@@ -22,6 +22,9 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
+// Get the translator object
+$translator = $environment->getTranslationObject();
+
 if (isset($_GET['back_to_index']) and $session->issetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index_ids')){
    $index_search_parameter_array = $session->getValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index_parameter_array');
    $params['interval'] = $index_search_parameter_array['interval'];
@@ -58,7 +61,7 @@ if ($environment->inPrivateRoom()){
          $params['with_modifying_actions'] = true;
          $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
          unset($params);
-         $errorbox->setText(getMessage('LOGIN_NOT_ALLOWED'));
+         $errorbox->setText($translator->getMessage('LOGIN_NOT_ALLOWED'));
          $page->add($errorbox);
       }
 
@@ -68,7 +71,7 @@ if ($environment->inPrivateRoom()){
          $params['with_modifying_actions'] = true;
          $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
          unset($params);
-         $errorbox->setText(getMessage('COMMON_RUBRIC_DOES_NOT_EXIST'));
+         $errorbox->setText($translator->getMessage('COMMON_RUBRIC_DOES_NOT_EXIST'));
          $page->add($errorbox);
    }else{
 
@@ -142,7 +145,7 @@ if ( isset($_GET['interval']) ) {
    }
 
    // Search / Select Area
-   if ( isset($_GET['option']) and isOption($_GET['option'],getMessage('COMMON_RESET')) ) {
+   if ( isset($_GET['option']) and isOption($_GET['option'],$translator->getMessage('COMMON_RESET')) ) {
       $search = '';
       $selgroup = '';
       $seltopic = '';
@@ -244,7 +247,7 @@ if ( isset($_GET['interval']) ) {
    // perform list actions              //
    ///////////////////////////////////////
 
-   if ( isOption($option,getMessage('COMMON_LIST_ACTION_BUTTON_GO'))
+   if ( isOption($option,$translator->getMessage('COMMON_LIST_ACTION_BUTTON_GO'))
         and $_POST['index_view_action'] != '-1'
         and !empty($selected_ids)
       ) {

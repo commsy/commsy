@@ -22,6 +22,9 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
+// Get the translator object
+$translator = $environment->getTranslationObject();
+
 if (isset($_GET['return_attach_item_list'])){
    $_POST = $session->getValue('linked_items_post_vars');
    unset($_POST['option']);
@@ -129,7 +132,7 @@ if (!empty($iid) and $iid != 'NEW') {
       $params['with_modifying_actions'] = true;
       $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
       unset($params);
-      $error_string = getMessage('LOGIN_NOT_ALLOWED');
+      $error_string = $translator->getMessage('LOGIN_NOT_ALLOWED');
       $errorbox->setText($error_string);
       $page->add($errorbox);
       $command = 'error';
@@ -142,7 +145,7 @@ if (!$context_item->isOpen()) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $error_string = getMessage('PROJECT_ROOM_IS_CLOSED',$context_item->getTitle());
+   $error_string = $translator->getMessage('PROJECT_ROOM_IS_CLOSED',$context_item->getTitle());
    $errorbox->setText($error_string);
    $page->add($errorbox);
    $command = 'error';
@@ -155,7 +158,7 @@ if ($command != 'error') { // only if user is allowed to edit user
    $form = $class_factory->getClass(USER_FORM,$class_params);
    unset($class_params);
    // cancel edit process
-   if ( isOption($command,getMessage('COMMON_CANCEL_BUTTON')) ) {
+   if ( isOption($command,$translator->getMessage('COMMON_CANCEL_BUTTON')) ) {
       $session->unsetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids');
       $session->unsetValue('linked_items_post_vars');
       if ( empty($_POST['iid']) ) {
@@ -197,13 +200,13 @@ if ($command != 'error') { // only if user is allowed to edit user
       $form->setRubricConnections($rubric_connection);
 
       // Redirect to attach groups
-      if ( isOption($command, getMessage('RUBRIC_DO_ATTACH_GROUP_BUTTON')) ) {
+      if ( isOption($command, $translator->getMessage('RUBRIC_DO_ATTACH_GROUP_BUTTON')) ) {
          attach_redirect(CS_GROUP_TYPE, $iid);
       }
       include_once('include/inc_right_boxes_handling.php');
 
 #      // Redirect to attach topics
-#      if ( isOption($command, getMessage('RUBRIC_DO_ATTACH_TOPIC_BUTTON')) ) {
+#      if ( isOption($command, $translator->getMessage('RUBRIC_DO_ATTACH_TOPIC_BUTTON')) ) {
 #         attach_redirect(CS_TOPIC_TYPE, $iid);
 #      }
 
@@ -320,7 +323,7 @@ if ($command != 'error') { // only if user is allowed to edit user
       $form->prepareForm();
       $form->loadValues();
 
-      if ( !empty($command) AND isOption($command,getMessage('USER_CHANGE_BUTTON')) ) {
+      if ( !empty($command) AND isOption($command,$translator->getMessage('USER_CHANGE_BUTTON')) ) {
          $correct = $form->check();
          if ( $correct
               and empty($_FILES['upload']['tmp_name'])
@@ -794,7 +797,7 @@ if ($command != 'error') { // only if user is allowed to edit user
          $params['width'] = 500;
          $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
          unset($params);
-         $errorbox->setText(getMessage('COMMON_EDIT_AS_MODERATOR'));
+         $errorbox->setText($translator->getMessage('COMMON_EDIT_AS_MODERATOR'));
          $page->add($errorbox);
       }
       $form_view->setForm($form);

@@ -22,6 +22,9 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
+// Get the translator object
+$translator = $environment->getTranslationObject();
+
 $current_user = $environment->getCurrentUserItem();
 if ( $current_user->isGuest() ) {
    redirect($environment->getCurrentContextID(),'home','index',array());
@@ -35,7 +38,7 @@ if ( isset($_POST['option']) ) {
    $command = '';
 }
 
-if ( isOption($command, getMessage('AGB_ACCEPTANCE_BUTTON')) ) {
+if ( isOption($command, $translator->getMessage('AGB_ACCEPTANCE_BUTTON')) ) {
    $current_user = $environment->getCurrentUserItem();
    $current_user->setAGBAcceptance();
    $current_user->save();
@@ -55,15 +58,15 @@ if ( isOption($command, getMessage('AGB_ACCEPTANCE_BUTTON')) ) {
       redirect($environment->getCurrentContextID(),'home','index',array());
    }
    exit();
-} elseif ( isOption($command, getMessage('AGB_ACCEPTANCE_NOT_BUTTON'))
-           or isOption($command, getMessage('AGB_ACCEPTANCE_NOT_BUTTON_ROOM'))
-           or isOption($command, getMessage('AGB_ACCEPTANCE_NOT_BUTTON_PORTAL'))
-              or isOption($command, getMessage('COMMON_CANCEL_BUTTON'))
+} elseif ( isOption($command, $translator->getMessage('AGB_ACCEPTANCE_NOT_BUTTON'))
+           or isOption($command, $translator->getMessage('AGB_ACCEPTANCE_NOT_BUTTON_ROOM'))
+           or isOption($command, $translator->getMessage('AGB_ACCEPTANCE_NOT_BUTTON_PORTAL'))
+              or isOption($command, $translator->getMessage('COMMON_CANCEL_BUTTON'))
          ) {
    $session_item = $environment->getSessionItem();
    $history = $session_item->getValue('history');
 
-   if ( (isOption($command, getMessage('AGB_ACCEPTANCE_NOT_BUTTON_PORTAL'))) or (isset($_POST['is_no_user']) and (isOption($command, getMessage('COMMON_CANCEL_BUTTON')))) ) {
+   if ( (isOption($command, $translator->getMessage('AGB_ACCEPTANCE_NOT_BUTTON_PORTAL'))) or (isset($_POST['is_no_user']) and (isOption($command, $translator->getMessage('COMMON_CANCEL_BUTTON')))) ) {
          if ( $environment->inPortal() or $environment->inServer() ) {
           $authentication = $environment->getAuthenticationObject();
           $authentication->delete($current_user->getItemID());
@@ -74,18 +77,18 @@ if ( isOption($command, getMessage('AGB_ACCEPTANCE_BUTTON')) ) {
    //  zur Seite leiten
    if ( !empty($history[0]['context'])
         and $history[0]['module'] != 'agb'
-        and !isOption($command, getMessage('COMMON_CANCEL_BUTTON'))
+        and !isOption($command, $translator->getMessage('COMMON_CANCEL_BUTTON'))
       ) {
       // Raum betreten
       $params = $history[0]['parameter'];
       unset($params['cs_modus']);
       redirect($history[0]['context'],$history[0]['module'],$history[0]['function'],$params);
-   } elseif ( !empty($history[1]['context']) and !isOption($command, getMessage('COMMON_CANCEL_BUTTON')) and !isset($_POST['is_no_user']) ) {
+   } elseif ( !empty($history[1]['context']) and !isOption($command, $translator->getMessage('COMMON_CANCEL_BUTTON')) and !isset($_POST['is_no_user']) ) {
       // zurück in vorigen Raum
       $params = $history[1]['parameter'];
       unset($params['cs_modus']);
       if ( $history[1]['context'] == $environment->getCurrentContextID()
-           and isOption($command, getMessage('COMMON_CANCEL_BUTTON'))
+           and isOption($command, $translator->getMessage('COMMON_CANCEL_BUTTON'))
          ) {
          redirect($environment->getCurrentPortalID(),'home','index',array('room_id' => $environment->getCurrentContextID()));
       } else {

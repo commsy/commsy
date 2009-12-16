@@ -26,6 +26,9 @@ $room_item = $environment->getCurrentContextItem();
 $current_user = $environment->getCurrentUserItem();
 $is_saved = false;
 
+// Get the translator object
+$translator = $environment->getTranslationObject();
+
 if ($current_user->isGuest()) {
    if (!$room_item->isOpenForGuests()) {
       redirect($environment->getCurrentPortalId(),'home','index','');
@@ -40,7 +43,7 @@ if ($current_user->isGuest()) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('PROJECT_ROOM_IS_CLOSED', $room_item->getTitle()));
+   $errorbox->setText($translator->getMessage('PROJECT_ROOM_IS_CLOSED', $room_item->getTitle()));
    $page->add($errorbox);
 } elseif (!$current_user->isModerator()) {
    $params = array();
@@ -48,7 +51,7 @@ if ($current_user->isGuest()) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('ACCESS_NOT_GRANTED'));
+   $errorbox->setText($translator->getMessage('ACCESS_NOT_GRANTED'));
    $page->add($errorbox);
 }
 // Access granted
@@ -74,9 +77,9 @@ else {
    unset($params);
 
    // Save item
-   if ( !empty($command) and isOption($command, getMessage('PREFERENCES_SAVE_BUTTON')) ) {
+   if ( !empty($command) and isOption($command, $translator->getMessage('PREFERENCES_SAVE_BUTTON')) ) {
       $correct = $form->check();
-      if ( $correct and isOption($command, getMessage('PREFERENCES_SAVE_BUTTON')) ) {
+      if ( $correct and isOption($command, $translator->getMessage('PREFERENCES_SAVE_BUTTON')) ) {
          if ( isset($_POST['context'])) {
             $old_context = $room_item->getRoomContext();
             if ($old_context != $_POST['context']){

@@ -89,6 +89,9 @@ if ( !empty($_POST['linked_only']) and $_POST['linked_only'] == 1 ) {
    $linked_only = false;
 }
 
+// Get the translator object
+$translator = $environment->getTranslationObject();
+
 $params = $environment->getCurrentParameterArray();
 $item_manager = $environment->getItemManager();
 $tmp_item = $item_manager->getItem($ref_iid);
@@ -252,7 +255,7 @@ if ( isset($_GET['interval']) ) {
 }
 
 if ( !empty($option)
-      and (isOption($option, getMessage('COMMON_ITEM_ATTACH')))
+      and (isOption($option, $translator->getMessage('COMMON_ITEM_ATTACH')))
     ) {
     $entry_array = array();
     $entry_new_array = array();

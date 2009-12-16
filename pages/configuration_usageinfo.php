@@ -25,6 +25,10 @@
 // get room item and current user
 $room_item = $environment->getCurrentContextItem();
 $current_user = $environment->getCurrentUserItem();
+
+// Get the translator object
+$translator = $environment->getTranslationObject();
+
 $is_saved = false;
 // Check access rights
 if ($current_user->isGuest()) {
@@ -41,7 +45,7 @@ if ($current_user->isGuest()) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('PROJECT_ROOM_IS_CLOSED', $room_item->getTitle()));
+   $errorbox->setText($translator->getMessage('PROJECT_ROOM_IS_CLOSED', $room_item->getTitle()));
    $page->add($errorbox);
 } elseif (!$current_user->isModerator()) {
    $params = array();
@@ -49,7 +53,7 @@ if ($current_user->isGuest()) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('ACCESS_NOT_GRANTED'));
+   $errorbox->setText($translator->getMessage('ACCESS_NOT_GRANTED'));
    $page->add($errorbox);
 }
 // Access granted
@@ -58,7 +62,7 @@ else {
    if ( isset($_POST['option']) ) {
       $command = $_POST['option'];
    } elseif (isset($_POST['info_text']) ) {
-      $command = getMessage('COMMON_CHOOSE_BUTTON');
+      $command = $translator->getMessage('COMMON_CHOOSE_BUTTON');
    } else {
       $command = '';
    }
@@ -72,7 +76,7 @@ else {
    $params['with_modifying_actions'] = true;
    $form_view = $class_factory->getClass(CONFIGURATION_FORM_VIEW,$params);
    unset($params);
-   if ( isOption($command, getMessage('COMMON_CHOOSE_BUTTON')) ) {
+   if ( isOption($command, $translator->getMessage('COMMON_CHOOSE_BUTTON')) ) {
       if ($_POST['info_text'] == 'home') {
          $values['info_text'] = 'home';
       } else {
@@ -97,7 +101,7 @@ else {
    }
 
    // Save item
-   if ( !empty($command) and isOption($command, getMessage('PREFERENCES_SAVE_BUTTON')) ) {
+   if ( !empty($command) and isOption($command, $translator->getMessage('PREFERENCES_SAVE_BUTTON')) ) {
       $correct = $form->check();
       if ( $correct ) {
          $info_array = array();

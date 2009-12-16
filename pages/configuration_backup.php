@@ -22,6 +22,9 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
+// Get the translator object
+$translator = $environment->getTranslationObject();
+
 class cNode extends SimpleXMLElement {
    function getName() {
       return dom_import_simplexml($this)->nodeName;
@@ -75,7 +78,7 @@ if ($current_user->isGuest()) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('PROJECT_ROOM_IS_CLOSED', $room_item->getTitle()));
+   $errorbox->setText($translator->getMessage('PROJECT_ROOM_IS_CLOSED', $room_item->getTitle()));
    $page->add($errorbox);
 } elseif ( ($room_item->isPortal() and !$current_user->isModerator())
            or ($room_item->isServer() and !$current_user->isRoot())
@@ -85,7 +88,7 @@ if ($current_user->isGuest()) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('ACCESS_NOT_GRANTED'));
+   $errorbox->setText($translator->getMessage('ACCESS_NOT_GRANTED'));
    $page->add($errorbox);
 }
 // Access granted
@@ -115,7 +118,7 @@ else {
    $form->prepareForm();
    $form->loadValues();
 
-   if ( !empty($command) and ( isOption($command, getMessage('PREFERENCES_BACKUP_BUTTON')) ) ) {
+   if ( !empty($command) and ( isOption($command, $translator->getMessage('PREFERENCES_BACKUP_BUTTON')) ) ) {
       if ( $form->check() ) {
          if ( !empty($_FILES['upload']['tmp_name'])
               and $_FILES['upload']['size'] > 0 ) {

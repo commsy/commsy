@@ -24,6 +24,9 @@
 
 include_once('classes/cs_list.php');
 
+// Get the translator object
+$translator = $environment->getTranslationObject();
+
 // check, if context is open
 $current_room_item = $environment->getCurrentContextItem();
 $current_user = $environment->getCurrentUserItem();
@@ -88,7 +91,7 @@ if (!isset($error) or !$error) {
    }
 
    // Search / Select Area
-   if ( isOption($option,getMessage('COMMON_RESET')) ) {
+   if ( isOption($option,$translator->getMessage('COMMON_RESET')) ) {
       $search = '';
       $selstatus = '';
    } else {
@@ -289,7 +292,7 @@ if (!isset($error) or !$error) {
    $selected_moderator_count = count(array_intersect($selected_ids,$moderator_ids));
    $room_moderator_count = count($moderator_ids);
 
-   if ( isOption($option,getMessage('COMMON_LIST_ACTION_BUTTON_GO'))
+   if ( isOption($option,$translator->getMessage('COMMON_LIST_ACTION_BUTTON_GO'))
         and $_POST['index_view_action'] != '-1'
         and !empty($selected_ids)
       ) {
@@ -307,7 +310,7 @@ if (!isset($error) or !$error) {
                }
             } else {
                $error = true;
-               $error_text_on_selection = getMessage('ERROR_LAST_MODERATOR');
+               $error_text_on_selection = $translator->getMessage('ERROR_LAST_MODERATOR');
                $action = '';
             }
             break;
@@ -315,7 +318,7 @@ if (!isset($error) or !$error) {
             $action = 'USER_ACCOUNT_LOCK';
             if ($room_moderator_count - $selected_moderator_count < 1) {
                $error = true;
-               $error_text_on_selection = getMessage('ERROR_LAST_MODERATOR');
+               $error_text_on_selection = $translator->getMessage('ERROR_LAST_MODERATOR');
                $action = '';
             }
             break;
@@ -324,7 +327,7 @@ if (!isset($error) or !$error) {
             // Bugfix - 1933279
             //if ($room_moderator_count - $selected_moderator_count < 1) {
             //   $error = true;
-            //   $error_text_on_selection = getMessage('ERROR_LAST_MODERATOR');
+            //   $error_text_on_selection = $translator->getMessage('ERROR_LAST_MODERATOR');
             //   $action = '';
             //}
             break;
@@ -333,7 +336,7 @@ if (!isset($error) or !$error) {
             $automatic = true;
             if ( $room_moderator_count - $selected_moderator_count < 1 ) {
                $error = true;
-               $error_text_on_selection = getMessage('ERROR_LAST_MODERATOR');
+               $error_text_on_selection = $translator->getMessage('ERROR_LAST_MODERATOR');
                $action = '';
             }
             break;
@@ -341,7 +344,7 @@ if (!isset($error) or !$error) {
             $action = 'USER_STATUS_USER';
             if ($room_moderator_count - $selected_moderator_count < 1) {
                $error = true;
-               $error_text_on_selection = getMessage('ERROR_LAST_MODERATOR');
+               $error_text_on_selection = $translator->getMessage('ERROR_LAST_MODERATOR');
                $action = '';
             }
             break;
@@ -367,7 +370,7 @@ if (!isset($error) or !$error) {
                }
             }
             if ($error) {
-               $error_text_on_selection = getMessage('INDEX_USER_MAKE_CONTACT_ERROR');
+               $error_text_on_selection = $translator->getMessage('INDEX_USER_MAKE_CONTACT_ERROR');
                $selected_ids = array_diff($selected_ids,$array_login_id);
                $view->setCheckedIDs($selected_ids);
             }
@@ -385,7 +388,7 @@ if (!isset($error) or !$error) {
                }
             }
             if ($error) {
-               $error_text_on_selection = getMessage('INDEX_USER_UNMAKE_CONTACT_ERROR');
+               $error_text_on_selection = $translator->getMessage('INDEX_USER_UNMAKE_CONTACT_ERROR');
                $selected_ids = array_diff($selected_ids,$array_login_id);
                $view->setCheckedIDs($selected_ids);
             }
@@ -431,7 +434,7 @@ if (!isset($error) or !$error) {
             }
             if (empty($selected_ids)) {
                $error = true;
-               $error_text_on_selection = getMessage('INDEX_USER_ACCOUNT_MERGE_ERROR');
+               $error_text_on_selection = $translator->getMessage('INDEX_USER_ACCOUNT_MERGE_ERROR');
                $view->setCheckedIDs($selected_ids);
             }
             break;

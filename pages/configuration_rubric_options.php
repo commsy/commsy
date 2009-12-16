@@ -27,6 +27,9 @@ $room_item = $environment->getCurrentContextItem();
 $current_user = $environment->getCurrentUserItem();
 $is_saved = false;
 
+// Get the translator object
+$translator = $environment->getTranslationObject();
+
 if ($current_user->isGuest()) {
    if (!$room_item->isOpenForGuests()) {
       redirect($environment->getCurrentPortalId(),'home','index','');
@@ -41,7 +44,7 @@ if ($current_user->isGuest()) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('PROJECT_ROOM_IS_CLOSED', $room_item->getTitle()));
+   $errorbox->setText($translator->getMessage('PROJECT_ROOM_IS_CLOSED', $room_item->getTitle()));
    $page->add($errorbox);
 } elseif (!$current_user->isModerator()) {
    $params = array();
@@ -49,7 +52,7 @@ if ($current_user->isGuest()) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('ACCESS_NOT_GRANTED'));
+   $errorbox->setText($translator->getMessage('ACCESS_NOT_GRANTED'));
    $page->add($errorbox);
 }
 // Access granted
@@ -74,16 +77,16 @@ else {
    $params['with_modifying_actions'] = true;
    $form_view = $class_factory->getClass(CONFIGURATION_FORM_VIEW,$params);
    unset($params);
-   if ( !empty($command) and isOption($command, getMessage('COMMON_CANCEL_BUTTON')) ) {
+   if ( !empty($command) and isOption($command, $translator->getMessage('COMMON_CANCEL_BUTTON')) ) {
      redirect($environment->getCurrentContextID(),'configuration', 'index', '');
    }
    // Save item
-   elseif ( !empty($command) and isOption($command, getMessage('PREFERENCES_SAVE_BUTTON')) ) {
+   elseif ( !empty($command) and isOption($command, $translator->getMessage('PREFERENCES_SAVE_BUTTON')) ) {
       if ( !empty($_POST) ) {
          $form->setFormPost($_POST);
       }
       $correct = $form->check();
-      if ( $correct and isOption($command, getMessage('PREFERENCES_SAVE_BUTTON')) ) {
+      if ( $correct and isOption($command, $translator->getMessage('PREFERENCES_SAVE_BUTTON')) ) {
          $home_conf = $room_item->getHomeConf();
          $home_conf_array = explode(',',$home_conf);
          $current_room_modules = array();

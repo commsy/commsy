@@ -60,7 +60,7 @@ if ( isset($item) and !$item->mayEdit($current_user) ) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('ACCESS_NOT_GRANTED'));
+   $errorbox->setText($translator->getMessage('ACCESS_NOT_GRANTED'));
    $page->add($errorbox);
 }
 
@@ -97,8 +97,8 @@ else {
 
    // Save item
    if ( !empty($command) and
-        (isOption($command, getMessage('COMMON_SAVE_BUTTON'))
-         or isOption($command, getMessage('PREFERENCES_SAVE_BUTTON')) ) ) {
+        (isOption($command, $translator->getMessage('COMMON_SAVE_BUTTON'))
+         or isOption($command, $translator->getMessage('PREFERENCES_SAVE_BUTTON')) ) ) {
 
       if ( $form->check() ) {
 
@@ -160,7 +160,7 @@ else {
       $params['width'] = 500;
       $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
       unset($params);
-      $errorbox->setText(getMessage('COMMON_EDIT_AS_MODERATOR'));
+      $errorbox->setText($translator->getMessage('COMMON_EDIT_AS_MODERATOR'));
       $page->add($errorbox);
    }
 

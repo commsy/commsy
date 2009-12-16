@@ -159,7 +159,7 @@ if ( !isset($item) ) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('ERROR_ILLEGAL_IID'));
+   $errorbox->setText($translator->getMessage('ERROR_ILLEGAL_IID'));
    $page->add($errorbox);
 } elseif ( $item->isDeleted() ) {
    $params = array();
@@ -167,7 +167,7 @@ if ( !isset($item) ) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('ITEM_NOT_AVAILABLE'));
+   $errorbox->setText($translator->getMessage('ITEM_NOT_AVAILABLE'));
    $page->add($errorbox);
 } elseif ( !$item->maySee($current_user) ) {
    $params = array();
@@ -175,7 +175,7 @@ if ( !isset($item) ) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('LOGIN_NOT_ALLOWED'));
+   $errorbox->setText($translator->getMessage('LOGIN_NOT_ALLOWED'));
    $page->add($errorbox);
 } else {
    //is current room open?

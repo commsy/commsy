@@ -22,6 +22,9 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
+// Get the translator object
+$translator = $environment->getTranslationObject();
+
 // Verify parameters for this page
 if (!empty($_GET['iid'])) {
    $current_item_id = $_GET['iid'];
@@ -46,7 +49,7 @@ if ($type != CS_ANNOUNCEMENT_TYPE) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('ERROR_ILLEGAL_IID'));
+   $errorbox->setText($translator->getMessage('ERROR_ILLEGAL_IID'));
    $page->add($errorbox);
 } else {
    // initialize objects
@@ -72,7 +75,7 @@ if ($type != CS_ANNOUNCEMENT_TYPE) {
       $params['with_modifying_actions'] = true;
       $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
       unset($params);
-      $errorbox->setText(getMessage('ITEM_NOT_AVAILABLE'));
+      $errorbox->setText($translator->getMessage('ITEM_NOT_AVAILABLE'));
       $page->add($errorbox);
    } elseif ( !$announcement_item->maySee($current_user) ) {
       $params = array();
@@ -80,7 +83,7 @@ if ($type != CS_ANNOUNCEMENT_TYPE) {
       $params['with_modifying_actions'] = true;
       $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
       unset($params);
-      $errorbox->setText(getMessage('LOGIN_NOT_ALLOWED'));
+      $errorbox->setText($translator->getMessage('LOGIN_NOT_ALLOWED'));
       $page->add($errorbox);
    } else {
       // Get clipboard

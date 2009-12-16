@@ -39,6 +39,9 @@ $current_user = $environment->getCurrentUserItem();
 $context_item = $environment->getCurrentContextItem();
 $with_anchor = false;
 
+// Get the translator object
+$translator = $environment->getTranslationObject();
+
 // Get item to be edited
 if ( !empty($_GET['iid']) ) {
    $current_iid = $_GET['iid'];
@@ -101,7 +104,7 @@ if ( !( ( $current_iid == 'NEW' and $current_user->isUser() )
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $error_string = getMessage('LOGIN_NOT_ALLOWED');
+   $error_string = $translator->getMessage('LOGIN_NOT_ALLOWED');
    $errorbox->setText($error_string);
    $page->add($errorbox);
 }
@@ -122,7 +125,7 @@ else {
    }
 
    // Cancel editing
-   if ( isOption($command, getMessage('COMMON_CANCEL_BUTTON')) ) {
+   if ( isOption($command, $translator->getMessage('COMMON_CANCEL_BUTTON')) ) {
       cleanup_session($current_iid);
       if (isset($section_item)and !empty($section_item)){
          $link_number = 'anchor'.$section_item->getItemID();
@@ -212,9 +215,9 @@ else {
       $form->loadValues();
 
       if (!empty($command) AND
-          (isOption($command,getMessage('SECTION_SAVE_BUTTON'))
-           OR isOption($command,getMessage('SECTION_CHANGE_BUTTON'))
-           OR isOption($command,getMessage('MATERIAL_VERSION_BUTTON'))) ) {
+          (isOption($command,$translator->getMessage('SECTION_SAVE_BUTTON'))
+           OR isOption($command,$translator->getMessage('SECTION_CHANGE_BUTTON'))
+           OR isOption($command,$translator->getMessage('MATERIAL_VERSION_BUTTON'))) ) {
          $infoBox_forAutoNewVersion = "";
 
          $correct = $form->check();
@@ -230,7 +233,7 @@ else {
             }
 
             // new version?
-            if ((!empty($command) AND isOption($command,getMessage('MATERIAL_VERSION_BUTTON')))
+            if ((!empty($command) AND isOption($command,$translator->getMessage('MATERIAL_VERSION_BUTTON')))
                   or ($_POST['material_modification_date'] != $material_item->getModificationDate())) {
                   $version = $material_item->getVersionID()+1;
                   $material_item->save();
@@ -313,7 +316,7 @@ else {
          $params['width'] = 500;
          $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
          unset($params);
-         $errorbox->setText(getMessage('COMMON_EDIT_AS_MODERATOR'));
+         $errorbox->setText($translator->getMessage('COMMON_EDIT_AS_MODERATOR'));
          $page->add($errorbox);
       }
       $form_view->setAction(curl($environment->getCurrentContextID(),'section','edit',''));

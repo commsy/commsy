@@ -46,7 +46,7 @@ if (!$current_user->isRoot() and !$current_context->mayEdit($current_user)) {
    }
 
    // Cancel editing
-   if ( isOption($command, getMessage('COMMON_CANCEL_BUTTON')) ) {
+   if ( isOption($command, $translator->getMessage('COMMON_CANCEL_BUTTON')) ) {
       redirect($environment->getCurrentContextID(),'configuration','index',array());
    }
 

@@ -25,6 +25,10 @@
 $user_manager = $environment->getUserManager();
 $user_manager->resetLimits();
 $user_item = $user_manager->getRootUser();
+
+// Get the translator object
+$translator = $environment->getTranslationObject(
+
 if (!empty($user_item)) {
    include_once('functions/error_functions.php');
    trigger_error('root user is allready know in database',E_USER_ERROR);
@@ -42,7 +46,7 @@ if (!empty($user_item)) {
       unset($class_params);
 
    // cancel
-   if ( isOption($command,getMessage('COMMON_CANCEL_BUTTON')) ) {
+   if ( isOption($command,$translator->getMessage('COMMON_CANCEL_BUTTON')) ) {
       redirect($environment->getCurrentContextID(), 'home', 'index', '');
    }
 
@@ -94,7 +98,7 @@ if (!empty($user_item)) {
    }
 }
 $page->setPageName($c_meta['name']);
-$page->setRoomName(getMessage('SERVER_INITIALIZE_HEADER_DESC'));
+$page->setRoomName($translator->getMessage('SERVER_INITIALIZE_HEADER_DESC'));
 $page->setWithoutPersonalArea();
 $page->setWithoutNavigationLinks();
 ?>

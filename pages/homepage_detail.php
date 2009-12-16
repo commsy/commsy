@@ -25,6 +25,9 @@
 $error = false;
 $current_context = $environment->getCurrentContextItem();
 
+// Get the translator object
+$translator = $environment->getTranslationObject();
+
 // Verify parameters for this page
 if ( !$current_context->showHomepageLink() ) {
    $params = array();
@@ -32,7 +35,7 @@ if ( !$current_context->showHomepageLink() ) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('HOMEPAGE_ERROR_NOT_ACTIVATED'));
+   $errorbox->setText($translator->getMessage('HOMEPAGE_ERROR_NOT_ACTIVATED'));
    $page->add($errorbox);
    $error = true;
 } elseif (!empty($_GET['iid'])) {
@@ -45,7 +48,7 @@ if ( !$current_context->showHomepageLink() ) {
       $params['with_modifying_actions'] = true;
       $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
       unset($params);
-      $errorbox->setText(getMessage('ERROR_ILLEGAL_IID'));
+      $errorbox->setText($translator->getMessage('ERROR_ILLEGAL_IID'));
       $page->add($errorbox);
       $error = true;
    }
@@ -81,7 +84,7 @@ if (!$error) {
       $params['with_modifying_actions'] = true;
       $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
       unset($params);
-      $errorbox->setText(getMessage('ITEM_NOT_AVAILABLE'));
+      $errorbox->setText($translator->getMessage('ITEM_NOT_AVAILABLE'));
       $page->add($errorbox);
    } else {
       $detail_view->setItem($homepage_item);

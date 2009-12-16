@@ -22,6 +22,9 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
+// Get the translator object
+$translator = $environment->getTranslationObject();
+
 $room_type = CS_MYROOM_TYPE;
 // Find current browsing starting point
 if ( isset($_GET['from']) ) {
@@ -113,7 +116,7 @@ if ( $mode == 'formattach' or $mode == 'detailattach' ) {
 }
 
 // Search / Select Area
-if ( isset($_GET['option']) and isOption($_GET['option'],getMessage('COMMON_RESET')) ) {
+if ( isset($_GET['option']) and isOption($_GET['option'],$translator->getMessage('COMMON_RESET')) ) {
    $search = '';
    $selstatus = 6;
 } else {
@@ -264,13 +267,13 @@ if ($mode == '') {
    ///////////////////////////////////////
 
 // Cancel editing
-if ( isOption($delete_command, getMessage('COMMON_CANCEL_BUTTON')) ) {
+if ( isOption($delete_command, $translator->getMessage('COMMON_CANCEL_BUTTON')) ) {
    $params = $environment->getCurrentParameterArray();
    redirect($environment->getCurrentContextID(),'myroom', 'index', $params);
 }
 
 // Delete item
-elseif ( isOption($delete_command, getMessage('COMMON_DELETE_BUTTON')) ) {
+elseif ( isOption($delete_command, $translator->getMessage('COMMON_DELETE_BUTTON')) ) {
    if ($session->issetValue('cid'.$environment->getCurrentContextID().
                                   '_'.$environment->getCurrentModule().
                                  '_deleted_ids')) {
@@ -290,7 +293,7 @@ elseif ( isOption($delete_command, getMessage('COMMON_DELETE_BUTTON')) ) {
    unset($params['mode']);
    redirect($environment->getCurrentContextID(), 'myroom', 'index', $params);
 }
-   if ( isOption($option,getMessage('COMMON_LIST_ACTION_BUTTON_GO'))
+   if ( isOption($option,$translator->getMessage('COMMON_LIST_ACTION_BUTTON_GO'))
         and $_POST['index_view_action'] != '-1'
         and !empty($selected_ids)
       ) {
@@ -458,11 +461,11 @@ if( $environment->inPrivateRoom() ){
 }
 // Set data for view
 if ($room_type == CS_PROJECT_TYPE and $context_type == CS_COMMUNITY_TYPE) {
-   $view->setTitle(getMessage('PROJECT_HEADER_IN_COMMUNITY_ROOM',$current_context_item->getTitle()));
+   $view->setTitle($translator->getMessage('PROJECT_HEADER_IN_COMMUNITY_ROOM',$current_context_item->getTitle()));
 } elseif ($room_type == CS_PROJECT_TYPE) {
-   $view->setTitle(getMessage('PROJECT_INDEX'));
+   $view->setTitle($translator->getMessage('PROJECT_INDEX'));
 } elseif ($room_type == CS_COMMUNITY_TYPE) {
-   $view->setTitle(getMessage('COMMUNITY_INDEX'));
+   $view->setTitle($translator->getMessage('COMMUNITY_INDEX'));
 }
 $view->setList($list);
 $view->setCountAll($count_all);
@@ -477,7 +480,7 @@ if (isset($_GET['select']) and $_GET['select']=='all'){
       $item = $list->getNext();
    }
 }
-if (isOption($option,getMessage('COMMON_LIST_ACTION_BUTTON_GO'))){
+if (isOption($option,$translator->getMessage('COMMON_LIST_ACTION_BUTTON_GO'))){
      $selected_ids = array();
 }
 

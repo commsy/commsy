@@ -27,13 +27,16 @@ $room_item = $environment->getCurrentContextItem();
 $current_user = $environment->getCurrentUserItem();
 $is_saved = false;
 
+// Get the translator object
+$translator = $environment->getTranslationObject();
+
 if (!$current_user->isModerator()) {
    $params = array();
    $params['environment'] = $environment;
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('ACCESS_NOT_GRANTED'));
+   $errorbox->setText($translator->getMessage('ACCESS_NOT_GRANTED'));
    $page->add($errorbox);
 } elseif ( !$room_item->isOpen() and !$room_item->isTemplate() ) {
    $params = array();
@@ -41,7 +44,7 @@ if (!$current_user->isModerator()) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('PROJECT_ROOM_IS_CLOSED', $room_item->getTitle()));
+   $errorbox->setText($translator->getMessage('PROJECT_ROOM_IS_CLOSED', $room_item->getTitle()));
    $page->add($errorbox);
    $command = 'error';
 }
@@ -67,12 +70,12 @@ else {
    unset($params);
 
    // Save item
-   if ( !empty($command) and isOption($command, getMessage('COMMON_CANCEL_BUTTON')) ) {
+   if ( !empty($command) and isOption($command, $translator->getMessage('COMMON_CANCEL_BUTTON')) ) {
      redirect($environment->getCurrentContextID(),'configuration', 'index', '');
    }
    elseif ( !empty($command)
-        and ( isOption($command, getMessage('COMMON_SAVE_BUTTON'))
-              or isOption($command, getMessage('PREFERENCES_SAVE_BUTTON'))
+        and ( isOption($command, $translator->getMessage('COMMON_SAVE_BUTTON'))
+              or isOption($command, $translator->getMessage('PREFERENCES_SAVE_BUTTON'))
              )
       ) {
 

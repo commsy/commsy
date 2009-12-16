@@ -100,6 +100,10 @@ $copy_view->setInterval($interval);
 $context_item = $environment->getCurrentContextItem();
 $session = $environment->getSession();
 $current_room_modules = $context_item->getHomeConf();
+
+// Get the translator object
+$translator = $environment->getTranslationObject();
+
 if ( !empty($current_room_modules) ){
    $room_modules = explode(',',$current_room_modules);
 } else {
@@ -158,7 +162,7 @@ foreach ($rubric_copy_array as $rubric){
 
 $item_id_array = $tmp_id_array;
 
-if ( isOption($option,getMessage('COMMON_COPY_LIST_ACTION_BUTTON_GO'))
+if ( isOption($option,$translator->getMessage('COMMON_COPY_LIST_ACTION_BUTTON_GO'))
      and $_POST['index_view_action'] != '-1'
    ) {
    switch ($_POST['index_view_action']) {
@@ -170,7 +174,7 @@ if ( isOption($option,getMessage('COMMON_COPY_LIST_ACTION_BUTTON_GO'))
          break;
    }
 }
-if($command == 'paste') {
+if($command == 'paste') {   
    $attach_array = array();
    $error_array = array();
    $error_name_array = array();
@@ -178,11 +182,11 @@ if($command == 'paste') {
    $count = 0;
    $iid = '';
    if (!empty($_POST['attach'])) {
-      foreach($_POST['attach'] as $key => $value){
+      foreach($_POST['attach'] as $key => $value){        
          $manager = $environment->getItemManager();
          $item = $manager->getItem($key);
          $item_manager = $environment->getManager($item->getItemType());
-         $import_item = $item_manager->getItem($key);
+         $import_item = $item_manager->getItem($key);         
          $copy = $import_item->copy();
          $count++;
          $rubric = $item->getItemType();
@@ -354,7 +358,7 @@ if (isset($_GET['select']) and $_GET['select']=='all'){
       $item = $item_list->getNext();
    }
 }
-if (isOption($option,getMessage('COMMON_COPY_LIST_ACTION_BUTTON_GO'))){
+if (isOption($option,$translator->getMessage('COMMON_COPY_LIST_ACTION_BUTTON_GO'))){
      $selected_ids = array();
 }
 

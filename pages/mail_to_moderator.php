@@ -28,8 +28,11 @@ if (!empty($_POST['option'])) {
    $command = '';
 }
 
+// Get the translator object
+$translator = $environment->getTranslationObject();
+
 // cancel edit process
-if ( isOption($command,getMessage('COMMON_CANCEL_BUTTON')) ) {
+if ( isOption($command,$translator->getMessage('COMMON_CANCEL_BUTTON')) ) {
    $history = $session->getValue('history');
    if (empty($history[1]['module'])) {
       $module = 'home';

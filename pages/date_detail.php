@@ -32,6 +32,9 @@ if (!empty($_GET['iid'])) {
 
 include_once('include/inc_delete_entry.php');
 
+// Get the translator object
+$translator = $environment->getTranslationObject();
+
 $item_manager = $environment->getItemManager();
 $type = $item_manager->getItemType($_GET['iid']);
 if ($type != CS_DATE_TYPE) {
@@ -40,7 +43,7 @@ if ($type != CS_DATE_TYPE) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('ERROR_ILLEGAL_IID'));
+   $errorbox->setText($translator->getMessage('ERROR_ILLEGAL_IID'));
    $page->add($errorbox);
 } else {
    //used to signal which "creator infos" of annotations are expanded...
@@ -69,7 +72,7 @@ if ($type != CS_DATE_TYPE) {
       $params['with_modifying_actions'] = true;
       $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
       unset($params);
-      $errorbox->setText(getMessage('ITEM_NOT_AVAILABLE'));
+      $errorbox->setText($translator->getMessage('ITEM_NOT_AVAILABLE'));
       $page->add($errorbox);
    } elseif ( !$dates_item->maySee($current_user) ) {
       $params = array();
@@ -77,7 +80,7 @@ if ($type != CS_DATE_TYPE) {
       $params['with_modifying_actions'] = true;
       $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
       unset($params);
-      $errorbox->setText(getMessage('LOGIN_NOT_ALLOWED'));
+      $errorbox->setText($translator->getMessage('LOGIN_NOT_ALLOWED'));
       $page->add($errorbox);
    } else {
       // Get clipboard

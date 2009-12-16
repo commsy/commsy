@@ -48,11 +48,11 @@ $params['environment'] = $environment;
 $params['with_modifying_actions'] = true;
 $table_view = $class_factory->getClass(TABLE_VIEW,$params);
 unset($params);
-$table_view->addColumn(getMessage('MESSAGE_TAG'),true,$sortby=='message',getMessage('MESSAGE_TAG'),'message','');
-$table_view->addAction(getMessage('LANGUAGE_EDIT'),true,'','language','edit');
+$table_view->addColumn($translator->getMessage('MESSAGE_TAG'),true,$sortby=='message',$translator->getMessage('MESSAGE_TAG'),'message','');
+$table_view->addAction($translator->getMessage('LANGUAGE_EDIT'),true,'','language','edit');
 
 foreach (array_keys(current($message)) as $item){
-    $table_view->addColumn(getMessage($item),true,$sortby==$item,getMessage($item),$item,'');
+    $table_view->addColumn($translator->getMessage($item),true,$sortby==$item,$translator->getMessage($item),$item,'');
 }
 
 if (!($sortby == 'message')) {

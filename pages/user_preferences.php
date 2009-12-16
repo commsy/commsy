@@ -30,6 +30,9 @@ if (!empty($_POST['option'])) {
    $command = '';
 }
 
+// Get the translator object
+$translator = $environment->getTranslationObject();
+
 if (!empty($_GET['iid'])) {
    $iid = $_GET['iid'];
 } elseif (!empty($_POST['iid'])) {
@@ -51,7 +54,7 @@ if (!$user->mayEdit($current_user)) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $error_string = getMessage('LOGIN_NOT_ALLOWED').'<br />';
+   $error_string = $translator->getMessage('LOGIN_NOT_ALLOWED').'<br />';
    $errorbox->setText($error_string);
    $page->add($errorbox);
    $command = 'error';
@@ -76,7 +79,7 @@ if ($command != 'error') { // only if user is allowed to edit user
    }
 
    // cancel edit process
-   if ( isOption($command,getMessage('COMMON_CANCEL_BUTTON')) ) {
+   if ( isOption($command,$translator->getMessage('COMMON_CANCEL_BUTTON')) ) {
       if ( empty($_POST['iid']) ) {    // cancel new user item
          redirect($environment->getCurrentContextID(), $current_module, 'index', '');
       } else {                                  // cancel edit news item
@@ -87,7 +90,7 @@ if ($command != 'error') { // only if user is allowed to edit user
                   'detail',
                   $params);
       }
-   } elseif ( isOption($command,getMessage('COMMON_CHANGE_BUTTON')) ) {  //save
+   } elseif ( isOption($command,$translator->getMessage('COMMON_CHANGE_BUTTON')) ) {  //save
 
       if (!empty($_POST)) {  // second call of form: set post vars
          $form->setFormPost($_POST);
@@ -95,7 +98,7 @@ if ($command != 'error') { // only if user is allowed to edit user
       $form->prepareForm();
       $form->loadValues();
 
-      if ( isOption($command,getMessage('COMMON_CHANGE_BUTTON')) ) {
+      if ( isOption($command,$translator->getMessage('COMMON_CHANGE_BUTTON')) ) {
          // Save changes, if everything is okay
          if ( $form->check()  ) {
             $user_manager = $environment->getUserManager();
@@ -203,7 +206,7 @@ if ($command != 'error') { // only if user is allowed to edit user
       $params['width'] = 500;
       $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
       unset($params);
-      $errorbox->setText(getMessage('COMMON_EDIT_AS_MODERATOR'));
+      $errorbox->setText($translator->getMessage('COMMON_EDIT_AS_MODERATOR'));
       $page->add($errorbox);
    }
    $form_view->setForm($form);

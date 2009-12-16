@@ -35,6 +35,9 @@ include_once('include/inc_delete_entry.php');
 $todo_manager = $environment->getToDosManager();
 $todo_item = $todo_manager->getItem($current_item_id);
 
+// Get the translator object
+$translator = $environment->getTranslationObject();
+
 if ( !isset($todo_item) ) {
    include_once('functions/error_functions.php');
    trigger_error('Item '.$current_item_id.' does not exist!', E_USER_ERROR);
@@ -44,7 +47,7 @@ if ( !isset($todo_item) ) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('ITEM_NOT_AVAILABLE'));
+   $errorbox->setText($translator->getMessage('ITEM_NOT_AVAILABLE'));
    $page->add($errorbox);
 } elseif ( !$todo_item->maySee($current_user) ) {
    $params = array();
@@ -52,7 +55,7 @@ if ( !isset($todo_item) ) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('LOGIN_NOT_ALLOWED'));
+   $errorbox->setText($translator->getMessage('LOGIN_NOT_ALLOWED'));
    $page->add($errorbox);
 } else {
    // Get clipboard

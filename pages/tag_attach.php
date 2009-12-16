@@ -25,6 +25,9 @@
 
 include_once('classes/cs_list.php');
 
+// Get the translator object
+$translator = $environment->getTranslationObject();
+
 if ( isset($_GET['ref_attach_iid']) ) {
    $ref_iid = $_GET['ref_attach_iid'];
 } elseif ( isset($_POST['ref_attach_iid']) ) {
@@ -58,7 +61,7 @@ if ($environment->getCurrentFunction() != 'edit'){
 
 }
 if ( !empty($option)
-      and (isOption($option, getMessage('COMMON_TAG_NEW_ATTACH')))
+      and (isOption($option, $translator->getMessage('COMMON_TAG_NEW_ATTACH')))
     ) {
     $tag_array = array();
     if (isset($_POST['taglist'])){

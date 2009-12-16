@@ -25,6 +25,10 @@ $formal_data = array();
 
 function performAction ( $environment, $action_array, $post_array ) {
    global $formal_data;
+   
+   // Get the translator object
+   $translator = $environment->getTranslationObject();
+
    // perform action
    $user_manager = $environment->getUserManager();
    $admin = $user_manager->getItem($action_array['user_item_id']);
@@ -357,11 +361,11 @@ function performAction ( $environment, $action_array, $post_array ) {
          $mail->set_reply_to_name($admin->getFullname());
 
          if(!isset($formal_data_from)){
-            $formal_data_from = array(getMessage('MAIL_FROM'), $admin->getFullname()." &lt;".$admin->getEmail()."&gt;");
+            $formal_data_from = array($translator->getMessage('MAIL_FROM'), $admin->getFullname()." &lt;".$admin->getEmail()."&gt;");
             $formal_data[] = $formal_data_from;
          }
          if(!isset($formal_data_reply)){
-            $formal_data_reply = array(getMessage('REPLY_TO'), $admin->getFullname()." &lt;".$admin->getEmail()."&gt;");
+            $formal_data_reply = array($translator->getMessage('REPLY_TO'), $admin->getFullname()." &lt;".$admin->getEmail()."&gt;");
             $formal_data[] = $formal_data_reply;
          }
          // subject and body
@@ -424,17 +428,19 @@ function performAction ( $environment, $action_array, $post_array ) {
 
          unset($translator);
          unset($room);
+         
+         $translator = $environment->getTranslationObject();
 
          if ( isset($subject) and !empty($subject) ) {
             $mail->set_subject($subject);
             if(!isset($formal_data_subject)){
-               $formal_data_subject = array(getMessage('MAIL_SUBJECT'), $subject);
+               $formal_data_subject = array($translator->getMessage('MAIL_SUBJECT'), $subject);
             }
          }
          if ( isset($content) and !empty($content) ) {
             $mail->set_message($content);
             if(!isset($formal_data_message)){
-               $formal_data_message = array(getMessage('COMMON_MAIL_CONTENT').":", $content);
+               $formal_data_message = array($translator->getMessage('COMMON_MAIL_CONTENT').":", $content);
             }
          }
          $mail->set_to($send_to);
@@ -517,7 +523,7 @@ function performAction ( $environment, $action_array, $post_array ) {
       unset($user);
    }
    if(isset($formal_data_send_to)){
-      $formal_data[] = array(getMessage('MAIL_TO'), implode(",", $formal_data_send_to));
+      $formal_data[] = array($translator->getMessage('MAIL_TO'), implode(",", $formal_data_send_to));
    }
    if(isset($formal_data_subject)){
       $formal_data[] = $formal_data_subject;

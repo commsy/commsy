@@ -28,6 +28,9 @@
 $current_user = $environment->getCurrentUserItem();
 $context_item = $environment->getCurrentContextItem();
 
+// Get the translator object
+$translator = $environment->getTranslationObject();
+
 // Check access rights
 if ( $context_item->isProjectRoom() and $context_item->isClosed() ) {
    $params = array();
@@ -35,7 +38,7 @@ if ( $context_item->isProjectRoom() and $context_item->isClosed() ) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('PROJECT_ROOM_IS_CLOSED', $context_item->getTitle()));
+   $errorbox->setText($translator->getMessage('PROJECT_ROOM_IS_CLOSED', $context_item->getTitle()));
    $page->add($errorbox);
 
 }  elseif ( !$current_user->isUser() ) {
@@ -44,7 +47,7 @@ if ( $context_item->isProjectRoom() and $context_item->isClosed() ) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('LOGIN_NOT_ALLOWED'));
+   $errorbox->setText($translator->getMessage('LOGIN_NOT_ALLOWED'));
    $page->add($errorbox);
 }
 // Access granted
@@ -61,7 +64,7 @@ else {
       }
 
       // Cancel editing
-      if ( isOption($command, getMessage('COMMON_CANCEL_BUTTON')) ) {
+      if ( isOption($command, $translator->getMessage('COMMON_CANCEL_BUTTON')) ) {
          redirect($environment->getCurrentContextID(),CS_DATE_TYPE, 'index','');
 
       }
@@ -82,7 +85,7 @@ else {
          $form->prepareForm();
          $form->loadValues();
          if ( !empty($command) and
-           isOption($command, getMessage('DATES_SELECTION_BUTTON')) ) {
+           isOption($command, $translator->getMessage('DATES_SELECTION_BUTTON')) ) {
 
             $date_manager = $environment->getDateManager();
             foreach($date_array as $dates_data){
@@ -94,7 +97,7 @@ else {
                if (isset($dates_data[$_POST['title']])){
                   $dates_item->setTitle($dates_data[$_POST['title']]);
                }else{
-                  $dates_item->setTitle(getMessage('COMMON_TITLE'));
+                  $dates_item->setTitle($translator->getMessage('COMMON_TITLE'));
                }
                if (isset($dates_data[$_POST['description']])){
                   $dates_item->setDescription($dates_data[$_POST['description']]);
@@ -126,7 +129,7 @@ else {
                      $starting_day = $dates_data[$_POST['startday']];
                   }
                }else{
-                  $starting_day = getMessage('COMMON_NOTHING_ATTACHED');
+                  $starting_day = $translator->getMessage('COMMON_NOTHING_ATTACHED');
                }
                $dates_item->setStartingDay($starting_day);
 
@@ -189,7 +192,7 @@ else {
          $command = '';
       }
       // Cancel editing
-      if ( isOption($command, getMessage('COMMON_CANCEL_BUTTON')) ) {
+      if ( isOption($command, $translator->getMessage('COMMON_CANCEL_BUTTON')) ) {
          redirect($environment->getCurrentContextID(),CS_DATE_TYPE, 'index',$params);
 
       }
@@ -228,7 +231,7 @@ else {
 
          // Save item
          if ( !empty($command)
-              and isOption($command, getMessage('DATES_IMPORT_BUTTON'))
+              and isOption($command, $translator->getMessage('DATES_IMPORT_BUTTON'))
             ) {
 
             $correct = $form->check();

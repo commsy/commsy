@@ -22,6 +22,9 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
+// Get the translator object
+$translator = $environment->getTranslationObject();
+
 // get room item and current user
 $room_item = $environment->getCurrentContextItem();
 $current_user = $environment->getCurrentUserItem();
@@ -41,7 +44,7 @@ if ($current_user->isGuest()) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('PROJECT_ROOM_IS_CLOSED', $room_item->getTitle()));
+   $errorbox->setText($translator->getMessage('PROJECT_ROOM_IS_CLOSED', $room_item->getTitle()));
    $page->add($errorbox);
 } elseif (!$current_user->isModerator()) {
    $params = array();
@@ -49,7 +52,7 @@ if ($current_user->isGuest()) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('ACCESS_NOT_GRANTED'));
+   $errorbox->setText($translator->getMessage('ACCESS_NOT_GRANTED'));
    $page->add($errorbox);
 }
 // Access granted
@@ -59,13 +62,13 @@ else {
    if ( isset($_POST['option']) ) {
       $command = $_POST['option'];
    } elseif (isset($_POST['mail_text']) ) {
-      $command = getMessage('COMMON_CHOOSE_BUTTON');
+      $command = $translator->getMessage('COMMON_CHOOSE_BUTTON');
    } else {
       $command = '';
    }
 
    // Cancel editing
-   if ( isOption($command, getMessage('COMMON_CANCEL_BUTTON')) ) {
+   if ( isOption($command, $translator->getMessage('COMMON_CANCEL_BUTTON')) ) {
       redirect( $environment->getCurrentContextID(),
                 $environment->getCurrentModule(),
                 $environment->getCurrentFunction(),
@@ -84,7 +87,7 @@ else {
       $form_view = $class_factory->getClass(CONFIGURATION_FORM_VIEW,$params);
       unset($params);
 
-      if ( ( isOption($command, getMessage('COMMON_CHOOSE_BUTTON'))
+      if ( ( isOption($command, $translator->getMessage('COMMON_CHOOSE_BUTTON'))
              and $_POST['auth_source'] != 'disabled'
              and $_POST['auth_source'] != 'new'
              and $_POST['auth_source'] > 100
@@ -94,7 +97,7 @@ else {
              and $_POST['auth_source'] != 'new'
              and $_POST['auth_source'] != 'disabled'
              and $_POST['auth_source'] > 100
-             and !isOption($command, getMessage('PREFERENCES_SAVE_BUTTON'))
+             and !isOption($command, $translator->getMessage('PREFERENCES_SAVE_BUTTON'))
            )
          ) {
          $auth_source_item = $room_item->getAuthSource($_POST['auth_source']);
@@ -125,11 +128,11 @@ else {
 
       // Save item
       if ( !empty($command)
-           and isOption($command, getMessage('PREFERENCES_SAVE_BUTTON'))
+           and isOption($command, $translator->getMessage('PREFERENCES_SAVE_BUTTON'))
          ) {
 
          $correct = $form->check();
-         if ( $correct and isOption($command, getMessage('PREFERENCES_SAVE_BUTTON')) ) {
+         if ( $correct and isOption($command, $translator->getMessage('PREFERENCES_SAVE_BUTTON')) ) {
 
             if (isset( $_POST['auth_source']) and $_POST['auth_source'] == 'new' ) {
                // TBD

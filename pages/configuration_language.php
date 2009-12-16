@@ -22,6 +22,8 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
+// Get the translator object
+$translator = $environment->getTranslationObject();
 
 if (!empty($_POST['option'])) {
    $command = $_POST['option'];
@@ -46,7 +48,7 @@ if ($current_user->isGuest()) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('PROJECT_ROOM_IS_CLOSED', $context_item->getTitle()));
+   $errorbox->setText($translator->getMessage('PROJECT_ROOM_IS_CLOSED', $context_item->getTitle()));
    $page->add($errorbox);
    $command = 'error';
 } elseif (!$current_user->isModerator()) {
@@ -55,7 +57,7 @@ if ($current_user->isGuest()) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('ACCESS_NOT_GRANTED'));
+   $errorbox->setText($translator->getMessage('ACCESS_NOT_GRANTED'));
    $page->add($errorbox);
    $command = 'error';
 }
@@ -71,7 +73,7 @@ if ($command != 'error') {
    }
 
    // Cancel editing
-   if ( isOption($command, getMessage('COMMON_CANCEL_BUTTON')) ) {
+   if ( isOption($command, $translator->getMessage('COMMON_CANCEL_BUTTON')) ) {
       redirect($environment->getCurrentContextID(),'configuration','index');
    }
 
@@ -96,7 +98,7 @@ if ($command != 'error') {
       $form->loadValues();
 
       // Save item
-      if ( !empty($command) and isOption($command, getMessage('PREFERENCES_SAVE_BUTTON') ) ) {
+      if ( !empty($command) and isOption($command, $translator->getMessage('PREFERENCES_SAVE_BUTTON') ) ) {
 
          $correct = $form->check();
          if ( $correct ) {
@@ -120,7 +122,7 @@ if ($command != 'error') {
          $params['width'] = 500;
          $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
          unset($params);
-         $errorbox->setText(getMessage('COMMON_EDIT_AS_MODERATOR'));
+         $errorbox->setText($translator->getMessage('COMMON_EDIT_AS_MODERATOR'));
          $page->add($errorbox);
       }
 

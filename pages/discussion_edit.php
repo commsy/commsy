@@ -52,6 +52,9 @@ function cleanup_session ($current_iid) {
 $current_user = $environment->getCurrentUserItem();
 $context_item = $environment->getCurrentContextItem();
 
+// Get the translator object
+$translator = $environment->getTranslationObject();
+
 // Get item to be edited
 if ( !empty($_GET['iid']) ) {
    $current_iid = $_GET['iid'];
@@ -109,7 +112,7 @@ if ( $context_item->isProjectRoom() and $context_item->isClosed() ) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('PROJECT_ROOM_IS_CLOSED', $context_item->getTitle()));
+   $errorbox->setText($translator->getMessage('PROJECT_ROOM_IS_CLOSED', $context_item->getTitle()));
    $page->add($errorbox);
 } elseif ( $current_iid != 'NEW' and !isset($discussion_item) ) {
    $params = array();
@@ -117,7 +120,7 @@ if ( $context_item->isProjectRoom() and $context_item->isClosed() ) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('ITEM_DOES_NOT_EXIST', $current_iid));
+   $errorbox->setText($translator->getMessage('ITEM_DOES_NOT_EXIST', $current_iid));
    $page->add($errorbox);
 } elseif ( !(($current_iid == 'NEW' and $current_user->isUser()) or
              ($current_iid != 'NEW' and isset($discussion_item) and
@@ -127,7 +130,7 @@ if ( $context_item->isProjectRoom() and $context_item->isClosed() ) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('LOGIN_NOT_ALLOWED'));
+   $errorbox->setText($translator->getMessage('LOGIN_NOT_ALLOWED'));
    $page->add($errorbox);
 }
 
@@ -142,7 +145,7 @@ else {
    }
 
    // Cancel editing
-   if ( isOption($command, getMessage('COMMON_CANCEL_BUTTON')) ) {
+   if ( isOption($command, $translator->getMessage('COMMON_CANCEL_BUTTON')) ) {
       $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_buzzword_ids');
       $session->unsetValue('buzzword_post_vars');
       $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_tag_ids');
@@ -242,8 +245,8 @@ else {
 
       // Save item
       if ( !empty($command) and
-           (isOption($command, getMessage('DISCUSSIONS_SAVE_BUTTON'))
-            or isOption($command, getMessage('DISCUSSIONS_CHANGE_BUTTON'))) ) {
+           (isOption($command, $translator->getMessage('DISCUSSIONS_SAVE_BUTTON'))
+            or isOption($command, $translator->getMessage('DISCUSSIONS_CHANGE_BUTTON'))) ) {
 
          $correct = $form->check();
          if ( $correct ) {
@@ -407,7 +410,7 @@ else {
          $params['width'] = 500;
          $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
          unset($params);
-         $errorbox->setText(getMessage('COMMON_EDIT_AS_MODERATOR'));
+         $errorbox->setText($translator->getMessage('COMMON_EDIT_AS_MODERATOR'));
          $page->add($errorbox);
       }
       $form_view->setAction(curl($environment->getCurrentContextID(),'discussion','edit',''));

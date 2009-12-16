@@ -61,7 +61,7 @@ if (!$current_user->isModerator() and !$room_item->mayEdit($current_user)) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('ACCESS_NOT_GRANTED'));
+   $errorbox->setText($translator->getMessage('ACCESS_NOT_GRANTED'));
    $page->addWarning($errorbox);
 } else {
 
@@ -76,7 +76,7 @@ if (!$current_user->isModerator() and !$room_item->mayEdit($current_user)) {
    }
 
    // Cancel editing
-   if ( isOption($command, getMessage('COMMON_CANCEL_BUTTON')) ) {
+   if ( isOption($command, $translator->getMessage('COMMON_CANCEL_BUTTON')) ) {
       $session = $environment->getSessionItem();
       $history = $session->getValue('history');
       if ( !isset($history[1]['function']) ) {
@@ -89,7 +89,7 @@ if (!$current_user->isModerator() and !$room_item->mayEdit($current_user)) {
    }
 
    // delete item
-   elseif ( isOption($command, getMessage('COMMON_DELETE_BUTTON')) ) {
+   elseif ( isOption($command, $translator->getMessage('COMMON_DELETE_BUTTON')) ) {
       $room_item->delete();
       redirect($environment->getCurrentPortalID(),'home','index','');
    }
@@ -101,7 +101,7 @@ if (!$current_user->isModerator() and !$room_item->mayEdit($current_user)) {
       $form = $class_factory->getClass(CONFIGURATION_COMMON_FORM,array('environment' => $environment));
 
       // Add a community_room
-      if ( isOption($command, getMessage('PREFERENCES_ADD_COMMUNITY_ROOMS_BUTTON')) ) {
+      if ( isOption($command, $translator->getMessage('PREFERENCES_ADD_COMMUNITY_ROOMS_BUTTON')) ) {
          $focus_element_onload = 'communityrooms';
          $post_community_room_ids = array();
          $new_community_room_ids = array();
@@ -194,8 +194,8 @@ if (!$current_user->isModerator() and !$room_item->mayEdit($current_user)) {
 
       // Save item
       if ( !empty($command)
-           and ( isOption($command, getMessage('COMMON_SAVE_BUTTON'))
-                 or isOption($command, getMessage('PREFERENCES_SAVE_BUTTON'))
+           and ( isOption($command, $translator->getMessage('COMMON_SAVE_BUTTON'))
+                 or isOption($command, $translator->getMessage('PREFERENCES_SAVE_BUTTON'))
                )
          ) {
    if ( $form->check()
@@ -315,7 +315,7 @@ if (!$current_user->isModerator() and !$room_item->mayEdit($current_user)) {
          $params['width'] = 500;
          $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
          unset($params);
-         $errorbox->setText(getMessage('COMMON_EDIT_AS_MODERATOR'));
+         $errorbox->setText($translator->getMessage('COMMON_EDIT_AS_MODERATOR'));
          $page->addWarning($errorbox);
       }
 

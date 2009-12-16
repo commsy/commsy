@@ -38,6 +38,9 @@ if (!empty($_POST['return_to_context'])) {
 // globals
 $material_manager = $environment->getMaterialManager();
 
+// Get the translator object
+$translator = $environment->getTranslationObject();
+
 // array of material items in clipboard
 $material_id_array = $session->getValue('material_clipboard');
 // option contains the name of the submit button, if this
@@ -51,7 +54,7 @@ if (!empty($_POST['option'])) {
 }
 
 $command ='';
-if ( isOption($option,getMessage('COMMON_LIST_ACTION_BUTTON_GO'))
+if ( isOption($option,$translator->getMessage('COMMON_LIST_ACTION_BUTTON_GO'))
         and $_POST['index_view_action'] != '-1'
 ) {
    switch ($_POST['index_view_action']) {

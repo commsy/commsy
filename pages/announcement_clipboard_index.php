@@ -22,6 +22,9 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
+// Get the translator object
+$translator = $environment->getTranslationObject();
+
 if (!empty($_POST['return_to_context'])) {
    $return_to = array();
    $return_to['module'] = $_POST['return_to_module'];
@@ -60,7 +63,7 @@ if (!empty($_POST['option'])) {
    $option = '';
 }
 $command ='';
-if ( isOption($option,getMessage('COMMON_LIST_ACTION_BUTTON_GO'))
+if ( isOption($option,$translator->getMessage('COMMON_LIST_ACTION_BUTTON_GO'))
         and $_POST['index_view_action'] != '-1'
 ) {
    switch ($_POST['index_view_action']) {
@@ -267,7 +270,7 @@ if (isset($_GET['select']) and $_GET['select']=='all'){
       $item = $announcement_list->getNext();
    }
 }
-if (isOption($option,getMessage('COMMON_LIST_ACTION_BUTTON_GO'))){
+if (isOption($option,$translator->getMessage('COMMON_LIST_ACTION_BUTTON_GO'))){
      $selected_ids = array();
 }
 

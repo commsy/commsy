@@ -149,20 +149,20 @@ if ($current_user->isGuest()) {
       }
    } else {
       if ($environment->getCurrentModule() == CS_PROJECT_TYPE) {
-         $page->setPageName(getMessage('COMMON_NEW_PROJECT'));
+         $page->setPageName($translator->getMessage('COMMON_NEW_PROJECT'));
       } elseif ($environment->getCurrentModule() == CS_COMMUNITY_TYPE) {
-         $page->setPageName(getMessage('COMMON_NEW_COMMUNITY'));
+         $page->setPageName($translator->getMessage('COMMON_NEW_COMMUNITY'));
       } elseif ($environment->inServer()) {
-         $page->setPageName(getMessage('PORTAL_ENTER_NEW'));
+         $page->setPageName($translator->getMessage('PORTAL_ENTER_NEW'));
       } else {
-         $page->setPageName(getMessage('PORTAL_ENTER_ROOM'));
+         $page->setPageName($translator->getMessage('PORTAL_ENTER_ROOM'));
       }
       unset($item);
    }
 
 
 
-   if ( isOption($delete_command, getMessage('COMMON_DELETE_BUTTON')) ) {
+   if ( isOption($delete_command, $translator->getMessage('COMMON_DELETE_BUTTON')) ) {
      $is_grouproom = false;
      if ( $item->isGroupRoom() ) {
         $is_grouproom = true;
@@ -192,7 +192,7 @@ if ($current_user->isGuest()) {
      } else {
         redirect($environment->getCurrentPortalID(),'home','index','');
      }
-   }elseif( isOption($delete_command, getMessage('COMMON_CANCEL_BUTTON')) ) {
+   }elseif( isOption($delete_command, $translator->getMessage('COMMON_CANCEL_BUTTON')) ) {
       if ( $environment->getCurrentModule() == CS_PROJECT_TYPE
            and $environment->inCommunityRoom()
          ) {
@@ -218,7 +218,7 @@ if ($current_user->isGuest()) {
          $history = $session->getValue('history');
          redirect($environment->getCurrentContextID(),$environment->getCurrentModule(),$environment->getCurrentFunction(),'');
       }
-   } elseif ( isOption($delete_command, getMessage('ROOM_ARCHIV_BUTTON')) ) {
+   } elseif ( isOption($delete_command, $translator->getMessage('ROOM_ARCHIV_BUTTON')) ) {
       $item->close();
       $item->save();
       if ( $environment->getCurrentModule() == CS_PROJECT_TYPE
@@ -267,7 +267,7 @@ if ($current_user->isGuest()) {
       $params['with_modifying_actions'] = true;
       $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
       unset($params);
-      $errorbox->setText(getMessage('ACCESS_NOT_GRANTED'));
+      $errorbox->setText($translator->getMessage('ACCESS_NOT_GRANTED'));
       $page->addLeft($errorbox);
    }
    // Access granted
@@ -280,13 +280,13 @@ if ($current_user->isGuest()) {
       }
 
       // delete item
-      if ( isOption($command, getMessage('ROOM_DELETE_BUTTON')) ) {
+      if ( isOption($command, $translator->getMessage('ROOM_DELETE_BUTTON')) ) {
          $params = $environment->getCurrentParameterArray();
          $page->addDeleteBox(curl($environment->getCurrentContextID(),module2type($environment->getCurrentModule()),$environment->getCurrentFunction(),$params));
       }
 
       // Cancel editing
-      if ( isOption($command, getMessage('COMMON_CANCEL_BUTTON')) ) {
+      if ( isOption($command, $translator->getMessage('COMMON_CANCEL_BUTTON')) ) {
          if ( $environment->getCurrentModule() == CS_PROJECT_TYPE
               and $environment->inCommunityRoom()
             ) {
@@ -325,7 +325,7 @@ if ($current_user->isGuest()) {
          $form = $class_factory->getClass(CONFIGURATION_PREFERENCES_FORM,array('environment' => $environment));
 
          // Add a community_room
-         if ( isOption($command, getMessage('PREFERENCES_ADD_COMMUNITY_ROOMS_BUTTON')) ) {
+         if ( isOption($command, $translator->getMessage('PREFERENCES_ADD_COMMUNITY_ROOMS_BUTTON')) ) {
             $focus_element_onload = 'communityrooms';
             $post_community_room_ids = array();
             $new_community_room_ids = array();
@@ -417,27 +417,27 @@ if ($current_user->isGuest()) {
                attach_redirect(CS_MATERIAL_TYPE, $current_iid);
             }
       // Redirect to attach TODO
-      if ( isOption($command, getMessage('RUBRIC_DO_ATTACH_TODO_BUTTON')) ) {
+      if ( isOption($command, $translator->getMessage('RUBRIC_DO_ATTACH_TODO_BUTTON')) ) {
          attach_redirect(CS_TODO_TYPE, $current_iid);
       }
 
       // Redirect to attach DATE
-      if ( isOption($command, getMessage('RUBRIC_DO_ATTACH_DATE_BUTTON')) ) {
+      if ( isOption($command, $translator->getMessage('RUBRIC_DO_ATTACH_DATE_BUTTON')) ) {
          attach_redirect(CS_DATE_TYPE, $current_iid);
       }
 
       // Redirect to attach ANNOUNCEMENT
-      if ( isOption($command, getMessage('RUBRIC_DO_ATTACH_ANNOUNCEMENT_BUTTON')) ) {
+      if ( isOption($command, $translator->getMessage('RUBRIC_DO_ATTACH_ANNOUNCEMENT_BUTTON')) ) {
          attach_redirect(CS_ANNOUNCEMENT_TYPE, $current_iid);
       }
 
       // Redirect to attach DISCUSSION
-      if ( isOption($command, getMessage('RUBRIC_DO_ATTACH_DISCUSSION_BUTTON')) ) {
+      if ( isOption($command, $translator->getMessage('RUBRIC_DO_ATTACH_DISCUSSION_BUTTON')) ) {
          attach_redirect(CS_DISCUSSION_TYPE, $current_iid);
       }
 
       // Redirect to attach PROJECT
-      if ( isOption($command, getMessage('RUBRIC_DO_ATTACH_PROJECT_BUTTON')) ) {
+      if ( isOption($command, $translator->getMessage('RUBRIC_DO_ATTACH_PROJECT_BUTTON')) ) {
          attach_redirect(CS_PROJECT_TYPE, $current_iid);
       }
 
@@ -600,8 +600,8 @@ if ($current_user->isGuest()) {
 
          // Save item
          if ( !empty($command) and
-              (isOption($command, getMessage('COMMON_SAVE_BUTTON'))
-              or isOption($command, getMessage('PREFERENCES_SAVE_BUTTON')) )
+              (isOption($command, $translator->getMessage('COMMON_SAVE_BUTTON'))
+              or isOption($command, $translator->getMessage('PREFERENCES_SAVE_BUTTON')) )
             ) {
              $correct = $form->check();
              if ( $correct
@@ -1065,7 +1065,7 @@ if ($current_user->isGuest()) {
             $params['width'] = 500;
             $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
             unset($params);
-            $errorbox->setText(getMessage('COMMON_EDIT_AS_MODERATOR'));
+            $errorbox->setText($translator->getMessage('COMMON_EDIT_AS_MODERATOR'));
             $page->add($errorbox);
          }
          if ($is_saved){

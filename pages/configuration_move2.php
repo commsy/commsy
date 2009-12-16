@@ -50,6 +50,9 @@ $manager = $environment->getRoomManager();
 $item = $manager->getItem($iid);
 $current_user = $environment->getCurrentUserItem();
 
+// Get the translator object
+$translator = $environment->getTranslationObject();
+
 // Check access rights
 if ( !empty($iid) and !isset($item) ) {
    $params = array();
@@ -57,7 +60,7 @@ if ( !empty($iid) and !isset($item) ) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('ITEM_DOES_NOT_EXIST', $iid));
+   $errorbox->setText($translator->getMessage('ITEM_DOES_NOT_EXIST', $iid));
    $page->add($errorbox);
 } elseif ( !$environment->inPortal() or !$current_user->isModerator() ) {
    $params = array();
@@ -65,7 +68,7 @@ if ( !empty($iid) and !isset($item) ) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('LOGIN_NOT_ALLOWED'));
+   $errorbox->setText($translator->getMessage('LOGIN_NOT_ALLOWED'));
    $page->add($errorbox);
 }
 

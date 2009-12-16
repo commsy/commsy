@@ -24,6 +24,9 @@
 
 $error = false;
 
+// Get the translator object
+$translator = $environment->getTranslationObject();
+
 // Verify parameters for this page
 $current_item_id = '';
 if (!empty($_GET['iid'])) {
@@ -36,7 +39,7 @@ if (!empty($_GET['iid'])) {
       $params['with_modifying_actions'] = true;
       $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
       unset($params);
-      $errorbox->setText(getMessage('ERROR_ILLEGAL_IID'));
+      $errorbox->setText($translator->getMessage('ERROR_ILLEGAL_IID'));
       $page->addError($errorbox);
       $error = true;
    }
@@ -50,7 +53,7 @@ if (!empty($_GET['iid'])) {
       $params['with_modifying_actions'] = true;
       $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
       unset($params);
-      $errorbox->setText(getMessage('ERROR_ILLEGAL_IID'));
+      $errorbox->setText($translator->getMessage('ERROR_ILLEGAL_IID'));
       $page->addError($errorbox);
       $error = true;
    }
@@ -71,7 +74,7 @@ if ( $context_item->isClosed() ) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('PROJECT_ROOM_IS_CLOSED', $context_item->getTitle()));
+   $errorbox->setText($translator->getMessage('PROJECT_ROOM_IS_CLOSED', $context_item->getTitle()));
    $page->addError($errorbox);
    $error = true;
 } elseif ( $current_item_id != 'NEW' and !isset($homepage_item) ) {
@@ -80,7 +83,7 @@ if ( $context_item->isClosed() ) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('ITEM_DOES_NOT_EXIST', $current_iid));
+   $errorbox->setText($translator->getMessage('ITEM_DOES_NOT_EXIST', $current_iid));
    $page->addError($errorbox);
    $error = true;
 } elseif ( !(($current_item_id == 'NEW' and $current_user->isUser()) or
@@ -91,7 +94,7 @@ if ( $context_item->isClosed() ) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('LOGIN_NOT_ALLOWED'));
+   $errorbox->setText($translator->getMessage('LOGIN_NOT_ALLOWED'));
    $page->addError($errorbox);
    $error = true;
 }
@@ -107,7 +110,7 @@ if (!$error) {
    }
 
    // Cancel editing
-   if ( isOption($command, getMessage('HOMEPAGE_MOVE_END_BUTTON')) ) {
+   if ( isOption($command, $translator->getMessage('HOMEPAGE_MOVE_END_BUTTON')) ) {
       $params = array();
       if ( !empty($current_item_id) ) {
          $params['iid'] = $current_item_id;
@@ -148,7 +151,7 @@ if (!$error) {
       $params['with_modifying_actions'] = true;
       $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
       unset($params);
-      $errorbox->setText(getMessage('ITEM_NOT_AVAILABLE'));
+      $errorbox->setText($translator->getMessage('ITEM_NOT_AVAILABLE'));
       $page->add($errorbox);
    } else {
       $detail_view->setItem($homepage_item);

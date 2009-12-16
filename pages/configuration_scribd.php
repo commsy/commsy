@@ -27,6 +27,9 @@ $server_item = $environment->getServerItem();
 $current_user = $environment->getCurrentUserItem();
 $is_saved = false;
 
+// Get the translator object
+$translator = $environment->getTranslationObject();
+
 // Check access rights
 if ( !$current_user->isRoot() ) {
    $params = array();
@@ -34,7 +37,7 @@ if ( !$current_user->isRoot() ) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('LOGIN_NOT_ALLOWED'));
+   $errorbox->setText($translator->getMessage('LOGIN_NOT_ALLOWED'));
    $page->add($errorbox);
 }
 
@@ -65,7 +68,7 @@ else {
    $form->prepareForm();
    $form->loadValues();
 
-   if ( !empty($command) and ( isOption($command, getMessage('PREFERENCES_SAVE_BUTTON')) ) ) {
+   if ( !empty($command) and ( isOption($command, $translator->getMessage('PREFERENCES_SAVE_BUTTON')) ) ) {
       if ( $form->check() ) {
 
          $server_item->setScribdApiKey($_POST['scribd_api_key']);

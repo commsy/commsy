@@ -35,6 +35,9 @@ include_once('include/inc_delete_entry.php');
 $label_manager = $environment->getGroupManager();
 $item = $label_manager->getItem($_GET['iid']);
 
+// Get the translator object
+$translator = $environment->getTranslationObject();
+
 ###############################################
 # FLAG: group room
 ###############################################
@@ -233,7 +236,7 @@ if ( isOption($option, $translator->getMessage('ACCOUNT_GET_MEMBERSHIP_BUTTON'))
                include_once('classes/cs_mail.php');
                $mail = new cs_mail();
                $mail->set_to($user_item->getEmail());
-               $mail->set_from_name(getMessage('SYSTEM_MAIL_MESSAGE',$room_item->getTitle()));
+               $mail->set_from_name($translator->getMessage('SYSTEM_MAIL_MESSAGE',$room_item->getTitle()));
                $server_item = $environment->getServerItem();
                $default_sender_address = $server_item->getDefaultSenderAddress();
                if ( !empty($default_sender_address) ) {
@@ -274,7 +277,7 @@ if ($type != CS_GROUP_TYPE) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('ERROR_ILLEGAL_IID'));
+   $errorbox->setText($translator->getMessage('ERROR_ILLEGAL_IID'));
    $page->add($errorbox);
 } else {
 
@@ -298,7 +301,7 @@ if ($type != CS_GROUP_TYPE) {
       $params['with_modifying_actions'] = true;
       $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
       unset($params);
-      $errorbox->setText(getMessage('ITEM_NOT_AVAILABLE'));
+      $errorbox->setText($translator->getMessage('ITEM_NOT_AVAILABLE'));
       $page->add($errorbox);
    } elseif ( !$group_item->maySee($current_user) ) {
       $params = array();
@@ -306,7 +309,7 @@ if ($type != CS_GROUP_TYPE) {
       $params['with_modifying_actions'] = true;
       $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
       unset($params);
-      $errorbox->setText(getMessage('LOGIN_NOT_ALLOWED'));
+      $errorbox->setText($translator->getMessage('LOGIN_NOT_ALLOWED'));
       $page->add($errorbox);
    } else {
 

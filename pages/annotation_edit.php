@@ -22,6 +22,8 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
+// Get the translator object
+$translator = $environment->getTranslationObject();
 
 // Function used for redirecting to connected rubrics
 function attach_redirect ($rubric_type, $current_iid) {
@@ -117,7 +119,7 @@ if ( $current_iid != 'NEW' and !isset($annotation_item) ) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('ITEM_DOES_NOT_EXIST', $current_iid));
+   $errorbox->setText($translator->getMessage('ITEM_DOES_NOT_EXIST', $current_iid));
    $page->add($errorbox);
 } elseif ( !(($current_iid == 'NEW' and $current_user->isUser()) or
              ($current_iid != 'NEW' and isset($annotation_item) and
@@ -127,7 +129,7 @@ if ( $current_iid != 'NEW' and !isset($annotation_item) ) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('LOGIN_NOT_ALLOWED'));
+   $errorbox->setText($translator->getMessage('LOGIN_NOT_ALLOWED'));
    $page->add($errorbox);
 }
 
@@ -142,7 +144,7 @@ else {
    }
 
    // Cancel editing
-   if ( isOption($command, getMessage('COMMON_CANCEL_BUTTON')) ) {
+   if ( isOption($command, $translator->getMessage('COMMON_CANCEL_BUTTON')) ) {
       $context = $session->getValue('annotation_history_context');
       $module = $session->getValue('annotation_history_module');
       $function = $session->getValue('annotation_history_function');
@@ -158,7 +160,7 @@ else {
    }
 
    // Delete item
-   elseif ( isOption($command, getMessage('ANNOTATION_DELETE_BUTTON')) ) {
+   elseif ( isOption($command, $translator->getMessage('ANNOTATION_DELETE_BUTTON')) ) {
       // go back to the origin
       $context = $session->getValue('annotation_history_context');
       $module = $session->getValue('annotation_history_module');
@@ -255,9 +257,9 @@ else {
 
       // Save item
       if ( !empty($command) and
-           (isOption($command, getMessage('ANNOTATION_SAVE_BUTTON'))
-            or isOption($command, getMessage('ANNOTATION_CHANGE_BUTTON'))
-            or isOption($command, getMessage('ANNOTATION_ADD_NEW_BUTTON'))
+           (isOption($command, $translator->getMessage('ANNOTATION_SAVE_BUTTON'))
+            or isOption($command, $translator->getMessage('ANNOTATION_CHANGE_BUTTON'))
+            or isOption($command, $translator->getMessage('ANNOTATION_ADD_NEW_BUTTON'))
             )
          ) {
          $correct = $form->check();
@@ -359,7 +361,7 @@ else {
          $params['width'] = 500;
          $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
          unset($params);
-         $errorbox->setText(getMessage('COMMON_EDIT_AS_MODERATOR'));
+         $errorbox->setText($translator->getMessage('COMMON_EDIT_AS_MODERATOR'));
          $page->add($errorbox);
       }
       $form_view->setAction(curl($environment->getCurrentContextID(),'annotation','edit',''));

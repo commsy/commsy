@@ -58,7 +58,7 @@ if ( isset($item) and !$item->mayEdit($current_user) ) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('ACCESS_NOT_GRANTED'));
+   $errorbox->setText($translator->getMessage('ACCESS_NOT_GRANTED'));
    $page->add($errorbox);
 } elseif ( !$item->isOpen() and !$item->isTemplate() ) {
    $params = array();
@@ -66,7 +66,7 @@ if ( isset($item) and !$item->mayEdit($current_user) ) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('PROJECT_ROOM_IS_CLOSED', $item->getTitle()));
+   $errorbox->setText($translator->getMessage('PROJECT_ROOM_IS_CLOSED', $item->getTitle()));
    $page->add($errorbox);
    $command = 'error';
 } elseif ( isset($item) and !$item->withWikiFunctions() ) {
@@ -75,7 +75,7 @@ if ( isset($item) and !$item->mayEdit($current_user) ) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('ACCESS_NOT_GRANTED'));
+   $errorbox->setText($translator->getMessage('ACCESS_NOT_GRANTED'));
    $page->add($errorbox);
 }
 
@@ -120,7 +120,7 @@ else {
    }
 
     if ( !empty($delete_command) and
-        isOption($delete_command, getMessage('COMMON_DELETE_BUTTON'))   ) {
+        isOption($delete_command, $translator->getMessage('COMMON_DELETE_BUTTON'))   ) {
 
       $current_user = $environment->getCurrentUserItem();
       $item->setModificatorItem($current_user);
@@ -145,7 +145,7 @@ else {
    }
       // Cancel editing
    elseif ( !empty($delete_command) and
-        isOption($delete_command, getMessage('COMMON_CANCEL_BUTTON'))    ) {
+        isOption($delete_command, $translator->getMessage('COMMON_CANCEL_BUTTON'))    ) {
         redirect($environment->getCurrentContextID(),$environment->getCurrentModule(),$environment->getCurrentFunction(),'');
    }
 
@@ -187,7 +187,7 @@ else {
 
 
       // delete item
-      if ( !empty($command) and isOption($command, getMessage('WIKI_DELETE_BUTTON')) ) {
+      if ( !empty($command) and isOption($command, $translator->getMessage('WIKI_DELETE_BUTTON')) ) {
          $params = $environment->getCurrentParameterArray();
          $page->addDeleteBox(curl($environment->getCurrentContextID(),module2type($environment->getCurrentModule()),$environment->getCurrentFunction(),$params));
       }
@@ -195,8 +195,8 @@ else {
 
    // Save item
     elseif ( !empty($command) and
-        (isOption($command, getMessage('WIKI_SAVE_BUTTON'))
-         or isOption($command, getMessage('COMMON_CHANGE_BUTTON')) ) ) {
+        (isOption($command, $translator->getMessage('WIKI_SAVE_BUTTON'))
+         or isOption($command, $translator->getMessage('COMMON_CHANGE_BUTTON')) ) ) {
 
       if ( $form->check() ) {
 
@@ -451,7 +451,7 @@ else {
       $params['width'] = 500;
       $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
       unset($params);
-      $errorbox->setText(getMessage('COMMON_EDIT_AS_MODERATOR'));
+      $errorbox->setText($translator->getMessage('COMMON_EDIT_AS_MODERATOR'));
       $page->add($errorbox);
    }
 

@@ -52,6 +52,8 @@ if ( $mail_obj->isSendMailAuto() ) {
 
 }
 
+// Get the translator object
+$translator = $environment->getTranslationObject();
 
 // option contains the name of the submit button, if this
 // script is called as result of a form post
@@ -68,7 +70,7 @@ if ( $command != 'error' ) {
    $form = $class_factory->getClass(MAIL_PROCESS_FORM,$class_params);
    unset($class_params);
 
-   if ( isOption($command,getMessage('MAIL_NOT_SEND_BUTTON')) ) {
+   if ( isOption($command,$translator->getMessage('MAIL_NOT_SEND_BUTTON')) ) {
       $mail_obj->goBackLink();
    } else {
 
@@ -81,7 +83,7 @@ if ( $command != 'error' ) {
       $form->prepareForm();
       $form->loadValues();
 
-      if ( !empty($command) AND isOption($command,getMessage('MAIL_SEND_BUTTON')) ) {
+      if ( !empty($command) AND isOption($command,$translator->getMessage('MAIL_SEND_BUTTON')) ) {
          $correct = $form->check();
          if ( $correct ) {
             include_once('classes/cs_mail.php');

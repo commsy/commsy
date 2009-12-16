@@ -61,6 +61,9 @@ $user_manager = $environment->getUserManager();
 $user_item = $user_manager->getItem($iid);
 $room_item = $environment->getCurrentContextItem();
 
+// Get the translator object
+$translator = $environment->getTranslationObject();
+
 // Check access rights
 if (!empty($iid) and $iid != 'NEW') {
    $current_user = $environment->getCurrentUserItem();
@@ -72,7 +75,7 @@ if (!empty($iid) and $iid != 'NEW') {
       $params['with_modifying_actions'] = true;
       $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
       unset($params);
-      $error_string = getMessage('LOGIN_NOT_ALLOWED');
+      $error_string = $translator->getMessage('LOGIN_NOT_ALLOWED');
       $errorbox->setText($error_string);
       $page->add($errorbox);
       $command = 'error';
@@ -85,7 +88,7 @@ if (!$context_item->isOpen()) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $error_string = getMessage('PROJECT_ROOM_IS_CLOSED',$context_item->getTitle());
+   $error_string = $translator->getMessage('PROJECT_ROOM_IS_CLOSED',$context_item->getTitle());
    $errorbox->setText($error_string);
    $page->add($errorbox);
    $command = 'error';

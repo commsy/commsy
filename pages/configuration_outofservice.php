@@ -27,6 +27,9 @@ $current_user = $environment->getCurrentUserItem();
 $translator = $environment->getTranslationObject();
 $current_context = $environment->getServerItem();
 
+// Get the translator object
+$translator = $environment->getTranslationObject();
+
 if (!$current_user->isRoot() and !$current_context->mayEdit($current_user)) {
    $params = array();
    $params['environment'] = $environment;
@@ -46,7 +49,7 @@ if (!$current_user->isRoot() and !$current_context->mayEdit($current_user)) {
    }
 
    // Cancel editing
-   if ( isOption($command, getMessage('COMMON_CANCEL_BUTTON')) ) {
+   if ( isOption($command, $translator->getMessage('COMMON_CANCEL_BUTTON')) ) {
       $session = $environment->getSessionItem();
       $history = $session->getValue('history');
       if ( !isset($history[1]['function']) ) {
@@ -82,8 +85,8 @@ if (!$current_user->isRoot() and !$current_context->mayEdit($current_user)) {
 
       // Save item
       if ( !empty($command)
-           and ( isOption($command, getMessage('COMMON_SAVE_BUTTON'))
-                 or isOption($command, getMessage('PREFERENCES_SAVE_BUTTON'))
+           and ( isOption($command, $translator->getMessage('COMMON_SAVE_BUTTON'))
+                 or isOption($command, $translator->getMessage('PREFERENCES_SAVE_BUTTON'))
                )
          ) {
          if ( $form->check() ) {

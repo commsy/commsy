@@ -28,6 +28,9 @@ include_once('functions/text_functions.php');
 $authentication = $environment->getAuthenticationObject();
 $current_module = $environment->getCurrentModule();
 
+// Get the translator object
+$translator = $environment->getTranslationObject();
+
 // option contains the name of the submit button, if this
 // script is called as result of a form post
 if (!empty($_POST['option'])) {
@@ -54,14 +57,14 @@ if ($user->getItemID() != $current_user->getItemID() and !$current_user->isModer
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $error_string = getMessage('LOGIN_NOT_ALLOWED').'<br />';
+   $error_string = $translator->getMessage('LOGIN_NOT_ALLOWED').'<br />';
    $errorbox->setText($error_string);
    $page->add($errorbox);
    $command = 'error';
 }
 
 // cancel button
-if ( isOption($command,getMessage('ADMIN_CANCEL_BUTTON')) or isOption($command,getMessage('COMMON_BACK_BUTTON'))) {
+if ( isOption($command,$translator->getMessage('ADMIN_CANCEL_BUTTON')) or isOption($command,$translator->getMessage('COMMON_BACK_BUTTON'))) {
    $params = array();
    $params['iid'] = $iid;
    redirect($environment->getCurrentContextID(), $current_module, 'detail', $params);
@@ -82,7 +85,7 @@ if ( isOption($command,getMessage('ADMIN_CANCEL_BUTTON')) or isOption($command,g
       }
 
       /* we called ourself as result of a form post */
-      elseif ( isOption($command,getMessage('PASSWORD_CHANGE_BUTTON_LONG')) ) {
+      elseif ( isOption($command,$translator->getMessage('PASSWORD_CHANGE_BUTTON_LONG')) ) {
          $error_string = '';
          $form->setFormPost($_POST);
          $form->prepareForm();
@@ -99,7 +102,7 @@ if ( isOption($command,getMessage('ADMIN_CANCEL_BUTTON')) or isOption($command,g
 
                   include_once('classes/cs_mail_obj.php');
                   $mail_obj = new cs_mail_obj();
-                  $mail_obj->setMailFormHeadLine(getMessage('USER_PASSWORD_CHANGE_HEADLINE'));
+                  $mail_obj->setMailFormHeadLine($translator->getMessage('USER_PASSWORD_CHANGE_HEADLINE'));
 
                   $mail_subject  = $translator->getMessage('MAIL_SUBJECT_USER_PASSWORD_CHANGE',$context_item->getTitle());
                   $mail_body  = $translator->getEmailMessage('MAIL_BODY_HELLO',$user->getFullname());
@@ -111,7 +114,7 @@ if ( isOption($command,getMessage('ADMIN_CANCEL_BUTTON')) or isOption($command,g
                   $url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?cid='.$environment->getCurrentContextID();
                   $mail_body .= LF.LF.$url;
 
-                  $mail_obj->setMailFormHints(getMessage('USER_MAIL_ADMIN_DESC'));
+                  $mail_obj->setMailFormHints($translator->getMessage('USER_MAIL_ADMIN_DESC'));
                   $mail_obj->setSubject($mail_subject);
                   $mail_obj->setContent($mail_body);
                   $sender[$current_user->getFullName()] = $current_user->getEMail();
@@ -128,7 +131,7 @@ if ( isOption($command,getMessage('ADMIN_CANCEL_BUTTON')) or isOption($command,g
                   $mail_obj->toSession();
                   redirect($environment->getCurrentContextID(),'mail','process','');
                } else {
-                  $error_string .= getMessage('COMMON_ERROR_DATABASE').$error_number.'<br />';
+                  $error_string .= $translator->getMessage('COMMON_ERROR_DATABASE').$error_number.'<br />';
                }
             }
          }

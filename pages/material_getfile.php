@@ -22,6 +22,9 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
+// Get the translator object
+$translator = $environment->getTranslationObject();
+
 if ( !empty($_GET['iid']) ) {
 
    $send_file = false;
@@ -105,7 +108,7 @@ if ( !empty($_GET['iid']) ) {
          $params['with_modifying_actions'] = true;
          $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
          unset($params);
-         $errorbox->setText(getMessage('FILE_ERROR_GET_FILE_NOT_EXISTS'));
+         $errorbox->setText($translator->getMessage('FILE_ERROR_GET_FILE_NOT_EXISTS'));
          $page->add($errorbox);
          $page->setWithoutLeftMenue();
       }
@@ -115,7 +118,7 @@ if ( !empty($_GET['iid']) ) {
       $params['with_modifying_actions'] = true;
       $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
       unset($params);
-      $errorbox->setText(getMessage('FILE_ERROR_GET_FILE'));
+      $errorbox->setText($translator->getMessage('FILE_ERROR_GET_FILE'));
       $page->add($errorbox);
       $page->setWithoutLeftMenue();
    }

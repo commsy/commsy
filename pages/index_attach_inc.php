@@ -28,6 +28,9 @@
 
    // Assumes global $attach_type is set!
    $infix = '_'.$attach_type;
+   
+   // Get the translator object
+   $translator = $environment->getTranslationObject();
 
    // Setup
    // Get originally attached items and access rights
@@ -125,7 +128,7 @@
       if ( isset($_POST['option']) ) {
 
          // Save if attach button was pressed and mode is detailattach
-         if ( isOption($_POST['option'], getMessage('COMMON_ATTACH_BUTTON')) ) {
+         if ( isOption($_POST['option'], $translator->getMessage('COMMON_ATTACH_BUTTON')) ) {
             if ( $mode == 'formattach' ) {
                $session->setValue($ref_iid.$infix.'_attach_ids', $new_attach_ids);
             } else {

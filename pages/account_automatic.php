@@ -58,9 +58,9 @@ if (empty($command) and $user->getDeletionDate()) {
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
    if ($environment->inProjectRoom()) {
-      $errorbox->setText(getMessage('MEMBER_EDIT_ERROR_JUST_DELETED',$user->getFullname()));
+      $errorbox->setText($translator->getMessage('MEMBER_EDIT_ERROR_JUST_DELETED',$user->getFullname()));
    } else {
-      $errorbox->setText(getMessage('ACCOUNT_EDIT_ERROR_JUST_DELETED',$user->getFullname(),$user->getUserID()));
+      $errorbox->setText($translator->getMessage('ACCOUNT_EDIT_ERROR_JUST_DELETED',$user->getFullname(),$user->getUserID()));
    }
    $page->add($errorbox);
    $command = 'error';
@@ -74,7 +74,7 @@ if (!$context_item->isOpen()) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $error_string = getMessage('PROJECT_ROOM_IS_CLOSED',$context_item->getTitle());
+   $error_string = $translator->getMessage('PROJECT_ROOM_IS_CLOSED',$context_item->getTitle());
    $errorbox->setText($error_string);
    $page->add($errorbox);
    $command = 'error';
@@ -249,10 +249,10 @@ if ($command == 'automatic') {
          $history = $session->getValue('history');
          redirect($history[0]['context'],$history[0]['module'],$history[0]['function'],$history[0]['parameter']);
       } else {
-         $error_string .= getMessage('COMMON_ERROR_SAVE_TASK').'<br />';
+         $error_string .= $translator->getMessage('COMMON_ERROR_SAVE_TASK').'<br />';
       }
    } else {
-      $error_string .= getMessage('USER_ERROR_SAVE').'<br />';
+      $error_string .= $translator->getMessage('USER_ERROR_SAVE').'<br />';
    }
    $params = array();
    $params['environment'] = $environment;

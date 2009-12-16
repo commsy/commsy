@@ -27,6 +27,9 @@ $room_item = $environment->getCurrentContextItem();
 $current_user = $environment->getCurrentUserItem();
 $is_saved = false;
 
+// Get the translator object
+$translator = $environment->getTranslationObject();
+
 // Check access rights
 if ( !$room_item->isOpen() ) {
    $params = array();
@@ -34,7 +37,7 @@ if ( !$room_item->isOpen() ) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('PROJECT_ROOM_IS_CLOSED', $room_item->getTitle()));
+   $errorbox->setText($translator->getMessage('PROJECT_ROOM_IS_CLOSED', $room_item->getTitle()));
    $page->add($errorbox);
 } elseif ( ($room_item->isProjectRoom()) or
            ($room_item->isCommunityRoom()) or
@@ -46,7 +49,7 @@ if ( !$room_item->isOpen() ) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('LOGIN_NOT_ALLOWED'));
+   $errorbox->setText($translator->getMessage('LOGIN_NOT_ALLOWED'));
    $page->add($errorbox);
 }
 
@@ -71,7 +74,7 @@ else {
       $form_view->setAction(curl($environment->getCurrentContextID(),$environment->getCurrentModule(),$environment->getCurrentFunction(),''));
 
      // ad clock pulse
-      if ( isOption($command, getMessage('CONFIGURATION_TIME_FORM_ELEMENT_AD_TITLE')) ) {
+      if ( isOption($command, $translator->getMessage('CONFIGURATION_TIME_FORM_ELEMENT_AD_TITLE')) ) {
          $counter = 1;
        if (isset($_POST['clock_pulse'])) {
          $counter = count($_POST['clock_pulse']);
@@ -119,9 +122,9 @@ else {
       $form->loadValues();
 
       // Save item
-      if ( !empty($command) and isOption($command, getMessage('PREFERENCES_SAVE_BUTTON')) ) {
+      if ( !empty($command) and isOption($command, $translator->getMessage('PREFERENCES_SAVE_BUTTON')) ) {
          $correct = $form->check();
-         if ( $correct and isOption($command, getMessage('PREFERENCES_SAVE_BUTTON')) ) {
+         if ( $correct and isOption($command, $translator->getMessage('PREFERENCES_SAVE_BUTTON')) ) {
 
             // show time
             if ( isset($_POST['show_time']) and !empty($_POST['show_time']) ) {

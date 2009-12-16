@@ -22,6 +22,9 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
+// Get the translator object
+$translator = $environment->getTranslationObject();
+
 // Function used for cleaning up the session. This function
 // deletes ALL session variables this page writes.
 function cleanup_session ($current_iid) {
@@ -68,7 +71,7 @@ if ( !$current_user->isUser() ) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('LOGIN_NOT_ALLOWED'));
+   $errorbox->setText($translator->getMessage('LOGIN_NOT_ALLOWED'));
    $page->add($errorbox);
 }elseif ( empty($linked_rubric) ){
    $params = array();
@@ -76,7 +79,7 @@ if ( !$current_user->isUser() ) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('BUZZWORD_MISSING_LINKED_RUBRIC'));
+   $errorbox->setText($translator->getMessage('BUZZWORD_MISSING_LINKED_RUBRIC'));
    $page->add($errorbox);
 }
 
@@ -144,7 +147,7 @@ else {
    }
 
    // Cancel editing
-   if ( isOption($command, getMessage('COMMON_BACK_BUTTON')) ) {
+   if ( isOption($command, $translator->getMessage('COMMON_BACK_BUTTON')) ) {
       redirect($environment->getCurrentContextID(), $linked_rubric, 'index', '');
    }
 
@@ -187,7 +190,7 @@ else {
            $params['focus_element_onload'] = $change_id;
          }
          redirect($environment->getCurrentContextID(),'buzzwords', 'edit', $params);
-      }elseif (!empty($command) and isOption($command, getMessage('BUZZWORDS_NEW_BUTTON'))){
+      }elseif (!empty($command) and isOption($command, $translator->getMessage('BUZZWORDS_NEW_BUTTON'))){
           if (isset($_POST['new_buzzword']) and !empty($_POST['new_buzzword'])){
              $buzzword_manager = $environment->getLabelManager();
              $buzzword_item = $buzzword_manager->getNewItem();
@@ -204,7 +207,7 @@ else {
              redirect($environment->getCurrentContextID(),
                 'buzzwords', 'edit', $params);
           }
-       }elseif (!empty($command) and isOption($command, getMessage('BUZZWORDS_COMBINE_BUTTON'))){
+       }elseif (!empty($command) and isOption($command, $translator->getMessage('BUZZWORDS_COMBINE_BUTTON'))){
           if ( (isset($_POST['sel1']) and !empty($_POST['sel1'])) and
                (isset($_POST['sel2']) and !empty($_POST['sel2'])) and
                (isset($_POST['sel1']) and isset($_POST['sel2']) and $_POST['sel1'] !=$_POST['sel2'])

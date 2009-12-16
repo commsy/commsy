@@ -25,6 +25,9 @@
 $class_factory->includeClass(FORM);
 include_once('functions/text_functions.php');
 
+// Get the translator object
+$translator = $environment->getTranslationObject();
+
 $room_item = $environment->getCurrentContextItem();
 $current_user = $environment->getCurrentUserItem();
 $is_saved = false;
@@ -43,7 +46,7 @@ if ($current_user->isGuest()) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('PROJECT_ROOM_IS_CLOSED', $room_item->getTitle()));
+   $errorbox->setText($translator->getMessage('PROJECT_ROOM_IS_CLOSED', $room_item->getTitle()));
    $page->add($errorbox);
 } elseif (!$current_user->isModerator()) {
    $params = array();
@@ -51,7 +54,7 @@ if ($current_user->isGuest()) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('ACCESS_NOT_GRANTED'));
+   $errorbox->setText($translator->getMessage('ACCESS_NOT_GRANTED'));
    $page->add($errorbox);
 }else{
    // option contains the name of the submit button, if this
@@ -81,7 +84,7 @@ if ($current_user->isGuest()) {
    }
 
    /* we called ourself as result of a form post */
-   elseif ( isOption($command,getMessage('PREFERENCES_SAVE_BUTTON'))) {
+   elseif ( isOption($command,$translator->getMessage('PREFERENCES_SAVE_BUTTON'))) {
       $form->setFormPost($_POST);
       $form->prepareForm();
       $form->loadValues();

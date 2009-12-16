@@ -30,6 +30,10 @@ if (!empty($_GET['account'])) {
    $account_mode = 'none';
 }
 
+// Get the translator object
+$translator = $environment->getTranslationObject();
+
+
 $room_id_env = $environment->getValueOfParameter('room_id');
 if ( !empty($room_id_env) ) {
    $_GET['room_id'] = $room_id_env;
@@ -89,7 +93,7 @@ if ( isset($_GET['action']) and $_GET['action'] == 'delete' ) {
 }
 
 // Cancel editing
-if ( isOption($delete_command, getMessage('COMMON_CANCEL_BUTTON')) ) {
+if ( isOption($delete_command, $translator->getMessage('COMMON_CANCEL_BUTTON')) ) {
    $params = $environment->getCurrentParameterArray();
    $anchor = '';
    $params['room_id'] = $current_item_id;
@@ -99,7 +103,7 @@ if ( isOption($delete_command, getMessage('COMMON_CANCEL_BUTTON')) ) {
 }
 
 // Delete item
-elseif ( isOption($delete_command, getMessage('COMMON_DELETE_BUTTON')) ) {
+elseif ( isOption($delete_command, $translator->getMessage('COMMON_DELETE_BUTTON')) ) {
    $manager = $environment->getRoomManager();
    $item = $manager->getItem($current_item_id);
    $current_user_item = $environment->getCurrentUserItem();
@@ -117,7 +121,7 @@ elseif ( isOption($delete_command, getMessage('COMMON_DELETE_BUTTON')) ) {
 }
 
 // Archiv item
-elseif ( isOption($delete_command, getMessage('ROOM_ARCHIV_BUTTON')) ) {
+elseif ( isOption($delete_command, $translator->getMessage('ROOM_ARCHIV_BUTTON')) ) {
    $manager = $environment->getRoomManager();
    $item = $manager->getItem($current_item_id);
    $current_user_item = $environment->getCurrentUserItem();

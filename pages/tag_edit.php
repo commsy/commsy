@@ -27,6 +27,9 @@
 $current_user = $environment->getCurrentUserItem();
 $current_context = $environment->getCurrentContextItem();
 
+// Get the translator object
+$translator = $environment->getTranslationObject();
+
 // Get linked rubric
 if ( !empty($_GET['module']) ) {
    $linked_rubric = $_GET['module'];
@@ -47,7 +50,7 @@ if ( !$current_user->isUser()
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('LOGIN_NOT_ALLOWED'));
+   $errorbox->setText($translator->getMessage('LOGIN_NOT_ALLOWED'));
    $page->add($errorbox);
 } elseif ( empty($linked_rubric) ) {
    $params = array();
@@ -55,7 +58,7 @@ if ( !$current_user->isUser()
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('TAG_MISSING_LINKED_RUBRIC'));
+   $errorbox->setText($translator->getMessage('TAG_MISSING_LINKED_RUBRIC'));
    $page->add($errorbox);
 }
 
@@ -73,7 +76,7 @@ else {
    foreach ($_POST as $key => $post_var){
       $iid = mb_substr(strchr($key,'#'),1);
       if ( !empty($iid) and mb_stristr($key,'option') ) {
-         if ( isOption($post_var, getMessage('COMMON_DELETE_BUTTON')) ) {
+         if ( isOption($post_var, $translator->getMessage('COMMON_DELETE_BUTTON')) ) {
             $delete_id = $iid;
          } elseif ( isOption($post_var, $translator->getMessage('BUZZWORDS_CHANGE_BUTTON')) ) {
             $change_id = $iid;
@@ -123,7 +126,7 @@ else {
    }
 
    // Cancel editing
-   if ( isOption($command, getMessage('COMMON_BACK_BUTTON')) ) {
+   if ( isOption($command, $translator->getMessage('COMMON_BACK_BUTTON')) ) {
       redirect($environment->getCurrentContextID(), 'material', 'index', '');
    }
 
@@ -144,7 +147,7 @@ else {
       $form->loadValues();
 
       // umhängen von Kategorien
-      if ( isOption($command, getMessage('TAG_SORT_BUTTON'))
+      if ( isOption($command, $translator->getMessage('TAG_SORT_BUTTON'))
            and $_POST['sort1'] != $_POST['sort2']
          ) {
          $tag2tag_manager = $environment->getTag2TagManager();
@@ -201,7 +204,7 @@ else {
          }
          redirect($environment->getCurrentContextID(),'tag', 'edit', $params);
 
-      } elseif (!empty($command) and isOption($command, getMessage('COMMON_ADD_BUTTON'))){
+      } elseif (!empty($command) and isOption($command, $translator->getMessage('COMMON_ADD_BUTTON'))){
           if ( isset($_POST['new_tag'])
                and !empty($_POST['new_tag'])
                and isset($_POST['father_id'])

@@ -23,6 +23,9 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
+// Get the translator object
+$translator = $environment->getTranslationObject();
+
 $current_user = $environment->getCurrentUser();
 if ( !isset($c_message_management)
      or ( isset($c_message_management)
@@ -40,7 +43,7 @@ if ( !isset($c_message_management)
       $command = '';
    }
 
-   if ( !empty($command) and ( isOption($command, getMessage('LANGUAGE_DELETE_UNUSED_BUTTON')) ) ) {
+   if ( !empty($command) and ( isOption($command, $translator->getMessage('LANGUAGE_DELETE_UNUSED_BUTTON')) ) ) {
       if ( !empty($_POST['unused_tags']) ) {
          $message_array = $translator->getCompleteMessageArray();
          foreach ( $_POST['unused_tags'] as $tag ) {

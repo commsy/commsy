@@ -22,6 +22,8 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
+// Get the translator object
+$translator = $environment->getTranslationObject();
 
 include_once('classes/cs_list.php');
 
@@ -58,7 +60,7 @@ if ($environment->getCurrentFunction() != 'edit'){
 
 }
 if ( !empty($option)
-      and (isOption($option, getMessage('COMMON_BUZZWORD_ATTACH')))
+      and (isOption($option, $translator->getMessage('COMMON_BUZZWORD_ATTACH')))
     ) {
     $buzzword_array = array();
     if (isset($_POST['buzzwordlist'])){

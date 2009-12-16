@@ -46,6 +46,9 @@ foreach ($_POST as $key => $post_var){
 $context_item = $environment->getCurrentContextItem();
 $is_saved = false;
 
+// Get the translator object
+$translator = $environment->getTranslationObject();
+
 // Check access rights
 if ($current_user->isGuest()) {
    if (!$context_item->isOpenForGuests()) {
@@ -61,7 +64,7 @@ if ($current_user->isGuest()) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('PROJECT_ROOM_IS_CLOSED', $context_item->getTitle()));
+   $errorbox->setText($translator->getMessage('PROJECT_ROOM_IS_CLOSED', $context_item->getTitle()));
    $page->add($errorbox);
    $command = 'error';
 } elseif (!$current_user->isModerator()) {
@@ -70,7 +73,7 @@ if ($current_user->isGuest()) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('ACCESS_NOT_GRANTED'));
+   $errorbox->setText($translator->getMessage('ACCESS_NOT_GRANTED'));
    $page->add($errorbox);
    $command = 'error';
 }
@@ -85,6 +88,14 @@ if ($command != 'error') {
      $command = '';
    }
 
+   // Cancel editing
+#	if ( isOption($command, $translator->getMessage('COMMON_CANCEL_BUTTON')) ) {
+#	   redirect($environment->getCurrentContextID(),'configuration','dates');
+#	}
+
+   // Show form and/or save item
+#    else {
+       // Initialize the form
         // Initialize the form
       $class_params= array();
       $class_params['environment'] = $environment;
@@ -96,7 +107,7 @@ if ($command != 'error') {
       unset($class_params);
 
       // Save item
-      if ( !empty($command) and isOption($command, getMessage('PREFERENCES_SAVE_BUTTON') ) ) {
+      if ( !empty($command) and isOption($command, $translator->getMessage('PREFERENCES_SAVE_BUTTON') ) ) {
 
          $correct = $form->check();
          if ( $correct ) {
@@ -168,7 +179,7 @@ if ($command != 'error') {
            $params['focus_element_onload'] = $change_id;
          }
          redirect($environment->getCurrentContextID(),'configuration', 'rubric_extras', $params);
-      }elseif (!empty($command) and isOption($command, getMessage('CONFIGURATION_TODO_NEW_STATUS_BUTTON'))){
+      }elseif (!empty($command) and isOption($command, $translator->getMessage('CONFIGURATION_TODO_NEW_STATUS_BUTTON'))){
           if (isset($_POST['new_status']) and !empty($_POST['new_status'])){
              $context_item = $environment->getCurrentContextItem();
              $status_array = $context_item->getExtraToDoStatusArray();
@@ -196,7 +207,7 @@ if ($command != 'error') {
          $params['width'] = 500;
          $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
          unset($params);
-         $errorbox->setText(getMessage('COMMON_EDIT_AS_MODERATOR'));
+         $errorbox->setText($translator->getMessage('COMMON_EDIT_AS_MODERATOR'));
          $page->add($errorbox);
       }
 

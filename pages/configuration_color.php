@@ -23,6 +23,9 @@
 //    along with CommSy.
 include_once('functions/curl_functions.php');
 
+// Get the translator object
+$translator = $environment->getTranslationObject();
+
 if (!empty($_POST['option'])) {
    $command = $_POST['option'];
 } else {
@@ -47,7 +50,7 @@ if ($current_user->isGuest()) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('PROJECT_ROOM_IS_CLOSED', $context_item->getTitle()));
+   $errorbox->setText($translator->getMessage('PROJECT_ROOM_IS_CLOSED', $context_item->getTitle()));
    $page->add($errorbox);
    $command = 'error';
 } elseif (!$current_user->isModerator()) {
@@ -56,7 +59,7 @@ if ($current_user->isGuest()) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('ACCESS_NOT_GRANTED'));
+   $errorbox->setText($translator->getMessage('ACCESS_NOT_GRANTED'));
    $page->add($errorbox);
    $command = 'error';
 }
@@ -77,7 +80,7 @@ if ($command != 'error') { // only if user is allowed to edit colors
 
    // Save item
 
-   if ( !empty($command) and isOption($command, getMessage('COMMON_SAVE_BUTTON')) ) {
+   if ( !empty($command) and isOption($command, $translator->getMessage('COMMON_SAVE_BUTTON')) ) {
       $color = $context_item->getColorArray();
       if ( isset($_POST['color_choice'])) {
          global $cs_color;

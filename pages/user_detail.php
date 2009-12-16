@@ -30,6 +30,9 @@ if (!empty($_GET['iid'])) {
    trigger_error('A user item id must be given.', E_USER_ERROR);
 }
 
+// Get the translator object
+$translator = $environment->getTranslationObject();
+
 $item_manager = $environment->getItemManager();
 $type = $item_manager->getItemType($_GET['iid']);
 if ($type != CS_USER_TYPE) {
@@ -38,7 +41,7 @@ if ($type != CS_USER_TYPE) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('ERROR_ILLEGAL_IID'));
+   $errorbox->setText($translator->getMessage('ERROR_ILLEGAL_IID'));
    $page->add($errorbox);
 } else {
 
@@ -63,7 +66,7 @@ if ($type != CS_USER_TYPE) {
       $params['with_modifying_actions'] = true;
       $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
       unset($params);
-      $errorbox->setText(getMessage('ITEM_NOT_AVAILABLE'));
+      $errorbox->setText($translator->getMessage('ITEM_NOT_AVAILABLE'));
       $page->add($errorbox);
    } elseif ( !$user_item->maySee($current_user) ) {
       $params = array();
@@ -71,7 +74,7 @@ if ($type != CS_USER_TYPE) {
       $params['with_modifying_actions'] = true;
       $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
       unset($params);
-      $errorbox->setText(getMessage('LOGIN_NOT_ALLOWED'));
+      $errorbox->setText($translator->getMessage('LOGIN_NOT_ALLOWED'));
       $page->add($errorbox);
    } elseif ( ( $current_user->isRoot()
                 or $current_user->isModerator()

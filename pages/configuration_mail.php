@@ -26,6 +26,9 @@
 $room_item = $environment->getCurrentContextItem();
 $current_user = $environment->getCurrentUserItem();
 
+// Get the translator object
+$translator = $environment->getTranslationObject();
+
 // Check access rights
 if ($current_user->isGuest()) {
    if (!$room_item->isOpenForGuests()) {
@@ -41,7 +44,7 @@ if ($current_user->isGuest()) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('PROJECT_ROOM_IS_CLOSED', $room_item->getTitle()));
+   $errorbox->setText($translator->getMessage('PROJECT_ROOM_IS_CLOSED', $room_item->getTitle()));
    $page->add($errorbox);
 } elseif (!$current_user->isModerator()) {
    $params = array();
@@ -49,7 +52,7 @@ if ($current_user->isGuest()) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('ACCESS_NOT_GRANTED'));
+   $errorbox->setText($translator->getMessage('ACCESS_NOT_GRANTED'));
    $page->add($errorbox);
 }
 
@@ -59,13 +62,13 @@ else {
    if ( isset($_POST['option']) ) {
       $command = $_POST['option'];
    } elseif (isset($_POST['mail_text']) ) {
-      $command = getMessage('COMMON_CHOOSE_BUTTON');
+      $command = $translator->getMessage('COMMON_CHOOSE_BUTTON');
    } else {
       $command = '';
    }
 
    // Cancel editing
-   if ( isOption($command, getMessage('COMMON_CANCEL_BUTTON')) ) {
+   if ( isOption($command, $translator->getMessage('COMMON_CANCEL_BUTTON')) ) {
       redirect( $environment->getCurrentContextID(),
                 $environment->getCurrentModule(),
                 $environment->getCurrentFunction(),
@@ -84,7 +87,7 @@ else {
       $form_view = $class_factory->getClass(CONFIGURATION_FORM_VIEW,$params);
       unset($params);
 
-      if ( isOption($command, getMessage('COMMON_CHOOSE_BUTTON')) ) {
+      if ( isOption($command, $translator->getMessage('COMMON_CHOOSE_BUTTON')) ) {
          $translator = $environment->getTranslationObject();
          $languages = $environment->getAvailableLanguageArray();
          if ($_POST['mail_text'] == -1) {
@@ -150,12 +153,12 @@ else {
       $form->loadValues();
 
       // Save item
-      if ( !empty($command) and ( isOption($command, getMessage('PREFERENCES_SAVE_BUTTON')) or
-                                  isOption($command, getMessage('COMMON_CHOOSE_BUTTON')) )
+      if ( !empty($command) and ( isOption($command, $translator->getMessage('PREFERENCES_SAVE_BUTTON')) or
+                                  isOption($command, $translator->getMessage('COMMON_CHOOSE_BUTTON')) )
          ) {
 
          $correct = $form->check();
-         if ( $correct and isOption($command, getMessage('PREFERENCES_SAVE_BUTTON')) ) {
+         if ( $correct and isOption($command, $translator->getMessage('PREFERENCES_SAVE_BUTTON')) ) {
 
            if ($_POST['mail_text'] == 'MAIL_CHOICE_HELLO') {
                $message_tag = 'MAIL_BODY_HELLO';

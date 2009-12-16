@@ -33,7 +33,10 @@ if (!empty($_POST['option'])) {
    $command = '';
 }
 
-if ( isOption($command,getMessage('COMMON_CANCEL_BUTTON')) ) {
+// Get the translator object
+$translator = $environment->getTranslationObject();
+
+if ( isOption($command,$translator->getMessage('COMMON_CANCEL_BUTTON')) ) {
    $history = $session->getValue('history');
    redirect($history[1]['context'],$history[1]['module'],$history[1]['function'],$history[1]['parameter']);
 } else {
@@ -45,7 +48,7 @@ if ( isOption($command,getMessage('COMMON_CANCEL_BUTTON')) ) {
    unset($class_params);
    $form->prepareForm();
 
-   if ( isOption($command,getMessage('COMMON_MAIL_SEND_BUTTON')) ) { // send mail
+   if ( isOption($command,$translator->getMessage('COMMON_MAIL_SEND_BUTTON')) ) { // send mail
       $form->setFormPost($_POST);
       $form->loadValues();
       if ( $form->check() ) {
@@ -101,7 +104,7 @@ if ( isOption($command,getMessage('COMMON_CANCEL_BUTTON')) ) {
          $email->set_reply_to_email($mail['reply_to_email']);
          $email->set_to($mail['to']);
          $email->set_subject($mail['subject']);
-         if (getMessage('COMMON_YES') == $_POST['copytosender']) {
+         if ($translator->getMessage('COMMON_YES') == $_POST['copytosender']) {
             $email->set_cc_to($current_user->getEmail());
          }
          if ( !empty($recipients_bcc) ) {
@@ -123,29 +126,29 @@ if ( isOption($command,getMessage('COMMON_CANCEL_BUTTON')) ) {
          $email->set_message($mail['message'].$add_message);
 
          // prepare formal data
-         $tmp = array(getMessage('MAIL_FROM'), $mail['from_name']." &lt;".$mail['from_email']."&gt;");
+         $tmp = array($translator->getMessage('MAIL_FROM'), $mail['from_name']." &lt;".$mail['from_email']."&gt;");
          $formal_data[] = $tmp;
 
-         $tmp = array(getMessage('REPLY_TO'), $mail['reply_to_name']." &lt;".$mail['reply_to_email']."&gt;");
+         $tmp = array($translator->getMessage('REPLY_TO'), $mail['reply_to_name']." &lt;".$mail['reply_to_email']."&gt;");
          $formal_data[] = $tmp;
 
-         $tmp = array(getMessage('MAIL_TO'), implode(",", $recipients_display));
+         $tmp = array($translator->getMessage('MAIL_TO'), implode(",", $recipients_display));
          $formal_data[] = $tmp;
 
-         if (getMessage('COMMON_YES') == $_POST['copytosender']) {
-            $tmp = array(getMessage('CC_TO'), $mail['from_name']." &lt;".$mail['from_email']."&gt;");
+         if ($translator->getMessage('COMMON_YES') == $_POST['copytosender']) {
+            $tmp = array($translator->getMessage('CC_TO'), $mail['from_name']." &lt;".$mail['from_email']."&gt;");
             $formal_data[] = $tmp;
          }
 
          if ( !empty($recipients_bcc) ) {
-            $tmp = array(getMessage('MAIL_BCC_TO'), implode(",<br/>",$recipients_display_bcc));
+            $tmp = array($translator->getMessage('MAIL_BCC_TO'), implode(",<br/>",$recipients_display_bcc));
             $formal_data[] = $tmp;
          }
 
-         $tmp = array(getMessage('MAIL_SUBJECT'), $_POST['subject']);
+         $tmp = array($translator->getMessage('MAIL_SUBJECT'), $_POST['subject']);
          $formal_data[] = $tmp;
 
-         $tmp = array(getMessage('COMMON_MAIL_CONTENT').":", $_POST['mailcontent'].$add_message);
+         $tmp = array($translator->getMessage('COMMON_MAIL_CONTENT').":", $_POST['mailcontent'].$add_message);
          $formal_data[] = $tmp;
 
          if ($email->send()) {

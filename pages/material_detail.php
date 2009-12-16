@@ -45,13 +45,16 @@ $type = $item_manager->getItemType($_GET['iid']);;
 
 include_once('include/inc_delete_entry.php');
 
+// Get the translator object
+$translator = $environment->getTranslationObject();
+
 if ($type != CS_MATERIAL_TYPE) {
    $params = array();
    $params['environment'] = $environment;
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('ERROR_ILLEGAL_IID'));
+   $errorbox->setText($translator->getMessage('ERROR_ILLEGAL_IID'));
    $page->add($errorbox);
 } else {
    //used to signal which "creator infos" of annotations are expanded...
@@ -76,7 +79,7 @@ if ($type != CS_MATERIAL_TYPE) {
          $params['with_modifying_actions'] = true;
          $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
          unset($params);
-         $errorbox->setText(getMessage('ITEM_NOT_AVAILABLE'));
+         $errorbox->setText($translator->getMessage('ITEM_NOT_AVAILABLE'));
          $page->add($errorbox);
       }
    } elseif ($material_item->isNotActivated() and $current_user->getItemID() !=  $material_item->getCreatorID() and !$current_user->isModerator()){
@@ -85,7 +88,7 @@ if ($type != CS_MATERIAL_TYPE) {
       $params['with_modifying_actions'] = true;
       $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
       unset($params);
-      $errorbox->setText(getMessage('ACCESS_NOT_GRANTED'));
+      $errorbox->setText($translator->getMessage('ACCESS_NOT_GRANTED'));
       $page->add($errorbox);
    } elseif ( !$material_item->maySee($current_user) ) {
       $params = array();
@@ -93,7 +96,7 @@ if ($type != CS_MATERIAL_TYPE) {
       $params['with_modifying_actions'] = true;
       $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
       unset($params);
-      $errorbox->setText(getMessage('LOGIN_NOT_ALLOWED'));
+      $errorbox->setText($translator->getMessage('LOGIN_NOT_ALLOWED'));
       $page->add($errorbox);
    } else {
       if(isset($_GET['export_to_wiki'])){

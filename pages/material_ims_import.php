@@ -27,6 +27,9 @@
 $current_user = $environment->getCurrentUserItem();
 $context_item = $environment->getCurrentContextItem();
 
+// Get the translator object
+$translator = $environment->getTranslationObject();
+
 // Check access rights
 if ( !$context_item->withMaterialImportLink() ) {
    $params = array();
@@ -34,7 +37,7 @@ if ( !$context_item->withMaterialImportLink() ) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('ACCESS_NOT_GRANTED', $context_item->getTitle()));
+   $errorbox->setText($translator->getMessage('ACCESS_NOT_GRANTED', $context_item->getTitle()));
    $page->add($errorbox);
 
 }  elseif ( !$current_user->isUser() ) {
@@ -43,7 +46,7 @@ if ( !$context_item->withMaterialImportLink() ) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('LOGIN_NOT_ALLOWED'));
+   $errorbox->setText($translator->getMessage('LOGIN_NOT_ALLOWED'));
    $page->add($errorbox);
 }
 // Access granted
@@ -56,7 +59,7 @@ else {
    } else {
       $command = '';
    }
-   if ( isOption($command, getMessage('COMMON_CANCEL_BUTTON')) ) {
+   if ( isOption($command, $translator->getMessage('COMMON_CANCEL_BUTTON')) ) {
       redirect($environment->getCurrentContextID(),CS_MATERIAL_TYPE, 'index',$params);
    }
 
@@ -149,7 +152,7 @@ else {
       $form->loadValues();
 
       // Save items
-      if ( !empty($command) and isOption($command, getMessage('MATERIAL_IMS_IMPORT_BUTTON')) ) {
+      if ( !empty($command) and isOption($command, $translator->getMessage('MATERIAL_IMS_IMPORT_BUTTON')) ) {
          $correct = $form->check();
 
          if ( $correct

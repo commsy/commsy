@@ -37,6 +37,9 @@ $manager = $environment->getRoomManager();
 $item = $manager->getItem($current_iid);
 $current_user = $environment->getCurrentUserItem();
 
+// Get the translator object
+$translator = $environment->getTranslationObject();
+
 // Check access rights
 if ( !empty($current_iid) and !isset($item) ) {
    $params = array();
@@ -44,7 +47,7 @@ if ( !empty($current_iid) and !isset($item) ) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('ITEM_DOES_NOT_EXIST', $current_iid));
+   $errorbox->setText($translator->getMessage('ITEM_DOES_NOT_EXIST', $current_iid));
    $page->add($errorbox);
 } elseif ( !$environment->inPortal() or !$current_user->isModerator() ) {
    $params = array();
@@ -52,7 +55,7 @@ if ( !empty($current_iid) and !isset($item) ) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('LOGIN_NOT_ALLOWED'));
+   $errorbox->setText($translator->getMessage('LOGIN_NOT_ALLOWED'));
    $page->add($errorbox);
 }
 
@@ -67,7 +70,7 @@ else {
    }
 
    // Cancel editing
-   if ( isOption($command, getMessage('COMMON_CANCEL_BUTTON')) ) {
+   if ( isOption($command, $translator->getMessage('COMMON_CANCEL_BUTTON')) ) {
       $params = array();
       $params['room_id'] = $current_iid;
       redirect($environment->getCurrentContextID(),'home', 'index', $params);
@@ -99,7 +102,7 @@ else {
 
       // Save item
       if ( !empty($command)
-          and isOption($command, getMessage('PORTAL_MOVE_ROOM_REGISTER_BUTTON'))
+          and isOption($command, $translator->getMessage('PORTAL_MOVE_ROOM_REGISTER_BUTTON'))
         ) {
 
          $correct = $form->check();
@@ -180,7 +183,7 @@ else {
                         $temp_language = $translator->getMessage('CONTEXT_LANGUAGE_USER');
                         break;
                      default:
-                        $temp_language = getMessage('COMMON_MESSAGETAG_ERROR'.' configuration_move(183) ');
+                        $temp_language = $translator->getMessage('COMMON_MESSAGETAG_ERROR'.' configuration_move(183) ');
                         break;
                   }
 

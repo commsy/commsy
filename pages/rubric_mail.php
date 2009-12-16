@@ -25,6 +25,9 @@
 include_once('classes/cs_mail.php');
 include_once('functions/text_functions.php');
 
+// Get the translator object
+$translator = $environment->getTranslationObject();
+
 // option contains the name of the submit button, if this
 // script is called as result of a form post
 if (!empty($_POST['option'])) {
@@ -41,7 +44,7 @@ if (!empty($_GET['iid'])) {
 }
 
 
-if ( isOption($command,getMessage('COMMON_CANCEL_BUTTON')) ) {
+if ( isOption($command,$translator->getMessage('COMMON_CANCEL_BUTTON')) ) {
    $history = $session->getValue('history');
    redirect($history[1]['context'],$history[1]['module'],$history[1]['function'],$history[1]['parameter']);
 } else {
@@ -73,7 +76,7 @@ if ( isOption($command,getMessage('COMMON_CANCEL_BUTTON')) ) {
 
    $form->prepareForm();
 
-   if ( isOption($command,getMessage('COMMON_MAIL_SEND_BUTTON')) ) { // send mail
+   if ( isOption($command,$translator->getMessage('COMMON_MAIL_SEND_BUTTON')) ) { // send mail
 
       $form->setFormPost($_POST);
       $form->loadValues();
@@ -224,9 +227,9 @@ if ( isOption($command,getMessage('COMMON_CANCEL_BUTTON')) ) {
             $count = $user_manager->getCountAll();
             unset($user_manager);
             if ( $count == 1 ) {
-               $text = getMessage('COMMON_MAIL_ALL_ONE_IN_ROOM',$count);
+               $text = $translator->getMessage('COMMON_MAIL_ALL_ONE_IN_ROOM',$count);
             } else {
-               $text = getMessage('COMMON_MAIL_ALL_IN_ROOM',$count);
+               $text = $translator->getMessage('COMMON_MAIL_ALL_IN_ROOM',$count);
             }
             $recipients_display[] = $text;
          }
@@ -247,7 +250,7 @@ if ( isOption($command,getMessage('COMMON_CANCEL_BUTTON')) ) {
          $email->set_subject($mail['subject']);
          $email->set_message($mail['message']);
 
-         if (getMessage('COMMON_YES') == $_POST['copytosender']) {
+         if ($translator->getMessage('COMMON_YES') == $_POST['copytosender']) {
             $email->set_cc_to($current_user->getEmail());
          }
          if ( !empty($recipients_bcc) ) {
@@ -264,29 +267,29 @@ if ( isOption($command,getMessage('COMMON_CANCEL_BUTTON')) ) {
             unset($params);
 
             // prepare formal data
-            $tmp = array(getMessage('MAIL_FROM'), $mail['from_name']." <".$mail['from_email'].">");
+            $tmp = array($translator->getMessage('MAIL_FROM'), $mail['from_name']." <".$mail['from_email'].">");
             $formal_data[] = $tmp;
 
-            $tmp = array(getMessage('REPLY_TO'), $mail['from_email']);
+            $tmp = array($translator->getMessage('REPLY_TO'), $mail['from_email']);
             $formal_data[] = $tmp;
 
-            $tmp = array(getMessage('MAIL_TO'), implode(", ", $recipients_display));
+            $tmp = array($translator->getMessage('MAIL_TO'), implode(", ", $recipients_display));
             $formal_data[] = $tmp;
 
-            if (getMessage('COMMON_YES') == $_POST['copytosender']) {
-               $tmp = array(getMessage('CC_TO'), $mail['from_name']." <".$mail['from_email'].">");
+            if ($translator->getMessage('COMMON_YES') == $_POST['copytosender']) {
+               $tmp = array($translator->getMessage('CC_TO'), $mail['from_name']." <".$mail['from_email'].">");
                $formal_data[] = $tmp;
             }
 
             if ( !empty($recipients_bcc) ) {
-               $tmp = array(getMessage('MAIL_BCC_TO'), implode(",<br/>",$recipients_display_bcc));
+               $tmp = array($translator->getMessage('MAIL_BCC_TO'), implode(",<br/>",$recipients_display_bcc));
                $formal_data[] = $tmp;
             }
 
-            $tmp = array(getMessage('MAIL_SUBJECT'), $_POST['subject']);
+            $tmp = array($translator->getMessage('MAIL_SUBJECT'), $_POST['subject']);
             $formal_data[] = $tmp;
 
-            $tmp = array(getMessage('MAIL_BODY'), $_POST['mailcontent']);
+            $tmp = array($translator->getMessage('MAIL_BODY'), $_POST['mailcontent']);
             $formal_data[] = $tmp;
             $detail_view->setFormalData($formal_data);
 
@@ -300,18 +303,18 @@ if ( isOption($command,getMessage('COMMON_CANCEL_BUTTON')) ) {
             $params['with_modifying_actions'] = true;
             $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
             unset($params);
-            $error_string = "*". getMessage('ERROR_SEND_MAIL')."*<br />";
-            $error_string .= "<br />*".getMessage('ERROR_MAIL_FROM')."*<br />".$mail['from_name'];
-            $error_string .= "<br />*".getMessage('ERROR_MAIL_REPLY_TO')."*<br />".$mail['from_email'];
-            $error_string .= "<br />*".getMessage('ERROR_MAIL_TO')."*<br />".implode(", ", $recipients_display);
-            if (getMessage('COMMON_YES') == $_POST['copytosender']) {
-               $error_string .= "<br />*".getMessage('ERROR_MAIL_CC')."*<br />".$mail['from_email'];
+            $error_string = "*". $translator->getMessage('ERROR_SEND_MAIL')."*<br />";
+            $error_string .= "<br />*".$translator->getMessage('ERROR_MAIL_FROM')."*<br />".$mail['from_name'];
+            $error_string .= "<br />*".$translator->getMessage('ERROR_MAIL_REPLY_TO')."*<br />".$mail['from_email'];
+            $error_string .= "<br />*".$translator->getMessage('ERROR_MAIL_TO')."*<br />".implode(", ", $recipients_display);
+            if ($translator->getMessage('COMMON_YES') == $_POST['copytosender']) {
+               $error_string .= "<br />*".$translator->getMessage('ERROR_MAIL_CC')."*<br />".$mail['from_email'];
             }
             if ( !empty($recipients_bcc) ) {
-               $error_string .= "<br />*".getMessage('MAIL_BCC_TO')."*<br />".implode(", ", $recipients_display_bcc);
+               $error_string .= "<br />*".$translator->getMessage('MAIL_BCC_TO')."*<br />".implode(", ", $recipients_display_bcc);
             }
-            $error_string .= "<br />*".getMessage('ERROR_MAIL_SUBJECT')."*<br />".$_POST['subject'];
-            $error_string .= "<br />*".getMessage('ERROR_MAIL_CONTENT')."*<br />".$_POST['mailcontent'];
+            $error_string .= "<br />*".$translator->getMessage('ERROR_MAIL_SUBJECT')."*<br />".$_POST['subject'];
+            $error_string .= "<br />*".$translator->getMessage('ERROR_MAIL_CONTENT')."*<br />".$_POST['mailcontent'];
             $errorbox->setText($error_string);
             $page->add($errorbox);
          }
@@ -353,5 +356,5 @@ if ( isOption($command,getMessage('COMMON_CANCEL_BUTTON')) ) {
       $page->add($form_view);
    }
 }
-$page->setPageName(getMessage('COMMON_PAGETITLE_MAIL'));
+$page->setPageName($translator->getMessage('COMMON_PAGETITLE_MAIL'));
 ?>

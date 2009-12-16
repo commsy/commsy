@@ -24,6 +24,9 @@
 
 $context_item = $environment->getCurrentContextItem();
 
+// Get the translator object
+$translator = $environment->getTranslationObject();
+
 if ( $context_item->isLocked() ) {
    $params = array();
    $params['environment'] = $environment;
@@ -35,7 +38,7 @@ if ( $context_item->isLocked() ) {
    } else {
       $room_name = $context_item->getTitle();
    }
-   $errorbox->setText(getMessage('CONTEXT_IS_LOCKED',$room_name));
+   $errorbox->setText($translator->getMessage('CONTEXT_IS_LOCKED',$room_name));
    $page->add($errorbox);
 } elseif ( $context_item->isDeleted() and !$context_item->isPortal() ) {
    $params = array();
@@ -48,7 +51,7 @@ if ( $context_item->isLocked() ) {
    } else {
       $room_name = $context_item->getTitle();
    }
-   $errorbox->setText(getMessage('CONTEXT_IS_DELETED',$room_name));
+   $errorbox->setText($translator->getMessage('CONTEXT_IS_DELETED',$room_name));
    $page->add($errorbox);
 } elseif ( $context_item->isDeleted() and $context_item->isPortal() ) {
    $params = array();
@@ -56,7 +59,7 @@ if ( $context_item->isLocked() ) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('PORTAL_ERROR_DELETED',$context_item->getTitle()));
+   $errorbox->setText($translator->getMessage('PORTAL_ERROR_DELETED',$context_item->getTitle()));
    $page->add($errorbox);
 } elseif ( $context_item->isProjectroom()
            or $context_item->isCommunityRoom()

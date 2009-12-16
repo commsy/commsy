@@ -84,7 +84,7 @@ if ($current_user->isGuest()) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('PROJECT_ROOM_IS_CLOSED', $context_item->getTitle()));
+   $errorbox->setText($translator->getMessage('PROJECT_ROOM_IS_CLOSED', $context_item->getTitle()));
    $page->add($errorbox);
 } elseif (!$current_user->isModerator()) {
    $params = array();
@@ -92,7 +92,7 @@ if ($current_user->isGuest()) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('ACCESS_NOT_GRANTED'));
+   $errorbox->setText($translator->getMessage('ACCESS_NOT_GRANTED'));
    $page->add($errorbox);
 } else {
    //access granted
@@ -124,7 +124,7 @@ if ($current_user->isGuest()) {
    }
 
    // Search / select form
-   if ( isset($_GET['option']) and isOption($_GET['option'],getMessage('COMMON_RESET')) ) {
+   if ( isset($_GET['option']) and isOption($_GET['option'],$translator->getMessage('COMMON_RESET')) ) {
 
       $selstatus = 6;
       $search = '';
@@ -227,7 +227,7 @@ if ($mode == '') {
       $selected_ids[] = $_GET['id'];
    }
 
-   if ( ( ( isOption($option,getMessage('COMMON_LIST_ACTION_BUTTON_GO')) and $_POST['index_view_action'] != '-1' )
+   if ( ( ( isOption($option,$translator->getMessage('COMMON_LIST_ACTION_BUTTON_GO')) and $_POST['index_view_action'] != '-1' )
         or !empty($material_mode) )
         and !empty($selected_ids)
       ) {

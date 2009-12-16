@@ -22,6 +22,9 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
+// Get the translator object
+$translator = $environment->getTranslationObject();
+
 if (!empty($_POST['option'])) {
    $command = $_POST['option'];
 } else {
@@ -29,7 +32,7 @@ if (!empty($_POST['option'])) {
 }
 
 // cancel edit process
-if ( isOption($command,getMessage('COMMON_CANCEL_BUTTON')) ) {
+if ( isOption($command,$translator->getMessage('COMMON_CANCEL_BUTTON')) ) {
    $history = $session->getValue('history');
    if (empty($history[1]['module'])) {
       $module = 'home';

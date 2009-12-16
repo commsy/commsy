@@ -24,6 +24,9 @@
 
 include_once('functions/curl_functions.php');
 
+// Get the translator object
+$translator = $environment->getTranslationObject();
+
 if (!empty($_POST['option'])) {
    $command = $_POST['option'];
 } else {
@@ -69,7 +72,7 @@ if ($current_user->isGuest()) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('PROJECT_ROOM_IS_CLOSED', $context_item->getTitle()));
+   $errorbox->setText($translator->getMessage('PROJECT_ROOM_IS_CLOSED', $context_item->getTitle()));
    $page->add($errorbox);
    $command = 'error';
 } elseif (!$current_user->isModerator()) {
@@ -78,7 +81,7 @@ if ($current_user->isGuest()) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('ACCESS_NOT_GRANTED'));
+   $errorbox->setText($translator->getMessage('ACCESS_NOT_GRANTED'));
    $page->add($errorbox);
    $command = 'error';
 }
@@ -95,7 +98,7 @@ if ($command != 'error') { // only if user is allowed to edit colors
    $form_view = $class_factory->getClass(CONFIGURATION_FORM_VIEW,$params);
    unset($params);
 
-   if ( isOption($command, getMessage('PREFERENCES_ADD_COMMUNITY_ROOMS_BUTTON')) ) {
+   if ( isOption($command, $translator->getMessage('PREFERENCES_ADD_COMMUNITY_ROOMS_BUTTON')) ) {
       $post_community_room_array = array();
       $focus_element_onload = 'communityrooms';
       $post_community_room_ids = array();
@@ -145,11 +148,11 @@ if ($command != 'error') { // only if user is allowed to edit colors
    $form->prepareForm();
    $form->loadValues();
 
-   if ( !empty($command) and isOption($command, getMessage('COMMON_CANCEL_BUTTON')) ) {
+   if ( !empty($command) and isOption($command, $translator->getMessage('COMMON_CANCEL_BUTTON')) ) {
      redirect($environment->getCurrentContextID(),'configuration', 'index', '');
    }
    // Save item
-   elseif ( !empty($command) and isOption($command, getMessage('PREFERENCES_SAVE_BUTTON')) ) {
+   elseif ( !empty($command) and isOption($command, $translator->getMessage('PREFERENCES_SAVE_BUTTON')) ) {
       $correct = $form->check();
       if ($correct){
          if ( isset($_POST['title']) ) {
@@ -277,8 +280,6 @@ if ($command != 'error') { // only if user is allowed to edit colors
                $color['warning'] = '#FC1D12';
                $color['schema']='SCHEMA_OWN';
 
-               $color = checkColorArray($color);
-               
                // logo: save and/or delete current logo
                if ( isset($_POST['delete_bgimage']) ) {
                   $disc_manager = $environment->getDiscManager();

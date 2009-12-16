@@ -27,6 +27,9 @@
 $current_user = $environment->getCurrentUserItem();
 $context_item = $environment->getCurrentContextItem();
 
+// Get the translator object
+$translator = $environment->getTranslationObject();
+
 // Get item to be edited
 if ( !empty($_GET['iid']) ) {
    $current_iid = $_GET['iid'];
@@ -51,7 +54,7 @@ if ( $context_item->isProjectRoom() and $context_item->isClosed() ) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('PROJECT_ROOM_IS_CLOSED', $context_item->getTitle()));
+   $errorbox->setText($translator->getMessage('PROJECT_ROOM_IS_CLOSED', $context_item->getTitle()));
    $page->add($errorbox);
 } elseif ( !isset($discussion_item) ) {
    $params = array();
@@ -59,7 +62,7 @@ if ( $context_item->isProjectRoom() and $context_item->isClosed() ) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('ITEM_DOES_NOT_EXIST', $current_iid));
+   $errorbox->setText($translator->getMessage('ITEM_DOES_NOT_EXIST', $current_iid));
    $page->add($errorbox);
 } elseif ( !$discussion_item->mayEditIgnoreClose($current_user) ) {
    $params = array();
@@ -67,7 +70,7 @@ if ( $context_item->isProjectRoom() and $context_item->isClosed() ) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('LOGIN_NOT_ALLOWED'));
+   $errorbox->setText($translator->getMessage('LOGIN_NOT_ALLOWED'));
    $page->add($errorbox);
 }
 
@@ -84,7 +87,7 @@ else {
    //Do the stuff that may be done while discussion is open
    if ($discussion_item->mayEdit($current_user)) {
        // Cancel editing
-       if ( isOption($command, getMessage('COMMON_CANCEL_BUTTON')) ) {
+       if ( isOption($command, $translator->getMessage('COMMON_CANCEL_BUTTON')) ) {
           $params = array();
           $params['iid'] = $current_iid;
           redirect($environment->getCurrentContextID(), 'discussion', 'detail', $params);
@@ -137,7 +140,7 @@ else {
 
           // Save item
           if ( !empty($command) and
-               isOption($command, getMessage('DISCUSSION_CLOSE_BUTTON')) ) {
+               isOption($command, $translator->getMessage('DISCUSSION_CLOSE_BUTTON')) ) {
 
              $correct = $form->check();
              if ( $correct ) {
@@ -205,7 +208,7 @@ else {
       $params['with_modifying_actions'] = true;
       $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
       unset($params);
-      $errorbox->setText(getMessage('DISCUSSION_UNKNOWN_ACCESS'));
+      $errorbox->setText($translator->getMessage('DISCUSSION_UNKNOWN_ACCESS'));
       $page->add($errorbox);
    }
 }

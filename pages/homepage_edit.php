@@ -101,6 +101,9 @@ function cleanup_session ($current_iid) {
 $current_user = $environment->getCurrentUserItem();
 $context_item = $environment->getCurrentContextItem();
 
+// Get the translator object
+$translator = $environment->getTranslationObject();
+
 // Get item to be edited
 if ( !empty($_GET['iid']) ) {
    $current_iid = $_GET['iid'];
@@ -144,7 +147,7 @@ if (!$current_context->showHomepageLink()) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('HOMEPAGE_ERROR_NOT_ACTIVATED'));
+   $errorbox->setText($translator->getMessage('HOMEPAGE_ERROR_NOT_ACTIVATED'));
    $page->add($errorbox);
    $error = true;
 } elseif ( $context_item->isClosed() ) {
@@ -153,7 +156,7 @@ if (!$current_context->showHomepageLink()) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('PROJECT_ROOM_IS_CLOSED', $context_item->getTitle()));
+   $errorbox->setText($translator->getMessage('PROJECT_ROOM_IS_CLOSED', $context_item->getTitle()));
    $page->add($errorbox);
 } elseif ( $current_iid != 'NEW' and !isset($homepage_item) ) {
    $params = array();
@@ -161,7 +164,7 @@ if (!$current_context->showHomepageLink()) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('ITEM_DOES_NOT_EXIST', $current_iid));
+   $errorbox->setText($translator->getMessage('ITEM_DOES_NOT_EXIST', $current_iid));
    $page->add($errorbox);
 } elseif ( !(($current_iid == 'NEW' and $current_user->isUser()) or
              ($current_iid != 'NEW' and isset($homepage_item) and
@@ -171,7 +174,7 @@ if (!$current_context->showHomepageLink()) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('LOGIN_NOT_ALLOWED'));
+   $errorbox->setText($translator->getMessage('LOGIN_NOT_ALLOWED'));
    $page->add($errorbox);
 }
 
@@ -186,7 +189,7 @@ else {
    }
 
    // Cancel editing
-   if ( isOption($command, getMessage('COMMON_CANCEL_BUTTON')) ) {
+   if ( isOption($command, $translator->getMessage('COMMON_CANCEL_BUTTON')) ) {
       cleanup_session($current_iid);
       if ( $current_iid == 'NEW' ) {
          if ( !empty($father_iid) ) {
@@ -204,7 +207,7 @@ else {
    }
 
    // Delete item
-   elseif ( isOption($command, getMessage('HOMEPAGE_DELETE_BUTTON')) ) {
+   elseif ( isOption($command, $translator->getMessage('HOMEPAGE_DELETE_BUTTON')) ) {
       cleanup_session($current_iid);
       $homepage_item->delete();
       redirect($environment->getCurrentContextID(),$environment->getCurrentModule(), 'detail', '');
@@ -214,7 +217,7 @@ else {
    else {
 
       // Redirect to attach material
-      if ( isOption($command, getMessage('HOMEPAGE_RUBRIK_BUTTON')) ) {
+      if ( isOption($command, $translator->getMessage('HOMEPAGE_RUBRIK_BUTTON')) ) {
          attach_redirect(CS_MATERIAL_TYPE, $current_iid);
       }
 
@@ -536,7 +539,7 @@ else {
 
       // Save item
       if ( !empty($command)
-           and isOption($command, getMessage('HOMEPAGE_SAVE_BUTTON'))
+           and isOption($command, $translator->getMessage('HOMEPAGE_SAVE_BUTTON'))
          ) {
 
          $correct = $form->check();
@@ -589,7 +592,7 @@ else {
             $params['with_modifying_actions'] = true;
             $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
             unset($params);
-            $errorbox->setText(getMessage('HOMEPAGE_ERROR_CHECK_FORM'));
+            $errorbox->setText($translator->getMessage('HOMEPAGE_ERROR_CHECK_FORM'));
             $page->add($errorbox);
          }
       }

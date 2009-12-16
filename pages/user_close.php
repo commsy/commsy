@@ -22,13 +22,14 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
+// Get the translator object
+$translator = $environment->getTranslationObject();
 
 if (!empty($_POST['option'])) {
    $command = $_POST['option'];
 } else {
    $command = '';
 }
-
 
 if (!empty($_GET['iid'])) {
    $iid = $_GET['iid'];
@@ -51,7 +52,7 @@ if (!empty($iid) and $iid != 'NEW') {
       $params['with_modifying_actions'] = true;
       $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
       unset($params);
-      $error_string = getMessage('LOGIN_NOT_ALLOWED');
+      $error_string = $translator->getMessage('LOGIN_NOT_ALLOWED');
       $errorbox->setText($error_string);
       $page->add($errorbox);
       $command = 'error';
@@ -68,7 +69,7 @@ if ($command != 'error') { // only if user is allowed to edit user
    $form->loadValues();
 
    // cancel edit process
-   if ( isOption($command,getMessage('COMMON_CANCEL_BUTTON')) ) {
+   if ( isOption($command,$translator->getMessage('COMMON_CANCEL_BUTTON')) ) {
       if ( empty($_POST['iid']) ) {
          redirect($environment->getCurrentContextID(), $environment->getCurrentModule(), 'index', '');
       } else {
@@ -81,12 +82,12 @@ if ($command != 'error') { // only if user is allowed to edit user
    // save user
    else {
       $redirect = false;
-      if ( isOption($command,getMessage('COMMON_USER_REJECT_BUTTON')) ) {
+      if ( isOption($command,$translator->getMessage('COMMON_USER_REJECT_BUTTON')) ) {
          $user_item->reject();
          $user_item->save();
          $redirect = true;
       }
-      if ( isOption($command,getMessage('COMMON_USER_AND_ENTRIES_DELETE_BUTTON')) ) {
+      if ( isOption($command,$translator->getMessage('COMMON_USER_AND_ENTRIES_DELETE_BUTTON')) ) {
          $user_item->deleteAllEntriesOfUser();
          $user_item->delete();
          $redirect = true;

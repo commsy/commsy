@@ -34,6 +34,9 @@ include_once('classes/cs_list.php');
 //   attached     = ref_iid is set, show backlink
 //                  show all items attached to the ref item
 
+// Get the translator object
+$translator = $environment->getTranslationObject();
+
 if (isset($_GET['back_to_index']) and $session->issetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index_ids')){
    $index_search_parameter_array = $session->getValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index_parameter_array');
    $params['interval'] = $index_search_parameter_array['interval'];
@@ -149,7 +152,7 @@ if ( isset($_GET['sort']) ) {
 }
 
 // Search / select form
-if ( isset($_GET['option']) and isOption($_GET['option'],getMessage('COMMON_RESET')) ) {
+if ( isset($_GET['option']) and isOption($_GET['option'],$translator->getMessage('COMMON_RESET')) ) {
    $search = '';
    $restrict_search = '';
    $selbuzzword = '';
@@ -315,12 +318,12 @@ if ( isset($_POST['attach']) ) {
 ///////////////////////////////////////
 
 // Cancel editing
-if ( isOption($delete_command, getMessage('COMMON_CANCEL_BUTTON')) ) {
+if ( isOption($delete_command, $translator->getMessage('COMMON_CANCEL_BUTTON')) ) {
    $params = $environment->getCurrentParameterArray();
    redirect($environment->getCurrentContextID(), CS_MATERIAL_TYPE, 'index', $params);
 }
 // Delete item
-elseif ( isOption($delete_command, getMessage('COMMON_DELETE_BUTTON')) ) {
+elseif ( isOption($delete_command, $translator->getMessage('COMMON_DELETE_BUTTON')) ) {
    if ($session->issetValue('cid'.$environment->getCurrentContextID().
                                   '_'.$environment->getCurrentModule().
                                  '_deleted_ids')) {
@@ -343,7 +346,7 @@ elseif ( isOption($delete_command, getMessage('COMMON_DELETE_BUTTON')) ) {
    redirect($environment->getCurrentContextID(), CS_MATERIAL_TYPE, 'index', $params);
 }
 
-if ( isOption($option,getMessage('COMMON_LIST_ACTION_BUTTON_GO'))
+if ( isOption($option,$translator->getMessage('COMMON_LIST_ACTION_BUTTON_GO'))
      and !isset($_GET['show_copies'])
      and $_POST['index_view_action'] != '-1'
      and !empty($selected_ids)
@@ -602,7 +605,7 @@ if ( $environment->isOutputMode('XML') ) {
             $item = $list->getNext();
          }
       }
-      if ( isOption($option,getMessage('COMMON_LIST_ACTION_BUTTON_GO'))
+      if ( isOption($option,$translator->getMessage('COMMON_LIST_ACTION_BUTTON_GO'))
            and $_POST['index_view_action'] != '3'
          ) {
          $selected_ids = array();

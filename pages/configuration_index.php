@@ -29,6 +29,9 @@ include_once('classes/cs_list.php');
 $room_item = $environment->getCurrentContextItem();
 $current_user = $environment->getCurrentUserItem();
 
+// Get the translator object
+$translator = $environment->getTranslationObject();
+
 // Check access rights
 if ($current_user->isGuest()) {
    if (!$room_item->isOpenForGuests()) {
@@ -44,7 +47,7 @@ if ($current_user->isGuest()) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('ACCESS_NOT_GRANTED'));
+   $errorbox->setText($translator->getMessage('ACCESS_NOT_GRANTED'));
    $page->add($errorbox);
 } else {
    //access granted

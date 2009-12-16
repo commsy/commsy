@@ -23,6 +23,9 @@
 
 include_once('classes/cs_list.php');
 
+// Get the translator object
+$translator = $environment->getTranslationObject();
+
 // Find current page mode. Modes are:
 //   browse       = standard, simply show items
 //   detailattach = attach_iid is set, show checkboxes
@@ -136,7 +139,7 @@ if ( isset($_GET['sort']) ) {
 }
 
 // Search / Select Area
-if ( isset($_GET['option']) and isOption($_GET['option'],getMessage('COMMON_RESET')) ) {
+if ( isset($_GET['option']) and isOption($_GET['option'],$translator->getMessage('COMMON_RESET')) ) {
    $search = '';
    $selgroup = '';
    $seluser = '';
@@ -278,13 +281,13 @@ if ($mode == '') {
    ///////////////////////////////////////
 
 // Cancel editing
-if ( isOption($delete_command, getMessage('COMMON_CANCEL_BUTTON')) ) {
+if ( isOption($delete_command, $translator->getMessage('COMMON_CANCEL_BUTTON')) ) {
    $params = $environment->getCurrentParameterArray();
    redirect($environment->getCurrentContextID(), CS_TODO_TYPE, 'index', $params);
 }
 
 // Delete item
-elseif ( isOption($delete_command, getMessage('COMMON_DELETE_BUTTON')) ) {
+elseif ( isOption($delete_command, $translator->getMessage('COMMON_DELETE_BUTTON')) ) {
    if ($session->issetValue('cid'.$environment->getCurrentContextID().
                                   '_'.$environment->getCurrentModule().
                                  '_deleted_ids')) {
@@ -307,7 +310,7 @@ elseif ( isOption($delete_command, getMessage('COMMON_DELETE_BUTTON')) ) {
    redirect($environment->getCurrentContextID(), CS_TODO_TYPE, 'index', $params);
 }
 
-   if ( isOption($option,getMessage('COMMON_LIST_ACTION_BUTTON_GO'))
+   if ( isOption($option,$translator->getMessage('COMMON_LIST_ACTION_BUTTON_GO'))
         and !isset($_GET['show_copies'])
         and $_POST['index_view_action'] != '-1'
         and !empty($selected_ids)
@@ -540,7 +543,7 @@ if (isset($_GET['select']) and $_GET['select']=='all'){
       $item = $list->getNext();
    }
 }
-if (isOption($option,getMessage('COMMON_LIST_ACTION_BUTTON_GO')) and $_POST['index_view_action'] != '3'){
+if (isOption($option,$translator->getMessage('COMMON_LIST_ACTION_BUTTON_GO')) and $_POST['index_view_action'] != '3'){
      $selected_ids = array();
 }
 

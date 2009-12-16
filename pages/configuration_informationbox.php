@@ -22,6 +22,8 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
+// Get the translator object
+$translator = $environment->getTranslationObject();
 
 // get room item and current user
 $room_item = $environment->getCurrentContextItem();
@@ -42,7 +44,7 @@ if ($current_user->isGuest()) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('PROJECT_ROOM_IS_CLOSED', $room_item->getTitle()));
+   $errorbox->setText($translator->getMessage('PROJECT_ROOM_IS_CLOSED', $room_item->getTitle()));
    $page->add($errorbox);
 } elseif (!$current_user->isModerator()) {
    $params = array();
@@ -50,7 +52,7 @@ if ($current_user->isGuest()) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('ACCESS_NOT_GRANTED'));
+   $errorbox->setText($translator->getMessage('ACCESS_NOT_GRANTED'));
    $page->add($errorbox);
 }
 // Access granted
@@ -61,7 +63,7 @@ else {
    }  else {
       $command = '';
    }
-   if ( !empty($command) and isOption($command, getMessage('PREFERENCES_SAVE_BUTTON')) ) {
+   if ( !empty($command) and isOption($command, $translator->getMessage('PREFERENCES_SAVE_BUTTON')) ) {
       $is_saved = true;
    }
    // Show form and/or save item
@@ -83,7 +85,7 @@ else {
       $form->setFormPost($_POST);
    }
 
-   if ( !empty($command) and isOption($command, getMessage('PREFERENCES_SAVE_BUTTON')) ) {
+   if ( !empty($command) and isOption($command, $translator->getMessage('PREFERENCES_SAVE_BUTTON')) ) {
       $correct = $form->check();
       if ( $correct ) {
          $info_array = array();
@@ -119,7 +121,7 @@ else {
        $params['width'] = 500;
        $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
        unset($params);
-       $errorbox->setText(getMessage('COMMON_EDIT_AS_MODERATOR'));
+       $errorbox->setText($translator->getMessage('COMMON_EDIT_AS_MODERATOR'));
        $page->add($errorbox);
     }
     include_once('functions/curl_functions.php');

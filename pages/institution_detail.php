@@ -36,6 +36,9 @@ if (!empty($_GET['iid'])) {
 
 include_once('include/inc_delete_entry.php');
 
+// Get the translator object
+$translator = $environment->getTranslationObject();
+
 $label_manager = $environment->getLabelManager();
 $item = $label_manager->getItem($_GET['iid']);
 $type = $item->getItemType();
@@ -45,7 +48,7 @@ if ($type != CS_INSTITUTION_TYPE) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('ERROR_ILLEGAL_IID'));
+   $errorbox->setText($translator->getMessage('ERROR_ILLEGAL_IID'));
    $page->add($errorbox);
 } else {
 
@@ -77,7 +80,7 @@ if ($type != CS_INSTITUTION_TYPE) {
       $params['with_modifying_actions'] = true;
       $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
       unset($params);
-      $errorbox->setText(getMessage('ITEM_NOT_AVAILABLE'));
+      $errorbox->setText($translator->getMessage('ITEM_NOT_AVAILABLE'));
       $page->add($errorbox);
    } elseif ( !$institution_item->maySee($current_user) ) {
       $params = array();
@@ -85,7 +88,7 @@ if ($type != CS_INSTITUTION_TYPE) {
       $params['with_modifying_actions'] = true;
       $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
       unset($params);
-      $errorbox->setText(getMessage('LOGIN_NOT_ALLOWED'));
+      $errorbox->setText($translator->getMessage('LOGIN_NOT_ALLOWED'));
       $page->add($errorbox);
    } else {
 

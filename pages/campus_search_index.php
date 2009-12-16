@@ -22,6 +22,9 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
+// Get the translator object
+$translator = $environment->getTranslationObject();
+
 if (isset($_GET['back_to_search']) and $session->issetValue('cid'.$environment->getCurrentContextID().'_campus_search_parameter_array')){
    $campus_search_parameter_array = $session->getValue('cid'.$environment->getCurrentContextID().'_campus_search_parameter_array');
    $params['search'] = $campus_search_parameter_array['search'];
@@ -67,7 +70,7 @@ if ( isset($_GET['interval']) ) {
 }
 
 // Search / Select Area
-if ( isset($_GET['option']) and isOption($_GET['option'],getMessage('COMMON_RESET')) ) {
+if ( isset($_GET['option']) and isOption($_GET['option'],$translator->getMessage('COMMON_RESET')) ) {
    $search = '';
    $selrubric = 'all';
    $selrestriction = 'all';
@@ -289,9 +292,6 @@ foreach ($rubric_array as $rubric) {
       /*Vorbereitung der Manager und Abzählen aller Einträge */
       if ($rubric!=CS_PROJECT_TYPE and $rubric!=CS_MYROOM_TYPE){
          $rubric_manager->setContextLimit($environment->getCurrentContextID());
-      } elseif($rubric == CS_PROJECT_TYPE) {
-         $rubric_manager->setContextLimit($environment->getCurrentPortalID());
-         $rubric_manager->setCommunityroomLimit($environment->getCurrentContextID());
       }
       if ($rubric == CS_DATE_TYPE) {
          $rubric_manager->setWithoutDateModeLimit();

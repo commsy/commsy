@@ -22,6 +22,9 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
+// Get the translator object
+$translator = $environment->getTranslationObject();
+
 set_time_limit(0);
 if (isset($_GET['return_attach_buzzword_list'])){
    $_POST = $session->getValue('buzzword_post_vars');
@@ -107,7 +110,7 @@ if ( $current_iid != 'NEW' and !isset($announcement_item) ) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('ITEM_DOES_NOT_EXIST', $current_iid));
+   $errorbox->setText($translator->getMessage('ITEM_DOES_NOT_EXIST', $current_iid));
    $page->add($errorbox);
 } elseif ( !(($current_iid == 'NEW' and $current_user->isUser()) or
              ($current_iid != 'NEW' and isset($announcement_item) and
@@ -117,7 +120,7 @@ if ( $current_iid != 'NEW' and !isset($announcement_item) ) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('ACCESS_NOT_GRANTED'));
+   $errorbox->setText($translator->getMessage('ACCESS_NOT_GRANTED'));
    $page->add($errorbox);
 }
 
@@ -135,7 +138,7 @@ else {
 
 
    // Cancel editing
-   if ( isOption($command, getMessage('COMMON_CANCEL_BUTTON')) ) {
+   if ( isOption($command, $translator->getMessage('COMMON_CANCEL_BUTTON')) ) {
       cleanup_session($current_iid);
       $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_buzzword_ids');
       $session->unsetValue('buzzword_post_vars');
@@ -220,8 +223,8 @@ else {
 
       // Save item
       if ( !empty($command) and
-           (isOption($command, getMessage('ANNOUNCEMENT_SAVE_BUTTON'))
-            or isOption($command, getMessage('ANNOUNCEMENT_CHANGE_BUTTON'))) ) {
+           (isOption($command, $translator->getMessage('ANNOUNCEMENT_SAVE_BUTTON'))
+            or isOption($command, $translator->getMessage('ANNOUNCEMENT_CHANGE_BUTTON'))) ) {
 
          $correct = $form->check();
          if ( $correct ) {
@@ -376,7 +379,7 @@ else {
          $class_params['width'] = 500;
          $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$class_params);
          unset($class_params);
-         $errorbox->setText(getMessage('COMMON_EDIT_AS_MODERATOR'));
+         $errorbox->setText($translator->getMessage('COMMON_EDIT_AS_MODERATOR'));
          $page->add($errorbox);
       }
       $params['iid'] = $current_iid;

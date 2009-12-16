@@ -23,6 +23,9 @@
 //    along with CommSy.
 $display_mod = 'admin';
 
+// Get the translator object
+$translator = $environment->getTranslationObject();
+
 //check access
 $error = false;
 $room_item = $environment->getCurrentContextItem();
@@ -40,7 +43,7 @@ if ($current_user->isGuest()) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('PROJECT_ROOM_IS_CLOSED', $room_item->getTitle()));
+   $errorbox->setText($translator->getMessage('PROJECT_ROOM_IS_CLOSED', $room_item->getTitle()));
    $page->add($errorbox);
    $error = true;
 } elseif (!$current_user->isModerator()) {
@@ -49,7 +52,7 @@ if ($current_user->isGuest()) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('ACCESS_NOT_GRANTED'));
+   $errorbox->setText($translator->getMessage('ACCESS_NOT_GRANTED'));
    $page->add($errorbox);
    $error = true;
 }

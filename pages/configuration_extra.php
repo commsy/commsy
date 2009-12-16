@@ -28,6 +28,9 @@ set_time_limit(0);
 $current_user = $environment->getCurrentUserItem();
 $is_saved = false;
 
+// Get the translator object
+$translator = $environment->getTranslationObject();
+
 // Check access rights
 if ( !$current_user->isRoot() ) {
    $params = array();
@@ -35,7 +38,7 @@ if ( !$current_user->isRoot() ) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('LOGIN_NOT_ALLOWED'));
+   $errorbox->setText($translator->getMessage('LOGIN_NOT_ALLOWED'));
    $page->add($errorbox);
 }
 
@@ -46,7 +49,7 @@ else {
    if ( isset($_POST['option']) ) {
       $command = $_POST['option'];
    } elseif (isset($_POST['mail_text']) ) {
-      $command = getMessage('COMMON_CHOOSE_BUTTON');
+      $command = $translator->getMessage('COMMON_CHOOSE_BUTTON');
    } else {
       $command = '';
    }
@@ -60,8 +63,8 @@ else {
       $post_vars = array();
    }
 
-   if ( isOption($command, getMessage('COMMON_CHOOSE_BUTTON'))
-        or ( !empty($_POST['extra']) and !isOption($command,getMessage('PREFERENCES_SAVE_BUTTON')) )
+   if ( isOption($command, $translator->getMessage('COMMON_CHOOSE_BUTTON'))
+        or ( !empty($_POST['extra']) and !isOption($command,$translator->getMessage('PREFERENCES_SAVE_BUTTON')) )
       ) {
       $translator = $environment->getTranslationObject();
       $languages = $environment->getAvailableLanguageArray();
@@ -125,6 +128,7 @@ else {
             unset($post_vars['ROOM_'.$portal->getItemID()]);
          }
          $room_list = $portal->getRoomList();
+         
          if ( !$room_list->isEmpty() ) {
             $room = $room_list->getFirst();
             while ($room) {
@@ -165,12 +169,12 @@ else {
    $form->loadValues();
 
    // Save item
-   if ( !empty($command) and ( isOption($command, getMessage('PREFERENCES_SAVE_BUTTON')) or
-                               isOption($command, getMessage('COMMON_CHOOSE_BUTTON')) )
+   if ( !empty($command) and ( isOption($command, $translator->getMessage('PREFERENCES_SAVE_BUTTON')) or
+                               isOption($command, $translator->getMessage('COMMON_CHOOSE_BUTTON')) )
       ) {
 
       $correct = $form->check();
-      if ( $correct and isOption($command, getMessage('PREFERENCES_SAVE_BUTTON')) ) {
+      if ( $correct and isOption($command, $translator->getMessage('PREFERENCES_SAVE_BUTTON')) ) {
 
          if (
               $_POST['extra'] == 'CONFIGURATION_EXTRA_SPONSORING' or
