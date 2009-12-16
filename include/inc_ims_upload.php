@@ -22,16 +22,19 @@
 
 function _getMaterialByXMLArray($material_item,$values_array,$directory){
    global $environment;
+   
+   $translator = $environment->getTranslationObject();
+   
    $files = array();
    if (isset($values_array['authors'])){
       $material_item->setAuthor($values_array['authors']);
    }else{
-        $material_item->setAuthor(getMessage('COMMON_NO_AUTHORS'));
+        $material_item->setAuthor($translator->getMessage('COMMON_NO_AUTHORS'));
    }
    if (isset($values_array['title'])){
       $material_item->setTitle($values_array['title']);
    }else{
-        $material_item->setTitle(getMessage('COMMON_NO_TITLE'));
+        $material_item->setTitle($translator->getMessage('COMMON_NO_TITLE'));
    }
    if (isset($values_array['toc'])){
       $material_item->setBibTOC($values_array['toc']);
@@ -62,7 +65,7 @@ function _getMaterialByXMLArray($material_item,$values_array,$directory){
               '   view.display(statusSpan, response);' .LF.
               '}));' .LF.
               '</script>';
-               $availability = getMessage('BELUGA_NO_AVAILABILITY_INFORMATION');
+               $availability = $translator->getMessage('BELUGA_NO_AVAILABILITY_INFORMATION');
       $material_item->setBibAvailibility($availability);
    }
    $file_man = $environment->getFileManager();
@@ -99,7 +102,7 @@ function _getMaterialByXMLArray($material_item,$values_array,$directory){
 #         case 'availability':
 #            $availability = utf8_decode($bib_values_array[$key]['value']);
 #            if ($availability == 'none'){
-#            	$availability = getMessage('BELUGA_NO_AVAILABILITY_INFORMATION');
+#            	$availability = $translator->getMessage('BELUGA_NO_AVAILABILITY_INFORMATION');
 #            }
 #            $material_item->setBibAvailibility($availability);
 #            break;
@@ -237,7 +240,7 @@ function _getMaterialByXMLArray_old($material_item, $values_array,$directory,$ci
             //$availability = utf8_decode($values_array[$key]['value']);
             $availability = $values_array[$key]['value'];
             if ($availability == 'none'){
-               $availability = getMessage('BELUGA_NO_AVAILABILITY_INFORMATION');
+               $availability = $translator->getMessage('BELUGA_NO_AVAILABILITY_INFORMATION');
             }
             break;
 
@@ -1150,10 +1153,10 @@ function _getMaterialByXMLArray_old($material_item, $values_array,$directory,$ci
    }
 
    if (empty($title)){
-      $title = getMessage('COMMON_NO_TITLE');
+      $title = $translator->getMessage('COMMON_NO_TITLE');
    }
    if (empty($author)){
-      $author = getMessage('COMMON_NO_AUTHOR');
+      $author = $translator->getMessage('COMMON_NO_AUTHOR');
    }
    if (!empty($beluga_url)){
       $material_item->setBibURL($beluga_url);

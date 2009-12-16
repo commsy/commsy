@@ -36,8 +36,8 @@ if ( !isset($translator) and isset($this->_translator) ) {
    global $c_html_textarea;
    if ( $c_html_textarea ) {
       $link_item = new cs_link();
-      $link_item->setTitle(getMessage('CONFIGURATION_TEXTAREA_TITLE'));
-      $link_item->setDescription(getMessage('CONFIGURATION_TEXTAREA_TITLE_DESC'));
+      $link_item->setTitle($translator->getMessage('CONFIGURATION_TEXTAREA_TITLE'));
+      $link_item->setDescription($translator->getMessage('CONFIGURATION_TEXTAREA_TITLE_DESC'));
       $link_item->setIconPath('images/cs_config/CONFIGURATION_TEXTAREA_TITLE.gif');
       $link_item->setContextID($environment->getCurrentContextID());
       $link_item->setModule('configuration');
@@ -48,9 +48,9 @@ if ( !isset($translator) and isset($this->_translator) ) {
 
    $context_item = $environment->getCurrentContextItem();
    $link_item = new cs_link();
-   $link_item->setTitle(getMessage('CONFIGURATION_SERVICE_LINK'));
+   $link_item->setTitle($translator->getMessage('CONFIGURATION_SERVICE_LINK'));
    $link_item->setIconPath('images/cs_config/CONFIGURATION_SERVICE.gif');
-   $link_item->setDescription(getMessage('CONFIGURATION_SERVICE_DESC'));
+   $link_item->setDescription($translator->getMessage('CONFIGURATION_SERVICE_DESC'));
    $link_item->setContextID($environment->getCurrentContextID());
    $link_item->setModule('configuration');
    $link_item->setFunction('service');
@@ -59,9 +59,9 @@ if ( !isset($translator) and isset($this->_translator) ) {
 
    if ( $environment->inServer() && $environment->isCurlForPHPAvailable()) {
       $link_item = new cs_link();
-      $link_item->setTitle(getMessage('CONFIGURATION_SCRIBD_LINK'));
+      $link_item->setTitle($translator->getMessage('CONFIGURATION_SCRIBD_LINK'));
       $link_item->setIconPath('images/cs_config/CONFIGURATION_SCRIBD_IMAGE.gif');
-      $link_item->setDescription(getMessage('CONFIGURATION_SCRIBD_LINK_DESC'));
+      $link_item->setDescription($translator->getMessage('CONFIGURATION_SCRIBD_LINK_DESC'));
       $link_item->setContextID($environment->getCurrentContextID());
       $link_item->setModule('configuration');
       $link_item->setFunction('scribd');
@@ -76,9 +76,9 @@ if ( !isset($translator) and isset($this->_translator) ) {
    $context_item = $environment->getCurrentContextItem();
    if ( $context_item->withHomepageLink() and !$context_item->isPortal() ) {
       $link_item = new cs_link();
-      $link_item->setTitle(getMessage('HOMEPAGE_CONFIGURATION_LINK'));
+      $link_item->setTitle($translator->getMessage('HOMEPAGE_CONFIGURATION_LINK'));
       $link_item->setIconPath('images/cs_config/HOMEPAGE_CONFIGURATION_IMAGE.gif');
-      $link_item->setDescription(getMessage('HOMEPAGE_CONFIGURATION_DESC'));
+      $link_item->setDescription($translator->getMessage('HOMEPAGE_CONFIGURATION_DESC'));
       $link_item->setContextID($environment->getCurrentContextID());
       $link_item->setModule('configuration');
       $link_item->setFunction('homepage');
@@ -93,9 +93,9 @@ if ( !isset($translator) and isset($this->_translator) ) {
    $context_item = $environment->getCurrentContextItem();
    if ( $context_item->withWikiFunctions() and !$context_item->isServer() ) {
       $link_item = new cs_link();
-      $link_item->setTitle(getMessage('WIKI_CONFIGURATION_LINK'));
+      $link_item->setTitle($translator->getMessage('WIKI_CONFIGURATION_LINK'));
       $link_item->setIconPath('images/cs_config/WIKI_CONFIGURATION_IMAGE.gif');
-      $link_item->setDescription(getMessage('WIKI_CONFIGURATION_DESC'));
+      $link_item->setDescription($translator->getMessage('WIKI_CONFIGURATION_DESC'));
       $link_item->setContextID($environment->getCurrentContextID());
       $link_item->setModule('configuration');
       $link_item->setFunction('wiki');
@@ -110,9 +110,9 @@ if ( !isset($translator) and isset($this->_translator) ) {
    $context_item = $environment->getCurrentContextItem();
    if ( $context_item->withChatLink() and !$context_item->isPortal() ) {
       $link_item = new cs_link();
-      $link_item->setTitle(getMessage('CHAT_CONFIGURATION_LINK'));
+      $link_item->setTitle($translator->getMessage('CHAT_CONFIGURATION_LINK'));
       $link_item->setIconPath('images/cs_config/CHAT_CONFIGURATION_IMAGE.gif');
-      $link_item->setDescription(getMessage('CHAT_CONFIGURATION_DESC'));
+      $link_item->setDescription($translator->getMessage('CHAT_CONFIGURATION_DESC'));
       $link_item->setContextID($environment->getCurrentContextID());
       $link_item->setModule('configuration');
       $link_item->setFunction('chat');

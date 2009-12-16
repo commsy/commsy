@@ -29,17 +29,19 @@ if ( !isset($environment) and isset($this->_environment) ) {
    $environment = $this->_environment;
 }
 
+   $translator = $environment->getTranslationObject();
+
    $configuration_important_link_list = new cs_list();
 
    $link_item = new cs_link();
-   $link_item->setTitle(getMessage('CONFIGURATION_ROOM_OPTIONS_TITLE'));
+   $link_item->setTitle($translator->getMessage('CONFIGURATION_ROOM_OPTIONS_TITLE'));
    $current_context = $environment->getCurrentContextItem();
    if(($environment->getCurrentBrowser() == 'MSIE') && (mb_substr($environment->getCurrentBrowserVersion(),0,1) == '6')){
       $link_item->setIconPath('images/commsyicons_msie6/48x48/config/room_options.gif');
    } else {
       $link_item->setIconPath('images/commsyicons/48x48/config/room_options.png');
    }
-   $link_item->setDescription(getMessage('CONFIGURATION_ROOM_OPTIONS_DESC'));
+   $link_item->setDescription($translator->getMessage('CONFIGURATION_ROOM_OPTIONS_DESC'));
    $link_item->setContextID($environment->getCurrentContextID());
    $link_item->setModule('configuration');
    $link_item->setFunction('room_options');
@@ -47,14 +49,14 @@ if ( !isset($environment) and isset($this->_environment) ) {
    $configuration_important_link_list->add($link_item);
 
    $link_item = new cs_link();
-   $link_item->setTitle(getMessage('CONFIGURATION_RUBRIC_OPTIONS_TITLE'));
+   $link_item->setTitle($translator->getMessage('CONFIGURATION_RUBRIC_OPTIONS_TITLE'));
    $current_context = $environment->getCurrentContextItem();
    if(($environment->getCurrentBrowser() == 'MSIE') && (mb_substr($environment->getCurrentBrowserVersion(),0,1) == '6')){
       $link_item->setIconPath('images/commsyicons_msie6/48x48/config/rubric_options.gif');
    } else {
       $link_item->setIconPath('images/commsyicons/48x48/config/rubric_options.png');
    } 
-   $link_item->setDescription(getMessage('CONFIGURATION_RUBRIC_OPTIONS_DESC'));
+   $link_item->setDescription($translator->getMessage('CONFIGURATION_RUBRIC_OPTIONS_DESC'));
    $link_item->setContextID($environment->getCurrentContextID());
    $link_item->setModule('configuration');
    $link_item->setFunction('rubric_options');
@@ -62,14 +64,14 @@ if ( !isset($environment) and isset($this->_environment) ) {
    $configuration_important_link_list->add($link_item);
 
    $link_item = new cs_link();
-   $link_item->setTitle(getMessage('CONFIGURATION_STRUCTURE_OPTIONS_TITLE'));
+   $link_item->setTitle($translator->getMessage('CONFIGURATION_STRUCTURE_OPTIONS_TITLE'));
    $current_context = $environment->getCurrentContextItem();
    if(($environment->getCurrentBrowser() == 'MSIE') && (mb_substr($environment->getCurrentBrowserVersion(),0,1) == '6')){
       $link_item->setIconPath('images/commsyicons_msie6/48x48/config/structure_options.gif');
    } else {
       $link_item->setIconPath('images/commsyicons/48x48/config/structure_options.png');
    }
-   $link_item->setDescription(getMessage('CONFIGURATION_STRUCTURE_OPTIONS_DESC'));
+   $link_item->setDescription($translator->getMessage('CONFIGURATION_STRUCTURE_OPTIONS_DESC'));
    $link_item->setContextID($environment->getCurrentContextID());
    $link_item->setModule('configuration');
    $link_item->setFunction('structure_options');
@@ -78,8 +80,8 @@ if ( !isset($environment) and isset($this->_environment) ) {
 
    if (!$environment->inPrivateRoom()){
       $link_item = new cs_link();
-      $link_item->setTitle(getMessage('CONFIGURATION_ACCOUNT_OPTIONS_TITLE'));
-      $link_item->setDescription(getMessage('CONFIGURATION_ACCOUNT_OPTIONS_DESC'));
+      $link_item->setTitle($translator->getMessage('CONFIGURATION_ACCOUNT_OPTIONS_TITLE'));
+      $link_item->setDescription($translator->getMessage('CONFIGURATION_ACCOUNT_OPTIONS_DESC'));
       if(($environment->getCurrentBrowser() == 'MSIE') && (mb_substr($environment->getCurrentBrowserVersion(),0,1) == '6')){
          $link_item->setIconPath('images/commsyicons_msie6/48x48/config/account_options.gif');
       } else {

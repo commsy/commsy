@@ -63,7 +63,7 @@ if ( strstr($right_box_command2, '_START') ) {
    $right_box_command = $translator->getMessage('COMMON_ITEM_NEW_ATTACH');
 }
 
-if ( isOption($command, getMessage('COMMON_BUZZWORD_NEW_ATTACH')) ) {
+if ( isOption($command, $translator->getMessage('COMMON_BUZZWORD_NEW_ATTACH')) ) {
    if (isset($_POST['return_attach_buzzword_list'])){
       $buzzword_array = array();
       if (isset($_POST['buzzwordlist'])){
@@ -115,7 +115,7 @@ if ( isOption($command, getMessage('COMMON_BUZZWORD_NEW_ATTACH')) ) {
    }
 
 }
-if ( isOption($right_box_command, getMessage('COMMON_BUZZWORD_NEW_ATTACH')) ) {
+if ( isOption($right_box_command, $translator->getMessage('COMMON_BUZZWORD_NEW_ATTACH')) ) {
    $session->setValue('buzzword_post_vars', $_POST);
    $buzzword_array = array();
    $buzzword_manager = $environment->getLabelManager();
@@ -137,7 +137,7 @@ if ( isOption($right_box_command, getMessage('COMMON_BUZZWORD_NEW_ATTACH')) ) {
    $buzzword_view->setCountAll($count_all);
 }
 
-if ( isOption($command, getMessage('COMMON_TAG_NEW_ATTACH')) ) {
+if ( isOption($command, $translator->getMessage('COMMON_TAG_NEW_ATTACH')) ) {
    if (isset($_POST['return_attach_tag_list'])){
       $tag_array = array();
       if (isset($_POST['taglist'])){
@@ -150,7 +150,7 @@ if ( isOption($command, getMessage('COMMON_TAG_NEW_ATTACH')) ) {
       $session_post_vars = $session->getValue('tag_post_vars');
    }
 }
-if ( isOption($right_box_command, getMessage('COMMON_TAG_NEW_ATTACH')) ) {
+if ( isOption($right_box_command, $translator->getMessage('COMMON_TAG_NEW_ATTACH')) ) {
    $session->setValue('tag_post_vars', $_POST);
    $params = array();
    $params['environment'] = $environment;
@@ -159,9 +159,9 @@ if ( isOption($right_box_command, getMessage('COMMON_TAG_NEW_ATTACH')) ) {
    unset($params);
 }
 
-if ( isOption($command, getMessage('COMMON_ITEM_NEW_ATTACH')) or
-     isOption($command, getMessage('COMMON_GROUP_ATTACH')) or
-     isOption($command, getMessage('COMMON_INSTITUTION_ATTACH'))
+if ( isOption($command, $translator->getMessage('COMMON_ITEM_NEW_ATTACH')) or
+     isOption($command, $translator->getMessage('COMMON_GROUP_ATTACH')) or
+     isOption($command, $translator->getMessage('COMMON_INSTITUTION_ATTACH'))
    ) {
 
    $entry_array = array();
@@ -321,9 +321,9 @@ if ( isOption($command, getMessage('COMMON_ITEM_NEW_ATTACH')) or
       $selected_ids = array_unique($selected_ids);
       $session->setValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids',$selected_ids);
    }
-   if ( isOption($right_box_command, getMessage('COMMON_ITEM_NEW_ATTACH')) or
-        isOption($right_box_command, getMessage('COMMON_GROUP_ATTACH')) or
-        isOption($right_box_command, getMessage('COMMON_INSTITUTION_ATTACH'))
+   if ( isOption($right_box_command, $translator->getMessage('COMMON_ITEM_NEW_ATTACH')) or
+        isOption($right_box_command, $translator->getMessage('COMMON_GROUP_ATTACH')) or
+        isOption($right_box_command, $translator->getMessage('COMMON_INSTITUTION_ATTACH'))
       ) {
       $session->setValue('linked_items_post_vars', $_POST);
       $item_list = new cs_list();

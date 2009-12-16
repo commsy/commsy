@@ -31,9 +31,11 @@ if ( !isset($environment) and isset($this->_environment) ) {
    $environment = $this->_environment;
 }
 
+$translator = $environment->getTranslationObject();
+
 if ( !$environment->inServer() and !$environment->inPrivateRoom()) {
    $link_item = new cs_link();
-   $link_item->setDescription(getMessage('ROOM_MEMBER_ADMIN_DESC'));
+   $link_item->setDescription($translator->getMessage('ROOM_MEMBER_ADMIN_DESC'));
    if(($environment->getCurrentBrowser() == 'MSIE') && (mb_substr($environment->getCurrentBrowserVersion(),0,1) == '6')){
       $link_item->setIconPath('images/commsyicons_msie6/48x48/config/account.gif');
       $link_item->setIconPathForNavigation('images/commsyicons_msie6/22x22/config/account.gif');
@@ -41,7 +43,7 @@ if ( !$environment->inServer() and !$environment->inPrivateRoom()) {
       $link_item->setIconPath('images/commsyicons/48x48/config/account.png');
       $link_item->setIconPathForNavigation('images/commsyicons/22x22/config/account.png');
    }
-   $link_item->setTitle(getMessage('ROOM_MEMBER_ADMIN'));
+   $link_item->setTitle($translator->getMessage('ROOM_MEMBER_ADMIN'));
    $link_item->setContextID($environment->getCurrentContextID());
    $link_item->setModule('account');
    $link_item->setFunction('index');
@@ -53,9 +55,9 @@ if ( !$environment->inServer()
      and !$environment->inPortal()
    ) {
    $link_item = new cs_link();
-   $link_item->setTitle(getMessage('COMMON_INFORMATION_BOX'));
-   $link_item->setShortTitle(getMessage('COMMON_INFORMATION_BOX_SHORT'));
-   $link_item->setDescription(getMessage('COMMON_INFORMATION_BOX_DESC'));
+   $link_item->setTitle($translator->getMessage('COMMON_INFORMATION_BOX'));
+   $link_item->setShortTitle($translator->getMessage('COMMON_INFORMATION_BOX_SHORT'));
+   $link_item->setDescription($translator->getMessage('COMMON_INFORMATION_BOX_DESC'));
    if(($environment->getCurrentBrowser() == 'MSIE') && (mb_substr($environment->getCurrentBrowserVersion(),0,1) == '6')){
       $link_item->setIconPath('images/commsyicons_msie6/48x48/config/informationbox.gif');
       $link_item->setIconPathForNavigation('images/commsyicons_msie6/22x22/config/informationbox.gif');
@@ -76,8 +78,8 @@ if ( $context_item->isCommunityRoom()
      and $context_item->withRubric(CS_MATERIAL_TYPE)
    ) {
    $link_item = new cs_link();
-   $link_item->setTitle(getMessage('MATERIAL_ADMIN_TINY_HEADER_CONFIGURATION'));
-   $link_item->setDescription(getMessage('MATERIAL_ADMIN_TINY_DESCRIPTION'));
+   $link_item->setTitle($translator->getMessage('MATERIAL_ADMIN_TINY_HEADER_CONFIGURATION'));
+   $link_item->setDescription($translator->getMessage('MATERIAL_ADMIN_TINY_DESCRIPTION'));
    if(($environment->getCurrentBrowser() == 'MSIE') && (mb_substr($environment->getCurrentBrowserVersion(),0,1) == '6')){
       $link_item->setIconPath('images/commsyicons_msie6/48x48/config/material_admin.gif');
       $link_item->setIconPathForNavigation('images/commsyicons_msie6/22x22/config/material_admin.gif');
@@ -98,8 +100,8 @@ if ( $environment->inProjectRoom()
      or $environment->inGroupRoom()
    ) {
    $link_item = new cs_link();
-   $link_item->setTitle(getMessage('PREFERENCES_USAGE_INFOS'));
-   $link_item->setDescription(getMessage('PREFERENCES_USAGE_INFOS_DESC'));
+   $link_item->setTitle($translator->getMessage('PREFERENCES_USAGE_INFOS'));
+   $link_item->setDescription($translator->getMessage('PREFERENCES_USAGE_INFOS_DESC'));
    if(($environment->getCurrentBrowser() == 'MSIE') && (mb_substr($environment->getCurrentBrowserVersion(),0,1) == '6')){
       $link_item->setIconPath('images/commsyicons_msie6/48x48/config/usage_info_options.gif');
       $link_item->setIconPathForNavigation('images/commsyicons_msie6/22x22/config/usage_info_options.gif');
@@ -116,8 +118,8 @@ if ( $environment->inProjectRoom()
 
 if ( !$environment->inServer() and !$environment->inPrivateRoom() ) {
    $link_item = new cs_link();
-   $link_item->setTitle(getMessage('PREFERENCES_MAIL_LINK'));
-   $link_item->setDescription(getMessage('PREFERENCES_MAIL_DESC'));
+   $link_item->setTitle($translator->getMessage('PREFERENCES_MAIL_LINK'));
+   $link_item->setDescription($translator->getMessage('PREFERENCES_MAIL_DESC'));
    if(($environment->getCurrentBrowser() == 'MSIE') && (mb_substr($environment->getCurrentBrowserVersion(),0,1) == '6')){
       $link_item->setIconPath('images/commsyicons_msie6/48x48/config/mail_options.gif');
       $link_item->setIconPathForNavigation('images/commsyicons_msie6/22x22/config/mail_options.gif');

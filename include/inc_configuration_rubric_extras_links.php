@@ -35,8 +35,8 @@ $translator = $environment->getTranslationObject();
    global $c_html_textarea;
    if ( $c_html_textarea ) {
       $link_item = new cs_link();
-      $link_item->setTitle(getMessage('CONFIGURATION_TEXTAREA_TITLE'));
-      $link_item->setDescription(getMessage('CONFIGURATION_TEXTAREA_TITLE_DESC'));
+      $link_item->setTitle($translator->getMessage('CONFIGURATION_TEXTAREA_TITLE'));
+      $link_item->setDescription($translator->getMessage('CONFIGURATION_TEXTAREA_TITLE_DESC'));
       if(($environment->getCurrentBrowser() == 'MSIE') && (mb_substr($environment->getCurrentBrowserVersion(),0,1) == '6')){
          $link_item->setIconPath('images/commsyicons_msie6/48x48/config/htmltextarea.gif');
          $link_item->setIconPathForNavigation('images/commsyicons_msie6/22x22/config/htmltextarea.gif');
@@ -57,7 +57,7 @@ $translator = $environment->getTranslationObject();
    $context_item = $environment->getCurrentContextItem();
    if ( $context_item->withWikiFunctions() and !$context_item->isServer() ) {
       $link_item = new cs_link();
-      $link_item->setTitle(getMessage('WIKI_CONFIGURATION_LINK'));
+      $link_item->setTitle($translator->getMessage('WIKI_CONFIGURATION_LINK'));
       if(($environment->getCurrentBrowser() == 'MSIE') && (mb_substr($environment->getCurrentBrowserVersion(),0,1) == '6')){
          $link_item->setIconPath('images/commsyicons_msie6/48x48/config/pmwiki.gif');
          $link_item->setIconPathForNavigation('images/commsyicons_msie6/22x22/config/pmwiki.gif');
@@ -65,7 +65,7 @@ $translator = $environment->getTranslationObject();
          $link_item->setIconPath('images/commsyicons/48x48/config/pmwiki.png');
          $link_item->setIconPathForNavigation('images/commsyicons/22x22/config/pmwiki.png');
       }
-      $link_item->setDescription(getMessage('WIKI_CONFIGURATION_DESC'));
+      $link_item->setDescription($translator->getMessage('WIKI_CONFIGURATION_DESC'));
       $link_item->setContextID($environment->getCurrentContextID());
       $link_item->setModule('configuration');
       $link_item->setFunction('wiki');
@@ -79,7 +79,7 @@ $translator = $environment->getTranslationObject();
    $context_item = $environment->getCurrentContextItem();
    if ( $context_item->withChatLink() and !$context_item->isPortal() and !$context_item->isPrivateroom() ) {
       $link_item = new cs_link();
-      $link_item->setTitle(getMessage('CHAT_CONFIGURATION_LINK'));
+      $link_item->setTitle($translator->getMessage('CHAT_CONFIGURATION_LINK'));
       if(($environment->getCurrentBrowser() == 'MSIE') && (mb_substr($environment->getCurrentBrowserVersion(),0,1) == '6')){
          $link_item->setIconPath('images/commsyicons_msie6/48x48/config/etchat.gif');
          $link_item->setIconPathForNavigation('images/commsyicons_msie6/22x22/config/etchat.gif');
@@ -87,7 +87,7 @@ $translator = $environment->getTranslationObject();
          $link_item->setIconPath('images/commsyicons/48x48/config/etchat.png');
          $link_item->setIconPathForNavigation('images/commsyicons/22x22/config/etchat.png');
       }
-      $link_item->setDescription(getMessage('CHAT_CONFIGURATION_DESC'));
+      $link_item->setDescription($translator->getMessage('CHAT_CONFIGURATION_DESC'));
       $link_item->setContextID($environment->getCurrentContextID());
       $link_item->setModule('configuration');
       $link_item->setFunction('chat');
@@ -102,13 +102,13 @@ $translator = $environment->getTranslationObject();
       ) {
       $link_item = new cs_link();
       if ( $environment->inPrivateRoom() ) {
-         $link_item->setTitle(getMessage('CONFIGURATION_TEMPLATE_FORM_ELEMENT_SHORT_TITLE'));
-         $link_item->setShortTitle(getMessage('CONFIGURATION_TEMPLATE_FORM_ELEMENT_SHORT_TITLE'));
-         $link_item->setDescription(getMessage('CONFIGURATION_TEMPLATE_FORM_ELEMENT_VALUE2'));
+         $link_item->setTitle($translator->getMessage('CONFIGURATION_TEMPLATE_FORM_ELEMENT_SHORT_TITLE'));
+         $link_item->setShortTitle($translator->getMessage('CONFIGURATION_TEMPLATE_FORM_ELEMENT_SHORT_TITLE'));
+         $link_item->setDescription($translator->getMessage('CONFIGURATION_TEMPLATE_FORM_ELEMENT_VALUE2'));
       } else {
-         $link_item->setTitle(getMessage('CONFIGURATION_TEMPLATE_FORM_ELEMENT_TITLE'));
-         $link_item->setShortTitle(getMessage('CONFIGURATION_TEMPLATE_FORM_ELEMENT_TITLE'));
-         $link_item->setDescription(getMessage('CONFIGURATION_TEMPLATE_FORM_ELEMENT_VALUE'));
+         $link_item->setTitle($translator->getMessage('CONFIGURATION_TEMPLATE_FORM_ELEMENT_TITLE'));
+         $link_item->setShortTitle($translator->getMessage('CONFIGURATION_TEMPLATE_FORM_ELEMENT_TITLE'));
+         $link_item->setDescription($translator->getMessage('CONFIGURATION_TEMPLATE_FORM_ELEMENT_VALUE'));
       }
       if(($environment->getCurrentBrowser() == 'MSIE') && (mb_substr($environment->getCurrentBrowserVersion(),0,1) == '6')){
          $link_item->setIconPath('images/commsyicons_msie6/48x48/config/template_options.gif');
@@ -125,7 +125,7 @@ $translator = $environment->getTranslationObject();
    }
 
    $link_item = new cs_link();
-   $link_item->setTitle(getMessage('CONFIGURATION_RUBRIC_EXTRAS_TITLE'));
+   $link_item->setTitle($translator->getMessage('CONFIGURATION_RUBRIC_EXTRAS_TITLE'));
    $current_context = $environment->getCurrentContextItem();
    if(($environment->getCurrentBrowser() == 'MSIE') && (mb_substr($environment->getCurrentBrowserVersion(),0,1) == '6')){
       $link_item->setIconPath('images/commsyicons_msie6/48x48/config/rubric_extras.gif');
@@ -134,7 +134,7 @@ $translator = $environment->getTranslationObject();
       $link_item->setIconPath('images/commsyicons/48x48/config/rubric_extras.png');
       $link_item->setIconPathForNavigation('images/commsyicons/22x22/config/rubric_extras.png');
    }
-   $link_item->setDescription(getMessage('CONFIGURATION_RUBRIC_EXTRAS_DESC'));
+   $link_item->setDescription($translator->getMessage('CONFIGURATION_RUBRIC_EXTRAS_DESC'));
    $link_item->setContextID($environment->getCurrentContextID());
    $link_item->setModule('configuration');
    $link_item->setFunction('rubric_extras');

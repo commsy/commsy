@@ -28,6 +28,9 @@ include_once('classes/cs_list.php');
 if ( !isset($environment) and isset($this->_environment) ) {
    $environment = $this->_environment;
 }
+
+   $translator = $environment->getTranslationObject();
+   
   $current_context = $environment->getCurrentContextItem();
 
    $rubric_link_list = new cs_list();
@@ -38,8 +41,8 @@ if ( !isset($environment) and isset($this->_environment) ) {
         or $environment->inGroupRoom()
       ) {
       $link_item = new cs_link();
-      $link_item->setTitle(getMessage('PREFERENCES_DATE_CONFIGURATIONS'));
-      $link_item->setDescription(getMessage('PREFERENCES_DATE_CONFIGURATIONS_DESC'));
+      $link_item->setTitle($translator->getMessage('PREFERENCES_DATE_CONFIGURATIONS'));
+      $link_item->setDescription($translator->getMessage('PREFERENCES_DATE_CONFIGURATIONS_DESC'));
       $link_item->setIconPath('images/cs_config/COMMON_DATE_PREFERENCES.gif');
       $link_item->setContextID($environment->getCurrentContextID());
       $link_item->setModule('configuration');
@@ -53,8 +56,8 @@ if ( !isset($environment) and isset($this->_environment) ) {
         or $environment->inGroupRoom()
       ) {
       $link_item = new cs_link();
-      $link_item->setTitle(getMessage('PREFERENCES_DISCUSSION_CONFIGURATIONS'));
-      $link_item->setDescription(getMessage('PREFERENCES_DISCUSSION_CONFIGURATIONS_DESC'));
+      $link_item->setTitle($translator->getMessage('PREFERENCES_DISCUSSION_CONFIGURATIONS'));
+      $link_item->setDescription($translator->getMessage('PREFERENCES_DISCUSSION_CONFIGURATIONS_DESC'));
       $link_item->setIconPath('images/cs_config/CONFIGURATION_DISCUSSION_PREFERENCES.gif');
       $link_item->setContextID($environment->getCurrentContextID());
       $link_item->setModule('configuration');
@@ -68,8 +71,8 @@ if ( !isset($environment) and isset($this->_environment) ) {
         or $environment->inGroupRoom()
       ) {
       $link_item = new cs_link();
-      $link_item->setTitle(getMessage('PREFERENCES_PATH_CONFIGURATIONS'));
-      $link_item->setDescription(getMessage('PREFERENCES_PATH_CONFIGURATIONS_DESC'));
+      $link_item->setTitle($translator->getMessage('PREFERENCES_PATH_CONFIGURATIONS'));
+      $link_item->setDescription($translator->getMessage('PREFERENCES_PATH_CONFIGURATIONS_DESC'));
       $link_item->setIconPath('images/cs_config/CONFIGURATION_PATH.gif');
       $link_item->setContextID($environment->getCurrentContextID());
       $link_item->setModule('configuration');
@@ -83,9 +86,9 @@ if ( !isset($environment) and isset($this->_environment) ) {
         and $current_context->withRubric(CS_GROUP_TYPE)
       ) {
       $link_item = new cs_link();
-      $link_item->setTitle(getMessage('CONFIGURATION_GROUPROOM_LINK'));
+      $link_item->setTitle($translator->getMessage('CONFIGURATION_GROUPROOM_LINK'));
       $link_item->setIconPath('images/cs_config/PORTAL_ENTER_NEW.gif');
-      $link_item->setDescription(getMessage('CONFIGURATION_GROUPROOM_LINK_DESC'));
+      $link_item->setDescription($translator->getMessage('CONFIGURATION_GROUPROOM_LINK_DESC'));
       $link_item->setContextID($environment->getCurrentContextID());
       $link_item->setModule('configuration');
       $link_item->setFunction('grouproom');

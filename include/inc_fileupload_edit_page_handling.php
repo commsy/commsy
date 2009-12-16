@@ -27,8 +27,10 @@ $file_upload_rubric = $environment->getCurrentModule();
 // init vars
 $from_multiupload = false;
 
+$translator = $environment->getTranslationObject();
+
 // enable multi upload
-if ( isOption($command, getMessage('MATERIAL_BUTTON_MULTI_UPLOAD_YES')) ) {
+if ( isOption($command, $translator->getMessage('MATERIAL_BUTTON_MULTI_UPLOAD_YES')) ) {
    $form->setWithMultiUpload();
    if ( isset($_POST) ) {
       $session->setValue($file_upload_rubric.'_multi_upload_post_vars',$_POST);

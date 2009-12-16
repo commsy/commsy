@@ -24,6 +24,9 @@
 
 function _can_delete ($id_to_check) {
    global $environment;
+   
+   $translator = $environment->getTranslationObject();
+   
    $retour = false;
    $type = '';
    if ( isset($_GET['section_action'])
@@ -87,7 +90,7 @@ if ( isset($_GET['action'])
    $page->addDeleteBox(curl($environment->getCurrentContextID(),$environment->getCurrentModule(),$environment->getCurrentFunction(),$params));
 }
 // Cancel editing
-if ( isOption($delete_command, getMessage('COMMON_CANCEL_BUTTON')) ) {
+if ( isOption($delete_command, $translator->getMessage('COMMON_CANCEL_BUTTON')) ) {
    $params = $environment->getCurrentParameterArray();
    $anchor = '';
    if ( isset($_GET['section_action']) and $_GET['section_action'] == 'delete' ) {
@@ -122,7 +125,7 @@ if ( isOption($delete_command, getMessage('COMMON_CANCEL_BUTTON')) ) {
    redirect($environment->getCurrentContextID(), $environment->getCurrentModule(), $environment->getCurrentFunction(), $params,$anchor);
 }
 // Delete item
-elseif ( isOption($delete_command, getMessage('COMMON_DELETE_BUTTON')) ) {
+elseif ( isOption($delete_command, $translator->getMessage('COMMON_DELETE_BUTTON')) ) {
 
    // check rights
    $delete = _can_delete($current_item_iid);
@@ -300,7 +303,7 @@ elseif ( isOption($delete_command, getMessage('COMMON_DELETE_BUTTON')) ) {
 }
 
 // room archive
-elseif ( isOption($delete_command, getMessage('ROOM_ARCHIV_BUTTON')) ) {
+elseif ( isOption($delete_command, $translator->getMessage('ROOM_ARCHIV_BUTTON')) ) {
    $manager = $environment->getRoomManager();
    $item = $manager->getItem($current_item_iid);
    $item->close();
@@ -342,7 +345,7 @@ elseif ( isOption($delete_command, getMessage('ROOM_ARCHIV_BUTTON')) ) {
    }
 }
 // user reject
-elseif ( isOption($delete_command, getMessage('COMMON_USER_REJECT_BUTTON')) ) {
+elseif ( isOption($delete_command, $translator->getMessage('COMMON_USER_REJECT_BUTTON')) ) {
    // do nothing, handling in page account_status
 }
 ?>
