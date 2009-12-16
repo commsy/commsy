@@ -2095,7 +2095,11 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                   $color = '#ffff66';
                }
                $color_border = '#CCCCCC';
-               $date_array_for_jQuery[] = 'new Array(' . $format_array[$i]['day'] . ',' . $current_month[$i] . ',\'' . $link . '\',' . count($format_array[$i]['dates']) . ',\'' . $color . '\'' . ',\'' . $color_border . '\'' . ',\'' . $href . '\'' . ',\'sticky_' . $date_index . '\')';
+               $current_month_temp = $current_month[$i];
+               if($current_month_temp[0] == 0){
+                  $current_month_temp = $current_month_temp[1];
+               }
+               $date_array_for_jQuery[] = 'new Array(' . $format_array[$i]['day'] . ',' . $current_month_temp . ',\'' . $link . '\',' . count($format_array[$i]['dates']) . ',\'' . $color . '\'' . ',\'' . $color_border . '\'' . ',\'' . $href . '\'' . ',\'sticky_' . $date_index . '\')';
                $tooltip = array();
                $tooltip['title'] = $date->getTitle();
                
@@ -2282,7 +2286,11 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $i = 0;
       for ($index_week = 0; $index_week < 6; $index_week++) {
          for ($index_day = 0; $index_day < 7; $index_day++) {
-            $html .= '<div class="calendar_month_entry" id="calendar_month_entry_' . $format_array[$i]['day'] .'_' . $current_month[$i] . '" style="';
+            $current_month_temp = $current_month[$i];
+            if($current_month_temp[0] == 0){
+               $current_month_temp = $current_month_temp[1];
+            }
+            $html .= '<div class="calendar_month_entry" id="calendar_month_entry_' . $format_array[$i]['day'] .'_' . $current_month_temp . '" style="';
             if($current_month[$i] != mb_substr($this->_month,4,2)){
                $html .= 'background-color:#dddddd;';
             }
