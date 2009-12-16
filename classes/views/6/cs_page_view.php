@@ -1,5 +1,9 @@
 <?PHP
 // $Id$
+// $Id$
+// $Id$
+// $Id$
+// $Id$
 //
 // Release $Name$
 //
@@ -1185,7 +1189,7 @@ class cs_page_view extends cs_view {
                if ($own_room->getItemID() == $this->_environment->getCurrentContextID()) {
                   $additional = ' selected="selected"';
                }
-               $retour .= '            <option value="'.$own_cid.'"'.$additional.'>'.getMessage('COMMON_PRIVATEROOM').'</option>'.LF;
+               $retour .= '            <option value="'.$own_cid.'"'.$additional.'>'.$this->_translator->getMessage('COMMON_PRIVATEROOM').'</option>'.LF;
             }
             unset($own_room);
             unset($private_room_manager);
@@ -1333,7 +1337,7 @@ class cs_page_view extends cs_view {
          $params = $this->_environment->getCurrentParameterArray();
          $params['left_menue'] = 'apear';
          $html .= '<div style=" margin:0px; padding-left:5px;">'.LF;
-         $html .= ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),$this->_environment->getCurrentFunction(),$params,'<span class="required">'.'> '.'</span>'.'<span class="fade-out-link" >'.getMessage('COMMON_FADE_IN').'</span>', '', '', '', '');
+         $html .= ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),$this->_environment->getCurrentFunction(),$params,'<span class="required">'.'> '.'</span>'.'<span class="fade-out-link" >'.$this->_translator->getMessage('COMMON_FADE_IN').'</span>', '', '', '', '');
          $html .= '</div>'.LF;
          unset($params);
          $html .='</td>'.LF;
@@ -1342,7 +1346,7 @@ class cs_page_view extends cs_view {
          $params['left_menue'] = 'disapear';
          $html .=       '<td style="width:58.3em; vertical-align:bottom; padding-top:0px;">';
          $html .= '<div style="margin:0px; padding-top:0px; padding-left:5px;">'.LF;
-         $html .= ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),$this->_environment->getCurrentFunction(),$params,'<span class="required">'.'< '.'</span>'.'<span class="fade-out-link">'.getMessage('COMMON_FADE_OUT').'</span>', '', '', '', '');
+         $html .= ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),$this->_environment->getCurrentFunction(),$params,'<span class="required">'.'< '.'</span>'.'<span class="fade-out-link">'.$this->_translator->getMessage('COMMON_FADE_OUT').'</span>', '', '', '', '');
          unset($params);
          $html .= '</div>'.LF;
          $html .='</td>'.LF;
@@ -1424,37 +1428,37 @@ class cs_page_view extends cs_view {
              switch( $temp )
              {
                 case 'ANNOUNCEMENT':
-                   $theRubricMessage = getMessage('COMMON_ANNOUNCEMENT_INDEX');  // Ankündigungen
+                   $theRubricMessage = $this->_translator->getMessage('COMMON_ANNOUNCEMENT_INDEX');  // Ankündigungen
                    break;
                 case 'DATE':
-                   $theRubricMessage = getMessage('COMMON_DATE_INDEX');          // Termine
+                   $theRubricMessage = $this->_translator->getMessage('COMMON_DATE_INDEX');          // Termine
                    break;
                 case 'DISCUSSION':
-                   $theRubricMessage = getMessage('COMMON_DISCUSSION_INDEX');    // Diskussionen
+                   $theRubricMessage = $this->_translator->getMessage('COMMON_DISCUSSION_INDEX');    // Diskussionen
                    break;
                 case 'MATERIAL':
-                   $theRubricMessage = getMessage('COMMON_MATERIAL_INDEX');      // Materialien
+                   $theRubricMessage = $this->_translator->getMessage('COMMON_MATERIAL_INDEX');      // Materialien
                    break;
                 case 'TODO':
-                   $theRubricMessage = getMessage('COMMON_TODO_INDEX');          // Aufgaben
+                   $theRubricMessage = $this->_translator->getMessage('COMMON_TODO_INDEX');          // Aufgaben
                    break;
                 default:
-                   $theRubricMessage = getMessage('COMMON_MESSAGETAG_ERROR' . ' cs_page_view(941) ');
+                   $theRubricMessage = $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR' . ' cs_page_view(941) ');
                    break;
              }
              if (in_array($rubric,$modules) and $context_item->isOpen() ){
                 if ($count== 1){
-                   $link_text = $theRubricMessage.' ('.$count.' '.getMessage('MYAREA_CLIPBOARD_HEADER_1').')';
+                   $link_text = $theRubricMessage.' ('.$count.' '.$this->_translator->getMessage('MYAREA_CLIPBOARD_HEADER_1').')';
                 }else{
-                   $link_text = $theRubricMessage.' ('.$count.' '.getMessage('MYAREA_CLIPBOARD_HEADER').')';
+                   $link_text = $theRubricMessage.' ('.$count.' '.$this->_translator->getMessage('MYAREA_CLIPBOARD_HEADER').')';
                 }
                 $params = array();
                 $html_array[$theRubricMessage] ='> '.ahref_curl($context_item->getItemID(),$rubric,'clipboard_index',$params,$link_text,'','','','','','','style="color:#800000"').BRLF;
              } else {
                 if ($count== 1){
-                   $html_array[$theRubricMessage] = '<span class="disabled">> '.$theRubricMessage.' ('.$count.' '.getMessage('MYAREA_CLIPBOARD_HEADER_1').')</span>'.BRLF;
+                   $html_array[$theRubricMessage] = '<span class="disabled">> '.$theRubricMessage.' ('.$count.' '.$this->_translator->getMessage('MYAREA_CLIPBOARD_HEADER_1').')</span>'.BRLF;
                 } else {
-                   $html_array[$theRubricMessage] = '<span class="disabled">> '.$theRubricMessage.' ('.$count.' '.getMessage('MYAREA_CLIPBOARD_HEADER').')</span>'.BRLF;
+                   $html_array[$theRubricMessage] = '<span class="disabled">> '.$theRubricMessage.' ('.$count.' '.$this->_translator->getMessage('MYAREA_CLIPBOARD_HEADER').')</span>'.BRLF;
                 }
              }
          }
@@ -1462,7 +1466,7 @@ class cs_page_view extends cs_view {
       unset($rubric_copy_array);
       unset($context_item);
       if ( empty($html_array) ){
-         $html .= '<span class="disabled">> '.getMessage('COMMON_NO_COPIES').'</span>'.BRLF;
+         $html .= '<span class="disabled">> '.$this->_translator->getMessage('COMMON_NO_COPIES').'</span>'.BRLF;
       }else{
          ksort($html_array);
          foreach($html_array as $html_text){
@@ -2015,7 +2019,7 @@ class cs_page_view extends cs_view {
          $html .= BR.'<div class="myarea_frame">'.LF;
          $html .= '<div class="myarea_headline">'.LF;
          $html .= '<div class="myarea_headline_title">'.LF;
-         $html .= getMessage('COMMON_SERVER_NEWS');
+         $html .= $this->_translator->getMessage('COMMON_SERVER_NEWS');
          $html .= '</div>'.LF;
          $html .= '</div>'.LF;
          $link = $server_item->getServerNewsLink();
@@ -2048,7 +2052,7 @@ class cs_page_view extends cs_view {
          $html .= BR.'<div class="myarea_frame">'.LF;
          $html .= '<div class="myarea_headline">'.LF;
          $html .= '<div class="myarea_headline_title" style="font-size:10pt;">'.LF;
-         $html .= getMessage('COMMON_PORTAL_NEWS');
+         $html .= $this->_translator->getMessage('COMMON_PORTAL_NEWS');
          $html .= '</div>'.LF;
          $html .= '</div>'.LF;
          $link = $portal_item->getServerNewsLink();
@@ -2135,7 +2139,7 @@ class cs_page_view extends cs_view {
       $html .= BR.'<div class="myarea_frame">'.LF;
       $html .= '<div class="myarea_headline">'.LF;
       $html .= '<div class="myarea_headline_title" style="font-size:10pt;">'.LF;
-      $html .= getMessage('MESSAGE_BOX_TITLE');
+      $html .= $this->_translator->getMessage('MESSAGE_BOX_TITLE');
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
       $html .= '<div class="myarea_section_title">'.$this->_translator->getMessage('MESSAGE_TITLE_LINK').'</div>';

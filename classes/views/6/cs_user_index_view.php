@@ -49,7 +49,7 @@ class cs_user_index_view extends cs_room_index_view {
       $html = '';
       $html .= '<div class="right_box">'.LF;
       $html .= '         <noscript>';
-      $html .= '<div class="right_box_title">'.getMessage('COMMON_ACTIONS').'</div>';
+      $html .= '<div class="right_box_title">'.$this->_translator->getMessage('COMMON_ACTIONS').'</div>';
       $html .= '         </noscript>';
       $html .= '<div class="right_box_main" >'.LF;
       $current_user = $this->_environment->getCurrentUserItem();
@@ -338,7 +338,7 @@ class cs_user_index_view extends cs_room_index_view {
          $this->_additional_selects = true;
          $html_text ='<div class="restriction">';
          $module = $this->_environment->getCurrentModule();
-         $html_text .= '<span class="infocolor">'.getMessage('COMMON_STATUS').':</span> ';
+         $html_text .= '<span class="infocolor">'.$this->_translator->getMessage('COMMON_STATUS').':</span> ';
          if ($params['selstatus'] == 3){
             $status_text = $this->_translator->getMessage('USER_MODERATORS');
          }else{

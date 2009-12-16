@@ -115,11 +115,11 @@ var $_configuration_rubric_list = NULL;
       // Actions
       $html .= LF.'<div>'.LF;
       $html .='<div>'.LF;
-      $html .= '<h2 class="pagetitle" style="font-family: verdana, arial, sans-serif;">'.getMessage('COMMON_COMMSY_CONFIGURE');
+      $html .= '<h2 class="pagetitle" style="font-family: verdana, arial, sans-serif;">'.$this->_translator->getMessage('COMMON_COMMSY_CONFIGURE');
       $html .= '</h2>'.LF;
       $html .='</div>'.LF;
       $html .= '<table class="configuration_table" style="margin-top:5px;" summary="Layout">'.LF;
-      $html .= '<tr class="list"><td class="head" colspan="3"><span style="font-weight: bold">'.getMessage('COMMON_CONFIGURATION_ADMIN_OPTIONS').'</span></td></tr>'.LF;
+      $html .= '<tr class="list"><td class="head" colspan="3"><span style="font-weight: bold">'.$this->_translator->getMessage('COMMON_CONFIGURATION_ADMIN_OPTIONS').'</span></td></tr>'.LF;
       $html .= '<tr>';
       $configuration_admin_list = $this->_configuration_admin_list;
       if ( isset($configuration_admin_list)) {
@@ -142,7 +142,7 @@ var $_configuration_rubric_list = NULL;
       }
       $html .= '</tr></table>'.LF;
       $html .= '<table class="configuration_table" style="margin-top:20px;" summary="Layout">'.LF;
-      $html .= '<tr class="list"><td class="head" colspan="3"><span style="font-weight: bold">'.getMessage('COMMON_CONFIGURATION_ROOM_OPTIONS').'</span></td></tr>'.LF;
+      $html .= '<tr class="list"><td class="head" colspan="3"><span style="font-weight: bold">'.$this->_translator->getMessage('COMMON_CONFIGURATION_ROOM_OPTIONS').'</span></td></tr>'.LF;
       $html .= '<tr>';
       $configuration_room_list = $this->_configuration_room_list;
          if ( isset($configuration_room_list)) {
@@ -166,7 +166,7 @@ var $_configuration_rubric_list = NULL;
       $html .= '</tr></table>'.LF;
       if ( !$this->_environment->inPortal() and !$this->_environment->inServer() ){
       $html .= '<table class="configuration_table" style="margin-top:20px;" summary="Layout">'.LF;
-      $html .= '<tr class="list"><td class="head" colspan="3"><span style="font-weight: bold">'.getMessage('COMMON_CONFIGURATION_RUBRIC_OPTIONS').'</span></td></tr>'.LF;
+      $html .= '<tr class="list"><td class="head" colspan="3"><span style="font-weight: bold">'.$this->_translator->getMessage('COMMON_CONFIGURATION_RUBRIC_OPTIONS').'</span></td></tr>'.LF;
       $html .= '<tr>';
       $configuration_rubric_list = $this->_configuration_rubric_list;
          if ( isset($configuration_rubric_list)) {
@@ -191,7 +191,7 @@ var $_configuration_rubric_list = NULL;
       }
       if ( isset($this->_addon_list)) {
         $html .= '<table class="configuration_table" style="padding-top:15px;" summary="Layout">'.LF;
-         $html .= '<tr class="list"><td class="head" colspan="3"><span style="font-weight: bold">'.getMessage('COMMON_ADDITIONAL_CONFIGURATION').'</span></td></tr>'.LF;
+         $html .= '<tr class="list"><td class="head" colspan="3"><span style="font-weight: bold">'.$this->_translator->getMessage('COMMON_ADDITIONAL_CONFIGURATION').'</span></td></tr>'.LF;
          $html.='<tr>';
             $list = $this->_addon_list;
             if ( isset($list)) {

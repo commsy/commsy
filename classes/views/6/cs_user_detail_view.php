@@ -178,7 +178,7 @@ class cs_user_detail_view extends cs_detail_view {
          $curl = curl($this->_environment->getCurrentContextID(),
                       'picture', 'getfile', $params,'');
          unset($params);
-         $html .= '<img alt="'.getMessage('USER_PICTURE_UPLOADFILE').'" src="'.$curl.'" class="portrait2" style=" width: '.$width.'px;"/>'.LF;
+         $html .= '<img alt="'.$this->_translator->getMessage('USER_PICTURE_UPLOADFILE').'" src="'.$curl.'" class="portrait2" style=" width: '.$width.'px;"/>'.LF;
          $html .='</td>'.LF;
       }
       $html .='</tr>'.LF;
@@ -702,7 +702,7 @@ class cs_user_detail_view extends cs_detail_view {
 
       $html = '';
       $html .= '<div class="right_box">'.LF;
-      $html .= '<div class="right_box_title" style="font-weight:bold; font-size:10pt;">'.getMessage('COMMON_ACTIONS').'</div>';
+      $html .= '<div class="right_box_title" style="font-weight:bold; font-size:10pt;">'.$this->_translator->getMessage('COMMON_ACTIONS').'</div>';
       $html .= '<div class="right_box_main">'.LF;
       if ( $item->mayEdit($user) and $mod ) {
          if ($this->_display_mod == 'admin' and $this->_environment->getCurrentModule() == 'account') {
@@ -722,7 +722,7 @@ class cs_user_detail_view extends cs_detail_view {
                                             $this->_environment->getCurrentModule(),
                                             'password',
                                             $params,
-                                            getMessage('ACCOUNT_PASSWORD_CHANGE')).BRLF;
+                                            $this->_translator->getMessage('ACCOUNT_PASSWORD_CHANGE')).BRLF;
                   unset($params);
                } else {
                   $html .= '<span class="disabled">> '.$this->_translator->getMessage('ACCOUNT_PASSWORD_CHANGE').'</span>'.BRLF;
@@ -841,7 +841,7 @@ class cs_user_detail_view extends cs_detail_view {
       $html .= '<div id="netnavigation'.$item->getItemID().'" style="height:250px;">'.LF;
       $html .= '<div class="netnavigation" >'.LF;
       $html .= '         <noscript>';
-      $html .= '<div class="right_box_title">'.getMessage('COMMON_NETNAVIGATION').'</div>';
+      $html .= '<div class="right_box_title">'.$this->_translator->getMessage('COMMON_NETNAVIGATION').'</div>';
       $html .= '         </noscript>';
       $title_string = '';
       foreach ( $connections as $connection ) {
@@ -887,7 +887,7 @@ class cs_user_detail_view extends cs_detail_view {
                   $text .= $this->_translator->getMessage('USERS');
                   break;
                default:
-                  $text .= getMessage('COMMON_MESSAGETAG_ERROR').' cs_detail_view('.__LINE__.') ';
+                  $text .= $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR').' cs_detail_view('.__LINE__.') ';
                   break;
             }
             if (empty($title_string)){
@@ -941,7 +941,7 @@ class cs_user_detail_view extends cs_detail_view {
             $text = $this->_translator->getMessage('USERS');
             break;
          default:
-            $text = getMessage('COMMON_MESSAGETAG_ERROR').' cs_user_detail_view('.__LINE__.') ';
+            $text = $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR').' cs_user_detail_view('.__LINE__.') ';
             break;
          }
          if (empty($title_string)){
@@ -1002,7 +1002,7 @@ class cs_user_detail_view extends cs_detail_view {
                $text = $this->_translator->getMessage('USERS');
                break;
             default:
-               $text = getMessage('COMMON_MESSAGETAG_ERROR').' cs_user_detail_view('.__LINE__.') ';
+               $text = $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR').' cs_user_detail_view('.__LINE__.') ';
                break;
          }
          $html .= '         <noscript>';
@@ -1050,9 +1050,9 @@ class cs_user_detail_view extends cs_detail_view {
                   if ($rubric_item->isNotActivated() and !($rubric_item->getCreatorID() == $user->getItemID() or $user->isModerator()) ){
                       $activating_date = $rubric_item->getActivatingDate();
                       if (strstr($activating_date,'9999-00-00')){
-                         $link_creator_text .= ' ('.getMessage('COMMON_NOT_ACTIVATED').')';
+                         $link_creator_text .= ' ('.$this->_translator->getMessage('COMMON_NOT_ACTIVATED').')';
                       }else{
-                         $link_creator_text .= ' ('.getMessage('COMMON_ACTIVATING_DATE').' '.getDateInLang($rubric_item->getActivatingDate()).')';
+                         $link_creator_text .= ' ('.$this->_translator->getMessage('COMMON_ACTIVATING_DATE').' '.getDateInLang($rubric_item->getActivatingDate()).')';
                       }
                       $html .= ahref_curl( $this->_environment->getCurrentContextID(),
                                            $module,
@@ -1162,7 +1162,7 @@ class cs_user_detail_view extends cs_detail_view {
          $html .='</div>'.LF;
 ############SQL-Statements reduzieren
          if ( $rubric != 'account' and !$this->_environment->inPrivateRoom()){
-            $title_string .= '"'.getMessage('COMMON_NETNAVIGATION').'"';
+            $title_string .= '"'.$this->_translator->getMessage('COMMON_NETNAVIGATION').'"';
             $desc_string .= '""';
             $size_string .= '"10"';
             $config_text .= 'true';

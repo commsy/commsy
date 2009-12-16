@@ -1550,12 +1550,12 @@ class cs_form_view extends cs_view {
           or !$form_element['with_html_area']
           or !$with_htmltextarea
         ) {
-         $title = '&nbsp;'.getMessage('COMMON_TEXT_FORMATING_HELP_FULL');
+         $title = '&nbsp;'.$this->_translator->getMessage('COMMON_TEXT_FORMATING_HELP_FULL');
          $html .= '<div style="padding-top:5px;">';
-         $text .= '<div class="bold" style="padding-bottom:5px;">'.getMessage('HELP_COMMON_FORMAT_TITLE').':</div>';
-         $text .= getMessage('COMMON_TEXT_FORMATING_FORMAT_TEXT');
-         $text .= '<div class="bold" style="padding-bottom:5px;">'.getMessage('COMMON_TEXT_INCLUDING_MEDIA').':</div>';
-         $text .= getMessage('COMMON_TEXT_INCLUDING_MEDIA_TEXT');
+         $text .= '<div class="bold" style="padding-bottom:5px;">'.$this->_translator->getMessage('HELP_COMMON_FORMAT_TITLE').':</div>';
+         $text .= $this->_translator->getMessage('COMMON_TEXT_FORMATING_FORMAT_TEXT');
+         $text .= '<div class="bold" style="padding-bottom:5px;">'.$this->_translator->getMessage('COMMON_TEXT_INCLUDING_MEDIA').':</div>';
+         $text .= $this->_translator->getMessage('COMMON_TEXT_INCLUDING_MEDIA_TEXT');
          $html .='<img id="toggle'.$item->getItemID().'" src="images/more.gif"/>';
          $html .= $title;
          $html .= '<div id="creator_information'.$item->getItemID().'">'.LF;
@@ -1567,10 +1567,10 @@ class cs_form_view extends cs_view {
          $html .= '</div>'.LF;
          $html .= '</div>'.LF;
       }else{
-         $title = '&nbsp;'.getMessage('COMMON_TEXT_FORMATING_HELP_SHORT');
+         $title = '&nbsp;'.$this->_translator->getMessage('COMMON_TEXT_FORMATING_HELP_SHORT');
          $html .= '<div style="padding-top:0px;">';
-         $text .= '<div class="bold" style="padding-bottom:5px;">'.getMessage('COMMON_TEXT_INCLUDING_MEDIA').':</div>';
-         $text .= getMessage('COMMON_TEXT_INCLUDING_MEDIA_TEXT');
+         $text .= '<div class="bold" style="padding-bottom:5px;">'.$this->_translator->getMessage('COMMON_TEXT_INCLUDING_MEDIA').':</div>';
+         $text .= $this->_translator->getMessage('COMMON_TEXT_INCLUDING_MEDIA_TEXT');
          $html .='<img id="toggle'.$item->getItemID().'" src="images/more.gif"/>';
          $html .= $title;
          $html .= '<div id="creator_information'.$item->getItemID().'">'.LF;
@@ -1826,140 +1826,140 @@ class cs_form_view extends cs_view {
       if (!$show_title_field){
          $html .='<div style="width:100%;">'.LF;
          if ( $this->_environment->getCurrentFunction() == 'mail' ) {
-            $html .= '<h2 class="pagetitle">'.getMessage('COMMON_MAIL_FORM_TITLE').'</h2>';
+            $html .= '<h2 class="pagetitle">'.$this->_translator->getMessage('COMMON_MAIL_FORM_TITLE').'</h2>';
          } else {
             $temp_mod_func = mb_strtoupper($this->_environment->getCurrentModule(), 'UTF-8') . '_' . mb_strtoupper($this->_environment->getCurrentFunction(), 'UTF-8');
             $tempMessage = "";
             switch( $temp_mod_func  )
             {
                case 'ACCOUNT_PASSWORD':      // Password ändern
-                  $tempMessage = getMessage('COMMON_ACCOUNT_PASSWORD_FORM_TITLE');
+                  $tempMessage = $this->_translator->getMessage('COMMON_ACCOUNT_PASSWORD_FORM_TITLE');
                   break;
                case 'ACCOUNT_PREFERENCES':   // Benutzer, Einstellungen ändern
-                  $tempMessage = getMessage('COMMON_ACCOUNT_PREFERENCES_FORM_TITLE');
+                  $tempMessage = $this->_translator->getMessage('COMMON_ACCOUNT_PREFERENCES_FORM_TITLE');
                   break;
                case 'ACCOUNT_STATUS':        // Status ändern (Portal)
-                  $tempMessage = getMessage('COMMON_ACCOUNT_STATUS_FORM_TITLE');
+                  $tempMessage = $this->_translator->getMessage('COMMON_ACCOUNT_STATUS_FORM_TITLE');
                   break;
                case 'CONFIGURATION_AGB':     // Nutzungsvereinbarungen
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_AGB_FORM_TITLE');
+                  $tempMessage = $this->_translator->getMessage('COMMON_CONFIGURATION_AGB_FORM_TITLE');
                   break;
                case 'CONFIGURATION_AUTHENTICATION': // Authentifizierung einstellen (Portal)
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_AUTHENTICATION_FORM_TITLE');
+                  $tempMessage = $this->_translator->getMessage('COMMON_CONFIGURATION_AUTHENTICATION_FORM_TITLE');
                   break;
                case 'CONFIGURATION_BACKUP':  // Backup eines Raumes einspielen (Server)
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_BACKUP_FORM_TITLE');
+                  $tempMessage = $this->_translator->getMessage('COMMON_CONFIGURATION_BACKUP_FORM_TITLE');
                   break;
                case 'CONFIGURATION_CHAT':    // Raum-Chat einstellen
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_CHAT_FORM_TITLE');
+                  $tempMessage = $this->_translator->getMessage('COMMON_CONFIGURATION_CHAT_FORM_TITLE');
                   break;
                case 'CONFIGURATION_COLOR':   // Farbkonfiguration
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_COLOR_FORM_TITLE');
+                  $tempMessage = $this->_translator->getMessage('COMMON_CONFIGURATION_COLOR_FORM_TITLE');
                   break;
                case 'CONFIGURATION_DATES':   // Termindarstellung
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_DATES_FORM_TITLE');
+                  $tempMessage = $this->_translator->getMessage('COMMON_CONFIGURATION_DATES_FORM_TITLE');
                   break;
                case 'CONFIGURATION_DEFAULTS': // Voreinstellungen für Räume
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_DEFAULTS_FORM_TITLE');
+                  $tempMessage = $this->_translator->getMessage('COMMON_CONFIGURATION_DEFAULTS_FORM_TITLE');
                   break;
                case 'CONFIGURATION_DISCUSSION': // Art der Diskussion
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_DISCUSSION_FORM_TITLE');
+                  $tempMessage = $this->_translator->getMessage('COMMON_CONFIGURATION_DISCUSSION_FORM_TITLE');
                   break;
                case 'CONFIGURATION_EXPORT':  // Raum exportieren (Server)
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_EXPORT_FORM_TITLE');
+                  $tempMessage = $this->_translator->getMessage('COMMON_CONFIGURATION_EXPORT_FORM_TITLE');
                   break;
                case 'CONFIGURATION_EXTRA':   // Extras einstellen (Server)
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_EXTRA_FORM_TITLE');
+                  $tempMessage = $this->_translator->getMessage('COMMON_CONFIGURATION_EXTRA_FORM_TITLE');
                   break;
                case 'CONFIGURATION_GROUPROOM': // Wenn das Extra "Gruppenräume" eingeschaltet ist
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_GROUPROOM_FORM_TITLE');
+                  $tempMessage = $this->_translator->getMessage('COMMON_CONFIGURATION_GROUPROOM_FORM_TITLE');
                   break;
                case 'CONFIGURATION_HOMEPAGE': // Raum-Webseite einstellen
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_HOMEPAGE_FORM_TITLE');
+                  $tempMessage = $this->_translator->getMessage('COMMON_CONFIGURATION_HOMEPAGE_FORM_TITLE');
                   break;
                case 'CONFIGURATION_HOME':    // Konfiguration der Home
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_HOME_FORM_TITLE');
+                  $tempMessage = $this->_translator->getMessage('COMMON_CONFIGURATION_HOME_FORM_TITLE');
                   break;
                case 'CONFIGURATION_HTMLTEXTAREA': // FCK-Editor-Konfiguration ??
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_HTMLTEXTAREA_FORM_TITLE');
+                  $tempMessage = $this->_translator->getMessage('COMMON_CONFIGURATION_HTMLTEXTAREA_FORM_TITLE');
                    break;
                case 'CONFIGURATION_IMS':     // IMS-Account Einstellungen (Server)
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_IMS_FORM_TITLE');
+                  $tempMessage = $this->_translator->getMessage('COMMON_CONFIGURATION_IMS_FORM_TITLE');
                   break;
                case 'CONFIGURATION_LANGUAGE': // Verfügbare Sprachen (Server)
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_LANGUAGE_FORM_TITLE');
+                  $tempMessage = $this->_translator->getMessage('COMMON_CONFIGURATION_LANGUAGE_FORM_TITLE');
                   break;
                case 'CONFIGURATION_MAIL':    // E-Mail-Texte
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_MAIL_FORM_TITLE');
+                  $tempMessage = $this->_translator->getMessage('COMMON_CONFIGURATION_MAIL_FORM_TITLE');
                   break;
                case 'CONFIGURATION_MOVE':    // Raum auf anderes Portal umziehen (Portal)
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_MOVE_FORM_TITLE');
+                  $tempMessage = $this->_translator->getMessage('COMMON_CONFIGURATION_MOVE_FORM_TITLE');
                   break;
                case 'CONFIGURATION_NEWS':    // Ankündigungen bearbeiten (Portal)
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_NEWS_FORM_TITLE');
+                  $tempMessage = $this->_translator->getMessage('COMMON_CONFIGURATION_NEWS_FORM_TITLE');
                   break;
                case 'CONFIGURATION_PLUGIN':  // Sponsoren und Werbung
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_PLUGIN_FORM_TITLE');
+                  $tempMessage = $this->_translator->getMessage('COMMON_CONFIGURATION_PLUGIN_FORM_TITLE');
                   break;
                case 'CONFIGURATION_PORTALHOME': // Gestaltung der Raumübersicht (Portal)
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_PORTALHOME_FORM_TITLE');
+                  $tempMessage = $this->_translator->getMessage('COMMON_CONFIGURATION_PORTALHOME_FORM_TITLE');
                   break;
                case 'CONFIGURATION_PREFERENCES': // Allgemeine Einstellungen bearbeiten (pers. Raum)
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_PREFERENCES_FORM_TITLE');
+                  $tempMessage = $this->_translator->getMessage('COMMON_CONFIGURATION_PREFERENCES_FORM_TITLE');
                   break;
                case 'CONFIGURATION_PRIVATEROOM_NEWSLETTER': // E-Mail-Newsletter (priv.)
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_PRIVATEROOM_NEWSLETTER_FORM_TITLE');
+                  $tempMessage = $this->_translator->getMessage('COMMON_CONFIGURATION_PRIVATEROOM_NEWSLETTER_FORM_TITLE');
                   break;
                case 'CONFIGURATION_ROOM_OPENING': // Raumeröffnungen (Portal)
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_ROOM_OPENING_FORM_TITLE');
+                  $tempMessage = $this->_translator->getMessage('COMMON_CONFIGURATION_ROOM_OPENING_FORM_TITLE');
                   break;
                case 'CONFIGURATION_RUBRIC':  // Auswahl der Rubriken
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_RUBRIC_FORM_TITLE');
+                  $tempMessage = $this->_translator->getMessage('COMMON_CONFIGURATION_RUBRIC_FORM_TITLE');
                   break;
                case 'CONFIGURATION_SERVICE': // Handhabungssupport einstellen
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_SERVICE_FORM_TITLE');
+                  $tempMessage = $this->_translator->getMessage('COMMON_CONFIGURATION_SERVICE_FORM_TITLE');
                   break;
                case 'CONFIGURATION_TIME':    // Zeittakte bearbeiten (Portal)
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_TIME_FORM_TITLE');
+                  $tempMessage = $this->_translator->getMessage('COMMON_CONFIGURATION_TIME_FORM_TITLE');
                   break;
                case 'CONFIGURATION_USAGEINFO': // Nutzungshinweise bearbeiten
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_USAGEINFO_FORM_TITLE');
+                  $tempMessage = $this->_translator->getMessage('COMMON_CONFIGURATION_USAGEINFO_FORM_TITLE');
                   break;
                case 'LABELS_EDIT':           // Nutzungshinweise bearbeiten
-                  $tempMessage = getMessage('COMMON_LABELS_EDIT_FORM_TITLE');
+                  $tempMessage = $this->_translator->getMessage('COMMON_LABELS_EDIT_FORM_TITLE');
                   break;
                case 'BUZZWORDS_EDIT':        // Nutzungshinweise bearbeiten
-                  $tempMessage = getMessage('COMMON_BUZZWORDS_EDIT_FORM_TITLE');
+                  $tempMessage = $this->_translator->getMessage('COMMON_BUZZWORDS_EDIT_FORM_TITLE');
                   break;
                case 'USER_ACTION':           // Personen E-Mail senden
-                  $tempMessage = getMessage('COMMON_USER_EMAIL_SEND_FORM_TITLE');
+                  $tempMessage = $this->_translator->getMessage('COMMON_USER_EMAIL_SEND_FORM_TITLE');
                   break;
                case 'USER_CLOSE':            // Personen E-Mail senden
-                  $tempMessage = getMessage('COMMON_USER_CLOSE_FORM_TITLE');
+                  $tempMessage = $this->_translator->getMessage('COMMON_USER_CLOSE_FORM_TITLE');
                   break;
                case 'ACCOUNT_CLOSE':            // Personen E-Mail senden
-                  $tempMessage = getMessage('COMMON_USER_CLOSE_FORM_TITLE');
+                  $tempMessage = $this->_translator->getMessage('COMMON_USER_CLOSE_FORM_TITLE');
                   break;
                case 'DATE_IMPORT':           // Externe Termine importieren
-                  $tempMessage = getMessage('COMMON_DATE_IMPORT_FORM_TITLE');
+                  $tempMessage = $this->_translator->getMessage('COMMON_DATE_IMPORT_FORM_TITLE');
                   break;
                case 'USER_PREFERENCES':      //
-                  $tempMessage = getMessage('COMMON_USER_PREFERENCES_FORM_TITLE');
+                  $tempMessage = $this->_translator->getMessage('COMMON_USER_PREFERENCES_FORM_TITLE');
                   break;
                case 'MAIL_TO_MODERATOR':      //
-                  $tempMessage = getMessage('CONFIGURATION_SERVICE_EMAIL_MODERATOR');
+                  $tempMessage = $this->_translator->getMessage('CONFIGURATION_SERVICE_EMAIL_MODERATOR');
                   break;
                case 'TAG_EDIT':      //
-                  $tempMessage = getMessage('TAG_EDIT_FORM_TITLE');
+                  $tempMessage = $this->_translator->getMessage('TAG_EDIT_FORM_TITLE');
                   break;
                case 'LANGUAGE_UNUSED':      //
-                  $tempMessage = getMessage('LANGUAGE_UNUSED_FORM_TITLE');
+                  $tempMessage = $this->_translator->getMessage('LANGUAGE_UNUSED_FORM_TITLE');
                   break;
                case 'MATERIAL_IMS_IMPORT':      //
-                  $tempMessage = getMessage('MATERIAL_IMS_IMPORT');
+                  $tempMessage = $this->_translator->getMessage('MATERIAL_IMS_IMPORT');
                   break;
                default:                      // "Bitte Messagetag-Fehler melden ..."
-                  $tempMessage = getMessage('COMMON_MESSAGETAG_ERROR')." cs_form_view(1819) ";
+                  $tempMessage = $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR')." cs_form_view(1819) ";
                   break;
             }
             $html .= '<h2 class="pagetitle">' . $tempMessage . '</h2>';
@@ -2122,7 +2122,7 @@ class cs_form_view extends cs_view {
                $html .='      <td colspan="2" style="border-bottom: none; xwhite-space:nowrap;">';
             }
          }
-         $html .= '<span class="required" style="font-size:16pt;">*</span> <span class="key" style="font-weight:normal;">'.getMessage('COMMON_MANDATORY_FIELDS').'</span> '.$buttonbartext;
+         $html .= '<span class="required" style="font-size:16pt;">*</span> <span class="key" style="font-weight:normal;">'.$this->_translator->getMessage('COMMON_MANDATORY_FIELDS').'</span> '.$buttonbartext;
          $html .= '</td>'.LF;
          $html .= '</tr>'.LF;
          $html .= '</table>'.LF;
@@ -2138,7 +2138,7 @@ class cs_form_view extends cs_view {
       $error_display = false;
       if ( isset($this->_error_array) and !empty($this->_error_array) ){
          foreach ($this->_error_array as $error){
-            if ($error == getMessage('COMMON_ERROR_BUZZWORD_ENTRY')){
+            if ($error == $this->_translator->getMessage('COMMON_ERROR_BUZZWORD_ENTRY')){
                $error_display = true;
             }
          }
@@ -2151,9 +2151,9 @@ class cs_form_view extends cs_view {
       $html = '<div class="right_box">'.LF;
       $color = $current_context->getColorArray();
       if ($error_display){
-         $html .= '<div class="right_box_title" style="color:'.$color['warning'].';">'.getMessage('COMMON_BUZZWORD_BOX').$html_text.'</div>';
+         $html .= '<div class="right_box_title" style="color:'.$color['warning'].';">'.$this->_translator->getMessage('COMMON_BUZZWORD_BOX').$html_text.'</div>';
       }else{
-         $html .= '<div class="right_box_title">'.getMessage('COMMON_BUZZWORD_BOX_EDIT').$html_text.'</div>';
+         $html .= '<div class="right_box_title">'.$this->_translator->getMessage('COMMON_BUZZWORD_BOX_EDIT').$html_text.'</div>';
       }
       $html .= '<div class="right_box_main">'.LF;
       $html .= '<table style="margin:0px; padding:0px;"><tr><td>'.LF;
@@ -2169,7 +2169,7 @@ class cs_form_view extends cs_view {
       $error_display = false;
       if ( isset($this->_error_array) and !empty($this->_error_array) ){
          foreach ($this->_error_array as $error){
-            if ($error == getMessage('COMMON_ERROR_TAG_ENTRY')){
+            if ($error == $this->_translator->getMessage('COMMON_ERROR_TAG_ENTRY')){
                $error_display = true;
             }
          }
@@ -2182,9 +2182,9 @@ class cs_form_view extends cs_view {
       }
       $html = '<div class="right_box">'.LF;
       if ($error_display){
-         $html .= '<div class="right_box_title" style="color:'.$color['warning'].';">'.getMessage('COMMON_TAG_BOX').$html_text.'</div>';
+         $html .= '<div class="right_box_title" style="color:'.$color['warning'].';">'.$this->_translator->getMessage('COMMON_TAG_BOX').$html_text.'</div>';
       }else{
-         $html .= '<div class="right_box_title">'.getMessage('COMMON_TAG_BOX_EDIT').$html_text.'</div>';
+         $html .= '<div class="right_box_title">'.$this->_translator->getMessage('COMMON_TAG_BOX_EDIT').$html_text.'</div>';
       }
       $html .= '<div class="right_box_main">'.LF;
       $html .= '<table><tr><td>'.LF;
@@ -2205,7 +2205,7 @@ class cs_form_view extends cs_view {
          $html .= '<div id="netnavigation1">'.LF;
          $html .= '<div class="netnavigation" >'.LF;
 #         $html .= '         <noscript>';
-         $html .= '<div class="right_box_title">'.getMessage('COMMON_NETNAVIGATION').'</div>';
+         $html .= '<div class="right_box_title">'.$this->_translator->getMessage('COMMON_NETNAVIGATION').'</div>';
 #         $html .= '         </noscript>';
          $i = 0;
          $first = true;
@@ -2255,7 +2255,7 @@ class cs_form_view extends cs_view {
                      $temp_title = $this->_translator->getMessage('USERS');
                      break;
                   default:
-                     $temp_title = getMessage('COMMON_MESSAGETAG_ERROR').' cs_form_view(2009) ';
+                     $temp_title = $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR').' cs_form_view(2009) ';
                      break;
                }
             }else{
@@ -2339,7 +2339,7 @@ class cs_form_view extends cs_view {
                   $temp_title = $this->_translator->getMessage('USERS');
                   break;
                default:
-                  $temp_title = getMessage('COMMON_MESSAGETAG_ERROR').' cs_form_view(2009) ';
+                  $temp_title = $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR').' cs_form_view(2009) ';
                   break;
             }
          }else{
@@ -2376,34 +2376,34 @@ class cs_form_view extends cs_view {
          switch( mb_strtoupper($connection, 'UTF-8') )
          {
             case 'GROUP':                 // Button: Gruppen zuordnen (erst ab 20 vorhand. Gruppen) OK
-               $tempMessage = getMessage('RUBRIC_DO_ATTACH_GROUP_BUTTON');
+               $tempMessage = $this->_translator->getMessage('RUBRIC_DO_ATTACH_GROUP_BUTTON');
                 break;
             case 'INSTITUTION':           // Button: Institutionen suchen (erst ab 20 vorhand. Institutionen) OK
-               $tempMessage = getMessage('RUBRIC_DO_ATTACH_INSTITUTION_BUTTON');
+               $tempMessage = $this->_translator->getMessage('RUBRIC_DO_ATTACH_INSTITUTION_BUTTON');
                break;
             case 'MATERIAL':              // Button: Materialien zuordnen (erst ab 20 vorhand. Materialien) OK
-               $tempMessage = getMessage('RUBRIC_DO_ATTACH_MATERIAL_BUTTON');
+               $tempMessage = $this->_translator->getMessage('RUBRIC_DO_ATTACH_MATERIAL_BUTTON');
                break;
             case 'DATE':              // Button: DATEien zuordnen (erst ab 20 vorhand. DATEien) OK
-               $tempMessage = getMessage('RUBRIC_DO_ATTACH_DATE_BUTTON');
+               $tempMessage = $this->_translator->getMessage('RUBRIC_DO_ATTACH_DATE_BUTTON');
                break;
             case 'ANNOUNCEMENT':              // Button: ANNOUNCEMENTien zuordnen (erst ab 20 vorhand. ANNOUNCEMENTien) OK
-               $tempMessage = getMessage('RUBRIC_DO_ATTACH_ANNOUNCEMENT_BUTTON');
+               $tempMessage = $this->_translator->getMessage('RUBRIC_DO_ATTACH_ANNOUNCEMENT_BUTTON');
                break;
             case 'DISCUSSION':              // Button: DISCUSSIONien zuordnen (erst ab 20 vorhand. DISCUSSIONien) OK
-               $tempMessage = getMessage('RUBRIC_DO_ATTACH_DISCUSSION_BUTTON');
+               $tempMessage = $this->_translator->getMessage('RUBRIC_DO_ATTACH_DISCUSSION_BUTTON');
                break;
             case 'TODO':              // Button: TODOien zuordnen (erst ab 20 vorhand. TODOien) OK
-               $tempMessage = getMessage('RUBRIC_DO_ATTACH_TODO_BUTTON');
+               $tempMessage = $this->_translator->getMessage('RUBRIC_DO_ATTACH_TODO_BUTTON');
                break;
             case 'PROJECT':               // Button: Projekträume zuordnen (erst ab 20 vorhand. Projekträumen) OK
-               $tempMessage = getMessage('RUBRIC_DO_ATTACH_PROJECT_BUTTON');
+               $tempMessage = $this->_translator->getMessage('RUBRIC_DO_ATTACH_PROJECT_BUTTON');
                break;
             case 'TOPIC':                 // Button: Themen suchen (erst ab 20 vorhand. Themen)OK
-               $tempMessage = getMessage('RUBRIC_DO_ATTACH_TOPIC_BUTTON');
+               $tempMessage = $this->_translator->getMessage('RUBRIC_DO_ATTACH_TOPIC_BUTTON');
                break;
             default:
-               $tempMessage = getMessage('COMMON_MESSAGETAG_ERROR') . " cs_form_view(2062) ";
+               $tempMessage = $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR') . " cs_form_view(2062) ";
                break;
          }
          $params['option'] = $tempMessage;

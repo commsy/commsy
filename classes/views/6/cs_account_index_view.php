@@ -257,7 +257,7 @@ class cs_account_index_view extends cs_index_view {
          $html .= '   <input type="hidden" name="SID" value="'.$this->_text_as_form($session->getSessionID()).'"/>'.LF;
       }
       $html .= '<div class="right_box">'.LF;
-      $html .= '<div class="right_box_title">'.getMessage('COMMON_SEARCHFIELD').'</div>';
+      $html .= '<div class="right_box_title">'.$this->_translator->getMessage('COMMON_SEARCHFIELD').'</div>';
       $html .= '<div class="right_box_main" style="padding-top:5px;">'.LF;
       $session = $this->_environment->getSession();
       $left_menue_status = $session->getValue('left_menue_status');
@@ -267,7 +267,7 @@ class cs_account_index_view extends cs_index_view {
         $width = '157';
       }
       $html .= '<input style="width:'.$width.'px; font-size:10pt; margin-bottom:5px;" name="search" type="text" size="20" value="'.$this->_text_as_form($this->getSearchText()).'"/>'.LF;
-      $html .= '<input style="margin-bottom:5px; font-size:10pt; width:55px;" name="option" value="'.getMessage('COMMON_SEARCH_BUTTON').'" type="submit"/>'.LF;
+      $html .= '<input style="margin-bottom:5px; font-size:10pt; width:55px;" name="option" value="'.$this->_translator->getMessage('COMMON_SEARCH_BUTTON').'" type="submit"/>'.LF;
       $html .= $this->_getAdditionalFormFieldsAsHTML();
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
@@ -284,7 +284,7 @@ class cs_account_index_view extends cs_index_view {
          $this->_additional_selects = true;
          $html_text ='<div class="restriction">';
          $module = $this->_environment->getCurrentModule();
-         $html_text .= '<span class="infocolor">'.getMessage('COMMON_STATUS').':</span> ';
+         $html_text .= '<span class="infocolor">'.$this->_translator->getMessage('COMMON_STATUS').':</span> ';
          if ($params['selstatus'] == 3){
             $status_text = $this->_translator->getMessage('USER_STATUS_MODERATOR');
          }elseif ($params['selstatus'] == 7){
@@ -341,11 +341,11 @@ class cs_account_index_view extends cs_index_view {
       $html .='<tr>'.LF;
       $html .='<td style="width:71%; padding-top:5px; vertical-align:bottom;">'.LF;
       $html .='<div>'.LF;
-      $tempMessage = getMessage('ACCOUNT_INDEX');
+      $tempMessage = $this->_translator->getMessage('ACCOUNT_INDEX');
       if ($this->_clipboard_mode){
-          $html .= '<h2 class="pagetitle">'.getMessage('CLIPBOARD_HEADER').' ('.$tempMessage.')';
+          $html .= '<h2 class="pagetitle">'.$this->_translator->getMessage('CLIPBOARD_HEADER').' ('.$tempMessage.')';
       }elseif ( $this->hasCheckboxes() and $this->_has_checkboxes != 'list_actions' ) {
-         $html .= '<h2 class="pagetitle">'.getMessage('COMMON_ASSIGN').' ('.$tempMessage.')';
+         $html .= '<h2 class="pagetitle">'.$this->_translator->getMessage('COMMON_ASSIGN').' ('.$tempMessage.')';
       }else{
           $html .= '<h2 class="pagetitle">'.$tempMessage;
       }
@@ -383,10 +383,10 @@ class cs_account_index_view extends cs_index_view {
 
       $html .='<td style="width:27%; vertical-align:top; padding-top:5px;">'.LF;
       $html .='<div id="commsy_panels" style="margin-bottom:1px;">'.LF;
-      $html .= $this->_getListInfosAsHTML(getMessage('ACCOUNT_INDEX'));
+      $html .= $this->_getListInfosAsHTML($this->_translator->getMessage('ACCOUNT_INDEX'));
       $html .='</div>'.LF;
       $html .= '<div class="commsy_no_panel" style="margin-bottom:0px;">'.LF;
-      $title_string = '"'.getMessage('COMMON_SEARCHFIELD').'"';
+      $title_string = '"'.$this->_translator->getMessage('COMMON_SEARCHFIELD').'"';
       $desc_string = '""';
       $size_string = '"10"';
       $config_text ='true';
@@ -909,7 +909,7 @@ class cs_account_index_view extends cs_index_view {
      function _getConfigurationOptionsAsHTML(){
          $html = '<div id="netnavigation1">'.LF;
          $html .= '<div class="netnavigation" >'.LF;
-         $html .= '<div class="right_box_title">'.getMessage('COMMON_CONFIGURATION').'</div>';
+         $html .= '<div class="right_box_title">'.$this->_translator->getMessage('COMMON_CONFIGURATION').'</div>';
          $html .= $this->_getConfigurationBoxAsHTML($this->_environment->getCurrentFunction());
 
          $title_string ='"'.$this->_translator->getMessage('COMMON_CONFIGURATION_ADMIN_OPTIONS').'"';
@@ -967,9 +967,9 @@ class cs_account_index_view extends cs_index_view {
       $html = '';
       $room = $this->_environment->getCurrentContextItem();
       $link_item = new cs_link();
-      $link_item->setDescription(getMessage('HOME_ROOM_MEMBER_ADMIN_DESC'));
+      $link_item->setDescription($this->_translator->getMessage('HOME_ROOM_MEMBER_ADMIN_DESC'));
       $link_item->setIconPath('images/cs_config/CONFIGURATION_OVERVIEW.gif');
-      $link_item->setTitle(getMessage('COMMON_COMMSY_CONFIGURE_HOME'));
+      $link_item->setTitle($this->_translator->getMessage('COMMON_COMMSY_CONFIGURE_HOME'));
       $link_item->setContextID($this->_environment->getCurrentContextID());
       $link_item->setModule('configuration');
       $link_item->setFunction('index');

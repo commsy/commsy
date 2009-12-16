@@ -187,7 +187,7 @@ class cs_detail_view extends cs_view {
       $annotated_item_type = $annotated_item->getItemType();
       $html  = '';
       $html .= '<div class="right_box">'.LF;
-      $html .= '<div class="right_box_title" style="font-weight:bold;">'.getMessage('COMMON_ACTIONS').'</div>';
+      $html .= '<div class="right_box_title" style="font-weight:bold;">'.$this->_translator->getMessage('COMMON_ACTIONS').'</div>';
       $html .= '<div class="right_box_main" >'.LF;
       if ( isset($item) ){
          if ($item->mayEdit($current_user) and $this->_with_modifying_actions ) {
@@ -258,7 +258,7 @@ class cs_detail_view extends cs_view {
       $html  = '';
       $html .= '<div class="right_box">'.LF;
       $html .= '         <noscript>';
-      $html .= '<div class="right_box_title">'.getMessage('COMMON_ACTIONS').'</div>';
+      $html .= '<div class="right_box_title">'.$this->_translator->getMessage('COMMON_ACTIONS').'</div>';
       $html .= '         </noscript>';
       $html .= '<div class="right_box_main" >'.LF;
       if ( $item->mayEdit($current_user) ) {
@@ -415,7 +415,7 @@ class cs_detail_view extends cs_view {
       $html  = '';
       $html .= '<div class="right_box">'.LF;
       $html .= '         <noscript>';
-      $html .= '<div class="right_box_title">'.getMessage('COMMON_BUZZWORDS').'</div>';
+      $html .= '<div class="right_box_title">'.$this->_translator->getMessage('COMMON_BUZZWORDS').'</div>';
       $html .= '         </noscript>';
       $html .= '<div class="right_box_main">'.LF;
       $html .= '<div>'.LF;
@@ -479,7 +479,7 @@ class cs_detail_view extends cs_view {
       $html  = '';
       $html .= '<div class="right_box">'.LF;
       $html .= '         <noscript>';
-      $html .= '<div class="right_box_title">'.getMessage('COMMON_TAGS').'</div>';
+      $html .= '<div class="right_box_title">'.$this->_translator->getMessage('COMMON_TAGS').'</div>';
       $html .= '         </noscript>';
       $html .= '<div class="right_box_main" >'.LF;
 
@@ -616,7 +616,7 @@ class cs_detail_view extends cs_view {
          $html .= $this->_getForwardBoxAsHTML($item);
          $html .='</div>'.LF;
 
-         $title_string .= '"'.getMessage('COMMON_ACTIONS').'"';
+         $title_string .= '"'.$this->_translator->getMessage('COMMON_ACTIONS').'"';
          $desc_string .= '""';
          $size_string .= '"10"';
          if ( strstr($detail_box_conf,'detailactions_tiny') ){
@@ -631,7 +631,7 @@ class cs_detail_view extends cs_view {
             if ( $current_context->withBuzzwords()
                  and !strstr($detail_box_conf,'detailbuzzwords_nodisplay')
                ){
-               $title_string .= ',"'.getMessage('COMMON_BUZZWORDS').'"';
+               $title_string .= ',"'.$this->_translator->getMessage('COMMON_BUZZWORDS').'"';
                $desc_string .= ',""';
                $size_string .= ',"10"';
                if ( strstr($detail_box_conf,'detailbuzzwords_short') ){
@@ -646,7 +646,7 @@ class cs_detail_view extends cs_view {
             if ( $current_context->withTags()
                    and !strstr($detail_box_conf,'detailtags_nodisplay')
                ){
-               $title_string .= ',"'.getMessage('COMMON_TAGS').'"';
+               $title_string .= ',"'.$this->_translator->getMessage('COMMON_TAGS').'"';
                $desc_string .= ',""';
                $size_string .= ',"10"';
                if ( strstr($detail_box_conf,'detailtags_short') ){
@@ -661,7 +661,7 @@ class cs_detail_view extends cs_view {
          }
 ############SQL-Statements reduzieren
          if ( !strstr($detail_box_conf,'detailnetnavigation_nodisplay') ){
-            $title_string .= ',"'.getMessage('COMMON_NETNAVIGATION').'"';
+            $title_string .= ',"'.$this->_translator->getMessage('COMMON_NETNAVIGATION').'"';
             $desc_string .= ',""';
             $size_string .= ',"10"';
             if ( strstr($detail_box_conf,'detailnetnavigation_short') ){
@@ -689,13 +689,13 @@ class cs_detail_view extends cs_view {
       if ($item->isNotActivated()){
          $formal_data1 = array();
          $temp_array = array();
-         $temp_array[]  = getMessage('COMMON_RIGHTS');
+         $temp_array[]  = $this->_translator->getMessage('COMMON_RIGHTS');
 
          $activating_date = $item->getActivatingDate();
          if (strstr($activating_date,'9999-00-00')){
-            $title = getMessage('COMMON_NOT_ACTIVATED');
+            $title = $this->_translator->getMessage('COMMON_NOT_ACTIVATED');
          }else{
-            $title = getMessage('COMMON_ACTIVATING_DATE').' '.getDateInLang($item->getActivatingDate());
+            $title = $this->_translator->getMessage('COMMON_ACTIVATING_DATE').' '.getDateInLang($item->getActivatingDate());
          }
          $temp_array[] = $title;
          $formal_data1[] = $temp_array;
@@ -829,17 +829,17 @@ class cs_detail_view extends cs_view {
       $html .= '</div>'.LF.LF;
       $html .= '<!-- BEGIN OF ANNOTATION VIEW -->'.LF.LF;
       $html .='<div class="detail_sub_items_title">'.LF;
-      $html .= '<span class="sub_item_pagetitle">'.getMessage('COMMON_ANNOTATIONS');
+      $html .= '<span class="sub_item_pagetitle">'.$this->_translator->getMessage('COMMON_ANNOTATIONS');
       $html .= '</span>'.LF;
       if ( !empty($this->_annotation_list) ){
          $count = $this->_annotation_list->getCount();
          if ($count == 1){
-            $html .= '<span class="sub_item_description"> ('.getMessage('COMMON_ONE_ANNOTATION');
+            $html .= '<span class="sub_item_description"> ('.$this->_translator->getMessage('COMMON_ONE_ANNOTATION');
          }else{
-            $html .= '<span class="sub_item_description"> ('.getMessage('COMMON_X_ANNOTATIONS',$count);
+            $html .= '<span class="sub_item_description"> ('.$this->_translator->getMessage('COMMON_X_ANNOTATIONS',$count);
          }
       }else{
-         $html .= '<span class="sub_item_description"> ('.getMessage('COMMON_NO_ANNOTATIONS');
+         $html .= '<span class="sub_item_description"> ('.$this->_translator->getMessage('COMMON_NO_ANNOTATIONS');
       }
       $html .= ')</span>'.LF;
       $html .='</div>'.LF;
@@ -962,7 +962,7 @@ class cs_detail_view extends cs_view {
       $html .= '<div class="netnavigation" >'.LF;
 
       $html .= '         <noscript>';
-      $html .= '<div class="right_box_title">'.getMessage('COMMON_NETNAVIGATION').'</div>';
+      $html .= '<div class="right_box_title">'.$this->_translator->getMessage('COMMON_NETNAVIGATION').'</div>';
       $html .= '         </noscript>';
 
       $title_string ='"'.$this->_translator->getMessage('COMMON_NETNAVIGATION_LATEST_ENTRIES');
@@ -984,7 +984,7 @@ class cs_detail_view extends cs_view {
             if ( isset($link_creator) and !$link_creator->isDeleted() ) {
                $fullname = $link_creator->getFullname();
             } else {
-               $fullname = getMessage('COMMON_DELETED_USER');
+               $fullname = $this->_translator->getMessage('COMMON_DELETED_USER');
             }
           // Create the list entry
             $linked_item = $link_item->getLinkedItem($item);  // Get the linked item
@@ -1029,7 +1029,7 @@ class cs_detail_view extends cs_view {
                      $text .= $this->_translator->getMessage('COMMON_ONE_USER');
                      break;
                   default:
-                     $text .= getMessage('COMMON_MESSAGETAG_ERROR').' cs_detail_view('.__LINE__.') ';
+                     $text .= $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR').' cs_detail_view('.__LINE__.') ';
                      break;
                }
                $link_creator_text = $text.' - '.$this->_translator->getMessage('COMMON_LINK_CREATOR').' '.
@@ -1059,9 +1059,9 @@ class cs_detail_view extends cs_view {
                if ($linked_item->isNotActivated() and !($linked_item->getCreatorID() == $user->getItemID() or $user->isModerator()) ){
                    $activating_date = $linked_item->getActivatingDate();
                    if (strstr($activating_date,'9999-00-00')){
-                      $link_creator_text .= ' ('.getMessage('COMMON_NOT_ACTIVATED').')';
+                      $link_creator_text .= ' ('.$this->_translator->getMessage('COMMON_NOT_ACTIVATED').')';
                    }else{
-                      $link_creator_text .= ' ('.getMessage('COMMON_ACTIVATING_DATE').' '.getDateInLang($linked_item->getActivatingDate()).')';
+                      $link_creator_text .= ' ('.$this->_translator->getMessage('COMMON_ACTIVATING_DATE').' '.getDateInLang($linked_item->getActivatingDate()).')';
                    }
                    $html .= ahref_curl( $this->_environment->getCurrentContextID(),
                                        $module,
@@ -1145,7 +1145,7 @@ class cs_detail_view extends cs_view {
                      $text .= $this->_translator->getMessage('USERS');
                      break;
                   default:
-                     $text .= getMessage('COMMON_MESSAGETAG_ERROR').' cs_detail_view(692) ';
+                     $text .= $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR').' cs_detail_view(692) ';
                      break;
                }
                $title_string .= ',"'.$text;
@@ -1186,10 +1186,10 @@ class cs_detail_view extends cs_view {
                      $title = addslashes(ahref_curl($this->_environment->getCurrentContextID(),CS_TOPIC_TYPE,'detail',$params,$title));
                      $html .='		<div class="netnavigation_panel">     '.LF;
                      $html .= '         <noscript>';
-                     $html .= '<div class="netnavigation_title">'.getMessage('TOPIC_PATH').': '.$noscript_title.'</div>';
+                     $html .= '<div class="netnavigation_title">'.$this->_translator->getMessage('TOPIC_PATH').': '.$noscript_title.'</div>';
                      $html .= '         </noscript>';
                      $html .= $this->_getPathItemsAsHTML($topic_item,$item->getItemID(),$path_item_list);
-                     $title_string .= ',"'.getMessage('TOPIC_PATH').': '.$title.'"';
+                     $title_string .= ',"'.$this->_translator->getMessage('TOPIC_PATH').': '.$title.'"';
                      $parameter_array = $this->_environment->getCurrentParameterArray();
                      if (isset($parameter_array['path']) and $parameter_array['path'] == $topic_item->getItemID()){
                         $show_entry = $counter;
@@ -1238,9 +1238,9 @@ class cs_detail_view extends cs_view {
             if ($path_item->isNotActivated() and !($path_item->getCreatorID() == $user->getItemID() or $user->isModerator()) ){
                 $activating_date = $path_item->getActivatingDate();
                 if (strstr($activating_date,'9999-00-00')){
-                   $link_creator_text = $path_item->getTitle().' ('.getMessage('COMMON_NOT_ACTIVATED').')';
+                   $link_creator_text = $path_item->getTitle().' ('.$this->_translator->getMessage('COMMON_NOT_ACTIVATED').')';
                 }else{
-                   $link_creator_text = $path_item->getTitle().' ('.getMessage('COMMON_ACTIVATING_DATE').' '.getDateInLang($path_item->getActivatingDate()).')';
+                   $link_creator_text = $path_item->getTitle().' ('.$this->_translator->getMessage('COMMON_ACTIVATING_DATE').' '.getDateInLang($path_item->getActivatingDate()).')';
                 }
                 $html .= ahref_curl( $this->_environment->getCurrentContextID(),
                                      type2Module($path_item_type),
@@ -1299,7 +1299,7 @@ class cs_detail_view extends cs_view {
                if ( isset($link_creator) and !$link_creator->isDeleted() ) {
                   $fullname = $link_creator->getFullname();
                } else {
-                  $fullname = getMessage('COMMON_DELETED_USER');
+                  $fullname = $this->_translator->getMessage('COMMON_DELETED_USER');
                }
                $link_created = $this->_translator->getDateInLang($link_item->getCreationDate());
                $link_creator_text = $this->_translator->getMessage('COMMON_LINK_CREATOR').' '.
@@ -1333,9 +1333,9 @@ class cs_detail_view extends cs_view {
                   if ($linked_item->isNotActivated() and !($linked_item->getCreatorID() == $user->getItemID() or $user->isModerator()) ){
                       $activating_date = $linked_item->getActivatingDate();
                       if (strstr($activating_date,'9999-00-00')){
-                         $link_creator_text .= ' ('.getMessage('COMMON_NOT_ACTIVATED').')';
+                         $link_creator_text .= ' ('.$this->_translator->getMessage('COMMON_NOT_ACTIVATED').')';
                       }else{
-                         $link_creator_text .= ' ('.getMessage('COMMON_ACTIVATING_DATE').' '.getDateInLang($linked_item->getActivatingDate()).')';
+                         $link_creator_text .= ' ('.$this->_translator->getMessage('COMMON_ACTIVATING_DATE').' '.getDateInLang($linked_item->getActivatingDate()).')';
                       }
                       $html .= ahref_curl( $this->_environment->getCurrentContextID(),
                                           $module,
@@ -1586,9 +1586,9 @@ class cs_detail_view extends cs_view {
       $html .= '|';
       // Show position
       if ( empty($ids) ) {
-         $html .= '<span class="bold">&nbsp;'.getMessage('COMMON_ENTRY').' 1 / 1</span>'.LF;
+         $html .= '<span class="bold">&nbsp;'.$this->_translator->getMessage('COMMON_ENTRY').' 1 / 1</span>'.LF;
       } else {
-         $html .= '<span class="bold">&nbsp;'.getMessage('COMMON_ENTRY').' '.($pos+1).' / '.$count_all.'</span>'.LF;
+         $html .= '<span class="bold">&nbsp;'.$this->_translator->getMessage('COMMON_ENTRY').' '.($pos+1).' / '.$count_all.'</span>'.LF;
       }
       $html .= '|';
 
@@ -1688,7 +1688,7 @@ class cs_detail_view extends cs_view {
          } elseif ( isset($modificator) and !$modificator->isDeleted() ) {
             $temp_html = '<span class="disabled">'.$modificator->getFullname().'</span>';
          } else {
-            $temp_html = '<span class="disabled">'.getMessage('COMMON_DELETED_USER').'</span>';
+            $temp_html = '<span class="disabled">'.$this->_translator->getMessage('COMMON_DELETED_USER').'</span>';
          }
          unset($params);
       } elseif ( ($user->isUser() and isset($modificator) and  $modificator->isVisibleForLoggedIn())
@@ -1707,7 +1707,7 @@ class cs_detail_view extends cs_view {
                $temp_html = '<span class="disabled">'.$modificator->getFullname().'</span>';
             }
          }else{
-            $temp_html = '<span class="disabled">'.getMessage('COMMON_DELETED_USER').'</span>';
+            $temp_html = '<span class="disabled">'.$this->_translator->getMessage('COMMON_DELETED_USER').'</span>';
          }
          unset($params);
       } else {
@@ -1720,7 +1720,7 @@ class cs_detail_view extends cs_view {
             }
             unset($current_user_item);
          }else{
-            $temp_html = '<span class="disabled">'.getMessage('COMMON_DELETED_USER').'</span>';
+            $temp_html = '<span class="disabled">'.$this->_translator->getMessage('COMMON_DELETED_USER').'</span>';
          }
       }
       if ($item->isNotActivated()){
@@ -1770,7 +1770,7 @@ class cs_detail_view extends cs_view {
          } elseif ( isset($creator) and !$creator->isDeleted()){
             $temp_html = '<span class="disabled">'.$creator->getFullname().'</span>';
          } else {
-            $temp_html = '<span class="disabled">'.getMessage('COMMON_DELETED_USER').'</span>';
+            $temp_html = '<span class="disabled">'.$this->_translator->getMessage('COMMON_DELETED_USER').'</span>';
          }
       } elseif ( $user->isUser() and isset($creator) and ($creator->isVisibleForLoggedIn())
                     || (!$user->isUser() and $creator->isVisibleForAll()) ) {
@@ -1787,7 +1787,7 @@ class cs_detail_view extends cs_view {
                $temp_html = '<span class="disabled">'.$creator->getFullname().'</span>';
             }
          }else{
-            $temp_html = '<span class="disabled">'.getMessage('COMMON_DELETED_USER').'</span>';
+            $temp_html = '<span class="disabled">'.$this->_translator->getMessage('COMMON_DELETED_USER').'</span>';
          }
          unset($params);
       } else {
@@ -1800,7 +1800,7 @@ class cs_detail_view extends cs_view {
             }
             unset($current_user_item);
          }else{
-            $temp_html = '<span class="disabled">'.getMessage('COMMON_DELETED_USER').'</span>';
+            $temp_html = '<span class="disabled">'.$this->_translator->getMessage('COMMON_DELETED_USER').'</span>';
          }
       }
       $html .= '   <tr>'.LF;
@@ -1833,7 +1833,7 @@ class cs_detail_view extends cs_view {
             }elseif(isset($modificator) and  !$modificator->isDeleted()){
                 $temp_text = '<span class="disabled">'.$modificator->getFullname().'</span>';
             }else{
-                $temp_text = '<span class="disabled">'.getMessage('COMMON_DELETED_USER').'</span>';
+                $temp_text = '<span class="disabled">'.$this->_translator->getMessage('COMMON_DELETED_USER').'</span>';
             }
             $modifier_array[] = $temp_text;
          } elseif ( ($user->isUser() and isset($modificator) and  $modificator->isVisibleForLoggedIn())
@@ -1852,7 +1852,7 @@ class cs_detail_view extends cs_view {
                   $modifier_array[] = '<span class="disabled">'.$modificator->getFullname().'</span>';
                }
             }else{
-               $modifier_array[] = '<span class="disabled">'.getMessage('COMMON_DELETED_USER').'</span>';
+               $modifier_array[] = '<span class="disabled">'.$this->_translator->getMessage('COMMON_DELETED_USER').'</span>';
             }
             unset($params);
          } else {
@@ -1865,7 +1865,7 @@ class cs_detail_view extends cs_view {
                }
                unset($current_user_item);
             }else{
-               $modifier_array[] = '<span class="disabled">'.getMessage('COMMON_DELETED_USER').'</span>';
+               $modifier_array[] = '<span class="disabled">'.$this->_translator->getMessage('COMMON_DELETED_USER').'</span>';
             }
          }
       }
