@@ -89,10 +89,10 @@ class cs_user_form extends cs_rubric_form {
 
       // headline
       if (!empty($this->_item)) {
-         $this->_headline = getMessage('USER_EDIT_FORM_TITLE');
+         $this->_headline = $this->_translator->getMessage('USER_EDIT_FORM_TITLE');
       } elseif (!empty($this->_form_post)) {
          if (!empty($this->_form_post['iid'])) {
-            $this->_headline = getMessage('USER_EDIT_FORM_TITLE');
+            $this->_headline = $this->_translator->getMessage('USER_EDIT_FORM_TITLE');
          }
       } else {
          $this->_headline = '';
@@ -184,7 +184,7 @@ class cs_user_form extends cs_rubric_form {
 
          $this->_form->addTextArea('description','',$this->_translator->getMessage('USER_DESCRIPTION'),'','58','10',false);
          $this->_form->combine();
-         $this->_form->addCheckbox('description_change_all',$this->_translator->getMessage('USER_CHANGE_IN_ALL_ROOMS'),false,$this->_translator->getMessage('USER_CHANGE_IN_ALL_ROOMS'),getMessage('USER_CHANGE_IN_ALL_ROOMS'),'');
+         $this->_form->addCheckbox('description_change_all',$this->_translator->getMessage('USER_CHANGE_IN_ALL_ROOMS'),false,$this->_translator->getMessage('USER_CHANGE_IN_ALL_ROOMS'),$this->_translator->getMessage('USER_CHANGE_IN_ALL_ROOMS'),'');
          $this->_form->addEmptyline();
 
          $this->_form->addImage('upload','',$this->_translator->getMessage('USER_PICTURE_UPLOADFILE'), $this->_translator->getMessage('USER_PICTURE_FILE_DESC'));
@@ -192,7 +192,7 @@ class cs_user_form extends cs_rubric_form {
          //delete picture
          if ( $this->_with_picture) {
             $this->_form->combine();
-            $this->_form->addCheckbox('deletePicture',$this->_translator->getMessage('USER_DEL_PIC'),false,getMessage('USER_DEL_PIC'),$this->_translator->getMessage('USER_DEL_PIC_BUTTON'),'');
+            $this->_form->addCheckbox('deletePicture',$this->_translator->getMessage('USER_DEL_PIC'),false,$this->_translator->getMessage('USER_DEL_PIC'),$this->_translator->getMessage('USER_DEL_PIC_BUTTON'),'');
          }
 
          $this->_form->combine();
@@ -226,7 +226,7 @@ class cs_user_form extends cs_rubric_form {
             $this->_form->addCheckbox('email_visibility','check',false,'',$this->_translator->getMessage('USER_EMAIL_VISIBILITY_VALUE'),'');
          } else {
             $this->_form->combine();
-            $this->_form->addCheckbox('email_change_all',$this->_translator->getMessage('USER_CHANGE_IN_ALL_ROOMS'),false,$this->_translator->getMessage('USER_CHANGE_IN_ALL_ROOMS'),getMessage('USER_CHANGE_IN_ALL_ROOMS'),'');
+            $this->_form->addCheckbox('email_change_all',$this->_translator->getMessage('USER_CHANGE_IN_ALL_ROOMS'),false,$this->_translator->getMessage('USER_CHANGE_IN_ALL_ROOMS'),$this->_translator->getMessage('USER_CHANGE_IN_ALL_ROOMS'),'');
          }
 
          ##################################################
