@@ -60,6 +60,7 @@ $class_factory = new cs_class_factory();
 // setup commsy-environment
 include_once('classes/cs_environment.php');
 $environment = new cs_environment();
+$translator = $environment->getTranslationObject();
 
 // transform POST_VARS and GET_VARS --- move into page object, if exist
 include_once('functions/text_functions.php');
@@ -220,7 +221,7 @@ if (!empty($SID)) {
             $error_string = implode('<br />',$error_array);
             $errorbox->setText($error_string);
          } else {
-            $errorbox->setText(getMessage('COMMON_ERROR'));
+            $errorbox->setText($translator->getMessage('COMMON_ERROR'));
          }
       }
       $current_user = $authentication->getUserItem();
@@ -267,12 +268,12 @@ $page->setCurrentUser($environment->getCurrentUserItem());
 // set title
 $title = $context_item_current->getTitle();
 if ($context_item_current->isProjectRoom() and $context_item_current->isTemplate()) {
-   $title .= ' ('.getMessage('PROJECTROOM_TEMPLATE').')';
+   $title .= ' ('.$translator->getMessage('PROJECTROOM_TEMPLATE').')';
 } elseif ($context_item_current->isClosed()) {
-   $title .= ' ('.getMessage('PROJECTROOM_CLOSED').')';
+   $title .= ' ('.$translator->getMessage('PROJECTROOM_CLOSED').')';
 }
 $page->setRoomName($title);
-$page->setPageName(getMessage('HOMEPAGE_PAGETITLE_COMMON'));
+$page->setPageName($translator->getMessage('HOMEPAGE_PAGETITLE_COMMON'));
 
 // display login errors
 if ( isset($session) and $session->issetValue('error_array') ) {

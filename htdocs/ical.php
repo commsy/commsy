@@ -34,6 +34,7 @@ if ( isset($_GET['cid']) ) {
    $environment->setCurrentContextID($_GET['cid']);
    $context_item = $environment->getCurrentContextItem();
    $hash_manager = $environment->getHashManager();
+   $translator = $environment->getTranslationObject();
 
       $validated = false;
       if ( $context_item->isOpenForGuests() ) {
@@ -86,7 +87,7 @@ if ( isset($_GET['cid']) ) {
           $organizer = (array) array($item->getCreatorItem()->getFullName(), $item->getCreatorItem()->getEmail());
            }
                  if ($current_module==CS_TODO_TYPE){
-         $categories = array('CommSy .'.getMessage('COMMON_TODOS'));
+         $categories = array('CommSy .'.$translator->getMessage('COMMON_TODOS'));
         $attendees = $item->getProcessorItemList();
         $attendee = $attendees->getFirst();
         $temp_array = array();
@@ -164,7 +165,7 @@ if ( isset($_GET['cid']) ) {
                     }
 
                  }else{
-         $categories = array('CommSy .'.getMessage('COMMON_DATES'));
+         $categories = array('CommSy .'.$translator->getMessage('COMMON_DATES'));
            $attendees = $item->getParticipantsItemList();
            $attendee = $attendees->getFirst();
            $temp_array = array();

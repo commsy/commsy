@@ -31,6 +31,7 @@ function performRoomIDArray ($id_array,$portal_name,$privatrooms = false) {
    } else {
       $room_manager = $environment->getRoomManager();
    }
+   $translator = $environment->getTranslationObject();
    $room_manager->setCacheOff();
    foreach ($id_array as $item_id) {
       $room = $room_manager->getItem($item_id);
@@ -64,7 +65,7 @@ function performRoomIDArray ($id_array,$portal_name,$privatrooms = false) {
          $type = 'Private';
          $user = $room->getOwnerUserItem();
          if (isset($user) and $user->isUser()){
-            $title = getMessage('COMMON_PRIVATE_ROOM').': '.$environment->getTextConverter()->text_as_html_short($user->getFullName()).' ('.$room->getItemID().')';
+            $title = $translator->getMessage('COMMON_PRIVATE_ROOM').': '.$environment->getTextConverter()->text_as_html_short($user->getFullName()).' ('.$room->getItemID().')';
             $portal_user_item = $user->getRelatedCommSyUserItem();
             if ( isset($portal_user_item) and $portal_user_item->isUser() ) {
                $active = $portal_user_item->isActiveDuringLast99Days();
@@ -73,7 +74,7 @@ function performRoomIDArray ($id_array,$portal_name,$privatrooms = false) {
             }
             unset($portal_user_item);
          } else {
-            $title = getMessage('COMMON_PRIVATE_ROOM').': '.$room->getItemID();
+            $title = $translator->getMessage('COMMON_PRIVATE_ROOM').': '.$room->getItemID();
             $active = false;
          }
          unset($user);
