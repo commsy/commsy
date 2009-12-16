@@ -1323,7 +1323,7 @@ class cs_form_view extends cs_view {
             $check_box_element['name'] = 'delete_'.$form_element['name'];
             $check_box_element['value'] = '';
             $check_box_element['ischecked'] = false;
-            $check_box_element['text'] = getMessage('LOGO_DELETE_OPTION');
+            $check_box_element['text'] = $this->_translator->getMessage('LOGO_DELETE_OPTION');
             $retour .= $this->_getCheckBoxAsHTML($check_box_element);
             unset($curl);
             $hidden_element = array();
@@ -1762,12 +1762,12 @@ class cs_form_view extends cs_view {
            or !$form_element['with_html_area']
            or !$with_htmltextarea
          ) {
-         $title = '&nbsp;'.getMessage('COMMON_TEXT_FORMATING_HELP_FULL');
+         $title = '&nbsp;'.$this->_translator->getMessage('COMMON_TEXT_FORMATING_HELP_FULL');
          $html .= '<div style="padding-top:5px;">';
-         $text .= '<div class="bold" style="padding-bottom:5px;">'.getMessage('HELP_COMMON_FORMAT_TITLE').':</div>';
-         $text .= getMessage('COMMON_TEXT_FORMATING_FORMAT_TEXT');
-         $text .= '<div class="bold" style="padding-bottom:5px;">'.getMessage('COMMON_TEXT_INCLUDING_MEDIA').':</div>';
-         $text .= getMessage('COMMON_TEXT_INCLUDING_MEDIA_TEXT');
+         $text .= '<div class="bold" style="padding-bottom:5px;">'.$this->_translator->getMessage('HELP_COMMON_FORMAT_TITLE').':</div>';
+         $text .= $this->_translator->getMessage('COMMON_TEXT_FORMATING_FORMAT_TEXT');
+         $text .= '<div class="bold" style="padding-bottom:5px;">'.$this->_translator->getMessage('COMMON_TEXT_INCLUDING_MEDIA').':</div>';
+         $text .= $this->_translator->getMessage('COMMON_TEXT_INCLUDING_MEDIA_TEXT');
          //$html .='<img id="toggle'.$item->getItemID().'" src="images/more.gif"/>';
          $html .='<img id="toggle'.$toggle_id.'" src="images/more.gif"/>';
          $html .= $title;
@@ -1781,10 +1781,10 @@ class cs_form_view extends cs_view {
          $html .= '</div>'.LF;
          $html .= '</div>'.LF;
       }else{
-         $title = '&nbsp;'.getMessage('COMMON_TEXT_FORMATING_HELP_SHORT');
+         $title = '&nbsp;'.$this->_translator->getMessage('COMMON_TEXT_FORMATING_HELP_SHORT');
          $html .= '<div style="padding-top:0px;">';
-         $text .= '<div class="bold" style="padding-bottom:5px;">'.getMessage('COMMON_TEXT_INCLUDING_MEDIA').':</div>';
-         $text .= getMessage('COMMON_TEXT_INCLUDING_MEDIA_TEXT');
+         $text .= '<div class="bold" style="padding-bottom:5px;">'.$this->_translator->getMessage('COMMON_TEXT_INCLUDING_MEDIA').':</div>';
+         $text .= $this->_translator->getMessage('COMMON_TEXT_INCLUDING_MEDIA_TEXT');
          //$html .='<img id="toggle'.$item->getItemID().'" src="images/more.gif"/>';
          $html .='<img id="toggle'.$toggle_id.'" src="images/more.gif"/>';
          $html .= $title;
@@ -1929,7 +1929,7 @@ class cs_form_view extends cs_view {
 
          if ( $this->_environment->getCurrentFunction() == 'mail' ) {
             $html .='<div class="content_display_width" style="width:100%">'.LF;
-            $html .= '<h2 class="pagetitle">'.getMessage('COMMON_MAIL_FORM_TITLE').'</h2>';
+            $html .= '<h2 class="pagetitle">'.$this->_translator->getMessage('COMMON_MAIL_FORM_TITLE').'</h2>';
          } else {
             $html .= '<div style="float:right; width:28%; white-space:nowrap; text-align-left; padding-top:5px; margin:0px;">'.LF;
             $html .= $this->_getSearchAsHTML();
@@ -1940,11 +1940,11 @@ class cs_form_view extends cs_view {
             switch( $temp_mod_func  )
             {
                case 'ANNOUNCEMENT_EDIT':
-                  //$tempMessage = getMessage('COMMON_ANNOUNCEMENT_EDIT');
+                  //$tempMessage = $this->_translator->getMessage('COMMON_ANNOUNCEMENT_EDIT');
                   if($this->current_iid != 'NEW'){
-                     $tempMessage = getMessage('COMMON_ANNOUNCEMENT_EDIT');
+                     $tempMessage = $this->_translator->getMessage('COMMON_ANNOUNCEMENT_EDIT');
                   } else {
-                     $tempMessage = getMessage('COMMON_NEW_ANNOUNCEMENT_EDIT');
+                     $tempMessage = $this->_translator->getMessage('COMMON_NEW_ANNOUNCEMENT_EDIT');
                   }
                   if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
                      $tempMessage = '<img src="images/commsyicons_msie6/32x32/announcement.gif" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
@@ -1953,11 +1953,11 @@ class cs_form_view extends cs_view {
                   }
                   break;
                case 'MATERIAL_EDIT':
-                  //$tempMessage = getMessage('COMMON_MATERIAL_EDIT');
+                  //$tempMessage = $this->_translator->getMessage('COMMON_MATERIAL_EDIT');
                   if($this->current_iid != 'NEW'){
-                     $tempMessage = getMessage('COMMON_MATERIAL_EDIT');
+                     $tempMessage = $this->_translator->getMessage('COMMON_MATERIAL_EDIT');
                   } else {
-                     $tempMessage = getMessage('COMMON_NEW_MATERIAL_EDIT');
+                     $tempMessage = $this->_translator->getMessage('COMMON_NEW_MATERIAL_EDIT');
                   }
                   if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
                      $tempMessage = '<img src="images/commsyicons_msie6/32x32/material.gif" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
@@ -1966,11 +1966,11 @@ class cs_form_view extends cs_view {
                   }
                   break;
                case 'DATE_EDIT':
-                  //$tempMessage = getMessage('COMMON_DATE_EDIT');
+                  //$tempMessage = $this->_translator->getMessage('COMMON_DATE_EDIT');
                   if($this->current_iid != 'NEW'){
-                     $tempMessage = getMessage('COMMON_DATE_EDIT');
+                     $tempMessage = $this->_translator->getMessage('COMMON_DATE_EDIT');
                   } else {
-                     $tempMessage = getMessage('COMMON_NEW_DATE_EDIT');
+                     $tempMessage = $this->_translator->getMessage('COMMON_NEW_DATE_EDIT');
                   }
                   if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
                      $tempMessage = '<img src="images/commsyicons_msie6/32x32/date.gif" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
@@ -1979,11 +1979,11 @@ class cs_form_view extends cs_view {
                   }
                   break;
                case 'TODO_EDIT':
-                  //$tempMessage = getMessage('COMMON_TODO_EDIT');
+                  //$tempMessage = $this->_translator->getMessage('COMMON_TODO_EDIT');
                   if($this->current_iid != 'NEW'){
-                     $tempMessage = getMessage('COMMON_TODO_EDIT');
+                     $tempMessage = $this->_translator->getMessage('COMMON_TODO_EDIT');
                   } else {
-                     $tempMessage = getMessage('COMMON_NEW_TODO_EDIT');
+                     $tempMessage = $this->_translator->getMessage('COMMON_NEW_TODO_EDIT');
                   }
                   if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
                      $tempMessage = '<img src="images/commsyicons_msie6/32x32/todo.gif" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
@@ -1992,11 +1992,11 @@ class cs_form_view extends cs_view {
                   }
                   break;
                case 'GROUP_EDIT':
-                  //$tempMessage = getMessage('COMMON_GROUP_EDIT');
+                  //$tempMessage = $this->_translator->getMessage('COMMON_GROUP_EDIT');
                   if($this->current_iid != 'NEW'){
-                     $tempMessage = getMessage('COMMON_GROUP_EDIT');
+                     $tempMessage = $this->_translator->getMessage('COMMON_GROUP_EDIT');
                   } else {
-                     $tempMessage = getMessage('COMMON_NEW_GROUP_EDIT');
+                     $tempMessage = $this->_translator->getMessage('COMMON_NEW_GROUP_EDIT');
                   }
                   if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
                      $tempMessage = '<img src="images/commsyicons_msie6/32x32/group.gif" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
@@ -2013,11 +2013,11 @@ class cs_form_view extends cs_view {
                   }
                   break;
                case 'TOPIC_EDIT':
-                  //$tempMessage = getMessage('COMMON_TOPIC_EDIT');
+                  //$tempMessage = $this->_translator->getMessage('COMMON_TOPIC_EDIT');
                   if($this->current_iid != 'NEW'){
-                     $tempMessage = getMessage('COMMON_TOPIC_EDIT');
+                     $tempMessage = $this->_translator->getMessage('COMMON_TOPIC_EDIT');
                   } else {
-                     $tempMessage = getMessage('COMMON_NEW_TOPIC_EDIT');
+                     $tempMessage = $this->_translator->getMessage('COMMON_NEW_TOPIC_EDIT');
                   }
                   if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
                      $tempMessage = '<img src="images/commsyicons_msie6/32x32/topic.gif" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
@@ -2026,7 +2026,7 @@ class cs_form_view extends cs_view {
                   }
                   break;
                case 'INSTITUTION_EDIT':
-                  $tempMessage = getMessage('COMMON_INSTITUTION_EDIT');
+                  $tempMessage = $this->_translator->getMessage('COMMON_INSTITUTION_EDIT');
                   if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
                      $tempMessage = '<img src="images/commsyicons_msie6/32x32/group.gif" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
                   } else {
@@ -2034,11 +2034,11 @@ class cs_form_view extends cs_view {
                   }
                   break;
                case 'DISCUSSION_EDIT':
-                  //$tempMessage = getMessage('COMMON_DISCUSSION_EDIT');
+                  //$tempMessage = $this->_translator->getMessage('COMMON_DISCUSSION_EDIT');
                   if($this->current_iid != 'NEW'){
-                     $tempMessage = getMessage('COMMON_DISCUSSION_EDIT');
+                     $tempMessage = $this->_translator->getMessage('COMMON_DISCUSSION_EDIT');
                   } else {
-                     $tempMessage = getMessage('COMMON_NEW_DISCUSSION_EDIT');
+                     $tempMessage = $this->_translator->getMessage('COMMON_NEW_DISCUSSION_EDIT');
                   }
                   if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
                      $tempMessage = '<img src="images/commsyicons_msie6/32x32/discussion.gif" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
@@ -2047,11 +2047,11 @@ class cs_form_view extends cs_view {
                   }
                   break;
                case 'DISCARTICLE_EDIT':
-                  //$tempMessage = getMessage('COMMON_DISCARTICLE_EDIT');
+                  //$tempMessage = $this->_translator->getMessage('COMMON_DISCARTICLE_EDIT');
                   if($this->current_iid != 'NEW'){
-                     $tempMessage = getMessage('COMMON_DISCARTICLE_EDIT');
+                     $tempMessage = $this->_translator->getMessage('COMMON_DISCARTICLE_EDIT');
                   } else {
-                     $tempMessage = getMessage('COMMON_NEW_DISCARTICLE_EDIT');
+                     $tempMessage = $this->_translator->getMessage('COMMON_NEW_DISCARTICLE_EDIT');
                   }
                   if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
                      $tempMessage = '<img src="images/commsyicons_msie6/32x32/discussion.gif" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
@@ -2060,11 +2060,11 @@ class cs_form_view extends cs_view {
                   }
                   break;
                case 'SECTION_EDIT':
-                  //$tempMessage = getMessage('COMMON_SECTION_EDIT');
+                  //$tempMessage = $this->_translator->getMessage('COMMON_SECTION_EDIT');
                   if($this->current_iid != 'NEW'){
-                     $tempMessage = getMessage('COMMON_SECTION_EDIT');
+                     $tempMessage = $this->_translator->getMessage('COMMON_SECTION_EDIT');
                   } else {
-                     $tempMessage = getMessage('COMMON_NEW_SECTION_EDIT');
+                     $tempMessage = $this->_translator->getMessage('COMMON_NEW_SECTION_EDIT');
                   }
                   if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
                      $tempMessage = '<img src="images/commsyicons_msie6/32x32/material.gif" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
@@ -2073,7 +2073,7 @@ class cs_form_view extends cs_view {
                   }
                   break;
                case 'ACCOUNT_PASSWORD':      // Password ändern
-                  $tempMessage = getMessage('COMMON_ACCOUNT_PASSWORD_FORM_TITLE');
+                  $tempMessage = $this->_translator->getMessage('COMMON_ACCOUNT_PASSWORD_FORM_TITLE');
                   if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
                      $tempMessage = '<img src="images/commsyicons_msie6/32x32/config/account.gif" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
                   } else {
@@ -2081,7 +2081,7 @@ class cs_form_view extends cs_view {
                   }
                   break;
                case 'ACCOUNT_PREFERENCES':   // Benutzer, Einstellungen ändern
-                  $tempMessage = getMessage('COMMON_ACCOUNT_PREFERENCES_FORM_TITLE');
+                  $tempMessage = $this->_translator->getMessage('COMMON_ACCOUNT_PREFERENCES_FORM_TITLE');
                   if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
                      $tempMessage = '<img src="images/commsyicons_msie6/32x32/config/account.gif" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
                   } else {
@@ -2089,7 +2089,7 @@ class cs_form_view extends cs_view {
                   }
                   break;
                case 'ACCOUNT_STATUS':        // Status ändern (Portal)
-                  $tempMessage = getMessage('COMMON_ACCOUNT_STATUS_FORM_TITLE');
+                  $tempMessage = $this->_translator->getMessage('COMMON_ACCOUNT_STATUS_FORM_TITLE');
                   if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
                      $tempMessage = '<img src="images/commsyicons_msie6/32x32/config/account.gif" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
                   } else {
@@ -2097,83 +2097,83 @@ class cs_form_view extends cs_view {
                   }
                   break;
                case 'CONFIGURATION_AGB':     // Nutzungsvereinbarungen
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_AGB_FORM_TITLE');
+                  $tempMessage = $this->_translator->getMessage('COMMON_CONFIGURATION_AGB_FORM_TITLE');
                   break;
                case 'CONFIGURATION_AUTHENTICATION': // Authentifizierung einstellen (Portal)
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_AUTHENTICATION_FORM_TITLE');
+                  $tempMessage = $this->_translator->getMessage('COMMON_CONFIGURATION_AUTHENTICATION_FORM_TITLE');
                   break;
                case 'CONFIGURATION_BACKUP':  // Backup eines Raumes einspielen (Server)
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_BACKUP_FORM_TITLE');
+                  $tempMessage = $this->_translator->getMessage('COMMON_CONFIGURATION_BACKUP_FORM_TITLE');
                   break;
                case 'CONFIGURATION_CHAT':    // Raum-Chat einstellen
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_CHAT_FORM_TITLE');
+                  $tempMessage = $this->_translator->getMessage('COMMON_CONFIGURATION_CHAT_FORM_TITLE');
                   break;
                case 'CONFIGURATION_COLOR':   // Farbkonfiguration
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_COLOR_FORM_TITLE');
+                  $tempMessage = $this->_translator->getMessage('COMMON_CONFIGURATION_COLOR_FORM_TITLE');
                   break;
                case 'CONFIGURATION_DATES':   // Termindarstellung
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_DATES_FORM_TITLE');
+                  $tempMessage = $this->_translator->getMessage('COMMON_CONFIGURATION_DATES_FORM_TITLE');
                   break;
                case 'CONFIGURATION_DEFAULTS': // Voreinstellungen für Räume
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_DEFAULTS_FORM_TITLE');
+                  $tempMessage = $this->_translator->getMessage('COMMON_CONFIGURATION_DEFAULTS_FORM_TITLE');
                   break;
                case 'CONFIGURATION_DISCUSSION': // Art der Diskussion
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_DISCUSSION_FORM_TITLE');
+                  $tempMessage = $this->_translator->getMessage('COMMON_CONFIGURATION_DISCUSSION_FORM_TITLE');
                   break;
                case 'CONFIGURATION_EXPORT':  // Raum exportieren (Server)
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_EXPORT_FORM_TITLE');
+                  $tempMessage = $this->_translator->getMessage('COMMON_CONFIGURATION_EXPORT_FORM_TITLE');
                   break;
                case 'CONFIGURATION_EXTRA':   // Extras einstellen (Server)
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_EXTRA_FORM_TITLE');
+                  $tempMessage = $this->_translator->getMessage('COMMON_CONFIGURATION_EXTRA_FORM_TITLE');
                   break;
                case 'CONFIGURATION_GROUPROOM': // Wenn das Extra "Gruppenräume" eingeschaltet ist
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_GROUPROOM_FORM_TITLE');
+                  $tempMessage = $this->_translator->getMessage('COMMON_CONFIGURATION_GROUPROOM_FORM_TITLE');
                   break;
                case 'CONFIGURATION_HOMEPAGE': // Raum-Webseite einstellen
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_HOMEPAGE_FORM_TITLE');
+                  $tempMessage = $this->_translator->getMessage('COMMON_CONFIGURATION_HOMEPAGE_FORM_TITLE');
                   break;
                case 'CONFIGURATION_HOME':    // Konfiguration der Home
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_HOME_FORM_TITLE');
+                  $tempMessage = $this->_translator->getMessage('COMMON_CONFIGURATION_HOME_FORM_TITLE');
                   break;
                case 'CONFIGURATION_HTMLTEXTAREA': // FCK-Editor-Konfiguration ??
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_HTMLTEXTAREA_FORM_TITLE');
+                  $tempMessage = $this->_translator->getMessage('COMMON_CONFIGURATION_HTMLTEXTAREA_FORM_TITLE');
                    break;
                case 'CONFIGURATION_IMS':     // IMS-Account Einstellungen (Server)
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_IMS_FORM_TITLE');
+                  $tempMessage = $this->_translator->getMessage('COMMON_CONFIGURATION_IMS_FORM_TITLE');
                   break;
                case 'CONFIGURATION_LANGUAGE': // Verfügbare Sprachen (Server)
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_LANGUAGE_FORM_TITLE');
+                  $tempMessage = $this->_translator->getMessage('COMMON_CONFIGURATION_LANGUAGE_FORM_TITLE');
                   break;
                case 'CONFIGURATION_MAIL':    // E-Mail-Texte
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_MAIL_FORM_TITLE');
+                  $tempMessage = $this->_translator->getMessage('COMMON_CONFIGURATION_MAIL_FORM_TITLE');
                   break;
                case 'CONFIGURATION_MOVE':    // Raum auf anderes Portal umziehen (Portal)
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_MOVE_FORM_TITLE');
+                  $tempMessage = $this->_translator->getMessage('COMMON_CONFIGURATION_MOVE_FORM_TITLE');
                   break;
                case 'CONFIGURATION_NEWS':    // Ankündigungen bearbeiten (Portal)
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_NEWS_FORM_TITLE');
+                  $tempMessage = $this->_translator->getMessage('COMMON_CONFIGURATION_NEWS_FORM_TITLE');
                   break;
                case 'CONFIGURATION_PLUGIN':  // Sponsoren und Werbung
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_PLUGIN_FORM_TITLE');
+                  $tempMessage = $this->_translator->getMessage('COMMON_CONFIGURATION_PLUGIN_FORM_TITLE');
                   break;
                case 'CONFIGURATION_PORTALHOME': // Gestaltung der Raumübersicht (Portal)
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_PORTALHOME_FORM_TITLE');
+                  $tempMessage = $this->_translator->getMessage('COMMON_CONFIGURATION_PORTALHOME_FORM_TITLE');
                   break;
                case 'CONFIGURATION_PREFERENCES': // Allgemeine Einstellungen bearbeiten (pers. Raum)
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_PREFERENCES_FORM_TITLE');
+                  $tempMessage = $this->_translator->getMessage('COMMON_CONFIGURATION_PREFERENCES_FORM_TITLE');
                   break;
                case 'CONFIGURATION_PRIVATEROOM_NEWSLETTER': // E-Mail-Newsletter (priv.)
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_PRIVATEROOM_NEWSLETTER_FORM_TITLE');
+                  $tempMessage = $this->_translator->getMessage('COMMON_CONFIGURATION_PRIVATEROOM_NEWSLETTER_FORM_TITLE');
                   break;
                case 'CONFIGURATION_ROOM_OPENING': // Raumeröffnungen (Portal)
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_ROOM_OPENING_FORM_TITLE');
+                  $tempMessage = $this->_translator->getMessage('COMMON_CONFIGURATION_ROOM_OPENING_FORM_TITLE');
                   break;
                case 'PROJECT_EDIT': // Raumeröffnungen (Portal)
-               	//$tempMessage = getMessage('COMMON_ROOM_EDIT_FORM_TITLE');
+               	//$tempMessage = $this->_translator->getMessage('COMMON_ROOM_EDIT_FORM_TITLE');
                	if($this->current_iid != 'NEW'){
-               		$tempMessage = getMessage('COMMON_ROOM_EDIT_FORM_TITLE');
+               		$tempMessage = $this->_translator->getMessage('COMMON_ROOM_EDIT_FORM_TITLE');
                	} else {
-                     $tempMessage = getMessage('COMMON_NEW_ROOM_EDIT_FORM_TITLE');
+                     $tempMessage = $this->_translator->getMessage('COMMON_NEW_ROOM_EDIT_FORM_TITLE');
                	}
                   if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
                      $tempMessage = '<img src="images/commsyicons_msie6/32x32/room.gif" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
@@ -2182,49 +2182,49 @@ class cs_form_view extends cs_view {
                   }
                   break;
                case 'CONFIGURATION_RUBRIC':  // Auswahl der Rubriken
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_RUBRIC_FORM_TITLE');
+                  $tempMessage = $this->_translator->getMessage('COMMON_CONFIGURATION_RUBRIC_FORM_TITLE');
                   break;
                case 'CONFIGURATION_SERVICE': // Handhabungssupport einstellen
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_SERVICE_FORM_TITLE');
+                  $tempMessage = $this->_translator->getMessage('COMMON_CONFIGURATION_SERVICE_FORM_TITLE');
                   break;
                case 'CONFIGURATION_TIME':    // Zeittakte bearbeiten (Portal)
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_TIME_FORM_TITLE');
+                  $tempMessage = $this->_translator->getMessage('COMMON_CONFIGURATION_TIME_FORM_TITLE');
                   break;
                case 'CONFIGURATION_USAGEINFO': // Nutzungshinweise bearbeiten
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_USAGEINFO_FORM_TITLE');
+                  $tempMessage = $this->_translator->getMessage('COMMON_CONFIGURATION_USAGEINFO_FORM_TITLE');
                   break;
                case 'LABELS_EDIT':           // Nutzungshinweise bearbeiten
-                  $tempMessage = getMessage('COMMON_LABELS_EDIT_FORM_TITLE');
+                  $tempMessage = $this->_translator->getMessage('COMMON_LABELS_EDIT_FORM_TITLE');
                   break;
                case 'BUZZWORDS_EDIT':        // Nutzungshinweise bearbeiten
-                  $tempMessage = getMessage('COMMON_BUZZWORDS_EDIT_FORM_TITLE');
+                  $tempMessage = $this->_translator->getMessage('COMMON_BUZZWORDS_EDIT_FORM_TITLE');
                   break;
                case 'USER_ACTION':           // Personen E-Mail senden
-                  $tempMessage = getMessage('COMMON_USER_EMAIL_SEND_FORM_TITLE');
+                  $tempMessage = $this->_translator->getMessage('COMMON_USER_EMAIL_SEND_FORM_TITLE');
                   break;
                case 'USER_CLOSE':            // Personen E-Mail senden
-                  $tempMessage = getMessage('COMMON_USER_CLOSE_FORM_TITLE');
+                  $tempMessage = $this->_translator->getMessage('COMMON_USER_CLOSE_FORM_TITLE');
                   break;
                case 'ACCOUNT_CLOSE':            // Personen E-Mail senden
-                  $tempMessage = getMessage('COMMON_USER_CLOSE_FORM_TITLE');
+                  $tempMessage = $this->_translator->getMessage('COMMON_USER_CLOSE_FORM_TITLE');
                   break;
                case 'DATE_IMPORT':           // Externe Termine importieren
-                  $tempMessage = getMessage('COMMON_DATE_IMPORT_FORM_TITLE');
+                  $tempMessage = $this->_translator->getMessage('COMMON_DATE_IMPORT_FORM_TITLE');
                   break;
                case 'USER_PREFERENCES':      //
-                  $tempMessage = getMessage('COMMON_USER_PREFERENCES_FORM_TITLE');
+                  $tempMessage = $this->_translator->getMessage('COMMON_USER_PREFERENCES_FORM_TITLE');
                   break;
                case 'MAIL_TO_MODERATOR':      //
-                  $tempMessage = getMessage('CONFIGURATION_SERVICE_EMAIL_MODERATOR');
+                  $tempMessage = $this->_translator->getMessage('CONFIGURATION_SERVICE_EMAIL_MODERATOR');
                   break;
                case 'TAG_EDIT':      //
-                  $tempMessage = getMessage('TAG_EDIT_FORM_TITLE');
+                  $tempMessage = $this->_translator->getMessage('TAG_EDIT_FORM_TITLE');
                   break;
                case 'LANGUAGE_UNUSED':      //
-                  $tempMessage = getMessage('LANGUAGE_UNUSED_FORM_TITLE');
+                  $tempMessage = $this->_translator->getMessage('LANGUAGE_UNUSED_FORM_TITLE');
                   break;
                case 'MATERIAL_IMS_IMPORT':      //
-                  $tempMessage = getMessage('MATERIAL_IMS_IMPORT');
+                  $tempMessage = $this->_translator->getMessage('MATERIAL_IMS_IMPORT');
                   if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
                      $tempMessage = '<img src="images/commsyicons_msie6/32x32/material.gif" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
                   } else {
@@ -2232,14 +2232,14 @@ class cs_form_view extends cs_view {
                   }
                   break;
                case 'ANNOTATION_EDIT':      //
-                  $tempMessage = getMessage('COMMON_ANNOTATION_EDIT');
+                  $tempMessage = $this->_translator->getMessage('COMMON_ANNOTATION_EDIT');
                   break;
                case 'STEP_EDIT':      //
-                  //$tempMessage = getMessage('COMMON_STEP_EDIT');
+                  //$tempMessage = $this->_translator->getMessage('COMMON_STEP_EDIT');
                   if($this->current_iid != 'NEW'){
-                     $tempMessage = getMessage('COMMON_STEP_EDIT');
+                     $tempMessage = $this->_translator->getMessage('COMMON_STEP_EDIT');
                   } else {
-                     $tempMessage = getMessage('COMMON_NEW_STEP_EDIT');
+                     $tempMessage = $this->_translator->getMessage('COMMON_NEW_STEP_EDIT');
                   }
                   if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
                      $tempMessage = '<img src="images/commsyicons_msie6/32x32/todo.gif" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
@@ -2248,7 +2248,7 @@ class cs_form_view extends cs_view {
                   }
                   break;
                case 'ACCOUNT_EDIT':      //
-                  $tempMessage = getMessage('ACCOUNT_EDIT');
+                  $tempMessage = $this->_translator->getMessage('ACCOUNT_EDIT');
                   if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
                      $tempMessage = '<img src="images/commsyicons_msie6/32x32/config/account.gif" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
                   } else {
@@ -2256,11 +2256,11 @@ class cs_form_view extends cs_view {
                   }
                   break;
                case 'MYROOM_EDIT': // room edit in myroom
-                  //$tempMessage = getMessage('COMMON_ROOM_EDIT_FORM_TITLE');
+                  //$tempMessage = $this->_translator->getMessage('COMMON_ROOM_EDIT_FORM_TITLE');
                   if($this->current_iid != 'NEW'){
-                     $tempMessage = getMessage('COMMON_ROOM_EDIT_FORM_TITLE');
+                     $tempMessage = $this->_translator->getMessage('COMMON_ROOM_EDIT_FORM_TITLE');
                   } else {
-                     $tempMessage = getMessage('COMMON_NEW_ROOM_EDIT_FORM_TITLE');
+                     $tempMessage = $this->_translator->getMessage('COMMON_NEW_ROOM_EDIT_FORM_TITLE');
                   }
                   if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
                      $tempMessage = '<img src="images/commsyicons_msie6/32x32/room.gif" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
@@ -2269,7 +2269,7 @@ class cs_form_view extends cs_view {
                   }
                   break;
                default:                      // "Bitte Messagetag-Fehler melden ..."
-                  $tempMessage = getMessage('COMMON_MESSAGETAG_ERROR')." cs_form_view(".__LINE__.") ";
+                  $tempMessage = $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR')." cs_form_view(".__LINE__.") ";
                   break;
             }
             $html .= '<h2 class="pagetitle">' . $tempMessage . '</h2>';
@@ -2547,7 +2547,7 @@ class cs_form_view extends cs_view {
                $html .='      <td colspan="2" style="border-bottom: none; xwhite-space:nowrap;">';
             }
          }
-         $html .= '<span class="required" style="font-size:16pt;">*</span> <span class="key" style="font-weight:normal;">'.getMessage('COMMON_MANDATORY_FIELDS').'</span> '.$buttonbartext;
+         $html .= '<span class="required" style="font-size:16pt;">*</span> <span class="key" style="font-weight:normal;">'.$this->_translator->getMessage('COMMON_MANDATORY_FIELDS').'</span> '.$buttonbartext;
          $html .= '</td>'.LF;
          $html .= '</tr>'.LF;
          $html .= '</table>'.LF;
@@ -2620,7 +2620,7 @@ class cs_form_view extends cs_view {
       $error_display = false;
       if ( isset($this->_error_array) and !empty($this->_error_array) ){
          foreach ($this->_error_array as $error){
-            if ($error == getMessage('COMMON_ERROR_BUZZWORD_ENTRY')){
+            if ($error == $this->_translator->getMessage('COMMON_ERROR_BUZZWORD_ENTRY')){
                $error_display = true;
             }
          }
@@ -2633,9 +2633,9 @@ class cs_form_view extends cs_view {
       $html = '<div class="right_box" style="margin-bottom:1px;">'.LF;
       $color = $current_context->getColorArray();
       if ($error_display){
-         $html .= '<div class="right_box_title" style="color:'.$color['warning'].';">'.$html_text.getMessage('COMMON_ATTACHED_BUZZWORDS').' ('.$count_buzzword_ids.')</div>';
+         $html .= '<div class="right_box_title" style="color:'.$color['warning'].';">'.$html_text.$this->_translator->getMessage('COMMON_ATTACHED_BUZZWORDS').' ('.$count_buzzword_ids.')</div>';
       }else{
-         $html .= '<div class="right_box_title">'.$html_text.getMessage('COMMON_ATTACHED_BUZZWORDS').' ('.$count_buzzword_ids.')</div>';
+         $html .= '<div class="right_box_title">'.$html_text.$this->_translator->getMessage('COMMON_ATTACHED_BUZZWORDS').' ('.$count_buzzword_ids.')</div>';
       }
       $html .= '<div class="right_box_main">'.LF;
       $html .= '<div>'.LF;
@@ -2725,7 +2725,7 @@ class cs_form_view extends cs_view {
       $error_display = false;
       if ( isset($this->_error_array) and !empty($this->_error_array) ){
          foreach ($this->_error_array as $error){
-            if ($error == getMessage('COMMON_ERROR_TAG_ENTRY')){
+            if ($error == $this->_translator->getMessage('COMMON_ERROR_TAG_ENTRY')){
                $error_display = true;
             }
          }
@@ -2737,9 +2737,9 @@ class cs_form_view extends cs_view {
       }
       $color = $current_context->getColorArray();
       if ($error_display){
-         $html .= '<div class="right_box_title" style="color:'.$color['warning'].';">'.$html_text.getMessage('COMMON_ATTACHED_TAGS').' ('.$count_tag_ids.')</div>';
+         $html .= '<div class="right_box_title" style="color:'.$color['warning'].';">'.$html_text.$this->_translator->getMessage('COMMON_ATTACHED_TAGS').' ('.$count_tag_ids.')</div>';
       }else{
-         $html .= '<div class="right_box_title">'.$html_text.getMessage('COMMON_ATTACHED_TAGS').' ('.$count_tag_ids.')</div>';
+         $html .= '<div class="right_box_title">'.$html_text.$this->_translator->getMessage('COMMON_ATTACHED_TAGS').' ('.$count_tag_ids.')</div>';
       }
       $html .= '<div class="right_box_main" >'.LF;
 
@@ -2876,7 +2876,7 @@ class cs_form_view extends cs_view {
       $error_display = false;
       if ( isset($this->_error_array) and !empty($this->_error_array) ){
          foreach ($this->_error_array as $error){
-            if ($error == getMessage('COMMON_ERROR_TAG_ENTRY')){
+            if ($error == $this->_translator->getMessage('COMMON_ERROR_TAG_ENTRY')){
                $error_display = true;
             }
          }
@@ -2888,9 +2888,9 @@ class cs_form_view extends cs_view {
       }
       $color = $current_context->getColorArray();
       if ($error_display){
-         $html .= '<div class="right_box_title" style="color:'.$color['warning'].';">'.$html_text.getMessage('COMMON_ATTACHED_TAGS').' ('.$count_tag_ids.')</div>';
+         $html .= '<div class="right_box_title" style="color:'.$color['warning'].';">'.$html_text.$this->_translator->getMessage('COMMON_ATTACHED_TAGS').' ('.$count_tag_ids.')</div>';
       }else{
-         $html .= '<div class="right_box_title">'.$html_text.getMessage('COMMON_ATTACHED_TAGS').' ('.$count_tag_ids.')</div>';
+         $html .= '<div class="right_box_title">'.$html_text.$this->_translator->getMessage('COMMON_ATTACHED_TAGS').' ('.$count_tag_ids.')</div>';
       }
       $html .= '<div class="right_box_main" >'.LF;
 

@@ -509,9 +509,9 @@ class cs_detail_view extends cs_view {
             } elseif ( isset($item) and $item->isNotActivated() and isset($_GET['path'])){
                $activating_date = $item->getActivatingDate();
                if (strstr($activating_date,'9999-00-00')){
-                  $activating_text = getMessage('COMMON_NOT_ACTIVATED');
+                  $activating_text = $this->_translator->getMessage('COMMON_NOT_ACTIVATED');
                }else{
-                  $activating_text = getMessage('COMMON_ACTIVATING_DATE').' '.getDateInLang($item->getActivatingDate());
+                  $activating_text = $this->_translator->getMessage('COMMON_ACTIVATING_DATE').' '.getDateInLang($item->getActivatingDate());
                }
                $html .='<li class="disabled" style="'.$style.'">';
                $params['iid'] =	$item->getItemID();
@@ -1201,7 +1201,7 @@ class cs_detail_view extends cs_view {
             }
             break;
          case 'MATERIAL_ADMIN':
-            $tempMessage = $this->_translator->getMessage('MATERIAL_ADMIN_INDEX').' ('.getMessage('MATERIAL_INDEX').')';
+            $tempMessage = $this->_translator->getMessage('MATERIAL_ADMIN_INDEX').' ('.$this->_translator->getMessage('MATERIAL_INDEX').')';
             if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
                $tempMessage = '<img src="images/commsyicons_msie6/32x32/config/material_admin.gif" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
             } else {
@@ -3107,12 +3107,12 @@ class cs_detail_view extends cs_view {
                  or !$with_htmltextarea
                ) {
                $html .= $normal;
-               $title = '&nbsp;'.getMessage('COMMON_TEXT_FORMATING_HELP_FULL');
+               $title = '&nbsp;'.$this->_translator->getMessage('COMMON_TEXT_FORMATING_HELP_FULL');
                $html .= '<div style="padding-top:5px;">';
-               $text .= '<div class="bold" style="padding-bottom:5px;">'.getMessage('HELP_COMMON_FORMAT_TITLE').':</div>';
-               $text .= getMessage('COMMON_TEXT_FORMATING_FORMAT_TEXT');
-               $text .= '<div class="bold" style="padding-bottom:5px;">'.getMessage('COMMON_TEXT_INCLUDING_MEDIA').':</div>';
-               $text .= getMessage('COMMON_TEXT_INCLUDING_MEDIA_TEXT');
+               $text .= '<div class="bold" style="padding-bottom:5px;">'.$this->_translator->getMessage('HELP_COMMON_FORMAT_TITLE').':</div>';
+               $text .= $this->_translator->getMessage('COMMON_TEXT_FORMATING_FORMAT_TEXT');
+               $text .= '<div class="bold" style="padding-bottom:5px;">'.$this->_translator->getMessage('COMMON_TEXT_INCLUDING_MEDIA').':</div>';
+               $text .= $this->_translator->getMessage('COMMON_TEXT_INCLUDING_MEDIA_TEXT');
                $html .='<img id="toggle'.$current_context->getItemID().'" src="images/more.gif"/>';
                $html .= $title;
                $html .= '<div id="creator_information'.$current_context->getItemID().'">'.LF;
@@ -3132,12 +3132,12 @@ class cs_detail_view extends cs_view {
                     and $current_browser != 'safari')
                ) {
                $html .= $normal;
-               $title = '&nbsp;'.getMessage('COMMON_TEXT_FORMATING_HELP_FULL');
+               $title = '&nbsp;'.$this->_translator->getMessage('COMMON_TEXT_FORMATING_HELP_FULL');
                $html .= '<div style="padding-top:5px;">';
-               $text .= '<div class="bold" style="padding-bottom:5px;">'.getMessage('HELP_COMMON_FORMAT_TITLE').':</div>';
-               $text .= getMessage('COMMON_TEXT_FORMATING_FORMAT_TEXT');
-               $text .= '<div class="bold" style="padding-bottom:5px;">'.getMessage('COMMON_TEXT_INCLUDING_MEDIA').':</div>';
-               $text .= getMessage('COMMON_TEXT_INCLUDING_MEDIA_TEXT');
+               $text .= '<div class="bold" style="padding-bottom:5px;">'.$this->_translator->getMessage('HELP_COMMON_FORMAT_TITLE').':</div>';
+               $text .= $this->_translator->getMessage('COMMON_TEXT_FORMATING_FORMAT_TEXT');
+               $text .= '<div class="bold" style="padding-bottom:5px;">'.$this->_translator->getMessage('COMMON_TEXT_INCLUDING_MEDIA').':</div>';
+               $text .= $this->_translator->getMessage('COMMON_TEXT_INCLUDING_MEDIA_TEXT');
                $html .='<img id="toggle'.$current_context->getItemID().'" src="images/more.gif"/>';
                $html .= $title;
                $html .= '<div id="creator_information'.$current_context->getItemID().'">'.LF;
@@ -3163,10 +3163,10 @@ class cs_detail_view extends cs_view {
                                               '',
                                               false
                                             );
-                     $title = '&nbsp;'.getMessage('COMMON_TEXT_FORMATING_HELP_SHORT');
+                     $title = '&nbsp;'.$this->_translator->getMessage('COMMON_TEXT_FORMATING_HELP_SHORT');
                      $html .= '<div style="padding-top:0px;">';
-                     $text .= '<div class="bold" style="padding-bottom:5px;">'.getMessage('COMMON_TEXT_INCLUDING_MEDIA').':</div>';
-                     $text .= getMessage('COMMON_TEXT_INCLUDING_MEDIA_TEXT');
+                     $text .= '<div class="bold" style="padding-bottom:5px;">'.$this->_translator->getMessage('COMMON_TEXT_INCLUDING_MEDIA').':</div>';
+                     $text .= $this->_translator->getMessage('COMMON_TEXT_INCLUDING_MEDIA_TEXT');
                      $html .='<img id="toggle'.$current_context->getItemID().'" src="images/more.gif"/>';
                      $html .= $title;
                      $html .= '<div id="creator_information'.$current_context->getItemID().'">'.LF;
@@ -3179,12 +3179,12 @@ class cs_detail_view extends cs_view {
                      $html .= '</div>'.BRLF;
                   } else {
                      $html .= $normal;
-                     $title = '&nbsp;'.getMessage('COMMON_TEXT_FORMATING_HELP_FULL');
+                     $title = '&nbsp;'.$this->_translator->getMessage('COMMON_TEXT_FORMATING_HELP_FULL');
                      $html .= '<div style="padding-top:5px;">';
-                     $text .= '<div class="bold" style="padding-bottom:5px;">'.getMessage('HELP_COMMON_FORMAT_TITLE').':</div>';
-                     $text .= getMessage('COMMON_TEXT_FORMATING_FORMAT_TEXT');
-                     $text .= '<div class="bold" style="padding-bottom:5px;">'.getMessage('COMMON_TEXT_INCLUDING_MEDIA').':</div>';
-                     $text .= getMessage('COMMON_TEXT_INCLUDING_MEDIA_TEXT');
+                     $text .= '<div class="bold" style="padding-bottom:5px;">'.$this->_translator->getMessage('HELP_COMMON_FORMAT_TITLE').':</div>';
+                     $text .= $this->_translator->getMessage('COMMON_TEXT_FORMATING_FORMAT_TEXT');
+                     $text .= '<div class="bold" style="padding-bottom:5px;">'.$this->_translator->getMessage('COMMON_TEXT_INCLUDING_MEDIA').':</div>';
+                     $text .= $this->_translator->getMessage('COMMON_TEXT_INCLUDING_MEDIA_TEXT');
                      $html .='<img id="toggle'.$current_context->getItemID().'" src="images/more.gif"/>';
                      $html .= $title;
                      $html .= '<div id="creator_information'.$current_context->getItemID().'">'.LF;
@@ -3198,12 +3198,12 @@ class cs_detail_view extends cs_view {
                   }
                } else {
                   $html .= $normal;
-                  $title = '&nbsp;'.getMessage('COMMON_TEXT_FORMATING_HELP_FULL');
+                  $title = '&nbsp;'.$this->_translator->getMessage('COMMON_TEXT_FORMATING_HELP_FULL');
                   $html .= '<div style="padding-top:5px;">';
-                  $text .= '<div class="bold" style="padding-bottom:5px;">'.getMessage('HELP_COMMON_FORMAT_TITLE').':</div>';
-                  $text .= getMessage('COMMON_TEXT_FORMATING_FORMAT_TEXT');
-                  $text .= '<div class="bold" style="padding-bottom:5px;">'.getMessage('COMMON_TEXT_INCLUDING_MEDIA').':</div>';
-                  $text .= getMessage('COMMON_TEXT_INCLUDING_MEDIA_TEXT');
+                  $text .= '<div class="bold" style="padding-bottom:5px;">'.$this->_translator->getMessage('HELP_COMMON_FORMAT_TITLE').':</div>';
+                  $text .= $this->_translator->getMessage('COMMON_TEXT_FORMATING_FORMAT_TEXT');
+                  $text .= '<div class="bold" style="padding-bottom:5px;">'.$this->_translator->getMessage('COMMON_TEXT_INCLUDING_MEDIA').':</div>';
+                  $text .= $this->_translator->getMessage('COMMON_TEXT_INCLUDING_MEDIA_TEXT');
                   $html .='<img id="toggle'.$current_context->getItemID().'" src="images/more.gif"/>';
                   $html .= $title;
                   $html .= '<div id="creator_information'.$current_context->getItemID().'">'.LF;
@@ -3223,7 +3223,7 @@ class cs_detail_view extends cs_view {
             $html .= '<td>&nbsp;'.LF;
             $html .= '</td>'.LF;
             $html .= '<td colspan="2" style="padding-top:10px; vertical-align:top; white-space:nowrap;">'.LF;
-            $html .= '<input name="option" value="'.getMessage('ANNOTATION_ADD_NEW_BUTTON').'" tabindex="8" type="submit"/>';
+            $html .= '<input name="option" value="'.$this->_translator->getMessage('ANNOTATION_ADD_NEW_BUTTON').'" tabindex="8" type="submit"/>';
             $current_user = $this->_environment->getCurrentUser();
             if ( $current_user->isAutoSaveOn() ) {
                $html .= '<span class="formcounter">'.LF;
@@ -3248,7 +3248,7 @@ class cs_detail_view extends cs_view {
             if ( $current_user->isAutoSaveOn() ) {
                $html .= '   <script type="text/javascript">'.LF;
                $html .= '      <!--'.LF;
-               $html .= '         var breakCrit = "'.getMessage('ANNOTATION_ADD_NEW_BUTTON').'"'.';'.LF;
+               $html .= '         var breakCrit = "'.$this->_translator->getMessage('ANNOTATION_ADD_NEW_BUTTON').'"'.';'.LF;
                $html .= '         startclock();'.LF;
                $html .= '      -->'.LF;
                $html .= '   </script>'.LF;

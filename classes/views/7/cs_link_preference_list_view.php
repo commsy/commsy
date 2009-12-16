@@ -92,12 +92,12 @@ var $_important_configuration_room_list = NULL;
       // Actions
       $html .= LF.'<div>'.LF;
       $html .='<div>'.LF;
-      $html .= '<h2 class="pagetitle" style="font-family: verdana, arial, sans-serif;">'.getMessage('COMMON_COMMSY_CONFIGURE');
+      $html .= '<h2 class="pagetitle" style="font-family: verdana, arial, sans-serif;">'.$this->_translator->getMessage('COMMON_COMMSY_CONFIGURE');
       $html .= '</h2>'.LF;
       $html .='</div>'.LF;
 
 
-      $html .= '<div class="config_headline">'.getMessage('COMMON_CONFIGURATION_ROOM_OPTIONS').'</div>'.LF;
+      $html .= '<div class="config_headline">'.$this->_translator->getMessage('COMMON_CONFIGURATION_ROOM_OPTIONS').'</div>'.LF;
       $html .= '<table class="configuration_table" summary="Layout">'.LF;
       $html .= '<tr class="list">';
       $important_configuration_room_list = $this->_important_configuration_room_list;
@@ -123,7 +123,7 @@ var $_important_configuration_room_list = NULL;
 
 
 
-      $html .= '<div class="config_headline">'.getMessage('COMMON_CONFIGURATION_ADMIN_OPTIONS').'</div>'.LF;
+      $html .= '<div class="config_headline">'.$this->_translator->getMessage('COMMON_CONFIGURATION_ADMIN_OPTIONS').'</div>'.LF;
       $html .= '<table class="configuration_table" summary="Layout">'.LF;
       $html .= '<tr class="list">';
       $configuration_usage_list = $this->_configuration_usage_list;
@@ -150,7 +150,7 @@ var $_important_configuration_room_list = NULL;
 
 
 
-      $html .= '<div class="config_headline">'.getMessage('COMMON_ADDITIONAL_CONFIGURATION').'</div>'.LF;
+      $html .= '<div class="config_headline">'.$this->_translator->getMessage('COMMON_ADDITIONAL_CONFIGURATION').'</div>'.LF;
       $html .= '<table class="configuration_table" summary="Layout">'.LF;
       $html .= '<tr class="list">';
       $configuration_rubric_extras_list = $this->_configuration_rubric_extras_list;

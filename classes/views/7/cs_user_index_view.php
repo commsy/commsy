@@ -102,7 +102,7 @@ class cs_user_index_view extends cs_room_index_view {
                                        'index',
                                        '',
                                        $image,
-                                       getMessage('ACCOUNT_INDEX')).LF;
+                                       $this->_translator->getMessage('ACCOUNT_INDEX')).LF;
 
       }else{
          if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
@@ -298,9 +298,9 @@ class cs_user_index_view extends cs_room_index_view {
          $curl = curl($this->_environment->getCurrentContextID(),
                       'picture', 'getfile', $params,'');
          unset($params);
-         $html = '<img alt="'.getMessage('USER_PICTURE_UPLOADFILE').'" src="'.$curl.'" style="vertical-align:middle; width: '.$width.'px;"/>'.LF;
+         $html = '<img alt="'.$this->_translator->getMessage('USER_PICTURE_UPLOADFILE').'" src="'.$curl.'" style="vertical-align:middle; width: '.$width.'px;"/>'.LF;
       }else{
-#         $html = '<img alt="'.getMessage('USER_PICTURE_UPLOADFILE').'" src="images/commsyicons/common/user_unknown_small.gif" style="vertical-align:middle;  height: 20px;"/>'.LF;
+#         $html = '<img alt="'.$this->_translator->getMessage('USER_PICTURE_UPLOADFILE').'" src="images/commsyicons/common/user_unknown_small.gif" style="vertical-align:middle;  height: 20px;"/>'.LF;
       }
       $params = array();
       $params['iid'] = $item->getItemID();
@@ -454,7 +454,7 @@ class cs_user_index_view extends cs_room_index_view {
          $this->_additional_selects = true;
          $html_text ='<tr>'.LF;
          $html_text .='<td>'.LF;
-         $html_text .= '<span class="infocolor">'.getMessage('COMMON_STATUS').': </span>';
+         $html_text .= '<span class="infocolor">'.$this->_translator->getMessage('COMMON_STATUS').': </span>';
          $html_text .='</td>'.LF;
          $html_text .='<td style="text-align:right;">'.LF;
          if ($params['selstatus'] == 3){

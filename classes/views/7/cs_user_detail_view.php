@@ -185,9 +185,10 @@ class cs_user_detail_view extends cs_detail_view {
          $html .= $this->_getFormalDataAsHTML($formal_data).LF;
       }
       $formal_data = array();
-
+      
       $html .='</td>'.LF;
       $picture = $item->getPicture();
+      
       if ( !empty($picture) ) {
          $disc_manager = $this->_environment->getDiscManager();
          if ($disc_manager->existsFile($picture)){
@@ -201,18 +202,19 @@ class cs_user_detail_view extends cs_detail_view {
          }else{
             $width = 150;
          }
+         
          $html .='<td style="vertical-align:top; width: 150px;">'.LF;
          $params = array();
          $params['picture'] = $picture;
          $curl = curl($this->_environment->getCurrentContextID(),
                       'picture', 'getfile', $params,'');
          unset($params);
-         $html .= '<img alt="'.getMessage('USER_PICTURE_UPLOADFILE').'" src="'.$curl.'" class="portrait2" style=" width: '.$width.'px;"/>'.LF;
+         $html .= '<img alt="'.$this->_translator->getMessage('USER_PICTURE_UPLOADFILE').'" src="'.$curl.'" class="portrait2" style=" width: '.$width.'px;"/>'.LF;
          $html .='</td>'.LF;
       }else{
          $html .='<td style="vertical-align:top; width: 150px;">'.LF;
          $linktext = $this->_translator->getMessage('USER_PICTURE_NO_PICTURE',str_replace('"','&quot;',encode(AS_HTML_SHORT,$item->getFullName())));
-         $html .= '<img alt="'.getMessage('USER_PICTURE_UPLOADFILE').'" src="images/commsyicons/common/user_unknown.gif" class="portrait2" title="'.$linktext.'"/>'.LF;
+         $html .= '<img alt="'.$this->_translator->getMessage('USER_PICTURE_UPLOADFILE').'" src="images/commsyicons/common/user_unknown.gif" class="portrait2" title="'.$linktext.'"/>'.LF;
          $html .='</td>'.LF;
       }
       $html .='</tr>'.LF;
@@ -400,16 +402,16 @@ class cs_user_detail_view extends cs_detail_view {
       $params = $this->_environment->getCurrentParameterArray();
       $params['mode']='print';
       if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-         $image = '<img src="images/commsyicons_msie6/22x22/print.gif" style="vertical-align:bottom;" alt="'.getMessage('COMMON_LIST_PRINTVIEW').'"/>';
+         $image = '<img src="images/commsyicons_msie6/22x22/print.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_LIST_PRINTVIEW').'"/>';
       } else {
-         $image = '<img src="images/commsyicons/22x22/print.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_LIST_PRINTVIEW').'"/>';
+         $image = '<img src="images/commsyicons/22x22/print.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_LIST_PRINTVIEW').'"/>';
       }
       $html .= ahref_curl($this->_environment->getCurrentContextID(),
                                     $this->_environment->getCurrentModule(),
                                     'detail',
                                     $params,
                                     $image,
-                                    getMessage('COMMON_LIST_PRINTVIEW'),
+                                    $this->_translator->getMessage('COMMON_LIST_PRINTVIEW'),
                                     '_blank'
                          ).LF;
       unset($params['mode']);
@@ -417,16 +419,16 @@ class cs_user_detail_view extends cs_detail_view {
       $params['download']='zip';
       $params['mode']='print';
       if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-         $image = '<img src="images/commsyicons_msie6/22x22/save.gif" style="vertical-align:bottom;" alt="'.getMessage('COMMON_DOWNLOAD').'"/>';
+         $image = '<img src="images/commsyicons_msie6/22x22/save.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_DOWNLOAD').'"/>';
       } else {
-         $image = '<img src="images/commsyicons/22x22/save.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_DOWNLOAD').'"/>';
+         $image = '<img src="images/commsyicons/22x22/save.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_DOWNLOAD').'"/>';
       }
       $html .= ahref_curl($this->_environment->getCurrentContextID(),
                                     $this->_environment->getCurrentModule(),
                                     'detail',
                                     $params,
                                     $image,
-                                    getMessage('COMMON_DOWNLOAD')).LF;
+                                    $this->_translator->getMessage('COMMON_DOWNLOAD')).LF;
       unset($params['download']);
       unset($params['mode']);
 
@@ -731,7 +733,7 @@ class cs_user_detail_view extends cs_detail_view {
 
       $html = '';
       $html .= '<div class="right_box">'.LF;
-      $html .= '<div class="right_box_title" style="font-weight:bold; font-size:10pt;">'.getMessage('COMMON_ACTIONS').'</div>';
+      $html .= '<div class="right_box_title" style="font-weight:bold; font-size:10pt;">'.$this->_translator->getMessage('COMMON_ACTIONS').'</div>';
       $html .= '<div class="right_box_main">'.LF;
       if ( $item->mayEdit($user) and $mod ) {
          if ($this->_display_mod == 'admin' and $this->_environment->getCurrentModule() == 'account') {
@@ -1093,7 +1095,7 @@ class cs_user_detail_view extends cs_detail_view {
       $html .= '<div id="netnavigation'.$item->getItemID().'" style="height:250px;">'.LF;
       $html .= '<div class="netnavigation" >'.LF;
       $html .= '         <noscript>';
-      $html .= '<div class="right_box_title">'.getMessage('COMMON_NETNAVIGATION').'</div>';
+      $html .= '<div class="right_box_title">'.$this->_translator->getMessage('COMMON_NETNAVIGATION').'</div>';
       $html .= '         </noscript>';
       $title_string = '';
       foreach ( $connections as $connection ) {
@@ -1139,7 +1141,7 @@ class cs_user_detail_view extends cs_detail_view {
                   $text .= $this->_translator->getMessage('USERS');
                   break;
                default:
-                  $text .= getMessage('COMMON_MESSAGETAG_ERROR').' cs_detail_view(692) ';
+                  $text .= $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR').' cs_detail_view(692) ';
                   break;
             }
             if (empty($title_string)){
@@ -1193,7 +1195,7 @@ class cs_user_detail_view extends cs_detail_view {
             $text = $this->_translator->getMessage('USERS');
             break;
          default:
-            $text = getMessage('COMMON_MESSAGETAG_ERROR').' cs_user_detail_view(818) ';
+            $text = $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR').' cs_user_detail_view(818) ';
             break;
          }
          if (empty($title_string)){
@@ -1254,7 +1256,7 @@ class cs_user_detail_view extends cs_detail_view {
                $text = $this->_translator->getMessage('USERS');
                break;
             default:
-               $text = getMessage('COMMON_MESSAGETAG_ERROR').' cs_user_detail_view(818) ';
+               $text = $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR').' cs_user_detail_view(818) ';
                break;
          }
          $html .= '         <noscript>';
@@ -1302,9 +1304,9 @@ class cs_user_detail_view extends cs_detail_view {
                   if ($rubric_item->isNotActivated() and !($rubric_item->getCreatorID() == $user->getItemID() or $user->isModerator()) ){
                       $activating_date = $rubric_item->getActivatingDate();
                       if (strstr($activating_date,'9999-00-00')){
-                         $link_creator_text .= ' ('.getMessage('COMMON_NOT_ACTIVATED').')';
+                         $link_creator_text .= ' ('.$this->_translator->getMessage('COMMON_NOT_ACTIVATED').')';
                       }else{
-                         $link_creator_text .= ' ('.getMessage('COMMON_ACTIVATING_DATE').' '.getDateInLang($rubric_item->getActivatingDate()).')';
+                         $link_creator_text .= ' ('.$this->_translator->getMessage('COMMON_ACTIVATING_DATE').' '.getDateInLang($rubric_item->getActivatingDate()).')';
                       }
                       $html .= ahref_curl( $this->_environment->getCurrentContextID(),
                                            $module,
@@ -1396,22 +1398,22 @@ class cs_user_detail_view extends cs_detail_view {
                   $params = array();
                   $params['iid'] = $item->getItemID();
                   if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-                     $image = '<img src="images/commsyicons_msie6/22x22/config/account.gif" style="vertical-align:bottom;" alt="'.getMessage('ACCOUNT_PASSWORD_CHANGE').'"/>';
+                     $image = '<img src="images/commsyicons_msie6/22x22/config/account.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('ACCOUNT_PASSWORD_CHANGE').'"/>';
                   } else {
-                     $image = '<img src="images/commsyicons/22x22/config/account.png" style="vertical-align:bottom;" alt="'.getMessage('ACCOUNT_PASSWORD_CHANGE').'"/>';
+                     $image = '<img src="images/commsyicons/22x22/config/account.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('ACCOUNT_PASSWORD_CHANGE').'"/>';
                   }
                   $html .= ahref_curl( $this->_environment->getCurrentContextID(),
                                             $this->_environment->getCurrentModule(),
                                             'password',
                                             $params,
                                             $image,
-                                            getMessage('ACCOUNT_PASSWORD_CHANGE')).LF;
+                                            $this->_translator->getMessage('ACCOUNT_PASSWORD_CHANGE')).LF;
                   unset($params);
                } else {
                   if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-                     $image = '<img src="images/commsyicons_msie6/22x22/config/account_grey.gif" style="vertical-align:bottom;" alt="'.getMessage('ACCOUNT_PASSWORD_CHANGE').'"/>';
+                     $image = '<img src="images/commsyicons_msie6/22x22/config/account_grey.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('ACCOUNT_PASSWORD_CHANGE').'"/>';
                   } else {
-                     $image = '<img src="images/commsyicons/22x22/config/account_grey.png" style="vertical-align:bottom;" alt="'.getMessage('ACCOUNT_PASSWORD_CHANGE').'"/>';
+                     $image = '<img src="images/commsyicons/22x22/config/account_grey.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('ACCOUNT_PASSWORD_CHANGE').'"/>';
                   }
                   $html .= '<span class="disabled"> '.$this->_translator->getMessage('ACCOUNT_PASSWORD_CHANGE').'</span>'.LF;
                }
@@ -1420,16 +1422,16 @@ class cs_user_detail_view extends cs_detail_view {
             $params = array();
             $params['iid'] = $item->getItemID();
             if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-               $image = '<img src="images/commsyicons_msie6/22x22/config/account.gif" style="vertical-align:bottom;" alt="'.getMessage('ACCOUNT_STATUS_CHANGE').'"/>';
+               $image = '<img src="images/commsyicons_msie6/22x22/config/account.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('ACCOUNT_STATUS_CHANGE').'"/>';
             } else {
-               $image = '<img src="images/commsyicons/22x22/config/account.png" style="vertical-align:bottom;" alt="'.getMessage('ACCOUNT_STATUS_CHANGE').'"/>';
+               $image = '<img src="images/commsyicons/22x22/config/account.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('ACCOUNT_STATUS_CHANGE').'"/>';
             }
             $html .= ahref_curl( $this->_environment->getCurrentContextID(),
                                $this->_environment->getCurrentModule(),
                                'status',
                                $params,
                                $image,
-                               getMessage('ACCOUNT_STATUS_CHANGE')).LF;
+                               $this->_translator->getMessage('ACCOUNT_STATUS_CHANGE')).LF;
             unset($params);
          }
 
@@ -1453,9 +1455,9 @@ class cs_user_detail_view extends cs_detail_view {
             $params = array();
             $params['iid'] = $own_room->getItemID();
             if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-               $image = '<img src="images/commsyicons_msie6/22x22/config/rubric_extras.gif" style="vertical-align:bottom;" alt="'.getMessage('USER_EDIT_PREFERENCES').'"/>';
+               $image = '<img src="images/commsyicons_msie6/22x22/config/rubric_extras.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('USER_EDIT_PREFERENCES').'"/>';
             } else {
-               $image = '<img src="images/commsyicons/22x22/config/rubric_extras.png" style="vertical-align:bottom;" alt="'.getMessage('USER_EDIT_PREFERENCES').'"/>';
+               $image = '<img src="images/commsyicons/22x22/config/rubric_extras.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('USER_EDIT_PREFERENCES').'"/>';
             }
             $html .=  ahref_curl($this->_environment->getCurrentContextID(),'configuration','export',$params,$image,$this->_translator->getMessage('PRIVATEROOM_EXPORT')).' '.LF;
             unset($params);
@@ -1465,9 +1467,9 @@ class cs_user_detail_view extends cs_detail_view {
             $params = array();
             $params['iid'] = $item->getItemID();
             if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-               $image = '<img src="images/commsyicons_msie6/22x22/config.gif" style="vertical-align:bottom;" alt="'.getMessage('USER_EDIT_PREFERENCES').'"/>';
+               $image = '<img src="images/commsyicons_msie6/22x22/config.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('USER_EDIT_PREFERENCES').'"/>';
             } else {
-               $image = '<img src="images/commsyicons/22x22/config.png" style="vertical-align:bottom;" alt="'.getMessage('USER_EDIT_PREFERENCES').'"/>';
+               $image = '<img src="images/commsyicons/22x22/config.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('USER_EDIT_PREFERENCES').'"/>';
             }
             $html .= ahref_curl( $this->_environment->getCurrentContextID(),
                                       $this->_environment->getCurrentModule(),
@@ -1591,7 +1593,7 @@ class cs_user_detail_view extends cs_detail_view {
         $html .='<div class="commsy_no_panel" style="margin-bottom:1px; padding:0px;">'.LF;
         $html .= '<div class="right_box">'.LF;
         $array = $this->_environment->getCurrentParameterArray();
-        $html .= '<div class="right_box_title">'.getMessage('COMMON_COMMSY_CONFIGURE_LINKS').'</div>';
+        $html .= '<div class="right_box_title">'.$this->_translator->getMessage('COMMON_COMMSY_CONFIGURE_LINKS').'</div>';
         $html .= '<div class="right_box_main" style="font-size:8pt;">'.LF;
         $html .= '         <table style="width:100%; border-collapse:collapse;" summary="Layout" >'.LF;
         $html .= '         <tr>'.LF;
@@ -1600,16 +1602,16 @@ class cs_user_detail_view extends cs_detail_view {
         $html .= '         </td>'.LF;
         $html .= '         <td style="text-align:right; font-size:10pt;" class="right_box_main">'.LF;
         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-           $image = '<img src="images/commsyicons_msie6/22x22/config.gif" style="vertical-align:bottom;" alt="'.getMessage('COMMON_COMMSY_CONFIGURE').'"/>';
+           $image = '<img src="images/commsyicons_msie6/22x22/config.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_COMMSY_CONFIGURE').'"/>';
         } else {
-           $image = '<img src="images/commsyicons/22x22/config.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_COMMSY_CONFIGURE').'"/>';
+           $image = '<img src="images/commsyicons/22x22/config.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_COMMSY_CONFIGURE').'"/>';
         }
         $html .= ahref_curl($this->_environment->getCurrentContextID(),
                                        'configuration',
                                        'index',
                                        '',
                                        $image,
-                                       getMessage('COMMON_COMMSY_CONFIGURE')).LF;
+                                       $this->_translator->getMessage('COMMON_COMMSY_CONFIGURE')).LF;
         $html .= '         </td>'.LF;
         $html .= '         </tr>'.LF;
         $html .= '         </table>'.LF;
@@ -1623,49 +1625,49 @@ class cs_user_detail_view extends cs_detail_view {
         $html .= '         </td>'.LF;
         $html .= '         <td style="text-align:right; font-size:10pt;" class="right_box_main">'.LF;
         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-           $image = '<img src="images/commsyicons_msie6/22x22/config/room_options.gif" style="vertical-align:bottom;" alt="'.getMessage('COMMON_CONFIGURATION_ROOM_OPTIONS').'"/>';
+           $image = '<img src="images/commsyicons_msie6/22x22/config/room_options.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_CONFIGURATION_ROOM_OPTIONS').'"/>';
         } else {
-           $image = '<img src="images/commsyicons/22x22/config/room_options.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_CONFIGURATION_ROOM_OPTIONS').'"/>';
+           $image = '<img src="images/commsyicons/22x22/config/room_options.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_CONFIGURATION_ROOM_OPTIONS').'"/>';
         }
         $html .= ahref_curl($this->_environment->getCurrentContextID(),
                                        'configuration',
                                        'room_options',
                                        '',
                                        $image,
-                                       getMessage('COMMON_CONFIGURATION_ROOM_OPTIONS')).LF;
+                                       $this->_translator->getMessage('COMMON_CONFIGURATION_ROOM_OPTIONS')).LF;
         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-           $image = '<img src="images/commsyicons_msie6/22x22/config/rubric_options.gif" style="vertical-align:bottom;" alt="'.getMessage('COMMON_CONFIGURATION_RUBRIC_OPTIONS').'"/>';
+           $image = '<img src="images/commsyicons_msie6/22x22/config/rubric_options.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_CONFIGURATION_RUBRIC_OPTIONS').'"/>';
         } else {
-           $image = '<img src="images/commsyicons/22x22/config/rubric_options.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_CONFIGURATION_RUBRIC_OPTIONS').'"/>';
+           $image = '<img src="images/commsyicons/22x22/config/rubric_options.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_CONFIGURATION_RUBRIC_OPTIONS').'"/>';
         }
         $html .= ahref_curl($this->_environment->getCurrentContextID(),
                                        'configuration',
                                        'rubric_options',
                                        '',
                                        $image,
-                                       getMessage('COMMON_CONFIGURATION_RUBRIC_OPTIONS')).LF;
+                                       $this->_translator->getMessage('COMMON_CONFIGURATION_RUBRIC_OPTIONS')).LF;
         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-           $image = '<img src="images/commsyicons_msie6/22x22/config/structure_options.gif" style="vertical-align:bottom;" alt="'.getMessage('CONFIGURATION_STRUCTURE_OPTIONS_TITLE').'"/>';
+           $image = '<img src="images/commsyicons_msie6/22x22/config/structure_options.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('CONFIGURATION_STRUCTURE_OPTIONS_TITLE').'"/>';
         } else {
-           $image = '<img src="images/commsyicons/22x22/config/structure_options.png" style="vertical-align:bottom;" alt="'.getMessage('CONFIGURATION_STRUCTURE_OPTIONS_TITLE').'"/>';
+           $image = '<img src="images/commsyicons/22x22/config/structure_options.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('CONFIGURATION_STRUCTURE_OPTIONS_TITLE').'"/>';
         }
         $html .= ahref_curl($this->_environment->getCurrentContextID(),
                                        'configuration',
                                        'structure_options',
                                        '',
                                        $image,
-                                       getMessage('CONFIGURATION_STRUCTURE_OPTIONS_TITLE')).LF;
+                                       $this->_translator->getMessage('CONFIGURATION_STRUCTURE_OPTIONS_TITLE')).LF;
         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-           $image = '<img src="images/commsyicons_msie6/22x22/config/account_options.gif" style="vertical-align:bottom;" alt="'.getMessage('CONFIGURATION_ACCOUNT_OPTIONS_TITLE').'"/>';
+           $image = '<img src="images/commsyicons_msie6/22x22/config/account_options.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('CONFIGURATION_ACCOUNT_OPTIONS_TITLE').'"/>';
         } else {
-           $image = '<img src="images/commsyicons/22x22/config/account_options.png" style="vertical-align:bottom;" alt="'.getMessage('CONFIGURATION_ACCOUNT_OPTIONS_TITLE').'"/>';
+           $image = '<img src="images/commsyicons/22x22/config/account_options.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('CONFIGURATION_ACCOUNT_OPTIONS_TITLE').'"/>';
         }
         $html .= ahref_curl($this->_environment->getCurrentContextID(),
                                        'configuration',
                                        'account_options',
                                        '',
                                        $image,
-                                       getMessage('CONFIGURATION_ACCOUNT_OPTIONS_TITLE')).LF;
+                                       $this->_translator->getMessage('CONFIGURATION_ACCOUNT_OPTIONS_TITLE')).LF;
         $html .= '         </td>'.LF;
         $html .= '         </tr>'.LF;
         $html .= '         </table>'.LF;
@@ -1680,65 +1682,65 @@ class cs_user_detail_view extends cs_detail_view {
         $html .= '         </td>'.LF;
         $html .= '         <td style="text-align:right; font-size:10pt;" class="right_box_main">'.LF;
         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-           $image = '<img src="images/commsyicons_msie6/22x22/config/account.gif" style="vertical-align:bottom;" alt="'.getMessage('COMMON_PAGETITLE_ACCOUNT').'"/>';
+           $image = '<img src="images/commsyicons_msie6/22x22/config/account.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_PAGETITLE_ACCOUNT').'"/>';
         } else {
-           $image = '<img src="images/commsyicons/22x22/config/account.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_PAGETITLE_ACCOUNT').'"/>';
+           $image = '<img src="images/commsyicons/22x22/config/account.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_PAGETITLE_ACCOUNT').'"/>';
         }
         $html .= ahref_curl($this->_environment->getCurrentContextID(),
                                        'account',
                                        'index',
                                        '',
                                        $image,
-                                       getMessage('COMMON_PAGETITLE_ACCOUNT')).LF;
+                                       $this->_translator->getMessage('COMMON_PAGETITLE_ACCOUNT')).LF;
         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-           $image = '<img src="images/commsyicons_msie6/22x22/config/informationbox.gif" style="vertical-align:bottom;" alt="'.getMessage('COMMON_INFORMATION_BOX').'"/>';
+           $image = '<img src="images/commsyicons_msie6/22x22/config/informationbox.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_INFORMATION_BOX').'"/>';
         } else {
-           $image = '<img src="images/commsyicons/22x22/config/informationbox.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_INFORMATION_BOX').'"/>';
+           $image = '<img src="images/commsyicons/22x22/config/informationbox.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_INFORMATION_BOX').'"/>';
         }
         $html .= ahref_curl($this->_environment->getCurrentContextID(),
                                        'configuration',
                                        'informationbox',
                                        '',
                                        $image,
-                                       getMessage('COMMON_INFORMATION_BOX')).LF;
+                                       $this->_translator->getMessage('COMMON_INFORMATION_BOX')).LF;
         if ( $room->isCommunityRoom()
            and $room->isOpenForGuests()
            and $room->withRubric(CS_MATERIAL_TYPE)
         ) {
            if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-              $image = '<img src="images/commsyicons_msie6/22x22/config/material_admin.gif" style="vertical-align:bottom;" alt="'.getMessage('MATERIAL_ADMIN_TINY_HEADER_CONFIGURATION').'"/>';
+              $image = '<img src="images/commsyicons_msie6/22x22/config/material_admin.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('MATERIAL_ADMIN_TINY_HEADER_CONFIGURATION').'"/>';
            } else {
-              $image = '<img src="images/commsyicons/22x22/config/material_admin.png" style="vertical-align:bottom;" alt="'.getMessage('MATERIAL_ADMIN_TINY_HEADER_CONFIGURATION').'"/>';
+              $image = '<img src="images/commsyicons/22x22/config/material_admin.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('MATERIAL_ADMIN_TINY_HEADER_CONFIGURATION').'"/>';
            }
            $html .= ahref_curl($this->_environment->getCurrentContextID(),
                                        'material_admin',
                                        'index',
                                        '',
                                        $image,
-                                       getMessage('MATERIAL_ADMIN_TINY_HEADER_CONFIGURATION')).LF;
+                                       $this->_translator->getMessage('MATERIAL_ADMIN_TINY_HEADER_CONFIGURATION')).LF;
         }
         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-           $image = '<img src="images/commsyicons_msie6/22x22/config/usage_info_options.gif" style="vertical-align:bottom;" alt="'.getMessage('COMMON_CONFIGURATION_USAGEINFO_FORM_TITLE').'"/>';
+           $image = '<img src="images/commsyicons_msie6/22x22/config/usage_info_options.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_CONFIGURATION_USAGEINFO_FORM_TITLE').'"/>';
         } else {
-           $image = '<img src="images/commsyicons/22x22/config/usage_info_options.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_CONFIGURATION_USAGEINFO_FORM_TITLE').'"/>';
+           $image = '<img src="images/commsyicons/22x22/config/usage_info_options.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_CONFIGURATION_USAGEINFO_FORM_TITLE').'"/>';
         }
         $html .= ahref_curl($this->_environment->getCurrentContextID(),
                                        'configuration',
                                        'usageinfo',
                                        '',
                                        $image,
-                                       getMessage('COMMON_CONFIGURATION_USAGEINFO_FORM_TITLE')).LF;
+                                       $this->_translator->getMessage('COMMON_CONFIGURATION_USAGEINFO_FORM_TITLE')).LF;
         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-           $image = '<img src="images/commsyicons_msie6/22x22/config/mail_options.gif" style="vertical-align:bottom;" alt="'.getMessage('COMMON_CONFIGURATION_MAIL_FORM_TITLE').'"/>';
+           $image = '<img src="images/commsyicons_msie6/22x22/config/mail_options.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_CONFIGURATION_MAIL_FORM_TITLE').'"/>';
         } else {
-           $image = '<img src="images/commsyicons/22x22/config/mail_options.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_CONFIGURATION_MAIL_FORM_TITLE').'"/>';
+           $image = '<img src="images/commsyicons/22x22/config/mail_options.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_CONFIGURATION_MAIL_FORM_TITLE').'"/>';
         }
         $html .= ahref_curl($this->_environment->getCurrentContextID(),
                                        'configuration',
                                        'mail',
                                        '',
                                        $image,
-                                       getMessage('COMMON_CONFIGURATION_MAIL_FORM_TITLE')).LF;
+                                       $this->_translator->getMessage('COMMON_CONFIGURATION_MAIL_FORM_TITLE')).LF;
         $html .= '         </td>'.LF;
         $html .= '         </tr>'.LF;
         $html .= '         </table>'.LF;
@@ -1755,68 +1757,68 @@ class cs_user_detail_view extends cs_detail_view {
         global $c_html_textarea;
         if ( $c_html_textarea ) {
            if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-              $image = '<img src="images/commsyicons_msie6/22x22/config/htmltextarea.gif" style="vertical-align:bottom;" alt="'.getMessage('CONFIGURATION_TEXTAREA_TITLE').'"/>';
+              $image = '<img src="images/commsyicons_msie6/22x22/config/htmltextarea.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('CONFIGURATION_TEXTAREA_TITLE').'"/>';
            } else {
-              $image = '<img src="images/commsyicons/22x22/config/htmltextarea.png" style="vertical-align:bottom;" alt="'.getMessage('CONFIGURATION_TEXTAREA_TITLE').'"/>';
+              $image = '<img src="images/commsyicons/22x22/config/htmltextarea.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('CONFIGURATION_TEXTAREA_TITLE').'"/>';
            }
            $html .= ahref_curl($this->_environment->getCurrentContextID(),
                                        'configuration',
                                        'htmltextarea',
                                        '',
                                        $image,
-                                       getMessage('CONFIGURATION_TEXTAREA_TITLE')).LF;
+                                       $this->_translator->getMessage('CONFIGURATION_TEXTAREA_TITLE')).LF;
         }
         $context_item = $this->_environment->getCurrentContextItem();
         if ( $context_item->withWikiFunctions() and !$context_item->isServer()  and !$context_item->isGrouproom()) {
            if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-              $image = '<img src="images/commsyicons_msie6/22x22/config/pmwiki.gif" style="vertical-align:bottom;" alt="'.getMessage('WIKI_CONFIGURATION_LINK').'"/>';
+              $image = '<img src="images/commsyicons_msie6/22x22/config/pmwiki.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('WIKI_CONFIGURATION_LINK').'"/>';
            } else {
-              $image = '<img src="images/commsyicons/22x22/config/pmwiki.png" style="vertical-align:bottom;" alt="'.getMessage('WIKI_CONFIGURATION_LINK').'"/>';
+              $image = '<img src="images/commsyicons/22x22/config/pmwiki.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('WIKI_CONFIGURATION_LINK').'"/>';
            }
            $html .= ahref_curl($this->_environment->getCurrentContextID(),
                                        'configuration',
                                        'wiki',
                                        '',
                                        $image,
-                                       getMessage('WIKI_CONFIGURATION_LINK')).LF;
+                                       $this->_translator->getMessage('WIKI_CONFIGURATION_LINK')).LF;
         }
         if ( $context_item->withChatLink() and !$context_item->isPortal()  and !$context_item->isGrouproom()) {
         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-           $image = '<img src="images/commsyicons_msie6/22x22/config/etchat.gif" style="vertical-align:bottom;" alt="'.getMessage('CHAT_CONFIGURATION_LINK').'"/>';
+           $image = '<img src="images/commsyicons_msie6/22x22/config/etchat.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('CHAT_CONFIGURATION_LINK').'"/>';
         } else {
-           $image = '<img src="images/commsyicons/22x22/config/etchat.png" style="vertical-align:bottom;" alt="'.getMessage('CHAT_CONFIGURATION_LINK').'"/>';
+           $image = '<img src="images/commsyicons/22x22/config/etchat.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('CHAT_CONFIGURATION_LINK').'"/>';
         }
         $html .= ahref_curl($this->_environment->getCurrentContextID(),
                                        'configuration',
                                        'chat',
                                        '',
                                        $image,
-                                       getMessage('CHAT_CONFIGURATION_LINK')).LF;
+                                       $this->_translator->getMessage('CHAT_CONFIGURATION_LINK')).LF;
         }
         if ( !$context_item->isGrouproom()){
            if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-              $image = '<img src="images/commsyicons_msie6/22x22/config/template_options.gif" style="vertical-align:bottom;" alt="'.getMessage('CONFIGURATION_TEMPLATE_FORM_ELEMENT_TITLE').'"/>';
+              $image = '<img src="images/commsyicons_msie6/22x22/config/template_options.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('CONFIGURATION_TEMPLATE_FORM_ELEMENT_TITLE').'"/>';
            } else {
-              $image = '<img src="images/commsyicons/22x22/config/template_options.png" style="vertical-align:bottom;" alt="'.getMessage('CONFIGURATION_TEMPLATE_FORM_ELEMENT_TITLE').'"/>';
+              $image = '<img src="images/commsyicons/22x22/config/template_options.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('CONFIGURATION_TEMPLATE_FORM_ELEMENT_TITLE').'"/>';
            }
            $html .= ahref_curl($this->_environment->getCurrentContextID(),
                                        'configuration',
                                        'template_options',
                                        '',
                                        $image,
-                                       getMessage('CONFIGURATION_TEMPLATE_FORM_ELEMENT_TITLE')).LF;
+                                       $this->_translator->getMessage('CONFIGURATION_TEMPLATE_FORM_ELEMENT_TITLE')).LF;
         }
         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-           $image = '<img src="images/commsyicons_msie6/22x22/config/rubric_extras.gif" style="vertical-align:bottom;" alt="'.getMessage('CONFIGURATION_RUBRIC_EXTRAS_TITLE').'"/>';
+           $image = '<img src="images/commsyicons_msie6/22x22/config/rubric_extras.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('CONFIGURATION_RUBRIC_EXTRAS_TITLE').'"/>';
         } else {
-           $image = '<img src="images/commsyicons/22x22/config/rubric_extras.png" style="vertical-align:bottom;" alt="'.getMessage('CONFIGURATION_RUBRIC_EXTRAS_TITLE').'"/>';
+           $image = '<img src="images/commsyicons/22x22/config/rubric_extras.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('CONFIGURATION_RUBRIC_EXTRAS_TITLE').'"/>';
         }
         $html .= ahref_curl($this->_environment->getCurrentContextID(),
                                        'configuration',
                                        'rubric_extras',
                                        '',
                                        $image,
-                                       getMessage('CONFIGURATION_RUBRIC_EXTRAS_TITLE')).LF;
+                                       $this->_translator->getMessage('CONFIGURATION_RUBRIC_EXTRAS_TITLE')).LF;
         $html .= '         </td>'.LF;
         $html .= '         </tr>'.LF;
         $html .= '         </table>'.LF;

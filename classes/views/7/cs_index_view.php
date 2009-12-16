@@ -305,7 +305,7 @@ class cs_index_view extends cs_view {
     */
     function getSearchText (){
        if (empty($this->_search_text)){
-        $this->_search_text = getMessage('COMMON_SEARCH_IN_ROOM');
+        $this->_search_text = $this->_translator->getMessage('COMMON_SEARCH_IN_ROOM');
        }
        return $this->_search_text;
     }
@@ -579,7 +579,7 @@ class cs_index_view extends cs_view {
       $html  = '';
       $html .= '<div class="right_box">'.LF;
       $html .= '         <noscript>';
-      $html .= '<div class="right_box_title">'.getMessage('COMMON_SORTING_BOX').'</div>';
+      $html .= '<div class="right_box_title">'.$this->_translator->getMessage('COMMON_SORTING_BOX').'</div>';
       $html .= '         </noscript>';
       $html .= '<div class="right_box_main" style="font-size:10pt;">'.LF;
       $html .= '<a href="javascript:callStudyLogSortAlphabetical()">'.$this->_translator->getMessage('COMMON_TITLE').'</a>'.LF;
@@ -616,12 +616,12 @@ class cs_index_view extends cs_view {
       $html  = '';
       $html .= '<div class="right_box">'.LF;
       $html .= '         <noscript>';
-      $html .= '<div class="right_box_title">'.getMessage('COMMON_BUZZWORD_BOX').'</div>';
+      $html .= '<div class="right_box_title">'.$this->_translator->getMessage('COMMON_BUZZWORD_BOX').'</div>';
       $html .= '         </noscript>';
       $html .= '<div class="right_box_main" style="font-size:8pt;">'.LF;
       $buzzword = $this->_available_buzzwords->getFirst();
       if (!isset($buzzword)){
-         $html .= '<span class="disabled" style="font-size:8pt;">'.getMessage('COMMON_NO_ENTRIES').'</span>';
+         $html .= '<span class="disabled" style="font-size:8pt;">'.$this->_translator->getMessage('COMMON_NO_ENTRIES').'</span>';
       }
       $params = $this->_environment->getCurrentParameterArray();
       unset($params['from']);
@@ -742,7 +742,7 @@ class cs_index_view extends cs_view {
       $html  = '';
       $html .= '<div class="right_box">'.LF;
       $html .= '         <noscript>';
-      $html .= '<div class="right_box_title">'.getMessage('COMMON_TAG_BOX').'</div>';
+      $html .= '<div class="right_box_title">'.$this->_translator->getMessage('COMMON_TAG_BOX').'</div>';
       $html .= '         </noscript>';
       $html .= '<div class="right_box_main" >'.LF;
       $current_context = $this->_environment->getCurrentContextItem();
@@ -774,7 +774,7 @@ class cs_index_view extends cs_view {
       }
       
       if ( empty($html_text) ){
-         $html_text .= '<span class="disabled" style="font-size:10pt;">'.getMessage('COMMON_NO_ENTRIES').'</span>';
+         $html_text .= '<span class="disabled" style="font-size:10pt;">'.$this->_translator->getMessage('COMMON_NO_ENTRIES').'</span>';
       }
       $html .= $html_text;
       $html .= '<div style="width:'.$width.'px; text-align:right; padding-right:2px; padding-top:5px; font-size:8pt;">';
@@ -1468,7 +1468,7 @@ EOD;
          if ( isset($params['search']) and !empty($params['search']) ){
             $html_text ='<tr>'.LF;
             $html_text .='<td>'.LF;
-            $html_text .= '<span class="infocolor">'.getMessage('COMMON_SEARCH_RESTRICTION').': </span>';
+            $html_text .= '<span class="infocolor">'.$this->_translator->getMessage('COMMON_SEARCH_RESTRICTION').': </span>';
             $html_text .='</td>'.LF;
             $html_text .='<td style="text-align:right;">'.LF;
             $html_text .= '<span><a title="'.urldecode($params['search']).'">'.chunkText($this->_text_as_html_short(urldecode($params['search'])),13).'</a></span>';
@@ -1485,11 +1485,11 @@ EOD;
          if ( isset($params['selgroup']) and !empty($params['selgroup']) ){
             $html_text ='<tr>'.LF;
             $html_text .='<td>'.LF;
-            $html_text .= '<span class="infocolor">'.getMessage('COMMON_GROUP').': </span>';
+            $html_text .= '<span class="infocolor">'.$this->_translator->getMessage('COMMON_GROUP').': </span>';
             $html_text .='</td>'.LF;
             $html_text .='<td style="text-align:right;">'.LF;
             if ($params['selgroup'] == '-1'){
-               $html_text .= '<span><a title="'.getMessage('COMMON_NOT_LINKED').'">'.getMessage('COMMON_NOT_LINKED').'</a></span>';
+               $html_text .= '<span><a title="'.$this->_translator->getMessage('COMMON_NOT_LINKED').'">'.$this->_translator->getMessage('COMMON_NOT_LINKED').'</a></span>';
             }else{
                $group_manager = $this->_environment->getGroupManager();
                $group_item = $group_manager->getItem($params['selgroup']);
@@ -1512,11 +1512,11 @@ EOD;
          if ( isset($params['seluser']) and !empty($params['seluser']) ){
             $html_text ='<tr>'.LF;
             $html_text .='<td>'.LF;
-            $html_text .= '<span class="infocolor">'.getMessage('COMMON_USER').': </span>';
+            $html_text .= '<span class="infocolor">'.$this->_translator->getMessage('COMMON_USER').': </span>';
             $html_text .='</td>'.LF;
             $html_text .='<td style="text-align:right;">'.LF;
             if ($params['seluser'] == '-1'){
-               $html_text .= '<span><a title="'.getMessage('COMMON_NOT_LINKED').'">'.getMessage('COMMON_NOT_LINKED').'</a></span>';
+               $html_text .= '<span><a title="'.$this->_translator->getMessage('COMMON_NOT_LINKED').'">'.$this->_translator->getMessage('COMMON_NOT_LINKED').'</a></span>';
             }else{
                $user_manager = $this->_environment->getUserManager();
                $user_item = $user_manager->getItem($params['seluser']);
@@ -1539,11 +1539,11 @@ EOD;
          if ( isset($params['selinstitution']) and !empty($params['selinstitution']) ){
             $html_text ='<tr>'.LF;
             $html_text .='<td>'.LF;
-            $html_text .= '<span class="infocolor">'.getMessage('COMMON_INSTITUTION').': </span>';
+            $html_text .= '<span class="infocolor">'.$this->_translator->getMessage('COMMON_INSTITUTION').': </span>';
             $html_text .='</td>'.LF;
             $html_text .='<td style="text-align:right;">'.LF;
             if ($params['selinstitution'] == '-1'){
-               $html_text .= '<span><a title="'.getMessage('COMMON_NOT_LINKED').'">'.getMessage('COMMON_NOT_LINKED').'</a></span>';
+               $html_text .= '<span><a title="'.$this->_translator->getMessage('COMMON_NOT_LINKED').'">'.$this->_translator->getMessage('COMMON_NOT_LINKED').'</a></span>';
             }else{
                $institution_manager = $this->_environment->getInstitutionManager();
                $institution_item = $institution_manager->getItem($params['selinstitution']);
@@ -1566,11 +1566,11 @@ EOD;
          if ( isset($params['seltopic']) and !empty($params['seltopic']) ){
             $html_text ='<tr>'.LF;
             $html_text .='<td>'.LF;
-            $html_text .= '<span class="infocolor">'.getMessage('COMMON_TOPIC').': </span>';
+            $html_text .= '<span class="infocolor">'.$this->_translator->getMessage('COMMON_TOPIC').': </span>';
             $html_text .='</td>'.LF;
             $html_text .='<td style="text-align:right;">'.LF;
             if ($params['seltopic'] == '-1'){
-               $html_text .= '<span><a title="'.getMessage('COMMON_NOT_LINKED').'">'.getMessage('COMMON_NOT_LINKED').'</a></span>';
+               $html_text .= '<span><a title="'.$this->_translator->getMessage('COMMON_NOT_LINKED').'">'.$this->_translator->getMessage('COMMON_NOT_LINKED').'</a></span>';
             }else{
                $topic_manager = $this->_environment->getTopicManager();
                $topic_item = $topic_manager->getItem($params['seltopic']);
@@ -1593,12 +1593,12 @@ EOD;
          if ( isset($params['selbuzzword'])  and !empty($params['selbuzzword']) ){
             $html_text ='<tr>'.LF;
             $html_text .='<td>'.LF;
-            $html_text .= '<span class="infocolor">'.getMessage('COMMON_BUZZWORD_RESTRICTION').': </span>';
+            $html_text .= '<span class="infocolor">'.$this->_translator->getMessage('COMMON_BUZZWORD_RESTRICTION').': </span>';
             $html_text .='</td>'.LF;
             $html_text .='<td style="text-align:right;">'.LF;
             $buzzword_manager = $this->_environment->getBuzzwordManager();
             if ($params['selbuzzword'] == '-1'){
-               $html_text .= '<span><a title="'.getMessage('COMMON_NOT_LINKED').'">'.getMessage('COMMON_NOT_LINKED').'</a></span>';
+               $html_text .= '<span><a title="'.$this->_translator->getMessage('COMMON_NOT_LINKED').'">'.$this->_translator->getMessage('COMMON_NOT_LINKED').'</a></span>';
             }else{
                $buzzword_item = $buzzword_manager->getItem($params['selbuzzword']);
                $html_text .= '<span><a title="'.$this->_text_as_html_short($buzzword_item->getName()).'">'.chunkText($this->_text_as_html_short($buzzword_item->getName()),12).'</a></span>';
@@ -1621,7 +1621,7 @@ EOD;
             $tag_item = $tag_manager->getItem($params['seltag_'.$i]);
             $html_text ='<tr>'.LF;
             $html_text .='<td>'.LF;
-            $html_text .= '<span class="infocolor">'.getMessage('COMMON_TAG_RESTRICTION').': </span>';
+            $html_text .= '<span class="infocolor">'.$this->_translator->getMessage('COMMON_TAG_RESTRICTION').': </span>';
             $html_text .='</td>'.LF;
             $html_text .='<td style="text-align:right;">'.LF;
             $html_text .= '<span>'.chunkText($this->_text_as_html_short($tag_item->getTitle()),12).'</span>';
@@ -1661,7 +1661,7 @@ EOD;
       $tempMessage = '';
       switch ( mb_strtoupper($this->_environment->getCurrentModule(), 'UTF-8') ) {
          case 'ANNOUNCEMENT':
-            $tempMessage = getMessage('ANNOUNCEMENT_INDEX');
+            $tempMessage = $this->_translator->getMessage('ANNOUNCEMENT_INDEX');
             if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
                $tempMessage = '<img src="images/commsyicons_msie6/32x32/announcement.gif" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
             } else {
@@ -1669,7 +1669,7 @@ EOD;
             }
             break;
          case 'DATE':
-            $tempMessage = getMessage('DATE_INDEX');
+            $tempMessage = $this->_translator->getMessage('DATE_INDEX');
             if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
                $tempMessage = '<img src="images/commsyicons_msie6/32x32/date.gif" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
             } else {
@@ -1677,7 +1677,7 @@ EOD;
             }
             break;
          case 'DISCUSSION':
-            $tempMessage = getMessage('DISCUSSION_INDEX');
+            $tempMessage = $this->_translator->getMessage('DISCUSSION_INDEX');
             if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
                $tempMessage = '<img src="images/commsyicons_msie6/32x32/discussion.gif" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
             } else {
@@ -1685,7 +1685,7 @@ EOD;
             }
             break;
          case 'INSTITUTION':
-            $tempMessage = getMessage('INSTITUTION_INDEX');
+            $tempMessage = $this->_translator->getMessage('INSTITUTION_INDEX');
             if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
                $tempMessage = '<img src="images/commsyicons_msie6/32x32/group.gif" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
             } else {
@@ -1693,7 +1693,7 @@ EOD;
             }
             break;
          case 'GROUP':
-            $tempMessage = getMessage('GROUP_INDEX');
+            $tempMessage = $this->_translator->getMessage('GROUP_INDEX');
             if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
                $tempMessage = '<img src="images/commsyicons_msie6/32x32/group.gif" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
             } else {
@@ -1701,7 +1701,7 @@ EOD;
             }
             break;
          case 'MATERIAL':
-            $tempMessage = getMessage('MATERIAL_INDEX');
+            $tempMessage = $this->_translator->getMessage('MATERIAL_INDEX');
             if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
                $tempMessage = '<img src="images/commsyicons_msie6/32x32/material.gif" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
             } else {
@@ -1709,7 +1709,7 @@ EOD;
             }
             break;
          case 'MATERIAL_ADMIN':
-            $tempMessage = getMessage('MATERIAL_ADMIN_INDEX').' ('.getMessage('MATERIAL_INDEX').')';
+            $tempMessage = $this->_translator->getMessage('MATERIAL_ADMIN_INDEX').' ('.$this->_translator->getMessage('MATERIAL_INDEX').')';
             if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
                $tempMessage = '<img src="images/commsyicons_msie6/32x32/config/material_admin.gif" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
             } else {
@@ -1717,7 +1717,7 @@ EOD;
             }
             break;
          case 'MYROOM':
-            $tempMessage = getMessage('MYROOM_INDEX');
+            $tempMessage = $this->_translator->getMessage('MYROOM_INDEX');
             if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
                $tempMessage = '<img src="images/commsyicons_msie6/32x32/room.gif" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
             } else {
@@ -1725,7 +1725,7 @@ EOD;
             }
             break;
          case 'PROJECT':
-            $tempMessage = getMessage('PROJECT_INDEX');
+            $tempMessage = $this->_translator->getMessage('PROJECT_INDEX');
             if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
                $tempMessage = '<img src="images/commsyicons_msie6/32x32/room.gif" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
             } else {
@@ -1733,7 +1733,7 @@ EOD;
             }
             break;
          case 'TODO':
-            $tempMessage = getMessage('TODO_INDEX');
+            $tempMessage = $this->_translator->getMessage('TODO_INDEX');
             if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
                $tempMessage = '<img src="images/commsyicons_msie6/32x32/todo.gif" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
             } else {
@@ -1741,7 +1741,7 @@ EOD;
             }
             break;
          case 'TOPIC':
-            $tempMessage = getMessage('TOPIC_INDEX');
+            $tempMessage = $this->_translator->getMessage('TOPIC_INDEX');
             if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
                $tempMessage = '<img src="images/commsyicons_msie6/32x32/topic.gif" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
             } else {
@@ -1749,7 +1749,7 @@ EOD;
             }
             break;
          case 'USER':
-            $tempMessage = getMessage('USER_INDEX');
+            $tempMessage = $this->_translator->getMessage('USER_INDEX');
             if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
                $tempMessage = '<img src="images/commsyicons_msie6/32x32/user.gif" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
             } else {
@@ -1757,13 +1757,13 @@ EOD;
             }
             break;
          default:
-            $tempMessage = getMessage('COMMON_MESSAGETAG_ERROR'.' cs_index_view(685) ');
+            $tempMessage = $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR'.' cs_index_view(685) ');
             break;
       }
       if ($this->_clipboard_mode){
-          $html .= '<h2 class="pagetitle">'.getMessage('CLIPBOARD_HEADER').' ('.$tempMessage.')';
+          $html .= '<h2 class="pagetitle">'.$this->_translator->getMessage('CLIPBOARD_HEADER').' ('.$tempMessage.')';
       }elseif ( $this->hasCheckboxes() and $this->_has_checkboxes != 'list_actions' ) {
-         $html .= '<h2 class="pagetitle">'.getMessage('COMMON_ASSIGN').' ('.$tempMessage.')';
+         $html .= '<h2 class="pagetitle">'.$this->_translator->getMessage('COMMON_ASSIGN').' ('.$tempMessage.')';
       }else{
           $html .= '<h2 class="pagetitle">'.$tempMessage;
       }
@@ -1860,40 +1860,40 @@ EOD;
          $tempMessage = '';
          switch ( mb_strtoupper($this->_environment->getCurrentModule(), 'UTF-8') ) {
             case 'ANNOUNCEMENT':
-               $tempMessage = getMessage('ANNOUNCEMENT_INDEX');
+               $tempMessage = $this->_translator->getMessage('ANNOUNCEMENT_INDEX');
                break;
             case 'DATE':
-               $tempMessage = getMessage('DATE_INDEX');
+               $tempMessage = $this->_translator->getMessage('DATE_INDEX');
                break;
             case 'DISCUSSION':
-               $tempMessage = getMessage('DISCUSSION_INDEX');
+               $tempMessage = $this->_translator->getMessage('DISCUSSION_INDEX');
                break;
             case 'INSTITUTION':
-               $tempMessage = getMessage('INSTITUTION_INDEX');
+               $tempMessage = $this->_translator->getMessage('INSTITUTION_INDEX');
                break;
             case 'GROUP':
-               $tempMessage = getMessage('GROUP_INDEX');
+               $tempMessage = $this->_translator->getMessage('GROUP_INDEX');
                break;
             case 'MATERIAL':
-               $tempMessage = getMessage('MATERIAL_INDEX');
+               $tempMessage = $this->_translator->getMessage('MATERIAL_INDEX');
                break;
             case 'MYROOM':
-               $tempMessage = getMessage('MYROOM_INDEX');
+               $tempMessage = $this->_translator->getMessage('MYROOM_INDEX');
                break;
             case 'PROJECT':
-               $tempMessage = getMessage('PROJECT_INDEX');
+               $tempMessage = $this->_translator->getMessage('PROJECT_INDEX');
                break;
             case 'TODO':
-               $tempMessage = getMessage('TODO_INDEX');
+               $tempMessage = $this->_translator->getMessage('TODO_INDEX');
                break;
             case 'TOPIC':
-               $tempMessage = getMessage('TOPIC_INDEX');
+               $tempMessage = $this->_translator->getMessage('TOPIC_INDEX');
                break;
             case 'USER':
-               $tempMessage = getMessage('USER_INDEX');
+               $tempMessage = $this->_translator->getMessage('USER_INDEX');
                break;
             default:
-               $tempMessage = getMessage('COMMON_MESSAGETAG_ERROR'.' cs_index_view('.__LINE__.') ');
+               $tempMessage = $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR'.' cs_index_view('.__LINE__.') ');
                break;
          }
          $html .= $this->_getListInfosAsHTML($tempMessage);
@@ -1920,9 +1920,9 @@ EOD;
                $additional_text =',';
             }
             if ($this->_environment->getCurrentModule() != 'campus_search'){
-               $title_string .= $additional_text.'"'.getMessage('COMMON_RESTRICTIONS').'"';
+               $title_string .= $additional_text.'"'.$this->_translator->getMessage('COMMON_RESTRICTIONS').'"';
             }else{
-               $title_string .= $additional_text.'"'.getMessage('COMMON_RESTRICTION_SEARCH').'"';
+               $title_string .= $additional_text.'"'.$this->_translator->getMessage('COMMON_RESTRICTION_SEARCH').'"';
             }
             $desc_string .= $additional_text.'""';
             $size_string .= $additional_text.'"10"';
@@ -1958,7 +1958,7 @@ EOD;
             } else {
                $additional_text = ',';
             }
-            $title_string .= $additional_text.'"'.getMessage('COMMON_BUZZWORD_BOX').'"';
+            $title_string .= $additional_text.'"'.$this->_translator->getMessage('COMMON_BUZZWORD_BOX').'"';
             $desc_string .= $additional_text.'""';
             if ( isset($this->_available_buzzwords) ) {
                $size_string .= $additional_text.'"'.$this->_available_buzzwords->getCount().'"';
@@ -1986,7 +1986,7 @@ EOD;
             } else {
                $additional_text =',';
             }
-            $title_string .= $additional_text.'"'.getMessage('COMMON_TAG_BOX').'"';
+            $title_string .= $additional_text.'"'.$this->_translator->getMessage('COMMON_TAG_BOX').'"';
             $desc_string .= $additional_text.'""';
             $tag_manager = $this->_environment->getTagManager();
             $tag_manager->setContextLimit($this->_environment->getCurrentContextID());
@@ -2019,7 +2019,7 @@ EOD;
             } else {
                $additional_text = ',';
             }
-            $title_string .= $additional_text.'"'.getMessage('COMMON_SORTING_BOX').'"';
+            $title_string .= $additional_text.'"'.$this->_translator->getMessage('COMMON_SORTING_BOX').'"';
             $desc_string .= $additional_text.'""';
             $size_string .= $additional_text.'"10"';
             $config_text .= $additional_text.'true';
@@ -2374,10 +2374,10 @@ EOD;
             $text .= $this->_translator->getMessage('COMMON_ENTRIES');
             break;
          default:
-            $text .= getMessage('COMMON_MESSAGETAG_ERROR').' cs_index_view(1913) ';
+            $text .= $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR').' cs_index_view(1913) ';
             break;
       }
-      $html .= '<span class="infocolor">'.getMessage('COMMON_ALL_LIST_ENTRIES',$text).':</span> ';
+      $html .= '<span class="infocolor">'.$this->_translator->getMessage('COMMON_ALL_LIST_ENTRIES',$text).':</span> ';
       $html .='</td>'.LF;
       $html .='<td style="text-align:right;">'.LF;
       $html .= $this->_count_all.''.LF;
@@ -2459,7 +2459,7 @@ EOD;
             $params['seldisplay_mode'] = 'html';
             $html .= '<div style="float:right;">'.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),'index',$params,$this->_translator->getMessage('COMMON_CHANGE_INDEX_VIEW_LIST')).'</div>'.LF;
          }
-         $html .= '<span class="infocolor">'.getMessage('DATE_ALTERNATIVE_DISPLAY').': </span>'.LF;
+         $html .= '<span class="infocolor">'.$this->_translator->getMessage('DATE_ALTERNATIVE_DISPLAY').': </span>'.LF;
       }
 
       $html .= '</div>'.LF;
@@ -2544,7 +2544,7 @@ EOD;
       $html .= '<div class="commsy_panel" style="margin-bottom:1px;">'.LF;
       $html .= '<div class="right_box">'.LF;
       $html .= '         <noscript>';
-      $html .= '<div class="right_box_title">'.getMessage('COMMON_NETNAVIGATION').'</div>';
+      $html .= '<div class="right_box_title">'.$this->_translator->getMessage('COMMON_NETNAVIGATION').'</div>';
       $html .= '         </noscript>';
       $html .= '<div class="right_box_main" style="padding-top:5px;">'.LF;
       $html .= $this->_getAdditionalFormFieldsAsHTML();
@@ -2619,9 +2619,9 @@ EOD;
      $html .= '   <input type="hidden" name="selrubric" value="'.$this->_environment->getCurrentModule().'"/>'.LF;
      $html .= '<input id="searchtext" onclick="javascript:resetSearchText(\'searchtext\');" style="width:220px; font-size:10pt; margin-bottom:0px;" name="search" type="text" size="20" value="'.$this->_text_as_form($this->getSearchText()).'"/>'.LF;
      if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-        $html .= '<input type="image" src="images/commsyicons_msie6/22x22/search.gif" style="vertical-align:top;" alt="'.getMessage('COMMON_SEARCH_BUTTON').'"/>';
+        $html .= '<input type="image" src="images/commsyicons_msie6/22x22/search.gif" style="vertical-align:top;" alt="'.$this->_translator->getMessage('COMMON_SEARCH_BUTTON').'"/>';
      } else {
-        $html .= '<input type="image" src="images/commsyicons/22x22/search.png" style="vertical-align:top;" alt="'.getMessage('COMMON_SEARCH_BUTTON').'"/>';
+        $html .= '<input type="image" src="images/commsyicons/22x22/search.png" style="vertical-align:top;" alt="'.$this->_translator->getMessage('COMMON_SEARCH_BUTTON').'"/>';
      }
      $html .= '</form>';
      return $html;
@@ -3048,7 +3048,7 @@ EOD;
          }
          unset($current_user_item);
       } else {
-         $fullname = getMessage('COMMON_DELETED_USER');
+         $fullname = $this->_translator->getMessage('COMMON_DELETED_USER');
       }
       $fullname = $this->_compareWithSearchText($fullname);
       return $this->_text_as_html_short($fullname);
