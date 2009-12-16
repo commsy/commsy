@@ -289,9 +289,9 @@ class cs_homepage_list_view extends cs_list_view_plain {
          $html .= '   <input type="hidden" name="SID" value="'.$this->_text_as_form($session->getSessionID()).'"/>'.LF;
       }
       $html .= '<div>'.LF;
-      $html .= '<div style="float: left; text-align: left">'.getMessage('COMMON_SEARCHFIELD').'<br /><input style="width: 10em;" name="search" type="text" size="20" value="'.$this->_text_as_form($this->getSearchText()).'"/></div> '.LF;
+      $html .= '<div style="float: left; text-align: left">'.$this->_translator->getMessage('COMMON_SEARCHFIELD').'<br /><input style="width: 10em;" name="search" type="text" size="20" value="'.$this->_text_as_form($this->getSearchText()).'"/></div> '.LF;
       $html .= $this->_getAdditionalFormFieldsAsHTML();
-     $html .= '<div><br /><input name="option" value="'.getMessage('COMMON_SHOW_BUTTON').'" type="submit"/></div>'.LF;
+     $html .= '<div><br /><input name="option" value="'.$this->_translator->getMessage('COMMON_SHOW_BUTTON').'" type="submit"/></div>'.LF;
      $html .= '</div>'.LF;
       $html .= '</form>'.LF;
 
@@ -510,7 +510,7 @@ class cs_homepage_list_view extends cs_list_view_plain {
       #$html .= $this->_getForwardLinkAsHTML();
 
       $html .= '<div style="width: 100%; text-align: left">'.LF;
-      $html .= '<h2 style="padding-bottom:0px;margin-bottom:0px;spacing-bottom:0px;">'.getMessage('HOMEPAGE_INDEX_OVERVIEW').'</h2>'.LF;
+      $html .= '<h2 style="padding-bottom:0px;margin-bottom:0px;spacing-bottom:0px;">'.$this->_translator->getMessage('HOMEPAGE_INDEX_OVERVIEW').'</h2>'.LF;
       $html .= $this->_getDescriptionAsHTML().BRLF;
       $html .= '</div>'.LF;
 

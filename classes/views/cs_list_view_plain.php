@@ -170,16 +170,16 @@ class cs_list_view_plain extends cs_view {
       $html .='</div>'.LF;
       $html .='<div>'.LF;
       if ($this->_environment->inServer()) {
-         $html .= '<span class="portal_section_title">'.getMessage('SERVER_PORTAL_OVERVIEW').'</span>'.LF;
+         $html .= '<span class="portal_section_title">'.$this->_translator->getMessage('SERVER_PORTAL_OVERVIEW').'</span>'.LF;
       } else {
-         $html .= '<span class="portal_section_title">'.getMessage('PORTAL_ROOM_OVERVIEW').'</span>'.LF;
+         $html .= '<span class="portal_section_title">'.$this->_translator->getMessage('PORTAL_ROOM_OVERVIEW').'</span>'.LF;
       }
       $html .='</div>'.LF;
       $html .='</div>'.LF;
       $html .='</td>'.LF;
       $html .='<td colspan="2" style="width:25%; padding-top:5px; vertical-align:bottom; text-align:right;">'.LF;
-#	   $html .= '<span class="portal_description">'.getMessage('COMMON_LIST_VIEW').': </span>'.LF;
-#	   $html .= '<span class="portal_description" style="font-weight:bold;">'.getMessage('COMMON_ROOMS').'</span>'.BRLF;
+#	   $html .= '<span class="portal_description">'.$this->_translator->getMessage('COMMON_LIST_VIEW').': </span>'.LF;
+#	   $html .= '<span class="portal_description" style="font-weight:bold;">'.$this->_translator->getMessage('COMMON_ROOMS').'</span>'.BRLF;
       $html .= '<span class="portal_forward_links">'.$this->_getForwardLinkAsHTML().'</span>'.BRLF;
       // actions
       $html .='</td>'.LF;
@@ -270,9 +270,9 @@ class cs_list_view_plain extends cs_view {
          $html .= '   <input type="hidden" name="SID" value="'.$this->_text_as_form($session->getSessionID()).'"/>'.LF;
       }
       $html .= '<div>'.LF;
-      $html .= '<div style="float: left; text-align: left">'.getMessage('COMMON_SEARCHFIELD').'<br /><input style="width: 8.8em;" name="search" type="text" size="15" value="'.$this->_text_as_form($this->getSearchText()).'"/></div> '.LF;
+      $html .= '<div style="float: left; text-align: left">'.$this->_translator->getMessage('COMMON_SEARCHFIELD').'<br /><input style="width: 8.8em;" name="search" type="text" size="15" value="'.$this->_text_as_form($this->getSearchText()).'"/></div> '.LF;
       $html .= $this->_getAdditionalFormFieldsAsHTML();
-      $html .= '<div><br /><input name="option" value="'.getMessage('COMMON_SHOW_BUTTON').'" type="submit"/></div>'.LF;
+      $html .= '<div><br /><input name="option" value="'.$this->_translator->getMessage('COMMON_SHOW_BUTTON').'" type="submit"/></div>'.LF;
       $html .= '</div>'.LF;
       $html .= '</form>'.LF;
 

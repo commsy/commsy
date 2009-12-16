@@ -77,7 +77,7 @@ var $_item = NULL;
                            '','', '', '', '', '', 'class="titlelink"');
       $html .='<div>'.LF;
       $html .= '<div class="profile_title" style="float:right">'.$title.'</div>';
-      $html .= '<h2 id="profile_title">'.getMessage('COMMON_BUZZWORD_NEW_ATTACH').'</h2>';
+      $html .= '<h2 id="profile_title">'.$this->_translator->getMessage('COMMON_BUZZWORD_NEW_ATTACH').'</h2>';
       $html .='</div>'.LF;
       $current_browser = mb_strtolower($this->_environment->getCurrentBrowser(), 'UTF-8');
       $current_browser_version = $this->_environment->getCurrentBrowserVersion();

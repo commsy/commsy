@@ -239,16 +239,16 @@ class cs_page_print_view extends cs_page_view {
             if ($context->isPrivateRoom()){
                switch ($link['module']) {
                   case 'topic':
-                     $link_title = getMessage('COMMON_TOPICS');
+                     $link_title = $this->_translator->getMessage('COMMON_TOPICS');
                      break;
                   case 'material':
-                     $link_title = getMessage('COMMON_MATERIALS');
+                     $link_title = $this->_translator->getMessage('COMMON_MATERIALS');
                      break;
                   case 'user':
-                     $link_title = getMessage('COMMON_MY_USER_DESCRIPTION');
+                     $link_title = $this->_translator->getMessage('COMMON_MY_USER_DESCRIPTION');
                      break;
                   case 'myroom':
-                     $link_title = getMessage('PRIVATEROOMS');
+                     $link_title = $this->_translator->getMessage('PRIVATEROOMS');
                      break;
                   default:
                      $link_title = $link['title'];

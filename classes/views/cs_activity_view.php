@@ -157,7 +157,7 @@ class cs_activity_view extends cs_view {
       }
 
       $html = '<div class="right_box">'.LF;
-      $html .= '<div class="right_box_title" style="font-weight:bold;">'.getMessage('COMMON_ROOM_INFORMATION').'</div>';
+      $html .= '<div class="right_box_title" style="font-weight:bold;">'.$this->_translator->getMessage('COMMON_ROOM_INFORMATION').'</div>';
       $html .= '<div class="right_box_main" style="'.$width.' font-size:10pt; padding-top:2px; padding-bottom:3px; padding-left:5px;">'.LF;
 
 
@@ -229,9 +229,9 @@ class cs_activity_view extends cs_view {
       if ( $current_context->showWikiLink() and $current_context->existWiki() and $current_context->issetWikiHomeLink() ) {
          global $c_pmwiki_path_url;
          if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-            $image = '<img src="images/commsyicons_msie6/22x22/pmwiki.gif" style="vertical-align:bottom;" alt="'.getMessage('COMMON_WIKI_LINK').'"/>';
+            $image = '<img src="images/commsyicons_msie6/22x22/pmwiki.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_WIKI_LINK').'"/>';
          } else {
-            $image = '<img src="images/commsyicons/22x22/pmwiki.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_WIKI_LINK').'"/>';
+            $image = '<img src="images/commsyicons/22x22/pmwiki.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_WIKI_LINK').'"/>';
          }
          $title = $this->_translator->getMessage('COMMON_WIKI_LINK').': '.$current_context->getWikiTitle();
          $url_session_id = '';
@@ -244,9 +244,9 @@ class cs_activity_view extends cs_view {
       }
       if ( $current_context->showHomepageLink() ) {
          if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-            $image = '<img src="images/commsyicons_msie6/22x22/commsy_homepage.gif" style="vertical-align:bottom;" alt="'.getMessage('HOMEPAGE_HOMEPAGE').'"/>';
+            $image = '<img src="images/commsyicons_msie6/22x22/commsy_homepage.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('HOMEPAGE_HOMEPAGE').'"/>';
          } else {
-            $image = '<img src="images/commsyicons/22x22/commsy_homepage.png" style="vertical-align:bottom;" alt="'.getMessage('HOMEPAGE_HOMEPAGE').'"/>';
+            $image = '<img src="images/commsyicons/22x22/commsy_homepage.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('HOMEPAGE_HOMEPAGE').'"/>';
          }
          $title = $this->_translator->getMessage('HOMEPAGE_HOMEPAGE');
          $html .=  ' '.ahref_curl($this->_environment->getCurrentContextID(),
@@ -268,17 +268,17 @@ class cs_activity_view extends cs_view {
             $current_user = $this->_environment->getCurrentUserItem();
             if ( isset($current_user) and $current_user->isReallyGuest() ) {
                if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-                  $image = '<img src="images/commsyicons_msie6/22x22/etchat_grey.gif" style="vertical-align:bottom;" alt="'.getMessage('CHAT_CHAT').'"/>';
+                  $image = '<img src="images/commsyicons_msie6/22x22/etchat_grey.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('CHAT_CHAT').'"/>';
                } else {
-                  $image = '<img src="images/commsyicons/22x22/etchat_grey.png" style="vertical-align:bottom;" alt="'.getMessage('CHAT_CHAT').'"/>';
+                  $image = '<img src="images/commsyicons/22x22/etchat_grey.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('CHAT_CHAT').'"/>';
                }
                $html .= ' '.$image;
                // TBD: icon ausgrauen
             } else {
                if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-                  $image = '<img src="images/commsyicons_msie6/22x22/etchat.gif" style="vertical-align:bottom;" alt="'.getMessage('CHAT_CHAT').'"/>';
+                  $image = '<img src="images/commsyicons_msie6/22x22/etchat.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('CHAT_CHAT').'"/>';
                } else {
-                  $image = '<img src="images/commsyicons/22x22/etchat.png" style="vertical-align:bottom;" alt="'.getMessage('CHAT_CHAT').'"/>';
+                  $image = '<img src="images/commsyicons/22x22/etchat.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('CHAT_CHAT').'"/>';
                }
                $html .=  ' '.ahref_curl($this->_environment->getCurrentContextID(),
                                    'context',
@@ -310,16 +310,16 @@ class cs_activity_view extends cs_view {
          $html .= '         </td>'.LF;
          $html .= '         <td style="text-align:right; font-size:10pt;" class="right_box_main">'.LF;
          if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-            $image = '<img src="images/commsyicons_msie6/22x22/config.gif" style="vertical-align:bottom;" alt="'.getMessage('COMMON_CONFIGURATION').'"/>';
+            $image = '<img src="images/commsyicons_msie6/22x22/config.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_CONFIGURATION').'"/>';
          } else {
-            $image = '<img src="images/commsyicons/22x22/config.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_CONFIGURATION').'"/>';
+            $image = '<img src="images/commsyicons/22x22/config.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_CONFIGURATION').'"/>';
          }
          $html .= ahref_curl($this->_environment->getCurrentContextID(),
                                        'configuration',
                                        'index',
                                        '',
                                        $image,
-                                       getMessage('COMMON_CONFIGURATION')).LF;
+                                       $this->_translator->getMessage('COMMON_CONFIGURATION')).LF;
          $show_user_config = false;
          // tasks
          $manager = $this->_environment->getTaskManager();
@@ -344,15 +344,15 @@ class cs_activity_view extends cs_view {
             $params['selstatus']='1';
             if ($count_new_accounts < 16){
                if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-                  $image = '<img src="images/commsyicons_msie6/22x22/config/account_'.$count_new_accounts.'.gif" style="vertical-align:bottom;" alt="'.getMessage('HOME_LOGIN_NEW_ACCOUNT_LINK',$count_new_accounts).'"/>';
+                  $image = '<img src="images/commsyicons_msie6/22x22/config/account_'.$count_new_accounts.'.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('HOME_LOGIN_NEW_ACCOUNT_LINK',$count_new_accounts).'"/>';
                } else {
-                  $image = '<img src="images/commsyicons/22x22/config/account_'.$count_new_accounts.'.png" style="vertical-align:bottom;" alt="'.getMessage('HOME_LOGIN_NEW_ACCOUNT_LINK',$count_new_accounts).'"/>';
+                  $image = '<img src="images/commsyicons/22x22/config/account_'.$count_new_accounts.'.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('HOME_LOGIN_NEW_ACCOUNT_LINK',$count_new_accounts).'"/>';
                }
             }else{
                if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-                  $image = '<img src="images/commsyicons_msie6/22x22/config/account_16.gif" style="vertical-align:bottom;" alt="'.getMessage('HOME_LOGIN_NEW_ACCOUNT_LINK',$count_new_accounts).'"/>';
+                  $image = '<img src="images/commsyicons_msie6/22x22/config/account_16.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('HOME_LOGIN_NEW_ACCOUNT_LINK',$count_new_accounts).'"/>';
                } else {
-                  $image = '<img src="images/commsyicons/22x22/config/account_16.png" style="vertical-align:bottom;" alt="'.getMessage('HOME_LOGIN_NEW_ACCOUNT_LINK',$count_new_accounts).'"/>';
+                  $image = '<img src="images/commsyicons/22x22/config/account_16.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('HOME_LOGIN_NEW_ACCOUNT_LINK',$count_new_accounts).'"/>';
                }
             }
             $html .= ahref_curl($this->_environment->getCurrentContextID(),
@@ -360,19 +360,19 @@ class cs_activity_view extends cs_view {
                                        'index',
                                        $params,
                                        $image,
-                                       getMessage('HOME_LOGIN_NEW_ACCOUNT_LINK',$count_new_accounts)).LF;
+                                       $this->_translator->getMessage('HOME_LOGIN_NEW_ACCOUNT_LINK',$count_new_accounts)).LF;
          }else{
             if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-               $image = '<img src="images/commsyicons_msie6/22x22/config_account.gif" style="vertical-align:bottom;" alt="'.getMessage('HOME_LOGIN_NEW_ACCOUNT_LINK').'"/>';
+               $image = '<img src="images/commsyicons_msie6/22x22/config_account.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('HOME_LOGIN_NEW_ACCOUNT_LINK').'"/>';
             } else {
-               $image = '<img src="images/commsyicons/22x22/config_account.png" style="vertical-align:bottom;" alt="'.getMessage('HOME_LOGIN_NEW_ACCOUNT_LINK').'"/>';
+               $image = '<img src="images/commsyicons/22x22/config_account.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('HOME_LOGIN_NEW_ACCOUNT_LINK').'"/>';
             }
             $html .= ahref_curl($this->_environment->getCurrentContextID(),
                                        'account',
                                        'index',
                                        '',
                                        $image,
-                                       getMessage('ACCOUNT_INDEX')).LF;
+                                       $this->_translator->getMessage('ACCOUNT_INDEX')).LF;
          }
          $html .= '         </td>'.LF;
          $html .= '         </tr>'.LF;
@@ -436,7 +436,7 @@ class cs_activity_view extends cs_view {
                                                  $image_text);
 
             }elseif($rubric_array[0] != CS_USER_TYPE and $rubric_array[0] != CS_PROJECT_TYPE){
-               $image = '<img title="'.getMessage('COMMON_NO_ACTION_NEW',$image_text).'" src="images/commsyicons/22x22/'.$rubric_array[0].'_grey.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_NO_ACTION_NEW',$image_text).'"/>';
+               $image = '<img title="'.$this->_translator->getMessage('COMMON_NO_ACTION_NEW',$image_text).'" src="images/commsyicons/22x22/'.$rubric_array[0].'_grey.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_NO_ACTION_NEW',$image_text).'"/>';
                $html .= ' '.$image;
             }
 

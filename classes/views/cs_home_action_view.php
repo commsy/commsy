@@ -41,7 +41,7 @@ var $_config_boxes = false;
    function cs_home_action_view ($params) {
       $this->cs_view($params);
       $this->setViewName('actions');
-      $this->_view_title = getMessage('COMMON_ACTIONS');
+      $this->_view_title = $this->_translator->getMessage('COMMON_ACTIONS');
    }
 
    function asHTML () {

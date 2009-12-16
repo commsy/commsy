@@ -153,7 +153,7 @@ class cs_configuration_rubric_form_view extends cs_configuration_form_view {
       foreach ($form_element_array as $form_element) {
          if ($first) {
             if ($form_element['type'] == 'select') {
-            $html .= '<div style="border-bottom: 1px solid black; margin-bottom:10px; font-weight:bold;"> <div style="background-color:'.$bgcolor.'; color:'.$color.'; padding-top:3px; padding-bottom:1px; padding-left: 4px;padding-right: 4px; font-size:10pt;">'.getMessage('HOME_INDEX').'</div>'.LF;
+            $html .= '<div style="border-bottom: 1px solid black; margin-bottom:10px; font-weight:bold;"> <div style="background-color:'.$bgcolor.'; color:'.$color.'; padding-top:3px; padding-bottom:1px; padding-left: 4px;padding-right: 4px; font-size:10pt;">'.$this->_translator->getMessage('HOME_INDEX').'</div>'.LF;
             }else{
             $html .= '<div style="padding-left:10em; font-weight:bold;">';
          }

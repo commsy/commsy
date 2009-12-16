@@ -114,7 +114,7 @@ class cs_private_room_detailed_short_view extends cs_view{
       $html .= '<div class="right_box" style="margin-top:0px; margin-bottom:1px;">'.LF;
       $html .= '<div class="right_box_title">'.LF;
       $html .= $this->_getBrowsingIconsAsHTML().LF;
-      $html .= '<div style="white-space:nowrap;">'.getMessage('COMMON_PAGE').' '.$this->_getForwardLinkAsHTML().'</div>'.LF;
+      $html .= '<div style="white-space:nowrap;">'.$this->_translator->getMessage('COMMON_PAGE').' '.$this->_getForwardLinkAsHTML().'</div>'.LF;
 
 
 #      $html .= '<div class="index_forward_links" style="white-space:nowrap;">'.$this->_getForwardLinkAsHTML().'</div>'.LF;
@@ -156,9 +156,9 @@ class cs_private_room_detailed_short_view extends cs_view{
          if ( $current_context->showWikiLink() and $current_context->existWiki() and $current_context->issetWikiHomeLink() ) {
             global $c_pmwiki_path_url;
             if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-               $image = '<img src="images/commsyicons_msie6/22x22/pmwiki.gif" style="vertical-align:bottom;" alt="'.getMessage('COMMON_WIKI_LINK').'"/>';
+               $image = '<img src="images/commsyicons_msie6/22x22/pmwiki.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_WIKI_LINK').'"/>';
             } else {
-               $image = '<img src="images/commsyicons/22x22/pmwiki.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_WIKI_LINK').'"/>';
+               $image = '<img src="images/commsyicons/22x22/pmwiki.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_WIKI_LINK').'"/>';
             }
             $title = $this->_translator->getMessage('COMMON_WIKI_LINK').': '.$current_context->getWikiTitle();
             $url_session_id = '';
@@ -172,16 +172,16 @@ class cs_private_room_detailed_short_view extends cs_view{
          }
          if ( !$context_user->isOnlyReadUser() ) {
             if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-               $image = '<img src="images/commsyicons_msie6/22x22/config.gif" style="vertical-align:bottom;" alt="'.getMessage('COMMON_CONFIGURATION').'"/>';
+               $image = '<img src="images/commsyicons_msie6/22x22/config.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_CONFIGURATION').'"/>';
             } else {
-               $image = '<img src="images/commsyicons/22x22/config.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_CONFIGURATION').'"/>';
+               $image = '<img src="images/commsyicons/22x22/config.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_CONFIGURATION').'"/>';
             }
             $html .= ahref_curl($this->_environment->getCurrentContextID(),
                                        'configuration',
                                        'index',
                                        '',
                                        $image,
-                                       getMessage('COMMON_CONFIGURATION')).LF;
+                                       $this->_translator->getMessage('COMMON_CONFIGURATION')).LF;
          }
          $html .= '         </td>'.LF;
          $html .= '         </tr>'.LF;
@@ -447,9 +447,9 @@ class cs_private_room_detailed_short_view extends cs_view{
       $context = $this->_environment->getCurrentContextItem();
       $time_spread = $context->getTimeSpread();
       if ($time_spread =='1'){
-         $description = getMessage('PRIVATE_ROOM_SHORT_DETAILED_VIEW_DESCRIPTION2',$time_spread);
+         $description = $this->_translator->getMessage('PRIVATE_ROOM_SHORT_DETAILED_VIEW_DESCRIPTION2',$time_spread);
       }else{
-         $description = getMessage('PRIVATE_ROOM_SHORT_DETAILED_VIEW_DESCRIPTION',$time_spread);
+         $description = $this->_translator->getMessage('PRIVATE_ROOM_SHORT_DETAILED_VIEW_DESCRIPTION',$time_spread);
       }
       if ( !empty($description) ) {
          $html .= ' ('.$description.')';
@@ -473,7 +473,7 @@ class cs_private_room_detailed_short_view extends cs_view{
       $html  = LF.'<!-- BEGIN OF LIST VIEW -->'.LF;
 #      $html .= LF.'<div class="head" style="margin-bottom:10px;">'.LF;
 #      $context = $this->_environment->getCurrentContextItem();
-#      $html .= '<span style="font-weight: bold">'.getMessage('COMMON_ROOM_OVERVIEW').'</span>';
+#      $html .= '<span style="font-weight: bold">'.$this->_translator->getMessage('COMMON_ROOM_OVERVIEW').'</span>';
 #      $html .= ' '.$this->_getDescriptionAsHTML().' '.LF;
 #      $html .='</div>'.LF;
       $html .= '';
@@ -763,37 +763,37 @@ class cs_private_room_detailed_short_view extends cs_view{
          switch ( $tempRubric )
          {
             case 'ANNOUNCEMENT':
-               $tempMessage = getMessage('COMMON_ANNOUNCEMENT_INDEX');
+               $tempMessage = $this->_translator->getMessage('COMMON_ANNOUNCEMENT_INDEX');
                break;
             case 'DATE':
-               $tempMessage = getMessage('COMMON_DATE_INDEX');
+               $tempMessage = $this->_translator->getMessage('COMMON_DATE_INDEX');
                break;
             case 'DISCUSSION':
-               $tempMessage = getMessage('COMMON_DISCUSSION_INDEX');
+               $tempMessage = $this->_translator->getMessage('COMMON_DISCUSSION_INDEX');
                break;
             case 'GROUP':
-               $tempMessage = getMessage('COMMON_GROUP_INDEX');
+               $tempMessage = $this->_translator->getMessage('COMMON_GROUP_INDEX');
                break;
             case 'MATERIAL':
-               $tempMessage = getMessage('COMMON_MATERIAL_INDEX');
+               $tempMessage = $this->_translator->getMessage('COMMON_MATERIAL_INDEX');
                break;
             case 'USER':
-               $tempMessage = getMessage('COMMON_USER_INDEX');
+               $tempMessage = $this->_translator->getMessage('COMMON_USER_INDEX');
                break;
             case 'INSTITUTION':
-               $tempMessage = getMessage('COMMON_INSTITUTION_INDEX');
+               $tempMessage = $this->_translator->getMessage('COMMON_INSTITUTION_INDEX');
                break;
             case 'TODO':
-               $tempMessage = getMessage('COMMON_TODO_INDEX');
+               $tempMessage = $this->_translator->getMessage('COMMON_TODO_INDEX');
                break;
             case 'PROJECT':
-               $tempMessage = getMessage('COMMON_PROJECT_INDEX');
+               $tempMessage = $this->_translator->getMessage('COMMON_PROJECT_INDEX');
                break;
             case 'TOPIC':
-               $tempMessage = getMessage('COMMON_TOPIC_INDEX');
+               $tempMessage = $this->_translator->getMessage('COMMON_TOPIC_INDEX');
                break;
             default:
-               $tempMessage = getMessage('COMMON_MESSAGETAG_ERROR').' cs_private_room_detailed_short_view.php(456) ';
+               $tempMessage = $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR').' cs_private_room_detailed_short_view.php(456) ';
                break;
          }
 $html .= ahref_curl( $item->getItemID(),
@@ -803,11 +803,11 @@ $html .= ahref_curl( $item->getItemID(),
                      $tempMessage);
 
          if ($count_entries == 0){
-            $html .= ' <span style="font-size:8pt;">('.getMessage('COMMON_NO_NEW_ENTRIES').')</span>';
+            $html .= ' <span style="font-size:8pt;">('.$this->_translator->getMessage('COMMON_NO_NEW_ENTRIES').')</span>';
          }elseif($count_entries == 1){
-            $html .= ' <span style="font-size:8pt;">('.$count_entries.' '.getMessage('NEWSLETTER_NEW_SINGLE_ENTRY').')</span>';
+            $html .= ' <span style="font-size:8pt;">('.$count_entries.' '.$this->_translator->getMessage('NEWSLETTER_NEW_SINGLE_ENTRY').')</span>';
          }else{
-            $html .= ' <span style="font-size:8pt;">('.$count_entries.' '.getMessage('NEWSLETTER_NEW_ENTRIES').')</span>';
+            $html .= ' <span style="font-size:8pt;">('.$count_entries.' '.$this->_translator->getMessage('NEWSLETTER_NEW_ENTRIES').')</span>';
          }
          $html .= $temp_html;
          $html .='</td>';
@@ -828,7 +828,7 @@ $html .= ahref_curl( $item->getItemID(),
       }elseif ($item->isLocked()) {
             $html .= ' ('.$this->_translator->getMessage('COMMON_PROJECTROOM_LOCKED').')'.LF;
             $html .= '<div style="float:left;"><img alt="door" src="images/door_closed_middle.gif" style="vertical-align: middle; margin-right:3px;"/></div>'.LF;
-            $html .= ' <div>'.getMessage('COMMON_LOCKED_SINCE').' '.$this->_translator->getDateInLang($item->getModificationDate()).'</div>'.LF;
+            $html .= ' <div>'.$this->_translator->getMessage('COMMON_LOCKED_SINCE').' '.$this->_translator->getDateInLang($item->getModificationDate()).'</div>'.LF;
       }else{
             $curl = curl($item->getItemID(), 'home', 'index','','');
             $html .= '<div style="float:left;"><a href="'.$curl.'">';

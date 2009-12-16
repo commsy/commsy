@@ -91,7 +91,7 @@ class cs_myroom_index_view extends cs_context_index_view {
       $html .= '<div class="right_box">'.LF;
       $html .= '<div class="right_box_title">'.LF;
       $html .= $this->_getBrowsingIconsAsHTML().LF;
-      $html .= '<div style="white-space:nowrap;">'.getMessage('COMMON_PAGE').' '.$this->_getForwardLinkAsHTML().'</div>'.LF;
+      $html .= '<div style="white-space:nowrap;">'.$this->_translator->getMessage('COMMON_PAGE').' '.$this->_getForwardLinkAsHTML().'</div>'.LF;
       $html .='</div>'.LF;
 
 
@@ -106,7 +106,7 @@ class cs_myroom_index_view extends cs_context_index_view {
       $html .= '<table style="width:100%; padding:0px; margin:0px; border-collapse:collapse;">';
       $html .='<tr>'.LF;
       $html .='<td>'.LF;
-      $html .= '<span class="infocolor">'.getMessage('COMMON_LIST_SHOWN_ENTRIES').' </span>';
+      $html .= '<span class="infocolor">'.$this->_translator->getMessage('COMMON_LIST_SHOWN_ENTRIES').' </span>';
       $html .='</td>'.LF;
       $html .='<td style="text-align:right;">'.LF;
       $html .= '<span class="index_description">'.$this->_getDescriptionAsHTML().'</span>'.LF;
@@ -164,10 +164,10 @@ class cs_myroom_index_view extends cs_context_index_view {
             $text .= $this->_translator->getMessage('COMMON_ENTRIES');
             break;
          default:
-            $text .= getMessage('COMMON_MESSAGETAG_ERROR').' cs_index_view(1913) ';
+            $text .= $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR').' cs_index_view(1913) ';
             break;
       }
-      $html .= '<span class="infocolor">'.getMessage('COMMON_ALL_LIST_ENTRIES',$text).':</span> ';
+      $html .= '<span class="infocolor">'.$this->_translator->getMessage('COMMON_ALL_LIST_ENTRIES',$text).':</span> ';
       $html .='</td>'.LF;
       $html .='<td style="text-align:right;">'.LF;
       $html .= $this->_count_all.''.LF;
@@ -433,7 +433,7 @@ class cs_myroom_index_view extends cs_context_index_view {
          }elseif ($item->isLocked()) {
             $html .= ' ('.$this->_translator->getMessage('PROJECTROOM_LOCKED').')'.LF;
             $html .= '<img alt="door" src="images/door_closed_small.gif" style="vertical-align: middle; "/>'.LF;
-            $html .= ' '.getMessage('COMMON_LOCKED_SINCE').' '.$this->_translator->getDateInLang($item->getModificationDate()).LF;
+            $html .= ' '.$this->_translator->getMessage('COMMON_LOCKED_SINCE').' '.$this->_translator->getDateInLang($item->getModificationDate()).LF;
          }else{
             $curl = curl($item->getItemID(), 'home', 'index','','');
             $html .= '<a href="'.$curl.'">';
@@ -755,9 +755,9 @@ class cs_myroom_index_view extends cs_context_index_view {
       $user = $this->_environment->getCurrentUserItem();
       $user_id = $user->getUserID();
       if ( $item->isShownInPrivateRoomHome($user_id) ){
-         $title = getMessage('CONTEXT_SHOWN_ON_HOME');
+         $title = $this->_translator->getMessage('CONTEXT_SHOWN_ON_HOME');
       }else{
-         $title = getMessage('CONTEXT_NOT_SHOWN_ON_HOME');
+         $title = $this->_translator->getMessage('CONTEXT_NOT_SHOWN_ON_HOME');
       }
       return $title;
    }

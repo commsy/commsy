@@ -211,7 +211,7 @@ class cs_page_help_view extends cs_page_view {
       $html .= '<div class="tabs_frame" style="'.$width.'">'.LF;
       $html .= '<div class="tabs">'.LF;
       $html .= '<div style="float:left; margin:0px; padding-left:13px;">'.LF;
-      $html .= '<span class="navlist">'.getMessage('COMMON_HELP').'</span>';
+      $html .= '<span class="navlist">'.$this->_translator->getMessage('COMMON_HELP').'</span>';
       $html .= '  '."\n";
       $html .= '</div>'."\n";
       $html .= '<div style="margin:0px; padding:0px;">'."\n";
@@ -309,7 +309,7 @@ class cs_page_help_view extends cs_page_view {
          $html .= '<span>'.$text.'</span>'.LF;
          $html .= '</div>'.LF;
          $html .= '<div>'.LF;
-         $html .= '<a href="#top">'.'<img src="images/browse_left2.gif" alt="&lt;" border="0"/></a>&nbsp;<a href="#top">'.getMessage('COMMON_TOP_OF_PAGE').'</a>';
+         $html .= '<a href="#top">'.'<img src="images/browse_left2.gif" alt="&lt;" border="0"/></a>&nbsp;<a href="#top">'.$this->_translator->getMessage('COMMON_TOP_OF_PAGE').'</a>';
          $html .= '</div>'.LF;
 
          $html .= '</div>'.LF;

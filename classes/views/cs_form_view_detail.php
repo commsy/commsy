@@ -77,10 +77,10 @@ class cs_form_view_detail extends cs_form_view {
          $html .= $label;
          if (!empty($form_element_array[0]['mandatory'])) {
             if ( $label[strlen($label)-1] == ':' ) {
-               $red_star = '<span class="required">'.getMessage('MARK').'</span>';
+               $red_star = '<span class="required">'.$this->_translator->getMessage('MARK').'</span>';
                $html = str_replace($label,substr($label,0,strlen($label)-1).$red_star.':',$html);
             } else {
-               $html.= '<span class="required">'.getMessage('MARK').'</span>'."\n";
+               $html.= '<span class="required">'.$this->_translator->getMessage('MARK').'</span>'."\n";
             }
          }
       }

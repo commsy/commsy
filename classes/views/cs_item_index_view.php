@@ -1481,9 +1481,9 @@ var $_sel_rubric = '';
      $html .= '   <input type="hidden" name="fct" value="index"/>'.LF;
      $html .= '<input id="searchtext" onclick="javascript:resetSearchText(\'searchtext\');" style="width:220px; font-size:10pt; margin-bottom:0px;" name="search" type="text" size="20" value="'.$this->_text_as_form($this->getSearchText()).'"/>'.LF;
      if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-        $html .= '<input type="image" src="images/commsyicons_msie6/22x22/search.gif" style="vertical-align:top;" alt="'.getMessage('COMMON_SEARCH_BUTTON').'"/>';
+        $html .= '<input type="image" src="images/commsyicons_msie6/22x22/search.gif" style="vertical-align:top;" alt="'.$this->_translator->getMessage('COMMON_SEARCH_BUTTON').'"/>';
      } else {
-        $html .= '<input type="image" src="images/commsyicons/22x22/search.png" style="vertical-align:top;" alt="'.getMessage('COMMON_SEARCH_BUTTON').'"/>';
+        $html .= '<input type="image" src="images/commsyicons/22x22/search.png" style="vertical-align:top;" alt="'.$this->_translator->getMessage('COMMON_SEARCH_BUTTON').'"/>';
      }
      $html .= '</form>';
      return $html;
@@ -1499,11 +1499,11 @@ var $_sel_rubric = '';
       $html .= '</div>'.LF;
       $html .='<div style="width:70%;">'.LF;
       $html .='<div>'.LF;
-      $tempMessage = getMessage('CAMPUS_SEARCH_INDEX');
+      $tempMessage = $this->_translator->getMessage('CAMPUS_SEARCH_INDEX');
       if ($this->_clipboard_mode){
-          $html .= '<h2 class="pagetitle">'.getMessage('CLIPBOARD_HEADER').' ('.$tempMessage.')';
+          $html .= '<h2 class="pagetitle">'.$this->_translator->getMessage('CLIPBOARD_HEADER').' ('.$tempMessage.')';
       }elseif ( $this->hasCheckboxes() and $this->_has_checkboxes != 'list_actions' ) {
-         $html .= '<h2 class="pagetitle">'.getMessage('COMMON_ASSIGN').' ('.$tempMessage.')';
+         $html .= '<h2 class="pagetitle">'.$this->_translator->getMessage('COMMON_ASSIGN').' ('.$tempMessage.')';
       }else{
           $html .= '<h2 class="pagetitle">'.$tempMessage;
       }
@@ -1537,10 +1537,10 @@ var $_sel_rubric = '';
          $this->_additional_selects = true;
          $html_text ='<tr>'.LF;
          $html_text .='<td>'.LF;
-         $html_text .= '<span class="infocolor" style="white-space:nowrap;">'.getMessage('MATERIAL_FILES').': </span>';
+         $html_text .= '<span class="infocolor" style="white-space:nowrap;">'.$this->_translator->getMessage('MATERIAL_FILES').': </span>';
          $html_text .='</td>'.LF;
          $html_text .='<td style="text-align:right;">'.LF;
-         $html_text .= getMessage('COMMON_ONLY_FILES');
+         $html_text .= $this->_translator->getMessage('COMMON_ONLY_FILES');
          $picture = '<img src="images/delete_restriction.gif" alt="x" border="0"/>';
          $new_params = $params;
          unset($new_params['only_files']);
@@ -1553,7 +1553,7 @@ var $_sel_rubric = '';
          $this->_additional_selects = true;
          $html_text ='<tr>'.LF;
          $html_text .='<td>'.LF;
-         $html_text .= '<span class="infocolor">'.getMessage('COMMON_RUBRIC').': </span>';
+         $html_text .= '<span class="infocolor">'.$this->_translator->getMessage('COMMON_RUBRIC').': </span>';
          $html_text .='</td>'.LF;
          $html_text .='<td style="text-align:right;">'.LF;
          switch ( mb_strtoupper($params['selrubric'], 'UTF-8') ){
@@ -1608,7 +1608,7 @@ var $_sel_rubric = '';
          $this->_additional_selects = true;
          $html_text ='<tr>'.LF;
          $html_text .='<td>'.LF;
-         $html_text .= '<span class="infocolor" style="white-space:nowrap;">'.getMessage('SEARCH_FIELD_RESTRICTION').': </span>';
+         $html_text .= '<span class="infocolor" style="white-space:nowrap;">'.$this->_translator->getMessage('SEARCH_FIELD_RESTRICTION').': </span>';
          $html_text .='</td>'.LF;
          $html_text .='<td style="text-align:right;">'.LF;
 
@@ -1664,10 +1664,10 @@ var $_sel_rubric = '';
             $this->_additional_selects = true;
             $html_text ='<tr>'.LF;
             $html_text .='<td>'.LF;
-            $html_text .= '<span class="infocolor">'.getMessage('COMMON_ACTIVATION_RESTRICTION').': </span>';
+            $html_text .= '<span class="infocolor">'.$this->_translator->getMessage('COMMON_ACTIVATION_RESTRICTION').': </span>';
             $html_text .='</td>'.LF;
             $html_text .='<td style="text-align:right;">'.LF;
-            $html_text .= '<span>'.getMessage('COMMON_SHOW_ONLY_ACTIVATED_ENTRIES').'</span>';
+            $html_text .= '<span>'.$this->_translator->getMessage('COMMON_SHOW_ONLY_ACTIVATED_ENTRIES').'</span>';
             $picture = '<img src="images/delete_restriction.gif" alt="x" border="0"/>';
             $new_params = $params;
             $new_params['selactivatingstatus'] = 1;
@@ -1687,7 +1687,7 @@ var $_sel_rubric = '';
       $html  = '';
       $html .= '<div class="right_box">'.LF;
       $html .= '         <noscript>';
-      $html .= '<div class="right_box_title">'.getMessage('COMMON_ACTIONS').'</div>';
+      $html .= '<div class="right_box_title">'.$this->_translator->getMessage('COMMON_ACTIONS').'</div>';
       $html .= '         </noscript>';
       $html .= '<div class="right_box_main" >'.LF;
       $params = $this->_environment->getCurrentParameterArray();
@@ -1729,7 +1729,7 @@ var $_sel_rubric = '';
       }
       $html .= '<div class="right_box">'.LF;
       $html .= '         <noscript>';
-      $html .= '<div class="right_box_title">'.getMessage('CAMPUS_SEARCH_INDEX').'</div>';
+      $html .= '<div class="right_box_title">'.$this->_translator->getMessage('CAMPUS_SEARCH_INDEX').'</div>';
       $html .= '         </noscript>';
       $html .= '<div class="right_box_main" style="padding-top:5px;">'.LF;
       $session = $this->_environment->getSession();
@@ -1742,7 +1742,7 @@ var $_sel_rubric = '';
       $html .= '<input style="width:'.$width.'px; font-size:8pt; margin-bottom:5px;" name="search" type="text" size="20" value="'.$this->_text_as_form($this->getSearchText()).'"/>'.LF;
       $html .= '<div style="margin-top:5px;">'.LF;
       $html .= $this->_getAdditionalFormFieldsAsHTML();
-      $html .= '<input style="width:65px; font-size:10pt;" name="option" value="'.getMessage('COMMON_SEARCH_BUTTON').'" type="submit"/></div>'.LF;
+      $html .= '<input style="width:65px; font-size:10pt;" name="option" value="'.$this->_translator->getMessage('COMMON_SEARCH_BUTTON').'" type="submit"/></div>'.LF;
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;

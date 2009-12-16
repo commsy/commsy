@@ -40,7 +40,7 @@ var  $_config_boxes = false;
     */
    function cs_home_configuration_view ($params) {
       $this->cs_view($params);
-      $this->_view_title = getMessage('COMMON_CONFIGURATION');
+      $this->_view_title = $this->_translator->getMessage('COMMON_CONFIGURATION');
       $this->setViewName('preferences');
    }
 
@@ -55,9 +55,9 @@ var  $_config_boxes = false;
      $html .= '         </noscript>';
      $html .= '<div class="right_box_main" style="font-size:10pt; padding-top:2px;padding-bottom:3px; padding-left:0px;">'.LF;
      $link_item = new cs_link();
-     $link_item->setDescription(getMessage('HOME_ROOM_MEMBER_ADMIN_DESC'));
+     $link_item->setDescription($this->_translator->getMessage('HOME_ROOM_MEMBER_ADMIN_DESC'));
      $link_item->setIconPath('images/cs_config/CONFIGURATION_OVERVIEW.gif');
-     $link_item->setTitle(getMessage('COMMON_COMMSY_CONFIGURE_HOME'));
+     $link_item->setTitle($this->_translator->getMessage('COMMON_COMMSY_CONFIGURE_HOME'));
      $link_item->setContextID($this->_environment->getCurrentContextID());
      $link_item->setModule('configuration');
      $link_item->setFunction('index');
@@ -98,9 +98,9 @@ var  $_config_boxes = false;
 
        if ( !$this->_environment->inPrivateRoom() ) {
         $link_item = new cs_link();
-          $link_item->setDescription(getMessage('HOME_ROOM_MEMBER_ADMIN_DESC'));
+          $link_item->setDescription($this->_translator->getMessage('HOME_ROOM_MEMBER_ADMIN_DESC'));
         $link_item->setIconPath('images/cs_config/ROOM_MEMBER_ADMIN.gif');
-        $link_item->setTitle(getMessage('HOME_LOGIN_NEW_ACCOUNT_LINK',$count_new_accounts));
+        $link_item->setTitle($this->_translator->getMessage('HOME_LOGIN_NEW_ACCOUNT_LINK',$count_new_accounts));
         $link_item->setContextID($this->_environment->getCurrentContextID());
         $link_item->setModule('account');
         $link_item->setFunction('index');
@@ -152,8 +152,8 @@ var  $_config_boxes = false;
            }
            // material
            $link_item = new cs_link();
-           $link_item->setTitle(getMessage('HOME_MATERIAL_ADMIN_TINY_HEADER',$count_new_materials));
-           $link_item->setDescription(getMessage('HOME_MATERIAL_ADMIN_TINY_DESCRIPTION'));
+           $link_item->setTitle($this->_translator->getMessage('HOME_MATERIAL_ADMIN_TINY_HEADER',$count_new_materials));
+           $link_item->setDescription($this->_translator->getMessage('HOME_MATERIAL_ADMIN_TINY_DESCRIPTION'));
            $link_item->setIconPath('images/cs_config/MATERIAL_ADMIN_TINY_DESCRIPTION.gif');
            $link_item->setContextID($this->_environment->getCurrentContextID());
            $link_item->setModule('material_admin');

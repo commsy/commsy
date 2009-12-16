@@ -110,9 +110,9 @@ class cs_topic_detail_view extends cs_detail_view {
                if ($linked_item->isNotActivated() and !($linked_item->getCreatorID() == $user->getItemID() or $user->isModerator()) ){
                    $activating_date = $linked_item->getActivatingDate();
                    if (strstr($activating_date,'9999-00-00')){
-                      $link_creator_text = getMessage('COMMON_NOT_ACTIVATED');
+                      $link_creator_text = $this->_translator->getMessage('COMMON_NOT_ACTIVATED');
                    }else{
-                      $link_creator_text = getMessage('COMMON_ACTIVATING_DATE').' '.getDateInLang($linked_item->getActivatingDate());
+                      $link_creator_text = $this->_translator->getMessage('COMMON_ACTIVATING_DATE').' '.getDateInLang($linked_item->getActivatingDate());
                    }
                    $html_text = ahref_curl( $this->_environment->getCurrentContextID(),
                                         $mod,

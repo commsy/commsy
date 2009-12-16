@@ -295,7 +295,7 @@ class cs_page_guide_view extends cs_page_view {
          $params = $this->_environment->getCurrentParameterArray();
          $params['left_menue'] = 'apear';
          $html .= '<div style=" margin:0px; padding-left:5px;">'.LF;
-         $html .= ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),$this->_environment->getCurrentFunction(),$params,'<span class="required">'.'> '.'</span>'.'<span style="font-size:8pt; color:black;">'.getMessage('COMMON_FADE_IN').'</span>', '', '', '', '');
+         $html .= ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),$this->_environment->getCurrentFunction(),$params,'<span class="required">'.'> '.'</span>'.'<span style="font-size:8pt; color:black;">'.$this->_translator->getMessage('COMMON_FADE_IN').'</span>', '', '', '', '');
          $html .= '</div>'.LF;
          unset($params);
          $html .='</div>'.LF;
@@ -304,7 +304,7 @@ class cs_page_guide_view extends cs_page_view {
          #$params['left_menue'] = 'disapear';
          #$html .=       '<div style="width:58.3em; vertical-align:bottom; padding-top:0px;">';
          #$html .= '<div style=" margin:0px; padding-top:0px; padding-left:5px;">'.LF;
-         #$html .= ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),$this->_environment->getCurrentFunction(),$params,'<span class="required">'.'< '.'</span>'.'<span style="font-size:8pt; color:black;">'.getMessage('COMMON_FADE_OUT').'</span>', '', '', '', '');
+         #$html .= ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),$this->_environment->getCurrentFunction(),$params,'<span class="required">'.'< '.'</span>'.'<span style="font-size:8pt; color:black;">'.$this->_translator->getMessage('COMMON_FADE_OUT').'</span>', '', '', '', '');
          #unset($params);
          #$html .= '</div>'.LF;
          #$html .='</div>'.LF;
@@ -604,7 +604,7 @@ class cs_page_guide_view extends cs_page_view {
       $html .='</div>';
       $html .= '<div class="top_of_page">'.LF;
       $html .= '<div>'.LF;
-      $html .= '<a href="#top">'.'<img src="images/browse_left2.gif" alt="&lt;" border="0"/></a>&nbsp;<a href="#top">'.getMessage('COMMON_TOP_OF_PAGE').'</a>';
+      $html .= '<a href="#top">'.'<img src="images/browse_left2.gif" alt="&lt;" border="0"/></a>&nbsp;<a href="#top">'.$this->_translator->getMessage('COMMON_TOP_OF_PAGE').'</a>';
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
@@ -1373,22 +1373,22 @@ class cs_page_guide_view extends cs_page_view {
          $html .= '<input type="hidden" name="'.$key.'" value="'.$value.'"/>'.LF;
       }
       if ( $type == 'portal' ) {
-         $html .= '<h2>'.getMessage('COMMON_DELETE_BOX_TITLE_PORTAL');
+         $html .= '<h2>'.$this->_translator->getMessage('COMMON_DELETE_BOX_TITLE_PORTAL');
       } else {
-         $html .= '<h2>'.getMessage('COMMON_DELETE_BOX_TITLE_ROOM');
+         $html .= '<h2>'.$this->_translator->getMessage('COMMON_DELETE_BOX_TITLE_ROOM');
       }
       $html .= '</h2>';
       if ( $type == 'portal' ) {
-         $html .= '<p style="text-align:left; font-weight:normal;">'.getMessage('COMMON_DELETE_BOX_DESCRIPTION_PORTAL');
+         $html .= '<p style="text-align:left; font-weight:normal;">'.$this->_translator->getMessage('COMMON_DELETE_BOX_DESCRIPTION_PORTAL');
       } else {
-         $html .= '<p style="text-align:left; font-weight:normal;">'.getMessage('COMMON_DELETE_BOX_DESCRIPTION_ROOM');
+         $html .= '<p style="text-align:left; font-weight:normal;">'.$this->_translator->getMessage('COMMON_DELETE_BOX_DESCRIPTION_ROOM');
       }
       $html .= '</p>';
       $html .= '<div style="height:20px;">';
-      $html .= '<input style="float:right;" type="submit" name="delete_option" value="'.getMessage('COMMON_DELETE_BUTTON').'" tabindex="2"/>';
-      $html .= '<input style="float:left;" type="submit" name="delete_option" value="'.getMessage('COMMON_CANCEL_BUTTON').'" tabindex="2"/>';
+      $html .= '<input style="float:right;" type="submit" name="delete_option" value="'.$this->_translator->getMessage('COMMON_DELETE_BUTTON').'" tabindex="2"/>';
+      $html .= '<input style="float:left;" type="submit" name="delete_option" value="'.$this->_translator->getMessage('COMMON_CANCEL_BUTTON').'" tabindex="2"/>';
       if ( $type != 'portal' ) {
-         $html .= '<input style="float:left;" type="submit" name="delete_option" value="'.getMessage('ROOM_ARCHIV_BUTTON').'" tabindex="2"/>';
+         $html .= '<input style="float:left;" type="submit" name="delete_option" value="'.$this->_translator->getMessage('ROOM_ARCHIV_BUTTON').'" tabindex="2"/>';
       }
       $html .= '</div>';
       $html .= '</form>';
@@ -1667,21 +1667,21 @@ class cs_page_guide_view extends cs_page_view {
          $html .= '<img src="'.$this->_style_image_path.'portal_key.gif" alt="" border="0"/>';
          $html .= '</td>'.LF;
          $html .= '<td style="width:26%; vertical-align:middle;">'.LF;
-         $html .= '<span class="search_title">'.getMessage('COMMON_ACCESS_POINT').':'.'</span>';
+         $html .= '<span class="search_title">'.$this->_translator->getMessage('COMMON_ACCESS_POINT').':'.'</span>';
          $html .= '</td>'.LF;
 
          $html .= '<td style="width:1%; vertical-align:middle;">'.LF;
          $html .= '<img src="'.$this->_style_image_path.'portal_info.gif" alt="" border="0"/>'.LF;
          $html .= '</td>'.LF;
          $html .= '<td style="width:42%; vertical-align:middle;">'.LF;
-         $html .= '<span class="search_title">'.getMessage('COMMON_DESCRIPTION').':'.'</span>';
+         $html .= '<span class="search_title">'.$this->_translator->getMessage('COMMON_DESCRIPTION').':'.'</span>';
          $html .= '</td>'.LF;
 
          $html .= '<td style="width:1%; vertical-align:middle;">'.LF;
          $html .= '<img src="'.$this->_style_image_path.'portal_info2.gif" alt="" border="0"/>'.LF;
          $html .= '</td>'.LF;
          $html .= '<td style="width:29%; vertical-align:middle;">'.LF;
-         $html .= '<span class="search_title">'.getMessage('COMMON_FACTS').':'.'</span>';
+         $html .= '<span class="search_title">'.$this->_translator->getMessage('COMMON_FACTS').':'.'</span>';
          $html .= '</td>'.LF;
       }else{
          $html .= '<td colspan="4" rowspan="2" style="width:71%; vertical-align:top; font-weight:normal;">'.LF;
@@ -1692,7 +1692,7 @@ class cs_page_guide_view extends cs_page_view {
          $html .= '<img src="'.$this->_style_image_path.'portal_info2.gif" alt="" border="0"/>'.LF;
          $html .= '</td>'.LF;
          $html .= '<td style="width:29%; vertical-align:top; padding-top:10px;">'.LF;
-         $html .= '<span class="search_title">'.getMessage('COMMON_FACTS').':'.'</span>';
+         $html .= '<span class="search_title">'.$this->_translator->getMessage('COMMON_FACTS').':'.'</span>';
          $html .= '</td>'.LF;
       }
 
@@ -1713,7 +1713,7 @@ class cs_page_guide_view extends cs_page_view {
          if (!empty($desc)){
             $html .= $this->_text_as_html_long($this->_cleanDataFromTextArea($item->getDescription()));
          }else{
-            $html .= '<span class="disabled">'.getMessage('COMMON_NO_DESCRIPTION').'</span>'.LF;
+            $html .= '<span class="disabled">'.$this->_translator->getMessage('COMMON_NO_DESCRIPTION').'</span>'.LF;
          }
          $html .= '</td>'.LF;
       } else {
@@ -2151,7 +2151,7 @@ class cs_page_guide_view extends cs_page_view {
                   if ($email_to_moderators != '' ) {
                      $html .= '&nbsp;-&nbsp;';
                   }
-                  $html .= ahref_curl($this->_environment->getCurrentContextID(),'agb','index','',getMessage('COMMON_AGB_CONFIRMATION_LINK_INPUT'),'','agb','','',' onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=yes, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400\');"').'&nbsp;-&nbsp;';
+                  $html .= ahref_curl($this->_environment->getCurrentContextID(),'agb','index','',$this->_translator->getMessage('COMMON_AGB_CONFIRMATION_LINK_INPUT'),'','agb','','',' onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=yes, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400\');"').'&nbsp;-&nbsp;';
                }
                $html .= '     </td>'.LF;
                $html .= '     <td style="margin:0px; padding:0px; font-size:8pt; vertical-align:text-bottom;">'.LF;
@@ -2168,7 +2168,7 @@ class cs_page_guide_view extends cs_page_view {
                   if ($email_to_moderators != '' ) {
                      $html .= '&nbsp;-&nbsp;';
                   }
-                  $html .= ahref_curl($this->_environment->getCurrentContextID(),'agb','index','',getMessage('AGB_CONFIRMATION_LINK_INPUT'),'','agb','','',' onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=yes, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400\');"');
+                  $html .= ahref_curl($this->_environment->getCurrentContextID(),'agb','index','',$this->_translator->getMessage('AGB_CONFIRMATION_LINK_INPUT'),'','agb','','',' onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=yes, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400\');"');
                }
                $html .= '</div>'.LF;
             }

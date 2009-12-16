@@ -851,9 +851,9 @@ class cs_page_room_view extends cs_page_view {
               or(
                  isset($_POST['right_box_option'])
                  and (
-                      isOption($_POST['right_box_option'], getMessage('COMMON_ITEM_NEW_ATTACH')) or
-                      isOption($_POST['right_box_option'], getMessage('COMMON_GROUP_ATTACH')) or
-                      isOption($_POST['right_box_option'], getMessage('COMMON_INSTITUTION_ATTACH'))
+                      isOption($_POST['right_box_option'], $this->_translator->getMessage('COMMON_ITEM_NEW_ATTACH')) or
+                      isOption($_POST['right_box_option'], $this->_translator->getMessage('COMMON_GROUP_ATTACH')) or
+                      isOption($_POST['right_box_option'], $this->_translator->getMessage('COMMON_INSTITUTION_ATTACH'))
                  )
                  and (!isset($_POST['return_attach_tag_list']))
               )
@@ -1604,7 +1604,7 @@ class cs_page_room_view extends cs_page_view {
                   }
                } else {
                   $modify = 0;
-                  $html .= 'var new_action_message="' . getMessage('COMMON_NO_ACTION_NEW',$this->_translator->getMessage('COMMON_NEW_ITEM')) . '";'.LF;
+                  $html .= 'var new_action_message="' . $this->_translator->getMessage('COMMON_NO_ACTION_NEW',$this->_translator->getMessage('COMMON_NEW_ITEM')) . '";'.LF;
                }
                $html .= 'initCommSyPanels(Array('.$title_string.'),Array('.$desc_string.'),Array('.$config_text.'),Array(),Array('.$size_string.'),Array('.$mod_string.'),' . $this->_environment->getCurrentContextID() . ',' . $modify . ');'.LF;
                $html .= '</script>'.LF;
@@ -1691,7 +1691,7 @@ class cs_page_room_view extends cs_page_view {
               and $_GET['attach_type'] == 'buzzword')
               or(
                  isset($_POST['right_box_option'])
-                 and isOption($_POST['right_box_option'], getMessage('COMMON_BUZZWORD_NEW_ATTACH'))
+                 and isOption($_POST['right_box_option'], $this->_translator->getMessage('COMMON_BUZZWORD_NEW_ATTACH'))
                  and (!isset($_POST['return_attach_buzzword_list']))
               )
             ) {
@@ -1704,7 +1704,7 @@ class cs_page_room_view extends cs_page_view {
               and $_GET['attach_type'] == 'tag')
               or(
                  isset($_POST['right_box_option'])
-                 and isOption($_POST['right_box_option'], getMessage('COMMON_TAG_NEW_ATTACH'))
+                 and isOption($_POST['right_box_option'], $this->_translator->getMessage('COMMON_TAG_NEW_ATTACH'))
                  and (!isset($_POST['return_attach_tag_list']))
               )
             ) {
@@ -1719,9 +1719,9 @@ class cs_page_room_view extends cs_page_view {
               or
               ( isset($_POST['right_box_option'])
                 and (
-                     isOption($_POST['right_box_option'], getMessage('COMMON_ITEM_NEW_ATTACH')) or
-                     isOption($_POST['right_box_option'], getMessage('COMMON_GROUP_ATTACH')) or
-                     isOption($_POST['right_box_option'], getMessage('COMMON_INSTITUTION_ATTACH'))
+                     isOption($_POST['right_box_option'], $this->_translator->getMessage('COMMON_ITEM_NEW_ATTACH')) or
+                     isOption($_POST['right_box_option'], $this->_translator->getMessage('COMMON_GROUP_ATTACH')) or
+                     isOption($_POST['right_box_option'], $this->_translator->getMessage('COMMON_INSTITUTION_ATTACH'))
                     )
                  and (!isset($_POST['return_attach_tag_list']))
               )

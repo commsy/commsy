@@ -79,7 +79,7 @@ var $_count_entries = 0;
                            '','', '', '', '', '', 'class="titlelink"');
       $html .='<div>'.LF;
       $html .= '<div class="profile_title" style="float:right">'.$title.'</div>';
-      $html .= '<h2 id="profile_title">'.getMessage('COMMON_TAG_NEW_ATTACH').'</h2>';
+      $html .= '<h2 id="profile_title">'.$this->_translator->getMessage('COMMON_TAG_NEW_ATTACH').'</h2>';
       $html .='</div>'.LF;
       $current_browser = mb_strtolower($this->_environment->getCurrentBrowser(), 'UTF-8');
       $current_browser_version = $this->_environment->getCurrentBrowserVersion();
@@ -431,7 +431,7 @@ var $_count_entries = 0;
       }
       
       if ( empty($html_text) ){
-         $html_text = '<span class="disabled" style="font-size:10pt;">'.getMessage('COMMON_NO_ENTRIES').'</span>';
+         $html_text = '<span class="disabled" style="font-size:10pt;">'.$this->_translator->getMessage('COMMON_NO_ENTRIES').'</span>';
       }
       $html .= $html_text.'</div>';
       return $html;

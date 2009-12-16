@@ -229,7 +229,7 @@ class cs_material_detail_view extends cs_detail_view {
                                     'edit',
                                     $params,
                                     $image,
-                                    getMessage('COMMON_SECTION_EDIT')).LF;
+                                    $this->_translator->getMessage('COMMON_SECTION_EDIT')).LF;
          unset($params);
       } else {
          if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
@@ -252,7 +252,7 @@ class cs_material_detail_view extends cs_detail_view {
                                    'section',
                                    'edit',
                                    $params,
-                                   $image,getMessage('MATERIAL_SECTION_ADD')).LF;
+                                   $image,$this->_translator->getMessage('MATERIAL_SECTION_ADD')).LF;
          unset($params);
       } else {
          if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
@@ -632,13 +632,11 @@ class cs_material_detail_view extends cs_detail_view {
          $temp_array[] = $link;
          $formal_data1[] = $temp_array;
       }
-      if($context_item->existWiki()){
-	      if ($item->isExportToWiki()) {
-	         $temp_array = array();
-	         $temp_array[] = $this->_translator->getMessage('MATERIAL_EXPORT_TO_WIKI_LINK');
-	         $temp_array[] = $item->getExportToWikiLink();
-	         $formal_data1[] = $temp_array;
-	      }
+      if ($item->isExportToWiki()) {
+         $temp_array = array();
+         $temp_array[] = $this->_translator->getMessage('MATERIAL_EXPORT_TO_WIKI_LINK');
+         $temp_array[] = $item->getExportToWikiLink();
+         $formal_data1[] = $temp_array;
       }
 
       // Sections

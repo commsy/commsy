@@ -38,7 +38,7 @@ class cs_home_extension_view extends cs_view {
     */
    function cs_home_extension_view ($params) {
       $this->cs_view($params);
-      $this->_view_title = getMessage('HOME_EXTRA_TOOLS');
+      $this->_view_title = $this->_translator->getMessage('HOME_EXTRA_TOOLS');
       $this->setViewName('homeextratools');
    }
 

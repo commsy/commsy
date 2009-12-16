@@ -41,7 +41,7 @@ class cs_home_tag_view extends cs_view {
       $this->setViewName('tags');
       $user = $this->_environment->getCurrentUserItem();
       $room = $this->_environment->getCurrentContextItem();
-      $this->_view_title = getMessage('COMMON_TAG_BOX');
+      $this->_view_title = $this->_translator->getMessage('COMMON_TAG_BOX');
    }
 
 
@@ -72,7 +72,7 @@ class cs_home_tag_view extends cs_view {
       $html  = '';
       $html .= '<div class="right_box">'.LF;
       $html .= '         <noscript>';
-      $html .= '<div class="right_box_title">'.getMessage('COMMON_TAG_BOX').'</div>';
+      $html .= '<div class="right_box_title">'.$this->_translator->getMessage('COMMON_TAG_BOX').'</div>';
       $html .= '         </noscript>';
       $html .= '<div class="right_box_main" >'.LF;
       $current_context = $this->_environment->getCurrentContextItem();
@@ -96,7 +96,7 @@ class cs_home_tag_view extends cs_view {
       }
       
       if ( empty($html_text) ){
-         $html_text .= '<span class="disabled" style="font-size:10pt;">'.getMessage('COMMON_NO_ENTRIES').'</span>';
+         $html_text .= '<span class="disabled" style="font-size:10pt;">'.$this->_translator->getMessage('COMMON_NO_ENTRIES').'</span>';
       }
       $html .= $html_text;
       $html .= '<div style="width:235px; text-align:right; padding-right:2px; padding-top:5px; font-size:8pt;">';

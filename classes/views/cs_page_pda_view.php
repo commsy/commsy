@@ -239,16 +239,16 @@ class cs_page_pda_view extends cs_page_view {
             if ($context->isPrivateRoom()){
                switch ($link['module']) {
                   case 'topic':
-                     $link_title = getMessage('COMMON_TOPICS');
+                     $link_title = $this->_translator->getMessage('COMMON_TOPICS');
                      break;
                   case 'material':
-                     $link_title = getMessage('COMMON_MATERIALS');
+                     $link_title = $this->_translator->getMessage('COMMON_MATERIALS');
                      break;
                   case 'user':
-                     $link_title = getMessage('COMMON_MY_USER_DESCRIPTION');
+                     $link_title = $this->_translator->getMessage('COMMON_MY_USER_DESCRIPTION');
                      break;
                   case 'myroom':
-                     $link_title = getMessage('PRIVATEROOMS');
+                     $link_title = $this->_translator->getMessage('PRIVATEROOMS');
                      break;
                   default:
                      $link_title = $link['title'];
@@ -414,7 +414,7 @@ class cs_page_pda_view extends cs_page_view {
             $params = $this->_environment->getCurrentParameterArray();
             $params['left_menue'] = 'apear';
             $html .= '<div style=" margin:0px; padding-left:10px;">'.LF;
-            $html .= ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),$this->_environment->getCurrentFunction(),$params,'<span class="required">'.'> '.'</span>'.'<span style="font-size:8pt; color:black;">'.getMessage('COMMON_FADE_IN').'</span>', '', '', '', '');
+            $html .= ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),$this->_environment->getCurrentFunction(),$params,'<span class="required">'.'> '.'</span>'.'<span style="font-size:8pt; color:black;">'.$this->_translator->getMessage('COMMON_FADE_IN').'</span>', '', '', '', '');
             $html .= '</div>'.LF;
             unset($params);
          }else{
@@ -422,7 +422,7 @@ class cs_page_pda_view extends cs_page_view {
             $params['left_menue'] = 'disapear';
             $html .='<td style="width:170px; vertical-align:bottom; padding-top:0px;">'.LF;
             $html .= '<div style=" margin:0px; padding-top:0px; padding-left:10px;">'.LF;
-            $html .= ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),$this->_environment->getCurrentFunction(),$params,'<span class="required">'.'< '.'</span>'.'<span style="font-size:8pt; color:black;">'.getMessage('COMMON_FADE_OUT').'</span>', '', '', '', '');
+            $html .= ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),$this->_environment->getCurrentFunction(),$params,'<span class="required">'.'< '.'</span>'.'<span style="font-size:8pt; color:black;">'.$this->_translator->getMessage('COMMON_FADE_OUT').'</span>', '', '', '', '');
             unset($params);
             $html .= '</div>'.LF;
             $html .='</td>'.LF;

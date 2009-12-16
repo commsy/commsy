@@ -204,7 +204,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $html .= '<table style="width:100%; padding:0px; margin:0px; border-collapse:collapse;">';
       $html .='<tr>'.LF;
       $html .='<td>'.LF;
-      $html .= '<span class="infocolor">'.getMessage('DATE_ALTERNATIVE_DISPLAY').': </span>';
+      $html .= '<span class="infocolor">'.$this->_translator->getMessage('DATE_ALTERNATIVE_DISPLAY').': </span>';
       $html .='</td>'.LF;
       $html .='<td style="text-align:right;">'.LF;
       $html .= ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),'index',$params,$this->_translator->getMessage('DATES_COMMON_DISPLAY')).LF;
@@ -248,9 +248,9 @@ class cs_date_calendar_index_view extends cs_room_index_view {
      $html .= '   <input type="hidden" name="selrubric" value="'.$this->_environment->getCurrentModule().'"/>'.LF;
      $html .= '<input id="searchtext" onclick="javascript:resetSearchText(\'searchtext\');" style="width:130px; font-size:10pt; margin-bottom:0px;" name="search" type="text" size="20" value="'.$this->_text_as_form($this->getSearchText()).'"/>'.LF;
      if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-        $html .= '<input type="image" src="images/commsyicons_msie6/22x22/search.gif" style="vertical-align:top;" alt="'.getMessage('COMMON_SEARCH_BUTTON').'"/>';
+        $html .= '<input type="image" src="images/commsyicons_msie6/22x22/search.gif" style="vertical-align:top;" alt="'.$this->_translator->getMessage('COMMON_SEARCH_BUTTON').'"/>';
      } else {
-        $html .= '<input type="image" src="images/commsyicons/22x22/search.png" style="vertical-align:top;" alt="'.getMessage('COMMON_SEARCH_BUTTON').'"/>';
+        $html .= '<input type="image" src="images/commsyicons/22x22/search.png" style="vertical-align:top;" alt="'.$this->_translator->getMessage('COMMON_SEARCH_BUTTON').'"/>';
      }
      $html .= '</form>';
      return $html;
@@ -263,30 +263,30 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $hash_manager = $this->_environment->getHashManager();
       $params = $this->_environment->getCurrentParameterArray();
       if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-         $image = '<img src="images/commsyicons_msie6/22x22/abbo.gif" style="vertical-align:bottom;" alt="'.getMessage('DATES_ABBO').'"/>';
+         $image = '<img src="images/commsyicons_msie6/22x22/abbo.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('DATES_ABBO').'"/>';
       } else {
-         $image = '<img src="images/commsyicons/22x22/abbo.png" style="vertical-align:bottom;" alt="'.getMessage('DATES_ABBO').'"/>';
+         $image = '<img src="images/commsyicons/22x22/abbo.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('DATES_ABBO').'"/>';
       }
-      $ical_url = '<a title="'.getMessage('DATES_ABBO').'"  href="webcal://';
+      $ical_url = '<a title="'.$this->_translator->getMessage('DATES_ABBO').'"  href="webcal://';
       $ical_url .= $_SERVER['HTTP_HOST'];
       global $c_single_entry_point;
       $ical_url .= str_replace($c_single_entry_point,'ical.php',$_SERVER['PHP_SELF']);
       $ical_url .= '?cid='.$_GET['cid'].'&amp;hid='.$hash_manager->getICalHashForUser($current_user->getItemID()).'">'.$image.'</a>'.LF;
       $html .= $ical_url;
       if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-         $image = '<img src="images/commsyicons_msie6/22x22/export.gif" style="vertical-align:bottom;" alt="'.getMessage('DATES_EXPORT').'"/>';
+         $image = '<img src="images/commsyicons_msie6/22x22/export.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('DATES_EXPORT').'"/>';
       } else {
-         $image = '<img src="images/commsyicons/22x22/export.png" style="vertical-align:bottom;" alt="'.getMessage('DATES_EXPORT').'"/>';
+         $image = '<img src="images/commsyicons/22x22/export.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('DATES_EXPORT').'"/>';
       }
-      $html .= '<a title="'.getMessage('DATES_EXPORT').'"  href="ical.php?cid='.$_GET['cid'].'&amp;hid='.$hash_manager->getICalHashForUser($current_user->getItemID()).'">'.$image.'</a>'.LF;
+      $html .= '<a title="'.$this->_translator->getMessage('DATES_EXPORT').'"  href="ical.php?cid='.$_GET['cid'].'&amp;hid='.$hash_manager->getICalHashForUser($current_user->getItemID()).'">'.$image.'</a>'.LF;
       unset($params);
       if ( $this->_environment->inPrivateRoom() ) {
          if ( $this->_with_modifying_actions ) {
             $params['import'] = 'yes';
             if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-               $image = '<img src="images/commsyicons_msie6/22x22/import.gif" style="vertical-align:bottom;" alt="'.getMessage('MATERIAL_IMS_IMPORT').'"/>';
+               $image = '<img src="images/commsyicons_msie6/22x22/import.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('MATERIAL_IMS_IMPORT').'"/>';
             } else {
-               $image = '<img src="images/commsyicons/22x22/import.png" style="vertical-align:bottom;" alt="'.getMessage('MATERIAL_IMS_IMPORT').'"/>';
+               $image = '<img src="images/commsyicons/22x22/import.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('MATERIAL_IMS_IMPORT').'"/>';
             }
             $html .= ahref_curl($this->_environment->getCurrentContextID(),
                                 CS_DATE_TYPE,
@@ -354,9 +354,9 @@ class cs_date_calendar_index_view extends cs_room_index_view {
 	            $this->_translator->getMessage('DATES_DECEMBER_LONG'));
 	      $tempMessage = $month_array[$month-1].' '.$this->_year;
 	      if ($this->_clipboard_mode){
-	          $html .= '<h2 class="pagetitle">'.getMessage('CLIPBOARD_HEADER').' ('.$tempMessage.')';
+	          $html .= '<h2 class="pagetitle">'.$this->_translator->getMessage('CLIPBOARD_HEADER').' ('.$tempMessage.')';
 	      }elseif ( $this->hasCheckboxes() and $this->_has_checkboxes != 'list_actions' ) {
-	         $html .= '<h2 class="pagetitle">'.getMessage('COMMON_ASSIGN').' ('.$tempMessage.')';
+	         $html .= '<h2 class="pagetitle">'.$this->_translator->getMessage('COMMON_ASSIGN').' ('.$tempMessage.')';
 	      }else{
 	          $html .= '<h2 class="pagetitle">'.$tempMessage;
 	      }
@@ -799,7 +799,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
          $html .= '>'.$i.'</option>';
       }
       $html .= '   </select>'.LF;
-      return getMessage('COMMON_YEAR').':'.$left.$html.$right;;
+      return $this->_translator->getMessage('COMMON_YEAR').':'.$left.$html.$right;;
    }
 
 
@@ -889,7 +889,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                                 $params,
                                 $next_image,
                                 '').LF;
-      return getMessage('COMMON_WEEK').':'.$left.$html.$right;;
+      return $this->_translator->getMessage('COMMON_WEEK').':'.$left.$html.$right;;
    }
    
    function _getWeekListWithJavascript() {
@@ -1003,7 +1003,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                                 $params,
                                 $next_image,
                                 '').LF;
-      #return getMessage('COMMON_WEEK').':'.$left.$html.$right;
+      #return $this->_translator->getMessage('COMMON_WEEK').':'.$left.$html.$right;
       $return = '<div style="width:100%; height:30px; position:relative">';
       $return .= '<div id="calendar_switch" style="position:absolute; bottom:0px; left:0px; z-index:1000;">';
       $return .= $left . $today . $right . '&nbsp;&nbsp;';
@@ -1118,7 +1118,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                                 $params,
                                 $next_image,
                                 '').LF;
-      return getMessage('COMMON_MONTH').':'.$left.$html.$right;;
+      return $this->_translator->getMessage('COMMON_MONTH').':'.$left.$html.$right;;
    }
    
    function _getMonthListWithJavascript() {

@@ -54,10 +54,10 @@ class cs_announcement_index_view extends cs_index_view {
             $this->_additional_selects = true;
             $html_text ='<tr>'.LF;
             $html_text .='<td>'.LF;
-            $html_text .= '<span class="infocolor">'.getMessage('COMMON_ACTIVATION_RESTRICTION').': </span>';
+            $html_text .= '<span class="infocolor">'.$this->_translator->getMessage('COMMON_ACTIVATION_RESTRICTION').': </span>';
             $html_text .='</td>'.LF;
             $html_text .='<td style="text-align:right;">'.LF;
-            $html_text .= '<span>'.getMessage('COMMON_SHOW_ONLY_ACTIVATED_ENTRIES').'</span>';
+            $html_text .= '<span>'.$this->_translator->getMessage('COMMON_SHOW_ONLY_ACTIVATED_ENTRIES').'</span>';
             $picture = '<img src="images/delete_restriction.gif" alt="x" border="0"/>';
             $new_params = $params;
             $new_params['selactivatingstatus'] = 1;
@@ -308,9 +308,9 @@ class cs_announcement_index_view extends cs_index_view {
             }
             $activating_date = $item->getActivatingDate();
             if (strstr($activating_date,'9999-00-00')){
-               $title .= BR.getMessage('COMMON_NOT_ACTIVATED');
+               $title .= BR.$this->_translator->getMessage('COMMON_NOT_ACTIVATED');
             }else{
-               $title .= BR.getMessage('COMMON_ACTIVATING_DATE').' '.getDateInLang($item->getActivatingDate());
+               $title .= BR.$this->_translator->getMessage('COMMON_ACTIVATING_DATE').' '.getDateInLang($item->getActivatingDate());
             }
             $title = '<span class="disabled">'.$title.'</span>';
             $html .= '      <td '.$style.'>'.$title.LF;

@@ -41,7 +41,7 @@ class cs_home_buzzword_view extends cs_view {
       $this->setViewName('buzzwords');
       $user = $this->_environment->getCurrentUserItem();
       $room = $this->_environment->getCurrentContextItem();
-      $this->_view_title = getMessage('COMMON_BUZZWORD_BOX');
+      $this->_view_title = $this->_translator->getMessage('COMMON_BUZZWORD_BOX');
    }
 
 
@@ -57,13 +57,13 @@ class cs_home_buzzword_view extends cs_view {
       $html  = '';
       $html .= '<div class="right_box">'.LF;
       $html .= '         <noscript>';
-      $html .= '<div class="right_box_title">'.getMessage('COMMON_BUZZWORD_BOX').'</div>';
+      $html .= '<div class="right_box_title">'.$this->_translator->getMessage('COMMON_BUZZWORD_BOX').'</div>';
       $html .= '         </noscript>';
       $html .= '<div class="right_box_main" style="font-size:8pt;">'.LF;
       $buzzword = $buzzword_list->getFirst();
       $params = $this->_environment->getCurrentParameterArray();
       if (!$buzzword){
-         $html .= '<span class="disabled" style="font-size:10pt;">'.getMessage('COMMON_NO_ENTRIES').'</span>';
+         $html .= '<span class="disabled" style="font-size:10pt;">'.$this->_translator->getMessage('COMMON_NO_ENTRIES').'</span>';
       }
       while ($buzzword){
          $count = $buzzword->getCountLinks();

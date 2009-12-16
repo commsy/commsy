@@ -69,13 +69,13 @@ class cs_group_detail_view extends cs_detail_view {
       $title_string =$this->_translator->getMessage('COMMON_REFERENCED_LATEST_ENTRIES');
       $link_items = $item->getLatestLinkItemList(10);
       if ($link_items->getCount() >0){
-         $title_string .= ' ('.getMessage('COMMON_REFERENCED_LATEST_ONE').' '.$link_items->getCount().')';
+         $title_string .= ' ('.$this->_translator->getMessage('COMMON_REFERENCED_LATEST_ONE').' '.$link_items->getCount().')';
       }
       $html = '<h3 class="subitemtitle" style="margin-top:0px; margin-bottom:0px;">'.$title_string;
       $html .= '</h3>'.LF;
       $html .='<ul style="list-style-type: decimal; list-style-position:inside; font-size:8pt; padding-left:0px; margin-left:0px; margin-top:0px; margin-bottom:20px; padding-bottom:0px;">  '.LF;
       if ($link_items->isEmpty()) {
-         $html .= getMessage('COMMON_NONE').LF;
+         $html .= $this->_translator->getMessage('COMMON_NONE').LF;
       } else {
          $i = 0;
          $link_item = $link_items->getFirst();
@@ -84,7 +84,7 @@ class cs_group_detail_view extends cs_detail_view {
             if ( isset($link_creator) and !$link_creator->isDeleted() ) {
                $fullname = $link_creator->getFullname();
             } else {
-               $fullname = getMessage('COMMON_DELETED_USER');
+               $fullname = $this->_translator->getMessage('COMMON_DELETED_USER');
             }
 
             $linked_item = $link_item->getLinkedItem($item);  // Get the linked item
@@ -129,7 +129,7 @@ class cs_group_detail_view extends cs_detail_view {
                      $text .= $this->_translator->getMessage('COMMON_ONE_USER');
                      break;
                   default:
-                     $text .= getMessage('COMMON_MESSAGETAG_ERROR').' cs_detail_view(692) ';
+                     $text .= $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR').' cs_detail_view(692) ';
                      break;
                }
                $link_creator_text = $text.' - '.$this->_translator->getMessage('COMMON_LINK_CREATOR').' '.
@@ -158,9 +158,9 @@ class cs_group_detail_view extends cs_detail_view {
                if ($linked_item->isNotActivated() and !($linked_item->getCreatorID() == $user->getItemID() or $user->isModerator()) ){
                    $activating_date = $linked_item->getActivatingDate();
                    if (strstr($activating_date,'9999-00-00')){
-                      $link_creator_text .= ' ('.getMessage('COMMON_NOT_ACTIVATED').')';
+                      $link_creator_text .= ' ('.$this->_translator->getMessage('COMMON_NOT_ACTIVATED').')';
                    }else{
-                      $link_creator_text .= ' ('.getMessage('COMMON_ACTIVATING_DATE').' '.getDateInLang($linked_item->getActivatingDate()).')';
+                      $link_creator_text .= ' ('.$this->_translator->getMessage('COMMON_ACTIVATING_DATE').' '.getDateInLang($linked_item->getActivatingDate()).')';
                    }
                    $html_text = ahref_curl( $this->_environment->getCurrentContextID(),
                                        $module,
@@ -461,9 +461,9 @@ class cs_group_detail_view extends cs_detail_view {
             if ( $grouproom_item->isUser($current_user) ) {
                if ($item->isSystemLabel() or ($grouproom_item->isLastModeratorByUserID($current_user->getUserID(),$current_user->getAuthSource())) ) {
                   if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-                     $image = '<img src="images/commsyicons_msie6/22x22/group_leave_grey.gif" style="vertical-align:bottom;" alt="'.getMessage('GROUP_LEAVE').'"/>';
+                     $image = '<img src="images/commsyicons_msie6/22x22/group_leave_grey.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('GROUP_LEAVE').'"/>';
                   } else {
-                     $image = '<img src="images/commsyicons/22x22/group_leave_grey.png" style="vertical-align:bottom;" alt="'.getMessage('GROUP_LEAVE').'"/>';
+                     $image = '<img src="images/commsyicons/22x22/group_leave_grey.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('GROUP_LEAVE').'"/>';
                   }
                   $html .= '<a title="'.$this->_translator->getMessage('GROUP_LEAVE').' "class="disabled">'.$image.'</a>'.LF;
                } else {
@@ -471,9 +471,9 @@ class cs_group_detail_view extends cs_detail_view {
                   $params['iid'] = $this->_item->getItemID();
                   $params['group_option'] = '2';
                   if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-                     $image = '<img src="images/commsyicons_msie6/22x22/group_leave.gif" style="vertical-align:bottom;" alt="'.getMessage('GROUP_LEAVE').'"/>';
+                     $image = '<img src="images/commsyicons_msie6/22x22/group_leave.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('GROUP_LEAVE').'"/>';
                   } else {
-                     $image = '<img src="images/commsyicons/22x22/group_leave.png" style="vertical-align:bottom;" alt="'.getMessage('GROUP_LEAVE').'"/>';
+                     $image = '<img src="images/commsyicons/22x22/group_leave.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('GROUP_LEAVE').'"/>';
                   }
                   $html .= ahref_curl( $this->_environment->getCurrentContextID(),
                                              'group',
@@ -491,9 +491,9 @@ class cs_group_detail_view extends cs_detail_view {
                         )
                   ) {
                   if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-                     $image = '<img src="images/commsyicons_msie6/22x22/group_enter_grey.gif" style="vertical-align:bottom;" alt="'.getMessage('GROUP_ENTER').'"/>';
+                     $image = '<img src="images/commsyicons_msie6/22x22/group_enter_grey.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('GROUP_ENTER').'"/>';
                   } else {
-                     $image = '<img src="images/commsyicons/22x22/group_enter_grey.png" style="vertical-align:bottom;" alt="'.getMessage('GROUP_ENTER').'"/>';
+                     $image = '<img src="images/commsyicons/22x22/group_enter_grey.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('GROUP_ENTER').'"/>';
                   }
                   $html .= '<a title="'.$this->_translator->getMessage('GROUP_ENTER').' "class="disabled">'.$image.'</a>'.LF;
                } else {
@@ -501,9 +501,9 @@ class cs_group_detail_view extends cs_detail_view {
                   $params['iid'] = $this->_item->getItemID();
                   $params['account'] = 'member';
                   if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-                     $image = '<img src="images/commsyicons_msie6/22x22/group_enter.gif" style="vertical-align:bottom;" alt="'.getMessage('GROUP_ENTER').'"/>';
+                     $image = '<img src="images/commsyicons_msie6/22x22/group_enter.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('GROUP_ENTER').'"/>';
                   } else {
-                     $image = '<img src="images/commsyicons/22x22/group_enter.png" style="vertical-align:bottom;" alt="'.getMessage('GROUP_ENTER').'"/>';
+                     $image = '<img src="images/commsyicons/22x22/group_enter.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('GROUP_ENTER').'"/>';
                   }
                   $html .= ahref_curl(  $this->_environment->getCurrentContextID(),
                                              'group',
@@ -527,9 +527,9 @@ class cs_group_detail_view extends cs_detail_view {
                $params['iid'] = $this->_item->getItemID();
                $params['group_option'] = '2';
                if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-                  $image = '<img src="images/commsyicons_msie6/22x22/group_leave.gif" style="vertical-align:bottom;" alt="'.getMessage('GROUP_LEAVE').'"/>';
+                  $image = '<img src="images/commsyicons_msie6/22x22/group_leave.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('GROUP_LEAVE').'"/>';
                } else {
-                  $image = '<img src="images/commsyicons/22x22/group_leave.png" style="vertical-align:bottom;" alt="'.getMessage('GROUP_LEAVE').'"/>';
+                  $image = '<img src="images/commsyicons/22x22/group_leave.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('GROUP_LEAVE').'"/>';
                }
                $html .= ahref_curl(  $this->_environment->getCurrentContextID(),
                                           'group',
@@ -540,9 +540,9 @@ class cs_group_detail_view extends cs_detail_view {
                unset($params);
             } else {
                if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-                  $image = '<img src="images/commsyicons_msie6/22x22/group_leave_grey.gif" style="vertical-align:bottom;" alt="'.getMessage('GROUP_LEAVE').'"/>';
+                  $image = '<img src="images/commsyicons_msie6/22x22/group_leave_grey.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('GROUP_LEAVE').'"/>';
                } else {
-                  $image = '<img src="images/commsyicons/22x22/group_leave_grey.png" style="vertical-align:bottom;" alt="'.getMessage('GROUP_LEAVE').'"/>';
+                  $image = '<img src="images/commsyicons/22x22/group_leave_grey.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('GROUP_LEAVE').'"/>';
                }
                $html .= '<a title="'.$this->_translator->getMessage('GROUP_LEAVE').' "class="disabled">'.$image.'</a>'.LF;
             }
@@ -552,9 +552,9 @@ class cs_group_detail_view extends cs_detail_view {
                $params['iid'] = $this->_item->getItemID();
                $params['group_option'] = '1';
                if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-                  $image = '<img src="images/commsyicons_msie6/22x22/group_enter.gif" style="vertical-align:bottom;" alt="'.getMessage('GROUP_ENTER').'"/>';
+                  $image = '<img src="images/commsyicons_msie6/22x22/group_enter.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('GROUP_ENTER').'"/>';
                } else {
-                  $image = '<img src="images/commsyicons/22x22/group_enter.png" style="vertical-align:bottom;" alt="'.getMessage('GROUP_ENTER').'"/>';
+                  $image = '<img src="images/commsyicons/22x22/group_enter.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('GROUP_ENTER').'"/>';
                }
                $html .= ahref_curl(  $this->_environment->getCurrentContextID(),
                                           'group',
@@ -565,9 +565,9 @@ class cs_group_detail_view extends cs_detail_view {
                unset($params);
             } else {
                if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-                  $image = '<img src="images/commsyicons_msie6/22x22/group_enter_grey.gif" style="vertical-align:bottom;" alt="'.getMessage('GROUP_ENTER').'"/>';
+                  $image = '<img src="images/commsyicons_msie6/22x22/group_enter_grey.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('GROUP_ENTER').'"/>';
                } else {
-                  $image = '<img src="images/commsyicons/22x22/group_enter_grey.png" style="vertical-align:bottom;" alt="'.getMessage('GROUP_ENTER').'"/>';
+                  $image = '<img src="images/commsyicons/22x22/group_enter_grey.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('GROUP_ENTER').'"/>';
                }
                $html .= '<a title="'.$this->_translator->getMessage('GROUP_ENTER').' "class="disabled">'.$image.'</a>'.LF;
             }

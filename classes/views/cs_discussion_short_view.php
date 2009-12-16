@@ -144,7 +144,7 @@ class cs_discussion_short_view extends cs_home_view {
          }
          unset($current_user_item);
       }else{
-         $fullname = getMessage('COMMON_DELETED_USER');
+         $fullname = $this->_translator->getMessage('COMMON_DELETED_USER');
       }
       return $this->_text_as_html_short($fullname);
    }

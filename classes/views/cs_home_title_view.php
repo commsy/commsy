@@ -73,7 +73,7 @@ class cs_home_title_view extends cs_view {
     */
     function getSearchText (){
        if (empty($this->_search_text)){
-       	$this->_search_text = getMessage('COMMON_SEARCH_IN_ROOM');
+       	$this->_search_text = $this->_translator->getMessage('COMMON_SEARCH_IN_ROOM');
        }
        return $this->_search_text;
     }
@@ -139,9 +139,9 @@ class cs_home_title_view extends cs_view {
       $html .= '   <input type="hidden" name="fct" value="index"/>'.LF;
       $html .= '<input id="searchtext" onclick="javascript:resetSearchText(\'searchtext\');" style="width:220px; font-size:10pt; margin-bottom:0px;" name="search" type="text" size="20" value="'.$this->_text_as_form($this->getSearchText()).'"/>';
       if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-         $html .= '<input type="image" src="images/commsyicons_msie6/22x22/search.gif" style="vertical-align:top;" alt="'.getMessage('COMMON_SEARCH_BUTTON').'"/>';
+         $html .= '<input type="image" src="images/commsyicons_msie6/22x22/search.gif" style="vertical-align:top;" alt="'.$this->_translator->getMessage('COMMON_SEARCH_BUTTON').'"/>';
       } else {
-         $html .= '<input type="image" src="images/commsyicons/22x22/search.png" style="vertical-align:top;" alt="'.getMessage('COMMON_SEARCH_BUTTON').'"/>';
+         $html .= '<input type="image" src="images/commsyicons/22x22/search.png" style="vertical-align:top;" alt="'.$this->_translator->getMessage('COMMON_SEARCH_BUTTON').'"/>';
       }
       $html .='</form>'.LF;
       $html .= '</div>'.LF;

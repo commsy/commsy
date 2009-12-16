@@ -589,8 +589,8 @@ class cs_guide_list_view extends cs_list_view_plain {
          $html .= '   <input type="hidden" name="activitymodus" value="'.$this->_text_as_form($this->_activity_modus).'"/>'.LF;
       }
       $html .= '<div style="padding-left:3px; padding-top:5px;">'.LF;
-      $html .= '<span class="search_title" style="">'.getMessage('COMMON_ROOM_SEARCH').'</span>'.BRLF;
-      $html .= '<span class="portal_description">'.getMessage('COMMON_ROOM_SEARCH_DESCRIPTION').'</span>'.BRLF;
+      $html .= '<span class="search_title" style="">'.$this->_translator->getMessage('COMMON_ROOM_SEARCH').'</span>'.BRLF;
+      $html .= '<span class="portal_description">'.$this->_translator->getMessage('COMMON_ROOM_SEARCH_DESCRIPTION').'</span>'.BRLF;
       $html .= '<div class="search_box">'.LF;
       $session = $this->_environment->getSession();
       $left_menue_status = $session->getValue('left_menue_status');
@@ -712,7 +712,7 @@ class cs_guide_list_view extends cs_list_view_plain {
       $html .= '<table summary="Layout"><tr><td style="width:1%; vertical-align:middle;">';
       $html .= '<input style="font-size: 8pt; padding-left: 0px; padding-right: 0px; margin-left: 0px; margin-right: 0px;" name="sel_archive_room" '.$text.' value="1" type="checkbox"/>';
       $html .= '</td><td style="width:99%; vertical-align:middle; font-size:8pt;">';
-      $html .= getMessage('COMMON_SHOW_ARCHIVED_ROOMS');;
+      $html .= $this->_translator->getMessage('COMMON_SHOW_ARCHIVED_ROOMS');;
       $html .= '</td></tr></table></div>'.LF;
 
 
@@ -758,7 +758,7 @@ class cs_guide_list_view extends cs_list_view_plain {
          $html .= '</div>'.LF;
       }
 
-      $html .= '<div><input style="margin-top:5px; font-size:8pt;" name="option" value="'.getMessage('COMMON_SHOW_BUTTON').'" type="submit"/></div>'.LF;
+      $html .= '<div><input style="margin-top:5px; font-size:8pt;" name="option" value="'.$this->_translator->getMessage('COMMON_SHOW_BUTTON').'" type="submit"/></div>'.LF;
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
@@ -989,7 +989,7 @@ class cs_guide_list_view extends cs_list_view_plain {
          $html .= '         <span class="bold_disabled">&lt;</span>'.LF;
       }
       $html .= '|';
-      $html .= '<span class="bold">&nbsp;'.getMessage('COMMON_PAGE').' '.$act_page.' / '.$num_pages.'&nbsp;</span>'.LF;
+      $html .= '<span class="bold">&nbsp;'.$this->_translator->getMessage('COMMON_PAGE').' '.$act_page.' / '.$num_pages.'&nbsp;</span>'.LF;
       $html .= '|';
       if ( $browse_right > 0 ) {
          $params['from'] = $browse_right;
@@ -1031,9 +1031,9 @@ class cs_guide_list_view extends cs_list_view_plain {
       $html .='<div>'.LF;
       $html .='<div>'.LF;
       if ($this->_environment->inServer()) {
-         $html .= '<span class="portal_section_title">'.getMessage('SERVER_PORTAL_OVERVIEW').'</span>'.LF;
+         $html .= '<span class="portal_section_title">'.$this->_translator->getMessage('SERVER_PORTAL_OVERVIEW').'</span>'.LF;
       } else {
-         $html .= '<span class="portal_section_title">'.getMessage('PORTAL_ROOM_OVERVIEW').'</span>'.LF;
+         $html .= '<span class="portal_section_title">'.$this->_translator->getMessage('PORTAL_ROOM_OVERVIEW').'</span>'.LF;
       }
       if (!$this->_environment->inServer()) {
          $html .= BR.$this->_getDescriptionAsHTML().LF;

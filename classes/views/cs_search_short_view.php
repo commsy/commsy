@@ -78,7 +78,7 @@ class cs_search_short_view extends cs_view {
    function __construct ($params) {
       $this->cs_view($params);
       $this->setViewName('search');
-      $this->_view_title = getMessage('CAMPUS_SEARCH_INDEX');
+      $this->_view_title = $this->_translator->getMessage('CAMPUS_SEARCH_INDEX');
    }
 
    /** set URL of the form view
@@ -247,7 +247,7 @@ class cs_search_short_view extends cs_view {
       $html .= '<div class="commsy_panel" style="margin-bottom:1px;">'.LF;
       $html .= '<div class="right_box" style="height:90px;">'.LF;
       $html .= '         <noscript>';
-      $html .= '<div class="right_box_title">'.getMessage('COMMON_SEARCHFIELD').'</div>';
+      $html .= '<div class="right_box_title">'.$this->_translator->getMessage('COMMON_SEARCHFIELD').'</div>';
       $html .= '         </noscript>';
       $html .= '<div class="right_box_main" style="height:90px;">'.LF;
       $form_element = $this->_form_elements->getFirst();

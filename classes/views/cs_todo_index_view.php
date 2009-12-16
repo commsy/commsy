@@ -93,22 +93,22 @@ class cs_todo_index_view extends cs_room_index_view {
       $hash_manager = $this->_environment->getHashManager();
       $params = $this->_environment->getCurrentParameterArray();
       if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-         $image = '<img src="images/commsyicons_msie6/22x22/abbo.gif" style="vertical-align:bottom;" alt="'.getMessage('TODO_ABBO').'"/>';
+         $image = '<img src="images/commsyicons_msie6/22x22/abbo.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('TODO_ABBO').'"/>';
       } else {
-         $image = '<img src="images/commsyicons/22x22/abbo.png" style="vertical-align:bottom;" alt="'.getMessage('TODO_ABBO').'"/>';
+         $image = '<img src="images/commsyicons/22x22/abbo.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('TODO_ABBO').'"/>';
       }
-      $ical_url = '<a title="'.getMessage('TODO_ABBO').'"  href="webcal://';
+      $ical_url = '<a title="'.$this->_translator->getMessage('TODO_ABBO').'"  href="webcal://';
       $ical_url .= $_SERVER['HTTP_HOST'];
       global $c_single_entry_point;
       $ical_url .= str_replace($c_single_entry_point,'ical.php',$_SERVER['PHP_SELF']);
       $ical_url .= '?cid='.$_GET['cid'].'&amp;mod=todo&amp;hid='.$hash_manager->getICalHashForUser($current_user->getItemID()).'">'.$image.'</a>'.LF;
       $html .= $ical_url;
       if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-         $image = '<img src="images/commsyicons_msie6/22x22/export.gif" style="vertical-align:bottom;" alt="'.getMessage('TODO_EXPORT').'"/>';
+         $image = '<img src="images/commsyicons_msie6/22x22/export.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('TODO_EXPORT').'"/>';
       } else {
-         $image = '<img src="images/commsyicons/22x22/export.png" style="vertical-align:bottom;" alt="'.getMessage('TODO_EXPORT').'"/>';
+         $image = '<img src="images/commsyicons/22x22/export.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('TODO_EXPORT').'"/>';
       }
-      $html .= '<a title="'.getMessage('TODO_EXPORT').'"  href="ical.php?cid='.$_GET['cid'].'&amp;mod=todo&amp;hid='.$hash_manager->getICalHashForUser($current_user->getItemID()).'">'.$image.'</a>'.LF;
+      $html .= '<a title="'.$this->_translator->getMessage('TODO_EXPORT').'"  href="ical.php?cid='.$_GET['cid'].'&amp;mod=todo&amp;hid='.$hash_manager->getICalHashForUser($current_user->getItemID()).'">'.$image.'</a>'.LF;
      unset($params);
      return $html;
    }
@@ -350,9 +350,9 @@ class cs_todo_index_view extends cs_room_index_view {
             }
             $activating_date = $item->getActivatingDate();
             if (strstr($activating_date,'9999-00-00')){
-               $title .= BR.getMessage('COMMON_NOT_ACTIVATED');
+               $title .= BR.$this->_translator->getMessage('COMMON_NOT_ACTIVATED');
             }else{
-               $title .= BR.getMessage('COMMON_ACTIVATING_DATE').' '.getDateInLang($item->getActivatingDate());
+               $title .= BR.$this->_translator->getMessage('COMMON_ACTIVATING_DATE').' '.getDateInLang($item->getActivatingDate());
             }
             $title = '<span class="disabled">'.$title.'</span>';
             $html .= '      <td '.$style.'>'.$title.LF;
@@ -683,10 +683,10 @@ class cs_todo_index_view extends cs_room_index_view {
             $this->_additional_selects = true;
             $html_text ='<tr>'.LF;
             $html_text .='<td>'.LF;
-            $html_text .= '<span class="infocolor">'.getMessage('COMMON_ACTIVATION_RESTRICTION').': </span>';
+            $html_text .= '<span class="infocolor">'.$this->_translator->getMessage('COMMON_ACTIVATION_RESTRICTION').': </span>';
             $html_text .='</td>'.LF;
             $html_text .='<td style="text-align:right;">'.LF;
-            $html_text .= '<span>'.getMessage('COMMON_SHOW_ONLY_ACTIVATED_ENTRIES').'</span>';
+            $html_text .= '<span>'.$this->_translator->getMessage('COMMON_SHOW_ONLY_ACTIVATED_ENTRIES').'</span>';
             $picture = '<img src="images/delete_restriction.gif" alt="x" border="0"/>';
             $new_params = $params;
             $new_params['selactivatingstatus'] = 1;
@@ -701,7 +701,7 @@ class cs_todo_index_view extends cs_room_index_view {
          $this->_additional_selects = true;
          $html_text ='<tr>'.LF;
          $html_text .='<td>'.LF;
-         $html_text .= '<span class="infocolor">'.getMessage('TODO_STATUS').': </span>';
+         $html_text .= '<span class="infocolor">'.$this->_translator->getMessage('TODO_STATUS').': </span>';
          $html_text .='</td>'.LF;
          $html_text .='<td style="text-align:right;">'.LF;
          if (isset($params['selstatus']) and $params['selstatus'] == 1){
@@ -734,7 +734,7 @@ class cs_todo_index_view extends cs_room_index_view {
          $this->_additional_selects = true;
          $html_text ='<tr>'.LF;
          $html_text .='<td>'.LF;
-         $html_text .= '<span class="infocolor">'.getMessage('TODO_STATUS').': </span>';
+         $html_text .= '<span class="infocolor">'.$this->_translator->getMessage('TODO_STATUS').': </span>';
          $html_text .='</td>'.LF;
          $html_text .='<td style="text-align:right;">'.LF;
          $status_text = $this->_translator->getMessage('TODO_NOT_DONE');

@@ -33,7 +33,7 @@ class cs_homepage_informationbox_short_view extends cs_view {
       $current_context = $this->_environment->getCurrentContextItem();
       $title = $current_context->getInformationBoxTitle();
       $this->setViewTitle($title);
-      $this->_view_name = getMessage('COMMON_INFORMATION_INDEX');
+      $this->_view_name = $this->_translator->getMessage('COMMON_INFORMATION_INDEX');
    }
 
    function _getDescriptionAsHTML() {
@@ -123,7 +123,7 @@ class cs_home_informationbox_view extends cs_home_view {
       $entry_manager = $this->_environment->getManager($item->getItemType());
       $entry = $entry_manager->getItem($id);
       $this->setViewTitle($this->_text_as_html_long(chunkText($entry->getTitle(),50)));
-      $this->_view_name = getMessage('COMMON_INFORMATION_INDEX');
+      $this->_view_name = $this->_translator->getMessage('COMMON_INFORMATION_INDEX');
    }
 
    function _getDescriptionAsHTML() {
@@ -161,7 +161,7 @@ class cs_home_informationbox_view extends cs_home_view {
       $html .= '<div id="right_box_title_link" style="float:right;">';
       $params = array();
       $params['iid'] = $id;
-      $html .= ahref_curl($this->_environment->getCurrentContextID(), 'content', 'detail', $params, '&gt; '.getMessage('COMMON_INFOBOX_FURTHER_INFORMATION'), '', '', '','','','','class="right_box_title"');
+      $html .= ahref_curl($this->_environment->getCurrentContextID(), 'content', 'detail', $params, '&gt; '.$this->_translator->getMessage('COMMON_INFOBOX_FURTHER_INFORMATION'), '', '', '','','','','class="right_box_title"');
       $html .= '</div>';
       $html .= '<div id="information_box_title">'.$this->_text_as_html_short($this->getViewTitle()).'</div></div>';
       $html .= '<div class="right_box_main" style="padding:0px 0px 0px 5px;">'.LF;

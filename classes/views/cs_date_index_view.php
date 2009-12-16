@@ -89,30 +89,30 @@ class cs_date_index_view extends cs_index_view {
       $hash_manager = $this->_environment->getHashManager();
       $params = $this->_environment->getCurrentParameterArray();
       if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-         $image = '<img src="images/commsyicons_msie6/22x22/abbo.gif" style="vertical-align:bottom;" alt="'.getMessage('DATES_ABBO').'"/>';
+         $image = '<img src="images/commsyicons_msie6/22x22/abbo.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('DATES_ABBO').'"/>';
       } else {
-         $image = '<img src="images/commsyicons/22x22/abbo.png" style="vertical-align:bottom;" alt="'.getMessage('DATES_ABBO').'"/>';
+         $image = '<img src="images/commsyicons/22x22/abbo.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('DATES_ABBO').'"/>';
       }
-      $ical_url = '<a title="'.getMessage('DATES_ABBO').'"  href="webcal://';
+      $ical_url = '<a title="'.$this->_translator->getMessage('DATES_ABBO').'"  href="webcal://';
       $ical_url .= $_SERVER['HTTP_HOST'];
       global $c_single_entry_point;
       $ical_url .= str_replace($c_single_entry_point,'ical.php',$_SERVER['PHP_SELF']);
       $ical_url .= '?cid='.$_GET['cid'].'&amp;hid='.$hash_manager->getICalHashForUser($current_user->getItemID()).'">'.$image.'</a>'.LF;
       $html .= $ical_url;
       if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-         $image = '<img src="images/commsyicons_msie6/22x22/export.gif" style="vertical-align:bottom;" alt="'.getMessage('DATES_EXPORT').'"/>';
+         $image = '<img src="images/commsyicons_msie6/22x22/export.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('DATES_EXPORT').'"/>';
       } else {
-         $image = '<img src="images/commsyicons/22x22/export.png" style="vertical-align:bottom;" alt="'.getMessage('DATES_EXPORT').'"/>';
+         $image = '<img src="images/commsyicons/22x22/export.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('DATES_EXPORT').'"/>';
       }
-      $html .= '<a title="'.getMessage('DATES_EXPORT').'"  href="ical.php?cid='.$_GET['cid'].'&amp;hid='.$hash_manager->getICalHashForUser($current_user->getItemID()).'">'.$image.'</a>'.LF;
+      $html .= '<a title="'.$this->_translator->getMessage('DATES_EXPORT').'"  href="ical.php?cid='.$_GET['cid'].'&amp;hid='.$hash_manager->getICalHashForUser($current_user->getItemID()).'">'.$image.'</a>'.LF;
       unset($params);
       if ( $this->_environment->inPrivateRoom() ) {
          if ( $this->_with_modifying_actions ) {
             $params['import'] = 'yes';
             if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-               $image = '<img src="images/commsyicons_msie6/22x22/import.gif" style="vertical-align:bottom;" alt="'.getMessage('MATERIAL_IMS_IMPORT').'"/>';
+               $image = '<img src="images/commsyicons_msie6/22x22/import.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('MATERIAL_IMS_IMPORT').'"/>';
             } else {
-               $image = '<img src="images/commsyicons/22x22/import.png" style="vertical-align:bottom;" alt="'.getMessage('MATERIAL_IMS_IMPORT').'"/>';
+               $image = '<img src="images/commsyicons/22x22/import.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('MATERIAL_IMS_IMPORT').'"/>';
             }
             $html .= ahref_curl($this->_environment->getCurrentContextID(),
                                 CS_DATE_TYPE,
@@ -182,10 +182,10 @@ class cs_date_index_view extends cs_index_view {
             $this->_additional_selects = true;
             $html_text ='<tr>'.LF;
             $html_text .='<td>'.LF;
-            $html_text .= '<span class="infocolor">'.getMessage('COMMON_ACTIVATION_RESTRICTION').': </span>';
+            $html_text .= '<span class="infocolor">'.$this->_translator->getMessage('COMMON_ACTIVATION_RESTRICTION').': </span>';
             $html_text .='</td>'.LF;
             $html_text .='<td style="text-align:right;">'.LF;
-            $html_text .= '<span>'.getMessage('COMMON_SHOW_ONLY_ACTIVATED_ENTRIES').'</span>';
+            $html_text .= '<span>'.$this->_translator->getMessage('COMMON_SHOW_ONLY_ACTIVATED_ENTRIES').'</span>';
             $picture = '<img src="images/delete_restriction.gif" alt="x" border="0"/>';
             $new_params = $params;
             $new_params['selactivatingstatus'] = 1;
@@ -200,7 +200,7 @@ class cs_date_index_view extends cs_index_view {
          $this->_additional_selects = true;
          $html_text ='<tr>'.LF;
          $html_text .='<td>'.LF;
-         $html_text .= '<span class="infocolor">'.getMessage('COMMON_DATE_STATUS').': </span>';
+         $html_text .= '<span class="infocolor">'.$this->_translator->getMessage('COMMON_DATE_STATUS').': </span>';
          $html_text .='</td>'.LF;
          $html_text .='<td style="text-align:right;">'.LF;
          $status_text = '';
@@ -346,7 +346,7 @@ class cs_date_index_view extends cs_index_view {
       $html .= '<table id="list_info_table" style="width:100%; padding:0px; margin:0px; border-collapse:collapse;">';
       $html .='<tr>'.LF;
       $html .='<td>'.LF;
-      $html .= '<span class="infocolor">'.getMessage('COMMON_LIST_SHOWN_ENTRIES').' </span>';
+      $html .= '<span class="infocolor">'.$this->_translator->getMessage('COMMON_LIST_SHOWN_ENTRIES').' </span>';
       $html .='</td>'.LF;
       $html .='<td style="text-align:right;">'.LF;
       $html .= '<span class="index_description">'.$this->_getDescriptionAsHTML().'</span>'.LF;
@@ -364,7 +364,7 @@ class cs_date_index_view extends cs_index_view {
       $connection = $this->_environment->getCurrentModule();
       $text = '';
       $text .= $this->_translator->getMessage('DATES');
-      $html .= '<span class="infocolor">'.getMessage('COMMON_ALL_LIST_ENTRIES',$text).':</span> ';
+      $html .= '<span class="infocolor">'.$this->_translator->getMessage('COMMON_ALL_LIST_ENTRIES',$text).':</span> ';
       $html .='</td>'.LF;
       $html .='<td style="text-align:right;">'.LF;
       $html .= $this->_count_all.''.LF;
@@ -436,7 +436,7 @@ class cs_date_index_view extends cs_index_view {
       unset($params['presentation_mode']);
       $params['seldisplay_mode'] = 'calendar';
       $html .= '<div style="float:right;">'.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),'index',$params,$this->_translator->getMessage('DATES_CHANGE_CALENDAR')).'</div>'.LF;
-      $html .= '<span class="infocolor">'.getMessage('DATE_ALTERNATIVE_DISPLAY').': </span>'.LF;
+      $html .= '<span class="infocolor">'.$this->_translator->getMessage('DATE_ALTERNATIVE_DISPLAY').': </span>'.LF;
 
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
@@ -543,9 +543,9 @@ class cs_date_index_view extends cs_index_view {
             }
             $activating_date = $item->getActivatingDate();
             if (strstr($activating_date,'9999-00-00')){
-               $title .= BR.getMessage('COMMON_NOT_ACTIVATED');
+               $title .= BR.$this->_translator->getMessage('COMMON_NOT_ACTIVATED');
             }else{
-               $title .= BR.getMessage('COMMON_ACTIVATING_DATE').' '.getDateInLang($item->getActivatingDate());
+               $title .= BR.$this->_translator->getMessage('COMMON_ACTIVATING_DATE').' '.getDateInLang($item->getActivatingDate());
             }
             $title = '<span class="disabled">'.$title.'</span>';
             $html .= '      <td '.$style.'>'.$title.LF;
@@ -595,7 +595,7 @@ class cs_date_index_view extends cs_index_view {
                            $title,
                            '','', '', '', '', '', '', '',
                            CS_DATE_TYPE.$item->getItemID());
-         $title .= ' <span class="changed"><span style="color:black"><i>['.getMessage('DATE_PRIVATE_ENTRY').']</i></span></span>';
+         $title .= ' <span class="changed"><span style="color:black"><i>['.$this->_translator->getMessage('DATE_PRIVATE_ENTRY').']</i></span></span>';
       }else{
          $title = ahref_curl( $this->_environment->getCurrentContextID(),
                            CS_DATE_TYPE,

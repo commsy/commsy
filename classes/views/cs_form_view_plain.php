@@ -253,7 +253,7 @@ class cs_form_view_plain extends cs_view {
          }
          $html .= $label;
          if (!empty($form_element_array[0]['mandatory'])) {
-            $html.= '<span class="required">'.getMessage('MARK').'</span>'."\n";
+            $html.= '<span class="required">'.$this->_translator->getMessage('MARK').'</span>'."\n";
          }
          $html .= '<br />'."\n";
       }

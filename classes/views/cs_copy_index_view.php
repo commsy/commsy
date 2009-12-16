@@ -176,7 +176,7 @@ class cs_copy_index_view extends cs_index_view {
       } else {
          $tempMessage = '<img src="images/commsyicons/22x22/copy.png" style="vertical-align:bottom;"/>';
       }
-      $html .= '<h2 id="copy_title">'.$tempMessage.'&nbsp;'.getMessage('MYAREA_MY_COPIES').'</h2>';
+      $html .= '<h2 id="copy_title">'.$tempMessage.'&nbsp;'.$this->_translator->getMessage('MYAREA_MY_COPIES').'</h2>';
       $html .='</div>'.LF;
       $html .='<div style="padding:10px;">'.LF;
       $params = $this->_environment->getCurrentParameterArray();
@@ -308,9 +308,9 @@ class cs_copy_index_view extends cs_index_view {
             }
             $activating_date = $item->getActivatingDate();
             if (strstr($activating_date,'9999-00-00')){
-               $title .= BR.getMessage('COMMON_NOT_ACTIVATED');
+               $title .= BR.$this->_translator->getMessage('COMMON_NOT_ACTIVATED');
             }else{
-               $title .= BR.getMessage('COMMON_ACTIVATING_DATE').' '.getDateInLang($item->getActivatingDate());
+               $title .= BR.$this->_translator->getMessage('COMMON_ACTIVATING_DATE').' '.getDateInLang($item->getActivatingDate());
             }
             $title = '<span class="disabled">'.$title.'</span>';
             $html .= '      <td '.$style.'>'.$title.LF;
@@ -364,7 +364,7 @@ class cs_copy_index_view extends cs_index_view {
             $text .= $this->_translator->getMessage('COMMON_ACCOUNTS');
             break;
          default:
-            $text .= getMessage('COMMON_MESSAGETAG_ERROR').' cs_index_view('.__LINE__.') ';
+            $text .= $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR').' cs_index_view('.__LINE__.') ';
             break;
       }
       $html .= '      <td '.$style.' style="font-size:8pt;">'.$text.'</td>'.LF;

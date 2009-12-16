@@ -278,7 +278,7 @@ class cs_form_view_left extends cs_view {
       $textfield['maxlength']  = $form_element['firstFieldMaxLength'];
       $textfield['value'] = reset($form_element['value']);
       if ($form_element['isFirstMandatory']) {
-         $form_element['firstLabel'] .= '<span class="required">'.getMessage('MARK').'</span>';
+         $form_element['firstLabel'] .= '<span class="required">'.$this->_translator->getMessage('MARK').'</span>';
       }
       if (!empty($form_element['failure_element']) and in_array('0',$form_element['failure_element'])) {
          $form_element['firstLabel'] = '<span class="bold">'.$form_element['firstLabel'].'</span>';
@@ -295,7 +295,7 @@ class cs_form_view_left extends cs_view {
       $textfield['maxlength']  = $form_element['secondFieldMaxLength'];
       $textfield['value'] = next($form_element['value']);
       if ($form_element['isSecondMandatory']) {
-         $form_element['secondLabel'] .= '<span class="required">'.getMessage('MARK').'</span>';
+         $form_element['secondLabel'] .= '<span class="required">'.$this->_translator->getMessage('MARK').'</span>';
       }
       if (!empty($form_element['failure_element']) and in_array('1',$form_element['failure_element'])) {
          $form_element['secondLabel'] = '<span class="bold">'.$form_element['secondLabel'].'</span>';
@@ -718,7 +718,7 @@ class cs_form_view_left extends cs_view {
        }
          $html .= $label;
          if (!empty($form_element_array[0]['mandatory'])) {
-            $html.= '<span class="required">'.getMessage('MARK').'</span>'.LF;
+            $html.= '<span class="required">'.$this->_translator->getMessage('MARK').'</span>'.LF;
          }
        $html .= BRLF;
       }

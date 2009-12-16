@@ -398,15 +398,15 @@ class cs_wiki_view extends cs_view {
                foreach ($reg_exp_array as $key => $reg_exp) {
                   if ( $key == '(:flash' and mb_stristr($value_new,'(:flash') ) {
                      //$value_new = $this->_format_flash($value_new,$this->_getArgs($value_new,$reg_exp));
-                     $value_new = '[=(:flash:)=] - ' . getMessage('EXPORT_TO_WIKI_NOT_SUPPOTED_YET');
+                     $value_new = '[=(:flash:)=] - ' . $this->_translator->getMessage('EXPORT_TO_WIKI_NOT_SUPPOTED_YET');
                      break;
                   } elseif ( $key == '(:wmplayer' and mb_stristr($value_new,'(:wmplayer') ) {
                      //$value_new = $this->_format_wmplayer($value_new,$this->_getArgs($value_new,$reg_exp));
-                     $value_new = '[=(:wmplayer:)=] - ' . getMessage('EXPORT_TO_WIKI_NOT_SUPPOTED_YET');
+                     $value_new = '[=(:wmplayer:)=] - ' . $this->_translator->getMessage('EXPORT_TO_WIKI_NOT_SUPPOTED_YET');
                      break;
                   } elseif ( $key == '(:quicktime' and mb_stristr($value_new,'(:quicktime') ) {
                      //$value_new = $this->_format_quicktime($value_new,$this->_getArgs($value_new,$reg_exp));
-                     $value_new = '[=(:quicktime:)=] - ' . getMessage('EXPORT_TO_WIKI_NOT_SUPPOTED_YET');
+                     $value_new = '[=(:quicktime:)=] - ' . $this->_translator->getMessage('EXPORT_TO_WIKI_NOT_SUPPOTED_YET');
                      break;
                   } elseif ( $key == '(:image' and mb_stristr($value_new,'(:image') ) {
                      $value_new = $this->_format_image($value_new,$this->_getArgs($value_new,$reg_exp));
@@ -443,7 +443,7 @@ class cs_wiki_view extends cs_view {
                      break;
                   } elseif ( $key == '(:office' and mb_stristr($value_new,'(:office') ) {
                      //$value_new = $this->_format_office($value_new,$this->_getArgs($value_new,$reg_exp));
-                     $value_new = '[=(:office:)=] - ' . getMessage('EXPORT_TO_WIKI_NOT_SUPPOTED_YET');
+                     $value_new = '[=(:office:)=] - ' . $this->_translator->getMessage('EXPORT_TO_WIKI_NOT_SUPPOTED_YET');
                      break;
                   } elseif ( $key == '{$' and mb_stristr($value_new,'{$') ) {
                      $value_new = $this->_format_math1($value_new,$this->_getArgs($value_new,$reg_exp));

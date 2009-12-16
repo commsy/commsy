@@ -1279,7 +1279,7 @@ class cs_statistic_view extends cs_view {
                $name_text .= ' ('.$this->_translator->getMessage('SERVER_STATISTIC_PROJECTROOM').')';
                break;
             default:                     // "Bitte Messagetag-Fehler melden"
-               $name_text .= getMessage('COMMON_MESSAGETAG_ERROR')." cs_statistic_view Zl.846";
+               $name_text .= $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR')." cs_statistic_view Zl.846";
                break;
          }
       }
@@ -1338,7 +1338,7 @@ class cs_statistic_view extends cs_view {
                    $temp_text .= $this->_translator->getMessage('SERVER_STATISTIC_RUBRIC_USER');
                    break;
                 default:                     // "Bitte Messagetag-Fehler melden"
-                   $temp_text .= getMessage('COMMON_MESSAGETAG_ERROR')." cs_statistic_view Zl.892";
+                   $temp_text .= $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR')." cs_statistic_view Zl.892";
                    break;
             }
             $temp_text .= ': ' . $room[$rubric_array[0]];

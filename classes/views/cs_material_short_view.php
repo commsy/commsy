@@ -131,7 +131,7 @@ class cs_material_short_view extends cs_home_view {
       if (isset($modificator) and !$modificator->isDeleted()){
          $fullname = $modificator->getFullName();
       }else{
-         $fullname = getMessage('COMMON_DELETED_USER');
+         $fullname = $this->_translator->getMessage('COMMON_DELETED_USER');
       }
       return $fullname;
    }

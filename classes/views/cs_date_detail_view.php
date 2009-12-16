@@ -80,7 +80,7 @@ var $_clipboard_id_array=array();
             $params['iid'] = $item->getItemID();
             $params['date_option'] = '2';
             if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-               $image = '<img src="images/commsyicons_msie6/22x22/group_leave.gif" style="vertical-align:bottom;" alt="'.getMessage('DATE_LEAVE').'"/>';
+               $image = '<img src="images/commsyicons_msie6/22x22/group_leave.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('DATE_LEAVE').'"/>';
             } else {
                $image = '<img src="images/commsyicons/22x22/group_leave.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('DATE_LEAVE').'"/>';
             }
@@ -390,7 +390,7 @@ var $_clipboard_id_array=array();
       }
       $html = $this->_text_as_html_short($html);
       if ($item->issetPrivatDate()){
-         $html .=' <span class="changed"><span class="disabled">['.getMessage('DATE_PRIVATE_ENTRY').']</span></span>';
+         $html .=' <span class="changed"><span class="disabled">['.$this->_translator->getMessage('DATE_PRIVATE_ENTRY').']</span></span>';
       }
       return $html;
    }
