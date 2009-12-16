@@ -33,6 +33,8 @@ if ( !$room_item->withAds() ) {
 
 $current_user = $environment->getCurrentUserItem();
 
+$translator = $environment->getTranslationObject();
+
 // Check access rights
 if ( !$room_item->isOpen() ) {
    $params = array();
@@ -40,7 +42,7 @@ if ( !$room_item->isOpen() ) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('PROJECT_ROOM_IS_CLOSED', $room_item->getTitle()));
+   $errorbox->setText($translator->getMessage('PROJECT_ROOM_IS_CLOSED', $room_item->getTitle()));
    $page->add($errorbox);
 } elseif ( ($room_item->isProjectRoom() and !$current_user->isModerator()) or
            ($room_item->isCommunityRoom() and !$current_user->isModerator()) or
@@ -51,7 +53,7 @@ if ( !$room_item->isOpen() ) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('LOGIN_NOT_ALLOWED'));
+   $errorbox->setText($translator->getMessage('LOGIN_NOT_ALLOWED'));
    $page->add($errorbox);
 }
 
@@ -78,8 +80,8 @@ else {
       $form_view = $class_factory->getClass(CONFIGURATION_FORM_VIEW,$params);
       unset($params);
 
-      if ( isOption($command, getMessage('ADS_AD_NORMAL_SPONSOR_BUTTON'))  or
-           isOption($command, getMessage('ADS_ADD_NEXT_NORMAL_SPONSOR_BUTTON')) ) {
+      if ( isOption($command, $translator->getMessage('ADS_AD_NORMAL_SPONSOR_BUTTON'))  or
+           isOption($command, $translator->getMessage('ADS_ADD_NEXT_NORMAL_SPONSOR_BUTTON')) ) {
          $counter_normal = 0;
          if ( isset($_FILES['normal_name']['name'])
               or isset($_POST['hidden_normal_name'])
@@ -168,7 +170,7 @@ else {
          $end = false;
          while ( !$end ) {
             // remove normal sponsor from form
-            if ( isset($_POST['normal_delete_'.$i]) and isOption($_POST['normal_delete_'.$i], getMessage('ADS_DELETE_BUTTON')) ) {
+            if ( isset($_POST['normal_delete_'.$i]) and isOption($_POST['normal_delete_'.$i], $translator->getMessage('ADS_DELETE_BUTTON')) ) {
                if ( isset($_POST['hidden_normal_name'][$i]) ) {
                   $disc_manager = $environment->getDiscManager();
                   if ( $disc_manager->existsFile($_POST['hidden_normal_name'][$i]) ) {
@@ -230,7 +232,7 @@ else {
 
             // move normal sponsor down in form
             if ( isset($_POST['normal_down_'.$i])
-                 and isOption($_POST['normal_down_'.$i], getMessage('ADS_DOWN_BUTTON'))
+                 and isOption($_POST['normal_down_'.$i], $translator->getMessage('ADS_DOWN_BUTTON'))
                ) {
                $temp_url = $_POST['normal_url'][$i];
                $_POST['normal_url'][$i] = $_POST['normal_url'][$i+1];
@@ -331,7 +333,7 @@ else {
                $end = true; // for while loop
             }
             // move normal sponsor up in form
-            if ( isset($_POST['normal_up_'.$i]) and isOption($_POST['normal_up_'.$i], getMessage('ADS_UP_BUTTON')) ) {
+            if ( isset($_POST['normal_up_'.$i]) and isOption($_POST['normal_up_'.$i], $translator->getMessage('ADS_UP_BUTTON')) ) {
                $temp_url = $_POST['normal_url'][$i];
                $_POST['normal_url'][$i] = $_POST['normal_url'][$i-1];
                $_POST['normal_url'][$i-1] = $temp_url;
@@ -456,14 +458,14 @@ else {
 
       // Save item
       if ( !empty($command)
-           and isOption($command, getMessage('COMMON_SAVE_BUTTON'))
+           and isOption($command, $translator->getMessage('COMMON_SAVE_BUTTON'))
            and ( !isset($error_on_upload)
                  or !$error_on_upload
                )
          ) {
          $correct = $form->check();
          if ( $correct
-              and isOption($command, getMessage('COMMON_SAVE_BUTTON'))
+              and isOption($command, $translator->getMessage('COMMON_SAVE_BUTTON'))
             ) {
             // show ads
             if ( isset($_POST['show_ads']) and !empty($_POST['show_ads']) ) {

@@ -133,27 +133,27 @@ class class_configuration_plugin_form extends cs_rubric_form {
       $translator = $this->_environment->getTranslationObject();
 
       $this->setHeadline($this->_headline);
-      $this->_form->addRadioGroup('show_google_ads',getMessage('ADS_SHOW_GOOGLE_ADS_CHOICE_FORM_TITLE'),'',$this->_show_ads_choice,'-1',true,true);
+      $this->_form->addRadioGroup('show_google_ads',$this->_translator->getMessage('ADS_SHOW_GOOGLE_ADS_CHOICE_FORM_TITLE'),'',$this->_show_ads_choice,'-1',true,true);
       $this->_form->addRadioGroup('show_amazon_ads',$this->_translator->getMessage('ADS_SHOW_AMAZON_ADS_CHOICE_FORM_TITLE'),'',$this->_show_ads_choice,'-1',true,true);
-      $this->_form->addRadioGroup('show_ads',getMessage('ADS_SHOW_ADS_CHOICE_FORM_TITLE'),'',$this->_show_ads_choice,'-1',true,true);
+      $this->_form->addRadioGroup('show_ads',$this->_translator->getMessage('ADS_SHOW_ADS_CHOICE_FORM_TITLE'),'',$this->_show_ads_choice,'-1',true,true);
 
       // normal sponsors
       $this->_form->addHeadline('headline',$this->_headline_normal_sponsors);
-      $this->_form->addTextField('normal_title','',getMessage('ADS_COMMON_SPONSOR_FORM_ELEMENT_HEADLINE'),'',200,'',false);
+      $this->_form->addTextField('normal_title','',$this->_translator->getMessage('ADS_COMMON_SPONSOR_FORM_ELEMENT_HEADLINE'),'',200,'',false);
       $first = true;
       for ($i=0; $i<$this->_normal_counter; $i++) {
          $this->_form->addEmptyLine('empty');
-         $this->_form->addButton('normal_delete_'.$i,getMessage('ADS_DELETE_BUTTON'),getMessage('ADS_FORM_ELEMENT_TITLE_SPONSOR_NO',$i+1));
+         $this->_form->addButton('normal_delete_'.$i,$this->_translator->getMessage('ADS_DELETE_BUTTON'),$this->_translator->getMessage('ADS_FORM_ELEMENT_TITLE_SPONSOR_NO',$i+1));
          if ($i > 0) {
             $this->_form->combine('horizontal');
-            $this->_form->addButton('normal_up_'.$i,getMessage('ADS_UP_BUTTON'),'','','');
+            $this->_form->addButton('normal_up_'.$i,$this->_translator->getMessage('ADS_UP_BUTTON'),'','','');
          }
          if ($i < $this->_normal_counter-1) {
             $this->_form->combine('horizontal');
-            $this->_form->addButton('normal_down_'.$i,getMessage('ADS_DOWN_BUTTON'),'','','');
+            $this->_form->addButton('normal_down_'.$i,$this->_translator->getMessage('ADS_DOWN_BUTTON'),'','','');
          }
-         $this->_form->addImage('normal_name['.$i.']','',getMessage('ADS_IMAGE_FORM_ELEMENT_TITLE'),'');
-         $this->_form->addTextField('normal_url['.$i.']','',getMessage('ADS_URL_FORM_ELEMENT_TITLE'),'',200,'',false);
+         $this->_form->addImage('normal_name['.$i.']','',$this->_translator->getMessage('ADS_IMAGE_FORM_ELEMENT_TITLE'),'');
+         $this->_form->addTextField('normal_url['.$i.']','',$this->_translator->getMessage('ADS_URL_FORM_ELEMENT_TITLE'),'',200,'',false);
       }
       unset($first);
       $this->_form->addButton('option',$this->_button_normal_sponsors);

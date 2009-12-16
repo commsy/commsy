@@ -244,7 +244,7 @@ class class_ads {
 
    function getArrayForExtraConfiguration () {
       $retour = array();
-      $retour['text']  = getMessage('CONFIGURATION_EXTRA_SPONSORING');
+      $retour['text']  = $this->_translator->getMessage('CONFIGURATION_EXTRA_SPONSORING');
       $retour['value'] = 'CONFIGURATION_EXTRA_SPONSORING';
       return $retour;
    }
