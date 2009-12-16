@@ -122,10 +122,10 @@ class cs_configuration_preferences_form extends cs_rubric_form {
       }
 
       $public_array = array();
-      $temp_array['text']  = getMessage('RUBRIC_PUBLIC_YES');
+      $temp_array['text']  = $this->_translator->getMessage('RUBRIC_PUBLIC_YES');
       $temp_array['value'] = 1;
       $public_array[] = $temp_array;
-      $temp_array['text']  = getMessage('RUBRIC_PUBLIC_NO', $fullname);
+      $temp_array['text']  = $this->_translator->getMessage('RUBRIC_PUBLIC_NO', $fullname);
       $temp_array['value'] = 0;
       $public_array[] = $temp_array;
       $this->_public_array = $public_array;
@@ -139,14 +139,14 @@ class cs_configuration_preferences_form extends cs_rubric_form {
       }
 
       if ( !empty($this->_iid) and $this->_iid != 'NEW' ) {
-         $this->_headline = getMessage('INTERNAL_META_TITLE');
+         $this->_headline = $this->_translator->getMessage('INTERNAL_META_TITLE');
       } else {
          if ($this->_environment->getCurrentModule() == CS_PROJECT_TYPE) {
-            $this->_headline = getMessage('COMMON_ENTER_NEW_PROJECT');
+            $this->_headline = $this->_translator->getMessage('COMMON_ENTER_NEW_PROJECT');
          } elseif ($this->_environment->inServer()) {
-         $this->_headline = getMessage('PORTAL_ENTER_NEW');
+         $this->_headline = $this->_translator->getMessage('PORTAL_ENTER_NEW');
       } else {
-         $this->_headline = getMessage('PORTAL_ENTER_ROOM');
+         $this->_headline = $this->_translator->getMessage('PORTAL_ENTER_ROOM');
       }
 
       if (!$this->_environment->inPortal()) {
@@ -159,13 +159,13 @@ class cs_configuration_preferences_form extends cs_rubric_form {
                $genus = $rubric_array['EN']['GENUS'];
             }
             if ($genus =='M'){
-               $new = getMessage('COMMON_NEW_M_BIG').' ';
+               $new = $this->_translator->getMessage('COMMON_NEW_M_BIG').' ';
             }
             elseif ($genus =='F'){
-               $new =  getMessage('COMMON_NEW_F_BIG').' ';
+               $new =  $this->_translator->getMessage('COMMON_NEW_F_BIG').' ';
             }
             else {
-               $new = getMessage('COMMON_NEW_N_BIG').' ';
+               $new = $this->_translator->getMessage('COMMON_NEW_N_BIG').' ';
             }
 
             $this->_headline = $new.$this->_headline;
@@ -215,7 +215,7 @@ class cs_configuration_preferences_form extends cs_rubric_form {
          $current_user = $this->_environment->getCurrentUserItem();
          $community_list = $current_portal->getCommunityList();
          $community_room_array = array();
-         $temp_array['text'] = '*'.getMessage('PREFERENCES_NO_COMMUNITY_ROOM');
+         $temp_array['text'] = '*'.$this->_translator->getMessage('PREFERENCES_NO_COMMUNITY_ROOM');
          $temp_array['value'] = '-1';
          $community_room_array[] = $temp_array;
          $temp_array['text'] = '--------------------';
@@ -459,7 +459,14 @@ class cs_configuration_preferences_form extends cs_rubric_form {
                      $temp_array['text'] = $item->getTitle();
                      $temp_array['value'] = $item->getItemID();
                      $this->_template_array[] = $temp_array;
-                     $this->_javascript_array[$item->getItemID()] = $this->_environment->getTextConverter()->text_as_html_long($this->_environment->getTextConverter()->cleanDataFromTextArea($item->getTemplateDescription()));
+                     
+                     /*
+                      * Fix:	text functions causes problems with javascript and <br /> tag
+                      * 		anyway, they are not need for displaying the content, because
+                      * 		mysql holds these information already escaped
+                      */
+                     //$this->_javascript_array[$item->getItemID()] = $this->_environment->getTextConverter()->text_as_html_long($this->_environment->getTextConverter()->cleanDataFromTextArea($item->getTemplateDescription()));
+                     $this->_javascript_array[$item->getItemID()] = nl2br($item->getTemplateDescription());
                   }
 
                }
@@ -683,7 +690,7 @@ class cs_configuration_preferences_form extends cs_rubric_form {
                                          '',
                                          false,
                                          '',
-                                         getMessage('LOGO_DELETE_OPTION'),
+                                         $this->_translator->getMessage('LOGO_DELETE_OPTION'),
                                          ''
                                         );
             }
@@ -757,7 +764,7 @@ class cs_configuration_preferences_form extends cs_rubric_form {
                                          '',
                                          false,
                                          '',
-                                         getMessage('CONFIGURATION_PICTURE_LOGO_DELETE_OPTION'),
+                                         $this->_translator->getMessage('CONFIGURATION_PICTURE_LOGO_DELETE_OPTION'),
                                          ''
                                         );
             }
@@ -787,7 +794,7 @@ class cs_configuration_preferences_form extends cs_rubric_form {
                                      'onChange="cs_toggle_template()"'
                                     );
             $this->_form->combine('vertical');
-            $this->_form->addText('template_select_text','',getMessage('CONFIGURATION_TEMPLATE_FORM_SELECT_DESC'),'',false,'','','left','','id="template_extention"');
+            $this->_form->addText('template_select_text','',$this->_translator->getMessage('CONFIGURATION_TEMPLATE_FORM_SELECT_DESC'),'',false,'','','left','','id="template_extention"');
          }
          // template functions
          if ( $this->_with_template_form_element3 ) {
@@ -807,7 +814,7 @@ class cs_configuration_preferences_form extends cs_rubric_form {
                                      '27'
                                     );
             $this->_form->combine('vertical');
-            $this->_form->addText('template_select_text','',getMessage('CONFIGURATION_TEMPLATE_FORM_SELECT_DESC'),'',false,'','','left','','id="template_extention"');
+            $this->_form->addText('template_select_text','',$this->_translator->getMessage('CONFIGURATION_TEMPLATE_FORM_SELECT_DESC'),'',false,'','','left','','id="template_extention"');
          }
       }
 
@@ -836,7 +843,7 @@ class cs_configuration_preferences_form extends cs_rubric_form {
                                  'onChange="cs_toggle_template()"'
                                 );
          $this->_form->combine('vertical');
-         $this->_form->addText('template_select_text','',getMessage('CONFIGURATION_TEMPLATE_FORM_SELECT_DESC'),'',false,'','','left','','id="template_extention"');
+         $this->_form->addText('template_select_text','',$this->_translator->getMessage('CONFIGURATION_TEMPLATE_FORM_SELECT_DESC'),'',false,'','','left','','id="template_extention"');
       }
 
       // language
@@ -851,7 +858,7 @@ class cs_configuration_preferences_form extends cs_rubric_form {
       } else {
          $languageArray = array();
          $zaehler = 0;
-         $languageArray[$zaehler]['text']  = getMessage('CONTEXT_LANGUAGE_USER');
+         $languageArray[$zaehler]['text']  = $this->_translator->getMessage('CONTEXT_LANGUAGE_USER');
          $languageArray[$zaehler]['value'] = 'user';
          $zaehler++;
          $languageArray[$zaehler]['text']  = '-------';
@@ -861,26 +868,26 @@ class cs_configuration_preferences_form extends cs_rubric_form {
          foreach ($tmpArray as $item){
             switch ( mb_strtoupper($item, 'UTF-8') ){
                case 'DE':
-                  $languageArray[$zaehler]['text']= getMessage('DE');
+                  $languageArray[$zaehler]['text']= $this->_translator->getMessage('DE');
                   break;
                case 'EN':
-                  $languageArray[$zaehler]['text']= getMessage('EN');
+                  $languageArray[$zaehler]['text']= $this->_translator->getMessage('EN');
                   break;
                default:
-                  // $languageArray[$zaehler]['text']= getMessage('COMMON_MESSAGETAG_ERROR'.' cs_configuration_preferenes_form(533) ');
+                  // $languageArray[$zaehler]['text']= $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR'.' cs_configuration_preferenes_form(533) ');
                   break;
             }
             $languageArray[$zaehler]['value']= $item;
             $zaehler++;
          }
-         $message = getMessage('CONTEXT_LANGUAGE_DESC2');
+         $message = $this->_translator->getMessage('CONTEXT_LANGUAGE_DESC2');
          #if ($this->_environment->getCurrentModule() == CS_PROJECT_TYPE) {
-         #   $message = getMessage('CONTEXT_LANGUAGE_DESC');
+         #   $message = $this->_translator->getMessage('CONTEXT_LANGUAGE_DESC');
          #}
          $this->_form->addSelect('language',
                                  $languageArray,
                                  '',
-                                 getMessage('CONTEXT_LANGUAGE'),
+                                 $this->_translator->getMessage('CONTEXT_LANGUAGE'),
                                  $message,
                                  0,
                                  false,
@@ -923,9 +930,9 @@ class cs_configuration_preferences_form extends cs_rubric_form {
                $radio_values[0]['extention'] = 'onclick="disable_code()"';
             }
             #if ($this->_type != CS_PORTAL_TYPE) {
-            #   $radio_values[1]['text'] = getMessage('PREFERENCES_CHECK_NEW_MEMBERS_SOMETIMES_ROOM');
+            #   $radio_values[1]['text'] = $this->_translator->getMessage('PREFERENCES_CHECK_NEW_MEMBERS_SOMETIMES_ROOM');
             #} else {
-            #   $radio_values[1]['text'] = getMessage('PREFERENCES_CHECK_NEW_MEMBERS_SOMETIMES_PORTAL');
+            #   $radio_values[1]['text'] = $this->_translator->getMessage('PREFERENCES_CHECK_NEW_MEMBERS_SOMETIMES_PORTAL');
             #}
             #$radio_values[1]['value'] = 'sometimes';
             #$radio_values[1]['extention'] = 'onclick="disable_code()"';
@@ -965,13 +972,13 @@ class cs_configuration_preferences_form extends cs_rubric_form {
            // do nothing
         } else {
             $radio_values = array();
-            $radio_values[0]['text'] = getMessage('COMMON_ON');
+            $radio_values[0]['text'] = $this->_translator->getMessage('COMMON_ON');
             $radio_values[0]['value'] = 'open';
-            $radio_values[1]['text'] = getMessage('COMMON_OFF');
+            $radio_values[1]['text'] = $this->_translator->getMessage('COMMON_OFF');
             $radio_values[1]['value'] = 'closed';
             $this->_form->addRadioGroup('open_for_guests',
-                                        getMessage('PREFERENCES_OPEN_FOR_GUESTS'),
-                                        getMessage('PREFERENCES_OPEN_FOR_GUESTS_DESC'),
+                                        $this->_translator->getMessage('PREFERENCES_OPEN_FOR_GUESTS'),
+                                        $this->_translator->getMessage('PREFERENCES_OPEN_FOR_GUESTS_DESC'),
                                         $radio_values,
                                         '',
                                         true,
@@ -980,13 +987,13 @@ class cs_configuration_preferences_form extends cs_rubric_form {
             unset($radio_values);
 
             $radio_values = array();
-            $radio_values[0]['text'] = getMessage('COMMON_ASSIGMENT_ON');
+            $radio_values[0]['text'] = $this->_translator->getMessage('COMMON_ASSIGMENT_ON');
             $radio_values[0]['value'] = 'open';
-            $radio_values[1]['text'] = getMessage('COMMON_ASSIGMENT_OFF');
+            $radio_values[1]['text'] = $this->_translator->getMessage('COMMON_ASSIGMENT_OFF');
             $radio_values[1]['value'] = 'closed';
             $this->_form->addRadioGroup('room_assignment',
-                                        getMessage('PREFERENCES_ROOM_ASSIGMENT'),
-                                        getMessage('PREFERENCES_ASSIGMENT_OPEN_FOR_GUESTS_DESC'),
+                                        $this->_translator->getMessage('PREFERENCES_ROOM_ASSIGMENT'),
+                                        $this->_translator->getMessage('PREFERENCES_ASSIGMENT_OPEN_FOR_GUESTS_DESC'),
                                         $radio_values,
                                         '',
                                         true,
@@ -1008,9 +1015,9 @@ class cs_configuration_preferences_form extends cs_rubric_form {
            }
            if ($portal_item->showTime()) {
               $radio_values = array();
-               $radio_values[0]['text'] = getMessage('COMMON_YES');
+               $radio_values[0]['text'] = $this->_translator->getMessage('COMMON_YES');
                $radio_values[0]['value'] = '1';
-               $radio_values[1]['text'] = getMessage('COMMON_NO');
+               $radio_values[1]['text'] = $this->_translator->getMessage('COMMON_NO');
                $radio_values[1]['value'] = '-1';
                $this->_form->addRadioGroup('show_time',
                                            $this->_translator->getMessage('CONFIGURATION_TIME_FORM_ELEMENT_CHOICE_TITLE'),
@@ -1047,23 +1054,23 @@ class cs_configuration_preferences_form extends cs_rubric_form {
 
       if ($project_room_link_status =='optional'){
          if ( !empty ($this->_shown_community_room_array) ) {
-            $this->_form->addCheckBoxGroup('communityroomlist',$this->_shown_community_room_array,'',getMessage('PREFERENCES_COMMUNITY_ROOMS'),'',false,false);
+            $this->_form->addCheckBoxGroup('communityroomlist',$this->_shown_community_room_array,'',$this->_translator->getMessage('PREFERENCES_COMMUNITY_ROOMS'),'',false,false);
             $this->_form->combine();
          }
          if(count($this->_community_room_array) > 2){
-            $this->_form->addSelect('communityrooms',$this->_community_room_array,'',getMessage('PREFERENCES_COMMUNITY_ROOMS'),'', 1, false,false,false,'','','','',13);
+            $this->_form->addSelect('communityrooms',$this->_community_room_array,'',$this->_translator->getMessage('PREFERENCES_COMMUNITY_ROOMS'),'', 1, false,false,false,'','','','',13);
             $this->_form->combine('horizontal');
-            $this->_form->addButton('option',getMessage('PREFERENCES_ADD_COMMUNITY_ROOMS_BUTTON'),'','',180);
+            $this->_form->addButton('option',$this->_translator->getMessage('PREFERENCES_ADD_COMMUNITY_ROOMS_BUTTON'),'','',180);
          }
       }else{
          if ( !empty ($this->_shown_community_room_array) ) {
-            $this->_form->addCheckBoxGroup('communityroomlist',$this->_shown_community_room_array,'',getMessage('PREFERENCES_COMMUNITY_ROOMS'),'',false,false);
+            $this->_form->addCheckBoxGroup('communityroomlist',$this->_shown_community_room_array,'',$this->_translator->getMessage('PREFERENCES_COMMUNITY_ROOMS'),'',false,false);
             $this->_form->combine();
          }
          if(count($this->_community_room_array) > 2){
-            $this->_form->addSelect('communityrooms',$this->_community_room_array,'',getMessage('PREFERENCES_COMMUNITY_ROOMS'),'', 1, false,true,false,'','','','',13);
+            $this->_form->addSelect('communityrooms',$this->_community_room_array,'',$this->_translator->getMessage('PREFERENCES_COMMUNITY_ROOMS'),'', 1, false,true,false,'','','','',13);
             $this->_form->combine('horizontal');
-            $this->_form->addButton('option',getMessage('PREFERENCES_ADD_COMMUNITY_ROOMS_BUTTON'),'','',180);
+            $this->_form->addButton('option',$this->_translator->getMessage('PREFERENCES_ADD_COMMUNITY_ROOMS_BUTTON'),'','',180);
          }
       }
    }
@@ -1072,8 +1079,8 @@ class cs_configuration_preferences_form extends cs_rubric_form {
         if ( $this->_type == CS_SERVER_TYPE and $this->_environment->inServer() ) {
            $this->_form->addTextField('server_default_sender_address',
                                       '',
-                                      getMessage('SERVER_DEFAULT_SENDER_ADDRESS'),
-                                      getMessage('SERVER_DEFAULT_SENDER_ADDRESS_DESC'),
+                                      $this->_translator->getMessage('SERVER_DEFAULT_SENDER_ADDRESS'),
+                                      $this->_translator->getMessage('SERVER_DEFAULT_SENDER_ADDRESS_DESC'),
                                       50,
                                       30,
                                       true
@@ -1088,13 +1095,13 @@ class cs_configuration_preferences_form extends cs_rubric_form {
    foreach ($tmpArray as $item){
       switch ( mb_strtoupper($item, 'UTF-8') ){
          case 'DE':
-            $languageArray[$zaehler]['text']= getMessage('DE');
+            $languageArray[$zaehler]['text']= $this->_translator->getMessage('DE');
             break;
          case 'EN':
-            $languageArray[$zaehler]['text']= getMessage('EN');
+            $languageArray[$zaehler]['text']= $this->_translator->getMessage('EN');
             break;
          case 'RU':
-            $languageArray[$zaehler]['text']= getMessage('RU');
+            $languageArray[$zaehler]['text']= $this->_translator->getMessage('RU');
             break;
          default:
             break;
@@ -1105,13 +1112,13 @@ class cs_configuration_preferences_form extends cs_rubric_form {
    $this->_form->addSelect( 'description_text',
                                $languageArray,
                                '',
-                               getMessage('CONFIGURATION_CHOOSE_LANGUAGE'),
+                               $this->_translator->getMessage('CONFIGURATION_CHOOSE_LANGUAGE'),
                                '',
                                '',
                                '',
                                '',
                                true,
-                               getMessage('COMMON_LANGUAGE_CHOOSE_BUTTON'),
+                               $this->_translator->getMessage('COMMON_LANGUAGE_CHOOSE_BUTTON'),
                                'option','','','13',true);
 
    $this->_form->combine();
@@ -1177,30 +1184,30 @@ class cs_configuration_preferences_form extends cs_rubric_form {
       if ( !empty($this->_iid) and $this->_iid != 'NEW' and $this->_type != CS_SERVER_TYPE ) {
                  // Projektraum
          if ($this->_environment->inProjectRoom()) {
-            $this->_form->addButtonBar('option',getMessage('PREFERENCES_SAVE_BUTTON'),'',getMessage('ROOM_DELETE_BUTTON'));
+            $this->_form->addButtonBar('option',$this->_translator->getMessage('PREFERENCES_SAVE_BUTTON'),'',$this->_translator->getMessage('ROOM_DELETE_BUTTON'));
            // aus Gemeinschaftsraum
          } elseif ($this->_environment->inCommunityRoom()) {
                 // Projektraum aus Gemeinschaftsraum heraus
              if ( $this->_environment->getCurrentModule() == CS_PROJECT_TYPE ) {
-                $this->_form->addButtonBar('option',getMessage('PREFERENCES_SAVE_BUTTON'),getMessage('COMMON_CANCEL_BUTTON'),'');
+                $this->_form->addButtonBar('option',$this->_translator->getMessage('PREFERENCES_SAVE_BUTTON'),$this->_translator->getMessage('COMMON_CANCEL_BUTTON'),'');
                 // im Gemeinschaftsraum
              } else {
-                $this->_form->addButtonBar('option',getMessage('PREFERENCES_SAVE_BUTTON'),'',getMessage('ROOM_DELETE_BUTTON'));
+                $this->_form->addButtonBar('option',$this->_translator->getMessage('PREFERENCES_SAVE_BUTTON'),'',$this->_translator->getMessage('ROOM_DELETE_BUTTON'));
              }
            //aus Privatraum
          } elseif ($this->_environment->inPrivateRoom()) {
                  if ( $this->_environment->getCurrentModule() != CS_MYROOM_TYPE ) {
-               $this->_form->addButtonBar('option',getMessage('PREFERENCES_SAVE_BUTTON'),'','');
+               $this->_form->addButtonBar('option',$this->_translator->getMessage('PREFERENCES_SAVE_BUTTON'),'','');
                  } else {
-               $this->_form->addButtonBar('option',getMessage('PREFERENCES_SAVE_BUTTON'),getMessage('COMMON_CANCEL_BUTTON'));
+               $this->_form->addButtonBar('option',$this->_translator->getMessage('PREFERENCES_SAVE_BUTTON'),$this->_translator->getMessage('COMMON_CANCEL_BUTTON'));
                  }
          } else {
-            $this->_form->addButtonBar('option',getMessage('PREFERENCES_SAVE_BUTTON'),getMessage('COMMON_CANCEL_BUTTON'),getMessage('ROOM_DELETE_BUTTON'));
+            $this->_form->addButtonBar('option',$this->_translator->getMessage('PREFERENCES_SAVE_BUTTON'),$this->_translator->getMessage('COMMON_CANCEL_BUTTON'),$this->_translator->getMessage('ROOM_DELETE_BUTTON'));
          }
       } elseif ( $this->_type == CS_SERVER_TYPE ) {
-         $this->_form->addButtonBar('option',getMessage('PREFERENCES_SAVE_BUTTON'));
+         $this->_form->addButtonBar('option',$this->_translator->getMessage('PREFERENCES_SAVE_BUTTON'));
       } else {
-         $this->_form->addButtonBar('option',getMessage('PREFERENCES_SAVE_BUTTON'),getMessage('COMMON_CANCEL_BUTTON'));
+         $this->_form->addButtonBar('option',$this->_translator->getMessage('PREFERENCES_SAVE_BUTTON'),$this->_translator->getMessage('COMMON_CANCEL_BUTTON'));
       }
    }
 
@@ -1437,7 +1444,7 @@ class cs_configuration_preferences_form extends cs_rubric_form {
       if ( !empty($this->_form_post['server_default_sender_address'])
           and !isEmailValid($this->_form_post['server_default_sender_address'])
         ) {
-         $this->_error_array[] = getMessage('USER_EMAIL_VALID_ERROR');
+         $this->_error_array[] = $this->_translator->getMessage('USER_EMAIL_VALID_ERROR');
          $this->_form->setFailure('server_default_sender_address','');
       }
 
@@ -1447,7 +1454,7 @@ class cs_configuration_preferences_form extends cs_rubric_form {
          if ( isset($this->_form_post['communityrooms']) and $project_room_link_status !='optional'){
             if ( ($this->_form_post['communityrooms'] == -1 or $this->_form_post['communityrooms'] == 'disabled' or $this->_form_post['communityrooms']=='--------------------') and !isset($this->_form_post['communityroomlist']) ){
                $this->_form->setFailure('communityrooms','mandatory');
-               $this->_error_array[] = getMessage('COMMON_ERROR_COMMUNITY_ROOM_ENTRY',getMessage('PREFERENCES_COMMUNITY_ROOMS'));
+               $this->_error_array[] = $this->_translator->getMessage('COMMON_ERROR_COMMUNITY_ROOM_ENTRY',$this->_translator->getMessage('PREFERENCES_COMMUNITY_ROOMS'));
             }
          }
       }
@@ -1464,10 +1471,10 @@ class cs_configuration_preferences_form extends cs_rubric_form {
       if ( $this->_environment->inPortal() or ( $this->_environment->getCurrentModule() == CS_PROJECT_TYPE and isset($_GET['iid']) and $_GET['iid'] == 'NEW')){
          $retour .= '      <!--'.LF;
          $retour .= '   var template_array = new Array(); initToggleTemplate('.$this->_environment->getCurrentContextItem()->getItemID().');'.LF;
-         $retour .= '   template_array['.'-1'.'] = "'.getMessage('CONFIGURATION_TEMPLATE_FORM_SELECT_DESC').'"'.LF;
+         $retour .= '   template_array['.'-1'.'] = "'.$this->_translator->getMessage('CONFIGURATION_TEMPLATE_FORM_SELECT_DESC').'"'.LF;
          foreach($this->_javascript_array as $key => $value){
             if ( empty($value) ) {
-               $retour .= '   template_array['.$key.'] = "<img id=\"toggle'.$this->_environment->getCurrentContextItem()->getItemID().'\" src=\"images\/more.gif\"\/>&nbsp;<span class=\"template_description\">'.getMessage('COMMON_TEMPLATE_DESCRIPTION').'<\/span><div id=\"template_information_box\">'.getMessage('COMMON_NO_DESCRIPTION').'<\/div>"'.LF;
+               $retour .= '   template_array['.$key.'] = "<img id=\"toggle'.$this->_environment->getCurrentContextItem()->getItemID().'\" src=\"images\/more.gif\"\/>&nbsp;<span class=\"template_description\">'.$this->_translator->getMessage('COMMON_TEMPLATE_DESCRIPTION').'<\/span><div id=\"template_information_box\">'.$this->_translator->getMessage('COMMON_NO_DESCRIPTION').'<\/div>"'.LF;
             } else {
                if ( $key > 0 ) {
                   $room_manager = $this->_environment->getRoomManager();
@@ -1482,7 +1489,7 @@ class cs_configuration_preferences_form extends cs_rubric_form {
                }
                $value = str_replace('/','\/',$value);
                $value = str_replace('"','\"',$value);
-               $retour .= '   template_array['.$key.'] = "<img id=\"toggle'.$this->_environment->getCurrentContextItem()->getItemID().'\" src=\"images\/more.gif\"\/>&nbsp;<span class=\"template_description\">'.getMessage('COMMON_TEMPLATE_DESCRIPTION').'<\/span><div id=\"template_information_box\">'.$value.'<\/div>"'.LF;
+               $retour .= '   template_array['.$key.'] = "<img id=\"toggle'.$this->_environment->getCurrentContextItem()->getItemID().'\" src=\"images\/more.gif\"\/>&nbsp;<span class=\"template_description\">'.$this->_translator->getMessage('COMMON_TEMPLATE_DESCRIPTION').'<\/span><div id=\"template_information_box\">'.$value.'<\/div>"'.LF;
             }
          }
          $retour .= '      -->'.LF;
