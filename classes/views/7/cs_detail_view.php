@@ -896,145 +896,242 @@ class cs_detail_view extends cs_view {
       return $html;
    }
 
-   function _getTagBoxAsHTMLWithJavascript($item){
+   function _getTagBoxAsHTMLWithJavascript($item, $distance = 0, $ebene = 0, $with_div = false, $tagged_item){
       // MUSEUM
-      $current_user = $this->_environment->getCurrentUserItem();
-      $current_context = $this->_environment->getCurrentContextItem();
-      if(!empty($this->_right_box_config['title_string'])){
-         $separator = ',';
-      }else{
-         $separator = '';
-      }
-      $tag_list = $item->getTagList();
-      $count_link_item = $tag_list->getCount();
-      $this->_right_box_config['title_string'] .= $separator.'"'.$this->_translator->getMessage('COMMON_ATTACHED_TAGS').' ('.$count_link_item.')"';
-      $this->_right_box_config['desc_string'] .= $separator.'""';
-      $this->_right_box_config['size_string'] .= $separator.'"10"';
-      if($current_context->isTagsShowExpanded()){
-         $this->_right_box_config['config_string'] .= $separator.'true';
-      } else {
-         $this->_right_box_config['config_string'] .= $separator.'false';
-      }
-      $html  = '';
-      $html .= '<div class="right_box">'.LF;
-      $html .= '         <noscript>';
-      $html .= '<div class="right_box_title">'.$this->_translator->getMessage('COMMON_TAGS').'</div>';
-      $html .= '         </noscript>';
-      $html .= '<div class="right_box_main" >'.LF;
-
-      $text = '';
-      $tag2tag_manager = $this->_environment->getTag2TagManager();
-      $tag_manager = $this->_environment->getTagManager();
-      $tag_item = $tag_list->getFirst();
-      if ( isset ($tag_item) ){
-         $params = $this->_environment->getCurrentParameterArray();
-         $text .= '<div id="tag_tree"><ul>';
-         while( $tag_item ){
-            $count_all = 1;
-            $shown_tag_array = $tag2tag_manager->getFatherItemIDArray($tag_item->getItemID());
-            $i = 1;
-            if( !empty($shown_tag_array) ) {
-               $count_all = count($shown_tag_array);
-               $shown_tag_array = array_reverse($shown_tag_array);
-               foreach( $shown_tag_array as $shown_tag ){
-                  $father_tag_item = $tag_manager->getItem($shown_tag);
-                  $count = $count_all - $i + 1;
-                  $ebene = $i-1;
-                  $font_size = round(13 - (($count*0.2)+$count));
-                  $font_weight = 'normal';
-                  $font_style = 'normal';
-                  if ($font_size < 8){
-                     $font_size = 8;
-                  }
-                  $font_color = 20 + $this->getTagColorLogarithmic($count);
-                  $color = 'rgb('.$font_color.'%,'.$font_color.'%,'.$font_color.'%);';
-                  $params['seltag'] = 'yes';
-                  if ( isset($father_tag_item) ) {
-                     $params['seltag_'.($count_all-$i)] = $father_tag_item->getItemID();
-                  }
-                  $title_link = ahref_curl($this->_environment->getCurrentContextID(),
-                                $this->_environment->getCurrentModule(),
-                                'index',
-                                $params,
-                                $this->_text_as_html_short($father_tag_item->getTitle()),
-                                $this->_text_as_html_short($father_tag_item->getTitle()),
-                                '',
-                                '',
-                                '',
-                                '',
-                                '',
-                                'style="color:'.$color.'"').LF;
-                  $link = curl($this->_environment->getCurrentContextID(),
-                                $this->_environment->getCurrentModule(),
-                                'index',
-                                $params);
-                  $text .= '<li id="' . $father_tag_item->getItemID() . '" data="url: \'' . $link . '\'" style="color:'.$color.'; font-size:'.$font_size.'px; font-style:'.$font_style.'; font-weight:'.$font_weight.';">'.LF;
-                  $text .= $title_link;
-                  $text .= '<ul>'.LF;
-                  $i++;
+//      $current_user = $this->_environment->getCurrentUserItem();
+//      $current_context = $this->_environment->getCurrentContextItem();
+//      if(!empty($this->_right_box_config['title_string'])){
+//         $separator = ',';
+//      }else{
+//         $separator = '';
+//      }
+//      $tag_list = $item->getTagList();
+//      $count_link_item = $tag_list->getCount();
+//      $this->_right_box_config['title_string'] .= $separator.'"'.$this->_translator->getMessage('COMMON_ATTACHED_TAGS').' ('.$count_link_item.')"';
+//      $this->_right_box_config['desc_string'] .= $separator.'""';
+//      $this->_right_box_config['size_string'] .= $separator.'"10"';
+//      if($current_context->isTagsShowExpanded()){
+//         $this->_right_box_config['config_string'] .= $separator.'true';
+//      } else {
+//         $this->_right_box_config['config_string'] .= $separator.'false';
+//      }
+//      $html  = '';
+//      $html .= '<div class="right_box">'.LF;
+//      $html .= '         <noscript>';
+//      $html .= '<div class="right_box_title">'.$this->_translator->getMessage('COMMON_TAGS').'</div>';
+//      $html .= '         </noscript>';
+//      $html .= '<div class="right_box_main" >'.LF;
+//
+//      $text = '';
+//      $tag2tag_manager = $this->_environment->getTag2TagManager();
+//      $tag_manager = $this->_environment->getTagManager();
+//      $tag_item = $tag_list->getFirst();
+//      if ( isset ($tag_item) ){
+//         $params = $this->_environment->getCurrentParameterArray();
+//         $text .= '<div id="tag_tree"><ul>';
+//         while( $tag_item ){
+//            $count_all = 1;
+//            $shown_tag_array = $tag2tag_manager->getFatherItemIDArray($tag_item->getItemID());
+//            $i = 1;
+//            if( !empty($shown_tag_array) ) {
+//               $count_all = count($shown_tag_array);
+//               $shown_tag_array = array_reverse($shown_tag_array);
+//               foreach( $shown_tag_array as $shown_tag ){
+//                  $father_tag_item = $tag_manager->getItem($shown_tag);
+//                  $count = $count_all - $i + 1;
+//                  $ebene = $i-1;
+//                  $font_size = round(13 - (($count*0.2)+$count));
+//                  $font_weight = 'normal';
+//                  $font_style = 'normal';
+//                  if ($font_size < 8){
+//                     $font_size = 8;
+//                  }
+//                  $font_color = 20 + $this->getTagColorLogarithmic($count);
+//                  $color = 'rgb('.$font_color.'%,'.$font_color.'%,'.$font_color.'%);';
+//                  $params['seltag'] = 'yes';
+//                  if ( isset($father_tag_item) ) {
+//                     $params['seltag_'.($count_all-$i)] = $father_tag_item->getItemID();
+//                  }
+//                  $title_link = ahref_curl($this->_environment->getCurrentContextID(),
+//                                $this->_environment->getCurrentModule(),
+//                                'index',
+//                                $params,
+//                                $this->_text_as_html_short($father_tag_item->getTitle()),
+//                                $this->_text_as_html_short($father_tag_item->getTitle()),
+//                                '',
+//                                '',
+//                                '',
+//                                '',
+//                                '',
+//                                'style="color:'.$color.'"').LF;
+//                  $link = curl($this->_environment->getCurrentContextID(),
+//                                $this->_environment->getCurrentModule(),
+//                                'index',
+//                                $params);
+//                  $text .= '<li id="' . $father_tag_item->getItemID() . '" data="url: \'' . $link . '\'" style="color:'.$color.'; font-size:'.$font_size.'px; font-style:'.$font_style.'; font-weight:'.$font_weight.';">'.LF;
+//                  $text .= $title_link;
+//                  $text .= '<ul>'.LF;
+//                  $i++;
+//               }
+//               
+//            }
+//            $params['seltag'] = 'yes';
+//            $params['seltag_'.($count_all-1)] = $tag_item->getItemID();
+//            $count = $count_all - $i + 1;
+//            $ebene = $i-1;
+//            $font_size = 13;
+//            $font_weight = 'normal';
+//            $font_style = 'normal';
+//            $font_color = 20 + $this->getTagColorLogarithmic($count);
+//            $color = 'rgb('.$font_color.'%,'.$font_color.'%,'.$font_color.'%);';
+//            $title_link = ahref_curl($this->_environment->getCurrentContextID(),
+//                             $this->_environment->getCurrentModule(),
+//                             'index',
+//                             $params,
+//                             $this->_text_as_html_short($tag_item->getTitle()),
+//                             $this->_text_as_html_short($tag_item->getTitle()),
+//                             '',
+//                             '',
+//                             '',
+//                             '',
+//                             '',
+//                             'style="color:'.$color.'"').LF;
+//            $link = curl($this->_environment->getCurrentContextID(),
+//                                $this->_environment->getCurrentModule(),
+//                                'index',
+//                                $params);
+//            $text .= '<li id="' . $tag_item->getItemID() . '" data="url: \'' . $link . '\'" style="color:'.$color.'; font-style:'.$font_style.'; font-size:'.$font_size.'px; font-weight:'.$font_weight.';">'.LF;
+//            $text .= $title_link;
+//            for ($index = 1; $index < $i; $index++) {
+//               $text .= '</li></ul>'.LF;
+//            }
+//            $tag_item = $tag_list->getNext();
+//         }
+//         $text .= '</li></ul></div>';
+//      }
+//      if ( empty($text) ){
+//         $html .= '   <div style="padding:0px 5px; font-size:8pt;" class="disabled">'.$this->_translator->getMessage('COMMON_NONE').'</div>'.LF;
+//      }else{
+//         $html .= $text;
+//      }
+//      $html .= '<div style="width:235px; font-size:8pt; text-align:right; padding-top:5px;">';
+//      if ($current_user->isUser() and $this->_with_modifying_actions ) {
+//         $params = array();
+//         $params = $this->_environment->getCurrentParameterArray();
+//         $params['attach_view'] = 'yes';
+//         $params['attach_type'] = 'tag';
+//         $html .= ahref_curl($this->_environment->getCurrentContextID(),
+//                             $this->_environment->getCurrentModule(),
+//                             $this->_environment->getCurrentFunction(),
+//                             $params,
+//                             $this->_translator->getMessage('COMMON_TAG_ATTACH')
+//                             ).LF;
+//         unset($params);
+//      } else {
+//         $html .= '<span class="disabled">'.$this->_translator->getMessage('COMMON_TAG_ATTACH').'</span>'.LF;
+//      }
+//      $html .= '</div>'.LF;
+//      $html .= '</div>'.LF;
+//      $html .= '</div>'.LF;
+//
+//      unset($current_user);
+//      return $html;
+      $html = '';
+      $params = $this->_environment->getCurrentParameterArray();
+      if ( isset($item) ) {
+         $list = $item->getChildrenList();
+         if ( isset($list) and !$list->isEmpty() ) {
+            $tag_list = $tagged_item->getTagList();
+            if($with_div){
+               $current_user = $this->_environment->getCurrentUserItem();
+               $current_context = $this->_environment->getCurrentContextItem();
+               if(!empty($this->_right_box_config['title_string'])){
+                  $separator = ',';
+               }else{
+                  $separator = '';
                }
-               
+               $count_link_item = $tag_list->getCount();
+               $this->_right_box_config['title_string'] .= $separator.'"'.$this->_translator->getMessage('COMMON_ATTACHED_TAGS').' ('.$count_link_item.')"';
+               $this->_right_box_config['desc_string'] .= $separator.'""';
+               $this->_right_box_config['size_string'] .= $separator.'"10"';
+               if($current_context->isTagsShowExpanded()){
+                  $this->_right_box_config['config_string'] .= $separator.'true';
+               } else {
+                  $this->_right_box_config['config_string'] .= $separator.'false';
+               }
+               $html .= '<div class="right_box">'.LF;
+               $html .= '         <noscript>';
+               $html .= '<div class="right_box_title">'.$this->_translator->getMessage('COMMON_TAGS').'</div>';
+               $html .= '         </noscript>';
+               $html .= '<div class="right_box_main" >'.LF;
+               $html .= '<div id="tag_tree">';
             }
-            $params['seltag'] = 'yes';
-            $params['seltag_'.($count_all-1)] = $tag_item->getItemID();
-            $count = $count_all - $i + 1;
-            $ebene = $i-1;
-            $font_size = 13;
-            $font_weight = 'normal';
+            $html .= '<ul>'.LF; // oberstes <ul>
+            $current_item = $list->getFirst();
+            $distance = $distance +1;
+            $font_weight ='normal';
+            $font_color = 30;
             $font_style = 'normal';
-            $font_color = 20 + $this->getTagColorLogarithmic($count);
-            $color = 'rgb('.$font_color.'%,'.$font_color.'%,'.$font_color.'%);';
-            $title_link = ahref_curl($this->_environment->getCurrentContextID(),
-                             $this->_environment->getCurrentModule(),
+            $i = 1;
+            while ( $current_item ) {
+               $font_weight = 'normal';
+               $tag_item = $tag_list->getFirst();
+               if ( isset ($tag_item) ){
+                  while( $tag_item ){
+                     if($tag_item->getItemID() == $current_item->getItemID()){
+                        $font_weight = 'bold';
+                     }
+                     $tag_item = $tag_list->getNext();
+                  }
+               }
+               $id = $current_item->getItemID();
+               $tag2tag_manager = $this->_environment->getTag2TagManager();
+               $count = count($tag2tag_manager->getFatherItemIDArray($id));
+               $font_size = round(13 - (($count*0.2)+$count));
+               if ($font_size < 8){
+                  $font_size = 8;
+               }
+               $font_color = 20 + $this->getTagColorLogarithmic($count);
+               $color = 'rgb('.$font_color.'%,'.$font_color.'%,'.$font_color.'%);';
+               $title = $this->_text_as_html_short($current_item->getTitle());
+               $params['seltag_'.$ebene] = $current_item->getItemID();
+               if( isset($params['seltag']) ){
+                  $i = $ebene+1;
+                  while( isset($params['seltag_'.$i]) ){
+                     unset($params['seltag_'.$i]);
+                     $i++;
+                  }
+               }
+               $params['seltag'] = 'yes';
+               $link = curl($this->_environment->getCurrentContextID(),
+                             'campus_search',
+                             'index',
+                             $params);
+               #$html .= '<li id="' . $current_item->getItemID() . '" data="url: \'' . $link . '\'" style="color:'.$color.'; font-style:'.$font_style.'; font-size:'.$font_size.'px; font-weight:'.$font_weight.';">'.LF;
+               $html .= '<li id="' . $current_item->getItemID() . '" data="url: \'' . $link . '\'" style="color:#545454; font-style:normal; font-size:10pt; font-weight:normal;">'.LF;
+               #$html .= ahref_curl($this->_environment->getCurrentContextID(),
+               #              'campus_search',
+               #              'index',
+               #              $params,
+               #              $title,$title,'','','','','','style="color:'.$color.'"').LF;
+               $html .= ahref_curl($this->_environment->getCurrentContextID(),
+                             'campus_search',
                              'index',
                              $params,
-                             $this->_text_as_html_short($tag_item->getTitle()),
-                             $this->_text_as_html_short($tag_item->getTitle()),
-                             '',
-                             '',
-                             '',
-                             '',
-                             '',
-                             'style="color:'.$color.'"').LF;
-            $link = curl($this->_environment->getCurrentContextID(),
-                                $this->_environment->getCurrentModule(),
-                                'index',
-                                $params);
-            $text .= '<li id="' . $tag_item->getItemID() . '" data="url: \'' . $link . '\'" style="color:'.$color.'; font-style:'.$font_style.'; font-size:'.$font_size.'px; font-weight:'.$font_weight.';">'.LF;
-            $text .= $title_link;
-            for ($index = 1; $index < $i; $index++) {
-               $text .= '</li></ul>'.LF;
+                             $title,$title,'','','','','','style="color:#545454; font-size:10pt; font-weight:' . $font_weight . ';"').LF;
+               $html .= $this->_getTagBoxAsHTMLWithJavascript($current_item, 0, 0, false, $tagged_item);
+               $current_item = $list->getNext();
+               $i++;
+               $html.='</li>'.LF;
             }
-            $tag_item = $tag_list->getNext();
+            $html.='</ul>'.LF;
+            if($with_div){
+               $html .= '</div>'.LF;
+               $html .= '</div>'.LF;
+               $html .= '</div>'.LF;
+            }
          }
-         $text .= '</li></ul></div>';
       }
-      if ( empty($text) ){
-         $html .= '   <div style="padding:0px 5px; font-size:8pt;" class="disabled">'.$this->_translator->getMessage('COMMON_NONE').'</div>'.LF;
-      }else{
-         $html .= $text;
-      }
-      $html .= '<div style="width:235px; font-size:8pt; text-align:right; padding-top:5px;">';
-      if ($current_user->isUser() and $this->_with_modifying_actions ) {
-         $params = array();
-         $params = $this->_environment->getCurrentParameterArray();
-         $params['attach_view'] = 'yes';
-         $params['attach_type'] = 'tag';
-         $html .= ahref_curl($this->_environment->getCurrentContextID(),
-                             $this->_environment->getCurrentModule(),
-                             $this->_environment->getCurrentFunction(),
-                             $params,
-                             $this->_translator->getMessage('COMMON_TAG_ATTACH')
-                             ).LF;
-         unset($params);
-      } else {
-         $html .= '<span class="disabled">'.$this->_translator->getMessage('COMMON_TAG_ATTACH').'</span>'.LF;
-      }
-      $html .= '</div>'.LF;
-      $html .= '</div>'.LF;
-      $html .= '</div>'.LF;
-
-      unset($current_user);
       return $html;
    }
    
@@ -1313,7 +1410,9 @@ class cs_detail_view extends cs_view {
             }
             // UMSTELLUNG MUSEUM
             if($with_javascript and true){
-               $html .= $this->_getTagBoxAsHTMLWithJavaScript($item);
+               #$html .= $this->_getTagBoxAsHTMLWithJavaScript($item);
+               $tag_manager = $this->_environment->getTagManager();
+               $html .= $this->_getTagBoxAsHTMLWithJavaScript($tag_manager->getRootTagItem(), 0, 0, true, $item);
             } else {
                $html .= $this->_getTagBoxAsHTML($item);
             }
