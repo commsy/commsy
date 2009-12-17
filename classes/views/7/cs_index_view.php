@@ -955,15 +955,10 @@ class cs_index_view extends cs_view {
       if ( isset($item) ) {
          $list = $item->getChildrenList();
          if ( isset($list) and !$list->isEmpty() ) {
-            #if ($ebene == 1){
-            #   $html.= '<div style="padding-bottom:5px;">'.LF;
-            #}else{
-            #   $html.= '<div style="padding-bottom:0px;">'.LF;
-            #}
             if($with_div){
                $html .= '<div id="tag_tree">';
             }
-            $html .= '<ul>'.LF; // oberstes <ul>
+            $html .= '<ul>'.LF;
             $current_item = $list->getFirst();
             $distance = $distance +1;
             $font_weight ='normal';
@@ -975,7 +970,6 @@ class cs_index_view extends cs_view {
                if ( empty($selected_id) ){
                   $tag2tag_manager = $this->_environment->getTag2TagManager();
                   $count = count($tag2tag_manager->getFatherItemIDArray($id));
-#                  $font_size = 14 - $this->getTagSizeLogarithmic($count);
                   $font_size = round(13 - (($count*0.2)+$count));
                   if ($font_size < 8){
                      $font_size = 8;
@@ -994,7 +988,6 @@ class cs_index_view extends cs_view {
                      if( !isset($id_array[0]) and isset($father_id_array[0]) ){
                         $count = 1;
                      }
-#                     $font_size = 14;
                      $font_size = round(13 - (($count*0.2)+$count));
                      if ($font_size < 8){
                         $font_size = 8;
@@ -1021,7 +1014,6 @@ class cs_index_view extends cs_view {
                      }elseif( !isset($id_array[0]) and isset($father_id_array[0]) ){
                         $count = count($father_id_array);
                      }
-#                     $font_size = 14 - $this->getTagSizeLogarithmic($count);
                      $font_size = round(13 - (($count*0.2)+$count));
                      if ($font_size < 8){
                         $font_size = 8;
@@ -1038,13 +1030,6 @@ class cs_index_view extends cs_view {
                   $font_style = 'normal';
                }
                $color = 'rgb('.$font_color.'%,'.$font_color.'%,'.$font_color.'%);';
-               #if (($ebene*15) <= 30){
-               #   #$html .= '<div style="padding-left:'.($ebene*15).'px; font-style:'.$font_style.'; font-size:'.$font_size.'px; font-weight:'.$font_weight.';">';
-               #   $html .= '<li id="' . $current_item->getItemID() . '" style="color:'.$color.'; font-style:'.$font_style.'; font-size:'.$font_size.'px; font-weight:'.$font_weight.';">'.LF;
-               #}else{
-               #   #$html .= '<div style="padding-left:40px; font-size:'.$font_size.'px; font-style:'.$font_style.'; font-weight:'.$font_weight.';">';
-               #   $html .= '<li id="' . $current_item->getItemID() . '" style="color:'.$color.'; font-style:'.$font_style.'; font-size:'.$font_size.'px; font-weight:'.$font_weight.';">'.LF;
-               #}
                $title = $this->_text_as_html_short($current_item->getTitle());
                if (!$is_selected){
                   $params['seltag_'.$ebene] = $current_item->getItemID();
@@ -1056,65 +1041,49 @@ class cs_index_view extends cs_view {
                      }
                   }
                   $params['seltag'] = 'yes';
-                  #$html .= '<span class="disabled" style="font-size:'.$font_size.'px;">'.LF;
-                  #$html .= '-';
-                  #$html .= '</span>'.LF;
                   if ( $this->_environment->inPrivateRoom()
                        and $this->_environment->getCurrentModule() == CS_MATERIAL_TYPE
                        and $this->_display_mode == 'flash'
                      ) {
-                     if (($ebene*15) <= 30){
-                        #$html .= '<div style="padding-left:'.($ebene*15).'px; font-style:'.$font_style.'; font-size:'.$font_size.'px; font-weight:'.$font_weight.';">';
-                        $html .= '<li id="' . $current_item->getItemID() . '" data="StudyLog: \'' . $current_item->getItemID() . '\'" "style="color:'.$color.'; font-style:'.$font_style.'; font-size:'.$font_size.'px; font-weight:'.$font_weight.';">'.LF;
-                     }else{
-                        #$html .= '<div style="padding-left:40px; font-size:'.$font_size.'px; font-style:'.$font_style.'; font-weight:'.$font_weight.';">';
-                        $html .= '<li id="' . $current_item->getItemID() . '" data="StudyLog: \'' . $current_item->getItemID() . '\'" style="color:'.$color.'; font-style:'.$font_style.'; font-size:'.$font_size.'px; font-weight:'.$font_weight.';">'.LF;
-                     }
+                     #$html .= '<li id="' . $current_item->getItemID() . '" data="StudyLog: \'' . $current_item->getItemID() . '\'" style="color:'.$color.'; font-style:'.$font_style.'; font-size:'.$font_size.'px; font-weight:'.$font_weight.';">'.LF;
+                     $html .= '<li id="' . $current_item->getItemID() . '" data="StudyLog: \'' . $current_item->getItemID() . '\'" style="color:#545454; font-style:normal; font-size:8pt; font-weight:normal;">'.LF;
                      $html .= '<a href="javascript:callStudyLogSortByTagId('.$current_item->getItemID().')">'.$title.'</a>'.LF;
                   } else {
                      $link = curl($this->_environment->getCurrentContextID(),
                                          $this->_environment->getCurrentModule(),
                                          $this->_environment->getCurrentFunction(),
                                          $params);
-                     if (($ebene*15) <= 30){
-                        #$html .= '<div style="padding-left:'.($ebene*15).'px; font-style:'.$font_style.'; font-size:'.$font_size.'px; font-weight:'.$font_weight.';">';
-                        $html .= '<li id="' . $current_item->getItemID() . '" data="url: \'' . $link . '\'" style="color:'.$color.'; font-style:'.$font_style.'; font-size:'.$font_size.'px; font-weight:'.$font_weight.';">'.LF;
-                     }else{
-                        #$html .= '<div style="padding-left:40px; font-size:'.$font_size.'px; font-style:'.$font_style.'; font-weight:'.$font_weight.';">';
-                        $html .= '<li id="' . $current_item->getItemID() . '" data="url: \'' . $link . '\'" style="color:'.$color.'; font-style:'.$font_style.'; font-size:'.$font_size.'px; font-weight:'.$font_weight.';">'.LF;
-                     }
+                     #$html .= '<li id="' . $current_item->getItemID() . '" data="url: \'' . $link . '\'" style="color:'.$color.'; font-style:'.$font_style.'; font-size:'.$font_size.'px; font-weight:'.$font_weight.';">'.LF;
+                     $html .= '<li id="' . $current_item->getItemID() . '" data="url: \'' . $link . '\'" style="color:#545454; font-style:normal; font-size:8pt; font-weight:normal;">'.LF;
+                     #$html .= ahref_curl($this->_environment->getCurrentContextID(),
+                     #                    $this->_environment->getCurrentModule(),
+                     #                    $this->_environment->getCurrentFunction(),
+                     #                    $params,
+                     #                    $title,
+                     #                    $title,'','','','','','style="color:'.$color.'"').LF;
                      $html .= ahref_curl($this->_environment->getCurrentContextID(),
                                          $this->_environment->getCurrentModule(),
                                          $this->_environment->getCurrentFunction(),
                                          $params,
                                          $title,
-                                         $title,'','','','','','style="color:'.$color.'"').LF;
+                                         $title,'','','','','','style="color:#545454;"').LF;
                   }
                }else{
                   $link = curl($this->_environment->getCurrentContextID(),
                                          $this->_environment->getCurrentModule(),
                                          $this->_environment->getCurrentFunction(),
                                          $params);
-                  if (($ebene*15) <= 30){
-                     #$html .= '<div style="padding-left:'.($ebene*15).'px; font-style:'.$font_style.'; font-size:'.$font_size.'px; font-weight:'.$font_weight.';">';
-                     $html .= '<li id="' . $current_item->getItemID() . '" data="url: \'' . $link . '\'" style="color:'.$color.'; font-style:'.$font_style.'; font-size:'.$font_size.'px; font-weight:'.$font_weight.';">'.LF;
-                  }else{
-                     #$html .= '<div style="padding-left:40px; font-size:'.$font_size.'px; font-style:'.$font_style.'; font-weight:'.$font_weight.';">';
-                     $html .= '<li id="' . $current_item->getItemID() . '" data="url: \'' . $link . '\'" style="color:'.$color.'; font-style:'.$font_style.'; font-size:'.$font_size.'px; font-weight:'.$font_weight.';">'.LF;
-                  }
-                  #$html .= '<span class="disabled" style="font-size:'.$font_size.'px;">'.LF;
-                  #$html .= '-';
-                  #$html .= '</span>'.LF;
-                  $html .= '<span style="font-weight:bold; font-style:'.$font_style.'; color: rgb('.$font_color.'%,'.$font_color.'%,'.$font_color.'%);">'.LF;
+                  #$html .= '<li id="' . $current_item->getItemID() . '" data="url: \'' . $link . '\'" style="color:'.$color.'; font-style:'.$font_style.'; font-size:'.$font_size.'px; font-weight:'.$font_weight.';">'.LF;
+                  $html .= '<li id="' . $current_item->getItemID() . '" data="url: \'' . $link . '\'" style="color:#000000; font-style:normal; font-size:8pt; font-weight:bold;">'.LF;
+                  #$html .= '<span style="font-weight:bold; font-style:'.$font_style.'; color: rgb('.$font_color.'%,'.$font_color.'%,'.$font_color.'%);">'.LF;
+                  #$html .= '<span style="font-weight:bold;">'.LF;
                   $html .= $title.LF;
-                  $html .= '</span>'.LF;
+                  #$html .= '</span>'.LF;
                }
-               #$html .= '</div>';
                $html .= $this->_getTagContentAsHTMLWithJavascript($current_item, $ebene+1, $selected_id, $father_id_array, $distance);
                $current_item = $list->getNext();
                $html.='</li>'.LF;
             }
-            #$html.='</div>'.LF;
             $html.='</ul>'.LF;
             if($with_div){
                $html .= '</div>'.LF;

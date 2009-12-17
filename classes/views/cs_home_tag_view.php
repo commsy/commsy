@@ -185,11 +185,6 @@ class cs_home_tag_view extends cs_view {
       if ( isset($item) ) {
          $list = $item->getChildrenList();
          if ( isset($list) and !$list->isEmpty() ) {
-            #if ($ebene == 1){
-            #   $html.= '<div style="padding-bottom:5px;">'.LF;
-            #}else{
-            #   $html.= '<div style="padding-bottom:0px;">'.LF;
-            #}
             if($with_div){
                $html .= '<div id="tag_tree">';
             }
@@ -204,20 +199,12 @@ class cs_home_tag_view extends cs_view {
                $id = $current_item->getItemID();
                $tag2tag_manager = $this->_environment->getTag2TagManager();
                $count = count($tag2tag_manager->getFatherItemIDArray($id));
-#                  $font_size = 14 - $this->getTagSizeLogarithmic($count);
                $font_size = round(13 - (($count*0.2)+$count));
                if ($font_size < 8){
                   $font_size = 8;
                }
                $font_color = 20 + $this->getTagColorLogarithmic($count);
                $color = 'rgb('.$font_color.'%,'.$font_color.'%,'.$font_color.'%);';
-               #if (($ebene*15) <= 30){
-               #   #$html .= '<div style="padding-left:'.($ebene*15).'px; font-style:'.$font_style.'; font-size:'.$font_size.'px; font-weight:'.$font_weight.';">';
-               #   $html .= '<li id="' . $current_item->getItemID() . '" style="color:'.$color.'; font-style:'.$font_style.'; font-size:'.$font_size.'px; font-weight:'.$font_weight.';">'.LF;
-               #}else{
-               #   #$html .= '<div style="padding-left:40px; font-size:'.$font_size.'px; font-style:'.$font_style.'; font-weight:'.$font_weight.';">';
-               #   $html .= '<li id="' . $current_item->getItemID() . '" style="color:'.$color.'; font-style:'.$font_style.'; font-size:'.$font_size.'px; font-weight:'.$font_weight.';">'.LF;
-               #}
                $title = $this->_text_as_html_short($current_item->getTitle());
                $params['seltag_'.$ebene] = $current_item->getItemID();
                if( isset($params['seltag']) ){
@@ -232,18 +219,18 @@ class cs_home_tag_view extends cs_view {
                              'campus_search',
                              'index',
                              $params);
-               if (($ebene*15) <= 30){
-                  #$html .= '<div style="padding-left:'.($ebene*15).'px; font-style:'.$font_style.'; font-size:'.$font_size.'px; font-weight:'.$font_weight.';">';
-                  $html .= '<li id="' . $current_item->getItemID() . '" data="url: \'' . $link . '\'" style="color:'.$color.'; font-style:'.$font_style.'; font-size:'.$font_size.'px; font-weight:'.$font_weight.';">'.LF;
-               }else{
-                  #$html .= '<div style="padding-left:40px; font-size:'.$font_size.'px; font-style:'.$font_style.'; font-weight:'.$font_weight.';">';
-                  $html .= '<li id="' . $current_item->getItemID() . '" data="url: \'' . $link . '\'" style="color:'.$color.'; font-style:'.$font_style.'; font-size:'.$font_size.'px; font-weight:'.$font_weight.';">'.LF;
-               }
+               #$html .= '<li id="' . $current_item->getItemID() . '" data="url: \'' . $link . '\'" style="color:'.$color.'; font-style:'.$font_style.'; font-size:'.$font_size.'px; font-weight:'.$font_weight.';">'.LF;
+               $html .= '<li id="' . $current_item->getItemID() . '" data="url: \'' . $link . '\'" style="color:#545454; font-style:normal; font-size:8pt; font-weight:normal;">'.LF;
+               #$html .= ahref_curl($this->_environment->getCurrentContextID(),
+               #              'campus_search',
+               #              'index',
+               #              $params,
+               #              $title,$title,'','','','','','style="color:'.$color.'"').LF;
                $html .= ahref_curl($this->_environment->getCurrentContextID(),
                              'campus_search',
                              'index',
                              $params,
-                             $title,$title,'','','','','','style="color:'.$color.'"').LF;
+                             $title,$title,'','','','','','style="color:#545454;"').LF;
                $html .= $this->_getTagContentAsHTMLWithJavascript($current_item, $ebene+1, $distance);
                $current_item = $list->getNext();
                $i++;

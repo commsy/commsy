@@ -293,3 +293,7 @@ span.custom1 a
 	background-color: maroon;
 	color: yellow;
 }
+
+.ui-dynatree-title{
+   font-weight:bold;
+}

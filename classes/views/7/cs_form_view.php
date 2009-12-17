@@ -2900,10 +2900,8 @@ class cs_form_view extends cs_view {
       $tag_item = $tag_list->getFirst();
       if ( isset ($tag_item) ){
          $params = $this->_environment->getCurrentParameterArray();
-         #$text .= '<div id="tag_tree_' . $tag_item->getItemID() . '"><ul>'; // oberstes <ul>
-         $text .= '<div id="tag_tree"><ul>'; // oberstes <ul>
+         $text .= '<div id="tag_tree"><ul>';
          while( $tag_item ){
-            #$text .= '<div style="margin-bottom:5px;">';
             $count_all = 1;
             $shown_tag_array = $tag2tag_manager->getFatherItemIDArray($tag_item->getItemID());
             $i = 1;
@@ -2922,13 +2920,6 @@ class cs_form_view extends cs_view {
                   }
                   $font_color = 20 + $this->getTagColorLogarithmic($count);
                   $color = 'rgb('.$font_color.'%,'.$font_color.'%,'.$font_color.'%);';
-                  #if (($ebene*15) <= 30){
-                  #   #$text .= '<div style="padding-left:'.($ebene*15).'px; color:'.$color.'; font-style:'.$font_style.'; font-size:'.$font_size.'px; font-weight:'.$font_weight.';">';
-                  #   $text .= '<li id="' . $father_tag_item->getItemID() . '" style="color:'.$color.'; font-style:'.$font_style.'; font-size:'.$font_size.'px; font-weight:'.$font_weight.';">'.LF;
-                  #}else{
-                  #   #$text .= '<div style="padding-left:40px; color:'.$color.'; font-size:'.$font_size.'px; font-style:'.$font_style.'; font-weight:'.$font_weight.';">';
-                  #   $text .= '<li id="' . $father_tag_item->getItemID() . '" style="color:'.$color.'; font-size:'.$font_size.'px; font-style:'.$font_style.'; font-weight:'.$font_weight.';">'.LF;
-                  #}
                   $params['seltag'] = 'yes';
                   if ( isset($father_tag_item) ) {
                      $params['seltag_'.($count_all-$i)] = $father_tag_item->getItemID();
@@ -2949,15 +2940,8 @@ class cs_form_view extends cs_view {
                                 $this->_environment->getCurrentModule(),
                                 'index',
                                 $params);
-                  if (($ebene*15) <= 30){
-                     #$text .= '<div style="padding-left:'.($ebene*15).'px; color:'.$color.'; font-style:'.$font_style.'; font-size:'.$font_size.'px; font-weight:'.$font_weight.';">';
-                     $text .= '<li id="' . $father_tag_item->getItemID() . '" data="url: \'' . $link . '\'" style="color:'.$color.'; font-style:'.$font_style.'; font-size:'.$font_size.'px; font-weight:'.$font_weight.';">'.LF;
-                  }else{
-                     #$text .= '<div style="padding-left:40px; color:'.$color.'; font-size:'.$font_size.'px; font-style:'.$font_style.'; font-weight:'.$font_weight.';">';
-                     $text .= '<li id="' . $father_tag_item->getItemID() . '" data="url: \'' . $link . '\'" style="color:'.$color.'; font-size:'.$font_size.'px; font-style:'.$font_style.'; font-weight:'.$font_weight.';">'.LF;
-                  }
+                  $text .= '<li id="' . $father_tag_item->getItemID() . '" data="url: \'' . $link . '\'" style="color:'.$color.'; font-size:'.$font_size.'px; font-style:'.$font_style.'; font-weight:'.$font_weight.';">'.LF;
                   $text .= $title_link;
-                  #$text .= '</div>';
                   $text .= '<ul>'.LF;
                   $i++;
                }
@@ -2987,17 +2971,14 @@ class cs_form_view extends cs_view {
                                 $this->_environment->getCurrentModule(),
                                 'index',
                                 $params);
-            #$text .= '<div style="padding-left:'.($ebene*15).'px; color:'.$color.'; font-style:'.$font_style.'; font-size:'.$font_size.'px; font-weight:'.$font_weight.';">';
             $text .= '<li id="' . $tag_item->getItemID() . '" data="url: \'' . $link . '\'" style="color:'.$color.'; font-style:'.$font_style.'; font-size:'.$font_size.'px; font-weight:'.$font_weight.';">'.LF;
             $text .= $title_link;
-            #$text .= '</div>';
-            #$text .= '</div>';
             for ($index = 1; $index < $i; $index++) {
                $text .= '</li></ul>'.LF;
             }
             $tag_item = $tag_list->getNext();
          }
-         $text .= '</li></ul></div>'; // oberstes <ul>
+         $text .= '</li></ul></div>';
       }
       if ( empty($text) ){
          $html .= '   <div style="padding:0px 5px; font-size:8pt;" class="disabled">'.$this->_translator->getMessage('COMMON_NONE').'</div>'.LF;

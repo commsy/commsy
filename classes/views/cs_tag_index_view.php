@@ -254,11 +254,6 @@ var $_count_entries = 0;
          $list = $item->getChildrenList();
          if ( isset($list) and !$list->isEmpty() ) {
             $this->_count_entries++;
-            #if ($ebene == 1){
-            #   $html.= '<div style="padding-bottom:5px;">'.LF;
-            #}else{
-            #   $html.= '<div style="padding-bottom:0px;">'.LF;
-            #}
             if($with_div){
                $html .= '<div id="tag_tree">';
             }
@@ -292,7 +287,6 @@ var $_count_entries = 0;
                      if( !isset($id_array[0]) and isset($father_id_array[0]) ){
                         $count = 1;
                      }
-#                     $font_size = 14;
                      $font_size = round(13 - (($count*0.2)+$count));
                      if ($font_size < 8){
                         $font_size = 8;
@@ -339,13 +333,9 @@ var $_count_entries = 0;
                $color = 'rgb('.$font_color.'%,'.$font_color.'%,'.$font_color.'%);';
                $this->_count_entries++;
 
-               if (($ebene*15) <= 30){
-                  #$html .= '<div style="padding-left:'.($ebene*30).'px; font-style:'.$font_style.'; font-size:'.$font_size.'px; font-weight:'.$font_weight.';">';
-                  $html .= '<li id="' . $current_item->getItemID() . '" data="checkbox: \'' . $current_item->getItemID() . '\'" style="color:'.$color.'; font-style:'.$font_style.'; font-size:'.$font_size.'px; font-weight:'.$font_weight.';">'.LF;
-               }else{
-                  #$html .= '<div style="padding-left:40px; font-size:'.$font_size.'px; font-style:'.$font_style.'; font-weight:'.$font_weight.';">';
-                  $html .= '<li id="' . $current_item->getItemID() . '" data="checkbox: \'' . $current_item->getItemID() . '\'" style="color:'.$color.'; font-style:'.$font_style.'; font-size:'.$font_size.'px; font-weight:'.$font_weight.';">'.LF;
-               }
+               #$html .= '<li id="' . $current_item->getItemID() . '" data="checkbox: \'' . $current_item->getItemID() . '\'" style="color:'.$color.'; font-style:'.$font_style.'; font-size:'.$font_size.'px; font-weight:'.$font_weight.';">'.LF;
+               $html .= '<li id="' . $current_item->getItemID() . '" data="checkbox: \'' . $current_item->getItemID() . '\'" style="color:#545454; font-style:normal; font-size:8pt; font-weight:normal;">'.LF;
+               
                $title = $this->_text_as_html_short($current_item->getTitle());
                $params['seltag_'.$ebene] = $current_item->getItemID();
                if( isset($params['seltag']) ){
@@ -362,16 +352,15 @@ var $_count_entries = 0;
                }
                $checkbox .= '/>'.LF;
                $checkbox .= '         <input type="hidden" name="shown['.$this->_text_as_form($current_item->getItemID()).']" value="1"/>'.LF;
-               $html .= '<div class="entry" style="white-space:nowrap; font-size:'.$font_size.'px;">'.LF;
+               #$html .= '<div class="entry" style="white-space:nowrap; font-size:'.$font_size.'px;">'.LF;
+               $html .= '<div class="entry" style="white-space:nowrap; font-size:8pt; font-weight:normal;">'.LF;
                $html .= $checkbox;
                $html .= $title;
                $html .= '</div>'.LF;
-               #$html .= '</div>';
                $html .= $this->_getTagContentAsHTMLWithJavascript($current_item, $ebene+1, $selected_id, $father_id_array, $distance);
                $current_item = $list->getNext();
                $html.='</li>'.LF;
             }
-            #$html.='</div>'.LF;
             $html.='</ul>'.LF;
             if($with_div){
                $html .= '</div>'.LF;
