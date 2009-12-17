@@ -353,7 +353,7 @@ var $_count_entries = 0;
                $checkbox .= '/>'.LF;
                $checkbox .= '         <input type="hidden" name="shown['.$this->_text_as_form($current_item->getItemID()).']" value="1"/>'.LF;
                #$html .= '<div class="entry" style="white-space:nowrap; font-size:'.$font_size.'px;">'.LF;
-               $html .= '<div class="entry" style="white-space:nowrap; font-size:8pt; font-weight:normal;">'.LF;
+               $html .= '<div class="entry" style="white-space:nowrap; font-size:10pt; font-weight:normal;">'.LF;
                $html .= $checkbox;
                $html .= $title;
                $html .= '</div>'.LF;
