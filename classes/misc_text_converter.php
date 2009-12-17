@@ -637,6 +637,53 @@ class misc_text_converter {
       return $variable_array;
    }
 
+   function _getArgs2 ($data,$reg_exp) {
+      $reg_exp = str_replace('?)?',')',$reg_exp);
+      $variable_array = array();
+      $matches = array();
+      $found = preg_match_all($reg_exp,$data,$matches);
+      $j = 0;
+      while (isset($matches[$j][0])) {
+         $variable_array[$j] = trim($matches[$j][0]);
+         $j++;
+      }
+      $last_element = array_pop($variable_array);
+      if ( !empty($last_element) ) {
+         $temp_array = explode(' ',$last_element);
+         $komma = false;
+         $cache = '';
+         foreach ($temp_array as $value) {
+            if ( !strstr($value,"'") ) {
+               if ( !$komma ) {
+                  $variable_array[] = $value;
+               } else {
+                  $cache .= ' '.$value;
+               }
+            }
+            if ( strstr($value,"'") ) {
+               if ( !$komma ) {
+                  if ( substr_count($value,"'") % 2 == 1 ) {
+                     $komma = true;
+                     $cache .= ' '.$value;
+                  } else {
+                     $result_array[] = $value;
+                  }
+               } else {
+                  if ( substr_count($value,"'") % 2 == 1 ) {
+                     $komma = false;
+                     $cache .= ' '.$value;
+                     $variable_array[] = trim($cache);
+                     $cache = '';
+                  } else {
+                     $cache .= ' '.$value;
+                  }
+               }
+            }
+         }
+      }
+      return $variable_array;
+   }
+
    #private function _parseArgs ($x) {
    public function _parseArgs ($x) {
       $z = array();
@@ -762,6 +809,33 @@ class misc_text_converter {
       return (mb_strtolower(strtr($value, UC_CHARS, LC_CHARS), 'UTF-8'));
    }
 
+   private function _getSubText ( $text, $search ) {
+      $retour = '';
+      $pos = strpos($text,$search);
+      $run = true;
+      $komma_closed = false;
+      $end_tag_begin = false;
+      for ( $i = $pos+strlen($search); $i < strlen($text); $i++ ) {
+         if ( $end_tag_begin
+              and $text[$i] == ")"
+              and $komma_closed ) {
+            break;
+         }
+         if ( $text[$i] == "'") {
+            $komma_closed = !$komma_closed;
+         }
+         if ( $text[$i] == ":") {
+            $end_tag_begin = true;
+         } else {
+            $end_tag_begin = false;
+         }
+      }
+      if ($end_tag_begin) {
+         $retour = substr($text,$pos,$i-$pos+1);
+      }
+      return $retour;
+   }
+
    #private function _newFormating ( $text ) {
    public function _newFormating ( $text ) {
       $file_array = $this->_getFileArray();
@@ -834,68 +908,87 @@ class misc_text_converter {
                   ##################################################
 
                   foreach ($reg_exp_array as $key => $reg_exp) {
+                     $check = false;
+                     $args_array = $this->_getArgs($value_new,$reg_exp);
+                     foreach ( $args_array as $arg_value ) {
+                        if ( strstr($arg_value,"'")
+                             and (substr_count($arg_value,"'") % 2) == 1
+                           ) {
+                           $check = true;
+                           break;
+                        }
+                     }
+                     if ($check) {
+                        $value = $this->_getSubText($text,$value);
+                        # delete HTML-tags and string conversion #########
+                        $value_new = strip_tags($value);
+                        $value_new = str_replace('&nbsp;',' ',$value_new);
+                        ##################################################
+                        $args_array = $this->_getArgs2($value_new,$reg_exp);
+                     }
                      if ( $key == '(:flash' and mb_stristr($value_new,'(:flash') ) {
-                        $value_new = $this->_formatFlash($value_new,$this->_getArgs($value_new,$reg_exp),$file_array);
+                        $value_new = $this->_formatFlash($value_new,$args_array,$file_array);
                         break;
                      } elseif ( $key == '(:wmplayer' and mb_stristr($value_new,'(:wmplayer') ) {
-                        $value_new = $this->_formatWmplayer($value_new,$this->_getArgs($value_new,$reg_exp),$file_array);
+                        $value_new = $this->_formatWmplayer($value_new,$args_array,$file_array);
                         break;
                      } elseif ( $key == '(:quicktime' and mb_stristr($value_new,'(:quicktime') ) {
-                        $value_new = $this->_formatQuicktime($value_new,$this->_getArgs($value_new,$reg_exp),$file_array);
+                        $value_new = $this->_formatQuicktime($value_new,$args_array,$file_array);
                         break;
                      } elseif ( $key == '(:image' and mb_stristr($value_new,'(:image') ) {
-                        $value_new = $this->_formatImage($value_new,$this->_getArgs($value_new,$reg_exp),$file_array);
+                        $value_new = $this->_formatImage($value_new,$args_array,$file_array);
                         break;
                      } elseif ( $key == '(:item' and mb_stristr($value_new,'(:item') ) {
-                        $value_new = $this->_formatItem($value_new,$this->_getArgs($value_new,$reg_exp));
+                        $value_new = $this->_formatItem($value_new,$args_array);
                         break;
                      } elseif ( $key == '(:link' and mb_stristr($value_new,'(:link') ) {
-                        $value_new = $this->_formatLink($value_new,$this->_getArgs($value_new,$reg_exp));
+                        $value_new = $this->_formatLink($value_new,$args_array);
                         break;
                      } elseif ( $key == '(:file' and mb_stristr($value_new,'(:file') ) {
-                        $value_new = $this->_formatFile($value_new,$this->_getArgs($value_new,$reg_exp),$file_array);
+                        $value_new = $this->_formatFile($value_new,$args_array,$file_array);
                         break;
                      } elseif ( $key == '(:zip' and mb_stristr($value_new,'(:zip') ) {
-                        $value_new = $this->_formatZip($value_new,$this->_getArgs($value_new,$reg_exp),$file_array);
+                        $value_new = $this->_formatZip($value_new,$args_array,$file_array);
                         break;
                      } elseif ( $key == '(:youtube' and mb_stristr($value_new,'(:youtube') ) {
-                        $value_new = $this->_formatYoutube($value_new,$this->_getArgs($value_new,$reg_exp));
+                        $value_new = $this->_formatYoutube($value_new,$args_array);
                         break;
                      } elseif ( $key == '(:googlevideo' and mb_stristr($value_new,'(:googlevideo') ) {
-                        $value_new = $this->_formatGooglevideo($value_new,$this->_getArgs($value_new,$reg_exp));
+                        $value_new = $this->_formatGooglevideo($value_new,$args_array);
                         break;
                      } elseif ( $key == '(:vimeo' and mb_stristr($value_new,'(:vimeo') ) {
-                        $value_new = $this->_formatVimeo($value_new,$this->_getArgs($value_new,$reg_exp));
+                        $value_new = $this->_formatVimeo($value_new,$args_array);
                         break;
                      } elseif ( $key == '(:mp3' and mb_stristr($value_new,'(:mp3') ) {
-                        $value_new = $this->_formatMP3($value_new,$this->_getArgs($value_new,$reg_exp),$file_array);
+                        $value_new = $this->_formatMP3($value_new,$args_array,$file_array);
                         break;
                      } elseif ( $key == '(:lecture2go' and mb_stristr($value_new,'(:lecture2go') ) {
-                        $value_new = $this->_formatLecture2go($value_new,$this->_getArgs($value_new,$reg_exp));
+                        $value_new = $this->_formatLecture2go($value_new,$args_array);
                         break;
                      } elseif ( $key == '(:office' and mb_stristr($value_new,'(:office') ) {
-                        $value_new = $this->_formatOffice($value_new,$this->_getArgs($value_new,$reg_exp),$file_array);
+                        $value_new = $this->_formatOffice($value_new,$args_array,$file_array);
                         break;
                      } elseif ( $key == '(:pdf' and mb_stristr($value_new,'(:pdf') ) {
-                        $value_new = $this->_formatPDF($value_new,$this->_getArgs($value_new,$reg_exp),$file_array);
+                        $value_new = $this->_formatPDF($value_new,$args_array,$file_array);
                         break;
                      } elseif ( $key == '(:slideshare' and mb_stristr($value_new,'(:slideshare') ) {
-                        $value_new = $this->_formatSlideshare($value_new,$this->_getArgs($value_new,$reg_exp));
+                        $value_new = $this->_formatSlideshare($value_new,$args_array);
                         break;
                      } elseif ( $key == '[slideshare' and mb_stristr($value_new,'[slideshare') ) {
-                        $value_new = $this->_formatSlideshare($value_new,$this->_getArgs($value_new,$reg_exp));
+                        $value_new = $this->_formatSlideshare($value_new,$args_array);
                         break;
                      } elseif ( $key == '{$' and mb_stristr($value_new,'{$') ) {
-                        $value_new = $this->_formatMath1($value_new,$this->_getArgs($value_new,$reg_exp));
+                        $value_new = $this->_formatMath1($value_new,$args_array);
                         break;
                      } elseif ( $key == '{$$' and mb_stristr($value_new,'{$$') ) {
-                        $value_new = $this->_formatMath2($value_new,$this->_getArgs($value_new,$reg_exp));
+                        $value_new = $this->_formatMath2($value_new,$args_array);
                         break;
                      } elseif ( $key == '(:flickr' and mb_stristr($value_new,'(:flickr') ) {
-                        $value_new = $this->_formatFlickr($value_new,$this->_getArgs($value_new,$reg_exp));
+                        $value_new = $this->_formatFlickr($value_new,$args_array);
                         break;
                      }
                   }
+
                   $text = str_replace($value,$value_new,$text);
                }
             }
@@ -1976,11 +2069,15 @@ class misc_text_converter {
          $args = array();
       }
 
+      $href_title = '';
       if ( !empty($args['alt']) ) {
          $alt = $args['alt'];
+         $href_title = ' title="'.str_replace('"','&quot;',$alt).'"';
       } elseif ( !empty($source) )  {
          $alt = 'image: '.$source;
+         $href_title = ' title="'.str_replace('"','&quot;',$alt).'"';
       }
+
       if ( !empty($args['gallery']) ) {
          // jQuery
          //$gallery = '['.$args['gallery'].']';
@@ -2032,7 +2129,7 @@ class misc_text_converter {
 
       if ( !empty($source) ) {
          $image_text .= '<div style="'.$float.$height.$width.' padding:5px;">';
-         $image_text .= '<a href="'.$source.'" rel="lightbox'.$gallery.'">';
+         $image_text .= '<a href="'.$source.'" rel="lightbox'.$gallery.'"'.$href_title.'>';
          $image_text .= '<img style="'.$height.$width.'" src="'.$source2.'" alt="'.$alt.'"/>';
          $image_text .= '</a>';
          $image_text .= '</div>';
