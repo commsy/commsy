@@ -49,6 +49,7 @@ class cs_portal_item extends cs_guide_item {
    private $_group_id_array = NULL;
    private $_private_id_array = NULL;
    private $_room_list_continuous_nlct = NULL;
+   private $_grouproom_list_count = NULL;
 
    /** constructor: cs_server_item
     * the only available constructor, initial values for internal variables
@@ -350,6 +351,16 @@ class cs_portal_item extends cs_guide_item {
       return $this->_project_list_count;
    }
 
+   function getCountGroupRooms () {
+      if (!isset($this->_grouproom_list_count)) {
+         $manager = $this->_environment->getGrouproomManager();
+         $manager->setContextLimit($this->getItemID());
+         $this->_grouproom_list_count = $manager->getCountAll();
+         unset($manager);
+      }
+      return $this->_grouproom_list_count;
+   }
+
    function getRoomList () {
       if (!isset($this->_room_list)) {
          $this->_room_list = $this->getCommunityList();
@@ -359,7 +370,7 @@ class cs_portal_item extends cs_guide_item {
    }
 
    function getCountRooms () {
-      return $this->getCountCommunityRooms() + $this->getCountProjectRooms();
+      return $this->getCountCommunityRooms() + $this->getCountProjectRooms() + $this->getCountGroupRooms();
    }
 
    function getContinuousRoomList () {

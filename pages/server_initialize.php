@@ -27,7 +27,7 @@ $user_manager->resetLimits();
 $user_item = $user_manager->getRootUser();
 
 // Get the translator object
-$translator = $environment->getTranslationObject(
+$translator = $environment->getTranslationObject();
 
 if (!empty($user_item)) {
    include_once('functions/error_functions.php');

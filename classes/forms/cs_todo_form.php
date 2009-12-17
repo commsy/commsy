@@ -233,8 +233,6 @@ class cs_todo_form extends cs_rubric_form {
 
    /** create the form, INTERNAL
     * this methods creates the form with the form definitions
-    *
-    * @author CommSy Development Group
     */
    function _createForm () {
 
@@ -243,19 +241,14 @@ class cs_todo_form extends cs_rubric_form {
       $this->_form->addTitleField('title','',$this->_translator->getMessage('COMMON_TITLE'),$this->_translator->getMessage('COMMON_TITLE_DESC'),200,46,true);
 #      $this->_form->addTitleField('title','',$this->_translator->getMessage('COMMON_TITLE'),$this->_translator->getMessage('COMMON_TITLE_DESC'),200,48,true);
       $this->_form->addDateTimeField('end_date_time','',
-                              'dayEnd','timeEnd',10,10,
-                              $this->_translator->getMessage('TODO_DATE'),
-                              $this->_translator->getMessage('DATES_END_DAY'),
-                              $this->_translator->getMessage('DATES_END_TIME'),
-                              $this->_translator->getMessage('TODO_TIME_DAY_END_DESC'),true,false);
-                              $this->_translator->getMessage('TODO_DATE'),
-                              $this->_translator->getMessage('DATES_END_DAY'),
-                              $this->_translator->getMessage('DATES_END_TIME'),
-                              $this->_translator->getMessage('TODO_TIME_DAY_END_DESC'),false,false);
+                                     'dayEnd','timeEnd',10,10,
+                                     $this->_translator->getMessage('TODO_DATE'),
+                                     $this->_translator->getMessage('DATES_END_DAY'),
+                                     $this->_translator->getMessage('DATES_END_TIME'),
+                                     $this->_translator->getMessage('TODO_TIME_DAY_END_DESC'),
+                                     false,false);
 
       $current_context = $this->_environment->getCurrentContextItem();
-      if($current_context->withTodoManagment()){
-         $this->_form->addTextField('minutes','',$this->_translator->getMessage('TODO_TIME'),$this->_translator->getMessage('TODO_TIME_DESC'),5,5,false);
       if($current_context->withTodoManagement()){
          $this->_form->addTextField('minutes','',$this->_translator->getMessage('TODO_TIME'),$this->_translator->getMessage('TODO_TIME_DESC'),5,5,false);
 
@@ -268,14 +261,8 @@ class cs_todo_form extends cs_rubric_form {
                               'value' => '3');
          $this->_form->combine('horizontal');
          $this->_form->addSelect('time_type',$time_type,'',$this->_translator->getMessage('TODO_TIME_TYPE'),'', 1, false,false,false,'','','','',12,true);
-
-
       }
 
-<<<<<<< cs_todo_form.php
-      $this->_form->addRadioGroup('status',$this->_translator->getMessage('TODO_STATUS'),$this->_translator->getMessage('TODO_STATUS_DESC'),$this->_status_array,'',true);
-      $this->_form->addTextArea('description','',$this->_translator->getMessage('COMMON_CONTENT'),'');
-=======
       $this->_form->addSelect('status',
                                      $this->_status_array,
                                      '',
@@ -291,16 +278,11 @@ class cs_todo_form extends cs_rubric_form {
                                      '',
                                      '17'
                                );
-#      $this->_form->addRadioGroup('status',$this->_translator->getMessage('TODO_STATUS'),$this->_translator->getMessage('TODO_STATUS_DESC'),$this->_status_array,'',true);
       $this->_form->addTextArea('description','',$this->_translator->getMessage('COMMON_CONTENT'),'');
->>>>>>> 1.8
-
 
       // rubric connections
       $this->_setFormElementsForConnectedRubrics();
-
       $this->_form->addEmptyline();
-
 
       // files
       $this->_form->addAnchor('fileupload');
