@@ -905,7 +905,7 @@ function draw_dates_month(){
 			//	added_scrollpane = true;
 			//}
 		}
-		jQuery('#calendar_month_entry_1_12_scroll').jScrollPane();
+		//jQuery('#calendar_month_entry_1_12_scroll').jScrollPane();
 		stickytooltip.init("*[data-tooltip]", "mystickytooltip");
 	}
 	if(typeof(today) != 'undefined'){
