@@ -81,7 +81,7 @@ class cs_date_form extends cs_rubric_form {
    var $_session_tag_array = array();
 
    #var $_color = '#FFFF80';
-
+    
   /** constructor: cs_date_form
     * the only available constructor
     *
@@ -306,8 +306,154 @@ class cs_date_form extends cs_rubric_form {
       $radio_values[8]['value'] = '#6633FF';
       $radio_values[9]['text'] = '<img src="images/spacer.gif" style="background-color:#cc33cc; border:1px solid #cccccc;"/>';
       $radio_values[9]['value'] = '#CC33CC';
-      $this->_form->addRadioGroup('date_addon_color',$this->_translator->getMessage('DATES_ADDON'),$this->_translator->getMessage('DATES_ADDON_DESC'),$radio_values,'',false,true,'','',false,' style="vertical-align:top;"',true,false);
-
+      $show_drop_down = false;
+      if (isset($this->_form_post['recurring'])){
+         $show_drop_down = true;
+      }
+      $this->_form->addRadioGroup('date_addon_color',$this->_translator->getMessage('DATES_ADDON'),$this->_translator->getMessage('DATES_ADDON_DESC'),$radio_values,'',false,true,'','',false,' style="vertical-align:top;"',true,$show_drop_down);
+      $this->_form->combine();
+      //$this->_form->addText('','','<br/>'.$this->_translator->getMessage('DATES_RECURRING').':');
+      $this->_form->addText('','','<br/>');
+      $this->_form->combine();
+      $this->_form->addCheckbox('recurring','recurring','','',$this->_translator->getMessage('DATES_RECURRING_DESC').':','');
+      $this->_form->combine('horizontal');  
+      $select_values = array();
+      $select_values[0]['text'] = $this->_translator->getMessage('DATES_RECURRING_DAILY');
+      $select_values[0]['value'] = 'daily';
+      $select_values[1]['text'] = $this->_translator->getMessage('DATES_RECURRING_WEEKLY');
+      $select_values[1]['value'] = 'weekly';
+      $select_values[2]['text'] = $this->_translator->getMessage('DATES_RECURRING_MONTHLY');
+      $select_values[2]['value'] = 'monthly';
+      $select_values[3]['text'] = $this->_translator->getMessage('DATES_RECURRING_YEARLY');
+      $select_values[3]['value'] = 'yearly';
+      $this->_form->addSelect('recurring_select',
+                               $select_values,
+                               $this->_translator->getMessage('DATES_RECURRING_WEEKLY'),
+                               $this->_translator->getMessage('DATES_RECURRING'),
+                               '',
+                               '',
+                               '',
+                               '',
+                               true,
+                               $this->_translator->getMessage('DATES_RECURRING'),
+                               'option',
+                               '',
+                               '',
+                               '',
+                               true);
+      $this->_form->combine('horizontal');
+      $this->_form->addText('','',$this->_translator->getMessage('DATES_RECURRING_DATE'));
+      $this->_form->combine();
+      if (isset($this->_form_post['recurring_select']) and $this->_form_post['recurring_select'] == 'daily'){
+         $this->_form->addTextfield('recurring_day','','','',4,1,false,'','','','',$this->_translator->getMessage('DATES_RECURRING_EVERY_DAY'),'',false,$this->_translator->getMessage('DATES_RECURRING_DAY'));
+      } elseif (isset($this->_form_post['recurring_select']) and $this->_form_post['recurring_select'] == 'monthly'){
+         $this->_form->addTextfield('recurring_month','','','',4,1,false,'','','','',$this->_translator->getMessage('DATES_RECURRING_EVERY_MONTH'),'',false,$this->_translator->getMessage('DATES_RECURRING_EVERY_MONTH_ON'));
+         $month_every_values = array();
+         $month_every_values[0]['text'] = $this->_translator->getMessage('DATES_RECURRING_FIRST');
+         $month_every_values[0]['value'] = 'first';
+         $month_every_values[1]['text'] = $this->_translator->getMessage('DATES_RECURRING_SECOND');
+         $month_every_values[1]['value'] = 'second';
+         $month_every_values[2]['text'] = $this->_translator->getMessage('DATES_RECURRING_THIRD');
+         $month_every_values[2]['value'] = 'third';
+         $month_every_values[3]['text'] = $this->_translator->getMessage('DATES_RECURRING_FOURTH');
+         $month_every_values[3]['value'] = 'fourth';
+         $month_every_values[4]['text'] = $this->_translator->getMessage('DATES_RECURRING_FIFTH');
+         $month_every_values[4]['value'] = 'fifth';
+         $month_every_values[5]['text'] = $this->_translator->getMessage('DATES_RECURRING_LAST');
+         $month_every_values[5]['value'] = 'last';
+         $this->_form->combine('horizontal');
+         $this->_form->addSelect('recurring_month_every',
+                               $month_every_values,
+                               $this->_translator->getMessage('DATES_RECURRING_FIRST'),
+                               $this->_translator->getMessage('DATES_RECURRING'),
+                               '',
+                               '',
+                               '',
+                               '');
+         $month_day_values = array();
+         $month_day_values[0]['text'] = $this->_translator->getMessage('COMMON_DATE_MONDAY');
+         $month_day_values[0]['value'] = 'monday';
+         $month_day_values[1]['text'] = $this->_translator->getMessage('COMMON_DATE_TUESDAY');
+         $month_day_values[1]['value'] = 'thuesday';
+         $month_day_values[2]['text'] = $this->_translator->getMessage('COMMON_DATE_WEDNESDAY');
+         $month_day_values[2]['value'] = 'wednesday';
+         $month_day_values[3]['text'] = $this->_translator->getMessage('COMMON_DATE_THURSDAY');
+         $month_day_values[3]['value'] = 'thursday';
+         $month_day_values[4]['text'] = $this->_translator->getMessage('COMMON_DATE_FRIDAY');
+         $month_day_values[4]['value'] = 'friday';
+         $month_day_values[5]['text'] = $this->_translator->getMessage('COMMON_DATE_SATURDAY');
+         $month_day_values[5]['value'] = 'saturday';
+         $month_day_values[6]['text'] = $this->_translator->getMessage('COMMON_DATE_SUNDAY');
+         $month_day_values[6]['value'] = 'sunday';
+         $this->_form->combine('horizontal');
+         $this->_form->addSelect('recurring_month_every',
+                               $month_day_values,
+                               $this->_translator->getMessage('COMMON_DATE_MONDAY'),
+                               $this->_translator->getMessage('DATES_RECURRING'),
+                               '',
+                               '',
+                               '',
+                               '');
+      } elseif (isset($this->_form_post['recurring_select']) and $this->_form_post['recurring_select'] == 'yearly'){
+         $this->_form->addTextfield('recurring_year','','','',4,1,false,'','','','',$this->_translator->getMessage('DATES_RECURRING_EVERY_YEAR'),'',false,'');
+         
+         $month_values = array();
+         $month_values[0]['text'] = $this->_translator->getMessage('DATES_JANUARY_LONG');
+         $month_values[0]['value'] = 'january';
+         $month_values[1]['text'] = $this->_translator->getMessage('DATES_FEBRUARY_LONG');
+         $month_values[1]['value'] = 'february';
+         $month_values[2]['text'] = $this->_translator->getMessage('DATES_MARCH_LONG');
+         $month_values[2]['value'] = 'march';
+         $month_values[3]['text'] = $this->_translator->getMessage('DATES_APRIL_LONG');
+         $month_values[3]['value'] = 'april';
+         $month_values[4]['text'] = $this->_translator->getMessage('DATES_MAY_LONG');
+         $month_values[4]['value'] = 'may';
+         $month_values[5]['text'] = $this->_translator->getMessage('DATES_JUNE_LONG');
+         $month_values[5]['value'] = 'june';
+         $month_values[6]['text'] = $this->_translator->getMessage('DATES_JULY_LONG');
+         $month_values[6]['value'] = 'july';
+         $month_values[7]['text'] = $this->_translator->getMessage('DATES_AUGUST_LONG');
+         $month_values[7]['value'] = 'august';
+         $month_values[8]['text'] = $this->_translator->getMessage('DATES_SEPTEMBER_LONG');
+         $month_values[8]['value'] = 'september';
+         $month_values[9]['text'] = $this->_translator->getMessage('DATES_OCTOBER_LONG');
+         $month_values[9]['value'] = 'october';
+         $month_values[10]['text'] = $this->_translator->getMessage('DATES_NOVEMBER_LONG');
+         $month_values[10]['value'] = 'november';
+         $month_values[11]['text'] = $this->_translator->getMessage('DATES_DECEMBER_LONG');
+         $month_values[11]['value'] = 'december';
+         $this->_form->combine('horizontal');
+         $this->_form->addSelect('recurring_year_every',
+                               $month_values,
+                               $this->_translator->getMessage('DATES_JANUARY_LONG'),
+                               $this->_translator->getMessage('DATES_RECURRING'),
+                               '',
+                               '',
+                               '',
+                               '');
+      } else {
+         $this->_form->addTextfield('recurring_week','','','',4,1,false,'','','','',$this->_translator->getMessage('DATES_RECURRING_EVERY_WEEK'),'',false,$this->_translator->getMessage('DATES_RECURRING_WEEK'));
+         $week_values = array();
+         $week_values[0]['text'] = $this->_translator->getMessage('COMMON_DATE_MONDAY');
+         $week_values[0]['value'] = 'monday';
+         $week_values[1]['text'] = $this->_translator->getMessage('COMMON_DATE_TUESDAY');
+         $week_values[1]['value'] = 'thuesday';
+         $week_values[2]['text'] = $this->_translator->getMessage('COMMON_DATE_WEDNESDAY');
+         $week_values[2]['value'] = 'wednesday';
+         $week_values[3]['text'] = $this->_translator->getMessage('COMMON_DATE_THURSDAY');
+         $week_values[3]['value'] = 'thursday';
+         $week_values[4]['text'] = $this->_translator->getMessage('COMMON_DATE_FRIDAY');
+         $week_values[4]['value'] = 'friday';
+         $week_values[5]['text'] = $this->_translator->getMessage('COMMON_DATE_SATURDAY');
+         $week_values[5]['value'] = 'saturday';
+         $week_values[6]['text'] = $this->_translator->getMessage('COMMON_DATE_SUNDAY');
+         $week_values[6]['value'] = 'sunday';
+         $this->_form->combine();
+         $this->_form->addCheckboxGroup('recurring_week_days',$week_values,'',$this->_translator->getMessage('DATES_RECURRING_WEEK_DAYS'),'',false,true);
+      } 
+      $this->_form->combine();
+      $this->_form->addTextfield('recurring_end_date','','','',13,13,false,'','','','',$this->_translator->getMessage('DATES_RECURRING_END_DATE').':<span class="required">*</span>');
+      
       $this->_form->addTextArea('description','',$this->_translator->getMessage('DATES_DESCRIPTION'),'','',10);
 
       // rubric connections
@@ -371,9 +517,9 @@ class cs_date_form extends cs_rubric_form {
       #$this->_form->combine();
       #pr('--->'.$this->_color.'<---');
       #$this->_form->addText('colorpicker',$this->_translator->getMessage('DATES_COLOUR'),'<br/><br/><INPUT class="color" value="' . $this->_color . '" name="colorpicker">',$this->_translator->getMessage('DATES_COLOUR_DESC'),false,'','','left','','',true,false);
-
-      #$this->_form->addText('colorpicker',$this->_translator->getMessage('DATES_COLOUR'),'<br/><br/><INPUT class="color" value="' . $this->_color . '" name="colorpicker">',$this->_translator->getMessage('DATES_COLOUR_DESC'),false,'','','left','','',true,false);
-
+          
+      #$this->_form->addText('colorpicker',$this->_translator->getMessage('DATES_COLOUR'),'<br/><br/><INPUT class="color" value="' . $this->_color . '" name="colorpicker">',$this->_translator->getMessage('DATES_COLOUR_DESC'),false,'','','left','','',true,false);  
+      
       if ($current_context->withActivatingContent() and !$current_context->isPrivateRoom()){
          $this->_form->addCheckbox('private_editing',1,'',$this->_translator->getMessage('COMMON_RIGHTS'),$this->_public_array[1]['text'],$this->_translator->getMessage('COMMON_RIGHTS_DESCRIPTION'),false,false,'','',true,false);
          $this->_form->combine();
@@ -470,7 +616,12 @@ class cs_date_form extends cs_rubric_form {
          #   $this->_values['colorpicker'] = '<br/><br/><INPUT class="color" value="' . $_POST['colorpicker'] . '" name="colorpicker">';
          #   $this->_color = $_POST['colorpicker'];
          #}
-         $this->_values['date_addon_color'] = $this->_form_post['date_addon_color'];
+         if (isset($this->_form_post['date_addon_color'])){
+            $this->_values['date_addon_color'] = $this->_form_post['date_addon_color'];
+         }
+         if (isset($this->_form_post['recurring'])){
+            $this->_values['recurring'] = $this->_form_post['recurring'];
+         }
       } elseif ( isset($this->_item) ) {
          $this->_values['iid'] = $this->_item->getItemID();
          $this->_values['title'] = $this->_item->getTitle();
@@ -558,7 +709,7 @@ class cs_date_form extends cs_rubric_form {
             $this->_values['date_addon_color'] = $this->_item->getColor();
             #$this->_color = $this->_item->getColor();
          }
-
+         
       } else {
          $temp_array['dayStart'] = $this->_private_date_starting_date;
          $temp_array['timeStart'] = $this->_private_date_starting_time;
@@ -577,7 +728,7 @@ class cs_date_form extends cs_rubric_form {
                $this->_values['public'] = ($this->_environment->inProjectRoom() OR $this->_environment->inGroupRoom())?'1':'0'; //In projectrooms everybody can edit the item by default, else default is creator only
             }
          }
-         $this->_values['date_addon_color'] = '#ffff66';
+         #$this->_values['date_addon_color'] = '#FFFF66';
       }
    }
 
@@ -619,6 +770,43 @@ class cs_date_form extends cs_rubric_form {
          if ( !isDatetimeCorrect($this->_environment->getSelectedLanguage(),$this->_form_post['dayActivateStart'],$this->_form_post['timeActivateStart']) ) {
             $this->_error_array[] = $this->_translator->getMessage('DATES_DATE_NOT_VALID');
             $this->_form->setFailure('start_activate_date_time','');
+         }
+      }
+      if ( !empty($this->_form_post['recurring'])){
+         if($this->_form_post['recurring_select'] == 'daily'){
+            if(empty($this->_form_post['recurring_day'])){
+                  $this->_error_array[] = $this->_translator->getMessage('DATES_RECURRING_DAY_ERROR');
+                  $this->_form->setFailure('recurring_day','');
+            }
+         } elseif($this->_form_post['recurring_select'] == 'weekly'){
+            if(empty($this->_form_post['recurring_week'])){
+                  $this->_error_array[] = $this->_translator->getMessage('DATES_RECURRING_WEEK_ERROR');
+                  $this->_form->setFailure('recurring_week','');
+            }
+            if(empty($this->_form_post['recurring_week_days'])){
+                  $this->_error_array[] = $this->_translator->getMessage('DATES_RECURRING_WEEKDAYS_ERROR');
+                  $this->_form->setFailure('recurring_week_days','');
+            }
+         } elseif($this->_form_post['recurring_select'] == 'monthly'){
+            if(empty($this->_form_post['recurring_month'])){
+                  $this->_error_array[] = $this->_translator->getMessage('DATES_RECURRING_MONTH_ERROR');
+                  $this->_form->setFailure('recurring_month','');
+            }
+         } elseif($this->_form_post['recurring_select'] == 'yearly'){
+            if(empty($this->_form_post['recurring_year'])){
+                  $this->_error_array[] = $this->_translator->getMessage('DATES_RECURRING_MONTH_ERROR');
+                  $this->_form->setFailure('recurring_year','');
+            }
+            // Ist das Datum OK? -> z.B. kein 31. Februar
+         }
+         if(empty($this->_form_post['recurring_end_date'])){
+               $this->_error_array[] = $this->_translator->getMessage('DATES_DATE_NOT_VALID');
+               $this->_form->setFailure('recurring_end_date','');
+         } else {
+            if ( !isDatetimeCorrect($this->_environment->getSelectedLanguage(),$this->_form_post['recurring_end_date'],'00:00') ) {
+               $this->_error_array[] = $this->_translator->getMessage('DATES_DATE_NOT_VALID');
+               $this->_form->setFailure('recurring_end_date','');
+            }
          }
       }
    }

@@ -681,6 +681,9 @@ jQuery(document).ready(function() {
 		   if(jQuery("input[name='dayActivateStart']").length){
 		      jQuery("input[name='dayActivateStart']").datepicker({showOn: 'button', buttonImage: datepicker_image, buttonImageOnly: true, buttonText: datepicker_choose});
 		   }
+		   if(jQuery("input[name='recurring_end_date']").length){
+		      jQuery("input[name='recurring_end_date']").datepicker({showOn: 'button', buttonImage: datepicker_image, buttonImageOnly: true, buttonText: datepicker_choose});
+		   }
 	   }
    }
 });

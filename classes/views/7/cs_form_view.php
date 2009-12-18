@@ -1630,6 +1630,7 @@ class cs_form_view extends cs_view {
 
       $first = true;
       $show_drop_down = false;
+      $show_drop_down_in_form = false;
       foreach ($form_element_array as $form_element) {
          if ($form_element['type'] == 'titlefield') {
             $html .= '         '.$this->_getTitleFieldAsHTML($form_element);
@@ -1658,6 +1659,9 @@ class cs_form_view extends cs_view {
                  $html .= '<div style="padding:0px 0px 5px 0px;">'.LF;
                  $html .= '<div class="form_formatting_checkbox_box">'.LF;
                  $show_drop_down = true;
+                 if(isset($form_element['show_drop_down']) and $form_element['show_drop_down']){
+                    $show_drop_down_in_form = true;
+                 }
                  $drop_down_name = $form_element['name'];
                }
                $html .= '<div style="font-size:10pt; text-align:left;">';
@@ -1731,7 +1735,11 @@ class cs_form_view extends cs_view {
          $html .= '</div>'.LF;
          $html .= '</div>'.LF;
          $html .= '</div>'.LF;
-         $html .='<script type="text/javascript">initTextFormatingInformation("'.$drop_down_name.'",false)</script>';
+         if($show_drop_down_in_form){
+            $html .='<script type="text/javascript">initTextFormatingInformation("'.$drop_down_name.'",true)</script>';
+         } else {
+            $html .='<script type="text/javascript">initTextFormatingInformation("'.$drop_down_name.'",false)</script>';
+         }
       }
       if (isset($form_element_array[0]['type']) and $form_element_array[0]['type'] == 'emptyline'){
          $html .= '</td>'.LF;
