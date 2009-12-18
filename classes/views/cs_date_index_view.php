@@ -605,7 +605,7 @@ class cs_date_index_view extends cs_index_view {
          if ( empty($download)
               or $download != 'zip'
             ) {
-            $html .= '         <input style="font-size:8pt; padding-left:0px; padding-right:0px; margin-left:0px; margin-right:0px;" type="checkbox" onClick="quark(this)" name="attach['.$key.']" value="1"';
+            $html .= '         <input style="color:blue; font-size:8pt; padding-left:0px; padding-right:0px; margin-left:0px; margin-right:0px;" type="checkbox" onClick="quark(this)" name="attach['.$key.']" value="1"';
             $user = $this->_environment->getCurrentUser();
             if($item->isNotActivated() and !($item->getCreatorID() == $user->getItemID() or $user->isModerator()) ){
                $html .= ' disabled="disabled"'.LF;
@@ -650,7 +650,8 @@ class cs_date_index_view extends cs_index_view {
              if (isset($this->_available_color_array[0])){
                 $color = $item->getColor();
                 if (!empty($color)){
-                   $html .= '<td '.$style.' style="width:1%; background-color:'.$item->getColor().';">';
+#                   $html .= '<td '.$style.' style="width:1%; background-color:'.$item->getColor().';">';
+                   $html .= '<td '.$style.' style="width:0%;">';
                 }else{
                    $html .= '<td '.$style.' style="width:0%;">';
                 }
