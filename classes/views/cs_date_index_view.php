@@ -324,7 +324,7 @@ class cs_date_index_view extends cs_index_view {
       $params = $this->_getGetParamsAsArray();
       $params['from'] = 1;
       $html = '   <tr class="head">'.LF;
-      $html .= '      <td class="head" style="width:55%;" colspan="3">';
+      $html .= '      <td class="head" style="width:55%;" colspan="2">';
       if ( $this->getSortKey() == 'title' ) {
          $params['sort'] = 'title_rev';
          $picture = '&nbsp;<img src="' . getSortImage('up') . '" alt="&lt;" border="0"/>';
@@ -368,7 +368,7 @@ class cs_date_index_view extends cs_index_view {
       $html .= $picture;
       $html .= '</td>'.LF;
 
-      $html .= '      <td style="width:25%; font-size:8pt;" class="head">';
+      $html .= '      <td colspan="2" style="width:25%; font-size:8pt;" class="head">';
       if ( $this->getSortKey() == 'place' ) {
          $params['sort'] = 'place_rev';
          $picture = '&nbsp;<img src="' . getSortImage('up') . '" alt="&lt;" border="0"/>';
@@ -396,9 +396,9 @@ class cs_date_index_view extends cs_index_view {
    function _getTablefootAsHTML() {
       $html  = '   <tr class="list">'.LF;
       if ( $this->hasCheckboxes() and $this->_has_checkboxes != 'list_actions') {
-         $html .= '<td class="foot_left" colspan="4"><input style="font-size:8pt;" type="submit" name="option" value="'.$this->_translator->getMessage('COMMON_ATTACH_BUTTON').'" /> <input type="submit"  style="font-size:8pt;" name="option" value="'.$this->_translator->getMessage('COMMON_CANCEL_BUTTON').'"/>';
+         $html .= '<td class="foot_left" colspan="3"><input style="font-size:8pt;" type="submit" name="option" value="'.$this->_translator->getMessage('COMMON_ATTACH_BUTTON').'" /> <input type="submit"  style="font-size:8pt;" name="option" value="'.$this->_translator->getMessage('COMMON_CANCEL_BUTTON').'"/>';
       }else{
-         $html .= '<td class="foot_left" colspan="4" style="vertical-align:middle;">'.LF;
+         $html .= '<td class="foot_left" colspan="3" style="vertical-align:middle;">'.LF;
          $html .= '<span class="select_link">[</span>';
          $params = $this->_environment->getCurrentParameterArray();
          $params['select'] = 'all';
@@ -409,7 +409,7 @@ class cs_date_index_view extends cs_index_view {
          $html .= $this->_getViewActionsAsHTML();
       }
       $html .= '</td>'.LF;
-      $html .= '<td class="foot_right" style="vertical-align:middle; text-align:right; font-size:8pt;">'.LF;
+      $html .= '<td colspan="2" class="foot_right" style="vertical-align:middle; text-align:right; font-size:8pt;">'.LF;
       if ( $this->hasCheckboxes() ) {
          if (count($this->getCheckedIDs())=='1'){
             $html .= ''.$this->_translator->getMessage('COMMON_SELECTED_ONE',count($this->getCheckedIDs()));
@@ -647,32 +647,15 @@ class cs_date_index_view extends cs_index_view {
             $title = '<span class="disabled">'.$title.'</span>';
             $html .= '      <td '.$style.'>'.$title.LF;
          }else{
-             if (isset($this->_available_color_array[0])){
-                $color = $item->getColor();
-                if (!empty($color)){
-#                   $html .= '<td '.$style.' style="width:1%; background-color:'.$item->getColor().';">';
-                   $html .= '<td '.$style.' style="width:0%;">';
-                }else{
-                   $html .= '<td '.$style.' style="width:0%;">';
-                }
-                $html .= '</td>';
-                if($with_links) {
-                   $html .= '      <td '.$style.'>'.$this->_getItemTitle($item).$fileicons.LF;
-                } else {
-                   $title = $this->_text_as_html_short($item->getTitle());
-                   $html .= '      <td '.$style.'>'.$title.LF;
-                }
-             }else{
-                if($with_links) {
-                   $html .= '      <td colspan="2" '.$style.'>'.$this->_getItemTitle($item).$fileicons.LF;
-                } else {
-                   $title = $this->_text_as_html_short($item->getTitle());
-                   $html .= '      <td colspan="2" '.$style.'>'.$title.LF;
-                }
-             }
+            if($with_links) {
+               $html .= '      <td '.$style.'>'.$this->_getItemTitle($item).$fileicons.LF;
+            } else {
+               $title = $this->_text_as_html_short($item->getTitle());
+               $html .= '      <td '.$style.'>'.$title.LF;
+            }
          }
       } else {
-         $html .= '      <td colspan="3" '.$style.' style="font-size:10pt;">'.$this->_getItemTitle($item).$fileicons.'</td>'.LF;
+         $html .= '      <td colspan="2" '.$style.' style="font-size:10pt;">'.$this->_getItemTitle($item).$fileicons.'</td>'.LF;
       }
       $html .= '      <td '.$style.' style="font-size:8pt;">'.$this->_getItemDate($item);
       $time = $this->_getItemTime($item);
@@ -681,7 +664,19 @@ class cs_date_index_view extends cs_index_view {
          $html .= ', '.$time;
       }
       $html .='</td>'.LF;
-      $html .= '      <td '.$style.' style="font-size:8pt;">'.$this->_getItemPlace($item).'</td>'.LF;
+      if (isset($this->_available_color_array[0])){
+         $html .= '      <td '.$style.' style="font-size:8pt;">'.$this->_getItemPlace($item).'</td>'.LF;
+         $color = $item->getColor();
+         if (!empty($color)){
+           $html .= '<td '.$style.' style="width:1%;"><img src="images/spacer.gif" style="height:10px; width:10px; background-color:' . $this->_text_as_html_short($color) . '; border:1px solid #cccccc;"/>';
+#            $html .= '<td '.$style.' style="width:0%;">';
+         }else{
+            $html .= '<td '.$style.' style="width:0%;">';
+         }
+         $html .= '</td>';
+      }else{
+         $html .= '      <td colspan="2"'.$style.' style="font-size:8pt;">'.$this->_getItemPlace($item).'</td>'.LF;
+      }
       $html .= '   </tr>'.LF;
 
       return $html;
