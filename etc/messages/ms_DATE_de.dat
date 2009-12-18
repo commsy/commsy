@@ -1,6 +1,17 @@
 <?php
 $message["DATE_ALTERNATIVE_DISPLAY"]["de"] = "Ansicht wechseln";
 $message["DATE_BACK_TO_CALENDAR"]["de"] = "zum Kalender";
+$message["DATE_COLOR_BLUE"]["de"] = "Blau";
+$message["DATE_COLOR_DARK_BLUE"]["de"] = "Dunkelblau";
+$message["DATE_COLOR_DEFAULT_YELLOW"]["de"] = "gelb (Standard)";
+$message["DATE_COLOR_GREEN"]["de"] = "Grün";
+$message["DATE_COLOR_GREY"]["de"] = "Grau";
+$message["DATE_COLOR_LIGHT_YELLOW"]["de"] = "hellgelb";
+$message["DATE_COLOR_ORANGE"]["de"] = "Orange";
+$message["DATE_COLOR_PURPLE"]["de"] = "Lila";
+$message["DATE_COLOR_RED"]["de"] = "Rot";
+$message["DATE_COLOR_TURQUOISE"]["de"] = "Türkis";
+$message["DATE_COLOR_UNKNOWN"]["de"] = "Unbekannt";
 $message["DATE_ENDDAY"]["de"] = "Tag (Ende)";
 $message["DATE_ENDTIME"]["de"] = "Uhrzeit (Ende)";
 $message["DATE_ENTER"]["de"] = "Teilnahme zusagen";

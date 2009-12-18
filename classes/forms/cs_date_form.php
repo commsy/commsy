@@ -81,7 +81,7 @@ class cs_date_form extends cs_rubric_form {
    var $_session_tag_array = array();
 
    #var $_color = '#FFFF80';
-   
+
   /** constructor: cs_date_form
     * the only available constructor
     *
@@ -289,25 +289,25 @@ class cs_date_form extends cs_rubric_form {
       $radio_values[0]['text'] = '<img src="images/spacer.gif" style="background-color:#999999; border:1px solid #cccccc;"/>';
       $radio_values[0]['value'] = '#999999';
       $radio_values[1]['text'] = '<img src="images/spacer.gif" style="background-color:#cc0000; border:1px solid #cccccc;"/>';
-      $radio_values[1]['value'] = '#cc0000';
+      $radio_values[1]['value'] = '#CC0000';
       $radio_values[2]['text'] = '<img src="images/spacer.gif" style="background-color:#ff6600; border:1px solid #cccccc;"/>';
-      $radio_values[2]['value'] = '#ff6600';
+      $radio_values[2]['value'] = '#FF6600';
       $radio_values[3]['text'] = '<img src="images/spacer.gif" style="background-color:#ffcc00; border:1px solid #cccccc;"/>';
-      $radio_values[3]['value'] = '#ffcc00';
+      $radio_values[3]['value'] = '#FFCC00';
       $radio_values[4]['text'] = '<img src="images/spacer.gif" style="background-color:#ffff66; border:1px solid #cccccc;"/>';
-      $radio_values[4]['value'] = '#ffff66';
+      $radio_values[4]['value'] = '#FFFF66';
       $radio_values[5]['text'] = '<img src="images/spacer.gif" style="background-color:#33cc00; border:1px solid #cccccc;"/>';
-      $radio_values[5]['value'] = '#33cc00';
+      $radio_values[5]['value'] = '#33CC00';
       $radio_values[6]['text'] = '<img src="images/spacer.gif" style="background-color:#00cccc; border:1px solid #cccccc;"/>';
-      $radio_values[6]['value'] = '#00cccc';
+      $radio_values[6]['value'] = '#00CCCC';
       $radio_values[7]['text'] = '<img src="images/spacer.gif" style="background-color:#3366ff; border:1px solid #cccccc;"/>';
-      $radio_values[7]['value'] = '#3366ff';
+      $radio_values[7]['value'] = '#3366FF';
       $radio_values[8]['text'] = '<img src="images/spacer.gif" style="background-color:#6633ff; border:1px solid #cccccc;"/>';
-      $radio_values[8]['value'] = '#6633ff';
+      $radio_values[8]['value'] = '#6633FF';
       $radio_values[9]['text'] = '<img src="images/spacer.gif" style="background-color:#cc33cc; border:1px solid #cccccc;"/>';
-      $radio_values[9]['value'] = '#cc33cc';
+      $radio_values[9]['value'] = '#CC33CC';
       $this->_form->addRadioGroup('date_addon_color',$this->_translator->getMessage('DATES_ADDON'),$this->_translator->getMessage('DATES_ADDON_DESC'),$radio_values,'',false,true,'','',false,' style="vertical-align:top;"',true,false);
-      
+
       $this->_form->addTextArea('description','',$this->_translator->getMessage('DATES_DESCRIPTION'),'','',10);
 
       // rubric connections
@@ -371,9 +371,9 @@ class cs_date_form extends cs_rubric_form {
       #$this->_form->combine();
       #pr('--->'.$this->_color.'<---');
       #$this->_form->addText('colorpicker',$this->_translator->getMessage('DATES_COLOUR'),'<br/><br/><INPUT class="color" value="' . $this->_color . '" name="colorpicker">',$this->_translator->getMessage('DATES_COLOUR_DESC'),false,'','','left','','',true,false);
-          
-      #$this->_form->addText('colorpicker',$this->_translator->getMessage('DATES_COLOUR'),'<br/><br/><INPUT class="color" value="' . $this->_color . '" name="colorpicker">',$this->_translator->getMessage('DATES_COLOUR_DESC'),false,'','','left','','',true,false);  
-      
+
+      #$this->_form->addText('colorpicker',$this->_translator->getMessage('DATES_COLOUR'),'<br/><br/><INPUT class="color" value="' . $this->_color . '" name="colorpicker">',$this->_translator->getMessage('DATES_COLOUR_DESC'),false,'','','left','','',true,false);
+
       if ($current_context->withActivatingContent() and !$current_context->isPrivateRoom()){
          $this->_form->addCheckbox('private_editing',1,'',$this->_translator->getMessage('COMMON_RIGHTS'),$this->_public_array[1]['text'],$this->_translator->getMessage('COMMON_RIGHTS_DESCRIPTION'),false,false,'','',true,false);
          $this->_form->combine();
@@ -558,7 +558,7 @@ class cs_date_form extends cs_rubric_form {
             $this->_values['date_addon_color'] = $this->_item->getColor();
             #$this->_color = $this->_item->getColor();
          }
-         
+
       } else {
          $temp_array['dayStart'] = $this->_private_date_starting_date;
          $temp_array['timeStart'] = $this->_private_date_starting_time;

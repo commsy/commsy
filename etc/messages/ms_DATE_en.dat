@@ -1,6 +1,17 @@
 <?php
 $message["DATE_ALTERNATIVE_DISPLAY"]["en"] = "Change display";
 $message["DATE_BACK_TO_CALENDAR"]["en"] = "calendar";
+$message["DATE_COLOR_BLUE"]["en"] = "blue";
+$message["DATE_COLOR_DARK_BLUE"]["en"] = "dark blue";
+$message["DATE_COLOR_DEFAULT_YELLOW"]["en"] = "yellow (default)";
+$message["DATE_COLOR_GREEN"]["en"] = "green";
+$message["DATE_COLOR_GREY"]["en"] = "grey";
+$message["DATE_COLOR_LIGHT_YELLOW"]["en"] = "light yellow";
+$message["DATE_COLOR_ORANGE"]["en"] = "orange";
+$message["DATE_COLOR_PURPLE"]["en"] = "purple";
+$message["DATE_COLOR_RED"]["en"] = "red";
+$message["DATE_COLOR_TURQUOISE"]["en"] = "turquoise";
+$message["DATE_COLOR_UNKNOWN"]["en"] = "unknown";
 $message["DATE_ENDDAY"]["en"] = "Day (end)";
 $message["DATE_ENDTIME"]["en"] = "Time (end)";
 $message["DATE_ENTER"]["en"] = "Accept participation";

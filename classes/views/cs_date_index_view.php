@@ -37,6 +37,8 @@ class cs_date_index_view extends cs_index_view {
    var $_selected_displaymode = NULL;
    var $_available_displaymode = NULL;
    var $_selected_status = NULL;
+   var $_available_color_array = array('#999999','#CC0000','#ff6600','#FFCC00','#33CC00','#00CCCC','#3366FF','#6633FF','#CC33CC');
+   var $_selected_color = NULL;
    var $_display_mode = NULL;
    var $_alternative_display = 'show';
    /** constructor
@@ -52,6 +54,7 @@ class cs_date_index_view extends cs_index_view {
       $this->cs_index_view($params);
       $this->setTitle($this->_translator->getMessage('DATES_HEADER'));
       $this->setActionTitle($this->_translator->getMessage('COMMON_DATES'));
+      $this->_colspan = 6;
    }
 
 
@@ -73,6 +76,22 @@ class cs_date_index_view extends cs_index_view {
 
    function getSelectedStatus () {
       return $this->_selected_status;
+   }
+
+   function setSelectedColor ($color) {
+      $this->_selected_color = $color;
+   }
+
+   function getSelectedColor () {
+      return $this->_selected_color;
+   }
+
+   function setAvailableColorArray ($array) {
+      $this->_available_color_array = $array;
+   }
+
+   function getAvailableColorArray () {
+      return $this->_available_color_array;
    }
 
    function _getGetParamsAsArray() {
@@ -168,6 +187,51 @@ class cs_date_index_view extends cs_index_view {
 
       $html .= '   </select>'.LF;
       $html .='</div>';
+
+      $selcolor = $this->getSelectedColor();
+
+
+      $html = '<div class="infocolor" style="text-align:left; padding-bottom:5px; font-size: 10pt;">'.$this->_translator->getMessage('COMMON_DATE_COLOR').BRLF;
+      if ( !empty($selcolor)) {
+         $style_color = '#'.$selcolor;
+      }else{
+      	$style_color = '#000000';
+      }
+      $html .= '   <select style="color:'.$style_color.'; width: '.$width.'px; font-size:10pt; margin-bottom:5px;" name="selcolor" size="1" id="submit_form">'.LF;
+
+      $html .= '      <option style="color:#000000;" value="2"';
+      if ( empty($selcolor) || $selcolor == 2 ) {
+         $html .= ' selected="selected"';
+      }
+      $html .= '>*'.$this->_translator->getMessage('COMMON_NO_SELECTION').'</option>'.LF;
+
+      $html .= '   <option class="disabled" disabled="disabled" value="-2">------------------------------</option>'.LF;
+      $color_array = $this->getAvailableColorArray();
+      foreach ($color_array as $color){
+         $html .= '      <option style="color:'.$color.'" value="'.str_replace('#','',$color).'"';
+         if ( $selcolor == str_replace('#','',$color) ) {
+            $html .= ' selected="selected"';
+         }
+         $color_text = '';
+         switch ($color){
+            case '#999999': $color_text = getMessage('DATE_COLOR_GREY');break;
+            case '#CC0000': $color_text = getMessage('DATE_COLOR_RED');break;
+            case '#ff6600': $color_text = getMessage('DATE_COLOR_ORANGE');break;
+            case '#FFCC00': $color_text = getMessage('DATE_COLOR_DEFAULT_YELLOW');break;
+            case '#FFFF66': $color_text = getMessage('DATE_COLOR_LIGHT_YELLOW');break;
+            case '#33CC00': $color_text = getMessage('DATE_COLOR_GREEN');break;
+            case '#00CCCC': $color_text = getMessage('DATE_COLOR_TURQUOISE');break;
+            case '#3366FF': $color_text = getMessage('DATE_COLOR_BLUE');break;
+            case '#6633FF': $color_text = getMessage('DATE_COLOR_DARK_BLUE');break;
+            case '#CC33CC': $color_text = getMessage('DATE_COLOR_PURPLE');break;
+            default: $color_text = getMessage('DATE_COLOR_UNKNOWN');
+         }
+         $html .= '>'.$color_text.'</option>'.LF;
+      }
+      $html .= '   </select>'.LF;
+      $html .='</div>';
+
+
       return $html;
    }
 
@@ -218,6 +282,39 @@ class cs_date_index_view extends cs_index_view {
          $html_text .='</tr>'.LF;
          $html .= $html_text;
       }
+      $params = $this->_environment->getCurrentParameterArray();
+      if ( isset($params['selcolor']) and $params['selcolor'] != 2 ){
+         $this->_additional_selects = true;
+         $html_text ='<tr>'.LF;
+         $html_text .='<td>'.LF;
+         $html_text .= '<span class="infocolor">'.$this->_translator->getMessage('COMMON_DATE_COLOR').': </span>';
+         $html_text .='</td>'.LF;
+         $html_text .='<td style="text-align:right;">'.LF;
+         $color_text = '';
+
+         $color_text = '';
+         switch ('#'.$params['selcolor']){
+            case '#999999': $color_text = getMessage('DATE_COLOR_GREY');break;
+            case '#CC0000': $color_text = getMessage('DATE_COLOR_RED');break;
+            case '#ff6600': $color_text = getMessage('DATE_COLOR_ORANGE');break;
+            case '#FFCC00': $color_text = getMessage('DATE_COLOR_DEFAULT_YELLOW');break;
+            case '#FFFF66': $color_text = getMessage('DATE_COLOR_LIGHT_YELLOW');break;
+            case '#33CC00': $color_text = getMessage('DATE_COLOR_GREEN');break;
+            case '#00CCCC': $color_text = getMessage('DATE_COLOR_TURQUOISE');break;
+            case '#3366FF': $color_text = getMessage('DATE_COLOR_BLUE');break;
+            case '#6633FF': $color_text = getMessage('DATE_COLOR_DARK_BLUE');break;
+            case '#CC33CC': $color_text = getMessage('DATE_COLOR_PURPLE');break;
+            default: $color_text = getMessage('DATE_COLOR_UNKNOWN');
+         }
+         $html_text .= '<span style="color:#'.$params['selcolor'].';">'.$color_text.'</span>';
+         $picture = '<img src="images/delete_restriction.gif" alt="x" border="0"/>';
+         $new_params = $params;
+         $new_params['selcolor'] = 2;
+         $html_text .= '&nbsp;'.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),'index',$new_params,$picture,$this->_translator->getMessage('COMMON_DELETE_RESTRICTIONS')).LF;
+         $html_text .='</td>'.LF;
+         $html_text .='</tr>'.LF;
+         $html .= $html_text;
+      }
       return $html;
    }
 
@@ -227,7 +324,7 @@ class cs_date_index_view extends cs_index_view {
       $params = $this->_getGetParamsAsArray();
       $params['from'] = 1;
       $html = '   <tr class="head">'.LF;
-      $html .= '      <td class="head" style="width:55%;" colspan="2">';
+      $html .= '      <td class="head" style="width:55%;" colspan="3">';
       if ( $this->getSortKey() == 'title' ) {
          $params['sort'] = 'title_rev';
          $picture = '&nbsp;<img src="' . getSortImage('up') . '" alt="&lt;" border="0"/>';
@@ -299,9 +396,9 @@ class cs_date_index_view extends cs_index_view {
    function _getTablefootAsHTML() {
       $html  = '   <tr class="list">'.LF;
       if ( $this->hasCheckboxes() and $this->_has_checkboxes != 'list_actions') {
-         $html .= '<td class="foot_left" colspan="3"><input style="font-size:8pt;" type="submit" name="option" value="'.$this->_translator->getMessage('COMMON_ATTACH_BUTTON').'" /> <input type="submit"  style="font-size:8pt;" name="option" value="'.$this->_translator->getMessage('COMMON_CANCEL_BUTTON').'"/>';
+         $html .= '<td class="foot_left" colspan="4"><input style="font-size:8pt;" type="submit" name="option" value="'.$this->_translator->getMessage('COMMON_ATTACH_BUTTON').'" /> <input type="submit"  style="font-size:8pt;" name="option" value="'.$this->_translator->getMessage('COMMON_CANCEL_BUTTON').'"/>';
       }else{
-         $html .= '<td class="foot_left" colspan="3" style="vertical-align:middle;">'.LF;
+         $html .= '<td class="foot_left" colspan="4" style="vertical-align:middle;">'.LF;
          $html .= '<span class="select_link">[</span>';
          $params = $this->_environment->getCurrentParameterArray();
          $params['select'] = 'all';
@@ -470,7 +567,7 @@ class cs_date_index_view extends cs_index_view {
             $this->_count_headlines ++;
             $room_manager = $this->_environment->getProjectManager();
             $sort_room = $room_manager->getItem($sort_criteria);
-            $html .= '                     <tr class="list"><td '.$style.' width="100%" style="font-weight:bold;" colspan="5">'.LF;
+            $html .= '                     <tr class="list"><td '.$style.' width="100%" style="font-weight:bold;" colspan="6">'.LF;
             if ( empty($sort_room) ) {
                $community_manager = $this->_environment->getCommunityManager();
                $sort_community = $community_manager->getItem($sort_criteria);
@@ -550,15 +647,31 @@ class cs_date_index_view extends cs_index_view {
             $title = '<span class="disabled">'.$title.'</span>';
             $html .= '      <td '.$style.'>'.$title.LF;
          }else{
-             if($with_links) {
-                $html .= '      <td '.$style.'>'.$this->_getItemTitle($item).$fileicons.LF;
-             } else {
-                $title = $this->_text_as_html_short($item->getTitle());
-                $html .= '      <td '.$style.'>'.$title.LF;
+             if (isset($this->_available_color_array[0])){
+                $color = $item->getColor();
+                if (!empty($color)){
+                   $html .= '<td '.$style.' style="width:1%; background-color:'.$item->getColor().';">';
+                }else{
+                   $html .= '<td '.$style.' style="width:0%;">';
+                }
+                $html .= '</td>';
+                if($with_links) {
+                   $html .= '      <td '.$style.'>'.$this->_getItemTitle($item).$fileicons.LF;
+                } else {
+                   $title = $this->_text_as_html_short($item->getTitle());
+                   $html .= '      <td '.$style.'>'.$title.LF;
+                }
+             }else{
+                if($with_links) {
+                   $html .= '      <td colspan="2" '.$style.'>'.$this->_getItemTitle($item).$fileicons.LF;
+                } else {
+                   $title = $this->_text_as_html_short($item->getTitle());
+                   $html .= '      <td colspan="2" '.$style.'>'.$title.LF;
+                }
              }
          }
       } else {
-         $html .= '      <td colspan="2" '.$style.' style="font-size:10pt;">'.$this->_getItemTitle($item).$fileicons.'</td>'.LF;
+         $html .= '      <td colspan="3" '.$style.' style="font-size:10pt;">'.$this->_getItemTitle($item).$fileicons.'</td>'.LF;
       }
       $html .= '      <td '.$style.' style="font-size:8pt;">'.$this->_getItemDate($item);
       $time = $this->_getItemTime($item);

@@ -57,6 +57,7 @@ class cs_dates_manager extends cs_manager {
    var $_group_limit = NULL;
    var $_topic_limit = NULL;
    var $_sort_order = NULL;
+   var $_color_limit = NULL;
 
    var $_month_limit = NULL;
    var $_month_limit2 = NULL;
@@ -65,7 +66,7 @@ class cs_dates_manager extends cs_manager {
    var $_year_limit = NULL;
    var $_date_mode_limit = 1;
    private $_not_older_than_limit = NULL;
-   
+
    /*
     * Translation Object
     */
@@ -100,6 +101,7 @@ class cs_dates_manager extends cs_manager {
       $this->_day_limit = NULL;
       $this->_day_limit2 = NULL;
       $this->_year_limit = NULL;
+      $this->_color_limit = NULL;
       $this->_date_mode_limit = 1;
       $this->_not_older_than_limit = NULL;
    }
@@ -121,6 +123,12 @@ class cs_dates_manager extends cs_manager {
    function setAgeLimit ($limit) {
       $this->_age_limit = (int)$limit;
    }
+
+
+   function setColorLimit ($limit) {
+      $this->_color_limit = $limit;
+   }
+
 
    /** set future limit
     * Restricts selected dates to dates in the future
@@ -302,6 +310,9 @@ class cs_dates_manager extends cs_manager {
       }
       if (isset($this->_age_limit)) {
          $query .= ' AND dates.modification_date >= DATE_SUB(CURRENT_DATE,interval '.encode(AS_DB,$this->_age_limit).' day)';
+      }
+      if (isset($this->_color_limit)) {
+         $query .= ' AND dates.color = "'.encode(AS_DB,$this->_color_limit).'"';
       }
       if ( isset($this->_existence_limit) ) {
          $query .= ' AND dates.creation_date >= DATE_SUB(CURRENT_DATE,interval '.encode(AS_DB,$this->_existence_limit).' day)';
@@ -521,6 +532,28 @@ class cs_dates_manager extends cs_manager {
      }
      return $dates;
    }
+
+   function getColorArray () {
+     $color_array = array();
+     $query = 'SELECT DISTINCT color FROM dates WHERE 1=1';
+     if (isset($this->_room_limit)) {
+         $query .= ' AND dates.context_id = "'.encode(AS_DB,$this->_room_limit).'"';
+     }
+     $result = $this->_db_connector->performQuery($query);
+     if ( !isset($result) ) {
+        include_once('functions/error_functions.php');trigger_error('Problems selecting one dates item.',E_USER_WARNING);
+     } else {
+        foreach ($result as $rs ) {
+           if ($rs['color'] != 'NULL' and !empty($rs['color'])){
+              $color_array[] = $rs['color'];
+           }
+        }
+     }
+     return $color_array;
+   }
+
+
+
 
   /** get a list of dates items
    *

@@ -220,6 +220,7 @@ $message["COMMON_DATE_APRIL_LONG"]["en"] = "April";
 $message["COMMON_DATE_APRIL_SHORT"]["en"] = "Apr";
 $message["COMMON_DATE_AUGUST_LONG"]["en"] = "August";
 $message["COMMON_DATE_AUGUST_SHORT"]["en"] = "Aug";
+$message["COMMON_DATE_COLOR"]["en"] = "date color";
 $message["COMMON_DATE_DECEMBER_LONG"]["en"] = "December";
 $message["COMMON_DATE_DECEMBER_SHORT"]["en"] = "Dec";
 $message["COMMON_DATE_EDIT"]["en"] = "Edit event";
