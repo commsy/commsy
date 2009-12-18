@@ -65,7 +65,7 @@ if ( isset($_GET['cid']) ) {
                     $dates_manager = $environment->getDatesManager();
          $dates_manager->setContextLimit($context_item->getItemID());
          $dates_manager->setWithoutDateModeLimit();
-         $dates_manager->setNotOlderThanMonthLimit(6);
+         $dates_manager->setNotOlderThanMonthLimit(3);
          $dates_manager->select();
          $item_list = $dates_manager->get();
            }else{
