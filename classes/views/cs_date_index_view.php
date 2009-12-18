@@ -296,7 +296,7 @@ class cs_date_index_view extends cs_index_view {
          switch ('#'.$params['selcolor']){
             case '#999999': $color_text = getMessage('DATE_COLOR_GREY');break;
             case '#CC0000': $color_text = getMessage('DATE_COLOR_RED');break;
-            case '#ff6600': $color_text = getMessage('DATE_COLOR_ORANGE');break;
+            case '#FF6600': $color_text = getMessage('DATE_COLOR_ORANGE');break;
             case '#FFCC00': $color_text = getMessage('DATE_COLOR_DEFAULT_YELLOW');break;
             case '#FFFF66': $color_text = getMessage('DATE_COLOR_LIGHT_YELLOW');break;
             case '#33CC00': $color_text = getMessage('DATE_COLOR_GREEN');break;
