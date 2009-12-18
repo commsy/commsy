@@ -45,6 +45,7 @@ if (isset($_GET['back_to_index']) and $session->issetValue('cid'.$environment->g
    $params['selbuzzword'] = $index_search_parameter_array['selbuzzword'];
    $params['seltag_array'] = $index_search_parameter_array['seltag_array'];
    $params['interval'] = $index_search_parameter_array['interval'];
+   $params['selcolor'] = $index_search_parameter_array['selcolor'];
    $params['sel_activating_status'] = $index_search_parameter_array['sel_activating_status'];
    $sel_array = $index_search_parameter_array['sel_array'];
    foreach($sel_array as $key => $value){
@@ -306,6 +307,13 @@ if ( isset($_GET['sort']) ) {
    $sort = $_GET['sort'];
 } else {
    $sort = 'time_rev';
+}
+
+// Find current sort key
+if ( isset($_GET['selcolor']) and $_GET['selcolor'] !='-2') {
+   $sel_color = $_GET['selcolor'];
+} else {
+   $sel_color = '';
 }
 
 // Search / Select Area
@@ -571,6 +579,7 @@ $dates_manager = $environment->getDatesManager();
 
 if ( empty($only_show_array) ) {
    $dates_manager->setContextLimit($environment->getCurrentContextID());
+   $color_array = $dates_manager->getColorArray();
    if ($seldisplay_mode == 'calendar'  and !($mode == 'formattach' or $mode == 'detailattach') ){
       $dates_manager->setDateModeLimit(2);
       $dates_manager->setYearLimit($year);
@@ -598,6 +607,10 @@ if ( empty($only_show_array) ) {
    }
    if ( $sel_activating_status == 2 ) {
       $dates_manager->showNoNotActivatedEntries();
+   }
+
+   if ( !empty($sel_color) and $sel_color != 2 ) {
+      $dates_manager->setColorLimit('#'.$sel_color);
    }
 
    if ( !empty($ref_iid) and $mode == 'attached' ){
@@ -786,6 +799,10 @@ $view->setSelectedBuzzword($selbuzzword);
 $view->setSelectedTagArray($seltag_array);
 $view->setAdditionalSelect();
 $view->setActivationLimit($sel_activating_status);
+$view->setSelectedColor($sel_color);
+if (isset($color_array[0])){
+#   $view->setAvailableColorArray($color_array);
+}
 
 
 if ( !empty($ref_iid) and $mode =='attached' ) {
@@ -834,6 +851,7 @@ $session->setValue('cid'.$environment->getCurrentContextID().'_dates_index_ids',
 $index_search_parameter_array = array();
 $index_search_parameter_array['interval'] = $interval;
 $index_search_parameter_array['sort'] = $sort;
+$index_search_parameter_array['selcolor'] = $sel_color;
 $index_search_parameter_array['search'] = $search;
 $index_search_parameter_array['sel_array'] = $sel_array;
 $index_search_parameter_array['selbuzzword'] = $selbuzzword;

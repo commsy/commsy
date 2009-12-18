@@ -42,11 +42,13 @@ class cs_date_calendar_index_view extends cs_room_index_view {
    var $_display_mode = NULL;
    var $_presentation_mode = '1';
    var $_week_start;
+   var $_available_color_array = array('#999999','#CC0000','#ff6600','#FFCC00','#33CC00','#00CCCC','#3366FF','#6633FF','#CC33CC');
+   var $_selected_color = NULL;
 
    // SUNBIRD
    var $use_sunbird = true;
    // SUNBIRD
-   
+
    /** set the content of the list view
     * this method sets the whole entries of the list view
     *
@@ -138,6 +140,21 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       return $this->_clipboard_id_array;
    }
 
+   function setSelectedColor ($color) {
+      $this->_selected_color = $color;
+   }
+
+   function getSelectedColor () {
+      return $this->_selected_color;
+   }
+
+   function setAvailableColorArray ($array) {
+      $this->_available_color_array = $array;
+   }
+
+   function getAvailableColorArray () {
+      return $this->_available_color_array;
+   }
 
    function setYear($year) {
       $this->_year = $year;
@@ -328,7 +345,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $html .= $this->_getListActionsAsHTML();
       $html .='</div>';
       $html .='<div>';
-      
+
       if($this->use_sunbird){
       	//$html .= $this->_getSwitchIconBar();
       	$html .= '<div style="float:left;padding-right:50px;"><h2 class="pagetitle"><img style="vertical-align: bottom;" src="images/commsyicons/32x32/date.png"/>' . $this->_translator->getMessage('DATES') . '</h2></div>';
@@ -361,8 +378,8 @@ class cs_date_calendar_index_view extends cs_room_index_view {
 	          $html .= '<h2 class="pagetitle">'.$tempMessage;
 	      }
    	  }
-      
-      
+
+
       $html .= '</h2>'.LF;
       $html .='</div>'.LF;
       $html .='</div>';
@@ -409,7 +426,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
 
       $html .= '<table style="width: 100%; border-collapse: collapse;">'.LF;
       // SUNBIRD UMSTELLUNG
-      
+
       if ($this->_presentation_mode == '2' and $this->use_sunbird){
          $html .= $this->_getTableheadMonthAsHTMLWithJavascript();
       } else {
@@ -654,7 +671,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       //$html .= '   <select style="width: 10em; font-size:10pt;" name="presentation_mode" size="1" onChange="javascript:document.indexform.submit()">'.LF;
       $html .= '   <select style="width: 10em; font-size:10pt;" name="presentation_mode" size="1" id="submit_form">'.LF;
       // jQuery
-      
+
       $html .= '      <option value="2"';
       if ($this->_presentation_mode == '2'){
          $html .= ' selected="selected"';
@@ -681,7 +698,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $html .= '   </tr>'.LF;
       return $html;
    }
-   
+
    function _getTableheadAsHTMLWithJavaScript() {
       $params = $this->_getGetParamsAsArray();
       // Optimierungsbedarf: Die $this->_translator->getMessage wird 11Mal!!! umsonst aufgerufen
@@ -721,7 +738,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $html .= '   </tr>'.LF;
       return $html;
    }
-   
+
    function _getTableheadMonthAsHTMLWithJavascript() {
       $params = $this->_getGetParamsAsArray();
       // Optimierungsbedarf: Die $this->_translator->getMessage wird 11Mal!!! umsonst aufgerufen
@@ -734,7 +751,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       #//$html .= '   <select style="width: 10em; font-size:10pt;" name="presentation_mode" size="1" onChange="javascript:document.indexform.submit()">'.LF;
       #$html .= '   <select style="width: 10em; font-size:10pt;" name="presentation_mode" size="1" id="submit_form">'.LF;
       #// jQuery
-      
+
       #$html .= '      <option value="2"';
       #if ($this->_presentation_mode == '2'){
       #   $html .= ' selected="selected"';
@@ -891,7 +908,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                                 '').LF;
       return $this->_translator->getMessage('COMMON_WEEK').':'.$left.$html.$right;;
    }
-   
+
    function _getWeekListWithJavascript() {
       $html ='';
       #$current_date = getdate();
@@ -1120,7 +1137,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                                 '').LF;
       return $this->_translator->getMessage('COMMON_MONTH').':'.$left.$html.$right;;
    }
-   
+
    function _getMonthListWithJavascript() {
       $html ='';
       $params = $this->_getGetParamsAsArray();
@@ -1140,7 +1157,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       //$html .= '   <select name="month" size="1" style="width:10em;" onChange="javascript:document.indexform.submit()">'.LF;
       #$html .= '   <select name="month" size="1" style="width:10em;" id="submit_form">'.LF;
       // jQuery
-      
+
       //Do some time calculations
       $month = mb_substr($this->_month,4,2);
       $year = $this->_year;
@@ -1195,7 +1212,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       if($calendar_week_last[0] == '0'){
          $calendar_week_last = $calendar_week_last[1];
       }
-      
+
       if (!isset($this->_month) or empty($this->_month)){
          $month = date ("Ymd");
       }else{
@@ -1418,7 +1435,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       unset($params);
       return $title;
    }
-   
+
   /** get the link to the item
     * this method returns the item title in the right formatted style
     *
@@ -1882,11 +1899,11 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $html .= '   </tr>'.LF;
       return $html;
    }
-   
+
    function _getMonthContentAsHTMLWithJavascript() {
       $current_time = localtime();
 	  $today = '';
-	  
+
       //Do some time calculations
       $month = mb_substr($this->_month,4,2);
       $year = $this->_year;
@@ -2000,7 +2017,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $html = '';
       $html .= '<div id="calender_month_frame" style="width:100%; background-color:#ffffff; border-top:1px solid black; border-left:1px solid black; padding:0px;">'.LF;
       #$html .= '<div id="calender_month_head" style="width:100%; clear:both;">'.LF;
-      
+
       #$html  = '   <tr class="calendar_head">'.LF;
       #$html .= '      <td class="calendar_head_first" style="width:14%; text-align:center;">'.$this->_translator->getMessage('COMMON_DATE_MONDAY').'</td>'.LF;
       #$html .= '      <td class="calendar_head" style="width:14%; text-align:center;">'.$this->_translator->getMessage('COMMON_DATE_TUESDAY').'</td>'.LF;
@@ -2019,7 +2036,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $html .= '<div class="calendar_month_entry_head">'.$this->_translator->getMessage('COMMON_DATE_SATURDAY').'</div>'.LF;
       $html .= '<div class="calendar_month_entry_head">'.$this->_translator->getMessage('COMMON_DATE_SUNDAY').'</div>'.LF;
       #$html .= '</div>'.LF;
-      
+
       #$html .= '<div id="calender_month_main" style="width:100%; clear:both; border:1px solid black;">'.LF;
       #$html .= '   <tr class="listcalendar" style="height:8em;">'.LF;
       //rest of table
@@ -2102,7 +2119,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                $date_array_for_jQuery[] = 'new Array(' . $format_array[$i]['day'] . ',' . $current_month_temp . ',\'' . $link . '\',' . count($format_array[$i]['dates']) . ',\'' . $color . '\'' . ',\'' . $color_border . '\'' . ',\'' . $href . '\'' . ',\'sticky_' . $date_index . '\')';
                $tooltip = array();
                $tooltip['title'] = $date->getTitle();
-               
+
                if($date->getItemID() != $tooltip_last_id){
                   $tooltip_last_id = $date->getItemID();
                   // set up style of days and times
@@ -2113,7 +2130,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                   } else {
                      $start_time_print = $this->_text_as_html_short($this->_compareWithSearchText($date->getStartingTime()));
                   }
-            
+
                   $parse_time_end = convertTimeFromInput($date->getEndingTime());
                   $conforms = $parse_time_end['conforms'];
                   if ($conforms == TRUE) {
@@ -2121,7 +2138,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                   } else {
                      $end_time_print = $this->_text_as_html_short($this->_compareWithSearchText($date->getEndingTime()));
                   }
-            
+
                  $parse_day_start = convertDateFromInput($date->getStartingDay(),$this->_environment->getSelectedLanguage());
                   $conforms = $parse_day_start['conforms'];
                   if ($conforms == TRUE) {
@@ -2129,7 +2146,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                   } else {
                      $start_day_print = $this->_text_as_html_short($this->_compareWithSearchText($date->getStartingDay()));
                   }
-            
+
                   $parse_day_end = convertDateFromInput($date->getEndingDay(),$this->_environment->getSelectedLanguage());
                   $conforms = $parse_day_end['conforms'];
                   if ($conforms == TRUE) {
@@ -2140,14 +2157,14 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                   //formating dates and times for displaying
                   $date_print ="";
                   $time_print ="";
-            
+
                   if ($end_day_print != "") { //with ending day
                      $date_print = $this->_translator->getMessage('DATES_AS_OF').' '.$start_day_print.' '.$this->_translator->getMessage('DATES_TILL').' '.$end_day_print;
                      if ($parse_day_start['conforms']
                          and $parse_day_end['conforms']) { //start and end are dates, not strings
                        $date_print .= ' ('.getDifference($parse_day_start['timestamp'], $parse_day_end['timestamp']).' '.$this->_translator->getMessage('DATES_DAYS').')';
                      }
-            
+
                      if ($start_time_print != "" and $end_time_print =="") { //starting time given
                         $time_print = $this->_translator->getMessage('DATES_AS_OF_LOWER').' '.$start_time_print;
                          if ($parse_time_start['conforms'] == true) {
@@ -2172,7 +2189,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                            $date_print .= ' ('.getDifference($parse_day_start['timestamp'], $parse_day_end['timestamp']).' '.$this->_translator->getMessage('DATES_DAYS').')';
                         }
                      }
-            
+
                   } else { //without ending day
                      $date_print = $this->_translator->getMessage('DATES_ON_DAY').' '.$start_day_print;
                      if ($start_time_print != "" and $end_time_print =="") { //starting time given
@@ -2195,7 +2212,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                         $time_print = $this->_translator->getMessage('DATES_FROM_TIME_LOWER').' '.$start_time_print.' '.$this->_translator->getMessage('DATES_TILL').' '.$end_time_print;
                      }
                   }
-            
+
                   if ($parse_day_start['timestamp'] == $parse_day_end['timestamp'] and $parse_day_start['conforms'] and $parse_day_end['conforms']) {
                      $date_print = $this->_translator->getMessage('DATES_ON_DAY').' '.$start_day_print;
                      if ($start_time_print != "" and $end_time_print =="") { //starting time given
@@ -2206,7 +2223,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                         $time_print = $this->_translator->getMessage('DATES_FROM_TIME_LOWER').' '.$start_time_print.' '.$this->_translator->getMessage('DATES_TILL').' '.$end_time_print;
                      }
                   }
-            
+
                   // Date and time
                   $temp_array = array();
                   $temp_array[] = $this->_translator->getMessage('DATES_DATETIME');
@@ -2226,7 +2243,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                $date_index++;
             }
          }
-         
+
                $params = array();
                $params['iid'] = 'NEW';
                $params['day'] = $format_array[$i]['day'];
@@ -2315,7 +2332,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       #$html .= '</div>'.LF;
       $html .= '<div id="calendar_month_footer" class="calendar_month_footer">' . $this->_translator->getMessage('DATES_TIPP_FOR_ENTRIES') . '</div>'.LF;
       $html .= '</div>'.LF;
-      
+
       $html .= '<div id="mystickytooltip" class="stickytooltip"><div style="border:1px solid #cccccc;">';
       foreach($tooltips as $id => $tooltip){
          $html .= '<div id="' . $id . '" class="atip" style="padding:5px; border:2px solid ' . $tooltip['color'] . '">'.LF;
@@ -2363,7 +2380,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $html .= 'var today = "' . $today . '";' .LF;
       $html .= '-->'.LF;
       $html .= '</script>'.LF;
-      
+
       return $html;
    }
 
@@ -2374,7 +2391,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
     *
     * @author CommSy Development Group
     */
-   
+
    function _getWeekContentAsHTML() {
       $week_start = $this->_week_start;
       $html ='';
@@ -2791,7 +2808,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $html .= '   </tr>'.LF;
       return $html;
    }
-   
+
    /** get the content of the list view as HTML
     * this method returns the content in HTML-Code
     *
@@ -2985,10 +3002,10 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                   break;
             }
             $html .= '</div></div>'.LF;
-            
+
          $week_start = $week_start + ( 3600 * 24);
       }
-       
+
       $session = $this->_environment->getSession();
       $width = '100%';
       $html .= '</div>'.LF;
@@ -3037,7 +3054,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $current_element = 0;
       $html_javascript = '<script type="text/javascript"><!--'.LF;
       $html_javascript .= 'var new_dates = new Array('.LF;
-      for($index=0; $index <24; $index++){ 
+      for($index=0; $index <24; $index++){
       $html .= '<div class="calendar_time" id="calendar_time_' . $index . '"><div class="data">' . $index . '</div></div>'.LF;
       for($index_day=0; $index_day <7; $index_day++){
          $week_start = $this->_week_start + ( 3600 * 24 * $index_day);
@@ -3115,7 +3132,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                if(mb_substr($start_minutes,0,1) == '0'){
                   $start_minutes = mb_substr($start_minutes,1,1);
                }
-               
+
                if(($date->getStartingDay() != $date->getEndingDay()) and ($date->getEndingDay() != '')){
                   $end_hour = 23;
                   $end_minutes = 60;
@@ -3129,22 +3146,22 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                if(mb_substr($end_minutes,0,1) == '0'){
                   $end_minutes = mb_substr($end_minutes,1,1);
                }
-               
+
                // umrechnen in Minuten, für jede viertelstunde 10 px drauf nach vier noch einen pixel drauf
                $start_minutes = $start_hour*60 + $start_minutes;
                $end_minutes = $end_hour*60 + $end_minutes;
-               
+
                $start_quaters = mb_substr(($start_minutes / 15),0,2);
                $start_quaters_addon = mb_substr(($start_quaters / 4),0,2);
                $end_quaters = mb_substr(($end_minutes / 15),0,2);
                $end_quaters_addon = mb_substr(($end_quaters / 4),0,2);
-               
+
                #pr($day);
                #pr(count($display_date_array[$day_entries]));
                #pr($start_hour . ' - ' . $start_minutes . ' - ' . $start_minutes . ' - ' . $start_quaters . ' - ' . $start_quaters_addon);
                #pr($end_hour . ' - ' . $end_minutes . ' - ' . $end_minutes . ' - ' . $end_quaters . ' - ' . $end_quaters_addon);
                #pr('-------------');
-               
+
                #if($start_quaters != 0){
                #   $top = ($start_quaters-1)*10 + ($start_quaters_addon-1);
                #} else {
@@ -3169,7 +3186,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                $date_array_for_jQuery[] = 'new Array(' . $day_entries . ',\'' . $link . '\',' . $start_quaters . ',' . $end_quaters . ',' . count($display_date_array[$day_entries]) . ',\'' . $color . '\'' . ',\'' . $color_border . '\'' . ',\'' . $href . '\'' . ',\'sticky_' . $date_index . '\')';
                $tooltip = array();
                $tooltip['title'] = $date->getTitle();
-               
+
                if($date->getItemID() != $tooltip_last_id){
                   $tooltip_last_id = $date->getItemID();
                   // set up style of days and times
@@ -3180,7 +3197,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                   } else {
                      $start_time_print = $this->_text_as_html_short($this->_compareWithSearchText($date->getStartingTime()));
                   }
-            
+
                   $parse_time_end = convertTimeFromInput($date->getEndingTime());
                   $conforms = $parse_time_end['conforms'];
                   if ($conforms == TRUE) {
@@ -3188,7 +3205,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                   } else {
                      $end_time_print = $this->_text_as_html_short($this->_compareWithSearchText($date->getEndingTime()));
                   }
-            
+
                  $parse_day_start = convertDateFromInput($date->getStartingDay(),$this->_environment->getSelectedLanguage());
                   $conforms = $parse_day_start['conforms'];
                   if ($conforms == TRUE) {
@@ -3196,7 +3213,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                   } else {
                      $start_day_print = $this->_text_as_html_short($this->_compareWithSearchText($date->getStartingDay()));
                   }
-            
+
                   $parse_day_end = convertDateFromInput($date->getEndingDay(),$this->_environment->getSelectedLanguage());
                   $conforms = $parse_day_end['conforms'];
                   if ($conforms == TRUE) {
@@ -3207,14 +3224,14 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                   //formating dates and times for displaying
                   $date_print ="";
                   $time_print ="";
-            
+
                   if ($end_day_print != "") { //with ending day
                      $date_print = $this->_translator->getMessage('DATES_AS_OF').' '.$start_day_print.' '.$this->_translator->getMessage('DATES_TILL').' '.$end_day_print;
                      if ($parse_day_start['conforms']
                          and $parse_day_end['conforms']) { //start and end are dates, not strings
                        $date_print .= ' ('.getDifference($parse_day_start['timestamp'], $parse_day_end['timestamp']).' '.$this->_translator->getMessage('DATES_DAYS').')';
                      }
-            
+
                      if ($start_time_print != "" and $end_time_print =="") { //starting time given
                         $time_print = $this->_translator->getMessage('DATES_AS_OF_LOWER').' '.$start_time_print;
                          if ($parse_time_start['conforms'] == true) {
@@ -3239,7 +3256,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                            $date_print .= ' ('.getDifference($parse_day_start['timestamp'], $parse_day_end['timestamp']).' '.$this->_translator->getMessage('DATES_DAYS').')';
                         }
                      }
-            
+
                   } else { //without ending day
                      $date_print = $this->_translator->getMessage('DATES_ON_DAY').' '.$start_day_print;
                      if ($start_time_print != "" and $end_time_print =="") { //starting time given
@@ -3262,7 +3279,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                         $time_print = $this->_translator->getMessage('DATES_FROM_TIME_LOWER').' '.$start_time_print.' '.$this->_translator->getMessage('DATES_TILL').' '.$end_time_print;
                      }
                   }
-            
+
                   if ($parse_day_start['timestamp'] == $parse_day_end['timestamp'] and $parse_day_start['conforms'] and $parse_day_end['conforms']) {
                      $date_print = $this->_translator->getMessage('DATES_ON_DAY').' '.$start_day_print;
                      if ($start_time_print != "" and $end_time_print =="") { //starting time given
@@ -3273,7 +3290,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                         $time_print = $this->_translator->getMessage('DATES_FROM_TIME_LOWER').' '.$start_time_print.' '.$this->_translator->getMessage('DATES_TILL').' '.$end_time_print;
                      }
                   }
-            
+
                   // Date and time
                   $temp_array = array();
                   $temp_array[] = $this->_translator->getMessage('DATES_DATETIME');
@@ -3284,7 +3301,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                   }
                   $tooltip_date = $temp_array;
                }
-               
+
                $tooltip['date'] = $tooltip_date;
                $tooltip['place'] = $date->getPlace();
                $tooltip['participants'] = $date->getParticipantsItemList();
@@ -3365,7 +3382,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       }
       return $ret;
    }
-   
+
    function _getSwitchIconBar(){
    	  //$header = '<div style="float:left;padding-right:50px;"><h2 class="pagetitle"><img style="vertical-align: bottom;" src="images/commsyicons/32x32/date.png"/>' . $this->_translator->getMessage('DATES') . '</h2></div>';
       $params = $this->_environment->getCurrentParameterArray();
