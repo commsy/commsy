@@ -801,7 +801,7 @@ $view->setAdditionalSelect();
 $view->setActivationLimit($sel_activating_status);
 $view->setSelectedColor($sel_color);
 if (isset($color_array[0])){
-#   $view->setAvailableColorArray($color_array);
+   $view->setUsedColorArray($color_array);
 }
 
 

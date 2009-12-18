@@ -41,6 +41,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
    var $_selected_status = NULL;
    var $_display_mode = NULL;
    var $_presentation_mode = '1';
+   var $_used_color_array = array();
    var $_week_start;
    var $_available_color_array = array('#999999','#CC0000','#ff6600','#FFCC00','#33CC00','#00CCCC','#3366FF','#6633FF','#CC33CC');
    var $_selected_color = NULL;
@@ -155,6 +156,15 @@ class cs_date_calendar_index_view extends cs_room_index_view {
    function getAvailableColorArray () {
       return $this->_available_color_array;
    }
+
+   function setUsedColorArray ($array) {
+      $this->_used_color_array = $array;
+   }
+
+   function getUsedColorArray () {
+      return $this->_used_color_array;
+   }
+
 
    function setYear($year) {
       $this->_year = $year;

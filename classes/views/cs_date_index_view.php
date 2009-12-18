@@ -39,6 +39,7 @@ class cs_date_index_view extends cs_index_view {
    var $_selected_status = NULL;
    var $_available_color_array = array('#999999','#CC0000','#ff6600','#FFCC00','#33CC00','#00CCCC','#3366FF','#6633FF','#CC33CC');
    var $_selected_color = NULL;
+   var $_used_color_array = array();
    var $_display_mode = NULL;
    var $_alternative_display = 'show';
    /** constructor
@@ -92,6 +93,14 @@ class cs_date_index_view extends cs_index_view {
 
    function getAvailableColorArray () {
       return $this->_available_color_array;
+   }
+
+   function setUsedColorArray ($array) {
+      $this->_used_color_array = $array;
+   }
+
+   function getUsedColorArray () {
+      return $this->_used_color_array;
    }
 
    function _getGetParamsAsArray() {
@@ -188,48 +197,47 @@ class cs_date_index_view extends cs_index_view {
       $html .= '   </select>'.LF;
       $html .='</div>';
 
-      $selcolor = $this->getSelectedColor();
+      if (isset($this->_used_color_array[0])){
+         $html = '<div class="infocolor" style="text-align:left; padding-bottom:5px; font-size: 10pt;">'.$this->_translator->getMessage('COMMON_DATE_COLOR').BRLF;
+         if ( !empty($selcolor)) {
+            $style_color = '#'.$selcolor;
+         }else{
+           $style_color = '#000000';
+         }
+         $html .= '   <select style="color:'.$style_color.'; width: '.$width.'px; font-size:10pt; margin-bottom:5px;" name="selcolor" size="1" id="submit_form">'.LF;
 
-
-      $html = '<div class="infocolor" style="text-align:left; padding-bottom:5px; font-size: 10pt;">'.$this->_translator->getMessage('COMMON_DATE_COLOR').BRLF;
-      if ( !empty($selcolor)) {
-         $style_color = '#'.$selcolor;
-      }else{
-      	$style_color = '#000000';
-      }
-      $html .= '   <select style="color:'.$style_color.'; width: '.$width.'px; font-size:10pt; margin-bottom:5px;" name="selcolor" size="1" id="submit_form">'.LF;
-
-      $html .= '      <option style="color:#000000;" value="2"';
-      if ( empty($selcolor) || $selcolor == 2 ) {
-         $html .= ' selected="selected"';
-      }
-      $html .= '>*'.$this->_translator->getMessage('COMMON_NO_SELECTION').'</option>'.LF;
-
-      $html .= '   <option class="disabled" disabled="disabled" value="-2">------------------------------</option>'.LF;
-      $color_array = $this->getAvailableColorArray();
-      foreach ($color_array as $color){
-         $html .= '      <option style="color:'.$color.'" value="'.str_replace('#','',$color).'"';
-         if ( $selcolor == str_replace('#','',$color) ) {
+         $html .= '      <option style="color:#000000;" value="2"';
+         if ( empty($selcolor) || $selcolor == 2 ) {
             $html .= ' selected="selected"';
          }
-         $color_text = '';
-         switch ($color){
-            case '#999999': $color_text = getMessage('DATE_COLOR_GREY');break;
-            case '#CC0000': $color_text = getMessage('DATE_COLOR_RED');break;
-            case '#ff6600': $color_text = getMessage('DATE_COLOR_ORANGE');break;
-            case '#FFCC00': $color_text = getMessage('DATE_COLOR_DEFAULT_YELLOW');break;
-            case '#FFFF66': $color_text = getMessage('DATE_COLOR_LIGHT_YELLOW');break;
-            case '#33CC00': $color_text = getMessage('DATE_COLOR_GREEN');break;
-            case '#00CCCC': $color_text = getMessage('DATE_COLOR_TURQUOISE');break;
-            case '#3366FF': $color_text = getMessage('DATE_COLOR_BLUE');break;
-            case '#6633FF': $color_text = getMessage('DATE_COLOR_DARK_BLUE');break;
-            case '#CC33CC': $color_text = getMessage('DATE_COLOR_PURPLE');break;
-            default: $color_text = getMessage('DATE_COLOR_UNKNOWN');
+         $html .= '>*'.$this->_translator->getMessage('COMMON_NO_SELECTION').'</option>'.LF;
+
+         $html .= '   <option class="disabled" disabled="disabled" value="-2">------------------------------</option>'.LF;
+         $color_array = $this->getAvailableColorArray();
+         foreach ($color_array as $color){
+            $html .= '      <option style="color:'.$color.'" value="'.str_replace('#','',$color).'"';
+            if ( !empty($selcolor) and $selcolor == str_replace('#','',$color) ) {
+               $html .= ' selected="selected"';
+            }
+            $color_text = '';
+            switch ($color){
+               case '#999999': $color_text = getMessage('DATE_COLOR_GREY');break;
+               case '#CC0000': $color_text = getMessage('DATE_COLOR_RED');break;
+               case '#ff6600': $color_text = getMessage('DATE_COLOR_ORANGE');break;
+               case '#FFCC00': $color_text = getMessage('DATE_COLOR_DEFAULT_YELLOW');break;
+               case '#FFFF66': $color_text = getMessage('DATE_COLOR_LIGHT_YELLOW');break;
+               case '#33CC00': $color_text = getMessage('DATE_COLOR_GREEN');break;
+               case '#00CCCC': $color_text = getMessage('DATE_COLOR_TURQUOISE');break;
+               case '#3366FF': $color_text = getMessage('DATE_COLOR_BLUE');break;
+               case '#6633FF': $color_text = getMessage('DATE_COLOR_DARK_BLUE');break;
+               case '#CC33CC': $color_text = getMessage('DATE_COLOR_PURPLE');break;
+               default: $color_text = getMessage('DATE_COLOR_UNKNOWN');
+            }
+            $html .= '>'.$color_text.'</option>'.LF;
          }
-         $html .= '>'.$color_text.'</option>'.LF;
+         $html .= '   </select>'.LF;
+         $html .='</div>';
       }
-      $html .= '   </select>'.LF;
-      $html .='</div>';
 
 
       return $html;
