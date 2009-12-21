@@ -756,8 +756,6 @@ function resize_calendar_month(){
 }
 
 function getSwitchIconBar(){
-	//alert(jQuery('#calendar_switch').width());
-	//alert(jQuery('#calendar_calendarweek').width());
 	if(jQuery('#calendar_switch').width() >= jQuery('#calendar_calendarweek').width()){
 		var add_width = jQuery('#calendar_switch').width() - jQuery('#calendar_calendarweek').width();
 		jQuery('#switch_float').css('float', 'right');
