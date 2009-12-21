@@ -872,6 +872,16 @@ function draw_dates_month(){
 		var current_date = '';
 		var added_scrollpane = false;
 		var added_jscrollpane = false;
+		var max_dates_on_day = 0;
+		for (var i = 0; i < calendar_dates.length; i++) {
+			if(max_dates_on_day < calendar_dates[i][3]){
+				max_dates_on_day = calendar_dates[i][3];
+			}
+		}
+		if(max_dates_on_day > 4){
+			var height= 101 + ((max_dates_on_day - 4) * 21);
+			jQuery('[class=calendar_month_entry]').css('height', height);
+		}
 		for (var i = 0; i < calendar_dates.length; i++) {
 			var day = calendar_dates[i][0];
 			var month = calendar_dates[i][1];

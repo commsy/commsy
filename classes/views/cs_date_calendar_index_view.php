@@ -1321,7 +1321,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                                 $params,
                                 $next_image,
                                 '').LF;
-      $return = '<div style="width:100%; height:40px; position:relative;">';
+      $return = '<div style="width:100%; height:30px; position:relative;">';
       $return .= '<div id="calendar_switch" style="position:absolute; bottom:0px; left:0px; z-index:1000;">';
       $return .= $left . $today . $right . '&nbsp;&nbsp;';
       $return .= '<span style="color: #2e4e73; font-size:1.3em;">';
@@ -3015,11 +3015,11 @@ class cs_date_calendar_index_view extends cs_room_index_view {
 
          $week_start = $week_start + ( 3600 * 24);
       }
-
+      $html .= '<div style="width:12px; float:left;">&nbsp;</div>'.LF;
       $session = $this->_environment->getSession();
       $width = '100%';
       $html .= '</div>'.LF;
-      $html .= '<div id="calender_days" style="width:100%; clear:both;">'.LF;
+      $html .= '<div id="calender_days" style="width:100%; clear:both;">'.LF; //12
       $html .= '<div class="calendar_time" id="calendar_time"><div class="data">&nbsp;</div></div>'.LF;
       for($index=0; $index <7; $index++){
          $week_start = $this->_week_start + ( 3600 * 24 * $index);
@@ -3059,6 +3059,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
          }
          $html .= '<div class="calendar_entry" id="calendar_entry_' . $index . '"><div class="data" id="calendar_entry_date_div_' . $index . '">'.$anAction.'</div></div>'.LF;
       }
+      $html .= '<div style="width:12px; float:left;">&nbsp;</div>'.LF; //12
       $html .= '</div>'.LF;
       $html .= '<div id="calender_main" style="height:450px; overflow:auto; clear:both;">'.LF;
       $current_element = 0;
