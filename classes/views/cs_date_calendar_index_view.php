@@ -3015,11 +3015,11 @@ class cs_date_calendar_index_view extends cs_room_index_view {
 
          $week_start = $week_start + ( 3600 * 24);
       }
-      $html .= '<div style="width:12px; float:left;">&nbsp;</div>'.LF;
+      #$html .= '<div style="width:12px; float:left;">&nbsp;</div>'.LF;
       $session = $this->_environment->getSession();
       $width = '100%';
       $html .= '</div>'.LF;
-      $html .= '<div id="calender_days" style="width:100%; clear:both;">'.LF; //12
+      $html .= '<div id="calender_days" style="width:100%; clear:both;">'.LF;
       $html .= '<div class="calendar_time" id="calendar_time"><div class="data">&nbsp;</div></div>'.LF;
       for($index=0; $index <7; $index++){
          $week_start = $this->_week_start + ( 3600 * 24 * $index);
@@ -3059,9 +3059,9 @@ class cs_date_calendar_index_view extends cs_room_index_view {
          }
          $html .= '<div class="calendar_entry" id="calendar_entry_' . $index . '"><div class="data" id="calendar_entry_date_div_' . $index . '">'.$anAction.'</div></div>'.LF;
       }
-      $html .= '<div style="width:12px; float:left;">&nbsp;</div>'.LF; //12
+      #$html .= '<div style="width:11px; float:left;">&nbsp;</div>'.LF;
       $html .= '</div>'.LF;
-      $html .= '<div id="calender_main" style="height:450px; overflow:auto; clear:both;">'.LF;
+      $html .= '<div id="calender_main" style="height:450px; overflow:none; clear:both;">'.LF;
       $current_element = 0;
       $html_javascript = '<script type="text/javascript"><!--'.LF;
       $html_javascript .= 'var new_dates = new Array('.LF;
