@@ -559,7 +559,13 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       if (isset($params['presentation_mode'])){
          $html .= '   <input type="hidden" name="presentation_mode" value="'.$params['presentation_mode'].'"/>'.LF;
       }else{
-         $html .= '   <input type="hidden" name="presentation_mode" value="2"/>'.LF;
+         $html .= '   <input type="hidden" name="presentation_mode" value="1"/>'.LF;
+      }
+      if (isset($params['week'])){
+         $html .= '   <input type="hidden" name="week" value="'.$params['week'].'"/>'.LF;
+      }
+      if (isset($params['month'])){
+         $html .= '   <input type="hidden" name="week" value="'.$params['month'].'"/>'.LF;
       }
       $selstatus = $this->getSelectedStatus();
       $html .= '<div class="infocolor" style="padding-bottom:5px;">'.$this->_translator->getMessage('COMMON_DATE_STATUS').BRLF;
@@ -590,6 +596,53 @@ class cs_date_calendar_index_view extends cs_room_index_view {
 
       $html .= '   </select>'.LF;
       $html .='</div>';
+
+
+      if (isset($this->_used_color_array[0])){
+         $selcolor = $this->_selected_color;
+         $html .= '<div class="infocolor" style="text-align:left; padding-bottom:5px; font-size: 10pt;">'.$this->_translator->getMessage('COMMON_DATE_COLOR').BRLF;
+         if ( !empty($selcolor)) {
+            $style_color = '#'.$selcolor;
+         }else{
+           $style_color = '#000000';
+         }
+         $html .= '   <select style="color:'.$style_color.'; width: 150px; font-size:10pt; margin-bottom:5px;" name="selcolor" size="1" id="submit_form">'.LF;
+
+         $html .= '      <option style="color:#000000;" value="2"';
+         if ( empty($selcolor) || $selcolor == 2 ) {
+            $html .= ' selected="selected"';
+         }
+         $html .= '>*'.$this->_translator->getMessage('COMMON_NO_SELECTION').'</option>'.LF;
+
+         $html .= '   <option class="disabled" disabled="disabled" value="-2">------------------------------</option>'.LF;
+         $color_array = $this->getAvailableColorArray();
+         foreach ($color_array as $color){
+            $html .= '      <option style="color:'.$color.'" value="'.str_replace('#','',$color).'"';
+            if ( !empty($selcolor) and $selcolor == str_replace('#','',$color) ) {
+               $html .= ' selected="selected"';
+            }
+            $color_text = '';
+            switch ($color){
+               case '#999999': $color_text = getMessage('DATE_COLOR_GREY');break;
+               case '#CC0000': $color_text = getMessage('DATE_COLOR_RED');break;
+               case '#FF6600': $color_text = getMessage('DATE_COLOR_ORANGE');break;
+               case '#FFCC00': $color_text = getMessage('DATE_COLOR_DEFAULT_YELLOW');break;
+               case '#FFFF66': $color_text = getMessage('DATE_COLOR_LIGHT_YELLOW');break;
+               case '#33CC00': $color_text = getMessage('DATE_COLOR_GREEN');break;
+               case '#00CCCC': $color_text = getMessage('DATE_COLOR_TURQUOISE');break;
+               case '#3366FF': $color_text = getMessage('DATE_COLOR_BLUE');break;
+               case '#6633FF': $color_text = getMessage('DATE_COLOR_DARK_BLUE');break;
+               case '#CC33CC': $color_text = getMessage('DATE_COLOR_PURPLE');break;
+               default: $color_text = getMessage('DATE_COLOR_UNKNOWN');
+            }
+            $html .= '>'.$color_text.'</option>'.LF;
+         }
+         $html .= '   </select>'.LF;
+         $html .='</div>';
+      }
+
+
+
       $context_item = $this->_environment->getCurrentContextItem();
       $current_room_modules = $context_item->getHomeConf();
       if ( !empty($current_room_modules) ){

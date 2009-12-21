@@ -37,7 +37,7 @@ class cs_date_index_view extends cs_index_view {
    var $_selected_displaymode = NULL;
    var $_available_displaymode = NULL;
    var $_selected_status = NULL;
-   var $_available_color_array = array('#999999','#CC0000','#ff6600','#FFCC00','#33CC00','#00CCCC','#3366FF','#6633FF','#CC33CC');
+   var $_available_color_array = array('#999999','#CC0000','#FF6600','#FFCC00','#33CC00','#00CCCC','#3366FF','#6633FF','#CC33CC');
    var $_selected_color = NULL;
    var $_used_color_array = array();
    var $_display_mode = NULL;
@@ -198,7 +198,8 @@ class cs_date_index_view extends cs_index_view {
       $html .='</div>';
 
       if (isset($this->_used_color_array[0])){
-         $html = '<div class="infocolor" style="text-align:left; padding-bottom:5px; font-size: 10pt;">'.$this->_translator->getMessage('COMMON_DATE_COLOR').BRLF;
+         $selcolor = $this->_selected_color;
+         $html .= '<div class="infocolor" style="text-align:left; padding-bottom:5px; font-size: 10pt;">'.$this->_translator->getMessage('COMMON_DATE_COLOR').BRLF;
          if ( !empty($selcolor)) {
             $style_color = '#'.$selcolor;
          }else{
@@ -223,7 +224,7 @@ class cs_date_index_view extends cs_index_view {
             switch ($color){
                case '#999999': $color_text = getMessage('DATE_COLOR_GREY');break;
                case '#CC0000': $color_text = getMessage('DATE_COLOR_RED');break;
-               case '#ff6600': $color_text = getMessage('DATE_COLOR_ORANGE');break;
+               case '#FF6600': $color_text = getMessage('DATE_COLOR_ORANGE');break;
                case '#FFCC00': $color_text = getMessage('DATE_COLOR_DEFAULT_YELLOW');break;
                case '#FFFF66': $color_text = getMessage('DATE_COLOR_LIGHT_YELLOW');break;
                case '#33CC00': $color_text = getMessage('DATE_COLOR_GREEN');break;
