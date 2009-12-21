@@ -323,6 +323,29 @@ class cs_dates_item extends cs_item {
       return $this->_getValue('color');
    }
    
+
+   /** set recurrence_id of a date
+    * this method sets the recurrence_id of the date
+    *
+    * @param string value recurrence_id of the date
+    *
+    * @author CommSy Development Group
+    */
+   function setRecurrenceId($value) {
+      $this->_setValue('recurrence_id', $value);
+   }
+
+   /** get recurrence_id of a date
+    * this method returns the recurrence_id of the date
+    *
+    * @return string recurrence_id of a date
+    *
+    * @author CommSy Development Group
+    */
+   function getRecurrenceId() {
+      return $this->_getValue('recurrence_id');
+   }
+   
    function issetPrivatDate(){
       return $this->_getValue('date_mode')==1;
    }

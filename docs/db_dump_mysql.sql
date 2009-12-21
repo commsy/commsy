@@ -160,6 +160,7 @@ CREATE TABLE IF NOT EXISTS `dates` (
   `public` tinyint(11) NOT NULL default '0',
   `date_mode` tinyint(4) NOT NULL default '0',
   `color` varchar(255) default NULL,
+  `recurrence_id` int(11) default NULL,
   `extras` text,
   PRIMARY KEY  (`item_id`),
   KEY `context_id` (`context_id`),
