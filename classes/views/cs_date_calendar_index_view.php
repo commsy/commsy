@@ -3463,7 +3463,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                                 '',
                                 'style="color:#2e4e73; text-decoration:none;"').LF;
       unset($params['month']);
-      $return = '<div id="switch_icon_bar" style="width:150px; margin:auto; text-align:center;">';
+      $return = '<div id="switch_icon_bar" style="width:400px; margin:auto; text-align:center;">';
       $return .= '<div id="switch_float" style="float:left; clear:both;">';
       $return .= '<div id="switch_icon_bar_today" style="text-align:center; height:25px; width:100px; float:left; background-image:url(images/commsyicons/date_today.png); background-repeat:no-repeat; background-position: 50% 0%;"><div style="position:absolute; bottom:0px; width:100px; font-size:1.3em;">' . $today . '</div></div>';
       $return .= '<div id="switch_icon_bar_week" style="text-align:center; height:25px; width:150px; float:left; background-image:url(images/commsyicons/date_week.png); background-repeat:no-repeat; background-position: 50% 0%;"><div style="position:absolute; bottom:0px; width:150px; font-size:1.3em;">' . $week  . '</div></div>';
