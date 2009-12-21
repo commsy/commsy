@@ -714,6 +714,7 @@ else {
 function save_recurring_dates($dates_item, $is_new_date){
    if($is_new_date){
       $recurring_date_array = array();
+      $recurring_pattern_array = array();
       
       $recurrent_id = $dates_item->getItemID();
       $next_date = $dates_item->getStartingDay();
@@ -728,12 +729,14 @@ function save_recurring_dates($dates_item, $is_new_date){
       $year_recurring = mb_substr($_POST['recurring_end_date'],6,4);
       $recurring_end_time = mktime(0,0,0,$month_recurring,$day_recurring,$year_recurring);
 
+	  $recurring_pattern_array['recurring_select'] = $_POST['recurring_select'];
       if($_POST['recurring_select'] == 'daily'){
          $next_date_time = $next_date_time + ($_POST['recurring_day'] * (60 * 60 * 24));
          while($next_date_time <= $recurring_end_time){
             $recurring_date_array[] = $next_date_time;
             $next_date_time = $next_date_time + ($_POST['recurring_day'] * (60 * 60 * 24));
          }
+         $recurring_pattern_array['recurring_day'] = $_POST['recurring_day'];
       } elseif($_POST['recurring_select'] == 'weekly'){
          if(date('w', $next_date_time) == 0){
             $week = $next_date_time - (6 * (60 * 60 * 24));
@@ -763,6 +766,8 @@ function save_recurring_dates($dates_item, $is_new_date){
             }
             $week = $week + ($_POST['recurring_week'] * (7 * 60 * 60 * 24));
          }
+         $recurring_pattern_array['recurring_week_days'] = $_POST['recurring_week_days'];
+         $recurring_pattern_array['recurring_week'] = $_POST['recurring_week'];
       } elseif($_POST['recurring_select'] == 'monthly'){
          $month_count = $month_date;
          $year_count = $year_date;
@@ -798,6 +803,9 @@ function save_recurring_dates($dates_item, $is_new_date){
             }
             $month = mktime(0,0,0,$month_count,1,$year_count);
          }
+         $recurring_pattern_array['recurring_month'] = $_POST['recurring_month'];
+         $recurring_pattern_array['recurring_month_day_every'] = $_POST['recurring_month_day_every'];
+         $recurring_pattern_array['recurring_month_every'] = $_POST['recurring_month_every'];
       } elseif($_POST['recurring_select'] == 'yearly'){
          $year_count = $year_date;
          $year = mktime(0,0,0,1,1,$year_count);
@@ -808,7 +816,13 @@ function save_recurring_dates($dates_item, $is_new_date){
             $year_count++;
             $year = mktime(0,0,0,1,1,$year_count);
          }
+         $recurring_pattern_array['recurring_year'] = $_POST['recurring_year'];
+         $recurring_pattern_array['recurring_year_every'] = $_POST['recurring_year_every'];
       }
+      
+      $recurring_pattern_array['recurring_start_date'] = $dates_item->getStartingDay();
+      $recurring_pattern_array['recurring_end_date'] = $year_recurring.'-'.$month_recurring.'-'.$day_recurring;
+      
       foreach($recurring_date_array as $date){
          $temp_date = clone $dates_item;
          $temp_date->setItemID('');
@@ -829,8 +843,11 @@ function save_recurring_dates($dates_item, $is_new_date){
             $temp_date->setEndingDay(date('Y-m-d', $date+($temp_ending_day_time - $temp_starting_day_time)));
          }
          $temp_date->setRecurrenceId($dates_item->getItemID());
+         $temp_date->setRecurrencePattern($recurring_pattern_array);
          $temp_date->save();
       }
+      $dates_item->setRecurrencePattern($recurring_pattern_array);
+      $dates_item->save();
    } else {
       // Liste mit den vorhandenen Terminen durchgehen
    }

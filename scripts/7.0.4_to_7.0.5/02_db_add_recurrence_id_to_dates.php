@@ -31,6 +31,10 @@ if ( !$this->_existsField('dates','recurrence_id') ) {
    $sql = "ALTER TABLE dates ADD recurrence_id int(11) NULL;";
    $success = $success AND $this->_select($sql);
 }
+if ( !$this->_existsField('dates','recurrence_pattern') ) {
+   $sql = "ALTER TABLE dates ADD recurrence_pattern TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL;";
+   $success = $success AND $this->_select($sql);
+}
 
 $this->_flushHTML(BRLF);
 ?>

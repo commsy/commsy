@@ -346,6 +346,28 @@ class cs_dates_item extends cs_item {
       return $this->_getValue('recurrence_id');
    }
    
+   /** set recurrence_pattern of a date
+    * this method sets the recurrence_pattern of the date
+    *
+    * @param string value recurrence_pattern of the date
+    *
+    * @author CommSy Development Group
+    */
+   function setRecurrencePattern($value) {
+      $this->_setValue('recurrence_pattern', $value);
+   }
+
+   /** get recurrence_pattern of a date
+    * this method returns the recurrence_pattern of the date
+    *
+    * @return string recurrence_pattern of a date
+    *
+    * @author CommSy Development Group
+    */
+   function getRecurrencePattern() {
+      return $this->_getValue('recurrence_pattern');
+   }
+   
    function issetPrivatDate(){
       return $this->_getValue('date_mode')==1;
    }

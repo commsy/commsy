@@ -533,6 +533,18 @@ class cs_dates_manager extends cs_manager {
      return $dates;
    }
 
+   /** Prepares the db_array for the item
+    *
+    * @param $db_array Contains the data from the database
+    *
+    * @return array Contains prepared data ( textfunctions applied etc. )
+    */
+   function _buildItem($db_array) {
+      include_once('functions/text_functions.php');
+      $db_array['recurrence_pattern'] = mb_unserialize($db_array['recurrence_pattern']);
+      return parent::_buildItem($db_array);
+   }
+
    function getColorArray () {
      $color_array = array();
      $query = 'SELECT DISTINCT color FROM dates WHERE 1=1';
@@ -617,7 +629,8 @@ class cs_dates_manager extends cs_manager {
                'place="'.encode(AS_DB,$item->getPlace()).'",'.
                'date_mode="'.encode(AS_DB,$item->getDateMode()).'",'.
                'color="'.encode(AS_DB,$item->getColor()).'",'.
-               'recurrence_id="'.encode(AS_DB,$item->getRecurrenceId()).'"'.
+               'recurrence_id="'.encode(AS_DB,$item->getRecurrenceId()).'",'.
+               'recurrence_pattern="'.encode(AS_DB,serialize($item->getRecurrencePattern())).'"'.
                ' WHERE item_id="'.encode(AS_DB,$item->getItemID()).'"';
 
       $result = $this->_db_connector->performQuery($query);
@@ -693,7 +706,8 @@ class cs_dates_manager extends cs_manager {
               'place="'.encode(AS_DB,$item->getPlace()).'", '.
               'date_mode="'.encode(AS_DB,$item->getDateMode()).'", '.
               'color="'.encode(AS_DB,$item->getColor()).'", '.
-              'recurrence_id="'.encode(AS_DB,$item->getRecurrenceId()).'"';
+              'recurrence_id="'.encode(AS_DB,$item->getRecurrenceId()).'", '.
+              'recurrence_pattern="'.encode(AS_DB,serialize($item->getRecurrencePattern())).'"';
      $result = $this->_db_connector->performQuery($query);
      if ( !isset($result) ) {
         include_once('functions/error_functions.php');trigger_error('Problems creating dates.',E_USER_WARNING);
