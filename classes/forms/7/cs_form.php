@@ -637,7 +637,8 @@ class cs_form {
                                    $up_and_down = false,
                                    $no_html_decode = false,
                                    $with_dhtml = false,
-                                   $font_size = 10 ) {
+                                   $font_size = 10,
+                                   $isDisabled = false ) {
                 $element['type'] = 'checkboxgroup';
                 $element['name'] = $name;
                 $element['font_size'] = $font_size;
@@ -665,6 +666,7 @@ class cs_form {
                 $element['up_and_down'] = $up_and_down;
                 $element['no_html_decode'] = $no_html_decode;
                 $element['with_dhtml'] = $with_dhtml;
+                $element['is_disabled'] = $isDisabled;
 
                 $this -> _formElements -> addElement($element);
         }

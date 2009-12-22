@@ -768,7 +768,9 @@ class cs_form_view extends cs_view {
                } else {
                   $option['ischecked'] = false;
                }
-
+               if($form_element['is_disabled']){
+                  $option['is_disabled'] = true;
+               }
                $html .= '<td style="font-size:'.$form_element['font_size'].'pt; padding-left: 0px; padding-top: 0px; padding-bottom: 0px; padding-right: 10px; border-bottom: none;">'.$this->_getCheckboxAsHTML($option,$form_element['font_size']).'</td>'."\n";
                if ($num_of_column == $form_element['columns']) {
                   $html .= '</tr>'."\n";
@@ -799,6 +801,9 @@ class cs_form_view extends cs_view {
                         $option['ischecked'] = true;
                      } else {
                         $option['ischecked'] = false;
+                     }
+                     if($form_element['is_disabled']){
+                        $option['is_disabled'] = true;
                      }
                      $html .= '<td style="font-size:'.$form_element['font_size'].'pt; padding-left: 0px; padding-top: 0px; padding-bottom: 0px; padding-right: 10px; border-bottom: none;">'.$this->_getCheckboxAsHTML($option,$form_element['font_size']).'</td>'."\n";
                   }
@@ -841,6 +846,9 @@ class cs_form_view extends cs_view {
                } else {
                   $option['ischecked'] = false;
                }
+               if($form_element['is_disabled']){
+                  $option['is_disabled'] = true;
+               }
                if (isset($form_element['font_size'])){
                   $html .= '         '.$this->_getCheckboxAsHTML($option,$form_element['font_size']);
                }else{
@@ -856,6 +864,9 @@ class cs_form_view extends cs_view {
                   $option['ischecked'] = true;
                } else {
                   $option['ischecked'] = false;
+               }
+               if($form_element['is_disabled']){
+                  $option['is_disabled'] = true;
                }
                $html .= '         '.$this->_getCheckboxAsHTML($option,10);
                $html .='</li>'.LF;
