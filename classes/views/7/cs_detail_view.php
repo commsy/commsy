@@ -955,7 +955,12 @@ class cs_detail_view extends cs_view {
                if ($font_size < 8){
                   $font_size = 8;
                }
-               $font_color = 20 + $this->getTagColorLogarithmic($count);
+               if($link_name != 'selected'){
+                  #$font_color = 20 + $this->getTagColorLogarithmic($count);
+                  $font_color = '#545454';
+               } else {
+                  $font_color = '#000000';
+               }
                $color = 'rgb('.$font_color.'%,'.$font_color.'%,'.$font_color.'%);';
                $title = $this->_text_as_html_short($current_item->getTitle());
                $params['seltag_'.$ebene] = $current_item->getItemID();
@@ -977,7 +982,7 @@ class cs_detail_view extends cs_view {
                              'campus_search',
                              'index',
                              $params,
-                             $title,$title,'','','','','','style="color:#545454; font-size:9pt; font-weight:' . $font_weight . ';"').LF;
+                             $title,$title,'','','','','','style="color:' . $font_color . '; font-size:9pt; font-weight:' . $font_weight . ';"').LF;
                $html .= $this->_getTagBoxAsHTMLWithJavascript($current_item, 0, 0, false, $tagged_item);
                $current_item = $list->getNext();
                $i++;
