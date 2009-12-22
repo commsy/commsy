@@ -854,6 +854,7 @@ class misc_text_converter {
       $reg_exp_array['(:file']        = '~\\(:file (.*?)(\\s.*?)?\\s*?:\\)~eu';
       $reg_exp_array['(:zip']         = '~\\(:zip (.*?)(\\s.*?)?\\s*?:\\)~eu';
       $reg_exp_array['(:youtube']     = '~\\(:youtube (.*?)(\\s.*?)?\\s*?:\\)~eu';
+      #$reg_exp_array['(:podcampus']   = '~\\(:podcampus (.*?)(\\s.*?)?\\s*?:\\)~eu';
       $reg_exp_array['(:googlevideo'] = '~\\(:googlevideo (.*?)(\\s.*?)?\\s*?:\\)~eu';
       $reg_exp_array['(:vimeo']       = '~\\(:vimeo (.*?)(\\s.*?)?\\s*?:\\)~eu';
       $reg_exp_array['(:mp3']         = '~\\(:mp3 (.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)~eu';
@@ -952,6 +953,9 @@ class misc_text_converter {
                         break;
                      } elseif ( $key == '(:youtube' and mb_stristr($value_new,'(:youtube') ) {
                         $value_new = $this->_formatYoutube($value_new,$args_array);
+                        break;
+                     } elseif ( $key == '(:podcampus' and mb_stristr($value_new,'(:podcampus') ) {
+                        $value_new = $this->_formatPodcampus($value_new,$args_array);
                         break;
                      } elseif ( $key == '(:googlevideo' and mb_stristr($value_new,'(:googlevideo') ) {
                         $value_new = $this->_formatGooglevideo($value_new,$args_array);
@@ -1167,6 +1171,70 @@ class misc_text_converter {
          $image_text .= '>'.LF;
          $image_text .= '</embed>'.LF;
          $image_text .= '</object>';
+         $image_text .= '</div>'.LF;
+         $text = str_replace($array[0],$image_text,$text);
+      }
+      $retour = $text;
+      return $retour;
+   }
+
+   private function _formatPodcampus ($text, $array){
+      $retour = '';
+      if ( !empty($array[1]) ) {
+         $source = $array[1];
+      }
+      if ( !empty($array[2]) ) {
+         $args = $this->_parseArgs($array[2]);
+      } else {
+         $args = array();
+      }
+
+      if ( !empty($args['float'])
+           and ( $args['float'] == 'left'
+                 or $args['float'] == 'right'
+               )
+         ) {
+         $float = 'float:'.$args['float'].';';
+      } elseif ( !empty($args['lfloat']) ) {
+         $float = 'float:left;';
+      } elseif ( !empty($args['rfloat']) ) {
+         $float = 'float:right;';
+      } else {
+         $float = '';
+      }
+
+      if ( !empty($source) ) {
+         $image_text = '';
+         $image_text .= LF.'<div style="'.$float.' padding:10px;">'.LF;
+         /*
+         $image_text .= '<object '.LF;
+         if ($this->_environment->getCurrentBrowser() == 'MSIE' ) {
+            $image_text .= '   type="application/x-shockwave-flash"'.LF;
+         }
+         if ( !empty($args['width']) ) {
+            $image_text .= '   width="'.$args['width'].'"'.LF;
+         }
+         if ( !empty($args['height']) ) {
+            $image_text .= '   height="'.$args['height'].'"'.LF;
+         }
+         $image_text .= '>'.LF;
+         $image_text .= '<param name="movie" value="http://www.podcampus.de/nodes/'.$source.'.swf" />'.LF;
+         $image_text .= '<param name="wmode" value="opaque" />'.LF;
+         */
+         $image_text .= '<embed src="http://www.podcampus.de/nodes/'.$source.'.swf"'.LF;
+         $image_text .= '   type="application/x-shockwave-flash"'.LF;
+         #$image_text .= '   wmode="opaque"'.LF;
+         if ( !empty($args['width']) ) {
+            $image_text .= '   width="'.$args['width'].'"'.LF;
+         }
+         if ( !empty($args['height']) ) {
+            $image_text .= '   height="'.$args['height'].'"'.LF;
+         }
+         $image_text .= '   allowscriptaccess="always"'.LF;
+         $image_text .= '   allowfullscreen="true"'.LF;
+         $image_text .= ' />'.LF;
+         #$image_text .= '</embed>'.LF;
+         #$image_text .= '</object>';
          $image_text .= '</div>'.LF;
          $text = str_replace($array[0],$image_text,$text);
       }
