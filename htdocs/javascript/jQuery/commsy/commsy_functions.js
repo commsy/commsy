@@ -994,12 +994,12 @@ function collapseTree(node, is_root){
 		}
 	}
 	if(!is_root){
+		if(collapse){
+			node.expand(false);
+		} else {
+			node.expand(true);
+		}
 		if(node.data.url.indexOf('name=selected') > -1){
-			if(collapse){
-				node.expand(false);
-			} else {
-				node.expand(true);
-			}
 			collapse = false;
 		}
 	}
