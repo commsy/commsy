@@ -300,6 +300,20 @@ elseif ( isOption($delete_command, $translator->getMessage('COMMON_DELETE_BUTTON
       unset($params['action']);
       redirect($environment->getCurrentContextID(), $environment->getCurrentModule(), $environment->getCurrentFunction(), $params,$anchor);
    }
+} elseif ( isOption($delete_command, $translator->getMessage('COMMON_DELETE_RECURRENCE_BUTTON')) ) {
+   // Serientermine löschen
+   $dates_manager = $environment->getDatesManager();
+   $dates_manager->resetLimits();
+   $dates_manager->setRecurrenceLimit($_GET['recurrence_id']);
+   $dates_manager->setWithoutDateModeLimit();
+   $dates_manager->select();
+   $dates_list = $dates_manager->get();
+   $temp_date = $dates_list->getFirst();
+   while($temp_date){
+      $temp_date->delete();
+      $temp_date = $dates_list->getNext();
+   }
+   redirect($environment->getCurrentContextID(), 'date', 'index', array(),'');
 }
 
 // room archive

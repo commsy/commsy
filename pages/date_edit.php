@@ -428,6 +428,9 @@ else {
       if ($session->issetValue($environment->getCurrentModule().'_add_files')) {
          $form->setSessionFileArray($session->getValue($environment->getCurrentModule().'_add_files'));
       }
+      if(isset($_POST['recurring_select'])){
+         $form->setRecurringSelect($_POST['recurring_select']);
+      }
       $form->prepareForm();
       $form->loadValues();
 
@@ -436,11 +439,12 @@ else {
            (isOption($command, $translator->getMessage('DATES_SAVE_BUTTON'))
             or isOption($command, $translator->getMessage('DATES_CHANGE_BUTTON'))
             or isOption($command, $translator->getMessage('DATES_PRIVATE_SAVE_BUTTON'))
-            or isOption($command, $translator->getMessage('DATES_PRIVATE_CHANGE_BUTTON'))) ) {
+            or isOption($command, $translator->getMessage('DATES_PRIVATE_CHANGE_BUTTON'))
+            or isOption($command, $translator->getMessage('DATES_CHANGE_RECURRING_BUTTON'))) ) {
 
          $correct = $form->check();
          if ( $correct ) {
-
+ 
             // Create new item
             $item_is_new = false;
             if ( !isset($dates_item) ) {
@@ -453,6 +457,14 @@ else {
                $item_is_new = true;
             }
 
+            $values_before_change = array();
+            $values_before_change['title'] = $dates_item->getTitle();
+            $values_before_change['startingTime'] = $dates_item->getStartingTime();
+            $values_before_change['endingTime'] = $dates_item->getEndingTime();
+            $values_before_change['place'] = $dates_item->getPlace();
+            $values_before_change['color'] = $dates_item->getColor();
+            $values_before_change['description'] = $dates_item->getDescription();      
+            
             // Set modificator and modification date
             $user = $environment->getCurrentUserItem();
             $dates_item->setModificatorItem($user);
@@ -587,17 +599,35 @@ else {
             $item_files_upload_to = $dates_item;
             include_once('include/inc_fileupload_edit_page_save_item.php');
 
-            $is_new_date = false;
-            if($dates_item->getItemID() == ''){
-               $is_new_date = true;
-            }
-            
             // Save item
             $dates_item->save();
             
             // Save recurrent items
-            if(isset($_POST['recurring'])){
-               save_recurring_dates($dates_item, $is_new_date);
+            if(isset($_POST['recurring']) or isset($_POST['recurring_date'])){
+               if(isOption($command, $translator->getMessage('DATES_SAVE_BUTTON')) and !isset($_POST['recurring_ignore'])){
+                  save_recurring_dates($dates_item, true, array());
+               } elseif (isOption($command, $translator->getMessage('DATES_CHANGE_RECURRING_BUTTON'))){
+                  $vales_to_change = array();
+                  if($values_before_change['title'] != $dates_item->getTitle()){
+                     $vales_to_change[] = 'title';
+                  }
+                  if($values_before_change['startingTime'] != $dates_item->getStartingTime()){
+                     $vales_to_change[] = 'startingTime';
+                  }
+                  if($values_before_change['endingTime'] != $dates_item->getEndingTime()){
+                     $vales_to_change[] = 'endingTime';
+                  }
+                  if($values_before_change['place'] != $dates_item->getPlace()){
+                     $vales_to_change[] = 'place';
+                  }
+                  if($values_before_change['color'] != $dates_item->getColor()){
+                     $vales_to_change[] = 'color';
+                  }
+                  if($values_before_change['description'] != $dates_item->getDescription()){
+                     $vales_to_change[] = 'description';
+                  }
+                  save_recurring_dates($dates_item, false, $vales_to_change);
+               }
             }
             
             if ($session->issetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_index_ids')){
@@ -711,7 +741,8 @@ else {
    }
 }
 
-function save_recurring_dates($dates_item, $is_new_date){
+function save_recurring_dates($dates_item, $is_new_date, $values_to_change){
+   global $environment;
    if($is_new_date){
       $recurring_date_array = array();
       $recurring_pattern_array = array();
@@ -846,10 +877,39 @@ function save_recurring_dates($dates_item, $is_new_date){
          $temp_date->setRecurrencePattern($recurring_pattern_array);
          $temp_date->save();
       }
+      $dates_item->setRecurrenceId($dates_item->getItemID());
       $dates_item->setRecurrencePattern($recurring_pattern_array);
       $dates_item->save();
    } else {
-      // Liste mit den vorhandenen Terminen durchgehen
+      $dates_manager = $environment->getDatesManager();
+      $dates_manager->resetLimits();
+      $dates_manager->setRecurrenceLimit($dates_item->getRecurrenceId());
+      $dates_manager->setWithoutDateModeLimit();
+      $dates_manager->select();
+      $dates_list = $dates_manager->get();
+      $temp_date = $dates_list->getFirst();
+      while($temp_date){
+         if(in_array('title',$values_to_change)){
+            $temp_date->setTitle($dates_item->getTitle());
+         }
+         if(in_array('startingTime',$values_to_change)){
+            $temp_date->setStartingTime($dates_item->getStartingTime());
+         }
+         if(in_array('endingTime',$values_to_change)){
+            $temp_date->setEndingTime($dates_item->getEndingTime());
+         }
+         if(in_array('place',$values_to_change)){
+            $temp_date->setPlace($dates_item->getPlace());
+         }
+         if(in_array('color',$values_to_change)){
+            $temp_date->setColor($dates_item->getColor());
+         }
+         if(in_array('description',$values_to_change)){
+            $temp_date->setDescription($dates_item->getDescription());
+         }
+         $temp_date->save();
+         $temp_date = $dates_list->getNext();
+      }
    }
 }
 ?>

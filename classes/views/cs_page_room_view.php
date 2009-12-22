@@ -1260,6 +1260,10 @@ class cs_page_room_view extends cs_page_view {
       $html .= '<div>'.LF;
       $html .= '<input style="float:right;" type="submit" name="delete_option" value="'.$this->_translator->getMessage('COMMON_DELETE_BUTTON').'" tabindex="2"/>'.LF;
       $html .= '<input style="float:left;" type="submit" name="delete_option" value="'.$this->_translator->getMessage('COMMON_CANCEL_BUTTON').'" tabindex="2"/>'.LF;
+      if(isset($_GET['recurrence_id'])){
+         $html .= '<br/><br>' . $this->_translator->getMessage('COMMON_DELETE_RECURRENCE_DESC');
+         $html .= '<br/><input style="clear:both" type="submit" name="delete_option" value="'.$this->_translator->getMessage('COMMON_DELETE_RECURRENCE_BUTTON').'" tabindex="2"/>'.LF;
+      }
       if ( ( $this->_environment->getCurrentModule() == 'configuration'
              and ( $this->_environment->getCurrentFunction() == 'preferences'
                    or $this->_environment->getCurrentFunction() == 'room_options'

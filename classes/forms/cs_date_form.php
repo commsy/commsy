@@ -82,6 +82,8 @@ class cs_date_form extends cs_rubric_form {
 
    #var $_color = '#FFFF80';
     
+   var $_recurring_select = 'weekly';
+   
   /** constructor: cs_date_form
     * the only available constructor
     *
@@ -320,14 +322,18 @@ class cs_date_form extends cs_rubric_form {
          $recurring_select = $recurring_pattern_array['recurring_select'];
          $recurring_selected = true;
          $show_disabled = true;
+         $this->_form->addHidden('recurring_select',$recurring_pattern_array['recurring_select']);
       } else {
-         $recurring_select = $this->_translator->getMessage('DATES_RECURRING_WEEKLY');
+         $recurring_select = $this->_recurring_select;
       }
       $this->_form->addRadioGroup('date_addon_color',$this->_translator->getMessage('DATES_ADDON'),$this->_translator->getMessage('DATES_ADDON_DESC'),$radio_values,'',false,true,'','',false,' style="vertical-align:top;"',true,$show_drop_down);
       $this->_form->combine();
       //$this->_form->addText('','','<br/>'.$this->_translator->getMessage('DATES_RECURRING').':');
       $this->_form->addText('','','<br/>');
       $this->_form->combine();
+      if(isset($recurring_pattern_array['recurring_select'])){
+         $this->_form->addHidden('recurring_date','1');
+      }
       $this->_form->addCheckbox('recurring','recurring',$recurring_selected,'',$this->_translator->getMessage('DATES_RECURRING_DESC').':','',false,$show_disabled);
       $this->_form->combine('horizontal');  
       $select_values = array();
@@ -362,18 +368,22 @@ class cs_date_form extends cs_rubric_form {
          $value_day = '';
          if(isset($recurring_pattern_array['recurring_select'])){
             $value_day = $recurring_pattern_array['recurring_day'];
+            $this->_form->addHidden('recurring_day',$recurring_pattern_array['recurring_day']);
          }
-         $this->_form->addTextfield('recurring_day',$value_day,'','',4,1,false,'','','','',$this->_translator->getMessage('DATES_RECURRING_EVERY_DAY'),'',$show_disabled,$this->_translator->getMessage('DATES_RECURRING_DAY'));
+         $this->_form->addTextfield('recurring_day',$value_day,'','',4,1,false,'','','','',$this->_translator->getMessage('DATES_RECURRING_EVERY_DAY'),'',$show_disabled,'. '.$this->_translator->getMessage('DATES_RECURRING_DAY'));
       } elseif ((isset($this->_form_post['recurring_select']) and $this->_form_post['recurring_select'] == 'monthly') or (isset($recurring_pattern_array['recurring_select']) and $recurring_pattern_array['recurring_select'] == 'monthly')){
          $value_month = '';
          $value_recurring_month_every = $this->_translator->getMessage('DATES_RECURRING_FIRST');
          $value_recurring_month_day_every = $this->_translator->getMessage('COMMON_DATE_MONDAY');
          if(isset($recurring_pattern_array['recurring_select'])){
             $value_month = $recurring_pattern_array['recurring_month'];
+            $this->_form->addHidden('recurring_month',$recurring_pattern_array['recurring_month']);
             $value_recurring_month_every = $recurring_pattern_array['recurring_month_every'];
+            $this->_form->addHidden('recurring_month_every',$recurring_pattern_array['recurring_month_every']);
             $value_recurring_month_day_every = $recurring_pattern_array['recurring_month_day_every'];
+            $this->_form->addHidden('recurring_month_day_every',$recurring_pattern_array['recurring_month_day_every']);
          }
-         $this->_form->addTextfield('recurring_month',$value_month,'','',4,1,false,'','','','',$this->_translator->getMessage('DATES_RECURRING_EVERY_MONTH'),'',$show_disabled,$this->_translator->getMessage('DATES_RECURRING_EVERY_MONTH_ON'));
+         $this->_form->addTextfield('recurring_month',$value_month,'','',4,1,false,'','','','',$this->_translator->getMessage('DATES_RECURRING_EVERY_MONTH'),'',$show_disabled,'. '.$this->_translator->getMessage('DATES_RECURRING_EVERY_MONTH_ON'));
          $month_every_values = array();
          $month_every_values[0]['text'] = $this->_translator->getMessage('DATES_RECURRING_FIRST');
          $month_every_values[0]['value'] = '1';
@@ -441,9 +451,11 @@ class cs_date_form extends cs_rubric_form {
          $value_recurring_year_every = $this->_translator->getMessage('DATES_JANUARY_LONG');
          if(isset($recurring_pattern_array['recurring_select'])){
             $value_year = $recurring_pattern_array['recurring_year'];
+            $this->_form->addHidden('recurring_year',$recurring_pattern_array['recurring_year']);
             $value_recurring_year_every = $recurring_pattern_array['recurring_year_every'];
+            $this->_form->addHidden('recurring_year_every',$recurring_pattern_array['recurring_year_every']);
          }
-         $this->_form->addTextfield('recurring_year',$value_year,'','',4,1,false,'','','','',$this->_translator->getMessage('DATES_RECURRING_EVERY_YEAR'),'',$show_disabled,'');
+         $this->_form->addTextfield('recurring_year',$value_year,'','',4,1,false,'','','','',$this->_translator->getMessage('DATES_RECURRING_EVERY_YEAR'),'',$show_disabled,'. ');
          $month_values = array();
          $month_values[0]['text'] = $this->_translator->getMessage('DATES_JANUARY_LONG');
          $month_values[0]['value'] = '1';
@@ -491,9 +503,11 @@ class cs_date_form extends cs_rubric_form {
          $value_selected = array();
          if(isset($recurring_pattern_array['recurring_select'])){
             $value_week = $recurring_pattern_array['recurring_week'];
+            $this->_form->addHidden('recurring_week',$recurring_pattern_array['recurring_week']);
             $value_selected = $recurring_pattern_array['recurring_week_days'];
+            $this->_form->addHidden('recurring_week_days',$recurring_pattern_array['recurring_week_days']);
          }
-         $this->_form->addTextfield('recurring_week',$value_week,'','',4,1,false,'','','','',$this->_translator->getMessage('DATES_RECURRING_EVERY_WEEK'),'',$show_disabled,$this->_translator->getMessage('DATES_RECURRING_WEEK'));
+         $this->_form->addTextfield('recurring_week',$value_week,'','',4,1,false,'','','','',$this->_translator->getMessage('DATES_RECURRING_EVERY_WEEK'),'',$show_disabled,'. '.$this->_translator->getMessage('DATES_RECURRING_WEEK'));
          $week_values = array();
          $week_values[0]['text'] = $this->_translator->getMessage('COMMON_DATE_MONDAY');
          $week_values[0]['value'] = 'monday';
@@ -626,7 +640,11 @@ class cs_date_form extends cs_rubric_form {
       if ( $id == 0 )  {
          $this->_form->addButtonBar('option',$this->_translator->getMessage('DATES_SAVE_BUTTON'),$this->_translator->getMessage('COMMON_CANCEL_BUTTON'));
       } else {
-         $this->_form->addButtonBar('option',$this->_translator->getMessage('DATES_CHANGE_BUTTON'),$this->_translator->getMessage('COMMON_CANCEL_BUTTON'),'','','');
+         if(!isset($recurring_pattern_array['recurring_select'])){
+            $this->_form->addButtonBar('option',$this->_translator->getMessage('DATES_CHANGE_BUTTON'),$this->_translator->getMessage('COMMON_CANCEL_BUTTON'),'','','');
+         } else {
+            $this->_form->addButtonBar('option',$this->_translator->getMessage('DATES_CHANGE_BUTTON'),$this->_translator->getMessage('COMMON_CANCEL_BUTTON'),'','','',$this->_translator->getMessage('DATES_CHANGE_RECURRING_BUTTON'));
+         }
       }
    }
 
@@ -872,11 +890,21 @@ class cs_date_form extends cs_rubric_form {
             if(empty($this->_form_post['recurring_day'])){
                   $this->_error_array[] = $this->_translator->getMessage('DATES_RECURRING_DAY_ERROR');
                   $this->_form->setFailure('recurring_day','');
+            } else {
+               if(!is_numeric($this->_form_post['recurring_day'])){
+                  $this->_error_array[] = $this->_translator->getMessage('DATES_RECURRING_NUMERIC_ERROR');
+                  $this->_form->setFailure('recurring_day','');
+               }
             }
          } elseif($this->_form_post['recurring_select'] == 'weekly'){
             if(empty($this->_form_post['recurring_week'])){
                   $this->_error_array[] = $this->_translator->getMessage('DATES_RECURRING_WEEK_ERROR');
                   $this->_form->setFailure('recurring_week','');
+            } else {
+               if(!is_numeric($this->_form_post['recurring_week'])){
+                  $this->_error_array[] = $this->_translator->getMessage('DATES_RECURRING_NUMERIC_ERROR');
+                  $this->_form->setFailure('recurring_week','');
+               }
             }
             if(empty($this->_form_post['recurring_week_days'])){
                   $this->_error_array[] = $this->_translator->getMessage('DATES_RECURRING_WEEKDAYS_ERROR');
@@ -886,11 +914,43 @@ class cs_date_form extends cs_rubric_form {
             if(empty($this->_form_post['recurring_month'])){
                   $this->_error_array[] = $this->_translator->getMessage('DATES_RECURRING_MONTH_ERROR');
                   $this->_form->setFailure('recurring_month','');
+            } else {
+               if(!is_numeric($this->_form_post['recurring_month'])){
+                  $this->_error_array[] = $this->_translator->getMessage('DATES_RECURRING_NUMERIC_ERROR');
+                  $this->_form->setFailure('recurring_month','');
+               }
             }
          } elseif($this->_form_post['recurring_select'] == 'yearly'){
             if(empty($this->_form_post['recurring_year'])){
                   $this->_error_array[] = $this->_translator->getMessage('DATES_RECURRING_YEAR_ERROR');
                   $this->_form->setFailure('recurring_year','');
+            } else {
+               if(!is_numeric($this->_form_post['recurring_year'])){
+                  $this->_error_array[] = $this->_translator->getMessage('DATES_RECURRING_NUMERIC_ERROR');
+                  $this->_form->setFailure('recurring_year','');
+               } else {
+                  if(($this->_form_post['recurring_year_every'] == '1'
+                      or $this->_form_post['recurring_year_every'] == '3'
+                      or $this->_form_post['recurring_year_every'] == '5'
+                      or $this->_form_post['recurring_year_every'] == '7'
+                      or $this->_form_post['recurring_year_every'] == '8'
+                      or $this->_form_post['recurring_year_every'] == '10'
+                      or $this->_form_post['recurring_year_every'] == '12') and ($this->_form_post['recurring_year'] > 31)){
+                     $this->_error_array[] = $this->_translator->getMessage('DATES_RECURRING_YEAR_TO_MANY_DAYS_ERROR');
+                     $this->_form->setFailure('recurring_year','');
+                  }
+                  if(($this->_form_post['recurring_year_every'] == '4'
+                      or $this->_form_post['recurring_year_every'] == '6'
+                      or $this->_form_post['recurring_year_every'] == '9'
+                      or $this->_form_post['recurring_year_every'] == '11') and ($this->_form_post['recurring_year'] > 30)){
+                     $this->_error_array[] = $this->_translator->getMessage('DATES_RECURRING_YEAR_TO_MANY_DAYS_ERROR');
+                     $this->_form->setFailure('recurring_year','');
+                  }
+                  if(($this->_form_post['recurring_year_every'] == '2') and ($this->_form_post['recurring_year'] > 29)){
+                     $this->_error_array[] = $this->_translator->getMessage('DATES_RECURRING_YEAR_TO_MANY_DAYS_ERROR');
+                     $this->_form->setFailure('recurring_year','');
+                  }
+               }
             }
             // Ist das Datum OK? -> z.B. kein 31. Februar
          }
@@ -953,6 +1013,10 @@ class cs_date_form extends cs_rubric_form {
             $this->_error_array[] = $this->_translator->getMessage('DATES_END_DATE_BEFORE_START_DATE');
          }
       }
+   }
+   
+   function setRecurringSelect($recurring_select){
+      $this->_recurring_select = $recurring_select;
    }
 }
 ?>

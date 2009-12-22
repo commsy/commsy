@@ -3499,6 +3499,11 @@ class cs_detail_view extends cs_view {
          ) {
          $params = $this->_environment->getCurrentParameterArray();
          $params['action'] = 'delete';
+         if($item->getItemType() == CS_DATE_TYPE){
+            if($item->getRecurrenceId() != '' and $item->getRecurrenceId() != 0){
+               $params['recurrence_id'] = $item->getRecurrenceId();
+            }
+         }
          if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
             $image = '<img src="images/commsyicons_msie6/22x22/delete.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_DELETE_ITEM').'"/>';
          } else {

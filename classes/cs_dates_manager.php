@@ -58,6 +58,7 @@ class cs_dates_manager extends cs_manager {
    var $_topic_limit = NULL;
    var $_sort_order = NULL;
    var $_color_limit = NULL;
+   var $_recurrence_limit = NULL;
 
    var $_month_limit = NULL;
    var $_month_limit2 = NULL;
@@ -102,6 +103,7 @@ class cs_dates_manager extends cs_manager {
       $this->_day_limit2 = NULL;
       $this->_year_limit = NULL;
       $this->_color_limit = NULL;
+      $this->_recurrence_limit = NULL;
       $this->_date_mode_limit = 1;
       $this->_not_older_than_limit = NULL;
    }
@@ -127,6 +129,10 @@ class cs_dates_manager extends cs_manager {
 
    function setColorLimit ($limit) {
       $this->_color_limit = $limit;
+   }
+   
+   function setRecurrenceLimit ($limit) {
+      $this->_recurrence_limit = $limit;
    }
 
 
@@ -313,6 +319,9 @@ class cs_dates_manager extends cs_manager {
       }
       if (isset($this->_color_limit)) {
          $query .= ' AND dates.color = "'.encode(AS_DB,$this->_color_limit).'"';
+      }
+      if (isset($this->_recurrence_limit)) {
+         $query .= ' AND dates.recurrence_id = "'.encode(AS_DB,$this->_recurrence_limit).'"';
       }
       if ( isset($this->_existence_limit) ) {
          $query .= ' AND dates.creation_date >= DATE_SUB(CURRENT_DATE,interval '.encode(AS_DB,$this->_existence_limit).' day)';
