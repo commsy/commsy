@@ -161,6 +161,7 @@ CREATE TABLE IF NOT EXISTS `dates` (
   `date_mode` tinyint(4) NOT NULL default '0',
   `color` varchar(255) default NULL,
   `recurrence_id` int(11) default NULL,
+  `recurrence_pattern` text,
   `extras` text,
   PRIMARY KEY  (`item_id`),
   KEY `context_id` (`context_id`),
