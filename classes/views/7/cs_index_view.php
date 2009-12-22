@@ -1045,40 +1045,28 @@ class cs_index_view extends cs_view {
                        and $this->_environment->getCurrentModule() == CS_MATERIAL_TYPE
                        and $this->_display_mode == 'flash'
                      ) {
-                     #$html .= '<li id="' . $current_item->getItemID() . '" data="StudyLog: \'' . $current_item->getItemID() . '\'" style="color:'.$color.'; font-style:'.$font_style.'; font-size:'.$font_size.'px; font-weight:'.$font_weight.';">'.LF;
-                     $html .= '<li id="' . $current_item->getItemID() . '" data="StudyLog: \'' . $current_item->getItemID() . '\'" style="color:#545454; font-style:normal; font-size:10pt; font-weight:normal;">'.LF;
+                     $html .= '<li id="' . $current_item->getItemID() . '" data="StudyLog: \'' . $current_item->getItemID() . '\'" style="color:#545454; font-style:normal; font-size:9pt; font-weight:normal;">'.LF;
                      $html .= '<a href="javascript:callStudyLogSortByTagId('.$current_item->getItemID().')">'.$title.'</a>'.LF;
                   } else {
                      $link = curl($this->_environment->getCurrentContextID(),
                                          $this->_environment->getCurrentModule(),
                                          $this->_environment->getCurrentFunction(),
                                          $params);
-                     #$html .= '<li id="' . $current_item->getItemID() . '" data="url: \'' . $link . '\'" style="color:'.$color.'; font-style:'.$font_style.'; font-size:'.$font_size.'px; font-weight:'.$font_weight.';">'.LF;
-                     $html .= '<li id="' . $current_item->getItemID() . '" data="url: \'' . $link . '\'" style="color:#545454; font-style:normal; font-size:10pt; font-weight:normal;">'.LF;
-                     #$html .= ahref_curl($this->_environment->getCurrentContextID(),
-                     #                    $this->_environment->getCurrentModule(),
-                     #                    $this->_environment->getCurrentFunction(),
-                     #                    $params,
-                     #                    $title,
-                     #                    $title,'','','','','','style="color:'.$color.'"').LF;
+                     $html .= '<li id="' . $current_item->getItemID() . '" data="url: \'' . $link . '\'" style="color:#545454; font-style:normal; font-size:9pt; font-weight:normal;">'.LF;
                      $html .= ahref_curl($this->_environment->getCurrentContextID(),
                                          $this->_environment->getCurrentModule(),
                                          $this->_environment->getCurrentFunction(),
                                          $params,
                                          $title,
-                                         $title,'','','','','','style="color:#545454; font-size:10pt;"').LF;
+                                         $title,'','','','','','style="color:#545454; font-size:9pt;"').LF;
                   }
                }else{
                   $link = curl($this->_environment->getCurrentContextID(),
                                          $this->_environment->getCurrentModule(),
                                          $this->_environment->getCurrentFunction(),
                                          $params);
-                  #$html .= '<li id="' . $current_item->getItemID() . '" data="url: \'' . $link . '\'" style="color:'.$color.'; font-style:'.$font_style.'; font-size:'.$font_size.'px; font-weight:'.$font_weight.';">'.LF;
-                  $html .= '<li id="' . $current_item->getItemID() . '" data="url: \'' . $link . '\'" style="color:#000000; font-style:normal; font-size:10pt; font-weight:bold;">'.LF;
-                  #$html .= '<span style="font-weight:bold; font-style:'.$font_style.'; color: rgb('.$font_color.'%,'.$font_color.'%,'.$font_color.'%);">'.LF;
-                  #$html .= '<span style="font-weight:bold;">'.LF;
+                  $html .= '<li id="' . $current_item->getItemID() . '" data="url: \'' . $link . '\'" style="color:#000000; font-style:normal; font-size:9pt; font-weight:bold;">'.LF;
                   $html .= $title.LF;
-                  #$html .= '</span>'.LF;
                }
                $html .= $this->_getTagContentAsHTMLWithJavascript($current_item, $ebene+1, $selected_id, $father_id_array, $distance);
                $current_item = $list->getNext();

@@ -6,7 +6,7 @@ div.ui-dynatree-container
    /* Anpassung jschultze */
 	/*font-family: tahoma, arial, helvetica;*/
 	/* Anpassung jschultze */
-	font-size: 10pt; /* font size should not be too big */
+	font-size: 9pt; /* font size should not be too big */
 	white-space: nowrap; 
 	padding: 3px;
 	
@@ -298,5 +298,5 @@ span.custom1 a
 
 .ui-dynatree-title{
    font-weight:bold;
-   font-size:10pt;
+   font-size:9pt;
 }

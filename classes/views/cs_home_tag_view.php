@@ -219,18 +219,12 @@ class cs_home_tag_view extends cs_view {
                              'campus_search',
                              'index',
                              $params);
-               #$html .= '<li id="' . $current_item->getItemID() . '" data="url: \'' . $link . '\'" style="color:'.$color.'; font-style:'.$font_style.'; font-size:'.$font_size.'px; font-weight:'.$font_weight.';">'.LF;
-               $html .= '<li id="' . $current_item->getItemID() . '" data="url: \'' . $link . '\'" style="color:#545454; font-style:normal; font-size:10pt; font-weight:normal;">'.LF;
-               #$html .= ahref_curl($this->_environment->getCurrentContextID(),
-               #              'campus_search',
-               #              'index',
-               #              $params,
-               #              $title,$title,'','','','','','style="color:'.$color.'"').LF;
+               $html .= '<li id="' . $current_item->getItemID() . '" data="url: \'' . $link . '\'" style="color:#545454; font-style:normal; font-size:9pt; font-weight:normal;">'.LF;
                $html .= ahref_curl($this->_environment->getCurrentContextID(),
                              'campus_search',
                              'index',
                              $params,
-                             $title,$title,'','','','','','style="color:#545454; font-size:10pt;"').LF;
+                             $title,$title,'','','','','','style="color:#545454; font-size:9pt;"').LF;
                $html .= $this->_getTagContentAsHTMLWithJavascript($current_item, $ebene+1, $distance);
                $current_item = $list->getNext();
                $i++;

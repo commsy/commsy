@@ -333,7 +333,6 @@ var $_count_entries = 0;
                $color = 'rgb('.$font_color.'%,'.$font_color.'%,'.$font_color.'%);';
                $this->_count_entries++;
 
-               #$html .= '<li id="' . $current_item->getItemID() . '" data="checkbox: \'' . $current_item->getItemID() . '\'" style="color:'.$color.'; font-style:'.$font_style.'; font-size:'.$font_size.'px; font-weight:'.$font_weight.';">'.LF;
                $html .= '<li id="' . $current_item->getItemID() . '" data="checkbox: \'' . $current_item->getItemID() . '\'" style="color:#545454; font-style:normal; font-size:8pt; font-weight:normal;">'.LF;
                
                $title = $this->_text_as_html_short($current_item->getTitle());
@@ -352,8 +351,7 @@ var $_count_entries = 0;
                }
                $checkbox .= '/>'.LF;
                $checkbox .= '         <input type="hidden" name="shown['.$this->_text_as_form($current_item->getItemID()).']" value="1"/>'.LF;
-               #$html .= '<div class="entry" style="white-space:nowrap; font-size:'.$font_size.'px;">'.LF;
-               $html .= '<div class="entry" style="white-space:nowrap; font-size:10pt; font-weight:normal;">'.LF;
+               $html .= '<div class="entry" style="white-space:nowrap; font-size:9pt; font-weight:normal;">'.LF;
                $html .= $checkbox;
                $html .= $title;
                $html .= '</div>'.LF;
