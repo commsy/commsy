@@ -791,7 +791,7 @@ function save_recurring_dates($dates_item, $is_new_date, $values_to_change){
                } elseif($day == 'sunday'){
                   $addon_days = 6;
                }
-               if( (($week+($addon_days * (60 * 60 * 24))) >= $next_date_time) and (($week+($addon_days * (60 * 60 * 24))) <= $recurring_end_time) ){
+               if( (($week+($addon_days * (60 * 60 * 24))) > $next_date_time) and (($week+($addon_days * (60 * 60 * 24))) <= $recurring_end_time) ){
                   $recurring_date_array[] = $week+($addon_days * (60 * 60 * 24));
                }
             }
