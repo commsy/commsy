@@ -2356,13 +2356,14 @@ class cs_form_view extends cs_view {
                 )
             ){
                $session_item = $this->_environment->getSessionItem();
+               $with_javascript = false;
                if($session_item->issetValue('javascript')){
                   if($session_item->getValue('javascript') == "1"){
                      $with_javascript = true;
                   }
                }
                // UMSTELLUNG MUSEUM
-               if($with_javascript and true){
+               if($with_javascript){
                   $html .= $this->_getTagBoxAsHTMLWithJavaScript();
                } else {
                   $html .= $this->_getTagBoxAsHTML();

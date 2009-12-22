@@ -83,13 +83,14 @@ class cs_home_tag_view extends cs_view {
       $html_text = '';
       
       $session_item = $this->_environment->getSessionItem();
+      $with_javascript = false;
       if($session_item->issetValue('javascript')){
          if($session_item->getValue('javascript') == "1"){
             $with_javascript = true;
          }
       }
       // UMSTELLUNG MUSEUM
-      if($with_javascript and true){
+      if($with_javascript){
          $html_text .= $this->_getTagContentAsHTMLWithJavascript($root_item,0,0,true);
       } else {
          $html_text .= $this->_getTagContentAsHTML($root_item,0);

@@ -1276,13 +1276,14 @@ class cs_detail_view extends cs_view {
          if ( $this->showTags() ) {
             $html .= '<div class="commsy_panel" style="margin-bottom:1px;">'.LF;
             $session_item = $this->_environment->getSessionItem();
+            $with_javascript = false;
             if($session_item->issetValue('javascript')){
                if($session_item->getValue('javascript') == "1"){
                   $with_javascript = true;
                }
             }
             // UMSTELLUNG MUSEUM
-            if($with_javascript and true){
+            if($with_javascript){
                #$html .= $this->_getTagBoxAsHTMLWithJavaScript($item);
                $tag_manager = $this->_environment->getTagManager();
                $html .= $this->_getTagBoxAsHTMLWithJavaScript($tag_manager->getRootTagItem(), 0, 0, true, $item);
