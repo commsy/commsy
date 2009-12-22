@@ -976,9 +976,35 @@ jQuery(document).ready(function() {
 					dtnode.select(jQuery("[#taglist_" + dtnode.data.checkbox).attr('checked'));
 				}
 			});
+			if(jQuery('[name=tag_tree_detail]').length){
+				collapseTree(jQuery(this).dynatree("getRoot"), true);
+			}
 		});
 	}
 });
+
+function collapseTree(node, is_root){
+	var collapse = true;
+	if(node.childList != null){
+		for (var int = 0; int < node.childList.length; int++) {
+			var result = collapseTree(node.childList[int], false);
+			if(!result){
+				collapse = false;
+			}
+		}
+	}
+	if(!is_root){
+		if(node.data.url.indexOf('name=selected') > -1){
+			if(collapse){
+				node.expand(false);
+			} else {
+				node.expand(true);
+			}
+			collapse = false;
+		}
+	}
+	return collapse;
+}
 
 function getExpandLevel(tree, maxVisible){
 	var return_counter = 1;

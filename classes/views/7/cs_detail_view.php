@@ -926,7 +926,7 @@ class cs_detail_view extends cs_view {
                $html .= '<div class="right_box_title">'.$this->_translator->getMessage('COMMON_TAGS').'</div>';
                $html .= '         </noscript>';
                $html .= '<div class="right_box_main" >'.LF;
-               $html .= '<div id="tag_tree">';
+               $html .= '<div id="tag_tree" name="tag_tree_detail">';
             }
             $html .= '<ul>'.LF; // oberstes <ul>
             $current_item = $list->getFirst();
@@ -937,11 +937,13 @@ class cs_detail_view extends cs_view {
             $i = 1;
             while ( $current_item ) {
                $font_weight = 'normal';
+               $link_name = '';
                $tag_item = $tag_list->getFirst();
                if ( isset ($tag_item) ){
                   while( $tag_item ){
                      if($tag_item->getItemID() == $current_item->getItemID()){
                         $font_weight = 'bold';
+                        $link_name = 'selected';
                      }
                      $tag_item = $tag_list->getNext();
                   }
@@ -965,6 +967,7 @@ class cs_detail_view extends cs_view {
                   }
                }
                $params['seltag'] = 'yes';
+               $params['name'] = $link_name;
                $link = curl($this->_environment->getCurrentContextID(),
                              'campus_search',
                              'index',
