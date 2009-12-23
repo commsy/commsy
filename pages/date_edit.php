@@ -898,9 +898,11 @@ function save_recurring_dates($dates_item, $is_new_date, $values_to_change){
          }
          if(in_array('startingTime',$values_to_change)){
             $temp_date->setStartingTime($dates_item->getStartingTime());
+            $temp_date->setDateTime_start(mb_substr($temp_date->getDateTime_start(),0,10) . ' ' . $dates_item->getStartingTime());
          }
          if(in_array('endingTime',$values_to_change)){
             $temp_date->setEndingTime($dates_item->getEndingTime());
+            $temp_date->setDateTime_end(mb_substr($temp_date->getDateTime_end(),0,10) . ' ' . $dates_item->getStartingTime());
          }
          if(in_array('place',$values_to_change)){
             $temp_date->setPlace($dates_item->getPlace());
