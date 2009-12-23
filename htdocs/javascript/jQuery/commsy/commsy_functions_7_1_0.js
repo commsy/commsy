@@ -976,7 +976,7 @@ jQuery(document).ready(function() {
 					dtnode.select(jQuery("[#taglist_" + dtnode.data.checkbox).attr('checked'));
 				}
 			});
-			if(jQuery('[name=tag_tree_detail]').length){
+			if(jQuery(this).attr('name') == 'tag_tree_detail'){
 				collapseTree(jQuery(this).dynatree("getRoot"), true);
 			}
 		});
