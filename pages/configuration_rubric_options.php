@@ -112,11 +112,18 @@ else {
          }
          $temp_array = array();
          $j = 0;
-         $default_rubrics = $room_item->getAvailableDefaultRubricArray();
-         if ( count($default_rubrics) > 8 ) {
-            $count = 8;
+         if ( !empty($_POST['rubric_0']) ) {
+            $count = 0;
+            while ( isset($_POST['rubric_'.$count]) ) {
+               $count++;
+            }
          } else {
-            $count = count($default_rubrics);
+            $default_rubrics = $room_item->getAvailableDefaultRubricArray();
+            if ( count($default_rubrics) > 8 ) {
+               $count = 8;
+            } else {
+               $count = count($default_rubrics);
+            }
          }
          $rubric_array_for_plugin = array();
          for ($i=0; $i<$count; $i++){
