@@ -43,7 +43,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
    var $_presentation_mode = '1';
    var $_used_color_array = array();
    var $_week_start;
-   var $_available_color_array = array('#999999','#CC0000','#FF6600','#FFCC00','#33CC00','#00CCCC','#3366FF','#6633FF','#CC33CC');
+   var $_available_color_array = array('#999999','#CC0000','#FF6600','#FFCC00','#FFFF66','#33CC00','#00CCCC','#3366FF','#6633FF','#CC33CC');
    var $_selected_color = NULL;
 
    // SUNBIRD
@@ -2078,7 +2078,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                if($date->getColor() != ''){
                   $color = $date->getColor();
                } else {
-                  $color = '#ffff66';
+                  $color = '#FFFF66';
                }
                $color_border = '#CCCCCC';
                $current_month_temp = $current_month[$i];
@@ -3097,7 +3097,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                if($date->getColor() != ''){
                   $color = $date->getColor();
                } else {
-                  $color = '#ffff66';
+                  $color = '#FFFF66';
                }
                $color_border = '#CCCCCC';
                #$html .= '<div style="position: absolute; top: ' . $top . 'px; left: ' . $left . 'px; width:' . $width . 'px; height:' . $height . 'px; background-color:' . $color . '; z-index:1000; overflow:hidden; border:1px solid #dddddd;">';
