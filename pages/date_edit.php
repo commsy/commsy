@@ -841,7 +841,7 @@ function save_recurring_dates($dates_item, $is_new_date, $values_to_change){
          $year_count = $year_date;
          $year = mktime(0,0,0,1,1,$year_count);
          while($year <= $recurring_end_time){
-            if((mktime(0,0,0,$_POST['recurring_year_every'],$_POST['recurring_year'],$year_count) >= $next_date_time) and (mktime(0,0,0,$_POST['recurring_year_every'],$_POST['recurring_year'],$year_count) <= $recurring_end_time)){
+            if((mktime(0,0,0,$_POST['recurring_year_every'],$_POST['recurring_year'],$year_count) > $next_date_time) and (mktime(0,0,0,$_POST['recurring_year_every'],$_POST['recurring_year'],$year_count) <= $recurring_end_time)){
                $recurring_date_array[] = mktime(0,0,0,$_POST['recurring_year_every'],$_POST['recurring_year'],$year_count);
             }
             $year_count++;
@@ -858,6 +858,7 @@ function save_recurring_dates($dates_item, $is_new_date, $values_to_change){
          $temp_date = clone $dates_item;
          $temp_date->setItemID('');
          $temp_date->setStartingDay(date('Y-m-d', $date));
+         $temp_date->setDateTime_start(date('Y-m-d 00:00:00', $date));
          if($dates_item->getEndingDay() != ''){
             $temp_starting_day = $dates_item->getStartingDay();
             $temp_starting_day_month = mb_substr($temp_starting_day,5,2);
@@ -872,6 +873,9 @@ function save_recurring_dates($dates_item, $is_new_date, $values_to_change){
             $temp_ending_day_time = mktime(0,0,0,$temp_ending_day_month,$temp_ending_day_day,$temp_ending_day_year);
             
             $temp_date->setEndingDay(date('Y-m-d', $date+($temp_ending_day_time - $temp_starting_day_time)));
+            $temp_date->setDateTime_end(date('Y-m-d 00:00:00', $date));
+         } else {
+            $temp_date->setDateTime_end(date('Y-m-d 00:00:00', $date));
          }
          $temp_date->setRecurrenceId($dates_item->getItemID());
          $temp_date->setRecurrencePattern($recurring_pattern_array);
