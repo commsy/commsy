@@ -999,8 +999,10 @@ function collapseTree(node, is_root){
 		} else {
 			node.expand(true);
 		}
-		if(node.data.url.indexOf('name=selected') > -1){
-			collapse = false;
+		if(typeof(node.data.url) !== 'undefined' && node.data.url != null) {
+			if(node.data.url.indexOf('name=selected') > -1){
+				collapse = false;
+			}
 		}
 	}
 	return collapse;
