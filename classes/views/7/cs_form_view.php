@@ -2939,7 +2939,8 @@ class cs_form_view extends cs_view {
                      $font_size = 8;
                   }
                   $font_color = 20 + $this->getTagColorLogarithmic($count);
-                  $color = 'rgb('.$font_color.'%,'.$font_color.'%,'.$font_color.'%);';
+                  #$color = 'rgb('.$font_color.'%,'.$font_color.'%,'.$font_color.'%);';
+                  $color = '#545454';
                   $params['seltag'] = 'yes';
                   if ( isset($father_tag_item) ) {
                      $params['seltag_'.($count_all-$i)] = $father_tag_item->getItemID();
@@ -2986,12 +2987,12 @@ class cs_form_view extends cs_view {
                              '',
                              '',
                              '',
-                             'style="color:'.$color.'"').LF;
+                             'style="color:#000000; font-weight:bold;"').LF;
             $link = curl($this->_environment->getCurrentContextID(),
                                 $this->_environment->getCurrentModule(),
                                 'index',
                                 $params);
-            $text .= '<li id="' . $tag_item->getItemID() . '" data="url: \'' . $link . '\'" style="color:'.$color.'; font-style:'.$font_style.'; font-size:'.$font_size.'px; font-weight:'.$font_weight.';">'.LF;
+            $text .= '<li id="' . $tag_item->getItemID() . '" data="url: \'' . $link . '\'" style="color:'.$color.'; font-style:'.$font_style.'; font-size:'.$font_size.'px; font-weight:bold;">'.LF;
             $text .= $title_link;
             for ($index = 1; $index < $i; $index++) {
                $text .= '</li></ul>'.LF;
