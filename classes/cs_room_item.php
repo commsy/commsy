@@ -311,11 +311,41 @@ class cs_room_item extends cs_context_item {
    * @return object cs_list a list of clock pulses (cs_label_item)
    */
    function getTimeList() {
-      $time_list = $this->_getLinkedItems($this->_environment->getTimeManager(), 'in_time');
+      $time_list = $this->_getLinkedTimeItems($this->_environment->getTimeManager(), 'in_time');
       $time_list->sortBy('sorting');
       return $time_list;
    }
 
+ /** get list of linked items
+   * this method returns a list of items which are linked to the news item
+   *
+   * @return object cs_list a list of cs_items
+   * @access private
+   * @author CommSy Development Group
+   */
+   function _getLinkedTimeItems ($item_manager, $link_type, $order='') {
+      if (!isset($this->_data[$link_type]) or !is_object($this->_data[$link_type])) {
+
+         global $environment;
+         $link_manager = $environment->getLinkManager();
+         $link_manager->setItemIDLimit($this->getItemID());
+         // preliminary version: there should be something like 'getIDArray() in the link_manager'
+
+         $id_array = array();
+         $link_array = $link_manager->getLinks($link_type, $this, $this->getVersionID(), 'eq');
+         $id_array = array();
+         foreach($link_array as $link) {
+            if ($link['to_item_id'] == $this->getItemID()) {
+               $id_array[] = $link['from_item_id'];
+            } elseif ($link['from_item_id'] == $this->getItemID()) {
+               $id_array[] = $link['to_item_id'];
+            }
+         }
+         $this->_data[$link_type] = $item_manager->getItemList($id_array);
+      }
+      return $this->_data[$link_type];
+   }
+   
    /** set clock pulses of a room item by id
    * this method sets a list of clock pulses item_ids which are linked to the room
    *
@@ -330,7 +360,7 @@ class cs_room_item extends cs_context_item {
       }
       $this->_setValue('in_time', $time_array, FALSE);
    }
-
+   
    /** set clock pulses of a room
    * this method sets a list of clock pulses which are linked to the room
    *
