@@ -189,6 +189,12 @@ class cs_log_manager extends cs_manager {
       if ( empty($array['iid']) or mb_strtoupper($array['iid'], 'UTF-8') == 'NEW' ) {
          $array['iid'] = '0';
       }
+      if(!isset($array['queries'])){
+      	$array['queries'] = '';
+      }
+      if(!isset($array['time'])){
+         $array['time'] = '';
+      }
       $query = 'INSERT DELAYED INTO log SET '.
                'ip="'.      encode(AS_DB,$array['remote_addr']).'", '.
                'timestamp=NOW(), '.
