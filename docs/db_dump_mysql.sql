@@ -549,6 +549,8 @@ CREATE TABLE IF NOT EXISTS `log` (
   `fct` varchar(250) default NULL,
   `param` varchar(250) default NULL,
   `iid` int(11) default NULL,
+  `queries` smallint(6) default NULL,
+  `time` varchar(11) default NULL,
   PRIMARY KEY  (`id`),
   KEY `timestamp` (`timestamp`),
   KEY `cid` (`cid`)
@@ -601,6 +603,8 @@ CREATE TABLE IF NOT EXISTS `log_archive` (
   `fct` varchar(250) default NULL,
   `param` varchar(250) default NULL,
   `iid` int(11) default NULL,
+  `queries` smallint(6) default NULL,
+  `time` varchar(11) default NULL,
   PRIMARY KEY  (`id`),
   KEY `ulogin` (`ulogin`),
   KEY `cid` (`cid`)

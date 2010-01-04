@@ -1587,9 +1587,9 @@ class cs_environment {
          include_once('classes/db_mysql_connector.php');
          $this->_db_mysql_connector = new db_mysql_connector($db['normal']);
          global $c_show_debug_infos;
-         if ( isset($c_show_debug_infos) and $c_show_debug_infos ) {
+         #if ( isset($c_show_debug_infos) and $c_show_debug_infos ) {
             $this->_db_mysql_connector->setLogQueries();
-         }
+         #}
       }
       return $this->_db_mysql_connector;
    }

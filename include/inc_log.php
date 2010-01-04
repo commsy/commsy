@@ -58,6 +58,16 @@ $array['module']           = $environment->getCurrentModule();
 $array['function']         = $environment->getCurrentFunction();
 $array['parameter_string'] = $environment->getCurrentParameterString();
 
+$db_connector = $environment->getDBConnector();
+$sql_query_array = $db_connector->getQueryArray();
+$all = count($sql_query_array);
+$unique = count(array_unique($sql_query_array));
+$array['queries'] = $all;
+
+$time_end = getmicrotime();
+$time = round($time_end - $time_start,3);
+$array['time'] = $time;
+
 $log_manager = $environment->getLogManager();
 $log_manager->saveArray($array);
 unset($log_manager);

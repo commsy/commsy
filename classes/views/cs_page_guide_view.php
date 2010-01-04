@@ -852,6 +852,7 @@ class cs_page_guide_view extends cs_page_view {
       $current_context = $this->_environment->getCurrentContextItem();
       if ( $current_context->showTime() and ( $item->isProjectRoom() or $item->isCommunityRoom() ) ) {
          $time_list = $item->getTimeList();
+         #$time_list = new cs_list();
          if ($time_list->isNotEmpty()) {
             $this->translatorChangeToPortal();
             $html .= '<span style="font-weight:bold;">'.$this->_translator->getMessage('COMMON_TIME_NAME').':</span>'.LF;

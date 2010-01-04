@@ -202,7 +202,9 @@ class cs_log_manager extends cs_manager {
                'module="'.  encode(AS_DB,$array['module']).'", '.
                'fct="'.     encode(AS_DB,$array['function']).'", '.
                'param="'.   encode(AS_DB,$array['parameter_string']).'", '.
-               'iid='.     encode(AS_DB,$array['iid']).';';
+               'iid="'.     encode(AS_DB,$array['iid']).'", '.
+               'queries="'.     encode(AS_DB,$array['queries']).'", '.
+               'time="'.     encode(AS_DB,$array['time']).'";';
       $result = $this->_db_connector->performQuery($query);
       if ( isset($result) ) {
          $retour = true;

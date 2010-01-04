@@ -78,7 +78,9 @@ class cs_log_archive_manager extends cs_manager {
                         'module="'.  encode(AS_DB,$data[$key]['module']).'", '.
                         'fct="'.     encode(AS_DB,$data[$key]['fct']).'", '.
                         'param="'.   encode(AS_DB,$data[$key]['param']).'", '.
-                        'iid="'.     encode(AS_DB,$data[$key]['iid']).'"';
+                        'iid="'.     encode(AS_DB,$data[$key]['iid']).'", '.
+                        'queries="'.     encode(AS_DB,$data[$key]['queries']).'", '.
+                        'time="'.     encode(AS_DB,$data[$key]['time']).'"';
 
                // perform query
                $result = $this->_db_connector->performQuery($query);
@@ -111,7 +113,9 @@ class cs_log_archive_manager extends cs_manager {
                      'module="'.  encode(AS_DB,$data['module']).'", '.
                      'fct="'.     encode(AS_DB,$data['fct']).'", '.
                      'param="'.   encode(AS_DB,$data['param']).'", '.
-                     'iid="'.     encode(AS_DB,$data['iid']).'"';
+                     'iid="'.     encode(AS_DB,$data[$key]['iid']).'", '.
+                     'queries="'.     encode(AS_DB,$data[$key]['queries']).'", '.
+                     'time="'.     encode(AS_DB,$data[$key]['time']).'"';
             // perform query
             $result = $this->_db_connector->performQuery($query);
             if ( !isset($result) ) {
