@@ -957,7 +957,7 @@ class cs_index_view extends cs_view {
          $list = $item->getChildrenList();
          if ( isset($list) and !$list->isEmpty() ) {
             if($with_div){
-               $html .= '<div id="tag_tree">';
+               $html .= '<div id="tag_tree"  name="tag_tree_detail">';
             }
             $html .= '<ul>'.LF;
             $current_item = $list->getFirst();
@@ -968,6 +968,7 @@ class cs_index_view extends cs_view {
             while ( $current_item ) {
                $is_selected = false;
                $id = $current_item->getItemID();
+               $link_name = '';
                if ( empty($selected_id) ){
                   $tag2tag_manager = $this->_environment->getTag2TagManager();
                   $count = count($tag2tag_manager->getFatherItemIDArray($id));
@@ -1028,7 +1029,8 @@ class cs_index_view extends cs_view {
                   $is_selected = true;
                   $font_size = 14;
                   $font_color = 20;
-                  $font_style = 'normal';
+                  #$font_style = 'normal';
+                  $link_name = 'selected';
                }
                $color = 'rgb('.$font_color.'%,'.$font_color.'%,'.$font_color.'%);';
                $title = $this->_text_as_html_short($current_item->getTitle());
@@ -1062,6 +1064,7 @@ class cs_index_view extends cs_view {
                                          $title,'','','','','','style="color:#545454; font-size:9pt;"').LF;
                   }
                }else{
+               	$params['name'] = $link_name;
                   $link = curl($this->_environment->getCurrentContextID(),
                                          $this->_environment->getCurrentModule(),
                                          $this->_environment->getCurrentFunction(),
