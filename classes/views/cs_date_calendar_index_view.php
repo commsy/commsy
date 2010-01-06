@@ -465,7 +465,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
          }
       }
       $html .='<tr>'.LF;
-      $html .='<td colspan="3" style="padding-top:2px; vertical-align:top; ">'.LF;
+      $html .='<td colspan="3" style="padding-top:2px; vertical-align:top;">'.LF;
       #$html .= '<table class="list" style="width: 100%; border-collapse: collapse;" summary="Layout">'.LF;
 #      $html .= '<table class="list" style="width: 100%; border-collapse: collapse; border: 0px;" summary="Layout">'.LF;
       if ($this->_presentation_mode == '2'){
@@ -1525,6 +1525,76 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       return $title;
    }
 
+  /** get the link to the item
+    * this method returns the item title in the right formatted style
+    *
+    * @return string title
+    *
+    * @author CommSy Development Group
+    */
+   function _getItemLinkWithJavascript($item, $text) {
+      $text = $this->_compareWithSearchText($text);
+      $params = array();
+      $params['iid'] = $item->getItemID();
+      $params['mode'] = 'private';
+      $parameter_array = $this->_environment->getCurrentParameterArray();
+      if (isset ($parameter_array['year'])){
+         $params['year'] = $parameter_array['year'];
+      }
+      if (isset ($parameter_array['month'])){
+         $params['month'] = $parameter_array['month'];
+      }
+       if (isset ($parameter_array['week'])){
+         $params['week'] = $parameter_array['week'];
+      }
+      if (isset ($parameter_array['presentation_mode'])){
+         $params['presentation_mode'] = $parameter_array['presentation_mode'];
+      }
+      $link_color = '#000000';
+      if ($item->getColor() != ''){
+      	if(($item->getColor() == '#3366FF')
+      	   or ($item->getColor() == '#6633FF')
+      	   or ($item->getColor() == '#CC33CC')
+      	   or ($item->getColor() == '#CC0000')
+      	   or ($item->getColor() == '#FF6600')
+      	   or ($item->getColor() == '#00CCCC')
+      	   or ($item->getColor() == '#999999')){
+      		$link_color = '#FFFFFF';
+      	}
+      }
+      if ( $item->issetPrivatDate() ){
+           $title ='<i>'.$title.'</i>';
+           $title = ahref_curl( $this->_environment->getCurrentContextID(),
+                           CS_DATE_TYPE,
+                           'detail',
+                           $params,
+                           $text,
+                           '',
+                           '',
+                           '',
+                           '',
+                           '',
+                           'calendar_link_' . $params['iid'],
+                           'style="color:' . $link_color .';"');
+         }else{
+            $title = ahref_curl( $this->_environment->getCurrentContextID(),
+                           CS_DATE_TYPE,
+                           'detail',
+                           $params,
+                           $text,
+                           '',
+                           '',
+                           '',
+                           '',
+                           '',
+                           'calendar_link_' . $params['iid'],
+                           'style="color:' . $link_color .';"');
+
+         }
+      unset($params);
+      return $title;
+   }
+   
    /** get the place of the item
     * this method returns the item place in the right formatted style
     *
@@ -2072,7 +2142,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
 
          if(isset($format_array[$i]['dates']) and !empty($format_array[$i]['dates'])){
             foreach($format_array[$i]['dates'] as $date){
-               $link = $this->_getItemLink($date, $date->getTitle());
+               $link = $this->_getItemLinkWithJavascript($date, $date->getTitle());
                $link_array = split('"', $link);
                $href = $link_array[1];
                if($date->getColor() != ''){
@@ -3047,6 +3117,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
          $left_position = 0;
          if ( isset($display_date_array[$day_entries]) ){
             foreach($display_date_array[$day_entries] as $date){
+            	$is_date_for_whole_day = false;
                $start_hour = mb_substr($date->getStartingTime(),0,2);
                if(mb_substr($start_hour,0,1) == '0'){
                   $start_hour = mb_substr($start_hour,1,1);
@@ -3057,8 +3128,14 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                }
 
                if(($date->getStartingDay() != $date->getEndingDay()) and ($date->getEndingDay() != '')){
-                  $end_hour = 23;
-                  $end_minutes = 60;
+               	if($date->getEndingTime() != ''){
+                     $end_hour = 23;
+                     $end_minutes = 60;
+               	} else {
+               		$end_hour = 0;
+                     $end_minutes = 0;
+                     $is_date_for_whole_day = true;
+               	}
                } else {
                   $end_hour = mb_substr($date->getEndingTime(),0,2);
                   $end_minutes = mb_substr($date->getEndingTime(),3,2);
@@ -3103,10 +3180,11 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                #$html .= '<div style="position: absolute; top: ' . $top . 'px; left: ' . $left . 'px; width:' . $width . 'px; height:' . $height . 'px; background-color:' . $color . '; z-index:1000; overflow:hidden; border:1px solid #dddddd;">';
                #$html .= '<div style="width:1000px;">' . $this->_getItemTitle($date,$date->getTitle()) . '</div>';
                #$html .= '</div>'.LF;
-               $link = $this->_getItemLink($date, $date->getTitle());
+               $link = $this->_getItemLinkWithJavascript($date, $date->getTitle());
                $link_array = split('"', $link);
                $href = $link_array[1];
-               $date_array_for_jQuery[] = 'new Array(' . $day_entries . ',\'' . $link . '\',' . $start_quaters . ',' . $end_quaters . ',' . count($display_date_array[$day_entries]) . ',\'' . $color . '\'' . ',\'' . $color_border . '\'' . ',\'' . $href . '\'' . ',\'sticky_' . $date_index . '\')';
+               
+               $date_array_for_jQuery[] = 'new Array(' . $day_entries . ',\'' . $link . '\',' . $start_quaters . ',' . $end_quaters . ',' . count($display_date_array[$day_entries]) . ',\'' . $color . '\'' . ',\'' . $color_border . '\'' . ',\'' . $href . '\'' . ',\'sticky_' . $date_index . '\'' . ',\'' . $is_date_for_whole_day . '\')';
                $tooltip = array();
                $tooltip['title'] = $date->getTitle();
 
