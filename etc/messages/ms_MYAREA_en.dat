@@ -3,6 +3,7 @@ $message["MYAREA_ACCOUNT"]["en"] = "User ID";
 $message["MYAREA_ACCOUNT_CHANGE"]["en"] = "Change user ID";
 $message["MYAREA_ACCOUNT_PROFIL"]["en"] = "My profile";
 $message["MYAREA_AUTH_PASSWORD_SET"]["en"] = "Change password";
+$message["MYAREA_PROFILE_EDIT"]["en"] = "Edit profile";
 $message["MYAREA_CHANGE_MY_ACTUAL_ROOMS"]["en"] = "Change room:";
 $message["MYAREA_CLIPBOARD_HEADER"]["en"] = "copies";
 $message["MYAREA_CLIPBOARD_HEADER_1"]["en"] = "copy";

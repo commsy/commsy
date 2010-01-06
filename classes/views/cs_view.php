@@ -82,6 +82,8 @@ class cs_view {
    var $_with_slimbox = false;
 
    public $_class_factory = NULL;
+   
+   protected $_text_converter;
 
 
    /** constructor: cs_view

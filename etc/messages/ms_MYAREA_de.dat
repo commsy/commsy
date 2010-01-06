@@ -3,6 +3,7 @@ $message["MYAREA_ACCOUNT"]["de"] = "Kennung";
 $message["MYAREA_ACCOUNT_CHANGE"]["de"] = "Kennung ändern";
 $message["MYAREA_ACCOUNT_PROFIL"]["de"] = "Meine Profildaten";
 $message["MYAREA_AUTH_PASSWORD_SET"]["de"] = "Passwort ändern";
+$message["MYAREA_PROFILE_EDIT"]["de"] = "Profil bearbeiten";
 $message["MYAREA_CHANGE_MY_ACTUAL_ROOMS"]["de"] = "Raum wechseln:";
 $message["MYAREA_CLIPBOARD_HEADER"]["de"] = "Kopien";
 $message["MYAREA_CLIPBOARD_HEADER_1"]["de"] = "Kopie";

@@ -1935,10 +1935,10 @@ class cs_page_view extends cs_view {
                       $params = array();
                       $params = $this->_environment->getCurrentParameterArray();
                       $params['cs_modus'] = 'password_change';
-                      $html .= '<span>> '.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),$this->_environment->getCurrentFunction(), $params,$this->_translator->getMessage('MYAREA_AUTH_PASSWORD_SET'),'','','','','','','style="color:#800000"').'</span>'.BRLF;
+                      $html .= '<span>> '.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),$this->_environment->getCurrentFunction(), $params,$this->_translator->getMessage('MYAREA_PROFILE_EDIT'),'','','','','','','style="color:#800000"').'</span>'.BRLF;
 
                } else {
-                   $html .= '<span class="disabled">> '.$this->_translator->getMessage('MYAREA_AUTH_PASSWORD_SET').'</span>'.BRLF;
+                   $html .= '<span class="disabled">> '.$this->_translator->getMessage('MYAREA_PROFILE_EDIT').'</span>'.BRLF;
                }
                unset($params['cs_modus']);
                if ($this->_environment->inServer() ) {

@@ -50,6 +50,16 @@ if (!isOption($command,'error')) {
       $form->prepareForm();
       $form->loadValues();
    }
+   
+   /* if we hit the abort button in the form */
+   elseif ( isOption($command,$translator->getMessage('ADMIN_CANCEL_BUTTON')) ) {
+      $params = $environment->getCurrentParameterArray();
+      if(	!empty($params['cs_modus']) and
+      	 	$params['cs_modus'] == 'password_change') {
+      	 unset($params['cs_modus']);
+      }
+   	  redirect($environment->getCurrentContextID(),$environment->getCurrentModule(),$environment->getCurrentFunction(),$params);
+   }
 
    /* we called ourself as result of a form post */
    elseif ( isOption($command,$translator->getMessage('PASSWORD_CHANGE_BUTTON_LONG')) ) {
@@ -58,10 +68,13 @@ if (!isOption($command,'error')) {
       $form->prepareForm();
       $form->loadValues();
       if ( $form->check() ) {
-         // change password
+         // change password and email
          if (empty($error_string)) {
             $auth_manager = $authentication->getAuthManager($_POST['auth_source_id']);
             $auth_manager->changePassword($_POST['user_id'],$_POST['password']);
+            $user_item = $environment->getCurrentUserItem();
+            $user_item->setEmail($_POST['email']);
+            $user_item->save();
             $error_number = $auth_manager->getErrorNumber();
             if (empty($error_number)) {
                $session_item = $environment->getSessionItem();

@@ -50,7 +50,8 @@ class cs_account_password_form extends cs_rubric_form {
     * this methods init the data (text and options) for the form
     */
    function _initForm () {
-      $this->_headline = $this->_translator->getMessage('USER_PASSWORD_CHANGE_HEADLINE');
+      //$this->_headline = $this->_translator->getMessage('USER_PASSWORD_CHANGE_HEADLINE');
+      $this->_headline = $this->_translator->getMessage('COMMON_PROFILE_EDIT');
 
       $session = $this->_environment->getSessionItem();
       if ( isset($session)
@@ -77,14 +78,19 @@ class cs_account_password_form extends cs_rubric_form {
       $this->_form->addText('user_id_text',$this->_translator->getMessage('AUTH_ACCOUNT'),'');
       $this->_form->addPassword('password','',$this->_translator->getMessage('USER_PASSWORD'),$this->_translator->getMessage('USER_PASSWORD_DESC'),'','',true);
       $this->_form->addPassword('password2','',$this->_translator->getMessage('USER_PASSWORD2'),$this->_translator->getMessage('USER_PASSWORD2_DESC'),'','',true);
+      
+      $this->_form->addTextfield('email','',$this->_translator->getMessage('USER_EMAIL'), '');
+      $this->_form->addTextfield('email2','',$this->_translator->getMessage('USER_EMAIL_CONFIRMATION'),'');
 
       // buttons
       if ( !empty($this->_modus)
            and $this->_modus == 'forget'
          ) {
-         $this->_form->addButton('option',$this->_translator->getMessage('PASSWORD_CHANGE_BUTTON_LONG'));
+         //$this->_form->addButton('option',$this->_translator->getMessage('PASSWORD_CHANGE_BUTTON_LONG'));
+         $this->_form->addButton('option',$this->_translator->getMessage('COMMON_CHANGE_BUTTON'));
       } else {
-         $this->_form->addButtonBar('option',$this->_translator->getMessage('PASSWORD_CHANGE_BUTTON_LONG'),$this->_translator->getMessage('ADMIN_CANCEL_BUTTON'));
+         //$this->_form->addButtonBar('option',$this->_translator->getMessage('PASSWORD_CHANGE_BUTTON_LONG'),$this->_translator->getMessage('ADMIN_CANCEL_BUTTON'));
+         $this->_form->addButtonBar('option',$this->_translator->getMessage('COMMON_CHANGE_BUTTON'),$this->_translator->getMessage('ADMIN_CANCEL_BUTTON'));
       }
    }
 
@@ -144,6 +150,7 @@ class cs_account_password_form extends cs_rubric_form {
          $this->_values['auth_source_id'] = $this->_item->getAuthSource();
          $this->_values['fullname_text'] = $this->_item->getFullname();
          $this->_values['user_id_text'] = $this->_item->getUserID();
+         $this->_values['email'] = $this->_item->getEmail();
       } else {
          // if $this->_form_post is empty and $this->_item is empty
          include_once('functions/error_functions.php');trigger_error('lost values',E_USER_WARNING);
@@ -158,6 +165,15 @@ class cs_account_password_form extends cs_rubric_form {
          $this->_error_array[] = $this->_translator->getMessage('USER_PASSWORD_ERROR');
          $this->_form->setFailure('password');
          $this->_form->setFailure('password2');
+      }
+      if(!isEmailValid($this->_form_post['email'])) {
+      	$this->_error_array[] = $this->_translator->getMessage('USER_EMAIL_VALID_ERROR');
+      	$this->_form->setFailure('email');
+      }
+      if($this->_form_post['email'] != $this->_form_post['email2']) {
+      	 $this->_error_array[] = $this->_translator->getMessage('USER_EMAIL_ERROR');
+      	 $this->_form->setFailure('email');
+      	 $this->_form->setFailure('email2');
       }
    }
 }
