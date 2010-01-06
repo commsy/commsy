@@ -83,7 +83,7 @@ class cs_view {
 
    public $_class_factory = NULL;
    
-   protected $_text_converter;
+   public $_text_converter;
 
 
    /** constructor: cs_view
