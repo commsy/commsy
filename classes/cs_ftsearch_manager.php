@@ -157,76 +157,78 @@ class cs_ftsearch_manager extends cs_manager {
       $return = '';
       exec($this->_cmdline, $ft_results, $return);
 
-      // Remark: problems with trailing german umlaute in search word
-      if ( strstr($ft_results[0],'err: Index file error') and $ft_results[1] == '.') {
-         if ( strstr($ft_results[0],'has an unknown format') ) {
-            $pos1 = mb_strpos($ft_results[0],'"');
-            $pos2 = mb_strrpos($ft_results[0],'"');
-            if ( $pos1 != $pos2 ) {
-               $file_name = mb_substr($ft_results[0],$pos1+1,$pos2-$pos1-1);
-               if ( !empty($file_name)
-                    and file_exists($file_name)
-                  ) {
-                  unlink($file_name);
-               }
-            }
-         } elseif ( !strstr($ft_results[0],'No such file or directory') ) {
-            include_once('functions/error_functions.php');
-            trigger_error("FT-Search: ". $ft_results[0], E_USER_WARNING);
-         }
-         unset ($ft_results);
-         return array();
-      } elseif ($ft_results[3] == 'err: no results' or $ft_results[4] == '.') {
-         // error handling by '$ft_results[4] == '.' -> array id 4 as begin of result section
-         //trigger_error("FT-Search: Nothing found or error performing search! " . $query, E_USER_WARNING);
-         unset ($ft_results);
-         return array();
-      } else {
-         for ($i = 0; $i < (count($ft_results) - 1); $i++) {
-            $r_entry = trim($ft_results[$i]);
-            if (mb_substr($r_entry, 0, 1) == "#") {
-               // e-swish result header - version info...
-            } else {
-               // *** split string
-               // get file rank
-               $f_rank = mb_substr($r_entry, 0, mb_strpos($r_entry, " "));
-               $r_entry = mb_substr($r_entry, mb_strpos($r_entry, " ") + 1, mb_strlen($r_entry));
-
-               // get file size
-               $f_size = number_format(intval(mb_substr($r_entry, mb_strrpos($r_entry, " ") + 1, mb_strlen($r_entry))) / 1024, 0, ',', '.');
-               $r_entry = mb_substr($r_entry, 0, mb_strrpos($r_entry, " "));
-               // get file url
-               $f_url = mb_substr($r_entry, 0, mb_strpos($r_entry, " \""));
-               $r_entry = mb_substr($r_entry, mb_strpos($r_entry, " \"") + 1, mb_strlen($r_entry));
-
-               // get file id
-               if ( !strstr($r_entry,'cid')  ) {
-                  $f_name = mb_substr($r_entry, 1, mb_strlen($r_entry) - 2);
-                  $f_name = substr($f_name,0,strpos($f_name,'.'));
-               } else {
-                  $f_name = substr($r_entry, 1, strlen($r_entry) - 2);
-                  $f_name = substr($f_name, strpos($f_name, "_") + 1, strlen($f_name));
-                  $f_name = substr($f_name, 0, strpos($f_name, "_"));
-               }
-               if ( !empty($f_name) ) {
-                  $ft_fid = $f_name;
-               }
-               // append iid
-               if ( isset($ft_fid)
-                    and !empty($ft_fid)
-                    and is_numeric($ft_fid) ) {
-                  $ft_fids[] = $ft_fid;
-               }
-            }
-         }
-         // set file item ids for cs_file_item (file icon with border)
-         if ( !empty($ft_fids) ) {
-            $ft_fids = array_unique($ft_fids);
-         } else {
-            $ft_fids = array();
-         }
-         $this->_ft_file_ids = $ft_fids;
-         return $ft_fids;
+      if(!empty($ft_results)){
+	      // Remark: problems with trailing german umlaute in search word
+	      if ( strstr($ft_results[0],'err: Index file error') and $ft_results[1] == '.') {
+	         if ( strstr($ft_results[0],'has an unknown format') ) {
+	            $pos1 = mb_strpos($ft_results[0],'"');
+	            $pos2 = mb_strrpos($ft_results[0],'"');
+	            if ( $pos1 != $pos2 ) {
+	               $file_name = mb_substr($ft_results[0],$pos1+1,$pos2-$pos1-1);
+	               if ( !empty($file_name)
+	                    and file_exists($file_name)
+	                  ) {
+	                  unlink($file_name);
+	               }
+	            }
+	         } elseif ( !strstr($ft_results[0],'No such file or directory') ) {
+	            include_once('functions/error_functions.php');
+	            trigger_error("FT-Search: ". $ft_results[0], E_USER_WARNING);
+	         }
+	         unset ($ft_results);
+	         return array();
+	      } elseif ($ft_results[3] == 'err: no results' or $ft_results[4] == '.') {
+	         // error handling by '$ft_results[4] == '.' -> array id 4 as begin of result section
+	         //trigger_error("FT-Search: Nothing found or error performing search! " . $query, E_USER_WARNING);
+	         unset ($ft_results);
+	         return array();
+	      } else {
+	         for ($i = 0; $i < (count($ft_results) - 1); $i++) {
+	            $r_entry = trim($ft_results[$i]);
+	            if (mb_substr($r_entry, 0, 1) == "#") {
+	               // e-swish result header - version info...
+	            } else {
+	               // *** split string
+	               // get file rank
+	               $f_rank = mb_substr($r_entry, 0, mb_strpos($r_entry, " "));
+	               $r_entry = mb_substr($r_entry, mb_strpos($r_entry, " ") + 1, mb_strlen($r_entry));
+	
+	               // get file size
+	               $f_size = number_format(intval(mb_substr($r_entry, mb_strrpos($r_entry, " ") + 1, mb_strlen($r_entry))) / 1024, 0, ',', '.');
+	               $r_entry = mb_substr($r_entry, 0, mb_strrpos($r_entry, " "));
+	               // get file url
+	               $f_url = mb_substr($r_entry, 0, mb_strpos($r_entry, " \""));
+	               $r_entry = mb_substr($r_entry, mb_strpos($r_entry, " \"") + 1, mb_strlen($r_entry));
+	
+	               // get file id
+	               if ( !strstr($r_entry,'cid')  ) {
+	                  $f_name = mb_substr($r_entry, 1, mb_strlen($r_entry) - 2);
+	                  $f_name = substr($f_name,0,strpos($f_name,'.'));
+	               } else {
+	                  $f_name = substr($r_entry, 1, strlen($r_entry) - 2);
+	                  $f_name = substr($f_name, strpos($f_name, "_") + 1, strlen($f_name));
+	                  $f_name = substr($f_name, 0, strpos($f_name, "_"));
+	               }
+	               if ( !empty($f_name) ) {
+	                  $ft_fid = $f_name;
+	               }
+	               // append iid
+	               if ( isset($ft_fid)
+	                    and !empty($ft_fid)
+	                    and is_numeric($ft_fid) ) {
+	                  $ft_fids[] = $ft_fid;
+	               }
+	            }
+	         }
+	         // set file item ids for cs_file_item (file icon with border)
+	         if ( !empty($ft_fids) ) {
+	            $ft_fids = array_unique($ft_fids);
+	         } else {
+	            $ft_fids = array();
+	         }
+	         $this->_ft_file_ids = $ft_fids;
+	         return $ft_fids;
+	      }
       }
    }
 
