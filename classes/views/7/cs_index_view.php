@@ -759,7 +759,7 @@ class cs_index_view extends cs_view {
          $father_id_array = $tag2tag_manager->getFatherItemIDArray($selected_id);
       }
       $html_text = '';
-      
+
       $session_item = $this->_environment->getSessionItem();
       $with_javascript = false;
       if($session_item->issetValue('javascript')){
@@ -773,7 +773,7 @@ class cs_index_view extends cs_view {
       } else {
          $html_text .= $this->_getTagContentAsHTML($root_item,0,$selected_id, $father_id_array);
       }
-      
+
       if ( empty($html_text) ){
          $html_text .= '<span class="disabled" style="font-size:10pt;">'.$this->_translator->getMessage('COMMON_NO_ENTRIES').'</span>';
       }
@@ -1084,7 +1084,7 @@ class cs_index_view extends cs_view {
       }
       return $html;
    }
-   
+
    private function _getSelectedTagArray () {
       return $this->_selected_tag_array;
    }
@@ -3046,7 +3046,17 @@ EOD;
       if ( !empty($this->_search_array) ){
          foreach ($this->_search_array as $search_text) {
             if ( mb_stristr($value,$search_text) ) {
-               $value = preg_replace('~'.preg_quote($search_text,'/').'~iu','*$0*',$value);
+            	// $replace = '(:mainsearch_text:)$0(:mainsearch_text_end:)';
+            	include_once('functions/misc_functions.php');
+                if ( getMarkerColor() == 'green') {
+               	$replace = '(:mainsearch_text_green:)$0(:mainsearch_text_green_end:)';
+                }
+                else if (getMarkerColor() == 'yellow') {
+               	$replace = '(:mainsearch_text_yellow:)$0(:mainsearch_text_yellow_end:)';
+                }
+            	// $replace = '(:searchedtext:)$0(:searchedtext_end:)';
+            	$value = preg_replace('~'.preg_quote($search_text,'/').'~iu',$replace,$value);
+               // $value = preg_replace('~'.preg_quote($search_text,'/').'~iu','*$0*',$value);
             }
          }
       }

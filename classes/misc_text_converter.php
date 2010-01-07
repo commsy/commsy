@@ -291,14 +291,25 @@ class misc_text_converter {
    public function _emphasize_text ($text) {
       // bold
       //$text = preg_replace('/(^|\n|\t|\s|[ >\/_[{(])\*([^*]+)\*($|\n|\t|[ <\/_.)\]},!?;])/', '$1<span style="font-weight:bold;">$2</span>$3', $text);
-      $text = preg_replace('~\*([^*]+)\*~u', '<span style="font-weight:bold;">$1</span>', $text);
+      $text = preg_replace('~\*([^*]+)\*~uU', '<span style="font-weight:bold;">$1</span>', $text);
 
       // italic
-      $text = preg_replace('~(^|\n|\t|\s|[ >\/[{(])_([^_]+)_($|\n|\t|:|[ <\/.)\]},!?;])~u', '$1<span style="font-style:italic;">$2</span>$3', $text);
+      $text = preg_replace('~(^|\n|\t|\s|[ >\/[{(])_([^_]+)_($|\n|\t|:|[ <\/.)\]},!?;])~uU', '$1<span style="font-style:italic;">$2</span>$3', $text);
+
+
+      // search (with yellow background)
+      $text = preg_replace('~\(:mainsearch_text_yellow:\)(.+)\(:mainsearch_text_yellow_end:\)~uU', '<span class="searched_text_yellow">$1</span>', $text);
+
+
+      // search (with green background)
+      $text = preg_replace('~\(:mainsearch_text_green:\)(.+)\(:mainsearch_text_green_end:\)~uU', '<span class="searched_text_green">$1</span>', $text);
+
 
       // search
       // maybe with yellow or orange background ???
-      $text = preg_replace('~\(:search:\)(.+)\(:search_end:\)~u', '<span style="font-style:italic;">$1</span>', $text);
+      $text = preg_replace('~\(:search:\)(.+)\(:search_end:\)~uU', '<span style="font-style:italic;">$1</span>', $text);
+      // $text = preg_replace('~\(:search:\)(.+)\(:search_end:\)~u', '<span class="searched_text">$1</span>', $text);
+
       return $text;
    }
 

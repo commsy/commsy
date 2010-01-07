@@ -105,6 +105,20 @@ span.select_link{
    font-size:8pt;
    color: <?php echo($color['headline_text'])?>;
 }
+/* background for the search text yellow */
+span.searched_text_yellow{
+	font-weight:bold;
+	font-size:9pt;
+	background-color:#EEFF22;
+	color:#000000;
+}
+/* background for the search text green */
+span.searched_text_green{
+	font-weight:bold;
+	font-size:9pt;
+	background-color:#77FF00;
+	color:#000000;
+}
 
 
 

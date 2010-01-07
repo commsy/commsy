@@ -1121,6 +1121,63 @@ function addFolderToZip($dir, $zipArchive, $zipdir = ''){
    return $zipArchive;
 }
 
+// up oder down...(up)
+function getMarkerColor(){
+   global $environment;
+   $room = $environment->getCurrentContextItem();
+   $color = $room->getColorArray();
+
+   $tabs_background_color = $color['tabs_background'];
+   if ( $tabs_background_color[0] == '#' ) {
+      $tabs_background_color = substr($tabs_background_color,1);
+   }
+   $r = hexdec($tabs_background_color[0].$tabs_background_color[1]);
+   $g = hexdec($tabs_background_color[2].$tabs_background_color[3]);
+   $b = hexdec($tabs_background_color[4].$tabs_background_color[5]);
+
+   $HSL = array();
+
+   $var_R = ($r / 255);
+   $var_G = ($g / 255);
+   $var_B = ($b / 255);
+
+   $var_Min = min($var_R, $var_G, $var_B);
+   $var_Max = max($var_R, $var_G, $var_B);
+   $del_Max = $var_Max - $var_Min;
+   $max = $var_Max;
+
+   $V = $var_Max;
+
+   if ($del_Max == 0) {
+      $H = 0;
+      $S = 0;
+   } else {
+      $S = $del_Max / $var_Max;
+
+      $del_R = ( ( ( $max - $var_R ) / 6 ) + ( $del_Max / 2 ) ) / $del_Max;
+      $del_G = ( ( ( $max - $var_G ) / 6 ) + ( $del_Max / 2 ) ) / $del_Max;
+      $del_B = ( ( ( $max - $var_B ) / 6 ) + ( $del_Max / 2 ) ) / $del_Max;
+
+      if ($var_R == $var_Max) $H = $del_B - $del_G;
+      else if ($var_G == $var_Max) $H = ( 1 / 3 ) + $del_R - $del_B;
+      else if ($var_B == $var_Max) $H = ( 2 / 3 ) + $del_G - $del_R;
+
+      if ($H<0) $H++;
+      if ($H>1) $H--;
+   }
+
+   $HSL['H'] = $H;
+   $HSL['S'] = $S;
+   $HSL['V'] = $V;
+
+   if($HSL['V'] < 0.91){
+      return 'yellow'; // white also hell
+   } elseif ($HSL['V'] > 0.91) {
+      return 'green'; // black also dunkel
+   }
+}
+
+
 function getSortImage($direction){
    global $environment;
    $room = $environment->getCurrentContextItem();

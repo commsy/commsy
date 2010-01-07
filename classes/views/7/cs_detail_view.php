@@ -926,7 +926,7 @@ class cs_detail_view extends cs_view {
                $html .= '<div class="right_box_title">'.$this->_translator->getMessage('COMMON_TAGS').'</div>';
                $html .= '         </noscript>';
                $html .= '<div class="right_box_main" >'.LF;
-               $html .= '<div id="tag_tree" name="tag_tree_detail">';
+               $html .= '<div id="tag_tree">';
             }
             $html .= '<ul>'.LF; // oberstes <ul>
             $current_item = $list->getFirst();
@@ -937,13 +937,11 @@ class cs_detail_view extends cs_view {
             $i = 1;
             while ( $current_item ) {
                $font_weight = 'normal';
-               $link_name = '';
                $tag_item = $tag_list->getFirst();
                if ( isset ($tag_item) ){
                   while( $tag_item ){
                      if($tag_item->getItemID() == $current_item->getItemID()){
                         $font_weight = 'bold';
-                        $link_name = 'selected';
                      }
                      $tag_item = $tag_list->getNext();
                   }
@@ -955,12 +953,7 @@ class cs_detail_view extends cs_view {
                if ($font_size < 8){
                   $font_size = 8;
                }
-               if($link_name != 'selected'){
-                  #$font_color = 20 + $this->getTagColorLogarithmic($count);
-                  $font_color = '#545454';
-               } else {
-                  $font_color = '#000000';
-               }
+               $font_color = 20 + $this->getTagColorLogarithmic($count);
                $color = 'rgb('.$font_color.'%,'.$font_color.'%,'.$font_color.'%);';
                $title = $this->_text_as_html_short($current_item->getTitle());
                $params['seltag_'.$ebene] = $current_item->getItemID();
@@ -972,17 +965,22 @@ class cs_detail_view extends cs_view {
                   }
                }
                $params['seltag'] = 'yes';
-               $params['name'] = $link_name;
                $link = curl($this->_environment->getCurrentContextID(),
                              'campus_search',
                              'index',
                              $params);
-               $html .= '<li id="' . $current_item->getItemID() . '" data="url: \'' . $link . '\'" style="color:#545454; font-style:normal; font-size:9pt; font-weight:normal;">'.LF;
+               #$html .= '<li id="' . $current_item->getItemID() . '" data="url: \'' . $link . '\'" style="color:'.$color.'; font-style:'.$font_style.'; font-size:'.$font_size.'px; font-weight:'.$font_weight.';">'.LF;
+               $html .= '<li id="' . $current_item->getItemID() . '" data="url: \'' . $link . '\'" style="color:#545454; font-style:normal; font-size:10pt; font-weight:normal;">'.LF;
+               #$html .= ahref_curl($this->_environment->getCurrentContextID(),
+               #              'campus_search',
+               #              'index',
+               #              $params,
+               #              $title,$title,'','','','','','style="color:'.$color.'"').LF;
                $html .= ahref_curl($this->_environment->getCurrentContextID(),
                              'campus_search',
                              'index',
                              $params,
-                             $title,$title,'','','','','','style="color:' . $font_color . '; font-size:9pt; font-weight:' . $font_weight . ';"').LF;
+                             $title,$title,'','','','','','style="color:#545454; font-size:10pt; font-weight:' . $font_weight . ';"').LF;
                $html .= $this->_getTagBoxAsHTMLWithJavascript($current_item, 0, 0, false, $tagged_item);
                $current_item = $list->getNext();
                $i++;
@@ -991,23 +989,6 @@ class cs_detail_view extends cs_view {
             $html.='</ul>'.LF;
             if($with_div){
                $html .= '</div>'.LF;
-               $html .= '<div style="width:235px; font-size:8pt; text-align:right; padding-top:5px;">';
-               if ($current_user->isUser() and $this->_with_modifying_actions ) {
-                  $params = array();
-                  $params = $this->_environment->getCurrentParameterArray();
-                  $params['attach_view'] = 'yes';
-                  $params['attach_type'] = 'tag';
-                  $html .= ahref_curl($this->_environment->getCurrentContextID(),
-                                      $this->_environment->getCurrentModule(),
-                                      $this->_environment->getCurrentFunction(),
-                                      $params,
-                                      $this->_translator->getMessage('COMMON_TAG_ATTACH')
-                                      ).LF;
-                  unset($params);
-               } else {
-                  $html .= '<span class="disabled">'.$this->_translator->getMessage('COMMON_TAG_ATTACH').'</span>'.LF;
-               }
-               $html .= '</div>'.LF;
                $html .= '</div>'.LF;
                $html .= '</div>'.LF;
             }
@@ -1015,7 +996,7 @@ class cs_detail_view extends cs_view {
       }
       return $html;
    }
-   
+
    function showBuzzwords(){
       $retour = false;
       $context_item = $this->_environment->getCurrentContextItem();
@@ -1284,14 +1265,13 @@ class cs_detail_view extends cs_view {
          if ( $this->showTags() ) {
             $html .= '<div class="commsy_panel" style="margin-bottom:1px;">'.LF;
             $session_item = $this->_environment->getSessionItem();
-            $with_javascript = false;
             if($session_item->issetValue('javascript')){
                if($session_item->getValue('javascript') == "1"){
                   $with_javascript = true;
                }
             }
             // UMSTELLUNG MUSEUM
-            if($with_javascript){
+            if($with_javascript and true){
                #$html .= $this->_getTagBoxAsHTMLWithJavaScript($item);
                $tag_manager = $this->_environment->getTagManager();
                $html .= $this->_getTagBoxAsHTMLWithJavaScript($tag_manager->getRootTagItem(), 0, 0, true, $item);
@@ -2603,7 +2583,8 @@ class cs_detail_view extends cs_view {
                                     CS_USER_TYPE,
                                     'detail',
                                     $params,
-                                    $this->_compareWithSearchText($modificator->getFullname()),
+                                    // $this->_compareWithSearchText($modificator->getFullname()),
+                                    $this->_text_as_html_short($this->_compareWithSearchText($modificator->getFullname())),
                                      '',
                                      '',
                                      '',
@@ -2633,7 +2614,7 @@ class cs_detail_view extends cs_view {
                                      'user',
                                      'detail',
                                      $params,
-                                     $this->_compareWithSearchText($modificator->getFullname()),
+                                     $this->_text_as_html_short($this->_compareWithSearchText($modificator->getFullname())),
                                      '',
                                      '',
                                      '',
@@ -2712,7 +2693,7 @@ class cs_detail_view extends cs_view {
                                      'user',
                                      'detail',
                                      $params,
-                                     $this->_compareWithSearchText($creator->getFullname()));
+                                     $this->_text_as_html_short($this->_compareWithSearchText($creator->getFullname())));
          } elseif ( isset($creator) and !$creator->isDeleted()){
             $temp_html = '<span class="disabled">'.$this->_compareWithSearchText($creator->getFullname()).'</span>';
          } else {
@@ -3323,7 +3304,16 @@ class cs_detail_view extends cs_view {
       if ( !empty($this->_search_array) ) {
          foreach ($this->_search_array as $search_text) {
             if ( mb_stristr($value,$search_text) ) {
-               $replace = '*$0*';
+               // CSS Klasse erstellen für Farbmarkierung
+               include_once('functions/misc_functions.php');
+               if ( getMarkerColor('up') == 'green') {
+               	$replace = '(:mainsearch_text_green:)$0(:mainsearch_text_green_end:)';
+               }
+               else if (getMarkerColor('up') == 'yellow') {
+               	$replace = '(:mainsearch_text_yellow:)$0(:mainsearch_text_yellow_end:)';
+               }
+               // $replace = '(:mainsearch_text:)$0(:mainsearch_text_end:)';
+               // $replace = '*$0*';
                if ( !$bold ) {
                   $replace = '(:search:)$0(:search_end:)';
                }
@@ -3381,11 +3371,6 @@ class cs_detail_view extends cs_view {
          ) {
          $params = $this->_environment->getCurrentParameterArray();
          $params['action'] = 'delete';
-         if($item->getItemType() == CS_DATE_TYPE){
-            if($item->getRecurrenceId() != '' and $item->getRecurrenceId() != 0){
-               $params['recurrence_id'] = $item->getRecurrenceId();
-            }
-         }
          if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
             $image = '<img src="images/commsyicons_msie6/22x22/delete.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_DELETE_ITEM').'"/>';
          } else {
