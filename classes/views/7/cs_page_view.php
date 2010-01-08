@@ -602,7 +602,13 @@ class cs_page_view extends cs_view {
          $retour .= '   </script>'.LF;
          // jQuery
          //$retour .= '   <script src="javascript/slimbox/js/slimbox.js" type="text/javascript"></script>'.LF;
-         $retour .= '   <script src="javascript/jQuery/Slimbox2/js/slimbox2.js" type="text/javascript"></script>'.LF;
+         $with_slimbox = true;
+		 if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+	           $with_slimbox = false;
+	     }
+	     if($with_slimbox){
+         	$retour .= '   <script src="javascript/jQuery/Slimbox2/js/slimbox2.js" type="text/javascript"></script>'.LF;
+	     }
          // jQuery
          // jQuery
          $retour .= '   <script type="text/javascript" src="javascript/swfobject.js"></script>'.LF;
@@ -621,7 +627,13 @@ class cs_page_view extends cs_view {
          $retour .= '   </script>'.LF;
          // jQuery
          //$retour .= '   <script src="javascript/slimbox/js/slimbox.js" type="text/javascript"></script>'.LF;
-         $retour .= '   <script src="javascript/jQuery/Slimbox2/js/slimbox2.js" type="text/javascript"></script>'.LF;
+         $with_slimbox = true;
+		 if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+	           $with_slimbox = false;
+	     }
+	     if($with_slimbox){
+         	$retour .= '   <script src="javascript/jQuery/Slimbox2/js/slimbox2.js" type="text/javascript"></script>'.LF;
+	     }
          // jQuery
          // jQuery
          $retour .= '   <script type="text/javascript" src="javascript/swfobject.js"></script>'.LF;
@@ -669,7 +681,13 @@ class cs_page_view extends cs_view {
          if ( $this->_environment->getCurrentModule() != 'configuration' ) {
             // jQuery
             //$retour .= '   <script src="javascript/slimbox/js/slimbox.js" type="text/javascript"></script>'.LF;
-            $retour .= '   <script src="javascript/jQuery/Slimbox2/js/slimbox2.js" type="text/javascript"></script>'.LF;
+            $with_slimbox = true;
+			 if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+		           $with_slimbox = false;
+		     }
+		     if($with_slimbox){
+            	$retour .= '   <script src="javascript/jQuery/Slimbox2/js/slimbox2.js" type="text/javascript"></script>'.LF;
+		     }
             // jQuery
          }
       }elseif ( $this->_environment->getCurrentFunction() == 'edit'
@@ -698,7 +716,13 @@ class cs_page_view extends cs_view {
             $retour .= '   </script>'.LF;
             // jQuery
             //$retour .= '   <script src="javascript/slimbox/js/slimbox.js" type="text/javascript"></script>'.LF;
-            $retour .= '   <script src="javascript/jQuery/Slimbox2/js/slimbox2.js" type="text/javascript"></script>'.LF;
+            $with_slimbox = true;
+		 	if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+	           $with_slimbox = false;
+	     	}
+	     	if($with_slimbox){
+            	$retour .= '   <script src="javascript/jQuery/Slimbox2/js/slimbox2.js" type="text/javascript"></script>'.LF;
+	     	}
             // jQuery
             $retour .= '   <script type="text/javascript" src="javascript/colorpicker/script.js"></script>'.LF;
          }
