@@ -2276,7 +2276,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                $tooltip['date'] = $tooltip_date;
                $tooltip['place'] = $date->getPlace();
                $tooltip['participants'] = $date->getParticipantsItemList();
-               $tooltip['desc'] = $date->getDescription();
+               #$tooltip['desc'] = $date->getDescription();
                $tooltip['color'] = $color;
                $tooltips['sticky_' . $date_index] = $tooltip;
                $date_index++;
@@ -2332,9 +2332,9 @@ class cs_date_calendar_index_view extends cs_room_index_view {
          $html .= '<tr><td colspan="2"><b>' . $tooltip['title'] . '</b></td></tr>'.LF;
          $html .= '<tr><td style="vertical-align:top;"><b>' . $this->_translator->getMessage('DATES_DATETIME') . ':</b></td><td>' .  $tooltip['date'][1] . '</td></tr>'.LF;
          if($tooltip['place'] != ''){
-            $html .= '<tr><td style="vertical-align:top;><b>' . $this->_translator->getMessage('DATES_PLACE') . ':</b></td><td>' . $tooltip['place'] . '</td></tr>'.LF;
+            $html .= '<tr><td style="vertical-align:top;"><b>' . $this->_translator->getMessage('DATES_PLACE') . ':</b></td><td>' . $tooltip['place'] . '</td></tr>'.LF;
          }
-         $html .= '<tr><td style="vertical-align:top;><b>' . $this->_translator->getMessage('DATE_PARTICIPANTS') . ':</b></td><td>'.LF;
+         $html .= '<tr><td style="vertical-align:top;"><b>' . $this->_translator->getMessage('DATE_PARTICIPANTS') . ':</b></td><td>'.LF;
          if($tooltip['participants']->isEmpty()){
             $html .= $this->_translator->getMessage('TODO_NO_PROCESSOR');
          } else {
@@ -2351,7 +2351,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
             }
          }
          $html .= '</td></tr>'.LF;
-         $html .= '<tr><td colspan="2">' . $tooltip['desc'] . '</td></tr>'.LF;
+         #$html .= '<tr><td colspan="2">' . $tooltip['desc'] . '</td></tr>'.LF;
          $html .= '</table>'.LF;
          $html .= '</div>'.LF;
       }
@@ -3306,7 +3306,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                $tooltip['date'] = $tooltip_date;
                $tooltip['place'] = $date->getPlace();
                $tooltip['participants'] = $date->getParticipantsItemList();
-               $tooltip['desc'] = $date->getDescription();
+               #$tooltip['desc'] = $date->getDescription();
                $tooltip['color'] = $color;
                $tooltips['sticky_' . $date_index] = $tooltip;
                $date_index++;
@@ -3321,9 +3321,9 @@ class cs_date_calendar_index_view extends cs_room_index_view {
          $html .= '<tr><td colspan="2"><b>' . $tooltip['title'] . '</b></td></tr>'.LF;
          $html .= '<tr><td style="vertical-align:top;"><b>' . $this->_translator->getMessage('DATES_DATETIME') . ':</b></td><td>' .  $tooltip['date'][1] . '</td></tr>'.LF;
          if($tooltip['place'] != ''){
-            $html .= '<tr><td style="vertical-align:top;><b>' . $this->_translator->getMessage('DATES_PLACE') . ':</b></td><td>' . $tooltip['place'] . '</td></tr>'.LF;
+            $html .= '<tr><td style="vertical-align:top;"><b>' . $this->_translator->getMessage('DATES_PLACE') . ':</b></td><td>' . $tooltip['place'] . '</td></tr>'.LF;
          }
-         $html .= '<tr><td style="vertical-align:top;><b>' . $this->_translator->getMessage('DATE_PARTICIPANTS') . ':</b></td><td>'.LF;
+         $html .= '<tr><td style="vertical-align:top;"><b>' . $this->_translator->getMessage('DATE_PARTICIPANTS') . ':</b></td><td>'.LF;
          if($tooltip['participants']->isEmpty()){
             $html .= $this->_translator->getMessage('TODO_NO_PROCESSOR');
          } else {
@@ -3340,7 +3340,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
             }
          }
          $html .= '</td></tr>'.LF;
-         $html .= '<tr><td colspan="2">' . $tooltip['desc'] . '</td></tr>'.LF;
+         #$html .= '<tr><td colspan="2">' . $tooltip['desc'] . '</td></tr>'.LF;
          $html .= '</table>'.LF;
          $html .= '</div>'.LF;
       }
