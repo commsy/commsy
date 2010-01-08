@@ -767,6 +767,9 @@ class cs_index_view extends cs_view {
             $with_javascript = true;
          }
       }
+      if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+	     $with_javascript = false;
+	  }
       // UMSTELLUNG MUSEUM
       if($with_javascript){
          $html_text .= $this->_getTagContentAsHTMLWithJavascript($root_item,0,$selected_id, $father_id_array,0,true);
