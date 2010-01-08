@@ -445,6 +445,9 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                $with_javascript = true;
             }
          }
+         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+         	$with_javascript = false;
+         }
          if($with_javascript and $this->use_sunbird){
             $html .= $this->_getTableheadMonthAsHTMLWithJavascript();
          } else {
@@ -457,6 +460,9 @@ class cs_date_calendar_index_view extends cs_room_index_view {
             if($session_item->getValue('javascript') == "1"){
                $with_javascript = true;
             }
+         }
+         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+         	$with_javascript = false;
          }
          if($with_javascript and $this->use_sunbird){
             $html .= $this->_getTableheadAsHTMLWithJavascript();
@@ -476,6 +482,9 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                $with_javascript = true;
             }
          }
+         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+         	$with_javascript = false;
+         }
          if($with_javascript and $this->use_sunbird){
             $html .= $this->_getMonthContentAsHTMLWithJavaScript();
          } else {
@@ -490,6 +499,9 @@ class cs_date_calendar_index_view extends cs_room_index_view {
             if($session_item->getValue('javascript') == "1"){
                $with_javascript = true;
             }
+         }
+         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+         	$with_javascript = false;
          }
          if($with_javascript and $this->use_sunbird){
             $html .= $this->_getWeekContentAsHTMLWithJavaScript();
