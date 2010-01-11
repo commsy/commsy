@@ -130,7 +130,7 @@ class cs_dates_manager extends cs_manager {
    function setColorLimit ($limit) {
       $this->_color_limit = $limit;
    }
-   
+
    function setRecurrenceLimit ($limit) {
       $this->_recurrence_limit = $limit;
    }
@@ -636,15 +636,31 @@ class cs_dates_manager extends cs_manager {
                'datetime_start="'.encode(AS_DB,$item->getDateTime_start()).'",'.
                'datetime_end="'.encode(AS_DB,$item->getDateTime_end()).'",'.
                'place="'.encode(AS_DB,$item->getPlace()).'",'.
-               'date_mode="'.encode(AS_DB,$item->getDateMode()).'",'.
-               'color="'.encode(AS_DB,$item->getColor()).'",'.
-               'recurrence_id="'.encode(AS_DB,$item->getRecurrenceId()).'",'.
-               'recurrence_pattern="'.encode(AS_DB,serialize($item->getRecurrencePattern())).'"'.
-               ' WHERE item_id="'.encode(AS_DB,$item->getItemID()).'"';
+               'date_mode="'.encode(AS_DB,$item->getDateMode()).'"';
+      $color = $item->getColor();
+      if ( !empty($color) ) {
+         $query .= ', color="'.encode(AS_DB,$item->getColor()).'"';
+      } else {
+         $query .= ', color=NULL';
+      }
+      $rev_id = $item->getRecurrenceId();
+      if ( !empty($rev_id) ) {
+         $query .= ', recurrence_id="'.encode(AS_DB,$item->getRecurrenceId()).'"';
+      } else {
+         $query .= ', recurrence_id=NULL';
+      }
+      $rev_pattern = $item->getRecurrencePattern();
+      if ( !empty($rev_pattern) ) {
+         $query .= ', recurrence_pattern="'.encode(AS_DB,serialize($item->getRecurrencePattern())).'"';
+      } else {
+         $query .= ', recurrence_pattern=NULL';
+      }
+      $query .= ' WHERE item_id="'.encode(AS_DB,$item->getItemID()).'"';
 
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) or !$result ) {
-         include_once('functions/error_functions.php');trigger_error('Problems updating dates.',E_USER_WARNING);
+         include_once('functions/error_functions.php');
+         trigger_error('Problems updating dates.',E_USER_WARNING);
       }
       unset($modificator);
       unset($item);
@@ -663,7 +679,8 @@ class cs_dates_manager extends cs_manager {
               'type="date"';
      $result = $this->_db_connector->performQuery($query);
      if ( !isset($result) ) {
-        include_once('functions/error_functions.php');trigger_error('Problems creating dates.',E_USER_WARNING);
+        include_once('functions/error_functions.php');
+        trigger_error('Problems creating dates.',E_USER_WARNING);
         $this->_create_id = NULL;
      } else {
         $this->_create_id = $result;
@@ -696,33 +713,43 @@ class cs_dates_manager extends cs_manager {
          $modification_date = $item->getModificationDate();
       }
 
-     $query = 'INSERT INTO dates SET '.
-              'item_id="'.encode(AS_DB,$item->getItemID()).'", '.
-              'context_id="'.encode(AS_DB,$item->getContextID()).'", '.
-              'creator_id="'.encode(AS_DB,$user->getItemID()).'",'.
-              'creation_date="'.$current_datetime.'",'.
-              'modifier_id="'.encode(AS_DB,$modificator->getItemID()).'",'.
-              'modification_date="'.$modification_date.'",'.
-              'title="'.encode(AS_DB,$item->getTitle()).'", '.
-              'public="'.encode(AS_DB,$public).'",'.
-              'description="'.encode(AS_DB,$item->getDescription()).'", '.
-              'start_time="'.encode(AS_DB,$item->getStartingTime()).'", '.
-              'end_time="'.encode(AS_DB,$item->getEndingTime()).'", '.
-              'start_day="'.encode(AS_DB,$item->getStartingDay()).'", '.
-              'end_day="'.encode(AS_DB,$item->getEndingDay()).'", '.
-              'datetime_start="'.encode(AS_DB,$item->getDateTime_start()).'", '.
-              'datetime_end="'.encode(AS_DB,$item->getDateTime_end()).'", '.
-              'place="'.encode(AS_DB,$item->getPlace()).'", '.
-              'date_mode="'.encode(AS_DB,$item->getDateMode()).'", '.
-              'color="'.encode(AS_DB,$item->getColor()).'", '.
-              'recurrence_id="'.encode(AS_DB,$item->getRecurrenceId()).'", '.
-              'recurrence_pattern="'.encode(AS_DB,serialize($item->getRecurrencePattern())).'"';
-     $result = $this->_db_connector->performQuery($query);
-     if ( !isset($result) ) {
-        include_once('functions/error_functions.php');trigger_error('Problems creating dates.',E_USER_WARNING);
-     }
-     unset($item);
-  }
+      $query = 'INSERT INTO dates SET '.
+               'item_id="'.encode(AS_DB,$item->getItemID()).'", '.
+               'context_id="'.encode(AS_DB,$item->getContextID()).'", '.
+               'creator_id="'.encode(AS_DB,$user->getItemID()).'",'.
+               'creation_date="'.$current_datetime.'",'.
+               'modifier_id="'.encode(AS_DB,$modificator->getItemID()).'",'.
+               'modification_date="'.$modification_date.'",'.
+               'title="'.encode(AS_DB,$item->getTitle()).'", '.
+               'public="'.encode(AS_DB,$public).'",'.
+               'description="'.encode(AS_DB,$item->getDescription()).'", '.
+               'start_time="'.encode(AS_DB,$item->getStartingTime()).'", '.
+               'end_time="'.encode(AS_DB,$item->getEndingTime()).'", '.
+               'start_day="'.encode(AS_DB,$item->getStartingDay()).'", '.
+               'end_day="'.encode(AS_DB,$item->getEndingDay()).'", '.
+               'datetime_start="'.encode(AS_DB,$item->getDateTime_start()).'", '.
+               'datetime_end="'.encode(AS_DB,$item->getDateTime_end()).'", '.
+               'place="'.encode(AS_DB,$item->getPlace()).'", '.
+               'date_mode="'.encode(AS_DB,$item->getDateMode()).'"';
+      $color = $item->getColor();
+      if ( !empty($color) ) {
+         $query .= ', color="'.encode(AS_DB,$item->getColor()).'"';
+      }
+      $rev_id = $item->getRecurrenceId();
+      if ( !empty($rev_id) ) {
+         $query .= ', recurrence_id="'.encode(AS_DB,$item->getRecurrenceId()).'"';
+      }
+      $rev_pattern = $item->getRecurrencePattern();
+      if ( !empty($rev_pattern) ) {
+         $query .= ', recurrence_pattern="'.encode(AS_DB,serialize($item->getRecurrencePattern())).'"';
+      }
+      $result = $this->_db_connector->performQuery($query);
+      if ( !isset($result) ) {
+         include_once('functions/error_functions.php');
+         trigger_error('Problems creating dates.',E_USER_WARNING);
+      }
+      unset($item);
+   }
 
   /**  delete a dates item
    *
