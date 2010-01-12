@@ -56,7 +56,8 @@ function ahref_curl( $context_id, $module, $function, $parameter, $linktext, $ti
       $style = ' '.$style;
    }
    if (!$empty_adress){
-       $ahref = '<a'.$style.' href="'.$address.'"';
+       #$ahref = '<a'.$style.' href="'.$address.'"';
+       $ahref = '<a href="'.$address.'"'.$style;
        if ( $title != '' )  $ahref .= ' title="'.strip_tags($title).'"';
        if ( $name != '' )   $ahref .= ' name="'.$name.'"';
        if ( $target != '' ) $ahref .= ' target="'.$target.'"';
