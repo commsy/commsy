@@ -2236,12 +2236,27 @@ class cs_detail_view extends cs_view {
       $pos       = $this->getPosition();  // zero-based!
       $item_manager = $this->_environment->getItemManager();
       $ids_not_activated = array();
-      foreach($ids as $index => $id){
-         $item = $item_manager->getItem($id);
-         if($item->isNotActivated()){
-            $ids_not_activated[] = $id;
+      #foreach($ids as $index => $id){
+      #   $item = $item_manager->getItem($id);
+      #   if($item->isNotActivated()){
+      #      $ids_not_activated[] = $id;
+      #   }
+      #}
+      $item_manager->resetLimits();
+      $item_manager->setContextLimit($this->_environment->getCurrentContextID());
+      $item_manager->setIDArrayLimit($ids);
+      $item_manager->setIntervalLimit(sizeof($ids));
+      $item_manager->select();
+      $item_list = $item_manager->get();
+      $temp_item = $item_list->getFirst();
+      while($temp_item){
+         if($temp_item->isNotActivated()){
+            $ids_not_activated[] = $temp_item->getItemID();
          }
+      	$temp_item = $item_list->getNext();
       }
+      $item_manager->resetLimits();
+      
       $count_all = count($ids);
       // Determine the position if it is not (correctly) given
       if ( $pos < 0 || $pos >= $count_all ) {

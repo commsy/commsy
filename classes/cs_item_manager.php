@@ -157,6 +157,9 @@ class cs_item_manager extends cs_manager {
      } elseif(empty($this->_room_array_limit)) {
         $query .= ' AND items.context_id = "'.encode(AS_DB,$this->_environment->getCurrentContextID()).'"';
      }
+     if (isset($this->_id_array_limit)) {
+        $query .= ' AND items.item_id IN ('.implode(", ",encode(AS_DB,$this->_id_array_limit)).')';
+     }
      if ( isset($this->_type_limit) or isset ($this->_label_limit)){
      $query .= ' AND (';
      if ( isset($this->_type_limit) ){
