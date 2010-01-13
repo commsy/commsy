@@ -3125,6 +3125,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $html .= '</div>'.LF;
       $date_array_for_jQuery = array();
       $date_array_for_jQuery_temp = array();
+      $date_array_for_jQuery_php = array();
       $date_index = 0;
       $tooltips = array();
       $tooltip_date = '';

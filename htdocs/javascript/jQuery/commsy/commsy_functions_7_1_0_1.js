@@ -794,6 +794,10 @@ function draw_dates(){
 			var color_border = calendar_dates[i][6];
 			var href = calendar_dates[i][7];
 			var tooltip = calendar_dates[i][8];
+			var is_date_for_whole_day = calendar_dates[i][9];
+			var max_overlap = calendar_dates[i][10];
+			var start_column = calendar_dates[i][11];
+			//var start_quarter = calendar_dates[i][12];
 			
 			if(start_quaters % 4 == 0){
 				var start_div = start_quaters / 4;
@@ -802,6 +806,7 @@ function draw_dates(){
 				var start_div = (start_quaters - start_quaters % 4) / 4;
 				var top = (start_quaters % 4) * 10;
 			}
+			
 			top = top+1;
 			
 			if(end_quaters != 0){
@@ -814,37 +819,21 @@ function draw_dates(){
 			var end_spacer = 0;
 			var between_space = (dates_on_day -1) * 0;
 			var width_div = jQuery('#calendar_entry_date_div_' + start_div + '_'+day).width()-1;
-			var width = width_div; // - (start_spacer + end_spacer) - between_space;
+			var width = width_div / max_overlap; // - (start_spacer + end_spacer) - between_space;
 
-			if(width % dates_on_day == 0){
-			   width = width / dates_on_day;
-			   var width_rest = 0;
-			} else {
-			   width = (width - (width % dates_on_day)) / dates_on_day;
-			   var width_rest = width % dates_on_day;
-			}
-			//width = width-2-width_rest;
-			//if(left_position == 0){
-			//   var left = left_position * width + 2;
-			//} else {
-			   var left = (left_position * width)+1;// + ((left_position+1) * 2);
-			//}
+			var left = (width * start_column)+1;// + ((left_position+1) * 2);
 			   
 			// Ausgleich border
 			width = width-2;
 			height = height-2-1;
-
-	    	if(next_day == 'none'){
-	    		width = width + width_rest + (width_div - ((width + 2) * dates_on_day));
-	    	}
-		    left_position++;
 		    
-		    if(start_quaters == 0 && end_quaters == 0){
-		    	jQuery('#calendar_entry_date_div_'+day).prepend('<div name="calendar_date" style="position:absolute; top:' + (top + 1) + 'px; left:' + left + 'px; height:' + (jQuery('#calendar_entry_'+day).height()-4) + 'px; width:' + width + 'px; background-color:' + color + '; z-index:1000; overflow:hidden; border:1px solid ' + color_border + ';"><div style="width:1000px; text-align:left; position:absolute; top:0px; left:0px;">' + title + '</div><div style="position:absolute; top:0px; left:0px; height:100%; width:100%;" data-tooltip="' + tooltip + '"><a href="' + href + '"><img src="images/spacer.gif" style="height:100%; width:100%;"/></a></div></div>');
+		    if(is_date_for_whole_day){
+		    	width = width_div - 2;
+		    	left = 1;
+		    	jQuery('#calendar_entry_date_div_'+day).prepend('<div name="calendar_date" style="position:absolute; top:' + (top + 1) + 'px; left:' + left + 'px; height: 18px; width:' + width + 'px; background-color:' + color + '; z-index:1000; overflow:hidden; border:1px solid ' + color_border + ';"><div style="width:1000px; text-align:left; position:absolute; top:0px; left:0px;">' + title + '</div><div style="position:absolute; top:0px; left:0px; height:100%; width:100%;" data-tooltip="' + tooltip + '"><a href="' + href + '"><img src="images/spacer.gif" style="height:100%; width:100%;"/></a></div></div>');
 		    } else {
 		    	jQuery('#calendar_entry_date_div_' + start_div + '_'+day).prepend('<div name="calendar_date" style="position:absolute; top:' + top + 'px; left:' + left + 'px; height:' + height + 'px; width:' + width + 'px; background-color:' + color + '; z-index:1000; overflow:hidden; border:1px solid ' + color_border + ';"><div style="width:1000px; text-align:left; position:absolute; top:0px; left:0px;">' + title + '</div><div style="position:absolute; top:0px; left:0px; height:100%; width:100%;"><a href="' + href + '" data-tooltip="' + tooltip + '"><img src="images/spacer.gif" style="height:100%; width:100%;"/></a></div></div>');
 		    }
-		    //jQuery('#mystickytooltip').append('<div id="sticky_' + start_div + '_' + day + '">Sticky Tooptip 1 content here...</div>');
 	    }
 		stickytooltip.init("*[data-tooltip]", "mystickytooltip");
 	}
