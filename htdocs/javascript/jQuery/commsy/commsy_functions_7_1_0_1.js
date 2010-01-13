@@ -740,6 +740,7 @@ function resize_calendar(){
 	jQuery('#calender_main').css({width: frame_width - scrollbar_width+'px'});
 	jQuery('.calender_hour').css({width: frame_width - scrollbar_width+'px'});
 	jQuery('.calendar_time').css({width: time_width+'px'});
+	jQuery('.calendar_time_day').css({width: time_width+'px'});
 	jQuery('.calendar_time_head').css({width: time_width+'px'});
 	jQuery('[id^=calendar_entry]').css({width: entry_width+'px'});
 	jQuery('[id^=calendar_head]').css({width: entry_width+'px'});
@@ -774,12 +775,14 @@ function draw_dates(){
 	var left_position = 0;
 	var current_day = '';
 	var tooltip_added = false;
+	var top_date_for_whole_day = 0;
 	if(typeof(calendar_dates) != 'undefined'){
 		for (var i = 0; i < calendar_dates.length; i++) {
 			var day = calendar_dates[i][0]-1;
 			if(current_day != day){
 				current_day = day;
 				left_position = 0;
+				top_date_for_whole_day = 0;
 			}
 			if(i+1 < calendar_dates.length){
 				var next_day = calendar_dates[i+1][0]-1;
@@ -798,6 +801,7 @@ function draw_dates(){
 			var max_overlap = calendar_dates[i][10];
 			var start_column = calendar_dates[i][11];
 			//var start_quarter = calendar_dates[i][12];
+			var max_overlap_for_date = calendar_dates[i][13];
 			
 			if(start_quaters % 4 == 0){
 				var start_div = start_quaters / 4;
@@ -820,7 +824,10 @@ function draw_dates(){
 			var between_space = (dates_on_day -1) * 0;
 			var width_div = jQuery('#calendar_entry_date_div_' + start_div + '_'+day).width()-1;
 			var width = width_div / max_overlap; // - (start_spacer + end_spacer) - between_space;
-
+			if(max_overlap_for_date == 1){
+			   width = width_div;
+			}
+			
 			var left = (width * start_column)+1;// + ((left_position+1) * 2);
 			   
 			// Ausgleich border
@@ -828,9 +835,16 @@ function draw_dates(){
 			height = height-2-1;
 		    
 		    if(is_date_for_whole_day){
+		      top_date_for_whole_day++;
 		    	width = width_div - 2;
 		    	left = 1;
-		    	jQuery('#calendar_entry_date_div_'+day).prepend('<div name="calendar_date" style="position:absolute; top:' + (top + 1) + 'px; left:' + left + 'px; height: 18px; width:' + width + 'px; background-color:' + color + '; z-index:1000; overflow:hidden; border:1px solid ' + color_border + ';"><div style="width:1000px; text-align:left; position:absolute; top:0px; left:0px;">' + title + '</div><div style="position:absolute; top:0px; left:0px; height:100%; width:100%;" data-tooltip="' + tooltip + '"><a href="' + href + '"><img src="images/spacer.gif" style="height:100%; width:100%;"/></a></div></div>');
+		    	if(top_date_for_whole_day > 1){
+		    	   top = 19 * (top_date_for_whole_day - 1);
+		    	   var height= 40 + ((top_date_for_whole_day - 2) * 19)-1;
+		    	}
+		    	jQuery('[class=calendar_time_day]').css('height', height);
+		    	jQuery('[class=calendar_entry_day]').css('height', height);
+		    	jQuery('#calendar_entry_date_div_'+day).prepend('<div name="calendar_date" style="position:absolute; top:' + (top) + 'px; left:' + left + 'px; height: 18px; width:' + width + 'px; background-color:' + color + '; z-index:1000; overflow:hidden; border:1px solid ' + color_border + ';"><div style="width:1000px; text-align:left; position:absolute; top:0px; left:0px;">' + title + '</div><div style="position:absolute; top:0px; left:0px; height:100%; width:100%;" data-tooltip="' + tooltip + '"><a href="' + href + '"><img src="images/spacer.gif" style="height:100%; width:100%;"/></a></div></div>');
 		    } else {
 		    	jQuery('#calendar_entry_date_div_' + start_div + '_'+day).prepend('<div name="calendar_date" style="position:absolute; top:' + top + 'px; left:' + left + 'px; height:' + height + 'px; width:' + width + 'px; background-color:' + color + '; z-index:1000; overflow:hidden; border:1px solid ' + color_border + ';"><div style="width:1000px; text-align:left; position:absolute; top:0px; left:0px;">' + title + '</div><div style="position:absolute; top:0px; left:0px; height:100%; width:100%;"><a href="' + href + '" data-tooltip="' + tooltip + '"><img src="images/spacer.gif" style="height:100%; width:100%;"/></a></div></div>');
 		    }
@@ -839,13 +853,14 @@ function draw_dates(){
 	}
 	if(typeof(today) != 'undefined'){
 		if(today != ''){
-			var today_color = '#fdefbf'
+			var today_color = '#fdefbf';
+			var today_color_day = '#ebddb0';
 			jQuery.each(jQuery('[id^=calendar_head]'), function(){
 				if((jQuery(this).attr('id').indexOf(today)) != -1){
 					//jQuery(this).css('background-color', today_color);
 					var today_array = jQuery(this).attr('id').split('_');
 					var today_index = today_array[2];
-					jQuery('#calendar_entry_' + today_index).css('background-color', today_color);
+					jQuery('#calendar_entry_' + today_index).css('background-color', today_color_day);
 					for ( var index = 0; index <= 23; index++) {
 						jQuery('#calendar_entry_' + index + '_' + today_index).css('background-color', today_color);
 					}
