@@ -2245,7 +2245,6 @@ class cs_detail_view extends cs_view {
       $item_manager->resetLimits();
       $item_manager->setContextLimit($this->_environment->getCurrentContextID());
       $item_manager->setIDArrayLimit($ids);
-      $item_manager->setIntervalLimit(sizeof($ids));
       $item_manager->select();
       $item_list = $item_manager->get();
       $temp_item = $item_list->getFirst();

@@ -211,15 +211,17 @@ class cs_item_manager extends cs_manager {
          $query .= ' AND '.$this->_db_table.'.context_id IN ('.implode(", ",encode(AS_DB,$this->_room_array_limit)).')';
       }
         $query .= ' ORDER BY items.modification_date DESC';
-     if ($mode == 'select' and !(isset($this->_user_sincelastlogin_limit) and $this->_user_sincelastlogin_limit)) {
-         $query .= ' LIMIT ';
-         if ( isset($this->_interval_limit) ) {
-            $query .= $this->_interval_limit;
-         } else {
-            $query .= CS_LIST_INTERVAL;
-         }
+      if (!isset($this->_id_array_limit)) {
+	      if ($mode == 'select' and !(isset($this->_user_sincelastlogin_limit) and $this->_user_sincelastlogin_limit)) {
+	         $query .= ' LIMIT ';
+	         if ( isset($this->_interval_limit) ) {
+	            $query .= $this->_interval_limit;
+	         } else {
+	            $query .= CS_LIST_INTERVAL;
+	         }
+	      }
       }
-
+      
      // perform query
      $result = $this->_db_connector->performQuery($query);
      if (!isset($result)) {
