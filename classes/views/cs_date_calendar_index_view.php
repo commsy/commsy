@@ -3018,7 +3018,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $width = '100%';
       $html .= '</div>'.LF;
       $html .= '<div id="calender_days" style="width:100%; clear:both;">'.LF;
-      $html .= '<div class="calendar_time" id="calendar_time"><div class="data">&nbsp;</div></div>'.LF;
+      $html .= '<div class="calendar_time_day" id="calendar_time"><div class="data">&nbsp;</div></div>'.LF;
       for($index=0; $index <7; $index++){
          $week_start = $this->_week_start + ( 3600 * 24 * $index);
          $startday = date ( "d", $week_start);
@@ -3055,7 +3055,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                            $params,
                            $image);
          }
-         $html .= '<div class="calendar_entry" id="calendar_entry_' . $index . '"><div class="data" id="calendar_entry_date_div_' . $index . '">'.$anAction.'</div></div>'.LF;
+         $html .= '<div class="calendar_entry_day" id="calendar_entry_' . $index . '"><div class="data" id="calendar_entry_date_div_' . $index . '">'.$anAction.'</div></div>'.LF;
       }
       #$html .= '<div style="width:11px; float:left;">&nbsp;</div>'.LF;
       $html .= '</div>'.LF;
@@ -3385,6 +3385,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       
       $overlap_array = array();
       $max_overlap_array = array();
+      $max_overlap_array_for_date = array();
       $date_array_for_jQuery_php_with_position = array();
       for ($int = 0; $int < 7; $int++) {
          $temp_quaters_array = array();
@@ -3410,7 +3411,22 @@ class cs_date_calendar_index_view extends cs_room_index_view {
             }
          }
          $max_overlap_array[] = $max_overlap;
+         for ($i = 0; $i < sizeof($date_array_for_jQuery_php); $i++) {
+            $day = $date_array_for_jQuery_php[$i][0]-1;
+            if($day == $int){
+               $start_quaters = $date_array_for_jQuery_php[$i][2];
+               $end_quaters = $date_array_for_jQuery_php[$i][3];
+               $max_overlap_for_date = 0;
+               for ($j = $start_quaters; $j < $end_quaters; $j++) {
+                  if($temp_quaters_array[$j] > $max_overlap_for_date){
+                     $max_overlap_for_date = $temp_quaters_array[$j];
+                  }
+               }
+               $max_overlap_array_for_date[] = $max_overlap_for_date;
+            }
+         }
       }
+
 
       #pr($max_overlap_array);
       // Arrays zum Sortieren vorbereiten
@@ -3426,6 +3442,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       		$temp_sort_array[] = $temp_part_array;
       	}
       	// Termine sortieren
+      	 $max_overlap_index = 0;
          foreach($date_array_for_jQuery_php as $temp_date){
          	$found_position = false;
             if($temp_date[0]-1 == $i){
@@ -3457,19 +3474,13 @@ class cs_date_calendar_index_view extends cs_room_index_view {
 		               }
                	}
                }
+               $temp_date[] = $max_overlap_array_for_date[$max_overlap_index];
+               $max_overlap_index++;
                $date_array_for_jQuery_php_with_position[] = $temp_date;
             }
          }
          $sort_dates_array[] = $temp_sort_array;
       }
-      
-      //pr($sort_dates_array);
-      #pr($date_array_for_jQuery_php_with_position);
-      // -> Breite des Array
-      // -> Länge des Arrays ist Anzahl der Quarters
-      // Mit jedem Termin durchgehen, und markieren
-      // Alles noch einmal durchgehen, und nach rechts vergrößern, wenn dort nichts liegt
-      // Javascript bekommt die Koordinaten des Termins und die Breite als Multiplikator des Breitenanteils
       
       
       $last = count($date_array_for_jQuery)-1;
@@ -3506,7 +3517,12 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       	} else {
             $start_quarter = 0;
          }
-         $html .= 'new Array(' . $day_entries . ',\'' . $link . '\',' . $start_quaters . ',' . $end_quaters . ',' . $dates_on_day . ',\'' . $color . '\'' . ',\'' . $color_border . '\'' . ',\'' . $href . '\'' . ',\'' . $date_index . '\'' . ',\'' . $is_date_for_whole_day . '\'' . ',\'' . $max_overlap . '\'' . ',\'' . $start_column . '\'' . ',\'' . $start_quarter . '\')'.LF;
+         if(isset($date_array_for_jQuery_php_with_position[$index][13])){
+      	   $max_overlap_for_date = $date_array_for_jQuery_php_with_position[$index][13];
+      	} else {
+            $max_overlap_for_date = 0;
+         }
+         $html .= 'new Array(' . $day_entries . ',\'' . $link . '\',' . $start_quaters . ',' . $end_quaters . ',' . $dates_on_day . ',\'' . $color . '\'' . ',\'' . $color_border . '\'' . ',\'' . $href . '\'' . ',\'' . $date_index . '\'' . ',\'' . $is_date_for_whole_day . '\'' . ',\'' . $max_overlap . '\'' . ',\'' . $start_column . '\'' . ',\'' . $start_quarter . '\'' . ',\'' . $max_overlap_for_date . '\')'.LF;
          #pr($date_array_for_jQuery[$index]);
          if($index < $last){
            $html .= ',';
