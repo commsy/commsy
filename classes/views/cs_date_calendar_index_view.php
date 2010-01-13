@@ -932,8 +932,6 @@ class cs_date_calendar_index_view extends cs_room_index_view {
          $d_time = mktime(3,0,0,date("m"),date("d"),date("Y") );
          $wday = date("w",$d_time );
          $week = mktime (3,0,0,date("m"),date("d") - ($wday - 1),date("Y"));
-         // 111
-         $week = date("Ymd", $week);
       }else{
          $week = $this->_week;
       }

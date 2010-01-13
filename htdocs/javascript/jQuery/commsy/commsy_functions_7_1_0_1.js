@@ -782,6 +782,7 @@ function draw_dates(){
 	var current_day = '';
 	var tooltip_added = false;
 	var top_date_for_whole_day = 0;
+	var height_day = 0;
 	if(typeof(calendar_dates) != 'undefined'){
 		for (var i = 0; i < calendar_dates.length; i++) {
 			var day = calendar_dates[i][0]-1;
@@ -846,10 +847,13 @@ function draw_dates(){
 		    	left = 1;
 		    	if(top_date_for_whole_day > 1){
 		    	   top = 19 * (top_date_for_whole_day - 1);
-		    	   var height= 40 + ((top_date_for_whole_day - 2) * 19)-1;
+		    	   var height_day_temp = 40 + ((top_date_for_whole_day - 2) * 19)-1;
 		    	}
-		    	jQuery('[class=calendar_time_day]').css('height', height);
-		    	jQuery('[class=calendar_entry_day]').css('height', height);
+		    	if(height_day_temp > height_day){
+		    	  height_day = height_day_temp;
+		    	}
+		    	jQuery('[class=calendar_time_day]').css('height', height_day);
+		    	jQuery('[class=calendar_entry_day]').css('height', height_day);
 		    	jQuery('#calendar_entry_date_div_'+day).prepend('<div name="calendar_date" style="position:absolute; top:' + (top) + 'px; left:' + left + 'px; height: 18px; width:' + width + 'px; background-color:' + color + '; z-index:1000; overflow:hidden; border:1px solid ' + color_border + ';"><div style="width:1000px; text-align:left; position:absolute; top:0px; left:0px;">' + title + '</div><div style="position:absolute; top:0px; left:0px; height:100%; width:100%;" data-tooltip="' + tooltip + '"><a href="' + href + '"><img src="images/spacer.gif" style="height:100%; width:100%;"/></a></div></div>');
 		    } else {
 		    	jQuery('#calendar_entry_date_div_' + start_div + '_'+day).prepend('<div name="calendar_date" style="position:absolute; top:' + top + 'px; left:' + left + 'px; height:' + height + 'px; width:' + width + 'px; background-color:' + color + '; z-index:1000; overflow:hidden; border:1px solid ' + color_border + ';"><div style="width:1000px; text-align:left; position:absolute; top:0px; left:0px;">' + title + '</div><div style="position:absolute; top:0px; left:0px; height:100%; width:100%;"><a href="' + href + '" data-tooltip="' + tooltip + '"><img src="images/spacer.gif" style="height:100%; width:100%;"/></a></div></div>');
