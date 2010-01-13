@@ -130,6 +130,8 @@ if ( $seldisplay_mode == 'calendar' ) {
    $d_time = mktime(3,0,0,date("m"),date("d"),date("Y") );
    $wday = date("w",$d_time );
    $week = mktime (3,0,0,date("m"),date("d") - ($wday - 1),date("Y"));
+   // 111
+   $week = date("Ymd", $week);
    $presentation_mode = '1';
    $old_month ='';
    $old_year ='';
@@ -190,6 +192,8 @@ if ( $seldisplay_mode == 'calendar' ) {
          $d_time = mktime(3,0,0,$real_month,'1',$year);
          $wday = date("w",$d_time);
          $week = mktime(3,0,0,$real_month,1 - ($wday - 1),$year);
+         // 111
+   		 $week = date("Ymd", $week);
          $presentation_mode = '2';
       }
       if (isset($_GET['year']) and $old_year != $year){
@@ -199,6 +203,8 @@ if ( $seldisplay_mode == 'calendar' ) {
          $month = date("Ymd",$d_time);
          $wday = date("w",$d_time);
          $week = mktime(3,0,0,$real_month,$real_day - ($wday - 1),$year);
+         // 111
+         $week = date("Ymd", $week);
       }
    // Beim Editieren oder der Auswahl der Selectboxen
    }elseif (isset($_GET['year']) and isset($_GET['month']) and isset($_GET['week'])){
@@ -215,6 +221,8 @@ if ( $seldisplay_mode == 'calendar' ) {
             $wday = 7;
          }
          $week = mktime(3,0,0,$real_month,$day - ($wday - 1),$year);
+         // 111
+         $week = date("Ymd", $week);
          if (isset($_GET['presentation_mode'])){
             $presentation_mode = $_GET['presentation_mode'];
          }
@@ -238,6 +246,8 @@ if ( $seldisplay_mode == 'calendar' ) {
             $d_time = mktime(3,0,0,$real_month,'1',$temp_year);
             $wday = date("w",$d_time);
             $temp_week = mktime(3,0,0,$real_month,1 - ($wday - 1),$temp_year);
+            // 111
+            $temp_week = date("Ymd", $temp_week);
             $presentation_mode = '2';
          }elseif (isset($_GET['year']) and $old_year != $year){
             $real_month = mb_substr($old_month,4,2);
@@ -246,6 +256,8 @@ if ( $seldisplay_mode == 'calendar' ) {
             $temp_month = date("Ymd",$d_time);
             $wday = date("w",$d_time);
             $temp_week = mktime(3,0,0,$real_month,$real_day - ($wday - 1),$year);
+            // 111
+            $temp_week = date("Ymd", $temp_week);
          }
          $month = $temp_month;
          $year = $temp_year;

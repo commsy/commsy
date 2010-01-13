@@ -475,7 +475,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
          }
       }
       $html .='<tr>'.LF;
-      $html .='<td colspan="3" style="padding-top:2px; vertical-align:top;">'.LF;
+      $html .='<td colspan="3" style="padding-top:0px; vertical-align:top;">'.LF;
       #$html .= '<table class="list" style="width: 100%; border-collapse: collapse;" summary="Layout">'.LF;
 #      $html .= '<table class="list" style="width: 100%; border-collapse: collapse; border: 0px;" summary="Layout">'.LF;
       if ($this->_presentation_mode == '2'){
@@ -932,6 +932,8 @@ class cs_date_calendar_index_view extends cs_room_index_view {
          $d_time = mktime(3,0,0,date("m"),date("d"),date("Y") );
          $wday = date("w",$d_time );
          $week = mktime (3,0,0,date("m"),date("d") - ($wday - 1),date("Y"));
+         // 111
+         $week = date("Ymd", $week);
       }else{
          $week = $this->_week;
       }
@@ -940,7 +942,11 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $html .= '   <select name="week" size="1" style="width:10em;" id="submit_form">'.LF;
       // jQuery
       for ( $i = -4; $i <= 7; $i++ ) {
-         $twkstart = $week + ( 3600 * 24 * 7 * $i );
+      	 $day_temp = mb_substr($week,6,2);
+      	 $month_temp = mb_substr($week,4,2);
+      	 $year_temp = mb_substr($week,0,4);
+      	 $week_mktime = mktime (3,0,0,$month_temp,$day_temp,$year_temp);
+         $twkstart = $week_mktime + ( 3600 * 24 * 7 * $i );
          $twkend = $twkstart + ( 3600 * 24 * 6 );
          $startmonth = date("m", $twkstart);
          $startmonth = $month_array[$startmonth-1];
@@ -1113,7 +1119,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                                 $next_image,
                                 '').LF;
       #return $this->_translator->getMessage('COMMON_WEEK').':'.$left.$html.$right;
-      $return = '<div style="width:100%; height:30px; position:relative">';
+      $return = '<div id="switch_top_bar" style="width:100%; height:30px; position:relative; background:transparent url(css/images/action_fader.png) repeat-x scroll 0 0;">';
       $return .= '<div id="calendar_switch" style="position:absolute; bottom:0px; left:0px; z-index:1000;">';
       $return .= $left . $today . $right . '&nbsp;&nbsp;';
       $return .= '<span style="color: #2e4e73; font-size:1.3em;">';
@@ -1360,7 +1366,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                                 $params,
                                 $next_image,
                                 '').LF;
-      $return = '<div style="width:100%; height:30px; position:relative;">';
+      $return = '<div id="switch_top_bar" style="width:100%; height:30px; position:relative; background:transparent url(css/images/action_fader.png) repeat-x scroll 0 0;">';
       $return .= '<div id="calendar_switch" style="position:absolute; bottom:0px; left:0px; z-index:1000;">';
       $return .= $left . $today . $right . '&nbsp;&nbsp;';
       $return .= '<span style="color: #2e4e73; font-size:1.3em;">';
