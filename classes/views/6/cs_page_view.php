@@ -654,7 +654,10 @@ class cs_page_view extends cs_view {
          $retour .= '   var datepicker_choose = \''.$this->_translator->getMessage('COMMON_DATEPICKER_CHOOSE').'\';'.LF;
          $retour .= '      -->'.LF;
          $retour .= '   </script>'.LF;
-         $retour .= '   <script type="text/javascript" src="javascript/jQuery/commsy/commsy_functions_7_1_1.js"></script>'.LF;
+         #$retour .= '   <script type="text/javascript" src="javascript/jQuery/commsy/commsy_functions_7_1_0_2.js"></script>'.LF;
+         include_once('functions/misc_functions.php');
+         $commsy_functions = getCurrentCommSyFunctions();
+         $retour .= '   <script type="text/javascript" src="javascript/jQuery/commsy/' . $commsy_functions . '"></script>'.LF;
       } else {
          $retour .= '   <script type="text/javascript" src="javascript/CommSyFunctions.js"></script>'.LF;
          $retour .= '   <script src="javascript/mootools-release-1.11.js" type="text/javascript"></script>'.LF;

@@ -782,7 +782,7 @@ function draw_dates(){
 	var current_day = '';
 	var tooltip_added = false;
 	var top_date_for_whole_day = 0;
-	var height_day = 0;
+	var height_day = 40;
 	if(typeof(calendar_dates) != 'undefined'){
 		for (var i = 0; i < calendar_dates.length; i++) {
 			var day = calendar_dates[i][0]-1;
