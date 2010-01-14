@@ -2255,7 +2255,7 @@ class cs_detail_view extends cs_view {
       	$temp_item = $item_list->getNext();
       }
       $item_manager->resetLimits();
-      
+
       $count_all = count($ids);
       // Determine the position if it is not (correctly) given
       if ( $pos < 0 || $pos >= $count_all ) {
@@ -2585,7 +2585,7 @@ class cs_detail_view extends cs_view {
       if ( isset($modificator)
            and $modificator->isRoot()
          ) {
-         $temp_html = $this->_compareWithSearchText($modificator->getFullname());
+         $temp_html = $this->_text_as_html_short($this->_compareWithSearchText($modificator->getFullname()));
       } elseif ( $environment->inProjectRoom()
                  or $environment->inGroupRoom()
                ) {
@@ -2701,7 +2701,7 @@ class cs_detail_view extends cs_view {
       // Creator
       $creator = $item->getCreatorItem();
       if ( isset($creator) and $creator->isRoot() ) {
-         $temp_html = $this->_compareWithSearchText($creator->getFullname());
+         $temp_html = $this->_text_as_html_short($this->_compareWithSearchText($creator->getFullname()));
       } elseif ( $environment->inProjectRoom() ) {
          if ( isset($creator) and $creator->isUser() and !$creator->isDeleted()  and $creator->maySee($user)){
             $params = array();
@@ -2726,7 +2726,7 @@ class cs_detail_view extends cs_view {
                                      'user',
                                      'detail',
                                      $params,
-                                     $this->_compareWithSearchText($creator->getFullname()));
+                                     $this->_text_as_html_short($this->_compareWithSearchText($creator->getFullname())));
             }else{
                $temp_html = '<span class="disabled">'.$this->_compareWithSearchText($creator->getFullname()).'</span>';
             }
@@ -2795,7 +2795,7 @@ class cs_detail_view extends cs_view {
                                         'user',
                                         'detail',
                                         $params,
-                                        $this->_compareWithSearchText($modificator->getFullname()));
+                                        $this->_text_as_html_short($this->_compareWithSearchText($modificator->getFullname())));
                   }else{
                      $modifier_array[] = '<span class="disabled">'.$this->_compareWithSearchText($modificator->getFullname()).'</span>';
                   }
