@@ -594,7 +594,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
          $html .= '   <input type="hidden" name="week" value="'.$params['week'].'"/>'.LF;
       }
       if (isset($params['month'])){
-         $html .= '   <input type="hidden" name="week" value="'.$params['month'].'"/>'.LF;
+         $html .= '   <input type="hidden" name="month" value="'.$params['month'].'"/>'.LF;
       }
       $selstatus = $this->getSelectedStatus();
       $html .= '<div class="infocolor" style="padding-bottom:5px;">'.$this->_translator->getMessage('COMMON_DATE_STATUS').BRLF;
