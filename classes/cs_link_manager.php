@@ -354,6 +354,152 @@ class cs_link_manager extends cs_manager {
 
    }
 
+  /** get all links
+    * this method get all links
+    *
+    * @param string  type       type of the link
+    * @param string  mode       one of count, select, select_with_item_type_from
+    */
+   function _performQuery2 ($mode = 'select', $with_linked_items= true) {
+      $data = array();
+      if ($mode == 'count') {
+         $query = 'SELECT count( DISTINCT link_items.item_id) AS count';
+      } elseif ($mode == 'id_array') {
+         $query = 'SELECT DISTINCT link_items.item_id';
+      } else {
+         $query = 'SELECT DISTINCT link_items.*';
+      }
+      $query .= ' FROM link_items ';
+
+      $query .= ' WHERE 1';
+
+      if ( isset($this->_id_array_limit) or isset($this->_link_type_limit) ) { // id-Array // user
+         $query .= ' AND ((';
+      }
+      if ( isset($this->_id_array_limit) ) { // id-Array
+         $query .= ' first_item_id IN ('.implode(',',$this->_id_array_limit).')';
+      }
+      if (isset($this->_second_linked_item) ) {
+         $query .= ' AND second_item_id ="'.encode(AS_DB,$this->_second_linked_item->getItemID()).'"';
+      }
+      if (!empty($this->_link_type_limit) ) { // user
+         if ( !empty($this->_id_array_limit) or !empty($this->_second_linked_item) ) { // id-Array
+            $query .= ' AND';
+         }
+         $query .= ' second_item_type ="'.encode(AS_DB,$this->_link_type_limit).'"'; //user
+      } elseif (!empty($this->_link_type_array_limit) ) {
+         if ( !empty($this->_id_array_limit) or !empty($this->_second_linked_item) ) { // id-Array
+            $query .= ' AND';
+         }
+         $query .= ' (';
+         $first = true;
+         foreach ($this->_link_type_array_limit as $limit){
+            if ($first){
+               $first = false;
+               $query .= ' second_item_type ="'.encode(AS_DB,$limit).'"';
+            } else {
+               $query .= ' OR second_item_type ="'.encode(AS_DB,$limit).'"';
+            }
+         }
+         $query .= ')';
+      }
+      if ( isset($this->_id_array_limit) or isset($this->_link_type_limit) ) {  // id-Array // user
+         $query .= ')';
+         $query .= ' OR (';
+      }
+      if ( isset($this->_id_array_limit) ) { // id-Array
+         $query .= ' second_item_id IN ('.implode(',',$this->_id_array_limit).')'; // id-Array
+      }
+      if (isset($this->_second_linked_item) ) {
+         $query .= ' AND first_item_id ="'.encode(AS_DB,$this->_second_linked_item->getItemID()).'"';
+      }
+      if (!empty($this->_link_type_limit) ) { // user
+         if ( !empty($this->_id_array_limit) or !empty($this->_second_linked_item) ) { // id-Array
+            $query .= ' AND';
+         }
+         $query .= ' first_item_type ="'.encode(AS_DB,$this->_link_type_limit).'"'; // user
+      } if (!empty($this->_link_type_array_limit) ) {
+         if ( !empty($this->_id_array_limit) or !empty($this->_second_linked_item) ) { // id-Array
+            $query .= ' AND';
+         }
+         $query .= ' (';
+         $first = true;
+         foreach ($this->_link_type_array_limit as $limit){
+            if ($first){
+               $first = false;
+               $query .= ' first_item_type ="'.encode(AS_DB,$limit).'"';
+            }else{
+               $query .= ' OR first_item_type ="'.encode(AS_DB,$limit).'"';
+            }
+         }
+         $query .= ' )';
+      }
+      if ( isset($this->_id_array_limit) or isset($this->_link_type_limit) ) { // id-Array // user
+         $query .= '))';
+      }
+      $query .= ' AND link_items.deleter_id IS NULL AND link_items.deletion_date IS NULL';
+      if (isset($this->_room_limit)) {
+         $query .= ' AND link_items.context_id = "'.encode(AS_DB,$this->_room_limit).'"';
+      }
+#       else {
+#         $query .= ' AND link_items.context_id = "'.$this->_environment->getCurrentContextID().'"';
+#      }
+
+      if ( isset($this->_sorting_place_limit)
+           and !empty($this->_sorting_place_limit)
+           and $this->_sorting_place_limit
+         ) {
+         $query .= ' AND '.$this->_db_table.'.sorting_place IS NOT NULL';
+      }
+
+      // group to eliminate versions
+      // there are no version_ids in this table ???????????
+      #if ( isset($this->_linked_item) ) {
+      #   $query .= ' GROUP BY link_items.item_id';
+      #}
+
+      // order
+      if ( !empty($this->_order) ) {
+         if ( $this->_order == 'sorting_place') {
+            $query .= ' ORDER BY '.$this->_db_table.'.sorting_place ASC, '.$this->_db_table.'.creation_date DESC';
+         }
+      } else {
+         $query .= ' ORDER BY link_items.creation_date DESC';
+      }
+      if (isset($this->_entry_limit)) {
+         $query .= ' LIMIT 0, '.encode(AS_DB,$this->_entry_limit);
+      }
+
+      $cache_exists = false;
+      if (!empty($this->_cache)){
+         foreach ($this->_cache as $cache_query){
+            if ($cache_query['query'] == $query){
+               $cache_exists = true;
+               $result = $cache_query['result'];
+            }
+         }
+      }
+
+      if (!$cache_exists){
+         // perform query
+         $r = $this->_db_connector->performQuery($query);
+         if (!isset($r)) {
+            include_once('functions/error_functions.php');
+            trigger_error('Problems with links: "'.$this->_dberror.'" from query: "'.$query.'"',E_USER_WARNING);
+         } else {
+            $result = $r;
+            if ( $this->_cache_on ) {
+               $temp = array();
+               $temp['query'] = $query;
+               $temp['result'] = $r;
+               $this->_cache[] = $temp;
+            }
+         }
+      }
+      return $result;
+
+   }
+   
    /** select items limited by limits
    * this method returns a list (cs_list) of items within the database limited by the limits.
    * depends on _performQuery(), which must be overwritten
@@ -407,6 +553,59 @@ class cs_link_manager extends cs_manager {
       }
    }
 
+  /** select items limited by limits
+   * this method returns a list (cs_list) of items within the database limited by the limits.
+   * depends on _performQuery(), which must be overwritten
+   */
+   function select2 ($with_linked_items = true) {
+      if ( isset($this->_id_array_limit) ) {
+         $result = $this->_performQuery2('select', $with_linked_items);
+         $this->_data = new cs_list();
+         $this->_id_array = NULL;
+         if (!$with_linked_items){
+            foreach ($result as $query_result) {
+               $item = $this->_buildItem($query_result);
+               $this->_data->add($item);
+            }
+         } else {
+            $link_list = new cs_list();
+            $item_id_array = array();
+            foreach ($result as $query_result) {
+               if ($this->_linked_item->getItemID() == $query_result['first_item_id']) {
+                  $item_id_array[] = $query_result['second_item_id'];
+               } else {
+                  $item_id_array[] = $query_result['first_item_id'];
+               }
+               $item = $this->_buildItem($query_result);
+               $link_list->add($item);
+            }
+            $this->_data = $link_list;
+         }
+        if ( isset($this->_order)
+             and !empty($this->_order)
+             and $this->_order == 'sorting_place'
+           ) {
+           $item = $this->_data->getFirst();
+           $link_list1 = new cs_list();
+           $link_list2 = new cs_list();
+           while ($item) {
+              if ($item->getSortingPlace()) {
+                 $link_list1->add($item);
+              } else {
+                 $link_list2->add($item);
+              }
+              $item = $this->_data->getNext();
+           }
+           $link_list1->addList($link_list2);
+           $this->_data = $link_list1;
+           unset($link_list1);
+           unset($link_list2);
+         }
+      } else {
+         parent::select();
+      }
+   }
+   
    function _selectForExport () {
       $result = $this->_performQuery('select',false);
       $this->_id_array = NULL;
