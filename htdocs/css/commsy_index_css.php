@@ -108,16 +108,18 @@ span.select_link{
 /* background for the search text yellow */
 span.searched_text_yellow{
 	font-weight:bold;
-	font-size:9pt;
+	/* font-size:9pt; */
 	background-color:#EEFF22;
 	color:#000000;
+	padding:2px;
 }
 /* background for the search text green */
 span.searched_text_green{
 	font-weight:bold;
-	font-size:9pt;
+	/* font-size:9pt; */
 	background-color:#77FF00;
 	color:#000000;
+	padding:2px;
 }
 
 

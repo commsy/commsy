@@ -3323,21 +3323,35 @@ class cs_detail_view extends cs_view {
             if ( mb_stristr($value,$search_text) ) {
                // CSS Klasse erstellen für Farbmarkierung
                include_once('functions/misc_functions.php');
-               if ( getMarkerColor('up') == 'green') {
+               if ( getMarkerColor() == 'green') {
                	$replace = '(:mainsearch_text_green:)$0(:mainsearch_text_green_end:)';
                }
-               else if (getMarkerColor('up') == 'yellow') {
+               else if (getMarkerColor() == 'yellow') {
                	$replace = '(:mainsearch_text_yellow:)$0(:mainsearch_text_yellow_end:)';
                }
                // $replace = '(:mainsearch_text:)$0(:mainsearch_text_end:)';
                // $replace = '*$0*';
                if ( !$bold ) {
-                  $replace = '(:search:)$0(:search_end:)';
+               	if ( getMarkerColor() == 'green') {
+               	  $replace = '(:mainsearch_text_green:)$0(:mainsearch_text_green_end:)';
+                }
+                else if (getMarkerColor() == 'yellow') {
+               	  $replace = '(:mainsearch_text_yellow:)$0(:mainsearch_text_yellow_end:)';
+                }
+
+                  // $replace = '(:search:)$0(:search_end:)';
                }
                if ( stristr($value,'<!-- KFC TEXT') ) {
-                  $replace = '<span class="bold">$0</span>';
+           		  if(getMarkerColor() == 'green'){
+           		  	$replace = '<span class="searched_text_green">$0</span>';
+           		  }
+           		  else if(getMarkerColor() == 'yellow'){
+           		  	$replace = '<span class="searched_text_yellow">$0</span>';
+           		  }
+
+                  // $replace = '<span class="bold">$0</span>';
                   if ( !$bold ) {
-                     $replace = '<span class="italic" style="font-style: italic;">$0</span>';
+                    $replace = '<span class="italic" style="font-style: italic;">$0</span>';
                   }
                }
                $value = preg_replace('~'.preg_quote($search_text,'/').'~iu',$replace,$value);
