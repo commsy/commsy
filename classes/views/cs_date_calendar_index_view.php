@@ -3479,9 +3479,9 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                	}
                }
                $temp_date[] = $max_overlap_array_for_date[$max_overlap_index];
-               $max_overlap_index++;
                $date_array_for_jQuery_php_with_position[] = $temp_date;
             }
+            $max_overlap_index++;
          }
          $sort_dates_array[] = $temp_sort_array;
       }
@@ -3526,7 +3526,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       	} else {
             $max_overlap_for_date = 0;
          }
-         $html .= 'new Array(' . $day_entries . ',\'' . $link . '\',' . $start_quaters . ',' . $end_quaters . ',' . $dates_on_day . ',\'' . $color . '\'' . ',\'' . $color_border . '\'' . ',\'' . $href . '\'' . ',\'' . $date_index . '\'' . ',\'' . $is_date_for_whole_day . '\'' . ',\'' . $max_overlap . '\'' . ',\'' . $start_column . '\'' . ',\'' . $start_quarter . '\'' . ',\'' . $max_overlap_for_date . '\')'.LF;
+         $html .= 'new Array(' . $day_entries . ',\'' . $link . '\',' . $start_quaters . ',' . $end_quaters . ',' . $dates_on_day . ',\'' . $color . '\'' . ',\'' . $color_border . '\'' . ',\'' . $href . '\'' . ',\'' . $date_index . '\'' . ',\'' . $is_date_for_whole_day . '\'' . ',' . $max_overlap . '' . ',' . $start_column . '' . ',' . $start_quarter . '' . ',' . $max_overlap_for_date . ')'.LF;
          #pr($date_array_for_jQuery[$index]);
          if($index < $last){
            $html .= ',';
