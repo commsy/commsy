@@ -348,7 +348,11 @@ class cs_todos_manager extends cs_manager {
     */
    function getItem ($item_id) {
       $todo = NULL;
-      if (array_key_exists($item_id,$this->_cached_items)){
+      if ( !empty($item_id)
+           and !empty($this->_cache_object[$item_id])
+         ) {
+         return $this->_cache_object[$item_id];
+      } elseif (array_key_exists($item_id,$this->_cached_items)){
          return $this->_buildItem($this->_cached_items[$item_id]);
       }else{
          $query = "SELECT * FROM todos WHERE todos.item_id = '".encode(AS_DB,$item_id)."'";

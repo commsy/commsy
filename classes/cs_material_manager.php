@@ -140,7 +140,7 @@ class cs_material_manager extends cs_manager {
   KEY creator_id (creator_id),
   KEY modificator (modifier_id)
 ) ENGINE=MyISAM;';
-   
+
    /*
     * Translation Object
     */
@@ -307,7 +307,11 @@ class cs_material_manager extends cs_manager {
     */
    function getItem ($item_id) {
       $material = NULL;
-      if (array_key_exists($item_id,$this->_cached_items)){
+      if ( !empty($item_id)
+           and !empty($this->_cache_object[$item_id])
+         ) {
+         return $this->_cache_object[$item_id];
+      } elseif (array_key_exists($item_id,$this->_cached_items)){
          return $this->_buildItem($this->_cached_items[$item_id]);
       } else {
          $query = "SELECT * FROM materials WHERE materials.item_id = '".encode(AS_DB,$item_id)."'";
@@ -839,7 +843,8 @@ class cs_material_manager extends cs_manager {
       $query = "SELECT MAX(materials.version_id) AS version_id FROM materials WHERE materials.item_id = '".encode(AS_DB,$item_id)."'";
       $result = $this->_db_connector->performQuery($query);
       if (!isset($result) or empty($result[0])) {
-         include_once('functions/error_functions.php');trigger_error('Problems selecting one material item from query: "'.$query.'"',E_USER_WARNING);
+         include_once('functions/error_functions.php');
+         trigger_error('Problems selecting one material item from query: "'.$query.'"',E_USER_WARNING);
       } else {
          $rs = $result[0];
          $latest_version = $rs['version_id'];

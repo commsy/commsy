@@ -71,7 +71,7 @@ class cs_announcement_manager extends cs_manager {
   var $_with_material = false;
 
   var$_group_limit=NULL;
-  
+
   /*
    * Translator Object
    */
@@ -340,33 +340,35 @@ class cs_announcement_manager extends cs_manager {
     *
     * @return object cs_item a label
     */
-  function getItem ($item_id) {
-     $announcement = NULL;
+   function getItem ($item_id) {
+      $announcement = NULL;
 
-     if ( !empty($item_id) ) {
-        $this->_with_material = true;
-         if ( array_key_exists($item_id,$this->_cached_items) ) {
+      if ( !empty($item_id) ) {
+         $this->_with_material = true;
+         if ( !empty($this->_cache_object[$item_id]) ) {
+            return $this->_cache_object[$item_id];
+         } elseif ( array_key_exists($item_id,$this->_cached_items) ) {
             return $this->_buildItem($this->_cached_items[$item_id]);
          } else {
-           $query = "SELECT * FROM announcement WHERE announcement.item_id = '".encode(AS_DB,$item_id)."'";
-           $result = $this->_db_connector->performQuery($query);
-           if ( !isset($result) ) {
-              include_once('functions/error_functions.php');
-              trigger_error('Problems selecting one announcement item.',E_USER_WARNING);
-           } elseif ( !empty($result[0]) ) {
-              if ( $this->_cache_on ) {
-                 $this->_cached_items[$result[0]['item_id']] = $result[0];
-              }
-              $announcement = $this->_buildItem($result[0]);
-              unset($result);
-           } else {
-              include_once('functions/error_functions.php');
-              trigger_error('Problems selecting announcement item ['.$item_id.'].',E_USER_WARNING);
-           }
-        }
-     }
-     return $announcement;
-  }
+            $query = "SELECT * FROM announcement WHERE announcement.item_id = '".encode(AS_DB,$item_id)."'";
+            $result = $this->_db_connector->performQuery($query);
+            if ( !isset($result) ) {
+               include_once('functions/error_functions.php');
+               trigger_error('Problems selecting one announcement item.',E_USER_WARNING);
+            } elseif ( !empty($result[0]) ) {
+               if ( $this->_cache_on ) {
+                  $this->_cached_items[$result[0]['item_id']] = $result[0];
+               }
+               $announcement = $this->_buildItem($result[0]);
+               unset($result);
+            } else {
+               include_once('functions/error_functions.php');
+               trigger_error('Problems selecting announcement item ['.$item_id.'].',E_USER_WARNING);
+            }
+         }
+      }
+      return $announcement;
+   }
 
    function getItemList($id_array) {
       return $this->_getItemList(CS_ANNOUNCEMENT_TYPE, $id_array);

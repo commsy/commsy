@@ -499,7 +499,7 @@ class cs_link_manager extends cs_manager {
       return $result;
 
    }
-   
+
    /** select items limited by limits
    * this method returns a list (cs_list) of items within the database limited by the limits.
    * depends on _performQuery(), which must be overwritten
@@ -605,7 +605,7 @@ class cs_link_manager extends cs_manager {
          parent::select();
       }
    }
-   
+
    function _selectForExport () {
       $result = $this->_performQuery('select',false);
       $this->_id_array = NULL;
@@ -1151,7 +1151,11 @@ class cs_link_manager extends cs_manager {
     */
    function getItem ($item_id) {
       $item = NULL;
-      if ( array_key_exists($item_id,$this->_cached_items) ) {
+      if ( !empty($item_id)
+           and !empty($this->_cache_object[$item_id])
+         ) {
+         return $this->_cache_object[$item_id];
+      } elseif ( array_key_exists($item_id,$this->_cached_items) ) {
          $item = $this->_buildItem($this->_cached_items[$item_id]);
       } elseif ( !empty($item_id) ) {
          $query = 'SELECT * FROM '.$this->_db_table.' WHERE '.$this->_db_table.'.item_id = "'.encode(AS_DB,$item_id).'";';

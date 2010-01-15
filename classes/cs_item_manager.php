@@ -406,19 +406,16 @@ class cs_item_manager extends cs_manager {
     */
    function getItem($iid, $vid = NULL) {
       $retour = NULL;
-      if ( !isset($this->_cached_items[$iid]) ) {
+      if ( !isset($this->_cache_object[$iid]) ) {
          $query = 'SELECT *';
          $query .= ' FROM items';
          $query .= ' WHERE item_id="'.$iid.'"';
          $result = $this->_db_connector->performQuery($query);
          if ( isset($result) and !empty($result) ) {
             $retour = $this->_buildItem($result[0]);
-            if ( $this->_cache_on ) {
-               $this->_cached_items[$iid] = $retour;
-            }
          }
       } else {
-         $retour = $this->_cached_items[$iid];
+         $retour = $this->_cache_object[$iid];
       }
       return $retour;
    }

@@ -530,8 +530,8 @@ class cs_dates_manager extends cs_manager {
    function getItem ($item_id = NULL) {
      $dates = NULL;
      if ( !is_null($item_id) ) {
-        if ( !empty($this->_cached_items[$item_id]) ) {
-           $dates = $this->_cached_items[$item_id];
+        if ( !empty($this->_cache_object[$item_id]) ) {
+           $dates = $this->_cache_object[$item_id];
         } else {
            $query = "SELECT * FROM dates WHERE dates.item_id = '".encode(AS_DB,$item_id)."'";
            $result = $this->_db_connector->performQuery($query);

@@ -389,7 +389,11 @@ class cs_discussion_manager extends cs_manager {
     */
      function getItem ($item_id) {
         $discussion = NULL;
-        if ( array_key_exists($item_id,$this->_cached_items) ) {
+        if ( !empty($item_id)
+             and !empty($this->_cache_object[$item_id])
+           ) {
+           return $this->_cache_object[$item_id];
+        } elseif ( array_key_exists($item_id,$this->_cached_items) ) {
            return $this->_buildItem($this->_cached_items[$item_id]);
         } elseif ( !empty($item_id) ) {
            $query = "SELECT * FROM discussions WHERE discussions.item_id = '".encode(AS_DB,$item_id)."'";

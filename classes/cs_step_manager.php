@@ -81,7 +81,7 @@ class cs_step_manager extends cs_manager {
 
    var $_all_step_list = NULL;
    var $_cached_todo_item_ids = array();
-   
+
    /*
     * Translation Object
     */
@@ -264,8 +264,8 @@ class cs_step_manager extends cs_manager {
 
     function getItem ($item_id) {
         $step = NULL;
-        if ( !empty($this->_cached_items[$item_id]) ) {
-             $step = $this->_cached_items[$item_id];
+        if ( !empty($this->_cache_object[$item_id]) ) {
+             $step = $this->_cache_object[$item_id];
         } else {
            $query = "SELECT * FROM step WHERE step.item_id = '".encode(AS_DB,$item_id)."'";
            $result = $this->_db_connector->performQuery($query);
@@ -274,11 +274,6 @@ class cs_step_manager extends cs_manager {
               trigger_error('Problems selecting one step item from query: "'.$query.'"',E_USER_WARNING);
            } else {
               $step = $this->_buildItem($result[0]);
-               if ( $this->_cache_on
-                    and isset($step)
-                  ) {
-                  $this->_cached_items[$step->getItemID()] = $step;
-               }
            }
         }
         return $step;
@@ -336,9 +331,6 @@ class cs_step_manager extends cs_manager {
                $step_item = $this->_buildItem($rs);
                if ( isset($step_item) ) {
                   $step_list->append($step_item);
-                  if ( $this->_cache_on ) {
-                     $this->_cached_items[$step_item->getItemID()] = $step_item;
-                  }
                }
                unset($step_item);
             }

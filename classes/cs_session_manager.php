@@ -107,9 +107,9 @@ class cs_session_manager {
          $this->deleteOldSessions();
       }
       if ( !empty($session_id)
-           and !empty($this->_cached_items[$session_id])
+           and !empty($this->_cache_object[$session_id])
          ) {
-         $session_item = $this->_cached_items[$session_id];
+         $session_item = $this->_cache_object[$session_id];
       } else {
          $session_arrays = array();
          $session_item = NULL;
@@ -136,7 +136,7 @@ class cs_session_manager {
             }
             $session_item->_data = $session_array;
             if ( $this->_cache_on ) {
-               $this->_cached_items[$session_id] = $session_item;
+               $this->_cache_object[$session_id] = $session_item;
             }
          }
       }

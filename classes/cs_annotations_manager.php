@@ -38,7 +38,7 @@ include_once('classes/cs_manager.php');
  * this class implements a database manager for the table "annotations"
  */
 class cs_annotations_manager extends cs_manager {
-   
+
   /**
    * object manager - containing object to the select links for annotations
    */
@@ -57,7 +57,7 @@ class cs_annotations_manager extends cs_manager {
    * string - containing an order limit for the selectd annotation
    */
   var $_order = NULL;
-  
+
   /*
    * Translator Object
    */
@@ -186,16 +186,20 @@ class cs_annotations_manager extends cs_manager {
   function getItem ($item_id) {
      $annotation = NULL;
      if ( !empty($item_id) ) {
-        $query = "SELECT * FROM annotations WHERE annotations.item_id = '".encode(AS_DB,$item_id)."'";
-        $result = $this->_db_connector->performQuery($query);
-        if ( !isset($result) ) {
-           include_once('functions/error_functions.php');
-           trigger_error('Problems selecting one annotation item.',E_USER_WARNING);
-        } elseif ( !empty($result[0]))  {
-           $annotation = $this->_buildItem($result[0]);
+        if ( !empty($this->_cache_object[$item_id]) ) {
+           $annotation = $this->_cache_object[$item_id];
         } else {
-           include_once('functions/error_functions.php');
-           trigger_error('Problems selecting annotation item ['.$item_id.'].',E_USER_WARNING);
+           $query = "SELECT * FROM annotations WHERE annotations.item_id = '".encode(AS_DB,$item_id)."'";
+           $result = $this->_db_connector->performQuery($query);
+           if ( !isset($result) ) {
+              include_once('functions/error_functions.php');
+              trigger_error('Problems selecting one annotation item.',E_USER_WARNING);
+           } elseif ( !empty($result[0]))  {
+              $annotation = $this->_buildItem($result[0]);
+           } else {
+              include_once('functions/error_functions.php');
+              trigger_error('Problems selecting annotation item ['.$item_id.'].',E_USER_WARNING);
+           }
         }
      }
      return $annotation;

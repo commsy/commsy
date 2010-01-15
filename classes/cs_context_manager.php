@@ -172,8 +172,8 @@ class cs_context_manager extends cs_manager {
       $item->_setItemData(encode(FROM_DB,$db_array));
 
       if ( $this->_cache_on ) {
-         if ( empty($this->_cached_items[$item->getItemID()]) ) {
-            $this->_cached_items[$item->getItemID()] = $item;
+         if ( empty($this->_cache_object[$item->getItemID()]) ) {
+            $this->_cache_object[$item->getItemID()] = $item;
          }
       }
 
@@ -396,7 +396,7 @@ class cs_context_manager extends cs_manager {
     */
    function getItem ($item_id) {
       $retour = NULL;
-      if ( !isset($this->_cached_items[$item_id])
+      if ( !isset($this->_cache_object[$item_id])
            and !isset($this->_cache_row[$item_id])
          ) {
          $query = "SELECT * FROM ".$this->_db_table." WHERE ".$this->_db_table.".item_id='".encode(AS_DB,$item_id)."'";
@@ -409,15 +409,12 @@ class cs_context_manager extends cs_manager {
             $data_array = $result[0];
             if ( !empty($data_array) ) {
                $retour = $this->_buildItem($data_array);
-               if ( $this->_cache_on ) {
-                  $this->_cached_items[$item_id] = $retour;
-               }
             }
             unset($result);
          }
       } else {
-         if ( !empty($this->_cached_items[$item_id]) ) {
-            $retour = $this->_cached_items[$item_id];
+         if ( !empty($this->_cache_object[$item_id]) ) {
+            $retour = $this->_cache_object[$item_id];
          } else {
             $retour = $this->_buildItem($this->_cache_row[$item_id]);
          }
