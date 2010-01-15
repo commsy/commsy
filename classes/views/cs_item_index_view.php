@@ -161,6 +161,19 @@ var $_sel_rubric = '';
          $html .= '</tr>'.LF;
          $html .= '<tr  class="list"><td class="odd" colspan="'.$this->_colspan.'" style="border-bottom: 0px;">'.$this->_translator->getMessage('COMMON_NO_ENTRIES').'</td></tr>';
       } else {
+      	$current_item = $list->getFirst();
+      	$temp_item_id_array = array();
+      	while ( $current_item ) {
+      		$temp_item_id_array[] = $current_item->getItemId();
+      		$current_item = $list->getNext();
+      	}
+         
+         $noticed_manager = $this->_environment->getNoticedManager();
+         $noticed_manager->getLatestNoticedAnnotationsByIDArray($temp_item_id_array);
+         
+         $link_manager = $this->_environment->getLinkManager();
+         $link_manager->getAllFileLinksForListByIDs($temp_item_id_array);
+      	
          $current_item = $list->getFirst();
          $i = 0;
          while ( $current_item ) {
