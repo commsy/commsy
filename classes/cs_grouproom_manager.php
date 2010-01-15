@@ -270,10 +270,10 @@ class cs_grouproom_manager extends cs_room2_manager {
             $query .= ' LIMIT '.encode(AS_DB,$this->_from_limit).', '.encode(AS_DB,$this->_interval_limit);
          }
       }
-      
+
       // perform query
       $result = $this->_db_connector->performQuery($query);
-      
+
       if (!isset($result)) {
          include_once('functions/error_functions.php');trigger_error('Problems selecting '.$this->_db_table.' items from query: "'.$query.'"',E_USER_WARNING);
       } else {
@@ -641,6 +641,8 @@ class cs_grouproom_manager extends cs_room2_manager {
       return $this->_getRelatedContextListForUser($user_item->getUserID(),$user_item->getAuthSource(),$this->_environment->getCurrentPortalID());
    }
 
-
+   public function getUserRelatedGroupListForUser ($user_item) {
+      return $this->_getRelatedContextListForUser($user_item->getUserID(),$user_item->getAuthSource(),$this->_environment->getCurrentPortalID(),false,true);
+   }
 }
 ?>

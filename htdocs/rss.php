@@ -28,6 +28,11 @@ if ( isset($_GET['cid']) ) {
    chdir('..');
    include_once('etc/cs_constants.php');
    include_once('etc/cs_config.php');
+
+   // start of execution time
+   include_once('functions/misc_functions.php');
+   $time_start = getmicrotime();
+
    include_once('classes/cs_environment.php');
    $environment = new cs_environment();
    $environment->setCurrentContextID($_GET['cid']);
@@ -188,24 +193,22 @@ if ( isset($_GET['cid']) ) {
       $item_manager->setIntervalLimit(20);
       $result = $item_manager->_performQuery();
    } else {
-      $project_list = $user_item->getRelatedProjectList();
+      $project_list = $user_item->getUserRelatedProjectList();
       $room_array = Array();
       $item = $project_list->getFirst();
       while ($item) {
-         if($item->mayEnter($user_item)){
-            $room_array[] = $item->getItemID();
-         }
+         $room_array[] = $item->getItemID();
          $item = $project_list->getNext();
       }
       unset($item);
-      $community = $user_item->getRelatedCommunityList();
+      $community = $user_item->getUserRelatedCommunityList();
       $item = $community->getFirst();
       while ($item) {
          $room_array[] = $item->getItemID();
          $item = $community->getNext();
       }
       unset($item);
-      $grouprooms = $user_item->getRelatedGroupList();
+      $grouprooms = $user_item->getUserRelatedGroupList();
       $item = $grouprooms->getFirst();
       while ($item) {
          $room_array[] = $item->getItemID();
@@ -218,8 +221,52 @@ if ( isset($_GET['cid']) ) {
       $item_manager->setTypeArrayLimit($type_limit_array);
       $item_manager->setIntervalLimit(20);
       $result = $item_manager->_performQuery();
-
    }
+
+   # caching - bringt nicht viel
+   /*
+   $item_id_array = array();
+   foreach($result as $row) {
+      if ( !empty($row['type'])
+           and !empty($row['item_id'])
+         ) {
+         $item_id_array[$row['type']][] = $row['item_id'];
+      }
+   }
+   if ( !empty($item_id_array) ) {
+      $user_item_id_array = array();
+      foreach ($item_id_array as $type => $id_array) {
+         $manager = $environment->getManager($type);
+         if ( !empty($manager) ) {
+            $manager->resetLimits();
+            $manager->unsetContextLimit();
+            $manager->setIDArrayLimit($id_array);
+            $manager->select();
+            $item_list = $manager->get();
+            if ( !empty($item_list)
+                 and $item_list->isNotEmpty()
+               ) {
+               $item = $item_list->getFirst();
+               while ( $item ) {
+                  $user_item_id_array[] = $item->getModificatorID();
+                  $item = $item_list->getNext();
+               }
+            }
+            unset($manager);
+         }
+      }
+      if ( !empty($user_item_id_array)
+           #and count($user_item_id_array) > 1
+         ) {
+         $user_item_id_array = array_unique($user_item_id_array);
+         $manager = $environment->getUserManager();
+         $manager->setIDArrayLimit($user_item_id_array);
+         $manager->select();
+         #$manager->get();
+      }
+   }
+   */
+
    $counter = 0;
    foreach($result as $row) {
       if ( $counter == 10 ) {
@@ -745,6 +792,9 @@ if ( isset($_GET['cid']) ) {
 
    // debugging
    #pr($rss);
+   #$db_connector = $environment->getDBConnector();
+   #$sql_query_array = $db_connector->getQueryArray();
+   #pr($sql_query_array);
    #exit();
 
    // Wir werden eine XML Datei ausgeben

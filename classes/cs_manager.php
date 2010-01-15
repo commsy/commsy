@@ -70,7 +70,7 @@ class cs_manager {
     * Environment - the environment of the CommSy
     */
    var $_environment = null;
-   
+
    /**
     * id_array for item_ids
     */
@@ -336,6 +336,10 @@ class cs_manager {
     */
    function setContextLimit ($limit) {
       $this->_room_limit = (int)$limit;
+   }
+
+   function unsetContextLimit () {
+      $this->_room_limit = NULL;
    }
 
    function setContextArrayLimit($limit) {
@@ -676,6 +680,16 @@ class cs_manager {
       $item = $this->getNewItem();
       if ( isset($item) ) {
          $item->_setItemData(encode(FROM_DB,$db_array));
+      }
+      if ( $this->_cache_on
+           and method_exists($item,'getItemID')
+         ) {
+         $item_id = $item->getItemID();
+         if ( !empty($item_id)
+              and empty($this->_cached_items[$item_id])
+            ) {
+            $this->_cached_items[$item_id] = $item;
+         }
       }
       return $item;
    }

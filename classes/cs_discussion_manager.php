@@ -48,8 +48,6 @@ class cs_discussion_manager extends cs_manager {
    */
    var $_from_limit = NULL;
 
-   var $_cached_items = array();
-
    /**
    * integer - containing how many discussion the select statement should get
    */
@@ -65,7 +63,7 @@ class cs_discussion_manager extends cs_manager {
    var $_topic_limit = NULL;
    var $_institution_limit = NULL;
    var $_sort_order = NULL;
-   
+
    /*
     * Translation Object
     */

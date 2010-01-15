@@ -46,7 +46,7 @@ class cs_todos_manager extends cs_manager {
    var $_group_limit = NULL;
    var $_topic_limit = NULL;
    var $_sort_order = NULL;
-   
+
    /*
     * Translation Object
     */

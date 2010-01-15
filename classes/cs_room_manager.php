@@ -378,6 +378,16 @@ class cs_room_manager extends cs_context_manager {
                  unset($temp_array);
               }
            }
+        } elseif ( !empty($this->_id_array_limit)
+                   and $this->_cache_on
+                 ) {
+            foreach ( $result as $row ) {
+               if ( !empty($row)
+                    and !empty($row['item_id'])
+                    and empty($this->_cache_row[$row['item_id']]) ) {
+                  $this->_cache_row[$row['item_id']] = $row;
+               }
+            }
         }
         return $result;
      }

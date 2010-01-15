@@ -48,7 +48,6 @@ class cs_item_manager extends cs_manager {
    var $_user_userid_limit = NULL;
    var $_user_authsourceid_limit = NULL;
    var $_user_since_lastlogin_limit = NULL;
-   var $_cache_object = array();
    var $_cache_row = array();
   /**
    * integer - containing the age of material as a limit
@@ -212,16 +211,16 @@ class cs_item_manager extends cs_manager {
       }
         $query .= ' ORDER BY items.modification_date DESC';
       if (!isset($this->_id_array_limit)) {
-	      if ($mode == 'select' and !(isset($this->_user_sincelastlogin_limit) and $this->_user_sincelastlogin_limit)) {
-	         $query .= ' LIMIT ';
-	         if ( isset($this->_interval_limit) ) {
-	            $query .= $this->_interval_limit;
-	         } else {
-	            $query .= CS_LIST_INTERVAL;
-	         }
-	      }
+         if ($mode == 'select' and !(isset($this->_user_sincelastlogin_limit) and $this->_user_sincelastlogin_limit)) {
+            $query .= ' LIMIT ';
+            if ( isset($this->_interval_limit) ) {
+               $query .= $this->_interval_limit;
+            } else {
+               $query .= CS_LIST_INTERVAL;
+            }
+         }
       }
-      
+
      // perform query
      $result = $this->_db_connector->performQuery($query);
      if (!isset($result)) {
@@ -407,7 +406,7 @@ class cs_item_manager extends cs_manager {
     */
    function getItem($iid, $vid = NULL) {
       $retour = NULL;
-      if ( !isset($this->_cache_object[$iid]) ) {
+      if ( !isset($this->_cached_items[$iid]) ) {
          $query = 'SELECT *';
          $query .= ' FROM items';
          $query .= ' WHERE item_id="'.$iid.'"';
@@ -415,11 +414,11 @@ class cs_item_manager extends cs_manager {
          if ( isset($result) and !empty($result) ) {
             $retour = $this->_buildItem($result[0]);
             if ( $this->_cache_on ) {
-               $this->_cache_object[$iid] = $retour;
+               $this->_cached_items[$iid] = $retour;
             }
          }
       } else {
-         $retour = $this->_cache_object[$iid];
+         $retour = $this->_cached_items[$iid];
       }
       return $retour;
    }

@@ -61,8 +61,8 @@ class cs_context_manager extends cs_manager {
    var $_status_limit = NULL;
 
    var $_id_array_limit = NULL;
-   var $_cache_object = array();
    var $_cache_list = array();
+   var $_cache_row = array();
 
    /** constructor: cs_room_manager
     * the only available constructor, initial values for internal variables
@@ -170,6 +170,13 @@ class cs_context_manager extends cs_manager {
       }
       $item = $this->_getNewRoomItem($db_array['type']);
       $item->_setItemData(encode(FROM_DB,$db_array));
+
+      if ( $this->_cache_on ) {
+         if ( empty($this->_cached_items[$item->getItemID()]) ) {
+            $this->_cached_items[$item->getItemID()] = $item;
+         }
+      }
+
       return $item;
    }
 
@@ -207,7 +214,7 @@ class cs_context_manager extends cs_manager {
       return $retour;
    }
 
-   function _getRelatedContextListForUser ($user_id, $auth_source, $context_id, $grouproom = false) {
+   function _getRelatedContextListForUser ($user_id, $auth_source, $context_id, $grouproom = false, $only_user = false) {
       include_once('classes/cs_list.php');
       $list = new cs_list();
       if ( !isset($this->_cache_list[$user_id.'_'.$auth_source.'_'.$context_id]) ) {
@@ -217,7 +224,11 @@ class cs_context_manager extends cs_manager {
                      AND user.auth_source="'.$auth_source.'"
                      AND user.deletion_date IS NULL
                      AND user.user_id="'.encode(AS_DB,$user_id).'"';
-         $query .= ' AND user.status >= "1"';
+         if ( !$only_user ) {
+            $query .= ' AND user.status >= "1"';
+         } else {
+            $query .= ' AND user.status >= "2"';
+         }
          $query .= ' WHERE 1';
          if ( isset($this->_room_type) and !empty($this->_room_type) ) {
             ############################################
@@ -385,7 +396,9 @@ class cs_context_manager extends cs_manager {
     */
    function getItem ($item_id) {
       $retour = NULL;
-      if ( !isset($this->_cache_object[$item_id]) ) {
+      if ( !isset($this->_cached_items[$item_id])
+           and !isset($this->_cache_row[$item_id])
+         ) {
          $query = "SELECT * FROM ".$this->_db_table." WHERE ".$this->_db_table.".item_id='".encode(AS_DB,$item_id)."'";
          $result = $this->_db_connector->performQuery($query);
          unset($query);
@@ -397,13 +410,17 @@ class cs_context_manager extends cs_manager {
             if ( !empty($data_array) ) {
                $retour = $this->_buildItem($data_array);
                if ( $this->_cache_on ) {
-                  $this->_cache_object[$item_id] = $retour;
+                  $this->_cached_items[$item_id] = $retour;
                }
             }
             unset($result);
          }
       } else {
-         $retour = $this->_cache_object[$item_id];
+         if ( !empty($this->_cached_items[$item_id]) ) {
+            $retour = $this->_cached_items[$item_id];
+         } else {
+            $retour = $this->_buildItem($this->_cache_row[$item_id]);
+         }
       }
       return $retour;
    }

@@ -450,7 +450,10 @@ class cs_dates_manager extends cs_manager {
          $query .= ' )';
       }
 
-      if ( isset($this->_date_mode_limit) and $this->_date_mode_limit !=2) {
+      if ( isset($this->_date_mode_limit)
+           and $this->_date_mode_limit !=2
+           and empty($this->_id_array_limit)
+         ) {
          $query .= ' AND dates.date_mode="'.encode(AS_DB,$this->_date_mode_limit).'"';
       }
 
@@ -527,14 +530,20 @@ class cs_dates_manager extends cs_manager {
    function getItem ($item_id = NULL) {
      $dates = NULL;
      if ( !is_null($item_id) ) {
-        $query = "SELECT * FROM dates WHERE dates.item_id = '".encode(AS_DB,$item_id)."'";
-        $result = $this->_db_connector->performQuery($query);
-        if ( !isset($result) ) {
-           include_once('functions/error_functions.php');trigger_error('Problems selecting one dates item.',E_USER_WARNING);
-        } elseif ( !empty($result[0]) ) {
-           $dates = $this->_buildItem($result[0]);
+        if ( !empty($this->_cached_items[$item_id]) ) {
+           $dates = $this->_cached_items[$item_id];
         } else {
-           include_once('functions/error_functions.php');trigger_error('Dates item ['.$item_id.'] does not exists.',E_USER_WARNING);
+           $query = "SELECT * FROM dates WHERE dates.item_id = '".encode(AS_DB,$item_id)."'";
+           $result = $this->_db_connector->performQuery($query);
+           if ( !isset($result) ) {
+              include_once('functions/error_functions.php');
+              trigger_error('Problems selecting one dates item.',E_USER_WARNING);
+           } elseif ( !empty($result[0]) ) {
+              $dates = $this->_buildItem($result[0]);
+           } else {
+              include_once('functions/error_functions.php');
+              trigger_error('Dates item ['.$item_id.'] does not exists.',E_USER_WARNING);
+           }
         }
      } else {
         $dates = $this->getNewItem();
@@ -556,13 +565,14 @@ class cs_dates_manager extends cs_manager {
 
    function getColorArray () {
      $color_array = array();
-     $query = 'SELECT DISTINCT color FROM dates WHERE 1=1';
+     $query = 'SELECT DISTINCT color FROM dates WHERE 1';
      if (isset($this->_room_limit)) {
          $query .= ' AND dates.context_id = "'.encode(AS_DB,$this->_room_limit).'"';
      }
      $result = $this->_db_connector->performQuery($query);
      if ( !isset($result) ) {
-        include_once('functions/error_functions.php');trigger_error('Problems selecting one dates item.',E_USER_WARNING);
+        include_once('functions/error_functions.php');
+        trigger_error('Problems selecting one dates item.',E_USER_WARNING);
      } else {
         foreach ($result as $rs ) {
            if ($rs['color'] != 'NULL' and !empty($rs['color'])){

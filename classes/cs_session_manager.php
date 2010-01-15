@@ -38,10 +38,9 @@ class cs_session_manager {
    var $_settings;
 
    var $_last_query;
-   
-   var $_cached_items = array();
+
    var $_cache_on = true;
-   
+
    /** constructor: cs_session_manager
     * the only available constructor, initial values for internal variables
     *
@@ -103,44 +102,44 @@ class cs_session_manager {
     * @return object cs_session_item the session item
     */
    function get ($session_id) {
-   	// don't delete session on every site request
-   	if ( 1 == rand(1,100) ) {
+      // don't delete session on every site request
+      if ( 1 == rand(1,100) ) {
          $this->deleteOldSessions();
-   	}
-   	if ( !empty($session_id)
-   	     and !empty($this->_cached_items[$session_id])
-   	   ) {
-   		$session_item = $this->_cached_items[$session_id];
-   	} else {
-	      $session_arrays = array();
-	      $session_item = NULL;
-	      $query = 'SELECT session_value FROM session WHERE session_id="'.encode(AS_DB,$session_id).'";';
-	      $this->_last_query = $query;
-	      $result = $this->_db_conntector->performQuery($query);
-	      if ( !isset($result) ) {
-	         include_once('functions/error_functions.php');
-	         trigger_error('Problems selecting session values for: '.$session_id.'.', E_USER_WARNING);
-	      } elseif ( !empty($result[0]) ) {
-	         include_once('classes/cs_session_item.php');
-	         $session_item = new cs_session_item();
-	         $session_item->setSessionID($session_id);
-	         $session = $result[0];
-	         if (!empty($session['session_value'])) {
-	            if ( strstr($session['session_value'],'cs_mail_obj') ) {
-	               // must included here, because this objects could get out of the session
-	               include_once('classes/cs_mail_obj.php');
-	            }
-	            include_once('functions/text_functions.php');
-	            $session_array = mb_unserialize($session['session_value']);
-	         } else {
-	            $session_array = array();
-	         }
-	         $session_item->_data = $session_array;
-	         if ( $this->_cache_on ) {
-	         	$this->_cached_items[$session_id] = $session_item;
-	         }
-	      }
-   	}
+      }
+      if ( !empty($session_id)
+           and !empty($this->_cached_items[$session_id])
+         ) {
+         $session_item = $this->_cached_items[$session_id];
+      } else {
+         $session_arrays = array();
+         $session_item = NULL;
+         $query = 'SELECT session_value FROM session WHERE session_id="'.encode(AS_DB,$session_id).'";';
+         $this->_last_query = $query;
+         $result = $this->_db_conntector->performQuery($query);
+         if ( !isset($result) ) {
+            include_once('functions/error_functions.php');
+            trigger_error('Problems selecting session values for: '.$session_id.'.', E_USER_WARNING);
+         } elseif ( !empty($result[0]) ) {
+            include_once('classes/cs_session_item.php');
+            $session_item = new cs_session_item();
+            $session_item->setSessionID($session_id);
+            $session = $result[0];
+            if (!empty($session['session_value'])) {
+               if ( strstr($session['session_value'],'cs_mail_obj') ) {
+                  // must included here, because this objects could get out of the session
+                  include_once('classes/cs_mail_obj.php');
+               }
+               include_once('functions/text_functions.php');
+               $session_array = mb_unserialize($session['session_value']);
+            } else {
+               $session_array = array();
+            }
+            $session_item->_data = $session_array;
+            if ( $this->_cache_on ) {
+               $this->_cached_items[$session_id] = $session_item;
+            }
+         }
+      }
       return $session_item;
    }
 

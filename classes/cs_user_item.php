@@ -1012,15 +1012,33 @@ class cs_user_item extends cs_item {
       return $room_manager->getItem($this->getRoomID());
    }
 
+   function getUserRelatedCommunityList () {
+      $manager = $this->_environment->getCommunityManager();
+      $list = $manager->getUserRelatedCommunityListForUser($this);
+      return $list;
+   }
+
    function getRelatedCommunityList () {
       $manager = $this->_environment->getCommunityManager();
       $list = $manager->getRelatedCommunityListForUser($this);
       return $list;
    }
 
+   function getUserRelatedProjectList () {
+      $manager = $this->_environment->getProjectManager();
+      $list = $manager->getUserRelatedProjectListForUser($this);
+      return $list;
+   }
+
    function getRelatedProjectList () {
       $manager = $this->_environment->getProjectManager();
       $list = $manager->getRelatedProjectListForUser($this);
+      return $list;
+   }
+
+   function getUserRelatedGroupList () {
+      $manager = $this->_environment->getGrouproomManager();
+      $list = $manager->getUserRelatedGroupListForUser($this);
       return $list;
    }
 

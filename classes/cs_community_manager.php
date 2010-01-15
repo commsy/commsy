@@ -126,8 +126,12 @@ class cs_community_manager extends cs_room2_manager {
     $this->_template_limit = NULL;
   }
 
-  function getRelatedCommunityListForUser ($user_item) {
+   function getRelatedCommunityListForUser ($user_item) {
       return $this->_getRelatedContextListForUser($user_item->getUserID(),$user_item->getAuthSource(),$this->_environment->getCurrentPortalID());
+   }
+
+   function getUserRelatedCommunityListForUser ($user_item) {
+      return $this->_getRelatedContextListForUser($user_item->getUserID(),$user_item->getAuthSource(),$this->_environment->getCurrentPortalID(),false,true);
    }
 
   /** select communities limited by limits
