@@ -123,6 +123,7 @@ class cs_manager {
    var $_db_connector = NULL;
 
    var $_cached_items = array();
+   var $_cache_object = array();
    var $_cache_on = true;
    var $_cached_sql = array();
 
@@ -686,9 +687,9 @@ class cs_manager {
          ) {
          $item_id = $item->getItemID();
          if ( !empty($item_id)
-              and empty($this->_cached_items[$item_id])
+              and empty($this->_cache_object[$item_id])
             ) {
-            $this->_cached_items[$item_id] = $item;
+            $this->_cache_object[$item_id] = $item;
          }
       }
       return $item;
