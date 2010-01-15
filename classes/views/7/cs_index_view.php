@@ -960,7 +960,11 @@ class cs_index_view extends cs_view {
          $list = $item->getChildrenList();
          if ( isset($list) and !$list->isEmpty() ) {
             if($with_div){
-               $html .= '<div id="tag_tree"  name="tag_tree_detail">';
+            	if(isset($_GET['seltag'])){
+                  $html .= '<div id="tag_tree" name="tag_tree_detail">';
+            	} else {
+            		$html .= '<div id="tag_tree">';
+            	}
             }
             $html .= '<ul>'.LF;
             $current_item = $list->getFirst();
