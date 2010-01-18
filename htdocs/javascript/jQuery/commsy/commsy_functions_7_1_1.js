@@ -1058,6 +1058,7 @@ jQuery(document).ready(function() {
 	   jQuery('#additional_calendar').datepicker({
 	      onSelect: function(dateText, inst) {
 		     //alert(dateText);
+		     //window.location.href='#'+dateText;
 		  }
 	   });
 	}
