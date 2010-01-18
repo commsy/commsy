@@ -72,10 +72,10 @@ if (!isOption($command,'error')) {
          if (empty($error_string)) {
             $auth_manager = $authentication->getAuthManager($_POST['auth_source_id']);
             $auth_manager->changePassword($_POST['user_id'],$_POST['password']);
+            $error_number = $auth_manager->getErrorNumber();
             $user_item = $environment->getCurrentUserItem();
             $user_item->setEmail($_POST['email']);
             $user_item->save();
-            $error_number = $auth_manager->getErrorNumber();
             if (empty($error_number)) {
                $session_item = $environment->getSessionItem();
                if ($session->issetValue('password_forget_time')) {
