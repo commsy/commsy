@@ -943,6 +943,9 @@ function draw_dates_month(){
             day = day.substring(1,2);
          }
          var month = today.substring(2,4);
+         if(month.substring(0,1) == 0){
+        	 month = month.substring(1,2);
+         }
          jQuery('#calendar_month_entry_' + day + '_' + month).css('background-color', today_color);
       }
    }
