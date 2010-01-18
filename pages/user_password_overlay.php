@@ -62,7 +62,7 @@ if (!isOption($command,'error')) {
    }
 
    /* we called ourself as result of a form post */
-   elseif ( isOption($command,$translator->getMessage('PASSWORD_CHANGE_BUTTON_LONG')) ) {
+   elseif ( isOption($command,$translator->getMessage('COMMON_CHANGE_BUTTON')) ) {
       $error_string = '';
       $form->setFormPost($_POST);
       $form->prepareForm();
