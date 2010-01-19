@@ -1053,13 +1053,29 @@ function getExpandLevel(tree, maxVisible){
 	return return_level;
 }
 
-//jQuery(document).ready(function() {
-//	if(jQuery('#additional_calendar').length){
-//	   jQuery('#additional_calendar').datepicker({
-//	      onSelect: function(dateText, inst) {
-//		     //alert(dateText);
-//		     //window.location.href='#'+dateText;
-//		  }
-//	   });
-//	}
-//});
+jQuery(document).ready(function() {
+	if(jQuery('#additional_calendar').length){
+	   jQuery('#additional_calendar').datepicker({
+	      onSelect: function(dateText, inst) {
+		     if(typeof(additional_calendar_href) !== 'undefined' && additional_calendar_href != '') {
+		        var day = dateText.substring(0,2);
+		        var month = dateText.substring(3,5);
+		        var year = dateText.substring(6,10);
+		        if(presentation_mode == 1){
+		        	var temp_date = new Date (year, month-1, day);
+		        	var dayOfWeek = temp_date.getDay(); // Mo = 1 ... So = 0
+		        	if(dayOfWeek != 0){
+		        		offset = (dayOfWeek - 1) * (3600 * 24);
+		        	} else {
+		        		offset = 6 * (3600 * 24);
+		        	}
+		        	var date = (temp_date.getTime() / 1000) - offset + (3600 * 24);
+		        } else if(presentation_mode == 2) {
+		        	var date =  year + '' + month + '' + day;
+		        }
+		        window.location.href = additional_calendar_href + '' + date;
+		     }
+		  }
+	   });
+	}
+});

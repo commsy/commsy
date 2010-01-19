@@ -3904,8 +3904,25 @@ class cs_date_calendar_index_view extends cs_room_index_view {
    }
    
    function _getAdditionalCalendarAsHTML(){
-   	#$html = '<div id="additional_calendar"></div>';
-   	$html = '';
+   	$params = array();
+   	$additional_calendar_href = curl($this->_environment->getCurrentContextID(),
+                                       CS_DATE_TYPE,
+                                       'index',
+                                       $params);
+      $additional_calendar_href = str_replace('&amp;', '&', $additional_calendar_href);
+      $additional_calendar_href .= '&presentation_mode=' . $this->_presentation_mode;
+      if($this->_presentation_mode == 1){
+      	$additional_calendar_href .= '&week=';
+      } elseif ($this->_presentation_mode == 2) {
+      	$additional_calendar_href .= '&month=';
+      }
+   	$html = '<div id="additional_calendar"></div>';
+   	$html .= '<script type="text/javascript">'.LF;
+      $html .= '<!--'.LF;
+      $html .= 'var additional_calendar_href = "' . $additional_calendar_href . '"'.LF;
+      $html .= 'var presentation_mode = "' . $this->_presentation_mode . '"'.LF;
+      $html .= '-->'.LF;
+      $html .= '</script>'.LF;
    	return $html;
    }
 }
