@@ -25,7 +25,7 @@
 // pretend, we work from the CommSy basedir to allow
 // giving include files without "../" prefix all the time.
 chdir('..');
-
+mb_internal_encoding('UTF-8');
 // include base-config
 include_once('etc/cs_constants.php');
 include_once('etc/cs_config.php');
