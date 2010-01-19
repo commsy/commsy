@@ -2163,6 +2163,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
          if(isset($format_array[$i]['dates']) and !empty($format_array[$i]['dates'])){
             foreach($format_array[$i]['dates'] as $date){
                $link = $this->_getItemLinkWithJavascript($date, $date->getTitle());
+               $link = str_replace("'", "\'", $link);
                $link_array = split('"', $link);
                $href = $link_array[1];
                if($date->getColor() != ''){
