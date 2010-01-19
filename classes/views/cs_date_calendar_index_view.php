@@ -3783,7 +3783,8 @@ class cs_date_calendar_index_view extends cs_room_index_view {
    }
    
    function _getAdditionalCalendarAsHTML(){
-   	$html = '<div id="additional_calendar"></div>';
+   	#$html = '<div id="additional_calendar"></div>';
+   	$html = '';
    	return $html;
    }
 }
