@@ -29,6 +29,11 @@ if ( isset($_GET['cid']) ) {
 	chdir('..');
 	include_once('etc/cs_constants.php');
 	include_once('etc/cs_config.php');
+	
+	// start of execution time
+   include_once('functions/misc_functions.php');
+   $time_start = getmicrotime();
+	
 	include_once('classes/cs_environment.php');
 	$environment = new cs_environment();
 	$environment->setCurrentContextID($_GET['cid']);
