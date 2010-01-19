@@ -989,6 +989,23 @@ class cs_detail_view extends cs_view {
             $html.='</ul>'.LF;
             if($with_div){
                $html .= '</div>'.LF;
+               $html .= '<div style="width:235px; font-size:8pt; text-align:right; padding-top:5px;">';
+               if ($current_user->isUser() and $this->_with_modifying_actions ) {
+                  $params = array();
+                  $params = $this->_environment->getCurrentParameterArray();
+                  $params['attach_view'] = 'yes';
+                  $params['attach_type'] = 'tag';
+                  $html .= ahref_curl($this->_environment->getCurrentContextID(),
+                             $this->_environment->getCurrentModule(),
+                             $this->_environment->getCurrentFunction(),
+                             $params,
+                             $this->_translator->getMessage('COMMON_TAG_ATTACH')
+                             ).LF;
+                  unset($params);
+               } else {
+                  $html .= '<span class="disabled">'.$this->_translator->getMessage('COMMON_TAG_ATTACH').'</span>'.LF;
+               }
+               $html .= '</div>'.LF;
                $html .= '</div>'.LF;
                $html .= '</div>'.LF;
             }
