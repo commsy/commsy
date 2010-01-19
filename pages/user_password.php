@@ -75,7 +75,7 @@ if ( isOption($command,$translator->getMessage('ADMIN_CANCEL_BUTTON')) or isOpti
    /* setup the form */
 
    // Construct the form
-   $form = $class_factory->getClass(ACCOUNT_PASSWORD_FORM,array('environment' => $environment));
+   $form = $class_factory->getClass(ACCOUNT_PASSWORD_ADMIN_FORM,array('environment' => $environment));
 
       /* we are not called as a result of a form post, so just display the form */
       if ( empty($command) and !empty($_GET['iid']) ) {
