@@ -1053,13 +1053,13 @@ function getExpandLevel(tree, maxVisible){
 	return return_level;
 }
 
-jQuery(document).ready(function() {
-	if(jQuery('#additional_calendar').length){
-	   jQuery('#additional_calendar').datepicker({
-	      onSelect: function(dateText, inst) {
-		     //alert(dateText);
-		     //window.location.href='#'+dateText;
-		  }
-	   });
-	}
-});
+//jQuery(document).ready(function() {
+//	if(jQuery('#additional_calendar').length){
+//	   jQuery('#additional_calendar').datepicker({
+//	      onSelect: function(dateText, inst) {
+//		     //alert(dateText);
+//		     //window.location.href='#'+dateText;
+//		  }
+//	   });
+//	}
+//});
