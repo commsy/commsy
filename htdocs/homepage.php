@@ -26,7 +26,7 @@
 // pretend, we work from the CommSy basedir to allow
 // giving include files without "../" prefix all the time.
 chdir('..');
-
+mb_internal_encoding('UTF-8');
 include_once('functions/misc_functions.php');
 
 // start of execution time

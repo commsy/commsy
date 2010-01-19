@@ -22,6 +22,7 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
+mb_internal_encoding('UTF-8');
 if ( isset($_GET['cid']) ) {
    $path = 'http://'.$_SERVER['SERVER_NAME'].$_SERVER['PHP_SELF'];
    $path = str_replace('rss.php','',$path);

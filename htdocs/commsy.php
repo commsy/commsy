@@ -27,7 +27,7 @@
 // giving include files without "../" prefix all the time.
 
 chdir('..');
-
+mb_internal_encoding('UTF-8');
 function cleanupSession($session, $environment){
      if ($session->issetValue('history')){
         $history_array = $session->getValue('history');
