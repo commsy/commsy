@@ -658,7 +658,7 @@ jQuery(document).ready(function() {
 		                                 //dayNamesMin: ['So','Mo','Di','Mi','Do','Fr','Sa'],
 		                                 //dayStatus: 'Setze DD als ersten Wochentag',
 		                                 //dateStatus: 'Wähle D, M d',
-		                                 dateFormat: 'dd.mm.yy',
+		                                 dateFormat: 'mm/dd/yy',
 		                                 firstDay: 1,
 		                                 //initStatus: 'Wähle ein Datum',
 		                                 isRTL: false};
