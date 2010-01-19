@@ -109,9 +109,9 @@ span.select_link{
 span.searched_text_yellow{
 	font-weight:bold;
 	/* font-size:9pt; */
-	background-color:#EEFF22;
+	background-color:#FFFF00;
 	color:#000000;
-	padding:2px;
+	padding:0px;
 }
 /* background for the search text green */
 span.searched_text_green{
@@ -119,7 +119,7 @@ span.searched_text_green{
 	/* font-size:9pt; */
 	background-color:#77FF00;
 	color:#000000;
-	padding:2px;
+	padding:0px;
 }
 
 
