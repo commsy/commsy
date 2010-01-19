@@ -1069,7 +1069,7 @@ jQuery(document).ready(function() {
 		        	} else {
 		        		offset = 6 * (3600 * 24);
 		        	}
-		        	var date = (temp_date.getTime() / 1000) - offset + (3600 * 24);
+		        	var date = (temp_date.getTime() / 1000) - offset;
 		        } else if(presentation_mode == 2) {
 		        	var date =  year + '' + month + '' + day;
 		        }
