@@ -3498,6 +3498,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       for ($index = 0; $index < count($date_array_for_jQuery_php_with_position); $index++) {
       	$day_entries = $date_array_for_jQuery_php_with_position[$index][0];
       	$link = $date_array_for_jQuery_php_with_position[$index][1];
+      	$link = str_replace("'", "\'", $link);
       	$start_quaters = $date_array_for_jQuery_php_with_position[$index][2];
       	$end_quaters = $date_array_for_jQuery_php_with_position[$index][3];
       	$dates_on_day = $date_array_for_jQuery_php_with_position[$index][4];
