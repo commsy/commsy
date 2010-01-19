@@ -79,8 +79,10 @@ class cs_account_password_form extends cs_rubric_form {
       $this->_form->addPassword('password','',$this->_translator->getMessage('USER_PASSWORD'),$this->_translator->getMessage('USER_PASSWORD_DESC'),'','',true);
       $this->_form->addPassword('password2','',$this->_translator->getMessage('USER_PASSWORD2'),$this->_translator->getMessage('USER_PASSWORD2_DESC'),'','',true);
 
-      $this->_form->addTextfield('email','',$this->_translator->getMessage('USER_EMAIL'), '');
-      $this->_form->addTextfield('email2','',$this->_translator->getMessage('USER_EMAIL_CONFIRMATION'),'');
+      if($this->_environment->getCurrentUserItem()->isRoot()){
+         $this->_form->addTextfield('email','',$this->_translator->getMessage('USER_EMAIL'), '');
+         $this->_form->addTextfield('email2','',$this->_translator->getMessage('USER_EMAIL_CONFIRMATION'),'');
+      }
 
       // buttons
       if ( !empty($this->_modus)
@@ -150,7 +152,9 @@ class cs_account_password_form extends cs_rubric_form {
          $this->_values['auth_source_id'] = $this->_item->getAuthSource();
          $this->_values['fullname_text'] = $this->_item->getFullname();
          $this->_values['user_id_text'] = $this->_item->getUserID();
-         $this->_values['email'] = $this->_item->getEmail();
+         if($this->_environment->getCurrentUserItem()->isRoot()){
+            $this->_values['email'] = $this->_item->getEmail();
+         }
       } else {
          // if $this->_form_post is empty and $this->_item is empty
          include_once('functions/error_functions.php');trigger_error('lost values',E_USER_WARNING);
@@ -166,14 +170,16 @@ class cs_account_password_form extends cs_rubric_form {
          $this->_form->setFailure('password');
          $this->_form->setFailure('password2');
       }
-      if(!isEmailValid($this->_form_post['email'])) {
-         $this->_error_array[] = $this->_translator->getMessage('USER_EMAIL_VALID_ERROR');
-         $this->_form->setFailure('email');
-      }
-      if($this->_form_post['email'] != $this->_form_post['email2']) {
-          $this->_error_array[] = $this->_translator->getMessage('USER_EMAIL_ERROR');
-          $this->_form->setFailure('email');
-          $this->_form->setFailure('email2');
+      if($this->_environment->getCurrentUserItem()->isRoot()){
+	      if(!isEmailValid($this->_form_post['email'])) {
+	         $this->_error_array[] = $this->_translator->getMessage('USER_EMAIL_VALID_ERROR');
+	         $this->_form->setFailure('email');
+	      }
+	      if($this->_form_post['email'] != $this->_form_post['email2']) {
+	          $this->_error_array[] = $this->_translator->getMessage('USER_EMAIL_ERROR');
+	          $this->_form->setFailure('email');
+	          $this->_form->setFailure('email2');
+	      }
       }
    }
 }
