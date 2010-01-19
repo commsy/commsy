@@ -169,6 +169,7 @@ var $_sel_rubric = '';
       	}
          
          $noticed_manager = $this->_environment->getNoticedManager();
+         $noticed_manager->getLatestNoticedByIDArray($temp_item_id_array);
          $noticed_manager->getLatestNoticedAnnotationsByIDArray($temp_item_id_array);
          
          $link_manager = $this->_environment->getLinkManager();
