@@ -114,7 +114,7 @@ class cs_todo_item extends cs_item {
       } elseif ($value =='3') {
         return $translator->getMessage('TODO_DONE');
       } else {
-        return $translator->getMessage('TODO_NOT_STARTED');
+        // return $translator->getMessage('TODO_NOT_STARTED');
          $context_item = $this->_environment->getCurrentContextItem();
          $extra_status_array = $context_item->getExtraToDoStatusArray();
          if (isset($extra_status_array[$value])){
