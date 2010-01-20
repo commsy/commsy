@@ -1058,9 +1058,15 @@ jQuery(document).ready(function() {
 	   jQuery('#additional_calendar').datepicker({
 	      onSelect: function(dateText, inst) {
 		     if(typeof(additional_calendar_href) !== 'undefined' && additional_calendar_href != '') {
-		        var day = dateText.substring(0,2);
-		        var month = dateText.substring(3,5);
-		        var year = dateText.substring(6,10);
+		        if(window.datepicker_language !== undefined && window.datepicker_language == 'de'){
+		        	var day = dateText.substring(0,2);
+			        var month = dateText.substring(3,5);
+			        var year = dateText.substring(6,10);
+				} else {
+					var day = dateText.substring(3,5);
+			        var month = dateText.substring(0,2);
+			        var year = dateText.substring(6,10);
+				}
 		        if(presentation_mode == 1){
 		        	var temp_date = new Date (year, month-1, day);
 		        	var dayOfWeek = temp_date.getDay(); // Mo = 1 ... So = 0
