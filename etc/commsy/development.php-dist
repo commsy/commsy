@@ -50,4 +50,11 @@ $c_logging_file = '';
 
 // enable security for HTML textarea
 $c_enable_htmltextarea_security = true;
+
+// use cron new
+// save cron result in log file
+// don't show it in HTML
+// ATTENTION: maybe the newsletter will be send twice
+// default = false -> use old cron
+// $c_cron_use_new = true;
 ?>
