@@ -1081,7 +1081,9 @@ jQuery(document).ready(function() {
 		        }
 		        window.location.href = additional_calendar_href + '' + date;
 		     }
-		  }
+		  },
+		  changeMonth: true,
+		  changeYear: true
 	   });
 	}
 });
