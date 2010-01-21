@@ -926,22 +926,25 @@ class cs_detail_view extends cs_view {
                $html .= '<div class="right_box_title">'.$this->_translator->getMessage('COMMON_TAGS').'</div>';
                $html .= '         </noscript>';
                $html .= '<div class="right_box_main" >'.LF;
-               $html .= '<div id="tag_tree">';
+               $html .= '<div id="tag_tree" name="tag_tree_detail">';
             }
             $html .= '<ul>'.LF; // oberstes <ul>
             $current_item = $list->getFirst();
             $distance = $distance +1;
             $font_weight ='normal';
+            $link_name = '';
             $font_color = 30;
             $font_style = 'normal';
             $i = 1;
             while ( $current_item ) {
                $font_weight = 'normal';
+               $link_name = '';
                $tag_item = $tag_list->getFirst();
                if ( isset ($tag_item) ){
                   while( $tag_item ){
                      if($tag_item->getItemID() == $current_item->getItemID()){
                         $font_weight = 'bold';
+                        $link_name = 'selected';
                      }
                      $tag_item = $tag_list->getNext();
                   }
@@ -957,6 +960,7 @@ class cs_detail_view extends cs_view {
                $color = 'rgb('.$font_color.'%,'.$font_color.'%,'.$font_color.'%);';
                $title = $this->_text_as_html_short($current_item->getTitle());
                $params['seltag_'.$ebene] = $current_item->getItemID();
+               $params['name'] = $link_name;
                if( isset($params['seltag']) ){
                   $i = $ebene+1;
                   while( isset($params['seltag_'.$i]) ){
