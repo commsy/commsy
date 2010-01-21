@@ -163,7 +163,10 @@ set_time_limit(0);
 header("Content-Type: text/html; charset=utf-8");
 
 #$result_html = '';
-if(!isset($context_id)){
+if ( !empty($_GET['cid']) ) {
+   $context_id = $_GET['cid'];
+}
+if ( !isset($context_id) ) {
    $filename = 'cronresult';
 } else {
    $filename = 'cronresult_'.$context_id;
@@ -216,9 +219,6 @@ include_once('classes/cs_environment.php');
 $environment = new cs_environment();
 $environment->setCacheOff();
 $result_array = array();
-if ( !empty($_GET['cid']) ) {
-   $context_id = $_GET['cid'];
-}
 
 echo('<h1>CommSy Cron Jobs</h1>'.LF);
 #$result_html .= '<h1>CommSy Cron Jobs</h1>'.LF;
