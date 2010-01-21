@@ -396,27 +396,31 @@ class cs_context_manager extends cs_manager {
     */
    function getItem ($item_id) {
       $retour = NULL;
-      if ( !isset($this->_cache_object[$item_id])
-           and !isset($this->_cache_row[$item_id])
+      if ( !empty($item_id)
+           and is_numeric($item_id)
          ) {
-         $query = "SELECT * FROM ".$this->_db_table." WHERE ".$this->_db_table.".item_id='".encode(AS_DB,$item_id)."'";
-         $result = $this->_db_connector->performQuery($query);
-         unset($query);
-         if ( !isset($result) ) {
-            include_once('functions/error_functions.php');
-            trigger_error('Problems selecting '.$this->_db_table.' item.',E_USER_WARNING);
-         } elseif ( !empty($result[0]) ) {
-            $data_array = $result[0];
-            if ( !empty($data_array) ) {
-               $retour = $this->_buildItem($data_array);
+         if ( !isset($this->_cache_object[$item_id])
+              and !isset($this->_cache_row[$item_id])
+            ) {
+            $query = "SELECT * FROM ".$this->_db_table." WHERE ".$this->_db_table.".item_id='".encode(AS_DB,$item_id)."'";
+            $result = $this->_db_connector->performQuery($query);
+            unset($query);
+            if ( !isset($result) ) {
+               include_once('functions/error_functions.php');
+               trigger_error('Problems selecting '.$this->_db_table.' item.',E_USER_WARNING);
+            } elseif ( !empty($result[0]) ) {
+               $data_array = $result[0];
+               if ( !empty($data_array) ) {
+                  $retour = $this->_buildItem($data_array);
+               }
+               unset($result);
             }
-            unset($result);
-         }
-      } else {
-         if ( !empty($this->_cache_object[$item_id]) ) {
-            $retour = $this->_cache_object[$item_id];
          } else {
-            $retour = $this->_buildItem($this->_cache_row[$item_id]);
+            if ( !empty($this->_cache_object[$item_id]) ) {
+               $retour = $this->_cache_object[$item_id];
+            } else {
+               $retour = $this->_buildItem($this->_cache_row[$item_id]);
+            }
          }
       }
       return $retour;

@@ -67,7 +67,7 @@ class cs_context_item extends cs_item {
 
    var $_rubric_support = array();
 
-   var $_cache_may_enter = array(); 
+   var $_cache_may_enter = array();
 
    /** constructor: cs_context_item
     * the only available constructor, initial values for internal variables
@@ -4928,7 +4928,11 @@ class cs_context_item extends cs_item {
          $manager->resetLimits();
        if ($this->isCommunityRoom()) {
             $manager->setContextLimit($this->getContextID());
-            $manager->setCommunityRoomLimit($this->getItemID());
+            #$manager->setCommunityRoomLimit($this->getItemID());
+            /**
+             * use redundant infos in community room
+             */
+            $manager->setIDArrayLimit($this->getInternalProjectIDArray());
        } else {
             $manager->setContextLimit($this->getItemID());
        }
@@ -4944,7 +4948,11 @@ class cs_context_item extends cs_item {
          $manager->resetLimits();
        if ($this->isCommunityRoom()) {
             $manager->setContextLimit($this->getContextID());
-            $manager->setCommunityRoomLimit($this->getItemID());
+            #$manager->setCommunityRoomLimit($this->getItemID());
+            /**
+             * use redundant infos in community room
+             */
+            $manager->setIDArrayLimit($this->getInternalProjectIDArray());
        } else {
             $manager->setContextLimit($this->getItemID());
        }
@@ -4958,12 +4966,16 @@ class cs_context_item extends cs_item {
       if (!isset($this->_count_mod_projects)) {
          $manager = $this->_environment->getProjectManager();
          $manager->resetLimits();
-       if ($this->isCommunityRoom()) {
+         if ($this->isCommunityRoom()) {
             $manager->setContextLimit($this->getContextID());
-            $manager->setCommunityRoomLimit($this->getItemID());
-       } else {
+            #$manager->setCommunityRoomLimit($this->getItemID());
+            /**
+             * use redundant infos in community room
+             */
+            $manager->setIDArrayLimit($this->getInternalProjectIDArray());
+         } else {
             $manager->setContextLimit($this->getItemID());
-       }
+         }
          $this->_count_mod_projects = $manager->getCountModProjects($start,$end);
       }
       $retour = $this->_count_mod_projects;

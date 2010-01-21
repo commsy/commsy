@@ -766,7 +766,9 @@ if ($current_user->isGuest()) {
              $item->setCheckNewMemberAlways();
           } elseif ($_POST['member_check'] == 'sometimes') {
              $item->setCheckNewMemberSometimes();
-          } elseif ($_POST['member_check'] == 'withcode') {
+          } elseif ( $_POST['member_check'] == 'withcode'
+                     and !empty($_POST['code'])
+                   ) {
              $item->setCheckNewMemberWithCode();
              $item->setCheckNewMemberCode($_POST['code']);
           }

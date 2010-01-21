@@ -393,7 +393,13 @@ class cs_configuration_preferences_form extends cs_rubric_form {
                  $room_manager->setContextLimit($current_portal->getItemID());
                  $room_manager->setTemplateLimit();
                  if ( $this->_environment->inCommunityRoom() ) {
-                    $room_manager->setCommunityRoomLimit($this->_environment->getCurrentContextID());
+                    #$room_manager->setCommunityRoomLimit($this->_environment->getCurrentContextID());
+                    /**
+                     * use redundant infos in community room
+                     */
+                    $current_community_item = $this->_environment->getCurrentContextItem();
+                    $room_manager->setIDArrayLimit($current_community_item->getInternalProjectIDArray());
+                    unset($current_community_item);
                  }
                  $room_manager->select();
                  $room_list = $room_manager->get();
@@ -459,7 +465,7 @@ class cs_configuration_preferences_form extends cs_rubric_form {
                      $temp_array['text'] = $item->getTitle();
                      $temp_array['value'] = $item->getItemID();
                      $this->_template_array[] = $temp_array;
-                     
+
                      /*
                       * Fix:	text functions causes problems with javascript and <br /> tag
                       * 		anyway, they are not need for displaying the content, because

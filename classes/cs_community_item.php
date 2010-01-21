@@ -80,6 +80,51 @@ class cs_community_item extends cs_room_item {
       return $this->getLinkedItemIDArray(CS_PROJECT_TYPE);
    }
 
+   public function getInternalProjectIDArray () {
+      $retour = array();
+      if ( $this->_issetExtra('PROJECT_ID_ARRAY') ) {
+         $array = $this->_getExtra('PROJECT_ID_ARRAY');
+         if ( is_array($array) ) {
+            $retour = $array;
+         }
+      }
+      return $retour;
+   }
+
+   public function setInternalProjectIDArray ( $array ) {
+      if ( is_array($array) ) {
+         $this->_setExtra('PROJECT_ID_ARRAY',$array);
+      }
+   }
+
+   public function addProjectID2InternalProjectIDArray ( $id ) {
+      if ( is_numeric($id) ) {
+         $array = $this->getInternalProjectIDArray();
+         if ( !in_array($id,$array) ) {
+            $array[] = $id;
+         }
+         $this->setInternalProjectIDArray($array);
+      }
+   }
+
+   public function removeProjectID2InternalProjectIDArray ( $id ) {
+      if ( is_numeric($id) ) {
+         $array = $this->getInternalProjectIDArray();
+         if ( in_array($id,$array) ) {
+            unset($array[array_search($id,$array)]);
+         }
+         $this->setInternalProjectIDArray($array);
+      }
+   }
+
+   public function unsetInternalProjectIDArray () {
+      $this->setInternalProjectIDArray(array());
+   }
+
+   public function initInternalProjectIDArray () {
+      $this->setInternalProjectIDArray($this->getProjectIDArray());
+   }
+
    /** get communitys of a project
     * this method returns a list of communitys which are linked to the project
     *
@@ -506,7 +551,11 @@ class cs_community_item extends cs_room_item {
       $room_manager = $this->_environment->getProjectManager();
       $room_manager->resetLimits();
       $room_manager->setContextLimit($this->getContextID());
-      $room_manager->setCommunityRoomLimit($this->getItemID());
+      #$room_manager->setCommunityRoomLimit($this->getItemID());
+      /**
+       * use redundant infos in community room
+       */
+      $room_manager->setIDArrayLimit($this->getInternalProjectIDArray());
       $room_list = $room_manager->getUsedProjectRooms($start,$end);
 
       return $room_list;
@@ -516,7 +565,11 @@ class cs_community_item extends cs_room_item {
       $room_manager = $this->_environment->getProjectManager();
       $room_manager->resetLimits();
       $room_manager->setContextLimit($this->getContextID());
-      $room_manager->setCommunityRoomLimit($this->getItemID());
+      #$room_manager->setCommunityRoomLimit($this->getItemID());
+      /**
+       * use redundant infos in community room
+       */
+      $room_manager->setIDArrayLimit($this->getInternalProjectIDArray());
       $room_list = $room_manager->getActiveProjectRooms($start,$end);
 
       return $room_list;
@@ -526,7 +579,11 @@ class cs_community_item extends cs_room_item {
       $room_manager = $this->_environment->getProjectManager();
       $room_manager->resetLimits();
       $room_manager->setContextLimit($this->getContextID());
-      $room_manager->setCommunityRoomLimit($this->getItemID());
+      #$room_manager->setCommunityRoomLimit($this->getItemID());
+      /**
+       * use redundant infos in community room
+       */
+      $room_manager->setIDArrayLimit($this->getInternalProjectIDArray());
       $room_manager->select();
       $room_list = $room_manager->get();
 
@@ -958,6 +1015,34 @@ class cs_community_item extends cs_room_item {
       unset($user_manager);
 
       return $retour;
+   }
+
+   function _setObjectLinkItems($changed_key) {
+      if ( $changed_key == CS_PROJECT_TYPE ) {
+         $array = array();
+         if ( !empty($this->_data[$changed_key])
+              and is_object($this->_data[$changed_key])
+            ) {
+            $item = $this->_data[$changed_key]->getFirst();
+            while ( $item ) {
+               $array[] = $item->getItemID();
+               $item = $this->_data[$changed_key]->getNext();
+            }
+         }
+         $this->setInternalProjectIDArray($array);
+      }
+      parent::_setObjectLinkItems($changed_key);
+   }
+
+   function _setIDLinkItems($changed_key) {
+      if ( $changed_key == CS_PROJECT_TYPE ) {
+         if ( !empty($this->_data[$changed_key])
+              and is_array($this->_data[$changed_key])
+            ) {
+            $this->setInternalProjectIDArray($this->_data[$changed_key]);
+         }
+      }
+      parent::_setIDLinkItems($changed_key);
    }
 }
 ?>

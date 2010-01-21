@@ -177,7 +177,11 @@ if ( $context_item->isLocked() ) {
                         $manager = $environment->getProjectManager();
                         $manager->reset();
                         $manager->setContextLimit($environment->getCurrentPortalID());
-                        $manager->setCommunityRoomLimit($environment->getCurrentContextID());
+                        #$manager->setCommunityRoomLimit($environment->getCurrentContextID());
+                        /**
+                         * use redundant infos in community room
+                         */
+                        $manager->setIDArrayLimit($context_item->getInternalProjectIDArray());
                         $count_all = $manager->getCountAll();
                         $manager->setSortOrder('activity_rev');
                         if ( $interval > 0 ) {

@@ -1103,8 +1103,78 @@ class cs_project_item extends cs_room_item {
       $grouproom_manager = $this->_environment->getGroupRoomManager();
       $grouproom_manager->setContextLimit($this->getContextID());
       $grouproom_manager->setProjectRoomLimit($this->getItemID());
-      $grouproom_manager->select(); 
+      $grouproom_manager->select();
       return $grouproom_manager->get();
+   }
+
+   function _setObjectLinkItems($changed_key) {
+      if ( $changed_key == CS_COMMUNITY_TYPE ) {
+         if ( !empty($this->_data[$changed_key])
+              and is_object($this->_data[$changed_key])
+            ) {
+            $item = $this->_data[$changed_key]->getFirst();
+            $community_save_array = array();
+            while ( $item ) {
+               $item->addProjectID2InternalProjectIDArray($this->getItemID());
+               $item->saveWithoutChangingModificationInformation();
+               $community_save_array[] = $item->getItemID();
+               unset($item);
+               $item = $this->_data[$changed_key]->getNext();
+            }
+            if ( !empty($this->_old_community_id_array) ) {
+               $community_manager = $this->_environment->getCommunityManager();
+               foreach ( $this->_old_community_id_array as $id ) {
+                  if ( !in_array($id,$community_save_array) ) {
+                     $item = $community_manager->getItem($id);
+                     if ( !empty($item) ) {
+                        $item->removeProjectID2InternalProjectIDArray($this->getItemID());
+                        $item->saveWithoutChangingModificationInformation();
+                     }
+                     unset($item);
+                  }
+               }
+               unset($community_manager);
+            }
+         }
+      }
+      parent::_setObjectLinkItems($changed_key);
+   }
+
+   function _setIDLinkItems($changed_key) {
+      if ( $changed_key == CS_COMMUNITY_TYPE ) {
+         if ( isset($this->_data[$changed_key])
+              and is_array($this->_data[$changed_key])
+            ) {
+            $community_save_array = array();
+            $community_manager = $this->_environment->getCommunityManager();
+            foreach ($this->_data[$changed_key] as $key => $id) {
+               if ( !empty($id['iid']) ) {
+                  $id = $id['iid'];
+               }
+               $item = $community_manager->getItem($id);
+               if ( !empty($item) ) {
+                  $item->addProjectID2InternalProjectIDArray($this->getItemID());
+                  $community_save_array[] = $id;
+                  $item->saveWithoutChangingModificationInformation();
+               }
+               unset($item);
+            }
+            if ( !empty($this->_old_community_id_array) ) {
+               foreach ( $this->_old_community_id_array as $id ) {
+                  if ( !in_array($id,$community_save_array) ) {
+                     $item = $community_manager->getItem($id);
+                     if ( !empty($item) ) {
+                        $item->removeProjectID2InternalProjectIDArray($this->getItemID());
+                        $item->saveWithoutChangingModificationInformation();
+                     }
+                     unset($item);
+                  }
+               }
+            }
+            unset($community_manager);
+         }
+      }
+      parent::_setIDLinkItems($changed_key);
    }
 }
 ?>

@@ -371,7 +371,13 @@ if ($environment->inCommunityRoom()) {
    $manager->setContextLimit($environment->getCurrentContextID());
 }
 if ($context_type == CS_COMMUNITY_TYPE) {
-   $manager->setCommunityroomLimit($environment->getCurrentContextID());
+   #$manager->setCommunityroomLimit($environment->getCurrentContextID());
+   /**
+    * use redundant infos in community room
+    */
+   $current_community_item = $environment->getCurrentContextID();
+   $manager->setIDArrayLimit($current_community_item->getInternalProjectIDArray());
+   unset($current_community_item);
 } elseif ($context_type == CS_MYROOM_TYPE) {
    $current_user_item = $environment->getCurrentUserItem();
    $manager->setUserIDLimit($current_user_item->getUserID());
