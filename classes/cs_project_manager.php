@@ -163,6 +163,12 @@ class cs_project_manager extends cs_room2_manager {
     * this method returns a list (cs_list) of projects within the database limited by the limits. the select statement is a bit tricky, see source code for further information
     */
   function _performQuery($mode = 'select') {
+     if ( isset($this->_id_array_limit)
+          and empty($this->_id_array_limit)
+        ) {
+        return array();
+     }
+
      $query = 'SELECT DISTINCT';
 #     if ( isset($this->_search_limit) ) {
 #        $query .= ' DISTINCT';

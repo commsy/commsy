@@ -292,6 +292,13 @@ foreach ($rubric_array as $rubric) {
       /*Vorbereitung der Manager und Abzählen aller Einträge */
       if ($rubric!=CS_PROJECT_TYPE and $rubric!=CS_MYROOM_TYPE){
          $rubric_manager->setContextLimit($environment->getCurrentContextID());
+      } elseif ( $rubric == CS_PROJECT_TYPE
+                 and $environment->inCommunityRoom()
+               ) {
+         $rubric_manager->setContextLimit($environment->getCurrentPortalID());
+         $current_community_item = $environment->getCurrentContextItem();
+         $rubric_manager->setIDArrayLimit($current_community_item->getInternalProjectIDArray());
+         unset($current_community_item);
       }
       if ($rubric == CS_DATE_TYPE) {
          $rubric_manager->setWithoutDateModeLimit();

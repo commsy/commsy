@@ -807,7 +807,9 @@ class cs_manager {
       $result = 0;
       if (empty($this->_id_array)) {
          $rs = $this->_performQuery('count');
-         if ( is_array($rs) ) {
+         if ( is_array($rs)
+              and isset($rs[0]['count'])
+            ) {
             $result = $rs[0]['count'];
          }
       } else {
