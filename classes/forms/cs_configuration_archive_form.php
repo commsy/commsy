@@ -69,11 +69,17 @@ var $_with_template_form_element3 = false;
                  $room_manager->setContextLimit($current_portal->getItemID());
                  $room_manager->setTemplateLimit();
                  if ( $this->_environment->inCommunityRoom() ) {
-                    #$room_manager->setCommunityRoomLimit($this->_environment->getCurrentContextID());
-                    /**
-                     * use redundant infos in community room
-                     */
-                    $room_manager->setIDArrayLimit($current_context->getInternalProjectIDArray());
+                    global $c_cache_cr_pr;
+                    if ( !isset($c_cache_cr_pr)
+                         or !$c_cache_cr_pr
+                       ) {
+                       $room_manager->setCommunityRoomLimit($this->_environment->getCurrentContextID());
+                    } else {
+                       /**
+                        * use redundant infos in community room
+                        */
+                       $room_manager->setIDArrayLimit($current_context->getInternalProjectIDArray());
+                    }
                  }
                  $room_manager->select();
                  $room_list = $room_manager->get();

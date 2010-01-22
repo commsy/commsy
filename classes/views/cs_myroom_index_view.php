@@ -42,21 +42,15 @@ class cs_myroom_index_view extends cs_context_index_view {
    function cs_myroom_index_view ($params) {
       $this->cs_context_index_view($params);
       $this->_room_type = CS_MYROOM_TYPE;
-      $manager = $this->_environment->getProjectManager();
-      if ($this->_environment->inCommunityRoom()) {
-         $manager->setContextLimit($this->_environment->getCurrentPortalID());
-      }
-      $this->_max_activity = $manager->getMaxActivityPointsInCommunityRoom($this->_environment->getCurrentContextID());
    }
 
-    function getSelectedTime () {
-       return $this->_selected_time;
-    }
+   function getSelectedTime () {
+      return $this->_selected_time;
+   }
 
-    function setSelectedTime ($value) {
-       $this->_selected_time = $value;
-    }
-
+   function setSelectedTime ($value) {
+      $this->_selected_time = $value;
+   }
 
    function _getIndexPageHeaderAsHTML(){
       $html = '';

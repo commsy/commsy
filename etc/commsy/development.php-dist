@@ -57,4 +57,8 @@ $c_enable_htmltextarea_security = true;
 // ATTENTION: maybe the newsletter will be send twice
 // default = false -> use old cron
 // $c_cron_use_new = true;
+
+// use project ids stored in community room items
+// default = false -> use LEFT JOIN room -> link_items -> room
+//$c_cache_cr_pr = true;
 ?>

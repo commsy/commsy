@@ -615,6 +615,28 @@ class cs_context_manager extends cs_manager {
       }
       return $retour;
    }
+
+   function getMaxActivityPointsInCommunityRoomInternal ($community_room_array_limit) {
+      $retour = 0;
+      if ( !empty($community_room_array_limit)
+           and is_array($community_room_array_limit)
+         ) {
+         $query  = 'SELECT MAX(activity) AS max FROM '.$this->_db_table;
+         $query .= ' WHERE '.$this->_db_table.'.item_id IN ('.encode(AS_DB,implode(',',$community_room_array_limit)).');';
+         $result = $this->_db_connector->performQuery($query);
+         if ( !isset($result) or empty($result[0]) ) {
+            include_once('functions/error_functions.php');
+            trigger_error('Problems selecting '.$this->_db_table.' max activity: "'.$this->_dberror.'" from query: "'.$query.'"',E_USER_WARNING);
+         } else {
+            $data_array = $result[0];
+            if (!empty($data_array)) {
+               $retour = $data_array['max'];
+            }
+         }
+      }
+      return $retour;
+   }
+
    function saveActivityPoints ($item) {
       $query = 'UPDATE '.$this->_db_table.' SET'.
                ' activity="'.encode(AS_DB,$item->getActivityPoints()).'"'.

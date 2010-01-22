@@ -48,7 +48,14 @@ class cs_project_short_view extends cs_context_short_view {
       if ($this->_environment->inCommunityRoom()) {
          $manager->setContextLimit($this->_environment->getCurrentPortalID());
       }
-      $this->_max_activity = $manager->getMaxActivityPointsInCommunityRoom($this->_environment->getCurrentContextID());
+      global $c_cache_cr_pr;
+      if ( !isset($c_cache_cr_pr) or !$c_cache_cr_pr ) {
+         $this->_max_activity = $manager->getMaxActivityPointsInCommunityRoom($this->_environment->getCurrentContextID());
+      } else {
+         $current_context_item = $this->_environment->getCurrentContextItem();
+         $this->_max_activity = $manager->getMaxActivityPointsInCommunityRoomInternal($current_context_item->getInternalProjectIDArray());
+         unset($current_context_item);
+      }
    }
 }
 ?>

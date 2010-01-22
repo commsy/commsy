@@ -4926,16 +4926,20 @@ class cs_context_item extends cs_item {
       if (!isset($this->_count_projects)) {
          $manager = $this->_environment->getProjectManager();
          $manager->resetLimits();
-       if ($this->isCommunityRoom()) {
+         if ($this->isCommunityRoom()) {
             $manager->setContextLimit($this->getContextID());
-            #$manager->setCommunityRoomLimit($this->getItemID());
-            /**
-             * use redundant infos in community room
-             */
-            $manager->setIDArrayLimit($this->getInternalProjectIDArray());
-       } else {
+            global $c_cache_cr_pr;
+            if ( !isset($c_cache_cr_pr) or !$c_cache_cr_pr ) {
+               $manager->setCommunityRoomLimit($this->getItemID());
+            } else {
+               /**
+                * use redundant infos in community room
+                */
+               $manager->setIDArrayLimit($this->getInternalProjectIDArray());
+            }
+         } else {
             $manager->setContextLimit($this->getItemID());
-       }
+         }
          $this->_count_projects = $manager->getCountProjects($start,$end);
       }
       $retour = $this->_count_projects;
@@ -4948,11 +4952,15 @@ class cs_context_item extends cs_item {
          $manager->resetLimits();
        if ($this->isCommunityRoom()) {
             $manager->setContextLimit($this->getContextID());
-            #$manager->setCommunityRoomLimit($this->getItemID());
-            /**
-             * use redundant infos in community room
-             */
-            $manager->setIDArrayLimit($this->getInternalProjectIDArray());
+            global $c_cache_cr_pr;
+            if ( !isset($c_cache_cr_pr) or !$c_cache_cr_pr ) {
+               $manager->setCommunityRoomLimit($this->getItemID());
+            } else {
+               /**
+                * use redundant infos in community room
+                */
+               $manager->setIDArrayLimit($this->getInternalProjectIDArray());
+            }
        } else {
             $manager->setContextLimit($this->getItemID());
        }
@@ -4968,11 +4976,15 @@ class cs_context_item extends cs_item {
          $manager->resetLimits();
          if ($this->isCommunityRoom()) {
             $manager->setContextLimit($this->getContextID());
-            #$manager->setCommunityRoomLimit($this->getItemID());
-            /**
-             * use redundant infos in community room
-             */
-            $manager->setIDArrayLimit($this->getInternalProjectIDArray());
+            global $c_cache_cr_pr;
+            if ( !isset($c_cache_cr_pr) or !$c_cache_cr_pr ) {
+               $manager->setCommunityRoomLimit($this->getItemID());
+            } else {
+               /**
+                * use redundant infos in community room
+                */
+               $manager->setIDArrayLimit($this->getInternalProjectIDArray());
+            }
          } else {
             $manager->setContextLimit($this->getItemID());
          }

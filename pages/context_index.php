@@ -384,11 +384,14 @@ if ($environment->inCommunityRoom()) {
    $manager->setContextLimit($environment->getCurrentContextID());
 }
 if ($context_type == CS_COMMUNITY_TYPE) {
-   #$manager->setCommunityroomLimit($environment->getCurrentContextID());
-   /**
-    * use redundant infos in community room
-    */
-   $manager->setIDArrayLimit($context_item->getInternalProjectIDArray());
+   if ( !isset($c_cache_cr_pr) or $c_cache_cr_pr ) {
+      $manager->setCommunityroomLimit($environment->getCurrentContextID());
+   } else {
+      /**
+       * use redundant infos in community room
+       */
+      $manager->setIDArrayLimit($context_item->getInternalProjectIDArray());
+   }
 } elseif ($context_type == CS_MYROOM_TYPE) {
    $current_user_item = $environment->getCurrentUserItem();
    $manager->setUserIDLimit($current_user_item->getUserID());
@@ -439,18 +442,24 @@ foreach ($sel_array as $rubric => $value) {
 
 if ($context_type == CS_PORTAL_TYPE) {
    if ( $room_type == CS_PROJECT_TYPE and !empty($selcommunityroom) ) {
-      #$manager->setCommunityroomLimit($selcommunityroom);
+      if ( !isset($c_cache_cr_pr) or !$c_cache_cr_pr ) {
+         $manager->setCommunityroomLimit($selcommunityroom);
+      } else {
+         /**
+          * use redundant infos in community room
+          */
+         $manager->setIDArrayLimit($context_item->getInternalProjectIDArray());
+      }
+   }
+} elseif ($room_type == CS_PROJECT_TYPE and $context_type == CS_COMMUNITY_TYPE) {
+   if ( !isset($c_cache_cr_pr) or !$c_cache_cr_pr ) {
+      $manager->setCommunityroomLimit($environment->getCurrentContextID());
+   } else {
       /**
        * use redundant infos in community room
        */
       $manager->setIDArrayLimit($context_item->getInternalProjectIDArray());
    }
-} elseif ($room_type == CS_PROJECT_TYPE and $context_type == CS_COMMUNITY_TYPE) {
-   #$manager->setCommunityroomLimit($environment->getCurrentContextID());
-   /**
-    * use redundant infos in community room
-    */
-   $manager->setIDArrayLimit($context_item->getInternalProjectIDArray());
 }
 if ( !empty($sort) ) {
    $manager->setSortOrder($sort);
