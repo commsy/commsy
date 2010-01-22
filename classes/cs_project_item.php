@@ -324,19 +324,38 @@ class cs_project_item extends cs_room_item {
    function delete() {
       parent::delete();
 
+      // delete in community rooms
+      $com_list = $this->getCommunityList();
+      if ( isset($com_list)
+           and is_object($com_list)
+           and $com_list->isNotEmpty()
+         ) {
+         $com_item = $com_list->getFirst();
+         while ($com_item) {
+            $com_item->removeProjectID2InternalProjectIDArray($this->getItemID());
+            $com_item->saveWithoutChangingModificationInformation();
+            unset($com_item);
+            $com_item = $com_list->getNext();
+         }
+      }
+      unset($com_list);
+
       // delete associated tasks
       $task_list = $this->_getTaskList();
       $current_task = $task_list->getFirst();
       while ($current_task) {
          $current_task->delete();
+         unset($current_task);
          $current_task = $task_list->getNext();
       }
+      unset($task_list);
 
       // send mail to moderation
       $this->_sendMailRoomDelete();
 
       $manager = $this->_environment->getProjectManager();
       $this->_delete($manager);
+      unset($manager);
 
       if ( $this->_environment->inPortal() ) {
          $id_manager = $this->_environment->getExternalIdManager();
@@ -351,6 +370,22 @@ class cs_project_item extends cs_room_item {
 
       // send mail to moderation
       $this->_sendMailRoomUnDelete();
+
+      // re-insert internal community room links
+      $com_list = $this->getCommunityList();
+      if ( isset($com_list)
+           and is_object($com_list)
+           and $com_list->isNotEmpty()
+         ) {
+         $com_item = $com_list->getFirst();
+         while ($com_item) {
+            $com_item->addProjectID2InternalProjectIDArray($this->getItemID());
+            $com_item->saveWithoutChangingModificationInformation();
+            unset($com_item);
+            $com_item = $com_list->getNext();
+         }
+      }
+      unset($com_list);
    }
 
    function setRoomContext ($value) {
