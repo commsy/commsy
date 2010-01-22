@@ -222,7 +222,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $html .= '<div class="right_box_main" style="'.$width.'">'.LF;
       
       if($this->calendar_with_javascript()){
-      	$html .= $this->_getAdditionalCalendarAsHTML().LF;
+      	//$html .= $this->_getAdditionalCalendarAsHTML().LF;
       }
       
       $html .= $this->_getAdditionalFormFieldsAsHTML().LF;
