@@ -180,6 +180,11 @@ class cs_auth_mysql extends cs_auth_manager {
    *                 false, if user_id is not free
    */
    function is_free($user_id) {
+      if($this->_translator == null) {
+         global $environment;
+         $this->_translator = $environment->getTranslationObject();
+      }
+   	
       $retour = true;
       $item = '';
       $user_id_array = $this->_getMultipleUserIDArray($user_id);
@@ -189,7 +194,7 @@ class cs_auth_mysql extends cs_auth_manager {
             $user_id_to_check = $this->_item->getUserID();
             if ( !empty($user_id_to_check) ) {
                $retour = false;
-               if ($user_id_to_check != $user_id) {
+               if (cs_strtoupper($user_id_to_check) != cs_strtoupper($user_id)) {
                   $this->_error_array[] = $this->_translator->getMessage('AUTH_ERROR_ACCOUNT_EXIST', $user_id_to_check);
                }
             }
