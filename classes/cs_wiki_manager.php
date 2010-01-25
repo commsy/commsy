@@ -1815,7 +1815,8 @@ function exportItemToWiki_soap($current_item_id,$rubric){
              $new_filename = $this->encodeUrl($file->getDiskFileNameWithoutFolder());
              $new_filename = preg_replace('~cid([0-9]*)_~u', '', $new_filename);
              $new_filename = $new_filename.'.'.$file->getExtension();
-             $client->uploadFile($new_filename, base64_encode($c_commsy_path_file . '/' . $file->getDiskFileName()), 'uploads/Main', $this->_environment->getSessionID());
+             $temp_file = file_get_contents ($c_commsy_path_file . '/' . $file->getDiskFileName());
+             $client->uploadFile($new_filename, base64_encode($temp_file), 'uploads/Main', $this->_environment->getSessionID());
              $new_link = $this->encodeUrlToHtml($file->getFileName());
              $file_link_array[] = '[[' . $c_pmwiki_path_url . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/uploads/Main/' . $new_filename . '|' . $new_link . ']]';
           }
@@ -1895,7 +1896,8 @@ function exportItemToWiki_soap($current_item_id,$rubric){
                    $new_filename = $this->encodeUrl($file->getDiskFileNameWithoutFolder());
                    $new_filename = preg_replace('~cid([0-9]*)_~u', '', $new_filename);
                    $new_filename = $new_filename.'.'.$file->getExtension();
-                   $client->uploadFile($new_filename, base64_encode($c_commsy_path_file . '/' . $file->getDiskFileName()), 'uploads/Main', $this->_environment->getSessionID());
+                   $temp_file = file_get_contents ($c_commsy_path_file . '/' . $file->getDiskFileName());
+                   $client->uploadFile($new_filename, base64_encode($temp_file), 'uploads/Main', $this->_environment->getSessionID());
                    $new_link = $this->encodeUrlToHtml($file->getFileName());
                    $file_link_array[] = '[[' . $c_pmwiki_path_url . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/uploads/Main/' . $new_filename . '|' . $new_link . ']]';
                 }
@@ -2507,13 +2509,9 @@ function soapCallToWiki(){
    //$test = $client->getProperties();					// - OK
    //$test = $client->getVersion();						// - OK
 
-   $test = $client->getReadPage('Johannes.GroupAttributes');
-
-   pr($test);
-
    #pr($client->__getLastRequestHeaders());
    #pr($client->__getLastResponseHeaders());
-   pr($client->__getLastResponse());
+   #pr($client->__getLastResponse());
 }
 
 function updateWiki($portal, $room){

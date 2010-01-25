@@ -469,5 +469,17 @@ class cs_wiki_view extends cs_view {
       }
       return $text;
    }
+   
+   function _getArgs ($data,$reg_exp) {
+      $variable_array = array();
+      $matches = array();
+      $found = preg_match_all($reg_exp,$data,$matches);
+      $j = 0;
+      while (isset($matches[$j][0])) {
+         $variable_array[$j] = trim($matches[$j][0]);
+         $j++;
+      }
+      return $variable_array;
+   }
 }
 ?>
