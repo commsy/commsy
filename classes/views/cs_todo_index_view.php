@@ -676,6 +676,7 @@ class cs_todo_index_view extends cs_room_index_view {
    function getAdditionalRestrictionTextAsHTML(){
       $html = '';
       $params = $this->_environment->getCurrentParameterArray();
+      $params['selstatus'] = $this->getSelectedStatus();
       $context_item = $this->_environment->getCurrentContextItem();
       if ($context_item->withActivatingContent()){
          $activation_limit= $this->getActivationLimit();
@@ -697,6 +698,7 @@ class cs_todo_index_view extends cs_room_index_view {
          }
       }
       $params = $this->_environment->getCurrentParameterArray();
+      $params['selstatus'] = $this->getSelectedStatus();
       if ( isset($params['selstatus']) and $params['selstatus'] != '-1' and $params['selstatus'] != '0' and !empty($params['selstatus']) ){
          $this->_additional_selects = true;
          $html_text ='<tr>'.LF;
@@ -725,7 +727,8 @@ class cs_todo_index_view extends cs_room_index_view {
          $html_text .= '<span><a title="'.$status_text.'">'.$status_text.'</a></span>';
          $picture = '<img src="images/delete_restriction.gif" alt="x" border="0"/>';
          $new_params = $params;
-         unset($new_params['selstatus']);
+         $new_params['selstatus'] = 0;
+         // unset($new_params['selstatus']);
          $html_text .= '&nbsp;'.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),'index',$new_params,$picture,$this->_translator->getMessage('COMMON_DELETE_RESTRICTIONS')).LF;
          $html_text .='</td>'.LF;
          $html_text .='</tr>'.LF;
@@ -734,15 +737,17 @@ class cs_todo_index_view extends cs_room_index_view {
          $this->_additional_selects = true;
          $html_text ='<tr>'.LF;
          $html_text .='<td>'.LF;
-         $html_text .= '<span class="infocolor">'.$this->_translator->getMessage('TODO_STATUS').': </span>';
+         // $html_text .= '<span class="infocolor">'.$this->_translator->getMessage('TODO_STATUS').': </span>';
          $html_text .='</td>'.LF;
          $html_text .='<td style="text-align:right;">'.LF;
-         $status_text = $this->_translator->getMessage('TODO_NOT_DONE');
-         $html_text .= '<span><a title="'.$status_text.'">'.$status_text.'</a></span>';
-         $picture = '<img src="images/delete_restriction.gif" alt="x" border="0"/>';
+         //$status_text = $this->_translator->getMessage('TODO_NOT_DONE');
+         // $html_text .= '<span><a title="'.$status_text.'">'.$status_text.'</a></span>';
+         // $picture = '<img src="images/delete_restriction.gif" alt="x" border="0"/>';
          $new_params = $params;
-         unset($new_params['selstatus']);
-         $html_text .= '&nbsp;'.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),'index',$new_params,$picture,$this->_translator->getMessage('COMMON_DELETE_RESTRICTIONS')).LF;
+         // unset($new_params['selstatus']);
+         // Loescht aber nicht die Einschränkung
+         $new_params['selstatus'] = 0;
+         //$html_text .= '&nbsp;'.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),'index',$new_params,$picture,$this->_translator->getMessage('COMMON_DELETE_RESTRICTIONS')).LF;
          $html_text .='</td>'.LF;
          $html_text .='</tr>'.LF;
          $html .= $html_text;
