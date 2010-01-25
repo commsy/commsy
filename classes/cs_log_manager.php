@@ -35,6 +35,7 @@ class cs_log_manager extends cs_manager {
    var $_limit_from = NULL;
    var $_limit_range = NULL;
    var $_limit_timestamp_not_older = NULL;
+   var $_limit_request = NULL;
 
    /** constructor: cs_log_manager
      * the only available constructor, initial values for internal variables
@@ -54,10 +55,15 @@ class cs_log_manager extends cs_manager {
       $this->_limit_from = NULL;
       $this->_limit_range = NULL;
       $this->_limit_timestamp_not_older = NULL;
+      $this->_limit_request = NULL;
    }
 
    function setTimestampOlderLimit ($data) {
       $this->_limit_timestamp_old = $data;
+   }
+   
+   function setRequestLimit($data) {
+   	  $this->_limit_request = $data;
    }
 
    /**
@@ -87,6 +93,14 @@ class cs_log_manager extends cs_manager {
       $row = $result[0];
       $retour = $row['count'];
       return $retour;
+   }
+   
+   function countWithUserDistinction() {
+   	  $retour = 0;
+   	  $result = $this->_performQuery('count_user_distinction');
+   	  $row = $result[0];
+   	  $retour = $row['count'];
+   	  return $retour;
    }
 
    function delete () {
@@ -127,6 +141,8 @@ class cs_log_manager extends cs_manager {
          $query = 'DELETE FROM log';
       } elseif ($mode == 'count') {
          $query = 'SELECT count(id) AS count FROM log';
+      } elseif ($mode == 'count_user_distinction') {
+      	 $query = 'SELECT COUNT(DISTINCT uid) AS count FROM log';
       } else {
          include_once('functions/error_functions.php');
          trigger_error('lost perform mode',E_USER_ERROR);
@@ -148,6 +164,10 @@ class cs_log_manager extends cs_manager {
 
       if ( isset($this->_limit_timestamp_not_older) and !empty($this->_limit_timestamp_not_older) ) {
          $query .= ' AND timestamp >= DATE_SUB(CURRENT_DATE,interval '.encode(AS_DB,$this->_limit_timestamp_not_older).' day)';
+      }
+      
+      if(isset($this->_limit_request) and !empty($this->_limit_request)) {
+      	 $query .= ' AND request LIKE "%'.encode(AS_DB,$this->_limit_request).'%"';
       }
 
       $query .= ' ORDER BY timestamp ASC';

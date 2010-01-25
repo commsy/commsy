@@ -500,7 +500,7 @@ class cs_file_item extends cs_item {
       return $retour;
    }
 
-   protected function _getDataAsXML () {
+   public function _getDataAsXML () {
       $retour = '';
       foreach ($this->_data as $key => $value) {
          if ($key == 'filename') {

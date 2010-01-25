@@ -394,11 +394,11 @@ class cs_privateroom_item extends cs_room_item {
                   $body_title = BR.BR.$title.''.LF;
                   $total_count = 0;
                   if ($mail_sequence =='daily'){
-                     $count_total = $item->getPageImpressions(1);
-                     $active = $item->getActiveMembers(1);
+                     $count_total = $item->getPageImpressionsForNewsletter(1);
+                     $active = $item->getActiveMembersForNewsletter(1);
                   } else {
-                     $count_total = $item->getPageImpressions(7);
-                     $active = $item->getActiveMembers(7);
+                     $count_total = $item->getPageImpressionsForNewsletter(7);
+                     $active = $item->getActiveMembersForNewsletter(7);
                   }
                   if ( $count_total == 1 ) {
                      $body_title .= '('.$count_total.'&nbsp;'.$translator->getMessage('ACTIVITY_PAGE_IMPRESSIONS_SINGULAR').'; ';

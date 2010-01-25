@@ -35,6 +35,7 @@ if ( isset($_GET['cid']) ) {
    $time_start = getmicrotime();
 
    include_once('classes/cs_environment.php');
+   include_once('functions/curl_functions.php'); // needed for setting fileArray
    $environment = new cs_environment();
    $environment->setCurrentContextID($_GET['cid']);
    $hash_manager = $environment->getHashManager();
@@ -42,6 +43,16 @@ if ( isset($_GET['cid']) ) {
    $validated = false;
    if ( $context_item->isOpenForGuests() ) {
       $validated = true;
+   }
+   
+   function setFileArray($item) {
+   	global $environment;
+   	$file_array = $item->getFileList()->to_Array();
+    $file_name_array = array();
+    foreach($file_array as $file) {
+    	$file_name_array[htmlentities($file->getDisplayName(), ENT_NOQUOTES, 'UTF-8')] = $file;
+    }
+    $environment->getTextConverter()->setFileArray($file_name_array);
    }
 
    if ( !$context_item->isPortal()
@@ -331,6 +342,7 @@ if ( isset($_GET['cid']) ) {
                $linked_item = $item->getLinkedItem();
                if ( isset($linked_item) ) {
                   $title = $translator->getMessage('RSS_NEW_ANNOTATION_TITLE',$item->getTitle(),$linked_item->getTitle());
+                  setFileArray($item);
                   $description = $environment->getTextConverter()->text_as_html_long($environment->getTextConverter()->cleanDataFromTextArea($item->getDescription()));
                   $user_item = $item->getModificatorItem();
                   $fullname = $user_item->getFullName();
@@ -415,6 +427,7 @@ if ( isset($_GET['cid']) ) {
                $linked_item = $item->getLinkedItem();
                if ( !empty($linked_item) ) {
                   $title = $translator->getMessage('RSS_NEW_DISCUSSIONARTICLE_TITLE',$item->getTitle(),$linked_item->getTitle());
+                  setFileArray($item);
                   $description = $environment->getTextConverter()->text_as_html_long($environment->getTextConverter()->cleanDataFromTextArea($item->getDescription()));
                   $user_item = $item->getModificatorItem();
                   $fullname = $user_item->getFullName();
@@ -462,6 +475,7 @@ if ( isset($_GET['cid']) ) {
                   $date = '';
                } else {
                   $title = $translator->getMessage('RSS_NEW_MATERIAL_TITLE',$item->getTitle());
+                  setFileArray($item);
                   $description = $environment->getTextConverter()->text_as_html_long($environment->getTextConverter()->cleanDataFromTextArea($item->getDescription()));
                   $user_item = $item->getModificatorItem();
                   $fullname = $user_item->getFullName();
@@ -494,6 +508,7 @@ if ( isset($_GET['cid']) ) {
                  and !$item->isNotActivated()
                ) {
                $title = $translator->getMessage('RSS_NEW_ANNOUNCEMENT_TITLE',$item->getTitle());
+               setFileArray($item);
                $description = $environment->getTextConverter()->text_as_html_long($environment->getTextConverter()->cleanDataFromTextArea($item->getDescription()));
                $user_item = $item->getModificatorItem();
                $fullname = $user_item->getFullName();
@@ -529,6 +544,7 @@ if ( isset($_GET['cid']) ) {
                if ( isset($linked_item) ) {
                   $title = $translator->getMessage('RSS_NEW_SECTION_TITLE',$item->getTitle(),$linked_item->getTitle());
                }
+               setFileArray($item);
                $description = $environment->getTextConverter()->text_as_html_long($environment->getTextConverter()->cleanDataFromTextArea($item->getDescription()));
                $user_item = $item->getModificatorItem();
                $fullname = $user_item->getFullName();
@@ -562,6 +578,7 @@ if ( isset($_GET['cid']) ) {
                  and !$item->isNotActivated()
                ) {
                $title = $translator->getMessage('RSS_NEW_DATE_TITLE',$item->getTitle());
+               setFileArray($item);
                $description = $environment->getTextConverter()->text_as_html_long($environment->getTextConverter()->cleanDataFromTextArea($item->getDescription()));
                $user_item = $item->getModificatorItem();
                $fullname = $user_item->getFullName();
@@ -595,6 +612,7 @@ if ( isset($_GET['cid']) ) {
                switch($item->getLabelType()) {
                   case 'group':
                      $title = $translator->getMessage('RSS_NEW_GROUP_TITLE',$item->getTitle());
+                  	 setFileArray($item);
                      $description = $environment->getTextConverter()->text_as_html_long($environment->getTextConverter()->cleanDataFromTextArea($item->getDescription()));
                      $user_item = $item->getModificatorItem();
                      $fullname = $user_item->getFullName();
@@ -615,6 +633,7 @@ if ( isset($_GET['cid']) ) {
                   break;
                   case 'institution':
                      $title = $translator->getMessage('RSS_NEW_INSTITUTION_TITLE',$item->getTitle());
+                  	 setFileArray($item);
                      $description = $environment->getTextConverter()->text_as_html_long($environment->getTextConverter()->cleanDataFromTextArea($item->getDescription()));
                      $user_item = $item->getModificatorItem();
                      $fullname = $user_item->getFullName();
@@ -635,6 +654,7 @@ if ( isset($_GET['cid']) ) {
                   break;
                   case 'topic':
                      $title = $translator->getMessage('RSS_NEW_TOPIC_TITLE',$item->getTitle());
+                  	 setFileArray($item);
                      $description = $environment->getTextConverter()->text_as_html_long($environment->getTextConverter()->cleanDataFromTextArea($item->getDescription()));
                      $user_item = $item->getModificatorItem();
                      $fullname = $user_item->getFullName();
@@ -668,6 +688,7 @@ if ( isset($_GET['cid']) ) {
                  and !$item->isNotActivated()
                ) {
                $title = $translator->getMessage('RSS_NEW_TODO_TITLE',$item->getTitle(),date('d.m.Y',strtotime($item->getDate())));
+               setFileArray($item);
                $description = $environment->getTextConverter()->text_as_html_long($environment->getTextConverter()->cleanDataFromTextArea($item->getDescription()));
                $user_item = $item->getModificatorItem();
                $fullname = $user_item->getFullName();
@@ -702,6 +723,7 @@ if ( isset($_GET['cid']) ) {
                if ( isset($linked_item) ) {
                   $title = $translator->getMessage('RSS_NEW_STEP_TITLE',$item->getTitle(),$linked_item->getTitle());
                }
+               setFileArray($item);
                $description = $environment->getTextConverter()->text_as_html_long($environment->getTextConverter()->cleanDataFromTextArea($item->getDescription()));
                $user_item = $item->getModificatorItem();
                $fullname = $user_item->getFullName();

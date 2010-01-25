@@ -20,4 +20,5 @@ $message["RSS_NOT_ALLOWED"]["de"] = "Bitte melden Sie sich mit Ihrer CommSy-Kenn
 $message["RSS_NO_CONTEXT"]["de"] = "Kein Kontext gewählt!";
 $message["RSS_SUBSCRIBE_LINK"]["de"] = "RSS-Feed dieses Raumes abonnieren";
 $message["RSS_TITLE"]["de"] = "%1 (RSS)";
+$message["RSS_OBJECT_TAG_REPLACE"]["de"] = "An dieser Stelle befindet sich im Original eine Medieneinbettung";
 ?>

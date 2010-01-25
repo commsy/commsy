@@ -1791,7 +1791,7 @@ class cs_user_item extends cs_item {
       return $retour;
    }
 
-   protected function _setAutoSaveStatus ($value) {
+   public function _setAutoSaveStatus ($value) {
       $this->_addExtra('CONFIG_AUTOSAVE_STATUS',$value);
    }
 

@@ -1623,7 +1623,7 @@ class cs_item {
       $this->_delete($manager);
    }
 
-   protected function _getDataAsXML () {
+   public function _getDataAsXML () {
       $retour = '';
       foreach ($this->_data as $key => $value) {
          if ($key == 'extras') {

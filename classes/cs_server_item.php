@@ -154,7 +154,7 @@ class cs_server_item extends cs_guide_item {
     */
    function _cronDaily () {
       $cron_array = array();
-      $cron_array[] = $this->_cronPageImpression();
+      $cron_array[] = $this->_cronPageImpressionAndUserActivity();
       $cron_array[] = $this->_cronLog();
       $cron_array[] = $this->_cronLogArchive();
       $cron_array[] = $this->_cronRoomActivity();
@@ -199,13 +199,13 @@ class cs_server_item extends cs_guide_item {
     *
     * @return array results of running this cron
     */
-   function _cronPageImpression () {
+   function _cronPageImpressionAndUserActivity () {
       include_once('functions/misc_functions.php');
       $time_start = getmicrotime();
 
       $cron_array = array();
-      $cron_array['title'] = 'page impression cron';
-      $cron_array['description'] = 'count page impressions';
+      $cron_array['title'] = 'page impression and user activity cron';
+      $cron_array['description'] = 'count page impressions and user activity';
       $cron_array['success'] = true;
       $cron_array['success_text'] = 'cron failed';
 
@@ -220,16 +220,46 @@ class cs_server_item extends cs_guide_item {
             $room_list = $portal_item->getRoomList();
             if ($room_list->isNotEmpty()) {
                $room_item = $room_list->getFirst();
+               
                while ($room_item) {
-                  $log_manager->resetLimits();
-                  $log_manager->setContextLimit($room_item->getItemID());
-                  $pi = $log_manager->getCountAll();
-
-                  $pi_array = $room_item->getPageImpressionArray();
-                  array_unshift($pi_array,$pi);
-                  $room_item->setPageImpressionArray($pi_array);
-                  $room_item->saveWithoutChangingModificationInformation();
-
+	              // get latest date in log table, in case that there are multiple days in it
+	              $log_manager->resetLimits();
+	              $log_manager->setContextLimit($room_item->getItemID());
+	              $log_manager->setTimestampOlderLimit(getCurrentDate());
+	              $log_manager->setRequestLimit("commsy.php");
+	              $logs = $log_manager->select();
+	              
+	              if(!empty($logs)) {
+	              	$last_entry = end($logs);
+	              	$oldest_date = 	getYearFromDateTime($last_entry['timestamp']) . 
+	              					getMonthFromDateTime($last_entry['timestamp']) . 
+	              					getDayFromDateTime($last_entry['timestamp']);
+	              	$current_date = getCurrentDate();
+	              	$day_diff = getDifference($oldest_date, $current_date);
+	              	
+	              	$pi_array = $room_item->getPageImpressionArray();
+	              	$ua_array = $room_item->getUserActivityArray();
+	              	$pi_input = array();
+	              	$ua_input = array();
+	              	
+	              	// for each day, get page impressions and user activity
+	              	for($i=1;$i < $day_diff;$i++) {
+	              	   $log_manager->resetLimits();
+	              	   $log_manager->setContextLimit($room_item->getItemID());
+	              	   $log_manager->setRequestLimit("commsy.php");
+	              	   $older_limit_stamp = datetime2Timestamp(date("Y-m-d 00:00:00"))-($i-1)*86400;
+	              	   $older_limit = date('Y-m-d', $older_limit_stamp);
+	              	   $log_manager->setTimestampOlderLimit($older_limit);
+	              	   $log_manager->setTimestampNotOlderLimit($i);
+	              	   
+	              	   $pi_input[] = $log_manager->getCountAll();
+	              	   $ua_input[] = $log_manager->countWithUserDistinction();
+	              	}
+	              	
+	              	$room_item->setPageImpressionArray(array_merge($pi_input, $pi_array));
+	              	$room_item->setUserActivityArray(array_merge($ua_input, $ua_array));
+	              	$room_item->saveWithoutChangingModificationInformation();
+	              }
                   $count_rooms++;
                   unset($room_item);
                   $room_item = $room_list->getNext();
@@ -240,7 +270,7 @@ class cs_server_item extends cs_guide_item {
          }
       }
 
-      $cron_array['success_text'] = 'count page impressions of '.$count_rooms.' rooms';
+      $cron_array['success_text'] = 'count page impressions and user activity of '.$count_rooms.' rooms';
       unset($log_manager);
       unset($portal_list);
 
@@ -273,6 +303,9 @@ class cs_server_item extends cs_guide_item {
       $from = 0;
       $range = 500;
       $log_DB->setRangeLimit($from,$range);
+      // only archive logs that are older then the beginning of the actual day
+      // getCurrentDate() returns date("Ymd");
+      $log_DB->setTimestampOlderLimit(getCurrentDate());
       $data_array = $log_DB->select();
       $count = count($data_array);
       if ($count == 0) {

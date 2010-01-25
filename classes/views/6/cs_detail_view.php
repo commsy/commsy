@@ -2014,7 +2014,7 @@ class cs_detail_view extends cs_view {
       return $html;
    }
 
-   protected function _getFilesForFormalData ($item) {
+   public function _getFilesForFormalData ($item) {
       $files = array();
 
       $file_list = $item->getFileList();

@@ -376,8 +376,16 @@ class cs_labels_manager extends cs_manager {
      if (!isset($this->_attribute_limit) || (isset($this->_attribute_limit) and ('modificator'== $this->_attribute_limit) )|| (isset($this->_attribute_limit) and ('all'== $this->_attribute_limit))){
         if ( (isset($this->_sort_order) and ($this->_sort_order == 'modificator' or $this->_sort_order == 'modificator_rev')) or (isset($this->_search_array) and !empty($this->_search_array))) {
            $query .= ' LEFT JOIN user ON labels.creator_id = user.item_id';
+           $query .= ' LEFT JOIN link_items AS l41 ON (l41.deletion_date IS NULL AND ((l41.first_item_id=labels.item_id AND l41.second_item_type="'.CS_USER_TYPE.'")))';
+     	   $query .= ' LEFT JOIN link_items AS l42 ON (l42.deletion_date IS NULL AND ((l42.second_item_id=labels.item_id AND l42.first_item_type="'.CS_USER_TYPE.'")))';
+           $query .= ' LEFT JOIN user AS user1 ON user1.item_id = l41.second_item_id';
+           $query .= ' LEFT JOIN user AS user2 ON user2.item_id = l42.first_item_id';
         }elseif ( (isset($this->_order) and $this->_order == 'creator') or (isset($this->_search_array) and !empty($this->_search_array))) {
            $query .= ' LEFT JOIN user ON labels.creator_id = user.item_id';
+           $query .= ' LEFT JOIN link_items AS l41 ON (l41.deletion_date IS NULL AND ((l41.first_item_id=labels.item_id AND l41.second_item_type="'.CS_USER_TYPE.'")))';
+     	   $query .= ' LEFT JOIN link_items AS l42 ON (l42.deletion_date IS NULL AND ((l42.second_item_id=labels.item_id AND l42.first_item_type="'.CS_USER_TYPE.'")))';
+     	   $query .= ' LEFT JOIN user AS user1 ON user1.item_id = l41.second_item_id';
+     	   $query .= ' LEFT JOIN user AS user2 ON user2.item_id = l42.first_item_id';
         }
      }
 
@@ -471,9 +479,14 @@ class cs_labels_manager extends cs_manager {
       if (isset($this->_search_array) AND !empty($this->_search_array)) {
          $query .= ' AND ( 1 = 1';
                         if (!isset($this->_attribute_limit) || ('all' == $this->_attribute_limit)){
-                           $field_array = array('labels.name','labels.description','labels.modification_date','TRIM(CONCAT(user.firstname," ",user.lastname))');
-                                $search_limit_query_code = $this->_generateSearchLimitCode($field_array);
-                                $query .= ' AND '.$search_limit_query_code;
+                           $field_array = array('labels.name',
+                           						'labels.description',
+                           						'labels.modification_date',
+                           						'TRIM(CONCAT(user.firstname," ",user.lastname))',
+                           						'TRIM(CONCAT(user1.firstname," ",user1.lastname))',
+                           						'TRIM(CONCAT(user2.firstname," ",user2.lastname))');
+                           $search_limit_query_code = $this->_generateSearchLimitCode($field_array);
+                           $query .= ' AND '.$search_limit_query_code;
                         } else {
             if ( 'title'==$this->_attribute_limit ){
                $query .= $this->_generateSearchLimitCode(array('labels.name'));

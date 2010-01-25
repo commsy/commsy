@@ -942,7 +942,7 @@ class cs_grouproom_item extends cs_room_item {
       $this->_sendMailToModeration('group','unlock');
    }
 
-   protected function _sendMailToModeration ($room_moderation, $room_change) {
+   public function _sendMailToModeration ($room_moderation, $room_change) {
       if ( $room_moderation == 'project' ) {
          $project_room_item = $this->getLinkedProjectItem();
          if ( isset($project_room_item) and !empty($project_room_item) ) {

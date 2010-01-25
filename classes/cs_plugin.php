@@ -22,10 +22,10 @@
 
 class cs_plugin {
 
-   protected $_environment = NULL;
-   protected $_translator  = NULL;
-   protected $_identifier  = ''; // must be the same as in etc/commsy/plugin.php
-   protected $_title       = '';
+   public $_environment = NULL;
+   public $_translator  = NULL;
+   public $_identifier  = ''; // must be the same as in etc/commsy/plugin.php
+   public $_title       = '';
 
    /** constructor
     * the only available constructor

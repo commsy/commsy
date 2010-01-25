@@ -43,7 +43,7 @@ class cs_index_view extends cs_view {
    var $_available_buzzwords = NULL;
    var $_include_mootools = false;
    var $_show_netnavigation_box = true;
-   protected $_display_mode = NULL;
+   public $_display_mode = NULL;
 
    /**
     * int - begin of list

@@ -2935,9 +2935,18 @@ class misc_text_converter {
    }
 
    private function _text_php2rss ($text) {
+   	  $text = $this->_text_objectTag2rss($text);
       $text = str_replace('&','&amp;',$text);
       $text = str_replace('<','&lt;',$text);
       return $text;
+   }
+   
+   private function _text_objectTag2rss($text) {
+   	  // find object tags and replace them with a hint and a link
+   	  $translator = $this->_environment->getTranslationObject();
+   	  $translation = $translator->getMessage("RSS_OBJECT_TAG_REPLACE");
+   	  $replace = '<a href="\\1">['.$translation.']</a>';
+   	  return preg_replace('/<object.*>.*value="(.*)".*<\/object>/U',$replace,$text);
    }
 
    private function _text_php2file ($text) {
