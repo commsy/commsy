@@ -1283,8 +1283,10 @@ function removeNotification(){
 function removeNotification_soap(){
    $client = $this->getSoapClient();
    $notification_array = $client->getPageNames('FoxNotifyLists');
-   foreach($notification_array as $notification_file){
-      $client->removePage($notification_file, $this->_environment->getSessionID());
+   if(!empty($notification_array)){
+      foreach($notification_array as $notification_file){
+         $client->removePage($notification_file, $this->_environment->getSessionID());
+      }
    }
 }
 
