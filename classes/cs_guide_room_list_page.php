@@ -138,23 +138,27 @@ class cs_guide_room_list_page extends cs_page {
          }else {
             $manager->setOrder('activity_rev');
          }
+         $ids = $manager->getIDArray();
+         $count_all_shown = count($ids);
          if ( $interval > 0
               and empty($this->_values['activitymodus'])
             ) {
             $manager->setIntervalLimit($from-1,$interval);
-         }
-         $ids = $manager->getIDArray();
-         $list = new cs_list();
-         if (empty($interval)){
-            $interval = count($ids);
-         }
-         for( $i = $from-1; $i<($interval+$from);$i++){
-            if (isset($ids[$i])){
-               $item = $manager->getItem($ids[$i]);
-               $list->add($item);
+            $manager->select();
+            $list = $manager->get();
+         } else {
+            # case needed any more? (ij 26.01.2010)
+            $list = new cs_list();
+            if (empty($interval)){
+               $interval = count($ids);
+            }
+            for( $i = $from-1; $i<($interval+$from);$i++){
+               if (isset($ids[$i])){
+                  $item = $manager->getItem($ids[$i]);
+                  $list->add($item);
+               }
             }
          }
-         $count_all_shown = count($ids);
       } elseif ($this->_environment->inServer()) {
          $context_item = $this->_environment->getCurrentContextItem();
          $list = $context_item->getPortalListByActivity();
