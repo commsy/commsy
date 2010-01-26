@@ -710,6 +710,11 @@ class misc_text_converter {
       return $this->_checkSecurity($z);
    }
 
+   // needed for Wiki-Export
+   public function parseArgs($x){ 
+      return $this->_parseArgs($x);
+   }
+   
    private function _checkSecurity ( $array ) {
       $retour = array();
       foreach ( $array as $key => $value ) {
