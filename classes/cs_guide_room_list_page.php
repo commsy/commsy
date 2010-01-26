@@ -140,6 +140,9 @@ class cs_guide_room_list_page extends cs_page {
          }
          $ids = $manager->getIDArray();
          $count_all_shown = count($ids);
+         if ( empty($interval) ) {
+            $interval = count($ids);
+         }
          if ( $interval > 0
               and empty($this->_values['activitymodus'])
             ) {
@@ -147,11 +150,9 @@ class cs_guide_room_list_page extends cs_page {
             $manager->select();
             $list = $manager->get();
          } else {
-            # case needed any more? (ij 26.01.2010)
+            # sortby log-table, not by activity points
+            # not performant (ij 26.01.2010)
             $list = new cs_list();
-            if (empty($interval)){
-               $interval = count($ids);
-            }
             for( $i = $from-1; $i<($interval+$from);$i++){
                if (isset($ids[$i])){
                   $item = $manager->getItem($ids[$i]);
