@@ -550,7 +550,7 @@ CREATE TABLE IF NOT EXISTS `log` (
   `param` varchar(250) default NULL,
   `iid` int(11) default NULL,
   `queries` smallint(6) default NULL,
-  `time` varchar(11) default NULL,
+  `time` float DEFAULT NULL,
   PRIMARY KEY  (`id`),
   KEY `timestamp` (`timestamp`),
   KEY `cid` (`cid`)
@@ -604,7 +604,7 @@ CREATE TABLE IF NOT EXISTS `log_archive` (
   `param` varchar(250) default NULL,
   `iid` int(11) default NULL,
   `queries` smallint(6) default NULL,
-  `time` varchar(11) default NULL,
+  `time` float DEFAULT NULL,
   PRIMARY KEY  (`id`),
   KEY `ulogin` (`ulogin`),
   KEY `cid` (`cid`)
@@ -796,7 +796,9 @@ CREATE TABLE IF NOT EXISTS `room` (
   `description` text,
   PRIMARY KEY  (`item_id`),
   KEY `context_id` (`context_id`),
-  KEY `creator_id` (`creator_id`)
+  KEY `creator_id` (`creator_id`),
+  KEY `type` (`type`),
+  KEY `activity` (`activity`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
