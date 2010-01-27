@@ -704,7 +704,7 @@ var scrollbar_width = 12;
 jQuery(document).ready(function() {
 	if(jQuery('#calender_main').length){
 		jQuery('#calender_main').jScrollPane({scrollbarWidth: scrollbar_width});
-		jQuery('.jScrollPaneContainer').css('border-top', '1px solid black');
+		jQuery('.jScrollPaneContainer').css('border-top', '1px solid #d2d2d2');
 		jQuery('#calender_frame').css('background-color',jQuery('[id^=calendar_head]').css('background-color'));
 		addNewDateLinks();
 		resize_calendar();
@@ -863,8 +863,9 @@ function draw_dates(){
 	}
 	if(typeof(today) != 'undefined'){
 		if(today != ''){
-			var today_color = '#fdefbf';
-			var today_color_day = '#ebddb0';
+			var today_color = '#f2e4b6';
+			var today_color_work = '#fff0c0';
+			var today_color_day = '#f2e4b6';
 			jQuery.each(jQuery('[id^=calendar_head]'), function(){
 				if((jQuery(this).attr('id').indexOf(today)) != -1){
 					//jQuery(this).css('background-color', today_color);
@@ -872,7 +873,11 @@ function draw_dates(){
 					var today_index = today_array[2];
 					jQuery('#calendar_entry_' + today_index).css('background-color', today_color_day);
 					for ( var index = 0; index <= 23; index++) {
-						jQuery('#calendar_entry_' + index + '_' + today_index).css('background-color', today_color);
+						if((index < 8) || (index > 15)){
+							jQuery('#calendar_entry_' + index + '_' + today_index).css('background-color', today_color);
+						} else {
+							jQuery('#calendar_entry_' + index + '_' + today_index).css('background-color', today_color_work);
+						}
 					}
 				}
 			});
@@ -937,7 +942,7 @@ function draw_dates_month(){
 	}
 	if(typeof(today) != 'undefined'){
       if(today != ''){
-         var today_color = '#fdefbf'
+         var today_color = '#fff0c0'
          var day = today.substring(0,2);
          if(day.substring(0,1) == 0){
             day = day.substring(1,2);

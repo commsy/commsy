@@ -2334,11 +2334,14 @@ class cs_date_calendar_index_view extends cs_room_index_view {
             }
             $html .= '<div class="calendar_month_entry" id="calendar_month_entry_' . $format_array[$i]['day'] .'_' . $current_month_temp . '" style="';
             if($current_month[$i] != mb_substr($this->_month,4,2)){
-               $html .= 'background-color:#dddddd;';
+               $html .= 'background-color:#dfdfdf;';
             }
             if($index_day == 0){
       	     $html .= 'clear:both;';
    	      }
+            if($index_day == 6){
+              $html .= 'border-right:1px solid black;';
+            }
       	   $html .= ' position:relative;">' . $format_array[$i]['day'] . '<div style="position: absolute; top:0px; left:0px; height:100%; width:100%;">' . $anAction_array[$i] . '</div></div>'.LF;
       	   $i++;
    	   }
@@ -2965,7 +2968,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       //title row with weekdays
       $html .= '<div id="calender_frame" style="width:100%; background-color:#ffffff; border:1px solid black; padding:0px;">'.LF;
       $html .= '<div id="calender_dates" style="width:100%; clear:both;">'.LF;
-      $html .= '<div class="calendar_time_head" id="calendar_time"><div class="data">&nbsp;</div></div>'.LF;
+      $html .= '<div class="calendar_time_head" id="calendar_time"><div class="data_day">&nbsp;</div></div>'.LF;
       $display_date_array = array();
       for ($i = 1; $i <8; $i++){
          $startday = date ("d",$week_start);
@@ -2994,7 +2997,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
             case 6: $text = 'COMMON_DATE_WEEKVIEW_SATURDAY'; break;
             case 7: $text = 'COMMON_DATE_WEEKVIEW_SUNDAY'; break;
          }
-            $html .='<div class="calendar_entry_head" id="calendar_head_' . ($i-1) . '_' . date("dmY", $week_start) . '"><div class="data">'.LF;
+            $html .='<div class="calendar_entry_head" id="calendar_head_' . ($i-1) . '_' . date("dmY", $week_start) . '"><div class="data_day">'.LF;
             switch ( $text ){
                case 'COMMON_DATE_WEEKVIEW_MONDAY':
                   $html .= $this->_translator->getMessage('COMMON_DATE_WEEKVIEW_MONDAY',    $display_startday, $startmonth);
@@ -3117,8 +3120,12 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                            $image);
          }
          #$html .= '<div class="calendar_entry" id="calendar_entry_' . $index . '"><div class="data" id="calendar_entry_date_div_' . $index . '_' . $index_day . '">' . $anAction . '</div></div>'.LF;
-         $html .= '<div class="calendar_entry" id="calendar_entry_' . $index . '_' . $index_day . '"><div class="data" id="calendar_entry_date_div_' . $index . '_' . $index_day . '"></div></div>'.LF;
-
+         if(($index < 8) or ($index > 15)){
+            $html .= '<div class="calendar_entry" id="calendar_entry_' . $index . '_' . $index_day . '"><div class="data" id="calendar_entry_date_div_' . $index . '_' . $index_day . '"></div></div>'.LF;
+         } else {
+            $html .= '<div class="calendar_entry_work" id="calendar_entry_' . $index . '_' . $index_day . '"><div class="data" id="calendar_entry_date_div_' . $index . '_' . $index_day . '"></div></div>'.LF;
+         }
+         
          $html_javascript .= 'new Array(\'#calendar_entry_date_div_' . $index . '_' . $index_day . '\',\'<div name="calendar_new_date" id="calendar_entry_background_div_' . $index . '_' . $index_day . '" style="position:absolute; top: 0px; left: 0px; height: 100%; width: 100%; z-index:900;"><div style="width:100%; text-align:left;">' . $anAction . '</div></div>\')';
          if($current_element < (24*7)-1){
             $html_javascript .= ','.LF;
