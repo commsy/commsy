@@ -2968,7 +2968,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       //title row with weekdays
       $html .= '<div id="calender_frame" style="width:100%; background-color:#ffffff; border:1px solid black; padding:0px;">'.LF;
       $html .= '<div id="calender_dates" style="width:100%; clear:both;">'.LF;
-      $html .= '<div class="calendar_time_head" id="calendar_time"><div class="data_day">&nbsp;</div></div>'.LF;
+      $html .= '<div class="calendar_time_head" id="calendar_time"><div class="data_date">&nbsp;</div></div>'.LF;
       $display_date_array = array();
       for ($i = 1; $i <8; $i++){
          $startday = date ("d",$week_start);
@@ -2997,7 +2997,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
             case 6: $text = 'COMMON_DATE_WEEKVIEW_SATURDAY'; break;
             case 7: $text = 'COMMON_DATE_WEEKVIEW_SUNDAY'; break;
          }
-            $html .='<div class="calendar_entry_head" id="calendar_head_' . ($i-1) . '_' . date("dmY", $week_start) . '"><div class="data_day">'.LF;
+            $html .='<div class="calendar_entry_head" id="calendar_head_' . ($i-1) . '_' . date("dmY", $week_start) . '"><div class="data_date">'.LF;
             switch ( $text ){
                case 'COMMON_DATE_WEEKVIEW_MONDAY':
                   $html .= $this->_translator->getMessage('COMMON_DATE_WEEKVIEW_MONDAY',    $display_startday, $startmonth);
@@ -3031,8 +3031,8 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $session = $this->_environment->getSession();
       $width = '100%';
       $html .= '</div>'.LF;
-      $html .= '<div id="calender_days" style="width:100%; clear:both;">'.LF;
-      $html .= '<div class="calendar_time_day" id="calendar_time"><div class="data">&nbsp;</div></div>'.LF;
+      $html .= '<div id="calender_days" style="width:100%; clear:both; border-top:1px solid black;">'.LF;
+      $html .= '<div class="calendar_time_day" id="calendar_time"><div class="data_day">&nbsp;</div></div>'.LF;
       for($index=0; $index <7; $index++){
          $week_start = $this->_week_start + ( 3600 * 24 * $index);
          $startday = date ( "d", $week_start);
@@ -3069,7 +3069,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                            $params,
                            $image);
          }
-         $html .= '<div class="calendar_entry_day" id="calendar_entry_' . $index . '"><div class="data" id="calendar_entry_date_div_' . $index . '">'.$anAction.'</div></div>'.LF;
+         $html .= '<div class="calendar_entry_day" id="calendar_entry_' . $index . '"><div class="data_day" id="calendar_entry_date_div_' . $index . '">'.$anAction.'</div></div>'.LF;
       }
       #$html .= '<div style="width:11px; float:left;">&nbsp;</div>'.LF;
       $html .= '</div>'.LF;

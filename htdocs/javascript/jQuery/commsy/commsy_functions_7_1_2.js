@@ -704,7 +704,7 @@ var scrollbar_width = 12;
 jQuery(document).ready(function() {
 	if(jQuery('#calender_main').length){
 		jQuery('#calender_main').jScrollPane({scrollbarWidth: scrollbar_width});
-		jQuery('.jScrollPaneContainer').css('border-top', '1px solid #d2d2d2');
+		jQuery('.jScrollPaneContainer').css('border-top', '1px solid #aaaaaa');
 		jQuery('#calender_frame').css('background-color',jQuery('[id^=calendar_head]').css('background-color'));
 		addNewDateLinks();
 		resize_calendar();

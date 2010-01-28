@@ -180,8 +180,9 @@ div.calendar_entry_work {height: 40px; width:14%; float:left; background-color:#
 div.calendar_entry_day {height: 40px; width:14%; float:left; background-color:#dddddd;}
 div.calendar_entry_head {height: 1.2em; width:14%; float:left; color: <?php echo($color['headline_text'])?>; background-color:<?php echo($color['tabs_background'])?>; font-weight:bold; text-align:center;}
 div.data {border-right:1px solid #d2d2d2; border-bottom:1px solid #d2d2d2; width:100%; height:100%; position:relative;}
-div.data_day {border-right:1px solid black; border-bottom:1px solid black; width:100%; height:100%; position:relative;}
-div.data_head {border-right:1px solid black; border-bottom:2px solid black; width:100%; height:100%; position:relative;}
+div.data_date {border-right:1px solid black; width:100%; height:100%; position:relative;}
+div.data_day {border-right:1px solid #aaaaaa; border-bottom:1px solid #aaaaaa; width:100%; height:100%; position:relative;}
+div.data_head {border-right:1px solid black; border-bottom:1px solid black; width:100%; height:100%; position:relative;}
 div.calendar_footer {height:1.2em; border-top:1px solid black; color: <?php echo($color['headline_text'])?>; background-color:<?php echo($color['tabs_background'])?>; font-weight:bold;}
 div.calendar_month_entry {height: 101px; width:14%; float:left; background-color:#ffffff; border-bottom:1px solid #d2d2d2; border-right:1px solid #d2d2d2;}
 div.calendar_month_entry_head {height: 1.2em; width:14%; float:left; color: <?php echo($color['headline_text'])?>; background-color:<?php echo($color['tabs_background'])?>; font-weight:bold; text-align:center; border-right: 1px solid black; border-bottom: 1px solid black;}
