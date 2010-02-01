@@ -507,6 +507,15 @@ class cs_statistic_view extends cs_view {
       $this->_pr_all_pr = $this->_pr_all_pr + $retour['all_pr'];
       $this->_pr_all_cr = $this->_pr_all_cr + $retour['all_cr'];
       $this->_pr_active = $this->_pr_active + $retour['active'];
+      if ( !empty($retour['active_gr']) ) {
+         $this->_pr_active_gr = $this->_pr_active_gr + $retour['active_gr'];
+      }
+      if ( !empty($retour['active_pr']) ) {
+         $this->_pr_active_pr = $this->_pr_active_pr + $retour['active_pr'];
+      }
+      if ( !empty($retour['active_cr']) ) {
+         $this->_pr_active_cr = $this->_pr_active_cr + $retour['active_cr'];
+      }
       $this->_ac_used = $this->_ac_used + $retour['ac_used'];
       $this->_ac_open = $this->_ac_open + $retour['ac_open'];
       $this->_ac_all  = $this->_ac_all  + $retour['ac_all'];
