@@ -1414,9 +1414,11 @@ class cs_item {
 
       $context_item = $this->_environment->getCurrentContextItem();
       if (
-            ($type == CS_COMMUNITY_TYPE and $this->isA(CS_PROJECT_TYPE) and $this->_environment->inProjectRoom())
-            or ($type == CS_COMMUNITY_TYPE and $this->isA(CS_PROJECT_TYPE) and $this->_environment->getCurrentModule() == 'project')
-            or ($type == CS_PROJECT_TYPE and $this->isA(CS_COMMUNITY_TYPE))
+            ( $type == CS_COMMUNITY_TYPE and $this->isA(CS_PROJECT_TYPE) and $this->_environment->inProjectRoom())
+              or ($type == CS_COMMUNITY_TYPE and $this->isA(CS_PROJECT_TYPE) and $this->_environment->getCurrentModule() == 'project')
+              or ($type == CS_PROJECT_TYPE and $this->isA(CS_COMMUNITY_TYPE)
+              or $type == CS_COMMUNITY_TYPE and $this->isA(CS_PROJECT_TYPE) and $this->_environment->inServer()
+            )
          ) {
          $link_item_manager->setRoomLimit($this->getContextID());
       } elseif ( $this->isA(CS_LABEL_TYPE) and $this->getLabelType() == CS_GROUP_TYPE ) {
