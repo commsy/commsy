@@ -181,9 +181,6 @@ class cs_statistic_view extends cs_view {
       $retour['is_open']       = $room->isOpen();
       $retour['active']        = $room->getCountActiveRooms($this->_start_date,$this->_end_date);
       $retour['used']          = $room->getCountUsedRooms($this->_start_date,$this->_end_date);
-      #$retour['used_closed']   = $room->getCountUsedClosedRooms($this->_start_date,$this->_end_date);
-      #$retour['closed']        = $room->getCountClosedRooms($this->_start_date,$this->_end_date);
-      #$retour['open']          = $room->getCountOpenRooms($this->_start_date,$this->_end_date);
       $retour['used']         += $room->getCountUsedClosedRooms($this->_start_date,$this->_end_date);
       $retour['all']           = $room->getCountAllRooms($this->_start_date,$this->_end_date);
       $retour['ac_used']       = $room->getCountUsedAccounts($this->_start_date,$this->_end_date);
@@ -249,18 +246,18 @@ class cs_statistic_view extends cs_view {
                   if ( $sub_room_item->isCommunityRoom() ) {
                      $temp_array2['is_open']       = $room->isOpen();
                      $temp_array2['creation_date'] = $sub_room_item->getCreationDate();
-                     $temp_array2['item_id'] = $sub_room_item->getItemID();
-                     $temp_array2['type'] = $sub_room_item->getItemType();
-                     $temp_array2['title'] = $sub_room_item->getTitle();
-                     $temp_array2['active'] = 0;
+                     $temp_array2['item_id']       = $sub_room_item->getItemID();
+                     $temp_array2['type']          = $sub_room_item->getItemType();
+                     $temp_array2['title']         = $sub_room_item->getTitle();
+                     $temp_array2['active']        = 0;
                      if ( $sub_room_item->isActive($this->_start_date,$this->_end_date) ) {
                         $temp_array2['active']++;
                      }
-                     $temp_array2['used'] = 1;
-                     $temp_array2['all'] = 0;
-                     $temp_array2['ac_used'] = $sub_room_item->getCountUsedAccounts($this->_start_date,$this->_end_date);
-                     $temp_array2['ac_open'] = $sub_room_item->getCountOpenAccounts($this->_start_date,$this->_end_date);
-                     $temp_array2['ac_all'] = $sub_room_item->getCountAllAccounts($this->_start_date,$this->_end_date);
+                     $temp_array2['used']          = 1;
+                     $temp_array2['all']           = 0;
+                     $temp_array2['ac_used']       = $sub_room_item->getCountUsedAccounts($this->_start_date,$this->_end_date);
+                     $temp_array2['ac_open']       = $sub_room_item->getCountOpenAccounts($this->_start_date,$this->_end_date);
+                     $temp_array2['ac_all']        = $sub_room_item->getCountAllAccounts($this->_start_date,$this->_end_date);
 
                      ########################################################################
                      # plugins - BEGIN
@@ -400,9 +397,6 @@ class cs_statistic_view extends cs_view {
       }
 
       $this->_pr_used = $this->_pr_used + $retour['used'];
-      #$this->_pr_used_closed = $this->_pr_used_closed + $retour['used_closed'];
-      #$this->_pr_closed = $this->_pr_closed + $retour['closed'];
-      #$this->_pr_open = $this->_pr_open + $retour['open'];
       $this->_pr_all = $this->_pr_all + $retour['all'];
       $this->_pr_active = $this->_pr_active + $retour['active'];
       $this->_ac_used = $this->_ac_used + $retour['ac_used'];
@@ -451,6 +445,7 @@ class cs_statistic_view extends cs_view {
       ########################################################################
       # plugins - END
       ########################################################################
+
       return $retour;
    }
 
