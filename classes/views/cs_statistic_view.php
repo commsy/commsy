@@ -63,6 +63,15 @@ class cs_statistic_view extends cs_view {
    var $_pr_open = 0;
    var $_pr_active = 0;
    var $_pr_all = 0;
+   var $_pr_all_cr = 0;
+   var $_pr_all_pr = 0;
+   var $_pr_all_gr = 0;
+   var $_pr_active_cr = 0;
+   var $_pr_active_pr = 0;
+   var $_pr_active_gr = 0;
+   var $_pr_used_cr = 0;
+   var $_pr_used_pr = 0;
+   var $_pr_used_gr = 0;
 
    var $_ac_used = 0;
    var $_ac_open = 0;
@@ -179,10 +188,18 @@ class cs_statistic_view extends cs_view {
       $retour['title']         = $room->getTitle();
       $retour['creation_date'] = $room->getCreationDate();
       $retour['is_open']       = $room->isOpen();
-      $retour['active']        = $room->getCountActiveRooms($this->_start_date,$this->_end_date);
-      $retour['used']          = $room->getCountUsedRooms($this->_start_date,$this->_end_date);
-      $retour['used']         += $room->getCountUsedClosedRooms($this->_start_date,$this->_end_date);
-      $retour['all']           = $room->getCountAllRooms($this->_start_date,$this->_end_date);
+      $retour['active']        = $room->getCountActiveTypeRooms('',$this->_start_date,$this->_end_date);
+      $retour['active_gr']     = $room->getCountActiveTypeRooms(CS_GROUPROOM_TYPE,$this->_start_date,$this->_end_date);
+      $retour['active_pr']     = $room->getCountActiveTypeRooms(CS_PROJECT_TYPE,$this->_start_date,$this->_end_date);
+      $retour['active_cr']     = $room->getCountActiveTypeRooms(CS_COMMUNITY_TYPE,$this->_start_date,$this->_end_date);
+      $retour['used']          = $room->getCountUsedTypeRooms('',$this->_start_date,$this->_end_date);
+      $retour['used_gr']       = $room->getCountUsedTypeRooms(CS_GROUPROOM_TYPE,$this->_start_date,$this->_end_date);
+      $retour['used_pr']       = $room->getCountUsedTypeRooms(CS_PROJECT_TYPE,$this->_start_date,$this->_end_date);
+      $retour['used_cr']       = $room->getCountUsedTypeRooms(CS_COMMUNITY_TYPE,$this->_start_date,$this->_end_date);
+      $retour['all']           = $room->getCountAllTypeRooms('',$this->_start_date,$this->_end_date);
+      $retour['all_gr']        = $room->getCountAllTypeRooms(CS_GROUPROOM_TYPE,$this->_start_date,$this->_end_date);
+      $retour['all_pr']        = $room->getCountAllTypeRooms(CS_PROJECT_TYPE,$this->_start_date,$this->_end_date);
+      $retour['all_cr']        = $room->getCountAllTypeRooms(CS_COMMUNITY_TYPE,$this->_start_date,$this->_end_date);
       $retour['ac_used']       = $room->getCountUsedAccounts($this->_start_date,$this->_end_date);
       $retour['ac_open']       = $room->getCountOpenAccounts($this->_start_date,$this->_end_date);
       $retour['ac_all']        = $room->getCountAllAccounts($this->_start_date,$this->_end_date);
@@ -252,9 +269,12 @@ class cs_statistic_view extends cs_view {
                      $temp_array2['active']        = 0;
                      if ( $sub_room_item->isActive($this->_start_date,$this->_end_date) ) {
                         $temp_array2['active']++;
+                        $temp_array2['active_cr']  = 1;
                      }
                      $temp_array2['used']          = 1;
-                     $temp_array2['all']           = 0;
+                     $temp_array2['used_cr']       = 1;
+                     $temp_array2['all']           = 1;
+                     $temp_array2['all_cr']        = 1;
                      $temp_array2['ac_used']       = $sub_room_item->getCountUsedAccounts($this->_start_date,$this->_end_date);
                      $temp_array2['ac_open']       = $sub_room_item->getCountOpenAccounts($this->_start_date,$this->_end_date);
                      $temp_array2['ac_all']        = $sub_room_item->getCountAllAccounts($this->_start_date,$this->_end_date);
@@ -300,17 +320,71 @@ class cs_statistic_view extends cs_view {
 
                      $this->_community_statistic_matrix[$sub_room_item->getItemID()] = $temp_array2;
                   } elseif ( $sub_room_item->isProjectRoom() ) {
+                     $group_room_list = $sub_room_item->getGroupRoomList();
                      $active = $sub_room_item->isActive($this->_start_date,$this->_end_date);
+                     if ( !empty($group_room_list)
+                          and $group_room_list->isNotEmpty()
+                        ) {
+                        $grouproom_item = $group_room_list->getFirst();
+                        $temp_group_room = array();
+                        while ($grouproom_item) {
+                           if ( isset($temp_group_room['all']) ) {
+                              $temp_group_room['all']++;
+                           } else {
+                              $temp_group_room['all'] = 1;
+                           }
+                           if ( isset($temp_group_room['all_gr']) ) {
+                              $temp_group_room['all_gr']++;
+                           } else {
+                              $temp_group_room['all_gr'] = 1;
+                           }
+                           if ($active) {
+                              if ( isset($temp_group_room['active']) ) {
+                                 $temp_group_room['active']++;
+                              } else {
+                                 $temp_group_room['active'] = 1;
+                              }
+                              if ( isset($temp_group_room['active_gr']) ) {
+                                 $temp_group_room['active_gr']++;
+                              } else {
+                                 $temp_group_room['active_gr'] = 1;
+                              }
+                           }
+                           $grouproom_item = $group_room_list->getNext();
+                        }
+                     }
                      $community_list = $sub_room_item->getCommunityList();
                      if ( isset($community_list)
                           and $community_list->isNotEmpty()
                         ) {
                         $community_room = $community_list->getFirst();
                         while ($community_room) {
+                           if ( !isset($this->_community_statistic_matrix[$community_room->getItemID()]['all_gr']) ) {
+                              $this->_community_statistic_matrix[$community_room->getItemID()]['all_gr'] = 0;
+                           }
+                           if ( !isset($this->_community_statistic_matrix[$community_room->getItemID()]['active_gr']) ) {
+                              $this->_community_statistic_matrix[$community_room->getItemID()]['active_gr'] = 0;
+                           }
+
+                           if ( isset($this->_community_statistic_matrix[$community_room->getItemID()]['all']) ) {
+                              $this->_community_statistic_matrix[$community_room->getItemID()]['all']++;
+                           } else {
+                              $this->_community_statistic_matrix[$community_room->getItemID()]['all'] = 1;
+                           }
+                           if ( isset($this->_community_statistic_matrix[$community_room->getItemID()]['all_pr']) ) {
+                              $this->_community_statistic_matrix[$community_room->getItemID()]['all_pr']++;
+                           } else {
+                              $this->_community_statistic_matrix[$community_room->getItemID()]['all_pr'] = 1;
+                           }
                            if ( isset($this->_community_statistic_matrix[$community_room->getItemID()]['used']) ) {
                               $this->_community_statistic_matrix[$community_room->getItemID()]['used']++;
                            } else {
                               $this->_community_statistic_matrix[$community_room->getItemID()]['used'] = 1;
+                           }
+                           if ( isset($this->_community_statistic_matrix[$community_room->getItemID()]['used_pr']) ) {
+                              $this->_community_statistic_matrix[$community_room->getItemID()]['used_pr']++;
+                           } else {
+                              $this->_community_statistic_matrix[$community_room->getItemID()]['used_pr'] = 1;
                            }
                            if ($active) {
                               if ( isset($this->_community_statistic_matrix[$community_room->getItemID()]['active']) ) {
@@ -318,7 +392,27 @@ class cs_statistic_view extends cs_view {
                               } else {
                                  $this->_community_statistic_matrix[$community_room->getItemID()]['active'] = 1;
                               }
+                              if ( isset($this->_community_statistic_matrix[$community_room->getItemID()]['active_pr']) ) {
+                                 $this->_community_statistic_matrix[$community_room->getItemID()]['active_pr']++;
+                              } else {
+                                 $this->_community_statistic_matrix[$community_room->getItemID()]['active_pr'] = 1;
+                              }
                            }
+
+                           // grouproom
+                           if ( !empty($temp_group_room['all']) ) {
+                              $this->_community_statistic_matrix[$community_room->getItemID()]['all'] += $temp_group_room['all'];
+                           }
+                           if ( !empty($temp_group_room['all_gr']) ) {
+                              $this->_community_statistic_matrix[$community_room->getItemID()]['all_gr'] += $temp_group_room['all_gr'];
+                           }
+                           if ( !empty($temp_group_room['active']) ) {
+                              $this->_community_statistic_matrix[$community_room->getItemID()]['active'] += $temp_group_room['active'];
+                           }
+                           if ( !empty($temp_group_room['active_gr']) ) {
+                              $this->_community_statistic_matrix[$community_room->getItemID()]['active_gr'] += $temp_group_room['active_gr'];
+                           }
+
                            $community_room = $community_list->getNext();
                         }
                      }
@@ -405,7 +499,13 @@ class cs_statistic_view extends cs_view {
       }
 
       $this->_pr_used = $this->_pr_used + $retour['used'];
+      $this->_pr_used_gr = $this->_pr_used_gr + $retour['used_gr'];
+      $this->_pr_used_pr = $this->_pr_used_pr + $retour['used_pr'];
+      $this->_pr_used_cr = $this->_pr_used_cr + $retour['used_cr'];
       $this->_pr_all = $this->_pr_all + $retour['all'];
+      $this->_pr_all_gr = $this->_pr_all_gr + $retour['all_gr'];
+      $this->_pr_all_pr = $this->_pr_all_pr + $retour['all_pr'];
+      $this->_pr_all_cr = $this->_pr_all_cr + $retour['all_cr'];
       $this->_pr_active = $this->_pr_active + $retour['active'];
       $this->_ac_used = $this->_ac_used + $retour['ac_used'];
       $this->_ac_open = $this->_ac_open + $retour['ac_open'];
@@ -572,7 +672,7 @@ class cs_statistic_view extends cs_view {
       $html .= '&nbsp;';
       $html .= '</td>'.LF;
 
-      $html .= '      <td style="width: 25%; border-bottom: 1px solid; border-left: 1px solid;" class="head" colspan="3">';
+      $html .= '      <td style="width: 25%; border-bottom: 1px solid; border-left: 1px solid;" class="head" colspan="12">';
       $html .= $this->_translator->getMessage('SERVER_STATISTIC_ROOMS');
       $html .= '</td>'.LF;
 
@@ -657,24 +757,39 @@ class cs_statistic_view extends cs_view {
       $html .= '      <td style="width:6%;text-align:right;  border-left: 1px solid;" class="head">';
       $html .= $this->_translator->getMessage('SERVER_STATISTIC_PROJECTROOMS_ALL');
       $html .= '</td>'.LF;
-      $html .= '      <td style="width:6%;text-align:right;" class="head">';
+      $html .= '      <td style="width:1%;text-align:right;" class="head">';
+      $html .= 'cr';
+      $html .= '</td>'.LF;
+      $html .= '      <td style="width:1%;text-align:right;" class="head">';
+      $html .= 'pr';
+      $html .= '</td>'.LF;
+      $html .= '      <td style="width:1%;text-align:right;" class="head">';
+      $html .= 'gr';
+      $html .= '</td>'.LF;
+      $html .= '      <td style="width:6%;text-align:right; border-left: 1px solid;" class="head">';
       $html .= $this->_translator->getMessage('SERVER_STATISTIC_PROJECTROOMS_USED');
       $html .= '</td>'.LF;
-      $html .= '      <td style="width:6%;text-align:right;" class="head">';
+      $html .= '      <td style="width:1%;text-align:right;" class="head">';
+      $html .= 'cr';
+      $html .= '</td>'.LF;
+      $html .= '      <td style="width:1%;text-align:right;" class="head">';
+      $html .= 'pr';
+      $html .= '</td>'.LF;
+      $html .= '      <td style="width:1%;text-align:right;" class="head">';
+      $html .= 'gr';
+      $html .= '</td>'.LF;
+      $html .= '      <td style="width:6%;text-align:right; border-left: 1px solid;" class="head">';
       $html .= $this->_translator->getMessage('SERVER_STATISTIC_PROJECTROOMS_ACTIVE');
       $html .= '</td>'.LF;
-      /*
-      $html .= '      <td style="width:6%;text-align:right;" class="head">';
-      $html .= $this->_translator->getMessage('SERVER_STATISTIC_PROJECTROOMS_OPEN');
+      $html .= '      <td style="width:1%;text-align:right;" class="head">';
+      $html .= 'cr';
       $html .= '</td>'.LF;
-      $html .= '      <td style="width:6%;text-align:right;" class="head">';
-      $html .= $this->_translator->getMessage('SERVER_STATISTIC_PROJECTROOMS_CLOSED');
+      $html .= '      <td style="width:1%;text-align:right;" class="head">';
+      $html .= 'pr';
       $html .= '</td>'.LF;
-      $html .= '      <td style="width:6%;text-align:right;" class="head">';
-      $html .= $this->_translator->getMessage('SERVER_STATISTIC_PROJECTROOMS_CLOSED_USED');
+      $html .= '      <td style="width:1%;text-align:right;" class="head">';
+      $html .= 'gr';
       $html .= '</td>'.LF;
-      */
-
       $html .= '      <td style="width: 2%;" class="head">';
       $html .= '&nbsp;';
       $html .= '</td>'.LF;
@@ -943,7 +1058,7 @@ class cs_statistic_view extends cs_view {
          $community_id_array = $portal_item->getCommunityIDArray();
       }
 
-      $colspan = 11;
+      $colspan = 20;
       $plugin_show = false;
       global $c_etchat_enable;
       if ( !empty($c_etchat_enable)
@@ -1063,11 +1178,17 @@ class cs_statistic_view extends cs_view {
       $html .= '      <td  class="head">&nbsp;</td>'.LF;
       $html .= '      <td  class="head">&nbsp;</td>'.LF;
       $html .= '      <td  class="head" style="text-align:right; border-left: 1px solid;">'.$this->_pr_all.'</td>'.LF;
-      $html .= '      <td  class="head" style="text-align:right;">'.$this->_pr_used.'</td>'.LF;
-      $html .= '      <td  class="head" style="text-align:right;">'.$this->_pr_active.'</td>'.LF;
-      #$html .= '      <td  class="head" style="text-align:right;">'.$this->_pr_open.'</td>'.LF;
-      #$html .= '      <td  class="head" style="text-align:right;">'.$this->_pr_closed.'</td>'.LF;
-      #$html .= '      <td  class="head" style="text-align:right;">'.$this->_pr_used_closed.'</td>'.LF;
+      $html .= '      <td  class="head" style="text-align:right;">'.$this->_pr_all_cr.'</td>'.LF;
+      $html .= '      <td  class="head" style="text-align:right;">'.$this->_pr_all_pr.'</td>'.LF;
+      $html .= '      <td  class="head" style="text-align:right;">'.$this->_pr_all_gr.'</td>'.LF;
+      $html .= '      <td  class="head" style="text-align:right; border-left: 1px solid;">'.$this->_pr_used.'</td>'.LF;
+      $html .= '      <td  class="head" style="text-align:right;">'.$this->_pr_used_cr.'</td>'.LF;
+      $html .= '      <td  class="head" style="text-align:right;">'.$this->_pr_used_pr.'</td>'.LF;
+      $html .= '      <td  class="head" style="text-align:right;">'.$this->_pr_used_gr.'</td>'.LF;
+      $html .= '      <td  class="head" style="text-align:right; border-left: 1px solid;">'.$this->_pr_active.'</td>'.LF;
+      $html .= '      <td  class="head" style="text-align:right;">'.$this->_pr_active_cr.'</td>'.LF;
+      $html .= '      <td  class="head" style="text-align:right;">'.$this->_pr_active_pr.'</td>'.LF;
+      $html .= '      <td  class="head" style="text-align:right;">'.$this->_pr_active_gr.'</td>'.LF;
       $html .= '      <td  class="head">&nbsp;</td>'.LF;
       $html .= '      <td  class="head" style="text-align:right; border-left: 1px solid;">'.$this->_ac_all.'</td>'.LF;
       $html .= '      <td  class="head" style="text-align:right;">'.$this->_ac_used.'</td>'.LF;
@@ -1157,27 +1278,73 @@ class cs_statistic_view extends cs_view {
     */
    function _getRooms ($item, $style) {
 
+      if ( !isset($item['all_cr']) ) {
+         $item['all_cr'] = 0;
+      }
+      if ( !isset($item['all_pr']) ) {
+         $item['all_pr'] = 0;
+      }
+      if ( !isset($item['all_gr']) ) {
+         $item['all_gr'] = 0;
+      }
+
+      if ( !isset($item['used_cr']) ) {
+         $item['used_cr'] = 0;
+      }
+      if ( !isset($item['used_pr']) ) {
+         $item['used_pr'] = 0;
+      }
+      if ( !isset($item['used_gr']) ) {
+         $item['used_gr'] = 0;
+      }
+
+      if ( !isset($item['active_cr']) ) {
+         $item['active_cr'] = 0;
+      }
+      if ( !isset($item['active_pr']) ) {
+         $item['active_pr'] = 0;
+      }
+      if ( !isset($item['active_gr']) ) {
+         $item['active_gr'] = 0;
+      }
+
       $retour  = ''.LF;
       $retour .= '      <td '.$style.' style="border-left:1px solid black; text-align:right;">'.LF;
       $retour .= $item['all'].LF;
       $retour .= '      </td>'.LF;
       $retour .= '      <td '.$style.' style="text-align:right;">'.LF;
+      $retour .= $item['all_cr'].LF;
+      $retour .= '      </td>'.LF;
+      $retour .= '      <td '.$style.' style="text-align:right;">'.LF;
+      $retour .= $item['all_pr'].LF;
+      $retour .= '      </td>'.LF;
+      $retour .= '      <td '.$style.' style="text-align:right;">'.LF;
+      $retour .= $item['all_gr'].LF;
+      $retour .= '      </td>'.LF;
+      $retour .= '      <td '.$style.' style="border-left:1px solid black; text-align:right;">'.LF;
       $retour .= $item['used'].LF;
       $retour .= '      </td>'.LF;
       $retour .= '      <td '.$style.' style="text-align:right;">'.LF;
+      $retour .= $item['used_cr'].LF;
+      $retour .= '      </td>'.LF;
+      $retour .= '      <td '.$style.' style="text-align:right;">'.LF;
+      $retour .= $item['used_pr'].LF;
+      $retour .= '      </td>'.LF;
+      $retour .= '      <td '.$style.' style="text-align:right;">'.LF;
+      $retour .= $item['used_gr'].LF;
+      $retour .= '      </td>'.LF;
+      $retour .= '      <td '.$style.' style="border-left:1px solid black; text-align:right;">'.LF;
       $retour .= $item['active'].LF;
       $retour .= '      </td>'.LF;
-      /*
       $retour .= '      <td '.$style.' style="text-align:right;">'.LF;
-      $retour .= $item['open'].LF;
+      $retour .= $item['active_cr'].LF;
       $retour .= '      </td>'.LF;
       $retour .= '      <td '.$style.' style="text-align:right;">'.LF;
-      $retour .= $item['closed'].LF;
+      $retour .= $item['active_pr'].LF;
       $retour .= '      </td>'.LF;
       $retour .= '      <td '.$style.' style="text-align:right;">'.LF;
-      $retour .= $item['used_closed'].LF;
+      $retour .= $item['active_gr'].LF;
       $retour .= '      </td>'.LF;
-      */
       return $retour;
    }
 
@@ -1245,7 +1412,7 @@ class cs_statistic_view extends cs_view {
          }
       } else {
         $retour .= '   <tr class="list">'.LF;
-        $retour .= '      <td class="even" colspan="3">'.LF;
+        $retour .= '      <td class="even" colspan="6">'.LF;
         $retour .= $this->_translator->getMessage('SERVER_STATISTIC_NO_ACTIVE_PROJECTROOMS');
         $retour .= '      </td>'.LF;
         $retour .= '   </tr>'.LF;

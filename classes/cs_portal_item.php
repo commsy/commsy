@@ -747,150 +747,6 @@ class cs_portal_item extends cs_guide_item {
    # statistic functions
    ##########################################################
 
-   function getCountUsedRooms ($start, $end) {
-      $retour = 0;
-
-      $room_manager = $this->_environment->getRoomManager();
-      $room_manager->resetLimits();
-      $room_manager->setContextLimit($this->getItemID());
-      $retour = $room_manager->getCountUsedRooms($start,$end);
-      unset($room_manager);
-
-      return $retour;
-   }
-
-   function getCountUsedClosedRooms ($start, $end) {
-      $retour = 0;
-
-      $room_manager = $this->_environment->getRoomManager();
-      $room_manager->resetLimits();
-      $room_manager->setContextLimit($this->getItemID());
-      $retour = $room_manager->getCountUsedClosedRooms($start,$end);
-      unset($room_manager);
-
-      return $retour;
-   }
-
-   function getCountOpenRooms ($start, $end) {
-      $retour = 0;
-
-      $room_manager = $this->_environment->getRoomManager();
-      $room_manager->resetLimits();
-      $room_manager->setContextLimit($this->getItemID());
-      $retour = $room_manager->getCountOpenRooms($start,$end);
-      unset($room_manager);
-
-      return $retour;
-   }
-
-   function getCountActiveRooms ($start, $end) {
-      $retour = 0;
-
-      $room_manager = $this->_environment->getRoomManager();
-      $room_manager->resetLimits();
-      $room_manager->setContextLimit($this->getItemID());
-      $retour = $room_manager->getCountActiveRooms($start,$end);
-      unset($room_manager);
-
-      return $retour;
-   }
-
-   function getCountClosedRooms ($start, $end) {
-      $retour = 0;
-
-      $room_manager = $this->_environment->getRoomManager();
-      $room_manager->resetLimits();
-      $room_manager->setContextLimit($this->getItemID());
-      $retour = $room_manager->getCountClosedRooms($start,$end);
-      unset($room_manager);
-
-      return $retour;
-   }
-
-   function getCountAllRooms ($start, $end) {
-      $retour = 0;
-
-      $room_manager = $this->_environment->getRoomManager();
-      $room_manager->resetLimits();
-      $room_manager->setContextLimit($this->getItemID());
-      $retour = $room_manager->getCountAllRooms($start,$end);
-      unset($room_manager);
-
-      return $retour;
-   }
-
-   function getCountUsedProjectRooms ($start, $end) {
-      $retour = 0;
-
-      $room_manager = $this->_environment->getProjectManager();
-      $room_manager->resetLimits();
-      $room_manager->setContextLimit($this->getItemID());
-      $retour = $room_manager->getCountUsedProjectRooms($start,$end);
-      unset($room_manager);
-
-      return $retour;
-   }
-
-   function getCountUsedClosedProjectRooms ($start, $end) {
-      $retour = 0;
-
-      $room_manager = $this->_environment->getProjectManager();
-      $room_manager->resetLimits();
-      $room_manager->setContextLimit($this->getItemID());
-      $retour = $room_manager->getCountUsedClosedProjectRooms($start,$end);
-      unset($room_manager);
-
-      return $retour;
-   }
-
-   function getCountOpenProjectRooms ($start, $end) {
-      $retour = 0;
-
-      $room_manager = $this->_environment->getProjectManager();
-      $room_manager->resetLimits();
-      $room_manager->setContextLimit($this->getItemID());
-      $retour = $room_manager->getCountOpenProjectRooms($start,$end);
-      unset($room_manager);
-
-      return $retour;
-   }
-
-   function getCountActiveProjectRooms ($start, $end) {
-      $retour = 0;
-
-      $room_manager = $this->_environment->getProjectManager();
-      $room_manager->resetLimits();
-      $room_manager->setContextLimit($this->getItemID());
-      $retour = $room_manager->getCountActiveProjectRooms($start,$end);
-      unset($room_manager);
-
-      return $retour;
-   }
-
-   function getCountClosedProjectRooms ($start, $end) {
-      $retour = 0;
-
-      $room_manager = $this->_environment->getProjectManager();
-      $room_manager->resetLimits();
-      $room_manager->setContextLimit($this->getItemID());
-      $retour = $room_manager->getCountClosedProjectRooms($start,$end);
-      unset($room_manager);
-
-      return $retour;
-   }
-
-   function getCountAllProjectRooms ($start, $end) {
-      $retour = 0;
-
-      $room_manager = $this->_environment->getProjectManager();
-      $room_manager->resetLimits();
-      $room_manager->setContextLimit($this->getItemID());
-      $retour = $room_manager->getCountAllProjectRooms($start,$end);
-      unset($room_manager);
-
-      return $retour;
-   }
-
    function getCountUsedAccounts ($start, $end) {
       $retour = 0;
 
@@ -935,6 +791,42 @@ class cs_portal_item extends cs_guide_item {
       $user_manager->setContextLimit($this->getItemID());
       $retour = $user_manager->getCountPlugin($plugin,$start,$end);
       unset($user_manager);
+
+      return $retour;
+   }
+
+   function getCountAllTypeRooms ($type, $start, $end) {
+      $retour = 0;
+
+      $room_manager = $this->_environment->getRoomManager();
+      $room_manager->resetLimits();
+      $room_manager->setContextLimit($this->getItemID());
+      $retour = $room_manager->getCountAllTypeRooms($type,$start,$end);
+      unset($room_manager);
+
+      return $retour;
+   }
+
+   function getCountUsedTypeRooms ($type, $start, $end) {
+      $retour = 0;
+
+      $room_manager = $this->_environment->getRoomManager();
+      $room_manager->resetLimits();
+      $room_manager->setContextLimit($this->getItemID());
+      $retour = $room_manager->getCountUsedTypeRooms($type,$start,$end);
+      unset($room_manager);
+
+      return $retour;
+   }
+
+   function getCountActiveTypeRooms ($type, $start, $end) {
+      $retour = 0;
+
+      $room_manager = $this->_environment->getRoomManager();
+      $room_manager->resetLimits();
+      $room_manager->setContextLimit($this->getItemID());
+      $retour = $room_manager->getCountActiveTypeRooms($type,$start,$end);
+      unset($room_manager);
 
       return $retour;
    }

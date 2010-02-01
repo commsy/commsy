@@ -397,106 +397,6 @@ class cs_room_manager extends cs_context_manager {
    # statistic functions
    ##########################################################
 
-   function getCountAllRooms ($start, $end) {
-      $retour = 0;
-
-      $query = "SELECT count(".$this->_db_table.".item_id) as number FROM ".$this->_db_table." WHERE context_id = '".encode(AS_DB,$this->_room_limit)."' and creation_date < '".encode(AS_DB,$end)."' and status != '4' and (type = 'project' or type = 'community')";
-      $result = $this->_db_connector->performQuery($query);
-      if ( !isset($result) ) {
-         include_once('functions/error_functions.php');trigger_error('Problems counting all rooms '.$this->_db_table.' from query: "'.$query.'"',E_USER_WARNING);
-      } else {
-         foreach ($result as $rs) {
-            $retour = $rs['number'];
-         }
-         unset($result);
-      }
-
-      return $retour;
-   }
-
-   function getCountOpenRooms ($start, $end) {
-      $retour = 0;
-
-      $query = "SELECT count(".$this->_db_table.".item_id) as number FROM ".$this->_db_table." WHERE context_id = '".encode(AS_DB,$this->_room_limit)."' AND (status = '1' or status = '3') and (deletion_date IS NULL or deletion_date > '".encode(AS_DB,$end)."') and creation_date < '".encode(AS_DB,$end)."' and (type = 'project' or type = 'community')";
-      $result = $this->_db_connector->performQuery($query);
-      if ( !isset($result) ) {
-         include_once('functions/error_functions.php');trigger_error('Problems counting open rooms '.$this->_db_table.' from query: "'.$query.'"',E_USER_WARNING);
-      } else {
-         foreach ($result as $rs) {
-            $retour = $rs['number'];
-         }
-         unset($result);
-      }
-
-      return $retour;
-   }
-
-   function getCountClosedRooms ($start, $end) {
-      $retour = 0;
-
-      $query = "SELECT count(".$this->_db_table.".item_id) as number FROM ".$this->_db_table." WHERE context_id = '".encode(AS_DB,$this->_room_limit)."' AND status = '2' and (deletion_date IS NULL or deletion_date > '".encode(AS_DB,$end)."') and creation_date < '".encode(AS_DB,$end)."' and (type = 'project' or type = 'community')";
-      $result = $this->_db_connector->performQuery($query);
-      if ( !isset($result) ) {
-         include_once('functions/error_functions.php');trigger_error('Problems counting open rooms '.$this->_db_table.' from query: "'.$query.'"',E_USER_WARNING);
-      } else {
-         foreach ($result as $rs) {
-            $retour = $rs['number'];
-         }
-         unset($result);
-      }
-
-      return $retour;
-   }
-
-   function getCountUsedRooms ($start, $end) {
-      $retour = 0;
-
-      $query  = "SELECT count(DISTINCT ".$this->_db_table.".item_id) as number FROM ".$this->_db_table.", user";
-      $query .= " WHERE user.context_id=".$this->_db_table.".item_id AND user.lastlogin > '".encode(AS_DB,$start)."' and user.creation_date < '".encode(AS_DB,$end)."'";
-      $query .= " AND ".$this->_db_table.".context_id = '".encode(AS_DB,$this->_room_limit)."' AND (".$this->_db_table.".status = '1' or ".$this->_db_table.".status = '3') and ".$this->_db_table.".deletion_date IS NULL and ".$this->_db_table.".creation_date < '".encode(AS_DB,$end)."' and (type = 'project' or type = 'community')";
-      $result = $this->_db_connector->performQuery($query);
-      if ( !isset($result) ) {
-         include_once('functions/error_functions.php');trigger_error('Problems counting used rooms '.$this->_db_table.' from query: "'.$query.'"',E_USER_WARNING);
-      } else {
-         foreach ($result as $rs) {
-            $retour = $rs['number'];
-         }
-         unset($result);
-      }
-
-      return $retour;
-   }
-
-   function getCountUsedClosedRooms ($start, $end) {
-      $retour = 0;
-
-      $query  = "SELECT count(DISTINCT ".$this->_db_table.".item_id) as number FROM ".$this->_db_table.", user";
-      $query .= " WHERE user.context_id=".$this->_db_table.".item_id AND user.lastlogin > '".encode(AS_DB,$start)."' and user.creation_date < '".encode(AS_DB,$end)."'";
-      $query .= " AND ".$this->_db_table.".context_id = '".encode(AS_DB,$this->_room_limit)."' AND ".$this->_db_table.".status = '2' and ".$this->_db_table.".deletion_date IS NULL and ".$this->_db_table.".creation_date < '".encode(AS_DB,$end)."' and (type = 'project' or type = 'community')";
-      $result = $this->_db_connector->performQuery($query);
-      if ( !isset($result) ) {
-         include_once('functions/error_functions.php');trigger_error('Problems counting used rooms '.$this->_db_table.' from query: "'.$query.'"',E_USER_WARNING);
-      } else {
-         foreach ($result as $rs) {
-            $retour = $rs['number'];
-         }
-         unset($result);
-      }
-
-      return $retour;
-   }
-
-   function getCountActiveRooms ($start, $end) {
-      $list = $this->getActiveRooms($start,$end);
-      if ($list->isEmpty()) {
-         return 0;
-      } else {
-         return $list->getCount();
-      }
-   }
-
-   ##########################################
-
    function getActiveRooms ($start, $end) {
       $list = $this->getUsedRooms($start,$end);
 
@@ -564,5 +464,99 @@ class cs_room_manager extends cs_context_manager {
    function getLastQuery() {
       return $this->_last_query;
    }
+
+   ##########################################################
+   # statistic functions - BEGIN
+   ##########################################################
+
+   function getCountAllTypeRooms ($type, $start, $end) {
+      $retour = 0;
+
+      $query = "SELECT count(".$this->_db_table.".item_id) as number FROM ".$this->_db_table." WHERE context_id = '".encode(AS_DB,$this->_room_limit)."' and creation_date < '".encode(AS_DB,$end)."' and status != '4' AND deletion_date IS NULL AND deletion_date IS NULL";
+      if ( !empty($type) ) {
+         $query .= ' AND type="'.$type.'"';
+      }
+      $result = $this->_db_connector->performQuery($query);
+      if ( !isset($result) ) {
+         include_once('functions/error_functions.php');
+         trigger_error('Problems counting all rooms '.$this->_db_table.' from query: "'.$query.'"',E_USER_WARNING);
+      } else {
+         foreach ($result as $rs) {
+            $retour = $rs['number'];
+         }
+      }
+
+      return $retour;
+   }
+
+   function getCountUsedTypeRooms ($type, $start, $end) {
+      return $this->_getUsedTypeRooms($type, $start, $end, 'COUNT');
+   }
+
+   function getCountActiveTypeRooms ($type, $start, $end) {
+      $list = $this->getActiveTypeRooms($type,$start,$end);
+      if ($list->isEmpty()) {
+         return 0;
+      } else {
+         return $list->getCount();
+      }
+   }
+
+   function getActiveTypeRooms ($type, $start, $end) {
+      $list = $this->getUsedTypeRooms($type, $start,$end);
+
+      // delete rooms that are not really active
+      $retour_list = new cs_list();
+      if (!$list->isEmpty()) {
+         $item = $list->getFirst();
+         while ($item) {
+            if ($item->isActive($start,$end)) {
+               $retour_list->add($item);
+            }
+            $item = $list->getNext();
+         }
+      }
+
+      return $retour_list;
+   }
+
+   function getUsedTypeRooms ($type, $start, $end) {
+      return $this->_getUsedTypeRooms($type, $start, $end, 'SELECT');
+   }
+
+   function _getUsedTypeRooms ($type, $start, $end, $mode = 'SELECT') {
+      if ( $mode == 'COUNT' ) {
+         $retour = 0;
+         $query  = "SELECT count(DISTINCT ".$this->_db_table.".item_id) as number";
+      } else {
+         $retour = new cs_list();
+         $query  = "SELECT ".$this->_db_table.".*";
+      }
+      $query .= " FROM ".$this->_db_table.", user";
+      $query .= " WHERE user.context_id=".$this->_db_table.".item_id AND user.lastlogin > '".encode(AS_DB,$start)."' and user.creation_date < '".encode(AS_DB,$end)."'";
+      $query .= " AND ".$this->_db_table.".context_id = '".encode(AS_DB,$this->_room_limit)."' AND ".$this->_db_table.".status != '4' AND ".$this->_db_table.".deletion_date IS NULL and ".$this->_db_table.".creation_date < '".encode(AS_DB,$end)."'";
+      if ( !empty($type) ) {
+         $query .= ' AND type="'.$type.'"';
+      }
+      $result = $this->_db_connector->performQuery($query);
+      if ( !isset($result) ) {
+         include_once('functions/error_functions.php');
+         trigger_error('Problems counting used rooms '.$this->_db_table.' from query: "'.$query.'"',E_USER_WARNING);
+      } else {
+         foreach ($result as $rs) {
+            if ( $mode == 'COUNT' ) {
+               $retour = $rs['number'];
+            } else {
+               $retour->add($this->_buildItem($rs));
+            }
+         }
+      }
+
+      return $retour;
+   }
+
+   ##########################################################
+   # statistic functions - END
+   ##########################################################
 }
 ?>

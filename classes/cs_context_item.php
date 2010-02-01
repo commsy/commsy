@@ -4946,54 +4946,6 @@ class cs_context_item extends cs_item {
       return $retour;
    }
 
-   function getCountNewProjects ($start,$end) {
-      if (!isset($this->_count_new_projects)) {
-         $manager = $this->_environment->getProjectManager();
-         $manager->resetLimits();
-       if ($this->isCommunityRoom()) {
-            $manager->setContextLimit($this->getContextID());
-            global $c_cache_cr_pr;
-            if ( !isset($c_cache_cr_pr) or !$c_cache_cr_pr ) {
-               $manager->setCommunityRoomLimit($this->getItemID());
-            } else {
-               /**
-                * use redundant infos in community room
-                */
-               $manager->setIDArrayLimit($this->getInternalProjectIDArray());
-            }
-       } else {
-            $manager->setContextLimit($this->getItemID());
-       }
-         $this->_count_new_projects = $manager->getCountNewProjects($start,$end);
-      }
-      $retour = $this->_count_new_projects;
-      return $retour;
-   }
-
-   function getCountModProjects ($start,$end) {
-      if (!isset($this->_count_mod_projects)) {
-         $manager = $this->_environment->getProjectManager();
-         $manager->resetLimits();
-         if ($this->isCommunityRoom()) {
-            $manager->setContextLimit($this->getContextID());
-            global $c_cache_cr_pr;
-            if ( !isset($c_cache_cr_pr) or !$c_cache_cr_pr ) {
-               $manager->setCommunityRoomLimit($this->getItemID());
-            } else {
-               /**
-                * use redundant infos in community room
-                */
-               $manager->setIDArrayLimit($this->getInternalProjectIDArray());
-            }
-         } else {
-            $manager->setContextLimit($this->getItemID());
-         }
-         $this->_count_mod_projects = $manager->getCountModProjects($start,$end);
-      }
-      $retour = $this->_count_mod_projects;
-      return $retour;
-   }
-
    /** get time spread for items on home
     * this method returns the time spread for items on the home of the context
     *
@@ -5033,28 +4985,28 @@ class cs_context_item extends cs_item {
       }
       return $retour;
    }
-   
+
    /*
     * set user activity array
     */
    function setUserActivityArray($value) {
-   	  if(is_array($value)) {
-   	  	 while(count($value) > 365) {
-   	  	 	array_pop($value);
-   	  	 }
-   	  }
-   	  $this->_addExtra('USER_ACTIVITY',(array)$value);
+        if(is_array($value)) {
+            while(count($value) > 365) {
+               array_pop($value);
+            }
+        }
+        $this->_addExtra('USER_ACTIVITY',(array)$value);
    }
-   
+
    /*
     * get user activity array
     */
    function getUserActivityArray() {
-   	  $retour = $this->_getExtra('USER_ACTIVITY');
-   	  if(empty($retour)) {
-   	  	 $retour = array();
-   	  }
-   	  return $retour;
+        $retour = $this->_getExtra('USER_ACTIVITY');
+        if(empty($retour)) {
+            $retour = array();
+        }
+        return $retour;
    }
 
    function getPageImpressions ($external_timespread = 0) {
@@ -5183,32 +5135,32 @@ class cs_context_item extends cs_item {
       unset($user_manager);
       return $active;
    }
-   
+
   function getActiveMembersForNewsletter($external_timespread = 0) {
-  	// take it from UserActivity extras field
-  	$retour = 0;
-  	if(isset($this->_user_activity_array[$external_timespread])) {
-  		$retour = $this->_user_activity_array[$external_timespread];
-  	} else {
-  		if($external_timespread != 0) {
-  			$timespread = $external_timespread;
-  		} else {
-  			$timespread = $this->getTimeSpread();
-  		}
-  		
-  		$count = 0;
-  		$ua_array = $this->getUserActivityArray();
-  		
-  		for($i=0; $i<$timespread;$i++) {
-  			if(!empty($ua_array[$i])) {
-  				$count += $ua_array[$i];
-  			}
-  		}
-  		$retour = $count;
-  	}
-  	return $retour;
+     // take it from UserActivity extras field
+     $retour = 0;
+     if(isset($this->_user_activity_array[$external_timespread])) {
+        $retour = $this->_user_activity_array[$external_timespread];
+     } else {
+        if($external_timespread != 0) {
+           $timespread = $external_timespread;
+        } else {
+           $timespread = $this->getTimeSpread();
+        }
+
+        $count = 0;
+        $ua_array = $this->getUserActivityArray();
+
+        for($i=0; $i<$timespread;$i++) {
+           if(!empty($ua_array[$i])) {
+              $count += $ua_array[$i];
+           }
+        }
+        $retour = $count;
+     }
+     return $retour;
   }
-   
+
   function getPageImpressionsForNewsletter($external_timespread = 0) {
       $retour = 0;
       if ( isset($this->_page_impression_array[$external_timespread]) ) {
@@ -5221,7 +5173,7 @@ class cs_context_item extends cs_item {
          }
          $count = 0;
          $pi_array = $this->getPageImpressionArray();
-         
+
          for ($i=0; $i<$timespread; $i++) {
             if (!empty($pi_array[$i])) {
                $count += $pi_array[$i];

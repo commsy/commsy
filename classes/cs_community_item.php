@@ -547,42 +547,6 @@ class cs_community_item extends cs_room_item {
    # some function to get lists of items in one community room
    ###########################################################
 
-   function getUsedProjectRoomList ($start, $end) {
-      $room_manager = $this->_environment->getProjectManager();
-      $room_manager->resetLimits();
-      $room_manager->setContextLimit($this->getContextID());
-      global $c_cache_cr_pr;
-      if ( !isset($c_cache_cr_pr) or !$c_cache_cr_pr ) {
-         $room_manager->setCommunityRoomLimit($this->getItemID());
-      } else {
-         /**
-          * use redundant infos in community room
-          */
-         $room_manager->setIDArrayLimit($this->getInternalProjectIDArray());
-      }
-      $room_list = $room_manager->getUsedProjectRooms($start,$end);
-
-      return $room_list;
-   }
-
-   function getActiveProjectRoomList ($start, $end) {
-      $room_manager = $this->_environment->getProjectManager();
-      $room_manager->resetLimits();
-      $room_manager->setContextLimit($this->getContextID());
-      global $c_cache_cr_pr;
-      if ( !isset($c_cache_cr_pr) or !$c_cache_cr_pr ) {
-         $room_manager->setCommunityRoomLimit($this->getItemID());
-      } else {
-         /**
-          * use redundant infos in community room
-          */
-         $room_manager->setIDArrayLimit($this->getInternalProjectIDArray());
-      }
-      $room_list = $room_manager->getActiveProjectRooms($start,$end);
-
-      return $room_list;
-   }
-
    function getProjectRoomList () {
       $room_manager = $this->_environment->getProjectManager();
       $room_manager->resetLimits();
