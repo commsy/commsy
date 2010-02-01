@@ -307,9 +307,17 @@ class cs_statistic_view extends cs_view {
                         ) {
                         $community_room = $community_list->getFirst();
                         while ($community_room) {
-                           $this->_community_statistic_matrix[$community_room->getItemID()]['used']++;
+                           if ( isset($this->_community_statistic_matrix[$community_room->getItemID()]['used']) ) {
+                              $this->_community_statistic_matrix[$community_room->getItemID()]['used']++;
+                           } else {
+                              $this->_community_statistic_matrix[$community_room->getItemID()]['used'] = 1;
+                           }
                            if ($active) {
-                              $this->_community_statistic_matrix[$community_room->getItemID()]['active']++;
+                              if ( isset($this->_community_statistic_matrix[$community_room->getItemID()]['active']) ) {
+                                 $this->_community_statistic_matrix[$community_room->getItemID()]['active']++;
+                              } else {
+                                 $this->_community_statistic_matrix[$community_room->getItemID()]['active'] = 1;
+                              }
                            }
                            $community_room = $community_list->getNext();
                         }
@@ -979,6 +987,7 @@ class cs_statistic_view extends cs_view {
          foreach ($value_array as $row) {
             if ( empty($type)
                  or ( $type == 'community'
+                      and !empty($row['item_id'])
                       and in_array($row['item_id'],$community_id_array)
                     )
                ) {
