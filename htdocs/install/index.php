@@ -730,6 +730,8 @@ if (!isset($action)) {
    $schreibe13 = '$_SERVER["SCRIPT_NAME"]';
    $schreibe14 = '$_SERVER["PHP_SELF"]';
    $schreibe15 = '$_SERVER["SCRIPT_FILENAME"]';
+   $schreibe16 = '$path';
+   $schreibe17 = '$retour';
 
    $daten = "<?php
 // Copyright (c)2008 Matthias Finck, Iver Jackewitz, Dirk Blössl
@@ -748,6 +750,18 @@ if (!isset($action)) {
 //
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
+
+function deleteLastSlash ( $schreibe16 ) {
+   $schreibe17 = $schreibe16;
+   if ( !empty($schreibe16) ) {
+      if ( substr($schreibe16,strlen($schreibe16)-1) == '/'
+           or substr($schreibe16,strlen($schreibe16)-1) == '\\\\'
+         ) {
+         $schreibe17 = substr($schreibe16,0,strlen($schreibe16)-1);
+      }
+   }
+   return $schreibe17;
+}
 
 // Database setup
 $schreibe1 = \"".$_SESSION['host']."\";
@@ -768,6 +782,8 @@ if ( !empty($schreibe8) ) {
 } else {
    $schreibe10 = \"".$_POST['domain']."\";
 }
+$schreibe10 = deleteLastSlash($schreibe10);
+
 if ( !empty($schreibe13) ) {
    $schreibe5 = dirname($schreibe13);
 } elseif ( !empty($schreibe14) ) {
@@ -775,6 +791,8 @@ if ( !empty($schreibe13) ) {
 } else {
    $schreibe5 = \"".$_POST['urlpath']."\";
 }
+$schreibe5 = deleteLastSlash($schreibe5);
+
 if ( !empty($schreibe15) ) {
    $schreibe6 = dirname($schreibe15);
    $schreibe6 = str_replace('/htdocs','',$schreibe6);
@@ -782,6 +800,7 @@ if ( !empty($schreibe15) ) {
 } else {
    $schreibe6 = \"".$_POST['abspath']."\";
 }
+$schreibe6 = deleteLastSlash($schreibe6);
 
 // security key
 $schreibe12 = \"".$sec_key."\";

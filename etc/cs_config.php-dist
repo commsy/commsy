@@ -1,4 +1,16 @@
 <?PHP
+function deleteLastSlash ( $path ) {
+   $retour = $path;
+   if ( !empty($path) ) {
+      if ( substr($path,strlen($path)-1) == '/'
+           or substr($path,strlen($path)-1) == '\\'
+         ) {
+         $retour = substr($path,0,strlen($path)-1);
+      }
+   }
+   return $retour;
+}
+
 // $Id$
 //
 // Release $Name$
@@ -42,6 +54,7 @@ if ( !empty($_SERVER['HTTP_HOST']) ) {
 } else {
 // $c_commsy_domain = 'http://www.xyz.de';
 }
+$c_commsy_domain = deleteLastSlash($c_commsy_domain);
 
 // Set url path to the installation of the commsy htdocs folder. This setting
 // specifies the relative path to the location of the important file commsy.php.
@@ -56,6 +69,7 @@ if ( !empty($_SERVER['SCRIPT_NAME']) ) {
 } else {
    $c_commsy_url_path = '';
 }
+$c_commsy_url_path = deleteLastSlash($c_commsy_url_path);
 
 // set file path to the installation of the commsy folder
 if ( !empty($_SERVER['SCRIPT_FILENAME']) ) {
@@ -65,6 +79,7 @@ if ( !empty($_SERVER['SCRIPT_FILENAME']) ) {
 } else {
    $c_commsy_path_file = '';
 }
+$c_commsy_url_path = deleteLastSlash($c_commsy_url_path);
 
 // set security key to prevent session riding
 // $c_security_key = '';
