@@ -727,6 +727,10 @@ if (!isset($action)) {
    $schreibe12 = '$c_security_key';
    $sec_key = md5(date("Y-m-d H:i:s"));
 
+   $schreibe13 = '$_SERVER["SCRIPT_NAME"]';
+   $schreibe14 = '$_SERVER["PHP_SELF"]';
+   $schreibe15 = '$_SERVER["SCRIPT_FILENAME"]';
+
    $daten = "<?php
 // Copyright (c)2008 Matthias Finck, Iver Jackewitz, Dirk Blössl
 //
@@ -745,13 +749,13 @@ if (!isset($action)) {
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-/** Database setup **/
+// Database setup
 $schreibe1 = \"".$_SESSION['host']."\";
 $schreibe2 = \"".$_SESSION['dbuser']."\";
 $schreibe3 = \"".$_SESSION['dbpass']."\";
 $schreibe4 = \"".$_SESSION['dbname']."\";
 
-/** Path setup **/
+// Path setup
 if ( !empty($schreibe8) ) {
    if ( !empty($schreibe9)
         and $schreibe9 == 443
@@ -764,9 +768,22 @@ if ( !empty($schreibe8) ) {
 } else {
    $schreibe10 = \"".$_POST['domain']."\";
 }
-$schreibe5 = \"".$_POST['urlpath']."\";
-$schreibe6 = \"".$_POST['abspath']."\";
+if ( !empty($schreibe13) ) {
+   $schreibe5 = dirname($schreibe13);
+} elseif ( !empty($schreibe14) ) {
+   $schreibe5 = dirname($schreibe14);
+} else {
+   $schreibe5 = \"".$_POST['urlpath']."\";
+}
+if ( !empty($schreibe15) ) {
+   $schreibe6 = dirname($schreibe15);
+   $schreibe6 = str_replace('/htdocs','',$schreibe6);
+   $schreibe6 = str_replace('/',DIRECTORY_SEPARATOR,$schreibe6);
+} else {
+   $schreibe6 = \"".$_POST['abspath']."\";
+}
 
+// security key
 $schreibe12 = \"".$sec_key."\";
 
 // include first default commsy settings

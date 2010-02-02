@@ -42,17 +42,29 @@ if ( !empty($_SERVER['HTTP_HOST']) ) {
 } else {
 // $c_commsy_domain = 'http://www.xyz.de';
 }
-//
+
 // Set url path to the installation of the commsy htdocs folder. This setting
 // specifies the relative path to the location of the important file commsy.php.
 // Example:
 //    http://www.xyz.de/commsy/htdocs/commsy.php
 //       -> http://www.xyz.de[$c_commsy_url_path]/commsy.php
 //       -> $c_commsy_url_path = '/commsy/htdocs'
-//    $c_commsy_url_path = '/commsy/htdocs';
-//
+if ( !empty($_SERVER['SCRIPT_NAME']) ) {
+   $c_commsy_url_path = dirname($_SERVER['SCRIPT_NAME']);
+} elseif ( !empty($_SERVER['PHP_SELF']) ) {
+   $c_commsy_url_path = dirname($_SERVER['PHP_SELF']);
+} else {
+   $c_commsy_url_path = '';
+}
+
 // set file path to the installation of the commsy folder
-//    $c_commsy_path_file = '/var/www/CommSy';
+if ( !empty($_SERVER['SCRIPT_FILENAME']) ) {
+   $c_commsy_path_file = dirname($_SERVER['SCRIPT_FILENAME']);
+   $c_commsy_path_file = str_replace('/htdocs','',$c_commsy_path_file);
+   $c_commsy_path_file = str_replace('/',DIRECTORY_SEPARATOR,$c_commsy_path_file);
+} else {
+   $c_commsy_path_file = '';
+}
 
 // set security key to prevent session riding
 // $c_security_key = '';
