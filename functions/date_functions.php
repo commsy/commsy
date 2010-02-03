@@ -385,6 +385,7 @@ function getDayNameFromInt($day) {
      case '4': $ret = $translator->getMessage('COMMON_DATE_THURSDAY'); break;
      case '5': $ret = $translator->getMessage('COMMON_DATE_FRIDAY'); break;
      case '6': $ret = $translator->getMessage('COMMON_DATE_SATURDAY'); break;
+     default: $ret = '';
    }
    return $ret;
 }
