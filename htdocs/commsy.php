@@ -841,7 +841,53 @@ if ( $current_user->isUser() and !$current_user->isRoot() ) {
 }
 
 // agb, errorbox or include page
-if ( $show_agb_again ) {
+if ( $current_context->isLocked()
+     and !( $environment->getCurrentModule() == 'room'
+            and $environment->getCurrentFunction() == 'change'
+          )
+     and !( $environment->getCurrentModule() == 'picture'
+            and $environment->getCurrentFunction() == 'getfile'
+          )
+     and !$current_user->isRoot()
+   ) {
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+   unset($params);
+   if ( $current_context->isPrivateRoom() ) {
+      $room_name = $translator->getMessage('PRIVATEROOM');
+   } else {
+      $room_name = $current_context->getTitle();
+   }
+   $errorbox->setText($translator->getMessage('CONTEXT_IS_LOCKED',$room_name));
+   $page->add($errorbox);
+} elseif ( $current_context->isDeleted()
+           and !( $environment->getCurrentModule() == 'room'
+                  and $environment->getCurrentFunction() == 'change'
+                )
+           and !( $environment->getCurrentModule() == 'picture'
+                  and $environment->getCurrentFunction() == 'getfile'
+                )
+           and !$current_user->isRoot()
+         ) {
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+   unset($params);
+   if ( $current_context->isPrivateRoom() ) {
+      $room_name = $translator->getMessage('PRIVATEROOM');
+   } else {
+      $room_name = $current_context->getTitle();
+   }
+   if ( $current_context->isPortal() ) {
+      $errorbox->setText($translator->getMessage('PORTAL_ERROR_DELETED',$room_name));
+   } else {
+      $errorbox->setText($translator->getMessage('CONTEXT_IS_DELETED',$room_name));
+   }
+   $page->add($errorbox);
+} elseif ( $show_agb_again ) {
    if ( ($current_module == 'picture')
         and ( $current_function == 'getfile'
               or $current_function == 'getingray'
