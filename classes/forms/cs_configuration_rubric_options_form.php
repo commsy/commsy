@@ -237,7 +237,10 @@ class cs_configuration_rubric_options_form extends cs_rubric_form {
                                 'id="nr'.$i.'" ');
        }
       }
-      if ($this->_environment->inProjectRoom() or $this->_environment->inGroupRoom()){
+      if ( $this->_environment->inProjectRoom()
+           or $this->_environment->inGroupRoom()
+           or $this->_environment->inCommunityRoom()
+         ){
          $this->_form->addTextField('time_spread',
                                     '',
                                     $this->_translator->getMessage('INTERNAL_TIME_SPREAD'),

@@ -258,7 +258,19 @@ class cs_community_item extends cs_room_item {
 
    function getTimeSpread () {
       $retour = '90';
+      if ($this->_issetExtra('TIMESPREAD')) {
+         $retour = $this->_getExtra('TIMESPREAD');
+      }
       return $retour;
+   }
+
+   /** set time spread for items on home
+    * this method sets the time spread for items on the home of the project project
+    *
+    * @param integer value the time spread
+    */
+   public function setTimeSpread ($value) {
+      $this->_addExtra('TIMESPREAD',(int)$value);
    }
 
    function setRoomContext ($value) {

@@ -163,11 +163,7 @@ class cs_activity_view extends cs_view {
 
       $environment = $this->getEnvironment();
       $context = $environment->getCurrentContextItem();
-      if ($environment->inCommunityRoom()){
-         $time_spread = 90;
-      }else{
-         $time_spread = $context->getTimeSpread();
-      }
+      $time_spread = $context->getTimeSpread();
       $html .= LF.'<!-- BEGIN OF ACTIVITY VIEW -->'.LF;
       $active = $context->getActiveMembers($time_spread);
       $all_users = $context->getAllUsers();
