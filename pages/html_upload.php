@@ -63,7 +63,15 @@ function replace_files ($dir, $pos=2,$fileitem,$environment,$namearray) {
          replace_files($dir.$file."/", $pos + 3,$fileitem,$environment,$namearray);
       } else {
          $extension = mb_strtolower(mb_substr(strrchr($dir.$file,"."),1), 'UTF-8');
-         if ( is_file($dir.$file) and ($extension == "htm" OR $extension == "html" OR $extension == "js" OR $extension == "xml" OR $extension == "xslt" OR $extension == "xsd")){
+         if ( is_file($dir.$file) and ( $extension == "htm"
+                                        or $extension == "html"
+                                        or $extension == "js"
+                                        or $extension == "xml"
+                                        or $extension == "xslt"
+                                        or $extension == "xsd"
+                                        #or $extension == "css"
+                                      )
+            ) {
             $replacement = replacement($environment,$fileitem,$dir,$file,$namearray);
             $open = fopen($dir.$file,'w');
             fputs($open,$replacement);
@@ -78,7 +86,12 @@ function replace_files ($dir, $pos=2,$fileitem,$environment,$namearray) {
 function replacement($environment,$file,$pfad,$datei,$namearray) {
    $filecontent = file_get_contents($pfad.$datei);
    logToFile($pfad.$datei);
-   $path = 'var/'.$environment->getCurrentPortalID().'/'.$environment->getCurrentContextID().'/html_'.$file->getDiskFileNameWithoutFolder().'/';
+   $disc_manager = $environment->getDiscManager();
+   $disc_manager->setPortalID($environment->getCurrentPortalID());
+   $disc_manager->setContextID($environment->getCurrentContextID());
+   $path_to_file = $disc_manager->getFilePath();
+   unset($disc_manager);
+   $path = $path_to_file.'html_'.$file->getDiskFileNameWithoutFolder().'/';
    $linkpath = "";
    if ( $path != $pfad ) {
       $linkpath = str_replace($path,'',$pfad);
@@ -93,7 +106,14 @@ function replacement($environment,$file,$pfad,$datei,$namearray) {
          $trefferlowercase = mb_strtolower($treffer, 'UTF-8');
          global $c_single_entry_point;
          //$replacement = $c_single_entry_point.'?cid='.$environment->getCurrentContextID().'&mod=material&fct=showzip_file&iid='.$file->getFileID().'&file='.$linkpath.$trefferlowercase;
-         $replacement = $c_single_entry_point.'?cid='.$environment->getCurrentContextID().'&mod=material&fct=showzip_file&iid='.$file->getFileID().'&file='.$linkpath.$namearray['filename'][$index];
+         if ( !isset($index)
+              or !isset($namearray['filename'][$index])
+            ) {
+            $namearray_filename_index = '';
+         } else {
+            $namearray_filename_index = $namearray['filename'][$index];
+         }
+         $replacement = $c_single_entry_point.'?cid='.$environment->getCurrentContextID().'&mod=material&fct=showzip_file&iid='.$file->getFileID().'&file='.$linkpath.$namearray_filename_index;
          //$replacement = str_replace('\\', '/', $replacement);
          if ( !mb_stristr($filecontent,$replacement) ) {
             $filecontent = str_replace($treffer, $replacement, $filecontent);
@@ -104,7 +124,15 @@ function replacement($environment,$file,$pfad,$datei,$namearray) {
          $treffer = "'".$name."'";
          global $c_single_entry_point;
          //$replacement = $c_single_entry_point.'?cid='.$environment->getCurrentContextID().'&mod=material&fct=showzip_file&iid='.$file->getFileID().'&file='.$linkpath.$trefferlowercase;
-         $replacement = $c_single_entry_point.'?cid='.$environment->getCurrentContextID().'&mod=material&fct=showzip_file&iid='.$file->getFileID().'&file='.$linkpath.$namearray['filename'][$index];
+         //$replacement = $c_single_entry_point.'?cid='.$environment->getCurrentContextID().'&mod=material&fct=showzip_file&iid='.$file->getFileID().'&file='.$linkpath.$namearray['filename'][$index];
+         if ( !isset($index)
+              or !isset($namearray['filename'][$index])
+            ) {
+            $namearray_filename_index = '';
+         } else {
+            $namearray_filename_index = $namearray['filename'][$index];
+         }
+         $replacement = $c_single_entry_point.'?cid='.$environment->getCurrentContextID().'&mod=material&fct=showzip_file&iid='.$file->getFileID().'&file='.$linkpath.$namearray_filename_index;
          //$replacement = str_replace('\\', '/', $replacement);
          $filecontent = str_replace($treffer, "'".$replacement."'", $filecontent);
       }
@@ -116,7 +144,12 @@ function replacement($environment,$file,$pfad,$datei,$namearray) {
 $zip = new ZipArchive;
 
 $source_file = $file->getDiskFileName();
-$target_directory = 'var/'.$environment->getCurrentPortalID().'/'.$environment->getCurrentContextID().'/html_'.$file->getDiskFileNameWithoutFolder().'/';
+$disc_manager = $environment->getDiscManager();
+$disc_manager->setPortalID($environment->getCurrentPortalID());
+$disc_manager->setContextID($environment->getCurrentContextID());
+$path_to_file = $disc_manager->getFilePath();
+unset($disc_manager);
+$target_directory = $path_to_file.'html_'.$file->getDiskFileNameWithoutFolder().'/';
 
 global $export_temp_folder;
 if ( !isset($export_temp_folder) ) {
@@ -142,7 +175,12 @@ if ( $res === TRUE ) {
 }
 unset($zip);
 if($file->getHasHTML() == 2) {
-   $pfad = 'var/'.$environment->getCurrentPortalID().'/'.$environment->getCurrentContextID().'/html_'.$file->getDiskFileNameWithoutFolder().'/';
+   $disc_manager = $environment->getDiscManager();
+   $disc_manager->setPortalID($environment->getCurrentPortalID());
+   $disc_manager->setContextID($environment->getCurrentContextID());
+   $path_to_file = $disc_manager->getFilePath();
+   unset($disc_manager);
+   $pfad = $path_to_file.'html_'.$file->getDiskFileNameWithoutFolder().'/';
    $namearray['oldfilename'] = array();
    $namearray['filename'] = array();
    $namearray['dirname'] = array();

@@ -51,17 +51,49 @@ class cs_disc_manager {
       $this->_setSecondID($value);
    }
 
-   function _getFilePath () {
+   function _getSecondFolder ( $second_folder ) {
+      $second_folder = (string)$second_folder;
+      if ( !empty($second_folder) ) {
+         $array = array();
+         $retour = '';
+         for ( $i=0; $i<strlen($second_folder);$i++) {
+            if ( $i > 0 and $i%4 == 0 ) {
+               $retour .= '/';
+            }
+            $retour .= $second_folder[$i];
+         }
+         $retour .= '_';
+      } else {
+         include_once('functions/date_functions.php');
+         $retour = md5(getCurrentDateTimeInMySQL());
+      }
+      return $retour;
+   }
+
+   function _getFilePath ( $first_id = '', $second_id = '') {
       $retour  = '';
       $retour .= $this->_file_path_basic;
-      if (!empty($this->_first_id)) {
+      if (!empty($first_id)) {
+         $retour .= $first_id.'/';
+      } elseif (!empty($this->_first_id)) {
          $retour .= $this->_first_id.'/';
       } else {
          include_once('functions/error_functions.php');
          trigger_error('first_id is not set',E_USER_ERROR);
       }
-      if (!empty($this->_second_id)) {
-         $retour .= $this->_second_id.'/';
+
+      if (!empty($second_id)) {
+         $retour_old = $retour.$second_id.'/';
+         $retour .= $this->_getSecondFolder($second_id).'/';
+         if ( !is_dir($retour) and is_dir($retour_old) ) {
+            $retour = $retour_old;
+         }
+      } elseif (!empty($this->_second_id)) {
+         $retour_old = $retour.$this->_second_id.'/';
+         $retour .= $this->_getSecondFolder($this->_second_id).'/';
+         if ( !is_dir($retour) and is_dir($retour_old) ) {
+            $retour = $retour_old;
+         }
       } else {
          include_once('functions/error_functions.php');
          trigger_error('second_id is not set',E_USER_ERROR);
@@ -69,8 +101,8 @@ class cs_disc_manager {
       return $retour;
    }
 
-   function getFilePath () {
-      return $this->_getFilePath();
+   function getFilePath ($first_id = '', $second_id = '') {
+      return $this->_getFilePath($first_id,$second_id);
    }
 
    function existsFile ($filename) {
@@ -95,16 +127,7 @@ class cs_disc_manager {
 
    function copyFile ($source_file, $dest_filename, $delete_source) {
       $retour = false;
-      $first_folder_string = $this->_file_path_basic.$this->_first_id;
-      $first_folder = @opendir($first_folder_string);
-      if (!$first_folder) {
-         mkdir($first_folder_string);
-      }
-      $second_folder_string = $first_folder_string.'/'.$this->_second_id;
-      $second_folder = @opendir($second_folder_string);
-      if (!$second_folder) {
-         mkdir($second_folder_string);
-      }
+      $this->_makeFolder($this->_first_id, $this->_second_id);
       if ( file_exists($source_file) ) {
          $retour = copy($source_file, $this->_getFilePath().$dest_filename);
       }
@@ -121,24 +144,10 @@ class cs_disc_manager {
          trigger_error('old_room_id is not set',E_USER_ERROR);
       }
       $this->_makeFolder($this->_first_id, $new_room_id);
-      $source_file = $this->_file_path_basic;
-      if (!empty($this->_first_id)) {
-         $source_file .= $this->_first_id.'/';
-      } else {
-         include_once('functions/error_functions.php');
-         trigger_error('first_id is not set',E_USER_ERROR);
-      }
-      $source_file .= $old_room_id.'/'.$old_file_id.'.'.cs_strtolower(mb_substr(strrchr($filename,'.'),1));
+      $source_file = str_replace('//','/',$this->_getFilePath('',$old_room_id).'/'.$old_file_id.'.'.cs_strtolower(mb_substr(strrchr($filename,'.'),1)));
+      $target_file = str_replace('//','/',$this->_getFilePath('',$new_room_id).'/'.$new_file_id.'.'.cs_strtolower(mb_substr(strrchr($filename,'.'),1)));
 
-      $target_file = $this->_file_path_basic;
-      if (!empty($this->_first_id)) {
-         $target_file .= $this->_first_id.'/';
-      } else {
-         include_once('functions/error_functions.php');
-         trigger_error('first_id is not set',E_USER_ERROR);
-      }
-      $target_file .= $new_room_id.'/'.$new_file_id.'.'.cs_strtolower(mb_substr(strrchr($filename,'.'),1));
-
+      // copy
       if ( file_exists($source_file) ) {
          $retour = copy($source_file,$target_file);
       } else {
@@ -159,24 +168,8 @@ class cs_disc_manager {
       $new_picture_name = implode('_',$value_array);
 
       // source file
-      $source_file = $this->_file_path_basic;
-      if (!empty($this->_first_id)) {
-         $source_file .= $this->_first_id.'/';
-      } else {
-         include_once('functions/error_functions.php');
-         trigger_error('first_id is not set',E_USER_ERROR);
-      }
-      $source_file .= $old_room_id.'/'.$picture_name;
-
-      // target file
-      $target_file = $this->_file_path_basic;
-      if (!empty($this->_first_id)) {
-         $target_file .= $this->_first_id.'/';
-      } else {
-         include_once('functions/error_functions.php');
-         trigger_error('first_id is not set',E_USER_ERROR);
-      }
-      $target_file .= $new_room_id.'/'.$new_picture_name;
+      $source_file = str_replace('//','/',$this->_getFilePath('',$old_room_id).'/'.$picture_name);
+      $target_file = str_replace('//','/',$this->_getFilePath('',$new_room_id).'/'.$picture_name);
 
       // copy
       if ( file_exists($source_file) ) {
@@ -195,20 +188,15 @@ class cs_disc_manager {
    }
 
    function _makeFolder ($first_id, $second_id) {
-      $first_folder_string = $this->_file_path_basic.$first_id;
-      $first_folder = @opendir($first_folder_string);
-      if (!$first_folder) {
-         @mkdir($first_folder_string);
-         $first_folder = @opendir($first_folder_string);
-         if (!$first_folder) {
-            include_once('functions/error_functions.php');
-            trigger_error('can not make directory '.$first_folder_string.' - abort executing',E_USER_ERROR);
-         }
-      }
-      $second_folder_string = $first_folder_string.'/'.$second_id;
-      $second_folder = @opendir($second_folder_string);
-      if (!$second_folder) {
-         mkdir($second_folder_string);
+      return $this->makeDirectoryR($this->_getFilePath($first_id,$second_id));
+   }
+
+   public function makeFolder ($first_id, $second_id) {
+      if ( !empty($first_id) and !empty($second_id) ) {
+         $this->_makeFolder($first_id,$second_id);
+      } else {
+         include_once('functions/error_functions.php');
+         trigger_error('first and second folder can not be empty - abort executing',E_USER_ERROR);
       }
    }
 
@@ -243,15 +231,9 @@ class cs_disc_manager {
 
    function moveFiles ($second_folder, $old_first_folder, $new_first_folder) {
       $retour = true;
-      $folder_new = $this->_file_path_basic.$new_first_folder.'/'.$second_folder;
-      $directory_handle = @opendir($folder_new);
-      if (!$directory_handle) {
-         $this->_makeFolder($new_first_folder,$second_folder);
-      } else {
-         closedir($directory_handle);
-      }
-
-      $folder_old = $this->_file_path_basic.$old_first_folder.'/'.$second_folder;
+      $this->_makeFolder($new_first_folder,$second_folder);
+      $folder_new = $this->_getFilePath($new_first_folder,$second_folder);
+      $folder_old = $this->_getFilePath($old_first_folder,$second_folder);
       $directory_handle = @opendir($folder_old);
       if ($directory_handle) {
          while ( false !== ( $entry = readdir($directory_handle) ) ) {
@@ -262,6 +244,36 @@ class cs_disc_manager {
          $retour = $retour and $this->_full_rmdir($folder_old);
       }
       return $retour;
+   }
+
+   function moveFilesR ( $quelle, $ziel  ) {
+      if ( is_dir($quelle) ) {
+         if ( !$this->makeDirectoryR($ziel) ) {
+            include_once('functions/error_functions.php');
+            trigger_error('<br/>kann '.$ziel.' nicht anlegen',E_USER_ERROR);
+         }
+
+         if ( $dirHandle = opendir($quelle) ) {
+            while ($file = readdir($dirHandle)){
+               if ($file == '.' || $file == '..') continue;
+               if ( is_dir($quelle.'/'.$file) ) {
+                  if ( !$this->moveFilesR($quelle.'/'.$file,$ziel.'/'.$file) ) {
+                     return false;
+                  }
+               } else {
+                  if ( !$this->_moveFile($quelle.'/'.$file,$ziel.'/'.$file) ) {
+                     return false;
+                  }
+               }
+            }
+
+            closedir($dirHandle);
+            if (!rmdir($quelle)) return false;
+            return true;
+         } else {
+            return false;
+         }
+      }
    }
 
    private function _full_rmdir($dirname) {
@@ -349,6 +361,14 @@ class cs_disc_manager {
 
    public function getCurrentFileName ($context_id, $file_id, $file_name, $file_ext) {
       $retour = $file_id.'.'.$file_ext;
+      return $retour;
+   }
+
+   public function getFilePathBasic ( $full = false) {
+      $retour = $this->_file_path_basic;
+      if ( $full ) {
+         $retour = getcwd().'/'.$retour;
+      }
       return $retour;
    }
 }

@@ -27,14 +27,14 @@ if (!empty($_GET['file']) and $disc_manager->existsFile($_GET['file'])) {
    header('Content-type: application/x-shockwave-flash');
    header('Pragma: no-cache');
    header('Expires: 0');
-   readfile($disc_manager->getFilePath('file').$_GET['file']);
+   readfile($disc_manager->getFilePath().$_GET['file']);
 } else if(!empty($_GET['file']) and withUmlaut($_GET['file'])) {
      $filename = rawurlencode($_GET['file']);
-  	 if (file_exists($disc_manager->_getFilePath().$filename)) {
+      if (file_exists($disc_manager->_getFilePath().$filename)) {
        header('Content-type: application/x-shockwave-flash');
-   	 header('Pragma: no-cache');
-   	 header('Expires: 0');
-       readfile($disc_manager->getFilePath('file').$filename);
+       header('Pragma: no-cache');
+       header('Expires: 0');
+       readfile($disc_manager->getFilePath().$filename);
      }
   }
 exit();

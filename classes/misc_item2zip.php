@@ -265,9 +265,14 @@ class misc_item2zip extends misc_2zip {
                if ( !file_exists($directory.'/images/'.$img_name) ) {
                   $orig_img_file = '';
                   if ( stristr($link,'picture=') ) {
-                     $orig_img_file  = 'var/';
-                     $orig_img_file .= $this->_environment->getCurrentPortalID().'/';
-                     $orig_img_file .= $this->_environment->getCurrentContextID().'/';
+                     $disc_manager = $this->_environment->getDiscManager();
+                     $disc_manager->setPortalID($this->_environment->getCurrentPortalID());
+                     $disc_manager->setContextID($this->_environment->getCurrentContextID());
+                     $orig_img_file = $disc_manager->getFilePath();
+                     unset($disc_manager);
+                     #$orig_img_file  = 'var/';
+                     #$orig_img_file .= $this->_environment->getCurrentPortalID().'/';
+                     #$orig_img_file .= $this->_environment->getCurrentContextID().'/';
                      $orig_img_file .= $img_name;
                   } elseif ( stristr($link,'images/disc1') ) {
                      $orig_img_file  = 'htdocs/images/';

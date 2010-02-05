@@ -118,8 +118,6 @@ class cs_project_item extends cs_room_item {
     * this method returns the time spread for items on the home of the project project
     *
     * @return integer the time spread
-    *
-    * @author CommSy Development Group
     */
    function getTimeSpread () {
       $retour = '7';
@@ -133,8 +131,6 @@ class cs_project_item extends cs_room_item {
     * this method sets the time spread for items on the home of the project project
     *
     * @param integer value the time spread
-    *
-    * @author CommSy Development Group
     */
    function setTimeSpread ($value) {
       $this->_addExtra('TIMESPREAD',(int)$value);

@@ -185,14 +185,14 @@ class cs_user_detail_view extends cs_detail_view {
          $html .= $this->_getFormalDataAsHTML($formal_data).LF;
       }
       $formal_data = array();
-      
+
       $html .='</td>'.LF;
       $picture = $item->getPicture();
-      
+
       if ( !empty($picture) ) {
          $disc_manager = $this->_environment->getDiscManager();
          if ($disc_manager->existsFile($picture)){
-            $image_array = getimagesize($disc_manager->getFilePath('picture').$picture);
+            $image_array = getimagesize($disc_manager->getFilePath().$picture);
             $pict_width = $image_array[0];
             if ($pict_width > 150){
                $width = 150;
@@ -202,7 +202,7 @@ class cs_user_detail_view extends cs_detail_view {
          }else{
             $width = 150;
          }
-         
+
          $html .='<td style="vertical-align:top; width: 150px;">'.LF;
          $params = array();
          $params['picture'] = $picture;

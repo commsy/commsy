@@ -57,7 +57,7 @@ class cs_institution_detail_view extends cs_detail_view {
       if ( !empty($picture) ){
          $disc_manager = $this->_environment->getDiscManager();
          if ($disc_manager->existsFile($picture)){
-            $image_array = getimagesize($disc_manager->getFilePath('picture').$picture);
+            $image_array = getimagesize($disc_manager->getFilePath().$picture);
             $pict_width = $image_array[0];
             if ($pict_width > 150){
                $width = 150;

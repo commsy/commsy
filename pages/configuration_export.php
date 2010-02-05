@@ -186,7 +186,13 @@ else {
             }
 
             //Location, that will be backuped
-            $backuppath = 'var/'.$environment->getCurrentPortalID().'/'.$_POST['iid'].'';
+            $disc_manager = $environment->getDiscManager();
+            $disc_manager->setPortalID($environment->getCurrentPortalID());
+            $disc_manager->setContextID($_POST['iid']);
+            $backuppath = $disc_manager->getFilePath();
+            $disc_manager->setContextID($environment->getCurrentContextID());
+            unset($disc_manager);
+            #$backuppath = 'var/'.$environment->getCurrentPortalID().'/'.$_POST['iid'].'';
 
             if ( class_exists('ZipArchive') ) {
                include_once('functions/misc_functions.php');

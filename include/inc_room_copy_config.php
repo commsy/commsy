@@ -48,6 +48,7 @@ $new_room->setPluginConfig($old_room->getPluginConfig());
 
 // config of colors
 $new_room->setColorArray($old_room->getColorArray());
+$new_room->generateLayoutImages();
 
 //ToDos
 $new_room->setExtraToDoStatusArray($old_room->getExtraToDoStatusArray());

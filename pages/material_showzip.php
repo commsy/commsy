@@ -26,28 +26,33 @@ if ( !empty($_GET['iid']) ) {
    $file = $file_manager->getItem($_GET['iid']);
 
    // is zip unpacked?
-   $dir = './var/'.$environment->getCurrentPortalID().'/'.$environment->getCurrentContextID().'/html_'.$file->getDiskFileNameWithoutFolder();
+   $disc_manager = $environment->getDiscManager();
+   $disc_manager->setPortalID($environment->getCurrentPortalID());
+   $disc_manager->setContextID($environment->getCurrentContextID());
+   $path_to_file = $disc_manager->getFilePath();
+   unset($disc_manager);
+   $dir = './'.$path_to_file.'html_'.$file->getDiskFileNameWithoutFolder();
    if ( !is_dir($dir) ) {
       include_once('pages/html_upload.php');
    }
 
-   if ( file_exists('./var/'.$environment->getCurrentPortalID().'/'.$environment->getCurrentContextID().'/html_'.$file->getDiskFileNameWithoutFolder().'/index.htm')
+   if ( file_exists('./'.$path_to_file.'html_'.$file->getDiskFileNameWithoutFolder().'/index.htm')
         and empty($_GET['file'])
       ) {
       $filename = 'index.htm';
-   } elseif((file_exists('./var/'.$environment->getCurrentPortalID().'/'.$environment->getCurrentContextID().'/html_'.$file->getDiskFileNameWithoutFolder().'/index.html')) and empty($_GET['file'])) {
+   } elseif((file_exists('./'.$path_to_file.'html_'.$file->getDiskFileNameWithoutFolder().'/index.html')) and empty($_GET['file'])) {
       $filename = 'index.html';
    } else {
       $filename = $_GET['file'];
    }
-   if (file_exists('./var/'.$environment->getCurrentPortalID().'/'.$environment->getCurrentContextID().'/html_'.$file->getDiskFileNameWithoutFolder().'/'.$filename)) {
-      $filecontent = file_get_contents('./var/'.$environment->getCurrentPortalID().'/'.$environment->getCurrentContextID().'/html_'.$file->getDiskFileNameWithoutFolder().'/'.$filename);
+   if (file_exists('./'.$path_to_file.'html_'.$file->getDiskFileNameWithoutFolder().'/'.$filename)) {
+      $filecontent = file_get_contents('./'.$path_to_file.'html_'.$file->getDiskFileNameWithoutFolder().'/'.$filename);
       echo $filecontent;
       exit;
    } else {
       include_once('functions/error_functions.php');
       trigger_error("material_showzip: File not found!", E_USER_ERROR);
-      trigger_error("material_showzip: File (./var/".$environment->getCurrentPortalID()."/".$environment->getCurrentContextID()."/html_".$file->getDiskFileNameWithoutFolder()."/".$filename.") not found!", E_USER_ERROR);
+      trigger_error("material_showzip: File (./".$path_to_file."html_".$file->getDiskFileNameWithoutFolder()."/".$filename.") not found!", E_USER_ERROR);
    }
    unset($iid);
 } else {

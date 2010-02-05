@@ -1325,7 +1325,7 @@ class cs_form_view extends cs_view {
             unset($params);
             $disc_manager = $this->_environment->getDiscManager();
             if ($disc_manager->existsFile($form_element['filename'])){
-               $image_array = getimagesize($disc_manager->getFilePath('picture').$form_element['filename']);
+               $image_array = getimagesize($disc_manager->getFilePath().$form_element['filename']);
                $pict_width = $image_array[0];
             }
             $retour .= '<img alt="Picture" src="'.$curl.'" style="height:4em;"/>'.LF;
@@ -1425,7 +1425,7 @@ class cs_form_view extends cs_view {
          }
             $disc_manager = $this->_environment->getDiscManager();
             if ($disc_manager->existsFile($form_element['filename'])){
-               $image_array = getimagesize($disc_manager->getFilePath('picture').$form_element['filename']);
+               $image_array = getimagesize($disc_manager->getFilePath().$form_element['filename']);
                $pict_width = $image_array[0];
                if ($pict_width > 150){
                   $style = ' style="width:150px;"';
@@ -2188,12 +2188,12 @@ class cs_form_view extends cs_view {
                   $tempMessage = $this->_translator->getMessage('COMMON_CONFIGURATION_ROOM_OPENING_FORM_TITLE');
                   break;
                case 'PROJECT_EDIT': // Raumeröffnungen (Portal)
-               	//$tempMessage = $this->_translator->getMessage('COMMON_ROOM_EDIT_FORM_TITLE');
-               	if($this->current_iid != 'NEW'){
-               		$tempMessage = $this->_translator->getMessage('COMMON_ROOM_EDIT_FORM_TITLE');
-               	} else {
+                  //$tempMessage = $this->_translator->getMessage('COMMON_ROOM_EDIT_FORM_TITLE');
+                  if($this->current_iid != 'NEW'){
+                     $tempMessage = $this->_translator->getMessage('COMMON_ROOM_EDIT_FORM_TITLE');
+                  } else {
                      $tempMessage = $this->_translator->getMessage('COMMON_NEW_ROOM_EDIT_FORM_TITLE');
-               	}
+                  }
                   if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
                      $tempMessage = '<img src="images/commsyicons_msie6/32x32/room.gif" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
                   } else {
@@ -2363,8 +2363,8 @@ class cs_form_view extends cs_view {
                   }
                }
                if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-	              $with_javascript = false;
-	           }
+                 $with_javascript = false;
+              }
                // UMSTELLUNG MUSEUM
                if($with_javascript){
                   $html .= $this->_getTagBoxAsHTMLWithJavaScript();
@@ -3029,7 +3029,7 @@ class cs_form_view extends cs_view {
       unset($current_user);
       return $html;
    }
-   
+
    function _getAllLinkedItemsAsHTML ($spaces=0) {
       $html = '';
       $current_context = $this->_environment->getCurrentContextItem();
@@ -3074,7 +3074,7 @@ class cs_form_view extends cs_view {
             $text = getRubricMessageTageName($type);
             $text .= ' - '.$item->getTitle();
             $html .= '   <li  style="padding-left:5px; list-style-type:none;">';
-            
+
             $type = $item->getType();
             if ($type =='label'){
                $type = $item->getLabelType();
@@ -3116,15 +3116,15 @@ class cs_form_view extends cs_view {
                      break;
                }
             $html .= '<img src="' . $img . '" style="padding-right:3px;" title="' . $text . '"/>';
-               
+
             if ($type == CS_USER_TYPE){
                $html .= '<a title="'.$text.'">'.$this->_text_as_html_short(chunkText($item->getFullName(),35)).'</a>';
             }else{
-            	if($item->isNotActivated() and !($item->getCreatorID() == $current_user->getItemID() or $current_user->isModerator())){
-               		$html .= '<a title="'.$text.'" class="disabled">'.$this->_text_as_html_short(chunkText($item->getTitle(),35)).'</a>';
-            	} else {
-            		$html .= '<a title="'.$text.'">'.$this->_text_as_html_short(chunkText($item->getTitle(),35)).'</a>';
-            	}
+               if($item->isNotActivated() and !($item->getCreatorID() == $current_user->getItemID() or $current_user->isModerator())){
+                     $html .= '<a title="'.$text.'" class="disabled">'.$this->_text_as_html_short(chunkText($item->getTitle(),35)).'</a>';
+               } else {
+                  $html .= '<a title="'.$text.'">'.$this->_text_as_html_short(chunkText($item->getTitle(),35)).'</a>';
+               }
             }
             $html .= '</li>'.LF;
             $linked_item = $linked_items->getNext();

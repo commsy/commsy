@@ -5224,25 +5224,11 @@ class cs_context_item extends cs_item {
        if ( $this->isPortal() or $this->isServer() ) {
           $disc_manager->setPortalID($this->getItemID());
           $disc_manager->setContextID($this->getItemID());
-          $var_folder = @opendir($c_commsy_path_file . '/var/' . $this->getItemID());
-          if (!$var_folder) {
-             mkdir($c_commsy_path_file . '/var/' . $this->getItemID());
-          }
-          $var_folder = @opendir($c_commsy_path_file . '/' . $disc_manager->getFilePath());
-          if (!$var_folder) {
-             mkdir($c_commsy_path_file . '/' . $disc_manager->getFilePath());
-          }
+          $disc_manager->makeFolder($this->getItemID(),$this->getItemID());
        } else {
           $disc_manager->setPortalID($this->_environment->getCurrentPortalItem()->getItemID());
           $disc_manager->setContextID($this->getItemID());
-          $var_folder = @opendir($c_commsy_path_file . '/var/' . $this->_environment->getCurrentPortalItem()->getItemID());
-          if (!$var_folder) {
-             mkdir($c_commsy_path_file . '/var/' . $this->_environment->getCurrentPortalItem()->getItemID());
-          }
-          $var_folder = @opendir($c_commsy_path_file . '/' . $disc_manager->getFilePath());
-          if (!$var_folder) {
-             mkdir($c_commsy_path_file . '/' . $disc_manager->getFilePath());
-          }
+          $disc_manager->makeFolder($this->_environment->getCurrentPortalItem()->getItemID(),$this->getItemID());
        }
 
        $image_24 = $this->generateColourGradient(24, $color_array['tabs_background']);
@@ -5265,6 +5251,7 @@ class cs_context_item extends cs_item {
        }
        imagePNG($image_32, $c_commsy_path_file . '/' . $disc_manager->getFilePath() . $color_array['schema'] . '_' .CS_GRADIENT_32);
        imagedestroy($image_32);
+       $disc_manager->setContextID($this->_environment->getCurrentContextItem()->getItemID());
     }
 
     function generateColourGradient($height, $rgb){

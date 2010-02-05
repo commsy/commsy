@@ -1292,8 +1292,8 @@ class cs_detail_view extends cs_view {
                }
             }
             if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-	           $with_javascript = false;
-	        }
+              $with_javascript = false;
+           }
             // UMSTELLUNG MUSEUM
             if($with_javascript and true){
                #$html .= $this->_getTagBoxAsHTMLWithJavaScript($item);
@@ -1537,7 +1537,7 @@ class cs_detail_view extends cs_view {
       if ( !empty($picture) ) {
          $disc_manager = $this->_environment->getDiscManager();
          if ($disc_manager->existsFile($picture)){
-            $image_array = getimagesize($disc_manager->getFilePath('picture').$picture);
+            $image_array = getimagesize($disc_manager->getFilePath().$picture);
             $pict_height = $image_array[1];
             if ($pict_height > 60){
                $height = 60;
@@ -2273,7 +2273,7 @@ class cs_detail_view extends cs_view {
          if($temp_item->isNotActivated()){
             $ids_not_activated[] = $temp_item->getItemID();
          }
-      	$temp_item = $item_list->getNext();
+         $temp_item = $item_list->getNext();
       }
       $item_manager->resetLimits();
 
@@ -3345,30 +3345,30 @@ class cs_detail_view extends cs_view {
                // CSS Klasse erstellen für Farbmarkierung
                include_once('functions/misc_functions.php');
                if ( getMarkerColor() == 'green') {
-               	$replace = '(:mainsearch_text_green:)$0(:mainsearch_text_green_end:)';
+                  $replace = '(:mainsearch_text_green:)$0(:mainsearch_text_green_end:)';
                }
                else if (getMarkerColor() == 'yellow') {
-               	$replace = '(:mainsearch_text_yellow:)$0(:mainsearch_text_yellow_end:)';
+                  $replace = '(:mainsearch_text_yellow:)$0(:mainsearch_text_yellow_end:)';
                }
                // $replace = '(:mainsearch_text:)$0(:mainsearch_text_end:)';
                // $replace = '*$0*';
                if ( !$bold ) {
-               	if ( getMarkerColor() == 'green') {
-               	  $replace = '(:mainsearch_text_green:)$0(:mainsearch_text_green_end:)';
+                  if ( getMarkerColor() == 'green') {
+                    $replace = '(:mainsearch_text_green:)$0(:mainsearch_text_green_end:)';
                 }
                 else if (getMarkerColor() == 'yellow') {
-               	  $replace = '(:mainsearch_text_yellow:)$0(:mainsearch_text_yellow_end:)';
+                    $replace = '(:mainsearch_text_yellow:)$0(:mainsearch_text_yellow_end:)';
                 }
 
                   // $replace = '(:search:)$0(:search_end:)';
                }
                if ( stristr($value,'<!-- KFC TEXT') ) {
-           		  if(getMarkerColor() == 'green'){
-           		  	$replace = '<span class="searched_text_green">$0</span>';
-           		  }
-           		  else if(getMarkerColor() == 'yellow'){
-           		  	$replace = '<span class="searched_text_yellow">$0</span>';
-           		  }
+                   if(getMarkerColor() == 'green'){
+                      $replace = '<span class="searched_text_green">$0</span>';
+                   }
+                   else if(getMarkerColor() == 'yellow'){
+                      $replace = '<span class="searched_text_yellow">$0</span>';
+                   }
 
                   // $replace = '<span class="bold">$0</span>';
                   if ( !$bold ) {

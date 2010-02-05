@@ -28,7 +28,12 @@ if ( !empty($_GET['iid']) and !empty($_GET['file']) ) {
    $_GET['file'] = str_replace("ß", "%DF", $_GET['file']);
    $_GET['file'] = str_replace("ü", "%FC", $_GET['file']);
    $_GET['file'] = str_replace("ä", "%E4", $_GET['file']);
-   $location = './var/'.$environment->getCurrentPortalID().'/'.$environment->getCurrentContextID().'/html_'.$file->getDiskFileNameWithoutFolder().'/'.$_GET['file'];
+   $disc_manager = $environment->getDiscManager();
+   $disc_manager->setPortalID($environment->getCurrentPortalID());
+   $disc_manager->setContextID($environment->getCurrentContextID());
+   $path_to_file = $disc_manager->getFilePath();
+   unset($disc_manager);
+   $location = './'.$path_to_file.'html_'.$file->getDiskFileNameWithoutFolder().'/'.$_GET['file'];
 
    if ( file_exists($location) ) {
       $extension = mb_strtolower(mb_substr(strrchr($_GET['file'],"."),1), 'UTF-8');
@@ -46,7 +51,7 @@ if ( !empty($_GET['iid']) and !empty($_GET['file']) ) {
          readfile($location);
          exit();
       } else {
-      	  $filecontent = file_get_contents($location);
+         $filecontent = file_get_contents($location);
          echo $filecontent;
          exit();
       }

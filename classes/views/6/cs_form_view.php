@@ -1231,7 +1231,7 @@ class cs_form_view extends cs_view {
          }
             $disc_manager = $this->_environment->getDiscManager();
             if ($disc_manager->existsFile($form_element['filename'])){
-               $image_array = getimagesize($disc_manager->getFilePath('picture').$form_element['filename']);
+               $image_array = getimagesize($disc_manager->getFilePath().$form_element['filename']);
                $pict_width = $image_array[0];
                if ($pict_width > 150){
                   $style = ' style="width:150px;"';

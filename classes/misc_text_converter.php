@@ -711,10 +711,10 @@ class misc_text_converter {
    }
 
    // needed for Wiki-Export
-   public function parseArgs($x){ 
+   public function parseArgs($x){
       return $this->_parseArgs($x);
    }
-   
+
    private function _checkSecurity ( $array ) {
       $retour = array();
       foreach ( $array as $key => $value ) {
@@ -1089,7 +1089,9 @@ class misc_text_converter {
       $retour = '';
       $image_text = '';
       if ( !empty($array[1]) ) {
-         if ( !empty($file_name_array) ) {
+         if ( !empty($file_name_array)
+              and !empty($file_name_array[$array[1]])
+            ) {
             $file = $file_name_array[$array[1]];
             if ( isset($file)
                  and ( $file->getMime() == 'application/x-zip-compressed'
@@ -1741,7 +1743,12 @@ class misc_text_converter {
 
             if(($file->getFdViewerFile() == '')){
                 $oldDir = getcwd();
-                chdir($c_commsy_path_file . '/var/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID());
+                $disc_manager = $this->_environment->getDiscManager();
+                $disc_manager->setPortalID($this->_environment->getCurrentPortalID());
+                $disc_manager->setContextID($this->_environment->getCurrentContextID());
+                $path_to_file = $disc_manager->getFilePath();
+                unset($disc_manager);
+                chdir($c_commsy_path_file . '/' . $path_to_file);
                 $ausgabe = exec('pdf2swf ' . $file->getDiskFileNameWithoutFolder());
                 $ausgabe = exec('swfcombine ' . $c_commsy_path_file . '/etc/fdviewer/fdviewer.swf \'#1\'=' . $c_commsy_path_file . "/" . mb_substr($file->getDiskFileNameWithoutFolder(), 0, -3) . 'swf -o ' . mb_substr($file->getDiskFileNameWithoutFolder(), 0, -3) . 'fdviewer.swf');
                 chdir($oldDir);
@@ -2940,18 +2947,18 @@ class misc_text_converter {
    }
 
    private function _text_php2rss ($text) {
-   	  $text = $this->_text_objectTag2rss($text);
+        $text = $this->_text_objectTag2rss($text);
       $text = str_replace('&','&amp;',$text);
       $text = str_replace('<','&lt;',$text);
       return $text;
    }
-   
+
    private function _text_objectTag2rss($text) {
-   	  // find object tags and replace them with a hint and a link
-   	  $translator = $this->_environment->getTranslationObject();
-   	  $translation = $translator->getMessage("RSS_OBJECT_TAG_REPLACE");
-   	  $replace = '<a href="\\1">['.$translation.']</a>';
-   	  return preg_replace('/<object.*>.*value="(.*)".*<\/object>/U',$replace,$text);
+        // find object tags and replace them with a hint and a link
+        $translator = $this->_environment->getTranslationObject();
+        $translation = $translator->getMessage("RSS_OBJECT_TAG_REPLACE");
+        $replace = '<a href="\\1">['.$translation.']</a>';
+        return preg_replace('/<object.*>.*value="(.*)".*<\/object>/U',$replace,$text);
    }
 
    private function _text_php2file ($text) {

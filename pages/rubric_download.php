@@ -150,7 +150,12 @@ function getCSS ( $file, $file_url ) {
 
            if($imgname != false)
          {
-            $srcfile = 'var/'.$environment->getCurrentPortalID().'/'.$environment->getCurrentContextID().'/'.$imgname;
+            $disc_manager = $environment->getDiscManager();
+            $disc_manager->setPortalID($environment->getCurrentPortalID());
+            $disc_manager->setContextID($environment->getCurrentContextID());
+            $path_to_file = $disc_manager->getFilePath();
+            unset($disc_manager);
+            $srcfile = $path_to_file.$imgname;
             $target = $directory.'/'.$img;
             $size = getimagesize($srcfile);
 

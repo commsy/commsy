@@ -182,7 +182,7 @@ class cs_privateroom_manager extends cs_room2_manager {
      if (isset($this->_status_limit)) {
         $query .= ' AND '.$this->_db_table.'.status = "'.encode(AS_DB,$this->_status_limit).'"';
      }
-     if (isset($this->_room_limit)) {
+     if (!empty($this->_room_limit)) {
         $query .= ' AND '.$this->_db_table.'.context_id = "'.encode(AS_DB,$this->_room_limit).'"';
      }
      if (isset($this->_room_type)) {
@@ -215,6 +215,8 @@ class cs_privateroom_manager extends cs_room2_manager {
            $query .= ' LIMIT '.$this->_from_limit.', '.$this->_interval_limit;
         }
      }
+
+     pr($query);
 
      // perform query
      $result = $this->_db_connector->performQuery($query);

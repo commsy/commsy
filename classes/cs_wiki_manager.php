@@ -1036,9 +1036,17 @@ function updateWikiProfileFile($user){
           } else if (stripos($file_contents_array[$index], 'text=') !== false){
               //my personal info:%0a(:email: Mail:[[mailto:<<EMAIL>>|<<EMAIL>>]] , Telefon: <<PHONE>>:)%0a(:info:%0aAttach:Profiles.<<PROFILE>>/<<IMAGE>>%0a<<DESCRIPTION>>%0a:)
               $tempString =  'text=my personal info:%0a(:email: Mail:[[mailto:' . $user->getEmail() . '|' . $user->getEmail() . ']] , Telefon: ' . $user->getTelephone() . ':)%0a(:info:%0aAttach:Profiles.' . $name_for_profile . '/';
-              if($user->getPicture() != '' and file_exists($c_commsy_path_file . '/var/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/' . $user->getPicture())){
+              $disc_manager = $this->_environment->getDiscManager();
+              $disc_manager->setPortalID($this->_environment->getCurrentPortalID());
+              $disc_manager->setContextID($this->_environment->getCurrentContextID());
+              $path_to_files = $disc_manager->getFilePath();
+              unset($disc_manager);
+              if($user->getPicture() != '' and file_exists($c_commsy_path_file . '/' . $path_to_files . $user->getPicture())){
                     $tempString .= $user->getPicture() . '%0a';
-                    copy($c_commsy_path_file . '/var/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/' . $user->getPicture(),'uploads/Profiles/' . $user->getPicture());
+                    copy($c_commsy_path_file . '/' . $path_to_files . $user->getPicture(),'uploads/Profiles/' . $user->getPicture());
+#              if($user->getPicture() != '' and file_exists($c_commsy_path_file . '/var/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/' . $user->getPicture())){
+#                    $tempString .= $user->getPicture() . '%0a';
+#                    copy($c_commsy_path_file . '/var/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/' . $user->getPicture(),'uploads/Profiles/' . $user->getPicture());
               } else {
                     $tempString .= 'nobody_m.gif%0a';
               }
@@ -1079,10 +1087,10 @@ function updateWikiProfileFile_soap($user){
 
       // Get the SOAP-client
       $client = $this->getSoapClient();
-      
+
       // remove the old file
-      
-      
+
+
       // create and save the new file
       $profiles_source = file_get_contents($c_commsy_path_file.'/etc/pmwiki/Profiles.Profile');
       $file_contents_array = explode("\n", $profiles_source);
@@ -1094,9 +1102,17 @@ function updateWikiProfileFile_soap($user){
           } else if (stripos($file_contents_array[$index], 'text=') !== false){
               //my personal info:%0a(:email: Mail:[[mailto:<<EMAIL>>|<<EMAIL>>]] , Telefon: <<PHONE>>:)%0a(:info:%0aAttach:Profiles.<<PROFILE>>/<<IMAGE>>%0a<<DESCRIPTION>>%0a:)
               $tempString =  'text=my personal info:%0a(:email: Mail:[[mailto:' . $user->getEmail() . '|' . $user->getEmail() . ']] , Telefon: ' . $user->getTelephone() . ':)%0a(:info:%0aAttach:Profiles.' . $name_for_profile . '/';
-              if($user->getPicture() != '' and file_exists($c_commsy_path_file . '/var/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/' . $user->getPicture())){
+              $disc_manager = $this->_environment->getDiscManager();
+              $disc_manager->setPortalID($this->_environment->getCurrentPortalID());
+              $disc_manager->setContextID($this->_environment->getCurrentContextID());
+              $path_to_files = $disc_manager->getFilePath();
+              unset($disc_manager);
+              if($user->getPicture() != '' and file_exists($c_commsy_path_file . '/' . $path_to_files . $user->getPicture())){
                     $tempString .= $user->getPicture() . '%0a';
-                    copy($c_commsy_path_file . '/var/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/' . $user->getPicture(),'uploads/Profiles/' . $user->getPicture());
+                    copy($c_commsy_path_file . '/' . $path_to_files . $user->getPicture(),'uploads/Profiles/' . $user->getPicture());
+#              if($user->getPicture() != '' and file_exists($c_commsy_path_file . '/var/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/' . $user->getPicture())){
+#                    $tempString .= $user->getPicture() . '%0a';
+#                    copy($c_commsy_path_file . '/var/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/' . $user->getPicture(),'uploads/Profiles/' . $user->getPicture());
               } else {
                     $tempString .= 'nobody_m.gif%0a';
               }
@@ -1104,7 +1120,7 @@ function updateWikiProfileFile_soap($user){
               $file_contents_array[$index] = $tempString;
           }
       }
-      
+
       $file_contents = implode("\n", $file_contents_array);
       $client->createPage('Profiles.' . $name_for_profile, $file_contents, $this->_environment->getSessionID());
       chdir($old_dir);
@@ -1391,7 +1407,7 @@ function exportItemToWiki($current_item_id,$rubric){
    global $c_pmwiki_path_url;
    global $c_commsy_domain;
    global $c_commsy_url_path;
-   
+
    $translator = $this->_environment->getTranslationObject();
 
    // Verzeichnis fuer Die angehaengten Dateien im Wiki
@@ -1747,7 +1763,7 @@ function exportItemToWiki_soap($current_item_id,$rubric){
    global $c_pmwiki_path_url;
    global $c_commsy_domain;
    global $c_commsy_url_path;
-   
+
    $translator = $this->_environment->getTranslationObject();
 
    $client = $this->getSoapClient();
@@ -1799,7 +1815,7 @@ function exportItemToWiki_soap($current_item_id,$rubric){
 
        $description = '<br />' . "\n" . $description;
        $client->uploadFile($html_wiki_file, base64_encode($description), 'uploads/Main', $this->_environment->getSessionID());
-       
+
        $c_pmwiki_path_url_upload = preg_replace('~http://[^/]*~u', '', $c_pmwiki_path_url);
        $returnwiki = '(:includeupload /' . $c_pmwiki_path_url_upload . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/uploads/Main/' . $html_wiki_file .':)';
 
@@ -1942,7 +1958,7 @@ function exportItemToWiki_soap($current_item_id,$rubric){
           if(!$exists_file){
             $file_buzzword_contents = file_get_contents($c_commsy_path_file.'/etc/pmwiki/Category.Keyword');
             $file_buzzword_contents = str_replace('CS_KEYWORD',$buzzword_title,$file_buzzword_contents);
-            $client->createPage('Category.'.$buzzword_title, $file_buzzword_contents, $this->_environment->getSessionID());      
+            $client->createPage('Category.'.$buzzword_title, $file_buzzword_contents, $this->_environment->getSessionID());
           }
           $buzzword_file_text .= 'Category.'.$buzzword_title;
           $buzzword = $buzzword_list->getNext();
@@ -2067,7 +2083,7 @@ function removeItemFromWiki_soap($current_item_id,$rubric){
 function updateExportLists($rubric){
    global $c_pmwiki_path_file;
    global $c_commsy_path_file;
-   
+
    $translator = $this->_environment->getTranslationObject();
 
    $old_dir = getcwd();
@@ -2149,7 +2165,7 @@ function updateExportLists($rubric){
 function updateExportLists_soap($rubric){
    global $c_pmwiki_path_file;
    global $c_commsy_path_file;
-   
+
    $translator = $this->_environment->getTranslationObject();
 
    $client = $this->getSoapClient();
@@ -2157,7 +2173,7 @@ function updateExportLists_soap($rubric){
       $exists_file = $client->getPageExists('Main.CommSyDiskussionenNavi', $this->_environment->getSessionID());
       if(!$exists_file){
          $file_contents = file_get_contents($c_commsy_path_file.'/etc/pmwiki/Main.CommSyDiskussionenNavi');
-         $client->createPage('Main.CommSyDiskussionenNavi', $file_contents, $this->_environment->getSessionID());      
+         $client->createPage('Main.CommSyDiskussionenNavi', $file_contents, $this->_environment->getSessionID());
       }
       $exported_discussions = array();
       $dicussion_array = $client->getPageNames('Main.CommSy'.$translator->getMessage('COMMON_DISCUSSION'));
@@ -2186,7 +2202,7 @@ function updateExportLists_soap($rubric){
       $exists_file = $client->getPageExists('Main.CommSyMaterialienNavi', $this->_environment->getSessionID());
       if(!$exists_file){
          $file_contents = file_get_contents($c_commsy_path_file.'/etc/pmwiki/Main.CommSyMaterialienNavi');
-         $client->createPage('Main.CommSyMaterialienNavi', $file_contents, $this->_environment->getSessionID());      
+         $client->createPage('Main.CommSyMaterialienNavi', $file_contents, $this->_environment->getSessionID());
       }
       $exported_discussions = array();
       $dicussion_array = $client->getPageNames('Main.CommSyCommSyMaterial');
@@ -2211,7 +2227,7 @@ function updateExportLists_soap($rubric){
       }
       $file_contents = implode("\n", $file_contents_array);
       $client->createPage('Main.CommSyMaterialien', $file_contents, $this->_environment->getSessionID());
-      
+
    }
 }
 
@@ -2582,11 +2598,11 @@ function deleteDirectory($dir) {
    }
    return rmdir($dir);
 }
-    
+
 function closeWiki(){
    $client = $this->getSoapClient();
    $file_contents_array = explode("\n", $client->getWikiConfiguration($this->_environment->getSessionID()));
-   
+
    $wiki_closed_found = false;
    $wiki_closed_added = false;
    foreach($file_contents_array as $file_contents_line){
@@ -2594,7 +2610,7 @@ function closeWiki(){
          $wiki_closed_found = true;
       }
    }
-   
+
    if(!$wiki_closed_found){
       for ($index = 0; $index < sizeof($file_contents_array); $index++) {
          if(stripos($file_contents_array[$index], '?>') !== false){
@@ -2613,7 +2629,7 @@ function closeWiki(){
 function openWiki(){
    $client = $this->getSoapClient();
    $file_contents_array = explode("\n", $client->getWikiConfiguration($this->_environment->getSessionID()));
-   
+
    $wiki_closed_found = false;
    $wiki_closed_added = false;
    foreach($file_contents_array as $file_contents_line){
@@ -2621,7 +2637,7 @@ function openWiki(){
          $wiki_closed_found = true;
       }
    }
-   
+
    if($wiki_closed_found){
       for ($index = 0; $index < sizeof($file_contents_array); $index++) {
          if(stripos($file_contents_array[$index], '$WIKI_CLOSED = "1";') !== false){

@@ -263,7 +263,7 @@ class cs_form_view_detail extends cs_form_view {
       if ( !empty($picture) ) {
          $disc_manager = $this->_environment->getDiscManager();
          if ($disc_manager->existsFile($picture)){
-            $image_array = getimagesize($disc_manager->getFilePath('picture').$picture);
+            $image_array = getimagesize($disc_manager->getFilePath().$picture);
             $pict_height = $image_array[1];
             if ($pict_height > 60){
                $height = 60;
