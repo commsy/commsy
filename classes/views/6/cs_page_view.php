@@ -2176,12 +2176,12 @@ class cs_page_view extends cs_view {
 
       $session_language = '';
       $session_item = $this->_environment->getSessionItem();
-      if ( $session_item->issetValue('message_language_select') ) {
-         $session_language = $session_item->getValue('message_language_select');
+      if ( $session_item->issetValue('message_language_select_dev') ) {
+         $session_language = $session_item->getValue('message_language_select_dev');
       }
       unset($session_item);
       $languageArray = $this->_translator->getAvailableLanguages();
-      $url = curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),$this->_environment->getCurrentFunction(),$this->_environment->getCurrentParameterArray());
+      $url = curl($this->_environment->getCurrentContextID(),'language','change',array());
       $html .= '<form style="margin:0px; padding:0px;" method="post" action="'.$url.'" name="language_change">'.LF;
       $html .= '<select name="message_language_select" size="1" onChange="javascript:document.language_change.submit()">'.LF;
       $html .= '<option value="reset"';

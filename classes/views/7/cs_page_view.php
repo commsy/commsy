@@ -607,12 +607,12 @@ class cs_page_view extends cs_view {
          // jQuery
          //$retour .= '   <script src="javascript/slimbox/js/slimbox.js" type="text/javascript"></script>'.LF;
          $with_slimbox = true;
-		 if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-	           $with_slimbox = false;
-	     }
-	     if($with_slimbox){
-         	$retour .= '   <script src="javascript/jQuery/Slimbox2/js/slimbox2.js" type="text/javascript"></script>'.LF;
-	     }
+       if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+              $with_slimbox = false;
+        }
+        if($with_slimbox){
+            $retour .= '   <script src="javascript/jQuery/Slimbox2/js/slimbox2.js" type="text/javascript"></script>'.LF;
+        }
          // jQuery
          // jQuery
          $retour .= '   <script type="text/javascript" src="javascript/swfobject.js"></script>'.LF;
@@ -632,12 +632,12 @@ class cs_page_view extends cs_view {
          // jQuery
          //$retour .= '   <script src="javascript/slimbox/js/slimbox.js" type="text/javascript"></script>'.LF;
          $with_slimbox = true;
-		 if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-	           $with_slimbox = false;
-	     }
-	     if($with_slimbox){
-         	$retour .= '   <script src="javascript/jQuery/Slimbox2/js/slimbox2.js" type="text/javascript"></script>'.LF;
-	     }
+       if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+              $with_slimbox = false;
+        }
+        if($with_slimbox){
+            $retour .= '   <script src="javascript/jQuery/Slimbox2/js/slimbox2.js" type="text/javascript"></script>'.LF;
+        }
          // jQuery
          // jQuery
          $retour .= '   <script type="text/javascript" src="javascript/swfobject.js"></script>'.LF;
@@ -686,12 +686,12 @@ class cs_page_view extends cs_view {
             // jQuery
             //$retour .= '   <script src="javascript/slimbox/js/slimbox.js" type="text/javascript"></script>'.LF;
             $with_slimbox = true;
-			 if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-		           $with_slimbox = false;
-		     }
-		     if($with_slimbox){
-            	$retour .= '   <script src="javascript/jQuery/Slimbox2/js/slimbox2.js" type="text/javascript"></script>'.LF;
-		     }
+          if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+                 $with_slimbox = false;
+           }
+           if($with_slimbox){
+               $retour .= '   <script src="javascript/jQuery/Slimbox2/js/slimbox2.js" type="text/javascript"></script>'.LF;
+           }
             // jQuery
          }
       }elseif ( $this->_environment->getCurrentFunction() == 'edit'
@@ -721,12 +721,12 @@ class cs_page_view extends cs_view {
             // jQuery
             //$retour .= '   <script src="javascript/slimbox/js/slimbox.js" type="text/javascript"></script>'.LF;
             $with_slimbox = true;
-		 	if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-	           $with_slimbox = false;
-	     	}
-	     	if($with_slimbox){
-            	$retour .= '   <script src="javascript/jQuery/Slimbox2/js/slimbox2.js" type="text/javascript"></script>'.LF;
-	     	}
+          if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+              $with_slimbox = false;
+           }
+           if($with_slimbox){
+               $retour .= '   <script src="javascript/jQuery/Slimbox2/js/slimbox2.js" type="text/javascript"></script>'.LF;
+           }
             // jQuery
             $retour .= '   <script type="text/javascript" src="javascript/colorpicker/script.js"></script>'.LF;
          }
@@ -2332,7 +2332,7 @@ class cs_page_view extends cs_view {
       }
       unset($session_item);
       $languageArray = $this->_translator->getAvailableLanguages();
-      $url = curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),$this->_environment->getCurrentFunction(),$this->_environment->getCurrentParameterArray());
+      $url = curl($this->_environment->getCurrentContextID(),'language','change',array());
       $html .= '<form style="margin:0px; padding:0px;" method="post" action="'.$url.'" name="language_change">'.LF;
       // jQuery
       //$html .= '<select name="message_language_select" size="1" onChange="javascript:document.language_change.submit()">'.LF;

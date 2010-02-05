@@ -21,21 +21,38 @@
 //
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
-$current_user = $environment->getCurrentUserItem();
-if ( $current_user->isUser() ) {
-   if ( !empty($_GET['language']) ) {
-      $current_user->setLanguage($_GET['language']);
-      $current_user->setChangeModificationOnSave(false);
-      $current_user->save();
 
-      $session_item = $environment->getSessionItem();
-      if ( $session_item->issetValue('password_forget_time') ) {
-         $session_item->setValue('message_language_select',$_GET['language']);
-      }
+if ( isset($_POST['message_language_select']) ) {
+   if ( empty($_POST['message_language_select'])
+        or $_POST['message_language_select'] == 'reset'
+      ) {
+      $session->unsetValue('message_language_select_dev');
+   } else {
+      $session->setValue('message_language_select_dev',$_POST['message_language_select']);
    }
 } else {
-   $session_item = $environment->getSessionItem();
-   $session_item->setValue('message_language_select',$_GET['language']);
+   $current_user = $environment->getCurrentUserItem();
+   if ( $current_user->isUser() ) {
+      if ( !empty($_GET['language']) ) {
+         $current_user->setLanguage($_GET['language']);
+         $current_user->setChangeModificationOnSave(false);
+         $current_user->save();
+
+         $session_item = $environment->getSessionItem();
+         if ( $session_item->issetValue('message_language_select') ) {
+            $session_item->unsetValue('message_language_select');
+         }
+         if ( $session_item->issetValue('message_language_select_dev') ) {
+            $session_item->unsetValue('message_language_select_dev');
+         }
+      }
+   } elseif ( !empty($_GET['language']) ) {
+      $session_item = $environment->getSessionItem();
+      $session_item->setValue('message_language_select',$_GET['language']);
+      if ( $session_item->issetValue('message_language_select_dev') ) {
+         $session_item->unsetValue('message_language_select_dev');
+      }
+   }
 }
 
 // back

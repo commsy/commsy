@@ -287,6 +287,9 @@ if ( !empty($SID) ) {
    // so we can load the session information
    $session_manager = $environment->getSessionManager();
    $session = $session_manager->get($SID);
+   if ( isset($session) ) {
+      $environment->setSessionItem($session);
+   }
 
    /** password forget (BEGIN) **/
    if ( isset($session)
@@ -517,6 +520,7 @@ if ( !empty($SID) ) {
    }
 }
 
+/************ language management **************/
 $translator = $environment->getTranslationObject();
 
 /************ session: clean search infos *******************/
@@ -590,17 +594,6 @@ if ( !empty($_POST)
       $errorbox->setText($translator->getMessage('ERROR_CROSS_SITE_REQUEST_FORGERY'));
    }
    unset($csrf_error);
-}
-
-/************ language management **************/
-if ( isset($_POST['message_language_select']) ) {
-   if ( empty($_POST['message_language_select'])
-        or $_POST['message_language_select'] == 'reset'
-      ) {
-      $session->unsetValue('message_language_select');
-   } else {
-      $session->setValue('message_language_select',$_POST['message_language_select']);
-   }
 }
 
 /*********** javascript check *************/

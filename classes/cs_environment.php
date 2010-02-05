@@ -147,6 +147,7 @@ class cs_environment {
 
    function setCurrentUserItem ($current_user) {
        $this->current_user = $current_user;
+       $this->unsetSelectedLanguage();
    }
 
    function getCurrentUserID () {
@@ -1284,8 +1285,8 @@ class cs_environment {
       } // end of if statement
 
       $session_item = $this->getSessionItem();
-      if ( isset($session_item) and $session_item->issetValue('message_language_select') ) {
-         $session_language = $session_item->getValue('message_language_select');
+      if ( isset($session_item) and $session_item->issetValue('message_language_select_dev') ) {
+         $session_language = $session_item->getValue('message_language_select_dev');
          if ( !empty($session_language) ) {
             $this->instance['translation_object']->setSessionLanguage($session_language);
          }
@@ -1321,14 +1322,19 @@ class cs_environment {
    }
 
    function getUserLanguage () {
-      $current_user = $this->getCurrentUserItem();
-      if ( $current_user->isUser() ) {
-         $retour = $current_user->getLanguage();
-         if ($retour == 'browser') {
+      $session_item = $this->getSessionItem();
+      if ($session_item->issetValue('message_language_select')) {
+         $retour = $session_item->getValue('message_language_select');
+      } else {
+         $current_user = $this->getCurrentUserItem();
+         if ( $current_user->isUser() ) {
+            $retour = $current_user->getLanguage();
+            if ($retour == 'browser') {
+               $retour = $this->getBrowserLanguage();
+            }
+         } else {
             $retour = $this->getBrowserLanguage();
          }
-      } else {
-         $retour = $this->getBrowserLanguage();
       }
       return $retour;
    }
