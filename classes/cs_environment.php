@@ -1323,7 +1323,9 @@ class cs_environment {
 
    function getUserLanguage () {
       $session_item = $this->getSessionItem();
-      if ($session_item->issetValue('message_language_select')) {
+      if ( isset($session_item)
+           and $session_item->issetValue('message_language_select')
+         ) {
          $retour = $session_item->getValue('message_language_select');
       } else {
          $current_user = $this->getCurrentUserItem();

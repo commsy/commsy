@@ -28,7 +28,7 @@ class cs_class_factory {
 
    public function __construct () {
        $class_config = array();
-       include('etc/config_classes.php');
+       include_once('etc/config_classes.php');
        $this->_class_array = $class_config;
    }
 
@@ -49,7 +49,6 @@ class cs_class_factory {
          ) {
          $this->_class_array[$name]['folder'] .= $this->_design_folder.'/';
       }
-
       if ( empty($this->_class_array[$name]['folder']) ) {
          trigger_error('don\'t know where class '.$name.' is',E_USER_ERROR);
       } elseif ( empty($this->_class_array[$name]['filename']) ) {
