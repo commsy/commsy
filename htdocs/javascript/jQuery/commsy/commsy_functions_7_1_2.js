@@ -162,13 +162,13 @@ function initCommSyPanels(panelTitles,panelDesc,panelDisplayed,cookieArray,sizeA
          klick.css('height', '100%');
 
          if((contentDiv.attr('id') == 'homeheader') && (modArray[commsy_panel_index] != 'user')){
-        	var dropdownItem = jQuery('<span><img src="images/commsyicons/16x16/browse_right2.png" data-popupmenu="popmenu'+no+'" /><ul id="popmenu'+no+'" class="jqpopupmenu"><li><a href="#">Aktion 1</a></li><li><a href="#">Aktion 2</a></li><li><a href="#">Aktion 3</a></li></ul></span>');
+        	//var dropdownItem = jQuery('<span><img src="images/commsyicons/16x16/browse_right2.png" data-popupmenu="popmenu'+no+'" /><ul id="popmenu'+no+'" class="jqpopupmenu"><li><a href="#">Aktion 1</a></li><li><a href="#">Aktion 2</a></li><li><a href="#">Aktion 3</a></li></ul></span>');
             //dropdownItem.css('width', '18px');
-        	dropdownItem.css('padding-left', '0px');
-        	dropdownItem.css('padding-top', '6px');
-        	dropdownItem.css('padding-right', '3px');
-            dropdownItem.css('float', 'right');
-            topBar.append(dropdownItem);
+        	//dropdownItem.css('padding-left', '0px');
+        	//dropdownItem.css('padding-top', '6px');
+        	//dropdownItem.css('padding-right', '3px');
+            //dropdownItem.css('float', 'right');
+            //topBar.append(dropdownItem);
             var newItem = jQuery('<span></span>');
             if(modify == 1){
                if(session_id){

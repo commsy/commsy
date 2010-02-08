@@ -216,8 +216,6 @@ class cs_privateroom_manager extends cs_room2_manager {
         }
      }
 
-     pr($query);
-
      // perform query
      $result = $this->_db_connector->performQuery($query);
      if (!isset($result)) {
