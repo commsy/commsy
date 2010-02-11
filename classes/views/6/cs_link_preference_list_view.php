@@ -142,7 +142,12 @@ var $_configuration_rubric_list = NULL;
       }
       $html .= '</tr></table>'.LF;
       $html .= '<table class="configuration_table" style="margin-top:20px;" summary="Layout">'.LF;
-      $html .= '<tr class="list"><td class="head" colspan="3"><span style="font-weight: bold">'.$this->_translator->getMessage('COMMON_CONFIGURATION_ROOM_OPTIONS').'</span></td></tr>'.LF;
+      /*
+       * Hier steht in der Version 6 die Beschreibung für die Einrichtung eines Portals, unter Version 7 die,
+       * für die Einrichtung eines Raumes. Wenn beide Versionen einmal zusammengelegt werden, muss hier unterschieden
+       * werden, welche Übersetzung benutzt werden soll.
+       */
+      $html .= '<tr class="list"><td class="head" colspan="3"><span style="font-weight: bold">'.$this->_translator->getMessage('COMMON_CONFIGURATION_PORTAL_OPTIONS'/*'COMMON_CONFIGURATION_ROOM_OPTIONS'*/).'</span></td></tr>'.LF;
       $html .= '<tr>';
       $configuration_room_list = $this->_configuration_room_list;
          if ( isset($configuration_room_list)) {
