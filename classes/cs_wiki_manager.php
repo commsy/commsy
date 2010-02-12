@@ -1043,6 +1043,9 @@ function updateWikiProfileFile($user){
               unset($disc_manager);
               if($user->getPicture() != '' and file_exists($c_commsy_path_file . '/' . $path_to_files . $user->getPicture())){
                     $tempString .= $user->getPicture() . '%0a';
+                    $disc_manager = $this->_environment->getDiscManager();
+                    $disc_manager->makeDirectoryR('uploads/Profiles');
+                    unset($disc_manager);
                     copy($c_commsy_path_file . '/' . $path_to_files . $user->getPicture(),'uploads/Profiles/' . $user->getPicture());
 #              if($user->getPicture() != '' and file_exists($c_commsy_path_file . '/var/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/' . $user->getPicture())){
 #                    $tempString .= $user->getPicture() . '%0a';
