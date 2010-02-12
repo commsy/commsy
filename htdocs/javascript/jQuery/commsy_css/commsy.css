@@ -1,0 +1,24 @@
+/*----- DropDownMenu -----*/
+
+div.dropdown_menu{
+   display: none;
+   z-index: 1000;
+   position: absolute;
+   border: 1px solid #bbbbbb;
+}
+
+div.dropdown_menu ul {
+   margin: 0;
+   padding: 0;
+   list-style: none;
+   background: #ffffff;
+}
+
+div.dropdown_menu li:hover {
+   background: #eeeeee;
+}
+
+div.dropdown_menu a {
+   display: block;
+   text-decoration: none;
+}
