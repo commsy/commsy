@@ -1099,3 +1099,62 @@ jQuery(document).ready(function() {
 	   });
 	}
 });
+
+jQuery(document).ready(function() {
+	if(dropDownMenus.length){
+		for ( var int = 0; int < dropDownMenus.length; int++) {
+			var tempDropDownMenu = dropDownMenus[int];
+			var tempImage = tempDropDownMenu[0];
+			var tempActions = tempDropDownMenu[1]
+			var disabled = false;
+			if (jQuery('#'+tempImage).length){
+				var image = jQuery('#'+tempImage);
+			} else if (jQuery('#'+tempImage+'_disabled').length){
+				var image = jQuery('#'+tempImage+'_disabled');
+				disabled = true;
+			}
+			
+			var button = jQuery('<img id="dropdown_button_'+int+'" src="images/commsyicons/dropdownmenu.png" />');
+			
+			var html = jQuery('<div id="dropdown_menu_'+int+'" class="dropdown_menu"></div>');
+			var offset = image.offset();
+			
+			var ul = jQuery('<ul></ul>');
+			for ( var int2 = 0; int2 < tempActions.length; int2++) {
+				var tempAction = tempActions[int2];
+				var tempActionImage = tempAction[0];
+				var tempActionText = tempAction[1];
+				var tempActionHREF = tempAction[2];
+				ul.append('<li><a href="'+tempActionHREF+'"><img src="'+tempActionImage+'" />'+tempActionText+'</a></li>');
+			}
+			
+			html.append(ul);
+			image.parent().wrap('<div style="display:inline;"></div>');
+			image.parent().parent().append(button);
+			image.parent().parent().append(html);
+			
+			jQuery('#dropdown_button_'+int).click(function(){
+				var id_parts = this.id.split('_');
+				var offset = jQuery('#'+this.id).parent().offset();
+				jQuery('#dropdown_menu_'+id_parts[2]).css('top', offset.top + 18);
+				jQuery('#dropdown_menu_'+id_parts[2]).css('left', offset.left - 1);
+				jQuery('#dropdown_menu_'+id_parts[2]).slideDown(150);
+			});
+
+			jQuery(document).mousedown(function(event) {
+				var target = jQuery(event.target);
+				var parents = target.parents();
+				var has_class = false;
+				for ( var int3 = 0; int3 < parents.length; int3++) {
+					var parent = parents[int3];
+					if(jQuery(parent).hasClass('dropdown_menu')){
+						has_class = true;
+					}
+				}
+				if(!target.hasClass('dropdown_menu') && !has_class){
+					jQuery("[id^='dropdown_menu_']").slideUp(150);
+				}
+			});
+		}
+	}
+});

@@ -108,9 +108,9 @@ class cs_material_index_view extends cs_index_view {
       $params['mode']='print';
       if ($current_context->withMaterialImportLink() ){
          if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-            $image = '<img src="images/commsyicons_msie6/22x22/import.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('MATERIAL_IMS_IMPORT').'"/>';
+            $image = '<img src="images/commsyicons_msie6/22x22/import.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('MATERIAL_IMS_IMPORT').' id="import_icon"/>';
          } else {
-            $image = '<img src="images/commsyicons/22x22/import.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('MATERIAL_IMS_IMPORT').'"/>';
+            $image = '<img src="images/commsyicons/22x22/import.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('MATERIAL_IMS_IMPORT').'" id="import_icon"/>';
          }
          $html .= ahref_curl($this->_environment->getCurrentContextID(),
                             CS_MATERIAL_TYPE,
@@ -575,6 +575,50 @@ class cs_material_index_view extends cs_index_view {
       include_once('functions/misc_functions.php');
       $retour .= plugin_hook_output_all('getAdditionalViewActionsAsHTML',array('module' => CS_MATERIAL_TYPE),LF);
       return $retour;
+   }
+   
+   function _initDropDownMenus(){
+   	$current_context = $this->_environment->getCurrentContextItem();
+      $current_user = $this->_environment->getCurrentUserItem();
+      
+      $image_import  = '';
+      $href_import = '';
+      $params = $this->_environment->getCurrentParameterArray();
+      $params['mode']='print';
+      if ($current_context->withMaterialImportLink() ){
+         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+            $image_import = 'images/commsyicons_msie6/22x22/import.gif';
+         } else {
+            $image_import = 'images/commsyicons/22x22/import.png';
+         }
+         $href_import = curl($this->_environment->getCurrentContextID(),
+                            CS_MATERIAL_TYPE,
+                            'ims_import',
+                            '');
+      }
+      unset($params);
+      
+      $image_new  = '';
+      $href_new = '';
+      $params = array();
+      $params['iid'] = 'NEW';
+      if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+         $image_new = 'images/commsyicons_msie6/22x22/new.gif';
+      } else {
+         $image_new = 'images/commsyicons/22x22/new.png';
+      }
+      $href_new = curl($this->_environment->getCurrentContextID(),
+                           $this->_environment->getCurrentModule(),
+                            'edit',
+                            $params);
+      unset($params);
+      
+   	$html = '<script type="text/javascript">'.LF;
+      $html .= '<!--'.LF;
+      $html .= 'var dropDownMenus = new Array(new Array("import_icon",new Array(new Array("'.$image_import.'","'.$this->_translator->getMessage('MATERIAL_IMS_IMPORT').'_2","'.$href_import.'"),new Array("'.$image_new.'","'.$this->_translator->getMessage('COMMON_NEW_ITEM').'_2","'.$href_new.'"))), new Array("new_icon",new Array(new Array("'.$image_new.'","'.$this->_translator->getMessage('COMMON_NEW_ITEM').'","'.$href_new.'"),new Array("'.$image_import.'","'.$this->_translator->getMessage('MATERIAL_IMS_IMPORT').'","'.$href_import.'"))));'.LF;
+      $html .= '-->'.LF;
+      $html .= '</script>'.LF;
+      return $html;
    }
 }
 ?>

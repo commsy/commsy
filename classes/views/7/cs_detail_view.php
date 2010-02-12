@@ -3609,9 +3609,6 @@ class cs_detail_view extends cs_view {
       } else {
          $html .= $this->_getNewActionDisabled();
       }
-      // actions_popup_menu
-      $html .= '<span style="padding-left:6px; padding-right:6px;"><img src="images/commsyicons/16x16/browse_right2.png" data-popupmenu="popmenu"/><ul id="popmenu" class="jqpopupmenu"><li><a href="#">Aktion 1</a></li><li><a href="#">Aktion 2</a></li><li><a href="#">Aktion 3</a></li></ul></span>';
-      // actions_popup_menu
       return $html;
    }
 

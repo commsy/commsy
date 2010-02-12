@@ -2237,9 +2237,9 @@ EOD;
          $params = array();
          $params['iid'] = 'NEW';
          if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-            $image = '<img src="images/commsyicons_msie6/22x22/new.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_NEW_ITEM').'"/>';
+            $image = '<img src="images/commsyicons_msie6/22x22/new.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_NEW_ITEM').'" id="new_icon"/>';
          } else {
-            $image = '<img src="images/commsyicons/22x22/new.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_NEW_ITEM').'"/>';
+            $image = '<img src="images/commsyicons/22x22/new.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_NEW_ITEM').'" id="new_icon"/>';
          }
          $html .= '&nbsp;&nbsp;'.ahref_curl($this->_environment->getCurrentContextID(),
                            $this->_environment->getCurrentModule(),
@@ -2250,19 +2250,21 @@ EOD;
          unset($params);
       } else {
          if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-            $image = '<img src="images/commsyicons_msie6/22x22/new_grey.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_NEW_ITEM').'"/>';
+            $image = '<img src="images/commsyicons_msie6/22x22/new_grey.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_NEW_ITEM').'" id="new_icon_disabled"/>';
          } else {
-            $image = '<img src="images/commsyicons/22x22/new_grey.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_NEW_ITEM').'"/>';
+            $image = '<img src="images/commsyicons/22x22/new_grey.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_NEW_ITEM').'" id="new_icon_disabled"/>';
          }
          $html .= '&nbsp;&nbsp;<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION_NEW',$this->_translator->getMessage('COMMON_NEW_ITEM')).' "class="disabled">'.$image.'</a>'.LF;
       }
-      // actions_popup_menu
-      $html .= '<span style="padding-left:6px; padding-right:6px;"><img src="images/commsyicons/16x16/browse_right2.png" data-popupmenu="popmenu"/><ul id="popmenu" class="jqpopupmenu"><li><a href="#">Aktion 1</a></li><li><a href="#">Aktion 2</a></li><li><a href="#">Aktion 3</a></li></ul></span>';
-      // actions_popup_menu
       $html .= '</div>'.LF;
+      $html .= $this->_initDropDownMenus();
       return $html;
    }
 
+   function _initDropDownMenus(){
+   	return '';
+   }
+   
    function _getListInfosAsHTML ($title) {
       $current_context = $this->_environment->getCurrentContextItem();
       $current_user = $this->_environment->getCurrentUserItem();
