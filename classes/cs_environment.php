@@ -1160,6 +1160,8 @@ class cs_environment {
             return $this->getTag2TagManager();
          } elseif ($type == CS_BUZZWORD_TYPE) {
             return $this->getBuzzwordManager();
+         } elseif ($type == CS_ITEM_BACKUP) {
+         	return $this->getBackupItemManager();
          } elseif ( !$this->isPlugin($type) ) {
             include_once('functions/error_functions.php');
             trigger_error('do not know this type ['.$type.']',E_USER_ERROR);

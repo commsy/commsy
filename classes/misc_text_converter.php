@@ -2264,7 +2264,24 @@ class misc_text_converter {
              $word = $array[1];
           }
           include_once('functions/curl_functions.php');
-          $image_text = ahref_curl($this->_environment->getCurrentContextID(), 'content', 'detail', $params, $word, '', $target, '');
+          // determ between type of item id
+          $item_manager = $this->_environment->getItemManager();
+          $item_manager->resetLimits();
+          $type = $item_manager->getItemType($word);
+          unset($item_manager);
+          
+          if(	$type == CS_ROOM_TYPE ||
+          		$type == CS_COMMUNITY_TYPE ||
+          		$type == CS_PRIVATEROOM_TYPE ||
+          		$type == CS_GROUPROOM_TYPE ||
+          		$type == CS_MYROOM_TYPE ||
+          		$type == CS_PROJECT_TYPE ||
+          		$type == CS_PORTAL_TYPE/* ||
+          		$type == CS_SERVER_TYPE*/) {
+          	 $image_text = ahref_curl($word, 'home', 'index', '', $word);
+          } else {
+          	 $image_text = ahref_curl($this->_environment->getCurrentContextID(), 'content', 'detail', $params, $word, '', $target, '');
+          }
       }
       if ( !empty($image_text) ) {
          $text = str_replace($array[0],$image_text,$text);

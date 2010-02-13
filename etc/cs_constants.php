@@ -55,6 +55,7 @@ define('CS_TASK_TYPE','task');
 define('CS_BUZZWORD_TYPE','buzzword');
 define('CS_TAG_TYPE','tag');
 define('CS_TAG2TAG_TYPE','tag2tag');
+define('CS_ITEM_BACKUP','item_backup');
 
 define('CS_ROOM_TYPE','room');
 define('CS_COMMUNITY_TYPE','community');
