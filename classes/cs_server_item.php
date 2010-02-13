@@ -296,7 +296,7 @@ class cs_server_item extends cs_guide_item {
    	  $time_start = getmicrotime();
    	  
    	  $cron_array = array();
-   	  $cron_array['title'] = 'item backup crom';
+   	  $cron_array['title'] = 'item backup cron';
    	  $cron_array['description'] = 'delete old entries in item_backup';
    	  $cron_array['success'] = false;
    	  $cron_array['success_text'] = 'cron failed';
