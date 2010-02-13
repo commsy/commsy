@@ -88,6 +88,8 @@ define('CS_LINKHOMEPAGEHOMEPAGE_TYPE','homepage_link_page_page');
 
 define('CS_PLUGIN_TYPE','plugin');
 
+define('CS_ITEMBACKUP_TYPE','item_backup');
+
 $xml_string = '<RUBRIC_CONNECTIONS>
                <MATERIAL>
                   <TOPIC>false</TOPIC>

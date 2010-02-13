@@ -1169,6 +1169,7 @@ class cs_user_manager extends cs_manager {
                   $u_item = $user_list->getNext();
                }
             }
+            
             // delete private room - part II
             if ( isset($delete_own_room) and $delete_own_room ) {
                $own_room->delete();

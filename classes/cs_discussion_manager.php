@@ -639,6 +639,11 @@ class cs_discussion_manager extends cs_manager {
    }
 
    function deleteDiscussionsOfUser($uid) {
+   	  // create backup of item
+   	  $this->backupItem($uid, array(	'title'				=>	'title',
+   	  									'modification_date'	=>	'modification_date',
+   	  									'public'			=>	'public'));
+   	  
       $current_datetime = getCurrentDateTimeInMySQL();
       $query  = 'SELECT discussions.* FROM discussions WHERE discussions.creator_id = "'.encode(AS_DB,$uid).'"';
       $result = $this->_db_connector->performQuery($query);

@@ -81,6 +81,7 @@ class db_mysql_connector {
                  or strstr($query,'INSERT INTO noticed')
                  or strstr($query,'INSERT INTO reader')
                  or strstr($query,'INSERT INTO section')
+                 or strstr($query,'INSERT INTO item_backup')
                ) {
                $retour = $result;
             } else {

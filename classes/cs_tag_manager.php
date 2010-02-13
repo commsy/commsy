@@ -684,6 +684,10 @@ class cs_tag_manager extends cs_manager {
    }
 
    public function deleteTagsOfUser ($uid) {
+   	  // create backup of item
+   	  $this->backupItem($uid, array(	'title'				=>	'title',
+   	  									'modification_date'	=>	'modification_date'));
+   	  
       $current_datetime = getCurrentDateTimeInMySQL();
       $query  = 'SELECT '.$this->_db_table.'.* FROM '.$this->_db_table.' WHERE '.$this->_db_table.'.creator_id = "'.encode(AS_DB,$uid).'"';
       $result = $this->_db_connector->performQuery($query);

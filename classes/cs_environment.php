@@ -973,6 +973,15 @@ class cs_environment {
       }
       return $this->instance['cs_session_manager'];
    }
+   
+   /**
+    * get instance of cs_backupitem_manager
+    * 
+    * @return cs_backupitem_manager
+    */
+   public function getBackupItemManager() {
+   	  return $this->_getInstance('cs_backupitem_manager');
+   }
 
    function getSession () {
       global $session; // (TBD) !!!!!!!

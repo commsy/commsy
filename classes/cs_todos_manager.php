@@ -573,6 +573,12 @@ class cs_todos_manager extends cs_manager {
    }
 
    function deleteTodosOfUser($uid) {
+   	  // create backup of item
+   	  $this->backupItem($uid, array(	'title'				=>	'title',
+   	  									'description'		=>	'description',
+   	  									'modification_date'	=>	'modification_date',
+   	  									'public'			=>	'public'));
+   	  
       $current_datetime = getCurrentDateTimeInMySQL();
       $query  = 'SELECT todos.* FROM todos WHERE todos.creator_id = "'.encode(AS_DB,$uid).'"';
       $result = $this->_db_connector->performQuery($query);

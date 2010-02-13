@@ -838,6 +838,12 @@ class cs_dates_manager extends cs_manager {
    }
 
    function deleteDatesOfUser($uid) {
+   	  // create backup of item
+   	  $this->backupItem($uid, array(	'title'				=>	'title',
+   	  									'description'		=>	'description',
+   	  									'modification_date'	=>	'modification_date',
+   	  									'public'			=>	'public'), array('place'));
+   	
       $current_datetime = getCurrentDateTimeInMySQL();
       $query  = 'SELECT dates.* FROM dates WHERE dates.creator_id = "'.encode(AS_DB,$uid).'"';
       $result = $this->_db_connector->performQuery($query);

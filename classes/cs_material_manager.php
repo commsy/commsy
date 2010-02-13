@@ -1172,6 +1172,12 @@ class cs_material_manager extends cs_manager {
    }
 
    function deleteMaterialsOfUser($uid) {
+   	  // create backup of item
+   	  $this->backupItem($uid, array(	'title'				=>	'title',
+   	  									'description'		=>	'description',
+   	  									'modification_date'	=>	'modification_date',
+   	  									'public'			=>	'public'), array('author', 'publishing_date', 'extras'));
+   	  
       $current_datetime = getCurrentDateTimeInMySQL();
       $query  = 'SELECT materials.* FROM materials WHERE materials.creator_id = "'.$uid.'"';
       $result = $this->_db_connector->performQuery($query);

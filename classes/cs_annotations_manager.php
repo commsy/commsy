@@ -445,6 +445,11 @@ class cs_annotations_manager extends cs_manager {
    }
 
    function deleteAnnotationsofUser($uid) {
+   	  // create backup of item
+   	  $this->backupItem($uid, array(	'title'				=>	'title',
+   	  									'description'		=>	'description',
+   	  									'modification_date'	=>	'modification_date'));
+   	  
       $current_datetime = getCurrentDateTimeInMySQL();
       $query  = 'SELECT annotations.* FROM annotations WHERE annotations.creator_id = "'.encode(AS_DB,$uid).'"';
       $result = $this->_db_connector->performQuery($query);

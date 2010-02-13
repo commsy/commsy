@@ -5272,5 +5272,17 @@ class cs_context_item extends cs_item {
         }
         return $image;
     }
+    
+    function getPageImpressionAndUserActivityLast() {
+       $retour = $this->_getExtra('PIUA_LAST');
+       if (empty($retour)) {
+         $retour = "";
+       }
+       return $retour;
+    }
+    
+    function setPageImpressionAndUserActivityLast($value) {
+       $this->_addExtra('PIUA_LAST',$value);
+    }
 }
 ?>

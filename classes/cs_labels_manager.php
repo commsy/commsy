@@ -1097,6 +1097,12 @@ class cs_labels_manager extends cs_manager {
    }
 
    function deleteLabelsOfUser($uid) {
+   	  // create backup of item
+   	  $this->backupItem($uid, array(	'name'				=>	'title',
+   	  									'description'		=>	'description',
+   	  									'modification_date'	=>	'modification_date',
+   	  									'public'			=>	'public'));
+   	  
       $current_datetime = getCurrentDateTimeInMySQL();
       $query  = 'SELECT labels.* FROM labels WHERE labels.creator_id = "'.$uid.'"';
       $result = $this->_db_connector->performQuery($query);

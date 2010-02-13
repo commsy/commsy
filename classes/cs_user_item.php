@@ -1196,7 +1196,6 @@ class cs_user_item extends cs_item {
    }
 
    function delete () {
-
       // delete associated tasks
       $task_list = $this->_getTaskList();
       if (isset($task_list)) {
@@ -1721,25 +1720,27 @@ class cs_user_item extends cs_item {
    }
 
    function deleteAllEntriesOfUser(){
-      $announcement_manager = $this->_environment->getAnnouncementManager();
+   	  $announcement_manager = $this->_environment->getAnnouncementManager();
+   	  $dates_manager = $this->_environment->getDatesManager();
+   	  $discussion_manager = $this->_environment->getDiscussionManager();
+   	  $discarticle_manager = $this->_environment->getDiscussionarticleManager();
+   	  $material_manager = $this->_environment->getMaterialManager();
+   	  $section_manager = $this->_environment->getSectionManager();
+   	  $annotation_manager = $this->_environment->getAnnotationManager();
+   	  $label_manager = $this->_environment->getLabelManager();
+   	  $tag_manager = $this->_environment->getTagManager();
+   	  $todo_manager = $this->_environment->getToDoManager();
+      
+   	  // replace users entries with the standart message for deleted entries
       $announcement_manager->deleteAnnouncementsofUser($this->getItemID());
-      $dates_manager = $this->_environment->getDatesManager();
       $dates_manager->deleteDatesOfUser($this->getItemID());
-      $discussion_manager = $this->_environment->getDiscussionManager();
       $discussion_manager->deleteDiscussionsOfUser($this->getItemID());
-      $discarticle_manager = $this->_environment->getDiscussionarticleManager();
       $discarticle_manager->deleteDiscarticlesOfUser($this->getItemID());
-      $material_manager = $this->_environment->getMaterialManager();
       $material_manager->deleteMaterialsOfUser($this->getItemID());
-      $section_manager = $this->_environment->getSectionManager();
       $section_manager->deleteSectionsOfUser($this->getItemID());
-      $annotation_manager = $this->_environment->getAnnotationManager();
       $annotation_manager->deleteAnnotationsOfUser($this->getItemID());
-      $label_manager = $this->_environment->getLabelManager();
       $label_manager->deleteLabelsOfUser($this->getItemID());
-      $tag_manager = $this->_environment->getTagManager();
       $tag_manager->deleteTagsOfUser($this->getItemID());
-      $todo_manager = $this->_environment->getToDoManager();
       $todo_manager->deleteTodosOfUser($this->getItemID());
    }
 
