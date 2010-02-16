@@ -14,6 +14,10 @@ div.dropdown_menu ul {
    background: #ffffff;
 }
 
+div.dropdown_menu li {
+   padding: 2px 2px 2px 2px;
+}
+
 div.dropdown_menu li:hover {
    background: #eeeeee;
 }
