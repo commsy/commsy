@@ -1115,6 +1115,8 @@ jQuery(document).ready(function() {
 					disabled = true;
 				}
 				image.attr('id',image.attr('id')+'_dropdown_menu_'+int);
+				image.attr('alt','');
+				image.parent().attr('title','');
 				
 				var button = jQuery('<img id="dropdown_button_'+int+'" src="images/commsyicons/dropdownmenu.png" />');
 				
@@ -1127,7 +1129,7 @@ jQuery(document).ready(function() {
 					var tempActionImage = tempAction[0];
 					var tempActionText = tempAction[1];
 					var tempActionHREF = tempAction[2];
-					ul.append('<li><a href="'+tempActionHREF+'"><img src="'+tempActionImage+'" style="vertical-align:middle;" />'+tempActionText+'</a></li>');
+					ul.append('<li><a href="'+tempActionHREF+'"><img src="'+tempActionImage+'" style="vertical-align:middle; padding-right:2px;" />'+tempActionText+'</a></li>');
 				}
 				
 				html.append(ul);
@@ -1143,9 +1145,7 @@ jQuery(document).ready(function() {
 						if(this_image.mouse_is_over){
 							var id_parts = id.split('_');
 							var offset = jQuery('#dropdown_button_'+id_parts[4]).parent().offset();
-							jQuery('#dropdown_menu_'+id_parts[4]).css('top', offset.top + 18);
-							jQuery('#dropdown_menu_'+id_parts[4]).css('left', offset.left - 3);
-							jQuery('#dropdown_menu_'+id_parts[4]).slideDown(150);
+							dropdown(jQuery('#dropdown_menu_'+id_parts[4]), offset);
 						}
 					}, 2000);
 				});
@@ -1157,9 +1157,7 @@ jQuery(document).ready(function() {
 				jQuery('#dropdown_button_'+int).click(function(){
 					var id_parts = this.id.split('_');
 					var offset = jQuery('#'+this.id).parent().offset();
-					jQuery('#dropdown_menu_'+id_parts[2]).css('top', offset.top + 18);
-					jQuery('#dropdown_menu_'+id_parts[2]).css('left', offset.left - 3);
-					jQuery('#dropdown_menu_'+id_parts[2]).slideDown(150);
+					dropdown(jQuery('#dropdown_menu_'+id_parts[2]), offset);
 				});
 	
 				jQuery('#dropdown_button_'+int).mouseover(function(){
@@ -1170,9 +1168,7 @@ jQuery(document).ready(function() {
 						if(this_image.mouse_is_over){
 							var id_parts = id.split('_');
 							var offset = jQuery('#dropdown_button_'+id_parts[2]).parent().offset();
-							jQuery('#dropdown_menu_'+id_parts[2]).css('top', offset.top + 18);
-							jQuery('#dropdown_menu_'+id_parts[2]).css('left', offset.left - 3);
-							jQuery('#dropdown_menu_'+id_parts[2]).slideDown(150);
+							dropdown(jQuery('#dropdown_menu_'+id_parts[2]), offset);
 						}
 					}, 2000);
 				});
@@ -1199,3 +1195,14 @@ jQuery(document).ready(function() {
 		}
 	}
 });
+
+function dropdown(object, offset){
+	object.css('top', offset.top + 18);
+	object.css('left', offset.left - 3);
+	object.slideDown(150);
+	object.mouseleave(function(){
+		setTimeout(function() {
+			object.slideUp(150);
+		}, 2000);
+	});
+}
