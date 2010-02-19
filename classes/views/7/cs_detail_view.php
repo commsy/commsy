@@ -1882,7 +1882,7 @@ class cs_detail_view extends cs_view {
          $link_item = $link_items->getFirst();
          while($link_item){
             $link_creator = $link_item->getCreatorItem();
-            if ( isset($link_creator) and !$link_creator->isDeleted() ) {
+            if ( isset($link_creator) and !$link_creator->isDeleted()) {
                $fullname = $this->_text_as_html_short($link_creator->getFullname());
             } else {
                $fullname = $this->_translator->getMessage('COMMON_DELETED_USER');
@@ -1970,7 +1970,7 @@ class cs_detail_view extends cs_view {
                $module = Type2Module($type);
                $user = $this->_environment->getCurrentUser();
                if ($module == CS_USER_TYPE and (!$linked_item->isUser() or !$linked_item->maySee($user))){
-                   $link_title = chunkText($this->_text_as_html_short($linked_item->getFullName()),35);
+                   //$link_title = chunkText($this->_text_as_html_short($linked_item->getFullName()),35);
                    /*
                    $html .= ahref_curl( $this->_environment->getCurrentContextID(),
                                        $module,
@@ -2088,17 +2088,22 @@ class cs_detail_view extends cs_view {
       $html .= '<div style="width:235px; font-size:8pt; text-align:right; padding-top:5px;">';
       $current_user = $this->_environment->getCurrentUserItem();
       if ($current_user->isUser() and $this->_with_modifying_actions ) {
-         $params = array();
+      	 $params = array();
          $params = $this->_environment->getCurrentParameterArray();
-         $params['attach_view'] = 'yes';
-         $params['attach_type'] = 'item';
-         $html .= ahref_curl($this->_environment->getCurrentContextID(),
-                             $this->_environment->getCurrentModule(),
-                             $this->_environment->getCurrentFunction(),
-                             $params,
-                             $this->_translator->getMessage('COMMON_ITEM_ATTACH')
-                             ).LF;
-         unset($params);
+         $group_manager = $this->_environment->getGroupManager();
+         $group_manager->setContextLimit($this->_environment->getCurrentContextID());
+         $group_all_item = $group_manager->getItemByName('ALL');
+         if($params['iid'] != $group_all_item->_data['item_id']) {
+	        $params['attach_view'] = 'yes';
+	        $params['attach_type'] = 'item';
+	        $html .= ahref_curl($this->_environment->getCurrentContextID(),
+	                            $this->_environment->getCurrentModule(),
+	                            $this->_environment->getCurrentFunction(),
+	                            $params,
+	                            $this->_translator->getMessage('COMMON_ITEM_ATTACH')
+	                            ).LF;
+	        unset($params);
+         }
       } else {
          $html .= '<span class="disabled">'.$this->_translator->getMessage('COMMON_ITEM_ATTACH').'</span>'.LF;
       }
