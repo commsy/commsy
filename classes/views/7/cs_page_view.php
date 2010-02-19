@@ -534,7 +534,8 @@ class cs_page_view extends cs_view {
       $retour  = '';
       // jQuery
       if(!(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6'))){
-         $retour .= '   <script type="text/javascript" src="javascript/jQuery/jquery-1.3.2.min.js"></script>'.LF;
+         #$retour .= '   <script type="text/javascript" src="javascript/jQuery/jquery-1.3.2.min.js"></script>'.LF;
+         $retour .= '   <script type="text/javascript" src="javascript/jQuery/jquery-1.4.1.min.js"></script>'.LF;
          $retour .= '   <script type="text/javascript" src="javascript/jQuery/jquery-ui-1.7.2.custom.min.js"></script>'.LF;
          $retour .= '   <link rel="stylesheet" type="text/css" href="javascript/jQuery/css/jQueryUI/smoothness/jquery-ui-1.7.2.custom.css"/>'.LF;
          $retour .= '   <link rel="stylesheet" type="text/css" href="javascript/jQuery/css/jQueryUI/additional_calendar/jquery-ui-1.7.2.custom.css"/>'.LF;
