@@ -1971,6 +1971,7 @@ class cs_detail_view extends cs_view {
                $user = $this->_environment->getCurrentUser();
                if ($module == CS_USER_TYPE and (!$linked_item->isUser() or !$linked_item->maySee($user))){
                    $link_title = chunkText($this->_text_as_html_short($linked_item->getFullName()),35);
+                   /*
                    $html .= ahref_curl( $this->_environment->getCurrentContextID(),
                                        $module,
                                        'detail',
@@ -2000,7 +2001,7 @@ class cs_detail_view extends cs_view {
                                        'class="disabled"',
                                        '',
                                        '',
-                                       true);
+                                       true); */
                }else{
                   if ($linked_item->isNotActivated() and !($linked_item->getCreatorID() == $user->getItemID() or $user->isModerator()) ){
                       $activating_date = $linked_item->getActivatingDate();
