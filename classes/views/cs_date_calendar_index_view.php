@@ -414,7 +414,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       }else{
          $html .='<div id="right_boxes_area" style="width:17%; padding-top: 10px; font-size:10pt;">'.LF;
       }
-      $html .='<div style="width:160px;">'.LF;
+      $html .='<div style="width:200px;">'.LF;
 
       $html .='<div id="commsy_panels">'.LF;
       $html .= '<div class="commsy_no_panel" style="margin-bottom:1px;">'.LF;
@@ -3923,7 +3923,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       } elseif ($this->_presentation_mode == 2) {
       	$additional_calendar_href .= '&month=';
       }
-   	$html = '<div id="additional_calendar" class="additional_calendar" style="width:100%; margin:auto; padding:3px; height:150px;"></div>';
+   	$html = '<div id="additional_calendar" class="additional_calendar" style="width:100%; margin:auto; padding:3px 0px 3px 0px; height:150px;"></div>';
    	$html .= '<script type="text/javascript">'.LF;
       $html .= '<!--'.LF;
       $html .= 'var additional_calendar_href = "' . $additional_calendar_href . '"'.LF;
