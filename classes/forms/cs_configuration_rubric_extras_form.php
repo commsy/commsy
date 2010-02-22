@@ -89,6 +89,8 @@ class cs_configuration_rubric_extras_form extends cs_rubric_form {
         $radio_values[0]['value'] = 'normal';
         $radio_values[1]['text'] = '<img src="images/dates_presentation_calendar.gif" width="150px;" style=" border:1px solid black; vertical-align: middle;"/>';
         $radio_values[1]['value'] = 'calendar';
+        $radio_values[2]['text'] = '<img src="images/dates_presentation_calendar_week.gif" width="150px;" style=" border:1px solid black; vertical-align: middle;"/>';
+        $radio_values[2]['value'] = 'calendar_week';
         $this->_form->addRadioGroup('dates_status',$this->_translator->getMessage('DATES_INDEX'),$desc,$radio_values,'',true,true,'','',false,' style="vertical-align:top;"');
         $this->_form->combine();
         $this->_form->addExplanation('dates',$this->_translator->getMessage('CONFIGURATION_DATES_DESC'));

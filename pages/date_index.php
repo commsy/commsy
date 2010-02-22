@@ -121,7 +121,7 @@ if ( isset($_GET['seldisplay_mode']) ) {
 $month = '';
 $year = '';
 
-if ( $seldisplay_mode == 'calendar' ) {
+if ( $seldisplay_mode == 'calendar' or $seldisplay_mode == 'calendar_week') {
 
    // Initialisierung der benötigten Werte
    $day = date("d");
@@ -153,6 +153,8 @@ if ( $seldisplay_mode == 'calendar' ) {
    }
    if(isset($_GET['presentation_mode']) and !empty($_GET['presentation_mode'])){
       $presentation_mode = $_GET['presentation_mode'];
+   }elseif($seldisplay_mode == 'calendar'){
+   	$presentation_mode = '2';
    }else{
       $presentation_mode = '1';
    }
@@ -374,7 +376,7 @@ if ( isset($_GET['option'])
    if ( isset($_GET['selstatus'])  and $_GET['selstatus'] !='-2') {
       $selstatus = $_GET['selstatus'];
    } else {
-      if ($seldisplay_mode=='calendar'  or $mode == 'formattach' or $mode == 'detailattach' or $environment->inPrivateRoom()){
+      if ($seldisplay_mode=='calendar'  or $seldisplay_mode == 'calendar_week' or $mode == 'formattach' or $mode == 'detailattach' or $environment->inPrivateRoom()){
          $selstatus = 2;
       }else{
          $selstatus = 3;
@@ -580,7 +582,7 @@ $dates_manager = $environment->getDatesManager();
 if ( empty($only_show_array) ) {
    $dates_manager->setContextLimit($environment->getCurrentContextID());
    $color_array = $dates_manager->getColorArray();
-   if ($seldisplay_mode == 'calendar'  and !($mode == 'formattach' or $mode == 'detailattach') ){
+   if (($seldisplay_mode == 'calendar' or $seldisplay_mode == 'calendar_week') and !($mode == 'formattach' or $mode == 'detailattach') ){
       $dates_manager->setDateModeLimit(2);
       $dates_manager->setYearLimit($year);
       if (!empty($presentation_mode) and $presentation_mode =='2'){
@@ -619,7 +621,7 @@ if ( empty($only_show_array) ) {
    if ( !empty($ref_user) and $mode == 'attached' ){
       $dates_manager->setRefUserLimit($ref_user);
    }
-   if ( !empty($sort) and ($seldisplay_mode!='calendar' or $mode == 'formattach' or $mode == 'detailattach') ) {
+   if ( !empty($sort) and ($seldisplay_mode!='calendar' or $seldisplay_mode == 'calendar_week' or $mode == 'formattach' or $mode == 'detailattach') ) {
       $dates_manager->setSortOrder($sort);
    }
    if ( !empty($search) ) {
@@ -661,7 +663,7 @@ if ( $context_item->isProjectRoom() ) {
 }
 // Prepare view object
 $context_item = $environment->getCurrentContextItem();
-if ($seldisplay_mode == 'calendar' and !($mode == 'formattach' or $mode == 'detailattach') ){
+if (($seldisplay_mode == 'calendar' or $seldisplay_mode == 'calendar_week') and !($mode == 'formattach' or $mode == 'detailattach') ){
    $with_modifying_actions = false;
    if ( $mode != 'detailattach' and $context_item->isOpen() ) {
       $with_modifying_actions = true;
@@ -711,7 +713,7 @@ $ids = $dates_manager->getIDArray();       // returns an array of item ids
 $count_all_shown = count($ids);
 
 if ( empty($only_show_array) ) {
-   if ($seldisplay_mode=='calendar' and !($mode == 'formattach' or $mode == 'detailattach') ){
+   if (($seldisplay_mode=='calendar' or $seldisplay_mode == 'calendar_week') and !($mode == 'formattach' or $mode == 'detailattach') ){
       if (!empty($year)) {
          $dates_manager->setYearLimit($year);
       }
@@ -740,13 +742,13 @@ if ( empty($only_show_array) ) {
       $dates_manager->setIntervalLimit($from-1,$interval);
    }
 }
-if ($seldisplay_mode=='calendar' and !($mode == 'formattach' or $mode == 'detailattach') ){
+if (($seldisplay_mode=='calendar' or $seldisplay_mode == 'calendar_week') and !($mode == 'formattach' or $mode == 'detailattach') ){
    $dates_manager->selectDistinct();
 } else {
    $dates_manager->select();
 }
 $list = $dates_manager->get();        // returns a cs_list of dates_items
-if ($seldisplay_mode=='calendar' and !($mode == 'formattach' or $mode == 'detailattach') ){
+if (($seldisplay_mode=='calendar' or $seldisplay_mode == 'calendar_week') and !($mode == 'formattach' or $mode == 'detailattach') ){
    $count_all_shown = $list->getCount();
 }
 
