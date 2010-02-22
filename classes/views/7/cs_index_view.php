@@ -1607,19 +1607,19 @@ EOD;
    }
 
 
-   function _getIndexPageHeaderAsHTML(){
+   function _getIndexPageHeaderAsHTML($left_width = '70', $right_width = '28',$search_width='220'){
       $html = '';
       $html .='<div style="width:100%;">'.LF;
       $html .='<div style="height:30px;">'.LF;
-      $html .= '<div id="search_box" style="float:right; width:28%; white-space:nowrap; text-align-left; padding-top:5px; margin:0px;">'.LF;
-      $html .= $this->_getSearchAsHTML();
+      $html .= '<div id="search_box" style="float:right; width:'.$right_width.'%; white-space:nowrap; text-align-left; padding-top:5px; margin:0px;">'.LF;
+      $html .= $this->_getSearchAsHTML($search_width);
       $html .= '</div>'.LF;
       $current_browser = mb_strtolower($this->_environment->getCurrentBrowser(), 'UTF-8');
       $current_browser_version = $this->_environment->getCurrentBrowserVersion();
       if ( $current_browser == 'msie' and (strstr($current_browser_version,'5.') or (strstr($current_browser_version,'6.'))) ){
          $html .='<div style="width: 99%;">'.LF;
       }else{
-         $html .='<div style="width: 70%; " >'.LF;
+         $html .='<div style="width: '.$left_width.'%; " >'.LF;
 
       }
       $html .='<div id="action_box">';
@@ -2264,7 +2264,7 @@ EOD;
    function _initDropDownMenus(){
    	return '';
    }
-   
+
    function _getListInfosAsHTML ($title) {
       $current_context = $this->_environment->getCurrentContextItem();
       $current_user = $this->_environment->getCurrentUserItem();
@@ -2582,7 +2582,7 @@ EOD;
   }
 
 
-  function _getSearchAsHTML () {
+  function _getSearchAsHTML ($search_with='220') {
      $html  = '';
      $html .= '<form style="padding:0px; margin:0px;" action="'.curl($this->_environment->getCurrentContextID(), 'campus_search', 'index','').'" method="get" name="searchform">'.LF;
      $html .= '   <input type="hidden" name="cid" value="'.$this->_text_as_form($this->_environment->getCurrentContextID()).'"/>'.LF;
@@ -2590,7 +2590,7 @@ EOD;
      $html .= '   <input type="hidden" name="SID" value="'.$this->_environment->getSessionItem()->getSessionID().'"/>'.LF;
      $html .= '   <input type="hidden" name="fct" value="index"/>'.LF;
      $html .= '   <input type="hidden" name="selrubric" value="'.$this->_environment->getCurrentModule().'"/>'.LF;
-     $html .= '<input id="searchtext" onclick="javascript:resetSearchText(\'searchtext\');" style="width:220px; font-size:10pt; margin-bottom:0px;" name="search" type="text" size="20" value="'.$this->_text_as_form($this->getSearchText()).'"/>'.LF;
+     $html .= '<input id="searchtext" onclick="javascript:resetSearchText(\'searchtext\');" style="width:'.$search_with.'px; font-size:10pt; margin-bottom:0px;" name="search" type="text" size="20" value="'.$this->_text_as_form($this->getSearchText()).'"/>'.LF;
      if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
         $html .= '<input type="image" src="images/commsyicons_msie6/22x22/search.gif" style="vertical-align:top;" alt="'.$this->_translator->getMessage('COMMON_SEARCH_BUTTON').'"/>';
      } else {

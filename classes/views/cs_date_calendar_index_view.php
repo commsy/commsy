@@ -189,7 +189,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $html  = '';
       $html .= '<div class="right_box">'.LF;
       $html .= '<div class="right_box_title">'.LF;
-      
+
       $date = date("Y-m-d");
       $date_array = explode('-',$date);
       $month = mb_substr($this->_month,4,2);
@@ -212,7 +212,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $tempMessage = $month_array[$month-1].' '.$this->_year;
       $html .= '<div style="white-space:nowrap;">'.$tempMessage.'</div>'.LF;
       $html .='</div>'.LF;
-      
+
       $width = '';
       $current_browser = mb_strtolower($this->_environment->getCurrentBrowser(), 'UTF-8');
       $current_browser_version = $this->_environment->getCurrentBrowserVersion();
@@ -220,13 +220,13 @@ class cs_date_calendar_index_view extends cs_room_index_view {
          $width = 'width:170px;';
       }
       $html .= '<div class="right_box_main" style="'.$width.'">'.LF;
-      
+
       if($this->calendar_with_javascript()){
       	$html .= $this->_getAdditionalCalendarAsHTML().LF;
       }
-      
+
       $html .= $this->_getAdditionalFormFieldsAsHTML().LF;
-      
+
       $html .= '<div class="listinfoborder"></div>'.LF;
       $params = $this->_environment->getCurrentParameterArray();
       unset($params['week']);
@@ -269,23 +269,6 @@ class cs_date_calendar_index_view extends cs_room_index_view {
 
 
 
-  function _getSearchAsHTML () {
-     $html  = '';
-     $html .= '<form style="padding:0px; margin:0px;" action="'.curl($this->_environment->getCurrentContextID(), 'campus_search', 'index','').'" method="get" name="searchform">'.LF;
-     $html .= '   <input type="hidden" name="cid" value="'.$this->_text_as_form($this->_environment->getCurrentContextID()).'"/>'.LF;
-     $html .= '   <input type="hidden" name="mod" value="campus_search"/>'.LF;
-     $html .= '   <input type="hidden" name="SID" value="'.$this->_environment->getSessionItem()->getSessionID().'"/>'.LF;
-     $html .= '   <input type="hidden" name="fct" value="index"/>'.LF;
-     $html .= '   <input type="hidden" name="selrubric" value="'.$this->_environment->getCurrentModule().'"/>'.LF;
-     $html .= '<input id="searchtext" onclick="javascript:resetSearchText(\'searchtext\');" style="width:130px; font-size:10pt; margin-bottom:0px;" name="search" type="text" size="20" value="'.$this->_text_as_form($this->getSearchText()).'"/>'.LF;
-     if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-        $html .= '<input type="image" src="images/commsyicons_msie6/22x22/search.gif" style="vertical-align:top;" alt="'.$this->_translator->getMessage('COMMON_SEARCH_BUTTON').'"/>';
-     } else {
-        $html .= '<input type="image" src="images/commsyicons/22x22/search.png" style="vertical-align:top;" alt="'.$this->_translator->getMessage('COMMON_SEARCH_BUTTON').'"/>';
-     }
-     $html .= '</form>';
-     return $html;
-  }
 
    function _getAdditionalActionsAsHTML(){
       $current_context = $this->_environment->getCurrentContextItem();
@@ -347,60 +330,9 @@ class cs_date_calendar_index_view extends cs_room_index_view {
     */
    function asHTML () {
       $html  = LF.'<!-- BEGIN OF LIST VIEW -->'.LF;
-      $html .='<div style="width:100%;">'.LF;
-
-      $html .='<div>'.LF;
-      $html .= '<div id="search_box" style="float:right; width:17%; white-space:nowrap; text-align-left; padding-top:5px; margin:0px;">'.LF;
-      $html .= $this->_getSearchAsHTML();
-      $html .= '</div>'.LF;
-
-      $html .='<div style="width:80%; padding-left:3px;">'.LF;
-      $html .='<div id="action_box" style="margin-right:5px;">';
-      $html .= $this->_getListActionsAsHTML();
-      $html .='</div>';
-      $html .='<div>';
-
-      if($this->use_sunbird){
-      	//$html .= $this->_getSwitchIconBar();
-      	$html .= '<div style="float:left;padding-right:50px;"><h2 class="pagetitle"><img style="vertical-align: bottom;" src="images/commsyicons/32x32/date.png"/>' . $this->_translator->getMessage('DATES') . '</h2></div>';
-      } else {
-	      $date = date("Y-m-d");
-	      $date_array = explode('-',$date);
-	      $month = mb_substr($this->_month,4,2);
-	      $first_char = mb_substr($month,0,1);
-	      if ($first_char == '0'){
-	         $month = mb_substr($month,1,2);
-	      }
-	      $month_array = array($this->_translator->getMessage('DATES_JANUARY_LONG'),
-	            $this->_translator->getMessage('DATES_FEBRUARY_LONG'),
-	            $this->_translator->getMessage('DATES_MARCH_LONG'),
-	            $this->_translator->getMessage('DATES_APRIL_LONG'),
-	            $this->_translator->getMessage('DATES_MAY_LONG'),
-	            $this->_translator->getMessage('DATES_JUNE_LONG'),
-	            $this->_translator->getMessage('DATES_JULY_LONG'),
-	            $this->_translator->getMessage('DATES_AUGUST_LONG'),
-	            $this->_translator->getMessage('DATES_SEPTEMBER_LONG'),
-	            $this->_translator->getMessage('DATES_OCTOBER_LONG'),
-	            $this->_translator->getMessage('DATES_NOVEMBER_LONG'),
-	            $this->_translator->getMessage('DATES_DECEMBER_LONG'));
-	      $tempMessage = $month_array[$month-1].' '.$this->_year;
-	      if ($this->_clipboard_mode){
-	          $html .= '<h2 class="pagetitle">'.$this->_translator->getMessage('CLIPBOARD_HEADER').' ('.$tempMessage.')';
-	      }elseif ( $this->hasCheckboxes() and $this->_has_checkboxes != 'list_actions' ) {
-	         $html .= '<h2 class="pagetitle">'.$this->_translator->getMessage('COMMON_ASSIGN').' ('.$tempMessage.')';
-	      }else{
-	          $html .= '<h2 class="pagetitle">'.$tempMessage;
-	      }
-   	  }
-
-
-      $html .= '</h2>'.LF;
-      $html .='</div>'.LF;
-      $html .='</div>';
-      $html .='<div style="font-size:0pt; width:100%; clear:both;">'.LF;
-      $html .='</div>'.LF;
-      $html .='</div>'.LF;
-
+      $left_width = '76';
+      $right_width = '22';
+      $html .= $this->_getIndexPageHeaderAsHTML($left_width,$right_width,'170').LF;
       $html .='<div>'.LF;
       $params = $this->_environment->getCurrentParameterArray();
       $html .= '<form style="padding:0px; margin:0px;" action="'.curl($this->_environment->getCurrentContextID(),
@@ -409,11 +341,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                                                                       $params).'" method="get" name="indexform">'.LF;
       $current_browser = mb_strtolower($this->_environment->getCurrentBrowser(), 'UTF-8');
       $current_browser_version = $this->_environment->getCurrentBrowserVersion();
-      if ( $current_browser == 'msie' ){
-         $html .='<div id="right_boxes_area" style="width:17%; padding-top: 10px; font-size:10pt;">'.LF;
-      }else{
-         $html .='<div id="right_boxes_area" style="width:17%; padding-top: 10px; font-size:10pt;">'.LF;
-      }
+      $html .='<div id="right_boxes_area" style="width:'.$right_width.'%; padding-top:40px;">'.LF;
       $html .='<div style="width:200px;">'.LF;
 
       $html .='<div id="commsy_panels">'.LF;
@@ -427,7 +355,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       if ( $current_browser == 'msie' and (strstr($current_browser_version,'5.') or (strstr($current_browser_version,'6.'))) ){
          $width= ' width:100%; padding-right:10px;';
       }else{
-         $width= ' width:80%;';
+         $width= ' width:'.$left_width.'%;';
       }
 
       if(!(isset($_GET['mode']) and $_GET['mode']=='print')){
@@ -524,7 +452,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $html .='</div>'.LF;
       $html .='<div style="clear:both;">'.LF;
       $html .='</div>'.LF;
-      $html .='</div>'.LF;
+#      $html .='</div>'.LF;
       $html .= '<!-- END OF PLAIN LIST VIEW -->'.LF.LF;
       return $html;
    }
@@ -600,7 +528,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $html .= '<div class="infocolor" style="padding-bottom:5px;">'.$this->_translator->getMessage('COMMON_DATE_STATUS').BRLF;
       // jQuery
       //$html .= '   <select name="selstatus" size="1" style="width:150px;" onChange="javascript:document.indexform.submit()">'.LF;
-      $html .= '   <select name="selstatus" size="1" style="width:150px;" id="submit_form">'.LF;
+      $html .= '   <select name="selstatus" size="1" style="width:185px;" id="submit_form">'.LF;
       // jQuery
       $html .= '      <option value="2"';
       if ( empty($selstatus) || $selstatus == 2 ) {
@@ -635,7 +563,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
          }else{
            $style_color = '#000000';
          }
-         $html .= '   <select style="color:'.$style_color.'; width: 150px; font-size:10pt; margin-bottom:5px;" name="selcolor" size="1" id="submit_form">'.LF;
+         $html .= '   <select style="color:'.$style_color.'; width: 185px; font-size:10pt; margin-bottom:5px;" name="selcolor" size="1" id="submit_form">'.LF;
 
          $html .= '      <option style="color:#000000;" value="2"';
          if ( empty($selcolor) || $selcolor == 2 ) {
@@ -711,7 +639,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                if ( isset($list)) {
                   // jQuery
                   //$html .= '   <select style="width: 150px; font-size:10pt;" name="sel'.$link_name[0].'" size="1" onChange="javascript:document.indexform.submit()">'.LF;
-                  $html .= '   <select style="width: 150px; font-size:10pt;" name="sel'.$link_name[0].'" size="1" id="submit_form">'.LF;
+                  $html .= '   <select style="width: 185px; font-size:10pt;" name="sel'.$link_name[0].'" size="1" id="submit_form">'.LF;
                   // jQuery
                   $html .= '      <option value="0"';
                   if ( !isset($selrubric) || $selrubric == 0 ) {
@@ -1336,7 +1264,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $params = $this->_environment->getCurrentParameterArray();
       unset($params['year']);
       unset($params['week']);
-      
+
       $prev_image = '<img src="images/calendar_prev.gif" alt="&lt;" border="0"/>';
       $today_image = '<img src="images/calendar_today.gif" alt="&lt;" border="0"/>';
       $next_image = '<img src="images/calendar_next.gif" alt="&lt;" border="0"/>';
@@ -1614,7 +1542,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       unset($params);
       return $title;
    }
-   
+
    /** get the place of the item
     * this method returns the item place in the right formatted style
     *
@@ -3125,7 +3053,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
          } else {
             $html .= '<div class="calendar_entry_work" id="calendar_entry_' . $index . '_' . $index_day . '"><div class="data" id="calendar_entry_date_div_' . $index . '_' . $index_day . '"></div></div>'.LF;
          }
-         
+
          $html_javascript .= 'new Array(\'#calendar_entry_date_div_' . $index . '_' . $index_day . '\',\'<div name="calendar_new_date" id="calendar_entry_background_div_' . $index . '_' . $index_day . '" style="position:absolute; top: 0px; left: 0px; height: 100%; width: 100%; z-index:900;"><div style="width:100%; text-align:left;">' . $anAction . '</div></div>\')';
          if($current_element < (24*7)-1){
             $html_javascript .= ','.LF;
@@ -3198,7 +3126,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                if($start_quaters == 0 and $end_quaters == 0){
                	$is_date_for_whole_day = true;
                }
-               
+
                $top = $start_quaters*10;
 
                $left = 19 + 129*($day_entries-1) + $left_position;
@@ -3213,9 +3141,9 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                $link = $this->_getItemLinkWithJavascript($date, $date->getTitle());
                $link_array = split('"', $link);
                $href = $link_array[1];
-               
+
                $overlap = 1;
-               if(!$is_date_for_whole_day){	
+               if(!$is_date_for_whole_day){
 	               $display_date = $date;
                   foreach($display_date_array[$day_entries] as $display_date_compare){
                   	$compare_is_date_for_whole_day = false;
@@ -3399,9 +3327,9 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $html .= 'var calendar_dates = new Array(';
       #pr($date_array_for_jQuery_php);
       #pr($date_array_for_jQuery_temp);
-      
+
       // die maximale breite bei nebeneinander liegenden Termine
-      
+
       $overlap_array = array();
       $max_overlap_array = array();
       $max_overlap_array_for_date = array();
@@ -3500,8 +3428,8 @@ class cs_date_calendar_index_view extends cs_room_index_view {
          }
          $sort_dates_array[] = $temp_sort_array;
       }
-      
-      
+
+
       $last = count($date_array_for_jQuery)-1;
       #for ($index = 0; $index < count($date_array_for_jQuery); $index++) {
       #	$html .= $date_array_for_jQuery[$index];
@@ -3548,14 +3476,14 @@ class cs_date_calendar_index_view extends cs_room_index_view {
            $html .= ',';
          }
       }
-   
+
       $html .= ');'.LF;
       $html .= 'var today = "' . $today . '";' .LF;
       $html .= '-->'.LF;
       $html .= '</script>'.LF;
       return $html;
    }
-   
+
    function getMktimeForDate($display_date){
    	#pr($display_date->getTitle() . ' ' . $display_date->getItemID());
    	$result = array();
@@ -3572,7 +3500,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $display_date_starttime_month = mb_substr($display_date->getStartingDay(),5,2);
       $display_date_starttime_day = mb_substr($display_date->getStartingDay(),8,2);
       $result['starttime'] = mktime((int)$display_date_starttime_hours, (int)$display_date_starttime_minutes, (int)$display_date_starttime_seconds, (int)$display_date_starttime_month, (int)$display_date_starttime_day, (int)$display_date_starttime_year);
-                     
+
       if($display_date->getEndingTime() != ''){
          $display_date_endtime_hours = mb_substr($display_date->getEndingTime(),0,2);
          $display_date_endtime_minutes = mb_substr($display_date->getEndingTime(),3,2);
@@ -3591,11 +3519,11 @@ class cs_date_calendar_index_view extends cs_room_index_view {
          $display_date_endtime_month = $display_date_starttime_month;
          $display_date_endtime_day = $display_date_starttime_day;
       }
-      $result['endtime'] = mktime((int)$display_date_endtime_hours, (int)$display_date_endtime_minutes, (int)$display_date_endtime_seconds, (int)$display_date_endtime_month, (int)$display_date_endtime_day, (int)$display_date_endtime_year);                
+      $result['endtime'] = mktime((int)$display_date_endtime_hours, (int)$display_date_endtime_minutes, (int)$display_date_endtime_seconds, (int)$display_date_endtime_month, (int)$display_date_endtime_day, (int)$display_date_endtime_year);
       #pr('.');
       return $result;
    }
-   
+
    function overlap_display_date_array($display_date_array){
    	$return_array = array();
    	$overlap_return_array = array();
@@ -3634,7 +3562,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
 	   		}
          }
    	}
-   	
+
    	$return_array_keys = array_keys($return_array);
    	foreach($return_array_keys as $key){
    		#pr($key);
@@ -3660,18 +3588,18 @@ class cs_date_calendar_index_view extends cs_room_index_view {
    	#return $return_array;
    	return $overlap_return_array;
    }
-   
+
    function overlap($display_date, $compare_date){
    	$result = false;
-   	
+
    	$display_date_times = $this->getMktimeForDate($display_date);
       $display_date_starttime = $display_date_times['starttime'];
       $display_date_endtime = $display_date_times['endtime'];
-      
+
       $display_date_compare_times = $this->getMktimeForDate($compare_date);
       $display_date_compare_starttime = $display_date_compare_times['starttime'];
       $display_date_compare_endtime = $display_date_compare_times['endtime'];
-      
+
       if((($display_date_starttime < $display_date_compare_starttime) and ($display_date_endtime > $display_date_compare_starttime))
          or (($display_date_starttime == $display_date_compare_starttime) and ($display_date_endtime == $display_date_compare_endtime))
          or (($display_date_starttime < $display_date_compare_endtime) and ($display_date_endtime > $display_date_compare_endtime))
@@ -3679,10 +3607,10 @@ class cs_date_calendar_index_view extends cs_room_index_view {
          or (($display_date_endtime > $display_date_compare_starttime) and ($display_date_endtime < $display_date_compare_endtime))){
          $result = true;
       }
-      
+
       return $result;
    }
-   
+
    function _getPreviousMonthAndYear($month,$year) {
       $ret['month'] = $month -1;
       $ret['year'] = $year;
@@ -3781,7 +3709,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $return .= '</div>';
       return $return;
    }
-   
+
    function getTooltipDate($date){
    	$parse_time_start = convertTimeFromInput($date->getStartingTime());
       $conforms = $parse_time_start['conforms'];
@@ -3895,7 +3823,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                   $tooltip_date = $temp_array;
                   return $tooltip_date;
    }
-   
+
    function calendar_with_javascript(){
    	$with_javascript = false;
    	$session_item = $this->_environment->getSessionItem();
@@ -3909,7 +3837,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       }
       return $with_javascript;
    }
-   
+
    function _getAdditionalCalendarAsHTML(){
    	$params = array();
    	$additional_calendar_href = curl($this->_environment->getCurrentContextID(),
