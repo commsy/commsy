@@ -57,7 +57,7 @@
 
 /* Interaction states
 ----------------------------------*/
-.additional_calendar .ui-state-default, .additional_calendar .ui-widget-content .ui-state-default { border: 1px solid #d3d3d3; background: #e6e6e6 url(images/ui-bg_glass_75_e6e6e6_1x400.png) 50% 50% repeat-x; font-weight: normal; color: #555555; outline: none; }
+.additional_calendar .ui-state-default, .additional_calendar .ui-widget-content .ui-state-default { border: 1px solid #d3d3d3; background: #e6e6e6 url(images/ui-bg_glass_75_e6e6e6_1x400.png) 50% 50% repeat-x; font-weight: normal; color: #555555; outline: none; font-size:9px;}
 .additional_calendar .ui-state-default a, .additional_calendar .ui-state-default a:link, .additional_calendar .ui-state-default a:visited { color: #555555; text-decoration: none; outline: none; }
 .additional_calendar .ui-state-hover, .additional_calendar .ui-widget-content .ui-state-hover, .additional_calendar .ui-state-focus, .additional_calendar .ui-widget-content .ui-state-focus { border: 1px solid #999999; background: #dadada url(images/ui-bg_glass_75_dadada_1x400.png) 50% 50% repeat-x; font-weight: normal; color: #212121; outline: none; }
 .additional_calendar .ui-state-hover a, .additional_calendar .ui-state-hover a:hover { color: #212121; text-decoration: none; outline: none; }
@@ -66,7 +66,7 @@
 
 /* Interaction Cues
 ----------------------------------*/
-.additional_calendar .ui-state-highlight, .additional_calendar .ui-widget-content .ui-state-highlight {border: 1px solid #fcefa1; background: #fbf9ee url(images/ui-bg_glass_55_fbf9ee_1x400.png) 50% 50% repeat-x; color: #363636; }
+.additional_calendar .ui-state-highlight, .additional_calendar .ui-widget-content .ui-state-highlight {border: 1px solid #fcefa1; background: #fbf9ee url(images/ui-bg_glass_55_fbf9ee_1x400.png) 50% 50% repeat-x; color: #363636; font-size:9px; }
 .additional_calendar .ui-state-highlight a, .additional_calendar .ui-widget-content .ui-state-highlight a { color: #363636; }
 .additional_calendar .ui-state-error, .additional_calendar .ui-widget-content .ui-state-error {border: 1px solid #cd0a0a; background: #fef1ec url(images/ui-bg_glass_95_fef1ec_1x400.png) 50% 50% repeat-x; color: #cd0a0a; }
 .additional_calendar .ui-state-error a, .additional_calendar .ui-widget-content .ui-state-error a { color: #cd0a0a; }
@@ -306,7 +306,7 @@
 .additional_calendar .ui-datepicker select.ui-datepicker-year { width: 49%;}
 .additional_calendar .ui-datepicker .ui-datepicker-title select.ui-datepicker-year { float: right; }
 .additional_calendar .ui-datepicker table {width: 100%; font-size: .9em; border-collapse: collapse; margin:0 0 .4em; }
-.additional_calendar .ui-datepicker th { padding: .7em .3em; text-align: center; font-weight: bold; border: 0;  }
+.additional_calendar .ui-datepicker th { padding: .7em .3em; text-align: center; font-weight: bold; border: 0; font-size:9px; }
 .additional_calendar .ui-datepicker td { border: 0; padding: 1px; }
 .additional_calendar .ui-datepicker td span, .additional_calendar .ui-datepicker td a { display: block; padding: .2em; text-align: right; text-decoration: none; }
 .additional_calendar .ui-datepicker .ui-datepicker-buttonpane { background-image: none; margin: .7em 0 0 0; padding:0 .2em; border-left: 0; border-right: 0; border-bottom: 0; }
