@@ -364,83 +364,83 @@ class cs_labels_manager extends cs_manager {
     */
   function _performQuery ($mode = 'select') {
      if ($mode == 'count') {
-        $query = 'SELECT DISTINCT count(labels.item_id) as count';
+        $query = 'SELECT DISTINCT count('.$this->addDatabasePrefix('labels').'.item_id) as count';
      } else {
         if ($mode == 'id_array') {
-           $query = 'SELECT DISTINCT labels.item_id';
+           $query = 'SELECT DISTINCT '.$this->addDatabasePrefix('labels').'.item_id';
         } else {
-           $query = 'SELECT DISTINCT labels.*';
+           $query = 'SELECT DISTINCT '.$this->addDatabasePrefix('labels').'.*';
         }
      }
-     $query .= ' FROM labels';
+     $query .= ' FROM '.$this->addDatabasePrefix('labels');
      if (!isset($this->_attribute_limit) || (isset($this->_attribute_limit) and ('modificator'== $this->_attribute_limit) )|| (isset($this->_attribute_limit) and ('all'== $this->_attribute_limit))){
         if ( (isset($this->_sort_order) and ($this->_sort_order == 'modificator' or $this->_sort_order == 'modificator_rev')) or (isset($this->_search_array) and !empty($this->_search_array))) {
-           $query .= ' LEFT JOIN user ON labels.creator_id = user.item_id';
-           $query .= ' LEFT JOIN link_items AS l41 ON (l41.deletion_date IS NULL AND ((l41.first_item_id=labels.item_id AND l41.second_item_type="'.CS_USER_TYPE.'")))';
-     	   $query .= ' LEFT JOIN link_items AS l42 ON (l42.deletion_date IS NULL AND ((l42.second_item_id=labels.item_id AND l42.first_item_type="'.CS_USER_TYPE.'")))';
-           $query .= ' LEFT JOIN user AS user1 ON user1.item_id = l41.second_item_id';
-           $query .= ' LEFT JOIN user AS user2 ON user2.item_id = l42.first_item_id';
+           $query .= ' LEFT JOIN '.$this->addDatabasePrefix('user').' ON '.$this->addDatabasePrefix('labels').'.creator_id = '.$this->addDatabasePrefix('user').'.item_id';
+           $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l41 ON (l41.deletion_date IS NULL AND ((l41.first_item_id='.$this->addDatabasePrefix('labels').'.item_id AND l41.second_item_type="'.CS_USER_TYPE.'")))';
+     	   $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l42 ON (l42.deletion_date IS NULL AND ((l42.second_item_id='.$this->addDatabasePrefix('labels').'.item_id AND l42.first_item_type="'.CS_USER_TYPE.'")))';
+           $query .= ' LEFT JOIN '.$this->addDatabasePrefix('user').' AS user1 ON user1.item_id = l41.second_item_id';
+           $query .= ' LEFT JOIN '.$this->addDatabasePrefix('user').' AS user2 ON user2.item_id = l42.first_item_id';
         }elseif ( (isset($this->_order) and $this->_order == 'creator') or (isset($this->_search_array) and !empty($this->_search_array))) {
-           $query .= ' LEFT JOIN user ON labels.creator_id = user.item_id';
-           $query .= ' LEFT JOIN link_items AS l41 ON (l41.deletion_date IS NULL AND ((l41.first_item_id=labels.item_id AND l41.second_item_type="'.CS_USER_TYPE.'")))';
-     	   $query .= ' LEFT JOIN link_items AS l42 ON (l42.deletion_date IS NULL AND ((l42.second_item_id=labels.item_id AND l42.first_item_type="'.CS_USER_TYPE.'")))';
-     	   $query .= ' LEFT JOIN user AS user1 ON user1.item_id = l41.second_item_id';
-     	   $query .= ' LEFT JOIN user AS user2 ON user2.item_id = l42.first_item_id';
+           $query .= ' LEFT JOIN '.$this->addDatabasePrefix('user').' ON '.$this->addDatabasePrefix('labels').'.creator_id = '.$this->addDatabasePrefix('user').'.item_id';
+           $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l41 ON (l41.deletion_date IS NULL AND ((l41.first_item_id='.$this->addDatabasePrefix('labels').'.item_id AND l41.second_item_type="'.CS_USER_TYPE.'")))';
+     	   $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l42 ON (l42.deletion_date IS NULL AND ((l42.second_item_id='.$this->addDatabasePrefix('labels').'.item_id AND l42.first_item_type="'.CS_USER_TYPE.'")))';
+     	   $query .= ' LEFT JOIN '.$this->addDatabasePrefix('user').' AS user1 ON user1.item_id = l41.second_item_id';
+     	   $query .= ' LEFT JOIN '.$this->addDatabasePrefix('user').' AS user2 ON user2.item_id = l42.first_item_id';
         }
      }
 
      if ( isset($this->_institution_limit) ) {
-        $query .= ' LEFT JOIN link_items AS l11 ON ( l11.deletion_date IS NULL AND ((l11.first_item_id=labels.item_id AND l11.second_item_type="'.CS_INSTITUTION_TYPE.'"))) ';
-        $query .= ' LEFT JOIN link_items AS l12 ON ( l12.deletion_date IS NULL AND ((l12.second_item_id=labels.item_id AND l12.first_item_type="'.CS_INSTITUTION_TYPE.'"))) ';
+        $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l11 ON ( l11.deletion_date IS NULL AND ((l11.first_item_id='.$this->addDatabasePrefix('labels').'.item_id AND l11.second_item_type="'.CS_INSTITUTION_TYPE.'"))) ';
+        $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l12 ON ( l12.deletion_date IS NULL AND ((l12.second_item_id='.$this->addDatabasePrefix('labels').'.item_id AND l12.first_item_type="'.CS_INSTITUTION_TYPE.'"))) ';
      }
      if ( isset($this->_topic_limit) ) {
-        $query .= ' LEFT JOIN link_items AS l21 ON ( l21.deletion_date IS NULL AND ((l21.first_item_id=labels.item_id AND l21.second_item_type="'.CS_TOPIC_TYPE.'"))) ';
-        $query .= ' LEFT JOIN link_items AS l22 ON ( l22.deletion_date IS NULL AND ((l22.second_item_id=labels.item_id AND l22.first_item_type="'.CS_TOPIC_TYPE.'"))) ';
+        $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l21 ON ( l21.deletion_date IS NULL AND ((l21.first_item_id='.$this->addDatabasePrefix('labels').'.item_id AND l21.second_item_type="'.CS_TOPIC_TYPE.'"))) ';
+        $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l22 ON ( l22.deletion_date IS NULL AND ((l22.second_item_id='.$this->addDatabasePrefix('labels').'.item_id AND l22.first_item_type="'.CS_TOPIC_TYPE.'"))) ';
      }
      if ( isset($this->_group_limit) ) {
-        $query .= ' LEFT JOIN link_items AS l31 ON ( l31.deletion_date IS NULL AND ((l31.first_item_id=labels.item_id AND l31.second_item_type="'.CS_GROUP_TYPE.'"))) ';
-        $query .= ' LEFT JOIN link_items AS l32 ON ( l32.deletion_date IS NULL AND ((l32.second_item_id=labels.item_id AND l32.first_item_type="'.CS_GROUP_TYPE.'"))) ';
+        $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l31 ON ( l31.deletion_date IS NULL AND ((l31.first_item_id='.$this->addDatabasePrefix('labels').'.item_id AND l31.second_item_type="'.CS_GROUP_TYPE.'"))) ';
+        $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l32 ON ( l32.deletion_date IS NULL AND ((l32.second_item_id='.$this->addDatabasePrefix('labels').'.item_id AND l32.first_item_type="'.CS_GROUP_TYPE.'"))) ';
      }
 
      if (!isset($this->_attribute_limit) || (isset($this->_attribute_limit) and ('all'==$this->_attribute_limit))){
         if (!empty($this->_material_limit)) {
-           $query .= ' LEFT JOIN links ON links.to_item_id = labels.item_id';
+           $query .= ' LEFT JOIN '.$this->addDatabasePrefix('links').' ON '.$this->addDatabasePrefix('links').'.to_item_id = '.$this->addDatabasePrefix('labels').'.item_id';
         }
      }
      if (!empty($this->_type_limit)) {
-        $query .= ' WHERE labels.type="'.encode(AS_DB,$this->_type_limit).'"';
+        $query .= ' WHERE '.$this->addDatabasePrefix('labels').'.type="'.encode(AS_DB,$this->_type_limit).'"';
      } else {
         $query .= ' WHERE 1';
      }
      if (!empty($this->_dossier_limit)) {
-        $query .= ' AND labels.name="'.encode(AS_DB,$this->_dossier_limit).'"';
+        $query .= ' AND '.$this->addDatabasePrefix('labels').'.name="'.encode(AS_DB,$this->_dossier_limit).'"';
      }
 
      if (!empty($this->_material_limit)) {
-        $query .= ' AND links.link_type = "material_for_'.encode(AS_DB,$this->_type_limit).'" AND links.from_item_id = "'.encode(AS_DB,$this->_material_limit).'"';
+        $query .= ' AND '.$this->addDatabasePrefix('links').'.link_type = "material_for_'.encode(AS_DB,$this->_type_limit).'" AND '.$this->addDatabasePrefix('links').'.from_item_id = "'.encode(AS_DB,$this->_material_limit).'"';
         if (!empty($this->_version_limit)) {
-           $query .= ' AND links.from_version_id = "'.encode(AS_DB,$this->_version_limit).'"';
+           $query .= ' AND '.$this->addDatabasePrefix('links').'.from_version_id = "'.encode(AS_DB,$this->_version_limit).'"';
         }
      }
 
      // insert limits into the select statement
      if (isset($this->_room_limit)) {
-        $query .= ' AND labels.context_id = "'.encode(AS_DB,$this->_room_limit).'"';
+        $query .= ' AND '.$this->addDatabasePrefix('labels').'.context_id = "'.encode(AS_DB,$this->_room_limit).'"';
      }
      if ($this->_delete_limit) {
-        $query .= ' AND labels.deleter_id IS NULL';
+        $query .= ' AND '.$this->addDatabasePrefix('labels').'.deleter_id IS NULL';
      }
      if (isset($this->_name_limit)) {
-        $query .= ' AND labels.name like "%'.encode(AS_DB,$this->_name_limit).'%"';
+        $query .= ' AND '.$this->addDatabasePrefix('labels').'.name like "%'.encode(AS_DB,$this->_name_limit).'%"';
      }
      if (isset($this->_exact_name_limit)) {
-        $query .= ' AND labels.name = "'.encode(AS_DB,$this->_exact_name_limit).'"';
+        $query .= ' AND '.$this->addDatabasePrefix('labels').'.name = "'.encode(AS_DB,$this->_exact_name_limit).'"';
      }
      if (isset($this->_age_limit)) {
-        $query .= ' AND labels.modification_date >= DATE_SUB(CURRENT_DATE,interval '.encode(AS_DB,$this->_age_limit).' day)';
+        $query .= ' AND '.$this->addDatabasePrefix('labels').'.modification_date >= DATE_SUB(CURRENT_DATE,interval '.encode(AS_DB,$this->_age_limit).' day)';
      }
       if ( isset($this->_existence_limit) ) {
-         $query .= ' AND labels.creation_date >= DATE_SUB(CURRENT_DATE,interval '.encode(AS_DB,$this->_existence_limit).' day)';
+         $query .= ' AND '.$this->addDatabasePrefix('labels').'.creation_date >= DATE_SUB(CURRENT_DATE,interval '.encode(AS_DB,$this->_existence_limit).' day)';
       }
 
       if ( isset($this->_topic_limit) ){
@@ -472,64 +472,64 @@ class cs_labels_manager extends cs_manager {
       }
 
       if( !empty($this->_id_array_limit) ) {
-         $query .= ' AND '.$this->_db_table.'.item_id IN ('.implode(", ",encode(AS_DB,$this->_id_array_limit)).')';
+         $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.item_id IN ('.implode(", ",encode(AS_DB,$this->_id_array_limit)).')';
       }
 
       // restrict sql-statement by search limit, create wheres
       if (isset($this->_search_array) AND !empty($this->_search_array)) {
          $query .= ' AND ( 1 = 1';
                         if (!isset($this->_attribute_limit) || ('all' == $this->_attribute_limit)){
-                           $field_array = array('labels.name',
-                           						'labels.description',
-                           						'labels.modification_date',
-                           						'TRIM(CONCAT(user.firstname," ",user.lastname))',
+                           $field_array = array($this->addDatabasePrefix('labels').'.name',
+                           						$this->addDatabasePrefix('labels').'.description',
+                           						$this->addDatabasePrefix('labels').'.modification_date',
+                           						'TRIM(CONCAT('.$this->addDatabasePrefix('user').'.firstname," ",'.$this->addDatabasePrefix('user').'.lastname))',
                            						'TRIM(CONCAT(user1.firstname," ",user1.lastname))',
                            						'TRIM(CONCAT(user2.firstname," ",user2.lastname))');
                            $search_limit_query_code = $this->_generateSearchLimitCode($field_array);
                            $query .= ' AND '.$search_limit_query_code;
                         } else {
             if ( 'title'==$this->_attribute_limit ){
-               $query .= $this->_generateSearchLimitCode(array('labels.name'));
+               $query .= $this->_generateSearchLimitCode(array($this->addDatabasePrefix('labels').'.name'));
             }
             if ('description'==$this->_attribute_limit){
                if ('title'==$this->_attribute_limit){
                   $query .= 'OR';
                }
-               $query .= $this->_generateSearchLimitCode(array('labels.description'));
+               $query .= $this->_generateSearchLimitCode(array($this->addDatabasePrefix('labels').'.description'));
             }
             if('modificator'== $this->_attribute_limit){
                if ( ('title'==$this->_attribute_limit) || ('description'==$this->_attribute_limit) ){
                   $query .= 'OR';
                }
-               $query .= $this->_generateSearchLimitCode(array('TRIM(CONCAT(user.firstname," ",user.lastname))'));
+               $query .= $this->_generateSearchLimitCode(array('TRIM(CONCAT('.$this->addDatabasePrefix('user').'.firstname," ",'.$this->addDatabasePrefix('user').'.lastname))'));
             }
          }
          $query .= ' )';
-         $query .= ' GROUP BY labels.item_id';
+         $query .= ' GROUP BY '.$this->addDatabasePrefix('labels').'.item_id';
                 }
 
      if ( isset($this->_sort_order) ) {
         if ( $this->_sort_order == 'title' ) {
-           $query .= ' ORDER BY labels.name ASC';
+           $query .= ' ORDER BY '.$this->addDatabasePrefix('labels').'.name ASC';
         } elseif ( $this->_sort_order == 'title_rev' ) {
-           $query .= ' ORDER BY labels.name DESC';
+           $query .= ' ORDER BY '.$this->addDatabasePrefix('labels').'.name DESC';
         } elseif ( $this->_sort_order == 'modificator' ) {
-           $query .= ' ORDER BY user.lastname ASC';
+           $query .= ' ORDER BY '.$this->addDatabasePrefix('user').'.lastname ASC';
         } elseif ( $this->_sort_order == 'modificator_rev' ) {
-           $query .= ' ORDER BY user.lastname DESC';
+           $query .= ' ORDER BY '.$this->addDatabasePrefix('user').'.lastname DESC';
         }
      }
 
      elseif (isset($this->_order)) {
         if ($this->_order == 'date') {
-           $query .= ' ORDER BY labels.modification_date DESC, labels.name ASC';
+           $query .= ' ORDER BY '.$this->addDatabasePrefix('labels').'.modification_date DESC, '.$this->addDatabasePrefix('labels').'.name ASC';
         } elseif ($this->_order == 'creator') {
-           $query .= ' ORDER BY user.lastname, labels.name';
+           $query .= ' ORDER BY '.$this->addDatabasePrefix('user').'.lastname, '.$this->addDatabasePrefix('labels').'.name';
         } else {
-           $query .= ' ORDER BY labels.name, labels.modification_date DESC';
+           $query .= ' ORDER BY '.$this->addDatabasePrefix('labels').'.name, '.$this->addDatabasePrefix('labels').'.modification_date DESC';
         }
      } else {
-        $query .= ' ORDER BY labels.name, labels.modification_date DESC';
+        $query .= ' ORDER BY '.$this->addDatabasePrefix('labels').'.name, '.$this->addDatabasePrefix('labels').'.modification_date DESC';
      }
      if ($mode == 'select') {
         if (isset($this->_interval_limit) and isset($this->_from_limit)) {
@@ -568,9 +568,9 @@ class cs_labels_manager extends cs_manager {
          $current_context = $this->_environment->getCurrentContextID();
       }
       if ( $this->_isAvailable() ) {
-         $query = 'SELECT * FROM labels';
-         $query .= ' WHERE labels.type = "'.encode(AS_DB,$type).'"';
-         $query .= ' AND labels.context_id = "'.encode(AS_DB,$current_context).'"';
+         $query = 'SELECT * FROM '.$this->addDatabasePrefix('labels');
+         $query .= ' WHERE '.$this->addDatabasePrefix('labels').'.type = "'.encode(AS_DB,$type).'"';
+         $query .= ' AND '.$this->addDatabasePrefix('labels').'.context_id = "'.encode(AS_DB,$current_context).'"';
          $result = $this->_db_connector->performQuery($query);
          if ( !isset($result) ) {
             include_once('functions/error_functions.php');
@@ -593,8 +593,8 @@ class cs_labels_manager extends cs_manager {
   function _getLabelWithoutType ($label_id) {
      $label = NULL;
      if ( !empty($label_id) ) {
-        $query = 'SELECT * FROM labels';
-        $query .= ' WHERE labels.item_id = "'.encode(AS_DB,$label_id).'"';
+        $query = 'SELECT * FROM '.$this->addDatabasePrefix('labels');
+        $query .= ' WHERE '.$this->addDatabasePrefix('labels').'.item_id = "'.encode(AS_DB,$label_id).'"';
         $result = $this->_db_connector->performQuery($query);
         if ( !isset($result) ) {
            include_once('functions/error_functions.php');
@@ -732,7 +732,7 @@ class cs_labels_manager extends cs_manager {
         $public = 0;
      }
 
-     $query =  'UPDATE labels SET '.
+     $query =  'UPDATE '.$this->addDatabasePrefix('labels').' SET '.
                'modifier_id="'.encode(AS_DB,$modificator->getItemID()).'",'.
                'modification_date="'.$current_datetime.'",';
      if ( !($item->getLabelType() == CS_GROUP_TYPE AND $item->isSystemLabel()) ) {
@@ -754,7 +754,7 @@ class cs_labels_manager extends cs_manager {
     * @param object cs_item label_item the label
     */
   function _create ($item) {
-     $query = 'INSERT INTO items SET '.
+     $query = 'INSERT INTO '.$this->addDatabasePrefix('items').' SET '.
               'context_id="'.encode(AS_DB,$item->getContextID()).'",'.
               'modification_date="'.getCurrentDateTimeInMySQL().'",'.
               'type="label"';
@@ -789,7 +789,7 @@ class cs_labels_manager extends cs_manager {
         $public = 0;
      }
 
-     $query  = 'INSERT INTO labels SET '.
+     $query  = 'INSERT INTO '.$this->addDatabasePrefix('labels').' SET '.
                'item_id="'.encode(AS_DB,$item->getItemID()).'",'.
                'context_id="'.encode(AS_DB,$item->getContextID()).'",'.
                'creator_id="'.encode(AS_DB,$user->getItemID()).'",'.
@@ -846,7 +846,7 @@ class cs_labels_manager extends cs_manager {
          $public = 0;
       }
 
-      $query =  'UPDATE labels SET '.
+      $query =  'UPDATE '.$this->addDatabasePrefix('labels').' SET '.
                 'context_id="'.encode(AS_DB,$item->getContextID()).'",'.
                 'creator_id="'.encode(AS_DB,$user->getItemID()).'",'.
                 'creation_date="'.$current_datetime.'",'.
@@ -871,7 +871,7 @@ class cs_labels_manager extends cs_manager {
      $current_datetime = getCurrentDateTimeInMySQL();
      $current_user = $this->_environment->getCurrentUserItem();
      $user_id = $current_user->getItemID();
-     $query = 'UPDATE labels SET '.
+     $query = 'UPDATE '.$this->addDatabasePrefix('labels').' SET '.
               'deletion_date="'.$current_datetime.'",'.
               'deleter_id="'.encode(AS_DB,$user_id).'"'.
               ' WHERE item_id="'.encode(AS_DB,$label_id).'"';
@@ -903,7 +903,7 @@ class cs_labels_manager extends cs_manager {
    function getCountGroups ($start, $end) {
       $retour = 0;
 
-      $query = "SELECT count(labels.item_id) as number FROM labels WHERE labels.type = '".CS_GROUP_TYPE."' AND labels.context_id = '".encode(AS_DB,$this->_room_limit)."' and ((labels.creation_date > '".encode(AS_DB,$start)."' and labels.creation_date < '".encode(AS_DB,$end)."') or (labels.modification_date > '".encode(AS_DB,$start)."' and labels.modification_date < '".encode(AS_DB,$end)."'))";
+      $query = "SELECT count(".$this->addDatabasePrefix("labels").".item_id) as number FROM ".$this->addDatabasePrefix("labels")." WHERE ".$this->addDatabasePrefix("labels").".type = '".CS_GROUP_TYPE."' AND ".$this->addDatabasePrefix("labels").".context_id = '".encode(AS_DB,$this->_room_limit)."' and ((".$this->addDatabasePrefix("labels").".creation_date > '".encode(AS_DB,$start)."' and ".$this->addDatabasePrefix("labels").".creation_date < '".encode(AS_DB,$end)."') or (".$this->addDatabasePrefix("labels").".modification_date > '".encode(AS_DB,$start)."' and ".$this->addDatabasePrefix("labels").".modification_date < '".encode(AS_DB,$end)."'))";
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) ) {
          include_once('functions/error_functions.php');trigger_error('Problems counting all groups.',E_USER_WARNING);
@@ -919,7 +919,7 @@ class cs_labels_manager extends cs_manager {
    function getCountNewGroups ($start, $end) {
       $retour = 0;
 
-      $query = "SELECT count(labels.item_id) as number FROM labels WHERE labels.type = '".CS_GROUP_TYPE."' AND labels.context_id = '".encode(AS_DB,$this->_room_limit)."' and labels.creation_date > '".encode(AS_DB,$start)."' and labels.creation_date < '".encode(AS_DB,$end)."'";
+      $query = "SELECT count(".$this->addDatabasePrefix("labels").".item_id) as number FROM ".$this->addDatabasePrefix("labels")." WHERE ".$this->addDatabasePrefix("labels").".type = '".CS_GROUP_TYPE."' AND ".$this->addDatabasePrefix("labels").".context_id = '".encode(AS_DB,$this->_room_limit)."' and ".$this->addDatabasePrefix("labels").".creation_date > '".encode(AS_DB,$start)."' and ".$this->addDatabasePrefix("labels").".creation_date < '".encode(AS_DB,$end)."'";
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) ) {
          include_once('functions/error_functions.php');trigger_error('Problems counting groups.',E_USER_WARNING);
@@ -934,7 +934,7 @@ class cs_labels_manager extends cs_manager {
    function getCountModGroups ($start, $end) {
       $retour = 0;
 
-      $query = "SELECT count(labels.item_id) as number FROM labels WHERE labels.type = '".CS_GROUP_TYPE."' AND labels.context_id = '".encode(AS_DB,$this->_room_limit)."' and labels.modification_date > '".encode(AS_DB,$start)."' and labels.modification_date < '".encode(AS_DB,$end)."' and labels.modification_date != labels.creation_date";
+      $query = "SELECT count(".$this->addDatabasePrefix("labels").".item_id) as number FROM ".$this->addDatabasePrefix("labels")." WHERE ".$this->addDatabasePrefix("labels").".type = '".CS_GROUP_TYPE."' AND ".$this->addDatabasePrefix("labels").".context_id = '".encode(AS_DB,$this->_room_limit)."' and ".$this->addDatabasePrefix("labels").".modification_date > '".encode(AS_DB,$start)."' and ".$this->addDatabasePrefix("labels").".modification_date < '".encode(AS_DB,$end)."' and ".$this->addDatabasePrefix("labels").".modification_date != ".$this->addDatabasePrefix("labels").".creation_date";
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) ) {
          include_once('functions/error_functions.php');trigger_error('Problems counting groups.',E_USER_WARNING);
@@ -949,7 +949,7 @@ class cs_labels_manager extends cs_manager {
    function getCountTopics ($start, $end) {
       $retour = 0;
 
-      $query = "SELECT count(labels.item_id) as number FROM labels WHERE labels.type = '".CS_TOPIC_TYPE."' AND labels.context_id = '".encode(AS_DB,$this->_room_limit)."' and ((labels.creation_date > '".encode(AS_DB,$start)."' and labels.creation_date < '".encode(AS_DB,$end)."') or (labels.modification_date > '".encode(AS_DB,$start)."' and labels.modification_date < '".encode(AS_DB,$end)."'))";
+      $query = "SELECT count(".$this->addDatabasePrefix("labels").".item_id) as number FROM ".$this->addDatabasePrefix("labels")." WHERE ".$this->addDatabasePrefix("labels").".type = '".CS_TOPIC_TYPE."' AND ".$this->addDatabasePrefix("labels").".context_id = '".encode(AS_DB,$this->_room_limit)."' and ((".$this->addDatabasePrefix("labels").".creation_date > '".encode(AS_DB,$start)."' and ".$this->addDatabasePrefix("labels").".creation_date < '".encode(AS_DB,$end)."') or (".$this->addDatabasePrefix("labels").".modification_date > '".encode(AS_DB,$start)."' and ".$this->addDatabasePrefix("labels").".modification_date < '".encode(AS_DB,$end)."'))";
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) ) {
          include_once('functions/error_functions.php');trigger_error('Problems counting all topics.',E_USER_WARNING);
@@ -965,7 +965,7 @@ class cs_labels_manager extends cs_manager {
    function getCountNewTopics ($start, $end) {
       $retour = 0;
 
-      $query = "SELECT count(labels.item_id) as number FROM labels WHERE labels.type = '".CS_TOPIC_TYPE."' AND labels.context_id = '".encode(AS_DB,$this->_room_limit)."' and labels.creation_date > '".encode(AS_DB,$start)."' and labels.creation_date < '".encode(AS_DB,$end)."'";
+      $query = "SELECT count(".$this->addDatabasePrefix("labels").".item_id) as number FROM ".$this->addDatabasePrefix("labels")." WHERE ".$this->addDatabasePrefix("labels").".type = '".CS_TOPIC_TYPE."' AND ".$this->addDatabasePrefix("labels").".context_id = '".encode(AS_DB,$this->_room_limit)."' and ".$this->addDatabasePrefix("labels").".creation_date > '".encode(AS_DB,$start)."' and ".$this->addDatabasePrefix("labels").".creation_date < '".encode(AS_DB,$end)."'";
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) ) {
          include_once('functions/error_functions.php');trigger_error('Problems counting topics.',E_USER_WARNING);
@@ -980,7 +980,7 @@ class cs_labels_manager extends cs_manager {
    function getCountModTopics ($start, $end) {
       $retour = 0;
 
-      $query = "SELECT count(labels.item_id) as number FROM labels WHERE labels.type = '".CS_TOPIC_TYPE."' AND labels.context_id = '".encode(AS_DB,$this->_room_limit)."' and labels.modification_date > '".encode(AS_DB,$start)."' and labels.modification_date < '".encode(AS_DB,$end)."' and labels.modification_date != labels.creation_date";
+      $query = "SELECT count(".$this->addDatabasePrefix("labels").".item_id) as number FROM ".$this->addDatabasePrefix("labels")." WHERE ".$this->addDatabasePrefix("labels").".type = '".CS_TOPIC_TYPE."' AND ".$this->addDatabasePrefix("labels").".context_id = '".encode(AS_DB,$this->_room_limit)."' and ".$this->addDatabasePrefix("labels").".modification_date > '".encode(AS_DB,$start)."' and ".$this->addDatabasePrefix("labels").".modification_date < '".encode(AS_DB,$end)."' and ".$this->addDatabasePrefix("labels").".modification_date != ".$this->addDatabasePrefix("labels").".creation_date";
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) ) {
          include_once('functions/error_functions.php');trigger_error('Problems counting topics.',E_USER_WARNING);
@@ -995,7 +995,7 @@ class cs_labels_manager extends cs_manager {
    function getCountInstitutions ($start, $end) {
       $retour = 0;
 
-      $query = "SELECT count(labels.item_id) as number FROM labels WHERE labels.type = '".CS_INSTITUTION_TYPE."' AND labels.context_id = '".encode(AS_DB,$this->_room_limit)."' and ((labels.creation_date > '".encode(AS_DB,$start)."' and labels.creation_date < '".encode(AS_DB,$end)."') or (labels.modification_date > '".encode(AS_DB,$start)."' and labels.modification_date < '".encode(AS_DB,$end)."'))";
+      $query = "SELECT count(".$this->addDatabasePrefix("labels").".item_id) as number FROM ".$this->addDatabasePrefix("labels")." WHERE ".$this->addDatabasePrefix("labels").".type = '".CS_INSTITUTION_TYPE."' AND ".$this->addDatabasePrefix("labels").".context_id = '".encode(AS_DB,$this->_room_limit)."' and ((".$this->addDatabasePrefix("labels").".creation_date > '".encode(AS_DB,$start)."' and ".$this->addDatabasePrefix("labels").".creation_date < '".encode(AS_DB,$end)."') or (".$this->addDatabasePrefix("labels").".modification_date > '".encode(AS_DB,$start)."' and ".$this->addDatabasePrefix("labels").".modification_date < '".encode(AS_DB,$end)."'))";
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) ) {
          include_once('functions/error_functions.php');trigger_error('Problems counting all topics.',E_USER_WARNING);
@@ -1011,7 +1011,7 @@ class cs_labels_manager extends cs_manager {
    function getCountNewInstitutions ($start, $end) {
       $retour = 0;
 
-      $query = "SELECT count(labels.item_id) as number FROM labels WHERE labels.type = '".CS_INSTITUTION_TYPE."' AND labels.context_id = '".encode(AS_DB,$this->_room_limit)."' and labels.creation_date > '".encode(AS_DB,$start)."' and labels.creation_date < '".encode(AS_DB,$end)."'";
+      $query = "SELECT count(".$this->addDatabasePrefix("labels").".item_id) as number FROM ".$this->addDatabasePrefix("labels")." WHERE ".$this->addDatabasePrefix("labels").".type = '".CS_INSTITUTION_TYPE."' AND ".$this->addDatabasePrefix("labels").".context_id = '".encode(AS_DB,$this->_room_limit)."' and ".$this->addDatabasePrefix("labels").".creation_date > '".encode(AS_DB,$start)."' and ".$this->addDatabasePrefix("labels").".creation_date < '".encode(AS_DB,$end)."'";
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) ) {
          include_once('functions/error_functions.php');trigger_error('Problems counting insitutions.',E_USER_WARNING);
@@ -1026,7 +1026,7 @@ class cs_labels_manager extends cs_manager {
    function getCountModInstitutions ($start, $end) {
       $retour = 0;
 
-      $query = "SELECT count(labels.item_id) as number FROM labels WHERE labels.type = '".CS_INSTITUTION_TYPE."' AND labels.context_id = '".encode(AS_DB,$this->_room_limit)."' and labels.modification_date > '".encode(AS_DB,$start)."' and labels.modification_date < '".encode(AS_DB,$end)."' and labels.modification_date != labels.creation_date";
+      $query = "SELECT count(".$this->addDatabasePrefix("labels").".item_id) as number FROM ".$this->addDatabasePrefix("labels")." WHERE ".$this->addDatabasePrefix("labels").".type = '".CS_INSTITUTION_TYPE."' AND ".$this->addDatabasePrefix("labels").".context_id = '".encode(AS_DB,$this->_room_limit)."' and ".$this->addDatabasePrefix("labels").".modification_date > '".encode(AS_DB,$start)."' and ".$this->addDatabasePrefix("labels").".modification_date < '".encode(AS_DB,$end)."' and ".$this->addDatabasePrefix("labels").".modification_date != ".$this->addDatabasePrefix("labels").".creation_date";
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) ) {
          include_once('functions/error_functions.php');trigger_error('Problems counting modified institutions.',E_USER_WARNING);
@@ -1066,7 +1066,7 @@ class cs_labels_manager extends cs_manager {
 
       // images of labels
       $query  = '';
-      $query .= 'SELECT * FROM '.$this->_db_table.' WHERE context_id="'.encode(AS_DB,$new_id).'" AND deleter_id IS NULL AND deletion_date IS NULL';
+      $query .= 'SELECT * FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE context_id="'.encode(AS_DB,$new_id).'" AND deleter_id IS NULL AND deletion_date IS NULL';
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) ) {
          include_once('functions/error_functions.php');
@@ -1082,7 +1082,7 @@ class cs_labels_manager extends cs_manager {
                   $value_array[0] = 'cid'.$new_id;
                   $extra_array['LABELPICTURE'] = implode('_',$value_array);
 
-                  $update_query = 'UPDATE '.$this->_db_table.' SET extras="'.encode(AS_DB,serialize($extra_array)).'" WHERE item_id="'.$query_result['item_id'].'"';
+                  $update_query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET extras="'.encode(AS_DB,serialize($extra_array)).'" WHERE item_id="'.$query_result['item_id'].'"';
                   $update_result = $this->_db_connector->performQuery($update_query);
                   if ( !isset($update_result) or !$update_result ) {
                      include_once('functions/error_functions.php');
@@ -1104,13 +1104,13 @@ class cs_labels_manager extends cs_manager {
    	  									'public'			=>	'public'));
    	  
       $current_datetime = getCurrentDateTimeInMySQL();
-      $query  = 'SELECT labels.* FROM labels WHERE labels.creator_id = "'.$uid.'"';
+      $query  = 'SELECT '.$this->addDatabasePrefix('labels').'.* FROM '.$this->addDatabasePrefix('labels').' WHERE '.$this->addDatabasePrefix('labels').'.creator_id = "'.$uid.'"';
       $result = $this->_db_connector->performQuery($query);
       if ( !empty($result) ) {
          foreach ( $result as $rs ) {
             //Never delete any group "ALL"
             if (!($rs['type'] == CS_GROUP_TYPE AND $rs['name'] == 'ALL')) {
-               $insert_query = 'UPDATE labels SET';
+               $insert_query = 'UPDATE '.$this->addDatabasePrefix('labels').' SET';
                $insert_query .= ' name = "'.encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_TITLE')).'",';
                $insert_query .= ' description = "'.encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_DESCRIPTION')).'",';
                $insert_query .= ' modification_date = "'.$current_datetime.'",';

@@ -1643,6 +1643,26 @@ class cs_page_guide_view extends cs_page_view {
             $html .=  BR.'> '.ahref_curl($this->_environment->getCurrentContextID(),'configuration','export',$params,$this->_translator->getMessage('PORTAL_EXPORT_ROOM'),'','','','','','','class="portal_link"').LF;
             unset($params);
          }
+         
+         if ( $current_user->isRoot()
+              and $this->_with_modifying_actions
+            ) {
+            $params = array();
+            $params['iid'] = $item->getItemID();
+            $params['to'] = 'backup';
+            $html .=  BR.'> '.ahref_curl($this->_environment->getCurrentContextID(),'configuration','dbbackup',$params,$this->_translator->getMessage('PORTAL_MOVE_ROOM_TO_BACKUP'),'','','','','','','class="portal_link"').LF;
+            unset($params);
+         }
+         
+         if ( $current_user->isRoot()
+              and $this->_with_modifying_actions
+            ) {
+            $params = array();
+            $params['iid'] = $item->getItemID();
+            $params['to'] = 'live';
+            $html .=  BR.'> '.ahref_curl($this->_environment->getCurrentContextID(),'configuration','dbbackup',$params,$this->_translator->getMessage('PORTAL_MOVE_ROOM_TO_LIVE'),'','','','','','','class="portal_link"').LF;
+            unset($params);
+         }
       } elseif ( $current_user->isRoot() ) {
          $params = array();
          $params['iid'] = $item->getItemID();

@@ -59,7 +59,7 @@ class cs_backupitem_manager extends cs_manager {
 	   $timestamp = getCurrentDateTimeMinusDaysInMySQL($days);
 	   $query = '
 	      DELETE FROM
-	         ' . $this->_db_table . '
+	         ' . $this->addDatabasePrefix($this->_db_table) . '
 	      WHERE
 	         backup_date < "' . $timestamp . '"';
 	   $result = $this->_db_connector->performQuery($query);

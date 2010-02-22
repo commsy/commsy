@@ -47,33 +47,33 @@ class cs_portal_manager extends cs_context_manager {
     */
    function _performQuery ($mode = 'select') {
       if ($mode == 'count') {
-         $query = 'SELECT count('.$this->_db_table.'.item_id) AS count';
+         $query = 'SELECT count('.$this->addDatabasePrefix($this->_db_table).'.item_id) AS count';
       } elseif ($mode == 'id_array') {
-          $query = 'SELECT '.$this->_db_table.'.item_id';
+          $query = 'SELECT '.$this->addDatabasePrefix($this->_db_table).'.item_id';
       } else {
-         $query = 'SELECT '.$this->_db_table.'.*';
+         $query = 'SELECT '.$this->addDatabasePrefix($this->_db_table).'.*';
       }
 
-      $query .= ' FROM '.$this->_db_table;
+      $query .= ' FROM '.$this->addDatabasePrefix($this->_db_table);
       $query .= ' WHERE 1';
 
       // insert limits into the select statement
       if ($this->_delete_limit == true) {
-         $query .= ' AND '.$this->_db_table.'.deleter_id IS NULL';
+         $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.deleter_id IS NULL';
       }
       if (isset($this->_status_limit)) {
-         $query .= ' AND '.$this->_db_table.'.status = "'.encode(AS_DB,$this->_status_limit).'"';
+         $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.status = "'.encode(AS_DB,$this->_status_limit).'"';
       }
 
       if (isset($this->_order)) {
          if ($this->_order == 'date') {
-            $query .= ' ORDER BY '.$this->_db_table.'.modification_date DESC, '.$this->_db_table.'.title ASC';
+            $query .= ' ORDER BY '.$this->addDatabasePrefix($this->_db_table).'.modification_date DESC, '.$this->addDatabasePrefix($this->_db_table).'.title ASC';
          } elseif ($this->_order == 'creation_date') {
-            $query .= ' ORDER BY '.$this->_db_table.'.creation_date ASC, '.$this->_db_table.'.title ASC';
+            $query .= ' ORDER BY '.$this->addDatabasePrefix($this->_db_table).'.creation_date ASC, '.$this->addDatabasePrefix($this->_db_table).'.title ASC';
          } elseif ($this->_order == 'activity_rev') {
-            $query .= ' ORDER BY '.$this->_db_table.'.activity DESC, '.$this->_db_table.'.title ASC';
+            $query .= ' ORDER BY '.$this->addDatabasePrefix($this->_db_table).'.activity DESC, '.$this->addDatabasePrefix($this->_db_table).'.title ASC';
          } else {
-            $query .= ' ORDER BY '.$this->_db_table.'.title, '.$this->_db_table.'.modification_date DESC';
+            $query .= ' ORDER BY '.$this->addDatabasePrefix($this->_db_table).'.title, '.$this->addDatabasePrefix($this->_db_table).'.modification_date DESC';
          }
       } else {
          $query .= ' ORDER BY title, modification_date DESC';

@@ -62,7 +62,7 @@ class cs_tag2tag_manager extends cs_manager {
     */
   public function getItem ($father_id, $child_id) {
      $retour = NULL;
-     $query = "SELECT * FROM ".$this->_db_table." WHERE ".$this->_db_table.".from_item_id = '".encode(AS_DB,$father_id)."' AND ".$this->_db_table.".to_item_id = '".encode(AS_DB,$child_id)."'";
+     $query = "SELECT * FROM ".$this->addDatabasePrefix($this->_db_table)." WHERE ".$this->addDatabasePrefix($this->_db_table).".from_item_id = '".encode(AS_DB,$father_id)."' AND ".$this->addDatabasePrefix($this->_db_table).".to_item_id = '".encode(AS_DB,$child_id)."'";
      $result = $this->_db_connector->performQuery($query);
      if (!isset($result) or empty($result[0])) {
         include_once('functions/error_functions.php');
@@ -81,7 +81,7 @@ class cs_tag2tag_manager extends cs_manager {
     */
   private function _getItemTo ($to_id) {
      $retour = NULL;
-     $query = "SELECT * FROM ".$this->_db_table." WHERE ".$this->_db_table.".to_item_id = '".encode(AS_DB,$to_id)."' AND deletion_date is NULL and deleter_id IS NULL;";
+     $query = "SELECT * FROM ".$this->addDatabasePrefix($this->_db_table)." WHERE ".$this->addDatabasePrefix($this->_db_table).".to_item_id = '".encode(AS_DB,$to_id)."' AND deletion_date is NULL and deleter_id IS NULL;";
      $result = $this->_db_connector->performQuery($query);
      if (!isset($result) or empty($result[0])) {
         include_once('functions/error_functions.php');
@@ -117,7 +117,7 @@ class cs_tag2tag_manager extends cs_manager {
         $sorting_place = 'NULL';
      }
 
-     $query = 'UPDATE '.$this->_db_table.' SET '.
+     $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET '.
               'from_item_id="'.encode(AS_DB,$item->getFatherItemID()).'",'.
               'modifier_id="'.encode(AS_DB,$item->getModifierItemID()).'",'.
               'modification_date="'.$current_datetime.'",'.
@@ -157,7 +157,7 @@ class cs_tag2tag_manager extends cs_manager {
         $sorting_place = 'NULL';
      }
 
-     $query = 'INSERT INTO '.$this->_db_table.' SET '.
+     $query = 'INSERT INTO '.$this->addDatabasePrefix($this->_db_table).' SET '.
               'from_item_id="'.encode(AS_DB,$item->getFatherItemID()).'",'.
               'to_item_id="'.encode(AS_DB,$item->getChildItemID()).'",'.
               'context_id="'.encode(AS_DB,$item->getContextItemID()).'",'.
@@ -207,7 +207,7 @@ class cs_tag2tag_manager extends cs_manager {
      include_once('functions/date_functions.php');
      $current_datetime = getCurrentDateTimeInMySQL();
      $user_id = $this->_current_user->getItemID();
-     $query = 'UPDATE '.$this->_db_table.' SET '.
+     $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET '.
               'deletion_date="'.$current_datetime.'",'.
               'deleter_id="'.encode(AS_DB,$user_id).'"'.
               ' WHERE from_item_id="'.encode(AS_DB,$father_id).'" AND to_item_id="'.encode(AS_DB,$child_id).'"';
@@ -227,7 +227,7 @@ class cs_tag2tag_manager extends cs_manager {
      include_once('functions/date_functions.php');
      $current_datetime = getCurrentDateTimeInMySQL();
      $user_id = $this->_current_user->getItemID();
-     $query = 'UPDATE '.$this->_db_table.' SET '.
+     $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET '.
               'deletion_date="'.$current_datetime.'",'.
               'deleter_id="'.encode(AS_DB,$user_id).'"'.
               ' WHERE from_item_id="'.encode(AS_DB,$link_id).'" OR to_item_id="'.encode(AS_DB,$link_id).'"';
@@ -248,7 +248,7 @@ class cs_tag2tag_manager extends cs_manager {
       include_once('functions/date_functions.php');
       $current_datetime = getCurrentDateTimeInMySQL();
       $user_id = $this->_current_user->getItemID();
-      $query = 'UPDATE '.$this->_db_table.' SET '.
+      $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET '.
                'deletion_date="'.$current_datetime.'",'.
                'deleter_id="'.encode(AS_DB,$user_id).'"'.
                ' WHERE from_item_id="'.encode(AS_DB,$father_id).'" AND to_item_id="'.encode(AS_DB,$item_id).'"';
@@ -269,7 +269,7 @@ class cs_tag2tag_manager extends cs_manager {
       include_once('functions/date_functions.php');
       $current_datetime = getCurrentDateTimeInMySQL();
       $user_id = $this->_current_user->getItemID();
-      $query = 'UPDATE '.$this->_db_table.' SET '.
+      $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET '.
                'deletion_date="'.$current_datetime.'",'.
                'deleter_id="'.encode(AS_DB,$user_id).'"'.
                ' WHERE from_item_id="'.encode(AS_DB,$item_id).'" OR to_item_id="'.encode(AS_DB,$item_id).'"';
@@ -361,7 +361,7 @@ class cs_tag2tag_manager extends cs_manager {
 
    private function _cleanSortingPlaces ($item_id) {
       if ( isset($item_id) ) {
-         $query = 'SELECT link_id FROM '.$this->_db_table.' WHERE '.$this->_db_table.'.from_item_id = '.encode(AS_DB,$item_id).' AND '.$this->_db_table.'.deletion_date is NULL AND '.$this->_db_table.'.deleter_id IS NULL ORDER BY sorting_place ASC;';
+         $query = 'SELECT link_id FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).'.from_item_id = '.encode(AS_DB,$item_id).' AND '.$this->addDatabasePrefix($this->_db_table).'.deletion_date is NULL AND '.$this->addDatabasePrefix($this->_db_table).'.deleter_id IS NULL ORDER BY sorting_place ASC;';
          $result = $this->_db_connector->performQuery($query);
          $link_id_array = array();
          if (!isset($result)) {
@@ -374,7 +374,7 @@ class cs_tag2tag_manager extends cs_manager {
          }
          $counter = 1;
          foreach ($link_id_array as $link_id) {
-            $query = 'UPDATE '.$this->_db_table.' SET sorting_place='.encode(AS_DB,$counter).' WHERE link_id='.encode(AS_DB,$link_id);
+            $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET sorting_place='.encode(AS_DB,$counter).' WHERE link_id='.encode(AS_DB,$link_id);
             $result = $this->_db_connector->performQuery($query);
             if (!isset($result) or !$result) {
                include_once('functions/error_functions.php');
@@ -387,7 +387,7 @@ class cs_tag2tag_manager extends cs_manager {
 
    public function deleteAllTagLinks ($context_id) {
       $current_user = $this->_environment->getCurrentUserItem();
-      $query = 'UPDATE '.$this->_db_table.' SET deleter_id='.encode(AS_DB,$current_user->getItemID()).', deletion_date=NOW() WHERE context_id='.encode(AS_DB,$context_id);
+      $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET deleter_id='.encode(AS_DB,$current_user->getItemID()).', deletion_date=NOW() WHERE context_id='.encode(AS_DB,$context_id);
       unset($current_user);
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) or !$result ) {
@@ -400,14 +400,14 @@ class cs_tag2tag_manager extends cs_manager {
     * this method get all links
     */
    public function _performQuery () {
-      $query = 'SELECT '.$this->_db_table.'.*';
-      $query .= ' FROM '.$this->_db_table;
+      $query = 'SELECT '.$this->addDatabasePrefix($this->_db_table).'.*';
+      $query .= ' FROM '.$this->addDatabasePrefix($this->_db_table);
       $query .= ' WHERE 1';
 
       if ( isset($this->_room_limit) ) {
          $query .= ' AND context_id="'.encode(AS_DB,$this->_room_limit).'"';
       }
-      $query .= ' AND '.$this->_db_table.'.deletion_date is NULL AND '.$this->_db_table.'.deleter_id IS NULL';
+      $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.deletion_date is NULL AND '.$this->addDatabasePrefix($this->_db_table).'.deleter_id IS NULL';
       $query .= ' ORDER BY sorting_place';
 
       // perform query
@@ -433,7 +433,7 @@ class cs_tag2tag_manager extends cs_manager {
 
    public function change ($item_id,$father_id,$place) {
       // select all links from father
-      $query = 'SELECT link_id,from_item_id,to_item_id,sorting_place FROM '.$this->_db_table.' WHERE '.$this->_db_table.'.from_item_id = '.encode(AS_DB,$father_id).' AND '.$this->_db_table.'.deletion_date is NULL AND '.$this->_db_table.'.deleter_id IS NULL ORDER BY sorting_place ASC;';
+      $query = 'SELECT link_id,from_item_id,to_item_id,sorting_place FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).'.from_item_id = '.encode(AS_DB,$father_id).' AND '.$this->addDatabasePrefix($this->_db_table).'.deletion_date is NULL AND '.$this->addDatabasePrefix($this->_db_table).'.deleter_id IS NULL ORDER BY sorting_place ASC;';
       $result = $this->_db_connector->performQuery($query);
       $link_id_array = array();
       if (!isset($result)) {
@@ -454,19 +454,19 @@ class cs_tag2tag_manager extends cs_manager {
             $this->deleteTagLinksFromToItemID($item_id);
             $this->insert($item_id,$father_id,$place);
          } elseif ( empty($old_place) ) {
-            $update = 'UPDATE '.$this->_db_table.' SET sorting_place=sorting_place+1 WHERE from_item_id='.encode(AS_DB,$father_id).' AND sorting_place >= '.$place.';';
+            $update = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET sorting_place=sorting_place+1 WHERE from_item_id='.encode(AS_DB,$father_id).' AND sorting_place >= '.$place.';';
             $result = $this->_db_connector->performQuery($update);
-            $update = 'UPDATE '.$this->_db_table.' SET sorting_place='.encode(AS_DB,$place).' WHERE link_id='.encode(AS_DB,$link_id).';';
+            $update = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET sorting_place='.encode(AS_DB,$place).' WHERE link_id='.encode(AS_DB,$link_id).';';
             $result = $this->_db_connector->performQuery($update);
          } elseif ( $old_place < $place ) {
-            $update = 'UPDATE '.$this->_db_table.' SET sorting_place=sorting_place-1 WHERE from_item_id='.encode(AS_DB,$father_id).' AND sorting_place > '.$old_place.' AND sorting_place <= '.$place.';';
+            $update = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET sorting_place=sorting_place-1 WHERE from_item_id='.encode(AS_DB,$father_id).' AND sorting_place > '.$old_place.' AND sorting_place <= '.$place.';';
             $result = $this->_db_connector->performQuery($update);
-            $update = 'UPDATE '.$this->_db_table.' SET sorting_place='.encode(AS_DB,$place).' WHERE link_id='.encode(AS_DB,$link_id).';';
+            $update = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET sorting_place='.encode(AS_DB,$place).' WHERE link_id='.encode(AS_DB,$link_id).';';
             $result = $this->_db_connector->performQuery($update);
          } elseif ( $old_place > $place ) {
-            $update = 'UPDATE '.$this->_db_table.' SET sorting_place=sorting_place+1 WHERE from_item_id='.encode(AS_DB,$father_id).' AND sorting_place < '.$old_place.' AND sorting_place >= '.$place.';';
+            $update = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET sorting_place=sorting_place+1 WHERE from_item_id='.encode(AS_DB,$father_id).' AND sorting_place < '.$old_place.' AND sorting_place >= '.$place.';';
             $result = $this->_db_connector->performQuery($update);
-            $update = 'UPDATE '.$this->_db_table.' SET sorting_place='.encode(AS_DB,$place).' WHERE link_id='.encode(AS_DB,$link_id).';';
+            $update = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET sorting_place='.encode(AS_DB,$place).' WHERE link_id='.encode(AS_DB,$link_id).';';
             $result = $this->_db_connector->performQuery($update);
          }
       }
@@ -480,7 +480,7 @@ class cs_tag2tag_manager extends cs_manager {
       $success = false;
 
       // is entry allready stored in database ?
-      $query = 'SELECT * FROM '.$this->_db_table;
+      $query = 'SELECT * FROM '.$this->addDatabasePrefix($this->_db_table);
       $query .= ' WHERE link_id="'.encode(AS_DB,$data_array['link_id']).'"';
 
       $result = $this->_db_connector->performQuery($query);
@@ -492,9 +492,9 @@ class cs_tag2tag_manager extends cs_manager {
          // now the backup
          $query = '';
          if ( empty($result[0]) ) {
-            $query .= 'INSERT INTO '.$this->_db_table.'';
+            $query .= 'INSERT INTO '.$this->addDatabasePrefix($this->_db_table).'';
          } else {
-            $query .= 'UPDATE '.$this->_db_table.'';
+            $query .= 'UPDATE '.$this->addDatabasePrefix($this->_db_table).'';
          }
 
          $query .= ' SET ';

@@ -83,7 +83,7 @@ class cs_log_error_manager extends cs_manager {
       }
 
       $query  = '';
-      $query .= 'DELETE FROM $this->_db_table WHERE id IN ('.$id_string.')';
+      $query .= 'DELETE FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE id IN ('.$id_string.')';
 
       // perform query
       $result = $this->_db_connector->performQuery($query);
@@ -97,11 +97,11 @@ class cs_log_error_manager extends cs_manager {
 
    function _performQuery ( $mode = 'select') {
       if ($mode == 'select') {
-         $query = 'SELECT * FROM '.$this->_db_table;
+         $query = 'SELECT * FROM '.$this->addDatabasePrefix($this->_db_table);
       } elseif ($mode == 'delete') {
-         $query = 'DELETE FROM '.$this->_db_table;
+         $query = 'DELETE FROM '.$this->addDatabasePrefix($this->_db_table);
       } elseif ($mode == 'count') {
-         $query = 'SELECT count(id) AS count FROM '.$this->_db_table;
+         $query = 'SELECT count(id) AS count FROM '.$this->addDatabasePrefix($this->_db_table);
       } else {
          include_once('functions/error_functions.php');
          trigger_error('lost perform mode',E_USER_ERROR);
@@ -158,7 +158,7 @@ class cs_log_error_manager extends cs_manager {
       if ( !isset($array['user']) ) {
          $array['user'] = '';
       }
-      $query = 'INSERT DELAYED INTO '.$this->_db_table.' SET '.
+      $query = 'INSERT DELAYED INTO '.$this->addDatabasePrefix($this->_db_table).' SET '.
                'datetime=NOW(), '.
                'number="'.  encode(AS_DB,$array['number']).'", '.
                'type="'.    encode(AS_DB,$array['type']).'", '.

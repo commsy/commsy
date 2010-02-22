@@ -137,24 +137,24 @@ class cs_annotations_manager extends cs_manager {
   function performQuery ($mode = 'select') {
 
      if ( $mode == 'id_array' ) {
-        $query = 'SELECT annotation.item_id';
+        $query = 'SELECT '.$this->addDatabasePrefix('annotations').'.item_id';
      } else {
-        $query = 'SELECT annotations.*';
+        $query = 'SELECT '.$this->addDatabasePrefix('annotations').'.*';
      }
-     $query .= ' FROM annotations';
+     $query .= ' FROM '.$this->addDatabasePrefix('annotations');
 
      $query .= ' WHERE 1';
 
      if ( isset($this->_linked_item_id) and !empty($this->_linked_item_id) ) {
-        $query .= ' AND annotations.linked_item_id='.encode(AS_DB,$this->_linked_item_id);
+        $query .= ' AND '.$this->addDatabasePrefix('annotations').'.linked_item_id='.encode(AS_DB,$this->_linked_item_id);
      } elseif ( isset($this->_room_limit) and !empty($this->_room_limit) ) {
-        $query .= ' AND annotations.context_id='.encode(AS_DB,$this->_room_limit);
+        $query .= ' AND '.$this->addDatabasePrefix('annotations').'.context_id='.encode(AS_DB,$this->_room_limit);
      }
      if ($this->_delete_limit == true) {
-        $query .= ' AND annotations.deleter_id IS NULL';
+        $query .= ' AND '.$this->addDatabasePrefix('annotations').'.deleter_id IS NULL';
      }
 
-     $query .= ' ORDER BY annotations.item_id ASC';
+     $query .= ' ORDER BY '.$this->addDatabasePrefix('annotations').'.item_id ASC';
 
      // perform query
      $result = $this->_db_connector->performQuery($query);
@@ -189,7 +189,7 @@ class cs_annotations_manager extends cs_manager {
         if ( !empty($this->_cache_object[$item_id]) ) {
            $annotation = $this->_cache_object[$item_id];
         } else {
-           $query = "SELECT * FROM annotations WHERE annotations.item_id = '".encode(AS_DB,$item_id)."'";
+           $query = "SELECT * FROM ".$this->addDatabasePrefix("annotations")." WHERE ".$this->addDatabasePrefix("annotations").".item_id = '".encode(AS_DB,$item_id)."'";
            $result = $this->_db_connector->performQuery($query);
            if ( !isset($result) ) {
               include_once('functions/error_functions.php');
@@ -215,9 +215,9 @@ class cs_annotations_manager extends cs_manager {
                $this->_item_id_array[] = $id;
             }
          }
-         $query = 'SELECT annotations.* FROM annotations'.
-               ' WHERE annotations.linked_item_id IN ('.implode(",",encode(AS_DB,$id_array)).')'.
-               ' AND annotations.deleter_id IS NULL GROUP BY annotations.item_id';
+         $query = 'SELECT '.$this->addDatabasePrefix('annotations').'.* FROM '.$this->addDatabasePrefix('annotations').
+               ' WHERE '.$this->addDatabasePrefix('annotations').'.linked_item_id IN ('.implode(",",encode(AS_DB,$id_array)).')'.
+               ' AND '.$this->addDatabasePrefix('annotations').'.deleter_id IS NULL GROUP BY '.$this->addDatabasePrefix('annotations').'.item_id';
          $result = $this->_db_connector->performQuery($query);
          if ( !isset($result) ) {
             include_once('functions/error_functions.php');
@@ -307,7 +307,7 @@ class cs_annotations_manager extends cs_manager {
          $version_id = '0';
       }
 
-     $query = 'UPDATE annotations SET '.
+     $query = 'UPDATE '.$this->addDatabasePrefix('annotations').' SET '.
               'modification_date="'.getCurrentDateTimeInMySQL().'",'.
               'title="'.encode(AS_DB,$annotation_item->getTitle()).'",'.
               'description="'.encode(AS_DB,$annotation_item->getDescription()).'",'.
@@ -331,7 +331,7 @@ class cs_annotations_manager extends cs_manager {
     * @author CommSy Development Group
     */
   function _create ($annotation_item) {
-     $query = 'INSERT INTO items SET '.
+     $query = 'INSERT INTO '.$this->addDatabasePrefix('items').' SET '.
               'context_id="'.encode(AS_DB,$annotation_item->getContextID()).'",'.
               'modification_date="'.getCurrentDateTimeInMySQL().'",'.
               'type="annotation"';
@@ -362,7 +362,7 @@ class cs_annotations_manager extends cs_manager {
          $version_id = '0';
       }
 
-     $query = 'INSERT INTO annotations SET '.
+     $query = 'INSERT INTO '.$this->addDatabasePrefix('annotations').' SET '.
               'item_id="'.encode(AS_DB,$annotation_item->getItemID()).'",'.
               'context_id="'.encode(AS_DB,$annotation_item->getContextID()).'",'.
               'creator_id="'.encode(AS_DB,$this->_current_user->getItemID()).'",'.
@@ -410,7 +410,7 @@ class cs_annotations_manager extends cs_manager {
   function delete ($item_id) {
      $current_datetime = getCurrentDateTimeInMySQL();
      $user_id = $this->_current_user->getItemID();
-     $query = 'UPDATE annotations SET '.
+     $query = 'UPDATE '.$this->addDatabasePrefix('annotations').' SET '.
               'deletion_date="'.$current_datetime.'",'.
               'deleter_id="'.encode(AS_DB,$user_id).'"'.
               ' WHERE item_id="'.encode(AS_DB,$item_id).'"';
@@ -423,17 +423,17 @@ class cs_annotations_manager extends cs_manager {
   }
 
    function getCountExistingAnnotationsOfUser($user_id) {
-     $query = 'SELECT count(annotations.item_id) as count';
-     $query .= ' FROM annotations';
+     $query = 'SELECT count('.$this->addDatabasePrefix('annotations').'.item_id) as count';
+     $query .= ' FROM '.$this->addDatabasePrefix('annotations');
      $query .= ' WHERE 1';
 
      if (isset($this->_room_limit)) {
-        $query .= ' AND annotations.context_id = "'.encode(AS_DB,$this->_room_limit).'"';
+        $query .= ' AND '.$this->addDatabasePrefix('annotations').'.context_id = "'.encode(AS_DB,$this->_room_limit).'"';
      } else {
-        $query .= ' AND annotations.context_id = "'.encode(AS_DB,$this->_environment->getCurrentContextID()).'"';
+        $query .= ' AND '.$this->addDatabasePrefix('annotations').'.context_id = "'.encode(AS_DB,$this->_environment->getCurrentContextID()).'"';
      }
-     $query .= ' AND annotations.deleter_id IS NULL';
-     $query .= ' AND annotations.creator_id ="'.encode(AS_DB,$user_id).'"';
+     $query .= ' AND '.$this->addDatabasePrefix('annotations').'.deleter_id IS NULL';
+     $query .= ' AND '.$this->addDatabasePrefix('annotations').'.creator_id ="'.encode(AS_DB,$user_id).'"';
 
      // perform query
      $result = $this->_db_connector->performQuery($query);
@@ -451,11 +451,11 @@ class cs_annotations_manager extends cs_manager {
    	  									'modification_date'	=>	'modification_date'));
    	  
       $current_datetime = getCurrentDateTimeInMySQL();
-      $query  = 'SELECT annotations.* FROM annotations WHERE annotations.creator_id = "'.encode(AS_DB,$uid).'"';
+      $query  = 'SELECT '.$this->addDatabasePrefix('annotations').'.* FROM '.$this->addDatabasePrefix('annotations').' WHERE '.$this->addDatabasePrefix('annotations').'.creator_id = "'.encode(AS_DB,$uid).'"';
       $result = $this->_db_connector->performQuery($query);
       if ( !empty($result) ) {
          foreach ( $result as $rs ) {
-            $insert_query = 'UPDATE annotations SET';
+            $insert_query = 'UPDATE '.$this->addDatabasePrefix('annotations').' SET';
             $insert_query .= ' title = "'.encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_TITLE')).'",';
             $insert_query .= ' description = "'.encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_DESCRIPTION')).'",';
             $insert_query .= ' modification_date = "'.$current_datetime.'"';

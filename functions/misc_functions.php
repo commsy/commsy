@@ -777,6 +777,8 @@ function isURLValid () {
 
          $funct != 'item_index' and
 
+         $funct != 'dbbackup' and
+         
          //chat
          $funct != 'process' and
          $funct != 'output' and

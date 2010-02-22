@@ -645,6 +645,15 @@ class cs_environment {
       return $this->_getInstance('cs_user_manager');
    }
 
+ /** get instance of cs_zzz_user_manager
+   *
+   * @return cs_zzz_user_manager
+   * @access public
+   */
+   public function getZzzUserManager() {
+      return $this->_getInstance('cs_zzz_user_manager');
+   }
+   
   /** get instance of cs_labels_manager
    *
    * @return cs_labels_manager
@@ -884,6 +893,15 @@ class cs_environment {
       return $this->_getInstance('cs_item_manager');
    }
 
+ /** get instance of cs_zzz_item_manager
+   *
+   * @return cs_zzz_item_manager
+   * @access public
+   */
+   public function getZzzItemManager() {
+      return $this->_getInstance('cs_zzz_item_manager');
+   }
+   
   /** get instance of cs_server_manager
    *
    * @return cs_server_manager

@@ -157,115 +157,115 @@ class cs_discussion_manager extends cs_manager {
 
    function _performQuery($mode = 'select') {
      if ($mode == 'count') {
-        $query = 'SELECT count(DISTINCT discussions.item_id) AS count';
+        $query = 'SELECT count(DISTINCT '.$this->addDatabasePrefix('discussions').'.item_id) AS count';
      } elseif ($mode == 'id_array') {
-        $query = 'SELECT DISTINCT discussions.item_id';
+        $query = 'SELECT DISTINCT '.$this->addDatabasePrefix('discussions').'.item_id';
      } elseif ($mode == 'distinct') {
-        $query = 'SELECT DISTINCT '.$this->_db_table.'.*';
+        $query = 'SELECT DISTINCT '.$this->addDatabasePrefix($this->_db_table).'.*';
      } else {
-        $query = 'SELECT DISTINCT discussions.*';
+        $query = 'SELECT DISTINCT '.$this->addDatabasePrefix('discussions').'.*';
      }
-     $query .= ' FROM discussions';
+     $query .= ' FROM '.$this->addDatabasePrefix('discussions');
 
      if ( ( isset($this->_search_array) AND !empty($this->_search_array) )
           or isset($this->_sort_order)
           or ( isset($this->_only_files_limit) and $this->_only_files_limit )
         ) {
-        $query .= ' LEFT JOIN discussionarticles ON (discussionarticles.discussion_id = discussions.item_id';
+        $query .= ' LEFT JOIN '.$this->addDatabasePrefix('discussionarticles').' ON ('.$this->addDatabasePrefix('discussionarticles').'.discussion_id = '.$this->addDatabasePrefix('discussions').'.item_id';
         if ( !empty($this->_room_array_limit)
              and is_array($this->_room_array_limit)
            ) {
-           $query .= ' AND discussionarticles.context_id IN ('.encode(AS_DB,implode(',',$this->_room_array_limit)).'))';
+           $query .= ' AND '.$this->addDatabasePrefix('discussionarticles').'.context_id IN ('.encode(AS_DB,implode(',',$this->_room_array_limit)).'))';
         } elseif ( !empty($this->_room_limit) ) {
-           $query .= ' AND discussionarticles.context_id = "'.encode(AS_DB,$this->_room_limit).'")';
+           $query .= ' AND '.$this->addDatabasePrefix('discussionarticles').'.context_id = "'.encode(AS_DB,$this->_room_limit).'")';
         } else {
-           $query .= ' AND discussionarticles.context_id = "'.encode(AS_DB,$this->_environment->getCurrentContextID()).'")';
+           $query .= ' AND '.$this->addDatabasePrefix('discussionarticles').'.context_id = "'.encode(AS_DB,$this->_environment->getCurrentContextID()).'")';
         }
         if (!isset($this->_buzzword_limit)) {
-           $query .= ' LEFT JOIN links AS l8 ON l8.from_item_id=discussions.item_id AND l8.link_type="buzzword_for"';
-           $query .= ' LEFT JOIN labels AS buzzwords ON l8.to_item_id=buzzwords.item_id AND buzzwords.type="buzzword"';
+           $query .= ' LEFT JOIN '.$this->addDatabasePrefix('links').' AS l8 ON l8.from_item_id='.$this->addDatabasePrefix('discussions').'.item_id AND l8.link_type="buzzword_for"';
+           $query .= ' LEFT JOIN '.$this->addDatabasePrefix('labels').' AS buzzwords ON l8.to_item_id=buzzwords.item_id AND buzzwords.type="buzzword"';
         }
 
      }
      // join to user database table
      if ((isset($this->_search_array) AND !empty($this->_search_array)) OR isset($this->_sort_order)) {
         // join to user database table
-        $query .= ' LEFT JOIN user AS people ON (people.item_id=discussions.creator_id )'; // modificator_id (TBD)
+        $query .= ' LEFT JOIN '.$this->addDatabasePrefix('user').' AS people ON (people.item_id='.$this->addDatabasePrefix('discussions').'.creator_id )'; // modificator_id (TBD)
      }
      if ((isset($this->_search_array) AND !empty($this->_search_array))) {
         // join to user database table
-        $query .= ' LEFT JOIN user AS people2 ON (people2.item_id=discussionarticles.creator_id )'; // modificator_id (TBD)
+        $query .= ' LEFT JOIN '.$this->addDatabasePrefix('user').' AS people2 ON (people2.item_id='.$this->addDatabasePrefix('discussionarticles').'.creator_id )'; // modificator_id (TBD)
      }
      if ( isset($this->_topic_limit) ) {
-        $query .= ' LEFT JOIN link_items AS l21 ON ( l21.deletion_date IS NULL AND ((l21.first_item_id=discussions.item_id AND l21.second_item_type="'.CS_TOPIC_TYPE.'"))) ';
-        $query .= ' LEFT JOIN link_items AS l22 ON ( l22.deletion_date IS NULL AND ((l22.second_item_id=discussions.item_id AND l22.first_item_type="'.CS_TOPIC_TYPE.'"))) ';
+        $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l21 ON ( l21.deletion_date IS NULL AND ((l21.first_item_id='.$this->addDatabasePrefix('discussions').'.item_id AND l21.second_item_type="'.CS_TOPIC_TYPE.'"))) ';
+        $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l22 ON ( l22.deletion_date IS NULL AND ((l22.second_item_id='.$this->addDatabasePrefix('discussions').'.item_id AND l22.first_item_type="'.CS_TOPIC_TYPE.'"))) ';
      }
      if ( isset($this->_institution_limit) ) {
-        $query .= ' LEFT JOIN link_items AS l41 ON ( l41.deletion_date IS NULL AND ((l41.first_item_id=discussions.item_id AND l41.second_item_type="'.CS_INSTITUTION_TYPE.'"))) ';
-        $query .= ' LEFT JOIN link_items AS l42 ON ( l42.deletion_date IS NULL AND ((l42.second_item_id=discussions.item_id AND l42.first_item_type="'.CS_INSTITUTION_TYPE.'"))) ';
+        $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l41 ON ( l41.deletion_date IS NULL AND ((l41.first_item_id='.$this->addDatabasePrefix('discussions').'.item_id AND l41.second_item_type="'.CS_INSTITUTION_TYPE.'"))) ';
+        $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l42 ON ( l42.deletion_date IS NULL AND ((l42.second_item_id='.$this->addDatabasePrefix('discussions').'.item_id AND l42.first_item_type="'.CS_INSTITUTION_TYPE.'"))) ';
      }
      if ( isset($this->_group_limit) ) {
-        $query .= ' LEFT JOIN link_items AS l31 ON ( l31.deletion_date IS NULL AND ((l31.first_item_id=discussions.item_id AND l31.second_item_type="'.CS_GROUP_TYPE.'"))) ';
-        $query .= ' LEFT JOIN link_items AS l32 ON ( l32.deletion_date IS NULL AND ((l32.second_item_id=discussions.item_id AND l32.first_item_type="'.CS_GROUP_TYPE.'"))) ';
+        $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l31 ON ( l31.deletion_date IS NULL AND ((l31.first_item_id='.$this->addDatabasePrefix('discussions').'.item_id AND l31.second_item_type="'.CS_GROUP_TYPE.'"))) ';
+        $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l32 ON ( l32.deletion_date IS NULL AND ((l32.second_item_id='.$this->addDatabasePrefix('discussions').'.item_id AND l32.first_item_type="'.CS_GROUP_TYPE.'"))) ';
      }
 
      if ( isset($this->_tag_limit) ) {
         $tag_id_array = $this->_getTagIDArrayByTagID($this->_tag_limit);
-        $query .= ' LEFT JOIN link_items AS l41 ON ( l41.deletion_date IS NULL AND ((l41.first_item_id=discussions.item_id AND l41.second_item_type="'.CS_TAG_TYPE.'"))) ';
-        $query .= ' LEFT JOIN link_items AS l42 ON ( l42.deletion_date IS NULL AND ((l42.second_item_id=discussions.item_id AND l42.first_item_type="'.CS_TAG_TYPE.'"))) ';
+        $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l41 ON ( l41.deletion_date IS NULL AND ((l41.first_item_id='.$this->addDatabasePrefix('discussions').'.item_id AND l41.second_item_type="'.CS_TAG_TYPE.'"))) ';
+        $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l42 ON ( l42.deletion_date IS NULL AND ((l42.second_item_id='.$this->addDatabasePrefix('discussions').'.item_id AND l42.first_item_type="'.CS_TAG_TYPE.'"))) ';
      }
 
       // restrict discussions by buzzword (la4)
       if (isset($this->_buzzword_limit)) {
          if ($this->_buzzword_limit == -1){
-            $query .= ' LEFT JOIN links AS l6 ON l6.from_item_id=discussions.item_id AND l6.link_type="buzzword_for"';
-            $query .= ' LEFT JOIN labels AS buzzwords ON l6.to_item_id=buzzwords.item_id AND buzzwords.type="buzzword"';
+            $query .= ' LEFT JOIN '.$this->addDatabasePrefix('links').' AS l6 ON l6.from_item_id='.$this->addDatabasePrefix('discussions').'.item_id AND l6.link_type="buzzword_for"';
+            $query .= ' LEFT JOIN '.$this->addDatabasePrefix('labels').' AS buzzwords ON l6.to_item_id=buzzwords.item_id AND buzzwords.type="buzzword"';
          }else{
-            $query .= ' INNER JOIN links AS l6 ON l6.from_item_id=discussions.item_id AND l6.link_type="buzzword_for"';
-            $query .= ' INNER JOIN labels AS buzzwords ON l6.to_item_id=buzzwords.item_id AND buzzwords.type="buzzword"';
+            $query .= ' INNER JOIN '.$this->addDatabasePrefix('links').' AS l6 ON l6.from_item_id='.$this->addDatabasePrefix('discussions').'.item_id AND l6.link_type="buzzword_for"';
+            $query .= ' INNER JOIN '.$this->addDatabasePrefix('labels').' AS buzzwords ON l6.to_item_id=buzzwords.item_id AND buzzwords.type="buzzword"';
          }
       }
 
       // restrict material by discusson
       if (isset($this->_ref_id_limit)) {
-         $query .= ' INNER JOIN link_items AS l5 ON ( (l5.first_item_id=discussions.item_id AND l5.second_item_id="'.encode(AS_DB,$this->_ref_id_limit).'")
-                     OR(l5.second_item_id=discussions.item_id AND l5.first_item_id="'.encode(AS_DB,$this->_ref_id_limit).'") AND l5.deleter_id IS NULL)';
+         $query .= ' INNER JOIN '.$this->addDatabasePrefix('link_items').' AS l5 ON ( (l5.first_item_id='.$this->addDatabasePrefix('discussions').'.item_id AND l5.second_item_id="'.encode(AS_DB,$this->_ref_id_limit).'")
+                     OR(l5.second_item_id='.$this->addDatabasePrefix('discussions').'.item_id AND l5.first_item_id="'.encode(AS_DB,$this->_ref_id_limit).'") AND l5.deleter_id IS NULL)';
       }
 
       // only files limit -> entries with files
       if ( isset($this->_only_files_limit) and $this->_only_files_limit ) {
-         $query .= ' INNER JOIN item_link_file AS lf ON discussionarticles.item_id = lf.item_iid';
+         $query .= ' INNER JOIN '.$this->addDatabasePrefix('item_link_file').' AS lf ON '.$this->addDatabasePrefix('discussionarticles').'.item_id = lf.item_iid';
       }
 
      $query .= ' WHERE 1';
 
       if (!$this->_show_not_activated_entries_limit) {
-         $query .= ' AND (discussions.modification_date IS NULL OR discussions.modification_date <= "'.getCurrentDateTimeInMySQL().'")';
+         $query .= ' AND ('.$this->addDatabasePrefix('discussions').'.modification_date IS NULL OR '.$this->addDatabasePrefix('discussions').'.modification_date <= "'.getCurrentDateTimeInMySQL().'")';
       }
      // fifth, insert limits into the select statement
      if ( !empty($this->_room_array_limit)
           and is_array($this->_room_array_limit)
         ) {
-        $query .= ' AND discussions.context_id IN ('.encode(AS_DB,implode(',',$this->_room_array_limit)).')';
+        $query .= ' AND '.$this->addDatabasePrefix('discussions').'.context_id IN ('.encode(AS_DB,implode(',',$this->_room_array_limit)).')';
      } elseif (isset($this->_room_limit)) {
-        $query .= ' AND discussions.context_id = "'.encode(AS_DB,$this->_room_limit).'"';
+        $query .= ' AND '.$this->addDatabasePrefix('discussions').'.context_id = "'.encode(AS_DB,$this->_room_limit).'"';
      } else {
-        $query .= ' AND discussions.context_id = "'.encode(AS_DB,$this->_environment->getCurrentContextID()).'"';
+        $query .= ' AND '.$this->addDatabasePrefix('discussions').'.context_id = "'.encode(AS_DB,$this->_environment->getCurrentContextID()).'"';
      }
      if ($this->_delete_limit == true) {
-        $query .= ' AND discussions.deleter_id IS NULL';
+        $query .= ' AND '.$this->addDatabasePrefix('discussions').'.deleter_id IS NULL';
      }
      if (isset($this->_ref_user_limit)) {
-         $query .= ' AND (discussions.creator_id = "'.encode(AS_DB,$this->_ref_user_limit).'" )';
+         $query .= ' AND ('.$this->addDatabasePrefix('discussions').'.creator_id = "'.encode(AS_DB,$this->_ref_user_limit).'" )';
      }
      if (isset($this->_age_limit)) {
-        $query .= ' AND discussions.modification_date >= DATE_SUB(CURRENT_DATE,interval '.encode(AS_DB,$this->_age_limit).' day)';
+        $query .= ' AND '.$this->addDatabasePrefix('discussions').'.modification_date >= DATE_SUB(CURRENT_DATE,interval '.encode(AS_DB,$this->_age_limit).' day)';
      }
       if ( isset($this->_existence_limit) ) {
-         $query .= ' AND discussions.creation_date >= DATE_SUB(CURRENT_DATE,interval '.encode(AS_DB,$this->_existence_limit).' day)';
+         $query .= ' AND '.$this->addDatabasePrefix('discussions').'.creation_date >= DATE_SUB(CURRENT_DATE,interval '.encode(AS_DB,$this->_existence_limit).' day)';
       }
      if(!empty($this->_id_array_limit)) {
-        $query .= ' AND discussions.item_id IN ('.implode(", ",encode(AS_DB,$this->_id_array_limit)).')';
+        $query .= ' AND '.$this->addDatabasePrefix('discussions').'.item_id IN ('.implode(", ",encode(AS_DB,$this->_id_array_limit)).')';
      }
 
       if ( isset($this->_topic_limit) ){
@@ -317,7 +317,7 @@ class cs_discussion_manager extends cs_manager {
       // restrict sql-statement by search limit, create wheres
       if (isset($this->_search_array) AND !empty($this->_search_array)) {
          $query .= ' AND (';
-         $field_array = array('TRIM(CONCAT(people.firstname," ",people.lastname))','TRIM(CONCAT(people2.firstname," ",people2.lastname))','discussions.title','discussions.modification_date','discussionarticles.subject','discussionarticles.description');
+         $field_array = array('TRIM(CONCAT(people.firstname," ",people.lastname))','TRIM(CONCAT(people2.firstname," ",people2.lastname))',$this->addDatabasePrefix('discussions').'.title',$this->addDatabasePrefix('discussions').'.modification_date',$this->addDatabasePrefix('discussionarticles').'.subject',$this->addDatabasePrefix('discussionarticles').'.description');
          $search_limit_query_code = $this->_generateSearchLimitCode($field_array);
          $query .= $search_limit_query_code;
          $query .= ')';
@@ -334,17 +334,17 @@ class cs_discussion_manager extends cs_manager {
       }
 
      if (isset($this->_search_array) AND !empty($this->_search_array)) {
-        $query .= ' GROUP BY discussions.item_id';
+        $query .= ' GROUP BY '.$this->addDatabasePrefix('discussions').'.item_id';
      }
      if ( isset($this->_sort_order) ) {
         if ( $this->_sort_order == 'latest' ) {
-           $query .= ' ORDER BY discussions.latest_article_modification_date DESC';
+           $query .= ' ORDER BY '.$this->addDatabasePrefix('discussions').'.latest_article_modification_date DESC';
         } elseif ( $this->_sort_order == 'latest_rev' ) {
-           $query .= ' ORDER BY discussions.latest_article_modification_date';
+           $query .= ' ORDER BY '.$this->addDatabasePrefix('discussions').'.latest_article_modification_date';
         } elseif ( $this->_sort_order == 'title' ) {
-           $query .= ' ORDER BY discussions.title';
+           $query .= ' ORDER BY '.$this->addDatabasePrefix('discussions').'.title';
         } elseif ( $this->_sort_order == 'title_rev' ) {
-           $query .= ' ORDER BY discussions.title DESC';
+           $query .= ' ORDER BY '.$this->addDatabasePrefix('discussions').'.title DESC';
         } elseif ( $this->_sort_order == 'creator' ) {
            $query .= ' ORDER BY people.lastname';
         } elseif ( $this->_sort_order == 'creator_rev' ) {
@@ -352,7 +352,7 @@ class cs_discussion_manager extends cs_manager {
         }
      }
      else {
-           $query .= ' ORDER BY discussions.modification_date DESC, discussions.title DESC';
+           $query .= ' ORDER BY '.$this->addDatabasePrefix('discussions').'.modification_date DESC, '.$this->addDatabasePrefix('discussions').'.title DESC';
      }
       if ($mode == 'select') {
          if (isset($this->_interval_limit) and isset($this->_from_limit)) {
@@ -396,7 +396,7 @@ class cs_discussion_manager extends cs_manager {
         } elseif ( array_key_exists($item_id,$this->_cached_items) ) {
            return $this->_buildItem($this->_cached_items[$item_id]);
         } elseif ( !empty($item_id) ) {
-           $query = "SELECT * FROM discussions WHERE discussions.item_id = '".encode(AS_DB,$item_id)."'";
+           $query = "SELECT * FROM ".$this->addDatabasePrefix("discussions")." WHERE ".$this->addDatabasePrefix("discussions").".item_id = '".encode(AS_DB,$item_id)."'";
            $result = $this->_db_connector->performQuery($query);
            if ( !isset($result) or empty($result[0]) ) {
               include_once('functions/error_functions.php');
@@ -450,7 +450,7 @@ class cs_discussion_manager extends cs_manager {
         $modification_date = $item->getModificationDate();
      }
 
-      $query = 'UPDATE discussions SET '.
+      $query = 'UPDATE '.$this->addDatabasePrefix('discussions').' SET '.
                'modifier_id="'.encode(AS_DB,$modificator->getItemID()).'",'.
                'modification_date="'.$modification_date.'",'.
                'title="'.encode(AS_DB,$item->getTitle()).'",'.
@@ -482,7 +482,7 @@ class cs_discussion_manager extends cs_manager {
    * @param cs_discussion_item the discussion item for which an entry should be made
    */
   function _create ($item) {
-     $query = 'INSERT INTO items SET '.
+     $query = 'INSERT INTO '.$this->addDatabasePrefix('items').' SET '.
               'context_id="'.encode(AS_DB,$item->getContextID()).'",'.
               'modification_date="'.getCurrentDateTimeInMySQL().'",'.
               'type="discussion"';
@@ -524,7 +524,7 @@ class cs_discussion_manager extends cs_manager {
         $modification_date = $item->getModificationDate();
      }
 
-     $query = 'INSERT INTO discussions SET '.
+     $query = 'INSERT INTO '.$this->addDatabasePrefix('discussions').' SET '.
               'item_id="'.encode(AS_DB,$item->getItemID()).'",'.
               'context_id="'.encode(AS_DB,$item->getContextID()).'",'.
               'creator_id="'.encode(AS_DB,$user->getItemID()).'",'.
@@ -560,7 +560,7 @@ class cs_discussion_manager extends cs_manager {
       $current_datetime = getCurrentDateTimeInMySQL();
       $current_user = $this->_environment->getCurrentUserItem();
       $user_id = $current_user->getItemID();
-      $query = 'UPDATE discussions SET '.
+      $query = 'UPDATE '.$this->addDatabasePrefix('discussions').' SET '.
                'deletion_date="'.$current_datetime.'",'.
                'deleter_id="'.encode(AS_DB,$user_id).'"'.
                ' WHERE item_id="'.encode(AS_DB,$item_id).'"';
@@ -582,13 +582,13 @@ class cs_discussion_manager extends cs_manager {
    function getCountDiscussions ($start, $end) {
       $retour = 0;
 
-      $query  = "SELECT count(DISTINCT discussions.item_id) as number FROM discussions, discussionarticles";
-      $query .= " WHERE discussions.context_id = '".encode(AS_DB,$this->_room_limit)."'";
-      $query .= " and ((discussions.creation_date > '".encode(AS_DB,$start)."' and discussions.creation_date < '".encode(AS_DB,$end)."')";
-      $query .= " or (discussions.modification_date > '".encode(AS_DB,$start)."' and discussions.modification_date < '".encode(AS_DB,$end)."'))";
-      $query .= " and discussions.item_id=discussionarticles.discussion_id";
-      $query .= " and ((discussionarticles.creation_date > '".encode(AS_DB,$start)."' and discussionarticles.creation_date < '".encode(AS_DB,$end)."')";
-      $query .= " or (discussionarticles.modification_date > '".encode(AS_DB,$start)."' and discussionarticles.modification_date < '".encode(AS_DB,$end)."'))";
+      $query  = "SELECT count(DISTINCT ".$this->addDatabasePrefix("discussions").".item_id) as number FROM ".$this->addDatabasePrefix("discussions").", ".$this->addDatabasePrefix("discussionarticles");
+      $query .= " WHERE ".$this->addDatabasePrefix("discussions").".context_id = '".encode(AS_DB,$this->_room_limit)."'";
+      $query .= " and ((".$this->addDatabasePrefix("discussions").".creation_date > '".encode(AS_DB,$start)."' and ".$this->addDatabasePrefix("discussions").".creation_date < '".encode(AS_DB,$end)."')";
+      $query .= " or (".$this->addDatabasePrefix("discussions").".modification_date > '".encode(AS_DB,$start)."' and ".$this->addDatabasePrefix("discussions").".modification_date < '".encode(AS_DB,$end)."'))";
+      $query .= " and ".$this->addDatabasePrefix("discussions").".item_id=".$this->addDatabasePrefix("discussionarticles").".discussion_id";
+      $query .= " and ((".$this->addDatabasePrefix("discussionarticles").".creation_date > '".encode(AS_DB,$start)."' and ".$this->addDatabasePrefix("discussionarticles").".creation_date < '".encode(AS_DB,$end)."')";
+      $query .= " or (".$this->addDatabasePrefix("discussionarticles").".modification_date > '".encode(AS_DB,$start)."' and ".$this->addDatabasePrefix("discussionarticles").".modification_date < '".encode(AS_DB,$end)."'))";
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) ) {
          include_once('functions/error_functions.php');trigger_error('Problems counting all discussions.',E_USER_WARNING);
@@ -604,7 +604,7 @@ class cs_discussion_manager extends cs_manager {
    function getCountNewDiscussions ($start, $end) {
       $retour = 0;
 
-      $query = "SELECT count(discussions.item_id) as number FROM discussions WHERE discussions.context_id = '".encode(AS_DB,$this->_room_limit)."' and discussions.creation_date > '".encode(AS_DB,$start)."' and discussions.creation_date < '".encode(AS_DB,$end)."'";
+      $query = "SELECT count(".$this->addDatabasePrefix("discussions").".item_id) as number FROM ".$this->addDatabasePrefix("discussions")." WHERE ".$this->addDatabasePrefix("discussions").".context_id = '".encode(AS_DB,$this->_room_limit)."' and ".$this->addDatabasePrefix("discussions").".creation_date > '".encode(AS_DB,$start)."' and ".$this->addDatabasePrefix("discussions").".creation_date < '".encode(AS_DB,$end)."'";
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) ) {
          include_once('functions/error_functions.php');trigger_error('Problems counting discussions.',E_USER_WARNING);
@@ -619,13 +619,13 @@ class cs_discussion_manager extends cs_manager {
    function getCountModDiscussions ($start, $end) {
       $retour = 0;
 
-      $query  = "SELECT count(DISTINCT discussions.item_id) as number FROM discussions, discussionarticles";
-      $query .= " WHERE discussions.context_id = '".encode(AS_DB,$this->_room_limit)."'";
-      $query .= " and discussions.modification_date > '".encode(AS_DB,$start)."' and discussions.modification_date < '".encode(AS_DB,$end)."'";
-      $query .= " and discussions.modification_date != discussions.creation_date";
-      $query .= " and discussions.item_id=discussionarticles.discussion_id";
-      $query .= " and ((discussionarticles.creation_date > '".encode(AS_DB,$start)."' and discussionarticles.creation_date < '".encode(AS_DB,$end)."')";
-      $query .= " or (discussionarticles.modification_date > '".encode(AS_DB,$start)."' and discussionarticles.modification_date < '".encode(AS_DB,$end)."'))";
+      $query  = "SELECT count(DISTINCT ".$this->addDatabasePrefix("discussions").".item_id) as number FROM ".$this->addDatabasePrefix("discussions").", ".$this->addDatabasePrefix("discussionarticles");
+      $query .= " WHERE ".$this->addDatabasePrefix("discussions").".context_id = '".encode(AS_DB,$this->_room_limit)."'";
+      $query .= " and ".$this->addDatabasePrefix("discussions").".modification_date > '".encode(AS_DB,$start)."' and ".$this->addDatabasePrefix("discussions").".modification_date < '".encode(AS_DB,$end)."'";
+      $query .= " and ".$this->addDatabasePrefix("discussions").".modification_date != ".$this->addDatabasePrefix("discussions").".creation_date";
+      $query .= " and ".$this->addDatabasePrefix("discussions").".item_id=".$this->addDatabasePrefix("discussionarticles").".discussion_id";
+      $query .= " and ((".$this->addDatabasePrefix("discussionarticles").".creation_date > '".encode(AS_DB,$start)."' and ".$this->addDatabasePrefix("discussionarticles").".creation_date < '".encode(AS_DB,$end)."')";
+      $query .= " or (".$this->addDatabasePrefix("discussionarticles").".modification_date > '".encode(AS_DB,$start)."' and ".$this->addDatabasePrefix("discussionarticles").".modification_date < '".encode(AS_DB,$end)."'))";
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) ) {
          include_once('functions/error_functions.php');trigger_error('Problems counting all discussions.',E_USER_WARNING);
@@ -645,11 +645,11 @@ class cs_discussion_manager extends cs_manager {
    	  									'public'			=>	'public'));
    	  
       $current_datetime = getCurrentDateTimeInMySQL();
-      $query  = 'SELECT discussions.* FROM discussions WHERE discussions.creator_id = "'.encode(AS_DB,$uid).'"';
+      $query  = 'SELECT '.$this->addDatabasePrefix('discussions').'.* FROM '.$this->addDatabasePrefix('discussions').' WHERE '.$this->addDatabasePrefix('discussions').'.creator_id = "'.encode(AS_DB,$uid).'"';
       $result = $this->_db_connector->performQuery($query);
       if ( !empty($result) ) {
          foreach ($result as $rs) {
-            $insert_query = 'UPDATE discussions SET';
+            $insert_query = 'UPDATE '.$this->addDatabasePrefix('discussions').' SET';
             $insert_query .= ' title = "'.encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_TITLE')).'",';
             $insert_query .= ' modification_date = "'.$current_datetime.'",';
             $insert_query .= ' public = "1"';

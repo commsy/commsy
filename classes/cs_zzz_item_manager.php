@@ -1,9 +1,11 @@
-<?php
+<?PHP
 // $Id$
 //
 // Release $Name$
 //
-// Copyright (c)2009 Iver Jackewitz
+// Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+// Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+// Edouard Simon, Monique Strauss, José Manuel González Vázquez
 //
 //    This file is part of CommSy.
 //
@@ -20,9 +22,14 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-// single entry point
-$c_single_entry_point = 'commsy.php';
+/** upper class of the zzz_item manager
+ */
+include_once('classes/cs_item_manager.php');
 
-// Prefix for backup-db-tables
-$c_db_backup_prefix = 'zzz';
+/** class for database connection to the database table "community"
+ * this class implements a database manager for the table "community"
+ */
+class cs_zzz_item_manager extends cs_item_manager {
+   var $_db_prefix = 'zzz_';
+}
 ?>

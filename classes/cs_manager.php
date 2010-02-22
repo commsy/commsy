@@ -130,6 +130,7 @@ class cs_manager {
    public $_class_factory = NULL;
    public $_id_array_limit = NULL;
    public $_link_modifier = true;
+   public $_db_prefix = '';
 
   /** constructor: cs_manager
     * the only available constructor, initial values for internal variables. sets room limit to room
@@ -502,7 +503,7 @@ class cs_manager {
          elseif ( $type == 'todo' ) {
             $type = 'todos';
          }
-         $query = "SELECT * FROM ".encode(AS_DB,$type)." WHERE ".encode(AS_DB,$type).".item_id IN ('".implode("', '",encode(AS_DB,$id_array))."')";
+         $query = "SELECT * FROM ".encode(AS_DB,$this->addDatabasePrefix($type))." WHERE ".encode(AS_DB,$this->addDatabasePrefix($type)).".item_id IN ('".implode("', '",encode(AS_DB,$id_array))."')";
          $result = $this->_db_connector->performQuery($query);
          if ( !isset($result) ) {
             include_once('functions/error_functions.php');
@@ -580,7 +581,7 @@ class cs_manager {
    * @param cs_item the item for which an update should be made
    */
    function _update($item) {
-      $query = 'UPDATE items SET';
+      $query = 'UPDATE '.$this->addDatabasePrefix('items').' SET';
       $modification_date = getCurrentDateTimeInMySQL();
       if ($item->isNotActivated()){
          $modification_date = $item->getModificationDate();
@@ -612,7 +613,7 @@ class cs_manager {
       $current_datetime = getCurrentDateTimeInMySQL();
       $current_user = $this->_environment->getCurrentUserItem();
       $user_id = $current_user->getItemID();
-      $query = 'UPDATE items SET '.
+      $query = 'UPDATE '.$this->addDatabasePrefix('items').' SET '.
                'deletion_date="'.$current_datetime.'",'.
                'deleter_id="'.encode(AS_DB,$user_id).'"'.
                ' WHERE item_id="'.$item_id.'"';
@@ -631,7 +632,7 @@ class cs_manager {
       $current_datetime = getCurrentDateTimeInMySQL();
       $current_user = $this->_environment->getCurrentUserItem();
       $user_id = $current_user->getItemID();
-      $query = 'UPDATE '.$this->_db_table.' SET'.
+      $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET'.
                ' deletion_date=NULL,'.
                ' deleter_id=NULL,'.
                ' modification_date="'.$current_datetime.'",'.
@@ -651,7 +652,7 @@ class cs_manager {
 
    function undelete ($item_id) {
       $current_datetime = getCurrentDateTimeInMySQL();
-      $query = 'UPDATE items SET '.
+      $query = 'UPDATE '.$this->addDatabasePrefix('items').' SET '.
                'modification_date="'.$current_datetime.'",'.
                'deletion_date=NULL,'.
                'deleter_id=NULL'.
@@ -862,7 +863,7 @@ class cs_manager {
      if ( $this->_db_table != 'links'
           and $this->_db_table != 'items'
        ) {
-         $query1 = 'UPDATE '.$this->_db_table.' SET creator_id = "'.encode(AS_DB,$new_id).'" WHERE creator_id = "'.encode(AS_DB,$old_id).'";';
+         $query1 = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET creator_id = "'.encode(AS_DB,$new_id).'" WHERE creator_id = "'.encode(AS_DB,$old_id).'";';
          $result = $this->_db_connector->performQuery($query1);
          if ( !isset($result) or !$result ) {
             include_once('functions/error_functions.php');
@@ -880,7 +881,7 @@ class cs_manager {
            and $this->_db_table != 'tasks'
            and $this->_db_table != 'items'
          ) {
-         $query2 = ' UPDATE '.$this->_db_table.' SET modifier_id = "'.encode(AS_DB,$new_id).'" WHERE modifier_id = "'.encode(AS_DB,$old_id).'";';
+         $query2 = ' UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET modifier_id = "'.encode(AS_DB,$new_id).'" WHERE modifier_id = "'.encode(AS_DB,$old_id).'";';
          $result = $this->_db_connector->performQuery($query2);
          if ( !isset($result) or !$result ) {
             include_once('functions/error_functions.php');
@@ -892,7 +893,7 @@ class cs_manager {
       }
 
       // deleter id
-      $query3 = ' UPDATE '.$this->_db_table.' SET deleter_id = "'.encode(AS_DB,$new_id).'" WHERE deleter_id = "'.encode(AS_DB,$old_id).'";';
+      $query3 = ' UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET deleter_id = "'.encode(AS_DB,$new_id).'" WHERE deleter_id = "'.encode(AS_DB,$old_id).'";';
       $result = $this->_db_connector->performQuery($query3);
       if ( !isset($result) or !$result ) {
          include_once('functions/error_functions.php');
@@ -908,7 +909,7 @@ class cs_manager {
       $current_date = getCurrentDateTimeInMySQL();
 
       $query  = '';
-      $query .= 'SELECT * FROM '.$this->_db_table.' WHERE context_id="'.encode(AS_DB,$old_id).'" AND deleter_id IS NULL AND deletion_date IS NULL';
+      $query .= 'SELECT * FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE context_id="'.encode(AS_DB,$old_id).'" AND deleter_id IS NULL AND deletion_date IS NULL';
 
       # special for links
       # should be deleted when data clean
@@ -947,7 +948,7 @@ class cs_manager {
             if ( !empty($type_field) ) {
                $type_sql_statement = ', '.$type_field;
             }
-            $sql = 'SELECT item_id,'.$title_field.$type_sql_statement.' FROM '.$this->_db_table.' WHERE context_id="'.encode(AS_DB,$new_id).'" AND deleter_id IS NULL AND deletion_date IS NULL;';
+            $sql = 'SELECT item_id,'.$title_field.$type_sql_statement.' FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE context_id="'.encode(AS_DB,$new_id).'" AND deleter_id IS NULL AND deletion_date IS NULL;';
             $sql_result = $this->_db_connector->performQuery($sql);
             if ( !isset($sql_result) ) {
                include_once('functions/error_functions.php');
@@ -964,7 +965,7 @@ class cs_manager {
                }
             }
          } elseif ( DBTable2Type($this->_db_table) == CS_TAG2TAG_TYPE ) {
-            $sql = 'SELECT to_item_id FROM '.$this->_db_table.' WHERE context_id="'.encode(AS_DB,$new_id).'" AND deleter_id IS NULL AND deletion_date IS NULL;';
+            $sql = 'SELECT to_item_id FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE context_id="'.encode(AS_DB,$new_id).'" AND deleter_id IS NULL AND deletion_date IS NULL;';
             $sql_result = $this->_db_connector->performQuery($sql);
             if ( !isset($sql_result) ) {
                include_once('functions/error_functions.php');
@@ -986,7 +987,7 @@ class cs_manager {
                   ) {
             $item_id = 'item_id';
             $modification_date = 'modification_date';
-            $sql  = 'SELECT '.$item_id.','.$modification_date.',extras FROM '.$this->_db_table.' WHERE context_id="'.encode(AS_DB,$new_id).'"';
+            $sql  = 'SELECT '.$item_id.','.$modification_date.',extras FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE context_id="'.encode(AS_DB,$new_id).'"';
             $sql .= ' AND extras LIKE "%s:4:\"COPY\";a:2:{s:7:\"ITEM_ID\";%"';
             $sql .= ' AND deleter_id IS NULL AND deletion_date IS NULL;';
             $sql_result = $this->_db_connector->performQuery($sql);
@@ -1003,7 +1004,7 @@ class cs_manager {
                }
             }
          } elseif ( DBTable2Type($this->_db_table) == CS_LINK_TYPE ) {
-            $sql  = 'SELECT from_item_id,to_item_id FROM '.$this->_db_table.' WHERE context_id="'.encode(AS_DB,$new_id).'"';
+            $sql  = 'SELECT from_item_id,to_item_id FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE context_id="'.encode(AS_DB,$new_id).'"';
             $sql .= ' AND deleter_id IS NULL AND deletion_date IS NULL;';
             $sql_result = $this->_db_connector->performQuery($sql);
             if ( !isset($sql_result) ) {
@@ -1015,7 +1016,7 @@ class cs_manager {
                }
             }
          } elseif ( DBTable2Type($this->_db_table) == CS_LINKITEM_TYPE ) {
-            $sql  = 'SELECT first_item_id,second_item_id FROM '.$this->_db_table.' WHERE context_id="'.encode(AS_DB,$new_id).'"';
+            $sql  = 'SELECT first_item_id,second_item_id FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE context_id="'.encode(AS_DB,$new_id).'"';
             $sql .= ' AND deleter_id IS NULL AND deletion_date IS NULL;';
             $sql_result = $this->_db_connector->performQuery($sql);
             if ( !isset($sql_result) ) {
@@ -1087,7 +1088,7 @@ class cs_manager {
             }
             if ($do_it) {
                $insert_query  = '';
-               $insert_query .= 'INSERT INTO '.$this->_db_table.' SET';
+               $insert_query .= 'INSERT INTO '.$this->addDatabasePrefix($this->_db_table).' SET';
                $first = true;
                $old_item_id = '';
                foreach ($query_result as $key => $value) {
@@ -1254,7 +1255,7 @@ class cs_manager {
 
    public function refreshInDescLinks ($context_id, $id_array) {
       $query  = '';
-      $query .= 'SELECT item_id, description FROM '.$this->_db_table.' WHERE context_id="'.encode(AS_DB,$context_id).'" AND deleter_id IS NULL AND deletion_date IS NULL';
+      $query .= 'SELECT item_id, description FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE context_id="'.encode(AS_DB,$context_id).'" AND deleter_id IS NULL AND deletion_date IS NULL';
 
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) ) {
@@ -1295,7 +1296,7 @@ class cs_manager {
                include_once('functions/security_functions.php');
                $desc = renewSecurityHash($desc);
             }
-            $query = 'UPDATE '.$this->_db_table.' SET description="'.encode(AS_DB,$desc).'" WHERE item_id='.encode(AS_DB,$item_id);
+            $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET description="'.encode(AS_DB,$desc).'" WHERE item_id='.encode(AS_DB,$item_id);
             $result_update = $this->_db_connector->performQuery($query);
             if ( !isset($result_update) or !$result_update ) {
                include_once('functions/error_functions.php');
@@ -1310,7 +1311,7 @@ class cs_manager {
 
    function _createItemInItemTable ($context_id, $type, $date) {
       $retour = '';
-      $query = 'INSERT INTO items SET '.
+      $query = 'INSERT INTO '.$this->addDatabasePrefix('items').' SET '.
              'context_id="'.encode(AS_DB,$context_id).'",'.
              'modification_date="'.encode(AS_DB,$date).'",'.
              'type="'.$type.'"';
@@ -1328,7 +1329,7 @@ class cs_manager {
    function deleteReallyOlderThan ($days) {
       $retour = false;
       $timestamp = getCurrentDateTimeMinusDaysInMySQL($days);
-      $query = 'DELETE FROM '.$this->_db_table.' WHERE deletion_date IS NOT NULL and deletion_date < "'.$timestamp.'"';
+      $query = 'DELETE FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE deletion_date IS NOT NULL and deletion_date < "'.$timestamp.'"';
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) or !$result ) {
          include_once('functions/error_functions.php');
@@ -1384,7 +1385,7 @@ class cs_manager {
 
       // get columns form database table
       if ( !isset($this->_key_array) ) {
-         $query = 'SHOW COLUMNS FROM '.$this->_db_table;
+         $query = 'SHOW COLUMNS FROM '.$this->addDatabasePrefix($this->_db_table);
          $result = $this->_db_connector->performQuery($query);
          if ( !isset($result) ) {
             include_once('functions/error_functions.php');
@@ -1400,7 +1401,7 @@ class cs_manager {
 
       // perform update
       $query  = '';
-      $query .= 'UPDATE '.$this->_db_table.'';
+      $query .= 'UPDATE '.$this->addDatabasePrefix($this->_db_table).'';
 
       $query .= ' SET ';
       $first = true;
@@ -1483,15 +1484,15 @@ class cs_manager {
       }
       
       // build from
-      $query .= ' FROM ' . $this->_db_table;
+      $query .= ' FROM ' . $this->addDatabasePrefix($this->_db_table);
       
       // build where
-      $query .= ' WHERE ' . $this->_db_table . '.creator_id = "' . encode(AS_DB, $uid) . '"'; 
+      $query .= ' WHERE ' . $this->addDatabasePrefix($this->_db_table) . '.creator_id = "' . encode(AS_DB, $uid) . '"'; 
       $result = $this->_db_connector->performQuery($query);
       
       if(!empty($result)) {
       	 // build insert query
-      	 $insert_query = 'INSERT IGNORE INTO item_backup(item_id, backup_date, ';
+      	 $insert_query = 'INSERT IGNORE INTO '.$this->addDatabasePrefix('item_backup').'(item_id, backup_date, ';
       	 for($i=0; $i<$size; $i++) {
       	    $insert_query .= $values[$i];
       	    if($i != $size-1) {
@@ -1564,17 +1565,17 @@ class cs_manager {
             } else {
                $table = $this->_db_table;
             }
-            $ft_sql_result = ' OR (' . $table . '.item_id IN (';
+            $ft_sql_result = ' OR (' . $this->addDatabasePrefix($table) . '.item_id IN (';
             for ($i = 0; $i < count($ft_result) - 1; $i++) {
                $ft_sql_result .= $ft_result[$i] . ',';
             }
-            $ft_sql_result .= $ft_result[count($ft_result) - 1] . ') AND '.$table.'.deleter_id IS NULL)';
+            $ft_sql_result .= $ft_result[count($ft_result) - 1] . ') AND '.$this->addDatabasePrefix($table).'.deleter_id IS NULL)';
             if ( $this->_db_table == type2Table(CS_MATERIAL_TYPE) ) {
-               $ft_sql_result .= ' OR (' . type2Table(CS_SECTION_TYPE) . '.item_id IN (';
+               $ft_sql_result .= ' OR (' . $this->addDatabasePrefix(type2Table(CS_SECTION_TYPE)) . '.item_id IN (';
                for ($i = 0; $i < count($ft_result) - 1; $i++) {
                   $ft_sql_result .= $ft_result[$i] . ',';
                }
-               $ft_sql_result .= $ft_result[count($ft_result) - 1] . ') AND '.type2Table(CS_SECTION_TYPE).'.deleter_id IS NULL)';
+               $ft_sql_result .= $ft_result[count($ft_result) - 1] . ') AND '.$this->addDatabasePrefix(type2Table(CS_SECTION_TYPE)).'.deleter_id IS NULL)';
             }
             unset($ft_result);
             return $ft_sql_result;
@@ -1587,7 +1588,7 @@ class cs_manager {
    public function existsItem ( $item_id ) {
       $retour = false;
       if ( !empty($item_id) ) {
-         $query = 'SELECT item_id FROM '.$this->_db_table;
+         $query = 'SELECT item_id FROM '.$this->addDatabasePrefix($this->_db_table);
          $query .= ' WHERE item_id = "'.encode(AS_DB,$item_id).'"';
          $result = $this->_db_connector->performQuery($query);
          if ( !isset($result) ) {
@@ -1621,6 +1622,56 @@ class cs_manager {
          }
          $retour .= $retour2;
          $retour .= '   </list>'.LF;
+      }
+      return $retour;
+   }
+   
+   function addDatabasePrefix($db_table){
+      return $this->_db_prefix . $db_table;
+   }
+   
+   function moveFromDbToBackup($context_id){
+   	global $c_db_backup_prefix;
+      $retour = false;
+      if ( !empty($context_id) ) {
+         $query = 'INSERT INTO '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$this->_db_table).' SELECT * FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).'.context_id = "'.$context_id.'"';
+         $result = $this->_db_connector->performQuery($query);
+         if ( !isset($result) ) {
+            include_once('functions/error_functions.php');
+            trigger_error('Problems while copying to backup-table.',E_USER_WARNING);
+         } else {
+            $query = 'DELETE FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).'.context_id = "'.$context_id.'"';
+            $result = $this->_db_connector->performQuery($query);
+	         if ( !isset($result) ) {
+	            include_once('functions/error_functions.php');
+	            trigger_error('Problems deleting after move to backup-table.',E_USER_WARNING);
+	         } elseif ( !empty($result[0]) ) {
+	            $retour = true;
+	         }
+         }
+      }
+      return $retour;
+   }
+   
+   function moveFromBackupToDb($context_id){
+   	global $c_db_backup_prefix;
+      $retour = false;
+      if ( !empty($context_id) ) {
+         $query = 'INSERT INTO '.$this->addDatabasePrefix($this->_db_table).' SELECT * FROM '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$this->_db_table).' WHERE '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$this->_db_table).'.context_id = "'.$context_id.'"';
+         $result = $this->_db_connector->performQuery($query);
+         if ( !isset($result) ) {
+            include_once('functions/error_functions.php');
+            trigger_error('Problems while copying to backup-table.',E_USER_WARNING);
+         } else {
+            $query = 'DELETE FROM '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$this->_db_table).' WHERE '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$this->_db_table).'.context_id = "'.$context_id.'"';
+            $result = $this->_db_connector->performQuery($query);
+            if ( !isset($result) ) {
+               include_once('functions/error_functions.php');
+               trigger_error('Problems deleting after move to backup-table.',E_USER_WARNING);
+            } elseif ( !empty($result[0]) ) {
+               $retour = true;
+            }
+         }
       }
       return $retour;
    }

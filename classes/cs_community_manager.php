@@ -139,53 +139,53 @@ class cs_community_manager extends cs_room2_manager {
     */
   function _performQuery ($mode = 'select') {
      if ($mode == 'count') {
-        $query = 'SELECT count('.$this->_db_table.'.item_id) as count';
+        $query = 'SELECT count('.$this->addDatabasePrefix($this->_db_table).'.item_id) as count';
      } elseif ($mode == 'id_array') {
-         $query = 'SELECT '.$this->_db_table.'.item_id';
+         $query = 'SELECT '.$this->addDatabasePrefix($this->_db_table).'.item_id';
      } else {
-        $query = 'SELECT '.$this->_db_table.'.*';
+        $query = 'SELECT '.$this->addDatabasePrefix($this->_db_table).'.*';
      }
 
-     $query .= ' FROM '.$this->_db_table;
+     $query .= ' FROM '.$this->addDatabasePrefix($this->_db_table);
      $query .= ' WHERE 1';
 
      // insert limits into the select statement
      if ($this->_delete_limit == true) {
-        $query .= ' AND '.$this->_db_table.'.deleter_id IS NULL';
+        $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.deleter_id IS NULL';
      }
      if (isset($this->_status_limit)) {
-        $query .= ' AND '.$this->_db_table.'.status = "'.encode(AS_DB,$this->_status_limit).'"';
+        $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.status = "'.encode(AS_DB,$this->_status_limit).'"';
      }
      if (isset($this->_room_limit)) {
-        $query .= ' AND '.$this->_db_table.'.context_id = "'.encode(AS_DB,$this->_room_limit).'"';
+        $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.context_id = "'.encode(AS_DB,$this->_room_limit).'"';
      }
      if (isset($this->_room_type)) {
-        $query .= ' AND '.$this->_db_table.'.type = "'.encode(AS_DB,$this->_room_type).'"';
+        $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.type = "'.encode(AS_DB,$this->_room_type).'"';
      }
 
       // id_array_limit
       if( !empty($this->_id_array_limit) ) {
-         $query .= ' AND '.$this->_db_table.'.item_id IN ('.implode(", ",encode(AS_DB,$this->_id_array_limit)).')';
+         $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.item_id IN ('.implode(", ",encode(AS_DB,$this->_id_array_limit)).')';
       }
 
      // template
      if (isset($this->_template_limit)) {
-        $query .= ' AND '.$this->_db_table.'.template = "'.encode(AS_DB,$this->_template_limit).'"';
+        $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.template = "'.encode(AS_DB,$this->_template_limit).'"';
      }
 
      if (isset($this->_order)) {
         if ($this->_order == 'date') {
-           $query .= ' ORDER BY '.$this->_db_table.'.modification_date DESC, '.$this->_db_table.'.title ASC';
+           $query .= ' ORDER BY '.$this->addDatabasePrefix($this->_db_table).'.modification_date DESC, '.$this->addDatabasePrefix($this->_db_table).'.title ASC';
         } elseif ($this->_order == 'creation_date') {
-           $query .= ' ORDER BY '.$this->_db_table.'.creation_date ASC, '.$this->_db_table.'.title ASC';
+           $query .= ' ORDER BY '.$this->addDatabasePrefix($this->_db_table).'.creation_date ASC, '.$this->addDatabasePrefix($this->_db_table).'.title ASC';
         } elseif ($this->_order == 'creator') {
-           $query .= ' ORDER BY user.lastname, '.$this->_db_table.'.modification_date DESC';
+           $query .= ' ORDER BY '.$this->addDatabasePrefix('user').'.lastname, '.$this->addDatabasePrefix($this->_db_table).'.modification_date DESC';
         } elseif ($this->_order == 'activity') {
-           $query .= ' ORDER BY '.$this->_db_table.'.activity ASC, '.$this->_db_table.'.title ASC';
+           $query .= ' ORDER BY '.$this->addDatabasePrefix($this->_db_table).'.activity ASC, '.$this->addDatabasePrefix($this->_db_table).'.title ASC';
         } elseif ($this->_order == 'activity_rev') {
-           $query .= ' ORDER BY '.$this->_db_table.'.activity DESC, '.$this->_db_table.'.title ASC';
+           $query .= ' ORDER BY '.$this->addDatabasePrefix($this->_db_table).'.activity DESC, '.$this->addDatabasePrefix($this->_db_table).'.title ASC';
         } else {
-           $query .= ' ORDER BY '.$this->_db_table.'.title, '.$this->_db_table.'.modification_date DESC';
+           $query .= ' ORDER BY '.$this->addDatabasePrefix($this->_db_table).'.title, '.$this->addDatabasePrefix($this->_db_table).'.modification_date DESC';
         }
      } else {
         $query .= ' ORDER BY title, modification_date DESC';
@@ -211,7 +211,7 @@ class cs_community_manager extends cs_room2_manager {
       if ( empty($id_array) ) {
          return new cs_list();
       } else {
-         $query = 'SELECT * FROM '.$this->_db_table.' WHERE '.$this->_db_table.'.item_id IN ("'.implode('", "',encode(AS_DB,$id_array)).'") AND '.$this->_db_table.'.type LIKE "community"';
+         $query = 'SELECT * FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).'.item_id IN ("'.implode('", "',encode(AS_DB,$id_array)).'") AND '.$this->addDatabasePrefix($this->_db_table).'.type LIKE "community"';
          $query .= " ORDER BY ".$sortBy;
          $result = $this->_db_connector->performQuery($query);
          if ( !isset($result) ) {

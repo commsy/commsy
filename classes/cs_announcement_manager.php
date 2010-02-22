@@ -155,66 +155,66 @@ class cs_announcement_manager extends cs_manager {
       // --->UTF8 - OK<----
       // ------------------
       if ($mode == 'count') {
-         $query = 'SELECT count('.$this->_db_table.'.item_id) as count';
+         $query = 'SELECT count('.$this->addDatabasePrefix($this->_db_table).'.item_id) as count';
       } elseif ($mode == 'id_array') {
-          $query = 'SELECT '.$this->_db_table.'.item_id';
+          $query = 'SELECT '.$this->addDatabasePrefix($this->_db_table).'.item_id';
       } elseif ($mode == 'distinct') {
-         $query = 'SELECT DISTINCT '.$this->_db_table.'.*';
+         $query = 'SELECT DISTINCT '.$this->addDatabasePrefix($this->_db_table).'.*';
       } else {
-         $query = 'SELECT '.$this->_db_table.'.*';
+         $query = 'SELECT '.$this->addDatabasePrefix($this->_db_table).'.*';
       }
-      $query .= ' FROM '.$this->_db_table;
+      $query .= ' FROM '.$this->addDatabasePrefix($this->_db_table);
 
       if ( isset($this->_search_array) AND !empty($this->_search_array) ||
            (isset($this->_sort_order) and
            ($this->_sort_order == 'modificator' || $this->_sort_order == 'modificator_rev')) ) {
-         $query .= ' INNER JOIN user AS people ON (people.item_id=announcement.creator_id )'; // modificator_id (TBD)
+         $query .= ' INNER JOIN '.$this->addDatabasePrefix('user').' AS people ON (people.item_id='.$this->addDatabasePrefix('announcement').'.creator_id )'; // modificator_id (TBD)
       }
 
       // restrict material by annotations
       if (isset($this->_ref_id_limit)) {
-         $query .= ' INNER JOIN link_items AS l5 ON ( (l5.first_item_id=announcement.item_id AND l5.second_item_id="'.$this->_ref_id_limit.'")
-                     OR(l5.second_item_id=announcement.item_id AND l5.first_item_id="'.$this->_ref_id_limit.'") AND l5.deleter_id IS NULL)';
+         $query .= ' INNER JOIN '.$this->addDatabasePrefix('link_items').' AS l5 ON ( (l5.first_item_id='.$this->addDatabasePrefix('announcement').'.item_id AND l5.second_item_id="'.$this->_ref_id_limit.'")
+                     OR(l5.second_item_id='.$this->addDatabasePrefix('announcement').'.item_id AND l5.first_item_id="'.$this->_ref_id_limit.'") AND l5.deleter_id IS NULL)';
       }
 
       if ( isset($this->_institution_limit) ) {
-         $query .= ' LEFT JOIN link_items AS l21 ON ( l21.deletion_date IS NULL AND ((l21.first_item_id=announcement.item_id AND l21.second_item_type="'.CS_INSTITUTION_TYPE.'"))) ';
-         $query .= ' LEFT JOIN link_items AS l22 ON ( l22.deletion_date IS NULL AND ((l22.second_item_id=announcement.item_id AND l22.first_item_type="'.CS_INSTITUTION_TYPE.'"))) ';
+         $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l21 ON ( l21.deletion_date IS NULL AND ((l21.first_item_id='.$this->addDatabasePrefix('announcement').'.item_id AND l21.second_item_type="'.CS_INSTITUTION_TYPE.'"))) ';
+         $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l22 ON ( l22.deletion_date IS NULL AND ((l22.second_item_id='.$this->addDatabasePrefix('announcement').'.item_id AND l22.first_item_type="'.CS_INSTITUTION_TYPE.'"))) ';
       }
       if ( isset($this->_topic_limit) ) {
-         $query .= ' LEFT JOIN link_items AS l31 ON ( l31.deletion_date IS NULL AND ((l31.first_item_id=announcement.item_id AND l31.second_item_type="'.CS_TOPIC_TYPE.'"))) ';
-         $query .= ' LEFT JOIN link_items AS l32 ON ( l32.deletion_date IS NULL AND ((l32.second_item_id=announcement.item_id AND l32.first_item_type="'.CS_TOPIC_TYPE.'"))) ';
+         $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l31 ON ( l31.deletion_date IS NULL AND ((l31.first_item_id='.$this->addDatabasePrefix('announcement').'.item_id AND l31.second_item_type="'.CS_TOPIC_TYPE.'"))) ';
+         $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l32 ON ( l32.deletion_date IS NULL AND ((l32.second_item_id='.$this->addDatabasePrefix('announcement').'.item_id AND l32.first_item_type="'.CS_TOPIC_TYPE.'"))) ';
       }
       if ( isset($this->_group_limit) ) {
-        $query .= ' LEFT JOIN link_items AS l41 ON ( l41.deletion_date IS NULL AND ((l41.first_item_id=announcement.item_id AND l41.second_item_type="'.CS_GROUP_TYPE.'"))) ';
-        $query .= ' LEFT JOIN link_items AS l42 ON ( l42.deletion_date IS NULL AND ((l42.second_item_id=announcement.item_id AND l42.first_item_type="'.CS_GROUP_TYPE.'"))) ';
+        $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l41 ON ( l41.deletion_date IS NULL AND ((l41.first_item_id='.$this->addDatabasePrefix('announcement').'.item_id AND l41.second_item_type="'.CS_GROUP_TYPE.'"))) ';
+        $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l42 ON ( l42.deletion_date IS NULL AND ((l42.second_item_id='.$this->addDatabasePrefix('announcement').'.item_id AND l42.first_item_type="'.CS_GROUP_TYPE.'"))) ';
      }
      if ( isset($this->_tag_limit) ) {
         $tag_id_array = $this->_getTagIDArrayByTagID($this->_tag_limit);
-        $query .= ' LEFT JOIN link_items AS l41 ON ( l41.deletion_date IS NULL AND ((l41.first_item_id='.$this->_db_table.'.item_id AND l41.second_item_type="'.CS_TAG_TYPE.'"))) ';
-        $query .= ' LEFT JOIN link_items AS l42 ON ( l42.deletion_date IS NULL AND ((l42.second_item_id='.$this->_db_table.'.item_id AND l42.first_item_type="'.CS_TAG_TYPE.'"))) ';
+        $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l41 ON ( l41.deletion_date IS NULL AND ((l41.first_item_id='.$this->addDatabasePrefix($this->_db_table).'.item_id AND l41.second_item_type="'.CS_TAG_TYPE.'"))) ';
+        $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l42 ON ( l42.deletion_date IS NULL AND ((l42.second_item_id='.$this->addDatabasePrefix($this->_db_table).'.item_id AND l42.first_item_type="'.CS_TAG_TYPE.'"))) ';
      }
 
       // restrict '.$this->_db_table.' by buzzword (la4)
       if (isset($this->_buzzword_limit)) {
          if ($this->_buzzword_limit == -1){
-            $query .= ' LEFT JOIN links AS l6 ON l6.from_item_id='.$this->_db_table.'.item_id AND l6.link_type="buzzword_for"';
-            $query .= ' LEFT JOIN labels AS buzzwords ON l6.to_item_id=buzzwords.item_id AND buzzwords.type="buzzword"';
+            $query .= ' LEFT JOIN '.$this->addDatabasePrefix('links').' AS l6 ON l6.from_item_id='.$this->addDatabasePrefix($this->_db_table).'.item_id AND l6.link_type="buzzword_for"';
+            $query .= ' LEFT JOIN '.$this->addDatabasePrefix('labels').' AS buzzwords ON l6.to_item_id=buzzwords.item_id AND buzzwords.type="buzzword"';
          }else{
-            $query .= ' INNER JOIN links AS l6 ON l6.from_item_id='.$this->_db_table.'.item_id AND l6.link_type="buzzword_for"';
-            $query .= ' INNER JOIN labels AS buzzwords ON l6.to_item_id=buzzwords.item_id AND buzzwords.type="buzzword"';
+            $query .= ' INNER JOIN '.$this->addDatabasePrefix('links').' AS l6 ON l6.from_item_id='.$this->addDatabasePrefix($this->_db_table).'.item_id AND l6.link_type="buzzword_for"';
+            $query .= ' INNER JOIN '.$this->addDatabasePrefix('labels').' AS buzzwords ON l6.to_item_id=buzzwords.item_id AND buzzwords.type="buzzword"';
          }
       }
 
 
       // only files limit -> entries with files
       if ( isset($this->_only_files_limit) and $this->_only_files_limit ) {
-         $query .= ' INNER JOIN item_link_file AS lf ON '.$this->_db_table.'.item_id = lf.item_iid';
+         $query .= ' INNER JOIN '.$this->addDatabasePrefix('item_link_file').' AS lf ON '.$this->addDatabasePrefix($this->_db_table).'.item_id = lf.item_iid';
       }
 
       $query .= ' WHERE 1';
       if (!$this->_show_not_activated_entries_limit) {
-         $query .= ' AND (announcement.modification_date IS NULL OR announcement.modification_date <= "'.getCurrentDateTimeInMySQL().'")';
+         $query .= ' AND ('.$this->addDatabasePrefix('announcement').'.modification_date IS NULL OR '.$this->addDatabasePrefix('announcement').'.modification_date <= "'.getCurrentDateTimeInMySQL().'")';
       }
       if ( isset($this->_topic_limit) ) {
          if ($this->_topic_limit == -1) {
@@ -262,31 +262,31 @@ class cs_announcement_manager extends cs_manager {
          }
       }
       if (isset($this->_room_limit)) {
-         $query .= ' AND announcement.context_id = "'.encode(AS_DB,$this->_room_limit).'"';
+         $query .= ' AND '.$this->addDatabasePrefix('announcement').'.context_id = "'.encode(AS_DB,$this->_room_limit).'"';
       }
       if ($this->_delete_limit == true) {
-         $query .= ' AND announcement.deleter_id IS NULL';
+         $query .= ' AND '.$this->addDatabasePrefix('announcement').'.deleter_id IS NULL';
       }
       if (isset($this->_ref_user_limit)) {
-         $query .= ' AND (announcement.creator_id = "'.encode(AS_DB,$this->_ref_user_limit).'" )';
+         $query .= ' AND ('.$this->addDatabasePrefix('announcement').'.creator_id = "'.encode(AS_DB,$this->_ref_user_limit).'" )';
       }
       if (isset($this->_age_limit)) {
-         $query .= ' AND announcement.modification_date >= DATE_SUB(CURRENT_DATE,interval '.encode(AS_DB,$this->_age_limit).' day)';
+         $query .= ' AND '.$this->addDatabasePrefix('announcement').'.modification_date >= DATE_SUB(CURRENT_DATE,interval '.encode(AS_DB,$this->_age_limit).' day)';
       }
       if ( isset($this->_existence_limit) ) {
-         $query .= ' AND announcement.creation_date >= DATE_SUB(CURRENT_DATE,interval '.encode(AS_DB,$this->_existence_limit).' day)';
+         $query .= ' AND '.$this->addDatabasePrefix('announcement').'.creation_date >= DATE_SUB(CURRENT_DATE,interval '.encode(AS_DB,$this->_existence_limit).' day)';
       }
       if (isset($this->_date_limit)) {
-         $query .= ' AND announcement.creation_date <= '."'".encode(AS_DB,$this->_date_limit)."'".' AND announcement.enddate >= '."'".encode(AS_DB,$this->_date_limit)."'".' ';
+         $query .= ' AND '.$this->addDatabasePrefix('announcement').'.creation_date <= '."'".encode(AS_DB,$this->_date_limit)."'".' AND '.$this->addDatabasePrefix('announcement').'.enddate >= '."'".encode(AS_DB,$this->_date_limit)."'".' ';
       }
       if( !empty($this->_id_array_limit) ) {
-         $query .= ' AND '.$this->_db_table.'.item_id IN ('.implode(", ",encode(AS_DB,$this->_id_array_limit)).')';
+         $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.item_id IN ('.implode(", ",encode(AS_DB,$this->_id_array_limit)).')';
       }
 
       // restrict sql-statement by search limit, create wheres
       if (isset($this->_search_array) AND !empty($this->_search_array)) {
          $query .= ' AND (';
-         $field_array = array('TRIM(CONCAT(people.firstname," ",people.lastname))','announcement.description','announcement.title');
+         $field_array = array('TRIM(CONCAT(people.firstname," ",people.lastname))',$this->addDatabasePrefix('announcement').'.description',$this->addDatabasePrefix('announcement').'.title');
          $search_limit_query_code = $this->_generateSearchLimitCode($field_array);
          $query .= $search_limit_query_code;
          $query .= ')';
@@ -304,20 +304,20 @@ class cs_announcement_manager extends cs_manager {
 
       if ( isset($this->_sort_order) ) {
          if ( $this->_sort_order == 'modified' ) {
-            $query .= ' ORDER BY announcement.modification_date DESC';
+            $query .= ' ORDER BY '.$this->addDatabasePrefix('announcement').'.modification_date DESC';
          } elseif ( $this->_sort_order == 'modified_rev' ) {
-            $query .= ' ORDER BY announcement.modification_date';
+            $query .= ' ORDER BY '.$this->addDatabasePrefix('announcement').'.modification_date';
          } elseif ( $this->_sort_order == 'title' ) {
-            $query .= ' ORDER BY announcement.title';
+            $query .= ' ORDER BY '.$this->addDatabasePrefix('announcement').'.title';
          } elseif ( $this->_sort_order == 'title_rev' ) {
-            $query .= ' ORDER BY announcement.title DESC';
+            $query .= ' ORDER BY '.$this->addDatabasePrefix('announcement').'.title DESC';
          } elseif ( $this->_sort_order == 'modificator' ) {
             $query .= ' ORDER BY people.lastname';
          } elseif ( $this->_sort_order == 'modificator_rev' ) {
             $query .= ' ORDER BY people.lastname DESC';
          }
       } else {
-         $query .= ' ORDER BY announcement.modification_date DESC';
+         $query .= ' ORDER BY '.$this->addDatabasePrefix('announcement').'.modification_date DESC';
       }
 
       if ( $mode == 'select' ) {
@@ -350,7 +350,7 @@ class cs_announcement_manager extends cs_manager {
          } elseif ( array_key_exists($item_id,$this->_cached_items) ) {
             return $this->_buildItem($this->_cached_items[$item_id]);
          } else {
-            $query = "SELECT * FROM announcement WHERE announcement.item_id = '".encode(AS_DB,$item_id)."'";
+            $query = "SELECT * FROM ".$this->addDatabasePrefix("announcement")." WHERE ".$this->addDatabasePrefix("announcement").".item_id = '".encode(AS_DB,$item_id)."'";
             $result = $this->_db_connector->performQuery($query);
             if ( !isset($result) ) {
                include_once('functions/error_functions.php');
@@ -410,7 +410,7 @@ class cs_announcement_manager extends cs_manager {
         $modification_date = $announcement_item->getModificationDate();
      }
 
-     $query = 'UPDATE announcement SET '.
+     $query = 'UPDATE '.$this->addDatabasePrefix('announcement').' SET '.
               'modifier_id="'.encode(AS_DB,$modificator->getItemID()).'",'.
               'modification_date="'.$modification_date.'",'.
               'title="'.encode(AS_DB,$announcement_item->getTitle()).'",'.
@@ -437,7 +437,7 @@ class cs_announcement_manager extends cs_manager {
     */
   function _create ($announcement_item) {
      $modification_date = getCurrentDateTimeInMySQL();
-     $query = 'INSERT INTO items SET '.
+     $query = 'INSERT INTO '.$this->addDatabasePrefix('items').' SET '.
               'context_id="'.encode(AS_DB,$announcement_item->getContextID()).'",'.
               'modification_date="'.$modification_date.'",'.
               'type="announcement"';
@@ -475,7 +475,7 @@ class cs_announcement_manager extends cs_manager {
         $modification_date = $announcement_item->getModificationDate();
      }
 
-     $query = 'INSERT INTO announcement SET '.
+     $query = 'INSERT INTO '.$this->addDatabasePrefix('announcement').' SET '.
               'item_id="'.encode(AS_DB,$announcement_item->getItemID()).'",'.
               'context_id="'.encode(AS_DB,$announcement_item->getContextID()).'",'.
               'creator_id="'.encode(AS_DB,$user->getItemID()).'",'.
@@ -502,7 +502,7 @@ class cs_announcement_manager extends cs_manager {
   function delete ($item_id) {
      $current_datetime = getCurrentDateTimeInMySQL();
      $user_id = $this->_current_user->getItemID();
-     $query = 'UPDATE announcement SET '.
+     $query = 'UPDATE '.$this->addDatabasePrefix('announcement').' SET '.
               'deletion_date="'.$current_datetime.'",'.
               'deleter_id="'.encode(AS_DB,$user_id).'"'.
               ' WHERE item_id="'.encode(AS_DB,$item_id).'"';
@@ -526,7 +526,7 @@ class cs_announcement_manager extends cs_manager {
    function getCountAnnouncements ($start, $end) {
       $retour = 0;
 
-      $query = "SELECT count(announcement.item_id) as number FROM announcement WHERE announcement.context_id = '".encode(AS_DB,$this->_room_limit)."' and ((announcement.creation_date > '".encode(AS_DB,$start)."' and announcement.creation_date < '".encode(AS_DB,$end)."') or (announcement.modification_date > '".encode(AS_DB,$start)."' and announcement.modification_date < '".encode(AS_DB,$end)."'))";
+      $query = "SELECT count(".$this->addDatabasePrefix("announcement").".item_id) as number FROM ".$this->addDatabasePrefix("announcement")." WHERE ".$this->addDatabasePrefix("announcement").".context_id = '".encode(AS_DB,$this->_room_limit)."' and ((".$this->addDatabasePrefix("announcement").".creation_date > '".encode(AS_DB,$start)."' and ".$this->addDatabasePrefix("announcement").".creation_date < '".encode(AS_DB,$end)."') or (".$this->addDatabasePrefix("announcement").".modification_date > '".encode(AS_DB,$start)."' and ".$this->addDatabasePrefix("announcement").".modification_date < '".encode(AS_DB,$end)."'))";
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) ) {
          include_once('functions/error_functions.php');trigger_error('Problems counting all announcement.',E_USER_WARNING);
@@ -543,7 +543,7 @@ class cs_announcement_manager extends cs_manager {
    function getCountNewAnnouncements ($start, $end) {
       $retour = 0;
 
-      $query = "SELECT count(announcement.item_id) as number FROM announcement WHERE announcement.context_id = '".encode(AS_DB,$this->_room_limit)."' and announcement.creation_date > '".encode(AS_DB,$start)."' and announcement.creation_date < '".encode(AS_DB,$end)."'";
+      $query = "SELECT count(".$this->addDatabasePrefix("announcement").".item_id) as number FROM ".$this->addDatabasePrefix("announcement")." WHERE ".$this->addDatabasePrefix("announcement").".context_id = '".encode(AS_DB,$this->_room_limit)."' and ".$this->addDatabasePrefix("announcement").".creation_date > '".encode(AS_DB,$start)."' and ".$this->addDatabasePrefix("announcement").".creation_date < '".encode(AS_DB,$end)."'";
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) ) {
          include_once('functions/error_functions.php');trigger_error('Problems counting announcement',E_USER_WARNING);
@@ -560,7 +560,7 @@ class cs_announcement_manager extends cs_manager {
    function getCountModAnnouncements ($start, $end) {
       $retour = 0;
 
-      $query = "SELECT count(announcement.item_id) as number FROM announcement WHERE announcement.context_id = '".encode(AS_DB,$this->_room_limit)."' and announcement.modification_date > '".encode(AS_DB,$start)."' and announcement.modification_date < '".encode(AS_DB,$end)."' and announcement.modification_date != announcement.creation_date";
+      $query = "SELECT count(".$this->addDatabasePrefix("announcement").".item_id) as number FROM ".$this->addDatabasePrefix("announcement")." WHERE ".$this->addDatabasePrefix("announcement").".context_id = '".encode(AS_DB,$this->_room_limit)."' and ".$this->addDatabasePrefix("announcement").".modification_date > '".encode(AS_DB,$start)."' and ".$this->addDatabasePrefix("announcement").".modification_date < '".encode(AS_DB,$end)."' and ".$this->addDatabasePrefix("announcement").".modification_date != ".$this->addDatabasePrefix("announcement").".creation_date";
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) ) {
          include_once('functions/error_functions.php');
@@ -583,11 +583,11 @@ class cs_announcement_manager extends cs_manager {
    	  									'public'			=>	'public'));
    	
       $current_datetime = getCurrentDateTimeInMySQL();
-      $query  = 'SELECT '.$this->_db_table.'.* FROM '.$this->_db_table.' WHERE '.$this->_db_table.'.creator_id = "'.encode(AS_DB,$uid).'"';
+      $query  = 'SELECT '.$this->addDatabasePrefix($this->_db_table).'.* FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).'.creator_id = "'.encode(AS_DB,$uid).'"';
       $result = $this->_db_connector->performQuery($query);
       if ( !empty($result) ) {
          foreach ( $result as $rs ) {
-            $insert_query = 'UPDATE '.$this->_db_table.' SET';
+            $insert_query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET';
             $insert_query .= ' title = "'.encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_TITLE')).'",';
             $insert_query .= ' description = "'.encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_DESCRIPTION')).'",';
             $insert_query .= ' modification_date = "'.$current_datetime.'",';

@@ -66,7 +66,7 @@ class cs_log_archive_manager extends cs_manager {
                   ) {
                   $data[$key]['iid'] = '0';
                }
-               $query = 'INSERT INTO log_archive SET '.
+               $query = 'INSERT INTO '.$this->addDatabasePrefix('log_archive').' SET '.
                         'ip="'.      encode(AS_DB,$data[$key]['ip']).'", '.
                         'agent="'.   encode(AS_DB,$data[$key]['agent']).'", '.
                         'timestamp="'.encode(AS_DB,$data[$key]['timestamp']).'", '.
@@ -101,7 +101,7 @@ class cs_log_archive_manager extends cs_manager {
                ) {
                $data['iid'] = '0';
             }
-            $query = 'INSERT INTO log_archive SET '.
+            $query = 'INSERT INTO '.$this->addDatabasePrefix('log_archive').' SET '.
                      'ip="'.      encode(AS_DB,$data['ip']).'", '.
                      'agent="'.   encode(AS_DB,$data['agent']).'", '.
                      'timestamp="'.encode(AS_DB,$data['timestamp']).'", '.
@@ -132,7 +132,7 @@ class cs_log_archive_manager extends cs_manager {
 
    function deleteByContextArray ($array) {
       $retour = false;
-      $query = 'DELETE FROM log_archive WHERE 1';
+      $query = 'DELETE FROM '.$this->addDatabasePrefix('log_archive').' WHERE 1';
       if ( !empty($array)
            and count($array) > 0
          ) {

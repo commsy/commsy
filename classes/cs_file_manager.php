@@ -157,12 +157,12 @@ class cs_file_manager extends cs_manager {
 
    function getItem( $file_id ) {
       $file = NULL;
-      $query  = 'SELECT * FROM files';
+      $query  = 'SELECT * FROM '.$this->addDatabasePrefix('files');
       $query .= ' WHERE 1';
       if ($this->_delete_limit == true) {
-        $query .= ' AND files.deleter_id IS NULL';
+        $query .= ' AND '.$this->addDatabasePrefix('files').'.deleter_id IS NULL';
       }
-      $query .= ' AND files.files_id="'.encode(AS_DB,$file_id).'"';
+      $query .= ' AND '.$this->addDatabasePrefix('files').'.files_id="'.encode(AS_DB,$file_id).'"';
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) ) {
          include_once('functions/error_functions.php');
@@ -178,7 +178,7 @@ class cs_file_manager extends cs_manager {
    function updateHasHTML($file_item) {
       $saved = false;
       $current_user = $this->_environment->getCurrentUser();
-        $query = 'UPDATE '.$this->_db_table.' SET'.
+        $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET'.
                 ' has_html="'.encode(AS_DB,$file_item->getHasHTML()).'"'.
                     ' WHERE files_id = "'.encode(AS_DB,$file_item->getFileID()).'"';
       $result = $this->_db_connector->performQuery($query);
@@ -195,7 +195,7 @@ class cs_file_manager extends cs_manager {
     function updateExtras($file_item) {
       $saved = false;
       $current_user = $this->_environment->getCurrentUser();
-        $query = 'UPDATE '.$this->_db_table.' SET'.
+        $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET'.
                 ' extras="'.encode(AS_DB,serialize($file_item->getExtraInformation())).'"'.
                     ' WHERE files_id = "'.encode(AS_DB,$file_item->getFileID()).'"';
       $result = $this->_db_connector->performQuery($query);
@@ -212,7 +212,7 @@ class cs_file_manager extends cs_manager {
    function saveItem($file_item) {
       $saved = false;
       $current_user = $this->_environment->getCurrentUser();
-      $query =  'INSERT INTO '.$this->_db_table.' SET'.
+      $query =  'INSERT INTO '.$this->addDatabasePrefix($this->_db_table).' SET'.
                 ' context_id="'.encode(AS_DB,$file_item->getContextID()).'",'.
                 ' creation_date="'.getCurrentDateTimeInMySQL().'", '.
                 ' creator_id="'.encode(AS_DB,$current_user->getItemID()).'", '.
@@ -229,7 +229,7 @@ class cs_file_manager extends cs_manager {
          $file_item->setFileID($result);
          $saved = $this->_saveOnDisk($file_item);
          if ($saved) {
-            $query = 'UPDATE '.$this->_db_table.' SET'.
+            $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET'.
                      ' size="'.encode(AS_DB,filesize($file_item->getDiskFileName())).'"'.
                      ' WHERE files_id="'.encode(AS_DB,$file_item->getFileID()).'"';
             $result = $this->_db_connector->performQuery($query);
@@ -300,13 +300,13 @@ class cs_file_manager extends cs_manager {
    }
 
    function _performQuery ($count = false) {
-      $query  = 'SELECT  files.files_id, files.creator_id, files.deleter_id, files.creation_date, files.modification_date, files.deletion_date, files.filename, files.context_id, files.size, files.has_html, files.scan, files.extras';
-      $query .= ' FROM '.$this->_db_table;
+      $query  = 'SELECT  '.$this->addDatabasePrefix('files').'.files_id, '.$this->addDatabasePrefix('files').'.creator_id, '.$this->addDatabasePrefix('files').'.deleter_id, '.$this->addDatabasePrefix('files').'.creation_date, '.$this->addDatabasePrefix('files').'.modification_date, '.$this->addDatabasePrefix('files').'.deletion_date, '.$this->addDatabasePrefix('files').'.filename, '.$this->addDatabasePrefix('files').'.context_id, '.$this->addDatabasePrefix('files').'.size, '.$this->addDatabasePrefix('files').'.has_html, '.$this->addDatabasePrefix('files').'.scan, '.$this->addDatabasePrefix('files').'.extras';
+      $query .= ' FROM '.$this->addDatabasePrefix($this->_db_table);
       $query .= ' WHERE 1';
 
       if ($this->_delete_limit == true) {
-         $query .= ' AND files.deleter_id IS NULL';
-         $query .= ' AND files.deletion_date IS NULL';
+         $query .= ' AND '.$this->addDatabasePrefix('files').'.deleter_id IS NULL';
+         $query .= ' AND '.$this->addDatabasePrefix('files').'.deletion_date IS NULL';
       }
 
       if (isset($this->_id_array_limit)) {
@@ -314,18 +314,18 @@ class cs_file_manager extends cs_manager {
          if ($id_string == '') {
             $query .= ' AND 1=0';
          } else {
-            $query .= ' AND files.files_id IN ('.encode(AS_DB,$id_string).')';
+            $query .= ' AND '.$this->addDatabasePrefix('files.').'files_id IN ('.encode(AS_DB,$id_string).')';
          }
       }
 
       if ( !empty($this->_limit_scan) ) {
-         $query .= ' AND '.$this->_db_table.'.scan="'.encode(AS_DB,$this->_limit_scan).'"';
+         $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.scan="'.encode(AS_DB,$this->_limit_scan).'"';
       }
       if ( !empty($this->_room_limit) ) {
-         $query .= ' AND '.$this->_db_table.'.context_id="'.encode(AS_DB,$this->_room_limit).'"';
+         $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.context_id="'.encode(AS_DB,$this->_room_limit).'"';
       }
       if ( !empty($this->_limit_newer) ) {
-          $query .= ' AND '.$this->_db_table.'.creation_date>"'.encode(AS_DB,$this->_limit_newer).'"';
+          $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.creation_date>"'.encode(AS_DB,$this->_limit_newer).'"';
       }
 
       if (isset($this->_order)) {
@@ -381,7 +381,7 @@ class cs_file_manager extends cs_manager {
       $current_datetime = getCurrentDateTimeInMySQL();
       $current_user = $this->_environment->getCurrentUserItem();
       $user_id = $current_user->getItemID();
-      $query = 'UPDATE '.$this->_db_table.' SET '.
+      $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET '.
               'deletion_date="'.$current_datetime.'",'.
               'deleter_id="'.encode(AS_DB,$user_id).'"'.
               ' WHERE files_id="'.encode(AS_DB,$item_id).'"';
@@ -397,7 +397,7 @@ class cs_file_manager extends cs_manager {
    }
 
    function deleteReally ($file_item) {
-      $query = 'DELETE FROM '.$this->_db_table.
+      $query = 'DELETE FROM '.$this->addDatabasePrefix($this->_db_table).
               ' WHERE files_id="'.encode(AS_DB,$file_item->getFileID()).'"';
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) ) {
@@ -416,7 +416,7 @@ class cs_file_manager extends cs_manager {
    }
 
    private function _deleteReallyByFileIDOnlyDB ($file_id) {
-      $query = 'DELETE FROM '.$this->_db_table.
+      $query = 'DELETE FROM '.$this->addDatabasePrefix($this->_db_table).
                ' WHERE files_id="'.encode(AS_DB,$file_id).'"';
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) ) {
@@ -492,7 +492,7 @@ class cs_file_manager extends cs_manager {
       $current_data_array = array();
 
       $query  = '';
-      $query .= 'SELECT * FROM '.$this->_db_table.' WHERE context_id="'.encode(AS_DB,$old_id).'" AND deleter_id IS NULL AND deletion_date IS NULL';
+      $query .= 'SELECT * FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE context_id="'.encode(AS_DB,$old_id).'" AND deleter_id IS NULL AND deletion_date IS NULL';
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) ) {
          include_once('functions/error_functions.php');
@@ -500,7 +500,7 @@ class cs_file_manager extends cs_manager {
       } else {
          $item_id = 'files_id';
          $modification_date = 'creation_date';
-         $sql  = 'SELECT '.$item_id.','.$modification_date.',extras FROM '.$this->_db_table.' WHERE context_id="'.encode(AS_DB,$new_id).'"';
+         $sql  = 'SELECT '.$item_id.','.$modification_date.',extras FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE context_id="'.encode(AS_DB,$new_id).'"';
          $sql .= ' AND extras LIKE "%s:4:\"COPY\";a:2:{s:7:\"ITEM_ID\";%"';
          $sql .= ' AND deleter_id IS NULL AND deletion_date IS NULL;';
          $sql_result = $this->_db_connector->performQuery($sql);
@@ -526,7 +526,7 @@ class cs_file_manager extends cs_manager {
 
             if ( $do_it ) {
                $insert_query  = '';
-               $insert_query .= 'INSERT INTO '.$this->_db_table.' SET';
+               $insert_query .= 'INSERT INTO '.$this->addDatabasePrefix($this->_db_table).' SET';
                $first = true;
                $old_item_id = '';
                foreach ($query_result as $key => $value) {
@@ -645,7 +645,7 @@ class cs_file_manager extends cs_manager {
       $retour = true;
       $timestamp = getCurrentDateTimeMinusDaysInMySQL($days);
 
-      $query = 'SELECT '.$this->_db_table.'.files_id, '.$this->_db_table.'.context_id, '.$this->_db_table.'.filename FROM '.$this->_db_table.' WHERE deletion_date IS NOT NULL and deletion_date < "'.$timestamp.'";';
+      $query = 'SELECT '.$this->addDatabasePrefix($this->_db_table).'.files_id, '.$this->addDatabasePrefix($this->_db_table).'.context_id, '.$this->addDatabasePrefix($this->_db_table).'.filename FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE deletion_date IS NOT NULL and deletion_date < "'.$timestamp.'";';
 
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) ) {
@@ -655,7 +655,7 @@ class cs_file_manager extends cs_manager {
       } else {
          $retour = $retour and parent::deleteReallyOlderThan($days);
          foreach ($result as $query_result) {
-            $query2 = 'SELECT context_id as portal_id FROM room WHERE item_id="'.$query_result['context_id'].'"';
+            $query2 = 'SELECT context_id as portal_id FROM '.$this->addDatabasePrefix('room').' WHERE item_id="'.$query_result['context_id'].'"';
             $result2 = $this->_db_connector->performQuery($query2);
             if ( !isset($result2) ) {
                include_once('functions/error_functions.php');
@@ -685,7 +685,7 @@ class cs_file_manager extends cs_manager {
       } else {
          $retour = true;
 
-         $sql = 'SELECT '.$this->_db_table.'.files_id, '.$this->_db_table.'.context_id, '.$this->_db_table.'.filename FROM '.$this->_db_table.' WHERE '.$this->_db_table.'.context_id="'.$context_id.'";';
+         $sql = 'SELECT '.$this->addDatabasePrefix($this->_db_table).'.files_id, '.$this->addDatabasePrefix($this->_db_table).'.context_id, '.$this->addDatabasePrefix($this->_db_table).'.filename FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).'.context_id="'.$context_id.'";';
          $result = $this->_db_connector->performQuery($sql);
          if ( !isset($result) ) {
             include_once('functions/error_functions.php');
@@ -700,7 +700,7 @@ class cs_file_manager extends cs_manager {
             }
 
             if ( !empty($file_id_array) ) {
-               $sql2 = 'SELECT file_id FROM item_link_file WHERE file_id IN ('.implode(',',$file_id_array).');';
+               $sql2 = 'SELECT file_id FROM '.$this->addDatabasePrefix('item_link_file').' WHERE file_id IN ('.implode(',',$file_id_array).');';
                $result2 = $this->_db_connector->performQuery($sql2);
                if ( !isset($result2) ) {
                   include_once('functions/error_functions.php');
@@ -728,11 +728,11 @@ class cs_file_manager extends cs_manager {
             $disc_manager = $this->_environment->getDiscManager();
             foreach ($result as $query_result) {
                if ( !empty($query_result['files_id']) and in_array($query_result['files_id'],$file_id_diff) ) {
-                  $sql = 'DELETE FROM '.$this->_db_table.' WHERE files_id="'.$query_result['files_id'].'";';
+                  $sql = 'DELETE FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE files_id="'.$query_result['files_id'].'";';
                   $result_delete = $this->_db_connector->performQuery($sql);
 
                   if ( empty($portal_id) ) {
-                     $query2 = 'SELECT context_id as portal_id FROM room WHERE item_id="'.$query_result['context_id'].'"';
+                     $query2 = 'SELECT context_id as portal_id FROM '.$this->addDatabasePrefix('room').' WHERE item_id="'.$query_result['context_id'].'"';
                      $result2 = $this->_db_connector->performQuery($query2);
                      if ( !isset($result2) ) {
                         include_once('functions/error_functions.php');
@@ -764,7 +764,7 @@ class cs_file_manager extends cs_manager {
 
    public function updateScanned ($file_item) {
       $saved = false;
-      $query = 'UPDATE '.$this->_db_table.' SET'.
+      $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET'.
                ' scan="'.encode(AS_DB,$file_item->getScanValue()).'"'.
                ' WHERE files_id = "'.encode(AS_DB,$file_item->getFileID()).'"';
       $result = $this->_db_connector->performQuery($query);
@@ -792,7 +792,7 @@ class cs_file_manager extends cs_manager {
 
    public function getFileIDForTempKey ( $temp_key ) {
       $retour = '';
-      $sql = 'SELECT files_id FROM '.$this->_db_table.' WHERE context_id="'.$this->_room_limit.'" AND extras LIKE "%'.$temp_key.'%";';
+      $sql = 'SELECT files_id FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE context_id="'.$this->_room_limit.'" AND extras LIKE "%'.$temp_key.'%";';
       $result = $this->_db_connector->performQuery($sql);
       if ( !isset($result) ) {
          include_once('functions/error_functions.php');

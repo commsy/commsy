@@ -37,8 +37,10 @@ class cs_noticed_manager {
   var $_noticed_id_array = array();
   var $_annotation_id_array = array();
   var $_noticed_annotation_id_array = array();
-   var $_cache_on = true;
+  var $_cache_on = true;
 
+  public $_db_prefix = '';
+  
    /**
     * Environment - the environment of the CommSy
     */
@@ -114,7 +116,7 @@ class cs_noticed_manager {
    }
 
    function getLatestNoticedForUserByID ( $item_id, $user_id ) {
-      $query  = 'SELECT version_id, read_date FROM noticed'.
+      $query  = 'SELECT version_id, read_date FROM '.$this->addDatabasePrefix('noticed').
                 ' WHERE item_id="'.encode(AS_DB,$item_id).'"'.
                 ' AND   user_id="'.encode(AS_DB,$user_id).'"'.
                 ' ORDER BY read_date DESC';
@@ -143,7 +145,7 @@ class cs_noticed_manager {
                $this->_rubric_id_array[] = $id;
             }
          }
-         $query  = 'SELECT item_id, version_id, MAX(read_date) as read_date FROM noticed'.
+         $query  = 'SELECT item_id, version_id, MAX(read_date) as read_date FROM '.$this->addDatabasePrefix('noticed').
                 ' WHERE item_id IN ('.implode(",",encode(AS_DB,$id_array)).')'.
                 ' AND   user_id="'.encode(AS_DB,$this->_current_user_id).'"'.
                 ' GROUP BY item_id';
@@ -172,7 +174,7 @@ class cs_noticed_manager {
                $this->_rubric_id_array[] = $id;
             }
          }
-         $query  = 'SELECT item_id, version_id, MAX(read_date) as read_date FROM noticed'.
+         $query  = 'SELECT item_id, version_id, MAX(read_date) as read_date FROM '.$this->addDatabasePrefix('noticed').
                 ' WHERE item_id IN ('.implode(",",encode(AS_DB,$id_array)).')'.
                 ' AND   user_id="'.encode(AS_DB,$user_id).'"'.
                 ' GROUP BY item_id';
@@ -218,7 +220,7 @@ class cs_noticed_manager {
                $annotation_item = $annotation_list->getNext();
             }
             // in den annotation_manager und die IDS im assoziativen Array zwischenspeichern
-            $query  = 'SELECT item_id, version_id, MAX(read_date) as read_date FROM noticed'.
+            $query  = 'SELECT item_id, version_id, MAX(read_date) as read_date FROM '.$this->addDatabasePrefix('noticed').
                 ' WHERE item_id IN ('.implode(",",encode(AS_DB,$annotation_id_array)).')'.
                 ' AND   user_id="'.encode(AS_DB,$this->_current_user_id).'"'.
                 ' GROUP BY item_id';
@@ -261,7 +263,7 @@ class cs_noticed_manager {
                $annotation_item = $annotation_list->getNext();
             }
             // in den annotation_manager und die IDS im assoziativen Array zwischenspeichern
-            $query  = 'SELECT item_id, version_id, MAX(read_date) as read_date FROM noticed'.
+            $query  = 'SELECT item_id, version_id, MAX(read_date) as read_date FROM '.$this->addDatabasePrefix('noticed').
                 ' WHERE item_id IN ('.implode(",",encode(AS_DB,$annotation_id_array)).')'.
                 ' AND user_id="'.encode(AS_DB,$user_id).'"'.
                 ' GROUP BY item_id';
@@ -292,7 +294,7 @@ class cs_noticed_manager {
      */
    function markNoticed ( $item_id, $version_id ) {
       if ( !empty($this->_current_user_id) ) {
-         $query = 'INSERT INTO noticed SET '.
+         $query = 'INSERT INTO '.$this->addDatabasePrefix('noticed').' SET '.
                   ' item_id="'.encode(AS_DB,$item_id).'", '.
                   ' version_id="'.encode(AS_DB,$version_id).'", '.
                   ' user_id="'.encode(AS_DB,$this->_current_user_id).'", '.
@@ -306,7 +308,7 @@ class cs_noticed_manager {
    }
 
    function mergeAccounts($new_id,$old_id) {
-      $select = "SELECT * FROM noticed WHERE user_id = '".encode(AS_DB,$old_id)."'";
+      $select = "SELECT * FROM ".$this->addDatabasePrefix("noticed")." WHERE user_id = '".encode(AS_DB,$old_id)."'";
 
       $result = $this->_db_connector->performQuery($select);
       if ( !isset($result) ) {
@@ -315,7 +317,7 @@ class cs_noticed_manager {
       }
 
       foreach ( $result as $row ) {
-           $select2 = "SELECT * FROM noticed WHERE user_id = '".encode(AS_DB,$new_id)."' ";
+           $select2 = "SELECT * FROM ".$this->addDatabasePrefix("noticed")." WHERE user_id = '".encode(AS_DB,$new_id)."' ";
            $select2.= " AND item_id = ".$row['item_id'];
            $select2.= " AND version_id = ".$row['version_id'];
 
@@ -331,7 +333,7 @@ class cs_noticed_manager {
 
 
          if ( empty($row2) ) {
-            $update = "UPDATE noticed SET ";
+            $update = "UPDATE ".$this->addDatabasePrefix("noticed")." SET ";
             $update.= " user_id = ".encode(AS_DB,$new_id);
             $update.= " WHERE user_id = ".encode(AS_DB,$old_id);
             $update.= " AND item_id = ".$row['item_id'];
@@ -343,7 +345,7 @@ class cs_noticed_manager {
             }
 
          } else {
-            $update = "DELETE FROM noticed ";
+            $update = "DELETE FROM ".$this->addDatabasePrefix("noticed")." ";
             $update.= " WHERE user_id = ".encode(AS_DB,$old_id);
             $update.= " AND item_id = ".$row['item_id'];
             $update.= " AND version_id = ".$row['version_id'];
@@ -354,6 +356,104 @@ class cs_noticed_manager {
             }
          }
       }
+   }
+   
+   function addDatabasePrefix($db_table){
+      return $this->_db_prefix . $db_table;
+   }
+   
+   function moveFromDbToBackup($context_id){
+      $id_array_items = array();
+      $item_manager = $this->_environment->getItemManager();
+      $item_manager->setContextLimit($context_id);
+      $item_manager->select();
+      $item_list = $item_manager->get();
+      $temp_item = $item_list->getFirst();
+      while($temp_item){
+         $id_array_items[] = $temp_item->getItemID();
+         $temp_item = $item_list->getNext();
+      }
+
+      $id_array_users = array();
+      $user_manager = $this->_environment->getUserManager();
+      $user_manager->setContextLimit($context_id);
+      $user_manager->select();
+      $user_list = $user_manager->get();
+      $temp_user = $user_list->getFirst();
+      while($temp_user){
+         $id_array_users[] = $temp_user->getItemID();
+         $temp_user = $user_list->getNext();
+      }
+      
+      global $c_db_backup_prefix;
+      $retour = false;
+      if(!empty($id_array_items) and !empty($id_array_users)){
+         if ( !empty($context_id) ) {
+            $query = 'INSERT INTO '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.'noticed').' SELECT * FROM '.$this->addDatabasePrefix('noticed').' WHERE '.$this->addDatabasePrefix('noticed').'.item_id IN ('.implode(",", $id_array_items).') OR '.$this->addDatabasePrefix('noticed').'.user_id IN ('.implode(",", $id_array_users).')';
+            $result = $this->_db_connector->performQuery($query);
+            if ( !isset($result) ) {
+               include_once('functions/error_functions.php');
+               trigger_error('Problems while copying to backup-table.',E_USER_WARNING);
+            } else {
+               $query = 'DELETE FROM '.$this->addDatabasePrefix('noticed').' WHERE '.$this->addDatabasePrefix('noticed').'.item_id IN ('.implode(",", $id_array_items).') OR '.$this->addDatabasePrefix('noticed').'.user_id IN ('.implode(",", $id_array_users).')';
+               $result = $this->_db_connector->performQuery($query);
+               if ( !isset($result) ) {
+                  include_once('functions/error_functions.php');
+                  trigger_error('Problems deleting after move to backup-table.',E_USER_WARNING);
+               } elseif ( !empty($result[0]) ) {
+                  $retour = true;
+               }
+            }
+         }
+      }
+      return $retour;
+   }
+   
+   function moveFromBackupToDb($context_id){
+      $id_array_items = array();
+      $zzz_item_manager = $this->_environment->getZzzItemManager();
+      $zzz_item_manager->setContextLimit($context_id);
+      $zzz_item_manager->select();
+      $item_list = $zzz_item_manager->get();
+      $temp_item = $item_list->getFirst();
+      while($temp_item){
+         $id_array_items[] = $temp_item->getItemID();
+         $temp_item = $item_list->getNext();
+      }
+
+      $id_array_users = array();
+      $zzz_user_manager = $this->_environment->getZzzUserManager();
+      $zzz_user_manager->setContextLimit($context_id);
+      $zzz_user_manager->select();
+      $user_list = $zzz_user_manager->get();
+      $temp_user = $user_list->getFirst();
+      while($temp_user){
+         $id_array_users[] = $temp_user->getItemID();
+         $temp_user = $user_list->getNext();
+      }
+      
+      global $c_db_backup_prefix;
+      $retour = false;
+      if(!empty($id_array_items) and !empty($id_array_users)){
+         if ( !empty($context_id) ) {
+            $query = 'INSERT INTO '.$this->addDatabasePrefix('noticed').' SELECT * FROM '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.'noticed').' WHERE '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.'noticed').'.item_id IN ('.implode(",", $id_array_items).') OR '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.'noticed').'.user_id IN ('.implode(",", $id_array_users).')';
+            $result = $this->_db_connector->performQuery($query);
+            if ( !isset($result) ) {
+               include_once('functions/error_functions.php');
+               trigger_error('Problems while copying to backup-table.',E_USER_WARNING);
+            } else {
+               $query = 'DELETE FROM '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.'noticed').' WHERE '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.'noticed').'.item_id IN ('.implode(",", $id_array_items).') OR '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.'noticed').'.user_id IN ('.implode(",", $id_array_users).')';
+               $result = $this->_db_connector->performQuery($query);
+               if ( !isset($result) ) {
+                  include_once('functions/error_functions.php');
+                  trigger_error('Problems deleting after move to backup-table.',E_USER_WARNING);
+               } elseif ( !empty($result[0]) ) {
+                  $retour = true;
+               }
+            }
+         }
+      }
+      return $retour;
    }
 }
 ?>

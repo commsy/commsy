@@ -97,43 +97,43 @@ class cs_homepage_manager extends cs_manager {
    function _performQuery ($mode = 'select') {
 
       if ($mode == 'count') {
-         $query = 'SELECT count('.$this->_db_table.'.item_id) as count';
+         $query = 'SELECT count('.$this->addDatabasePrefix($this->_db_table).'.item_id) as count';
       } elseif ($mode == 'id_array') {
-          $query = 'SELECT '.$this->_db_table.'.item_id';
+          $query = 'SELECT '.$this->addDatabasePrefix($this->_db_table).'.item_id';
       } elseif ( isset($this->_index_limit) and $this->_index_limit ) {
-          $query = 'SELECT '.$this->_db_table.'.*,room.title AS room_title,room.activity AS room_activity';
+          $query = 'SELECT '.$this->addDatabasePrefix($this->_db_table).'.*,'.$this->addDatabasePrefix('room').'.title AS room_title,'.$this->addDatabasePrefix('room').'.activity AS room_activity';
       } else {
-         $query = 'SELECT '.$this->_db_table.'.*,homepage_link_page_page.sorting_place,homepage_link_page_page.from_item_id';
+         $query = 'SELECT '.$this->addDatabasePrefix($this->_db_table).'.*,'.$this->addDatabasePrefix('homepage_link_page_page').'.sorting_place,'.$this->addDatabasePrefix('homepage_link_page_page').'.from_item_id';
       }
-      $query .= ' FROM '.$this->_db_table.'';
+      $query .= ' FROM '.$this->addDatabasePrefix($this->_db_table).'';
       if ( isset($this->_index_limit) and $this->_index_limit ) {
-         $query .= ' INNER JOIN room ON '.$this->_db_table.'.context_id=room.item_id';
+         $query .= ' INNER JOIN '.$this->addDatabasePrefix('room').' ON '.$this->addDatabasePrefix($this->_db_table).'.context_id='.$this->addDatabasePrefix('room').'.item_id';
       } else {
-         $query .= ' LEFT JOIN homepage_link_page_page ON '.$this->_db_table.'.item_id=homepage_link_page_page.to_item_id';
+         $query .= ' LEFT JOIN '.$this->addDatabasePrefix('homepage_link_page_page').' ON '.$this->addDatabasePrefix($this->_db_table).'.item_id='.$this->addDatabasePrefix('homepage_link_page_page').'.to_item_id';
       }
       $query .= ' WHERE 1';
 
       if ( isset($this->_index_limit) and $this->_index_limit ) {
-         $query .= ' AND room.extras LIKE "%HOMEPAGELINK\";s:1%"';
+         $query .= ' AND '.$this->addDatabasePrefix('room').'.extras LIKE "%HOMEPAGELINK\";s:1%"';
       }
 
       if (isset($this->_room_limit) and !isset($this->_index_limit)) {
-         $query .= ' AND '.$this->_db_table.'.context_id = "'.encode(AS_DB,$this->_room_limit).'"';
+         $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.context_id = "'.encode(AS_DB,$this->_room_limit).'"';
       }
       if ($this->_delete_limit == true) {
-         $query .= ' AND '.$this->_db_table.'.deleter_id IS NULL';
+         $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.deleter_id IS NULL';
       }
       if (isset($this->_ref_user_limit)) {
-         $query .= ' AND ('.$this->_db_table.'.creator_id = "'.encode(AS_DB,$this->_ref_user_limit).'" )';
+         $query .= ' AND ('.$this->addDatabasePrefix($this->_db_table).'.creator_id = "'.encode(AS_DB,$this->_ref_user_limit).'" )';
       }
       if( !empty($this->_id_array_limit) ) {
-         $query .= ' AND '.$this->_db_table.'.item_id IN ('.implode(", ",encode(AS_DB,$this->_id_array_limit)).')';
+         $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.item_id IN ('.implode(", ",encode(AS_DB,$this->_id_array_limit)).')';
       }
      if ( !empty($this->_father_limit) ) {
-        $query .= ' AND homepage_link_page_page.from_item_id="'.encode(AS_DB,$this->_father_limit).'" AND '.$this->_db_table.'.page_type="CHILD"';
+        $query .= ' AND '.$this->addDatabasePrefix('homepage_link_page_page').'.from_item_id="'.encode(AS_DB,$this->_father_limit).'" AND '.$this->addDatabasePrefix($this->_db_table).'.page_type="CHILD"';
      }
      if ( isset($this->_index_limit) and $this->_index_limit ) {
-        $query .= ' AND '.$this->_db_table.'.page_type="ROOT"';
+        $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.page_type="ROOT"';
      }
 
       // restrict sql-statement by search limit, create wheres
@@ -142,40 +142,40 @@ class cs_homepage_manager extends cs_manager {
        if ( isset($this->_index_limit) and $this->_index_limit ) {
           $field_array = array('room.title');
        } else {
-          $field_array = array(''.$this->_db_table.'.description',''.$this->_db_table.'.title');
+          $field_array = array(''.$this->addDatabasePrefix($this->_db_table).'.description',''.$this->addDatabasePrefix($this->_db_table).'.title');
        }
        $search_limit_query_code = $this->_generateSearchLimitCode($field_array);
        $query .= $search_limit_query_code;
          $query .= ')';
       }
       if ( isset($this->_index_limit) and $this->_index_limit ) {
-         $order_query = ' room.activity DESC, ';
+         $order_query = ' '.$this->addDatabasePrefix('room').'.activity DESC, ';
      } else {
        $order_query = '';
      }
 
      if ( isset($this->_sort_order) and !empty($this->_sort_order) ) {
          if ( $this->_sort_order == 'modified' ) {
-            $query .= ' ORDER BY '.$this->_db_table.'.modification_date DESC';
+            $query .= ' ORDER BY '.$this->addDatabasePrefix($this->_db_table).'.modification_date DESC';
          } elseif ( $this->_sort_order == 'modified_rev' ) {
-            $query .= ' ORDER BY '.$this->_db_table.'.modification_date';
+            $query .= ' ORDER BY '.$this->addDatabasePrefix($this->_db_table).'.modification_date';
          } elseif ( $this->_sort_order == 'title' ) {
-            $query .= ' ORDER BY '.$this->_db_table.'.title';
+            $query .= ' ORDER BY '.$this->addDatabasePrefix($this->_db_table).'.title';
          } elseif ( $this->_sort_order == 'title_rev' ) {
-            $query .= ' ORDER BY '.$this->_db_table.'.title DESC';
+            $query .= ' ORDER BY '.$this->addDatabasePrefix($this->_db_table).'.title DESC';
        } elseif ( $this->_sort_order == 'activity' and isset($this->_index_limit) and $this->_index_limit ) {
-            $query .= ' ORDER BY room.activity DESC, '.$this->_db_table.'.title DESC, '.$this->_db_table.'.modification_date';
+            $query .= ' ORDER BY '.$this->addDatabasePrefix('room').'.activity DESC, '.$this->addDatabasePrefix($this->_db_table).'.title DESC, '.$this->addDatabasePrefix($this->_db_table).'.modification_date';
        } elseif ( $this->_sort_order == 'activity_rev' and isset($this->_index_limit) and $this->_index_limit ) {
-            $query .= ' ORDER BY room.activity ASC, '.$this->_db_table.'.title DESC, '.$this->_db_table.'.modification_date';
+            $query .= ' ORDER BY '.$this->addDatabasePrefix('room').'.activity ASC, '.$this->addDatabasePrefix($this->_db_table).'.title DESC, '.$this->addDatabasePrefix($this->_db_table).'.modification_date';
        } elseif ( $this->_sort_order == 'room_title' and isset($this->_index_limit) and $this->_index_limit ) {
-            $query .= ' ORDER BY room.title DESC, '.$this->_db_table.'.title DESC, '.$this->_db_table.'.modification_date';
+            $query .= ' ORDER BY '.$this->addDatabasePrefix('room').'.title DESC, '.$this->addDatabasePrefix($this->_db_table).'.title DESC, '.$this->addDatabasePrefix($this->_db_table).'.modification_date';
        } elseif ( $this->_sort_order == 'room_title_rev' and isset($this->_index_limit) and $this->_index_limit ) {
-            $query .= ' ORDER BY room.title ASC, '.$this->_db_table.'.title DESC, '.$this->_db_table.'.modification_date';
+            $query .= ' ORDER BY '.$this->addDatabasePrefix('room').'.title ASC, '.$this->addDatabasePrefix($this->_db_table).'.title DESC, '.$this->addDatabasePrefix($this->_db_table).'.modification_date';
        }
       } elseif ( !isset($this->_index_limit) or !$this->_index_limit ) {
-        $query .= ' ORDER BY homepage_link_page_page.sorting_place ASC, '.$this->_db_table.'.modification_date DESC, '.$this->_db_table.'.title DESC';
+        $query .= ' ORDER BY '.$this->addDatabasePrefix('homepage_link_page_page').'.sorting_place ASC, '.$this->addDatabasePrefix($this->_db_table).'.modification_date DESC, '.$this->addDatabasePrefix($this->_db_table).'.title DESC';
      } else {
-        $query .= ' ORDER BY '.$this->_db_table.'.modification_date DESC, '.$this->_db_table.'.title DESC';
+        $query .= ' ORDER BY '.$this->addDatabasePrefix($this->_db_table).'.modification_date DESC, '.$this->addDatabasePrefix($this->_db_table).'.title DESC';
      }
 
       if ( $mode == 'select' ) {
@@ -201,9 +201,9 @@ class cs_homepage_manager extends cs_manager {
   public function getItem ($item_id) {
      $homepage = NULL;
      if ( !empty($item_id) ) {
-        $query  = "SELECT *,homepage_link_page_page.sorting_place,homepage_link_page_page.from_item_id FROM ".$this->_db_table;
-        $query .= ' LEFT JOIN homepage_link_page_page ON '.$this->_db_table.'.item_id=homepage_link_page_page.to_item_id';
-        $query .= " WHERE ".$this->_db_table.".item_id = '".encode(AS_DB,$item_id)."'";
+        $query  = "SELECT *,".$this->addDatabasePrefix("homepage_link_page_page").".sorting_place,".$this->addDatabasePrefix("homepage_link_page_page").".from_item_id FROM ".$this->addDatabasePrefix($this->_db_table);
+        $query .= ' LEFT JOIN '.$this->addDatabasePrefix('homepage_link_page_page').' ON '.$this->addDatabasePrefix($this->_db_table).'.item_id='.$this->addDatabasePrefix('homepage_link_page_page').'.to_item_id';
+        $query .= " WHERE ".$this->addDatabasePrefix($this->_db_table).".item_id = '".encode(AS_DB,$item_id)."'";
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) or empty($result[0])) {
            include_once('functions/error_functions.php');
@@ -231,7 +231,7 @@ class cs_homepage_manager extends cs_manager {
     */
   private function _getSpecialPageItem ($type,$cid) {
      $homepage = NULL;
-     $query = "SELECT * FROM ".$this->_db_table." WHERE ".$this->_db_table.".context_id='".encode(AS_DB,$cid)."' AND ".$this->_db_table.".page_type='".encode(AS_DB,$type)."' AND deleter_id IS NULL AND deletion_date IS NULL;";
+     $query = "SELECT * FROM ".$this->addDatabasePrefix($this->_db_table)." WHERE ".$this->addDatabasePrefix($this->_db_table).".context_id='".encode(AS_DB,$cid)."' AND ".$this->addDatabasePrefix($this->_db_table).".page_type='".encode(AS_DB,$type)."' AND deleter_id IS NULL AND deletion_date IS NULL;";
      $result = $this->_db_connector->performQuery($query);
      if (!isset($result)) {
         include_once('functions/error_functions.php');
@@ -274,7 +274,7 @@ class cs_homepage_manager extends cs_manager {
         $public = '0';
      }
 
-     $query = 'UPDATE '.$this->_db_table.' SET '.
+     $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET '.
               'modifier_id="'.encode(AS_DB,$modificator->getItemID()).'",'.
               'modification_date="'.encode(AS_DB,$current_datetime).'",'.
               'title="'.encode(AS_DB,$homepage_item->getTitle()).'",'.
@@ -297,7 +297,7 @@ class cs_homepage_manager extends cs_manager {
     * @param object cs_item homepage_item the homepage
     */
   function _create ($homepage_item) {
-     $query = 'INSERT INTO items SET '.
+     $query = 'INSERT INTO '.$this->addDatabasePrefix('items').' SET '.
               'context_id="'.encode(AS_DB,$homepage_item->getContextID()).'",'.
               'modification_date="'.getCurrentDateTimeInMySQL().'",'.
               'type="'.$this->_db_table.'"';
@@ -329,7 +329,7 @@ class cs_homepage_manager extends cs_manager {
         $public = '0';
      }
 
-     $query = 'INSERT INTO '.$this->_db_table.' SET '.
+     $query = 'INSERT INTO '.$this->addDatabasePrefix($this->_db_table).' SET '.
               'item_id="'.encode(AS_DB,$homepage_item->getItemID()).'",'.
               'context_id="'.encode(AS_DB,$homepage_item->getContextID()).'",'.
               'creator_id="'.encode(AS_DB,$user->getItemID()).'",'.
@@ -370,7 +370,7 @@ class cs_homepage_manager extends cs_manager {
   function delete ($item_id) {
      $current_datetime = getCurrentDateTimeInMySQL();
      $user_id = $this->_current_user->getItemID();
-     $query = 'UPDATE '.$this->_db_table.' SET '.
+     $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET '.
               'deletion_date="'.$current_datetime.'",'.
               'deleter_id="'.encode(AS_DB,$user_id).'"'.
               ' WHERE item_id="'.encode(AS_DB,$item_id).'"';
@@ -510,7 +510,7 @@ class cs_homepage_manager extends cs_manager {
   public function deleteHomepage ($context_id) {
      $current_datetime = getCurrentDateTimeInMySQL();
      $user_id = $this->_current_user->getItemID();
-     $query = 'UPDATE '.$this->_db_table.' SET '.
+     $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET '.
               'deletion_date="'.$current_datetime.'",'.
               'deleter_id="'.encode(AS_DB,$user_id).'"'.
               ' WHERE context_id="'.encode(AS_DB,$context_id).'"';

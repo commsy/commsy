@@ -175,13 +175,13 @@ class cs_section_manager extends cs_manager {
 
    function _performQuery($mode = 'select') {
      if ($mode == 'count') {
-        $query = 'SELECT count(section.item_id) AS count';
+        $query = 'SELECT count('.$this->addDatabasePrefix('section').'.item_id) AS count';
      } elseif ($mode == 'id_array') {
-         $query = 'SELECT section.item_id';
+         $query = 'SELECT '.$this->addDatabasePrefix('section').'.item_id';
      } else {
-        $query = 'SELECT section.*';
+        $query = 'SELECT '.$this->addDatabasePrefix('section').'.*';
      }
-     $query .= ' FROM section';
+     $query .= ' FROM '.$this->addDatabasePrefix('section');
 
      if (isset($this->_search_limit) AND !empty($this->_search_limit)) {
         // join to user database table
@@ -195,35 +195,35 @@ class cs_section_manager extends cs_manager {
 
      // fifth, insert limits into the select statement
      if ( isset($this->_material_item_id_limit) and !empty($this->_material_item_id_limit) ) {
-        $query .= ' AND section.material_item_id='.encode(AS_DB,$this->_material_item_id_limit);
-        $query .= ' AND section.version_id='.encode(AS_DB,$this->_version_id_limit);
+        $query .= ' AND '.$this->addDatabasePrefix('section').'.material_item_id='.encode(AS_DB,$this->_material_item_id_limit);
+        $query .= ' AND '.$this->addDatabasePrefix('section').'.version_id='.encode(AS_DB,$this->_version_id_limit);
      }
      if (isset($this->_room_limit)) {
-        $query .= ' AND section.context_id = "'.encode(AS_DB,$this->_room_limit).'"';
+        $query .= ' AND '.$this->addDatabasePrefix('section').'.context_id = "'.encode(AS_DB,$this->_room_limit).'"';
      } else {
-        $query .= ' AND section.context_id = "'.encode(AS_DB,$this->_environment->getCurrentContextID()).'"';
+        $query .= ' AND '.$this->addDatabasePrefix('section').'.context_id = "'.encode(AS_DB,$this->_environment->getCurrentContextID()).'"';
      }
      if ($this->_delete_limit == true) {
-        $query .= ' AND section.deleter_id IS NULL';
+        $query .= ' AND '.$this->addDatabasePrefix('section').'.deleter_id IS NULL';
      }
      if (!empty($this->_id_array_limit)) {
-        $query .= ' AND section.item_id IN ('.implode(", ",encode(AS_DB,$this->_id_array_limit)).')';
+        $query .= ' AND '.$this->addDatabasePrefix('section').'.item_id IN ('.implode(", ",encode(AS_DB,$this->_id_array_limit)).')';
      }
       if ( isset($this->_existence_limit) ) {
-         $query .= ' AND section.creation_date >= DATE_SUB(CURRENT_DATE,interval '.encode(AS_DB,$this->_existence_limit).' day)';
+         $query .= ' AND '.$this->addDatabasePrefix('section').'.creation_date >= DATE_SUB(CURRENT_DATE,interval '.encode(AS_DB,$this->_existence_limit).' day)';
       }
       if ( isset($this->_age_limit) ) {
-         $query .= ' AND section.creation_date >= DATE_SUB(CURRENT_DATE,interval '.encode(AS_DB,$this->_age_limit).' day)';
+         $query .= ' AND '.$this->addDatabasePrefix('section').'.creation_date >= DATE_SUB(CURRENT_DATE,interval '.encode(AS_DB,$this->_age_limit).' day)';
       }
               // restrict sql-statement by search limit, create wheres
      if (isset($this->_search_limit) AND !empty($this->_search_limit)) {
         $query .= ' AND (';
 
         // material item
-        $query .= ' UPPER(section.title) LIKE BINARY "%'.encode(AS_DB,$this->_search_limit).'%"';
-        $query .= ' OR UPPER(section.description) LIKE BINARY "%'.encode(AS_DB,$this->_search_limit).'%"';
+        $query .= ' UPPER('.$this->addDatabasePrefix('section').'.title) LIKE BINARY "%'.encode(AS_DB,$this->_search_limit).'%"';
+        $query .= ' OR UPPER('.$this->addDatabasePrefix('section').'.description) LIKE BINARY "%'.encode(AS_DB,$this->_search_limit).'%"';
         if ( $this->_search_limit != ':' and $this->_search_limit != '-' ) {
-           $query .= ' OR UPPER(section.modification_date) LIKE BINARY "%'.encode(AS_DB,$this->_search_limit).'%"';
+           $query .= ' OR UPPER('.$this->addDatabasePrefix('section').'.modification_date) LIKE BINARY "%'.encode(AS_DB,$this->_search_limit).'%"';
         }
 
         // creation date - modification date language problem (TBD)
@@ -242,9 +242,9 @@ class cs_section_manager extends cs_manager {
       }
 
      if (isset($this->_search_limit) AND !empty($this->_search_limit)) {
-        $query .= ' GROUP BY section.item_id';
+        $query .= ' GROUP BY '.$this->addDatabasePrefix('section').'.item_id';
      }
-     $query .= ' ORDER BY section.number ASC, section.modification_date DESC, section.title DESC';
+     $query .= ' ORDER BY '.$this->addDatabasePrefix('section').'.number ASC, '.$this->addDatabasePrefix('section').'.modification_date DESC, '.$this->addDatabasePrefix('section').'.title DESC';
 
       if ($mode == 'select') {
          if (isset($this->_interval_limit) and isset($this->_from_limit)) {
@@ -278,8 +278,8 @@ class cs_section_manager extends cs_manager {
     */
      function getItem ($item_id) {
         $section = NULL;
-        $query = "SELECT * FROM section WHERE section.item_id = '".encode(AS_DB,$item_id)."'";
-        $query .= " ORDER BY section.version_id DESC";
+        $query = "SELECT * FROM ".$this->addDatabasePrefix("section")." WHERE ".$this->addDatabasePrefix("section").".item_id = '".encode(AS_DB,$item_id)."'";
+        $query .= " ORDER BY ".$this->addDatabasePrefix("section").".version_id DESC";
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) or empty($result[0])) {
            include_once('functions/error_functions.php');trigger_error('Problems selecting one section item from query: "'.$query.'"',E_USER_WARNING);
@@ -294,8 +294,8 @@ class cs_section_manager extends cs_manager {
    function getItemByVersion ($item_id,$version_id) {
       $section = NULL;
 
-      $query = "SELECT * FROM section WHERE section.item_id = '".encode(AS_DB,$item_id)."'";
-      $query .=" AND section.version_id = '".$version_id."'";
+      $query = "SELECT * FROM ".$this->addDatabasePrefix("section")." WHERE ".$this->addDatabasePrefix("section").".item_id = '".encode(AS_DB,$item_id)."'";
+      $query .=" AND ".$this->addDatabasePrefix("section").".version_id = '".$version_id."'";
       $result = $this->_db_connector->performQuery($query);
       if (!isset($result) or empty($result[0])) {
           include_once('functions/error_functions.php');trigger_error('Problems selecting one materials item from query: "'.$query.'"',E_USER_WARNING);
@@ -320,11 +320,11 @@ class cs_section_manager extends cs_manager {
          return new cs_section_list();
       } else {
          $section = NULL;
-         $query = "SELECT * FROM section WHERE section.item_id IN ('".implode("', '",encode(AS_DB,$id_array))."')";
+         $query = "SELECT * FROM ".$this->addDatabasePrefix("section")." WHERE ".$this->addDatabasePrefix("section").".item_id IN ('".implode("', '",encode(AS_DB,$id_array))."')";
          if (!is_null($version_id)) {
-            $query .= " AND section.version_id='".encode(AS_DB,$version_id)."'";
+            $query .= " AND ".$this->addDatabasePrefix("section").".version_id='".encode(AS_DB,$version_id)."'";
          }
-         $query .= " ORDER BY section.number";
+         $query .= " ORDER BY ".$this->addDatabasePrefix("section").".number";
          $result = $this->_db_connector->performQuery($query);
          if (!isset($result)) {
             include_once('functions/error_functions.php');trigger_error('Problems selecting list of section items from query: "'.$query.'"',E_USER_WARNING);
@@ -350,9 +350,9 @@ class cs_section_manager extends cs_manager {
          return new cs_section_list();
       } else {
          $section = NULL;
-         $query = "SELECT * FROM section WHERE material_item_id IN ('".implode("', '",encode(AS_DB,$id_array))."')";
-         $query .= " AND section.deleter_id IS NULL";
-         $query .= " AND section.deletion_date IS NULL";
+         $query = "SELECT * FROM ".$this->addDatabasePrefix("section")." WHERE material_item_id IN ('".implode("', '",encode(AS_DB,$id_array))."')";
+         $query .= " AND ".$this->addDatabasePrefix("section").".deleter_id IS NULL";
+         $query .= " AND ".$this->addDatabasePrefix("section").".deletion_date IS NULL";
          $result = $this->_db_connector->performQuery($query);
          if (!isset($result)) {
             include_once('functions/error_functions.php');trigger_error('Problems selecting list of section items from query: "'.$query.'"',E_USER_WARNING);
@@ -411,7 +411,7 @@ class cs_section_manager extends cs_manager {
         }
         $modificator_item = $item->getModificatorItem();
 
-        $query = 'UPDATE section SET '.
+        $query = 'UPDATE '.$this->addDatabasePrefix('section').' SET '.
               $date_string.
               'title="'.encode(AS_DB,$item->getTitle()).'",'.
               'number="'.encode(AS_DB,$item->getNumber()).'",'.
@@ -436,7 +436,7 @@ class cs_section_manager extends cs_manager {
    * @param cs_section_item the section item for which an entry should be made
    */
   function _create ($item) {
-     $query = 'INSERT INTO items SET '.
+     $query = 'INSERT INTO '.$this->addDatabasePrefix('items').' SET '.
               'context_id="'.encode(AS_DB,$item->getContextID()).'",'.
               'modification_date="'.getCurrentDateTimeInMySQL().'",'.
               'type="section"';
@@ -459,7 +459,7 @@ class cs_section_manager extends cs_manager {
     */
   function _newSection ($item) {
      $current_datetime = getCurrentDateTimeInMySQL();
-     $query = 'INSERT INTO section SET '.
+     $query = 'INSERT INTO '.$this->addDatabasePrefix('section').' SET '.
               'item_id="'.encode(AS_DB,$item->getItemID()).'",'.
               'version_id="'.encode(AS_DB,$item->getVersionID()).'",'.
               'context_id="'.encode(AS_DB,$item->getContextID()).'",'.
@@ -487,7 +487,7 @@ class cs_section_manager extends cs_manager {
       $current_datetime = getCurrentDateTimeInMySQL();
       $current_user = $this->_environment->getCurrentUserItem();
       $user_id = $current_user->getItemID();
-      $query = 'UPDATE section SET '.
+      $query = 'UPDATE '.$this->addDatabasePrefix('section').' SET '.
                'deletion_date="'.$current_datetime.'",'.
                'deleter_id="'.encode(AS_DB,$user_id).'"'.
                ' WHERE item_id="'.encode(AS_DB,$item_id).'"';
@@ -590,11 +590,11 @@ class cs_section_manager extends cs_manager {
    	  									'modification_date'	=>	'modification_date'));
    	  
       $current_datetime = getCurrentDateTimeInMySQL();
-      $query  = 'SELECT section.* FROM section WHERE section.creator_id = "'.encode(AS_DB,$uid).'"';
+      $query  = 'SELECT '.$this->addDatabasePrefix('section').'.* FROM '.$this->addDatabasePrefix('section').' WHERE '.$this->addDatabasePrefix('section').'.creator_id = "'.encode(AS_DB,$uid).'"';
       $result = $this->_db_connector->performQuery($query);
       if ( !empty($result) ) {
          foreach ( $result as $rs ) {
-            $insert_query = 'UPDATE section SET';
+            $insert_query = 'UPDATE '.$this->addDatabasePrefix('section').' SET';
             $insert_query .= ' title = "'.encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_TITLE')).'",';
             $insert_query .= ' modification_date = "'.$current_datetime.'",';
             $insert_query .= ' description = "'.encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_DESCRIPTION')).'"';

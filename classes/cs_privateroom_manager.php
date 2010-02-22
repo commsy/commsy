@@ -153,61 +153,61 @@ class cs_privateroom_manager extends cs_room2_manager {
     */
   function _performQuery ($mode = 'select') {
      if ($mode == 'count') {
-        $query = 'SELECT count('.$this->_db_table.'.item_id) AS count';
+        $query = 'SELECT count('.$this->addDatabasePrefix($this->_db_table).'.item_id) AS count';
      } elseif ($mode == 'id_array') {
-         $query = 'SELECT '.$this->_db_table.'.item_id';
+         $query = 'SELECT '.$this->addDatabasePrefix($this->_db_table).'.item_id';
      } else {
-        $query = 'SELECT '.$this->_db_table.'.*';
+        $query = 'SELECT '.$this->addDatabasePrefix($this->_db_table).'.*';
      }
 
-     $query .= ' FROM '.$this->_db_table;
+     $query .= ' FROM '.$this->addDatabasePrefix($this->_db_table);
      // user id limit
      if (isset($this->_user_id_limit)) {
-        $query .= ' LEFT JOIN user ON user.context_id='.$this->_db_table.'.item_id AND user.deletion_date IS NULL';
+        $query .= ' LEFT JOIN '.$this->addDatabasePrefix('user').' ON '.$this->addDatabasePrefix('user').'.context_id='.$this->addDatabasePrefix($this->_db_table).'.item_id AND '.$this->addDatabasePrefix('user').'.deletion_date IS NULL';
         if (!$this->_all_room_limit) {
-           $query .= ' AND user.status >= "2"';
+           $query .= ' AND '.$this->addDatabasePrefix('user').'.status >= "2"';
         }
      }
      $query .= ' WHERE 1';
      if (isset($this->_user_id_limit)) {
-        $query .= ' AND user.user_id="'.encode(AS_DB,$this->_user_id_limit).'"';
+        $query .= ' AND '.$this->addDatabasePrefix('user').'.user_id="'.encode(AS_DB,$this->_user_id_limit).'"';
      }
      if (isset($this->_auth_source_limit)) {
-        $query .= ' AND user.auth_source="'.encode(AS_DB,$this->_auth_source_limit).'"';
+        $query .= ' AND '.$this->addDatabasePrefix('user').'.auth_source="'.encode(AS_DB,$this->_auth_source_limit).'"';
      }
      // insert limits into the select statement
      if ($this->_delete_limit == true) {
-        $query .= ' AND '.$this->_db_table.'.deleter_id IS NULL';
+        $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.deleter_id IS NULL';
      }
      if (isset($this->_status_limit)) {
-        $query .= ' AND '.$this->_db_table.'.status = "'.encode(AS_DB,$this->_status_limit).'"';
+        $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.status = "'.encode(AS_DB,$this->_status_limit).'"';
      }
      if (!empty($this->_room_limit)) {
-        $query .= ' AND '.$this->_db_table.'.context_id = "'.encode(AS_DB,$this->_room_limit).'"';
+        $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.context_id = "'.encode(AS_DB,$this->_room_limit).'"';
      }
      if (isset($this->_room_type)) {
-        $query .= ' AND '.$this->_db_table.'.type = "'.encode(AS_DB,$this->_room_type).'"';
+        $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.type = "'.encode(AS_DB,$this->_room_type).'"';
      }
      if (isset($this->_template_limit)) {
-        $query .= ' AND '.$this->_db_table.'.template = "1"';
+        $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.template = "1"';
      }
 
      if (isset($this->_order)) {
         if ($this->_order == 'date') {
-           $query .= ' ORDER BY '.$this->_db_table.'.modification_date DESC, '.$this->_db_table.'.title ASC';
+           $query .= ' ORDER BY '.$this->addDatabasePrefix($this->_db_table).'.modification_date DESC, '.$this->addDatabasePrefix($this->_db_table).'.title ASC';
         } elseif ($this->_order == 'creation_date') {
-           $query .= ' ORDER BY '.$this->_db_table.'.creation_date ASC, '.$this->_db_table.'.title ASC';
+           $query .= ' ORDER BY '.$this->addDatabasePrefix($this->_db_table).'.creation_date ASC, '.$this->addDatabasePrefix($this->_db_table).'.title ASC';
         } elseif ($this->_order == 'creator') {
-           $query .= ' ORDER BY user.lastname, '.$this->_db_table.'.modification_date DESC';
+           $query .= ' ORDER BY '.$this->addDatabasePrefix('user').'.lastname, '.$this->addDatabasePrefix($this->_db_table).'.modification_date DESC';
         } elseif ($this->_order == 'activity') {
-           $query .= ' ORDER BY '.$this->_db_table.'.activity ASC, '.$this->_db_table.'.title ASC';
+           $query .= ' ORDER BY '.$this->addDatabasePrefix($this->_db_table).'.activity ASC, '.$this->addDatabasePrefix($this->_db_table).'.title ASC';
         } elseif ($this->_order == 'activity_rev') {
-           $query .= ' ORDER BY '.$this->_db_table.'.activity DESC, '.$this->_db_table.'.title ASC';
+           $query .= ' ORDER BY '.$this->addDatabasePrefix($this->_db_table).'.activity DESC, '.$this->addDatabasePrefix($this->_db_table).'.title ASC';
         } else {
-           $query .= ' ORDER BY '.$this->_db_table.'.title, '.$this->_db_table.'.modification_date DESC';
+           $query .= ' ORDER BY '.$this->addDatabasePrefix($this->_db_table).'.title, '.$this->addDatabasePrefix($this->_db_table).'.modification_date DESC';
         }
      } else {
-        $query .= ' ORDER BY '.$this->_db_table.'.title DESC';
+        $query .= ' ORDER BY '.$this->addDatabasePrefix($this->_db_table).'.title DESC';
      }
 
      if ($mode == 'select') {
@@ -260,7 +260,7 @@ class cs_privateroom_manager extends cs_room2_manager {
       if (empty($id_array)) {
          return new cs_list();
       } else {
-         $query = 'SELECT * FROM '.$this->_db_table.' WHERE '.$this->_db_table.'.item_id IN ("'.implode('", "',encode(AS_DB,$id_array)).'") AND '.$this->_db_table.'.type LIKE "privateroom"';
+         $query = 'SELECT * FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).'.item_id IN ("'.implode('", "',encode(AS_DB,$id_array)).'") AND '.$this->addDatabasePrefix($this->_db_table).'.type LIKE "privateroom"';
          $query .= " ORDER BY ".encode(AS_DB,$sortBy);
          $result = $this->_db_connector->performQuery($query);
          if (!isset($result)) {
@@ -293,7 +293,7 @@ class cs_privateroom_manager extends cs_room2_manager {
       } else {
          $public = 0;
       }
-      $query = 'INSERT INTO '.$this->_db_table.' SET '.
+      $query = 'INSERT INTO '.$this->addDatabasePrefix($this->_db_table).' SET '.
                'item_id="'.encode(AS_DB,$item->getItemID()).'",'.
                'context_id="'.encode(AS_DB,$item->getContextID()).'",'.
                'creator_id="'.encode(AS_DB,$user->getItemID()).'",'.
@@ -322,7 +322,7 @@ class cs_privateroom_manager extends cs_room2_manager {
       if ( $this->_update_with_changing_modification_information ) {
          parent::_update($item);
       }
-      $query  = 'UPDATE '.$this->_db_table.' SET ';
+      $query  = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET ';
       if ( $this->_update_with_changing_modification_information ) {
          $query .= 'modification_date="'.getCurrentDateTimeInMySQL().'",';
          $modifier_id = $this->_current_user->getItemID();
@@ -385,19 +385,19 @@ class cs_privateroom_manager extends cs_room2_manager {
    public function getItemIDOfRelatedOwnRoomForUser ($user_id, $auth_source, $context_id) {
       $retour = '';
 
-      $query  = 'SELECT '.$this->_db_table.'.item_id';
-      $query .= ' FROM '.$this->_db_table;
+      $query  = 'SELECT '.$this->addDatabasePrefix($this->_db_table).'.item_id';
+      $query .= ' FROM '.$this->addDatabasePrefix($this->_db_table);
 
-      $query .= ' INNER JOIN user ON user.context_id='.$this->_db_table.'.item_id
-                  AND user.deletion_date IS NULL
-                  AND user.user_id="'.encode(AS_DB,$user_id).'"
-                  AND user.auth_source="'.encode(AS_DB,$auth_source).'"';
-      $query .= ' AND user.status = "3"';
+      $query .= ' INNER JOIN '.$this->addDatabasePrefix('user').' ON '.$this->addDatabasePrefix('user').'.context_id='.$this->addDatabasePrefix($this->_db_table).'.item_id
+                  AND '.$this->addDatabasePrefix('user').'.deletion_date IS NULL
+                  AND '.$this->addDatabasePrefix('user').'.user_id="'.encode(AS_DB,$user_id).'"
+                  AND '.$this->addDatabasePrefix('user').'.auth_source="'.encode(AS_DB,$auth_source).'"';
+      $query .= ' AND '.$this->addDatabasePrefix('user').'.status = "3"';
 
       $query .= ' WHERE 1';
-      $query .= ' AND '.$this->_db_table.'.type = "privateroom"';
-      $query .= ' AND '.$this->_db_table.'.context_id="'.encode(AS_DB,$context_id).'"';
-      $query .= ' AND '.$this->_db_table.'.deleter_id IS NULL';
+      $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.type = "privateroom"';
+      $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.context_id="'.encode(AS_DB,$context_id).'"';
+      $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.deleter_id IS NULL';
 
       // perform query
       $result = $this->_db_connector->performQuery($query);
@@ -430,13 +430,13 @@ class cs_privateroom_manager extends cs_room2_manager {
             ) {
             $retour = $this->_private_room_array[$user_item->getItemID()];
          } else {
-            $query  = 'SELECT '.$this->_db_table.'.*';
-            $query .= ' FROM '.$this->_db_table;
+            $query  = 'SELECT '.$this->addDatabasePrefix($this->_db_table).'.*';
+            $query .= ' FROM '.$this->addDatabasePrefix($this->_db_table);
 
-            $query .= ' INNER JOIN user ON user.context_id='.$this->_db_table.'.item_id
-                        AND user.auth_source="'.encode(AS_DB,$user_item->getAuthSource()).'"
-                        AND user.deletion_date IS NULL
-                        AND user.user_id="'.encode(AS_DB,$user_item->getUserID()).'"';
+            $query .= ' INNER JOIN '.$this->addDatabasePrefix('user').' ON '.$this->addDatabasePrefix('user').'.context_id='.$this->addDatabasePrefix($this->_db_table).'.item_id
+                        AND '.$this->addDatabasePrefix('user').'.auth_source="'.encode(AS_DB,$user_item->getAuthSource()).'"
+                        AND '.$this->addDatabasePrefix('user').'.deletion_date IS NULL
+                        AND '.$this->addDatabasePrefix('user').'.user_id="'.encode(AS_DB,$user_item->getUserID()).'"';
             /*
             if (!$this->_all_room_limit) {
                $query .= ' AND user.status >= "2"';
@@ -446,14 +446,14 @@ class cs_privateroom_manager extends cs_room2_manager {
             */
 
             $query .= ' WHERE 1';
-            $query .= ' AND '.$this->_db_table.'.type = "privateroom"';
-            $query .= ' AND '.$this->_db_table.'.context_id="'.encode(AS_DB,$context_id).'"';
+            $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.type = "privateroom"';
+            $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.context_id="'.encode(AS_DB,$context_id).'"';
 
             if ($this->_delete_limit == true) {
-               $query .= ' AND '.$this->_db_table.'.deleter_id IS NULL';
+               $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.deleter_id IS NULL';
             }
             if (isset($this->_status_limit)) {
-               $query .= ' AND '.$this->_db_table.'.status = "'.encode(AS_DB,$this->_status_limit).'"';
+               $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.status = "'.encode(AS_DB,$this->_status_limit).'"';
             }
             $query .= ' ORDER BY title, creation_date DESC';
 

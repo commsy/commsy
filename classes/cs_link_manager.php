@@ -217,13 +217,13 @@ class cs_link_manager extends cs_manager {
    function _performQuery ($mode = 'select', $with_linked_items= true) {
       $data = array();
       if ($mode == 'count') {
-         $query = 'SELECT count( DISTINCT link_items.item_id) AS count';
+         $query = 'SELECT count( DISTINCT '.$this->addDatabasePrefix('link_items').'.item_id) AS count';
       } elseif ($mode == 'id_array') {
-         $query = 'SELECT DISTINCT link_items.item_id';
+         $query = 'SELECT DISTINCT '.$this->addDatabasePrefix('link_items').'.item_id';
       } else {
-         $query = 'SELECT DISTINCT link_items.*';
+         $query = 'SELECT DISTINCT '.$this->addDatabasePrefix('link_items').'.*';
       }
-      $query .= ' FROM link_items ';
+      $query .= ' FROM '.$this->addDatabasePrefix('link_items').' ';
 
       $query .= ' WHERE 1';
 
@@ -291,9 +291,9 @@ class cs_link_manager extends cs_manager {
       if ( isset($this->_linked_item) or isset($this->_link_type_limit) ) {
          $query .= '))';
       }
-      $query .= ' AND link_items.deleter_id IS NULL AND link_items.deletion_date IS NULL';
+      $query .= ' AND '.$this->addDatabasePrefix('link_items').'.deleter_id IS NULL AND '.$this->addDatabasePrefix('link_items').'.deletion_date IS NULL';
       if (isset($this->_room_limit)) {
-         $query .= ' AND link_items.context_id = "'.encode(AS_DB,$this->_room_limit).'"';
+         $query .= ' AND '.$this->addDatabasePrefix('link_items').'.context_id = "'.encode(AS_DB,$this->_room_limit).'"';
       }
 #       else {
 #         $query .= ' AND link_items.context_id = "'.$this->_environment->getCurrentContextID().'"';
@@ -303,7 +303,7 @@ class cs_link_manager extends cs_manager {
            and !empty($this->_sorting_place_limit)
            and $this->_sorting_place_limit
          ) {
-         $query .= ' AND '.$this->_db_table.'.sorting_place IS NOT NULL';
+         $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.sorting_place IS NOT NULL';
       }
 
       // group to eliminate versions
@@ -315,10 +315,10 @@ class cs_link_manager extends cs_manager {
       // order
       if ( !empty($this->_order) ) {
          if ( $this->_order == 'sorting_place') {
-            $query .= ' ORDER BY '.$this->_db_table.'.sorting_place ASC, '.$this->_db_table.'.creation_date DESC';
+            $query .= ' ORDER BY '.$this->addDatabasePrefix($this->_db_table).'.sorting_place ASC, '.$this->addDatabasePrefix($this->_db_table).'.creation_date DESC';
          }
       } else {
-         $query .= ' ORDER BY link_items.creation_date DESC';
+         $query .= ' ORDER BY '.$this->addDatabasePrefix('link_items').'.creation_date DESC';
       }
       if (isset($this->_entry_limit)) {
          $query .= ' LIMIT 0, '.encode(AS_DB,$this->_entry_limit);
@@ -363,13 +363,13 @@ class cs_link_manager extends cs_manager {
    function _performQuery2 ($mode = 'select', $with_linked_items= true) {
       $data = array();
       if ($mode == 'count') {
-         $query = 'SELECT count( DISTINCT link_items.item_id) AS count';
+         $query = 'SELECT count( DISTINCT '.$this->addDatabasePrefix('link_items').'.item_id) AS count';
       } elseif ($mode == 'id_array') {
-         $query = 'SELECT DISTINCT link_items.item_id';
+         $query = 'SELECT DISTINCT '.$this->addDatabasePrefix('link_items').'.item_id';
       } else {
-         $query = 'SELECT DISTINCT link_items.*';
+         $query = 'SELECT DISTINCT '.$this->addDatabasePrefix('link_items').'.*';
       }
-      $query .= ' FROM link_items ';
+      $query .= ' FROM '.$this->addDatabasePrefix('link_items').' ';
 
       $query .= ' WHERE 1';
 
@@ -437,9 +437,9 @@ class cs_link_manager extends cs_manager {
       if ( isset($this->_id_array_limit) or isset($this->_link_type_limit) ) { // id-Array // user
          $query .= '))';
       }
-      $query .= ' AND link_items.deleter_id IS NULL AND link_items.deletion_date IS NULL';
+      $query .= ' AND '.$this->addDatabasePrefix('link_items').'.deleter_id IS NULL AND '.$this->addDatabasePrefix('link_items').'.deletion_date IS NULL';
       if (isset($this->_room_limit)) {
-         $query .= ' AND link_items.context_id = "'.encode(AS_DB,$this->_room_limit).'"';
+         $query .= ' AND '.$this->addDatabasePrefix('link_items').'.context_id = "'.encode(AS_DB,$this->_room_limit).'"';
       }
 #       else {
 #         $query .= ' AND link_items.context_id = "'.$this->_environment->getCurrentContextID().'"';
@@ -449,7 +449,7 @@ class cs_link_manager extends cs_manager {
            and !empty($this->_sorting_place_limit)
            and $this->_sorting_place_limit
          ) {
-         $query .= ' AND '.$this->_db_table.'.sorting_place IS NOT NULL';
+         $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.sorting_place IS NOT NULL';
       }
 
       // group to eliminate versions
@@ -461,10 +461,10 @@ class cs_link_manager extends cs_manager {
       // order
       if ( !empty($this->_order) ) {
          if ( $this->_order == 'sorting_place') {
-            $query .= ' ORDER BY '.$this->_db_table.'.sorting_place ASC, '.$this->_db_table.'.creation_date DESC';
+            $query .= ' ORDER BY '.$this->addDatabasePrefix($this->_db_table).'.sorting_place ASC, '.$this->addDatabasePrefix($this->_db_table).'.creation_date DESC';
          }
       } else {
-         $query .= ' ORDER BY link_items.creation_date DESC';
+         $query .= ' ORDER BY '.$this->addDatabasePrefix('link_items').'.creation_date DESC';
       }
       if (isset($this->_entry_limit)) {
          $query .= ' LIMIT 0, '.encode(AS_DB,$this->_entry_limit);
@@ -660,7 +660,7 @@ class cs_link_manager extends cs_manager {
      $first_item = $link_item->getFirstLinkedItem();
      $second_item = $link_item->getSecondLinkedItem();
      $modificator = $link_item->getModificatorItem();
-     $query = 'UPDATE link_items SET '.
+     $query = 'UPDATE '.$this->addDatabasePrefix('link_items').' SET '.
               'modification_date="'.getCurrentDateTimeInMySQL().'",'.
               'first_item_id="'.encode(AS_DB,$first_item->getItemID()).'",'.
               'second_item_id="'.encode(AS_DB,$second_item->getItemID()).'",'.
@@ -687,7 +687,7 @@ class cs_link_manager extends cs_manager {
     * @param object cs_item link_item
     */
   function _create ($link_item) {
-     $query = 'INSERT INTO items SET '.
+     $query = 'INSERT INTO '.$this->addDatabasePrefix('items').' SET '.
               'context_id="'.encode(AS_DB,$link_item->getContextID()).'",'.
               'modification_date="'.getCurrentDateTimeInMySQL().'",'.
               'type="link_item"';
@@ -703,7 +703,7 @@ class cs_link_manager extends cs_manager {
         $creator = $link_item->getCreatorItem();
         $creator_id = $creator->getItemID();
         $current_datetime = getCurrentDateTimeInMySQL();
-        $query  = 'INSERT INTO link_items SET '.
+        $query  = 'INSERT INTO '.$this->addDatabasePrefix('link_items').' SET '.
                   'item_id="'.encode(AS_DB,$link_item->getItemID()).'",';
         $query .= 'context_id="'.encode(AS_DB,$link_item->getContextID()).'",';
         $first_item = $link_item->getFirstLinkedItem();
@@ -733,7 +733,7 @@ class cs_link_manager extends cs_manager {
         if ( !isset($result) ) {
            include_once('functions/error_functions.php');
            trigger_error('Problems creating link item from query: "'.$query.'"',E_USER_WARNING);
-           $query = 'DELETE FROM items WHERE item_id="'.$this->getCreateID().'"';
+           $query = 'DELETE FROM '.$this->addDatabasePrefix('items').' WHERE item_id="'.$this->getCreateID().'"';
            $result = $this->_db_connector->performQuery($query);
            $this->_create_id = NULL;
         }
@@ -751,7 +751,7 @@ class cs_link_manager extends cs_manager {
      $current_datetime = getCurrentDateTimeInMySQL();
      $current_user = $this->_environment->getCurrentUserItem();
      $user_id = $current_user->getItemID();
-     $query = 'UPDATE link_items SET '.
+     $query = 'UPDATE '.$this->addDatabasePrefix('link_items').' SET '.
               'deletion_date="'.$current_datetime.'",'.
               'deleter_id="'.encode(AS_DB,$user_id).'"'.
               ' WHERE item_id="'.encode(AS_DB,$item_id).'"';
@@ -769,7 +769,7 @@ class cs_link_manager extends cs_manager {
   }
 
   function deleteAllLinkItemsInCommunityRoom($item_id,$context_id){
-     $query = 'UPDATE link_items SET '.
+     $query = 'UPDATE '.$this->addDatabasePrefix('link_items').' SET '.
               'deletion_date="'.getCurrentDateTimeInMySQL().'",'.
               'deleter_id="'.encode(AS_DB,$this->_current_user->getItemID()).'"'.
               ' WHERE (first_item_id="'.encode(AS_DB,$item_id).'"';
@@ -787,18 +787,18 @@ class cs_link_manager extends cs_manager {
   }
 
    function getCountExistingLinkItemsOfUser($user_id){
-     $query = 'SELECT count(link_items.item_id) AS count';
-     $query .= ' FROM link_items';
+     $query = 'SELECT count('.$this->addDatabasePrefix('link_items').'.item_id) AS count';
+     $query .= ' FROM '.$this->addDatabasePrefix('link_items');
      $query .= ' WHERE 1';
 
      if (isset($this->_room_limit)) {
-        $query .= ' AND link_items.context_id = "'.encode(AS_DB,$this->_room_limit).'"';
+        $query .= ' AND '.$this->addDatabasePrefix('link_items').'.context_id = "'.encode(AS_DB,$this->_room_limit).'"';
      } else {
-        $query .= ' AND link_items.context_id = "'.encode(AS_DB,$this->_environment->getCurrentContextID()).'"';
+        $query .= ' AND '.$this->addDatabasePrefix('link_items').'.context_id = "'.encode(AS_DB,$this->_environment->getCurrentContextID()).'"';
      }
-     $query .= ' AND NOT(link_items.first_item_type="user" AND link_items.second_item_type="group")';
-     $query .= ' AND link_items.deleter_id IS NULL';
-     $query .= ' AND link_items.creator_id ="'.encode(AS_DB,$user_id).'"';
+     $query .= ' AND NOT('.$this->addDatabasePrefix('link_items').'.first_item_type="user" AND '.$this->addDatabasePrefix('link_items').'.second_item_type="group")';
+     $query .= ' AND '.$this->addDatabasePrefix('link_items').'.deleter_id IS NULL';
+     $query .= ' AND '.$this->addDatabasePrefix('link_items').'.creator_id ="'.encode(AS_DB,$user_id).'"';
 
      // perform query
      $result = $this->_db_connector->performQuery($query);
@@ -817,7 +817,7 @@ class cs_link_manager extends cs_manager {
     * @param integer version_id    version id of the item
     */
   function deleteLinksBecauseItemIsDeleted ($item_id, $version_id=NULL) {
-     $query = 'UPDATE link_items SET '.
+     $query = 'UPDATE '.$this->addDatabasePrefix('link_items').' SET '.
               'deletion_date="'.getCurrentDateTimeInMySQL().'",'.
               'deleter_id="'.encode(AS_DB,$this->_current_user->getItemID()).'"'.
               ' WHERE (first_item_id="'.encode(AS_DB,$item_id).'"';
@@ -834,7 +834,7 @@ class cs_link_manager extends cs_manager {
   }
 
   function undeleteLinks ($item) {
-     $query = 'UPDATE link_items SET '.
+     $query = 'UPDATE '.$this->addDatabasePrefix('link_items').' SET '.
               'modification_date="'.getCurrentDateTimeInMySQL().'",'.
               'deletion_date=NULL,'.
               'deleter_id=NULL'.
@@ -855,22 +855,22 @@ class cs_link_manager extends cs_manager {
      $query ='';
      switch ( $type ) {
         case CS_MATERIAL_TYPE:
-           $query ='SELECT DISTINCT materials.item_id FROM materials WHERE materials.creator_id ="'.encode(AS_DB,$creator_id).'" AND materials.deleter_id IS NULL AND materials.deletion_date IS NULL ORDER BY materials.modification_date DESC, materials.title ASC';
+           $query ='SELECT DISTINCT '.$this->addDatabasePrefix('materials').'.item_id FROM '.$this->addDatabasePrefix('materials').' WHERE '.$this->addDatabasePrefix('materials').'.creator_id ="'.encode(AS_DB,$creator_id).'" AND '.$this->addDatabasePrefix('materials').'.deleter_id IS NULL AND '.$this->addDatabasePrefix('materials').'.deletion_date IS NULL ORDER BY '.$this->addDatabasePrefix('materials').'.modification_date DESC, '.$this->addDatabasePrefix('materials').'.title ASC';
            break;
         case CS_PROJECT_TYPE:
-           $query ='SELECT DISTINCT room.item_id FROM room WHERE room.creator_id ="'.encode(AS_DB,$creator_id).'" AND room.deleter_id IS NULL AND room.deletion_date IS NULL AND room.type="project" ORDER BY room.modification_date DESC, room.title ASC';
+           $query ='SELECT DISTINCT '.$this->addDatabasePrefix('room').'.item_id FROM '.$this->addDatabasePrefix('room').' WHERE '.$this->addDatabasePrefix('room').'.creator_id ="'.encode(AS_DB,$creator_id).'" AND '.$this->addDatabasePrefix('room').'.deleter_id IS NULL AND '.$this->addDatabasePrefix('room').'.deletion_date IS NULL AND '.$this->addDatabasePrefix('room').'.type="project" ORDER BY '.$this->addDatabasePrefix('room').'.modification_date DESC, '.$this->addDatabasePrefix('room').'.title ASC';
            break;
         case CS_ANNOUNCEMENT_TYPE:
-           $query ='SELECT DISTINCT announcement.item_id FROM announcement WHERE announcement.creator_id ="'.encode(AS_DB,$creator_id).'" AND announcement.deleter_id IS NULL  AND announcement.deletion_date IS NULL ORDER BY announcement.modification_date DESC';
+           $query ='SELECT DISTINCT '.$this->addDatabasePrefix('announcement').'.item_id FROM '.$this->addDatabasePrefix('announcement').' WHERE '.$this->addDatabasePrefix('announcement').'.creator_id ="'.encode(AS_DB,$creator_id).'" AND '.$this->addDatabasePrefix('announcement').'.deleter_id IS NULL  AND '.$this->addDatabasePrefix('announcement').'.deletion_date IS NULL ORDER BY '.$this->addDatabasePrefix('announcement').'.modification_date DESC';
            break;
         case CS_DISCUSSION_TYPE:
-           $query ='SELECT DISTINCT discussions.item_id FROM discussions WHERE discussions.creator_id ="'.encode(AS_DB,$creator_id).'" AND discussions.deleter_id IS NULL AND discussions.deletion_date IS NULL ORDER BY discussions.modification_date DESC, discussions.title DESC';
+           $query ='SELECT DISTINCT '.$this->addDatabasePrefix('discussions').'.item_id FROM '.$this->addDatabasePrefix('discussions').' WHERE '.$this->addDatabasePrefix('discussions').'.creator_id ="'.encode(AS_DB,$creator_id).'" AND '.$this->addDatabasePrefix('discussions').'.deleter_id IS NULL AND '.$this->addDatabasePrefix('discussions').'.deletion_date IS NULL ORDER BY '.$this->addDatabasePrefix('discussions').'.modification_date DESC, '.$this->addDatabasePrefix('discussions').'.title DESC';
            break;
         case CS_TODO_TYPE:
-           $query ='SELECT DISTINCT todos.item_id FROM todos WHERE todos.creator_id ="'.encode(AS_DB,$creator_id).'" AND todos.deleter_id IS NULL AND todos.deletion_date IS NULL ORDER BY todos.modification_date DESC';
+           $query ='SELECT DISTINCT '.$this->addDatabasePrefix('todos').'.item_id FROM '.$this->addDatabasePrefix('todos').' WHERE '.$this->addDatabasePrefix('todos').'.creator_id ="'.encode(AS_DB,$creator_id).'" AND '.$this->addDatabasePrefix('todos').'.deleter_id IS NULL AND '.$this->addDatabasePrefix('todos').'.deletion_date IS NULL ORDER BY '.$this->addDatabasePrefix('todos').'.modification_date DESC';
            break;
         case CS_DATE_TYPE:
-           $query ='SELECT DISTINCT dates.item_id FROM dates WHERE dates.creator_id ="'.encode(AS_DB,$creator_id).'" AND dates.deleter_id IS NULL AND dates.deletion_date IS NULL ORDER BY dates.datetime_start ASC';
+           $query ='SELECT DISTINCT '.$this->addDatabasePrefix('dates').'.item_id FROM '.$this->addDatabasePrefix('dates').' WHERE '.$this->addDatabasePrefix('dates').'.creator_id ="'.encode(AS_DB,$creator_id).'" AND '.$this->addDatabasePrefix('dates').'.deleter_id IS NULL AND '.$this->addDatabasePrefix('dates').'.deletion_date IS NULL ORDER BY '.$this->addDatabasePrefix('dates').'.datetime_start ASC';
            break;
      }
      // perform query
@@ -883,7 +883,7 @@ class cs_link_manager extends cs_manager {
          }
       }
       if ($type =='CS_DISCUSSION_TYPE'){
-         $query ='SELECT DISTINCT discussionarticless.item_id FROM discussionarticles WHERE discussionarticles.creator_id ="'.encode(AS_DB,$creator_id).'" OR discussionarticles.deleter_id IS NULL  ORDER BY discussionarticle.modification_date DESC, discussionarticle.subject DESC';
+         $query ='SELECT DISTINCT '.$this->addDatabasePrefix('discussionarticless').'.item_id FROM '.$this->addDatabasePrefix('discussionarticles').' WHERE '.$this->addDatabasePrefix('discussionarticles').'.creator_id ="'.encode(AS_DB,$creator_id).'" OR '.$this->addDatabasePrefix('discussionarticles').'.deleter_id IS NULL  ORDER BY '.$this->addDatabasePrefix('discussionarticle').'.modification_date DESC, '.$this->addDatabasePrefix('discussionarticle').'.subject DESC';
          $result = $this->_db_connector->performQuery($query);
          $id_array = array();
          if ( isset($result) ) {
@@ -901,7 +901,7 @@ class cs_link_manager extends cs_manager {
   }
 
   function moveRoom ($roomMover) {
-     $query = "UPDATE link_items SET ";
+     $query = "UPDATE ".$this->addDatabasePrefix("link_items")." SET ";
      $query .= " WHERE context_id = '".encode(AS_DB,$roomMover->getRoomId())."'";
 
      $result = $this->_db_connector->performQuery($query);
@@ -913,11 +913,11 @@ class cs_link_manager extends cs_manager {
    function mergeAccounts ($new_id, $old_id) {
      parent::mergeAccounts($new_id,$old_id);
 
-     $query = 'SELECT * FROM link_items WHERE creator_id = "'.encode(AS_DB,$new_id).'" AND first_item_id ="'.encode(AS_DB,$old_id).'"';
+     $query = 'SELECT * FROM '.$this->addDatabasePrefix('link_items').' WHERE creator_id = "'.encode(AS_DB,$new_id).'" AND first_item_id ="'.encode(AS_DB,$old_id).'"';
      $result = $this->_db_connector->performQuery($query);
      if ( isset($result) ) {
         foreach ( $result as $row ) {
-           $update = "UPDATE link_items SET ";
+           $update = "UPDATE ".$this->addDatabasePrefix("link_items")." SET ";
            $update.= " first_item_id = ".encode(AS_DB,$new_id);
            $update.= " WHERE item_id = ".$row['item_id'];
 
@@ -928,11 +928,11 @@ class cs_link_manager extends cs_manager {
         }
      }
 
-     $query = 'SELECT * FROM link_items WHERE creator_id = "'.encode(AS_DB,$new_id).'" AND second_item_id ="'.encode(AS_DB,$old_id).'"';
+     $query = 'SELECT * FROM '.$this->addDatabasePrefix('link_items').' WHERE creator_id = "'.encode(AS_DB,$new_id).'" AND second_item_id ="'.encode(AS_DB,$old_id).'"';
      $result = $this->_db_connector->performQuery($query);
      if ( isset($result) ) {
         foreach ( $result as $row ) {
-           $update = "UPDATE link_items SET ";
+           $update = "UPDATE ".$this->addDatabasePrefix("link_items")." SET ";
            $update.= " second_item_id = ".encode(AS_DB,$new_id);
            $update.= " WHERE item_id = ".$row['item_id'];
 
@@ -947,7 +947,7 @@ class cs_link_manager extends cs_manager {
 
    function cleanSortingPlaces ($linked_item) {
       $item_id = $linked_item->getItemID();
-      $query = 'UPDATE '.$this->_db_table.' SET sorting_place=NULL WHERE first_item_id="'.encode(AS_DB,$item_id).'" OR second_item_id="'.encode(AS_DB,$item_id).'";';
+      $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET sorting_place=NULL WHERE first_item_id="'.encode(AS_DB,$item_id).'" OR second_item_id="'.encode(AS_DB,$item_id).'";';
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) or !$result ) {
          include_once('functions/error_functions.php');
@@ -964,7 +964,7 @@ class cs_link_manager extends cs_manager {
             $item_id = $value['item_id'];
             $place = $value['place'];
 
-            $query = 'UPDATE '.$this->_db_table.' SET sorting_place="'.encode(AS_DB,$place).'" WHERE item_id="'.encode(AS_DB,$item_id).'";';
+            $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET sorting_place="'.encode(AS_DB,$place).'" WHERE item_id="'.encode(AS_DB,$item_id).'";';
             $result = $this->_db_connector->performQuery($query);
             if ( !isset($result) or !$result ) {
                include_once('functions/error_functions.php');
@@ -1113,7 +1113,7 @@ class cs_link_manager extends cs_manager {
       $retour = NULL;
       $id_array = array();
 
-      $sql1 = 'SELECT '.$this->_db_table.'.item_id AS item_id FROM '.$this->_db_table.' LEFT JOIN items ON '.$this->_db_table.'.first_item_id=items.item_id WHERE '.$this->_db_table.'.context_id="'.$context_id.'"AND items.context_id IS NULL;';
+      $sql1 = 'SELECT '.$this->addDatabasePrefix($this->_db_table).'.item_id AS item_id FROM '.$this->addDatabasePrefix($this->_db_table).' LEFT JOIN '.$this->addDatabasePrefix('items').' ON '.$this->addDatabasePrefix($this->_db_table).'.first_item_id='.$this->addDatabasePrefix('items').'.item_id WHERE '.$this->addDatabasePrefix($this->_db_table).'.context_id="'.$context_id.'"AND '.$this->addDatabasePrefix('items').'.context_id IS NULL;';
       $result = $this->_db_connector->performQuery($sql1);
       if ( !empty($result) ) {
          foreach ( $result as $row ) {
@@ -1121,7 +1121,7 @@ class cs_link_manager extends cs_manager {
          }
       }
 
-      $sql2 = 'SELECT '.$this->_db_table.'.item_id FROM '.$this->_db_table.' LEFT JOIN items ON '.$this->_db_table.'.second_item_id=items.item_id WHERE '.$this->_db_table.'.context_id="'.$context_id.'"AND items.context_id IS NULL;';
+      $sql2 = 'SELECT '.$this->addDatabasePrefix($this->_db_table).'.item_id FROM '.$this->addDatabasePrefix($this->_db_table).' LEFT JOIN '.$this->addDatabasePrefix('items').' ON '.$this->addDatabasePrefix($this->_db_table).'.second_item_id='.$this->addDatabasePrefix('items').'.item_id WHERE '.$this->addDatabasePrefix($this->_db_table).'.context_id="'.$context_id.'"AND '.$this->addDatabasePrefix('items').'.context_id IS NULL;';
       $result = $this->_db_connector->performQuery($sql2);
       if ( !empty($result) ) {
          foreach ( $result as $row ) {
@@ -1131,9 +1131,9 @@ class cs_link_manager extends cs_manager {
 
       $id_array = array_unique($id_array);
       if ( !empty($id_array) ) {
-         $sql3 = 'DELETE FROM '.$this->_db_table.' WHERE item_id IN ('.implode(',',$id_array).');';
+         $sql3 = 'DELETE FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE item_id IN ('.implode(',',$id_array).');';
          $result = $this->_db_connector->performQuery($sql3);
-         $sql3 = 'DELETE FROM items WHERE item_id IN ('.implode(',',$id_array).');';
+         $sql3 = 'DELETE FROM '.$this->addDatabasePrefix('items').' WHERE item_id IN ('.implode(',',$id_array).');';
          $result = $this->_db_connector->performQuery($sql3);
          $retour = count($id_array);
       } else {
@@ -1158,7 +1158,7 @@ class cs_link_manager extends cs_manager {
       } elseif ( array_key_exists($item_id,$this->_cached_items) ) {
          $item = $this->_buildItem($this->_cached_items[$item_id]);
       } elseif ( !empty($item_id) ) {
-         $query = 'SELECT * FROM '.$this->_db_table.' WHERE '.$this->_db_table.'.item_id = "'.encode(AS_DB,$item_id).'";';
+         $query = 'SELECT * FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).'.item_id = "'.encode(AS_DB,$item_id).'";';
          $result = $this->_db_connector->performQuery($query);
          if ( !isset($result) or empty($result[0]) ) {
             include_once('functions/error_functions.php');
@@ -1192,11 +1192,11 @@ class cs_link_manager extends cs_manager {
       if ( !empty($first_id)
            and !empty($second_id)
          ) {
-         $query  = 'SELECT * FROM '.$this->_db_table.' WHERE';
-         $query .= ' ('.$this->_db_table.'.first_item_id = "'.encode(AS_DB,$first_id).'"';
-         $query .= ' AND '.$this->_db_table.'.second_item_id = "'.encode(AS_DB,$second_id).'")';
-         $query .= ' OR ('.$this->_db_table.'.first_item_id = "'.encode(AS_DB,$second_id).'"';
-         $query .= ' AND '.$this->_db_table.'.second_item_id = "'.encode(AS_DB,$first_id).'")';
+         $query  = 'SELECT * FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE';
+         $query .= ' ('.$this->addDatabasePrefix($this->_db_table).'.first_item_id = "'.encode(AS_DB,$first_id).'"';
+         $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.second_item_id = "'.encode(AS_DB,$second_id).'")';
+         $query .= ' OR ('.$this->addDatabasePrefix($this->_db_table).'.first_item_id = "'.encode(AS_DB,$second_id).'"';
+         $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.second_item_id = "'.encode(AS_DB,$first_id).'")';
          $query .= ';';
          $result = $this->_db_connector->performQuery($query);
          if ( !isset($result) ) {

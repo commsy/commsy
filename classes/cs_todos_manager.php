@@ -126,98 +126,98 @@ class cs_todos_manager extends cs_manager {
 
    function _performQuery ( $mode = 'select' ) {
       if ($mode == 'count') {
-         $query = 'SELECT count(todos.item_id) AS count';
+         $query = 'SELECT count('.$this->addDatabasePrefix('todos').'.item_id) AS count';
       } elseif ($mode == 'id_array') {
-         $query = 'SELECT todos.item_id';
+         $query = 'SELECT '.$this->addDatabasePrefix('todos').'.item_id';
       } elseif ($mode == 'distinct') {
-         $query = 'SELECT DISTINCT '.$this->_db_table.'.*';
+         $query = 'SELECT DISTINCT '.$this->addDatabasePrefix($this->_db_table).'.*';
       } else {
-         $query = 'SELECT todos.*';
+         $query = 'SELECT '.$this->addDatabasePrefix('todos').'.*';
       }
-      $query .= ' FROM todos';
+      $query .= ' FROM '.$this->addDatabasePrefix('todos');
 
      if ( ( isset($this->_search_array) AND !empty($this->_search_array) )
         ) {
-        $query .= ' LEFT JOIN step ON (step.todo_item_id = todos.item_id AND step.context_id = "'.encode(AS_DB,$this->_room_limit).'")';
+        $query .= ' LEFT JOIN '.$this->addDatabasePrefix('step').' ON ('.$this->addDatabasePrefix('step').'.todo_item_id = '.$this->addDatabasePrefix('todos').'.item_id AND '.$this->addDatabasePrefix('step').'.context_id = "'.encode(AS_DB,$this->_room_limit).'")';
      }
      if ( !empty($this->_search_array) ||
            (isset($this->_sort_order) and
            ($this->_sort_order == 'modificator' || $this->_sort_order == 'modificator_rev')) ) {
-         $query .= ' LEFT JOIN user AS people ON (people.item_id=todos.creator_id )'; // modificator_id (TBD)
+         $query .= ' LEFT JOIN '.$this->addDatabasePrefix('user').' AS people ON (people.item_id='.$this->addDatabasePrefix('todos').'.creator_id )'; // modificator_id (TBD)
      }
      if ( isset($this->_topic_limit) ) {
-        $query .= ' LEFT JOIN link_items AS l21 ON ( l21.deletion_date IS NULL AND ((l21.first_item_id=todos.item_id AND l21.second_item_type="'.CS_TOPIC_TYPE.'"))) ';
-        $query .= ' LEFT JOIN link_items AS l22 ON ( l22.deletion_date IS NULL AND ((l22.second_item_id=todos.item_id AND l22.first_item_type="'.CS_TOPIC_TYPE.'"))) ';
+        $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l21 ON ( l21.deletion_date IS NULL AND ((l21.first_item_id='.$this->addDatabasePrefix('todos').'.item_id AND l21.second_item_type="'.CS_TOPIC_TYPE.'"))) ';
+        $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l22 ON ( l22.deletion_date IS NULL AND ((l22.second_item_id='.$this->addDatabasePrefix('todos').'.item_id AND l22.first_item_type="'.CS_TOPIC_TYPE.'"))) ';
      }
      if ( isset($this->_group_limit) ) {
-        $query .= ' LEFT JOIN link_items AS l31 ON ( l31.deletion_date IS NULL AND ((l31.first_item_id=todos.item_id AND l31.second_item_type="'.CS_GROUP_TYPE.'"))) ';
-        $query .= ' LEFT JOIN link_items AS l32 ON ( l32.deletion_date IS NULL AND ((l32.second_item_id=todos.item_id AND l32.first_item_type="'.CS_GROUP_TYPE.'"))) ';
+        $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l31 ON ( l31.deletion_date IS NULL AND ((l31.first_item_id='.$this->addDatabasePrefix('todos').'.item_id AND l31.second_item_type="'.CS_GROUP_TYPE.'"))) ';
+        $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l32 ON ( l32.deletion_date IS NULL AND ((l32.second_item_id='.$this->addDatabasePrefix('todos').'.item_id AND l32.first_item_type="'.CS_GROUP_TYPE.'"))) ';
      }
 
      if ( isset($this->_user_limit) ) {
-        $query .= ' LEFT JOIN link_items AS user_limit1 ON ( user_limit1.deletion_date IS NULL AND ((user_limit1.first_item_id=todos.item_id AND user_limit1.second_item_type="'.CS_USER_TYPE.'"))) ';
-        $query .= ' LEFT JOIN link_items AS user_limit2 ON ( user_limit2.deletion_date IS NULL AND ((user_limit2.second_item_id=todos.item_id AND user_limit2.first_item_type="'.CS_USER_TYPE.'"))) ';
+        $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS user_limit1 ON ( user_limit1.deletion_date IS NULL AND ((user_limit1.first_item_id='.$this->addDatabasePrefix('todos').'.item_id AND user_limit1.second_item_type="'.CS_USER_TYPE.'"))) ';
+        $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS user_limit2 ON ( user_limit2.deletion_date IS NULL AND ((user_limit2.second_item_id='.$this->addDatabasePrefix('todos').'.item_id AND user_limit2.first_item_type="'.CS_USER_TYPE.'"))) ';
      }
 
      if ( isset($this->_tag_limit) ) {
         $tag_id_array = $this->_getTagIDArrayByTagID($this->_tag_limit);
-        $query .= ' LEFT JOIN link_items AS l41 ON ( l41.deletion_date IS NULL AND ((l41.first_item_id=todos.item_id AND l41.second_item_type="'.CS_TAG_TYPE.'"))) ';
-        $query .= ' LEFT JOIN link_items AS l42 ON ( l42.deletion_date IS NULL AND ((l42.second_item_id=todos.item_id AND l42.first_item_type="'.CS_TAG_TYPE.'"))) ';
+        $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l41 ON ( l41.deletion_date IS NULL AND ((l41.first_item_id='.$this->addDatabasePrefix('todos').'.item_id AND l41.second_item_type="'.CS_TAG_TYPE.'"))) ';
+        $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l42 ON ( l42.deletion_date IS NULL AND ((l42.second_item_id='.$this->addDatabasePrefix('todos').'.item_id AND l42.first_item_type="'.CS_TAG_TYPE.'"))) ';
      }
 
       // restrict todos by buzzword (la4)
       if (isset($this->_buzzword_limit)) {
          if ($this->_buzzword_limit == -1){
-            $query .= ' LEFT JOIN links AS l6 ON l6.from_item_id=todos.item_id AND l6.link_type="buzzword_for"';
-            $query .= ' LEFT JOIN labels AS buzzwords ON l6.to_item_id=buzzwords.item_id AND buzzwords.type="buzzword"';
+            $query .= ' LEFT JOIN '.$this->addDatabasePrefix('links').' AS l6 ON l6.from_item_id='.$this->addDatabasePrefix('todos').'.item_id AND l6.link_type="buzzword_for"';
+            $query .= ' LEFT JOIN '.$this->addDatabasePrefix('labels').' AS buzzwords ON l6.to_item_id=buzzwords.item_id AND buzzwords.type="buzzword"';
          }else{
-            $query .= ' INNER JOIN links AS l6 ON l6.from_item_id=todos.item_id AND l6.link_type="buzzword_for"';
-            $query .= ' INNER JOIN labels AS buzzwords ON l6.to_item_id=buzzwords.item_id AND buzzwords.type="buzzword"';
+            $query .= ' INNER JOIN '.$this->addDatabasePrefix('links').' AS l6 ON l6.from_item_id='.$this->addDatabasePrefix('todos').'.item_id AND l6.link_type="buzzword_for"';
+            $query .= ' INNER JOIN '.$this->addDatabasePrefix('labels').' AS buzzwords ON l6.to_item_id=buzzwords.item_id AND buzzwords.type="buzzword"';
          }
       }
 
       if (isset($this->_ref_id_limit)) {
-         $query .= ' INNER JOIN link_items AS l5 ON ( (l5.first_item_id=todos.item_id AND l5.second_item_id="'.encode(AS_DB,$this->_ref_id_limit).'")
-                     OR(l5.second_item_id=todos.item_id AND l5.first_item_id="'.encode(AS_DB,$this->_ref_id_limit).'") AND l5.deleter_id IS NULL)';
+         $query .= ' INNER JOIN '.$this->addDatabasePrefix('link_items').' AS l5 ON ( (l5.first_item_id='.$this->addDatabasePrefix('todos').'.item_id AND l5.second_item_id="'.encode(AS_DB,$this->_ref_id_limit).'")
+                     OR(l5.second_item_id='.$this->addDatabasePrefix('todos').'.item_id AND l5.first_item_id="'.encode(AS_DB,$this->_ref_id_limit).'") AND l5.deleter_id IS NULL)';
       }
 
       // only files limit -> entries with files
       if ( isset($this->_only_files_limit) and $this->_only_files_limit ) {
-         $query .= ' INNER JOIN item_link_file AS lf ON '.$this->_db_table.'.item_id = lf.item_iid';
+         $query .= ' INNER JOIN '.$this->addDatabasePrefix('item_link_file').' AS lf ON '.$this->addDatabasePrefix($this->_db_table).'.item_id = lf.item_iid';
       }
 
       $query .= ' WHERE 1';
       if ( isset($this->_room_limit) ) {
-         $query .= ' AND todos.context_id = "'.encode(AS_DB,$this->_room_limit).'"';
+         $query .= ' AND '.$this->addDatabasePrefix('todos').'.context_id = "'.encode(AS_DB,$this->_room_limit).'"';
       }
       if (!$this->_show_not_activated_entries_limit) {
-         $query .= ' AND (todos.modification_date IS NULL OR todos.modification_date <= "'.getCurrentDateTimeInMySQL().'")';
+         $query .= ' AND ('.$this->addDatabasePrefix('todos').'.modification_date IS NULL OR '.$this->addDatabasePrefix('todos').'.modification_date <= "'.getCurrentDateTimeInMySQL().'")';
       }
 #      if ( $this->_future_limit ) {
 #         $date = date("Y-m-d").' 00:00:00';
 #         $query .= ' AND todos.date >= "'.$date.'"';
 #      }
       if ( $this->_delete_limit == true ) {
-         $query .= ' AND todos.deleter_id IS NULL';
+         $query .= ' AND '.$this->addDatabasePrefix('todos').'.deleter_id IS NULL';
       }
       if (isset($this->_ref_user_limit)) {
-         $query .= ' AND (todos.creator_id = "'.encode(AS_DB,$this->_ref_user_limit).'" )';
+         $query .= ' AND ('.$this->addDatabasePrefix('todos').'.creator_id = "'.encode(AS_DB,$this->_ref_user_limit).'" )';
       }
       if (isset($this->_status_limit)) {
          if ($this->_status_limit == 4){
-            $query .= ' AND (todos.status != "3")';
+            $query .= ' AND ('.$this->addDatabasePrefix('todos').'.status != "3")';
          }else{
-            $query .= ' AND (todos.status = "'.encode(AS_DB,$this->_status_limit).'" )';
+            $query .= ' AND ('.$this->addDatabasePrefix('todos').'.status = "'.encode(AS_DB,$this->_status_limit).'" )';
          }
       }
       if ( isset($this->_age_limit) ) {
-         $query .= ' AND todos.modification_date >= DATE_SUB(CURRENT_DATE,interval '.encode(AS_DB,$this->_age_limit).' day)';
+         $query .= ' AND '.$this->addDatabasePrefix('todos').'.modification_date >= DATE_SUB(CURRENT_DATE,interval '.encode(AS_DB,$this->_age_limit).' day)';
       }
       if ( isset($this->_existence_limit) ) {
-         $query .= ' AND todos.creation_date >= DATE_SUB(CURRENT_DATE,interval '.encode(AS_DB,$this->_existence_limit).' day)';
+         $query .= ' AND '.$this->addDatabasePrefix('todos').'.creation_date >= DATE_SUB(CURRENT_DATE,interval '.encode(AS_DB,$this->_existence_limit).' day)';
       }
       if( !empty($this->_id_array_limit) ) {
-         $query .= ' AND todos.item_id IN ('.implode(", ",encode(AS_DB,$this->_id_array_limit)).')';
+         $query .= ' AND '.$this->addDatabasePrefix('todos').'.item_id IN ('.implode(", ",encode(AS_DB,$this->_id_array_limit)).')';
       }
       if ( isset($this->_topic_limit) ){
          if($this->_topic_limit == -1){
@@ -267,9 +267,9 @@ class cs_todos_manager extends cs_manager {
 
       // restrict sql-statement by search limit, create wheres
       if (isset($this->_search_array) AND !empty($this->_search_array)) {
-         $query .= ' AND step.deletion_date IS NULL';
+         $query .= ' AND '.$this->addDatabasePrefix('step').'.deletion_date IS NULL';
          $query .= ' AND (';
-         $field_array = array('TRIM(CONCAT(people.firstname," ",people.lastname))','todos.description','todos.title','step.title','step.description');
+         $field_array = array('TRIM(CONCAT(people.firstname," ",people.lastname))',$this->addDatabasePrefix('todos').'.description',$this->addDatabasePrefix('todos').'.title',$this->addDatabasePrefix('step').'.title',$this->addDatabasePrefix('step').'.description');
          $search_limit_query_code = $this->_generateSearchLimitCode($field_array);
          $query .= $search_limit_query_code;
          $query .= ')';
@@ -287,24 +287,24 @@ class cs_todos_manager extends cs_manager {
       // order
       if ( isset($this->_sort_order) ) {
          if ( $this->_sort_order == 'modified' ) {
-            $query .= ' ORDER BY todos.modification_date DESC';
+            $query .= ' ORDER BY '.$this->addDatabasePrefix('todos').'.modification_date DESC';
          } elseif ( $this->_sort_order == 'modified_rev' ) {
-            $query .= ' ORDER BY todos.modification_date';
+            $query .= ' ORDER BY '.$this->addDatabasePrefix('todos').'.modification_date';
          } elseif ( $this->_sort_order == 'title' ) {
-            $query .= ' ORDER BY todos.title';
+            $query .= ' ORDER BY '.$this->addDatabasePrefix('todos').'.title';
          } elseif ( $this->_sort_order == 'title_rev' ) {
-            $query .= ' ORDER BY todos.title DESC';
+            $query .= ' ORDER BY '.$this->addDatabasePrefix('todos').'.title DESC';
          } elseif ( $this->_sort_order == 'date' ) {
-            $query .= ' ORDER BY todos.date';
+            $query .= ' ORDER BY '.$this->addDatabasePrefix('todos').'.date';
          } elseif ( $this->_sort_order == 'date_rev' ) {
-            $query .= ' ORDER BY todos.date DESC';
+            $query .= ' ORDER BY '.$this->addDatabasePrefix('todos').'.date DESC';
          } elseif ( $this->_sort_order == 'status' ) {
-            $query .= ' ORDER BY todos.status';
+            $query .= ' ORDER BY '.$this->addDatabasePrefix('todos').'.status';
          } elseif ( $this->_sort_order == 'status_rev' ) {
-            $query .= ' ORDER BY todos.status DESC';
+            $query .= ' ORDER BY '.$this->addDatabasePrefix('todos').'.status DESC';
          }
       }else{
-         $query .= ' ORDER BY todos.date DESC';
+         $query .= ' ORDER BY '.$this->addDatabasePrefix('todos').'.date DESC';
       }
 
       if ( $mode == 'select' ) {
@@ -355,7 +355,7 @@ class cs_todos_manager extends cs_manager {
       } elseif (array_key_exists($item_id,$this->_cached_items)){
          return $this->_buildItem($this->_cached_items[$item_id]);
       }else{
-         $query = "SELECT * FROM todos WHERE todos.item_id = '".encode(AS_DB,$item_id)."'";
+         $query = "SELECT * FROM ".$this->addDatabasePrefix("todos")." WHERE ".$this->addDatabasePrefix("todos").".item_id = '".encode(AS_DB,$item_id)."'";
          $result = $this->_db_connector->performQuery($query);
          if (!isset($result) or empty($result[0])) {
             include_once('functions/error_functions.php');
@@ -403,7 +403,7 @@ class cs_todos_manager extends cs_manager {
       if ($item->isNotActivated()){
          $modification_date = $item->getModificationDate();
       }
-      $query = 'UPDATE todos SET '.
+      $query = 'UPDATE '.$this->addDatabasePrefix('todos').' SET '.
                'modifier_id="'.encode(AS_DB,$modificator->getItemID()).'",'.
                'modification_date="'.$modification_date.'",'.
                'title="'.encode(AS_DB,$item->getTitle()).'",'.
@@ -428,7 +428,7 @@ class cs_todos_manager extends cs_manager {
    * @param cs_todo_item the todo item for which an entry should be made
    */
   function _create ($item) {
-     $query = 'INSERT INTO items SET '.
+     $query = 'INSERT INTO '.$this->addDatabasePrefix('items').' SET '.
               'context_id="'.encode(AS_DB,$item->getContextID()).'",'.
               'modification_date="'.getCurrentDateTimeInMySQL().'",'.
               'type="todo"';
@@ -467,7 +467,7 @@ class cs_todos_manager extends cs_manager {
          $modification_date = $item->getModificationDate();
       }
 
-      $query = 'INSERT INTO todos SET '.
+      $query = 'INSERT INTO '.$this->addDatabasePrefix('todos').' SET '.
                'item_id="'.encode(AS_DB,$item->getItemID()).'",'.
                'context_id="'.encode(AS_DB,$item->getContextID()).'",'.
                'creator_id="'.encode(AS_DB,$user->getItemID()).'",'.
@@ -503,7 +503,7 @@ class cs_todos_manager extends cs_manager {
      $current_datetime = getCurrentDateTimeInMySQL();
      $current_user = $this->_environment->getCurrentUserItem();
      $user_id = $current_user->getItemID();
-      $query = 'UPDATE todos SET '.
+      $query = 'UPDATE '.$this->addDatabasePrefix('todos').' SET '.
               'deletion_date="'.$current_datetime.'",'.
               'deleter_id="'.encode(AS_DB,$user_id).'"'.
               ' WHERE item_id="'.encode(AS_DB,$item_id).'"';
@@ -527,7 +527,7 @@ class cs_todos_manager extends cs_manager {
    function getCountTodos ($start, $end) {
       $retour = 0;
 
-      $query = "SELECT count(todos.item_id) as number FROM todos WHERE todos.context_id = '".encode(AS_DB,$this->_room_limit)."' and ((todos.creation_date > '".encode(AS_DB,$start)."' and todos.creation_date < '".encode(AS_DB,$end)."') or (todos.modification_date > '".encode(AS_DB,$start)."' and todos.modification_date < '".encode(AS_DB,$end)."'))";
+      $query = "SELECT count(".$this->addDatabasePrefix("todos").".item_id) as number FROM ".$this->addDatabasePrefix("todos")." WHERE ".$this->addDatabasePrefix("todos").".context_id = '".encode(AS_DB,$this->_room_limit)."' and ((".$this->addDatabasePrefix("todos").".creation_date > '".encode(AS_DB,$start)."' and ".$this->addDatabasePrefix("todos").".creation_date < '".encode(AS_DB,$end)."') or (".$this->addDatabasePrefix("todos").".modification_date > '".encode(AS_DB,$start)."' and ".$this->addDatabasePrefix("todos").".modification_date < '".encode(AS_DB,$end)."'))";
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) ) {
          include_once('functions/error_functions.php');trigger_error('Problems counting all todos from query: "'.$query.'"',E_USER_WARNING);
@@ -543,7 +543,7 @@ class cs_todos_manager extends cs_manager {
    function getCountNewTodos ($start, $end) {
       $retour = 0;
 
-      $query = "SELECT count(todos.item_id) as number FROM todos WHERE todos.context_id = '".encode(AS_DB,$this->_room_limit)."' and todos.creation_date > '".encode(AS_DB,$start)."' and todos.creation_date < '".encode(AS_DB,$end)."'";
+      $query = "SELECT count(".$this->addDatabasePrefix("todos").".item_id) as number FROM ".$this->addDatabasePrefix("todos")." WHERE ".$this->addDatabasePrefix("todos").".context_id = '".encode(AS_DB,$this->_room_limit)."' and ".$this->addDatabasePrefix("todos").".creation_date > '".encode(AS_DB,$start)."' and ".$this->addDatabasePrefix("todos").".creation_date < '".encode(AS_DB,$end)."'";
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) ) {
          include_once('functions/error_functions.php');trigger_error('Problems counting todos from query:<br />"'.$query.'"',E_USER_WARNING);
@@ -559,7 +559,7 @@ class cs_todos_manager extends cs_manager {
    function getCountModTodos ($start, $end) {
       $retour = 0;
 
-      $query = "SELECT count(todos.item_id) as number FROM todos WHERE todos.context_id = '".encode(AS_DB,$this->_room_limit)."' and todos.modification_date > '".encode(AS_DB,$start)."' and todos.modification_date < '".encode(AS_DB,$end)."' and todos.modification_date != todos.creation_date";
+      $query = "SELECT count(".$this->addDatabasePrefix("todos").".item_id) as number FROM ".$this->addDatabasePrefix("todos")." WHERE ".$this->addDatabasePrefix("todos").".context_id = '".encode(AS_DB,$this->_room_limit)."' and ".$this->addDatabasePrefix("todos").".modification_date > '".encode(AS_DB,$start)."' and ".$this->addDatabasePrefix("todos").".modification_date < '".encode(AS_DB,$end)."' and ".$this->addDatabasePrefix("todos").".modification_date != ".$this->addDatabasePrefix("todos").".creation_date";
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) ) {
          include_once('functions/error_functions.php');trigger_error('Problems counting todos from query:<br />"'.$query.'"',E_USER_WARNING);
@@ -580,11 +580,11 @@ class cs_todos_manager extends cs_manager {
    	  									'public'			=>	'public'));
    	  
       $current_datetime = getCurrentDateTimeInMySQL();
-      $query  = 'SELECT todos.* FROM todos WHERE todos.creator_id = "'.encode(AS_DB,$uid).'"';
+      $query  = 'SELECT '.$this->addDatabasePrefix('todos').'.* FROM '.$this->addDatabasePrefix('todos').' WHERE '.$this->addDatabasePrefix('todos').'.creator_id = "'.encode(AS_DB,$uid).'"';
       $result = $this->_db_connector->performQuery($query);
       if (!empty($result)) {
          foreach ( $result as $rs ) {
-            $insert_query = 'UPDATE todos SET';
+            $insert_query = 'UPDATE '.$this->addDatabasePrefix('todos').' SET';
             $insert_query .= ' title = "'.encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_TITLE')).'",';
             $insert_query .= ' description = "'.encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_DESCRIPTION')).'",';
             $insert_query .= ' modification_date = "'.$current_datetime.'",';

@@ -52,7 +52,7 @@ class cs_room2_manager extends cs_context_manager {
       if ( $this->_update_with_changing_modification_information ) {
          parent::_update($item);
       }
-      $query  = 'UPDATE '.$this->_db_table.' SET ';
+      $query  = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET ';
       if ( $this->_update_with_changing_modification_information ) {
          $query .= 'modification_date="'.getCurrentDateTimeInMySQL().'",';
          $modifier_id = $this->_current_user->getItemID();
@@ -132,7 +132,7 @@ class cs_room2_manager extends cs_context_manager {
          $public = 0;
       }
 
-      $query = 'INSERT INTO '.$this->_db_table.' SET '.
+      $query = 'INSERT INTO '.$this->addDatabasePrefix($this->_db_table).' SET '.
                'item_id="'.encode(AS_DB,$item->getItemID()).'",'.
                'context_id="'.encode(AS_DB,$item->getContextID()).'",'.
                'creator_id="'.encode(AS_DB,$user->getItemID()).'",'.

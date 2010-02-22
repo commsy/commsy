@@ -176,7 +176,7 @@ class cs_link_father_manager extends cs_manager {
       }
 
       $query  = '';
-      $query .= 'UPDATE '.$this->_db_table.'';
+      $query .= 'UPDATE '.$this->addDatabasePrefix($this->_db_table).'';
 
       $query .= ' SET ';
       $first = true;

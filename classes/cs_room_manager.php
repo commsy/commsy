@@ -191,20 +191,20 @@ class cs_room_manager extends cs_context_manager {
   function _performQuery ($mode = 'select') {
      $query = '';
      if ($mode == 'count') {
-        $query .= 'SELECT count(DISTINCT '.$this->_db_table.'.item_id) as count';
+        $query .= 'SELECT count(DISTINCT '.$this->addDatabasePrefix($this->_db_table).'.item_id) as count';
      } elseif ($mode == 'id_array') {
-         $query .= 'SELECT DISTINCT '.$this->_db_table.'.item_id';
+         $query .= 'SELECT DISTINCT '.$this->addDatabasePrefix($this->_db_table).'.item_id';
      } else {
-        $query .= 'SELECT DISTINCT '.$this->_db_table.'.*';
+        $query .= 'SELECT DISTINCT '.$this->addDatabasePrefix($this->_db_table).'.*';
      }
 
-     $query .= ' FROM '.$this->_db_table;
+     $query .= ' FROM '.$this->addDatabasePrefix($this->_db_table);
 
      // user id limit
      if (isset($this->_user_id_limit)) {
-        $query .= ' LEFT JOIN user ON user.context_id='.$this->_db_table.'.item_id AND user.deletion_date IS NULL';
+        $query .= ' LEFT JOIN '.$this->addDatabasePrefix('user').' ON '.$this->addDatabasePrefix('user').'.context_id='.$this->addDatabasePrefix($this->_db_table).'.item_id AND '.$this->addDatabasePrefix('user').'.deletion_date IS NULL';
         if (!$this->_all_room_limit) {
-           $query .= ' AND user.status >= "2"';
+           $query .= ' AND '.$this->addDatabasePrefix('user').'.status >= "2"';
         }
      }
 
@@ -215,10 +215,10 @@ class cs_room_manager extends cs_context_manager {
     // time (clock pulses)
     if ( isset($this->_time_limit) ) {
        if ($this->_time_limit != -1) {
-         $query .= ' INNER JOIN links AS room_time ON room_time.from_item_id='.$this->_db_table.'.item_id AND room_time.link_type="in_time"';
-         $query .= ' INNER JOIN labels AS time_label ON room_time.to_item_id=time_label.item_id AND time_label.type="time"';
+         $query .= ' INNER JOIN '.$this->addDatabasePrefix('links').' AS room_time ON room_time.from_item_id='.$this->addDatabasePrefix($this->_db_table).'.item_id AND room_time.link_type="in_time"';
+         $query .= ' INNER JOIN '.$this->addDatabasePrefix('labels').' AS time_label ON room_time.to_item_id=time_label.item_id AND time_label.type="time"';
        } else {
-         $query .= ' LEFT JOIN links AS room_time ON room_time.from_item_id='.$this->_db_table.'.item_id AND room_time.link_type="in_time"';
+         $query .= ' LEFT JOIN '.$this->addDatabasePrefix('links').' AS room_time ON room_time.from_item_id='.$this->addDatabasePrefix($this->_db_table).'.item_id AND room_time.link_type="in_time"';
        }
      }
 
@@ -229,11 +229,11 @@ class cs_room_manager extends cs_context_manager {
 #     }
 
      if ( !empty($this->_id_array_limit) ) {
-        $query .= ' AND '.$this->_db_table.'.item_id IN ('.implode(',',$this->_id_array_limit).')';
+        $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.item_id IN ('.implode(',',$this->_id_array_limit).')';
      }
 
      if (!empty($this->_room_type)) {
-        $query .= ' AND '.$this->_db_table.'.type = "'.encode(AS_DB,$this->_room_type).'"';
+        $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.type = "'.encode(AS_DB,$this->_room_type).'"';
      }
 
      ###################################
@@ -244,7 +244,7 @@ class cs_room_manager extends cs_context_manager {
              and !isset($this->_id_array_limit)
              and !$this->_limit_with_grouproom
            ) {
-           $query .= ' AND '.$this->_db_table.'.type != "'.CS_GROUPROOM_TYPE.'"';
+           $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.type != "'.CS_GROUPROOM_TYPE.'"';
         }
      }
      ###################################
@@ -253,37 +253,37 @@ class cs_room_manager extends cs_context_manager {
 
      // insert limits into the select statement
     if (isset($this->_deleted_limit) and $this->_deleted_limit) {
-        $query .= ' AND '.$this->_db_table.'.deleter_id IS NOT NULL AND '.$this->_db_table.'.deletion_date IS NOT NULL';
+        $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.deleter_id IS NOT NULL AND '.$this->addDatabasePrefix($this->_db_table).'.deletion_date IS NOT NULL';
     } elseif ($this->_delete_limit == true) {
-        $query .= ' AND '.$this->_db_table.'.deleter_id IS NULL AND '.$this->_db_table.'.deletion_date IS NULL';
+        $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.deleter_id IS NULL AND '.$this->addDatabasePrefix($this->_db_table).'.deletion_date IS NULL';
      }
      if (isset($this->_status_limit)) {
-        $query .= ' AND '.$this->_db_table.'.status = "'.encode(AS_DB,$this->_status_limit).'"';
+        $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.status = "'.encode(AS_DB,$this->_status_limit).'"';
      }
      if ( isset($this->_room_limit)
           and !empty($this->_room_limit)
           and !isset($this->_id_array_limit)
         ) {
-        $query .= ' AND '.$this->_db_table.'.context_id = "'.encode(AS_DB,$this->_room_limit).'"';
+        $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.context_id = "'.encode(AS_DB,$this->_room_limit).'"';
      }
      if (isset($this->_continuous_limit)) {
-        $query .= ' AND '.$this->_db_table.'.continuous = "'.encode(AS_DB,$this->_continuous_limit).'"';
+        $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.continuous = "'.encode(AS_DB,$this->_continuous_limit).'"';
      }
      //search limit
      if (isset($this->_search_array) AND !empty($this->_search_array)) {
          $query .= ' AND (';
 #         $field_array = array('CONCAT(user2.firstname, " ",user2.lastname)','user2.lastname','user2.firstname',$this->_db_table.'.title',$this->_db_table.'.extras');
-         $field_array = array($this->_db_table.'.title',$this->_db_table.'.contact_persons',$this->_db_table.'.description');
+         $field_array = array($this->addDatabasePrefix($this->_db_table).'.title',$this->addDatabasePrefix($this->_db_table).'.contact_persons',$this->addDatabasePrefix($this->_db_table).'.description');
          $search_limit_query_code = $this->_generateSearchLimitCode($field_array);
          $query .= $search_limit_query_code;
          $query .= ')';
       }
 
      if (!empty($this->_user_id_limit)) {
-        $query .= ' AND user.user_id="'.encode(AS_DB,$this->_user_id_limit).'"';
+        $query .= ' AND '.$this->addDatabasePrefix('user').'.user_id="'.encode(AS_DB,$this->_user_id_limit).'"';
      }
      if (!empty($this->_auth_source_limit)) {
-        $query .= ' AND user.auth_source="'.encode(AS_DB,$this->_auth_source_limit).'"';
+        $query .= ' AND '.$this->addDatabasePrefix('user').'.auth_source="'.encode(AS_DB,$this->_auth_source_limit).'"';
      }
 
     // time (clock pulses)
@@ -297,10 +297,10 @@ class cs_room_manager extends cs_context_manager {
 
       // template
       if (isset($this->_template_limit)) {
-        $query .= ' AND '.$this->_db_table.'.template = "'.encode(AS_DB,$this->_template_limit).'"';
+        $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.template = "'.encode(AS_DB,$this->_template_limit).'"';
       }
       if ( !isset($this->_logarchive_limit) ) {
-         $query .= ' AND '.$this->_db_table.'.type != "privateroom"';
+         $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.type != "privateroom"';
       }
 
       // log archive
@@ -315,31 +315,31 @@ class cs_room_manager extends cs_context_manager {
             } else {
                $query .= ' OR ';
             }
-            $query .= $this->_db_table.'.extras LIKE "%'.encode(AS_DB,$log_arg_limit).'%"';
+            $query .= $this->addDatabasePrefix($this->_db_table).'.extras LIKE "%'.encode(AS_DB,$log_arg_limit).'%"';
          }
-         $query .= ' AND '.$this->_db_table.'.extras LIKE "%'.encode(AS_DB,$this->_logarchive_limit).'%"';
+         $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.extras LIKE "%'.encode(AS_DB,$this->_logarchive_limit).'%"';
          $query .= ')';
       }
 
      if ($mode != 'count') {
         if (isset($this->_order)) {
            if ($this->_order == 'date') {
-              $query .= ' ORDER BY '.$this->_db_table.'.modification_date DESC, '.$this->_db_table.'.title ASC';
+              $query .= ' ORDER BY '.$this->addDatabasePrefix($this->_db_table).'.modification_date DESC, '.$this->addDatabasePrefix($this->_db_table).'.title ASC';
            } elseif ($this->_order == 'creation_date') {
-              $query .= ' ORDER BY '.$this->_db_table.'.creation_date ASC, '.$this->_db_table.'.title ASC';
+              $query .= ' ORDER BY '.$this->addDatabasePrefix($this->_db_table).'.creation_date ASC, '.$this->addDatabasePrefix($this->_db_table).'.title ASC';
            } elseif ($this->_order == 'activity') {
-              $query .= ' ORDER BY '.$this->_db_table.'.activity ASC, '.$this->_db_table.'.title ASC';
+              $query .= ' ORDER BY '.$this->addDatabasePrefix($this->_db_table).'.activity ASC, '.$this->addDatabasePrefix($this->_db_table).'.title ASC';
            } elseif ($this->_order == 'activity_rev') {
-              $query .= ' ORDER BY '.$this->_db_table.'.activity DESC, '.$this->_db_table.'.title ASC';
+              $query .= ' ORDER BY '.$this->addDatabasePrefix($this->_db_table).'.activity DESC, '.$this->addDatabasePrefix($this->_db_table).'.title ASC';
            } elseif ($this->_order == 'title') {
-              $query .= ' ORDER BY '.$this->_db_table.'.title ASC';
+              $query .= ' ORDER BY '.$this->addDatabasePrefix($this->_db_table).'.title ASC';
            } elseif ($this->_order == 'title_rev') {
-              $query .= ' ORDER BY '.$this->_db_table.'.title DESC';
+              $query .= ' ORDER BY '.$this->addDatabasePrefix($this->_db_table).'.title DESC';
            } else {
-              $query .= ' ORDER BY '.$this->_db_table.'.title, '.$this->_db_table.'.modification_date DESC';
+              $query .= ' ORDER BY '.$this->addDatabasePrefix($this->_db_table).'.title, '.$this->addDatabasePrefix($this->_db_table).'.modification_date DESC';
            }
         } else {
-           $query .= ' ORDER BY '.$this->_db_table.'.title, '.$this->_db_table.'.modification_date DESC';
+           $query .= ' ORDER BY '.$this->addDatabasePrefix($this->_db_table).'.title, '.$this->addDatabasePrefix($this->_db_table).'.modification_date DESC';
         }
      }
 
@@ -418,12 +418,12 @@ class cs_room_manager extends cs_context_manager {
    function getUsedRooms ($start, $end) {
       $list = new cs_list();
 
-      $query  = "SELECT ".$this->_db_table.".* FROM ".$this->_db_table.", user";
-      $query .= " WHERE user.context_id=".$this->_db_table.".item_id AND user.lastlogin > '".encode(AS_DB,$start)."' and user.creation_date < '".encode(AS_DB,$end)."'";
-      $query .= " AND ".$this->_db_table.".context_id = '".encode(AS_DB,$this->_room_limit)."' AND ".$this->_db_table.".status != '4' and ".$this->_db_table.".deletion_date IS NULL and ".$this->_db_table.".creation_date < '".encode(AS_DB,$end)."' and (type = 'project' or type = 'community')";
-      $query .= " GROUP BY ".$this->_db_table.".item_id";
-      $query .= " ORDER BY ".$this->_db_table.".type";
-      $query .= ", ".$this->_db_table.".title";
+      $query  = "SELECT ".$this->addDatabasePrefix($this->_db_table).".* FROM ".$this->addDatabasePrefix($this->_db_table).", ".$this->addDatabasePrefix("user");
+      $query .= " WHERE ".$this->addDatabasePrefix("user").".context_id=".$this->addDatabasePrefix($this->_db_table).".item_id AND ".$this->addDatabasePrefix("user").".lastlogin > '".encode(AS_DB,$start)."' and ".$this->addDatabasePrefix("user").".creation_date < '".encode(AS_DB,$end)."'";
+      $query .= " AND ".$this->addDatabasePrefix($this->_db_table).".context_id = '".encode(AS_DB,$this->_room_limit)."' AND ".$this->addDatabasePrefix($this->_db_table).".status != '4' and ".$this->addDatabasePrefix($this->_db_table).".deletion_date IS NULL and ".$this->addDatabasePrefix($this->_db_table).".creation_date < '".encode(AS_DB,$end)."' and (type = 'project' or type = 'community')";
+      $query .= " GROUP BY ".$this->addDatabasePrefix($this->_db_table).".item_id";
+      $query .= " ORDER BY ".$this->addDatabasePrefix($this->_db_table).".type";
+      $query .= ", ".$this->addDatabasePrefix($this->_db_table).".title";
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) ) {
          include_once('functions/error_functions.php');
@@ -449,7 +449,7 @@ class cs_room_manager extends cs_context_manager {
 
    function getAllMaxActivityPoints () {
       $retour = 0;
-      $query = 'SELECT MAX(activity) AS max FROM '.$this->_db_table.' WHERE deleter_id IS NULL AND deletion_date is NULL and (type = "project" or type = "community");';
+      $query = 'SELECT MAX(activity) AS max FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE deleter_id IS NULL AND deletion_date is NULL and (type = "project" or type = "community");';
       $result = $this->_db_connector->performQuery($query);
       if (!isset($result)) {
          include_once('functions/error_functions.php');trigger_error('Problems selecting '.$this->_db_table.' max activity from query: "'.$query.'"',E_USER_WARNING);
@@ -472,7 +472,7 @@ class cs_room_manager extends cs_context_manager {
    function getCountAllTypeRooms ($type, $start, $end) {
       $retour = 0;
 
-      $query = "SELECT count(".$this->_db_table.".item_id) as number FROM ".$this->_db_table." WHERE context_id = '".encode(AS_DB,$this->_room_limit)."' and creation_date < '".encode(AS_DB,$end)."' and status != '4' AND deletion_date IS NULL AND deletion_date IS NULL";
+      $query = "SELECT count(".$this->addDatabasePrefix($this->_db_table).".item_id) as number FROM ".$this->addDatabasePrefix($this->_db_table)." WHERE context_id = '".encode(AS_DB,$this->_room_limit)."' and creation_date < '".encode(AS_DB,$end)."' and status != '4' AND deletion_date IS NULL AND deletion_date IS NULL";
       if ( !empty($type) ) {
          $query .= ' AND type="'.$type.'"';
       }
@@ -527,14 +527,14 @@ class cs_room_manager extends cs_context_manager {
    function _getUsedTypeRooms ($type, $start, $end, $mode = 'SELECT') {
       if ( $mode == 'COUNT' ) {
          $retour = 0;
-         $query  = "SELECT count(DISTINCT ".$this->_db_table.".item_id) as number";
+         $query  = "SELECT count(DISTINCT ".$this->addDatabasePrefix($this->_db_table).".item_id) as number";
       } else {
          $retour = new cs_list();
-         $query  = "SELECT ".$this->_db_table.".*";
+         $query  = "SELECT ".$this->addDatabasePrefix($this->_db_table).".*";
       }
-      $query .= " FROM ".$this->_db_table.", user";
-      $query .= " WHERE user.context_id=".$this->_db_table.".item_id AND user.lastlogin > '".encode(AS_DB,$start)."' and user.creation_date < '".encode(AS_DB,$end)."'";
-      $query .= " AND ".$this->_db_table.".context_id = '".encode(AS_DB,$this->_room_limit)."' AND ".$this->_db_table.".status != '4' AND ".$this->_db_table.".deletion_date IS NULL and ".$this->_db_table.".creation_date < '".encode(AS_DB,$end)."'";
+      $query .= " FROM ".$this->addDatabasePrefix($this->_db_table).", ".$this->addDatabasePrefix("user");
+      $query .= " WHERE ".$this->addDatabasePrefix("user").".context_id=".$this->addDatabasePrefix($this->_db_table).".item_id AND ".$this->addDatabasePrefix("user").".lastlogin > '".encode(AS_DB,$start)."' and ".$this->addDatabasePrefix("user").".creation_date < '".encode(AS_DB,$end)."'";
+      $query .= " AND ".$this->addDatabasePrefix($this->_db_table).".context_id = '".encode(AS_DB,$this->_room_limit)."' AND ".$this->addDatabasePrefix($this->_db_table).".status != '4' AND ".$this->addDatabasePrefix($this->_db_table).".deletion_date IS NULL and ".$this->addDatabasePrefix($this->_db_table).".creation_date < '".encode(AS_DB,$end)."'";
       if ( !empty($type) ) {
          $query .= ' AND type="'.$type.'"';
       }
@@ -558,5 +558,51 @@ class cs_room_manager extends cs_context_manager {
    ##########################################################
    # statistic functions - END
    ##########################################################
+   
+   function moveFromDbToBackup($context_id){
+      global $c_db_backup_prefix;
+      $retour = false;
+      if ( !empty($context_id) ) {
+         $query = 'INSERT INTO '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$this->_db_table).' SELECT * FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).'.item_id = "'.$context_id.'"';
+         $result = $this->_db_connector->performQuery($query);
+         if ( !isset($result) ) {
+            include_once('functions/error_functions.php');
+            trigger_error('Problems while copying to backup-table.',E_USER_WARNING);
+         } else {
+            $query = 'DELETE FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).'.item_id = "'.$context_id.'"';
+            $result = $this->_db_connector->performQuery($query);
+            if ( !isset($result) ) {
+               include_once('functions/error_functions.php');
+               trigger_error('Problems deleting after move to backup-table.',E_USER_WARNING);
+            } elseif ( !empty($result[0]) ) {
+               $retour = true;
+            }
+         }
+      }
+      return $retour;
+   }
+   
+   function moveFromBackupToDb($context_id){
+      global $c_db_backup_prefix;
+      $retour = false;
+      if ( !empty($context_id) ) {
+         $query = 'INSERT INTO '.$this->addDatabasePrefix($this->_db_table).' SELECT * FROM '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$this->_db_table).' WHERE '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$this->_db_table).'.item_id = "'.$context_id.'"';
+         $result = $this->_db_connector->performQuery($query);
+         if ( !isset($result) ) {
+            include_once('functions/error_functions.php');
+            trigger_error('Problems while copying to backup-table.',E_USER_WARNING);
+         } else {
+            $query = 'DELETE FROM '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$this->_db_table).' WHERE '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$this->_db_table).'.item_id = "'.$context_id.'"';
+            $result = $this->_db_connector->performQuery($query);
+            if ( !isset($result) ) {
+               include_once('functions/error_functions.php');
+               trigger_error('Problems deleting after move to backup-table.',E_USER_WARNING);
+            } elseif ( !empty($result[0]) ) {
+               $retour = true;
+            }
+         }
+      }
+      return $retour;
+   }
 }
 ?>

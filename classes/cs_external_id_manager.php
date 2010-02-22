@@ -101,28 +101,28 @@ class cs_external_id_manager extends cs_manager {
 
    function _performQuery($mode = 'select') {
       if ($mode == 'count') {
-         $query = 'SELECT count('.$this->_db_table.'.commsy_id) as count';
+         $query = 'SELECT count('.$this->addDatabasePrefix($this->_db_table).'.commsy_id) as count';
       } elseif ($mode == 'id_array') {
-         $query = 'SELECT '.$this->_db_table.'.commsy_id';
+         $query = 'SELECT '.$this->addDatabasePrefix($this->_db_table).'.commsy_id';
       } elseif ($mode == 'distinct') {
-            $query = 'SELECT DISTINCT '.$this->_db_table.'.*';
+            $query = 'SELECT DISTINCT '.$this->addDatabasePrefix($this->_db_table).'.*';
       } else {
-         $query = 'SELECT '.$this->_db_table.'.*';
+         $query = 'SELECT '.$this->addDatabasePrefix($this->_db_table).'.*';
       }
 
-      $query .= ' FROM '.$this->_db_table.'';
+      $query .= ' FROM '.$this->addDatabasePrefix($this->_db_table).'';
 
       $query .= ' WHERE 1';
 
       // fifth, insert limits into the select statement
       if ( isset($this->_commsy_id_limit)) {
-         $query .= ' AND '.$this->_db_table.'.commsy_id = "'.encode(AS_DB,$this->_commsy_id_limit).'"';
+         $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.commsy_id = "'.encode(AS_DB,$this->_commsy_id_limit).'"';
       }
       if (isset($this->_source_limit)) {
-         $query .= ' AND '.$this->_db_table.'.source_system LIKE "'.encode(AS_DB,$this->_source_limit).'"';
+         $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.source_system LIKE "'.encode(AS_DB,$this->_source_limit).'"';
       }
       if (isset($this->_external_id_limit)) {
-         $query .= ' AND '.$this->_db_table.'.external_id = "'.encode(AS_DB,$this->_external_id_limit).'"';
+         $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.external_id = "'.encode(AS_DB,$this->_external_id_limit).'"';
       }
 
       // perform query
@@ -136,7 +136,7 @@ class cs_external_id_manager extends cs_manager {
    }
 
    public function addIDsToDB($source,$external_id,$commsy_id) {
-      $query = 'INSERT INTO '.$this->_db_table.' VALUES ("'.encode(AS_DB,$external_id).'","'.encode(AS_DB,$source).'","'.encode(AS_DB,$commsy_id).'")';
+      $query = 'INSERT INTO '.$this->addDatabasePrefix($this->_db_table).' VALUES ("'.encode(AS_DB,$external_id).'","'.encode(AS_DB,$source).'","'.encode(AS_DB,$commsy_id).'")';
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) ) {
          include_once('functions/error_functions.php');
@@ -145,7 +145,7 @@ class cs_external_id_manager extends cs_manager {
    }
 
    public function getCommSyId ($source,$external_id) {
-      $query = 'SELECT '.$this->_db_table.'.commsy_id FROM '.$this->_db_table.' WHERE '.$this->_db_table.'.source_system LIKE "'.encode(AS_DB,$source).'" AND '.$this->_db_table.'.external_id = "'.encode(AS_DB,$external_id).'"';
+      $query = 'SELECT '.$this->addDatabasePrefix($this->_db_table).'.commsy_id FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).'.source_system LIKE "'.encode(AS_DB,$source).'" AND '.$this->addDatabasePrefix($this->_db_table).'.external_id = "'.encode(AS_DB,$external_id).'"';
       $this->_last_query = $query;
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) ) {
@@ -159,7 +159,7 @@ class cs_external_id_manager extends cs_manager {
    }
 
    public function getExternalId ($source,$commsy_id) {
-      $query = 'SELECT '.$this->_db_table.'.external_id FROM '.$this->_db_table.' WHERE '.$this->_db_table.'.source_system LIKE "'.encode(AS_DB,$source).'" AND '.$this->_db_table.'.commsy_id = "'.encode(AS_DB,$commsy_id).'"';
+      $query = 'SELECT '.$this->addDatabasePrefix($this->_db_table).'.external_id FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).'.source_system LIKE "'.encode(AS_DB,$source).'" AND '.$this->addDatabasePrefix($this->_db_table).'.commsy_id = "'.encode(AS_DB,$commsy_id).'"';
       $this->_last_query = $query;
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) ) {
@@ -173,7 +173,7 @@ class cs_external_id_manager extends cs_manager {
    }
 
    function deleteByExternalId($external_id,$source_system) {
-      $query = 'DELETE FROM '.$this->_db_table.' WHERE '.$this->_db_table.'.external_id = "'.encode(AS_DB,$external_id).'" AND '.$this->_db_table.'.source_system = "'.encode(AS_DB,$source_system).'"';
+      $query = 'DELETE FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).'.external_id = "'.encode(AS_DB,$external_id).'" AND '.$this->addDatabasePrefix($this->_db_table).'.source_system = "'.encode(AS_DB,$source_system).'"';
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) or !$result) {
          include_once('functions/error_functions.php');trigger_error('Problems deleting from '.$this->_db_table.'.',E_USER_WARNING);
@@ -181,7 +181,7 @@ class cs_external_id_manager extends cs_manager {
    }
 
    function deleteByCommSyId($iid) {
-      $query = 'DELETE FROM '.$this->_db_table.' WHERE '.$this->_db_table.'.commsy_id = "'.encode(AS_DB,$iid).'"';
+      $query = 'DELETE FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).'.commsy_id = "'.encode(AS_DB,$iid).'"';
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) or !$result) {
          include_once('functions/error_functions.php');trigger_error('Problems deleting from '.$this->_db_table.'.',E_USER_WARNING);

@@ -186,61 +186,61 @@ class cs_links_manager extends cs_manager {
   function _performQuery ($type = '', $mode = 'select', $item_id = '') {
      $data = array();
      if ($mode == 'count') {
-        $query = 'SELECT count(links.item_id)';
+        $query = 'SELECT count('.$this->addDatabasePrefix('links').'.item_id)';
      } elseif ($mode == 'id_array') {
-         $query = 'SELECT links.item_id';
+         $query = 'SELECT '.$this->addDatabasePrefix('links').'.item_id';
      } else {
-        $query = 'SELECT links.*';
+        $query = 'SELECT '.$this->addDatabasePrefix('links').'.*';
         if ($mode == 'select_with_item_type_from') {
-           $query .= ',items.type';
+           $query .= ','.$this->addDatabasePrefix('items').'.type';
         }
      }
-     $query .= ' FROM links';
+     $query .= ' FROM '.$this->addDatabasePrefix('links');
      if (isset($this->_order) and $this->_order == 'section') {
-        $query .= ' LEFT JOIN section ON section.item_id = links.from_item_id AND section.version_id = links.from_version_id';
+        $query .= ' LEFT JOIN '.$this->addDatabasePrefix('section').' ON '.$this->addDatabasePrefix('section').'.item_id = '.$this->addDatabasePrefix('links').'.from_item_id AND '.$this->addDatabasePrefix('section').'.version_id = '.$this->addDatabasePrefix('links').'.from_version_id';
      }
      if ( $mode == 'select_with_item_type_from' ) {
-        $query .= ' LEFT JOIN items ON items.item_id=links.to_item_id';
+        $query .= ' LEFT JOIN '.$this->addDatabasePrefix('items').' ON '.$this->addDatabasePrefix('items').'.item_id='.$this->addDatabasePrefix('links').'.to_item_id';
      }
      if ( !empty($this->_limit_item_type) ) {
-        $query .= ' LEFT JOIN items ON items.item_id=links.from_item_id';
+        $query .= ' LEFT JOIN '.$this->addDatabasePrefix('items').' ON '.$this->addDatabasePrefix('items').'.item_id='.$this->addDatabasePrefix('links').'.from_item_id';
      }
      if (!empty($type)) {
-        $query .= ' WHERE links.link_type LIKE "'.encode(AS_DB,$type).'"';
+        $query .= ' WHERE '.$this->addDatabasePrefix('links').'.link_type LIKE "'.encode(AS_DB,$type).'"';
      } else {
         $query .= ' WHERE 1';
      }
 
      if ( !empty($this->_limit_link_type) and empty($type) ) {
-        $query .= ' AND links.link_type="'.$this->_limit_link_type.'"';
+        $query .= ' AND '.$this->addDatabasePrefix('links').'.link_type="'.$this->_limit_link_type.'"';
      }
 
      if ( !empty($this->_limit_item_type) ) {
-        $query .= ' AND items.type="'.$this->_limit_item_type.'"';
+        $query .= ' AND '.$this->addDatabasePrefix('items').'.type="'.$this->_limit_item_type.'"';
      }
 
       // fifth, insert limits into the select statement
      if (isset($this->_item_id_limit)) {
-        $query .= ' AND (links.from_item_id = "'.encode(AS_DB,$this->_item_id_limit).'"';
-        $query .= ' OR links.to_item_id = "'.encode(AS_DB,$this->_item_id_limit).'" )';
+        $query .= ' AND ('.$this->addDatabasePrefix('links').'.from_item_id = "'.encode(AS_DB,$this->_item_id_limit).'"';
+        $query .= ' OR '.$this->addDatabasePrefix('links').'.to_item_id = "'.encode(AS_DB,$this->_item_id_limit).'" )';
      }
      if (isset($this->_version_id_limit)) {
-        $query .= ' AND (links.from_version_id = "'.encode(AS_DB,$this->_version_id_limit).'"';
-        $query .= ' OR links.to_version_id = "'.encode(AS_DB,$this->_version_id_limit).'") ';
+        $query .= ' AND ('.$this->addDatabasePrefix('links').'.from_version_id = "'.encode(AS_DB,$this->_version_id_limit).'"';
+        $query .= ' OR '.$this->addDatabasePrefix('links').'.to_version_id = "'.encode(AS_DB,$this->_version_id_limit).'") ';
      }
      if (isset($this->_room_limit)) {
-        $query .= ' AND links.context_id = "'.encode(AS_DB,$this->_room_limit).'"';
+        $query .= ' AND '.$this->addDatabasePrefix('links').'.context_id = "'.encode(AS_DB,$this->_room_limit).'"';
      } else {
-        $query .= ' AND links.context_id = "'.encode(AS_DB,$this->_environment->getCurrentContextID()).'"';
+        $query .= ' AND '.$this->addDatabasePrefix('links').'.context_id = "'.encode(AS_DB,$this->_environment->getCurrentContextID()).'"';
      }
      if (!$this->_with_deleted_links) {
-        $query .= ' AND links.deleter_id IS NULL';
+        $query .= ' AND '.$this->addDatabasePrefix('links').'.deleter_id IS NULL';
      }
      if (isset($this->_order)) {
         if ($this->_order == 'section') {
-           $query .= ' ORDER BY section.number';
+           $query .= ' ORDER BY '.$this->addDatabasePrefix('section').'.number';
         } else {
-           $query .= ' ORDER BY links.'.encode(AS_DB,$this->_order);
+           $query .= ' ORDER BY '.$this->addDatabasePrefix('links').'.'.encode(AS_DB,$this->_order);
         }
      }
 
@@ -278,11 +278,11 @@ class cs_links_manager extends cs_manager {
         $from_id_array = array_unique($from_id_array);
      }
 
-     $query = 'UPDATE links SET '.
+     $query = 'UPDATE '.$this->addDatabasePrefix('links').' SET '.
               'to_item_id="'.encode(AS_DB,$buzz1).'"'.
-              ' WHERE links.to_item_id="'.encode(AS_DB,$buzz2).'"';
+              ' WHERE '.$this->addDatabasePrefix('links').'.to_item_id="'.encode(AS_DB,$buzz2).'"';
      if ( !empty($from_id_array) ) {
-        $query .= ' AND '.$this->_db_table.'.from_item_id NOT IN ('.implode(',',encode(AS_DB,$from_id_array)).')';
+        $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.from_item_id NOT IN ('.implode(',',encode(AS_DB,$from_id_array)).')';
      }
      $result = $this->_db_connector->performQuery($query);
      if ( !isset($result) ) {
@@ -363,14 +363,14 @@ class cs_links_manager extends cs_manager {
     */
   function isLinkedTo ($from_item_id, $to_item_id, $from_version_id=NULL, $to_version_id=NULL, $link_type=NULL) {
 
-     $query  = 'SELECT * FROM links';
-     $query .= ' WHERE links.from_item_id="'.encode(AS_DB,$from_item_id).'"';
-     $query .= ' AND links.to_item_id = "'.encode(AS_DB,$to_item_id).'"';
-     $query .= isset($from_version_id) ? ' AND links.from_version_id="'.encode(AS_DB,$from_version_id).'"' : '';
-     $query .= isset($to_version_id) ? ' AND links.to_version_id="'.encode(AS_DB,$to_version_id).'"' : '';
-     $query .= isset($link_type) ? ' AND links.link_type = "'.encode(AS_DB,$link_type).'"' : '';
+     $query  = 'SELECT * FROM '.$this->addDatabasePrefix('links');
+     $query .= ' WHERE '.$this->addDatabasePrefix('links').'.from_item_id="'.encode(AS_DB,$from_item_id).'"';
+     $query .= ' AND '.$this->addDatabasePrefix('links').'.to_item_id = "'.encode(AS_DB,$to_item_id).'"';
+     $query .= isset($from_version_id) ? ' AND '.$this->addDatabasePrefix('links').'.from_version_id="'.encode(AS_DB,$from_version_id).'"' : '';
+     $query .= isset($to_version_id) ? ' AND '.$this->addDatabasePrefix('links').'.to_version_id="'.encode(AS_DB,$to_version_id).'"' : '';
+     $query .= isset($link_type) ? ' AND '.$this->addDatabasePrefix('links').'.link_type = "'.encode(AS_DB,$link_type).'"' : '';
      if (!$this->_with_deleted_links) {
-        $query .= ' AND links.deleter_id IS NULL';
+        $query .= ' AND '.$this->addDatabasePrefix('links').'.deleter_id IS NULL';
      }
      $result = $this->_db_connector->performQuery($query);
      if (!isset($result)) {
@@ -463,7 +463,7 @@ class cs_links_manager extends cs_manager {
     * @param array
     */
   function _create ($db_data) {
-     $query = 'INSERT INTO links SET '.
+     $query = 'INSERT INTO '.$this->addDatabasePrefix('links').' SET '.
               'from_item_id="'.encode(AS_DB,$db_data['from_item_id']).'",'.
               'from_version_id="'.encode(AS_DB,$db_data['from_version_id']).'",'.
               'to_item_id="'.encode(AS_DB,$db_data['to_item_id']).'",'.
@@ -492,7 +492,7 @@ class cs_links_manager extends cs_manager {
            and !empty($db_data['to_item_id'])
            and !empty($db_data['link_type'])
          ) {
-         $sql =  'UPDATE '.$this->_db_table.' SET x="'.$db_data['x'].'",y="'.$db_data['y'].'"';
+         $sql =  'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET x="'.$db_data['x'].'",y="'.$db_data['y'].'"';
          $sql .= ' WHERE from_item_id="'.$db_data['from_item_id'].'" AND to_item_id="'.$db_data['to_item_id'].'" AND link_type="'.$db_data['link_type'].'"';
          if ( !empty($db_data['from_version_id']) ) {
             $sql .= ' AND from_version_id="'.$db_data['from_version_id'].'"';
@@ -553,7 +553,7 @@ class cs_links_manager extends cs_manager {
     */
   function deleteLinksFrom ($from_item_id, $from_version_id=NULL, $link_type=NULL) {
      if ($this->_isAvailable($link_type)) {
-        $query = 'DELETE FROM links WHERE '.
+        $query = 'DELETE FROM '.$this->addDatabasePrefix('links').' WHERE '.
                  'from_item_id="'.encode(AS_DB,$from_item_id).'"';
         if (!empty($from_version_id)) {
            $query .= ' AND from_version_id="'.encode(AS_DB,$from_version_id).'"';
@@ -579,7 +579,7 @@ class cs_links_manager extends cs_manager {
     */
   function deleteLinksTo ($to_item_id, $to_version_id=NULL, $link_type=NULL) {
      if ($this->_isAvailable($link_type)) {
-        $query = 'DELETE FROM links WHERE '.
+        $query = 'DELETE FROM '.$this->addDatabasePrefix('links').' WHERE '.
                  'to_item_id="'.$to_item_id.'"';
         if (!empty($to_version_id)) {
            $query .= ' AND to_version_id="'.encode(AS_DB,$to_version_id).'"';
@@ -607,7 +607,7 @@ class cs_links_manager extends cs_manager {
     */
   function deleteLink ($from_item_id, $to_item_id, $from_version_id=NULL, $to_version_id=NULL, $link_type=NULL) {
      if ($this->_isAvailable($link_type)) {
-        $query = 'DELETE FROM links WHERE '.
+        $query = 'DELETE FROM '.$this->addDatabasePrefix('links').' WHERE '.
                  'from_item_id="'.encode(AS_DB,$from_item_id).'" and '.
                  'to_item_id="'.encode(AS_DB,$to_item_id).'"';
         $query .= !empty($from_version_id) ? ' and from_version_id="'.encode(AS_DB,$from_version_id).'"' : '';
@@ -629,7 +629,7 @@ class cs_links_manager extends cs_manager {
     */
   function deleteFromLinks ($from_item_array, $to_item_id) {
      if ( !empty($from_item_array) and !empty($to_item_id) ) {
-        $query = 'DELETE FROM links WHERE '.
+        $query = 'DELETE FROM '.$this->addDatabasePrefix('links').' WHERE '.
                  'from_item_id IN ('.encode(AS_DB,implode(',',$from_item_array)).') AND '.
                  'to_item_id="'.encode(AS_DB,$to_item_id).'"';
         $result = $this->_db_connector->performQuery($query);
@@ -647,7 +647,7 @@ class cs_links_manager extends cs_manager {
     * @param integer version_id    version id of the item
     */
   function deleteLinksBecauseItemIsDeleted ($item_id, $version_id=NULL) {
-     $query = 'UPDATE links SET '.
+     $query = 'UPDATE '.$this->addDatabasePrefix('links').' SET '.
               'deletion_date="'.getCurrentDateTimeInMySQL().'",'.
               'deleter_id="'.encode(AS_DB,$this->_current_user->getItemID()).'"'.
               ' WHERE (from_item_id="'.encode(AS_DB,$item_id).'"';
@@ -698,7 +698,7 @@ class cs_links_manager extends cs_manager {
 
    function linkFileByID ($from_item, $file_id) {
       if ( $this->_existFileLink($from_item, $file_id) ) {
-         $query = "UPDATE item_link_file SET ";
+         $query = "UPDATE ".$this->addDatabasePrefix("item_link_file")." SET ";
          $query .= "deleter_id=NULL, ";
          $query .= "deletion_date=NULL ";
          $query .= "WHERE ";
@@ -706,7 +706,7 @@ class cs_links_manager extends cs_manager {
          $query .= "item_vid='".encode(AS_DB,$from_item->getVersionID())."' AND ";
          $query .= "file_id='".encode(AS_DB,$file_id)."'";
       } else {
-         $query = "INSERT INTO item_link_file SET ";
+         $query = "INSERT INTO ".$this->addDatabasePrefix("item_link_file")." SET ";
          $query .= "item_iid='".encode(AS_DB,$from_item->getItemID())."', ";
          $query .= "item_vid='".encode(AS_DB,$from_item->getVersionID())."', ";
          $query .= "file_id='".encode(AS_DB,$file_id)."'";
@@ -736,7 +736,7 @@ class cs_links_manager extends cs_manager {
                }
             }
          } else {
-        $query = "SELECT * FROM item_link_file";
+        $query = "SELECT * FROM ".$this->addDatabasePrefix("item_link_file");
             $query .= " WHERE item_iid=".encode(AS_DB,$from_item->getItemID());
             $query .= " AND item_vid=".encode(AS_DB,$version_id);
             $query .= " AND deletion_date IS NULL";
@@ -779,7 +779,7 @@ class cs_links_manager extends cs_manager {
                }
             }
          }
-         $query  = 'SELECT item_iid, MAX(item_vid) as item_vid, file_id, deleter_id, deletion_date FROM item_link_file'.
+         $query  = 'SELECT item_iid, MAX(item_vid) as item_vid, file_id, deleter_id, deletion_date FROM '.$this->addDatabasePrefix('item_link_file').
                 ' WHERE item_iid IN ('.implode(",",encode(AS_DB,$id_array)).')'.
                 ' AND deleter_id IS NULL'.
                 ' AND deletion_date IS NULL'.
@@ -811,7 +811,7 @@ class cs_links_manager extends cs_manager {
 
    function deleteFileLinkByID($from_item, $file_id=NULL) {
       $deleter = $this->_environment->getCurrentUser();
-      $query = "UPDATE item_link_file SET deletion_date='".getCurrentDateTimeInMySQL()."', deleter_id=".encode(AS_DB,$deleter->getItemID());
+      $query = "UPDATE ".$this->addDatabasePrefix("item_link_file")." SET deletion_date='".getCurrentDateTimeInMySQL()."', deleter_id=".encode(AS_DB,$deleter->getItemID());
       $query .= " WHERE item_iid=".encode(AS_DB,$from_item->getItemID());
       $query .= " AND item_vid=".encode(AS_DB,$from_item->getVersionID());
       if (!is_null($file_id)) {   // this test is needed when invoked by deleteFileLinks()
@@ -829,7 +829,7 @@ class cs_links_manager extends cs_manager {
       if ( empty($version_id) ) {
          $version_id = '0';
       }
-      $query = "SELECT * FROM item_link_file";
+      $query = "SELECT * FROM ".$this->addDatabasePrefix("item_link_file");
       $query .= " WHERE item_iid=".encode(AS_DB,$from_item->getItemID());
       $query .= " AND item_vid=".encode(AS_DB,$version_id);
       $query .= " AND file_id=".encode(AS_DB,$file_id);
@@ -858,7 +858,7 @@ class cs_links_manager extends cs_manager {
       }
 
       // is entry allready stored in database ?
-      $query = 'SELECT * FROM '.$this->_db_table;
+      $query = 'SELECT * FROM '.$this->addDatabasePrefix($this->_db_table);
       $query .= ' WHERE from_item_id="'.encode(AS_DB,$data_array['from_item_id']).'"';
       $query .= ' AND from_version_id="'.encode(AS_DB,$data_array['from_version_id']).'"';
       $query .= ' AND to_item_id="'.encode(AS_DB,$data_array['to_item_id']).'"';
@@ -873,9 +873,9 @@ class cs_links_manager extends cs_manager {
          // now the backup
          $query = '';
          if ( empty($result[0]) ) {
-            $query .= 'INSERT INTO '.$this->_db_table.'';
+            $query .= 'INSERT INTO '.$this->addDatabasePrefix($this->_db_table).'';
          } else {
-            $query .= 'UPDATE '.$this->_db_table.'';
+            $query .= 'UPDATE '.$this->addDatabasePrefix($this->_db_table).'';
          }
 
          $query .= ' SET ';
@@ -944,7 +944,7 @@ class cs_links_manager extends cs_manager {
       if ( !empty($id_array) ) {
          $link_type = '';
          if ( $label_type == 'buzzword' ) {
-            $query = 'SELECT to_item_id, count(from_item_id) AS num FROM `links` WHERE to_item_id IN ('.implode(',',$id_array).') GROUP BY to_item_id;';
+            $query = 'SELECT to_item_id, count(from_item_id) AS num FROM `'.$this->addDatabasePrefix('links').'` WHERE to_item_id IN ('.implode(',',$id_array).') GROUP BY to_item_id;';
             $result = $this->_db_connector->performQuery($query);
             if ( !isset($result) ) {
                include_once('functions/error_functions.php');
@@ -1018,7 +1018,7 @@ class cs_links_manager extends cs_manager {
       $retour = NULL;
       $rows = array();
 
-      $sql1 = 'SELECT '.$this->_db_table.'.* AS item_id FROM '.$this->_db_table.' LEFT JOIN items ON '.$this->_db_table.'.to_item_id=items.item_id WHERE '.$this->_db_table.'.context_id="'.$context_id.'"AND items.context_id IS NULL;';
+      $sql1 = 'SELECT '.$this->addDatabasePrefix($this->_db_table).'.* AS item_id FROM '.$this->addDatabasePrefix($this->_db_table).' LEFT JOIN '.$this->addDatabasePrefix('items').' ON '.$this->addDatabasePrefix($this->_db_table).'.to_item_id='.$this->addDatabasePrefix('items').'.item_id WHERE '.$this->addDatabasePrefix($this->_db_table).'.context_id="'.$context_id.'"AND '.$this->addDatabasePrefix('items').'.context_id IS NULL;';
       $result = $this->_db_connector->performQuery($sql1);
       if ( !empty($result) ) {
          foreach ( $result as $row ) {
@@ -1026,7 +1026,7 @@ class cs_links_manager extends cs_manager {
          }
       }
 
-      $sql2 = 'SELECT '.$this->_db_table.'.* FROM '.$this->_db_table.' LEFT JOIN items ON '.$this->_db_table.'.from_item_id=items.item_id WHERE '.$this->_db_table.'.context_id="'.$context_id.'"AND items.context_id IS NULL;';
+      $sql2 = 'SELECT '.$this->addDatabasePrefix($this->_db_table).'.* FROM '.$this->addDatabasePrefix($this->_db_table).' LEFT JOIN '.$this->addDatabasePrefix('items').' ON '.$this->addDatabasePrefix($this->_db_table).'.from_item_id='.$this->addDatabasePrefix('items').'.item_id WHERE '.$this->addDatabasePrefix($this->_db_table).'.context_id="'.$context_id.'"AND '.$this->addDatabasePrefix('items').'.context_id IS NULL;';
       $result = $this->_db_connector->performQuery($sql2);
       if ( !empty($result) ) {
          foreach ( $result as $row ) {
@@ -1037,7 +1037,7 @@ class cs_links_manager extends cs_manager {
       $rows = array_unique($rows);
       if ( !empty($rows) ) {
          foreach ( $rows as $row ) {
-            $sql3 = 'DELETE FROM '.$this->_db_table.' WHERE to_item_id="'.$row['to_item_id'].'" AND to_version_id="'.$row['to_version_id'].'" AND from_item_id="'.$row['from_item_id'].'" AND from_version_id="'.$row['from_version_id'].'";';
+            $sql3 = 'DELETE FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE to_item_id="'.$row['to_item_id'].'" AND to_version_id="'.$row['to_version_id'].'" AND from_item_id="'.$row['from_item_id'].'" AND from_version_id="'.$row['from_version_id'].'";';
             $result = $this->_db_connector->performQuery($sql3);
          }
          $retour = count($rows);

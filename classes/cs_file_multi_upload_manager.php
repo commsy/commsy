@@ -83,7 +83,7 @@ class cs_file_multi_upload_manager extends cs_manager {
    function addFileArray ($session_id, $file_array, $context_id = 0) {
       $file_array_string = serialize($file_array);
       if ( !empty($file_array_string) ) {
-         $query = 'INSERT INTO file_multi_upload SET session_id="'.encode(AS_DB,$session_id).'", file_array="'.encode(AS_DB,$file_array_string).'"';
+         $query = 'INSERT INTO '.$this->addDatabasePrefix('file_multi_upload').' SET session_id="'.encode(AS_DB,$session_id).'", file_array="'.encode(AS_DB,$file_array_string).'"';
          if ( !empty($context_id) ) {
             $query .= ', cid="'.encode(AS_DB,$context_id).'"';
          }
@@ -103,11 +103,11 @@ class cs_file_multi_upload_manager extends cs_manager {
 
    function _performQuery ( $mode = 'select') {
       if ($mode == 'select') {
-         $query = 'SELECT * FROM '.$this->_db_table;
+         $query = 'SELECT * FROM '.$this->addDatabasePrefix($this->_db_table);
       } elseif ($mode == 'delete') {
-         $query = 'DELETE FROM '.$this->_db_table;
+         $query = 'DELETE FROM '.$this->addDatabasePrefix($this->_db_table);
       } elseif ($mode == 'count') {
-         $query = 'SELECT count(id) AS count FROM '.$this->_db_table;
+         $query = 'SELECT count(id) AS count FROM '.$this->addDatabasePrefix($this->_db_table);
       } else {
          include_once('functions/error_functions.php');
          trigger_error('lost perform mode',E_USER_ERROR);

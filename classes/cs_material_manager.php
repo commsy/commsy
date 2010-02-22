@@ -314,11 +314,11 @@ class cs_material_manager extends cs_manager {
       } elseif (array_key_exists($item_id,$this->_cached_items)){
          return $this->_buildItem($this->_cached_items[$item_id]);
       } else {
-         $query = "SELECT * FROM materials WHERE materials.item_id = '".encode(AS_DB,$item_id)."'";
+         $query = "SELECT * FROM ".$this->addDatabasePrefix("materials")." WHERE ".$this->addDatabasePrefix("materials").".item_id = '".encode(AS_DB,$item_id)."'";
          if ($this->_delete_limit == true) {
-             $query .= ' AND materials.deleter_id IS NULL';
+             $query .= ' AND '.$this->addDatabasePrefix('materials').'.deleter_id IS NULL';
          }
-         $query .= " ORDER BY materials.version_id DESC";
+         $query .= " ORDER BY ".$this->addDatabasePrefix("materials").".version_id DESC";
          $result = $this->_db_connector->performQuery($query);
          if ( !isset($result) ) {
             include_once('functions/error_functions.php');
@@ -344,8 +344,8 @@ class cs_material_manager extends cs_manager {
       if (empty($id_array)) {
          return new cs_list();
       } else {
-         $query = "SELECT * FROM materials WHERE materials.item_id IN ('".implode("', '",encode(AS_DB,$id_array))."')";
-         $query .= " ORDER BY materials.item_id, materials.version_id DESC";
+         $query = "SELECT * FROM ".$this->addDatabasePrefix("materials")." WHERE ".$this->addDatabasePrefix("materials").".item_id IN ('".implode("', '",encode(AS_DB,$id_array))."')";
+         $query .= " ORDER BY ".$this->addDatabasePrefix("materials").".item_id, ".$this->addDatabasePrefix("materials").".version_id DESC";
          $result = $this->_db_connector->performQuery($query);
          if (!isset($result)) {
             include_once('functions/error_functions.php');
@@ -370,8 +370,8 @@ class cs_material_manager extends cs_manager {
     */
    function getItemByVersion ($item_id,$version_id) {
       $material = NULL;
-      $query = "SELECT * FROM materials WHERE materials.item_id = '".encode(AS_DB,$item_id)."'";
-      $query .=" AND materials.version_id = '".encode(AS_DB,$version_id)."'";
+      $query = "SELECT * FROM ".$this->addDatabasePrefix("materials")." WHERE ".$this->addDatabasePrefix("materials").".item_id = '".encode(AS_DB,$item_id)."'";
+      $query .=" AND ".$this->addDatabasePrefix("materials").".version_id = '".encode(AS_DB,$version_id)."'";
       $result = $this->_db_connector->performQuery($query);
       if (!isset($result) or empty($result[0])) {
          include_once('functions/error_functions.php');
@@ -391,12 +391,12 @@ class cs_material_manager extends cs_manager {
     */
    function getVersionList($material_id){
       $version_list = new cs_list();
-      $query  = 'SELECT * FROM materials';
-      $query .= ' WHERE materials.item_id="'.encode(AS_DB,$material_id).'"';
+      $query  = 'SELECT * FROM '.$this->addDatabasePrefix('materials');
+      $query .= ' WHERE '.$this->addDatabasePrefix('materials').'.item_id="'.encode(AS_DB,$material_id).'"';
       if ($this->_delete_limit == true) {
-         $query .= ' AND materials.deleter_id IS NULL';
+         $query .= ' AND '.$this->addDatabasePrefix('materials').'.deleter_id IS NULL';
       }
-      $query .= " ORDER BY materials.version_id DESC";
+      $query .= " ORDER BY ".$this->addDatabasePrefix("materials").".version_id DESC";
       $result = $this->_db_connector->performQuery($query);
       if (!isset($result)) {
          include_once('functions/error_functions.php');trigger_error('Problems selecting versions of a material from query: "'.$query.'"',E_USER_WARNING);
@@ -484,11 +484,11 @@ class cs_material_manager extends cs_manager {
       if (!$this->_handle_tmp_manual){
          $query  = 'CREATE TEMPORARY TABLE tmp3'.$temp_number.' (item_id INT(11) NOT NULL, version_id INT(11) NOT NULL, PRIMARY KEY (item_id, version_id));';
          $result = $this->_db_connector->performQuery($query);
-         $query  = 'INSERT INTO tmp3'.$temp_number.' (item_id,version_id) SELECT item_id,MAX(version_id) FROM materials';
+         $query  = 'INSERT INTO tmp3'.$temp_number.' (item_id,version_id) SELECT item_id,MAX(version_id) FROM '.$this->addDatabasePrefix('materials');
          if ( isset($this->_room_limit) ) {
-            $query .= ' WHERE '.$this->_db_table.'.context_id = "'.encode(AS_DB,$this->_room_limit).'"';
+            $query .= ' WHERE '.$this->addDatabasePrefix($this->_db_table).'.context_id = "'.encode(AS_DB,$this->_room_limit).'"';
          } else {
-            $query .= ' WHERE '.$this->_db_table.'.context_id = "'.encode(AS_DB,$this->_environment->getCurrentContextID()).'"';
+            $query .= ' WHERE '.$this->addDatabasePrefix($this->_db_table).'.context_id = "'.encode(AS_DB,$this->_environment->getCurrentContextID()).'"';
          }
          $query .= ' GROUP BY item_id;';
          $result = $this->_db_connector->performQuery($query);
@@ -500,57 +500,57 @@ class cs_material_manager extends cs_manager {
       }
 
       if ($mode == 'count') {
-         $query .= 'SELECT count(DISTINCT materials.item_id) AS count';
+         $query .= 'SELECT count(DISTINCT '.$this->addDatabasePrefix('materials').'.item_id) AS count';
       } elseif ($mode == 'id_array') {
-         $query .= 'SELECT DISTINCT materials.item_id';
+         $query .= 'SELECT DISTINCT '.$this->addDatabasePrefix('materials').'.item_id';
       } elseif ($mode == 'distinct') {
-         $query .= 'SELECT DISTINCT '.$this->_db_table.'.*';
+         $query .= 'SELECT DISTINCT '.$this->addDatabasePrefix($this->_db_table).'.*';
       } else {
-         $query .= 'SELECT DISTINCT materials.*';
+         $query .= 'SELECT DISTINCT '.$this->addDatabasePrefix('materials').'.*';
       }
-      $query .= ' FROM materials';
-      $query .= ' INNER JOIN tmp3'.$temp_number.' ON materials.item_id=tmp3'.$temp_number.'.item_id AND materials.version_id=tmp3'.$temp_number.'.version_id';
+      $query .= ' FROM '.$this->addDatabasePrefix('materials');
+      $query .= ' INNER JOIN tmp3'.$temp_number.' ON '.$this->addDatabasePrefix('materials').'.item_id=tmp3'.$temp_number.'.item_id AND '.$this->addDatabasePrefix('materials').'.version_id=tmp3'.$temp_number.'.version_id';
 
       if ( ( isset($this->_search_array) AND !empty($this->_search_array) )
            or ( isset($this->_only_files_limit) and $this->_only_files_limit )
           ) {
-         $query .= ' LEFT JOIN section ON (section.material_item_id = materials.item_id AND section.version_id = materials.version_id AND section.context_id = "'.$this->_room_limit.'")';
+         $query .= ' LEFT JOIN '.$this->addDatabasePrefix('section').' ON ('.$this->addDatabasePrefix('section').'.material_item_id = '.$this->addDatabasePrefix('materials').'.item_id AND '.$this->addDatabasePrefix('section').'.version_id = '.$this->addDatabasePrefix('materials').'.version_id AND '.$this->addDatabasePrefix('section').'.context_id = "'.$this->_room_limit.'")';
       }
 
      if ( isset($this->_institution_limit) ) {
-        $query .= ' LEFT JOIN link_items AS l11 ON ( l11.deletion_date IS NULL AND ((l11.first_item_id=materials.item_id AND l11.second_item_type="'.CS_INSTITUTION_TYPE.'"))) ';
-        $query .= ' LEFT JOIN link_items AS l12 ON ( l12.deletion_date IS NULL AND ((l12.second_item_id=materials.item_id AND l12.first_item_type="'.CS_INSTITUTION_TYPE.'"))) ';
+        $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l11 ON ( l11.deletion_date IS NULL AND ((l11.first_item_id='.$this->addDatabasePrefix('materials').'.item_id AND l11.second_item_type="'.CS_INSTITUTION_TYPE.'"))) ';
+        $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l12 ON ( l12.deletion_date IS NULL AND ((l12.second_item_id='.$this->addDatabasePrefix('materials').'.item_id AND l12.first_item_type="'.CS_INSTITUTION_TYPE.'"))) ';
      }
      if ( isset($this->_topics_limit) ) {
-        $query .= ' LEFT JOIN link_items AS l21 ON ( l21.deletion_date IS NULL AND ((l21.first_item_id=materials.item_id AND l21.second_item_type="'.CS_TOPIC_TYPE.'"))) ';
-        $query .= ' LEFT JOIN link_items AS l22 ON ( l22.deletion_date IS NULL AND ((l22.second_item_id=materials.item_id AND l22.first_item_type="'.CS_TOPIC_TYPE.'"))) ';
+        $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l21 ON ( l21.deletion_date IS NULL AND ((l21.first_item_id='.$this->addDatabasePrefix('materials').'.item_id AND l21.second_item_type="'.CS_TOPIC_TYPE.'"))) ';
+        $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l22 ON ( l22.deletion_date IS NULL AND ((l22.second_item_id='.$this->addDatabasePrefix('materials').'.item_id AND l22.first_item_type="'.CS_TOPIC_TYPE.'"))) ';
      }
      if ( isset($this->_group_limit) ) {
-        $query .= ' LEFT JOIN link_items AS l31 ON ( l31.deletion_date IS NULL AND ((l31.first_item_id=materials.item_id AND l31.second_item_type="'.CS_GROUP_TYPE.'"))) ';
-        $query .= ' LEFT JOIN link_items AS l32 ON ( l32.deletion_date IS NULL AND ((l32.second_item_id=materials.item_id AND l32.first_item_type="'.CS_GROUP_TYPE.'"))) ';
+        $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l31 ON ( l31.deletion_date IS NULL AND ((l31.first_item_id='.$this->addDatabasePrefix('materials').'.item_id AND l31.second_item_type="'.CS_GROUP_TYPE.'"))) ';
+        $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l32 ON ( l32.deletion_date IS NULL AND ((l32.second_item_id='.$this->addDatabasePrefix('materials').'.item_id AND l32.first_item_type="'.CS_GROUP_TYPE.'"))) ';
      }
 
      if ( isset($this->_tag_limit) ) {
         $tag_id_array = $this->_getTagIDArrayByTagID($this->_tag_limit);
-        $query .= ' LEFT JOIN link_items AS l41 ON ( l41.deletion_date IS NULL AND ((l41.first_item_id=materials.item_id AND l41.second_item_type="'.CS_TAG_TYPE.'"))) ';
-        $query .= ' LEFT JOIN link_items AS l42 ON ( l42.deletion_date IS NULL AND ((l42.second_item_id=materials.item_id AND l42.first_item_type="'.CS_TAG_TYPE.'"))) ';
+        $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l41 ON ( l41.deletion_date IS NULL AND ((l41.first_item_id='.$this->addDatabasePrefix('materials').'.item_id AND l41.second_item_type="'.CS_TAG_TYPE.'"))) ';
+        $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l42 ON ( l42.deletion_date IS NULL AND ((l42.second_item_id='.$this->addDatabasePrefix('materials').'.item_id AND l42.first_item_type="'.CS_TAG_TYPE.'"))) ';
      }
 
       // restrict materials by buzzword (la4)
       if (isset($this->_buzzword_limit)) {
          if ($this->_buzzword_limit == -1){
-            $query .= ' LEFT JOIN links AS l5 ON l5.from_item_id=materials.item_id AND l5.from_version_id=materials.version_id AND l5.link_type="buzzword_for"';
-            $query .= ' LEFT JOIN labels AS buzzwords ON l5.to_item_id=buzzwords.item_id AND buzzwords.type="buzzword"';
+            $query .= ' LEFT JOIN '.$this->addDatabasePrefix('links').' AS l5 ON l5.from_item_id='.$this->addDatabasePrefix('materials').'.item_id AND l5.from_version_id='.$this->addDatabasePrefix('materials').'.version_id AND l5.link_type="buzzword_for"';
+            $query .= ' LEFT JOIN '.$this->addDatabasePrefix('labels').' AS buzzwords ON l5.to_item_id=buzzwords.item_id AND buzzwords.type="buzzword"';
          }else{
-            $query .= ' INNER JOIN links AS l5 ON l5.from_item_id=materials.item_id AND l5.from_version_id=materials.version_id AND l5.link_type="buzzword_for"';
-            $query .= ' INNER JOIN labels AS buzzwords ON l5.to_item_id=buzzwords.item_id AND buzzwords.type="buzzword"';
+            $query .= ' INNER JOIN '.$this->addDatabasePrefix('links').' AS l5 ON l5.from_item_id='.$this->addDatabasePrefix('materials').'.item_id AND l5.from_version_id='.$this->addDatabasePrefix('materials').'.version_id AND l5.link_type="buzzword_for"';
+            $query .= ' INNER JOIN '.$this->addDatabasePrefix('labels').' AS buzzwords ON l5.to_item_id=buzzwords.item_id AND buzzwords.type="buzzword"';
          }
       }
 
       // restrict material by ref item
       if (isset($this->_ref_id_limit)) {
-         $query .= ' INNER JOIN link_items AS l5 ON ( (l5.first_item_id=materials.item_id AND l5.second_item_id="'.encode(AS_DB,$this->_ref_id_limit).'")
-                     OR (l5.second_item_id=materials.item_id AND l5.first_item_id="'.encode(AS_DB,$this->_ref_id_limit).'") ) AND l5.deletion_date IS NULL';
+         $query .= ' INNER JOIN '.$this->addDatabasePrefix('link_items').' AS l5 ON ( (l5.first_item_id='.$this->addDatabasePrefix('materials').'.item_id AND l5.second_item_id="'.encode(AS_DB,$this->_ref_id_limit).'")
+                     OR (l5.second_item_id='.$this->addDatabasePrefix('materials').'.item_id AND l5.first_item_id="'.encode(AS_DB,$this->_ref_id_limit).'") ) AND l5.deletion_date IS NULL';
       }
 
 
@@ -558,45 +558,45 @@ class cs_material_manager extends cs_manager {
       if (isset($this->_search_array) AND !empty($this->_search_array)) {
 
          // join to user database table
-         $query .= ' LEFT JOIN user AS creator ON materials.creator_id=creator.item_id';
-         $query .= ' LEFT JOIN user AS modificator ON materials.modifier_id=modificator.item_id';
+         $query .= ' LEFT JOIN '.$this->addDatabasePrefix('user').' AS creator ON '.$this->addDatabasePrefix('materials').'.creator_id=creator.item_id';
+         $query .= ' LEFT JOIN '.$this->addDatabasePrefix('user').' AS modificator ON '.$this->addDatabasePrefix('materials').'.modifier_id=modificator.item_id';
 
          if (!isset($this->_buzzword_limit)) {
-            $query .= ' LEFT JOIN links AS l8 ON l8.from_item_id=materials.item_id AND l8.from_version_id=materials.version_id AND l8.link_type="buzzword_for"';
-            $query .= ' LEFT JOIN labels AS buzzwords ON l8.to_item_id=buzzwords.item_id AND buzzwords.type="buzzword"';
+            $query .= ' LEFT JOIN '.$this->addDatabasePrefix('links').' AS l8 ON l8.from_item_id='.$this->addDatabasePrefix('materials').'.item_id AND l8.from_version_id='.$this->addDatabasePrefix('materials').'.version_id AND l8.link_type="buzzword_for"';
+            $query .= ' LEFT JOIN '.$this->addDatabasePrefix('labels').' AS buzzwords ON l8.to_item_id=buzzwords.item_id AND buzzwords.type="buzzword"';
          }
 
          //look in filenames of linked files for the search_limit
-         $query .= ' LEFT JOIN item_link_file ON materials.item_id = item_link_file.item_iid'.
-                   ' LEFT JOIN files ON item_link_file.file_id = files.files_id';
+         $query .= ' LEFT JOIN '.$this->addDatabasePrefix('item_link_file').' ON '.$this->addDatabasePrefix('materials').'.item_id = '.$this->addDatabasePrefix('item_link_file').'.item_iid'.
+                   ' LEFT JOIN '.$this->addDatabasePrefix('files').' ON '.$this->addDatabasePrefix('item_link_file').'.file_id = '.$this->addDatabasePrefix('files').'.files_id';
          //look in filenames of linked files for the search_limit
       }elseif((isset($this->_order) and
            ($this->_order == 'modificator' || $this->_order == 'modificator_rev'))){
-         $query .= ' INNER JOIN user AS people ON materials.modifier_id=people.item_id';
+         $query .= ' INNER JOIN '.$this->addDatabasePrefix('user').' AS people ON '.$this->addDatabasePrefix('materials').'.modifier_id=people.item_id';
       }
 
       // only files limit -> entries with files (material)
       if ( isset($this->_limit_only_files_mode)
            and $this->_limit_only_files_mode == 'item' ) {
-         $query .= ' INNER JOIN item_link_file AS lf2 ON '.$this->_db_table.'.item_id = lf2.item_iid';
+         $query .= ' INNER JOIN '.$this->addDatabasePrefix('item_link_file').' AS lf2 ON '.$this->addDatabasePrefix($this->_db_table).'.item_id = lf2.item_iid';
       }
 
       // only files limit -> entries with files (sections)
       elseif ( isset($this->_limit_only_files_mode)
            and $this->_limit_only_files_mode == 'subitem' ) {
-         $query .= ' INNER JOIN item_link_file AS lf1 ON section.item_id = lf1.item_iid';
+         $query .= ' INNER JOIN '.$this->addDatabasePrefix('item_link_file').' AS lf1 ON '.$this->addDatabasePrefix('section').'.item_id = lf1.item_iid';
       }
 
       // only files limit -> entries with files (sections and material)
       elseif ( isset($this->_limit_only_files_mode)
            and $this->_limit_only_files_mode == 'both' ) {
-         $query .= ' INNER JOIN item_link_file AS lf2 ON '.$this->_db_table.'.item_id = lf2.item_iid';
-         $query .= ' INNER JOIN item_link_file AS lf1 ON section.item_id = lf1.item_iid';
+         $query .= ' INNER JOIN '.$this->addDatabasePrefix('item_link_file').' AS lf2 ON '.$this->addDatabasePrefix($this->_db_table).'.item_id = lf2.item_iid';
+         $query .= ' INNER JOIN '.$this->addDatabasePrefix('item_link_file').' AS lf1 ON '.$this->addDatabasePrefix('section').'.item_id = lf1.item_iid';
       }
 
       $query .= ' WHERE 1';
       if (isset($this->_room_limit)) {
-         $query .= ' AND materials.context_id = "'.encode(AS_DB,$this->_room_limit).'"';
+         $query .= ' AND '.$this->addDatabasePrefix('materials').'.context_id = "'.encode(AS_DB,$this->_room_limit).'"';
       }
       //if (isset($this->_search_limit) AND !empty($this->_search_limit)) {
       //   if (isset($this->_room_limit)) {
@@ -605,24 +605,24 @@ class cs_material_manager extends cs_manager {
       //}
 
       if ($this->_delete_limit == true) {
-         $query .= ' AND materials.deletion_date IS NULL';
+         $query .= ' AND '.$this->addDatabasePrefix('materials').'.deletion_date IS NULL';
       }
 
 
 /***Activating Code***/
       if (!$this->_show_not_activated_entries_limit) {
-         $query .= ' AND (materials.modification_date IS NULL OR materials.modification_date <= "'.getCurrentDateTimeInMySQL().'")';
+         $query .= ' AND ('.$this->addDatabasePrefix('materials').'.modification_date IS NULL OR '.$this->addDatabasePrefix('materials').'.modification_date <= "'.getCurrentDateTimeInMySQL().'")';
       }
 /*********************/
 
       if (isset($this->_ref_user_limit)) {
-         $query .= ' AND (materials.creator_id = "'.encode(AS_DB,$this->_ref_user_limit).'" )';
+         $query .= ' AND ('.$this->addDatabasePrefix('materials').'.creator_id = "'.encode(AS_DB,$this->_ref_user_limit).'" )';
       }
       if (isset($this->_public_limit)) {
          if ($this->_public_limit == 6){
-            $query .= ' AND (materials.world_public >= "1" )';
+            $query .= ' AND ('.$this->addDatabasePrefix('materials').'.world_public >= "1" )';
          }else{
-            $query .= ' AND (materials.world_public = "'.encode(AS_DB,$this->_public_limit).'" )';
+            $query .= ' AND ('.$this->addDatabasePrefix('materials').'.world_public = "'.encode(AS_DB,$this->_public_limit).'" )';
          }
       }
       if ( isset($this->_topics_limit) ){
@@ -654,10 +654,10 @@ class cs_material_manager extends cs_manager {
       }
 
       if (isset($this->_age_limit)) {
-         $query .= ' AND materials.modification_date >= DATE_SUB(CURRENT_DATE,interval '.encode(AS_DB,$this->_age_limit).' day)';
+         $query .= ' AND '.$this->addDatabasePrefix('materials').'.modification_date >= DATE_SUB(CURRENT_DATE,interval '.encode(AS_DB,$this->_age_limit).' day)';
       }
       if ( isset($this->_existence_limit) ) {
-         $query .= ' AND materials.creation_date >= DATE_SUB(CURRENT_DATE,interval '.encode(AS_DB,$this->_existence_limit).' day)';
+         $query .= ' AND '.$this->addDatabasePrefix('materials').'.creation_date >= DATE_SUB(CURRENT_DATE,interval '.encode(AS_DB,$this->_existence_limit).' day)';
       }
 
       if ( isset($this->_tag_limit) ) {
@@ -680,11 +680,11 @@ class cs_material_manager extends cs_manager {
       }
       if (isset($this->_id_limit)) {
          $id_string = implode(', ',$this->_id_limit);
-         $query .= ' AND materials.item_id IN ('.encode(AS_DB,$id_string).')';
+         $query .= ' AND '.$this->addDatabasePrefix('materials').'.item_id IN ('.encode(AS_DB,$id_string).')';
       }
 
       if( !empty($this->_id_array_limit) ) {
-         $query .= ' AND '.$this->_db_table.'.item_id IN ('.implode(", ",encode(AS_DB,$this->_id_array_limit)).')';
+         $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.item_id IN ('.implode(", ",encode(AS_DB,$this->_id_array_limit)).')';
       }
 
       if (isset($this->_attribute_limit) and !($this->_attribute_limit=='all')
@@ -692,11 +692,11 @@ class cs_material_manager extends cs_manager {
          if ( 'modificator'== $this->_attribute_limit ) {
             $query .= ' AND '.$this->_generateSearchLimitCode(array('TRIM(CONCAT(creator.firstname," ",creator.lastname))'));
          } elseif ( 'title'==$this->_attribute_limit ) {
-            $query .= ' AND '.$this->_generateSearchLimitCode(array('materials.title'));
+            $query .= ' AND '.$this->_generateSearchLimitCode(array($this->addDatabasePrefix('materials').'.title'));
          }elseif ( 'author'==$this->_attribute_limit ) {
-            $query .= ' AND '.$this->_generateSearchLimitCode(array('materials.author'));
+            $query .= ' AND '.$this->_generateSearchLimitCode(array($this->addDatabasePrefix('materials').'.author'));
          } elseif ( 'description'==$this->_attribute_limit ) {
-            $query .= ' AND '.$this->_generateSearchLimitCode(array('materials.description'));
+            $query .= ' AND '.$this->_generateSearchLimitCode(array($this->addDatabasePrefix('materials').'.description'));
          }elseif ( 'file'==$this->_attribute_limit ){
               $query .= $this->initFTSearch();
          }
@@ -704,7 +704,7 @@ class cs_material_manager extends cs_manager {
       // restrict sql-statement by search limit, create wheres
       elseif (isset($this->_search_array) AND !empty($this->_search_array)) {
          $query .= ' AND (';
-         $field_array = array('TRIM(CONCAT(modificator.firstname," ",modificator.lastname))','TRIM(CONCAT(creator.firstname," ",creator.lastname))','section.description','section.title','materials.publishing_date','materials.author','materials.title','materials.description','buzzwords.name');
+         $field_array = array('TRIM(CONCAT(modificator.firstname," ",modificator.lastname))','TRIM(CONCAT(creator.firstname," ",creator.lastname))',$this->addDatabasePrefix('section').'.description',$this->addDatabasePrefix('section').'.title',$this->addDatabasePrefix('materials').'.publishing_date',$this->addDatabasePrefix('materials').'.author',$this->addDatabasePrefix('materials').'.title',$this->addDatabasePrefix('materials').'.description','buzzwords.name');
          $search_limit_query_code = $this->_generateSearchLimitCode($field_array);
          $query .= $search_limit_query_code;
          $query .= ' )';
@@ -719,7 +719,7 @@ class cs_material_manager extends cs_manager {
 
       // only entries with files
       if ( isset($this->_limit_not_item_id_array) ) {
-         $query .= ' AND '.$this->_db_table.'.item_id NOT IN ('.implode(',',encode(AS_DB,$this->_limit_not_item_id_array)).')';
+         $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.item_id NOT IN ('.implode(',',encode(AS_DB,$this->_limit_not_item_id_array)).')';
       }
 
       // only files limit -> entries with files (material)
@@ -744,37 +744,37 @@ class cs_material_manager extends cs_manager {
       if ( ( isset($this->_search_array) AND !empty($this->_search_array) )
            or ( isset($this->_only_files_limit) and $this->_only_files_limit )
          ) {
-         $query .= ' AND section.deleter_id IS NULL AND section.deletion_date IS NULL';
+         $query .= ' AND '.$this->addDatabasePrefix('section').'.deleter_id IS NULL AND '.$this->addDatabasePrefix('section').'.deletion_date IS NULL';
       }
 
       if (isset($this->_search_array) AND !empty($this->_search_array)) {
-         $query .= ' GROUP BY materials.item_id';
+         $query .= ' GROUP BY '.$this->addDatabasePrefix('materials').'.item_id';
       }
 
       if ( isset($this->_order) ) {
          if ( $this->_order == 'date_rev' ) {
-            $query .= ' ORDER BY materials.modification_date ASC, materials.title DESC';
+            $query .= ' ORDER BY '.$this->addDatabasePrefix('materials').'.modification_date ASC, '.$this->addDatabasePrefix('materials').'.title DESC';
          } elseif ( $this->_order == 'publishing_date' ) {
-            $query .= ' ORDER BY materials.publishing_date DESC, materials.title ASC';
+            $query .= ' ORDER BY '.$this->addDatabasePrefix('materials').'.publishing_date DESC, '.$this->addDatabasePrefix('materials').'.title ASC';
          } elseif ( $this->_order == 'publishing_date_rev' ) {
-            $query .= ' ORDER BY materials.publishing_date ASC, materials.title DESC';
+            $query .= ' ORDER BY '.$this->addDatabasePrefix('materials').'.publishing_date ASC, '.$this->addDatabasePrefix('materials').'.title DESC';
          } elseif ($this->_order == 'author') {
-            $query .= ' ORDER BY materials.author ASC, materials.title ASC';
+            $query .= ' ORDER BY '.$this->addDatabasePrefix('materials').'.author ASC, '.$this->addDatabasePrefix('materials').'.title ASC';
          } elseif ($this->_order == 'author_rev') {
-            $query .= ' ORDER BY materials.author DESC, materials.title DESC';
+            $query .= ' ORDER BY '.$this->addDatabasePrefix('materials').'.author DESC, '.$this->addDatabasePrefix('materials').'.title DESC';
          }elseif ( $this->_order == 'modificator' ) {
             $query .= ' ORDER BY people.lastname';
          } elseif ( $this->_order == 'modificator_rev' ) {
             $query .= ' ORDER BY people.lastname DESC';
          } elseif ($this->_order == 'title') {
-            $query .= ' ORDER BY materials.title ASC, materials.modification_date DESC';
+            $query .= ' ORDER BY '.$this->addDatabasePrefix('materials').'.title ASC, '.$this->addDatabasePrefix('materials').'.modification_date DESC';
          } elseif ($this->_order == 'title_rev') {
-            $query .= ' ORDER BY materials.title DESC, materials.modification_date ASC';
+            $query .= ' ORDER BY '.$this->addDatabasePrefix('materials').'.title DESC, '.$this->addDatabasePrefix('materials').'.modification_date ASC';
          } else {
-            $query .= ' ORDER BY materials.modification_date DESC, materials.title ASC'; // default: sort by date
+            $query .= ' ORDER BY '.$this->addDatabasePrefix('materials').'.modification_date DESC, '.$this->addDatabasePrefix('materials').'.title ASC'; // default: sort by date
          }
       } else {
-         $query .= ' ORDER BY materials.modification_date DESC, materials.title ASC'; // default: sort by date
+         $query .= ' ORDER BY '.$this->addDatabasePrefix('materials').'.modification_date DESC, '.$this->addDatabasePrefix('materials').'.title ASC'; // default: sort by date
       }
       if ($mode == 'select') {
          if (isset($this->_interval_limit) and isset($this->_from_limit)) {
@@ -809,7 +809,7 @@ class cs_material_manager extends cs_manager {
       $session = $this->_environment->getSessionItem();
       $query = 'CREATE TEMPORARY TABLE tmp3'.encode(AS_DB,$session->getSessionID()).' (item_id INT(11) NOT NULL, version_id INT(11) NOT NULL, PRIMARY KEY (item_id, version_id));';
       $result = $this->_db_connector->performQuery($query);
-      $query = 'INSERT INTO tmp3'.encode(AS_DB,$session->getSessionID()).' (item_id,version_id) SELECT item_id,MAX(version_id) FROM materials WHERE materials.context_id ="'.$room_id.'" GROUP BY item_id;';
+      $query = 'INSERT INTO tmp3'.encode(AS_DB,$session->getSessionID()).' (item_id,version_id) SELECT item_id,MAX(version_id) FROM '.$this->addDatabasePrefix('materials').' WHERE '.$this->addDatabasePrefix('materials').'.context_id ="'.$room_id.'" GROUP BY item_id;';
       $result = $this->_db_connector->performQuery($query);
       unset($session);
       $this->_handle_tmp_manual = true;
@@ -820,7 +820,7 @@ class cs_material_manager extends cs_manager {
       $query = 'CREATE TEMPORARY TABLE tmp3'.encode(AS_DB,$session->getSessionID()).' (item_id INT(11) NOT NULL, version_id INT(11) NOT NULL, PRIMARY KEY (item_id, version_id));';
       $result = $this->_db_connector->performQuery($query);
       if ( isset($id_array) and !empty($id_array) ) {
-         $query = 'INSERT INTO tmp3'.encode(AS_DB,$session->getSessionID()).' (item_id,version_id) SELECT item_id,MAX(version_id) FROM materials WHERE materials.context_id IN ('.implode(",", $id_array).') GROUP BY item_id;';
+         $query = 'INSERT INTO tmp3'.encode(AS_DB,$session->getSessionID()).' (item_id,version_id) SELECT item_id,MAX(version_id) FROM '.$this->addDatabasePrefix('materials').' WHERE '.$this->addDatabasePrefix('materials').'.context_id IN ('.implode(",", $id_array).') GROUP BY item_id;';
          $result = $this->_db_connector->performQuery($query);
       }
       unset($session);
@@ -840,7 +840,7 @@ class cs_material_manager extends cs_manager {
    */
    function getLatestVersionID($item_id) {
       $latest_version = NULL;
-      $query = "SELECT MAX(materials.version_id) AS version_id FROM materials WHERE materials.item_id = '".encode(AS_DB,$item_id)."'";
+      $query = "SELECT MAX(".$this->addDatabasePrefix("materials").".version_id) AS version_id FROM ".$this->addDatabasePrefix("materials")." WHERE ".$this->addDatabasePrefix("materials").".item_id = '".encode(AS_DB,$item_id)."'";
       $result = $this->_db_connector->performQuery($query);
       if (!isset($result) or empty($result[0])) {
          include_once('functions/error_functions.php');
@@ -903,7 +903,7 @@ class cs_material_manager extends cs_manager {
          if ($material_item->isNotActivated()){
             $modification_date = $material_item->getModificationDate();
          }
-         $query = 'UPDATE materials SET '.
+         $query = 'UPDATE '.$this->addDatabasePrefix('materials').' SET '.
                   'modification_date="'.$modification_date.'",'.
                   'modifier_id="'.encode(AS_DB,$modificator->getItemID()).'",'.
                   'title="'.encode(AS_DB,$material_item->getTitle()).'",'.
@@ -934,7 +934,7 @@ class cs_material_manager extends cs_manager {
      if ( !isset($context_id) ) {
         include_once('functions/error_functions.php');trigger_error('Problems creating new material: ContextID is not set',E_USER_ERROR);
      } else {
-        $query = 'INSERT INTO items SET '.
+        $query = 'INSERT INTO '.$this->addDatabasePrefix('items').' SET '.
                  'context_id="'.encode(AS_DB,$context_id).'",'.
                  'modification_date="'.getCurrentDateTimeInMySQL().'",'.
                  'type="'.encode(AS_DB,$material_item->getItemType(NONE)).'"';
@@ -987,7 +987,7 @@ class cs_material_manager extends cs_manager {
         if ($material_item->isNotActivated()){
            $modification_date = $material_item->getModificationDate();
         }
-        $query = 'INSERT INTO materials SET '.
+        $query = 'INSERT INTO '.$this->addDatabasePrefix('materials').' SET '.
                  'item_id="'.encode(AS_DB,$material_item->getItemID()).'",'.
                  'version_id="'.encode(AS_DB,$material_item->getVersionID()).'",'.
                  'context_id="'.encode(AS_DB,$context_id).'",'.
@@ -1063,7 +1063,7 @@ class cs_material_manager extends cs_manager {
         include_once('functions/error_functions.php');
         trigger_error('Problems deleting material: Deleter is not set',E_USER_ERROR);
      } else {
-        $query = 'UPDATE materials SET '.
+        $query = 'UPDATE '.$this->addDatabasePrefix('materials').' SET '.
                  'deletion_date="'.$current_datetime.'",'.
                  'deleter_id="'.encode(AS_DB,$user_id).'"'.
                  ' WHERE item_id="'.encode(AS_DB,$material_id).'"';
@@ -1114,7 +1114,7 @@ class cs_material_manager extends cs_manager {
 
    function mergeAccount($new_id,$old_id) {
       parent::mergeAccounts($new_id,$old_id);
-      $query = 'UPDATE material_link_file SET deleter_id = "'.encode(AS_DB,$new_id).'" WHERE deleter_id = "'.encode(AS_DB,$old_id).'";';
+      $query = 'UPDATE '.$this->addDatabasePrefix('material_link_file').' SET deleter_id = "'.encode(AS_DB,$new_id).'" WHERE deleter_id = "'.encode(AS_DB,$old_id).'";';
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) or !$result ) {
          include_once('functions/error_functions.php');trigger_error('Problems creating material_link_file from query: "'.$query.'"',E_USER_WARNING);
@@ -1128,7 +1128,7 @@ class cs_material_manager extends cs_manager {
    function getCountMaterials ($start, $end) {
       $retour = 0;
 
-      $query = "SELECT count(materials.item_id) as number FROM materials WHERE materials.context_id = '".encode(AS_DB,$this->_room_limit)."' and ((materials.creation_date > '".encode(AS_DB,$start)."' and materials.creation_date < '".encode(AS_DB,$end)."') or (materials.modification_date > '".encode(AS_DB,$start)."' and materials.modification_date < '".encode(AS_DB,$end)."'))";
+      $query = "SELECT count(".$this->addDatabasePrefix("materials").".item_id) as number FROM ".$this->addDatabasePrefix("materials")." WHERE ".$this->addDatabasePrefix("materials").".context_id = '".encode(AS_DB,$this->_room_limit)."' and ((".$this->addDatabasePrefix("materials").".creation_date > '".encode(AS_DB,$start)."' and ".$this->addDatabasePrefix("materials").".creation_date < '".encode(AS_DB,$end)."') or (".$this->addDatabasePrefix("materials").".modification_date > '".encode(AS_DB,$start)."' and ".$this->addDatabasePrefix("materials").".modification_date < '".encode(AS_DB,$end)."'))";
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) ) {
          include_once('functions/error_functions.php');trigger_error('Problems counting all materials from query: "'.$query.'"',E_USER_WARNING);
@@ -1144,7 +1144,7 @@ class cs_material_manager extends cs_manager {
    function getCountNewMaterials ($start, $end) {
       $retour = 0;
 
-      $query = "SELECT count(materials.item_id) as number FROM materials WHERE materials.context_id = '".encode(AS_DB,$this->_room_limit)."' and materials.creation_date > '".encode(AS_DB,$start)."' and materials.creation_date < '".encode(AS_DB,$end)."'";
+      $query = "SELECT count(".$this->addDatabasePrefix("materials").".item_id) as number FROM ".$this->addDatabasePrefix("materials")." WHERE ".$this->addDatabasePrefix("materials").".context_id = '".encode(AS_DB,$this->_room_limit)."' and ".$this->addDatabasePrefix("materials").".creation_date > '".encode(AS_DB,$start)."' and ".$this->addDatabasePrefix("materials").".creation_date < '".encode(AS_DB,$end)."'";
       $result = $this->_db_connector->performQuery($query);
       if ( !$result ) {
          include_once('functions/error_functions.php');trigger_error('Problems counting materials from query: "'.$query.'"',E_USER_WARNING);
@@ -1159,7 +1159,7 @@ class cs_material_manager extends cs_manager {
    function getCountModMaterials ($start, $end) {
       $retour = 0;
 
-      $query = "SELECT count(materials.item_id) as number FROM materials WHERE materials.context_id = '".encode(AS_DB,$this->_room_limit)."' and materials.modification_date > '".encode(AS_DB,$start)."' and materials.modification_date < '".encode(AS_DB,$end)."' and materials.modification_date != materials.creation_date";
+      $query = "SELECT count(".$this->addDatabasePrefix("materials").".item_id) as number FROM ".$this->addDatabasePrefix("materials")." WHERE ".$this->addDatabasePrefix("materials").".context_id = '".encode(AS_DB,$this->_room_limit)."' and ".$this->addDatabasePrefix("materials").".modification_date > '".encode(AS_DB,$start)."' and ".$this->addDatabasePrefix("materials").".modification_date < '".encode(AS_DB,$end)."' and ".$this->addDatabasePrefix("materials").".modification_date != ".$this->addDatabasePrefix("materials").".creation_date";
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) ) {
          include_once('functions/error_functions.php');trigger_error('Problems counting materials from query: "'.$query.'"',E_USER_WARNING);
@@ -1179,11 +1179,11 @@ class cs_material_manager extends cs_manager {
    	  									'public'			=>	'public'), array('author', 'publishing_date', 'extras'));
    	  
       $current_datetime = getCurrentDateTimeInMySQL();
-      $query  = 'SELECT materials.* FROM materials WHERE materials.creator_id = "'.$uid.'"';
+      $query  = 'SELECT '.$this->addDatabasePrefix('materials').'.* FROM '.$this->addDatabasePrefix('materials').' WHERE '.$this->addDatabasePrefix('materials').'.creator_id = "'.$uid.'"';
       $result = $this->_db_connector->performQuery($query);
       if ( isset($result) ) {
          foreach ( $result as $rs ) {
-            $insert_query = 'UPDATE materials SET';
+            $insert_query = 'UPDATE '.$this->addDatabasePrefix('materials').' SET';
             $insert_query .= ' title = "'.encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_TITLE')).'",';
             $insert_query .= ' description = "'.encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_DESCRIPTION')).'",';
             $insert_query .= ' author = "",';

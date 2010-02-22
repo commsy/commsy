@@ -73,7 +73,7 @@ class cs_hash_manager extends cs_manager {
       $retour = false;
       if ( !empty($user_item_id) ) {
          if ( !isset($this->_cached_rss_array[$user_item_id]) or empty($this->_cached_rss_array[$user_item_id]) ) {
-            $query = "SELECT rss FROM ".$this->_db_table." WHERE user_item_id = '".$user_item_id."' LIMIT 1";
+            $query = "SELECT rss FROM ".$this->addDatabasePrefix($this->_db_table)." WHERE user_item_id = '".$user_item_id."' LIMIT 1";
             $result = $this->_db_connector->performQuery($query);
             if ( isset($result[0]['rss']) and !empty($result[0]['rss']) ) {
                $retour = $result[0]['rss'];
@@ -90,7 +90,7 @@ class cs_hash_manager extends cs_manager {
 
    public function isRSSHashValid ( $rss_hash, $context_item ) {
       $retour = false;
-      $query = "SELECT user_item_id FROM ".$this->_db_table." WHERE rss = '".$rss_hash."' LIMIT 1";
+      $query = "SELECT user_item_id FROM ".$this->addDatabasePrefix($this->_db_table)." WHERE rss = '".$rss_hash."' LIMIT 1";
       $result = $this->_db_connector->performQuery($query);
       if (!empty($result) ) {
          $retour = $context_item->mayEnterByUserItemID($result[0]['user_item_id']);
@@ -103,14 +103,14 @@ class cs_hash_manager extends cs_manager {
 
    public function deleteHashesForUser ( $user_item_id ) {
       if ( !empty($user_item_id) ) {
-         $delete = "DElETE FROM ".$this->_db_table." WHERE user_item_id = '".$user_item_id."' LIMIT 1";
+         $delete = "DElETE FROM ".$this->addDatabasePrefix($this->_db_table)." WHERE user_item_id = '".$user_item_id."' LIMIT 1";
          $result = $this->_db_connector->performQuery($delete);
       }
    }
 
    private function _getUserItemIDForRSSHash ( $rss_hash ) {
       $retour = '';
-      $query = "SELECT user_item_id FROM ".$this->_db_table." WHERE rss = '".$rss_hash."' LIMIT 1";
+      $query = "SELECT user_item_id FROM ".$this->addDatabasePrefix($this->_db_table)." WHERE rss = '".$rss_hash."' LIMIT 1";
       $result = $this->_db_connector->performQuery($query);
       if (!empty($result[0]['user_item_id'])) {
          $retour = $result[0]['user_item_id'];
@@ -165,7 +165,7 @@ class cs_hash_manager extends cs_manager {
       $retour = false;
       if ( !empty($user_item_id) ) {
          if ( !isset($this->_cached_ical_array[$user_item_id]) or empty($this->_cached_ical_array[$user_item_id]) ) {
-            $query = "SELECT ical FROM ".$this->_db_table." WHERE user_item_id = '".$user_item_id."' LIMIT 1";
+            $query = "SELECT ical FROM ".$this->addDatabasePrefix($this->_db_table)." WHERE user_item_id = '".$user_item_id."' LIMIT 1";
             $result = $this->_db_connector->performQuery($query);
             if ( isset($result[0]['ical']) and !empty($result[0]['ical']) ) {
                $retour = $result[0]['ical'];
@@ -182,7 +182,7 @@ class cs_hash_manager extends cs_manager {
 
    public function isICalHashValid ( $ical_hash, $context_item ) {
       $retour = false;
-      $query = "SELECT user_item_id FROM ".$this->_db_table." WHERE ical = '".$ical_hash."' LIMIT 1";
+      $query = "SELECT user_item_id FROM ".$this->addDatabasePrefix($this->_db_table)." WHERE ical = '".$ical_hash."' LIMIT 1";
       $result = $this->_db_connector->performQuery($query);
       if (!empty($result) ) {
          $retour = $context_item->mayEnterByUserItemID($result[0]['user_item_id']);
@@ -195,7 +195,7 @@ class cs_hash_manager extends cs_manager {
 
    private function _getUserItemIDForICalHash ( $ical_hash ) {
       $retour = '';
-     $query = "SELECT user_item_id FROM ".$this->_db_table." WHERE ical = '".$ical_hash."' LIMIT 1";
+     $query = "SELECT user_item_id FROM ".$this->addDatabasePrefix($this->_db_table)." WHERE ical = '".$ical_hash."' LIMIT 1";
      $result = $this->_db_connector->performQuery($query);
      if(!empty($result))
      {
@@ -220,7 +220,7 @@ class cs_hash_manager extends cs_manager {
       if ( !empty($user_item_id) ) {
          $update = false;
 
-         $query = "SELECT * FROM ".$this->_db_table." WHERE user_item_id = '".$user_item_id."';";
+         $query = "SELECT * FROM ".$this->addDatabasePrefix($this->_db_table)." WHERE user_item_id = '".$user_item_id."';";
          $result = $this->_db_connector->performQuery($query);
          if ( isset($result[0]['rss']) and !empty($result[0]['rss'])  ) {
             $rss_hash = $result[0]['rss'];
@@ -236,14 +236,86 @@ class cs_hash_manager extends cs_manager {
          }
 
          if ( $update ) {
-            $query = "UPDATE ".$this->_db_table." SET rss = '".$rss_hash."', ical = '".$ical_hash."'
+            $query = "UPDATE ".$this->addDatabasePrefix($this->_db_table)." SET rss = '".$rss_hash."', ical = '".$ical_hash."'
                       WHERE user_item_id ='".$user_item_id."';";
          } else {
-            $query = "INSERT INTO ".$this->_db_table." (`user_item_id`,`rss`,`ical`)
+            $query = "INSERT INTO ".$this->addDatabasePrefix($this->_db_table)." (`user_item_id`,`rss`,`ical`)
                       VALUES ('".$user_item_id."', '".$rss_hash."', '".$ical_hash."')";
          }
          $result = $this->_db_connector->performQuery($query);
       }
+   }
+   
+   function moveFromDbToBackup($context_id){
+   	$id_array = array();
+   	$user_manager = $this->_environment->getUserManager();
+   	$user_manager->setContextLimit($context_id);
+   	$user_manager->select();
+   	$user_list = $user_manager->get();
+   	$temp_user = $user_list->getFirst();
+   	while($temp_user){
+   		$id_array[] = $temp_user->getItemID();
+   		$temp_user = $user_list->getNext();
+   	}
+
+      global $c_db_backup_prefix;
+      $retour = false;
+      if(!empty($id_array)){
+	      if ( !empty($context_id) ) {
+	         $query = 'INSERT INTO '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$this->_db_table).' SELECT * FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).'.user_item_id IN ('.implode(",", $id_array).')';
+	         $result = $this->_db_connector->performQuery($query);
+	         if ( !isset($result) ) {
+	            include_once('functions/error_functions.php');
+	            trigger_error('Problems while copying to backup-table.',E_USER_WARNING);
+	         } else {
+	            $query = 'DELETE FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).'.user_item_id IN ('.implode(",", $id_array).')';
+	            $result = $this->_db_connector->performQuery($query);
+	            if ( !isset($result) ) {
+	               include_once('functions/error_functions.php');
+	               trigger_error('Problems deleting after move to backup-table.',E_USER_WARNING);
+	            } elseif ( !empty($result[0]) ) {
+	               $retour = true;
+	            }
+	         }
+	      }
+      }
+      return $retour;
+   }
+   
+   function moveFromBackupToDb($context_id){
+      $id_array = array();
+      $zzz_user_manager = $this->_environment->getZzzUserManager();
+      $zzz_user_manager->setContextLimit($context_id);
+      $zzz_user_manager->select();
+      $user_list = $zzz_user_manager->get();
+      $temp_user = $user_list->getFirst();
+      while($temp_user){
+         $id_array[] = $temp_user->getItemID();
+         $temp_user = $user_list->getNext();
+      }
+
+      global $c_db_backup_prefix;
+      $retour = false;
+      if(!empty($id_array)){
+         if ( !empty($context_id) ) {
+            $query = 'INSERT INTO '.$this->addDatabasePrefix($this->_db_table).' SELECT * FROM '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$this->_db_table).' WHERE '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$this->_db_table).'.user_item_id IN ('.implode(",", $id_array).')';
+            $result = $this->_db_connector->performQuery($query);
+            if ( !isset($result) ) {
+               include_once('functions/error_functions.php');
+               trigger_error('Problems while copying to backup-table.',E_USER_WARNING);
+            } else {
+               $query = 'DELETE FROM '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$this->_db_table).' WHERE '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$this->_db_table).'.user_item_id IN ('.implode(",", $id_array).')';
+               $result = $this->_db_connector->performQuery($query);
+               if ( !isset($result) ) {
+                  include_once('functions/error_functions.php');
+                  trigger_error('Problems deleting after move to backup-table.',E_USER_WARNING);
+               } elseif ( !empty($result[0]) ) {
+                  $retour = true;
+               }
+            }
+         }
+      }
+      return $retour;
    }
 }
 ?>

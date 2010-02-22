@@ -132,54 +132,54 @@ class cs_tasks_manager extends cs_manager {
     */
   function _performQuery ($mode = 'select') {
      if ($mode == 'count') {
-        $query = 'SELECT count(tasks.item_id)';
+        $query = 'SELECT count('.$this->addDatabasePrefix('tasks').'.item_id)';
      } elseif ($mode == 'id_array') {
-         $query = 'SELECT tasks.item_id';
+         $query = 'SELECT '.$this->addDatabasePrefix('tasks').'.item_id';
      } else {
-        $query = 'SELECT tasks.*';
+        $query = 'SELECT '.$this->addDatabasePrefix('tasks').'.*';
      }
-     $query .= ' FROM tasks';
+     $query .= ' FROM '.$this->addDatabasePrefix('tasks');
      // now joins if necessary
      $query .= ' WHERE 1';
 
      // insert limits into the select statement
      if (isset($this->_room_limit)) {
-        $query .= ' AND tasks.context_id = "'.encode(AS_DB,$this->_room_limit).'"';
+        $query .= ' AND '.$this->addDatabasePrefix('tasks').'.context_id = "'.encode(AS_DB,$this->_room_limit).'"';
      }
      if ($this->_delete_limit == true) {
-        $query .= ' AND tasks.deleter_id IS NULL';
+        $query .= ' AND '.$this->addDatabasePrefix('tasks').'.deleter_id IS NULL';
      }
      if (isset($this->_status_limit)) {
-        $query .= ' AND tasks.status = "'.encode(AS_DB,$this->_status_limit).'"';
+        $query .= ' AND '.$this->addDatabasePrefix('tasks').'.status = "'.encode(AS_DB,$this->_status_limit).'"';
      }
      if (isset($this->_linked_id_limit)) {
-        $query .= ' AND tasks.linked_item_id = "'.encode(AS_DB,$this->_linked_id_limit).'"';
+        $query .= ' AND '.$this->addDatabasePrefix('tasks').'.linked_item_id = "'.encode(AS_DB,$this->_linked_id_limit).'"';
      }
 
       // restrict sql-statement by search limit, create wheres
       elseif (isset($this->_search_limit) AND !empty($this->_search_limit)) {
         $query .= ' AND (';
-        $query .= ' UPPER(tasks.title) LIKE BINARY "%'.encode(AS_DB,$this->_search_limit).'%"';
+        $query .= ' UPPER('.$this->addDatabasePrefix('tasks').'.title) LIKE BINARY "%'.encode(AS_DB,$this->_search_limit).'%"';
         $query .= ' OR';
-        $query .= ' UPPER(tasks.status) LIKE BINARY "%'.encode(AS_DB,$this->_search_limit).'%")';
+        $query .= ' UPPER('.$this->addDatabasePrefix('tasks').'.status) LIKE BINARY "%'.encode(AS_DB,$this->_search_limit).'%")';
      }
 
      if (isset($this->_sort_order)) {
         if ($this->_sort_order == 'date') {
-           $query .= ' ORDER BY tasks.modification_date DESC, tasks.title ASC, tasks.status DESC';
+           $query .= ' ORDER BY '.$this->addDatabasePrefix('tasks').'.modification_date DESC, '.$this->addDatabasePrefix('tasks').'.title ASC, '.$this->addDatabasePrefix('tasks').'.status DESC';
         } elseif ($this->_sort_order == 'date_rev') {
-           $query .= ' ORDER BY tasks.modification_date ASC, tasks.title ASC, tasks.status DESC';
+           $query .= ' ORDER BY '.$this->addDatabasePrefix('tasks').'.modification_date ASC, '.$this->addDatabasePrefix('tasks').'.title ASC, '.$this->addDatabasePrefix('tasks').'.status DESC';
         } elseif ($this->_sort_order == 'status') {
-           $query .= ' ORDER BY tasks.status ASC';
+           $query .= ' ORDER BY '.$this->addDatabasePrefix('tasks').'.status ASC';
         } elseif ($this->_sort_order == 'status_rev') {
-           $query .= ' ORDER BY tasks.status DESC';
+           $query .= ' ORDER BY '.$this->addDatabasePrefix('tasks').'.status DESC';
         } elseif ($this->_sort_order == 'title_rev') {
-           $query .= ' ORDER BY tasks.title DESC';
+           $query .= ' ORDER BY '.$this->addDatabasePrefix('tasks').'.title DESC';
         } else {
-           $query .= ' ORDER BY tasks.title ASC';
+           $query .= ' ORDER BY '.$this->addDatabasePrefix('tasks').'.title ASC';
         }
      } else {
-        $query .= ' ORDER BY tasks.modification_date DESC, tasks.title ASC, tasks.status DESC';
+        $query .= ' ORDER BY '.$this->addDatabasePrefix('tasks').'.modification_date DESC, '.$this->addDatabasePrefix('tasks').'.title ASC, '.$this->addDatabasePrefix('tasks').'.status DESC';
      }
 
      if ($mode == 'select') {
@@ -205,7 +205,7 @@ class cs_tasks_manager extends cs_manager {
     */
   function getItem ($item_id) {
      $task = NULL;
-     $query = "SELECT * FROM tasks WHERE tasks.item_id = '".encode(AS_DB,$item_id)."'";
+     $query = "SELECT * FROM ".$this->addDatabasePrefix("tasks")." WHERE ".$this->addDatabasePrefix("tasks").".item_id = '".encode(AS_DB,$item_id)."'";
      $result = $this->_db_connector->performQuery($query);
      if (!isset($result) or empty($result[0])) {
         include_once('functions/error_functions.php');trigger_error('Problems selecting one task from query: "'.$query.'"',E_USER_WARNING);
@@ -268,7 +268,7 @@ class cs_tasks_manager extends cs_manager {
     */
   function _update ($item) {
      parent::_update($item);
-     $query = 'UPDATE tasks SET '.
+     $query = 'UPDATE '.$this->addDatabasePrefix('tasks').' SET '.
               'modification_date="'.getCurrentDateTimeInMySQL().'",'.
               'title="'.encode(AS_DB,$item->getTitle()).'",'.
 #              'linked_item_id="'.$item->getLinkedItemID().'",'.
@@ -288,7 +288,7 @@ class cs_tasks_manager extends cs_manager {
     * @param object cs_item task_item the task
     */
   function _create ($item) {
-     $query = 'INSERT INTO items SET '.
+     $query = 'INSERT INTO '.$this->addDatabasePrefix('items').' SET '.
               'context_id="'.encode(AS_DB,$item->getContextID()).'",'.
               'modification_date="'.getCurrentDateTimeInMySQL().'",'.
               'type="task"';
@@ -312,7 +312,7 @@ class cs_tasks_manager extends cs_manager {
      $current_datetime = getCurrentDateTimeInMySQL();
      $current_user = $item->getCreatorItem();
      $linked_item = $item->getItem();
-     $query = 'INSERT INTO tasks SET '.
+     $query = 'INSERT INTO '.$this->addDatabasePrefix('tasks').' SET '.
               'item_id="'.encode(AS_DB,$item->getItemID()).'",'.
               'context_id="'.encode(AS_DB,$item->getContextID()).'",'.
               'creator_id="'.encode(AS_DB,$current_user->getItemID()).'",'.
@@ -335,7 +335,7 @@ class cs_tasks_manager extends cs_manager {
    */
   function getTaskListForItem($item) {
      $item_id = $item->getItemID();
-     $query = 'SELECT * FROM tasks WHERE linked_item_id="'.encode(AS_DB,$item_id).'"';
+     $query = 'SELECT * FROM '.$this->addDatabasePrefix('tasks').' WHERE linked_item_id="'.encode(AS_DB,$item_id).'"';
      $result = $this->_db_connector->performQuery($query);
      $task_list = new cs_list();
      foreach ($result as $query_result) {
@@ -357,7 +357,7 @@ class cs_tasks_manager extends cs_manager {
      $current_user = $this->_environment->getCurrentUserItem();
      $user_id = $current_user->getItemID();
      unset($current_user);
-     $query = 'UPDATE tasks SET '.
+     $query = 'UPDATE '.$this->addDatabasePrefix('tasks').' SET '.
               'deletion_date="'.$current_datetime.'",'.
               'deleter_id="'.encode(AS_DB,$user_id).'",'.
               'status="CLOSED"'.

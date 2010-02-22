@@ -63,9 +63,9 @@ class cs_log_ads_manager extends cs_manager {
 
    function _performQuery ( $mode = 'select') {
       if ($mode == 'select') {
-         $query = 'SELECT * FROM '.$this->_table_name;
+         $query = 'SELECT * FROM '.$this->addDatabasePrefix($this->_table_name);
       } elseif ($mode == 'delete') {
-         $query = 'DELETE FROM '.$this->_table_name;
+         $query = 'DELETE FROM '.$this->addDatabasePrefix($this->_table_name);
       } else {
          include_once('functions/error_functions.php');trigger_error('lost perform mode',E_USER_ERROR);
       }
@@ -90,7 +90,7 @@ class cs_log_ads_manager extends cs_manager {
          trigger_error('need array',E_USER_ERROR);
          $success = false;
       } else {
-         $query = 'INSERT INTO '.$this->_table_name.' SET '.
+         $query = 'INSERT INTO '.$this->addDatabasePrefix($this->_table_name).' SET '.
                   'cid="'.encode(AS_DB,$data['cid']).'", '.
                   'aim="'.encode(AS_DB,$data['aim']).'", '.
                   'timestamp=NOW()';

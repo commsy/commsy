@@ -109,7 +109,7 @@ class cs_group_manager extends cs_labels_manager {
    }
 
    private function _renameGroupall ($context_id) {
-      $query  = 'UPDATE '.$this->_db_table.' SET name="ALL" WHERE type="group" and (name="Alle Mitglieder" or name="All members") and context_id="'.$context_id.'";';
+      $query  = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET name="ALL" WHERE type="group" and (name="Alle Mitglieder" or name="All members") and context_id="'.$context_id.'";';
       $result = $this->_db_connector->performQuery($query);
       $this->resetCache();
    }

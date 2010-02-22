@@ -112,31 +112,31 @@ class cs_item_manager extends cs_manager {
 
    function _performQuery($mode = 'select') {
      if ($mode == 'count') {
-        $query = 'SELECT count(items.item_id) AS count';
+        $query = 'SELECT count('.$this->addDatabasePrefix('items').'.item_id) AS count';
      } elseif ($mode == 'id_array') {
-         $query = 'SELECT items.item_id';
+         $query = 'SELECT '.$this->addDatabasePrefix('items').'.item_id';
      } else {
-        $query = 'SELECT items.*,label.type AS subtype';
+        $query = 'SELECT '.$this->addDatabasePrefix('items').'.*,label.type AS subtype';
      }
-     $query .= ' FROM items';
-     $query .= ' LEFT JOIN labels AS label ON items.item_id=label.item_id AND (label.type="institution" OR label.type="topic" OR label.type="group")';
+     $query .= ' FROM '.$this->addDatabasePrefix('items');
+     $query .= ' LEFT JOIN '.$this->addDatabasePrefix('labels').' AS label ON '.$this->addDatabasePrefix('items').'.item_id=label.item_id AND (label.type="institution" OR label.type="topic" OR label.type="group")';
 
      if ( isset($this->_user_userid_limit) and !empty($this->_user_userid_limit)
           and isset($this->_user_authsourceid_limit) and !empty($this->_user_authsourceid_limit)
         ) {
-        $query .= ' INNER JOIN user ON user.context_id='.$this->_db_table.'.context_id';
+        $query .= ' INNER JOIN '.$this->addDatabasePrefix('user').' ON '.$this->addDatabasePrefix('user').'.context_id='.$this->addDatabasePrefix($this->_db_table).'.context_id';
      }
 
      $query .= ' WHERE 1';
 
 /***Activating Code***/
       if (!$this->_show_not_activated_entries_limit) {
-         $query .= ' AND (items.modification_date IS NULL OR items.modification_date <= "'.getCurrentDateTimeInMySQL().'")';
+         $query .= ' AND ('.$this->addDatabasePrefix('items').'.modification_date IS NULL OR '.$this->addDatabasePrefix('items').'.modification_date <= "'.getCurrentDateTimeInMySQL().'")';
       }
 /*********************/
 
      if ( isset($this->_existence_limit) ) {
-         $query .= ' AND items.modification_date >= DATE_SUB(CURRENT_DATE,interval '.encode(AS_DB,$this->_existence_limit).' day)';
+         $query .= ' AND '.$this->addDatabasePrefix('items').'.modification_date >= DATE_SUB(CURRENT_DATE,interval '.encode(AS_DB,$this->_existence_limit).' day)';
      }
      if ( isset($this->_type_array_limit) and !empty($this->_type_array_limit) ) {
         $query .= ' AND (';
@@ -147,17 +147,17 @@ class cs_item_manager extends cs_manager {
            } else {
               $query .= ' OR';
            }
-           $query .=' items.type = "'.encode(AS_DB,$type).'"';
+           $query .=' '.$this->addDatabasePrefix('items').'.type = "'.encode(AS_DB,$type).'"';
         }
         $query .= ' )';
      }
      if (isset($this->_room_limit) and empty($this->_room_array_limit)) {
-        $query .= ' AND items.context_id = "'.encode(AS_DB,$this->_room_limit).'"';
+        $query .= ' AND '.$this->addDatabasePrefix('items').'.context_id = "'.encode(AS_DB,$this->_room_limit).'"';
      } elseif(empty($this->_room_array_limit)) {
-        $query .= ' AND items.context_id = "'.encode(AS_DB,$this->_environment->getCurrentContextID()).'"';
+        $query .= ' AND '.$this->addDatabasePrefix('items').'.context_id = "'.encode(AS_DB,$this->_environment->getCurrentContextID()).'"';
      }
      if (isset($this->_id_array_limit) and !empty($this->_id_array_limit)) {
-        $query .= ' AND items.item_id IN ('.implode(", ",encode(AS_DB,$this->_id_array_limit)).')';
+        $query .= ' AND '.$this->addDatabasePrefix('items').'.item_id IN ('.implode(", ",encode(AS_DB,$this->_id_array_limit)).')';
      }
      if ( isset($this->_type_limit) or isset ($this->_label_limit)){
      $query .= ' AND (';
@@ -169,7 +169,7 @@ class cs_item_manager extends cs_manager {
            }else{
               $query .= ' OR';
            }
-           $query .=' items.type = "'.encode(AS_DB,$type).'"';
+           $query .=' '.$this->addDatabasePrefix('items').'.type = "'.encode(AS_DB,$type).'"';
         }
      }
      if (isset ($this->_label_limit)){
@@ -189,27 +189,27 @@ class cs_item_manager extends cs_manager {
      $query .=')';
      }
      if ($this->_delete_limit == true) {
-        $query .= ' AND items.deleter_id IS NULL';
-        $query .= ' AND items.deletion_date IS NULL';
+        $query .= ' AND '.$this->addDatabasePrefix('items').'.deleter_id IS NULL';
+        $query .= ' AND '.$this->addDatabasePrefix('items').'.deletion_date IS NULL';
      }
      if (isset($this->_age_limit)) {
-        $query .= ' AND items.modification_date > DATE_SUB(CURRENT_DATE,interval '.encode(AS_DB,$this->_age_limit).' day)';
+        $query .= ' AND '.$this->addDatabasePrefix('items').'.modification_date > DATE_SUB(CURRENT_DATE,interval '.encode(AS_DB,$this->_age_limit).' day)';
      }
 
      if ( isset($this->_user_userid_limit) and !empty($this->_user_userid_limit)
           and isset($this->_user_authsourceid_limit) and !empty($this->_user_authsourceid_limit)
         ) {
-        $query .= ' AND user.user_id="'.encode(AS_DB,$this->_user_userid_limit).'"';
-        $query .= ' AND user.auth_source="'.encode(AS_DB,$this->_user_authsourceid_limit).'"';
+        $query .= ' AND '.$this->addDatabasePrefix('user').'.user_id="'.encode(AS_DB,$this->_user_userid_limit).'"';
+        $query .= ' AND '.$this->addDatabasePrefix('user').'.auth_source="'.encode(AS_DB,$this->_user_authsourceid_limit).'"';
         if ( isset($this->_user_sincelastlogin_limit) and $this->_user_sincelastlogin_limit ) {
-           $query .= ' AND user.lastlogin < '.$this->_db_table.'.modification_date';
+           $query .= ' AND '.$this->addDatabasePrefix('user').'.lastlogin < '.$this->addDatabasePrefix($this->_db_table).'.modification_date';
         }
      }
      //context array limit
      if( !empty($this->_room_array_limit)) {
-         $query .= ' AND '.$this->_db_table.'.context_id IN ('.implode(", ",encode(AS_DB,$this->_room_array_limit)).')';
+         $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.context_id IN ('.implode(", ",encode(AS_DB,$this->_room_array_limit)).')';
       }
-        $query .= ' ORDER BY items.modification_date DESC';
+        $query .= ' ORDER BY '.$this->addDatabasePrefix('items').'.modification_date DESC';
       if (!isset($this->_id_array_limit)) {
          if ($mode == 'select' and !(isset($this->_user_sincelastlogin_limit) and $this->_user_sincelastlogin_limit)) {
             $query .= ' LIMIT ';
@@ -236,20 +236,20 @@ class cs_item_manager extends cs_manager {
 
    function getAllUsedRubricsOfRoomList($room_ids){
         $rs = array();
-        $query = 'SELECT DISTINCT items.context_id, items.type, label.type AS subtype';
-        $query .= ' FROM items';
-        $query .= ' LEFT JOIN labels AS label ON items.item_id=label.item_id AND (label.type="institution" OR label.type="topic" OR label.type="group")';
+        $query = 'SELECT DISTINCT '.$this->addDatabasePrefix('items').'.context_id, '.$this->addDatabasePrefix('items').'.type, label.type AS subtype';
+        $query .= ' FROM '.$this->addDatabasePrefix('items');
+        $query .= ' LEFT JOIN '.$this->addDatabasePrefix('labels').' AS label ON '.$this->addDatabasePrefix('items').'.item_id=label.item_id AND (label.type="institution" OR label.type="topic" OR label.type="group")';
         $query .= ' WHERE 1';
-        $query .= ' AND items.context_id IN ('.implode(",",encode(AS_DB,$room_ids)).')';
-        $query .= ' AND items.deleter_id IS NULL';
-        $query .= ' AND items.deletion_date IS NULL';
-        $query .= ' AND items.type != "annotation"';
-        $query .= ' AND items.type != "link_item"';
-        $query .= ' AND items.type != "task"';
+        $query .= ' AND '.$this->addDatabasePrefix('items').'.context_id IN ('.implode(",",encode(AS_DB,$room_ids)).')';
+        $query .= ' AND '.$this->addDatabasePrefix('items').'.deleter_id IS NULL';
+        $query .= ' AND '.$this->addDatabasePrefix('items').'.deletion_date IS NULL';
+        $query .= ' AND '.$this->addDatabasePrefix('items').'.type != "annotation"';
+        $query .= ' AND '.$this->addDatabasePrefix('items').'.type != "link_item"';
+        $query .= ' AND '.$this->addDatabasePrefix('items').'.type != "task"';
         if (isset($this->_age_limit)) {
-           $query .= ' AND items.modification_date > DATE_SUB(CURRENT_DATE,interval '.encode(AS_DB,$this->_age_limit).' day)';
+           $query .= ' AND '.$this->addDatabasePrefix('items').'.modification_date > DATE_SUB(CURRENT_DATE,interval '.encode(AS_DB,$this->_age_limit).' day)';
         }
-        $query .= ' ORDER BY items.context_id DESC';
+        $query .= ' ORDER BY '.$this->addDatabasePrefix('items').'.context_id DESC';
         // perform query
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
@@ -262,17 +262,17 @@ class cs_item_manager extends cs_manager {
 
    function getAllNewEntriesOfRoomList($room_ids){
         $rs = array();
-        $query = 'SELECT DISTINCT items.item_id';
-        $query .= ' FROM items';
+        $query = 'SELECT DISTINCT '.$this->addDatabasePrefix('items').'.item_id';
+        $query .= ' FROM '.$this->addDatabasePrefix('items');
         $query .= ' WHERE 1';
-        $query .= ' AND items.context_id IN ('.implode(",",encode(AS_DB,$room_ids)).')';
-        $query .= ' AND items.deleter_id IS NULL';
-        $query .= ' AND items.deletion_date IS NULL';
-        $query .= ' AND items.type != "annotation"';
-        $query .= ' AND items.type != "link_item"';
-        $query .= ' AND items.type != "task"';
+        $query .= ' AND '.$this->addDatabasePrefix('items').'.context_id IN ('.implode(",",encode(AS_DB,$room_ids)).')';
+        $query .= ' AND '.$this->addDatabasePrefix('items').'.deleter_id IS NULL';
+        $query .= ' AND '.$this->addDatabasePrefix('items').'.deletion_date IS NULL';
+        $query .= ' AND '.$this->addDatabasePrefix('items').'.type != "annotation"';
+        $query .= ' AND '.$this->addDatabasePrefix('items').'.type != "link_item"';
+        $query .= ' AND '.$this->addDatabasePrefix('items').'.type != "task"';
         if (isset($this->_age_limit)) {
-           $query .= ' AND items.modification_date > DATE_SUB(CURRENT_DATE,interval '.encode(AS_DB,$this->_age_limit).' day)';
+           $query .= ' AND '.$this->addDatabasePrefix('items').'.modification_date > DATE_SUB(CURRENT_DATE,interval '.encode(AS_DB,$this->_age_limit).' day)';
         }
         // perform query
         $result = $this->_db_connector->performQuery($query);
@@ -288,24 +288,24 @@ class cs_item_manager extends cs_manager {
 
    function getAllNewEntriesOfHomeView($room_id){
         $rs = array();
-        $query = 'SELECT DISTINCT items.item_id, items.type, label.type AS subtype';
-        $query .= ' FROM items';
-        $query .= ' LEFT JOIN labels AS label ON items.item_id=label.item_id AND (label.type="institution" OR label.type="topic" OR label.type="group")';
+        $query = 'SELECT DISTINCT '.$this->addDatabasePrefix('items').'.item_id, '.$this->addDatabasePrefix('items').'.type, label.type AS subtype';
+        $query .= ' FROM '.$this->addDatabasePrefix('items');
+        $query .= ' LEFT JOIN '.$this->addDatabasePrefix('labels').' AS label ON '.$this->addDatabasePrefix('items').'.item_id=label.item_id AND (label.type="institution" OR label.type="topic" OR label.type="group")';
         $query .= ' WHERE 1';
-        $query .= ' AND items.context_id ="'.encode(AS_DB,$room_id).'"';
-        $query .= ' AND items.deleter_id IS NULL';
-        $query .= ' AND items.deletion_date IS NULL';
-        $query .= ' AND items.type != "annotation"';
-        $query .= ' AND items.type != "discarticle"';
-        $query .= ' AND items.type != "section"';
-        $query .= ' AND items.type != "link_item"';
+        $query .= ' AND '.$this->addDatabasePrefix('items').'.context_id ="'.encode(AS_DB,$room_id).'"';
+        $query .= ' AND '.$this->addDatabasePrefix('items').'.deleter_id IS NULL';
+        $query .= ' AND '.$this->addDatabasePrefix('items').'.deletion_date IS NULL';
+        $query .= ' AND '.$this->addDatabasePrefix('items').'.type != "annotation"';
+        $query .= ' AND '.$this->addDatabasePrefix('items').'.type != "discarticle"';
+        $query .= ' AND '.$this->addDatabasePrefix('items').'.type != "section"';
+        $query .= ' AND '.$this->addDatabasePrefix('items').'.type != "link_item"';
         if (isset($this->_age_limit)){
-           $query .= ' AND items.type != "announcement"';
-           $query .= ' AND items.type != "date"';
+           $query .= ' AND '.$this->addDatabasePrefix('items').'.type != "announcement"';
+           $query .= ' AND '.$this->addDatabasePrefix('items').'.type != "date"';
         }
-        $query .= ' AND items.type != "task"';
+        $query .= ' AND '.$this->addDatabasePrefix('items').'.type != "task"';
         if (isset($this->_age_limit)) {
-           $query .= ' AND items.modification_date > DATE_SUB(CURRENT_DATE,interval '.encode(AS_DB,$this->_age_limit).' day)';
+           $query .= ' AND '.$this->addDatabasePrefix('items').'.modification_date > DATE_SUB(CURRENT_DATE,interval '.encode(AS_DB,$this->_age_limit).' day)';
         }
         // perform query
         $result = $this->_db_connector->performQuery($query);
@@ -342,17 +342,17 @@ class cs_item_manager extends cs_manager {
 
 
    function getCountExistingItemsOfUser ($user_id) {
-      $query = 'SELECT count(items.item_id) AS count';
-      $query .= ' FROM items';
-      $query .= ' INNER JOIN link_modifier_item AS l1 ON items.item_id=l1.item_id AND l1.modifier_id="'.encode(AS_DB,$user_id).'"';
+      $query = 'SELECT count('.$this->addDatabasePrefix('items').'.item_id) AS count';
+      $query .= ' FROM '.$this->addDatabasePrefix('items');
+      $query .= ' INNER JOIN '.$this->addDatabasePrefix('link_modifier_item').' AS l1 ON '.$this->addDatabasePrefix('items').'.item_id=l1.item_id AND l1.modifier_id="'.encode(AS_DB,$user_id).'"';
       $query .= ' WHERE 1';
 
       if (isset($this->_room_limit)) {
-         $query .= ' AND items.context_id = "'.encode(AS_DB,$this->_room_limit).'"';
+         $query .= ' AND '.$this->addDatabasePrefix('items').'.context_id = "'.encode(AS_DB,$this->_room_limit).'"';
       } else {
-         $query .= ' AND items.context_id = "'.encode(AS_DB,$this->_environment->getCurrentContextID()).'"';
+         $query .= ' AND '.$this->addDatabasePrefix('items').'.context_id = "'.encode(AS_DB,$this->_environment->getCurrentContextID()).'"';
       }
-      $query .= ' AND items.deleter_id IS NULL';
+      $query .= ' AND '.$this->addDatabasePrefix('items').'.deleter_id IS NULL';
 
       // perform query
       $result = $this->_db_connector->performQuery($query);
@@ -371,8 +371,8 @@ class cs_item_manager extends cs_manager {
     */
   function getItemType($iid) {
       $type = "";
-      $query = 'SELECT items.type';
-      $query .= ' FROM items';
+      $query = 'SELECT '.$this->addDatabasePrefix('items').'.type';
+      $query .= ' FROM '.$this->addDatabasePrefix('items');
       $query .= ' WHERE item_id = "'.encode(AS_DB,$iid).'"';
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) ) {
@@ -408,7 +408,7 @@ class cs_item_manager extends cs_manager {
       $retour = NULL;
       if ( !isset($this->_cache_object[$iid]) ) {
          $query = 'SELECT *';
-         $query .= ' FROM items';
+         $query .= ' FROM '.$this->addDatabasePrefix('items');
          $query .= ' WHERE item_id="'.$iid.'"';
          $result = $this->_db_connector->performQuery($query);
          if ( isset($result) and !empty($result) ) {
@@ -437,7 +437,7 @@ class cs_item_manager extends cs_manager {
 
    public function deleteSpecialItems ($context_id, $type) {
       $current_user = $this->_environment->getCurrentUserItem();
-      $query = 'UPDATE '.$this->_db_table.' SET deleter_id='.encode(AS_DB,$current_user->getItemID()).', deletion_date=NOW() WHERE context_id='.encode(AS_DB,$context_id).' AND type="'.encode(AS_DB,$type).'"';
+      $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET deleter_id='.encode(AS_DB,$current_user->getItemID()).', deletion_date=NOW() WHERE context_id='.encode(AS_DB,$context_id).' AND type="'.encode(AS_DB,$type).'"';
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) or !$result ) {
          include_once('functions/error_functions.php');
@@ -448,7 +448,7 @@ class cs_item_manager extends cs_manager {
    function deleteReallyOlderThan ($days) {
       $retour = false;
       $timestamp = getCurrentDateTimeMinusDaysInMySQL($days);
-      $query = 'DELETE FROM '.$this->_db_table.' WHERE deletion_date IS NOT NULL and deletion_date < "'.$timestamp.'" AND type != "'.CS_DISCARTICLE_TYPE.'" AND type != "'.CS_USER_TYPE.'";'; // user und discarticle werden noch gebraucht
+      $query = 'DELETE FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE deletion_date IS NOT NULL and deletion_date < "'.$timestamp.'" AND type != "'.CS_DISCARTICLE_TYPE.'" AND type != "'.CS_USER_TYPE.'";'; // user und discarticle werden noch gebraucht
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) or !$result ) {
          include_once('functions/error_functions.php');

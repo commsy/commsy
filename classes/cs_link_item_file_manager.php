@@ -67,7 +67,7 @@ class cs_link_item_file_manager extends cs_link_father_manager {
 
       if ( !empty($file_id_array) ) {
          $query  = '';
-         $query .= 'SELECT * FROM '.$this->_db_table.' WHERE deleter_id IS NULL AND deletion_date IS NULL';
+         $query .= 'SELECT * FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE deleter_id IS NULL AND deletion_date IS NULL';
          $query .= ' AND file_id IN ('.implode(',',encode(AS_DB,$file_id_array)).')';
          $result = $this->_db_connector->performQuery($query);
          if ( !isset($result) ) {
@@ -76,7 +76,7 @@ class cs_link_item_file_manager extends cs_link_father_manager {
          } else {
             $current_data_array = array();
 
-            $sql  = 'SELECT item_iid,file_id FROM '.$this->_db_table.' WHERE 1';
+            $sql  = 'SELECT item_iid,file_id FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE 1';
             $sql .= ' AND file_id IN ('.implode(',',encode(AS_DB,$file_id_array2)).')';
             $sql .= ' AND deleter_id IS NULL AND deletion_date IS NULL;';
             $sql_result = $this->_db_connector->performQuery($sql);
@@ -97,7 +97,7 @@ class cs_link_item_file_manager extends cs_link_father_manager {
 
                if ( $do_it ) {
                   $insert_query  = '';
-                  $insert_query .= 'INSERT INTO '.$this->_db_table.' SET';
+                  $insert_query .= 'INSERT INTO '.$this->addDatabasePrefix($this->_db_table).' SET';
                   $first = true;
                   foreach ($query_result as $key => $value) {
                      $value = encode(FROM_DB,$value);
@@ -147,12 +147,12 @@ class cs_link_item_file_manager extends cs_link_father_manager {
    }
 
    function _performQuery () {
-      $query  = 'SELECT '.$this->_db_table.'.*';
-      $query .= ' FROM '.$this->_db_table;
+      $query  = 'SELECT '.$this->addDatabasePrefix($this->_db_table).'.*';
+      $query .= ' FROM '.$this->addDatabasePrefix($this->_db_table);
 
       // restrict context_limit
       if (isset($this->_context_limit)) {
-         $query .= ' INNER JOIN files AS f ON f.files_id='.$this->_db_table.'.file_id';
+         $query .= ' INNER JOIN '.$this->addDatabasePrefix('files').' AS f ON f.files_id='.$this->addDatabasePrefix($this->_db_table).'.file_id';
       }
 
       $query .= ' WHERE 1';
@@ -161,7 +161,7 @@ class cs_link_item_file_manager extends cs_link_father_manager {
          $query .= ' AND f.context_id = "'.encode(AS_DB,$this->_context_limit).'"';
       }
       if (isset($this->_limit_file_id)) {
-         $query .= ' AND '.$this->_db_table.'.file_id = "'.encode(AS_DB,$this->_limit_file_id).'"';
+         $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.file_id = "'.encode(AS_DB,$this->_limit_file_id).'"';
       }
 
       // perform query
@@ -181,7 +181,7 @@ class cs_link_item_file_manager extends cs_link_father_manager {
     * @param integer version_id    version id of the item
     */
   function deleteByItem ($item_id, $version_id=NULL) {
-     $query = 'UPDATE '.$this->_db_table.' SET '.
+     $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET '.
               'deletion_date="'.getCurrentDateTimeInMySQL().'",'.
               'deleter_id="'.encode(AS_DB,$this->_current_user->getItemID()).'"'.
               ' WHERE item_iid="'.encode(AS_DB,$item_id).'"';
@@ -200,7 +200,7 @@ class cs_link_item_file_manager extends cs_link_father_manager {
     * @param integer file_id       id of the file item
     */
   function deleteByFileID ($file_id) {
-     $query = 'UPDATE '.$this->_db_table.' SET '.
+     $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET '.
               'deletion_date="'.getCurrentDateTimeInMySQL().'",'.
               'deleter_id="'.encode(AS_DB,$this->_current_user->getItemID()).'"'.
               ' WHERE file_id="'.encode(AS_DB,$file_id).'";';
@@ -212,7 +212,7 @@ class cs_link_item_file_manager extends cs_link_father_manager {
   }
 
    function deleteByFileReally ($file_id) {
-      $query = 'DELETE FROM '.$this->_db_table.
+      $query = 'DELETE FROM '.$this->addDatabasePrefix($this->_db_table).
                ' WHERE file_id="'.encode(AS_DB,$file_id).'"';
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) ) {
@@ -248,6 +248,78 @@ class cs_link_item_file_manager extends cs_link_father_manager {
    function getNewItem () {
       include_once('classes/cs_link_item_file.php');
       return new cs_link_item_file($this->_environment);
+   }
+   
+   function moveFromDbToBackup($context_id){
+   	$id_array = array();
+      $item_manager = $this->_environment->getItemManager();
+      $item_manager->setContextLimit($context_id);
+      $item_manager->select();
+      $item_list = $item_manager->get();
+      $temp_item = $item_list->getFirst();
+      while($temp_item){
+         $id_array[] = $temp_item->getItemID();
+         $temp_item = $item_list->getNext();
+      }
+
+      global $c_db_backup_prefix;
+      $retour = false;
+      if(!empty($id_array)){
+	      if ( !empty($context_id) ) {
+	         $query = 'INSERT INTO '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$this->_db_table).' SELECT * FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).'.item_iid IN ('.implode(",", $id_array).')';
+	         $result = $this->_db_connector->performQuery($query);
+	         if ( !isset($result) ) {
+	            include_once('functions/error_functions.php');
+	            trigger_error('Problems while copying to backup-table.',E_USER_WARNING);
+	         } else {
+	            $query = 'DELETE FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).'.item_iid IN ('.implode(",", $id_array).')';
+	            $result = $this->_db_connector->performQuery($query);
+	            if ( !isset($result) ) {
+	               include_once('functions/error_functions.php');
+	               trigger_error('Problems deleting after move to backup-table.',E_USER_WARNING);
+	            } elseif ( !empty($result[0]) ) {
+	               $retour = true;
+	            }
+	         }
+	      }
+      }
+      return $retour;
+   }
+   
+   function moveFromBackupToDb($context_id){
+      $id_array = array();
+      $zzz_item_manager = $this->_environment->getZzzItemManager();
+      $zzz_item_manager->setContextLimit($context_id);
+      $zzz_item_manager->select();
+      $item_list = $zzz_item_manager->get();
+      $temp_item = $item_list->getFirst();
+      while($temp_item){
+         $id_array[] = $temp_item->getItemID();
+         $temp_item = $item_list->getNext();
+      }
+
+      global $c_db_backup_prefix;
+      $retour = false;
+      if(!empty($id_array)){
+         if ( !empty($context_id) ) {
+            $query = 'INSERT INTO '.$this->addDatabasePrefix($this->_db_table).' SELECT * FROM '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$this->_db_table).' WHERE '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$this->_db_table).'.item_iid IN ('.implode(",", $id_array).')';
+            $result = $this->_db_connector->performQuery($query);
+            if ( !isset($result) ) {
+               include_once('functions/error_functions.php');
+               trigger_error('Problems while copying to backup-table.',E_USER_WARNING);
+            } else {
+               $query = 'DELETE FROM '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$this->_db_table).' WHERE '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$this->_db_table).'.item_iid IN ('.implode(",", $id_array).')';
+               $result = $this->_db_connector->performQuery($query);
+               if ( !isset($result) ) {
+                  include_once('functions/error_functions.php');
+                  trigger_error('Problems deleting after move to backup-table.',E_USER_WARNING);
+               } elseif ( !empty($result[0]) ) {
+                  $retour = true;
+               }
+            }
+         }
+      }
+      return $retour;
    }
 }
 ?>

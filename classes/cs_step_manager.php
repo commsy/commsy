@@ -167,46 +167,46 @@ class cs_step_manager extends cs_manager {
 
    function _performQuery($mode = 'select') {
      if ($mode == 'count') {
-        $query = 'SELECT count(step.item_id) AS count';
+        $query = 'SELECT count('.$this->addDatabasePrefix('step').'.item_id) AS count';
      } elseif ($mode == 'id_array') {
-         $query = 'SELECT step.item_id';
+         $query = 'SELECT '.$this->addDatabasePrefix('step').'.item_id';
      } else {
-        $query = 'SELECT step.*';
+        $query = 'SELECT '.$this->addDatabasePrefix('step').'.*';
      }
-     $query .= ' FROM step';
+     $query .= ' FROM '.$this->addDatabasePrefix('step');
 
      $query .= ' WHERE 1';
 
      // fifth, insert limits into the select statement
      if ( isset($this->_todo_item_id_limit) and !empty($this->_todo_item_id_limit) ) {
-        $query .= ' AND step.todo_item_id='.encode(AS_DB,$this->_todo_item_id_limit);
+        $query .= ' AND '.$this->addDatabasePrefix('step').'.todo_item_id='.encode(AS_DB,$this->_todo_item_id_limit);
      }
      if (isset($this->_room_limit)) {
-        $query .= ' AND step.context_id = "'.encode(AS_DB,$this->_room_limit).'"';
+        $query .= ' AND '.$this->addDatabasePrefix('step').'.context_id = "'.encode(AS_DB,$this->_room_limit).'"';
      } else {
-        $query .= ' AND step.context_id = "'.encode(AS_DB,$this->_environment->getCurrentContextID()).'"';
+        $query .= ' AND '.$this->addDatabasePrefix('step').'.context_id = "'.encode(AS_DB,$this->_environment->getCurrentContextID()).'"';
      }
      if ($this->_delete_limit == true) {
-        $query .= ' AND step.deleter_id IS NULL';
+        $query .= ' AND '.$this->addDatabasePrefix('step').'.deleter_id IS NULL';
      }
      if (!empty($this->_id_array_limit)) {
-        $query .= ' AND step.item_id IN ('.implode(", ",encode(AS_DB,$this->_id_array_limit)).')';
+        $query .= ' AND '.$this->addDatabasePrefix('step').'.item_id IN ('.implode(", ",encode(AS_DB,$this->_id_array_limit)).')';
      }
       if ( isset($this->_existence_limit) ) {
-         $query .= ' AND step.creation_date >= DATE_SUB(CURRENT_DATE,interval '.encode(AS_DB,$this->_existence_limit).' day)';
+         $query .= ' AND '.$this->addDatabasePrefix('step').'.creation_date >= DATE_SUB(CURRENT_DATE,interval '.encode(AS_DB,$this->_existence_limit).' day)';
       }
       if ( isset($this->_age_limit) ) {
-         $query .= ' AND step.creation_date >= DATE_SUB(CURRENT_DATE,interval '.encode(AS_DB,$this->_age_limit).' day)';
+         $query .= ' AND '.$this->addDatabasePrefix('step').'.creation_date >= DATE_SUB(CURRENT_DATE,interval '.encode(AS_DB,$this->_age_limit).' day)';
       }
               // restrict sql-statement by search limit, create wheres
      if (isset($this->_search_limit) AND !empty($this->_search_limit)) {
         $query .= ' AND (';
 
         // todo item
-        $query .= ' UPPER(step.title) LIKE BINARY "%'.encode(AS_DB,$this->_search_limit).'%"';
-        $query .= ' OR UPPER(step.description) LIKE BINARY "%'.encode(AS_DB,$this->_search_limit).'%"';
+        $query .= ' UPPER('.$this->addDatabasePrefix('step').'.title) LIKE BINARY "%'.encode(AS_DB,$this->_search_limit).'%"';
+        $query .= ' OR UPPER('.$this->addDatabasePrefix('step').'.description) LIKE BINARY "%'.encode(AS_DB,$this->_search_limit).'%"';
         if ( $this->_search_limit != ':' and $this->_search_limit != '-' ) {
-           $query .= ' OR UPPER(step.modification_date) LIKE BINARY "%'.encode(AS_DB,$this->_search_limit).'%"';
+           $query .= ' OR UPPER('.$this->addDatabasePrefix('step').'.modification_date) LIKE BINARY "%'.encode(AS_DB,$this->_search_limit).'%"';
         }
 
         // creation date - modification date language problem (TBD)
@@ -225,9 +225,9 @@ class cs_step_manager extends cs_manager {
       }
 
      if (isset($this->_search_limit) AND !empty($this->_search_limit)) {
-        $query .= ' GROUP BY step.item_id';
+        $query .= ' GROUP BY '.$this->addDatabasePrefix('step').'.item_id';
      }
-     $query .= ' ORDER BY step.item_id ASC, step.modification_date DESC, step.title DESC';
+     $query .= ' ORDER BY '.$this->addDatabasePrefix('step').'.item_id ASC, '.$this->addDatabasePrefix('step').'.modification_date DESC, '.$this->addDatabasePrefix('step').'.title DESC';
 
       if ($mode == 'select') {
          if (isset($this->_interval_limit) and isset($this->_from_limit)) {
@@ -267,7 +267,7 @@ class cs_step_manager extends cs_manager {
         if ( !empty($this->_cache_object[$item_id]) ) {
              $step = $this->_cache_object[$item_id];
         } else {
-           $query = "SELECT * FROM step WHERE step.item_id = '".encode(AS_DB,$item_id)."'";
+           $query = "SELECT * FROM ".$this->addDatabasePrefix("step")." WHERE ".$this->addDatabasePrefix("step").".item_id = '".encode(AS_DB,$item_id)."'";
            $result = $this->_db_connector->performQuery($query);
            if (!isset($result) or empty($result[0])) {
               include_once('functions/error_functions.php');
@@ -291,8 +291,8 @@ class cs_step_manager extends cs_manager {
          return new cs_step_list();
       } else {
          $step = NULL;
-         $query = "SELECT * FROM step WHERE step.item_id IN ('".implode("', '",encode(AS_DB,$id_array))."')";
-         $query .= " ORDER BY step.item_id";
+         $query = "SELECT * FROM ".$this->addDatabasePrefix("step")." WHERE ".$this->addDatabasePrefix("step").".item_id IN ('".implode("', '",encode(AS_DB,$id_array))."')";
+         $query .= " ORDER BY ".$this->addDatabasePrefix("step").".item_id";
          $result = $this->_db_connector->performQuery($query);
          if (!isset($result)) {
             include_once('functions/error_functions.php');trigger_error('Problems selecting list of step items from query: "'.$query.'"',E_USER_WARNING);
@@ -318,9 +318,9 @@ class cs_step_manager extends cs_manager {
          return new cs_step_list();
       } else {
          $step = NULL;
-         $query = "SELECT * FROM step WHERE todo_item_id IN ('".implode("', '",encode(AS_DB,$id_array))."')";
-         $query .= " AND step.deleter_id IS NULL";
-         $query .= " AND step.deletion_date IS NULL";
+         $query = "SELECT * FROM ".$this->addDatabasePrefix("step")." WHERE todo_item_id IN ('".implode("', '",encode(AS_DB,$id_array))."')";
+         $query .= " AND ".$this->addDatabasePrefix("step").".deleter_id IS NULL";
+         $query .= " AND ".$this->addDatabasePrefix("step").".deletion_date IS NULL";
          $result = $this->_db_connector->performQuery($query);
          if (!isset($result)) {
             include_once('functions/error_functions.php');
@@ -358,7 +358,7 @@ class cs_step_manager extends cs_manager {
         }
         $modificator_item = $item->getModificatorItem();
 
-        $query = 'UPDATE step SET '.
+        $query = 'UPDATE '.$this->addDatabasePrefix('step').' SET '.
               $date_string.
               'title="'.encode(AS_DB,$item->getTitle()).'",'.
               'description="'.encode(AS_DB,$item->getDescription()).'",'.
@@ -383,7 +383,7 @@ class cs_step_manager extends cs_manager {
    * @param cs_step_item the step item for which an entry should be made
    */
   function _create ($item) {
-     $query = 'INSERT INTO items SET '.
+     $query = 'INSERT INTO '.$this->addDatabasePrefix('items').' SET '.
               'context_id="'.encode(AS_DB,$item->getContextID()).'",'.
               'modification_date="'.getCurrentDateTimeInMySQL().'",'.
               'type="step"';
@@ -406,7 +406,7 @@ class cs_step_manager extends cs_manager {
     */
   function _newStep ($item) {
      $current_datetime = getCurrentDateTimeInMySQL();
-     $query = 'INSERT INTO step SET '.
+     $query = 'INSERT INTO '.$this->addDatabasePrefix('step').' SET '.
               'item_id="'.encode(AS_DB,$item->getItemID()).'",'.
               'context_id="'.encode(AS_DB,$item->getContextID()).'",'.
               'creator_id="'.encode(AS_DB,$item->getCreatorID()).'",'.
@@ -435,7 +435,7 @@ class cs_step_manager extends cs_manager {
       $current_datetime = getCurrentDateTimeInMySQL();
       $current_user = $this->_environment->getCurrentUserItem();
       $user_id = $current_user->getItemID();
-      $query = 'UPDATE step SET '.
+      $query = 'UPDATE '.$this->addDatabasePrefix('step').' SET '.
                'deletion_date="'.$current_datetime.'",'.
                'deleter_id="'.encode(AS_DB,$user_id).'"'.
                ' WHERE item_id="'.encode(AS_DB,$item_id).'"';
@@ -528,11 +528,11 @@ class cs_step_manager extends cs_manager {
 
    function deleteStepsOfUser($uid) {
       $current_datetime = getCurrentDateTimeInMySQL();
-      $query  = 'SELECT step.* FROM step WHERE step.creator_id = "'.encode(AS_DB,$uid).'"';
+      $query  = 'SELECT '.$this->addDatabasePrefix('step').'.* FROM '.$this->addDatabasePrefix('step').' WHERE '.$this->addDatabasePrefix('step').'.creator_id = "'.encode(AS_DB,$uid).'"';
       $result = $this->_db_connector->performQuery($query);
       if ( !empty($result) ) {
          foreach ( $result as $rs ) {
-            $insert_query = 'UPDATE step SET';
+            $insert_query = 'UPDATE '.$this->addDatabasePrefix('step').' SET';
             $insert_query .= ' title = "'.encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_TITLE')).'",';
             $insert_query .= ' modification_date = "'.$current_datetime.'",';
             $insert_query .= ' description = "'.encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_DESCRIPTION')).'"';

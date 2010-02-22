@@ -109,7 +109,7 @@ class cs_ftsearch_manager extends cs_manager {
            and is_numeric($f_iid)
          ) {
          $data = NULL;
-         $query = "SELECT item_iid FROM item_link_file";
+         $query = "SELECT item_iid FROM ".$this->addDatabasePrefix("item_link_file");
          $query .= " WHERE file_id=" . encode(AS_DB,$f_iid);
          $query .= " AND deletion_date IS NULL";
 

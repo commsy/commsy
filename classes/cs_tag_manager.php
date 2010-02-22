@@ -276,68 +276,68 @@ class cs_tag_manager extends cs_manager {
     */
   function _performQuery ($mode = 'select') {
      if ($mode == 'count') {
-        $query = 'SELECT DISTINCT count('.$this->_db_table.'.item_id) as count';
+        $query = 'SELECT DISTINCT count('.$this->addDatabasePrefix($this->_db_table).'.item_id) as count';
      } else {
         if ($mode == 'id_array') {
-           $query = 'SELECT DISTINCT '.$this->_db_table.'.item_id';
+           $query = 'SELECT DISTINCT '.$this->addDatabasePrefix($this->_db_table).'.item_id';
         } else {
-           $query = 'SELECT DISTINCT '.$this->_db_table.'.*';
+           $query = 'SELECT DISTINCT '.$this->addDatabasePrefix($this->_db_table).'.*';
         }
      }
-     $query .= ' FROM '.$this->_db_table;
+     $query .= ' FROM '.$this->addDatabasePrefix($this->_db_table);
      $query .= ' WHERE 1';
 
       // insert limits into the select statement
       if( !empty($this->_id_array_limit) ) {
-         $query .= ' AND '.$this->_db_table.'.item_id IN ('.implode(", ",encode(AS_DB,$this->_id_array_limit)).')';
+         $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.item_id IN ('.implode(", ",encode(AS_DB,$this->_id_array_limit)).')';
       }
      if (isset($this->_room_limit)) {
-        $query .= ' AND '.$this->_db_table.'.context_id = "'.encode(AS_DB,$this->_room_limit).'"';
+        $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.context_id = "'.encode(AS_DB,$this->_room_limit).'"';
      }
      if ($this->_delete_limit) {
-        $query .= ' AND '.$this->_db_table.'.deleter_id IS NULL AND '.$this->_db_table.'.deletion_date IS NULL';
+        $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.deleter_id IS NULL AND '.$this->addDatabasePrefix($this->_db_table).'.deletion_date IS NULL';
      }
      if (isset($this->_title_limit)) {
-        $query .= ' AND '.$this->_db_table.'.title like "%'.encode(AS_DB,$this->_title_limit).'%"';
+        $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.title like "%'.encode(AS_DB,$this->_title_limit).'%"';
      }
      if (isset($this->_exact_title_limit)) {
-        $query .= ' AND '.$this->_db_table.'.title = "'.encode(AS_DB,$this->_exact_title_limit).'"';
+        $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.title = "'.encode(AS_DB,$this->_exact_title_limit).'"';
      }
      if (isset($this->_age_limit)) {
-        $query .= ' AND '.$this->_db_table.'.modification_date >= DATE_SUB(CURRENT_DATE,interval '.encode(AS_DB,$this->_age_limit).' day)';
+        $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.modification_date >= DATE_SUB(CURRENT_DATE,interval '.encode(AS_DB,$this->_age_limit).' day)';
      }
       if ( isset($this->_existence_limit) ) {
-         $query .= ' AND '.$this->_db_table.'.creation_date >= DATE_SUB(CURRENT_DATE,interval '.encode(AS_DB,$this->_existence_limit).' day)';
+         $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.creation_date >= DATE_SUB(CURRENT_DATE,interval '.encode(AS_DB,$this->_existence_limit).' day)';
       }
 
       // restrict sql-statement by search limit, create wheres
       if (isset($this->_search_array) AND !empty($this->_search_array)) {
          $query .= ' AND (';
          if ( !isset($this->_attribute_limit) || ('all' == $this->_attribute_limit) ) {
-            $field_array = array(''.$this->_db_table.'.title',''.$this->_db_table.'.modification_date');
+            $field_array = array(''.$this->addDatabasePrefix($this->_db_table).'.title',''.$this->addDatabasePrefix($this->_db_table).'.modification_date');
             $search_limit_query_code = $this->_generateSearchLimitCode($field_array);
             $query .= $search_limit_query_code;
          }
          $query .= ' )';
-         $query .= ' GROUP BY '.$this->_db_table.'.item_id';
+         $query .= ' GROUP BY '.$this->addDatabasePrefix($this->_db_table).'.item_id';
       }
 
      if ( isset($this->_sort_order) ) {
         if ( $this->_sort_order == 'title' ) {
-           $query .= ' ORDER BY '.$this->_db_table.'.title ASC';
+           $query .= ' ORDER BY '.$this->addDatabasePrefix($this->_db_table).'.title ASC';
         } elseif ( $this->_sort_order == 'title_rev' ) {
-           $query .= ' ORDER BY '.$this->_db_table.'.title DESC';
+           $query .= ' ORDER BY '.$this->addDatabasePrefix($this->_db_table).'.title DESC';
         }
      }
 
      elseif (isset($this->_order)) {
         if ($this->_order == 'date') {
-           $query .= ' ORDER BY '.$this->_db_table.'.modification_date DESC, '.$this->_db_table.'.title ASC';
+           $query .= ' ORDER BY '.$this->addDatabasePrefix($this->_db_table).'.modification_date DESC, '.$this->addDatabasePrefix($this->_db_table).'.title ASC';
         } else {
-           $query .= ' ORDER BY '.$this->_db_table.'.title, '.$this->_db_table.'.modification_date DESC';
+           $query .= ' ORDER BY '.$this->addDatabasePrefix($this->_db_table).'.title, '.$this->addDatabasePrefix($this->_db_table).'.modification_date DESC';
         }
      } else {
-        $query .= ' ORDER BY '.$this->_db_table.'.title, '.$this->_db_table.'.modification_date DESC';
+        $query .= ' ORDER BY '.$this->addDatabasePrefix($this->_db_table).'.title, '.$this->addDatabasePrefix($this->_db_table).'.modification_date DESC';
      }
      if ($mode == 'select') {
         if (isset($this->_interval_limit) and isset($this->_from_limit)) {
@@ -404,8 +404,8 @@ class cs_tag_manager extends cs_manager {
   function _getTag ($item_id) {
      $item = NULL;
      if ( !empty($item_id) ) {
-        $query = 'SELECT * FROM '.$this->_db_table;
-        $query .= ' WHERE '.$this->_db_table.'.item_id = "'.encode(AS_DB,$item_id).'"';
+        $query = 'SELECT * FROM '.$this->addDatabasePrefix($this->_db_table);
+        $query .= ' WHERE '.$this->addDatabasePrefix($this->_db_table).'.item_id = "'.encode(AS_DB,$item_id).'"';
         $result = $this->_db_connector->performQuery($query);
         if ( !isset($result) ) {
            include_once('functions/error_functions.php');
@@ -533,7 +533,7 @@ class cs_tag_manager extends cs_manager {
      $modificator = $item->getModificatorItem();
      $current_datetime = getCurrentDateTimeInMySQL();
 
-     $query = 'UPDATE '.$this->_db_table.' SET '.
+     $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET '.
               'modifier_id="'.encode(AS_DB,$modificator->getItemID()).'",'.
               'modification_date="'.$current_datetime.'",'.
               'title="'.encode(AS_DB,$item->getTitle()).'"'.
@@ -551,7 +551,7 @@ class cs_tag_manager extends cs_manager {
     * @param object cs_item tag_item the tag
     */
   function _create ($item) {
-     $query = 'INSERT INTO items SET '.
+     $query = 'INSERT INTO '.$this->addDatabasePrefix('items').' SET '.
               'context_id="'.encode(AS_DB,$item->getContextID()).'",'.
               'modification_date="'.getCurrentDateTimeInMySQL().'",'.
               'type="'.CS_TAG_TYPE.'"';
@@ -586,7 +586,7 @@ class cs_tag_manager extends cs_manager {
         $modificator_id = $this->_environment->getRootUserItemID();
      }
 
-     $query  = 'INSERT INTO '.$this->_db_table.' SET '.
+     $query  = 'INSERT INTO '.$this->addDatabasePrefix($this->_db_table).' SET '.
                'item_id="'.encode(AS_DB,$item->getItemID()).'",'.
                'context_id="'.encode(AS_DB,$item->getContextID()).'",'.
                'creator_id="'.encode(AS_DB,$user_id).'",'.
@@ -629,7 +629,7 @@ class cs_tag_manager extends cs_manager {
       $modificator = $item->getModificatorItem();
       $current_datetime = getCurrentDateTimeInMySQL();
 
-      $query = 'UPDATE '.$this->_db_table.' SET '.
+      $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET '.
                'context_id="'.encode(AS_DB,$item->getContextID()).'",'.
                'creator_id="'.encode(AS_DB,$user->getItemID()).'",'.
                'creation_date="'.$current_datetime.'",'.
@@ -648,7 +648,7 @@ class cs_tag_manager extends cs_manager {
      $current_datetime = getCurrentDateTimeInMySQL();
      $current_user = $this->_environment->getCurrentUserItem();
      $user_id = $current_user->getItemID();
-     $query = 'UPDATE '.$this->_db_table.' SET '.
+     $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET '.
               'deletion_date="'.$current_datetime.'",'.
               'deleter_id="'.encode(AS_DB,$user_id).'"'.
               ' WHERE item_id="'.encode(AS_DB,$item_id).'"';
@@ -689,11 +689,11 @@ class cs_tag_manager extends cs_manager {
    	  									'modification_date'	=>	'modification_date'));
    	  
       $current_datetime = getCurrentDateTimeInMySQL();
-      $query  = 'SELECT '.$this->_db_table.'.* FROM '.$this->_db_table.' WHERE '.$this->_db_table.'.creator_id = "'.encode(AS_DB,$uid).'"';
+      $query  = 'SELECT '.$this->addDatabasePrefix($this->_db_table).'.* FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).'.creator_id = "'.encode(AS_DB,$uid).'"';
       $result = $this->_db_connector->performQuery($query);
       if ( !empty($result) ) {
          foreach ( $result as $rs ) {
-            $insert_query = 'UPDATE '.$this->_db_table.' SET';
+            $insert_query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET';
             $insert_query .= ' modification_date = "'.$current_datetime.'",';
             $insert_query .= ' title = "'.encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_TITLE')).'"';
             $insert_query .= ' WHERE item_id = "'.encode(AS_DB,$rs['item_id']).'"';

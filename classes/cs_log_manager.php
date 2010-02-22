@@ -122,7 +122,7 @@ class cs_log_manager extends cs_manager {
       }
 
       $query  = '';
-      $query .= 'DELETE FROM log WHERE id IN ('.$id_string.')';
+      $query .= 'DELETE FROM '.$this->addDatabasePrefix('log').' WHERE id IN ('.$id_string.')';
 
       // perform query
       $result = $this->_db_connector->performQuery($query);
@@ -136,13 +136,13 @@ class cs_log_manager extends cs_manager {
 
    function _performQuery ( $mode = 'select') {
       if ($mode == 'select') {
-         $query = 'SELECT * FROM log';
+         $query = 'SELECT * FROM '.$this->addDatabasePrefix('log');
       } elseif ($mode == 'delete') {
-         $query = 'DELETE FROM log';
+         $query = 'DELETE FROM '.$this->addDatabasePrefix('log');
       } elseif ($mode == 'count') {
-         $query = 'SELECT count(id) AS count FROM log';
+         $query = 'SELECT count(id) AS count FROM '.$this->addDatabasePrefix('log');
       } elseif ($mode == 'count_user_distinction') {
-      	 $query = 'SELECT COUNT(DISTINCT uid) AS count FROM log';
+      	 $query = 'SELECT COUNT(DISTINCT uid) AS count FROM '.$this->addDatabasePrefix('log');
       } else {
          include_once('functions/error_functions.php');
          trigger_error('lost perform mode',E_USER_ERROR);
@@ -215,7 +215,7 @@ class cs_log_manager extends cs_manager {
       if(!isset($array['time'])){
          $array['time'] = '';
       }
-      $query = 'INSERT DELAYED INTO log SET '.
+      $query = 'INSERT DELAYED INTO '.$this->addDatabasePrefix('log').' SET '.
                'ip="'.      encode(AS_DB,$array['remote_addr']).'", '.
                'timestamp=NOW(), '.
                'agent="'.   encode(AS_DB,$array['user_agent']).'", '.
