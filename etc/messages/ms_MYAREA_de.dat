@@ -3,7 +3,6 @@ $message["MYAREA_ACCOUNT"]["de"] = "Kennung";
 $message["MYAREA_ACCOUNT_CHANGE"]["de"] = "Kennung ändern";
 $message["MYAREA_ACCOUNT_PROFIL"]["de"] = "Meine Profildaten";
 $message["MYAREA_AUTH_PASSWORD_SET"]["de"] = "Passwort ändern";
-$message["MYAREA_PROFILE_EDIT"]["de"] = "Profil bearbeiten";
 $message["MYAREA_CHANGE_MY_ACTUAL_ROOMS"]["de"] = "Raum wechseln:";
 $message["MYAREA_CLIPBOARD_HEADER"]["de"] = "Kopien";
 $message["MYAREA_CLIPBOARD_HEADER_1"]["de"] = "Kopie";
@@ -25,6 +24,7 @@ $message["MYAREA_MY_COPIES"]["de"] = "Meine Kopien";
 $message["MYAREA_MY_PROFILE"]["de"] = "Mein Profil";
 $message["MYAREA_PASSWORD"]["de"] = "Passwort";
 $message["MYAREA_PROFILE"]["de"] = "Profil";
+$message["MYAREA_PROFILE_EDIT"]["de"] = "Profil bearbeiten";
 $message["MYAREA_PROJECT_INDEX"]["de"] = "%_PROJECT_SUB_NOMPL_BIG";
 $message["MYAREA_USER_AUTH_SOURCE_SHORT"]["de"] = "Quelle";
 ?>

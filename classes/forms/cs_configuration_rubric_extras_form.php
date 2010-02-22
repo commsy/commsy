@@ -85,11 +85,17 @@ class cs_configuration_rubric_extras_form extends cs_rubric_form {
         // Terminoptionen
         $radio_values = array();
         $desc = $this->_translator->getMessage('CONFIGURATION_DATES_DESC');
-        $radio_values[0]['text'] = '<img src="images/dates_presentation_normal.gif" width="150px;" style=" border:1px solid black; vertical-align: middle;"/>';
+        #$radio_values[0]['text'] = '<img src="images/dates_presentation_normal.gif" width="150px;" style=" border:1px solid black; vertical-align: middle;"/>';
+        #$radio_values[0]['value'] = 'normal';
+        $radio_values[0]['text'] = '<div style="height:62px; width:150px; border:1px solid black; display:inline-block; background-image:url(images/dates_presentation_normal_150.gif); text-align:center; padding-top:30px;">'.$this->_translator->getMessage('CONFIGURATION_DATES_PRESENTATION_NORMAL').'</div>';
         $radio_values[0]['value'] = 'normal';
-        $radio_values[1]['text'] = '<img src="images/dates_presentation_calendar.gif" width="150px;" style=" border:1px solid black; vertical-align: middle;"/>';
+        #$radio_values[1]['text'] = '<img src="images/dates_presentation_calendar_150.gif" width="150px;" style=" border:1px solid black; vertical-align: middle;"/>';
+        #$radio_values[1]['value'] = 'calendar';
+        $radio_values[1]['text'] = '<div style="height:62px; width:150px; border:1px solid black; display:inline-block; background-image:url(images/dates_presentation_calendar_150.gif); text-align:center; padding-top:30px;">'.$this->_translator->getMessage('CONFIGURATION_DATES_PRESENTATION_CALENDAR').'</div>';
         $radio_values[1]['value'] = 'calendar';
-        $radio_values[2]['text'] = '<img src="images/dates_presentation_calendar_week.gif" width="150px;" style=" border:1px solid black; vertical-align: middle;"/>';
+        #$radio_values[2]['text'] = '<img src="images/dates_presentation_calendar_week_150.gif" width="150px;" style=" border:1px solid black; vertical-align: middle;"/>';
+        #$radio_values[2]['value'] = 'calendar_week';
+        $radio_values[2]['text'] = '<div style="height:62px; width:150px; border:1px solid black; display:inline-block; background-image:url(images/dates_presentation_calendar_week_150.gif); text-align:center; padding-top:30px;">'.$this->_translator->getMessage('CONFIGURATION_DATES_PRESENTATION_CALENDAR_WEEK').'</div>';
         $radio_values[2]['value'] = 'calendar_week';
         $this->_form->addRadioGroup('dates_status',$this->_translator->getMessage('DATES_INDEX'),$desc,$radio_values,'',true,true,'','',false,' style="vertical-align:top;"');
         $this->_form->combine();
