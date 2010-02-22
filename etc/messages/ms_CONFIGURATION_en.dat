@@ -108,7 +108,7 @@ $message["CONFIGURATION_CONFIRMATION_FORM_TITLE"]["en"] = "Terms and<br/>
 Conditions";
 $message["CONFIGURATION_DATES"]["en"] = "Default display";
 $message["CONFIGURATION_DATES_CHANGE"]["en"] = "Type of display for events";
-$message["CONFIGURATION_DATES_DESC"]["en"] = "Select list of events (option 1), or the calendar-view with month (option 2) or weeks (option 3) as default view for the events workspace page.";
+$message["CONFIGURATION_DATES_DESC"]["en"] = "Select list of events (option 1), or the calendar-view with weeks (option 2) or months (option 3) as default view for the events workspace page.";
 $message["CONFIGURATION_DATES_DESC_0"]["en"] = "As list of events";
 $message["CONFIGURATION_DATES_DESC_1"]["en"] = "As calendar";
 $message["CONFIGURATION_DATES_PRESENTATION_CALENDAR"]["en"] = "Month-view";
