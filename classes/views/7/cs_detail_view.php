@@ -1859,6 +1859,21 @@ class cs_detail_view extends cs_view {
       }
       $item = $this->getItem();
       $link_items = $item->getAllLinkItemList();
+      // Löschen der gesperrten Kennungen für die RightBox
+	  $countItem = $link_items->getFirst();
+	  while($countItem) {
+	  	$linked_item = $countItem->getLinkedItem($item);
+	  	if ( isset($linked_item) ) {
+               $fragment = '';    // there is no anchor defined by default
+               $type = $linked_item->getType();
+	  	}
+	  	$module = Type2Module($type);
+               $user = $this->_environment->getCurrentUser();
+               if ($module == CS_USER_TYPE and (!$linked_item->isUser() or !$linked_item->maySee($user))){
+				$link_items->removeElement($countItem);
+               }
+      $countItem = $link_items->getNext();
+	  }
       $count_link_item = $link_items->getCount();
       $this->_right_box_config['title_string'] .= $separator.'"'.$this->_translator->getMessage('COMMON_NETNAVIGATION_ENTRIES').' ('.$count_link_item.')"';
       $this->_right_box_config['desc_string'] .= $separator.'""';
@@ -1970,8 +1985,8 @@ class cs_detail_view extends cs_view {
                $module = Type2Module($type);
                $user = $this->_environment->getCurrentUser();
                if ($module == CS_USER_TYPE and (!$linked_item->isUser() or !$linked_item->maySee($user))){
-                   //$link_title = chunkText($this->_text_as_html_short($linked_item->getFullName()),35);
-                   /*
+                 /*$link_title = chunkText($this->_text_as_html_short($linked_item->getFullName()),35);
+
                    $html .= ahref_curl( $this->_environment->getCurrentContextID(),
                                        $module,
                                        'detail',
