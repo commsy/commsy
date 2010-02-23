@@ -24,6 +24,11 @@
 
 include_once('classes/cs_list.php');
 
+// because email to all accounts
+if ($environment->inPortal()) {
+   set_time_limit(0);
+}
+
 // Get the translator object
 $translator = $environment->getTranslationObject();
 

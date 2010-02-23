@@ -23,9 +23,14 @@
 //    along with CommSy.
 $formal_data = array();
 
+// because email to all accounts
+if ($environment->inPortal()) {
+   set_time_limit(0);
+}
+
 function performAction ( $environment, $action_array, $post_array ) {
    global $formal_data;
-   
+
    // Get the translator object
    $translator = $environment->getTranslationObject();
 
@@ -428,7 +433,7 @@ function performAction ( $environment, $action_array, $post_array ) {
 
          unset($translator);
          unset($room);
-         
+
          $translator = $environment->getTranslationObject();
 
          if ( isset($subject) and !empty($subject) ) {
