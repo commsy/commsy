@@ -315,6 +315,7 @@ class cs_todo_detail_view extends cs_detail_view {
                $step_minutes_text = '';
                $exact_minutes = $step_minutes/60;
                $step_minutes = round($exact_minutes,1);
+               $done_time = '';
                if ($step_minutes != $exact_minutes){
                   $done_time .= 'ca. ';
                }
@@ -334,14 +335,15 @@ class cs_todo_detail_view extends cs_detail_view {
                if ($step_minutes != $exact_minutes){
                   $done_time .= 'ca. ';
                }
-               if ($this->_translator->getSelectedLanguage() == 'de'){
-                  $step_minutes = str_replace('.',',',$step_minutes);
-               }
-               $done_time .= $step_minutes;
                $tmp_message = $this->_translator->getMessage('COMMON_DAYS');
                if ($step_minutes == 1){
                   $tmp_message = $this->_translator->getMessage('COMMON_DAY');
                }
+               if ($this->_translator->getSelectedLanguage() == 'de'){
+                  $step_minutes = str_replace('.',',',$step_minutes);
+               }
+               $done_time .= $step_minutes;
+               
             }else{
                $step_minutes = round($step_minutes,1);
                if ($this->_translator->getSelectedLanguage() == 'de'){
