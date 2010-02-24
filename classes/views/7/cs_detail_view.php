@@ -2107,8 +2107,6 @@ class cs_detail_view extends cs_view {
          $params = $this->_environment->getCurrentParameterArray();
          $group_manager = $this->_environment->getGroupManager();
          $group_manager->setContextLimit($this->_environment->getCurrentContextID());
-         $group_all_item = $group_manager->getItemByName('ALL');
-         if($params['iid'] != $group_all_item->_data['item_id']) {
 	        $params['attach_view'] = 'yes';
 	        $params['attach_type'] = 'item';
 	        $html .= ahref_curl($this->_environment->getCurrentContextID(),
@@ -2118,7 +2116,6 @@ class cs_detail_view extends cs_view {
 	                            $this->_translator->getMessage('COMMON_ITEM_ATTACH')
 	                            ).LF;
 	        unset($params);
-         }
       } else {
          $html .= '<span class="disabled">'.$this->_translator->getMessage('COMMON_ITEM_ATTACH').'</span>'.LF;
       }
