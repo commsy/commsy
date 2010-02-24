@@ -57,7 +57,7 @@ class cs_tag_manager extends cs_manager {
    */
   var $_interval_limit = NULL;
 
-   var $_sort_order = NULL;
+  var $_sort_order = NULL;
 
   /**
    * string - containing an order limit for the select statement
@@ -72,7 +72,7 @@ class cs_tag_manager extends cs_manager {
   var $_object_data = NULL;
 
   var $_cached_sql = array();
-  
+
   /*
    * Translation Object
    */
@@ -112,6 +112,7 @@ class cs_tag_manager extends cs_manager {
   function setAgeLimit ($limit) {
      $this->_age_limit = (int)$limit;
   }
+
 
   /** set title limit
     * this method sets a title limit
@@ -228,7 +229,42 @@ class cs_tag_manager extends cs_manager {
                $this->_data->sortby('title');
             }
          } else {
-            #$this->_data->sortby('title');
+         	// sort tags(alphabet) if no order is given
+         	$tag2tag_manager = $this->_environment->getTag2TagManager();
+         	$query = 'SELECT link_id,sorting_place,title FROM '.$tag2tag_manager->_db_table.' INNER JOIN '.$this->_db_table.' ON item_id = to_item_id WHERE '.$tag2tag_manager->_db_table.'.deletion_date is NULL AND '.$tag2tag_manager->_db_table.'.deleter_id IS NULL ORDER BY title ASC';
+		    $result = $tag2tag_manager->_db_connector->performQuery($query);
+			if (!isset($result)) {
+         	include_once('functions/error_functions.php');
+         	trigger_error('Problems cleaning sorting place for father item id (GET) '.encode(AS_DB,$item_id).' from query: "'.$query.'"',E_USER_WARNING);
+      		} else {
+      			$flag = false;
+      			$i = $result['0']['sorting_place'];
+      			foreach ( $result as $result_array ) {
+            		if ( $result_array['sorting_place'] != $i  ) {
+               			$flag = true;
+               			break;
+            		}
+            	$i = $i - 1;
+         		}
+         		unset($result);
+			}
+			if($flag == false){
+				$query = 'SELECT item_id,title FROM '.$this->_db_table.' WHERE '.$this->_db_table.'.deletion_date is NULL AND '.$this->_db_table.'.deleter_id IS NULL AND title != "CS_TAG_ROOT" ORDER BY title ASC;';
+		    	$result = $this->_db_connector->performQuery($query);
+		    	if (!isset($result)) {
+         			include_once('functions/error_functions.php');
+         			trigger_error('Problems cleaning sorting place for father item id (GET) '.encode(AS_DB,$item_id).' from query: "'.$query.'"',E_USER_WARNING);
+      			} else {
+		    		$sorting_place_id = 1;
+		    		foreach ( $result as $result_array ) {
+				  		$update = 'UPDATE '.$tag2tag_manager->_db_table.' SET sorting_place='.$sorting_place_id.' WHERE to_item_id = '.$result_array["item_id"].';';
+            	  		$result = $tag2tag_manager->_db_connector->performQuery($update);
+            	  		$sorting_place_id = $sorting_place_id + 1;
+					}
+				$this->_data->sortby('title');
+		    	}
+			}
+			unset($tag2tag_manager);
          }
       } else {
          $result = $this->_performQuery();
@@ -330,6 +366,7 @@ class cs_tag_manager extends cs_manager {
         }
      }
 
+
      elseif (isset($this->_order)) {
         if ($this->_order == 'date') {
            $query .= ' ORDER BY '.$this->addDatabasePrefix($this->_db_table).'.modification_date DESC, '.$this->addDatabasePrefix($this->_db_table).'.title ASC';
@@ -344,7 +381,6 @@ class cs_tag_manager extends cs_manager {
            $query .= ' LIMIT '.encode(AS_DB,$this->_from_limit).', '.encode(AS_DB,$this->_interval_limit);
         }
      }
-
      // sixth, perform query
      if ( isset($this->_cached_sql[$query]) ) {
          $result = $this->_cached_sql[$query];
@@ -687,7 +723,7 @@ class cs_tag_manager extends cs_manager {
    	  // create backup of item
    	  $this->backupItem($uid, array(	'title'				=>	'title',
    	  									'modification_date'	=>	'modification_date'));
-   	  
+
       $current_datetime = getCurrentDateTimeInMySQL();
       $query  = 'SELECT '.$this->addDatabasePrefix($this->_db_table).'.* FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).'.creator_id = "'.encode(AS_DB,$uid).'"';
       $result = $this->_db_connector->performQuery($query);
