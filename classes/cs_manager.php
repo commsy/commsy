@@ -1640,14 +1640,7 @@ class cs_manager {
             include_once('functions/error_functions.php');
             trigger_error('Problems while copying to backup-table.',E_USER_WARNING);
          } else {
-            $query = 'DELETE FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).'.context_id = "'.$context_id.'"';
-            $result = $this->_db_connector->performQuery($query);
-	         if ( !isset($result) ) {
-	            include_once('functions/error_functions.php');
-	            trigger_error('Problems deleting after move to backup-table.',E_USER_WARNING);
-	         } elseif ( !empty($result[0]) ) {
-	            $retour = true;
-	         }
+	         $retour = $this->deleteFromDb($context_id);
          }
       }
       return $retour;
@@ -1663,15 +1656,28 @@ class cs_manager {
             include_once('functions/error_functions.php');
             trigger_error('Problems while copying to backup-table.',E_USER_WARNING);
          } else {
-            $query = 'DELETE FROM '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$this->_db_table).' WHERE '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$this->_db_table).'.context_id = "'.$context_id.'"';
-            $result = $this->_db_connector->performQuery($query);
-            if ( !isset($result) ) {
-               include_once('functions/error_functions.php');
-               trigger_error('Problems deleting after move to backup-table.',E_USER_WARNING);
-            } elseif ( !empty($result[0]) ) {
-               $retour = true;
-            }
+            $retour = $this->deleteFromDb($context_id, true);
          }
+      }
+      return $retour;
+   }
+   
+   function deleteFromDb($context_id, $from_backup = false){
+   	global $c_db_backup_prefix;
+   	$retour = false;
+   	
+   	$db_prefix = '';
+   	if($from_backup){
+   		$db_prefix .= $c_db_backup_prefix.'_';
+   	}
+   	
+      $query = 'DELETE FROM '.$this->addDatabasePrefix($db_prefix.$this->_db_table).' WHERE '.$this->addDatabasePrefix($db_prefix.$this->_db_table).'.context_id = "'.$context_id.'"';
+      $result = $this->_db_connector->performQuery($query);
+      if ( !isset($result) ) {
+         include_once('functions/error_functions.php');
+         trigger_error('Problems deleting after move to backup-table.',E_USER_WARNING);
+      } elseif ( !empty($result[0]) ) {
+         $retour = true;
       }
       return $retour;
    }
