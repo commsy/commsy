@@ -483,7 +483,7 @@ class cs_server_item extends cs_guide_item {
       $item_type_array[] = CS_LINKITEM_TYPE;
       $item_type_array[] = CS_MATERIAL_TYPE;
       #$item_type_array[] = CS_PORTAL_TYPE; // not implemented yet because than all data (rooms, data in rooms) should be deleted too
-      #$item_type_array[] = CS_ROOM_TYPE; // not implemented yet because than all data in rooms should be deleted too
+      $item_type_array[] = CS_ROOM_TYPE; // not implemented yet because than all data in rooms should be deleted too
       $item_type_array[] = CS_SECTION_TYPE;
       $item_type_array[] = CS_TAG_TYPE;
       $item_type_array[] = CS_TAG2TAG_TYPE;

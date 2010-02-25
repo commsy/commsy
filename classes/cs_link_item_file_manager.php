@@ -272,14 +272,7 @@ class cs_link_item_file_manager extends cs_link_father_manager {
 	            include_once('functions/error_functions.php');
 	            trigger_error('Problems while copying to backup-table.',E_USER_WARNING);
 	         } else {
-	            $query = 'DELETE FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).'.item_iid IN ('.implode(",", $id_array).')';
-	            $result = $this->_db_connector->performQuery($query);
-	            if ( !isset($result) ) {
-	               include_once('functions/error_functions.php');
-	               trigger_error('Problems deleting after move to backup-table.',E_USER_WARNING);
-	            } elseif ( !empty($result[0]) ) {
-	               $retour = true;
-	            }
+	            $retour = $this->deleteFromDb($context_id);
 	         }
 	      }
       }
@@ -308,16 +301,49 @@ class cs_link_item_file_manager extends cs_link_father_manager {
                include_once('functions/error_functions.php');
                trigger_error('Problems while copying to backup-table.',E_USER_WARNING);
             } else {
-               $query = 'DELETE FROM '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$this->_db_table).' WHERE '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$this->_db_table).'.item_iid IN ('.implode(",", $id_array).')';
-               $result = $this->_db_connector->performQuery($query);
-               if ( !isset($result) ) {
-                  include_once('functions/error_functions.php');
-                  trigger_error('Problems deleting after move to backup-table.',E_USER_WARNING);
-               } elseif ( !empty($result[0]) ) {
-                  $retour = true;
-               }
+               $retour = $this->deleteFromDb($context_id, true);
             }
          }
+      }
+      return $retour;
+   }
+   
+   function deleteFromDb($context_id, $from_backup = false){
+   	global $c_db_backup_prefix;
+      $retour = false;
+      
+      $db_prefix = '';
+      $id_array = array();
+      if(!$from_backup){
+	      $item_manager = $this->_environment->getItemManager();
+	      $item_manager->setContextLimit($context_id);
+	      $item_manager->select();
+	      $item_list = $item_manager->get();
+	      $temp_item = $item_list->getFirst();
+	      while($temp_item){
+	         $id_array[] = $temp_item->getItemID();
+	         $temp_item = $item_list->getNext();
+	      }
+      } else {
+      	$db_prefix .= $c_db_backup_prefix.'_';
+	      $zzz_item_manager = $this->_environment->getZzzItemManager();
+	      $zzz_item_manager->setContextLimit($context_id);
+	      $zzz_item_manager->select();
+	      $item_list = $zzz_item_manager->get();
+	      $temp_item = $item_list->getFirst();
+	      while($temp_item){
+	         $id_array[] = $temp_item->getItemID();
+	         $temp_item = $item_list->getNext();
+	      }
+      }
+      
+      $query = 'DELETE FROM '.$this->addDatabasePrefix($db_prefix.$this->_db_table).' WHERE '.$this->addDatabasePrefix($db_prefix.$this->_db_table).'.item_iid IN ('.implode(",", $id_array).')';
+      $result = $this->_db_connector->performQuery($query);
+      if ( !isset($result) ) {
+         include_once('functions/error_functions.php');
+         trigger_error('Problems deleting after move to backup-table.',E_USER_WARNING);
+      } elseif ( !empty($result[0]) ) {
+         $retour = true;
       }
       return $retour;
    }

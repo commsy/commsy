@@ -26,7 +26,7 @@ class cs_disc_manager {
    var $_second_id = NULL;
    var $_file_path_basic = 'var/';
    private $_last_saved_filename = '';
-
+   
    function cs_disc_manager () {
    }
 
@@ -370,6 +370,11 @@ class cs_disc_manager {
          $retour = getcwd().'/'.$retour;
       }
       return $retour;
+   }
+   
+   public function removeRoomDir($first_id, $second_id){
+   	$dir = $this->_getFilePath($first_id,$second_id);
+   	$this->_full_rmdir($dir);
    }
 }
 ?>

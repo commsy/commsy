@@ -569,14 +569,7 @@ class cs_room_manager extends cs_context_manager {
             include_once('functions/error_functions.php');
             trigger_error('Problems while copying to backup-table.',E_USER_WARNING);
          } else {
-            $query = 'DELETE FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).'.item_id = "'.$context_id.'"';
-            $result = $this->_db_connector->performQuery($query);
-            if ( !isset($result) ) {
-               include_once('functions/error_functions.php');
-               trigger_error('Problems deleting after move to backup-table.',E_USER_WARNING);
-            } elseif ( !empty($result[0]) ) {
-               $retour = true;
-            }
+            $retour = $this->deleteFromDb($context_id);
          }
       }
       return $retour;
@@ -592,15 +585,141 @@ class cs_room_manager extends cs_context_manager {
             include_once('functions/error_functions.php');
             trigger_error('Problems while copying to backup-table.',E_USER_WARNING);
          } else {
-            $query = 'DELETE FROM '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$this->_db_table).' WHERE '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$this->_db_table).'.item_id = "'.$context_id.'"';
-            $result = $this->_db_connector->performQuery($query);
-            if ( !isset($result) ) {
-               include_once('functions/error_functions.php');
-               trigger_error('Problems deleting after move to backup-table.',E_USER_WARNING);
-            } elseif ( !empty($result[0]) ) {
-               $retour = true;
-            }
+            $retour = $this->deleteFromDb($context_id, true);
          }
+      }
+      return $retour;
+   }
+   
+   function deleteFromDb($context_id, $from_backup = false){
+      global $c_db_backup_prefix;
+      $retour = false;
+      
+      $db_prefix = '';
+      if($from_backup){
+         $db_prefix .= $c_db_backup_prefix.'_';
+      }
+      
+      $query = 'DELETE FROM '.$this->addDatabasePrefix($db_prefix.$this->_db_table).' WHERE '.$this->addDatabasePrefix($db_prefix.$this->_db_table).'.item_id = "'.$context_id.'"';
+      $result = $this->_db_connector->performQuery($query);
+      if ( !isset($result) ) {
+         include_once('functions/error_functions.php');
+         trigger_error('Problems deleting after move to backup-table.',E_USER_WARNING);
+      } elseif ( !empty($result[0]) ) {
+         $retour = true;
+      }
+      return $retour;
+   }
+   
+   function deleteReallyOlderThan ($days) {
+      $retour = false;
+      
+      $timestamp = getCurrentDateTimeMinusDaysInMySQL($days);
+      
+      $id_array = array();
+      $query = 'SELECT item_id, context_id FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE deletion_date IS NOT NULL and deletion_date < "'.$timestamp.'"';
+      $result = $this->_db_connector->performQuery($query);
+      if ( !isset($result) or !$result ) {
+         #include_once('functions/error_functions.php');
+         #trigger_error('Problem deleting items.',E_USER_ERROR);
+      } else {
+         foreach ($result as $rs) {
+         	$temp_array['item_id'] = $rs['item_id'];
+            $temp_array['portal_id'] = $rs['context_id'];
+         	$id_array[] = $temp_array;
+         }
+      }
+      
+      foreach($id_array as $room_array){
+      	$iid = $room_array['item_id'];
+      	$portal_id = $room_array['portal_id'];
+      	
+	      // Dateien auf der Platte löschen
+	      $disc_manager = $this->_environment->getDiscManager();
+	      $disc_manager->removeRoomDir($portal_id, $iid);
+	      
+	      // DB-Inhate löschen
+	      $from_backup = false;
+	      
+	      // Managers that nedd data from other tables
+	      $hash_manager = $this->_environment->getHashManager();
+	      $hash_manager->deleteFromDb($iid, $from_backup);
+	      
+	      $link_modifier_item_manager = $this->_environment->getLinkModifierItemManager();
+	      $link_modifier_item_manager->deleteFromDb($iid, $from_backup);
+	      
+	      $link_item_file_manager = $this->_environment->getLinkItemFileManager();
+	      $link_item_file_manager->deleteFromDb($iid, $from_backup);
+	      
+	      $noticed_manager = $this->_environment->getNoticedManager();
+	      $noticed_manager->deleteFromDb($iid, $from_backup);
+	      
+	      $reader_manager = $this->_environment->getReaderManager();
+	      $reader_manager->deleteFromDb($iid, $from_backup);
+	      
+	      // Plain copy of the rest
+	      $annotation_manager = $this->_environment->getAnnotationManager();
+	      $annotation_manager->deleteFromDb($iid, $from_backup);
+	      
+	      $announcement_manager = $this->_environment->getAnnouncementManager();
+	      $announcement_manager->deleteFromDb($iid, $from_backup);
+	      
+	      $dates_manager = $this->_environment->getDatesManager();
+	      $dates_manager->deleteFromDb($iid, $from_backup);
+	      
+	      $discussion_manager = $this->_environment->getDiscussionManager();
+	      $discussion_manager->deleteFromDb($iid, $from_backup);
+	      
+	      $discussionarticles_manager = $this->_environment->getDiscussionarticleManager();
+	      $discussionarticles_manager->deleteFromDb($iid, $from_backup);
+	      
+	      $file_manager = $this->_environment->getFileManager();
+	      $file_manager->deleteFromDb($iid, $from_backup);
+	      
+	      $homepage_link_manager = $this->_environment->getHomepageLinkManager();
+	      $homepage_link_manager->deleteFromDb($iid, $from_backup);
+	      
+	      $homepage_manager = $this->_environment->getHomepageManager();
+	      $homepage_manager->deleteFromDb($iid, $from_backup);
+	      
+	      $item_manager = $this->_environment->getItemManager();
+	      $item_manager->deleteFromDb($iid, $from_backup);
+	      
+	      $labels_manager = $this->_environment->getLabelManager();
+	      $labels_manager->deleteFromDb($iid, $from_backup);
+	      
+	      $links_manager = $this->_environment->getLinkManager();
+	      $links_manager->deleteFromDb($iid, $from_backup);
+	      
+	      $link_item_manager = $this->_environment->getLinkItemManager();
+	      $link_item_manager->deleteFromDb($iid, $from_backup);
+	      
+	      $material_manager = $this->_environment->getMaterialManager();
+	      $material_manager->deleteFromDb($iid, $from_backup);
+	      
+	      $section_manager = $this->_environment->getSectionManager();
+	      $section_manager->deleteFromDb($iid, $from_backup);
+	      
+	      $step_manager = $this->_environment->getStepManager();
+	      $step_manager->deleteFromDb($iid, $from_backup);
+	      
+	      $tag_manager = $this->_environment->getTagManager();
+	      $tag_manager->deleteFromDb($iid, $from_backup);
+	      
+	      $tag2tag_manager = $this->_environment->getTag2TagManager();
+	      $tag2tag_manager->deleteFromDb($iid, $from_backup);
+	      
+	      $task_manager = $this->_environment->getTaskManager();
+	      $task_manager->deleteFromDb($iid, $from_backup);
+	      
+	      $todo_manager = $this->_environment->getTodoManager();
+	      $todo_manager->deleteFromDb($iid, $from_backup);
+	      
+	      $user_manager = $this->_environment->getUserManager();
+	      $user_manager->deleteFromDb($iid, $from_backup);
+	      
+	      $room_manager = $this->_environment->getRoomManager();
+	      $room_manager->deleteFromDb($iid, $from_backup);
       }
       return $retour;
    }

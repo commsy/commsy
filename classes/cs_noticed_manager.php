@@ -395,14 +395,7 @@ class cs_noticed_manager {
                include_once('functions/error_functions.php');
                trigger_error('Problems while copying to backup-table.',E_USER_WARNING);
             } else {
-               $query = 'DELETE FROM '.$this->addDatabasePrefix('noticed').' WHERE '.$this->addDatabasePrefix('noticed').'.item_id IN ('.implode(",", $id_array_items).') OR '.$this->addDatabasePrefix('noticed').'.user_id IN ('.implode(",", $id_array_users).')';
-               $result = $this->_db_connector->performQuery($query);
-               if ( !isset($result) ) {
-                  include_once('functions/error_functions.php');
-                  trigger_error('Problems deleting after move to backup-table.',E_USER_WARNING);
-               } elseif ( !empty($result[0]) ) {
-                  $retour = true;
-               }
+               $retour = $this->deleteFromDb($context_id);
             }
          }
       }
@@ -442,16 +435,68 @@ class cs_noticed_manager {
                include_once('functions/error_functions.php');
                trigger_error('Problems while copying to backup-table.',E_USER_WARNING);
             } else {
-               $query = 'DELETE FROM '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.'noticed').' WHERE '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.'noticed').'.item_id IN ('.implode(",", $id_array_items).') OR '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.'noticed').'.user_id IN ('.implode(",", $id_array_users).')';
-               $result = $this->_db_connector->performQuery($query);
-               if ( !isset($result) ) {
-                  include_once('functions/error_functions.php');
-                  trigger_error('Problems deleting after move to backup-table.',E_USER_WARNING);
-               } elseif ( !empty($result[0]) ) {
-                  $retour = true;
-               }
+               $retour = $this->deleteFromDb($context_id, true);
             }
          }
+      }
+      return $retour;
+   }
+   
+   function deleteFromDb($context_id, $from_backup = false){
+   	global $c_db_backup_prefix;
+      $retour = false;
+      
+      $db_prefix = '';
+      $id_array_items = array();
+      $id_array_users = array();
+      if(!$from_backup){
+	      $item_manager = $this->_environment->getItemManager();
+	      $item_manager->setContextLimit($context_id);
+	      $item_manager->select();
+	      $item_list = $item_manager->get();
+	      $temp_item = $item_list->getFirst();
+	      while($temp_item){
+	         $id_array_items[] = $temp_item->getItemID();
+	         $temp_item = $item_list->getNext();
+	      }
+	      $user_manager = $this->_environment->getUserManager();
+	      $user_manager->setContextLimit($context_id);
+	      $user_manager->select();
+	      $user_list = $user_manager->get();
+	      $temp_user = $user_list->getFirst();
+	      while($temp_user){
+	         $id_array_users[] = $temp_user->getItemID();
+	         $temp_user = $user_list->getNext();
+	      }
+      } else {
+	      $db_prefix .= $c_db_backup_prefix.'_';
+	      $zzz_item_manager = $this->_environment->getZzzItemManager();
+	      $zzz_item_manager->setContextLimit($context_id);
+	      $zzz_item_manager->select();
+	      $item_list = $zzz_item_manager->get();
+	      $temp_item = $item_list->getFirst();
+	      while($temp_item){
+	         $id_array_items[] = $temp_item->getItemID();
+	         $temp_item = $item_list->getNext();
+	      }
+	      $zzz_user_manager = $this->_environment->getZzzUserManager();
+	      $zzz_user_manager->setContextLimit($context_id);
+	      $zzz_user_manager->select();
+	      $user_list = $zzz_user_manager->get();
+	      $temp_user = $user_list->getFirst();
+	      while($temp_user){
+	         $id_array_users[] = $temp_user->getItemID();
+	         $temp_user = $user_list->getNext();
+	      }
+      }
+      
+      $query = 'DELETE FROM '.$this->addDatabasePrefix($db_prefix.'noticed').' WHERE '.$this->addDatabasePrefix($db_prefix.'noticed').'.item_id IN ('.implode(",", $id_array_items).') OR '.$this->addDatabasePrefix($db_prefix.'noticed').'.user_id IN ('.implode(",", $id_array_users).')';
+      $result = $this->_db_connector->performQuery($query);
+      if ( !isset($result) ) {
+         include_once('functions/error_functions.php');
+         trigger_error('Problems deleting after move to backup-table.',E_USER_WARNING);
+      } elseif ( !empty($result[0]) ) {
+         $retour = true;
       }
       return $retour;
    }
