@@ -231,7 +231,7 @@ class cs_tag_manager extends cs_manager {
          } else {
          	// sort tags(alphabet) if no order is given
          	$tag2tag_manager = $this->_environment->getTag2TagManager();
-         	$query = 'SELECT link_id,sorting_place,title FROM '.$tag2tag_manager->_db_table.' INNER JOIN '.$this->_db_table.' ON item_id = to_item_id WHERE '.$tag2tag_manager->_db_table.'.deletion_date is NULL AND '.$tag2tag_manager->_db_table.'.deleter_id IS NULL ORDER BY title ASC';
+         	$query = 'SELECT link_id,sorting_place,title FROM '.$this->addDatabasePrefix($tag2tag_manager->_db_table).' INNER JOIN '.$this->addDatabasePrefix($this->_db_table).' ON item_id = to_item_id WHERE '.$this->addDatabasePrefix($tag2tag_manager->_db_table).'.deletion_date is NULL AND '.$this->addDatabasePrefix($tag2tag_manager->_db_table).'.deleter_id IS NULL ORDER BY title ASC';
 		    $result = $tag2tag_manager->_db_connector->performQuery($query);
 			if (!isset($result)) {
          	include_once('functions/error_functions.php');
@@ -249,7 +249,7 @@ class cs_tag_manager extends cs_manager {
          		unset($result);
 			}
 			if($flag == false){
-				$query = 'SELECT item_id,title FROM '.$this->_db_table.' WHERE '.$this->_db_table.'.deletion_date is NULL AND '.$this->_db_table.'.deleter_id IS NULL AND title != "CS_TAG_ROOT" ORDER BY title ASC;';
+				$query = 'SELECT item_id,title FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).'.deletion_date is NULL AND '.$this->addDatabasePrefix($this->_db_table).'.deleter_id IS NULL AND title != "CS_TAG_ROOT" ORDER BY title ASC;';
 		    	$result = $this->_db_connector->performQuery($query);
 		    	if (!isset($result)) {
          			include_once('functions/error_functions.php');
@@ -257,7 +257,7 @@ class cs_tag_manager extends cs_manager {
       			} else {
 		    		$sorting_place_id = 1;
 		    		foreach ( $result as $result_array ) {
-				  		$update = 'UPDATE '.$tag2tag_manager->_db_table.' SET sorting_place='.$sorting_place_id.' WHERE to_item_id = '.$result_array["item_id"].';';
+				  		$update = 'UPDATE '.$this->addDatabasePrefix($tag2tag_manager->_db_table).' SET sorting_place='.$sorting_place_id.' WHERE to_item_id = '.$result_array["item_id"].';';
             	  		$result = $tag2tag_manager->_db_connector->performQuery($update);
             	  		$sorting_place_id = $sorting_place_id + 1;
 					}
