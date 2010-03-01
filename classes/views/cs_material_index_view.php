@@ -576,28 +576,13 @@ class cs_material_index_view extends cs_index_view {
       $retour .= plugin_hook_output_all('getAdditionalViewActionsAsHTML',array('module' => CS_MATERIAL_TYPE),LF);
       return $retour;
    }
-   
-   function _initDropDownMenus(){
-   	$current_context = $this->_environment->getCurrentContextItem();
-      $current_user = $this->_environment->getCurrentUserItem();
-      
-      $image_import  = '';
-      $href_import = '';
-      $params = $this->_environment->getCurrentParameterArray();
-      $params['mode']='print';
-      if ($current_context->withMaterialImportLink() ){
-         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-            $image_import = 'images/commsyicons_msie6/22x22/import.gif';
-         } else {
-            $image_import = 'images/commsyicons/22x22/import.png';
-         }
-         $href_import = curl($this->_environment->getCurrentContextID(),
-                            CS_MATERIAL_TYPE,
-                            'ims_import',
-                            '');
-      }
-      unset($params);
-      
+
+   function _initDropDownMenus () {
+      $action_array = array();
+      $html = '';
+
+      // new icon for drop down
+      // auslagern in index
       $image_new  = '';
       $href_new = '';
       $params = array();
@@ -608,16 +593,71 @@ class cs_material_index_view extends cs_index_view {
          $image_new = 'images/commsyicons/22x22/new.png';
       }
       $href_new = curl($this->_environment->getCurrentContextID(),
-                           $this->_environment->getCurrentModule(),
-                            'edit',
-                            $params);
+                       $this->_environment->getCurrentModule(),
+                       'edit',
+                       $params);
       unset($params);
-      
-   	$html = '<script type="text/javascript">'.LF;
-      $html .= '<!--'.LF;
-      $html .= 'var dropDownMenus = new Array(new Array("new_icon",new Array(new Array("'.$image_new.'","'.$this->_translator->getMessage('COMMON_NEW_ITEM').'","'.$href_new.'"),new Array("'.$image_import.'","'.$this->_translator->getMessage('MATERIAL_IMS_IMPORT').'","'.$href_import.'"))));'.LF;
-      $html .= '-->'.LF;
-      $html .= '</script>'.LF;
+      $text_new = $this->_translator->getMessage('COMMON_NEW_ITEM');
+      if ( !empty($text_new)
+           and !empty($image_new)
+           and !empty($href_new)
+         ) {
+         $temp_array = array();
+         $temp_array['text']  = $text_new;
+         $temp_array['image'] = $image_new;
+         $temp_array['href']  = $href_new;
+         $action_array[] = $temp_array;
+         unset($temp_array);
+      }
+
+      // ims import
+      $current_context = $this->_environment->getCurrentContextItem();
+      if ($current_context->withMaterialImportLink() ){
+         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+            $image_import = 'images/commsyicons_msie6/22x22/import.gif';
+         } else {
+            $image_import = 'images/commsyicons/22x22/import.png';
+         }
+         $href_import = curl($this->_environment->getCurrentContextID(),
+                            CS_MATERIAL_TYPE,
+                            'ims_import',
+                            '');
+         $text_import = $this->_translator->getMessage('MATERIAL_IMS_IMPORT');
+         if ( !empty($text_import)
+              and !empty($image_import)
+              and !empty($href_import)
+            ) {
+            $temp_array = array();
+            $temp_array['text']  = $text_import;
+            $temp_array['image'] = $image_import;
+            $temp_array['href']  = $href_import;
+            $action_array[] = $temp_array;
+            unset($temp_array);
+         }
+      }
+      unset($current_context);
+
+      // init drop down menu
+      if ( !empty($action_array)
+           and count($action_array) > 1
+         ) {
+         $html .= '<script type="text/javascript">'.LF;
+         $html .= '<!--'.LF;
+         $html .= 'var dropDownMenus = new Array(new Array("new_icon",new Array(';
+         $first = true;
+         foreach ($action_array as $action) {
+            if ( $first ) {
+               $first = false;
+            } else {
+               $html .= ',';
+            }
+            $html .= 'new Array("'.$action['image'].'","'.$action['text'].'","'.$action['href'].'")';
+         }
+         $html .= ')));'.LF;
+         $html .= '-->'.LF;
+         $html .= '</script>'.LF;
+      }
+
       return $html;
    }
 }
