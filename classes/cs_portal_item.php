@@ -680,10 +680,34 @@ class cs_portal_item extends cs_guide_item {
       $found = false;
       while (!$found and $year < $current_year+1) {
          foreach ($clock_pulse_array as $key => $clock_pulse) {
-            $begin_month = $clock_pulse['BEGIN'][3].$clock_pulse['BEGIN'][4];
-            $begin_day = $clock_pulse['BEGIN'][0].$clock_pulse['BEGIN'][1];
-            $end_month = $clock_pulse['END'][3].$clock_pulse['END'][4];
-            $end_day = $clock_pulse['END'][0].$clock_pulse['END'][1];
+            if ( isset($clock_pulse['BEGIN'][3])
+                 and isset($clock_pulse['BEGIN'][4])
+               ) {
+               $begin_month = $clock_pulse['BEGIN'][3].$clock_pulse['BEGIN'][4];
+            } else {
+               $begin_month = '';
+            }
+            if ( isset($clock_pulse['BEGIN'][0])
+                 and isset($clock_pulse['BEGIN'][1])
+               ) {
+               $begin_day = $clock_pulse['BEGIN'][0].$clock_pulse['BEGIN'][1];
+            } else {
+               $begin_day = '';
+            }
+            if ( isset($clock_pulse['END'][3])
+                 and isset($clock_pulse['END'][4])
+               ) {
+               $end_month = $clock_pulse['END'][3].$clock_pulse['END'][4];
+            } else {
+               $end_month = '';
+            }
+            if ( isset($clock_pulse['END'][0])
+                 and isset($clock_pulse['END'][1])
+               ) {
+               $end_day = $clock_pulse['END'][0].$clock_pulse['END'][1];
+            } else {
+               $end_day = '';
+            }
             $begin = $begin_month.$begin_day;
             $end = $end_month.$end_day;
             if ($begin > $end) {

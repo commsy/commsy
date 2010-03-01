@@ -138,7 +138,14 @@ class cs_room_item extends cs_context_item {
       $retour = '';
       $title_array = explode('_',$title);
       $day_month = $this->_getBeginDayMonthFromTimeLabel($title);
-      $retour = $title_array[0].$day_month[3].$day_month[4].$day_month[0].$day_month[1];
+      if ( isset($title_array[0])
+           and isset($day_month[0])
+           and isset($day_month[1])
+           and isset($day_month[3])
+           and isset($day_month[4])
+         ) {
+         $retour = $title_array[0].$day_month[3].$day_month[4].$day_month[0].$day_month[1];
+      }
       return $retour;
    }
 
@@ -146,7 +153,14 @@ class cs_room_item extends cs_context_item {
       $retour = '';
       $title_array = explode('_',$title);
       $day_month = $this->_getEndDayMonthFromTimeLabel($title);
-      $retour = $title_array[0].$day_month[3].$day_month[4].$day_month[0].$day_month[1];
+      if ( isset($title_array[0])
+           and isset($day_month[0])
+           and isset($day_month[1])
+           and isset($day_month[3])
+           and isset($day_month[4])
+         ) {
+         $retour = $title_array[0].$day_month[3].$day_month[4].$day_month[0].$day_month[1];
+      }
       return $retour;
    }
 
@@ -345,7 +359,7 @@ class cs_room_item extends cs_context_item {
       }
       return $this->_data[$link_type];
    }
-   
+
    /** set clock pulses of a room item by id
    * this method sets a list of clock pulses item_ids which are linked to the room
    *
@@ -360,7 +374,7 @@ class cs_room_item extends cs_context_item {
       }
       $this->_setValue('in_time', $time_array, FALSE);
    }
-   
+
    /** set clock pulses of a room
    * this method sets a list of clock pulses which are linked to the room
    *
