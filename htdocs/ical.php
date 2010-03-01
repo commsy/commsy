@@ -201,6 +201,11 @@ if ( isset($_GET['cid']) ) {
 					$percent = 0;
 				}
 
+            $due = '';
+            if($item->getDate() != '9999-00-00 00:00:00'){
+               $due = strtotime($item->getDate());
+            }
+				
 				if($enddate != '-1')
 				{
 					$iCal->addToDo($title, //Title for the event
@@ -231,7 +236,7 @@ if ( isset($_GET['cid']) ) {
 					$path.$c_single_entry_point.'?cid='.$_GET['cid'].'&mod=todo&fct=detail&iid='.$item->getItemID(), // optional URL for that event
 					$language, // Language of the Strings
 					$item->getItemID(), // Optional UID for this event
-					strtotime($item->getDate())
+					$due // strtotime($item->getDate())
 					);
 				}
 
