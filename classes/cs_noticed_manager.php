@@ -490,13 +490,15 @@ class cs_noticed_manager {
 	      }
       }
       
-      $query = 'DELETE FROM '.$this->addDatabasePrefix($db_prefix.'noticed').' WHERE '.$this->addDatabasePrefix($db_prefix.'noticed').'.item_id IN ('.implode(",", $id_array_items).') OR '.$this->addDatabasePrefix($db_prefix.'noticed').'.user_id IN ('.implode(",", $id_array_users).')';
-      $result = $this->_db_connector->performQuery($query);
-      if ( !isset($result) ) {
-         include_once('functions/error_functions.php');
-         trigger_error('Problems deleting after move to backup-table.',E_USER_WARNING);
-      } elseif ( !empty($result[0]) ) {
-         $retour = true;
+      if(!empty($id_array_items) and !empty($id_array_users)){
+	      $query = 'DELETE FROM '.$this->addDatabasePrefix($db_prefix.'noticed').' WHERE '.$this->addDatabasePrefix($db_prefix.'noticed').'.item_id IN ('.implode(",", $id_array_items).') OR '.$this->addDatabasePrefix($db_prefix.'noticed').'.user_id IN ('.implode(",", $id_array_users).')';
+	      $result = $this->_db_connector->performQuery($query);
+	      if ( !isset($result) ) {
+	         include_once('functions/error_functions.php');
+	         trigger_error('Problems deleting after move to backup-table.',E_USER_WARNING);
+	      } elseif ( !empty($result[0]) ) {
+	         $retour = true;
+	      }
       }
       return $retour;
    }

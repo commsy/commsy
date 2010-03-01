@@ -337,13 +337,15 @@ class cs_link_item_file_manager extends cs_link_father_manager {
 	      }
       }
       
-      $query = 'DELETE FROM '.$this->addDatabasePrefix($db_prefix.$this->_db_table).' WHERE '.$this->addDatabasePrefix($db_prefix.$this->_db_table).'.item_iid IN ('.implode(",", $id_array).')';
-      $result = $this->_db_connector->performQuery($query);
-      if ( !isset($result) ) {
-         include_once('functions/error_functions.php');
-         trigger_error('Problems deleting after move to backup-table.',E_USER_WARNING);
-      } elseif ( !empty($result[0]) ) {
-         $retour = true;
+      if(!empty($id_array)){
+	      $query = 'DELETE FROM '.$this->addDatabasePrefix($db_prefix.$this->_db_table).' WHERE '.$this->addDatabasePrefix($db_prefix.$this->_db_table).'.item_iid IN ('.implode(",", $id_array).')';
+	      $result = $this->_db_connector->performQuery($query);
+	      if ( !isset($result) ) {
+	         include_once('functions/error_functions.php');
+	         trigger_error('Problems deleting after move to backup-table.',E_USER_WARNING);
+	      } elseif ( !empty($result[0]) ) {
+	         $retour = true;
+	      }
       }
       return $retour;
    }
