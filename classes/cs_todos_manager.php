@@ -187,7 +187,9 @@ class cs_todos_manager extends cs_manager {
       }
 
       $query .= ' WHERE 1';
-      if ( isset($this->_room_limit) ) {
+      if (isset($this->_room_array_limit)) {
+         $query .= ' AND '.$this->addDatabasePrefix('todos').'.context_id IN ('.implode(", ", $this->_room_array_limit).')';
+      }elseif (isset($this->_room_limit)) {
          $query .= ' AND '.$this->addDatabasePrefix('todos').'.context_id = "'.encode(AS_DB,$this->_room_limit).'"';
       }
       if (!$this->_show_not_activated_entries_limit) {
@@ -204,7 +206,7 @@ class cs_todos_manager extends cs_manager {
          $query .= ' AND ('.$this->addDatabasePrefix('todos').'.creator_id = "'.encode(AS_DB,$this->_ref_user_limit).'" )';
       }
       if (isset($this->_status_limit)) {
-         if ($this->_status_limit == 4){
+          if ($this->_status_limit == 4){
             $query .= ' AND ('.$this->addDatabasePrefix('todos').'.status != "3")';
          }else{
             $query .= ' AND ('.$this->addDatabasePrefix('todos').'.status = "'.encode(AS_DB,$this->_status_limit).'" )';
@@ -312,7 +314,6 @@ class cs_todos_manager extends cs_manager {
             $query .= ' LIMIT '.$this->_from_limit.', '.$this->_interval_limit;
          }
       }
-
       // perform query
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) ) {
@@ -578,7 +579,7 @@ class cs_todos_manager extends cs_manager {
    	  									'description'		=>	'description',
    	  									'modification_date'	=>	'modification_date',
    	  									'public'			=>	'public'));
-   	  
+
       $current_datetime = getCurrentDateTimeInMySQL();
       $query  = 'SELECT '.$this->addDatabasePrefix('todos').'.* FROM '.$this->addDatabasePrefix('todos').' WHERE '.$this->addDatabasePrefix('todos').'.creator_id = "'.encode(AS_DB,$uid).'"';
       $result = $this->_db_connector->performQuery($query);
