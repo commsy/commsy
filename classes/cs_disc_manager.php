@@ -26,7 +26,7 @@ class cs_disc_manager {
    var $_second_id = NULL;
    var $_file_path_basic = 'var/';
    private $_last_saved_filename = '';
-   
+
    function cs_disc_manager () {
    }
 
@@ -169,7 +169,7 @@ class cs_disc_manager {
 
       // source file
       $source_file = str_replace('//','/',$this->_getFilePath('',$old_room_id).'/'.$picture_name);
-      $target_file = str_replace('//','/',$this->_getFilePath('',$new_room_id).'/'.$picture_name);
+      $target_file = str_replace('//','/',$this->_getFilePath('',$new_room_id).'/'.$new_picture_name);
 
       // copy
       if ( file_exists($source_file) ) {
@@ -371,10 +371,10 @@ class cs_disc_manager {
       }
       return $retour;
    }
-   
+
    public function removeRoomDir($first_id, $second_id){
-   	$dir = $this->_getFilePath($first_id,$second_id);
-   	$this->_full_rmdir($dir);
+      $dir = $this->_getFilePath($first_id,$second_id);
+      $this->_full_rmdir($dir);
    }
 }
 ?>
