@@ -99,7 +99,6 @@ class cs_material_index_view extends cs_index_view {
 /*********************/
    }
 
-
    function _getAdditionalActionsAsHTML(){
       #$current_context = $this->_environment->getCurrentContextItem();
       #$current_user = $this->_environment->getCurrentUserItem();
@@ -121,11 +120,6 @@ class cs_material_index_view extends cs_index_view {
       #}
       #return $html;
    }
-
-
-
-
-
 
    function _getTableheadAsHTML($with_links=TRUE) {
       include_once('functions/misc_functions.php');

@@ -23,14 +23,29 @@
 //    along with CommSy.
 
 // headline
-$this->_flushHeadline('db: add index to room table');
+$this->_flushHeadline('db: add index to links table');
 
 $success = true;
 
-if ( !$this->_existsIndex('room','activity') ) {
-   $sql = "ALTER TABLE room ADD INDEX ( activity );";
+if ( !$this->_existsIndex('links','link_type ') ) {
+   $sql = "ALTER TABLE links ADD INDEX ( link_type );";
    $success = $success AND $this->_select($sql);
 }
-
+if ( !$this->_existsIndex('links','from_item_id ') ) {
+   $sql = "ALTER TABLE links ADD INDEX ( from_item_id );";
+   $success = $success AND $this->_select($sql);
+}
+if ( !$this->_existsIndex('links','from_version_id ') ) {
+   $sql = "ALTER TABLE links ADD INDEX ( from_version_id );";
+   $success = $success AND $this->_select($sql);
+}
+if ( !$this->_existsIndex('links','to_item_id ') ) {
+   $sql = "ALTER TABLE links ADD INDEX ( to_item_id );";
+   $success = $success AND $this->_select($sql);
+}
+if ( !$this->_existsIndex('links','to_version_id ') ) {
+   $sql = "ALTER TABLE links ADD INDEX ( to_version_id );";
+   $success = $success AND $this->_select($sql);
+}
 $this->_flushHTML(BRLF);
 ?>
