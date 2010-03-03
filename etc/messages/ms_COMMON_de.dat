@@ -751,6 +751,7 @@ $message["COMMON_USER_INDEX"]["de"] = "Personen";
 $message["COMMON_USER_NOT_VISIBLE"]["de"] = "Nicht sichtbar";
 $message["COMMON_USER_PREFERENCES_FORM_TITLE"]["de"] = "Einstellungen";
 $message["COMMON_USER_REJECT_BUTTON"]["de"] = "Teilnahme beenden";
+$message["COMMON_WEATHER_BOX"]["de"] = "Wetter";
 $message["COMMON_WEEK"]["de"] = "Woche";
 $message["COMMON_WIKI_ADMIN_PW"]["de"] = "<div style=&quot;float:left; width:120px;&quot;>Administrieren:</div>";
 $message["COMMON_WIKI_DELETE_EXISTING_DISCUSSIONS"]["de"] = "zum Löschen eines Forums den Haken entfernen";

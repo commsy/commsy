@@ -129,6 +129,27 @@ $class_config[$class_name]['filename'] = $class_name.'.php';
 $class_config[$class_name]['folder'] = $main_folder.$view_folder;
 $class_config[$class_name]['switchable'] = false;
 
+$class_name = 'cs_privateroom_home_buzzword_view';
+define('PRIVATEROOM_HOME_BUZZWORD_VIEW',$class_name);
+$class_config[$class_name]['name'] = $class_name;
+$class_config[$class_name]['filename'] = $class_name.'.php';
+$class_config[$class_name]['folder'] = $main_folder.$view_folder;
+$class_config[$class_name]['switchable'] = false;
+
+$class_name = 'cs_privateroom_home_weather_view';
+define('PRIVATEROOM_HOME_WEATHER_VIEW',$class_name);
+$class_config[$class_name]['name'] = $class_name;
+$class_config[$class_name]['filename'] = $class_name.'.php';
+$class_config[$class_name]['folder'] = $main_folder.$view_folder;
+$class_config[$class_name]['switchable'] = false;
+
+$class_name = 'cs_privateroom_home_search_view';
+define('PRIVATEROOM_HOME_SEARCH_VIEW',$class_name);
+$class_config[$class_name]['name'] = $class_name;
+$class_config[$class_name]['filename'] = $class_name.'.php';
+$class_config[$class_name]['folder'] = $main_folder.$view_folder;
+$class_config[$class_name]['switchable'] = false;
+
 $class_name = 'cs_home_tag_view';
 define('HOME_TAG_VIEW',$class_name);
 $class_config[$class_name]['name'] = $class_name;
