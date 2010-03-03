@@ -385,6 +385,54 @@ a.navlist_help, a.navlist_help:hover, a.navlist_help:active{
    text-decoration:none;
 }
 
+
+/* Tablist rightbox*/
+#tabs_frame_right_box {
+   position:relative;
+   <?php
+   echo('background: url(../'.$c_single_entry_point.'?cid='.$cid.'&mod=picture&fct=getfile&picture=' . $color['schema'] . '_cs_gradient_24.png) repeat-x;');
+   ?>
+   background-color: <?php echo($color['tabs_background'])?>;
+   padding:0px;
+   margin:0px;
+   font-weight: bold;
+}
+
+#tablist_right_box{
+   margin:0px;
+   padding:0px 0px;
+   white-space:nowrap;
+}
+
+#tabs_right_box {
+   position:relative;
+   width: 100%;
+   padding:4px 0px 3px 0px;
+   margin:0px 0px 0px 0px;
+   font-weight: bold;
+   font-size: 10pt;
+}
+
+#tablist_right_box a.navlist{
+   color:<?php echo($color['headline_text'])?>;
+   padding:4px 6px 3px 6px;
+   border-right:1px solid <?php echo($color['headline_text'])?>;
+   text-decoration:none;
+   font-size: 10pt;
+}
+
+#tablist_right_box a.navlist_current{
+   color:<?php echo($color['headline_text'])?>;
+   padding:4px 6px 3px 6px;
+   border-right:1px solid <?php echo($color['headline_text'])?>;
+   text-decoration:none;
+   <?php
+   echo('background: url(../'.$c_single_entry_point.'?cid='.$cid.'&mod=picture&fct=getfile&picture=' . $color['schema'] . '_cs_gradient_24_focus.png) repeat-x;');
+   ?>
+   background-color:<?php echo($color['tabs_focus'])?>;
+}
+
+
 /*Headlines*/
 h1{
    margin:0px;
