@@ -569,6 +569,7 @@ class cs_page_view extends cs_view {
          $retour .= '   <script type="text/javascript" src="javascript/CommSyTextFormatingInformation.js"></script>'.LF;
          $retour .= '   <link rel="stylesheet" media="screen" type="text/css" href="javascript/slimbox/css/slimbox.css"/>'.LF;
       }
+      $retour .= '   <link rel="stylesheet" media="screen" type="text/css" href="css/commsy_portlets_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
       // jQuery
       if (!$this->_environment->inServer()){
          // jQuery

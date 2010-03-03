@@ -816,7 +816,7 @@ function draw_dates(){
 			var start_column = calendar_dates[i][11];
 			//var start_quarter = calendar_dates[i][12];
 			var max_overlap_for_date = calendar_dates[i][13];
-			
+
 			if(start_quaters % 4 == 0){
 				var start_div = start_quaters / 4;
 				var top = 0;
@@ -824,15 +824,15 @@ function draw_dates(){
 				var start_div = (start_quaters - start_quaters % 4) / 4;
 				var top = (start_quaters % 4) * 10;
 			}
-			
+
 			top = top+1;
-			
+
 			if(end_quaters != 0){
 				var height = (end_quaters - start_quaters) * 10; // + ((end_quaters - start_quaters) / 4)-1;
 			} else {
 				var height = 40;
 			}
-			
+
 			var start_spacer = 0;
 			var end_spacer = 0;
 			var between_space = (dates_on_day -1) * 0;
@@ -841,13 +841,13 @@ function draw_dates(){
 			if(max_overlap_for_date == 1){
 			   width = width_div;
 			}
-			
+
 			var left = (width * start_column)+1;// + ((left_position+1) * 2);
-			   
+
 			// Ausgleich border
 			width = width-2;
 			height = height-2-1;
-		    
+
 		    if(is_date_for_whole_day){
 		      top_date_for_whole_day++;
 		    	width = width_div - 2;
@@ -970,6 +970,26 @@ function addNewDateLinks(){
 		}
 	}
 }
+
+jQuery(document).ready(function() {
+		$(".column").sortable({
+			connectWith: '.column'
+		});
+
+		$(".portlet").addClass("ui-widget ui-widget-content ui-helper-clearfix ui-corner-all")
+			.find(".portlet-header")
+				.addClass("ui-widget-header ui-corner-all")
+				.prepend('<span class="ui-icon ui-icon-minusthick"></span>')
+				.end()
+			.find(".portlet-content");
+
+		$(".portlet-header .ui-icon").click(function() {
+			$(this).toggleClass("ui-icon-minusthick").toggleClass("ui-icon-plusthick");
+			$(this).parents(".portlet:first").find(".portlet-content").toggle();
+		});
+
+		$(".column").disableSelection();
+});
 
 jQuery(document).ready(function() {
 	if(jQuery('[id^=tag_tree]').length){
@@ -1117,12 +1137,12 @@ jQuery(document).ready(function() {
 				image.attr('id',image.attr('id')+'_dropdown_menu_'+int);
 				image.attr('alt','');
 				image.parent().attr('title','');
-				
+
 				var button = jQuery('<img id="dropdown_button_'+int+'" src="images/commsyicons/dropdownmenu.png" />');
-				
+
 				var html = jQuery('<div id="dropdown_menu_'+int+'" class="dropdown_menu"></div>');
 				var offset = image.offset();
-				
+
 				var ul = jQuery('<ul></ul>');
 				for ( var int2 = 0; int2 < tempActions.length; int2++) {
 					var tempAction = tempActions[int2];
@@ -1131,12 +1151,12 @@ jQuery(document).ready(function() {
 					var tempActionHREF = tempAction[2];
 					ul.append('<li><a href="'+tempActionHREF+'"><img src="'+tempActionImage+'" style="vertical-align:middle; padding-right:2px;" />'+tempActionText+'</a></li>');
 				}
-				
+
 				html.append(ul);
 				image.parent().wrap('<div style="display:inline;"></div>');
 				image.parent().parent().append(button);
 				image.parent().parent().append(html);
-				
+
 				image.mouseover(function(){
 					var id = this.id;
 					var this_image = this;
@@ -1149,17 +1169,17 @@ jQuery(document).ready(function() {
 						}
 					}, 2000);
 				});
-				
+
 				image.mouseout(function(){
 					this.mouse_is_over = false;
 				});
-				
+
 				jQuery('#dropdown_button_'+int).click(function(){
 					var id_parts = this.id.split('_');
 					var offset = jQuery('#'+this.id).parent().offset();
 					dropdown(jQuery('#dropdown_menu_'+id_parts[2]), offset);
 				});
-	
+
 				jQuery('#dropdown_button_'+int).mouseover(function(){
 					var id = this.id;
 					var this_image = this;
@@ -1172,11 +1192,11 @@ jQuery(document).ready(function() {
 						}
 					}, 2000);
 				});
-				
+
 				jQuery('#dropdown_button_'+int).mouseout(function(){
 					this.mouse_is_over = false;
 				});
-				
+
 				jQuery(document).mousedown(function(event) {
 					var target = jQuery(event.target);
 					var parents = target.parents();

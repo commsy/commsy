@@ -582,6 +582,7 @@ $message["COMMON_RESET_SEARCH_DESC"]["de"] = "Dies setzt die Einschränkung durc
 $message["COMMON_RESTRICTIONS"]["de"] = "Einschränkungen der Liste";
 $message["COMMON_RESTRICTIONS_SHORT"]["de"] = "Einschränkungen";
 $message["COMMON_RESTRICTION_SEARCH"]["de"] = "Einschränkungen der Suche";
+$message["COMMON_RESTRICTION_SHORT"]["de"] = "Einschränkung";
 $message["COMMON_RIGHTS"]["de"] = "Zugriffsrechte";
 $message["COMMON_RIGHTS_DESCRIPTION"]["de"] = "Einstellung von Bearbeitungsrechten und Veröffentlichungstermin";
 $message["COMMON_ROOM"]["de"] = "Raum";
