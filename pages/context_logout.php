@@ -61,6 +61,7 @@ if ( !empty($_GET['back_tool']) ) {
 if ( mb_stristr($_SERVER['PHP_SELF'],'homepage.php') ) {
    $session->setToolName('homepage');
 }
+$environment->setSessionItem($session);
 
 // redirect
 $current_context = $environment->getCurrentContextItem();
@@ -71,6 +72,7 @@ if ( isset($root_session_id) and !empty($root_session_id) ) {
       $session = $session_manager->get($root_session_id);
       $session->setValue('cookie',2);
       unset($session_manager);
+      $environment->setSessionItem($session);
    }
    $params = $history[0]['parameter'];
    $params['SID'] = $root_session_id;

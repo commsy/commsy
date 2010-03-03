@@ -111,6 +111,7 @@ if ($type != CS_USER_TYPE) {
       } else {
          $session->setValue('commsy_id',$environment->getCurrentPortalID());
       }
+      $environment->setSessionItem($session);
       redirect($environment->getCurrentContextID(),'home','index',array());
 
    } else {
