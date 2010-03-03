@@ -31,7 +31,15 @@ $context_item = $environment->getCurrentContextItem();
 $translator = $environment->getTranslationObject();
 
 // Check access rights
-if ( !$context_item->withMaterialImportLink() ) {
+if ( $context_item->isClosed() ) {
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+   unset($params);
+   $errorbox->setText($translator->getMessage('PROJECT_ROOM_IS_CLOSED', $context_item->getTitle()));
+   $page->add($errorbox);
+} elseif ( !$context_item->withMaterialImportLink() ) {
    $params = array();
    $params['environment'] = $environment;
    $params['with_modifying_actions'] = true;
@@ -39,7 +47,6 @@ if ( !$context_item->withMaterialImportLink() ) {
    unset($params);
    $errorbox->setText($translator->getMessage('ACCESS_NOT_GRANTED', $context_item->getTitle()));
    $page->add($errorbox);
-
 }  elseif ( !$current_user->isUser() ) {
    $params = array();
    $params['environment'] = $environment;

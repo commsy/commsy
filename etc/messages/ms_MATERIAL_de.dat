@@ -66,7 +66,14 @@ $message["MATERIAL_IMS_IMPORT_BUTTON"]["de"] = "Material importieren";
 $message["MATERIAL_IMS_UPLOADLINK"]["de"] = "Direkter <br/>
 Import";
 $message["MATERIAL_IMS_UPLOAD_LINK_HEADER"]["de"] = "Link zum Beluga-Katalog";
+$message["MATERIAL_IMS_WRONG_FILE_FORMAT"]["de"] = "Zum Importieren von mehreren Materialien muss die ausgewählte Datei eine ZIP-Datei im IMS-Content-Format sein! 
+<br/><br/>
+Wenn Sie nur eine beliebige digitale Datei (z.B. PDF, Word, Open Office, Bilder, ...) hochladen wollten, dann folgen Sie dem &quot;grünen&quot; Plus bzw. diesem Link: %1";
 $message["MATERIAL_INDEX"]["de"] = "Materialien";
+$message["MATERIAL_INSERT_NEW_LABEL"]["de"] = "Datei hochladen";
+$message["MATERIAL_INSERT_NEW_LINK"]["de"] = "Neues Material erstellen";
+$message["MATERIAL_INSERT_NEW_TEXT"]["de"] = "Zum Hochladen von Dateien verwenden Sie bitte das &quot;grüne&quot; Plus bzw. folgenden diesem Link:
+%1";
 $message["MATERIAL_ISBN"]["de"] = "ISBN";
 $message["MATERIAL_ISBN_DESC"]["de"] = "/3830913680/";
 $message["MATERIAL_ISSN"]["de"] = "ISSN";

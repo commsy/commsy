@@ -75,6 +75,13 @@ class cs_material_ims_import_form extends cs_rubric_form {
          $this->_form->combine('vertical');
          $this->_form->addText('import_description','',$this->_translator->getMessage('BELUGA_IMPORT_DESCRIPTION').BR);
       }
+
+      // link to insert material
+      #$this->_form->addEmptyLine();
+      #$link = ahref_curl($this->_environment->getCurrentContextID(),'material','edit',array('iid'=>'NEW'),$this->_translator->getMessage('MATERIAL_INSERT_NEW_LINK'));
+      #$this->_form->addText('new_material',$this->_translator->getMessage('MATERIAL_INSERT_NEW_LABEL'),$this->_translator->getMessage('MATERIAL_INSERT_NEW_TEXT',$link));
+
+      // buttons
       $this->_form->addButtonBar('option',$this->_translator->getMessage('MATERIAL_IMS_IMPORT_BUTTON'),$this->_translator->getMessage('COMMON_CANCEL_BUTTON'));
    }
 
@@ -102,12 +109,13 @@ class cs_material_ims_import_form extends cs_rubric_form {
       if ( isset($file_elements[1]) and !empty($file_elements[1]) ){
          $file_type = mb_strtoupper( $file_elements[1] , 'UTF-8');
          if ($file_type != 'ZIP') {
-            $this->_error_array[] = $this->_translator->getMessage('DATES_WRONG_FILE_FORMAT');
-      $error = true;
+            $link = ahref_curl($this->_environment->getCurrentContextID(),'material','edit',array('iid'=>'NEW'),$this->_translator->getMessage('MATERIAL_INSERT_NEW_LINK'));
+            $this->_error_array[] = $this->_translator->getMessage('MATERIAL_IMS_WRONG_FILE_FORMAT',$link);
+            $error = true;
          }
-      }elseif ( !isset($file_elements[1]) ){
-            $this->_error_array[] = $this->_translator->getMessage('NO_DATES_FILE_FOUND');
-      $error = true;
+      } elseif ( !isset($file_elements[1]) ){
+         $this->_error_array[] = $this->_translator->getMessage('NO_DATES_FILE_FOUND');
+         $error = true;
       }
       return $error;
    }

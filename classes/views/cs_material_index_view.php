@@ -574,39 +574,43 @@ class cs_material_index_view extends cs_index_view {
    function _initDropDownMenus () {
       $action_array = array();
       $html = '';
+      $current_context = $this->_environment->getCurrentContextItem();
 
       // new icon for drop down
       // auslagern in index
-      $image_new  = '';
-      $href_new = '';
-      $params = array();
-      $params['iid'] = 'NEW';
-      if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-         $image_new = 'images/commsyicons_msie6/22x22/new.gif';
-      } else {
-         $image_new = 'images/commsyicons/22x22/new.png';
-      }
-      $href_new = curl($this->_environment->getCurrentContextID(),
-                       $this->_environment->getCurrentModule(),
-                       'edit',
-                       $params);
-      unset($params);
-      $text_new = $this->_translator->getMessage('COMMON_NEW_ITEM');
-      if ( !empty($text_new)
-           and !empty($image_new)
-           and !empty($href_new)
-         ) {
-         $temp_array = array();
-         $temp_array['text']  = $text_new;
-         $temp_array['image'] = $image_new;
-         $temp_array['href']  = $href_new;
-         $action_array[] = $temp_array;
-         unset($temp_array);
+      if ( $current_context->isOpen() ) {
+         $image_new  = '';
+         $href_new = '';
+         $params = array();
+         $params['iid'] = 'NEW';
+         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+            $image_new = 'images/commsyicons_msie6/22x22/new.gif';
+         } else {
+            $image_new = 'images/commsyicons/22x22/new.png';
+         }
+         $href_new = curl($this->_environment->getCurrentContextID(),
+                          $this->_environment->getCurrentModule(),
+                          'edit',
+                          $params);
+         unset($params);
+         $text_new = $this->_translator->getMessage('COMMON_NEW_ITEM');
+         if ( !empty($text_new)
+              and !empty($image_new)
+              and !empty($href_new)
+            ) {
+            $temp_array = array();
+            $temp_array['text']  = $text_new;
+            $temp_array['image'] = $image_new;
+            $temp_array['href']  = $href_new;
+            $action_array[] = $temp_array;
+            unset($temp_array);
+         }
       }
 
       // ims import
-      $current_context = $this->_environment->getCurrentContextItem();
-      if ($current_context->withMaterialImportLink() ){
+      if ( $current_context->isOpen()
+           and $current_context->withMaterialImportLink()
+         ) {
          if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
             $image_import = 'images/commsyicons_msie6/22x22/import.gif';
          } else {

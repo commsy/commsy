@@ -65,7 +65,15 @@ $message["MATERIAL_IMS_IMPORT"]["en"] = "Import material";
 $message["MATERIAL_IMS_IMPORT_BUTTON"]["en"] = "Import material";
 $message["MATERIAL_IMS_UPLOADLINK"]["en"] = "Direct <br/>import";
 $message["MATERIAL_IMS_UPLOAD_LINK_HEADER"]["en"] = "Go to Beluga Library";
+$message["MATERIAL_IMS_WRONG_FILE_FORMAT"]["en"] = "To import serveral materials the file format has to be ZIP and IMS content.
+<br/><br/>
+If you only want to upload a file (PDF, word, open office, an image file, ...), please follow the &quot;green&quot; cross or this link:
+%1";
 $message["MATERIAL_INDEX"]["en"] = "Materials";
+$message["MATERIAL_INSERT_NEW_LABEL"]["en"] = "Upload file";
+$message["MATERIAL_INSERT_NEW_LINK"]["en"] = "Insert new material";
+$message["MATERIAL_INSERT_NEW_TEXT"]["en"] = "To upload a file follow the &quot;green&quot; cross or this link:
+%1";
 $message["MATERIAL_ISBN"]["en"] = "ISBN";
 $message["MATERIAL_ISBN_DESC"]["en"] = "/3830913680/";
 $message["MATERIAL_ISSN"]["en"] = "ISSN";
