@@ -20,6 +20,7 @@ $message["TODO_LIST_ACTION_IN_PROGRESS"]["de"] = "Einträge als &quot;in Bearbei
 $message["TODO_LIST_ACTION_NOT_STARTED"]["de"] = "Einträge als &quot;nicht bearbeitet&quot; markieren";
 $message["TODO_MINUTES"]["de"] = "Geplante Zeit";
 $message["TODO_NOT_DONE"]["de"] = "nicht erledigt";
+$message["TODO_NOT_DONE_2"]["de"] = "nicht erledigte";
 $message["TODO_NOT_STARTED"]["de"] = "nicht bearbeitet";
 $message["TODO_NO_END_DATE"]["de"] = "k.A.";
 $message["TODO_NO_END_DATE_LONG"]["de"] = "keine Angabe";

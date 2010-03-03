@@ -20,6 +20,7 @@ $message["TODO_LIST_ACTION_IN_PROGRESS"]["en"] = "Mark selected as &quot;in prog
 $message["TODO_LIST_ACTION_NOT_STARTED"]["en"] = "Mark selected as &quot;not started&quot;";
 $message["TODO_MINUTES"]["en"] = "Planned time";
 $message["TODO_NOT_DONE"]["en"] = "Not complete";
+$message["TODO_NOT_DONE_2"]["en"] = "Not completed";
 $message["TODO_NOT_STARTED"]["en"] = "Not started";
 $message["TODO_NO_END_DATE"]["en"] = "n/a";
 $message["TODO_NO_END_DATE_LONG"]["en"] = "not applicable";

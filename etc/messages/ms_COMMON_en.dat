@@ -580,6 +580,7 @@ $message["COMMON_RESET"]["en"] = "Reset";
 $message["COMMON_RESET_SEARCH"]["en"] = "reset";
 $message["COMMON_RESET_SEARCH_DESC"]["en"] = "Reset search. All items will be displayed.";
 $message["COMMON_RESTRICTIONS"]["en"] = "List restrictions";
+$message["COMMON_RESTRICTIONS_SHORT"]["en"] = "Restrictions";
 $message["COMMON_RESTRICTION_SEARCH"]["en"] = "Search restrictions";
 $message["COMMON_RIGHTS"]["en"] = "Access rights";
 $message["COMMON_RIGHTS_DESCRIPTION"]["en"] = "Rights for editing the entry and publishing date";

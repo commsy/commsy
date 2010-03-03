@@ -580,6 +580,7 @@ $message["COMMON_RESET"]["de"] = "Zurücksetzen";
 $message["COMMON_RESET_SEARCH"]["de"] = "zurücksetzen";
 $message["COMMON_RESET_SEARCH_DESC"]["de"] = "Dies setzt die Einschränkung durch die Suche nach %1 zurück. Es werden wieder alle Einträge angezeigt.";
 $message["COMMON_RESTRICTIONS"]["de"] = "Einschränkungen der Liste";
+$message["COMMON_RESTRICTIONS_SHORT"]["de"] = "Einschränkungen";
 $message["COMMON_RESTRICTION_SEARCH"]["de"] = "Einschränkungen der Suche";
 $message["COMMON_RIGHTS"]["de"] = "Zugriffsrechte";
 $message["COMMON_RIGHTS_DESCRIPTION"]["de"] = "Einstellung von Bearbeitungsrechten und Veröffentlichungstermin";
