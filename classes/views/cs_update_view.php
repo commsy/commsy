@@ -185,6 +185,16 @@ class cs_update_view extends cs_view {
       return $retour;
    }
 
+   private function _existsTable ( $table ) {
+      $retour = false;
+      $sql = 'SHOW TABLES LIKE "'.$table.'"';
+      $result = $this->_select($sql);
+      if(!empty($result)){
+      	$retour = true;
+      }
+      return $retour;
+   }
+   
    /** get content of plugin as HTML
     * this method returns the content of the plugin in HTML-Code
     *
