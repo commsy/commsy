@@ -289,14 +289,18 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       }
 
       if (isset($parameter_array['show_todo_selections']) and $parameter_array['show_todo_selections'] == 'true'){
-         $html .= '<div class="right_box_main" style="'.$width.' height:290px; overflow-y:auto;">'.LF;
+         if ($this->_presentation_mode == '2'){
+            $html .= '<div class="right_box_main" style="'.$width.' height:393px; overflow-y:auto;">'.LF;
+         }else{
+            $html .= '<div class="right_box_main" style="'.$width.' height:273px; overflow-y:auto;">'.LF;
+         }
          $html .= $this->_getAdditionalFormFieldsAsHTML();
          $html .= '</div>'.LF;
       }else{
          if ($this->_presentation_mode == '2'){
-            $html .= '<div class="right_box_main" style="'.$width.' height:410px; overflow-y:auto; padding:0px;">'.LF;
+            $html .= '<div class="right_box_main" style="'.$width.' height:398px; overflow-y:auto; padding:0px;">'.LF;
          }else{
-            $html .= '<div class="right_box_main" style="'.$width.' height:290px; overflow-y:auto; padding:0px;">'.LF;
+            $html .= '<div class="right_box_main" style="'.$width.' height:278px; overflow-y:auto; padding:0px;">'.LF;
          }
          if (!$todo_list->isEmpty()){
            $todo_item = $todo_list->getFirst();
@@ -394,7 +398,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                $html .= '</div>';
                $html .= '</div>';
                $html .= '</div>';
-	           $html .= '<div class="right_box_main" style="height: 170px; '.$width.'">'.LF;
+	           $html .= '<div class="right_box_main" style="height: 180px; '.$width.'">'.LF;
                $html .= $this->_getAdditionalFormFieldsForPrivateRoomAsHTML().LF;
 #               $html .= '</div>';
             }else{
@@ -430,7 +434,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                $html .= '</div>';
                $html .= '</div>';
                $html .= '</div>';
-	           $html .= '<div class="right_box_main" style="height: 170px; '.$width.'">'.LF;
+	           $html .= '<div class="right_box_main" style="height: 180px; '.$width.'">'.LF;
 	     	   $html .= $this->_getAdditionalCalendarAsHTML().LF;
 #               $html .= '</div>';
             }
