@@ -4367,7 +4367,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       } elseif ($this->_presentation_mode == 2) {
       	$additional_calendar_href .= '&month=';
       }
-   	$html = '<div id="additional_calendar" class="additional_calendar" style="width:100%; margin:auto; padding:3px 0px 3px 0px; height:160px;"></div>';
+   	$html = '<div id="additional_calendar" class="additional_calendar" style="width:100%; margin:auto; padding:3px 0px 3px 0px;"></div>';
    	$html .= '<script type="text/javascript">'.LF;
       $html .= '<!--'.LF;
       $html .= 'var additional_calendar_href = "' . $additional_calendar_href . '"'.LF;
