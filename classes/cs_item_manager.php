@@ -73,6 +73,7 @@ class cs_item_manager extends cs_manager {
       parent::resetLimits();
       $this->_age_limit = NULL;
       $this->_type_limit = NULL;
+      $this->_order_limit = NULL;
       $this->_label_limit = NULL;
       $this->_interval_limit = NULL;
       $this->_type_array_limit = array();
@@ -98,6 +99,10 @@ class cs_item_manager extends cs_manager {
 
    function setTypeArrayLimit ($array) {
      $this->_type_array_limit = $array;
+   }
+
+   function setOrderLimit ($limit) {
+     $this->_order_limit = $limit;
    }
 
    function setUserUserIDLimit ($limit) {
@@ -234,6 +239,46 @@ class cs_item_manager extends cs_manager {
      return $this->_getItemList('items', $id_array);
   }
 
+  function getPrivateRoomHomeItemList ($id_array) {
+      /** cs_list is needed for storage the commsy items
+       */
+      $type = 'items';
+      include_once('classes/cs_list.php');
+      if ( empty($id_array) ) {
+         return new cs_list();
+      } else {
+         if ( $type == 'discussion' ) {
+            $type = 'discussions';
+         }
+         elseif ( $type == 'todo' ) {
+            $type = 'todos';
+         }
+         $query = "SELECT * FROM ".encode(AS_DB,$this->addDatabasePrefix($type))." WHERE ".encode(AS_DB,$this->addDatabasePrefix($type)).".item_id IN ('".implode("', '",encode(AS_DB,$id_array))."')";
+         $query .= ' ORDER BY '.$this->addDatabasePrefix('items').'.modification_date DESC';
+         $result = $this->_db_connector->performQuery($query);
+         if ( !isset($result) ) {
+            include_once('functions/error_functions.php');
+            trigger_error('Problems selecting list of '.$type.' items.',E_USER_WARNING);
+         } else {
+            $list = new cs_list();
+            foreach ($result as $rs ) {
+               // special for todo
+               if ( $type == 'todos' and isset($rs['date']) ){
+                  $rs['end_date'] = $rs['date'];
+                  unset($rs['date']);
+               }
+               $list->add($this->_buildItem($rs));
+            }
+            unset($result);
+         }
+         unset($query);
+         unset($id_array);
+         unset($type);
+
+         return $list;
+      }
+  }
+
    function getAllUsedRubricsOfRoomList($room_ids){
         $rs = array();
         $query = 'SELECT DISTINCT '.$this->addDatabasePrefix('items').'.context_id, '.$this->addDatabasePrefix('items').'.type, label.type AS subtype';
@@ -259,6 +304,36 @@ class cs_item_manager extends cs_manager {
         }
         return $rs;
    }
+
+   function getAllNewPrivateRoomEntriesOfRoomList($room_ids){
+        $rs = array();
+        $query = 'SELECT DISTINCT '.$this->addDatabasePrefix('items').'.item_id';
+        $query .= ' FROM '.$this->addDatabasePrefix('items');
+        $query .= ' WHERE 1';
+        $query .= ' AND '.$this->addDatabasePrefix('items').'.context_id IN ('.implode(",",encode(AS_DB,$room_ids)).')';
+        $query .= ' AND '.$this->addDatabasePrefix('items').'.deleter_id IS NULL';
+        $query .= ' AND '.$this->addDatabasePrefix('items').'.deletion_date IS NULL';
+        $query .= ' AND '.$this->addDatabasePrefix('items').'.type != "annotation"';
+        $query .= ' AND '.$this->addDatabasePrefix('items').'.type != "link_item"';
+        $query .= ' AND '.$this->addDatabasePrefix('items').'.type != "task"';
+        if (isset($this->_age_limit)) {
+           $query .= ' AND '.$this->addDatabasePrefix('items').'.modification_date > DATE_SUB(CURRENT_DATE,interval '.encode(AS_DB,$this->_age_limit).' day)';
+        }
+        $query .= ' ORDER BY '.$this->addDatabasePrefix('items').'.modification_date DESC';
+        $query .= ' LIMIT ';
+        $query .= 20;
+        // perform query
+        $result = $this->_db_connector->performQuery($query);
+        if (!isset($result)) {
+           include_once('functions/error_functions.php');trigger_error('Problems selecting items from query: "'.$query.'"',E_USER_WARNING);
+        } else {
+            foreach ( $result as $query_result ) {
+                $rs[] = $query_result['item_id'];
+           }
+        }
+        return $rs;
+   }
+
 
    function getAllNewEntriesOfRoomList($room_ids){
         $rs = array();

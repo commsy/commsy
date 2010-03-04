@@ -25,6 +25,46 @@
 
 if (isset($c_use_new_private_room) and $c_use_new_private_room){
 
+
+$room_id_array = array();
+$room_id_array[] = $current_context->getItemID();
+$grouproom_list = $current_user_item->getRelatedGroupList();
+if ( isset($grouproom_list) and $grouproom_list->isNotEmpty()) {
+   $grouproom_list->reverse();
+   $grouproom_item = $grouproom_list->getFirst();
+   while ($grouproom_item) {
+      $project_room_id = $grouproom_item->getLinkedProjectItemID();
+      if ( in_array($project_room_id,$room_id_array) ) {
+         $room_id_array_temp = array();
+         foreach ($room_id_array as $value) {
+            $room_id_array_temp[] = $value;
+            if ( $value == $project_room_id) {
+                $room_id_array_temp[] = $grouproom_item->getItemID();
+            }
+         }
+         $room_id_array = $room_id_array_temp;
+      }
+      $grouproom_item = $grouproom_list->getNext();
+   }
+}
+$project_list = $current_user_item->getRelatedProjectList();
+if ( isset($project_list) and $project_list->isNotEmpty()) {
+   $project_item = $project_list->getFirst();
+   while ($project_item) {
+       $room_id_array[] = $project_item->getItemID();
+       $project_item = $project_list->getNext();
+   }
+}
+$community_list = $current_user_item->getRelatedcommunityList();
+if ( isset($community_list) and $community_list->isNotEmpty()) {
+   $community_item = $community_list->getFirst();
+   while ($community_item) {
+       $room_id_array[] = $community_item->getItemID();
+       $community_item = $community_list->getNext();
+   }
+}
+
+
 $params = array();
 $params['environment'] = $environment;
 $params['with_modifying_actions'] = $context_item->isOpen();
@@ -77,30 +117,22 @@ $portlet_array[] = $clock_view;
 /* NEW ENTRIES */
 $params = array();
 $params['environment'] = $environment;
+$item_manager = $environment->getItemManager();
+$item_manager->setOrderLimit(true);
+$item_manager->setIntervalLimit(true);
+$new_entry_array = $item_manager->getAllNewPrivateRoomEntriesOfRoomList($room_id_array);
+
+$new_entry_list = $item_manager->getPrivateRoomHomeItemList($new_entry_array);
+#$item_manager->setContextArrayLimit($room_id_array);
+#$item_manager->select();
+#$new_entry_list = $item_manager->getList();
 $params['with_modifying_actions'] = $current_context->isOpen();
 $new_entries_view = $class_factory->getClass(PRIVATEROOM_HOME_NEW_ENTRIES_VIEW,$params);
+$new_entries_view->setList($new_entry_list);
 unset($params);
 $portlet_array[] = $new_entries_view;
 /* END NEW ENTRIES */
 
-
-/* CONFIGURATION */
-$params = array();
-$params['environment'] = $environment;
-$params['with_modifying_actions'] = $current_context->isOpen();
-$configuration_view = $class_factory->getClass(PRIVATEROOM_HOME_CONFIGURATION_VIEW,$params);
-unset($params);
-$portlet_array[] = $configuration_view;
-/* CONFIGURATION END */
-
-/* WEATHER */
-$params = array();
-$params['environment'] = $environment;
-$params['with_modifying_actions'] = $current_context->isOpen();
-$weather_view = $class_factory->getClass(PRIVATEROOM_HOME_WEATHER_VIEW,$params);
-unset($params);
-$portlet_array[] = $weather_view;
-/* WEATHER END */
 
 /* BUZZWORDS */
 if ( $current_context->withBuzzwords() ){
@@ -113,6 +145,16 @@ if ( $current_context->withBuzzwords() ){
 }
 /* END BUZZWORDS */
 
+/* WEATHER */
+$params = array();
+$params['environment'] = $environment;
+$params['with_modifying_actions'] = $current_context->isOpen();
+$weather_view = $class_factory->getClass(PRIVATEROOM_HOME_WEATHER_VIEW,$params);
+unset($params);
+$portlet_array[] = $weather_view;
+/* WEATHER END */
+
+
 /* NEWS */
 $params = array();
 $params['environment'] = $environment;
@@ -121,6 +163,15 @@ $news_view = $class_factory->getClass(PRIVATEROOM_HOME_NEWS_VIEW,$params);
 unset($params);
 $portlet_array[] = $news_view;
 /* END NEWS */
+
+/* CONFIGURATION */
+$params = array();
+$params['environment'] = $environment;
+$params['with_modifying_actions'] = $current_context->isOpen();
+$configuration_view = $class_factory->getClass(PRIVATEROOM_HOME_CONFIGURATION_VIEW,$params);
+unset($params);
+$portlet_array[] = $configuration_view;
+/* CONFIGURATION END */
 
 /* RSS TICKER */
 $params = array();

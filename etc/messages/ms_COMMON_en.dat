@@ -447,6 +447,7 @@ $message["COMMON_NETNAVIGATION_ENTRIES"]["en"] = "related contents";
 $message["COMMON_NETNAVIGATION_LATEST_ENTRIES"]["en"] = "Latest added references";
 $message["COMMON_NEW"]["en"] = "New";
 $message["COMMON_NEWEST_ENTRIES"]["en"] = "Newest entries";
+$message["COMMON_NEWEST_ENTRIES_IN_ROOMS"]["en"] = "Newest entries in all rooms where %1 is member.";
 $message["COMMON_NEWS"]["en"] = "News";
 $message["COMMON_NEW_ANNOTATION"]["en"] = "New comment";
 $message["COMMON_NEW_ANNOUNCEMENT_EDIT"]["en"] = "Create new announcement";
