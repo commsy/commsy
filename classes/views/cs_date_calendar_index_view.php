@@ -284,6 +284,8 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $current_browser_version = $this->_environment->getCurrentBrowserVersion();
       if ( $current_browser == 'msie' and (strstr($current_browser_version,'5.') or (strstr($current_browser_version,'6.'))) ){
          $width = 'width:170px;';
+      } else {
+      	$width = 'width:198px;';
       }
 
       if (isset($parameter_array['show_todo_selections']) and $parameter_array['show_todo_selections'] == 'true'){
