@@ -64,10 +64,6 @@ class cs_private_room_detailed_short_view extends cs_view{
       $this->_user_for_room_array = $user_array;
    }
 
-   function setPortletViewArray($portlet_array){
-      $this->_portlet_views = $portlet_array;
-   }
-
    function _getForwardLinkAsHTML () {
       // short names for easy reading
       $from      = $this->_from;
@@ -465,47 +461,6 @@ class cs_private_room_detailed_short_view extends cs_view{
    }
 
 
-   function _getPortletsAsHTML($portlet_array,$columns){
-      $html = '<div style="margin-top:10px;">';
-      $column_count = 0;
-      $html_array = array();
-      $width= 100/($columns + $columns -1);
-      for ($i=0; $i< ($columns + 1); $i++){
-         if ($i < ($columns -1)){
-            $html_array[$i] = '<div class="column" style="width:'.($width*2).'%;">';
-         }else{
-            $html_array[$i] = '<div class="column" style="width:'.$width.'%;">';
-         }
-      }
-      foreach ($portlet_array as $portlet){
-         if ($column_count == $columns){
-            $column_count = 0;
-         }
-         $html_array[$column_count] .= $this->_getPortletAsHTML($portlet['title'],$portlet['content']);
-#         $html_array[$column_count % $columns] .= $this->_getPortletAsHTML($portlet['title'],$portlet['content']);
-         $column_count++;
-      }
-
-      for ($i=0; $i< ($columns + 1); $i++){
-         $html_array[$i] .= '</div>';
-      }
-      foreach ($html_array as $html_entry){
-         $html .= $html_entry;
-      }
-      $html .= '</div>';
-      return $html;
-
-   }
-
-   function _getPortletAsHTML($title,$content){
-      $html  = '<div class="portlet">'.LF;
-      $html .= '<div class="portlet-header">'.$title.'</div>'.LF;
-      $html .= '<div class="portlet-content">'.$content.'</div>'.LF;
-      $html .= '</div>'.LF;
-      return $html;
-   }
-
-
    /** get list view as HTML
     * this method returns the list view in HTML-Code
     *
@@ -515,70 +470,6 @@ class cs_private_room_detailed_short_view extends cs_view{
     */
    function asHTML () {
 
-
-   if (isset($c_use_new_private_room) and $c_use_new_private_room){
-      $html  = LF.'<!-- BEGIN OF LIST VIEW -->'.LF;
-      $context = $this->_environment->getCurrentContextItem();
-#      $html .= LF.'<div class="head" style="margin-bottom:10px;">'.LF;
-#      $html .= '<span style="font-weight: bold">'.$this->_translator->getMessage('COMMON_ROOM_OVERVIEW').'</span>';
-#      $html .= ' '.$this->_getDescriptionAsHTML().' '.LF;
-#      $html .='</div>'.LF;
-
-      $portlet_array = array();
-      $tmp_array['title'] = 'Die 20 neuesten Einträge';
-      $tmp_array['content'] = 'Hier stehen tolle News drin';
-      $portlet_array[] = $tmp_array;
-
-      $tmp_array['title'] = 'News';
-      $tmp_array['content'] = 'Hier stehen tolle News drin';
-      $portlet_array[] = $tmp_array;
-      $tmp_array['title'] = 'News';
-      $tmp_array['content'] = 'Hier stehen tolle News drin';
-      $portlet_array[] = $tmp_array;
-      $tmp_array['title'] = 'News';
-      $tmp_array['content'] = 'Hier stehen tolle News drin';
-      $portlet_array[] = $tmp_array;
-      $tmp_array['title'] = 'News';
-      $tmp_array['content'] = 'Hier stehen tolle News drin';
-      $portlet_array[] = $tmp_array;
-
-      foreach($this->_portlet_views as $portlet_view){
-         $tmp_array['title'] = $portlet_view->getViewTitle();
-         $tmp_array['content'] = $portlet_view->asHTML();
-         $portlet_array[] = $tmp_array;
-      }
-
-
-      $html .= $this->_getPortletsAsHTML($portlet_array,3);
-/*      $list = $this->_list;
-      $user = $this->_environment->getCurrentUserItem();
-      $temp_item  = $list->getFirst();
-      $room_id_array = array();
-      while ($temp_item) {
-         $room_id_array[] = $temp_item->getItemID();
-         $temp_item = $list->getNext();
-      }
-      $material_manager = $this->_environment->getMaterialManager();
-      $material_manager->create_tmp_table_by_id_array($room_id_array);
-      $current_item  = $list->getFirst();
-      while ($current_item) {
-         $html.= '<div style="margin-bottom:20px;">'.LF;
-         $item_text = $this->_getRoomWindowAsHTML($current_item);
-         $html .= $item_text;
-         $html .= '</div>'.LF;
-         $current_item = $list->getNext();
-      }
-      $material_manager->delete_tmp_table();
-      $html .= '<!-- END OF LIST VIEW -->'.LF.LF;*/
-      return $html;
-
-
-
-    /**************/
-    /* Alter Code */
-    /**************/
-
-    }else{
       $html  = LF.'<!-- BEGIN OF LIST VIEW -->'.LF;
 #      $html .= LF.'<div class="head" style="margin-bottom:10px;">'.LF;
 #      $context = $this->_environment->getCurrentContextItem();
@@ -607,11 +498,6 @@ class cs_private_room_detailed_short_view extends cs_view{
       $material_manager->delete_tmp_table();
       $html .= '<!-- END OF LIST VIEW -->'.LF.LF;
       return $html;
-    }
-    /*******************/
-    /* ENDE Alter Code */
-    /*******************/
-
 
    }
 

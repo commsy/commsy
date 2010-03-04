@@ -8,7 +8,6 @@ pages/home_index.php
 pages/date_index.php
 
 Methodeweise Weiche
-classes/views/cs_private_room_detailed_short_view.php (asHTML())
 classes/views/cs_home_title_view.php (asHTML())
 classes/views/cs_myroom_index_view.php (asHTML, _getIndexPageHeaderAsHTML(), getRoomWindowAsHTML())
 
