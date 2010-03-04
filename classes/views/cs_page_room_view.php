@@ -210,6 +210,7 @@ class cs_page_room_view extends cs_page_view {
     * @return string linkbar as HTML
     */
    function _getLinkRowAsHTML ($bottom=false) {
+      global $c_use_new_private_room;
       $html  = LF.'<!-- BEGIN TABS -->'.LF;
       $html .= '<div id="tabs_frame" >'.LF;
       if ($bottom){

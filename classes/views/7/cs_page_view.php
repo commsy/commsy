@@ -508,6 +508,7 @@ class cs_page_view extends cs_view {
 
    function _includedJavascriptAsHTML(){
       global $c_commsy_url_path;
+      global $c_use_new_private_room;
       $module   = $this->_environment->getCurrentModule();
       $current_user   = $this->_environment->getCurrentUserItem();
       $function = $this->_environment->getCurrentFunction();

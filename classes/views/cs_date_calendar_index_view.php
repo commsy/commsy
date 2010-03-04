@@ -45,6 +45,8 @@ class cs_date_calendar_index_view extends cs_room_index_view {
    var $_week_start;
    var $_available_color_array = array('#999999','#CC0000','#FF6600','#FFCC00','#FFFF66','#33CC00','#00CCCC','#3366FF','#6633FF','#CC33CC');
    var $_selected_color = NULL;
+   var $_todo_list = NULL;
+   var $_count_all_todos = NULL;
 
    // SUNBIRD
    var $use_sunbird = true;
@@ -71,7 +73,23 @@ class cs_date_calendar_index_view extends cs_room_index_view {
        }
     }
 
+    function setToDoList ($list) {
+       $this->_todo_list = $list;
+       if (!empty($this->_list)){
+          $id_array = array();
+          $item = $list->getFirst();
+          while($item){
+             $id_array[] = $item->getModificatorID();
+             $item = $list->getNext();
+          }
+          $user_manager = $this->_environment->getUserManager();
+          $user_manager->getRoomUserByIDsForCache($this->_environment->getCurrentContextID(),$id_array);
+       }
+    }
 
+    function setCountAllTodos($count){
+       $this->_count_all_todos = $count;
+    }
 
     function setPresentationMode($mode){
        $this->_presentation_mode = $mode;
@@ -183,87 +201,314 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $this->_display_mode = $status;
    }
 
-   function _getListInfosAsHTML ($title) {
-      $current_context = $this->_environment->getCurrentContextItem();
-      $current_user = $this->_environment->getCurrentUserItem();
-      $html  = '';
-      $html .= '<div class="right_box">'.LF;
-      $html .= '<div class="right_box_title">'.LF;
+   function _getTodosListAsHTML($todo_list){
+      $html = '';
+      $html .= '</div>'.LF;
+      $html .= '</div>'.LF;
+      $html .= '<div class="right_box" style="margin-top:10px;">'.LF;
+      $html .= '<div id="tabs_frame_todo_right_box">'.LF;
+      $html .= '<div id="tabs_todo_right_box">'.LF;
+      $html .= '<div style="float:right;">'.$this->_getToDoActionsAsHTML().'</div>'.LF;
+      $html .= '<div id="tablist_todo_right_box">'.LF;
+      $parameter_array = $this->_environment->getCurrentParameterArray();
+      if (isset($parameter_array['show_todo_selections']) and $parameter_array['show_todo_selections'] == 'true'){
+         $new_parameter_array = $parameter_array;
+         unset($new_parameter_array['show_todo_selections']);
+         $html .= ahref_curl(
+                             $this->_environment->getCurrentContextID(),
+                             $this->_environment->getCurrentModule(),
+                             'index',
+                             $new_parameter_array,
+                             $this->_translator->getMessage('TODO_INDEX').' ',
+                             '',
+                             '',
+                             '',
+                             '',
+                             '',
+                             '',
+                             'class="navlist"').LF;
+         $new_parameter_array['show_todo_selections'] = 'true';
+         $html .= ahref_curl(
+                             $this->_environment->getCurrentContextID(),
+                             $this->_environment->getCurrentModule(),
+                             'index',
+                             $new_parameter_array,
+                             $this->_translator->getMessage('COMMON_RESTRICTION_SHORT'),
+                             '',
+                             '',
+                             '',
+                             '',
+                             '',
+                             '',
+                             'class="navlist_current"').LF;
+         $html .= '</div>';
+         $html .= '</div>';
+         $html .= '</div>';
+      }else{
+         $new_parameter_array = $parameter_array;
+         unset($new_parameter_array['show_todo_selections']);
+         $html .= ahref_curl(
+                             $this->_environment->getCurrentContextID(),
+                             $this->_environment->getCurrentModule(),
+                             'index',
+                             $new_parameter_array,
+                             $this->_translator->getMessage('TODO_INDEX').' ',
+                             '',
+                             '',
+                             '',
+                             '',
+                             '',
+                             '',
+                             'class="navlist_current"').LF;
+         $new_parameter_array['show_todo_selections'] = 'true';
+         $html .= ahref_curl(
+                             $this->_environment->getCurrentContextID(),
+                             $this->_environment->getCurrentModule(),
+                             'index',
+                             $new_parameter_array,
+                             $this->_translator->getMessage('COMMON_RESTRICTION_SHORT'),
+                             '',
+                             '',
+                             '',
+                             '',
+                             '',
+                             '',
+                             'class="navlist"').LF;
+         $html .= '</div>';
+         $html .= '</div>';
+         $html .= '</div>';
 
-      $date = date("Y-m-d");
-      $date_array = explode('-',$date);
-      $month = mb_substr($this->_month,4,2);
-      $first_char = mb_substr($month,0,1);
-      if ($first_char == '0'){
-         $month = mb_substr($month,1,2);
       }
-      $month_array = array($this->_translator->getMessage('DATES_JANUARY_LONG'),
-      $this->_translator->getMessage('DATES_FEBRUARY_LONG'),
-      $this->_translator->getMessage('DATES_MARCH_LONG'),
-      $this->_translator->getMessage('DATES_APRIL_LONG'),
-      $this->_translator->getMessage('DATES_MAY_LONG'),
-      $this->_translator->getMessage('DATES_JUNE_LONG'),
-      $this->_translator->getMessage('DATES_JULY_LONG'),
-      $this->_translator->getMessage('DATES_AUGUST_LONG'),
-      $this->_translator->getMessage('DATES_SEPTEMBER_LONG'),
-      $this->_translator->getMessage('DATES_OCTOBER_LONG'),
-      $this->_translator->getMessage('DATES_NOVEMBER_LONG'),
-      $this->_translator->getMessage('DATES_DECEMBER_LONG'));
-      $tempMessage = $month_array[$month-1].' '.$this->_year;
-      $html .= '<div style="white-space:nowrap;">'.$tempMessage.'</div>'.LF;
-      $html .='</div>'.LF;
-
       $width = '';
       $current_browser = mb_strtolower($this->_environment->getCurrentBrowser(), 'UTF-8');
       $current_browser_version = $this->_environment->getCurrentBrowserVersion();
       if ( $current_browser == 'msie' and (strstr($current_browser_version,'5.') or (strstr($current_browser_version,'6.'))) ){
          $width = 'width:170px;';
       }
-      $html .= '<div class="right_box_main" style="'.$width.'">'.LF;
 
-      if($this->calendar_with_javascript()){
-      	$html .= $this->_getAdditionalCalendarAsHTML().LF;
+      if (isset($parameter_array['show_todo_selections']) and $parameter_array['show_todo_selections'] == 'true'){
+         $html .= '<div class="right_box_main" style="'.$width.' height:290px; overflow-y:auto;">'.LF;
+         $html .= $this->_getAdditionalFormFieldsAsHTML();
+         $html .= '</div>'.LF;
+      }else{
+         if ($this->_presentation_mode == '2'){
+            $html .= '<div class="right_box_main" style="'.$width.' height:410px; overflow-y:auto; padding:0px;">'.LF;
+         }else{
+            $html .= '<div class="right_box_main" style="'.$width.' height:290px; overflow-y:auto; padding:0px;">'.LF;
+         }
+         if (!$todo_list->isEmpty()){
+           $todo_item = $todo_list->getFirst();
+           $i = 1;
+           while ($todo_item){
+              if ($i%2 == 0)
+                 $color = '#DFDFDF';
+              else{
+                 $color = '#FFFFFF';
+              }
+              $html .= '<div style="background-color:'.$color.'; width:100%; overflow-x:hidden; white-space:nowrap;"><div style="padding:2px 3px;">'.LF;
+              $params = array();
+              $params['iid'] = $todo_item->getItemID();
+              $original_date = $todo_item->getDate();
+              $date = getDateInLang($original_date);
+              $actual_date = date("Y-m-d H:i:s");
+              if ($original_date < $actual_date){
+                 $style = 'class="required" style="font-weight:normal;"';
+              }else{
+             	 $style = 'style="color:#05860F;"';
+              }
+              $html .= ahref_curl(
+                               $todo_item->getContextID(),
+                               CS_TODO_TYPE,
+                               'detail',
+                               $params,
+                               $this->_text_as_html_short($todo_item->getTitle()),
+                               '',
+                               '',
+                               '',
+                               '',
+                               '',
+                               '',
+                               $style).LF;
+              $html .= '</div></div>';
+              $i++;
+              $todo_item = $todo_list->getNext();
+           }
+         }
+         $html .= '</div>'.LF;
       }
-
-      $html .= $this->_getAdditionalFormFieldsAsHTML().LF;
-
-      $html .= '<div class="listinfoborder"></div>'.LF;
-      $params = $this->_environment->getCurrentParameterArray();
-      unset($params['week']);
-      unset($params['year']);
-      unset($params['month']);
-      unset($params['presentation_mode']);
-      $params['seldisplay_mode'] = 'normal';
-      $html .= '<table style="width:100%; padding:0px; margin:0px; border-collapse:collapse;">';
-      $html .='<tr>'.LF;
-      $html .='<td>'.LF;
-      $html .= '<span class="infocolor">'.$this->_translator->getMessage('DATE_ALTERNATIVE_DISPLAY').': </span>';
-      $html .='</td>'.LF;
-      $html .='<td style="text-align:right;">'.LF;
-      $html .= ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),'index',$params,$this->_translator->getMessage('DATES_COMMON_DISPLAY')).LF;
-      $html .='</td>'.LF;
-      $html .='</tr>'.LF;
-      #$html .='<tr>'.LF;
-      #$html .='<td colspan="2">'.LF;
-      #$html .= '<select style="width: 10em; font-size:10pt;" name="presentation_mode" size="1" id="submit_form">'.LF;
-      #$html .= '<option value="2"';
-      #if ($this->_presentation_mode == '2'){
-      #   $html .= ' selected="selected"';
-      #}
-      #$html .= '>'.$this->_translator->getMessage('DATE_MONTH_PRESENTATION').'</option>'.LF;
-      #$html .= '      <option value="1"';
-      #if ($this->_presentation_mode != '2'){
-      #   $html .= ' selected="selected"';
-      #}
-      #$html .= '>'.$this->_translator->getMessage('DATE_WEEK_PRESENTATION').'</option>'.LF;
-      #$html .= '   </select>'.LF;
-      #$html .='</td>'.LF;
-      #$html .='</tr>'.LF;
-      $html .='</table>'.LF;
-
       $html .= '</div>'.LF;
-      $html .= '</div>'.LF;
+      return $html;
+   }
 
+   function _getListInfosAsHTML ($title) {
+      global $c_use_new_private_room;
+      $current_context = $this->_environment->getCurrentContextItem();
+      $current_user = $this->_environment->getCurrentUserItem();
+      $html  = '';
+	  $width = '';
+	  $current_browser = mb_strtolower($this->_environment->getCurrentBrowser(), 'UTF-8');
+	  $current_browser_version = $this->_environment->getCurrentBrowserVersion();
+	  if ( $current_browser == 'msie' and (strstr($current_browser_version,'5.') or (strstr($current_browser_version,'6.'))) ){
+	     $width = 'width:170px;';
+	  }
+
+      if ($current_context->isPrivateRoom() and (isset($c_use_new_private_room) and $c_use_new_private_room)){
+         $html .= '<div class="right_box">'.LF;
+	     if($this->calendar_with_javascript()){
+            $html .= '<div id="tabs_frame_right_box">'.LF;
+            $html .= '<div id="tabs_right_box">'.LF;
+            $html .= '<div id="tablist_right_box">'.LF;
+            $parameter_array = $this->_environment->getCurrentParameterArray();
+            if (isset($parameter_array['show_selections']) and $parameter_array['show_selections'] == 'true'){
+               $new_parameter_array = $parameter_array;
+               unset($new_parameter_array['show_selections']);
+               $html .= ahref_curl(
+                                   $this->_environment->getCurrentContextID(),
+                                   $this->_environment->getCurrentModule(),
+                                   'index',
+                                   $new_parameter_array,
+                                   $this->_translator->getMessage('DATES_END_DAY'),
+                                   '',
+                                   '',
+                                   '',
+                                   '',
+                                   '',
+                                   '',
+                                   'class="navlist"').LF;
+               $new_parameter_array['show_selections'] = 'true';
+               $html .= ahref_curl(
+                                   $this->_environment->getCurrentContextID(),
+                                   $this->_environment->getCurrentModule(),
+                                   'index',
+                                   $new_parameter_array,
+                                   $this->_translator->getMessage('COMMON_RESTRICTION_SHORT'),
+                                   '',
+                                   '',
+                                   '',
+                                   '',
+                                   '',
+                                   '',
+                                   'class="navlist_current"').LF;
+               $html .= '</div>';
+               $html .= '</div>';
+               $html .= '</div>';
+	           $html .= '<div class="right_box_main" style="height: 170px; '.$width.'">'.LF;
+               $html .= $this->_getAdditionalFormFieldsForPrivateRoomAsHTML().LF;
+#               $html .= '</div>';
+            }else{
+               $new_parameter_array = $parameter_array;
+               unset($new_parameter_array['show_selections']);
+               $html .= ahref_curl(
+                                   $this->_environment->getCurrentContextID(),
+                                   $this->_environment->getCurrentModule(),
+                                   'index',
+                                   $new_parameter_array,
+                                   $this->_translator->getMessage('DATES_END_DAY'),
+                                   '',
+                                   '',
+                                   '',
+                                   '',
+                                   '',
+                                   '',
+                                   'class="navlist_current"').LF;
+               $new_parameter_array['show_selections'] = 'true';
+               $html .= ahref_curl(
+                                   $this->_environment->getCurrentContextID(),
+                                   $this->_environment->getCurrentModule(),
+                                   'index',
+                                   $new_parameter_array,
+                                   $this->_translator->getMessage('COMMON_RESTRICTION_SHORT'),
+                                   '',
+                                   '',
+                                   '',
+                                   '',
+                                   '',
+                                   '',
+                                   'class="navlist"').LF;
+               $html .= '</div>';
+               $html .= '</div>';
+               $html .= '</div>';
+	           $html .= '<div class="right_box_main" style="height: 170px; '.$width.'">'.LF;
+	     	   $html .= $this->_getAdditionalCalendarAsHTML().LF;
+#               $html .= '</div>';
+            }
+	     }else{
+            $html .= '<div class="right_box">'.LF;
+            $html .= '<div class="right_box_title">'.LF;
+            $html .= '</div>';
+	        $html .= '<div class="right_box_main" style="height: 170px; '.$width.'">'.LF;
+            $html .= $this->_getAdditionalFormFieldsForPrivateRoomAsHTML().LF;
+            $html .= '</div>';
+            $html .= '</div>';
+	     }
+         $html .= $this->_getTodosListAsHTML($this->_todo_list);
+      }else{
+         $html .= '<div class="right_box">'.LF;
+         $html .= '<div class="right_box_title">'.LF;
+      	 $date = date("Y-m-d");
+	     $date_array = explode('-',$date);
+	     $month = mb_substr($this->_month,4,2);
+	     $first_char = mb_substr($month,0,1);
+	     if ($first_char == '0'){
+	        $month = mb_substr($month,1,2);
+	     }
+	     $month_array = array($this->_translator->getMessage('DATES_JANUARY_LONG'),
+	     $this->_translator->getMessage('DATES_FEBRUARY_LONG'),
+	     $this->_translator->getMessage('DATES_MARCH_LONG'),
+	     $this->_translator->getMessage('DATES_APRIL_LONG'),
+	     $this->_translator->getMessage('DATES_MAY_LONG'),
+	     $this->_translator->getMessage('DATES_JUNE_LONG'),
+	     $this->_translator->getMessage('DATES_JULY_LONG'),
+	     $this->_translator->getMessage('DATES_AUGUST_LONG'),
+	     $this->_translator->getMessage('DATES_SEPTEMBER_LONG'),
+	     $this->_translator->getMessage('DATES_OCTOBER_LONG'),
+	     $this->_translator->getMessage('DATES_NOVEMBER_LONG'),
+	     $this->_translator->getMessage('DATES_DECEMBER_LONG'));
+	     $tempMessage = $month_array[$month-1].' '.$this->_year;
+	     $html .= '<div style="white-space:nowrap;">'.$tempMessage.'</div>'.LF;
+	     $html .='</div>'.LF;
+
+	     $html .= '<div class="right_box_main" style="'.$width.'">'.LF;
+	     if($this->calendar_with_javascript()){
+	     	$html .= $this->_getAdditionalCalendarAsHTML().LF;
+	     }
+         $html .= $this->_getAdditionalFormFieldsAsHTML().LF;
+         $html .= '<div class="listinfoborder"></div>'.LF;
+         $params = $this->_environment->getCurrentParameterArray();
+         unset($params['week']);
+         unset($params['year']);
+         unset($params['month']);
+         unset($params['presentation_mode']);
+         $params['seldisplay_mode'] = 'normal';
+         $html .= '<table style="width:100%; padding:0px; margin:0px; border-collapse:collapse;">';
+         $html .='<tr>'.LF;
+         $html .='<td>'.LF;
+         $html .= '<span class="infocolor">'.$this->_translator->getMessage('DATE_ALTERNATIVE_DISPLAY').': </span>';
+         $html .='</td>'.LF;
+         $html .='<td style="text-align:right;">'.LF;
+         $html .= ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),'index',$params,$this->_translator->getMessage('DATES_COMMON_DISPLAY')).LF;
+         $html .='</td>'.LF;
+         $html .='</tr>'.LF;
+         #$html .='<tr>'.LF;
+	     #$html .='<td colspan="2">'.LF;
+	     #$html .= '<select style="width: 10em; font-size:10pt;" name="presentation_mode" size="1" id="submit_form">'.LF;
+	     #$html .= '<option value="2"';
+	     #if ($this->_presentation_mode == '2'){
+	     #   $html .= ' selected="selected"';
+	     #}
+	     #$html .= '>'.$this->_translator->getMessage('DATE_MONTH_PRESENTATION').'</option>'.LF;
+	     #$html .= '      <option value="1"';
+	     #if ($this->_presentation_mode != '2'){
+	     #   $html .= ' selected="selected"';
+	     #}
+	     #$html .= '>'.$this->_translator->getMessage('DATE_WEEK_PRESENTATION').'</option>'.LF;
+	     #$html .= '   </select>'.LF;
+	     #$html .='</td>'.LF;
+	     #$html .='</tr>'.LF;
+         $html .='</table>'.LF;
+         $html .= '</div>'.LF;
+         $html .= '</div>'.LF;
+     }
      return $html;
    }
 
@@ -320,6 +565,40 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       }
       return $html;
    }
+
+   function _getToDoActionsAsHTML(){
+      $current_context = $this->_environment->getCurrentContextItem();
+      $current_user = $this->_environment->getCurrentUserItem();
+      $html  = '';
+      $hash_manager = $this->_environment->getHashManager();
+      $params = $this->_environment->getCurrentParameterArray();
+      if ($current_user->isUser() and $this->_with_modifying_actions ) {
+         $params = array();
+         $params['iid'] = 'NEW';
+         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+            $image = '<img src="images/commsyicons_msie6/22x22/new.gif" style="height:20px; vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_NEW_ITEM').'" id="new_icon"/>';
+         } else {
+            $image = '<img src="images/commsyicons/22x22/new.png" style="height:20px; vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_NEW_ITEM').'" id="new_icon"/>';
+         }
+         $html .= '&nbsp;&nbsp;'.ahref_curl($this->_environment->getCurrentContextID(),
+                           CS_TODO_TYPE,
+                            'edit',
+                            $params,
+                            $image,
+                            $this->_translator->getMessage('COMMON_NEW_ITEM')).LF;
+         unset($params);
+      } else {
+         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+            $image = '<img src="images/commsyicons_msie6/22x22/new_grey.gif" style="height:20px; vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_NEW_ITEM').'" id="new_icon_disabled"/>';
+         } else {
+            $image = '<img src="images/commsyicons/22x22/new_grey.png" style="height:20px; vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_NEW_ITEM').'" id="new_icon_disabled"/>';
+         }
+         $html .= '&nbsp;&nbsp;<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION_NEW',$this->_translator->getMessage('COMMON_NEW_ITEM')).' "class="disabled">'.$image.'</a>'.LF;
+      }
+      return $html;
+   }
+
+
 
    /** get list view as HTML
     * this method returns the list view in HTML-Code
@@ -404,8 +683,6 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       }
       $html .='<tr>'.LF;
       $html .='<td colspan="3" style="padding-top:0px; vertical-align:top;">'.LF;
-      #$html .= '<table class="list" style="width: 100%; border-collapse: collapse;" summary="Layout">'.LF;
-#      $html .= '<table class="list" style="width: 100%; border-collapse: collapse; border: 0px;" summary="Layout">'.LF;
       if ($this->_presentation_mode == '2'){
          $session_item = $this->_environment->getSessionItem();
          $with_javascript = false;
@@ -523,6 +800,191 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       }
       if (isset($params['month'])){
          $html .= '   <input type="hidden" name="month" value="'.$params['month'].'"/>'.LF;
+      }
+      if (isset($params['show_selections'])){
+         $html .= '   <input type="hidden" name="show_selections" value="'.$params['show_selections'].'"/>'.LF;
+      }
+      $selstatus = $this->getSelectedStatus();
+      $html .= '<div class="infocolor" style="padding-bottom:5px;">'.$this->_translator->getMessage('COMMON_DATE_STATUS').BRLF;
+      // jQuery
+      //$html .= '   <select name="selstatus" size="1" style="width:150px;" onChange="javascript:document.indexform.submit()">'.LF;
+      $html .= '   <select name="selstatus" size="1" style="width:185px;" id="submit_form">'.LF;
+      // jQuery
+      $html .= '      <option value="2"';
+      if ( empty($selstatus) || $selstatus == 2 ) {
+         $html .= ' selected="selected"';
+      }
+      $html .= '>*'.$this->_translator->getMessage('COMMON_NO_SELECTION').'</option>'.LF;
+
+      $html .= '   <option class="disabled" disabled="disabled" value="-2">------------------------------</option>'.LF;
+      $html .= '      <option value="3"';
+      if ( !empty($selstatus) and $selstatus == 3 ) {
+         $html .= ' selected="selected"';
+      }
+      $text = $this->_translator->getMessage('DATES_PUBLIC');
+      $html .= '>'.$text.'</option>'.LF;
+
+      $html .= '      <option value="4"';
+      if ( !empty($selstatus) and $selstatus == 4 ) {
+         $html .= ' selected="selected"';
+      }
+      $text = $this->_translator->getMessage('DATES_NON_PUBLIC');
+      $html .= '>'.$text.'</option>'.LF;
+
+      $html .= '   </select>'.LF;
+      $html .='</div>';
+
+
+      if (isset($this->_used_color_array[0])){
+         $selcolor = $this->_selected_color;
+         $html .= '<div class="infocolor" style="text-align:left; padding-bottom:5px; font-size: 10pt;">'.$this->_translator->getMessage('COMMON_DATE_COLOR').BRLF;
+         if ( !empty($selcolor)) {
+            $style_color = '#'.$selcolor;
+         }else{
+           $style_color = '#000000';
+         }
+         $html .= '   <select style="color:'.$style_color.'; width: 185px; font-size:10pt; margin-bottom:5px;" name="selcolor" size="1" id="submit_form">'.LF;
+
+         $html .= '      <option style="color:#000000;" value="2"';
+         if ( empty($selcolor) || $selcolor == 2 ) {
+            $html .= ' selected="selected"';
+         }
+         $html .= '>*'.$this->_translator->getMessage('COMMON_NO_SELECTION').'</option>'.LF;
+
+         $html .= '   <option class="disabled" disabled="disabled" value="-2">------------------------------</option>'.LF;
+         $color_array = $this->getAvailableColorArray();
+         foreach ($color_array as $color){
+            $html .= '      <option style="color:'.$color.'" value="'.str_replace('#','',$color).'"';
+            if ( !empty($selcolor) and $selcolor == str_replace('#','',$color) ) {
+               $html .= ' selected="selected"';
+            }
+            $color_text = '';
+            switch ($color){
+               case '#999999': $color_text = getMessage('DATE_COLOR_GREY');break;
+               case '#CC0000': $color_text = getMessage('DATE_COLOR_RED');break;
+               case '#FF6600': $color_text = getMessage('DATE_COLOR_ORANGE');break;
+               case '#FFCC00': $color_text = getMessage('DATE_COLOR_DEFAULT_YELLOW');break;
+               case '#FFFF66': $color_text = getMessage('DATE_COLOR_LIGHT_YELLOW');break;
+               case '#33CC00': $color_text = getMessage('DATE_COLOR_GREEN');break;
+               case '#00CCCC': $color_text = getMessage('DATE_COLOR_TURQUOISE');break;
+               case '#3366FF': $color_text = getMessage('DATE_COLOR_BLUE');break;
+               case '#6633FF': $color_text = getMessage('DATE_COLOR_DARK_BLUE');break;
+               case '#CC33CC': $color_text = getMessage('DATE_COLOR_PURPLE');break;
+               default: $color_text = getMessage('DATE_COLOR_UNKNOWN');
+            }
+            $html .= '>'.$color_text.'</option>'.LF;
+         }
+         $html .= '   </select>'.LF;
+         $html .='</div>';
+      }
+
+
+
+      $context_item = $this->_environment->getCurrentContextItem();
+      $current_room_modules = $context_item->getHomeConf();
+      if ( !empty($current_room_modules) ){
+         $room_modules = explode(',',$current_room_modules);
+      } else {
+         $room_modules =  array();
+      }
+      foreach ( $room_modules as $module ) {
+         $link_name = explode('_', $module);
+         if ( $link_name[1] != 'none' ) {
+            if (($context_item->_is_perspective($link_name[0]) and $context_item->withRubric($link_name[0]))
+                or ( $link_name[0] == CS_USER_TYPE and $context_item->withRubric($link_name[0]))
+            ) {
+               $list = $this->getAvailableRubric($link_name[0]);
+               $selrubric = $this->getSelectedRubric($link_name[0]);
+               $temp_link = mb_strtoupper($link_name[0], 'UTF-8');
+               switch ( $temp_link )
+               {
+                  case 'GROUP':
+                     $html .= '<div class="infocolor" style="padding-bottom:5px;">'.$this->_translator->getMessage('COMMON_GROUP');
+                     break;
+                  case 'INSTITUTION':
+                     $html .= '<div class="infocolor" style="padding-bottom:5px;">'.$this->_translator->getMessage('COMMON_INSTITUTION');
+                     break;
+                  case 'TOPIC':
+                     $html .= '<div class="infocolor" style="padding-bottom:5px;">'.$this->_translator->getMessage('COMMON_TOPIC');
+                     break;
+                  case 'USER':
+                     $html .= '<div class="infocolor" style="padding-bottom:5px;">'.$this->_translator->getMessage('COMMON_USER');
+                     break;
+                  default:
+                     $html .= $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR').' cs_datescalendar_index_view(341) ';
+                     break;
+               }
+               $html .= BRLF;
+
+               if ( isset($list)) {
+                  // jQuery
+                  //$html .= '   <select style="width: 150px; font-size:10pt;" name="sel'.$link_name[0].'" size="1" onChange="javascript:document.indexform.submit()">'.LF;
+                  $html .= '   <select style="width: 185px; font-size:10pt;" name="sel'.$link_name[0].'" size="1" id="submit_form">'.LF;
+                  // jQuery
+                  $html .= '      <option value="0"';
+                  if ( !isset($selrubric) || $selrubric == 0 ) {
+                     $html .= ' selected="selected"';
+                  }
+                  $html .= '>*'.$this->_translator->getMessage('COMMON_NO_SELECTION').'</option>'.LF;
+                  $html .= '   <option class="disabled" disabled="disabled" value="-2">------------------------------</option>'.LF;
+                  $sel_item = $list->getFirst();
+                  while ( $sel_item ) {
+                     $html .= '      <option value="'.$sel_item->getItemID().'"';
+                     if ( isset($selrubric) and $selrubric == $sel_item->getItemID() ) {
+                        $html .= ' selected="selected"';
+                     }
+                     if ($link_name[0] == CS_USER_TYPE){
+                        $text = $this->_Name2SelectOption($sel_item->getFullName());
+                     }else{
+                        $text = $this->_Name2SelectOption($sel_item->getTitle());
+                     }
+                     $html .= '>'.$text.'</option>'.LF;
+                     $sel_item = $list->getNext();
+                 }
+                 $html .= '   <option class="disabled" disabled="disabled" value="-1">------------------------------</option>'.LF;
+                 $html .= '      <option value="-1"';
+                 if ( !isset($selrubric) || $selrubric == -1 ) {
+                    $html .= ' selected="selected"';
+                 }
+                 $html .= '>*'.$this->_translator->getMessage('COMMON_NOT_LINKED').'</option>'.LF;
+                 $html .= '   </select>'.LF;
+             } else {
+           $html.='';
+             }
+             $html .='</div>';
+            }
+         }
+      }
+     return $html;
+   }
+
+
+   function _getAdditionalFormFieldsForPrivateRoomAsHTML () {
+      $current_context = $this->_environment->getCurrentContextItem();
+      $width = '12';
+      // Search / select form
+      $session_item = $this->_environment->getSessionItem();
+      $session_id = $session_item->getSessionID();
+      unset($session_item);
+      $html  = '   <input type="hidden" name="SID" value="'.$this->_text_as_form($session_id).'"/>'.LF;
+      $html .= '   <input type="hidden" name="cid" value="'.$this->_text_as_form($this->_environment->getCurrentContextID()).'"/>'.LF;
+      $html .= '   <input type="hidden" name="mod" value="'.$this->_text_as_form($this->_module).'"/>'.LF;
+      $html .= '   <input type="hidden" name="fct" value="'.$this->_text_as_form($this->_function).'"/>'.LF;
+      $html .= '   <input type="hidden" name="sort" value="'.$this->_text_as_form($this->getSortKey()).'"/>'.LF;
+      $params = $this->_environment->getCurrentParameterArray();
+      if (isset($params['presentation_mode'])){
+         $html .= '   <input type="hidden" name="presentation_mode" value="'.$params['presentation_mode'].'"/>'.LF;
+      }else{
+         $html .= '   <input type="hidden" name="presentation_mode" value="1"/>'.LF;
+      }
+      if (isset($params['week'])){
+         $html .= '   <input type="hidden" name="week" value="'.$params['week'].'"/>'.LF;
+      }
+      if (isset($params['month'])){
+         $html .= '   <input type="hidden" name="month" value="'.$params['month'].'"/>'.LF;
+      }
+      if (isset($params['show_selections'])){
+         $html .= '   <input type="hidden" name="show_selections" value="'.$params['show_selections'].'"/>'.LF;
       }
       $selstatus = $this->getSelectedStatus();
       $html .= '<div class="infocolor" style="padding-bottom:5px;">'.$this->_translator->getMessage('COMMON_DATE_STATUS').BRLF;
@@ -1473,6 +1935,60 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       return $title;
    }
 
+   function _getToDoItemLinkWithJavascript($item, $text) {
+      $text = $this->_compareWithSearchText($text);
+      $params = array();
+      $params['iid'] = $item->getItemID();
+      $params['mode'] = 'private';
+      $parameter_array = $this->_environment->getCurrentParameterArray();
+      if (isset ($parameter_array['year'])){
+         $params['year'] = $parameter_array['year'];
+      }
+      if (isset ($parameter_array['month'])){
+         $params['month'] = $parameter_array['month'];
+      }
+       if (isset ($parameter_array['week'])){
+         $params['week'] = $parameter_array['week'];
+      }
+      if (isset ($parameter_array['presentation_mode'])){
+         $params['presentation_mode'] = $parameter_array['presentation_mode'];
+      }
+      $link_color = '#000000';
+      if ( $item->issetPrivatDate() ){
+           $title ='<i>'.$title.'</i>';
+           $title = ahref_curl( $this->_environment->getCurrentContextID(),
+                           CS_TODO_TYPE,
+                           'detail',
+                           $params,
+                           $text,
+                           '',
+                           '',
+                           '',
+                           '',
+                           '',
+                           'calendar_link_' . $params['iid'],
+                           'style="color:' . $link_color .';"');
+         }else{
+            $title = ahref_curl( $this->_environment->getCurrentContextID(),
+                           CS_TODO_TYPE,
+                           'detail',
+                           $params,
+                           $text,
+                           '',
+                           '',
+                           '',
+                           '',
+                           '',
+                           'calendar_link_' . $params['iid'],
+                           'style="color:' . $link_color .';"');
+
+         }
+      unset($params);
+      return $title;
+   }
+
+
+
   /** get the link to the item
     * this method returns the item title in the right formatted style
     *
@@ -1480,7 +1996,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
     *
     * @author CommSy Development Group
     */
-   function _getItemLinkWithJavascript($item, $text) {
+   function _getDateItemLinkWithJavascript($item, $text) {
       $text = $this->_compareWithSearchText($text);
       $params = array();
       $params['iid'] = $item->getItemID();
@@ -1512,7 +2028,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       }
       if ( $item->issetPrivatDate() ){
            $title ='<i>'.$title.'</i>';
-           $title = ahref_curl( $this->_environment->getCurrentContextID(),
+           $title = ahref_curl( $item->getContextID(),
                            CS_DATE_TYPE,
                            'detail',
                            $params,
@@ -1525,7 +2041,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                            'calendar_link_' . $params['iid'],
                            'style="color:' . $link_color .';"');
          }else{
-            $title = ahref_curl( $this->_environment->getCurrentContextID(),
+            $title = ahref_curl( $item->getContextID(),
                            CS_DATE_TYPE,
                            'detail',
                            $params,
@@ -2092,7 +2608,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
 
          if(isset($format_array[$i]['dates']) and !empty($format_array[$i]['dates'])){
             foreach($format_array[$i]['dates'] as $date){
-               $link = $this->_getItemLinkWithJavascript($date, $date->getTitle());
+               $link = $this->_getDateItemLinkWithJavascript($date, $date->getTitle());
                $link = str_replace("'", "\'", $link);
                $link_array = split('"', $link);
                $href = $link_array[1];
@@ -3138,7 +3654,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                   $color = '#FFFF66';
                }
                $color_border = '#CCCCCC';
-               $link = $this->_getItemLinkWithJavascript($date, $date->getTitle());
+               $link = $this->_getDateItemLinkWithJavascript($date, $date->getTitle());
                $link_array = split('"', $link);
                $href = $link_array[1];
 
@@ -3851,7 +4367,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       } elseif ($this->_presentation_mode == 2) {
       	$additional_calendar_href .= '&month=';
       }
-   	$html = '<div id="additional_calendar" class="additional_calendar" style="width:100%; margin:auto; padding:3px 0px 3px 0px; height:150px;"></div>';
+   	$html = '<div id="additional_calendar" class="additional_calendar" style="width:100%; margin:auto; padding:3px 0px 3px 0px; height:160px;"></div>';
    	$html .= '<script type="text/javascript">'.LF;
       $html .= '<!--'.LF;
       $html .= 'var additional_calendar_href = "' . $additional_calendar_href . '"'.LF;
