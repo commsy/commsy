@@ -575,12 +575,17 @@ class cs_page_view extends cs_view {
      /**********/
 	  /*PORTLETS*/
       if ($this->_environment->inPrivateRoom()){
+         $retour .= '   <link rel="stylesheet" media="screen" type="text/css" href="css/commsy_portlets_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
+
          $retour .= '   <script type="text/javascript" src="javascript/jQuery/weather/js/weather.js"></script>'.LF;
          $retour .= '   <script type="text/javascript" src="javascript/jQuery/weather/js/jquery.cookie.js"></script>'.LF;
-         $retour .= '   <script type="text/javascript" src="javascript/jQuery/CSS3Clock/css3clock.js"></script>'.LF;
          $retour .= '   <link rel="stylesheet" media="screen" type="text/css" href="javascript/jQuery/weather/css/styles.css"/>'.LF;
-         $retour .= '   <link rel="stylesheet" media="screen" type="text/css" href="css/commsy_portlets_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
+
+         $retour .= '   <script type="text/javascript" src="javascript/jQuery/CSS3Clock/css3clock.js"></script>'.LF;
          $retour .= '   <link rel="stylesheet" media="screen" type="text/css" href="javascript/jQuery/CSS3Clock/style.css"/>'.LF;
+
+         $retour .= '   <script type="text/javascript" src="javascript/jQuery/rsstickerajax/rssticker.js"></script>'.LF;
+         $retour .= '   <link rel="stylesheet" media="screen" type="text/css" href="javascript/jQuery/rsstickerajax/rssticker-style.css"/>'.LF;
       }
       /*********/
       }

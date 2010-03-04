@@ -48,6 +48,8 @@ class cs_privateroom_home_portlet_view extends cs_view{
 
    var $_list = NULL;
 
+   var $_column_count = 2;
+
    /** constructor
     * the only available constructor, initial values for internal variables
     *
@@ -60,6 +62,10 @@ class cs_privateroom_home_portlet_view extends cs_view{
 
    function setPortletViewArray($portlet_array){
       $this->_portlet_views = $portlet_array;
+   }
+
+   function setColumnCount($count){
+   	  $this->_column_count = $count;
    }
 
     function setList ($list) {
@@ -75,12 +81,25 @@ class cs_privateroom_home_portlet_view extends cs_view{
       $html = '<div style="margin-top:10px;">';
       $column_count = 0;
       $html_array = array();
-      $width= 100/($columns + $columns -1);
+      for ($i = 0; $i < ($columns+1); $i++){
+         $width[$i]= 100/$columns;
+      }
+      switch ($columns){
+         case 2:
+            $width[0] = 60;
+            $width[1] = 40;
+         	break;
+         case 3:
+            $width[0] = 30;
+            $width[1] = 45;
+            $width[2] = 25;
+         	break;
+      }
       for ($i=0; $i< ($columns + 1); $i++){
          if ($i < ($columns -1)){
-            $html_array[$i] = '<div class="column" style="width:'.($width*2).'%;">';
+            $html_array[$i] = '<div class="column" style="width:'.$width[$i].'%;">';
          }else{
-            $html_array[$i] = '<div class="column" style="width:'.$width.'%;">';
+            $html_array[$i] = '<div class="column" style="width:'.$width[$i].'%;">';
          }
       }
       foreach ($portlet_array as $portlet){
@@ -134,7 +153,9 @@ class cs_privateroom_home_portlet_view extends cs_view{
          $portlet_array[] = $tmp_array;
       }
 
-      $html .= $this->_getPortletsAsHTML($portlet_array,3);
+      $html .= $this->_getPortletsAsHTML($portlet_array,$this->_column_count);
+      $html .='</div>'.LF;
+      $html .='<div style="clear:both;"></div>'.LF;
       return $html;
    }
 

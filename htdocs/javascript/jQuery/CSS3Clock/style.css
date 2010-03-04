@@ -1,8 +1,9 @@
 #clock {
         	position: relative;
-        	width: 140px;
+        	width: 180px;
         	height: 180px;
-        	margin: 20px auto 0 auto;
+        	margin: 0px;
+        	padding:0px;
         	background: url(images/clockface.jpg);
         	list-style: none;
         	}

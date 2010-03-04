@@ -45,7 +45,7 @@ var  $_config_boxes = false;
    }
 
    function asHTML () {
-     $html  = ' <div style="width:100%; padding: 0px 0px 10px 15px;"><div style="width:180px;"><ul id="clock"> <li id="sec"></li><li id="hour"></li><li id="min"></li></ul></div></div>';
+     $html  = ' <div style="width:100%; padding: 5px;"><div style="width:180px;"><ul id="clock"> <li id="sec"></li><li id="hour"></li><li id="min"></li></ul></div></div>';
      return $html;
    }
 }
