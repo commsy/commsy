@@ -569,7 +569,21 @@ class cs_page_view extends cs_view {
          $retour .= '   <script type="text/javascript" src="javascript/CommSyTextFormatingInformation.js"></script>'.LF;
          $retour .= '   <link rel="stylesheet" media="screen" type="text/css" href="javascript/slimbox/css/slimbox.css"/>'.LF;
       }
-      $retour .= '   <link rel="stylesheet" media="screen" type="text/css" href="css/commsy_portlets_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
+
+     if (isset($c_use_new_private_room) and $c_use_new_private_room){
+     /**********/
+	  /*PORTLETS*/
+      if ($this->_environment->inPrivateRoom()){
+         $retour .= '   <script type="text/javascript" src="javascript/jQuery/weather/js/weather.js"></script>'.LF;
+         $retour .= '   <script type="text/javascript" src="javascript/jQuery/weather/js/jquery.cookie.js"></script>'.LF;
+         $retour .= '   <script type="text/javascript" src="javascript/jQuery/CSS3Clock/css3clock.js"></script>'.LF;
+         $retour .= '   <link rel="stylesheet" media="screen" type="text/css" href="javascript/jQuery/weather/css/styles.css"/>'.LF;
+         $retour .= '   <link rel="stylesheet" media="screen" type="text/css" href="css/commsy_portlets_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
+         $retour .= '   <link rel="stylesheet" media="screen" type="text/css" href="javascript/jQuery/CSS3Clock/style.css"/>'.LF;
+      }
+      /*********/
+      }
+
       // jQuery
       if (!$this->_environment->inServer()){
          // jQuery

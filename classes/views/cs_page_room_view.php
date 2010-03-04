@@ -543,6 +543,13 @@ class cs_page_room_view extends cs_page_view {
             }
             $link_title .= $link['title'];
          }
+
+         if (isset($c_use_new_private_room) and $c_use_new_private_room){
+         if ($this->_environment->inPrivateRoom() and ($link['module'] == 'date' or $link['module'] == 'todo') ){
+            $link_title = '<img src="images/commsyicons/16x16/date.png" style="vertical-align:bottom;"/>';
+            $link_title = $this->_translator->getMessage('MYCALENDAR_INDEX');
+         }
+         }
          if ($first){
             $first = false;
          }
@@ -1638,6 +1645,10 @@ class cs_page_room_view extends cs_page_view {
                $html .= '</td>'.LF;
                $html .= '</tr>'.LF;
                $html .= '</table>'.LF;
+            }
+         }else{
+            if (isset($c_use_new_private_room) and $c_use_new_private_room){
+            $html .= '<div style="clear:both"/></div>'.LF;
             }
          }
 
