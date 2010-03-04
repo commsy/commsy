@@ -80,13 +80,13 @@ var $_list = NULL;
          switch ( $type ) {
             case CS_DISCARTICLE_TYPE:
                $linked_iid = $full_item->getDiscussionID();
-               $fragment = $full_item->getItemID();
+               $fragment = 'anchor'.$full_item->getItemID();
                $discussion_manager = $this->_environment->getDiscussionManager();
                $new_full_item = $discussion_manager->getItem($linked_iid);
                break;
             case CS_SECTION_TYPE:
                $linked_iid = $full_item->getLinkedItemID();
-               $fragment = $full_item->getItemID();
+               $fragment = 'anchor'.$full_item->getItemID();
                $material_manager = $this->_environment->getMaterialManager();
                $new_full_item = $material_manager->getItem($linked_iid);
                break;
@@ -99,60 +99,60 @@ var $_list = NULL;
             $type = $full_item->getLabelType();
          }
          switch ( mb_strtoupper($type, 'UTF-8') ) {
-                  case 'ANNOUNCEMENT':
-                     $text .= $this->_translator->getMessage('COMMON_ONE_ANNOUNCEMENT');
-                     $img = 'images/commsyicons/netnavigation/announcement.png';
-                     break;
-                  case 'DATE':
-                     $text .= $this->_translator->getMessage('COMMON_ONE_DATE');
-                     $img = 'images/commsyicons/netnavigation/date.png';
-                     break;
-                  case 'DISCUSSION':
-                     $text .= $this->_translator->getMessage('COMMON_ONE_DISCUSSION');
-                     $img = 'images/commsyicons/netnavigation/discussion.png';
-                     break;
-                  case 'GROUP':
-                     $text .= $this->_translator->getMessage('COMMON_ONE_GROUP');
-                     $img = 'images/commsyicons/netnavigation/group.png';
-                     break;
-                  case 'INSTITUTION':
-                     $text .= $this->_translator->getMessage('COMMON_ONE_INSTITUTION');
-                     $img = '';
-                     break;
-                  case 'MATERIAL':
-                     $text .= $this->_translator->getMessage('COMMON_ONE_MATERIAL');
-                     $img = 'images/commsyicons/netnavigation/material.png';
-                     break;
-                  case 'PROJECT':
-                     $text .= $this->_translator->getMessage('COMMON_ONE_PROJECT');
-                     $img = '';
-                     break;
-                  case 'TODO':
-                     $text .= $this->_translator->getMessage('COMMON_ONE_TODO');
-                     $img = 'images/commsyicons/netnavigation/todo.png';
-                     break;
-                  case 'TOPIC':
-                     $text .= $this->_translator->getMessage('COMMON_ONE_TOPIC');
-                     $img = 'images/commsyicons/netnavigation/topic.png';
-                     break;
-                  case 'USER':
-                     $text .= $this->_translator->getMessage('COMMON_USER');
-                     $img = 'images/commsyicons/netnavigation/user.png';
-                     break;
-                  default:
-                     $text .= $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR').' cs_detail_view('.__LINE__.') ';
-                     $img = '';
-                     break;
-               }
-               $link_creator_text = $text.' - '.$this->_translator->getMessage('COMMON_EDIT_BY').' '.
+           case 'ANNOUNCEMENT':
+              $text .= $this->_translator->getMessage('COMMON_ONE_ANNOUNCEMENT');
+              $img = 'images/commsyicons/netnavigation/announcement.png';
+              break;
+           case 'DATE':
+              $text .= $this->_translator->getMessage('COMMON_ONE_DATE');
+              $img = 'images/commsyicons/netnavigation/date.png';
+              break;
+           case 'DISCUSSION':
+              $text .= $this->_translator->getMessage('COMMON_ONE_DISCUSSION');
+              $img = 'images/commsyicons/netnavigation/discussion.png';
+              break;
+           case 'GROUP':
+              $text .= $this->_translator->getMessage('COMMON_ONE_GROUP');
+              $img = 'images/commsyicons/netnavigation/group.png';
+              break;
+           case 'INSTITUTION':
+              $text .= $this->_translator->getMessage('COMMON_ONE_INSTITUTION');
+              $img = '';
+              break;
+           case 'MATERIAL':
+              $text .= $this->_translator->getMessage('COMMON_ONE_MATERIAL');
+              $img = 'images/commsyicons/netnavigation/material.png';
+              break;
+           case 'PROJECT':
+              $text .= $this->_translator->getMessage('COMMON_ONE_PROJECT');
+              $img = '';
+              break;
+           case 'TODO':
+              $text .= $this->_translator->getMessage('COMMON_ONE_TODO');
+              $img = 'images/commsyicons/netnavigation/todo.png';
+              break;
+           case 'TOPIC':
+              $text .= $this->_translator->getMessage('COMMON_ONE_TOPIC');
+              $img = 'images/commsyicons/netnavigation/topic.png';
+              break;
+           case 'USER':
+              $text .= $this->_translator->getMessage('COMMON_USER');
+              $img = 'images/commsyicons/netnavigation/user.png';
+              break;
+           default:
+              $text .= $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR').' cs_detail_view('.__LINE__.') ';
+              $img = '';
+              break;
+        }
+        $link_creator_text = $text.' - '.$this->_translator->getMessage('COMMON_EDIT_BY').' '.
                                     $fullname.', '.
                                     $link_created;
          $module = Type2Module($type);
-                      if ($module == CS_USER_TYPE){
-                          $link_title = chunkText($this->_text_as_html_short($full_item->getFullName()),35);
-                      }else{
-                          $link_title = chunkText($this->_text_as_html_short($full_item->getTitle()),35);
-                      }
+         if ($module == CS_USER_TYPE){
+            $link_title = chunkText($this->_text_as_html_short($full_item->getFullName()),35);
+         }else{
+            $link_title = chunkText($this->_text_as_html_short($full_item->getTitle()),35);
+         }
          $params = array();
          $params['iid'] = $linked_iid;
          $html .= ahref_curl( $full_item->getContextID(),
