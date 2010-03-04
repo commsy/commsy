@@ -1889,6 +1889,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
     * @author CommSy Development Group
     */
    function _getItemLink($item, $text) {
+      $title = $this->_compareWithSearchText($item->getTitle());
       $text = $this->_compareWithSearchText($text);
       $params = array();
       $params['iid'] = $item->getItemID();
@@ -1938,6 +1939,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
    }
 
    function _getToDoItemLinkWithJavascript($item, $text) {
+      $title = $this->_compareWithSearchText($item->getTitle());
       $text = $this->_compareWithSearchText($text);
       $params = array();
       $params['iid'] = $item->getItemID();
@@ -1999,6 +2001,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
     * @author CommSy Development Group
     */
    function _getDateItemLinkWithJavascript($item, $text) {
+      $title = $this->_compareWithSearchText($item->getTitle());
       $text = $this->_compareWithSearchText($text);
       $params = array();
       $params['iid'] = $item->getItemID();

@@ -57,17 +57,17 @@ var  $_config_boxes = false;
 
      $html .= ' <h4 style="margin-bottom:0px; margin-top:0px;">Sport1.de</h4> '.LF;
      $html .= '<script type="text/javascript"> '.LF;
-     $html .= ' new rssticker_ajax("Sport1", 600, "Sport1", "ticker", 10000, "date");'.LF.LF;
+     $html .= ' new rssticker_ajax("Sport1", 0, "Sport1", "ticker", 10000, "date");'.LF.LF;
      $html .= '</script>'.LF;
 
      $html .= ' <h4 style="margin-bottom:0px;">Tagesschau.de</h4> '.LF;
      $html .= '<script type="text/javascript"> '.LF;
-     $html .= ' new rssticker_ajax("Tagesschau", 600, "Tagesschau", "ticker", 10000, "date");'.LF;
+     $html .= ' new rssticker_ajax("Tagesschau", 0, "Tagesschau", "ticker", 10000, "date");'.LF;
      $html .= '</script>'.LF;
 
      $html .= ' <h4 style="margin-bottom:0px;">Spiegel.de</h4> '.LF;
      $html .= '<script type="text/javascript"> '.LF;
-     $html .= ' new rssticker_ajax("Spiegel", 600, "Spiegel", "ticker", 10000, "date+description");'.LF;
+     $html .= ' new rssticker_ajax("Spiegel", 0, "Spiegel", "ticker", 10000, "date+description");'.LF;
      $html .= '</script>'.LF;
 
      $html .= '</div>';
