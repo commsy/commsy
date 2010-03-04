@@ -1952,7 +1952,7 @@ class cs_detail_view extends cs_view {
                      break;
                   case 'USER':
                      $text .= $this->_translator->getMessage('COMMON_USER');
-                     $img = 'images/commsyicons/netnavigation/user.png"';
+                     $img = 'images/commsyicons/netnavigation/user.png';
                      break;
                   default:
                      $text .= $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR').' cs_detail_view('.__LINE__.') ';
