@@ -84,14 +84,14 @@ $portlet_array[] = $new_entries_view;
 /* END NEW ENTRIES */
 
 
-/* NEWS */
+/* CONFIGURATION */
 $params = array();
 $params['environment'] = $environment;
 $params['with_modifying_actions'] = $current_context->isOpen();
-$news_view = $class_factory->getClass(PRIVATEROOM_HOME_NEWS_VIEW,$params);
+$configuration_view = $class_factory->getClass(PRIVATEROOM_HOME_CONFIGURATION_VIEW,$params);
 unset($params);
-$portlet_array[] = $news_view;
-/* END NEWS */
+$portlet_array[] = $configuration_view;
+/* CONFIGURATION END */
 
 /* WEATHER */
 $params = array();
@@ -122,15 +122,15 @@ unset($params);
 $portlet_array[] = $news_view;
 /* END NEWS */
 
-
-/* CONFIGURATION */
+/* RSS TICKER */
 $params = array();
 $params['environment'] = $environment;
 $params['with_modifying_actions'] = $current_context->isOpen();
-$configuration_view = $class_factory->getClass(PRIVATEROOM_HOME_CONFIGURATION_VIEW,$params);
+$news_view = $class_factory->getClass(PRIVATEROOM_HOME_RSS_TICKER_VIEW,$params);
 unset($params);
-$portlet_array[] = $configuration_view;
-/* CONFIGURATION END */
+$portlet_array[] = $news_view;
+/* RSS TICKER */
+
 
 /* NEWS */
 $params = array();
@@ -149,6 +149,7 @@ $portlet_view->setPortletViewArray($portlet_array);
 include_once('classes/cs_list.php');
 
 $portlet_view->setList($activ_room_list);
+$portlet_view->setColumnCount(3);
 $page->add($portlet_view);
 
 

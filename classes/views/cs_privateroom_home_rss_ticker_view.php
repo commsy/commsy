@@ -46,7 +46,7 @@ var  $_config_boxes = false;
 
    function asHTML () {
 	 //rssticker_ajax(RSS_id, cachetime, divId, divClass, delay, optionalswitch)
-	 //1) RSS_id: "Array key of RSS feed in PHP script"
+	 //1) RSS_id: "Array key of RSS feed in PHP script bridge.php"
 	 //2) cachetime: Time to cache the feed in minutes (0 for no cache)
 	 //3) divId: "ID of DIV to display ticker in. DIV dynamically created"
 	 //4) divClass: "Class name of this ticker, for styling purposes"
