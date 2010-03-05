@@ -741,6 +741,7 @@ $message["COMMON_TOPICS"]["de"] = "%_TOPICS_SUB_NOMPL_BIG";
 $message["COMMON_TOPIC_EDIT"]["de"] = "%_TOPICS_SUB_NOMS_BIG bearbeiten";
 $message["COMMON_TOPIC_INDEX"]["de"] = "%_TOPICS_SUB_NOMPL_BIG";
 $message["COMMON_TOP_OF_PAGE"]["de"] = "Anfang der Seite";
+$message["COMMON_TWITTER_FRIENDS"]["de"] = "Freunde bei Twitter";
 $message["COMMON_UNIVERSITY_CONTEXT"]["de"] = "Hochschule";
 $message["COMMON_UNKNOWN"]["de"] = "Unbekannt";
 $message["COMMON_UNREAD"]["de"] = "ungelesen";

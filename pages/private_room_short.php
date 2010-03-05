@@ -183,14 +183,14 @@ $portlet_array[] = $news_view;
 /* RSS TICKER */
 
 
-/* NEWS */
+/* TWITTER */
 $params = array();
 $params['environment'] = $environment;
 $params['with_modifying_actions'] = $current_context->isOpen();
-$news_view = $class_factory->getClass(PRIVATEROOM_HOME_NEWS_VIEW,$params);
+$news_view = $class_factory->getClass(PRIVATEROOM_HOME_TWITTER_VIEW,$params);
 unset($params);
 $portlet_array[] = $news_view;
-/* END NEWS */
+/* END TWITTER */
 
 
 $portlet_view->setPortletViewArray($portlet_array);

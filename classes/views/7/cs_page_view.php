@@ -586,6 +586,12 @@ class cs_page_view extends cs_view {
 
          $retour .= '   <script type="text/javascript" src="javascript/jQuery/rsstickerajax/rssticker.js"></script>'.LF;
          $retour .= '   <link rel="stylesheet" media="screen" type="text/css" href="javascript/jQuery/rsstickerajax/rssticker-style.css"/>'.LF;
+
+         $retour .= '<script type="text/javascript" src="javascript/jQuery/twitter/jquery.twitter-friends-1.0.min.js"></script>'.LF;
+
+
+#         $retour .= '   <script type="text/javascript" src="javascript/jQuery/flickr/flickr.js"></script>'.LF;
+#         $retour .= '   <script type="text/javascript" src="javascript/jQuery/flickr/flickrpreview.js"></script>'.LF;
       }
       /*********/
       }
