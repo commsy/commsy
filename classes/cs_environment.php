@@ -753,6 +753,15 @@ class cs_environment {
       return $this->_getInstance('cs_grouproom_manager');
    }
 
+  /** get instance of cs_zzz_grouproom_manager
+   *
+   * @return cs_zzz_item_manager
+   * @access public
+   */
+   public function getZzzGroupRoomManager() {
+      return $this->_getInstance('cs_zzz_grouproom_manager');
+   }
+   
   /** get instance of cs_privateroom_manager
    *
    * @return cs_PrivateRoom_manager
