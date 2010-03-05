@@ -101,6 +101,19 @@ class cs_hash_manager extends cs_manager {
       return $retour;
    }
 
+   public function isAjaxHashValid ( $rss_hash, $context_item ) {
+      $retour = false;
+      $query = "SELECT user_item_id FROM ".$this->addDatabasePrefix($this->_db_table)." WHERE rss = '".$rss_hash."' LIMIT 1";
+      $result = $this->_db_connector->performQuery($query);
+      if (!empty($result) ) {
+         $retour = $context_item->mayEnterByUserItemID($result[0]['user_item_id']);
+         if ( !$retour ) {
+            $this->deleteHashesForUser($result[0]['user_item_id']);
+         }
+      }
+      return $retour;
+   }
+   
    public function deleteHashesForUser ( $user_item_id ) {
       if ( !empty($user_item_id) ) {
          $delete = "DElETE FROM ".$this->addDatabasePrefix($this->_db_table)." WHERE user_item_id = '".$user_item_id."' LIMIT 1";

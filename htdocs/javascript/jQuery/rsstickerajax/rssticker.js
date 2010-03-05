@@ -7,7 +7,9 @@
 //var lastrssbridgeurl="lastrss/bridge.php"
 //Absolute URL syntax. Uncomment below line if you wish to use an absolute reference:
 //var lastrssbridgeurl="http://localhost/phpWorkspace/CommSy7/htdocs/javascript/jQuery/rsstickerajax/lastrss/bridge.php"
-var lastrssbridgeurl=document.URL.split("commsy.php")[0] + 'javascript/jQuery/rsstickerajax/lastrss/bridge.php';
+//var lastrssbridgeurl=document.URL.split("commsy.php")[0] + 'javascript/jQuery/rsstickerajax/lastrss/bridge.php';
+jQuery(document).ready(function() {
+var lastrssbridgeurl=document.URL.split("commsy.php")[0] + 'ajax.php?cid=' + window.rss_ticker_cid + '&hid=' + window.rss_ticker_hid + '&fct=privateroom_rss_ticker';
 //alert(lastrssbridgeurl);
 ////////////No need to edit beyond here//////////////
 
@@ -143,3 +145,4 @@ this.opacitysetting+=0.2
 if (fadetype=="up" && this.opacitysetting>=1)
 clearInterval(this[timerid])
 }
+});
