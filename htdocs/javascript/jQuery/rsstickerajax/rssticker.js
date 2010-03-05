@@ -8,7 +8,7 @@
 //Absolute URL syntax. Uncomment below line if you wish to use an absolute reference:
 //var lastrssbridgeurl="http://localhost/phpWorkspace/CommSy7/htdocs/javascript/jQuery/rsstickerajax/lastrss/bridge.php"
 var lastrssbridgeurl=document.URL.split("commsy")[0] + 'javascript/jQuery/rsstickerajax/lastrss/bridge.php';
-
+alert(lastrssbridgeurl);
 ////////////No need to edit beyond here//////////////
 
 function createAjaxObj(){
