@@ -1,5 +1,6 @@
 <?php
+$message["PORTLET_TWITTER_CHANNEL_ID"]["de"] = "Nachfolgend die Bilder der &quot;Freunde&quot; der Twitterkennung &quot;%1&quot;.";
 $message["PORTLET_YOUTUBE_CHANNEL"]["de"] = "Youtube Kanal";
-$message["PORTLET_YOUTUBE_CHANNEL_ID"]["de"] = "Die folgenden Videos sind die meistgesehenen Videos des Kanals &quot;%1&quot;.";
+$message["PORTLET_YOUTUBE_CHANNEL_ID"]["de"] = "Die folgenden Videos sind die Favouriten des YouTube-Kanals &quot;%1&quot;.";
 $message["PORTLET_YOUTUBE_IS_LOADING"]["de"] = "Kanal wird geladen ...";
 ?>

@@ -54,9 +54,9 @@ var $_list = NULL;
    function _getItemAsHTML($item, $pos=0, $with_links=TRUE) {
       $html = '';
       if ($pos%2 == 0){
-         $style='class="odd"';
-      }else{
          $style='class="even"';
+      }else{
+         $style='class="odd"';
       }
       $type = $item->getItemType();
       $item_manager = $this->_environment->getManager($type);
@@ -77,6 +77,8 @@ var $_list = NULL;
          } else {
             $fullname = $this->_translator->getMessage('COMMON_DELETED_USER');
          }
+         $room = $full_item->getContextItem();
+         $room_title = $room->getTitle();
          switch ( $type ) {
             case CS_DISCARTICLE_TYPE:
                $linked_iid = $full_item->getDiscussionID();
@@ -101,19 +103,19 @@ var $_list = NULL;
          switch ( mb_strtoupper($type, 'UTF-8') ) {
            case 'ANNOUNCEMENT':
               $text .= $this->_translator->getMessage('COMMON_ONE_ANNOUNCEMENT');
-              $img = 'images/commsyicons/netnavigation/announcement.png';
+              $img = 'images/commsyicons/32x32/announcement.png';
               break;
            case 'DATE':
               $text .= $this->_translator->getMessage('COMMON_ONE_DATE');
-              $img = 'images/commsyicons/netnavigation/date.png';
+              $img = 'images/commsyicons/32x32/date.png';
               break;
            case 'DISCUSSION':
               $text .= $this->_translator->getMessage('COMMON_ONE_DISCUSSION');
-              $img = 'images/commsyicons/netnavigation/discussion.png';
+              $img = 'images/commsyicons/32x32/discussion.png';
               break;
            case 'GROUP':
               $text .= $this->_translator->getMessage('COMMON_ONE_GROUP');
-              $img = 'images/commsyicons/netnavigation/group.png';
+              $img = 'images/commsyicons/32x32/group.png';
               break;
            case 'INSTITUTION':
               $text .= $this->_translator->getMessage('COMMON_ONE_INSTITUTION');
@@ -121,7 +123,7 @@ var $_list = NULL;
               break;
            case 'MATERIAL':
               $text .= $this->_translator->getMessage('COMMON_ONE_MATERIAL');
-              $img = 'images/commsyicons/netnavigation/material.png';
+              $img = 'images/commsyicons/32x32/material.png';
               break;
            case 'PROJECT':
               $text .= $this->_translator->getMessage('COMMON_ONE_PROJECT');
@@ -129,15 +131,15 @@ var $_list = NULL;
               break;
            case 'TODO':
               $text .= $this->_translator->getMessage('COMMON_ONE_TODO');
-              $img = 'images/commsyicons/netnavigation/todo.png';
+              $img = 'images/commsyicons/32x32/todo.png';
               break;
            case 'TOPIC':
               $text .= $this->_translator->getMessage('COMMON_ONE_TOPIC');
-              $img = 'images/commsyicons/netnavigation/topic.png';
+              $img = 'images/commsyicons/32x32/topic.png';
               break;
            case 'USER':
               $text .= $this->_translator->getMessage('COMMON_USER');
-              $img = 'images/commsyicons/netnavigation/user.png';
+              $img = 'images/commsyicons/32x32/user.png';
               break;
            default:
               $text .= $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR').' cs_detail_view('.__LINE__.') ';
@@ -149,13 +151,13 @@ var $_list = NULL;
                                     $link_created;
          $module = Type2Module($type);
          if ($module == CS_USER_TYPE){
-            $link_title = chunkText($this->_text_as_html_short($full_item->getFullName()),35);
+            $link_title = $this->_text_as_html_short($full_item->getFullName());
          }else{
-            $link_title = chunkText($this->_text_as_html_short($full_item->getTitle()),35);
+            $link_title = $this->_text_as_html_short($full_item->getTitle());
          }
          $params = array();
          $params['iid'] = $linked_iid;
-         $html .= ahref_curl( $full_item->getContextID(),
+         $html .= '<div style="float:left;">'.ahref_curl( $full_item->getContextID(),
                                        $module,
                                        'detail',
                                        $params,
@@ -169,8 +171,8 @@ var $_list = NULL;
                                        '',
                                        '',
                                        '',
-                                       '');
-                      $html .= ahref_curl( $full_item->getContextID(),
+                                       '').'</div>';
+         $html .= ahref_curl( $full_item->getContextID(),
                                        $module,
                                        'detail',
                                        $params,
@@ -184,7 +186,24 @@ var $_list = NULL;
                                        '',
                                        '',
                                        '',
+                                       '').$this->_getItemChangeStatus($full_item,$full_item->getContextID());
+         $html .= '<br/><span style="font-size:8pt;">('.$this->_translator->getMessage('COMMON_ROOM').': ';
+         $html .= ahref_curl( $full_item->getContextID(),
+                                       'home',
+                                       'detail',
+                                       $params,
+                                       $room_title,
+                                       $room_title,
+                                       '_self',
+                                       $fragment,
+                                       '',
+                                       '',
+                                       '',
+                                       '',
+                                       '',
+                                       '',
                                        '');
+         $html .= ')</span>'.LF;
          $html .= '   </td>'.LF;
          $html .= '   </tr>'.LF;
       }
@@ -193,8 +212,25 @@ var $_list = NULL;
    }
 
 
-
-
+   function _getItemChangeStatus($item,$context_id) {
+      $current_user = $this->_environment->getCurrentUserItem();
+      $related_user = $current_user->getRelatedUserItemInContext($context_id);
+      if ($related_user->isUser()) {
+         $noticed_manager = $this->_environment->getNoticedManager();
+         $noticed = $noticed_manager->getLatestnoticedByUser($item->getItemID(),$related_user->getItemID());
+         if ( empty($noticed) ) {
+            $info_text = ' <span class="changed">['.$this->_translator->getMessage('COMMON_NEW').']</span>';
+         } elseif ( $noticed['read_date'] < $item->getModificationDate() ) {
+            $info_text = ' <span class="changed">['.$this->_translator->getMessage('COMMON_CHANGED').']</span>';
+         } else {
+            $info_text = '';
+         }
+         // Add change info for annotations (TBD)
+      } else {
+         $info_text = '';
+      }
+      return $info_text;
+   }
 
 
 

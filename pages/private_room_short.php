@@ -27,7 +27,6 @@ if (isset($c_use_new_private_room) and $c_use_new_private_room){
 
 
 $room_id_array = array();
-$room_id_array[] = $current_context->getItemID();
 $grouproom_list = $current_user_item->getRelatedGroupList();
 if ( isset($grouproom_list) and $grouproom_list->isNotEmpty()) {
    $grouproom_list->reverse();
@@ -63,6 +62,8 @@ if ( isset($community_list) and $community_list->isNotEmpty()) {
        $community_item = $community_list->getNext();
    }
 }
+$room_id_array_without_privateroom = $room_id_array;
+$room_id_array[] = $current_context->getItemID();
 
 
 $params = array();
@@ -119,8 +120,8 @@ $params = array();
 $params['environment'] = $environment;
 $item_manager = $environment->getItemManager();
 $item_manager->setOrderLimit(true);
-$item_manager->setIntervalLimit(true);
-$new_entry_array = $item_manager->getAllNewPrivateRoomEntriesOfRoomList($room_id_array);
+$item_manager->setIntervalLimit(15);
+$new_entry_array = $item_manager->getAllNewPrivateRoomEntriesOfRoomList($room_id_array_without_privateroom);
 
 $new_entry_list = $item_manager->getPrivateRoomHomeItemList($new_entry_array);
 #$item_manager->setContextArrayLimit($room_id_array);
@@ -165,6 +166,7 @@ $twitter_view->setTwitterID('xenzen');
 $portlet_array[] = $twitter_view;
 /* END TWITTER */
 
+
 /* CONFIGURATION */
 $params = array();
 $params['environment'] = $environment;
@@ -173,6 +175,7 @@ $configuration_view = $class_factory->getClass(PRIVATEROOM_HOME_CONFIGURATION_VI
 unset($params);
 $portlet_array[] = $configuration_view;
 /* CONFIGURATION END */
+
 
 /* RSS TICKER */
 $rss_ticker_array = array(
@@ -184,7 +187,6 @@ $rss_ticker_array = array(
 "slashdot" => "http://rss.slashdot.org/Slashdot/slashdot",
 "dynamicdrive" => "http://www.dynamicdrive.com/export.php?type=new"
 );
-
 $params = array();
 $params['environment'] = $environment;
 $params['with_modifying_actions'] = $current_context->isOpen();
