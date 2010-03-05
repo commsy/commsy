@@ -159,9 +159,10 @@ $portlet_array[] = $weather_view;
 $params = array();
 $params['environment'] = $environment;
 $params['with_modifying_actions'] = $current_context->isOpen();
-$news_view = $class_factory->getClass(PRIVATEROOM_HOME_TWITTER_VIEW,$params);
+$twitter_view = $class_factory->getClass(PRIVATEROOM_HOME_TWITTER_VIEW,$params);
 unset($params);
-$portlet_array[] = $news_view;
+$twitter_view->setTwitterID('xenzen');
+$portlet_array[] = $twitter_view;
 /* END TWITTER */
 
 /* CONFIGURATION */
@@ -174,12 +175,23 @@ $portlet_array[] = $configuration_view;
 /* CONFIGURATION END */
 
 /* RSS TICKER */
+$rss_ticker_array = array(
+"Spiegel" => "http://www.spiegel.de/schlagzeilen/index.rss",
+"Sport1" => "http://www.sport1.de/de_1/startseite/rss.xml",
+"Tagesschau" => "http://www.tagesschau.de/xml/rss2",
+"BBC" => "http://newsrss.bbc.co.uk/rss/newsonline_uk_edition/front_page/rss.xml",
+"news.com" => "http://news.com.com/2547-1_3-0-5.xml",
+"slashdot" => "http://rss.slashdot.org/Slashdot/slashdot",
+"dynamicdrive" => "http://www.dynamicdrive.com/export.php?type=new"
+);
+
 $params = array();
 $params['environment'] = $environment;
 $params['with_modifying_actions'] = $current_context->isOpen();
-$news_view = $class_factory->getClass(PRIVATEROOM_HOME_RSS_TICKER_VIEW,$params);
+$rss_view = $class_factory->getClass(PRIVATEROOM_HOME_RSS_TICKER_VIEW,$params);
+$rss_view->setRSSTickerArray($rss_ticker_array);
 unset($params);
-$portlet_array[] = $news_view;
+$portlet_array[] = $rss_view;
 /* RSS TICKER */
 
 /* NEWS */
@@ -200,14 +212,17 @@ unset($params);
 $portlet_array[] = $news_view;
 /* END NEWS */
 
+
 /* YOUTUBE */
 $params = array();
 $params['environment'] = $environment;
 $params['with_modifying_actions'] = $current_context->isOpen();
-$news_view = $class_factory->getClass(PRIVATEROOM_HOME_YOUTUBE_VIEW,$params);
+$youtube_view = $class_factory->getClass(PRIVATEROOM_HOME_YOUTUBE_VIEW,$params);
+$youtube_view->setChannelID('zdf');
 unset($params);
-$portlet_array[] = $news_view;
+$portlet_array[] = $youtube_view;
 /* END YOUTUBE */
+
 
 $portlet_view->setPortletViewArray($portlet_array);
 

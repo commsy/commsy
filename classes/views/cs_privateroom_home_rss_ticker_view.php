@@ -31,7 +31,7 @@ include_once('classes/cs_link.php');
  */
 class cs_privateroom_home_rss_ticker_view extends cs_view {
 
-var  $_config_boxes = false;
+var  $_rss_ticker_array = array();
 
    /** constructor
     * the only available constructor, initial values for internal variables
@@ -44,6 +44,10 @@ var  $_config_boxes = false;
       $this->setViewName('clock');
    }
 
+   function setRssTickerArray($array){
+      $this->_rss_ticker_array = $array;
+   }
+
    function asHTML () {
 	 //rssticker_ajax(RSS_id, cachetime, divId, divClass, delay, optionalswitch)
 	 //1) RSS_id: "Array key of RSS feed in PHP script bridge.php"
@@ -52,8 +56,9 @@ var  $_config_boxes = false;
 	 //4) divClass: "Class name of this ticker, for styling purposes"
 	 //5) delay: delay between message change, in milliseconds
 	 //6) optionalswitch: "optional arbitrary" string to create additional logic in call back function
+     $html = '';
 
-     $html  = '<div style="padding-right:12px;">'.LF;
+     $html .= '<div style="padding-right:12px;">'.LF;
 
      $html .= ' <h4 style="margin-bottom:0px; margin-top:0px;">Sport1.de</h4> '.LF;
      $html .= '<script type="text/javascript"> '.LF;

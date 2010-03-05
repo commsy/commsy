@@ -29,6 +29,9 @@ $rsslist=array(
 "dynamicdrive" => "http://www.dynamicdrive.com/export.php?type=new"
 );
 
+#global $rss_ticker_array;
+#$rsslist = $rss_ticker_array;
+
 ////Beginners don't need to configure past here////////////////////
 
 $rssid=$_GET['id'];

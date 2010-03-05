@@ -31,7 +31,8 @@ include_once('classes/cs_link.php');
  */
 class cs_privateroom_home_twitter_view extends cs_view {
 
-var  $_config_boxes = false;
+   var $_twitter_id = '';
+
 
    /** constructor
     * the only available constructor, initial values for internal variables
@@ -44,11 +45,16 @@ var  $_config_boxes = false;
       $this->setViewName('twitter');
    }
 
+   function setTwitterID($id){
+      $this->_twitter_id = $id;
+   }
+
    function asHTML () {
-     $html ='<script type="text/javascript">'.LF;
-     $html .='$(document).ready(function(){$("#twitter_friends").twitterFriends({debug:1,username:"xenzen"});});'.LF;
+     $html  = '<div style="margin-top:0px; margin-bottom:5px;">'.$this->_translator->getMessage('PORTLET_TWITTER_CHANNEL_ID',$this->_twitter_id).'</div>'.LF;
+     $html .='<script type="text/javascript">'.LF;
+     $html .='$(document).ready(function(){$("#twitter_friends_'.$this->_twitter_id.'").twitterFriends({debug:1,username:"'.$this->_twitter_id.'"});});'.LF;
      $html .= '</script>'.LF;
-     $html .= '<div id="twitter_friends"></div>';
+     $html .= '<div id="twitter_friends_'.$this->_twitter_id.'"></div>';
      return $html;
    }
 }

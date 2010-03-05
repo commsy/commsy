@@ -44,7 +44,6 @@ var $_channel_id = '';
       $this->cs_view($params);
       $this->_view_title = $this->_translator->getMessage('PORTLET_YOUTUBE_CHANNEL');
       $this->setViewName('youtube_cannel');
-      $this->_channel_id = 'zdf';
    }
 
 
@@ -68,10 +67,10 @@ var $_channel_id = '';
 
    function asHTML () {
      $html  = '<div style="margin-top:0px; margin-bottom:5px;">'.$this->_translator->getMessage('PORTLET_YOUTUBE_CHANNEL_ID',$this->_channel_id).'</div>'.LF;
-     $html .= '<div id="youtubevideos"></div>'.LF;
+     $html .= '<div id="youtubevideos_'.$this->_channel_id.'"></div>'.LF;
      $html .= '<script type="text/javascript">'.LF;
      $html .= '$(document).ready(function() {' .LF;
-     $html .= '   $("#youtubevideos").youTubeChannel({'.LF;
+     $html .= '   $("#youtubevideos_'.$this->_channel_id.'").youTubeChannel({'.LF;
      $html .= '      userName: "'.$this->_channel_id.'",'.LF;
      $html .= '      channel: "favorites",'.LF;
      $html .= '      hideAuthor: true,'.LF;
