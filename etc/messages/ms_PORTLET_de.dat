@@ -1,0 +1,5 @@
+<?php
+$message["PORTLET_YOUTUBE_CHANNEL"]["de"] = "Youtube Kanal";
+$message["PORTLET_YOUTUBE_CHANNEL_ID"]["de"] = "Die folgenden Videos sind die meistgesehenen Videos des Kanals &quot;%1&quot;.";
+$message["PORTLET_YOUTUBE_IS_LOADING"]["de"] = "Kanal wird geladen ...";
+?>

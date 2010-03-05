@@ -589,6 +589,8 @@ class cs_page_view extends cs_view {
 
          $retour .= '<script type="text/javascript" src="javascript/jQuery/twitter/jquery.twitter-friends-1.0.min.js"></script>'.LF;
 
+         $retour .= '<script type="text/javascript" src="javascript/jQuery/youtube/jquery.youtube.js"></script>'.LF;
+
 
 #         $retour .= '   <script type="text/javascript" src="javascript/jQuery/flickr/flickr.js"></script>'.LF;
 #         $retour .= '   <script type="text/javascript" src="javascript/jQuery/flickr/flickrpreview.js"></script>'.LF;

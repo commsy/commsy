@@ -155,14 +155,14 @@ $portlet_array[] = $weather_view;
 /* WEATHER END */
 
 
-/* NEWS */
+/* TWITTER */
 $params = array();
 $params['environment'] = $environment;
 $params['with_modifying_actions'] = $current_context->isOpen();
-$news_view = $class_factory->getClass(PRIVATEROOM_HOME_NEWS_VIEW,$params);
+$news_view = $class_factory->getClass(PRIVATEROOM_HOME_TWITTER_VIEW,$params);
 unset($params);
 $portlet_array[] = $news_view;
-/* END NEWS */
+/* END TWITTER */
 
 /* CONFIGURATION */
 $params = array();
@@ -182,16 +182,32 @@ unset($params);
 $portlet_array[] = $news_view;
 /* RSS TICKER */
 
-
-/* TWITTER */
+/* NEWS */
 $params = array();
 $params['environment'] = $environment;
 $params['with_modifying_actions'] = $current_context->isOpen();
-$news_view = $class_factory->getClass(PRIVATEROOM_HOME_TWITTER_VIEW,$params);
+$news_view = $class_factory->getClass(PRIVATEROOM_HOME_NEWS_VIEW,$params);
 unset($params);
 $portlet_array[] = $news_view;
-/* END TWITTER */
+/* END NEWS */
 
+/* NEWS */
+$params = array();
+$params['environment'] = $environment;
+$params['with_modifying_actions'] = $current_context->isOpen();
+$news_view = $class_factory->getClass(PRIVATEROOM_HOME_NEWS_VIEW,$params);
+unset($params);
+$portlet_array[] = $news_view;
+/* END NEWS */
+
+/* YOUTUBE */
+$params = array();
+$params['environment'] = $environment;
+$params['with_modifying_actions'] = $current_context->isOpen();
+$news_view = $class_factory->getClass(PRIVATEROOM_HOME_YOUTUBE_VIEW,$params);
+unset($params);
+$portlet_array[] = $news_view;
+/* END YOUTUBE */
 
 $portlet_view->setPortletViewArray($portlet_array);
 

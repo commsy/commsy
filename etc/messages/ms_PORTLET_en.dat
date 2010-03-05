@@ -1,0 +1,5 @@
+<?php
+$message["PORTLET_YOUTUBE_CHANNEL"]["en"] = "Youtube channel";
+$message["PORTLET_YOUTUBE_CHANNEL_ID"]["en"] = "The following videos are from channel &quot;%1&quot;.";
+$message["PORTLET_YOUTUBE_IS_LOADING"]["en"] = "Channel ist loading ...";
+?>
