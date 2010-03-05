@@ -637,6 +637,7 @@ class cs_room_manager extends cs_context_manager {
          // delete files
          $disc_manager = $this->_environment->getDiscManager();
          $disc_manager->removeRoomDir($portal_id, $iid);
+         unset($disc_manager);
 
          // delete db content
          $from_backup = false;
@@ -644,82 +645,108 @@ class cs_room_manager extends cs_context_manager {
          // managers need data from other tables
          $hash_manager = $this->_environment->getHashManager();
          $hash_manager->deleteFromDb($iid, $from_backup);
+         unset($hash_manager);
 
          $link_modifier_item_manager = $this->_environment->getLinkModifierItemManager();
          $link_modifier_item_manager->deleteFromDb($iid, $from_backup);
+         unset($link_modifier_item_manager);
 
          $link_item_file_manager = $this->_environment->getLinkItemFileManager();
          $link_item_file_manager->deleteFromDb($iid, $from_backup);
+         unset($link_item_file_manager);
 
          $noticed_manager = $this->_environment->getNoticedManager();
          $noticed_manager->deleteFromDb($iid, $from_backup);
+         unset($noticed_manager);
 
          $reader_manager = $this->_environment->getReaderManager();
          $reader_manager->deleteFromDb($iid, $from_backup);
+         unset($reader_manager);
 
          // plain copy of the rest
          $annotation_manager = $this->_environment->getAnnotationManager();
          $annotation_manager->deleteFromDb($iid, $from_backup);
+         unset($annotation_manager);
 
          $announcement_manager = $this->_environment->getAnnouncementManager();
          $announcement_manager->deleteFromDb($iid, $from_backup);
+         unset($announcement_manager);
 
          $dates_manager = $this->_environment->getDatesManager();
          $dates_manager->deleteFromDb($iid, $from_backup);
+         unset($dates_manager);
 
          $discussion_manager = $this->_environment->getDiscussionManager();
          $discussion_manager->deleteFromDb($iid, $from_backup);
+         unset($discussion_manager);
 
          $discussionarticles_manager = $this->_environment->getDiscussionarticleManager();
          $discussionarticles_manager->deleteFromDb($iid, $from_backup);
+         unset($discussionarticles_manager);
 
          $file_manager = $this->_environment->getFileManager();
          $file_manager->deleteFromDb($iid, $from_backup);
+         unset($file_manager);
 
          $homepage_link_manager = $this->_environment->getHomepageLinkManager();
          $homepage_link_manager->deleteFromDb($iid, $from_backup);
+         unset($homepage_link_manager);
 
          $homepage_manager = $this->_environment->getHomepageManager();
          $homepage_manager->deleteFromDb($iid, $from_backup);
+         unset($homepage_manager);
 
          $item_manager = $this->_environment->getItemManager();
          $item_manager->deleteFromDb($iid, $from_backup);
+         unset($item_manager);
 
          $labels_manager = $this->_environment->getLabelManager();
          $labels_manager->deleteFromDb($iid, $from_backup);
+         unset($labels_manager);
 
          $links_manager = $this->_environment->getLinkManager();
          $links_manager->deleteFromDb($iid, $from_backup);
+         unset($links_manager);
 
          $link_item_manager = $this->_environment->getLinkItemManager();
          $link_item_manager->deleteFromDb($iid, $from_backup);
+         unset($link_item_manager);
 
          $material_manager = $this->_environment->getMaterialManager();
          $material_manager->deleteFromDb($iid, $from_backup);
+         unset($material_manager);
 
          $section_manager = $this->_environment->getSectionManager();
          $section_manager->deleteFromDb($iid, $from_backup);
+         unset($section_manager);
 
          $step_manager = $this->_environment->getStepManager();
          $step_manager->deleteFromDb($iid, $from_backup);
+         unset($step_manager);
 
          $tag_manager = $this->_environment->getTagManager();
          $tag_manager->deleteFromDb($iid, $from_backup);
+         unset($tag_manager);
 
          $tag2tag_manager = $this->_environment->getTag2TagManager();
          $tag2tag_manager->deleteFromDb($iid, $from_backup);
+         unset($tag2tag_manager);
 
          $task_manager = $this->_environment->getTaskManager();
          $task_manager->deleteFromDb($iid, $from_backup);
+         unset($task_manager);
 
          $todo_manager = $this->_environment->getTodoManager();
          $todo_manager->deleteFromDb($iid, $from_backup);
+         unset($todo_manager);
 
          $user_manager = $this->_environment->getUserManager();
          $user_manager->deleteFromDb($iid, $from_backup);
+         unset($user_manager);
 
          $room_manager = $this->_environment->getRoomManager();
          $room_manager->deleteFromDb($iid, $from_backup);
+         unset($room_manager);
       }
       return $retour;
    }
