@@ -265,6 +265,15 @@ foreach ( $portal_id_array as $portal_id ) {
       #$result_html .= '<hr/>'.LF;
       fwrite($file, '<hr/>'.LF);
 
+      // private rooms
+      #echo('<h4>Private Rooms</h4>'.LF);
+      #$result_html .= '<h4>Private Rooms</h4>'.LF;
+      fwrite($file, '<h4>Private Rooms</h4>'.LF);
+      performRoomIDArray($portal->getPrivateIDArray(),$portal->getTitle(),true);
+      #echo('<hr/>'.LF);
+      #$result_html .= '<hr/>'.LF;
+      fwrite($file, '<hr/>'.LF);
+
       // community rooms
       #echo('<h4>Community Rooms</h4>'.LF);
       #$result_html .= '<h4>Community Rooms</h4>'.LF;
@@ -288,15 +297,6 @@ foreach ( $portal_id_array as $portal_id ) {
       #$result_html .= '<h4>Group Rooms</h4>'.LF;
       fwrite($file, '<h4>Group Rooms</h4>'.LF);
       performRoomIDArray($portal->getGroupIDArray(),$portal->getTitle());
-      #echo('<hr/>'.LF);
-      #$result_html .= '<hr/>'.LF;
-      fwrite($file, '<hr/>'.LF);
-
-      // private rooms
-      #echo('<h4>Private Rooms</h4>'.LF);
-      #$result_html .= '<h4>Private Rooms</h4>'.LF;
-      fwrite($file, '<h4>Private Rooms</h4>'.LF);
-      performRoomIDArray($portal->getPrivateIDArray(),$portal->getTitle(),true);
       #echo('<hr/>'.LF);
       #$result_html .= '<hr/>'.LF;
       fwrite($file, '<hr/>'.LF);

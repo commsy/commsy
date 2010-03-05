@@ -225,6 +225,11 @@ foreach ( $portal_id_array as $portal_id ) {
       displayCronResults($portal->runCron());
       echo('<hr/>'.LF);
 
+      // private rooms
+      echo('<h4>Private Rooms</h4>'.LF);
+      performRoomIDArray($portal->getPrivateIDArray(),$portal->getTitle(),true);
+      echo('<hr/>'.LF);
+
       // community rooms
       echo('<h4>Community Rooms</h4>'.LF);
       performRoomIDArray($portal->getCommunityIDArray(),$portal->getTitle());
@@ -238,11 +243,6 @@ foreach ( $portal_id_array as $portal_id ) {
       // group rooms
       echo('<h4>Group Rooms</h4>'.LF);
       performRoomIDArray($portal->getGroupIDArray(),$portal->getTitle());
-      echo('<hr/>'.LF);
-
-      // private rooms
-      echo('<h4>Private Rooms</h4>'.LF);
-      performRoomIDArray($portal->getPrivateIDArray(),$portal->getTitle(),true);
       echo('<hr/>'.LF);
 
       // unset
