@@ -3,16 +3,6 @@
 // Author: Dynamic Drive (http://www.dynamicdrive.com)
 // -------------------------------------------------------------------
 
-//Relative URL syntax:
-//var lastrssbridgeurl="lastrss/bridge.php"
-//Absolute URL syntax. Uncomment below line if you wish to use an absolute reference:
-//var lastrssbridgeurl="http://localhost/phpWorkspace/CommSy7/htdocs/javascript/jQuery/rsstickerajax/lastrss/bridge.php"
-//var lastrssbridgeurl=document.URL.split("commsy.php")[0] + 'javascript/jQuery/rsstickerajax/lastrss/bridge.php';
-jQuery(document).ready(function() {
-var lastrssbridgeurl=document.URL.split("commsy.php")[0] + 'ajax.php?cid=' + window.rss_ticker_cid + '&hid=' + window.rss_ticker_hid + '&fct=privateroom_rss_ticker';
-//alert(lastrssbridgeurl);
-////////////No need to edit beyond here//////////////
-
 function createAjaxObj(){
 var httprequest=false
 if (window.XMLHttpRequest){ // if Mozilla, Safari etc
@@ -39,11 +29,13 @@ return httprequest
 // rssticker_ajax(RSS_id, cachetime, divId, divClass, delay, optionallogicswitch)
 // -------------------------------------------------------------------
 
-function rssticker_ajax(RSS_id, cachetime, divId, divClass, delay, logicswitch){
+function rssticker_ajax(RSS_id, cachetime, divId, divClass, delay, logicswitch, csRoomID, csHID){
 this.RSS_id=RSS_id //Array key indicating which RSS feed to display
 this.cachetime=cachetime //Time to cache feed, in minutes. 0=no cache.
 this.tickerid=divId //ID of ticker div to display information
 this.delay=delay //Delay between msg change, in miliseconds.
+this.csroomid=csRoomID //Delay between msg change, in miliseconds.
+this.cshid=csHID //Delay between msg change, in miliseconds.
 this.logicswitch=(typeof logicswitch!="undefined")? logicswitch : ""
 this.mouseoverBol=0 //Boolean to indicate whether mouse is currently over ticker (and pause it if it is)
 this.pointer=0
@@ -63,9 +55,10 @@ this.getAjaxcontent()
 rssticker_ajax.prototype.getAjaxcontent=function(){
 if (this.ajaxobj){
 var instanceOfTicker=this
+var lastrssbridgeurl=document.URL.split("commsy.php")[0] + 'ajax.php?cid=' + encodeURIComponent(this.csroomid) + '&hid=' + encodeURIComponent(this.cshid) + '&fct=privateroom_rss_ticker';
 var parameters="id="+encodeURIComponent(this.RSS_id)+"&cachetime="+this.cachetime+"&bustcache="+new Date().getTime()
 this.ajaxobj.onreadystatechange=function(){instanceOfTicker.initialize()}
-this.ajaxobj.open('GET', lastrssbridgeurl+"?"+parameters, true)
+this.ajaxobj.open('GET', lastrssbridgeurl+"&"+parameters, true)
 this.ajaxobj.send(null)
 }
 }
@@ -145,4 +138,3 @@ this.opacitysetting+=0.2
 if (fadetype=="up" && this.opacitysetting>=1)
 clearInterval(this[timerid])
 }
-});

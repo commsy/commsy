@@ -23,28 +23,30 @@
 //    along with CommSy.
 
 mb_internal_encoding('UTF-8');
+
 if ( isset($_GET['cid']) ) {
 	if ( isset($_GET['hid']) ) {
 		chdir('..');
+      include_once('functions/misc_functions.php');
 	   include_once('etc/cs_constants.php');
 	   include_once('etc/cs_config.php');
-	   
+
 	   // start of execution time
 	   include_once('functions/misc_functions.php');
 	   $time_start = getmicrotime();
-	   
+
 	   include_once('classes/cs_environment.php');
 	   $environment = new cs_environment();
 	   $environment->setCurrentContextID($_GET['cid']);
 	   $context_item = $environment->getCurrentContextItem();
 	   $hash_manager = $environment->getHashManager();
 	   $translator = $environment->getTranslationObject();
-	
+
 	   $validated = false;
 	   if ( $context_item->isOpenForGuests() ) {
 	      $validated = true;
 	   }
-	
+
 	   if ( !$context_item->isPortal()
 	   and !$context_item->isServer()
 	   and isset($_GET['hid'])
@@ -60,7 +62,7 @@ if ( isset($_GET['cid']) ) {
 	   if($validated) {
 	   	if(isset($_GET['fct'])){
 	   		if($_GET['fct'] == 'privateroom_rss_ticker'){
-	   			privateroom_rss_ticker();
+                privateroom_rss_ticker();
 	   		}
 	   	}
 	   }
@@ -83,6 +85,10 @@ if ( isset($_GET['cid']) ) {
 	die($translator->getMessage('AJAX_NO_CID_GIVEN'));
 }
 
+function privateroom_rss_ticker2(){
+   include "javascript/jQuery/rsstickerajax/lastrss/bridge.php";
+}
+
 function privateroom_rss_ticker(){
 	/*
 	======================================================================
@@ -91,17 +97,18 @@ function privateroom_rss_ticker(){
 	Created: Feb 9th, 2006. Updated: Feb 9th, 2006
 	======================================================================
 	*/
-	
+
 	header('Content-type: text/xml');
-	
+
 	// include lastRSS
-	include "javascript/jQuery/rsstickerajax/lastrss/lastRSS.php"; //path to lastRSS.php on your server from this script ("bridge.php")
-	
+   include_once('htdocs/javascript/jQuery/rsstickerajax/lastrss/lastRSS.php'); //path to lastRSS.php on your server from this script ("bridge.php")
+
 	// Create lastRSS object
-	$rss = new lastRSS;
+	$rss = new lastRSS();
+
 	$rss->cache_dir = 'cache'; //path to cache directory on your server from this script. Chmod 777!
 	$rss->date_format = 'M d, Y g:i:s A'; //date format of RSS item. See PHP date() function for possible input.
-	
+
 	// List of RSS URLs
 	$rsslist=array(
 	"Spiegel" => "http://www.spiegel.de/schlagzeilen/index.rss",
@@ -112,21 +119,20 @@ function privateroom_rss_ticker(){
 	"slashdot" => "http://rss.slashdot.org/Slashdot/slashdot",
 	"dynamicdrive" => "http://www.dynamicdrive.com/export.php?type=new"
 	);
-	
+
 	#global $rss_ticker_array;
 	#$rsslist = $rss_ticker_array;
-	
+
 	////Beginners don't need to configure past here////////////////////
-	
+
 	$rssid=$_GET['id'];
 	$rssurl=isset($rsslist[$rssid])? $rsslist[$rssid] : die("Error: Can't find requested RSS in list.");
-	
+
 	// -------------------------------------------------------------------
 	// outputRSS_XML()- Outputs the "title", "link", "description", and "pubDate" elements of an RSS feed in XML format
 	// -------------------------------------------------------------------
-	
-	function outputRSS_XML($url) {
-	    global $rss;
+
+	function outputRSS_XML($url,$rss) {
 	    $cacheseconds=(int) $_GET["cachetime"]; //typecast "cachetime" parameter as integer (0 or greater)
 	    $rss->cache_time = $cacheseconds;
 	    if ($rs = $rss->get($url)) {
@@ -142,9 +148,9 @@ function privateroom_rss_ticker(){
 	        // you will probably hide this message in a live version
 	    }
 	}
-	
+
 	// ===============================================================================
-	
-	outputRSS_XML($rssurl);
+
+	outputRSS_XML($rssurl,$rss);
 }
 ?>
