@@ -198,6 +198,8 @@ $message["CONFIGURATION_PRIVATEROOM_HOME_DESC_1"]["en"] = "normal";
 $message["CONFIGURATION_PRIVATEROOM_HOME_DESC_2"]["en"] = "detailed (incl. new items)";
 $message["CONFIGURATION_PRIVATEROOM_HOME_DESC_3"]["en"] = "Notice: Due to increased server load this page might require more time to show up than others.
 This is no bug, the process of compiling the required information is quite demanding datawise.";
+$message["CONFIGURATION_PRIVATEROOM_HOME_OPTIONS_DESC"]["en"] = "Select and configure the elemants of the home / notice board page.";
+$message["CONFIGURATION_PRIVATEROOM_HOME_OPTIONS_TITLE"]["en"] = "Configure home / notice board page.";
 $message["CONFIGURATION_PRIVATEROOM_HOME_WEEKLY"]["en"] = "days";
 $message["CONFIGURATION_PRIVATEROOM_LINK"]["en"] = "Private Raum";
 $message["CONFIGURATION_PRIVATEROOM_LINK_OFF"]["en"] = "only available at other room memberships";

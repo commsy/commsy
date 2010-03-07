@@ -141,12 +141,7 @@ class cs_privateroom_home_portlet_view extends cs_view{
    function asHTML () {
       $html  = LF.'<!-- BEGIN OF LIST VIEW -->'.LF;
       $context = $this->_environment->getCurrentContextItem();
-#      $html .= LF.'<div class="head" style="margin-bottom:10px;">'.LF;
-#      $html .= '<span style="font-weight: bold">'.$this->_translator->getMessage('COMMON_ROOM_OVERVIEW').'</span>';
-#      $html .= ' '.$this->_getDescriptionAsHTML().' '.LF;
-#      $html .='</div>'.LF;
-
-
+      $portlet_array = array();
       foreach($this->_portlet_views as $portlet_view){
          $tmp_array['title'] = $portlet_view->getViewTitle();
          $tmp_array['content'] = $portlet_view->asHTML();

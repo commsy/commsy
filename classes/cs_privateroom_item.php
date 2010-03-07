@@ -632,19 +632,20 @@ class cs_privateroom_item extends cs_room_item {
    # time methods
    ###################################################
 
-   function _getShowTime () {
-      $retour = '';
-      if ($this->_issetExtra('TIME_SHOW')) {
-         $retour = $this->_getExtra('TIME_SHOW');
-      }
-      return $retour;
-   }
 
    function showTime () {
       $retour = true;
       $value = $this->_getShowTime();
       if ($value == -1) {
         $retour = false;
+      }
+      return $retour;
+   }
+
+   function _getShowTime () {
+      $retour = '';
+      if ($this->_issetExtra('TIME_SHOW')) {
+         $retour = $this->_getExtra('TIME_SHOW');
       }
       return $retour;
    }
@@ -1020,5 +1021,291 @@ class cs_privateroom_item extends cs_room_item {
       //return $result;
       return true;
    }
+
+
+   /* PORTLET FUNCTIONS
+    * *****************
+    */
+   function getPortletColumnCount () {
+      $retour = 3;
+      if ($this->_issetExtra('PORTLET_COLUMN_COUNT')) {
+         $retour = $this->_getExtra('PORTLET_COLUMN_COUNT');
+      }
+      return $retour;
+   }
+
+   function setPortletColumnCount ($count) {
+      $this->_addExtra('PORTLET_COLUMN_COUNT',$count);
+   }
+
+
+
+   function getPortletShowNewEntryList () {
+      $retour = true;
+      if ($this->_issetExtra('PORTLET_SHOW_ENTRY_LIST')) {
+         if($this->_getExtra('PORTLET_SHOW_ENTRY_LIST') == '-1'){
+            $retour = false;
+         }
+      }
+      return $retour;
+   }
+
+   function setPortletShowNewEntryList () {
+      $this->_addExtra('PORTLET_SHOW_ENTRY_LIST','1');
+   }
+
+   function unsetPortletShowNewEntryList () {
+      $this->_addExtra('PORTLET_SHOW_ENTRY_LIST','-1');
+   }
+
+   function getPortletNewEntryListCount () {
+      $retour = 15;
+      if ($this->_issetExtra('PORTLET_ENTRY_LIST_COUNT')) {
+         $retour = $this->_getExtra('PORTLET_ENTRY_LIST_COUNT');
+      }
+      return $retour;
+   }
+
+   function setPortletNewEntryListCount ($i) {
+      $this->_addExtra('PORTLET_ENTRY_LIST_COUNT',$i);
+   }
+
+
+
+
+
+   function getPortletShowActiveRoomList () {
+      $retour = true;
+      if ($this->_issetExtra('PORTLET_ACTIVE_ROOM_LIST')) {
+         if($this->_getExtra('PORTLET_ACTIVE_ROOM_LIST') == '-1'){
+            $retour = false;
+         }
+      }
+      return $retour;
+   }
+
+   function setPortletShowActiveRoomList () {
+      $this->_addExtra('PORTLET_ACTIVE_ROOM_LIST','1');
+   }
+
+   function unsetPortletShowActiveRoomList () {
+      $this->_addExtra('PORTLET_ACTIVE_ROOM_LIST','-1');
+   }
+
+   function getPortletActiveRoomCount () {
+      $retour = 4;
+      if ($this->_issetExtra('PORTLET_ACTIVE_ROOM_COUNT')) {
+         $retour = $this->_getExtra('PORTLET_ACTIVE_ROOM_COUNT');
+      }
+      return $retour;
+   }
+
+   function setPortletActiveRoomCount ($i) {
+      $this->_addExtra('PORTLET_ACTIVE_ROOM_COUNT',$i);
+   }
+
+
+
+
+
+   function setPortletShowSearchBox () {
+      $this->_addExtra('PORTLET_SHOW_SEARCH_BOX','1');
+   }
+   function unsetPortletShowSearchBox () {
+      $this->_addExtra('PORTLET_SHOW_SEARCH_BOX','-1');
+   }
+
+   function getPortletShowSearchBox () {
+      $retour = true;
+      if ($this->_issetExtra('PORTLET_SHOW_SEARCH_BOX')) {
+         if($this->_getExtra('PORTLET_SHOW_SEARCH_BOX') == '-1'){
+            $retour = false;
+         }
+      }
+      return $retour;
+   }
+
+
+
+
+
+   function setPortletShowWeatherBox () {
+      $this->_addExtra('PORTLET_SHOW_WEATHER_BOX','1');
+   }
+   function unsetPortletShowWeatherBox () {
+      $this->_addExtra('PORTLET_SHOW_WEATHER_BOX','-1');
+   }
+
+   function getPortletShowWeatherBox () {
+      $retour = true;
+      if ($this->_issetExtra('PORTLET_SHOW_WEATHER_BOX')) {
+         if($this->_getExtra('PORTLET_SHOW_WEATHER_BOX') == '-1'){
+            $retour = false;
+         }
+      }
+      return $retour;
+   }
+
+
+
+
+
+   function setPortletShowClockBox () {
+      $this->_addExtra('PORTLET_SHOW_CLOCK_BOX','1');
+   }
+   function unsetPortletShowClockBox () {
+      $this->_addExtra('PORTLET_SHOW_CLOCK_BOX','-1');
+   }
+
+   function getPortletShowClockBox () {
+      $retour = true;
+      if ($this->_issetExtra('PORTLET_SHOW_CLOCK_BOX')) {
+         if($this->_getExtra('PORTLET_SHOW_CLOCK_BOX') == '-1'){
+            $retour = false;
+         }
+      }
+      return $retour;
+   }
+
+
+
+
+
+   function setPortletShowBuzzwordBox () {
+      $this->_addExtra('PORTLET_SHOW_BUZZWORD_BOX','1');
+   }
+   function unsetPortletShowBuzzwordBox () {
+      $this->_addExtra('PORTLET_SHOW_BUZZWORD_BOX','-1');
+   }
+
+   function getPortletShowBuzzwordBox () {
+      $retour = true;
+      if ($this->_issetExtra('PORTLET_SHOW_BUZZWORD_BOX')) {
+         if($this->_getExtra('PORTLET_SHOW_BUZZWORD_BOX') == '-1'){
+            $retour = false;
+         }
+      }
+      return $retour;
+   }
+
+
+
+
+
+   function setPortletShowConfigurationBox () {
+      $this->_addExtra('PORTLET_SHOW_CONFIGURATION_BOX','1');
+   }
+   function unsetPortletShowConfigurationBox () {
+      $this->_addExtra('PORTLET_SHOW_CONFIGURATION_BOX','-1');
+   }
+
+   function getPortletShowConfigurationBox () {
+      $retour = true;
+      if ($this->_issetExtra('PORTLET_SHOW_CONFIGURATION_BOX')) {
+         if($this->_getExtra('PORTLET_SHOW_CONFIGURATION_BOX') == '-1'){
+            $retour = false;
+         }
+      }
+      return $retour;
+   }
+
+
+
+   function setPortletShowTwitter () {
+      $this->_addExtra('PORTLET_SHOW_TWITTER','1');
+   }
+   function unsetPortletShowTwitter () {
+      $this->_addExtra('PORTLET_SHOW_TWITTER','-1');
+   }
+
+   function getPortletShowTwitter () {
+      $retour = false;
+      if ($this->_issetExtra('PORTLET_SHOW_TWITTER')) {
+         if($this->_getExtra('PORTLET_SHOW_TWITTER') == '1'){
+            $retour = true;
+         }
+      }
+      return $retour;
+   }
+
+   function getPortletTwitterAccount () {
+      $retour = '';
+      if ($this->_issetExtra('PORTLET_TWITTER_ACCOUNT')) {
+         $retour = $this->_getExtra('PORTLET_TWITTER_ACCOUNT');
+      }
+      return $retour;
+   }
+
+   function setPortletTwitterAccount ($account) {
+      $this->_addExtra('PORTLET_TWITTER_ACCOUNT',$account);
+   }
+
+
+   function setPortletShowYouTube () {
+      $this->_addExtra('PORTLET_SHOW_YOUTUBE','1');
+   }
+   function unsetPortletShowYouTube () {
+      $this->_addExtra('PORTLET_SHOW_YOUTUBE','-1');
+   }
+
+   function getPortletShowYouTube () {
+      $retour = false;
+      if ($this->_issetExtra('PORTLET_SHOW_YOUTUBE')) {
+         if($this->_getExtra('PORTLET_SHOW_YOUTUBE') == '1'){
+            $retour = true;
+         }
+      }
+      return $retour;
+   }
+
+   function getPortletYouTubeAccount () {
+      $retour = '';
+      if ($this->_issetExtra('PORTLET_YOUTUBE_ACCOUNT')) {
+         $retour = $this->_getExtra('PORTLET_YOUTUBE_ACCOUNT');
+      }
+      return $retour;
+   }
+
+   function setPortletYouTubeAccount ($account) {
+      $this->_addExtra('PORTLET_YOUTUBE_ACCOUNT',$account);
+   }
+
+
+
+   function setPortletShowRSS () {
+      $this->_addExtra('PORTLET_SHOW_RSS','1');
+   }
+   function unsetPortletShowRSS () {
+      $this->_addExtra('PORTLET_SHOW_RSS','-1');
+   }
+
+   function getPortletShowRSS () {
+      $retour = false;
+      if ($this->_issetExtra('PORTLET_SHOW_RSS')) {
+         if($this->_getExtra('PORTLET_SHOW_RSS') == '1'){
+            $retour = true;
+         }
+      }
+      return $retour;
+   }
+
+   function setPortletRSSArray($array){
+      $this->_addExtra('PORTLET_RSS_ARRAY',$array);
+   }
+
+
+   function getPortletRSSArray(){
+      $retour = array();
+      if ($this->_issetExtra('PORTLET_RSS_ARRAY')) {
+         $retour = $this->_getExtra('PORTLET_RSS_ARRAY');
+      }
+      return $retour;
+   }
+
+
+   /* END OF PORTLET FUNCTIONS
+    * *****************
+    */
+
 }
 ?>

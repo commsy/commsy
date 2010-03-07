@@ -90,6 +90,7 @@ function privateroom_rss_ticker2(){
 }
 
 function privateroom_rss_ticker(){
+global $context_item;
 	/*
 	======================================================================
 	LastRSS bridge script- By Dynamic Drive (http://www.dynamicdrive.com)
@@ -110,18 +111,11 @@ function privateroom_rss_ticker(){
 	$rss->date_format = 'M d, Y g:i:s A'; //date format of RSS item. See PHP date() function for possible input.
 
 	// List of RSS URLs
-	$rsslist=array(
-	"Spiegel" => "http://www.spiegel.de/schlagzeilen/index.rss",
-	"Sport1" => "http://www.sport1.de/de_1/startseite/rss.xml",
-	"Tagesschau" => "http://www.tagesschau.de/xml/rss2",
-	"BBC" => "http://newsrss.bbc.co.uk/rss/newsonline_uk_edition/front_page/rss.xml",
-	"news.com" => "http://news.com.com/2547-1_3-0-5.xml",
-	"slashdot" => "http://rss.slashdot.org/Slashdot/slashdot",
-	"dynamicdrive" => "http://www.dynamicdrive.com/export.php?type=new"
-	);
-
-	#global $rss_ticker_array;
-	#$rsslist = $rss_ticker_array;
+	$portlet_array = $context_item->getPortletRSSArray();
+   $rsslist=array();
+   foreach($portlet_array as $rss_item){
+      $rsslist[$rss_item['title']] = $rss_item['adress'];
+   }
 
 	////Beginners don't need to configure past here////////////////////
 
@@ -138,7 +132,11 @@ function privateroom_rss_ticker(){
 	    if ($rs = $rss->get($url)) {
 	       echo "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n<rss version=\"2.0\">\n<channel>\n";
 	            foreach ($rs['items'] as $item) {
-	                echo "<item>\n<link>$item[link]</link>\n<title>$item[title]</title>\n<description>$item[description]</description>\n<pubDate>$item[pubDate]</pubDate>\n</item>\n\n";
+                   if (isset($item['description'])){
+                       echo "<item>\n<link>$item[link]</link>\n<title>$item[title]</title>\n<description>$item[description]</description>\n<pubDate>$item[pubDate]</pubDate>\n</item>\n\n";
+                   }else{
+                       echo "<item>\n<link>$item[link]</link>\n<title>$item[title]</title>\n<description>...</description>\n<pubDate>$item[pubDate]</pubDate>\n</item>\n\n";
+                   }
 	            }
 	       echo "</channel></rss>";
 	            if ($rs['items_count'] <= 0) { echo "<li>Sorry, no items found in the RSS file :-(</li>"; }

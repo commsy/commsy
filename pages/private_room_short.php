@@ -79,64 +79,72 @@ $params['with_modifying_actions'] = $current_context->isOpen();
 $portlet_view = $class_factory->getClass(PRIVATEROOM_HOME_PORTLET_VIEW,$params);
 unset($params);
 
+$portlet_array = array();
 /* SEARCH */
-$params = array();
-$params['environment'] = $environment;
-$params['with_modifying_actions'] = $current_context->isOpen();
-$search_view = $class_factory->getClass(PRIVATEROOM_HOME_SEARCH_VIEW,$params);
-unset($params);
-$portlet_array[] = $search_view;
+if ($current_context->getPortletShowSearchBox()){
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = $current_context->isOpen();
+   $search_view = $class_factory->getClass(PRIVATEROOM_HOME_SEARCH_VIEW,$params);
+   unset($params);
+   $portlet_array[] = $search_view;
+}
 /* SEARCH END */
 
 /* ROOMS */
-$room_manager = $environment->getMyRoomManager();
-$user = $environment->getCurrentUserItem();
-$room_manager->setIntervalLimit(0,4);
-$room_manager->setSortOrder('activity_rev');
-$current_user_item = $environment->getCurrentUserItem();
-$room_manager->setUserIDLimit($current_user_item->getUserID());
-$room_manager->setAuthSourceLimit($current_user_item->getAuthSource());
-$room_manager->select();
-$activ_room_list = $room_manager->getRelatedContextListForUser($user->getUserID(),$user->getAuthSource(),$environment->getCurrentPortalID());
-$params = array();
-$params['environment'] = $environment;
-$params['with_modifying_actions'] = $with_modifying_actions;
-$myroom_view = $class_factory->getClass(PRIVATEROOM_HOME_ROOM_VIEW,$params);
-$myroom_view->setList($activ_room_list);
-$portlet_array[] = $myroom_view;
+if ($current_context->getPortletShowActiveRoomList()){
+   $room_manager = $environment->getMyRoomManager();
+   $user = $environment->getCurrentUserItem();
+   $room_manager->setIntervalLimit(0,$current_context->getPortletActiveRoomCount());
+   $room_manager->setSortOrder('activity_rev');
+   $current_user_item = $environment->getCurrentUserItem();
+   $room_manager->setUserIDLimit($current_user_item->getUserID());
+   $room_manager->setAuthSourceLimit($current_user_item->getAuthSource());
+   $room_manager->select();
+   $activ_room_list = $room_manager->getRelatedContextListForUser($user->getUserID(),$user->getAuthSource(),$environment->getCurrentPortalID());
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = $with_modifying_actions;
+   $myroom_view = $class_factory->getClass(PRIVATEROOM_HOME_ROOM_VIEW,$params);
+   $myroom_view->setList($activ_room_list);
+   $portlet_array[] = $myroom_view;
+   $portlet_view->setList($activ_room_list);
+}
 /* ROOMS END */
 
 /* CLOCK */
-$params = array();
-$params['environment'] = $environment;
-$params['with_modifying_actions'] = $current_context->isOpen();
-$clock_view = $class_factory->getClass(PRIVATEROOM_HOME_CLOCK_VIEW,$params);
-unset($params);
-$portlet_array[] = $clock_view;
+if ($current_context->getPortletShowClockBox()){
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = $current_context->isOpen();
+   $clock_view = $class_factory->getClass(PRIVATEROOM_HOME_CLOCK_VIEW,$params);
+   unset($params);
+   $portlet_array[] = $clock_view;
+}
 /* CLOCK END */
 
-/* NEW ENTRIES */
-$params = array();
-$params['environment'] = $environment;
-$item_manager = $environment->getItemManager();
-$item_manager->setOrderLimit(true);
-$item_manager->setIntervalLimit(15);
-$new_entry_array = $item_manager->getAllNewPrivateRoomEntriesOfRoomList($room_id_array_without_privateroom);
-
-$new_entry_list = $item_manager->getPrivateRoomHomeItemList($new_entry_array);
-#$item_manager->setContextArrayLimit($room_id_array);
-#$item_manager->select();
-#$new_entry_list = $item_manager->getList();
-$params['with_modifying_actions'] = $current_context->isOpen();
-$new_entries_view = $class_factory->getClass(PRIVATEROOM_HOME_NEW_ENTRIES_VIEW,$params);
-$new_entries_view->setList($new_entry_list);
-unset($params);
-$portlet_array[] = $new_entries_view;
-/* END NEW ENTRIES */
-
+if ($current_context->getPortletShowNewEntryList()){
+   /* NEW ENTRIES */
+   $params = array();
+   $params['environment'] = $environment;
+   $item_manager = $environment->getItemManager();
+   $item_manager->setOrderLimit(true);
+   $item_manager->setIntervalLimit($current_context->getPortletNewEntryListCount());
+   $new_entry_array = $item_manager->getAllNewPrivateRoomEntriesOfRoomList($room_id_array_without_privateroom);
+   $new_entry_list = $item_manager->getPrivateRoomHomeItemList($new_entry_array);
+   #$item_manager->setContextArrayLimit($room_id_array);
+   #$item_manager->select();
+   #$new_entry_list = $item_manager->getList();
+   $params['with_modifying_actions'] = $current_context->isOpen();
+   $new_entries_view = $class_factory->getClass(PRIVATEROOM_HOME_NEW_ENTRIES_VIEW,$params);
+   $new_entries_view->setList($new_entry_list);
+   unset($params);
+   $portlet_array[] = $new_entries_view;
+   /* END NEW ENTRIES */
+}
 
 /* BUZZWORDS */
-if ( $current_context->withBuzzwords() ){
+if ( $current_context->withBuzzwords() and $current_context->getPortletShowBuzzwordBox()){
    $params = array();
    $params['environment'] = $environment;
    $params['with_modifying_actions'] = $current_context->isOpen();
@@ -147,82 +155,81 @@ if ( $current_context->withBuzzwords() ){
 /* END BUZZWORDS */
 
 /* WEATHER */
-$params = array();
-$params['environment'] = $environment;
-$params['with_modifying_actions'] = $current_context->isOpen();
-$weather_view = $class_factory->getClass(PRIVATEROOM_HOME_WEATHER_VIEW,$params);
-unset($params);
-$portlet_array[] = $weather_view;
+if ($current_context->getPortletShowWeatherBox()){
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = $current_context->isOpen();
+   $weather_view = $class_factory->getClass(PRIVATEROOM_HOME_WEATHER_VIEW,$params);
+   unset($params);
+   $portlet_array[] = $weather_view;
+}
 /* WEATHER END */
 
 
 /* TWITTER */
-$params = array();
-$params['environment'] = $environment;
-$params['with_modifying_actions'] = $current_context->isOpen();
-$twitter_view = $class_factory->getClass(PRIVATEROOM_HOME_TWITTER_VIEW,$params);
-unset($params);
-$twitter_view->setTwitterID('xenzen');
-$portlet_array[] = $twitter_view;
+if ($current_context->getPortletShowTwitter()){
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = $current_context->isOpen();
+   $twitter_view = $class_factory->getClass(PRIVATEROOM_HOME_TWITTER_VIEW,$params);
+   unset($params);
+   $twitter_view->setTwitterID($current_context->getPortletTwitterAccount());
+   $portlet_array[] = $twitter_view;
+}
 /* END TWITTER */
 
-
 /* CONFIGURATION */
-$params = array();
-$params['environment'] = $environment;
-$params['with_modifying_actions'] = $current_context->isOpen();
-$configuration_view = $class_factory->getClass(PRIVATEROOM_HOME_CONFIGURATION_VIEW,$params);
-unset($params);
-$portlet_array[] = $configuration_view;
+if ($current_context->getPortletShowConfigurationBox()){
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = $current_context->isOpen();
+   $configuration_view = $class_factory->getClass(PRIVATEROOM_HOME_CONFIGURATION_VIEW,$params);
+   unset($params);
+   $portlet_array[] = $configuration_view;
+}
 /* CONFIGURATION END */
 
 
 /* RSS TICKER */
-$rss_ticker_array = array(
-"Spiegel" => "http://www.spiegel.de/schlagzeilen/index.rss",
-"Sport1" => "http://www.sport1.de/de_1/startseite/rss.xml",
-"Tagesschau" => "http://www.tagesschau.de/xml/rss2",
-"BBC" => "http://newsrss.bbc.co.uk/rss/newsonline_uk_edition/front_page/rss.xml",
-"news.com" => "http://news.com.com/2547-1_3-0-5.xml",
-"slashdot" => "http://rss.slashdot.org/Slashdot/slashdot",
-"dynamicdrive" => "http://www.dynamicdrive.com/export.php?type=new"
-);
-$params = array();
-$params['environment'] = $environment;
-$params['with_modifying_actions'] = $current_context->isOpen();
-$rss_view = $class_factory->getClass(PRIVATEROOM_HOME_RSS_TICKER_VIEW,$params);
-$rss_view->setRSSTickerArray($rss_ticker_array);
-unset($params);
-$portlet_array[] = $rss_view;
+if ($current_context->getPortletShowRSS()){
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = $current_context->isOpen();
+   $rss_view = $class_factory->getClass(PRIVATEROOM_HOME_RSS_TICKER_VIEW,$params);
+   unset($params);
+   $portlet_array[] = $rss_view;
+}
 /* RSS TICKER */
 
-/* NEWS */
+/* NEWS
 $params = array();
 $params['environment'] = $environment;
 $params['with_modifying_actions'] = $current_context->isOpen();
 $news_view = $class_factory->getClass(PRIVATEROOM_HOME_NEWS_VIEW,$params);
 unset($params);
 $portlet_array[] = $news_view;
-/* END NEWS */
+ END NEWS */
 
-/* NEWS */
+/* NEWS
 $params = array();
 $params['environment'] = $environment;
 $params['with_modifying_actions'] = $current_context->isOpen();
 $news_view = $class_factory->getClass(PRIVATEROOM_HOME_NEWS_VIEW,$params);
 unset($params);
 $portlet_array[] = $news_view;
-/* END NEWS */
+ END NEWS */
 
 
 /* YOUTUBE */
-$params = array();
-$params['environment'] = $environment;
-$params['with_modifying_actions'] = $current_context->isOpen();
-$youtube_view = $class_factory->getClass(PRIVATEROOM_HOME_YOUTUBE_VIEW,$params);
-$youtube_view->setChannelID('zdf');
-unset($params);
-$portlet_array[] = $youtube_view;
+if ($current_context->getPortletShowYouTube()){
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = $current_context->isOpen();
+   $youtube_view = $class_factory->getClass(PRIVATEROOM_HOME_YOUTUBE_VIEW,$params);
+   $youtube_view->setChannelID('zdf');
+   unset($params);
+   $portlet_array[] = $youtube_view;
+}
 /* END YOUTUBE */
 
 
@@ -232,8 +239,7 @@ $portlet_view->setPortletViewArray($portlet_array);
 
 include_once('classes/cs_list.php');
 
-$portlet_view->setList($activ_room_list);
-$portlet_view->setColumnCount(3);
+$portlet_view->setColumnCount($current_context->getPortletColumnCount());
 $page->add($portlet_view);
 
 

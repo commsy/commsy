@@ -68,22 +68,20 @@ var  $_rss_ticker_array = array();
      $html .= '   var rss_ticker_cid = "'.$current_context_item->getItemID().'";'.LF;
      $html .= '   var rss_ticker_hid = "'.$hash_manager->getRSSHashForUser($current_user_item->getItemID()).'";'.LF;
      $html .= '</script>'.LF;
-
-     $html .= ' <h4 style="margin-bottom:0px; margin-top:0px;">Sport1.de</h4> '.LF;
-     $html .= '<script type="text/javascript"> '.LF;
-     $html .= '  new rssticker_ajax("Sport1", 0, "Sport1", "ticker", 10000, "date",rss_ticker_cid,rss_ticker_hid);'.LF;
-     $html .= '</script>'.LF;
-
-     $html .= ' <h4 style="margin-bottom:0px;">Tagesschau.de</h4> '.LF;
-     $html .= '<script type="text/javascript"> '.LF;
-     $html .= '  new rssticker_ajax("Tagesschau", 0, "Tagesschau", "ticker", 10000, "date",rss_ticker_cid,rss_ticker_hid);'.LF;
-     $html .= '</script>'.LF;
-
-     $html .= ' <h4 style="margin-bottom:0px;">Spiegel.de</h4> '.LF;
-     $html .= '<script type="text/javascript"> '.LF;
-     $html .= '  new rssticker_ajax("Spiegel", 0, "Spiegel", "ticker", 10000, "date+description",rss_ticker_cid,rss_ticker_hid);'.LF;
-     $html .= '</script>'.LF;
-
+     $portlet_rss_array = $current_context_item->getPortletRSSArray();
+     foreach($portlet_rss_array as $rss_item){
+        if (isset($rss_item['title']) and !empty($rss_item['title']) and isset($rss_item['adress']) and !empty($rss_item['adress'])){
+           $html .= ' <h4 style="margin-bottom:0px; margin-top:0px;">'.$rss_item['title'].'</h4> '.LF;
+           $html .= '<script type="text/javascript"> '.LF;
+           if (isset($rss_item['title']) and !empty($rss_item['title']) and $rss_item['display'] == '2'){
+#              $html .= '  new rssticker_ajax("'.$rss_item['title'].'", 0, "'.$rss_item['title'].'", "ticker", 10000, "date+description",rss_ticker_cid,rss_ticker_hid);'.LF;
+              $html .= '  new rssticker_ajax("'.$rss_item['title'].'", 0, "'.$rss_item['title'].'", "ticker", 10000, "date",rss_ticker_cid,rss_ticker_hid);'.LF;
+           }else{
+              $html .= '  new rssticker_ajax("'.$rss_item['title'].'", 0, "'.$rss_item['title'].'", "ticker", 10000, "date",rss_ticker_cid,rss_ticker_hid);'.LF;
+           }
+           $html .= '</script>'.LF;
+        }
+     }
      $html .= '</div>';
 
      return $html;

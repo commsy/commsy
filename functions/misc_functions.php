@@ -758,6 +758,7 @@ function isURLValid () {
          $funct != 'informationbox' and
          $funct != 'service' and
          $funct != 'privateroom_newsletter' and
+         $funct != 'privateroom_home_options' and
          $funct != 'dates' and
          $funct != 'authentication' and
          $funct != 'export' and
@@ -778,7 +779,7 @@ function isURLValid () {
          $funct != 'item_index' and
 
          $funct != 'dbbackup' and
-         
+
          //chat
          $funct != 'process' and
          $funct != 'output' and
