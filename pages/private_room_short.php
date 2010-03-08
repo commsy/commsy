@@ -146,12 +146,14 @@ if ($current_context->getPortletShowWeatherBox()){
 
 
 /* DOKUVERSER*/
-$params = array();
-$params['environment'] = $environment;
-$params['with_modifying_actions'] = $current_context->isOpen();
-$dokuverser_view = $class_factory->getClass(PRIVATEROOM_HOME_DOKUVERSER_VIEW,$params);
-unset($params);
-$portlet_array[] = $dokuverser_view;
+if ($current_context->getPortletShowDokuverserBox()){
+   $params = array();
+	$params['environment'] = $environment;
+	$params['with_modifying_actions'] = $current_context->isOpen();
+	$dokuverser_view = $class_factory->getClass(PRIVATEROOM_HOME_DOKUVERSER_VIEW,$params);
+	unset($params);
+	$portlet_array[] = $dokuverser_view;
+}
 /* END DOKUVERSER */
 
 
