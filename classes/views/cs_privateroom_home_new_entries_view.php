@@ -86,6 +86,12 @@ var $_list = NULL;
                $discussion_manager = $this->_environment->getDiscussionManager();
                $new_full_item = $discussion_manager->getItem($linked_iid);
                break;
+            case CS_STEP_TYPE:
+               $linked_iid = $full_item->getToDoID();
+               $fragment = 'anchor'.$full_item->getItemID();
+               $todo_manager = $this->_environment->getToDoManager();
+               $new_full_item = $todo_manager->getItem($linked_iid);
+               break;
             case CS_SECTION_TYPE:
                $linked_iid = $full_item->getLinkedItemID();
                $fragment = 'anchor'.$full_item->getItemID();
