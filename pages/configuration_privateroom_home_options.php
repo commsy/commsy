@@ -178,6 +178,12 @@ else {
             $item->unsetPortletShowSearchBox();
          }
 
+         if ( isset($_POST['dokuverser_box']) and !empty($_POST['dokuverser_box']) ) {
+            $item->setPortletShowDokuverserBox();
+         }else{
+            $item->unsetPortletShowDokuverserBox();
+         }
+
          if ( isset($_POST['buzzword_box']) and !empty($_POST['buzzword_box']) ) {
             $item->setPortletShowBuzzwordBox();
          }else{
