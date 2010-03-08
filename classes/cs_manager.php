@@ -132,6 +132,8 @@ class cs_manager {
    public $_link_modifier = true;
    public $_db_prefix = '';
 
+   var $_force_sql = false;
+
   /** constructor: cs_manager
     * the only available constructor, initial values for internal variables. sets room limit to room
     *
@@ -158,6 +160,10 @@ class cs_manager {
 
    public function setCacheOff () {
       $this->_cache_on = false;
+   }
+
+   public function forceSQL () {
+      $this->_force_sql = true;
    }
 
    public function setSaveWithoutLinkModifier () {
@@ -1455,88 +1461,88 @@ class cs_manager {
 
       return $success;
    }
-   
+
    /**
     * create a backup of an item for a user in item_backup
-    * 
+    *
     * @param $uid - userID
     * @param $mapArray - this array maps a source column(key) to a target column(value)
     * @param $specialArray - Array of special columns, they are serialized and stored in special column
     */
    public function backupItem($uid, $mapArray, $specialArray = array()) {
       $current_datetime = getCurrentDateTimeInMySQL();
-      
+
       // build select
       $query = 'SELECT item_id, ';
       $size = sizeof($mapArray);
       $keys = array_keys($mapArray);
       $values = array_values($mapArray);
       for($i=0; $i<$size; $i++) {
-      	 $query .= $keys[$i];
+          $query .= $keys[$i];
          if($i != $size-1) {
-         	$query .= ', ';
+            $query .= ', ';
          }
       }
-      
-   	  // if specialArray is set, select these columns too
+
+        // if specialArray is set, select these columns too
       foreach($specialArray as $specialColumn) {
-      	 $query .= ', ' . $specialColumn;
+          $query .= ', ' . $specialColumn;
       }
-      
+
       // build from
       $query .= ' FROM ' . $this->addDatabasePrefix($this->_db_table);
-      
+
       // build where
-      $query .= ' WHERE ' . $this->addDatabasePrefix($this->_db_table) . '.creator_id = "' . encode(AS_DB, $uid) . '"'; 
+      $query .= ' WHERE ' . $this->addDatabasePrefix($this->_db_table) . '.creator_id = "' . encode(AS_DB, $uid) . '"';
       $result = $this->_db_connector->performQuery($query);
-      
+
       if(!empty($result)) {
-      	 // build insert query
-      	 $insert_query = 'INSERT IGNORE INTO '.$this->addDatabasePrefix('item_backup').'(item_id, backup_date, ';
-      	 for($i=0; $i<$size; $i++) {
-      	    $insert_query .= $values[$i];
-      	    if($i != $size-1) {
-      	       $insert_query .= ', ';
-      	    }
-      	 }
-      	 if(!empty($specialArray)) $insert_query .= ', special';
-      	 $insert_query .= ') VALUES';
-      	 
-      	 $count = 0;
-      	 $rssize = sizeof($result);
-      	 foreach($result as $rs) {
-	        $rsvalues = array_values($rs);
-	        $insert_query .= '("' . encode(AS_DB, $rs['item_id']) . '","' . $current_datetime . '", ';
-	      	for($i = 1; $i<$size+1; $i++) {
-	      	   $insert_query .= '"' . encode(AS_DB, $rsvalues[$i]) . '"';
-	      	   if($i!= $size) {
-	      	   	  $insert_query .= ', ';
-	      	   }
-	      	}
-	      	
-	      	// get specialArray fields
-		    if(!empty($specialArray)) {
-		       $special = array();
-		       foreach($specialArray as $specialColumn) {
-		          $special[] = $rs[$specialColumn];
-		       }
-		       $insert_query .= ', "' . encode(AS_DB, serialize($special)) . '"';
-		    }	    
-	     	
-	      	$insert_query .= ')';
-	      	$count++;
-	      	if($count != $rssize) {
-	      	   $insert_query .= ', ';
-	      	}
-      	 }
-      	 // exec query
-      	 $result2 = $this->_db_connector->performQuery($insert_query);
-      	 /*
-      	 if(!isset($result2) || !$result2) {
-      	 	include_once('functions/error_functions.php');trigger_error('Problems backuping item.',E_USER_WARNING);
-      	 }
-      	 */
-      	 unset($result2);
+          // build insert query
+          $insert_query = 'INSERT IGNORE INTO '.$this->addDatabasePrefix('item_backup').'(item_id, backup_date, ';
+          for($i=0; $i<$size; $i++) {
+             $insert_query .= $values[$i];
+             if($i != $size-1) {
+                $insert_query .= ', ';
+             }
+          }
+          if(!empty($specialArray)) $insert_query .= ', special';
+          $insert_query .= ') VALUES';
+
+          $count = 0;
+          $rssize = sizeof($result);
+          foreach($result as $rs) {
+           $rsvalues = array_values($rs);
+           $insert_query .= '("' . encode(AS_DB, $rs['item_id']) . '","' . $current_datetime . '", ';
+            for($i = 1; $i<$size+1; $i++) {
+               $insert_query .= '"' . encode(AS_DB, $rsvalues[$i]) . '"';
+               if($i!= $size) {
+                    $insert_query .= ', ';
+               }
+            }
+
+            // get specialArray fields
+          if(!empty($specialArray)) {
+             $special = array();
+             foreach($specialArray as $specialColumn) {
+                $special[] = $rs[$specialColumn];
+             }
+             $insert_query .= ', "' . encode(AS_DB, serialize($special)) . '"';
+          }
+
+            $insert_query .= ')';
+            $count++;
+            if($count != $rssize) {
+               $insert_query .= ', ';
+            }
+          }
+          // exec query
+          $result2 = $this->_db_connector->performQuery($insert_query);
+          /*
+          if(!isset($result2) || !$result2) {
+             include_once('functions/error_functions.php');trigger_error('Problems backuping item.',E_USER_WARNING);
+          }
+          */
+          unset($result2);
       }
       unset($result);
    }
@@ -1625,13 +1631,13 @@ class cs_manager {
       }
       return $retour;
    }
-   
+
    function addDatabasePrefix($db_table){
       return $this->_db_prefix . $db_table;
    }
-   
+
    function moveFromDbToBackup($context_id){
-   	global $c_db_backup_prefix;
+      global $c_db_backup_prefix;
       $retour = false;
       if ( !empty($context_id) ) {
          $query = 'INSERT INTO '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$this->_db_table).' SELECT * FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).'.context_id = "'.$context_id.'"';
@@ -1640,14 +1646,14 @@ class cs_manager {
             include_once('functions/error_functions.php');
             trigger_error('Problems while copying to backup-table.',E_USER_WARNING);
          } else {
-	         $retour = $this->deleteFromDb($context_id);
+            $retour = $this->deleteFromDb($context_id);
          }
       }
       return $retour;
    }
-   
+
    function moveFromBackupToDb($context_id){
-   	global $c_db_backup_prefix;
+      global $c_db_backup_prefix;
       $retour = false;
       if ( !empty($context_id) ) {
          $query = 'INSERT INTO '.$this->addDatabasePrefix($this->_db_table).' SELECT * FROM '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$this->_db_table).' WHERE '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$this->_db_table).'.context_id = "'.$context_id.'"';
@@ -1661,16 +1667,16 @@ class cs_manager {
       }
       return $retour;
    }
-   
+
    function deleteFromDb($context_id, $from_backup = false){
-   	global $c_db_backup_prefix;
-   	$retour = false;
-   	
-   	$db_prefix = '';
-   	if($from_backup){
-   		$db_prefix .= $c_db_backup_prefix.'_';
-   	}
-   	
+      global $c_db_backup_prefix;
+      $retour = false;
+
+      $db_prefix = '';
+      if($from_backup){
+         $db_prefix .= $c_db_backup_prefix.'_';
+      }
+
       $query = 'DELETE FROM '.$this->addDatabasePrefix($db_prefix.$this->_db_table).' WHERE '.$this->addDatabasePrefix($db_prefix.$this->_db_table).'.context_id = "'.$context_id.'"';
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) ) {

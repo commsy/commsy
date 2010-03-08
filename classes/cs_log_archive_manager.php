@@ -102,20 +102,20 @@ class cs_log_archive_manager extends cs_manager {
                $data['iid'] = '0';
             }
             $query = 'INSERT INTO '.$this->addDatabasePrefix('log_archive').' SET '.
-                     'ip="'.      encode(AS_DB,$data['ip']).'", '.
-                     'agent="'.   encode(AS_DB,$data['agent']).'", '.
+                     'ip="'.       encode(AS_DB,$data['ip']).'", '.
+                     'agent="'.    encode(AS_DB,$data['agent']).'", '.
                      'timestamp="'.encode(AS_DB,$data['timestamp']).'", '.
-                     'request="'. encode(AS_DB,$data['request']).'", '.
-                     'method="'.  encode(AS_DB,$data['method']).'", '.
-                     'uid="'.     encode(AS_DB,$data['uid']).'", '.
-                     'ulogin="'.  encode(AS_DB,$data['ulogin']).'", '.
-                     'cid="'.     encode(AS_DB,$data['cid']).'", '.
-                     'module="'.  encode(AS_DB,$data['module']).'", '.
-                     'fct="'.     encode(AS_DB,$data['fct']).'", '.
-                     'param="'.   encode(AS_DB,$data['param']).'", '.
-                     'iid="'.     encode(AS_DB,$data[$key]['iid']).'", '.
-                     'queries="'.     encode(AS_DB,$data[$key]['queries']).'", '.
-                     'time="'.     encode(AS_DB,$data[$key]['time']).'"';
+                     'request="'.  encode(AS_DB,$data['request']).'", '.
+                     'method="'.   encode(AS_DB,$data['method']).'", '.
+                     'uid="'.      encode(AS_DB,$data['uid']).'", '.
+                     'ulogin="'.   encode(AS_DB,$data['ulogin']).'", '.
+                     'cid="'.      encode(AS_DB,$data['cid']).'", '.
+                     'module="'.   encode(AS_DB,$data['module']).'", '.
+                     'fct="'.      encode(AS_DB,$data['fct']).'", '.
+                     'param="'.    encode(AS_DB,$data['param']).'", '.
+                     'iid="'.      encode(AS_DB,$data['iid']).'", '.
+                     'queries="'.  encode(AS_DB,$data['queries']).'", '.
+                     'time="'.     encode(AS_DB,$data['time']).'"';
             // perform query
             $result = $this->_db_connector->performQuery($query);
             if ( !isset($result) ) {

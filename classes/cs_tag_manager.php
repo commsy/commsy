@@ -229,42 +229,42 @@ class cs_tag_manager extends cs_manager {
                $this->_data->sortby('title');
             }
          } else {
-         	// sort tags(alphabet) if no order is given
-         	$tag2tag_manager = $this->_environment->getTag2TagManager();
-         	$query = 'SELECT link_id,sorting_place,title FROM '.$this->addDatabasePrefix($tag2tag_manager->_db_table).' INNER JOIN '.$this->addDatabasePrefix($this->_db_table).' ON item_id = to_item_id WHERE '.$this->addDatabasePrefix($tag2tag_manager->_db_table).'.deletion_date is NULL AND '.$this->addDatabasePrefix($tag2tag_manager->_db_table).'.deleter_id IS NULL ORDER BY title ASC';
-		    $result = $tag2tag_manager->_db_connector->performQuery($query);
-			if (!isset($result)) {
-         	include_once('functions/error_functions.php');
-         	trigger_error('Problems cleaning sorting place for father item id (GET) '.encode(AS_DB,$item_id).' from query: "'.$query.'"',E_USER_WARNING);
-      		} else {
-      			$flag = false;
-      			$i = $result['0']['sorting_place'];
-      			foreach ( $result as $result_array ) {
-            		if ( $result_array['sorting_place'] != $i  ) {
-               			$flag = true;
-               			break;
-            		}
-            	$i = $i - 1;
-         		}
-         		unset($result);
-			}
-			if($flag == false){
-				$query = 'SELECT item_id,title FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).'.deletion_date is NULL AND '.$this->addDatabasePrefix($this->_db_table).'.deleter_id IS NULL AND title != "CS_TAG_ROOT" ORDER BY title ASC;';
-		    	$result = $this->_db_connector->performQuery($query);
-		    	if (!isset($result)) {
-         			include_once('functions/error_functions.php');
-         			trigger_error('Problems cleaning sorting place for father item id (GET) '.encode(AS_DB,$item_id).' from query: "'.$query.'"',E_USER_WARNING);
-      			} else {
-		    		$sorting_place_id = 1;
-		    		foreach ( $result as $result_array ) {
-				  		$update = 'UPDATE '.$this->addDatabasePrefix($tag2tag_manager->_db_table).' SET sorting_place='.$sorting_place_id.' WHERE to_item_id = '.$result_array["item_id"].';';
-            	  		$result = $tag2tag_manager->_db_connector->performQuery($update);
-            	  		$sorting_place_id = $sorting_place_id + 1;
-					}
-				$this->_data->sortby('title');
-		    	}
-			}
-			unset($tag2tag_manager);
+            // sort tags(alphabet) if no order is given
+            $tag2tag_manager = $this->_environment->getTag2TagManager();
+            $query = 'SELECT link_id,sorting_place,title FROM '.$this->addDatabasePrefix($tag2tag_manager->_db_table).' INNER JOIN '.$this->addDatabasePrefix($this->_db_table).' ON item_id = to_item_id WHERE '.$this->addDatabasePrefix($tag2tag_manager->_db_table).'.deletion_date is NULL AND '.$this->addDatabasePrefix($tag2tag_manager->_db_table).'.deleter_id IS NULL ORDER BY title ASC';
+            $result = $tag2tag_manager->_db_connector->performQuery($query);
+            if (!isset($result)) {
+               include_once('functions/error_functions.php');
+               trigger_error('Problems selecting tags from query: "'.$query.'"',E_USER_WARNING);
+            } else {
+               $flag = false;
+               $i = $result['0']['sorting_place'];
+               foreach ( $result as $result_array ) {
+                  if ( $result_array['sorting_place'] != $i  ) {
+                        $flag = true;
+                        break;
+                  }
+               $i = $i - 1;
+               }
+               unset($result);
+         }
+         if($flag == false){
+            $query = 'SELECT item_id,title FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).'.deletion_date is NULL AND '.$this->addDatabasePrefix($this->_db_table).'.deleter_id IS NULL AND title != "CS_TAG_ROOT" ORDER BY title ASC;';
+             $result = $this->_db_connector->performQuery($query);
+             if (!isset($result)) {
+                  include_once('functions/error_functions.php');
+                  trigger_error('Problems selecting tags from query: "'.$query.'"',E_USER_WARNING);
+               } else {
+                $sorting_place_id = 1;
+                foreach ( $result as $result_array ) {
+                    $update = 'UPDATE '.$this->addDatabasePrefix($tag2tag_manager->_db_table).' SET sorting_place='.$sorting_place_id.' WHERE to_item_id = '.$result_array["item_id"].';';
+                       $result = $tag2tag_manager->_db_connector->performQuery($update);
+                       $sorting_place_id = $sorting_place_id + 1;
+               }
+            $this->_data->sortby('title');
+             }
+         }
+         unset($tag2tag_manager);
          }
       } else {
          $result = $this->_performQuery();
@@ -381,10 +381,14 @@ class cs_tag_manager extends cs_manager {
            $query .= ' LIMIT '.encode(AS_DB,$this->_from_limit).', '.encode(AS_DB,$this->_interval_limit);
         }
      }
+
      // sixth, perform query
-     if ( isset($this->_cached_sql[$query]) ) {
-         $result = $this->_cached_sql[$query];
+     if ( !$this->_force_sql
+          and isset($this->_cached_sql[$query])
+        ) {
+        $result = $this->_cached_sql[$query];
      } else {
+        $this->_force_sql = false;
         $result = $this->_db_connector->performQuery($query);
         if ( !isset($result) ) {
            if ($mode == 'count') {
@@ -708,6 +712,7 @@ class cs_tag_manager extends cs_manager {
 
       $tag_root_item_old = $this->getRootTagItemFor($old_id);
       if ( isset($tag_root_item_old) ) {
+         $this->forceSQL();
          $tag_root_item_new = $this->getRootTagItemFor($new_id);
          if ( isset($tag_root_item_new) ) {
             $retour[$tag_root_item_old->getItemID()] = $tag_root_item_new->getItemID();
@@ -715,14 +720,13 @@ class cs_tag_manager extends cs_manager {
          }
       }
       unset($tag_root_item_old);
-
       return $retour;
    }
 
    public function deleteTagsOfUser ($uid) {
-   	  // create backup of item
-   	  $this->backupItem($uid, array(	'title'				=>	'title',
-   	  									'modification_date'	=>	'modification_date'));
+        // create backup of item
+        $this->backupItem($uid, array(	'title'				=>	'title',
+                                   'modification_date'	=>	'modification_date'));
 
       $current_datetime = getCurrentDateTimeInMySQL();
       $query  = 'SELECT '.$this->addDatabasePrefix($this->_db_table).'.* FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).'.creator_id = "'.encode(AS_DB,$uid).'"';

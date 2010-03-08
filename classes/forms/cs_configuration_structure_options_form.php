@@ -77,9 +77,9 @@ var $_with_tags = false;
       //netnavigation
       $this->_form->addCheckbox('netnavigation','yes','',$this->_translator->getMessage('PREFERENCES_CONFIGURATION_NETNAVIGATION'),$this->_translator->getMessage('PREFERENCES_CONFIGURATION_NETNAVIGATION_VALUE'),'','','','onclick="cs_toggleNetnavigation()"');
       $this->_form->combine();
-      $this->_form->addCheckbox('path','yes','',$this->_translator->getMessage('TOPIC_INDEX'),$this->_translator->getMessage('PREFERENCES_CONFIGURATION_PATH_VALUE'),'');
-      $this->_form->combine();
       $this->_form->addCheckbox('netnavigation_show','yes','',$this->_translator->getMessage('CONFIGURATION_SHOW_EXPANDED'),$this->_translator->getMessage('CONFIGURATION_SHOW_EXPANDED'));
+      $this->_form->combine();
+      $this->_form->addCheckbox('path','yes','',$this->_translator->getMessage('TOPIC_INDEX'),$this->_translator->getMessage('PREFERENCES_CONFIGURATION_PATH_VALUE'),'');
 
       // buttons
       $this->_form->addButtonBar('option',$this->_translator->getMessage('PREFERENCES_SAVE_BUTTON'),'');
