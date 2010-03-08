@@ -81,7 +81,7 @@ class cs_section_manager extends cs_manager {
 
    var $_all_section_list = NULL;
    var $_cached_material_item_ids = array();
-   
+
    /*
     * Translation Object
     */
@@ -405,7 +405,7 @@ class cs_section_manager extends cs_manager {
    */
    function _update ($item) {
         $date_string = '';
-          if (!$this->_save_section_without_date) {
+        if (!$this->_save_section_without_date) {
            parent::_update($item);
            $date_string = 'modification_date="'.getCurrentDateTimeInMySQL().'",';
         }
@@ -584,11 +584,11 @@ class cs_section_manager extends cs_manager {
 
 
    function deleteSectionsOfUser($uid) {
-   	   // create backup of item
-   	  $this->backupItem($uid, array(	'title'				=>	'title',
-   	  									'description'		=>	'description',
-   	  									'modification_date'	=>	'modification_date'));
-   	  
+         // create backup of item
+        $this->backupItem($uid, array(	'title'				=>	'title',
+                                   'description'		=>	'description',
+                                   'modification_date'	=>	'modification_date'));
+
       $current_datetime = getCurrentDateTimeInMySQL();
       $query  = 'SELECT '.$this->addDatabasePrefix('section').'.* FROM '.$this->addDatabasePrefix('section').' WHERE '.$this->addDatabasePrefix('section').'.creator_id = "'.encode(AS_DB,$uid).'"';
       $result = $this->_db_connector->performQuery($query);

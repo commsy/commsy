@@ -352,7 +352,7 @@ class cs_step_manager extends cs_manager {
    */
    function _update ($item) {
         $date_string = '';
-          if (!$this->_save_step_without_date) {
+        if (!$this->_save_step_without_date) {
            parent::_update($item);
            $date_string = 'modification_date="'.getCurrentDateTimeInMySQL().'",';
         }
