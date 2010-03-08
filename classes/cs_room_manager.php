@@ -530,7 +530,7 @@ class cs_room_manager extends cs_context_manager {
          $query  = "SELECT count(DISTINCT ".$this->addDatabasePrefix($this->_db_table).".item_id) as number";
       } else {
          $retour = new cs_list();
-         $query  = "SELECT ".$this->addDatabasePrefix($this->_db_table).".*";
+         $query  = "SELECT DISTINCT ".$this->addDatabasePrefix($this->_db_table).".*";
       }
       $query .= " FROM ".$this->addDatabasePrefix($this->_db_table).", ".$this->addDatabasePrefix("user");
       $query .= " WHERE ".$this->addDatabasePrefix("user").".context_id=".$this->addDatabasePrefix($this->_db_table).".item_id AND ".$this->addDatabasePrefix("user").".lastlogin > '".encode(AS_DB,$start)."' and ".$this->addDatabasePrefix("user").".creation_date < '".encode(AS_DB,$end)."'";

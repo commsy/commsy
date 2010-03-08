@@ -835,7 +835,7 @@ class cs_statistic_view extends cs_view {
               and $c_etchat_enable
             ) {
             $html .= '      <td style="text-align:right; border-left: 1px solid;" class="head">';
-            $html .= $this->_translator->getMessage('CHAT_CHAT');
+            $html .= $this->_translator->getMessage('CONFIGURATION_STATISTIC_CHAT');
             $html .= '</td>'.LF;
          }
          if ( !empty($c_pmwiki)

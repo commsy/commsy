@@ -246,6 +246,7 @@ $message["CONFIGURATION_SORT_ROOMS_ACTIVITY"]["de"] = "nach Aktivität (Standard
 $message["CONFIGURATION_SORT_ROOMS_TITLE"]["de"] = "nach Titel";
 $message["CONFIGURATION_SPONSOR_DESC"]["de"] = "Hier können Sie die Anzeige von Sponsoren und Werbung konfigurieren.";
 $message["CONFIGURATION_SPONSOR_LINK"]["de"] = "Sponsoren und Werbung";
+$message["CONFIGURATION_STATISTIC_CHAT"]["de"] = "Chat";
 $message["CONFIGURATION_STRUCTURE_OPTIONS_DESC"]["de"] = "Verwenden Sie <span class=&quot;bold&quot;>Schlagwörter</span>, <span class=&quot;bold&quot;>Kategorien</span> oder die <span class=&quot;bold&quot;>Netznavigation</span> (mit <span style=&quot;font-weight:bold&quot;>Pfaden</span>).";
 $message["CONFIGURATION_STRUCTURE_OPTIONS_TITLE"]["de"] = "Strukturierungshilfen";
 $message["CONFIGURATION_TAGS_FORM_TITLE"]["de"] = "Schlagwörter und Kategorien";
