@@ -69,6 +69,8 @@ class cs_context_item extends cs_item {
 
    var $_cache_may_enter = array();
 
+   var $_count_items = NULL;
+
    /** constructor: cs_context_item
     * the only available constructor, initial values for internal variables
     *
@@ -4592,6 +4594,17 @@ class cs_context_item extends cs_item {
    # statistic functions
    ######################################################################
 
+   function getCountItems ($start,$end) {
+      if ( !isset($this->_count_items) ) {
+         $manager = $this->_environment->getItemManager();
+         $manager->resetLimits();
+         $manager->setContextLimit($this->getItemID());
+         $this->_count_items = $manager->getCountItems($start,$end);
+      }
+      $retour = $this->_count_items;
+      return $retour;
+   }
+
    function getCountAnnouncements ($start,$end) {
       if (!isset($this->_count_announcements)) {
          $manager = $this->_environment->getAnnouncementManager();
@@ -5272,7 +5285,7 @@ class cs_context_item extends cs_item {
         }
         return $image;
     }
-    
+
     function getPageImpressionAndUserActivityLast() {
        $retour = $this->_getExtra('PIUA_LAST');
        if (empty($retour)) {
@@ -5280,7 +5293,7 @@ class cs_context_item extends cs_item {
        }
        return $retour;
     }
-    
+
     function setPageImpressionAndUserActivityLast($value) {
        $this->_addExtra('PIUA_LAST',$value);
     }

@@ -582,36 +582,44 @@ class cs_community_item extends cs_room_item {
       $activity_border = 9;
       $activity = 0;
 
-      $activity = $activity + $this->getCountAnnouncements($start,$end);
+      $activity = $activity + $this->getCountItems($start,$end);
       if ($activity > $activity_border) {
          return true;
+      }
+
+      /*
+      $activity = $activity + $this->getCountAnnouncements($start,$end);
+      if ($activity > $activity_border) {
+         #return true;
       }
 
       $activity = $activity + $this->getCountUsers($start,$end);
       if ($activity > $activity_border) {
-         return true;
+         #return true;
       }
 
       $activity = $activity + $this->getCountMaterials($start,$end);
       if ($activity > $activity_border) {
-         return true;
+         #return true;
       }
 
       $activity = $activity + $this->getCountDiscussions($start,$end);
       if ($activity > $activity_border) {
-         return true;
+         #return true;
       }
 
       $activity = $activity + $this->getCountInstitutions($start,$end);
       if ($activity > $activity_border) {
-         return true;
+         #return true;
       }
 
       $activity = $activity + $this->getCountTopics($start,$end);
       if ($activity > $activity_border) {
-         return true;
+         #return true;
       }
+      */
 
+      // count project items additionaly because item manager can count them
       $activity = $activity + $this->getCountProjects($start,$end);
       if ($activity > $activity_border) {
          return true;

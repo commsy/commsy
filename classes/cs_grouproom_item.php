@@ -130,7 +130,7 @@ class cs_grouproom_item extends cs_room_item {
          // create first moderator
          $current_user = $this->_environment->getCurrentUser();
          $new_room_user = $current_user->cloneData();
-         
+
          // Fixed: Picture of Creator was not copied when creating a group-room
          $picture = $current_user->getPicture();
          if( !empty($picture) ) {
@@ -143,8 +143,8 @@ class cs_grouproom_item extends cs_room_item {
                $this->getItemID());
             $new_room_user->setPicture($new_picture_name);
          }
-         // ~Fixed 
-         
+         // ~Fixed
+
          $new_room_user->setContextID($this->getItemID());
          $new_room_user->makeModerator();
          $new_room_user->makeContactPerson();
@@ -422,6 +422,12 @@ class cs_grouproom_item extends cs_room_item {
       $activity_border = 9;
       $activity = 0;
 
+      $activity = $activity + $this->getCountItems($start,$end);
+      if ($activity > $activity_border) {
+         return true;
+      }
+
+      /*
       $activity = $activity + $this->getCountAnnouncements($start,$end);
       if ($activity > $activity_border) {
          return true;
@@ -456,6 +462,7 @@ class cs_grouproom_item extends cs_room_item {
       if ($activity > $activity_border) {
          return true;
       }
+      */
 
       return false;
    }
@@ -860,7 +867,7 @@ class cs_grouproom_item extends cs_room_item {
       }
       return $retour;
    }
-   
+
    ################################################################
    # mail to moderation, if the group room status changed
    # - delete
@@ -1094,7 +1101,7 @@ class cs_grouproom_item extends cs_room_item {
          unset($save_language);
       }
    }
-   
+
    #######################################################
    # linking calls for extras to the parent project room #
    #######################################################
@@ -1105,12 +1112,12 @@ class cs_grouproom_item extends cs_room_item {
          return $linked_project_item->withAds();
       }
    }
-   
+
    public function withGrouproomFunctions() {
       // grouprooms can not have grouprooms
       return false;
    }
-   
+
    public function withLogArchive() {
       // point to linked project item
       $linked_project_item = $this->getLinkedProjectItem();
@@ -1118,7 +1125,7 @@ class cs_grouproom_item extends cs_room_item {
          return $linked_project_item->withLogArchive();
       }
    }
-   
+
    public function withPDAView() {
       // point to linked project item
       $linked_project_item = $this->getLinkedProjectItem();
@@ -1126,7 +1133,7 @@ class cs_grouproom_item extends cs_room_item {
          return $linked_project_item->withPDAView();
       }
    }
-   
+
    public function withHomepageLink() {
       // point to linked project item
       $linked_project_item = $this->getLinkedProjectItem();
@@ -1134,7 +1141,7 @@ class cs_grouproom_item extends cs_room_item {
          return $linked_project_item->withHomepageLink();
       }
    }
-   
+
    public function withWikiFunctions() {
       // point to linked project item
       $linked_project_item = $this->getLinkedProjectItem();
@@ -1142,7 +1149,7 @@ class cs_grouproom_item extends cs_room_item {
          return $linked_project_item->withWikiFunctions();
       }
    }
-   
+
    public function withChatLink(){
       // point to linked project item
       $linked_project_item = $this->getLinkedProjectItem();
@@ -1150,7 +1157,7 @@ class cs_grouproom_item extends cs_room_item {
          return $linked_project_item->withChatLink();
       }
    }
-   
+
    public function withMaterialImportLink() {
       // point to linked project item
       $linked_project_item = $this->getLinkedProjectItem();
@@ -1158,7 +1165,7 @@ class cs_grouproom_item extends cs_room_item {
          return $linked_project_item->withMaterialImportLink();
       }
    }
-   
+
    public function withActivatingContent() {
       // point to linked project item
       $linked_project_item = $this->getLinkedProjectItem();

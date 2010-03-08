@@ -544,5 +544,27 @@ class cs_item_manager extends cs_manager {
       }
       return $retour;
    }
+
+   ########################################################
+   # statistic functions
+   ########################################################
+
+   function getCountItems ($start, $end) {
+      $retour = 0;
+
+      $query = "SELECT count(".$this->addDatabasePrefix($this->_db_table).".item_id) as number FROM ".$this->addDatabasePrefix($this->_db_table)." WHERE ".$this->addDatabasePrefix($this->_db_table).".context_id = '".encode(AS_DB,$this->_room_limit)."' and ".$this->addDatabasePrefix($this->_db_table).".modification_date > '".encode(AS_DB,$start)."' and ".$this->addDatabasePrefix($this->_db_table).".modification_date < '".encode(AS_DB,$end)."';";
+      $result = $this->_db_connector->performQuery($query);
+      if ( !isset($result) ) {
+         include_once('functions/error_functions.php');
+         trigger_error('Problems counting items with query: '.$query,E_USER_WARNING);
+      } else {
+         foreach ($result as $rs) {
+            $retour = $rs['number'];
+         }
+         unset($result);
+      }
+
+      return $retour;
+   }
 }
 ?>

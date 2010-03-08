@@ -555,6 +555,12 @@ class cs_project_item extends cs_room_item {
       $activity_border = 9;
       $activity = 0;
 
+      $activity = $activity + $this->getCountItems($start,$end);
+      if ($activity > $activity_border) {
+         return true;
+      }
+
+      /*
       $activity = $activity + $this->getCountAnnouncements($start,$end);
       if ($activity > $activity_border) {
          return true;
@@ -594,6 +600,7 @@ class cs_project_item extends cs_room_item {
       if ($activity > $activity_border) {
          return true;
       }
+      */
 
       return false;
    }
