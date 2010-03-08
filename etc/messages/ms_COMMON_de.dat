@@ -308,6 +308,7 @@ $message["COMMON_DISCUSSION"]["de"] = "Diskussion";
 $message["COMMON_DISCUSSIONS"]["de"] = "Diskussionen";
 $message["COMMON_DISCUSSION_EDIT"]["de"] = "Diskussion bearbeiten";
 $message["COMMON_DISCUSSION_INDEX"]["de"] = "Diskussionen";
+$message["COMMON_DOKUVERSER"]["de"] = "Dokuverser";
 $message["COMMON_DONT_STOP"]["de"] = "Dieser Vorgang kann etwas dauern. Brechen Sie ihn nicht ab!";
 $message["COMMON_DOWNLOAD"]["de"] = "Seite speichern";
 $message["COMMON_EDIT"]["de"] = "bearbeiten";

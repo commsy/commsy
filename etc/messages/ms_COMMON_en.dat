@@ -309,6 +309,7 @@ $message["COMMON_DISCUSSION"]["en"] = "Discussion";
 $message["COMMON_DISCUSSIONS"]["en"] = "Discussions";
 $message["COMMON_DISCUSSION_EDIT"]["en"] = "Discussion edit";
 $message["COMMON_DISCUSSION_INDEX"]["en"] = "Discussions";
+$message["COMMON_DOKUVERSER"]["en"] = "Docuverser";
 $message["COMMON_DONT_STOP"]["en"] = "This process can run a bit longer. Don't stop it!";
 $message["COMMON_DOWNLOAD"]["en"] = "Download this page";
 $message["COMMON_EDIT"]["en"] = "Edit";

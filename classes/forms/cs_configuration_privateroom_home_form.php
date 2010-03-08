@@ -135,6 +135,7 @@ class cs_configuration_privateroom_home_form extends cs_rubric_form {
                                '');
 
       $this->_form->addCheckbox('search_box',1,'',$this->_translator->getMessage('PORTLET_CONFIGURATION_SEARCH_BOX'),$this->_translator->getMessage('PORTLET_CONFIGURATION_SHOW_ON_HOME'),$this->_translator->getMessage('PORTLET_CONFIGURATION_SEARCH_BOX_DESC'));
+      $this->_form->addCheckbox('dokuverser_box',1,'',$this->_translator->getMessage('PORTLET_CONFIGURATION_DOKUVERSER_BOX'),$this->_translator->getMessage('PORTLET_CONFIGURATION_DOKUVERSER_BOX_DESC'),$this->_translator->getMessage('PORTLET_CONFIGURATION_DOKUVERSER_BOX_DESC'));
       $this->_form->addCheckbox('buzzword_box',1,'',$this->_translator->getMessage('PORTLET_CONFIGURATION_BUZZWORD_BOX'),$this->_translator->getMessage('PORTLET_CONFIGURATION_SHOW_ON_HOME'),$this->_translator->getMessage('PORTLET_CONFIGURATION_BUZZWORD_BOX_DESC'));
       $this->_form->addCheckbox('configuration_box',1,'',$this->_translator->getMessage('PORTLET_CONFIGURATION_CONFIGURATION_BOX'),$this->_translator->getMessage('PORTLET_CONFIGURATION_SHOW_ON_HOME'),$this->_translator->getMessage('PORTLET_CONFIGURATION_CONFIGURATION_BOX_DESC'));
       $this->_form->addCheckbox('weather_box',1,'',$this->_translator->getMessage('PORTLET_CONFIGURATION_WEATHER_BOX'),$this->_translator->getMessage('PORTLET_CONFIGURATION_SHOW_ON_HOME'),$this->_translator->getMessage('PORTLET_CONFIGURATION_WEATHER_BOX_DESC'));
@@ -218,6 +219,11 @@ class cs_configuration_privateroom_home_form extends cs_rubric_form {
          }else{
             $this->_values['search_box'] = '0';
          }
+         if ($this->_item->getPortletShowDokuverserBox()){
+            $this->_values['dokuverser_box'] = '1';
+         }else{
+            $this->_values['dokuverser_box'] = '0';
+         }
          if ($this->_item->getPortletShowBuzzwordBox()){
             $this->_values['buzzword_box'] = '1';
          }else{
@@ -272,6 +278,7 @@ class cs_configuration_privateroom_home_form extends cs_rubric_form {
          $this->_values['configuration_box'] = '1';
          $this->_values['clock_box'] = '1';
          $this->_values['weather_box'] = '1';
+         $this->_values['dokuverser_box'] = '1';
          $this->_values['twitter'] = '0';
          $this->_values['twitter_account'] = '';
          $this->_values['youtube'] = '0';

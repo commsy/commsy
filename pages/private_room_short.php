@@ -133,7 +133,39 @@ if ($current_context->getPortletShowSearchBox()){
 }
 /* SEARCH END */
 
+/* WEATHER */
+if ($current_context->getPortletShowWeatherBox()){
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = $current_context->isOpen();
+   $weather_view = $class_factory->getClass(PRIVATEROOM_HOME_WEATHER_VIEW,$params);
+   unset($params);
+   $portlet_array[] = $weather_view;
+}
+/* WEATHER END */
+
+
+/* DOKUVERSER*/
+$params = array();
+$params['environment'] = $environment;
+$params['with_modifying_actions'] = $current_context->isOpen();
+$dokuverser_view = $class_factory->getClass(PRIVATEROOM_HOME_DOKUVERSER_VIEW,$params);
+unset($params);
+$portlet_array[] = $dokuverser_view;
+/* END DOKUVERSER */
+
+
+/* CLOCK */
+if ($current_context->getPortletShowClockBox()){
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = $current_context->isOpen();
+   $clock_view = $class_factory->getClass(PRIVATEROOM_HOME_CLOCK_VIEW,$params);
+   unset($params);
+   $portlet_array[] = $clock_view;
+}
 /* CLOCK END */
+
 
 /* TWITTER */
 if ($current_context->getPortletShowTwitter()){
@@ -147,29 +179,17 @@ if ($current_context->getPortletShowTwitter()){
 }
 /* END TWITTER */
 
-/* BUZZWORDS */
-if ( $current_context->withBuzzwords() and $current_context->getPortletShowBuzzwordBox()){
+
+/* RSS TICKER */
+if ($current_context->getPortletShowRSS()){
    $params = array();
    $params['environment'] = $environment;
    $params['with_modifying_actions'] = $current_context->isOpen();
-   $buzzword_view = $class_factory->getClass(PRIVATEROOM_HOME_BUZZWORD_VIEW,$params);
+   $rss_view = $class_factory->getClass(PRIVATEROOM_HOME_RSS_TICKER_VIEW,$params);
    unset($params);
-   $portlet_array[] = $buzzword_view;
+   $portlet_array[] = $rss_view;
 }
-/* END BUZZWORDS */
-
-
-/* CLOCK */
-if ($current_context->getPortletShowClockBox()){
-   $params = array();
-   $params['environment'] = $environment;
-   $params['with_modifying_actions'] = $current_context->isOpen();
-   $clock_view = $class_factory->getClass(PRIVATEROOM_HOME_CLOCK_VIEW,$params);
-   unset($params);
-   $portlet_array[] = $clock_view;
-}
-
-
+/* RSS TICKER */
 
 /* CONFIGURATION */
 if ($current_context->getPortletShowConfigurationBox()){
@@ -182,38 +202,18 @@ if ($current_context->getPortletShowConfigurationBox()){
 }
 /* CONFIGURATION END */
 
-/* RSS TICKER */
-if ($current_context->getPortletShowRSS()){
+/* BUZZWORDS */
+if ( $current_context->withBuzzwords() and $current_context->getPortletShowBuzzwordBox()){
    $params = array();
    $params['environment'] = $environment;
    $params['with_modifying_actions'] = $current_context->isOpen();
-   $rss_view = $class_factory->getClass(PRIVATEROOM_HOME_RSS_TICKER_VIEW,$params);
+   $buzzword_view = $class_factory->getClass(PRIVATEROOM_HOME_BUZZWORD_VIEW,$params);
    unset($params);
-   $portlet_array[] = $rss_view;
+   $portlet_array[] = $buzzword_view;
 }
-
-/* WEATHER */
-if ($current_context->getPortletShowWeatherBox()){
-   $params = array();
-   $params['environment'] = $environment;
-   $params['with_modifying_actions'] = $current_context->isOpen();
-   $weather_view = $class_factory->getClass(PRIVATEROOM_HOME_WEATHER_VIEW,$params);
-   unset($params);
-   $portlet_array[] = $weather_view;
-}
-/* WEATHER END */
+/* END BUZZWORDS */
 
 
-/* RSS TICKER */
-
-/* NEWS
-$params = array();
-$params['environment'] = $environment;
-$params['with_modifying_actions'] = $current_context->isOpen();
-$news_view = $class_factory->getClass(PRIVATEROOM_HOME_NEWS_VIEW,$params);
-unset($params);
-$portlet_array[] = $news_view;
- END NEWS */
 
 /* NEWS
 $params = array();
