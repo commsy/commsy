@@ -25,21 +25,17 @@
 mb_internal_encoding('UTF-8');
 
 if ( isset($_GET['cid']) ) {
-	if ( isset($_GET['hid']) ) {
+	if ( isset($_GET['sid']) ) {
 		chdir('..');
       include_once('functions/misc_functions.php');
 	   include_once('etc/cs_constants.php');
 	   include_once('etc/cs_config.php');
 
-	   // start of execution time
-	   include_once('functions/misc_functions.php');
-	   $time_start = getmicrotime();
-
 	   include_once('classes/cs_environment.php');
 	   $environment = new cs_environment();
 	   $environment->setCurrentContextID($_GET['cid']);
 	   $context_item = $environment->getCurrentContextItem();
-	   $hash_manager = $environment->getHashManager();
+	   $session_manager = $environment->getSessionManager();
 	   $translator = $environment->getTranslationObject();
 
 	   $validated = false;
@@ -49,20 +45,21 @@ if ( isset($_GET['cid']) ) {
 
 	   if ( !$context_item->isPortal()
 	   and !$context_item->isServer()
-	   and isset($_GET['hid'])
-	   and !empty($_GET['hid'])
+	   and isset($_GET['sid'])
+	   and !empty($_GET['sid'])
 	   and !$validated
 	   ) {
-	      if ( !$context_item->isLocked()
-	      and $hash_manager->isAjaxHashValid($_GET['hid'],$context_item)
-	      ) {
-	         $validated = true;
+	      if ( !$context_item->isLocked()) {
+	        $session_item = $session_manager->get($_GET['sid']);
+            if ( isset($session_item) and $session_item->issetValue('user_id') ) {
+               $validated = true;
+            }
 	      }
 	   }
 	   if($validated) {
 	   	if(isset($_GET['fct'])){
-	   		if($_GET['fct'] == 'privateroom_rss_ticker'){
-                privateroom_rss_ticker();
+	   		if(file_exists('pages/ajax/'.$_GET['fct'].'.php')){
+	   			include_once('pages/ajax/'.$_GET['fct'].'.php');
 	   		}
 	   	}
 	   }
@@ -73,7 +70,7 @@ if ( isset($_GET['cid']) ) {
 	   include_once('classes/cs_environment.php');
 	   $environment = new cs_environment();
 	   $translator = $environment->getTranslationObject();
-	   die($translator->getMessage('AJAX_NO_HID_GIVEN'));
+	   die($translator->getMessage('AJAX_NO_SID_GIVEN'));
 	}
 } else {
 	chdir('..');
@@ -83,72 +80,5 @@ if ( isset($_GET['cid']) ) {
 	$environment = new cs_environment();
 	$translator = $environment->getTranslationObject();
 	die($translator->getMessage('AJAX_NO_CID_GIVEN'));
-}
-
-function privateroom_rss_ticker2(){
-   include "javascript/jQuery/rsstickerajax/lastrss/bridge.php";
-}
-
-function privateroom_rss_ticker(){
-global $context_item;
-	/*
-	======================================================================
-	LastRSS bridge script- By Dynamic Drive (http://www.dynamicdrive.com)
-	Communicates between LastRSS.php to Advanced Ajax ticker script using Ajax. Returns RSS feed in XML format
-	Created: Feb 9th, 2006. Updated: Feb 9th, 2006
-	======================================================================
-	*/
-
-	header('Content-type: text/xml');
-
-	// include lastRSS
-   include_once('htdocs/javascript/jQuery/rsstickerajax/lastrss/lastRSS.php'); //path to lastRSS.php on your server from this script ("bridge.php")
-
-	// Create lastRSS object
-	$rss = new lastRSS();
-
-	$rss->cache_dir = 'cache'; //path to cache directory on your server from this script. Chmod 777!
-	$rss->date_format = 'M d, Y g:i:s A'; //date format of RSS item. See PHP date() function for possible input.
-
-	// List of RSS URLs
-	$portlet_array = $context_item->getPortletRSSArray();
-   $rsslist=array();
-   foreach($portlet_array as $rss_item){
-      $rsslist[$rss_item['title']] = $rss_item['adress'];
-   }
-
-	////Beginners don't need to configure past here////////////////////
-
-	$rssid=$_GET['id'];
-	$rssurl=isset($rsslist[$rssid])? $rsslist[$rssid] : die("Error: Can't find requested RSS in list.");
-
-	// -------------------------------------------------------------------
-	// outputRSS_XML()- Outputs the "title", "link", "description", and "pubDate" elements of an RSS feed in XML format
-	// -------------------------------------------------------------------
-
-	function outputRSS_XML($url,$rss) {
-	    $cacheseconds=(int) $_GET["cachetime"]; //typecast "cachetime" parameter as integer (0 or greater)
-	    $rss->cache_time = $cacheseconds;
-	    if ($rs = $rss->get($url)) {
-	       echo "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n<rss version=\"2.0\">\n<channel>\n";
-	            foreach ($rs['items'] as $item) {
-                   if (isset($item['description'])){
-                       echo "<item>\n<link>$item[link]</link>\n<title>$item[title]</title>\n<description>$item[description]</description>\n<pubDate>$item[pubDate]</pubDate>\n</item>\n\n";
-                   }else{
-                       echo "<item>\n<link>$item[link]</link>\n<title>$item[title]</title>\n<description>...</description>\n<pubDate>$item[pubDate]</pubDate>\n</item>\n\n";
-                   }
-	            }
-	       echo "</channel></rss>";
-	            if ($rs['items_count'] <= 0) { echo "<li>Sorry, no items found in the RSS file :-(</li>"; }
-	    }
-	    else {
-	        echo "Sorry: It's not possible to reach RSS file $url\n<br />";
-	        // you will probably hide this message in a live version
-	    }
-	}
-
-	// ===============================================================================
-
-	outputRSS_XML($rssurl,$rss);
 }
 ?>

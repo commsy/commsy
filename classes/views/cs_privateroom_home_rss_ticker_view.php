@@ -66,7 +66,7 @@ var  $_rss_ticker_array = array();
      $hash_manager = $environment->getHashManager();
      $html .= '<script type="text/javascript"> '.LF;
      $html .= '   var rss_ticker_cid = "'.$current_context_item->getItemID().'";'.LF;
-     $html .= '   var rss_ticker_hid = "'.$hash_manager->getRSSHashForUser($current_user_item->getItemID()).'";'.LF;
+     $html .= '   var rss_ticker_sid = "'.$environment->getSessionID().'";'.LF;
      $html .= '</script>'.LF;
      $portlet_rss_array = $current_context_item->getPortletRSSArray();
      foreach($portlet_rss_array as $rss_item){
@@ -74,10 +74,10 @@ var  $_rss_ticker_array = array();
            $html .= ' <h4 style="margin-bottom:0px; margin-top:0px;">'.$rss_item['title'].'</h4> '.LF;
            $html .= '<script type="text/javascript"> '.LF;
            if (isset($rss_item['title']) and !empty($rss_item['title']) and $rss_item['display'] == '2'){
-#              $html .= '  new rssticker_ajax("'.$rss_item['title'].'", 0, "'.$rss_item['title'].'", "ticker", 10000, "date+description",rss_ticker_cid,rss_ticker_hid);'.LF;
-              $html .= '  new rssticker_ajax("'.$rss_item['title'].'", 0, "'.$rss_item['title'].'", "ticker", 10000, "date",rss_ticker_cid,rss_ticker_hid);'.LF;
+#              $html .= '  new rssticker_ajax("'.$rss_item['title'].'", 0, "'.$rss_item['title'].'", "ticker", 10000, "date+description",rss_ticker_cid,rss_ticker_sid);'.LF;
+              $html .= '  new rssticker_ajax("'.$rss_item['title'].'", 0, "'.$rss_item['title'].'", "ticker", 10000, "date",rss_ticker_cid,rss_ticker_sid);'.LF;
            }else{
-              $html .= '  new rssticker_ajax("'.$rss_item['title'].'", 0, "'.$rss_item['title'].'", "ticker", 10000, "date",rss_ticker_cid,rss_ticker_hid);'.LF;
+              $html .= '  new rssticker_ajax("'.$rss_item['title'].'", 0, "'.$rss_item['title'].'", "ticker", 10000, "date",rss_ticker_cid,rss_ticker_sid);'.LF;
            }
            $html .= '</script>'.LF;
         }

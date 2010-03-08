@@ -55,7 +55,7 @@ this.getAjaxcontent()
 rssticker_ajax.prototype.getAjaxcontent=function(){
 if (this.ajaxobj){
 var instanceOfTicker=this
-var lastrssbridgeurl=document.URL.split("commsy.php")[0] + 'ajax.php?cid=' + encodeURIComponent(this.csroomid) + '&hid=' + encodeURIComponent(this.cshid) + '&fct=privateroom_rss_ticker';
+var lastrssbridgeurl=document.URL.split("commsy.php")[0] + 'ajax.php?cid=' + encodeURIComponent(this.csroomid) + '&sid=' + encodeURIComponent(this.cshid) + '&fct=privateroom_rss_ticker';
 var parameters="id="+encodeURIComponent(this.RSS_id)+"&cachetime="+this.cachetime+"&bustcache="+new Date().getTime()
 this.ajaxobj.onreadystatechange=function(){instanceOfTicker.initialize()}
 this.ajaxobj.open('GET', lastrssbridgeurl+"&"+parameters, true)
