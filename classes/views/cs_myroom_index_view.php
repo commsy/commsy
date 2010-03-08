@@ -58,17 +58,18 @@ class cs_myroom_index_view extends cs_context_index_view {
       $html = '';
       $html .='<div style="width:100%;">'.LF;
       $html .='<div style="height:30px;">'.LF;
-      $html .= '<div style="float:right; width:28%; white-space:nowrap; text-align-left; padding-top:5px; margin:0px;">'.LF;
-      $html .= $this->_getSearchAsHTML();
-      $html .= '</div>'.LF;
-      $html .='<div style="width:70%;">'.LF;
+ #     $html .= '<div style="float:right; width:28%; white-space:nowrap; text-align-left; padding-top:5px; margin:0px;">'.LF;
+ #     $html .= $this->_getSearchAsHTML();
+ #     $html .= '</div>'.LF;
+ #     $html .='<div style="width:70%;">'.LF;
+      $html .='<div style="width:100%;">'.LF;
       $html .='<div style="vertical-align:bottom;">'.LF;
       if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
          $image = '<img src="images/commsyicons_msie6/32x32/room.gif" style="vertical-align:bottom;"/>';
       } else {
          $image = '<img src="images/commsyicons/32x32/room.png" style="vertical-align:bottom;"/>';
       }
-      $html .= '<h2 class="pagetitle">'.$image.' '.$this->_translator->getMessage('MYROOM_INDEX').' ('.$this->_translator->getMessage('MYROOM_SORTED_BY_ACTIVITY').')';
+      $html .= '<h2 class="pagetitle">'.$image.' '.$this->_translator->getMessage('MYROOM_INDEX');
       $html .= '</h2>'.LF;
       $html .='</div>'.LF;
       $html .='</div>'.LF;
@@ -223,43 +224,34 @@ class cs_myroom_index_view extends cs_context_index_view {
       }else{
          $html .='<div style="width:100%; padding-top:5px; vertical-align:bottom;">'.LF;
       }
-      $params = $this->_environment->getCurrentParameterArray();
-      $html .= '<form style="padding:0px; margin:0px;" action="';
-      $html .= curl($this->_environment->getCurrentContextID(),
-                    $this->_environment->getCurrentModule(),
-                    $this->_environment->getCurrentFunction(),
-                    $params
-                   ).'" method="post">'.LF;
-      if ( $this->hasCheckboxes() and $this->_has_checkboxes != 'list_actions' ) {
-         $html .= '   <input type="hidden" name="ref_iid" value="'.$this->_text_as_form($this->getRefIID()).'"/>'.LF;
-      }
 
-      $html .= '<table style="width: 100%; border-collapse: collapse;" summary="Layout">'.LF;
-      $context = $this->_environment->getCurrentContextItem();
-      $html .= '<tr>';
+
+      for ($i=0; $i< 4; $i++){
+         $html_array[$i] = '<div class="column" style="width:25%;">';
+      }
       $list = $this->_list;
       $user = $this->_environment->getCurrentUserItem();
+      $column_count = 0;
       if ( isset($list)) {
          $current_item = $list->getFirst();
-         $count = 0;
          while ( $current_item ) {
-            if ( $count == 4 ){
-               $count = 0;
-               $html .= '</tr><tr>'.LF;
+            if ($column_count == 4){
+               $column_count = 0;
             }
-            $item_text = $this->_getRoomWindowAsHTML($current_item);
-            $html .= $item_text;
-            $count++;
+            $html_text = '<div class="portlet">'.LF;
+            $html_text .= $this->_getRoomWindowAsHTML($current_item);
+            $html_text .= '</div>'.LF;
+            $html_array[$column_count] .= $html_text;
+            $column_count++;
             $current_item = $list->getNext();
          }
-         while ( $count < 4 ){
-            $html .= '<td width="25%" style="vertical-align: baseline;"></td>';
-            $count++;
-         }
       }
-      $html .= '</tr></table>'.LF;
-
-      $html .= '</form>'.LF;
+      for ($i=0; $i< 4; $i++){
+         $html_array[$i] .= '</div>';
+      }
+      foreach ($html_array as $html_entry){
+         $html .= $html_entry;
+      }
       $html .='</div>'.LF;
       $html .='<div style="clear:both;">'.LF;
       $html .='</div>'.LF;
@@ -500,12 +492,12 @@ class cs_myroom_index_view extends cs_context_index_view {
          $cs_color['tableheader']  = '';
      }
       $html  = '';
-      $html = '<td style="width:25%; padding:3px; vertical-align: middle;">'.LF;
+#      $html = '<td style="width:25%; padding:3px; vertical-align: middle;">'.LF;
       $html .= '<table class="room_window'.$item->getItemID().'" summary="Layout" style="width:100%; border-collapse:collapse;">'.LF;
       $html .= '<tr>'.LF;
       $logo = $item->getLogoFilename();
       // Titelzeile
-      if (!empty($logo) ) {
+/*      if (!empty($logo) ) {
          $html .= '<td class="detail_view_title_room_window'.$item->getItemID().'" style="padding:3px;">';
          $params = array();
          $params['picture'] = $item->getLogoFilename();
@@ -528,18 +520,18 @@ class cs_myroom_index_view extends cs_context_index_view {
          }
          $html .='</div>'.LF;
          $html .= '</td>'.LF;
-      } else {
+      } else {*/
          $html .= '<td class="detail_view_title_room_window'.$item->getItemID().'" colspan="2" style="font-weight: bold; padding-top: 3px; padding-bottom: 3px; padding-left:3px;">';
          $params['iid']=$item->getItemID();
-         $title = $this->_text_as_html_short($title)."\n";
-         $html .= ahref_curl($item->getItemID(),'home','index',array(),$title);
-             if ($item->isLocked()) {
-            $html .= ' ('.$this->_translator->getMessage('PROJECTROOM_LOCKED').')';
+         $display_title = chunkText($this->_text_as_html_short($title),20)."\n";
+         if ($item->isLocked()) {
+            $title = $this->_text_as_html_short($title).' ('.$this->_translator->getMessage('PROJECTROOM_LOCKED').')';
          } elseif ($item->isClosed()) {
-            $html .= ' ('.$this->_translator->getMessage('PROJECTROOM_CLOSED').')';
+            $title = $this->_text_as_html_short($title).' ('.$this->_translator->getMessage('PROJECTROOM_CLOSED').')';
          }
+         $html .= ahref_curl($item->getItemID(),'home','index',array(),$display_title,$title);
          $html .= '</td>';
-      }
+#      }
       $html .= '<td class="detail_view_title_room_window'.$item->getItemID().'" style="vertical-align:top; text-align:right;">'.LF;
       $html .= '</td>'.LF;
       $html .= '<td class="detail_view_title_room_window'.$item->getItemID().'" style="vertical-align:top; text-align:right;">'.LF;
@@ -548,6 +540,7 @@ class cs_myroom_index_view extends cs_context_index_view {
 
       $html .= '</tr>'.LF;
       $html .= '<tr><td colspan="4" class="detail_view_content_room_window'.$item->getItemID().'">'.LF;
+
       $html .='<table style="width: 100%;" summary="Layout">';
 
 
@@ -617,7 +610,7 @@ class cs_myroom_index_view extends cs_context_index_view {
       $html .= '</table>'.LF.LF;
       $html .= '</td></tr>'.LF;
       $html .= '</table>'.LF.LF;
-      $html .='</td>';
+#      $html .='</td>';
       return $html;
 
     /**************/
