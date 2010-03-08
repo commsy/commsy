@@ -319,6 +319,9 @@ class cs_item_manager extends cs_manager {
         $query .= ' AND '.$this->addDatabasePrefix('items').'.type != "link_item"';
         $query .= ' AND '.$this->addDatabasePrefix('items').'.type != "task"';
         $query .= ' AND '.$this->addDatabasePrefix('items').'.type != "tag"';
+        $query .= ' AND '.$this->addDatabasePrefix('items').'.type != "project"';
+        $query .= ' AND '.$this->addDatabasePrefix('items').'.type != "community"';
+        $query .= ' AND '.$this->addDatabasePrefix('items').'.type != "grouproom"';
         if (isset($this->_age_limit)) {
            $query .= ' AND '.$this->addDatabasePrefix('items').'.modification_date > DATE_SUB(CURRENT_DATE,interval '.encode(AS_DB,$this->_age_limit).' day)';
         }
