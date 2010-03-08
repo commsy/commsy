@@ -56,6 +56,7 @@ else {
 
    if ( isset($_GET['selection']) ){
       $date_array = $session->getValue('date_array');
+      
       // Find out what to do
       if ( isset($_POST['option']) ) {
          $command = $_POST['option'];
@@ -160,6 +161,7 @@ else {
                }
                $dates_item->save();
             }
+            
             $context_item = $environment->getCurrentContextItem();
             $session->unsetValue('date_array');
             redirect($environment->getCurrentContextID(),CS_DATE_TYPE, 'index','');
@@ -256,7 +258,13 @@ else {
                or page_edit_virusscan_isClean($_FILES['dates_upload']['tmp_name'],$_FILES['dates_upload']['name']))) {
                $data_array = file($_FILES['dates_upload']['tmp_name']);
                $dates_data_array = array();
+               
                for ($i = 0; $i < count($data_array); $i++){
+                  /*
+                   * skip empty cvs lines
+                   */
+                  if(trim(str_replace(',','',$data_array[$i])) == '') continue;
+                  
                   if ($i == 0){
                      $temp_data = str_replace('"','',$data_array[$i]);
                      $data_header_array = explode(',',$temp_data);
