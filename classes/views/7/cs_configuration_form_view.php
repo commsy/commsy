@@ -388,6 +388,14 @@ class cs_configuration_form_view extends cs_form_view {
                   }
                   $tempMessage = $image.' '.$this->_translator->getMessage('CONFIGURATION_RUBRIC_EXTRAS_TITLE');
                   break;
+               case 'CONFIGURATION_PRIVATEROOM_HOME_OPTIONS':
+                  if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+                     $image = '<img src="images/commsyicons_msie6/32x32/config/privateroom_home_options.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('CONFIGURATION_PRIVATEROOM_HOME_OPTIONS_TITLE').'"/>';
+                  } else {
+                     $image = '<img src="images/commsyicons/32x32/config/privateroom_home_options.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('CONFIGURATION_PRIVATEROOM_HOME_OPTIONS_TITLE').'"/>';
+                  }
+                  $tempMessage = $image.' '.$this->_translator->getMessage('CONFIGURATION_PRIVATEROOM_HOME_OPTIONS_TITLE');
+                  break;
                case 'CONFIGURATION_TEMPLATE_OPTIONS':
                   if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
                      $image = '<img src="images/commsyicons_msie6/32x32/config/template_options.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('CONFIGURATION_TEMPLATE_FORM_ELEMENT_TITLE').'"/>';

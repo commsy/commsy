@@ -80,16 +80,26 @@ $portlet_view = $class_factory->getClass(PRIVATEROOM_HOME_PORTLET_VIEW,$params);
 unset($params);
 
 $portlet_array = array();
-/* SEARCH */
-if ($current_context->getPortletShowSearchBox()){
+
+if ($current_context->getPortletShowNewEntryList()){
+   /* NEW ENTRIES */
    $params = array();
    $params['environment'] = $environment;
+   $item_manager = $environment->getItemManager();
+   $item_manager->setOrderLimit(true);
+   $item_manager->setIntervalLimit($current_context->getPortletNewEntryListCount());
+   $new_entry_array = $item_manager->getAllNewPrivateRoomEntriesOfRoomList($room_id_array_without_privateroom);
+   $new_entry_list = $item_manager->getPrivateRoomHomeItemList($new_entry_array);
+   #$item_manager->setContextArrayLimit($room_id_array);
+   #$item_manager->select();
+   #$new_entry_list = $item_manager->getList();
    $params['with_modifying_actions'] = $current_context->isOpen();
-   $search_view = $class_factory->getClass(PRIVATEROOM_HOME_SEARCH_VIEW,$params);
+   $new_entries_view = $class_factory->getClass(PRIVATEROOM_HOME_NEW_ENTRIES_VIEW,$params);
+   $new_entries_view->setList($new_entry_list);
    unset($params);
-   $portlet_array[] = $search_view;
+   $portlet_array[] = $new_entries_view;
+   /* END NEW ENTRIES */
 }
-/* SEARCH END */
 
 /* ROOMS */
 if ($current_context->getPortletShowActiveRoomList()){
@@ -112,59 +122,18 @@ if ($current_context->getPortletShowActiveRoomList()){
 }
 /* ROOMS END */
 
-/* CLOCK */
-if ($current_context->getPortletShowClockBox()){
+/* SEARCH */
+if ($current_context->getPortletShowSearchBox()){
    $params = array();
    $params['environment'] = $environment;
    $params['with_modifying_actions'] = $current_context->isOpen();
-   $clock_view = $class_factory->getClass(PRIVATEROOM_HOME_CLOCK_VIEW,$params);
+   $search_view = $class_factory->getClass(PRIVATEROOM_HOME_SEARCH_VIEW,$params);
    unset($params);
-   $portlet_array[] = $clock_view;
+   $portlet_array[] = $search_view;
 }
+/* SEARCH END */
+
 /* CLOCK END */
-
-if ($current_context->getPortletShowNewEntryList()){
-   /* NEW ENTRIES */
-   $params = array();
-   $params['environment'] = $environment;
-   $item_manager = $environment->getItemManager();
-   $item_manager->setOrderLimit(true);
-   $item_manager->setIntervalLimit($current_context->getPortletNewEntryListCount());
-   $new_entry_array = $item_manager->getAllNewPrivateRoomEntriesOfRoomList($room_id_array_without_privateroom);
-   $new_entry_list = $item_manager->getPrivateRoomHomeItemList($new_entry_array);
-   #$item_manager->setContextArrayLimit($room_id_array);
-   #$item_manager->select();
-   #$new_entry_list = $item_manager->getList();
-   $params['with_modifying_actions'] = $current_context->isOpen();
-   $new_entries_view = $class_factory->getClass(PRIVATEROOM_HOME_NEW_ENTRIES_VIEW,$params);
-   $new_entries_view->setList($new_entry_list);
-   unset($params);
-   $portlet_array[] = $new_entries_view;
-   /* END NEW ENTRIES */
-}
-
-/* BUZZWORDS */
-if ( $current_context->withBuzzwords() and $current_context->getPortletShowBuzzwordBox()){
-   $params = array();
-   $params['environment'] = $environment;
-   $params['with_modifying_actions'] = $current_context->isOpen();
-   $buzzword_view = $class_factory->getClass(PRIVATEROOM_HOME_BUZZWORD_VIEW,$params);
-   unset($params);
-   $portlet_array[] = $buzzword_view;
-}
-/* END BUZZWORDS */
-
-/* WEATHER */
-if ($current_context->getPortletShowWeatherBox()){
-   $params = array();
-   $params['environment'] = $environment;
-   $params['with_modifying_actions'] = $current_context->isOpen();
-   $weather_view = $class_factory->getClass(PRIVATEROOM_HOME_WEATHER_VIEW,$params);
-   unset($params);
-   $portlet_array[] = $weather_view;
-}
-/* WEATHER END */
-
 
 /* TWITTER */
 if ($current_context->getPortletShowTwitter()){
@@ -178,6 +147,30 @@ if ($current_context->getPortletShowTwitter()){
 }
 /* END TWITTER */
 
+/* BUZZWORDS */
+if ( $current_context->withBuzzwords() and $current_context->getPortletShowBuzzwordBox()){
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = $current_context->isOpen();
+   $buzzword_view = $class_factory->getClass(PRIVATEROOM_HOME_BUZZWORD_VIEW,$params);
+   unset($params);
+   $portlet_array[] = $buzzword_view;
+}
+/* END BUZZWORDS */
+
+
+/* CLOCK */
+if ($current_context->getPortletShowClockBox()){
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = $current_context->isOpen();
+   $clock_view = $class_factory->getClass(PRIVATEROOM_HOME_CLOCK_VIEW,$params);
+   unset($params);
+   $portlet_array[] = $clock_view;
+}
+
+
+
 /* CONFIGURATION */
 if ($current_context->getPortletShowConfigurationBox()){
    $params = array();
@@ -189,7 +182,6 @@ if ($current_context->getPortletShowConfigurationBox()){
 }
 /* CONFIGURATION END */
 
-
 /* RSS TICKER */
 if ($current_context->getPortletShowRSS()){
    $params = array();
@@ -199,6 +191,19 @@ if ($current_context->getPortletShowRSS()){
    unset($params);
    $portlet_array[] = $rss_view;
 }
+
+/* WEATHER */
+if ($current_context->getPortletShowWeatherBox()){
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = $current_context->isOpen();
+   $weather_view = $class_factory->getClass(PRIVATEROOM_HOME_WEATHER_VIEW,$params);
+   unset($params);
+   $portlet_array[] = $weather_view;
+}
+/* WEATHER END */
+
+
 /* RSS TICKER */
 
 /* NEWS

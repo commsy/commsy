@@ -54,9 +54,9 @@ if ( !isset($environment) and isset($this->_environment) ) {
       $link_item->setTitle($translator->getMessage('CONFIGURATION_PRIVATEROOM_HOME_OPTIONS_TITLE'));
       $current_context = $environment->getCurrentContextItem();
       if(($environment->getCurrentBrowser() == 'MSIE') && (mb_substr($environment->getCurrentBrowserVersion(),0,1) == '6')){
-         $link_item->setIconPath('images/commsyicons_msie6/48x48/config/room_options.gif');
+         $link_item->setIconPath('images/commsyicons_msie6/48x48/config/privateroom_home_options.gif');
       } else {
-         $link_item->setIconPath('images/commsyicons/48x48/config/room_options.png');
+         $link_item->setIconPath('images/commsyicons/48x48/config/privateroom_home_options.png');
       }
       $link_item->setDescription($translator->getMessage('CONFIGURATION_PRIVATEROOM_HOME_OPTIONS_DESC'));
       $link_item->setContextID($environment->getCurrentContextID());
