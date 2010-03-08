@@ -128,6 +128,8 @@ class cs_file_item extends cs_item {
       $this->_mime['aiff']    = 'audio/x-aiff';
 
       // Video
+      $this->_icon['mp4']	  = "movie.png";
+      $this->_mime['mp4']	  = "video/mp4";
       $this->_icon['avi']     = "movie.png";
       $this->_mime['avi']     = 'video/avi';
       $this->_icon['mov']     = "movie.png";
