@@ -58,9 +58,14 @@ class cs_account_forget_page extends cs_left_page {
             $user_manager = $this->_environment->getUserManager();
             $user_manager->resetLimits();
             $user_manager->setContextLimit($this->_environment->getCurrentPortalID());
-            $user_manager->setSearchLimit($this->_post_vars['email']);
+            /*
+             * email must match(not only be like) database entry to avoid finding to much identifications
+             */
+            //$user_manager->setSearchLimit($this->_post_vars['email']);
+            $user_manager->setEmailLimit($this->_post_vars['email']);
             $user_manager->select();
             $user_list = $user_manager->get();
+            
             $account_text = '';
             $user_fullname = ' ';
 
