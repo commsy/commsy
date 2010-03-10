@@ -1122,11 +1122,120 @@ jQuery(document).ready(function() {
 
 jQuery(document).ready(function() {
 	if(typeof(dropDownMenus) !== 'undefined'){
+		//if(false){
+		//	for ( var int = 0; int < dropDownMenus.length; int++) {
+		//		var tempDropDownMenu = dropDownMenus[int];
+		//		var tempImage = tempDropDownMenu[0];
+		//		var tempActions = tempDropDownMenu[1]
+		//		var disabled = false;
+		//		if (jQuery('#'+tempImage).length){
+		//			var image = jQuery('#'+tempImage);
+		//		} else if (jQuery('#'+tempImage+'_disabled').length){
+		//			var image = jQuery('#'+tempImage+'_disabled');
+		//			disabled = true;
+		//		}
+		//		image.attr('id',image.attr('id')+'_dropdown_menu_'+int);
+		//		image.attr('alt','');
+		//		image.parent().attr('title','');
+		//
+		//		var button = jQuery('<img id="dropdown_button_'+int+'" src="images/commsyicons/dropdownmenu.png" />');
+		//
+		//		var html = jQuery('<div id="dropdown_menu_'+int+'" class="dropdown_menu"></div>');
+		//		var offset = image.offset();
+		//
+		//		var ul = jQuery('<ul></ul>');
+		//		for ( var int2 = 0; int2 < tempActions.length; int2++) {
+		//			var tempAction = tempActions[int2];
+		//			var tempActionImage = tempAction[0];
+		//			var tempActionText = tempAction[1];
+		//			var tempActionHREF = tempAction[2];
+		//			ul.append('<li><a href="'+tempActionHREF+'"><img src="'+tempActionImage+'" style="vertical-align:middle; padding-right:2px;" />'+tempActionText+'</a></li>');
+		//		}
+		//
+		//		html.append(ul);
+		//		image.parent().wrap('<div style="display:inline;"></div>');
+		//		image.parent().parent().append(button);
+		//		image.parent().parent().append(html);
+		//
+		//		image.mouseover(function(){
+		//			var id = this.id;
+		//			var this_image = this;
+		//			this_image.mouse_is_over = true;
+		//			setTimeout(function() {
+		//				if(this_image.mouse_is_over){
+		//					var id_parts = id.split('_');
+		//					var offset = jQuery('#dropdown_button_'+id_parts[4]).parent().offset();
+		//					dropdown(jQuery('#dropdown_menu_'+id_parts[4]), offset);
+		//				}
+		//			}, 2000);
+		//		});
+		//
+		//		image.mouseout(function(){
+		//			this.mouse_is_over = false;
+		//		});
+		//
+		//		jQuery('#dropdown_button_'+int).click(function(){
+		//			var id_parts = this.id.split('_');
+		//			var offset = jQuery('#'+this.id).parent().offset();
+		//			dropdown(jQuery('#dropdown_menu_'+id_parts[2]), offset);
+		//		});
+		//
+		//		jQuery('#dropdown_button_'+int).mouseover(function(){
+		//			var id = this.id;
+		//			var this_image = this;
+		//			this_image.mouse_is_over = true;
+		//			setTimeout(function() {
+		//				if(this_image.mouse_is_over){
+		//					var id_parts = id.split('_');
+		//					var offset = jQuery('#dropdown_button_'+id_parts[2]).parent().offset();
+		//					dropdown(jQuery('#dropdown_menu_'+id_parts[2]), offset);
+		//				}
+		//			}, 2000);
+		//		});
+		//
+		//		jQuery('#dropdown_button_'+int).mouseout(function(){
+		//			this.mouse_is_over = false;
+		//		});
+		//
+		//		jQuery(document).mousedown(function(event) {
+		//			var target = jQuery(event.target);
+		//			var parents = target.parents();
+		//			var has_class = false;
+		//			for ( var int3 = 0; int3 < parents.length; int3++) {
+		//				var parent = parents[int3];
+		//				if(jQuery(parent).hasClass('dropdown_menu')){
+		//					has_class = true;
+		//				}
+		//			}
+		//			if(!target.hasClass('dropdown_menu') && !has_class){
+		//				jQuery("[id^='dropdown_menu_']").slideUp(150);
+		//			}
+		//		});
+		//	}
+		//}
 		if(dropDownMenus.length){
+			// how many different menus?
+			var dropdown_menus = new Array();
 			for ( var int = 0; int < dropDownMenus.length; int++) {
 				var tempDropDownMenu = dropDownMenus[int];
 				var tempImage = tempDropDownMenu[0];
-				var tempActions = tempDropDownMenu[1]
+				var in_array = false;
+				for ( var int2 = 0; int2 < dropdown_menus.length; int2++) {
+					var array_element = dropdown_menus[int2];
+					if(array_element == tempImage){
+						in_array = true;
+					}
+				}
+				if(!in_array){
+					dropdown_menus.push(tempImage);
+				}
+			}
+			
+			// sort menu_entries to menus
+			for ( var int3 = 0; int3 < dropdown_menus.length; int3++) {
+				var current_menu = dropdown_menus[int3];
+				
+				var tempImage = current_menu;
 				var disabled = false;
 				if (jQuery('#'+tempImage).length){
 					var image = jQuery('#'+tempImage);
@@ -1134,24 +1243,27 @@ jQuery(document).ready(function() {
 					var image = jQuery('#'+tempImage+'_disabled');
 					disabled = true;
 				}
-				image.attr('id',image.attr('id')+'_dropdown_menu_'+int);
+				image.attr('id',image.attr('id')+'_dropdown_menu_'+int3);
 				image.attr('alt','');
 				image.parent().attr('title','');
+				
+				var button = jQuery('<img id="dropdown_button_'+int3+'" src="images/commsyicons/dropdownmenu.png" />');
 
-				var button = jQuery('<img id="dropdown_button_'+int+'" src="images/commsyicons/dropdownmenu.png" />');
-
-				var html = jQuery('<div id="dropdown_menu_'+int+'" class="dropdown_menu"></div>');
+				var html = jQuery('<div id="dropdown_menu_'+int3+'" class="dropdown_menu"></div>');
 				var offset = image.offset();
 
 				var ul = jQuery('<ul></ul>');
-				for ( var int2 = 0; int2 < tempActions.length; int2++) {
-					var tempAction = tempActions[int2];
-					var tempActionImage = tempAction[0];
-					var tempActionText = tempAction[1];
-					var tempActionHREF = tempAction[2];
-					ul.append('<li><a href="'+tempActionHREF+'"><img src="'+tempActionImage+'" style="vertical-align:middle; padding-right:2px;" />'+tempActionText+'</a></li>');
+				
+				for ( var int4 = 0; int4 < dropDownMenus.length; int4++) {
+					var temp_menu_entry = dropDownMenus[int4];
+					if(temp_menu_entry[0] == current_menu){
+						var tempActionImage = temp_menu_entry[1];
+						var tempActionText = temp_menu_entry[2];
+						var tempActionHREF = temp_menu_entry[3];
+						ul.append('<li><a href="'+tempActionHREF+'"><img src="'+tempActionImage+'" style="vertical-align:middle; padding-right:2px;" />'+tempActionText+'</a></li>');
+					}
 				}
-
+				
 				html.append(ul);
 				image.parent().wrap('<div style="display:inline;"></div>');
 				image.parent().parent().append(button);
@@ -1174,13 +1286,13 @@ jQuery(document).ready(function() {
 					this.mouse_is_over = false;
 				});
 
-				jQuery('#dropdown_button_'+int).click(function(){
+				jQuery('#dropdown_button_'+int3).click(function(){
 					var id_parts = this.id.split('_');
 					var offset = jQuery('#'+this.id).parent().offset();
 					dropdown(jQuery('#dropdown_menu_'+id_parts[2]), offset);
 				});
 
-				jQuery('#dropdown_button_'+int).mouseover(function(){
+				jQuery('#dropdown_button_'+int3).mouseover(function(){
 					var id = this.id;
 					var this_image = this;
 					this_image.mouse_is_over = true;
@@ -1193,7 +1305,7 @@ jQuery(document).ready(function() {
 					}, 2000);
 				});
 
-				jQuery('#dropdown_button_'+int).mouseout(function(){
+				jQuery('#dropdown_button_'+int3).mouseout(function(){
 					this.mouse_is_over = false;
 				});
 

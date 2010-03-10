@@ -2262,9 +2262,72 @@ EOD;
    }
 
    function _initDropDownMenus(){
-   	return '';
+   	$action_array = array();
+      $html = '';
+      $current_context = $this->_environment->getCurrentContextItem();
+
+      if ( $current_context->isOpen() ) {
+         $image_new  = '';
+         $href_new = '';
+         $params = array();
+         $params['iid'] = 'NEW';
+         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+            $image_new = 'images/commsyicons_msie6/22x22/new.gif';
+         } else {
+            $image_new = 'images/commsyicons/22x22/new.png';
+         }
+         $href_new = curl($this->_environment->getCurrentContextID(),
+                          $this->_environment->getCurrentModule(),
+                          'edit',
+                          $params);
+         unset($params);
+         $text_new = $this->_translator->getMessage('COMMON_NEW_ITEM');
+         if ( !empty($text_new)
+              and !empty($image_new)
+              and !empty($href_new)
+            ) {
+            $temp_array = array();
+            $temp_array['dropdown_image']  = "new_icon";
+            $temp_array['text']  = $text_new;
+            $temp_array['image'] = $image_new;
+            $temp_array['href']  = $href_new;
+            $action_array[] = $temp_array;
+            unset($temp_array);
+         }
+      }
+
+      unset($current_context);
+
+      $action_array = array_merge($action_array, $this->_getAdditionalDropDownEntries());
+      
+      // init drop down menu
+      if ( !empty($action_array)
+           and count($action_array) > 1
+         ) {
+         $html .= '<script type="text/javascript">'.LF;
+         $html .= '<!--'.LF;
+         #$html .= 'var dropDownMenus = new Array(new Array("new_icon",new Array(';
+         $html .= 'var dropDownMenus = new Array(';
+         $first = true;
+         foreach ($action_array as $action) {
+            if ( $first ) {
+               $first = false;
+            } else {
+               $html .= ',';
+            }
+            $html .= 'new Array("'.$action['dropdown_image'].'","'.$action['image'].'","'.$action['text'].'","'.$action['href'].'")';
+         }
+         $html .= ');'.LF;
+         $html .= '-->'.LF;
+         $html .= '</script>'.LF;
+      }
+   	return $html;
    }
 
+   function _getAdditionalDropDownEntries() {
+   	return array();
+   }
+   
    function _getListInfosAsHTML ($title) {
       $current_context = $this->_environment->getCurrentContextItem();
       $current_user = $this->_environment->getCurrentUserItem();
