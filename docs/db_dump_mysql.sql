@@ -589,17 +589,6 @@ CREATE TABLE IF NOT EXISTS `log` (
 -- Daten für Tabelle `log`
 --
 
-INSERT INTO `log` (`id`, `ip`, `agent`, `timestamp`, `request`, `post_content`, `method`, `uid`, `ulogin`, `cid`, `module`, `fct`, `param`, `iid`, `queries`, `time`) VALUES
-(7, '::1', 'Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.6; de; rv:1.9.1.8) Gecko/20100202 Firefox/3.5.8', '2010-03-05 11:41:56', '/commsy/htdocs/commsy.php?cid=99&mod=home&fct=index&jscheck=1&isJS=1&SID=8d53b41ec881c5b49ba2790b9de44edd', 'NULL', 'GET', 0, 'guest', 99, 'home', 'index', 'jscheck=1&isJS=1', 0, 9, 0.501),
-(8, '::1', 'Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.6; de; rv:1.9.1.8) Gecko/20100202 Firefox/3.5.8', '2010-03-05 11:41:59', '/commsy/htdocs/commsy.php?cid=99&mod=home&fct=index&jscheck=1&isJS=1', 'NULL', 'GET', 98, 'root', 99, 'home', 'index', 'jscheck=1&isJS=1', 0, 9, 0.207),
-(9, '::1', 'Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.6; de; rv:1.9.1.8) Gecko/20100202 Firefox/3.5.8', '2010-03-05 11:42:01', '/commsy/htdocs/commsy.php?cid=99&mod=configuration&fct=index', 'NULL', 'GET', 98, 'root', 99, 'configuration', 'index', '', 0, 7, 0.282),
-(10, '::1', 'Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.6; de; rv:1.9.1.8) Gecko/20100202 Firefox/3.5.8', '2010-03-05 11:42:04', '/commsy/htdocs/commsy.php?cid=99&mod=configuration&fct=update', 'NULL', 'GET', 98, 'root', 99, 'configuration', 'update', '', 0, 15, 0.345),
-(11, '::1', 'Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.6; de; rv:1.9.1.8) Gecko/20100202 Firefox/3.5.8', '2010-03-05 11:42:42', '/commsy/htdocs/commsy.php?cid=99&mod=configuration&fct=statistic', 'NULL', 'GET', 98, 'root', 99, 'configuration', 'statistic', '', 0, 9, 0.242),
-(12, '::1', 'Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.6; de; rv:1.9.1.8) Gecko/20100202 Firefox/3.5.8', '2010-03-05 11:42:48', '/commsy/htdocs/commsy.php?cid=99&mod=home&fct=index', 'NULL', 'GET', 98, 'root', 99, 'home', 'index', '', 0, 9, 0.204),
-(13, '::1', 'Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.6; de; rv:1.9.1.8) Gecko/20100202 Firefox/3.5.8', '2010-03-05 11:42:50', '/commsy/htdocs/commsy.php?cid=99&mod=configuration&fct=index', 'NULL', 'GET', 98, 'root', 99, 'configuration', 'index', '', 0, 7, 0.389),
-(14, '::1', 'Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.6; de; rv:1.9.1.8) Gecko/20100202 Firefox/3.5.8', '2010-03-05 11:42:53', '/commsy/htdocs/commsy.php?cid=99&mod=configuration&fct=update', 'NULL', 'GET', 98, 'root', 99, 'configuration', 'update', '', 0, 14, 0.225),
-(15, '::1', 'Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.6; de; rv:1.9.1.8) Gecko/20100202 Firefox/3.5.8', '2010-03-05 11:42:57', '/commsy/htdocs/commsy.php?cid=99&mod=configuration&fct=update', '<SECURITY_TOKEN>5786d44d288ab517be9a6f0f855391ad</SECURITY_TOKEN>\n<7_2_0_TO_7_2_1/02_DB_ADD_ZZZ_TABLES_PHP>1</7_2_0_TO_7_2_1/02_DB_ADD_ZZZ_TABLES_PHP>\n<OPTION>Update durchführen</OPTION>\n', 'POST', 98, 'root', 99, 'configuration', 'update', '', 0, 66, 0.488);
-
 -- --------------------------------------------------------
 
 --
@@ -681,9 +670,6 @@ CREATE TABLE IF NOT EXISTS `log_error` (
 -- Daten für Tabelle `log_error`
 --
 
-INSERT INTO `log_error` (`id`, `datetime`, `number`, `type`, `message`, `url`, `referer`, `file`, `line`, `context`, `module`, `function`, `user`) VALUES
-(1, '2010-03-05 11:41:49', 256, 'User Error', ' can not initiate room -> bug in item table', 'localhost/commsy/htdocs/commsy.php?cid=107&mod=home&fct=index', '', '/Users/johannes/workspace/commsy/classes/cs_environment.php', 220, 107, 'home', 'index', 'unknown');
-
 -- --------------------------------------------------------
 
 --
@@ -702,9 +688,6 @@ CREATE TABLE IF NOT EXISTS `log_message_tag` (
 --
 -- Daten für Tabelle `log_message_tag`
 --
-
-INSERT INTO `log_message_tag` (`id`, `tag`, `version`, `datetime`, `language`) VALUES
-(2, 'USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_UPDATE_FORM', '7.2.1 beta', '2010-03-05 11:42:04', 'de');
 
 -- --------------------------------------------------------
 
@@ -969,10 +952,6 @@ CREATE TABLE IF NOT EXISTS `session` (
 --
 -- Daten für Tabelle `session`
 --
-
-INSERT INTO `session` (`id`, `session_id`, `session_key`, `session_value`, `created`) VALUES
-(5, '8d53b41ec881c5b49ba2790b9de44edd', 'new_session_type', 'a:5:{s:7:"user_id";s:5:"guest";s:9:"commsy_id";i:99;s:6:"cookie";s:1:"1";s:10:"javascript";i:1;s:7:"history";a:1:{i:0;a:4:{s:7:"context";i:99;s:6:"module";s:4:"home";s:8:"function";s:5:"index";s:9:"parameter";a:2:{s:7:"jscheck";s:1:"1";s:4:"isJS";s:1:"1";}}}}', '2010-03-05 11:41:56'),
-(6, '4d13bd2eefeba167502575f6f245a74b', 'new_session_type', 'a:6:{s:7:"user_id";s:4:"root";s:6:"cookie";i:1;s:10:"javascript";i:1;s:9:"commsy_id";i:99;s:11:"auth_source";s:3:"100";s:7:"history";a:5:{i:0;a:4:{s:7:"context";i:99;s:6:"module";s:13:"configuration";s:8:"function";s:6:"update";s:9:"parameter";a:0:{}}i:1;a:4:{s:7:"context";i:99;s:6:"module";s:13:"configuration";s:8:"function";s:5:"index";s:9:"parameter";a:0:{}}i:2;a:4:{s:7:"context";i:99;s:6:"module";s:4:"home";s:8:"function";s:5:"index";s:9:"parameter";a:0:{}}i:3;a:4:{s:7:"context";i:99;s:6:"module";s:13:"configuration";s:8:"function";s:9:"statistic";s:9:"parameter";a:0:{}}i:4;a:4:{s:7:"context";i:99;s:6:"module";s:13:"configuration";s:8:"function";s:6:"update";s:9:"parameter";a:0:{}}}}', '2010-03-05 11:42:57');
 
 -- --------------------------------------------------------
 

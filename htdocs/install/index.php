@@ -829,19 +829,21 @@ $schreibe12 = \"".$sec_key."\";
       echo('ERROR: can not write config file');
    }
 
-     // DATENBANK INSTALLIEREN
-   $file_content = file_get_contents("../../docs/db_dump_mysql.sql");
+   // DATENBANK INSTALLIEREN
+   $file_rows = file("../../docs/db_dump_mysql.sql");
    include_once("../../etc/cs_config.php");
    include_once("../../etc/commsy/default.php");
-   /* nicht mysqli verwenden: TBD
    include_once('../../classes/db_mysql_connector.php');
    $db_connector = new db_mysql_connector($db["normal"]);
-   $db_connector->performQuery($file_content);
+   $statement = "";
+   foreach ($file_rows as $file_row) {
+      $statement .= $file_row . "\n";
+      if ( strstr($file_row, ";") ) {
+         $db_connector->performQuery($statement);
+         $statement = "";
+      }
+   }
    unset($db_connector);
-   */
-   $mysqli = new mysqli($_SESSION['host'],$_SESSION['dbuser'],$_SESSION['dbpass'],$_SESSION['dbname']);
-   $mysqli->multi_query($file_content);
-   unset($mysqli);
 
    echo "<div id=\"text\">";
 
