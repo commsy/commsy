@@ -893,5 +893,43 @@ class cs_material_detail_view extends cs_detail_view {
       }
       return $file_list;
    }
+   
+   function _getAdditionalDropDownEntries() {
+      $action_array = array();
+      $current_context = $this->_environment->getCurrentContextItem();
+      
+      foreach($this->_dropdown_rubrics_new as $rubric){
+	      if ( $current_context->isOpen()) {
+	         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+	            $image_import = 'images/commsyicons_msie6/22x22/'.$this->_dropdown_image_array[$rubric].'.gif';
+	         } else {
+	            $image_import = 'images/commsyicons/22x22/'.$this->_dropdown_image_array[$rubric].'.png';
+	         }
+	         $params = array();
+	         $params['iid'] = 'NEW';
+	         $params['linked_item'] = $this->_item->getItemID();
+	         $href_import = curl($this->_environment->getCurrentContextID(),
+	                            $rubric,
+	                            'edit',
+	                            $params);
+	         $text_import = $this->_translator->getMessage($this->_dropdown_message_array[$rubric]);
+	         if ( !empty($text_import)
+	              and !empty($image_import)
+	              and !empty($href_import)
+	            ) {
+	            $temp_array = array();
+	            $temp_array['dropdown_image']  = "new_icon";
+	            $temp_array['text']  = $text_import;
+	            $temp_array['image'] = $image_import;
+	            $temp_array['href']  = $href_import;
+	            $action_array[] = $temp_array;
+	            unset($temp_array);
+	         }
+	      }
+      }
+      
+      unset($current_context);
+      return $action_array;
+   }
 }
 ?>

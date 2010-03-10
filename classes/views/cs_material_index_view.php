@@ -602,8 +602,8 @@ class cs_material_index_view extends cs_index_view {
             unset($temp_array);
          }
       }
+      
       unset($current_context);
-
       return $action_array;
    }
 }

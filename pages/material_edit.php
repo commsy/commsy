@@ -23,6 +23,14 @@
 //    along with CommSy.
 
 set_time_limit(0);
+
+// Linked item from "NEW" dropdown-menu
+if(isset($_GET['linked_item'])){
+   $entry_new_array = array();
+   $entry_new_array[] = $_GET['linked_item'];
+   $session->setValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids',$entry_new_array);
+}
+
 if (isset($_GET['return_attach_buzzword_list'])){
    $_POST = $session->getValue('buzzword_post_vars');
    unset($_POST['option']);

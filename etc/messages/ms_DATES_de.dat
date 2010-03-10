@@ -23,7 +23,6 @@ $message["DATES_COLOUR_DESC"]["de"] = "Farb-Einstellungen für diesen Termin";
 $message["DATES_COMMON_DISPLAY"]["de"] = "Liste";
 $message["DATES_DATETIME"]["de"] = "Termin";
 $message["DATES_DATE_NOT_VALID"]["de"] = "Das Datum ist ungültig.";
-$message["DATES_TIME_NOT_VALID"]["de"] = "Die Uhrzeit ist ungültig.";
 $message["DATES_DAYS"]["de"] = "Tage";
 $message["DATES_DECEMBER_LONG"]["de"] = "Dezember";
 $message["DATES_DECEMBER_SHORT"]["de"] = "Dez";
@@ -112,6 +111,7 @@ Uhrzeit: SS:MM - z.B. 12:30";
 $message["DATES_TIME_DAY_START"]["de"] = "Beginn";
 $message["DATES_TIME_DAY_START_DESC"]["de"] = "Datum: TT.MM.JJJJ - z.B. 24.12.2006<br/>
 Uhrzeit: SS:MM - z.B. 12:30";
+$message["DATES_TIME_NOT_VALID"]["de"] = "Die Uhrzeit ist ungültig.";
 $message["DATES_TIPP_FOR_ENTRIES"]["de"] = "Tipp: Klicken Sie auf einen Tag, um einen Termin einzutragen.";
 $message["DATES_TITLE_DESC"]["de"] = "Titel des Termins <i>(private Einträge werden gesondert dargestellt)</i>";
 $message["DATES_UPLOADFILE"]["de"] = "Termindatei";

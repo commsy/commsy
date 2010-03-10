@@ -22,6 +22,12 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
+// Linked item from "NEW" dropdown-menu
+if(isset($_GET['linked_item'])){
+   $entry_new_array = array();
+   $entry_new_array[] = $_GET['linked_item'];
+   $session->setValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids',$entry_new_array);
+}
 
 // Function used for cleaning up the session. This function
 // deletes ALL session variables this page writes.

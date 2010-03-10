@@ -1,0 +1,9 @@
+<?php
+$message["DROPDOWN_NEW_ANNOUNCEMENT"]["de"] = "Neue Ankündigung erstellen";
+$message["DROPDOWN_NEW_DATE"]["de"] = "Neuen Termin erstellen";
+$message["DROPDOWN_NEW_DISCUSSION"]["de"] = "Neue Diskussion erstellen";
+$message["DROPDOWN_NEW_GROUP"]["de"] = "Neue Gruppe erstellen";
+$message["DROPDOWN_NEW_MATERIAL"]["de"] = "Neues Material erstellen";
+$message["DROPDOWN_NEW_TODO"]["de"] = "Neue Aufgabe erstellen";
+$message["DROPDOWN_NEW_TOPIC"]["de"] = "Neues Thema erstellen";
+?>

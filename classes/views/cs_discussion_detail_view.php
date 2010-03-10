@@ -850,5 +850,9 @@ class cs_discussion_detail_view extends cs_detail_view {
       }
       return $file_list;
    }
+   
+   function _getAdditionalDropDownEntries() {
+      return array();
+   }
 }
 ?>
