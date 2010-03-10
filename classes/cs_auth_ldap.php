@@ -89,7 +89,7 @@ class cs_auth_ldap extends cs_auth_manager {
 
    private $_user_dn   = NULL;
    private $_user_data = NULL;
-   
+
    /*
     * Translation Object
     */
@@ -386,7 +386,7 @@ class cs_auth_ldap extends cs_auth_manager {
          $connect = @ldap_connect($this->_server,$this->_server_port);
          @ldap_set_option($connect,LDAP_OPT_PROTOCOL_VERSION,3);
          @ldap_set_option($connect,LDAP_OPT_REFERRALS,0);
-         $bind = @ldap_bind( $connect, $user_dn, $this->encryptPassword($password) );
+         $bind = @ldap_bind( $connect, $user_dn, $this->encryptPassword($user_password) );
          if ( $bind ) {
             $suchfilter = "(".$this->_field_userid."=".$uid.")";
             $base_user_array = explode(',',$this->_baseuser);

@@ -426,8 +426,8 @@ function auto_create_accounts($date_array){
          if($account_length == 0){
             $temp_account_array = array();
             $temp_account_array['lastname'] = $account[$_POST['autoaccounts_lastname']];
-            $temp_account_array['firstname'] = $account[$_POST['autoaccounts_lastname']];
-            $temp_account_array['email'] = $account[$_POST['autoaccounts_lastname']];
+            $temp_account_array['firstname'] = $account[$_POST['autoaccounts_firstname']];
+            $temp_account_array['email'] = $account[$_POST['autoaccounts_email']];
             $temp_account_array['account'] = $account[$_POST['autoaccounts_account']];
             $temp_account_array['account_changed'] = false;
             $temp_account_array['password'] = '';
