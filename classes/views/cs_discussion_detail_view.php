@@ -666,7 +666,7 @@ class cs_discussion_detail_view extends cs_detail_view {
                $html .= $this->_getSubItemAsHTML($current_item, $pos_number).LF;
                $html .='</td>'.LF;
                $html .='</tr>'.LF;
-               
+
                /*if(!(isset($_GET['mode']) and $_GET['mode']=='print')){*/
                   $html .='<tr>'.LF;
                   $html .='<td style="padding-top:5px; padding-bottom:30px; vertical-align:top; ">'.LF;
@@ -849,10 +849,6 @@ class cs_discussion_detail_view extends cs_detail_view {
          $file = $files->getNext();
       }
       return $file_list;
-   }
-   
-   function _getAdditionalDropDownEntries() {
-      return array();
    }
 }
 ?>

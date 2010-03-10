@@ -928,6 +928,16 @@ class cs_translator {
                $tags[$i++] = $this->_getRubricName(Module2Type($placeholder_elements[1]),
                                                    $placeholder_elements[3],
                                                    $placeholder_elements[4]);
+               if ( !empty($placeholder_elements[5])
+                    and $placeholder_elements[5] == 'ADJ'
+                    and !empty($placeholder_elements[1])
+                  ) {
+                  $upper_lower = '';
+                  if ( !empty($placeholder_elements[7]) ) {
+                     $upper_lower = $placeholder_elements[7];
+                  }
+                  $tags[($i-1)] = $this->_getRubricAdjective(Module2Type($placeholder_elements[1]),$placeholder_elements[6],$upper_lower).$tags[($i-1)];
+               }
             }
          }
 
@@ -941,6 +951,73 @@ class cs_translator {
       }
    }
 
+   private function _getRubricGenus ( $rubric ) {
+      $retour = '';
+      if ( !empty($rubric) ) {
+         $rubric_array = $this->_getRubricArray($rubric);
+         if ( !empty($rubric_array) ) {
+            $language = '';
+            if ( $this->_issetSessionLanguage() ) {
+               $language = $this->_getSessionLanguage();
+            } else {
+               $language = $this->_selected_language;
+            }
+            if ( !empty($language)
+                 and !empty($rubric_array[mb_strtoupper($language)]['GENUS'])
+               ) {
+               $retour = $rubric_array[mb_strtoupper($language)]['GENUS'];
+            }
+         }
+
+      }
+      return $retour;
+   }
+
+   private function _getRubricAdjective ( $rubric, $adjective, $upper_case = '') {
+      $retour = '';
+      if ( !empty($rubric)
+           and !empty($adjective)
+         ) {
+         $genus = $this->_getRubricGenus($rubric);
+         $adjective_array = $this->_getAdjectiveArray();
+         $language = '';
+         if ( $this->_issetSessionLanguage() ) {
+            $language = $this->_getSessionLanguage();
+         } else {
+            $language = $this->_selected_language;
+         }
+         if ( !empty($genus)
+              and !empty($adjective_array)
+              and !empty($language)
+              and !empty($adjective_array[mb_strtoupper($adjective)][mb_strtoupper($language)][mb_strtoupper($genus)])
+            ) {
+            $adjective_tranlsation = $adjective_array[mb_strtoupper($adjective)][mb_strtoupper($language)][mb_strtoupper($genus)];
+            if ( !empty($adjective_tranlsation) ) {
+               if ($upper_case == 'BIG') {
+                  include_once('functions/text_functions.php');
+                  $adjective_tranlsation = cs_ucfirst($adjective_tranlsation);
+               } elseif ($upper_case == 'LOW') {
+                  include_once('functions/text_functions.php');
+                  $adjective_tranlsation = cs_ucfirst($adjective_tranlsation);
+               }
+               $retour = $adjective_tranlsation.' ';
+            }
+         }
+      }
+      return $retour;
+   }
+
+   private function _getAdjectiveArray () {
+      $retour = array();
+      $retour['NEW']['DE']['F'] = $this->getMessageInLang('DE','COMMON_NEW_F');
+      $retour['NEW']['DE']['M'] = $this->getMessageInLang('DE','COMMON_NEW_M');;
+      $retour['NEW']['DE']['N'] = $this->getMessageInLang('DE','COMMON_NEW_N');;
+      $retour['NEW']['EN']['F'] = $this->getMessageInLang('EN','COMMON_NEW_F');;
+      $retour['NEW']['EN']['M'] = $this->getMessageInLang('EN','COMMON_NEW_M');;
+      $retour['NEW']['EN']['N'] = $this->getMessageInLang('EN','COMMON_NEW_N');;
+      return $retour;
+   }
+
    /** get _getRubricArray - INTERNAL
     * this method gets the stored rubric array for one rubric
     *
@@ -950,7 +1027,10 @@ class cs_translator {
     * @return array value name cases
     */
    function _getRubricArray($rubric) {
-      if ( !empty($this->_rubric_translation_array) and !empty($this->_rubric_translation_array[cs_strtoupper($rubric)]) ) {
+      if ( !empty($this->_rubric_translation_array)
+           and !empty($rubric)
+           and !empty($this->_rubric_translation_array[cs_strtoupper($rubric)])
+         ) {
          $retour = $this->_rubric_translation_array[cs_strtoupper($rubric)];
       } else {
          $rubric_array['NAME'] = 'rubrics';

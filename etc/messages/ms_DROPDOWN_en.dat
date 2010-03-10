@@ -5,5 +5,5 @@ $message["DROPDOWN_NEW_DISCUSSION"]["en"] = "Create new discussion";
 $message["DROPDOWN_NEW_GROUP"]["en"] = "Create new group";
 $message["DROPDOWN_NEW_MATERIAL"]["en"] = "Create new material";
 $message["DROPDOWN_NEW_TODO"]["en"] = "Create new todo";
-$message["DROPDOWN_NEW_TOPIC"]["en"] = "Create new topic";
+$message["DROPDOWN_NEW_TOPIC"]["en"] = "Create %_TOPICS_SUB_NOMS_LOW_ADJ_NEW_LOW";
 ?>

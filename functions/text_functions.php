@@ -313,6 +313,11 @@ function cs_ucfirst($text){
     return $return_text.mb_substr($text, 1, mb_strlen($text, 'UTF-8'), 'UTF-8');
 }
 
+function cs_lcfirst($text){
+    $return_text = mb_strtolower(mb_substr($text, 0, 1, 'UTF-8'), 'UTF-8');
+    return $return_text.mb_substr($text, 1, mb_strlen($text, 'UTF-8'), 'UTF-8');
+}
+
 // von http://de3.php.net/sprintf
 if (!function_exists('mb_sprintf')) {
   function mb_sprintf($format) {
