@@ -23,6 +23,7 @@ $message["DATES_COLOUR_DESC"]["en"] = "Colour-settings for this date";
 $message["DATES_COMMON_DISPLAY"]["en"] = "List";
 $message["DATES_DATETIME"]["en"] = "Event date";
 $message["DATES_DATE_NOT_VALID"]["en"] = "Date is not valid.";
+$message["DATES_TIME_NOT_VALID"]["en"] = "Time is not valid.";
 $message["DATES_DAYS"]["en"] = "days";
 $message["DATES_DECEMBER_LONG"]["en"] = "December";
 $message["DATES_DECEMBER_SHORT"]["en"] = "Dec";

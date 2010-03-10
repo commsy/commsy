@@ -23,6 +23,7 @@ $message["DATES_COLOUR_DESC"]["de"] = "Farb-Einstellungen für diesen Termin";
 $message["DATES_COMMON_DISPLAY"]["de"] = "Liste";
 $message["DATES_DATETIME"]["de"] = "Termin";
 $message["DATES_DATE_NOT_VALID"]["de"] = "Das Datum ist ungültig.";
+$message["DATES_TIME_NOT_VALID"]["de"] = "Die Uhrzeit ist ungültig.";
 $message["DATES_DAYS"]["de"] = "Tage";
 $message["DATES_DECEMBER_LONG"]["de"] = "Dezember";
 $message["DATES_DECEMBER_SHORT"]["de"] = "Dez";
