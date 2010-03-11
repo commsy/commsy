@@ -1346,7 +1346,11 @@ jQuery(document).ready(function() {
 function dropdown(object, offset){
 	object.css('top', offset.top + 18);
 	object.css('left', offset.left - 3);
-	object.slideDown(150);
+	if(object.css('display') == 'none'){
+		object.slideDown(150);
+	} else if(object.css('display') == 'block'){
+		object.slideUp(150);
+	} 
 	object.mouseleave(function(){
 		setTimeout(function() {
 			object.slideUp(150);
