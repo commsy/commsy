@@ -592,6 +592,10 @@ class cs_page_view extends cs_view {
          $retour .= '<script type="text/javascript" src="javascript/jQuery/youtube/jquery.youtube.js"></script>'.LF;
 
 
+         $retour .= '<link rel="stylesheet" href="javascript/jQuery/src/ajaxrotator/jquery.ctrotator.css" type="text/css" media="all" />'.LF;
+         $retour .= '<script type="text/javascript" src="javascript/jQuery/ajaxrotator/src/jquery.ctrotator.bridge.flickr.js"></script>'.LF;
+         $retour .= '<script type="text/javascript" src="javascript/jQuery/ajaxrotator/src/jquery.ctrotator.bridge.li.js"></script>'.LF;
+         $retour .= '<script type="text/javascript" src="javascript/jQuery/ajaxrotator/src/jquery.ctrotator.js"></script>'.LF;
 #         $retour .= '   <script type="text/javascript" src="javascript/jQuery/flickr/flickr.js"></script>'.LF;
 #         $retour .= '   <script type="text/javascript" src="javascript/jQuery/flickr/flickrpreview.js"></script>'.LF;
       }

@@ -25,6 +25,7 @@ $message["PORTLET_CONFIGURATION_WEATHER_BOX"]["en"] = "Weather";
 $message["PORTLET_CONFIGURATION_YOUTUBE"]["en"] = "YouTube channel";
 $message["PORTLET_CONFIGURATION_YOUTUBE_VALUE"]["en"] = "Show on home / the noticed board, youtube account:";
 $message["PORTLET_CONFIGURATION_YOUTUBE_WITHOUT_ACCOUNT"]["en"] = "To show the youtube box, a youtube account is necessary.";
+$message["PORTLET_FLICKR_ID"]["en"] = "Picture gallery of the flickr ID &quot;%1&quot;";
 $message["PORTLET_SHOW_ON_HOME"]["en"] = "Show on home / the noticed board";
 $message["PORTLET_TWITTER_CHANNEL_ID"]["en"] = "The following friends are friends of &quot;%1&quot;.";
 $message["PORTLET_YOUTUBE_CHANNEL"]["en"] = "Youtube channel";

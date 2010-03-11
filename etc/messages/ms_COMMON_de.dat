@@ -349,6 +349,7 @@ $message["COMMON_FIELD_RESTRICTIONS"]["de"] = "Begrenzung der Suche";
 $message["COMMON_FILE"]["de"] = "Datei";
 $message["COMMON_FILES_ERROR_MISSING"]["de"] = "%1: Datei %2 fehlt.";
 $message["COMMON_FILES_ERROR_OTHERS_SUCCESSFULL"]["de"] = "Alle anderen Kopien wurden erfolgreich übernommen.";
+$message["COMMON_FLICKR"]["de"] = "Flickr Foto Galerie";
 $message["COMMON_FOREIGN_ROOM"]["de"] = "Mein persönlicher Raum";
 $message["COMMON_FORWARD_BUTTON"]["de"] = "Weiter";
 $message["COMMON_FROM2"]["de"] = "von";

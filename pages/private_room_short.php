@@ -226,6 +226,14 @@ unset($params);
 $portlet_array[] = $news_view;
  END NEWS */
 
+/* FLICKR */
+$params = array();
+$params['environment'] = $environment;
+$params['with_modifying_actions'] = $current_context->isOpen();
+$flickr_view = $class_factory->getClass(PRIVATEROOM_HOME_FLICKR_VIEW,$params);
+unset($params);
+$portlet_array[] = $flickr_view;
+/* END FLICKR */
 
 /* YOUTUBE */
 if ($current_context->getPortletShowYouTube()){

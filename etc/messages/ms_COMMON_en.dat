@@ -350,6 +350,7 @@ $message["COMMON_FIELD_RESTRICTIONS"]["en"] = "Search limitation";
 $message["COMMON_FILE"]["en"] = "File";
 $message["COMMON_FILES_ERROR_MISSING"]["en"] = "%1: file %2 is missing.";
 $message["COMMON_FILES_ERROR_OTHERS_SUCCESSFULL"]["en"] = "All the other copies were successfully transferred.";
+$message["COMMON_FLICKR"]["en"] = "Flickr foto gallery";
 $message["COMMON_FOREIGN_ROOM"]["en"] = "My private workspace";
 $message["COMMON_FORWARD_BUTTON"]["en"] = "Forward";
 $message["COMMON_FROM2"]["en"] = "from";
