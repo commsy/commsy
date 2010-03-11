@@ -149,6 +149,10 @@ class cs_privateroom_home_portlet_view extends cs_view{
       }
 
       $html .= $this->_getPortletsAsHTML($portlet_array,$this->_column_count);
+      foreach($this->_portlet_views as $portlet_view){
+         $html .= $portlet_view->getPortletJavascriptAsHTML();
+      }
+
       $html .='</div>'.LF;
       $html .='<div style="clear:both;"></div>'.LF;
       return $html;

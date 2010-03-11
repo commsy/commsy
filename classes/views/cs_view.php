@@ -82,7 +82,7 @@ class cs_view {
    var $_with_slimbox = false;
 
    public $_class_factory = NULL;
-   
+
    public $_text_converter;
 
 
@@ -127,6 +127,10 @@ class cs_view {
 
    function setViewName($value){
      $this->_view_name = (string)$value;
+   }
+
+   function getPortletJavascriptAsHTML(){
+   	return '';
    }
 
    /** set anchor of view

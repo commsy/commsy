@@ -42,7 +42,7 @@ this.pointer=0
 this.opacitysetting=0.2 //Opacity value when reset. Internal use.
 this.title=[], this.link=[], this.description=[], this.pubdate=[] //Arrays to hold each component of an RSS item
 this.ajaxobj=createAjaxObj()
-document.write('<div id="'+divId+'" class="'+divClass+'" >Initializing ticker...</div>')
+//document.write('<div id="'+divId+'" class="'+divClass+'" >Initializing ticker...</div>')
 if (window.getComputedStyle) //detect if moz-opacity is defined in external CSS for specified class
 this.mozopacityisdefined=(window.getComputedStyle(document.getElementById(this.tickerid), "").getPropertyValue("-moz-opacity")==1)? 0 : 1
 this.getAjaxcontent()
