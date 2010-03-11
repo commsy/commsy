@@ -200,7 +200,7 @@ class cs_auth_ldap extends cs_auth_manager {
                      $search = @ldap_search($connect,$baseuser,$suchfilter);
                      $result = ldap_get_entries($connect,$search);
                      if ( $result['count'] != 0 ) {
-                        $this->_user_data = $this->_cleanLDAPArray($result[0]);
+                        $this->_user_data[$uid] = $this->_cleanLDAPArray($result[0]);
                         $access = $result[0]['dn'];
                         break;
                      }
@@ -338,20 +338,22 @@ class cs_auth_ldap extends cs_auth_manager {
       $retour = array( 'firstname' => '',
                        'lastname' => '',
                        'email' => '');
-      if ( empty($this->_user_data) ) {
-         $this->_fillUserData($uid,$password);
-      }
-      if ( !empty($this->_user_data) ) {
-         $user_data_array = $this->_user_data;
-      }
-      if ( !empty($user_data_array['givenname']) ) {
-         $retour['firstname'] = $user_data_array['givenname'];
-      }
-      if ( !empty($user_data_array['sn']) ) {
-         $retour['lastname'] = $user_data_array['sn'];
-      }
-      if ( !empty($user_data_array['mail']) ) {
-         $retour['email'] = $user_data_array['mail'];
+      if ( !empty($uid) ) {
+         if ( empty($this->_user_data[$uid]) ) {
+            $this->_fillUserData($uid,$password);
+         }
+         if ( !empty($this->_user_data[$uid]) ) {
+            $user_data_array = $this->_user_data[$uid];
+         }
+         if ( !empty($user_data_array['givenname']) ) {
+            $retour['firstname'] = $user_data_array['givenname'];
+         }
+         if ( !empty($user_data_array['sn']) ) {
+            $retour['lastname'] = $user_data_array['sn'];
+         }
+         if ( !empty($user_data_array['mail']) ) {
+            $retour['email'] = $user_data_array['mail'];
+         }
       }
       return $retour;
    }
@@ -397,7 +399,7 @@ class cs_auth_ldap extends cs_auth_manager {
                   $search = @ldap_search($connect,$baseuser,$suchfilter);
                   $result = ldap_get_entries($connect,$search);
                   if ( $result['count'] != 0 ) {
-                     $this->_user_data = $this->_cleanLDAPArray($result[0]);
+                     $this->_user_data[$uid] = $this->_cleanLDAPArray($result[0]);
                      $access = $result[0]['dn'];
                      break;
                   }

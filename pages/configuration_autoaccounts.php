@@ -452,9 +452,19 @@ function auto_create_accounts($date_array){
                   $user_manager = $environment->getUserManager();
                   $user_item = $user_manager->getNewItem();
                   $user_item->setUserID($account[$_POST['autoaccounts_account']]);
-                  $user_item->setFirstname($new_account_data['firstname']);
-                  $user_item->setLastname($new_account_data['lastname']);
-                  if(!empty($new_account_data['email'])){
+                  if ( !empty($account[$_POST['autoaccounts_firstname']]) ) {
+                     $user_item->setFirstname($account[$_POST['autoaccounts_firstname']]);
+                  } else {
+                     $user_item->setFirstname($new_account_data['firstname']);
+                  }
+                  if ( !empty($account[$_POST['autoaccounts_lastname']]) ) {
+                     $user_item->setLastname($account[$_POST['autoaccounts_lastname']]);
+                  } else {
+                     $user_item->setLastname($new_account_data['lastname']);
+                  }
+                  if ( !empty($account[$_POST['autoaccounts_email']]) ) {
+                     $user_item->setEmail($account[$_POST['autoaccounts_email']]);
+                  } elseif ( !empty($new_account_data['email']) ) {
                      $user_item->setEmail($new_account_data['email']);
                   } else {
                      $server_item = $environment->getServerItem();
