@@ -112,6 +112,7 @@ class cs_detail_view extends cs_view {
 	   $this->_dropdown_image_array[CS_GROUP_TYPE] = 'group';
 	   $this->_dropdown_image_array[CS_TODO_TYPE] = 'todo';
 	   $this->_dropdown_image_array[CS_TOPIC_TYPE] = 'topic';
+	   $this->_dropdown_image_array[CS_INSTITUTION_TYPE] = 'institution';
 	   
 	   $this->_dropdown_message_array[CS_ANNOUNCEMENT_TYPE] = 'DROPDOWN_NEW_ANNOUNCEMENT';
 	   $this->_dropdown_message_array[CS_DATE_TYPE] = 'DROPDOWN_NEW_DATE';
@@ -120,6 +121,7 @@ class cs_detail_view extends cs_view {
 	   $this->_dropdown_message_array[CS_GROUP_TYPE] = 'DROPDOWN_NEW_GROUP';
 	   $this->_dropdown_message_array[CS_TODO_TYPE] = 'DROPDOWN_NEW_TODO';
 	   $this->_dropdown_message_array[CS_TOPIC_TYPE] = 'DROPDOWN_NEW_TOPIC';
+	   $this->_dropdown_message_array[CS_INSTITUTION_TYPE] = 'DROPDOWN_NEW_INSTITUTION';
 	   
       $home_conf = $context_item->getHomeConf();
       $home_conf_array = explode(',',$home_conf);
@@ -135,20 +137,22 @@ class cs_detail_view extends cs_view {
       foreach($home_conf_array as $rubric){
          $temp_rubric_array = explode('_',$rubric);
          $temp_rubric = $temp_rubric_array[0];
-         if($temp_rubric == 'announcement' and $dropdown_mod != 'announcement'){
+         if($temp_rubric == 'announcement'){ #and $dropdown_mod != 'announcement'){
             $this->_dropdown_rubrics_new[] = CS_ANNOUNCEMENT_TYPE;
-         } elseif($temp_rubric == 'date' and $dropdown_mod != 'date'){
+         } elseif($temp_rubric == 'date'){ # and $dropdown_mod != 'date'){
             $this->_dropdown_rubrics_new[] = CS_DATE_TYPE;
-         }  elseif($temp_rubric == 'material' and $dropdown_mod != 'material'){
+         }  elseif($temp_rubric == 'material'){ # and $dropdown_mod != 'material'){
             $this->_dropdown_rubrics_new[] = CS_MATERIAL_TYPE;
-         }  elseif($temp_rubric == 'discussion' and $dropdown_mod != 'discussion'){
+         }  elseif($temp_rubric == 'discussion'){ # and $dropdown_mod != 'discussion'){
             $this->_dropdown_rubrics_new[] = CS_DISCUSSION_TYPE;
-         }  elseif($temp_rubric == 'group' and $dropdown_mod != 'group'){
+         }  elseif($temp_rubric == 'group'){ # and $dropdown_mod != 'group'){
             $this->_dropdown_rubrics_new[] = CS_GROUP_TYPE;
-         }  elseif($temp_rubric == 'todo' and $dropdown_mod != 'todo'){
+         }  elseif($temp_rubric == 'todo'){ # and $dropdown_mod != 'todo'){
             $this->_dropdown_rubrics_new[] = CS_TODO_TYPE;
-         }  elseif($temp_rubric == 'topic' and $dropdown_mod != 'topic'){
+         }  elseif($temp_rubric == 'topic'){ # and $dropdown_mod != 'topic'){
             $this->_dropdown_rubrics_new[] = CS_TOPIC_TYPE;
+         }  elseif($temp_rubric == 'institution'){ # and $dropdown_mod != 'topic'){
+            $this->_dropdown_rubrics_new[] = CS_INSTITUTION_TYPE;
          }
       }
    }
@@ -352,7 +356,7 @@ class cs_detail_view extends cs_view {
       $html .= plugin_hook_output_all('getDetailActionAsHTML',NULL,LF);
 
       $html .= $this->_getNewAction($item,$current_user);
-      #$html .= $this->_initDropDownMenus();
+      $html .= $this->_initDropDownMenus();
       return $html;
    }
 
@@ -376,7 +380,33 @@ class cs_detail_view extends cs_view {
                           'edit',
                           $params);
          unset($params);
-         $text_new = $this->_translator->getMessage('COMMON_NEW_ITEM');
+         
+	      if(isset($_GET['mod'])){
+	         $dropdown_mod = $_GET['mod'];
+	      } elseif(isset($_POST['mod'])){
+	         $dropdown_mod = $_POST['mod'];
+	      } else {
+	         $dropdown_mod = '';
+	      }
+	      
+	      if($dropdown_mod == 'announcement'){
+	      	$text_new = $this->_translator->getMessage('COMMON_ENTER_NEW_ANNOUNCEMENT');
+	      } elseif($dropdown_mod == 'date'){
+	      	$text_new = $this->_translator->getMessage('COMMON_ENTER_NEW_DATE');
+	      } elseif($dropdown_mod == 'material'){
+            $text_new = $this->_translator->getMessage('COMMON_ENTER_NEW_MATERIAL');
+         } elseif($dropdown_mod == 'discussion'){
+            $text_new = $this->_translator->getMessage('COMMON_ENTER_NEW_DISCUSSION');
+         } elseif($dropdown_mod == 'group'){
+            $text_new = $this->_translator->getMessage('COMMON_ENTER_NEW_GROUP');
+         } elseif($dropdown_mod == 'todo'){
+            $text_new = $this->_translator->getMessage('COMMON_ENTER_NEW_TODO');
+         } elseif($dropdown_mod == 'topic'){
+            $text_new = $this->_translator->getMessage('COMMON_ENTER_NEW_TOPIC');
+         } elseif($dropdown_mod == 'institution'){
+            $text_new = $this->_translator->getMessage('COMMON_ENTER_NEW_INSTITUTION');
+         }
+         
          if ( !empty($text_new)
               and !empty($image_new)
               and !empty($href_new)

@@ -32,8 +32,10 @@ div.dropdown_menu a {
 }
 
 hr.dropdown_seperator {
+   margin-top:1px;
+   margin-bottom:0px;
    border: 0px;
    border-top: solid 1px #bbbbbb;
    border-bottom: transparent;
-   width:95%;
+   width:98%;
 }
