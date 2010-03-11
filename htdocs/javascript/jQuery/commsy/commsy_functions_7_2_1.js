@@ -971,9 +971,20 @@ function addNewDateLinks(){
 	}
 }
 
+/* Parameter
+   accept: 'groupItem',
+   helperclass: 'sortHelper',
+   activeclass : 	'sortableactive',
+   hoverclass : 	'sortablehover',
+   handle: 'div.itemHeader',
+   tolerance: 'pointer',
+   onChange : function()
+*/
 jQuery(document).ready(function() {
 		$(".column").sortable({
-			connectWith: '.column'
+			connectWith: '.column',
+			handle: 'div.portlet-header',
+		    tolerance: 'pointer'
 		});
 
 		$(".portlet").addClass("ui-widget ui-widget-content ui-helper-clearfix ui-corner-all")
@@ -1230,11 +1241,11 @@ jQuery(document).ready(function() {
 					dropdown_menus.push(tempImage);
 				}
 			}
-			
+
 			// sort menu_entries to menus
 			for ( var int3 = 0; int3 < dropdown_menus.length; int3++) {
 				var current_menu = dropdown_menus[int3];
-				
+
 				var tempImage = current_menu;
 				var disabled = false;
 				if (jQuery('#'+tempImage).length){
@@ -1246,14 +1257,14 @@ jQuery(document).ready(function() {
 				image.attr('id',image.attr('id')+'_dropdown_menu_'+int3);
 				image.attr('alt','');
 				image.parent().attr('title','');
-				
+
 				var button = jQuery('<img id="dropdown_button_'+int3+'" src="images/commsyicons/dropdownmenu.png" />');
 
 				var html = jQuery('<div id="dropdown_menu_'+int3+'" class="dropdown_menu"></div>');
 				var offset = image.offset();
 
 				var ul = jQuery('<ul></ul>');
-				
+
 				for ( var int4 = 0; int4 < dropDownMenus.length; int4++) {
 					var temp_menu_entry = dropDownMenus[int4];
 					if(temp_menu_entry[0] == current_menu){
@@ -1267,7 +1278,7 @@ jQuery(document).ready(function() {
 						}
 					}
 				}
-				
+
 				html.append(ul);
 				image.parent().wrap('<div style="display:inline;"></div>');
 				image.parent().parent().append(button);

@@ -52,11 +52,18 @@ if (!empty($_GET['cid'])) {
 
 .portlet {
 	margin: 0 20px 20px 0;
+    -moz-border-radius-topleft: 10px;
+    -webkit-border-top-left-radius: 10px;
+	-khtml-border-radius-topleft:10px;
 }
 
 .portlet-header {
 	margin: 0em;
 	padding: 4px 6px;
+    -moz-border-radius-topleft: 10px;
+    -webkit-border-top-left-radius: 10px;
+	-khtml-border-radius-topleft:10px;
+	cursor: move;
 }
 
 .ui-widget-header {
@@ -70,6 +77,7 @@ if (!empty($_GET['cid'])) {
 
 .portlet-header .ui-icon {
 	float: right;
+	cursor: auto;
 }
 .portlet-content { padding: 0.4em; }
 .ui-sortable-placeholder { border: 1px dotted black; visibility: visible !important; height: 50px !important; }
