@@ -205,7 +205,7 @@ class cs_topic_detail_view extends cs_detail_view {
       $html .= $this->_getDownloadAction($item,$current_user);
       $html .= $this->_getNewAction($item,$current_user);
 
-      $html .= $this->_initDropDownMenus();
+      #$html .= $this->_initDropDownMenus();
       return $html;
    }
 

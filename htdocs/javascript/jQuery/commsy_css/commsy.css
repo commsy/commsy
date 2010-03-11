@@ -14,15 +14,26 @@ div.dropdown_menu ul {
    background: #ffffff;
 }
 
-div.dropdown_menu li {
+li.dropdown {
    padding: 2px 2px 2px 2px;
 }
 
-div.dropdown_menu li:hover {
+li.dropdown:hover {
    background: #eeeeee;
+}
+
+li.dropdown_seperator {
+   background: #ffffff;
 }
 
 div.dropdown_menu a {
    display: block;
    text-decoration: none;
+}
+
+hr.dropdown_seperator {
+   border: 0px;
+   border-top: solid 1px #bbbbbb;
+   border-bottom: transparent;
+   width:95%;
 }

@@ -352,7 +352,7 @@ class cs_detail_view extends cs_view {
       $html .= plugin_hook_output_all('getDetailActionAsHTML',NULL,LF);
 
       $html .= $this->_getNewAction($item,$current_user);
-      $html .= $this->_initDropDownMenus();
+      #$html .= $this->_initDropDownMenus();
       return $html;
    }
 
@@ -393,6 +393,13 @@ class cs_detail_view extends cs_view {
 
       unset($current_context);
 
+      $temp_array = array();
+      $temp_array['dropdown_image']  = "new_icon";
+      $temp_array['text']  = '';
+      $temp_array['image'] = 'seperator';
+      $temp_array['href']  = '';
+      $action_array[] = $temp_array;
+      
       $action_array = array_merge($action_array, $this->_getAdditionalDropDownEntries());
       
       // init drop down menu

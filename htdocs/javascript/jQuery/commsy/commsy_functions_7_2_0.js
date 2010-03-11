@@ -1257,10 +1257,14 @@ jQuery(document).ready(function() {
 				for ( var int4 = 0; int4 < dropDownMenus.length; int4++) {
 					var temp_menu_entry = dropDownMenus[int4];
 					if(temp_menu_entry[0] == current_menu){
-						var tempActionImage = temp_menu_entry[1];
-						var tempActionText = temp_menu_entry[2];
-						var tempActionHREF = temp_menu_entry[3];
-						ul.append('<li><a href="'+tempActionHREF+'"><img src="'+tempActionImage+'" style="vertical-align:middle; padding-right:2px;" />'+tempActionText+'</a></li>');
+						if(temp_menu_entry[1] != 'seperator'){
+							var tempActionImage = temp_menu_entry[1];
+							var tempActionText = temp_menu_entry[2];
+							var tempActionHREF = temp_menu_entry[3];
+							ul.append('<li class="dropdown"><a href="'+tempActionHREF+'"><img src="'+tempActionImage+'" style="vertical-align:middle; padding-right:2px;" />'+tempActionText+'</a></li>');
+						} else {
+							ul.append('<li class="dropdown_seperator"><hr class="dropdown_seperator"></li>');
+						}
 					}
 				}
 				

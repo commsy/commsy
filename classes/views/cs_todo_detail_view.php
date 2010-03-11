@@ -473,7 +473,7 @@ class cs_todo_detail_view extends cs_detail_view {
       // delete
       $html .= $this->_getDeleteAction($item,$current_user);
 
-      $html .= $this->_initDropDownMenus();
+      #$html .= $this->_initDropDownMenus();
       return $html.'&nbsp;&nbsp;&nbsp;';
    }
 
