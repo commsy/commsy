@@ -52,17 +52,23 @@ if (!empty($_GET['cid'])) {
 
 .portlet {
 	margin: 0 20px 20px 0;
-    -moz-border-radius-topleft: 10px;
-    -webkit-border-top-left-radius: 10px;
-	-khtml-border-radius-topleft:10px;
+    -moz-border-radius-topleft: 5px;
+    -webkit-border-top-left-radius: 5px;
+	-khtml-border-radius-topleft:5px;
+    -moz-border-radius-topright: 5px;
+    -webkit-border-top-right-radius: 5px;
+	-khtml-border-radius-topright:5px;
 }
 
 .portlet-header {
 	margin: 0em;
 	padding: 4px 6px;
-    -moz-border-radius-topleft: 10px;
-    -webkit-border-top-left-radius: 10px;
-	-khtml-border-radius-topleft:10px;
+    -moz-border-radius-topleft: 5px;
+    -webkit-border-top-left-radius: 5px;
+	-khtml-border-radius-topleft:5px;
+    -moz-border-radius-topright: 5px;
+    -webkit-border-top-right-radius: 5px;
+	-khtml-border-radius-topright:5px;
 	cursor: move;
 }
 
