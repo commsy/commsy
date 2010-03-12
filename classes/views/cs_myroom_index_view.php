@@ -477,6 +477,7 @@ class cs_myroom_index_view extends cs_context_index_view {
     */
    function _getRoomWindowAsHTML ($item) {
      global $c_use_new_private_room;
+     global $c_single_entry_point;
      if (isset($c_use_new_private_room) and $c_use_new_private_room){
       $current_user = $this->_environment->getCurrentUserItem();
       $may_enter = $item->mayEnter($current_user);
@@ -493,7 +494,9 @@ class cs_myroom_index_view extends cs_context_index_view {
      }
 
             $style = '    style="border:1px solid  '.$cs_color['tableheader'].'; margin:0px; padding:5px 10px 5px 10px; ';
+            $style .= 'background: url(../'.$c_single_entry_point.'?cid='.$item->getItemID().'&mod=picture&fct=getfile&picture=' . $color_array['schema'] . '_cs_gradient_24.png) repeat-x;';
             $style .= 'background-color: '.$cs_color['tableheader'].';';
+
             if (isset($cs_color['room_title'])){
                $style .= ' color:'.$cs_color['room_title'].' "';
             }else{
