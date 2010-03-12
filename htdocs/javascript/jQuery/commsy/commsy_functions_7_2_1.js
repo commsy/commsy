@@ -990,14 +990,14 @@ jQuery(document).ready(function() {
 		$(".portlet").addClass("ui-widget ui-widget-content ui-helper-clearfix ui-corner-all")
 			.find(".portlet-header")
 				.addClass("ui-widget-header ui-corner-all")
-				.prepend('<span class="ui-icon ui-icon-minusthick"></span>')
+//				.prepend('<span class="ui-icon ui-icon-minusthick"></span>')
 				.end()
 			.find(".portlet-content");
 
-		$(".portlet-header .ui-icon").click(function() {
-			$(this).toggleClass("ui-icon-minusthick").toggleClass("ui-icon-plusthick");
-			$(this).parents(".portlet:first").find(".portlet-content").toggle();
-		});
+//		$(".portlet-header .ui-icon").click(function() {
+//			$(this).toggleClass("ui-icon-minusthick").toggleClass("ui-icon-plusthick");
+//			$(this).parents(".portlet:first").find(".portlet-content").toggle();
+//		});
 
 		$(".column").disableSelection();
 });
@@ -1350,7 +1350,7 @@ function dropdown(object, offset){
 		object.slideDown(150);
 	} else if(object.css('display') == 'block'){
 		object.slideUp(150);
-	} 
+	}
 	object.mouseleave(function(){
 		setTimeout(function() {
 			object.slideUp(150);
