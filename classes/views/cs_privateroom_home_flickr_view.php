@@ -31,7 +31,7 @@ include_once('classes/cs_link.php');
  */
 class cs_privateroom_home_flickr_view extends cs_view {
 
-var  $_flickr_id = '71753457@N00';
+var  $_flickr_id = '';
 var  $_rotation_time = '5000';
 
    /** constructor
@@ -46,7 +46,7 @@ var  $_rotation_time = '5000';
    }
 
    function getPortletJavascriptAsHTML(){
-    $count= '1';
+     $count= '1';
      $html  = '<script type="text/javascript">'.LF;
      $html .= 'var bridge = new ctRotatorBridgeFlickr("http://api.flickr.com/services/feeds/photos_faves.gne?format=json&id='.$this->_flickr_id.'&jsoncallback=?", function(dataSource){'.LF;
      $html .= '$("#flickr").ctRotator(dataSource, {'.LF;
@@ -72,7 +72,11 @@ var  $_rotation_time = '5000';
    }
 
    function asHTML () {
-     $html  = '<div style="margin-bottom:5px;">'.$this->_translator->getMessage('PORTLET_FLICKR_ID',$this->_flickr_id).'</div>'.LF;
+   	 if (empty($this->_flickr_id)){
+        $html  = '<div style="margin-bottom:5px;">'.$this->_translator->getMessage('PORTLET_FLICKR_ID_UNKNOWN').'</div>'.LF;
+   	 }else{
+   	 	 $html  = '<div style="margin-bottom:5px;">'.$this->_translator->getMessage('PORTLET_FLICKR_ID',$this->_flickr_id).'</div>'.LF;
+   	 }
      $html  .= '<div style="text-align:center;height:205px;overflow:hidden;" id="flickr"></div>'.LF;
      return $html;
    }

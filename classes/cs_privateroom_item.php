@@ -1293,6 +1293,37 @@ class cs_privateroom_item extends cs_room_item {
 
 
 
+   function setPortletShowFlickr () {
+      $this->_addExtra('PORTLET_SHOW_FLICKR','1');
+   }
+   function unsetPortletShowFlickr () {
+      $this->_addExtra('PORTLET_SHOW_FLICKR','-1');
+   }
+
+   function getPortletShowFlickr () {
+      $retour = false;
+      if ($this->_issetExtra('PORTLET_SHOW_FLICKR')) {
+         if($this->_getExtra('PORTLET_SHOW_FLICKR') == '1'){
+            $retour = true;
+         }
+      }
+      return $retour;
+   }
+
+   function getPortletFlickrID () {
+      $retour = '';
+      if ($this->_issetExtra('PORTLET_FLICKR_ID')) {
+         $retour = $this->_getExtra('PORTLET_FLICKR_ID');
+      }
+      return $retour;
+   }
+
+   function setPortletFlickrID ($id) {
+      $this->_addExtra('PORTLET_FLICKR_ID',$id);
+   }
+
+
+
    function setPortletShowRSS () {
       $this->_addExtra('PORTLET_SHOW_RSS','1');
    }

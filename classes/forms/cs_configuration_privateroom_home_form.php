@@ -146,6 +146,10 @@ class cs_configuration_privateroom_home_form extends cs_rubric_form {
       $this->_form->combine('horizontal');
       $this->_form->addTextfield('youtube_account','',$this->_translator->getMessage('PORTLET_CONFIGURATION_YOUTUBE_ACCOUNT'),$this->_translator->getMessage('PORTLET_CONFIGURATION_YOUTUBE_DESC'),100,28);
 
+      $this->_form->addCheckbox('flickr',1,'',$this->_translator->getMessage('PORTLET_CONFIGURATION_FLICKR'),$this->_translator->getMessage('PORTLET_CONFIGURATION_FLICKR_VALUE'),$this->_translator->getMessage('PORTLET_CONFIGURATION_FLICKR_DESC'));
+      $this->_form->combine('horizontal');
+      $this->_form->addTextfield('flickr_id','',$this->_translator->getMessage('PORTLET_CONFIGURATION_FLICKR_ID'),$this->_translator->getMessage('PORTLET_CONFIGURATION_FLICKR_DESC'),100,28);
+
       $this->_form->addCheckbox('twitter',1,'',$this->_translator->getMessage('PORTLET_CONFIGURATION_TWITTER'),$this->_translator->getMessage('PORTLET_CONFIGURATION_TWITTER_VALUE'),$this->_translator->getMessage('PORTLET_CONFIGURATION_TWITTER_DESC'));
       $this->_form->combine('horizontal');
       $this->_form->addTextfield('twitter_account','',$this->_translator->getMessage('PORTLET_CONFIGURATION_TWITTER_ACCOUNT'),$this->_translator->getMessage('PORTLET_CONFIGURATION_TWITTER_DESC'),100,28);
@@ -256,6 +260,13 @@ class cs_configuration_privateroom_home_form extends cs_rubric_form {
             $this->_values['youtube'] = '0';
          }
          $this->_values['youtube_account'] = $this->_item->getPortletYouTubeAccount();
+         if ($this->_item->getPortletShowFlickr()){
+            $this->_values['flickr'] = '1';
+         }else{
+            $this->_values['flickr'] = '0';
+         }
+         $this->_values['flickr_id'] = $this->_item->getPortletFlickrID();
+
          $rss_array = $this->_item->getPortletRssArray();
          $shown_rss_array = array();
          foreach ($rss_array as $rss){
@@ -283,6 +294,8 @@ class cs_configuration_privateroom_home_form extends cs_rubric_form {
          $this->_values['twitter_account'] = '';
          $this->_values['youtube'] = '0';
          $this->_values['youtube_account'] = '';
+         $this->_values['flickr'] = '0';
+         $this->_values['flickr_id'] = '';
          $this->_values['show_rss'] = '0';
       }
    }
@@ -300,6 +313,12 @@ class cs_configuration_privateroom_home_form extends cs_rubric_form {
          ) {
          $this->_error_array[] = $this->_translator->getMessage('PORTLET_CONFIGURATION_YOUTUBE_WITHOUT_ACCOUNT');
          $this->_form->setFailure('youtube_account','');
+      }
+      if ( !empty($this->_form_post['flickr'])
+           and empty($this->_form_post['flickr_id'])
+         ) {
+         $this->_error_array[] = $this->_translator->getMessage('PORTLET_CONFIGURATION_FLICKR_WITHOUT_ID');
+         $this->_form->setFailure('flickr_id','');
       }
       if ( !empty($this->_form_post['rss_title'])
            and empty($this->_form_post['rss_adress'])

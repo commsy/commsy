@@ -133,6 +133,11 @@ else {
          unset($values['rss_adress']);
          unset($values['rss_display']);
       }
+      if ( isOption($command, $translator->getMessage('PREFERENCES_SAVE_BUTTON')) ) {
+         unset($values['rss_title']);
+         unset($values['rss_adress']);
+         unset($values['rss_display']);
+      }
       $form->setFormPost($values);
    }
 
@@ -226,11 +231,22 @@ else {
          if ( isset($_POST['youtube_account']) and !empty($_POST['youtube_account']) ) {
             $item->setPortletYouTubeAccount($_POST['youtube_account']);
          }
+
+         if ( isset($_POST['flickr']) and !empty($_POST['flickr']) ) {
+            $item->setPortletShowFlickr();
+         }else{
+            $item->unsetPortletShowFlickr();
+         }
+         if ( isset($_POST['flickr_id']) and !empty($_POST['flickr_id']) ) {
+            $item->setPortletFlickrID($_POST['flickr_id']);
+         }
+
          if ( isset($_POST['show_rss']) and !empty($_POST['show_rss']) ) {
             $item->setPortletShowRSS();
          }else{
             $item->unsetPortletShowRSS();
          }
+         $portlet_rss_array = array();
          if ( isset($_POST['rsslist']) and !empty($_POST['rsslist']) ) {
             $array = $session->getValue($current_iid.'_add_rss');
             $portlet_rss_array = array();
@@ -241,8 +257,21 @@ else {
                   }
                }
             }
-            $item->setPortletRSSArray($portlet_rss_array);
+            if ( isset($_POST['rss_title']) and !empty($_POST['rss_title']) and isset($_POST['rss_adress']) and !empty($_POST['rss_adress']) ) {
+               $rss = array();
+               $rss['title'] = $_POST['rss_title'];
+               $rss['adress'] = $_POST['rss_adress'];
+               $rss['display'] = '1';
+               $portlet_rss_array[]	= $rss;
+            }
+         }elseif( isset($_POST['rss_title']) and !empty($_POST['rss_title']) and isset($_POST['rss_adress']) and !empty($_POST['rss_adress']) ){
+             $rss = array();
+             $rss['title'] = $_POST['rss_title'];
+             $rss['adress'] = $_POST['rss_adress'];
+             $rss['display'] = '1';
+             $portlet_rss_array[]	= $rss;
          }
+         $item->setPortletRSSArray($portlet_rss_array);
 
 
          $item->save();
