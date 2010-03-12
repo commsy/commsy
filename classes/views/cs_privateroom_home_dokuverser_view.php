@@ -54,11 +54,12 @@ var  $_config_boxes = false;
      $params['SID'] = $this->_environment->getSessionID();
      $data_url = utf8_encode(rawurlencode(_curl(false,$this->_environment->getCurrentContextID(),'material','index',$params)));
      unset($params);
-     $height = '450px';
+     $height = '450';
      $bgcolor = '#ffffff';
      unset($color_array);
      $html  = '';
-     $html .= '<script src="javascript/AC_OETags.js" language="javascript" type="text/javascript"></script>'.LF;
+     $html .='<embed style="height:450px; text-align:center; width:100%;" type="application/x-shockwave-flash" pluginspage="http://www.adobe.com/go/getflashplayer" allowscriptaccess="sameDomain" name="study_log" bgcolor="#ffffff" quality="high" wmode="transparent" id="study_log" flashvars="thickbox=false&amp;thickboxHeight=550&amp;motionSpeed=18&amp;thumbWidth=10&amp;applicationType=commsy&amp;commsyXml=commsy.php%3Fcid%3D196732%26mod%3Dmaterial%26fct%3Dindex%26output%3DXML%26SID%3Dcd2fcd129ab49aef84f2058ab3880f7f" src="flash/study_log.swf">'.LF;
+ /*    $html .= '<script src="javascript/AC_OETags.js" language="javascript" type="text/javascript"></script>'.LF;
      $html .= '<script src="javascript/history/history.js" language="javascript" type="text/javascript"></script>'.LF;
      $html .= '<script language="JavaScript" type="text/javascript">'.LF;
      $html .= '<!--'.LF;
@@ -71,13 +72,14 @@ var  $_config_boxes = false;
      $html .= '    // Location visited after installation is complete if installation is required'.LF;
      $html .= '    var MMPlayerType = (isIE == true) ? "ActiveX" : "PlugIn";'.LF;
      $html .= '    var MMredirectURL = window.location;'.LF;
-     $html .= '    document.title = document.title.slice(0, 47) + " - Flash Player Installation";'.LF;
-     $html .= '    var MMdoctitle = document.title;'.LF;
+#     $html .= '    document.title = document.title.slice(0, 47) + " - Flash Player Installation";'.LF;
+#     $html .= '    var MMdoctitle = document.title;'.LF;
+     $html .= '    var MMdoctitle = document.title.slice(0, 47) + " - Flash Player Installation";'.LF;
      $html .= '    jQuery("#docuverser").append(AC_FL_RunContent('.LF;
      $html .= '        "src", "flash/playerProductInstall",'.LF;
      $html .= '        "FlashVars", "MMredirectURL="+MMredirectURL+\'&MMplayerType=\'+MMPlayerType+\'&MMdoctitle=\'+MMdoctitle+\'&commsyXml=\'+\''.$data_url.'\'+\'&applicationType=commsy\'+"",'.LF;
      $html .= '        "width", "100%",'.LF;
-     $html .= '        "height", "'.$height.'",'.LF;
+     $html .= '        "height", "'.$height.'px;",'.LF;
      $html .= '        "align", "middle",'.LF;
      $html .= '        "id", "study_log",'.LF;
      $html .= '        "wmode", "transparent",'.LF;
@@ -95,7 +97,7 @@ var  $_config_boxes = false;
      $html .= '            "src", "flash/study_log",'.LF;
      $html .= '            "FlashVars", "thickbox=false&thickboxHeight=550&motionSpeed=18&thumbWidth=14&applicationType=commsy&commsyXml='.$data_url.'",'.LF;
      $html .= '            "width", "100%",'.LF;
-     $html .= '            "height", "'.$height.'",'.LF;
+     $html .= '            "height", "'.$height.'px;",'.LF;
      $html .= '            "align", "middle",'.LF;
      $html .= '            "id", "study_log",'.LF;
      $html .= '            "wmode", "transparent",'.LF;
@@ -111,9 +113,11 @@ var  $_config_boxes = false;
      $html .= '    jQuery("#docuverser").append(alternateContent);  // insert non-flash content'.LF;
      $html .= '  }'.LF;
      $html .= '// -->'.LF;
-     $html .= '</script>'.LF;
+     $html .= '</script>'.LF;*/
      return $html;
    }
+
+
 
    function asHTML () {
      $html  = '';
