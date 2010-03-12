@@ -491,37 +491,19 @@ class cs_myroom_index_view extends cs_context_index_view {
          $cs_color['room_background']  = '';
          $cs_color['tableheader']  = '';
      }
+
+            $style = '    style="border:1px solid  '.$cs_color['tableheader'].'; margin:0px; padding:5px 10px 5px 10px; ';
+            $style .= 'background-color: '.$cs_color['tableheader'].';';
+            if (isset($cs_color['room_title'])){
+               $style .= ' color:'.$cs_color['room_title'].' "';
+            }else{
+               $style .= ' color:#000000; "';
+            }
+
+
       $html  = '';
 #      $html = '<td style="width:25%; padding:3px; vertical-align: middle;">'.LF;
-      $html .= '<table class="room_window'.$item->getItemID().'" summary="Layout" style="width:100%; border-collapse:collapse;">'.LF;
-      $html .= '<tr>'.LF;
-      $logo = $item->getLogoFilename();
-      // Titelzeile
-/*      if (!empty($logo) ) {
-         $html .= '<td class="detail_view_title_room_window'.$item->getItemID().'" style="padding:3px;">';
-         $params = array();
-         $params['picture'] = $item->getLogoFilename();
-         $curl = curl($item->getItemID(), 'picture', 'getfile', $params,'');
-         unset($params);
-         $params['iid']=$item->getItemID();
-         $html .='<div style="float:left; padding-right:3px;">'.LF;
-         $html .= ahref_curl($this->_environment->getCurrentContextID(),'myroom','detail',$params,'<img style="height:20px;" src="'.$curl.'" alt="'.$this->_translator->getMessage('LOGO').'" border="0"/>');
-         $html .='</div>'.LF;
-         $html .='<div style="font-weight: bold; padding-top: 3px; padding-bottom: 3px; ">'.LF;
-         $title = $this->_text_as_html_short($title);
-         $html .= ahref_curl($item->getItemID(),'home','index',array(),$title);
-         unset($params);
-         if ($item->isLocked()) {
-            $html .= ' ('.$this->_translator->getMessage('PROJECTROOM_LOCKED').')'.LF;
-         }elseif ($item->isProjectroom() and $item->isTemplate()) {
-            $html .= ' ('.$this->_translator->getMessage('PROJECTROOM_TEMPLATE').')'.LF;
-         }elseif ($item->isClosed()) {
-            $html .= ' ('.$this->_translator->getMessage('PROJECTROOM_CLOSED').')';
-         }
-         $html .='</div>'.LF;
-         $html .= '</td>'.LF;
-      } else {*/
-         $html .= '<td class="detail_view_title_room_window'.$item->getItemID().'" colspan="2" style="font-weight: bold; padding-top: 3px; padding-bottom: 3px; padding-left:3px;">';
+      $html  = '<div class="portlet-header" '.$style.'>';
          $params['iid']=$item->getItemID();
          $display_title = chunkText($this->_text_as_html_short($title),20)."\n";
          if ($item->isLocked()) {
@@ -529,16 +511,14 @@ class cs_myroom_index_view extends cs_context_index_view {
          } elseif ($item->isClosed()) {
             $title = $this->_text_as_html_short($title).' ('.$this->_translator->getMessage('PROJECTROOM_CLOSED').')';
          }
-         $html .= ahref_curl($item->getItemID(),'home','index',array(),$display_title,$title);
-         $html .= '</td>';
-#      }
-      $html .= '<td class="detail_view_title_room_window'.$item->getItemID().'" style="vertical-align:top; text-align:right;">'.LF;
-      $html .= '</td>'.LF;
-      $html .= '<td class="detail_view_title_room_window'.$item->getItemID().'" style="vertical-align:top; text-align:right;">'.LF;
-      $html .= $this->_getRoomActionsAsHTML($item,$current_user);
-      $html .= '</td>'.LF;
-
-      $html .= '</tr>'.LF;
+            if (isset($cs_color['room_title'])){
+               $style = ' color:'.$cs_color['room_title'].' "';
+            }else{
+               $style = ' color:#000000; "';
+            }
+         $html .= ahref_curl($item->getItemID(),'home','index',array(),$display_title,$title,'','','','','','style="'.$style.'"');
+      $html .= '</div>'.LF;
+      $html .= '<table class="room_window'.$item->getItemID().'" summary="Layout" style="width:100%; border-collapse:collapse;">'.LF;
       $html .= '<tr><td colspan="4" class="detail_view_content_room_window'.$item->getItemID().'">'.LF;
 
       $html .='<table style="width: 100%;" summary="Layout">';
