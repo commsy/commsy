@@ -384,7 +384,7 @@ class cs_room_item extends cs_context_item {
       $this->_setObject('in_time', $value, FALSE);
    }
 
-    ######################################################
+   ######################################################
    # methods for template technique                     #
    ######################################################
 
@@ -408,7 +408,6 @@ class cs_room_item extends cs_context_item {
 
    function setTemplate () {
       $this->_setValue('template',1,true);
-#      $this->close();
    }
 
    function setNotTemplate () {
@@ -1214,6 +1213,33 @@ class cs_room_item extends cs_context_item {
     */
    function setDescriptionArray ($value) {
       $this->_setValue('description',(array)$value);
+   }
+
+   public function isUsed ($start_date, $end_date) {
+      $retour = false;
+
+      $user_manager = $this->_environment->getUserManager();
+      $user_manager->setContextLimit($this->getItemID());
+      $count = $user_manager->getCountUsedAccounts($start_date,$end_date);
+      unset($user_manager);
+      if ( !empty($count)
+           and is_numeric($count)
+           and $count > 0
+         ) {
+         $retour = true;
+      } else {
+         $item_manager = $this->_environment->getItemManager();
+         $item_manager->setContextLimit($this->getItemID());
+         $count = $item_manager->getCountItems($start_date,$end_date);
+         if ( !empty($count)
+              and is_numeric($count)
+              and $count > 0
+            ) {
+            $retour = true;
+         }
+         unset($item_manager);
+      }
+      return $retour;
    }
 }
 ?>

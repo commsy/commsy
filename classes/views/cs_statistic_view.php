@@ -322,12 +322,18 @@ class cs_statistic_view extends cs_view {
                   } elseif ( $sub_room_item->isProjectRoom() ) {
                      $group_room_list = $sub_room_item->getGroupRoomList();
                      $active = $sub_room_item->isActive($this->_start_date,$this->_end_date);
+                     $temp_group_room = array();
                      if ( !empty($group_room_list)
                           and $group_room_list->isNotEmpty()
                         ) {
                         $grouproom_item = $group_room_list->getFirst();
-                        $temp_group_room = array();
                         while ($grouproom_item) {
+                           $active_gr = $grouproom_item->isActive($this->_start_date,$this->_end_date);
+                           if ($active_gr) {
+                              $used_gr = true;
+                           } else {
+                              $used_gr = $grouproom_item->isUsed($this->_start_date,$this->_end_date);
+                           }
                            if ( isset($temp_group_room['all']) ) {
                               $temp_group_room['all']++;
                            } else {
@@ -338,7 +344,7 @@ class cs_statistic_view extends cs_view {
                            } else {
                               $temp_group_room['all_gr'] = 1;
                            }
-                           if ($active) {
+                           if ($active_gr) {
                               if ( isset($temp_group_room['active']) ) {
                                  $temp_group_room['active']++;
                               } else {
@@ -348,6 +354,18 @@ class cs_statistic_view extends cs_view {
                                  $temp_group_room['active_gr']++;
                               } else {
                                  $temp_group_room['active_gr'] = 1;
+                              }
+                           }
+                           if ($used_gr) {
+                              if ( isset($temp_group_room['used']) ) {
+                                 $temp_group_room['used']++;
+                              } else {
+                                 $temp_group_room['used'] = 1;
+                              }
+                              if ( isset($temp_group_room['used_gr']) ) {
+                                 $temp_group_room['used_gr']++;
+                              } else {
+                                 $temp_group_room['used_gr'] = 1;
                               }
                            }
                            $grouproom_item = $group_room_list->getNext();
@@ -365,7 +383,9 @@ class cs_statistic_view extends cs_view {
                            if ( !isset($this->_community_statistic_matrix[$community_room->getItemID()]['active_gr']) ) {
                               $this->_community_statistic_matrix[$community_room->getItemID()]['active_gr'] = 0;
                            }
-
+                           if ( !isset($this->_community_statistic_matrix[$community_room->getItemID()]['used_gr']) ) {
+                              $this->_community_statistic_matrix[$community_room->getItemID()]['used_gr'] = 0;
+                           }
                            if ( isset($this->_community_statistic_matrix[$community_room->getItemID()]['all']) ) {
                               $this->_community_statistic_matrix[$community_room->getItemID()]['all']++;
                            } else {
@@ -412,10 +432,17 @@ class cs_statistic_view extends cs_view {
                            if ( !empty($temp_group_room['active_gr']) ) {
                               $this->_community_statistic_matrix[$community_room->getItemID()]['active_gr'] += $temp_group_room['active_gr'];
                            }
+                           if ( !empty($temp_group_room['used']) ) {
+                              $this->_community_statistic_matrix[$community_room->getItemID()]['used'] += $temp_group_room['used'];
+                           }
+                           if ( !empty($temp_group_room['used_gr']) ) {
+                              $this->_community_statistic_matrix[$community_room->getItemID()]['used_gr'] += $temp_group_room['used_gr'];
+                           }
 
                            $community_room = $community_list->getNext();
                         }
                      }
+                     unset($temp_group_room);
                   }
                } else {
                   $temp_array2['type'] = $sub_room_item->getItemType();
