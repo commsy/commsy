@@ -311,7 +311,7 @@ class cs_entry_index_view extends cs_index_view {
 
 
    function _getIndexPageHeaderAsHTML(){
-      $html .= '<h2 class="pagetitle">'.$this->_translator->getMessage('ENTRY_INDEX');
+      $html = '<h2 class="pagetitle">'.$this->_translator->getMessage('ENTRY_INDEX');
       $html .= '</h2>'.LF;
       return $html;
    }
