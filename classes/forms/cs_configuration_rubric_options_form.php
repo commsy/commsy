@@ -152,6 +152,9 @@ class cs_configuration_rubric_options_form extends cs_rubric_form {
               case 'USER':
                  $select_array[$i]['text'] = $this->_translator->getMessage('USER_INDEX');
                  break;
+              case 'ENTRY':
+                 $select_array[$i]['text'] = $this->_translator->getMessage('ENTRY_INDEX');
+                 break;
               default:
                  $text = '';
                  if ( $this->_environment->isPlugin($rubric) ) {

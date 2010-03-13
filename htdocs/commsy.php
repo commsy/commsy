@@ -978,6 +978,9 @@ if ( $environment->isOutputModeNot('XML') ) {
                case 'USER':
                   $tempMessage = $translator->getMessage('COMMON_USER_INDEX');
                   break;
+               case 'ENTRY':
+                  $tempMessage = $translator->getMessage('COMMON_ENTRY_INDEX');
+                  break;
                default:
                   $text = '';
                   if ( $environment->isPlugin($link_name[0]) ) {

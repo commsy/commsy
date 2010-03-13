@@ -243,6 +243,13 @@ $class_config[$class_name]['filename'] = $class_name.'.php';
 $class_config[$class_name]['folder'] = $main_folder.$view_folder;
 $class_config[$class_name]['switchable'] = false;
 
+$class_name = 'cs_entry_index_view';
+define('ENTRY_INDEX_VIEW',$class_name);
+$class_config[$class_name]['name'] = $class_name;
+$class_config[$class_name]['filename'] = $class_name.'.php';
+$class_config[$class_name]['folder'] = $main_folder.$view_folder;
+$class_config[$class_name]['switchable'] = false;
+
 $class_name = 'cs_material_index_view';
 define('MATERIAL_INDEX_VIEW',$class_name);
 $class_config[$class_name]['name'] = $class_name;

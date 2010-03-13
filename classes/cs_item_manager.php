@@ -279,6 +279,53 @@ class cs_item_manager extends cs_manager {
       }
   }
 
+
+  function getPrivateRoomItemList ($id_array,$user_ids) {
+      /** cs_list is needed for storage the commsy items
+       */
+      $type = 'items';
+      include_once('classes/cs_list.php');
+      if ( empty($id_array) ) {
+         return new cs_list();
+      } else {
+         if ( $type == 'discussion' ) {
+            $type = 'discussions';
+         }
+         elseif ( $type == 'todo' ) {
+            $type = 'todos';
+         }
+         $query = "SELECT DISTINCT * FROM ".encode(AS_DB,$this->addDatabasePrefix($type));
+         $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_modifier_item').' AS modifier ON '.$this->addDatabasePrefix('items').'.item_id=modifier.item_id';
+         $query .=" WHERE ".encode(AS_DB,$this->addDatabasePrefix($type)).".item_id IN ('".implode("', '",encode(AS_DB,$id_array))."')";
+         $query .= ' AND modifier.modifier_id IN ('.implode(",",encode(AS_DB,$user_ids)).')';;
+         $query .= ' GROUP BY '.$this->addDatabasePrefix('items').'.item_id ';
+         $query .= ' ORDER BY '.$this->addDatabasePrefix('items').'.modification_date DESC';
+         $result = $this->_db_connector->performQuery($query);
+         if ( !isset($result) ) {
+            include_once('functions/error_functions.php');
+            trigger_error('Problems selecting list of '.$type.' items.',E_USER_WARNING);
+         } else {
+            $list = new cs_list();
+            foreach ($result as $rs ) {
+               // special for todo
+               if ( $type == 'todos' and isset($rs['date']) ){
+                  $rs['end_date'] = $rs['date'];
+                  unset($rs['date']);
+               }
+               $list->add($this->_buildItem($rs));
+            }
+            unset($result);
+         }
+         unset($query);
+         unset($id_array);
+         unset($type);
+
+         return $list;
+      }
+  }
+
+
+
    function getAllUsedRubricsOfRoomList($room_ids){
         $rs = array();
         $query = 'SELECT DISTINCT '.$this->addDatabasePrefix('items').'.context_id, '.$this->addDatabasePrefix('items').'.type, label.type AS subtype';
@@ -304,6 +351,59 @@ class cs_item_manager extends cs_manager {
         }
         return $rs;
    }
+
+
+
+   function getAllPrivateRoomEntriesOfUserList($room_ids,$user_ids){
+        $rs = array();
+        $query = 'SELECT DISTINCT '.$this->addDatabasePrefix('items').'.*, modifier.modifier_id';
+        $query .= ' FROM '.$this->addDatabasePrefix('items');
+        $query .= ' LEFT JOIN '.$this->addDatabasePrefix('labels').' AS label ON '.$this->addDatabasePrefix('items').'.item_id=label.item_id';
+        $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_modifier_item').' AS modifier ON '.$this->addDatabasePrefix('items').'.item_id=modifier.item_id';
+        $query .= ' WHERE 1';
+        $query .= ' AND (label.type IS NULL OR label.type="group" OR label.type="topic" OR label.type="group")';
+        $query .= ' AND '.$this->addDatabasePrefix('items').'.context_id IN ('.implode(",",encode(AS_DB,$room_ids)).')';
+        $query .= ' AND '.$this->addDatabasePrefix('items').'.deleter_id IS NULL';
+        $query .= ' AND '.$this->addDatabasePrefix('items').'.deletion_date IS NULL';
+        $query .= ' AND '.$this->addDatabasePrefix('items').'.type != "annotation"';
+        $query .= ' AND '.$this->addDatabasePrefix('items').'.type != "link_item"';
+        $query .= ' AND '.$this->addDatabasePrefix('items').'.type != "task"';
+        $query .= ' AND '.$this->addDatabasePrefix('items').'.type != "tag"';
+        $query .= ' AND '.$this->addDatabasePrefix('items').'.type != "project"';
+        $query .= ' AND '.$this->addDatabasePrefix('items').'.type != "community"';
+        $query .= ' AND '.$this->addDatabasePrefix('items').'.type != "grouproom"';
+        $query .= ' AND '.$this->addDatabasePrefix('items').'.type != "discarticle"';
+        $query .= ' AND '.$this->addDatabasePrefix('items').'.type != "section"';
+        $query .= ' AND '.$this->addDatabasePrefix('items').'.type != "step"';
+
+        $query .= ' AND modifier.modifier_id IN ('.implode(",",encode(AS_DB,$user_ids)).')';;
+
+        $query .= ' ORDER BY '.$this->addDatabasePrefix('items').'.modification_date DESC';
+        $query .= ' LIMIT ';
+        if (isset($this->_interval_limit)) {
+           $query .= $this->_interval_limit;
+        }else{
+           $query .= '20';
+        }
+        // perform query
+        $result = $this->_db_connector->performQuery($query);
+         if ( !isset($result) ) {
+            include_once('functions/error_functions.php');
+            trigger_error('Problems selecting list of '.$type.' items.',E_USER_WARNING);
+         } else {
+            $list = new cs_list();
+            foreach ($result as $rs ) {
+               // special for todo
+               $list->add($this->_buildItem($rs));
+            }
+            unset($result);
+         }
+
+        return $list;
+   }
+
+
+
 
    function getAllNewPrivateRoomEntriesOfRoomList($room_ids){
         $rs = array();

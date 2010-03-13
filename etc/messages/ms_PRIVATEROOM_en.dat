@@ -15,5 +15,9 @@ $message["PRIVATEROOM_MAIL_SUBJECT_FOOTER"]["en"] = "You can unsubscribe this ne
 $message["PRIVATEROOM_MAIL_SUBJECT_HEADER_DAILY"]["en"] = "This newsletter is send by %1. It includes information about unread items of all open rooms (presented on the home of your private room) since yesterday.";
 $message["PRIVATEROOM_MAIL_SUBJECT_HEADER_WEEKLY"]["en"] = "This newsletter is send by %1. It includes information about unread items of all open rooms (presented on the home of your private room) since one week.";
 $message["PRIVATEROOM_MAIL_SUBJECT_WEEKLY"]["en"] = "Weekly CommSy newsletter";
+$message["PRIVATEROOM_MY_ENTRIES_BUZZWORD_BOX"]["en"] = "Buzzwords";
+$message["PRIVATEROOM_MY_ENTRIES_LIST_BOX"]["en"] = "Repository entries";
+$message["PRIVATEROOM_MY_ENTRIES_MATRIX_BOX"]["en"] = "Matrix";
+$message["PRIVATEROOM_MY_ENTRIES_SEARCH_BOX"]["en"] = "Search in repository";
 $message["PRIVATEROOM_UNLOCK"]["en"] = "Unlock private workspace";
 ?>

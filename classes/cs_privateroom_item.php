@@ -50,6 +50,7 @@ class cs_privateroom_item extends cs_room_item {
       $this->_default_rubrics_array[4] = CS_USER_TYPE;
       $this->_default_rubrics_array[5] = CS_DISCUSSION_TYPE;
       $this->_default_rubrics_array[6] = CS_TODO_TYPE;
+      $this->_default_rubrics_array[6] = CS_ENTRY_TYPE;
       $this->_default_home_conf_array[CS_MYROOM_TYPE] = 'tiny';
       $this->_default_home_conf_array[CS_MATERIAL_TYPE] = 'tiny';
       $this->_default_home_conf_array[CS_DATE_TYPE] = 'tiny';
@@ -57,6 +58,7 @@ class cs_privateroom_item extends cs_room_item {
       $this->_default_home_conf_array[CS_USER_TYPE] = 'tiny';
       $this->_default_home_conf_array[CS_DISCUSSION_TYPE] = 'none';
       $this->_default_home_conf_array[CS_TODO_TYPE] = 'none';
+      $this->_default_home_conf_array[CS_ENTRY_TYPE] = 'tiny';
    }
 
    private function _addPluginInRubricArray () {
@@ -516,6 +518,9 @@ class cs_privateroom_item extends cs_room_item {
                               break;
                            case 'USER':
                               $tempMessage = $translator->getMessage('USER_INDEX');
+                              break;
+                           case 'ENTRY':
+                              $tempMessage = $translator->getMessage('ENTRY_INDEX');
                               break;
                            default:
                               $tempMessage = $translator->getMessage('COMMON_MESSAGETAG_ERROR'.' cs_privateroom_item(456) ');

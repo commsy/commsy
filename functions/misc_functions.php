@@ -632,6 +632,7 @@ function isURLValid () {
         $module != 'step' and
         $module != 'chat' and
         $module != 'material' and
+        $module != 'entry' and
         $module != 'buzzword' and
         $module != 'user' and
         $module != 'group' and

@@ -15,5 +15,9 @@ $message["PRIVATEROOM_MAIL_SUBJECT_FOOTER"]["de"] = "Falls Sie den Newsletter ni
 $message["PRIVATEROOM_MAIL_SUBJECT_HEADER_DAILY"]["de"] = "Dieser tägliche Newsletter listet neue oder geänderte Einträge in Ihren Räumen des CommSy-Portals %1 auf. Berücksichtigt werden bisher ungelesene Beiträge aus allen Räumen, die auf der Startseite Ihres persönlichen Raums angezeigt werden.";
 $message["PRIVATEROOM_MAIL_SUBJECT_HEADER_WEEKLY"]["de"] = "Dieser wöchentliche Newsletter listet neue oder geänderte Einträge in Ihren Räumen des CommSy-Portals %1 auf. Berücksichtigt werden bisher ungelesene Beiträge aus allen Räumen, die auf der Startseite Ihres persönlichen Raums angezeigt werden.";
 $message["PRIVATEROOM_MAIL_SUBJECT_WEEKLY"]["de"] = "Wöchentlicher CommSy-Newsletter";
+$message["PRIVATEROOM_MY_ENTRIES_BUZZWORD_BOX"]["de"] = "Schlagworte";
+$message["PRIVATEROOM_MY_ENTRIES_LIST_BOX"]["de"] = "Einträge in der Ablage";
+$message["PRIVATEROOM_MY_ENTRIES_MATRIX_BOX"]["de"] = "Matrix";
+$message["PRIVATEROOM_MY_ENTRIES_SEARCH_BOX"]["de"] = "Suche in der Ablage";
 $message["PRIVATEROOM_UNLOCK"]["de"] = "Persönlichen Raum entsperren";
 ?>

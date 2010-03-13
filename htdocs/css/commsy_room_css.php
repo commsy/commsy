@@ -648,5 +648,26 @@ table.configuration_table{
    vertical-align:bottom;
 }
 
+.cs-box-content{
+	border: 1px solid <?php echo($color['tabs_background'])?>;
+   background-color:#FFFFFF;
+   margin:0px 0px 20px 0px;
+   padding:5px;
+}
+
+.cs-box-header {
+    margin: 0em;
+    background-color:<?php echo($color['tabs_background'])?>;
+    color:<?php echo($color['headline_text'])?>;
+    padding: 4px 6px;
+    -moz-border-radius-topleft: 5px;
+    -webkit-border-top-left-radius: 5px;
+    -khtml-border-radius-topleft:5px;
+    -moz-border-radius-topright: 5px;
+    -webkit-border-top-right-radius: 5px;
+    -khtml-border-radius-topright:5px;
+}
+
+
 
 
