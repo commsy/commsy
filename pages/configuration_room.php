@@ -71,19 +71,19 @@ if ( $current_user->isModerator() or $current_user->isRoot() ) {
          $room->undelete();
       }elseif ($status == 'archive') {
          $room->close();
-         
+
          // Fix: Find Group-Rooms if existing
          if( $room->isGrouproomActive() ) {
             $groupRoomList = $room->getGroupRoomList();
-            
+
             if( !$groupRoomList->isEmpty() ) {
                $room_item = $groupRoomList->getFirst();
-               
+
                while($room_item) {
                   // All GroupRooms have to be closed too
                   $room_item->close();
                   $room_item->save();
-                  
+
                   $room_item = $groupRoomList->getNext();
                }
             }
@@ -91,25 +91,26 @@ if ( $current_user->isModerator() or $current_user->isRoot() ) {
          // ~Fix
       }elseif ($status == 'open') {
          $room->open();
-         
+
          // Fix: Find Group-Rooms if existing
          if( $room->isGrouproomActive() ) {
             $groupRoomList = $room->getGroupRoomList();
-            
+
             if( !$groupRoomList->isEmpty() ) {
                $room_item = $groupRoomList->getFirst();
-               
+
                while($room_item) {
                   // All GroupRooms have to be opened too
                   $room_item->open();
                   $room_item->save();
-                  
+
                   $room_item = $groupRoomList->getNext();
                }
             }
          }
       } else {
-         include_once('functions/error_functions.php');trigger_error('automatic mode is not defined, E_USER_ERROR');
+         include_once('functions/error_functions.php');
+         trigger_error('automatic mode is not defined, E_USER_ERROR');
       }
       $room->save();
 
@@ -121,9 +122,11 @@ if ( $current_user->isModerator() or $current_user->isRoot() ) {
       }
       redirect($history[0]['context'],$history[0]['module'],$history[0]['function'],$params);
    } else {
-      include_once('functions/error_functions.php');trigger_error('no automatic status set',E_USER_ERROR);
+      include_once('functions/error_functions.php');
+      trigger_error('no automatic status set',E_USER_ERROR);
    }
 } else {
-   include_once('functions/error_functions.php');trigger_error('you don\'t have the permission to do that',E_USER_ERROR);
+   include_once('functions/error_functions.php');
+   trigger_error('you don\'t have the permission to do that',E_USER_ERROR);
 }
 ?>
