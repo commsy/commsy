@@ -254,7 +254,7 @@ function getCSS ( $file, $file_url ) {
 
         if ( $zip->open($filename, ZIPARCHIVE::CREATE) !== TRUE ) {
             include_once('functions/error_functions.php');
-            trigger_error('can not open zip-file '.$filename_zip,E_USER_WARNNG);
+            trigger_error('can not open zip-file '.$filename_zip,E_USER_WARNING);
         }
         $temp_dir = getcwd();
         chdir($directory);
@@ -267,7 +267,7 @@ function getCSS ( $file, $file_url ) {
         unset($params['downloads']);
      } else {
         include_once('functions/error_functions.php');
-        trigger_error('can not initiate ZIP class, please contact your system administrator',E_USER_WARNNG);
+        trigger_error('can not initiate ZIP class, please contact your system administrator',E_USER_WARNING);
      }
 
      //send zipfile by header
