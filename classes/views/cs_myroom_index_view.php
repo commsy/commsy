@@ -229,22 +229,47 @@ class cs_myroom_index_view extends cs_context_index_view {
       for ($i=0; $i< 4; $i++){
          $html_array[$i] = '<div class="column" style="width:25%;">';
       }
-      $list = $this->_list;
-      $user = $this->_environment->getCurrentUserItem();
-      $column_count = 0;
-      if ( isset($list)) {
-         $current_item = $list->getFirst();
-         while ( $current_item ) {
-            if ($column_count == 4){
-               $column_count = 0;
-            }
-            $html_text = '<div class="portlet">'.LF;
-            $html_text .= $this->_getRoomWindowAsHTML($current_item);
-            $html_text .= '</div>'.LF;
-            $html_array[$column_count] .= $html_text;
-            $column_count++;
-            $current_item = $list->getNext();
+      
+      $privateroom_item = $this->_environment->getCurrentContextItem();
+      $column_array = $privateroom_item->getMyroomConfig();
+      
+      if(!empty($column_array)){
+      	$list = $this->_list;
+      	$user = $this->_environment->getCurrentUserItem();
+         $column_count = 0;
+         foreach($column_array as $column){
+         	foreach($column as $room_id){
+	         	$current_item = $list->getFirst();
+	            while ( $current_item ) {
+	               if($current_item->getItemID() == $room_id){
+	               	$html_text = '<div class="portlet">'.LF;
+                     $html_text .= $this->_getRoomWindowAsHTML($current_item);
+                     $html_text .= '</div>'.LF;
+                     $html_array[$column_count] .= $html_text;
+	               }
+	               $current_item = $list->getNext();
+	            }
+         	}
+         	$column_count++;
          }
+      } else {
+	      $list = $this->_list;
+	      $user = $this->_environment->getCurrentUserItem();
+	      $column_count = 0;
+	      if ( isset($list)) {
+	         $current_item = $list->getFirst();
+	         while ( $current_item ) {
+	            if ($column_count == 4){
+	               $column_count = 0;
+	            }
+	            $html_text = '<div class="portlet">'.LF;
+	            $html_text .= $this->_getRoomWindowAsHTML($current_item);
+	            $html_text .= '</div>'.LF;
+	            $html_array[$column_count] .= $html_text;
+	            $column_count++;
+	            $current_item = $list->getNext();
+	         }
+	      }
       }
       for ($i=0; $i< 4; $i++){
          $html_array[$i] .= '</div>';
@@ -256,6 +281,12 @@ class cs_myroom_index_view extends cs_context_index_view {
       $html .='<div style="clear:both;">'.LF;
       $html .='</div>'.LF;
       $html .= '<!-- END OF PLAIN LIST VIEW -->'.LF.LF;
+      $html .= '<script type="text/javascript">'.LF;
+      $html .= '<!--'.LF;
+      $html .= 'var ajax_cid = '.$this->_environment->getCurrentContextItem()->getItemID().';'.LF;
+      $html .= 'var ajax_function = "privateroom_myroom";'.LF;
+      $html .= '-->'.LF;
+      $html .= '</script>'.LF;
       return $html;
 
 
@@ -506,7 +537,7 @@ class cs_myroom_index_view extends cs_context_index_view {
 
       $html  = '';
 #      $html = '<td style="width:25%; padding:3px; vertical-align: middle;">'.LF;
-      $html  = '<div class="portlet-header" '.$style.'>';
+      $html  = '<div id="'.$item->getItemID().'" class="portlet-header" '.$style.'>';
          $params['iid']=$item->getItemID();
          $display_title = chunkText($this->_text_as_html_short($title),20)."\n";
          if ($item->isLocked()) {

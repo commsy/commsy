@@ -1375,6 +1375,18 @@ class cs_privateroom_item extends cs_room_item {
       return $retour;
    }
    
+   function setMyroomConfig ($column_array) {
+      $this->_addExtra('MYROOM_CONFIG',$column_array);
+   }
+
+   function getMyroomConfig(){
+      $retour = array();
+      if ($this->_issetExtra('MYROOM_CONFIG')) {
+         $retour = $this->_getExtra('MYROOM_CONFIG');
+      }
+      return $retour;
+   }
+   
    /* END OF PORTLET FUNCTIONS
     * *****************
     */

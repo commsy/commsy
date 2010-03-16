@@ -838,7 +838,8 @@ function isURLValid () {
          $funct != 'autoaccounts' and
          
          // ajax
-         $funct != 'privateroom_home'
+         $funct != 'privateroom_home' and
+         $funct != 'privateroom_myroom'
        ) {
        return false;
     }

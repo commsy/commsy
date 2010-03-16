@@ -174,6 +174,12 @@ class cs_privateroom_home_portlet_view extends cs_view{
 
       $html .='</div>'.LF;
       $html .='<div style="clear:both;"></div>'.LF;
+      $html .= '<script type="text/javascript">'.LF;
+      $html .= '<!--'.LF;
+      $html .= 'var ajax_cid = '.$this->_environment->getCurrentContextItem()->getItemID().';'.LF;
+      $html .= 'var ajax_function = "privateroom_home";'.LF;
+      $html .= '-->'.LF;
+      $html .= '</script>'.LF;
       return $html;
    }
 
@@ -235,12 +241,6 @@ class cs_privateroom_home_portlet_view extends cs_view{
          }
          $retour .= '   </style>'."\n";
          $retour .= '   <!-- END Styles -->'."\n".LF;
-         $retour .= '<script type="text/javascript">'.LF;
-         $retour .= '<!--'.LF;
-         $retour .= 'var ajax_cid = '.$this->_environment->getCurrentContextItem()->getItemID().';'.LF;
-         $retour .= '-->'.LF;
-         $retour .= '</script>'.LF;
-         
       }
       return $retour;
    }

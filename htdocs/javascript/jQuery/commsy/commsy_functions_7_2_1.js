@@ -986,23 +986,35 @@ jQuery(document).ready(function() {
 			handle: 'div.portlet-header',
 		    tolerance: 'pointer',
 		    update: function(event, ui) {
-			    var json_data = new Object();
-			    var portlet_columns = jQuery(".column");
-			    for ( var int = 0; int < portlet_columns.length-1; int++) {
-			    	column_portlets = new Array();
-					var portlet_column = jQuery(portlet_columns[int]);
-					portlets = portlet_column.children();
-					for ( var int2 = 0; int2 < portlets.length; int2++) {
-						var portlet = jQuery(portlets[int2]);
-						column_portlets.push(portlet.find('.portlet-content').find('div').attr('id'));
+			    //if(window.ajax_function == 'privateroom_home'){
+				    var json_data = new Object();
+				    var portlet_columns = jQuery(".column");
+				    for ( var int = 0; int < portlet_columns.length; int++) {
+				    	column_portlets = new Array();
+						var portlet_column = jQuery(portlet_columns[int]);
+						portlets = portlet_column.children();
+						for ( var int2 = 0; int2 < portlets.length; int2++) {
+							var portlet = jQuery(portlets[int2]);
+							if(window.ajax_function == 'privateroom_home'){
+								column_portlets.push(portlet.find('.portlet-content').find('div').attr('id'));
+							} else if (window.ajax_function == 'privateroom_myroom') {
+								column_portlets.push(portlet.find('.portlet-header').attr('id'));
+							}
+						}
+						if(column_portlets.length == 0){
+							column_portlets[0] = 'empty';
+						}
+						json_data['column_'+int] = column_portlets;
 					}
-					json_data['column_'+int] = column_portlets;
-				}
+			    //} else if (window.ajax_function == 'privateroom_myroom'){
+			    //	
+			    //}
 			    jQuery.ajax({
 			       //type: 'POST', // -> funktioniert nicht, Parameter als GET (Standard - keine Angabe notwendig) an den Server weiterleiten!
-				   url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct=privateroom_home&output=json&do=save_config',
+				   url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct='+window.ajax_function+'&output=json&do=save_config',
 				   data: json_data,
 				   success: function(msg){
+			    	//alert(msg);
 				   }
 				});
 			}
