@@ -275,7 +275,8 @@ class cs_grouproom_manager extends cs_room2_manager {
       $result = $this->_db_connector->performQuery($query);
 
       if (!isset($result)) {
-         include_once('functions/error_functions.php');trigger_error('Problems selecting '.$this->_db_table.' items from query: "'.$query.'"',E_USER_WARNING);
+         include_once('functions/error_functions.php');
+         trigger_error('Problems selecting '.$this->_db_table.' items from query: "'.$query.'"',E_USER_WARNING);
       } else {
          return $result;
       }
@@ -289,7 +290,8 @@ class cs_grouproom_manager extends cs_room2_manager {
          $query .= " ORDER BY ".$sortBy;
          $result = $this->_db_connector->performQuery($query);
          if (!isset($result)) {
-            include_once('functions/error_functions.php');trigger_error('Problems selecting list of '.$this->_room_type.' items from query: "'.$query.'"',E_USER_WARNING);
+            include_once('functions/error_functions.php');
+            trigger_error('Problems selecting list of '.$this->_room_type.' items from query: "'.$query.'"',E_USER_WARNING);
          } else {
             $list = new cs_list();
             foreach ($result as $rs) {

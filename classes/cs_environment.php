@@ -653,7 +653,7 @@ class cs_environment {
    public function getZzzUserManager() {
       return $this->_getInstance('cs_zzz_user_manager');
    }
-   
+
   /** get instance of cs_labels_manager
    *
    * @return cs_labels_manager
@@ -761,7 +761,7 @@ class cs_environment {
    public function getZzzGroupRoomManager() {
       return $this->_getInstance('cs_zzz_grouproom_manager');
    }
-   
+
   /** get instance of cs_privateroom_manager
    *
    * @return cs_PrivateRoom_manager
@@ -865,6 +865,16 @@ class cs_environment {
       return $this->_getInstance('cs_room_manager');
    }
 
+ /** get instance of cs_zzz_room_manager
+   *
+   * @return cs_zzz_room_manager
+   * @access public
+   */
+   public function getZzzRoomManager() {
+      return $this->_getInstance('cs_zzz_room_manager');
+   }
+
+
   /** get instance of cs_task_manager
    *
    * @return cs_task_manager
@@ -910,7 +920,7 @@ class cs_environment {
    public function getZzzItemManager() {
       return $this->_getInstance('cs_zzz_item_manager');
    }
-   
+
   /** get instance of cs_server_manager
    *
    * @return cs_server_manager
@@ -1000,14 +1010,14 @@ class cs_environment {
       }
       return $this->instance['cs_session_manager'];
    }
-   
+
    /**
     * get instance of cs_backupitem_manager
-    * 
+    *
     * @return cs_backupitem_manager
     */
    public function getBackupItemManager() {
-   	  return $this->_getInstance('cs_backupitem_manager');
+        return $this->_getInstance('cs_backupitem_manager');
    }
 
    function getSession () {
@@ -1188,7 +1198,7 @@ class cs_environment {
          } elseif ($type == CS_BUZZWORD_TYPE) {
             return $this->getBuzzwordManager();
          } elseif ($type == CS_ITEM_BACKUP) {
-         	return $this->getBackupItemManager();
+            return $this->getBackupItemManager();
          } elseif ( !$this->isPlugin($type) ) {
             include_once('functions/error_functions.php');
             trigger_error('do not know this type ['.$type.']',E_USER_ERROR);
