@@ -234,7 +234,13 @@ class cs_privateroom_home_portlet_view extends cs_view{
             $item = $this->_list->getNext();
          }
          $retour .= '   </style>'."\n";
-         $retour .= '   <!-- END Styles -->'."\n";
+         $retour .= '   <!-- END Styles -->'."\n".LF;
+         $retour .= '<script type="text/javascript">'.LF;
+         $retour .= '<!--'.LF;
+         $retour .= 'var ajax_cid = '.$this->_environment->getCurrentContextItem()->getItemID().';'.LF;
+         $retour .= '-->'.LF;
+         $retour .= '</script>'.LF;
+         
       }
       return $retour;
    }

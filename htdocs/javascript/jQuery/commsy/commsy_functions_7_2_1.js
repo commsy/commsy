@@ -1000,7 +1000,7 @@ jQuery(document).ready(function() {
 				}
 			    jQuery.ajax({
 			       //type: 'POST', // -> funktioniert nicht, Parameter als GET (Standard - keine Angabe notwendig) an den Server weiterleiten!
-				   url: 'commsy.php?cid=104&mod=ajax&fct=privateroom_home&output=json&do=save_config',
+				   url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct=privateroom_home&output=json&do=save_config',
 				   data: json_data,
 				   success: function(msg){
 				   }
