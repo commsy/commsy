@@ -62,7 +62,8 @@ class cs_privateroom_home_room_view extends cs_view {
     }
 
    function asHTML () {
-      $html  = LF.'<!-- BEGIN OF LIST VIEW -->'.LF;
+   	$html = '<div id="'.get_class($this).'">'.LF;
+      $html .= LF.'<!-- BEGIN OF LIST VIEW -->'.LF;
       $html .= '<table style="width: 100%; border-collapse: collapse;" summary="Layout">'.LF;
       $context = $this->_environment->getCurrentContextItem();
       $html .= '<tr>';
@@ -89,7 +90,8 @@ class cs_privateroom_home_room_view extends cs_view {
       	$html .='<td>'.$this->_translator->getMessage('COMMON_NO_ENTRIES').'</td>'.LF;
       }
       $html .= '</tr></table>'.LF;
-      $html .= '<!-- END OF PLAIN LIST VIEW -->'.LF.LF;
+      $html .= '<!-- END OF PLAIN LIST VIEW -->'.LF;
+      $html .= '</div>'.LF.LF;
       return $html;
    }
 

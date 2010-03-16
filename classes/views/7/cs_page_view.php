@@ -555,6 +555,7 @@ class cs_page_view extends cs_view {
          $retour .= '   var datepicker_choose = \''.$this->_translator->getMessage('COMMON_DATEPICKER_CHOOSE').'\';'.LF;
          $retour .= '      -->'.LF;
          $retour .= '   </script>'.LF;
+         $retour .= '   <script type="text/javascript" src="javascript/jQuery/JSON/json2.js"></script>'.LF;
          #$retour .= '   <script type="text/javascript" src="javascript/jQuery/commsy/commsy_functions_7_1_0_2.js"></script>'.LF;
          include_once('functions/misc_functions.php');
          $commsy_functions = getCurrentCommSyFunctions();

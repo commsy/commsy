@@ -55,7 +55,7 @@ class cs_privateroom_home_buzzword_view extends cs_view {
       $buzzword_manager->select();
       $buzzword_list = $buzzword_manager->get();
       $html  = '';
-      $html .= '<div>'.LF;
+      $html .= '<div id="'.get_class($this).'">'.LF;
       $html .= '<div style="font-size:8pt; width:100%">'.LF;
       $buzzword = $buzzword_list->getFirst();
       $params = $this->_environment->getCurrentParameterArray();

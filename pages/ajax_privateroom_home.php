@@ -22,31 +22,28 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-$this->includeClass(VIEW);
-include_once('functions/date_functions.php');
-include_once('classes/cs_link.php');
+include_once('functions/development_functions.php');
 
-/**
- *  generic upper class for CommSy homepage-views
- */
-class cs_privateroom_home_clock_view extends cs_view {
+if(isset($_GET['do'])){
+	if($_GET['do'] == 'save_config'){
+		// room_manager -> config speichern
+		$get_keys = array_keys($_GET);
+		$column_array = array();
+		foreach($get_keys as $get_key){
+			if(stristr($get_key, 'column')){
+				$column_array[] = $_GET[$get_key];
+			}
+		}
+      debugToFile($column_array);
+      $privateroom_item = $environment->getCurrentContextItem();
+      $privateroom_item->setHomeConfig($column_array);
+      $privateroom_item->save();
+	} elseif($_GET['do'] == 'get_config'){
+      #$privateroom_item = $environment->getCurrentContextItem();
+      #$column_array = $privateroom_item->getHomeConfig();
+      #debugToFile($column_array);
+   } else {
 
-var  $_config_boxes = false;
-
-   /** constructor
-    * the only available constructor, initial values for internal variables
-    *
-    * @param array params parameters in an array of this class
-    */
-   function cs_privateroom_home_clock_view ($params) {
-      $this->cs_view($params);
-      $this->_view_title = $this->_translator->getMessage('COMMON_CLOCK');
-      $this->setViewName('clock');
-   }
-
-   function asHTML () {
-     $html  = ' <div id="'.get_class($this).'" style="margin:0px auto; padding: 5px; text-align:center;"><div style="width:180px; margin:0px auto;"><ul id="clock"> <li id="sec"></li><li id="hour"></li><li id="min"></li></ul></div></div>';
-     return $html;
    }
 }
 ?>

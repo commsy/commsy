@@ -1362,7 +1362,19 @@ class cs_privateroom_item extends cs_room_item {
       return $retour;
    }
 
+   
+   function setHomeConfig ($column_array) {
+      $this->_addExtra('HOME_CONFIG',$column_array);
+   }
 
+   function getHomeConfig(){
+      $retour = array();
+      if ($this->_issetExtra('HOME_CONFIG')) {
+         $retour = $this->_getExtra('HOME_CONFIG');
+      }
+      return $retour;
+   }
+   
    /* END OF PORTLET FUNCTIONS
     * *****************
     */

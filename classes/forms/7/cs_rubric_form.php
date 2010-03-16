@@ -331,6 +331,7 @@ class cs_rubric_form {
 
    function _setFormElementForConnectedRubric ($type) {
       switch ( $type ) {
+      	case 'entry':
          case 'project':
          case 'todo':
          case 'material':

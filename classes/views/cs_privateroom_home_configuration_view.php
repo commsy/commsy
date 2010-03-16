@@ -53,7 +53,7 @@ var  $_config_boxes = false;
          or ( $current_context->showHomepageLink() )
          ){
 
-      $html .='<div class="listinfoborder">'.LF;
+      $html .='<div id="'.get_class($this).'" class="listinfoborder">'.LF;
       $html .='</div>'.LF;
       $html .= '         <table style="width:100%; border-collapse:collapse;" summary="Layout" >'.LF;
       $html .= '         <tr>'.LF;
@@ -137,7 +137,7 @@ var  $_config_boxes = false;
       if ( $context_user->isModerator()
            and !$context_user->isOnlyReadUser()
          ) {
-         $html .='<div class="listinfoborder">'.LF;
+         $html .='<div id="cs_privateroom_home_configuration_view" class="listinfoborder">'.LF;
          $html .='</div>'.LF;
          $html .= '         <table style="width:100%; border-collapse:collapse;" summary="Layout" >'.LF;
          $html .= '         <tr>'.LF;

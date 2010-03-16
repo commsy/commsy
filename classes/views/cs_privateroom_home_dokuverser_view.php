@@ -121,7 +121,7 @@ var  $_config_boxes = false;
 
    function asHTML () {
      $html  = '';
-     $html .= '<div style="padding-bottom:5px;">'.LF;
+     $html .= '<div id="'.get_class($this).'" style="padding-bottom:5px;">'.LF;
      $html .= ' <span style="margin-bottom:0px; margin-top:0px; font-weight:bold;">'.$this->_translator->getMessage('COMMON_SORTING_BOX').':</span> '.LF;
      $html .= '<a href="javascript:callStudyLogSortAlphabetical()">'.$this->_translator->getMessage('COMMON_TITLE').'</a>'.LF;
      $html .= ' | <a href="javascript:callStudyLogSortChronological()">'.$this->_translator->getMessage('COMMON_CALENDAR_DATE').'</a>'.LF;

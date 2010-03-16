@@ -158,8 +158,10 @@ unset($current_context);
 $_POST = $environment->getTextConverter()->correctPostValuesForTextEditor($_POST);
 
 // set output mode: default is html
-if ( $environment->getCurrentFunction() == 'index'
-     and $environment->getCurrentModule() == type2Module(CS_MATERIAL_TYPE)
+if ( ($environment->getCurrentFunction() == 'index'
+      and $environment->getCurrentModule() == type2Module(CS_MATERIAL_TYPE)
+     )
+     or $environment->getCurrentModule() == 'ajax'
    ) {
    if ( !empty($_GET['output']) ) {
       $environment->setOutputMode($_GET['output']);
@@ -599,6 +601,8 @@ if ( !empty($_POST)
 /*********** javascript check *************/
 if ( !$outofservice
      and $environment->isOutputModeNot('XML')
+     and $environment->isOutputModeNot('JSON')
+     and !$environment->getCurrentModule() == 'ajax'
      and !$session->issetValue('javascript')
      and !isset($_GET['jscheck'])
      and !( $environment->getCurrentModule() == 'file'
@@ -616,6 +620,7 @@ if ( !$outofservice
 }
 if ( isset($_GET['jscheck'])
      and $environment->isOutputModeNot('XML')
+     and $environment->isOutputModeNot('JSON')
      and ( empty($_POST)
            or ( count($_POST) == 1
                 and !empty($_POST['HTTP_ACCEPT_LANGUAGE']) // bugfix: php configuration
@@ -662,6 +667,12 @@ if ( $environment->isOutputMode('XML') ) {
    $params['environment'] = $environment;
    $params['with_modifying_actions'] = $with_modifying_actions;
    $page = $class_factory->getClass(PAGE_XML_VIEW,$params);
+   unset($params);
+} elseif ( $environment->isOutputMode('JSON') ) {
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = $with_modifying_actions;
+   $page = $class_factory->getClass(PAGE_JSON_VIEW,$params);
    unset($params);
 } else {
    $parameters = $environment->getCurrentParameterArray();
@@ -743,7 +754,7 @@ if ( isset($session) ) {
    }
 }
 
-if ( $environment->isOutputModeNot('XML') ) {
+if ( $environment->isOutputModeNot('XML') and $environment->isOutputModeNot('JSON')) {
    $page->setCurrentUser($environment->getCurrentUserItem());
 
    // set title
@@ -922,7 +933,7 @@ if ( $current_context->isLocked()
    }
 }
 
-if ( $environment->isOutputModeNot('XML') ) {
+if ( $environment->isOutputModeNot('XML') and $environment->isOutputModeNot('JSON')) {
 
    // set navigation links
    $current_room_modules = $context_item_current->getHomeConf();
@@ -1041,7 +1052,7 @@ if ( $environment->isOutputModeNot('XML') ) {
 
 // display page
 header("Content-Type: text/html; charset=utf-8");
-if ( $environment->isOutputMode('XML') ) {
+if ( $environment->isOutputMode('XML') or $environment->isOutputMode('JSON') ) {
    echo($page->getContent());
 } else {
    include_once('functions/security_functions.php');
@@ -1233,7 +1244,7 @@ if ( isset($c_show_debug_infos) and $c_show_debug_infos ) {
    pr($sql_query_array);
    pr($session);
 }
-if ( $environment->isOutputModeNot('XML') ) {
+if ( $environment->isOutputModeNot('XML') and $environment->isOutputModeNot('JSON') ) {
    echo('<!-- Total execution time: '.$time.' seconds -->');
 }
 ?>

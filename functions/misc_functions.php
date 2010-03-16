@@ -686,7 +686,10 @@ function isURLValid () {
         $module != 'file' and
 
         // plugin
-        $module != 'plugin'
+        $module != 'plugin' and
+        
+        // ajax
+        $module != 'ajax'
       ) {
       return false;
     }
@@ -832,7 +835,10 @@ function isURLValid () {
          $funct != 'upload' and
 
          // automtic generated accounts
-         $funct != 'autoaccounts'
+         $funct != 'autoaccounts' and
+         
+         // ajax
+         $funct != 'privateroom_home'
        ) {
        return false;
     }

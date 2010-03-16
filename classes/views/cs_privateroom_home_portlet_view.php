@@ -95,6 +95,10 @@ class cs_privateroom_home_portlet_view extends cs_view{
             $width[2] = 25;
          	break;
       }
+      
+      $privateroom_item = $this->_environment->getCurrentContextItem();
+      $home_config = $privateroom_item->getHomeConfig();
+      
       for ($i=0; $i< ($columns + 1); $i++){
          if ($i < ($columns -1)){
             $html_array[$i] = '<div class="column" style="width:'.$width[$i].'%;">';
@@ -102,14 +106,26 @@ class cs_privateroom_home_portlet_view extends cs_view{
             $html_array[$i] = '<div class="column" style="width:'.$width[$i].'%;">';
          }
       }
-      foreach ($portlet_array as $portlet){
-         if ($column_count == $columns){
-            $column_count = 0;
-         }
-         $html_array[$column_count] .= $this->_getPortletAsHTML($portlet['title'],$portlet['content']);
-#         $html_array[$column_count % $columns] .= $this->_getPortletAsHTML($portlet['title'],$portlet['content']);
-         $column_count++;
+      
+      for ($i=0; $i< sizeof($home_config); $i++){
+      	$temp_column_config = $home_config[$i];
+      	foreach($temp_column_config as $portlet_class){
+      		foreach ($portlet_array as $portlet){
+      			if($portlet['class'] == $portlet_class){
+      				$html_array[$i] .= $this->_getPortletAsHTML($portlet['title'],$portlet['content']);
+      			}
+      		}
+      	}
       }
+      
+#      foreach ($portlet_array as $portlet){
+#         if ($column_count == $columns){
+#            $column_count = 0;
+#         }
+#         $html_array[$column_count] .= $this->_getPortletAsHTML($portlet['title'],$portlet['content']);
+##         $html_array[$column_count % $columns] .= $this->_getPortletAsHTML($portlet['title'],$portlet['content']);
+#         $column_count++;
+#      }
 
       for ($i=0; $i< ($columns + 1); $i++){
          $html_array[$i] .= '</div>';
@@ -143,6 +159,7 @@ class cs_privateroom_home_portlet_view extends cs_view{
       $context = $this->_environment->getCurrentContextItem();
       $portlet_array = array();
       foreach($this->_portlet_views as $portlet_view){
+      	$tmp_array['class'] = get_class($portlet_view);
          $tmp_array['title'] = $portlet_view->getViewTitle();
          $tmp_array['content'] = $portlet_view->asHTML();
          $portlet_array[] = $tmp_array;

@@ -82,7 +82,7 @@ var  $_rss_ticker_array = array();
      $html = '';
      $current_context_item = $this->_environment->getCurrentContextItem();
      $current_user_item = $this->_environment->getCurrentUserItem();
-     $html .= '<div style="padding-right:12px;">'.LF;
+     $html .= '<div id="'.get_class($this).'" style="padding-right:12px;">'.LF;
      $portlet_rss_array = $current_context_item->getPortletRSSArray();
      foreach($portlet_rss_array as $rss_item){
         if (isset($rss_item['title']) and !empty($rss_item['title']) and isset($rss_item['adress']) and !empty($rss_item['adress'])){

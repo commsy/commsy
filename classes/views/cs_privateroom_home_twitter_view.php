@@ -50,7 +50,7 @@ class cs_privateroom_home_twitter_view extends cs_view {
    }
 
    function asHTML () {
-     $html  = '<div style="margin-top:0px; margin-bottom:5px;">'.$this->_translator->getMessage('PORTLET_TWITTER_CHANNEL_ID',$this->_twitter_id).'</div>'.LF;
+     $html  = '<div id="'.get_class($this).'" style="margin-top:0px; margin-bottom:5px;">'.$this->_translator->getMessage('PORTLET_TWITTER_CHANNEL_ID',$this->_twitter_id).'</div>'.LF;
      $html .='<script type="text/javascript">'.LF;
      $html .='$(document).ready(function(){$("#twitter_friends_'.$this->_twitter_id.'").twitterFriends({debug:1,username:"'.$this->_twitter_id.'"});});'.LF;
      $html .= '</script>'.LF;

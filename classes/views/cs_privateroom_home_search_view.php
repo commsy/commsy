@@ -97,7 +97,7 @@ class cs_privateroom_home_search_view extends cs_view {
 
 
    function asHTML(){
-      $html = '<div>'.LF;
+      $html = '<div id="'.get_class($this).'">'.LF;
       $html .= '<form style="padding:0px; margin:0px;" action="'.curl($this->_environment->getCurrentContextID(), 'campus_search', 'index','').'" method="post" name="form">'.LF;
       $html .= '   <input type="hidden" name="cid" value="'.$this->_text_as_form($this->_environment->getCurrentContextID()).'"/>'.LF;
       $html .= '   <input type="hidden" name="mod" value="campus_search"/>'.LF;

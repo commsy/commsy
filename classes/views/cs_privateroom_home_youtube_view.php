@@ -82,7 +82,7 @@ var $_channel_id = '';
    }
 
    function asHTML () {
-     $html  = '<div style="margin-top:0px; margin-bottom:5px;">'.$this->_translator->getMessage('PORTLET_YOUTUBE_CHANNEL_ID',$this->_channel_id).'</div>'.LF;
+     $html  = '<div id="'.get_class($this).'" style="margin-top:0px; margin-bottom:5px;">'.$this->_translator->getMessage('PORTLET_YOUTUBE_CHANNEL_ID',$this->_channel_id).'</div>'.LF;
      $html .= '<div id="youtubevideos_'.$this->_channel_id.'"></div>'.LF;
      return $html;
    }

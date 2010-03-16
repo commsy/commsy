@@ -981,25 +981,47 @@ function addNewDateLinks(){
    onChange : function()
 */
 jQuery(document).ready(function() {
-		$(".column").sortable({
+		jQuery(".column").sortable({
 			connectWith: '.column',
 			handle: 'div.portlet-header',
-		    tolerance: 'pointer'
+		    tolerance: 'pointer',
+		    update: function(event, ui) {
+			    var json_data = new Object();
+			    var portlet_columns = jQuery(".column");
+			    for ( var int = 0; int < portlet_columns.length-1; int++) {
+			    	column_portlets = new Array();
+					var portlet_column = jQuery(portlet_columns[int]);
+					portlets = portlet_column.children();
+					for ( var int2 = 0; int2 < portlets.length; int2++) {
+						var portlet = jQuery(portlets[int2]);
+						column_portlets.push(portlet.find('.portlet-content').find('div').attr('id'));
+					}
+					json_data['column_'+int] = column_portlets;
+				}
+			    jQuery.ajax({
+			       //type: 'POST', // -> funktioniert nicht, Parameter als GET (Standard - keine Angabe notwendig) an den Server weiterleiten!
+				   url: 'http://localhost/commsy/htdocs/commsy.php?cid=104&mod=ajax&fct=privateroom_home&output=json&do=save_config',
+				   data: json_data,
+				   success: function(msg){
+				   }
+				});
+			}
 		});
 
-		$(".portlet").addClass("ui-widget ui-widget-content ui-helper-clearfix ui-corner-all")
+		jQuery(".portlet").addClass("ui-widget ui-widget-content ui-helper-clearfix ui-corner-all")
 			.find(".portlet-header")
 				.addClass("ui-widget-header ui-corner-all")
 //				.prepend('<span class="ui-icon ui-icon-minusthick"></span>')
 				.end()
 			.find(".portlet-content");
 
+	
 //		$(".portlet-header .ui-icon").click(function() {
 //			$(this).toggleClass("ui-icon-minusthick").toggleClass("ui-icon-plusthick");
 //			$(this).parents(".portlet:first").find(".portlet-content").toggle();
 //		});
 
-		$(".column").disableSelection();
+		jQuery(".column").disableSelection();
 });
 
 jQuery(document).ready(function() {
@@ -1133,97 +1155,6 @@ jQuery(document).ready(function() {
 
 jQuery(document).ready(function() {
 	if(typeof(dropDownMenus) !== 'undefined'){
-		//if(false){
-		//	for ( var int = 0; int < dropDownMenus.length; int++) {
-		//		var tempDropDownMenu = dropDownMenus[int];
-		//		var tempImage = tempDropDownMenu[0];
-		//		var tempActions = tempDropDownMenu[1]
-		//		var disabled = false;
-		//		if (jQuery('#'+tempImage).length){
-		//			var image = jQuery('#'+tempImage);
-		//		} else if (jQuery('#'+tempImage+'_disabled').length){
-		//			var image = jQuery('#'+tempImage+'_disabled');
-		//			disabled = true;
-		//		}
-		//		image.attr('id',image.attr('id')+'_dropdown_menu_'+int);
-		//		image.attr('alt','');
-		//		image.parent().attr('title','');
-		//
-		//		var button = jQuery('<img id="dropdown_button_'+int+'" src="images/commsyicons/dropdownmenu.png" />');
-		//
-		//		var html = jQuery('<div id="dropdown_menu_'+int+'" class="dropdown_menu"></div>');
-		//		var offset = image.offset();
-		//
-		//		var ul = jQuery('<ul></ul>');
-		//		for ( var int2 = 0; int2 < tempActions.length; int2++) {
-		//			var tempAction = tempActions[int2];
-		//			var tempActionImage = tempAction[0];
-		//			var tempActionText = tempAction[1];
-		//			var tempActionHREF = tempAction[2];
-		//			ul.append('<li><a href="'+tempActionHREF+'"><img src="'+tempActionImage+'" style="vertical-align:middle; padding-right:2px;" />'+tempActionText+'</a></li>');
-		//		}
-		//
-		//		html.append(ul);
-		//		image.parent().wrap('<div style="display:inline;"></div>');
-		//		image.parent().parent().append(button);
-		//		image.parent().parent().append(html);
-		//
-		//		image.mouseover(function(){
-		//			var id = this.id;
-		//			var this_image = this;
-		//			this_image.mouse_is_over = true;
-		//			setTimeout(function() {
-		//				if(this_image.mouse_is_over){
-		//					var id_parts = id.split('_');
-		//					var offset = jQuery('#dropdown_button_'+id_parts[4]).parent().offset();
-		//					dropdown(jQuery('#dropdown_menu_'+id_parts[4]), offset);
-		//				}
-		//			}, 2000);
-		//		});
-		//
-		//		image.mouseout(function(){
-		//			this.mouse_is_over = false;
-		//		});
-		//
-		//		jQuery('#dropdown_button_'+int).click(function(){
-		//			var id_parts = this.id.split('_');
-		//			var offset = jQuery('#'+this.id).parent().offset();
-		//			dropdown(jQuery('#dropdown_menu_'+id_parts[2]), offset);
-		//		});
-		//
-		//		jQuery('#dropdown_button_'+int).mouseover(function(){
-		//			var id = this.id;
-		//			var this_image = this;
-		//			this_image.mouse_is_over = true;
-		//			setTimeout(function() {
-		//				if(this_image.mouse_is_over){
-		//					var id_parts = id.split('_');
-		//					var offset = jQuery('#dropdown_button_'+id_parts[2]).parent().offset();
-		//					dropdown(jQuery('#dropdown_menu_'+id_parts[2]), offset);
-		//				}
-		//			}, 2000);
-		//		});
-		//
-		//		jQuery('#dropdown_button_'+int).mouseout(function(){
-		//			this.mouse_is_over = false;
-		//		});
-		//
-		//		jQuery(document).mousedown(function(event) {
-		//			var target = jQuery(event.target);
-		//			var parents = target.parents();
-		//			var has_class = false;
-		//			for ( var int3 = 0; int3 < parents.length; int3++) {
-		//				var parent = parents[int3];
-		//				if(jQuery(parent).hasClass('dropdown_menu')){
-		//					has_class = true;
-		//				}
-		//			}
-		//			if(!target.hasClass('dropdown_menu') && !has_class){
-		//				jQuery("[id^='dropdown_menu_']").slideUp(150);
-		//			}
-		//		});
-		//	}
-		//}
 		if(dropDownMenus.length){
 			// how many different menus?
 			var dropdown_menus = new Array();
