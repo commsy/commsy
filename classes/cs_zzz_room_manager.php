@@ -30,6 +30,9 @@ include_once('classes/cs_room_manager.php');
  * this class implements a database manager for the table "room"
  */
 class cs_zzz_room_manager extends cs_room_manager {
-   var $_db_prefix = 'zzz_';
+   public function __construct ($environment) {
+      $this->_db_prefix = $environment->getConfiguration('c_db_backup_prefix').'_';
+      parent::cs_room_manager($environment);
+   }
 }
 ?>

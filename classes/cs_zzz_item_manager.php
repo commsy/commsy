@@ -30,6 +30,9 @@ include_once('classes/cs_item_manager.php');
  * this class implements a database manager for the table "community"
  */
 class cs_zzz_item_manager extends cs_item_manager {
-   var $_db_prefix = 'zzz_';
+   public function __construct ($environment) {
+      $this->_db_prefix = $environment->getConfiguration('c_db_backup_prefix').'_';
+      parent::cs_item_manager($environment);
+   }
 }
 ?>

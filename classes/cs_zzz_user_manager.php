@@ -30,6 +30,9 @@ include_once('classes/cs_user_manager.php');
  * this class implements a database manager for the table "community"
  */
 class cs_zzz_user_manager extends cs_user_manager {
-   var $_db_prefix = 'zzz_';
+   public function __construct ($environment) {
+      $this->_db_prefix = $environment->getConfiguration('c_db_backup_prefix').'_';
+      parent::cs_user_manager($environment);
+   }
 }
 ?>
