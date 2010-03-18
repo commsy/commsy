@@ -105,6 +105,120 @@ class cs_entry_index_view extends cs_index_view {
       return $html;
    }
 
+   function _getFavouritesBoxAsHTML(){
+      $html = '<div class="portlet">'.LF;
+      $html .= '<div class="portlet-header">'.LF;
+      $html .= $this->_translator->getMessage('PRIVATEROOM_MY_LISTS_BOX').LF;
+      $html .= '</div>'.LF;
+      $html .= '<div class="portlet-content">'.LF;
+#      $html .= $this->_translator->getMessage('PRIVATEROOM_MY_LISTS_BOX_DESCRIPTION').LF;
+      $html .= '<form style="padding:0px; margin:0px;" action="'.curl($this->_environment->getCurrentContextID(), 'campus_search', 'index','').'" method="post" name="list_form">'.LF;
+      $html .= '   <input type="hidden" name="cid" value="'.$this->_text_as_form($this->_environment->getCurrentContextID()).'"/>'.LF;
+      $html .= '   <input type="hidden" name="mod" value="campus_search"/>'.LF;
+      $html .= '   <input type="hidden" name="fct" value="index"/>'.LF;
+      $html .= '   <input id="new_list" onclick="javascript:resetSearchText(\'new_list\');" style="width:200px; font-size:10pt; margin-bottom:0px;" name="new_list" type="text" size="20" value="'.$this->_text_as_form($this->_translator->getMessage('PRIVATEROOM_MY_LISTS_BOX_NEW_ENTRY')).'"/>';
+      $html .= '   <input name="option" value="'.$this->_text_as_form($this->_translator->getMessage('PRIVATEROOM_MY_LISTS_BOX_NEW_ENTRY_BUTTON')).'" tabindex="23" style="font-size: 10pt;" type="submit"/>'.LF;
+      $html .='</form>'.LF;
+
+      $html .= '<ul style="margin:0px; padding:0px;">'.LF;
+      $html .= '<li style="display:block; padding:3px;" class="even"><a>Die neusten 20 Einträge</a>'.LF;
+      $html .= '</li>'.LF;
+      $html .= '<li style="display:block; padding:3px;" class="odd"><a>Meine Favouriten (17)</a>'.LF;
+      $html .= '</li>'.LF;
+      $html .= '</ul>'.LF;
+
+
+
+      $html .= '</div>'.LF;
+      $html .= '</div>'.LF;
+      return $html;
+   }
+
+/*   function _getCreateNewEntryBoxAsHTML(){
+      $html = '<div class="portlet">'.LF;
+      $html .= '<div class="portlet-header">'.LF;
+      $html .= $this->_translator->getMessage('PRIVATEROOM_CREATE_NEW_ENTRY_BOX').LF;
+      $html .= '</div>'.LF;
+      $html .= '<div class="portlet-content">'.LF;
+
+      $params = array();
+      $html .= '<div style="vertical-align:bottom; height:25px;">'.LF;
+      $image = '<img src="images/commsyicons/22x22/material.png" style="vertical-align:top;" alt="'.$this->_translator->getMessage('COMMON_ENTER_NEW_MATERIAL').'"/>'.LF;
+      $params = array();
+      $html .= ahref_curl(  $this->_environment->getCurrentContextID(),
+                                       CS_MATERIAL_TYPE,
+                                       'edit',
+                                       $params,
+                                       $image,
+                                       $this->_translator->getMessage('COMMON_ENTER_NEW_MATERIAL')).LF;
+      $link = $this->_translator->getMessage('COMMON_ENTER_NEW_MATERIAL').LF;
+      $html .= ahref_curl(  $this->_environment->getCurrentContextID(),
+                                       CS_MATERIAL_TYPE,
+                                       'edit',
+                                       $params,
+                                       $link,
+                                       $this->_translator->getMessage('COMMON_ENTER_NEW_MATERIAL')).LF;
+      $html .= '</div>'.LF;
+
+      $html .= '<div style="vertical-align:bottom; height:25px;">'.LF;
+       $image = '<img src="images/commsyicons/22x22/date.png" style="vertical-align:top;" alt="'.$this->_translator->getMessage('COMMON_ENTER_NEW_MATERIAL').'"/>'.LF;
+      $html .= ahref_curl(  $this->_environment->getCurrentContextID(),
+                                       CS_DATE_TYPE,
+                                       'edit',
+                                       $params,
+                                       $image,
+                                       $this->_translator->getMessage('COMMON_ENTER_NEW_DATE')).LF;
+      $link = $this->_translator->getMessage('COMMON_ENTER_NEW_DATE').LF;
+      $html .= ahref_curl(  $this->_environment->getCurrentContextID(),
+                                       CS_DATE_TYPE,
+                                       'edit',
+                                       $params,
+                                       $link,
+                                       $this->_translator->getMessage('COMMON_ENTER_NEW_DATE')).LF;
+      $html .= '</div>'.LF;
+
+      $html .= '<div style="vertical-align:bottom; height:25px;">'.LF;
+      $image = '<img src="images/commsyicons/22x22/todo.png" style="vertical-align:top;" alt="'.$this->_translator->getMessage('COMMON_ENTER_NEW_MATERIAL').'"/>'.LF;
+      $params = array();
+      $html .= ahref_curl(  $this->_environment->getCurrentContextID(),
+                                       CS_TODO_TYPE,
+                                       'edit',
+                                       $params,
+                                       $image,
+                                       $this->_translator->getMessage('COMMON_ENTER_NEW_TODO')).LF;
+      $link = $this->_translator->getMessage('COMMON_ENTER_NEW_TODO').LF;
+      $html .= ahref_curl(  $this->_environment->getCurrentContextID(),
+                                       CS_TODO_TYPE,
+                                       'edit',
+                                       $params,
+                                       $link,
+                                       $this->_translator->getMessage('COMMON_ENTER_NEW_TODO')).LF;
+      $html .= '</div>'.LF;
+
+      $html .= '<div style="vertical-align:bottom; height:25px;">'.LF;
+      $image = '<img src="images/commsyicons/22x22/discussion.png" style="vertical-align:top;" alt="'.$this->_translator->getMessage('COMMON_ENTER_NEW_MATERIAL').'"/>'.LF;
+      $params = array();
+      $html .= ahref_curl(  $this->_environment->getCurrentContextID(),
+                                       CS_DISCUSSION_TYPE,
+                                       'edit',
+                                       $params,
+                                       $image,
+                                       $this->_translator->getMessage('COMMON_ENTER_NEW_DISCUSSION')).LF;
+      $link = $this->_translator->getMessage('COMMON_ENTER_NEW_DISCUSSION').LF;
+      $html .= ahref_curl(  $this->_environment->getCurrentContextID(),
+                                       CS_DISCUSSION_TYPE,
+                                       'edit',
+                                       $params,
+                                       $link,
+                                       $this->_translator->getMessage('COMMON_ENTER_NEW_DISCUSSION')).LF;
+      $html .= '</div>'.LF;
+
+
+
+      $html .= '</div>'.LF;
+      $html .= '</div>'.LF;
+      return $html;
+   }*/
 
 
    function asHTML () {
@@ -116,8 +230,10 @@ class cs_entry_index_view extends cs_index_view {
       $html .= '</div>'.LF;
       $html .= '<div class="column" style="width:50%;">'.LF;
       $html .= $this->_getSearchBoxAsHTML().LF;
+ #     $html .= $this->_getCreateNewEntryBoxAsHTML().LF;
       $html .= $this->_getMatrixBoxAsHTML().LF;
       $html .= $this->_getBuzzwordBoxAsHTML().LF;
+      $html .= $this->_getFavouritesBoxAsHTML().LF;
       $html .= '</div>'.LF;
 
       $html .='<div style="clear:both;">'.LF;

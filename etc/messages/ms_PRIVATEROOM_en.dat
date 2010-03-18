@@ -8,6 +8,7 @@ $message["PRIVATEROOM_COMMON_X_ENTRIES_FROM_ALL"]["en"] = "%1 workspaces";
 $message["PRIVATEROOM_COMMON_X_FROM_Z_FROM_ALL"]["en"] = "%1 of %1 workspaces";
 $message["PRIVATEROOM_COMMON_X_TO_Y_FROM_Z"]["en"] = "%1 to %2 of %3 workspaces";
 $message["PRIVATEROOM_COMMON_X_TO_Y_FROM_Z_FROM_ALL"]["en"] = "%1 to %2 of %3";
+$message["PRIVATEROOM_CREATE_NEW_ENTRY_BOX"]["en"] = "Create new entry";
 $message["PRIVATEROOM_EXPORT"]["en"] = "Export private workspace";
 $message["PRIVATEROOM_LOCK"]["en"] = "Lock private workspace";
 $message["PRIVATEROOM_MAIL_SUBJECT_DAILY"]["en"] = "Daily CommSy newsletter";
@@ -19,5 +20,9 @@ $message["PRIVATEROOM_MY_ENTRIES_BUZZWORD_BOX"]["en"] = "Buzzwords";
 $message["PRIVATEROOM_MY_ENTRIES_LIST_BOX"]["en"] = "Repository entries";
 $message["PRIVATEROOM_MY_ENTRIES_MATRIX_BOX"]["en"] = "Matrix";
 $message["PRIVATEROOM_MY_ENTRIES_SEARCH_BOX"]["en"] = "Search in repository";
+$message["PRIVATEROOM_MY_LISTS_BOX"]["en"] = "My lists";
+$message["PRIVATEROOM_MY_LISTS_BOX_DESCRIPTION"]["en"] = "Add an entry by using drag n drop.";
+$message["PRIVATEROOM_MY_LISTS_BOX_NEW_ENTRY"]["en"] = "name of new list";
+$message["PRIVATEROOM_MY_LISTS_BOX_NEW_ENTRY_BUTTON"]["en"] = "Add new list";
 $message["PRIVATEROOM_UNLOCK"]["en"] = "Unlock private workspace";
 ?>

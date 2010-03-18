@@ -8,6 +8,7 @@ $message["PRIVATEROOM_COMMON_X_ENTRIES_FROM_ALL"]["de"] = "%1 Räume";
 $message["PRIVATEROOM_COMMON_X_FROM_Z_FROM_ALL"]["de"] = "%1 von %1 Räumen";
 $message["PRIVATEROOM_COMMON_X_TO_Y_FROM_Z"]["de"] = "%1 bis %2 von %3 Räumen";
 $message["PRIVATEROOM_COMMON_X_TO_Y_FROM_Z_FROM_ALL"]["de"] = "%1 bis %2 von %3";
+$message["PRIVATEROOM_CREATE_NEW_ENTRY_BOX"]["de"] = "Neuen Eintrag erstellen";
 $message["PRIVATEROOM_EXPORT"]["de"] = "Persönlichen Raum exportieren";
 $message["PRIVATEROOM_LOCK"]["de"] = "Persönlichen Raum sperren";
 $message["PRIVATEROOM_MAIL_SUBJECT_DAILY"]["de"] = "Täglicher CommSy-Newsletter";
@@ -19,5 +20,9 @@ $message["PRIVATEROOM_MY_ENTRIES_BUZZWORD_BOX"]["de"] = "Schlagworte";
 $message["PRIVATEROOM_MY_ENTRIES_LIST_BOX"]["de"] = "Einträge in der Ablage";
 $message["PRIVATEROOM_MY_ENTRIES_MATRIX_BOX"]["de"] = "Matrix";
 $message["PRIVATEROOM_MY_ENTRIES_SEARCH_BOX"]["de"] = "Suche in der Ablage";
+$message["PRIVATEROOM_MY_LISTS_BOX"]["de"] = "Meine Listen";
+$message["PRIVATEROOM_MY_LISTS_BOX_DESCRIPTION"]["de"] = "Legen Sie Listen mit persönlichen Zusammenstellungen von Einträgen an. Um einen Eintrag einer Liste hinzuzufügen, ziehen Sie einfach den Eintrag auf den Listennamen.";
+$message["PRIVATEROOM_MY_LISTS_BOX_NEW_ENTRY"]["de"] = "Name einer neuen Liste";
+$message["PRIVATEROOM_MY_LISTS_BOX_NEW_ENTRY_BUTTON"]["de"] = "Neue Liste erstellen";
 $message["PRIVATEROOM_UNLOCK"]["de"] = "Persönlichen Raum entsperren";
 ?>
