@@ -162,6 +162,6 @@ function setConditions(conditions, conditions_img, temp, humidity) {
 		temp_type = "C";
 	}
 
-	$("#cs_privateroom_home_weather_view").append("<img id='weather_img' src='http://www.google.com/images/weather/" + conditions_img + "' />");
-	$("#cs_privateroom_home_weather_view").append("<div id='weather_conditions'><p id='weather_country'>" + country + "</p><p id='weather_city'>" + city + ", " + region + "</p><p id='weather_temp'>Temp: " + temp + "&deg; " + temp_type + "</p><p id='weather_hum'>Humidity: " + humidity + "%</p><p id='weather_cond'>" + conditions.substr(0, 1).toUpperCase() + conditions.substr(1) + "</p></div>");
+	$("#weather_widget").append("<img id='weather_img' src='http://www.google.com/images/weather/" + conditions_img + "' />");
+	$("#weather_widget").append("<div id='weather_conditions'><p id='weather_country'>" + country + "</p><p id='weather_city'>" + city + ", " + region + "</p><p id='weather_temp'>Temp: " + temp + "&deg; " + temp_type + "</p><p id='weather_hum'>Humidity: " + humidity + "%</p><p id='weather_cond'>" + conditions.substr(0, 1).toUpperCase() + conditions.substr(1) + "</p></div>");
 }

@@ -46,7 +46,9 @@ class cs_privateroom_home_weather_view extends cs_view {
 
 
    function asHTML(){
-      $html = '<div id="'.get_class($this).'"></div>'.LF;
+      $html = '<div id="'.get_class($this).'">'.LF;
+      $html .= '<div id="weather_widget"></div>'.LF;
+      $html .= '</div>'.LF;
       return $html;
    }
 }
