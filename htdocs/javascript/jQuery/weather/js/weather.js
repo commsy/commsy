@@ -9,7 +9,7 @@ $("document").ready(function() {
 });
 
 function geoPlugin(data) {
-	$.cookie('loc_latitude', data.geoplugin_latitude, {expires: 7});	
+	$.cookie('loc_latitude', data.geoplugin_latitude, {expires: 7});
 	$.cookie('loc_longitude', data.geoplugin_longitude, {expires: 7});
 	$.cookie('loc_country', data.geoplugin_countryName, {expires: 7});
 	$.cookie('loc_region', data.geoplugin_region, {expires: 7});
@@ -21,12 +21,12 @@ function geoPlugin(data) {
 function getWeather() {
 	var latitude = $.cookie('loc_latitude');
 	var longitude = $.cookie('loc_longitude');
-	
+
 	var loc_conditions = $.cookie('loc_conditions');
 	var loc_conditions_img = $.cookie('loc_conditions_img');
 	var loc_temp = $.cookie('loc_temp');
 	var loc_humidity = $.cookie('loc_humidity');
-	
+
 	if (loc_conditions && loc_conditions_img) {
 		setConditions(loc_conditions, loc_conditions_img, loc_temp, loc_humidity);
 	} else {
@@ -36,9 +36,9 @@ function getWeather() {
 			var weather = data.weatherObservation.weatherCondition;
 			var temp = data.weatherObservation.temperature;
 			var humidity = data.weatherObservation.humidity;
-			
+
 			var conditions_img = getConditions(clouds, weather);
-			
+
 			var conditions = '';
 			if (weather == 'n/a') {
 				if (clouds == 'n/a') {
@@ -49,11 +49,11 @@ function getWeather() {
 			} else {
 				conditions = weather;
 			}
-			
-			$.cookie('loc_conditions', conditions);	
-			$.cookie('loc_conditions_img', conditions_img);	
-			$.cookie('loc_temp', temp);	
-			$.cookie('loc_humidity', humidity);	
+
+			$.cookie('loc_conditions', conditions);
+			$.cookie('loc_conditions_img', conditions_img);
+			$.cookie('loc_temp', temp);
+			$.cookie('loc_humidity', humidity);
 			setConditions(conditions, conditions_img, temp, humidity);
 		});
 	}
@@ -162,6 +162,6 @@ function setConditions(conditions, conditions_img, temp, humidity) {
 		temp_type = "C";
 	}
 
-	$("#weather_widget").append("<img id='weather_img' src='http://www.google.com/images/weather/" + conditions_img + "' />");
-	$("#weather_widget").append("<div id='weather_conditions'><p id='weather_country'>" + country + "</p><p id='weather_city'>" + city + ", " + region + "</p><p id='weather_temp'>Temp: " + temp + "&deg; " + temp_type + "</p><p id='weather_hum'>Humidity: " + humidity + "%</p><p id='weather_cond'>" + conditions.substr(0, 1).toUpperCase() + conditions.substr(1) + "</p></div>");
+	$("#cs_privateroom_home_weather_view").append("<img id='weather_img' src='http://www.google.com/images/weather/" + conditions_img + "' />");
+	$("#cs_privateroom_home_weather_view").append("<div id='weather_conditions'><p id='weather_country'>" + country + "</p><p id='weather_city'>" + city + ", " + region + "</p><p id='weather_temp'>Temp: " + temp + "&deg; " + temp_type + "</p><p id='weather_hum'>Humidity: " + humidity + "%</p><p id='weather_cond'>" + conditions.substr(0, 1).toUpperCase() + conditions.substr(1) + "</p></div>");
 }

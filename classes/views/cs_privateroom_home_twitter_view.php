@@ -54,7 +54,7 @@ class cs_privateroom_home_twitter_view extends cs_view {
      $html .='<script type="text/javascript">'.LF;
      $html .='$(document).ready(function(){$("#twitter_friends_'.$this->_twitter_id.'").twitterFriends({debug:1,username:"'.$this->_twitter_id.'"});});'.LF;
      $html .= '</script>'.LF;
-     $html .= '<div id="twitter_friends_'.$this->_twitter_id.'"></div>';
+     $html .= '<div id="twitter_friends_'.$this->_twitter_id.'" style="height:200px;"></div>';
      return $html;
    }
 }
