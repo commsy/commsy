@@ -687,7 +687,7 @@ function isURLValid () {
 
         // plugin
         $module != 'plugin' and
-        
+
         // ajax
         $module != 'ajax'
       ) {
@@ -836,9 +836,10 @@ function isURLValid () {
 
          // automtic generated accounts
          $funct != 'autoaccounts' and
-         
+
          // ajax
          $funct != 'privateroom_home' and
+         $funct != 'privateroom_entry' and
          $funct != 'privateroom_myroom'
        ) {
        return false;

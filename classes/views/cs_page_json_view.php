@@ -64,8 +64,8 @@ class cs_page_json_view extends cs_page_view {
     *
     * @param string $value a XML fragment
     */
-   public function add ( $value ) {
-      $this->_json_array[] = $value;
+   public function add ( $key,$value ) {
+      $this->_json_array[$key] = $value;
    }
 
    public function getContent () {
@@ -76,8 +76,8 @@ class cs_page_json_view extends cs_page_view {
       $retour  = '';
       $retour .= '{';
 
-      foreach ( $this->_json_array as $value ) {
-         #$retour .= $value;
+      foreach ( $this->_json_array as $key =>$value ) {
+         $retour .= '"'.$key.'":"'.$value.'" ';
       }
 
       $retour .= '}';

@@ -385,7 +385,7 @@ class cs_entry_index_view extends cs_index_view {
             $style_text  = 'style="margin-left:2px; margin-right:2px;';
             $style_text .= ' color: rgb('.$font_color.'%,'.$font_color.'%,'.$font_color.'%);';
             $style_text .= 'font-size:'.$font_size.'px;"';
-            $title  = '<span  '.$style_text.'>'.LF;
+            $title  = '<span  id="buzzword_'.$buzzword->getItemID().'" class="droppable_buzzword" '.$style_text.'>'.LF;
             $title .= $this->_text_as_html_short($buzzword->getName()).LF;
             $title .= '</span> ';
 

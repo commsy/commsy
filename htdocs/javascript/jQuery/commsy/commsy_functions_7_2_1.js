@@ -1,5 +1,17 @@
 
 
+function getQueryParams(qs) {
+    qs = qs.split("+").join(" ");
+    var params = {};
+    var tokens;
+
+    while (tokens = /[?&]?([^=]+)=([^&]*)/g.exec(qs)) {
+        params[decodeURIComponent(tokens[1])]
+            = decodeURIComponent(tokens[2]);
+    }
+    return params;
+}
+
 jQuery(document).ready(function() {
   		jQuery(".dragable_item").draggable({cursor:"move", opacity: 0.7, helper: "clone" });
       jQuery(".droppable_list").droppable({
@@ -14,8 +26,32 @@ jQuery(document).ready(function() {
 			   alert(this.id);
 			}
 		});
-
+      jQuery(".droppable_buzzword").droppable({
+			hoverClass: 'droppable_item_hover',
+			drop: function(event, ui) {
+				 var $_GET = getQueryParams(document.location.search);
+				 var json_data = new Object();
+			    json_data['action'] = 'add_item';
+			    var buzzwordId = this.id.replace(/[^0-9]/g,'');
+			    var itemId = ui.draggable[0].id.replace(/[^0-9]/g,'');
+			    json_data['buzzword_id'] = buzzwordId;
+			    json_data['item_id'] = itemId;
+			    jQuery.ajax({
+				   url: 'commsy.php?cid='+$_GET["cid"]+'&mod=ajax&fct=privateroom_entry&output=json&do=update_buzzwords',
+				   data: json_data,
+				   success: function(msg){
+			    	   var resultJSON = eval('(' + msg + ')');
+                  if (resultJSON === undefined){
+                  }else{
+                      jQuery("#buzzword_"+buzzwordId).css('font-size',resultJSON[itemId]+"px");
+                  }
+ 				   }
+				});
+			}
+		});
 	});
+
+
 
 jQuery(document).ready(function() {
    jQuery("select[id='submit_form']").each(function(i) {
