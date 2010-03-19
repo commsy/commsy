@@ -1629,7 +1629,7 @@ class cs_item {
       $retour = '';
       foreach ($this->_data as $key => $value) {
          if ($key == 'extras') {
-            /*
+            /* ereg_replace() is deprecated as of PHP 5.3.x - refactor before removing comment! See: http://php.net/manual/de/migration53.deprecated.php
             $xml = array2XML($value);
             if ( strstr($xml,"%CS_AND;") ) {
                $xml = ereg_replace("%CS_AND;", "&", $xml);
