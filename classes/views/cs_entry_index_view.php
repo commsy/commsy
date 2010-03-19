@@ -121,9 +121,9 @@ class cs_entry_index_view extends cs_index_view {
       $html .='</form>'.LF;
 
       $html .= '<ul style="margin:0px; padding:0px;">'.LF;
-      $html .= '<li style="display:block; padding:3px;" class="even"><a>Die neusten 20 Einträge</a>'.LF;
+      $html .= '<li class="droppable_list" id="list_1" style="display:block; padding:3px;" class="even"><a>Die neusten 20 Einträge</a>'.LF;
       $html .= '</li>'.LF;
-      $html .= '<li style="display:block; padding:3px;" class="odd"><a>Meine Favouriten (17)</a>'.LF;
+      $html .= '<li class="droppable_list" id="list_2" style="display:block; padding:3px;" class="odd"><a>Meine Favouriten (17)</a>'.LF;
       $html .= '</li>'.LF;
       $html .= '</ul>'.LF;
 
@@ -276,6 +276,7 @@ class cs_entry_index_view extends cs_index_view {
       $html .= $this->_translator->getMessage('PRIVATEROOM_MY_ENTRIES_MATRIX_BOX').LF;
       $html .= '</div>'.LF;
       $html .= '<div class="portlet-content">'.LF;
+      $count = 0;
 /*Prototyp*/
       $html .= '<table style="width:100%; border:1px solid #EEEEEE;">';
       $html .= '<tr>'.LF;
@@ -292,45 +293,57 @@ class cs_entry_index_view extends cs_index_view {
       $html .= '<tr>'.LF;
       $html .= '<td style="background-color:#EEEEEE;">Unterrichten'.LF;
       $html .= '</td>'.LF;
-      $html .= '<td style="text-align:center;"><a>5</a>'.LF;
+      $html .= '<td class="droppable_matrix" id="'.$count.'" style="text-align:center;"><a>5</a>'.LF;
       $html .= '</td>'.LF;
-      $html .= '<td style="text-align:center;"><a>2</a>'.LF;
+      $count ++;
+      $html .= '<td class="droppable_matrix" id="'.$count.'" style="text-align:center;"><a>2</a>'.LF;
       $html .= '</td>'.LF;
-      $html .= '<td style="text-align:center;"><a>0</a>'.LF;
+      $count ++;
+      $html .= '<td class="droppable_matrix" id="'.$count.'" style="text-align:center;"><a>0</a>'.LF;
       $html .= '</td>'.LF;
+      $count ++;
       $html .= '</tr>'.LF;
 
       $html .= '<tr>'.LF;
       $html .= '<td style="background-color:#EEEEEE;">Erziehen und Beraten'.LF;
       $html .= '</td>'.LF;
-      $html .= '<td style="text-align:center;"><a>10</a>'.LF;
+      $html .= '<td class="droppable_matrix" id="'.$count.'" style="text-align:center;"><a>10</a>'.LF;
       $html .= '</td>'.LF;
-      $html .= '<td style="text-align:center;"><a>2</a>'.LF;
+      $count ++;
+      $html .= '<td class="droppable_matrix" id="'.$count.'" style="text-align:center;"><a>2</a>'.LF;
       $html .= '</td>'.LF;
-      $html .= '<td style="text-align:center;"><a>6</a>'.LF;
+      $count ++;
+      $html .= '<td class="droppable_matrix" id="'.$count.'" style="text-align:center;"><a>6</a>'.LF;
       $html .= '</td>'.LF;
+      $count ++;
       $html .= '</tr>'.LF;
 
       $html .= '<tr>'.LF;
       $html .= '<td style="background-color:#EEEEEE;">Diagnostizieren und fördern'.LF;
       $html .= '</td>'.LF;
-      $html .= '<td style="text-align:center;"><a>3</a>'.LF;
+      $html .= '<td class="droppable_matrix" id="'.$count.'" style="text-align:center;"><a>3</a>'.LF;
       $html .= '</td>'.LF;
-      $html .= '<td style="text-align:center;"><a>0</a>'.LF;
+      $count ++;
+      $html .= '<td class="droppable_matrix" id="'.$count.'" style="text-align:center;"><a>0</a>'.LF;
       $html .= '</td>'.LF;
-      $html .= '<td style="text-align:center;"><a>0</a>'.LF;
+      $count ++;
+      $html .= '<td class="droppable_matrix" id="'.$count.'" style="text-align:center;"><a>0</a>'.LF;
       $html .= '</td>'.LF;
+      $count ++;
       $html .= '</tr>'.LF;
 
       $html .= '<tr>'.LF;
       $html .= '<td style="background-color:#EEEEEE;">Schule entwickeln'.LF;
       $html .= '</td>'.LF;
-      $html .= '<td style="text-align:center;"><a>3</a>'.LF;
+      $html .= '<td class="droppable_matrix" id="'.$count.'" style="text-align:center;"><a>3</a>'.LF;
       $html .= '</td>'.LF;
-      $html .= '<td style="text-align:center;"><a>20</a>'.LF;
+      $count ++;
+      $html .= '<td class="droppable_matrix" id="'.$count.'" style="text-align:center;"><a>20</a>'.LF;
       $html .= '</td>'.LF;
-      $html .= '<td style="text-align:center;"><a>3</a>'.LF;
+      $count ++;
+      $html .= '<td class="droppable_matrix" id="'.$count.'" style="text-align:center;"><a>3</a>'.LF;
       $html .= '</td>'.LF;
+      $count ++;
       $html .= '</tr>'.LF;
 
       $html .= '</table>';
@@ -554,21 +567,7 @@ class cs_entry_index_view extends cs_index_view {
          }
          $params = array();
          $params['iid'] = $linked_iid;
-         $html .= '<div style="float:left;">'.ahref_curl( $full_item->getContextID(),
-                                       $module,
-                                       'detail',
-                                       $params,
-                                       '<img src="' . $img . '" style="padding-right:3px;" title="' . $link_creator_text . '"/>',
-                                       $link_creator_text,
-                                       '_self',
-                                       $fragment,
-                                       '',
-                                       '',
-                                       '',
-                                       '',
-                                       '',
-                                       '',
-                                       '').'</div>';
+         $html .= '<div id="item_'.$item->getItemID().'" class="dragable_item" style="float:left;">'.'<img src="' . $img . '" style="padding-right:3px;" title="' . $link_creator_text . '"/>'.'</div>';
          $html .= ahref_curl( $full_item->getContextID(),
                                        $module,
                                        'detail',

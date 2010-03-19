@@ -1,3 +1,22 @@
+
+
+jQuery(document).ready(function() {
+  		jQuery(".dragable_item").draggable({cursor:"move", opacity: 0.7, helper: "clone" });
+      jQuery(".droppable_list").droppable({
+			hoverClass: 'droppable_item_hover',
+			drop: function(event, ui) {
+			   alert(this.id);
+			}
+		});
+      jQuery(".droppable_matrix").droppable({
+			hoverClass: 'droppable_item_hover',
+			drop: function(event, ui) {
+			   alert(this.id);
+			}
+		});
+
+	});
+
 jQuery(document).ready(function() {
    jQuery("select[id='submit_form']").each(function(i) {
       jQuery(this).change(function () {
@@ -1007,7 +1026,7 @@ jQuery(document).ready(function() {
 						json_data['column_'+int] = column_portlets;
 					}
 			    //} else if (window.ajax_function == 'privateroom_myroom'){
-			    //	
+			    //
 			    //}
 			    jQuery.ajax({
 			       //type: 'POST', // -> funktioniert nicht, Parameter als GET (Standard - keine Angabe notwendig) an den Server weiterleiten!
@@ -1027,7 +1046,7 @@ jQuery(document).ready(function() {
 				.end()
 			.find(".portlet-content");
 
-	
+
 //		$(".portlet-header .ui-icon").click(function() {
 //			$(this).toggleClass("ui-icon-minusthick").toggleClass("ui-icon-plusthick");
 //			$(this).parents(".portlet:first").find(".portlet-content").toggle();

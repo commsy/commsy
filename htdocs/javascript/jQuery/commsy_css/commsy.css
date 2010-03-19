@@ -7,6 +7,14 @@ div.dropdown_menu{
    border: 1px solid #bbbbbb;
 }
 
+.dragable_item:hover{
+  cursor: move;
+}
+
+.droppable_item_hover{
+   border: 1px solid black;
+}
+
 div.dropdown_menu ul {
    margin: 0;
    padding: 0;
