@@ -954,6 +954,17 @@ class cs_links_manager extends cs_manager {
                   $retour[$row['to_item_id']] = $row['num'];
                }
             }
+         }elseif ( $label_type == 'mylist' ) {
+            $query = 'SELECT to_item_id, count(from_item_id) AS num FROM `'.$this->addDatabasePrefix('links').'` WHERE to_item_id IN ('.implode(',',$id_array).') GROUP BY to_item_id;';
+            $result = $this->_db_connector->performQuery($query);
+            if ( !isset($result) ) {
+               include_once('functions/error_functions.php');
+               trigger_error('Problem counting links from query: "'.$query.'"',E_USER_ERROR);
+            } else {
+               foreach ( $result as $row ) {
+                  $retour[$row['to_item_id']] = $row['num'];
+               }
+            }
          } else {
             include_once('functions/error_functions.php');
             trigger_error($label_type.' not implemented yet',E_USER_ERROR);
@@ -999,6 +1010,25 @@ class cs_links_manager extends cs_manager {
       $insert_array = array_diff($new_array,$nothing_array);
       $this->deleteFromLinks($delete_array,$item_id);
       $this->_insertFromLinks($insert_array,$item_id,'buzzword_for');
+   }
+
+   public function saveLinksRubricToMylist ($new_array,$item_id,$rubric) {
+      $this->setItemTypeLimit($rubric);
+      $this->setItemIDLimit($item_id);
+      $result_array = $this->_performQuery();
+      $insert_array = array();
+      $nothing_array = array();
+      $delete_array = array();
+      foreach ($result_array as $link) {
+         if ( !in_array($link['from_item_id'],$new_array) ) {
+            $delete_array[] = $link['from_item_id'];
+         } else {
+            $nothing_array[] = $link['from_item_id'];
+         }
+      }
+      $insert_array = array_diff($new_array,$nothing_array);
+      $this->deleteFromLinks($delete_array,$item_id);
+      $this->_insertFromLinks($insert_array,$item_id,'in_mylist');
    }
 
    private function _insertFromLinks($insert_array,$item_id,$link_type) {

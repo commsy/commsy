@@ -17,7 +17,25 @@ jQuery(document).ready(function() {
       jQuery(".droppable_list").droppable({
 			hoverClass: 'droppable_item_hover',
 			drop: function(event, ui) {
-			   alert(this.id);
+				 var $_GET = getQueryParams(document.location.search);
+				 var json_data = new Object();
+			    json_data['action'] = 'add_item';
+			    var mylistId = this.id.replace(/[^0-9]/g,'');
+			    var itemId = ui.draggable[0].id.replace(/[^0-9]/g,'');
+			    json_data['mylist_id'] = mylistId;
+			    json_data['item_id'] = itemId;
+			    jQuery.ajax({
+				   url: 'commsy.php?cid='+$_GET["cid"]+'&mod=ajax&fct=privateroom_entry&output=json&do=update_mylist',
+				   data: json_data,
+				   success: function(msg){
+			    	   var resultJSON = eval('(' + msg + ')');
+                  if (resultJSON === undefined){
+                  }else{
+                      var text = '<span id="mylist_count_' + mylistId +'">' + resultJSON[itemId] + '</span>';
+                      jQuery("#mylist_count_"+mylistId).replaceWith(text);
+                  }
+ 				   }
+				});
 			}
 		});
       jQuery(".droppable_matrix").droppable({

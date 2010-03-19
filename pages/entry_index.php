@@ -65,6 +65,30 @@ $room_id_array_without_privateroom = $room_id_array;
 $room_id_array[] = $current_context->getItemID();
 
 
+// Find out what to do
+if ( isset($_POST['option']) ) {
+   $command = $_POST['option'];
+}elseif ( isset($_GET['option']) ) {
+   $command = $_GET['option'];
+} else {
+   $command = '';
+}
+
+if ( isOption($command, $translator->getMessage('PRIVATEROOM_MY_LISTS_BOX_NEW_ENTRY_BUTTON')) and isset($_POST['new_list']) and !empty($_POST['new_list'])) {
+   $mylist_manager = $environment->getMylistManager();
+   $my_list_item = $mylist_manager->getNewItem();
+   $my_list_item->setLabelType('mylist');
+   $my_list_item->setName($_POST['new_list']);
+   $my_list_item->setContextID($environment->getCurrentContextID());
+   $user = $environment->getCurrentUserItem();
+   $my_list_item->setCreatorItem($user);
+   $my_list_item->setCreationDate(getCurrentDateTimeInMySQL());
+   $my_list_item->save();
+   $params = array();
+   redirect($environment->getCurrentContextID(),CS_ENTRY_TYPE, 'index',$params);
+}
+
+/*
 if (isset($_GET['back_to_search']) and $session->issetValue('cid'.$environment->getCurrentContextID().'_campus_search_parameter_array')){
    $campus_search_parameter_array = $session->getValue('cid'.$environment->getCurrentContextID().'_campus_search_parameter_array');
    $params['search'] = $campus_search_parameter_array['search'];
@@ -228,7 +252,7 @@ foreach ( $room_modules as $module ) {
    }
 }
 
-
+*/
 $search_list = new cs_list();
 $campus_search_ids = array();
 $params = array();
@@ -236,7 +260,7 @@ $params['environment'] = $environment;
 $params['with_modifying_actions'] = true;
 $view = $class_factory->getClass(ENTRY_INDEX_VIEW,$params);
 unset($params);
-
+/*
 $context_item = $environment->getCurrentContextItem();
 $current_room_modules = $context_item->getHomeConf();
 if ( !empty($current_room_modules) ){
@@ -307,9 +331,9 @@ $buzzword_manager->setGetCountLinks();
 $buzzword_manager->select();
 $buzzword_list = $buzzword_manager->get();
 $count_all = 0;
-
+*/
 /*Durchführung möglicher Einschränkungen*/
-foreach($sel_array as $rubric => $value){
+/*foreach($sel_array as $rubric => $value){
    $label_manager = $environment->getManager($rubric);
    $label_manager->setContextLimit($environment->getCurrentContextID());
    $label_manager->select();
@@ -318,7 +342,7 @@ foreach($sel_array as $rubric => $value){
    $view->setAvailableRubric($rubric,$temp_rubric_list);
    $view->setSelectedRubric($rubric,$value);
    unset($rubric_list);
-}
+}*/
 
 // Get data from database
 global $c_plugin_array;
@@ -463,7 +487,7 @@ $view->setActivationLimit($sel_activating_status);*/
 
 // Add list view to page
 $page->add($view);
-
+/*
 // Safe information in session for later use
 $campus_search_parameter_array = array();
 $campus_search_parameter_array['search'] = $search;
@@ -488,4 +512,5 @@ unset($ftsearch_manager);
 
 $session->setValue('cid'.$environment->getCurrentContextID().'_campus_search_parameter_array', $campus_search_parameter_array);
 $session->setValue('cid'.$environment->getCurrentContextID().'_campus_search_index_ids', $campus_search_ids);
+*/
 ?>

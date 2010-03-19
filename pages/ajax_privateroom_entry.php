@@ -49,6 +49,17 @@ if(isset($_GET['do'])and isset($_GET['action'])){
           $font_size = round($minsize+round($a)*$treshold);
 	      $page->add($_GET['item_id'],$font_size);
 	   }
+	}elseif($_GET['do'] == 'update_mylist' and $_GET['action']= 'add_item'){
+	   if (isset($_GET['mylist_id'])and isset($_GET['item_id'])){
+	      $mylist_manager = $environment->getMylistManager();
+	      $mylist_item = $mylist_manager->getItem($_GET['mylist_id']);
+	      $id_array = $mylist_item->getAllLinkedItemIDArrayLabelVersion();
+	      if (!in_array($_GET['item_id'],$id_array)){
+	         $id_array[] = 	$_GET['item_id'];
+	      }
+	      $mylist_item->saveLinksByIDArray($id_array);
+	      $page->add($_GET['item_id'],count($id_array));
+	   }
 	}
 }
 ?>

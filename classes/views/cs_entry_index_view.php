@@ -89,9 +89,9 @@ class cs_entry_index_view extends cs_index_view {
       $html .= $this->_translator->getMessage('PRIVATEROOM_MY_ENTRIES_SEARCH_BOX').LF;
       $html .= '</div>'.LF;
       $html .= '<div class="portlet-content">'.LF;
-      $html .= '<form style="padding:0px; margin:0px;" action="'.curl($this->_environment->getCurrentContextID(), 'campus_search', 'index','').'" method="post" name="form">'.LF;
+      $html .= '<form style="padding:0px; margin:0px;" action="'.curl($this->_environment->getCurrentContextID(), 'entry', 'index','').'" method="post" name="form">'.LF;
       $html .= '   <input type="hidden" name="cid" value="'.$this->_text_as_form($this->_environment->getCurrentContextID()).'"/>'.LF;
-      $html .= '   <input type="hidden" name="mod" value="campus_search"/>'.LF;
+      $html .= '   <input type="hidden" name="mod" value="entry"/>'.LF;
       $html .= '   <input type="hidden" name="fct" value="index"/>'.LF;
       $html .= '<input id="searchtext" onclick="javascript:resetSearchText(\'searchtext\');" style="width:80%; font-size:10pt; margin-bottom:0px;" name="search" type="text" size="20" value="'.$this->_text_as_form($this->getSearchText()).'"/>';
       if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
@@ -105,16 +105,25 @@ class cs_entry_index_view extends cs_index_view {
       return $html;
    }
 
-   function _getFavouritesBoxAsHTML(){
+   function _getMylistsBoxAsHTML(){
+      $current_user = $this->_environment->getCurrentUserItem();
+      $mylist_manager = $this->_environment->getLabelManager();
+      $mylist_manager->resetLimits();
+      $mylist_manager->setContextLimit($this->_environment->getCurrentContextID());
+      $mylist_manager->setTypeLimit('mylist');
+      $mylist_manager->setGetCountLinks();
+      $mylist_manager->select();
+      $mylist_list = $mylist_manager->get();
+
       $html = '<div class="portlet">'.LF;
       $html .= '<div class="portlet-header">'.LF;
       $html .= $this->_translator->getMessage('PRIVATEROOM_MY_LISTS_BOX').LF;
       $html .= '</div>'.LF;
       $html .= '<div class="portlet-content">'.LF;
 #      $html .= $this->_translator->getMessage('PRIVATEROOM_MY_LISTS_BOX_DESCRIPTION').LF;
-      $html .= '<form style="padding:0px; margin:0px;" action="'.curl($this->_environment->getCurrentContextID(), 'campus_search', 'index','').'" method="post" name="list_form">'.LF;
+      $html .= '<form style="padding:0px; margin:0px;" action="'.curl($this->_environment->getCurrentContextID(), 'entry', 'index','').'" method="post" name="mylist_form">'.LF;
       $html .= '   <input type="hidden" name="cid" value="'.$this->_text_as_form($this->_environment->getCurrentContextID()).'"/>'.LF;
-      $html .= '   <input type="hidden" name="mod" value="campus_search"/>'.LF;
+      $html .= '   <input type="hidden" name="mod" value="entry"/>'.LF;
       $html .= '   <input type="hidden" name="fct" value="index"/>'.LF;
       $html .= '   <input id="new_list" onclick="javascript:resetSearchText(\'new_list\');" style="width:200px; font-size:10pt; margin-bottom:0px;" name="new_list" type="text" size="20" value="'.$this->_text_as_form($this->_translator->getMessage('PRIVATEROOM_MY_LISTS_BOX_NEW_ENTRY')).'"/>';
       $html .= '   <input name="option" value="'.$this->_text_as_form($this->_translator->getMessage('PRIVATEROOM_MY_LISTS_BOX_NEW_ENTRY_BUTTON')).'" tabindex="23" style="font-size: 10pt;" type="submit"/>'.LF;
@@ -123,8 +132,15 @@ class cs_entry_index_view extends cs_index_view {
       $html .= '<ul style="margin:0px; padding:0px;">'.LF;
       $html .= '<li class="droppable_list" id="list_1" style="display:block; padding:3px;" class="even"><a>Die neusten 20 Einträge</a>'.LF;
       $html .= '</li>'.LF;
-      $html .= '<li class="droppable_list" id="list_2" style="display:block; padding:3px;" class="odd"><a>Meine Favouriten (17)</a>'.LF;
-      $html .= '</li>'.LF;
+
+      $mylist_item = $mylist_list->getFirst();
+      while($mylist_item){
+         $count = $mylist_item->getCountLinks();
+         $html .= '<li class="droppable_list" id="mylist_'.$mylist_item->getItemID().'" style="display:block; padding:3px;" class="odd"><a>'.$mylist_item->getName().' </a>'.LF;
+         $html .= '(<span id="mylist_count_'.$mylist_item->getItemID().'">'.$count.'</span>)'.LF;
+         $html .= '</li>'.LF;
+         $mylist_item = 	$mylist_list->getNext();
+      }
       $html .= '</ul>'.LF;
 
 
@@ -233,7 +249,7 @@ class cs_entry_index_view extends cs_index_view {
  #     $html .= $this->_getCreateNewEntryBoxAsHTML().LF;
       $html .= $this->_getMatrixBoxAsHTML().LF;
       $html .= $this->_getBuzzwordBoxAsHTML().LF;
-      $html .= $this->_getFavouritesBoxAsHTML().LF;
+      $html .= $this->_getMylistsBoxAsHTML().LF;
       $html .= '</div>'.LF;
 
       $html .='<div style="clear:both;">'.LF;
@@ -390,7 +406,7 @@ class cs_entry_index_view extends cs_index_view {
             $title .= '</span> ';
 
             $html .= ahref_curl($this->_environment->getCurrentContextID(),
-                                'campus_search',
+                                'entry',
                                 'index',
                                 $params,
                                 $title,$title).LF;

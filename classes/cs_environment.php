@@ -826,6 +826,18 @@ class cs_environment {
       return $this->_getInstance('cs_buzzword_manager');
    }
 
+
+  /** get instance of cs_mylist_manager
+   *
+   * @return cs_mylist_manager
+   * @access public
+   */
+   function getMylistManager() {
+      return $this->_getInstance('cs_mylist_manager');
+   }
+
+
+
   /** get instance of cs_file_manager
    *
    * @return cs_file_manager
@@ -1197,6 +1209,8 @@ class cs_environment {
             return $this->getTag2TagManager();
          } elseif ($type == CS_BUZZWORD_TYPE) {
             return $this->getBuzzwordManager();
+         }elseif ($type == CS_MYLIST_TYPE) {
+            return $this->getMylistManager();
          } elseif ($type == CS_ITEM_BACKUP) {
             return $this->getBackupItemManager();
          } elseif ( !$this->isPlugin($type) ) {
