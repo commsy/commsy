@@ -61,9 +61,9 @@ class cs_log_manager extends cs_manager {
    function setTimestampOlderLimit ($data) {
       $this->_limit_timestamp_old = $data;
    }
-   
+
    function setRequestLimit($data) {
-   	  $this->_limit_request = $data;
+      $this->_limit_request = $data;
    }
 
    /**
@@ -94,13 +94,13 @@ class cs_log_manager extends cs_manager {
       $retour = $row['count'];
       return $retour;
    }
-   
+
    function countWithUserDistinction() {
-   	  $retour = 0;
-   	  $result = $this->_performQuery('count_user_distinction');
-   	  $row = $result[0];
-   	  $retour = $row['count'];
-   	  return $retour;
+      $retour = 0;
+      $result = $this->_performQuery('count_user_distinction');
+      $row = $result[0];
+      $retour = $row['count'];
+      return $retour;
    }
 
    function delete () {
@@ -142,7 +142,7 @@ class cs_log_manager extends cs_manager {
       } elseif ($mode == 'count') {
          $query = 'SELECT count(id) AS count FROM '.$this->addDatabasePrefix('log');
       } elseif ($mode == 'count_user_distinction') {
-      	 $query = 'SELECT COUNT(DISTINCT uid) AS count FROM '.$this->addDatabasePrefix('log');
+         $query = 'SELECT COUNT(DISTINCT uid) AS count FROM '.$this->addDatabasePrefix('log');
       } else {
          include_once('functions/error_functions.php');
          trigger_error('lost perform mode',E_USER_ERROR);
@@ -165,9 +165,9 @@ class cs_log_manager extends cs_manager {
       if ( isset($this->_limit_timestamp_not_older) and !empty($this->_limit_timestamp_not_older) ) {
          $query .= ' AND timestamp >= DATE_SUB(CURRENT_DATE,interval '.encode(AS_DB,$this->_limit_timestamp_not_older).' day)';
       }
-      
+
       if(isset($this->_limit_request) and !empty($this->_limit_request)) {
-      	 $query .= ' AND request LIKE "%'.encode(AS_DB,$this->_limit_request).'%"';
+         $query .= ' AND request LIKE "%'.encode(AS_DB,$this->_limit_request).'%"';
       }
 
       $query .= ' ORDER BY timestamp ASC';
@@ -210,10 +210,10 @@ class cs_log_manager extends cs_manager {
          $array['iid'] = '0';
       }
       if(!isset($array['queries'])){
-      	$array['queries'] = '';
+         $array['queries'] = '0';
       }
       if(!isset($array['time'])){
-         $array['time'] = '';
+         $array['time'] = '0';
       }
       $query = 'INSERT DELAYED INTO '.$this->addDatabasePrefix('log').' SET '.
                'ip="'.      encode(AS_DB,$array['remote_addr']).'", '.
