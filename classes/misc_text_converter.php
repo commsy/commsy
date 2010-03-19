@@ -1886,7 +1886,9 @@ class misc_text_converter {
 //            $translator = $this->_environment->getTranslationObject();
 //            $retour .= $translator->getMessage('WIKI_FLICKR_NO_ID_FOUND');
 //         }
-         $flickr_link_array = split('/', $array[1]);
+         // split() is deprecated as of PHP 5.3.x - use explode() instead!
+         //$flickr_link_array = split('/', $array[1]);
+         $flickr_link_array = explode('/', $array[1]);
 // Zweite Version - allerdings wird ein API-Key benötigt.
 //         $flicker_id_stream = fopen('http://api.flickr.com/services/rest/?method=flickr.people.findByUsername&api_key=4f97257bac19849ee0bcdeb67537b01c&username=' . $flickr_link_array[4],"r");
 //         $flicker_id_stream_contents = stream_get_contents($flicker_id_stream);

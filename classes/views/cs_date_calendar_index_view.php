@@ -2619,7 +2619,9 @@ class cs_date_calendar_index_view extends cs_room_index_view {
             foreach($format_array[$i]['dates'] as $date){
                $link = $this->_getDateItemLinkWithJavascript($date, $date->getTitle());
                $link = str_replace("'", "\'", $link);
-               $link_array = split('"', $link);
+               // split() is deprecated as of PHP 5.3.x - use explode() instead!
+               //$link_array = split('"', $link);
+               $link_array = explode('"', $link);
                $href = $link_array[1];
                if($date->getColor() != ''){
                   $color = $date->getColor();
@@ -3664,7 +3666,9 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                }
                $color_border = '#CCCCCC';
                $link = $this->_getDateItemLinkWithJavascript($date, $date->getTitle());
-               $link_array = split('"', $link);
+               // split() is deprecated as of PHP 5.3.x - use explode() instead!
+               //$link_array = split('"', $link);
+               $link_array = explode('"', $link);
                $href = $link_array[1];
 
                $overlap = 1;
