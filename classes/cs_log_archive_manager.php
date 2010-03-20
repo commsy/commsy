@@ -66,20 +66,30 @@ class cs_log_archive_manager extends cs_manager {
                   ) {
                   $data[$key]['iid'] = '0';
                }
+               if ( !isset($data[$key]['queries'])
+                    or empty($data[$key]['queries'])
+                  ) {
+                  $data[$key]['queries'] = '0';
+               }
+               if ( !isset($data[$key]['time'])
+                    or empty($data[$key]['time'])
+                  ) {
+                  $data[$key]['time'] = '0';
+               }
                $query = 'INSERT INTO '.$this->addDatabasePrefix('log_archive').' SET '.
-                        'ip="'.      encode(AS_DB,$data[$key]['ip']).'", '.
-                        'agent="'.   encode(AS_DB,$data[$key]['agent']).'", '.
+                        'ip="'.       encode(AS_DB,$data[$key]['ip']).'", '.
+                        'agent="'.    encode(AS_DB,$data[$key]['agent']).'", '.
                         'timestamp="'.encode(AS_DB,$data[$key]['timestamp']).'", '.
-                        'request="'. encode(AS_DB,$data[$key]['request']).'", '.
-                        'method="'.  encode(AS_DB,$data[$key]['method']).'", '.
-                        'uid="'.     encode(AS_DB,$data[$key]['uid']).'", '.
-                        'ulogin="'.  encode(AS_DB,$data[$key]['ulogin']).'", '.
-                        'cid="'.     encode(AS_DB,$data[$key]['cid']).'", '.
-                        'module="'.  encode(AS_DB,$data[$key]['module']).'", '.
-                        'fct="'.     encode(AS_DB,$data[$key]['fct']).'", '.
-                        'param="'.   encode(AS_DB,$data[$key]['param']).'", '.
-                        'iid="'.     encode(AS_DB,$data[$key]['iid']).'", '.
-                        'queries="'.     encode(AS_DB,$data[$key]['queries']).'", '.
+                        'request="'.  encode(AS_DB,$data[$key]['request']).'", '.
+                        'method="'.   encode(AS_DB,$data[$key]['method']).'", '.
+                        'uid="'.      encode(AS_DB,$data[$key]['uid']).'", '.
+                        'ulogin="'.   encode(AS_DB,$data[$key]['ulogin']).'", '.
+                        'cid="'.      encode(AS_DB,$data[$key]['cid']).'", '.
+                        'module="'.   encode(AS_DB,$data[$key]['module']).'", '.
+                        'fct="'.      encode(AS_DB,$data[$key]['fct']).'", '.
+                        'param="'.    encode(AS_DB,$data[$key]['param']).'", '.
+                        'iid="'.      encode(AS_DB,$data[$key]['iid']).'", '.
+                        'queries="'.  encode(AS_DB,$data[$key]['queries']).'", '.
                         'time="'.     encode(AS_DB,$data[$key]['time']).'"';
 
                // perform query
