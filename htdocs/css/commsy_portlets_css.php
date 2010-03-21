@@ -90,3 +90,22 @@ if (!empty($_GET['cid'])) {
 .ui-sortable-placeholder * { visibility: hidden; }
 
 
+.droppable_item_hover{
+  background-color: #dddddd;
+}
+
+.droppable_list{
+   line-height: 20px;
+   padding-left:5px;
+   margin:0px;
+   vertical-align:center;
+}
+
+.droppable_list_newest_entries{
+   line-height: 20px;
+   padding-left:5px;
+   margin:0px;
+   vertical-align:center;
+}
+
+

@@ -37,11 +37,18 @@ class cs_entry_index_view extends cs_index_view {
     * @param boolean with_modifying_actions true: display with modifying functions
     *                                       false: display without modifying functions
     */
+
+   var $_sellist = '';
+
    public function __construct ($params) {
       $this->cs_index_view($params);
       $this->setTitle($this->_translator->getMessage('COMMON_ENTRIES'));
       $this->setActionTitle($this->_translator->getMessage('COMMON_ENTRY'));
       $this->_colspan = '4';
+   }
+
+   function setSelectedMyList($limit){
+   	$this->_sellist = $limit;
    }
 
 
@@ -106,6 +113,8 @@ class cs_entry_index_view extends cs_index_view {
    }
 
    function _getMylistsBoxAsHTML(){
+      $params = $this->_environment->getCurrentParameterArray();
+      unset($params['selbuzzword']);
       $current_user = $this->_environment->getCurrentUserItem();
       $mylist_manager = $this->_environment->getLabelManager();
       $mylist_manager->resetLimits();
@@ -125,23 +134,81 @@ class cs_entry_index_view extends cs_index_view {
       $html .= '   <input type="hidden" name="cid" value="'.$this->_text_as_form($this->_environment->getCurrentContextID()).'"/>'.LF;
       $html .= '   <input type="hidden" name="mod" value="entry"/>'.LF;
       $html .= '   <input type="hidden" name="fct" value="index"/>'.LF;
-      $html .= '   <input id="new_list" onclick="javascript:resetSearchText(\'new_list\');" style="width:200px; font-size:10pt; margin-bottom:0px;" name="new_list" type="text" size="20" value="'.$this->_text_as_form($this->_translator->getMessage('PRIVATEROOM_MY_LISTS_BOX_NEW_ENTRY')).'"/>';
-      $html .= '   <input name="option" value="'.$this->_text_as_form($this->_translator->getMessage('PRIVATEROOM_MY_LISTS_BOX_NEW_ENTRY_BUTTON')).'" tabindex="23" style="font-size: 10pt;" type="submit"/>'.LF;
+      $html .= '   <input id="new_list" onclick="javascript:resetSearchText(\'new_list\');" style="width:160px; font-size:10pt; margin-bottom:0px;" name="new_list" type="text" size="20" value="'.$this->_text_as_form($this->_translator->getMessage('PRIVATEROOM_MY_LISTS_BOX_NEW_ENTRY')).'"/>';
+      $html .= '   <input name="option" value="'.$this->_text_as_form($this->_translator->getMessage('PRIVATEROOM_MY_LISTS_BOX_NEW_ENTRY_BUTTON')).'" tabindex="23" style="width: 150px; font-size: 10pt;" type="submit"/>'.LF;
       $html .='</form>'.LF;
 
-      $html .= '<ul style="margin:0px; padding:0px;">'.LF;
-      $html .= '<li class="droppable_list" id="list_1" style="display:block; padding:3px;" class="even"><a>Die neusten 20 Einträge</a>'.LF;
-      $html .= '</li>'.LF;
+      $html .= '<div style="margin:10px 0px 0px 0px; padding:0px;">'.LF;
+      $font_style = '';
+      if ($this->_sellist == 'new' or count($params) == 0){
+      	$font_style = ' font-weight:bold;';
+      }
+      $html .= '<div style="display:block; margin:0px;'.$font_style.'" class="even">'.LF;
+      $html .= '<div style="float:right; padding-top:2px;">'.LF;
+      $html .= '<img src="images/commsyicons/16x16/copy_grey.png" style="vertical-align:top;" alt="'.$this->_translator->getMessage('ENTRY_COPY_MYLIST').'"/>'.LF;
+      $html .= '<img src="images/commsyicons/16x16/delete_grey.png" style="vertical-align:top;" alt="'.$this->_translator->getMessage('ENTRY_DELETE_MYLIST').'"/>'.LF;
+      $html .= '</div>'.LF;
+      $html .=' <p class="droppable_list_newest_entries">'.LF;
+      $params['sellist'] = 'new';
+      $html .= ahref_curl(  $this->_environment->getCurrentContextID(),
+                                       CS_ENTRY_TYPE,
+                                       'index',
+                                       $params,
+                                       $this->_translator->getMessage('COMMON_NEWEST_ENTRIES'),
+                                       $this->_translator->getMessage('COMMON_NEWEST_ENTRIES')).LF;
+      $html .= '</p></div>'.LF;
 
       $mylist_item = $mylist_list->getFirst();
+      $counter = 0;
       while($mylist_item){
+         $params = $this->_environment->getCurrentParameterArray();
+         unset($params['selbuzzword']);
+         if ($counter%2 == 0){
+            $style='class="odd"';
+         }else{
+            $style='class="even"';
+         }
+         if ($this->_sellist == $mylist_item->getItemID()){
+            $font_style = ' font-weight:bold;';
+         }else{
+            $font_style = '';
+         }
          $count = $mylist_item->getCountLinks();
-         $html .= '<li class="droppable_list" id="mylist_'.$mylist_item->getItemID().'" style="display:block; padding:3px;" class="odd"><a>'.$mylist_item->getName().' </a>'.LF;
+         $html .= '<div '.$style.' style="display:block; margin:0px;'.$font_style.'" >'.LF;
+         $html .= '<div style="float:right; padding-top:2px;">'.LF;
+         $image = '<img src="images/commsyicons/16x16/copy.png" style="vertical-align:top;" alt="'.$this->_translator->getMessage('ENTRY_COPY_MYLIST').'"/>'.LF;
+         $params['copy_list'] = $mylist_item->getItemID();
+         $html .= ahref_curl(  $this->_environment->getCurrentContextID(),
+                                       CS_ENTRY_TYPE,
+                                       'index',
+                                       $params,
+                                       $image,
+                                       $this->_translator->getMessage('ENTRY_COPY_MYLIST')).LF;
+         unset($params['copy_list']);
+         $params['delete_list'] = $mylist_item->getItemID();
+         $image = '<img src="images/commsyicons/16x16/delete.png" style="vertical-align:top;" alt="'.$this->_translator->getMessage('ENTRY_DELETE_MYLIST').'"/>'.LF;
+         $html .= ahref_curl(  $this->_environment->getCurrentContextID(),
+                                       CS_ENTRY_TYPE,
+                                       'index',
+                                       $params,
+                                       $image,
+                                       $this->_translator->getMessage('ENTRY_DELETE_MYLIST')).LF;
+         $html .= '</div>'.LF;
+         unset($params['delete_list']);
+         $html .= ' <p class="droppable_list" id="mylist_'.$mylist_item->getItemID().'">'.LF;
+         $params['sellist'] = $mylist_item->getItemID();
+         $html .= ahref_curl(  $this->_environment->getCurrentContextID(),
+                                       CS_ENTRY_TYPE,
+                                       'index',
+                                       $params,
+                                       $mylist_item->getName(),
+                                       $mylist_item->getName()).LF;
          $html .= '(<span id="mylist_count_'.$mylist_item->getItemID().'">'.$count.'</span>)'.LF;
-         $html .= '</li>'.LF;
+         $html .= '</p></div>'.LF;
+         $counter++;
          $mylist_item = 	$mylist_list->getNext();
       }
-      $html .= '</ul>'.LF;
+      $html .= '</div>'.LF;
 
 
 
@@ -241,15 +308,15 @@ class cs_entry_index_view extends cs_index_view {
       $html  = LF.'<!-- BEGIN OF LIST VIEW -->'.LF;
 
       $html .= $this->_getIndexPageHeaderAsHTML().LF;
-      $html .= '<div class="column" style="width:50%;">'.LF;
-      $html .= $this->_getContentBoxAsHTML().LF;
-      $html .= '</div>'.LF;
-      $html .= '<div class="column" style="width:50%;">'.LF;
-      $html .= $this->_getSearchBoxAsHTML().LF;
+      $html .= '<div class="column" style="width:40%;">'.LF;
  #     $html .= $this->_getCreateNewEntryBoxAsHTML().LF;
-      $html .= $this->_getMatrixBoxAsHTML().LF;
       $html .= $this->_getBuzzwordBoxAsHTML().LF;
       $html .= $this->_getMylistsBoxAsHTML().LF;
+      $html .= $this->_getMatrixBoxAsHTML().LF;
+      $html .= '</div>'.LF;
+      $html .= '<div class="column" style="width:60%;">'.LF;
+      $html .= $this->_getSearchBoxAsHTML().LF;
+      $html .= $this->_getContentBoxAsHTML().LF;
       $html .= '</div>'.LF;
 
       $html .='<div style="clear:both;">'.LF;
@@ -372,6 +439,8 @@ class cs_entry_index_view extends cs_index_view {
 
 
    function _getBuzzwordBoxasHTML(){
+      $params = $this->_environment->getCurrentParameterArray();
+      unset($params['sellist']);
       $current_user = $this->_environment->getCurrentUserItem();
       $buzzword_manager = $this->_environment->getLabelManager();
       $buzzword_manager->resetLimits();
@@ -387,7 +456,6 @@ class cs_entry_index_view extends cs_index_view {
       $html .= '</div>'.LF;
       $html .= '<div class="portlet-content">'.LF;
       $buzzword = $buzzword_list->getFirst();
-      $params = $this->_environment->getCurrentParameterArray();
       if (!$buzzword){
          $html .= '<span class="disabled" style="font-size:10pt;">'.$this->_translator->getMessage('COMMON_NO_ENTRIES').'</span>';
       }

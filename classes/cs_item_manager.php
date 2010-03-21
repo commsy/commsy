@@ -41,6 +41,8 @@ class cs_item_manager extends cs_manager {
 
    var $_label_limit = NULL;
 
+   var $_list_limit = NULL;
+
    var $_interval_limit = NULL;
 
    var $_type_array_limit = array();
@@ -74,6 +76,7 @@ class cs_item_manager extends cs_manager {
       $this->_age_limit = NULL;
       $this->_type_limit = NULL;
       $this->_order_limit = NULL;
+      $this->_list_limit = NULL;
       $this->_label_limit = NULL;
       $this->_interval_limit = NULL;
       $this->_type_array_limit = array();
@@ -103,6 +106,10 @@ class cs_item_manager extends cs_manager {
 
    function setOrderLimit ($limit) {
      $this->_order_limit = $limit;
+   }
+
+   function setListLimit ($limit) {
+     $this->_list_limit = $limit;
    }
 
    function setUserUserIDLimit ($limit) {
@@ -360,6 +367,29 @@ class cs_item_manager extends cs_manager {
         $query .= ' FROM '.$this->addDatabasePrefix('items');
         $query .= ' LEFT JOIN '.$this->addDatabasePrefix('labels').' AS label ON '.$this->addDatabasePrefix('items').'.item_id=label.item_id';
         $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_modifier_item').' AS modifier ON '.$this->addDatabasePrefix('items').'.item_id=modifier.item_id';
+
+      // restrict materials by buzzword (la4)
+      if (isset($this->_list_limit)) {
+         if ($this->_list_limit == -1){
+            $query .= ' LEFT JOIN '.$this->addDatabasePrefix('links').' AS links ON links.from_item_id='.$this->addDatabasePrefix('items').'.item_id AND links.link_type="in_mylist"';
+            $query .= ' LEFT JOIN '.$this->addDatabasePrefix('labels').' AS mylists ON links.to_item_id=mylists.item_id AND mylists.type="mylist"';
+         }else{
+            $query .= ' INNER JOIN '.$this->addDatabasePrefix('links').' AS links ON links.from_item_id='.$this->addDatabasePrefix('items').'.item_id AND links.link_type="in_mylist"';
+            $query .= ' INNER JOIN '.$this->addDatabasePrefix('labels').' AS mylists ON links.to_item_id=mylists.item_id AND mylists.type="mylist"';
+         }
+      }
+
+      if (isset($this->_buzzword_limit)) {
+         if ($this->_buzzword_limit == -1){
+            $query .= ' LEFT JOIN '.$this->addDatabasePrefix('links').' AS buzzword_links ON buzzword_links.from_item_id='.$this->addDatabasePrefix('items').'.item_id AND buzzword_links.link_type="buzzword_for"';
+            $query .= ' LEFT JOIN '.$this->addDatabasePrefix('labels').' AS buzzwords ON buzzword_links.to_item_id=buzzwords.item_id AND buzzwords.type="buzzword"';
+         }else{
+            $query .= ' INNER JOIN '.$this->addDatabasePrefix('links').' AS buzzword_links ON buzzword_links.from_item_id='.$this->addDatabasePrefix('items').'.item_id AND buzzword_links.link_type="buzzword_for"';
+            $query .= ' INNER JOIN '.$this->addDatabasePrefix('labels').' AS buzzwords ON buzzword_links.to_item_id=buzzwords.item_id AND buzzwords.type="buzzword"';
+         }
+      }
+
+
         $query .= ' WHERE 1';
         $query .= ' AND (label.type IS NULL OR label.type="group" OR label.type="topic" OR label.type="group")';
         $query .= ' AND '.$this->addDatabasePrefix('items').'.context_id IN ('.implode(",",encode(AS_DB,$room_ids)).')';
@@ -378,13 +408,27 @@ class cs_item_manager extends cs_manager {
         $query .= ' AND '.$this->addDatabasePrefix('items').'.type != "user"';
 
         $query .= ' AND modifier.modifier_id IN ('.implode(",",encode(AS_DB,$user_ids)).')';;
+        if (isset($this->_list_limit)) {
+           if ($this->_list_limit ==-1){
+              $query .= ' AND (links.to_item_id IS NULL OR links.deletion_date IS NOT NULL)';
+           }else{
+              $query .= ' AND mylists.item_id="'.encode(AS_DB,$this->_list_limit).'"';
+           }
+        }
+        if (isset($this->_buzzword_limit)) {
+           if ($this->_buzzword_limit ==-1){
+              $query .= ' AND (buzzword_links.to_item_id IS NULL OR buzzword_links.deletion_date IS NOT NULL)';
+           }else{
+              $query .= ' AND buzzwords.item_id="'.encode(AS_DB,$this->_buzzword_limit).'"';
+           }
+        }
 
         $query .= ' ORDER BY '.$this->addDatabasePrefix('items').'.modification_date DESC';
-        $query .= ' LIMIT ';
         if (isset($this->_interval_limit)) {
+           $query .= ' LIMIT ';
            $query .= $this->_interval_limit;
         }else{
-           $query .= '20';
+           $query .= '';
         }
         // perform query
         $result = $this->_db_connector->performQuery($query);

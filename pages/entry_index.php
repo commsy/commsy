@@ -74,6 +74,27 @@ if ( isset($_POST['option']) ) {
    $command = '';
 }
 
+// Find current buzzword selection
+if ( isset($_GET['selbuzzword']) and $_GET['selbuzzword'] !='-2') {
+   $selbuzzword = $_GET['selbuzzword'];
+} else {
+   $selbuzzword = 0;
+}
+
+// Find current buzzword selection
+if ( isset($_GET['sellist']) and $_GET['sellist'] !='-2') {
+   $sellist = $_GET['sellist'];
+} else {
+   $sellist = 0;
+}
+
+if ( isset($_GET['delete_list'])) {
+   $deletelist = $_GET['delete_list'];
+} else {
+   $deletelist = 0;
+}
+
+
 if ( isOption($command, $translator->getMessage('PRIVATEROOM_MY_LISTS_BOX_NEW_ENTRY_BUTTON')) and isset($_POST['new_list']) and !empty($_POST['new_list'])) {
    $mylist_manager = $environment->getMylistManager();
    $my_list_item = $mylist_manager->getNewItem();
@@ -85,6 +106,15 @@ if ( isOption($command, $translator->getMessage('PRIVATEROOM_MY_LISTS_BOX_NEW_EN
    $my_list_item->setCreationDate(getCurrentDateTimeInMySQL());
    $my_list_item->save();
    $params = array();
+   redirect($environment->getCurrentContextID(),CS_ENTRY_TYPE, 'index',$params);
+}
+
+if ( !empty($deletelist) ) {
+   $mylist_manager = $environment->getMylistManager();
+   $my_list_item = $mylist_manager->getItem($deletelist);
+   $my_list_item->delete();
+   $params = $environment->getCurrentParameterArray();
+   unset($params['delete_list']);
    redirect($environment->getCurrentContextID(),CS_ENTRY_TYPE, 'index',$params);
 }
 
@@ -375,7 +405,15 @@ foreach ($rubric_array as $rubric) {
 
       $item_manager = $environment->getItemManager();
       $item_manager->setOrderLimit(true);
-      $item_manager->setIntervalLimit($current_context->getPortletNewEntryListCount());
+      if (!empty($sellist) and $sellist != 'new'){
+         $item_manager->setListLimit($sellist);
+      }
+      if (!empty($selbuzzword)){
+         $item_manager->setBuzzwordLimit($selbuzzword);
+      }
+      if (empty($selbuzzword) and (empty($sellist) or $sellist == 'new')){
+         $item_manager->setIntervalLimit($current_context->getPortletNewEntryListCount());
+      }
       $new_entry_list = $item_manager->getAllPrivateRoomEntriesOfUserList($privatroom_id_array,$user_id_array);
 
 
@@ -472,6 +510,8 @@ unset($params);
 // Set data for view
 #$sublist = $search_list->getSubList($from-1,$interval);
 $view->setList($new_entry_list);
+$view->setSelectedMyList($sellist);
+$view->setSelectedBuzzword($selbuzzword);
 /*$view->setCountAllShown(count($campus_search_ids));
 $view->setCountAll($count_all);
 $view->setFrom($from);

@@ -1,3 +1,5 @@
 <?php
+$message["ENTRY_COPY_MYLIST"]["en"] = "Copy list";
+$message["ENTRY_DELETE_MYLIST"]["en"] = "Delete list";
 $message["ENTRY_INDEX"]["en"] = "My repository";
 ?>
