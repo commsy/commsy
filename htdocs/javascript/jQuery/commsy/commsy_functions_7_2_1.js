@@ -13,7 +13,16 @@ function getQueryParams(qs) {
 }
 
 jQuery(document).ready(function() {
-  		jQuery(".dragable_item").draggable({cursor:"move", opacity: 0.7, helper: "clone" });
+  		jQuery(".dragable_item").draggable({
+  		   cursor:"move",
+  		   opacity: 0.7,
+  		   helper: function(event) {
+  		      var img = jQuery("#" + this.id + "_img").html();
+  		      var new_img = img.replace('16x16','32x32');
+				return new_img;
+			},
+  		   cursorAt: { cursor: 'crosshair', top: 22, left: 22 }
+  		   });
       jQuery(".droppable_list").droppable({
 			hoverClass: 'droppable_item_hover',
 			drop: function(event, ui) {

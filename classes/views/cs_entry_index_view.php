@@ -39,6 +39,7 @@ class cs_entry_index_view extends cs_index_view {
     */
 
    var $_sellist = '';
+   var $_selbuzzword = '';
 
    public function __construct ($params) {
       $this->cs_index_view($params);
@@ -48,7 +49,11 @@ class cs_entry_index_view extends cs_index_view {
    }
 
    function setSelectedMyList($limit){
-   	$this->_sellist = $limit;
+    $this->_sellist = $limit;
+   }
+
+   function setSelectedBuzzword($limit){
+    $this->_selbuzzword = $limit;
    }
 
 
@@ -114,6 +119,13 @@ class cs_entry_index_view extends cs_index_view {
 
    function _getMylistsBoxAsHTML(){
       $params = $this->_environment->getCurrentParameterArray();
+      $font_style = '';
+      if (
+           $this->_sellist == 'new'
+           and empty($this->_selbuzzword)
+        ){
+        $font_style = ' font-weight:bold;';
+      }
       unset($params['selbuzzword']);
       $current_user = $this->_environment->getCurrentUserItem();
       $mylist_manager = $this->_environment->getLabelManager();
@@ -123,13 +135,11 @@ class cs_entry_index_view extends cs_index_view {
       $mylist_manager->setGetCountLinks();
       $mylist_manager->select();
       $mylist_list = $mylist_manager->get();
-
       $html = '<div class="portlet">'.LF;
       $html .= '<div class="portlet-header">'.LF;
       $html .= $this->_translator->getMessage('PRIVATEROOM_MY_LISTS_BOX').LF;
       $html .= '</div>'.LF;
       $html .= '<div class="portlet-content">'.LF;
-#      $html .= $this->_translator->getMessage('PRIVATEROOM_MY_LISTS_BOX_DESCRIPTION').LF;
       $html .= '<form style="padding:0px; margin:0px;" action="'.curl($this->_environment->getCurrentContextID(), 'entry', 'index','').'" method="post" name="mylist_form">'.LF;
       $html .= '   <input type="hidden" name="cid" value="'.$this->_text_as_form($this->_environment->getCurrentContextID()).'"/>'.LF;
       $html .= '   <input type="hidden" name="mod" value="entry"/>'.LF;
@@ -139,10 +149,6 @@ class cs_entry_index_view extends cs_index_view {
       $html .='</form>'.LF;
 
       $html .= '<div style="margin:10px 0px 0px 0px; padding:0px;">'.LF;
-      $font_style = '';
-      if ($this->_sellist == 'new' or count($params) == 0){
-      	$font_style = ' font-weight:bold;';
-      }
       $html .= '<div style="display:block; margin:0px;'.$font_style.'" class="even">'.LF;
       $html .= '<div style="float:right; padding-top:2px;">'.LF;
       $html .= '<img src="images/commsyicons/16x16/copy_grey.png" style="vertical-align:top;" alt="'.$this->_translator->getMessage('ENTRY_COPY_MYLIST').'"/>'.LF;
@@ -308,13 +314,13 @@ class cs_entry_index_view extends cs_index_view {
       $html  = LF.'<!-- BEGIN OF LIST VIEW -->'.LF;
 
       $html .= $this->_getIndexPageHeaderAsHTML().LF;
-      $html .= '<div class="column" style="width:40%;">'.LF;
+      $html .= '<div class="column" style="width:50%;">'.LF;
  #     $html .= $this->_getCreateNewEntryBoxAsHTML().LF;
-      $html .= $this->_getBuzzwordBoxAsHTML().LF;
       $html .= $this->_getMylistsBoxAsHTML().LF;
+      $html .= $this->_getBuzzwordBoxAsHTML().LF;
       $html .= $this->_getMatrixBoxAsHTML().LF;
       $html .= '</div>'.LF;
-      $html .= '<div class="column" style="width:60%;">'.LF;
+      $html .= '<div class="column" style="width:50%;">'.LF;
       $html .= $this->_getSearchBoxAsHTML().LF;
       $html .= $this->_getContentBoxAsHTML().LF;
       $html .= '</div>'.LF;
@@ -334,9 +340,8 @@ class cs_entry_index_view extends cs_index_view {
       $html .= $this->_translator->getMessage('PRIVATEROOM_MY_ENTRIES_LIST_BOX').LF;
       $html .= '</div>'.LF;
       $html .= '<div class="portlet-content">'.LF;
-      $html .= '<table style="width:100%;">';
       if ( !isset($list) || $list->isEmpty() ) {
-         $html .= '<tr  class="list"><td class="odd" style="border-bottom: 0px;">'.$this->_translator->getMessage('COMMON_NO_ENTRIES').'</td></tr>';
+         $html .= '<div class="odd" style="border-bottom: 0px;">'.$this->_translator->getMessage('COMMON_NO_ENTRIES').'</div>';
       } else {
          $current_item = $list->getFirst();
          $i = 0;
@@ -345,7 +350,6 @@ class cs_entry_index_view extends cs_index_view {
             $current_item = $list->getNext();
          }
       }
-      $html .= '</table>';
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
       return $html;
@@ -376,13 +380,13 @@ class cs_entry_index_view extends cs_index_view {
       $html .= '<tr>'.LF;
       $html .= '<td style="background-color:#EEEEEE;">Unterrichten'.LF;
       $html .= '</td>'.LF;
-      $html .= '<td class="droppable_matrix" id="'.$count.'" style="text-align:center;"><a>5</a>'.LF;
+      $html .= '<td class="droppable_matrix" id="id_'.$count.'" style="text-align:center;"><a>5</a>'.LF;
       $html .= '</td>'.LF;
       $count ++;
-      $html .= '<td class="droppable_matrix" id="'.$count.'" style="text-align:center;"><a>2</a>'.LF;
+      $html .= '<td class="droppable_matrix" id="id_'.$count.'" style="text-align:center;"><a>2</a>'.LF;
       $html .= '</td>'.LF;
       $count ++;
-      $html .= '<td class="droppable_matrix" id="'.$count.'" style="text-align:center;"><a>0</a>'.LF;
+      $html .= '<td class="droppable_matrix" id="id_'.$count.'" style="text-align:center;"><a>0</a>'.LF;
       $html .= '</td>'.LF;
       $count ++;
       $html .= '</tr>'.LF;
@@ -390,13 +394,13 @@ class cs_entry_index_view extends cs_index_view {
       $html .= '<tr>'.LF;
       $html .= '<td style="background-color:#EEEEEE;">Erziehen und Beraten'.LF;
       $html .= '</td>'.LF;
-      $html .= '<td class="droppable_matrix" id="'.$count.'" style="text-align:center;"><a>10</a>'.LF;
+      $html .= '<td class="droppable_matrix" id="id_'.$count.'" style="text-align:center;"><a>10</a>'.LF;
       $html .= '</td>'.LF;
       $count ++;
-      $html .= '<td class="droppable_matrix" id="'.$count.'" style="text-align:center;"><a>2</a>'.LF;
+      $html .= '<td class="droppable_matrix" id="id_'.$count.'" style="text-align:center;"><a>2</a>'.LF;
       $html .= '</td>'.LF;
       $count ++;
-      $html .= '<td class="droppable_matrix" id="'.$count.'" style="text-align:center;"><a>6</a>'.LF;
+      $html .= '<td class="droppable_matrix" id="id_'.$count.'" style="text-align:center;"><a>6</a>'.LF;
       $html .= '</td>'.LF;
       $count ++;
       $html .= '</tr>'.LF;
@@ -404,13 +408,13 @@ class cs_entry_index_view extends cs_index_view {
       $html .= '<tr>'.LF;
       $html .= '<td style="background-color:#EEEEEE;">Diagnostizieren und fördern'.LF;
       $html .= '</td>'.LF;
-      $html .= '<td class="droppable_matrix" id="'.$count.'" style="text-align:center;"><a>3</a>'.LF;
+      $html .= '<td class="droppable_matrix" id="id_'.$count.'" style="text-align:center;"><a>3</a>'.LF;
       $html .= '</td>'.LF;
       $count ++;
-      $html .= '<td class="droppable_matrix" id="'.$count.'" style="text-align:center;"><a>0</a>'.LF;
+      $html .= '<td class="droppable_matrix" id="id_'.$count.'" style="text-align:center;"><a>0</a>'.LF;
       $html .= '</td>'.LF;
       $count ++;
-      $html .= '<td class="droppable_matrix" id="'.$count.'" style="text-align:center;"><a>0</a>'.LF;
+      $html .= '<td class="droppable_matrix" id="id_'.$count.'" style="text-align:center;"><a>0</a>'.LF;
       $html .= '</td>'.LF;
       $count ++;
       $html .= '</tr>'.LF;
@@ -418,13 +422,13 @@ class cs_entry_index_view extends cs_index_view {
       $html .= '<tr>'.LF;
       $html .= '<td style="background-color:#EEEEEE;">Schule entwickeln'.LF;
       $html .= '</td>'.LF;
-      $html .= '<td class="droppable_matrix" id="'.$count.'" style="text-align:center;"><a>3</a>'.LF;
+      $html .= '<td class="droppable_matrix" id="id_'.$count.'" style="text-align:center;"><a>3</a>'.LF;
       $html .= '</td>'.LF;
       $count ++;
-      $html .= '<td class="droppable_matrix" id="'.$count.'" style="text-align:center;"><a>20</a>'.LF;
+      $html .= '<td class="droppable_matrix" id="id_'.$count.'" style="text-align:center;"><a>20</a>'.LF;
       $html .= '</td>'.LF;
       $count ++;
-      $html .= '<td class="droppable_matrix" id="'.$count.'" style="text-align:center;"><a>3</a>'.LF;
+      $html .= '<td class="droppable_matrix" id="id_'.$count.'" style="text-align:center;"><a>3</a>'.LF;
       $html .= '</td>'.LF;
       $count ++;
       $html .= '</tr>'.LF;
@@ -467,7 +471,12 @@ class cs_entry_index_view extends cs_index_view {
             $params['selbuzzword'] = $buzzword->getItemID();
             $temp_text = '';
             $style_text  = 'style="margin-left:2px; margin-right:2px;';
-            $style_text .= ' color: rgb('.$font_color.'%,'.$font_color.'%,'.$font_color.'%);';
+            if (!empty($this->_selbuzzword) and $this->_selbuzzword == $buzzword->getItemID()){
+               $style_text .= ' color:#000000;';
+            	$style_text .= ' font-weight:bold;';
+            }else{
+               $style_text .= ' color: rgb('.$font_color.'%,'.$font_color.'%,'.$font_color.'%);';
+            }
             $style_text .= 'font-size:'.$font_size.'px;"';
             $title  = '<span  id="buzzword_'.$buzzword->getItemID().'" class="droppable_buzzword" '.$style_text.'>'.LF;
             $title .= $this->_text_as_html_short($buzzword->getName()).LF;
@@ -550,8 +559,6 @@ class cs_entry_index_view extends cs_index_view {
       $item_manager = $this->_environment->getManager($type);
       $full_item = $item_manager->getItem($item->getItemID());
       if (is_object($full_item)){
-         $html .= '   <tr class="list">'.LF;
-         $html .= '   <td '.$style.'>'.LF;
          $type = $full_item->getType();
          if ($type =='label'){
             $type = $full_item->getLabelType();
@@ -597,83 +604,47 @@ class cs_entry_index_view extends cs_index_view {
          switch ( mb_strtoupper($type, 'UTF-8') ) {
            case 'ANNOUNCEMENT':
               $text .= $this->_translator->getMessage('COMMON_ONE_ANNOUNCEMENT');
-              $img = 'images/commsyicons/32x32/announcement.png';
+              $img = 'images/commsyicons/16x16/announcement.png';
               break;
            case 'DATE':
               $text .= $this->_translator->getMessage('COMMON_ONE_DATE');
-              $img = 'images/commsyicons/32x32/date.png';
+              $img = 'images/commsyicons/16x16/date.png';
               break;
            case 'DISCUSSION':
               $text .= $this->_translator->getMessage('COMMON_ONE_DISCUSSION');
-              $img = 'images/commsyicons/32x32/discussion.png';
-              break;
-           case 'GROUP':
-              $text .= $this->_translator->getMessage('COMMON_ONE_GROUP');
-              $img = 'images/commsyicons/32x32/group.png';
-              break;
-           case 'INSTITUTION':
-              $text .= $this->_translator->getMessage('COMMON_ONE_INSTITUTION');
-              $img = '';
+              $img = 'images/commsyicons/16x16/discussion.png';
               break;
            case 'MATERIAL':
               $text .= $this->_translator->getMessage('COMMON_ONE_MATERIAL');
-              $img = 'images/commsyicons/32x32/material.png';
-              break;
-           case 'PROJECT':
-              $text .= $this->_translator->getMessage('COMMON_ONE_PROJECT');
-              $img = '';
+              $img = 'images/commsyicons/16x16/material.png';
               break;
            case 'TODO':
               $text .= $this->_translator->getMessage('COMMON_ONE_TODO');
-              $img = 'images/commsyicons/32x32/todo.png';
-              break;
-           case 'TOPIC':
-              $text .= $this->_translator->getMessage('COMMON_ONE_TOPIC');
-              $img = 'images/commsyicons/32x32/topic.png';
-              break;
-           case 'USER':
-              $text .= $this->_translator->getMessage('COMMON_USER');
-              $img = 'images/commsyicons/32x32/user.png';
+              $img = 'images/commsyicons/16x16/todo.png';
               break;
            default:
               $text .= $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR').' cs_detail_view('.__LINE__.') ';
               $img = '';
               break;
         }
-        $link_creator_text = $text.' - '.$this->_translator->getMessage('COMMON_EDIT_BY').' '.
-                                    $fullname.', '.
-                                    $link_created;
-         $module = Type2Module($type);
-         if ($module == CS_USER_TYPE){
-            $link_title = $this->_text_as_html_short($full_item->getFullName());
-         }else{
-            $link_title = $this->_text_as_html_short($full_item->getTitle());
-         }
-         $params = array();
-         $params['iid'] = $linked_iid;
-         $html .= '<div id="item_'.$item->getItemID().'" class="dragable_item" style="float:left;">'.'<img src="' . $img . '" style="padding-right:3px;" title="' . $link_creator_text . '"/>'.'</div>';
-         $html .= ahref_curl( $full_item->getContextID(),
+        $module = Type2Module($type);
+        $link_title = $this->_text_as_html_short($full_item->getTitle());
+        $params = array();
+
+        $html .= '<div id="item_'.$item->getItemID().'" class="dragable_item" style="width:100%; vertical-align: middle;">'.LF;
+        $html .= '   <table '.$style.' style="width:100%; border-collapse:collapse;">'.LF;
+        $html .= '<tr>'.LF;
+        $html .= '<td style="vertical-align:center; padding:3px; width:1%;">'.LF;
+        $html .= '<span id="item_'.$item->getItemID().'_img"><img src="' . $img . '" style="padding-right:3px;" title=""/></span>';
+        $html .= '</td>'.LF;
+        $html .= '<td>'.LF;
+        $params['iid'] = $linked_iid;
+        $html .= ahref_curl( $full_item->getContextID(),
                                        $module,
                                        'detail',
                                        $params,
                                        $link_title,
-                                       $link_creator_text,
-                                       '_self',
-                                       $fragment,
                                        '',
-                                       '',
-                                       '',
-                                       '',
-                                       '',
-                                       '',
-                                       '').$this->_getItemChangeStatus($full_item,$full_item->getContextID());
-         $html .= '<br/><span style="font-size:8pt;">('.$this->_translator->getMessage('COMMON_ROOM').': ';
-         $html .= ahref_curl( $full_item->getContextID(),
-                                       'home',
-                                       'detail',
-                                       $params,
-                                       $room_title,
-                                       $room_title,
                                        '_self',
                                        $fragment,
                                        '',
@@ -683,11 +654,283 @@ class cs_entry_index_view extends cs_index_view {
                                        '',
                                        '',
                                        '');
-         $html .= ')</span>'.LF;
-         $html .= '   </td>'.LF;
-         $html .= '   </tr>'.LF;
+         $html .= $this->_getAdditionalInformationAsHTML($type,$full_item);
+         $html .= '</td>'.LF;
+         $html .= '</tr>'.LF;
+         $html .= '</table>'.LF;
+         $html .= '   </div>'.LF;
       }
 
+      return $html;
+   }
+
+
+   function _getMaterialItemFiles($item, $with_links=true){
+      $retour = '';
+      $file_list='';
+      $files = $item->getFileListWithFilesFromSections();
+      $files->sortby('filename');
+      $file = $files->getFirst();
+      $user = $this->_environment->getCurrentUser();
+      while ($file) {
+         $url = $file->getUrl();
+         $displayname = $file->getDisplayName();
+         $filesize = $file->getFileSize();
+         $fileicon = $file->getFileIcon();
+         if ($with_links and $this->_environment->inProjectRoom() || (!$this->_environment->inProjectRoom() and ($item->isPublished() || $user->isUser())) ) {
+            if ( isset($_GET['mode'])
+                 and $_GET['mode']=='print'
+                 and ( empty($_GET['download'])
+                       or $_GET['download'] != 'zip'
+                     )
+               ) {
+               $file_list .= '<span class="disabled">'.$fileicon.'</span>'."\n";
+            } else {
+               if ( mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'png')
+                    or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'jpg')
+                    or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'jpeg')
+                    or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'gif')
+                  ) {
+                  $this->_with_slimbox = true;
+                  // jQuery
+                  //$file_list.='<a href="'.$url.'" rel="lightbox[gallery'.$item->getItemID().']" title="'.$this->_text_as_html_short($displayname).' ('.$filesize.' kb)" >'.$fileicon.'</a> ';
+                  $file_list.='<a href="'.$url.'" rel="lightbox-gallery'.$item->getItemID().'" title="'.$this->_text_as_html_short($displayname).' ('.$filesize.' kb)" >'.$fileicon.'</a> ';
+                  // jQuery
+               }else{
+                  $file_list.='<a href="'.$url.'" title="'.$this->_text_as_html_short($displayname).' ('.$filesize.' kb)" target="blank" >'.$fileicon.'</a> ';
+               }
+            }
+         } else {
+            $file_list .= '<span class="disabled">'.$fileicon.'</span>'."\n";
+         }
+         $file = $files->getNext();
+      }
+      if (!empty($file_list)){
+      	$file_list = '</td><td style="float:right; padding:3px;">'.$file_list;
+
+      }
+      return $retour.$file_list;
+   }
+
+   function _getDiscussionItemFiles($item, $with_links=true){
+      $retour = '';
+      $file_list='';
+      $files = $item->getFileListWithFilesFromArticles();
+      $files->sortby('filename');
+      $file = $files->getFirst();
+      $user = $this->_environment->getCurrentUser();
+      while ($file) {
+         $url = $file->getUrl();
+         $displayname = $file->getDisplayName();
+         $filesize = $file->getFileSize();
+         $fileicon = $file->getFileIcon();
+         if ($with_links and $this->_environment->inProjectRoom() || (!$this->_environment->inProjectRoom() and ($item->isPublished() || $user->isUser())) ) {
+            if ( isset($_GET['mode'])
+                 and $_GET['mode']=='print'
+                 and ( empty($_GET['download'])
+                       or $_GET['download'] != 'zip'
+                     )
+               ) {
+               $file_list .= '<span class="disabled">'.$fileicon.'</span>'."\n";
+            } else {
+              if ( mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'png')
+                    or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'jpg')
+                    or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'jpeg')
+                    or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'gif')
+                  ) {
+                      $this->_with_slimbox = true;
+                      // jQuery
+                      //$file_list.='<a href="'.$url.'" rel="lightbox[gallery'.$item->getItemID().']" title="'.$this->_text_as_html_short($displayname).' ('.$filesize.' kb)" >'.$fileicon.'</a> ';
+                      $file_list.='<a href="'.$url.'" rel="lightbox-gallery'.$item->getItemID().'" title="'.$this->_text_as_html_short($displayname).' ('.$filesize.' kb)" >'.$fileicon.'</a> ';
+                      // jQuery
+                  }else{
+                     $file_list.='<a href="'.$url.'" title="'.$this->_text_as_html_short($displayname).' ('.$filesize.' kb)" target="blank" >'.$fileicon.'</a> ';
+                  }
+              }
+         } else {
+            $file_list .= '<span class="disabled">'.$fileicon.'</span>'."\n";
+         }
+         $file = $files->getNext();
+      }
+      if (!empty($file_list)){
+        $file_list = '</td><td style="float:right; padding:3px;">'.$file_list;
+
+      }
+      return $retour.$file_list;
+   }
+
+  function _getTodoItemFiles($item, $with_links=true){
+      $retour = '';
+      $file_list='';
+      $files = $item->getFileListWithFilesFromSteps();
+      $files->sortby('filename');
+      $file = $files->getFirst();
+      $user = $this->_environment->getCurrentUser();
+      while ($file) {
+         $url = $file->getUrl();
+         $displayname = $file->getDisplayName();
+         $filesize = $file->getFileSize();
+         $fileicon = $file->getFileIcon();
+         if ($with_links and $this->_environment->inProjectRoom() || (!$this->_environment->inProjectRoom() and ($item->isPublished() || $user->isUser())) ) {
+            if ( isset($_GET['mode'])
+                 and $_GET['mode']=='print'
+                 and ( empty($_GET['download'])
+                       or $_GET['download'] != 'zip'
+                     )
+               ) {
+               $file_list .= '<span class="disabled">'.$fileicon.'</span>'."\n";
+            } else {
+              if ( mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'png')
+                    or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'jpg')
+                    or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'jpeg')
+                    or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'gif')
+                  ) {
+                      $this->_with_slimbox = true;
+                      // jQuery
+                      //$file_list.='<a href="'.$url.'" rel="lightbox[gallery'.$item->getItemID().']" title="'.$this->_text_as_html_short($displayname).' ('.$filesize.' kb)" >'.$fileicon.'</a> ';
+                      $file_list.='<a href="'.$url.'" rel="lightbox-gallery'.$item->getItemID().'" title="'.$this->_text_as_html_short($displayname).' ('.$filesize.' kb)" >'.$fileicon.'</a> ';
+                      // jQuery
+                  }else{
+                     $file_list.='<a href="'.$url.'" title="'.$this->_text_as_html_short($displayname).' ('.$filesize.' kb)" target="blank" >'.$fileicon.'</a> ';
+                  }
+              }
+         } else {
+            $file_list .= '<span class="disabled">'.$fileicon.'</span>'."\n";
+         }
+         $file = $files->getNext();
+      }
+      if (!empty($file_list)){
+        $file_list = '</td><td style="float:right; padding:3px;">'.$file_list;
+
+      }
+      return $retour.$file_list;
+   }
+
+   function _getItemFiles($item, $with_links=TRUE){
+      $retour='';
+      $file_list='';
+      $files = $item->getFileList();
+      $files->sortby('filename');
+      $file = $files->getFirst();
+      $user = $this->_environment->getCurrentUser();
+      while ($file) {
+         $url = $file->getUrl();
+         $displayname = $file->getDisplayName();
+         $filesize = $file->getFileSize();
+         $fileicon = $file->getFileIcon();
+         if ( $with_links
+              and $this->_environment->inProjectRoom()
+              or ( !$this->_environment->inProjectRoom()
+                   and ( $item->isPublished()
+                         or $user->isUser()
+                       )
+                 )
+            ) {
+            if ( isset($_GET['mode'])
+                 and $_GET['mode']=='print'
+                 and ( empty($_GET['download'])
+                       or $_GET['download'] != 'zip'
+                     )
+               ) {
+               $file_list .= '<span class="disabled">'.$fileicon.'</span>'."\n";
+            } else {
+               if ( ( empty($_GET['download'])
+                      or $_GET['download'] != 'zip'
+                    )
+                    and
+                    ( mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'png')
+                      or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'jpg')
+                      or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'jpeg')
+                      or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'gif')
+                    )
+                  ) {
+                  $this->_with_slimbox = true;
+                  // jQuery
+                  //$file_list.='<a href="'.$url.'" rel="lightbox[gallery'.$item->getItemID().']" title="'.$this->_text_as_html_short($displayname).' ('.$filesize.' kb)" >'.$fileicon.'</a> ';
+                  $file_list.='<a href="'.$url.'" rel="lightbox-gallery'.$item->getItemID().'" title="'.$this->_text_as_html_short($displayname).' ('.$filesize.' kb)" >'.$fileicon.'</a> ';
+                  // jQuery
+               } else {
+                  $file_list.='<a href="'.$url.'" title="'.$this->_text_as_html_short($displayname).' ('.$filesize.' kb)" target="blank" >'.$fileicon.'</a> ';
+               }
+            }
+         } else {
+            $file_list .= '<span class="disabled">'.$fileicon.'</span>'."\n";
+         }
+         $file = $files->getNext();
+      }
+      if (!empty($file_list)){
+        $file_list = '</td><td style="float:right; padding:3px;">'.$file_list;
+
+      }
+      return $retour.$file_list;
+   }
+
+   function _getMaterialItemAuthor($item){
+         $author = $item->getAuthor();
+         $author = $this->_compareWithSearchText($author);
+         return $this->_text_as_html_short($author);
+   }
+
+   function _getMaterialItemPublishingDate($item){
+      $publishing_date = $this->_compareWithSearchText($item->getPublishingDate());
+      return $this->_text_as_html_short($publishing_date);
+   }
+
+   function _getAdditionalInformationAsHTML($type,$item){
+      $html = '';
+      switch ( mb_strtoupper($type, 'UTF-8') ) {
+        case 'ANNOUNCEMENT':
+           $html .= ' '.$this->_getItemFiles($item, true);
+           break;
+        case 'DATE':
+           $html .= ' '.$this->_getItemFiles($item, true);
+           break;
+        case 'DISCUSSION':
+           $html .= ' '.$this->_getDiscussionItemFiles($item, true);
+           break;
+        case 'MATERIAL':
+           $author_text = $this->_getMaterialItemAuthor($item);
+           $year_text = $this->_getMaterialItemPublishingDate($item);
+           $bib_kind = $item->getBibKind() ? $item->getBibKind() : 'none';
+           if (!empty($author_text) and $bib_kind !='none'){
+              if (!empty($year_text)){
+                 $year_text = ', '.$year_text;
+              }else{
+                 $year_text = '';
+              }
+              $html .= '<span style="font-size:8pt;"> ('.$this->_getMaterialItemAuthor($item).$year_text.')'.'</span>';
+           }
+           $html .= ' '.$this->_getMaterialItemFiles($item, true);
+           break;
+        case 'TODO':
+           $html .= ' '.$this->_getTodoItemFiles($item, true);
+           break;
+        default:
+           $html .= $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR').' cs_detail_view('.__LINE__.') ';
+           break;
+      }
+      if (
+           (!empty($this->_sellist) and $this->_sellist !='new')
+           or !empty($this->_selbuzzword)
+         ){
+         $params = $this->_environment->getCurrentParameterArray();
+         $params['delete_item'] = $item->getItemID();
+         $text = '';
+         if (!empty($this->_selbuzzword)){
+            $text = $this->_translator->getMessage('ENTRY_DELETE_ENTRY_FROM_BUZZWORD');
+         }elseif(!empty($this->_sellist)){
+            $text = $this->_translator->getMessage('ENTRY_DELETE_ENTRY_FROM_MYLIST');
+         }
+         $image = '<img src="images/commsyicons/16x16/delete.png" style="vertical-align:top;" alt="'.$this->_translator->getMessage('ENTRY_DELETE_MYLIST').'"/>'.LF;
+         $html .= '</td><td style="padding:3px; width:25px; text-align:right;">'.LF;
+         $html .= ahref_curl(  $this->_environment->getCurrentContextID(),
+                                       CS_ENTRY_TYPE,
+                                       'index',
+                                       $params,
+                                       $image,
+                                       $text).LF;
+
+      }
       return $html;
    }
 
@@ -709,10 +952,6 @@ class cs_entry_index_view extends cs_index_view {
                            '', '', '', '', '', '', '', '',
                            CS_ANNOUNCEMENT_TYPE.$item->getItemID());
       unset($params);
-      if ( !$this->_environment->inPrivateRoom() and !$item->isNotActivated()) {
-         $title .= $this->_getItemChangeStatus($item);
-         $title .= $this->_getItemAnnotationChangeStatus($item);
-      }
       return $title;
    }
 

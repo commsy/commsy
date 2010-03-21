@@ -94,6 +94,12 @@ if ( isset($_GET['delete_list'])) {
    $deletelist = 0;
 }
 
+if ( isset($_GET['delete_item'])) {
+   $deleteitem = $_GET['delete_item'];
+} else {
+   $deleteitem = 0;
+}
+
 
 if ( isOption($command, $translator->getMessage('PRIVATEROOM_MY_LISTS_BOX_NEW_ENTRY_BUTTON')) and isset($_POST['new_list']) and !empty($_POST['new_list'])) {
    $mylist_manager = $environment->getMylistManager();
@@ -115,6 +121,22 @@ if ( !empty($deletelist) ) {
    $my_list_item->delete();
    $params = $environment->getCurrentParameterArray();
    unset($params['delete_list']);
+   redirect($environment->getCurrentContextID(),CS_ENTRY_TYPE, 'index',$params);
+}
+
+if ( !empty($deleteitem) ) {
+   $from_id = '';
+   if ( !empty($sellist) ) {
+      $from_id = $sellist;
+   }if ( !empty($selbuzzword) ) {
+      $from_id = $selbuzzword;
+   }
+   if (!empty($from_id)){
+      $link_manager = $environment->getLinkManager();
+   	$link_manager->deleteLink($deleteitem,$from_id);
+   }
+   $params = $environment->getCurrentParameterArray();
+   unset($params['delete_item']);
    redirect($environment->getCurrentContextID(),CS_ENTRY_TYPE, 'index',$params);
 }
 
