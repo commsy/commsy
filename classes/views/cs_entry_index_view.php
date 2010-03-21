@@ -465,7 +465,7 @@ class cs_entry_index_view extends cs_index_view {
       }
       while ($buzzword){
          $count = $buzzword->getCountLinks();
-         if ($count > 0){
+         if ($count > 0 or true){
             $font_size = $this->getBuzzwordSizeLogarithmic($count);
             $font_color = 100 - $this->getBuzzwordColorLogarithmic($count);
             $params['selbuzzword'] = $buzzword->getItemID();
