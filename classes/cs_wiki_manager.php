@@ -209,7 +209,8 @@ class cs_wiki_manager extends cs_manager {
          $str .= '}'.LF.LF;
       }
 
-      $str .= '$SHOW_DIFF = "1";'.LF;
+      $str .= '$WITH_DIFF = true;'.LF;
+      $str .= '$WITH_PRINT = true;'.LF;
 
 
       // Additional features - not activated by default.
