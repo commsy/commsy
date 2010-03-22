@@ -851,10 +851,48 @@ class misc_text_converter {
       }
       return $retour;
    }
+   
+   /**
+    * Decodes the following chars in all given attributes: ':', '(' and ')'
+    * 
+    * @param $attr_array - Array von Attributen
+    * @param $text - Text
+    * @return umgewandelter Text
+    */
+   private function _decode_tag_chars($attr_array, $text) {
+      // loop through all tags
+      foreach($attr_array as $attr) {
+      	 // find tags and content
+      	 $reg_exp = "~$attr='(.*?)'~eu";
+      	 $found = preg_match_all($reg_exp, $text, $matches);
+      	 
+      	 if($found > 0) {
+      	 	// eleminate duplicates
+      	 	$matches[1] = array_unique($matches[1]);
+      	 	
+      	 	// replace chars
+      	 	foreach($matches[1] as $string) {
+      	 	   //$new_tag_content = htmlentities($string);
+      	 	   $new_tag_content = $string;
+      	 	   $new_tag_content = str_replace('(', '&#040;', $new_tag_content);
+      	 	   $new_tag_content = str_replace(')', '&#041;', $new_tag_content);
+      	 	   $new_tag_content = str_replace(':', '&#058;', $new_tag_content);
+      	 	   
+      	 	   $text = str_replace("$attr='$string'", "$attr='$new_tag_content'", $text);
+      	 	}
+      	 }
+      }
+      
+      return $text;
+   }
 
    #private function _newFormating ( $text ) {
    public function _newFormating ( $text ) {
       $file_array = $this->_getFileArray();
+      
+      // decode tags used in alt and text attributes
+      $attr = array('alt', 'text');
+      $text = $this->_decode_tag_chars($attr, $text);
 
       $reg_exp_father_array = array();
       $reg_exp_father_array[]       = '~\\(:(.*?):\\)~eu';
