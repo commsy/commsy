@@ -74,25 +74,22 @@ if ( isset($_POST['option']) ) {
    $command = '';
 }
 
-// Find current buzzword selection
 if ( isset($_GET['selbuzzword']) and $_GET['selbuzzword'] !='-2') {
    $selbuzzword = $_GET['selbuzzword'];
 } else {
    $selbuzzword = 0;
 }
 
-// Find current buzzword selection
 if ( isset($_GET['sellist']) and $_GET['sellist'] !='-2') {
    $sellist = $_GET['sellist'];
 } else {
    $sellist = 0;
 }
 
-// Find current buzzword selection
-if ( isset($_GET['sellist']) and $_GET['sellist'] !='-2') {
-   $sellist = $_GET['sellist'];
+if ( isset($_GET['delete_list'])) {
+   $deletelist = $_GET['delete_list'];
 } else {
-   $sellist = 0;
+   $deletelist = 0;
 }
 
 if ( isset($_GET['search'])) {
