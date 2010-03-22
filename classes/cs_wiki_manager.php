@@ -209,6 +209,9 @@ class cs_wiki_manager extends cs_manager {
          $str .= '}'.LF.LF;
       }
 
+      $str .= '$SHOW_DIFF = "1";'.LF;
+
+
       // Additional features - not activated by default.
       // modify in comsy_config.php to activate.
       if ( $item->WikiEnableFCKEditor() == "1" ) {
