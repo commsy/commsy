@@ -853,13 +853,13 @@ class misc_text_converter {
    }
    
    /**
-    * Decodes the following chars in all given attributes: ':', '(' and ')'
+    * Encodes the following chars in all given attributes: ':', '(' and ')'
     * 
     * @param $attr_array - Array von Attributen
-    * @param $text - Text
-    * @return umgewandelter Text
+    * @param $text - text
+    * @return encoded text
     */
-   private function _decode_tag_chars($attr_array, $text) {
+   private function _encode_attr($attr_array, $text) {
       // loop through all tags
       foreach($attr_array as $attr) {
       	 // find tags and content
@@ -873,11 +873,7 @@ class misc_text_converter {
       	 	// replace chars
       	 	foreach($matches[1] as $string) {
       	 	   //$new_tag_content = htmlentities($string);
-      	 	   $new_tag_content = $string;
-      	 	   $new_tag_content = str_replace('(', '&#040;', $new_tag_content);
-      	 	   $new_tag_content = str_replace(')', '&#041;', $new_tag_content);
-      	 	   $new_tag_content = str_replace(':', '&#058;', $new_tag_content);
-      	 	   
+      	 	   $new_tag_content = $this->_decode_tag_chars($string);
       	 	   $text = str_replace("$attr='$string'", "$attr='$new_tag_content'", $text);
       	 	}
       	 }
@@ -885,14 +881,73 @@ class misc_text_converter {
       
       return $text;
    }
+   
+   private function _decode_tag_chars($text) {
+   	  $text = str_replace('(', '&#040;', $text);
+      $text = str_replace(')', '&#041;', $text);
+      $text = str_replace(':', '&#058;', $text);
+      
+      return $text;
+   }
+   
+   /**
+    * Encodes file names
+    * 
+    * @param $text - text
+    * @return encoded text
+    */
+   private function _encode_file_names($text) {
+   	  $reg_exp = "~\\(:.*? (.*?)\\.([a-zA-Z0-9]*)~eu";
+   	  $found = preg_match_all($reg_exp, $text, $matches);
+   	  
+   	  if($found > 0) {
+   	     for($i = 0; $i < $found; $i++) {
+   	     	$new_file_name = $this->_decode_tag_chars($matches[1][$i]);
+   	     	$new_file_extension = $this->_decode_tag_chars($matches[2][$i]);
+   	     	$text = str_replace($matches[1][$i].'.'.$matches[2][$i], "$new_file_name.$new_file_extension", $text);
+   	     }
+   	  }
+   	  
+   	  return $text;
+   }
+   
+   /**
+    * Decodes file names
+    * 
+    * @param $text - text
+    * @return decoded text
+    */
+   private function _decode_file_names($text) {
+   	  $reg_exp = "~\\(:.*? (.*?)\\.([a-zA-Z0-9]*)~eu";
+   	  $found = preg_match_all($reg_exp, $text, $matches);
+   	  if($found > 0) {
+   	     for($i = 0; $i < $found; $i++) {
+   	     	$new_file_name = html_entity_decode($matches[1][$i]);
+   	     	$new_file_extension = html_entity_decode(($matches[2][$i]));
+   	     	$text = str_replace($matches[1][$i].'.'.$matches[2][$i], "$new_file_name.$new_file_extension", $text);
+   	     }
+   	  }
+   	  
+   	  return $text;
+   }
 
    #private function _newFormating ( $text ) {
    public function _newFormating ( $text ) {
       $file_array = $this->_getFileArray();
       
+      
+      //////////////////////////////////////////////////////////////
+      // this is for preventing parsing of (: and :)
+      //////////////////////////////////////////////////////////////
       // decode tags used in alt and text attributes
       $attr = array('alt', 'text');
-      $text = $this->_decode_tag_chars($attr, $text);
+      $text = $this->_encode_attr($attr, $text);
+      
+      // decode file names
+      $text = $this->_encode_file_names($text);
+      //////////////////////////////////////////////////////////////
+      //////////////////////////////////////////////////////////////
+      //////////////////////////////////////////////////////////////
 
       $reg_exp_father_array = array();
       $reg_exp_father_array[]       = '~\\(:(.*?):\\)~eu';
@@ -981,6 +1036,10 @@ class misc_text_converter {
                         ##################################################
                         $args_array = $this->_getArgs2($value_new,$reg_exp);
                      }
+                     
+                     // decode file names
+                     $value_new = $this->_decode_file_names($value_new);
+                     
                      if ( $key == '(:flash' and mb_stristr($value_new,'(:flash') ) {
                         $value_new = $this->_formatFlash($value_new,$args_array,$file_array);
                         break;
