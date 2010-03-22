@@ -88,10 +88,17 @@ if ( isset($_GET['sellist']) and $_GET['sellist'] !='-2') {
    $sellist = 0;
 }
 
-if ( isset($_GET['delete_list'])) {
-   $deletelist = $_GET['delete_list'];
+// Find current buzzword selection
+if ( isset($_GET['sellist']) and $_GET['sellist'] !='-2') {
+   $sellist = $_GET['sellist'];
 } else {
-   $deletelist = 0;
+   $sellist = 0;
+}
+
+if ( isset($_GET['search'])) {
+   $searchtext = $_GET['search'];
+} else {
+   $searchtext = '';
 }
 
 if ( isset($_GET['delete_item'])) {
@@ -433,9 +440,10 @@ foreach ($rubric_array as $rubric) {
       if (!empty($selbuzzword)){
          $item_manager->setBuzzwordLimit($selbuzzword);
       }
-      if (empty($selbuzzword) and (empty($sellist) or $sellist == 'new')){
-         $item_manager->setIntervalLimit($current_context->getPortletNewEntryListCount());
+      if (!empty($searchtext)){
+         $item_manager->setSearchLimit($searchtext);
       }
+      $item_manager->setIntervalLimit(20);
       $new_entry_list = $item_manager->getAllPrivateRoomEntriesOfUserList($privatroom_id_array,$user_id_array);
 
 
@@ -534,6 +542,7 @@ unset($params);
 $view->setList($new_entry_list);
 $view->setSelectedMyList($sellist);
 $view->setSelectedBuzzword($selbuzzword);
+$view->setSearchText($searchtext);
 /*$view->setCountAllShown(count($campus_search_ids));
 $view->setCountAll($count_all);
 $view->setFrom($from);

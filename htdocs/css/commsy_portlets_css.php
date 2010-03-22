@@ -108,4 +108,10 @@ if (!empty($_GET['cid'])) {
    vertical-align:center;
 }
 
+.description-background{
+	background-color:#EEEEEE;
+	margin: 0px 0px 5px 0px;
+	padding:3px;
+}
+
 

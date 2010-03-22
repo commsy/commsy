@@ -441,6 +441,7 @@ $message["COMMON_MODIFIED_BY"]["de"] = "bearbeitet von";
 $message["COMMON_MODIFIED_LIST"]["de"] = "am";
 $message["COMMON_MONTH"]["de"] = "Monat";
 $message["COMMON_MORE"]["de"] = "mehr";
+$message["COMMON_MYLIST_RESTRICTION"]["de"] = "Meine Liste";
 $message["COMMON_MYROOM_INDEX"]["de"] = "Mein persönlicher Raum";
 $message["COMMON_MY_USER_DESCRIPTION"]["de"] = "Mein Profil";
 $message["COMMON_NAME"]["de"] = "Name";

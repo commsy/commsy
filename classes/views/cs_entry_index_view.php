@@ -61,32 +61,6 @@ class cs_entry_index_view extends cs_index_view {
        $this->_list = $list;
     }
 
-
-   function _getItemChangeStatus($item,$context_id) {
-      $current_user = $this->_environment->getCurrentUserItem();
-      $related_user = $current_user->getRelatedUserItemInContext($context_id);
-      if ($related_user->isUser()) {
-         $noticed_manager = $this->_environment->getNoticedManager();
-         $noticed = $noticed_manager->getLatestnoticedByUser($item->getItemID(),$related_user->getItemID());
-         if ( empty($noticed) ) {
-            $info_text = ' <span class="changed">['.$this->_translator->getMessage('COMMON_NEW').']</span>';
-         } elseif ( $noticed['read_date'] < $item->getModificationDate() ) {
-            $info_text = ' <span class="changed">['.$this->_translator->getMessage('COMMON_CHANGED').']</span>';
-         } else {
-            $info_text = '';
-         }
-         // Add change info for annotations (TBD)
-      } else {
-         $info_text = '';
-      }
-      return $info_text;
-   }
-
-    /** get the value of the search box
-    * this method gets the search value of the list
-    *
-    * @param string  $this->_search_text
-    */
     function getSearchText (){
        if (empty($this->_search_text)){
         $this->_search_text = $this->_translator->getMessage('COMMON_SEARCH_IN_ENTRIES');
@@ -101,10 +75,17 @@ class cs_entry_index_view extends cs_index_view {
       $html .= $this->_translator->getMessage('PRIVATEROOM_MY_ENTRIES_SEARCH_BOX').LF;
       $html .= '</div>'.LF;
       $html .= '<div class="portlet-content">'.LF;
-      $html .= '<form style="padding:0px; margin:0px;" action="'.curl($this->_environment->getCurrentContextID(), 'entry', 'index','').'" method="post" name="form">'.LF;
+      $html .= '<form style="padding:0px; margin:0px;" action="'.curl($this->_environment->getCurrentContextID(), 'entry', 'index','').'" method="get" name="form">'.LF;
       $html .= '   <input type="hidden" name="cid" value="'.$this->_text_as_form($this->_environment->getCurrentContextID()).'"/>'.LF;
       $html .= '   <input type="hidden" name="mod" value="entry"/>'.LF;
       $html .= '   <input type="hidden" name="fct" value="index"/>'.LF;
+      $params = $this->_environment->getCurrentParameterArray();
+      if (isset($params['selbuzzword']) and !empty($params['selbuzzword'])){
+         $html .= '   <input type="hidden" name="sellbuzzword" value="'.$params['selbuzzword'].'"/>'.LF;
+      }
+      if (isset($params['sellist']) and !empty($params['sellist'])){
+         $html .= '   <input type="hidden" name="sellist" value="'.$params['sellist'].'"/>'.LF;
+      }
       $html .= '<input id="searchtext" onclick="javascript:resetSearchText(\'searchtext\');" style="width:80%; font-size:10pt; margin-bottom:0px;" name="search" type="text" size="20" value="'.$this->_text_as_form($this->getSearchText()).'"/>';
       if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
          $html .= '<input type="image" src="images/commsyicons_msie6/22x22/search.gif" style="vertical-align:top;" alt="'.$this->_translator->getMessage('COMMON_SEARCH_BUTTON').'"/>';
@@ -120,13 +101,9 @@ class cs_entry_index_view extends cs_index_view {
    function _getMylistsBoxAsHTML(){
       $params = $this->_environment->getCurrentParameterArray();
       $font_style = '';
-      if (
-           $this->_sellist == 'new'
-           and empty($this->_selbuzzword)
-        ){
+      if (!empty($this->_sellist) and $this->_sellist == 'new'){
         $font_style = ' font-weight:bold;';
       }
-      unset($params['selbuzzword']);
       $current_user = $this->_environment->getCurrentUserItem();
       $mylist_manager = $this->_environment->getLabelManager();
       $mylist_manager->resetLimits();
@@ -149,7 +126,7 @@ class cs_entry_index_view extends cs_index_view {
       $html .='</form>'.LF;
 
       $html .= '<div style="margin:10px 0px 0px 0px; padding:0px;">'.LF;
-      $html .= '<div style="display:block; margin:0px;'.$font_style.'" class="even">'.LF;
+/*      $html .= '<div style="display:block; margin:0px;'.$font_style.'" class="even">'.LF;
       $html .= '<div style="float:right; padding-top:2px;">'.LF;
       $html .= '<img src="images/commsyicons/16x16/copy_grey.png" style="vertical-align:top;" alt="'.$this->_translator->getMessage('ENTRY_COPY_MYLIST').'"/>'.LF;
       $html .= '<img src="images/commsyicons/16x16/delete_grey.png" style="vertical-align:top;" alt="'.$this->_translator->getMessage('ENTRY_DELETE_MYLIST').'"/>'.LF;
@@ -162,17 +139,16 @@ class cs_entry_index_view extends cs_index_view {
                                        $params,
                                        $this->_translator->getMessage('COMMON_NEWEST_ENTRIES'),
                                        $this->_translator->getMessage('COMMON_NEWEST_ENTRIES')).LF;
-      $html .= '</p></div>'.LF;
+      $html .= '</p></div>'.LF;*/
 
       $mylist_item = $mylist_list->getFirst();
       $counter = 0;
       while($mylist_item){
          $params = $this->_environment->getCurrentParameterArray();
-         unset($params['selbuzzword']);
          if ($counter%2 == 0){
-            $style='class="odd"';
-         }else{
             $style='class="even"';
+         }else{
+            $style='class="odd"';
          }
          if ($this->_sellist == $mylist_item->getItemID()){
             $font_style = ' font-weight:bold;';
@@ -335,11 +311,77 @@ class cs_entry_index_view extends cs_index_view {
 
    function _getContentBoxAsHTML () {
       $list = $this->_list;
+      $params = $this->_environment->getCurrentParameterArray();
       $html = '<div class="portlet">'.LF;
       $html .= '<div class="portlet-header">'.LF;
       $html .= $this->_translator->getMessage('PRIVATEROOM_MY_ENTRIES_LIST_BOX').LF;
       $html .= '</div>'.LF;
-      $html .= '<div class="portlet-content">'.LF;
+      $html .= '<div id="contentbox" class="portlet-content">'.LF;
+      if (
+          !empty($this->_sellist)
+          or !empty($this->_selbuzzword)
+          or (!empty($this->_search_text) and $this->_search_text != $this->_translator->getMessage('COMMON_SEARCH_IN_ENTRIES'))
+      ){
+         $html .= '<table class="description-background" style="width:100%;">'.LF;
+         $html .= '<tr>'.LF;
+         $html .= '<td style="vertical-align:top;">'.LF;
+         $html .= $this->_translator->getMessage('COMMON_RESTRICTIONS').': ';
+         $html .= '</td>'.LF;
+         $html .= '<td style="text-align:right;">';
+         if (!empty($this->_sellist)){
+            $html .= '<div>'.LF;
+            if ($this->_sellist == 'new'){
+               $html .= $this->_translator->getMessage('COMMON_MYLIST_RESTRICTION').': "'.$this->_translator->getMessage('COMMON_NEWEST_ENTRIES').'"';
+      	    }else{
+      	       $list_manager = $this->_environment->getMyListManager();
+      	       $list_item = $list_manager->getItem($this->_sellist);
+      	       $html .= $this->_translator->getMessage('COMMON_MYLIST_RESTRICTION').': "'.$list_item->getName().'"';
+      	   }
+           $new_aparams = $params;
+           unset($new_aparams['sellist']);
+           $image = '<img src="images/delete_restriction.gif" style="padding-top:3px;" alt="'.$this->_translator->getMessage('ENTRY_DELETE_RESTRICTION').'"/>'.LF;
+           $html .= ' '.ahref_curl(  $this->_environment->getCurrentContextID(),
+                                       CS_ENTRY_TYPE,
+                                       'index',
+                                       $new_aparams,
+                                       $image,
+                                       $this->_translator->getMessage('ENTRY_DELETE_RESTRICTION')).LF;
+           $html .= '</div>'.LF;
+         }
+         if (!empty($this->_selbuzzword)){
+            $html .= '<div>'.LF;
+         	$buzzword_manager = $this->_environment->getBuzzwordManager();
+      	    $buzzword_item = $buzzword_manager->getItem($this->_selbuzzword);
+      	    $html .= $this->_translator->getMessage('COMMON_BUZZWORD_RESTRICTION').': "'.$buzzword_item->getName().'"';
+            $new_aparams = $params;
+            unset($new_aparams['selbuzzword']);
+            $image = '<img src="images/delete_restriction.gif" style="padding-top:3px;" alt="'.$this->_translator->getMessage('ENTRY_DELETE_RESTRICTION').'"/>'.LF;
+            $html .= ' '.ahref_curl(  $this->_environment->getCurrentContextID(),
+                                       CS_ENTRY_TYPE,
+                                       'index',
+                                       $new_aparams,
+                                       $image,
+                                       $this->_translator->getMessage('ENTRY_DELETE_RESTRICTION')).LF;
+            $html .= '</div>'.LF;
+         }
+         if (!empty($this->_search_text) and $this->_search_text != $this->_translator->getMessage('COMMON_SEARCH_IN_ENTRIES')){
+            $html .= '<div>'.LF;
+      	    $html .= $this->_translator->getMessage('COMMON_SEARCH_RESTRICTION').': "'.$this->_search_text.'"';
+            $new_aparams = $params;
+            unset($new_aparams['search']);
+            $image = '<img src="images/delete_restriction.gif" style="padding-top:3px;" alt="'.$this->_translator->getMessage('ENTRY_DELETE_RESTRICTION').'"/>'.LF;
+            $html .= ' '.ahref_curl(  $this->_environment->getCurrentContextID(),
+                                       CS_ENTRY_TYPE,
+                                       'index',
+                                       $new_aparams,
+                                       $image,
+                                       $this->_translator->getMessage('ENTRY_DELETE_RESTRICTION')).LF;
+            $html .= '</div>'.LF;
+         }
+         $html .= '<td>';
+         $html .= '</tr>'.LF;
+         $html .= '</table>'.LF;
+      }
       if ( !isset($list) || $list->isEmpty() ) {
          $html .= '<div class="odd" style="border-bottom: 0px;">'.$this->_translator->getMessage('COMMON_NO_ENTRIES').'</div>';
       } else {
@@ -350,6 +392,7 @@ class cs_entry_index_view extends cs_index_view {
             $current_item = $list->getNext();
          }
       }
+
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
       return $html;
@@ -444,7 +487,6 @@ class cs_entry_index_view extends cs_index_view {
 
    function _getBuzzwordBoxasHTML(){
       $params = $this->_environment->getCurrentParameterArray();
-      unset($params['sellist']);
       $current_user = $this->_environment->getCurrentUserItem();
       $buzzword_manager = $this->_environment->getLabelManager();
       $buzzword_manager->resetLimits();
