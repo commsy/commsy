@@ -1159,7 +1159,10 @@ $activity_points = 1;
 $context_item_current = $environment->getCurrentContextItem();
 if ( isset($context_item_current) ) {
    $context_item_current->saveActivityPoints($activity_points);
-   if ( $context_item_current->isProjectRoom() or $context_item_current->isCommunityRoom() or $environment->inPrivateRoom() ) {
+   if ( $context_item_current->isProjectRoom()
+        or $context_item_current->isCommunityRoom()
+        or $environment->inPrivateRoom()
+      ) {
       $current_portal_item = $environment->getCurrentPortalItem();
       if ( isset($current_portal_item) ) {
          $current_portal_item->saveActivityPoints($activity_points);

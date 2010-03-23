@@ -339,28 +339,28 @@ if ( $context_item->isProjectroom()
       $file_manager->setIDArrayLimit($file_id_array);
       $file_manager->select();
 
-	  if ( $current_context->withBuzzwords() ){
-	     $params = array();
-	     $params['environment'] = $environment;
-	     $params['with_modifying_actions'] = $context_item->isOpen();
-	     $buzzword_view = $class_factory->getClass(HOME_BUZZWORD_VIEW,$params);
-	     unset($params);
-	     $page->addRight($buzzword_view);
-	  }
-	  if ( $current_context->withTags() ){
-	     $params = array();
-	     $params['environment'] = $environment;
-	     $params['with_modifying_actions'] = $context_item->isOpen();
-	     $tag_view = $class_factory->getClass(HOME_TAG_VIEW,$params);
-	     unset($params);
-	     $page->addRight($tag_view);
-	  }
-	  $params = array();
-	  $params['environment'] = $environment;
-	  $params['with_modifying_actions'] = $context_item->isOpen();
-	  $usage_info_view = $class_factory->getClass(HOME_USAGEINFO_VIEW,$params);
-	  unset($params);
-	  $page->addRight($usage_info_view);
+      if ( $current_context->withBuzzwords() ){
+         $params = array();
+         $params['environment'] = $environment;
+         $params['with_modifying_actions'] = $context_item->isOpen();
+         $buzzword_view = $class_factory->getClass(HOME_BUZZWORD_VIEW,$params);
+         unset($params);
+         $page->addRight($buzzword_view);
+      }
+      if ( $current_context->withTags() ){
+         $params = array();
+         $params['environment'] = $environment;
+         $params['with_modifying_actions'] = $context_item->isOpen();
+         $tag_view = $class_factory->getClass(HOME_TAG_VIEW,$params);
+         unset($params);
+         $page->addRight($tag_view);
+      }
+      $params = array();
+      $params['environment'] = $environment;
+      $params['with_modifying_actions'] = $context_item->isOpen();
+      $usage_info_view = $class_factory->getClass(HOME_USAGEINFO_VIEW,$params);
+      unset($params);
+      $page->addRight($usage_info_view);
    } else {
  /*     if ($context_item->withInformationBox()){
          $params = array();
@@ -400,10 +400,10 @@ $context_item = $environment->getCurrentContextItem();
 $translator = $environment->getTranslationObject();
 
 if ( $context_item->isProjectroom()
-           or $context_item->isCommunityRoom()
-           or $context_item->isPrivateRoom()
-           or $context_item->isGroupRoom()
-         ) {
+     or $context_item->isCommunityRoom()
+     or $context_item->isPrivateRoom()
+     or $context_item->isGroupRoom()
+   ) {
    $session_item = $environment->getSessionItem();
    $history = $session_item->getValue('history');
    if ( isset($history[0]['context']) ) {
