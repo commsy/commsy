@@ -60,6 +60,7 @@ var $_item = NULL;
       $html .='<div id="profile_content">'.LF;
       $html .= '<form style="padding:0px; margin:0px;" action="';
       $params = $this->_environment->getCurrentParameterArray();
+      unset($params['rem_item_text']);
       $html .= curl($this->_environment->getCurrentContextID(),
                     $this->_environment->getCurrentModule(),
                     $this->_environment->getCurrentFunction(),
@@ -68,6 +69,7 @@ var $_item = NULL;
       $params = $this->_environment->getCurrentParameterArray();
       unset($params['attach_view']);
       unset($params['attach_type']);
+      unset($params['rem_item_text']);
       $params['return_attach_buzzword_list']= 'true';
       $title = ahref_curl( $this->_environment->getCurrentContextID(),
                            $this->_environment->getCurrentModule(),
@@ -192,6 +194,37 @@ var $_item = NULL;
       $html .= '<td colspan ="3" '.$style.' >'.LF;
       $html .= '<span class="infocolor">'.$this->_translator->getMessage('BUZZWORDS_NEW_BUTTON').':&nbsp;'.'</span>';
       $html .= '         <input style="font-size:10pt; width:150px; padding-left:0px; padding-right:0px; margin-left:0px; margin-right:0px;" name="attach_new_buzzword" value=""/>';
+      $html .= '		 <input style="font-size:10pt;" type="submit" name="option" value="'.$this->_translator->getMessage('COMMON_BUZZWORD_ADD').'"/>';
+      
+      $session_item = $this->_environment->getSessionItem();
+      if($session_item->issetValue('buzzword_add_duplicated')) {
+         $html .= '&nbsp;<span style="font-weight:bold;color:red;">'.$this->_translator->getMessage('COMMON_BUZZWORD_ADD_DUPLICATED').'</span>'.LF;
+      }
+      
+      if($session_item->issetValue('buzzword_add')) {
+         $html .= '<ul>';
+         // iterate list
+         $new_buzzword_list = $session_item->getValue('buzzword_add');
+         $new_buzzword_item = $new_buzzword_list->getFirst();
+         while($new_buzzword_item) {
+            
+            $params = $this->_environment->getCurrentParameterArray();
+            $text = $this->_environment->getTextConverter()->text_as_html_short($new_buzzword_item);
+            $params['rem_item_text'] = $text;
+            $img = ahref_curl(   $this->_environment->getCurrentContextID(),
+                                 $this->_environment->getCurrentModule(),
+                                 $this->_environment->getCurrentFunction(),
+                                 $params,
+                 			     ' <img src="images/delete_restriction.gif" alt="x"/>');
+            
+            
+            $html .= '<li>' . $text . $img . '</li>';
+            $new_buzzword_item = $new_buzzword_list->getNext();
+         }
+         $html .= '</ul>';
+      }
+      unset($session_item);
+      
       $html .= '</td>'.LF;
       $html .= '</tr>'.LF;
       return $html;
