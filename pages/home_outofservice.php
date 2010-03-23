@@ -22,13 +22,18 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
+if(isset($_POST['option']) && $_POST['option'] == $translator->getMessage('MYAREA_LOGIN_BUTTON')) {
+   include_once('pages/context_login.php');
+   exit();
+}
+
 $server = $environment->getServerItem();
 $text = $environment->getTextConverter()->cleanDataFromTextArea($server->getOutOfService());
 
 $params = array();
 $params['environment'] = $environment;
 $params['with_modifying_actions'] = false;
-$text_view = $class_factory->getClass(TEXT_VIEW,$params);
+$text_view = $class_factory->getClass(OUTOFSERVICE_VIEW,$params);
 unset($params);
 $text_view->setText($text);
 if ( $environment->inPortal() or $environment->inServer() ) {

@@ -23,6 +23,7 @@ $message["SERVER_INITIALIZE_HEADER_DESC"]["de"] = "CommSy-Server initializieren"
 $message["SERVER_NEWS_LINK"]["de"] = "Server-Ankündigungen";
 $message["SERVER_NEWS_LINK_DESC"]["de"] = "Einstellungen zu serverweiten Ankündigungen.";
 $message["SERVER_OUTOFSERVICE_NAVBAR_TITLE"]["de"] = "Wartungsarbeiten";
+$message["SERVER_OUTOFSERVICE_ROOT_LOGIN"]["de"] = "Root-Login";
 $message["SERVER_PORTAL_OVERVIEW"]["de"] = "Portalübersicht";
 $message["SERVER_STATISTIC_ACCOUNTS"]["de"] = "Nutzende (E-Mail-Adressen)";
 $message["SERVER_STATISTIC_ACCOUNTS_ALL"]["de"] = "alle";
