@@ -445,6 +445,9 @@ class cs_dates_item extends cs_item {
    function delete() {
       $date_manager = $this->_environment->getDatesManager();
       $this->_delete($date_manager);
+      
+      // delete associated annotations
+      $this->deleteAssociatedAnnotations();
    }
 
    /** asks if item is editable by everybody or just creator

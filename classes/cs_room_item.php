@@ -320,6 +320,11 @@ class cs_room_item extends cs_context_item {
       $this->setClosureDate(getCurrentDateTimeInMySQL());
       parent::close();
    }
+   
+   function delete() {
+      // delete associated annotations
+      $this->deleteAssociatedAnnotations();
+   }
 
    /** get time of a room
    * this method returns a list of clock pulses which are linked to the room

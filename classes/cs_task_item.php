@@ -176,6 +176,9 @@ class cs_task_item extends cs_item {
    function delete() {
       $task_manager = $this->_environment->getTaskManager();
       $this->_delete($task_manager);
+      
+      // delete associated annotations
+      $this->deleteAssociatedAnnotations();
    }
 }
 ?>

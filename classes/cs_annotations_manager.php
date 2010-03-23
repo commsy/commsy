@@ -147,7 +147,8 @@ class cs_annotations_manager extends cs_manager {
 
      if ( isset($this->_linked_item_id) and !empty($this->_linked_item_id) ) {
         $query .= ' AND '.$this->addDatabasePrefix('annotations').'.linked_item_id='.encode(AS_DB,$this->_linked_item_id);
-     } elseif ( isset($this->_room_limit) and !empty($this->_room_limit) ) {
+     }
+     if ( isset($this->_room_limit) and !empty($this->_room_limit) ) {
         $query .= ' AND '.$this->addDatabasePrefix('annotations').'.context_id='.encode(AS_DB,$this->_room_limit);
      }
      if ($this->_delete_limit == true) {

@@ -1631,6 +1631,21 @@ class cs_item {
       $manager = $this->_environment->getManager($this->getItemType());
       $this->_delete($manager);
    }
+   
+   function deleteAssociatedAnnotations() {
+      $annotation_manager = $this->_environment->getAnnotationManager();
+      
+      // get all annotations linked with the item
+      $annotation_list = $annotation_manager->getAnnotatedItemList($this->getItemID());
+      
+      // delete them
+      $item = $annotation_list->getFirst();
+      while($item){
+         $item->delete();
+         
+         $item = $annotation_list->getNext();
+      }
+   }
 
    public function _getDataAsXML () {
       $retour = '';
