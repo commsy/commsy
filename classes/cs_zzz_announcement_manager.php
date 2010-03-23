@@ -26,8 +26,8 @@
  */
 include_once('classes/cs_announcement_manager.php');
 
-/** class for database connection to the database table "zzz_task"
- * this class implements a database manager for the table "zzz_task"
+/** class for database connection to the database table "zzz_announcement"
+ * this class implements a database manager for the table "zzz_announcement"
  */
 class cs_zzz_announcement_manager extends cs_announcement_manager {
    public function __construct ($environment) {

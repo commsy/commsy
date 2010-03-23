@@ -131,6 +131,7 @@ class cs_manager {
    public $_id_array_limit = NULL;
    public $_link_modifier = true;
    public $_db_prefix = '';
+   public $_with_db_prefix = true;
 
    var $_force_sql = false;
 
@@ -1632,8 +1633,24 @@ class cs_manager {
       return $retour;
    }
 
-   function addDatabasePrefix($db_table){
-      return $this->_db_prefix . $db_table;
+   function addDatabasePrefix ($db_table) {
+      $retour = $db_table;
+      if ( $this->withDatabasePrefix() ) {
+         $retour = $this->_db_prefix.$retour;
+      }
+      return $retour;
+   }
+
+   function setWithoutDatabasePrefix () {
+      $this->_with_db_prefix = false;
+   }
+
+   function setWithDatabasePrefix () {
+      $this->_with_db_prefix = true;
+   }
+
+   function withDatabasePrefix () {
+      return $this->_with_db_prefix;
    }
 
    function moveFromDbToBackup($context_id){

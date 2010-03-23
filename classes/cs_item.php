@@ -89,6 +89,13 @@ class cs_item {
             if ( isset($item) ) {
                $manager = $this->_environment->getManager($item->getItemType());
                $this->_context_item = $manager->getItem($this->getContextId());
+            } else {
+               $item_manager = $this->_environment->getItemManager(true);
+               $item = $item_manager->getItem($this->getContextID());
+               if ( isset($item) ) {
+                  $manager = $this->_environment->getManager($item->getItemType(),true);
+                  $this->_context_item = $manager->getItem($this->getContextId());
+               }
             }
          }
       }

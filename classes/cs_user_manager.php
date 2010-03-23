@@ -955,14 +955,19 @@ class cs_user_manager extends cs_manager {
 
    function getRootUser () {
       if ( !isset($this->_root_user) ) {
+         $this->setWithoutDatabasePrefix();
          $query = "SELECT * FROM ".$this->addDatabasePrefix("user")." WHERE ".$this->addDatabasePrefix("user").".user_id = 'root' AND context_id = '".encode(AS_DB,$this->_environment->getServerID())."'";
+         $this->setWithDatabasePrefix();
          $result = $this->_db_connector->performQuery($query);
          if ( !isset($result) ) {
             include_once('functions/error_functions.php');
             trigger_error('Problems selecting one user item.',E_USER_WARNING);
-         } else {
+         } elseif ( !empty($result[0])) {
             $this->_root_user = $this->_buildItem($result[0]);
             unset($result);
+         } else {
+            include_once('functions/error_functions.php');
+            trigger_error('can not get root user object - '.__LINE__.' - '.__FILE__,E_USER_WARNING);
          }
       }
       return $this->_root_user;
@@ -1169,7 +1174,7 @@ class cs_user_manager extends cs_manager {
                   $u_item = $user_list->getNext();
                }
             }
-            
+
             // delete private room - part II
             if ( isset($delete_own_room) and $delete_own_room ) {
                $own_room->delete();

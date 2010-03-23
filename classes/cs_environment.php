@@ -97,6 +97,7 @@ class cs_environment {
    private $_output_mode = 'html';
    private $_misc_text_converter = NULL;
    private $_class_factory = NULL;
+   private $_archive_mode = false;
 
   /** constructor: cs_environment
    * the only available constructor, initial values for internal variables
@@ -197,6 +198,21 @@ class cs_environment {
          if (is_null($this->current_context) or $this->current_context->getItemID() != $this->current_context_id) {
             $item_manager = $this->getItemManager();
             $item = $item_manager->getItem($this->current_context_id);
+            if ( !isset($item) ) {
+               if ( !$this->isArchiveMode() ) {
+                  $item_manager = $this->getZzzItemManager();
+                  $item = $item_manager->getItem($this->current_context_id);
+                  if ( isset($item) ) {
+                     $this->activateArchiveMode();
+                  }
+               } else {
+                  $item_manager = $this->getItemManager(true);
+                  $item = $item_manager->getItem($this->current_context_id);
+                  if ( isset($item) ) {
+                     $this->deactivateArchiveMode();
+                  }
+               }
+            }
             if ( isset($item) ) {
                $type = $item->getItemType();
                if ($type == CS_PROJECT_TYPE) {
@@ -217,7 +233,11 @@ class cs_environment {
                }
             } else {
                include_once('functions/error_functions.php');
-               trigger_error(' can not initiate room -> bug in item table',E_USER_ERROR);
+               $archive_mode = ' - archive mode = false';
+               if ($this->isArchiveMode()) {
+                  $archive_mode = ' - archive mode = true';
+               }
+               trigger_error('can not initiate room ['.$this->current_context_id.'] -> bug in item table'.$archive_mode,E_USER_ERROR);
             }
             if ( !empty($manager)
                  and is_object($manager)
@@ -229,7 +249,7 @@ class cs_environment {
          $this->current_context_id = $this->getServerID();
          $this->current_context = $this->getServerItem();
       }
-     return $this->current_context;
+      return $this->current_context;
    }
 
   /** get server object
@@ -475,17 +495,42 @@ class cs_environment {
    * @access public
    */
    function getAnnouncementManager() {
-      return $this->_getInstance('cs_announcement_manager');
+      if ( !$this->isArchiveMode() ) {
+         return $this->_getInstance('cs_announcement_manager');
+      } else {
+         return $this->getZzzAnnouncementManager();
+      }
+   }
+
+  /** get instance of cs_zzz_announcement_manager
+   *
+   * @return cs_zzz_announcement_manager
+   * @access public
+   */
+   function getZzzAnnouncementManager() {
+      return $this->_getInstance('cs_zzz_announcement_manager');
    }
 
   /** get instance of cs_annotation_manager
    *
    * @return cs_annotation_manager
    * @access public
-   * @author CommSy Development Group
    */
    function getAnnotationManager() {
-      return $this->_getInstance('cs_annotations_manager');
+      if ( !$this->isArchiveMode() ) {
+         return $this->_getInstance('cs_annotations_manager');
+      } else {
+         return $this->getZzzAnnotationManager();
+      }
+   }
+
+  /** get instance of cs_zzz_annotation_manager
+   *
+   * @return cs_zzz_annotation_manager
+   * @access public
+   */
+   function getZzzAnnotationManager() {
+      return $this->_getInstance('cs_zzz_annotation_manager');
    }
 
   /** get instance of cs_announcement_manager
@@ -523,48 +568,78 @@ class cs_environment {
    * @access public
    */
    function getTodosManager() {
-      return $this->_getInstance('cs_todos_manager');
+      return $this->getTodoManager();
    }
 
    function getTodoManager () {
-      return $this->getTodosManager();
+      if ( !$this->isArchiveMode() ) {
+         return $this->_getInstance('cs_todos_manager');
+      } else {
+         return $this->getZzzTodoManager();
+      }
    }
 
-   /** get instance of cs_dates_manager
+   function getZzzTodoManager () {
+      return $this->_getInstance('cs_zzz_todo_manager');
+   }
+
+  /** get instance of cs_dates_manager
    *
    * @return cs_dates_manager
    * @access public
-   * @author CommSy Development Group
    */
    function getDateManager() {
-      return $this->_getInstance('cs_dates_manager');
+      if ( !$this->isArchiveMode() ) {
+         return $this->_getInstance('cs_dates_manager');
+      } else {
+         return $this->getZzzDateManager();
+      }
+   }
+
+  /** get instance of cs_zzz_date_manager
+   *
+   * @return cs_date_manager
+   * @access public
+   */
+   function getZzzDateManager() {
+      return $this->_getInstance('cs_zzz_date_manager');
    }
 
    /** get instance of cs_dates_manager
    *
    * @return cs_dates_manager
    * @access public
-   * @author CommSy Development Group
    */
    function getDatesManager() {
-      return $this->_getInstance('cs_dates_manager');
+      return $this->getDateManager();
    }
 
   /** get instance of cs_material_manager
    *
    * @return cs_material_manager
    * @access public
-   * @author CommSy Development Group
    */
    function getMaterialManager() {
-      return $this->_getInstance('cs_material_manager');
+      if ( !$this->isArchiveMode() ) {
+         return $this->_getInstance('cs_material_manager');
+      } else {
+         return $this->getZzzMaterialManager();
+      }
+   }
+
+  /** get instance of cs_zzz_material_manager
+   *
+   * @return cs_zzz_material_manager
+   * @access public
+   */
+   function getZzzMaterialManager() {
+      return $this->_getInstance('cs_zzz_material_manager');
    }
 
   /** get instance of cs_ftsearch_manager
    *
    * @return cs_ftsearch_manager
    * @access public
-   * @author CommSy Development Group
    */
    function getFTSearchManager() {
       return $this->_getInstance('cs_ftsearch_manager');
@@ -574,24 +649,56 @@ class cs_environment {
    *
    * @return cs_section_manager
    * @access public
-   * @author CommSy Development Group
    */
    function getSectionManager() {
-      return $this->_getInstance('cs_section_manager');
+      if ( !$this->isArchiveMode() ) {
+         return $this->_getInstance('cs_section_manager');
+      } else {
+         return $this->getZzzSectionManager();
+      }
+   }
+
+  /** get instance of cs_zzz_section_manager
+   *
+   * @return cs_zzz_section_manager
+   * @access public
+   */
+   function getZzzSectionManager() {
+      return $this->_getInstance('cs_zzz_section_manager');
    }
 
    function getStepManager() {
-      return $this->_getInstance('cs_step_manager');
+      if ( !$this->isArchiveMode() ) {
+         return $this->_getInstance('cs_step_manager');
+      } else {
+         return $this->getZzzStepManager();
+      }
+   }
+
+   function getZzzStepManager() {
+      return $this->_getInstance('cs_zzz_step_manager');
    }
 
   /** get instance of cs_discussion_manager
    *
    * @return cs_discussion_manager
    * @access public
-   * @author CommSy Development Group
    */
    function getDiscussionManager() {
-      return $this->_getInstance('cs_discussion_manager');
+      if ( !$this->isArchiveMode() ) {
+         return $this->_getInstance('cs_discussion_manager');
+      } else {
+         return $this->getZzzDiscussionManager();
+      }
+   }
+
+  /** get instance of cs_discussion_manager
+   *
+   * @return cs_zzz_discussion_manager
+   * @access public
+   */
+   function getZzzDiscussionManager() {
+      return $this->_getInstance('cs_zzz_discussion_manager');
    }
 
   /** get instance of cs_discussion_manager, DON't USE !!!
@@ -599,50 +706,88 @@ class cs_environment {
    *
    * @return cs_discussion_manager
    * @access public
-   * @author CommSy Development Group
    */
    function getDiscussionArticlesManager() {
-      return $this->_getInstance('cs_discussionarticles_manager');
+      return $this->getDiscussionArticleManager();
    }
 
   /** get instance of cs_discussion_manager
    *
    * @return cs_discussion_manager
    * @access public
-   * @author CommSy Development Group
    */
    function getDiscussionArticleManager() {
-      return $this->_getInstance('cs_discussionarticles_manager');
+      if ( !$this->isArchiveMode() ) {
+         return $this->_getInstance('cs_discussionarticles_manager');
+      } else {
+         return $this->getZzzDiscussionArticleManager();
+      }
+   }
+
+  /** get instance of cs_zzz_discussionarticle_manager
+   *
+   * @return cs_zzz_discussionarticle_manager
+   * @access public
+   */
+   function getZzzDiscussionArticleManager() {
+      return $this->_getInstance('cs_zzz_discussionarticle_manager');
    }
 
   /** get instance of cs_links_manager
    *
    * @return cs_links_manager
    * @access public
-   * @author CommSy Development Group
    */
    function getLinkManager() {
-      return $this->_getInstance('cs_links_manager');
+      if ( !$this->isArchiveMode() ) {
+         return $this->_getInstance('cs_links_manager');
+      } else {
+         return $this->getZzzLinkManager();
+      }
+   }
+
+  /** get instance of cs_zzz_links_manager
+   *
+   * @return cs_zzz_links_manager
+   * @access public
+   */
+   function getZzzLinkManager() {
+      return $this->_getInstance('cs_zzz_links_manager');
    }
 
   /** get instance of cs_links_manager
    *
    * @return cs_links_manager
    * @access public
-   * @author CommSy Development Group
    */
    function getLinkItemManager() {
-      return $this->_getInstance('cs_link_manager');
+      if ( !$this->isArchiveMode() ) {
+         return $this->_getInstance('cs_link_manager');
+      } else {
+         return $this->getZzzLinkItemManager();
+      }
+   }
+
+  /** get instance of cs_zzz_link_manager
+   *
+   * @return cs_zzz_link_manager
+   * @access public
+   */
+   function getZzzLinkItemManager() {
+      return $this->_getInstance('cs_zzz_link_manager');
    }
 
   /** get instance of cs_user_manager
    *
    * @return cs_user_manager
    * @access public
-   * @author CommSy Development Group
    */
    function getUserManager() {
-      return $this->_getInstance('cs_user_manager');
+      if ( !$this->isArchiveMode() ) {
+         return $this->_getInstance('cs_user_manager');
+      } else {
+         return $this->getZzzUserManager();
+      }
    }
 
  /** get instance of cs_zzz_user_manager
@@ -658,38 +803,84 @@ class cs_environment {
    *
    * @return cs_labels_manager
    * @access public
-   * @author CommSy Development Group
    */
    function getLabelManager() {
-      return $this->_getInstance('cs_labels_manager');
+      if ( !$this->isArchiveMode() ) {
+         return $this->_getInstance('cs_labels_manager');
+      } else {
+         return $this->getZzzLabelManager();
+      }
+   }
+
+  /** get instance of cs_labels_manager
+   *
+   * @return cs_labels_manager
+   * @access public
+   */
+   function getZzzLabelManager() {
+      return $this->_getInstance('cs_zzz_label_manager');
    }
 
   /** get instance of cs_topic_manager
    *
    * @return cs_topic_manager
    * @access public
-   * @author CommSy Development Group
    */
    function getTopicManager() {
-      if (!isset($this->instance['topic_manager'])) {
-         $topic_manager = $this->_getInstance('cs_topic_manager');
-         $topic_manager->resetLimits();
-         $this->instance['topic_manager'] = $topic_manager;
+      if ( !$this->isArchiveMode() ) {
+         if (!isset($this->instance['topic_manager'])) {
+            $topic_manager = $this->_getInstance('cs_topic_manager');
+            $topic_manager->resetLimits();
+            $this->instance['topic_manager'] = $topic_manager;
+         } else {
+            #$this->instance['topic_manager']->resetLimits();
+         }
+         return $this->instance['topic_manager'];
       } else {
-         #$this->instance['topic_manager']->resetLimits();
+         return $this->getZzzTopicManager();
       }
-      return $this->instance['topic_manager'];
+   }
+
+  /** get instance of cs_zzz_topic_manager
+   *
+   * @return cs_zzz_topic_manager
+   * @access public
+   */
+   function getZzzTopicManager() {
+      if (!isset($this->instance['zzz_topic_manager'])) {
+         $topic_manager = $this->_getInstance('cs_zzz_topic_manager');
+         $topic_manager->resetLimits();
+         $this->instance['zzz_topic_manager'] = $topic_manager;
+      } else {
+         #$this->instance['zzz_topic_manager']->resetLimits();
+      }
+      return $this->instance['zzz_topic_manager'];
    }
 
    function getGroupManager() {
-      if (!isset($this->instance['group_manager'])) {
-         $group_manager = $this->_getInstance('cs_group_manager');
-         $group_manager->resetLimits();
-         $this->instance['group_manager'] = $group_manager;
+      if ( !$this->isArchiveMode() ) {
+         if (!isset($this->instance['group_manager'])) {
+            $group_manager = $this->_getInstance('cs_group_manager');
+            $group_manager->resetLimits();
+            $this->instance['group_manager'] = $group_manager;
+         } else {
+            #$this->instance['group_manager']->resetLimits();
+         }
+         return $this->instance['group_manager'];
       } else {
-         #$this->instance['group_manager']->resetLimits();
+         return $this->getZzzGroupManager();
       }
-      return $this->instance['group_manager'];
+   }
+
+   function getZzzGroupManager() {
+      if (!isset($this->instance['zzz_group_manager'])) {
+         $group_manager = $this->_getInstance('cs_zzz_group_manager');
+         $group_manager->resetLimits();
+         $this->instance['zzz_group_manager'] = $group_manager;
+      } else {
+         #$this->instance['zzz_group_manager']->resetLimits();
+      }
+      return $this->instance['zzz_group_manager'];
    }
 
   /** get instance of cs_institution_manager
@@ -698,14 +889,34 @@ class cs_environment {
    * @access public
    */
    function getInstitutionManager() {
-      if (!isset($this->instance['institution_manager'])) {
-         $institution_manager = $this->_getInstance('cs_institution_manager');
-         $institution_manager->resetLimits();
-         $this->instance['institution_manager'] = $institution_manager;
+      if ( !$this->isArchiveMode() ) {
+         if (!isset($this->instance['institution_manager'])) {
+            $institution_manager = $this->_getInstance('cs_institution_manager');
+            $institution_manager->resetLimits();
+            $this->instance['institution_manager'] = $institution_manager;
+         } else {
+            #$this->instance['institution_manager']->resetLimits();
+         }
+         return $this->instance['institution_manager'];
       } else {
-         #$this->instance['institution_manager']->resetLimits();
+         return $this->getZzzInstitutionManager();
       }
-      return $this->instance['institution_manager'];
+   }
+
+  /** get instance of cs_zzz_institution_manager
+   *
+   * @return cs_zzz_institution_manager
+   * @access public
+   */
+   function getZzzInstitutionManager() {
+      if (!isset($this->instance['zzz_institution_manager'])) {
+         $institution_manager = $this->_getInstance('cs_zzz_institution_manager');
+         $institution_manager->resetLimits();
+         $this->instance['zzz_institution_manager'] = $institution_manager;
+      } else {
+         #$this->instance['zzz_institution_manager']->resetLimits();
+      }
+      return $this->instance['zzz_institution_manager'];
    }
 
    /** get instance of cs_link_modifier_item_manager
@@ -714,7 +925,20 @@ class cs_environment {
    * @access public
    */
    function getLinkModifierItemManager() {
-      return $this->_getInstance('cs_link_modifier_item_manager');
+      if ( !$this->isArchiveMode() ) {
+         return $this->_getInstance('cs_link_modifier_item_manager');
+      } else {
+         return $this->getZzzLinkModifierItemManager();
+      }
+   }
+
+   /** get instance of cs_zzz_link_modifier_item_manager
+   *
+   * @return cs_zzz_link_modifier_item_manager
+   * @access public
+   */
+   function getZzzLinkModifierItemManager() {
+      return $this->_getInstance('cs_zzz_link_modifier_item_manager');
    }
 
   /** get instance of cs_link_item_file_manager
@@ -723,7 +947,20 @@ class cs_environment {
    * @access public
    */
    function getLinkItemFileManager() {
-      return $this->_getInstance('cs_link_item_file_manager');
+      if ( !$this->isArchiveMode() ) {
+         return $this->_getInstance('cs_link_item_file_manager');
+      } else {
+         return $this->getZzzLinkItemFileManager();
+      }
+   }
+
+  /** get instance of cs_zzz_link_item_file_manager
+   *
+   * @return cs_zzz_link_item_file_manager
+   * @access public
+   */
+   function getZzzLinkItemFileManager() {
+      return $this->_getInstance('cs_zzz_link_item_file_manager');
    }
 
   /** get instance of cs_community_manager
@@ -823,9 +1060,21 @@ class cs_environment {
    * @access public
    */
    function getBuzzwordManager() {
-      return $this->_getInstance('cs_buzzword_manager');
+      if ( !$this->isArchiveMode() ) {
+         return $this->_getInstance('cs_buzzword_manager');
+      } else {
+         return $this->getZzzBuzzwordManager();
+      }
    }
 
+  /** get instance of cs_zzz_buzzword_manager
+   *
+   * @return cs_zzz_buzzword_manager
+   * @access public
+   */
+   function getZzzBuzzwordManager() {
+      return $this->_getInstance('cs_zzz_buzzword_manager');
+   }
 
   /** get instance of cs_mylist_manager
    *
@@ -836,36 +1085,70 @@ class cs_environment {
       return $this->_getInstance('cs_mylist_manager');
    }
 
-
-
   /** get instance of cs_file_manager
    *
    * @return cs_file_manager
    * @access public
-   * @author CommSy Development Group
    */
    function getFileManager() {
-      return $this->_getInstance('cs_file_manager');
+      if ( !$this->isArchiveMode() ) {
+         return $this->_getInstance('cs_file_manager');
+      } else {
+         return $this->getZzzFileManager();
+      }
+   }
+
+  /** get instance of cs_zzz_file_manager
+   *
+   * @return cs_zzz_file_manager
+   * @access public
+   */
+   function getZzzFileManager() {
+      return $this->_getInstance('cs_zzz_file_manager');
    }
 
   /** get instance of cs_reader_manager
    *
    * @return cs_reader_manager
    * @access public
-   * @author CommSy Development Group
    */
    function getReaderManager() {
-      return $this->_getInstance('cs_reader_manager');
+      if ( !$this->isArchiveMode() ) {
+         return $this->_getInstance('cs_reader_manager');
+      } else {
+         return $this->getZzzReaderManager();
+      }
+   }
+
+  /** get instance of cs_zzz_reader_manager
+   *
+   * @return cs_zzz_reader_manager
+   * @access public
+   */
+   function getZzzReaderManager() {
+      return $this->_getInstance('cs_zzz_reader_manager');
    }
 
   /** get instance of cs_noticed_manager
    *
    * @return cs_noticed_manager
    * @access public
-   * @author CommSy Development Group
    */
    function getNoticedManager() {
-      return $this->_getInstance('cs_noticed_manager');
+      if ( !$this->isArchiveMode() ) {
+         return $this->_getInstance('cs_noticed_manager');
+      } else {
+         return $this->getZzzNoticedManager();
+      }
+   }
+
+  /** get instance of cs_zzz_noticed_manager
+   *
+   * @return cs_zzz_noticed_manager
+   * @access public
+   */
+   function getZzzNoticedManager() {
+      return $this->_getInstance('cs_zzz_noticed_manager');
    }
 
   /** get instance of cs_room_manager
@@ -873,8 +1156,12 @@ class cs_environment {
    * @return cs_room_manager
    * @access public
    */
-   function getRoomManager() {
-      return $this->_getInstance('cs_room_manager');
+   function getRoomManager($force = false) {
+      if ( $force or !$this->isArchiveMode() ) {
+         return $this->_getInstance('cs_room_manager');
+      } else {
+         return $this->getZzzRoomManager();
+      }
    }
 
  /** get instance of cs_zzz_room_manager
@@ -886,15 +1173,26 @@ class cs_environment {
       return $this->_getInstance('cs_zzz_room_manager');
    }
 
-
   /** get instance of cs_task_manager
    *
    * @return cs_task_manager
    * @access public
-   * @author CommSy Development Group
    */
    function getTaskManager() {
-      return $this->_getInstance('cs_tasks_manager');
+      if ( !$this->isArchiveMode() ) {
+         return $this->_getInstance('cs_tasks_manager');
+      } else {
+         return $this->getZzzTaskManager();
+      }
+   }
+
+ /** get instance of cs_zzz_task_manager
+   *
+   * @return cs_zzz_task_manager
+   * @access public
+   */
+   public function getZzzTaskManager() {
+      return $this->_getInstance('cs_zzz_task_manager');
    }
 
   /** get instance of cs_tag_manager
@@ -903,7 +1201,20 @@ class cs_environment {
    * @access public
    */
    public function getTagManager () {
-      return $this->_getInstance('cs_tag_manager');
+      if ( !$this->isArchiveMode() ) {
+         return $this->_getInstance('cs_tag_manager');
+      } else {
+         return $this->getZzzTagManager();
+      }
+   }
+
+  /** get instance of cs_zzz_tag_manager
+   *
+   * @return cs_zzz_tag_manager
+   * @access public
+   */
+   public function getZzzTagManager () {
+      return $this->_getInstance('cs_zzz_tag_manager');
    }
 
   /** get instance of cs_tag2tag_manager
@@ -912,7 +1223,20 @@ class cs_environment {
    * @access public
    */
    public function getTag2TagManager () {
-      return $this->_getInstance('cs_tag2tag_manager');
+      if ( !$this->isArchiveMode() ) {
+         return $this->_getInstance('cs_tag2tag_manager');
+      } else {
+         return $this->getZzzTag2TagManager();
+      }
+   }
+
+  /** get instance of cs_zzz_tag2tag_manager
+   *
+   * @return cs_zzz_tag2tag_manager
+   * @access public
+   */
+   public function getZzzTag2TagManager () {
+      return $this->_getInstance('cs_zzz_tag2tag_manager');
    }
 
   /** get instance of cs_item_manager
@@ -920,8 +1244,12 @@ class cs_environment {
    * @return cs_item_manager
    * @access public
    */
-   public function getItemManager() {
-      return $this->_getInstance('cs_item_manager');
+   public function getItemManager($force = false) {
+      if ( $force or !$this->isArchiveMode() ) {
+         return $this->_getInstance('cs_item_manager');
+      } else {
+         return $this->getZzzItemManager();
+      }
    }
 
  /** get instance of cs_zzz_item_manager
@@ -1121,15 +1449,13 @@ class cs_environment {
    * @return cs_XXX_manager
    * @access public
    */
-   function getManager ($type) {
+   function getManager ($type, $force = false) {
       if (!empty($type)) {
          if ($type == CS_DATE_TYPE) {
             return $this->getDateManager();
          } elseif ($type == CS_TODO_TYPE or $type == 'todos') {
             return $this->getTodosManager();
-         } elseif ($type == 'contact' or $type == 'contacts') {
-            return $this->getUserManager();
-         } elseif ($type == CS_USER_TYPE or $type == 'users') {
+         } elseif ($type == 'contact' or $type == 'contacts' or $type == CS_USER_TYPE or $type == 'users') {
             return $this->getUserManager();
          } elseif ($type == CS_MATERIAL_TYPE or $type == 'materials') {
             return $this->getMaterialManager();
@@ -1158,23 +1484,23 @@ class cs_environment {
          } elseif ($type == 'log_archive') {
             return $this->getLogArchiveManager();
          } elseif ($type == CS_PROJECT_TYPE) {
-            return $this->getProjectManager();
+            return $this->getProjectManager($force);
          }elseif ($type == CS_STEP_TYPE) {
             return $this->getStepManager();
          } elseif ($type == CS_ROOM_TYPE) {
-            return $this->getRoomManager();
+            return $this->getRoomManager($force);
          } elseif ($type == CS_COMMUNITY_TYPE) {
-            return $this->getCommunityManager();
+            return $this->getCommunityManager($force);
          } elseif ($type == CS_PRIVATEROOM_TYPE) {
-            return $this->getPrivateRoomManager();
+            return $this->getPrivateRoomManager($force);
          } elseif ($type == CS_GROUPROOM_TYPE) {
-            return $this->getGroupRoomManager();
+            return $this->getGroupRoomManager($force);
          } elseif ($type == CS_MYROOM_TYPE) {
             return $this->getMyRoomManager();
          } elseif ($type == CS_PORTAL_TYPE) {
-            return $this->getPortalManager();
+            return $this->getPortalManager($force);
          } elseif ($type == CS_SERVER_TYPE) {
-            return $this->getServerManager();
+            return $this->getServerManager($force);
          } elseif ($type == CS_FILE_TYPE) {
             return $this->getFileManager();
          } elseif ($type == CS_LINK_TYPE) {
@@ -1775,6 +2101,18 @@ class cs_environment {
          $retour = true;
       }
       return $retour;
+   }
+
+   public function activateArchiveMode () {
+      $this->_archive_mode = true;
+   }
+
+   public function deactivateArchiveMode () {
+      $this->_archive_mode = false;
+   }
+
+   public function isArchiveMode () {
+      return $this->_archive_mode;
    }
 }
 ?>

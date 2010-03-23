@@ -22,27 +22,17 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-/** upper class of the zzz_item manager
+/** upper class of the zzz_section_manager
  */
-include_once('classes/cs_item_manager.php');
+include_once('classes/cs_section_manager.php');
 
-/** class for database connection to the database table "zzz_item"
- * this class implements a database manager for the table "zzz_item"
+/** class for database connection to the database table "zzz_section"
+ * this class implements a database manager for the table "zzz_section"
  */
-class cs_zzz_item_manager extends cs_item_manager {
+class cs_zzz_section_manager extends cs_section_manager {
    public function __construct ($environment) {
       $this->_db_prefix = $environment->getConfiguration('c_db_backup_prefix').'_';
-      parent::cs_item_manager($environment);
-   }
-
-   public function getItem ( $iid ) {
-      $retour = parent::getItem($iid);
-      if ( !isset($retour) ) {
-         $item_manager = $this->_environment->getItemManager(true);
-         $retour = $item_manager->getItem($iid);
-         unset($item_manager);
-      }
-      return $retour;
+      parent::cs_section_manager($environment);
    }
 }
 ?>

@@ -77,7 +77,6 @@ class cs_item_manager extends cs_manager {
       $this->_type_limit = NULL;
       $this->_order_limit = NULL;
       $this->_list_limit = NULL;
-      $this->_search_limit = NULL;
       $this->_label_limit = NULL;
       $this->_interval_limit = NULL;
       $this->_type_array_limit = array();
@@ -365,38 +364,32 @@ class cs_item_manager extends cs_manager {
    function getAllPrivateRoomEntriesOfUserList($room_ids,$user_ids){
         $rs = array();
         $query = 'SELECT DISTINCT '.$this->addDatabasePrefix('items').'.*, modifier.modifier_id';
-        if (isset($this->_search_array)) {
-           $query .= ' ,materials.title, materials.description, materials.extras, todos.title, todos.description, todos.description';
-        }
         $query .= ' FROM '.$this->addDatabasePrefix('items');
         $query .= ' LEFT JOIN '.$this->addDatabasePrefix('labels').' AS label ON '.$this->addDatabasePrefix('items').'.item_id=label.item_id';
         $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_modifier_item').' AS modifier ON '.$this->addDatabasePrefix('items').'.item_id=modifier.item_id';
 
-        // restrict materials by buzzword (la4)
-        if (isset($this->_list_limit)) {
-           if ($this->_list_limit == -1){
-              $query .= ' LEFT JOIN '.$this->addDatabasePrefix('links').' AS links ON links.from_item_id='.$this->addDatabasePrefix('items').'.item_id AND links.link_type="in_mylist"';
-              $query .= ' LEFT JOIN '.$this->addDatabasePrefix('labels').' AS mylists ON links.to_item_id=mylists.item_id AND mylists.type="mylist"';
-           }else{
-              $query .= ' INNER JOIN '.$this->addDatabasePrefix('links').' AS links ON links.from_item_id='.$this->addDatabasePrefix('items').'.item_id AND links.link_type="in_mylist"';
-              $query .= ' INNER JOIN '.$this->addDatabasePrefix('labels').' AS mylists ON links.to_item_id=mylists.item_id AND mylists.type="mylist"';
-           }
-        }
+       // restrict materials by buzzword (la4)
+       if (isset($this->_list_limit)) {
+          if ($this->_list_limit == -1){
+             $query .= ' LEFT JOIN '.$this->addDatabasePrefix('links').' AS links ON links.from_item_id='.$this->addDatabasePrefix('items').'.item_id AND links.link_type="in_mylist"';
+             $query .= ' LEFT JOIN '.$this->addDatabasePrefix('labels').' AS mylists ON links.to_item_id=mylists.item_id AND mylists.type="mylist"';
+          }else{
+             $query .= ' INNER JOIN '.$this->addDatabasePrefix('links').' AS links ON links.from_item_id='.$this->addDatabasePrefix('items').'.item_id AND links.link_type="in_mylist"';
+             $query .= ' INNER JOIN '.$this->addDatabasePrefix('labels').' AS mylists ON links.to_item_id=mylists.item_id AND mylists.type="mylist"';
+          }
+       }
 
-        if (isset($this->_buzzword_limit)) {
-           if ($this->_buzzword_limit == -1){
-              $query .= ' LEFT JOIN '.$this->addDatabasePrefix('links').' AS buzzword_links ON buzzword_links.from_item_id='.$this->addDatabasePrefix('items').'.item_id AND buzzword_links.link_type="buzzword_for"';
-              $query .= ' LEFT JOIN '.$this->addDatabasePrefix('labels').' AS buzzwords ON buzzword_links.to_item_id=buzzwords.item_id AND buzzwords.type="buzzword"';
-           }else{
-              $query .= ' INNER JOIN '.$this->addDatabasePrefix('links').' AS buzzword_links ON buzzword_links.from_item_id='.$this->addDatabasePrefix('items').'.item_id AND buzzword_links.link_type="buzzword_for"';
-              $query .= ' INNER JOIN '.$this->addDatabasePrefix('labels').' AS buzzwords ON buzzword_links.to_item_id=buzzwords.item_id AND buzzwords.type="buzzword"';
-           }
-        }
+       if (isset($this->_buzzword_limit)) {
+          if ($this->_buzzword_limit == -1){
+             $query .= ' LEFT JOIN '.$this->addDatabasePrefix('links').' AS buzzword_links ON buzzword_links.from_item_id='.$this->addDatabasePrefix('items').'.item_id AND buzzword_links.link_type="buzzword_for"';
+             $query .= ' LEFT JOIN '.$this->addDatabasePrefix('labels').' AS buzzwords ON buzzword_links.to_item_id=buzzwords.item_id AND buzzwords.type="buzzword"';
+          }else{
+             $query .= ' INNER JOIN '.$this->addDatabasePrefix('links').' AS buzzword_links ON buzzword_links.from_item_id='.$this->addDatabasePrefix('items').'.item_id AND buzzword_links.link_type="buzzword_for"';
+             $query .= ' INNER JOIN '.$this->addDatabasePrefix('labels').' AS buzzwords ON buzzword_links.to_item_id=buzzwords.item_id AND buzzwords.type="buzzword"';
+          }
+       }
 
-        if (isset($this->_search_array)) {
-           $query .= ' LEFT JOIN '.$this->addDatabasePrefix('materials').' AS materials ON materials.item_id='.$this->addDatabasePrefix('items').'.item_id';
-           $query .= ' LEFT JOIN '.$this->addDatabasePrefix('todos').' AS todos ON todos.item_id='.$this->addDatabasePrefix('items').'.item_id';
-        }
+
         $query .= ' WHERE 1';
         $query .= ' AND (label.type IS NULL OR label.type="group" OR label.type="topic" OR label.type="group")';
         $query .= ' AND '.$this->addDatabasePrefix('items').'.context_id IN ('.implode(",",encode(AS_DB,$room_ids)).')';
@@ -429,20 +422,6 @@ class cs_item_manager extends cs_manager {
               $query .= ' AND buzzwords.item_id="'.encode(AS_DB,$this->_buzzword_limit).'"';
            }
         }
-        if (isset($this->_search_array) AND !empty($this->_search_array)) {
-           $query .= ' AND (';
-           $field_array = array('materials.description',
-                                'materials.title',
-                                'materials.author',
-                                'materials.extras',
-                                'todos.title',
-                                'todos.description',
-                                'todos.extras'
-                                );
-           $search_limit_query_code = $this->_generateSearchLimitCode($field_array);
-           $query .= $search_limit_query_code;
-           $query .= ')';
-        }
 
         $query .= ' ORDER BY '.$this->addDatabasePrefix('items').'.modification_date DESC';
         if (isset($this->_interval_limit)) {
@@ -455,6 +434,7 @@ class cs_item_manager extends cs_manager {
         $result = $this->_db_connector->performQuery($query);
          if ( !isset($result) ) {
             include_once('functions/error_functions.php');
+            trigger_error('Problems selecting list of items.',E_USER_WARNING);
             trigger_error('Problems selecting list of entry items.',E_USER_WARNING);
          } else {
             $list = new cs_list();
@@ -467,9 +447,6 @@ class cs_item_manager extends cs_manager {
 
         return $list;
    }
-
-
-
 
    function getAllNewPrivateRoomEntriesOfRoomList($room_ids){
         $rs = array();
@@ -733,6 +710,58 @@ class cs_item_manager extends cs_manager {
          unset($result);
       }
 
+      return $retour;
+   }
+
+   ########################################################
+   # archive functions
+   ########################################################
+
+   function moveFromDbToBackup($context_id){
+      global $c_db_backup_prefix;
+      $retour = false;
+      if ( !empty($context_id) ) {
+         $query = 'INSERT INTO '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$this->_db_table).' SELECT * FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).'.item_id = "'.$context_id.'"';
+         $result = $this->_db_connector->performQuery($query);
+         if ( !isset($result) ) {
+            include_once('functions/error_functions.php');
+            trigger_error('Problems while copying to backup-table.',E_USER_WARNING);
+         } else {
+            $query = 'DELETE FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).'.item_id = "'.$context_id.'"';
+            $result = $this->_db_connector->performQuery($query);
+            if ( !isset($result) ) {
+               include_once('functions/error_functions.php');
+               trigger_error('Problems deleting after move to backup-table.',E_USER_WARNING);
+            } elseif ( !empty($result[0]) ) {
+               $retour = true;
+            }
+         }
+      }
+      $retour = $retour and parent::moveFromDbToBackup($context_id);
+      return $retour;
+   }
+
+   function moveFromBackupToDb($context_id){
+      global $c_db_backup_prefix;
+      $retour = false;
+      if ( !empty($context_id) ) {
+         $query = 'INSERT INTO '.$this->addDatabasePrefix($this->_db_table).' SELECT * FROM '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$this->_db_table).' WHERE '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$this->_db_table).'.item_id = "'.$context_id.'"';
+         $result = $this->_db_connector->performQuery($query);
+         if ( !isset($result) ) {
+            include_once('functions/error_functions.php');
+            trigger_error('Problems while copying to backup-table.',E_USER_WARNING);
+         } else {
+            $query = 'DELETE FROM '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$this->_db_table).' WHERE '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$this->_db_table).'.item_id = "'.$context_id.'"';
+            $result = $this->_db_connector->performQuery($query);
+            if ( !isset($result) ) {
+               include_once('functions/error_functions.php');
+               trigger_error('Problems deleting after move to backup-table.',E_USER_WARNING);
+            } elseif ( !empty($result[0]) ) {
+               $retour = true;
+            }
+         }
+      }
+      $retour = $retour and parent::moveFromBackupToDb($context_id);
       return $retour;
    }
 }
