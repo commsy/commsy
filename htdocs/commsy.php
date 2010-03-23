@@ -29,41 +29,41 @@
 chdir('..');
 mb_internal_encoding('UTF-8');
 function cleanupSession($session, $environment){
-     if ($session->issetValue('history')){
-        $history_array = $session->getValue('history');
-        $used_modules = array();
-        foreach($history_array as $history){
-           $used_modules[] = $history['module'];
-        }
-        $context_item = $environment->getCurrentContextItem();
-        $current_room_modules = $context_item->getHomeConf();
-        $room_modules = array();
-        if (!empty($current_room_modules)) {
-           $room_modules =  explode(',',$current_room_modules);
-        }
-        foreach ($room_modules as $module) {
-           $module_name = explode('_',$module);
-           $name = $module_name[0];
-           if ( !in_array($name,$used_modules) and !in_array('home',$used_modules)) {
-              $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$name.'_index_ids');
-              $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$name.'s_index_ids');
-              $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$name.'_selected_ids');
-              $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$name.'s_selected_ids');
-           }
-        }
-        if ( !in_array('account',$used_modules) ){
-           $session->unsetValue('cid'.$environment->getCurrentContextID().'_account_index_ids');
-           $session->unsetValue('cid'.$environment->getCurrentContextID().'_account_selected_ids');
-        }
-     }
-     if ($environment->getCurrentFunction() != 'edit'){
-        $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_buzzword_ids');
-        $session->unsetValue('buzzword_post_vars');
-        $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_tag_ids');
-        $session->unsetValue('tag_post_vars');
-        $session->unsetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids');
-        $session->unsetValue('linked_items_post_vars');
-     }
+   if ($session->issetValue('history')){
+      $history_array = $session->getValue('history');
+      $used_modules = array();
+      foreach($history_array as $history){
+         $used_modules[] = $history['module'];
+      }
+      $context_item = $environment->getCurrentContextItem();
+      $current_room_modules = $context_item->getHomeConf();
+      $room_modules = array();
+      if (!empty($current_room_modules)) {
+         $room_modules =  explode(',',$current_room_modules);
+      }
+      foreach ($room_modules as $module) {
+         $module_name = explode('_',$module);
+         $name = $module_name[0];
+         if ( !in_array($name,$used_modules) and !in_array('home',$used_modules)) {
+            $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$name.'_index_ids');
+            $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$name.'s_index_ids');
+            $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$name.'_selected_ids');
+            $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$name.'s_selected_ids');
+         }
+      }
+      if ( !in_array('account',$used_modules) ){
+         $session->unsetValue('cid'.$environment->getCurrentContextID().'_account_index_ids');
+         $session->unsetValue('cid'.$environment->getCurrentContextID().'_account_selected_ids');
+      }
+   }
+   if ($environment->getCurrentFunction() != 'edit'){
+      $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_buzzword_ids');
+      $session->unsetValue('buzzword_post_vars');
+      $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_tag_ids');
+      $session->unsetValue('tag_post_vars');
+      $session->unsetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids');
+      $session->unsetValue('linked_items_post_vars');
+   }
 }
 
 // include base-config
@@ -85,16 +85,23 @@ if ( get_magic_quotes_gpc() ) {
    trigger_error('"magic_quotes_gpc" must be switched off for CommSy to work correctly. This must be set in php.ini, .htaccess or httpd.conf.', E_USER_ERROR);
 }
 if ( get_magic_quotes_runtime() ) {
-   ini_set('magic_quotes_runtime',0);
-   if ( get_magic_quotes_runtime() ) {
+   if ( isPHP5() ) {
+      ini_set('magic_quotes_runtime',0);
+      if ( get_magic_quotes_runtime() ) {
+         include_once('functions/error_functions.php');
+         trigger_error('"magic_quotes_runtime" must be switched off for CommSy to work correctly. See "htaccess-dist".', E_USER_ERROR);
+      }
+   } else {
       include_once('functions/error_functions.php');
       trigger_error('"magic_quotes_runtime" must be switched off for CommSy to work correctly. See "htaccess-dist".', E_USER_ERROR);
    }
 }
-$ini_reg_globals = ini_get('register_globals');
-if ( !empty($ini_reg_globals) and strtolower($ini_reg_globals) != 'off' ) {
-   include_once('functions/error_functions.php');
-   trigger_error('"register_globals" must be switched off for CommSy to work correctly. This must be set in php.ini, .htaccess or httpd.conf.', E_USER_ERROR);
+if ( isPHP5() ) {
+   $ini_reg_globals = ini_get('register_globals');
+   if ( !empty($ini_reg_globals) and strtolower($ini_reg_globals) != 'off' ) {
+      include_once('functions/error_functions.php');
+      trigger_error('"register_globals" must be switched off for CommSy to work correctly. This must be set in php.ini, .htaccess or httpd.conf.', E_USER_ERROR);
+   }
 }
 
 // setup commsy-environment

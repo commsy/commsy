@@ -42,15 +42,22 @@ if ( get_magic_quotes_gpc() ) {
    trigger_error('"magic_quotes_gpc" must be switched off for CommSy to work correctly. This must be set in php.ini, .htaccess or httpd.conf.', E_USER_ERROR);
 }
 if ( get_magic_quotes_runtime() ) {
-   ini_set('magic_quotes_runtime',0);
-   if ( get_magic_quotes_runtime() ) {
+   if ( isPHP5() ) {
+      ini_set('magic_quotes_runtime',0);
+      if ( get_magic_quotes_runtime() ) {
+         include_once('functions/error_functions.php');
+         trigger_error('"magic_quotes_runtime" must be switched off for CommSy to work correctly. See "htaccess-dist".', E_USER_ERROR);
+      }
+   } else {
       include_once('functions/error_functions.php');
       trigger_error('"magic_quotes_runtime" must be switched off for CommSy to work correctly. See "htaccess-dist".', E_USER_ERROR);
    }
 }
-if ( ini_get('register_globals') ) {
-   include_once('functions/error_functions.php');
-   trigger_error('"register_globals" must be switched off for CommSy to work correctly. This must be set in php.ini, .htaccess or httpd.conf.', E_USER_ERROR);
+if ( isPHP5() ) {
+   if ( ini_get('register_globals') ) {
+      include_once('functions/error_functions.php');
+      trigger_error('"register_globals" must be switched off for CommSy to work correctly. This must be set in php.ini, .htaccess or httpd.conf.', E_USER_ERROR);
+   }
 }
 
 // setup commsy-environment

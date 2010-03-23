@@ -1907,8 +1907,8 @@ function checkColorArray($color_array){
 }
 
 function getCurrentCommSyFunctions(){
-	$functions_file = '';
-	$files_found = array();
+   $functions_file = '';
+   $files_found = array();
    if($dir=opendir('htdocs/javascript/jQuery/commsy')){
       while($file=readdir($dir)) {
          if(stripos($file, 'commsy_functions') !== false){
@@ -1917,19 +1917,30 @@ function getCurrentCommSyFunctions(){
       }
    }
    if(sizeof($files_found) > 1){
-   	$modification_time = 0;
-   	$current_file = '';
-   	foreach($files_found as $file_found){
-   		$modification_time_temp = filemtime('htdocs/javascript/jQuery/commsy/'.$file_found);
-   		if($modification_time < $modification_time_temp){
-   			$modification_time = $modification_time_temp;
-   			$current_file = $file_found;
-   		}
-   	}
-   	$functions_file = $current_file;
+      $modification_time = 0;
+      $current_file = '';
+      foreach($files_found as $file_found){
+         $modification_time_temp = filemtime('htdocs/javascript/jQuery/commsy/'.$file_found);
+         if($modification_time < $modification_time_temp){
+            $modification_time = $modification_time_temp;
+            $current_file = $file_found;
+         }
+      }
+      $functions_file = $current_file;
    } else {
-   	$functions_file = $files_found[0];
+      $functions_file = $files_found[0];
    }
    return $functions_file;
+}
+
+function isPHP5 () {
+   $retour = false;
+   $php_version = phpversion();
+   if ( $php_version < 6
+        and $php_version >= 5
+      ) {
+      $retour = true;
+   }
+   return $retour;
 }
 ?>
