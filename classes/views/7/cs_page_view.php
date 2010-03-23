@@ -574,7 +574,7 @@ class cs_page_view extends cs_view {
 
      if (isset($c_use_new_private_room) and $c_use_new_private_room){
      /**********/
-	  /*PORTLETS*/
+     /*PORTLETS*/
       if ($this->_environment->inPrivateRoom()){
          $retour .= '   <link rel="stylesheet" media="screen" type="text/css" href="css/commsy_portlets_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
 
@@ -847,6 +847,7 @@ class cs_page_view extends cs_view {
       if ( $current_context_item->isLocked()
            or $current_context_item->isServer()
            or $current_context_item->isPortal()
+           or $current_context_item->isClosed()
          ) {
          // do nothing
       } elseif ( $current_context_item->isOpenForGuests() ) {
