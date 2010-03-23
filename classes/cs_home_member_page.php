@@ -277,9 +277,9 @@ class cs_home_member_page extends cs_left_page {
                   }
               }
 
-            // login in user
+              // login in user
               #if ($login) {
-            $session = $this->_environment->getSessionItem();
+                 $session = $this->_environment->getSessionItem();
                  #if ($session->issetValue('last_step')) {
                     #$last_step = $session->getValue('last_step');
                     #$session->unsetValue('last_step');
@@ -303,15 +303,13 @@ class cs_home_member_page extends cs_left_page {
                  // switch between portals
                  $session->setValue('commsy_id',$this->_environment->getCurrentPortalID());
 
-       // auth_source
-       if ( empty($auth_source) ) {
-           $auth_source = $authentication->getAuthSourceItemID();
-       }
-       $session->setValue('auth_source',$auth_source);
-
-
-                 #$this->_environment->setSessionItem($session);
-              #}
+                 // auth_source
+                 if ( empty($auth_source) ) {
+                    $auth_source = $authentication->getAuthSourceItemID();
+                 }
+                 $session->setValue('auth_source',$auth_source);
+                 $this->_environment->setSessionItem($session);
+               #}
             }
          }
       }

@@ -349,6 +349,7 @@ class cs_home_member2_page extends cs_left_page {
                   $auth_source = $authentication->getAuthSourceItemID();
                }
                $session->setValue('auth_source',$auth_source);
+               $this->_environment->setSessionItem($session);
             }
          }
       }
