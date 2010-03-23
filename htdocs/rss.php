@@ -44,7 +44,7 @@ if ( isset($_GET['cid']) ) {
    if ( $context_item->isOpenForGuests() ) {
       $validated = true;
    }
-   
+
    function setFileArray($item) {
    	global $environment;
    	$file_array = $item->getFileList()->to_Array();
@@ -202,8 +202,152 @@ if ( isset($_GET['cid']) ) {
       // RSS File Content
       $item_manager->resetLimits();
       $item_manager->setTypeArrayLimit($type_limit_array);
-      $item_manager->setIntervalLimit(20);
+      $item_manager->showNoNotActivatedEntries();
+      $item_manager->setIntervalLimit(10);
       $result = $item_manager->_performQuery();
+      // Bugfix: not activated items
+      $flag = true;
+      $n = 1;
+      while($flag){
+      $counter = 0;
+      $newIntervalLimit = 10;
+   	  foreach($result as $row) {
+      if ( $counter == 10 ) {
+         break;
+      }
+      $type = $row['type'];
+
+      switch($type)
+      {
+         case 'user':
+            include_once('classes/cs_user_manager.php');
+            $manager = new cs_user_manager($environment);
+            $item = $manager->getItem($row['item_id']);
+            if ($item->isNotActivated()) {
+            	$newIntervalLimit++;
+               }
+            unset($item);
+            unset($manager);
+      		break;
+      	case 'annotation':
+            include_once('classes/cs_annotations_manager.php');
+            $manager = new cs_annotations_manager($environment);
+            $item = $manager->getItem($row['item_id']);
+            if ($item->isNotActivated()) {
+            	$newIntervalLimit++;
+               }
+            unset($item);
+            unset($manager);
+            break;
+        case 'discussion':
+            include_once('classes/cs_discussion_manager.php');
+            $manager = new cs_discussion_manager($environment);
+            $item = $manager->getItem($row['item_id']);
+            if ($item->isNotActivated()) {
+            	$newIntervalLimit++;
+               }
+            unset($item);
+            unset($manager);
+            break;
+        case 'discarticle':
+            include_once('classes/cs_discussionarticles_manager.php');
+            $manager = new cs_discussionarticles_manager($environment);
+            $item = $manager->getItem($row['item_id']);
+            if ($item->isNotActivated()) {
+            	$newIntervalLimit++;
+               }
+            unset($item);
+            unset($manager);
+            break;
+        case 'material':
+            include_once('classes/cs_material_manager.php');
+            $manager = new cs_material_manager($environment);
+            $item = $manager->getItem($row['item_id']);
+            if ($item->isNotActivated()) {
+            	$newIntervalLimit++;
+            }
+            unset($item);
+            unset($manager);
+            break;
+      case 'announcement':
+            include_once('classes/cs_announcement_manager.php');
+            $manager = new cs_announcement_manager($environment);
+            $item = $manager->getItem($row['item_id']);
+            if ($item->isNotActivated()) {
+            	$newIntervalLimit++;
+               }
+            unset($item);
+            unset($manager);
+            break;
+      case 'section':
+            include_once('classes/cs_section_manager.php');
+            $manager = new cs_section_manager($environment);
+            $item = $manager->getItem($row['item_id']);
+            if ($item->isNotActivated()) {
+            	$newIntervalLimit++;
+               }
+            unset($item);
+            unset($manager);
+            break;
+      case 'date':
+            include_once('classes/cs_dates_manager.php');
+            $manager = new cs_dates_manager($environment);
+            $item = $manager->getItem($row['item_id']);
+			if ($item->isNotActivated()) {
+            	$newIntervalLimit++;
+               }
+            unset($manager);
+            unset($item);
+            break;
+      case 'label':
+            include_once('classes/cs_labels_manager.php');
+            $manager = new cs_labels_manager($environment);
+            $item = $manager->getItem($row['item_id']);
+            if ($item->isNotActivated()) {
+            	$newIntervalLimit++;
+               }
+            unset($manager);
+            unset($item);
+            break;
+      case 'todo':
+            include_once('classes/cs_todos_manager.php');
+            $manager = new cs_todos_manager($environment);
+            $item = $manager->getItem($row['item_id']);
+            if ($item->isNotActivated()) {
+            	$newIntervalLimit++;
+               }
+            unset($manager);
+            unset($item);
+            break;
+      case 'step':
+            $manager = $environment->getManager(CS_STEP_TYPE);
+            $item = $manager->getItem($row['item_id']);
+            if ($item->isNotActivated()) {
+            	$newIntervalLimit++;
+               }
+            unset($item);
+            unset($manager);
+            break;
+
+      }
+   	  }
+
+   	  if ($n * 10 - ($newIntervalLimit - $n * 10) >= 10){
+	   	$item_manager->resetLimits();
+	    $item_manager->setTypeArrayLimit($type_limit_array);
+	    $item_manager->showNoNotActivatedEntries();
+	    $item_manager->setIntervalLimit($newIntervalLimit);
+	    $result = $item_manager->_performQuery();
+	    $flag = false;
+   	  } else {
+   	  	$item_manager->resetLimits();
+	    $item_manager->setTypeArrayLimit($type_limit_array);
+	    $item_manager->showNoNotActivatedEntries();
+	    $item_manager->setIntervalLimit($newIntervalLimit);
+	    $result = $item_manager->_performQuery();
+   	  }
+   	  $n++;
+      }
    } else {
       $project_list = $user_item->getUserRelatedProjectList();
       $room_array = Array();
@@ -231,8 +375,153 @@ if ( isset($_GET['cid']) ) {
       $item_manager->resetLimits();
       $item_manager->setContextArrayLimit($room_array);
       $item_manager->setTypeArrayLimit($type_limit_array);
-      $item_manager->setIntervalLimit(20);
+      $item_manager->setIntervalLimit(10);
       $result = $item_manager->_performQuery();
+      // Bugfix: not activated items
+      $flag = true;
+      $n = 1;
+      while($flag){
+      $counter = 0;
+      $newIntervalLimit = 10;
+   	  foreach($result as $row) {
+      if ( $counter == 10 ) {
+         break;
+      }
+      $type = $row['type'];
+
+      switch($type)
+      {
+         case 'user':
+            include_once('classes/cs_user_manager.php');
+            $manager = new cs_user_manager($environment);
+            $item = $manager->getItem($row['item_id']);
+            if ($item->isNotActivated()) {
+            	$newIntervalLimit++;
+               }
+            unset($item);
+            unset($manager);
+      		break;
+      	case 'annotation':
+            include_once('classes/cs_annotations_manager.php');
+            $manager = new cs_annotations_manager($environment);
+            $item = $manager->getItem($row['item_id']);
+            if ($item->isNotActivated()) {
+            	$newIntervalLimit++;
+               }
+            unset($item);
+            unset($manager);
+            break;
+        case 'discussion':
+            include_once('classes/cs_discussion_manager.php');
+            $manager = new cs_discussion_manager($environment);
+            $item = $manager->getItem($row['item_id']);
+            if ($item->isNotActivated()) {
+            	$newIntervalLimit++;
+               }
+            unset($item);
+            unset($manager);
+            break;
+        case 'discarticle':
+            include_once('classes/cs_discussionarticles_manager.php');
+            $manager = new cs_discussionarticles_manager($environment);
+            $item = $manager->getItem($row['item_id']);
+            if ($item->isNotActivated()) {
+            	$newIntervalLimit++;
+               }
+            unset($item);
+            unset($manager);
+            break;
+        case 'material':
+            include_once('classes/cs_material_manager.php');
+            $manager = new cs_material_manager($environment);
+            $item = $manager->getItem($row['item_id']);
+            if ($item->isNotActivated()) {
+            	$newIntervalLimit++;
+            }
+            unset($item);
+            unset($manager);
+            break;
+      case 'announcement':
+            include_once('classes/cs_announcement_manager.php');
+            $manager = new cs_announcement_manager($environment);
+            $item = $manager->getItem($row['item_id']);
+            if ($item->isNotActivated()) {
+            	$newIntervalLimit++;
+               }
+            unset($item);
+            unset($manager);
+            break;
+      case 'section':
+            include_once('classes/cs_section_manager.php');
+            $manager = new cs_section_manager($environment);
+            $item = $manager->getItem($row['item_id']);
+            if ($item->isNotActivated()) {
+            	$newIntervalLimit++;
+               }
+            unset($item);
+            unset($manager);
+            break;
+      case 'date':
+            include_once('classes/cs_dates_manager.php');
+            $manager = new cs_dates_manager($environment);
+            $item = $manager->getItem($row['item_id']);
+			if ($item->isNotActivated()) {
+            	$newIntervalLimit++;
+               }
+            unset($manager);
+            unset($item);
+            break;
+      case 'label':
+            include_once('classes/cs_labels_manager.php');
+            $manager = new cs_labels_manager($environment);
+            $item = $manager->getItem($row['item_id']);
+            if ($item->isNotActivated()) {
+            	$newIntervalLimit++;
+               }
+            unset($manager);
+            unset($item);
+            break;
+      case 'todo':
+            include_once('classes/cs_todos_manager.php');
+            $manager = new cs_todos_manager($environment);
+            $item = $manager->getItem($row['item_id']);
+            if ($item->isNotActivated()) {
+            	$newIntervalLimit++;
+               }
+            unset($manager);
+            unset($item);
+            break;
+      case 'step':
+            $manager = $environment->getManager(CS_STEP_TYPE);
+            $item = $manager->getItem($row['item_id']);
+            if ($item->isNotActivated()) {
+            	$newIntervalLimit++;
+               }
+            unset($item);
+            unset($manager);
+            break;
+
+      }
+   	  }
+   	  if($n * 10 - ($newIntervalLimit - $n * 10) >= 10){
+	   	$item_manager->resetLimits();
+	   	$item_manager->setContextArrayLimit($room_array);
+	    $item_manager->setTypeArrayLimit($type_limit_array);
+	    $item_manager->showNoNotActivatedEntries();
+	    $item_manager->setIntervalLimit($newIntervalLimit);
+	    $result = $item_manager->_performQuery();
+	    $flag = false;
+   	  } else {
+   	  	$item_manager->resetLimits();
+      	$item_manager->setContextArrayLimit($room_array);
+      	$item_manager->setTypeArrayLimit($type_limit_array);
+      	$item_manager->setIntervalLimit($newIntervalLimit);
+      	$result = $item_manager->_performQuery();
+   	  }
+   	  $n++;
+
+      }
+
    }
 
    # caching - bringt nicht viel
@@ -278,7 +567,6 @@ if ( isset($_GET['cid']) ) {
       }
    }
    */
-
    $counter = 0;
    foreach($result as $row) {
       if ( $counter == 10 ) {
@@ -574,6 +862,7 @@ if ( isset($_GET['cid']) ) {
             include_once('classes/cs_dates_manager.php');
             $manager = new cs_dates_manager($environment);
             $item = $manager->getItem($row['item_id']);
+
             if ( isset($item)
                  and !$item->isNotActivated()
                ) {
@@ -811,6 +1100,7 @@ if ( isset($_GET['cid']) ) {
       }
    }
 
+
    $rss .= $rss_end;
 
    // debugging
@@ -824,7 +1114,6 @@ if ( isset($_GET['cid']) ) {
    header('Content-type: application/rss+xml; charset=UTF-8');
 
    echo($rss);
-
    # logging
    if ( !empty($_GET['hid']) ) {
       $l_current_user_item = $hash_manager->getUserByRSSHash($_GET['hid']);
