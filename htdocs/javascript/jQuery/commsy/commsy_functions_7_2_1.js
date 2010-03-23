@@ -1317,7 +1317,7 @@ jQuery(document).ready(function() {
 						if(this_image.mouse_is_over){
 							var id_parts = id.split('_');
 							var offset = jQuery('#dropdown_button_'+id_parts[4]).parent().offset();
-							dropdown(jQuery('#dropdown_menu_'+id_parts[4]), offset);
+							dropdown(jQuery('#dropdown_menu_'+id_parts[4]), offset, id_parts[4]);
 						}
 					}, 2000);
 				});
@@ -1329,7 +1329,7 @@ jQuery(document).ready(function() {
 				jQuery('#dropdown_button_'+int3).click(function(){
 					var id_parts = this.id.split('_');
 					var offset = jQuery('#'+this.id).parent().offset();
-					dropdown(jQuery('#dropdown_menu_'+id_parts[2]), offset);
+					dropdown(jQuery('#dropdown_menu_'+id_parts[2]), offset, id_parts[2]);
 				});
 
 				jQuery('#dropdown_button_'+int3).mouseover(function(){
@@ -1340,7 +1340,7 @@ jQuery(document).ready(function() {
 						if(this_image.mouse_is_over){
 							var id_parts = id.split('_');
 							var offset = jQuery('#dropdown_button_'+id_parts[2]).parent().offset();
-							dropdown(jQuery('#dropdown_menu_'+id_parts[2]), offset);
+							dropdown(jQuery('#dropdown_menu_'+id_parts[2]), offset, id_parts[2]);
 						}
 					}, 2000);
 				});
@@ -1361,6 +1361,7 @@ jQuery(document).ready(function() {
 					}
 					if(!target.hasClass('dropdown_menu') && !has_class){
 						jQuery("[id^='dropdown_menu_']").slideUp(150);
+						jQuery("[id^='dropdown_button_']").attr('src', 'images/commsyicons/dropdownmenu.png');
 					}
 				});
 			}
@@ -1368,17 +1369,20 @@ jQuery(document).ready(function() {
 	}
 });
 
-function dropdown(object, offset){
+function dropdown(object, offset, button){
 	object.css('top', offset.top + 18);
 	object.css('left', offset.left - 3);
 	if(object.css('display') == 'none'){
 		object.slideDown(150);
+		jQuery('#dropdown_button_'+button).attr('src', 'images/commsyicons/dropdownmenu_up.png');
 	} else if(object.css('display') == 'block'){
 		object.slideUp(150);
+		jQuery("[id^='dropdown_button_']").attr('src', 'images/commsyicons/dropdownmenu.png');
 	}
 	object.mouseleave(function(){
 		setTimeout(function() {
 			object.slideUp(150);
+			jQuery("[id^='dropdown_button_']").attr('src', 'images/commsyicons/dropdownmenu.png');
 		}, 2000);
 	});
 }
