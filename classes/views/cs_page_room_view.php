@@ -293,7 +293,7 @@ class cs_page_room_view extends cs_page_view {
 //         }
       }
 
-     // Einstellungen
+     // configuration
      // Wiki, Chat
 
      $current_context = $this->_environment->getCurrentContextItem();
@@ -361,7 +361,9 @@ class cs_page_room_view extends cs_page_view {
       $current_context_item = $this->_environment->getCurrentContextItem();
       $current_user_item = $this->_environment->getCurrentUserItem();
       $show_rss_link = false;
-      if ( $current_context_item->isLocked() ) {
+      if ( $current_context_item->isLocked()
+           or $current_context_item->isClosed()
+         ) {
          // do nothing
       } elseif ( $current_context_item->isOpenForGuests() ) {
          $show_rss_link =  true;
