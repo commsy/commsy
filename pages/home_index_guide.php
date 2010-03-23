@@ -242,8 +242,15 @@ if (isOption($option, $translator->getMessage('ACCOUNT_GET_MEMBERSHIP_BUTTON')))
 
    // build new user_item
    if ( !$room_item->checkNewMembersWithCode()
-        or ( $room_item->getCheckNewMemberCode() == $_POST['code'])
+        or (( $room_item->getCheckNewMemberCode() == $_POST['code'])
+        and (empty($_POST['description_user']))
+        or empty($_POST['code'])
+        and isset($_POST['description_user'])
+        or ($room_item->getCheckNewMemberCode() == $_POST['code']))
       ) {
+      	if($room_item->getCheckNewMemberCode() == $_POST['code']) {
+      		unset($_POST['description_user']);
+      	}
        $user_manager = $environment->getUserManager();
        $current_user = $environment->getCurrentUserItem();
        $private_room_user_item = $current_user->getRelatedPrivateRoomUserItem();
@@ -272,6 +279,7 @@ if (isOption($option, $translator->getMessage('ACCOUNT_GET_MEMBERSHIP_BUTTON')))
        //check room_settings
        if ( !$room_item->checkNewMembersNever()
             and !$room_item->checkNewMembersWithCode()
+            or (isset($_POST['description_user']))
           ) {
           $user_item->request();
           $check_message = 'YES'; // for mail body
@@ -304,6 +312,7 @@ if (isOption($option, $translator->getMessage('ACCOUNT_GET_MEMBERSHIP_BUTTON')))
 
           if ( !$room_item->checkNewMembersNever()
                and !$room_item->checkNewMembersWithCode()
+               or (isset($_POST['description_user']))
              ) {
              // save task
              $task_manager = $environment->getTaskManager();
@@ -443,6 +452,7 @@ if (isOption($option, $translator->getMessage('ACCOUNT_GET_MEMBERSHIP_BUTTON')))
        }
    } elseif ( $room_item->checkNewMembersWithCode()
               and $room_item->getCheckNewMemberCode() != $_POST['code']
+              and isset($_POST['code'])
             ) {
       $account_mode = 'member';
       $error = 'code';

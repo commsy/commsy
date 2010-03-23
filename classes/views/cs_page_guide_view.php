@@ -1038,6 +1038,7 @@ class cs_page_guide_view extends cs_page_view {
         }
 
         if ($item->checkNewMembersWithCode()) {
+        	$toggle_id = rand(0,1000000);
            $html .= $this->_translator->getMessage('ACCOUNT_GET_CODE_TEXT');
            if ( isset($get_params['error']) and !empty($get_params['error']) ) {
               $temp_array[0] = $this->_translator->getMessage('COMMON_ATTENTION').': ';
@@ -1047,6 +1048,37 @@ class cs_page_guide_view extends cs_page_view {
            $temp_array[0] = $this->_translator->getMessage('ACCOUNT_PROCESS_ROOM_CODE').': ';
            $temp_array[1] = '<input type="text" name="code" tabindex="14" size="30"/>'.LF;
            $formal_data[] = $temp_array;
+
+		   $temp_array = array();
+	       $temp_array[0] = '&nbsp;';
+	       $temp_array[1] = '<input type="submit" name="option" tabindex="15" value="'.$this->_translator->getMessage('ACCOUNT_GET_MEMBERSHIP_BUTTON').'"/>'.
+	                         '&nbsp;&nbsp;'.'<input type="submit" name="option" tabindex="16" value="'.$this->_translator->getMessage('COMMON_BACK_BUTTON').'"/>'.LF;
+	       $formal_data[] = $temp_array;
+
+		   if ( !empty($formal_data) ) {
+           $html .= $this->_getFormalDataAsHTML2($formal_data);
+           $html .= BRLF;
+           }
+           unset($formal_data);
+
+		   // Normale Raumanmeldung trotz Passwort
+		   $title = $this->_translator->getMessage('ACCOUNT_GET_CODE_TEXT_2');
+		   $html .= '<div>';
+		   $html .='<img id="toggle'.$toggle_id.'" src="images/more.gif"/>';
+		   $html .= '&nbsp;'.$title.'';
+		   $html .= '</div>';
+		   $html .= '<div id="creator_information'.$toggle_id.'">'.LF;
+           $html .= $this->_translator->getMessage('ACCOUNT_GET_4_TEXT');
+           $html .='<script type="text/javascript">initTextFormatingInformation("'.$toggle_id.'",false);</script>';
+           $temp_array[0] = $this->_translator->getMessage('ACCOUNT_PROCESS_ROOM_REASON').': ';
+           $value = '';
+           if (!empty($get_params['description_user'])) {
+              $value = $get_params['description_user'];
+              $value = str_replace('%20',' ',$value);
+           }
+           $temp_array[1] = '<textarea name="description_user" cols="31" rows="10" tabindex="14">'.$value.'</textarea>'.LF;
+           $formal_data[] = $temp_array;
+
         } else {
            $html .= $this->_translator->getMessage('ACCOUNT_GET_4_TEXT');
            $temp_array[0] = $this->_translator->getMessage('ACCOUNT_PROCESS_ROOM_REASON').': ';
@@ -1070,6 +1102,7 @@ class cs_page_guide_view extends cs_page_view {
         }
         unset($params);
         $html .= '</form>'.LF;
+        $html .= '</div>'.LF;
         $html .= '</div>'.LF;
      }
 
@@ -1643,7 +1676,7 @@ class cs_page_guide_view extends cs_page_view {
             $html .=  BR.'> '.ahref_curl($this->_environment->getCurrentContextID(),'configuration','export',$params,$this->_translator->getMessage('PORTAL_EXPORT_ROOM'),'','','','','','','class="portal_link"').LF;
             unset($params);
          }
-         
+
          if ( $current_user->isRoot()
               and $this->_with_modifying_actions
             ) {
@@ -1653,7 +1686,7 @@ class cs_page_guide_view extends cs_page_view {
             $html .=  BR.'> '.ahref_curl($this->_environment->getCurrentContextID(),'configuration','dbbackup',$params,$this->_translator->getMessage('PORTAL_MOVE_ROOM_TO_BACKUP'),'','','','','','','class="portal_link"').LF;
             unset($params);
          }
-         
+
          if ( $current_user->isRoot()
               and $this->_with_modifying_actions
             ) {

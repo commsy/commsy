@@ -13,6 +13,7 @@ $message["ACCOUNT_GET_4_TEXT"]["en"] = "Please explain, if necessary, why you wa
 $message["ACCOUNT_GET_6_TEXT_2"]["en"] = "<b>Your user account is queued for approval by the workspace moderator/s.</b> As soon as one of the moderator/s approves your workspace membership, CommSy will let you know by e-mail.";
 $message["ACCOUNT_GET_BUTTON"]["en"] = "Submit";
 $message["ACCOUNT_GET_CODE_TEXT"]["en"] = "Please type in the correct membership code for this workspace in the textfield below. </br>Entering the correct code, you immediately join the workspace as a member.";
+$message["ACCOUNT_GET_CODE_TEXT_2"]["en"] = "Become a member without membership code.";
 $message["ACCOUNT_GET_GUEST_CHOICE"]["en"] = "You need a valid user account to apply for membership in this workspace.  Please<br/>
 - log in or<br/>
 - %1";
@@ -29,7 +30,7 @@ $message["ACCOUNT_NOT_ACCEPTED_YET"]["en"] = "Your membership is still <b>queued
 $message["ACCOUNT_PASSWORD_CHANGE"]["en"] = "Change password";
 $message["ACCOUNT_PROCESS_CONFIRMATION"]["en"] = "Confirmation";
 $message["ACCOUNT_PROCESS_ROOM_CODE"]["en"] = "membership code";
-$message["ACCOUNT_PROCESS_ROOM_CODE_ERROR"]["en"] = "Sorry, you entered a wrong membership code.";
+$message["ACCOUNT_PROCESS_ROOM_CODE_ERROR"]["en"] = "<b>Sorry, you entered a wrong membership code.</b> If you dont know the membership code use 'become a member without membership code' below the textfield.";
 $message["ACCOUNT_PROCESS_ROOM_REASON"]["en"] = "Your message";
 $message["ACCOUNT_SEND_BUTTON"]["en"] = "Send";
 $message["ACCOUNT_SHOW_AGB_ERROR"]["en"] = "Please read the applying <span style=&quot;font-weight:bold&quot;>Terms and Conditions</span> thoroughly.";
