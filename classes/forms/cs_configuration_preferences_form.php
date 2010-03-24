@@ -1212,7 +1212,7 @@ class cs_configuration_preferences_form extends cs_rubric_form {
                $this->_form->addButtonBar('option',$this->_translator->getMessage('PREFERENCES_SAVE_BUTTON'),$this->_translator->getMessage('COMMON_CANCEL_BUTTON'));
                  }
          } else {
-            $this->_form->addButtonBar('option',$this->_translator->getMessage('PREFERENCES_SAVE_BUTTON'),$this->_translator->getMessage('COMMON_CANCEL_BUTTON'),$this->_translator->getMessage('ROOM_DELETE_BUTTON'));
+            $this->_form->addButtonBar('option',$this->_translator->getMessage('PREFERENCES_SAVE_BUTTON'),$this->_translator->getMessage('COMMON_CANCEL_BUTTON'),$this->_translator->getMessage('PORTAL_DELETE_BUTTON'));
          }
       } elseif ( $this->_type == CS_SERVER_TYPE ) {
          $this->_form->addButtonBar('option',$this->_translator->getMessage('PREFERENCES_SAVE_BUTTON'));

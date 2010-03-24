@@ -8,6 +8,7 @@ $message["PORTAL_CONFIGURATION_ACTION"]["de"] = "Portal konfigurieren";
 $message["PORTAL_CONFIGURATION_NEWS_SHOW_SERVER"]["de"] = "Serverinfos<br/>
 anzeigen?";
 $message["PORTAL_COUNT_ROOMS"]["de"] = "%1 Räume, %2 Mitglieder";
+$message["PORTAL_DELETE_BUTTON"]["de"] = "Portal löschen";
 $message["PORTAL_DELETED_ROOMS"]["de"] = "Gelöschte Räume";
 $message["PORTAL_EDIT_ROOM"]["de"] = "Raum bearbeiten";
 $message["PORTAL_ENTER_COMMUNITY"]["de"] = "%_COMMUNITY_SUB_NOMS_BIG neu eröffnen";
