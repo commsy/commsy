@@ -195,24 +195,11 @@ class cs_environment {
            and $this->current_context_id != 0
            and $this->current_context_id != $this->getServerID()
          ) {
-         if (is_null($this->current_context) or $this->current_context->getItemID() != $this->current_context_id) {
+         if ( is_null($this->current_context)
+              or $this->current_context->getItemID() != $this->current_context_id
+            ) {
             $item_manager = $this->getItemManager();
             $item = $item_manager->getItem($this->current_context_id);
-            if ( !isset($item) ) {
-               if ( !$this->isArchiveMode() ) {
-                  $item_manager = $this->getZzzItemManager();
-                  $item = $item_manager->getItem($this->current_context_id);
-                  if ( isset($item) ) {
-                     $this->activateArchiveMode();
-                  }
-               } else {
-                  $item_manager = $this->getItemManager(true);
-                  $item = $item_manager->getItem($this->current_context_id);
-                  if ( isset($item) ) {
-                     $this->deactivateArchiveMode();
-                  }
-               }
-            }
             if ( isset($item) ) {
                $type = $item->getItemType();
                if ($type == CS_PROJECT_TYPE) {
@@ -243,6 +230,43 @@ class cs_environment {
                  and is_object($manager)
                ) {
                $this->current_context = $manager->getItem($this->current_context_id);
+               if ( !isset($this->current_context) ) {
+                  if ( !$this->isArchiveMode() ) {
+                     $this->activateArchiveMode();
+                  } else {
+                     $this->deactivateArchiveMode();
+                  }
+                  $type = $item->getItemType();
+                  if ($type == CS_PROJECT_TYPE) {
+                     $manager = $this->getRoomManager(); // room_manager for caching
+                  } elseif ($type == CS_COMMUNITY_TYPE) {
+                     $manager = $this->getRoomManager(); // room_manager for caching
+                  } elseif ($type == CS_PRIVATEROOM_TYPE) {
+                     $manager = $this->getManager(CS_PRIVATEROOM_TYPE); // room_manager for caching
+                  } elseif ($type == CS_GROUPROOM_TYPE) {
+                     $manager = $this->getRoomManager(); // room_manager for caching
+                  } elseif ($type == CS_PORTAL_TYPE) {
+                     $manager = $this->getPortalManager();
+                  } elseif ($type == CS_SERVER_TYPE) {
+                     $manager = $this->getServerManager();
+                  } else {
+                     include_once('functions/error_functions.php');
+                     trigger_error('wrong type of room ['.$type.']',E_USER_ERROR);
+                  }
+                  if ( !empty($manager)
+                       and is_object($manager)
+                     ) {
+                     $this->current_context = $manager->getItem($this->current_context_id);
+                     if ( !isset($this->current_context) ) {
+                        include_once('functions/error_functions.php');
+                        $archive_mode = ' - archive mode = false';
+                        if ($this->isArchiveMode()) {
+                           $archive_mode = ' - archive mode = true';
+                        }
+                        trigger_error('can not initiate room ['.$this->current_context_id.'] -> bug in room table'.$archive_mode,E_USER_ERROR);
+                     }
+                  }
+               }
             }
          }
       } else {
@@ -782,8 +806,8 @@ class cs_environment {
    * @return cs_user_manager
    * @access public
    */
-   function getUserManager() {
-      if ( !$this->isArchiveMode() ) {
+   function getUserManager( $force = false ) {
+      if ( $force or !$this->isArchiveMode() ) {
          return $this->_getInstance('cs_user_manager');
       } else {
          return $this->getZzzUserManager();
@@ -969,7 +993,20 @@ class cs_environment {
    * @access public
    */
    function getCommunityManager () {
-      return $this->_getInstance('cs_community_manager');
+      if ( !$this->isArchiveMode() ) {
+         return $this->_getInstance('cs_community_manager');
+      } else {
+         return $this->getZzzCommunityManager();
+      }
+   }
+
+  /** get instance of cs_zzz_community_manager
+   *
+   * @return cs_zzz_community_manager
+   * @access public
+   */
+   function getZzzCommunityManager () {
+      return $this->_getInstance('cs_zzz_community_manager');
    }
 
   /** get instance of cs_privateroom_manager
@@ -987,7 +1024,11 @@ class cs_environment {
    * @access public
    */
    function getGroupRoomManager () {
-      return $this->_getInstance('cs_grouproom_manager');
+      if ( !$this->isArchiveMode() ) {
+         return $this->_getInstance('cs_grouproom_manager');
+      } else {
+         return $this->getZzzGroupRoomManager();
+      }
    }
 
   /** get instance of cs_zzz_grouproom_manager
@@ -1035,14 +1076,26 @@ class cs_environment {
       return $this->_getInstance('cs_log_error_manager');
    }
 
-   /** get instance of cs_project_manager
+  /** get instance of cs_project_manager
    *
    * @return cs_project_manager
    * @access public
-   * @author CommSy Development Group
    */
    function getProjectManager () {
-      return $this->_getInstance('cs_project_manager');
+      if ( !$this->isArchiveMode() ) {
+         return $this->_getInstance('cs_project_manager');
+      } else {
+         return $this->getZzzProjectManager();
+      }
+   }
+
+  /** get instance of cs_zzz_project_manager
+   *
+   * @return cs_zzz_project_manager
+   * @access public
+   */
+   function getZzzProjectManager () {
+      return $this->_getInstance('cs_zzz_project_manager');
    }
 
   /** get instance of cs_time_manager

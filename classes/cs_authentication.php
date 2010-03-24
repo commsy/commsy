@@ -794,6 +794,41 @@ class cs_authentication {
       return $this->_getPortalUserItem($uid,$auth_source);
    }
 
+   private function _getUserItemInternal ($uid, $auth_source, $force = false) {
+      $retour = NULL;
+      $user_manager = $this->_environment->getUserManager($force);
+      $user_manager->resetLimits();
+      $user_manager->setUserIDLimit($uid);
+      $user_manager->setAuthSourceLimit($auth_source);
+      $user_manager->setContextLimit($this->_environment->getCurrentPortalID());
+      $user_manager->select();
+      $user_list = $user_manager->get();
+      // if there are more than one uids at the portal, than something is wrong
+      if ($user_list->getCount() == 1) {
+         $retour = $user_list->getFirst();
+      } elseif ($user_list->getCount() > 1) {
+         // display error text for multible user ids in this context
+         $portal = $this->_environment->getCurrentPortalItem();
+         $translator = $this->_environment->getTranslationObject();
+         if (!empty($portal)) {
+            $mod_list = $portal->getModeratorList();
+            $text = $translator->getMessage('AUTH_ERROR_ACCOUNT_TO_MANY',$uid,$portal->getTitle());
+            if (!$mod_list->isEmpty()) {
+               $mod_item = $mod_list->getFirst();
+               $text .= '<br />'."\n";
+               while ($mod_item) {
+                  $text .= '<br />'.$mod_item->getFullname().' [<a href="mailto:"'.$mod_item->getEmail().'">'.$mod_item->getEmail().'</a>]'."\n";
+                  $mod_item = $mod_list->getNext();
+               }
+            }
+            $this->_error_array[] = $text;
+         } else {
+            $this->_error_array[] = $translator->getMessage('COMMON_DATABASE_ERROR');
+         }
+      }
+      return $retour;
+   }
+
    function _getPortalUserItem ($uid, $auth_source) {
       $user_manager = $this->_environment->getUserManager();
       $user_item = $user_manager->getNewItem();
@@ -803,36 +838,9 @@ class cs_authentication {
          $translator = $this->_environment->getTranslationObject();
          $user_item->setLastname('GUEST');
       } else {
-         $user_manager->resetLimits();
-         $user_manager->setUserIDLimit($uid);
-         $user_manager->setAuthSourceLimit($auth_source);
-         $user_manager->setContextLimit($this->_environment->getCurrentPortalID());
-         $user_manager->select();
-         $user_list = $user_manager->get();
-         // if there are more than one uids at the portal, than something is wrong
-         if ($user_list->getCount() == 1) {
-            $user_item = $user_list->getFirst();
-         } elseif ($user_list->getCount() > 1) {
-            $user_item = NULL;
-            // display error text for multible user ids in this context
-            $portal = $this->_environment->getCurrentPortalItem();
-            $translator = $this->_environment->getTranslationObject();
-            if (!empty($portal)) {
-               $mod_list = $portal->getModeratorList();
-               $text = $translator->getMessage('AUTH_ERROR_ACCOUNT_TO_MANY',$uid,$portal->getTitle());
-               if (!$mod_list->isEmpty()) {
-                  $mod_item = $mod_list->getFirst();
-                  $text .= '<br />'."\n";
-                  while ($mod_item) {
-                     $text .= '<br />'.$mod_item->getFullname().' [<a href="mailto:"'.$mod_item->getEmail().'">'.$mod_item->getEmail().'</a>]'."\n";
-                     $mod_item = $mod_list->getNext();
-                  }
-               }
-               $this->_error_array[] = $text;
-            } else {
-               $user_item = NULL;
-               $this->_error_array[] = $translator->getMessage('COMMON_DATABASE_ERROR');
-            }
+         $user_item = $this->_getUserItemInternal($uid,$auth_source,false);
+         if ( !isset($user_item) ) {
+            $user_item = $this->_getUserItemInternal($uid,$auth_source,true);
          }
       }
       return $user_item;

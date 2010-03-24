@@ -414,6 +414,21 @@ if ( $context_item->isProjectroom()
          $type = $history_context_item->getItemType();
          $item_manager = $environment->getManager($type);
          $history_context_item = $item_manager->getItem($history_context_id);
+         if ( !isset($history_context_item) ) {
+            if ( !$environment->isArchiveMode() ) {
+               $environment->activateArchiveMode();
+               $item_manager2 = $environment->getManager($type);
+               $history_context_item = $item_manager2->getItem($history_context_id);
+               $environment->deactivateArchiveMode();
+               unset($item_manager2);
+            } else {
+               $environment->deactivateArchiveMode();
+               $item_manager2 = $environment->getManager($type);
+               $history_context_item = $item_manager2->getItem($history_context_id);
+               $environment->activateArchiveMode();
+               unset($item_manager2);
+            }
+         }
          if ( $history_context_item->isPortal() ) {
             $session_item->setValue('leave_home_context','portal');
          } else {
