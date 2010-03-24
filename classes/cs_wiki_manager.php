@@ -159,6 +159,7 @@ class cs_wiki_manager extends cs_manager {
       }
 
       $str  = '<?php'.LF;
+      
       $str .= '$COMMSY_ROOM_ID = "'.$item->getItemID().'";'.LF;
       $str .= 'session_name(\'SESSID-\'.$COMMSY_ROOM_ID);'.LF;
       if ( $item->isPortal() ) {
@@ -184,6 +185,12 @@ class cs_wiki_manager extends cs_manager {
       if (!empty($language) and mb_strtoupper($language, 'UTF-8')!='USER'){
          $str .= '$COMMSY_LANGUAGE = "'.mb_strtolower($item->getLanguage(), 'UTF-8').'";'.LF;
       }
+      
+      // Clean-URLs
+      $str .= LF.'global $FarmDirUrl;'.LF;
+      $str .= '$EnablePathInfo = 1;'.LF;
+      $str .= '$ScriptUrl = $FarmDirUrl."/wikis/".$COMMSY_PORTAL_ID."/".$COMMSY_ROOM_ID;'.LF;
+      
       $str .= LF.'global $FarmD;'.LF.LF;
       if ( $item->isPortal() ) {
          $str .= '@require_once("$FarmD/cookbook/phpinc-markup.php");'.LF;
@@ -604,11 +611,41 @@ class cs_wiki_manager extends cs_manager {
        }
 
      // Wiki Authetifizierung
-
+       
       $str .= '?>';
 
       file_put_contents('commsy_config.php',$str);
 
+      if(!file_exists('.htaccess')){
+         global $c_commsy_path_file;
+         copy($c_commsy_path_file.'/etc/pmwiki/htaccess-local','.htaccess');
+      }
+      
+      chdir('..');
+      if(!file_exists('.htaccess')){
+         global $c_commsy_path_file;
+         copy($c_commsy_path_file.'/etc/pmwiki/htaccess-root','.htaccess');
+         
+         $file_forum_contents = file_get_contents('.htaccess');
+         $file_forum_contents_array = explode("\n", $file_forum_contents);
+         for ($index = 0; $index < sizeof($file_forum_contents_array); $index++) {
+            if(stripos($file_forum_contents_array[$index], 'RewriteBase') !== false){
+               $temp_room_id = $item->getItemID();
+			      if ( $item->isPortal() ) {
+			         $temp_portal_id = $item->getItemID();
+			      } else {
+			         $temp_portal_id = $item->getContextID();
+			      }
+			      global $c_pmwiki_path_url;
+			      $temp_pmwiki_path_url = str_replace('http://', '', $c_pmwiki_path_url);
+			      $temp_pmwiki_path_url = mb_stristr($temp_pmwiki_path_url, '/');
+               $file_forum_contents_array[$index] = 'RewriteBase '.$temp_pmwiki_path_url.'/wikis/'.$temp_portal_id.'/'.$temp_room_id.'/';
+            }
+         }
+         $file_forum_contents = implode("\n", $file_forum_contents_array);
+         file_put_contents('.htaccess', $file_forum_contents);
+      }
+      
       chdir($old_dir);
    }
 
