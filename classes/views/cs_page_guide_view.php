@@ -842,7 +842,8 @@ class cs_page_guide_view extends cs_page_view {
          if ( $current_user->isUser() ) {
             $html .= '<li style="font-weight:bold; font-size:8pt;">'.'<a href="'.$actionCurl.'">'.$this->_translator->getMessage('EMAIL_CONTACT_MODERATOR').'</a></li>';
          }else{
-            $html .= '<li style="font-weight:bold; font-size:8pt;">'.'<span class="disabled">'.$this->_translator->getMessage('EMAIL_CONTACT_MODERATOR').'</span></li>';
+            //$html .= '<li style="font-weight:bold; font-size:8pt;">'.'<span class="disabled">'.$this->_translator->getMessage('EMAIL_CONTACT_MODERATOR').'</span></li>';
+            $html .= '<li style="font-weight:bold; font-size:8pt;">'.'<a href="'.$actionCurl.'">'.$this->_translator->getMessage('EMAIL_CONTACT_MODERATOR').'</a></li>';
          }
       }else{
          $html .= '<li style="font-weight:bold; font-size:8pt;">'.'<span class="disabled">'.$this->_translator->getMessage('COMMON_NO_CONTACTS').'</span></li>';
