@@ -22,7 +22,9 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-if(isset($_POST['option']) && $_POST['option'] == $translator->getMessage('MYAREA_LOGIN_BUTTON')) {
+if ( isset($_POST['option'])
+     and $_POST['option'] == $translator->getMessage('MYAREA_LOGIN_BUTTON')
+   ) {
    include_once('pages/context_login.php');
    exit();
 }
