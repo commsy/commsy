@@ -736,8 +736,26 @@ class cs_item_manager extends cs_manager {
                $retour = true;
             }
          }
+         $query = 'INSERT INTO '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$this->_db_table).' SELECT * FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).'.context_id = "'.$context_id.'"';
+         $result = $this->_db_connector->performQuery($query);
+         if ( !isset($result) ) {
+            include_once('functions/error_functions.php');
+            trigger_error('Problems while copying to backup-table.',E_USER_WARNING);
+         } else {
+            $db_prefix = '';
+            $query = 'DELETE FROM '.$this->addDatabasePrefix($db_prefix.$this->_db_table).' WHERE '.$this->addDatabasePrefix($db_prefix.$this->_db_table).'.context_id = "'.$context_id.'"';
+            $result = $this->_db_connector->performQuery($query);
+            if ( !isset($result) ) {
+               include_once('functions/error_functions.php');
+               trigger_error('Problems deleting after move to backup-table.',E_USER_WARNING);
+               $retour = false;
+            } elseif ( !empty($result[0]) ) {
+               $retour = true;
+            } else {
+               $retour = false;
+            }
+         }
       }
-      $retour = $retour and parent::moveFromDbToBackup($context_id);
       return $retour;
    }
 
@@ -760,8 +778,27 @@ class cs_item_manager extends cs_manager {
                $retour = true;
             }
          }
+         $query = 'INSERT INTO '.$this->addDatabasePrefix($this->_db_table).' SELECT * FROM '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$this->_db_table).' WHERE '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$this->_db_table).'.context_id = "'.$context_id.'"';
+         $result = $this->_db_connector->performQuery($query);
+         if ( !isset($result) ) {
+            include_once('functions/error_functions.php');
+            trigger_error('Problems while copying to backup-table.',E_USER_WARNING);
+         } else {
+            $db_prefix = '';
+            $db_prefix .= $c_db_backup_prefix.'_';
+            $query = 'DELETE FROM '.$this->addDatabasePrefix($db_prefix.$this->_db_table).' WHERE '.$this->addDatabasePrefix($db_prefix.$this->_db_table).'.context_id = "'.$context_id.'"';
+            $result = $this->_db_connector->performQuery($query);
+            if ( !isset($result) ) {
+               include_once('functions/error_functions.php');
+               trigger_error('Problems deleting after move to backup-table.',E_USER_WARNING);
+               $retour = false;
+            } elseif ( !empty($result[0]) ) {
+               $retour = true;
+            } else {
+               $retour = false;
+            }
+         }
       }
-      $retour = $retour and parent::moveFromBackupToDb($context_id);
       return $retour;
    }
 }

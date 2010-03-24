@@ -32,7 +32,7 @@ include_once('classes/cs_tag2tag_manager.php');
 class cs_zzz_tag2tag_manager extends cs_tag2tag_manager {
    public function __construct ($environment) {
       $this->_db_prefix = $environment->getConfiguration('c_db_backup_prefix').'_';
-      parent::cs_tag2tag_manager($environment);
+      parent::__construct($environment);
    }
 }
 ?>
