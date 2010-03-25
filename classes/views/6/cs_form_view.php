@@ -906,10 +906,15 @@ class cs_form_view extends cs_view {
     * @return string selectbox as HMTL
     */
    function _getSelectAsHTML ($form_element) {
+      $html  = '';
+   	  if(!empty($form_element['before_form_text'])) {
+         $html .= $form_element['before_form_text'].'&nbsp;'.LF;
+      }
+      
       if ($form_element['multiple']) {
          $form_element['name'] .= '[]';
       }
-      $html  = '';
+      
       if (!empty($form_element['descriptionText'])){
          $html .='<table summary="Layout"><tr><td style="border-bottom: none;">';
          $html .= $this->_text_as_html_short_coding_format($form_element['descriptionText']).'</td><td style="border-bottom: none;">';

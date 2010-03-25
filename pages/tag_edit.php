@@ -177,7 +177,32 @@ else {
          $params = array();
          redirect($environment->getCurrentContextID(),'tag', 'edit', $params);
       }
-
+      
+      // combine categories
+      elseif(	isOption($command, $translator->getMessage('TAG_COMBINE_BUTTON')) &&
+      			$_POST['sel1'] != $_POST['sel2']) {
+         $tag2tag_manager = $environment->getTag2TagManager();
+         $sel_1 = $_POST['sel1'];
+         $sel_2 = $_POST['sel2'];
+         $put = $_POST['combine_father_id'];
+         $childrenIdArray_1 = $tag2tag_manager->getRecursiveChildrenItemIDArray($sel_1);
+         $childrenIdArray_2 = $tag2tag_manager->getRecursiveChildrenItemIDArray($sel_2);
+         
+         // check whether put id is not a child of the selected categories or itself a selected categorie
+         if(!in_array($put, $childrenIdArray_1) &&
+         	!in_array($put, $childrenIdArray_2) &&
+         	$put != $sel_1 &&
+         	$put != $sel_2) {
+            
+         	// combine the selected categories
+         	$tag2tag_manager->combine($sel_1, $sel_2, $put);
+         }
+         
+         unset($tag2tag_manager);
+         $params = array();
+         redirect($environment->getCurrentContextID(), 'tag', 'edit', $params);
+      }
+      
       // Save item
       elseif ( !empty($delete_id) or !empty($change_id) ) {
          if ( !empty($_POST) ) {

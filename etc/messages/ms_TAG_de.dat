@@ -2,7 +2,9 @@
 $message["TAG_ACTIONS_AFTER"]["de"] = "nach";
 $message["TAG_ACTIONS_BEFORE"]["de"] = "vor";
 $message["TAG_ACTIONS_UNDER"]["de"] = "unter";
+$message["TAG_WORD_TO"]["de"] = "zu";
 $message["TAG_EDIT_FORM_TITLE"]["de"] = "Kategorien bearbeiten";
 $message["TAG_FORM_ROOT_LEVEL"]["de"] = "oberster Ebene";
 $message["TAG_SORT_BUTTON"]["de"] = "einfügen";
+$message["TAG_COMBINE_BUTTON"]["de"] = "zusammenlegen";
 ?>

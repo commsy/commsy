@@ -828,6 +828,22 @@ class cs_link_manager extends cs_manager {
         include_once('functions/error_functions.php');
         trigger_error('Problems deleting (updating) links of an item from query: "'.$query.'"',E_USER_WARNING);
      }
+     
+     // delete in items table too
+     $query = '
+     	UPDATE ' .
+     	   $this->addDatabasePrefix('link_items') . '
+     	SET
+     	   deletion_date = "' . getCurrentDateTimeInMySQL() . '",
+     	   deleter_id = "' . encode(AS_DB, $this->_current_user->getItemID()) . '"
+     	WHERE
+     	   item_id = "' . encode(AS_DB, $item_id) . '"
+     ';
+     $result = $this->_db_connector->performQuery($query);
+     if(!isset($result) || !$result) {
+     	include_once('functions/error_functions.php');
+     	trigger_error('Problems deleting(updating) an item from query: "' . $query . '"', E_USER_WARNING);
+     }
 
      // reset cache
      $this->_resetCache();

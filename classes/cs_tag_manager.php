@@ -684,7 +684,7 @@ class cs_tag_manager extends cs_manager {
       }
    }
 
-  function delete ($item_id) {
+  function delete ($item_id, $deleteTag2TagRecursive = true) {
      $current_datetime = getCurrentDateTimeInMySQL();
      $current_user = $this->_environment->getCurrentUserItem();
      $user_id = $current_user->getItemID();
@@ -701,7 +701,11 @@ class cs_tag_manager extends cs_manager {
         $link_manager->deleteLinksBecauseItemIsDeleted($item_id);
         unset($link_manager);
         $tag2tag_manager = $this->_environment->getTag2TagManager();
-        $tag2tag_manager->deleteTagLinksForTag($item_id);
+        if($deleteTag2Tag) {
+           $tag2tag_manager->deleteTagLinksForTag($item_id);
+        } else {
+           $tag2tag_manager->deleteTagLinks($item_id);
+        }
         unset($tag2tag_manager);
         parent::delete($item_id);
      }

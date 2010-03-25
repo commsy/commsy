@@ -149,7 +149,7 @@ class cs_tag_form extends cs_rubric_form {
    function _createForm () {
       include_once('functions/text_functions.php');
       $this->_form->addSubHeadline('headline1',cs_ucfirst($this->_translator->getMessage('COMMON_ADD_BUTTON')),'','',3);
-      $this->_form->addTextField('new_tag','','','','',30,false,'','','','','','',false,'zu');
+      $this->_form->addTextField('new_tag','','','','',30,false,'','','','','','',false,$this->_translator->getMessage('TAG_WORD_TO'));
       $this->_form->combine('horizontal');
       $this->_form->addSelect('father_id',$this->_values_tree,'','','', 1, false,false,false,'','','','',12);
       $this->_form->combine('horizontal');
@@ -162,12 +162,14 @@ class cs_tag_form extends cs_rubric_form {
       $this->_form->addSelect('sort2',$this->_second_sort_tree,'','','', 1, false,false,false,'','','','',11);
       $this->_form->combine('horizontal');
       $this->_form->addButton('option',$this->_translator->getMessage('TAG_SORT_BUTTON'),'','',80);
-      $this->_form->addSubHeadline('headline3',cs_ucfirst($this->_translator->getMessage('BUZZWORDS_COMBINE_BUTTON')),'','',3);
+      $this->_form->addSubHeadline('headline3',cs_ucfirst($this->_translator->getMessage('TAG_COMBINE_BUTTON')),'','',3);
       $this->_form->addSelect('sel1',$this->_first_sort_tree,'','','', 1, false,false,false,'','','','',13.2);
       $this->_form->combine('horizontal');
       $this->_form->addSelect('sel2',$this->_first_sort_tree,'','','', 1, false,false,false,'','','','',13.2);
       $this->_form->combine('horizontal');
-      $this->_form->addButton('option',$this->_translator->getMessage('BUZZWORDS_COMBINE_BUTTON'));
+      $this->_form->addSelect('combine_father_id', $this->_values_tree, '', '', '', 1, false, false, false, '', '', '', $this->_translator->getMessage('TAG_WORD_TO'), 12);
+      $this->_form->combine('horizontal');
+      $this->_form->addButton('option',$this->_translator->getMessage('TAG_COMBINE_BUTTON'));
       $this->_form->addEmptyline();
 
       if ( isset($this->_root_tag) ) {

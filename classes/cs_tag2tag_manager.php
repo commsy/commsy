@@ -471,6 +471,64 @@ class cs_tag2tag_manager extends cs_manager {
          }
       }
    }
+   
+   /**
+    * Combines two categories to one
+    * 
+    * @param $item_id_1 first item id
+    * @param $item_id_2 second item id
+    * @param $father_id father id under which the combined categorie will be inserted
+    */
+   public function combine($item_id_1, $item_id_2, $father_id) {
+      // get children of both items
+      $childrenIdArrayItem_1 = $this->getChildrenItemIDArray($item_id_1);
+      $childrenIdArrayItem_2 = $this->getChildrenItemIDArray($item_id_2);
+      
+      // get item titles
+      $tag_manager = $this->_environment->getTagManager();
+      $item_1 = $tag_manager->getItem($item_id_1);
+      $item_title_1 = $item_1->getTitle();
+      $item_2 = $tag_manager->getItem($item_id_2);
+      $item_title_2 = $item_2->getTitle();
+      
+      // delete tags, but keep children alive
+      $tag_manager->delete($item_id_1, false);
+      $tag_manager->delete($item_id_2, false);
+      
+      unset($item_1);
+      unset($item_2);
+      
+      // create new tag
+      $new = $tag_manager->getNewItem();
+      $new->setTitle($item_title_1 . '/' . $item_title_2);
+      $new->setContextID($this->_environment->getCurrentContextID());
+      $new->setCreatorItem($this->_environment->getCurrentUserItem());
+      $new->setCreationDate(getCurrentDateTimeInMySQL());
+      
+      // set position
+      $new->setPosition($father_id, $this->countChildren($father_id));
+      
+      // save
+      $new->save();
+      
+      // link old childrens to new tag
+      $new_id = $new->getItemID();
+      $count = 1;
+      foreach(array_merge($childrenIdArrayItem_1, $childrenIdArrayItem_2) as $item_id) {
+         // get item
+         $item = $tag_manager->getItem($item_id);
+         
+         // set position
+         $item->setPosition($new_id, $count);
+         $item->save();
+         
+         unset($item);
+         $count++;
+      }
+      
+      unset($tag_manager);
+      unset($new);
+   }
 
    private function _cacheAllLinkRows () {
       $this->_cached_rows = $this->_performQuery();
