@@ -512,6 +512,20 @@ if ( !empty($SID) ) {
          ###############################################
       }
       $current_user = $authentication->getUserItem();
+
+      // correction of authentication class and got to room door
+      if ( $environment->inPortal()
+           and !empty($to_room_door)
+           and $to_room_door
+           and !$current_user->isUser()
+           and $environment->getCurrentContextID() == $current_user->getContextID()
+           and $current_user->getStatus() != $current_user->getLastStatus()
+           and $current_user->getLastStatus() > 1
+         ) {
+         $current_user->setStatus($current_user->getLastStatus());
+      }
+      // correction of authentication class and got to room door
+
       $environment->setCurrentUserItem($current_user);
    } elseif (!$outofservice) {
       // there is no user id in the session information, or no session
