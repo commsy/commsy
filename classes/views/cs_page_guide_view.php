@@ -1039,7 +1039,7 @@ class cs_page_guide_view extends cs_page_view {
         }
 
         if ($item->checkNewMembersWithCode()) {
-        	$toggle_id = rand(0,1000000);
+           $toggle_id = rand(0,1000000);
            $html .= $this->_translator->getMessage('ACCOUNT_GET_CODE_TEXT');
            if ( isset($get_params['error']) and !empty($get_params['error']) ) {
               $temp_array[0] = $this->_translator->getMessage('COMMON_ATTENTION').': ';
@@ -1050,25 +1050,25 @@ class cs_page_guide_view extends cs_page_view {
            $temp_array[1] = '<input type="text" name="code" tabindex="14" size="30"/>'.LF;
            $formal_data[] = $temp_array;
 
-		   $temp_array = array();
-	       $temp_array[0] = '&nbsp;';
-	       $temp_array[1] = '<input type="submit" name="option" tabindex="15" value="'.$this->_translator->getMessage('ACCOUNT_GET_MEMBERSHIP_BUTTON').'"/>'.
-	                         '&nbsp;&nbsp;'.'<input type="submit" name="option" tabindex="16" value="'.$this->_translator->getMessage('COMMON_BACK_BUTTON').'"/>'.LF;
-	       $formal_data[] = $temp_array;
+         $temp_array = array();
+          $temp_array[0] = '&nbsp;';
+          $temp_array[1] = '<input type="submit" name="option" tabindex="15" value="'.$this->_translator->getMessage('ACCOUNT_GET_MEMBERSHIP_BUTTON').'"/>'.
+                            '&nbsp;&nbsp;'.'<input type="submit" name="option" tabindex="16" value="'.$this->_translator->getMessage('COMMON_BACK_BUTTON').'"/>'.LF;
+          $formal_data[] = $temp_array;
 
-		   if ( !empty($formal_data) ) {
+         if ( !empty($formal_data) ) {
            $html .= $this->_getFormalDataAsHTML2($formal_data);
            $html .= BRLF;
            }
            unset($formal_data);
 
-		   // Normale Raumanmeldung trotz Passwort
-		   $title = $this->_translator->getMessage('ACCOUNT_GET_CODE_TEXT_2');
-		   $html .= '<div>';
-		   $html .='<img id="toggle'.$toggle_id.'" src="images/more.gif"/>';
-		   $html .= '&nbsp;'.$title.'';
-		   $html .= '</div>';
-		   $html .= '<div id="creator_information'.$toggle_id.'">'.LF;
+         // Normale Raumanmeldung trotz Passwort
+         $title = $this->_translator->getMessage('ACCOUNT_GET_CODE_TEXT_2');
+         $html .= '<div>';
+         $html .='<img id="toggle'.$toggle_id.'" src="images/more.gif"/>';
+         $html .= '&nbsp;'.$title.'';
+         $html .= '</div>';
+         $html .= '<div id="creator_information'.$toggle_id.'">'.LF;
            $html .= $this->_translator->getMessage('ACCOUNT_GET_4_TEXT');
            $html .='<script type="text/javascript">initTextFormatingInformation("'.$toggle_id.'",false);</script>';
            $temp_array[0] = $this->_translator->getMessage('ACCOUNT_PROCESS_ROOM_REASON').': ';
@@ -1677,26 +1677,6 @@ class cs_page_guide_view extends cs_page_view {
             $html .=  BR.'> '.ahref_curl($this->_environment->getCurrentContextID(),'configuration','export',$params,$this->_translator->getMessage('PORTAL_EXPORT_ROOM'),'','','','','','','class="portal_link"').LF;
             unset($params);
          }
-
-         if ( $current_user->isRoot()
-              and $this->_with_modifying_actions
-            ) {
-            $params = array();
-            $params['iid'] = $item->getItemID();
-            $params['to'] = 'backup';
-            $html .=  BR.'> '.ahref_curl($this->_environment->getCurrentContextID(),'configuration','dbbackup',$params,$this->_translator->getMessage('PORTAL_MOVE_ROOM_TO_BACKUP'),'','','','','','','class="portal_link"').LF;
-            unset($params);
-         }
-
-         if ( $current_user->isRoot()
-              and $this->_with_modifying_actions
-            ) {
-            $params = array();
-            $params['iid'] = $item->getItemID();
-            $params['to'] = 'live';
-            $html .=  BR.'> '.ahref_curl($this->_environment->getCurrentContextID(),'configuration','dbbackup',$params,$this->_translator->getMessage('PORTAL_MOVE_ROOM_TO_LIVE'),'','','','','','','class="portal_link"').LF;
-            unset($params);
-         }
       } elseif ( $current_user->isRoot() ) {
          $params = array();
          $params['iid'] = $item->getItemID();
@@ -2012,7 +1992,13 @@ class cs_page_guide_view extends cs_page_view {
                } elseif (isset($_GET['room_id'])) {
                   $room_manager = $this->_environment->getRoomManager();
                   $room_item = $room_manager->getItem($_GET['room_id']);
-                  #if ( isset($room_item) and !$room_item->isPrivateRoom() ) {
+                  if ( !isset($room_item)
+                       and !$this->_environment->isArchiveMode()
+                     ) {
+                     $zzz_room_manager = $this->_environment->getZzzRoomManager();
+                     $room_item = $zzz_room_manager->getItem($_GET['room_id']);
+                     unset($zzz_room_manager);
+                  }
                   if ( isset($room_item) ) {
                      $html .= '<td colspan="2" class="portal_leftviews" style="'.$width.'">'.LF;
                      $html .= $this->_getRoomItemAsHTML($room_item);

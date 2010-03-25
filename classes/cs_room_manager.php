@@ -252,14 +252,15 @@ class cs_room_manager extends cs_context_manager {
      ###################################
 
      // insert limits into the select statement
-    if (isset($this->_deleted_limit) and $this->_deleted_limit) {
+     if (isset($this->_deleted_limit) and $this->_deleted_limit) {
         $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.deleter_id IS NOT NULL AND '.$this->addDatabasePrefix($this->_db_table).'.deletion_date IS NOT NULL';
-    } elseif ($this->_delete_limit == true) {
+     } elseif ($this->_delete_limit == true) {
         $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.deleter_id IS NULL AND '.$this->addDatabasePrefix($this->_db_table).'.deletion_date IS NULL';
      }
      if (isset($this->_status_limit)) {
         $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.status = "'.encode(AS_DB,$this->_status_limit).'"';
      }
+
      if ( isset($this->_room_limit)
           and !empty($this->_room_limit)
           and !isset($this->_id_array_limit)

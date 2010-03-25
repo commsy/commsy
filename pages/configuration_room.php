@@ -43,6 +43,13 @@ if (!empty($_GET['iid'])) {
 
 $manager = $environment->getRoomManager();
 $room = $manager->getItem($iid);
+$archive = false;
+if ( !isset($room) ) {
+   $zzz_manager = $environment->getZzzRoomManager();
+   $room = $zzz_manager->getItem($iid);
+   unset($zzz_manager);
+   $archive = true;
+}
 $current_user = $environment->getCurrentUserItem();
 $context_item = $environment->getCurrentContextItem();
 
@@ -70,41 +77,49 @@ if ( $current_user->isModerator() or $current_user->isRoot() ) {
       } elseif ($status == 'undelete') {
          $room->undelete();
       }elseif ($status == 'archive') {
-         $room->close();
+         if ( $current_user->isRoot() ) {
+            $room->moveToArchive();
+         } else {
+            $room->close();
 
-         // Fix: Find Group-Rooms if existing
-         if( $room->isGrouproomActive() ) {
-            $groupRoomList = $room->getGroupRoomList();
+            // Fix: Find Group-Rooms if existing
+            if( $room->isGrouproomActive() ) {
+               $groupRoomList = $room->getGroupRoomList();
 
-            if( !$groupRoomList->isEmpty() ) {
-               $room_item = $groupRoomList->getFirst();
+               if( !$groupRoomList->isEmpty() ) {
+                  $room_item = $groupRoomList->getFirst();
 
-               while($room_item) {
-                  // All GroupRooms have to be closed too
-                  $room_item->close();
-                  $room_item->save();
+                  while($room_item) {
+                     // All GroupRooms have to be closed too
+                     $room_item->close();
+                     $room_item->save();
 
-                  $room_item = $groupRoomList->getNext();
+                     $room_item = $groupRoomList->getNext();
+                  }
                }
             }
+            // ~Fix
          }
-         // ~Fix
       }elseif ($status == 'open') {
-         $room->open();
+         if ($archive) {
+            $room->backFromArchive();
+         } else {
+            $room->open();
 
-         // Fix: Find Group-Rooms if existing
-         if( $room->isGrouproomActive() ) {
-            $groupRoomList = $room->getGroupRoomList();
+            // Fix: Find Group-Rooms if existing
+            if( $room->isGrouproomActive() ) {
+               $groupRoomList = $room->getGroupRoomList();
 
-            if( !$groupRoomList->isEmpty() ) {
-               $room_item = $groupRoomList->getFirst();
+               if( !$groupRoomList->isEmpty() ) {
+                  $room_item = $groupRoomList->getFirst();
 
-               while($room_item) {
-                  // All GroupRooms have to be opened too
-                  $room_item->open();
-                  $room_item->save();
+                  while($room_item) {
+                     // All GroupRooms have to be opened too
+                     $room_item->open();
+                     $room_item->save();
 
-                  $room_item = $groupRoomList->getNext();
+                     $room_item = $groupRoomList->getNext();
+                  }
                }
             }
          }
