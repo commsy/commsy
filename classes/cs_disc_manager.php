@@ -79,7 +79,7 @@ class cs_disc_manager {
          $retour .= $this->_first_id.'/';
       } else {
          include_once('functions/error_functions.php');
-         trigger_error('first_id is not set',E_USER_ERROR);
+         trigger_error('first_id is not set',E_USER_WARNING);
       }
 
       if (!empty($second_id)) {
@@ -96,7 +96,7 @@ class cs_disc_manager {
          }
       } else {
          include_once('functions/error_functions.php');
-         trigger_error('second_id is not set',E_USER_ERROR);
+         trigger_error('second_id is not set',E_USER_WARNING);
       }
       return $retour;
    }
