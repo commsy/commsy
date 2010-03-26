@@ -464,7 +464,6 @@ class cs_item_manager extends cs_manager {
         }else{
            $query .= '';
         }
-        pr($query);
         // perform query
         $result = $this->_db_connector->performQuery($query);
          if ( !isset($result) ) {
