@@ -478,6 +478,58 @@ class cs_entry_index_view extends cs_index_view {
 
       $html .= '</table>';
 /*EndePrototyp*/
+
+/*
+      $html .= '<form style="padding:0px; margin:0px;" action="'.curl($this->_environment->getCurrentContextID(), 'entry', 'index','').'" method="post" name="matrix-form">'.LF;
+      $html .= '   <input type="hidden" name="cid" value="'.$this->_text_as_form($this->_environment->getCurrentContextID()).'"/>'.LF;
+      $html .= '   <input type="hidden" name="mod" value="entry"/>'.LF;
+      $html .= '   <input type="hidden" name="fct" value="index"/>'.LF;
+      $params = $this->_environment->getCurrentParameterArray();
+      if (isset($params['selbuzzword']) and !empty($params['selbuzzword'])){
+         $html .= '   <input type="hidden" name="sellbuzzword" value="'.$params['selbuzzword'].'"/>'.LF;
+      }
+      if (isset($params['sellist']) and !empty($params['sellist'])){
+         $html .= '   <input type="hidden" name="sellist" value="'.$params['sellist'].'"/>'.LF;
+      }
+      if (isset($params['search']) and !empty($params['search'])){
+         $html .= '   <input type="hidden" name="search" value="'.$params['search'].'"/>'.LF;
+      }
+      $matrix_manager = $this->_environment->getMatrixManager();
+      $matrix_manager->resetLimits();
+      $matrix_manager->setContextLimit($this->_environment->getCurrentContextID());
+      $matrix_manager->setRowLimit();
+      $matrix_manager->select();
+      $matrix_row_list = $matrix_manager->get();
+      $matrix_item = $matrix_row_list->getFirst();
+      $count_rows = 0;
+      while($matrix_item){
+         $html .= '<input name="matrix_'.$matrix_item->getItemID().'" value="'.$matrix_item->getItemID().'" checked="checked" type="checkbox">';
+         $html .= $matrix_item->getName().BRLF;
+         $matrix_item = $matrix_row_list->getNext();
+         $count_rows++;
+      }
+      $html .= '   <input type="hidden" name="new_matrix_row_count" value="'.$count_rows.'"/>'.LF;
+      $html .= '   <input id="new_matrix_row" onclick="javascript:resetSearchText(\'new_matrix_row\');" style="width:160px; font-size:10pt; margin-bottom:0px;" name="new_matrix_row" type="text" size="20" value="'.$this->_text_as_form($this->_translator->getMessage('PRIVATEROOM_MATRIX_NEW_ROW_ENTRY')).'"/>'.BRLF;
+
+      $matrix_manager->resetLimits();
+      $matrix_manager->setContextLimit($this->_environment->getCurrentContextID());
+      $matrix_manager->setColumnLimit();
+      $matrix_manager->select();
+      $matrix_column_list = $matrix_manager->get();
+      $matrix_item = $matrix_column_list->getFirst();
+      $count_columns = 0;
+      while($matrix_item){
+         $html .= '<input name="matrix_'.$matrix_item->getItemID().'" value="'.$matrix_item->getItemID().'" checked="checked" type="checkbox">';
+         $html .= $matrix_item->getName().BRLF;
+         $matrix_item = $matrix_column_list->getNext();
+         $count_columns++;
+      }
+      $html .= '   <input type="hidden" name="new_matrix_column_count" value="'.$count_columns.'"/>'.LF;
+      $html .= '   <input id="new_matrix_column" onclick="javascript:resetSearchText(\'new_matrix_column\');" style="width:160px; font-size:10pt; margin-bottom:0px;" name="new_matrix_column" type="text" size="20" value="'.$this->_text_as_form($this->_translator->getMessage('PRIVATEROOM_MATRIX_NEW_COLUMN_ENTRY')).'"/>'.BRLF;
+      $html .= '   <input name="option" value="'.$this->_text_as_form($this->_translator->getMessage('PRIVATEROOM_MATRIX_SAVE_BUTTON')).'" style="width: 150px; font-size: 10pt;" type="submit"/>'.LF;
+      $html .='</form>'.LF;
+
+*/
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
       return $html;

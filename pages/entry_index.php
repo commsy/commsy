@@ -119,6 +119,34 @@ if ( isOption($command, $translator->getMessage('PRIVATEROOM_MY_LISTS_BOX_NEW_EN
    redirect($environment->getCurrentContextID(),CS_ENTRY_TYPE, 'index',$params);
 }
 
+if ( isOption($command, $translator->getMessage('PRIVATEROOM_MATRIX_SAVE_BUTTON'))) {
+   $matrix_manager = $environment->getMatrixManager();
+   if (isset($_POST['new_matrix_column']) and !empty($_POST['new_matrix_column']) and $_POST['new_matrix_column'] != $translator->getMessage('PRIVATEROOM_MATRIX_NEW_COLUMN_ENTRY')){
+      $matrix_item = $matrix_manager->getNewItem();
+      $matrix_item->setLabelType('matrix');
+      $matrix_item->setName($_POST['new_matrix_column']);
+      $matrix_item->setIsColumn();
+      $matrix_item->setContextID($environment->getCurrentContextID());
+      $user = $environment->getCurrentUserItem();
+      $matrix_item->setCreatorItem($user);
+      $matrix_item->setCreationDate(getCurrentDateTimeInMySQL());
+      $matrix_item->save();
+   }
+   if (isset($_POST['new_matrix_row']) and !empty($_POST['new_matrix_row']) and $_POST['new_matrix_row'] != $translator->getMessage('PRIVATEROOM_MATRIX_NEW_ROW_ENTRY')){
+      $matrix_item = $matrix_manager->getNewItem();
+      $matrix_item->setLabelType('matrix');
+      $matrix_item->setName($_POST['new_matrix_row']);
+      $matrix_item->setIsRow();
+      $matrix_item->setContextID($environment->getCurrentContextID());
+      $user = $environment->getCurrentUserItem();
+      $matrix_item->setCreatorItem($user);
+      $matrix_item->setCreationDate(getCurrentDateTimeInMySQL());
+      $matrix_item->save();
+   }
+   $params = array();
+   redirect($environment->getCurrentContextID(),CS_ENTRY_TYPE, 'index',$params);
+}
+
 if ( !empty($deletelist) ) {
    $mylist_manager = $environment->getMylistManager();
    $my_list_item = $mylist_manager->getItem($deletelist);
