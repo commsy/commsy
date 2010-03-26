@@ -163,6 +163,15 @@ class cs_tag_form extends cs_rubric_form {
       $this->_form->combine('horizontal');
       $this->_form->addButton('option',$this->_translator->getMessage('TAG_SORT_BUTTON'),'','',80);
       $this->_form->addSubHeadline('headline3',cs_ucfirst($this->_translator->getMessage('TAG_COMBINE_BUTTON')),'','',3);
+      
+      $session_item = $this->_environment->getSessionItem();
+      if(   $session_item->issetValue('tag_cannot_combine') &&
+            $session_item->getValue('tag_cannot_combine') == 'true') {
+         $this->_form->addText('tag_cannot_combine', '', $this->_translator->getMessage('TAG_CANNOT_COMBINE'), '', true, '', '', '', '', 'style="color: #FF0000;"');
+         $session_item->unsetValue('tag_cannot_combine');
+      }
+      unset($session_item);
+      
       $this->_form->addSelect('sel1',$this->_first_sort_tree,'','','', 1, false,false,false,'','','','',13.2);
       $this->_form->combine('horizontal');
       $this->_form->addSelect('sel2',$this->_first_sort_tree,'','','', 1, false,false,false,'','','','',13.2);

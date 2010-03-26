@@ -196,6 +196,11 @@ else {
             
          	// combine the selected categories
          	$tag2tag_manager->combine($sel_1, $sel_2, $put);
+         } else {
+            // show error message
+            $session_item = $environment->getSessionItem();
+            $session_item->setValue('tag_cannot_combine', 'true');
+            unset($session_item);
          }
          
          unset($tag2tag_manager);

@@ -980,7 +980,17 @@ class cs_link_manager extends cs_manager {
             $item_id = $value['item_id'];
             $place = $value['place'];
 
-            $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET sorting_place="'.encode(AS_DB,$place).'" WHERE item_id="'.encode(AS_DB,$item_id).'";';
+            $query = '
+               UPDATE ' .
+                  $this->addDatabasePrefix($this->_db_table) . '
+               SET
+                  sorting_place="' . encode(AS_DB, $place) . '",
+                  modification_date = "' . getCurrentDateTimeinMySQL() . '"
+               WHERE
+                  item_id="' . encode(AS_DB, $item_id) . '";
+            ';
+            
+            //$query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET sorting_place="'.encode(AS_DB,$place).'" WHERE item_id="'.encode(AS_DB,$item_id).'";';
             $result = $this->_db_connector->performQuery($query);
             if ( !isset($result) or !$result ) {
                include_once('functions/error_functions.php');
