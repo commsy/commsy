@@ -21,7 +21,6 @@ $message["SERVER_INITIALIZE_HEADER_DESC"]["en"] = "Initialize CommSy-Server";
 $message["SERVER_NEWS_LINK"]["en"] = "Server news";
 $message["SERVER_NEWS_LINK_DESC"]["en"] = "Options for server-wide announcements.";
 $message["SERVER_OUTOFSERVICE_NAVBAR_TITLE"]["en"] = "Out of service";
-$message["SERVER_OUTOFSERVICE_ROOT_LOGIN"]["de"] = "Administration";
 $message["SERVER_PORTAL_OVERVIEW"]["en"] = "Portal overview";
 $message["SERVER_STATISTIC_ACCOUNTS"]["en"] = "Users (e-mail adresses)";
 $message["SERVER_STATISTIC_ACCOUNTS_ALL"]["en"] = "all";

@@ -118,6 +118,9 @@ class cs_guide_room_list_page extends cs_page {
             } elseif ($selroom == 6) {
                $manager->setRoomTypeLimit(CS_GROUPROOM_TYPE);
                $count_all = $manager->getCountAll();
+            } elseif ($selroom == 8) {
+               $manager->setArchiveLimit();
+               $count_all = $manager->getCountAll();
             } elseif ($selroom == 9) {
                $manager->setDeletedLimit();
                $count_all = $manager->getCountAll();

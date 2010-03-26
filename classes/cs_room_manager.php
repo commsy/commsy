@@ -69,6 +69,8 @@ class cs_room_manager extends cs_context_manager {
 
   private $_limit_with_grouproom = false;
 
+  private $_archive_limit = false;
+
   /** constructor
     * the only available constructor, initial values for internal variables
     *
@@ -96,6 +98,7 @@ class cs_room_manager extends cs_context_manager {
      $this->_template_limit = NULL;
      $this->_logarchive_limit = NULL;
      $this->_limit_with_grouproom = false;
+     $this->_archive_limit = false;
   }
 
   public function setWithGrouproom () {
@@ -111,6 +114,11 @@ class cs_room_manager extends cs_context_manager {
   function setIntervalLimit ($from, $interval) {
      $this->_interval_limit = (integer)$interval;
      $this->_from_limit = (integer)$from;
+  }
+
+  function setArchiveLimit () {
+     $this->_archive_limit = true;
+     $this->setClosedLimit();
   }
 
   function setRoomTypeLimit ($value) {
@@ -348,6 +356,15 @@ class cs_room_manager extends cs_context_manager {
         if (isset($this->_interval_limit) and isset($this->_from_limit)) {
            $query .= ' LIMIT '.encode(AS_DB,$this->_from_limit).', '.encode(AS_DB,$this->_interval_limit);
         }
+     }
+
+     // archive limit zzz_tables
+     $db_prefix = $this->_environment->getConfiguration('c_db_backup_prefix').'_';
+     if ( isset($this->_archive_limit)
+          and $this->_archive_limit
+          and !strstr($query,$db_prefix)
+        ) {
+        $query = str_replace(' '.$this->addDatabasePrefix($this->_db_table),' '.$db_prefix.$this->addDatabasePrefix($this->_db_table),$query);
      }
      $this->_last_query = $query;
 

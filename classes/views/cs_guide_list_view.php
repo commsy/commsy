@@ -647,8 +647,12 @@ class cs_guide_list_view extends cs_list_view_plain {
             $html .= ' selected="selected"';
          }
          $html .= '>'.$this->_translator->getMessage('PORTAL_DELETED_ROOMS').'</option>'.LF;
+         $html .= '      <option value="8"';
+         if ( !empty($selroom) and $selroom == 8 ) {
+            $html .= ' selected="selected"';
+         }
+         $html .= '>'.$this->_translator->getMessage('PORTAL_ARCHIVED_ROOMS').'</option>'.LF;
       }
-
 
       $current_context = $this->_environment->getCurrentContextItem();
       if ( $show_rooms !='onlycommunityrooms'

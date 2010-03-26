@@ -306,8 +306,23 @@ class cs_context_item extends cs_item {
          $user_manager->setContactModeratorLimit();
          $user_manager->select();
          $this->_contact_moderator_list = $user_manager->get();
-         if ($this->_contact_moderator_list->isEmpty()) {
-            $this->_contact_moderator_list = $this->getModeratorList();
+         unset($user_manager);
+         if ( $this->_contact_moderator_list->isEmpty() ) {
+            if ( $this->isClosed()
+                 and !$this->_environment->isArchiveMode()
+               ) {
+               $user_manager = $this->_environment->getZzzUserManager();
+               $user_manager->setContextLimit($this->getItemID());
+               $user_manager->setContactModeratorLimit();
+               $user_manager->select();
+               $this->_contact_moderator_list = $user_manager->get();
+               unset($user_manager);
+               if ( $this->_contact_moderator_list->isEmpty() ) {
+                  $this->_contact_moderator_list = $this->getModeratorList();
+               }
+            } else {
+               $this->_contact_moderator_list = $this->getModeratorList();
+            }
          }
       }
       return $this->_contact_moderator_list;
@@ -1263,6 +1278,20 @@ class cs_context_item extends cs_item {
          $userManager->setModeratorLimit();
          $userManager->select();
          $this->_moderator_list = $userManager->get();
+         unset($userManager);
+         if ( $this->_moderator_list->isEmpty() ) {
+            if ( $this->isClosed()
+                 and !$this->_environment->isArchiveMode()
+               ) {
+               $userManager = $this->_environment->getZzzUserManager();
+               $userManager->resetLimits();
+               $userManager->setContextLimit($this->getItemID());
+               $userManager->setModeratorLimit();
+               $userManager->select();
+               $this->_moderator_list = $userManager->get();
+               unset($userManager);
+            }
+         }
       }
       return $this->_moderator_list;
    }
