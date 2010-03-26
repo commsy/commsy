@@ -364,6 +364,13 @@ class cs_item_manager extends cs_manager {
    function getAllPrivateRoomEntriesOfUserList($room_ids,$user_ids){
         $rs = array();
         $query = 'SELECT DISTINCT '.$this->addDatabasePrefix('items').'.*, modifier.modifier_id';
+        if (isset($this->_search_array)) {
+           $query .= ', materials.title, materials.description, materials.extras'.LF;
+           $query .= ', todos.title, todos.description';
+           $query .= ', discarticles.subject, discarticles.description';
+           $query .= ', dates.title, dates.description, dates.place';
+           $query .= ', discussions.title';
+        }
         $query .= ' FROM '.$this->addDatabasePrefix('items');
         $query .= ' LEFT JOIN '.$this->addDatabasePrefix('labels').' AS label ON '.$this->addDatabasePrefix('items').'.item_id=label.item_id';
         $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_modifier_item').' AS modifier ON '.$this->addDatabasePrefix('items').'.item_id=modifier.item_id';
@@ -389,6 +396,13 @@ class cs_item_manager extends cs_manager {
           }
        }
 
+        if (isset($this->_search_array)) {
+           $query .= ' LEFT JOIN '.$this->addDatabasePrefix('materials').' AS materials ON materials.item_id='.$this->addDatabasePrefix('items').'.item_id';
+           $query .= ' LEFT JOIN '.$this->addDatabasePrefix('todos').' AS todos ON todos.item_id='.$this->addDatabasePrefix('items').'.item_id';
+           $query .= ' LEFT JOIN '.$this->addDatabasePrefix('discussionarticles').' AS discarticles ON discarticles.item_id='.$this->addDatabasePrefix('items').'.item_id';
+           $query .= ' LEFT JOIN '.$this->addDatabasePrefix('dates').' AS dates ON dates.item_id='.$this->addDatabasePrefix('items').'.item_id';
+           $query .= ' LEFT JOIN '.$this->addDatabasePrefix('discussions').' AS discussions ON discussions.item_id='.$this->addDatabasePrefix('items').'.item_id';
+        }
 
         $query .= ' WHERE 1';
         $query .= ' AND (label.type IS NULL OR label.type="group" OR label.type="topic" OR label.type="group")';
@@ -422,6 +436,26 @@ class cs_item_manager extends cs_manager {
               $query .= ' AND buzzwords.item_id="'.encode(AS_DB,$this->_buzzword_limit).'"';
            }
         }
+        if (isset($this->_search_array) AND !empty($this->_search_array)) {
+           $query .= ' AND (';
+           $field_array = array('materials.description',
+                                'materials.title',
+                                'materials.author',
+                                'materials.extras',
+                                'discussions.title',
+                                'discarticles.subject',
+                                'discarticles.description',
+                                'dates.title',
+                                'dates.description',
+                                'dates.place',
+                                'todos.title',
+                                'todos.description',
+                                'todos.extras'
+                                );
+           $search_limit_query_code = $this->_generateSearchLimitCode($field_array);
+           $query .= $search_limit_query_code;
+           $query .= ')';
+        }
 
         $query .= ' ORDER BY '.$this->addDatabasePrefix('items').'.modification_date DESC';
         if (isset($this->_interval_limit)) {
@@ -430,6 +464,7 @@ class cs_item_manager extends cs_manager {
         }else{
            $query .= '';
         }
+        pr($query);
         // perform query
         $result = $this->_db_connector->performQuery($query);
          if ( !isset($result) ) {
