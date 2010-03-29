@@ -345,11 +345,13 @@ class cs_file_item extends cs_item {
 
       // are we in search status? - set by session
       $session = $this->_environment->getSessionItem();
-      if ($session->issetValue('cid'.$this->_environment->getCurrentContextID().'_campus_search_parameter_array')) {
-         $search_array = $session->getValue('cid'.$this->_environment->getCurrentContextID().'_campus_search_parameter_array');
-         if ( !empty($search_array['file_id_array']) ) {
-            $ft_file_ids = $search_array['file_id_array'];
-         }
+      if(isset($session)){
+	      if ($session->issetValue('cid'.$this->_environment->getCurrentContextID().'_campus_search_parameter_array')) {
+	         $search_array = $session->getValue('cid'.$this->_environment->getCurrentContextID().'_campus_search_parameter_array');
+	         if ( !empty($search_array['file_id_array']) ) {
+	            $ft_file_ids = $search_array['file_id_array'];
+	         }
+	      }
       }
 
       if ( !empty($ft_file_ids) and in_array($this->getFileID(),$ft_file_ids) ) {
