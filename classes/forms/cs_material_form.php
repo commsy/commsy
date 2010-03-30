@@ -366,7 +366,7 @@ class cs_material_form extends cs_rubric_form {
             default:
                break;
          }
-
+   
       if ( $this->_bib_kind=='none' ) {
          $this->_form->addTextArea('description','',$this->_translator->getMessage('MATERIAL_ABSTRACT'),'','',20);
       } else {
@@ -625,6 +625,21 @@ class cs_material_form extends cs_rubric_form {
             $this->_form->setFailure('start_date_time','');
          }
       }
+   }
+   
+   function getInfoForHeaderAsHTML () {
+   	$retour  = ''.LF;
+      $retour  .= 'var ckeditor_commsy_images = new Array(';
+      $counter = 0;
+      foreach($this->_file_array as $temp_file){
+      	$retour  .= '"'.$temp_file['text'].'"';
+      	if($counter < sizeof($this->_file_array)-1){
+      		$retour  .= ',';
+      	}
+      	$counter++;
+      }
+      $retour  .= ');'.LF;
+   	return $retour;
    }
 }
 ?>
