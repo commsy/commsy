@@ -365,9 +365,10 @@ class cs_detail_view extends cs_view {
       $action_array = array();
       $html = '';
       $current_context = $this->_environment->getCurrentContextItem();
+      $current_portal = $this->_environment->getCurrentPortalItem();
 
       if ( isset($c_use_linked_dropdown_rooms)
-           and in_array($current_context->getItemID(), $c_use_linked_dropdown_rooms)
+           and (in_array($current_context->getItemID(), $c_use_linked_dropdown_rooms) or in_array($current_portal->getItemID(), $c_use_linked_dropdown_rooms))
          ) {
          if ( $current_context->isOpen() ) {
             $image_new  = '';
