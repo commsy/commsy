@@ -1317,7 +1317,9 @@ jQuery(document).ready(function() {
 						if(this_image.mouse_is_over){
 							var id_parts = id.split('_');
 							var offset = jQuery('#dropdown_button_'+id_parts[4]).parent().offset();
-							dropdown(jQuery('#dropdown_menu_'+id_parts[4]), offset, id_parts[4]);
+							if(jQuery('#dropdown_menu_'+id_parts[4]).css('display') == 'none'){
+								dropdown(jQuery('#dropdown_menu_'+id_parts[4]), offset, id_parts[4]);
+							}
 						}
 					}, 2000);
 				});
