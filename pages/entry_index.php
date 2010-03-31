@@ -121,6 +121,19 @@ if ( isOption($command, $translator->getMessage('PRIVATEROOM_MY_LISTS_BOX_NEW_EN
 
 if ( isOption($command, $translator->getMessage('PRIVATEROOM_MATRIX_SAVE_BUTTON'))) {
    $matrix_manager = $environment->getMatrixManager();
+   $matrix_manager->resetLimits();
+   $matrix_manager->setContextLimit($environment->getCurrentContextID());
+   $matrix_manager->setColumnLimit();
+   $matrix_manager->select();
+   $matrix_column_list = $matrix_manager->get();
+   $matrix_item = $matrix_column_list->getFirst();
+   while($matrix_item){
+      $id = $matrix_item->getItemID();
+      if (!isset($_POST['matrix_'.$id])){
+         $matrix_item->delete();
+      }
+      $matrix_item = $matrix_column_list->getNext();
+   }
    if (isset($_POST['new_matrix_column']) and !empty($_POST['new_matrix_column']) and $_POST['new_matrix_column'] != $translator->getMessage('PRIVATEROOM_MATRIX_NEW_COLUMN_ENTRY')){
       $matrix_item = $matrix_manager->getNewItem();
       $matrix_item->setLabelType('matrix');
@@ -131,6 +144,19 @@ if ( isOption($command, $translator->getMessage('PRIVATEROOM_MATRIX_SAVE_BUTTON'
       $matrix_item->setCreatorItem($user);
       $matrix_item->setCreationDate(getCurrentDateTimeInMySQL());
       $matrix_item->save();
+   }
+   $matrix_manager->resetLimits();
+   $matrix_manager->setContextLimit($environment->getCurrentContextID());
+   $matrix_manager->setRowLimit();
+   $matrix_manager->select();
+   $matrix_row_list = $matrix_manager->get();
+   $matrix_item = $matrix_row_list->getFirst();
+   while($matrix_item){
+      $id = $matrix_item->getItemID();
+      if (!isset($_POST['matrix_'.$id])){
+         $matrix_item->delete();
+      }
+      $matrix_item = $matrix_row_list->getNext();
    }
    if (isset($_POST['new_matrix_row']) and !empty($_POST['new_matrix_row']) and $_POST['new_matrix_row'] != $translator->getMessage('PRIVATEROOM_MATRIX_NEW_ROW_ENTRY')){
       $matrix_item = $matrix_manager->getNewItem();

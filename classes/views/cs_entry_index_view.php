@@ -407,79 +407,61 @@ class cs_entry_index_view extends cs_index_view {
       $html .= '</div>'.LF;
       $html .= '<div class="portlet-content">'.LF;
       $count = 0;
-/*Prototyp*/
-      $html .= '<table style="width:100%; border:1px solid #EEEEEE;">';
-      $html .= '<tr>'.LF;
-      $html .= '<td style="background-color:#EEEEEE;">'.LF;
-      $html .= '</td>'.LF;
-      $html .= '<td style="background-color:#EEEEEE;">Subjektbezug'.LF;
-      $html .= '</td>'.LF;
-      $html .= '<td style="background-color:#EEEEEE;">Schulbezug'.LF;
-      $html .= '</td>'.LF;
-      $html .= '<td style="background-color:#EEEEEE;">Wissenschaftsbezug'.LF;
-      $html .= '</td>'.LF;
-      $html .= '</tr>'.LF;
-
-      $html .= '<tr>'.LF;
-      $html .= '<td style="background-color:#EEEEEE;">Unterrichten'.LF;
-      $html .= '</td>'.LF;
-      $html .= '<td class="droppable_matrix" id="id_'.$count.'" style="text-align:center;"><a>5</a>'.LF;
-      $html .= '</td>'.LF;
-      $count ++;
-      $html .= '<td class="droppable_matrix" id="id_'.$count.'" style="text-align:center;"><a>2</a>'.LF;
-      $html .= '</td>'.LF;
-      $count ++;
-      $html .= '<td class="droppable_matrix" id="id_'.$count.'" style="text-align:center;"><a>0</a>'.LF;
-      $html .= '</td>'.LF;
-      $count ++;
-      $html .= '</tr>'.LF;
-
-      $html .= '<tr>'.LF;
-      $html .= '<td style="background-color:#EEEEEE;">Erziehen und Beraten'.LF;
-      $html .= '</td>'.LF;
-      $html .= '<td class="droppable_matrix" id="id_'.$count.'" style="text-align:center;"><a>10</a>'.LF;
-      $html .= '</td>'.LF;
-      $count ++;
-      $html .= '<td class="droppable_matrix" id="id_'.$count.'" style="text-align:center;"><a>2</a>'.LF;
-      $html .= '</td>'.LF;
-      $count ++;
-      $html .= '<td class="droppable_matrix" id="id_'.$count.'" style="text-align:center;"><a>6</a>'.LF;
-      $html .= '</td>'.LF;
-      $count ++;
-      $html .= '</tr>'.LF;
-
-      $html .= '<tr>'.LF;
-      $html .= '<td style="background-color:#EEEEEE;">Diagnostizieren und fördern'.LF;
-      $html .= '</td>'.LF;
-      $html .= '<td class="droppable_matrix" id="id_'.$count.'" style="text-align:center;"><a>3</a>'.LF;
-      $html .= '</td>'.LF;
-      $count ++;
-      $html .= '<td class="droppable_matrix" id="id_'.$count.'" style="text-align:center;"><a>0</a>'.LF;
-      $html .= '</td>'.LF;
-      $count ++;
-      $html .= '<td class="droppable_matrix" id="id_'.$count.'" style="text-align:center;"><a>0</a>'.LF;
-      $html .= '</td>'.LF;
-      $count ++;
-      $html .= '</tr>'.LF;
-
-      $html .= '<tr>'.LF;
-      $html .= '<td style="background-color:#EEEEEE;">Schule entwickeln'.LF;
-      $html .= '</td>'.LF;
-      $html .= '<td class="droppable_matrix" id="id_'.$count.'" style="text-align:center;"><a>3</a>'.LF;
-      $html .= '</td>'.LF;
-      $count ++;
-      $html .= '<td class="droppable_matrix" id="id_'.$count.'" style="text-align:center;"><a>20</a>'.LF;
-      $html .= '</td>'.LF;
-      $count ++;
-      $html .= '<td class="droppable_matrix" id="id_'.$count.'" style="text-align:center;"><a>3</a>'.LF;
-      $html .= '</td>'.LF;
-      $count ++;
-      $html .= '</tr>'.LF;
-
-      $html .= '</table>';
-/*EndePrototyp*/
-
 /*
+      $matrix_manager = $this->_environment->getMatrixManager();
+      $matrix_manager->resetLimits();
+      $matrix_manager->setContextLimit($this->_environment->getCurrentContextID());
+      $matrix_manager->setRowLimit();
+      $matrix_manager->select();
+      $matrix_row_list = $matrix_manager->get();
+
+      $matrix_manager = $this->_environment->getMatrixManager();
+      $matrix_manager->resetLimits();
+      $matrix_manager->setContextLimit($this->_environment->getCurrentContextID());
+      $matrix_manager->setColumnLimit();
+      $matrix_manager->select();
+      $matrix_column_list = $matrix_manager->get();
+
+      $matrix_row_title_array = array();
+      $matrix_item = $matrix_row_list->getFirst();
+      while($matrix_item){
+      	 $matrix_row_title_array[$matrix_item->getItemID()] = $matrix_item->getName();
+         $matrix_item = $matrix_row_list->getNext();
+      }
+      $matrix_column_title_array = array();
+      $matrix_item = $matrix_column_list->getFirst();
+      while($matrix_item){
+      	 $matrix_column_title_array[$matrix_item->getItemID()] = $matrix_item->getName();
+         $matrix_item = $matrix_column_list->getNext();
+      }
+
+      $html_table = '';
+      $html_table .= '<table style="width:100%; border:1px solid #CCCCCC;">';
+      $html_table .= '<tr>'.LF;
+      $html_table .= '<td style="background-color:#CCCCCC;">'.LF;
+      $html_table .= '</td>'.LF;
+      foreach($matrix_column_title_array as $column_title){
+         $html_table .= '<td style="background-color:#CCCCCC;">'.$column_title.LF;
+         $html_table .= '</td>'.LF;
+
+      }
+      $html_table .= '</tr>'.LF;
+      foreach($matrix_row_title_array as $row_key => $row){
+         $html_table .= '<tr>'.LF;
+         $html_table .= '<td style="background-color:#CCCCCC;">'.$row.LF;
+         $html_table .= '</td>'.LF;
+         foreach($matrix_column_title_array as $column_key => $column){
+            $html_table .= '<td class="droppable_matrix" id="id_'.$row_key.'_'.$column_key.'" style="text-align:center;"><a></a>'.LF;
+            $count = $matrix_manager->getEntriesInPosition($column_key,$row_key);
+            $html_table .= $count;
+            $html_table .= '</td>'.LF;
+         }
+         $html_table .= '</tr>'.LF;
+      }
+      $html_table .= '</table>';
+
+      $html .= $html_table.LF;
+
       $html .= '<form style="padding:0px; margin:0px;" action="'.curl($this->_environment->getCurrentContextID(), 'entry', 'index','').'" method="post" name="matrix-form">'.LF;
       $html .= '   <input type="hidden" name="cid" value="'.$this->_text_as_form($this->_environment->getCurrentContextID()).'"/>'.LF;
       $html .= '   <input type="hidden" name="mod" value="entry"/>'.LF;
@@ -509,7 +491,7 @@ class cs_entry_index_view extends cs_index_view {
          $count_rows++;
       }
       $html .= '   <input type="hidden" name="new_matrix_row_count" value="'.$count_rows.'"/>'.LF;
-      $html .= '   <input id="new_matrix_row" onclick="javascript:resetSearchText(\'new_matrix_row\');" style="width:160px; font-size:10pt; margin-bottom:0px;" name="new_matrix_row" type="text" size="20" value="'.$this->_text_as_form($this->_translator->getMessage('PRIVATEROOM_MATRIX_NEW_ROW_ENTRY')).'"/>'.BRLF;
+      $html .= '   <input id="new_matrix_row" onclick="javascript:resetSearchText(\'new_matrix_row\');" style="width:250px; font-size:10pt; margin-bottom:0px;" name="new_matrix_row" type="text" size="20" value="'.$this->_text_as_form($this->_translator->getMessage('PRIVATEROOM_MATRIX_NEW_ROW_ENTRY')).'"/>'.BR.BRLF;
 
       $matrix_manager->resetLimits();
       $matrix_manager->setContextLimit($this->_environment->getCurrentContextID());
@@ -525,10 +507,9 @@ class cs_entry_index_view extends cs_index_view {
          $count_columns++;
       }
       $html .= '   <input type="hidden" name="new_matrix_column_count" value="'.$count_columns.'"/>'.LF;
-      $html .= '   <input id="new_matrix_column" onclick="javascript:resetSearchText(\'new_matrix_column\');" style="width:160px; font-size:10pt; margin-bottom:0px;" name="new_matrix_column" type="text" size="20" value="'.$this->_text_as_form($this->_translator->getMessage('PRIVATEROOM_MATRIX_NEW_COLUMN_ENTRY')).'"/>'.BRLF;
-      $html .= '   <input name="option" value="'.$this->_text_as_form($this->_translator->getMessage('PRIVATEROOM_MATRIX_SAVE_BUTTON')).'" style="width: 150px; font-size: 10pt;" type="submit"/>'.LF;
+      $html .= '   <input id="new_matrix_column" onclick="javascript:resetSearchText(\'new_matrix_column\');" style="width:250px; font-size:10pt; margin-bottom:0px;" name="new_matrix_column" type="text" size="20" value="'.$this->_text_as_form($this->_translator->getMessage('PRIVATEROOM_MATRIX_NEW_COLUMN_ENTRY')).'"/>'.BRLF;
+      $html .= '   <input name="option" value="'.$this->_text_as_form($this->_translator->getMessage('PRIVATEROOM_MATRIX_SAVE_BUTTON')).'" style="width: 250px; font-size: 10pt;" type="submit"/>'.LF;
       $html .='</form>'.LF;
-
 */
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;

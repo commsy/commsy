@@ -1031,6 +1031,25 @@ class cs_links_manager extends cs_manager {
       $this->_insertFromLinks($insert_array,$item_id,'in_mylist');
    }
 
+   public function saveLinksRubricToMatrix ($new_array,$item_id,$rubric) {
+      $this->setItemTypeLimit($rubric);
+      $this->setItemIDLimit($item_id);
+      $result_array = $this->_performQuery();
+      $insert_array = array();
+      $nothing_array = array();
+      $delete_array = array();
+      foreach ($result_array as $link) {
+         if ( !in_array($link['from_item_id'],$new_array) ) {
+            $delete_array[] = $link['from_item_id'];
+         } else {
+            $nothing_array[] = $link['from_item_id'];
+         }
+      }
+      $insert_array = array_diff($new_array,$nothing_array);
+      $this->deleteFromLinks($delete_array,$item_id);
+      $this->_insertFromLinks($insert_array,$item_id,'in_matrix');
+   }
+
    private function _insertFromLinks($insert_array,$item_id,$link_type) {
       foreach ($insert_array as $from_item_id) {
          $temp_array = array();

@@ -69,7 +69,22 @@ class cs_matrix_manager extends cs_labels_manager {
      $this->_row_limit = true;
   }
 
-
+  function getEntriesInPosition($id1,$id2){
+     $query = 'SELECT DISTINCT count('.$this->addDatabasePrefix('links').'.from_item_id) as count';
+     $query .= ' FROM '.$this->addDatabasePrefix('links');
+     $query .= ' WHERE 1';
+     $query .= ' AND (';
+     $query .= ' ('.$this->addDatabasePrefix('links').'.x = "'.$id1.'" AND '.$this->addDatabasePrefix('links').'.y = "'.$id2.'" )';
+     $query .= ' OR';
+     $query .= ' ('.$this->addDatabasePrefix('links').'.x = "'.$id2.'" AND '.$this->addDatabasePrefix('links').'.y = "'.$id1.'" )';
+     $query .= ' )';
+     $result = $this->_db_connector->performQuery($query);
+     if ( !isset($result[0]['count']) ) {
+        trigger_error('Problems counting matrix entries.', E_USER_WARNING);
+     } else {
+        return $result[0]['count'];
+     }
+  }
 
   function _performQuery ($mode = 'select') {
      if ($mode == 'count') {
