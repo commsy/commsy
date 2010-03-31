@@ -650,7 +650,7 @@ class cs_material_form extends cs_rubric_form {
 
    	$retour  = ''.LF;
    	$retour  .= 'var ckeditor_show_icons = true;'.LF;
-      $retour  .= 'var ckeditor_commsy_images = new Array(';
+      $retour  .= 'var ckeditor_commsy_files = new Array(';
       $counter = 0;
       foreach($ckEditor_file_array as $temp_file){
       	$retour  .= '"'.$temp_file['text'].'"';

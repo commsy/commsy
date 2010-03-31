@@ -105,12 +105,12 @@ CKEDITOR.dialog.add( 'CommSyFiles', function( editor )
 	);
 	
 	var html = '';
-	if(typeof(ckeditor_commsy_images) !== 'undefined'){
-		if(ckeditor_commsy_images.length > 0){
+	if(typeof(ckeditor_commsy_files) !== 'undefined'){
+		if(ckeditor_commsy_files.length > 0){
 			var file_counter = 0;
 			html += '<ul style="list-style-type: none">';
-			for ( var int = 0; int < ckeditor_commsy_images.length; int++) {
-				var temp_file = ckeditor_commsy_images[int];
+			for ( var int = 0; int < ckeditor_commsy_files.length; int++) {
+				var temp_file = ckeditor_commsy_files[int];
 				var file_extension_array = temp_file.split('.');
 				var file_extension = file_extension_array[file_extension_array.length-1];
 				file_extension = file_extension.toLowerCase();
