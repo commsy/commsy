@@ -17,7 +17,7 @@ CKEDITOR.plugins.add( 'CommSyImages',
 		editor.addCommand( 'CommSyImages', new CKEDITOR.dialogCommand( 'CommSyImages' ) );
 		editor.ui.addButton( 'CommSyImages',
 			{
-				label : 'CommSyImages',
+				label : ckeditor_images,
 				command : 'CommSyImages',
 				icon: this.path + 'images/CommSyImages.png'
 			});

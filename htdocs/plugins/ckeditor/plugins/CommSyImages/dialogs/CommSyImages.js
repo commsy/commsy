@@ -30,7 +30,19 @@ CKEDITOR.dialog.add( 'CommSyImages', function( editor )
 		}
 	};
 
-	var types = new Array('jpg', 'gif', 'png');
+	var image_types = new Array(
+			new Array('jpg', 'picture.png'),
+			new Array('jpeg', 'picture.png'),
+			new Array('gif', 'picture.png'),
+			new Array('tif', 'picture.png'),
+			new Array('tiff', 'picture.png'),
+			new Array('png', 'picture.png'),
+			new Array('qt', 'picture.gif'),
+			new Array('pict', 'picture.png'),
+			new Array('psd', 'picture.png'),
+			new Array('bmp', 'picture.png'),
+			new Array('svg', 'picture.png')
+	);
 	
 	var html = '';
 	if(typeof(ckeditor_commsy_images) !== 'undefined'){
@@ -43,25 +55,30 @@ CKEDITOR.dialog.add( 'CommSyImages', function( editor )
 				var file_extension = file_extension_array[file_extension_array.length-1];
 				file_extension = file_extension.toLowerCase();
 				var is_image = false;
-				for ( var int2 = 0; int2 < types.length; int2++) {
-					if(file_extension == types[int2]){
+				var file_icon = 'unknown.png';
+				for ( var int2 = 0; int2 < image_types.length; int2++) {
+					if(file_extension == image_types[int2][0]){
 						is_image = true;
+						file_icon = image_types[int2][1];
 					}
 				}
 				if(is_image){
-					html += '<li><img src="plugins/ckeditor/plugins/CommSyImages/images/CommSyImages.png" /><span id="'+temp_file+'" onmouseover="this.style.cursor=\'pointer\';"> '+temp_file+'</span></li>';
+					html += '<li><img src="images/'+file_icon+'" /><span id="'+temp_file+'" onmouseover="this.style.cursor=\'pointer\';"> '+temp_file+'</span></li>';
 					image_counter++;
 				}
 			}
 			html += '</ul>';
 			if(image_counter == 0){
-				html = 'Keine Bilder vorhanden';
+				html = ckeditor_images_no_files;
 				onClick = function( evt ){};
 			}
 		} else {
-			html = 'Keine Bilder vorhanden';
+			html = ckeditor_images_no_files;
 			onClick = function( evt ){};
 		}
+	} else {
+		html = ckeditor_images_no_files;
+		onClick = function( evt ){};
 	}
 	
 	var commsyImageSelector =
@@ -77,7 +94,7 @@ CKEDITOR.dialog.add( 'CommSyImages', function( editor )
 	};
 	
 	return {
-		title : 'Bild auswählen',
+		title : ckeditor_images_select,
 		minWidth : 270,
 		minHeight : 120,
 		contents : [

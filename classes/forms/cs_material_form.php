@@ -629,6 +629,7 @@ class cs_material_form extends cs_rubric_form {
    
    function getInfoForHeaderAsHTML () {
    	$retour  = ''.LF;
+   	$retour  .= 'var ckeditor_show_icons = true;'.LF;
       $retour  .= 'var ckeditor_commsy_images = new Array(';
       $counter = 0;
       foreach($this->_file_array as $temp_file){

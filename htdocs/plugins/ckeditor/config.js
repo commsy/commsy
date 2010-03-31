@@ -8,5 +8,7 @@ CKEDITOR.editorConfig = function( config )
 	// Define changes to default configuration here. For example:
 	// config.language = 'fr';
 	// config.uiColor = '#AADC6E';
-	config.extraPlugins = 'CommSyImages,CommSyFiles';
+	if(typeof(ckeditor_show_icons) !== 'undefined'){
+		config.extraPlugins = 'CommSyImages,CommSyFiles';
+	}
 };

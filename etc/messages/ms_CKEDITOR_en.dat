@@ -1,0 +1,8 @@
+<?php
+$message["CKEDITOR_FILES"]["en"] = "Insert files";
+$message["CKEDITOR_FILES_NO_FILES"]["en"] = "No files attached";
+$message["CKEDITOR_FILES_SELECT"]["en"] = "Select file";
+$message["CKEDITOR_IMAGES"]["en"] = "Insert images";
+$message["CKEDITOR_IMAGES_NO_FILES"]["en"] = "No images attached";
+$message["CKEDITOR_IMAGES_SELECT"]["en"] = "Select image";
+?>

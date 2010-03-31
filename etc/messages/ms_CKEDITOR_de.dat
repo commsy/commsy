@@ -1,0 +1,8 @@
+<?php
+$message["CKEDITOR_FILES"]["de"] = "Dateien einfügen";
+$message["CKEDITOR_FILES_NO_FILES"]["de"] = "Keine Dateien vorhanden";
+$message["CKEDITOR_FILES_SELECT"]["de"] = "Datei auswählen";
+$message["CKEDITOR_IMAGES"]["de"] = "Bilder einfügen";
+$message["CKEDITOR_IMAGES_NO_FILES"]["de"] = "Keine Bilder vorhanden";
+$message["CKEDITOR_IMAGES_SELECT"]["de"] = "Bild auswählen";
+?>

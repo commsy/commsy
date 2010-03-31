@@ -113,6 +113,12 @@ class class_ckeditor extends cs_plugin {
                         [ \'Format\', \'Font\', \'FontSize\', \'-\', \'JustifyLeft\', \'JustifyCenter\', \'JustifyRight\', \'JustifyBlock\', \'-\', \'Link\', \'Unlink\', \'-\', \'Table\', \'HorizontalRule\', \'Smiley\', \'-\', \'Maximize\', \'About\', \'-\', \'CommSyImages\',\'CommSyFiles\',]
                      ]
                   });'.LF;
+      $retour  .= 'var ckeditor_images = "'.$this->_translator->getMessage('CKEDITOR_IMAGES').'";'.LF;
+      $retour  .= 'var ckeditor_images_select = "'.$this->_translator->getMessage('CKEDITOR_IMAGES_SELECT').'";'.LF;
+      $retour  .= 'var ckeditor_images_no_files = "'.$this->_translator->getMessage('CKEDITOR_IMAGES_NO_FILES').'";'.LF;
+      $retour  .= 'var ckeditor_files = "'.$this->_translator->getMessage('CKEDITOR_FILES').'";'.LF;
+      $retour  .= 'var ckeditor_files_select = "'.$this->_translator->getMessage('CKEDITOR_FILES_SELECT').'";'.LF;
+      $retour  .= 'var ckeditor_files_no_files = "'.$this->_translator->getMessage('CKEDITOR_FILES_NO_FILES').'";'.LF;
       $retour .= '</script>'.LF;
       $retour .= LF;
       unset($color);

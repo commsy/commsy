@@ -10,11 +10,7 @@ CKEDITOR.dialog.add( 'CommSyFiles', function( editor )
 		images = config.smiley_images,
 		columns = 8,
 		i;
-
-	/**
-	 * Simulate "this" of a dialog for non-dialog events.
-	 * @type {CKEDITOR.dialog}
-	 */
+	
 	var dialog;
 	var onClick = function( evt )
 	{
@@ -30,7 +26,71 @@ CKEDITOR.dialog.add( 'CommSyFiles', function( editor )
 		}
 	};
 
-	var types = new Array('jpg', 'gif', 'png');
+	var image_types = new Array(
+			new Array('jpg', 'picture.png'),
+			new Array('jpeg', 'picture.png'),
+			new Array('gif', 'picture.png'),
+			new Array('tif', 'picture.png'),
+			new Array('tiff', 'picture.png'),
+			new Array('png', 'picture.png'),
+			new Array('qt', 'picture.gif'),
+			new Array('pict', 'picture.png'),
+			new Array('psd', 'picture.png'),
+			new Array('bmp', 'picture.png'),
+			new Array('svg', 'picture.png')
+	);
+	
+	var file_types = new Array(
+			new Array('htm', 'text.png'),
+			new Array('html', 'text.png'),
+			new Array('txt', 'text.png'),
+			new Array('text', 'text.png'),
+			new Array('xml', 'text.png'),
+			new Array('xsl', 'text.png'),
+			
+			new Array('zip', 'archive.png'),
+			new Array('tar', 'archive.png'),
+			new Array('gz', 'archive.png'),
+			new Array('tgz', 'archive.png'),
+			new Array('z', 'archive.png'),
+			new Array('hqx', 'archive.png'),
+			new Array('sit', 'archive.png'),
+			
+			new Array('au', 'sound.png'),
+			new Array('wav', 'sound.png'),
+			new Array('mp3', 'sound.png'),
+			new Array('aif', 'sound.png'),
+			new Array('aiff', 'sound.png'),
+			
+			new Array('mp4', 'movie.png'),
+			new Array('avi', 'movie.png'),
+			new Array('mov', 'movie.png'),
+			new Array('moov', 'movie.png'),
+			new Array('mpg', 'movie.png'),
+			new Array('mpeg', 'movie.png'),
+			new Array('dif', 'movie.png'),
+			new Array('dv', 'movie.png'),
+			new Array('flv', 'movie.png'),
+			
+			new Array('pdf', 'pdf.png'),
+			new Array('fdf', 'pdf.png'),
+			new Array('doc', 'doc.png'),
+			new Array('docx', 'doc.png'),
+			new Array('dot', 'doc.png'),
+			new Array('rtf', 'doc.png'),
+			new Array('ppt', 'ppt.png'),
+			new Array('pot', 'ppt.png'),
+			new Array('pptx', 'ppt.png'),
+			new Array('lsi', 'lassi_commsy.png'),
+			new Array('odf', 'ooo_formula_commsy.png'),
+			new Array('odg', 'ooo_draw_commsy.png'),
+			new Array('ods', 'ooo_calc_commsy.png'),
+			new Array('odp', 'ooo_impress_commsy.png'),
+			new Array('odt', 'ooo_writer_commsy.png'),
+			new Array('xls', 'xls.png'),
+			new Array('xlsx', 'xls.png'),
+			new Array('swf', 'movie.png')
+	);
 	
 	var html = '';
 	if(typeof(ckeditor_commsy_images) !== 'undefined'){
@@ -42,26 +102,39 @@ CKEDITOR.dialog.add( 'CommSyFiles', function( editor )
 				var file_extension_array = temp_file.split('.');
 				var file_extension = file_extension_array[file_extension_array.length-1];
 				file_extension = file_extension.toLowerCase();
-				var is_file = true;
-				for ( var int2 = 0; int2 < types.length; int2++) {
-					if(file_extension == types[int2]){
-						is_file = false;
+				var is_file = false;
+				var is_image = false;
+				var file_icon = 'unknown.png';
+				for ( var int2 = 0; int2 < file_types.length; int2++) {
+					if(file_extension == file_types[int2][0]){
+						is_file = true;
+						file_icon = file_types[int2][1];
 					}
 				}
-				if(is_file){
-					html += '<li><img src="plugins/ckeditor/plugins/CommSyFiles/images/CommSyFiles.png" /><span id="'+temp_file+'" onmouseover="this.style.cursor=\'pointer\';"> '+temp_file+'</span></li>';
+				if(!is_file){
+					for ( var int2 = 0; int2 < image_types.length; int2++) {
+						if(file_extension == image_types[int2][0]){
+							is_image = true;
+						}
+					}
+				}
+				if(!is_image){
+					html += '<li><img src="images/'+file_icon+'" /><span id="'+temp_file+'" onmouseover="this.style.cursor=\'pointer\';"> '+temp_file+'</span></li>';
 					file_counter++;
 				}
 			}
 			html += '</ul>';
 			if(file_counter == 0){
-				html = 'Keine Dateien vorhanden';
+				html = ckeditor_files_no_files;
 				onClick = function( evt ){};
 			}
 		} else {
-			html = 'Keine Dateien vorhanden';
+			html = ckeditor_files_no_files;
 			onClick = function( evt ){};
 		}
+	} else {
+		html = ckeditor_files_no_files;
+		onClick = function( evt ){};
 	}
 	
 	var commsyImageSelector =
@@ -77,7 +150,7 @@ CKEDITOR.dialog.add( 'CommSyFiles', function( editor )
 	};
 	
 	return {
-		title : 'Datei auswählen',
+		title : ckeditor_files_select,
 		minWidth : 270,
 		minHeight : 120,
 		contents : [

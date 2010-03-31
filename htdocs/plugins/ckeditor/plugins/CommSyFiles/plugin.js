@@ -17,7 +17,7 @@ CKEDITOR.plugins.add( 'CommSyFiles',
 		editor.addCommand( 'CommSyFiles', new CKEDITOR.dialogCommand( 'CommSyFiles' ) );
 		editor.ui.addButton( 'CommSyFiles',
 			{
-				label : 'CommSyFiles',
+				label : ckeditor_files,
 				command : 'CommSyFiles',
 				icon: this.path + 'images/CommSyFiles.png'
 			});
