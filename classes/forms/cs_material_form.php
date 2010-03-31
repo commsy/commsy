@@ -628,13 +628,33 @@ class cs_material_form extends cs_rubric_form {
    }
    
    function getInfoForHeaderAsHTML () {
+   	$ckEditor_file_array = array();
+      if (!empty($this->_session_file_array)) {
+         foreach ( $this->_session_file_array as $file ) {
+            $temp_array['text'] = $file['name'];
+            $temp_array['value'] = $file['file_id'];
+            $ckEditor_file_array[] = $temp_array;
+         }
+      } elseif (isset($this->_item)) {
+         $file_list = $this->_item->getFileList();
+         if ($file_list->getCount() > 0) {
+            $file_item = $file_list->getFirst();
+            while ($file_item) {
+               $temp_array['text'] = $file_item->getDisplayname();
+               $temp_array['value'] = $file_item->getFileID();
+               $ckEditor_file_array[] = $temp_array;
+               $file_item = $file_list->getNext();
+            }
+         }
+      }
+
    	$retour  = ''.LF;
    	$retour  .= 'var ckeditor_show_icons = true;'.LF;
       $retour  .= 'var ckeditor_commsy_images = new Array(';
       $counter = 0;
-      foreach($this->_file_array as $temp_file){
+      foreach($ckEditor_file_array as $temp_file){
       	$retour  .= '"'.$temp_file['text'].'"';
-      	if($counter < sizeof($this->_file_array)-1){
+      	if($counter < sizeof($ckEditor_file_array)-1){
       		$retour  .= ',';
       	}
       	$counter++;

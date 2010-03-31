@@ -46,8 +46,9 @@ class class_ckeditor extends cs_plugin {
 
    public function getInfosForHeaderAsHTML () {
       $retour  = '';
-      $retour .= '   <script type="text/javascript" src="plugins/'.$this->getIdentifier().'/ckeditor.js"></script>';
-      $retour .= '   <link rel="stylesheet" href="plugins/'.$this->getIdentifier().'/commsy_css.php?cid='.$this->_environment->getCurrentContextID().'" />';
+      $retour .= '   <script type="text/javascript" src="plugins/'.$this->getIdentifier().'/ckeditor.js"></script>'.LF;
+      $retour .= '   <link rel="stylesheet" href="plugins/'.$this->getIdentifier().'/commsy_css.php?cid='.$this->_environment->getCurrentContextID().'" />'.LF;
+      $retour .= '   <link rel="stylesheet" href="plugins/'.$this->getIdentifier().'/commsy.css" />'.LF;
       return $retour;
    }
 
@@ -116,6 +117,20 @@ class class_ckeditor extends cs_plugin {
       $retour  .= 'var ckeditor_images = "'.$this->_translator->getMessage('CKEDITOR_IMAGES').'";'.LF;
       $retour  .= 'var ckeditor_images_select = "'.$this->_translator->getMessage('CKEDITOR_IMAGES_SELECT').'";'.LF;
       $retour  .= 'var ckeditor_images_no_files = "'.$this->_translator->getMessage('CKEDITOR_IMAGES_NO_FILES').'";'.LF;
+      
+      $retour  .= 'var ckeditor_images_select_file = "'.$this->_translator->getMessage('CKEDITOR_IMAGES_SELECT_FILE').'";'.LF;   
+      
+      $retour  .= 'var ckeditor_images_select_width = "'.$this->_translator->getMessage('CKEDITOR_IMAGES_SELECT_WIDTH').'";'.LF;
+      $retour  .= 'var ckeditor_images_size_small = "'.$this->_translator->getMessage('CKEDITOR_IMAGES_SIZE_SMALL').'";'.LF;
+      $retour  .= 'var ckeditor_images_size_medium = "'.$this->_translator->getMessage('CKEDITOR_IMAGES_SIZE_MEDIUM').'";'.LF;
+      $retour  .= 'var ckeditor_images_size_large = "'.$this->_translator->getMessage('CKEDITOR_IMAGES_SIZE_LARGE').'";'.LF;
+      $retour  .= 'var ckeditor_images_size_original = "'.$this->_translator->getMessage('CKEDITOR_IMAGES_SIZE_ORIGINAL').'";'.LF;
+      
+      $retour  .= 'var ckeditor_images_select_alignment = "'.$this->_translator->getMessage('CKEDITOR_IMAGES_SELECT_ALIGNMENT').'";'.LF;
+      $retour  .= 'var ckeditor_images_alignment_left = "'.$this->_translator->getMessage('CKEDITOR_IMAGES_ALIGNMENT_LEFT').'";'.LF;
+      $retour  .= 'var ckeditor_images_alignment_center = "'.$this->_translator->getMessage('CKEDITOR_IMAGES_ALIGNMENT_CENTER').'";'.LF;
+      $retour  .= 'var ckeditor_images_alignment_right = "'.$this->_translator->getMessage('CKEDITOR_IMAGES_ALIGNMENT_RIGHT').'";'.LF;
+      
       $retour  .= 'var ckeditor_files = "'.$this->_translator->getMessage('CKEDITOR_FILES').'";'.LF;
       $retour  .= 'var ckeditor_files_select = "'.$this->_translator->getMessage('CKEDITOR_FILES_SELECT').'";'.LF;
       $retour  .= 'var ckeditor_files_no_files = "'.$this->_translator->getMessage('CKEDITOR_FILES_NO_FILES').'";'.LF;

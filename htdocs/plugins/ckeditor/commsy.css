@@ -1,0 +1,14 @@
+td.ckeditor_select_title {
+   padding: 5px;
+   text-align: right;
+}
+
+td.ckeditor_select_content {
+   padding: 5px;
+   text-align: left;
+}
+
+select.ckeditor_select{
+   width: 200px;
+   background: #ffffff;
+}

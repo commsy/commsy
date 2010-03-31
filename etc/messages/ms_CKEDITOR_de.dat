@@ -3,6 +3,16 @@ $message["CKEDITOR_FILES"]["de"] = "Dateien einfügen";
 $message["CKEDITOR_FILES_NO_FILES"]["de"] = "Keine Dateien vorhanden";
 $message["CKEDITOR_FILES_SELECT"]["de"] = "Datei auswählen";
 $message["CKEDITOR_IMAGES"]["de"] = "Bilder einfügen";
+$message["CKEDITOR_IMAGES_ALIGNMENT_CENTER"]["de"] = "zentriert";
+$message["CKEDITOR_IMAGES_ALIGNMENT_LEFT"]["de"] = "linksbündig";
+$message["CKEDITOR_IMAGES_ALIGNMENT_RIGHT"]["de"] = "rechtsbündig";
 $message["CKEDITOR_IMAGES_NO_FILES"]["de"] = "Keine Bilder vorhanden";
 $message["CKEDITOR_IMAGES_SELECT"]["de"] = "Bild auswählen";
+$message["CKEDITOR_IMAGES_SELECT_ALIGNMENT"]["de"] = "Bildposition";
+$message["CKEDITOR_IMAGES_SELECT_FILE"]["de"] = "Angehängte Bilddatei";
+$message["CKEDITOR_IMAGES_SELECT_WIDTH"]["de"] = "Bildbreite";
+$message["CKEDITOR_IMAGES_SIZE_LARGE"]["de"] = "groß";
+$message["CKEDITOR_IMAGES_SIZE_MEDIUM"]["de"] = "mittel";
+$message["CKEDITOR_IMAGES_SIZE_ORIGINAL"]["de"] = "Originalgröße";
+$message["CKEDITOR_IMAGES_SIZE_SMALL"]["de"] = "klein";
 ?>
