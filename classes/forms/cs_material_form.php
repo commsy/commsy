@@ -660,6 +660,42 @@ class cs_material_form extends cs_rubric_form {
       	$counter++;
       }
       $retour  .= ');'.LF;
+      
+      $ckEditor_link_array = array();
+      $item_manager = $this->_environment->getItemManager();
+      $item_manager->resetLimits();
+      $item_manager->setContextLimit($this->_environment->getCurrentContextID());
+      $item_manager->select();
+      $item_list = $item_manager->get();
+      $item_item = $item_list->getFirst();
+      while($item_item){
+      	if($item_item->getItemType() != 'link_item'){
+	         $temp_manager = $this->_environment->getManager($item_item->getItemType());
+	         $temp_manager->setIDArrayLimit(array($item_item->getItemID()));
+	         $temp_manager->select();
+	         $temp_list = $temp_manager->get();
+	         $temp_item = $temp_list->getFirst();
+	      	if($temp_item->getItemType() != 'user'){
+	      		$text = $temp_item->getTitle();
+	      	} else {
+	      		$text = $temp_item->getFullname();
+	      	}
+	         
+	         $ckEditor_link_array[] = array($temp_item->getItemID(), $text, $temp_item->getItemType());
+      	}
+      	$item_item = $item_list->getNext();
+      }
+      
+      $retour  .= 'var ckeditor_commsy_links = new Array(';
+      $counter = 0;
+      foreach($ckEditor_link_array as $temp_array){
+         $retour  .= 'new Array("'.$temp_array[0].'","'.$temp_array[1].'","'.$temp_array[2].'")';
+         if($counter < sizeof($ckEditor_link_array)-1){
+            $retour  .= ',';
+         }
+         $counter++;
+      }
+      $retour  .= ');'.LF;
    	return $retour;
    }
 }
