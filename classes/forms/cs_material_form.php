@@ -690,8 +690,8 @@ class cs_material_form extends cs_rubric_form {
 	      	}
 	         $text = str_replace("'", "\'",$text);
 	         $text = str_replace('"', '\"',$text);
-	         if(strlen($text) > 50){
-	           $text = substr($text, 0, 47).'...';
+	         if(strlen($text) > 30){
+	           $text = substr($text, 0, 27).'...';
 	         }
 	         
 	         $ckEditor_link_array[] = array($temp_item->getItemID(), $text, $temp_item->getItemType());
