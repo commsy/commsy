@@ -15,4 +15,7 @@ $message["CKEDITOR_IMAGES_SIZE_LARGE"]["de"] = "groß";
 $message["CKEDITOR_IMAGES_SIZE_MEDIUM"]["de"] = "mittel";
 $message["CKEDITOR_IMAGES_SIZE_ORIGINAL"]["de"] = "Originalgröße";
 $message["CKEDITOR_IMAGES_SIZE_SMALL"]["de"] = "klein";
+$message["CKEDITOR_LINKS"]["de"] = "Verweise auf Einträge in CommSy";
+$message["CKEDITOR_LINKS_NO_LINKS"]["de"] = "Keine Einträge vorhanden";
+$message["CKEDITOR_LINKS_SELECT"]["de"] = "Eintrag auswählen";
 ?>

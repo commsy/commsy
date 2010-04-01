@@ -111,7 +111,7 @@ class class_ckeditor extends cs_plugin {
                      [
                         [ \'Cut\', \'Copy\', \'Paste\', \'PasteFromWord\', \'-\', \'Undo\', \'Redo\', \'-\', \'Bold\', \'Italic\', \'Underline\', \'Strike\', \'Subscript\', \'Superscript\', \'-\', \'NumberedList\', \'BulletedList\', \'Outdent\', \'Indent\', \'Blockquote\', \'-\', \'TextColor\', \'BGColor\', \'-\', \'RemoveFormat\']
                         ,\'/\',
-                        [ \'Format\', \'Font\', \'FontSize\', \'-\', \'JustifyLeft\', \'JustifyCenter\', \'JustifyRight\', \'JustifyBlock\', \'-\', \'Link\', \'Unlink\', \'-\', \'Table\', \'HorizontalRule\', \'Smiley\', \'-\', \'Maximize\', \'About\', \'-\', \'CommSyImages\',\'CommSyFiles\',]
+                        [ \'Format\', \'Font\', \'FontSize\', \'-\', \'JustifyLeft\', \'JustifyCenter\', \'JustifyRight\', \'JustifyBlock\', \'-\', \'Link\', \'Unlink\', \'-\', \'Table\', \'HorizontalRule\', \'Smiley\', \'-\', \'Maximize\', \'About\', \'-\', \'CommSyImages\',\'CommSyFiles\',\'CommSyLinks\']
                      ]
                   });'.LF;
       $retour  .= 'var ckeditor_images = "'.$this->_translator->getMessage('CKEDITOR_IMAGES').'";'.LF;
@@ -134,6 +134,10 @@ class class_ckeditor extends cs_plugin {
       $retour  .= 'var ckeditor_files = "'.$this->_translator->getMessage('CKEDITOR_FILES').'";'.LF;
       $retour  .= 'var ckeditor_files_select = "'.$this->_translator->getMessage('CKEDITOR_FILES_SELECT').'";'.LF;
       $retour  .= 'var ckeditor_files_no_files = "'.$this->_translator->getMessage('CKEDITOR_FILES_NO_FILES').'";'.LF;
+      
+      $retour  .= 'var ckeditor_links = "'.$this->_translator->getMessage('CKEDITOR_LINKS').'";'.LF;
+      $retour  .= 'var ckeditor_links_select = "'.$this->_translator->getMessage('CKEDITOR_LINKS_SELECT').'";'.LF;
+      $retour  .= 'var ckeditor_links_no_links = "'.$this->_translator->getMessage('CKEDITOR_LINKS_NO_LINKS').'";'.LF;
       $retour .= '</script>'.LF;
       $retour .= LF;
       unset($color);

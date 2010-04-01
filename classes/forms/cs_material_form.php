@@ -680,7 +680,9 @@ class cs_material_form extends cs_rubric_form {
 	      	} else {
 	      		$text = $temp_item->getFullname();
 	      	}
-	         
+	         $text = str_replace("'", "\'",$text);
+	         $text = str_replace('"', '\"',$text);
+	      	
 	         $ckEditor_link_array[] = array($temp_item->getItemID(), $text, $temp_item->getItemType());
       	}
       	$item_item = $item_list->getNext();

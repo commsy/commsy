@@ -12,3 +12,22 @@ select.ckeditor_select{
    width: 200px;
    background: #ffffff;
 }
+
+div.ckeditor_links_entry{
+   vertical-align:bottom;
+   height:20px;
+}
+
+div.ckeditor_files_icon{
+   width:22px;
+   float:left;
+   clear:both;
+   position: relative;
+   top: 0;
+}
+
+div.ckeditor_files_text{
+   float:left;
+   position: relative;
+   top: 0;
+}
