@@ -670,7 +670,14 @@ class cs_material_form extends cs_rubric_form {
       $item_list = $item_manager->get();
       $item_item = $item_list->getFirst();
       while($item_item){
-      	if($item_item->getItemType() != 'link_item'){
+      	if($item_item->getItemType() == 'material'
+      	   or $item_item->getItemType() == 'announcement'
+      	   or $item_item->getItemType() == 'date'
+      	   or $item_item->getItemType() == 'discussion'
+      	   or $item_item->getItemType() == 'user'
+      	   or $item_item->getItemType() == 'todo'
+      	   or $item_item->getItemType() == 'topic'
+      	   or $item_item->getItemType() == 'group'){
 	         $temp_manager = $this->_environment->getManager($item_item->getItemType());
 	         $temp_manager->setIDArrayLimit(array($item_item->getItemID()));
 	         $temp_manager->select();
