@@ -665,7 +665,7 @@ class cs_material_form extends cs_rubric_form {
       $item_manager = $this->_environment->getItemManager();
       $item_manager->resetLimits();
       $item_manager->setContextLimit($this->_environment->getCurrentContextID());
-      $item_manager->setIntervalLimit(100);
+      $item_manager->setIntervalLimit(50);
       $item_manager->select();
       $item_list = $item_manager->get();
       $item_item = $item_list->getFirst();
@@ -674,7 +674,6 @@ class cs_material_form extends cs_rubric_form {
       	   or $item_item->getItemType() == 'announcement'
       	   or $item_item->getItemType() == 'date'
       	   or $item_item->getItemType() == 'discussion'
-      	   or $item_item->getItemType() == 'user'
       	   or $item_item->getItemType() == 'todo'
       	   or $item_item->getItemType() == 'topic'
       	   or $item_item->getItemType() == 'group'){
