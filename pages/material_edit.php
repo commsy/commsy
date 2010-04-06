@@ -207,7 +207,6 @@ else {
             $session_post_vars['new_buzzword']='';
          }
 
-
          if ( isset($post_file_ids) AND !empty($post_file_ids) ) {
             $session_post_vars['filelist'] = $post_file_ids;
          }
@@ -218,6 +217,23 @@ else {
             $session_post_vars['taglist'] = $post_tag_ids;
          }
          $form->setFormPost($session_post_vars);
+         
+         // attach filelist postvar to right box postvars
+         if(isset($_POST['right_box_option'])) {
+            if($_POST['right_box_option'] == $translator->getMessage('COMMON_BUZZWORD_NEW_ATTACH')) {
+               $buzzword_post_vars = $session->getValue('buzzword_post_vars');
+               $buzzword_post_vars['filelist'] = $post_file_ids;
+               $session->setValue('buzzword_post_vars', $buzzword_post_vars);
+            } elseif($_POST['right_box_option'] == $translator->getMessage('COMMON_TAG_NEW_ATTACH')) {
+               $tag_post_vars = $session->getValue('tag_post_vars');
+               $tag_post_vars['filelist'] = $post_file_ids;
+               $session->setValue('tag_post_vars', $tag_post_vars);
+            } elseif($_POST['right_box_option'] == $translator->getMessage('COMMON_ITEM_NEW_ATTACH')) {
+               $linked_items_post_vars = $session->getValue('linked_items_post_vars');
+               $linked_items_post_vars['filelist'] = $post_file_ids;
+               $session->setValue('linked_items_post_vars', $linked_items_post_vars);
+            }
+         }
       }
 
       // Back from multi upload
