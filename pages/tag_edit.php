@@ -219,9 +219,12 @@ else {
                   $tag_item->setTitle($post_var);
                   $tag_item->save();
                   unset($tag_item);
-               } elseif ( !empty($iid) and $iid == $delete_id ) {
+               } elseif ( !empty($iid) and isset($delete_id) and $iid == $delete_id ) {
                   $tag_item = $tag_manager->getItem($iid);
                   $tag_item->delete();
+                  // only one item can be deleted at once, so we unset $delete_id after deleting
+                  // to avoid problems when trying to delete one item twice
+                  unset($delete_id);
                   unset($tag_item);
                }
                unset($tag_manager);
