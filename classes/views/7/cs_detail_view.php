@@ -687,9 +687,14 @@ class cs_detail_view extends cs_view {
             }
 
 
-            if ( isset($item) and $item->isA(CS_USER_TYPE) ) {
+            if ( isset($item)
+                 and is_object($item)
+                 and $item->isA(CS_USER_TYPE)
+               ) {
                $link_title = $item->getFullName();
-            } elseif ( isset($item) ) {
+            } elseif ( isset($item)
+                       and is_object($item)
+                     ) {
                $link_title = $item->getTitle();
             } else {
                $link_title = '';

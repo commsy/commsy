@@ -24,9 +24,9 @@
 
 function _can_delete ($id_to_check) {
    global $environment;
-   
+
    $translator = $environment->getTranslationObject();
-   
+
    $retour = false;
    $type = '';
    if ( isset($_GET['section_action'])
@@ -61,7 +61,11 @@ function _can_delete ($id_to_check) {
       $manager = $environment->getManager($type);
       if ( isset($manager) ) {
          $item_to_check = $manager->getItem($id_to_check);
-         $retour = $item_to_check->mayEdit($environment->getCurrentUserItem());
+         if ( isset($item_to_check)
+              and is_object($item_to_check)
+            ) {
+            $retour = $item_to_check->mayEdit($environment->getCurrentUserItem());
+         }
       }
       unset($manager);
    }
