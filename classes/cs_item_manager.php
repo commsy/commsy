@@ -679,7 +679,7 @@ class cs_item_manager extends cs_manager {
          if ( isset($result) and !empty($result) ) {
             $retour = $this->_buildItem($result[0]);
          } elseif ( !$this->_environment->isArchiveMode()
-                    and !is_a($this,'cs_zzz_item_manager')
+                    and get_class($this) == 'cs_item_manager'
                   ) {
             $zzz_item_manager = $this->_environment->getZzzItemManager();
             $retour = $zzz_item_manager->getItem($iid);
@@ -688,7 +688,7 @@ class cs_item_manager extends cs_manager {
             }
             unset($zzz_item_manager);
          } elseif ( $this->_environment->isArchiveMode()
-                    and !is_a($this,'cs_item_manager')
+                    and get_class($this) == 'cs_zzz_item_manager'
                   ) {
             $item_manager = $this->_environment->getItemManager(true);
             $retour = $item_manager->getItem($iid);
@@ -698,6 +698,12 @@ class cs_item_manager extends cs_manager {
             unset($item_manager);
          } else {
             $retour = 'empty';
+         }
+         if ( !empty($retour)
+              and $retour != 'empty'
+              and is_object($retour)
+            ) {
+            $this->_cache_object[$iid] = $retour;
          }
       } else {
          $retour = $this->_cache_object[$iid];

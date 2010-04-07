@@ -86,13 +86,17 @@ class cs_item {
          if ( !empty($context_id) ) {
             $item_manager = $this->_environment->getItemManager();
             $item = $item_manager->getItem($this->getContextID());
-            if ( isset($item) ) {
+            if ( isset($item)
+                 and is_object($item)
+               ) {
                $manager = $this->_environment->getManager($item->getItemType());
                $this->_context_item = $manager->getItem($this->getContextId());
             } else {
                $item_manager = $this->_environment->getItemManager(true);
                $item = $item_manager->getItem($this->getContextID());
-               if ( isset($item) ) {
+               if ( isset($item)
+                    and is_object($item)
+                  ) {
                   $manager = $this->_environment->getManager($item->getItemType(),true);
                   $this->_context_item = $manager->getItem($this->getContextId());
                }
@@ -1631,18 +1635,18 @@ class cs_item {
       $manager = $this->_environment->getManager($this->getItemType());
       $this->_delete($manager);
    }
-   
+
    function deleteAssociatedAnnotations() {
       $annotation_manager = $this->_environment->getAnnotationManager();
-      
+
       // get all annotations linked with the item
       $annotation_list = $annotation_manager->getAnnotatedItemList($this->getItemID());
-      
+
       // delete them
       $item = $annotation_list->getFirst();
       while($item){
          $item->delete();
-         
+
          $item = $annotation_list->getNext();
       }
    }
