@@ -701,7 +701,7 @@ class cs_tag_manager extends cs_manager {
         $link_manager->deleteLinksBecauseItemIsDeleted($item_id);
         unset($link_manager);
         $tag2tag_manager = $this->_environment->getTag2TagManager();
-        if($deleteTag2Tag) {
+        if($deleteTag2TagRecursive) {
            $tag2tag_manager->deleteTagLinksForTag($item_id);
         } else {
            $tag2tag_manager->deleteTagLinks($item_id);
