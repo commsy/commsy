@@ -79,7 +79,7 @@ if ( !empty($_SERVER['SCRIPT_FILENAME']) ) {
 } else {
    $c_commsy_path_file = '';
 }
-$c_commsy_url_path = deleteLastSlash($c_commsy_url_path);
+$c_commsy_path_file = deleteLastSlash($c_commsy_path_file);
 
 // set security key to prevent session riding
 // $c_security_key = '';

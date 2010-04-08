@@ -574,7 +574,15 @@ class cs_environment {
    function getDiscManager() {
       $name = 'cs_disc_manager';
       if (!isset($this->instance[$name])) {
+         $path = $this->getConfiguration('c_commsy_path_file');
+         $old_path = getcwd();
+         if ( $old_path != $path ) {
+            chdir($path);
+         }
          require_once('classes/'.$name.'.php');
+         if ( $old_path != $path ) {
+            chdir($old_path);
+         }
          $this->instance[$name] = new $name($this->getCurrentPortalID(),$this->getCurrentContextID());
          if (!$this->inServer()) {
             $this->instance[$name]->setPortalID($this->getCurrentPortalID());
@@ -1464,7 +1472,7 @@ class cs_environment {
    * returns a single instance of a class. a reference to the returned object must
    * be assigned, otherwise a copy is created.
    * Example:
-   * $news_manager =<b>&</b> $enviroment->_getInstance('cs_news_manager');
+   * $news_manager = $enviroment->_getInstance('cs_news_manager');
    *
    * @param string           name      name of the class to be instantiated
    * @return cs_manager
@@ -1472,7 +1480,15 @@ class cs_environment {
    */
    function _getInstance($name) {
       if ( !isset($this->instance[$name]) ) {
+         $path = $this->getConfiguration('c_commsy_path_file');
+         $old_path = getcwd();
+         if ( $old_path != $path ) {
+            chdir($path);
+         }
          require_once('classes/'.$name.'.php');
+         if ( $old_path != $path ) {
+            chdir($old_path);
+         }
          $this->instance[$name] = new $name($this);
       }
       $this->instance[$name]->resetLimits();
