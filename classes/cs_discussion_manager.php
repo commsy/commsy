@@ -398,13 +398,13 @@ class cs_discussion_manager extends cs_manager {
         } elseif ( !empty($item_id) ) {
            $query = "SELECT * FROM ".$this->addDatabasePrefix("discussions")." WHERE ".$this->addDatabasePrefix("discussions").".item_id = '".encode(AS_DB,$item_id)."'";
            $result = $this->_db_connector->performQuery($query);
-           if ( !isset($result) or empty($result[0]) ) {
+           if ( !isset($result) ) {
               include_once('functions/error_functions.php');
               trigger_error('Problems selecting one discussions item ('.$item_id.').',E_USER_WARNING);
-           } else {
+           } elseif ( !empty($result[0]) ) {
               $discussion = $this->_buildItem($result[0]);
               if ( $this->_cache_on ) {
-                 $this->_cached_items[$result[0]['item_id']] = $result[0];
+                 $this->_cached_items[$item_id] = $result[0];
               }
            }
            return $discussion;
@@ -639,11 +639,11 @@ class cs_discussion_manager extends cs_manager {
    }
 
    function deleteDiscussionsOfUser($uid) {
-   	  // create backup of item
-   	  $this->backupItem($uid, array(	'title'				=>	'title',
-   	  									'modification_date'	=>	'modification_date',
-   	  									'public'			=>	'public'));
-   	  
+        // create backup of item
+        $this->backupItem($uid, array(	'title'				=>	'title',
+                                   'modification_date'	=>	'modification_date',
+                                   'public'			=>	'public'));
+
       $current_datetime = getCurrentDateTimeInMySQL();
       $query  = 'SELECT '.$this->addDatabasePrefix('discussions').'.* FROM '.$this->addDatabasePrefix('discussions').' WHERE '.$this->addDatabasePrefix('discussions').'.creator_id = "'.encode(AS_DB,$uid).'"';
       $result = $this->_db_connector->performQuery($query);
