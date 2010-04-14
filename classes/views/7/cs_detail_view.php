@@ -84,6 +84,8 @@ class cs_detail_view extends cs_view {
 
    var $_dropdown_rubrics_new = array();
 
+   var $_tagBoxInitialized = false;
+   
    /** constructor: cs_detail_view
     * the only available constructor, initial values for internal variables
     *
@@ -1111,6 +1113,7 @@ class cs_detail_view extends cs_view {
       if ( isset($item) ) {
          $list = $item->getChildrenList();
          if ( isset($list) and !$list->isEmpty() ) {
+         	$this->_tagBoxInitialized = true;
             $tag_list = $tagged_item->getTagList();
             if($with_div){
                $current_user = $this->_environment->getCurrentUserItem();
@@ -1221,6 +1224,48 @@ class cs_detail_view extends cs_view {
                $html .= '</div>'.LF;
                $html .= '</div>'.LF;
             }
+         } elseif (!$this->_tagBoxInitialized) {
+            if(!empty($this->_right_box_config['title_string'])){
+               $separator = ',';
+            }else{
+               $separator = '';
+            }
+            #$count_link_item = $tag_list->getCount();
+            $this->_right_box_config['title_string'] .= $separator.'"'.$this->_translator->getMessage('COMMON_ATTACHED_TAGS').' (0)"';
+            $this->_right_box_config['desc_string'] .= $separator.'""';
+            $this->_right_box_config['size_string'] .= $separator.'"10"';
+            $current_context = $this->_environment->getCurrentContextItem();
+            if($current_context->isTagsShowExpanded()){
+               $this->_right_box_config['config_string'] .= $separator.'true';
+            } else {
+               $this->_right_box_config['config_string'] .= $separator.'false';
+            }
+            $html .= '<div class="right_box">'.LF;
+            $html .= '         <noscript>';
+            $html .= '<div class="right_box_title">'.$this->_translator->getMessage('COMMON_TAGS').'</div>';
+            $html .= '         </noscript>';
+            $html .= '<div class="right_box_main" >'.LF;
+            $html .= '<div style="padding:0px 5px; font-size:8pt;" class="disabled">'.$this->_translator->getMessage('COMMON_NONE').'</div>'.LF;
+            $html .= '<div style="width:235px; font-size:8pt; text-align:right; padding-top:5px;">';
+            $current_user = $this->_environment->getCurrentUserItem();
+            if ($current_user->isUser() and $this->_with_modifying_actions ) {
+               $params = array();
+               $params = $this->_environment->getCurrentParameterArray();
+               $params['attach_view'] = 'yes';
+               $params['attach_type'] = 'tag';
+               $html .= ahref_curl($this->_environment->getCurrentContextID(),
+                          $this->_environment->getCurrentModule(),
+                          $this->_environment->getCurrentFunction(),
+                          $params,
+                          $this->_translator->getMessage('COMMON_TAG_ATTACH')
+                          ).LF;
+               unset($params);
+            } else {
+               $html .= '<span class="disabled">'.$this->_translator->getMessage('COMMON_TAG_ATTACH').'</span>'.LF;
+            }
+            $html .= '</div>'.LF;
+            $html .= '</div>'.LF;
+            $html .= '</div>'.LF;
          }
       }
       return $html;
