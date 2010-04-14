@@ -328,7 +328,7 @@ class cs_page_homepage_view extends cs_page_view {
       $retour .= '</div>'.LF;
 
       $retour .= '<div class="site_footer">'.LF;
-        $retour .= '   <a href="http://www.commsy.net" target="_top" title="'.$this->_translator->getMessage('COMMSY_LINK_TITLE').'">'.'<img src="images/commsy-logo-70x14.jpg" alt="commsy logo" style="vertical-align: bottom;" />'.'</a>&nbsp;&nbsp;'.getCommSyVersion();
+      $retour .= '   <a href="http://www.commsy.net" target="_top" title="'.$this->_translator->getMessage('COMMSY_LINK_TITLE').'">'.'<img src="images/commsy-logo-70x14.jpg" alt="commsy logo" style="vertical-align: bottom;" />'.'</a>&nbsp;&nbsp;'.getCommSyVersion();
       $retour .= '</div>'.LF;
 
       return $retour;

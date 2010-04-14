@@ -116,4 +116,7 @@ $c_use_new_private_room = false;
 
 //Flag for dropdown-menus
 $c_use_linked_dropdown_rooms = array();
+
+// version addon, to display after version informations
+#$c_version_addon = 'Server 1';
 ?>
