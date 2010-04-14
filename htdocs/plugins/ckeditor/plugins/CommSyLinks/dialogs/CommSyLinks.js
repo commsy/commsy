@@ -48,7 +48,8 @@ CKEDITOR.dialog.add( 'CommSyLinks', function( editor )
 	if(typeof(ckeditor_commsy_links) !== 'undefined'){
 		if(ckeditor_commsy_links.length > 0){
 			var file_counter = 0;
-			html += '<ul style="list-style-type: none">';
+			//html += '<ul style="list-style-type: none">';
+			html += '<select name="Essen" size=10 width=100%>';
 			for ( var int = 0; int < ckeditor_commsy_links.length; int++) {
 				var item_id = ckeditor_commsy_links[int][0];
 				var item_text = ckeditor_commsy_links[int][1];
@@ -59,10 +60,12 @@ CKEDITOR.dialog.add( 'CommSyLinks', function( editor )
 						item_icon = item_types[int2][1];
 					}
 				}
-				html += '<li><div class="ckeditor_links_entry"><div class="ckeditor_files_icon"><img src="images/commsyicons/16x16/'+item_icon+'" /></div><div class="ckeditor_files_text"><span id="'+item_id+'" onmouseover="this.style.cursor=\'pointer\';"> '+item_text+'</span></div></div></li>';
+				//html += '<li><div class="ckeditor_links_entry"><div class="ckeditor_files_icon"><img src="images/commsyicons/16x16/'+item_icon+'" /></div><div class="ckeditor_files_text"><span id="'+item_id+'" onmouseover="this.style.cursor=\'pointer\';"> '+item_text+'</span></div></div></li>';
+				html += '<option id="'+item_id+'" style="background-image:url(images/commsyicons/16x16/'+item_icon+'); background-repeat:no-repeat; padding:2px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+item_text+'</option>';
 				file_counter++;
 			}
-			html += '</ul>';
+			//html += '</ul>';
+			html += '</select>';
 			if(file_counter == 0){
 				html = ckeditor_links_no_links;
 				onClick = function( evt ){};

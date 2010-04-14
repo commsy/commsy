@@ -366,7 +366,7 @@ class cs_material_form extends cs_rubric_form {
             default:
                break;
          }
-
+   
       if ( $this->_bib_kind=='none' ) {
          $this->_form->addTextArea('description','',$this->_translator->getMessage('MATERIAL_ABSTRACT'),'','',20);
       } else {
@@ -626,9 +626,9 @@ class cs_material_form extends cs_rubric_form {
          }
       }
    }
-
+   
    function getInfoForHeaderAsHTML () {
-      $ckEditor_file_array = array();
+   	$ckEditor_file_array = array();
       if (!empty($this->_session_file_array)) {
          foreach ( $this->_session_file_array as $file ) {
             $temp_array['text'] = $file['name'];
@@ -648,19 +648,19 @@ class cs_material_form extends cs_rubric_form {
          }
       }
 
-      $retour  = ''.LF;
-      $retour  .= 'var ckeditor_show_icons = true;'.LF;
+   	$retour  = ''.LF;
+   	$retour  .= 'var ckeditor_show_icons = true;'.LF;
       $retour  .= 'var ckeditor_commsy_files = new Array(';
       $counter = 0;
       foreach($ckEditor_file_array as $temp_file){
-         $retour  .= '"'.$temp_file['text'].'"';
-         if($counter < sizeof($ckEditor_file_array)-1){
-            $retour  .= ',';
-         }
-         $counter++;
+      	$retour  .= '"'.$temp_file['text'].'"';
+      	if($counter < sizeof($ckEditor_file_array)-1){
+      		$retour  .= ',';
+      	}
+      	$counter++;
       }
       $retour  .= ');'.LF;
-
+      
       $ckEditor_link_array = array();
       $item_manager = $this->_environment->getItemManager();
       $item_manager->resetLimits();
@@ -670,36 +670,35 @@ class cs_material_form extends cs_rubric_form {
       $item_list = $item_manager->get();
       $item_item = $item_list->getFirst();
       while($item_item){
-         if($item_item->getItemType() == 'material'
-            or $item_item->getItemType() == 'announcement'
-            or $item_item->getItemType() == 'date'
-            or $item_item->getItemType() == 'discussion'
-            or $item_item->getItemType() == 'todo'
-            or $item_item->getItemType() == 'topic'
-            or $item_item->getItemType() == 'group'){
-            $temp_manager = $this->_environment->getManager($item_item->getItemType());
-            $temp_manager->setIDArrayLimit(array($item_item->getItemID()));
-            $temp_manager->select();
-            $temp_list = $temp_manager->get();
-            $temp_item = $temp_list->getFirst();
-            if ( !empty($temp_item) ) {
-               if($temp_item->getItemType() != 'user'){
-                  $text = $temp_item->getTitle();
-               } else {
-                  $text = $temp_item->getFullname();
-               }
-               $text = str_replace("'", "\'",$text);
-               $text = str_replace('"', '\"',$text);
-               if(strlen($text) > 30){
-                 $text = substr($text, 0, 27).'...';
-               }
-
-               $ckEditor_link_array[] = array($temp_item->getItemID(), $text, $temp_item->getItemType());
+      	#if($item_item->getItemType() == 'material'
+      	#   or $item_item->getItemType() == 'announcement'
+      	#   or $item_item->getItemType() == 'date'
+      	#   or $item_item->getItemType() == 'discussion'
+      	#   or $item_item->getItemType() == 'todo'
+      	#   or $item_item->getItemType() == 'topic'
+      	#   or $item_item->getItemType() == 'group'){
+	         $temp_manager = $this->_environment->getManager($item_item->getItemType());
+	         $temp_manager->setIDArrayLimit(array($item_item->getItemID()));
+	         $temp_manager->select();
+	         $temp_list = $temp_manager->get();
+	         $temp_item = $temp_list->getFirst();
+	         if ( !empty($temp_item) ) {
+		      	if($temp_item->getItemType() != 'user'){
+		      		$text = $temp_item->getTitle();
+		      	} else {
+		      		$text = $temp_item->getFullname();
+		      	}
+		         $text = str_replace("'", "\'",$text);
+		         $text = str_replace('"', '\"',$text);
+		         if(strlen($text) > 30){
+		           $text = substr($text, 0, 27).'...';
+		         }
+		         $ckEditor_link_array[] = array($temp_item->getItemID(), $text, $temp_item->getItemType());
             }
-         }
-         $item_item = $item_list->getNext();
+      	#}
+      	$item_item = $item_list->getNext();
       }
-
+      
       $retour  .= 'var ckeditor_commsy_links = new Array(';
       $counter = 0;
       foreach($ckEditor_link_array as $temp_array){
@@ -710,7 +709,7 @@ class cs_material_form extends cs_rubric_form {
          $counter++;
       }
       $retour  .= ');'.LF;
-      return $retour;
+   	return $retour;
    }
 }
 ?>
