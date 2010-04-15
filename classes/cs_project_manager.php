@@ -73,6 +73,8 @@ class cs_project_manager extends cs_room2_manager {
 
   var $_template_limit = NULL;
 
+  private $_sql_with_extra = false;
+
   /** constructor: cs_project_manager
     * the only available constructor, initial values for internal variables
     *
@@ -177,6 +179,25 @@ class cs_project_manager extends cs_room2_manager {
         $query .= ' count( DISTINCT '.$this->addDatabasePrefix($this->_db_table).'.item_id) AS count';
      } elseif ($mode == 'id_array') {
         $query .= ' '.$this->addDatabasePrefix($this->_db_table).'.item_id';
+     } elseif ( !$this->_sql_with_extra ) {
+        $query .= ' '.$this->addDatabasePrefix($this->_db_table).'.item_id';
+        $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.context_id';
+        $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.creator_id';
+        $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.modifier_id';
+        $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.deleter_id';
+        $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.creation_date';
+        $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.modification_date';
+        $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.deletion_date';
+        $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.title';
+        $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.status';
+        $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.activity';
+        $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.type';
+        $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.public';
+        $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.is_open_for_guests';
+        $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.continuous';
+        $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.template';
+        $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.contact_persons';
+        $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.description';
      } else {
         $query .= ' '.$this->addDatabasePrefix($this->_db_table).'.*';
      }

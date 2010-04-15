@@ -71,6 +71,8 @@ class cs_room_manager extends cs_context_manager {
 
   private $_archive_limit = false;
 
+  private $_sql_with_extra = false;
+
   /** constructor
     * the only available constructor, initial values for internal variables
     *
@@ -202,6 +204,25 @@ class cs_room_manager extends cs_context_manager {
         $query .= 'SELECT count(DISTINCT '.$this->addDatabasePrefix($this->_db_table).'.item_id) as count';
      } elseif ($mode == 'id_array') {
          $query .= 'SELECT DISTINCT '.$this->addDatabasePrefix($this->_db_table).'.item_id';
+     } elseif ( !$this->_sql_with_extra ) {
+        $query .= 'SELECT DISTINCT '.$this->addDatabasePrefix($this->_db_table).'.item_id';
+        $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.context_id';
+        $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.creator_id';
+        $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.modifier_id';
+        $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.deleter_id';
+        $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.creation_date';
+        $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.modification_date';
+        $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.deletion_date';
+        $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.title';
+        $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.status';
+        $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.activity';
+        $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.type';
+        $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.public';
+        $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.is_open_for_guests';
+        $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.continuous';
+        $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.template';
+        $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.contact_persons';
+        $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.description';
      } else {
         $query .= 'SELECT DISTINCT '.$this->addDatabasePrefix($this->_db_table).'.*';
      }
@@ -281,7 +302,6 @@ class cs_room_manager extends cs_context_manager {
      //search limit
      if (isset($this->_search_array) AND !empty($this->_search_array)) {
          $query .= ' AND (';
-#         $field_array = array('CONCAT(user2.firstname, " ",user2.lastname)','user2.lastname','user2.firstname',$this->_db_table.'.title',$this->_db_table.'.extras');
          $field_array = array($this->addDatabasePrefix($this->_db_table).'.title',$this->addDatabasePrefix($this->_db_table).'.contact_persons',$this->addDatabasePrefix($this->_db_table).'.description');
          $search_limit_query_code = $this->_generateSearchLimitCode($field_array);
          $query .= $search_limit_query_code;
@@ -365,6 +385,7 @@ class cs_room_manager extends cs_context_manager {
           and !strstr($query,$db_prefix)
         ) {
         $query = str_replace(' '.$this->addDatabasePrefix($this->_db_table),' '.$db_prefix.$this->addDatabasePrefix($this->_db_table),$query);
+        $query = str_replace('('.$this->addDatabasePrefix($this->_db_table),'('.$db_prefix.$this->addDatabasePrefix($this->_db_table),$query);
      }
      $this->_last_query = $query;
 

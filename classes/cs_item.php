@@ -68,11 +68,10 @@ class cs_item {
    var $_change_modification_on_save = true;
 
    public $_link_modifier = true;
+   var $_db_load_extras = true;
 
-   /** constructor
+  /** constructor
    * the only available constructor, initial values for internal variables
-   *
-   * @author CommSy Development Group
    */
    function cs_item ($environment) {
       $this->_environment = $environment;
@@ -585,8 +584,6 @@ class cs_item {
     * this method returns the type of the item
     *
     * @return string type of the item
-    *
-    * @author CommSy Development Group
     */
    function getType () {
       return $this->_type;
@@ -618,8 +615,6 @@ class cs_item {
     * this method returns the type of the item form the database table item
     *
     * @return string type of the item out of the database table item
-    *
-    * @author CommSy Development Group
     */
    function getItemType () {
       $type = $this->_getValue('type');
@@ -899,10 +894,52 @@ class cs_item {
    * @access private
    */
    function _getValue($key) {
-      if(!isset($this->_data[$key])) {
-         $this->_data[$key] = ($key == 'extras') ? array() : '';
+      if ( !isset($this->_data[$key]) ) {
+         if ( $key == 'extras' ) {
+            if ( $this->_db_load_extras ) {
+               $this->_data[$key] = array();
+            } else {
+               $this->_loadExtras();
+            }
+         } else {
+            $this->_data[$key] = '';
+         }
       }
       return $this->_data[$key];
+   }
+
+   function _loadExtras () {
+      $this->setLoadExtras();
+      if ( is_object($this)
+           and method_exists($this,'getItemType')
+         ) {
+         $manager = $this->_environment->getManager($this->getItemType());
+         if ( is_object($manager)
+              and method_exists($manager,'getExtras')
+            ) {
+            $this->_data['extras'] = $manager->getExtras($this->getItemID());
+            if ( empty($this->_data['extras'])
+                 and method_exists($this,'isClosed')
+                 and $this->isClosed()
+                 and !$this->_environment->isArchiveMode()
+               ) {
+               $this->_environment->activateArchiveMode();
+               $manager = $this->_environment->getManager($this->getItemType());
+               $this->_environment->deactivateArchiveMode();
+               if ( is_object($manager)
+                    and method_exists($manager,'getExtras')
+                  ) {
+                  $this->_data['extras'] = $manager->getExtras($this->getItemID());
+               }
+               unset($manager);
+            }
+         }
+         unset($manager);
+      }
+   }
+
+   function setLoadExtras () {
+      $this->_db_load_extras = true;
    }
 
    /** get data object

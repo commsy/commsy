@@ -170,6 +170,9 @@ class cs_context_manager extends cs_manager {
       }
       $item = $this->_getNewRoomItem($db_array['type']);
       $item->_setItemData(encode(FROM_DB,$db_array));
+      if (isset($db_array['extras'])){
+         $item->setLoadExtras();
+      }
 
       if ( $this->_cache_on ) {
          if ( empty($this->_cache_object[$item->getItemID()]) ) {
@@ -421,6 +424,36 @@ class cs_context_manager extends cs_manager {
             } else {
                $retour = $this->_buildItem($this->_cache_row[$item_id]);
             }
+         }
+      }
+      return $retour;
+   }
+
+   /** get a extras of a room
+    *
+    * @param integer item_id id of the item
+    *
+    * @return array extras of a room: project, community, portal, server
+    */
+   function getExtras ($item_id) {
+      $retour = array();
+      if ( !empty($item_id)
+           and is_numeric($item_id)
+         ) {
+         $query = "SELECT extras FROM ".$this->addDatabasePrefix($this->_db_table)." WHERE ".$this->addDatabasePrefix($this->_db_table).".item_id='".encode(AS_DB,$item_id)."'";
+         $result = $this->_db_connector->performQuery($query);
+         unset($query);
+         if ( !isset($result) ) {
+            include_once('functions/error_functions.php');
+            trigger_error('Problems selecting '.$this->_db_table.' item.',E_USER_WARNING);
+         } elseif ( !empty($result[0]) ) {
+            $data_array = $result[0];
+            if ( !empty($data_array['extras']) ) {
+               include_once('functions/text_functions.php');
+               $retour = mb_unserialize($data_array['extras']);
+            }
+            unset($data_array);
+            unset($result);
          }
       }
       return $retour;
