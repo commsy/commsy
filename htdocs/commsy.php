@@ -1205,8 +1205,8 @@ if ( isset($c_show_debug_infos) and $c_show_debug_infos ) {
    echo('Peak of memory allocated: '.memory_get_peak_usage().BRLF);
    echo('Current of memory allocated: '.memory_get_usage().BRLF);
 
-   if ($all > 70){
-      echo('<div style="color:red; font-weight:bold">Zu viele SQL-Statements ('.$all.'). Grenzwert: 70 Statements</div>');
+   if ($all > 100){
+      echo('<div style="color:red; font-weight:bold">Zu viele SQL-Statements ('.$all.'). Grenzwert: 100 Statements</div>');
       echo(BRLF);
    }
    if ($too_much > 0){
@@ -1266,6 +1266,10 @@ if ( isset($c_show_debug_infos) and $c_show_debug_infos ) {
    }
    echo('All queries:'.LF);
    pr($sql_query_array);
+
+   echo(BRLF);
+   echo('<hr/>'.LF);
+   echo('<span style="font-weight:bold;">Session Object</span>'.BRLF);
    pr($session);
 }
 if ( $environment->isOutputModeNot('XML') and $environment->isOutputModeNot('JSON') ) {
