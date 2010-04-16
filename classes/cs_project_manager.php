@@ -73,8 +73,6 @@ class cs_project_manager extends cs_room2_manager {
 
   var $_template_limit = NULL;
 
-  private $_sql_with_extra = false;
-
   /** constructor: cs_project_manager
     * the only available constructor, initial values for internal variables
     *

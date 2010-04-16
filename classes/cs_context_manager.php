@@ -63,6 +63,7 @@ class cs_context_manager extends cs_manager {
    var $_id_array_limit = NULL;
    var $_cache_list = array();
    var $_cache_row = array();
+   var $_sql_with_extra = true;
 
    /** constructor: cs_room_manager
     * the only available constructor, initial values for internal variables
@@ -170,8 +171,10 @@ class cs_context_manager extends cs_manager {
       }
       $item = $this->_getNewRoomItem($db_array['type']);
       $item->_setItemData(encode(FROM_DB,$db_array));
-      if (isset($db_array['extras'])){
-         $item->setLoadExtras();
+
+      if ( isset($this->_sql_with_extra)
+           and !$this->_sql_with_extra ) {
+         $item->unsetLoadExtras();
       }
 
       if ( $this->_cache_on ) {
@@ -679,6 +682,14 @@ class cs_context_manager extends cs_manager {
          include_once('functions/error_functions.php');
          trigger_error('Problems updating activity points '.$this->_db_table.'.',E_USER_WARNING);
       }
+   }
+
+   public function setQueryWithExtra () {
+      $this->_sql_with_extra = true;
+   }
+
+   public function setQueryWithoutExtra () {
+      $this->_sql_with_extra = false;
    }
 }
 ?>

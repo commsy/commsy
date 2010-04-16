@@ -34,7 +34,6 @@ include_once('functions/text_functions.php');
 class cs_room_item extends cs_context_item {
 
    var $_old_status = NULL;
-   var $_db_load_extras = false;
 
    /** constructor
    *

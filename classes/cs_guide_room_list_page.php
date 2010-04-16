@@ -150,6 +150,7 @@ class cs_guide_room_list_page extends cs_page {
               and empty($this->_values['activitymodus'])
             ) {
             $manager->setIntervalLimit($from-1,$interval);
+            $manager->setQueryWithoutExtra();
             $manager->select();
             $list = $manager->get();
          } else {

@@ -484,6 +484,7 @@ if( $environment->inPrivateRoom() ){
 if ( $interval > 0 ) {
    $manager->setIntervalLimit($from-1,$interval);
 }
+$manager->setQueryWithoutExtra();
 $manager->select();
 unset($list);
 if( $environment->inPrivateRoom() ){

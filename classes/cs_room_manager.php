@@ -71,8 +71,6 @@ class cs_room_manager extends cs_context_manager {
 
   private $_archive_limit = false;
 
-  private $_sql_with_extra = false;
-
   /** constructor
     * the only available constructor, initial values for internal variables
     *

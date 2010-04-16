@@ -289,6 +289,9 @@ foreach ($rubric_array as $rubric) {
       $rubric_ids = array();
       $rubric_list = new cs_list();
       $rubric_manager = $environment->getManager($rubric);
+      if ( $rubric == CS_PROJECT_TYPE ) {
+         $rubric_manager->setQueryWithoutExtra();
+      }
       /*Vorbereitung der Manager und Abzählen aller Einträge */
       if ($rubric!=CS_PROJECT_TYPE and $rubric!=CS_MYROOM_TYPE){
          $rubric_manager->setContextLimit($environment->getCurrentContextID());

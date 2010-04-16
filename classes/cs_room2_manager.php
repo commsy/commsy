@@ -100,7 +100,7 @@ class cs_room2_manager extends cs_context_manager {
                 "contact_persons='".encode(AS_DB,$item->getContactPersonString())."',".
                 "description='".encode(AS_DB,serialize($item->getDescriptionArray()))."'".
                 ' WHERE item_id="'.encode(AS_DB,$item->getItemID()).'"';
-      
+
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) or !$result ) {
          include_once('functions/error_functions.php');

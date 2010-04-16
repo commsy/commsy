@@ -541,6 +541,7 @@ if ( $context_item->isProjectroom()
                         if ( $interval > 0 ) {
                            $manager->setIntervalLimit(0,5);
                         }
+                        $manager->setQueryWithoutExtra();
                         $manager->select();
                         $list = $manager->get();
                         $short_list_view->setList($list);

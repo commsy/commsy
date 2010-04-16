@@ -908,6 +908,14 @@ class cs_item {
       return $this->_data[$key];
    }
 
+   function unsetLoadExtras () {
+      $this->_db_load_extras = false;
+   }
+
+   function setLoadExtras () {
+      $this->_db_load_extras = true;
+   }
+
    function _loadExtras () {
       $this->setLoadExtras();
       if ( is_object($this)
@@ -938,11 +946,7 @@ class cs_item {
       }
    }
 
-   function setLoadExtras () {
-      $this->_db_load_extras = true;
-   }
-
-   /** get data object
+  /** get data object
    * this method returns the object for the specified key or NULL if it is not set.
    *
    * @param string key
