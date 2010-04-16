@@ -315,10 +315,11 @@ class misc_text_converter {
 
    #private function _activate_urls ($text) {
    public function _activate_urls ($text) {
-      $url_string = '^(?<=([\s|\n|>|\(]{1}))((http://|https://|ftp://|www\.)'; //everything starting with http, https or ftp followed by "://" or www. is a url and will be avtivated
+      $url_string = '^(?<=([\s|\n|>|\(]{0}))((http://|https://|ftp://|www\.)'; //everything starting with http, https or ftp followed by "://" or www. is a url and will be avtivated
+      #$url_string = '^(?<=([\s|\n|>|\(]{1}))((http://|https://|ftp://|www\.)'; //everything starting with http, https or ftp followed by "://" or www. is a url and will be avtivated
       $url_string .= "([".RFC1738_CHARS."]+?))"; //All characters allowed for FTP an HTTP URL's by RFC 1738 (non-greedy because of potential trailing punctuation marks)
       $url_string .= '(?=([\.\?:\),;!]*($|\s|<|&quot;|&nbsp;)))^u'; //after the url is a space character- and perhaps before it a punctuation mark (which does not belong to the url)
-      //$text = preg_replace($url_string, '$1<a href="$2" target="_blank" title="$2">$2</a>$5', $text);
+      #$text = preg_replace($url_string, '$1<a href="$2" target="_blank" title="$2">$2</a>$5', $text);
       $text = preg_replace($url_string, '<a href="$2" target="_blank" title="$2">$2</a>', $text);
       $text = preg_replace_callback('~">(.[^"]+)</a>~u','spezial_chunkURL',$text);
       $text = preg_replace('~<a href="www~u','<a href="http://www',$text); //add "http://" to links that were activated with www in front only
@@ -851,10 +852,10 @@ class misc_text_converter {
       }
       return $retour;
    }
-   
+
    /**
     * Encodes the following chars in all given attributes: ':', '(' and ')'
-    * 
+    *
     * @param $attr_array - Array von Attributen
     * @param $text - text
     * @return encoded text
@@ -865,11 +866,11 @@ class misc_text_converter {
       	 // find tags and content
       	 $reg_exp = "~$attr='(.*?)'~eu";
       	 $found = preg_match_all($reg_exp, $text, $matches);
-      	 
+
       	 if($found > 0) {
       	 	// eleminate duplicates
       	 	$matches[1] = array_unique($matches[1]);
-      	 	
+
       	 	// replace chars
       	 	foreach($matches[1] as $string) {
       	 	   //$new_tag_content = htmlentities($string);
@@ -878,28 +879,28 @@ class misc_text_converter {
       	 	}
       	 }
       }
-      
+
       return $text;
    }
-   
+
    private function _decode_tag_chars($text) {
    	  $text = str_replace('(', '&#040;', $text);
       $text = str_replace(')', '&#041;', $text);
       $text = str_replace(':', '&#058;', $text);
-      
+
       return $text;
    }
-   
+
    /**
     * Encodes file names
-    * 
+    *
     * @param $text - text
     * @return encoded text
     */
    private function _encode_file_names($text) {
    	  $reg_exp = "~\\(:.*? (.*?)\\.([a-zA-Z0-9]*)~eu";
    	  $found = preg_match_all($reg_exp, $text, $matches);
-   	  
+
    	  if($found > 0) {
    	     for($i = 0; $i < $found; $i++) {
    	     	$new_file_name = $this->_decode_tag_chars($matches[1][$i]);
@@ -907,13 +908,13 @@ class misc_text_converter {
    	     	$text = str_replace($matches[1][$i].'.'.$matches[2][$i], "$new_file_name.$new_file_extension", $text);
    	     }
    	  }
-   	  
+
    	  return $text;
    }
-   
+
    /**
     * Decodes file names
-    * 
+    *
     * @param $text - text
     * @return decoded text
     */
@@ -927,22 +928,22 @@ class misc_text_converter {
    	     	$text = str_replace($matches[1][$i].'.'.$matches[2][$i], "$new_file_name.$new_file_extension", $text);
    	     }
    	  }
-   	  
+
    	  return $text;
    }
 
    #private function _newFormating ( $text ) {
    public function _newFormating ( $text ) {
       $file_array = $this->_getFileArray();
-      
-      
+
+
       //////////////////////////////////////////////////////////////
       // this is for preventing parsing of (: and :)
       //////////////////////////////////////////////////////////////
       // decode tags used in alt and text attributes
       $attr = array('alt', 'text');
       $text = $this->_encode_attr($attr, $text);
-      
+
       // decode file names
       $text = $this->_encode_file_names($text);
       //////////////////////////////////////////////////////////////
@@ -1036,10 +1037,10 @@ class misc_text_converter {
                         ##################################################
                         $args_array = $this->_getArgs2($value_new,$reg_exp);
                      }
-                     
+
                      // decode file names
                      $value_new = $this->_decode_file_names($value_new);
-                     
+
                      if ( $key == '(:flash' and mb_stristr($value_new,'(:flash') ) {
                         $value_new = $this->_formatFlash($value_new,$args_array,$file_array);
                         break;
@@ -2368,7 +2369,7 @@ class misc_text_converter {
           $item_manager->resetLimits();
           $type = $item_manager->getItemType($word);
           unset($item_manager);
-          
+
           if(	$type == CS_ROOM_TYPE ||
           		$type == CS_COMMUNITY_TYPE ||
           		$type == CS_PRIVATEROOM_TYPE ||
