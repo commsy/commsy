@@ -588,7 +588,7 @@ class cs_environment {
             $this->instance[$name]->setPortalID($this->getCurrentPortalID());
             $this->instance[$name]->setContextID($this->getCurrentContextID());
          } else {
-           $this->instance[$name]->setServerID($this->getServerID());
+            $this->instance[$name]->setServerID($this->getServerID());
          }
       }
       return $this->instance[$name];
