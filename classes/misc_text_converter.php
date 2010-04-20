@@ -315,7 +315,7 @@ class misc_text_converter {
 
    #private function _activate_urls ($text) {
    public function _activate_urls ($text) {
-      $url_string = '^(?<=([\s|\n|>|\(]{0}))((http://|https://|ftp://|www\.)'; //everything starting with http, https or ftp followed by "://" or www. is a url and will be avtivated
+      $url_string = '^(?<=([\s|\n|>|\(]{1}))((http://|https://|ftp://|www\.)'; //everything starting with http, https or ftp followed by "://" or www. is a url and will be avtivated
       #$url_string = '^(?<=([\s|\n|>|\(]{1}))((http://|https://|ftp://|www\.)'; //everything starting with http, https or ftp followed by "://" or www. is a url and will be avtivated
       $url_string .= "([".RFC1738_CHARS."]+?))"; //All characters allowed for FTP an HTTP URL's by RFC 1738 (non-greedy because of potential trailing punctuation marks)
       $url_string .= '(?=([\.\?:\),;!]*($|\s|<|&quot;|&nbsp;)))^u'; //after the url is a space character- and perhaps before it a punctuation mark (which does not belong to the url)
