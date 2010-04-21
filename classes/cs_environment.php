@@ -1480,15 +1480,15 @@ class cs_environment {
    */
    function _getInstance($name) {
       if ( !isset($this->instance[$name]) ) {
-         $path = $this->getConfiguration('c_commsy_path_file');
-         $old_path = getcwd();
-         if ( $old_path != $path ) {
-            chdir($path);
-         }
+         #$path = $this->getConfiguration('c_commsy_path_file');
+         #$old_path = getcwd();
+         #if ( $old_path != $path ) {
+         #   chdir($path);
+         #}
          require_once('classes/'.$name.'.php');
-         if ( $old_path != $path ) {
-            chdir($old_path);
-         }
+         #if ( $old_path != $path ) {
+         #   chdir($old_path);
+         #}
          $this->instance[$name] = new $name($this);
       }
       $this->instance[$name]->resetLimits();
