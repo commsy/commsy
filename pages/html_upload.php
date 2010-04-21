@@ -96,16 +96,14 @@ function replacement($environment,$file,$pfad,$datei,$namearray) {
    if ( $path != $pfad ) {
       $linkpath = str_replace($path,'',$pfad);
    }
-   foreach ( $namearray['oldfilename'] as $name ) {
-      //!'(.*?)show.gif!
+   foreach ( $namearray['oldfilename'] as $index => $name ) {
       $pattern = "~[\\\./\d\wÄÖÜäöü_-]{0,}".$name."~isu";
-      //$pattern = "~".$name."~isu";
+      #$pattern = "~".$name."~isu";
       logToFile($pattern);
       preg_match_all($pattern, $filecontent, $current_treffer);
       foreach ( $current_treffer[0] as $treffer ) {
          $trefferlowercase = mb_strtolower($treffer, 'UTF-8');
          global $c_single_entry_point;
-         //$replacement = $c_single_entry_point.'?cid='.$environment->getCurrentContextID().'&mod=material&fct=showzip_file&iid='.$file->getFileID().'&file='.$linkpath.$trefferlowercase;
          if ( !isset($index)
               or !isset($namearray['filename'][$index])
             ) {
@@ -114,7 +112,6 @@ function replacement($environment,$file,$pfad,$datei,$namearray) {
             $namearray_filename_index = $namearray['filename'][$index];
          }
          $replacement = $c_single_entry_point.'?cid='.$environment->getCurrentContextID().'&mod=material&fct=showzip_file&iid='.$file->getFileID().'&file='.$linkpath.$namearray_filename_index;
-         //$replacement = str_replace('\\', '/', $replacement);
          if ( !mb_stristr($filecontent,$replacement) ) {
             $filecontent = str_replace($treffer, $replacement, $filecontent);
          }
@@ -123,8 +120,6 @@ function replacement($environment,$file,$pfad,$datei,$namearray) {
          $trefferlowercase = mb_strtolower($name, 'UTF-8');
          $treffer = "'".$name."'";
          global $c_single_entry_point;
-         //$replacement = $c_single_entry_point.'?cid='.$environment->getCurrentContextID().'&mod=material&fct=showzip_file&iid='.$file->getFileID().'&file='.$linkpath.$trefferlowercase;
-         //$replacement = $c_single_entry_point.'?cid='.$environment->getCurrentContextID().'&mod=material&fct=showzip_file&iid='.$file->getFileID().'&file='.$linkpath.$namearray['filename'][$index];
          if ( !isset($index)
               or !isset($namearray['filename'][$index])
             ) {
@@ -133,7 +128,6 @@ function replacement($environment,$file,$pfad,$datei,$namearray) {
             $namearray_filename_index = $namearray['filename'][$index];
          }
          $replacement = $c_single_entry_point.'?cid='.$environment->getCurrentContextID().'&mod=material&fct=showzip_file&iid='.$file->getFileID().'&file='.$linkpath.$namearray_filename_index;
-         //$replacement = str_replace('\\', '/', $replacement);
          $filecontent = str_replace($treffer, "'".$replacement."'", $filecontent);
       }
    }
