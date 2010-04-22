@@ -574,14 +574,20 @@ class cs_environment {
    function getDiscManager() {
       $name = 'cs_disc_manager';
       if (!isset($this->instance[$name])) {
-         $path = $this->getConfiguration('c_commsy_path_file');
-         $old_path = getcwd();
-         if ( $old_path != $path ) {
-            chdir($path);
-         }
-         require_once('classes/'.$name.'.php');
-         if ( $old_path != $path ) {
-            chdir($old_path);
+         $file = 'classes/'.$name.'.php';
+         if ( file_exists($file) ) {
+            require_once($file);
+         } else {
+            $path = $this->getConfiguration('c_commsy_path_file');
+            $current_path = getcwd();
+            if ( $current_path != $path
+                 and file_exists($path.'/'.$file)
+               ) {
+               require_once($path.'/'.$file);
+            } else {
+               include_once('functions/error_functions.php');
+               trigger_error('can\'t find '.$file.' - current path: '.$current_path.' - config path: '.$path,E_USER_ERROR);
+            }
          }
          $this->instance[$name] = new $name($this->getCurrentPortalID(),$this->getCurrentContextID());
          if (!$this->inServer()) {
@@ -1480,15 +1486,21 @@ class cs_environment {
    */
    function _getInstance($name) {
       if ( !isset($this->instance[$name]) ) {
-         #$path = $this->getConfiguration('c_commsy_path_file');
-         #$old_path = getcwd();
-         #if ( $old_path != $path ) {
-         #   chdir($path);
-         #}
-         require_once('classes/'.$name.'.php');
-         #if ( $old_path != $path ) {
-         #   chdir($old_path);
-         #}
+         $file = 'classes/'.$name.'.php';
+         if ( file_exists($file) ) {
+            require_once($file);
+         } else {
+            $path = $this->getConfiguration('c_commsy_path_file');
+            $current_path = getcwd();
+            if ( $current_path != $path
+                 and file_exists($path.'/'.$file)
+               ) {
+               require_once($path.'/'.$file);
+            } else {
+               include_once('functions/error_functions.php');
+               trigger_error('can\'t find '.$file.' - current path: '.$current_path.' - config path: '.$path,E_USER_ERROR);
+            }
+         }
          $this->instance[$name] = new $name($this);
       }
       $this->instance[$name]->resetLimits();
