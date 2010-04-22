@@ -669,7 +669,9 @@ class cs_form_view extends cs_view {
          global $c_single_entry_point;
          $url .= str_replace($c_single_entry_point,'',$_SERVER['PHP_SELF']);
          $curl_upload = $url.curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),'upload',array('SID' => $session_id));
+         $curl_upload = str_replace('commsy.phpcommsy.php','commsy.php',$curl_upload);
          $curl_end = $url.curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),$this->_environment->getCurrentFunction(),$this->_environment->getCurrentParameterArray());
+         $curl_end = str_replace('commsy.phpcommsy.php','commsy.php',$curl_end);
          $html .= '<div style="background: #F0F0F0; border: 1px dashed #B0B0B0; width: 600px">'.LF;
          $html .= '<applet name="postlet" code="Main.class" archive="applet/postlet.jar" width="600px" height="150">'.LF;
          $html .= '   <param name = "maxthreads"         value = "5" />'.LF;
