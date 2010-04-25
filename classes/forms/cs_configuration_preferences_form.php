@@ -1099,6 +1099,8 @@ class cs_configuration_preferences_form extends cs_rubric_form {
               $this->_form->addSelect('server_portal_option',$this->_portal_option_array,'',$this->_translator->getMessage('PREFERENCES_PORTAL_DEFAULT'),'', 1, false,false,false,'','','','',13);
            }
         }
+
+   if ( $this->_type == CS_PORTAL_TYPE ) {
    $languageArray = array();
    $tmpArray = $this->_environment->getAvailableLanguageArray();
    $zaehler = 0;
@@ -1118,8 +1120,8 @@ class cs_configuration_preferences_form extends cs_rubric_form {
       }
       $languageArray[$zaehler]['value']= $item;
       $zaehler++;
-   }
-   $this->_form->addSelect( 'description_text',
+      }
+      $this->_form->addSelect( 'description_text',
                                $languageArray,
                                '',
                                $this->_translator->getMessage('CONFIGURATION_CHOOSE_LANGUAGE'),
@@ -1131,9 +1133,7 @@ class cs_configuration_preferences_form extends cs_rubric_form {
                                $this->_translator->getMessage('COMMON_LANGUAGE_CHOOSE_BUTTON'),
                                'option','','','13',true);
 
-   $this->_form->combine();
-
-   if ( $this->_type == CS_PORTAL_TYPE ) {
+      $this->_form->combine();
       foreach ($this->_languages as $language) {
          if ( $language == $this->_description_text ) {
             $this->_form->addTextField('wellcome1_'.$language,'',$this->_translator->getMessage('COMMON_DESCRIPTION'),'',255,35);
@@ -1151,34 +1151,25 @@ class cs_configuration_preferences_form extends cs_rubric_form {
       }
    }
 
-   // description (text-area)
-      foreach ($this->_languages as $language) {
-         if ($language == $this->_description_text){
-
-            if (isset ($this->_item) ){
-               $html_status = $this->_item->getHtmlTextAreaStatus();
-            }elseif ( $this->_environment->inCommunityRoom() ){
-               $context = $this->_environment->getCurrentContextItem();
-               $html_status = $context->getHtmlTextAreaStatus();
-            }else{
-               $portal = $this->_environment->getCurrentPortalItem();
-               if ( isset($portal) ) {
-                  $html_status = $portal->getHtmlTextAreaStatus();
-               } else {
-                  $html_status = 0;
-               }
+        if (isset ($this->_item) ){
+           $html_status = $this->_item->getHtmlTextAreaStatus();
+        }elseif ( $this->_environment->inCommunityRoom() ){
+            $context = $this->_environment->getCurrentContextItem();
+            $html_status = $context->getHtmlTextAreaStatus();
+         }else{
+            $portal = $this->_environment->getCurrentPortalItem();
+            if ( isset($portal) ) {
+               $html_status = $portal->getHtmlTextAreaStatus();
+            } else {
+               $html_status = 0;
             }
-
-            if ($html_status =='1'){
-               $html_status ='2';
-            }
-
-            $this->_form->addTextArea('description_'.$language,'','','','48','15','virtual',false,false,true,$html_status);
-
-         } else {
-            $this->_form->addHidden('description_'.$language,'');
          }
-      }
+
+         if ($html_status =='1'){
+            $html_status ='2';
+         }
+
+         $this->_form->addTextArea('description','','','','48','15','virtual',false,false,true,$html_status);
 
 
 
@@ -1272,15 +1263,7 @@ class cs_configuration_preferences_form extends cs_rubric_form {
             $this->_values['server_default_sender_address'] = $this->_item->getDefaultSenderAddress();
             $this->_values['server_portal_option'] = $this->_item->getDefaultPortalItemID();
          }
-         $description_array = $this->_item->getDescriptionArray();
-         $languages = $this->_environment->getAvailableLanguageArray();
-         foreach ($languages as $language) {
-            if (!empty($description_array[cs_strtoupper($language)])) {
-               $this->_values['description_'.$language] = $description_array[cs_strtoupper($language)];
-            } else {
-               $this->_values['description_'.$language] = '';
-            }
-         }
+         $this->_values['description'] = $this->_item->getDescription();
          if ( $this->_item->isPortal() ) {
             $description_array = $this->_item->getDescriptionWellcome1Array();
             $languages = $this->_environment->getAvailableLanguageArray();

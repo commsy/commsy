@@ -366,15 +366,12 @@ if ($command != 'error') { // only if user is allowed to edit colors
             }
          }
          $languages = $environment->getAvailableLanguageArray();
-         $description = $context_item->getDescriptionArray();
-         foreach ($languages as $language) {
-            if (!empty($_POST['description_'.$language])) {
-               $description[mb_strtoupper($language, 'UTF-8')] = $_POST['description_'.$language];
-            } else {
-               $description[mb_strtoupper($language, 'UTF-8')] = '';
-            }
+         $description = $context_item->getDescription();
+         if (!empty($_POST['description'])) {
+            $context_item->setDescription($_POST['description']);
+         }else{
+            $context_item->setDescription('');
          }
-         $context_item->setDescriptionArray($description);
          $redirect = false;
 
          // save room_item

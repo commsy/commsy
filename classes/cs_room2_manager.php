@@ -98,7 +98,7 @@ class cs_room2_manager extends cs_context_manager {
                 "template='".$template."',".
                 "is_open_for_guests='".$open_for_guests."',".
                 "contact_persons='".encode(AS_DB,$item->getContactPersonString())."',".
-                "description='".encode(AS_DB,serialize($item->getDescriptionArray()))."'".
+                "room_description='".encode(AS_DB,$item->getDescription())."'".
                 ' WHERE item_id="'.encode(AS_DB,$item->getItemID()).'"';
 
       $result = $this->_db_connector->performQuery($query);
@@ -146,7 +146,7 @@ class cs_room2_manager extends cs_context_manager {
                'continuous="'.$continuous.'",'.
                'status="'.encode(AS_DB,$item->getStatus()).'",'.
                'contact_persons="'.encode(AS_DB,$item->getContactPersonString()).'",'.
-               'description="'.encode(AS_DB,serialize($item->getDescriptionArray())).'"';
+               'room_description="'.encode(AS_DB,$item->getDescription()).'"';
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) ) {
          include_once('functions/error_functions.php');

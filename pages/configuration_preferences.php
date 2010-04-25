@@ -816,15 +816,11 @@ if ($current_user->isGuest()) {
           }
        }
        $languages = $environment->getAvailableLanguageArray();
-       $description = $item->getDescriptionArray();
-       foreach ($languages as $language) {
-          if (!empty($_POST['description_'.$language])) {
-             $description[mb_strtoupper($language, 'UTF-8')] = $_POST['description_'.$language];
-          } else {
-             $description[mb_strtoupper($language, 'UTF-8')] = '';
-          }
+       $description = $item->getDescription();
+       if (!empty($_POST['description'])) {
+          $description = $_POST['description'];
        }
-       $item->setDescriptionArray($description);
+       $item->setDescription($description);
        if ( $item->isPortal() ) {
           $description = $item->getDescriptionWellcome1Array();
           foreach ($languages as $language) {

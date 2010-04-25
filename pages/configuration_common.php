@@ -251,17 +251,11 @@ if (!$current_user->isModerator() and !$room_item->mayEdit($current_user)) {
       }
 
 
-      // descriptions
-      $languages = $environment->getAvailableLanguageArray();
-      $description = $room_item->getDescriptionArray();
-      foreach ($languages as $language) {
-         if (!empty($_POST['description_'.$language])) {
-            $description[mb_strtoupper($language, 'UTF-8')] = $_POST['description_'.$language];
-         } else {
-            $description[mb_strtoupper($language, 'UTF-8')] = '';
-         }
+      $description = $room_item->getDescription();
+      if (!empty($_POST['description'])) {
+         $description = $_POST['description'];
       }
-      $room_item->setDescriptionArray($description);
+      $room_item->setDescription($description);
 
       $community_room_array = array();
       if ( isset($_POST['communityroomlist']) ) {

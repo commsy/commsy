@@ -52,7 +52,6 @@ class cs_configuration_common_form extends cs_rubric_form {
 
    var $_time_array2 = array();
 
-   var $_description_text = '';
 
    /**
    * array - containing the 2 choices of the public field
@@ -96,20 +95,6 @@ class cs_configuration_common_form extends cs_rubric_form {
 
       $this->_headline = $this->_translator->getMessage('INTERNAL_META_TITLE');
       $this->setHeadline($this->_headline);
-
-      if (isset($this->_form_post['description_text'])) {
-         $this->_description_text = $this->_form_post['description_text'];
-      }elseif ( isset($this->_item) ) {
-         $this->_description_text = $this->_item->getLanguage();
-      }else{
-         $current_portal = $this->_environment->getCurrentPortalItem();
-         $language = $current_portal->getLanguage();
-         $this->_description_text = $language;
-      }
-
-      if ($this->_description_text =='user'){
-          $this->_description_text = 'de';
-      }
 
       if ( isset($this->_item) ) {
          $this->_type = $this->_item->getItemType();
@@ -377,49 +362,6 @@ class cs_configuration_common_form extends cs_rubric_form {
          }
       }
 
-      // description
-      $languageArray = array();
-      $tmpArray = $this->_environment->getAvailableLanguageArray();
-      $zaehler = 0;
-
-      foreach ($tmpArray as $item){
-         switch ( mb_strtoupper($item, 'UTF-8') ){
-            case 'DE':
-               $languageArray[$zaehler]['text'] = $this->_translator->getMessage('DE');
-               break;
-            case 'EN':
-               $languageArray[$zaehler]['text'] = $this->_translator->getMessage('EN');
-               break;
-            case 'RU':
-               $languageArray[$zaehler]['text'] = $this->_translator->getMessage('RU');
-               break;
-            default:
-               // $languageArray[$zaehler]['text'] = $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR'.' cs_configuration_common_form(449) ');
-               break;
-         }
-
-         $languageArray[$zaehler]['value']= $item;
-         $zaehler++;
-      }
-      $this->_form->addSelect( 'description_text',
-                               $languageArray,
-                               '',
-                               $this->_translator->getMessage('CONFIGURATION_CHOOSE_LANGUAGE'),
-                               '',
-                               '',
-                               '',
-                               '',
-                               true,
-                               $this->_translator->getMessage('COMMON_LANGUAGE_CHOOSE_BUTTON'),
-                               'option','','','13',true
-                             );
-
-      $this->_form->combine();
-
-      // description
-      foreach ($this->_languages as $language) {
-         if ($language == $this->_description_text){
-
             if (isset ($this->_item) ){
                $html_status = $this->_item->getHtmlTextAreaStatus();
             }elseif ( $this->_environment->inCommunityRoom() ){
@@ -434,7 +376,7 @@ class cs_configuration_common_form extends cs_rubric_form {
                $html_status ='2';
             }
 
-            $this->_form->addTextArea('description_'.$language,
+            $this->_form->addTextArea('description',
                                       '',
                                       '',
                                       '',
@@ -446,11 +388,6 @@ class cs_configuration_common_form extends cs_rubric_form {
                                       true,
                                       $html_status
                                      );
-
-         } else{
-            $this->_form->addHidden('description_'.$language,'');
-         }
-      }
 
       // buttons
       $this->_form->addButtonBar('option',
@@ -472,17 +409,8 @@ class cs_configuration_common_form extends cs_rubric_form {
          $this->_values['show_title'] = $this->_item->showTitle();
          $this->_values['logo'] = $this->_item->getLogoFilename();
 
-         $description_array = $this->_item->getDescriptionArray();
-         $languages = $this->_environment->getAvailableLanguageArray();
-
-         foreach ($languages as $language) {
-
-            if (!empty($description_array[cs_strtoupper($language)])) {
-               $this->_values['description_'.$language] = $description_array[cs_strtoupper($language)];
-            } else {
-               $this->_values['description_'.$language] = '';
-            }
-         }
+         $description = $this->_item->getDescription();
+         $this->_values['description'] = $description;
 
          if ($this->_type == 'project') {
             $community_room_array = array();

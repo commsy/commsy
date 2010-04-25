@@ -160,7 +160,7 @@ class cs_community_manager extends cs_room2_manager {
         $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.continuous';
         $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.template';
         $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.contact_persons';
-        $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.description';
+        $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.room_description';
      } else {
         $query = 'SELECT '.$this->addDatabasePrefix($this->_db_table).'.*';
      }

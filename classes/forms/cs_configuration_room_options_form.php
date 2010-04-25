@@ -147,17 +147,6 @@ class cs_configuration_room_options_form extends cs_rubric_form {
       $this->_with_logo = $current_context_item->getLogoFilename();
       $this->_with_bg_image = $current_context_item->getBGImageFilename();
 
-      /****Beschreibung*****/
-      $this->_languages = $this->_environment->getAvailableLanguageArray();
-      if (isset($this->_form_post['description_text'])) {
-         $this->_description_text = $this->_form_post['description_text'];
-      } else{
-         $this->_description_text = $current_context_item->getLanguage();
-         if ( $this->_description_text == 'user' ) {
-            $this->_description_text = 'de';
-         }
-      }
-
 
       /****Zeittakte*****/
       // time pulses
@@ -766,31 +755,13 @@ class cs_configuration_room_options_form extends cs_rubric_form {
          $languageArray[$zaehler]['value']= $item;
          $zaehler++;
       }
-      $this->_form->addSelect( 'description_text',
-                               $languageArray,
-                               '',
-                               $this->_translator->getMessage('CONFIGURATION_CHOOSE_LANGUAGE'),
-                               '',
-                               '',
-                               '',
-                               '',
-                               true,
-                               $this->_translator->getMessage('COMMON_LANGUAGE_CHOOSE_BUTTON'),
-                               'option','','','16',true);
-
-      $this->_form->combine();
       $context_item = $this->_environment->getCurrentContextItem();
-      foreach ($this->_languages as $language) {
-         if ($language == $this->_description_text){
-            $html_status = $context_item->getHtmlTextAreaStatus();
-            if ($html_status =='1'){
-               $html_status ='2';
-            }
-            $this->_form->addTextArea('description_'.$language,'','','','','5','virtual',false,false,true,$html_status);
-         } else {
-            $this->_form->addHidden('description_'.$language,'');
-         }
+      $html_status = $context_item->getHtmlTextAreaStatus();
+      if ($html_status =='1'){
+          $html_status ='2';
       }
+      $this->_form->addTextArea('description','','','','','5','virtual',false,false,true,$html_status);
+
 
       /******** buttons***********/
       $this->_form->addButtonBar('option',$this->_translator->getMessage('PREFERENCES_SAVE_BUTTON'),'',$this->_translator->getMessage('COMMON_DELETE_ROOM'));
@@ -909,15 +880,7 @@ class cs_configuration_room_options_form extends cs_rubric_form {
          }
       }
 
-      $description_array = $context_item->getDescriptionArray();
-      $languages = $this->_environment->getAvailableLanguageArray();
-      foreach ($languages as $language) {
-         if (!empty($description_array[cs_strtoupper($language)])) {
-            $this->_values['description_'.$language] = $description_array[cs_strtoupper($language)];
-         } else {
-            $this->_values['description_'.$language] = '';
-         }
-      }
+      $this->_values['description'] = $context_item->getDescription();
    }
 
    function _checkValues () {

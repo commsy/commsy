@@ -1214,6 +1214,17 @@ class cs_room_item extends cs_context_item {
       return $retour;
    }
 
+   function getDescription () {
+      $retour = $this->_getValue('room_description');
+      if(empty($retour)){
+         $retour = array();
+      }
+      return $retour;
+   }
+   function setDescription ($value) {
+      $this->_setValue('room_description',$value);
+   }
+
   /** set description array
     *
     * @param array value description text in different languages
