@@ -378,7 +378,7 @@ class cs_configuration_common_form extends cs_rubric_form {
 
             $this->_form->addTextArea('description',
                                       '',
-                                      $this->_translator->getMessage('COMMON_DESCRIPTION'),
+                                      $this->_translator->getMessage('CONFIGURATION_ROOM_DESCRIPTION'),
                                       '',
                                       '44',
                                       '15',
