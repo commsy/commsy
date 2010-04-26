@@ -1217,7 +1217,7 @@ class cs_room_item extends cs_context_item {
    function getDescription () {
       $retour = $this->_getValue('room_description');
       if(empty($retour)){
-         $retour = array();
+         $retour = '';
       }
       return $retour;
    }
