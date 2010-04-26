@@ -28,6 +28,8 @@
  *
  * @author CommSy Development Group
  */
+
+
 class cs_manager {
 
   /**
@@ -488,6 +490,27 @@ class cs_manager {
   function getItemList ($id_array) {
      echo(get_class($this).': cs_manager->getItemList needs to be overwritten !!!<br />'."\n");
   }
+
+
+   function _existsField ( $table, $field ) {
+      $retour = false;
+      $sql = 'SHOW COLUMNS FROM '.$table;
+      $db = $this->_environment->getDBConnector();
+      $result = $db->performQuery($sql);
+      foreach ( $result as $field_array ) {
+         if ( !empty($field_array)
+              and !empty($field_array['Field'])
+              and $field_array['Field'] == $field
+            ) {
+            $retour = true;
+            break;
+         }
+      }
+      return $retour;
+   }
+
+
+
 
     /** get a list of items
     * this method returns a list of items

@@ -195,7 +195,11 @@ class cs_project_manager extends cs_room2_manager {
         $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.continuous';
         $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.template';
         $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.contact_persons';
-        $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.room_description';
+        if ($this->_existsField($this->_db_table, 'room_description')){
+           $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.room_description';
+        }else{
+           $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.description';
+        }
      } else {
         $query .= ' '.$this->addDatabasePrefix($this->_db_table).'.*';
      }
@@ -324,8 +328,12 @@ class cs_project_manager extends cs_room2_manager {
      }
 
      if (isset($this->_search_array) AND !empty($this->_search_array)) {
-         $query .= ' AND (';
-       $field_array = array('TRIM(CONCAT(user2.firstname," ",user2.lastname))',$this->addDatabasePrefix($this->_db_table).'.title',$this->addDatabasePrefix($this->_db_table).'.contact_persons',$this->addDatabasePrefix($this->_db_table).'.room_description');
+        $query .= ' AND (';
+        if ($this->_existsField($this->_db_table, 'room_description')){
+           $field_array = array('TRIM(CONCAT(user2.firstname," ",user2.lastname))',$this->addDatabasePrefix($this->_db_table).'.title',$this->addDatabasePrefix($this->_db_table).'.contact_persons',$this->addDatabasePrefix($this->_db_table).'.room_description');
+        }else{
+           $field_array = array('TRIM(CONCAT(user2.firstname," ",user2.lastname))',$this->addDatabasePrefix($this->_db_table).'.title',$this->addDatabasePrefix($this->_db_table).'.contact_persons',$this->addDatabasePrefix($this->_db_table).'.description');
+        }
        $search_limit_query_code = $this->_generateSearchLimitCode($field_array);
        $query .= $search_limit_query_code;
          $query .= ' )';
