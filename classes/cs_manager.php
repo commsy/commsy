@@ -494,7 +494,7 @@ class cs_manager {
 
    function _existsField ( $table, $field ) {
       $retour = false;
-      $sql = 'SHOW COLUMNS FROM '.$table;
+      $sql = 'SHOW COLUMNS FROM '.$this->addDatabasePrefix($table);
       $db = $this->_environment->getDBConnector();
       $result = $db->performQuery($sql);
       foreach ( $result as $field_array ) {
