@@ -1168,8 +1168,8 @@ class cs_configuration_preferences_form extends cs_rubric_form {
          if ($html_status =='1'){
             $html_status ='2';
          }
-
-         $this->_form->addTextArea('description','','','','48','15','virtual',false,false,true,$html_status);
+        
+         $this->_form->addTextArea('description','',$this->_translator->getMessage('COMMON_DESCRIPTION'),'','48','15','virtual',false,false,true,$html_status);
 
 
 
