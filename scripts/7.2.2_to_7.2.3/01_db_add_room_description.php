@@ -24,7 +24,7 @@
 
 // headline
 $this->_flushHeadline('db: add room_description to room table');
-
+$this->_flushHTML(BRLF);
 $success = true;
 
 if ( !$this->_existsField('room','room_description') ) {
@@ -39,64 +39,26 @@ if ( !$this->_existsField('zzz_room','room_description') ) {
 
 $old_memory = ini_get("memory_limit");
 ini_set("memory_limit","1000M");
-set_time_limit(600);
+set_time_limit(0);
 $portal_manager = $this->_environment->getPortalManager();
 $portal_manager->setContextLimit($this->_environment->getCurrentContextID());
 $portal_manager->select();
 $portal_list = $portal_manager->get();
 $portal = $portal_list->getFirst();
 while ( $portal ) {
+
+   $this->_flushHTML($portal->getTitle());
+   $this->_flushHTML(BRLF);
+
    $room_manager = $this->_environment->getRoomManager();
    $room_manager->setContextLimit($portal->getItemID());
+   $room_manager->setWithGrouproom();
    $room_manager->select();
    $room_list = $room_manager->get();
-   $room = $room_list->getFirst();
-   while ( $room ) {
-   	$description_new = $room->getDescription();
-   	if(empty($description_new)){
-	      $description_array = $room->getDescriptionArray();
-	      $language = $room->getLanguage();
-	      $description_text = '';
-	      if(isset($description_array[strtoupper($language)]) and !empty($description_array[strtoupper($language)])){
-	      	$description_text = $description_array[strtoupper($language)];
-	      } else {
-	      	foreach($description_array as $language_key => $description){
-	      		if($language_key != $language){
-	      			if(isset($description_array[strtoupper($language_key)]) and !empty($description_array[strtoupper($language_key)])){
-	      				$description_text = $description_array[strtoupper($language_key)];
-	      			}
-	      		}
-	      	}
-	      }
-	      
-	      $values = array();
-	      preg_match('~<!-- KFC TEXT ([a-z0-9]*) -->~u',$description_text,$values);
-	      if ( !empty($values[1]) ) {
-	         $hash = $values[1];
-	         $description_text = str_replace('<!-- KFC TEXT '.$hash.' -->','',$description_text);
-	         
-	         if(mb_strlen($description_text) > 1000){
-	            $description_text = mb_substr($description_text, 0, 1000);
-	         }
-	         
-	         $description_text = '<!-- KFC TEXT '.$hash.' -->'.$description_text.'<!-- KFC TEXT '.$hash.' -->';
-	      } else {
-	         if(mb_strlen($description_text) > 1000){
-	      	  $description_text = mb_substr($description_text, 0, 1000);
-	         }
-	      }
-	
-	      $room->setDescription($description_text);
-	      $room->save();
-   	}
-   	$room = $room_list->getNext();
-   }
-   
-   // Backup-Tabellen
-   $zzz_room_manager = $this->_environment->getZzzRoomManager();
-   $zzz_room_manager->setContextLimit($portal->getItemID());
-   $zzz_room_manager->select();
-   $room_list = $zzz_room_manager->get();
+
+   $count = $room_list->getCount();
+   $this->_initProgressBar($count);
+
    $room = $room_list->getFirst();
    while ( $room ) {
       $description_new = $room->getDescription();
@@ -115,17 +77,17 @@ while ( $portal ) {
                }
             }
          }
-         
+
          $values = array();
          preg_match('~<!-- KFC TEXT ([a-z0-9]*) -->~u',$description_text,$values);
          if ( !empty($values[1]) ) {
             $hash = $values[1];
             $description_text = str_replace('<!-- KFC TEXT '.$hash.' -->','',$description_text);
-            
+
             if(mb_strlen($description_text) > 1000){
                $description_text = mb_substr($description_text, 0, 1000);
             }
-            
+
             $description_text = '<!-- KFC TEXT '.$hash.' -->'.$description_text.'<!-- KFC TEXT '.$hash.' -->';
          } else {
             if(mb_strlen($description_text) > 1000){
@@ -136,9 +98,67 @@ while ( $portal ) {
          $room->setDescription($description_text);
          $room->save();
       }
+      $this->_updateProgressBar($count);
       $room = $room_list->getNext();
    }
-   
+
+   // Backup-Tabellen
+   $this->_environment->activateArchiveMode();
+   $zzz_room_manager = $this->_environment->getZzzRoomManager();
+   $zzz_room_manager->setContextLimit($portal->getItemID());
+   $zzz_room_manager->setWithGrouproom();
+   $zzz_room_manager->select();
+   $room_list = $zzz_room_manager->get();
+
+   $count = $room_list->getCount();
+   $this->_initProgressBar($count);
+
+   $room = $room_list->getFirst();
+   while ( $room ) {
+      $description_new = $room->getDescription();
+      if(empty($description_new)){
+         $description_array = $room->getDescriptionArray();
+         $language = $room->getLanguage();
+         $description_text = '';
+         if(isset($description_array[strtoupper($language)]) and !empty($description_array[strtoupper($language)])){
+            $description_text = $description_array[strtoupper($language)];
+         } else {
+            foreach($description_array as $language_key => $description){
+               if($language_key != $language){
+                  if(isset($description_array[strtoupper($language_key)]) and !empty($description_array[strtoupper($language_key)])){
+                     $description_text = $description_array[strtoupper($language_key)];
+                  }
+               }
+            }
+         }
+
+         $values = array();
+         preg_match('~<!-- KFC TEXT ([a-z0-9]*) -->~u',$description_text,$values);
+         if ( !empty($values[1]) ) {
+            $hash = $values[1];
+            $description_text = str_replace('<!-- KFC TEXT '.$hash.' -->','',$description_text);
+
+            if(mb_strlen($description_text) > 1000){
+               $description_text = mb_substr($description_text, 0, 1000);
+            }
+
+            $description_text = '<!-- KFC TEXT '.$hash.' -->'.$description_text.'<!-- KFC TEXT '.$hash.' -->';
+         } else {
+            if(mb_strlen($description_text) > 1000){
+              $description_text = mb_substr($description_text, 0, 1000);
+            }
+         }
+
+         $room->setDescription($description_text);
+         $room->save();
+      }
+      $this->_updateProgressBar($count);
+      $room = $room_list->getNext();
+   }
+   $this->_environment->deactivateArchiveMode();
+
+   $this->_flushHTML(BRLF);
+   $this->_flushHTML(BRLF);
    $portal = $portal_list->getNext();
 }
 
