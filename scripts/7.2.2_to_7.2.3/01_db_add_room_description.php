@@ -53,7 +53,7 @@ while ( $portal ) {
    $room_manager = $this->_environment->getRoomManager();
    $room_manager->setContextLimit($portal->getItemID());
    $room_manager->setWithGrouproom();
-   $room_manager->setDeletedLimit();
+   $room_manager->setDeleteLimit(false);
    $room_manager->select();
    $room_list = $room_manager->get();
 
@@ -62,8 +62,15 @@ while ( $portal ) {
 
    $room = $room_list->getFirst();
    while ( $room ) {
-      $description_new = $room->getDescription();
+      $description_new = stripslashes($room->getDescription());
+      if ( $room->isGroupRoom() ) {
+         #pr($room->getTitle());
+         #pr($description_new);
+      }
       if(empty($description_new)){
+         if ( $room->isGroupRoom() ) {
+            #pr('HIER');
+         }
          $description_array = $room->getDescriptionArray();
          $language = $room->getLanguage();
          $description_text = '';
@@ -108,7 +115,7 @@ while ( $portal ) {
    $zzz_room_manager = $this->_environment->getZzzRoomManager();
    $zzz_room_manager->setContextLimit($portal->getItemID());
    $zzz_room_manager->setWithGrouproom();
-   $zzz_room_manager->setDeletedLimit();
+   $zzz_room_manager->setDeleteLimit(false);
    $zzz_room_manager->select();
    $room_list = $zzz_room_manager->get();
 
