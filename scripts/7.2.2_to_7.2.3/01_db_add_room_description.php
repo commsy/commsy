@@ -63,14 +63,7 @@ while ( $portal ) {
    $room = $room_list->getFirst();
    while ( $room ) {
       $description_new = stripslashes($room->getDescription());
-      if ( $room->isGroupRoom() ) {
-         #pr($room->getTitle());
-         #pr($description_new);
-      }
       if(empty($description_new)){
-         if ( $room->isGroupRoom() ) {
-            #pr('HIER');
-         }
          $description_array = $room->getDescriptionArray();
          $language = $room->getLanguage();
          $description_text = '';
