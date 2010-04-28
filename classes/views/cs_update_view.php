@@ -46,6 +46,8 @@ class cs_update_view extends cs_view {
 
    private $_db = NULL;
 
+   private $_cached_sql = array();
+
    /** constructor
     * the only available constructor, initial values for internal variables
     *
@@ -156,7 +158,12 @@ class cs_update_view extends cs_view {
    private function _existsField ( $table, $field ) {
       $retour = false;
       $sql = 'SHOW COLUMNS FROM '.$table;
-      $result = $this->_select($sql);
+      if ( empty($this->_cached_sql[$sql]) ) {
+         $result = $this->_select($sql);
+         $this->_cached_sql[$sql] = $result;
+      } else {
+         $result = $this->_cached_sql[$sql];
+      }
       foreach ( $result as $field_array ) {
          if ( !empty($field_array)
               and !empty($field_array['Field'])
@@ -190,11 +197,11 @@ class cs_update_view extends cs_view {
       $sql = 'SHOW TABLES LIKE "'.$table.'"';
       $result = $this->_select($sql);
       if(!empty($result)){
-      	$retour = true;
+         $retour = true;
       }
       return $retour;
    }
-   
+
    /** get content of plugin as HTML
     * this method returns the content of the plugin in HTML-Code
     *

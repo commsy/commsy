@@ -495,8 +495,15 @@ class cs_manager {
    function _existsField ( $table, $field ) {
       $retour = false;
       $sql = 'SHOW COLUMNS FROM '.$this->addDatabasePrefix($table);
-      $db = $this->_environment->getDBConnector();
-      $result = $db->performQuery($sql);
+      if ( empty($this->_cached_sql[$sql]) ) {
+         $db = $this->_environment->getDBConnector();
+         $result = $db->performQuery($sql);
+         if ($this->_cache_on) {
+            $this->_cached_sql[$sql] = $result;
+         }
+      } else {
+         $result = $this->_cached_sql[$sql];
+      }
       foreach ( $result as $field_array ) {
          if ( !empty($field_array)
               and !empty($field_array['Field'])
@@ -508,9 +515,6 @@ class cs_manager {
       }
       return $retour;
    }
-
-
-
 
     /** get a list of items
     * this method returns a list of items
