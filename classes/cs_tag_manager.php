@@ -238,13 +238,15 @@ class cs_tag_manager extends cs_manager {
                trigger_error('Problems selecting tags from query: "'.$query.'"',E_USER_WARNING);
             } else {
                $flag = false;
-               $i = $result['0']['sorting_place'];
-               foreach ( $result as $result_array ) {
-                  if ( $result_array['sorting_place'] != $i  ) {
-                        $flag = true;
-                        break;
+               if (isset($result['0']['sorting_place'])){
+                  $i = $result['0']['sorting_place'];
+                  foreach ( $result as $result_array ) {
+                     if ( $result_array['sorting_place'] != $i  ) {
+                           $flag = true;
+                           break;
+                     }
+                     $i = $i - 1;
                   }
-               $i = $i - 1;
                }
                unset($result);
          }
