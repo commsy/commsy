@@ -262,7 +262,7 @@ class cs_group_form extends cs_rubric_form {
       }
       $this->_setFormElementsForConnectedRubrics();
 
-      $this->_form->addTextArea('description','',$this->_translator->getMessage('COMMON_CONTENT'),'');
+      $this->_form->addTextArea('description','',$this->_translator->getMessage('CONFIGURATION_ROOM_DESCRIPTION'),'');
 
       $this->_form->addEmptyline();      // public radio-buttons
       $this->_form->addHidden('has_picture','');
