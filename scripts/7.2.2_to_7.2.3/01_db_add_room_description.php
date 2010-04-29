@@ -38,7 +38,7 @@ if ( !$this->_existsField('zzz_room','room_description') ) {
 }
 
 $old_memory = ini_get("memory_limit");
-ini_set("memory_limit","1000M");
+ini_set("memory_limit","4000M");
 set_time_limit(0);
 $portal_manager = $this->_environment->getPortalManager();
 $portal_manager->setContextLimit($this->_environment->getCurrentContextID());
