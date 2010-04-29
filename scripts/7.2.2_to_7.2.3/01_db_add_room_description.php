@@ -28,12 +28,12 @@ $this->_flushHTML(BRLF);
 $success = true;
 
 if ( !$this->_existsField('room','room_description') ) {
-   $sql = "ALTER TABLE `room` ADD `room_description` VARCHAR( 2000 ) NULL , ADD INDEX ( `room_description` )";
+   $sql = "ALTER TABLE `room` ADD `room_description` VARCHAR( 10000 ) NULL , ADD INDEX ( `room_description` )";
    $success = $success AND $this->_select($sql);
 }
 
 if ( !$this->_existsField('zzz_room','room_description') ) {
-   $sql = "ALTER TABLE `zzz_room` ADD `room_description` VARCHAR( 2000 ) NULL , ADD INDEX ( `room_description` )";
+   $sql = "ALTER TABLE `zzz_room` ADD `room_description` VARCHAR( 10000 ) NULL , ADD INDEX ( `room_description` )";
    $success = $success AND $this->_select($sql);
 }
 
@@ -85,14 +85,14 @@ while ( $portal ) {
             $hash = $values[1];
             $description_text = str_replace('<!-- KFC TEXT '.$hash.' -->','',$description_text);
 
-            if(mb_strlen($description_text) > 1000){
-               $description_text = mb_substr($description_text, 0, 1000);
+            if(mb_strlen($description_text) > 5000){
+               $description_text = mb_substr($description_text, 0, 5000);
             }
 
             $description_text = '<!-- KFC TEXT '.$hash.' -->'.$description_text.'<!-- KFC TEXT '.$hash.' -->';
          } else {
-            if(mb_strlen($description_text) > 1000){
-              $description_text = mb_substr($description_text, 0, 1000);
+            if(mb_strlen($description_text) > 5000){
+              $description_text = mb_substr($description_text, 0, 5000);
             }
          }
 
@@ -140,14 +140,14 @@ while ( $portal ) {
             $hash = $values[1];
             $description_text = str_replace('<!-- KFC TEXT '.$hash.' -->','',$description_text);
 
-            if(mb_strlen($description_text) > 1000){
-               $description_text = mb_substr($description_text, 0, 1000);
+            if(mb_strlen($description_text) > 5000){
+               $description_text = mb_substr($description_text, 0, 5000);
             }
 
             $description_text = '<!-- KFC TEXT '.$hash.' -->'.$description_text.'<!-- KFC TEXT '.$hash.' -->';
          } else {
-            if(mb_strlen($description_text) > 1000){
-              $description_text = mb_substr($description_text, 0, 1000);
+            if(mb_strlen($description_text) > 5000){
+              $description_text = mb_substr($description_text, 0, 5000);
             }
          }
 
