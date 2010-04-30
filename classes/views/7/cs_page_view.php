@@ -571,6 +571,13 @@ class cs_page_view extends cs_view {
          $retour .= '   <script type="text/javascript" src="javascript/CommSyTextFormatingInformation.js"></script>'.LF;
          $retour .= '   <link rel="stylesheet" media="screen" type="text/css" href="javascript/slimbox/css/slimbox.css"/>'.LF;
       }
+      global $c_new_upload;
+      if($this->_environment->getCurrentFunction() == 'edit' and $c_new_upload){
+         $retour .= '   <script type="text/javascript" src="javascript/jQuery/jquery.uploadify-v2.1.0/jquery.uploadify.v2.1.0.min.js"></script>'.LF;
+         $retour .= '   <script type="text/javascript" src="javascript/jQuery/jquery.uploadify-v2.1.0/swfobject.js"></script>'.LF;
+         $retour .= '   <link rel="stylesheet" type="text/css" href="javascript/jQuery/jquery.uploadify-v2.1.0/uploadify_commsy.css"/>'.LF;
+      }
+
 
      if (isset($c_use_new_private_room) and $c_use_new_private_room){
      /**********/

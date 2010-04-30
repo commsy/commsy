@@ -113,6 +113,7 @@ $c_read_account_array = array();
 
 //Flag for new Version of private_room
 $c_use_new_private_room = false;
+$c_new_upload = false;
 
 //Flag for dropdown-menus
 $c_use_linked_dropdown_rooms = array();

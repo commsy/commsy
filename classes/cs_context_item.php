@@ -243,6 +243,31 @@ class cs_context_item extends cs_item {
       return $retour;
    }
 
+   function getMaxUploadSizeInBytes(){
+      $val = ini_get('upload_max_filesize');
+      $val = trim($val);
+      $last = $val[mb_strlen($val)-1];
+      switch($last) {
+         case 'k':
+         case 'K':
+            $val = $val * 1024;
+            break;
+         case 'm':
+         case 'M':
+            $val = $val * 1048576;
+            break;
+      }
+      $retour = $val;
+      if ($this->_issetExtra('MAX_UPLOAD_SIZE')) {
+         $retour = $this->_getExtra('MAX_UPLOAD_SIZE');
+      }
+      return $retour;
+   }
+
+   function setMaxUploadSizeInBytes($val){
+     $this->_addExtra('MAX_UPLOAD_SIZE',$val);
+   }
+
    function setNotShownInPrivateRoomHome ($user_id) {
       $current_user = $this->_environment->getCurrentUserItem();
       $tag = $current_user->getItemID();

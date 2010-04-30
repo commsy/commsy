@@ -366,7 +366,7 @@ class cs_material_form extends cs_rubric_form {
             default:
                break;
          }
-   
+
       if ( $this->_bib_kind=='none' ) {
          $this->_form->addTextArea('description','',$this->_translator->getMessage('MATERIAL_ABSTRACT'),'','',20);
       } else {
@@ -374,19 +374,7 @@ class cs_material_form extends cs_rubric_form {
       }
       // files
       $this->_form->addAnchor('fileupload');
-      $val = ini_get('upload_max_filesize');
-      $val = trim($val);
-      $last = $val[mb_strlen($val)-1];
-      switch($last) {
-         case 'k':
-         case 'K':
-            $val = $val * 1024;
-            break;
-         case 'm':
-         case 'M':
-            $val = $val * 1048576;
-            break;
-      }
+      $val = $context_item->getMaxUploadSizeInBytes();
       $meg_val = round($val/1048576);
       if ( !empty($this->_file_array) ) {
          $this->_form->addCheckBoxGroup('filelist',$this->_file_array,'',$this->_translator->getMessage('MATERIAL_FILES'),$this->_translator->getMessage('MATERIAL_FILES_DESC', $meg_val),false,false);
@@ -395,7 +383,8 @@ class cs_material_form extends cs_rubric_form {
       $this->_form->addHidden('MAX_FILE_SIZE', $val);
       $this->_form->addFilefield('upload', $this->_translator->getMessage('MATERIAL_FILES'), $this->_translator->getMessage('MATERIAL_UPLOAD_DESC',$meg_val), 12, false, $this->_translator->getMessage('MATERIAL_UPLOADFILE_BUTTON'),'option',$this->_with_multi_upload);
       $this->_form->combine('vertical');
-      if ($this->_with_multi_upload) {
+      global $c_new_upload;
+      if ($this->_with_multi_upload or $c_new_upload) {
          // do nothing
       } else {
          #$px = '245';
@@ -626,7 +615,7 @@ class cs_material_form extends cs_rubric_form {
          }
       }
    }
-   
+
    function getInfoForHeaderAsHTML () {
    	$ckEditor_file_array = array();
       if (!empty($this->_session_file_array)) {
@@ -660,7 +649,7 @@ class cs_material_form extends cs_rubric_form {
       	$counter++;
       }
       $retour  .= ');'.LF;
-      
+
      //------------------------------------------------------------------------------------
      //------------------------------------------------------------------------------------
      //------------------------------------ ACHTUNG! --------------------------------------
@@ -707,7 +696,7 @@ class cs_material_form extends cs_rubric_form {
      //--- 	#}
      //--- 	$item_item = $item_list->getNext();
      //--- }
-     //--- 
+     //---
      //--- $retour  .= 'var ckeditor_commsy_links = new Array(';
      //--- $counter = 0;
      //--- foreach($ckEditor_link_array as $temp_array){
@@ -724,7 +713,7 @@ class cs_material_form extends cs_rubric_form {
      //------------------------------------ ACHTUNG! --------------------------------------
      //------------------------------------------------------------------------------------
      //------------------------------------------------------------------------------------
-      
+
    	return $retour;
    }
 }
