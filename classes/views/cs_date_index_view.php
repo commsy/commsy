@@ -292,6 +292,7 @@ class cs_date_index_view extends cs_index_view {
          $html .= $html_text;
       }
       $params = $this->_environment->getCurrentParameterArray();
+/*
       if ( isset($params['selcolor']) and $params['selcolor'] != 2 ){
          $this->_additional_selects = true;
          $html_text ='<tr>'.LF;
@@ -323,7 +324,7 @@ class cs_date_index_view extends cs_index_view {
          $html_text .='</td>'.LF;
          $html_text .='</tr>'.LF;
          $html .= $html_text;
-      }
+      }*/
       return $html;
    }
 

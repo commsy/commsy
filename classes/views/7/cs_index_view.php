@@ -43,6 +43,8 @@ class cs_index_view extends cs_view {
    var $_available_buzzwords = NULL;
    var $_include_mootools = false;
    var $_show_netnavigation_box = true;
+   var $_selected_color = NULL;
+   var $_selected_status = NULL;
    public $_display_mode = NULL;
 
    /**
@@ -379,6 +381,22 @@ class cs_index_view extends cs_view {
    }
    // @segment-end 81876
 
+   function setSelectedColor ($value) {
+   	  $this->_selected_color = $value;
+   }
+
+   function getSelectedColor () {
+   	  return $this->_selected_color;
+   }
+
+   function setSelectedStatus ($value) {
+   	  $this->_selected_status = $value;
+   }
+
+   function getSelectedStatus () {
+   	  return $this->_selected_status;
+   }
+
    function setAvailableGroups ($group_list) {
       $this->_available_groups = $group_list;
    }
@@ -566,6 +584,9 @@ class cs_index_view extends cs_view {
       }
       $params['seltopic'] = $this->getSelectedTopic();
       $params['selbuzzword'] = $this->getSelectedBuzzword();
+      $params['selstatus'] = $this->getSelectedStatus();
+      $params['seluser'] = $this->getSelectedUser();
+      $params['selcolor'] = $this->getSelectedColor();
       $tag_array = $this->_getSelectedTagArray();
       if ( !empty($tag_array) ){
          foreach($tag_array as $key => $tag_id){
@@ -1531,6 +1552,59 @@ EOD;
             $html_text .='</tr>'.LF;
             $html .= $html_text;
          }
+         if ( isset($params['selstatus']) and $params['selstatus'] != '-1' and $params['selstatus'] != '0' and !empty($params['selstatus']) and $this->_environment->current_module == "todo"){
+         $this->_additional_selects = true;
+         $html_text ='<tr>'.LF;
+         $html_text .='<td>'.LF;
+         $html_text .= '<span class="infocolor">'.$this->_translator->getMessage('TODO_STATUS').': </span>';
+         $html_text .='</td>'.LF;
+         $html_text .='<td style="text-align:right;">'.LF;
+         if (isset($params['selstatus']) and $params['selstatus'] == 1){
+            $status_text = $this->_translator->getMessage('TODO_NOT_STARTED');
+         }elseif(isset($params['selstatus']) and $params['selstatus'] == 2){
+            $status_text = $this->_translator->getMessage('TODO_IN_POGRESS');
+         }elseif(isset($params['selstatus']) and $params['selstatus'] == 3){
+            $status_text = $this->_translator->getMessage('TODO_DONE');
+         }elseif(isset($params['selstatus']) and $params['selstatus'] == 4){
+            $status_text = $this->_translator->getMessage('TODO_NOT_DONE');
+         }elseif(isset($params['selstatus']) and $params['selstatus'] != 0){
+            $context_item = $this->_environment->getCurrentContextItem();
+            $todo_status_array = $context_item->getExtraToDoStatusArray();
+            $status_text = '';
+            if (isset($todo_status_array[$params['selstatus']])){
+               $status_text = $todo_status_array[$params['selstatus']];
+            }
+         }else{
+            $status_text = '';
+         }
+         $html_text .= '<span><a title="'.$status_text.'">'.$status_text.'</a></span>';
+         $picture = '<img src="images/delete_restriction.gif" alt="x" border="0"/>';
+         $new_params = $params;
+         $new_params['selstatus'] = 0;
+         // unset($new_params['selstatus']);
+         $html_text .= '&nbsp;'.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),'index',$new_params,$picture,$this->_translator->getMessage('COMMON_DELETE_RESTRICTIONS')).LF;
+         $html_text .='</td>'.LF;
+         $html_text .='</tr>'.LF;
+         $html .= $html_text;
+         } else{
+         $this->_additional_selects = true;
+         $html_text ='<tr>'.LF;
+         $html_text .='<td>'.LF;
+         // $html_text .= '<span class="infocolor">'.$this->_translator->getMessage('TODO_STATUS').': </span>';
+         $html_text .='</td>'.LF;
+         $html_text .='<td style="text-align:right;">'.LF;
+         //$status_text = $this->_translator->getMessage('TODO_NOT_DONE');
+         // $html_text .= '<span><a title="'.$status_text.'">'.$status_text.'</a></span>';
+         // $picture = '<img src="images/delete_restriction.gif" alt="x" border="0"/>';
+         $new_params = $params;
+         // unset($new_params['selstatus']);
+         // Loescht aber nicht die Einschränkung
+         $new_params['selstatus'] = 0;
+         //$html_text .= '&nbsp;'.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),'index',$new_params,$picture,$this->_translator->getMessage('COMMON_DELETE_RESTRICTIONS')).LF;
+         $html_text .='</td>'.LF;
+         $html_text .='</tr>'.LF;
+         $html .= $html_text;
+         }
          if ( isset($params['seltopic']) and !empty($params['seltopic']) ){
             $html_text ='<tr>'.LF;
             $html_text .='<td>'.LF;
@@ -1558,6 +1632,40 @@ EOD;
             $html_text .='</tr>'.LF;
             $html .= $html_text;
          }
+
+         if ( isset($params['selcolor']) and $params['selcolor'] != 2 ){
+         $this->_additional_selects = true;
+         $html_text ='<tr>'.LF;
+         $html_text .='<td>'.LF;
+         $html_text .= '<span class="infocolor">'.$this->_translator->getMessage('COMMON_DATE_COLOR').': </span>';
+         $html_text .='</td>'.LF;
+         $html_text .='<td style="text-align:right;">'.LF;
+         $color_text = '';
+
+         $color_text = '';
+         switch ('#'.$params['selcolor']){
+            case '#999999': $color_text = getMessage('DATE_COLOR_GREY');break;
+            case '#CC0000': $color_text = getMessage('DATE_COLOR_RED');break;
+            case '#FF6600': $color_text = getMessage('DATE_COLOR_ORANGE');break;
+            case '#FFCC00': $color_text = getMessage('DATE_COLOR_DEFAULT_YELLOW');break;
+            case '#FFFF66': $color_text = getMessage('DATE_COLOR_LIGHT_YELLOW');break;
+            case '#33CC00': $color_text = getMessage('DATE_COLOR_GREEN');break;
+            case '#00CCCC': $color_text = getMessage('DATE_COLOR_TURQUOISE');break;
+            case '#3366FF': $color_text = getMessage('DATE_COLOR_BLUE');break;
+            case '#6633FF': $color_text = getMessage('DATE_COLOR_DARK_BLUE');break;
+            case '#CC33CC': $color_text = getMessage('DATE_COLOR_PURPLE');break;
+            default: $color_text = getMessage('DATE_COLOR_UNKNOWN');
+         }
+         $html_text .= '<span style="color:#'.$params['selcolor'].';">'.$color_text.'</span>';
+         $picture = '<img src="images/delete_restriction.gif" alt="x" border="0"/>';
+         $new_params = $params;
+         $new_params['selcolor'] = 2;
+         $html_text .= '&nbsp;'.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),'index',$new_params,$picture,$this->_translator->getMessage('COMMON_DELETE_RESTRICTIONS')).LF;
+         $html_text .='</td>'.LF;
+         $html_text .='</tr>'.LF;
+         $html .= $html_text;
+         }
+
          if ( isset($params['selbuzzword'])  and !empty($params['selbuzzword']) ){
             $html_text ='<tr>'.LF;
             $html_text .='<td>'.LF;
@@ -2548,6 +2656,7 @@ EOD;
       $html .= '   <input type="hidden" name="fct" value="'.$this->_text_as_form($this->_function).'"/>'.LF;
       $html .= '   <input type="hidden" name="sort" value="'.$this->_text_as_form($this->getSortKey()).'"/>'.LF;
       $params = $this->_environment->getCurrentParameterArray();
+
       if ( isset($params['seltag']) ){
          $html .= '   <input type="hidden" name="seltag" value="'.$params['seltag'].'"/>'.LF;
       }
@@ -2556,6 +2665,15 @@ EOD;
       }
       if ( isset($params['selgroup']) ){
          $html .= '   <input type="hidden" name="selgroup" value="'.$params['selgroup'].'"/>'.LF;
+      }
+      if ( isset($params['selcolor']) ){
+      	 $html .= '   <input type="hidden" name="selcolor" value="'.$params['selcolor'].'"/>'.LF;
+      }
+      if ( isset($params['selstatus']) ){
+      	 $html .= '   <input type="hidden" name="selstatus" value="'.$params['selstatus'].'"/>'.LF;
+      }
+      if ( isset($params['seluser']) ){
+      	 $html .= '   <input type="hidden" name="seluser" value="'.$params['seluser'].'"/>'.LF;
       }
       if ( isset($params['selinstitution']) ){
          $html .= '   <input type="hidden" name="selinstitution" value="'.$params['selinstitution'].'"/>'.LF;
@@ -2665,6 +2783,36 @@ EOD;
      $html .= '   <input type="hidden" name="SID" value="'.$this->_environment->getSessionItem()->getSessionID().'"/>'.LF;
      $html .= '   <input type="hidden" name="fct" value="index"/>'.LF;
      $html .= '   <input type="hidden" name="selrubric" value="'.$this->_environment->getCurrentModule().'"/>'.LF;
+     // Abfrage von Kategorien... Schleife für jeden seltag_i
+     if (isset($_GET['seltag'])){
+     	$i = 0;
+     	// Schleife: Alles Tags, die gesetzt sind abfragen
+     	while(isset($_GET['seltag'])) {
+     		if(isset($_GET['seltag_'.$i.''])) {
+     			$html .= '<input type="hidden" name="seltag_'.$i.'" value="'.$_GET['seltag_'.$i.''].'">'.LF;
+     			$html .= '<input type="hidden" name="seltag" value="yes">'.LF;
+
+     			break;
+     		}
+     		$i++;
+     	}
+     }
+     if (isset($_GET['selbuzzword'])) {
+     	$html .= '<input type="hidden" name="selbuzzword" value="'.$_GET['selbuzzword'].'">'.LF;
+     }
+     if (isset($_GET['seluser'])) {
+     	$html .= '<input type="hidden" name="seluser" value="'.$_GET['seluser'].'">'.LF;
+     }
+     if (isset($_GET['selgroup'])) {
+     	$html .= '<input type="hidden" name="selgroup" value="'.$_GET['selgroup'].'">'.LF;
+     }
+     if (isset($_GET['selcolor'])) {
+     	$html .= '<input type="hidden" name="selcolor" value="'.$_GET['selcolor'].'">'.LF;
+     }
+     if (isset($_GET['selstatus'])) {
+     	$html .= '<input type="hidden" name="selstatus" value="'.$_GET['selstatus'].'">'.LF;
+     }
+     #$html .= '	  <input type="hidden" name="seltag" value="'.$_GET['seltag_0'].'"'.LF;
      $html .= '<input id="searchtext" onclick="javascript:resetSearchText(\'searchtext\');" style="width:'.$search_with.'px; font-size:10pt; margin-bottom:0px;" name="search" type="text" size="20" value="'.$this->_text_as_form($this->getSearchText()).'"/>'.LF;
      if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
         $html .= '<input type="image" src="images/commsyicons_msie6/22x22/search.gif" style="vertical-align:top;" alt="'.$this->_translator->getMessage('COMMON_SEARCH_BUTTON').'"/>';

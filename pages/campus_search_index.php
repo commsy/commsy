@@ -106,10 +106,14 @@ if ( isset($_GET['option']) and isOption($_GET['option'],$translator->getMessage
    // Find current buzzword selection
    if ( isset($_GET['selbuzzword']) and $_GET['selbuzzword'] !='-2') {
       $selbuzzword = $_GET['selbuzzword'];
+   } else if (isset($_POST['selbuzzword']) and $_POST['selbuzzword'] != '-2') {
+   	  $selbuzzword = $_POST['selbuzzword'];
    } else {
       $selbuzzword = 0;
    }
    $last_selected_tag = '';
+
+
 
    // Find current topic selection
    if ( isset($_GET['seltag']) and $_GET['seltag'] =='yes') {
@@ -122,6 +126,22 @@ if ( isset($_GET['option']) and isOption($_GET['option'],$translator->getMessage
       while(isset($_GET['seltag_'.$i]) and $_GET['seltag_'.$i] !='-2'){
          if (!empty($_GET['seltag_'.$i])){
             $seltag_array[$i] = $_GET['seltag_'.$i];
+            $j++;
+         }
+         $i++;
+      }
+      $last_selected_tag = $seltag_array[$j-1];
+   }else if(isset($_POST['seltag']) and $_POST['seltag'] =='yes') {
+   	  // Seltag aus der Hiddenform holen
+   	  $i = 0;
+      while ( !isset($_POST['seltag_'.$i]) ){
+         $i++;
+      }
+      $seltag_array[] = $_POST['seltag_'.$i];
+      $j = 0;
+      while(isset($_POST['seltag_'.$i]) and $_POST['seltag_'.$i] !='-2'){
+         if (!empty($_POST['seltag_'.$i])){
+            $seltag_array[$i] = $_POST['seltag_'.$i];
             $j++;
          }
          $i++;
@@ -153,6 +173,52 @@ if ( isset($_GET['option']) and isOption($_GET['option'],$translator->getMessage
    }  else {
       $selrestriction = 'all';
    }
+   // Find current selection seltag (Kategorie) fehlt die POST Abfrage in cs_index_view
+   // ein Hiddenfeld hinzufügen.
+   if (isset($_POST['selgroup'])) {
+   	$selgroup = $_POST['selgroup'];
+   } else {
+   	#$selgroup = 0;
+   }
+
+   if (isset($_POST['selcolor'])) {
+   	$selcolor = $_POST['selcolor'];
+   } else if(isset($_GET['selcolor'])){
+   	$selcolor = $_GET['selcolor'];
+   } else {
+   	$selcolor = '';
+   }
+
+   if (isset($_POST['seluser'])) {
+   	$seluser = $_POST['seluser'];
+   } else {
+   	$seluser = $_GET['seluser'];
+   }
+
+   if (isset($_POST['selstatus'])) {
+   	$selstatus = $_POST['selstatus'];
+   } else if (isset($_GET['selstatus'])){
+   	$selstatus = $_GET['selstatus'];
+   } else {
+   	$selstatus = '';
+   }
+
+   if (isset($_POST['selactivationstatus'])) {
+
+   }
+
+   # selgroup
+   # sort=date
+   #mode=list_actions
+
+   #selactivatingstatus=1
+
+   #selactivatingstatus=2
+   #selstatus=2
+   #selcolor=2
+   #seluser=0
+
+
    // Find current only files selection
    if ( isset($_POST['only_files']) ) {
       $selfiles = $_POST['only_files'];
@@ -236,6 +302,8 @@ if ( !empty($selrubric) and $selrubric != 'all' and $selrubric != 'campus_search
 // Find current sel_activating_status selection
 if ( isset($_GET['selactivatingstatus']) and $_GET['selactivatingstatus'] !='-2') {
    $sel_activating_status = $_GET['selactivatingstatus'];
+} else if (isset($_POST['selactivatingstatus']) and $_POST['selactivatingstatus'] !='-2') {
+   $sel_activating_status = $_POST['selactivatingstatus'];
 } else {
    $sel_activating_status = 2;
 }
@@ -303,8 +371,11 @@ foreach ($rubric_array as $rubric) {
          $rubric_manager->setIDArrayLimit($current_community_item->getInternalProjectIDArray());
          unset($current_community_item);
       }
-      if ($rubric == CS_DATE_TYPE) {
+      if ($rubric == CS_DATE_TYPE AND $selstatus == 2) {
          $rubric_manager->setWithoutDateModeLimit();
+      }
+      else if ($rubric == CS_DATE_TYPE AND $selstatus != 2) {
+      	 $rubric_manager->setDateModeLimit($selstatus);
       }
       if ($rubric==CS_USER_TYPE) {
          $rubric_manager->setUserLimit();
@@ -333,6 +404,17 @@ foreach ($rubric_array as $rubric) {
       }
       if ( !empty($last_selected_tag) ){
          $rubric_manager->setTagLimit($last_selected_tag);
+      }
+      if ( !empty($selcolor) and $selcolor != '2' and $selrubric == "date") {
+      	 $rubric_manager->setColorLimit('#'.$selcolor);
+      }
+
+      if ( ($selrubric == "todo") and !empty($selstatus)) {
+      	 $rubric_manager->setStatusLimit($selstatus);
+      }
+
+      if (!empty($seluser)) {
+      	 $rubric_manager->setUserLimit($seluser);
       }
 
       if ( !empty($selfiles) ) {
@@ -371,6 +453,13 @@ $view->setChoosenRubric($selrubric);
 $view->setSelectedBuzzword($selbuzzword);
 $view->setSelectedTagArray($seltag_array);
 $view->setActivationLimit($sel_activating_status);
+#group color user status
+$view->setSelectedUser($seluser);
+$view->setSelectedGroup($selgroup);
+$view->setSelectedStatus($selstatus);
+$view->setSelectedColor($selcolor);
+
+
 
 // Add list view to page
 $page->add($view);
@@ -381,6 +470,10 @@ $campus_search_parameter_array['search'] = $search;
 $campus_search_parameter_array['selrestriction'] = $selrestriction;
 $campus_search_parameter_array['selrubric'] = $selrubric;
 $campus_search_parameter_array['selbuzzword'] = $selbuzzword;
+$campus_search_parameter_array['selstatus'] = $selstatus;
+$campus_search_parameter_array['selcolor'] = $selcolor;
+$campus_search_parameter_array['selgroup'] = $selgroup;
+$campus_search_parameter_array['seluser'] = $seluser;
 $campus_search_parameter_array['seltag_array'] = $seltag_array;
 $campus_search_parameter_array['selfiles'] = $selfiles;
 $campus_search_parameter_array['sel_array'] = $sel_array;

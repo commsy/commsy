@@ -696,9 +696,11 @@ class cs_todo_index_view extends cs_room_index_view {
             $html_text .='</tr>'.LF;
             $html .= $html_text;
          }
+         return $html;
       }
       $params = $this->_environment->getCurrentParameterArray();
       $params['selstatus'] = $this->getSelectedStatus();
+
       if ( isset($params['selstatus']) and $params['selstatus'] != '-1' and $params['selstatus'] != '0' and !empty($params['selstatus']) ){
          $this->_additional_selects = true;
          $html_text ='<tr>'.LF;
@@ -752,7 +754,7 @@ class cs_todo_index_view extends cs_room_index_view {
          $html_text .='</tr>'.LF;
          $html .= $html_text;
       }
-      return $html;
+      #return $html;
    }
 
    function _getViewActionsAsHTML () {
