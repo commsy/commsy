@@ -257,10 +257,10 @@ if (!empty($_GET['SID'])) {
            and $environment->getCurrentFunction() == 'login'
            and !$outofservice
          ) {
-   if (!isset($_GET['jscheck']) and !isset($_GET['isJS'])){
-       include_once('pages/context_reload.php');
-       exit();
-   }
+#   if (!isset($_GET['jscheck']) and !isset($_GET['isJS'])){
+#       include_once('pages/context_reload.php');
+#       exit();
+#   }
    include_once('pages/context_login.php');
    exit();
 } elseif ( strtolower($environment->getCurrentFunction()) == 'getfile'
@@ -627,7 +627,8 @@ if ( !empty($_POST)
 if ( !$outofservice
      and $environment->isOutputModeNot('XML')
      and $environment->isOutputModeNot('JSON')
-     and !$environment->getCurrentModule() == 'ajax'
+#     and !$environment->getCurrentModule() == 'ajax'
+     and !($environment->getCurrentModule() == 'ajax')
      and !$session->issetValue('javascript')
      and !isset($_GET['jscheck'])
      and !( $environment->getCurrentModule() == 'file'

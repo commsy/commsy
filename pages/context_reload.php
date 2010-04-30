@@ -25,12 +25,14 @@ include_once('functions/curl_functions.php');
 
 $params2 = $environment->getCurrentParameterArray();
 $params2['jscheck'] = '1';
+/*
 if ( !empty($_POST['user_id']) ) {
    $params2['user_id'] = $_POST['user_id'];
 }
 if ( !empty($_POST['password']) ) {
    $params2['password'] = $_POST['password'];
 }
+*/
 $params1 = $params2;
 $params1['isJS'] = '1';
 $url1 = _curl( false,
