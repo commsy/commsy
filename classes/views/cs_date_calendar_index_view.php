@@ -2765,10 +2765,20 @@ class cs_date_calendar_index_view extends cs_room_index_view {
 
                $params = array();
                $params['iid'] = 'NEW';
-               $params['day'] = $format_array[$i]['day'];
+               $temp_day = $format_array[$i]['day'];
+               if(mb_strlen($temp_day) == 1){
+                  $temp_day = '0'.$temp_day;
+               }
+               #$params['day'] = $format_array[$i]['day'];
+               $params['day'] = $temp_day;
                $parameter_array = $this->_environment->getCurrentParameterArray();
                //$params['month'] = $this->_month;
-               $params['month'] = $current_year[$i].$current_month[$i].'01';
+               $temp_month = $current_month[$i];
+               if(mb_strlen($temp_month) == 1){
+               	$temp_month = '0'.$temp_month;
+               }
+               #$params['month'] = $current_year[$i].$current_month[$i].'01';
+               $params['month'] = $current_year[$i].$temp_month.'01';
                $params['year'] = $current_year[$i];
                $params['presentation_mode'] = $this->_presentation_mode;
                $params['modus_from'] = 'calendar';
