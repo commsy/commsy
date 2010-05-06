@@ -191,8 +191,10 @@ if ( isset($_GET['option']) and isOption($_GET['option'],$translator->getMessage
 
    if (isset($_POST['seluser'])) {
    	$seluser = $_POST['seluser'];
-   } else {
+   } else if (isset($_GET['seluser'])){
    	$seluser = $_GET['seluser'];
+   } else {
+   	$seluser = '';
    }
 
    if (isset($_POST['selstatus'])) {
@@ -453,7 +455,6 @@ $view->setChoosenRubric($selrubric);
 $view->setSelectedBuzzword($selbuzzword);
 $view->setSelectedTagArray($seltag_array);
 $view->setActivationLimit($sel_activating_status);
-#group color user status
 $view->setSelectedUser($seluser);
 $view->setSelectedGroup($selgroup);
 $view->setSelectedStatus($selstatus);
