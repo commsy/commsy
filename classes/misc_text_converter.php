@@ -863,28 +863,28 @@ class misc_text_converter {
    private function _encode_attr($attr_array, $text) {
       // loop through all tags
       foreach($attr_array as $attr) {
-      	 // find tags and content
-      	 $reg_exp = "~$attr='(.*?)'~eu";
-      	 $found = preg_match_all($reg_exp, $text, $matches);
+          // find tags and content
+          $reg_exp = "~$attr='(.*?)'~eu";
+          $found = preg_match_all($reg_exp, $text, $matches);
 
-      	 if($found > 0) {
-      	 	// eleminate duplicates
-      	 	$matches[1] = array_unique($matches[1]);
+          if($found > 0) {
+             // eleminate duplicates
+             $matches[1] = array_unique($matches[1]);
 
-      	 	// replace chars
-      	 	foreach($matches[1] as $string) {
-      	 	   //$new_tag_content = htmlentities($string);
-      	 	   $new_tag_content = $this->_decode_tag_chars($string);
-      	 	   $text = str_replace("$attr='$string'", "$attr='$new_tag_content'", $text);
-      	 	}
-      	 }
+             // replace chars
+             foreach($matches[1] as $string) {
+                //$new_tag_content = htmlentities($string);
+                $new_tag_content = $this->_decode_tag_chars($string);
+                $text = str_replace("$attr='$string'", "$attr='$new_tag_content'", $text);
+             }
+          }
       }
 
       return $text;
    }
 
    private function _decode_tag_chars($text) {
-   	  $text = str_replace('(', '&#040;', $text);
+        $text = str_replace('(', '&#040;', $text);
       $text = str_replace(')', '&#041;', $text);
       $text = str_replace(':', '&#058;', $text);
 
@@ -898,18 +898,18 @@ class misc_text_converter {
     * @return encoded text
     */
    private function _encode_file_names($text) {
-   	  $reg_exp = "~\\(:.*? (.*?)\\.([a-zA-Z0-9]*)~eu";
-   	  $found = preg_match_all($reg_exp, $text, $matches);
+        $reg_exp = "~\\(:.*? (.*?)\\.([a-zA-Z0-9]*)~eu";
+        $found = preg_match_all($reg_exp, $text, $matches);
 
-   	  if($found > 0) {
-   	     for($i = 0; $i < $found; $i++) {
-   	     	$new_file_name = $this->_decode_tag_chars($matches[1][$i]);
-   	     	$new_file_extension = $this->_decode_tag_chars($matches[2][$i]);
-   	     	$text = str_replace($matches[1][$i].'.'.$matches[2][$i], "$new_file_name.$new_file_extension", $text);
-   	     }
-   	  }
+        if($found > 0) {
+           for($i = 0; $i < $found; $i++) {
+              $new_file_name = $this->_decode_tag_chars($matches[1][$i]);
+              $new_file_extension = $this->_decode_tag_chars($matches[2][$i]);
+              $text = str_replace($matches[1][$i].'.'.$matches[2][$i], "$new_file_name.$new_file_extension", $text);
+           }
+        }
 
-   	  return $text;
+        return $text;
    }
 
    /**
@@ -919,17 +919,17 @@ class misc_text_converter {
     * @return decoded text
     */
    private function _decode_file_names($text) {
-   	  $reg_exp = "~\\(:.*? (.*?)\\.([a-zA-Z0-9]*)~eu";
-   	  $found = preg_match_all($reg_exp, $text, $matches);
-   	  if($found > 0) {
-   	     for($i = 0; $i < $found; $i++) {
-   	     	$new_file_name = html_entity_decode($matches[1][$i]);
-   	     	$new_file_extension = html_entity_decode(($matches[2][$i]));
-   	     	$text = str_replace($matches[1][$i].'.'.$matches[2][$i], "$new_file_name.$new_file_extension", $text);
-   	     }
-   	  }
+        $reg_exp = "~\\(:.*? (.*?)\\.([a-zA-Z0-9]*)~eu";
+        $found = preg_match_all($reg_exp, $text, $matches);
+        if($found > 0) {
+           for($i = 0; $i < $found; $i++) {
+              $new_file_name = html_entity_decode($matches[1][$i]);
+              $new_file_extension = html_entity_decode(($matches[2][$i]));
+              $text = str_replace($matches[1][$i].'.'.$matches[2][$i], "$new_file_name.$new_file_extension", $text);
+           }
+        }
 
-   	  return $text;
+        return $text;
    }
 
    #private function _newFormating ( $text ) {
@@ -941,11 +941,11 @@ class misc_text_converter {
       // this is for preventing parsing of (: and :)
       //////////////////////////////////////////////////////////////
       // decode tags used in alt and text attributes
-      $attr = array('alt', 'text');
-      $text = $this->_encode_attr($attr, $text);
+      #$attr = array('alt', 'text');
+      #$text = $this->_encode_attr($attr, $text);
 
       // decode file names
-      $text = $this->_encode_file_names($text);
+      #$text = $this->_encode_file_names($text);
       //////////////////////////////////////////////////////////////
       //////////////////////////////////////////////////////////////
       //////////////////////////////////////////////////////////////
@@ -1039,7 +1039,7 @@ class misc_text_converter {
                      }
 
                      // decode file names
-                     $value_new = $this->_decode_file_names($value_new);
+                     #$value_new = $this->_decode_file_names($value_new);
 
                      if ( $key == '(:flash' and mb_stristr($value_new,'(:flash') ) {
                         $value_new = $this->_formatFlash($value_new,$args_array,$file_array);
@@ -2371,16 +2371,16 @@ class misc_text_converter {
           unset($item_manager);
 
           if(	$type == CS_ROOM_TYPE ||
-          		$type == CS_COMMUNITY_TYPE ||
-          		$type == CS_PRIVATEROOM_TYPE ||
-          		$type == CS_GROUPROOM_TYPE ||
-          		$type == CS_MYROOM_TYPE ||
-          		$type == CS_PROJECT_TYPE ||
-          		$type == CS_PORTAL_TYPE/* ||
-          		$type == CS_SERVER_TYPE*/) {
-          	 $image_text = ahref_curl($word, 'home', 'index', '', $word);
+                $type == CS_COMMUNITY_TYPE ||
+                $type == CS_PRIVATEROOM_TYPE ||
+                $type == CS_GROUPROOM_TYPE ||
+                $type == CS_MYROOM_TYPE ||
+                $type == CS_PROJECT_TYPE ||
+                $type == CS_PORTAL_TYPE/* ||
+                $type == CS_SERVER_TYPE*/) {
+              $image_text = ahref_curl($word, 'home', 'index', '', $word);
           } else {
-          	 $image_text = ahref_curl($this->_environment->getCurrentContextID(), 'content', 'detail', $params, $word, '', $target, '');
+              $image_text = ahref_curl($this->_environment->getCurrentContextID(), 'content', 'detail', $params, $word, '', $target, '');
           }
       }
       if ( !empty($image_text) ) {
