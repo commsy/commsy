@@ -36,6 +36,7 @@ If you <b>quit your membership</b> also quit your workspace access. The items yo
 If you <b>delete</b> your account completely, everything you have written in this workspace will be deleted. You will not be able to access the workspace with this account.
 </li>
 </ul>";
+$message["USER_CREATIONDATE"]["en"] = "created";
 $message["USER_DELETE_FORM_DESCRIPTION"]["en"] = "Your choice is between two options:
 <ul><li>If you <b>quit the membership</b> also quit the workspace access. The items the person entered will not be deleted. It is possible to reactivate the account.</li>
 <li>If you <b>delete</b> the account completely, everything the person have written in this workspace will be deleted. The person will not be able to access the workspace with this account.</li></ul>";
