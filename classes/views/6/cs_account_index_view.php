@@ -131,62 +131,32 @@ class cs_account_index_view extends cs_index_view {
 
       $html .= '</td>'.LF;
 
-      if (!$this->_environment->inProjectRoom()){
-         $html .= '      <td style="width:20%; font-size:8pt;" class="head">';
-         if ( $this->getSortKey() == 'last_login' ) {
-            $params['sort'] = 'last_login_rev';
-            $picture = '&nbsp;<img src="' . getSortImage('up') . '" alt="&lt;" border="0"/>';
-         } elseif ( $this->getSortKey() == 'last_login_rev' ) {
-            $params['sort'] = 'last_login';
-            $picture = '&nbsp;<img src="' . getSortImage('down') . '" alt="&lt;" border="0"/>';
-         } else {
-            $params['sort'] = 'last_login';
-            $picture ='&nbsp;';
-         }
-         $html .= ahref_curl($this->_environment->getCurrentContextID(),
-                             $this->_module, $this->_function,
-                             $params,
-                             $this->_translator->getMessage('USER_LASTLOGIN'),
-                             '',
-                             '',
-                             $this->getFragment(),
-                             '',
-                             '',
-                             '',
-                             'class="head"'
-                            );
-         $html .= $picture;
-         $html .= '</td>'.LF;
-         $html .= '      <td style="width:30%; font-size:8pt;" class="head">';
-      }else{
-         $html .= '      <td style="width:15%; font-size:8pt;" class="head">';
-         if ( $this->getSortKey() == 'status' ) {
-            $params['sort'] = 'status_rev';
-            $picture = '&nbsp;<img src="' . getSortImage('up') . '" alt="&lt;" border="0"/>';
-         } elseif ( $this->getSortKey() == 'status_rev' ) {
-            $params['sort'] = 'status';
-            $picture = '&nbsp;<img src="' . getSortImage('down') . '" alt="&lt;" border="0"/>';
-         } else {
-            $params['sort'] = 'status';
-            $picture ='&nbsp;';
-         }
-         $html .= ahref_curl($this->_environment->getCurrentContextID(),
-                             $this->_module,
-                             $this->_function,
-                             $params,
-                             $this->_translator->getMessage('USER_STATUS'),
-                             '',
-                             '',
-                             $this->getFragment(),
-                             '',
-                             '',
-                             '',
-                             'class="head"'
-                            );
-         $html .= $picture;
-         $html .= '</td>'.LF;
-         $html .= '      <td style="width:40%; font-size:8pt;" class="head">';
+      $html .= '      <td style="width:20%; font-size:8pt;" class="head">';
+      if ( $this->getSortKey() == 'last_login' ) {
+         $params['sort'] = 'last_login_rev';
+         $picture = '&nbsp;<img src="' . getSortImage('up') . '" alt="&lt;" border="0"/>';
+      } elseif ( $this->getSortKey() == 'last_login_rev' ) {
+         $params['sort'] = 'last_login';
+         $picture = '&nbsp;<img src="' . getSortImage('down') . '" alt="&lt;" border="0"/>';
+      } else {
+         $params['sort'] = 'last_login';
+         $picture ='&nbsp;';
       }
+      $html .= ahref_curl($this->_environment->getCurrentContextID(),
+                          $this->_module, $this->_function,
+                          $params,
+                          $this->_translator->getMessage('USER_LASTLOGIN'),
+                          '',
+                          '',
+                          $this->getFragment(),
+                          '',
+                          '',
+                          '',
+                          'class="head"'
+                         );
+      $html .= $picture;
+      $html .= '</td>'.LF;
+      $html .= '      <td style="width:30%; font-size:8pt;" class="head">';
 
       if ( $this->getSortKey() == 'email' ) {
          $params['sort'] = 'email_rev';
@@ -465,19 +435,17 @@ class cs_account_index_view extends cs_index_view {
       $html .= '      </td>'.LF;
 
       $html .= '      <td '.$style.' style="font-size:10pt;" >'.$this->_getItemFullname($item).' ('.$this->_getItemUserID($item).')'.LF;
-          if ( $item->isRequested() and $item->getUserComment() != '' ) {
-             $html .= '<img src="images/private.gif" width="10" height="10" border="0" title="'.$item->getUserComment().'" alt=""/>';
-          }
-      if ( !$this->_environment->inProjectRoom() ) {
-         $html .= BRLF.'<span class="disabled" style="font-size:8pt;">'.$this->_getStatus($item).'</span>'.LF;
+      if ( $item->isRequested() and $item->getUserComment() != '' ) {
+         $html .= '<img src="images/private.gif" width="10" height="10" border="0" title="'.$item->getUserComment().'" alt=""/>';
       }
+      $html .= BRLF.'<span class="disabled" style="font-size:8pt;">'.$this->_getStatus($item).'</span>'.LF;
       $html .= '      </td>'.LF;
-      if ( !$this->_environment->inProjectRoom() ) {
-         $html .= '      <td '.$style.' style="font-size:8pt;">'.$this->_getItemLastLogin($item).'</td>'.LF;
-      }else{
-         $html .= '      <td '.$style.' style="font-size:8pt;">'.$this->_getStatus($item).'</td>'.LF;
-      }
-      $html .= '      <td '.$style.' style="font-size:8pt;">'.$this->_getItemEmail($item).'</td>'.LF;
+      $html .= '      <td '.$style.' style="font-size:8pt; white-space: nowrap;">'.$this->_getItemLastLogin($item).LF;
+      $html .= BRLF.'<span class="disabled" style="font-size:8pt;">'.$this->_getCreationDate($item).'</span>'.LF;
+      $html .= '      </td>'.LF;
+      $html .= '      <td '.$style.' style="font-size:8pt;">'.$this->_getItemEmail($item).LF;
+      $html .= BRLF.'<span class="disabled" style="font-size:8pt;">'.$this->_translator->getMessage('USER_CREATIONDATE').'</span>'.LF;
+      $html .= '      </td>'.LF;
       $html .= '   </tr>'.LF;
 
       return $html;
@@ -545,6 +513,16 @@ class cs_account_index_view extends cs_index_view {
       }
       $datetime = $this->_compareWithSearchText($datetime);
       return $datetime;
+   }
+
+   function _getCreationDate ($item) {
+      $retour = '';
+      if ( !empty($item)
+           and is_object($item)
+         ) {
+         $retour = getDateTimeInLang($item->getCreationDate());
+      }
+      return $retour;
    }
 
    /** get View-Actions of this index view
