@@ -177,8 +177,10 @@ if ( isset($_GET['option']) and isOption($_GET['option'],$translator->getMessage
    // ein Hiddenfeld hinzufügen.
    if (isset($_POST['selgroup'])) {
    	$selgroup = $_POST['selgroup'];
+   } else if($_GET['selgroup']) {
+   	$selgroup = $_GET['selgroup'];
    } else {
-   	#$selgroup = 0;
+   	$selgroup = '';
    }
 
    if (isset($_POST['selcolor'])) {
@@ -205,20 +207,6 @@ if ( isset($_GET['option']) and isOption($_GET['option'],$translator->getMessage
    	$selstatus = '';
    }
 
-   if (isset($_POST['selactivationstatus'])) {
-
-   }
-
-   # selgroup
-   # sort=date
-   #mode=list_actions
-
-   #selactivatingstatus=1
-
-   #selactivatingstatus=2
-   #selstatus=2
-   #selcolor=2
-   #seluser=0
 
 
    // Find current only files selection
