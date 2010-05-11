@@ -704,7 +704,7 @@ class cs_material_manager extends cs_manager {
       // restrict sql-statement by search limit, create wheres
       elseif (isset($this->_search_array) AND !empty($this->_search_array)) {
          $query .= ' AND (';
-         $field_array = array('TRIM(CONCAT(modificator.firstname," ",modificator.lastname))','TRIM(CONCAT(creator.firstname," ",creator.lastname))',$this->addDatabasePrefix('section').'.description',$this->addDatabasePrefix('section').'.title',$this->addDatabasePrefix('materials').'.publishing_date',$this->addDatabasePrefix('materials').'.author',$this->addDatabasePrefix('materials').'.title',$this->addDatabasePrefix('materials').'.description','buzzwords.name');
+         $field_array = array('TRIM(CONCAT(modificator.firstname," ",modificator.lastname))','TRIM(CONCAT(creator.firstname," ",creator.lastname))',$this->addDatabasePrefix('section').'.description',$this->addDatabasePrefix('section').'.title',$this->addDatabasePrefix('materials').'.publishing_date',$this->addDatabasePrefix('materials').'.author',$this->addDatabasePrefix('materials').'.title',$this->addDatabasePrefix('materials').'.description','buzzwords.name',$this->addDatabasePrefix('files').'.filename');
          $search_limit_query_code = $this->_generateSearchLimitCode($field_array);
          $query .= $search_limit_query_code;
          $query .= ' )';
@@ -1177,7 +1177,7 @@ class cs_material_manager extends cs_manager {
    	  									'description'		=>	'description',
    	  									'modification_date'	=>	'modification_date',
    	  									'public'			=>	'public'), array('author', 'publishing_date', 'extras'));
-   	  
+
       $current_datetime = getCurrentDateTimeInMySQL();
       $query  = 'SELECT '.$this->addDatabasePrefix('materials').'.* FROM '.$this->addDatabasePrefix('materials').' WHERE '.$this->addDatabasePrefix('materials').'.creator_id = "'.$uid.'"';
       $result = $this->_db_connector->performQuery($query);
