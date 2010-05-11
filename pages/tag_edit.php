@@ -178,6 +178,21 @@ else {
          redirect($environment->getCurrentContextID(),'tag', 'edit', $params);
       }
       
+      // sort alphabetically
+      elseif(isOption($command, $translator->getMessage('TAG_SORT_ABC'))) {
+         $tag_manager = $environment->getTagManager();
+         $root_tag = $tag_manager->getRootTagItem();
+         unset($tag_manager);
+         
+         $tag2tag_manager = $environment->getTag2TagManager();
+         $children_id_array = $tag2tag_manager->getRecursiveChildrenItemIDArray($root_tag->getItemID());
+         $tag2tag_manager->sortRecursiveABC($root_tag->getItemID());
+         unset($tag2tag_manager);
+         
+         $params = array();
+         redirect($environment->getCurrentContextID(),'tag', 'edit', $params);
+      }
+      
       // combine categories
       elseif(	isOption($command, $translator->getMessage('TAG_COMBINE_BUTTON')) &&
       			$_POST['sel1'] != $_POST['sel2']) {
@@ -256,6 +271,11 @@ else {
 
              unset($tag_item);
              unset($tag_manager);
+             
+             // sort alphabetically
+             $tag2tag_manager = $environment->getTag2TagManager();
+             $tag2tag_manager->sortRecursiveABC($_POST['father_id']);
+             unset($tag2tag_manager);
 
              $params = array();
              $params['focus_element_onload'] = 'new_tag';

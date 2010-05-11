@@ -110,6 +110,8 @@ class cs_form_view_detail extends cs_form_view {
             $html .= '         '.$this->_getSelectAsHTML($form_element);
          } elseif ($form_element['type'] == 'selectgroup') {
             $html .= '         '.$this->_getSelectGroupAsHTML($form_element);
+         } elseif ($form_element['type'] == 'anchor') {
+            $html .= $this->_getAnchorAsHTML($form_element);
          }  elseif ($form_element['type'] == 'checkbox') {
             $html .= '         '.$this->_getCheckboxAsHTML($form_element).LF;
          } elseif ($form_element['type'] == 'checkboxgroup') {
@@ -271,7 +273,7 @@ class cs_form_view_detail extends cs_form_view {
                $height = $pict_height;
             }
          }else{
-             $height = 60;
+            $height = 60;
          }
 
          if ( empty($picture_url) ) {
@@ -299,13 +301,12 @@ class cs_form_view_detail extends cs_form_view {
       }
       $params = array();
       $params['iid'] = $item->getItemID();
-      $html = ahref_curl( $this->_environment->getCurrentContextID(),
-                           CS_USER_TYPE,
-                           'detail',
-                           $params,
-                           $html,
-                           $linktext,'', '', '', '', '', '', '',
-                           '');
+      $html = ahref_curl(	$this->_environment->getCurrentContextID(),
+      						CS_USER_TYPE,
+      						'detail',
+      						$params,
+      						$html,
+      						$linktext,'', '', '', '', '', '', '', '');
       return $html;
    }
 }

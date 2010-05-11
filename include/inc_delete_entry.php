@@ -169,6 +169,9 @@ elseif ( isOption($delete_command, $translator->getMessage('COMMON_DELETE_BUTTON
          }
          $params = array();
          $params['iid'] = $current_item_iid;
+         
+         // change position of all childs
+         
          $discarticle_item->delete();
          unset($discarticle_item);
          $discussion_item->setModificationDate(getCurrentDateTimeInMySQL());

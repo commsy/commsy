@@ -862,7 +862,7 @@ class cs_form {
          * @param string $labelSecondSave   the label for the second save button
          * @param string $isDisabled        maybe disable this element: standard = false
          */
-        function addButtonBar( $name,
+                function addButtonBar( $name,
                                $labelSave,
                                $labelCancel = '',
                                $labelDelete = '',
@@ -873,7 +873,10 @@ class cs_form {
                                $firstWidth='',
                                $secondWidth='',
                                $style='',
-                               $javascript='') {
+                               $javascript='',
+                               $idSave='',
+                               $idCancel='',
+                               $idDelete='') {
                 $element['type'] = 'buttonbar';
                 $element['name'] = $name;
                 $element['labelSave']       = $labelSave;
@@ -890,7 +893,9 @@ class cs_form {
                 $element['secondWidth'] = $secondWidth;
                 $element['style']       = $style;
                 $element['javascript']       = $javascript;
-
+                $element['idSave']      = $idSave;
+                $element['idCancel']    = $idCancel;
+                $element['idDelete']    = $idDelete;
 
                 $this -> _formElements -> addElement($element);
         }
@@ -913,7 +918,9 @@ class cs_form {
                             $isDisabled = false,
                             $text_after = '',
                             $anchor = '',
-                            $font_size = 10 ) {
+                            $font_size = 10,
+                            $javascript = '',
+                            $id = '') {
                 $element['type'] = 'button';
                 $element['name'] = $name;
                 $element['button_text'] = $button_text;
@@ -932,6 +939,8 @@ class cs_form {
                 } else {
                      $element['text_after'] = '';
                 }
+                $element['javascript']  = $javascript;
+                $element['element_id'] = $id;
                 $this -> _formElements -> addElement($element);
         }
 

@@ -43,3 +43,27 @@ hr.dropdown_seperator {
    border-bottom: transparent;
    width:98%;
 }
+
+div.delete_confirm_background {
+	background-color: white;
+	height: 100%;
+	left: 0;
+	opacity: 0.7;
+	position: fixed;
+	top: 0;
+	width: 100%;
+	z-index: 1000;
+}
+
+div.delete_confirm_box {
+	position: fixed;
+	z-index: 1100;
+	margin-top: 100px;
+	margin-left: 30%;
+	width: 400px;
+	padding: 20px;
+	background-color: white;
+	border: 2px solid red;
+	top: 0px;
+	display: none;
+}

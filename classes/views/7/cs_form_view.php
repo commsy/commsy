@@ -317,7 +317,7 @@ class cs_form_view extends cs_view {
    function _getAnchorAsHTML ($form_element) {
       $html  = ''.LF;
       $html .= '         <!-- BEGIN OF FORM-ELEMENT: anchor -->'.LF;
-      $html .= '         <a name="'.$form_element['name'].'" />'.LF;
+      $html .= '         <a name="'.$form_element['name'].'"></a>'.LF;
       $html .= '         <!-- END OF FORM-ELEMENT: anchor -->'.LF;
       return $html;
    }
@@ -405,9 +405,12 @@ class cs_form_view extends cs_view {
     *
     * @return string button as HMTL
     */
-   function _getButtonAsHTML ($button_text, $button_name, $width = '', $is_disabled = false, $style='', $font_size='10', $text_after='',$javascript ='') {
+   function _getButtonAsHTML ($button_text, $button_name, $width = '', $is_disabled = false, $style='', $font_size='10', $text_after='',$javascript='',$id='') {
       $html  = '';
       $html .= '<input type="submit" name="'.$button_name.'"';
+      if(!empty($id)) {
+         $html .= ' id="'.$id.'"';
+      }
       $html .= ' value="'.$button_text.'"';
       $html .= ' tabindex="'.$this->_count_form_elements.'" ';
       $this->_count_form_elements++;
@@ -448,13 +451,13 @@ class cs_form_view extends cs_view {
          $style = $form_element['style'];
       }
       if (!empty($form_element['labelSave'])) {
-         $html .= $this->_getButtonAsHTML($form_element['labelSave'],$form_element['name'],'',$form_element['is_disabled'],$style,'','',$form_element['javascript'])."\n";
+         $html .= $this->_getButtonAsHTML($form_element['labelSave'],$form_element['name'],'',$form_element['is_disabled'],$style,'','',$form_element['javascript'],$form_element['idSave'])."\n";
       }
       if (!empty($form_element['labelSecondSave'])) {
          $html .= $this->_getButtonAsHTML($form_element['labelSecondSave'],$form_element['name'],'',$form_element['is_disabled'],$style)."\n";
       }
       if (!empty($form_element['labelCancel'])) {
-         $html .= $this->_getButtonAsHTML($form_element['labelCancel'],$form_element['name'],'',$form_element['is_disabled'],$style)."\n";
+         $html .= $this->_getButtonAsHTML($form_element['labelCancel'],$form_element['name'],'',$form_element['is_disabled'],$style,'','','',$form_element['idCancel'])."\n";
       }
 
       $current_user = $this->_environment->getCurrentUser();
@@ -506,9 +509,9 @@ class cs_form_view extends cs_view {
                $html .= '                <td  class="buttonbar" style="padding-top:2px; border-bottom: none; text-align: right;">'."\n";
             }
          }
-         $html .= '                   '.$this->_getButtonAsHTML($form_element['labelDelete'],$form_element['name'],'',$form_element['is_disabled'],$style).'&nbsp;'."\n";
+         $html .= '                   '.$this->_getButtonAsHTML($form_element['labelDelete'],$form_element['name'],'',$form_element['is_disabled'],$style,'','','',$form_element['idDelete']).'&nbsp;'."\n";
       } elseif ( empty($_GET['show_profile'])
-                or $_GET['show_profile'] != 'yes'
+                   or $_GET['show_profile'] != 'yes'
               ) {
          if ($this->_special_color) {
             $html .= '                <td  style="padding-top:2px; border-bottom: none; text-align: right;">'."\n";
@@ -1760,9 +1763,9 @@ class cs_form_view extends cs_view {
                   $form_element['text_after'] = '';
                }
                if ( isset($form_element['width']) and !empty($form_element['width']) ) {
-                  $html .= $this->_getButtonAsHTML($form_element['button_text'],$form_element['name'],$form_element['width'],$disabled,'',$form_element['font_size'],$form_element['text_after']);
+                  $html .= $this->_getButtonAsHTML($form_element['button_text'],$form_element['name'],$form_element['width'],$disabled,'',$form_element['font_size'],$form_element['text_after'],$form_element['javascript'],$form_element['element_id']);
                } else {
-                  $html .= $this->_getButtonAsHTML($form_element['button_text'],$form_element['name'],'',$disabled,'',$form_element['font_size'],$form_element['text_after']);
+                  $html .= $this->_getButtonAsHTML($form_element['button_text'],$form_element['name'],'',$disabled,'',$form_element['font_size'],$form_element['text_after'],$form_element['javascript'],$form_element['element_id']);
                }
             } elseif ($form_element['type'] == 'text') {
                $html .= '         '.$this->_getTextAsHTML($form_element);

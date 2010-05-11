@@ -132,7 +132,18 @@ class cs_tag_form extends cs_rubric_form {
                $this->_form->combine('horizontal');
                $this->_form->addButton('right_box_option'.'#'.$child->getItemID(),$this->_translator->getMessage('COMMON_ITEM_NEW_ATTACH'),'','',(mb_strlen($this->_translator->getMessage('COMMON_ITEM_NEW_ATTACH'))*7));
                $this->_form->combine('horizontal');
-               $this->_form->addButton('option'.'#'.$child->getItemID(),$this->_translator->getMessage('COMMON_DELETE_BUTTON'));
+               $this->_form->addButton(	'option'.'#'.$child->getItemID(),
+               							$this->_translator->getMessage('COMMON_DELETE_BUTTON'),
+              							'',
+               							'',
+               							'',
+               							'',
+               							'',
+               							'',
+               							'',
+               							'',
+               							'delete_confirm_option#' . $child->getItemID());
+
                $this->_createFormForChildren($child,$depth+1);
                unset($child);
                $child = $children_list->getNext();
@@ -141,6 +152,23 @@ class cs_tag_form extends cs_rubric_form {
          unset($children_list);
       }
       unset($item);
+   }
+    
+   /** get information for header as HTML
+    * this method returns information in HTML-Code needs for the header of the HTML-Page
+    *
+    * @return string javascipt needed for the form
+    */
+   function getInfoForHeaderAsHTML() {
+      $return = "
+          var headline = '" . $this->_translator->getMessage("COMMON_DELETE_BOX_TITLE") . "';
+          var text1 = '" . $this->_translator->getMessage("COMMON_DELETE_BOX_DESCRIPTION") . "';
+          var text2 = '';
+          var button_delete = '" . $this->_translator->getMessage("COMMON_DELETE_BUTTON") . "';
+          var button_cancel = '" . $this->_translator->getMessage("COMMON_CANCEL_BUTTON") . "';
+      ";
+
+      return $return;
    }
 
    /** create the form, INTERNAL
@@ -162,6 +190,7 @@ class cs_tag_form extends cs_rubric_form {
       $this->_form->addSelect('sort2',$this->_second_sort_tree,'','','', 1, false,false,false,'','','','',11);
       $this->_form->combine('horizontal');
       $this->_form->addButton('option',$this->_translator->getMessage('TAG_SORT_BUTTON'),'','',80);
+      $this->_form->addButton('option',$this->_translator->getMessage('TAG_SORT_ABC'));
       $this->_form->addSubHeadline('headline3',cs_ucfirst($this->_translator->getMessage('TAG_COMBINE_BUTTON')),'','',3);
       
       $session_item = $this->_environment->getSessionItem();

@@ -124,7 +124,17 @@ class cs_buzzwords_form extends cs_rubric_form {
          $this->_form->combine('horizontal');
          $this->_form->addButton('right_box_option'.'#'.$buzzword['value'],$this->_translator->getMessage('COMMON_ITEM_NEW_ATTACH'),'','',(mb_strlen($this->_translator->getMessage('COMMON_ITEM_NEW_ATTACH'))*7));
          $this->_form->combine('horizontal');
-         $this->_form->addButton('option'.'#'.$buzzword['value'],$this->_translator->getMessage('COMMON_DELETE_BUTTON'),'','',(mb_strlen($this->_translator->getMessage('COMMON_DELETE_BUTTON'))*9));
+         $this->_form->addButton(	'option'.'#'.$buzzword['value'],
+         							$this->_translator->getMessage('COMMON_DELETE_BUTTON'),
+         							'',
+         							'',
+                                    (mb_strlen($this->_translator->getMessage('COMMON_DELETE_BUTTON'))*9),
+         							'',
+         							'',
+         							'',
+         							'',
+         							'',
+         							'delete_confirm_option'.'#'.$buzzword['value']);
       }
 
       $session = $this->_environment->getSession();
@@ -146,6 +156,23 @@ class cs_buzzwords_form extends cs_rubric_form {
       if ( !empty($this->_form_post) ) {
          $this->_values = $this->_form_post;
       }
+   }
+   
+	/** get information for header as HTML
+    * this method returns information in HTML-Code needs for the header of the HTML-Page
+    *
+    * @return string javascipt needed for the form
+    */
+   function getInfoForHeaderAsHTML() {
+      $return = "
+          var headline = '" . $this->_translator->getMessage("COMMON_DELETE_BOX_TITLE") . "';
+          var text1 = '" . $this->_translator->getMessage("COMMON_DELETE_BOX_DESCRIPTION") . "';
+          var text2 = '';
+          var button_delete = '" . $this->_translator->getMessage("COMMON_DELETE_BUTTON") . "';
+          var button_cancel = '" . $this->_translator->getMessage("COMMON_CANCEL_BUTTON") . "';
+      ";
+
+      return $return;
    }
 }
 ?>

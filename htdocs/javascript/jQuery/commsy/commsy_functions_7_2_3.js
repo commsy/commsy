@@ -1390,3 +1390,319 @@ function dropdown(object, offset, button){
 		}, 2000);
 	});
 }
+
+function delete_overlay(element, html_element, click_extra_action) {
+	var extra = '';
+	/*
+	if(typeof(button_extra) != "undefined") {
+		extra = jQuery("<input/>", {
+					"type" : "submit",
+					"value" : button_extra,
+					"name" : "delete_option",
+        	        //"style" : "float: left;",
+        	        "click" : click_extra_action
+				});
+	}
+	*/
+	
+	delete_overlay.element = element;
+	
+	
+	jQuery('body').append(
+    	    jQuery("<div/>", {
+    	    	"id"	: "delete_confirm_overlay_background",
+    	    	"class" : "delete_confirm_background"
+    	    })
+    	).append(
+    	    jQuery("<div/>", {
+    	    	"id"	: "delete_confirm_overlay_box",
+    	        "class" : "delete_confirm_box"
+    	    }).append(
+    	        jQuery("<form/>", {
+    	            "method" : "post"
+    	        }).append(
+    	            jQuery("<h2/>", {
+    	            	"text" : headline,
+    	            	"style" : "text-align: center;"
+    	            })
+    	        ).append(
+    	        	jQuery("<p style='text-align: left;'>"+text1+"</p>")
+    	        ).append(
+    	        	jQuery("<p style='text-align: left;'>"+text2+"</p>")
+    	        ).append(
+    	        	jQuery("<div/>", {
+    	        	}).append(
+    	        	    jQuery("<input/>", {
+    	        	        "type" : "submit",
+    	        	        "value" : button_delete,
+    	        	        "name" : "delete_option",
+    	        	        "style" : "float: right;",
+    	        	        "click" : function() {
+    	        	    		jQuery("[id='delete_confirm_overlay_background']").remove();
+    	        	    		jQuery("[id='delete_confirm_overlay_box']").remove();
+    	        	    		
+    	        	    		// remove event handler
+    	        	    		delete_overlay.element.unbind();
+    	        	    		
+    	        	    		// click for buttons and redirect for links
+    	        	    		
+    	        	    		if(html_element.type == 'submit') {
+    	        	    			/*
+        	        	    		 * This is a workaround for mapping more then one button from the overlay
+        	        	    		 * to the underlying formular, by changing the value of the underlying
+        	        	    		 * submit button.
+        	        	    		 * To avoid visual effects(change of value), the submit button will be
+        	        	    		 * renamed and replaced by an invisible pendant.
+        	        	    		 */
+        	        	    		
+    	        	    			// change button id
+    	        	    			var id = html_element.id;
+    	        	    			html_element.id = html_element.id + '_fake';
+    	        	    			
+    	        	    			// get form of button
+    	        	    			var form = jQuery("input[id='" + html_element.id + "']").parent();
+    	        	    			while(form[0].localName.substr(0, 4) != 'form') {
+    	        	    				form = form.parent();
+    	        	    			}
+    	        	    			
+    	        	    			form.append(
+    	        	    			    jQuery("<input/>", {
+        	        	    			    "type" : html_element.type,
+        	        	    			    "value" : button_delete,
+        	        	    			    "name" : html_element.name,
+        	        	    			    "style" : /*html_element.style + */" display: none",
+        	        	    			    "id" : id
+        	        	    			}));
+    	        	    			
+    	        	    			// click button
+    	        	    			jQuery("input[id='" + id + "']").click();
+    	        	    		} else {
+    	        	    			var href = html_element.href;
+    	        	    			var href_new = '';
+    	        	    			
+    	        	    			// remove anchor
+    	        	    			var split = href.split('#');
+    	        	    			var anchor = '';
+    	        	    			if(split.length > 1) {
+    	        	    				anchor = split[1];
+    	        	    			}
+    	        	    			
+    	        	    			// remove 'action=delete'
+    	        	    			split = split[0].split('&');
+    	        	    			
+    	        	    			for(var i in split) {
+    	        	    				if(split[i] != 'action=delete') {
+    	        	    					href_new += split[i] + '&';
+    	        	    				}
+    	        	    			}
+    	        	    			href_new += 'delete_option=' + button_delete;
+    	        	    			
+    	        	    			if(anchor != '') {
+    	        	    				href_new += '#' + anchor;
+    	        	    			}
+    	        	    			
+    	        	    			jQuery(location).attr('href', href_new);
+    	        	    		}
+    	        	    		
+    	        	    		return false;
+    	        	    	}
+    	        	    })
+    	        	).append(
+    	        		extra
+    	        	).append(
+    	        		jQuery("<input/>", {
+    	        			"type" : "submit",
+    	        	        "value" : button_cancel,
+    	        	        "name" : "delete_option",
+    	        	        "style" : "float: left;",
+    	        	        "click" : function() {
+    	        				jQuery("[id='delete_confirm_overlay_box']").fadeOut('slow', function() {
+    	        					jQuery("[id='delete_confirm_overlay_background']").remove();
+	    	        				jQuery("[id='delete_confirm_overlay_box']").remove();
+    	        				});
+    	        				return false;
+    	        		    }
+    	        		})))));
+    	
+    	jQuery("[id='delete_confirm_overlay_box']").fadeIn('slow');
+    	
+    	return false;
+}
+
+/*
+ *  Manages the deletion confirm box for select elements with submit button
+ *  name confirm button "delete_confirmselect_..." and
+ *  observed option "delete_check_..."
+ */
+jQuery(document).ready(function() {
+	jQuery("[id^='delete_confirmselect_']").click(
+		function() {
+			var element = jQuery(this);
+			var html_element = this;
+			
+			if(jQuery("[id^='delete_check_']").attr('selected')) {
+				// add overlay
+		    	delete_overlay(element, html_element, function() {});
+		    	
+		    	return false;
+			}
+		}
+	);
+});
+
+/*
+ *  Manages the deletion confirm box for all elements with name-tag: "delete_confirm_..."
+ *  Use for form buttons and links
+ */
+jQuery(document).ready(function() {
+	jQuery("[id^='delete_confirm_']").click(function() {
+    	var element = jQuery(this);
+    	var html_element = this;
+
+    	// add overlay
+    	delete_overlay(element, html_element, function() {
+    		/*
+    		jQuery("[id='delete_confirm_overlay_background']").remove();
+    		jQuery("[id='delete_confirm_overlay_box']").remove();
+    		
+    		// remove event handler
+    		element.unbind();
+    		
+    		// workaround
+			html_element.value = button_extra;
+			
+    		// click for buttons and redirect for links
+    		if(html_element.type == 'submit') {
+    			html_element.click();
+    		} else {
+    			jQuery(location).attr('href', html_element.href);
+    		}
+    		*/
+    		return false;
+    		
+    	});
+    	
+    	return false;
+	});
+});
+
+function formatDiscussionTreeThreaded(flag, dtnode) {
+	// scale tree
+	jQuery('[id=discussion_tree] [id^=ui-dynatree-id-]').each(function() {
+		var span_container = jQuery(this);
+		
+		// store which elements we already calculated
+		if(typeof(formatDiscussionTreeThreaded.cache) == 'undefined') {
+			// initalize
+			formatDiscussionTreeThreaded.cache = new Array();
+		}
+		
+		// skip invisible
+		if(span_container.width() == 0 || span_container.css('display') == 'none') {
+			// continue
+			return true;
+		}
+		
+		// skip if cached
+		if(	jQuery.inArray(this.id, formatDiscussionTreeThreaded.cache) > -1 &&
+			'ui-dynatree-id-' + dtnode.data.key != this.id) {
+			// continue
+			return true;
+		}
+		
+		// get div width
+		var div_width = jQuery('[id^=discussion_tree]').width();
+		
+		// get width of tree icons
+		var tree_width = 0;
+		jQuery('[id=' + this.id + '] span').each(function() {
+			tree_width += jQuery(this).width();
+		});
+		
+		// get width of title(+icon)
+		var title_width = 0;
+		var count_icons = -2;
+		jQuery('[id=' + this.id + '] a[id=]').each(function() {
+			title_width += jQuery(this).width();
+			count_icons++;
+		});
+		if(count_icons > 0) {
+			title_width += 11;
+		}
+		
+		// get width of creator
+		var creator_width = 0;
+		creator_width = jQuery('[id=' + this.id + '] a[id*=creator_text]').width();
+		
+		// calculate space beetween title and creator
+		var creator_space = (Math.floor(div_width / 5) * 2) - tree_width - title_width;
+		
+		// calculate space beetween creator and date
+		var date_space = (Math.floor(div_width / 5) * 4) - tree_width - title_width - creator_space - creator_width;
+		
+		// set spaces
+		jQuery('[id=' + this.id + '] img[id*=creator_space]').css('width', creator_space);
+		jQuery('[id=' + this.id + '] img[id*=date_space]').css('width', date_space);
+		
+		// set cache
+		formatDiscussionTreeThreaded.cache.push(this.id);
+	});
+}
+
+jQuery(document).ready(function() {
+	if(jQuery('[id=discussion_tree]').length){
+		jQuery.ui.dynatree.nodedatadefaults["icon"] = false;
+		
+		jQuery('[id=discussion_tree]').dynatree({
+			fx: { height: "toggle", duration: 200 },
+			onExpand: function(flag, dtnode) {
+				formatDiscussionTreeThreaded(flag, dtnode);
+			},
+			onPostInit: function(flag, dtnode) {
+				formatDiscussionTreeThreaded(flag, dtnode);
+			},
+			onActivate: function(dtnode) {
+				if(dtnode.data.url) {
+					window.location(dtnode.data.url);
+				}
+			}
+		});
+		/*
+		jQuery('[id^=discussion_tree]').each(function(){
+			jQuery(this).dynatree({
+				fx: { height: "toggle", duration: 200 },
+				checkbox: true,
+				onActivate: function(dtnode){
+					if( dtnode.data.url ){
+						window.location(dtnode.data.url);
+					}
+					if( dtnode.data.StudyLog ){
+						callStudyLogSortByTagId(dtnode.data.StudyLog);
+					}
+				},
+				onSelect: function(select, dtnode){
+					if( dtnode.data.checkbox ){
+						jQuery("[#taglist_" + dtnode.data.checkbox).attr('checked', select);
+					}
+				}
+			});
+			var max_visible_nodes = 20;
+			var max_expand_level = getExpandLevel(jQuery(this), max_visible_nodes);
+			jQuery(this).dynatree("getRoot").visit(function(dtnode){
+				if(dtnode.getLevel() < max_expand_level){
+					dtnode.expand(true);
+				}
+				if( !dtnode.data.checkbox ){
+					dtnode.data.hideCheckbox = true;
+					dtnode.render(true);
+				} else {
+					dtnode.select(jQuery("[#taglist_" + dtnode.data.checkbox).attr('checked'));
+				}
+			});
+			if(jQuery(this).attr('name') == 'tag_tree_detail'){
+				collapseTree(jQuery(this).dynatree("getRoot"), true);
+			}
+		});
+		*/
+	}
+});

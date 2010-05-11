@@ -354,6 +354,58 @@ class cs_tag2tag_manager extends cs_manager {
       }
       return $retour;
    }
+   
+   public function sortRecursiveABC($root_id) {
+      //////////////////////////////
+      // "0." force cache reset ////
+      //////////////////////////////
+      $this->_cached_rows = array();
+      $this->_cached_father_id_array = array();
+      $this->_cached_children_id_array_array = NULL;
+      //////////////////////////////
+      //////////////////////////////
+      //////////////////////////////
+      
+      // 1. fetch all direct children
+      $children_array = $this->getChildrenItemIDArray($root_id);
+      
+      // 2. sort children
+      if(sizeof($children_array) > 1) {
+         $temp_array = array();
+         $tag_manager = $this->_environment->getTagManager();
+         foreach($children_array as $id) {
+            $item_title = $tag_manager->getItem($id)->getTitle();
+            array_push($temp_array, array(   'id'   =>   $id,
+                                             'name' =>   $item_title));
+         }
+         
+         usort(   $temp_array,
+                  create_function('$a,$b','return strnatcasecmp($a[\'name\'],$b[\'name\']);'));
+         
+         // 3. change sort order
+         foreach($children_array as $id) {
+            $item = $tag_manager->getItem($id);
+            
+            // get new position
+            $new_sort_order = 1;
+            foreach($temp_array as $item_info_array) {
+               if($item_info_array['id'] == $id) {
+                  break;
+               }
+               $new_sort_order++;
+            }
+            
+            // change sort order and save
+            $item->setPosition($root_id, $new_sort_order);
+            $item->save();
+            unset($item);
+            
+            // 4. call recursive
+            $this->sortRecursiveABC($id);
+         }
+         unset($tag_manager);
+      }
+   }
 
    public function countChildren ($item_id) {
       return count($this->getChildrenItemIDArray($item_id));

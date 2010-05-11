@@ -66,8 +66,179 @@ class cs_discussion_detail_view extends cs_detail_view {
       return $this->_clipboard_id_array;
    }
 
+   function _getDiscussionFormAsHTMLForThreadedView() {
+      if(!(isset($_GET['mode']) and $_GET['mode'] == 'print')) {
+         $html = '<!-- BEGIN OF DISCARTICLE FORM VIEW -->'.LF.LF;
+         $html .= '<div style="border-top: 1px dotted; border-bottom: 1px dotted;">'.LF;
+         $item = $this->getItem();
+         $discussion_type = $item->getDiscussionType();
+         $disabled = '';
+
+         if(!(isset($_GET['discarticle_action']) && $_GET['discarticle_action'] == 'edit')) {
+            ////////////////////////////////////////////////////////
+            // calculate index
+            // find largest child position
+            $father_position = $_GET['ref_position'];
+            $father_position_length = mb_strlen($father_position);
+
+            $max = 1000;
+            $subitems_list = clone($this->getSubItemList());
+            $subitem = $subitems_list->getFirst();
+            while($subitem) {
+               $subitem_position = $subitem->getPosition();
+               $subitem_position_length = mb_strlen($subitem_position);
+
+               if(   $subitem_position_length > $father_position_length &&
+               mb_substr($subitem_position, 0, $father_position_length) == $father_position) {
+                  $postfix = mb_substr($subitem_position, $father_position_length+1);
+                   
+                  if(((int) $postfix) > $max) {
+                     $max = (int) $postfix;
+                  }
+               }
+
+               $subitem = $subitems_list->getNext();
+            }
+            $pos = $father_position . "." . ++$max;
+
+            $number_array = explode('.',$pos);
+            $number = '';
+            foreach($number_array as $num){
+               if ( empty($number) ){
+                  $number = '1';
+               }else{
+                  $len = mb_strlen($num);
+                  $tmp_num = mb_substr($num,1,$len);
+                  $first = mb_substr($tmp_num,0,1);
+                  while($first == '0'){
+                     $tmp_num = mb_substr($tmp_num,1,mb_strlen($tmp_num));
+                     $first = mb_substr($tmp_num,0,1);
+                  }
+                  $number .= '.'.$tmp_num;
+               }
+            }
+            $number = substr($number,2);
+            if ( $position_length > 10 and !empty($number) ) {
+               $range = floor($position_length/3.5)-1;
+               $number_array = explode('.',$number);
+               $middle = count($number_array)/2;
+               if ( $middle % 2 ) {
+                  $middle -= 0.5;
+               }
+               $number = '';
+               $print = false;
+               foreach ($number_array as $key => $value) {
+                  if ( $key < $middle-$range or $key > $middle+$range ) {
+                     $number .= $value.'.';
+                  } elseif ( !$print ) {
+                     $number .= '...';
+                     $print = true;
+                  }
+               }
+               $number = substr($number,0,strlen($number)-1);
+            }
+             
+            ////////////////////////////////////////////////////////
+             
+            $class_factory = $this->_environment->getClassFactory();
+            $class_params = array();
+            $class_params['environment'] = $this->_environment;
+            $form = $class_factory->getClass(DISCARTICLE_FORM,$class_params);
+            $form->setDetailMode($number);
+            $form->setRefPosition($father_position);
+            $form->setDiscussionID($item->getItemID());
+            unset($class_params);
+            $form->prepareForm();
+            $form->loadValues();
+            $class_params = array();
+            $class_params['environment'] = $this->_environment;
+            $class_params['with_modifying_actions'] = true;
+            $form_view = $class_factory->getClass(FORM_DETAIL_VIEW,$class_params);
+            unset($class_params);
+            $form_view->setAction(curl($this->_environment->getCurrentContextID(),'discarticle','edit',array()));
+            $form_view->setForm($form);
+            $html .= $form_view->asHTML();
+         } else if(isset($_GET['discarticle_iid'])) {
+            $discarticle_iid = $_GET['discarticle_iid'];
+
+            $subitems_list = clone($this->getSubItemList());
+            $subitem = $subitems_list->getFirst();
+            while($subitem) {
+               if($subitem->getItemID() == $discarticle_iid) {
+                  break;
+               }
+
+               $subitem = $subitems_list->getNext();
+            }
+            $pos = $subitem->getPosition();
+             
+            $number_array = explode('.',$pos);
+            $number = '';
+            foreach($number_array as $num){
+               if ( empty($number) ){
+                  $number = '1';
+               }else{
+                  $len = mb_strlen($num);
+                  $tmp_num = mb_substr($num,1,$len);
+                  $first = mb_substr($tmp_num,0,1);
+                  while($first == '0'){
+                     $tmp_num = mb_substr($tmp_num,1,mb_strlen($tmp_num));
+                     $first = mb_substr($tmp_num,0,1);
+                  }
+                  $number .= '.'.$tmp_num;
+               }
+            }
+            $number = substr($number,2);
+            if ( $position_length > 10 and !empty($number) ) {
+               $range = floor($position_length/3.5)-1;
+               $number_array = explode('.',$number);
+               $middle = count($number_array)/2;
+               if ( $middle % 2 ) {
+                  $middle -= 0.5;
+               }
+               $number = '';
+               $print = false;
+               foreach ($number_array as $key => $value) {
+                  if ( $key < $middle-$range or $key > $middle+$range ) {
+                     $number .= $value.'.';
+                  } elseif ( !$print ) {
+                     $number .= '...';
+                     $print = true;
+                  }
+               }
+               $number = substr($number,0,strlen($number)-1);
+            }
+
+            $class_factory = $this->_environment->getClassFactory();
+            $class_params = array();
+            $class_params['environment'] = $this->_environment;
+            $form = $class_factory->getClass(DISCARTICLE_FORM,$class_params);
+            $form->setItem($subitem);
+             
+            $form->setDetailMode($number);
+            unset($class_params);
+            $form->prepareForm();
+            $form->loadValues();
+            $class_params = array();
+            $class_params['environment'] = $this->_environment;
+            $class_params['with_modifying_actions'] = true;
+            $form_view = $class_factory->getClass(FORM_DETAIL_VIEW,$class_params);
+            unset($class_params);
+            $form_view->setAction(curl($this->_environment->getCurrentContextID(),'discarticle','edit',array()));
+            $form_view->setForm($form);
+             
+            $html .= $form_view->asHTML();
+         }
+
+         $html .= '</div>';
+         $html .= '<!-- END OF DISCARTICLE FORM VIEW -->'.LF.LF;
+
+         return $html;
+      }
+   }
+
    function _getDiscussionFormAsHTML(){
-        if(!(isset($_GET['mode']) and $_GET['mode'] == 'print')) {
+      if(!(isset($_GET['mode']) and $_GET['mode'] == 'print')) {
          $html = '<!-- BEGIN OF DISCARTICLE FORM VIEW -->'.LF.LF;
          $item = $this->getItem();
          $discussion_type = $item->getDiscussionType();
@@ -128,6 +299,319 @@ class cs_discussion_detail_view extends cs_detail_view {
       return $html;
    }
 
+   function _getItemAsHTMLThreadedWithJavaScript($item) {
+      $html = '<div id="discussion_tree">'.LF;
+       
+      // build list of articles
+      $last_position = 0;
+      $subitems = $this->_subitems;
+      $article = $subitems->getFirst();
+      while($article) {
+         // files
+         $fileicons = $this->_getItemFiles($article,true);
+         if(empty($fileicons)) {
+            $fileicons = '&nbsp;';
+         } else {
+            $fileicons = '&nbsp;'.$fileicons.'&nbsp;';
+         }
+
+         // creator
+         $creator = $article->getCreatorItem();
+         if(isset($creator)) {
+            $current_user_item = $this->_environment->getCurrentUserItem();
+            if($current_user_item->isGuest() && $creator->isVisibleForLoggedIn()) {
+               $creator_fullname = $this->_translator->getMessage('COMMON_USER_NOT_VISIBLE');
+            } else {
+               $creator_fullname = $creator->getFullName();
+            }
+            unset($current_user_item);
+         } else {
+            $creator_fullname = '';
+         }
+
+         // Because articles are deep ordered, building the tree is getting easier
+         $position = count(explode('.', $article->getPosition()));
+         $display_subject = $article->getSubject();
+
+         // limit display text
+         $length = mb_strlen($display_subject);
+         $max = 28 - $position;
+         $new = $this->_getItemChangeStatus($article);
+         if(!empty($new)) {
+            if(mb_stristr($new,$this->_translator->getMessage('COMMON_NEW'))) {
+               $max -= mb_strlen($this->_translator->getMessage('COMMON_NEW'));
+            } else if(mb_stristr($new,$this->_translator->getMessage('COMMON_CHANGED'))) {
+               $max -= mb_strlen($this->_translator->getMessage('COMMON_CHANGED'));
+            }
+         }
+         if($length > $max) {
+            $display_subject = mb_substr($display_subject, 0, $max) . '...';
+         }
+
+         // open sublist if position > last position
+         if($position > $last_position) {
+            $html .= '<ul>'.LF;
+         }
+
+         // close sublist if position < last position
+         while($position < $last_position) {
+            $html .= '</ul>'.LF;
+            $last_position--;
+         }
+
+         // add list item
+         $params = array();
+         $params['iid'] = $item->getItemID();
+         $param_zip = $this->_environment->getValueOfParameter('download');
+         $display = $this->_text_as_html_short($this->_compareWithSearchText($display_subject));
+         if(empty($param_zip) || $param_zip != 'zip') {
+            $link = curl(   $this->_environment->getCurrentContextID(),
+            CS_DISCUSSION_TYPE,
+                                 'detail',
+            $params,
+                                 'anchor' . $article->getItemID());
+            $html .= '<li id="' . $article->getItemID() . '" data="url: \'' . $link . '\'">';
+            $html .= ahref_curl(   $this->_environment->getCurrentContextID(),
+            CS_DISCUSSION_TYPE,
+                                        'detail',
+            $params,
+            $display,
+            $display,'',
+                                        'anchor' . $article->getItemID(),'','','',
+                                        'style="color:#545454; font-size:10pt; font-weight:' . $font_weight . ';"').LF;
+
+         } else {
+            $html .= '<li>' . $this->_text_as_html_short($this->_compareWithSearchText($display_subject));
+         }
+
+         $html .= '<a id="discussion_tree_' . $article->getItemID() . '_change_status_text" style="color:#545454; font-size:10pt; font-weight:' . $font_weight . ';"">';
+         $html .= $this->_getItemChangeStatus($article);
+         $html .= '</a>';
+         $html .= $fileicons.LF;
+         $html .= '<img id="discussion_tree_' . $article->getItemID() . '_creator_space" src="images/spacer.gif">';
+         $html .= '<a id="discussion_tree_' . $article->getItemID() . '_creator_text" style="color:#545454; font-size:10pt; font-weight:' . $font_weight . ';"">';
+         $html .= $this->_text_as_html_short($this->_compareWithSearchText($creator_fullname))/*.'&nbsp;'*/.LF;
+
+         $html .= '<img id="discussion_tree_' . $article->getItemID() . '_date_space" src="images/spacer.gif">';
+         $html .= $this->_text_as_html_short($this->_compareWithSearchText(getDateTimeInLang($article->getModificationDate(), false))).LF;
+
+         // update last position
+         $last_position = $position;
+
+         $article = $subitems->getNext();
+      }
+       
+      // close remaining lists
+      while($position > 0) {
+         $html .= '</ul>'.LF;
+         $position--;
+      }
+       
+      $html .= '</div>'.LF;
+      return $html;
+   }
+
+   function _getItemAsHTMLThreadedWithoutJavascript($item) {
+      $subitems = $this->_subitems;
+      $rest_subitems = clone($subitems);
+      $article = $subitems->getFirst();
+      if(!empty($article)){
+         $article_old = clone($article);
+      }
+
+      $pos_number = 1;
+      $picture_array = array();
+      $picture_array[] = '';
+      $html = '';
+      while ( $article ) {
+         $rest_subitems->removeElement($article);
+         $position_length =  count(explode('.',$article->getPosition()));
+
+         // Initialisierung
+         $picture_array_new = array();
+         for ($j = 1; $j < $position_length; $j++ ){
+            if (!isset($picture_array[$j])){
+               $picture_array_new[$j] =  '<img src="images/disc12.gif" style="margin:0px; padding:0px; height:1.2em;" alt="threaded-picture"/>';
+            }else{
+               $picture_array_new[$j] = $picture_array[$j];
+            }
+         }
+         $picture_array = $picture_array_new;
+         $pic_pos = $position_length-1;
+         $picture_array[$pic_pos] = '<img src="images/disc13.gif" style="margin:0px; padding:0px; height:1.2em;" alt="threaded-picture"/>';
+
+         //aktuelles Element
+         $next_article = $rest_subitems->getFirst();
+         $smaller_in_array = false;
+         while ($next_article and !$smaller_in_array){
+            $next_position_length =  count(explode('.',$next_article->getPosition()));
+            if ($next_position_length < $position_length){
+               $smaller_in_array = true;
+            }
+            if ($next_position_length == $position_length and !$smaller_in_array){
+               $picture_array[$pic_pos] = '<img src="images/disc11.gif" style="margin:0px; padding:0px; height:1.2em;" alt="threaded-picture"/>';
+            }
+            $next_article = $rest_subitems->getNext();
+         }
+
+         //Element davor
+         if (isset($article_old)){
+            $old_position_length =  count(explode('.',$article_old->getPosition()));
+            if ($old_position_length < $position_length){
+               $pic_pos = $old_position_length-1;
+               if (isset($picture_array[$pic_pos]) and $picture_array[$pic_pos] == '<img src="images/disc13.gif" style="margin:0px; padding:0px; height:1.2em;" alt="threaded-picture"/>'){
+                  $picture_array[$pic_pos] = '<img src="images/disc12.gif" style="margin:0px; padding:0px; height:1.2em;" alt="threaded-picture"/>';
+               }else{
+                  $picture_array[$pic_pos] = '<img src="images/disc10.gif" style="margin:0px; padding:0px; height:1.2em;" alt="threaded-picture"/>';
+               }
+            }
+         }
+
+         // files
+         $fileicons = $this->_getItemFiles($article,true);
+         if ( !empty($fileicons) ) {
+            $fileicons = '&nbsp;'.$fileicons.'&nbsp;';
+         }
+         $creator = $article->getCreatorItem();
+         if ( isset($creator) ) {
+            $current_user_item = $this->_environment->getCurrentUserItem();
+            if ( $current_user_item->isGuest()
+            and $creator->isVisibleForLoggedIn()
+            ) {
+               $creator_fullname = $this->_translator->getMessage('COMMON_USER_NOT_VISIBLE');
+            } else {
+               $creator_fullname = $creator->getFullName();
+            }
+            unset($current_user_item);
+         } else {
+            $creator_fullname = '';
+         }
+         $html .= '<tr style="padding:0px; margin:0px;">'.LF;
+
+         $position_length =  count(explode('.',$article->getPosition()));
+         $display_subject = $article->getSubject();
+         $length = mb_strlen($display_subject);
+         $max = 28 - $position_length;
+         $new = $this->_getItemChangeStatus($article);
+         if ( !empty($new) ) {
+            if ( mb_stristr($new,$this->_translator->getMessage('COMMON_NEW')) ) {
+               $max = $max-mb_strlen($this->_translator->getMessage('COMMON_NEW'));
+            } elseif ( mb_stristr($new,$this->_translator->getMessage('COMMON_CHANGED')) ) {
+               $max = $max-mb_strlen($this->_translator->getMessage('COMMON_CHANGED'));
+            }
+         }
+         if ($length > $max){
+            $display_subject = mb_substr($display_subject,0,$max).'...';
+         }
+         $hover = str_replace('"','&quot;',$this->_text_as_html_short($article->getSubject()));
+         $em = $position_length-2;
+         $old_postion_length = count(explode('.',$article_old->getPosition()));
+         if ($pos_number != 1){
+            $html .= '   <td style="padding:0px; margin:0px; vertical-align:top;"><div style="float:left;">';
+            $pictures = $position_length;
+            for ($i = 1; $i < $pictures; $i++){
+               $html .=  $picture_array[$i];
+            }
+            $html .='</div><div>';
+            $params = array();
+            $params['iid'] = $item->getItemID();
+            $param_zip = $this->_environment->getValueOfParameter('download');
+            if ( empty($param_zip)
+            or $param_zip != 'zip'
+            ) {
+               $title = ahref_curl( $this->_environment->getCurrentContextID(),
+               CS_DISCUSSION_TYPE,
+	                             'detail',
+               $params,
+               $this->_text_as_html_short($this->_compareWithSearchText($display_subject)),
+               $hover,
+	                             '',
+	                             'anchor'.$article->getItemID());
+            } else {
+               $title = $this->_text_as_html_short($this->_compareWithSearchText($display_subject));
+            }
+            $html .= $this->_getItemChangeStatus($article).' ';
+            $html .= $title.$fileicons;
+            #                 $html .= $this->_getItemChangeStatus($article);
+            $html .='</div></td><td>';
+
+            $html .= '   <td style="white-space:nowrap; width: 30%;">'.$this->_text_as_html_short($this->_compareWithSearchText($creator_fullname)).'&nbsp; </td>'.LF;
+            $html .= '   <td style="white-space:nowrap; width: 25%;">'.$this->_text_as_html_short($this->_compareWithSearchText(getDateTimeInLang($article->getModificationDate(),false))).'</td>'.LF;
+         }
+         $html .= '</tr>'.LF;
+         $article_old = clone($article);
+         $article = $subitems->getNext();
+         $pos_number++;
+      }
+      return $html;
+   }
+
+   function _getItemAsHTMLLinear($item) {
+      $subitems = $this->_subitems;
+      $article = $subitems->getFirst();
+      $pos_number = 1;
+      $html = '';
+      while($article) {
+         $html .= '<tr style="padding:0px; margin:0px;">'.LF;
+
+         // files
+         $fileicons = $this->_getItemFiles($article,true);
+         if(empty($fileicons)) {
+            $fileicons = '&nbsp;';
+         } else {
+            $fileicons = '&nbsp;'.$fileicons.'&nbsp;';
+         }
+
+         // creator
+         $creator = $article->getCreatorItem();
+         if(isset($creator)) {
+            $current_user_item = $this->_environment->getCurrentUserItem();
+            if($current_user_item->isGuest() && $creator->isVisibleForLoggedIn()) {
+               $creator_fullname = $this->_translator->getMessage('COMMON_USER_NOT_VISIBLE');
+            } else {
+               $creator_fullname = $creator->getFullName();
+            }
+            unset($current_user_item);
+         } else {
+            $creator_fullname = '';
+         }
+
+         $display_subject = $article->getSubject();
+         $length = mb_strlen($display_subject);
+         $max = 28;
+         if($length > $max) {
+            $display_subject = mb_substr($display_subject,0,$max).'...';
+         }
+         $hover = str_replace('"','\'',$this->_text_as_html_short($article->getSubject()));
+         $html .= '   <td style="width: 2%; vertical-align:bottom">'.$pos_number.'. '.'</td>'.LF;
+         $html .= '   <td style="width: 46%;">';
+         $params = array();
+         $params['iid'] = $item->getItemID();
+         $param_zip = $this->_environment->getValueOfParameter('download');
+         if(empty($param_zip) || $param_zip != 'zip') {
+            $html .= ahref_curl(   $this->_environment->getCurrentContextID(),
+            CS_DISCUSSION_TYPE,
+	                              		 'detail',
+            $params,
+            $this->_text_as_html_short($this->_compareWithSearchText($display_subject)),
+            $hover,
+	                              		 '',
+	                              		 'anchor'.$article->getItemID());
+         } else {
+            $html .= $this->_text_as_html_short($this->_compareWithSearchText($display_subject));
+         }
+         $html .= $this->_getItemChangeStatus($article).' ';
+         $html .= $fileicons.'</td>'.LF;
+         $html .= '   <td style="vertical-align:bottom; white-space:nowrap; width: 30%;">'.$this->_text_as_html_short($this->_compareWithSearchText($creator_fullname)).'&nbsp; </td>'.LF;
+         $html .= '   <td style="vertical-align:bottom; white-space:nowrap; width: 22%;">'.$this->_text_as_html_short($this->_compareWithSearchText(getDateTimeInLang($article->getModificationDate(), false))).'</td>'.LF;
+
+         $html .= '</tr>'.LF;
+         $article = $subitems->getNext();
+         $pos_number++;
+      }
+      return $html;
+   }
+
    /** get the single entry of the list view as HTML
     * this method returns the single entry in HTML-Code
     *
@@ -136,8 +620,6 @@ class cs_discussion_detail_view extends cs_detail_view {
     * @param object item     the single list entry
     */
    function _getItemAsHTML($item) {
-      $subitems = $this->_subitems;
-
       $html  = LF.'<!-- BEGIN OF DISCUSSION ITEM DETAIL -->'.LF;
 
       if ($item->isExportToWiki()) {
@@ -151,208 +633,33 @@ class cs_discussion_detail_view extends cs_detail_view {
       }
 
       // Index
-      if ( isset($subitems) ) {
-         $id_array = array();
-         $temp_item = $subitems->getFirst();
-         while ($temp_item){
-            $id_array[] = $temp_item->getItemID();
-            $temp_item = $subitems->getNext();
-         }
-         $noticed_manager = $this->_environment->getNoticedManager();
-         $noticed_manager->getLatestNoticedByIDArray($id_array);
-         $rest_subitems = clone($subitems);
+      if(isset($this->_subitems)) {
          $html .= '<table id="discussionSummary" style="width:100%; padding:0px; margin:0px; border-collapse:collapse;" summary="Layout">'.LF;
-         $article = $subitems->getFirst();
-         if(!empty($article)){
-            $article_old = clone($article);
-         }
+         $discussion_type = $item->getDiscussionType();
+         if($discussion_type == 'threaded') {
+            // threaded view
 
-         $pos_number = 1;
-         $picture_array = array();
-         $picture_array[] = '';
-         while ( $article ) {
-            $rest_subitems->removeElement($article);
-            $position_length =  count(explode('.',$article->getPosition()));
-
-            // Initialisierung
-            $picture_array_new = array();
-            for ($j = 1; $j < $position_length; $j++ ){
-               if (!isset($picture_array[$j])){
-                  $picture_array_new[$j] =  '<img src="images/disc12.gif" style="margin:0px; padding:0px; height:1.2em;" alt="threaded-picture"/>';
-               }else{
-                  $picture_array_new[$j] = $picture_array[$j];
+            // check for javascript
+            $session_item = $this->_environment->getSessionItem();
+            if($session_item->issetValue('javascript')){
+               if($session_item->getValue('javascript') == "1"){
+                  $with_javascript = true;
                }
             }
-            $picture_array = $picture_array_new;
-            $pic_pos = $position_length-1;
-            $picture_array[$pic_pos] = '<img src="images/disc13.gif" style="margin:0px; padding:0px; height:1.2em;" alt="threaded-picture"/>';
-
-
-            //aktuelles Element
-            $next_article = $rest_subitems->getFirst();
-            $smaller_in_array = false;
-            while ($next_article and !$smaller_in_array){
-               $next_position_length =  count(explode('.',$next_article->getPosition()));
-               if ($next_position_length < $position_length){
-                  $smaller_in_array = true;
-               }
-               if ($next_position_length == $position_length and !$smaller_in_array){
-                  $picture_array[$pic_pos] = '<img src="images/disc11.gif" style="margin:0px; padding:0px; height:1.2em;" alt="threaded-picture"/>';
-               }
-               $next_article = $rest_subitems->getNext();
+            if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+               $with_javascript = false;
             }
-
-            //Element davor
-            if (isset($article_old)){
-               $old_position_length =  count(explode('.',$article_old->getPosition()));
-               if ($old_position_length < $position_length){
-                  $pic_pos = $old_position_length-1;
-                  if (isset($picture_array[$pic_pos]) and $picture_array[$pic_pos] == '<img src="images/disc13.gif" style="margin:0px; padding:0px; height:1.2em;" alt="threaded-picture"/>'){
-                     $picture_array[$pic_pos] = '<img src="images/disc12.gif" style="margin:0px; padding:0px; height:1.2em;" alt="threaded-picture"/>';
-                  }else{
-                     $picture_array[$pic_pos] = '<img src="images/disc10.gif" style="margin:0px; padding:0px; height:1.2em;" alt="threaded-picture"/>';
-                  }
-               }
-            }
-
-            // files
-            $fileicons = $this->_getItemFiles($article,true);
-            if ( !empty($fileicons) ) {
-               $fileicons = '&nbsp;'.$fileicons.'&nbsp;';
-            }
-
-            $creator = $article->getCreatorItem();
-            if ( isset($creator) ) {
-               $current_user_item = $this->_environment->getCurrentUserItem();
-               if ( $current_user_item->isGuest()
-                    and $creator->isVisibleForLoggedIn()
-                  ) {
-                  $creator_fullname = $this->_translator->getMessage('COMMON_USER_NOT_VISIBLE');
-               } else {
-                  $creator_fullname = $creator->getFullName();
-               }
-               unset($current_user_item);
+            // UMSTELLUNG MUSEUM
+            if($with_javascript and true){
+               // javascript version
+               $html .= $this->_getItemAsHTMLThreadedWithJavaScript($item);
             } else {
-               $creator_fullname = '';
+               // old version(non-javascript)
+               $html .= $this->_getItemAsHTMLThreadedWithoutJavaScript($item);
             }
-            $html .= '<tr style="padding:0px; margin:0px;">'.LF;
-
-            // discussion type
-            $discussion_type = $item->getDiscussionType();
-            if ($discussion_type == 'threaded'){
-               $position_length =  count(explode('.',$article->getPosition()));
-               $display_subject = $article->getSubject();
-               $length = mb_strlen($display_subject);
-               $max = 28 - $position_length;
-               $new = $this->_getItemChangeStatus($article);
-               if ( !empty($new) ) {
-                  if ( mb_stristr($new,$this->_translator->getMessage('COMMON_NEW')) ) {
-                     $max = $max-mb_strlen($this->_translator->getMessage('COMMON_NEW'));
-                  } elseif ( mb_stristr($new,$this->_translator->getMessage('COMMON_CHANGED')) ) {
-                     $max = $max-mb_strlen($this->_translator->getMessage('COMMON_CHANGED'));
-                  }
-               }
-               if ($length > $max){
-                  $display_subject = mb_substr($display_subject,0,$max).'...';
-               }
-               $hover = str_replace('"','&quot;',$this->_text_as_html_short($article->getSubject()));
-               $em = $position_length-2;
-               $old_postion_length = count(explode('.',$article_old->getPosition()));
-               if ($pos_number != 1){
-                  $html .= '   <td style="padding:0px; margin:0px; vertical-align:top;"><div style="float:left;">';
-                  $pictures = $position_length;
-                  for ($i = 1; $i < $pictures; $i++){
-                     $html .=  $picture_array[$i];
-                  }
-                  $html .='</div><div>';
-                  $params = array();
-                  $params['iid'] = $item->getItemID();
-                  $param_zip = $this->_environment->getValueOfParameter('download');
-                  if ( empty($param_zip)
-                       or $param_zip != 'zip'
-                     ) {
-                     $title = ahref_curl( $this->_environment->getCurrentContextID(),
-                              CS_DISCUSSION_TYPE,
-                              'detail',
-                              $params,
-                              $this->_text_as_html_short($this->_compareWithSearchText($display_subject)),
-                              $hover,
-                              '',
-                              'anchor'.$article->getItemID());
-                  } else {
-                    $title = $this->_text_as_html_short($this->_compareWithSearchText($display_subject));
-                  }
-                  $html .= $this->_getItemChangeStatus($article).' ';
-                  $html .= $title.$fileicons;
-#                  $html .= $this->_getItemChangeStatus($article);
-                  $html .='</div></td><td>';
-               }
-               else{
-                  $html .= '   <td colspan="2" style="vertical-align:top; padding:0px; margin:0px; padding-left:'.$em.'em; width: 55%;">';
-                  $params = array();
-                  $params['iid'] = $item->getItemID();
-                  $param_zip = $this->_environment->getValueOfParameter('download');
-                  if ( empty($param_zip)
-                       or $param_zip != 'zip'
-                     ) {
-                     $title = ahref_curl( $this->_environment->getCurrentContextID(),
-                              CS_DISCUSSION_TYPE,
-                              'detail',
-                              $params,
-                              $this->_text_as_html_short($this->_compareWithSearchText($display_subject)),
-                              $hover,
-                              '',
-                              'anchor'.$article->getItemID());
-                  } else {
-                     $title = $this->_text_as_html_short($this->_compareWithSearchText($display_subject));
-                  }
-                  $html .= $this->_getItemChangeStatus($article).' ';
-                  $html .= $title.$fileicons;
-               }
-               $html .= '   <td style="white-space:nowrap; width: 30%;">'.$this->_text_as_html_short($this->_compareWithSearchText($creator_fullname)).'&nbsp; </td>'.LF;
-               $html .= '   <td style="white-space:nowrap; width: 25%;">'.$this->_text_as_html_short($this->_compareWithSearchText(getDateTimeInLang($article->getModificationDate(),false))).'</td>'.LF;
-            }
-
-            // lineare diskussion
-            else {
-               if ( empty($fileicons) ) {
-                  $fileicons = '&nbsp;';
-               }
-               $display_subject = $article->getSubject();
-               $length = mb_strlen($display_subject);
-               $max = 28;
-               if ($length > $max){
-                  $display_subject = mb_substr($display_subject,0,$max).'...';
-               }
-               $hover = str_replace('"','\'',$this->_text_as_html_short($article->getSubject()));
-               $html .= '   <td style="width: 2%; vertical-align:bottom">'.$pos_number.'. '.'</td>'.LF;
-               $html .= '   <td style="width: 46%;">';
-               $params = array();
-               $params['iid'] = $item->getItemID();
-               $param_zip = $this->_environment->getValueOfParameter('download');
-               if ( empty($param_zip)
-                    or $param_zip != 'zip'
-                  ) {
-                  $html .= ahref_curl( $this->_environment->getCurrentContextID(),
-                              CS_DISCUSSION_TYPE,
-                              'detail',
-                              $params,
-                              $this->_text_as_html_short($this->_compareWithSearchText($display_subject)),
-                              $hover,
-                              '',
-                              'anchor'.$article->getItemID());
-               } else {
-                  $html .= $this->_text_as_html_short($this->_compareWithSearchText($display_subject));
-               }
-               $html .= $this->_getItemChangeStatus($article).' ';
-               $html .= $fileicons.'</td>'.LF;
-               $html .= '   <td style="vertical-align:bottom; white-space:nowrap; width: 30%;">'.$this->_text_as_html_short($this->_compareWithSearchText($creator_fullname)).'&nbsp; </td>'.LF;
-               $html .= '   <td style="vertical-align:bottom; white-space:nowrap; width: 22%;">'.$this->_text_as_html_short($this->_compareWithSearchText(getDateTimeInLang($article->getModificationDate(), false))).'</td>'.LF;
-            }
-            $html .= '</tr>'.LF;
-            $article_old = clone($article);
-            $article = $subitems->getNext();
-            $pos_number++;
+         } else {
+            // linear view
+            $html .= $this->_getItemAsHTMLLinear($item);
          }
          $html .= '</table>'.LF;
       }
@@ -396,12 +703,12 @@ class cs_discussion_detail_view extends cs_detail_view {
          }
          $params = $this->_environment->getCurrentParameterArray();
          $params['status'] = 'all_articles';
-         $html .= ahref_curl( $this->_environment->getCurrentContextID(),
-                                     $this->_environment->getCurrentModule(),
-                                     'detail',
-                                     $params,
-                                     $image,
-                                     $this->_translator->getMessage('DISCUSSION_CLOSE_ALL_ARTICLES')).LF;
+         $html .= ahref_curl(	$this->_environment->getCurrentContextID(),
+         						$this->_environment->getCurrentModule(),
+                                'detail',
+         						$params,
+         						$image,
+         						$this->_translator->getMessage('DISCUSSION_CLOSE_ALL_ARTICLES')).LF;
          unset($params);
       }
 
@@ -430,29 +737,76 @@ class cs_discussion_detail_view extends cs_detail_view {
       $current_context = $this->_environment->getCurrentContextItem();
       $current_user = $this->_environment->getCurrentUserItem();
       $html  = '';
-      $html .= $this->_getEditAction($subitem,$current_user,'discarticle');
       $discussion_type = $item->getDiscussionType();
+      if($discussion_type == 'threaded') {
+         if ( $item->mayEdit($user) and $this->_with_modifying_actions ) {
+            $params = array();
+            $params['iid'] = $item->getItemID();
+            $params['discarticle_action'] = 'edit';
+            $params['discarticle_iid'] = $subitem->getItemID();
+            if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+               $image = '<img src="images/commsyicons_msie6/22x22/edit.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_EDIT_ITEM').'"/>';
+            } else {
+               $image = '<img src="images/commsyicons/22x22/edit.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_EDIT_ITEM').'"/>';
+            }
+            $html .= ahref_curl(   $this->_environment->getCurrentContextID(),
+            $this->_environment->getCurrentModule(),
+	                                'detail',
+            $params,
+            $image,
+            $this->_translator->getMessage('COMMON_EDIT_ITEM'),
+	                                '',
+                                	'discarticle_form') . LF;
+            unset($params);
+         } else {
+            if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+               $image = '<img src="images/commsyicons_msie6/22x22/edit_grey.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_EDIT_ITEM').'"/>';
+            } else {
+               $image = '<img src="images/commsyicons/22x22/edit_grey.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_EDIT_ITEM').'"/>';
+            }
+            $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION_NEW',$this->_translator->getMessage('COMMON_EDIT_ITEM')).' "class="disabled">'.$image.'</a>'.LF;
+         }
+      } else {
+         $html .= $this->_getEditAction($subitem,$current_user,'discarticle');
+      }
+
       if ( $user->isUser() and $this->_with_modifying_actions and $discussion_type == 'threaded') {
          $params = array();
-         $params['iid'] = 'NEW';
-         $params['discussion_id'] = $item->getItemID();
+         //$params['iid'] = 'NEW';
+         $params['iid'] = $item->GetItemID();
+         //$params['discussion_id'] = $item->getItemID();
+
          $params['ref_position'] = 1;
          $ref_position = $subitem->getPosition();
          if(!empty($ref_position)){
             $params['ref_position'] = $subitem->getPosition();
          }
-         $params['ref_did'] = $subitem->getItemID();
+         //$params['ref_did'] = $subitem->getItemID();
+         $params['answer_to'] = $subitem->getItemID();
          if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
             $image = '<img src="images/commsyicons_msie6/22x22/new_section.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('DISCARTICLE_ANSWER_NEW').'"/>';
          } else {
             $image = '<img src="images/commsyicons/22x22/new_section.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('DISCARTICLE_ANSWER_NEW').'"/>';
          }
-         $html .= ahref_curl(  $this->_environment->getCurrentContextID(),
-                                    'discarticle',
-                                    'edit',
-                                    $params,
-                                    $image,
-                                    $this->_translator->getMessage('DISCARTICLE_ANSWER_NEW')).LF;
+
+         // in threaded view, we want to put the form directly into the detail view and not on a single page
+
+         $html .= ahref_curl(   $this->_environment->getCurrentContextID(),
+                                'discussion',
+                                'detail',
+         $params,
+         $image,
+         $this->_translator->getMessage('DISCARTICLE_ANSWER_NEW'),
+                                '',
+                                'discarticle_form').LF;
+         /*
+          $html .= ahref_curl(   $this->_environment->getCurrentContextID(),
+          'discarticle',
+          'edit',
+          $params,
+          $image,
+          $this->_translator->getMessage('DISCARTICLE_ANSWER_NEW')).LF;
+          */
          unset($params);
       } elseif ($discussion_type == 'threaded') {
          if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
@@ -464,25 +818,31 @@ class cs_discussion_detail_view extends cs_detail_view {
          $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION_NEW',$this->_translator->getMessage('DISCARTICLE_ANSWER_NEW')).' "class="disabled">'.$image.'</a>'.LF;
       }
       if ( $subitem->mayEdit($user) and $this->_with_modifying_actions  ) {
-        $params = $this->_environment->getCurrentParameterArray();
-        $params['action'] = 'delete';
-        $params['discarticle_iid'] = $subitem->getItemID();
-        $params['iid'] = $item->getItemID();
-        $params['discarticle_action'] = 'delete';
-        if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-           $image = '<img src="images/commsyicons_msie6/22x22/delete.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_DELETE_ITEM').'"/>';
-        } else {
-           $image = '<img src="images/commsyicons/22x22/delete.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_DELETE_ITEM').'"/>';
-        }
-        $html .= ahref_curl( $this->_environment->getCurrentContextID(),
+         $params = $this->_environment->getCurrentParameterArray();
+         $params['action'] = 'delete';
+         $params['discarticle_iid'] = $subitem->getItemID();
+         $params['iid'] = $item->getItemID();
+         $params['discarticle_action'] = 'delete';
+         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+            $image = '<img src="images/commsyicons_msie6/22x22/delete.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_DELETE_ITEM').'"/>';
+         } else {
+            $image = '<img src="images/commsyicons/22x22/delete.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_DELETE_ITEM').'"/>';
+         }
+         $html .= ahref_curl( 		   $this->_environment->getCurrentContextID(),
                                        $this->_environment->getCurrentModule(),
                                        'detail',
                                        $params,
                                        $image,
                                        '',
                                        '',
-                                       'anchor'.$subitem->getItemID()).LF;
-        unset($params);
+                                       '',//anchor'.$subitem->getItemID(),
+        							   '',
+       								   '',
+       								   '',
+        							   '',
+       								   '',
+        							   'delete_confirm_disarc'.$subitem->getItemID()).LF;
+         unset($params);
       } else {
          if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
             $image = '<img src="images/commsyicons_msie6/22x22/delete_grey.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_DELETE_ITEM').'"/>';
@@ -507,105 +867,145 @@ class cs_discussion_detail_view extends cs_detail_view {
       if ( isset($subitems) and !$subitems->isEmpty() ) {
          $current_item = $subitems->getFirst();
          $pos_number = 1;
+
+         // calculate id after which the answer-form should appear
+         if(isset($_GET['answer_to'])) {
+            $father_position = $_GET['ref_position'];
+            $father_position_length = mb_strlen($father_position);
+             
+            $max = 1000;
+            $insert_after_id = 0;
+            $subitems_list = clone($this->getSubItemList());
+            $subitem = $subitems_list->getFirst();
+            while($subitem) {
+               $subitem_position = $subitem->getPosition();
+               $subitem_position_length = mb_strlen($subitem_position);
+
+               if(   $subitem_position_length > $father_position_length &&
+               mb_substr($subitem_position, 0, $father_position_length) == $father_position) {
+                  $postfix = mb_substr($subitem_position, $father_position_length+1);
+
+                  if(((int) $postfix) > $max) {
+                     $max = (int) $postfix;
+                     $insert_after_id = $subitem->getItemID();
+                  }
+               }
+
+               $subitem = $subitems_list->getNext();
+            }
+            if($insert_after_id == 0) {
+               $insert_after_id = $_GET['answer_to'];
+            }
+         }
+
          while ( $current_item ) {
             $discussion_type = $item->getDiscussionType();
             $html .='<tr class="detail_discussion_entries">'.LF;
             if ($discussion_type == 'threaded'){
-               $html .='<td style="width:100%; padding-top:0px;  vertical-align:bottom;">'.LF;
-               $html .='<table style="width:100%;" summary="Layout">'.LF;
-               $html .='<tr>'.LF;
-               $position_length =  count(explode('.',$current_item->getPosition()));
-               if ( $position_length < 6 ) {
-                  $px = ($position_length-1)*20;
-               } elseif ( $position_length < 11 ) {
-                  $px = 5*20;
-                  $px += ($position_length-6)*15;
-               } elseif ( $position_length < 14 ) {
-                  $px = 5*20;
-                  $px += 5*15;
-                  $px += ($position_length-11)*10;
+               if(   isset($_GET['discarticle_action']) &&
+                     isset($_GET['discarticle_iid']) &&
+                     $_GET['discarticle_action'] == 'edit' &&
+                     $_GET['discarticle_iid'] == $current_item->getItemID()) {
+                  $html .='<td style="width:100%; padding-top:0px;  vertical-align:bottom;">'.LF;
+                  $html .= $this->_getDiscussionFormAsHTMLForThreadedView();
+                  $html .= '</td>'.LF;
+                  $html .= '</tr>'.LF;
                } else {
-                  $px = 5*20;
-                  $px += 5*15;
-                  $px += 3*10;
-               }
-               if ($px > 0) {
-                  $html .='<td style="width:'.$px.'px;">&nbsp;'.LF;
-                  $html .='</td>'.LF;
-                  $html .='<td>'.LF;
-               } else {
-                  $html .='<td>'.LF;
-               }
-               $image = $this->_getItemPicture($current_item->getModificatorItem());
-               $html .='<table>'.LF;
-               $html .='<tr>'.LF;
-               $html .= '<td rowspan="3" style="width:60px; vertical-align:top; padding:20px 5px 5px 5px;">'.$image.'</td>'.LF;
-               $html .='<td style="width:70%; padding-top:5px; vertical-align:bottom;">'.LF;
-               $html .='<div style="padding-top:10px;">'.LF;
-               $html .= '<a id="anchor'.$pos_number.'" name="anchor'.$pos_number.'"></a>'.LF;
-               $html .= '<a id="anchor'.$current_item->getItemID().'" name="anchor'.$current_item->getItemID().'"></a>'.LF;
-               $pos = $current_item->getPosition();
-               $number_array = explode('.',$pos);
-               $number = '';
-               foreach($number_array as $num){
-                  if ( empty($number) ){
-                     $number = '1';
-                  }else{
-                     $len = mb_strlen($num);
-                     $tmp_num = mb_substr($num,1,$len);
-                     $first = mb_substr($tmp_num,0,1);
-                     while($first == '0'){
-                        $tmp_num = mb_substr($tmp_num,1,mb_strlen($tmp_num));
-                        $first = mb_substr($tmp_num,0,1);
-                     }
-                     $number .= '.'.$tmp_num;
+                  $html .='<td style="width:100%; padding-top:0px;  vertical-align:bottom;">'.LF;
+                  $html .='<table style="width:100%;" summary="Layout">'.LF;
+                  $html .='<tr>'.LF;
+                  $position_length =  count(explode('.',$current_item->getPosition()));
+                  if ( $position_length < 6 ) {
+                     $px = ($position_length-1)*20;
+                  } elseif ( $position_length < 11 ) {
+                     $px = 5*20;
+                     $px += ($position_length-6)*15;
+                  } elseif ( $position_length < 14 ) {
+                     $px = 5*20;
+                     $px += 5*15;
+                     $px += ($position_length-11)*10;
+                  } else {
+                     $px = 5*20;
+                     $px += 5*15;
+                     $px += 3*10;
                   }
-               }
-               $number = substr($number,2);
-               if ( $position_length > 10 and !empty($number) ) {
-                  $range = floor($position_length/3.5)-1;
-                  $number_array = explode('.',$number);
-                  $middle = count($number_array)/2;
-                  if ( $middle % 2 ) {
-                     $middle -= 0.5;
+                  if ($px > 0) {
+                     $html .='<td style="width:'.$px.'px;">&nbsp;'.LF;
+                     $html .='</td>'.LF;
+                     $html .='<td>'.LF;
+                  } else {
+                     $html .='<td>'.LF;
                   }
+                  $image = $this->_getItemPicture($current_item->getModificatorItem());
+                  $html .='<table>'.LF;
+                  $html .='<tr>'.LF;
+                  $html .= '<td rowspan="3" style="width:60px; vertical-align:top; padding:20px 5px 5px 5px;">'.$image.'</td>'.LF;
+                  $html .='<td style="width:70%; padding-top:5px; vertical-align:bottom;">'.LF;
+                  $html .='<div style="padding-top:10px;">'.LF;
+                  $html .= '<a id="anchor'.$pos_number.'" name="anchor'.$pos_number.'"></a>'.LF;
+                  $html .= '<a id="anchor'.$current_item->getItemID().'" name="anchor'.$current_item->getItemID().'"></a>'.LF;
+                  $pos = $current_item->getPosition();
+                  $number_array = explode('.',$pos);
                   $number = '';
-                  $print = false;
-                  foreach ($number_array as $key => $value) {
-                     if ( $key < $middle-$range or $key > $middle+$range ) {
-                        $number .= $value.'.';
-                     } elseif ( !$print ) {
-                        $number .= '...';
-                        $print = true;
+                  foreach($number_array as $num){
+                     if ( empty($number) ){
+                        $number = '1';
+                     }else{
+                        $len = mb_strlen($num);
+                        $tmp_num = mb_substr($num,1,$len);
+                        $first = mb_substr($tmp_num,0,1);
+                        while($first == '0'){
+                           $tmp_num = mb_substr($tmp_num,1,mb_strlen($tmp_num));
+                           $first = mb_substr($tmp_num,0,1);
+                        }
+                        $number .= '.'.$tmp_num;
                      }
                   }
-                  $number = substr($number,0,strlen($number)-1);
-               }
-               $html .= '<h3 class="subitemtitle">'.$this->_getSubItemTitleAsHTML($current_item, $number);
-               $html .= '</h3>'.LF;
-               $html .='</div>'.LF;
-               $html .='</td>'.LF;
-               if(!(isset($_GET['mode']) and $_GET['mode']=='print')){
-                  $html .='<td style="width:28%; padding-top:5px; padding-left:0px; padding-right:3px; vertical-align:bottom; text-align:right;">'.LF;
-                  $html .= $this->_getSubItemDetailActionsAsHTML($current_item);
-                  $html .='</td>'.LF;
-               }else{
-                  $html .='<td style="width:28%; padding-top:5px; padding-left:0px; padding-right:3px; vertical-align:bottom; text-align:right;">'.LF;
-                  $html .= '&nbsp';
-                  $html .='</td>'.LF;
-               }
-               $html .='</tr>'.LF;
-               $html .='<tr>'.LF;
-               $html .='<td colspan="2" class="infoborder" style="padding-top:5px; vertical-align:top; ">'.LF;
-               if(!(isset($_GET['mode']) and $_GET['mode']=='print')){
-                  $html .='<div style="float:right; height:6px; font-size:2pt;">'.LF;
-                  $html .= $this->_getBrowsingIconsAsHTML($current_item, $pos_number,$count);
+                  $number = substr($number,2);
+                  if ( $position_length > 10 and !empty($number) ) {
+                     $range = floor($position_length/3.5)-1;
+                     $number_array = explode('.',$number);
+                     $middle = count($number_array)/2;
+                     if ( $middle % 2 ) {
+                        $middle -= 0.5;
+                     }
+                     $number = '';
+                     $print = false;
+                     foreach ($number_array as $key => $value) {
+                        if ( $key < $middle-$range or $key > $middle+$range ) {
+                           $number .= $value.'.';
+                        } elseif ( !$print ) {
+                           $number .= '...';
+                           $print = true;
+                        }
+                     }
+                     $number = substr($number,0,strlen($number)-1);
+                  }
+                  $html .= '<h3 class="subitemtitle">'.$this->_getSubItemTitleAsHTML($current_item, $number);
+                  $html .= '</h3>'.LF;
                   $html .='</div>'.LF;
-               }
-               $html .= $this->_getSubItemAsHTML($current_item, $pos_number).LF;
-               $html .='</td>'.LF;
-               $html .='</tr>'.LF;
-               /*if(!(isset($_GET['mode']) and $_GET['mode']=='print')){*/
+                  $html .='</td>'.LF;
+                  if(!(isset($_GET['mode']) and $_GET['mode']=='print')){
+                     $html .='<td style="width:28%; padding-top:5px; padding-left:0px; padding-right:3px; vertical-align:bottom; text-align:right;">'.LF;
+                     $html .= $this->_getSubItemDetailActionsAsHTML($current_item);
+                     $html .='</td>'.LF;
+                  }else{
+                     $html .='<td style="width:28%; padding-top:5px; padding-left:0px; padding-right:3px; vertical-align:bottom; text-align:right;">'.LF;
+                     $html .= '&nbsp';
+                     $html .='</td>'.LF;
+                  }
+                  $html .='</tr>'.LF;
+                  $html .='<tr>'.LF;
+                  $html .='<td colspan="2" class="infoborder" style="padding-top:5px; vertical-align:top; ">'.LF;
+                  if(!(isset($_GET['mode']) and $_GET['mode']=='print')){
+                     $html .='<div style="float:right; height:6px; font-size:2pt;">'.LF;
+                     $html .= $this->_getBrowsingIconsAsHTML($current_item, $pos_number,$count);
+                     $html .='</div>'.LF;
+                  }
+                  $html .= $this->_getSubItemAsHTML($current_item, $pos_number).LF;
+                  $html .='</td>'.LF;
+                  $html .='</tr>'.LF;
+                  /*if(!(isset($_GET['mode']) and $_GET['mode']=='print')){*/
                   $html .='<tr>'.LF;
                   $html .='<td class="discarticleCreatorInformation" style="padding-top:5px; padding-bottom:30px; vertical-align:top; ">'.LF;
                   $mode = 'short';
@@ -618,13 +1018,23 @@ class cs_discussion_detail_view extends cs_detail_view {
                   }
                   $html .='</td>'.LF;
                   $html .='</tr>'.LF;
+                  $html .='</table>'.LF;
+                  $html .='</td>'.LF;
+                  $html .='</tr>'.LF;
+                  $html .='</table>'.LF;
+                  $html .='</td>'.LF;
+                  $html .='</tr>'.LF;
 
-                  $html .='</table>'.LF;
-                  $html .='</td>'.LF;
-                  $html .='</tr>'.LF;
-                  $html .='</table>'.LF;
-                  $html .='</td>'.LF;
-                  $html .='</tr>'.LF;
+                  // add answer form if requestet
+                  if($insert_after_id == $current_item->getItemID()) {
+                     $html .='<tr class="detail_discussion_entries">'.LF;
+                     $html .='<td>'.LF;
+                     $html .= $this->_getDiscussionFormAsHTMLForThreadedView();
+                     $html .='</td>'.LF;
+                     $html .='</tr>'.LF;
+                  }
+               }
+
                /*} else {
                   $html .='</table>'.LF;
                   $html .='</td>'.LF;
@@ -668,37 +1078,37 @@ class cs_discussion_detail_view extends cs_detail_view {
                $html .='</tr>'.LF;
 
                /*if(!(isset($_GET['mode']) and $_GET['mode']=='print')){*/
-                  $html .='<tr>'.LF;
-                  $html .='<td style="padding-top:5px; padding-bottom:30px; vertical-align:top; ">'.LF;
+               $html .='<tr>'.LF;
+               $html .='<td style="padding-top:5px; padding-bottom:30px; vertical-align:top; ">'.LF;
+               $mode = 'short';
+               if (!$item->isA(CS_USER_TYPE)) {
                   $mode = 'short';
-                  if (!$item->isA(CS_USER_TYPE)) {
-                     $mode = 'short';
-                     if (in_array($current_item->getItemId(),$this->_openCreatorInfo)) {
-                        $mode = 'long';
-                     }
-                     $html .= $this->_getCreatorInformationAsHTML($current_item, 6,$mode).LF;
+                  if (in_array($current_item->getItemId(),$this->_openCreatorInfo)) {
+                     $mode = 'long';
                   }
-                  $html .='</td>'.LF;
-                  $html .='</tr>'.LF;
+                  $html .= $this->_getCreatorInformationAsHTML($current_item, 6,$mode).LF;
+               }
+               $html .='</td>'.LF;
+               $html .='</tr>'.LF;
                /*}else{
-                  $html .='<tr>'.LF;
-                  $html .='<td style="padding-top:5px; padding-bottom:40px; vertical-align:top; ">'.LF;
-                  $html .='</td>'.LF;
-                  $html .='</tr>'.LF;
-               }*/
+                $html .='<tr>'.LF;
+                $html .='<td style="padding-top:5px; padding-bottom:40px; vertical-align:top; ">'.LF;
+                $html .='</td>'.LF;
+                $html .='</tr>'.LF;
+                }*/
             }
             // set reader
-       $reader_manager = $this->_environment->getReaderManager();
-             $reader = $reader_manager->getLatestReader($current_item->getItemID());
-       if ( empty($reader) or $reader['read_date'] < $current_item->getModificationDate() ) {
-          $reader_manager->markRead($current_item->getItemID(),0);
-       }
-       // set Noticed
-       $noticed_manager = $this->_environment->getNoticedManager();
-       $noticed = $noticed_manager->getLatestNoticed($current_item->getItemID());
-       if ( empty($noticed) or $noticed['read_date'] < $current_item->getModificationDate() ) {
-          $noticed_manager->markNoticed($current_item->getItemID(),0);
-       }
+            $reader_manager = $this->_environment->getReaderManager();
+            $reader = $reader_manager->getLatestReader($current_item->getItemID());
+            if ( empty($reader) or $reader['read_date'] < $current_item->getModificationDate() ) {
+               $reader_manager->markRead($current_item->getItemID(),0);
+            }
+            // set Noticed
+            $noticed_manager = $this->_environment->getNoticedManager();
+            $noticed = $noticed_manager->getLatestNoticed($current_item->getItemID());
+            if ( empty($noticed) or $noticed['read_date'] < $current_item->getModificationDate() ) {
+               $noticed_manager->markNoticed($current_item->getItemID(),0);
+            }
 
             $current_item = $subitems->getNext();
             $pos_number++;

@@ -3705,11 +3705,19 @@ class cs_detail_view extends cs_view {
             $image = '<img src="images/commsyicons/22x22/delete.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_DELETE_ITEM').'"/>';
          }
          $html .= ahref_curl( $this->_environment->getCurrentContextID(),
-                                     $this->_environment->getCurrentModule(),
-                                     'detail',
-                                     $params,
-                                     $image,
-                                     $this->_translator->getMessage('COMMON_DELETE_ITEM')).LF;
+         					  $this->_environment->getCurrentModule(),
+                              'detail',
+         					  $params,
+         					  $image,
+         					  $this->_translator->getMessage('COMMON_DELETE_ITEM').LF,
+                              '',
+                              '',
+                              '',
+                              '',
+                              '',
+                              '',
+                              '',
+                              'delete_confirm_entry');
          unset($params);
       } else {
          if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
@@ -3720,6 +3728,27 @@ class cs_detail_view extends cs_view {
          $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION_NEW',$this->_translator->getMessage('COMMON_DELETE_ITEM')).' "class="disabled">'.$image.'</a>'.LF;
       }
       return $html;
+   }
+    
+   /** get information for header as HTML
+    * this method returns information in HTML-Code needs for the header of the HTML-Page
+    *
+    * @return string javascipt needed for the form
+    */
+   function getInfoForHeaderAsHTML() {
+      $return = "
+          <script type='text/javascript'>
+          <!--
+              var headline = '" . $this->_translator->getMessage("COMMON_DELETE_BOX_TITLE") . "';
+              var text1 = '" . $this->_translator->getMessage("COMMON_DELETE_BOX_DESCRIPTION") . "';
+              var text2 = '" . $this->_translator->getMessage("COMMON_DELETE_BOX_DESCRIPTION_MODERATOR") . "';
+              var button_delete = '" . $this->_translator->getMessage("COMMON_DELETE_BUTTON") . "';
+              var button_cancel = '" . $this->_translator->getMessage("COMMON_CANCEL_BUTTON") . "';
+          -->
+          </script>
+      ";
+
+      return $return;
    }
 
    function _getWikiAction ( $item, $user, $context ) {

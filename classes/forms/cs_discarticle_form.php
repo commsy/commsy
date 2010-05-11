@@ -116,11 +116,15 @@ class cs_discarticle_form extends cs_rubric_form {
     * @author CommSy Development Group
     */
    function _createForm () {
-
+      $this->_form->addAnchor('discarticle_form');
       $text_title = $this->_translator->getMessage('COMMON_SUBJECT');
       $text_discription = $this->_translator->getMessage('DISCUSSION_ARTICLE');
       if ( $this->_detail_mode ) {
-         $text_title = $this->_number.'.';
+         if($this->_number == '') {
+            $text_title = '';
+         } else {
+            $text_title = $this->_number.'.';
+         }
          $text_discription = '';
       }
 
