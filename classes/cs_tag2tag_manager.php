@@ -359,9 +359,9 @@ class cs_tag2tag_manager extends cs_manager {
       //////////////////////////////
       // "0." force cache reset ////
       //////////////////////////////
-      $this->_cached_rows = array();
-      $this->_cached_father_id_array = array();
-      $this->_cached_children_id_array_array = NULL;
+//      $this->_cached_rows = array();
+//      $this->_cached_father_id_array = array();
+//      $this->_cached_children_id_array_array = NULL;
       //////////////////////////////
       //////////////////////////////
       //////////////////////////////

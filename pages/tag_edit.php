@@ -273,9 +273,9 @@ else {
              unset($tag_manager);
              
              // sort alphabetically
-             $tag2tag_manager = $environment->getTag2TagManager();
-             $tag2tag_manager->sortRecursiveABC($_POST['father_id']);
-             unset($tag2tag_manager);
+//             $tag2tag_manager = $environment->getTag2TagManager();
+//             $tag2tag_manager->sortRecursiveABC($_POST['father_id']);
+//             unset($tag2tag_manager);
 
              $params = array();
              $params['focus_element_onload'] = 'new_tag';
