@@ -107,7 +107,7 @@ if ( isset($_GET['option']) and isOption($_GET['option'],$translator->getMessage
    if ( isset($_GET['selbuzzword']) and $_GET['selbuzzword'] !='-2') {
       $selbuzzword = $_GET['selbuzzword'];
    } else if (isset($_POST['selbuzzword']) and $_POST['selbuzzword'] != '-2') {
-   	  $selbuzzword = $_POST['selbuzzword'];
+        $selbuzzword = $_POST['selbuzzword'];
    } else {
       $selbuzzword = 0;
    }
@@ -132,8 +132,8 @@ if ( isset($_GET['option']) and isOption($_GET['option'],$translator->getMessage
       }
       $last_selected_tag = $seltag_array[$j-1];
    }else if(isset($_POST['seltag']) and $_POST['seltag'] =='yes') {
-   	  // Seltag aus der Hiddenform holen
-   	  $i = 0;
+        // Seltag aus der Hiddenform holen
+        $i = 0;
       while ( !isset($_POST['seltag_'.$i]) ){
          $i++;
       }
@@ -176,35 +176,35 @@ if ( isset($_GET['option']) and isOption($_GET['option'],$translator->getMessage
    // Find current selection seltag (Kategorie) fehlt die POST Abfrage in cs_index_view
    // ein Hiddenfeld hinzufügen.
    if (isset($_POST['selgroup'])) {
-   	$selgroup = $_POST['selgroup'];
-   } else if($_GET['selgroup']) {
-   	$selgroup = $_GET['selgroup'];
+      $selgroup = $_POST['selgroup'];
+   } elseif ( isset($_GET['selgroup']) ) {
+      $selgroup = $_GET['selgroup'];
    } else {
-   	$selgroup = '';
+      $selgroup = '';
    }
 
    if (isset($_POST['selcolor'])) {
-   	$selcolor = $_POST['selcolor'];
+      $selcolor = $_POST['selcolor'];
    } else if(isset($_GET['selcolor'])){
-   	$selcolor = $_GET['selcolor'];
+      $selcolor = $_GET['selcolor'];
    } else {
-   	$selcolor = '';
+      $selcolor = '';
    }
 
    if (isset($_POST['seluser'])) {
-   	$seluser = $_POST['seluser'];
+      $seluser = $_POST['seluser'];
    } else if (isset($_GET['seluser'])){
-   	$seluser = $_GET['seluser'];
+      $seluser = $_GET['seluser'];
    } else {
-   	$seluser = '';
+      $seluser = '';
    }
 
    if (isset($_POST['selstatus'])) {
-   	$selstatus = $_POST['selstatus'];
+      $selstatus = $_POST['selstatus'];
    } else if (isset($_GET['selstatus'])){
-   	$selstatus = $_GET['selstatus'];
+      $selstatus = $_GET['selstatus'];
    } else {
-   	$selstatus = '';
+      $selstatus = '';
    }
 
 
@@ -365,7 +365,7 @@ foreach ($rubric_array as $rubric) {
          $rubric_manager->setWithoutDateModeLimit();
       }
       else if ($rubric == CS_DATE_TYPE AND $selstatus != 2) {
-      	 $rubric_manager->setDateModeLimit($selstatus);
+          $rubric_manager->setDateModeLimit($selstatus);
       }
       if ($rubric==CS_USER_TYPE) {
          $rubric_manager->setUserLimit();
@@ -396,15 +396,15 @@ foreach ($rubric_array as $rubric) {
          $rubric_manager->setTagLimit($last_selected_tag);
       }
       if ( !empty($selcolor) and $selcolor != '2' and $selrubric == "date") {
-      	 $rubric_manager->setColorLimit('#'.$selcolor);
+          $rubric_manager->setColorLimit('#'.$selcolor);
       }
 
       if ( ($selrubric == "todo") and !empty($selstatus)) {
-      	 $rubric_manager->setStatusLimit($selstatus);
+          $rubric_manager->setStatusLimit($selstatus);
       }
 
       if (!empty($seluser)) {
-      	 $rubric_manager->setUserLimit($seluser);
+          $rubric_manager->setUserLimit($seluser);
       }
 
       if ( !empty($selfiles) ) {
