@@ -1149,7 +1149,37 @@ class cs_configuration_preferences_form extends cs_rubric_form {
                  $this->_form->addHidden('wellcome2_'.$language,'');
          }
       }
-   }
+      // description (text-area)
+      foreach ($this->_languages as $language) {
+         if ($language == $this->_description_text){
+
+            if (isset ($this->_item) ){
+               $html_status = $this->_item->getHtmlTextAreaStatus();
+            }elseif ( $this->_environment->inCommunityRoom() ){
+               $context = $this->_environment->getCurrentContextItem();
+               $html_status = $context->getHtmlTextAreaStatus();
+            }else{
+               $portal = $this->_environment->getCurrentPortalItem();
+               if ( isset($portal) ) {
+                  $html_status = $portal->getHtmlTextAreaStatus();
+               } else {
+                  $html_status = 0;
+               }
+            }
+
+            if ($html_status =='1'){
+               $html_status ='2';
+            }
+
+            $this->_form->addTextArea('description_'.$language,'','','','48','15','virtual',false,false,true,$html_status);
+
+         } else {
+            $this->_form->addHidden('description_'.$language,'');
+         }
+      }
+
+
+   }else{
 
         if (isset ($this->_item) ){
            $html_status = $this->_item->getHtmlTextAreaStatus();
@@ -1168,9 +1198,9 @@ class cs_configuration_preferences_form extends cs_rubric_form {
          if ($html_status =='1'){
             $html_status ='2';
          }
-        
-         $this->_form->addTextArea('description','',$this->_translator->getMessage('CONFIGURATION_ROOM_DESCRIPTION'),'','48','15','virtual',false,false,true,$html_status);
 
+         $this->_form->addTextArea('description','',$this->_translator->getMessage('CONFIGURATION_ROOM_DESCRIPTION'),'','48','15','virtual',false,false,true,$html_status);
+   }
 
 
 
@@ -1263,7 +1293,6 @@ class cs_configuration_preferences_form extends cs_rubric_form {
             $this->_values['server_default_sender_address'] = $this->_item->getDefaultSenderAddress();
             $this->_values['server_portal_option'] = $this->_item->getDefaultPortalItemID();
          }
-         $this->_values['description'] = $this->_item->getDescription();
          if ( $this->_item->isPortal() ) {
             $description_array = $this->_item->getDescriptionWellcome1Array();
             $languages = $this->_environment->getAvailableLanguageArray();
@@ -1283,6 +1312,18 @@ class cs_configuration_preferences_form extends cs_rubric_form {
                   $this->_values['wellcome2_'.$language] = $this->_item->getDescriptionWellcome2ByLanguage(cs_strtoupper($language));
                }
             }
+            $description_array = $this->_item->getDescriptionArray();
+            $languages = $this->_environment->getAvailableLanguageArray();
+            foreach ($languages as $language) {
+               if (!empty($description_array[cs_strtoupper($language)])) {
+                  $this->_values['description_'.$language] = $description_array[cs_strtoupper($language)];
+               } else {
+                  $this->_values['description_'.$language] = '';
+               }
+            }
+
+         }else{
+            $this->_values['description'] = $this->_item->getDescription();
          }
          if ($this->_item->isCommunityRoom()) {
             $this->_values['show_title'] = $this->_item->showTitle();
