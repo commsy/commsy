@@ -820,6 +820,7 @@ if ($current_user->isGuest()) {
        if (!empty($_POST['description'])) {
           $description = $_POST['description'];
        }
+       // TBD: portal geht nicht
        $item->setDescription($description);
        if ( $item->isPortal() ) {
           $description = $item->getDescriptionWellcome1Array();

@@ -45,6 +45,22 @@ class cs_plugin {
       return false;
    }
 
+   public function inPrivateRoom () {
+      return false;
+   }
+
+   public function inProjectRoom () {
+      return false;
+   }
+
+   public function inCommunityRoom () {
+      return false;
+   }
+
+   public function inGroupRoom () {
+      return false;
+   }
+
    public function getTitle () {
       if ( !empty($this->_title) ) {
          return $this->_title;

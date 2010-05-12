@@ -80,7 +80,24 @@ class cs_configuration_rubric_options_form extends cs_rubric_form {
         ) {
         $plugin_class = $plugin_list->getFirst();
         while ( $plugin_class ) {
-           if ( !in_array($plugin_class->getIdentifier(),$default_rubrics) ) {
+           if ( !in_array($plugin_class->getIdentifier(),$default_rubrics)
+                and ( ( $this->_environment->inPrivateRoom()
+                        and $plugin_class->inPrivateRoom()
+                      )
+                      or
+                      ( $this->_environment->inProjectRoom()
+                        and $plugin_class->inProjectRoom()
+                      )
+                      or
+                      ( $this->_environment->inCommunityRoom()
+                        and $plugin_class->inCommunityRoom()
+                      )
+                      or
+                      ( $this->_environment->inGroupRoom()
+                        and $plugin_class->inGroupRoom()
+                      )
+                    )
+              ) {
               $default_rubrics[] = mb_strtolower($plugin_class->getIdentifier());
            }
            $plugin_class = $plugin_list->getNext();
