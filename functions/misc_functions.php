@@ -991,8 +991,9 @@ function plugin_hook_plugin ($plugin, $hook_function, $params = null) {
    if ( in_array($plugin,$c_plugin_array) ) {
       $do_it = false;
       $plugin_class = $environment->getPluginClass($plugin);
+      $current_context_item = $environment->getCurrentContextItem();
       if ( method_exists($plugin_class,'isConfigurableInRoom')
-           and $plugin_class->isConfigurableInRoom()
+           and $plugin_class->isConfigurableInRoom($current_context_item->getItemType())
          ) {
          $current_context_item = $environment->getCurrentContextItem();
       } elseif ( method_exists($plugin_class,'isConfigurableInPortal')
@@ -1046,8 +1047,9 @@ function plugin_hook_output ($plugin,$hook_function,$params = NULL) {
    if ( in_array($plugin,$c_plugin_array) ) {
       $do_it = false;
       $plugin_class = $environment->getPluginClass($plugin);
+      $current_context_item = $environment->getCurrentContextItem();
       if ( method_exists($plugin_class,'isConfigurableInRoom')
-           and $plugin_class->isConfigurableInRoom()
+           and $plugin_class->isConfigurableInRoom($current_context_item->getItemType())
          ) {
          $current_context_item = $environment->getCurrentContextItem();
       } elseif ( method_exists($plugin_class,'isConfigurableInPortal')

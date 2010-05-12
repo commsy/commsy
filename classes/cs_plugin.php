@@ -45,6 +45,10 @@ class cs_plugin {
       return false;
    }
 
+   public function isExtraPlugin () {
+      return false;
+   }
+
    public function inPrivateRoom () {
       return false;
    }

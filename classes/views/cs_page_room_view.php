@@ -220,8 +220,7 @@ class cs_page_room_view extends cs_page_view {
       }
       $html .= '<div style="float:right; margin:0px; padding:0px 12px;">'.LF;
 
-     // Einstellungen
-
+     // configuration
      $context_user = $this->_environment->getCurrentUserItem();
       if ( $context_user->isModerator()
            and !$context_user->isOnlyReadUser()
@@ -291,71 +290,72 @@ class cs_page_room_view extends cs_page_view {
 //                                       $image,
 //                                       $this->_translator->getMessage('ACCOUNT_INDEX')).LF;
 //         }
-      }
-
-     // configuration
-     // Wiki, Chat
-
-     $current_context = $this->_environment->getCurrentContextItem();
-     if (
-         ( $current_context->showWikiLink() and $current_context->existWiki() and $current_context->issetWikiHomeLink() )
-         or ( $current_context->showChatLink() )
-         or ( $current_context->showHomepageLink() )
-         ){
-
-      $current_context = $this->_environment->getCurrentContextItem();
-      if ( $current_context->showWikiLink() and $current_context->existWiki() and $current_context->issetWikiHomeLink() ) {
-         global $c_pmwiki_path_url;
-         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-            $image = '<img src="images/commsyicons_msie6/pmwiki_home.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_WIKI_LINK').'"/>';
-         } else {
-            $image = '<img src="images/pmwiki_home.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_WIKI_LINK').'"/>';
          }
-         $title = $this->_translator->getMessage('COMMON_WIKI_LINK').': '.$current_context->getWikiTitle();
-         $url_session_id = '';
-         if ( $current_context->withWikiUseCommSyLogin() ) {
-            $session_item = $this->_environment->getSessionItem();
-            $url_session_id = '?commsy_session_id='.$session_item->getSessionID();
-            unset($session_item);
-         }
-         $html .= ' '.'<a title="'.$title.'" href="'.$c_pmwiki_path_url.'/wikis/'.$current_context->getContextID().'/'.$current_context->getItemID().'/'.$url_session_id.'" target="_blank">'.$image.'</a>'.LF;
-      }
-      if ( $current_context->showChatLink() ) {
-         global $c_etchat_enable;
-         if ( !empty($c_etchat_enable)
-              and $c_etchat_enable
-            ) {
-            $current_user = $this->_environment->getCurrentUserItem();
-            if ( isset($current_user) and $current_user->isReallyGuest() ) {
-               if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-                  $image = '<img src="images/commsyicons_msie6/etchat_grey_home.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('CHAT_CHAT').'" title="'.$this->_translator->getMessage('CHAT_CHAT').'"/>';
-               } else {
-                  $image = '<img src="images/etchat_grey_home.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('CHAT_CHAT').'" title="'.$this->_translator->getMessage('CHAT_CHAT').'"/>';
-               }
-               $html .= ' '.$image;
-               // TBD: icon ausgrauen
+
+        // Wiki, Chat
+
+        $current_context = $this->_environment->getCurrentContextItem();
+        if (
+            ( $current_context->showWikiLink() and $current_context->existWiki() and $current_context->issetWikiHomeLink() )
+            or ( $current_context->showChatLink() )
+            or ( $current_context->showHomepageLink() )
+            ){
+
+         $current_context = $this->_environment->getCurrentContextItem();
+         if ( $current_context->showWikiLink() and $current_context->existWiki() and $current_context->issetWikiHomeLink() ) {
+            global $c_pmwiki_path_url;
+            if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+               $image = '<img src="images/commsyicons_msie6/pmwiki_home.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_WIKI_LINK').'"/>';
             } else {
-               if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-                  $image = '<img src="images/commsyicons_msie6/etchat_home.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('CHAT_CHAT').'" title="'.$this->_translator->getMessage('CHAT_CHAT').'"/>';
+               $image = '<img src="images/pmwiki_home.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_WIKI_LINK').'"/>';
+            }
+            $title = $this->_translator->getMessage('COMMON_WIKI_LINK').': '.$current_context->getWikiTitle();
+            $url_session_id = '';
+            if ( $current_context->withWikiUseCommSyLogin() ) {
+               $session_item = $this->_environment->getSessionItem();
+               $url_session_id = '?commsy_session_id='.$session_item->getSessionID();
+               unset($session_item);
+            }
+            $html .= ' '.'<a title="'.$title.'" href="'.$c_pmwiki_path_url.'/wikis/'.$current_context->getContextID().'/'.$current_context->getItemID().'/'.$url_session_id.'" target="_blank">'.$image.'</a>'.LF;
+         }
+         if ( $current_context->showChatLink() ) {
+            global $c_etchat_enable;
+            if ( !empty($c_etchat_enable)
+                 and $c_etchat_enable
+               ) {
+               $current_user = $this->_environment->getCurrentUserItem();
+               if ( isset($current_user) and $current_user->isReallyGuest() ) {
+                  if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+                     $image = '<img src="images/commsyicons_msie6/etchat_grey_home.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('CHAT_CHAT').'" title="'.$this->_translator->getMessage('CHAT_CHAT').'"/>';
+                  } else {
+                     $image = '<img src="images/etchat_grey_home.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('CHAT_CHAT').'" title="'.$this->_translator->getMessage('CHAT_CHAT').'"/>';
+                  }
+                  $html .= ' '.$image;
+                  // TBD: icon ausgrauen
                } else {
-                  $image = '<img src="images/etchat_home.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('CHAT_CHAT').'" title="'.$this->_translator->getMessage('CHAT_CHAT').'"/>';
+                  if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+                     $image = '<img src="images/commsyicons_msie6/etchat_home.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('CHAT_CHAT').'" title="'.$this->_translator->getMessage('CHAT_CHAT').'"/>';
+                  } else {
+                     $image = '<img src="images/etchat_home.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('CHAT_CHAT').'" title="'.$this->_translator->getMessage('CHAT_CHAT').'"/>';
+                  }
+                  $html .=  ' '.ahref_curl($this->_environment->getCurrentContextID(),
+                                      'context',
+                                      'forward',
+                                      array('tool' => 'etchat'),
+                                      $image,
+                                      '',
+                                      'chat',
+                                      '',
+                                      '',
+                                      'onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=yes, width=970, height=600\');"').LF;
                }
-               $html .=  ' '.ahref_curl($this->_environment->getCurrentContextID(),
-                                   'context',
-                                   'forward',
-                                   array('tool' => 'etchat'),
-                                   $image,
-                                   '',
-                                   'chat',
-                                   '',
-                                   '',
-                                   'onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=yes, width=970, height=600\');"').LF;
             }
          }
-      }
+
+         // plugins for moderators an users
+         $html .= plugin_hook_output_all('getExtraActionAsHTML');
       }
 
-     // Wiki, Chat
 
       // rss link
       $current_context_item = $this->_environment->getCurrentContextItem();

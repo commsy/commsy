@@ -70,6 +70,7 @@ class cs_configuration_plugins_form extends cs_rubric_form {
          $current_portal_item = $this->_environment->getCurrentPortalItem();
          foreach ($c_plugin_array as $plugin) {
             $plugin_class = $this->_environment->getPluginClass($plugin);
+            $current_context_item = $this->_environment->getCurrentContextItem();
             if ( (
                    $this->_environment->inPortal()
                    and method_exists($plugin_class,'isConfigurableInPortal')
@@ -80,7 +81,7 @@ class cs_configuration_plugins_form extends cs_rubric_form {
                    !$this->_environment->inServer()
                    and $current_portal_item->isPluginOn($plugin)
                    and method_exists($plugin_class,'isConfigurableInRoom')
-                   and $plugin_class->isConfigurableInRoom()
+                   and $plugin_class->isConfigurableInRoom($current_context_item->getItemType())
                  )
                ) {
                $temp_array = array();

@@ -84,7 +84,7 @@ else {
                        )
                        or
                        ( !$environment->inServer()
-                         and $plugin_class->isConfigurableInRoom()
+                         and $plugin_class->isConfigurableInRoom($current_context_item->getItemType())
                        )
                      ) {
                      if ( !empty($_POST[$plugin])
