@@ -290,7 +290,7 @@ class cs_page_room_view extends cs_page_view {
 //                                       $image,
 //                                       $this->_translator->getMessage('ACCOUNT_INDEX')).LF;
 //         }
-         }
+        }
 
         // Wiki, Chat
 
@@ -351,11 +351,10 @@ class cs_page_room_view extends cs_page_view {
                }
             }
          }
-
-         // plugins for moderators an users
-         $html .= plugin_hook_output_all('getExtraActionAsHTML');
       }
 
+      // plugins for moderators an users
+      $html .= plugin_hook_output_all('getExtraActionAsHTML',array(),LF).LF;
 
       // rss link
       $current_context_item = $this->_environment->getCurrentContextItem();
