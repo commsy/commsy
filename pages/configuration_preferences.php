@@ -816,13 +816,13 @@ if ($current_user->isGuest()) {
           }
        }
        $languages = $environment->getAvailableLanguageArray();
-      if ( $item->isPortal() ) {
-       $description = $item->getDescription();
-       if (!empty($_POST['description'])) {
-          $description = $_POST['description'];
-       }
-       // TBD: portal geht nicht
-       $item->setDescription($description);
+#      if ( $item->isPortal() ) {
+#       $description = $item->getDescription();
+#       if (!empty($_POST['description'])) {
+#          $description = $_POST['description'];
+#       }
+#       // TBD: portal geht nicht
+#       $item->setDescription($description);
        if ( $item->isPortal() ) {
           $description = $item->getDescriptionWellcome1Array();
           foreach ($languages as $language) {
