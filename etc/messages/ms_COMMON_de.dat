@@ -287,7 +287,7 @@ Achtung: Beim Löschen eines Raums löschen Sie in der Regel auch fremde Beiträ
 Alternativ zum Löschen können Sie den Raum archivieren, d.h. alle Mitglieder können weiterhin auf die Inhalte des Raums zugreifen, es können allerdings keine Änderungen mehr vorgenommen werden.";
 $message["COMMON_DELETE_BOX_DESCRIPTION_WIKI"]["de"] = "Ein gelöschtes Wiki kann nicht wieder rekonstruiert werden. Möchten Sie dieses Wiki endgültig löschen?";
 $message["COMMON_DELETE_BOX_INDEX_DESCRIPTION"]["de"] = "Als Moderator dieses Raumes können Sie <span class=&quot;bold&quot;>eigene und fremde Einträge</span> gleichzeitig löschen.
-Gelöschte Einträge können nicht wieder rekonstruiert werden. Möchten Sie diese <span style=&quot;font-weight:bold&quot;>%1 ausgewählten Einräge</span> endgültig löschen?";
+Gelöschte Einträge können nicht wieder rekonstruiert werden. Möchten Sie diese <span style=&quot;font-weight:bold&quot;>%1 ausgewählten Einträge</span> endgültig löschen?";
 $message["COMMON_DELETE_BOX_INDEX_DESCRIPTION_ONE_ENTRY"]["de"] = "Als Moderator dieses Raumes können Sie <span class=&quot;bold&quot;>eigene und fremde Einträge</span> gleichzeitig löschen.
 Gelöschte Einträge können nicht wieder rekonstruiert werden. Möchten Sie diesen <span style=&quot;font-weight:bold&quot;>einen ausgewählten Eintrag</span> endgültig löschen?";
 $message["COMMON_DELETE_BOX_INDEX_TITLE"]["de"] = "Löschen von Einträgen";
