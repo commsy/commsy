@@ -76,6 +76,7 @@ function replace_files ($dir, $pos=2,$fileitem,$environment,$namearray) {
             $open = fopen($dir.$file,'w');
             fputs($open,$replacement);
             fclose($open);
+            update_progress_bar(count_for_process($namearray));
          }
       }
    }
@@ -180,6 +181,25 @@ function replacement($environment,$file,$pfad,$datei,$namearray) {
    return $filecontent;
 }
 
+function count_for_process ( $namearray ) {
+   $retour = 0;
+   if ( !empty($namearray['oldfilename']) ) {
+      foreach ( $namearray['oldfilename'] as $name ) {
+         $extension = mb_strtolower(mb_substr(strrchr($name,"."),1), 'UTF-8');
+         if ( $extension == "htm"
+              or $extension == "html"
+              or $extension == "js"
+              or $extension == "xml"
+              or $extension == "xslt"
+              or $extension == "xsd"
+            ) {
+            $retour++;
+         }
+      }
+   }
+   return $retour;
+}
+
 $zip = new ZipArchive;
 
 $source_file = $file->getDiskFileName();
@@ -223,7 +243,39 @@ if($file->getHasHTML() == 2) {
    $namearray['oldfilename'] = array();
    $namearray['filename'] = array();
    $namearray['dirname'] = array();
+
+   #######################################
+   # process-bar 1
+   #######################################
+   include_once('functions/misc_functions.php');
+   echo('<div class="process">'.LF);
+   $text_converter = $environment->getTextConverter();
+   echo($text_converter->encode(AS_HTML_SHORT,$translator->getMessage('FILE_ZIP_UPLOAD_PROCESS_TITLE',$file->getDisplayName())).BRLF);
+   flush();
+   #######################################
+   # process-bar 1
+   #######################################
+
    $namearray = listfilenames($pfad,2,$file,$environment,$namearray);
+
+   #######################################
+   # process-bar 2
+   #######################################
+   init_progress_bar(count_for_process($namearray),$translator->getMessage('FILE_ZIP_UPLOAD_PROCESS_DESC'));
+   #######################################
+   # process-bar 2
+   #######################################
+
    replace_files($pfad,2,$file,$environment,$namearray);
+
+   #######################################
+   # process-bar 3
+   #######################################
+   echo('</div>'.LF);
+   echo('<style type="text/css">'.LF.'div.process { display: none; }'.LF.'</style>'.LF);
+   flush();
+   #######################################
+   # process-bar 3
+   #######################################
 }
 ?>

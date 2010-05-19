@@ -1945,4 +1945,34 @@ function isPHP5 () {
    }
    return $retour;
 }
+
+function init_progress_bar($count,$title = 'Total entries to be processed',$value = '100%') {
+   global $bash;
+   echo BRLF.$title.": ".$count.LF;
+   echo BRLF."|....................................................................................................|".$value.LF;
+   echo '<script type="text/javascript">window.scrollTo(1,10000000);</script>'.LF;
+   echo BRLF."|";
+   flush();
+}
+
+function update_progress_bar($total) {
+   static $counter_upb = 0;
+   static $percent = 0;
+   $counter_upb++;
+   $cur_percent = (int)(($counter_upb*100)/($total) );
+   if ($percent < $cur_percent) {
+      $add = $cur_percent-$percent;
+      while ($add>0) {
+         $add--;
+         echo(".");
+      }
+      $percent = $cur_percent;
+      flush();
+   }
+   if ($counter_upb==$total) {
+      $counter_upb = 0;
+      $percent = 0;
+      echo('|');
+   }
+}
 ?>
