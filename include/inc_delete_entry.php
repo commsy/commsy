@@ -78,6 +78,7 @@ if (!empty($_GET['iid'])) {
    include_once('functions/error_functions.php');
    trigger_error('An item id must be given.', E_USER_ERROR);
 }
+
 // Find out what to do
 if ( isset($_POST['delete_option']) ) {
    $delete_command = $_POST['delete_option'];
@@ -170,7 +171,29 @@ elseif ( isOption($delete_command, $translator->getMessage('COMMON_DELETE_BUTTON
          $params = array();
          $params['iid'] = $current_item_iid;
          
-         // change position of all childs
+         // delete all childs too
+         if($disc_type == 'threaded') {
+            $position = $discarticle_item->getPosition();
+            $position_length = mb_strlen($position);
+            
+            // find children and delete
+            $discarticle_manager = $environment->getDiscussionArticlesManager();
+            $disc_articles = $discarticle_manager->getAllArticlesForItem($discussion_item);
+            $disc_item = $disc_articles->getFirst();
+            while($disc_item) {
+               $disc_item_position = $disc_item->getPosition();
+               if(   mb_strlen($disc_item_position) > $position_length &&
+                     mb_substr($disc_item_position, 0, $position_length) == $position) {
+                  // delete disarticles
+                  $disc_item->delete();
+               }
+               
+               $disc_item = $disc_articles->getNext();
+            }
+            unset($discarticle_manager);
+            unset($disc_articles);
+            unset($disc_item);
+         }
          
          $discarticle_item->delete();
          unset($discarticle_item);
