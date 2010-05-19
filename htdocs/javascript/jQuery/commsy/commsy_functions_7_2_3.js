@@ -1635,10 +1635,10 @@ function formatDiscussionTreeThreaded(flag, dtnode) {
 		creator_width = jQuery('[id=' + this.id + '] a[id*=creator_text]').width();
 		
 		// calculate space beetween title and creator
-		var creator_space = (Math.floor(div_width / 5) * 2) - tree_width - title_width;
+		var creator_space = (Math.floor(div_width / 20) * 7) - tree_width - title_width;
 		
 		// calculate space beetween creator and date
-		var date_space = (Math.floor(div_width / 5) * 4) - tree_width - title_width - creator_space - creator_width;
+		var date_space = (Math.floor(div_width / 20) * 19) - tree_width - title_width - creator_space - creator_width;
 		
 		// set spaces
 		jQuery('[id=' + this.id + '] img[id*=creator_space]').css('width', creator_space);
