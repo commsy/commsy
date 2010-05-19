@@ -408,4 +408,47 @@ function cs_utf8_encode ($value) {
       return utf8_encode($value);
    }
 }
+
+/**
+* Encodes String to UTF8
+* @param string $string
+* @return string
+*/
+function cs_utf8_encode2($string) {
+   if ( check_utf8($string) ) {
+      return $string;
+   } else {
+      if ( function_exists('mb_convert_encoding') ) {
+         return mb_convert_encoding($string,'utf-8');
+      } else {
+         return utf8_encode($string);
+      }
+   }
+}
+
+function check_utf8($str) {
+    $len = strlen($str);
+    for($i = 0; $i < $len; $i++){
+        $c = ord($str[$i]);
+        if ($c > 128) {
+            if (($c > 247)) return false;
+            elseif ($c > 239) $bytes = 4;
+            elseif ($c > 223) $bytes = 3;
+            elseif ($c > 191) $bytes = 2;
+            else return false;
+            if (($i + $bytes) > $len) return false;
+            while ($bytes > 1) {
+                $i++;
+                $b = ord($str[$i]);
+                if ($b < 128 || $b > 191) return false;
+                $bytes--;
+            }
+        }
+    }
+    return true;
+} // end of check_utf8
+
+function is_utf8 ($string) {
+   return check_utf8($string);
+}
 ?>

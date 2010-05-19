@@ -85,6 +85,24 @@ function replace_files ($dir, $pos=2,$fileitem,$environment,$namearray) {
 
 function replacement($environment,$file,$pfad,$datei,$namearray) {
    $filecontent = file_get_contents($pfad.$datei);
+
+   #####################
+   # utf8
+   # ----
+   # text must be in utf8
+   # if not, we must convert to utf8
+   # because preg_match misses targets
+   # if text ist not in utf8
+   #
+   #####################
+
+   include_once('functions/text_functions.php');
+   $filecontent = cs_utf8_encode2($filecontent);
+
+   #####################
+   # utf8
+   #####################
+
    logToFile($pfad.$datei);
    $disc_manager = $environment->getDiscManager();
    $disc_manager->setPortalID($environment->getCurrentPortalID());
@@ -100,9 +118,28 @@ function replacement($environment,$file,$pfad,$datei,$namearray) {
       $pattern = "~[\\\./\d\wÄÖÜäöü_-]{0,}".$name."~isu";
       #$pattern = "~".$name."~isu";
       logToFile($pattern);
+      #pr($pattern);
       preg_match_all($pattern, $filecontent, $current_treffer);
+      #pr($current_treffer[0]);
       foreach ( $current_treffer[0] as $treffer ) {
          $trefferlowercase = mb_strtolower($treffer, 'UTF-8');
+         $path_relative = '';
+         if ( strlen($trefferlowercase) > (strlen($name)+1)
+              and ( strstr($trefferlowercase,'/')
+                    or strstr($trefferlowercase,'\\')
+                  )
+            ) {
+            $path_relative = str_replace('\\','/',$treffer);
+            $path_relative = str_replace($name,'',$path_relative);
+            if ( $path_relative[0] == '.' ) {
+               $path_relative = substr($path_relative,1);
+            }
+            if ( $path_relative[0] == '/'
+                 or $path_relative[0] == '\\'
+               ) {
+               $path_relative = substr($path_relative,1);
+            }
+         }
          global $c_single_entry_point;
          if ( !isset($index)
               or !isset($namearray['filename'][$index])
@@ -111,7 +148,16 @@ function replacement($environment,$file,$pfad,$datei,$namearray) {
          } else {
             $namearray_filename_index = $namearray['filename'][$index];
          }
-         $replacement = $c_single_entry_point.'?cid='.$environment->getCurrentContextID().'&mod=material&fct=showzip_file&iid='.$file->getFileID().'&file='.$linkpath.$namearray_filename_index;
+         if ( !empty($path_relative) ) {
+            if ( !empty($linkpath)
+                 and stristr($linkpath,$path_relative)
+               ) {
+               $path_relative = $linkpath;
+            }
+            $replacement = $c_single_entry_point.'?cid='.$environment->getCurrentContextID().'&mod=material&fct=showzip_file&iid='.$file->getFileID().'&file='.$path_relative.$namearray_filename_index;
+         } else {
+            $replacement = $c_single_entry_point.'?cid='.$environment->getCurrentContextID().'&mod=material&fct=showzip_file&iid='.$file->getFileID().'&file='.$linkpath.$namearray_filename_index;
+         }
          if ( !mb_stristr($filecontent,$replacement) ) {
             $filecontent = str_replace($treffer, $replacement, $filecontent);
          }
@@ -131,7 +177,6 @@ function replacement($environment,$file,$pfad,$datei,$namearray) {
          $filecontent = str_replace($treffer, "'".$replacement."'", $filecontent);
       }
    }
-   logToFile($filecontent);
    return $filecontent;
 }
 
