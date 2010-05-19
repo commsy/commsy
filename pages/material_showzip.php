@@ -42,8 +42,11 @@ if ( !empty($_GET['iid']) ) {
       $filename = 'index.htm';
    } elseif((file_exists('./'.$path_to_file.'html_'.$file->getDiskFileNameWithoutFolder().'/index.html')) and empty($_GET['file'])) {
       $filename = 'index.html';
-   } else {
+   } elseif ( !empty($_GET['file']) ) {
       $filename = $_GET['file'];
+   } else {
+      include_once('functions/error_functions.php');
+      trigger_error('material_showzip: lost file, please close window and try again',E_USER_ERROR);
    }
    if (file_exists('./'.$path_to_file.'html_'.$file->getDiskFileNameWithoutFolder().'/'.$filename)) {
       $filecontent = file_get_contents('./'.$path_to_file.'html_'.$file->getDiskFileNameWithoutFolder().'/'.$filename);
