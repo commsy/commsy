@@ -249,6 +249,9 @@ if($file->getHasHTML() == 2) {
    #######################################
    include_once('functions/misc_functions.php');
    echo('<div class="process">'.LF);
+   if ( !isset($translator) ) {
+      $translator = $environment->getTranslationObject();
+   }
    $text_converter = $environment->getTextConverter();
    echo($text_converter->encode(AS_HTML_SHORT,$translator->getMessage('FILE_ZIP_UPLOAD_PROCESS_TITLE',$file->getDisplayName())).BRLF);
    flush();
