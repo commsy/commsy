@@ -178,8 +178,6 @@ class cs_detail_view extends cs_view {
       return $this->_subitems;
    }
 
-
-
    function _getDetailAnnotationActionsAsHTML ($item= NULL) {
       $current_context = $this->_environment->getCurrentContextItem();
       $current_user = $this->_environment->getCurrentUserItem();
