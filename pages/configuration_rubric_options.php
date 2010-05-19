@@ -165,9 +165,14 @@ else {
          $is_saved = true;
          if (!isset($_GET['option'])){
             $params['conf'] = implode($temp_array,',');
+            $params['saved'] = 'true';
             redirect($environment->getCurrentContextID(), $environment->getCurrentModule(),$environment->getCurrentFunction(), $params);
          }
       }
+   }
+   
+   if(isset($_GET['saved']) && $_GET['saved'] == 'true') {
+      $form_view->setItemIsSaved();
    }
 
    // Load form data from postvars

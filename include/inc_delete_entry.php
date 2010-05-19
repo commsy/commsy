@@ -176,25 +176,41 @@ elseif ( isOption($delete_command, $translator->getMessage('COMMON_DELETE_BUTTON
             $position = $discarticle_item->getPosition();
             $position_length = mb_strlen($position);
             
-            // find children and delete
+            // find discarticles: delete children, rename descendants
             $discarticle_manager = $environment->getDiscussionArticlesManager();
-            $disc_articles = $discarticle_manager->getAllArticlesForItem($discussion_item);
-            $disc_item = $disc_articles->getFirst();
-            while($disc_item) {
-               $disc_item_position = $disc_item->getPosition();
-               if(   mb_strlen($disc_item_position) > $position_length &&
-                     mb_substr($disc_item_position, 0, $position_length) == $position) {
-                  // delete disarticles
-                  $disc_item->delete();
+            $discussion_articles = $discarticle_manager->getAllArticlesForItem($discussion_item);
+            
+            $discussion_article = $discussion_articles->getFirst();
+            while($discussion_article) {          
+               $discussion_article_position = $discussion_article->getPosition();
+               $discussion_article_position_length = mb_strlen($discussion_article_position);
+               
+               // children
+               if(   $discussion_article_position_length  > $position_length &&
+                     mb_substr($discussion_article_position, 0, $position_length) == $position) {
+                  // delete discarticles
+                  $discussion_article->delete();
+                  
+               // descendants
+               } else if(   $discussion_article_position_length >= $position_length &&
+                     mb_substr($position, $position_length-4, 4) < mb_substr($discussion_article_position, $position_length-4, 4)) {
+                  // rename elements
+                  $discussion_article_new_position = 
+                     mb_substr($discussion_article_position, 0, $position_length-4) . 
+                     ((string) ((int) mb_substr($discussion_article_position, $position_length-4, 4))-1) . 
+                     mb_substr($discussion_article_position, $position_length);
+                  
+                  $discussion_article->setPosition($discussion_article_new_position);
+                  $discussion_article->setModificationDate(getCurrentDateTimeInMySQL());
+                  $discussion_article->save();
                }
                
-               $disc_item = $disc_articles->getNext();
+               $discussion_article = $discussion_articles->getNext();
             }
             unset($discarticle_manager);
-            unset($disc_articles);
-            unset($disc_item);
+            unset($discussion_articles);
+            unset($discussion_article);
          }
-         
          $discarticle_item->delete();
          unset($discarticle_item);
          $discussion_item->setModificationDate(getCurrentDateTimeInMySQL());

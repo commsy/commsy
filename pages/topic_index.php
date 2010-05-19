@@ -38,7 +38,7 @@ include_once('classes/cs_list.php');
 // Get the translator object
 $translator = $environment->getTranslationObject();
 
-if (isset($_GET['back_to_index']) and $session->issetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index_ids')){
+if (isset($_GET['back_to_index']) and $session->issetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index')){
    $index_search_parameter_array = $session->getValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index_parameter_array');
    $params['interval'] = $index_search_parameter_array['interval'];
    $params['sort'] = $index_search_parameter_array['sort'];
@@ -49,7 +49,7 @@ if (isset($_GET['back_to_index']) and $session->issetValue('cid'.$environment->g
       $params['selgroup'] = $index_search_parameter_array['selgroup'];
    }
    $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index_parameter_array');
-   $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index_ids');
+   $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index');
    redirect($environment->getCurrentContextID(),$environment->getCurrentModule(), 'index', $params);
 }
 
@@ -441,7 +441,7 @@ if ($environment->inCommunityRoom()){
    $index_search_parameter_array['selgroup'] = $selgroup;
 }
 $session->setValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index_parameter_array',$index_search_parameter_array);
-$session->setValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index_ids',$ids);
+$session->setValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index','true');
 
 
 ?>

@@ -1457,8 +1457,15 @@ function delete_overlay(element, html_element, click_extra_action) {
         	        	    		
     	        	    			// change button id
     	        	    			var id = html_element.id;
-    	        	    			html_element.id = html_element.id + '_fake';
     	        	    			
+    	        	    			var name = '';
+    	        	    			if(id.substr(0, 20) == 'delete_confirmselect') {
+    	        	    				name = 'delete_option';
+    	        	    			} else {
+    	        	    				name = html_element.name;
+    	        	    			}
+	        	    				html_element.id = html_element.id + '_fake';
+	        	    				
     	        	    			// get form of button
     	        	    			var form = jQuery("input[id='" + html_element.id + "']").parent();
     	        	    			while(form[0].localName.substr(0, 4) != 'form') {
@@ -1469,10 +1476,11 @@ function delete_overlay(element, html_element, click_extra_action) {
     	        	    			    jQuery("<input/>", {
         	        	    			    "type" : html_element.type,
         	        	    			    "value" : button_delete,
-        	        	    			    "name" : html_element.name,
+        	        	    			    "name" : name,
         	        	    			    "style" : /*html_element.style + */" display: none",
         	        	    			    "id" : id
-        	        	    			}));
+        	        	    			})
+    	        	    			);
     	        	    			
     	        	    			// click button
     	        	    			jQuery("input[id='" + id + "']").click();

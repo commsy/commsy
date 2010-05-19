@@ -344,8 +344,15 @@ class cs_discussion_detail_view extends cs_detail_view {
                $max -= mb_strlen($this->_translator->getMessage('COMMON_CHANGED'));
             }
          }
-         if($length > $max) {
-            $display_subject = mb_substr($display_subject, 0, $max) . '...';
+         
+         // limit display length of subject
+         if ($length > $max){
+            $display_subject = mb_substr($display_subject,0,$max).'...';
+         }
+         
+         // limit display length of creator
+         if(mb_strlen($creator_fullname) > 28) {
+            $creator_fullname = mb_substr($creator_fullname, 0, 28) . '...';
          }
 
          // open sublist if position > last position
@@ -385,7 +392,7 @@ class cs_discussion_detail_view extends cs_detail_view {
          }
 
          $html .= '<a id="discussion_tree_' . $article->getItemID() . '_change_status_text" style="color:#545454; font-size:10pt; font-weight:' . $font_weight . ';"">';
-         $html .= $this->_getItemChangeStatus($article);
+         $html .= $new;
          $html .= '</a>';
          $html .= $fileicons.LF;
          $html .= '<img id="discussion_tree_' . $article->getItemID() . '_creator_space" src="images/spacer.gif">';
@@ -490,6 +497,8 @@ class cs_discussion_detail_view extends cs_detail_view {
 
          $position_length =  count(explode('.',$article->getPosition()));
          $display_subject = $article->getSubject();
+         
+         // limit display text
          $length = mb_strlen($display_subject);
          $max = 28 - $position_length;
          $new = $this->_getItemChangeStatus($article);
@@ -500,9 +509,12 @@ class cs_discussion_detail_view extends cs_detail_view {
                $max = $max-mb_strlen($this->_translator->getMessage('COMMON_CHANGED'));
             }
          }
+         
+         // limit display length of subject
          if ($length > $max){
             $display_subject = mb_substr($display_subject,0,$max).'...';
          }
+         
          $hover = str_replace('"','&quot;',$this->_text_as_html_short($article->getSubject()));
          $em = $position_length-2;
          $old_postion_length = count(explode('.',$article_old->getPosition()));
@@ -530,7 +542,7 @@ class cs_discussion_detail_view extends cs_detail_view {
             } else {
                $title = $this->_text_as_html_short($this->_compareWithSearchText($display_subject));
             }
-            $html .= $this->_getItemChangeStatus($article).' ';
+            $html .= $new . ' ';
             $html .= $title.$fileicons;
             #                 $html .= $this->_getItemChangeStatus($article);
             $html .='</div></td><td>';
@@ -1259,6 +1271,27 @@ class cs_discussion_detail_view extends cs_detail_view {
          $file = $files->getNext();
       }
       return $file_list;
+   }
+   
+   /** get information for header as HTML
+    * this method returns information in HTML-Code needs for the header of the HTML-Page
+    *
+    * @return string javascipt needed for the form
+    */
+   function getInfoForHeaderAsHTML() {
+      $return = "
+          <script type='text/javascript'>
+          <!--
+              var headline = '" . $this->_translator->getMessage("COMMON_DELETE_BOX_TITLE") . "';
+              var text1 = '" . $this->_translator->getMessage("COMMON_DELETE_BOX_DESCRIPTION_DISCUSSION") . "';
+              var text2 = '" . $this->_translator->getMessage("COMMON_DELETE_BOX_DESCRIPTION_MODERATOR") . "';
+              var button_delete = '" . $this->_translator->getMessage("COMMON_DELETE_BUTTON") . "';
+              var button_cancel = '" . $this->_translator->getMessage("COMMON_CANCEL_BUTTON") . "';
+          -->
+          </script>
+      ";
+
+      return $return;
    }
 }
 ?>

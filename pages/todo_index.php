@@ -37,7 +37,7 @@ $translator = $environment->getTranslationObject();
 //   attached     = ref_iid is set, show backlink
 //                  show all items attached to the ref item
 if ( isset($_GET['back_to_index'])
-     and $session->issetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index_ids')
+     and $session->issetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index')
    ) {
    $index_search_parameter_array = $session->getValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index_parameter_array');
    $params['interval'] = $index_search_parameter_array['interval'];
@@ -51,7 +51,7 @@ if ( isset($_GET['back_to_index'])
       $params['sel'.$key] = $value;
    }
    $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index_parameter_array');
-   $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index_ids');
+   $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index');
    redirect($environment->getCurrentContextID(),$environment->getCurrentModule(), 'index', $params);
 }
 
@@ -97,7 +97,6 @@ if ( isset($_POST['delete_option']) ) {
 } else {
    $delete_command = '';
 }
-
 
 // Find clipboard id array
 if ( $session->issetValue('todo_clipboard') ) {
@@ -636,6 +635,6 @@ $index_search_parameter_array['selbuzzword'] = $selbuzzword;
 $index_search_parameter_array['seltag_array'] = $seltag_array;
 $index_search_parameter_array['sel_activating_status'] = $sel_activating_status;
 $session->setValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index_parameter_array',$index_search_parameter_array);
-$session->setValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index_ids',$ids);
+$session->setValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index','true');
 
 ?>

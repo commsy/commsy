@@ -38,7 +38,7 @@ include_once('classes/cs_list.php');
 // Get the translator object
 $translator = $environment->getTranslationObject();
 
-if (isset($_GET['back_to_index']) and $session->issetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index_ids')){
+if (isset($_GET['back_to_index']) and $session->issetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index')){
    $index_search_parameter_array = $session->getValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index_parameter_array');
    $params['interval'] = $index_search_parameter_array['interval'];
    $params['sort'] = $index_search_parameter_array['sort'];
@@ -51,7 +51,7 @@ if (isset($_GET['back_to_index']) and $session->issetValue('cid'.$environment->g
       $params['sel'.$key] = $value;
    }
    $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index_parameter_array');
-   $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index_ids');
+   $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index');
    redirect($environment->getCurrentContextID(),$environment->getCurrentModule(), 'index', $params);
 }
 
@@ -80,7 +80,6 @@ if ( isset($_GET['mode']) ) {
    unset($ref_user);
 }
 
-
 // Find current option
 if ( isset($_POST['option']) ) {
    $option = $_POST['option'];
@@ -98,7 +97,6 @@ if ( isset($_POST['delete_option']) ) {
 } else {
    $delete_command = '';
 }
-
 
 // Find clipboard id array
 if ( $session->issetValue('discussion_clipboard') ) {
@@ -476,7 +474,6 @@ while ($item){
 $discarticle_manager = $environment->getDiscussionArticleManager();
 $discarticle_list = $discarticle_manager->getAllDiscArticlesItemListByIDArray($id_array);
 
-
 $item = $discarticle_list->getFirst();
 while ($item){
    $id_array[] = $item->getItemID();
@@ -489,7 +486,6 @@ $file_id_array = $link_manager->getAllFileLinksForListByIDs($id_array);
 $file_manager = $environment->getFileManager();
 $file_manager->setIDArrayLimit($file_id_array);
 $file_manager->select();
-
 
 if (isset($_GET['select']) and $_GET['select']=='all'){
    $item = $list->getFirst();
@@ -506,9 +502,6 @@ if (isOption($option,$translator->getMessage('COMMON_LIST_ACTION_BUTTON_GO')) an
 }
 $context_item = $environment->getCurrentContextItem();
 
-
-
-
 // Get available buzzwords
 $buzzword_manager = $environment->getLabelManager();
 $buzzword_manager->resetLimits();
@@ -517,12 +510,6 @@ $buzzword_manager->setTypeLimit('buzzword');
 $buzzword_manager->setGetCountLinks();
 $buzzword_manager->select();
 $buzzword_list = $buzzword_manager->get();
-
-
-
-
-
-
 
 // Prepare view object
 // Prepare view object
@@ -537,8 +524,6 @@ if ( $context_item->isProjectRoom() ) {
    }
 }
 
-
-
 // Set data for view
 $view->setList($list);
 $view->setCountAll($count_all);
@@ -549,17 +534,9 @@ $view->setSortKey($sort);
 $view->setSearchText($search);
 $view->setClipboardIDArray($clipboard_id_array);
 $view->setActivationLimit($sel_activating_status);
-
-
-
 $view->setAvailableBuzzwords($buzzword_list);
 $view->setSelectedBuzzword($selbuzzword);
 $view->setSelectedTagArray($seltag_array);
-
-
-
-
-
 
 if ( !empty($ref_iid) and $mode =='attached' ) {
    $item_manager = $environment->getItemManager();
@@ -609,6 +586,6 @@ $index_search_parameter_array['selbuzzword'] = $selbuzzword;
 $index_search_parameter_array['seltag_array'] = $seltag_array;
 $index_search_parameter_array['sel_activating_status'] = $sel_activating_status;
 $session->setValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index_parameter_array',$index_search_parameter_array);
-$session->setValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index_ids',$ids);
+$session->setValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index','true');
 
 ?>

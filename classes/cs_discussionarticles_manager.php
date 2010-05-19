@@ -386,12 +386,14 @@ class cs_discussionarticles_manager extends cs_manager {
   function _newDiscussionArticle ($discussionarticle_item) {
      $current_datetime = getCurrentDateTimeInMySQL();
      $this->_current_article_modification_date = $current_datetime;
+     $modificator = $discussionarticle_item->getModificatorItem();
      $query = 'INSERT INTO '.$this->addDatabasePrefix('discussionarticles').' SET '.
               'item_id="'.encode(AS_DB,$discussionarticle_item->getItemID()).'",'.
               'context_id="'.encode(AS_DB,$discussionarticle_item->getContextID()).'",'.
               'discussion_id="'.encode(AS_DB,$discussionarticle_item->getDiscussionID()).'",'.
               'creator_id="'.encode(AS_DB,$this->_current_user->getItemID()).'",'.
               'creation_date="'.$current_datetime.'",'.
+     		  'modifier_id="'.encode(AS_DB,$modificator->getItemID()).'",'.
               'modification_date="'.$current_datetime.'",'.
               'subject="'.encode(AS_DB,$discussionarticle_item->getSubject()).'",'.
               'position="'.encode(AS_DB,$discussionarticle_item->getPosition()).'",'.
