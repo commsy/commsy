@@ -66,6 +66,8 @@ class cs_dates_manager extends cs_manager {
    var $_day_limit2 = NULL;
    var $_year_limit = NULL;
    var $_date_mode_limit = 1;
+   var $_assignment_limit = false;
+   var $_related_user_limit = NULL;
    private $_not_older_than_limit = NULL;
 
    /*
@@ -105,7 +107,9 @@ class cs_dates_manager extends cs_manager {
       $this->_color_limit = NULL;
       $this->_recurrence_limit = NULL;
       $this->_date_mode_limit = 1;
+      $this->_assignment_limit = false;
       $this->_not_older_than_limit = NULL;
+      $this->_related_user_limit = NULL;
    }
 
    public function setNotOlderThanMonthLimit ( $month ) {
@@ -129,6 +133,13 @@ class cs_dates_manager extends cs_manager {
 
    function setColorLimit ($limit) {
       $this->_color_limit = $limit;
+   }
+
+   function setAssignmentLimit ($array) {
+      $this->_assignment_limit = true;
+      if (isset($array[0])){
+         $this->_related_user_limit = $array;
+      }
    }
 
    function setRecurrenceLimit ($limit) {
@@ -248,6 +259,10 @@ class cs_dates_manager extends cs_manager {
         $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS user_limit1 ON ( user_limit1.deletion_date IS NULL AND ((user_limit1.first_item_id='.$this->addDatabasePrefix('dates').'.item_id AND user_limit1.second_item_type="'.CS_USER_TYPE.'"))) ';
         $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS user_limit2 ON ( user_limit2.deletion_date IS NULL AND ((user_limit2.second_item_id='.$this->addDatabasePrefix('dates').'.item_id AND user_limit2.first_item_type="'.CS_USER_TYPE.'"))) ';
      }
+     if ( isset($this->_assignment_limit)  AND isset($this->_related_user_limit) ) {
+        $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS related_user_limit1 ON ( related_user_limit1.deletion_date IS NULL AND ((related_user_limit1.first_item_id='.$this->addDatabasePrefix('dates').'.item_id AND related_user_limit1.second_item_type="'.CS_USER_TYPE.'"))) ';
+        $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS related_user_limit2 ON ( related_user_limit2.deletion_date IS NULL AND ((related_user_limit2.second_item_id='.$this->addDatabasePrefix('dates').'.item_id AND related_user_limit2.first_item_type="'.CS_USER_TYPE.'"))) ';
+     }
      if ( isset($this->_tag_limit) ) {
         $tag_id_array = $this->_getTagIDArrayByTagID($this->_tag_limit);
         $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l41 ON ( l41.deletion_date IS NULL AND ((l41.first_item_id='.$this->addDatabasePrefix('dates').'.item_id AND l41.second_item_type="'.CS_TAG_TYPE.'"))) ';
@@ -351,6 +366,11 @@ class cs_dates_manager extends cs_manager {
             $query .= ' AND ((user_limit1.first_item_id = "'.encode(AS_DB,$this->_user_limit).'" OR user_limit1.second_item_id = "'.encode(AS_DB,$this->_user_limit).'")';
             $query .= ' OR (user_limit2.first_item_id = "'.encode(AS_DB,$this->_user_limit).'" OR user_limit2.second_item_id = "'.encode(AS_DB,$this->_user_limit).'"))';
          }
+      }
+
+      if ( isset($this->_assignment_limit) AND isset($this->_related_user_limit) ){
+         $query .= ' AND ( (related_user_limit1.first_item_id IN ('.implode(", ", $this->_related_user_limit).') OR related_user_limit1.second_item_id IN ('.implode(", ", $this->_related_user_limit).') )';
+         $query .= ' OR  (related_user_limit2.first_item_id IN ('.implode(", ", $this->_related_user_limit).') OR related_user_limit2.second_item_id IN ('.implode(", ", $this->_related_user_limit).') ))';
       }
 
       // dates restricted by groups, second part

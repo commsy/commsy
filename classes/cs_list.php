@@ -287,6 +287,16 @@ class cs_list {
       return $return_item;
    }
 
+   function getElementByID ($id) {
+      $return_item = new cs_list();
+      foreach($this->_data as $pos => $list_item){
+         if ($list_item->getItemID() == $id) {
+            $return_item = $list_item;
+         }
+      }
+      return $return_item;
+   }
+
    function get($pos) {
       return $this->_data[$pos];
    }

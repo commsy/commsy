@@ -47,6 +47,9 @@ class cs_date_calendar_index_view extends cs_room_index_view {
    var $_selected_color = NULL;
    var $_todo_list = NULL;
    var $_count_all_todos = NULL;
+   var $_room_id_array = array();
+   var $_selected_room = NULL;
+   var $_selected_assignment = NULL;
 
    // SUNBIRD
    var $use_sunbird = true;
@@ -85,6 +88,10 @@ class cs_date_calendar_index_view extends cs_room_index_view {
           $user_manager = $this->_environment->getUserManager();
           $user_manager->getRoomUserByIDsForCache($this->_environment->getCurrentContextID(),$id_array);
        }
+    }
+
+    function setRoomIDArray($array){
+    	$this->_room_id_array = $array;
     }
 
     function setCountAllTodos($count){
@@ -165,6 +172,22 @@ class cs_date_calendar_index_view extends cs_room_index_view {
 
    function getSelectedColor () {
       return $this->_selected_color;
+   }
+
+   function setSelectedRoom ($room) {
+      $this->_selected_room = $room;
+   }
+
+   function getSelectedRoom () {
+      return $this->_selected_room;
+   }
+
+   function setSelectedAssignment ($val) {
+      $this->_selected_assignment = $val;
+   }
+
+   function getSelectedAssignment () {
+      return $this->_selected_assignment;
    }
 
    function setAvailableColorArray ($array) {
@@ -981,7 +1004,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       if (isset($params['presentation_mode'])){
          $html .= '   <input type="hidden" name="presentation_mode" value="'.$params['presentation_mode'].'"/>'.LF;
       }else{
-         $html .= '   <input type="hidden" name="presentation_mode" value="1"/>'.LF;
+         $html .= '   <input type="hidden" name="presentation_mode" value="2"/>'.LF;
       }
       if (isset($params['week'])){
          $html .= '   <input type="hidden" name="week" value="'.$params['week'].'"/>'.LF;
@@ -992,6 +1015,63 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       if (isset($params['show_selections'])){
          $html .= '   <input type="hidden" name="show_selections" value="'.$params['show_selections'].'"/>'.LF;
       }
+
+      $selassigment = $this->getSelectedAssignment();
+      $html .= '<div class="infocolor" style="padding-bottom:5px;">'.$this->_translator->getMessage('PRIVATEROOM_CALENDAR_ASSIGNMENT_STATUS').BRLF;
+      // jQuery
+      //$html .= '   <select name="selstatus" size="1" style="width:150px;" onChange="javascript:document.indexform.submit()">'.LF;
+      $html .= '   <select name="selassignment" size="1" style="width:185px;" id="submit_form">'.LF;
+      // jQuery
+      $html .= '      <option value="2"';
+      if ( empty($selassigment) || $selassigment == 2 ) {
+         $html .= ' selected="selected"';
+      }
+      $html .= '>*'.$this->_translator->getMessage('COMMON_NO_SELECTION').'</option>'.LF;
+
+      $html .= '   <option class="disabled" disabled="disabled" value="-2">------------------------------</option>'.LF;
+      $html .= '      <option value="3"';
+      if ( !empty($selassigment) and $selassigment == 3 ) {
+         $html .= ' selected="selected"';
+      }
+      $text = $this->_translator->getMessage('PRIVATEROOM_ASSIGNED_TO_ME');
+      $html .= '>'.$text.'</option>'.LF;
+
+      $html .= '   </select>'.LF;
+      $html .='</div>';
+
+      if (!empty($this->_room_id_array)){
+         $selroom = $this->getSelectedRoom();
+         $item_manager = $this->_environment->getItemManager();
+
+         $html .= '<div class="infocolor" style="padding-bottom:5px;">'.$this->_translator->getMessage('PRIVATEROOM_CALENDAR_ROOM_STATUS').BRLF;
+         $html .= '   <select name="selroom" size="1" style="width:185px;" id="submit_form">'.LF;
+         $html .= '      <option value="2"';
+         if ( empty($selroom) || $selroom == 2 ) {
+            $html .= ' selected="selected"';
+         }
+         $html .= '>*'.$this->_translator->getMessage('COMMON_NO_SELECTION').'</option>'.LF;
+         foreach ($this->_room_id_array as $room_id){
+            $html .= '      <option value="'.$room_id.'"';
+            if ( empty($selroom) || $selroom == $room_id ) {
+               $html .= ' selected="selected"';
+            }
+/*
+ * Performance-Problem: Eine DB-Abfrage für jeden Raum in der Liste. Das ist sehr ineffizient.
+ * Räume können "Gruppenräume", "Projekträume", "persönliche Räume" oder "Gemeinschaftsräume" sein
+ */
+            $item = $item_manager->getItem($room_id);
+            $type = $item->getItemType();
+            $manager = $this->_environment->getManager($type);
+            $item = $manager->getItem($room_id);
+            $html .= '>'.$item->getTitle().'</option>'.LF;
+/*
+ * Ende Performance-Problem
+ */
+         }
+         $html .= '   </select>'.LF;
+         $html .='</div>';
+      }
+
       $selstatus = $this->getSelectedStatus();
       $html .= '<div class="infocolor" style="padding-bottom:5px;">'.$this->_translator->getMessage('COMMON_DATE_STATUS').BRLF;
       // jQuery
@@ -1066,84 +1146,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
          $html .='</div>';
       }
 
-
-
-      $context_item = $this->_environment->getCurrentContextItem();
-      $current_room_modules = $context_item->getHomeConf();
-      if ( !empty($current_room_modules) ){
-         $room_modules = explode(',',$current_room_modules);
-      } else {
-         $room_modules =  array();
-      }
-      foreach ( $room_modules as $module ) {
-         $link_name = explode('_', $module);
-         if ( $link_name[1] != 'none' ) {
-            if (($context_item->_is_perspective($link_name[0]) and $context_item->withRubric($link_name[0]))
-                or ( $link_name[0] == CS_USER_TYPE and $context_item->withRubric($link_name[0]))
-            ) {
-               $list = $this->getAvailableRubric($link_name[0]);
-               $selrubric = $this->getSelectedRubric($link_name[0]);
-               $temp_link = mb_strtoupper($link_name[0], 'UTF-8');
-               switch ( $temp_link )
-               {
-                  case 'GROUP':
-                     $html .= '<div class="infocolor" style="padding-bottom:5px;">'.$this->_translator->getMessage('COMMON_GROUP');
-                     break;
-                  case 'INSTITUTION':
-                     $html .= '<div class="infocolor" style="padding-bottom:5px;">'.$this->_translator->getMessage('COMMON_INSTITUTION');
-                     break;
-                  case 'TOPIC':
-                     $html .= '<div class="infocolor" style="padding-bottom:5px;">'.$this->_translator->getMessage('COMMON_TOPIC');
-                     break;
-                  case 'USER':
-                     $html .= '<div class="infocolor" style="padding-bottom:5px;">'.$this->_translator->getMessage('COMMON_USER');
-                     break;
-                  default:
-                     $html .= $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR').' cs_datescalendar_index_view(341) ';
-                     break;
-               }
-               $html .= BRLF;
-
-               if ( isset($list)) {
-                  // jQuery
-                  //$html .= '   <select style="width: 150px; font-size:10pt;" name="sel'.$link_name[0].'" size="1" onChange="javascript:document.indexform.submit()">'.LF;
-                  $html .= '   <select style="width: 185px; font-size:10pt;" name="sel'.$link_name[0].'" size="1" id="submit_form">'.LF;
-                  // jQuery
-                  $html .= '      <option value="0"';
-                  if ( !isset($selrubric) || $selrubric == 0 ) {
-                     $html .= ' selected="selected"';
-                  }
-                  $html .= '>*'.$this->_translator->getMessage('COMMON_NO_SELECTION').'</option>'.LF;
-                  $html .= '   <option class="disabled" disabled="disabled" value="-2">------------------------------</option>'.LF;
-                  $sel_item = $list->getFirst();
-                  while ( $sel_item ) {
-                     $html .= '      <option value="'.$sel_item->getItemID().'"';
-                     if ( isset($selrubric) and $selrubric == $sel_item->getItemID() ) {
-                        $html .= ' selected="selected"';
-                     }
-                     if ($link_name[0] == CS_USER_TYPE){
-                        $text = $this->_Name2SelectOption($sel_item->getFullName());
-                     }else{
-                        $text = $this->_Name2SelectOption($sel_item->getTitle());
-                     }
-                     $html .= '>'.$text.'</option>'.LF;
-                     $sel_item = $list->getNext();
-                 }
-                 $html .= '   <option class="disabled" disabled="disabled" value="-1">------------------------------</option>'.LF;
-                 $html .= '      <option value="-1"';
-                 if ( !isset($selrubric) || $selrubric == -1 ) {
-                    $html .= ' selected="selected"';
-                 }
-                 $html .= '>*'.$this->_translator->getMessage('COMMON_NOT_LINKED').'</option>'.LF;
-                 $html .= '   </select>'.LF;
-             } else {
-           $html.='';
-             }
-             $html .='</div>';
-            }
-         }
-      }
-     return $html;
+      return $html;
    }
 
 

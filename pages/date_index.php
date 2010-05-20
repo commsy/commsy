@@ -320,6 +320,18 @@ if ( isset($_GET['selcolor']) and $_GET['selcolor'] !='-2') {
    $sel_color = '';
 }
 
+if ( isset($_GET['selroom']) and $_GET['selroom'] !='-2' and $_GET['selroom'] !='2') {
+   $sel_room = $_GET['selroom'];
+} else {
+   $sel_room = '2';
+}
+
+if ( isset($_GET['selassignment']) and $_GET['selassignment'] !='-2' and $_GET['selassignment'] !='3') {
+   $sel_assignment = $_GET['selassignment'];
+} else {
+   $sel_assignment = '3';
+}
+
 // Search / Select Area
 if ( isset($_GET['option'])
      and isOption($_GET['option'],$translator->getMessage('COMMON_RESET')) ) {
@@ -771,8 +783,16 @@ if ($current_context->isPrivateRoom()){
           $community_item = $community_list->getNext();
       }
    }
-   $dates_manager->setContextArrayLimit($room_id_array);
-
+   if ($sel_room != "2"){
+   	  $room_id = array();
+   	  $room_id[] = $sel_room;
+      $dates_manager->setContextArrayLimit($room_id);
+   }else{
+      $dates_manager->setContextArrayLimit($room_id_array);
+   }
+   $view->setRoomIDArray($room_id_array);
+   $view->setSelectedRoom($sel_room);
+   $view->setSelectedAssignment($sel_assignment);
    $todo_manager = $environment->getToDoManager();
    $todo_manager->setContextArrayLimit($room_id_array);
    $todo_ids = $todo_manager->getIDArray();
@@ -821,7 +841,17 @@ if ( empty($only_show_array) ) {
       }
       $dates_manager->setDateModeLimit($selstatus);
    }
-
+   if ($sel_assignment != '2'){
+   	  $current_user = $environment->getCurrentUserItem();
+   	  $user_list = $current_user->getRelatedUserList();
+   	  $user_item = $user_list->getFirst();
+   	  $user_id_array = array();
+   	  while ($user_item){
+   	  	  $user_id_array[] = $user_item->getItemID();
+   	  	  $user_item = $user_list->getNext();
+   	  }
+      $dates_manager->setAssignmentLimit($user_id_array);
+   }
 
    if ( $interval > 0 ) {
       $dates_manager->setIntervalLimit($from-1,$interval);
