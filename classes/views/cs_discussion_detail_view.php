@@ -139,11 +139,28 @@ class cs_discussion_detail_view extends cs_detail_view {
             }
              
             ////////////////////////////////////////////////////////
-             
+            
             $class_factory = $this->_environment->getClassFactory();
             $class_params = array();
             $class_params['environment'] = $this->_environment;
             $form = $class_factory->getClass(DISCARTICLE_FORM,$class_params);
+            
+            // check for session postvars
+            $session_item = $this->_environment->getSessionItem();
+            if($session_item->issetValue('back_to_discussion_detail_view_postvars')) {
+               // load from postvars
+               $form->setFormPost($session_item->getValue('back_to_discussion_detail_view_postvars'));
+               $session_item->unsetValue('back_to_discussion_detail_view_postvars');
+            } else {
+               // load from database
+               //$form->setItem($subitem);
+            }
+            
+            if($session_item->issetValue('discarticle_add_files')) {
+               $form->setSessionFileArray($session_item->getValue('discarticle_add_files'));
+            }
+            unset($session_item);
+            
             $form->setDetailMode($number);
             $form->setRefPosition($father_position);
             $form->setDiscussionID($item->getItemID());
@@ -155,8 +172,13 @@ class cs_discussion_detail_view extends cs_detail_view {
             $class_params['with_modifying_actions'] = true;
             $form_view = $class_factory->getClass(FORM_DETAIL_VIEW,$class_params);
             unset($class_params);
-            $form_view->setAction(curl($this->_environment->getCurrentContextID(),'discarticle','edit',array()));
+            $params = array();
+            $params['back_to_discussion_detail_view'] = 'new';
+            $params['answer_to'] = $_GET['answer_to'];
+            $form_view->setAction(curl($this->_environment->getCurrentContextID(),'discarticle','edit',$params));
+            unset($params);
             $form_view->setForm($form);
+            
             $html .= $form_view->asHTML();
          } else if(isset($_GET['discarticle_iid'])) {
             $discarticle_iid = $_GET['discarticle_iid'];
@@ -208,14 +230,32 @@ class cs_discussion_detail_view extends cs_detail_view {
                }
                $number = substr($number,0,strlen($number)-1);
             }
-
+            
+            //////////////////////////////////////////////////////////////
+            
             $class_factory = $this->_environment->getClassFactory();
             $class_params = array();
             $class_params['environment'] = $this->_environment;
             $form = $class_factory->getClass(DISCARTICLE_FORM,$class_params);
-            $form->setItem($subitem);
-             
+            
+            // check for session postvars
+            $session_item = $this->_environment->getSessionItem();
+            if($session_item->issetValue('back_to_discussion_detail_view_postvars')) {
+               // load from postvars
+               $form->setFormPost($session_item->getValue('back_to_discussion_detail_view_postvars'));
+               $session_item->unsetValue('back_to_discussion_detail_view_postvars');
+            } else {
+               // load from database
+               $form->setItem($subitem);
+            }
+            
+            if($session_item->issetValue('discarticle_add_files')) {
+               $form->setSessionFileArray($session_item->getValue('discarticle_add_files'));
+            }
+            unset($session_item);
+            
             $form->setDetailMode($number);
+            $form->setDiscussionID($item->getItemID());
             unset($class_params);
             $form->prepareForm();
             $form->loadValues();
@@ -224,9 +264,12 @@ class cs_discussion_detail_view extends cs_detail_view {
             $class_params['with_modifying_actions'] = true;
             $form_view = $class_factory->getClass(FORM_DETAIL_VIEW,$class_params);
             unset($class_params);
-            $form_view->setAction(curl($this->_environment->getCurrentContextID(),'discarticle','edit',array()));
+            $params = array();
+            $params['back_to_discussion_detail_view'] = 'edit';
+            $form_view->setAction(curl($this->_environment->getCurrentContextID(),'discarticle','edit',$params));
+            unset($params);
             $form_view->setForm($form);
-             
+            
             $html .= $form_view->asHTML();
          }
 
@@ -398,6 +441,7 @@ class cs_discussion_detail_view extends cs_detail_view {
          $html .= '<img id="discussion_tree_' . $article->getItemID() . '_creator_space" src="images/spacer.gif">';
          $html .= '<a id="discussion_tree_' . $article->getItemID() . '_creator_text" style="color:#545454; font-size:10pt; font-weight:' . $font_weight . ';"">';
          $html .= $this->_text_as_html_short($this->_compareWithSearchText($creator_fullname))/*.'&nbsp;'*/.LF;
+         $html .= '</a>';
 
          $html .= '<img id="discussion_tree_' . $article->getItemID() . '_date_space" src="images/spacer.gif">';
          $html .= $this->_text_as_html_short($this->_compareWithSearchText(getDateTimeInLang($article->getModificationDate(), false))).LF;

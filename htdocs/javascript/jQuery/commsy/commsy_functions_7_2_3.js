@@ -1630,12 +1630,18 @@ function formatDiscussionTreeThreaded(flag, dtnode) {
 		// get width of title(+icon)
 		var title_width = 0;
 		var count_icons = -2;
+		//jQuery('[id=' + this.id + '] a[id=]').each(function() {
 		jQuery('[id=' + this.id + '] a[id=]').each(function() {
 			title_width += jQuery(this).width();
+			
 			count_icons++;
 		});
+		
 		if(count_icons > 0) {
-			title_width += 11;
+			title_width += 4;
+		}
+		for(var i=0	; i < count_icons; i++) {
+			title_width += 7;
 		}
 		
 		// get width of creator
@@ -1643,10 +1649,10 @@ function formatDiscussionTreeThreaded(flag, dtnode) {
 		creator_width = jQuery('[id=' + this.id + '] a[id*=creator_text]').width();
 		
 		// calculate space beetween title and creator
-		var creator_space = (Math.floor(div_width / 20) * 7) - tree_width - title_width;
+		var creator_space = (Math.floor(div_width / 5) * 2) - tree_width - title_width;
 		
 		// calculate space beetween creator and date
-		var date_space = (Math.floor(div_width / 20) * 19) - tree_width - title_width - creator_space - creator_width;
+		var date_space = (Math.floor(div_width / 5) * 4) - tree_width - title_width - creator_space - creator_width;
 		
 		// set spaces
 		jQuery('[id=' + this.id + '] img[id*=creator_space]').css('width', creator_space);
