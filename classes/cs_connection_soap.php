@@ -511,6 +511,9 @@ class cs_connection_soap {
                      if ( $agb ) {
                         $user_item->setAGBAcceptance();
                      }
+                     if ($room_item->checkNewMembersNever()){
+                     	$user_item->setStatus(2);
+                     }
                      $user_item->save();
                      $user_item->setCreatorID2ItemID();
 
