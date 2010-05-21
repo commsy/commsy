@@ -349,6 +349,9 @@ class cs_discussion_detail_view extends cs_detail_view {
       $last_position = 0;
       $subitems = $this->_subitems;
       $article = $subitems->getFirst();
+      
+      $font_weight = 'normal';
+      
       while($article) {
          // files
          $fileicons = $this->_getItemFiles($article,true);
