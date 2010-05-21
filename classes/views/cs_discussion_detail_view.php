@@ -1085,12 +1085,14 @@ class cs_discussion_detail_view extends cs_detail_view {
                   $html .='</tr>'.LF;
 
                   // add answer form if requestet
-                  if($insert_after_id == $current_item->getItemID()) {
-                     $html .='<tr class="detail_discussion_entries">'.LF;
-                     $html .='<td>'.LF;
-                     $html .= $this->_getDiscussionFormAsHTMLForThreadedView();
-                     $html .='</td>'.LF;
-                     $html .='</tr>'.LF;
+                  if(isset($insert_after_id)){
+	                  if($insert_after_id == $current_item->getItemID()) {
+	                     $html .='<tr class="detail_discussion_entries">'.LF;
+	                     $html .='<td>'.LF;
+	                     $html .= $this->_getDiscussionFormAsHTMLForThreadedView();
+	                     $html .='</td>'.LF;
+	                     $html .='</tr>'.LF;
+	                  }
                   }
                }
 
