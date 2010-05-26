@@ -315,7 +315,7 @@ class misc_text_converter {
 
    #private function _activate_urls ($text) {
    public function _activate_urls ($text) {
-   	  $text = ' '.$text;
+        $text = ' '.$text;
       $url_string = '^(?<=([\s|\n|>|\(]{1}))((http://|https://|ftp://|www\.)'; //everything starting with http, https or ftp followed by "://" or www. is a url and will be avtivated
       #$url_string = '^(?<=([\s|\n|>|\(]{1}))((http://|https://|ftp://|www\.)'; //everything starting with http, https or ftp followed by "://" or www. is a url and will be avtivated
       $url_string .= "([".RFC1738_CHARS."]+?))"; //All characters allowed for FTP an HTTP URL's by RFC 1738 (non-greedy because of potential trailing punctuation marks)
@@ -1219,10 +1219,33 @@ class misc_text_converter {
                   } else {
                      $name = $file->getDisplayName();
                   }
+                  if ( !empty($args['target'])
+                       and ( $args['target'] == '_blank'
+                             or $args['target'] == 'newwin'
+                             or $args['target'] == 'tab'
+                           )
+                     ) {
+                     $display = $args['target'];
+                  } elseif ( !empty($args['newwin']) ) {
+                     $display = 'newwin';
+                  } else {
+                     $display = 'window';
+                  }
+
+                  if ( $display == 'newwin'
+                       or $display == '_blank'
+                       or $display == 'tab'
+                     ) {
+                     $target = 'target="_blank"';
+                     $onclick = '';
+                  } else {
+                     $target = 'target="help"';
+                     $onclick = 'onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=yes, width=800, height=600\');"';
+                  }
 
                   $source = $file->getUrl();
                   global $c_single_entry_point;
-                  $image_text = '<a href="'.$c_single_entry_point.'?cid='.$this->_environment->getCurrentContextID().'&amp;mod=material&amp;fct=showzip&amp;iid='.$file->getFileID().'" target="help" onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=yes, width=800, height=600\');">'.$name.'</a>';
+                  $image_text = '<a href="'.$c_single_entry_point.'?cid='.$this->_environment->getCurrentContextID().'&amp;mod=material&amp;fct=showzip&amp;iid='.$file->getFileID().'" '.$target.' '.$onclick.'>'.$name.'</a>';
                }
             }
          }
