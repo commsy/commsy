@@ -85,7 +85,6 @@ function replace_files ($dir, $pos=2,$fileitem,$environment,$namearray) {
    @closedir($handle);
 }
 
-
 function replacement($environment,$file,$pfad,$datei,$namearray) {
    $filecontent = file_get_contents($pfad.$datei);
 
@@ -95,7 +94,7 @@ function replacement($environment,$file,$pfad,$datei,$namearray) {
    # text must be in utf8
    # if not, we must convert to utf8
    # because preg_match misses targets
-   # if text ist not in utf8
+   # if text is not in utf8
    #
    #####################
 
