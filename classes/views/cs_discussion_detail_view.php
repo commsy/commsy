@@ -118,6 +118,7 @@ class cs_discussion_detail_view extends cs_detail_view {
                }
             }
             $number = substr($number,2);
+            $position_length =  count(explode('.',$pos));
             if ( $position_length > 10 and !empty($number) ) {
                $range = floor($position_length/3.5)-1;
                $number_array = explode('.',$number);
@@ -211,6 +212,7 @@ class cs_discussion_detail_view extends cs_detail_view {
                }
             }
             $number = substr($number,2);
+            $position_length =  count(explode('.',$pos));
             if ( $position_length > 10 and !empty($number) ) {
                $range = floor($position_length/3.5)-1;
                $number_array = explode('.',$number);
@@ -251,6 +253,7 @@ class cs_discussion_detail_view extends cs_detail_view {
             
             if($session_item->issetValue('discarticle_add_files')) {
                $form->setSessionFileArray($session_item->getValue('discarticle_add_files'));
+               //$session_item->unsetValue('discarticle_add_files');
             }
             unset($session_item);
             

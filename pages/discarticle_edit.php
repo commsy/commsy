@@ -218,6 +218,25 @@ else {
          $session_item = $environment->getSessionItem();
          $session_item->setValue('back_to_discussion_detail_view_postvars', $session_post_vars);
          
+         if(empty($_POST) && isset($discarticle_item)) {
+	        // get files from database
+	        $file_list = $discarticle_item->getFileList();
+	        if ( !$file_list->isEmpty() ) {
+	           $file_array = array();
+	           $file_item = $file_list->getFirst();
+	           while ( $file_item ) {
+	              $temp_array = array();
+	              $temp_array['name'] = $file_item->getDisplayName();
+	              $temp_array['file_id'] = (int)$file_item->getFileID();
+	              $file_array[] = $temp_array;
+	              $file_item = $file_list->getNext();
+	           }
+	           if ( !empty($file_array)) {
+	              $session->setValue($environment->getCurrentModule().'_add_files', $file_array);
+	           }
+	        }
+         }
+         
          // Redirect
          //cleanup_session($current_iid);
          $params = array();
@@ -228,19 +247,17 @@ else {
             // new
             $params['ref_position'] = $_POST['ref_position'];
             $params['answer_to'] = $_GET['answer_to'];
-            $anchor = 'discarticle_form';
          } else {
             // edit
             $params['discarticle_action'] = 'edit';
             $params['discarticle_iid'] = $discarticle_item->getItemID();
-            $anchor = 'anchor' . $discarticle_item->getItemID();
          }
          
          redirect(   $environment->getCurrentContextID(),
                      'discussion',
                      'detail',
                      $params,
-                     $anchor);
+                     'discarticle_form');
       }
 
       // Load form data from postvars
