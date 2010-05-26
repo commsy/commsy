@@ -34,7 +34,9 @@ function listfilenames ($dir, $pos=2,$fileitem,$environment,$namearray) {
          continue;
       }
       $newfilename = mb_strtolower($file, 'UTF-8');
-      rename($dir.$file,$dir.$newfilename);
+      if ( file_exists($dir.$file) ) {
+         rename($dir.$file,$dir.$newfilename);
+      }
       $oldfilename = $file;
       $file = $newfilename;
       if ( is_dir($dir.$file) ) {
