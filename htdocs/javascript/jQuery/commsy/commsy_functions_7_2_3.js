@@ -1623,14 +1623,13 @@ function formatDiscussionTreeThreaded(flag, dtnode) {
 		
 		// get width of tree icons
 		var tree_width = 0;
-		jQuery('[id=' + this.id + '] span').each(function() {
+		jQuery('[id=' + this.id + '] span[class^=ui-dynatree]').each(function() {
 			tree_width += jQuery(this).width();
 		});
 		
 		// get width of title(+icon)
 		var title_width = 0;
 		var count_icons = -2;
-		//jQuery('[id=' + this.id + '] a[id=]').each(function() {
 		jQuery('[id=' + this.id + '] a[id=]').each(function() {
 			title_width += jQuery(this).width();
 			
@@ -1644,15 +1643,20 @@ function formatDiscussionTreeThreaded(flag, dtnode) {
 			title_width += 7;
 		}
 		
+		// get width of status text
+		var status_text_width = 0;
+		status_text_width = jQuery('[id=' + this.id + '] a[id*=change_status_text]').width();
+		if(status_text_width > 0 ) status_text_width += 3;
+		
 		// get width of creator
 		var creator_width = 0;
 		creator_width = jQuery('[id=' + this.id + '] a[id*=creator_text]').width();
 		
 		// calculate space beetween title and creator
-		var creator_space = (Math.floor(div_width / 5) * 2) - tree_width - title_width;
+		var creator_space = (Math.floor(div_width / 5) * 2) - tree_width - title_width - status_text_width;
 		
 		// calculate space beetween creator and date
-		var date_space = (Math.floor(div_width / 5) * 4) - tree_width - title_width - creator_space - creator_width;
+		var date_space = (Math.floor(div_width / 5) * 4) - tree_width - title_width - creator_space - creator_width - status_text_width;
 		
 		// set spaces
 		jQuery('[id=' + this.id + '] img[id*=creator_space]').css('width', creator_space);
@@ -1664,10 +1668,12 @@ function formatDiscussionTreeThreaded(flag, dtnode) {
 }
 
 jQuery(document).ready(function() {
-	if(jQuery('[id=discussion_tree]').length){
+	var tree = jQuery('[id=discussion_tree]');
+	
+	if(tree.length){
 		jQuery.ui.dynatree.nodedatadefaults["icon"] = false;
 		
-		jQuery('[id=discussion_tree]').dynatree({
+		tree.dynatree({
 			fx: { height: "toggle", duration: 200 },
 			onExpand: function(flag, dtnode) {
 				formatDiscussionTreeThreaded(flag, dtnode);
@@ -1681,6 +1687,29 @@ jQuery(document).ready(function() {
 				}
 			}
 		});
+		
+		var max_visible_nodes = 10;
+		var max_expand_level = getExpandLevel(tree, max_visible_nodes);
+		
+		// root immer ausklappen
+		if(max_expand_level < 2) max_expand_level = 2;
+		
+		tree.dynatree("getRoot").visit(function(dtnode) {
+			if(dtnode.getLevel() < max_expand_level) {
+				dtnode.expand(true);
+			}
+		});
+		
+		// "geänderte" und "neue" Einträge ausklappen
+		jQuery('[id=discussion_tree]').dynatree("getRoot").visit(function(dtnode) {
+		    var title = dtnode.data.title;
+		    var regexp = /(change_status_text)/g;
+		    
+		    if(regexp.test(title) == true) {
+		    	dtnode.focus();
+		    }
+		});
+		
 		/*
 		jQuery('[id^=discussion_tree]').each(function(){
 			jQuery(this).dynatree({
