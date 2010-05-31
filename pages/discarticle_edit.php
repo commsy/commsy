@@ -208,7 +208,11 @@ else {
       
       // Handle requests from discussion_detail_view
       if(   !empty($_FILES['upload']['tmp_name']) &&
-            isset($_GET['back_to_discussion_detail_view'])) {
+            isset($_GET['back_to_discussion_detail_view']) &&
+            !empty($command) &&
+               !(isOption($command, $translator->getMessage('DISCARTICLE_SAVE_BUTTON')) ||
+               isOption($command, $translator->getMessage('DISCARTICLE_CHANGE_BUTTON')))
+            ) {
          // set session post vars
          $session_post_vars = $_POST;
          if ( isset($post_file_ids) AND !empty($post_file_ids) ) {

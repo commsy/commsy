@@ -1683,8 +1683,21 @@ jQuery(document).ready(function() {
 			},
 			onActivate: function(dtnode) {
 				if(dtnode.data.url) {
-					window.location(dtnode.data.url);
+					try {
+						window.location(dtnode.data.url);
+					}
+					catch(e) {
+					}
 				}
+			},
+			onClick: function(dtnode, event) {
+				// Hervorgehobenen Hintergrund verhindern, wenn nicht auf einen Link für einen Beitrag geklickt wird
+				console.log(event.target.localName);
+				if(event.target.localName != 'a') {
+					return false;
+				}
+				
+				event.target.click();
 			}
 		});
 		
@@ -1709,43 +1722,5 @@ jQuery(document).ready(function() {
 		    	dtnode.focus();
 		    }
 		});
-		
-		/*
-		jQuery('[id^=discussion_tree]').each(function(){
-			jQuery(this).dynatree({
-				fx: { height: "toggle", duration: 200 },
-				checkbox: true,
-				onActivate: function(dtnode){
-					if( dtnode.data.url ){
-						window.location(dtnode.data.url);
-					}
-					if( dtnode.data.StudyLog ){
-						callStudyLogSortByTagId(dtnode.data.StudyLog);
-					}
-				},
-				onSelect: function(select, dtnode){
-					if( dtnode.data.checkbox ){
-						jQuery("[#taglist_" + dtnode.data.checkbox).attr('checked', select);
-					}
-				}
-			});
-			var max_visible_nodes = 20;
-			var max_expand_level = getExpandLevel(jQuery(this), max_visible_nodes);
-			jQuery(this).dynatree("getRoot").visit(function(dtnode){
-				if(dtnode.getLevel() < max_expand_level){
-					dtnode.expand(true);
-				}
-				if( !dtnode.data.checkbox ){
-					dtnode.data.hideCheckbox = true;
-					dtnode.render(true);
-				} else {
-					dtnode.select(jQuery("[#taglist_" + dtnode.data.checkbox).attr('checked'));
-				}
-			});
-			if(jQuery(this).attr('name') == 'tag_tree_detail'){
-				collapseTree(jQuery(this).dynatree("getRoot"), true);
-			}
-		});
-		*/
 	}
 });

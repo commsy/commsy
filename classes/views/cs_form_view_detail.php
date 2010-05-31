@@ -74,7 +74,21 @@ class cs_form_view_detail extends cs_form_view {
          if ( $form_element_array[0]['type'] == 'titlefield' ) {
             $label = '<span class="titlefield">'.$label.'</span>';
          }
-         $html .= $label;
+         
+         if(   $this->_environment->getCurrentModule() == 'discussion' &&
+               $this->_environment->getCurrentFunction() == 'detail' &&
+               isset($form_element_array[0]['type']) &&
+               $form_element_array[0]['type'] == 'checkboxgroup') {
+            $html .= '<table>';
+            $html .= '<tr>';
+            $html .= '      <td class="key" style="width:10%; vertical-align:baseline; ">';
+            $html .= $label;
+            $html .= '</td>';
+            $html .= '<td>';
+         } else {
+            $html .= $label;
+         }
+         
          if (!empty($form_element_array[0]['mandatory'])) {
             if ( $label[strlen($label)-1] == ':' ) {
                $red_star = '<span class="required">'.$this->_translator->getMessage('MARK').'</span>';
@@ -143,6 +157,14 @@ class cs_form_view_detail extends cs_form_view {
          ) {
          $html .= '<br />'.LF;
          $html .= $form_element_array[0]['example'];
+      }
+      if(   $this->_environment->getCurrentModule() == 'discussion' &&
+            $this->_environment->getCurrentFunction() == 'detail' &&
+            isset($form_element_array[0]['type']) &&
+            $form_element_array[0]['type'] == 'checkboxgroup') {
+         $html .= '</td>';
+         $html .= '</tr>';
+         $html .= '</table>';
       }
       $html .= '</div>'.LF;
       $html .= '<!-- END OF FORM-ELEMENT: '.$form_element_array[0]['name'].' ('.$form_element_array[0]['type'].') -->'.LF.LF;
