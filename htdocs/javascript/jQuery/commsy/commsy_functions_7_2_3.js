@@ -1689,17 +1689,20 @@ jQuery(document).ready(function() {
 					catch(e) {
 					}
 				}
-			}/*,
+			},
 			onClick: function(dtnode, event) {
 				// Hervorgehobenen Hintergrund verhindern, wenn nicht auf einen Link für einen Beitrag geklickt wird
 				console.log(event.target.localName);
-				if(event.target.localName != 'a') {
+				if(	event.target.localName == 'img' ||
+						(event.target.localName == 'span' &&
+						event.target.className != 'ui-dynatree-expander')) {
 					return false;
 				}
 				
-				
-				event.target.click();
-			}*/
+				if(event.target.localName == 'a') {
+					event.target.click();
+				}
+			}
 		});
 		
 		var max_visible_nodes = 10;
