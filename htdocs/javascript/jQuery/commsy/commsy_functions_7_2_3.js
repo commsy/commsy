@@ -1678,9 +1678,6 @@ jQuery(document).ready(function() {
 			onExpand: function(flag, dtnode) {
 				formatDiscussionTreeThreaded(flag, dtnode);
 			},
-			onPostInit: function(flag, dtnode) {
-				formatDiscussionTreeThreaded(flag, dtnode);
-			},
 			onActivate: function(dtnode) {
 				if(dtnode.data.url) {
 					try {
@@ -1705,6 +1702,7 @@ jQuery(document).ready(function() {
 				
 				if(event.target.localName == 'a') {
 					event.target.click();
+					//jQuery(location).attr('href', event.target.href);
 				}
 			}
 		});
@@ -1730,5 +1728,8 @@ jQuery(document).ready(function() {
 		    	dtnode.focus();
 		    }
 		});
+		
+		// show
+		//jQuery('[id=discussion_tree]').slideDown('slow');
 	}
 });

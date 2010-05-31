@@ -368,6 +368,7 @@ class cs_discussion_detail_view extends cs_detail_view {
    }
 
    function _getItemAsHTMLThreadedWithJavaScript($item) {
+      //$html = '<div id="discussion_tree" style="display: none">'.LF;
       $html = '<div id="discussion_tree">'.LF;
        
       // build list of articles
@@ -428,7 +429,8 @@ class cs_discussion_detail_view extends cs_detail_view {
 
          // open sublist if position > last position
          if($position > $last_position) {
-            $html .= '<ul>'.LF;
+            //$html .= '<ul>'.LF;
+            $html .= '<ul style="padding: 0px 0px 0px 10px;">'.LF;
          }
 
          // close sublist if position < last position
