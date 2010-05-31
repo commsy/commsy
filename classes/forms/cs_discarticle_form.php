@@ -212,7 +212,19 @@ class cs_discarticle_form extends cs_rubric_form {
          }
       } else {
          $this->_form->addEmptyLine();
-         $this->_form->addButton('option',$this->_translator->getMessage('DISCARTICLE_SAVE_BUTTON'),'');
+         
+         $discussion_manager = $this->_environment->getDiscussionManager();
+		 $discussion = $discussion_manager->getItem($this->_did);
+		 $discussion_type = $discussion->getDiscussionType();
+		 
+		 $this->_form->addButton('option',$this->_translator->getMessage('DISCARTICLE_SAVE_BUTTON'),'');
+         if(   $this->_environment->getCurrentModule() == 'discussion' &&
+               $this->_environment->getCurrentFunction() == 'detail' &&
+               $discussion_type == 'threaded') {
+            $this->_form->combine('vertical');
+            $this->_form->addButton('option',$this->_translator->getMessage('COMMON_CANCEL_BUTTON'),'');
+            
+         }
       }
    }
 

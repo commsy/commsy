@@ -1255,6 +1255,18 @@ class cs_page_room_view extends cs_page_view {
             $html .= '<p style="text-align:left;">'.$this->_translator->getMessage('COMMON_DELETE_BOX_DESCRIPTION_MODERATOR');
             $html .= '</p>'.LF;
          }
+      } elseif ( $this->_environment->getCurrentModule() == 'discussion'
+                 and $this->_environment->getCurrentFunction() == 'detail'
+               ) {
+         $user_item = $this->_environment->getCurrentUserItem();
+         $html .= '<h2>'.$this->_translator->getMessage('COMMON_DELETE_BOX_TITLE');
+         $html .= '</h2>'.LF;
+         $html .= '<p style="text-align:left;">'.$this->_translator->getMessage('COMMON_DELETE_BOX_DESCRIPTION_DISCUSSION');
+         $html .= '</p>'.LF;
+         if( $user_item->isModerator() ) {
+            $html .= '<p style="text-align:left;">'.$this->_translator->getMessage('COMMON_DELETE_BOX_DESCRIPTION_MODERATOR');
+            $html .= '</p>'.LF;
+         }
       }else{
          $user_item = $this->_environment->getCurrentUserItem();
          $html .= '<h2>'.$this->_translator->getMessage('COMMON_DELETE_BOX_TITLE');

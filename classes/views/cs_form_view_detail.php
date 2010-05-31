@@ -82,7 +82,7 @@ class cs_form_view_detail extends cs_form_view {
             $html .= '<table>';
             $html .= '<tr>';
             $html .= '      <td class="key" style="width:10%; vertical-align:baseline; ">';
-            $html .= $label;
+            $html .= $label . ':';
             $html .= '</td>';
             $html .= '<td>';
          } else {
