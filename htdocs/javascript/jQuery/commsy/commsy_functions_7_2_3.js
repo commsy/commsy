@@ -1692,12 +1692,16 @@ jQuery(document).ready(function() {
 			},
 			onClick: function(dtnode, event) {
 				// Hervorgehobenen Hintergrund verhindern, wenn nicht auf einen Link für einen Beitrag geklickt wird
-				console.log(event.target.localName);
 				if(	event.target.localName == 'img' ||
 						(event.target.localName == 'span' &&
 						event.target.className != 'ui-dynatree-expander')) {
 					return false;
 				}
+				
+				/*
+				// set max tree depth
+				if(dtnode.getLevel() > 10) return false;
+				*/
 				
 				if(event.target.localName == 'a') {
 					event.target.click();
