@@ -1689,7 +1689,7 @@ jQuery(document).ready(function() {
 					catch(e) {
 					}
 				}
-			},
+			}/*,
 			onClick: function(dtnode, event) {
 				// Hervorgehobenen Hintergrund verhindern, wenn nicht auf einen Link für einen Beitrag geklickt wird
 				console.log(event.target.localName);
@@ -1697,8 +1697,9 @@ jQuery(document).ready(function() {
 					return false;
 				}
 				
+				
 				event.target.click();
-			}
+			}*/
 		});
 		
 		var max_visible_nodes = 10;
