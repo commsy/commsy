@@ -146,15 +146,27 @@ class cs_discussion_detail_view extends cs_detail_view {
             $class_params['environment'] = $this->_environment;
             $form = $class_factory->getClass(DISCARTICLE_FORM,$class_params);
             
-            // check for session postvars
             $session_item = $this->_environment->getSessionItem();
             if($session_item->issetValue('back_to_discussion_detail_view_postvars')) {
                // load from postvars
-               $form->setFormPost($session_item->getValue('back_to_discussion_detail_view_postvars'));
+               $session_post_vars = $session_item->getValue('back_to_discussion_detail_view_postvars');
+               $form->setFormPost($session_post_vars);
                $session_item->unsetValue('back_to_discussion_detail_view_postvars');
             } else {
                // load from database
                //$form->setItem($subitem);
+            }
+            
+            
+            $clear_add_files = false;
+            if($session_item->issetValue('back_to_discussion_detail_view_last_upload')) {
+               if($session_item->getValue('back_to_discussion_detail_view_last_upload') != "new" . $_GET['answer_to']) {
+                  $clear_add_files = true;
+               }
+            }
+            
+            if($clear_add_files) {
+               $session_item->unsetValue('discarticle_add_files');
             }
             
             if($session_item->issetValue('discarticle_add_files')) {
@@ -240,20 +252,30 @@ class cs_discussion_detail_view extends cs_detail_view {
             $class_params['environment'] = $this->_environment;
             $form = $class_factory->getClass(DISCARTICLE_FORM,$class_params);
             
-            // check for session postvars
             $session_item = $this->_environment->getSessionItem();
             if($session_item->issetValue('back_to_discussion_detail_view_postvars')) {
                // load from postvars
-               $form->setFormPost($session_item->getValue('back_to_discussion_detail_view_postvars'));
+               $session_post_vars = $session_item->getValue('back_to_discussion_detail_view_postvars');
+               $form->setFormPost($session_post_vars);
                $session_item->unsetValue('back_to_discussion_detail_view_postvars');
             } else {
                // load from database
                $form->setItem($subitem);
             }
             
+            $clear_add_files = false;
+            if($session_item->issetValue('back_to_discussion_detail_view_last_upload')) {
+               if($session_item->getValue('back_to_discussion_detail_view_last_upload') != "edit" . $_GET['discarticle_iid']) {
+                  $clear_add_files = true;
+               }
+            }
+            
+            if($clear_add_files) {
+               $session_item->unsetValue('discarticle_add_files');
+            }
+            
             if($session_item->issetValue('discarticle_add_files')) {
                $form->setSessionFileArray($session_item->getValue('discarticle_add_files'));
-               //$session_item->unsetValue('discarticle_add_files');
             }
             unset($session_item);
             

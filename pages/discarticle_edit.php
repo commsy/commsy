@@ -192,20 +192,6 @@ else {
 
    // Show form and/or save item
    else {
-
-      // Initialize the form
-      $class_params= array();
-      $class_params['environment'] = $environment;
-      $form = $class_factory->getClass(DISCARTICLE_FORM,$class_params);
-      unset($class_params);
-      $form->setDiscussionID($discussion_id);
-      $form->setRefPosition($ref_position);
-      if (isset($ref_did)){
-         $form->setRefDid($ref_did);
-      }
-
-      include_once('include/inc_fileupload_edit_page_handling.php');
-      
       // Handle requests from discussion_detail_view
       if(   !empty($_FILES['upload']['tmp_name']) &&
             isset($_GET['back_to_discussion_detail_view']) &&
@@ -213,16 +199,10 @@ else {
                !(isOption($command, $translator->getMessage('DISCARTICLE_SAVE_BUTTON')) ||
                isOption($command, $translator->getMessage('DISCARTICLE_CHANGE_BUTTON')))
             ) {
-         // set session post vars
-         $session_post_vars = $_POST;
-         if ( isset($post_file_ids) AND !empty($post_file_ids) ) {
-            $session_post_vars['filelist'] = $post_file_ids;
-         }
-         
          $session_item = $environment->getSessionItem();
-         $session_item->setValue('back_to_discussion_detail_view_postvars', $session_post_vars);
          
-         if(empty($_POST) && isset($discarticle_item)) {
+         if(   (!$session_item->issetValue($environment->getCurrentModule().'_add_files') &&
+               isset($discarticle_item))) {
 	        // get files from database
 	        $file_list = $discarticle_item->getFileList();
 	        if ( !$file_list->isEmpty() ) {
@@ -240,6 +220,23 @@ else {
 	           }
 	        }
          }
+         
+         include_once('include/inc_fileupload_edit_page_handling.php');
+         
+         // set session post vars
+         $session_post_vars = $_POST;
+         if ( isset($post_file_ids) AND !empty($post_file_ids) ) {
+            $session_post_vars['filelist'] = $post_file_ids;
+         }
+           
+         $session_item->setValue('back_to_discussion_detail_view_postvars', $session_post_vars);
+         
+         if(isset($discarticle_item)) {
+            $session_item->setValue('back_to_discussion_detail_view_last_upload', "edit" . $discarticle_item->getItemID());
+         } else {
+            $session_item->setValue('back_to_discussion_detail_view_last_upload', "new" . $_GET['answer_to']);
+         }
+         
          
          // Redirect
          //cleanup_session($current_iid);
@@ -263,6 +260,19 @@ else {
                      $params,
                      'discarticle_form');
       }
+      
+      // Initialize the form
+      $class_params= array();
+      $class_params['environment'] = $environment;
+      $form = $class_factory->getClass(DISCARTICLE_FORM,$class_params);
+      unset($class_params);
+      $form->setDiscussionID($discussion_id);
+      $form->setRefPosition($ref_position);
+      if (isset($ref_did)){
+         $form->setRefDid($ref_did);
+      }
+      
+      include_once('include/inc_fileupload_edit_page_handling.php');
 
       // Load form data from postvars
       if ( !empty($_POST) ) {
