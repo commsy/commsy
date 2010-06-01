@@ -91,7 +91,7 @@ class cs_discussion_detail_view extends cs_detail_view {
                if(   $subitem_position_length > $father_position_length &&
                mb_substr($subitem_position, 0, $father_position_length) == $father_position) {
                   $postfix = mb_substr($subitem_position, $father_position_length+1);
-                   
+
                   if(((int) $postfix) > $max) {
                      $max = (int) $postfix;
                   }
@@ -138,14 +138,14 @@ class cs_discussion_detail_view extends cs_detail_view {
                }
                $number = substr($number,0,strlen($number)-1);
             }
-             
+
             ////////////////////////////////////////////////////////
-            
+
             $class_factory = $this->_environment->getClassFactory();
             $class_params = array();
             $class_params['environment'] = $this->_environment;
             $form = $class_factory->getClass(DISCARTICLE_FORM,$class_params);
-            
+
             $session_item = $this->_environment->getSessionItem();
             if($session_item->issetValue('back_to_discussion_detail_view_postvars')) {
                // load from postvars
@@ -156,24 +156,24 @@ class cs_discussion_detail_view extends cs_detail_view {
                // load from database
                //$form->setItem($subitem);
             }
-            
-            
+
+
             $clear_add_files = false;
             if($session_item->issetValue('back_to_discussion_detail_view_last_upload')) {
                if($session_item->getValue('back_to_discussion_detail_view_last_upload') != "new" . $_GET['answer_to']) {
                   $clear_add_files = true;
                }
             }
-            
+
             if($clear_add_files) {
                $session_item->unsetValue('discarticle_add_files');
             }
-            
+
             if($session_item->issetValue('discarticle_add_files')) {
                $form->setSessionFileArray($session_item->getValue('discarticle_add_files'));
             }
             unset($session_item);
-            
+
             $form->setDetailMode($number);
             $form->setRefPosition($father_position);
             $form->setDiscussionID($item->getItemID());
@@ -191,7 +191,7 @@ class cs_discussion_detail_view extends cs_detail_view {
             $form_view->setAction(curl($this->_environment->getCurrentContextID(),'discarticle','edit',$params));
             unset($params);
             $form_view->setForm($form);
-            
+
             $html .= $form_view->asHTML();
          } else if(isset($_GET['discarticle_iid'])) {
             $discarticle_iid = $_GET['discarticle_iid'];
@@ -206,7 +206,7 @@ class cs_discussion_detail_view extends cs_detail_view {
                $subitem = $subitems_list->getNext();
             }
             $pos = $subitem->getPosition();
-             
+
             $number_array = explode('.',$pos);
             $number = '';
             foreach($number_array as $num){
@@ -244,14 +244,14 @@ class cs_discussion_detail_view extends cs_detail_view {
                }
                $number = substr($number,0,strlen($number)-1);
             }
-            
+
             //////////////////////////////////////////////////////////////
-            
+
             $class_factory = $this->_environment->getClassFactory();
             $class_params = array();
             $class_params['environment'] = $this->_environment;
             $form = $class_factory->getClass(DISCARTICLE_FORM,$class_params);
-            
+
             $session_item = $this->_environment->getSessionItem();
             if($session_item->issetValue('back_to_discussion_detail_view_postvars')) {
                // load from postvars
@@ -262,23 +262,23 @@ class cs_discussion_detail_view extends cs_detail_view {
                // load from database
                $form->setItem($subitem);
             }
-            
+
             $clear_add_files = false;
             if($session_item->issetValue('back_to_discussion_detail_view_last_upload')) {
                if($session_item->getValue('back_to_discussion_detail_view_last_upload') != "edit" . $_GET['discarticle_iid']) {
                   $clear_add_files = true;
                }
             }
-            
+
             if($clear_add_files) {
                $session_item->unsetValue('discarticle_add_files');
             }
-            
+
             if($session_item->issetValue('discarticle_add_files')) {
                $form->setSessionFileArray($session_item->getValue('discarticle_add_files'));
             }
             unset($session_item);
-            
+
             $form->setDetailMode($number);
             $form->setDiscussionID($item->getItemID());
             unset($class_params);
@@ -294,7 +294,7 @@ class cs_discussion_detail_view extends cs_detail_view {
             $form_view->setAction(curl($this->_environment->getCurrentContextID(),'discarticle','edit',$params));
             unset($params);
             $form_view->setForm($form);
-            
+
             $html .= $form_view->asHTML();
          }
 
@@ -370,14 +370,14 @@ class cs_discussion_detail_view extends cs_detail_view {
    function _getItemAsHTMLThreadedWithJavaScript($item) {
       //$html = '<div id="discussion_tree" style="display: none">'.LF;
       $html = '<div id="discussion_tree">'.LF;
-       
+
       // build list of articles
       $last_position = 0;
       $subitems = $this->_subitems;
       $article = $subitems->getFirst();
-      
+
       $font_weight = 'normal';
-      
+
       while($article) {
          // files
          $fileicons = $this->_getItemFiles($article,true);
@@ -416,12 +416,12 @@ class cs_discussion_detail_view extends cs_detail_view {
                $max -= mb_strlen($this->_translator->getMessage('COMMON_CHANGED'));
             }
          }
-         
+
          // limit display length of subject
          if ($length > $max){
             $display_subject = mb_substr($display_subject,0,$max).'...';
          }
-         
+
          // limit display length of creator
          if(mb_strlen($creator_fullname) > 28) {
             $creator_fullname = mb_substr($creator_fullname, 0, 28) . '...';
@@ -463,7 +463,7 @@ class cs_discussion_detail_view extends cs_detail_view {
          } else {
             $html .= '<li>' . $this->_text_as_html_short($this->_compareWithSearchText($display_subject));
          }
-         
+
          if(!empty($new)) {
 	         $html .= '<a id="discussion_tree_' . $article->getItemID() . '_change_status_text" style="color:#545454; font-size:10pt; font-weight:' . $font_weight . ';"">';
 	         $html .= $new;
@@ -483,13 +483,13 @@ class cs_discussion_detail_view extends cs_detail_view {
 
          $article = $subitems->getNext();
       }
-       
+
       // close remaining lists
       while($position > 0) {
          $html .= '</ul>'.LF;
          $position--;
       }
-       
+
       $html .= '</div>'.LF;
       return $html;
    }
@@ -573,7 +573,7 @@ class cs_discussion_detail_view extends cs_detail_view {
 
          $position_length =  count(explode('.',$article->getPosition()));
          $display_subject = $article->getSubject();
-         
+
          // limit display text
          $length = mb_strlen($display_subject);
          $max = 28 - $position_length;
@@ -585,12 +585,12 @@ class cs_discussion_detail_view extends cs_detail_view {
                $max = $max-mb_strlen($this->_translator->getMessage('COMMON_CHANGED'));
             }
          }
-         
+
          // limit display length of subject
          if ($length > $max){
             $display_subject = mb_substr($display_subject,0,$max).'...';
          }
-         
+
          $hover = str_replace('"','&quot;',$this->_text_as_html_short($article->getSubject()));
          $em = $position_length-2;
          $old_postion_length = count(explode('.',$article_old->getPosition()));
@@ -732,6 +732,8 @@ class cs_discussion_detail_view extends cs_detail_view {
             if($session_item->issetValue('javascript')){
                if($session_item->getValue('javascript') == "1"){
                   $with_javascript = true;
+               }else{
+                  $with_javascript = false;
                }
             } else {
             	$with_javascript = true;
@@ -962,7 +964,7 @@ class cs_discussion_detail_view extends cs_detail_view {
          if(isset($_GET['answer_to'])) {
             $father_position = $_GET['ref_position'];
             $father_position_length = mb_strlen($father_position);
-             
+
             $max = 1000;
             $insert_after_id = 0;
             $subitems_list = clone($this->getSubItemList());
@@ -1352,7 +1354,7 @@ class cs_discussion_detail_view extends cs_detail_view {
       }
       return $file_list;
    }
-   
+
    /** get information for header as HTML
     * this method returns information in HTML-Code needs for the header of the HTML-Page
     *

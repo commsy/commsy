@@ -85,7 +85,7 @@ class cs_detail_view extends cs_view {
    var $_dropdown_rubrics_new = array();
 
    var $_tagBoxInitialized = false;
-   
+
    /** constructor: cs_detail_view
     * the only available constructor, initial values for internal variables
     *
@@ -1542,6 +1542,8 @@ class cs_detail_view extends cs_view {
             if($session_item->issetValue('javascript')){
                if($session_item->getValue('javascript') == "1"){
                   $with_javascript = true;
+               }else{
+                  $with_javascript = false;
                }
             } else {
             	$with_javascript = true;
@@ -3731,7 +3733,7 @@ class cs_detail_view extends cs_view {
       }
       return $html;
    }
-    
+
    /** get information for header as HTML
     * this method returns information in HTML-Code needs for the header of the HTML-Page
     *
