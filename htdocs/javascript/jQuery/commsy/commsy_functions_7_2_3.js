@@ -1468,7 +1468,7 @@ function delete_overlay(element, html_element, click_extra_action) {
 	        	    				
     	        	    			// get form of button
     	        	    			var form = jQuery("input[id='" + html_element.id + "']").parent();
-    	        	    			while(form[0].localName.substr(0, 4) != 'form') {
+    	        	    			while(form[0].nodeName.substr(0, 4) != 'FORM') {
     	        	    				form = form.parent();
     	        	    			}
     	        	    			
@@ -1689,8 +1689,8 @@ jQuery(document).ready(function() {
 			},
 			onClick: function(dtnode, event) {
 				// Hervorgehobenen Hintergrund verhindern, wenn nicht auf einen Link für einen Beitrag geklickt wird
-				if(	event.target.localName == 'img' ||
-						(event.target.localName == 'span' &&
+				if(	event.target.nodeName == 'IMG' ||
+						(event.target.nodeName == 'SPAN' &&
 						event.target.className != 'ui-dynatree-expander')) {
 					return false;
 				}
@@ -1699,11 +1699,11 @@ jQuery(document).ready(function() {
 				// set max tree depth
 				if(dtnode.getLevel() > 10) return false;
 				*/
-				
-				if(event.target.localName == 'a') {
-					event.target.click();
-					//jQuery(location).attr('href', event.target.href);
+				if(event.target.nodeName == 'A') {
+					jQuery(location).attr('href', event.target.href);
 				}
+				
+				return false;
 			}
 		});
 		
