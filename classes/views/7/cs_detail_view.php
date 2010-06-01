@@ -1537,6 +1537,7 @@ class cs_detail_view extends cs_view {
 
          /***********Tags*************/
          if ( $this->showTags() ) {
+         	$with_javascript = true;
             $html .= '<div class="commsy_panel" style="margin-bottom:1px;">'.LF;
             $session_item = $this->_environment->getSessionItem();
             if($session_item->issetValue('javascript')){

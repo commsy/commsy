@@ -728,6 +728,7 @@ class cs_discussion_detail_view extends cs_detail_view {
             // threaded view
 
             // check for javascript
+            $with_javascript = true;
             $session_item = $this->_environment->getSessionItem();
             if($session_item->issetValue('javascript')){
                if($session_item->getValue('javascript') == "1"){
