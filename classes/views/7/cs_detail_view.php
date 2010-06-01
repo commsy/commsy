@@ -1537,13 +1537,14 @@ class cs_detail_view extends cs_view {
 
          /***********Tags*************/
          if ( $this->showTags() ) {
-         	$with_javascript = true;
             $html .= '<div class="commsy_panel" style="margin-bottom:1px;">'.LF;
             $session_item = $this->_environment->getSessionItem();
             if($session_item->issetValue('javascript')){
                if($session_item->getValue('javascript') == "1"){
                   $with_javascript = true;
                }
+            } else {
+            	$with_javascript = true;
             }
             if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
               $with_javascript = false;
