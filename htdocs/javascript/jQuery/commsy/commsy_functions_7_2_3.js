@@ -1594,76 +1594,24 @@ jQuery(document).ready(function() {
 	});
 });
 
-function formatDiscussionTreeThreaded(flag, dtnode) {
-	// scale tree
-	jQuery('[id=discussion_tree] [id^=ui-dynatree-id-]').each(function() {
-		var span_container = jQuery(this);
-		
-		// store which elements we already calculated
-		if(typeof(formatDiscussionTreeThreaded.cache) == 'undefined') {
-			// initalize
-			formatDiscussionTreeThreaded.cache = new Array();
-		}
-		
-		// skip invisible
-		if(span_container.width() == 0 || span_container.css('display') == 'none') {
-			// continue
-			return true;
-		}
-		
-		// skip if cached
-		if(	jQuery.inArray(this.id, formatDiscussionTreeThreaded.cache) > -1 &&
-			'ui-dynatree-id-' + dtnode.data.key != this.id) {
-			// continue
-			return true;
-		}
-		
-		// get div width
-		var div_width = jQuery('[id^=discussion_tree]').width();
-		
-		// get width of tree icons
-		var tree_width = 0;
-		jQuery('[id=' + this.id + '] span[class^=ui-dynatree]').each(function() {
-			tree_width += jQuery(this).width();
-		});
-		
-		// get width of title(+icon)
-		var title_width = 0;
-		var count_icons = -2;
-		jQuery('[id=' + this.id + '] a[id=]').each(function() {
-			title_width += jQuery(this).width();
-			
-			count_icons++;
-		});
-		
-		if(count_icons > 0) {
-			title_width += 4;
-		}
-		for(var i=0	; i < count_icons; i++) {
-			title_width += 7;
-		}
-		
-		// get width of status text
-		var status_text_width = 0;
-		status_text_width = jQuery('[id=' + this.id + '] a[id*=change_status_text]').width();
-		if(status_text_width > 0 ) status_text_width += 3;
-		
-		// get width of creator
-		var creator_width = 0;
-		creator_width = jQuery('[id=' + this.id + '] a[id*=creator_text]').width();
-		
-		// calculate space beetween title and creator
-		var creator_space = (Math.floor(div_width / 5) * 2) - tree_width - title_width - status_text_width;
-		
-		// calculate space beetween creator and date
-		var date_space = (Math.floor(div_width / 5) * 4) - tree_width - title_width - creator_space - creator_width - status_text_width;
-		
-		// set spaces
-		jQuery('[id=' + this.id + '] img[id*=creator_space]').css('width', creator_space);
-		jQuery('[id=' + this.id + '] img[id*=date_space]').css('width', date_space);
-		
-		// set cache
-		formatDiscussionTreeThreaded.cache.push(this.id);
+function formatDiscussionTreeThreaded() {
+	// get div width
+	var div_width = jQuery('[id=discussion_tree]').width();
+	
+	// set all creator texts at 50%
+	var creator_width = (Math.floor(div_width / 2) * 1);
+	jQuery('[id=discussion_tree] [class=discussion_detail_view_threaded_tree_creator]').each(function() {
+		jQuery(this).css('position', 'absolute');
+		jQuery(this).css('display', 'inline');
+		jQuery(this).css('left', creator_width);
+	});
+	
+	// set all date texts at 85%
+	var date_width = (Math.floor(div_width / 20) * 17);
+	jQuery('[id=discussion_tree] [class=discussion_detail_view_threaded_tree_date]').each(function() {
+		jQuery(this).css('position', 'absolute');
+		jQuery(this).css('display', 'inline');
+		jQuery(this).css('left', date_width);
 	});
 }
 
@@ -1673,11 +1621,10 @@ jQuery(document).ready(function() {
 	if(tree.length){
 		jQuery.ui.dynatree.nodedatadefaults["icon"] = false;
 		
+		formatDiscussionTreeThreaded();
+		
 		tree.dynatree({
 			fx: { height: "toggle", duration: 200 },
-			onExpand: function(flag, dtnode) {
-				formatDiscussionTreeThreaded(flag, dtnode);
-			},
 			onActivate: function(dtnode) {
 				if(dtnode.data.url) {
 					try {
@@ -1701,9 +1648,9 @@ jQuery(document).ready(function() {
 				*/
 				if(event.target.nodeName == 'A') {
 					jQuery(location).attr('href', event.target.href);
+					
+					return false;
 				}
-				
-				return false;
 			}
 		});
 		
@@ -1728,8 +1675,5 @@ jQuery(document).ready(function() {
 		    	dtnode.focus();
 		    }
 		});
-		
-		// show
-		//jQuery('[id=discussion_tree]').slideDown('slow');
 	}
 });
