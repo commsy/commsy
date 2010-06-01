@@ -863,6 +863,12 @@ if ($current_user->isGuest()) {
           }
           $item->setDescriptionArray($description);
 
+       }elseif($item->isServer()){
+          if (!empty($_POST['description'])) {
+             $desc_array = array();
+             $desc_array['DE'] = $_POST['description'];
+             $item->setDescriptionArray($desc_array);
+          }
        }else{
        	  $description = $item->getDescription();
           if (!empty($_POST['description'])) {
