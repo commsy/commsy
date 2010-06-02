@@ -799,22 +799,26 @@ jQuery(document).ready(function() {
 		resize_calendar();
 		draw_dates();
 		jQuery('#calender_main')[0].scrollTo(321);
-		$(window).resize(function(){
-			//jQuery('#calender_frame').css('width', '100%');
-			//jQuery('#calender_main').css('width', '100%');
-			//jQuery('jScrollPaneContainer').width('100%');
-			resize_calendar();
-			draw_dates();
-		});
+//		$(window).resize(function(){
+//			//jQuery('#calender_frame').css('width', '100%');
+//			//jQuery('#calender_main').css('width', '100%');
+//			//jQuery('jScrollPaneContainer').width('100%');
+//			resize_calendar();
+//			draw_dates();
+//		});
 	}
 	if(jQuery('#calender_month_frame').length){
 		resize_calendar_month();
 		draw_dates_month();
-		$(window).resize(function(){
-			resize_calendar_month();
-			draw_dates_month();
-		});
+//		$(window).resize(function(){
+//			resize_calendar_month();
+//			draw_dates_month();
+//		});
 	}
+	
+	// set commsy body to a fixed size
+	var body_width = jQuery('[class=commsy_body]').width();
+	jQuery('[class=commsy_body]').css('width', body_width);
 });
 
 function resize_calendar(){
@@ -1675,5 +1679,9 @@ jQuery(document).ready(function() {
 		    	dtnode.focus();
 		    }
 		});
+		
+		// set commsy body to a fixed size
+		var body_width = jQuery('[class=commsy_body]').width();
+		jQuery('[class=commsy_body]').css('width', body_width);
 	}
 });

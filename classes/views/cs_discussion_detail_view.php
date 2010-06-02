@@ -465,19 +465,20 @@ class cs_discussion_detail_view extends cs_detail_view {
          }
 
          if(!empty($new)) {
-	         //$html .= '<a id="discussion_tree_' . $article->getItemID() . '_change_status_text" style="color:#545454; font-size:10pt; font-weight:' . $font_weight . ';"">';
-	         $html .= $new;
-	         //$html .= '</a>';
+	         //$html .= '<a id="discussion_tree_' . $article->getItemID() . '_change_status_text" style="color:#545454; font-size:10pt; font-weight:' . $font_weight . ';">';
+	         $html .= '<a style="color:#545454; font-size:10pt; font-weight:' . $font_weight . ';text-decoration:none;">';
+             $html .= $new;
+	         $html .= '</a>';
          }
          $html .= $fileicons.LF;
          //$html .= '<img id="discussion_tree_' . $article->getItemID() . '_creator_space" src="images/spacer.gif">';
          //$html .= '<a class="discussion_detail_view_threaded_tree_creator" id="discussion_tree_' . $article->getItemID() . '_creator_text" style="color:#545454; font-size:10pt; font-weight:' . $font_weight . ';text-decoration:none">';
-         $html .= '<a class="discussion_detail_view_threaded_tree_creator" style="color:#545454; font-size:10pt; font-weight:' . $font_weight . ';text-decoration:none">';
+         $html .= '<a class="discussion_detail_view_threaded_tree_creator" style="color:#545454; font-size:10pt; font-weight:' . $font_weight . '; text-decoration:none;">';
          $html .= $this->_text_as_html_short($this->_compareWithSearchText($creator_fullname))/*.'&nbsp;'*/.LF;
          $html .= '</a>';
 
          //$html .= '<img id="discussion_tree_' . $article->getItemID() . '_date_space" src="images/spacer.gif">';
-         $html .= '<a class="discussion_detail_view_threaded_tree_date" style="color:#545454; font-size:10pt; font-weight:' . $font_weight . ';text-decoration:none">';
+         $html .= '<a class="discussion_detail_view_threaded_tree_date" style="color:#545454; font-size:10pt; font-weight:' . $font_weight . '; text-decoration:none;">';
          $html .= $this->_text_as_html_short($this->_compareWithSearchText(getDateTimeInLang($article->getModificationDate(), false))).LF;
          $html .= '</a>';
 
