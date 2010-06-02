@@ -192,9 +192,8 @@ else {
 
    // Show form and/or save item
    else {
-      // Handle requests from discussion_detail_view
-      if(   !empty($_FILES['upload']['tmp_name']) &&
-            isset($_GET['back_to_discussion_detail_view']) &&
+      // Handle requests from discussion_detail_view   
+      if(   isset($_GET['back_to_discussion_detail_view']) &&
             !empty($command) &&
                !(isOption($command, $translator->getMessage('DISCARTICLE_SAVE_BUTTON')) ||
                isOption($command, $translator->getMessage('DISCARTICLE_CHANGE_BUTTON')))
