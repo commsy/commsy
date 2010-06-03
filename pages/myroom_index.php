@@ -96,6 +96,12 @@ if ( isset($_GET['sort']) ) {
    $sort = 'activity_rev';
 }
 
+$room_status = '';
+if ( isset($_GET['selroomstatus']) ) {
+   if ( $_GET['selroomstatus'] == 2 ) {
+      $room_status = 'archive';
+   }
+}
 
 $mode = 'browse';
 if ( !empty($ref_iid) or !empty($ref_user)) {
@@ -198,6 +204,11 @@ if ( isset($_GET['option']) and isOption($_GET['option'],$translator->getMessage
 }
 
 // Get data from database
+if ( !empty($room_status)
+     and $room_status == 'archive'
+   ) {
+   $environment->activateArchiveMode();
+}
 if ( !isset($room_type) ) {
    include_once('functions/error_functions.php');
    trigger_error('room_type not set',E_USER_ERROR);
@@ -207,6 +218,11 @@ if ( !isset($room_type) ) {
    $manager = $environment->getCommunityManager();
 } elseif ( $room_type == CS_MYROOM_TYPE) {
    $manager = $environment->getMyRoomManager();
+}
+if ( !empty($room_status)
+     and $room_status == 'archive'
+   ) {
+   $environment->deactivateArchiveMode();
 }
 
 $context_item = $environment->getCurrentContextItem();
@@ -501,6 +517,9 @@ $view->setSortKey($sort);
 $view->setSearchText($search);
 if ( $room_type == CS_PROJECT_TYPE and !empty($selcommunityroom) ) {
    $view->setSelectedCommunityRoom($selcommunityroom);
+}
+if ( !empty($_GET['selroomstatus']) ) {
+   $view->setSelectedRoomStatus($_GET['selroomstatus']);
 }
 
 $seltime_value = $seltime;

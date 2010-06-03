@@ -13,6 +13,7 @@ $message["ROOM_BUSINESS_CONTEXT_DESCRIPTION"]["de"] = "Die Rubriken lauten:
 <li>Gruppen</li>
 <li>Aufgaben</li>
 </ul>";
+$message["ROOM_CLOSED"]["de"] = "archiviert";
 $message["ROOM_CONTACT"]["de"] = "AnsprechpartnerInnen";
 $message["ROOM_CONTACT_SINGULAR"]["de"] = "AnsprechpartnerIn";
 $message["ROOM_CONTINUOUS_SINCE"]["de"] = "kontinuierlich seit";
@@ -80,6 +81,7 @@ $message["ROOM_JOIN_ERROR_IS_DENIED"]["de"] = "Sie haben sich bereits beim Raum 
 $message["ROOM_MEMBER_ADMIN"]["de"] = "Kennungen";
 $message["ROOM_MEMBER_ADMIN_DESC"]["de"] = "Hier können Sie Kennungen freischalten oder den Status von TeilnehmerInnen ändern.";
 $message["ROOM_NOT_LINKED"]["de"] = "nicht zugeordnet";
+$message["ROOM_ONGOING"]["de"] = "aktuell";
 $message["ROOM_SCHOOL_CONTEXT_DESCRIPTION"]["de"] = "Die Rubriken lauten:
 <ul>
 <li>Ankündigungen</li>

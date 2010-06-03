@@ -34,6 +34,8 @@ class cs_myroom_index_view extends cs_context_index_view {
 
    var $_selected_time = 0;
 
+   var $_selected_room_status = 0;
+
    /** constructor
     * the only available constructor, initial values for internal variables
     *
@@ -50,6 +52,14 @@ class cs_myroom_index_view extends cs_context_index_view {
 
    function setSelectedTime ($value) {
       $this->_selected_time = $value;
+   }
+
+   function getSelectedRoomStatus () {
+      return $this->_selected_room_status;
+   }
+
+   function setSelectedRoomStatus ($value) {
+      $this->_selected_room_status = $value;
    }
 
    function _getIndexPageHeaderAsHTML(){
@@ -229,47 +239,47 @@ class cs_myroom_index_view extends cs_context_index_view {
       for ($i=0; $i< 4; $i++){
          $html_array[$i] = '<div class="column" style="width:25%;">';
       }
-      
+
       $privateroom_item = $this->_environment->getCurrentContextItem();
       $column_array = $privateroom_item->getMyroomConfig();
-      
+
       if(!empty($column_array)){
-      	$list = $this->_list;
-      	$user = $this->_environment->getCurrentUserItem();
+         $list = $this->_list;
+         $user = $this->_environment->getCurrentUserItem();
          $column_count = 0;
          foreach($column_array as $column){
-         	foreach($column as $room_id){
-	         	$current_item = $list->getFirst();
-	            while ( $current_item ) {
-	               if($current_item->getItemID() == $room_id){
-	               	$html_text = '<div class="portlet">'.LF;
+            foreach($column as $room_id){
+               $current_item = $list->getFirst();
+               while ( $current_item ) {
+                  if($current_item->getItemID() == $room_id){
+                     $html_text = '<div class="portlet">'.LF;
                      $html_text .= $this->_getRoomWindowAsHTML($current_item);
                      $html_text .= '</div>'.LF;
                      $html_array[$column_count] .= $html_text;
-	               }
-	               $current_item = $list->getNext();
-	            }
-         	}
-         	$column_count++;
+                  }
+                  $current_item = $list->getNext();
+               }
+            }
+            $column_count++;
          }
       } else {
-	      $list = $this->_list;
-	      $user = $this->_environment->getCurrentUserItem();
-	      $column_count = 0;
-	      if ( isset($list)) {
-	         $current_item = $list->getFirst();
-	         while ( $current_item ) {
-	            if ($column_count == 4){
-	               $column_count = 0;
-	            }
-	            $html_text = '<div class="portlet">'.LF;
-	            $html_text .= $this->_getRoomWindowAsHTML($current_item);
-	            $html_text .= '</div>'.LF;
-	            $html_array[$column_count] .= $html_text;
-	            $column_count++;
-	            $current_item = $list->getNext();
-	         }
-	      }
+         $list = $this->_list;
+         $user = $this->_environment->getCurrentUserItem();
+         $column_count = 0;
+         if ( isset($list)) {
+            $current_item = $list->getFirst();
+            while ( $current_item ) {
+               if ($column_count == 4){
+                  $column_count = 0;
+               }
+               $html_text = '<div class="portlet">'.LF;
+               $html_text .= $this->_getRoomWindowAsHTML($current_item);
+               $html_text .= '</div>'.LF;
+               $html_array[$column_count] .= $html_text;
+               $column_count++;
+               $current_item = $list->getNext();
+            }
+         }
       }
       for ($i=0; $i< 4; $i++){
          $html_array[$i] .= '</div>';
@@ -297,7 +307,7 @@ class cs_myroom_index_view extends cs_context_index_view {
     }else{
       $html  = LF.'<!-- BEGIN OF LIST VIEW -->'.LF;
 
-       $html .= $this->_getIndexPageHeaderAsHTML();
+      $html .= $this->_getIndexPageHeaderAsHTML();
       /*****************************/
       /*******BEGIN RIGHT BOXES*****/
       /*****************************/
@@ -318,9 +328,11 @@ class cs_myroom_index_view extends cs_context_index_view {
          $tempMessage = $this->_translator->getMessage('MYROOM_INDEX');
          $html .= $this->_getListInfosAsHTML($tempMessage);
          $html .='</div>'.LF;
-#         $html .= '<div class="commsy_no_panel" style="margin-bottom:1px;">'.LF;
-#         $html .= $this->_getExpertSearchAsHTML();
-#         $html .='</div>'.LF;
+         if ( $current_context->isPrivateRoom() ) {
+            $html .= '<div class="commsy_no_panel" style="margin-bottom:1px;">'.LF;
+            $html .= $this->_getExpertSearchAsHTML();
+            $html .='</div>'.LF;
+         }
          $html .= '</form>'.LF;
 
          $html .='</div>'.LF;
@@ -401,11 +413,15 @@ class cs_myroom_index_view extends cs_context_index_view {
      $width = '235';
      $html .= '<div class="commsy_panel" style="margin-bottom:1px;">'.LF;
      $html .= '<div class="right_box">'.LF;
-     $html .= '         <noscript>';
+     #$html .= '         <noscript>';
      $html .= '<div class="right_box_title">'.$this->_translator->getMessage('COMMON_RESTRICTIONS').'</div>';
-     $html .= '         </noscript>';
+     #$html .= '         </noscript>';
      $html .= '<div class="right_box_main" style="padding-top:5px;">'.LF;
-     $html .= $this->_getAdditionalFormFieldsAsHTML().LF;
+     if ( $this->_environment->inPrivateRoom() ) {
+        $html .= $this->_getAdditionalFormFieldsAsHTML2().LF;
+     } else {
+        $html .= $this->_getAdditionalFormFieldsAsHTML().LF;
+     }
      $html .= '</div>'.LF;
      $html .= '</div>'.LF;
      $html .= '</div>'.LF;
@@ -454,13 +470,43 @@ class cs_myroom_index_view extends cs_context_index_view {
          }
          $text = $this->_translator->getMessage('USER_PROJECT_CONTACT_MODERATOR');
          $html .= '>'.$text.'</option>'.LF;
-
       }
+
       $html .= '   </select>'.LF;
       $html .='</div>';
       return $html;
    }
 
+   // in private room - OLD style
+   function _getAdditionalFormFieldsAsHTML2 ($field_length=14.5) {
+      $current_context = $this->_environment->getCurrentContextItem();
+      $session = $this->_environment->getSession();
+      $width = '235';
+      $context_item = $this->_environment->getCurrentContextItem();
+      $selroomstatus = $this->getSelectedRoomStatus();
+
+      $html = '<div class="infocolor" style="text-align:left; padding-bottom:5px; font-size: 10pt;">'.$this->_translator->getMessage('COMMON_STATUS').BRLF;
+      // STATUS SELECTION FIELD
+      // jQuery
+      $html .= '   <select name="selroomstatus" size="1" style="width: '.$width.'px; font-size:10pt; margin-bottom:5px;" id="submit_form">'.LF;
+      // jQuery
+      $html .= '      <option value="1"';
+      if ( empty($selroomstatus) || $selroomstatus == 1 ) {
+         $html .= ' selected="selected"';
+      }
+      $html .= '>*'.$this->_translator->getMessage('ROOM_ONGOING').'</option>'.LF;
+
+      $html .= '      <option value="2"';
+      if ( !empty($selroomstatus) and $selroomstatus == 2 ) {
+         $html .= ' selected="selected"';
+      }
+      $text = $this->_translator->getMessage('ROOM_CLOSED');
+      $html .= '>'.$text.'</option>'.LF;
+
+      $html .= '   </select>'.LF;
+      $html .='</div>';
+      return $html;
+   }
 
    function _getEditAction ( $item, $user, $module = '' ) {
       $html  = '';
@@ -746,7 +792,11 @@ class cs_myroom_index_view extends cs_context_index_view {
       // Get percentage of active members
       $active = $item->getActiveMembers($context->getTimeSpread());
       $all_users = $item->getAllUsers();
-      $percentage = round($active / $all_users * 100);
+      if ( !empty($active) and $active > 0 ) {
+         $percentage = round($active / $all_users * 100);
+      } else {
+         $percentage = 0;
+      }
       $html .= $this->_translator->getMessage('ACTIVITY_ACTIVE_MEMBERS').':'.BRLF;
       $html .= '         <div class="gauge'.$item->getItemID().'">'.LF;
       if ( $percentage >= 5 ) {
