@@ -683,7 +683,7 @@ $message["COMMON_TEXT_INCLUDING_MEDIA_TEXT"]["de"] = "<ol style=&quot;font-weigh
         <li>lfloat bzw. rfloat: Textumfluss von rechts bzw. links</li>
         <li>alt=TEXT: Beschriftung des Links</li>
         <li>alt='LANGER TEXT': mehr als ein Wort Beschriftung</li>
-        <li>width=ZAHL bzw. height = ZAHL: Breite bzw. Höhe in px</li>
+        <li>width=ZAHL bzw. height=ZAHL: Breite bzw. Höhe in px</li>
         <li>http://www.url.de/IMAGE: für Bilder direkt aus dem Internet</li>
     </ul>
     </li>
@@ -699,7 +699,7 @@ $message["COMMON_TEXT_INCLUDING_MEDIA_TEXT"]["de"] = "<ol style=&quot;font-weigh
     <li>Argumente:
     <ul>
         <li>lfloat bzw. rfloat: Textumfluss von rechts bzw. links</li>
-        <li>width=ZAHL bzw. height = ZAHL: Breite bzw. Höhe in px</li>
+        <li>width=ZAHL bzw. height=ZAHL: Breite bzw. Höhe in px</li>
         <li>play=true/false: automatischer Start (Standard ist false)</li>
         <li>http://www.url.de/DATEINAME: für Videos direkt aus dem Internet</li>
         <li>FILM-ID: ID aus der URL (z.B. http://de.youtube.com/watch?v=FILM-ID)</li>
@@ -714,7 +714,7 @@ $message["COMMON_TEXT_INCLUDING_MEDIA_TEXT"]["de"] = "<ol style=&quot;font-weigh
     <li>Argumente:
     <ul>
         <li>lfloat bzw. rfloat: Textumfluss von rechts bzw. links</li>
-        <li>width=ZAHL bzw. height = ZAHL: Breite bzw. Höhe in px</li>
+        <li>width=ZAHL bzw. height=ZAHL: Breite bzw. Höhe in px</li>
         <li>play=true/false: automatischer Start (Standard ist false)</li>
         <li>http://www.url.de/DATEINAME.mp3: für Musik direkt aus dem Internet</li>
     </ul>
