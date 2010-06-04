@@ -1921,7 +1921,8 @@ class cs_environment {
       global $_SERVER;
 
       $browser = array ( //reversed array
-         "OPERA",
+         "IPHONE",
+		 "OPERA",
          "MSIE",            // parent
          "NETSCAPE",
          "FIREFOX",
@@ -1944,6 +1945,11 @@ class cs_environment {
             $this->_browser_version = $version;
             break; // first match wins
          }
+      }
+      if($this->_browser == 'IPHONE'){
+      	// IPHONE Textarea ohne FCK-/ CK-Editor
+      	$currentContextItem = $this->getCurrentContextItem();
+      	$currentContextItem->setHtmlTextAreaStatus(3);
       }
    }
 
