@@ -1947,7 +1947,7 @@ class cs_environment {
          }
       }
       if($this->_browser == 'IPHONE'){
-      	// IPHONE Textarea ohne FCK-/ CK-Editor
+      	// IPHONE Textarea without FCK-/ CK-Editor
       	$currentContextItem = $this->getCurrentContextItem();
       	$currentContextItem->setHtmlTextAreaStatus(3);
       }
