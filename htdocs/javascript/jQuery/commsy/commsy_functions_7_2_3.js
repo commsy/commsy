@@ -1691,7 +1691,8 @@ jQuery(document).ready(function() {
 		var front_side = jQuery(this);
 		var id = jQuery(this).parent().parent().attr('id');
 		jQuery(this).click(function() {
-			var height = jQuery("#"+id).find('.portlet-content').height()+'px'
+			var height = jQuery("#"+id).find('.portlet-content').height()+'px';
+			var id_portlet = jQuery("#"+id).find('.portlet-content').find('div').attr('id');
 			jQuery("#"+id).flip({
 			   direction:'rl',
 			   content:jQuery("#"+id+"_preferences"),
@@ -1702,6 +1703,7 @@ jQuery(document).ready(function() {
 						jQuery("#"+id).revertFlip();
 					 });
 					 jQuery(this).parent().parent().find('.portlet-content').css('height', height);
+					 jQuery(this).parent().parent().find('.portlet-content').append(jQuery('<div id="'+id_portlet+'"></div>'));
 				  });
 			   }
 			});
