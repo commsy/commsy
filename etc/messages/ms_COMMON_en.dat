@@ -454,6 +454,7 @@ $message["COMMON_NEW_F"]["en"] = "new";
 $message["COMMON_NEW_F_BIG"]["en"] = "new";
 $message["COMMON_NEW_GROUP_EDIT"]["en"] = "Create new group";
 $message["COMMON_NEW_ITEM"]["en"] = "Add new item";
+$message["COMMON_NEW_ITEM_PORTLET"]["en"] = "New item";
 $message["COMMON_NEW_M"]["en"] = "new";
 $message["COMMON_NEW_MATERIAL"]["en"] = "Add material";
 $message["COMMON_NEW_MATERIAL_EDIT"]["en"] = "Create new material";

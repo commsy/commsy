@@ -234,6 +234,13 @@ $class_config[$class_name]['filename'] = $class_name.'.php';
 $class_config[$class_name]['folder'] = $main_folder.$view_folder;
 $class_config[$class_name]['switchable'] = false;
 
+$class_name = 'cs_privateroom_home_new_item_view';
+define('PRIVATEROOM_HOME_NEW_ITEM_VIEW',$class_name);
+$class_config[$class_name]['name'] = $class_name;
+$class_config[$class_name]['filename'] = $class_name.'.php';
+$class_config[$class_name]['folder'] = $main_folder.$view_folder;
+$class_config[$class_name]['switchable'] = false;
+
 /*************INDEX**************/
 
 $class_name = 'cs_announcement_index_view';

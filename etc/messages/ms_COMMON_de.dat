@@ -464,6 +464,7 @@ $message["COMMON_NEW_F"]["de"] = "neue";
 $message["COMMON_NEW_F_BIG"]["de"] = "Neue";
 $message["COMMON_NEW_GROUP_EDIT"]["de"] = "Neue Gruppe erstellen";
 $message["COMMON_NEW_ITEM"]["de"] = "Neuen Eintrag erstellen";
+$message["COMMON_NEW_ITEM_PORTLET"]["de"] = "Neuer Eintrag";
 $message["COMMON_NEW_M"]["de"] = "neuer";
 $message["COMMON_NEW_MATERIAL"]["de"] = "Neuen Eintrag erstellen";
 $message["COMMON_NEW_MATERIAL_EDIT"]["de"] = "Neues Material erstellen";

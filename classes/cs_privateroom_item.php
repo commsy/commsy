@@ -1363,6 +1363,24 @@ class cs_privateroom_item extends cs_room_item {
    }
 
    
+   function setPortletShowNewItem () {
+      $this->_addExtra('PORTLET_SHOW_NEW_ITEM','1');
+   }
+   function unsetPortletShowNewItem () {
+      $this->_addExtra('PORTLET_SHOW_NEW_ITEM','-1');
+   }
+
+   function getPortletShowNewItem () {
+      $retour = true;
+      if ($this->_issetExtra('PORTLET_SHOW_NEW_ITEM')) {
+         if($this->_getExtra('PORTLET_SHOW_NEW_ITEM') == '-1'){
+            $retour = false;
+         }
+      }
+      return $retour;
+   }
+   
+   
    function setHomeConfig ($column_array) {
       $this->_addExtra('HOME_CONFIG',$column_array);
    }

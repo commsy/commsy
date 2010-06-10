@@ -250,6 +250,16 @@ if ($current_context->getPortletShowYouTube()){
 }
 /* END YOUTUBE */
 
+/* NEW_ITEM */
+if ($current_context->getPortletShowNewItem()){
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = $current_context->isOpen();
+   $search_view = $class_factory->getClass(PRIVATEROOM_HOME_NEW_ITEM_VIEW,$params);
+   unset($params);
+   $portlet_array[] = $search_view;
+}
+/* NEW_ITEM END */
 
 $portlet_view->setPortletViewArray($portlet_array);
 
