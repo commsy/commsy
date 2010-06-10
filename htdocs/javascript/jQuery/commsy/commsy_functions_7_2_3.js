@@ -1697,6 +1697,7 @@ jQuery(document).ready(function() {
 			   direction:'rl',
 			   content:jQuery("#"+id+"_preferences"),
 			   color: '#FFFFFF',
+			   speed: 300,
 			   onEnd: function(){
 				  jQuery("#"+id).find('a').each(function(){
 					 jQuery(this).click(function(){
