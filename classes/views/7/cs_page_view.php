@@ -605,7 +605,7 @@ class cs_page_view extends cs_view {
 #         $retour .= '<script type="text/javascript" src="javascript/jQuery/ajaxrotator/src/jquery.ctrotator.bridge.rss20.js"></script>'.LF;
          $retour .= '<script type="text/javascript" src="javascript/jQuery/ajaxrotator/src/jquery.ctrotator.js"></script>'.LF;
 
-#         $retour .= '<script type="text/javascript" src="javascript/jQuery/jquery.flip.0-9-9/jquery.flip.min.js"></script>'.LF;
+         $retour .= '<script type="text/javascript" src="javascript/jQuery/jquery.flip.0-9-9/jquery.flip.min.js"></script>'.LF;
 
       }
       /*********/

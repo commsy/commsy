@@ -1685,3 +1685,24 @@ jQuery(document).ready(function() {
 		jQuery('[class=commsy_body]').css('width', body_width);
 	}
 });
+
+jQuery(document).ready(function() {
+	jQuery("[name=portlet_preferences]").each(function (i) {
+		var front_side = jQuery(this);
+		var id = jQuery(this).parent().parent().attr('id');
+		jQuery(this).click(function() {
+			jQuery("#"+id).flip({
+			   direction:'rl',
+			   content:jQuery("#"+id+"_preferences"),
+			   color: '#FFFFFF',
+			   onEnd: function(){
+				  jQuery("#"+id).find('a').each(function(){
+					 jQuery(this).click(function(){
+						jQuery("#"+id).revertFlip();
+					 });
+				  });
+			   }
+			});
+		})
+	})
+});
