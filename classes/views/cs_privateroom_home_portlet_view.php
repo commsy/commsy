@@ -146,13 +146,13 @@ class cs_privateroom_home_portlet_view extends cs_view{
       $html  = '<div class="portlet" id="'.$temp_name.'">'.LF;
       $html .= '<div class="portlet-header">'.$title.'</div>'.LF;
       $html .= '<div class="portlet-content">'.$content.'</div>'.LF;
-      $html .= '<div class="portlet-turn"><a href="#" name="portlet_preferences">Einstellungen</a></div>'.LF;
+      $html .= '<div class="portlet-turn" style="float:right;"><a name="portlet_preferences" style="cursor:pointer;"><img src="images/commsyicons/preferences_icon.png"/></a>&nbsp;</div>'.LF;
       $html .= '</div>'.LF;
       
       $html .= '<div class="portlet" style="display:none;" id="'.$temp_name.'_preferences">'.LF;
-      $html .= '<div class="portlet-header">Einstellungen</div>'.LF;
+      $html .= '<div class="portlet-header">'.$title.' - Einstellungen</div>'.LF;
       $html .= '<div class="portlet-content">'.$title.'...</div>'.LF;
-      $html .= '<div class="portlet-turn"><a href="#" name="portlet_preferences_back_button">Zurück</a></div>'.LF;
+      $html .= '<div class="portlet-turn" style="float:right;"><a name="portlet_preferences_back_button" style="cursor:pointer;"><img src="images/commsyicons/preferences_icon.png"/></a>&nbsp;</div>'.LF;
       $html .= '</div>'.LF;
       return $html;
    }

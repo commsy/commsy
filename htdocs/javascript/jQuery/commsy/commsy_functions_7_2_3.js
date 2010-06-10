@@ -1691,6 +1691,7 @@ jQuery(document).ready(function() {
 		var front_side = jQuery(this);
 		var id = jQuery(this).parent().parent().attr('id');
 		jQuery(this).click(function() {
+			var height = jQuery("#"+id).find('.portlet-content').height()+'px'
 			jQuery("#"+id).flip({
 			   direction:'rl',
 			   content:jQuery("#"+id+"_preferences"),
@@ -1700,6 +1701,7 @@ jQuery(document).ready(function() {
 					 jQuery(this).click(function(){
 						jQuery("#"+id).revertFlip();
 					 });
+					 jQuery(this).parent().parent().find('.portlet-content').css('height', height);
 				  });
 			   }
 			});
