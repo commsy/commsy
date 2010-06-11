@@ -259,14 +259,16 @@ if ($mode == '') {
             $noticed_manager = $environment->getNoticedManager();
             foreach ($selected_ids as $id) {
                $topic_item = $topic_manager->getItem($id);
-               $version_id = $topic_item->getVersionID();
-               $noticed_manager->markNoticed($id, $version_id );
-               $annotation_list =$topic_item->getAnnotationList();
-               if ( !empty($annotation_list) ){
-                  $annotation_item = $annotation_list->getFirst();
-                  while($annotation_item){
-                     $noticed_manager->markNoticed($annotation_item->getItemID(),'0');
-                     $annotation_item = $annotation_list->getNext();
+               if ( isset($topic_item) ) {
+                  $version_id = $topic_item->getVersionID();
+                  $noticed_manager->markNoticed($id, $version_id );
+                  $annotation_list = $topic_item->getAnnotationList();
+                  if ( !empty($annotation_list) ){
+                     $annotation_item = $annotation_list->getFirst();
+                     while($annotation_item){
+                        $noticed_manager->markNoticed($annotation_item->getItemID(),'0');
+                        $annotation_item = $annotation_list->getNext();
+                     }
                   }
                }
             }

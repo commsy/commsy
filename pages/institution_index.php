@@ -45,7 +45,7 @@ if (isset($_GET['back_to_index']) and $session->issetValue('cid'.$environment->g
    $params['seltopic'] = $index_search_parameter_array['seltopic'];
    $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index_parameter_array');
    $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index');
-   
+
    redirect($environment->getCurrentContextID(),$environment->getCurrentModule(), 'index', $params);
 }
 
@@ -239,14 +239,16 @@ if ($mode == '') {
             $noticed_manager = $environment->getNoticedManager();
             foreach ($selected_ids as $id) {
                $institution_item = $institution_manager->getItem($id);
-               $version_id = $institution_item->getVersionID();
-               $noticed_manager->markNoticed($id, $version_id );
-               $annotation_list =$institution_item->getAnnotationList();
-               if ( !empty($annotation_list) ){
-                  $annotation_item = $annotation_list->getFirst();
-                  while($annotation_item){
-                     $noticed_manager->markNoticed($annotation_item->getItemID(),'0');
-                     $annotation_item = $annotation_list->getNext();
+               if ( isset($institution_item) ) {
+                  $version_id = $institution_item->getVersionID();
+                  $noticed_manager->markNoticed($id, $version_id );
+                  $annotation_list =$institution_item->getAnnotationList();
+                  if ( !empty($annotation_list) ){
+                     $annotation_item = $annotation_list->getFirst();
+                     while($annotation_item){
+                        $noticed_manager->markNoticed($annotation_item->getItemID(),'0');
+                        $annotation_item = $annotation_list->getNext();
+                     }
                   }
                }
             }
