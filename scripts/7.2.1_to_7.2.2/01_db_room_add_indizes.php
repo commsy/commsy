@@ -38,12 +38,12 @@ if ( !$this->_existsIndex('room','deletion_date') ) {
 }
 
 if ( !$this->_existsIndex('zzz_room','deleter_id') ) {
-   $sql = "ALTER TABLE room ADD INDEX ( deleter_id );";
+   $sql = "ALTER TABLE zzz_room ADD INDEX ( deleter_id );";
    $success = $success AND $this->_select($sql);
 }
 
 if ( !$this->_existsIndex('zzz_room','deletion_date') ) {
-   $sql = "ALTER TABLE room ADD INDEX ( deletion_date );";
+   $sql = "ALTER TABLE zzz_room ADD INDEX ( deletion_date );";
    $success = $success AND $this->_select($sql);
 }
 
