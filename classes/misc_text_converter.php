@@ -2063,7 +2063,7 @@ class misc_text_converter {
          $source = $array[1].$array[2];
          $ext = cs_strtolower(mb_substr(strrchr($source,'.'),1));
       }
-      $source = $source.'&SID='.$this->_environment->getSessionID();
+      $source = $source.'&amp;SID='.$this->_environment->getSessionID();
       
       if ( !empty($array[3]) ) {
          $args = $this->_parseArgs($array[3]);
