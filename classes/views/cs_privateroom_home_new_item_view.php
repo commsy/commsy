@@ -69,5 +69,9 @@ class cs_privateroom_home_new_item_view extends cs_view {
       $html .= '</div>'.LF;
       return $html;
    }
+   
+   function getPreferencesAsHTML(){
+      return 'getPreferencesAsHTML()';
+   }
 }
 ?>

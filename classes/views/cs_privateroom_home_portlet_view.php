@@ -113,7 +113,7 @@ class cs_privateroom_home_portlet_view extends cs_view{
 	      	foreach($temp_column_config as $portlet_class){
 	      		foreach ($portlet_array as $portlet){
 	      			if($portlet['class'] == $portlet_class){
-	      				$html_array[$i] .= $this->_getPortletAsHTML($portlet['title'],$portlet['content']);
+	      				$html_array[$i] .= $this->_getPortletAsHTML($portlet['title'],$portlet['content'],$portlet['preferences']);
 	      			}
 	      		}
 	      	}
@@ -123,7 +123,7 @@ class cs_privateroom_home_portlet_view extends cs_view{
 	         if ($column_count == $columns){
 	            $column_count = 0;
 	         }
-	         $html_array[$column_count] .= $this->_getPortletAsHTML($portlet['title'],$portlet['content']);
+	         $html_array[$column_count] .= $this->_getPortletAsHTML($portlet['title'],$portlet['content'],$portlet['preferences']);
 #            $html_array[$column_count % $columns] .= $this->_getPortletAsHTML($portlet['title'],$portlet['content']);
 	         $column_count++;
 	      }	
@@ -140,20 +140,24 @@ class cs_privateroom_home_portlet_view extends cs_view{
 
    }
 
-   function _getPortletAsHTML($title,$content){
+   function _getPortletAsHTML($title,$content,$preferences){
    	$temp_name = str_ireplace(' ', '_', $title);
    	
       $html  = '<div class="portlet" id="'.$temp_name.'">'.LF;
       $html .= '<div class="portlet-header">'.$title.'</div>'.LF;
       $html .= '<div class="portlet-content">'.$content.'</div>'.LF;
-      $html .= '<div class="portlet-turn" style="float:right;"><a name="portlet_preferences" style="cursor:pointer;"><img src="images/config_home.png"/></a>&nbsp;</div>'.LF;
+      if(isset($preferences) and !empty($preferences)){
+         $html .= '<div class="portlet-turn" style="float:right;"><a name="portlet_preferences" style="cursor:pointer;"><img src="images/config_home.png"/></a>&nbsp;</div>'.LF;
+      }
       $html .= '</div>'.LF;
       
-      $html .= '<div class="portlet" style="display:none;" id="'.$temp_name.'_preferences">'.LF;
-      $html .= '<div class="portlet-header">'.$title.' - Einstellungen</div>'.LF;
-      $html .= '<div class="portlet-content">'.$title.'...</div>'.LF;
-      $html .= '<div class="portlet-turn" style="float:right;"><a name="portlet_preferences_back_button" style="cursor:pointer;"><img src="images/commsyicons/16x16/room.png" height="18" width="18"/></a>&nbsp;</div>'.LF;
-      $html .= '</div>'.LF;
+      if(isset($preferences) and !empty($preferences)){
+         $html .= '<div class="portlet" style="display:none;" id="'.$temp_name.'_preferences">'.LF;
+         $html .= '<div class="portlet-header">'.$title.' - Einstellungen</div>'.LF;
+         $html .= '<div class="portlet-content">'.$preferences.'...</div>'.LF;
+         $html .= '<div class="portlet-turn" style="float:right;"><a name="portlet_preferences_back_button" style="cursor:pointer;"><img src="images/commsyicons/16x16/room.png" height="18" width="18"/></a>&nbsp;</div>'.LF;
+         $html .= '</div>'.LF;
+      }
       return $html;
    }
 
@@ -173,6 +177,7 @@ class cs_privateroom_home_portlet_view extends cs_view{
       	$tmp_array['class'] = get_class($portlet_view);
          $tmp_array['title'] = $portlet_view->getViewTitle();
          $tmp_array['content'] = $portlet_view->asHTML();
+         $tmp_array['preferences'] = $portlet_view->getPreferencesAsHTML();
          $portlet_array[] = $tmp_array;
       }
 

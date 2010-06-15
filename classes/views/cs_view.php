@@ -387,5 +387,9 @@ class cs_view {
       }
       return $info_text;
    }
+   
+   function getPreferencesAsHTML(){
+      return '';
+   }
 }
 ?>
