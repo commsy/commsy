@@ -23,7 +23,7 @@
 //    along with CommSy.
 
 
-if (isset($c_use_new_private_room) and $c_use_new_private_room){
+if (isset($c_use_new_private_room) and $c_use_new_private_room and $environment->inPrivateRoom()){
 
 include_once('classes/cs_list.php');
 
