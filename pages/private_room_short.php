@@ -251,7 +251,7 @@ if ($current_context->getPortletShowYouTube()){
 /* END YOUTUBE */
 
 /* NEW_ITEM */
-if ($current_context->getPortletShowNewItem()){
+if ($current_context->getPortletShowNewItemBox()){
    $params = array();
    $params['environment'] = $environment;
    $params['with_modifying_actions'] = $current_context->isOpen();

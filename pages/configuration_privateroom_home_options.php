@@ -200,6 +200,12 @@ else {
          }else{
             $item->unsetPortletShowConfigurationBox();
          }
+         
+         if ( isset($_POST['new_item_box']) and !empty($_POST['new_item_box']) ) {
+            $item->setPortletShowNewItemBox();
+         }else{
+            $item->unsetPortletShowNewItemBox();
+         }
 
          if ( isset($_POST['weather_box']) and !empty($_POST['weather_box']) ) {
             $item->setPortletShowWeatherBox();
