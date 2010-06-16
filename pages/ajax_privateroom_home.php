@@ -34,9 +34,9 @@ if(isset($_GET['do'])){
 				$column_array[] = $_GET[$get_key];
 			}
 		}
-      debugToFile($column_array);
       $privateroom_item = $environment->getCurrentContextItem();
       $privateroom_item->setHomeConfig($column_array);
+      $privateroom_item->updateHomeConfiguration($column_array);
       $privateroom_item->save();
 	} elseif($_GET['do'] == 'get_config'){
       #$privateroom_item = $environment->getCurrentContextItem();

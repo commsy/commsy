@@ -154,13 +154,26 @@ else {
          $item->setModificatorItem($current_user);
          $item->setModificationDate(getCurrentDateTimeInMySQL());
 
-
+         $home_config_array = $item->getHomeConfig();
+         $portlet_array = array();
+         foreach($home_config_array as $column){
+            foreach($column as $column_entry){
+               if(($column_entry != 'null') && ($column_entry != 'empty')){
+                  $portlet_array[] = $column_entry;
+               }
+            }
+         }
+         $add_to_home_config_array = array();
+         
          if ( isset($_POST['column_count']) and !empty($_POST['column_count']) ) {
             $item->setPortletColumnCount($_POST['column_count']);
          }
 
          if ( isset($_POST['new_entry_list']) and !empty($_POST['new_entry_list']) ) {
             $item->setPortletShowNewEntryList();
+	         if(!in_array('cs_privateroom_home_new_entries_view', $portlet_array)){
+	            $add_to_home_config_array[] = 'cs_privateroom_home_new_entries_view';
+	         }
          }else{
             $item->unsetPortletShowNewEntryList();
          }
@@ -170,6 +183,9 @@ else {
 
          if ( isset($_POST['active_rooms']) and !empty($_POST['active_rooms']) ) {
             $item->setPortletShowActiveRoomList();
+	         if(!in_array('cs_privateroom_home_room_view', $portlet_array)){
+	           $add_to_home_config_array[] = 'cs_privateroom_home_room_view';
+	         }
          }else{
             $item->unsetPortletShowActiveRoomList();
          }
@@ -179,48 +195,72 @@ else {
 
          if ( isset($_POST['search_box']) and !empty($_POST['search_box']) ) {
             $item->setPortletShowSearchBox();
+	         if(!in_array('cs_privateroom_home_search_view', $portlet_array)){
+	            $add_to_home_config_array[] = 'cs_privateroom_home_search_view';
+	         }
          }else{
             $item->unsetPortletShowSearchBox();
          }
 
          if ( isset($_POST['dokuverser_box']) and !empty($_POST['dokuverser_box']) ) {
             $item->setPortletShowDokuverserBox();
+	         if(!in_array('cs_privateroom_home_dokuverser_view', $portlet_array)){
+	            $add_to_home_config_array[] = 'cs_privateroom_home_dokuverser_view';
+	         }
          }else{
             $item->unsetPortletShowDokuverserBox();
          }
 
          if ( isset($_POST['buzzword_box']) and !empty($_POST['buzzword_box']) ) {
             $item->setPortletShowBuzzwordBox();
+	         if(!in_array('cs_privateroom_home_buzzword_view', $portlet_array)){
+	            $add_to_home_config_array[] = 'cs_privateroom_home_buzzword_view';
+	         }
          }else{
             $item->unsetPortletShowBuzzwordBox();
          }
 
          if ( isset($_POST['configuration_box']) and !empty($_POST['configuration_box']) ) {
             $item->setPortletShowConfigurationBox();
+	         if(!in_array('cs_privateroom_home_configuration_view', $portlet_array)){
+	            $add_to_home_config_array[] = 'cs_privateroom_home_configuration_view';
+	         }
          }else{
             $item->unsetPortletShowConfigurationBox();
          }
          
          if ( isset($_POST['new_item_box']) and !empty($_POST['new_item_box']) ) {
             $item->setPortletShowNewItemBox();
+	         if(!in_array('cs_privateroom_home_new_item_view', $portlet_array)){
+	            $add_to_home_config_array[] = 'cs_privateroom_home_new_item_view';
+	         }
          }else{
             $item->unsetPortletShowNewItemBox();
          }
 
          if ( isset($_POST['weather_box']) and !empty($_POST['weather_box']) ) {
             $item->setPortletShowWeatherBox();
+	         if(!in_array('cs_privateroom_home_weather_view', $portlet_array)){
+	            $add_to_home_config_array[] = 'cs_privateroom_home_weather_view';
+	         }
          }else{
             $item->unsetPortletShowWeatherBox();
          }
 
          if ( isset($_POST['clock_box']) and !empty($_POST['clock_box']) ) {
             $item->setPortletShowClockBox();
+	         if(!in_array('cs_privateroom_home_clock_view', $portlet_array)){
+	            $add_to_home_config_array[] = 'cs_privateroom_home_clock_view';
+	         }
          }else{
             $item->unsetPortletShowClockBox();
          }
 
          if ( isset($_POST['twitter']) and !empty($_POST['twitter']) ) {
             $item->setPortletShowTwitter();
+	         if(!in_array('cs_privateroom_home_twitter_view', $portlet_array)){
+	            $add_to_home_config_array[] = 'cs_privateroom_home_twitter_view';
+	         }
          }else{
             $item->unsetPortletShowTwitter();
          }
@@ -231,6 +271,9 @@ else {
 
          if ( isset($_POST['youtube']) and !empty($_POST['youtube']) ) {
             $item->setPortletShowYouTube();
+	         if(!in_array('cs_privateroom_home_youtube_view', $portlet_array)){
+	            $add_to_home_config_array[] = 'cs_privateroom_home_youtube_view';
+	         }
          }else{
             $item->unsetPortletShowYouTube();
          }
@@ -240,6 +283,9 @@ else {
 
          if ( isset($_POST['flickr']) and !empty($_POST['flickr']) ) {
             $item->setPortletShowFlickr();
+	         if(!in_array('cs_privateroom_home_flickr_view', $portlet_array)){
+	            $add_to_home_config_array[] = 'cs_privateroom_home_flickr_view';
+	         }
          }else{
             $item->unsetPortletShowFlickr();
          }
@@ -249,6 +295,9 @@ else {
 
          if ( isset($_POST['show_rss']) and !empty($_POST['show_rss']) ) {
             $item->setPortletShowRSS();
+	         if(!in_array('cs_privateroom_home_rss_ticker_view', $portlet_array)){
+	            $add_to_home_config_array[] = 'cs_privateroom_home_rss_ticker_view';
+	         }
          }else{
             $item->unsetPortletShowRSS();
          }
@@ -279,7 +328,20 @@ else {
          }
          $item->setPortletRSSArray($portlet_rss_array);
 
-
+         foreach($add_to_home_config_array as $add_to_home_portlet){
+	         $smallest = 0;
+	         $size = sizeof($home_config_array[0]);
+	         foreach($home_config_array as $key => $column){
+	         	if((sizeof($column) < $size) and ($column[0] != 'null') and ($column[0] != 'empty')){
+	         		$smallest = $key;
+	         		$size = sizeof($column);
+	         	}
+	         }
+	         $home_config_array[$smallest][] = $add_to_home_portlet;
+         }
+         
+         $item->setHomeConfig($home_config_array);
+         
          $item->save();
          $session->unsetValue($current_iid.'_add_rss');
 

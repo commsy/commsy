@@ -1405,6 +1405,95 @@ class cs_privateroom_item extends cs_room_item {
       return $retour;
    }
    
+   function updateHomeConfiguration($column_array){
+   	$portlet_array = array();
+   	foreach($column_array as $column){
+   		foreach($column as $column_entry){
+   			if(($column_entry != 'null') && ($column_entry != 'empty')){
+   				$portlet_array[] = $column_entry;
+   			}
+   		}
+   	}
+   	if(in_array('cs_privateroom_home_buzzword_view', $portlet_array)){
+   		$this->setPortletShowBuzzwordBox();
+   	} else {
+   		$this->unsetPortletShowBuzzwordBox();
+   	}
+   	
+      if(in_array('cs_privateroom_home_configuration_view', $portlet_array)){
+         $this->setPortletShowConfigurationBox();
+      } else {
+         $this->unsetPortletShowConfigurationBox();
+      }
+      
+      if(in_array('cs_privateroom_home_clock_view', $portlet_array)){
+         $this->setPortletShowClockBox();
+      } else {
+         $this->unsetPortletShowClockBox();
+      }
+      
+      if(in_array('cs_privateroom_home_rss_ticker_view', $portlet_array)){
+         $this->setPortletShowRSS();
+      } else {
+         $this->unsetPortletShowRSS();
+      }
+      
+      if(in_array('cs_privateroom_home_dokuverser_view', $portlet_array)){
+         $this->setPortletShowDokuverserBox();
+      } else {
+         $this->unsetPortletShowDokuverserBox();
+      }
+      
+      if(in_array('cs_privateroom_home_twitter_view', $portlet_array)){
+         $this->setPortletShowTwitter();
+      } else {
+         $this->unsetPortletShowTwitter();
+      }
+      
+      if(in_array('cs_privateroom_home_youtube_view', $portlet_array)){
+         $this->setPortletShowYouTube();
+      } else {
+         $this->unsetPortletShowYouTube();
+      }
+      
+      if(in_array('cs_privateroom_home_flickr_view', $portlet_array)){
+         $this->setPortletShowFlickr();
+      } else {
+         $this->unsetPortletShowFlickr();
+      }
+      
+      if(in_array('cs_privateroom_home_room_view', $portlet_array)){
+         $this->setPortletShowActiveRoomList();
+      } else {
+         $this->unsetPortletShowActiveRoomList();
+      }
+      
+      if(in_array('cs_privateroom_home_new_entries_view', $portlet_array)){
+         $this->setPortletShowNewEntryList();
+      } else {
+         $this->unsetPortletShowNewEntryList();
+      }
+      
+      if(in_array('cs_privateroom_home_weather_view', $portlet_array)){
+         $this->setPortletShowWeatherBox();
+      } else {
+         $this->unsetPortletShowWeatherBox();
+      }
+      
+      if(in_array('cs_privateroom_home_search_view', $portlet_array)){
+         $this->setPortletShowSearchBox();
+      } else {
+         $this->unsetPortletShowSearchBox();
+      }
+      
+      if(in_array('cs_privateroom_home_new_item_view', $portlet_array)){
+         $this->setPortletShowNewItemBox();
+      } else {
+         $this->unsetPortletShowNewItemBox();
+      }
+
+   }
+   
    /* END OF PORTLET FUNCTIONS
     * *****************
     */
