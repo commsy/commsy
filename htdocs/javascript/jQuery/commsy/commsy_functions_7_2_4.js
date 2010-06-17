@@ -1715,6 +1715,8 @@ jQuery(document).ready(function() {
 		jQuery(this).click(function() {
 			jQuery('#'+id).remove();
 			
+			// TODO: Haken im DropDown-Menu entfernen!
+			
 			var json_data = new Object();
 		    var portlet_columns = jQuery(".column");
 		    for ( var int = 0; int < portlet_columns.length; int++) {
@@ -1744,3 +1746,155 @@ jQuery(document).ready(function() {
 		});
 	});
 });
+
+jQuery(document).ready(function() {
+	if(typeof(dropDownPortlets) !== 'undefined'){
+		if(dropDownPortlets.length){
+			// how many different menus?
+			var dropdown_menus = new Array();
+			for ( var int = 0; int < dropDownPortlets.length; int++) {
+				var tempDropDownMenu = dropDownPortlets[int];
+				var tempImage = tempDropDownMenu[0];
+				var in_array = false;
+				for ( var int2 = 0; int2 < dropdown_menus.length; int2++) {
+					var array_element = dropdown_menus[int2];
+					if(array_element == tempImage){
+						in_array = true;
+					}
+				}
+				if(!in_array){
+					dropdown_menus.push(tempImage);
+				}
+			}
+
+			// sort menu_entries to menus
+			for ( var int3 = 0; int3 < dropdown_menus.length; int3++) {
+				var current_menu = dropdown_menus[int3];
+
+				var tempImage = current_menu;
+				var disabled = false;
+				if (jQuery('#'+tempImage).length){
+					var image = jQuery('#'+tempImage);
+				} else if (jQuery('#'+tempImage+'_disabled').length){
+					var image = jQuery('#'+tempImage+'_disabled');
+					disabled = true;
+				}
+				image.attr('id',image.attr('id')+'_dropdown_menu_'+int3);
+				image.attr('alt','');
+				image.parent().attr('title','');
+
+				var button = jQuery('<img id="dropdown_button_'+int3+'" src="images/commsyicons/dropdownmenu.png" />');
+
+				var html = jQuery('<div id="dropdown_menu_'+int3+'" class="dropdown_menu"></div>');
+				var offset = image.offset();
+
+				var ul = jQuery('<ul></ul>');
+
+				if(portletsColumnCount == 2){
+					ul.append(jQuery('<li class="dropdown" style="text-align:center;">'+portletsColumnText+': <input type="radio" name="column_count" value="2" checked>2 <input type="radio" name="column_count" value="3">3</li>'));
+				} else if (portletsColumnCount == 3){
+					ul.append(jQuery('<li class="dropdown" style="text-align:center;">'+portletsColumnText+': <input type="radio" name="column_count" value="2">2 <input type="radio" name="column_count" value="3" checked>3</li>'));
+				}
+				
+				ul.append('<li class="dropdown_seperator"><hr class="dropdown_seperator"></li>');
+				for ( var int4 = 0; int4 < dropDownPortlets.length; int4++) {
+					var temp_menu_entry = dropDownPortlets[int4];
+					if(temp_menu_entry[0] == current_menu){
+						if(temp_menu_entry[1] != 'seperator'){
+							var tempActionChecked = temp_menu_entry[1];
+							var tempActionText = temp_menu_entry[2];
+							var tempActionValue = temp_menu_entry[3];
+							ul.append('<li class="dropdown"><input type="checkbox" name="portlets" value="'+tempActionValue+'" '+tempActionChecked+'>'+tempActionText+'</li>');
+						} else {
+							ul.append('<li class="dropdown_seperator"><hr class="dropdown_seperator"></li>');
+						}
+					}
+				}
+				ul.append('<li class="dropdown_seperator"><hr class="dropdown_seperator"></li>');
+				
+				var ok_button = jQuery('<li class="dropdown" style="text-align:center;"><input type="submit" value="'+portletsSaveButton+'"></li>');
+				ul.append(ok_button);
+				
+				html.append(ul);
+				image.parent().wrap('<div style="display:inline;"></div>');
+				image.parent().parent().append(button);
+				image.parent().parent().append(html);
+
+				image.mouseover(function(){
+					var id = this.id;
+					var this_image = this;
+					this_image.mouse_is_over = true;
+					setTimeout(function() {
+						if(this_image.mouse_is_over){
+							var id_parts = id.split('_');
+							var offset = jQuery('#dropdown_button_'+id_parts[4]).parent().offset();
+							if(jQuery('#dropdown_menu_'+id_parts[4]).css('display') == 'none'){
+								dropdown_portlets(jQuery('#dropdown_menu_'+id_parts[4]), offset, id_parts[4]);
+							}
+						}
+					}, 2000);
+				});
+
+				image.mouseout(function(){
+					this.mouse_is_over = false;
+				});
+
+				jQuery('#dropdown_button_'+int3).click(function(){
+					var id_parts = this.id.split('_');
+					var offset = jQuery('#'+this.id).parent().offset();
+					dropdown_portlets(jQuery('#dropdown_menu_'+id_parts[2]), offset, id_parts[2]);
+				});
+
+				jQuery('#dropdown_button_'+int3).mouseover(function(){
+					var id = this.id;
+					var this_image = this;
+					this_image.mouse_is_over = true;
+					setTimeout(function() {
+						if(this_image.mouse_is_over){
+							var id_parts = id.split('_');
+							var offset = jQuery('#dropdown_button_'+id_parts[2]).parent().offset();
+							if(jQuery('#dropdown_menu_'+id_parts[2]).css('display') == 'none'){
+								dropdown_portlets(jQuery('#dropdown_menu_'+id_parts[2]), offset, id_parts[2]);
+							}
+						}
+					}, 2000);
+				});
+
+				jQuery('#dropdown_button_'+int3).mouseout(function(){
+					this.mouse_is_over = false;
+				});
+				
+				ok_button.click(function(){
+					var json_data = new Object();
+					json_data['column_count'] = jQuery('[name=column_count]:checked').attr('value');
+					
+					var portlet_array = new Array();
+					jQuery('[name=portlets]:checked').each(function(){
+						portlet_array.push(jQuery(this).attr('value'));
+					});
+					json_data['portlets'] = portlet_array;
+					
+					jQuery.ajax({
+					   url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct=privateroom_home_configuration&output=json&do=save_config',
+					   data: json_data,
+					   success: function(msg){
+						window.location = 'http://localhost/commsy/htdocs/commsy.php?cid='+window.ajax_cid+'&mod=home&fct=index';
+					   }
+					});
+				});
+			}
+		}
+	}
+});
+
+function dropdown_portlets(object, offset, button){
+	object.css('top', offset.top + 18);
+	object.css('left', offset.left - 3);
+	if(object.css('display') == 'none'){
+		object.slideDown(150);
+		jQuery('#dropdown_button_'+button).attr('src', 'images/commsyicons/dropdownmenu_up.png');
+	} else if(object.css('display') == 'block'){
+		object.slideUp(150);
+		jQuery("[id^='dropdown_button_']").attr('src', 'images/commsyicons/dropdownmenu.png');
+	}
+}

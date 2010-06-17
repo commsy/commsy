@@ -181,6 +181,8 @@ class cs_privateroom_home_portlet_view extends cs_view{
          $portlet_array[] = $tmp_array;
       }
 
+      $html .= '<div style="width:100%; float:right;"><div style="float:right;"><a href="#"><img id="new_icon" src="images/commsyicons/22x22/new.png"></a></div></div>';
+      
       $html .= $this->_getPortletsAsHTML($portlet_array,$this->_column_count);
       foreach($this->_portlet_views as $portlet_view){
          $html .= $portlet_view->getPortletJavascriptAsHTML();
@@ -256,10 +258,184 @@ class cs_privateroom_home_portlet_view extends cs_view{
          $retour .= '   </style>'."\n";
          $retour .= '   <!-- END Styles -->'."\n".LF;
       }
+      
+      $retour .= $this->_initDropDownMenus();
+      
       return $retour;
    }
 
+   function _initDropDownMenus(){
+   	$privateroom_item = $this->_environment->getCurrentContextItem();
+      $action_array = array();
+      $html = '';
 
-
+      $temp_array = array();
+      $temp_array['dropdown_image']  = "new_icon";
+      $temp_array['text']  = $this->_translator->getMessage('PORTLET_CONFIGURATION_NEWEST_ENTRIES');
+      $temp_array['value'] = "new_entry_list";
+      if($privateroom_item->getPortletShowNewEntryList()){
+      	$temp_array['checked']  = "checked";
+      } else {
+      	$temp_array['checked']  = "";
+      }
+      $action_array[] = $temp_array;
+      
+      $temp_array = array();
+      $temp_array['dropdown_image']  = "new_icon";
+      $temp_array['text']  = $this->_translator->getMessage('PORTLET_CONFIGURATION_ACTIVE_ROOMS');
+      $temp_array['value'] = "active_rooms";
+      if($privateroom_item->getPortletShowActiveRoomList()){
+         $temp_array['checked']  = "checked";
+      } else {
+         $temp_array['checked']  = "";
+      }
+      $action_array[] = $temp_array;
+      
+      $temp_array = array();
+      $temp_array['dropdown_image']  = "new_icon";
+      $temp_array['text']  = $this->_translator->getMessage('PORTLET_CONFIGURATION_SEARCH_BOX');
+      $temp_array['value'] = "search_box";
+      if($privateroom_item->getPortletShowSearchBox()){
+         $temp_array['checked']  = "checked";
+      } else {
+         $temp_array['checked']  = "";
+      }
+      $action_array[] = $temp_array;
+      
+      $temp_array = array();
+      $temp_array['dropdown_image']  = "new_icon";
+      $temp_array['text']  = $this->_translator->getMessage('PORTLET_CONFIGURATION_DOKUVERSER_BOX');
+      $temp_array['value'] = "dokuverser_box";
+      if($privateroom_item->getPortletShowDokuverserBox()){
+         $temp_array['checked']  = "checked";
+      } else {
+         $temp_array['checked']  = "";
+      }
+      $action_array[] = $temp_array;
+      
+      $temp_array = array();
+      $temp_array['dropdown_image']  = "new_icon";
+      $temp_array['text']  = $this->_translator->getMessage('PORTLET_CONFIGURATION_BUZZWORD_BOX');
+      $temp_array['value'] = "buzzword_box";
+      if($privateroom_item->getPortletShowBuzzwordBox()){
+         $temp_array['checked']  = "checked";
+      } else {
+         $temp_array['checked']  = "";
+      }
+      $action_array[] = $temp_array;
+      
+      $temp_array = array();
+      $temp_array['dropdown_image']  = "new_icon";
+      $temp_array['text']  = $this->_translator->getMessage('PORTLET_CONFIGURATION_CONFIGURATION_BOX');
+      $temp_array['value'] = "configuration_box";
+      if($privateroom_item->getPortletShowConfigurationBox()){
+         $temp_array['checked']  = "checked";
+      } else {
+         $temp_array['checked']  = "";
+      }
+      $action_array[] = $temp_array;
+      
+      $temp_array = array();
+      $temp_array['dropdown_image']  = "new_icon";
+      $temp_array['text']  = $this->_translator->getMessage('PORTLET_CONFIGURATION_NEW_ITEM_BOX');
+      $temp_array['value'] = "new_item_box";
+      if($privateroom_item->getPortletShowNewItemBox()){
+         $temp_array['checked']  = "checked";
+      } else {
+         $temp_array['checked']  = "";
+      }
+      $action_array[] = $temp_array;
+      
+      $temp_array = array();
+      $temp_array['dropdown_image']  = "new_icon";
+      $temp_array['text']  = $this->_translator->getMessage('PORTLET_CONFIGURATION_WEATHER_BOX');
+      $temp_array['value'] = "weather_box";
+      if($privateroom_item->getPortletShowWeatherBox()){
+         $temp_array['checked']  = "checked";
+      } else {
+         $temp_array['checked']  = "";
+      }
+      $action_array[] = $temp_array;
+      
+      $temp_array = array();
+      $temp_array['dropdown_image']  = "new_icon";
+      $temp_array['text']  = $this->_translator->getMessage('PORTLET_CONFIGURATION_CLOCK_BOX');
+      $temp_array['value'] = "clock_box";
+      if($privateroom_item->getPortletShowClockBox()){
+         $temp_array['checked']  = "checked";
+      } else {
+         $temp_array['checked']  = "";
+      }
+      $action_array[] = $temp_array;
+      
+      $temp_array = array();
+      $temp_array['dropdown_image']  = "new_icon";
+      $temp_array['text']  = $this->_translator->getMessage('PORTLET_CONFIGURATION_YOUTUBE');
+      $temp_array['value'] = "youtube";
+      if($privateroom_item->getPortletShowYouTube()){
+         $temp_array['checked']  = "checked";
+      } else {
+         $temp_array['checked']  = "";
+      }
+      $action_array[] = $temp_array;
+      
+      $temp_array = array();
+      $temp_array['dropdown_image']  = "new_icon";
+      $temp_array['text']  = $this->_translator->getMessage('PORTLET_CONFIGURATION_FLICKR');
+      $temp_array['value'] = "flickr";
+      if($privateroom_item->getPortletShowFlickr()){
+         $temp_array['checked']  = "checked";
+      } else {
+         $temp_array['checked']  = "";
+      }
+      $action_array[] = $temp_array;
+      
+      $temp_array = array();
+      $temp_array['dropdown_image']  = "new_icon";
+      $temp_array['text']  = $this->_translator->getMessage('COMMON_TWITTER_FRIENDS');
+      $temp_array['value'] = "twitter";
+      if($privateroom_item->getPortletShowTwitter()){
+         $temp_array['checked']  = "checked";
+      } else {
+         $temp_array['checked']  = "";
+      }
+      $action_array[] = $temp_array;
+      
+      $temp_array = array();
+      $temp_array['dropdown_image']  = "new_icon";
+      $temp_array['text']  = $this->_translator->getMessage('PORTLET_CONFIGURATION_RSS');
+      $temp_array['value'] = "rsslist";
+      if($privateroom_item->getPortletShowRSS()){
+         $temp_array['checked']  = "checked";
+      } else {
+         $temp_array['checked']  = "";
+      }
+      $action_array[] = $temp_array;
+      
+      // init drop down menu
+      if ( !empty($action_array)
+           and count($action_array) >= 1
+         ) {
+         $html .= '<script type="text/javascript">'.LF;
+         $html .= '<!--'.LF;
+         $html .= 'var dropDownPortlets = new Array(';
+         $first = true;
+         foreach ($action_array as $action) {
+            if ( $first ) {
+               $first = false;
+            } else {
+               $html .= ',';
+            }
+            $html .= 'new Array("'.$action['dropdown_image'].'","'.$action['checked'].'","'.$action['text'].'","'.$action['value'].'")';
+         }
+         $html .= ');'.LF;
+         $html .= 'var portletsColumnText = "'.$this->_translator->getMessage('PORTLET_CONFIGURATION_COLUMN_COUNT').'";'.LF;
+         $html .= 'var portletsColumnCount = '.$privateroom_item->getPortletColumnCount().';'.LF;
+         $html .= 'var portletsSaveButton = "'.$this->_translator->getMessage('PREFERENCES_SAVE_BUTTON').'";'.LF;
+         $html .= '-->'.LF;
+         $html .= '</script>'.LF;
+      }
+      return $html;
+   }
 }
 ?>
