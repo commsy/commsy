@@ -369,7 +369,7 @@ class cs_discussion_detail_view extends cs_detail_view {
 
    function _getItemAsHTMLThreadedWithJavaScript($item) {
       //$html = '<div id="discussion_tree" style="display: none">'.LF;
-      $html = '<div id="discussion_tree">'.LF;
+      $html = '<div id="discussion_tree" style="position: relative">'.LF;
 
       // build list of articles
       $last_position = 0;
@@ -446,20 +446,19 @@ class cs_discussion_detail_view extends cs_detail_view {
          $display = $this->_text_as_html_short($this->_compareWithSearchText($display_subject));
          if(empty($param_zip) || $param_zip != 'zip') {
             $link = curl(   $this->_environment->getCurrentContextID(),
-            CS_DISCUSSION_TYPE,
-                                 'detail',
-            $params,
-                                 'anchor' . $article->getItemID());
+                            CS_DISCUSSION_TYPE,
+                            'detail',
+                            $params,
+                            'anchor' . $article->getItemID());
             $html .= '<li id="' . $article->getItemID() . '" data="url: \'' . $link . '\'">';
             $html .= ahref_curl(   $this->_environment->getCurrentContextID(),
-            CS_DISCUSSION_TYPE,
-                                        'detail',
-            $params,
-            $display,
-            $display,'',
-                                        'anchor' . $article->getItemID(),'','','',
-                                        'style="color:#545454; font-size:10pt; font-weight:' . $font_weight . ';"').LF;
-
+                                   CS_DISCUSSION_TYPE,
+                                   'detail',
+                                   $params,
+                                   $display,
+                                   $display,'',
+                                   'anchor' . $article->getItemID(),'','','',
+                                   'style="color:#545454; font-size:10pt; font-weight:' . $font_weight . ';"').LF;
          } else {
             $html .= '<li>' . $this->_text_as_html_short($this->_compareWithSearchText($display_subject));
          }
