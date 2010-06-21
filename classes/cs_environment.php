@@ -1946,10 +1946,16 @@ class cs_environment {
             break; // first match wins
          }
       }
+      // IPHONE Textarea without FCK-/ CK-Editor
       if($this->_browser == 'IPHONE'){
-      	// IPHONE Textarea without FCK-/ CK-Editor
       	$currentContextItem = $this->getCurrentContextItem();
-      	$currentContextItem->setHtmlTextAreaStatus(3);
+      	if($currentContextItem->isPluginOn('ckeditor')){
+      		$currentContextItem->setPluginOff('ckeditor');
+      	}
+      	if($currentContextItem->withHtmlTextArea()){
+      		$currentContextItem->setHtmlTextAreaStatus(3);
+      	}
+      	unset($currentContextItem);
       }
    }
 
