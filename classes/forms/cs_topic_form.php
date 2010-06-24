@@ -500,19 +500,29 @@ class cs_topic_form extends cs_rubric_form {
          // PATH - END
       }
 
-      // public radio-buttons
       if ( !$this->_environment->inPrivateRoom() ){
-         $this->_form->addEmptyline();
-         if ( !isset($this->_item) ) {
-            $this->_form->addRadioGroup('public',$this->_translator->getMessage('RUBRIC_PUBLIC'),$this->_translator->getMessage('RUBRIC_PUBLIC_DESC'),$this->_public_array);
-         } else {
-            $current_user = $this->_environment->getCurrentUser();
-            $creator = $this->_item->getCreatorItem();
-            if ($current_user->getItemID() == $creator->getItemID() or $current_user->isModerator()) {
-               $this->_form->addRadioGroup('public',$this->_translator->getMessage('RUBRIC_PUBLIC'),$this->_translator->getMessage('RUBRIC_PUBLIC_DESC'),$this->_public_array);
-            } else {
-               $this->_form->addHidden('public','');
-            }
+         // public radio-buttons
+         if ($current_context->withActivatingContent()){
+            $this->_form->addCheckbox('private_editing',1,'',$this->_translator->getMessage('COMMON_RIGHTS'),$this->_public_array[1]['text'],$this->_translator->getMessage('COMMON_RIGHTS_DESCRIPTION'),false,false,'','',true,false);
+            $this->_form->combine();
+            $this->_form->addCheckbox('hide',1,'',$this->_translator->getMessage('COMMON_HIDE'),$this->_translator->getMessage('COMMON_HIDE'),'');
+            $this->_form->combine('horizontal');
+            $this->_form->addDateTimeField('start_date_time','','dayStart','timeStart',9,4,$this->_translator->getMessage('DATES_HIDING_DAY'),'('.$this->_translator->getMessage('DATES_HIDING_DAY'),$this->_translator->getMessage('DATES_HIDING_TIME'),$this->_translator->getMessage('DATES_TIME_DAY_START_DESC'),FALSE,FALSE,100,100,true,'left','',FALSE);
+            $this->_form->combine('horizontal');
+            $this->_form->addText('hide_end2','',')');
+         }else{
+             // public radio-buttons
+             if ( !isset($this->_item) ) {
+                $this->_form->addRadioGroup('public',$this->_translator->getMessage('RUBRIC_PUBLIC'),$this->_translator->getMessage('RUBRIC_PUBLIC_DESC'),$this->_public_array);
+             } else {
+                $current_user = $this->_environment->getCurrentUser();
+                $creator = $this->_item->getCreatorItem();
+                if ($current_user->getItemID() == $creator->getItemID() or $current_user->isModerator()) {
+                   $this->_form->addRadioGroup('public',$this->_translator->getMessage('RUBRIC_PUBLIC'),$this->_translator->getMessage('RUBRIC_PUBLIC_DESC'),$this->_public_array);
+                } else {
+                   $this->_form->addHidden('public','');
+                }
+             }
          }
       } else {
          $this->_form->addHidden('public','');
@@ -541,6 +551,7 @@ class cs_topic_form extends cs_rubric_form {
     * this methods loads the selected and given values to the form from the material item or the form_post data
     */
    function _prepareValues () {
+      $current_context = $this->_environment->getCurrentContextItem();
       $this->_values = array();
       if ( !empty($this->_form_post) ) {
          $this->_values = $this->_form_post;
@@ -566,7 +577,25 @@ class cs_topic_form extends cs_rubric_form {
          $this->_values['iid'] = $this->_item->getItemID();
          $this->_values['name'] = $this->_item->getName();
          $this->_values['description'] = $this->_item->getDescription();
-         $this->_values['public'] = $this->_item->isPublic();
+         if ($current_context->withActivatingContent()){
+            if ($this->_item->isPrivateEditing()){
+               $this->_values['private_editing'] = 1;
+            }else{
+               $this->_values['private_editing'] = $this->_item->isPrivateEditing();
+            }
+         }else{
+            $this->_values['public'] = $this->_item->isPublic();
+         }
+         $this->_values['hide'] = $this->_item->isNotActivated()?'1':'0';
+         if ($this->_item->isNotActivated()){
+            $activating_date = $this->_item->getActivatingDate();
+            if (!strstr($activating_date,'9999-00-00')){
+               $array = array();
+               $array['dayStart'] = getDateInLang($activating_date);
+               $array['timeStart'] = getTimeInLang($activating_date);
+               $this->_values['start_date_time'] = $array;
+            }
+         }
          $this->_setValuesForRubricConnections();
       } else {
          $this->_values['public'] = ($this->_environment->inProjectRoom() OR $this->_environment->inGroupRoom())?'1':'0'; //In projectrooms everybody can edit the item by default, else default is creator only
