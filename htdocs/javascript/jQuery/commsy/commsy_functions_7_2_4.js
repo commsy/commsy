@@ -1449,7 +1449,6 @@ function delete_overlay(element, html_element, click_extra_action) {
     	        	    		delete_overlay.element.unbind();
     	        	    		
     	        	    		// click for buttons and redirect for links
-    	        	    		
     	        	    		if(html_element.type == 'submit') {
     	        	    			/*
         	        	    		 * This is a workaround for mapping more then one button from the overlay
@@ -1459,23 +1458,26 @@ function delete_overlay(element, html_element, click_extra_action) {
         	        	    		 * renamed and replaced by an invisible pendant.
         	        	    		 */
         	        	    		
-    	        	    			// change button id
+    	        	    			// set button parameters
     	        	    			var id = html_element.id;
+    	        	    			var name = 'delete_option';
     	        	    			
-    	        	    			var name = '';
-    	        	    			if(id.substr(0, 20) == 'delete_confirmselect') {
-    	        	    				name = 'delete_option';
-    	        	    			} else {
-    	        	    				name = html_element.name;
+    	        	    			// Look for '#' in button-name
+    	        	    			var rSplit = html_element.name.split('#');
+    	        	    			if(rSplit.length > 0) {
+    	        	    				name += '#' + rSplit[1];
     	        	    			}
+    	        	    			
+    	        	    			// change id of original button
 	        	    				html_element.id = html_element.id + '_fake';
 	        	    				
-    	        	    			// get form of button
+    	        	    			// get form of originial button
     	        	    			var form = jQuery("input[id='" + html_element.id + "']").parent();
     	        	    			while(form[0].nodeName.substr(0, 4) != 'FORM') {
     	        	    				form = form.parent();
     	        	    			}
     	        	    			
+    	        	    			// add new invisible button to form
     	        	    			form.append(
     	        	    			    jQuery("<input/>", {
         	        	    			    "type" : html_element.type,
@@ -1547,19 +1549,17 @@ function delete_overlay(element, html_element, click_extra_action) {
  *  observed option "delete_check_..."
  */
 jQuery(document).ready(function() {
-	jQuery("[id^='delete_confirmselect_']").click(
-		function() {
-			var element = jQuery(this);
-			var html_element = this;
-			
-			if(jQuery("[id^='delete_check_']").attr('selected')) {
-				// add overlay
-		    	delete_overlay(element, html_element, function() {});
-		    	
-		    	return false;
-			}
+	jQuery("[id^='delete_confirmselect_']").click(function() {
+		var element = jQuery(this);
+		var html_element = this;
+		
+		if(jQuery("[id^='delete_check_']").attr('selected')) {
+			// add overlay
+		   	delete_overlay(element, html_element, function() {});
+		   	
+		    return false;
 		}
-	);
+	});
 });
 
 /*
@@ -1573,116 +1573,131 @@ jQuery(document).ready(function() {
 
     	// add overlay
     	delete_overlay(element, html_element, function() {
-    		/*
-    		jQuery("[id='delete_confirm_overlay_background']").remove();
-    		jQuery("[id='delete_confirm_overlay_box']").remove();
-    		
-    		// remove event handler
-    		element.unbind();
-    		
-    		// workaround
-			html_element.value = button_extra;
-			
-    		// click for buttons and redirect for links
-    		if(html_element.type == 'submit') {
-    			html_element.click();
-    		} else {
-    			jQuery(location).attr('href', html_element.href);
-    		}
-    		*/
     		return false;
-    		
     	});
     	
     	return false;
 	});
 });
 
-function formatDiscussionTreeThreaded() {
-	// get div width
-	var div_width = jQuery('[id=discussion_tree]').width();
+function formatDiscussionTreeWithProgress(div_width, iteration, creators, dates) {
+	var total = creators.length;
 	
+	if(iteration == total) {
+		setupDiscussionTree();
+		return false;
+	}
+	
+	// do css stuff
 	// set all creator texts at 50%
 	var creator_width = (Math.floor(div_width / 2) * 1);
-	jQuery('[id=discussion_tree] [class=discussion_detail_view_threaded_tree_creator]').each(function() {
-		jQuery(this).css('position', 'absolute');
-		jQuery(this).css('display', 'inline');
-		jQuery(this).css('left', creator_width);
+	jQuery(creators[iteration]).css('position', 'absolute');
+	jQuery(creators[iteration]).css('display', 'inline');
+	jQuery(creators[iteration]).css('left', creator_width);
+	
+	// set all date texts at 80%
+	var date_width = (Math.floor(div_width / 5) * 4);
+	jQuery(dates[iteration]).css('position', 'absolute');
+	jQuery(dates[iteration]).css('display', 'inline');
+	jQuery(dates[iteration]).css('left', date_width);
+	
+	// update progressbar
+	var percent = (iteration+1) * 100 / total;
+	jQuery('[id=discussion_tree_progressbar]').progressbar("value", percent);
+	jQuery('[id=discussion_tree_progressbar_percent]').html(Math.floor(percent));
+	
+	// call recursivly
+	setTimeout(function() {
+		formatDiscussionTreeWithProgress(div_width, ++iteration, creators, dates);
+	}, 1);
+	
+	return false;
+}
+
+function setupDiscussionTree() {
+	var tree = jQuery('[id=discussion_tree]');
+	
+	tree.dynatree({
+		fx: { height: "toggle", duration: 200 },
+		onActivate: function(dtnode) {
+			if(dtnode.data.url) {
+				try {
+					window.location(dtnode.data.url);
+				}
+				catch(e) {
+				}
+			}
+		},
+		onClick: function(dtnode, event) {
+			// Hervorgehobenen Hintergrund verhindern, wenn nicht auf einen Link für einen Beitrag geklickt wird
+			if(	event.target.nodeName == 'IMG' ||
+					(event.target.nodeName == 'SPAN' &&
+					event.target.className != 'ui-dynatree-expander')) {
+				return false;
+			}
+			
+			// set max tree depth
+			if(dtnode.getLevel() > 11) return false;
+			
+			if(event.target.nodeName == 'A') {
+				jQuery(location).attr('href', event.target.href);
+				
+				return false;
+			}
+		}
 	});
 	
-	// set all date texts at 85%
-	var date_width = (Math.floor(div_width / 20) * 17);
-	jQuery('[id=discussion_tree] [class=discussion_detail_view_threaded_tree_date]').each(function() {
-		jQuery(this).css('position', 'absolute');
-		jQuery(this).css('display', 'inline');
-		jQuery(this).css('left', date_width);
+	var max_visible_nodes = 10;
+	var max_expand_level = getExpandLevel(tree, max_visible_nodes);
+	
+	// root immer ausklappen
+	if(max_expand_level < 2) max_expand_level = 2;
+	
+	tree.dynatree("getRoot").visit(function(dtnode) {
+		if(dtnode.getLevel() < max_expand_level) {
+			dtnode.expand(true);
+		}
 	});
+	
+	// "geänderte" und "neue" Einträge ausklappen
+	jQuery('[id=discussion_tree]').dynatree("getRoot").visit(function(dtnode) {
+	    var title = dtnode.data.title;
+	    var regexp = /(change_status_text)/g;
+	    
+	    if(regexp.test(title) == true) {
+	    	dtnode.focus();
+	    }
+	});
+	
+	// make tree visible
+	jQuery('[id=discussion_tree]').fadeIn(200);
+	
+	// remove progressbar
+	jQuery('[id=discussion_tree_progressbar_wrap]').remove();
+	
+	// set commsy body to a fixed size
+	var body_width = jQuery('[class=commsy_body]').width();
+	jQuery('[class=commsy_body]').css('width', body_width);
 }
 
 jQuery(document).ready(function() {
 	var tree = jQuery('[id=discussion_tree]');
 	
-	if(tree.length){
+	if(tree.length) {
 		jQuery.ui.dynatree.nodedatadefaults["icon"] = false;
 		
-		formatDiscussionTreeThreaded();
+		// set progressbar
+		jQuery('[id=discussion_tree_progressbar]').progressbar();
 		
-		tree.dynatree({
-			fx: { height: "toggle", duration: 200 },
-			onActivate: function(dtnode) {
-				if(dtnode.data.url) {
-					try {
-						window.location(dtnode.data.url);
-					}
-					catch(e) {
-					}
-				}
-			},
-			onClick: function(dtnode, event) {
-				// Hervorgehobenen Hintergrund verhindern, wenn nicht auf einen Link für einen Beitrag geklickt wird
-				if(	event.target.nodeName == 'IMG' ||
-						(event.target.nodeName == 'SPAN' &&
-						event.target.className != 'ui-dynatree-expander')) {
-					return false;
-				}
-				
-				/*
-				// set max tree depth
-				if(dtnode.getLevel() > 10) return false;
-				*/
-				if(event.target.nodeName == 'A') {
-					jQuery(location).attr('href', event.target.href);
-					
-					return false;
-				}
-			}
-		});
+		// get div width
+		var div_width = jQuery('[class=infoborder]').width();
 		
-		var max_visible_nodes = 10;
-		var max_expand_level = getExpandLevel(tree, max_visible_nodes);
+		var creators = jQuery('[id=discussion_tree] [class=discussion_detail_view_threaded_tree_creator]');
+		var dates = jQuery('[id=discussion_tree] [class=discussion_detail_view_threaded_tree_date]');
 		
-		// root immer ausklappen
-		if(max_expand_level < 2) max_expand_level = 2;
+		formatDiscussionTreeWithProgress(div_width, 0, creators, dates);
 		
-		tree.dynatree("getRoot").visit(function(dtnode) {
-			if(dtnode.getLevel() < max_expand_level) {
-				dtnode.expand(true);
-			}
-		});
-		
-		// "geänderte" und "neue" Einträge ausklappen
-		jQuery('[id=discussion_tree]').dynatree("getRoot").visit(function(dtnode) {
-		    var title = dtnode.data.title;
-		    var regexp = /(change_status_text)/g;
-		    
-		    if(regexp.test(title) == true) {
-		    	dtnode.focus();
-		    }
-		});
-		
-		// set commsy body to a fixed size
-		var body_width = jQuery('[class=commsy_body]').width();
-		jQuery('[class=commsy_body]').css('width', body_width);
+		return false;
 	}
 });
 
