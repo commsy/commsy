@@ -268,9 +268,43 @@ else {
             if (isset($_POST['description'])) {
                $topic_item->setDescription($_POST['description']);
             }
-            if (isset($_POST['public'])) {
-               $topic_item->setPublic($_POST['public']);
+
+            if(isset($_POST['public'])) {
+               if($topic_item->isPublic() != $_POST['public']) {
+                  $topic_item->setPublic($_POST['public']);
+               }
+            } else {
+               if(isset($_POST['private_editing'])) {
+                  $topic_item->setPrivateEditing('0');
+               } else {
+                  $topic_item->setPrivateEditing('1');
+               }
             }
+            
+            if ( isset($_POST['hide']) ) {
+                // variables for datetime-format of end and beginning
+                $dt_hiding_time = '00:00:00';
+                $dt_hiding_date = '9999-00-00';
+                $dt_hiding_datetime = '';
+                $converted_day_start = convertDateFromInput($_POST['dayStart'],$environment->getSelectedLanguage());
+                if ($converted_day_start['conforms'] == TRUE) {
+                   $dt_hiding_datetime = $converted_day_start['datetime'].' ';
+                   $converted_time_start = convertTimeFromInput($_POST['timeStart']);
+                   if ($converted_time_start['conforms'] == TRUE) {
+                      $dt_hiding_datetime .= $converted_time_start['datetime'];
+                   }else{
+                      $dt_hiding_datetime .= $dt_hiding_time;
+                   }
+                }else{
+                   $dt_hiding_datetime = $dt_hiding_date.' '.$dt_hiding_time;
+                }
+                $topic_item->setModificationDate($dt_hiding_datetime);
+            } else {
+               if($topic_item->isNotActivated()){
+                  $topic_item->setModificationDate(getCurrentDateTimeInMySQL());
+               }
+            }
+            
             if ( isset($_POST['path_active']) and $_POST['path_active'] == 1 ) {
                $topic_item->activatePath();
             } elseif ( isset($_POST['path_active']) and $_POST['path_active'] == -1 ) {

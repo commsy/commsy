@@ -389,9 +389,23 @@ foreach ($rubric_array as $rubric) {
       if ( $sel_activating_status == 2 ) {
          $rubric_manager->showNoNotActivatedEntries();
       }
-
       $rubric_manager->selectDistinct();
       $rubric_list = $rubric_manager->get();
+      
+      // show hidded entries only if user is moderator or owner
+      if($sel_activating_status != 2 && !$current_user->isModerator()) {
+         // check if user is owner
+         $entry = $rubric_list->getFirst();
+         while($entry) {
+            if($entry->isNotActivated() && $entry->getCreatorID() != $current_user->getItemID()) {
+               // remove item from list
+               $rubric_list->removeElement($entry);
+            }
+            
+            $entry = $rubric_list->getNext();
+         }
+      }
+      
       $item_list->addList($rubric_list);
       $temp_rubric_ids = $rubric_manager->getIDArray();
       if (!empty($temp_rubric_ids)){
