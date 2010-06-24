@@ -160,13 +160,13 @@ class cs_group_index_view extends cs_index_view {
          $html .= '   <option class="disabled" disabled="disabled">------------------------------</option>'.LF;
          $user = $this->_environment->getCurrentUserItem();
          if ($user->isModerator()){
-            $html .= '   <option value="3">'.$this->_translator->getMessage('COMMON_LIST_ACTION_DELETE').'</option>'.LF;
+            $html .= '   <option value="3" id="delete_check_option">'.$this->_translator->getMessage('COMMON_LIST_ACTION_DELETE').'</option>'.LF;
          }else{
             $html .= '   <option class="disabled" disabled="disabled">'.$this->_translator->getMessage('COMMON_LIST_ACTION_DELETE').'</option>'.LF;
          }
       }
       $html .= '</select>'.LF;
-      $html .= '<input type="submit" style="width:70px; font-size:8pt;" name="option"';
+      $html .= '<input type="submit" id="delete_confirmselect_option" style="width:70px; font-size:8pt;" name="option"';
       $html .= ' value="'.$this->_translator->getMessage('COMMON_LIST_ACTION_BUTTON_GO').'"';
       $html .= '/>'.LF;
 

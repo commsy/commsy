@@ -967,11 +967,13 @@ class cs_group_detail_view extends cs_detail_view {
    }
 
    function getInfoForHeaderAsHTML () {
-      $retour  = '   <!-- BEGIN Styles -->'.LF;
+      $retour = parent::getInfoForHeaderAsHTML();
+      
+      $retour .= '   <!-- BEGIN Styles -->'.LF;
       $retour .= '   <style type="text/css">'.LF;
       $retour .= '    img.logo_small { height: 40px; }'.LF;
       $retour .= '   </style>'.LF;
-      $retour .= '   <!-- END Styles -->'.LF;
+      $retour .= '   <!-- END Styles -->'.LF;  
       return $retour;
    }
 

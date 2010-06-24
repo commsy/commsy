@@ -368,8 +368,14 @@ class cs_discussion_detail_view extends cs_detail_view {
    }
 
    function _getItemAsHTMLThreadedWithJavaScript($item) {
-      //$html = '<div id="discussion_tree" style="display: none">'.LF;
-      $html = '<div id="discussion_tree" style="position: relative">'.LF;
+      $html = '<div id="discussion_tree_progressbar_wrap">' . LF;
+      $html .= '<div style="float: left; width: 180px;">' . $this->_translator->getMessage("DISCUSSION_THREADED_LOADING") . '</div>' . LF;
+      $html .= '<div style="float: right; width: 50px; text-align: center;">' . LF;
+      $html .= '<span id="discussion_tree_progressbar_percent"></span>' . LF;
+      $html .= '%</div>' . LF;
+      $html .= '<div id="discussion_tree_progressbar" style="margin-left: 180px; margin-right: 50px;"></div>' . LF;
+      $html .= '</div>' . LF;
+      $html .= '<div id="discussion_tree" style="position: relative; display:none;">'.LF;
 
       // build list of articles
       $last_position = 0;
@@ -429,8 +435,7 @@ class cs_discussion_detail_view extends cs_detail_view {
 
          // open sublist if position > last position
          if($position > $last_position) {
-            //$html .= '<ul>'.LF;
-            $html .= '<ul style="padding: 0px 0px 0px 10px;">'.LF;
+            $html .= '<ul style="padding: 0px 0px 0px 10px; margin: 0px 0px 0px 10px;">'.LF;
          }
 
          // close sublist if position < last position
@@ -1364,12 +1369,17 @@ class cs_discussion_detail_view extends cs_detail_view {
     * @return string javascipt needed for the form
     */
    function getInfoForHeaderAsHTML() {
+      $text2 = '';
+      if($this->_environment->getCurrentUserItem()->isModerator()) {
+         $text2 = $this->_translator->getMessage("COMMON_DELETE_BOX_DESCRIPTION_MODERATOR");
+      }
+      
       $return = "
           <script type='text/javascript'>
           <!--
               var headline = '" . $this->_translator->getMessage("COMMON_DELETE_BOX_TITLE") . "';
               var text1 = '" . $this->_translator->getMessage("COMMON_DELETE_BOX_DESCRIPTION_DISCUSSION") . "';
-              var text2 = '" . $this->_translator->getMessage("COMMON_DELETE_BOX_DESCRIPTION_MODERATOR") . "';
+              var text2 = '" . $text2 . "';
               var button_delete = '" . $this->_translator->getMessage("COMMON_DELETE_BUTTON") . "';
               var button_cancel = '" . $this->_translator->getMessage("COMMON_CANCEL_BUTTON") . "';
           -->
