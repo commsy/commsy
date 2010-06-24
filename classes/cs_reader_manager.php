@@ -187,7 +187,13 @@ class cs_reader_manager {
      */
    function markRead ( $item_id, $version_id ) {
       if ( !empty($this->_current_user_id) ) {
-         $query = 'INSERT INTO '.$this->addDatabasePrefix('reader').' SET '.
+         /*
+          * There was a problem in reader-/ and noticed manager when marking an entry as readed, if
+          * it was a non-active entry. In this case, the manager tried to execute the same insert
+          * statement twice, which caused an error because of the tables primary key.
+          * To fix this, the query is changed to "INSERT IGNORE INTO..."
+          */
+         $query = 'INSERT IGNORE INTO '.$this->addDatabasePrefix('reader').' SET '.
                   ' item_id="'.encode(AS_DB,$item_id).'", '.
                   ' version_id="'.encode(AS_DB,$version_id).'", '.
                   ' user_id="'.encode(AS_DB,$this->_current_user_id).'", '.
