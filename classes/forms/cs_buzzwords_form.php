@@ -164,10 +164,15 @@ class cs_buzzwords_form extends cs_rubric_form {
     * @return string javascipt needed for the form
     */
    function getInfoForHeaderAsHTML() {
+      $text2 = '';
+      if($this->_environment->getCurrentUserItem()->isModerator()) {
+         $text2 = $this->_translator->getMessage("COMMON_DELETE_BOX_DESCRIPTION_MODERATOR");
+      }
+      
       $return = "
           var headline = '" . $this->_translator->getMessage("COMMON_DELETE_BOX_TITLE") . "';
           var text1 = '" . $this->_translator->getMessage("COMMON_DELETE_BOX_DESCRIPTION") . "';
-          var text2 = '';
+          var text2 = '" . $text2 . "';
           var button_delete = '" . $this->_translator->getMessage("COMMON_DELETE_BUTTON") . "';
           var button_cancel = '" . $this->_translator->getMessage("COMMON_CANCEL_BUTTON") . "';
       ";
