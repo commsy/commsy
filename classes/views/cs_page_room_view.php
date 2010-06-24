@@ -1166,11 +1166,36 @@ class cs_page_room_view extends cs_page_view {
    function getDeleteBoxAsHTML(){
       $session = $this->_environment->getSession();
       $left_menue_status = $session->getValue('left_menue_status');
-      $left = '0em';
-      $width = '100%';
-      $html  = '<div style="position: absolute; z-index:1000; top:95px; left:'.$left.'; width:'.$width.'; height: 100%;">'.LF;
+      
+      // background div
+      $html = '<div style="	position: fixed;
+      						z-index: 1000;
+      						top: 0px;
+      						left: 0px;
+      						width: 100%;
+      						height: 100%;
+      						background-color: white;
+      						opacity: 0.7;
+      						filter: alpha(opacity=70);
+      						-moz-opacity: 0.7;
+      						-khtml-opacity: 0.7;"></div>'.LF;
+      
+      // box div
+      $html .= '<div style="	position: fixed;
+      							z-index: 1100;
+      							margin-top: 100px;
+      							margin-left: 30%;
+      							width: 400px;
+      							padding: 20px;
+      							background-color: white;
+      							border: 2px solid red;
+      							top: 0px;">'.LF;
+      
+      //$left = '0em';
+      //$width = '100%';
+      //$html  = '<div style="position: absolute; z-index:1000; top:95px; left:'.$left.'; width:'.$width.'; height: 100%;">'.LF;
       $html .= '<center>';
-      $html .= '<div style="position:fixed; left:'.$left.'; z-index:1000; margin-top:10px; margin-left: 30%; width:400px; padding:20px; background-color:#FFF; border:2px solid red;">';
+      //$html .= '<div style="position:fixed; left:'.$left.'; z-index:1000; margin-top:10px; margin-left: 30%; width:400px; padding:20px; background-color:#FFF; border:2px solid red;">';
       $html .= '<form style="margin-bottom:50px;" method="post" action="'.$this->_delete_box_action_url.'">'.LF;
       foreach ( $this->_delete_box_hidden_values as $key => $value ) {
          $html .= '<input type="hidden" name="'.$key.'" value="'.$value.'"/>'.LF;
@@ -1304,7 +1329,7 @@ class cs_page_room_view extends cs_page_view {
       $html .= '</form>'.LF;
       $html .= '</div>'.LF;
       $html .= '</center>'.LF;
-      $html .= '</div>'.LF;
+      //$html .= '</div>'.LF;
       $html .= '<div id="delete" style="position: absolute; z-index:900; top:95px; left:'.$left.'; width:'.$width.'; height: 100%; background-color:#FFF; opacity:0.7; filter:Alpha(opacity=70);">';
       $html .= '</div>'.LF;
       return $html;
