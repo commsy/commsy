@@ -198,13 +198,13 @@ class cs_topic_index_view extends cs_index_view {
          $html .= '   <option class="disabled" disabled="disabled">------------------------------</option>'.LF;
          $user = $this->_environment->getCurrentUserItem();
          if ($user->isModerator()){
-            $html .= '   <option value="3">'.$this->_translator->getMessage('COMMON_LIST_ACTION_DELETE').'</option>'.LF;
+            $html .= '   <option value="3" id="delete_check_option">'.$this->_translator->getMessage('COMMON_LIST_ACTION_DELETE').'</option>'.LF;
          }else{
             $html .= '   <option class="disabled" disabled="disabled">'.$this->_translator->getMessage('COMMON_LIST_ACTION_DELETE').'</option>'.LF;
          }
       }
       $html .= '</select>'.LF;
-      $html .= '<input type="submit" style="width:70px; font-size:8pt;" name="option"';
+      $html .= '<input type="submit" id="delete_confirmselect_option" style="width:70px; font-size:8pt;" name="option"';
       $html .= ' value="'.$this->_translator->getMessage('COMMON_LIST_ACTION_BUTTON_GO').'"';
       $html .= '/>'.LF;
 
@@ -263,7 +263,11 @@ class cs_topic_index_view extends cs_index_view {
      if(!(isset($_GET['mode']) and $_GET['mode']=='print')){
          $html .= '      <td '.$style.' style="vertical-align:middle;" width="2%">'.LF;
          $html .= '         <input style="font-size:8pt; padding-left:0px; padding-right:0px; margin-left:0px; margin-right:0px;" type="checkbox" onClick="quark(this)" name="attach['.$key.']" value="1"';
-         if ( in_array($key, $checked_ids) ) {
+         $user = $this->_environment->getCurrentUser();
+         if(   $item->isNotActivated() && !($item->getCreatorID() == $user->getItemID() ||
+               $user->isModerator()) ){
+            $html .= ' disabled="disabled"'.LF;
+         } else if ( in_array($key, $checked_ids) ) {
             $html .= ' checked="checked"'.LF;
             if ( in_array($key, $dontedit_ids) ) {
                $html .= ' disabled="disabled"'.LF;
@@ -272,7 +276,34 @@ class cs_topic_index_view extends cs_index_view {
          $html .= '/>'.LF;
          $html .= '         <input type="hidden" name="shown['.$this->_text_as_form($key).']" value="1"/>'.LF;
          $html .= '      </td>'.LF;
-         $html .= '      <td '.$style.' style="font-size:10pt;">'.$this->_getItemTitle($item).'</td>'.LF;
+         
+         if ($item->isNotActivated()) {
+            $title = $item->getTitle();
+            $title = $this->_compareWithSearchText($title);
+            $user = $this->_environment->getCurrentUser();
+            if($item->getCreatorID() == $user->getItemID() or $user->isModerator()){
+               $params = array();
+               $params['iid'] = $item->getItemID();
+               $title = ahref_curl( $this->_environment->getCurrentContextID(),
+                                  CS_TOPIC_TYPE,
+                                  'detail',
+                                  $params,
+                                  $title,
+                                  '','', '', '', '', '', '', '',
+                                  CS_TOPIC_TYPE.$item->getItemID());
+               unset($params);
+            }
+            $activating_date = $item->getActivatingDate();
+            if (strstr($activating_date,'9999-00-00')){
+               $title .= BR.$this->_translator->getMessage('COMMON_NOT_ACTIVATED');
+            }else{
+               $title .= BR.$this->_translator->getMessage('COMMON_ACTIVATING_DATE').' '.getDateInLang($item->getActivatingDate());
+            }
+            $title = '<span class="disabled">'.$title.'</span>';
+            $html .= '      <td '.$style.'>'.$title.LF;
+         } else {
+            $html .= '      <td '.$style.' style="font-size:10pt;">'.$this->_getItemTitle($item).'</td>'.LF;
+         }
       }else{
          $html .= '      <td colspan="2" '.$style.' style="font-size:10pt;">'.$this->_getItemTitle($item).'</td>'.LF;
       }
@@ -310,7 +341,7 @@ class cs_topic_index_view extends cs_index_view {
             CS_TOPIC_TYPE.$item->getItemID());
 
       unset($params);
-      if (!empty($this->_room_id) and !$this->_environment->inPrivateRoom()) {
+      if (!empty($this->_room_id) and !$this->_environment->inPrivateRoom() and !$item->isNotActivated()) {
          $title .= $this->_getItemChangeStatus($item);
          $title .= $this->_getItemAnnotationChangeStatus($item);
       }
