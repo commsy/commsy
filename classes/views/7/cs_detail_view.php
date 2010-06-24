@@ -3740,12 +3740,17 @@ class cs_detail_view extends cs_view {
     * @return string javascipt needed for the form
     */
    function getInfoForHeaderAsHTML() {
+      $text2 = '';
+      if($this->_environment->getCurrentUserItem()->isModerator()) {
+         $text2 = $this->_translator->getMessage("COMMON_DELETE_BOX_DESCRIPTION_MODERATOR");
+      }
+      
       $return = "
           <script type='text/javascript'>
           <!--
               var headline = '" . $this->_translator->getMessage("COMMON_DELETE_BOX_TITLE") . "';
               var text1 = '" . $this->_translator->getMessage("COMMON_DELETE_BOX_DESCRIPTION") . "';
-              var text2 = '" . $this->_translator->getMessage("COMMON_DELETE_BOX_DESCRIPTION_MODERATOR") . "';
+              var text2 = '" . $text2 . "';
               var button_delete = '" . $this->_translator->getMessage("COMMON_DELETE_BUTTON") . "';
               var button_cancel = '" . $this->_translator->getMessage("COMMON_CANCEL_BUTTON") . "';
           -->

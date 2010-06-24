@@ -1210,6 +1210,23 @@ EOD;
       } else {
          $html = '';
       }
+      
+      $text2 = '';
+      if($this->_environment->getCurrentUserItem()->isModerator()) {
+         $text2 = $this->_translator->getMessage("COMMON_DELETE_BOX_DESCRIPTION_MODERATOR");
+      }
+      
+      $html .= "
+          <script type='text/javascript'>
+	      <!--
+              var headline = '" . $this->_translator->getMessage("COMMON_DELETE_BOX_TITLE") . "';
+              var text1 = '" . $this->_translator->getMessage("COMMON_DELETE_BOX_DESCRIPTION") . "';
+              var text2 = '" . $text2 . "';
+              var button_delete = '" . $this->_translator->getMessage("COMMON_DELETE_BUTTON") . "';
+              var button_cancel = '" . $this->_translator->getMessage("COMMON_CANCEL_BUTTON") . "';
+          -->
+          </script>
+      ";
       return $html;
    }
 
@@ -2842,11 +2859,11 @@ EOD;
 
          $html .= '   <option class="disabled" disabled="disabled">------------------------------</option>'.LF;
          if ($this->_environment->inPrivateRoom()){
-            $html .= '   <option value="3">'.$this->_translator->getMessage('COMMON_LIST_ACTION_DELETE').'</option>'.LF;
+            $html .= '   <option value="3" id="delete_check_option">'.$this->_translator->getMessage('COMMON_LIST_ACTION_DELETE').'</option>'.LF;
          }else{
             $user = $this->_environment->getCurrentUserItem();
             if ($user->isModerator()){
-               $html .= '   <option value="3">'.$this->_translator->getMessage('COMMON_LIST_ACTION_DELETE').'</option>'.LF;
+               $html .= '   <option value="3" id="delete_check_option">'.$this->_translator->getMessage('COMMON_LIST_ACTION_DELETE').'</option>'.LF;
             }else{
                $html .= '   <option class="disabled" disabled="disabled">'.$this->_translator->getMessage('COMMON_LIST_ACTION_DELETE').'</option>'.LF;
             }
@@ -2857,7 +2874,7 @@ EOD;
       }
 
       $html .= '</select>'.LF;
-      $html .= '<input type="submit" style="width:70px; font-size:8pt;" name="option"';
+      $html .= '<input type="submit" id="delete_confirmselect_option" style="width:70px; font-size:8pt;" name="option"';
       $html .= ' value="'.$this->_translator->getMessage('COMMON_LIST_ACTION_BUTTON_GO').'"';
       $html .= '/>'.LF;
 
