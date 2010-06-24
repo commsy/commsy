@@ -19,4 +19,5 @@ $message["DISCUSSION_IS_CLOSED"]["en"] = "closed";
 $message["DISCUSSION_LAST_ENTRY"]["en"] = "last item";
 $message["DISCUSSION_SIMPLE"]["en"] = "flat";
 $message["DISCUSSION_THREADED"]["en"] = "threaded";
+$message["DISCUSSION_THREADED_LOADING"]["en"] = "Tree view is loading";
 ?>

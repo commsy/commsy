@@ -6,6 +6,7 @@ $message["TAG_CANNOT_COMBINE"]["en"] = "Categories cannot be combined in this wa
 $message["TAG_COMBINE_BUTTON"]["en"] = "combine";
 $message["TAG_EDIT_FORM_TITLE"]["en"] = "Edit categories";
 $message["TAG_FORM_ROOT_LEVEL"]["en"] = "top level";
+$message["TAG_SORT_ABC"]["en"] = "sort alphabetically";
 $message["TAG_SORT_BUTTON"]["en"] = "paste";
 $message["TAG_WORD_TO"]["en"] = "to";
 ?>

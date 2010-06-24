@@ -19,4 +19,5 @@ $message["DISCUSSION_IS_CLOSED"]["de"] = "abgeschlossen";
 $message["DISCUSSION_LAST_ENTRY"]["de"] = "Letzter Beitrag";
 $message["DISCUSSION_SIMPLE"]["de"] = "linear";
 $message["DISCUSSION_THREADED"]["de"] = "verzweigt (threaded)";
+$message["DISCUSSION_THREADED_LOADING"]["de"] = "Baumansicht wird geladen";
 ?>
