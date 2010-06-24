@@ -272,7 +272,7 @@ class cs_privateroom_home_portlet_view extends cs_view{
       $temp_array = array();
       $temp_array['dropdown_image']  = "new_icon";
       $temp_array['text']  = $this->_translator->getMessage('PORTLET_CONFIGURATION_NEWEST_ENTRIES');
-      $temp_array['value'] = "new_entry_list";
+      $temp_array['value'] = "cs_privateroom_home_new_entries_view";
       if($privateroom_item->getPortletShowNewEntryList()){
       	$temp_array['checked']  = "checked";
       } else {
@@ -283,7 +283,7 @@ class cs_privateroom_home_portlet_view extends cs_view{
       $temp_array = array();
       $temp_array['dropdown_image']  = "new_icon";
       $temp_array['text']  = $this->_translator->getMessage('PORTLET_CONFIGURATION_ACTIVE_ROOMS');
-      $temp_array['value'] = "active_rooms";
+      $temp_array['value'] = "cs_privateroom_home_room_view";
       if($privateroom_item->getPortletShowActiveRoomList()){
          $temp_array['checked']  = "checked";
       } else {
@@ -294,7 +294,7 @@ class cs_privateroom_home_portlet_view extends cs_view{
       $temp_array = array();
       $temp_array['dropdown_image']  = "new_icon";
       $temp_array['text']  = $this->_translator->getMessage('PORTLET_CONFIGURATION_SEARCH_BOX');
-      $temp_array['value'] = "search_box";
+      $temp_array['value'] = "cs_privateroom_home_search_view";
       if($privateroom_item->getPortletShowSearchBox()){
          $temp_array['checked']  = "checked";
       } else {
@@ -305,7 +305,7 @@ class cs_privateroom_home_portlet_view extends cs_view{
       $temp_array = array();
       $temp_array['dropdown_image']  = "new_icon";
       $temp_array['text']  = $this->_translator->getMessage('PORTLET_CONFIGURATION_DOKUVERSER_BOX');
-      $temp_array['value'] = "dokuverser_box";
+      $temp_array['value'] = "cs_privateroom_home_dokuverser_view";
       if($privateroom_item->getPortletShowDokuverserBox()){
          $temp_array['checked']  = "checked";
       } else {
@@ -316,7 +316,7 @@ class cs_privateroom_home_portlet_view extends cs_view{
       $temp_array = array();
       $temp_array['dropdown_image']  = "new_icon";
       $temp_array['text']  = $this->_translator->getMessage('PORTLET_CONFIGURATION_BUZZWORD_BOX');
-      $temp_array['value'] = "buzzword_box";
+      $temp_array['value'] = "cs_privateroom_home_buzzword_view";
       if($privateroom_item->getPortletShowBuzzwordBox()){
          $temp_array['checked']  = "checked";
       } else {
@@ -327,7 +327,7 @@ class cs_privateroom_home_portlet_view extends cs_view{
       $temp_array = array();
       $temp_array['dropdown_image']  = "new_icon";
       $temp_array['text']  = $this->_translator->getMessage('PORTLET_CONFIGURATION_CONFIGURATION_BOX');
-      $temp_array['value'] = "configuration_box";
+      $temp_array['value'] = "cs_privateroom_home_configuration_view";
       if($privateroom_item->getPortletShowConfigurationBox()){
          $temp_array['checked']  = "checked";
       } else {
@@ -338,7 +338,7 @@ class cs_privateroom_home_portlet_view extends cs_view{
       $temp_array = array();
       $temp_array['dropdown_image']  = "new_icon";
       $temp_array['text']  = $this->_translator->getMessage('PORTLET_CONFIGURATION_NEW_ITEM_BOX');
-      $temp_array['value'] = "new_item_box";
+      $temp_array['value'] = "cs_privateroom_home_new_item_view";
       if($privateroom_item->getPortletShowNewItemBox()){
          $temp_array['checked']  = "checked";
       } else {
@@ -349,7 +349,7 @@ class cs_privateroom_home_portlet_view extends cs_view{
       $temp_array = array();
       $temp_array['dropdown_image']  = "new_icon";
       $temp_array['text']  = $this->_translator->getMessage('PORTLET_CONFIGURATION_WEATHER_BOX');
-      $temp_array['value'] = "weather_box";
+      $temp_array['value'] = "cs_privateroom_home_weather_view";
       if($privateroom_item->getPortletShowWeatherBox()){
          $temp_array['checked']  = "checked";
       } else {
@@ -360,7 +360,7 @@ class cs_privateroom_home_portlet_view extends cs_view{
       $temp_array = array();
       $temp_array['dropdown_image']  = "new_icon";
       $temp_array['text']  = $this->_translator->getMessage('PORTLET_CONFIGURATION_CLOCK_BOX');
-      $temp_array['value'] = "clock_box";
+      $temp_array['value'] = "cs_privateroom_home_clock_view";
       if($privateroom_item->getPortletShowClockBox()){
          $temp_array['checked']  = "checked";
       } else {
@@ -371,7 +371,7 @@ class cs_privateroom_home_portlet_view extends cs_view{
       $temp_array = array();
       $temp_array['dropdown_image']  = "new_icon";
       $temp_array['text']  = $this->_translator->getMessage('PORTLET_CONFIGURATION_YOUTUBE');
-      $temp_array['value'] = "youtube";
+      $temp_array['value'] = "cs_privateroom_home_youtube_view";
       if($privateroom_item->getPortletShowYouTube()){
          $temp_array['checked']  = "checked";
       } else {
@@ -382,7 +382,7 @@ class cs_privateroom_home_portlet_view extends cs_view{
       $temp_array = array();
       $temp_array['dropdown_image']  = "new_icon";
       $temp_array['text']  = $this->_translator->getMessage('PORTLET_CONFIGURATION_FLICKR');
-      $temp_array['value'] = "flickr";
+      $temp_array['value'] = "cs_privateroom_home_flickr_view";
       if($privateroom_item->getPortletShowFlickr()){
          $temp_array['checked']  = "checked";
       } else {
@@ -393,7 +393,7 @@ class cs_privateroom_home_portlet_view extends cs_view{
       $temp_array = array();
       $temp_array['dropdown_image']  = "new_icon";
       $temp_array['text']  = $this->_translator->getMessage('COMMON_TWITTER_FRIENDS');
-      $temp_array['value'] = "twitter";
+      $temp_array['value'] = "cs_privateroom_home_twitter_view";
       if($privateroom_item->getPortletShowTwitter()){
          $temp_array['checked']  = "checked";
       } else {
@@ -404,7 +404,7 @@ class cs_privateroom_home_portlet_view extends cs_view{
       $temp_array = array();
       $temp_array['dropdown_image']  = "new_icon";
       $temp_array['text']  = $this->_translator->getMessage('PORTLET_CONFIGURATION_RSS');
-      $temp_array['value'] = "rsslist";
+      $temp_array['value'] = "cs_privateroom_home_rss_ticker_view";
       if($privateroom_item->getPortletShowRSS()){
          $temp_array['checked']  = "checked";
       } else {

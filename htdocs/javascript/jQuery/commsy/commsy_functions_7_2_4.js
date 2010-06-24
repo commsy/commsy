@@ -1715,7 +1715,12 @@ jQuery(document).ready(function() {
 		jQuery(this).click(function() {
 			jQuery('#'+id).remove();
 			
-			// TODO: Haken im DropDown-Menu entfernen!
+			// Haken im DropDown-Menu entfernen!
+			jQuery('[name=portlets]:checked').each(function(){
+				if(id == jQuery(this).attr('value')){
+					jQuery(this).attr('checked', false);
+				}
+			});
 			
 			var json_data = new Object();
 		    var portlet_columns = jQuery(".column");
