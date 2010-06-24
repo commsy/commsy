@@ -122,8 +122,6 @@ if(isset($_GET['do'])){
             	if(!in_array($column_entry, $column_array)){
             		unset($home_config_array[$key_top][$key]);
             	}
-            } else {
-            	unset($home_config_array[$key_top][$key]);
             }
          }
       }

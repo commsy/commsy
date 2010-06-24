@@ -1494,6 +1494,18 @@ class cs_privateroom_item extends cs_room_item {
 
    }
    
+   function setMyroomDisplayConfig ($myroom_array) {
+      $this->_addExtra('MYROOM_DISPLAY_CONFIG',$myroom_array);
+   }
+
+   function getMyroomDisplayConfig(){
+      $retour = array();
+      if ($this->_issetExtra('MYROOM_DISPLAY_CONFIG')) {
+         $retour = $this->_getExtra('MYROOM_DISPLAY_CONFIG');
+      }
+      return $retour;
+   }
+   
    /* END OF PORTLET FUNCTIONS
     * *****************
     */

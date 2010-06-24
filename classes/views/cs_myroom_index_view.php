@@ -229,6 +229,8 @@ class cs_myroom_index_view extends cs_context_index_view {
      if (isset($c_use_new_private_room) and $c_use_new_private_room){
       $html  = LF.'<!-- BEGIN OF LIST VIEW -->'.LF;
       $html .= $this->_getIndexPageHeaderAsHTML();
+      $html .= '<div style="width:100%; float:right;"><div style="float:right;"><a href="#"><img id="new_icon" src="images/commsyicons/22x22/new.png"></a></div></div>';
+      
       if(!(isset($_GET['mode']) and $_GET['mode']=='print')){
          $html .='<div class="index_content_display_width" style="width:100%; padding-top:5px; vertical-align:bottom;">'.LF;
       }else{
@@ -583,7 +585,7 @@ class cs_myroom_index_view extends cs_context_index_view {
 
       $html  = '';
 #      $html = '<td style="width:25%; padding:3px; vertical-align: middle;">'.LF;
-      $html  = '<div id="'.$item->getItemID().'" class="portlet-header" '.$style.'>';
+      $html  = '<div id="'.$item->getItemID().'" class="portlet-header" '.$style.'><div style="float:right;"><a name="myroom_remove" style="cursor:pointer;"><img src="images/commsyicons/16x16/delete.png" /></a></div>';
          $params['iid']=$item->getItemID();
          $display_title = chunkText($this->_text_as_html_short($title),20)."\n";
          if ($item->isLocked()) {
@@ -881,10 +883,56 @@ class cs_myroom_index_view extends cs_context_index_view {
          $retour .= '   </style>'."\n";
          $retour .= '   <!-- END Styles -->'."\n";
       }
+      $retour .= $this->_initDropDownMenus();
       return $retour;
    }
 
+   function _initDropDownMenus(){
+      $privateroom_item = $this->_environment->getCurrentContextItem();
+      $action_array = array();
+      $html = '';
 
+      $myroom_array = $privateroom_item->getMyroomDisplayConfig();
+      
+      $list = $this->_list;
+      $room_item = $list->getFirst();
+      while($room_item){
+	      $temp_array = array();
+	      $temp_array['dropdown_image']  = "new_icon";
+	      $temp_array['text']  = $room_item->getTitle();
+	      $temp_array['value'] = $room_item->getItemID();
+	      if(in_array($room_item->getItemID(), $myroom_array)){
+	         $temp_array['checked']  = "checked";
+	      } else {
+	         $temp_array['checked']  = "";
+	      }
+	      $action_array[] = $temp_array;
+	      $room_item = $list->getNext();
+      }
+      
+      // init drop down menu
+      if ( !empty($action_array)
+           and count($action_array) >= 1
+         ) {
+         $html .= '<script type="text/javascript">'.LF;
+         $html .= '<!--'.LF;
+         $html .= 'var dropDownMyRooms = new Array(';
+         $first = true;
+         foreach ($action_array as $action) {
+            if ( $first ) {
+               $first = false;
+            } else {
+               $html .= ',';
+            }
+            $html .= 'new Array("'.$action['dropdown_image'].'","'.$action['checked'].'","'.$action['text'].'","'.$action['value'].'")';
+         }
+         $html .= ');'.LF;
+         $html .= 'var myroomSaveButton = "'.$this->_translator->getMessage('PREFERENCES_SAVE_BUTTON').'";'.LF;
+         $html .= '-->'.LF;
+         $html .= '</script>'.LF;
+      }
+      return $html;
+   }
 
 
    function _getTableheadAsHTML () {
