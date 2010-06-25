@@ -2239,6 +2239,8 @@ class misc_text_converter {
             $temp_file_name = htmlentities($array[2], ENT_NOQUOTES, 'UTF-8');
             if ( !empty($array[2]) and !empty($file_name_array[$temp_file_name]) ) {
                $file = $file_name_array[$temp_file_name];
+            } elseif (!empty($array[2]) and !empty($file_name_array[$array[2]])){
+            	$file = $file_name_array[$array[2]];
             }
             if ( isset($file) ) {
                if ( mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'png')
