@@ -79,8 +79,9 @@ class cs_myroom_index_view extends cs_context_index_view {
       } else {
          $image = '<img src="images/commsyicons/32x32/room.png" style="vertical-align:bottom;"/>';
       }
-      $html .= '<h2 class="pagetitle">'.$image.' '.$this->_translator->getMessage('MYROOM_INDEX');
-      $html .= '</h2>'.LF;
+      $html .= '<div style="float:left;"><h2 class="pagetitle">'.$image.' '.$this->_translator->getMessage('MYROOM_INDEX');
+      $html .= '</h2></div>'.LF;
+      $html .= '<div style="float:right;"><a href="#"><img id="new_icon" src="images/commsyicons/48x48/config/privateroom_home_options.png" height=24></a></div>';
       $html .='</div>'.LF;
       $html .='</div>'.LF;
       $html .='</div>'.LF;
@@ -229,7 +230,7 @@ class cs_myroom_index_view extends cs_context_index_view {
      if (isset($c_use_new_private_room) and $c_use_new_private_room){
       $html  = LF.'<!-- BEGIN OF LIST VIEW -->'.LF;
       $html .= $this->_getIndexPageHeaderAsHTML();
-      $html .= '<div style="width:100%; float:right;"><div style="float:right;"><a href="#"><img id="new_icon" src="images/commsyicons/22x22/new.png"></a></div></div>';
+      #$html .= '<div style="width:100%; float:right;"><div style="float:right;"><a href="#"><img id="new_icon" src="images/commsyicons/22x22/new.png"></a></div></div>';
       
       if(!(isset($_GET['mode']) and $_GET['mode']=='print')){
          $html .='<div class="index_content_display_width" style="width:100%; padding-top:5px; vertical-align:bottom;">'.LF;

@@ -150,7 +150,8 @@ class cs_home_title_view extends cs_view {
          $html .= '</div>'.LF;
       }
       $html .= '<div>'.LF;
-      $html .= '<h2 class="pagetitle">'.$home_title.'</h2>'.LF;
+      $html .= '<div style="float:left;"><h2 class="pagetitle">'.$home_title.'</h2></div>'.LF;
+      $html .= '<div style="float:right;"><a href="#"><img id="new_icon" src="images/commsyicons/48x48/config/privateroom_home_options.png" height=24></a></div>';
       $html .= '</div>';
       $html .= '</div>';
       return $html;

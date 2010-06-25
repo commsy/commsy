@@ -1898,7 +1898,7 @@ jQuery(document).ready(function() {
 					   url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct=privateroom_home_configuration&output=json&do=save_config',
 					   data: json_data,
 					   success: function(msg){
-						window.location = 'http://localhost/commsy/htdocs/commsy.php?cid='+window.ajax_cid+'&mod=home&fct=index';
+						window.location = 'commsy.php?cid='+window.ajax_cid+'&mod=home&fct=index';
 					   }
 					});
 				});
@@ -2085,7 +2085,7 @@ jQuery(document).ready(function() {
 					   url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct=privateroom_myroom_configuration&output=json&do=save_config',
 					   data: json_data,
 					   success: function(msg){
-						window.location = 'http://localhost/commsy/htdocs/commsy.php?cid='+window.ajax_cid+'&mod=myroom&fct=index';
+						window.location = 'commsy.php?cid='+window.ajax_cid+'&mod=myroom&fct=index';
 					   }
 					});
 				});
