@@ -70,9 +70,10 @@ class cs_entry_index_view extends cs_index_view {
 
 
    function _getSearchBoxAsHTML(){
-      $html = '<div class="portlet">'.LF;
+      $html = '<div class="portlet" id="my_search_box">'.LF;
       $html .= '<div class="portlet-header">'.LF;
       $html .= $this->_translator->getMessage('PRIVATEROOM_MY_ENTRIES_SEARCH_BOX').LF;
+      $html .= '<div style="float:right;"><a name="myentries_remove" style="cursor:pointer;"><img src="images/commsyicons/16x16/delete.png" /></a></div>';
       $html .= '</div>'.LF;
       $html .= '<div class="portlet-content">'.LF;
       $html .= '<form style="padding:0px; margin:0px;" action="'.curl($this->_environment->getCurrentContextID(), 'entry', 'index','').'" method="get" name="form">'.LF;
@@ -112,9 +113,10 @@ class cs_entry_index_view extends cs_index_view {
       $mylist_manager->setGetCountLinks();
       $mylist_manager->select();
       $mylist_list = $mylist_manager->get();
-      $html = '<div class="portlet">'.LF;
+      $html = '<div class="portlet" id="my_list_box">'.LF;
       $html .= '<div class="portlet-header">'.LF;
       $html .= $this->_translator->getMessage('PRIVATEROOM_MY_LISTS_BOX').LF;
+      $html .= '<div style="float:right;"><a name="myentries_remove" style="cursor:pointer;"><img src="images/commsyicons/16x16/delete.png" /></a></div>';
       $html .= '</div>'.LF;
       $html .= '<div class="portlet-content">'.LF;
       $html .= '<form style="padding:0px; margin:0px;" action="'.curl($this->_environment->getCurrentContextID(), 'entry', 'index','').'" method="post" name="mylist_form">'.LF;
@@ -287,34 +289,135 @@ class cs_entry_index_view extends cs_index_view {
 
 
    function asHTML () {
+   	$privateroom_item = $this->_environment->getCurrentContextItem();
+   	$myentries_array = $privateroom_item->getMyEntriesDisplayConfig();
+   	
       $html  = LF.'<!-- BEGIN OF LIST VIEW -->'.LF;
 
       $html .= $this->_getIndexPageHeaderAsHTML().LF;
+      $html .= '<div style="width:100%; clear:both;">';
       $html .= '<div class="column" style="width:50%;">'.LF;
  #     $html .= $this->_getCreateNewEntryBoxAsHTML().LF;
-      $html .= $this->_getMylistsBoxAsHTML().LF;
-      $html .= $this->_getBuzzwordBoxAsHTML().LF;
-      $html .= $this->_getMatrixBoxAsHTML().LF;
+      if(in_array("my_list_box", $myentries_array)){
+         $html .= $this->_getMylistsBoxAsHTML().LF;
+      }
+      if(in_array("my_buzzword_box", $myentries_array)){
+         $html .= $this->_getBuzzwordBoxAsHTML().LF;
+      }
+      if(in_array("my_matrix_box", $myentries_array)){
+         $html .= $this->_getMatrixBoxAsHTML().LF;
+      }
       $html .= '</div>'.LF;
       $html .= '<div class="column" style="width:50%;">'.LF;
-      $html .= $this->_getSearchBoxAsHTML().LF;
-      $html .= $this->_getContentBoxAsHTML().LF;
+      if(in_array("my_search_box", $myentries_array)){
+         $html .= $this->_getSearchBoxAsHTML().LF;
+      }
+      if(in_array("my_entries_box", $myentries_array)){
+         $html .= $this->_getContentBoxAsHTML().LF;
+      }
       $html .= '</div>'.LF;
-
+      $html .= '</div>';
       $html .='<div style="clear:both;">'.LF;
       $html .='</div>'.LF;
       $html .= '<!-- END OF PLAIN LIST VIEW -->'.LF.LF;
+      $html .= $this->_initDropDownMenus();
       return $html;
    }
 
+   function _initDropDownMenus(){
+      $privateroom_item = $this->_environment->getCurrentContextItem();
+      $action_array = array();
+      $html = '';
 
+      $myentries_array = $privateroom_item->getMyEntriesDisplayConfig();
+      
+      $temp_array = array();
+      $temp_array['dropdown_image']  = "new_icon";
+      $temp_array['text']  = $this->_translator->getMessage('PRIVATEROOM_MY_LISTS_BOX');
+      $temp_array['value'] = "my_list_box";
+      if(in_array("my_list_box", $myentries_array)){
+         $temp_array['checked']  = "checked";
+      } else {
+         $temp_array['checked']  = "";
+      }
+      $action_array[] = $temp_array;
+      
+      $temp_array = array();
+      $temp_array['dropdown_image']  = "new_icon";
+      $temp_array['text']  = $this->_translator->getMessage('PRIVATEROOM_MY_ENTRIES_BUZZWORD_BOX');
+      $temp_array['value'] = "my_buzzword_box";
+      if(in_array("my_buzzword_box", $myentries_array)){
+         $temp_array['checked']  = "checked";
+      } else {
+         $temp_array['checked']  = "";
+      }
+      $action_array[] = $temp_array;
+      
+      $temp_array = array();
+      $temp_array['dropdown_image']  = "new_icon";
+      $temp_array['text']  = $this->_translator->getMessage('PRIVATEROOM_MY_ENTRIES_MATRIX_BOX');
+      $temp_array['value'] = "my_matrix_box";
+      if(in_array("my_matrix_box", $myentries_array)){
+         $temp_array['checked']  = "checked";
+      } else {
+         $temp_array['checked']  = "";
+      }
+      $action_array[] = $temp_array;
+      
+      $temp_array = array();
+      $temp_array['dropdown_image']  = "new_icon";
+      $temp_array['text']  = $this->_translator->getMessage('PRIVATEROOM_MY_ENTRIES_SEARCH_BOX');
+      $temp_array['value'] = "my_search_box";
+      if(in_array("my_search_box", $myentries_array)){
+         $temp_array['checked']  = "checked";
+      } else {
+         $temp_array['checked']  = "";
+      }
+      $action_array[] = $temp_array;
+      
+      $temp_array = array();
+      $temp_array['dropdown_image']  = "new_icon";
+      $temp_array['text']  = $this->_translator->getMessage('PRIVATEROOM_MY_ENTRIES_LIST_BOX');
+      $temp_array['value'] = "my_entries_box";
+      if(in_array("my_entries_box", $myentries_array)){
+         $temp_array['checked']  = "checked";
+      } else {
+         $temp_array['checked']  = "";
+      }
+      $action_array[] = $temp_array;
+      
+      // init drop down menu
+      if ( !empty($action_array)
+           and count($action_array) >= 1
+         ) {
+         $html .= '<script type="text/javascript">'.LF;
+         $html .= '<!--'.LF;
+         $html .= 'var dropDownMyEntries = new Array(';
+         $first = true;
+         foreach ($action_array as $action) {
+            if ( $first ) {
+               $first = false;
+            } else {
+               $html .= ',';
+            }
+            $html .= 'new Array("'.$action['dropdown_image'].'","'.$action['checked'].'","'.$action['text'].'","'.$action['value'].'")';
+         }
+         $html .= ');'.LF;
+         $html .= 'var myentriesSaveButton = "'.$this->_translator->getMessage('PREFERENCES_SAVE_BUTTON').'";'.LF;
+         $html .= 'var ajax_cid = "'.$privateroom_item->getItemID().'";'.LF;
+         $html .= '-->'.LF;
+         $html .= '</script>'.LF;
+      }
+      return $html;
+   }
 
    function _getContentBoxAsHTML () {
       $list = $this->_list;
       $params = $this->_environment->getCurrentParameterArray();
-      $html = '<div class="portlet">'.LF;
+      $html = '<div class="portlet" id="my_entries_box">'.LF;
       $html .= '<div class="portlet-header">'.LF;
       $html .= $this->_translator->getMessage('PRIVATEROOM_MY_ENTRIES_LIST_BOX').LF;
+      $html .= '<div style="float:right;"><a name="myentries_remove" style="cursor:pointer;"><img src="images/commsyicons/16x16/delete.png" /></a></div>';
       $html .= '</div>'.LF;
       $html .= '<div id="contentbox" class="portlet-content">'.LF;
       if (
@@ -401,9 +504,10 @@ class cs_entry_index_view extends cs_index_view {
 
 
    function _getMatrixBoxAsHTML () {
-      $html = '<div class="portlet">'.LF;
+      $html = '<div class="portlet" id="my_matrix_box">'.LF;
       $html .= '<div class="portlet-header">'.LF;
       $html .= $this->_translator->getMessage('PRIVATEROOM_MY_ENTRIES_MATRIX_BOX').LF;
+      $html .= '<div style="float:right;"><a name="myentries_remove" style="cursor:pointer;"><img src="images/commsyicons/16x16/delete.png" /></a></div>';
       $html .= '</div>'.LF;
       $html .= '<div class="portlet-content">'.LF;
       $count = 0;
@@ -529,9 +633,10 @@ class cs_entry_index_view extends cs_index_view {
       $buzzword_manager->select();
       $buzzword_list = $buzzword_manager->get();
       $html  = '';
-      $html .= '<div class="portlet">'.LF;
+      $html .= '<div class="portlet" id="my_buzzword_box">'.LF;
       $html .= '<div class="portlet-header">'.LF;
       $html .= $this->_translator->getMessage('PRIVATEROOM_MY_ENTRIES_BUZZWORD_BOX').LF;
+      $html .= '<div style="float:right;"><a name="myentries_remove" style="cursor:pointer;"><img src="images/commsyicons/16x16/delete.png" /></a></div>';
       $html .= '</div>'.LF;
       $html .= '<div class="portlet-content">'.LF;
       $buzzword = $buzzword_list->getFirst();
@@ -608,8 +713,14 @@ class cs_entry_index_view extends cs_index_view {
 
 
    function _getIndexPageHeaderAsHTML(){
-      $html = '<h2 class="pagetitle">'.$this->_translator->getMessage('ENTRY_INDEX');
-      $html .= '</h2>'.LF;
+      if (!$this->_environment->inPrivateRoom()){
+         $html = '<h2 class="pagetitle">'.$this->_translator->getMessage('ENTRY_INDEX');
+         $html .= '</h2>'.LF;
+      } else {
+         $html = '<div style="width:100%;"><div style="float:left;"><h2 class="pagetitle">'.$this->_translator->getMessage('ENTRY_INDEX');
+         $html .= '</h2></div>'.LF;
+         $html .= '<div style="float:right;"><a href="#"><img id="new_icon" src="images/commsyicons/48x48/config/privateroom_home_options.png" height=24></a></div></div>';
+      }
       return $html;
    }
 
