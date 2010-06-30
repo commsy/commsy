@@ -612,6 +612,8 @@ class cs_configuration_room_options_form extends cs_rubric_form {
             $this->_form->addTextField('color_1','',$this->_translator->getMessage('COMMON_COLOR_101'),'','',10);
             $this->_form->addTextField('color_2','',$this->_translator->getMessage('COMMON_COLOR_102'),'','',10);
             $this->_form->addTextField('color_3','',$this->_translator->getMessage('COMMON_COLOR_103'),'','',10);
+            $this->_form->addTextField('color_31','',$this->_translator->getMessage('COMMON_COLOR_1031'),'','',10);
+            $this->_form->addTextField('color_32','',$this->_translator->getMessage('COMMON_COLOR_1032'),'','',10);
             $this->_form->addTextField('color_4','',$this->_translator->getMessage('COMMON_COLOR_104'),'','',10);
             $this->_form->addTextField('color_5','',$this->_translator->getMessage('COMMON_COLOR_105'),'','',10);
             $this->_form->addTextField('color_6','',$this->_translator->getMessage('COMMON_COLOR_106'),'','',10);
@@ -717,6 +719,8 @@ class cs_configuration_room_options_form extends cs_rubric_form {
             $this->_form->addTextField('color_1','',$this->_translator->getMessage('COMMON_COLOR_101'),'','',10);
             $this->_form->addTextField('color_2','',$this->_translator->getMessage('COMMON_COLOR_102'),'','',10);
             $this->_form->addTextField('color_3','',$this->_translator->getMessage('COMMON_COLOR_103'),'','',10);
+            $this->_form->addTextField('color_31','',$this->_translator->getMessage('COMMON_COLOR_1031'),'','',10);
+            $this->_form->addTextField('color_32','',$this->_translator->getMessage('COMMON_COLOR_1032'),'','',10);
             $this->_form->addTextField('color_4','',$this->_translator->getMessage('COMMON_COLOR_104'),'','',10);
             $this->_form->addTextField('color_5','',$this->_translator->getMessage('COMMON_COLOR_105'),'','',10);
             $this->_form->addTextField('color_6','',$this->_translator->getMessage('COMMON_COLOR_106'),'','',10);
@@ -780,6 +784,8 @@ class cs_configuration_room_options_form extends cs_rubric_form {
       $temp_array['color_1'] = $color['tabs_background'];
       $temp_array['color_2'] = $color['tabs_focus'];
       $temp_array['color_3'] = $color['tabs_title'];
+      $temp_array['color_31'] = $color['tabs_separators'];
+      $temp_array['color_32'] = $color['tabs_dash'];
       $temp_array['color_4'] = $color['content_background'];
       $temp_array['color_5'] = $color['boxes_background'];
       $temp_array['color_6'] = $color['hyperlink'];
@@ -797,6 +803,16 @@ class cs_configuration_room_options_form extends cs_rubric_form {
                   $this->_values['color_'.$i] = $temp_array['color_'.$i];
                }
             }
+            if(!empty($this->_form_post['color_31'])) {
+               $this->_values['color_31'] = $ths->_form_post['color_31'];
+            } else {
+               $this->_values['color_31'] = $temp_array['color_31'];
+            }
+            if(!empty($this->_form_post['color_32'])) {
+               $this->_values['color_32'] = $ths->_form_post['color_32'];
+            } else {
+               $this->_values['color_32'] = $temp_array['color_32'];
+            }
          }
       } else {
          $color_array = $context_item->getColorArray();
@@ -804,6 +820,8 @@ class cs_configuration_room_options_form extends cs_rubric_form {
          $this->_values['color_1'] = $color['tabs_background'];
          $this->_values['color_2'] = $color['tabs_focus'];
          $this->_values['color_3'] = $color['tabs_title'];
+         $this->_values['color_31'] = $color['tabs_separators'];
+         $this->_values['color_32'] = $color['tabs_dash'];
          $this->_values['color_5'] = $color['boxes_background'];
          $this->_values['color_7'] = $color['list_entry_even'];
          $this->_values['color_6'] = $color['hyperlink'];

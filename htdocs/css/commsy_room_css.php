@@ -320,7 +320,7 @@ ul.item_list {
 #tabs {
    position:relative;
    width: 100%;
-   border-bottom: 1px solid <?php echo($color['tabs_title'])?>;
+   border-bottom: 1px solid <?php echo($color['tabs_dash'])?>;
    padding:4px 0px 3px 0px;
    margin:0px;
    font-weight: bold;
@@ -347,7 +347,7 @@ span.navlist{
 a.navlist{
    color:<?php echo($color['headline_text'])?>;
    padding:4px 6px 3px 6px;
-   border-right:1px solid <?php echo($color['headline_text'])?>;
+   border-right:1px solid <?php echo($color['tabs_separators'])?>;
    text-decoration:none;
    font-size: 10pt;
 }
@@ -355,7 +355,7 @@ a.navlist{
 a.navlist_current{
    color:<?php echo($color['headline_text'])?>;
    padding:4px 6px 3px 6px;
-   border-right:1px solid <?php echo($color['headline_text'])?>;
+   border-right:1px solid <?php echo($color['tabs_separators'])?>;
    text-decoration:none;
    <?php
    echo('background: url(../'.$c_single_entry_point.'?cid='.$cid.'&mod=picture&fct=getfile&picture=' . $color['schema'] . '_cs_gradient_24_focus.png) repeat-x;');

@@ -251,6 +251,16 @@ if ($command != 'error') { // only if user is allowed to edit colors
                }else{
                   $color['tabs_title'] = '#000000';
                }
+               if (!empty($_POST['color_31'])){
+                  $color['tabs_separators'] = $_POST['color_31'];
+               }else{
+                  $color['tabs_separators'] = '#000000';
+               }
+               if (!empty($_POST['color_32'])){
+                  $color['tabs_dash'] = $_POST['color_32'];
+               }else{
+                  $color['tabs_dash'] = '#000000';
+               }
                if (!empty($_POST['color_4'])){
                   $color['content_background'] = $_POST['color_4'];
                }else{
