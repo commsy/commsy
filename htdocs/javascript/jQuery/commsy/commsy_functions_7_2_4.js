@@ -2268,3 +2268,29 @@ jQuery(document).ready(function() {
 		});
 	});
 });
+
+jQuery(document).ready(function() {
+
+	/* This is basic - uses default settings */
+	
+	//jQuery("a[rel^='lightbox']").fancybox();
+	
+	/* Using custom settings */
+	
+	//jQuery("a[rel^='lightbox']").fancybox({
+	//	'hideOnContentClick': true
+	//});
+
+	/* Apply fancybox to multiple items */
+	
+	jQuery("a[rel^='lightbox']").fancybox({
+		'transitionIn'	:	'fade',
+		'transitionOut'	:	'fade',
+		'speedIn'		:	600, 
+		'speedOut'		:	200, 
+		'overlayShow'	:	true,
+		'titleShow'	    :   false,
+		'autoScale'     :   true
+	});
+	
+});
