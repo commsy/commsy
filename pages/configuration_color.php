@@ -157,6 +157,9 @@ if ($command != 'error') { // only if user is allowed to edit colors
              if (!empty($_POST['color_16'])){
                $color['warning'] = $_POST['color_16'];
             }
+             if (!empty($_POST['color_17'])){
+               $color['welcome_text'] = $_POST['color_17'];
+            }
             $color['schema']='SCHEMA_OWN';
          }
       }

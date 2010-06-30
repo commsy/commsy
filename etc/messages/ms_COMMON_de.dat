@@ -96,6 +96,7 @@ $message["COMMON_COLOR_13"]["de"] = "Datum";
 $message["COMMON_COLOR_14"]["de"] = "Systemtext";
 $message["COMMON_COLOR_15"]["de"] = "Ausgegrauter Text";
 $message["COMMON_COLOR_16"]["de"] = "Hinweistext";
+$message["COMMON_COLOR_17"]["de"] = "Begrüßungstext";
 $message["COMMON_COLOR_2"]["de"] = "Menüsauswahl";
 $message["COMMON_COLOR_4"]["de"] = "Menüschrift";
 $message["COMMON_COLOR_5"]["de"] = "Menüschrift";

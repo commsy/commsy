@@ -340,7 +340,7 @@ h1.portal_title{
     padding:0px;
     font-size:20px;
     font-weight:bold;
-    color:<?php echo($color['tabs_background'])?>;
+    color:<?php echo($color['welcome_text'])?>;
 }
 
 h1.portal_main_title{
@@ -348,7 +348,7 @@ h1.portal_main_title{
     padding:0px 10px 0px 0px;
     font-size:25px;
     font-weight:bold;
-    color:<?php echo($color['tabs_background'])?>;
+    color:<?php echo($color['welcome_text'])?>;
 }
 
 h1.portal_announcement_title{

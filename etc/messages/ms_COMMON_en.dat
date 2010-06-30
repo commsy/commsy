@@ -96,6 +96,7 @@ $message["COMMON_COLOR_13"]["en"] = "Date";
 $message["COMMON_COLOR_14"]["en"] = "System text";
 $message["COMMON_COLOR_15"]["en"] = "'Inactive' text";
 $message["COMMON_COLOR_16"]["en"] = "Text warnings";
+$message["COMMON_COLOR_17"]["en"] = "Welcome text";
 $message["COMMON_COLOR_2"]["en"] = "Menu selection";
 $message["COMMON_COLOR_4"]["en"] = "Menu font";
 $message["COMMON_COLOR_5"]["en"] = "Menu font";

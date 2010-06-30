@@ -230,6 +230,7 @@ class cs_internal_color_form extends cs_rubric_form {
             $this->_form->addTextField('color_14','',$this->_translator->getMessage('COMMON_COLOR_14'),'','',10);
             $this->_form->addTextField('color_15','',$this->_translator->getMessage('COMMON_COLOR_15'),'','',10);
             $this->_form->addTextField('color_16','',$this->_translator->getMessage('COMMON_COLOR_16'),'','',10);
+            $this->_form->addTextField('color_17','',$this->_translator->getMessage('COMMON_COLOR_17'),'','',10);
          }
       } else{
          $context_item = $this->_environment->getCurrentContextItem();
@@ -296,6 +297,7 @@ class cs_internal_color_form extends cs_rubric_form {
             $this->_form->addTextField('color_14','',$this->_translator->getMessage('COMMON_COLOR_14'),'','',10);
             $this->_form->addTextField('color_15','',$this->_translator->getMessage('COMMON_COLOR_15'),'','',10);
             $this->_form->addTextField('color_16','',$this->_translator->getMessage('COMMON_COLOR_16'),'','',10);
+            $this->_form->addTextField('color_17','',$this->_translator->getMessage('COMMON_COLOR_17'),'','',10);
          }
 
       }
@@ -329,6 +331,7 @@ class cs_internal_color_form extends cs_rubric_form {
       $temp_array['color_14'] = $color['info_color'];
       $temp_array['color_15'] = $color['disabled'];
       $temp_array['color_16'] = $color['warning'];
+      $temp_array['color_17'] = $color['welcome_text'];
 
       if ( !empty($this->_form_post) ) {
          $this->_values = $this->_form_post;
@@ -336,7 +339,7 @@ class cs_internal_color_form extends cs_rubric_form {
             $this->_values['color_choice'] = 'COMMON_COLOR_'.mb_strtoupper($color['schema'], 'UTF-8');
          }
          if ($this->_values['color_choice']=='COMMON_COLOR_SCHEMA_OWN'){
-            for ($i=1; $i<17; $i++){
+            for ($i=1; $i<18; $i++){
                if ( !empty($this->_form_post['color_'.$i]) ){
                   $this->_values['color_'.$i] = $this->_form_post['color_'.$i];
                }else{
@@ -363,6 +366,7 @@ class cs_internal_color_form extends cs_rubric_form {
             $this->_values['color_14'] = $color['info_color'];
             $this->_values['color_15'] = $color['disabled'];
             $this->_values['color_16'] = $color['warning'];
+            $this->_values['color_17'] = $color['welcome_text'];
          }
       }
    }
