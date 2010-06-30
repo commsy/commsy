@@ -42,5 +42,7 @@ $c_session_lifetime = 6;
 // $c_proxy_port = '3128';
 
 // return path of emails
-// $c_return_path_mail_address = 'mailreturn@your-domain.net';
+// $c_return_path_mail_address = 'SENDER';                     // use sender email address as return path
+// $c_return_path_mail_address = 'mailreturn@your-domain.net'; // use this email address as return path
+// $c_return_path_mail_address = '';                           // do not use a return path
 ?>

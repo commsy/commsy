@@ -218,8 +218,16 @@ class cs_mail extends Mail
 
          $return_mail_address = '';
          global $c_return_path_mail_address;
-         if ( isset($c_return_path_mail_address) and !empty($c_return_path_mail_address) ) {
-            $return_mail_address = $c_return_path_mail_address;
+         if ( isset($c_return_path_mail_address)
+              and !empty($c_return_path_mail_address)
+            ) {
+            if ( $c_return_path_mail_address == 'SENDER'
+                 and !empty($this->from_email)
+               ) {
+               $return_mail_address = $this->from_email;
+            } else {
+               $return_mail_address = $c_return_path_mail_address;
+            }
          }
 
          $success = true;

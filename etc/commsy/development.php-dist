@@ -49,7 +49,7 @@ $c_enable_logging_to_file = false;
 $c_logging_file = '';
 
 // enable security for HTML textarea
-$c_enable_htmltextarea_security = true;
+$c_enable_htmltextarea_security = false;
 
 // use cron new
 // save cron result in log file
