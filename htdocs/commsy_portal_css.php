@@ -258,11 +258,11 @@ div.search_link a{
 }
 
 .list td.portal-even {
-    background-color: <?php echo($color['myarea_title_backround'])?>;
+    background-color: <?php echo($color['list_entry_even'])?>;
 }
 
 .list td.portal-odd {
-    background-color: <?php echo($color['myarea_content_backround'])?>;
+    background-color: <?php echo($color['list_entry_odd'])?>;
 }
 
 .list td {
