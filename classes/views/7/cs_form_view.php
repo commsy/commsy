@@ -657,12 +657,24 @@ class cs_form_view extends cs_view {
       $context_item = $this->_environment->getCurrentContextItem();
       $val = $context_item->getMaxUploadSizeInBytes();
       if ($c_new_upload){
+         // prepare some values to send to the uploadify script
+         global $c_virus_scan;
+         global $c_virus_scan_cron;
+         $session = $this->_environment->getSessionItem();
+         $scriptData = '';
+         $scriptData .= '"c_virus_scan" : "' . $c_virus_scan . '",';
+         $scriptData .= '"c_virus_scan_cron" : "' . $c_virus_scan_cron . '",';
+         $scriptData .= '"file_upload_rubric" : "' . $this->_environment->getCurrentModule() . '",';
+         $scriptData .= '"session_id" : "' . $session->getSessionID() . '",';
+         
          $html .='<script type="text/javascript">';
          $html .='$(document).ready(function() {';
          $html .='   $("#uploadify").uploadify({';
 		 $html .='      "uploader"       : "javascript/jQuery/jquery.uploadify-v2.1.0/uploadify.swf",';
 		 $html .='      "script"         : "javascript/jQuery/jquery.uploadify-v2.1.0/uploadify.php",';
 		 $html .='      "folder"         : "javascript/jQuery/jquery.uploadify-v2.1.0/uploads",';
+		 $html .='		"scriptData"	 : ({'.$scriptData.'}),';
+		//$html .= '"scriptData"	: ({\'var_name\': \'this_var_value\'}),';//        ({'var_name': 'this_var_value'})'
 		 $html .='      "multi"          : true,';
 		 $html .='      "wmode"          : "transparent",';
 		 $html .='      "buttonImg"      : "javascript/jQuery/jquery.uploadify-v2.1.0/button.png",';
