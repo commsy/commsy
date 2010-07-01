@@ -661,17 +661,26 @@ class cs_form_view extends cs_view {
          global $c_virus_scan;
          global $c_virus_scan_cron;
          $session = $this->_environment->getSessionItem();
+         if($session->issetValue($file_upload_rubric . '_add_files')) {
+            $file_array = $session->getValue($file_upload_rubric . '_add_files');
+         } else {
+            $file_array = array();
+         }
+//         if(!isset($c_virus_scan)) $c_virus_scan = false;
+//         if(!isset($c_virus_scan_cron)) $c_virus_scan_cron = false;
          $scriptData = '';
          $scriptData .= '"c_virus_scan" : "' . $c_virus_scan . '",';
          $scriptData .= '"c_virus_scan_cron" : "' . $c_virus_scan_cron . '",';
          $scriptData .= '"file_upload_rubric" : "' . $this->_environment->getCurrentModule() . '",';
-         $scriptData .= '"session_id" : "' . $session->getSessionID() . '",';
+         //$scriptData .= '"session_id" : "' . $session->getSessionID() . '",';
+         //$scriptData .= '"' . $this->_environment->getCurrentModule() . '_add_files" : "' . $file_array . '"';
          
          $html .='<script type="text/javascript">';
          $html .='$(document).ready(function() {';
          $html .='   $("#uploadify").uploadify({';
 		 $html .='      "uploader"       : "javascript/jQuery/jquery.uploadify-v2.1.0/uploadify.swf",';
-		 $html .='      "script"         : "javascript/jQuery/jquery.uploadify-v2.1.0/uploadify.php",';
+		 //$html .='      "script"         : "javascript/jQuery/jquery.uploadify-v2.1.0/uploadify.php",';
+		 $html .='		"script"		 : "commsy.php?cid=' . $this->_environment->getCurrentContextID() . '&mod=ajax&fct=uploadify",';
 		 $html .='      "folder"         : "javascript/jQuery/jquery.uploadify-v2.1.0/uploads",';
 		 $html .='		"scriptData"	 : ({'.$scriptData.'}),';
 		//$html .= '"scriptData"	: ({\'var_name\': \'this_var_value\'}),';//        ({'var_name': 'this_var_value'})'
@@ -682,7 +691,8 @@ class cs_form_view extends cs_view {
 		 $html .='      "height"         : 25,';
 		 $html .='      "sizeLimit"      : '.$val.',';
 		 $html .='      "buttonText"     : "'.$this->_translator->getMessage('COMMON_UPLOAD_SEARCH_BUTTON').'",';
-		 $html .='      "cancelImg"      : "images/commsyicons/16x16/delete.png"';
+		 $html .='      "cancelImg"      : "images/commsyicons/16x16/delete.png",';
+		 $html .='		"onComplete"	 : uploadify_onComplete';
 	     $html .='   });';
          $html .='});';
          $html .='</script>';

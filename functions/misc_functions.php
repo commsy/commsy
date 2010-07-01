@@ -843,7 +843,8 @@ function isURLValid () {
          $funct != 'privateroom_myroom_configuration' and
          $funct != 'privateroom_my_entries_configuration' and
          $funct != 'privateroom_entry' and
-         $funct != 'privateroom_myroom'
+         $funct != 'privateroom_myroom' and
+         $funct != 'uploadify'
        ) {
        return false;
     }
