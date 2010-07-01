@@ -127,6 +127,24 @@
 
 			return false;
 		},
+		
+		// CommSy - jschultze
+		fancybox_format_download = function(title) {
+			if (title && title.length) {
+				switch (currentOpts.titlePosition) {
+					case 'inside':
+						return title;
+					case 'over':
+						return '<span id="fancybox-title-over">' + title + '</span>';
+					default:
+						return '<span id="fancybox-title-wrap"><span id="fancybox-title-left"></span><span id="fancybox-title-main">' + title + '</span><span id="fancybox-title-right"></span></span>';
+					    //return '<span id="fancybox-title-wrap">' + title + '</span>';
+				}
+			}
+
+			return false;
+		},
+		// CommSy - jschultze
 
 		fancybox_process_title = function() {
 			var title	= currentOpts.title,
@@ -170,7 +188,53 @@
 
 			$('#fancybox-title').appendTo( outer ).hide();
 		},
+		
+		// CommSy - jschultze
+		fancybox_process_download = function() {
+			var link = jQuery('[title='+currentOpts.title+']').attr('href');
+			var title	= '<a style=\"font-size:10pt;font-weight:bold;\" href=\"'+link+'\">'+window.message+'</a>';
+			var	width	= final_pos.width - (currentOpts.padding * 2),
+				titlec	= 'fancybox-title-' + currentOpts.titlePosition;
+				
+			$('#fancybox-title').remove();
 
+			titleh = 0;
+
+			if (currentOpts.downloadShow === false) {
+				return;
+			}
+
+			title = $.isFunction(currentOpts.titleFormat) ? currentOpts.titleFormat(title, currentArray, currentIndex, currentOpts) : fancybox_format_download(title);
+			
+			if (!title || title === '') {
+				return;
+			}
+
+			$('<div id="fancybox-title" class="' + titlec + '" />').css({
+				'width'			: width,
+				'paddingLeft'	: currentOpts.padding,
+				'paddingRight'	: currentOpts.padding
+			}).html(title).appendTo('body');
+
+			switch (currentOpts.titlePosition) {
+				case 'inside':
+					titleh = $("#fancybox-title").outerHeight(true) - currentOpts.padding;
+					final_pos.height += titleh;
+				break;
+
+				case 'over':
+					$('#fancybox-title').css('bottom', currentOpts.padding);
+				break;
+
+				default:
+					$('#fancybox-title').css('bottom', $("#fancybox-title").outerHeight(true) * -1);
+				break;
+			}
+
+			$('#fancybox-title').appendTo( outer ).hide();
+		},
+		// CommSy - jschultze
+		
 		fancybox_set_navigation = function() {
 			$(document).unbind('keydown.fb').bind('keydown.fb', function(e) {
 				if (e.keyCode == 27 && currentOpts.enableEscapeButton) {
@@ -390,6 +454,10 @@
 			final_pos = fancybox_get_zoom_to();
 
 			fancybox_process_title();
+			
+			// CommSy - jschultze
+			fancybox_process_download();
+			// CommSy - jschultze
 
 			if (wrap.is(":visible")) {
 				$( close.add( nav_left ).add( nav_right ) ).hide();

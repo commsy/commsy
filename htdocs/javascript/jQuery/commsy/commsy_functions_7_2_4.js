@@ -2290,7 +2290,10 @@ jQuery(document).ready(function() {
 		'speedOut'		:	200, 
 		'overlayShow'	:	true,
 		'titleShow'	    :   false,
-		'autoScale'     :   true
+		'autoScale'     :   true,
+		// CommSy
+		'downloadShow'	:   true
+		// CommSy
 	});
 	
 });
