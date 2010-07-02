@@ -20,6 +20,7 @@ div.dropdown_menu ul {
 
 li.dropdown {
    padding: 2px 2px 2px 2px;
+   color: #000000;
 }
 
 li.dropdown:hover {

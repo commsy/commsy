@@ -22,6 +22,7 @@ $message["HOME_MATERIAL_ADMIN_TINY_HEADER"]["de"] = "Material veröffentlichen (
 $message["HOME_MATERIAL_ENTER_NEW"]["de"] = "Material eingeben";
 $message["HOME_MYROOM_ENTER_NEW"]["de"] = "Raum einrichten";
 $message["HOME_NEW_ENTRY"]["de"] = "Aktionen";
+$message["HOME_PORTLET_CONFIGURATION"]["de"] = "Widgets bearbeiten";
 $message["HOME_PROJECT_ENTER_NEW"]["de"] = "Raum einrichten";
 $message["HOME_ROOM_INDEX"]["de"] = "Überblick";
 $message["HOME_ROOM_MEMBER_ADMIN_DESC"]["de"] = "Hier können Sie Kennungen freischalten oder den Status von TeilnehmerInnen ändern.";

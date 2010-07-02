@@ -71,7 +71,7 @@ class cs_privateroom_home_new_item_view extends cs_view {
    }
    
    function getPreferencesAsHTML(){
-      return 'getPreferencesAsHTML()';
+      return '<div style="height:400px">getPreferencesAsHTML()</div>';
    }
 }
 ?>

@@ -60,6 +60,16 @@ if (!empty($_GET['cid'])) {
 	-khtml-border-radius-topright:5px;
 }
 
+.portlet-configuration {
+   margin: 0 20px 0 0;
+    -moz-border-radius-topleft: 5px;
+    -webkit-border-top-left-radius: 5px;
+   -khtml-border-radius-topleft:5px;
+    -moz-border-radius-topright: 5px;
+    -webkit-border-top-right-radius: 5px;
+   -khtml-border-radius-topright:5px;
+}
+
 .portlet-header {
 	margin: 0em;
 	padding: 4px 6px;
@@ -70,6 +80,17 @@ if (!empty($_GET['cid'])) {
     -webkit-border-top-right-radius: 5px;
 	-khtml-border-radius-topright:5px;
 	cursor: move;
+}
+
+.portlet-header-configuration {
+   margin: 0em;
+   padding: 4px 6px;
+    -moz-border-radius-topleft: 5px;
+    -webkit-border-top-left-radius: 5px;
+   -khtml-border-radius-topleft:5px;
+    -moz-border-radius-topright: 5px;
+    -webkit-border-top-right-radius: 5px;
+   -khtml-border-radius-topright:5px;
 }
 
 .ui-widget-header {
