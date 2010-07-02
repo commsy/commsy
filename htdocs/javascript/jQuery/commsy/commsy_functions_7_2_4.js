@@ -2291,6 +2291,8 @@ jQuery(document).ready(function() {
 		'overlayShow'	:	true,
 		'titleShow'	    :   false,
 		'autoScale'     :   true,
+		'overlayOpacity':   0.8,
+		'overlayColor'  :   '#000000',
 		// CommSy
 		'downloadShow'	:   true
 		// CommSy

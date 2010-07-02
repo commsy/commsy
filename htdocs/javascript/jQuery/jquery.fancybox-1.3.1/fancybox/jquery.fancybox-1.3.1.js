@@ -137,8 +137,8 @@
 					case 'over':
 						return '<span id="fancybox-title-over">' + title + '</span>';
 					default:
-						return '<span id="fancybox-title-wrap"><span id="fancybox-title-left"></span><span id="fancybox-title-main">' + title + '</span><span id="fancybox-title-right"></span></span>';
-					    //return '<span id="fancybox-title-wrap">' + title + '</span>';
+						//return '<span id="fancybox-title-wrap"><span id="fancybox-title-left"></span><span id="fancybox-title-main">' + title + '</span><span id="fancybox-title-right"></span></span>';
+					    return '<span id="fancybox-title-wrap">' + title + '</span>';
 				}
 			}
 
