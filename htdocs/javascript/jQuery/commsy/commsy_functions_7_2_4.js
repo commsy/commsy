@@ -1397,20 +1397,7 @@ function dropdown(object, offset, button){
 
 function delete_overlay(element, html_element, click_extra_action) {
 	var extra = '';
-	/*
-	if(typeof(button_extra) != "undefined") {
-		extra = jQuery("<input/>", {
-					"type" : "submit",
-					"value" : button_extra,
-					"name" : "delete_option",
-        	        //"style" : "float: left;",
-        	        "click" : click_extra_action
-				});
-	}
-	*/
-	
 	delete_overlay.element = element;
-	
 	
 	jQuery('body').append(
     	    jQuery("<div/>", {
@@ -2277,6 +2264,30 @@ jQuery(document).ready(function() {
 		});
 	});
 });
+
+function uploadify_onComplete(event, queueID, fileObj, response, data) {
+	// add checkbox and file name to finished list
+	jQuery("div[id='fileFinished']").append(
+		jQuery("<input/>", {
+			"type"		:	"checkbox",
+			"checked"	:	"checked",
+			"name"		:	"filelist[]",
+			"value"		:	response
+		}),
+		jQuery("<span/>", {
+			"style"		:	"font-size: 10pt;",
+			"innerHTML"	:	fileObj.name
+		}),
+		jQuery("<br/>"
+		)
+	);
+	
+	// refresh page
+	//location.reload(true);
+	
+	// reload page
+	//jQuery(location).attr('href', l);
+}
 
 jQuery(document).ready(function() {
 

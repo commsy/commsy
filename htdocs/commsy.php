@@ -928,7 +928,6 @@ if ( $current_context->isLocked()
       include_once('pages/agb_detail.php');
    }
 } elseif ( !isset($errorbox) ) {
-
    if ( $environment->isPlugin($environment->getCurrentModule()) ) {
       $current_module = 'plugin';
       $current_function = 'index';

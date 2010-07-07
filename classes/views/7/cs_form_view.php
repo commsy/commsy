@@ -654,9 +654,11 @@ class cs_form_view extends cs_view {
 //      $with_flash = true;
       //http://www.uploadify.com/documentation/
 //      $with_flash = false;
-      $context_item = $this->_environment->getCurrentContextItem();
-      $val = $context_item->getMaxUploadSizeInBytes();
+      $val = $this->_environment->getCurrentContextItem()->getMaxUploadSizeInBytes();
       if ($c_new_upload){
+         // this div holds the list of files, which upload is finished(+checkbox)
+         $html .= '<div id="fileFinished"></div>';
+         
          // prepare some values to send to the uploadify script
          global $c_virus_scan;
          global $c_virus_scan_cron;
@@ -666,8 +668,6 @@ class cs_form_view extends cs_view {
          } else {
             $file_array = array();
          }
-//         if(!isset($c_virus_scan)) $c_virus_scan = false;
-//         if(!isset($c_virus_scan_cron)) $c_virus_scan_cron = false;
          $scriptData = '';
          $scriptData .= '"cid"					: "' . $this->_environment->getCurrentContextID() . '",';
          $scriptData .= '"mod"					: "ajax",';
@@ -675,8 +675,8 @@ class cs_form_view extends cs_view {
          $scriptData .= '"c_virus_scan"			: "' . $c_virus_scan . '",';
          $scriptData .= '"c_virus_scan_cron"	: "' . $c_virus_scan_cron . '",';
          $scriptData .= '"file_upload_rubric"	: "' . $this->_environment->getCurrentModule() . '",';
-         //$scriptData .= '"session_id" : "' . $session->getSessionID() . '",';
-         //$scriptData .= '"' . $this->_environment->getCurrentModule() . '_add_files" : "' . $file_array . '"';
+         $scriptData .= '"SID"					: "' . $session->getSessionID() . '",';
+         $scriptData .= '"security_token"		: "' . getToken() . '"';
          
          $html .='<script type="text/javascript">';
          $html .='$(document).ready(function() {';
@@ -687,7 +687,6 @@ class cs_form_view extends cs_view {
 		 $html .='		"method"		 : "GET",';
 		 $html .='      "folder"         : "javascript/jQuery/jquery.uploadify-v2.1.0/uploads",';
 		 $html .='		"scriptData"	 : ({'.$scriptData.'}),';
-		//$html .= '"scriptData"	: ({\'var_name\': \'this_var_value\'}),';//        ({'var_name': 'this_var_value'})'
 		 $html .='      "multi"          : true,';
 		 $html .='      "wmode"          : "transparent",';
 		 $html .='      "buttonImg"      : "javascript/jQuery/jquery.uploadify-v2.1.0/button.png",';
@@ -695,8 +694,8 @@ class cs_form_view extends cs_view {
 		 $html .='      "height"         : 25,';
 		 $html .='      "sizeLimit"      : '.$val.',';
 		 $html .='      "buttonText"     : "'.$this->_translator->getMessage('COMMON_UPLOAD_SEARCH_BUTTON').'",';
-		 $html .='      "cancelImg"      : "images/commsyicons/16x16/delete.png"';
-		 //$html .='		"onComplete"	 : uploadify_onComplete';
+		 $html .='      "cancelImg"      : "images/commsyicons/16x16/delete.png",';
+		 $html .='		"onComplete"	 : uploadify_onComplete';
 	     $html .='   });';
          $html .='});';
          $html .='</script>';
