@@ -86,5 +86,11 @@ var $_channel_id = '';
      $html .= '<div id="youtubevideos_'.$this->_channel_id.'"></div>'.LF;
      return $html;
    }
+   
+   function getPreferencesAsHTML(){
+   	$html = '<input type="text" name="portlet_youtube">';
+   	$html .= '<input type="submit" id="portlet_youtube_button" value="Speichern">';
+      return $html;
+   }
 }
 ?>

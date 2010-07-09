@@ -1705,8 +1705,15 @@ jQuery(document).ready(function() {
 					 jQuery(this).click(function(){
 						jQuery("#"+id).revertFlip();
 					 });
-					 jQuery(this).parent().parent().find('.portlet-content').css('height', height);
+					 //jQuery(this).parent().parent().find('.portlet-content').css('height', height);
 					 jQuery(this).parent().parent().find('.portlet-content').append(jQuery('<div id="'+id_portlet+'"></div>'));
+					 
+					 // ToDo: Erst nach dem Drehen kann der Button mit einer Funktion belegt werden.
+					 var tmp_button = jQuery('#portlet_save_button');
+				     tmp_button.click(function(){
+						alert('1');
+					 });
+					 
 				  });
 			   }
 			});

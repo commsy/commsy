@@ -154,7 +154,7 @@ class cs_privateroom_home_portlet_view extends cs_view{
       if(isset($preferences) and !empty($preferences)){
          $html .= '<div class="portlet" style="display:none;" id="'.$class.'_preferences">'.LF;
          $html .= '<div class="portlet-header">'.$title.' - Einstellungen</div>'.LF;
-         $html .= '<div class="portlet-content">'.$preferences.'...</div>'.LF;
+         $html .= '<div class="portlet-content">'.$preferences.'</div>'.LF;
          $html .= '<div class="portlet-turn" style="float:right;"><a name="portlet_preferences_back_button" style="cursor:pointer;"><img src="images/commsyicons/16x16/room.png" height="18" width="18"/></a>&nbsp;</div>'.LF;
          $html .= '</div>'.LF;
       }
