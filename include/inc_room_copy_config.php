@@ -142,14 +142,16 @@ if ( $old_room->withNetnavigation() ) {
 $new_room->setEmailTextArray($old_room->getEmailTextArray());
 
 // title and logo
-if ( $old_room->isPrivateRoom() ) {
-   $title = $old_room->getTitlePure();
-   if ( empty($title)
-        or $title == $translator->getMessage('COMMON_PRIVATEROOM')
-      ) {
+if ( $old_room->isPrivateRoom() or $old_room->isProjectRoom()) {
+   if($old_room->isPrivateRoom()) {
+   	  $title = $old_room->getTitlePure();
+      if ( empty($title)
+           or $title == $translator->getMessage('COMMON_PRIVATEROOM')
+         ) {
       $title = 'PRIVATEROOM';
-   }
+      }
    $new_room->setTitle($title);
+   }
 
    $disc_manager = $environment->getDiscManager();
    if ( $old_room->getItemID() > 99 ) {

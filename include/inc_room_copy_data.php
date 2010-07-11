@@ -108,6 +108,9 @@ foreach ($data_type_array as $type) {
 }
 unset($data_type_array);
 
+$arrayContextID = array();
+$arrayContextID[$old_room_id] = $new_room->getItemID();
+$new_id_array = $new_id_array + $arrayContextID;
 
 // now change all old item ids in usage infos with new IDs
 $array = $new_room->getUsageInfoTextArray();
@@ -133,8 +136,36 @@ foreach ( $array as $key => $value ) {
       ) {
       foreach ($matches[1] as $match) {
          $id = $match;
-         if ( isset($id_array[$id]) ) {
-            $value = str_replace('(:item '.$id,'(:item '.$id_array[$id],$desc);
+         if ( isset($new_id_array[$id]) ) {
+            $value = str_replace('(:item '.$id,'(:item '.$new_id_array[$id],$value);
+            $replace = true;
+         }
+      }
+      $new_array[$key] = $value;
+   }
+   #cid=([0-9]*)
+   preg_match_all('~iid=([0-9]*) ~u', $value, $matches);
+   if ( isset($matches[0])
+        and !empty($matches[0])
+      ) {
+      foreach ($matches[1] as $match) {
+         $id = $match;
+         if ( isset($new_id_array[$id]) ) {
+            $value = str_replace('iid='.$id,'iid='.$new_id_array[$id],$value);
+            $replace = true;
+         }
+      }
+      $new_array[$key] = $value;
+   }
+
+   preg_match_all('~cid=([0-9]*) ~xu', $value, $matches);
+   if ( isset($matches[0])
+        and !empty($matches[0])
+      ) {
+      foreach ($matches[1] as $match) {
+         $id = $match;
+         if ( isset($new_id_array[$id]) ) {
+            $value = str_replace('cid='.$id,'cid='.$new_room->getItemID(),$value);
             $replace = true;
          }
       }
@@ -177,13 +208,43 @@ foreach ( $array as $key => $value ) {
       ) {
       foreach ($matches[1] as $match) {
          $id = $match;
-         if ( isset($id_array[$id]) ) {
-            $value = str_replace('(:item '.$id,'(:item '.$id_array[$id],$desc);
+         if ( isset($new_id_array[$id]) ) {
+            $value = str_replace('(:item '.$id,'(:item '.$new_id_array[$id],$value);
             $replace = true;
          }
       }
       $new_array[$key] = $value;
    }
+
+   preg_match_all('~iid=([0-9]*) ~u', $value, $matches);
+   if ( isset($matches[0])
+        and !empty($matches[0])
+      ) {
+      foreach ($matches[1] as $match) {
+         $id = $match;
+         if ( isset($new_id_array[$id]) ) {
+            $value = str_replace('iid='.$id,'iid='.$new_id_array[$id],$value);
+            $replace = true;
+         }
+      }
+      $new_array[$key] = $value;
+   }
+
+
+   preg_match_all('~cid=([0-9]*) ~xu', $value, $matches);
+   if ( isset($matches[0])
+        and !empty($matches[0])
+      ) {
+      foreach ($matches[1] as $match) {
+         $id = $match;
+         if ( isset($new_id_array[$id]) ) {
+            $value = str_replace('cid='.$id,'cid='.$new_room->getItemID(),$value);
+            $replace = true;
+         }
+      }
+      $new_array[$key] = $value;
+   }
+
 
    // html textarea security
    if ( !empty($new_array[$key])
