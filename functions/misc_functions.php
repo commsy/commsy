@@ -840,6 +840,7 @@ function isURLValid () {
          // ajax
          $funct != 'privateroom_home' and
          $funct != 'privateroom_home_configuration' and
+         $funct != 'privateroom_home_portlet_configuration' and
          $funct != 'privateroom_myroom_configuration' and
          $funct != 'privateroom_my_entries_configuration' and
          $funct != 'privateroom_entry' and

@@ -244,7 +244,8 @@ if ($current_context->getPortletShowYouTube()){
    $params['environment'] = $environment;
    $params['with_modifying_actions'] = $current_context->isOpen();
    $youtube_view = $class_factory->getClass(PRIVATEROOM_HOME_YOUTUBE_VIEW,$params);
-   $youtube_view->setChannelID('zdf');
+   //$youtube_view->setChannelID('zdf');
+   $youtube_view->setChannelID($current_context->getPortletYouTubeAccount());
    unset($params);
    $portlet_array[] = $youtube_view;
 }

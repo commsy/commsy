@@ -1709,11 +1709,14 @@ jQuery(document).ready(function() {
 					 jQuery(this).parent().parent().find('.portlet-content').append(jQuery('<div id="'+id_portlet+'"></div>'));
 					 
 					 // ToDo: Erst nach dem Drehen kann der Button mit einer Funktion belegt werden.
-					 var tmp_button = jQuery('#portlet_save_button');
-				     tmp_button.click(function(){
-						alert('1');
-					 });
-					 
+					 //activePortletPreferences();
+				  });
+				  jQuery("#"+id).find('input').each(function(){
+					  if(jQuery(this).attr('type') == 'submit'){
+						  jQuery(this).click(function(){
+							  portlet_button_action(jQuery(this).attr('id'));
+						  });
+					  }
 				  });
 			   }
 			});
@@ -1760,6 +1763,31 @@ jQuery(document).ready(function() {
 		});
 	});
 });
+
+function portlet_button_action(id){
+   if(id == 'portlet_youtube_button'){
+	   save_portlet_youtube();
+   } else if (id == 'portlet_new_item_button'){
+	   save_portlet_new_item();
+   }
+}
+
+function save_portlet_youtube(){
+	var json_data = new Object();
+	json_data['youtube_channel'] = jQuery('#portlet_youtube_channel').val();
+	
+	jQuery.ajax({
+	   url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct=privateroom_home_portlet_configuration&output=json&portlet=youtube',
+	   data: json_data,
+	   success: function(msg){
+		  //window.location = 'commsy.php?cid='+window.ajax_cid+'&mod=home&fct=index';
+		  // Kanal im portlet ersetzen und neu laden.
+	   }
+	});
+}
+
+function save_portlet_new_item(){
+}
 
 jQuery(document).ready(function() {
 	if(typeof(dropDownPortlets) !== 'undefined'){
