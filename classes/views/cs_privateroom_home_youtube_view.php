@@ -88,7 +88,7 @@ var $_channel_id = '';
    }
    
    function getPreferencesAsHTML(){
-   	$html = '<input type="text" id="portlet_youtube_channel">';
+   	$html = '<input type="text" id="portlet_youtube_channel" value="'.$this->_channel_id.'">';
    	$html .= '<input type="submit" id="portlet_youtube_button" value="Speichern">';
       return $html;
    }
