@@ -1688,12 +1688,15 @@ jQuery(document).ready(function() {
 	}
 });
 
+var portlet_data = new Object();
+
 jQuery(document).ready(function() {
-	jQuery("[name=portlet_preferences]").each(function (i) {
+	//jQuery("[name=portlet_preferences]").each(function (i) {
+    jQuery("a.preferences_flip").each(function (i) {
 		var front_side = jQuery(this);
 		var id = jQuery(this).parent().parent().attr('id');
 		jQuery(this).click(function() {
-			var height = jQuery("#"+id).find('.portlet-content').height()+'px';
+			//var height = jQuery("#"+id).find('.portlet-content').height()+'px';
 			var id_portlet = jQuery("#"+id).find('.portlet-content').find('div').attr('id');
 			jQuery("#"+id).flip({
 			   direction:'rl',
@@ -1701,7 +1704,7 @@ jQuery(document).ready(function() {
 			   color: '#FFFFFF',
 			   speed: 300,
 			   onEnd: function(){
-				  jQuery("#"+id).find('a').each(function(){
+				  jQuery("#"+id).find('a.preferences_flip').each(function(){
 					 jQuery(this).click(function(){
 						jQuery("#"+id).revertFlip();
 					 });
@@ -1715,6 +1718,12 @@ jQuery(document).ready(function() {
 						  });
 					  }
 				  });
+				  jQuery("#"+id).find('div.portlet-front').each(function(){
+					  portlet_return_action(id, jQuery("#"+id));
+				  });
+				  // Komplette Kontrolle hier
+				  // Vorderseite identifizieren -> on click -> Funktion
+				  // Rückseite identifizieren -> on click -> Funktion
 			   }
 			});
 		});
@@ -1769,7 +1778,17 @@ function portlet_button_action(id, portlet){
    }
 }
 
+function portlet_return_action(id, portlet){
+   if(id == 'cs_privateroom_home_youtube_view'){
+      return_portlet_youtube(portlet);
+   } else if (id == 'cs_privateroom_home_new_item_view'){
+      return_portlet_new_item(portlet);
+   }
+}
+
 function save_portlet_youtube(portlet){
+	portlet_data['youtube_channel'] = jQuery('#portlet_youtube_channel').val();
+	
 	var json_data = new Object();
 	json_data['youtube_channel'] = jQuery('#portlet_youtube_channel').val();
 	
@@ -1780,18 +1799,27 @@ function save_portlet_youtube(portlet){
 		  //window.location = 'commsy.php?cid='+window.ajax_cid+'&mod=home&fct=index';
 		  // Kanal im portlet ersetzen und neu laden.
 		  portlet.revertFlip();
-		  $("#youtubevideos_"+jQuery('#portlet_youtube_channel').val()).youTubeChannel({
-		     userName: jQuery('#portlet_youtube_channel').val(),
-		     channel: "favorites",
-		     hideAuthor: true,
-		     numberToDisplay: 3,
-		     linksInNewWindow: true,
-		     });
 	   }
 	});
 }
 
+function return_portlet_youtube(){
+	//alert(portlet_data['youtube_channel']);
+	$("#youtubevideos_portlet").find('#channel_div').remove();
+	$("#youtubevideos_portlet").find('p.loader').remove();
+	
+	$("#youtubevideos_portlet").youTubeChannel({
+	   userName: portlet_data['youtube_channel'],
+	   channel: "favorites",
+	   hideAuthor: true,
+	   numberToDisplay: 3,
+	   linksInNewWindow: true,
+	});
+}
+
 function save_portlet_new_item(){
+}
+function return_portlet_new_item(){
 }
 
 jQuery(document).ready(function() {

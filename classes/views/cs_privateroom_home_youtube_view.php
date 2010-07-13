@@ -68,7 +68,8 @@ var $_channel_id = '';
    function getPortletJavascriptAsHTML(){
      $html  = '<script type="text/javascript">'.LF;
      $html .= '$(document).ready(function() {' .LF;
-     $html .= '   $("#youtubevideos_'.$this->_channel_id.'").youTubeChannel({'.LF;
+     //$html .= '   $("#youtubevideos_'.$this->_channel_id.'").youTubeChannel({'.LF;
+     $html .= '   $("#youtubevideos_portlet").youTubeChannel({'.LF;
      $html .= '      userName: "'.$this->_channel_id.'",'.LF;
      $html .= '      channel: "favorites",'.LF;
      $html .= '      hideAuthor: true,'.LF;
@@ -83,7 +84,8 @@ var $_channel_id = '';
 
    function asHTML () {
      $html  = '<div id="'.get_class($this).'" style="margin-top:0px; margin-bottom:5px;">'.$this->_translator->getMessage('PORTLET_YOUTUBE_CHANNEL_ID',$this->_channel_id).'</div>'.LF;
-     $html .= '<div id="youtubevideos_'.$this->_channel_id.'"></div>'.LF;
+     //$html .= '<div id="youtubevideos_'.$this->_channel_id.'"></div>'.LF;
+     $html .= '<div id="youtubevideos_portlet"></div>'.LF;
      return $html;
    }
    
