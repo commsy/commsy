@@ -1711,19 +1711,12 @@ jQuery(document).ready(function() {
 					 //jQuery(this).parent().parent().find('.portlet-content').css('height', height);
 					 jQuery(this).parent().parent().find('.portlet-content').append(jQuery('<div id="'+id_portlet+'"></div>'));
 				  });
-				  jQuery("#"+id).find('input').each(function(){
-					  if(jQuery(this).attr('type') == 'submit'){
-						  jQuery(this).click(function(){
-							  portlet_button_action(jQuery(this).attr('id'), jQuery("#"+id));
-						  });
-					  }
+				  jQuery("#"+id).find('div.portlet-back').each(function(){
+				      portlet_turn_action(true, id, jQuery("#"+id));
 				  });
 				  jQuery("#"+id).find('div.portlet-front').each(function(){
-					  portlet_return_action(id, jQuery("#"+id));
+				  	  portlet_turn_action(false, id, jQuery("#"+id));
 				  });
-				  // Komplette Kontrolle hier
-				  // Vorderseite identifizieren -> on click -> Funktion
-				  // Rückseite identifizieren -> on click -> Funktion
 			   }
 			});
 		});
@@ -1770,40 +1763,42 @@ jQuery(document).ready(function() {
 	});
 });
 
-function portlet_button_action(id, portlet){
-   if(id == 'portlet_youtube_button'){
-	   save_portlet_youtube(portlet);
-   } else if (id == 'portlet_new_item_button'){
-	   save_portlet_new_item(portlet);
+function portlet_turn_action(preferences, id, portlet){
+   if(preferences){
+      if(id == 'cs_privateroom_home_youtube_view'){
+         turn_portlet_youtube(id, portlet);
+      } else if (id == 'cs_privateroom_home_new_item_view'){
+         turn_portlet_new_item(id, portlet);
+      }
+   } else {
+      if(id == 'cs_privateroom_home_youtube_view'){
+         return_portlet_youtube(id, portlet);
+      } else if (id == 'cs_privateroom_home_new_item_view'){
+         return_portlet_new_item(id, portlet);
+      }
    }
 }
 
-function portlet_return_action(id, portlet){
-   if(id == 'cs_privateroom_home_youtube_view'){
-      return_portlet_youtube(portlet);
-   } else if (id == 'cs_privateroom_home_new_item_view'){
-      return_portlet_new_item(portlet);
-   }
+function turn_portlet_youtube(id, portlet){
+   jQuery("#"+id).find('input').each(function(){
+      if(jQuery(this).attr('type') == 'submit'){
+	     jQuery(this).click(function(){
+	        portlet_data['youtube_channel'] = jQuery('#portlet_youtube_channel').val();
+	    	var json_data = new Object();
+	    	json_data['youtube_channel'] = jQuery('#portlet_youtube_channel').val();	
+	    	jQuery.ajax({
+	    	   url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct=privateroom_home_portlet_configuration&output=json&portlet=youtube',
+	    	   data: json_data,
+	    	   success: function(msg){
+	    	      portlet.revertFlip();
+	    	   }
+	    	});
+		 });
+      }
+   });
 }
 
-function save_portlet_youtube(portlet){
-	portlet_data['youtube_channel'] = jQuery('#portlet_youtube_channel').val();
-	
-	var json_data = new Object();
-	json_data['youtube_channel'] = jQuery('#portlet_youtube_channel').val();
-	
-	jQuery.ajax({
-	   url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct=privateroom_home_portlet_configuration&output=json&portlet=youtube',
-	   data: json_data,
-	   success: function(msg){
-		  //window.location = 'commsy.php?cid='+window.ajax_cid+'&mod=home&fct=index';
-		  // Kanal im portlet ersetzen und neu laden.
-		  portlet.revertFlip();
-	   }
-	});
-}
-
-function return_portlet_youtube(){
+function return_portlet_youtube(id, portlet){
 	//alert(portlet_data['youtube_channel']);
 	$("#youtubevideos_portlet").find('#channel_div').remove();
 	$("#youtubevideos_portlet").find('p.loader').remove();
@@ -1817,9 +1812,9 @@ function return_portlet_youtube(){
 	});
 }
 
-function save_portlet_new_item(){
+function turn_portlet_new_item(id, portlet){
 }
-function return_portlet_new_item(){
+function return_portlet_new_item(id, portlet){
 }
 
 jQuery(document).ready(function() {
