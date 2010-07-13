@@ -1790,6 +1790,7 @@ function turn_portlet_youtube(id, portlet){
 	    	   url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct=privateroom_home_portlet_configuration&output=json&portlet=youtube',
 	    	   data: json_data,
 	    	   success: function(msg){
+	    		  portlet_data['youtube_save'] = true;
 	    	      portlet.revertFlip();
 	    	   }
 	    	});
@@ -1799,17 +1800,23 @@ function turn_portlet_youtube(id, portlet){
 }
 
 function return_portlet_youtube(id, portlet){
-	//alert(portlet_data['youtube_channel']);
-	$("#youtubevideos_portlet").find('#channel_div').remove();
-	$("#youtubevideos_portlet").find('p.loader').remove();
+   if(portlet_data['youtube_save']){
+	  if(typeof(youtube_message) !== 'undefined'){
+		  var message = youtube_message.replace('TEMP_CHANNEL', portlet_data['youtube_channel']);
+		  jQuery('[name="youtube_message"]').html(message);
+	  } 
+	  
+	  $("#youtubevideos_portlet").find('#channel_div').remove();
+	  $("#youtubevideos_portlet").find('p.loader').remove();
 	
-	$("#youtubevideos_portlet").youTubeChannel({
-	   userName: portlet_data['youtube_channel'],
-	   channel: "favorites",
-	   hideAuthor: true,
-	   numberToDisplay: 3,
-	   linksInNewWindow: true,
-	});
+	  $("#youtubevideos_portlet").youTubeChannel({
+	     userName: portlet_data['youtube_channel'],
+	     channel: "favorites",
+	     hideAuthor: true,
+	     numberToDisplay: 3,
+	     linksInNewWindow: true,
+	  });
+   }
 }
 
 function turn_portlet_new_item(id, portlet){

@@ -78,12 +78,13 @@ var $_channel_id = '';
      $html .= '      loadingText: "'.$this->_translator->getMessage('PORTLET_YOUTUBE_IS_LOADING').'",'.LF;
      $html .= '   });'.LF;
      $html .= '});'.LF;
+     $html .= 'var youtube_message = \''.$this->_translator->getMessage('PORTLET_YOUTUBE_CHANNEL_ID','TEMP_CHANNEL').'\';'.LF;
      $html .= '</script>';
      return $html;
    }
 
    function asHTML () {
-     $html  = '<div id="'.get_class($this).'" style="margin-top:0px; margin-bottom:5px;">'.$this->_translator->getMessage('PORTLET_YOUTUBE_CHANNEL_ID',$this->_channel_id).'</div>'.LF;
+     $html  = '<div id="'.get_class($this).'" name="youtube_message" style="margin-top:0px; margin-bottom:5px;">'.$this->_translator->getMessage('PORTLET_YOUTUBE_CHANNEL_ID',$this->_channel_id).'</div>'.LF;
      //$html .= '<div id="youtubevideos_'.$this->_channel_id.'"></div>'.LF;
      $html .= '<div id="youtubevideos_portlet"></div>'.LF;
      return $html;
