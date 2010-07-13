@@ -1780,6 +1780,9 @@ function portlet_turn_action(preferences, id, portlet){
 }
 
 function turn_portlet_youtube(id, portlet){
+   if(portlet_data['youtube_channel']){
+      jQuery('#portlet_youtube_channel').val(portlet_data['youtube_channel']);
+   }
    jQuery("#"+id).find('input').each(function(){
       if(jQuery(this).attr('type') == 'submit'){
 	     jQuery(this).click(function(){
@@ -1804,7 +1807,7 @@ function return_portlet_youtube(id, portlet){
 	  if(typeof(youtube_message) !== 'undefined'){
 		  var message = youtube_message.replace('TEMP_CHANNEL', portlet_data['youtube_channel']);
 		  jQuery('[name="youtube_message"]').html(message);
-	  } 
+	  }
 	  
 	  $("#youtubevideos_portlet").find('#channel_div').remove();
 	  $("#youtubevideos_portlet").find('p.loader').remove();
@@ -1816,6 +1819,7 @@ function return_portlet_youtube(id, portlet){
 	     numberToDisplay: 3,
 	     linksInNewWindow: true,
 	  });
+	  portlet_data['youtube_save'] = false;
    }
 }
 
