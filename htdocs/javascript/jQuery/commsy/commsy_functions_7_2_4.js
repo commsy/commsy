@@ -1951,11 +1951,18 @@ function turn_portlet_rss(id, portlet){
 	  jQuery(this).parent().find('[name="portlet_rss[]"]:checked').each(function(){
 		  checked_array.push(jQuery(this).attr('value'));
 	  });
+	  
+	  if(jQuery('#portlet_rss_title').val() != '' && jQuery('#portlet_rss_adress').val() != ''){
+		  json_data['rss_add_titel'] = jQuery('#portlet_rss_title').val();
+		  json_data['rss_add_adress'] = jQuery('#portlet_rss_adress').val();
+		  jQuery('#portlet_rss_list').append('<div class="rss_list_div" name="'+jQuery('#portlet_rss_title').val()+'"><input type="checkbox" name="portlet_rss[]" value="'+jQuery('#portlet_rss_title').val()+'" checked >'+jQuery('#portlet_rss_title').val()+' ('+jQuery('#portlet_rss_adress').val()+')</div>');
+	      checked_array.push(jQuery('#portlet_rss_title').val());
+	  }
+	  
 	  portlet_data['rss_checked'] = checked_array;
 	  json_data['rss_checked'] = checked_array;
 	  
-  	  json_data['rss_add_titel'] = jQuery('#portlet_rss_title').val();
-	  json_data['rss_add_adress'] = jQuery('#portlet_rss_adress').val();
+  	  
 	  jQuery.ajax({
 	     url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct=privateroom_home_portlet_configuration&output=json&portlet=rss_save',
 	     data: json_data,
