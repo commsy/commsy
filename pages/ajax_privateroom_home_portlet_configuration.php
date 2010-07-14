@@ -27,7 +27,6 @@ include_once('functions/development_functions.php');
 if(isset($_GET['portlet'])){
 	if($_GET['portlet'] == 'youtube'){
 		$privateroom_item = $environment->getCurrentContextItem();
-		debugToFile($privateroom_item->getPortletYouTubeAccount());
 		$channel = '';
 		
 		$get_keys = array_keys($_GET);
@@ -44,7 +43,24 @@ if(isset($_GET['portlet'])){
 			$privateroom_item->setPortletYouTubeAccount($channel);
 		}
       $privateroom_item->save();
-
+	} elseif($_GET['portlet'] == 'flickr'){
+		$privateroom_item = $environment->getCurrentContextItem();
+      $id = '';
+      
+      $get_keys = array_keys($_GET);
+      $column_array = array();
+      foreach($get_keys as $get_key){
+         if(stristr($get_key, 'flickr_id')){
+            if(!empty($_GET[$get_key])){
+               $id = $_GET[$get_key];
+            }
+         }
+      }
+      
+      if($id != ''){
+         $privateroom_item->setPortletFlickrID($id);
+      }
+      $privateroom_item->save();
 	}
 }
 ?>

@@ -1769,12 +1769,16 @@ function portlet_turn_action(preferences, id, portlet){
          turn_portlet_youtube(id, portlet);
       } else if (id == 'cs_privateroom_home_new_item_view'){
          turn_portlet_new_item(id, portlet);
+      } else if (id == 'cs_privateroom_home_flickr_view'){
+         turn_portlet_flickr(id, portlet);
       }
    } else {
       if(id == 'cs_privateroom_home_youtube_view'){
          return_portlet_youtube(id, portlet);
       } else if (id == 'cs_privateroom_home_new_item_view'){
          return_portlet_new_item(id, portlet);
+      } else if (id == 'cs_privateroom_home_flickr_view'){
+         return_portlet_flickr(id, portlet);
       }
    }
 }
@@ -1827,6 +1831,52 @@ function turn_portlet_new_item(id, portlet){
 }
 function return_portlet_new_item(id, portlet){
 }
+
+function turn_portlet_flickr(id, portlet){
+	   if(portlet_data['flickr_id']){
+	      jQuery('#portlet_flickr_id').val(portlet_data['flickr_id']);
+	   }
+	   jQuery("#"+id).find('input').each(function(){
+	      if(jQuery(this).attr('type') == 'submit'){
+		     jQuery(this).click(function(){
+		        portlet_data['flickr_id'] = jQuery('#portlet_flickr_id').val();
+		    	var json_data = new Object();
+		    	json_data['flickr_id'] = jQuery('#portlet_flickr_id').val();	
+		    	jQuery.ajax({
+		    	   url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct=privateroom_home_portlet_configuration&output=json&portlet=flickr',
+		    	   data: json_data,
+		    	   success: function(msg){
+		    		  portlet_data['flickr_save'] = true;
+		    	      portlet.revertFlip();
+		    	   }
+		    	});
+			 });
+	      }
+	   });
+	}
+
+	function return_portlet_flickr(id, portlet){
+	   if(portlet_data['flickr_save']){
+		  if(typeof(flickr_message) !== 'undefined'){
+			  var message = flickr_message.replace('TEMP_ID', portlet_data['flickr_id']);
+			  jQuery('[name="flickr_message"]').html(message);
+		  }
+		  
+		  var url = "http://api.flickr.com/services/feeds/photos_faves.gne?format=json&id="+portlet_data['flickr_id']+"&jsoncallback=?";
+		  var bridge = new ctRotatorBridgeFlickr(url, function(dataSource){
+			  $("#flickr").ctRotator(dataSource, {
+			     showCount:1,
+			     speed: 5000,
+			     itemRenderer:function(item){
+			        return "<a href=\"" + item.url+ "\"><img style=\"height:200px;\" src=\"" + item.image + "\" alt=\"" + item.title + "\"/></a>";
+			     }
+			  });
+		  });
+		  bridge.getDataSource();
+
+		  portlet_data['flickr_save'] = false;
+	   }
+	}
 
 jQuery(document).ready(function() {
 	if(typeof(dropDownPortlets) !== 'undefined'){

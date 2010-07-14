@@ -60,6 +60,7 @@ var  $_rotation_time = '5000';
      $html .= '});'.LF;
      $html .= '});'.LF;
      $html .= 'bridge.getDataSource();'.LF;
+     $html .= 'var flickr_message = \''.$this->_translator->getMessage('PORTLET_FLICKR_ID','TEMP_ID').'\';'.LF;
      $html .= '</script>'.LF;
      return $html;
    }
@@ -75,10 +76,17 @@ var  $_rotation_time = '5000';
    	 if (empty($this->_flickr_id)){
         $html  = '<div id="'.get_class($this).'" style="margin-bottom:5px;">'.$this->_translator->getMessage('PORTLET_FLICKR_ID_UNKNOWN').'</div>'.LF;
    	 }else{
-   	 	 $html  = '<div id="'.get_class($this).'" style="margin-bottom:5px;">'.$this->_translator->getMessage('PORTLET_FLICKR_ID',$this->_flickr_id).'</div>'.LF;
+   	 	 $html  = '<div id="'.get_class($this).'" style="margin-bottom:5px;" name="flickr_message">'.$this->_translator->getMessage('PORTLET_FLICKR_ID',$this->_flickr_id).'</div>'.LF;
    	 }
      $html  .= '<div style="text-align:center;height:205px;overflow:hidden;" id="flickr"></div>'.LF;
      return $html;
+   }
+   
+   function getPreferencesAsHTML(){
+   	$html = $this->_translator->getMessage('PORTLET_CONFIGURATION_FLICKR_ID').': ';
+      $html .= '<input type="text" id="portlet_flickr_id" value="'.$this->_flickr_id.'">';
+      $html .= '<input type="submit" id="portlet_flickr_button" value="'.$this->_translator->getMessage('COMMON_SAVE_BUTTON').'">';
+      return $html;
    }
 }
 ?>

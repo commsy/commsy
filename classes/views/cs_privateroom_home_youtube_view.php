@@ -91,8 +91,9 @@ var $_channel_id = '';
    }
    
    function getPreferencesAsHTML(){
-   	$html = '<input type="text" id="portlet_youtube_channel" value="'.$this->_channel_id.'">';
-   	$html .= '<input type="submit" id="portlet_youtube_button" value="Speichern">';
+   	$html = $this->_translator->getMessage('PORTLET_CONFIGURATION_YOUTUBE_ACCOUNT').': ';
+   	$html .= '<input type="text" id="portlet_youtube_channel" value="'.$this->_channel_id.'">';
+   	$html .= '<input type="submit" id="portlet_youtube_button" value="'.$this->_translator->getMessage('COMMON_SAVE_BUTTON').'">';
       return $html;
    }
 }
