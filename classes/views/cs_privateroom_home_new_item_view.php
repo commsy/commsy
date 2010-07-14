@@ -69,11 +69,5 @@ class cs_privateroom_home_new_item_view extends cs_view {
       $html .= '</div>'.LF;
       return $html;
    }
-   
-   function getPreferencesAsHTML(){
-      $html = '<input type="text" name="portlet_new_item">';
-      $html .= '<input type="submit" id="portlet_new_item_button" value="Speichern">';
-      return $html;
-   }
 }
 ?>
