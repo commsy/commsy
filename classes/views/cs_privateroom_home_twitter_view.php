@@ -50,12 +50,20 @@ class cs_privateroom_home_twitter_view extends cs_view {
    }
 
    function asHTML () {
-     $html  = '<div id="'.get_class($this).'" style="margin-top:0px; margin-bottom:5px;">'.$this->_translator->getMessage('PORTLET_TWITTER_CHANNEL_ID',$this->_twitter_id).'</div>'.LF;
+     $html  = '<div id="'.get_class($this).'" name="twitter_message" style="margin-top:0px; margin-bottom:5px;">'.$this->_translator->getMessage('PORTLET_TWITTER_CHANNEL_ID',$this->_twitter_id).'</div>'.LF;
      $html .='<script type="text/javascript">'.LF;
-     $html .='$(document).ready(function(){$("#twitter_friends_'.$this->_twitter_id.'").twitterFriends({debug:1,username:"'.$this->_twitter_id.'"});});'.LF;
+     $html .='$(document).ready(function(){$("#twitter_friends").twitterFriends({debug:1,username:"'.$this->_twitter_id.'"});});'.LF;
+     $html .= 'var twitter_message = \''.$this->_translator->getMessage('PORTLET_TWITTER_CHANNEL_ID','TEMP_TWITTER_CHANNEL_ID').'\';'.LF;
      $html .= '</script>'.LF;
-     $html .= '<div id="twitter_friends_'.$this->_twitter_id.'" style="height:200px;"></div>';
+     $html .= '<div id="twitter_friends" style="height:200px;"></div>';
      return $html;
+   }
+   
+   function getPreferencesAsHTML(){
+      $html = $this->_translator->getMessage('PORTLET_CONFIGURATION_TWITTER_ACCOUNT').': ';
+      $html .= '<input type="text" id="portlet_twitter_channel_id" value="'.$this->_twitter_id.'">';
+      $html .= '<input type="submit" id="portlet_twitter_button" value="'.$this->_translator->getMessage('COMMON_SAVE_BUTTON').'">';
+      return $html;
    }
 }
 ?>

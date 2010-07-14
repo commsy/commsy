@@ -24,6 +24,7 @@ $message["PORTLET_CONFIGURATION_RSS_SHORT"]["en"] = "short";
 $message["PORTLET_CONFIGURATION_SEARCH_BOX"]["en"] = "Searchbox";
 $message["PORTLET_CONFIGURATION_SHOW_ON_HOME"]["en"] = "Show on home / the noticed board";
 $message["PORTLET_CONFIGURATION_TWITTER"]["en"] = "Friends on<br/>twitter";
+$message["PORTLET_CONFIGURATION_TWITTER_ACCOUNT"]["en"] = "Twitter account";
 $message["PORTLET_CONFIGURATION_TWITTER_VALUE"]["en"] = "Show on home / the noticed board, twitter account:";
 $message["PORTLET_CONFIGURATION_TWITTER_WITHOUT_ACCOUNT"]["en"] = "To show the twitter box, a twitter account is necessary.";
 $message["PORTLET_CONFIGURATION_WEATHER_BOX"]["en"] = "Weather";

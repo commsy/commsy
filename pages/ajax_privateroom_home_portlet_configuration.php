@@ -61,6 +61,24 @@ if(isset($_GET['portlet'])){
          $privateroom_item->setPortletFlickrID($id);
       }
       $privateroom_item->save();
-	}
+	} elseif($_GET['portlet'] == 'twitter'){
+      $privateroom_item = $environment->getCurrentContextItem();
+      $id = '';
+      
+      $get_keys = array_keys($_GET);
+      $column_array = array();
+      foreach($get_keys as $get_key){
+         if(stristr($get_key, 'twitter_channel_id')){
+            if(!empty($_GET[$get_key])){
+               $id = $_GET[$get_key];
+            }
+         }
+      }
+      
+      if($id != ''){
+         $privateroom_item->setPortletTwitterAccount($id);
+      }
+      $privateroom_item->save();
+   }
 }
 ?>

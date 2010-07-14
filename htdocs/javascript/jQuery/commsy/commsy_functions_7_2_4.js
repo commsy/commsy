@@ -1771,6 +1771,8 @@ function portlet_turn_action(preferences, id, portlet){
          turn_portlet_new_item(id, portlet);
       } else if (id == 'cs_privateroom_home_flickr_view'){
          turn_portlet_flickr(id, portlet);
+      } else if (id == 'cs_privateroom_home_twitter_view'){
+         turn_portlet_twitter(id, portlet);
       }
    } else {
       if(id == 'cs_privateroom_home_youtube_view'){
@@ -1779,6 +1781,8 @@ function portlet_turn_action(preferences, id, portlet){
          return_portlet_new_item(id, portlet);
       } else if (id == 'cs_privateroom_home_flickr_view'){
          return_portlet_flickr(id, portlet);
+      } else if (id == 'cs_privateroom_home_twitter_view'){
+         return_portlet_twitter(id, portlet);
       }
    }
 }
@@ -1833,51 +1837,90 @@ function return_portlet_new_item(id, portlet){
 }
 
 function turn_portlet_flickr(id, portlet){
-	   if(portlet_data['flickr_id']){
-	      jQuery('#portlet_flickr_id').val(portlet_data['flickr_id']);
-	   }
-	   jQuery("#"+id).find('input').each(function(){
-	      if(jQuery(this).attr('type') == 'submit'){
-		     jQuery(this).click(function(){
-		        portlet_data['flickr_id'] = jQuery('#portlet_flickr_id').val();
-		    	var json_data = new Object();
-		    	json_data['flickr_id'] = jQuery('#portlet_flickr_id').val();	
-		    	jQuery.ajax({
-		    	   url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct=privateroom_home_portlet_configuration&output=json&portlet=flickr',
-		    	   data: json_data,
-		    	   success: function(msg){
-		    		  portlet_data['flickr_save'] = true;
-		    	      portlet.revertFlip();
-		    	   }
-		    	});
-			 });
-	      }
-	   });
-	}
+   if(portlet_data['flickr_id']){
+      jQuery('#portlet_flickr_id').val(portlet_data['flickr_id']);
+   }
+   jQuery("#"+id).find('input').each(function(){
+      if(jQuery(this).attr('type') == 'submit'){
+         jQuery(this).click(function(){
+            portlet_data['flickr_id'] = jQuery('#portlet_flickr_id').val();
+            var json_data = new Object();
+            json_data['flickr_id'] = jQuery('#portlet_flickr_id').val();	
+            jQuery.ajax({
+               url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct=privateroom_home_portlet_configuration&output=json&portlet=flickr',
+               data: json_data,
+               success: function(msg){
+                  portlet_data['flickr_save'] = true;
+                  portlet.revertFlip();
+               }
+            });
+         });
+      }
+   });
+}
 
-	function return_portlet_flickr(id, portlet){
-	   if(portlet_data['flickr_save']){
-		  if(typeof(flickr_message) !== 'undefined'){
-			  var message = flickr_message.replace('TEMP_ID', portlet_data['flickr_id']);
-			  jQuery('[name="flickr_message"]').html(message);
-		  }
+function return_portlet_flickr(id, portlet){
+   if(portlet_data['flickr_save']){
+      if(typeof(flickr_message) !== 'undefined'){
+         var message = flickr_message.replace('TEMP_ID', portlet_data['flickr_id']);
+         jQuery('[name="flickr_message"]').html(message);
+      }
 		  
-		  var url = "http://api.flickr.com/services/feeds/photos_faves.gne?format=json&id="+portlet_data['flickr_id']+"&jsoncallback=?";
-		  var bridge = new ctRotatorBridgeFlickr(url, function(dataSource){
-			  $("#flickr").ctRotator(dataSource, {
-			     showCount:1,
-			     speed: 5000,
-			     itemRenderer:function(item){
-			        return "<a href=\"" + item.url+ "\"><img style=\"height:200px;\" src=\"" + item.image + "\" alt=\"" + item.title + "\"/></a>";
-			     }
-			  });
-		  });
-		  bridge.getDataSource();
+      var url = "http://api.flickr.com/services/feeds/photos_faves.gne?format=json&id="+portlet_data['flickr_id']+"&jsoncallback=?";
+      var bridge = new ctRotatorBridgeFlickr(url, function(dataSource){
+         $("#flickr").ctRotator(dataSource, {
+            showCount:1,
+            speed: 5000,
+            itemRenderer:function(item){
+               return "<a href=\"" + item.url+ "\"><img style=\"height:200px;\" src=\"" + item.image + "\" alt=\"" + item.title + "\"/></a>";
+            }
+         });
+      });
+      bridge.getDataSource();
 
-		  portlet_data['flickr_save'] = false;
-	   }
-	}
+      portlet_data['flickr_save'] = false;
+   }
+}
 
+function turn_portlet_twitter(id, portlet){
+   if(portlet_data['twitter_channel_id']){
+      jQuery('#portlet_twitter_channel_id').val(portlet_data['twitter_channel_id']);
+   }
+   jQuery("#"+id).find('input').each(function(){
+      if(jQuery(this).attr('type') == 'submit'){
+         jQuery(this).click(function(){
+            portlet_data['twitter_channel_id'] = jQuery('#portlet_twitter_channel_id').val();
+            var json_data = new Object();
+            json_data['twitter_channel_id'] = jQuery('#portlet_twitter_channel_id').val();	
+            jQuery.ajax({
+               url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct=privateroom_home_portlet_configuration&output=json&portlet=twitter',
+               data: json_data,
+               success: function(msg){
+                  portlet_data['twitter_save'] = true;
+                  portlet.revertFlip();
+               }
+            });
+         });
+      }
+   });
+}
+
+function return_portlet_twitter(id, portlet){
+   if(portlet_data['twitter_save']){
+      if(typeof(twitter_message) !== 'undefined'){
+         var message = twitter_message.replace('TEMP_TWITTER_CHANNEL_ID', portlet_data['twitter_channel_id']);
+         jQuery('[name="twitter_message"]').html(message);
+      }
+			  
+      $("#twitter_friends").twitterFriends({
+         debug:1,
+         username:portlet_data['twitter_channel_id']
+      });
+			  
+      portlet_data['twitter_save'] = false;
+   }
+}
+	
 jQuery(document).ready(function() {
 	if(typeof(dropDownPortlets) !== 'undefined'){
 		if(dropDownPortlets.length){
