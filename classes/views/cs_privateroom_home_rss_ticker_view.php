@@ -95,5 +95,24 @@ var  $_rss_ticker_array = array();
 
      return $html;
    }
+   
+   function getPreferencesAsHTML(){
+      $html = $this->_translator->getMessage('PORTLET_CONFIGURATION_RSS').':<br/>';
+      $current_context_item = $this->_environment->getCurrentContextItem();
+      $portlet_rss_array = $current_context_item->getPortletRSSArray();
+      $html .= '<div id="portlet_rss_list">';
+      foreach($portlet_rss_array as $rss_item){
+      	$checked = '';
+      	if($rss_item['display']){
+      		$checked = ' checked ';
+      	}
+      	$html .= '<div class="rss_list_div" name="'.$rss_item['title'].'"><input type="checkbox" name="portlet_rss[]" value="'.$rss_item['title'].'"'.$checked.'>'.$rss_item['title'].' ('.$rss_item['adress'].')</div>'.LF;
+      }
+      $html .= '</div><br/>';
+      $html .= '<input type="text" id="portlet_rss_title" size="10">&nbsp;<input type="text" id="portlet_rss_adress" size="32">';
+      $html .= '<input type="submit" id="portlet_rss_add_button" value="'.$this->_translator->getMessage('PORTLET_CONFIGURATION_RSS_ADD_BUTTON').'"><br/><br/>';
+      $html .= '<input type="submit" id="portlet_rss_button" value="'.$this->_translator->getMessage('COMMON_SAVE_BUTTON').'">';
+      return $html;
+   }
 }
 ?>

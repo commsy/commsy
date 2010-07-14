@@ -79,6 +79,67 @@ if(isset($_GET['portlet'])){
          $privateroom_item->setPortletTwitterAccount($id);
       }
       $privateroom_item->save();
+   } elseif($_GET['portlet'] == 'rss_add'){
+      $privateroom_item = $environment->getCurrentContextItem();
+      $current_rss_array = $privateroom_item->getPortletRSSArray();
+      $temp_rss_array = array();
+      
+      $get_keys = array_keys($_GET);
+      $column_array = array();
+      foreach($get_keys as $get_key){
+         if(stristr($get_key, 'rss_add_titel')){
+            if(!empty($_GET[$get_key])){
+               $temp_rss_array['title'] = $_GET[$get_key];
+            }
+         } elseif(stristr($get_key, 'rss_add_adress')){
+            if(!empty($_GET[$get_key])){
+               $temp_rss_array['adress'] = $_GET[$get_key];
+            }
+         }
+      }
+      $temp_rss_array['display'] = '1';
+      $current_rss_array[] = $temp_rss_array;
+
+      $privateroom_item->setPortletRSSArray($current_rss_array);
+      $privateroom_item->save();
+   } elseif($_GET['portlet'] == 'rss_save'){
+      $privateroom_item = $environment->getCurrentContextItem();
+      $current_rss_array = $privateroom_item->getPortletRSSArray();
+      $temp_rss_array = array();
+      $checked_array = array();
+      
+      $get_keys = array_keys($_GET);
+      $column_array = array();
+      foreach($get_keys as $get_key){
+         if(stristr($get_key, 'rss_add_titel')){
+            if(!empty($_GET[$get_key])){
+               $temp_rss_array['title'] = $_GET[$get_key];
+            }
+         } elseif(stristr($get_key, 'rss_add_adress')){
+            if(!empty($_GET[$get_key])){
+               $temp_rss_array['adress'] = $_GET[$get_key];
+            }
+         } elseif(stristr($get_key, 'rss_checked')){
+            if(!empty($_GET[$get_key])){
+               $checked_array = $_GET[$get_key];
+            }
+         }
+      }
+      
+      $new_rss_array = array();
+      foreach($current_rss_array as $current_rss){
+         if(in_array($current_rss['title'], $checked_array)){
+         	$new_rss_array[] = $current_rss;
+         }
+      }
+      
+      if(isset($temp_rss_array['title'])){
+         $temp_rss_array['display'] = '1';
+         $new_rss_array[] = $temp_rss_array;
+      }
+      
+      $privateroom_item->setPortletRSSArray($new_rss_array);
+      $privateroom_item->save();
    }
 }
 ?>

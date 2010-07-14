@@ -1773,6 +1773,8 @@ function portlet_turn_action(preferences, id, portlet){
          turn_portlet_flickr(id, portlet);
       } else if (id == 'cs_privateroom_home_twitter_view'){
          turn_portlet_twitter(id, portlet);
+      } else if (id == 'cs_privateroom_home_rss_ticker_view'){
+         turn_portlet_rss(id, portlet);
       }
    } else {
       if(id == 'cs_privateroom_home_youtube_view'){
@@ -1783,6 +1785,8 @@ function portlet_turn_action(preferences, id, portlet){
          return_portlet_flickr(id, portlet);
       } else if (id == 'cs_privateroom_home_twitter_view'){
          return_portlet_twitter(id, portlet);
+      } else if (id == 'cs_privateroom_home_rss_ticker_view'){
+         return_portlet_rss(id, portlet);
       }
    }
 }
@@ -1920,7 +1924,79 @@ function return_portlet_twitter(id, portlet){
       portlet_data['twitter_save'] = false;
    }
 }
-	
+
+function turn_portlet_rss(id, portlet){
+   jQuery('#portlet_rss_add_button').click(function(){
+	  if(jQuery('#portlet_rss_title').val() != '' && jQuery('#portlet_rss_adress').val() != ''){
+         jQuery('#portlet_rss_list').append('<div class="rss_list_div" name="'+jQuery('#portlet_rss_title').val()+'"><input type="checkbox" name="portlet_rss[]" value="'+jQuery('#portlet_rss_title').val()+'" checked >'+jQuery('#portlet_rss_title').val()+' ('+jQuery('#portlet_rss_adress').val()+')</div>');
+         
+         var json_data = new Object();
+    	 json_data['rss_add_titel'] = jQuery('#portlet_rss_title').val();
+    	 json_data['rss_add_adress'] = jQuery('#portlet_rss_adress').val();
+    	 jQuery.ajax({
+    	    url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct=privateroom_home_portlet_configuration&output=json&portlet=rss_add',
+    	    data: json_data,
+    	    success: function(msg){
+    	       portlet_data['rss_save'] = true;
+    	    }
+    	 });
+         
+         jQuery('#portlet_rss_title').val('');
+         jQuery('#portlet_rss_adress').val('');
+	  }
+   });
+   jQuery('#portlet_rss_button').click(function(){
+	  var json_data = new Object();
+	  var checked_array = new Array();
+	  jQuery(this).parent().find('[name="portlet_rss[]"]:checked').each(function(){
+		  checked_array.push(jQuery(this).attr('value'));
+	  });
+	  portlet_data['rss_checked'] = checked_array;
+	  json_data['rss_checked'] = checked_array;
+	  
+  	  json_data['rss_add_titel'] = jQuery('#portlet_rss_title').val();
+	  json_data['rss_add_adress'] = jQuery('#portlet_rss_adress').val();
+	  jQuery.ajax({
+	     url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct=privateroom_home_portlet_configuration&output=json&portlet=rss_save',
+	     data: json_data,
+	     success: function(msg){
+	        portlet_data['rss_save'] = true;
+	        portlet.revertFlip();
+	     }
+	  });
+   });
+   if(typeof(portlet_data['rss_checked']) !== 'undefined'){
+	   jQuery('#portlet_rss_button').parent().find('.rss_list_div').each(function(){
+		  var checked = false;
+		  for ( var int = 0; int < portlet_data['rss_checked'].length; int++) {
+			 if(jQuery(this).attr('name') == portlet_data['rss_checked'][int]){
+		    	 checked = true;
+		     }
+		  }
+		  if(!checked){
+	         jQuery(this).remove();
+		  }
+	   });
+   }
+}
+
+function return_portlet_rss(id, portlet){
+   if(portlet_data['rss_save']){
+	  if(typeof(portlet_data['rss_checked']) !== 'undefined'){
+	     var temp_div = jQuery('.ticker').parent();
+	     jQuery(temp_div).children().remove();
+	  
+	     for ( var int = 0; int < portlet_data['rss_checked'].length; int++) {
+		    var rss = portlet_data['rss_checked'][int];
+		    jQuery(temp_div).append('<h4 style="margin-bottom: 0px; margin-top: 0px;">'+rss+'</h4><div id="'+rss+'" class="ticker"></div>');
+		    new rssticker_ajax(rss, 0, rss, "ticker", 10000, "date",rss_ticker_cid,rss_ticker_sid);
+	     }
+	  
+         portlet_data['rss_save'] = false;
+	  }
+   }
+}
+
 jQuery(document).ready(function() {
 	if(typeof(dropDownPortlets) !== 'undefined'){
 		if(dropDownPortlets.length){
