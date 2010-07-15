@@ -298,29 +298,24 @@ class cs_entry_index_view extends cs_index_view {
       $html .= '<div style="width:100%; clear:both; margin-top: 10px;">';
       
       if(!empty($myentries_array)){
-         $html .= '<div style="width:50%; float:left;">'.LF;
+         $html .= '<div id="myentries_left" style="width:50%; float:left;">'.LF;
          $html .= $this->_getContentBoxAsHTML().LF;
          $html .= '</div>'.LF;
-      
-         $html .= '<div class="column" style="width:50%; float:right;">'.LF;
-         #$html .= $this->_getCreateNewEntryBoxAsHTML().LF;
-         if(in_array("my_list_box", $myentries_array)){
-            $html .= $this->_getMylistsBoxAsHTML().LF;
+         $html .= '<div id="myentries_right" class="column" style="width:50%; float:right;">'.LF;
+         foreach($myentries_array as $myentry){
+	         if($myentry == "my_list_box"){
+	            $html .= $this->_getMylistsBoxAsHTML().LF;
+	         }
+	         if($myentry == "my_buzzword_box"){
+	            $html .= $this->_getBuzzwordBoxAsHTML().LF;
+	         }
+	         if($myentry == "my_matrix_box"){
+	            $html .= $this->_getMatrixBoxAsHTML().LF;
+	         }
+	         if($myentry == "my_search_box"){
+	            $html .= $this->_getSearchBoxAsHTML().LF;
+	         }
          }
-         if(in_array("my_buzzword_box", $myentries_array)){
-            $html .= $this->_getBuzzwordBoxAsHTML().LF;
-         }
-         if(in_array("my_matrix_box", $myentries_array)){
-            $html .= $this->_getMatrixBoxAsHTML().LF;
-         }
-	      #$html .= '</div>'.LF;
-	      #$html .= '<div class="column" style="width:50%;">'.LF;
-	      if(in_array("my_search_box", $myentries_array)){
-	         $html .= $this->_getSearchBoxAsHTML().LF;
-	      }
-	      #if(in_array("my_entries_box", $myentries_array)){
-	      #   $html .= $this->_getContentBoxAsHTML().LF;
-	      #}
 	      $html .= '</div>'.LF;
       } else {
       	$html .= '<div style="width:100%; float:left;">'.LF;
@@ -417,6 +412,7 @@ class cs_entry_index_view extends cs_index_view {
          $html .= ');'.LF;
          $html .= 'var myentriesSaveButton = "'.$this->_translator->getMessage('PREFERENCES_SAVE_BUTTON').'";'.LF;
          $html .= 'var ajax_cid = "'.$privateroom_item->getItemID().'";'.LF;
+         $html .= 'var ajax_function = "privateroom_myentries";'.LF;
          $html .= '-->'.LF;
          $html .= '</script>'.LF;
       }

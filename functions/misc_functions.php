@@ -845,6 +845,7 @@ function isURLValid () {
          $funct != 'privateroom_my_entries_configuration' and
          $funct != 'privateroom_entry' and
          $funct != 'privateroom_myroom' and
+         $funct != 'privateroom_myentries' and
          $funct != 'uploadify'
        ) {
        return false;

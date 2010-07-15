@@ -26,31 +26,17 @@ include_once('functions/development_functions.php');
 
 if(isset($_GET['do'])){
 	if($_GET['do'] == 'save_config'){
-		$privateroom_item = $environment->getCurrentContextItem();
-		$current_entries = $privateroom_item->getMyEntriesDisplayConfig();
-		
+		// room_manager -> config speichern
 		$get_keys = array_keys($_GET);
-		$myentries_array = array();
+		$column_array = array();
 		foreach($get_keys as $get_key){
-			if(stristr($get_key, 'myentries')){
-				$myentries_array = $_GET[$get_key];
+			if(stristr($get_key, 'column')){
+				$column_array = $_GET[$get_key];
 			}
 		}
 
-		$new_entries = array();
-	   foreach($current_entries as $entry){
-	   	if(in_array($entry, $myentries_array)){
-            $new_entries[] = $entry;
-	   	}
-      }
-		
-		foreach($myentries_array as $myentry){
-			if(!in_array($myentry, $current_entries)){
-				$new_entries[] = $myentry;
-			}
-		}
-		
-		$privateroom_item->setMyEntriesDisplayConfig($new_entries);
+      $privateroom_item = $environment->getCurrentContextItem();
+      $privateroom_item->setMyEntriesDisplayConfig($column_array);
       $privateroom_item->save();
 	}
 }
