@@ -296,26 +296,38 @@ class cs_entry_index_view extends cs_index_view {
 
       $html .= $this->_getIndexPageHeaderAsHTML().LF;
       $html .= '<div style="width:100%; clear:both; margin-top: 10px;">';
-      $html .= '<div class="column" style="width:50%;">'.LF;
- #     $html .= $this->_getCreateNewEntryBoxAsHTML().LF;
-      if(in_array("my_list_box", $myentries_array)){
-         $html .= $this->_getMylistsBoxAsHTML().LF;
-      }
-      if(in_array("my_buzzword_box", $myentries_array)){
-         $html .= $this->_getBuzzwordBoxAsHTML().LF;
-      }
-      if(in_array("my_matrix_box", $myentries_array)){
-         $html .= $this->_getMatrixBoxAsHTML().LF;
-      }
-      $html .= '</div>'.LF;
-      $html .= '<div class="column" style="width:50%;">'.LF;
-      if(in_array("my_search_box", $myentries_array)){
-         $html .= $this->_getSearchBoxAsHTML().LF;
-      }
-      if(in_array("my_entries_box", $myentries_array)){
+      
+      if(!empty($myentries_array)){
+         $html .= '<div style="width:50%; float:left;">'.LF;
          $html .= $this->_getContentBoxAsHTML().LF;
+         $html .= '</div>'.LF;
+      
+         $html .= '<div class="column" style="width:50%; float:right;">'.LF;
+         #$html .= $this->_getCreateNewEntryBoxAsHTML().LF;
+         if(in_array("my_list_box", $myentries_array)){
+            $html .= $this->_getMylistsBoxAsHTML().LF;
+         }
+         if(in_array("my_buzzword_box", $myentries_array)){
+            $html .= $this->_getBuzzwordBoxAsHTML().LF;
+         }
+         if(in_array("my_matrix_box", $myentries_array)){
+            $html .= $this->_getMatrixBoxAsHTML().LF;
+         }
+	      #$html .= '</div>'.LF;
+	      #$html .= '<div class="column" style="width:50%;">'.LF;
+	      if(in_array("my_search_box", $myentries_array)){
+	         $html .= $this->_getSearchBoxAsHTML().LF;
+	      }
+	      #if(in_array("my_entries_box", $myentries_array)){
+	      #   $html .= $this->_getContentBoxAsHTML().LF;
+	      #}
+	      $html .= '</div>'.LF;
+      } else {
+      	$html .= '<div style="width:100%; float:left;">'.LF;
+         $html .= $this->_getContentBoxAsHTML().LF;
+         $html .= '</div>'.LF;
       }
-      $html .= '</div>'.LF;
+      
       $html .= '</div>';
       $html .='<div style="clear:both;">'.LF;
       $html .='</div>'.LF;
@@ -375,16 +387,16 @@ class cs_entry_index_view extends cs_index_view {
       }
       $action_array[] = $temp_array;
       
-      $temp_array = array();
-      $temp_array['dropdown_image']  = "new_icon";
-      $temp_array['text']  = $this->_translator->getMessage('PRIVATEROOM_MY_ENTRIES_LIST_BOX');
-      $temp_array['value'] = "my_entries_box";
-      if(in_array("my_entries_box", $myentries_array)){
-         $temp_array['checked']  = "checked";
-      } else {
-         $temp_array['checked']  = "";
-      }
-      $action_array[] = $temp_array;
+      #$temp_array = array();
+      #$temp_array['dropdown_image']  = "new_icon";
+      #$temp_array['text']  = $this->_translator->getMessage('PRIVATEROOM_MY_ENTRIES_LIST_BOX');
+      #$temp_array['value'] = "my_entries_box";
+      #if(in_array("my_entries_box", $myentries_array)){
+      #   $temp_array['checked']  = "checked";
+      #} else {
+      #   $temp_array['checked']  = "";
+      #}
+      #$action_array[] = $temp_array;
       
       // init drop down menu
       if ( !empty($action_array)
@@ -415,9 +427,9 @@ class cs_entry_index_view extends cs_index_view {
       $list = $this->_list;
       $params = $this->_environment->getCurrentParameterArray();
       $html = '<div class="portlet" id="my_entries_box">'.LF;
-      $html .= '<div class="portlet-header">'.LF;
+      $html .= '<div class="portlet-header" style="cursor:default;">'.LF;
       $html .= $this->_translator->getMessage('PRIVATEROOM_MY_ENTRIES_LIST_BOX').LF;
-      $html .= '<div style="float:right;"><a name="myentries_remove" style="cursor:pointer;"><img src="images/commsyicons/16x16/delete.png" /></a></div>';
+      #$html .= '<div style="float:right;"><a name="myentries_remove" style="cursor:pointer;"><img src="images/commsyicons/16x16/delete.png" /></a></div>';
       $html .= '</div>'.LF;
       $html .= '<div id="contentbox" class="portlet-content">'.LF;
       if (
