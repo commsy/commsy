@@ -295,7 +295,7 @@ class cs_entry_index_view extends cs_index_view {
       $html  = LF.'<!-- BEGIN OF LIST VIEW -->'.LF;
 
       $html .= $this->_getIndexPageHeaderAsHTML().LF;
-      $html .= '<div style="width:100%; clear:both;">';
+      $html .= '<div style="width:100%; clear:both; margin-top: 10px;">';
       $html .= '<div class="column" style="width:50%;">'.LF;
  #     $html .= $this->_getCreateNewEntryBoxAsHTML().LF;
       if(in_array("my_list_box", $myentries_array)){
@@ -713,14 +713,26 @@ class cs_entry_index_view extends cs_index_view {
 
 
    function _getIndexPageHeaderAsHTML(){
+   	$html ='<div style="width:100%;">'.LF;
+      $html .='<div style="height:30px;">'.LF;
       if (!$this->_environment->inPrivateRoom()){
-         $html = '<h2 class="pagetitle">'.$this->_translator->getMessage('ENTRY_INDEX');
+         $html .= '<h2 class="pagetitle">'.$this->_translator->getMessage('ENTRY_INDEX');
          $html .= '</h2>'.LF;
       } else {
-         $html = '<div style="width:100%;"><div style="float:left;"><h2 class="pagetitle">'.$this->_translator->getMessage('ENTRY_INDEX');
+         $html .= '<div style="width: 100%;"><div style="float:left;"><h2 class="pagetitle">'.$this->_translator->getMessage('ENTRY_INDEX');
          $html .= '</h2></div>'.LF;
-         $html .= '<div style="float:right;"><a href="#"><img id="new_icon" src="images/commsyicons/48x48/config/privateroom_home_options.png" height=24></a></div></div>';
+         #$html .= '<div style="float:right;"><a href="#"><img id="new_icon" src="images/commsyicons/48x48/config/privateroom_home_options.png" height=24></a></div></div>';
+         $html .= '<div style="float:right;">'.LF;
+         $html .= '<div class="portlet-configuration">'.LF;
+         $html .= '<div class="portlet-header-configuration ui-widget-header" style="width:200px;">'.LF;
+         $html .= $this->_translator->getMessage('HOME_ENTRY_CONFIGURATION').LF;
+         $html .= '<a href="#"><img id="new_icon" src="images/commsyicons/48x48/config/privateroom_home_options.png" height=0></a>'.LF;
+         $html .= '</div>'.LF;
+         $html .= '</div>'.LF;
+         $html .= '</div>'.LF;
       }
+      $html .= '</div>'.LF;
+      $html .= '</div>'.LF;
       return $html;
    }
 

@@ -81,7 +81,17 @@ class cs_myroom_index_view extends cs_context_index_view {
       }
       $html .= '<div style="float:left;"><h2 class="pagetitle">'.$image.' '.$this->_translator->getMessage('MYROOM_INDEX');
       $html .= '</h2></div>'.LF;
-      $html .= '<div style="float:right;"><a href="#"><img id="new_icon" src="images/commsyicons/48x48/config/privateroom_home_options.png" height=24></a></div>';
+      #$html .= '<div style="float:right;"><a href="#"><img id="new_icon" src="images/commsyicons/48x48/config/privateroom_home_options.png" height=24></a></div>';
+      
+      $html .= '<div style="float:right;">'.LF;
+      $html .= '<div class="portlet-configuration">'.LF;
+      $html .= '<div class="portlet-header-configuration ui-widget-header" style="width:200px;">'.LF;
+      $html .= $this->_translator->getMessage('HOME_MYROOM_CONFIGURATION').LF;
+      $html .= '<a href="#"><img id="new_icon" src="images/commsyicons/48x48/config/privateroom_home_options.png" height=0></a>'.LF;
+      $html .= '</div>'.LF;
+      $html .= '</div>'.LF;
+      $html .= '</div>'.LF;
+         
       $html .='</div>'.LF;
       $html .='</div>'.LF;
       $html .='</div>'.LF;

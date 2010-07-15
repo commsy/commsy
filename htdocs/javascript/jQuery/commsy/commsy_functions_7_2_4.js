@@ -2281,9 +2281,11 @@ jQuery(document).ready(function() {
 					setTimeout(function() {
 						if(this_image.mouse_is_over){
 							var id_parts = id.split('_');
-							var offset = jQuery('#dropdown_button_'+id_parts[4]).parent().offset();
+							//var offset = jQuery('#dropdown_button_'+id_parts[4]).parent().offset();
+							var offset = jQuery('#dropdown_button_'+id_parts[4]).parent().parent().offset();
+							var width = jQuery('#dropdown_button_'+id_parts[4]).parent().parent().css('width');
 							if(jQuery('#dropdown_menu_'+id_parts[4]).css('display') == 'none'){
-								dropdown_portlets(jQuery('#dropdown_menu_'+id_parts[4]), offset, id_parts[4]);
+								dropdown_portlets(jQuery('#dropdown_menu_'+id_parts[4]), offset, id_parts[4], width);
 							}
 						}
 					}, 2000);
@@ -2295,8 +2297,10 @@ jQuery(document).ready(function() {
 
 				jQuery('#dropdown_button_'+int3).click(function(){
 					var id_parts = this.id.split('_');
-					var offset = jQuery('#'+this.id).parent().offset();
-					dropdown_portlets(jQuery('#dropdown_menu_'+id_parts[2]), offset, id_parts[2]);
+					//var offset = jQuery('#'+this.id).parent().offset();
+					var offset = jQuery('#'+this.id).parent().parent().offset();
+					var width = jQuery('#'+this.id).parent().parent().css('width');
+					dropdown_portlets(jQuery('#dropdown_menu_'+id_parts[2]), offset, id_parts[2], width);
 				});
 
 				jQuery('#dropdown_button_'+int3).mouseover(function(){
@@ -2306,9 +2310,11 @@ jQuery(document).ready(function() {
 					setTimeout(function() {
 						if(this_image.mouse_is_over){
 							var id_parts = id.split('_');
-							var offset = jQuery('#dropdown_button_'+id_parts[2]).parent().offset();
+							//var offset = jQuery('#dropdown_button_'+id_parts[2]).parent().offset();
+							var offset = jQuery('#dropdown_button_'+id_parts[2]).parent().parent().offset();
+							var width = jQuery('#dropdown_button_'+id_parts[2]).parent().parent().css('width');
 							if(jQuery('#dropdown_menu_'+id_parts[2]).css('display') == 'none'){
-								dropdown_portlets(jQuery('#dropdown_menu_'+id_parts[2]), offset, id_parts[2]);
+								dropdown_portlets(jQuery('#dropdown_menu_'+id_parts[2]), offset, id_parts[2], width);
 							}
 						}
 					}, 2000);
@@ -2413,9 +2419,11 @@ jQuery(document).ready(function() {
 					setTimeout(function() {
 						if(this_image.mouse_is_over){
 							var id_parts = id.split('_');
-							var offset = jQuery('#dropdown_button_'+id_parts[4]).parent().offset();
+							//var offset = jQuery('#dropdown_button_'+id_parts[4]).parent().offset();
+							var offset = jQuery('#dropdown_button_'+id_parts[4]).parent().parent().offset();
+							var width = jQuery('#dropdown_button_'+id_parts[4]).parent().parent().css('width');
 							if(jQuery('#dropdown_menu_'+id_parts[4]).css('display') == 'none'){
-								dropdown_portlets(jQuery('#dropdown_menu_'+id_parts[4]), offset, id_parts[4]);
+								dropdown_portlets(jQuery('#dropdown_menu_'+id_parts[4]), offset, id_parts[4], width);
 							}
 						}
 					}, 2000);
@@ -2427,8 +2435,10 @@ jQuery(document).ready(function() {
 
 				jQuery('#dropdown_button_'+int3).click(function(){
 					var id_parts = this.id.split('_');
-					var offset = jQuery('#'+this.id).parent().offset();
-					dropdown_portlets(jQuery('#dropdown_menu_'+id_parts[2]), offset, id_parts[2]);
+					//var offset = jQuery('#'+this.id).parent().offset();
+					var offset = jQuery('#'+this.id).parent().parent().offset();
+					var width = jQuery('#'+this.id).parent().parent().css('width');
+					dropdown_portlets(jQuery('#dropdown_menu_'+id_parts[2]), offset, id_parts[2], width);
 				});
 
 				jQuery('#dropdown_button_'+int3).mouseover(function(){
@@ -2438,9 +2448,11 @@ jQuery(document).ready(function() {
 					setTimeout(function() {
 						if(this_image.mouse_is_over){
 							var id_parts = id.split('_');
-							var offset = jQuery('#dropdown_button_'+id_parts[2]).parent().offset();
+							//var offset = jQuery('#dropdown_button_'+id_parts[2]).parent().offset();
+							var offset = jQuery('#dropdown_button_'+id_parts[2]).parent().parent().offset();
+							var width = jQuery('#dropdown_button_'+id_parts[2]).parent().parent().css('width');
 							if(jQuery('#dropdown_menu_'+id_parts[2]).css('display') == 'none'){
-								dropdown_portlets(jQuery('#dropdown_menu_'+id_parts[2]), offset, id_parts[2]);
+								dropdown_portlets(jQuery('#dropdown_menu_'+id_parts[2]), offset, id_parts[2], width);
 							}
 						}
 					}, 2000);
