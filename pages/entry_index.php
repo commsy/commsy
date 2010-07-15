@@ -591,6 +591,9 @@ foreach ($rubric_array as $rubric) {
 
 
 }
+
+// ToDo: Nur Einträge in der Liste belassen, die auch angezeigt werden -> sonst gibt es leere Seiten über die geblättert wird!
+
 $browse_prev = true;
 $browse_next = true;
 $temp_list = new cs_list();

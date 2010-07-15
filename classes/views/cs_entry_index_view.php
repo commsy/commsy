@@ -518,7 +518,7 @@ class cs_entry_index_view extends cs_index_view {
       	if($this->_interval != '20'){
       	  $params['interval'] = 20;
       	  $params['pos'] = 0;
-      	  $interval_20 .= ahref_curl(  $this->_environment->getCurrentContextID(),
+      	  $interval_20 = ahref_curl(  $this->_environment->getCurrentContextID(),
                                           'entry',
                                           'index',
                                           $params,
@@ -528,7 +528,7 @@ class cs_entry_index_view extends cs_index_view {
       	if($this->_interval != '50'){
       		$params['interval'] = 50;
             $params['pos'] = 0;
-            $interval_50 .= ahref_curl(  $this->_environment->getCurrentContextID(),
+            $interval_50 = ahref_curl(  $this->_environment->getCurrentContextID(),
                                           'entry',
                                           'index',
                                           $params,
@@ -538,7 +538,7 @@ class cs_entry_index_view extends cs_index_view {
          if($this->_interval != 'all'){
          	$params['interval'] = 'all';
             $params['pos'] = 0;
-            $interval_all .= ahref_curl(  $this->_environment->getCurrentContextID(),
+            $interval_all = ahref_curl(  $this->_environment->getCurrentContextID(),
                                           'entry',
                                           'index',
                                           $params,
@@ -550,7 +550,7 @@ class cs_entry_index_view extends cs_index_view {
       	if($this->_browse_prev){
       		$params['interval'] = $this->_interval;
             $params['pos'] = 0;
-	         $browse_first .= ahref_curl(  $this->_environment->getCurrentContextID(),
+	         $browse_first = ahref_curl(  $this->_environment->getCurrentContextID(),
 	                                       'entry',
 	                                       'index',
 	                                       $params,
@@ -558,7 +558,7 @@ class cs_entry_index_view extends cs_index_view {
 	                                       $this->_translator->getMessage('COMMON_BROWSE_START_DESC')).LF;
 	         $params['interval'] = $this->_interval;
             $params['pos'] = $this->_pos - 1;
-	         $browse_prev .= ahref_curl(  $this->_environment->getCurrentContextID(),
+	         $browse_prev = ahref_curl(  $this->_environment->getCurrentContextID(),
 	                                       'entry',
 	                                       'index',
 	                                       $params,
@@ -571,7 +571,7 @@ class cs_entry_index_view extends cs_index_view {
          if($this->_browse_next){
          	$params['interval'] = $this->_interval;
             $params['pos'] = $this->_pos + 1;
-	         $browse_next .= ahref_curl(  $this->_environment->getCurrentContextID(),
+	         $browse_next = ahref_curl(  $this->_environment->getCurrentContextID(),
 	                                       'entry',
 	                                       'index',
 	                                       $params,
@@ -579,7 +579,7 @@ class cs_entry_index_view extends cs_index_view {
 	                                       $this->_translator->getMessage('COMMON_BROWSE_RIGHT_DESC')).LF;
 	         $params['interval'] = $this->_interval;
             $params['pos'] = $this->_max_pos;
-	         $browse_last .= ahref_curl(  $this->_environment->getCurrentContextID(),
+	         $browse_last = ahref_curl(  $this->_environment->getCurrentContextID(),
 	                                       'entry',
 	                                       'index',
 	                                       $params,
