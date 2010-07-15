@@ -514,6 +514,7 @@ class cs_entry_index_view extends cs_index_view {
       }
 
       if ( isset($list) && !($list->isEmpty()) ) {
+      	$interval_20 = '20';
       	if($this->_interval != '20'){
       	  $params['interval'] = 20;
       	  $params['pos'] = 0;
@@ -522,9 +523,8 @@ class cs_entry_index_view extends cs_index_view {
                                           'index',
                                           $params,
                                           '20').LF;
-      	} else {
-      		$interval_20 = '20';
       	}
+      	$interval_50 = '50';
       	if($this->_interval != '50'){
       		$params['interval'] = 50;
             $params['pos'] = 0;
@@ -533,9 +533,8 @@ class cs_entry_index_view extends cs_index_view {
                                           'index',
                                           $params,
                                           '50').LF;
-      	} else {
-            $interval_50 = '50';
-         }
+      	}
+      	$interval_all = $this->_translator->getMessage('COMMON_PAGE_ENTRIES_ALL');
          if($this->_interval != 'all'){
          	$params['interval'] = 'all';
             $params['pos'] = 0;
@@ -544,10 +543,10 @@ class cs_entry_index_view extends cs_index_view {
                                           'index',
                                           $params,
                                           $this->_translator->getMessage('COMMON_PAGE_ENTRIES_ALL')).LF;
-         } else {
-            $interval_all = $this->_translator->getMessage('COMMON_PAGE_ENTRIES_ALL');
          }
-                                          
+
+         $browse_first = '&lt;&lt;';
+         $browse_prev = '&lt;';
       	if($this->_browse_prev){
       		$params['interval'] = $this->_interval;
             $params['pos'] = 0;
@@ -565,11 +564,10 @@ class cs_entry_index_view extends cs_index_view {
 	                                       $params,
 	                                       '&lt;',
 	                                       $this->_translator->getMessage('COMMON_BROWSE_LEFT_DESC')).LF;
-      	} else {
-      		$browse_first = '&lt;&lt;';
-      		$browse_prev = '&lt;';
       	}
       	
+      	$browse_next = '&gt;';
+         $browse_last = '&gt;&gt;';
          if($this->_browse_next){
          	$params['interval'] = $this->_interval;
             $params['pos'] = $this->_pos + 1;
@@ -587,10 +585,8 @@ class cs_entry_index_view extends cs_index_view {
 	                                       $params,
 	                                       '&gt;&gt;',
 	                                       $this->_translator->getMessage('COMMON_BROWSE_END_DESC')).LF;
-         } else {
-            $browse_next = '&gt;';
-            $browse_last = '&gt;&gt;';
          }
+         
       	$current_pos = $this->_pos + 1;
       	$whole_ammount = $this->_max_pos+1;
          
