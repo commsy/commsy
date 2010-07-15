@@ -200,6 +200,7 @@ class cs_entry_index_view extends cs_index_view {
          unset($params['delete_list']);
          $html .= ' <p class="droppable_list" id="mylist_'.$mylist_item->getItemID().'">'.LF;
          $params['sellist'] = $mylist_item->getItemID();
+         $params['pos'] = 0;
          $html .= ahref_curl(  $this->_environment->getCurrentContextID(),
                                        CS_ENTRY_TYPE,
                                        'index',
@@ -514,44 +515,54 @@ class cs_entry_index_view extends cs_index_view {
 
       if ( isset($list) && !($list->isEmpty()) ) {
       	if($this->_interval != '20'){
+      	  $params['interval'] = 20;
+      	  $params['pos'] = 0;
       	  $interval_20 .= ahref_curl(  $this->_environment->getCurrentContextID(),
                                           'entry',
                                           'index',
-                                          array('interval' => 20, 'pos' => 0),
+                                          $params,
                                           '20').LF;
       	} else {
       		$interval_20 = '20';
       	}
       	if($this->_interval != '50'){
+      		$params['interval'] = 50;
+            $params['pos'] = 0;
             $interval_50 .= ahref_curl(  $this->_environment->getCurrentContextID(),
                                           'entry',
                                           'index',
-                                          array('interval' => 50, 'pos' => 0),
+                                          $params,
                                           '50').LF;
       	} else {
             $interval_50 = '50';
          }
          if($this->_interval != 'all'){
+         	$params['interval'] = 'all';
+            $params['pos'] = 0;
             $interval_all .= ahref_curl(  $this->_environment->getCurrentContextID(),
                                           'entry',
                                           'index',
-                                          array('interval' => 'all', 'pos' => 0),
+                                          $params,
                                           $this->_translator->getMessage('COMMON_PAGE_ENTRIES_ALL')).LF;
          } else {
             $interval_all = $this->_translator->getMessage('COMMON_PAGE_ENTRIES_ALL');
          }
                                           
       	if($this->_browse_prev){
+      		$params['interval'] = $this->_interval;
+            $params['pos'] = 0;
 	         $browse_first .= ahref_curl(  $this->_environment->getCurrentContextID(),
 	                                       'entry',
 	                                       'index',
-	                                       array('interval' => $this->_interval, 'pos' => 0),
+	                                       $params,
 	                                       '&lt;&lt;',
 	                                       $this->_translator->getMessage('COMMON_BROWSE_START_DESC')).LF;
+	         $params['interval'] = $this->_interval;
+            $params['pos'] = $this->_pos - 1;
 	         $browse_prev .= ahref_curl(  $this->_environment->getCurrentContextID(),
 	                                       'entry',
 	                                       'index',
-	                                       array('interval' => $this->_interval, 'pos' => $this->_pos - 1),
+	                                       $params,
 	                                       '&lt;',
 	                                       $this->_translator->getMessage('COMMON_BROWSE_LEFT_DESC')).LF;
       	} else {
@@ -560,16 +571,20 @@ class cs_entry_index_view extends cs_index_view {
       	}
       	
          if($this->_browse_next){
+         	$params['interval'] = $this->_interval;
+            $params['pos'] = $this->_pos + 1;
 	         $browse_next .= ahref_curl(  $this->_environment->getCurrentContextID(),
 	                                       'entry',
 	                                       'index',
-	                                       array('interval' => $this->_interval, 'pos' => $this->_pos + 1),
+	                                       $params,
 	                                       '&gt;',
 	                                       $this->_translator->getMessage('COMMON_BROWSE_RIGHT_DESC')).LF;
+	         $params['interval'] = $this->_interval;
+            $params['pos'] = $this->_max_pos;
 	         $browse_last .= ahref_curl(  $this->_environment->getCurrentContextID(),
 	                                       'entry',
 	                                       'index',
-	                                       array('interval' => $this->_interval, 'pos' => $this->_max_pos),
+	                                       $params,
 	                                       '&gt;&gt;',
 	                                       $this->_translator->getMessage('COMMON_BROWSE_END_DESC')).LF;
          } else {
