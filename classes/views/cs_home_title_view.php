@@ -159,7 +159,9 @@ class cs_home_title_view extends cs_view {
          $html .= '<div class="portlet-configuration">'.LF;
          $html .= '<div class="portlet-header-configuration ui-widget-header" style="width:200px;">'.LF;
          $html .= $this->_translator->getMessage('HOME_PORTLET_CONFIGURATION').LF;
+         $html .= '<div style="float:right;">'.LF;
          $html .= '<a href="#"><img id="new_icon" src="images/commsyicons/48x48/config/privateroom_home_options.png" height=0></a>'.LF;
+         $html .= '</div>'.LF;
          $html .= '</div>'.LF;
          $html .= '</div>'.LF;
          $html .= '</div>'.LF;
