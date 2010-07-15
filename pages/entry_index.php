@@ -104,6 +104,17 @@ if ( isset($_GET['delete_item'])) {
    $deleteitem = 0;
 }
 
+if ( isset($_GET['interval'])) {
+   $interval = $_GET['interval'];
+} else {
+   $interval = 20;
+}
+
+if ( isset($_GET['pos'])) {
+   $pos = $_GET['pos'];
+} else {
+   $pos = 0;
+}
 
 if ( isOption($command, $translator->getMessage('PRIVATEROOM_MY_LISTS_BOX_NEW_ENTRY_BUTTON')) and isset($_POST['new_list']) and !empty($_POST['new_list'])) {
    $mylist_manager = $environment->getMylistManager();
@@ -494,7 +505,7 @@ foreach ($rubric_array as $rubric) {
       if (!empty($searchtext)){
          $item_manager->setSearchLimit($searchtext);
       }
-      $item_manager->setIntervalLimit(20);
+      #$item_manager->setIntervalLimit($interval);
       $new_entry_list = $item_manager->getAllPrivateRoomEntriesOfUserList($privatroom_id_array,$user_id_array);
 
 
@@ -580,20 +591,60 @@ foreach ($rubric_array as $rubric) {
 
 
 }
+$browse_prev = true;
+$browse_next = true;
+$temp_list = new cs_list();
+if($interval != 'all'){
+	$temp_start = $pos * $interval;
+	$temp_index = 0;
+	$temp_item = $new_entry_list->getFirst();
+	while($temp_item){
+	   if(($temp_index >= $temp_start) and ($temp_index < ($temp_start + $interval))){
+	      $temp_list->add($temp_item);
+	   }
+	   $temp_index++;
+	   $temp_item = $new_entry_list->getNext();
+	}
+	if($pos == 0){
+	   $browse_prev = false;
+	}
+	if(($temp_start + $interval) >= $temp_index){
+	   $browse_next = false;
+	}
+	if($temp_index % $interval == 0){
+	   $max_pos = ($temp_index / $interval) - 1;
+	} else {
+	   $max_pos = (($temp_index - ($temp_index % $interval)) / $interval);
+	}
+} else {
+	$temp_list = $new_entry_list;
+	$browse_prev = false;
+	$browse_next = false;
+	$pos = 0;
+	$max_pos = 0;
+}
+
 
 $params = array();
 $params['environment'] = $environment;
 $params['with_modifying_actions'] = $current_context->isOpen();
 $my_entries_view = $class_factory->getClass(PRIVATEROOM_HOME_NEW_ENTRIES_VIEW,$params);
-$my_entries_view->setList($new_entry_list);
+#$my_entries_view->setList($new_entry_list);
+$my_entries_view->setList($temp_list);
 unset($params);
 
 // Set data for view
 #$sublist = $search_list->getSubList($from-1,$interval);
-$view->setList($new_entry_list);
+#$view->setList($new_entry_list);
+$view->setList($temp_list);
 $view->setSelectedMyList($sellist);
 $view->setSelectedBuzzword($selbuzzword);
 $view->setSearchText($searchtext);
+$view->setInterval($interval);
+$view->setPos($pos);
+$view->setMaxPos($max_pos);
+$view->setBrowsePrev($browse_prev);
+$view->setBrowseNext($browse_next);
 /*$view->setCountAllShown(count($campus_search_ids));
 $view->setCountAll($count_all);
 $view->setFrom($from);

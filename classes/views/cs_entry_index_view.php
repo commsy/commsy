@@ -68,7 +68,26 @@ class cs_entry_index_view extends cs_index_view {
        return $this->_search_text;
     }
 
+   function setInterval($interval){
+      $this->_interval = $interval;
+   }
+   
+   function setPos($pos){
+      $this->_pos = $pos;
+   }
+   
+   function setMaxPos($max_pos){
+      $this->_max_pos = $max_pos;
+   }
 
+   function setBrowsePrev($browse_prev){
+      $this->_browse_prev = $browse_prev;
+   }
+   
+   function setBrowseNext($browse_next){
+      $this->_browse_next = $browse_next;
+   }
+   
    function _getSearchBoxAsHTML(){
       $html = '<div class="portlet" id="my_search_box">'.LF;
       $html .= '<div class="portlet-header">'.LF;
@@ -428,12 +447,12 @@ class cs_entry_index_view extends cs_index_view {
       #$html .= '<div style="float:right;"><a name="myentries_remove" style="cursor:pointer;"><img src="images/commsyicons/16x16/delete.png" /></a></div>';
       $html .= '</div>'.LF;
       $html .= '<div id="contentbox" class="portlet-content">'.LF;
+      $html .= '<table class="description-background" style="width:100%;">'.LF;
       if (
           !empty($this->_sellist)
           or !empty($this->_selbuzzword)
           or (!empty($this->_search_text) and $this->_search_text != $this->_translator->getMessage('COMMON_SEARCH_IN_ENTRIES'))
       ){
-         $html .= '<table class="description-background" style="width:100%;">'.LF;
          $html .= '<tr>'.LF;
          $html .= '<td style="vertical-align:top;">'.LF;
          $html .= $this->_translator->getMessage('COMMON_RESTRICTIONS').': ';
@@ -491,8 +510,79 @@ class cs_entry_index_view extends cs_index_view {
          }
          $html .= '<td>';
          $html .= '</tr>'.LF;
-         $html .= '</table>'.LF;
       }
+
+      if ( isset($list) && !($list->isEmpty()) ) {
+      	if($this->_interval != '20'){
+      	  $interval_20 .= ahref_curl(  $this->_environment->getCurrentContextID(),
+                                          'entry',
+                                          'index',
+                                          array('interval' => 20, 'pos' => 0),
+                                          '20').LF;
+      	} else {
+      		$interval_20 = '20';
+      	}
+      	if($this->_interval != '50'){
+            $interval_50 .= ahref_curl(  $this->_environment->getCurrentContextID(),
+                                          'entry',
+                                          'index',
+                                          array('interval' => 50, 'pos' => 0),
+                                          '50').LF;
+      	} else {
+            $interval_50 = '50';
+         }
+         if($this->_interval != 'all'){
+            $interval_all .= ahref_curl(  $this->_environment->getCurrentContextID(),
+                                          'entry',
+                                          'index',
+                                          array('interval' => 'all', 'pos' => 0),
+                                          $this->_translator->getMessage('COMMON_PAGE_ENTRIES_ALL')).LF;
+         } else {
+            $interval_all = $this->_translator->getMessage('COMMON_PAGE_ENTRIES_ALL');
+         }
+                                          
+      	if($this->_browse_prev){
+	         $browse_first .= ahref_curl(  $this->_environment->getCurrentContextID(),
+	                                       'entry',
+	                                       'index',
+	                                       array('interval' => $this->_interval, 'pos' => 0),
+	                                       '&lt;&lt;',
+	                                       $this->_translator->getMessage('COMMON_BROWSE_START_DESC')).LF;
+	         $browse_prev .= ahref_curl(  $this->_environment->getCurrentContextID(),
+	                                       'entry',
+	                                       'index',
+	                                       array('interval' => $this->_interval, 'pos' => $this->_pos - 1),
+	                                       '&lt;',
+	                                       $this->_translator->getMessage('COMMON_BROWSE_LEFT_DESC')).LF;
+      	} else {
+      		$browse_first = '&lt;&lt;';
+      		$browse_prev = '&lt;';
+      	}
+      	
+         if($this->_browse_next){
+	         $browse_next .= ahref_curl(  $this->_environment->getCurrentContextID(),
+	                                       'entry',
+	                                       'index',
+	                                       array('interval' => $this->_interval, 'pos' => $this->_pos + 1),
+	                                       '&gt;',
+	                                       $this->_translator->getMessage('COMMON_BROWSE_RIGHT_DESC')).LF;
+	         $browse_last .= ahref_curl(  $this->_environment->getCurrentContextID(),
+	                                       'entry',
+	                                       'index',
+	                                       array('interval' => $this->_interval, 'pos' => $this->_max_pos),
+	                                       '&gt;&gt;',
+	                                       $this->_translator->getMessage('COMMON_BROWSE_END_DESC')).LF;
+         } else {
+            $browse_next = '&gt;';
+            $browse_last = '&gt;&gt;';
+         }
+      	$current_pos = $this->_pos + 1;
+      	$whole_ammount = $this->_max_pos+1;
+         
+         $html .= '<tr><td style="text-align:left; font-weight:bold;">'.$interval_20.' | '.$interval_50.' | '.$interval_all.'</td><td style="text-align:right; font-weight:bold;">'.$current_pos.' / '.$whole_ammount.'&nbsp;&nbsp;&nbsp;'.$browse_first.' | '.$browse_prev.' | '.$browse_next.' | '.$browse_last.'</td></tr>';
+      }
+      $html .= '</table>'.LF;
+         
       if ( !isset($list) || $list->isEmpty() ) {
          $html .= '<div class="odd" style="border-bottom: 0px;">'.$this->_translator->getMessage('COMMON_NO_ENTRIES').'</div>';
       } else {
