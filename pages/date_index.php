@@ -320,16 +320,34 @@ if ( isset($_GET['selcolor']) and $_GET['selcolor'] !='-2') {
    $sel_color = '';
 }
 
-if ( isset($_GET['selroom']) and $_GET['selroom'] !='-2' and $_GET['selroom'] !='2') {
+$sel_room_default = false;
+if ( isset($_GET['selroom'])
+     and $_GET['selroom'] != '-2'
+     and $_GET['selroom'] != '2'
+   ) {
    $sel_room = $_GET['selroom'];
 } else {
    $sel_room = '2';
+   if ( $environment->inPrivateRoom() ) {
+      // TBD: use saved selections
+      $sel_room = $environment->getCurrentContextID();
+      $sel_room_default = true;
+   }
 }
 
-if ( isset($_GET['selassignment']) and $_GET['selassignment'] !='-2' and $_GET['selassignment'] !='3') {
+if ( isset($_GET['selassignment'])
+     and $_GET['selassignment'] != '-2'
+     and $_GET['selassignment'] != '3'
+   ) {
    $sel_assignment = $_GET['selassignment'];
 } else {
    $sel_assignment = '3';
+   if ( $environment->inPrivateRoom() ) {
+      // TBD: use saved selections
+      if ( $sel_room_default ) {
+         $sel_assignment = 2;
+      }
+   }
 }
 
 // Search / Select Area
