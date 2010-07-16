@@ -106,8 +106,12 @@ class cs_privateroom_item extends cs_room_item {
       $retour = array();
       foreach (explode(',',$rubrics) as $rubric){
          if (!mb_stristr($rubric,CS_USER_TYPE) ) {
-            if ( !isset($new_private_room)
-                 or !$new_private_room
+            if ( ( !isset($new_private_room)
+                   and !mb_stristr($rubric,CS_ENTRY_TYPE)
+                 )
+                 or ( !$new_private_room
+                      and !mb_stristr($rubric,CS_ENTRY_TYPE)
+                    )
                  or ( $new_private_room
                       and !mb_stristr($rubric,CS_MATERIAL_TYPE)
                       and !mb_stristr($rubric,CS_TOPIC_TYPE)
