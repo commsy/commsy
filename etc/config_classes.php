@@ -68,4 +68,13 @@ if ( !defined('MISC_2ZIP')) {
    $class_config[$class_name]['folder'] = $main_folder.$sub_folder;
    $class_config[$class_name]['switchable'] = false;
 }
+
+if ( !defined('MISC_USER_ROOMLIST')) {
+   $class_name = 'misc_user_roomlist';
+   define('MISC_USER_ROOMLIST',$class_name);
+   $class_config[$class_name]['name'] = $class_name;
+   $class_config[$class_name]['filename'] = $class_name.'.php';
+   $class_config[$class_name]['folder'] = $main_folder.$sub_folder;
+   $class_config[$class_name]['switchable'] = false;
+}
 ?>

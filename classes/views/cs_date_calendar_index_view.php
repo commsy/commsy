@@ -91,7 +91,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
     }
 
     function setRoomIDArray($array){
-    	$this->_room_id_array = $array;
+       $this->_room_id_array = $array;
     }
 
     function setCountAllTodos($count){
@@ -308,7 +308,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       if ( $current_browser == 'msie' and (strstr($current_browser_version,'5.') or (strstr($current_browser_version,'6.'))) ){
          $width = 'width:170px;';
       } else {
-      	$width = 'width:198px;';
+         $width = 'width:198px;';
       }
 
       if (isset($parameter_array['show_todo_selections']) and $parameter_array['show_todo_selections'] == 'true'){
@@ -343,7 +343,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
               if ($original_date < $actual_date){
                  $style = 'class="required" style="font-weight:normal;"';
               }else{
-             	 $style = 'style="color:#05860F;"';
+                 $style = 'style="color:#05860F;"';
               }
               $html .= ahref_curl(
                                $todo_item->getContextID(),
@@ -374,16 +374,16 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $current_context = $this->_environment->getCurrentContextItem();
       $current_user = $this->_environment->getCurrentUserItem();
       $html  = '';
-	  $width = '';
-	  $current_browser = mb_strtolower($this->_environment->getCurrentBrowser(), 'UTF-8');
-	  $current_browser_version = $this->_environment->getCurrentBrowserVersion();
-	  if ( $current_browser == 'msie' and (strstr($current_browser_version,'5.') or (strstr($current_browser_version,'6.'))) ){
-	     $width = 'width:170px;';
-	  }
+      $width = '';
+      $current_browser = mb_strtolower($this->_environment->getCurrentBrowser(), 'UTF-8');
+      $current_browser_version = $this->_environment->getCurrentBrowserVersion();
+      if ( $current_browser == 'msie' and (strstr($current_browser_version,'5.') or (strstr($current_browser_version,'6.'))) ){
+         $width = 'width:170px;';
+      }
 
       if ($current_context->isPrivateRoom() and (isset($c_use_new_private_room) and $c_use_new_private_room)){
          $html .= '<div class="right_box">'.LF;
-	     if($this->calendar_with_javascript()){
+         if($this->calendar_with_javascript()){
             $html .= '<div id="tabs_frame_right_box">'.LF;
             $html .= '<div id="tabs_right_box">'.LF;
             $html .= '<div id="tablist_right_box">'.LF;
@@ -421,9 +421,9 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                $html .= '</div>';
                $html .= '</div>';
                $html .= '</div>';
-	           $html .= '<div class="right_box_main" style="height: 180px; '.$width.'">'.LF;
+               $html .= '<div class="right_box_main" style="height: 180px; '.$width.'">'.LF;
                $html .= $this->_getAdditionalFormFieldsForPrivateRoomAsHTML().LF;
-#               $html .= '</div>';
+#              $html .= '</div>';
             }else{
                $new_parameter_array = $parameter_array;
                unset($new_parameter_array['show_selections']);
@@ -457,50 +457,50 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                $html .= '</div>';
                $html .= '</div>';
                $html .= '</div>';
-	           $html .= '<div class="right_box_main" style="height: 180px; '.$width.'">'.LF;
-	     	   $html .= $this->_getAdditionalCalendarAsHTML().LF;
-#               $html .= '</div>';
+               $html .= '<div class="right_box_main" style="height: 180px; '.$width.'">'.LF;
+               $html .= $this->_getAdditionalCalendarAsHTML().LF;
+#              $html .= '</div>';
             }
-	     }else{
+         }else{
             $html .= '<div class="right_box">'.LF;
             $html .= '<div class="right_box_title">'.LF;
             $html .= '</div>';
-	        $html .= '<div class="right_box_main" style="height: 170px; '.$width.'">'.LF;
+            $html .= '<div class="right_box_main" style="height: 170px; '.$width.'">'.LF;
             $html .= $this->_getAdditionalFormFieldsForPrivateRoomAsHTML().LF;
             $html .= '</div>';
             $html .= '</div>';
-	     }
+         }
          $html .= $this->_getTodosListAsHTML($this->_todo_list);
       }else{
          $html .= '<div class="right_box">'.LF;
          $html .= '<div class="right_box_title">'.LF;
-      	 $date = date("Y-m-d");
-	     $date_array = explode('-',$date);
-	     $month = mb_substr($this->_month,4,2);
-	     $first_char = mb_substr($month,0,1);
-	     if ($first_char == '0'){
-	        $month = mb_substr($month,1,2);
-	     }
-	     $month_array = array($this->_translator->getMessage('DATES_JANUARY_LONG'),
-	     $this->_translator->getMessage('DATES_FEBRUARY_LONG'),
-	     $this->_translator->getMessage('DATES_MARCH_LONG'),
-	     $this->_translator->getMessage('DATES_APRIL_LONG'),
-	     $this->_translator->getMessage('DATES_MAY_LONG'),
-	     $this->_translator->getMessage('DATES_JUNE_LONG'),
-	     $this->_translator->getMessage('DATES_JULY_LONG'),
-	     $this->_translator->getMessage('DATES_AUGUST_LONG'),
-	     $this->_translator->getMessage('DATES_SEPTEMBER_LONG'),
-	     $this->_translator->getMessage('DATES_OCTOBER_LONG'),
-	     $this->_translator->getMessage('DATES_NOVEMBER_LONG'),
-	     $this->_translator->getMessage('DATES_DECEMBER_LONG'));
-	     $tempMessage = $month_array[$month-1].' '.$this->_year;
-	     $html .= '<div style="white-space:nowrap;">'.$tempMessage.'</div>'.LF;
-	     $html .='</div>'.LF;
+         $date = date("Y-m-d");
+         $date_array = explode('-',$date);
+         $month = mb_substr($this->_month,4,2);
+         $first_char = mb_substr($month,0,1);
+         if ($first_char == '0'){
+            $month = mb_substr($month,1,2);
+         }
+         $month_array = array($this->_translator->getMessage('DATES_JANUARY_LONG'),
+         $this->_translator->getMessage('DATES_FEBRUARY_LONG'),
+         $this->_translator->getMessage('DATES_MARCH_LONG'),
+         $this->_translator->getMessage('DATES_APRIL_LONG'),
+         $this->_translator->getMessage('DATES_MAY_LONG'),
+         $this->_translator->getMessage('DATES_JUNE_LONG'),
+         $this->_translator->getMessage('DATES_JULY_LONG'),
+         $this->_translator->getMessage('DATES_AUGUST_LONG'),
+         $this->_translator->getMessage('DATES_SEPTEMBER_LONG'),
+         $this->_translator->getMessage('DATES_OCTOBER_LONG'),
+         $this->_translator->getMessage('DATES_NOVEMBER_LONG'),
+         $this->_translator->getMessage('DATES_DECEMBER_LONG'));
+         $tempMessage = $month_array[$month-1].' '.$this->_year;
+         $html .= '<div style="white-space:nowrap;">'.$tempMessage.'</div>'.LF;
+         $html .='</div>'.LF;
 
-	     $html .= '<div class="right_box_main" style="'.$width.'">'.LF;
-	     if($this->calendar_with_javascript()){
-	     	$html .= $this->_getAdditionalCalendarAsHTML().LF;
-	     }
+         $html .= '<div class="right_box_main" style="'.$width.'">'.LF;
+         if($this->calendar_with_javascript()){
+            $html .= $this->_getAdditionalCalendarAsHTML().LF;
+         }
          $html .= $this->_getAdditionalFormFieldsAsHTML().LF;
          $html .= '<div class="listinfoborder"></div>'.LF;
          $params = $this->_environment->getCurrentParameterArray();
@@ -519,21 +519,21 @@ class cs_date_calendar_index_view extends cs_room_index_view {
          $html .='</td>'.LF;
          $html .='</tr>'.LF;
          #$html .='<tr>'.LF;
-	     #$html .='<td colspan="2">'.LF;
-	     #$html .= '<select style="width: 10em; font-size:10pt;" name="presentation_mode" size="1" id="submit_form">'.LF;
-	     #$html .= '<option value="2"';
-	     #if ($this->_presentation_mode == '2'){
-	     #   $html .= ' selected="selected"';
-	     #}
-	     #$html .= '>'.$this->_translator->getMessage('DATE_MONTH_PRESENTATION').'</option>'.LF;
-	     #$html .= '      <option value="1"';
-	     #if ($this->_presentation_mode != '2'){
-	     #   $html .= ' selected="selected"';
-	     #}
-	     #$html .= '>'.$this->_translator->getMessage('DATE_WEEK_PRESENTATION').'</option>'.LF;
-	     #$html .= '   </select>'.LF;
-	     #$html .='</td>'.LF;
-	     #$html .='</tr>'.LF;
+         #$html .='<td colspan="2">'.LF;
+         #$html .= '<select style="width: 10em; font-size:10pt;" name="presentation_mode" size="1" id="submit_form">'.LF;
+         #$html .= '<option value="2"';
+         #if ($this->_presentation_mode == '2'){
+         #   $html .= ' selected="selected"';
+         #}
+         #$html .= '>'.$this->_translator->getMessage('DATE_MONTH_PRESENTATION').'</option>'.LF;
+         #$html .= '      <option value="1"';
+         #if ($this->_presentation_mode != '2'){
+         #   $html .= ' selected="selected"';
+         #}
+         #$html .= '>'.$this->_translator->getMessage('DATE_WEEK_PRESENTATION').'</option>'.LF;
+         #$html .= '   </select>'.LF;
+         #$html .='</td>'.LF;
+         #$html .='</tr>'.LF;
          $html .='</table>'.LF;
          $html .= '</div>'.LF;
          $html .= '</div>'.LF;
@@ -686,7 +686,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
             }
          }
          if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-         	$with_javascript = false;
+            $with_javascript = false;
          }
          if($with_javascript and $this->use_sunbird){
             $html .= $this->_getTableheadMonthAsHTMLWithJavascript();
@@ -702,7 +702,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
             }
          }
          if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-         	$with_javascript = false;
+            $with_javascript = false;
          }
          if($with_javascript and $this->use_sunbird){
             $html .= $this->_getTableheadAsHTMLWithJavascript();
@@ -721,7 +721,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
             }
          }
          if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-         	$with_javascript = false;
+            $with_javascript = false;
          }
          if($with_javascript and $this->use_sunbird){
             $html .= $this->_getMonthContentAsHTMLWithJavaScript();
@@ -739,7 +739,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
             }
          }
          if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-         	$with_javascript = false;
+            $with_javascript = false;
          }
          if($with_javascript and $this->use_sunbird){
             $html .= $this->_getWeekContentAsHTMLWithJavaScript();
@@ -1037,40 +1037,9 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $html .= '>'.$text.'</option>'.LF;
 
       $html .= '   </select>'.LF;
-      $html .='</div>';
+      $html .= '</div>';
 
-      if (!empty($this->_room_id_array)){
-         $selroom = $this->getSelectedRoom();
-         $item_manager = $this->_environment->getItemManager();
-
-         $html .= '<div class="infocolor" style="padding-bottom:5px;">'.$this->_translator->getMessage('PRIVATEROOM_CALENDAR_ROOM_STATUS').BRLF;
-         $html .= '   <select name="selroom" size="1" style="width:185px;" id="submit_form">'.LF;
-         $html .= '      <option value="2"';
-         if ( empty($selroom) || $selroom == 2 ) {
-            $html .= ' selected="selected"';
-         }
-         $html .= '>*'.$this->_translator->getMessage('COMMON_NO_SELECTION').'</option>'.LF;
-         foreach ($this->_room_id_array as $room_id){
-            $html .= '      <option value="'.$room_id.'"';
-            if ( empty($selroom) || $selroom == $room_id ) {
-               $html .= ' selected="selected"';
-            }
-/*
- * Performance-Problem: Eine DB-Abfrage für jeden Raum in der Liste. Das ist sehr ineffizient.
- * Räume können "Gruppenräume", "Projekträume", "persönliche Räume" oder "Gemeinschaftsräume" sein
- */
-            $item = $item_manager->getItem($room_id);
-            $type = $item->getItemType();
-            $manager = $this->_environment->getManager($type);
-            $item = $manager->getItem($room_id);
-            $html .= '>'.$item->getTitle().'</option>'.LF;
-/*
- * Ende Performance-Problem
- */
-         }
-         $html .= '   </select>'.LF;
-         $html .='</div>';
-      }
+      $html .= $this->_getRoomListAsHTML();
 
       $selstatus = $this->getSelectedStatus();
       $html .= '<div class="infocolor" style="padding-bottom:5px;">'.$this->_translator->getMessage('COMMON_DATE_STATUS').BRLF;
@@ -1149,6 +1118,87 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       return $html;
    }
 
+   private function _getRoomListAsHTML () {
+      $switch = 'new';
+      $html = '';
+      if ( $switch == 'old' ) {
+         $html .= $this->_getRoomListAllAsHTML();
+      } else {
+         $html .= $this->_getUserRoomListAsHTML();
+      }
+      return $html;
+   }
+
+   private function _getUserRoomListAsHTML () {
+      $html = '';
+      $params = array();
+      $params['environment'] = $this->_environment;
+      $misc_user_room_list = $this->_class_factory->getClass(MISC_USER_ROOMLIST,$params);
+      $select_add = 'name="selroom" size="1" style="width:185px;" id="submit_form"';
+      $select_room = $this->getSelectedRoom();
+
+      $add_option = '      <option value="2"';
+      if ( empty($select_room) || $select_room == 2 ) {
+         $add_option .= ' selected="selected"';
+      }
+      $add_option .= '>*'.$this->_translator->getMessage('COMMON_NO_SELECTION').'</option>'.LF;
+      $misc_user_room_list->addAdditionalOption($add_option);
+
+      $html_room_list = $misc_user_room_list->getCurrentUserRoomListAsSelectHTML($select_add,$select_room);
+      if ( !empty($html_room_list) ) {
+         $html .= '<div class="infocolor" style="padding-bottom:5px;">'.$this->_translator->getMessage('PRIVATEROOM_CALENDAR_ROOM_STATUS').BRLF;
+         $html .= $html_room_list;
+         $html .= '</div>'.LF;
+      }
+      unset($params);
+      return $html;
+   }
+
+   private function _getRoomListAllAsHTML () {
+      $html = '';
+      if (!empty($this->_room_id_array)){
+         $selroom = $this->getSelectedRoom();
+         $room_manager = $this->_environment->getRoomManager();
+         $room_manager->setAuthSourceLimit(NULL);
+         $room_manager->setIDArrayLimit($this->_room_id_array);
+         $room_manager->select();
+         $room_list = $room_manager->get();
+         if ( $room_list->isNotEmpty() ) {
+            $html .= '<div class="infocolor" style="padding-bottom:5px;">'.$this->_translator->getMessage('PRIVATEROOM_CALENDAR_ROOM_STATUS').BRLF;
+            $html .= '   <select name="selroom" size="1" style="width:185px;" id="submit_form">'.LF;
+            $html .= '      <option value="2"';
+            if ( empty($selroom) || $selroom == 2 ) {
+               $html .= ' selected="selected"';
+            }
+            $html .= '>*'.$this->_translator->getMessage('COMMON_NO_SELECTION').'</option>'.LF;
+
+            $current_user = $this->_environment->getCurrentUserItem();
+            $own_room_item = $current_user->getOwnRoom();
+            if ( isset($own_room_item) ) {
+               $html .= '      <option value="'.$own_room_item->getItemID().'"';
+               if ( $selroom == $own_room_item->getItemID() ) {
+                  $html .= ' selected="selected"';
+               }
+               $html .= '>'.encode(AS_HTML_SHORT,$own_room_item->getTitle()).'</option>'.LF;
+            }
+
+
+            $room_item = $room_list->getFirst();
+            while ( $room_item ) {
+               $html .= '      <option value="'.$room_item->getItemID().'"';
+               if ( $selroom == $room_item->getItemID() ) {
+                  $html .= ' selected="selected"';
+               }
+               $html .= '>'.encode(AS_HTML_SHORT,$room_item->getTitle()).'</option>'.LF;
+
+               $room_item = $room_list->getNext();
+            }
+            $html .= '   </select>'.LF;
+            $html .='</div>';
+         }
+      }
+      return $html;
+   }
 
    function _getTableheadAsHTML() {
       $params = $this->_getGetParamsAsArray();
@@ -1339,10 +1389,10 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $html .= '   <select name="week" size="1" style="width:10em;" id="submit_form">'.LF;
       // jQuery
       for ( $i = -4; $i <= 7; $i++ ) {
-      	 $day_temp = mb_substr($week,6,2);
-      	 $month_temp = mb_substr($week,4,2);
-      	 $year_temp = mb_substr($week,0,4);
-      	 $week_mktime = mktime (3,0,0,$month_temp,$day_temp,$year_temp);
+         $day_temp = mb_substr($week,6,2);
+         $month_temp = mb_substr($week,4,2);
+         $year_temp = mb_substr($week,0,4);
+         $week_mktime = mktime (3,0,0,$month_temp,$day_temp,$year_temp);
          $twkstart = $week_mktime + ( 3600 * 24 * 7 * $i );
          $twkend = $twkstart + ( 3600 * 24 * 6 );
          $startmonth = date("m", $twkstart);
@@ -1716,20 +1766,20 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $year = mb_substr($month,0,4);
       $month = mb_substr($month,4,2);
       if($month != 1 and $month != 12){
-      	$prev_month = $month-1;
-      	$next_month = $month+1;
-      	$prev_month_year = $year;
-      	$next_month_year = $year;
+         $prev_month = $month-1;
+         $next_month = $month+1;
+         $prev_month_year = $year;
+         $next_month_year = $year;
       } elseif ($month == 1){
-      	$prev_month = 12;
-      	$next_month = 2;
-      	$prev_month_year = $year-1;
-      	$next_month_year = $year;
+         $prev_month = 12;
+         $next_month = 2;
+         $prev_month_year = $year-1;
+         $next_month_year = $year;
       } elseif ($month == 12){
-      	$prev_month = 11;
-      	$next_month = 1;
-      	$prev_month_year = $year;
-      	$next_month_year = $year+1;
+         $prev_month = 11;
+         $next_month = 1;
+         $prev_month_year = $year;
+         $next_month_year = $year+1;
       }
 
       $params = $this->_environment->getCurrentParameterArray();
@@ -2028,15 +2078,15 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       }
       $link_color = '#000000';
       if ($item->getColor() != ''){
-      	if(($item->getColor() == '#3366FF')
-      	   or ($item->getColor() == '#6633FF')
-      	   or ($item->getColor() == '#CC33CC')
-      	   or ($item->getColor() == '#CC0000')
-      	   or ($item->getColor() == '#FF6600')
-      	   or ($item->getColor() == '#00CCCC')
-      	   or ($item->getColor() == '#999999')){
-      		$link_color = '#FFFFFF';
-      	}
+         if(($item->getColor() == '#3366FF')
+            or ($item->getColor() == '#6633FF')
+            or ($item->getColor() == '#CC33CC')
+            or ($item->getColor() == '#CC0000')
+            or ($item->getColor() == '#FF6600')
+            or ($item->getColor() == '#00CCCC')
+            or ($item->getColor() == '#999999')){
+            $link_color = '#FFFFFF';
+         }
       }
       if ( $item->issetPrivatDate() ){
            $title ='<i>'.$title.'</i>';
@@ -2481,7 +2531,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
 
    function _getMonthContentAsHTMLWithJavascript() {
       $current_time = localtime();
-	  $today = '';
+      $today = '';
 
       //Do some time calculations
       $month = mb_substr($this->_month,4,2);
@@ -2535,7 +2585,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $finish = false;
       $date_tooltip_array = array();
       while ($current_date) {
-      	$date_tooltip_array[$current_date->getItemID()] = $this->getTooltipDate($current_date);
+         $date_tooltip_array[$current_date->getItemID()] = $this->getTooltipDate($current_date);
          $start_date_month = '';
     $start_date_day = '';
     $start_date_year = '';
@@ -2778,7 +2828,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                //$params['month'] = $this->_month;
                $temp_month = $current_month[$i];
                if(mb_strlen($temp_month) == 1){
-               	$temp_month = '0'.$temp_month;
+                  $temp_month = '0'.$temp_month;
                }
                #$params['month'] = $current_year[$i].$current_month[$i].'01';
                $params['month'] = $current_year[$i].$temp_month.'01';
@@ -2805,14 +2855,14 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                $html .= 'background-color:#dfdfdf;';
             }
             if($index_day == 0){
-      	     $html .= 'clear:both;';
-   	      }
+               $html .= 'clear:both;';
+            }
             if($index_day == 6){
               $html .= 'border-right:1px solid black;';
             }
-      	   $html .= ' position:relative;">' . $format_array[$i]['day'] . '<div style="position: absolute; top:0px; left:0px; height:100%; width:100%;">' . $anAction_array[$i] . '</div></div>'.LF;
-      	   $i++;
-   	   }
+            $html .= ' position:relative;">' . $format_array[$i]['day'] . '<div style="position: absolute; top:0px; left:0px; height:100%; width:100%;">' . $anAction_array[$i] . '</div></div>'.LF;
+            $i++;
+         }
       }
       //Create the html part of the calendar
       //title row with weekdays
@@ -3620,11 +3670,11 @@ class cs_date_calendar_index_view extends cs_room_index_view {
          $day_entries = $day-1;
          $left_position = 0;
          if ( isset($display_date_array[$day_entries]) ){
-         	#$overlap_array = $this->overlap_display_date_array($display_date_array[$day_entries]);
-         	#pr($overlap_array);
-         	#$sort_array = array();
+            #$overlap_array = $this->overlap_display_date_array($display_date_array[$day_entries]);
+            #pr($overlap_array);
+            #$sort_array = array();
             foreach($display_date_array[$day_entries] as $date){
-            	$is_date_for_whole_day = false;
+               $is_date_for_whole_day = false;
                $start_hour = mb_substr($date->getStartingTime(),0,2);
                if(mb_substr($start_hour,0,1) == '0'){
                   $start_hour = mb_substr($start_hour,1,1);
@@ -3635,14 +3685,14 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                }
 
                if(($date->getStartingDay() != $date->getEndingDay()) and ($date->getEndingDay() != '')){
-               	if($date->getEndingTime() != ''){
+                  if($date->getEndingTime() != ''){
                      $end_hour = 23;
                      $end_minutes = 60;
-               	} else {
-               		$end_hour = 0;
+                  } else {
+                     $end_hour = 0;
                      $end_minutes = 0;
                      $is_date_for_whole_day = true;
-               	}
+                  }
                } else {
                   $end_hour = mb_substr($date->getEndingTime(),0,2);
                   $end_minutes = mb_substr($date->getEndingTime(),3,2);
@@ -3664,7 +3714,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                $end_quaters_addon = mb_substr(($end_quaters / 4),0,2);
 
                if($start_quaters == 0 and $end_quaters == 0){
-               	$is_date_for_whole_day = true;
+                  $is_date_for_whole_day = true;
                }
 
                $top = $start_quaters*10;
@@ -3686,17 +3736,17 @@ class cs_date_calendar_index_view extends cs_room_index_view {
 
                $overlap = 1;
                if(!$is_date_for_whole_day){
-	               $display_date = $date;
+                  $display_date = $date;
                   foreach($display_date_array[$day_entries] as $display_date_compare){
-                  	$compare_is_date_for_whole_day = false;
-                  	if(($display_date_compare->getStartingDay() != $display_date_compare->getEndingDay()) and ($display_date_compare->getEndingDay() != '')){
-                  		$compare_is_date_for_whole_day = true;
-                  	}
-                  	if(!$compare_is_date_for_whole_day and ($display_date->getItemID() != $display_date_compare->getItemID())){
-                  	   if($this->overlap($display_date, $display_date_compare)){
+                     $compare_is_date_for_whole_day = false;
+                     if(($display_date_compare->getStartingDay() != $display_date_compare->getEndingDay()) and ($display_date_compare->getEndingDay() != '')){
+                        $compare_is_date_for_whole_day = true;
+                     }
+                     if(!$compare_is_date_for_whole_day and ($display_date->getItemID() != $display_date_compare->getItemID())){
+                        if($this->overlap($display_date, $display_date_compare)){
                            $overlap++;
                         }
-                  	}
+                     }
                   }
                }
 
@@ -3922,46 +3972,46 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $sort_dates_array = array();
       $sort_dates_start_array = array();
       for ($i = 0; $i < 7; $i++) {
-      	$temp_sort_array = array();
-      	for ($j = 0; $j < $max_overlap_array[$i]; $j++) {
-      		$temp_part_array = array();
-      		for ($k = 0; $k < 96; $k++) {
-      			$temp_part_array[] = 0;
-      		}
-      		$temp_sort_array[] = $temp_part_array;
-      	}
-      	// Termine sortieren
-      	 $max_overlap_index = 0;
+         $temp_sort_array = array();
+         for ($j = 0; $j < $max_overlap_array[$i]; $j++) {
+            $temp_part_array = array();
+            for ($k = 0; $k < 96; $k++) {
+               $temp_part_array[] = 0;
+            }
+            $temp_sort_array[] = $temp_part_array;
+         }
+         // Termine sortieren
+         $max_overlap_index = 0;
          foreach($date_array_for_jQuery_php as $temp_date){
-         	$found_position = false;
+            $found_position = false;
             if($temp_date[0]-1 == $i){
                $start_quaters = $temp_date[2];
                $end_quaters = $temp_date[3];
                $date_set = false;
                for ($temp_part = 0; $temp_part < sizeof($temp_sort_array); $temp_part++) {
                #foreach($temp_sort_array as $temp_part_array){
-               	if(!$date_set){
-		               $slot_free = true;
-		               for ($time = $start_quaters; $time < $end_quaters; $time++) {
-		               	if($temp_sort_array[$temp_part][$time] != 0){
-		               	#if($temp_part_array[$time] != 0){
-		               		$slot_free = false;
-		               	}
-		               }
-		               if($slot_free){
-			               for ($time = $start_quaters; $time < $end_quaters; $time++) {
-			                  $temp_sort_array[$temp_part][$time] = 1;
-			                  if(!$found_position){
-			                  	$temp_date[] = sizeof($temp_sort_array);
-			                  	$temp_date[] = $temp_part;
-			                  	$temp_date[] = $time;
-			                  	$found_position = true;
-			                  }
-			                  $temp_part_array[$time] = 1;
-			               }
-			               $date_set = true;
-		               }
-               	}
+                  if(!$date_set){
+                     $slot_free = true;
+                     for ($time = $start_quaters; $time < $end_quaters; $time++) {
+                        if($temp_sort_array[$temp_part][$time] != 0){
+                        #if($temp_part_array[$time] != 0){
+                           $slot_free = false;
+                        }
+                     }
+                     if($slot_free){
+                        for ($time = $start_quaters; $time < $end_quaters; $time++) {
+                           $temp_sort_array[$temp_part][$time] = 1;
+                           if(!$found_position){
+                              $temp_date[] = sizeof($temp_sort_array);
+                              $temp_date[] = $temp_part;
+                              $temp_date[] = $time;
+                              $found_position = true;
+                           }
+                           $temp_part_array[$time] = 1;
+                        }
+                        $date_set = true;
+                     }
+                  }
                }
                $temp_date[] = $max_overlap_array_for_date[$max_overlap_index];
                $date_array_for_jQuery_php_with_position[] = $temp_date;
@@ -3981,35 +4031,35 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       #	}
       #}
       for ($index = 0; $index < count($date_array_for_jQuery_php_with_position); $index++) {
-      	$day_entries = $date_array_for_jQuery_php_with_position[$index][0];
-      	$link = $date_array_for_jQuery_php_with_position[$index][1];
-      	$link = str_replace("'", "\'", $link);
-      	$start_quaters = $date_array_for_jQuery_php_with_position[$index][2];
-      	$end_quaters = $date_array_for_jQuery_php_with_position[$index][3];
-      	$dates_on_day = $date_array_for_jQuery_php_with_position[$index][4];
-      	$color = $date_array_for_jQuery_php_with_position[$index][5];
-      	$color_border = $date_array_for_jQuery_php_with_position[$index][6];
-      	$href = $date_array_for_jQuery_php_with_position[$index][7];
-      	$date_index = $date_array_for_jQuery_php_with_position[$index][8];
-      	$is_date_for_whole_day = $date_array_for_jQuery_php_with_position[$index][9];
-      	if(isset($date_array_for_jQuery_php_with_position[$index][10])){
-      	   $max_overlap = $date_array_for_jQuery_php_with_position[$index][10];
-      	} else {
-      		$max_overlap = 0;
-      	}
-      	if(isset($date_array_for_jQuery_php_with_position[$index][11])){
-      	   $start_column = $date_array_for_jQuery_php_with_position[$index][11];
-      	} else {
+         $day_entries = $date_array_for_jQuery_php_with_position[$index][0];
+         $link = $date_array_for_jQuery_php_with_position[$index][1];
+         $link = str_replace("'", "\'", $link);
+         $start_quaters = $date_array_for_jQuery_php_with_position[$index][2];
+         $end_quaters = $date_array_for_jQuery_php_with_position[$index][3];
+         $dates_on_day = $date_array_for_jQuery_php_with_position[$index][4];
+         $color = $date_array_for_jQuery_php_with_position[$index][5];
+         $color_border = $date_array_for_jQuery_php_with_position[$index][6];
+         $href = $date_array_for_jQuery_php_with_position[$index][7];
+         $date_index = $date_array_for_jQuery_php_with_position[$index][8];
+         $is_date_for_whole_day = $date_array_for_jQuery_php_with_position[$index][9];
+         if(isset($date_array_for_jQuery_php_with_position[$index][10])){
+            $max_overlap = $date_array_for_jQuery_php_with_position[$index][10];
+         } else {
+            $max_overlap = 0;
+         }
+         if(isset($date_array_for_jQuery_php_with_position[$index][11])){
+            $start_column = $date_array_for_jQuery_php_with_position[$index][11];
+         } else {
             $start_column = 0;
          }
          if(isset($date_array_for_jQuery_php_with_position[$index][12])){
-      	   $start_quarter = $date_array_for_jQuery_php_with_position[$index][12];
-      	} else {
+            $start_quarter = $date_array_for_jQuery_php_with_position[$index][12];
+         } else {
             $start_quarter = 0;
          }
          if(isset($date_array_for_jQuery_php_with_position[$index][13])){
-      	   $max_overlap_for_date = $date_array_for_jQuery_php_with_position[$index][13];
-      	} else {
+            $max_overlap_for_date = $date_array_for_jQuery_php_with_position[$index][13];
+         } else {
             $max_overlap_for_date = 0;
          }
          $html .= 'new Array(' . $day_entries . ',\'' . $link . '\',' . $start_quaters . ',' . $end_quaters . ',' . $dates_on_day . ',\'' . $color . '\'' . ',\'' . $color_border . '\'' . ',\'' . $href . '\'' . ',\'' . $date_index . '\'' . ',\'' . $is_date_for_whole_day . '\'' . ',' . $max_overlap . '' . ',' . $start_column . '' . ',' . $start_quarter . '' . ',' . $max_overlap_for_date . ')'.LF;
@@ -4027,9 +4077,9 @@ class cs_date_calendar_index_view extends cs_room_index_view {
    }
 
    function getMktimeForDate($display_date){
-   	#pr($display_date->getTitle() . ' ' . $display_date->getItemID());
-   	$result = array();
-   	if($display_date->getStartingTime() != ''){
+      #pr($display_date->getTitle() . ' ' . $display_date->getItemID());
+      $result = array();
+      if($display_date->getStartingTime() != ''){
          $display_date_starttime_hours = mb_substr($display_date->getStartingTime(),0,2);
          $display_date_starttime_minutes = mb_substr($display_date->getStartingTime(),3,2);
          $display_date_starttime_seconds = mb_substr($display_date->getStartingTime(),6,2);
@@ -4067,74 +4117,74 @@ class cs_date_calendar_index_view extends cs_room_index_view {
    }
 
    function overlap_display_date_array($display_date_array){
-   	$return_array = array();
-   	$overlap_return_array = array();
-   	foreach($display_date_array as $display_date){
-   		$return_array[$display_date->getItemID()] = 0;
-   	}
-   	foreach($display_date_array as $display_date) {
-   	#for ($display_index = 0; $display_index < sizeof($display_date_array); $display_index++) {
-   		#$display_date = $display_date_array[$display_index];
-   		$overlap_array = array();
-   	   $date_is_date_for_whole_day = false;
+      $return_array = array();
+      $overlap_return_array = array();
+      foreach($display_date_array as $display_date){
+         $return_array[$display_date->getItemID()] = 0;
+      }
+      foreach($display_date_array as $display_date) {
+      #for ($display_index = 0; $display_index < sizeof($display_date_array); $display_index++) {
+         #$display_date = $display_date_array[$display_index];
+         $overlap_array = array();
+         $date_is_date_for_whole_day = false;
          if(($display_date->getStartingDay() != $display_date->getEndingDay()) and ($display_date->getEndingDay() != '')){
             $date_is_date_for_whole_day = true;
          }
          if(!$date_is_date_for_whole_day){
-	   		foreach($display_date_array as $compare_date){
-         	#for ($compare_index = $display_index; $compare_index < sizeof($display_date_array); $compare_index++) {
-         		#$compare_date = $display_date_array[$compare_index];
-	   		   if($display_date->getItemID() != $compare_date->getItemID()){
-	   		      $compare_date_is_date_for_whole_day = false;
-			         if(($compare_date->getStartingDay() != $compare_date->getEndingDay()) and ($compare_date->getEndingDay() != '')){
-			            $compare_date_is_date_for_whole_day = true;
-			         }
-	               if(!$compare_date_is_date_for_whole_day){
+            foreach($display_date_array as $compare_date){
+            #for ($compare_index = $display_index; $compare_index < sizeof($display_date_array); $compare_index++) {
+               #$compare_date = $display_date_array[$compare_index];
+               if($display_date->getItemID() != $compare_date->getItemID()){
+                  $compare_date_is_date_for_whole_day = false;
+                  if(($compare_date->getStartingDay() != $compare_date->getEndingDay()) and ($compare_date->getEndingDay() != '')){
+                     $compare_date_is_date_for_whole_day = true;
+                  }
+                  if(!$compare_date_is_date_for_whole_day){
                      if($display_date->getItemID() != $compare_date->getItemID()){
-                     	if($this->overlap($display_date, $compare_date)){
-                     		$overlap_array[] = $compare_date->getItemID();
-                     		#$return_array[] = array($display_date->getItemID(),$compare_date->getItemID());
-                     		#$return_array[$display_date->getItemID()] = $return_array[$display_date->getItemID()] + 1;
-                     		#$return_array[$compare_date->getItemID()] = $return_array[$compare_date->getItemID()] + 1;
-                     	}
+                        if($this->overlap($display_date, $compare_date)){
+                           $overlap_array[] = $compare_date->getItemID();
+                           #$return_array[] = array($display_date->getItemID(),$compare_date->getItemID());
+                           #$return_array[$display_date->getItemID()] = $return_array[$display_date->getItemID()] + 1;
+                           #$return_array[$compare_date->getItemID()] = $return_array[$compare_date->getItemID()] + 1;
+                        }
                      }
-	               }
-	   		   }
-	   		   $return_array[$display_date->getItemID()] = $overlap_array;
-	   		}
+                  }
+               }
+               $return_array[$display_date->getItemID()] = $overlap_array;
+            }
          }
-   	}
+      }
 
-   	$return_array_keys = array_keys($return_array);
-   	foreach($return_array_keys as $key){
-   		#pr($key);
-   		$array = $return_array[$key];
-   		$count = count($array);
-   		if($count > 1){
-   		   for ($compare_index = 0; $compare_index < sizeof($array) - 1; $compare_index++) {
-   		   	$compare_key = $array[$compare_index];
-   		   	for ($compare_with_index = $compare_index + 1; $compare_with_index < sizeof($array); $compare_with_index++) {
-   		   		$compare_with_key = $array[$compare_with_index];
-   		   		$compare_array = $return_array[$compare_key];
-   		   		if(!in_array($compare_with_key, $compare_array)){
-   		   			$count--;
-   		   		}
-   		   		#pr($compare_key . ' <-> ' . $compare_with_key);
-   		   	}
-   			}
-   		}
-   		#pr($count);
-   		$overlap_return_array[$key] = $count+1;
-   	}
-   	#pr($return_array);
-   	#return $return_array;
-   	return $overlap_return_array;
+      $return_array_keys = array_keys($return_array);
+      foreach($return_array_keys as $key){
+         #pr($key);
+         $array = $return_array[$key];
+         $count = count($array);
+         if($count > 1){
+            for ($compare_index = 0; $compare_index < sizeof($array) - 1; $compare_index++) {
+               $compare_key = $array[$compare_index];
+               for ($compare_with_index = $compare_index + 1; $compare_with_index < sizeof($array); $compare_with_index++) {
+                  $compare_with_key = $array[$compare_with_index];
+                  $compare_array = $return_array[$compare_key];
+                  if(!in_array($compare_with_key, $compare_array)){
+                     $count--;
+                  }
+                  #pr($compare_key . ' <-> ' . $compare_with_key);
+               }
+            }
+         }
+         #pr($count);
+         $overlap_return_array[$key] = $count+1;
+      }
+      #pr($return_array);
+      #return $return_array;
+      return $overlap_return_array;
    }
 
    function overlap($display_date, $compare_date){
-   	$result = false;
+      $result = false;
 
-   	$display_date_times = $this->getMktimeForDate($display_date);
+      $display_date_times = $this->getMktimeForDate($display_date);
       $display_date_starttime = $display_date_times['starttime'];
       $display_date_endtime = $display_date_times['endtime'];
 
@@ -4174,28 +4224,28 @@ class cs_date_calendar_index_view extends cs_room_index_view {
    }
 
    function _getSwitchIconBar(){
-   	  //$header = '<div style="float:left;padding-right:50px;"><h2 class="pagetitle"><img style="vertical-align: bottom;" src="images/commsyicons/32x32/date.png"/>' . $this->_translator->getMessage('DATES') . '</h2></div>';
+      //$header = '<div style="float:left;padding-right:50px;"><h2 class="pagetitle"><img style="vertical-align: bottom;" src="images/commsyicons/32x32/date.png"/>' . $this->_translator->getMessage('DATES') . '</h2></div>';
       $params = $this->_environment->getCurrentParameterArray();
       if(isset($params['presentation_mode'])){
          if($params['presentation_mode'] == 1){
-   	      $day = date('D');
-   	      if($day == 'Mon'){
-   	         $params['week'] = time();
-   	      } elseif ($day == 'Tue'){
-   	         $params['week'] = time() - (3600 * 24);
-   	      } elseif ($day == 'Wed'){
-   	         $params['week'] = time() - (3600 * 24 * 2);
-   	      } elseif ($day == 'Thu'){
-   	         $params['week'] = time() - (3600 * 24 * 3);
-   	      } elseif ($day == 'Fri'){
-   	         $params['week'] = time() - (3600 * 24 * 4);
-   	      } elseif ($day == 'Sat'){
-   	         $params['week'] = time() - (3600 * 24 * 5);
-   	      } elseif ($day == 'Sun'){
-   	         $params['week'] = time() - (3600 * 24 * 6);
-   	      }
+            $day = date('D');
+            if($day == 'Mon'){
+               $params['week'] = time();
+            } elseif ($day == 'Tue'){
+               $params['week'] = time() - (3600 * 24);
+            } elseif ($day == 'Wed'){
+               $params['week'] = time() - (3600 * 24 * 2);
+            } elseif ($day == 'Thu'){
+               $params['week'] = time() - (3600 * 24 * 3);
+            } elseif ($day == 'Fri'){
+               $params['week'] = time() - (3600 * 24 * 4);
+            } elseif ($day == 'Sat'){
+               $params['week'] = time() - (3600 * 24 * 5);
+            } elseif ($day == 'Sun'){
+               $params['week'] = time() - (3600 * 24 * 6);
+            }
          } elseif($params['presentation_mode'] == 2){
-         	$params['month'] = date("Ymd");
+            $params['month'] = date("Ymd");
          }
       }
       $today = ahref_curl($this->_environment->getCurrentContextID(),
@@ -4253,7 +4303,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
    }
 
    function getTooltipDate($date){
-   	$parse_time_start = convertTimeFromInput($date->getStartingTime());
+      $parse_time_start = convertTimeFromInput($date->getStartingTime());
       $conforms = $parse_time_start['conforms'];
       if ($conforms == TRUE) {
          $start_time_print = getTimeLanguage($parse_time_start['datetime']);
@@ -4367,8 +4417,8 @@ class cs_date_calendar_index_view extends cs_room_index_view {
    }
 
    function calendar_with_javascript(){
-   	$with_javascript = false;
-   	$session_item = $this->_environment->getSessionItem();
+      $with_javascript = false;
+      $session_item = $this->_environment->getSessionItem();
       if($session_item->issetValue('javascript')){
          if($session_item->getValue('javascript') == "1"){
             $with_javascript = true;
@@ -4381,26 +4431,26 @@ class cs_date_calendar_index_view extends cs_room_index_view {
    }
 
    function _getAdditionalCalendarAsHTML(){
-   	$params = array();
-   	$additional_calendar_href = curl($this->_environment->getCurrentContextID(),
+      $params = array();
+      $additional_calendar_href = curl($this->_environment->getCurrentContextID(),
                                        CS_DATE_TYPE,
                                        'index',
                                        $params);
       $additional_calendar_href = str_replace('&amp;', '&', $additional_calendar_href);
       $additional_calendar_href .= '&presentation_mode=' . $this->_presentation_mode;
       if($this->_presentation_mode == 1){
-      	$additional_calendar_href .= '&week=';
+         $additional_calendar_href .= '&week=';
       } elseif ($this->_presentation_mode == 2) {
-      	$additional_calendar_href .= '&month=';
+         $additional_calendar_href .= '&month=';
       }
-   	$html = '<div id="additional_calendar" class="additional_calendar" style="width:100%; margin:auto; padding:3px 0px 3px 0px;"></div>';
-   	$html .= '<script type="text/javascript">'.LF;
+      $html = '<div id="additional_calendar" class="additional_calendar" style="width:100%; margin:auto; padding:3px 0px 3px 0px;"></div>';
+      $html .= '<script type="text/javascript">'.LF;
       $html .= '<!--'.LF;
       $html .= 'var additional_calendar_href = "' . $additional_calendar_href . '"'.LF;
       $html .= 'var presentation_mode = "' . $this->_presentation_mode . '"'.LF;
       $html .= '-->'.LF;
       $html .= '</script>'.LF;
-   	return $html;
+      return $html;
    }
 }
 ?>

@@ -156,7 +156,7 @@ if ( $seldisplay_mode == 'calendar' or $seldisplay_mode == 'calendar_month') {
    if(isset($_GET['presentation_mode']) and !empty($_GET['presentation_mode'])){
       $presentation_mode = $_GET['presentation_mode'];
    }elseif($seldisplay_mode == 'calendar_month'){
-   	$presentation_mode = '2';
+      $presentation_mode = '2';
    }else{
       $presentation_mode = '1';
    }
@@ -597,8 +597,8 @@ if ( empty($only_show_array) ) {
    $color_array = $dates_manager->getColorArray();
    $current_context = $environment->getCurrentContextItem();
    if ($current_context->isPrivateRoom()){
-   	  $id_array = array();
-   	  $id_array[] = $environment->getCurrentContextID();
+      $id_array = array();
+      $id_array[] = $environment->getCurrentContextID();
       $dates_manager->setContextArrayLimit($id_array);
       $dates_manager->setDateModeLimit(2);
       $dates_manager->setYearLimit($year);
@@ -784,8 +784,8 @@ if ($current_context->isPrivateRoom()){
       }
    }
    if ($sel_room != "2"){
-   	  $room_id = array();
-   	  $room_id[] = $sel_room;
+      $room_id = array();
+      $room_id[] = $sel_room;
       $dates_manager->setContextArrayLimit($room_id);
    }else{
       $dates_manager->setContextArrayLimit($room_id_array);
@@ -842,14 +842,14 @@ if ( empty($only_show_array) ) {
       $dates_manager->setDateModeLimit($selstatus);
    }
    if ($sel_assignment != '2'){
-   	  $current_user = $environment->getCurrentUserItem();
-   	  $user_list = $current_user->getRelatedUserList();
-   	  $user_item = $user_list->getFirst();
-   	  $user_id_array = array();
-   	  while ($user_item){
-   	  	  $user_id_array[] = $user_item->getItemID();
-   	  	  $user_item = $user_list->getNext();
-   	  }
+      $current_user = $environment->getCurrentUserItem();
+      $user_list = $current_user->getRelatedUserList();
+      $user_item = $user_list->getFirst();
+      $user_id_array = array();
+      while ($user_item){
+         $user_id_array[] = $user_item->getItemID();
+         $user_item = $user_list->getNext();
+      }
       $dates_manager->setAssignmentLimit($user_id_array);
    }
 
