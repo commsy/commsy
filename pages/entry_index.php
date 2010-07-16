@@ -477,7 +477,7 @@ foreach ($rubric_array as $rubric) {
    if ( (!isset($c_plugin_array)
         or !in_array(strtolower($rubric),$c_plugin_array)
       )and $rubric != CS_ENTRY_TYPE) {
-
+      	
       $user_id_array = array();
       $user_id_array[]= $current_user->getItemID();
 
@@ -593,6 +593,15 @@ foreach ($rubric_array as $rubric) {
 }
 
 // ToDo: Nur Einträge in der Liste belassen, die auch angezeigt werden -> sonst gibt es leere Seiten über die geblättert wird!
+$sort_list = new cs_list();
+$sort_item = $new_entry_list->getFirst();
+while($sort_item){
+   if(in_array($sort_item->getItemType(), $rubric_array)){
+      $sort_list->add($sort_item);
+   }
+   $sort_item = $new_entry_list->getNext();
+}
+$new_entry_list = $sort_list;
 
 $browse_prev = true;
 $browse_next = true;
