@@ -1921,8 +1921,9 @@ class cs_environment {
       global $_SERVER;
 
       $browser = array ( //reversed array
-         "IPHONE",
-		 "OPERA",
+      //   "IPAD",
+		//	"IPHONE",
+		 	"OPERA",
          "MSIE",            // parent
          "NETSCAPE",
          "FIREFOX",
@@ -1947,16 +1948,17 @@ class cs_environment {
          }
       }
       // IPHONE Textarea without FCK-/ CK-Editor
-      if($this->_browser == 'IPHONE'){
-      	$currentContextItem = $this->getCurrentContextItem();
-      	if($currentContextItem->isPluginOn('ckeditor')){
-      		$currentContextItem->setPluginOff('ckeditor');
-      	}
-      	if($currentContextItem->withHtmlTextArea()){
-      		$currentContextItem->setHtmlTextAreaStatus(3);
-      	}
-      	unset($currentContextItem);
-      }
+//      if($this->_browser == 'IPHONE' OR $this->_browser == 'IPAD'){
+//      	$currentContextItem = $this->getCurrentContextItem();
+//      	if($currentContextItem->isPluginOn('ckeditor')){
+//      		$currentContextItem->setPluginOff('ckeditor');
+//      	}
+//      	if($currentContextItem->withHtmlTextArea()){
+//      		$currentContextItem->setHtmlTextAreaStatus(3);
+//      	}
+//      	unset($currentContextItem);
+//      }
+	$this->getCurrentOperatingSystem();
    }
 
    function getCurrentOperatingSystem () {
@@ -1989,6 +1991,30 @@ class cs_environment {
       }
       if ( $os == 'UNKNOWN' and (mb_strpos($HTTP_USER_AGENT, "Macintosh") || mb_strpos($HTTP_USER_AGENT, "Mac_PowerPC")) ) {
          $os = "Mac OS";
+      }
+      if ( $os == 'UNKNOWN' and (mb_strpos($HTTP_USER_AGENT, "iPhone") || mb_strpos($HTTP_USER_AGENT, "Mac_PowerPC")) ) {
+         $os = "iPhone";
+         // iPhone Textarea without FCK-/ CK-Editor
+         $currentContextItem = $this->getCurrentContextItem();
+      	if($currentContextItem->isPluginOn('ckeditor')){
+      		$currentContextItem->setPluginOff('ckeditor');
+      	}
+      	if($currentContextItem->withHtmlTextArea()){
+      		$currentContextItem->setHtmlTextAreaStatus(3);
+      	}
+      	unset($currentContextItem);
+      }
+      if ( $os == 'UNKNOWN' and (mb_strpos($HTTP_USER_AGENT, "iPad") || mb_strpos($HTTP_USER_AGENT, "Mac_PowerPC")) ) {
+         $os = "iPad";
+         // iPad Textarea without FCK-/ CK-Editor
+         $currentContextItem = $this->getCurrentContextItem();
+      	if($currentContextItem->isPluginOn('ckeditor')){
+      		$currentContextItem->setPluginOff('ckeditor');
+      	}
+      	if($currentContextItem->withHtmlTextArea()){
+      		$currentContextItem->setHtmlTextAreaStatus(3);
+      	}
+      	unset($currentContextItem);
       }
       return $os;
    }
