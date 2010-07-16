@@ -2523,7 +2523,8 @@ jQuery(document).ready(function() {
 					   url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct=privateroom_my_entries_configuration&output=json&do=save_config',
 					   data: json_data,
 					   success: function(msg){
-						window.location = 'commsy.php?cid='+window.ajax_cid+'&mod=entry&fct=index';
+					      //window.location = 'commsy.php?cid='+window.ajax_cid+'&mod=entry&fct=index';
+						  window.location = window.location.href; 
 					   }
 					});
 				});

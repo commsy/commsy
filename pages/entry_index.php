@@ -597,7 +597,6 @@ $sort_list = new cs_list();
 $sort_item = $new_entry_list->getFirst();
 while($sort_item){
    if(in_array($sort_item->getItemType(), $rubric_array)){
-   	pr($sort_item->getItemType());
       $sort_list->add($sort_item);
    }
    $sort_item = $new_entry_list->getNext();
