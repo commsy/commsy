@@ -41,11 +41,69 @@ class cs_entry_index_view extends cs_index_view {
    var $_sellist = '';
    var $_selbuzzword = '';
 
+   var $_dropdown_image_array = array();
+
+   var $_dropdown_message_array = array();
+
+   var $_dropdown_rubrics_new = array();
+   
    public function __construct ($params) {
       $this->cs_index_view($params);
       $this->setTitle($this->_translator->getMessage('COMMON_ENTRIES'));
       $this->setActionTitle($this->_translator->getMessage('COMMON_ENTRY'));
       $this->_colspan = '4';
+      
+      $this->_dropdown_image_array[CS_ANNOUNCEMENT_TYPE] = 'announcement';
+      $this->_dropdown_image_array[CS_DATE_TYPE] = 'date';
+      $this->_dropdown_image_array[CS_MATERIAL_TYPE] = 'material';
+      $this->_dropdown_image_array[CS_DISCUSSION_TYPE] = 'discussion';
+      $this->_dropdown_image_array[CS_GROUP_TYPE] = 'group';
+      $this->_dropdown_image_array[CS_TODO_TYPE] = 'todo';
+      $this->_dropdown_image_array[CS_TOPIC_TYPE] = 'topic';
+      $this->_dropdown_image_array[CS_INSTITUTION_TYPE] = 'institution';
+
+      $this->_dropdown_message_array[CS_ANNOUNCEMENT_TYPE] = 'DROPDOWN_NEW_ANNOUNCEMENT';
+      $this->_dropdown_message_array[CS_DATE_TYPE] = 'DROPDOWN_NEW_DATE';
+      $this->_dropdown_message_array[CS_MATERIAL_TYPE] = 'DROPDOWN_NEW_MATERIAL';
+      $this->_dropdown_message_array[CS_DISCUSSION_TYPE] = 'DROPDOWN_NEW_DISCUSSION';
+      $this->_dropdown_message_array[CS_GROUP_TYPE] = 'DROPDOWN_NEW_GROUP';
+      $this->_dropdown_message_array[CS_TODO_TYPE] = 'DROPDOWN_NEW_TODO';
+      $this->_dropdown_message_array[CS_TOPIC_TYPE] = 'DROPDOWN_NEW_TOPIC';
+      $this->_dropdown_message_array[CS_INSTITUTION_TYPE] = 'DROPDOWN_NEW_INSTITUTION';
+
+      $context_item = $this->_environment->getCurrentContextItem();
+      $home_conf = $context_item->getHomeConf();
+      $home_conf_array = explode(',',$home_conf);
+
+      if(isset($_GET['mod'])){
+         $dropdown_mod = $_GET['mod'];
+      } elseif(isset($_POST['mod'])){
+         $dropdown_mod = $_POST['mod'];
+      } else {
+         $dropdown_mod = '';
+      }
+
+      foreach($home_conf_array as $rubric){
+         $temp_rubric_array = explode('_',$rubric);
+         $temp_rubric = $temp_rubric_array[0];
+         if($temp_rubric == 'announcement'){ #and $dropdown_mod != 'announcement'){
+            $this->_dropdown_rubrics_new[] = CS_ANNOUNCEMENT_TYPE;
+         } elseif($temp_rubric == 'date'){ # and $dropdown_mod != 'date'){
+            $this->_dropdown_rubrics_new[] = CS_DATE_TYPE;
+         }  elseif($temp_rubric == 'material'){ # and $dropdown_mod != 'material'){
+            $this->_dropdown_rubrics_new[] = CS_MATERIAL_TYPE;
+         }  elseif($temp_rubric == 'discussion'){ # and $dropdown_mod != 'discussion'){
+            $this->_dropdown_rubrics_new[] = CS_DISCUSSION_TYPE;
+         }  elseif($temp_rubric == 'group'){ # and $dropdown_mod != 'group'){
+            $this->_dropdown_rubrics_new[] = CS_GROUP_TYPE;
+         }  elseif($temp_rubric == 'todo'){ # and $dropdown_mod != 'todo'){
+            $this->_dropdown_rubrics_new[] = CS_TODO_TYPE;
+         }  elseif($temp_rubric == 'topic'){ # and $dropdown_mod != 'topic'){
+            $this->_dropdown_rubrics_new[] = CS_TOPIC_TYPE;
+         }  elseif($temp_rubric == 'institution'){ # and $dropdown_mod != 'topic'){
+            $this->_dropdown_rubrics_new[] = CS_INSTITUTION_TYPE;
+         }
+      }
    }
 
    function setSelectedMyList($limit){
@@ -179,6 +237,9 @@ class cs_entry_index_view extends cs_index_view {
          $count = $mylist_item->getCountLinks();
          $html .= '<div '.$style.' style="display:block; margin:0px;'.$font_style.'" >'.LF;
          $html .= '<div style="float:right; padding-top:2px;">'.LF;
+         
+         $html .= '<a href="#"><img src="images/commsyicons/16x16/new_home.png" id="new_icon_'.$mylist_item->getItemID().'" style="vertical-align:top;" alt=""/></a>';
+         
          $image = '<img src="images/commsyicons/16x16/copy.png" style="vertical-align:top;" alt="'.$this->_translator->getMessage('ENTRY_COPY_MYLIST').'"/>'.LF;
          $params['copy_list'] = $mylist_item->getItemID();
          $html .= ahref_curl(  $this->_environment->getCurrentContextID(),
@@ -212,6 +273,7 @@ class cs_entry_index_view extends cs_index_view {
          $counter++;
          $mylist_item = 	$mylist_list->getNext();
       }
+      $html .= $this->_initDropDownMenuForList($mylist_list);
       $html .= '</div>'.LF;
 
 
@@ -1264,5 +1326,157 @@ class cs_entry_index_view extends cs_index_view {
       return $title;
    }
 
+   function _initDropDownMenuForList($list){
+   	$action_array = array();
+      $html = '';
+      $current_context = $this->_environment->getCurrentContextItem();
+      //$current_portal = $this->_environment->getCurrentPortalItem();
+
+      $html .= '<script type="text/javascript">'.LF;
+      $html .= '<!--'.LF;
+      $html .= 'var dropDownForLists = new Array(';
+      
+      $list_item = $list->getFirst();
+      $first_list = true;
+      while($list_item){
+      //if ( isset($c_use_linked_dropdown_rooms)
+      //     and (in_array($current_context->getItemID(), $c_use_linked_dropdown_rooms) or in_array($current_portal->getItemID(), $c_use_linked_dropdown_rooms))
+      //   ) {
+         //if ( $current_context->isOpen() ) {
+            $action_array = array();
+            $image_new  = '';
+            $href_new = '';
+            $params = array();
+            $params['iid'] = 'NEW';
+            if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+               $image_new = 'images/commsyicons_msie6/22x22/new.gif';
+            } else {
+               $image_new = 'images/commsyicons/22x22/new.png';
+            }
+            $href_new = curl($this->_environment->getCurrentContextID(),
+                             $this->_environment->getCurrentModule(),
+                             'edit',
+                             $params);
+            unset($params);
+
+            if(isset($_GET['mod'])){
+               $dropdown_mod = $_GET['mod'];
+            } elseif(isset($_POST['mod'])){
+               $dropdown_mod = $_POST['mod'];
+            } else {
+               $dropdown_mod = '';
+            }
+
+            if($dropdown_mod == 'announcement'){
+               $text_new = $this->_translator->getMessage('COMMON_ENTER_NEW_ANNOUNCEMENT');
+            } elseif($dropdown_mod == 'date'){
+               $text_new = $this->_translator->getMessage('COMMON_ENTER_NEW_DATE');
+            } elseif($dropdown_mod == 'material'){
+               $text_new = $this->_translator->getMessage('COMMON_ENTER_NEW_MATERIAL');
+            } elseif($dropdown_mod == 'discussion'){
+               $text_new = $this->_translator->getMessage('COMMON_ENTER_NEW_DISCUSSION');
+            } elseif($dropdown_mod == 'group'){
+               $text_new = $this->_translator->getMessage('COMMON_ENTER_NEW_GROUP');
+            } elseif($dropdown_mod == 'todo'){
+               $text_new = $this->_translator->getMessage('COMMON_ENTER_NEW_TODO');
+            } elseif($dropdown_mod == 'topic'){
+               $text_new = $this->_translator->getMessage('COMMON_ENTER_NEW_TOPIC');
+            } elseif($dropdown_mod == 'institution'){
+               $text_new = $this->_translator->getMessage('COMMON_ENTER_NEW_INSTITUTION');
+            }
+
+            if ( !empty($text_new)
+                 and !empty($image_new)
+                 and !empty($href_new)
+               ) {
+               $temp_array = array();
+               $temp_array['dropdown_image']  = "new_icon_".$list_item->getItemID();
+               $temp_array['text']  = $text_new;
+               $temp_array['image'] = $image_new;
+               $temp_array['href']  = $href_new;
+               $action_array[] = $temp_array;
+               unset($temp_array);
+            }
+         //}
+
+         unset($current_context);
+
+         #$temp_array = array();
+         #$temp_array['dropdown_image']  = "new_icon_".$list_item->getItemID();
+         #$temp_array['text']  = '';
+         #$temp_array['image'] = 'seperator';
+         #$temp_array['href']  = '';
+         #$action_array[] = $temp_array;
+
+         foreach($this->_dropdown_rubrics_new as $rubric){
+	         //if ( $current_context->isOpen()) {
+	            if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+	               $image_import = 'images/commsyicons_msie6/22x22/'.$this->_dropdown_image_array[$rubric].'.gif';
+	            } else {
+	               $image_import = 'images/commsyicons/22x22/'.$this->_dropdown_image_array[$rubric].'.png';
+	            }
+	            $params = array();
+	            $params['iid'] = 'NEW';
+	            //$params['linked_item'] = $this->_item->getItemID();
+	            $params['mylist_id'] = $list_item->getItemID();
+	            $href_import = curl($this->_environment->getCurrentContextID(),
+	                               $rubric,
+	                               'edit',
+	                               $params);
+	            $text_import = $this->_translator->getMessage($this->_dropdown_message_array[$rubric]);
+	            if ( !empty($text_import)
+	                 and !empty($image_import)
+	                 and !empty($href_import)
+	               ) {
+	               $temp_array = array();
+	               $temp_array['dropdown_image']  = "new_icon_".$list_item->getItemID();
+	               $temp_array['text']  = $text_import;
+	               $temp_array['image'] = $image_import;
+	               $temp_array['href']  = $href_import;
+	               $action_array[] = $temp_array;
+	               unset($temp_array);
+	            }
+	         //}
+	      }
+         
+         #$action_array = array_merge($action_array, $this->_getAdditionalDropDownEntries());
+
+         // init drop down menu
+         if ( !empty($action_array)
+              and count($action_array) > 1
+            ) {
+            #$html .= '<script type="text/javascript">'.LF;
+            #$html .= '<!--'.LF;
+            #$html .= 'var dropDownMenus = new Array(new Array("new_icon",new Array(';
+            //$html .= 'var dropDownForList_'.$list_item->getItemID().' = new Array(';
+            if ( $first_list ) {
+               $first_list = false;
+            } else {
+               $html .= ',';
+            }
+            $html .= 'new Array('.$list_item->getItemID().',';
+            $html .= 'new Array(';
+            $first = true;
+            foreach ($action_array as $action) {
+               if ( $first ) {
+                  $first = false;
+               } else {
+                  $html .= ',';
+               }
+               $html .= 'new Array("'.$action['dropdown_image'].'","'.$action['image'].'","'.$action['text'].'","'.$action['href'].'")';
+            }
+            $html .= ')';
+            $html .= ')';
+            #$html .= '-->'.LF;
+            #$html .= '</script>'.LF;
+         }
+         $list_item = $list->getNext();
+      }
+      $html .= ');'.LF;
+      $html .= '-->'.LF;
+      $html .= '</script>'.LF;
+      //}
+      return $html;
+   }
 }
 ?>

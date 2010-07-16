@@ -479,8 +479,14 @@ foreach ($rubric_array as $rubric) {
       )and $rubric != CS_ENTRY_TYPE) {
       	
       $user_id_array = array();
+      #$user_list = $current_user->getRelatedUserList();
+      #$temp_user_item = $user_list->getFirst();
+      #while($temp_user_item){
+      #	$user_id_array[] = $temp_user_item->getItemID();
+      #	$temp_user_item = $user_list->getNext();
+      #}
       $user_id_array[]= $current_user->getItemID();
-
+      
       $privatroom_id_array = array();
       $privatroom_id_array[]= $current_context->getItemID();
 
