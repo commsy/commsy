@@ -705,6 +705,17 @@ class cs_context_item extends cs_item {
       if ($this->_issetExtra('DATEPRESENTATIONSTATUS')) {
          $retour = $this->_getExtra('DATEPRESENTATIONSTATUS');
       }
+
+      // new private room
+      if ( $this->isPrivateRoom()
+           and $retour == 'normal'
+         ) {
+         $new_private_room = $this->_environment->getConfiguration('c_use_new_private_room');
+         if ( isset($new_private_room) and $new_private_room ) {
+            $retour = 'calendar_month';
+         }
+      }
+
       return $retour;
    }
 

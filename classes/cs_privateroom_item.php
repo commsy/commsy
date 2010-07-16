@@ -43,22 +43,32 @@ class cs_privateroom_item extends cs_room_item {
    function cs_privateroom_item ($environment) {
       $this->cs_context_item($environment);
       $this->_type = CS_PRIVATEROOM_TYPE;
+
+      // new private room
+      $new_private_room = $this->_environment->getConfiguration('c_use_new_private_room');
+      if ( !isset($new_private_room) ) {
+         $new_private_room = false;
+      }
+
       $this->_default_rubrics_array[0] = CS_MYROOM_TYPE;
-      $this->_default_rubrics_array[1] = CS_MATERIAL_TYPE;
-      $this->_default_rubrics_array[2] = CS_DATE_TYPE;
-      $this->_default_rubrics_array[3] = CS_TOPIC_TYPE;
-      $this->_default_rubrics_array[4] = CS_USER_TYPE;
-      $this->_default_rubrics_array[5] = CS_DISCUSSION_TYPE;
-      $this->_default_rubrics_array[6] = CS_TODO_TYPE;
       $this->_default_home_conf_array[CS_MYROOM_TYPE] = 'tiny';
-      $this->_default_home_conf_array[CS_MATERIAL_TYPE] = 'tiny';
+      if (!$new_private_room) {
+         $this->_default_rubrics_array[1] = CS_MATERIAL_TYPE;
+         $this->_default_home_conf_array[CS_MATERIAL_TYPE] = 'tiny';
+      }
+      $this->_default_rubrics_array[2] = CS_DATE_TYPE;
       $this->_default_home_conf_array[CS_DATE_TYPE] = 'tiny';
-      $this->_default_home_conf_array[CS_TOPIC_TYPE] = 'tiny';
-      $this->_default_home_conf_array[CS_USER_TYPE] = 'tiny';
-      $this->_default_home_conf_array[CS_DISCUSSION_TYPE] = 'none';
-      $this->_default_home_conf_array[CS_TODO_TYPE] = 'none';
-      global $c_use_new_private_room;
-      if ($c_use_new_private_room){
+      if (!$new_private_room) {
+         $this->_default_rubrics_array[3] = CS_TOPIC_TYPE;
+         $this->_default_rubrics_array[4] = CS_USER_TYPE;
+         $this->_default_rubrics_array[5] = CS_DISCUSSION_TYPE;
+         $this->_default_rubrics_array[6] = CS_TODO_TYPE;
+         $this->_default_home_conf_array[CS_TOPIC_TYPE] = 'tiny';
+         $this->_default_home_conf_array[CS_USER_TYPE] = 'tiny';
+         $this->_default_home_conf_array[CS_DISCUSSION_TYPE] = 'none';
+         $this->_default_home_conf_array[CS_TODO_TYPE] = 'none';
+      }
+      if ($new_private_room) {
          $this->_default_rubrics_array[7] = CS_ENTRY_TYPE;
          $this->_default_home_conf_array[CS_ENTRY_TYPE] = 'tiny';
       }
@@ -90,12 +100,22 @@ class cs_privateroom_item extends cs_room_item {
    }
 
    function getHomeConf () {
+      $new_private_room = $this->_environment->getConfiguration('c_use_new_private_room');
       $this->_addPluginInRubricArray();
       $rubrics = parent::getHomeConf();
       $retour = array();
       foreach (explode(',',$rubrics) as $rubric){
          if (!mb_stristr($rubric,CS_USER_TYPE) ) {
-            $retour[] = $rubric;
+            if ( !isset($new_private_room)
+                 or !$new_private_room
+                 or ( $new_private_room
+                      and !mb_stristr($rubric,CS_MATERIAL_TYPE)
+                      and !mb_stristr($rubric,CS_TOPIC_TYPE)
+                      and !mb_stristr($rubric,CS_TODO_TYPE)
+                    )
+               ) {
+               $retour[] = $rubric;
+            }
          }
       }
       $retour = implode(',',$retour);
@@ -1362,7 +1382,7 @@ class cs_privateroom_item extends cs_room_item {
       return $retour;
    }
 
-   
+
    function setPortletShowNewItemBox () {
       $this->_addExtra('PORTLET_SHOW_NEW_ITEM','1');
    }
@@ -1379,8 +1399,8 @@ class cs_privateroom_item extends cs_room_item {
       }
       return $retour;
    }
-   
-   
+
+
    function setHomeConfig ($column_array) {
       $this->_addExtra('HOME_CONFIG',$column_array);
    }
@@ -1392,7 +1412,7 @@ class cs_privateroom_item extends cs_room_item {
       }
       return $retour;
    }
-   
+
    function setMyroomConfig ($column_array) {
       $this->_addExtra('MYROOM_CONFIG',$column_array);
    }
@@ -1404,88 +1424,88 @@ class cs_privateroom_item extends cs_room_item {
       }
       return $retour;
    }
-   
+
    function updateHomeConfiguration($column_array){
-   	$portlet_array = array();
-   	foreach($column_array as $column){
-   		foreach($column as $column_entry){
-   			if(($column_entry != 'null') && ($column_entry != 'empty')){
-   				$portlet_array[] = $column_entry;
-   			}
-   		}
-   	}
-   	if(in_array('cs_privateroom_home_buzzword_view', $portlet_array)){
-   		$this->setPortletShowBuzzwordBox();
-   	} else {
-   		$this->unsetPortletShowBuzzwordBox();
-   	}
-   	
+      $portlet_array = array();
+      foreach($column_array as $column){
+         foreach($column as $column_entry){
+            if(($column_entry != 'null') && ($column_entry != 'empty')){
+               $portlet_array[] = $column_entry;
+            }
+         }
+      }
+      if(in_array('cs_privateroom_home_buzzword_view', $portlet_array)){
+         $this->setPortletShowBuzzwordBox();
+      } else {
+         $this->unsetPortletShowBuzzwordBox();
+      }
+
       if(in_array('cs_privateroom_home_configuration_view', $portlet_array)){
          $this->setPortletShowConfigurationBox();
       } else {
          $this->unsetPortletShowConfigurationBox();
       }
-      
+
       if(in_array('cs_privateroom_home_clock_view', $portlet_array)){
          $this->setPortletShowClockBox();
       } else {
          $this->unsetPortletShowClockBox();
       }
-      
+
       if(in_array('cs_privateroom_home_rss_ticker_view', $portlet_array)){
          $this->setPortletShowRSS();
       } else {
          $this->unsetPortletShowRSS();
       }
-      
+
       if(in_array('cs_privateroom_home_dokuverser_view', $portlet_array)){
          $this->setPortletShowDokuverserBox();
       } else {
          $this->unsetPortletShowDokuverserBox();
       }
-      
+
       if(in_array('cs_privateroom_home_twitter_view', $portlet_array)){
          $this->setPortletShowTwitter();
       } else {
          $this->unsetPortletShowTwitter();
       }
-      
+
       if(in_array('cs_privateroom_home_youtube_view', $portlet_array)){
          $this->setPortletShowYouTube();
       } else {
          $this->unsetPortletShowYouTube();
       }
-      
+
       if(in_array('cs_privateroom_home_flickr_view', $portlet_array)){
          $this->setPortletShowFlickr();
       } else {
          $this->unsetPortletShowFlickr();
       }
-      
+
       if(in_array('cs_privateroom_home_room_view', $portlet_array)){
          $this->setPortletShowActiveRoomList();
       } else {
          $this->unsetPortletShowActiveRoomList();
       }
-      
+
       if(in_array('cs_privateroom_home_new_entries_view', $portlet_array)){
          $this->setPortletShowNewEntryList();
       } else {
          $this->unsetPortletShowNewEntryList();
       }
-      
+
       if(in_array('cs_privateroom_home_weather_view', $portlet_array)){
          $this->setPortletShowWeatherBox();
       } else {
          $this->unsetPortletShowWeatherBox();
       }
-      
+
       if(in_array('cs_privateroom_home_search_view', $portlet_array)){
          $this->setPortletShowSearchBox();
       } else {
          $this->unsetPortletShowSearchBox();
       }
-      
+
       if(in_array('cs_privateroom_home_new_item_view', $portlet_array)){
          $this->setPortletShowNewItemBox();
       } else {
@@ -1493,7 +1513,7 @@ class cs_privateroom_item extends cs_room_item {
       }
 
    }
-   
+
    function setMyroomDisplayConfig ($myroom_array) {
       $this->_addExtra('MYROOM_DISPLAY_CONFIG',$myroom_array);
    }
@@ -1505,7 +1525,7 @@ class cs_privateroom_item extends cs_room_item {
       }
       return $retour;
    }
-   
+
    function setMyEntriesDisplayConfig ($my_entries_array) {
       $this->_addExtra('MY_ENTRIES_DISPLAY_CONFIG',$my_entries_array);
    }
@@ -1517,7 +1537,7 @@ class cs_privateroom_item extends cs_room_item {
       }
       return $retour;
    }
-   
+
    /* END OF PORTLET FUNCTIONS
     * *****************
     */

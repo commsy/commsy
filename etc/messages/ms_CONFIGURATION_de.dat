@@ -110,6 +110,7 @@ einbarungen";
 $message["CONFIGURATION_DATES"]["de"] = "Voreinstellung";
 $message["CONFIGURATION_DATES_CHANGE"]["de"] = "Termindarstellung";
 $message["CONFIGURATION_DATES_DESC"]["de"] = "Wählen Sie zwischen der Listendarstellung (Option 1), dem Terminkalender in der Wochenansicht (Option 2) oder dem Terminkalender in der Monatsansicht (Option 3) als voreingestellte Darstellung der Termine in diesem Raum.";
+$message["CONFIGURATION_DATES_DESC2"]["de"] = "Wählen Sie beim Terminkalender zwischen der Wochenansicht (Option 1) oder der Monatsansicht (Option 2) als voreingestellte Darstellung.";
 $message["CONFIGURATION_DATES_DESC_0"]["de"] = "als Liste";
 $message["CONFIGURATION_DATES_DESC_1"]["de"] = "als Kalender";
 $message["CONFIGURATION_DATES_PRESENTATION_CALENDAR"]["de"] = "Monatsansicht";

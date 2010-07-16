@@ -82,18 +82,33 @@ class cs_configuration_rubric_extras_form extends cs_rubric_form {
      $current_context = $this->_environment->getCurrentContextItem();
 
      if ( $current_context->withRubric(CS_DATE_TYPE) ) {
+        // new private room -> no date list view
+        $show_list_option = true;
+        if ( $this->_environment->inPrivateRoom() ) {
+           $new_private_room = $this->_environment->getConfiguration('c_use_new_private_room');
+           if ( isset($new_private_room) and $new_private_room ) {
+              $show_list_option = false;
+           }
+        }
+
         // Terminoptionen
         $radio_values = array();
         $desc = $this->_translator->getMessage('CONFIGURATION_DATES_DESC');
-        $radio_values[0]['text'] = '<div style="height:62px; width:150px; border:1px solid black; display:inline-block; background-image:url(images/dates_presentation_normal_150.gif); text-align:center; padding-top:30px;">'.$this->_translator->getMessage('CONFIGURATION_DATES_PRESENTATION_NORMAL').'</div>';
-        $radio_values[0]['value'] = 'normal';
+        if ( $show_list_option ) {
+           $radio_values[0]['text'] = '<div style="height:62px; width:150px; border:1px solid black; display:inline-block; background-image:url(images/dates_presentation_normal_150.gif); text-align:center; padding-top:30px;">'.$this->_translator->getMessage('CONFIGURATION_DATES_PRESENTATION_NORMAL').'</div>';
+           $radio_values[0]['value'] = 'normal';
+        }
         $radio_values[1]['text'] = '<div style="height:62px; width:150px; border:1px solid black; display:inline-block; background-image:url(images/dates_presentation_calendar_week_150.gif); text-align:center; padding-top:30px;">'.$this->_translator->getMessage('CONFIGURATION_DATES_PRESENTATION_CALENDAR_WEEK').'</div>';
         $radio_values[1]['value'] = 'calendar';
         $radio_values[2]['text'] = '<div style="height:62px; width:150px; border:1px solid black; display:inline-block; background-image:url(images/dates_presentation_calendar_month_150.gif); text-align:center; padding-top:30px;">'.$this->_translator->getMessage('CONFIGURATION_DATES_PRESENTATION_CALENDAR').'</div>';
         $radio_values[2]['value'] = 'calendar_month';
         $this->_form->addRadioGroup('dates_status',$this->_translator->getMessage('DATES_INDEX'),$desc,$radio_values,'',true,true,'','',false,' style="vertical-align:top;"');
         $this->_form->combine();
-        $this->_form->addExplanation('dates',$this->_translator->getMessage('CONFIGURATION_DATES_DESC'));
+        if ( $show_list_option ) {
+           $this->_form->addExplanation('dates',$this->_translator->getMessage('CONFIGURATION_DATES_DESC'));
+        } else {
+           $this->_form->addExplanation('dates',$this->_translator->getMessage('CONFIGURATION_DATES_DESC2'));
+        }
         $output = true;
      }
 

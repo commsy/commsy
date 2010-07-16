@@ -56,6 +56,14 @@ class cs_configuration_rubric_options_form extends cs_rubric_form {
     * this methods creates the form with the form definitions
     */
    function _createForm () {
+     $new_private_room = false;
+     if ( $this->_environment->inPrivateRoom() ) {
+        $new_private_room = $this->_environment->getConfiguration('c_use_new_private_room');
+        if ( !isset($new_private_room) ) {
+           $new_private_room = false;
+        }
+     }
+
      $view_mod_array = array();
      $view_mod_array[0]['text'] = $this->_translator->getMessage('RUBRIC_CONFIG_SHORT');
      $view_mod_array[0]['value'] = 'short';
@@ -140,7 +148,11 @@ class cs_configuration_rubric_options_form extends cs_rubric_form {
                  $select_array[$i]['text'] = $this->_translator->getMessage('ANNOUNCEMENT_INDEX');
                  break;
               case 'DATE':
-                 $select_array[$i]['text'] = $this->_translator->getMessage('DATE_INDEX');
+                 if ( $new_private_room ) {
+                    $select_array[$i]['text'] = $this->_translator->getMessage('MYCALENDAR_INDEX');
+                 } else {
+                    $select_array[$i]['text'] = $this->_translator->getMessage('DATE_INDEX');
+                 }
                  break;
               case 'DISCUSSION':
                  $select_array[$i]['text'] = $this->_translator->getMessage('DISCUSSION_INDEX');

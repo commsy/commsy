@@ -114,7 +114,6 @@ if ($command != 'error') {
 
             // Terminoptionen
             if ( isset($_POST['dates_status']) ) {
-
                $context_item->setDatesPresentationStatus($_POST['dates_status']);
             }
 
