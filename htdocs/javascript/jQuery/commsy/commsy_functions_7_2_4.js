@@ -1499,7 +1499,7 @@ function delete_overlay(element, html_element, click_extra_action) {
     	        	    			
     	        	    			// Look for '#' in button-name
     	        	    			var rSplit = html_element.name.split('#');
-    	        	    			if(rSplit.length > 0) {
+    	        	    			if(rSplit.length > 1) {
     	        	    				name += '#' + rSplit[1];
     	        	    			}
     	        	    			
