@@ -161,7 +161,8 @@ class cs_discarticle_form extends cs_rubric_form {
       $this->_form->addHidden('MAX_FILE_SIZE', $val);
       $this->_form->addFilefield('upload', $this->_translator->getMessage('MATERIAL_FILES'), '', 12, false, $this->_translator->getMessage('MATERIAL_UPLOADFILE_BUTTON'),'option',$this->_with_multi_upload);
       $this->_form->combine('vertical');
-      if ($this->_with_multi_upload) {
+      global $c_new_upload;
+      if ($this->_with_multi_upload or $c_new_upload) {
          // do nothing
       } else {
          #$px = '245';
