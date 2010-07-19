@@ -207,8 +207,6 @@ if ($type != CS_DATE_TYPE) {
       $rubric_connections[] = CS_MATERIAL_TYPE;
       $detail_view->setRubricConnections($dates_item);
 
-
-
       // add annotations to detail view
       $annotations = $dates_item->getAnnotationList();
       $reader_manager = $environment->getReaderManager();

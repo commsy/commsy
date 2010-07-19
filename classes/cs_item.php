@@ -1427,11 +1427,44 @@ class cs_item {
 
       $context_item = $this->_environment->getCurrentContextItem();
       $conf = $context_item->getHomeConf();
+
+      // translation of entry to rubrics for new private room
+      if ( $this->_environment->inPrivateRoom()
+           and mb_stristr($conf,CS_ENTRY_TYPE)
+         ) {
+         $temp_array = array();
+         $temp_array2 = array();
+         $temp_array3 = array();
+         $rubric_array2 = array();
+         $temp_array[] = CS_ANNOUNCEMENT_TYPE;
+         $temp_array[] = CS_TODO_TYPE;
+         $temp_array[] = CS_DISCUSSION_TYPE;
+         $temp_array[] = CS_MATERIAL_TYPE;
+         $temp_array[] = CS_DATE_TYPE;
+         foreach ( $temp_array as $temp_rubric ) {
+            if ( !mb_stristr($conf,$temp_rubric) ) {
+               $temp_array2[] = $temp_rubric;
+               $temp_array3[] = $temp_rubric.'_nodisplay';
+            }
+         }
+         $rubric_array = explode(',',$conf);
+         foreach ( $rubric_array as $temp_rubric ) {
+            if ( !mb_stristr($temp_rubric,CS_ENTRY_TYPE) ) {
+               $rubric_array2[] = $temp_rubric;
+            } else {
+               $rubric_array2 = array_merge($rubric_array2,$temp_array3);
+            }
+         }
+         $conf = implode(',',$rubric_array2);
+         unset($rubric_array2);
+      }
+
       if ( !empty($conf) ) {
          $rubrics = explode(',', $conf);
       } else {
          $rubrics = array();
       }
+
       $type_array = array();
       foreach ( $rubrics as $rubric ) {
          $rubric_array = explode('_', $rubric);
@@ -1606,6 +1639,34 @@ class cs_item {
          unset($rubric_sorted_array[CS_USER_TYPE]);
       }
       */
+
+      // translation of entry to rubrics for new private room
+      if ( $this->_environment->inPrivateRoom()
+           and in_array(CS_ENTRY_TYPE,$rubric_array)
+         ) {
+         $temp_array = array();
+         $temp_array2 = array();
+         $rubric_array2 = array();
+         $temp_array[] = CS_ANNOUNCEMENT_TYPE;
+         $temp_array[] = CS_TODO_TYPE;
+         $temp_array[] = CS_DISCUSSION_TYPE;
+         $temp_array[] = CS_MATERIAL_TYPE;
+         $temp_array[] = CS_DATE_TYPE;
+         foreach ( $temp_array as $temp_rubric ) {
+            if ( !in_array($temp_rubric,$rubric_array) ) {
+               $temp_array2[] = $temp_rubric;
+            }
+         }
+         foreach ( $rubric_array as $temp_rubric ) {
+            if ( $temp_rubric != CS_ENTRY_TYPE ) {
+               $rubric_array2[] = $temp_rubric;
+            } else {
+               $rubric_array2 = array_merge($rubric_array2,$temp_array2);
+            }
+         }
+         $rubric_array = $rubric_array2;
+         unset($rubric_array2);
+      }
 
       foreach($rubric_array as $rubric){
          if ($rubric !=CS_USER_TYPE  or

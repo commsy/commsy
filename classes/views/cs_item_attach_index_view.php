@@ -638,11 +638,44 @@ class cs_item_attach_index_view extends cs_item_index_view {
       $context_item = $this->_environment->getCurrentContextItem();
       $current_room_modules = $context_item->getHomeConf();
       if ( !empty($current_room_modules) ){
+
+         // translation of entry to rubrics for new private room
+         if ( $this->_environment->inPrivateRoom()
+              and mb_stristr($current_room_modules,CS_ENTRY_TYPE)
+            ) {
+            $temp_array = array();
+            $temp_array2 = array();
+            $temp_array3 = array();
+            $rubric_array2 = array();
+            $temp_array[] = CS_ANNOUNCEMENT_TYPE;
+            $temp_array[] = CS_TODO_TYPE;
+            $temp_array[] = CS_DISCUSSION_TYPE;
+            $temp_array[] = CS_MATERIAL_TYPE;
+            $temp_array[] = CS_DATE_TYPE;
+            foreach ( $temp_array as $temp_rubric ) {
+               if ( !mb_stristr($current_room_modules,$temp_rubric) ) {
+                  $temp_array2[] = $temp_rubric;
+                  $temp_array3[] = $temp_rubric.'_nodisplay';
+               }
+            }
+            $rubric_array = explode(',',$current_room_modules);
+            foreach ( $rubric_array as $temp_rubric ) {
+               if ( !mb_stristr($temp_rubric,CS_ENTRY_TYPE) ) {
+                  $rubric_array2[] = $temp_rubric;
+               } else {
+                  $rubric_array2 = array_merge($rubric_array2,$temp_array3);
+               }
+            }
+            $current_room_modules = implode(',',$rubric_array2);
+            unset($rubric_array2);
+         }
+
          $room_modules = explode(',',$current_room_modules);
       } else {
          $room_modules =  array();
       }
       $first = '';
+
       foreach ( $room_modules as $module ) {
          $link_name = explode('_', $module);
          if ( $link_name[1] != 'none'
@@ -696,7 +729,7 @@ class cs_item_attach_index_view extends cs_item_index_view {
                   $text = $this->_translator->getMessage('USER_INDEX');
                   break;
                default:
-                  $text = $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR'.' '.__FILE__.'('.__LINE__.') ' );
+                  $text = $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR'.' ('.$link_name[0].') '.__FILE__.'('.__LINE__.') ' );
                   break;
             }
             $html .= '>'.$this->_text_as_form($text).'</option>'.LF;

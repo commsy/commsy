@@ -224,6 +224,35 @@ class cs_detail_view extends cs_view {
             $rubric_connections[] = $link_name[0];
          }
       }
+      /*
+      // translation of entry to rubrics for new private room
+      if ( $this->_environment->inPrivateRoom()
+           and in_array(CS_ENTRY_TYPE,$rubric_connections)
+         ) {
+         $temp_array = array();
+         $temp_array2 = array();
+         $rubric_array2 = array();
+         $temp_array[] = CS_ANNOUNCEMENT_TYPE;
+         $temp_array[] = CS_TODO_TYPE;
+         $temp_array[] = CS_DISCUSSION_TYPE;
+         $temp_array[] = CS_MATERIAL_TYPE;
+         $temp_array[] = CS_DATE_TYPE;
+         foreach ( $temp_array as $temp_rubric ) {
+            if ( !in_array($temp_rubric,$rubric_connections) ) {
+               $temp_array2[] = $temp_rubric;
+            }
+         }
+         foreach ( $rubric_connections as $temp_rubric ) {
+            if ( $temp_rubric != CS_ENTRY_TYPE ) {
+               $rubric_array2[] = $temp_rubric;
+            } else {
+               $rubric_array2 = array_merge($rubric_array2,$temp_array2);
+            }
+         }
+         $rubric_connections = $rubric_array2;
+         unset($rubric_array2);
+      }
+      */
       $this->_rubric_connections = $rubric_connections;
    }
 
@@ -1113,7 +1142,7 @@ class cs_detail_view extends cs_view {
       if ( isset($item) ) {
          $list = $item->getChildrenList();
          if ( isset($list) and !$list->isEmpty() ) {
-         	$this->_tagBoxInitialized = true;
+            $this->_tagBoxInitialized = true;
             $tag_list = $tagged_item->getTagList();
             if($with_div){
                $current_user = $this->_environment->getCurrentUserItem();
@@ -1546,7 +1575,7 @@ class cs_detail_view extends cs_view {
                   $with_javascript = false;
                }
             } else {
-            	$with_javascript = true;
+               $with_javascript = true;
             }
             if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
               $with_javascript = false;
@@ -2117,20 +2146,20 @@ class cs_detail_view extends cs_view {
       $item = $this->getItem();
       $link_items = $item->getAllLinkItemList();
       // Löschen der gesperrten Kennungen für die RightBox
-     $countItem = $link_items->getFirst();
-     while($countItem) {
-        $linked_item = $countItem->getLinkedItem($item);
-        if ( isset($linked_item) ) {
-               $fragment = '';    // there is no anchor defined by default
-               $type = $linked_item->getType();
-        }
-        $module = Type2Module($type);
-               $user = $this->_environment->getCurrentUser();
-               if ($module == CS_USER_TYPE and (!$linked_item->isUser() or !$linked_item->maySee($user))){
+      $countItem = $link_items->getFirst();
+      while($countItem) {
+         $linked_item = $countItem->getLinkedItem($item);
+         if ( isset($linked_item) ) {
+            $fragment = '';    // there is no anchor defined by default
+            $type = $linked_item->getType();
+         }
+         $module = Type2Module($type);
+         $user = $this->_environment->getCurrentUser();
+         if ($module == CS_USER_TYPE and (!$linked_item->isUser() or !$linked_item->maySee($user))){
             $link_items->removeElement($countItem);
-               }
-      $countItem = $link_items->getNext();
-     }
+         }
+         $countItem = $link_items->getNext();
+      }
       $count_link_item = $link_items->getCount();
       $this->_right_box_config['title_string'] .= $separator.'"'.$this->_translator->getMessage('COMMON_NETNAVIGATION_ENTRIES').' ('.$count_link_item.')"';
       $this->_right_box_config['desc_string'] .= $separator.'""';
@@ -3709,11 +3738,11 @@ class cs_detail_view extends cs_view {
             $image = '<img src="images/commsyicons/22x22/delete.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_DELETE_ITEM').'"/>';
          }
          $html .= ahref_curl( $this->_environment->getCurrentContextID(),
-         					  $this->_environment->getCurrentModule(),
+                          $this->_environment->getCurrentModule(),
                               'detail',
-         					  $params,
-         					  $image,
-         					  $this->_translator->getMessage('COMMON_DELETE_ITEM').LF,
+                          $params,
+                          $image,
+                          $this->_translator->getMessage('COMMON_DELETE_ITEM').LF,
                               '',
                               '',
                               '',
@@ -3744,7 +3773,7 @@ class cs_detail_view extends cs_view {
       if($this->_environment->getCurrentUserItem()->isModerator()) {
          $text2 = $this->_translator->getMessage("COMMON_DELETE_BOX_DESCRIPTION_MODERATOR");
       }
-      
+
       $return = "
           <script type='text/javascript'>
           <!--

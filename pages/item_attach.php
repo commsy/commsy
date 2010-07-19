@@ -333,6 +333,7 @@ foreach ( $room_modules as $module ) {
       }
    }
 }
+
 if ( !empty($selrubric)
      and $selrubric != 'all'
      and $selrubric != 'campus_search'
@@ -350,6 +351,34 @@ if ($environment->getCurrentModule() == CS_USER_TYPE){
       $rubric_array[] = CS_INSTITUTION_TYPE;
    }
    $interval = 100;
+}
+
+// translation of entry to rubrics for new private room
+if ( $environment->inPrivateRoom()
+     and in_array(CS_ENTRY_TYPE,$rubric_array)
+   ) {
+   $temp_array = array();
+   $temp_array2 = array();
+   $rubric_array2 = array();
+   $temp_array[] = CS_ANNOUNCEMENT_TYPE;
+   $temp_array[] = CS_TODO_TYPE;
+   $temp_array[] = CS_DISCUSSION_TYPE;
+   $temp_array[] = CS_MATERIAL_TYPE;
+   $temp_array[] = CS_DATE_TYPE;
+   foreach ( $temp_array as $temp_rubric ) {
+      if ( !in_array($temp_rubric,$rubric_array) ) {
+         $temp_array2[] = $temp_rubric;
+      }
+   }
+   foreach ( $rubric_array as $temp_rubric ) {
+      if ( $temp_rubric != CS_ENTRY_TYPE ) {
+         $rubric_array2[] = $temp_rubric;
+      } else {
+         $rubric_array2 = array_merge($rubric_array2,$temp_array2);
+      }
+   }
+   $rubric_array = $rubric_array2;
+   unset($rubric_array2);
 }
 
 foreach ($rubric_array as $rubric) {
@@ -391,7 +420,7 @@ foreach ($rubric_array as $rubric) {
       }
       $rubric_manager->selectDistinct();
       $rubric_list = $rubric_manager->get();
-      
+
       // show hidded entries only if user is moderator or owner
       if($sel_activating_status != 2 && !$current_user->isModerator()) {
          // check if user is owner
@@ -401,11 +430,11 @@ foreach ($rubric_array as $rubric) {
                // remove item from list
                $rubric_list->removeElement($entry);
             }
-            
+
             $entry = $rubric_list->getNext();
          }
       }
-      
+
       $item_list->addList($rubric_list);
       $temp_rubric_ids = $rubric_manager->getIDArray();
       if (!empty($temp_rubric_ids)){
