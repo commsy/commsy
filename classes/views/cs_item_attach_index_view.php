@@ -501,19 +501,19 @@ class cs_item_attach_index_view extends cs_item_index_view {
             $html .= $this->_getToDoItemAsLongHtml($item,$style);
             break;
          case CS_USER_TYPE:
-         	$group_manager = $this->_environment->getGroupManager();
-			$group_all_item = $group_manager->getItemByName('ALL');
-	  		if($group_all_item->_data['item_id'] != $this->_ref_iid){
-	            if ($this->_first_user){
-	              $this->_first_user = false;
-	              $html .= '   <tr class="list">'.LF;
-	              $html .= '      <td class="head" style="font-size:10pt; font-weight:bold" colspan="4">';
-	              $html .= $this->_translator->getMessage('COMMON_USERS');
-	              $html .= '</td>'.LF;
-	            }
-	            $html .= $this->_getUserItemAsLongHtml($item,$style);
-	  		}
-	  		unset($group_manager);
+            $group_manager = $this->_environment->getGroupManager();
+            $group_all_item = $group_manager->getItemByName('ALL');
+            if($group_all_item->_data['item_id'] != $this->_ref_iid){
+               if ($this->_first_user){
+                 $this->_first_user = false;
+                 $html .= '   <tr class="list">'.LF;
+                 $html .= '      <td class="head" style="font-size:10pt; font-weight:bold" colspan="4">';
+                 $html .= $this->_translator->getMessage('COMMON_USERS');
+                 $html .= '</td>'.LF;
+               }
+               $html .= $this->_getUserItemAsLongHtml($item,$style);
+            }
+            unset($group_manager);
             break;
          case CS_PROJECT_TYPE:
             if ( $this->_environment->inPrivateRoom() ){

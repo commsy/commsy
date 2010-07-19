@@ -331,7 +331,7 @@ class cs_rubric_form {
 
    function _setFormElementForConnectedRubric ($type) {
       switch ( $type ) {
-      	case 'entry':
+         case 'entry':
          case 'project':
          case 'todo':
          case 'material':
@@ -469,9 +469,9 @@ class cs_rubric_form {
          $item_manager = $this->_environment->getItemManager();
          $item = $item_manager->getItem($this->_form_post['iid']);
          $item_type = $item->getItemType();
-       if ($item_type == 'item' and !empty($this->_form_post['type'])) {
-         $item_type = $this->_form_post['type'];
-       }
+         if ($item_type == 'item' and !empty($this->_form_post['type'])) {
+            $item_type = $this->_form_post['type'];
+         }
          $manager = $this->_environment->getManager($item_type);
          $item = $manager->getItem($this->_form_post['iid']);
       }

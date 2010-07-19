@@ -81,9 +81,9 @@ class cs_date_form extends cs_rubric_form {
    var $_session_tag_array = array();
 
    #var $_color = '#FFFF80';
-    
+
    var $_recurring_select = 'weekly';
-   
+
   /** constructor: cs_date_form
     * the only available constructor
     *
@@ -335,7 +335,7 @@ class cs_date_form extends cs_rubric_form {
          $this->_form->addHidden('recurring_date','1');
       }
       $this->_form->addCheckbox('recurring','recurring',$recurring_selected,'',$this->_translator->getMessage('DATES_RECURRING_DESC').':','',false,$show_disabled);
-      $this->_form->combine('horizontal');  
+      $this->_form->combine('horizontal');
       $select_values = array();
       $select_values[0]['text'] = $this->_translator->getMessage('DATES_RECURRING_DAILY');
       $select_values[0]['value'] = 'daily';
@@ -525,7 +525,7 @@ class cs_date_form extends cs_rubric_form {
          $week_values[6]['value'] = 'sunday';
          $this->_form->combine();
          $this->_form->addCheckboxGroup('recurring_week_days',$week_values,$value_selected,$this->_translator->getMessage('DATES_RECURRING_WEEK_DAYS'),'',false,true,0,'','','','',false,false,false,10,$show_disabled);
-      } 
+      }
       $this->_form->combine();
       $value_end_date = '';
       if(isset($recurring_pattern_array['recurring_select'])){
@@ -535,7 +535,7 @@ class cs_date_form extends cs_rubric_form {
       if(isset($recurring_pattern_array['recurring_select'])){
          $this->_form->addHidden('recurring_ignore', '1');
       }
-      
+
       $this->_form->addTextArea('description','',$this->_translator->getMessage('DATES_DESCRIPTION'),'','',10);
 
       // rubric connections
@@ -588,9 +588,9 @@ class cs_date_form extends cs_rubric_form {
       #$this->_form->combine();
       #pr('--->'.$this->_color.'<---');
       #$this->_form->addText('colorpicker',$this->_translator->getMessage('DATES_COLOUR'),'<br/><br/><INPUT class="color" value="' . $this->_color . '" name="colorpicker">',$this->_translator->getMessage('DATES_COLOUR_DESC'),false,'','','left','','',true,false);
-          
-      #$this->_form->addText('colorpicker',$this->_translator->getMessage('DATES_COLOUR'),'<br/><br/><INPUT class="color" value="' . $this->_color . '" name="colorpicker">',$this->_translator->getMessage('DATES_COLOUR_DESC'),false,'','','left','','',true,false);  
-      
+
+      #$this->_form->addText('colorpicker',$this->_translator->getMessage('DATES_COLOUR'),'<br/><br/><INPUT class="color" value="' . $this->_color . '" name="colorpicker">',$this->_translator->getMessage('DATES_COLOUR_DESC'),false,'','','left','','',true,false);
+
       if ($current_context->withActivatingContent() and !$current_context->isPrivateRoom()){
          $this->_form->addCheckbox('private_editing',1,'',$this->_translator->getMessage('COMMON_RIGHTS'),$this->_public_array[1]['text'],$this->_translator->getMessage('COMMON_RIGHTS_DESCRIPTION'),false,false,'','',true,false);
          $this->_form->combine();
@@ -601,20 +601,24 @@ class cs_date_form extends cs_rubric_form {
          $this->_form->addDateTimeField('start_activate_date_time','','dayActivateStart','timeActivateStart',9,4,$this->_translator->getMessage('DATES_HIDING_DAY'),'('.$this->_translator->getMessage('DATES_HIDING_DAY'),$this->_translator->getMessage('DATES_HIDING_TIME'),$this->_translator->getMessage('DATES_TIME_DAY_START_DESC'),FALSE,FALSE,100,100,true,'left','',FALSE);
          $this->_form->combine('horizontal');
          $this->_form->addText('hide_end2','',')');
-      }else{
-          // public radio-buttons
-          $this->_form->addCheckbox('mode','','',$this->_translator->getMessage('COMMON_DATE_STATUS'),$this->_translator->getMessage('DATES_NON_PUBLIC_FORM'),'');
-          if ( !isset($this->_item) ) {
-             $this->_form->addRadioGroup('public',$this->_translator->getMessage('RUBRIC_PUBLIC'),$this->_translator->getMessage('RUBRIC_PUBLIC_DESC'),$this->_public_array);
-          } else {
-             $current_user = $this->_environment->getCurrentUser();
-             $creator = $this->_item->getCreatorItem();
-             if ($current_user->getItemID() == $creator->getItemID() or $current_user->isModerator()) {
-                $this->_form->addRadioGroup('public',$this->_translator->getMessage('RUBRIC_PUBLIC'),$this->_translator->getMessage('RUBRIC_PUBLIC_DESC'),$this->_public_array);
-             } else {
-                $this->_form->addHidden('public','');
-             }
-          }
+      } else {
+         // public radio-buttons
+         $this->_form->addCheckbox('mode','','',$this->_translator->getMessage('COMMON_DATE_STATUS'),$this->_translator->getMessage('DATES_NON_PUBLIC_FORM'),'');
+         if ( !$current_context->isPrivateRoom() ) {
+            if ( !isset($this->_item) ) {
+               $this->_form->addRadioGroup('public',$this->_translator->getMessage('RUBRIC_PUBLIC'),$this->_translator->getMessage('RUBRIC_PUBLIC_DESC'),$this->_public_array);
+            } else {
+               $current_user = $this->_environment->getCurrentUser();
+               $creator = $this->_item->getCreatorItem();
+               if ($current_user->getItemID() == $creator->getItemID() or $current_user->isModerator()) {
+                  $this->_form->addRadioGroup('public',$this->_translator->getMessage('RUBRIC_PUBLIC'),$this->_translator->getMessage('RUBRIC_PUBLIC_DESC'),$this->_public_array);
+               } else {
+                  $this->_form->addHidden('public','');
+               }
+            }
+         } else {
+            $this->_form->addHidden('public',0);
+         }
       }
 
       // buttons
@@ -811,7 +815,7 @@ class cs_date_form extends cs_rubric_form {
             $this->_values['date_addon_color'] = $this->_item->getColor();
             #$this->_color = $this->_item->getColor();
          }
-         
+
       } else {
          $temp_array['dayStart'] = $this->_private_date_starting_date;
          $temp_array['timeStart'] = $this->_private_date_starting_time;
@@ -1003,7 +1007,7 @@ class cs_date_form extends cs_rubric_form {
          }
       }
    }
-   
+
    function setRecurringSelect($recurring_select){
       $this->_recurring_select = $recurring_select;
    }

@@ -667,10 +667,10 @@ class cs_page_view extends cs_view {
         }
         if($with_slimbox){
            if (isset($c_use_new_lightbox) and $c_use_new_lightbox){
-        		  $retour .= '   <script src="javascript/jQuery/jquery.fancybox-1.3.1/fancybox/jquery.fancybox-1.3.1.js" type="text/javascript"></script>'.LF;
-        	  } else {
+              $retour .= '   <script src="javascript/jQuery/jquery.fancybox-1.3.1/fancybox/jquery.fancybox-1.3.1.js" type="text/javascript"></script>'.LF;
+           } else {
               $retour .= '   <script src="javascript/jQuery/Slimbox2/js/slimbox2.js" type="text/javascript"></script>'.LF;
-        	  }
+           }
         }
          // jQuery
          // jQuery
@@ -792,7 +792,7 @@ class cs_page_view extends cs_view {
               $with_slimbox = false;
            }
            if($with_slimbox){
-           	  if (isset($c_use_new_lightbox) and $c_use_new_lightbox){
+              if (isset($c_use_new_lightbox) and $c_use_new_lightbox){
                  $retour .= '   <script src="javascript/jQuery/jquery.fancybox-1.3.1/fancybox/jquery.fancybox-1.3.1.js" type="text/javascript"></script>'.LF;
               } else {
                  $retour .= '   <script src="javascript/jQuery/Slimbox2/js/slimbox2.js" type="text/javascript"></script>'.LF;
@@ -1614,7 +1614,7 @@ class cs_page_view extends cs_view {
       $session = $this->_environment->getSession();
       $current_room_modules = $context_item->getHomeConf();
       if ( !empty($current_room_modules) ){
-   $room_modules = explode(',',$current_room_modules);
+         $room_modules = explode(',',$current_room_modules);
       } else {
          $room_modules =  array();
       }
