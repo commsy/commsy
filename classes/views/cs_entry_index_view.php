@@ -737,6 +737,25 @@ class cs_entry_index_view extends cs_index_view {
 
       $html .= $html_table.LF;
 
+      // form
+      
+      // /form
+      
+      $html .= '</div>'.LF;
+      
+      // Preferences link
+      $html .= '<div class="portlet-turn portlet-front" style="float:right;">'.LF;
+      $html .= '<a class="preferences_flip" name="portlet_preferences" style="cursor:pointer;"><img src="images/config_home.png" /></a>'.LF;
+      $html .= '&nbsp;</div>'.LF;
+      
+      $html .= '</div>'.LF;
+      
+      // Preferences content
+      $html .= '<div class="portlet" style="display:none;" id="my_matrix_box_preferences">'.LF;
+      $html .= '<div class="portlet-header">'.$this->_translator->getMessage('PRIVATEROOM_MY_ENTRIES_MATRIX_BOX').' - Einstellungen</div>'.LF;
+      $html .= '<div class="portlet-content">'.LF;
+      
+      // form
       $html .= '<form style="padding:0px; margin:0px;" action="'.curl($this->_environment->getCurrentContextID(), 'entry', 'index','').'" method="post" name="matrix-form">'.LF;
       $html .= '   <input type="hidden" name="cid" value="'.$this->_text_as_form($this->_environment->getCurrentContextID()).'"/>'.LF;
       $html .= '   <input type="hidden" name="mod" value="entry"/>'.LF;
@@ -785,8 +804,10 @@ class cs_entry_index_view extends cs_index_view {
       $html .= '   <input id="new_matrix_column" onclick="javascript:resetSearchText(\'new_matrix_column\');" style="width:250px; font-size:10pt; margin-bottom:0px;" name="new_matrix_column" type="text" size="20" value="'.$this->_text_as_form($this->_translator->getMessage('PRIVATEROOM_MATRIX_NEW_COLUMN_ENTRY')).'"/>'.BRLF;
       $html .= '   <input name="option" value="'.$this->_text_as_form($this->_translator->getMessage('PRIVATEROOM_MATRIX_SAVE_BUTTON')).'" style="width: 250px; font-size: 10pt;" type="submit"/>'.LF;
       $html .='</form>'.LF;
-
+      // /form
+      
       $html .= '</div>'.LF;
+      $html .= '<div class="portlet-turn portlet-back" style="float:right;"><a class="preferences_flip" name="portlet_preferences_back_button" style="cursor:pointer;"><img src="images/commsyicons/16x16/room.png" height="18" width="18"/></a>&nbsp;</div>'.LF;
       $html .= '</div>'.LF;
       return $html;
 
