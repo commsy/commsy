@@ -321,17 +321,40 @@ if ( isset($_GET['selcolor']) and $_GET['selcolor'] !='-2') {
 }
 
 $sel_room_default = false;
+$room_save_selection = false;
 if ( isset($_GET['selroom'])
      and $_GET['selroom'] != '-2'
      and $_GET['selroom'] != '2'
    ) {
    $sel_room = $_GET['selroom'];
+   // save selection
+   if ( $context_item->isPrivateRoom() ) {
+      $date_sel_room = $context_item->getRubrikSelection(CS_DATE_TYPE,'room');
+      if ( $date_sel_room != $sel_room ) {
+         $context_item->setRubrikSelection(CS_DATE_TYPE,'room',$sel_room);
+         $room_save_selection = true;
+      }
+   }
+} elseif ( !empty($_GET['selroom'])
+           and $_GET['selroom'] == '2'
+         ) {
+   $sel_room = '2';
+   if ( $context_item->isPrivateRoom() ) {
+      $date_sel_room = $context_item->getRubrikSelection(CS_DATE_TYPE,'room');
+      if ( $date_sel_room != $sel_room ) {
+         $context_item->setRubrikSelection(CS_DATE_TYPE,'room',$sel_room);
+         $room_save_selection = true;
+      }
+   }
 } else {
    $sel_room = '2';
    if ( $environment->inPrivateRoom() ) {
-      // TBD: use saved selections
-      $sel_room = $environment->getCurrentContextID();
-      $sel_room_default = true;
+      $date_sel_room = $context_item->getRubrikSelection(CS_DATE_TYPE,'room');
+      if ( !empty($date_sel_room) ) {
+         $sel_room = $date_sel_room;
+      } else {
+         $sel_room = $environment->getCurrentContextID();
+      }
    }
 }
 
@@ -340,11 +363,21 @@ if ( isset($_GET['selassignment'])
      and $_GET['selassignment'] != '3'
    ) {
    $sel_assignment = $_GET['selassignment'];
+   // save selection
+   if ( $context_item->isPrivateRoom() ) {
+      $date_sel_assignment = $context_item->getRubrikSelection(CS_DATE_TYPE,'assignment');
+      if ( $date_sel_assignment != $sel_assignment ) {
+         $context_item->setRubrikSelection(CS_DATE_TYPE,'assignment',$sel_assignment);
+         $room_save_selection = true;
+      }
+   }
 } else {
    $sel_assignment = '3';
    if ( $environment->inPrivateRoom() ) {
-      // TBD: use saved selections
-      if ( $sel_room_default ) {
+      $date_sel_assignment = $context_item->getRubrikSelection(CS_DATE_TYPE,'assignment');
+      if ( !empty($date_sel_assignment) ) {
+         $sel_assignment = $date_sel_assignment;
+      } else {
          $sel_assignment = 2;
       }
    }
@@ -405,15 +438,44 @@ if ( isset($_GET['option'])
 
 
    // Find current status selection
-   if ( isset($_GET['selstatus'])  and $_GET['selstatus'] !='-2') {
+   if ( isset($_GET['selstatus'])
+        and $_GET['selstatus'] != '-2'
+      ) {
       $selstatus = $_GET['selstatus'];
+      // save selection
+      if ( $context_item->isPrivateRoom() ) {
+         $date_sel_status = $context_item->getRubrikSelection(CS_DATE_TYPE,'status');
+         if ( $date_sel_status != $selstatus ) {
+            $context_item->setRubrikSelection(CS_DATE_TYPE,'status',$selstatus);
+            $room_save_selection = true;
+         }
+      }
    } else {
-      if ($seldisplay_mode=='calendar'  or $seldisplay_mode == 'calendar_month' or $mode == 'formattach' or $mode == 'detailattach' or $environment->inPrivateRoom()){
+      if ( $seldisplay_mode=='calendar'
+           or $seldisplay_mode == 'calendar_month'
+           or $mode == 'formattach'
+           or $mode == 'detailattach'
+           or $environment->inPrivateRoom()
+         ) {
          $selstatus = 2;
+         if ( $environment->inPrivateRoom() ) {
+            $date_sel_status = $context_item->getRubrikSelection(CS_DATE_TYPE,'status');
+            if ( !empty($date_sel_status) ) {
+               $selstatus = $date_sel_status;
+            } else {
+               $selstatus = 2;
+            }
+         }
       }else{
          $selstatus = 3;
       }
    }
+}
+
+if ( isset($room_save_selection)
+     and $room_save_selection
+   ) {
+   $context_item->save();
 }
 
 //***********************************

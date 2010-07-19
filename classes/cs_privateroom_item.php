@@ -3,7 +3,7 @@
 //
 // Release $Name$
 //
-// Copyright (c)2002-2007 Dirk Blössl, Matthias Finck, Dirk Fust, Franz Grünig,
+// Copyright (c)2002-2010 Dirk Blössl, Matthias Finck, Dirk Fust, Franz Grünig,
 // Oliver Hankel, Iver Jackewitz, Michael Janneck, Martti Jeenicke,
 // Detlev Krause, Irina L. Marinescu, Frithjof Meyer, Timo Nolte, Bernd Pape,
 // Edouard Simon, Monique Strauss, José Manuel González Vázquez
@@ -1054,6 +1054,48 @@ class cs_privateroom_item extends cs_room_item {
       return true;
    }
 
+   ##################################
+   # save rubric selections - BEGIN
+   ##################################
+
+   private function _getRubrikSelectioArray () {
+      $retour = array();
+      if ($this->_issetExtra('SELECTION')) {
+         $retour = $this->_getExtra('SELECTION');
+      }
+      return $retour;
+   }
+
+   private function _setRubrikSelection ( $array ) {
+      if ( isset($array) ) {
+         $this->_setExtra('SELECTION',$array);
+      }
+   }
+
+   public function getRubrikSelection ($rubric, $selection) {
+      $retour = '';
+      if ($this->_issetExtra('SELECTION')) {
+         $sel_array = $this->_getExtra('SELECTION');
+         if ( !empty($sel_array[$rubric][$selection]) ) {
+            $retour = $sel_array[$rubric][$selection];
+         }
+      }
+      return $retour;
+   }
+
+   public function setRubrikSelection ($rubric, $selection, $value) {
+      if ($this->_issetExtra('SELECTION')) {
+         $sel_array = $this->_getExtra('SELECTION');
+      } else {
+         $sel_array = array();
+      }
+      $sel_array[$rubric][$selection] = $value;
+      $this->_setRubrikSelection($sel_array);
+   }
+
+   ##################################
+   # save rubric selections - END
+   ##################################
 
    /* PORTLET FUNCTIONS
     * *****************
