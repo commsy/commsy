@@ -357,7 +357,6 @@ if ( isset($_GET['selroom'])
       }
    }
 }
-
 if ( isset($_GET['selassignment'])
      and $_GET['selassignment'] != '-2'
      and $_GET['selassignment'] != '3'
@@ -367,6 +366,17 @@ if ( isset($_GET['selassignment'])
    if ( $context_item->isPrivateRoom() ) {
       $date_sel_assignment = $context_item->getRubrikSelection(CS_DATE_TYPE,'assignment');
       if ( $date_sel_assignment != $sel_assignment ) {
+         $context_item->setRubrikSelection(CS_DATE_TYPE,'assignment',$sel_assignment);
+         $room_save_selection = true;
+      }
+   }
+} elseif ( !empty($_GET['selassignment'])
+           and $_GET['selassignment'] == '3'
+         ) {
+   $sel_assignment = '3';
+   if ( $context_item->isPrivateRoom() ) {
+      $date_sel_assignment = $context_item->getRubrikSelection(CS_DATE_TYPE,'assignment');
+      if ( $date_sel_room != $sel_assignment ) {
          $context_item->setRubrikSelection(CS_DATE_TYPE,'assignment',$sel_assignment);
          $room_save_selection = true;
       }

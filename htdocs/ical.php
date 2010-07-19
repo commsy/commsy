@@ -47,18 +47,24 @@ if ( isset($_GET['cid']) ) {
    }
 
    if ( !$context_item->isPortal()
-   and !$context_item->isServer()
-   and isset($_GET['hid'])
-   and !empty($_GET['hid'])
-   and !$validated
-   ) {
-      if ( !$context_item->isLocked()
-      and $hash_manager->isICalHashValid($_GET['hid'],$context_item)
+        and !$context_item->isServer()
+        and isset($_GET['hid'])
+        and !empty($_GET['hid'])
+        and !$validated
       ) {
+      if ( !$context_item->isLocked()
+           and $hash_manager->isICalHashValid($_GET['hid'],$context_item)
+         ) {
          $validated = true;
       }
    }
    if($validated) {
+      if ( !empty($_GET['hid']) ) {
+         $l_current_user_item = $hash_manager->getUserByICalHash($_GET['hid']);
+         if ( !empty($l_current_user_item) ) {
+            $environment->setCurrentUserItem($l_current_user_item);
+         }
+      }
       include_once('classes/external_classes/ical/iCal.php');
       $iCal = new iCal('', 0); // (ProgrammID, Method [1 = Publish | 0 = Request])
       if ( isset($_GET['mod'])){
@@ -68,8 +74,81 @@ if ( isset($_GET['cid']) ) {
       }
       if ($current_module==CS_DATE_TYPE){
          $dates_manager = $environment->getDatesManager();
-         $dates_manager->setContextLimit($context_item->getItemID());
          $dates_manager->setWithoutDateModeLimit();
+         if ( !$environment->inPrivateRoom() ) {
+            $dates_manager->setContextLimit($context_item->getItemID());
+         } else {
+            $context_item = $environment->getCurrentContextItem();
+            $date_sel_status = $context_item->getRubrikSelection(CS_DATE_TYPE,'status');
+            if ( !empty($date_sel_status) ) {
+               $dates_manager->setDateModeLimit($date_sel_status);
+            }
+            $date_sel_assignment = $context_item->getRubrikSelection(CS_DATE_TYPE,'assignment');
+            if ( !empty($date_sel_assignment)
+                 and $date_sel_assignment != '2'
+               ) {
+               $current_user_item = $environment->getCurrentUserItem();
+               $user_list = $current_user_item->getRelatedUserList();
+               $user_item = $user_list->getFirst();
+               $user_id_array = array();
+               while ($user_item){
+                  $user_id_array[] = $user_item->getItemID();
+                  $user_item = $user_list->getNext();
+               }
+               $dates_manager->setAssignmentLimit($user_id_array);
+               unset($user_id_array);
+               unset($user_list);
+            }
+            $date_sel_room = $context_item->getRubrikSelection(CS_DATE_TYPE,'room');
+            if ( !empty($date_sel_room) ) {
+               if ( $date_sel_room != "2" ) {
+                  $room_id = array();
+                  $room_id[] = $date_sel_room;
+                  $dates_manager->setContextArrayLimit($room_id);
+                  unset($room_id);
+               } else {
+                  $room_id_array = array();
+                  $room_id_array[] = $context_item->getItemID();
+                  $current_user_item = $environment->getCurrentUserItem();
+                  $grouproom_list = $current_user_item->getRelatedGroupList();
+                  if ( isset($grouproom_list) and $grouproom_list->isNotEmpty()) {
+                     $grouproom_list->reverse();
+                     $grouproom_item = $grouproom_list->getFirst();
+                     while ($grouproom_item) {
+                        $project_room_id = $grouproom_item->getLinkedProjectItemID();
+                        if ( in_array($project_room_id,$room_id_array) ) {
+                           $room_id_array_temp = array();
+                           foreach ($room_id_array as $value) {
+                              $room_id_array_temp[] = $value;
+                              if ( $value == $project_room_id) {
+                                  $room_id_array_temp[] = $grouproom_item->getItemID();
+                              }
+                           }
+                           $room_id_array = $room_id_array_temp;
+                        }
+                        $grouproom_item = $grouproom_list->getNext();
+                     }
+                  }
+                  $project_list = $current_user_item->getRelatedProjectList();
+                  if ( isset($project_list) and $project_list->isNotEmpty()) {
+                     $project_item = $project_list->getFirst();
+                     while ($project_item) {
+                         $room_id_array[] = $project_item->getItemID();
+                         $project_item = $project_list->getNext();
+                     }
+                  }
+                  $community_list = $current_user_item->getRelatedcommunityList();
+                  if ( isset($community_list) and $community_list->isNotEmpty()) {
+                     $community_item = $community_list->getFirst();
+                     while ($community_item) {
+                         $room_id_array[] = $community_item->getItemID();
+                         $community_item = $community_list->getNext();
+                     }
+                  }
+                  $dates_manager->setContextArrayLimit($room_id_array);
+               }
+            }
+         }
          $dates_manager->setNotOlderThanMonthLimit(3);
          $dates_manager->select();
          $item_list = $dates_manager->get();
@@ -357,12 +436,6 @@ if ( isset($_GET['cid']) ) {
       $iCal->outputFile($dateiname);
 
       # logging
-      if ( !empty($_GET['hid']) ) {
-         $l_current_user_item = $hash_manager->getUserByICalHash($_GET['hid']);
-         if ( !empty($l_current_user_item) ) {
-            $environment->setCurrentUserItem($l_current_user_item);
-         }
-      }
       include_once('include/inc_log.php');
 
    } else {

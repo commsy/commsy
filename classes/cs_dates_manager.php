@@ -532,7 +532,7 @@ class cs_dates_manager extends cs_manager {
             $query .= ' LIMIT '.encode(AS_DB,$this->_from_limit).', '.encode(AS_DB,$this->_interval_limit);
          }
       }
-#      pr($query);
+      #pr($query);
 
       // perform query
       $result = $this->_db_connector->performQuery($query);
@@ -861,11 +861,11 @@ class cs_dates_manager extends cs_manager {
    }
 
    function deleteDatesOfUser($uid) {
-   	  // create backup of item
-   	  $this->backupItem($uid, array(	'title'				=>	'title',
-   	  									'description'		=>	'description',
-   	  									'modification_date'	=>	'modification_date',
-   	  									'public'			=>	'public'), array('place'));
+        // create backup of item
+        $this->backupItem($uid, array(	'title'				=>	'title',
+                                        'description'		=>	'description',
+                                        'modification_date'	=>	'modification_date',
+                                        'public'			=>	'public'), array('place'));
 
       $current_datetime = getCurrentDateTimeInMySQL();
       $query  = 'SELECT '.$this->addDatabasePrefix('dates').'.* FROM '.$this->addDatabasePrefix('dates').' WHERE '.$this->addDatabasePrefix('dates').'.creator_id = "'.encode(AS_DB,$uid).'"';
