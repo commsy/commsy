@@ -90,6 +90,5 @@ if(!empty($_FILES)) {
 }
 
 $environment->getSessionManager()->save($session);
-
 exit;
 ?>

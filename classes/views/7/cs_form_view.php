@@ -668,13 +668,22 @@ class cs_form_view extends cs_view {
          } else {
             $file_array = array();
          }
+         
+         if($this->_environment->getCurrentModule() == 'todo' && $this->_environment->getCurrentFunction() == 'detail') {
+            $target_module = "step";
+         } else if($this->_environment->getCurrentModule() == 'discussion' && $this->_environment->getCurrentFunction() == 'detail') {
+            $target_module = "discarticle";
+         } else {
+            $target_module = $this->_environment->getCurrentModule();
+         }
+         
          $scriptData = '';
          $scriptData .= '"cid"					: "' . $this->_environment->getCurrentContextID() . '",';
          $scriptData .= '"mod"					: "ajax",';
          $scriptData .= '"fct"					: "uploadify",';
          $scriptData .= '"c_virus_scan"			: "' . $c_virus_scan . '",';
          $scriptData .= '"c_virus_scan_cron"	: "' . $c_virus_scan_cron . '",';
-         $scriptData .= '"file_upload_rubric"	: "' . $this->_environment->getCurrentModule() . '",';
+         $scriptData .= '"file_upload_rubric"	: "' . $target_module . '",';
          $scriptData .= '"SID"					: "' . $session->getSessionID() . '",';
          $scriptData .= '"security_token"		: "' . getToken() . '"';
          

@@ -2549,12 +2549,6 @@ function uploadify_onComplete(event, queueID, fileObj, response, data) {
 		jQuery("<br/>"
 		)
 	);
-	
-	// refresh page
-	//location.reload(true);
-	
-	// reload page
-	//jQuery(location).attr('href', l);
 }
 
 jQuery(document).ready(function() {
