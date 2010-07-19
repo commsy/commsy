@@ -153,6 +153,7 @@ class cs_entry_index_view extends cs_index_view {
       #$html .= '<div style="float:right;"><a name="myentries_remove" style="cursor:pointer;"><img src="images/commsyicons/16x16/delete.png" /></a></div>';
       $html .= '</div>'.LF;
       $html .= '<div class="portlet-content">'.LF;
+      $html .= '<div id="search_left" style="width:75%; float:left;">'.LF;
       $html .= '<form style="padding:0px; margin:0px;" action="'.curl($this->_environment->getCurrentContextID(), 'entry', 'index','').'" method="get" name="form">'.LF;
       $html .= '   <input type="hidden" name="cid" value="'.$this->_text_as_form($this->_environment->getCurrentContextID()).'"/>'.LF;
       $html .= '   <input type="hidden" name="mod" value="entry"/>'.LF;
@@ -171,6 +172,28 @@ class cs_entry_index_view extends cs_index_view {
          $html .= '<input type="image" src="images/commsyicons/22x22/search.png" style="vertical-align:top;" alt="'.$this->_translator->getMessage('COMMON_SEARCH_BUTTON').'"/>';
       }
       $html .='</form>'.LF;
+      $html .= '</div>'.LF;
+      $html .= '<div id="search_right" style="width:25%; float:right; text-align:right;">'.LF;
+      if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+         $image_new_material = '<img src="images/commsyicons_msie6/22x22/material.gif" style="vertical-align:bottom;"/>';
+         $image_new_date = '<img src="images/commsyicons_msie6/22x22/date.gif" style="vertical-align:bottom;"/>';
+         $image_new_discussion = '<img src="images/commsyicons_msie6/22x22/discussion.gif" style="vertical-align:bottom;"/>';
+         $image_new_todo = '<img src="images/commsyicons_msie6/22x22/todo.gif" style="vertical-align:bottom;"/>';
+      } else {
+         $image_new_material = '<img src="images/commsyicons/22x22/material.png" style="vertical-align:bottom;"/>';
+         $image_new_date = '<img src="images/commsyicons/22x22/date.png" style="vertical-align:bottom;"/>';
+         $image_new_discussion = '<img src="images/commsyicons/22x22/discussion.png" style="vertical-align:bottom;"/>';
+         $image_new_todo = '<img src="images/commsyicons/22x22/todo.png" style="vertical-align:bottom;"/>';
+      }
+
+      $html .= ahref_curl($this->_environment->getCurrentContextID(),'material','edit',array('iid' => 'NEW'),$image_new_material, $this->_translator->getMessage('COMMON_ENTER_NEW_MATERIAL'));
+      $html .= '&nbsp;&nbsp;&nbsp;';
+      $html .= ahref_curl($this->_environment->getCurrentContextID(),'date','edit',array('iid' => 'NEW'),$image_new_date, $this->_translator->getMessage('COMMON_ENTER_NEW_DATE'));
+      $html .= '&nbsp;&nbsp;&nbsp;';
+      $html .= ahref_curl($this->_environment->getCurrentContextID(),'discussion','edit',array('iid' => 'NEW'),$image_new_discussion, $this->_translator->getMessage('COMMON_ENTER_NEW_DISCUSSION'));
+      $html .= '&nbsp;&nbsp;&nbsp;';
+      $html .= ahref_curl($this->_environment->getCurrentContextID(),'todo','edit',array('iid' => 'NEW'),$image_new_todo, $this->_translator->getMessage('COMMON_ENTER_NEW_TODO'));
+      $html .= '</div>'.LF;
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
       return $html;
