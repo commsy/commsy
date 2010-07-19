@@ -83,27 +83,27 @@ class cs_entry_index_view extends cs_index_view {
          $dropdown_mod = '';
       }
 
-      foreach($home_conf_array as $rubric){
-         $temp_rubric_array = explode('_',$rubric);
-         $temp_rubric = $temp_rubric_array[0];
-         if($temp_rubric == 'announcement'){ #and $dropdown_mod != 'announcement'){
-            $this->_dropdown_rubrics_new[] = CS_ANNOUNCEMENT_TYPE;
-         } elseif($temp_rubric == 'date'){ # and $dropdown_mod != 'date'){
+      #foreach($home_conf_array as $rubric){
+      #   $temp_rubric_array = explode('_',$rubric);
+      #   $temp_rubric = $temp_rubric_array[0];
+      #   if($temp_rubric == 'announcement'){ #and $dropdown_mod != 'announcement'){
+      #      $this->_dropdown_rubrics_new[] = CS_ANNOUNCEMENT_TYPE;
+      #   } elseif($temp_rubric == 'date'){ # and $dropdown_mod != 'date'){
             $this->_dropdown_rubrics_new[] = CS_DATE_TYPE;
-         }  elseif($temp_rubric == 'material'){ # and $dropdown_mod != 'material'){
+      #   }  elseif($temp_rubric == 'material'){ # and $dropdown_mod != 'material'){
             $this->_dropdown_rubrics_new[] = CS_MATERIAL_TYPE;
-         }  elseif($temp_rubric == 'discussion'){ # and $dropdown_mod != 'discussion'){
+      #   }  elseif($temp_rubric == 'discussion'){ # and $dropdown_mod != 'discussion'){
             $this->_dropdown_rubrics_new[] = CS_DISCUSSION_TYPE;
-         }  elseif($temp_rubric == 'group'){ # and $dropdown_mod != 'group'){
-            $this->_dropdown_rubrics_new[] = CS_GROUP_TYPE;
-         }  elseif($temp_rubric == 'todo'){ # and $dropdown_mod != 'todo'){
+      #   }  elseif($temp_rubric == 'group'){ # and $dropdown_mod != 'group'){
+      #      $this->_dropdown_rubrics_new[] = CS_GROUP_TYPE;
+      #   }  elseif($temp_rubric == 'todo'){ # and $dropdown_mod != 'todo'){
             $this->_dropdown_rubrics_new[] = CS_TODO_TYPE;
-         }  elseif($temp_rubric == 'topic'){ # and $dropdown_mod != 'topic'){
-            $this->_dropdown_rubrics_new[] = CS_TOPIC_TYPE;
-         }  elseif($temp_rubric == 'institution'){ # and $dropdown_mod != 'topic'){
-            $this->_dropdown_rubrics_new[] = CS_INSTITUTION_TYPE;
-         }
-      }
+      #   }  elseif($temp_rubric == 'topic'){ # and $dropdown_mod != 'topic'){
+      #      $this->_dropdown_rubrics_new[] = CS_TOPIC_TYPE;
+      #   }  elseif($temp_rubric == 'institution'){ # and $dropdown_mod != 'topic'){
+      #      $this->_dropdown_rubrics_new[] = CS_INSTITUTION_TYPE;
+      #   }
+      #}
    }
 
    function setSelectedMyList($limit){
@@ -1331,12 +1331,13 @@ class cs_entry_index_view extends cs_index_view {
       $html = '';
       $current_context = $this->_environment->getCurrentContextItem();
       //$current_portal = $this->_environment->getCurrentPortalItem();
-
+      
       $html .= '<script type="text/javascript">'.LF;
       $html .= '<!--'.LF;
       $html .= 'var dropDownForLists = new Array(';
       
       $list_item = $list->getFirst();
+      
       $first_list = true;
       while($list_item){
       //if ( isset($c_use_linked_dropdown_rooms)

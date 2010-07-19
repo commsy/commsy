@@ -27,6 +27,9 @@ if(isset($_GET['linked_item'])){
    $entry_new_array[] = $_GET['linked_item'];
    $session->setValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids',$entry_new_array);
 }
+if(isset($_GET['mylist_id'])){
+   $session->setValue('cid'.$environment->getCurrentContextID().'_linked_items_mylist_id',$_GET['mylist_id']);
+}
 
 // Function used for redirecting to connected rubrics
 if (isset($_GET['return_attach_buzzword_list'])){
@@ -373,6 +376,17 @@ else {
                $session->setValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_index_ids',$id_array);
            }
 
+           if ($session->issetValue('cid'.$environment->getCurrentContextID().'_linked_items_mylist_id')){
+              $mylist_manager = $environment->getMylistManager();
+              $mylist_item = $mylist_manager->getItem($session->getValue('cid'.$environment->getCurrentContextID().'_linked_items_mylist_id'));
+              $id_array = $mylist_item->getAllLinkedItemIDArrayLabelVersion();
+              if (!in_array($todo_item->getItemID(),$id_array)){
+                 $id_array[] =  $todo_item->getItemID();
+              }
+              $mylist_item->saveLinksByIDArray($id_array);
+           }
+           $session->unsetValue('cid'.$environment->getCurrentContextID().'_linked_items_mylist_id');
+           
             // Redirect
             cleanup_session($current_iid);
             $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_buzzword_ids');
