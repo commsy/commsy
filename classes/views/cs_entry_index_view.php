@@ -148,9 +148,9 @@ class cs_entry_index_view extends cs_index_view {
    
    function _getSearchBoxAsHTML(){
       $html = '<div class="portlet" id="my_search_box">'.LF;
-      $html .= '<div class="portlet-header">'.LF;
+      $html .= '<div class="portlet-header" style="cursor:default;">'.LF;
       $html .= $this->_translator->getMessage('PRIVATEROOM_MY_ENTRIES_SEARCH_BOX').LF;
-      $html .= '<div style="float:right;"><a name="myentries_remove" style="cursor:pointer;"><img src="images/commsyicons/16x16/delete.png" /></a></div>';
+      #$html .= '<div style="float:right;"><a name="myentries_remove" style="cursor:pointer;"><img src="images/commsyicons/16x16/delete.png" /></a></div>';
       $html .= '</div>'.LF;
       $html .= '<div class="portlet-content">'.LF;
       $html .= '<form style="padding:0px; margin:0px;" action="'.curl($this->_environment->getCurrentContextID(), 'entry', 'index','').'" method="get" name="form">'.LF;
@@ -380,27 +380,29 @@ class cs_entry_index_view extends cs_index_view {
       $html .= '<div style="width:100%; clear:both; margin-top: 10px;">';
       
       if(!empty($myentries_array)){
-         $html .= '<div id="myentries_left" style="width:50%; float:left;">'.LF;
-         $html .= $this->_getContentBoxAsHTML().LF;
-         $html .= '</div>'.LF;
-         $html .= '<div id="myentries_right" class="column" style="width:50%; float:right;">'.LF;
+         $html .= '<div id="myentries_left" class="column" style="width:50%; float:left;">'.LF;
          foreach($myentries_array as $myentry){
-	         if($myentry == "my_list_box"){
-	            $html .= $this->_getMylistsBoxAsHTML().LF;
-	         }
-	         if($myentry == "my_buzzword_box"){
-	            $html .= $this->_getBuzzwordBoxAsHTML().LF;
-	         }
-	         if($myentry == "my_matrix_box"){
-	            $html .= $this->_getMatrixBoxAsHTML().LF;
-	         }
-	         if($myentry == "my_search_box"){
-	            $html .= $this->_getSearchBoxAsHTML().LF;
-	         }
+            if($myentry == "my_list_box"){
+               $html .= $this->_getMylistsBoxAsHTML().LF;
+            }
+            if($myentry == "my_buzzword_box"){
+               $html .= $this->_getBuzzwordBoxAsHTML().LF;
+            }
+            if($myentry == "my_matrix_box"){
+               $html .= $this->_getMatrixBoxAsHTML().LF;
+            }
+            #if($myentry == "my_search_box"){
+            #   $html .= $this->_getSearchBoxAsHTML().LF;
+            #}
          }
+         $html .= '</div>'.LF;
+         $html .= '<div id="myentries_right" style="width:50%; float:right;">'.LF;
+         $html .= $this->_getSearchBoxAsHTML().LF;
+         $html .= $this->_getContentBoxAsHTML().LF;
 	      $html .= '</div>'.LF;
       } else {
       	$html .= '<div style="width:100%; float:left;">'.LF;
+      	$html .= $this->_getSearchBoxAsHTML().LF;
          $html .= $this->_getContentBoxAsHTML().LF;
          $html .= '</div>'.LF;
       }
@@ -453,16 +455,16 @@ class cs_entry_index_view extends cs_index_view {
       }
       $action_array[] = $temp_array;
       
-      $temp_array = array();
-      $temp_array['dropdown_image']  = "new_icon";
-      $temp_array['text']  = $this->_translator->getMessage('PRIVATEROOM_MY_ENTRIES_SEARCH_BOX');
-      $temp_array['value'] = "my_search_box";
-      if(in_array("my_search_box", $myentries_array)){
-         $temp_array['checked']  = "checked";
-      } else {
-         $temp_array['checked']  = "";
-      }
-      $action_array[] = $temp_array;
+      #$temp_array = array();
+      #$temp_array['dropdown_image']  = "new_icon";
+      #$temp_array['text']  = $this->_translator->getMessage('PRIVATEROOM_MY_ENTRIES_SEARCH_BOX');
+      #$temp_array['value'] = "my_search_box";
+      #if(in_array("my_search_box", $myentries_array)){
+      #   $temp_array['checked']  = "checked";
+      #} else {
+      #   $temp_array['checked']  = "";
+      #}
+      #$action_array[] = $temp_array;
       
       #$temp_array = array();
       #$temp_array['dropdown_image']  = "new_icon";

@@ -1129,6 +1129,7 @@ jQuery(document).ready(function() {
 		var id = jQuery(this).parent().parent().parent().attr('id');
 		jQuery(this).click(function() {
 			jQuery('#'+id).remove();
+			jQuery('#'+id+'_preferences').remove();
 			
 			// Haken im DropDown-Menu entfernen!
 			jQuery('[name=myentries]:checked').each(function(){
@@ -1154,8 +1155,8 @@ jQuery(document).ready(function() {
 					}
 				}
 				if(column_portlets.length == 0){
-					jQuery('#myentries_right').remove();
-					jQuery('#myentries_left').css('width', '100%');
+					jQuery('#myentries_left').remove();
+					jQuery('#myentries_right').css('width', '100%');
 				}
 				json_data['column_'+int] = column_portlets;
 			}
