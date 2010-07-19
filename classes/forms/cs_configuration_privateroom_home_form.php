@@ -135,7 +135,7 @@ class cs_configuration_privateroom_home_form extends cs_rubric_form {
                                '');
 
       $this->_form->addCheckbox('search_box',1,'',$this->_translator->getMessage('PORTLET_CONFIGURATION_SEARCH_BOX'),$this->_translator->getMessage('PORTLET_CONFIGURATION_SHOW_ON_HOME'),$this->_translator->getMessage('PORTLET_CONFIGURATION_SEARCH_BOX_DESC'));
-      $this->_form->addCheckbox('dokuverser_box',1,'',$this->_translator->getMessage('PORTLET_CONFIGURATION_DOKUVERSER_BOX'),$this->_translator->getMessage('PORTLET_CONFIGURATION_DOKUVERSER_BOX_DESC'),$this->_translator->getMessage('PORTLET_CONFIGURATION_DOKUVERSER_BOX_DESC'));
+      #$this->_form->addCheckbox('dokuverser_box',1,'',$this->_translator->getMessage('PORTLET_CONFIGURATION_DOKUVERSER_BOX'),$this->_translator->getMessage('PORTLET_CONFIGURATION_DOKUVERSER_BOX_DESC'),$this->_translator->getMessage('PORTLET_CONFIGURATION_DOKUVERSER_BOX_DESC'));
       $this->_form->addCheckbox('buzzword_box',1,'',$this->_translator->getMessage('PORTLET_CONFIGURATION_BUZZWORD_BOX'),$this->_translator->getMessage('PORTLET_CONFIGURATION_SHOW_ON_HOME'),$this->_translator->getMessage('PORTLET_CONFIGURATION_BUZZWORD_BOX_DESC'));
       $this->_form->addCheckbox('configuration_box',1,'',$this->_translator->getMessage('PORTLET_CONFIGURATION_CONFIGURATION_BOX'),$this->_translator->getMessage('PORTLET_CONFIGURATION_SHOW_ON_HOME'),$this->_translator->getMessage('PORTLET_CONFIGURATION_CONFIGURATION_BOX_DESC'));
       $this->_form->addCheckbox('new_item_box',1,'',$this->_translator->getMessage('PORTLET_CONFIGURATION_NEW_ITEM_BOX'),$this->_translator->getMessage('PORTLET_CONFIGURATION_SHOW_ON_HOME'),$this->_translator->getMessage('PORTLET_CONFIGURATION_NEW_ITEM_BOX_DESC'));

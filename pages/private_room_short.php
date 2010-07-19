@@ -139,6 +139,7 @@ if ($current_context->getPortletShowWeatherBox()){
    $params['environment'] = $environment;
    $params['with_modifying_actions'] = $current_context->isOpen();
    $weather_view = $class_factory->getClass(PRIVATEROOM_HOME_WEATHER_VIEW,$params);
+   $weather_view->setLocation($current_context->getPortletWeatherLocation());
    unset($params);
    $portlet_array[] = $weather_view;
 }
@@ -146,14 +147,14 @@ if ($current_context->getPortletShowWeatherBox()){
 
 
 /* DOKUVERSER*/
-if ($current_context->getPortletShowDokuverserBox()){
-   $params = array();
-	$params['environment'] = $environment;
-	$params['with_modifying_actions'] = $current_context->isOpen();
-	$dokuverser_view = $class_factory->getClass(PRIVATEROOM_HOME_DOKUVERSER_VIEW,$params);
-	unset($params);
-	$portlet_array[] = $dokuverser_view;
-}
+#if ($current_context->getPortletShowDokuverserBox()){
+#	$params = array();
+#	$params['environment'] = $environment;
+#	$params['with_modifying_actions'] = $current_context->isOpen();
+#	$dokuverser_view = $class_factory->getClass(PRIVATEROOM_HOME_DOKUVERSER_VIEW,$params);
+#	unset($params);
+#	$portlet_array[] = $dokuverser_view;
+#}
 /* END DOKUVERSER */
 
 

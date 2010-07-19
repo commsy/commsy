@@ -1221,7 +1221,16 @@ class cs_privateroom_item extends cs_room_item {
    }
 
 
-
+   function getPortletWeatherLocation () {
+      $retour = '';
+      if ($this->_issetExtra('PORTLET_WEATHER_LOCATION')) {
+         $retour = $this->_getExtra('PORTLET_WEATHER_LOCATION');
+      }
+      return $retour;
+   }
+   function setPortletWeatherLocation ($account) {
+      $this->_addExtra('PORTLET_WEATHER_LOCATION',$account);
+   }
 
 
    function setPortletShowDokuverserBox () {

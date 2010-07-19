@@ -303,16 +303,16 @@ class cs_privateroom_home_portlet_view extends cs_view{
       }
       $action_array[] = $temp_array;
       
-      $temp_array = array();
-      $temp_array['dropdown_image']  = "new_icon";
-      $temp_array['text']  = $this->_translator->getMessage('PORTLET_CONFIGURATION_DOKUVERSER_BOX');
-      $temp_array['value'] = "cs_privateroom_home_dokuverser_view";
-      if($privateroom_item->getPortletShowDokuverserBox()){
-         $temp_array['checked']  = "checked";
-      } else {
-         $temp_array['checked']  = "";
-      }
-      $action_array[] = $temp_array;
+      #$temp_array = array();
+      #$temp_array['dropdown_image']  = "new_icon";
+      #$temp_array['text']  = $this->_translator->getMessage('PORTLET_CONFIGURATION_DOKUVERSER_BOX');
+      #$temp_array['value'] = "cs_privateroom_home_dokuverser_view";
+      #if($privateroom_item->getPortletShowDokuverserBox()){
+      #   $temp_array['checked']  = "checked";
+      #} else {
+      #   $temp_array['checked']  = "";
+      #}
+      #$action_array[] = $temp_array;
       
       $temp_array = array();
       $temp_array['dropdown_image']  = "new_icon";

@@ -31,6 +31,8 @@ $this->includeClass(VIEW);
  */
 class cs_privateroom_home_weather_view extends cs_view {
 
+	var $_location = '';
+	
    /** constructor
     * the only available constructor, initial values for internal variables
     *
@@ -44,6 +46,9 @@ class cs_privateroom_home_weather_view extends cs_view {
       $this->_view_title = $this->_translator->getMessage('COMMON_WEATHER_BOX');
    }
 
+   function setLocation($location){
+      $this->_location = $location;
+   }
 
    function asHTML(){
       $html = '<div id="'.get_class($this).'">'.LF;
@@ -51,5 +56,12 @@ class cs_privateroom_home_weather_view extends cs_view {
       $html .= '</div>'.LF;
       return $html;
    }
+   
+   #function getPreferencesAsHTML(){
+   #   $html = $this->_translator->getMessage('PORTLET_CONFIGURATION_WEATHER_LOCATION').': ';
+   #   $html .= '<input type="text" id="portlet_weather_location" value="'.$this->_location.'">';
+   #   $html .= '<input type="submit" id="portlet_weather_button" value="'.$this->_translator->getMessage('COMMON_SAVE_BUTTON').'">';
+   #   return $html;
+   #}
 }
 ?>
