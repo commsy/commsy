@@ -738,7 +738,7 @@ class cs_entry_index_view extends cs_index_view {
       $html_table = '';
       $html_table .= '<table id="matrix_table" style="width:100%; border:1px solid #CCCCCC;">';
       $html_table .= '<tr id="matrix_table_header">'.LF;
-      $html_table .= '<td style="background-color:#CCCCCC;">'.LF;
+      $html_table .= '<td id="matrix_table_top_left" style="background-color:#CCCCCC;">'.LF;
       $html_table .= '</td>'.LF;
       foreach($matrix_column_title_array as $column_key => $column_title){
          $html_table .= '<td id="'.$column_key.'" style="background-color:#CCCCCC;">'.$column_title.LF;
@@ -748,7 +748,7 @@ class cs_entry_index_view extends cs_index_view {
       $html_table .= '</tr>'.LF;
       foreach($matrix_row_title_array as $row_key => $row){
          $html_table .= '<tr id="'.$row_key.'">'.LF;
-         $html_table .= '<td style="background-color:#CCCCCC;">'.$row.LF;
+         $html_table .= '<td name="matrix_table_left" style="background-color:#CCCCCC;">'.$row.LF;
          $html_table .= '</td>'.LF;
          foreach($matrix_column_title_array as $column_key => $column){
             $html_table .= '<td class="droppable_matrix" id="id_'.$row_key.'_'.$column_key.'" style="text-align:center;"><a></a>'.LF;

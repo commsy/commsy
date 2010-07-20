@@ -50,7 +50,7 @@ jQuery(document).ready(function() {
       jQuery(".droppable_matrix").droppable({
 			hoverClass: 'droppable_item_hover',
 			drop: function(event, ui) {
-			   alert(this.id);
+			   drop_to_matrix(this.id);
 			}
 		});
       jQuery(".droppable_buzzword").droppable({
@@ -2105,7 +2105,8 @@ function turn_portlet_matrix(id, portlet){
                 	    }
                 	    if(resultJSON['new_column']){
                 	       jQuery('#matrix_columns').append('<div><input name="matrix_'+resultJSON['new_column']+'" value="'+resultJSON['new_column']+'" checked="checked" type="checkbox">'+resultJSON['new_column_name']+'</div>');
-                 	    }
+                	       portlet_data['current_matrix_columns_new'].push(new MatrixItem(resultJSON['new_column'], resultJSON['new_column_name']));
+                	    }
                         //jQuery("#buzzword_"+buzzwordId).css('font-size',resultJSON[itemId]+"px");
                      }
                      jQuery('#matrix_rows').find('[name^="matrix_"]:not(:checked)').each(function(){
@@ -2125,9 +2126,7 @@ function turn_portlet_matrix(id, portlet){
 
 function return_portlet_matrix(id, portlet){
    if(portlet_data['matrix_save']){
-	  //alert(portlet_data['current_matrix_rows'].length);
-	  //alert(portlet_data['current_matrix_columns'].length);
-	  var current_rows = new Array();
+	  // Zeilen
 	  jQuery('#matrix_table').find('tr').each(function(){
 		  if(jQuery(this).attr('id') != 'matrix_table_header'){
 			  var row_exists = false;
@@ -2138,29 +2137,79 @@ function return_portlet_matrix(id, portlet){
 			  }
 			  if(!row_exists){
 			     jQuery(this).remove();
-			  } else {
-				 current_rows.push(jQuery(this).attr('id'));
 			  }
 		  }
 	  });
 	  for ( var int = 0; int < portlet_data['current_matrix_rows_new'].length; int++) {
 		var temp_row = portlet_data['current_matrix_rows_new'][int];
-		jQuery('#matrix_table').append('<tr id="'+temp_row.id+'"><td style="background-color:#CCCCCC;">'+temp_row.name+'</td></tr>');
+		jQuery('#matrix_table').append('<tr id="'+temp_row.id+'"><td name="matrix_table_left" style="background-color:#CCCCCC;">'+temp_row.name+'</td></tr>');
 		for ( var int2 = 0; int2 < portlet_data['current_matrix_columns'].length; int2++) {
 			var temp_column = portlet_data['current_matrix_columns'][int2].id;
 			jQuery('#'+temp_row.id).append('<td class="droppable_matrix" id="id_'+temp_row.id+'_'+temp_column+'" style="text-align:center;">0</td>');
 		}
 	  }
+	  
+	  // Spalten
+	  jQuery('#matrix_table').find('tr').each(function(){
+		  if(jQuery(this).attr('id') != 'matrix_table_header'){
+			  jQuery(this).find('td').each(function(){
+				  if(jQuery(this).attr('name') != 'matrix_table_left'){
+					  var column_exists = false;
+					  for (var int = 0; int < portlet_data['current_matrix_columns'].length; int++) {
+						var temp_array = jQuery(this).attr('id').split('_');
+						var temp_id = temp_array[2];
+					  	if(portlet_data['current_matrix_columns'][int].id == temp_id){
+					  		column_exists = true;
+					  	}
+					  }
+					  if(!column_exists){
+					     jQuery(this).remove();
+					  }
+				  }
+			  });
+		  } else {
+			  jQuery(this).find('td').each(function(){
+				  if(jQuery(this).attr('id') != 'matrix_table_top_left'){
+					  var column_exists = false;
+					  for (var int = 0; int < portlet_data['current_matrix_columns'].length; int++) {
+					  	if(portlet_data['current_matrix_columns'][int].id == jQuery(this).attr('id')){
+					  		column_exists = true;
+					  	}
+					  }
+					  if(!column_exists){
+					     jQuery(this).remove();
+					  }
+				  }
+			  });
+		  }
+	  });
+	  
+	  for ( var int = 0; int < portlet_data['current_matrix_columns_new'].length; int++) {
+	     var temp_column = portlet_data['current_matrix_columns_new'][int];
+	     jQuery('#matrix_table').find('tr').each(function(){
+			  if(jQuery(this).attr('id') != 'matrix_table_header'){
+				  jQuery(this).append('<td class="droppable_matrix" id="id_'+jQuery(this).attr('id')+'_'+temp_column.id+'" style="text-align:center;">0</td>');
+			  } else {
+				  jQuery(this).append('<td class="droppable_matrix" id="'+temp_column.id+'" style="background-color:#CCCCCC;">'+temp_column.name+'</td>');
+			  }
+		  });
+	  }
+	  
 	  jQuery(".droppable_matrix").droppable({
 	     hoverClass: 'droppable_item_hover',
 		 drop: function(event, ui) {
-		    alert(this.id);
+		    drop_to_matrix(this.id);
 		 }
 	  });
+	  
 	  portlet_data['matrix_save'] = false;
 	  portlet_data['current_matrix_rows_new'] = new Array();
 	  portlet_data['current_matrix_columns_new'] = new Array();
    }
+}
+
+function drop_to_matrix(id){
+	alert('drop_to_matrix: '+id);
 }
 
 jQuery(document).ready(function() {
