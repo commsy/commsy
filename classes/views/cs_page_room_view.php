@@ -1166,31 +1166,31 @@ class cs_page_room_view extends cs_page_view {
    function getDeleteBoxAsHTML(){
       $session = $this->_environment->getSession();
       $left_menue_status = $session->getValue('left_menue_status');
-      
+
       // background div
       $html = '<div style="	position: fixed;
-      						z-index: 1000;
-      						top: 0px;
-      						left: 0px;
-      						width: 100%;
-      						height: 100%;
-      						background-color: white;
-      						opacity: 0.7;
-      						filter: alpha(opacity=70);
-      						-moz-opacity: 0.7;
-      						-khtml-opacity: 0.7;"></div>'.LF;
-      
+                        z-index: 1000;
+                        top: 0px;
+                        left: 0px;
+                        width: 100%;
+                        height: 100%;
+                        background-color: white;
+                        opacity: 0.7;
+                        filter: alpha(opacity=70);
+                        -moz-opacity: 0.7;
+                        -khtml-opacity: 0.7;"></div>'.LF;
+
       // box div
       $html .= '<div style="	position: fixed;
-      							z-index: 1100;
-      							margin-top: 100px;
-      							margin-left: 30%;
-      							width: 400px;
-      							padding: 20px;
-      							background-color: white;
-      							border: 2px solid red;
-      							top: 0px;">'.LF;
-      
+                           z-index: 1100;
+                           margin-top: 100px;
+                           margin-left: 30%;
+                           width: 400px;
+                           padding: 20px;
+                           background-color: white;
+                           border: 2px solid red;
+                           top: 0px;">'.LF;
+
       //$left = '0em';
       //$width = '100%';
       //$html  = '<div style="position: absolute; z-index:1000; top:95px; left:'.$left.'; width:'.$width.'; height: 100%;">'.LF;
@@ -1743,11 +1743,14 @@ class cs_page_room_view extends cs_page_view {
               and isset($_GET['attach_type'])
               and !empty($_GET['attach_type'])
               and $_GET['attach_type'] == 'buzzword')
-              or(
-                 isset($_POST['right_box_option'])
-                 and isOption($_POST['right_box_option'], $this->_translator->getMessage('COMMON_BUZZWORD_NEW_ATTACH'))
-                 and (!isset($_POST['return_attach_buzzword_list']))
-              )
+              or (
+                   isset($_POST['right_box_option'])
+                   and isOption($_POST['right_box_option'], $this->_translator->getMessage('COMMON_BUZZWORD_NEW_ATTACH'))
+                   and (!isset($_POST['return_attach_buzzword_list']))
+                 )
+              or ( !empty($_POST['option'])
+                   and isOption($_POST['option'], $this->_translator->getMessage('COMMON_BUZZWORD_ADD'))
+                 )
             ) {
             $html .= $this->getBuzzwordBoxAsHTML();
          }

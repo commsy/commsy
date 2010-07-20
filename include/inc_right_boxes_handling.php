@@ -63,6 +63,10 @@ if ( strstr($right_box_command2, '_START') ) {
    $right_box_command = $translator->getMessage('COMMON_ITEM_NEW_ATTACH');
 }
 
+$session_item = $environment->getSessionItem();
+if($session_item->issetValue('buzzword_add_duplicated')) {
+   $session_item->unsetValue('buzzword_add_duplicated');
+}
 if ( isOption($command, $translator->getMessage('COMMON_BUZZWORD_NEW_ATTACH')) ) {
    if (isset($_POST['return_attach_buzzword_list'])){
       $buzzword_array = array();
@@ -110,13 +114,103 @@ if ( isOption($command, $translator->getMessage('COMMON_BUZZWORD_NEW_ATTACH')) )
             $buzzword_array[] = $buzzword_item->getItemID();
          }
       }
+
+      // add buzzword attach list
+      $session_item = $environment->getSessionItem();
+      if($session_item->issetValue('buzzword_add')) {
+         $buzzword_attach_list = $session_item->getValue('buzzword_add');
+         $buzzword_manager = $environment->getLabelManager();
+         $buzzword_manager->reset();
+         $user = $environment->getCurrentUserItem();
+
+         // iterate attach list
+         $attach_item = $buzzword_attach_list->getFirst();
+         while($attach_item) {
+            // create new item
+            $buzzword_item = $buzzword_manager->getNewItem();
+            $buzzword_item->setLabelType('buzzword');
+            $buzzword_item->setTitle($attach_item);
+            $buzzword_item->setContextID($environment->getCurrentContextID());
+            $buzzword_item->setCreatorItem($user);
+            $buzzword_item->setCreationDate(getCurrentDateTimeInMySQL());
+            $buzzword_item->save();
+            $buzzword_array[] = $buzzword_item->getItemID();
+
+            $attach_item = $buzzword_attach_list->getNext();
+         }
+      }
+      $session_item->unsetValue('buzzword_add');
       $session->setValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_buzzword_ids',$buzzword_array);
       $session_post_vars = $session->getValue('buzzword_post_vars');
    }
+} elseif(!empty($command) and (isOption($command, $translator->getMessage('COMMON_BUZZWORD_ADD')))) {
+   if(!empty($_POST['attach_new_buzzword'])) {
+      // set session item
+      $session_item = $environment->getSessionItem();
+      $buzzword_attach_list = $session_item->getValue('buzzword_add');
+      $exist = false;
+      if(!$session_item->issetValue('buzzword_add')) {
+         $buzzword_attach_list = new cs_list();
+      } else {
+        // check for duplicated entries in new buzzword list
+        $buzzword_manager = $environment->getLabelManager();
+        if (!empty($buzzword_attach_list) ){
+           $buzzword = $buzzword_attach_list->getFirst();
+           while ( $buzzword ){
+              if(strcmp($buzzword, ltrim($_POST['attach_new_buzzword'])) == 0) {
+                 $exist = true;
+                 break;
+              }
+              $buzzword = $buzzword_attach_list->getNext();
+           }
+        }
+      }
 
+      // check for duplicated entries in existing buzzword list
+      $buzzword_manager = $environment->getLabelManager();
+      $buzzword_manager->reset();
+      $buzzword_manager->setContextLimit($environment->getCurrentContextID());
+      $buzzword_manager->setTypeLimit('buzzword');
+      $buzzword_manager->select();
+      $buzzword_list = $buzzword_manager->get();
+      if ( !empty($buzzword_list) ){
+         $buzzword = $buzzword_list->getFirst();
+         while ( $buzzword ){
+            if ( strcmp($buzzword->getName(), ltrim($_POST['attach_new_buzzword'])) == 0 ){
+               $exist = true;
+            }
+            $buzzword = $buzzword_list->getNext();
+         }
+      }
+
+      if($exist) {
+         // duplicated entry
+         $session_item->setValue('buzzword_add_duplicated', 'true');
+      } else {
+         $buzzword_attach_list->add(ltrim($_POST['attach_new_buzzword']));
+      }
+
+      $session_item->setValue('buzzword_add', $buzzword_attach_list);
+
+      // POST
+      $session_post_vars = $session->getValue('buzzword_post_vars');
+
+      unset($session_item);
+   }
+} elseif ( isOption($right_box_command, $translator->getMessage('COMMON_BUZZWORD_NEW_ATTACH')) ) {
+   // delete attach list when opening window
+   $session_item = $environment->getSessionItem();
+   if($session_item->issetValue('buzzword_add')) {
+      $session_item->unsetValue('buzzword_add');
+   }
 }
-if ( isOption($right_box_command, $translator->getMessage('COMMON_BUZZWORD_NEW_ATTACH')) ) {
-   $session->setValue('buzzword_post_vars', $_POST);
+
+if ( isOption($right_box_command, $translator->getMessage('COMMON_BUZZWORD_NEW_ATTACH'))
+     or isOption($command, $translator->getMessage('COMMON_BUZZWORD_ADD'))
+   ) {
+   if ( isOption($right_box_command, $translator->getMessage('COMMON_BUZZWORD_NEW_ATTACH')) ) {
+      $session->setValue('buzzword_post_vars', $_POST);
+   }
    $buzzword_array = array();
    $buzzword_manager = $environment->getLabelManager();
    $buzzword_manager->resetLimits();
@@ -218,7 +312,8 @@ if ( isOption($command, $translator->getMessage('COMMON_ITEM_NEW_ATTACH')) or
    $entry_array = array_unique($entry_array);
    $session->setValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids',$entry_array);
    $session_post_vars = $session->getValue('linked_items_post_vars');
-} elseif(empty($command)){
+} elseif ( empty($command)
+         ) {
    if ( isset($_POST['mode']) ) {
       $mode = $_POST['mode'];
    } elseif ( isset($_GET['mode']) ) {

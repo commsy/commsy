@@ -182,10 +182,19 @@ $translator = $environment->getTranslationObject();
 $parameter_array = $environment->getCurrentParameterArray();
 setCalendarSessionArray($parameter_array);
 // Get item to be edited
+
+$session_post_vars = $session->getValue('buzzword_post_vars');
+if ( !empty($session_post_vars['iid']) ) {
+   $_POST['iid'] = $session_post_vars['iid'];
+}
+unset($session_post_vars);
+
 if ( !empty($_GET['iid']) ) {
    $current_iid = $_GET['iid'];
 } elseif ( !empty($_POST['iid']) ) {
    $current_iid = $_POST['iid'];
+} elseif ( !empty($session_post_vars['iid']) ) {
+   $current_iid = $session_post_vars['iid'];
 } else {
    $current_iid = 'NEW';
 }
@@ -385,7 +394,7 @@ else {
          if ( !empty($command) and isOption($command, $translator->getMessage('COMMON_NEW_BUZZWORD_BUTTON')) ){
             $session_post_vars['new_buzzword']='';
          }
-          if ( isset($post_file_ids) AND !empty($post_file_ids) ) {
+         if ( isset($post_file_ids) AND !empty($post_file_ids) ) {
             $session_post_vars['filelist'] = $post_file_ids;
          }
          if ( isset($post_buzzword_ids) AND !empty($post_buzzword_ids) ) {
