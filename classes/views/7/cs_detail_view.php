@@ -858,6 +858,11 @@ class cs_detail_view extends cs_view {
             ) {
             $link_text = $this->_translator->getMessage('DATE_BACK_TO_CALENDAR');
          }
+         if ( module2type($this->_environment->getCurrentModule()) == CS_DATE_TYPE
+              and $this->_environment->inPrivateRoom()
+            ) {
+            $link_text = $this->_translator->getMessage('COMMON_BACK_TO_INDEX');
+         }
          $html .= ahref_curl( $this->_environment->getCurrentContextID(),
                            $this->_environment->getCurrentModule(),
                            'index',

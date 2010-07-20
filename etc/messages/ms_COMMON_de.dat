@@ -45,6 +45,7 @@ $message["COMMON_AUTHOR"]["de"] = "AutorInnen";
 $message["COMMON_AUTOMATIC_DELETE_DESCRIPTION"]["de"] = "Dieser Eintrag wurde auf Wunsch des Erstellers/der Erstellerin wie alle übrigen Einträge dieser Person in diesem Raum automatisch entfernt. Der Beitrag ist durch diesen Eintrag ersetzt worden, um den Zusammenhang zu anderen Einträgen zu wahren. Bei Bedarf kann dieser Eintrag jederzeit gelöscht werden.";
 $message["COMMON_AUTOMATIC_DELETE_TITLE"]["de"] = "Gelöschter Eintrag (aus Datenschutzgründen)";
 $message["COMMON_BACK_BUTTON"]["de"] = "Zurück";
+$message["COMMON_BACK_TO_INDEX"]["de"] = "zur Übersicht";
 $message["COMMON_BACK_TO_ITEM"]["de"] = "zugeordneter Eintrag";
 $message["COMMON_BACK_TO_LIST"]["de"] = "zur Listenansicht";
 $message["COMMON_BACK_TO_PATH"]["de"] = "zum Pfad";
