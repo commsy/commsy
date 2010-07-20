@@ -264,9 +264,9 @@ var $_list = NULL;
    function getPreferencesAsHTML(){
    	$current_context = $this->_environment->getCurrentContextItem();
    	$count = $current_context->getPortletNewEntryListCount();
+   	$user = $current_context->getPortletNewEntryListShowUser();
    	
       $html = $this->_translator->getMessage('PORTLET_CONFIGURATION_NEW_ENTRIES_COUNT').': ';
-
       $html .= '<select id="portlet_new_entries_count" size="0" tabindex="30" style="font-size:10pt;">';
       if($count == '10'){
       	$html .= '<option value="10" selected>10</option>';
@@ -282,7 +282,21 @@ var $_list = NULL;
       } else {
          $html .= '<option value="20">20</option>';
       }
-      $html .= '</select>';
+      $html .= '</select><br/>';
+      
+      $html .= $this->_translator->getMessage('PORTLET_CONFIGURATION_NEW_ENTRIES_SHOW_USER').': ';
+      $html .= '<select id="portlet_new_entries_show_user" size="0" tabindex="30" style="font-size:10pt;">';
+      if($user == '1'){
+         $html .= '<option value="1" selected>'.$this->_translator->getMessage('COMMON_YES').'</option>';
+      } else {
+         $html .= '<option value="1">'.$this->_translator->getMessage('COMMON_YES').'</option>';
+      }
+      if($user == '-1'){
+         $html .= '<option value="-1" selected>'.$this->_translator->getMessage('COMMON_NO').'</option>';
+      } else {
+         $html .= '<option value="-1">'.$this->_translator->getMessage('COMMON_NO').'</option>';
+      }
+      $html .= '</select><br/>';
       
       $html .= '<input type="submit" id="portlet_new_entries_button" value="'.$this->_translator->getMessage('COMMON_SAVE_BUTTON').'">';
       return $html;

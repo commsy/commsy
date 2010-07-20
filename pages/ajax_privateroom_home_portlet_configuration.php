@@ -143,6 +143,7 @@ if(isset($_GET['portlet'])){
    } elseif($_GET['portlet'] == 'new_entries'){
       $privateroom_item = $environment->getCurrentContextItem();
       $count = '';
+      $user = '';
       
       $get_keys = array_keys($_GET);
       $column_array = array();
@@ -152,10 +153,16 @@ if(isset($_GET['portlet'])){
                $count = $_GET[$get_key];
             }
          }
+         if(stristr($get_key, 'new_entries_show_user')){
+            if(!empty($_GET[$get_key])){
+               $user = $_GET[$get_key];
+            }
+         }
       }
       
-      if($count != ''){
+      if($count != '' and $user != ''){
          $privateroom_item->setPortletNewEntryListCount($count);
+         $privateroom_item->setPortletNewEntryListShowUser($user);
       }
       $privateroom_item->save();
    }

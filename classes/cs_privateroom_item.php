@@ -1144,7 +1144,17 @@ class cs_privateroom_item extends cs_room_item {
       $this->_addExtra('PORTLET_ENTRY_LIST_COUNT',$i);
    }
 
+   function getPortletNewEntryListShowUser () {
+      $retour = '1';
+      if ($this->_issetExtra('PORTLET_ENTRY_LIST_SHOW_USER')) {
+         $retour = $this->_getExtra('PORTLET_ENTRY_LIST_SHOW_USER');
+      }
+      return $retour;
+   }
 
+   function setPortletNewEntryListShowUser ($i) {
+      $this->_addExtra('PORTLET_ENTRY_LIST_SHOW_USER',$i);
+   }
 
 
 

@@ -16,6 +16,7 @@ $message["PORTLET_CONFIGURATION_FLICKR_WITHOUT_ID"]["de"] = "Die Flickrbox kann 
 $message["PORTLET_CONFIGURATION_NEWEST_ENTRIES"]["de"] = "Neuste Einträge";
 $message["PORTLET_CONFIGURATION_NEWEST_ENTRIES_VALUE"]["de"] = "Auf der Home anzeigen, Anzahl:";
 $message["PORTLET_CONFIGURATION_NEW_ENTRIES_COUNT"]["de"] = "Anzahl der angezeigten Einträge";
+$message["PORTLET_CONFIGURATION_NEW_ENTRIES_SHOW_USER"]["de"] = "Personen anzeigen";
 $message["PORTLET_CONFIGURATION_NEW_ITEM_BOX"]["de"] = "Neuer Eintrag";
 $message["PORTLET_CONFIGURATION_RSS"]["de"] = "RSS Feeds";
 $message["PORTLET_CONFIGURATION_RSS_ADD_BUTTON"]["de"] = "hinzufügen";

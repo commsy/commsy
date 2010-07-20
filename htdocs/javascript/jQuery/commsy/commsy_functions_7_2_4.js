@@ -2224,8 +2224,10 @@ function turn_portlet_new_entries(id, portlet){
       if(jQuery(this).attr('type') == 'submit'){
 	     jQuery(this).click(function(){
 	        portlet_data['new_entries_count'] = jQuery('#portlet_new_entries_count').find(':selected').val();
+	        portlet_data['new_entries_show_user'] = jQuery('#portlet_new_entries_show_user').find(':selected').val();
 	    	var json_data = new Object();
-	    	json_data['new_entries_count'] = jQuery('#portlet_new_entries_count').find(':selected').val();	
+	    	json_data['new_entries_count'] = jQuery('#portlet_new_entries_count').find(':selected').val();
+	    	json_data['new_entries_show_user'] = jQuery('#portlet_new_entries_show_user').find(':selected').val();
 	    	jQuery.ajax({
 	    	   url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct=privateroom_home_portlet_configuration&output=json&portlet=new_entries',
 	    	   data: json_data,
