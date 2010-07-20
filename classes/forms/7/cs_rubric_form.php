@@ -144,8 +144,6 @@ class cs_rubric_form {
     * set an array with the form post data
     *
     * @param array array an array: HTTP_POST_VARS
-    *
-    * @author CommSy Development Group
     */
    function setFormPost ($array) {
       $this->_form_post = $array;

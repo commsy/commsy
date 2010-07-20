@@ -432,7 +432,8 @@ else {
       }
 
       else {
-         include_once('functions/error_functions.php');trigger_error('dates_edit was called in an unknown manner', E_USER_ERROR);
+         include_once('functions/error_functions.php');
+         trigger_error('dates_edit was called in an unknown manner', E_USER_ERROR);
       }
 
       if ($session->issetValue($environment->getCurrentModule().'_add_files')) {
@@ -454,7 +455,7 @@ else {
 
          $correct = $form->check();
          if ( $correct ) {
- 
+
             // Create new item
             $item_is_new = false;
             if ( !isset($dates_item) ) {
@@ -473,8 +474,8 @@ else {
             $values_before_change['endingTime'] = $dates_item->getEndingTime();
             $values_before_change['place'] = $dates_item->getPlace();
             $values_before_change['color'] = $dates_item->getColor();
-            $values_before_change['description'] = $dates_item->getDescription();      
-            
+            $values_before_change['description'] = $dates_item->getDescription();
+
             // Set modificator and modification date
             $user = $environment->getCurrentUserItem();
             $dates_item->setModificatorItem($user);
@@ -605,13 +606,13 @@ else {
             if(isset($_POST['date_addon_color'])){
                $dates_item->setColor($_POST['date_addon_color']);
             }
-            
+
             $item_files_upload_to = $dates_item;
             include_once('include/inc_fileupload_edit_page_save_item.php');
 
             // Save item
             $dates_item->save();
-            
+
             // Save recurrent items
             if(isset($_POST['recurring']) or isset($_POST['recurring_date'])){
                if(isOption($command, $translator->getMessage('DATES_SAVE_BUTTON')) and !isset($_POST['recurring_ignore'])){
@@ -639,7 +640,7 @@ else {
                   save_recurring_dates($dates_item, false, $vales_to_change);
                }
             }
-            
+
             if ($session->issetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_index_ids')){
                $id_array =  array_reverse($session->getValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_index_ids'));
             }else{
@@ -661,7 +662,7 @@ else {
               $mylist_item->saveLinksByIDArray($id_array);
            }
            $session->unsetValue('cid'.$environment->getCurrentContextID().'_linked_items_mylist_id');
-           
+
             // Redirect
             cleanup_session($current_iid);
             $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_buzzword_ids');
@@ -767,10 +768,10 @@ function save_recurring_dates($dates_item, $is_new_date, $values_to_change){
    if($is_new_date){
       $recurring_date_array = array();
       $recurring_pattern_array = array();
-      
+
       $recurrent_id = $dates_item->getItemID();
       $next_date = $dates_item->getStartingDay();
-      
+
       $month_date = mb_substr($next_date,5,2);
       $day_date = mb_substr($next_date,8,2);
       $year_date = mb_substr($next_date,0,4);
@@ -781,7 +782,7 @@ function save_recurring_dates($dates_item, $is_new_date, $values_to_change){
       $year_recurring = mb_substr($_POST['recurring_end_date'],6,4);
       $recurring_end_time = mktime(0,0,0,$month_recurring,$day_recurring,$year_recurring);
 
-	  $recurring_pattern_array['recurring_select'] = $_POST['recurring_select'];
+      $recurring_pattern_array['recurring_select'] = $_POST['recurring_select'];
       if($_POST['recurring_select'] == 'daily'){
          $next_date_time = $next_date_time + ($_POST['recurring_day'] * (60 * 60 * 24));
          while($next_date_time <= $recurring_end_time){
@@ -871,16 +872,16 @@ function save_recurring_dates($dates_item, $is_new_date, $values_to_change){
          $recurring_pattern_array['recurring_year'] = $_POST['recurring_year'];
          $recurring_pattern_array['recurring_year_every'] = $_POST['recurring_year_every'];
       }
-      
+
       $recurring_pattern_array['recurring_start_date'] = $dates_item->getStartingDay();
       $recurring_pattern_array['recurring_end_date'] = $year_recurring.'-'.$month_recurring.'-'.$day_recurring;
-      
+
       foreach($recurring_date_array as $date){
          $temp_date = clone $dates_item;
          $temp_date->setItemID('');
          $temp_date->setStartingDay(date('Y-m-d', $date));
          if($dates_item->getStartingTime() != ''){
-         	$temp_date->setDateTime_start(date('Y-m-d', $date) . ' ' . $dates_item->getStartingTime());
+            $temp_date->setDateTime_start(date('Y-m-d', $date) . ' ' . $dates_item->getStartingTime());
          } else {
             $temp_date->setDateTime_start(date('Y-m-d 00:00:00', $date));
          }
@@ -890,13 +891,13 @@ function save_recurring_dates($dates_item, $is_new_date, $values_to_change){
             $temp_starting_day_day = mb_substr($temp_starting_day,8,2);
             $temp_starting_day_year = mb_substr($temp_starting_day,0,4);
             $temp_starting_day_time = mktime(0,0,0,$temp_starting_day_month,$temp_starting_day_day,$temp_starting_day_year);
-            
+
             $temp_ending_day = $dates_item->getEndingDay();
             $temp_ending_day_month = mb_substr($temp_ending_day,5,2);
             $temp_ending_day_day = mb_substr($temp_ending_day,8,2);
             $temp_ending_day_year = mb_substr($temp_ending_day,0,4);
             $temp_ending_day_time = mktime(0,0,0,$temp_ending_day_month,$temp_ending_day_day,$temp_ending_day_year);
-            
+
             $temp_date->setEndingDay(date('Y-m-d', $date+($temp_ending_day_time - $temp_starting_day_time)));
             if($dates_item->getEndingTime() != ''){
                $temp_date->setDateTime_end(date('Y-m-d', $date) . ' ' . $dates_item->getEndingTime());
