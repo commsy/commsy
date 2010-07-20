@@ -162,6 +162,20 @@ function setConditions(conditions, conditions_img, temp, humidity) {
 		temp_type = "C";
 	}
 
+	// CommSy
+	if(typeof(portlet_weather_temp) !== 'undefined'){
+	   var temp_temp = portlet_weather_temp;
+	} else {
+	   var temp_temp = 'Temp';
+	}
+	if(typeof(portlet_weather_humidity) !== 'undefined'){
+      var temp_humidity = portlet_weather_humidity;
+   } else {
+      var temp_humidity = 'Humidity';
+   }
+	// CommSy
+	
 	$("#weather_widget").append("<img id='weather_img' src='http://www.google.com/images/weather/" + conditions_img + "' />");
-	$("#weather_widget").append("<div id='weather_conditions'><p id='weather_country'>" + country + "</p><p id='weather_city'>" + city + ", " + region + "</p><p id='weather_temp'>Temp: " + temp + "&deg; " + temp_type + "</p><p id='weather_hum'>Humidity: " + humidity + "%</p><p id='weather_cond'>" + conditions.substr(0, 1).toUpperCase() + conditions.substr(1) + "</p></div>");
+	//$("#weather_widget").append("<div id='weather_conditions'><p id='weather_country'>" + country + "</p><p id='weather_city'>" + city + ", " + region + "</p><p id='weather_temp'>Temp: " + temp + "&deg; " + temp_type + "</p><p id='weather_hum'>Humidity: " + humidity + "%</p><p id='weather_cond'>" + conditions.substr(0, 1).toUpperCase() + conditions.substr(1) + "</p></div>");
+	$("#weather_widget").append("<div id='weather_conditions'><p id='weather_country'>" + country + "</p><p id='weather_city'>" + city + ", " + region + "</p><p id='weather_temp'>"+temp_temp+": " + temp + "&deg; " + temp_type + "</p><p id='weather_hum'>"+temp_humidity+": " + humidity + "%</p></div>");
 }
