@@ -71,6 +71,11 @@ $with_anchor = false;
 $translator = $environment->getTranslationObject();
 
 // Get material to be edited
+$session_post_vars = $session->getValue('buzzword_post_vars');
+if ( !empty($session_post_vars['iid']) ) {
+   $_POST['iid'] = $session_post_vars['iid'];
+}
+unset($session_post_vars);
 if ( !empty($_GET['iid']) ) {
    $current_iid = $_GET['iid'];
 } elseif ( !empty($_POST['iid']) ) {
@@ -220,12 +225,14 @@ else {
             $session_post_vars['taglist'] = $post_tag_ids;
          }
          $form->setFormPost($session_post_vars);
-         
+
          // attach filelist postvar to right box postvars
          if(isset($_POST['right_box_option'])) {
             if($_POST['right_box_option'] == $translator->getMessage('COMMON_BUZZWORD_NEW_ATTACH')) {
                $buzzword_post_vars = $session->getValue('buzzword_post_vars');
-               $buzzword_post_vars['filelist'] = $post_file_ids;
+               if ( isset($post_file_ids) ) {
+                  $buzzword_post_vars['filelist'] = $post_file_ids;
+               }
                $session->setValue('buzzword_post_vars', $buzzword_post_vars);
             } elseif($_POST['right_box_option'] == $translator->getMessage('COMMON_TAG_NEW_ATTACH')) {
                $tag_post_vars = $session->getValue('tag_post_vars');
@@ -540,16 +547,16 @@ else {
 
                // Save material
                $material_item->save();
-	           if ($session->issetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_index_ids')){
-	              $id_array =  array_reverse($session->getValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_index_ids'));
-	           }else{
-	              $id_array =  array();
-	           }
-	           if ($item_is_new){
-	              $id_array[] = $material_item->getItemID();
-	              $id_array = array_reverse($id_array);
-	              $session->setValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_index_ids',$id_array);
-	          }
+              if ($session->issetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_index_ids')){
+                 $id_array =  array_reverse($session->getValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_index_ids'));
+              }else{
+                 $id_array =  array();
+              }
+              if ($item_is_new){
+                 $id_array[] = $material_item->getItemID();
+                 $id_array = array_reverse($id_array);
+                 $session->setValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_index_ids',$id_array);
+             }
 
                // send notifications if world public status is requested
                if ( $material_item->getWorldPublic() == 1
@@ -638,16 +645,16 @@ else {
                }
 
                if ($session->issetValue('cid'.$environment->getCurrentContextID().'_linked_items_mylist_id')){
-			         $mylist_manager = $environment->getMylistManager();
-			         $mylist_item = $mylist_manager->getItem($session->getValue('cid'.$environment->getCurrentContextID().'_linked_items_mylist_id'));
-			         $id_array = $mylist_item->getAllLinkedItemIDArrayLabelVersion();
-			         if (!in_array($material_item->getItemID(),$id_array)){
-			            $id_array[] =  $material_item->getItemID();
-			         }
-			         $mylist_item->saveLinksByIDArray($id_array);
-			      }
-			      $session->unsetValue('cid'.$environment->getCurrentContextID().'_linked_items_mylist_id');
-               
+                  $mylist_manager = $environment->getMylistManager();
+                  $mylist_item = $mylist_manager->getItem($session->getValue('cid'.$environment->getCurrentContextID().'_linked_items_mylist_id'));
+                  $id_array = $mylist_item->getAllLinkedItemIDArrayLabelVersion();
+                  if (!in_array($material_item->getItemID(),$id_array)){
+                     $id_array[] =  $material_item->getItemID();
+                  }
+                  $mylist_item->saveLinksByIDArray($id_array);
+               }
+               $session->unsetValue('cid'.$environment->getCurrentContextID().'_linked_items_mylist_id');
+
                // Redirect
                cleanup_session($current_iid);
                $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_buzzword_ids');
