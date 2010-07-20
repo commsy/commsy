@@ -803,12 +803,14 @@ class cs_entry_index_view extends cs_index_view {
       $matrix_row_list = $matrix_manager->get();
       $matrix_item = $matrix_row_list->getFirst();
       $count_rows = 0;
+      $html .= '<div id="matrix_rows">'.LF;
       while($matrix_item){
-         $html .= '<input name="matrix_'.$matrix_item->getItemID().'" value="'.$matrix_item->getItemID().'" checked="checked" type="checkbox">';
-         $html .= $matrix_item->getName().BRLF;
+         $html .= '<div><input name="matrix_'.$matrix_item->getItemID().'" value="'.$matrix_item->getItemID().'" checked="checked" type="checkbox">';
+         $html .= $matrix_item->getName().'</div>';
          $matrix_item = $matrix_row_list->getNext();
          $count_rows++;
       }
+      $html .= '</div>'.LF;
       $html .= '   <input type="hidden" name="new_matrix_row_count" value="'.$count_rows.'"/>'.LF;
       $html .= '   <input id="new_matrix_row" onclick="javascript:resetSearchText(\'new_matrix_row\');" style="width:250px; font-size:10pt; margin-bottom:0px;" name="new_matrix_row" type="text" size="20" value="'.$this->_text_as_form($this->_translator->getMessage('PRIVATEROOM_MATRIX_NEW_ROW_ENTRY')).'"/>'.BR.BRLF;
 
@@ -819,12 +821,14 @@ class cs_entry_index_view extends cs_index_view {
       $matrix_column_list = $matrix_manager->get();
       $matrix_item = $matrix_column_list->getFirst();
       $count_columns = 0;
+      $html .= '<div id="matrix_columns">'.LF;
       while($matrix_item){
-         $html .= '<input name="matrix_'.$matrix_item->getItemID().'" value="'.$matrix_item->getItemID().'" checked="checked" type="checkbox">';
-         $html .= $matrix_item->getName().BRLF;
+         $html .= '<div><input name="matrix_'.$matrix_item->getItemID().'" value="'.$matrix_item->getItemID().'" checked="checked" type="checkbox">';
+         $html .= $matrix_item->getName().'</div>';
          $matrix_item = $matrix_column_list->getNext();
          $count_columns++;
       }
+      $html .= '</div>'.LF;
       $html .= '   <input type="hidden" name="new_matrix_column_count" value="'.$count_columns.'"/>'.LF;
       $html .= '   <input id="new_matrix_column" onclick="javascript:resetSearchText(\'new_matrix_column\');" style="width:250px; font-size:10pt; margin-bottom:0px;" name="new_matrix_column" type="text" size="20" value="'.$this->_text_as_form($this->_translator->getMessage('PRIVATEROOM_MATRIX_NEW_COLUMN_ENTRY')).'"/>'.BRLF;
       $html .= '   <input name="option" value="'.$this->_text_as_form($this->_translator->getMessage('PRIVATEROOM_MATRIX_SAVE_BUTTON')).'" style="width: 250px; font-size: 10pt;" type="submit"/>'.LF;
@@ -834,6 +838,14 @@ class cs_entry_index_view extends cs_index_view {
       $html .= '</div>'.LF;
       $html .= '<div class="portlet-turn portlet-back" style="float:right;"><a class="preferences_flip" name="portlet_preferences_back_button" style="cursor:pointer;"><img src="images/commsyicons/16x16/room.png" height="18" width="18"/></a>&nbsp;</div>'.LF;
       $html .= '</div>'.LF;
+      
+      $html .= '<script type="text/javascript">'.LF;
+      $html .= '<!--'.LF;
+      $html .= 'var new_row_message = "'.$this->_translator->getMessage('PRIVATEROOM_MATRIX_NEW_ROW_ENTRY').'";'.LF;
+      $html .= 'var new_column_message = "'.$this->_translator->getMessage('PRIVATEROOM_MATRIX_NEW_COLUMN_ENTRY').'";'.LF;
+      $html .= '-->'.LF;
+      $html .= '</script>'.LF;
+      
       return $html;
 
    }

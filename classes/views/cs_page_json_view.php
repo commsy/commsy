@@ -76,8 +76,14 @@ class cs_page_json_view extends cs_page_view {
       $retour  = '';
       $retour .= '{';
 
+      $first = true;
       foreach ( $this->_json_array as $key =>$value ) {
-         $retour .= '"'.$key.'":"'.$value.'" ';
+      	if($first){
+      		$retour .= '"'.$key.'":"'.$value.'"';
+      		$first = false;
+      	} else {
+            $retour .= ', "'.$key.'":"'.$value.'"';
+      	}
       }
 
       $retour .= '}';

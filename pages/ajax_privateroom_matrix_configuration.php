@@ -26,6 +26,7 @@ include_once('functions/development_functions.php');
 
 if(isset($_GET['do'])){
 	if($_GET['do'] == 'save_config'){
+		$json_return_array = array();
 	   $get_keys = array_keys($_GET);
       $matrix_array = array();
       $new_matrix_column = '';
@@ -63,6 +64,8 @@ if(isset($_GET['do'])){
 	      $matrix_item->setCreatorItem($user);
 	      $matrix_item->setCreationDate(getCurrentDateTimeInMySQL());
 	      $matrix_item->save();
+	      $json_return_array['new_column'] = $matrix_item->getItemID();
+	      $json_return_array['new_column_name'] = $new_matrix_column;
 	   }
 	   $matrix_manager->resetLimits();
 	   $matrix_manager->setContextLimit($environment->getCurrentContextID());
@@ -87,7 +90,14 @@ if(isset($_GET['do'])){
 	      $matrix_item->setCreatorItem($user);
 	      $matrix_item->setCreationDate(getCurrentDateTimeInMySQL());
 	      $matrix_item->save();
+	      $json_return_array['new_row'] = $matrix_item->getItemID();
+	      $json_return_array['new_row_name'] = $new_matrix_row;
 	   }
+	   
+	   $page->add('new_column', $json_return_array['new_column']);
+      $page->add('new_column_name', $json_return_array['new_column_name']);
+	   $page->add('new_row', $json_return_array['new_row']);
+	   $page->add('new_row_name', $json_return_array['new_row_name']);
 	}
 }
 ?>

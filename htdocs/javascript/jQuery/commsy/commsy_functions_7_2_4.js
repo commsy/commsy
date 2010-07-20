@@ -2073,15 +2073,35 @@ function turn_portlet_matrix(id, portlet){
 	    	      checked_array.push(jQuery(this).attr('value'));
 	    	   });
 	    	   json_data['current_matrix'] = checked_array;
+	    	   portlet_data['current_matrix'] = checked_array;
 	    	   
 	    	   jQuery.ajax({
 	    	   url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct=privateroom_matrix_configuration&output=json&do=save_config',
 	    	      data: json_data,
 	    	      success: function(msg){
-	    	      portlet_data['matrix_save'] = true;
-	    	      //portlet.revertFlip();
-	    	   }
-	        });
+	    	         portlet_data['matrix_save'] = true;
+	    	         //portlet.revertFlip();
+	    	         var resultJSON = eval('(' + msg + ')');
+                     if (resultJSON === undefined){
+                     }else{
+                	    if(resultJSON['new_row']){
+                		   jQuery('#matrix_rows').append('<div><input name="matrix_'+resultJSON['new_row']+'" value="'+resultJSON['new_row']+'" checked="checked" type="checkbox">'+resultJSON['new_row_name']+'</div>');
+                	    }
+                	    if(resultJSON['new_column']){
+                	       jQuery('#matrix_columns').append('<div><input name="matrix_'+resultJSON['new_column']+'" value="'+resultJSON['new_column']+'" checked="checked" type="checkbox">'+resultJSON['new_column_name']+'</div>');
+                 	    }
+                        //jQuery("#buzzword_"+buzzwordId).css('font-size',resultJSON[itemId]+"px");
+                     }
+                     jQuery('#matrix_rows').find('[name^="matrix_"]:not(:checked)').each(function(){
+       	    	        jQuery(this).parent().remove();
+       	    	     });
+                     jQuery('#matrix_columns').find('[name^="matrix_"]:not(:checked)').each(function(){
+        	    	    jQuery(this).parent().remove();
+        	    	 });
+                     jQuery('#new_matrix_row').val(new_row_message);
+                     jQuery('#new_matrix_column').val(new_column_message);
+	    	     }
+	         });
 		 });
       }
    });
