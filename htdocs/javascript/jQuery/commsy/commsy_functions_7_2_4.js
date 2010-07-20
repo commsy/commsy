@@ -1826,6 +1826,8 @@ function portlet_turn_action(preferences, id, portlet){
          turn_portlet_rss(id, portlet);
       } else if (id == 'my_matrix_box'){
          turn_portlet_matrix(id, portlet);
+      } else if (id == 'cs_privateroom_home_new_entries_view'){
+         turn_portlet_new_entries(id, portlet);
       }
    } else {
       if(id == 'cs_privateroom_home_youtube_view'){
@@ -1840,6 +1842,8 @@ function portlet_turn_action(preferences, id, portlet){
          return_portlet_rss(id, portlet);
       } else if (id == 'my_matrix_box'){
          return_portlet_matrix(id, portlet);
+      } else if (id == 'cs_privateroom_home_new_entries_view'){
+         return_portlet_new_entries(id, portlet);
       }
    }
 }
@@ -2210,6 +2214,36 @@ function return_portlet_matrix(id, portlet){
 
 function drop_to_matrix(id){
 	alert('drop_to_matrix: '+id);
+}
+
+function turn_portlet_new_entries(id, portlet){
+   if(portlet_data['youtube_channel']){
+      jQuery('#portlet_new_entries_count').val(portlet_data['portlet_new_entries_count']);
+   }
+   jQuery("#"+id).find('input').each(function(){
+      if(jQuery(this).attr('type') == 'submit'){
+	     jQuery(this).click(function(){
+	        portlet_data['new_entries_count'] = jQuery('#portlet_new_entries_count').find(':selected').val();
+	    	var json_data = new Object();
+	    	json_data['new_entries_count'] = jQuery('#portlet_new_entries_count').find(':selected').val();	
+	    	jQuery.ajax({
+	    	   url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct=privateroom_home_portlet_configuration&output=json&portlet=new_entries',
+	    	   data: json_data,
+	    	   success: function(msg){
+	    		  portlet_data['new_entries_save'] = true;
+	    	      //portlet.revertFlip();
+	    		  window.location = window.location.href;
+	    	   }
+	    	});
+		 });
+      }
+   });
+}
+
+function return_portlet_new_entries(id, portlet){
+   if(portlet_data['new_entries_save']){
+	  portlet_data['new_entries_save'] = false;
+   }
 }
 
 jQuery(document).ready(function() {

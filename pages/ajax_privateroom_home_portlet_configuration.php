@@ -140,6 +140,24 @@ if(isset($_GET['portlet'])){
       
       $privateroom_item->setPortletRSSArray($new_rss_array);
       $privateroom_item->save();
+   } elseif($_GET['portlet'] == 'new_entries'){
+      $privateroom_item = $environment->getCurrentContextItem();
+      $count = '';
+      
+      $get_keys = array_keys($_GET);
+      $column_array = array();
+      foreach($get_keys as $get_key){
+         if(stristr($get_key, 'new_entries_count')){
+            if(!empty($_GET[$get_key])){
+               $count = $_GET[$get_key];
+            }
+         }
+      }
+      
+      if($count != ''){
+         $privateroom_item->setPortletNewEntryListCount($count);
+      }
+      $privateroom_item->save();
    }
 }
 ?>

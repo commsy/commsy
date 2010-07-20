@@ -15,6 +15,7 @@ $message["PORTLET_CONFIGURATION_FLICKR_VALUE"]["en"] = "Show on home / the notic
 $message["PORTLET_CONFIGURATION_FLICKR_WITHOUT_ID"]["en"] = "To show the flickr box, a flickr id is necessary.";
 $message["PORTLET_CONFIGURATION_NEWEST_ENTRIES"]["en"] = "Latest entries";
 $message["PORTLET_CONFIGURATION_NEWEST_ENTRIES_VALUE"]["en"] = "Show on home / the noticed board, numer:";
+$message["PORTLET_CONFIGURATION_NEW_ENTRIES_COUNT"]["en"] = "Number of displayed entries";
 $message["PORTLET_CONFIGURATION_NEW_ITEM_BOX"]["en"] = "New item";
 $message["PORTLET_CONFIGURATION_RSS"]["en"] = "RSS feeds";
 $message["PORTLET_CONFIGURATION_RSS_ADD_BUTTON"]["en"] = "add";

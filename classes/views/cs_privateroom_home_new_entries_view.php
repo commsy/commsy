@@ -260,5 +260,32 @@ var $_list = NULL;
       return $html;
 
    }
+   
+   function getPreferencesAsHTML(){
+   	$current_context = $this->_environment->getCurrentContextItem();
+   	$count = $current_context->getPortletNewEntryListCount();
+   	
+      $html = $this->_translator->getMessage('PORTLET_CONFIGURATION_NEW_ENTRIES_COUNT').': ';
+
+      $html .= '<select id="portlet_new_entries_count" size="0" tabindex="30" style="font-size:10pt;">';
+      if($count == '10'){
+      	$html .= '<option value="10" selected>10</option>';
+      } else {
+         $html .= '<option value="10">10</option>';
+      }
+      if($count == '15'){
+         $html .= '<option value="15" selected>15</option>';
+      } else {
+         $html .= '<option value="15">15</option>';
+      }if($count == '20'){
+         $html .= '<option value="20" selected>20</option>';
+      } else {
+         $html .= '<option value="20">20</option>';
+      }
+      $html .= '</select>';
+      
+      $html .= '<input type="submit" id="portlet_new_entries_button" value="'.$this->_translator->getMessage('COMMON_SAVE_BUTTON').'">';
+      return $html;
+   }
 }
 ?>
