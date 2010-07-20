@@ -1824,6 +1824,8 @@ function portlet_turn_action(preferences, id, portlet){
          turn_portlet_twitter(id, portlet);
       } else if (id == 'cs_privateroom_home_rss_ticker_view'){
          turn_portlet_rss(id, portlet);
+      } else if (id == 'my_matrix_box'){
+         turn_portlet_matrix(id, portlet);
       }
    } else {
       if(id == 'cs_privateroom_home_youtube_view'){
@@ -1836,6 +1838,8 @@ function portlet_turn_action(preferences, id, portlet){
          return_portlet_twitter(id, portlet);
       } else if (id == 'cs_privateroom_home_rss_ticker_view'){
          return_portlet_rss(id, portlet);
+      } else if (id == 'my_matrix_box'){
+         return_portlet_matrix(id, portlet);
       }
    }
 }
@@ -2050,6 +2054,43 @@ function return_portlet_rss(id, portlet){
 	  
          portlet_data['rss_save'] = false;
 	  }
+   }
+}
+
+
+function turn_portlet_matrix(id, portlet){
+   jQuery("#"+id).find('input').each(function(){
+      if(jQuery(this).attr('type') == 'submit'){
+	     jQuery(this).click(function(){
+	           portlet_data['new_matrix_row'] = jQuery('#new_matrix_row').val();
+	           portlet_data['new_matrix_column'] = jQuery('#new_matrix_column').val();
+	    	   var json_data = new Object();
+	    	   json_data['new_matrix_row'] = jQuery('#new_matrix_row').val();
+	    	   json_data['new_matrix_column'] = jQuery('#new_matrix_column').val();
+	    	   
+	    	   var checked_array = new Array();
+	    	   jQuery(this).parent().find('[name^="matrix_"]:checked').each(function(){
+	    	      checked_array.push(jQuery(this).attr('value'));
+	    	   });
+	    	   json_data['current_matrix'] = checked_array;
+	    	   
+	    	   jQuery.ajax({
+	    	   url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct=privateroom_matrix_configuration&output=json&do=save_config',
+	    	      data: json_data,
+	    	      success: function(msg){
+	    	      portlet_data['matrix_save'] = true;
+	    	      //portlet.revertFlip();
+	    	   }
+	        });
+		 });
+      }
+   });
+}
+
+function return_portlet_matrix(id, portlet){
+   if(portlet_data['matrix_save']){
+	  
+	  portlet_data['matrix_save'] = false;
    }
 }
 
