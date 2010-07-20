@@ -88,8 +88,12 @@ if ($current_context->getPortletShowNewEntryList()){
    $item_manager = $environment->getItemManager();
    $item_manager->setOrderLimit(true);
    $item_manager->setIntervalLimit($current_context->getPortletNewEntryListCount());
-   $new_entry_array = $item_manager->getAllNewPrivateRoomEntriesOfRoomList($room_id_array_without_privateroom);
-   $new_entry_list = $item_manager->getPrivateRoomHomeItemList($new_entry_array);
+   if(isset($room_id_array_without_privateroom) and !empty($room_id_array_without_privateroom)){
+      $new_entry_array = $item_manager->getAllNewPrivateRoomEntriesOfRoomList($room_id_array_without_privateroom);
+      $new_entry_list = $item_manager->getPrivateRoomHomeItemList($new_entry_array);
+   } else {
+   	$new_entry_list = new cs_list();
+   }
    #$item_manager->setContextArrayLimit($room_id_array);
    #$item_manager->select();
    #$new_entry_list = $item_manager->getList();
