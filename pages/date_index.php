@@ -883,19 +883,102 @@ if ($current_context->isPrivateRoom()){
    $view->setRoomIDArray($room_id_array);
    $view->setSelectedRoom($sel_room);
    $view->setSelectedAssignment($sel_assignment);
+
+   // todo
+   $todo_sel_room = '';
+   if ( !empty($_GET[CS_TODO_TYPE.'_selroom'])
+        and $_GET[CS_TODO_TYPE.'_selroom'] != '-2'
+        and $_GET[CS_TODO_TYPE.'_selroom'] != '2'
+      ) {
+      $todo_sel_room = $_GET[CS_TODO_TYPE.'_selroom'];
+      $room_id_array = array();
+      $room_id_array[] = $todo_sel_room;
+      $view->setSelectedRoom($todo_sel_room,CS_TODO_TYPE);
+      $context_item->setRubrikSelection(CS_TODO_TYPE,'room',$todo_sel_room);
+      $context_item->save();
+   } elseif ( !empty($_GET[CS_TODO_TYPE.'_selroom'])
+              and $_GET[CS_TODO_TYPE.'_selroom'] == '2'
+            ) {
+      $todo_sel_room = $_GET[CS_TODO_TYPE.'_selroom'];
+      $view->setSelectedRoom($todo_sel_room,CS_TODO_TYPE);
+      $context_item->setRubrikSelection(CS_TODO_TYPE,'room',$todo_sel_room);
+      $context_item->save();
+   } elseif ( empty($_GET[CS_TODO_TYPE.'_selroom']) ) {
+      $todo_sel_room = $context_item->getRubrikSelection(CS_TODO_TYPE,'room');
+      if ( !empty($todo_sel_room)
+           and $todo_sel_room != '-2'
+           and $todo_sel_room != '2'
+         ) {
+         $room_id_array = array();
+         $room_id_array[] = $todo_sel_room;
+         $view->setSelectedRoom($todo_sel_room,CS_TODO_TYPE);
+      }
+   }
+
+   $todo_sel_status_for_manager = 4;
+   if ( !empty($_GET[CS_TODO_TYPE.'_selstatus'])
+        and $_GET[CS_TODO_TYPE.'_selstatus'] != '-2'
+      ) {
+      $todo_sel_status = $_GET[CS_TODO_TYPE.'_selstatus'];
+      $view->setSelectedStatus($todo_sel_status,CS_TODO_TYPE);
+      $context_item->setRubrikSelection(CS_TODO_TYPE,'status',$todo_sel_status);
+      $context_item->save();
+      if ( $todo_sel_status > 9 ) {
+         $todo_sel_status_for_manager = $todo_sel_status - 10;
+      }
+   } elseif ( empty($_GET[CS_TODO_TYPE.'_selstatus']) ) {
+      $todo_sel_status = $context_item->getRubrikSelection(CS_TODO_TYPE,'status');
+      if ( !empty($todo_sel_status) ) {
+         $view->setSelectedStatus($todo_sel_status,CS_TODO_TYPE);
+         if ( $todo_sel_status > 9 ) {
+            $todo_sel_status_for_manager = $todo_sel_status - 10;
+         }
+      }
+   }
+
+   $todo_sel_assignment = 3;
+   if ( !empty($_GET[CS_TODO_TYPE.'_selassignment'])
+        and $_GET[CS_TODO_TYPE.'_selassignment'] != '-2'
+      ) {
+      $todo_sel_assignment = $_GET[CS_TODO_TYPE.'_selassignment'];
+      $view->setSelectedAssignment($todo_sel_assignment,CS_TODO_TYPE);
+      $context_item->setRubrikSelection(CS_TODO_TYPE,'assignment',$todo_sel_assignment);
+      $context_item->save();
+   } elseif ( empty($_GET[CS_TODO_TYPE.'_selassignment']) ) {
+      $todo_sel_assignment = $context_item->getRubrikSelection(CS_TODO_TYPE,'assignment');
+      if ( !empty($todo_sel_assignment) ) {
+         $view->setSelectedAssignment($todo_sel_assignment,CS_TODO_TYPE);
+      }
+   }
+
    $todo_manager = $environment->getToDoManager();
    $todo_manager->setContextArrayLimit($room_id_array);
    $todo_ids = $todo_manager->getIDArray();
    $count_all_todos = count($todo_ids);
    $todo_manager->showNoNotActivatedEntries();
    $todo_manager->setSortOrder('date');
-   $todo_manager->setStatusLimit('4');
+   $todo_manager->setStatusLimit($todo_sel_status_for_manager);
+   if ($todo_sel_assignment == '3'){
+      $current_user = $environment->getCurrentUserItem();
+      $user_list = $current_user->getRelatedUserList();
+      $user_item = $user_list->getFirst();
+      $user_id_array = array();
+      while ($user_item){
+         $user_id_array[] = $user_item->getItemID();
+         $user_item = $user_list->getNext();
+      }
+      $todo_manager->setAssignmentLimit($user_id_array);
+      unset($user_id_array);
+      unset($user_list);
+   }
    $todo_manager->select();
    $todo_list = $todo_manager->get();
    $view->setTodoList($todo_list);
    if ( isset($count_all_todos) ) {
       $view->setCountAllTodos($count_all_todos);
    }
+   // todo
+
 }
 
 if ( !empty($only_show_array) ) {

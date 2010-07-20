@@ -46,6 +46,7 @@ class cs_todos_manager extends cs_manager {
    var $_group_limit = NULL;
    var $_topic_limit = NULL;
    var $_sort_order = NULL;
+   private $_assignment_limit = false;
 
    /*
     * Translation Object
@@ -80,6 +81,7 @@ class cs_todos_manager extends cs_manager {
       $this->_topic_limit = NULL;
       $this->_user_limit = NULL;
       $this->_sort_order = NULL;
+      $this->_assignment_limit = false;
    }
 
    /** set age limit
@@ -89,6 +91,13 @@ class cs_todos_manager extends cs_manager {
     */
    function setAgeLimit ($limit) {
       $this->_age_limit = (int)$limit;
+   }
+
+   function setAssignmentLimit ($array) {
+      $this->_assignment_limit = true;
+      if (isset($array[0])){
+         $this->_related_user_limit = $array;
+      }
    }
 
    function setStatusLimit ($limit) {
@@ -157,6 +166,11 @@ class cs_todos_manager extends cs_manager {
      if ( isset($this->_user_limit) ) {
         $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS user_limit1 ON ( user_limit1.deletion_date IS NULL AND ((user_limit1.first_item_id='.$this->addDatabasePrefix('todos').'.item_id AND user_limit1.second_item_type="'.CS_USER_TYPE.'"))) ';
         $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS user_limit2 ON ( user_limit2.deletion_date IS NULL AND ((user_limit2.second_item_id='.$this->addDatabasePrefix('todos').'.item_id AND user_limit2.first_item_type="'.CS_USER_TYPE.'"))) ';
+     }
+
+     if ( isset($this->_assignment_limit)  AND isset($this->_related_user_limit) ) {
+        $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS related_user_limit1 ON ( related_user_limit1.deletion_date IS NULL AND ((related_user_limit1.first_item_id='.$this->addDatabasePrefix($this->_db_table).'.item_id AND related_user_limit1.second_item_type="'.CS_USER_TYPE.'"))) ';
+        $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS related_user_limit2 ON ( related_user_limit2.deletion_date IS NULL AND ((related_user_limit2.second_item_id='.$this->addDatabasePrefix($this->_db_table).'.item_id AND related_user_limit2.first_item_type="'.CS_USER_TYPE.'"))) ';
      }
 
      if ( isset($this->_tag_limit) ) {
@@ -248,6 +262,12 @@ class cs_todos_manager extends cs_manager {
             $query .= ' OR (user_limit2.first_item_id = "'.encode(AS_DB,$this->_user_limit).'" OR user_limit2.second_item_id = "'.encode(AS_DB,$this->_user_limit).'"))';
          }
       }
+
+      if ( isset($this->_assignment_limit) AND isset($this->_related_user_limit) ){
+         $query .= ' AND ( (related_user_limit1.first_item_id IN ('.implode(", ", $this->_related_user_limit).') OR related_user_limit1.second_item_id IN ('.implode(", ", $this->_related_user_limit).') )';
+         $query .= ' OR  (related_user_limit2.first_item_id IN ('.implode(", ", $this->_related_user_limit).') OR related_user_limit2.second_item_id IN ('.implode(", ", $this->_related_user_limit).') ))';
+      }
+
       if ( isset($this->_tag_limit) ) {
          $tag_id_array = $this->_getTagIDArrayByTagID($this->_tag_limit);
          $id_string = implode(', ',$tag_id_array);
@@ -314,6 +334,7 @@ class cs_todos_manager extends cs_manager {
             $query .= ' LIMIT '.$this->_from_limit.', '.$this->_interval_limit;
          }
       }
+
       // perform query
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) ) {
@@ -574,11 +595,11 @@ class cs_todos_manager extends cs_manager {
    }
 
    function deleteTodosOfUser($uid) {
-   	  // create backup of item
-   	  $this->backupItem($uid, array(	'title'				=>	'title',
-   	  									'description'		=>	'description',
-   	  									'modification_date'	=>	'modification_date',
-   	  									'public'			=>	'public'));
+        // create backup of item
+        $this->backupItem($uid, array(	'title'				=>	'title',
+                                   'description'		=>	'description',
+                                   'modification_date'	=>	'modification_date',
+                                   'public'			=>	'public'));
 
       $current_datetime = getCurrentDateTimeInMySQL();
       $query  = 'SELECT '.$this->addDatabasePrefix('todos').'.* FROM '.$this->addDatabasePrefix('todos').' WHERE '.$this->addDatabasePrefix('todos').'.creator_id = "'.encode(AS_DB,$uid).'"';

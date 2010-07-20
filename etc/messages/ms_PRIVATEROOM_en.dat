@@ -1,5 +1,6 @@
 <?php
 $message["PRIVATEROOM_ASSIGNED_TO_ME"]["en"] = "Dates with my commitment";
+$message["PRIVATEROOM_ASSIGNED_TO_ME_TODO"]["en"] = "Todos with my commitment";
 $message["PRIVATEROOM_CALENDAR_ASSIGNMENT_STATUS"]["en"] = "Personal participation";
 $message["PRIVATEROOM_CALENDAR_ROOM_STATUS"]["en"] = "Room";
 $message["PRIVATEROOM_COMMON_NO_ENTRIES"]["en"] = "No workspaces available";

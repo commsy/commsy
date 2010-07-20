@@ -39,6 +39,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
    var $_week;
    var $_with_modifying_actions;
    var $_selected_status = NULL;
+   private $_selected_status_array = array();
    var $_display_mode = NULL;
    var $_presentation_mode = '1';
    var $_used_color_array = array();
@@ -49,7 +50,9 @@ class cs_date_calendar_index_view extends cs_room_index_view {
    var $_count_all_todos = NULL;
    var $_room_id_array = array();
    var $_selected_room = NULL;
+   private $_selected_room_array = array();
    var $_selected_assignment = NULL;
+   private $_selected_assignment_array = array();
 
    // SUNBIRD
    var $use_sunbird = true;
@@ -59,8 +62,6 @@ class cs_date_calendar_index_view extends cs_room_index_view {
     * this method sets the whole entries of the list view
     *
     * @param list  $this->_list          content of the list view
-    *
-    * @author CommSy Development Group
     */
     function setList ($list) {
        $this->_list = $list;
@@ -174,20 +175,44 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       return $this->_selected_color;
    }
 
-   function setSelectedRoom ($room) {
-      $this->_selected_room = $room;
+   function setSelectedRoom ($room,$rubric = CS_DATE_TYPE) {
+      $this->_selected_room_array[$rubric] = $room;
+      if ( $rubric == CS_DATE_TYPE ) {
+         $this->_selected_room = $room;
+      }
    }
 
-   function getSelectedRoom () {
-      return $this->_selected_room;
+   function getSelectedRoom ( $rubric = CS_DATE_TYPE ) {
+      $retour = '';
+      if ( !empty($this->_selected_room_array[$rubric]) ) {
+         $retour = $this->_selected_room_array[$rubric];
+      }
+      if ( !empty($retour)
+           and $rubric == CS_DATE_TYPE
+         ) {
+         $retour = $this->_selected_room;
+      }
+      return $retour;
    }
 
-   function setSelectedAssignment ($val) {
-      $this->_selected_assignment = $val;
+   function setSelectedAssignment ($value,$rubric = CS_DATE_TYPE) {
+      $this->_selected_assignment_array[$rubric] = $value;
+      if ( $rubric == CS_DATE_TYPE ) {
+         $this->_selected_assignment = $value;
+      }
    }
 
-   function getSelectedAssignment () {
-      return $this->_selected_assignment;
+   function getSelectedAssignment ( $rubric = CS_DATE_TYPE ) {
+      $retour = '';
+      if ( !empty($this->_selected_assignment_array[$rubric]) ) {
+         $retour = $this->_selected_assignment_array[$rubric];
+      }
+      if ( !empty($retour)
+           and $rubric == CS_DATE_TYPE
+         ) {
+         $retour = $this->_selected_assignment;
+      }
+      return $retour;
    }
 
    function setAvailableColorArray ($array) {
@@ -311,13 +336,20 @@ class cs_date_calendar_index_view extends cs_room_index_view {
          $width = 'width:198px;';
       }
 
-      if (isset($parameter_array['show_todo_selections']) and $parameter_array['show_todo_selections'] == 'true'){
+      if ( isset($parameter_array['show_todo_selections'])
+           and $parameter_array['show_todo_selections'] == 'true'
+         ) {
+         if ( $current_browser == 'msie' and (strstr($current_browser_version,'5.') or (strstr($current_browser_version,'6.'))) ){
+            $width = 'width:170px;'; // TBD
+         } else {
+            $width = 'width:190px;';
+         }
          if ($this->_presentation_mode == '2'){
             $html .= '<div class="right_box_main" style="'.$width.' height:393px; overflow-y:auto;">'.LF;
          }else{
             $html .= '<div class="right_box_main" style="'.$width.' height:273px; overflow-y:auto;">'.LF;
          }
-         $html .= $this->_getAdditionalFormFieldsAsHTML();
+         $html .= $this->_getAdditionalFormFieldsForPrivateRoomAsHTML(CS_TODO_TYPE);
          $html .= '</div>'.LF;
       }else{
          if ($this->_presentation_mode == '2'){
@@ -325,7 +357,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
          }else{
             $html .= '<div class="right_box_main" style="'.$width.' height:278px; overflow-y:auto; padding:0px;">'.LF;
          }
-         if (!$todo_list->isEmpty()){
+         if ( isset($todo_list) and !$todo_list->isEmpty()){
            $todo_item = $todo_list->getFirst();
            $i = 1;
            while ($todo_item){
@@ -792,12 +824,24 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       return $html;
    }
 
-   function setSelectedStatus ($status) {
-      $this->_selected_status = (int)$status;
+   function setSelectedStatus ($value,$rubric = CS_DATE_TYPE) {
+      $this->_selected_status_array[$rubric] = (int)$value;
+      if ( $rubric == CS_DATE_TYPE ) {
+         $this->_selected_status = $value;
+      }
    }
 
-   function getSelectedStatus () {
-      return $this->_selected_status;
+   function getSelectedStatus ( $rubric = CS_DATE_TYPE ) {
+      $retour = '';
+      if ( !empty($this->_selected_status_array[$rubric]) ) {
+         $retour = $this->_selected_status_array[$rubric];
+      }
+      if ( !empty($retour)
+           and $rubric == CS_DATE_TYPE
+         ) {
+         $retour = $this->_selected_status;
+      }
+      return $retour;
    }
 
    function _getGetParamsAsArray() {
@@ -984,11 +1028,17 @@ class cs_date_calendar_index_view extends cs_room_index_view {
             }
          }
       }
-     return $html;
+      return $html;
    }
 
 
-   function _getAdditionalFormFieldsForPrivateRoomAsHTML () {
+   function _getAdditionalFormFieldsForPrivateRoomAsHTML ( $rubric = CS_DATE_TYPE ) {
+
+      $form_prefix = '';
+      if ( $rubric == CS_TODO_TYPE ) {
+         $form_prefix = CS_TODO_TYPE.'_';
+      }
+
       $current_context = $this->_environment->getCurrentContextItem();
       $width = '12';
       // Search / select form
@@ -1013,14 +1063,15 @@ class cs_date_calendar_index_view extends cs_room_index_view {
          $html .= '   <input type="hidden" name="month" value="'.$params['month'].'"/>'.LF;
       }
       if (isset($params['show_selections'])){
-         $html .= '   <input type="hidden" name="show_selections" value="'.$params['show_selections'].'"/>'.LF;
+         $html .= '   <input type="hidden" name="'.$form_prefix.'show_selections" value="'.$params['show_selections'].'"/>'.LF;
       }
 
-      $selassigment = $this->getSelectedAssignment();
+      $selassigment = $this->getSelectedAssignment($rubric);
       $html .= '<div class="infocolor" style="padding-bottom:5px;">'.$this->_translator->getMessage('PRIVATEROOM_CALENDAR_ASSIGNMENT_STATUS').BRLF;
+
       // jQuery
       //$html .= '   <select name="selstatus" size="1" style="width:150px;" onChange="javascript:document.indexform.submit()">'.LF;
-      $html .= '   <select name="selassignment" size="1" style="width:185px;" id="submit_form">'.LF;
+      $html .= '   <select name="'.$form_prefix.'selassignment" size="1" style="width:185px;" id="submit_form">'.LF;
       // jQuery
       $html .= '      <option value="2"';
       if ( empty($selassigment) || $selassigment == 2 ) {
@@ -1033,19 +1084,33 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       if ( !empty($selassigment) and $selassigment == 3 ) {
          $html .= ' selected="selected"';
       }
-      $text = $this->_translator->getMessage('PRIVATEROOM_ASSIGNED_TO_ME');
+      if ( $rubric == CS_TODO_TYPE ) {
+         $text = $this->_translator->getMessage('PRIVATEROOM_ASSIGNED_TO_ME_TODO');
+      } else {
+         $text = $this->_translator->getMessage('PRIVATEROOM_ASSIGNED_TO_ME');
+      }
       $html .= '>'.$text.'</option>'.LF;
 
       $html .= '   </select>'.LF;
+
       $html .= '</div>';
 
-      $html .= $this->_getRoomListAsHTML();
+      $html_room = $this->_getRoomListAsHTML($rubric);
+      if ( $rubric == CS_TODO_TYPE ) {
+         $html_room = str_replace('name="selroom"','name="'.$form_prefix.'selroom"',$html_room);
+      }
+      $html .= $html_room;
+      unset($html_room);
 
-      $selstatus = $this->getSelectedStatus();
-      $html .= '<div class="infocolor" style="padding-bottom:5px;">'.$this->_translator->getMessage('COMMON_DATE_STATUS').BRLF;
+      $selstatus = $this->getSelectedStatus($rubric);
+      if ( $rubric == CS_DATE_TYPE ) {
+         $html .= '<div class="infocolor" style="padding-bottom:5px;">'.$this->_translator->getMessage('COMMON_DATE_STATUS').BRLF;
+      } else {
+         $html .= '<div class="infocolor" style="padding-bottom:5px;">'.$this->_translator->getMessage('COMMON_STATUS').BRLF;
+      }
       // jQuery
       //$html .= '   <select name="selstatus" size="1" style="width:150px;" onChange="javascript:document.indexform.submit()">'.LF;
-      $html .= '   <select name="selstatus" size="1" style="width:185px;" id="submit_form">'.LF;
+      $html .= '   <select name="'.$form_prefix.'selstatus" size="1" style="width:185px;" id="submit_form">'.LF;
       // jQuery
       $html .= '      <option value="2"';
       if ( empty($selstatus) || $selstatus == 2 ) {
@@ -1054,23 +1119,49 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $html .= '>*'.$this->_translator->getMessage('COMMON_NO_SELECTION').'</option>'.LF;
 
       $html .= '   <option class="disabled" disabled="disabled" value="-2">------------------------------</option>'.LF;
-      $html .= '      <option value="3"';
-      if ( !empty($selstatus) and $selstatus == 3 ) {
-         $html .= ' selected="selected"';
-      }
-      $text = $this->_translator->getMessage('DATES_PUBLIC');
-      $html .= '>'.$text.'</option>'.LF;
+      if ( $rubric == CS_DATE_TYPE ) {
+         $html .= '      <option value="3"';
+         if ( !empty($selstatus) and $selstatus == 3 ) {
+            $html .= ' selected="selected"';
+         }
+         $text = $this->_translator->getMessage('DATES_PUBLIC');
+         $html .= '>'.$text.'</option>'.LF;
 
-      $html .= '      <option value="4"';
-      if ( !empty($selstatus) and $selstatus == 4 ) {
-         $html .= ' selected="selected"';
-      }
-      $text = $this->_translator->getMessage('DATES_NON_PUBLIC');
-      $html .= '>'.$text.'</option>'.LF;
+         $html .= '      <option value="4"';
+         if ( !empty($selstatus) and $selstatus == 4 ) {
+            $html .= ' selected="selected"';
+         }
+         $text = $this->_translator->getMessage('DATES_NON_PUBLIC');
+         $html .= '>'.$text.'</option>'.LF;
+      } else {
+         $html .= '      <option value="11"';
+         if ( isset($selstatus) and $selstatus == 11 ) {
+            $html .= ' selected="selected"';
+         }
+         $html .= '>'.$this->_translator->getMessage('TODO_NOT_STARTED').'</option>'.LF;
 
+         $html .= '      <option value="12"';
+         if ( isset($selstatus) and $selstatus == 12 ) {
+            $html .= ' selected="selected"';
+         }
+         $html .= '>'.$this->_translator->getMessage('TODO_IN_POGRESS').'</option>'.LF;
+
+         $html .= '      <option value="13"';
+         if (  isset($selstatus) and $selstatus == 13 ) {
+            $html .= ' selected="selected"';
+         }
+         $html .= '>'.$this->_translator->getMessage('TODO_DONE').'</option>'.LF;
+
+         $html .= '      <option value="-2" disabled="disabled"';
+         $html .= '>------------------</option>'.LF;
+         $html .= '      <option value="14"';
+         if (  isset($selstatus) and $selstatus == 14 ) {
+            $html .= ' selected="selected"';
+         }
+         $html .= '>'.$this->_translator->getMessage('TODO_NOT_DONE').'</option>'.LF;
+      }
       $html .= '   </select>'.LF;
       $html .='</div>';
-
 
       if (isset($this->_used_color_array[0])){
          $selcolor = $this->_selected_color;
@@ -1118,24 +1209,24 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       return $html;
    }
 
-   private function _getRoomListAsHTML () {
+   private function _getRoomListAsHTML ( $rubric = CS_DATE_TYPE ) {
       $switch = 'new';
       $html = '';
       if ( $switch == 'old' ) {
-         $html .= $this->_getRoomListAllAsHTML();
+         $html .= $this->_getRoomListAllAsHTML($rubric);
       } else {
-         $html .= $this->_getUserRoomListAsHTML();
+         $html .= $this->_getUserRoomListAsHTML($rubric);
       }
       return $html;
    }
 
-   private function _getUserRoomListAsHTML () {
+   private function _getUserRoomListAsHTML ( $rubric = CS_DATE_TYPE ) {
       $html = '';
       $params = array();
       $params['environment'] = $this->_environment;
       $misc_user_room_list = $this->_class_factory->getClass(MISC_USER_ROOMLIST,$params);
       $select_add = 'name="selroom" size="1" style="width:185px;" id="submit_form"';
-      $select_room = $this->getSelectedRoom();
+      $select_room = $this->getSelectedRoom($rubric);
 
       $add_option = '      <option value="2"';
       if ( empty($select_room) || $select_room == 2 ) {
@@ -1154,10 +1245,10 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       return $html;
    }
 
-   private function _getRoomListAllAsHTML () {
+   private function _getRoomListAllAsHTML ( $rubric = CS_DATE_TYPE ) {
       $html = '';
       if (!empty($this->_room_id_array)){
-         $selroom = $this->getSelectedRoom();
+         $selroom = $this->getSelectedRoom($rubric);
          $room_manager = $this->_environment->getRoomManager();
          $room_manager->setAuthSourceLimit(NULL);
          $room_manager->setIDArrayLimit($this->_room_id_array);

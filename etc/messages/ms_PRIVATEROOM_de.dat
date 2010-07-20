@@ -1,5 +1,6 @@
 <?php
 $message["PRIVATEROOM_ASSIGNED_TO_ME"]["de"] = "Mir zugeordnete Termine";
+$message["PRIVATEROOM_ASSIGNED_TO_ME_TODO"]["de"] = "Mir zugeordnete Aufgaben";
 $message["PRIVATEROOM_CALENDAR_ASSIGNMENT_STATUS"]["de"] = "Persönliche Zuordnung";
 $message["PRIVATEROOM_CALENDAR_ROOM_STATUS"]["de"] = "Raum";
 $message["PRIVATEROOM_COMMON_NO_ENTRIES"]["de"] = "Keine Räume vorhanden";
