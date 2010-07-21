@@ -2349,7 +2349,7 @@ function turn_portlet_buzzwords(id, portlet){
 			    var resultJSON = eval('(' + msg + ')');
 	            if (resultJSON === undefined){
 	            }else{
-	            	portlet_data['buzzwords_change'].push(new BuzzwordItem(resultJSON['change_buzzword_id'], resultJSON['change_buzzword_name']))
+	            	portlet_data['buzzwords_change'].push(new BuzzwordItem(resultJSON['change_buzzword_id'], resultJSON['change_buzzword_name']));
 	            }
 		     }
 		  }); 
