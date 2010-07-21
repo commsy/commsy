@@ -929,6 +929,24 @@ class cs_entry_index_view extends cs_index_view {
       $html .= '<input type="submit" id="portlet_buzzword_new_button" value="'.$this->_translator->getMessage('BUZZWORDS_NEW_BUTTON').'">';
       $html .= '<br/><br/>'.LF;
       
+      $html .= '<div id="portlet_buzzword_combine">';
+	      $html .= '<select id="portal_buzzword_combine_first" size="1" tabindex="15">'.LF;
+	      $buzzword = $buzzword_list->getFirst();
+	      while($buzzword){
+	         $html .= '<option value="'.$buzzword->getItemID().'">'.$buzzword->getName().'</option>'.LF;
+	         $buzzword = $buzzword_list->getNext();
+	      }
+	      $html .= '</select>'.LF;
+	      $html .= '<select id="portal_buzzword_combine_second" size="1" tabindex="15">'.LF;
+	      $buzzword = $buzzword_list->getFirst();
+	      while($buzzword){
+	         $html .= '<option value="'.$buzzword->getItemID().'">'.$buzzword->getName().'</option>'.LF;
+	         $buzzword = $buzzword_list->getNext();
+	      }
+	      $html .= '</select>'.LF;
+	      $html .= '<input type="submit" id="portlet_buzzword_combine_button" value="'.$this->_translator->getMessage('BUZZWORDS_COMBINE_BUTTON').'">';
+      $html .= '</div><br/>';
+      
       $html .= '<div id="portlet_buzzword_preferences_list">';
       $buzzword = $buzzword_list->getFirst();
       while($buzzword){

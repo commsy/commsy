@@ -79,6 +79,29 @@ if(isset($_GET['do'])){
       $page->add('change_buzzword_id', $buzzword_item->getItemID());
       $page->add('change_buzzword_name', $buzzword_item->getName());
       $buzzword_item->save();
+   } elseif($_GET['do'] == 'combine_buzzwords'){
+      $buzzword_combine_first_id = '';
+      $buzzword_combine_second_id = '';
+      $get_keys = array_keys($_GET);
+      foreach($get_keys as $get_key){
+         if(stristr($get_key, 'buzzword_combine_first')){
+            $buzzword_combine_first_id = $_GET[$get_key];
+         } elseif(stristr($get_key, 'buzzword_combine_second')){
+            $buzzword_combine_second_id = $_GET[$get_key];
+         }
+      }
+      $link_manager = $environment->getLinkManager();
+      $link_manager->combineBuzzwords($buzzword_combine_first_id,$buzzword_combine_second_id);
+      $buzzword_manager = $environment->getLabelManager();
+      $buzzword_item1 = $buzzword_manager->getItem($buzzword_combine_first_id);
+      $buzzword_item2 = $buzzword_manager->getItem($buzzword_combine_second_id);
+      $buzzword_item1->setName($buzzword_item1->getName().'/'.$buzzword_item2->getName());
+      $buzzword_item1->setModificationDate(getCurrentDateTimeInMySQL());
+      $buzzword_item1->save();
+      $buzzword_item2->delete();
+      $page->add('combine_first_id', $buzzword_combine_first_id);
+      $page->add('combine_second_id', $buzzword_combine_second_id);
+      $page->add('combine_name', $buzzword_item1->getName());
    }
 }
 ?>

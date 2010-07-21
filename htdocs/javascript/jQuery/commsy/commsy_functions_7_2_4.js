@@ -2256,9 +2256,15 @@ function BuzzwordItem(id, name) {
     this.id = id;
     this.name = name;
 }
+function BuzzwordCombineItem(id_first, id_second, name) {
+   this.id_first = id_first;
+   this.id_second = id_second;
+   this.name = name;
+}
 portlet_data['buzzwords_new'] = new Array();
 portlet_data['buzzwords_change'] = new Array();
 portlet_data['buzzwords_delete'] = new Array();
+portlet_data['buzzwords_combine'] = new Array();
 function turn_portlet_buzzwords(id, portlet){
    jQuery('#portlet_buzzword_new').val('');
    
@@ -2298,6 +2304,25 @@ function turn_portlet_buzzwords(id, portlet){
 	     }
 	  });
    });
+   
+   jQuery('#portlet_buzzword_combine_button').click(function(){
+     var json_data = new Object();
+     json_data['buzzword_combine_first'] = jQuery('#portal_buzzword_combine_first').find(':selected').val();
+     json_data['buzzword_combine_second'] = jQuery('#portal_buzzword_combine_second').find(':selected').val();
+     jQuery.ajax({
+        url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct=privateroom_buzzword_configuration&output=json&do=combine_buzzwords',
+        data: json_data,
+        success: function(msg){
+          portlet_data['buzzwords_save'] = true;
+          var resultJSON = eval('(' + msg + ')');
+            if (resultJSON === undefined){
+            }else{
+               portlet_data['buzzwords_combine'].push(new BuzzwordCombineItem(resultJSON['combine_first_id'], resultJSON['combine_second_id'], resultJSON['combine_name']))
+            }
+        }
+     });
+   });
+   
    activate_buzzword_buttons();
 }
 
