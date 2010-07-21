@@ -62,6 +62,23 @@ if(isset($_GET['do'])){
       $page->add('delete_buzzword_id', $buzzword_item->getItemID());
       $page->add('delete_buzzword_name', $buzzword_item->getName());
       $buzzword_item->delete();
-	}
+	} elseif($_GET['do'] == 'change_buzzword'){
+      $change_buzzword_id = '';
+      $change_buzzword_name = '';
+      $get_keys = array_keys($_GET);
+      foreach($get_keys as $get_key){
+         if(stristr($get_key, 'buzzword_change_id')){
+            $change_buzzword_id = $_GET[$get_key];
+         } elseif(stristr($get_key, 'buzzword_change_name')){
+            $change_buzzword_name = $_GET[$get_key];
+         }
+      }
+      $buzzword_manager = $environment->getLabelManager();
+      $buzzword_item = $buzzword_manager->getItem($change_buzzword_id);
+      $buzzword_item->setName($change_buzzword_name);
+      $page->add('change_buzzword_id', $buzzword_item->getItemID());
+      $page->add('change_buzzword_name', $buzzword_item->getName());
+      $buzzword_item->save();
+   }
 }
 ?>
