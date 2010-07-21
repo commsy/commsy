@@ -900,17 +900,46 @@ class cs_entry_index_view extends cs_index_view {
          $buzzword = $buzzword_list->getNext();
       }
       $html .= '<div style="width:100%; text-align:right; padding-right:2px; padding-top:5px;">';
-      if ($current_user->isUser() and $this->_with_modifying_actions ) {
-         $params = array();
-         $params['module'] = $this->_environment->getCurrentModule();
-         $html .= ahref_curl($this->_environment->getCurrentContextID(),'buzzwords','edit',$params,$this->_translator->getMessage('COMMON_EDIT')).LF;
-         unset($params);
-      } else {
-         $html .= '<span class="disabled">'.$this->_translator->getMessage('COMMON_EDIT').'</span>'.LF;
-      }
+      #if ($current_user->isUser() and $this->_with_modifying_actions ) {
+      #   $params = array();
+      #   $params['module'] = $this->_environment->getCurrentModule();
+      #   $html .= ahref_curl($this->_environment->getCurrentContextID(),'buzzwords','edit',$params,$this->_translator->getMessage('COMMON_EDIT')).LF;
+      #   unset($params);
+      #} else {
+      #   $html .= '<span class="disabled">'.$this->_translator->getMessage('COMMON_EDIT').'</span>'.LF;
+      #}
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
+      
+      // Preferences link
+      $html .= '<div class="portlet-turn portlet-front" style="float:right;">'.LF;
+      $html .= '<a class="preferences_flip" name="portlet_preferences" style="cursor:pointer;"><img src="images/config_home.png" /></a>'.LF;
+      $html .= '&nbsp;</div>'.LF;
+      
       $html .= '</div>'.LF;
+      
+      // Preferences content
+      $html .= '<div class="portlet" style="display:none;" id="my_buzzword_box_preferences">'.LF;
+      $html .= '<div class="portlet-header">'.$this->_translator->getMessage('PRIVATEROOM_MY_ENTRIES_BUZZWORD_BOX').' - Einstellungen</div>'.LF;
+      $html .= '<div class="portlet-content">'.LF;
+      
+      // form
+      $html .= '<input type="text" id="portlet_buzzword_new">';
+      $html .= '<input type="submit" id="portlet_youtube_button" value="'.$this->_translator->getMessage('BUZZWORDS_NEW_BUTTON').'">';
+      // /form
+      
+      $html .= '</div>'.LF;
+      $html .= '<div class="portlet-turn portlet-back" style="float:right;"><a class="preferences_flip" name="portlet_preferences_back_button" style="cursor:pointer;"><img src="images/commsyicons/16x16/room.png" height="18" width="18"/></a>&nbsp;</div>'.LF;
+      $html .= '</div>'.LF;
+      
+      $html .= '<script type="text/javascript">'.LF;
+      $html .= '<!--'.LF;
+      $html .= 'var buzzword_cid = "'.$this->_environment->getCurrentContextID().'";'.LF;
+      $html .= 'var ajax_function = "privateroom_myentries";'.LF;
+      $html .= '-->'.LF;
+      $html .= '</script>'.LF;
+      
+      
       unset($current_user);
       return $html;
    }
