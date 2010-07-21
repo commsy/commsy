@@ -2290,98 +2290,15 @@ function turn_portlet_buzzwords(id, portlet){
                	  insert = true;
                }
                });
-        	   if(!insert){
+        	      if(!insert){
                   jQuery('#portlet_buzzword_preferences_list').find('div').last().after('<div><input type="text" class="portlet_buzzword_textfield" id="portlet_buzzword_'+resultJSON['new_buzzword_id']+'" value="'+resultJSON['new_buzzword_name']+'" size="40">&nbsp;<input type="submit" class="portlet_buzzword_change_button" id="'+resultJSON['new_buzzword_id']+'" value="Ändern">&nbsp;<input type="submit" class="portlet_buzzword_delete_button" id="'+resultJSON['new_buzzword_id']+'" value="Löschen"></div>');
                }
-        	   
-        	   // Eigene Funktion 1
-        	   jQuery('.portlet_buzzword_change_button').each(function(){
-        		   jQuery(this).click(function(){
-        			  var json_data = new Object();
-        			  json_data['buzzword_change_id'] = jQuery(this).attr('id');
-        			  json_data['buzzword_change_name'] = jQuery('#portlet_buzzword_'+jQuery(this).attr('id')).val();
-        			  jQuery.ajax({
-        			     url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct=privateroom_buzzword_configuration&output=json&do=change_buzzword',
-        			     data: json_data,
-        			     success: function(msg){
-        				    //jQuery('#'+json_data['buzzword_delete']).parent().remove();
-        				    portlet_data['buzzwords_save'] = true;
-        				    var resultJSON = eval('(' + msg + ')');
-        		            if (resultJSON === undefined){
-        		            }else{
-        		            	portlet_data['buzzwords_change'].push(new BuzzwordItem(resultJSON['change_buzzword_id'], resultJSON['change_buzzword_name']))
-        		            }
-        			     }
-        			  }); 
-        		   });
-        	   });
-        	   jQuery('.portlet_buzzword_delete_button').each(function(){
-        		   jQuery(this).click(function(){
-        			  var json_data = new Object();
-        			  json_data['buzzword_delete'] = jQuery(this).attr('id');
-        			  jQuery.ajax({
-        			     url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct=privateroom_buzzword_configuration&output=json&do=delete_buzzword',
-        			     data: json_data,
-        			     success: function(msg){
-        				    jQuery('#'+json_data['buzzword_delete']).parent().remove();
-        				    portlet_data['buzzwords_save'] = true;
-        				    var resultJSON = eval('(' + msg + ')');
-        		            if (resultJSON === undefined){
-        		            }else{
-        		            	portlet_data['buzzwords_delete'].push(new BuzzwordItem(resultJSON['delete_buzzword_id'], resultJSON['delete_buzzword_name']))
-        		            }
-        			     }
-        			  });
-        		   });
-        	   });
-        	   // Eigene Funktion 1
-        	   
+        	      activate_buzzword_buttons();
             }
 	     }
 	  });
    });
-   
-   // Eigene Funktion 1
-   jQuery('.portlet_buzzword_change_button').each(function(){
-	   jQuery(this).click(function(){
-		  var json_data = new Object();
-		  json_data['buzzword_change_id'] = jQuery(this).attr('id');
-		  json_data['buzzword_change_name'] = jQuery('#portlet_buzzword_'+jQuery(this).attr('id')).val();
-		  jQuery.ajax({
-		     url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct=privateroom_buzzword_configuration&output=json&do=change_buzzword',
-		     data: json_data,
-		     success: function(msg){
-			    //jQuery('#'+json_data['buzzword_delete']).parent().remove();
-			    portlet_data['buzzwords_save'] = true;
-			    var resultJSON = eval('(' + msg + ')');
-	            if (resultJSON === undefined){
-	            }else{
-	            	portlet_data['buzzwords_change'].push(new BuzzwordItem(resultJSON['change_buzzword_id'], resultJSON['change_buzzword_name']));
-	            }
-		     }
-		  }); 
-	   });
-   });
-   jQuery('.portlet_buzzword_delete_button').each(function(){
-	   jQuery(this).click(function(){
-		  var json_data = new Object();
-		  json_data['buzzword_delete'] = jQuery(this).attr('id');
-		  jQuery.ajax({
-		     url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct=privateroom_buzzword_configuration&output=json&do=delete_buzzword',
-		     data: json_data,
-		     success: function(msg){
-			    jQuery('#'+json_data['buzzword_delete']).parent().remove();
-			    portlet_data['buzzwords_save'] = true;
-			    var resultJSON = eval('(' + msg + ')');
-	            if (resultJSON === undefined){
-	            }else{
-	            	portlet_data['buzzwords_delete'].push(new BuzzwordItem(resultJSON['delete_buzzword_id'], resultJSON['delete_buzzword_name']))
-	            }
-		     }
-		  });
-	   });
-   });
-   // Eigene Funktion 1
+   activate_buzzword_buttons();
 }
 
 function return_portlet_buzzwords(id, portlet){
@@ -2453,6 +2370,48 @@ function return_portlet_buzzwords(id, portlet){
 	  portlet_data['buzzwords_delete'] = new Array();
 	  portlet_data['buzzwords_save'] = false;
    }
+}
+
+function activate_buzzword_buttons(){
+   jQuery('.portlet_buzzword_change_button').each(function(){
+      jQuery(this).click(function(){
+        var json_data = new Object();
+        json_data['buzzword_change_id'] = jQuery(this).attr('id');
+        json_data['buzzword_change_name'] = jQuery('#portlet_buzzword_'+jQuery(this).attr('id')).val();
+        jQuery.ajax({
+           url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct=privateroom_buzzword_configuration&output=json&do=change_buzzword',
+           data: json_data,
+           success: function(msg){
+             //jQuery('#'+json_data['buzzword_delete']).parent().remove();
+             portlet_data['buzzwords_save'] = true;
+             var resultJSON = eval('(' + msg + ')');
+               if (resultJSON === undefined){
+               }else{
+                  portlet_data['buzzwords_change'].push(new BuzzwordItem(resultJSON['change_buzzword_id'], resultJSON['change_buzzword_name']));
+               }
+           }
+        }); 
+      });
+   });
+   jQuery('.portlet_buzzword_delete_button').each(function(){
+      jQuery(this).click(function(){
+        var json_data = new Object();
+        json_data['buzzword_delete'] = jQuery(this).attr('id');
+        jQuery.ajax({
+           url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct=privateroom_buzzword_configuration&output=json&do=delete_buzzword',
+           data: json_data,
+           success: function(msg){
+             jQuery('#'+json_data['buzzword_delete']).parent().remove();
+             portlet_data['buzzwords_save'] = true;
+             var resultJSON = eval('(' + msg + ')');
+               if (resultJSON === undefined){
+               }else{
+                  portlet_data['buzzwords_delete'].push(new BuzzwordItem(resultJSON['delete_buzzword_id'], resultJSON['delete_buzzword_name']))
+               }
+           }
+        });
+      });
+   });
 }
 
 jQuery(document).ready(function() {
