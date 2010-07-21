@@ -2261,6 +2261,13 @@ portlet_data['buzzwords_change'] = new Array();
 portlet_data['buzzwords_delete'] = new Array();
 function turn_portlet_buzzwords(id, portlet){
    jQuery('#portlet_buzzword_new').val('');
+   
+   for ( var int = 0; int < portlet_data['buzzwords_change'].length; int++) {
+      var temp_change_buzzword = portlet_data['buzzwords_change'][int];
+      jQuery('#portlet_buzzword_'+temp_change_buzzword.id).val(temp_change_buzzword.name)
+   }
+   //portlet_data['buzzwords_change'] = new Array();
+   
    jQuery('#portlet_buzzword_new_button').click(function(){
       portlet_data['new_buzzword'] = jQuery('#portlet_buzzword_new').val();
 	  var json_data = new Object();
@@ -2442,7 +2449,7 @@ function return_portlet_buzzwords(id, portlet){
 	  });
 	  
 	  portlet_data['buzzwords_new'] = new Array();
-	  portlet_data['buzzwords_change'] = new Array();
+	  //portlet_data['buzzwords_change'] = new Array();
 	  portlet_data['buzzwords_delete'] = new Array();
 	  portlet_data['buzzwords_save'] = false;
    }
