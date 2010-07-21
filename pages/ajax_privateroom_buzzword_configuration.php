@@ -27,7 +27,6 @@ include_once('functions/development_functions.php');
 if(isset($_GET['do'])){
 	if($_GET['do'] == 'save_new_buzzword'){
       $new_buzzword = '';
-      
       $get_keys = array_keys($_GET);
       foreach($get_keys as $get_key){
          if(stristr($get_key, 'new_buzzword')){
@@ -50,6 +49,19 @@ if(isset($_GET['do'])){
       #$page->add('new_column_name', $json_return_array['new_column_name']);
 	   #$page->add('new_row', $json_return_array['new_row']);
 	   #$page->add('new_row_name', $json_return_array['new_row_name']);
+	} elseif($_GET['do'] == 'delete_buzzword'){
+	   $delete_buzzword = '';
+      $get_keys = array_keys($_GET);
+      foreach($get_keys as $get_key){
+         if(stristr($get_key, 'buzzword_delete')){
+            $delete_buzzword = $_GET[$get_key];
+         }
+      }
+      $buzzword_manager = $environment->getLabelManager();
+      $buzzword_item = $buzzword_manager->getItem($delete_buzzword);
+      $page->add('delete_buzzword_id', $buzzword_item->getItemID());
+      $page->add('delete_buzzword_name', $buzzword_item->getName());
+      $buzzword_item->delete();
 	}
 }
 ?>

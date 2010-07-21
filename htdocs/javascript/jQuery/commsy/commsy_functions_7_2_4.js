@@ -2257,40 +2257,95 @@ function BuzzwordItem(id, name) {
     this.name = name;
 }
 portlet_data['buzzwords_new'] = new Array();
+portlet_data['buzzwords_delete'] = new Array();
 function turn_portlet_buzzwords(id, portlet){
    jQuery('#portlet_buzzword_new').val('');
-   jQuery("#"+id).find('input').each(function(){
-      if(jQuery(this).attr('type') == 'submit'){
-	     jQuery(this).click(function(){
-	        portlet_data['new_buzzword'] = jQuery('#portlet_buzzword_new').val();
-	    	var json_data = new Object();
-	    	json_data['new_buzzword'] = jQuery('#portlet_buzzword_new').val();
-	    	jQuery.ajax({
-	    	   url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct=privateroom_buzzword_configuration&output=json&do=save_new_buzzword',
-	    	   data: json_data,
-	    	   success: function(msg){
-	    		  portlet_data['buzzwords_save'] = true;
-	    		  jQuery('#portlet_buzzword_new').val('');
-	    	      //portlet.revertFlip();
-	    		  var resultJSON = eval('(' + msg + ')');
-                  if (resultJSON === undefined){
-                  }else{
-                	  portlet_data['buzzwords_new'].push(new BuzzwordItem(resultJSON['new_buzzword_id'], resultJSON['new_buzzword_name']))
-                  }
-	    	   }
-	    	});
-		 });
-      }
+   //jQuery("#"+id).find('input').each(function(){
+      //if(jQuery(this).attr('id') == 'portlet_buzzword_new_button'){
+   jQuery('#portlet_buzzword_new_button').click(function(){
+      portlet_data['new_buzzword'] = jQuery('#portlet_buzzword_new').val();
+	  var json_data = new Object();
+	  json_data['new_buzzword'] = jQuery('#portlet_buzzword_new').val();
+	  jQuery.ajax({
+	     url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct=privateroom_buzzword_configuration&output=json&do=save_new_buzzword',
+	     data: json_data,
+	     success: function(msg){
+		    portlet_data['buzzwords_save'] = true;
+		    jQuery('#portlet_buzzword_new').val('');
+	        //portlet.revertFlip();
+		    var resultJSON = eval('(' + msg + ')');
+            if (resultJSON === undefined){
+            }else{
+        	   portlet_data['buzzwords_new'].push(new BuzzwordItem(resultJSON['new_buzzword_id'], resultJSON['new_buzzword_name']));
+        	   var insert = false;
+        	   jQuery('#portlet_buzzword_preferences_list').find('div').each(function(){	  
+               if(jQuery(this).find('.portlet_buzzword_textfield').val().toLowerCase() > resultJSON['new_buzzword_name'].toLowerCase() && !insert){
+                  jQuery(this).before('<div><input type="text" class="portlet_buzzword_textfield" id="portlet_buzzword_'+resultJSON['new_buzzword_id']+'" value="'+resultJSON['new_buzzword_name']+'" size="40">&nbsp;<input type="submit" class="portlet_buzzword_change_button" id="'+resultJSON['new_buzzword_id']+'" value="Ändern">&nbsp;<input type="submit" class="portlet_buzzword_delete_button" id="'+resultJSON['new_buzzword_id']+'" value="Löschen"></div>');
+               	  insert = true;
+               }
+               });
+        	   if(!insert){
+                  jQuery('#portlet_buzzword_preferences_list').find('div').last().after('<div><input type="text" class="portlet_buzzword_textfield" id="portlet_buzzword_'+resultJSON['new_buzzword_id']+'" value="'+resultJSON['new_buzzword_name']+'" size="40">&nbsp;<input type="submit" class="portlet_buzzword_change_button" id="'+resultJSON['new_buzzword_id']+'" value="Ändern">&nbsp;<input type="submit" class="portlet_buzzword_delete_button" id="'+resultJSON['new_buzzword_id']+'" value="Löschen"></div>');
+               }
+            }
+	     }
+	  });
    });
+   jQuery('.portlet_buzzword_change_button').each(function(){
+	   jQuery(this).click(function(){
+		   alert(jQuery(this).attr('id')); 
+	   });
+   });
+   jQuery('.portlet_buzzword_delete_button').each(function(){
+	   jQuery(this).click(function(){
+		  var json_data = new Object();
+		  json_data['buzzword_delete'] = jQuery(this).attr('id');
+		  jQuery.ajax({
+		     url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct=privateroom_buzzword_configuration&output=json&do=delete_buzzword',
+		     data: json_data,
+		     success: function(msg){
+			    jQuery('#'+json_data['buzzword_delete']).parent().remove();
+			    portlet_data['buzzwords_save'] = true;
+			    var resultJSON = eval('(' + msg + ')');
+	            if (resultJSON === undefined){
+	            }else{
+	            	portlet_data['buzzwords_delete'].push(new BuzzwordItem(resultJSON['delete_buzzword_id'], resultJSON['delete_buzzword_name']))
+	            }
+		     }
+		  });
+	   });
+   });
+      //}
+   //});
 }
 
 function return_portlet_buzzwords(id, portlet){
    if(portlet_data['buzzwords_save']){
+	  //jQuery(portlet).find('.portlet-content').find('#null').remove();
 	  for ( var int3 = 0; int3 < portlet_data['buzzwords_new'].length; int3++) {
 		 var temp_buzzword = portlet_data['buzzwords_new'][int3];
-		 //alert(temp_buzzword.name);
-		 jQuery(portlet).find('.portlet-content').append('<a href="commsy.php?cid='+buzzword_cid+'&amp;mod=entry&amp;fct=index&amp;selbuzzword='+temp_buzzword.id+'" title="'+temp_buzzword.name+'"><span id="buzzword_'+temp_buzzword.id+'" class="droppable_buzzword" style="margin-left:2px; margin-right:2px; color: rgb(63%,63%,63%);font-size:11px;">'+temp_buzzword.name+'</span></a>')
-      }
+		 var insert = false;
+		 jQuery(portlet).find('.portlet-content').find('a').each(function(){
+			 if((jQuery(this).attr('title').toLowerCase() > temp_buzzword.name.toLowerCase()) && !insert){
+				jQuery(this).before('<a href="commsy.php?cid='+buzzword_cid+'&amp;mod=entry&amp;fct=index&amp;selbuzzword='+temp_buzzword.id+'" title="'+temp_buzzword.name+'"><span id="buzzword_'+temp_buzzword.id+'" class="droppable_buzzword" style="margin-left:2px; margin-right:2px; color: rgb(63%,63%,63%);font-size:11px;">'+temp_buzzword.name+'</span></a>');
+			    insert = true;
+			 }
+		 });
+		 if(!insert){
+		    jQuery(portlet).find('.portlet-content').find('a').last().after('<a href="commsy.php?cid='+buzzword_cid+'&amp;mod=entry&amp;fct=index&amp;selbuzzword='+temp_buzzword.id+'" title="'+temp_buzzword.name+'"><span id="buzzword_'+temp_buzzword.id+'" class="droppable_buzzword" style="margin-left:2px; margin-right:2px; color: rgb(63%,63%,63%);font-size:11px;">'+temp_buzzword.name+'</span></a>');
+		 }
+	  }
+	  
+	  for ( var int = 0; int < portlet_data['buzzwords_delete'].length; int++) {
+		var temp_delete_buzzword = portlet_data['buzzwords_delete'][int];
+		jQuery(portlet).find('.portlet-content').find('a').each(function(){
+			var temp_id_array = jQuery(this).find('span').attr('id').split('_');
+			var temp_id = temp_id_array[1];
+			if(temp_id == temp_delete_buzzword.id){
+			   jQuery(this).remove();
+			}
+		});
+	  }
 	  
 	  jQuery(".droppable_buzzword").droppable({
 		 hoverClass: 'droppable_item_hover',
@@ -2317,6 +2372,7 @@ function return_portlet_buzzwords(id, portlet){
 	  });
 	  
 	  portlet_data['buzzwords_new'] = new Array();
+	  portlet_data['buzzwords_delete'] = new Array();
 	  portlet_data['buzzwords_save'] = false;
    }
 }

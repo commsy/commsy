@@ -887,7 +887,7 @@ class cs_entry_index_view extends cs_index_view {
                $style_text .= ' color: rgb('.$font_color.'%,'.$font_color.'%,'.$font_color.'%);';
             }
             $style_text .= 'font-size:'.$font_size.'px;"';
-            $title  = '<span  id="buzzword_'.$buzzword->getItemID().'" class="droppable_buzzword" '.$style_text.'>'.LF;
+            $title  = '<span id="buzzword_'.$buzzword->getItemID().'" class="droppable_buzzword" '.$style_text.'>'.LF;
             $title .= $this->_text_as_html_short($buzzword->getName()).LF;
             $title .= '</span> ';
 
@@ -895,11 +895,12 @@ class cs_entry_index_view extends cs_index_view {
                                 'entry',
                                 'index',
                                 $params,
-                                $title,$title).LF;
+                                $title,
+                                $buzzword->getName()).LF;
          }
          $buzzword = $buzzword_list->getNext();
       }
-      $html .= '<div style="width:100%; text-align:right; padding-right:2px; padding-top:5px;">';
+      #$html .= '<div style="width:100%; text-align:right; padding-right:2px; padding-top:5px;">';
       #if ($current_user->isUser() and $this->_with_modifying_actions ) {
       #   $params = array();
       #   $params['module'] = $this->_environment->getCurrentModule();
@@ -908,7 +909,7 @@ class cs_entry_index_view extends cs_index_view {
       #} else {
       #   $html .= '<span class="disabled">'.$this->_translator->getMessage('COMMON_EDIT').'</span>'.LF;
       #}
-      $html .= '</div>'.LF;
+      #$html .= '</div>'.LF;
       $html .= '</div>'.LF;
       
       // Preferences link
@@ -924,8 +925,22 @@ class cs_entry_index_view extends cs_index_view {
       $html .= '<div class="portlet-content">'.LF;
       
       // form
-      $html .= '<input type="text" id="portlet_buzzword_new">';
-      $html .= '<input type="submit" id="portlet_youtube_button" value="'.$this->_translator->getMessage('BUZZWORDS_NEW_BUTTON').'">';
+      $html .= '<input type="text" id="portlet_buzzword_new" size="40">';
+      $html .= '<input type="submit" id="portlet_buzzword_new_button" value="'.$this->_translator->getMessage('BUZZWORDS_NEW_BUTTON').'">';
+      $html .= '<br/><br/>'.LF;
+      
+      $html .= '<div id="portlet_buzzword_preferences_list">';
+      $buzzword = $buzzword_list->getFirst();
+      while($buzzword){
+      	$html .= '<div>';
+      	$html .= '<input type="text" class="portlet_buzzword_textfield" id="portlet_buzzword_'.$buzzword->getItemID().'" value="'.$buzzword->getName().'" size="40">&nbsp;';
+      	$html .= '<input type="submit" class="portlet_buzzword_change_button" id="'.$buzzword->getItemID().'" value="'.$this->_translator->getMessage('BUZZWORDS_CHANGE_BUTTON').'">&nbsp;';
+      	$html .= '<input type="submit" class="portlet_buzzword_delete_button" id="'.$buzzword->getItemID().'" value="'.$this->_translator->getMessage('COMMON_DELETE_BUTTON').'">';
+      	$html .= '</div>';
+      	$buzzword = $buzzword_list->getNext();
+      }
+      $html .= '</div>';
+      
       // /form
       
       $html .= '</div>'.LF;
