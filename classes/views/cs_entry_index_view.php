@@ -864,7 +864,7 @@ class cs_entry_index_view extends cs_index_view {
       $html  = '';
       $html .= '<div class="portlet" id="my_buzzword_box">'.LF;
       $html .= '<div class="portlet-header">'.LF;
-      $html .= $this->_translator->getMessage('PRIVATEROOM_MY_ENTRIES_BUZZWORD_BOX').LF;
+      $html .= $this->_translator->getMessage('COMMON_BUZZWORD_BOX').LF;
       $html .= '<div style="float:right;"><a name="myentries_remove" style="cursor:pointer;"><img src="images/commsyicons/16x16/delete.png" /></a></div>';
       $html .= '</div>'.LF;
       $html .= '<div class="portlet-content">'.LF;
@@ -969,6 +969,7 @@ class cs_entry_index_view extends cs_index_view {
       $html .= '<!--'.LF;
       $html .= 'var buzzword_cid = "'.$this->_environment->getCurrentContextID().'";'.LF;
       $html .= 'var ajax_function = "privateroom_myentries";'.LF;
+      $html .= 'var buzzword_message = "'.$this->_translator->getMessage('COMMON_NO_ENTRIES').'";'.LF;
       $html .= '-->'.LF;
       $html .= '</script>'.LF;
       

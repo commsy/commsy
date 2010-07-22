@@ -1828,7 +1828,7 @@ function portlet_turn_action(preferences, id, portlet){
          turn_portlet_matrix(id, portlet);
       } else if (id == 'cs_privateroom_home_new_entries_view'){
          turn_portlet_new_entries(id, portlet);
-      } else if (id == 'my_buzzword_box'){
+      } else if ((id == 'my_buzzword_box') || (id == 'cs_privateroom_home_buzzword_view')){
          turn_portlet_buzzwords(id, portlet);
       }
    } else {
@@ -1846,7 +1846,7 @@ function portlet_turn_action(preferences, id, portlet){
          return_portlet_matrix(id, portlet);
       } else if (id == 'cs_privateroom_home_new_entries_view'){
          return_portlet_new_entries(id, portlet);
-      } else if (id == 'my_buzzword_box'){
+      } else if ((id == 'my_buzzword_box') || (id == 'cs_privateroom_home_buzzword_view')){
          return_portlet_buzzwords(id, portlet);
       }
    }
@@ -2415,6 +2415,9 @@ function return_portlet_buzzwords(id, portlet){
 			   jQuery(this).remove();
 			}
 		});
+		if(jQuery(portlet).find('.portlet-content').find('a').size() == 0){
+			jQuery(portlet).find('.portlet-content').append('<span class="disabled" style="font-size:10pt;">'+buzzword_message+'</span></div><div id="null"></div>');
+		}
 	  }
 	  
 	  for ( var int = 0; int < portlet_data['buzzwords_change'].length; int++) {

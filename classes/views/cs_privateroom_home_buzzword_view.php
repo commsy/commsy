@@ -59,41 +59,75 @@ class cs_privateroom_home_buzzword_view extends cs_view {
       $html .= '<div style="font-size:8pt; width:100%">'.LF;
       $buzzword = $buzzword_list->getFirst();
       $params = $this->_environment->getCurrentParameterArray();
+      #if (!$buzzword){
+      #   $html .= '<span class="disabled" style="font-size:10pt;">'.$this->_translator->getMessage('COMMON_NO_ENTRIES').'</span>';
+      #}
+      #while ($buzzword){
+      #   $count = $buzzword->getCountLinks();
+      #   if ($count > 0 and true){
+      #      $font_size = $this->getBuzzwordSizeLogarithmic($count);
+      #      $font_color = 100 - $this->getBuzzwordColorLogarithmic($count);
+      #      $params['selbuzzword'] = $buzzword->getItemID();
+      #      $temp_text = '';
+      #      $style_text  = 'style="margin-left:2px; margin-right:2px;';
+      #      $style_text .= ' color: rgb('.$font_color.'%,'.$font_color.'%,'.$font_color.'%);';
+      #      $style_text .= 'font-size:'.$font_size.'px;"';
+      #      $title  = '<span  '.$style_text.'>'.LF;
+      #      $title .= $this->_text_as_html_short($buzzword->getName()).LF;
+      #      $title .= '</span> ';
+
+      #      $html .= ahref_curl($this->_environment->getCurrentContextID(),
+      #                          'campus_search',
+      #                          'index',
+      #                          $params,
+      #                          $title,$title).LF;
+      #   }
+      #   $buzzword = $buzzword_list->getNext();
+      #}
+      #$html .= '<div style="width:100%; text-align:right; padding-right:2px; padding-top:5px;">';
+      #if ($current_user->isUser() and $this->_with_modifying_actions ) {
+      #   $params = array();
+      #   $params['module'] = $this->_environment->getCurrentModule();
+      #   $html .= ahref_curl($this->_environment->getCurrentContextID(),'buzzwords','edit',$params,$this->_translator->getMessage('COMMON_EDIT')).LF;
+      #   unset($params);
+      #} else {
+      #   $html .= '<span class="disabled">'.$this->_translator->getMessage('COMMON_EDIT').'</span>'.LF;
+      #}
+      #$html .= '</div>'.LF;
+
+      $buzzword = $buzzword_list->getFirst();
       if (!$buzzword){
          $html .= '<span class="disabled" style="font-size:10pt;">'.$this->_translator->getMessage('COMMON_NO_ENTRIES').'</span>';
       }
       while ($buzzword){
          $count = $buzzword->getCountLinks();
-         if ($count > 0 and true){
+         if ($count > 0 or true){
             $font_size = $this->getBuzzwordSizeLogarithmic($count);
             $font_color = 100 - $this->getBuzzwordColorLogarithmic($count);
             $params['selbuzzword'] = $buzzword->getItemID();
             $temp_text = '';
             $style_text  = 'style="margin-left:2px; margin-right:2px;';
-            $style_text .= ' color: rgb('.$font_color.'%,'.$font_color.'%,'.$font_color.'%);';
+            if (!empty($this->_selbuzzword) and $this->_selbuzzword == $buzzword->getItemID()){
+               $style_text .= ' color:#000000;';
+               $style_text .= ' font-weight:bold;';
+            }else{
+               $style_text .= ' color: rgb('.$font_color.'%,'.$font_color.'%,'.$font_color.'%);';
+            }
             $style_text .= 'font-size:'.$font_size.'px;"';
-            $title  = '<span  '.$style_text.'>'.LF;
+            $title  = '<span id="buzzword_'.$buzzword->getItemID().'" class="droppable_buzzword" '.$style_text.'>'.LF;
             $title .= $this->_text_as_html_short($buzzword->getName()).LF;
             $title .= '</span> ';
 
             $html .= ahref_curl($this->_environment->getCurrentContextID(),
-                                'campus_search',
+                                'entry',
                                 'index',
                                 $params,
-                                $title,$title).LF;
+                                $title,
+                                $buzzword->getName()).LF;
          }
          $buzzword = $buzzword_list->getNext();
       }
-      $html .= '<div style="width:100%; text-align:right; padding-right:2px; padding-top:5px;">';
-      if ($current_user->isUser() and $this->_with_modifying_actions ) {
-         $params = array();
-         $params['module'] = $this->_environment->getCurrentModule();
-         $html .= ahref_curl($this->_environment->getCurrentContextID(),'buzzwords','edit',$params,$this->_translator->getMessage('COMMON_EDIT')).LF;
-         unset($params);
-      } else {
-         $html .= '<span class="disabled">'.$this->_translator->getMessage('COMMON_EDIT').'</span>'.LF;
-      }
-      $html .= '</div>'.LF;
+      
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
       unset($current_user);
@@ -123,5 +157,54 @@ class cs_privateroom_home_buzzword_view extends cs_view {
       return round($minsize+round($a)*$treshold);
    }
 
+   function getPreferencesAsHTML(){
+   	$buzzword_manager = $this->_environment->getLabelManager();
+      $buzzword_manager->resetLimits();
+      $buzzword_manager->setContextLimit($this->_environment->getCurrentContextID());
+      $buzzword_manager->setTypeLimit('buzzword');
+      $buzzword_manager->setGetCountLinks();
+      $buzzword_manager->select();
+      $buzzword_list = $buzzword_manager->get();
+      $html = '<input type="text" id="portlet_buzzword_new" size="40">';
+      $html .= '<input type="submit" id="portlet_buzzword_new_button" value="'.$this->_translator->getMessage('BUZZWORDS_NEW_BUTTON').'">';
+      $html .= '<br/><br/>'.LF;
+      
+      $html .= '<div id="portlet_buzzword_combine">';
+      $html .= '<select id="portal_buzzword_combine_first" size="1" tabindex="15">'.LF;
+      $buzzword = $buzzword_list->getFirst();
+      while($buzzword){
+         $html .= '<option value="'.$buzzword->getItemID().'">'.$buzzword->getName().'</option>'.LF;
+         $buzzword = $buzzword_list->getNext();
+      }
+      $html .= '</select>'.LF;
+      $html .= '<select id="portal_buzzword_combine_second" size="1" tabindex="15">'.LF;
+      $buzzword = $buzzword_list->getFirst();
+      while($buzzword){
+         $html .= '<option value="'.$buzzword->getItemID().'">'.$buzzword->getName().'</option>'.LF;
+         $buzzword = $buzzword_list->getNext();
+      }
+      $html .= '</select>'.LF;
+      $html .= '<input type="submit" id="portlet_buzzword_combine_button" value="'.$this->_translator->getMessage('BUZZWORDS_COMBINE_BUTTON').'">';
+      $html .= '</div><br/>';
+      
+      $html .= '<div id="portlet_buzzword_preferences_list">';
+      $buzzword = $buzzword_list->getFirst();
+      while($buzzword){
+         $html .= '<div>';
+         $html .= '<input type="text" class="portlet_buzzword_textfield" id="portlet_buzzword_'.$buzzword->getItemID().'" value="'.$buzzword->getName().'" size="40">&nbsp;';
+         $html .= '<input type="submit" class="portlet_buzzword_change_button" id="'.$buzzword->getItemID().'" value="'.$this->_translator->getMessage('BUZZWORDS_CHANGE_BUTTON').'">&nbsp;';
+         $html .= '<input type="submit" class="portlet_buzzword_delete_button" id="'.$buzzword->getItemID().'" value="'.$this->_translator->getMessage('COMMON_DELETE_BUTTON').'">';
+         $html .= '</div>';
+         $buzzword = $buzzword_list->getNext();
+      }
+      $html .= '</div>';
+      $html .= '<script type="text/javascript">'.LF;
+      $html .= '<!--'.LF;
+      $html .= 'var buzzword_cid = "'.$this->_environment->getCurrentContextID().'";'.LF;
+      $html .= 'var buzzword_message = "'.$this->_translator->getMessage('COMMON_NO_ENTRIES').'";'.LF;
+      $html .= '-->'.LF;
+      $html .= '</script>'.LF;
+      return $html;
+   }
 }
 ?>
