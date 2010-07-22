@@ -592,6 +592,12 @@ class cs_page_room_view extends cs_page_view {
                  or ($this->_module == 'auth' and $link['module'] == 'contact')
                  or ($this->_module == 'user' and $link['module'] == 'contact')
                  or ($this->_module == 'rubric' and $this->_function =='mail' and $link['module'] == $h_module )
+                 or ( $this->_module == 'todo'
+                      and $link['module'] == 'date'
+                      and $this->_environment->inPrivateRoom()
+                      and !empty($c_use_new_private_room)
+                      and $c_use_new_private_room
+                    )
             ) {
                $ahref = ahref_curl($this->_environment->getCurrentContextID(), $link['module'], $link['function'], $link['parameter'], $link_title, $link['explanation'],'','','','','','class="navlist_current"');
             } elseif ( $this->_module =='annotation' ) {

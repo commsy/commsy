@@ -415,6 +415,14 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                  $todo_tooltip['date'] = $this->_translator->getMessage('TODO_NO_END_DATE_LONG');
               }
               $todo_tooltip['color'] = $color_link;
+              $todo_context_item = $todo_item->getContextItem();
+              if ( isset($todo_context_item) ) {
+                  $room_title = $todo_context_item->getTitle();
+                  if ( !empty($room_title) ) {
+                     $todo_tooltip['context'] = encode(AS_HTML_SHORT,$room_title);
+                  }
+                  unset($todo_context_item);
+              }
               $todo_tooltip_array[$todo_tooltip['iid']] = $todo_tooltip;
               // tooltip
               $i++;
