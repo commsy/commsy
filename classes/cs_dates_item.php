@@ -322,7 +322,6 @@ class cs_dates_item extends cs_item {
    function getColor() {
       return $this->_getValue('color');
    }
-   
 
    /** set recurrence_id of a date
     * this method sets the recurrence_id of the date
@@ -345,7 +344,7 @@ class cs_dates_item extends cs_item {
    function getRecurrenceId() {
       return $this->_getValue('recurrence_id');
    }
-   
+
    /** set recurrence_pattern of a date
     * this method sets the recurrence_pattern of the date
     *
@@ -367,7 +366,7 @@ class cs_dates_item extends cs_item {
    function getRecurrencePattern() {
       return $this->_getValue('recurrence_pattern');
    }
-   
+
    function issetPrivatDate(){
       return $this->_getValue('date_mode')==1;
    }
@@ -380,7 +379,8 @@ class cs_dates_item extends cs_item {
          $user_manager->setIDArrayLimit($member_ids);
          $user_manager->select();
          $members = $user_manager->get();
-      }        // returns a cs_list of user_items
+      }
+      // returns a cs_list of user_items
       return $members;
    }
 
@@ -445,7 +445,7 @@ class cs_dates_item extends cs_item {
    function delete() {
       $date_manager = $this->_environment->getDatesManager();
       $this->_delete($date_manager);
-      
+
       // delete associated annotations
       $this->deleteAssociatedAnnotations();
    }

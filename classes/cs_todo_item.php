@@ -88,7 +88,7 @@ class cs_todo_item extends cs_item {
    * @return datetime date of a todo
    */
    function getDate () {
-   	  $date = $this->_getValue('end_date');
+      $date = $this->_getValue('end_date');
       return $date;
    }
 
@@ -196,7 +196,8 @@ class cs_todo_item extends cs_item {
          $user_manager->setIDArrayLimit($member_ids);
          $user_manager->select();
          $members = $user_manager->get();
-      }        // returns a cs_list of user_items
+      }
+      // returns a cs_list of user_items
       return $members;
    }
 

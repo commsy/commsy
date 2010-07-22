@@ -504,22 +504,24 @@ class cs_user_manager extends cs_manager {
      if (isset($this->_user_limit)) {
         $query .= ' AND '.$this->addDatabasePrefix('user').'.user_id = "'.encode(AS_DB,$this->_user_limit).'"';
      }
-     if ( isset($this->_context_array_limit)
-          and !empty($this->_context_array_limit)
-          and count($this->_context_array_limit) > 0
-          and !empty($this->_context_array_limit[0])
-        ) {
-        $id_string = implode(',',$this->_context_array_limit);
-        if ( $this->_only_from_portal ) {
-           $query .= ' AND user2.context_id IN ('.encode(AS_DB,$id_string).')';
-           $query .= ' AND '.$this->addDatabasePrefix('user').'.context_id = "'.encode(AS_DB,$this->_environment->getCurrentPortalID()).'"';
+     if ( empty($this->_id_array_limit) ) {
+        if ( isset($this->_context_array_limit)
+             and !empty($this->_context_array_limit)
+             and count($this->_context_array_limit) > 0
+             and !empty($this->_context_array_limit[0])
+           ) {
+           $id_string = implode(',',$this->_context_array_limit);
+           if ( $this->_only_from_portal ) {
+              $query .= ' AND user2.context_id IN ('.encode(AS_DB,$id_string).')';
+              $query .= ' AND '.$this->addDatabasePrefix('user').'.context_id = "'.encode(AS_DB,$this->_environment->getCurrentPortalID()).'"';
+           } else {
+              $query .= ' AND '.$this->addDatabasePrefix('user').'.context_id IN ('.$id_string.')';
+           }
+        } elseif (isset($this->_room_limit) and $this->_room_limit != 0) {
+           $query .= ' AND '.$this->addDatabasePrefix('user').'.context_id = "'.encode(AS_DB,$this->_room_limit).'"';
         } else {
-           $query .= ' AND '.$this->addDatabasePrefix('user').'.context_id IN ('.$id_string.')';
+           $query .= ' AND '.$this->addDatabasePrefix('user').'.context_id IS NULL';
         }
-     } elseif (isset($this->_room_limit) and $this->_room_limit != 0) {
-        $query .= ' AND '.$this->addDatabasePrefix('user').'.context_id = "'.encode(AS_DB,$this->_room_limit).'"';
-     } else {
-        $query .= ' AND '.$this->addDatabasePrefix('user').'.context_id IS NULL';
      }
 
      if ( isset($this->_auth_source_limit) ) {

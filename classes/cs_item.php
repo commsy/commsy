@@ -1486,6 +1486,7 @@ class cs_item {
 
 
    function getLinkItemList ($type) {
+      $context_limit =
       $link_list = new cs_list();
       $link_item_manager = $this->_environment->getLinkItemManager();
       $link_item_manager->setLinkedItemLimit($this);
@@ -1506,10 +1507,15 @@ class cs_item {
             )
          ) {
          $link_item_manager->setRoomLimit($this->getContextID());
-      } elseif ( $this->isA(CS_LABEL_TYPE) and $this->getLabelType() == CS_GROUP_TYPE ) {
+      } elseif ( $this->isA(CS_LABEL_TYPE)
+                 and $this->getLabelType() == CS_GROUP_TYPE
+               ) {
          // müsste dies nicht für alle Fälle gelten ???
          $link_item_manager->setRoomLimit($this->getContextID());
-      } elseif ( $this->isA(CS_USER_TYPE) ) {
+      } elseif ( $this->isA(CS_USER_TYPE)
+                 or $this->isA(CS_DATE_TYPE)
+                 or $this->isA(CS_TODO_TYPE)
+               ) {
          $link_item_manager->setRoomLimit($this->getContextID());
       } else {
          $link_item_manager->setRoomLimit($this->_environment->getCurrentContextID() );
