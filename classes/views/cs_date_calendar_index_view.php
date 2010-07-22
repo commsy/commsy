@@ -53,6 +53,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
    private $_selected_room_array = array();
    var $_selected_assignment = NULL;
    private $_selected_assignment_array = array();
+   private $_tooltip_div_array = array();
 
    // SUNBIRD
    var $use_sunbird = true;
@@ -358,6 +359,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
             $html .= '<div class="right_box_main" style="'.$width.' height:278px; overflow-y:auto; padding:0px;">'.LF;
          }
          if ( isset($todo_list) and !$todo_list->isEmpty()){
+           $todo_array_for_jQuery = array();
            $todo_tooltip_array = array();
            $todo_item = $todo_list->getFirst();
            $i = 1;
@@ -367,7 +369,8 @@ class cs_date_calendar_index_view extends cs_room_index_view {
               else{
                  $color = '#FFFFFF';
               }
-              $html .= '<div style="background-color:'.$color.'; width:100%; overflow-x:hidden; white-space:nowrap;"><div style="padding:2px 3px;">'.LF;
+              $html .= '<div style="background-color:'.$color.'; width:100%; overflow-x:hidden; white-space:nowrap;">';
+              $html .= '<div style="padding:2px 3px;" id="todo_tooltip_'.$todo_item->getItemID().'" data-tooltip="todo_tooltip_'.$todo_item->getItemID().'">'.LF;
               $params = array();
               $params['iid'] = $todo_item->getItemID();
               $original_date = $todo_item->getDate();
@@ -375,11 +378,13 @@ class cs_date_calendar_index_view extends cs_room_index_view {
               $actual_date = date("Y-m-d H:i:s");
               if ($original_date < $actual_date){
                  $style = 'class="required" style="font-weight:normal;"';
+                 $color_link = 'red';
               }else{
                  $style = 'style="color:#05860F;"';
+                 $color_link = '#05860F';
               }
 
-              $html .= ahref_curl(
+              $link = ahref_curl(
                                $todo_item->getContextID(),
                                CS_TODO_TYPE,
                                'detail',
@@ -392,6 +397,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                                '',
                                '',
                                $style).LF;
+              $html .= $link;
               $html .= '</div></div>';
 
               // tooltip
@@ -408,10 +414,9 @@ class cs_date_calendar_index_view extends cs_room_index_view {
               } else {
                  $todo_tooltip['date'] = $this->_translator->getMessage('TODO_NO_END_DATE_LONG');
               }
-              $todo_tooltip['color'] = 'yellow';
+              $todo_tooltip['color'] = $color_link;
               $todo_tooltip_array[$todo_tooltip['iid']] = $todo_tooltip;
               // tooltip
-
               $i++;
               $todo_item = $todo_list->getNext();
            }
@@ -420,55 +425,36 @@ class cs_date_calendar_index_view extends cs_room_index_view {
 
          // tooltip
          if ( !empty($todo_tooltip_array) ) {
-            /*
-            $html .= '<div id="mystickytooltip_todo" class="stickytooltip"><div style="border:1px solid #cccccc;">';
-            foreach($todo_tooltip_array as $id => $tooltip){
-               $html .= '<div id="' . $id . '" class="atip" style="padding:5px; border:2px solid ' . $tooltip['color'] . '">'.LF;
-               $html .= '<table>'.LF;
-               $html .= '<tr><td colspan="2"><b>' . $tooltip['title'] . '</b></td></tr>'.LF;
-               $html .= '<tr><td style="vertical-align:top;"><b>' . $this->_translator->getMessage('TODO_DATE') . ':</b></td><td>' .  $tooltip['date'] . '</td></tr>'.LF;
-               $html .= '<tr><td style="vertical-align:top;"><b>' . $this->_translator->getMessage('DATE_PARTICIPANTS') . ':</b></td><td>'.LF;
+            foreach($todo_tooltip_array as $id => $tooltip) {
+               $tooltip_html = '<div id="todo_tooltip_'.$tooltip['iid'].'" class="atip" style="padding:5px; border:2px solid ' . $tooltip['color'] . '">'.LF;
+               $tooltip_html .= '<table>'.LF;
+               $tooltip_html .= '<tr><td colspan="2"><b>' . $tooltip['title'] . '</b></td></tr>'.LF;
+               $tooltip_html .= '<tr><td style="vertical-align:top;"><b>' . $this->_translator->getMessage('TODO_DATE') . ':</b></td><td>' .  $tooltip['date'] . '</td></tr>'.LF;
+               $tooltip_html .= '<tr><td style="vertical-align:top;"><b>' . $this->_translator->getMessage('DATE_PARTICIPANTS') . ':</b></td><td>'.LF;
                if($tooltip['participants']->isEmpty()){
-                  $html .= $this->_translator->getMessage('TODO_NO_PROCESSOR');
+                  $tooltip_html .= $this->_translator->getMessage('TODO_NO_PROCESSOR');
                } else {
                   $participant = $tooltip['participants']->getFirst();
                   $count = $tooltip['participants']->getCount();
                   $counter = 1;
                   while ($participant) {
-                     $html .= $participant->getFullName();
+                     $tooltip_html .= $participant->getFullName();
                      if ( $counter < $count) {
-                        $html .= ', ';
+                        $tooltip_html .= ', ';
                      }
                      $participant = $tooltip['participants']->getNext();
                      $counter++;
                   }
                }
-               $html .= '</td></tr>'.LF;
+               $tooltip_html .= '</td></tr>'.LF;
                if ( !empty($tooltip['context']) ) {
-                  $html .= '<tr><td style="vertical-align:top;"><b>' . $this->_translator->getMessage('COMMON_ROOM') . ':</b></td><td>' . $tooltip['context'] . '</td></tr>'.LF;
+                  $tooltip_html .= '<tr><td style="vertical-align:top;"><b>' . $this->_translator->getMessage('COMMON_ROOM') . ':</b></td><td>' . $tooltip['context'] . '</td></tr>'.LF;
                }
-               $html .= '</table>'.LF;
-               $html .= '</div>'.LF;
+               $tooltip_html .= '</table>'.LF;
+               $tooltip_html .= '</div>'.LF;
+               $this->_tooltip_div_array[] = $tooltip_html;
+               unset($tooltip_html);
             }
-            $html .= '</div></div>';
-            $html .= '<script type="text/javascript">'.LF;
-            $html .= '<!--'.LF;
-            $html .= 'var calendar_todos = new Array(';
-
-                        # ???
-            #if(isset($date_array_for_jQuery) and !empty($date_array_for_jQuery)){
-            #   $last = count($date_array_for_jQuery)-1;
-            #   for ($index = 0; $index < count($date_array_for_jQuery); $index++) {
-            #      $html .= $date_array_for_jQuery[$index];
-            #      if($index < $last){
-            #        $html .= ',';
-            #      }
-            #   }
-            #}
-            $html .= ');'.LF;
-            $html .= '-->'.LF;
-            $html .= '</script>'.LF;
-            */
          }
          // tooltip
 
@@ -3047,6 +3033,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $html .= '</div>'.LF;
 
       $html .= '<div id="mystickytooltip" class="stickytooltip"><div style="border:1px solid #cccccc;">';
+
       foreach($tooltips as $id => $tooltip){
          $html .= '<div id="' . $id . '" class="atip" style="padding:5px; border:2px solid ' . $tooltip['color'] . '">'.LF;
          $html .= '<table>'.LF;
@@ -3079,6 +3066,14 @@ class cs_date_calendar_index_view extends cs_room_index_view {
          $html .= '</table>'.LF;
          $html .= '</div>'.LF;
       }
+
+      // tooltips for todos
+      if ( !empty($this->_tooltip_div_array) ) {
+         foreach ( $this->_tooltip_div_array as $div ) {
+            $html .= $div;
+         }
+      }
+
       $html .= '</div></div>';
       $html .= '<script type="text/javascript">'.LF;
       $html .= '<!--'.LF;
