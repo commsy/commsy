@@ -2296,9 +2296,13 @@ function turn_portlet_buzzwords(id, portlet){
                	  insert = true;
                }
                });
-        	      if(!insert){
-                  jQuery('#portlet_buzzword_preferences_list').find('div').last().after('<div><input type="text" class="portlet_buzzword_textfield" id="portlet_buzzword_'+resultJSON['new_buzzword_id']+'" value="'+resultJSON['new_buzzword_name']+'" size="40">&nbsp;<input type="submit" class="portlet_buzzword_change_button" id="'+resultJSON['new_buzzword_id']+'" value="Ändern">&nbsp;<input type="submit" class="portlet_buzzword_delete_button" id="'+resultJSON['new_buzzword_id']+'" value="Löschen"></div>');
-               }
+        	   if(!insert){
+        		  if(jQuery('#portlet_buzzword_preferences_list').find('div').size() == 0){
+        			 jQuery('#portlet_buzzword_preferences_list').append('<div><input type="text" class="portlet_buzzword_textfield" id="portlet_buzzword_'+resultJSON['new_buzzword_id']+'" value="'+resultJSON['new_buzzword_name']+'" size="40">&nbsp;<input type="submit" class="portlet_buzzword_change_button" id="'+resultJSON['new_buzzword_id']+'" value="Ändern">&nbsp;<input type="submit" class="portlet_buzzword_delete_button" id="'+resultJSON['new_buzzword_id']+'" value="Löschen"></div>');
+        		  } else {
+                     jQuery('#portlet_buzzword_preferences_list').find('div').last().after('<div><input type="text" class="portlet_buzzword_textfield" id="portlet_buzzword_'+resultJSON['new_buzzword_id']+'" value="'+resultJSON['new_buzzword_name']+'" size="40">&nbsp;<input type="submit" class="portlet_buzzword_change_button" id="'+resultJSON['new_buzzword_id']+'" value="Ändern">&nbsp;<input type="submit" class="portlet_buzzword_delete_button" id="'+resultJSON['new_buzzword_id']+'" value="Löschen"></div>');
+        		  }
+        	   }
         	   activate_buzzword_buttons();
         	   var insert = false;
         	   jQuery('#portal_buzzword_combine_first').find('option').each(function(){
@@ -2308,7 +2312,11 @@ function turn_portlet_buzzwords(id, portlet){
             	   }
                });
         	   if(!insert){
-        		   jQuery('#portal_buzzword_combine_first').find('option').last().after('<option value="'+resultJSON['new_buzzword_id']+'">'+resultJSON['new_buzzword_name']+'</option>');
+        		   if(jQuery('#portal_buzzword_combine_first').find('option').size() == 0){
+        			   jQuery('#portal_buzzword_combine_first').append('<option value="'+resultJSON['new_buzzword_id']+'">'+resultJSON['new_buzzword_name']+'</option>');
+        		   } else {
+        			   jQuery('#portal_buzzword_combine_first').find('option').last().after('<option value="'+resultJSON['new_buzzword_id']+'">'+resultJSON['new_buzzword_name']+'</option>');
+        		   }
         	   }
         	   var insert = false;
         	   jQuery('#portal_buzzword_combine_second').find('option').each(function(){
@@ -2318,7 +2326,11 @@ function turn_portlet_buzzwords(id, portlet){
             	   }
                });
         	   if(!insert){
-        		   jQuery('#portal_buzzword_combine_second').find('option').last().after('<option value="'+resultJSON['new_buzzword_id']+'">'+resultJSON['new_buzzword_name']+'</option>');
+        		   if(jQuery('#portal_buzzword_combine_second').find('option').size() == 0){
+        			   jQuery('#portal_buzzword_combine_second').append('<option value="'+resultJSON['new_buzzword_id']+'">'+resultJSON['new_buzzword_name']+'</option>');
+        		   } else {
+        			   jQuery('#portal_buzzword_combine_second').find('option').last().after('<option value="'+resultJSON['new_buzzword_id']+'">'+resultJSON['new_buzzword_name']+'</option>');
+        		   }
         	   }
             }
 	     }
@@ -2384,7 +2396,13 @@ function return_portlet_buzzwords(id, portlet){
 			 }
 		 });
 		 if(!insert){
-		    jQuery(portlet).find('.portlet-content').find('a').last().after('<a href="commsy.php?cid='+buzzword_cid+'&amp;mod=entry&amp;fct=index&amp;selbuzzword='+temp_buzzword.id+'" title="'+temp_buzzword.name+'"><span id="buzzword_'+temp_buzzword.id+'" class="droppable_buzzword" style="margin-left:2px; margin-right:2px; color: rgb(63%,63%,63%);font-size:11px;">'+temp_buzzword.name+'</span></a>');
+			if(jQuery(portlet).find('.portlet-content').find('a').size() == 0){
+			   jQuery(portlet).find('.disabled').remove();
+			   jQuery(portlet).find('#id').remove();
+			   jQuery(portlet).find('.portlet-content').append('<a href="commsy.php?cid='+buzzword_cid+'&amp;mod=entry&amp;fct=index&amp;selbuzzword='+temp_buzzword.id+'" title="'+temp_buzzword.name+'"><span id="buzzword_'+temp_buzzword.id+'" class="droppable_buzzword" style="margin-left:2px; margin-right:2px; color: rgb(63%,63%,63%);font-size:11px;">'+temp_buzzword.name+'</span></a>');
+			} else {
+		       jQuery(portlet).find('.portlet-content').find('a').last().after('<a href="commsy.php?cid='+buzzword_cid+'&amp;mod=entry&amp;fct=index&amp;selbuzzword='+temp_buzzword.id+'" title="'+temp_buzzword.name+'"><span id="buzzword_'+temp_buzzword.id+'" class="droppable_buzzword" style="margin-left:2px; margin-right:2px; color: rgb(63%,63%,63%);font-size:11px;">'+temp_buzzword.name+'</span></a>');
+			}
 		 }
 	  }
 	  
