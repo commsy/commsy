@@ -63,6 +63,7 @@ if ( isset($community_list) and $community_list->isNotEmpty()) {
    }
 }
 $room_id_array_without_privateroom = $room_id_array;
+#$room_id_array[] = $environment->getCurrentContextID();
 $room_id_array[] = $current_context->getItemID();
 
 
@@ -92,11 +93,8 @@ if ($current_context->getPortletShowNewEntryList()){
       $new_entry_array = $item_manager->getAllNewPrivateRoomEntriesOfRoomList($room_id_array_without_privateroom);
       $new_entry_list = $item_manager->getPrivateRoomHomeItemList($new_entry_array);
    } else {
-   	$new_entry_list = new cs_list();
+      $new_entry_list = new cs_list();
    }
-   #$item_manager->setContextArrayLimit($room_id_array);
-   #$item_manager->select();
-   #$new_entry_list = $item_manager->getList();
    $params['with_modifying_actions'] = $current_context->isOpen();
    $new_entries_view = $class_factory->getClass(PRIVATEROOM_HOME_NEW_ENTRIES_VIEW,$params);
    $new_entries_view->setList($new_entry_list);

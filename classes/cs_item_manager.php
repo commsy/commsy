@@ -484,41 +484,44 @@ class cs_item_manager extends cs_manager {
 
    function getAllNewPrivateRoomEntriesOfRoomList($room_ids){
         $rs = array();
-        $query = 'SELECT DISTINCT '.$this->addDatabasePrefix('items').'.item_id, label.type';
-        $query .= ' FROM '.$this->addDatabasePrefix('items');
-        $query .= ' LEFT JOIN '.$this->addDatabasePrefix('labels').' AS label ON '.$this->addDatabasePrefix('items').'.item_id=label.item_id';
-        $query .= ' WHERE 1';
-        $query .= ' AND (label.type IS NULL OR label.type="group" OR label.type="topic" OR label.type="group")';
-        $query .= ' AND '.$this->addDatabasePrefix('items').'.context_id IN ('.implode(",",encode(AS_DB,$room_ids)).')';
-        $query .= ' AND '.$this->addDatabasePrefix('items').'.deleter_id IS NULL';
-        $query .= ' AND '.$this->addDatabasePrefix('items').'.deletion_date IS NULL';
-        $query .= ' AND '.$this->addDatabasePrefix('items').'.type != "annotation"';
-        $query .= ' AND '.$this->addDatabasePrefix('items').'.type != "link_item"';
-        $query .= ' AND '.$this->addDatabasePrefix('items').'.type != "task"';
-        $query .= ' AND '.$this->addDatabasePrefix('items').'.type != "tag"';
-        $query .= ' AND '.$this->addDatabasePrefix('items').'.type != "project"';
-        $query .= ' AND '.$this->addDatabasePrefix('items').'.type != "community"';
-        $query .= ' AND '.$this->addDatabasePrefix('items').'.type != "grouproom"';
-        $query .= ' AND '.$this->addDatabasePrefix('items').'.type != "discarticle"';
-        $query .= ' AND '.$this->addDatabasePrefix('items').'.type != "section"';
-        $query .= ' AND '.$this->addDatabasePrefix('items').'.type != "step"';
-        if (isset($this->_age_limit)) {
-           $query .= ' AND '.$this->addDatabasePrefix('items').'.modification_date > DATE_SUB(CURRENT_DATE,interval '.encode(AS_DB,$this->_age_limit).' day)';
-        }
-        $query .= ' ORDER BY '.$this->addDatabasePrefix('items').'.modification_date DESC';
-        $query .= ' LIMIT ';
-        if (isset($this->_interval_limit)) {
-           $query .= $this->_interval_limit;
-        }else{
-           $query .= '20';
-        }
-        // perform query
-        $result = $this->_db_connector->performQuery($query);
-        if (!isset($result)) {
-           include_once('functions/error_functions.php');trigger_error('Problems selecting items from query: "'.$query.'"',E_USER_WARNING);
-        } else {
-            foreach ( $result as $query_result ) {
-                $rs[] = $query_result['item_id'];
+        if ( !empty($room_ids) ) {
+           $query = 'SELECT DISTINCT '.$this->addDatabasePrefix('items').'.item_id, label.type';
+           $query .= ' FROM '.$this->addDatabasePrefix('items');
+           $query .= ' LEFT JOIN '.$this->addDatabasePrefix('labels').' AS label ON '.$this->addDatabasePrefix('items').'.item_id=label.item_id';
+           $query .= ' WHERE 1';
+           $query .= ' AND (label.type IS NULL OR label.type="group" OR label.type="topic" OR label.type="group")';
+           $query .= ' AND '.$this->addDatabasePrefix('items').'.context_id IN ('.implode(",",encode(AS_DB,$room_ids)).')';
+           $query .= ' AND '.$this->addDatabasePrefix('items').'.deleter_id IS NULL';
+           $query .= ' AND '.$this->addDatabasePrefix('items').'.deletion_date IS NULL';
+           $query .= ' AND '.$this->addDatabasePrefix('items').'.type != "annotation"';
+           $query .= ' AND '.$this->addDatabasePrefix('items').'.type != "link_item"';
+           $query .= ' AND '.$this->addDatabasePrefix('items').'.type != "task"';
+           $query .= ' AND '.$this->addDatabasePrefix('items').'.type != "tag"';
+           $query .= ' AND '.$this->addDatabasePrefix('items').'.type != "project"';
+           $query .= ' AND '.$this->addDatabasePrefix('items').'.type != "community"';
+           $query .= ' AND '.$this->addDatabasePrefix('items').'.type != "grouproom"';
+           $query .= ' AND '.$this->addDatabasePrefix('items').'.type != "discarticle"';
+           $query .= ' AND '.$this->addDatabasePrefix('items').'.type != "section"';
+           $query .= ' AND '.$this->addDatabasePrefix('items').'.type != "step"';
+           if (isset($this->_age_limit)) {
+              $query .= ' AND '.$this->addDatabasePrefix('items').'.modification_date > DATE_SUB(CURRENT_DATE,interval '.encode(AS_DB,$this->_age_limit).' day)';
+           }
+           $query .= ' ORDER BY '.$this->addDatabasePrefix('items').'.modification_date DESC';
+           $query .= ' LIMIT ';
+           if (isset($this->_interval_limit)) {
+              $query .= $this->_interval_limit;
+           }else{
+              $query .= '20';
+           }
+           // perform query
+           $result = $this->_db_connector->performQuery($query);
+           if (!isset($result)) {
+              include_once('functions/error_functions.php');
+              trigger_error('Problems selecting items from query: "'.$query.'"',E_USER_WARNING);
+           } else {
+               foreach ( $result as $query_result ) {
+                   $rs[] = $query_result['item_id'];
+              }
            }
         }
         return $rs;
