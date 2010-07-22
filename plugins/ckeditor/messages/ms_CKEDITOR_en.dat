@@ -1,3 +1,22 @@
 <?php
 $message["CKEDITOR_DESCRIPTION"]["en"] = "CKEditor is a WYSIWYG editor, which means that the text being edited on it looks as similar as possible to the results when publishing it. It brings to the web common editing features found on desktop editing applications like Microsoft Word and OpenOffice.";
+$message["CKEDITOR_FILES"]["en"] = "Insert files";
+$message["CKEDITOR_FILES_NO_FILES"]["en"] = "No files attached";
+$message["CKEDITOR_FILES_SELECT"]["en"] = "Select file";
+$message["CKEDITOR_IMAGES"]["en"] = "Insert images";
+$message["CKEDITOR_IMAGES_ALIGNMENT_CENTER"]["en"] = "center";
+$message["CKEDITOR_IMAGES_ALIGNMENT_LEFT"]["en"] = "flush left";
+$message["CKEDITOR_IMAGES_ALIGNMENT_RIGHT"]["en"] = "flush right";
+$message["CKEDITOR_IMAGES_NO_FILES"]["en"] = "No images attached";
+$message["CKEDITOR_IMAGES_SELECT"]["en"] = "Select image";
+$message["CKEDITOR_IMAGES_SELECT_ALIGNMENT"]["en"] = "Image-alignment";
+$message["CKEDITOR_IMAGES_SELECT_FILE"]["en"] = "Attached image";
+$message["CKEDITOR_IMAGES_SELECT_WIDTH"]["en"] = "Image-width";
+$message["CKEDITOR_IMAGES_SIZE_LARGE"]["en"] = "large";
+$message["CKEDITOR_IMAGES_SIZE_MEDIUM"]["en"] = "medium";
+$message["CKEDITOR_IMAGES_SIZE_ORIGINAL"]["en"] = "original size";
+$message["CKEDITOR_IMAGES_SIZE_SMALL"]["en"] = "small";
+$message["CKEDITOR_LINKS"]["en"] = "Link to entries in CommSy";
+$message["CKEDITOR_LINKS_NO_LINKS"]["en"] = "No entries available";
+$message["CKEDITOR_LINKS_SELECT"]["en"] = "Select entry";
 ?>

@@ -155,10 +155,45 @@ if ( $seldisplay_mode == 'calendar' or $seldisplay_mode == 'calendar_month') {
    }
    if(isset($_GET['presentation_mode']) and !empty($_GET['presentation_mode'])){
       $presentation_mode = $_GET['presentation_mode'];
+      if ( $environment->inPrivateRoom() ) {
+         $current_context_item = $environment->getCurrentContextItem();
+         $saved_date_display_mode = $current_context_item->getDatesPresentationStatus();
+         if ( $presentation_mode == 1 ) {
+            $current_date_display_mode = 'calendar';
+         } else {
+            $current_date_display_mode = 'calendar_month';
+         }
+         if ( $saved_date_display_mode != $current_date_display_mode ) {
+            $current_context_item->setDatesPresentationStatus($current_date_display_mode);
+            $current_context_item->save();
+         }
+         unset($current_context_item);
+      }
    }elseif($seldisplay_mode == 'calendar_month'){
       $presentation_mode = '2';
+      if ( $environment->inPrivateRoom() ) {
+         $current_context_item = $environment->getCurrentContextItem();
+         $saved_date_display_mode = $current_context_item->getDatesPresentationStatus();
+         if ( $saved_date_display_mode != 'calendar_month' ) {
+            $current_context_item->setDatesPresentationStatus('calendar_month');
+            $current_context_item->save();
+         }
+         unset($current_context_item);
+      }
    }else{
       $presentation_mode = '1';
+      if ( $environment->inPrivateRoom() ) {
+         $current_context_item = $environment->getCurrentContextItem();
+         $saved_date_display_mode = $current_context_item->getDatesPresentationStatus();
+         if ( !empty($saved_date_display_mode)
+              and $saved_date_display_mode == 'calendar'
+            ) {
+            $presentation_mode = '1';
+         } else {
+            $presentation_mode = '2';
+         }
+         unset($current_context_item);
+      }
    }
    if ($session->issetValue($environment->getCurrentContextID().'_month')){
       $old_month = $session->getValue($environment->getCurrentContextID().'_month');
