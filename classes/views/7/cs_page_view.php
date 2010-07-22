@@ -316,11 +316,11 @@ class cs_page_view extends cs_view {
          $retour .= '   <link rel="stylesheet" media="screen" type="text/css" href="css/commsy_right_boxes_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
          // jQuery
          //$retour .= '   <link rel="stylesheet" media="screen" type="text/css" href="javascript/slimbox/css/slimbox.css"/>'.LF;
-         if (isset($c_use_new_lightbox) and $c_use_new_lightbox){
+         #if (isset($c_use_new_lightbox) and $c_use_new_lightbox){
             $retour .= '   <link rel="stylesheet" media="screen" type="text/css" href="javascript/jQuery/jquery.fancybox-1.3.1/fancybox/jquery.fancybox-1.3.1.css"/>'.LF;
-         } else {
-            $retour .= '   <link rel="stylesheet" media="screen" type="text/css" href="javascript/jQuery/Slimbox2/css/slimbox2.css"/>'.LF;
-         }
+         #} else {
+         #   $retour .= '   <link rel="stylesheet" media="screen" type="text/css" href="javascript/jQuery/Slimbox2/css/slimbox2.css"/>'.LF;
+         #}
          // jQuery
       }
       if ($left_menue_status !='disapear'){
@@ -430,11 +430,11 @@ class cs_page_view extends cs_view {
          $retour .= '   <link rel="stylesheet" type="text/css" href="commsy_right_boxes_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
          // jQuery
          //$retour .= '   <link rel="stylesheet" type="text/css" href="javascript/slimbox/css/slimbox.css"/>'.LF;
-         if (isset($c_use_new_lightbox) and $c_use_new_lightbox){
+         #if (isset($c_use_new_lightbox) and $c_use_new_lightbox){
             $retour .= '   <link rel="stylesheet" media="screen" type="text/css" href="javascript/jQuery/jquery.fancybox-1.3.1/fancybox/jquery.fancybox-1.3.1.css"/>'.LF;
-         } else {
-            $retour .= '   <link rel="stylesheet" type="text/css" href="javascript/jQuery/Slimbox2/css/slimbox2.css"/>'.LF;
-         }
+         #} else {
+         #   $retour .= '   <link rel="stylesheet" type="text/css" href="javascript/jQuery/Slimbox2/css/slimbox2.css"/>'.LF;
+         #}
          // jQuery
       }
       if ($left_menue_status !='disapear'){
@@ -666,11 +666,11 @@ class cs_page_view extends cs_view {
               $with_slimbox = false;
         }
         if($with_slimbox){
-           if (isset($c_use_new_lightbox) and $c_use_new_lightbox){
+           #if (isset($c_use_new_lightbox) and $c_use_new_lightbox){
               $retour .= '   <script src="javascript/jQuery/jquery.fancybox-1.3.1/fancybox/jquery.fancybox-1.3.1.js" type="text/javascript"></script>'.LF;
-           } else {
-              $retour .= '   <script src="javascript/jQuery/Slimbox2/js/slimbox2.js" type="text/javascript"></script>'.LF;
-           }
+           #} else {
+           #   $retour .= '   <script src="javascript/jQuery/Slimbox2/js/slimbox2.js" type="text/javascript"></script>'.LF;
+           #}
         }
          // jQuery
          // jQuery
@@ -695,11 +695,11 @@ class cs_page_view extends cs_view {
               $with_slimbox = false;
         }
         if($with_slimbox){
-           if (isset($c_use_new_lightbox) and $c_use_new_lightbox){
+           #if (isset($c_use_new_lightbox) and $c_use_new_lightbox){
               $retour .= '   <script src="javascript/jQuery/jquery.fancybox-1.3.1/fancybox/jquery.fancybox-1.3.1.js" type="text/javascript"></script>'.LF;
-           } else {
-              $retour .= '   <script src="javascript/jQuery/Slimbox2/js/slimbox2.js" type="text/javascript"></script>'.LF;
-           }
+           #} else {
+           #   $retour .= '   <script src="javascript/jQuery/Slimbox2/js/slimbox2.js" type="text/javascript"></script>'.LF;
+           #}
         }
          // jQuery
          // jQuery
@@ -753,11 +753,11 @@ class cs_page_view extends cs_view {
                  $with_slimbox = false;
            }
            if($with_slimbox){
-              if (isset($c_use_new_lightbox) and $c_use_new_lightbox){
+              #if (isset($c_use_new_lightbox) and $c_use_new_lightbox){
                  $retour .= '   <script src="javascript/jQuery/jquery.fancybox-1.3.1/fancybox/jquery.fancybox-1.3.1.js" type="text/javascript"></script>'.LF;
-              } else {
-                 $retour .= '   <script src="javascript/jQuery/Slimbox2/js/slimbox2.js" type="text/javascript"></script>'.LF;
-              }
+              #} else {
+              #   $retour .= '   <script src="javascript/jQuery/Slimbox2/js/slimbox2.js" type="text/javascript"></script>'.LF;
+              #}
            }
             // jQuery
          }
@@ -792,11 +792,11 @@ class cs_page_view extends cs_view {
               $with_slimbox = false;
            }
            if($with_slimbox){
-              if (isset($c_use_new_lightbox) and $c_use_new_lightbox){
+              #if (isset($c_use_new_lightbox) and $c_use_new_lightbox){
                  $retour .= '   <script src="javascript/jQuery/jquery.fancybox-1.3.1/fancybox/jquery.fancybox-1.3.1.js" type="text/javascript"></script>'.LF;
-              } else {
-                 $retour .= '   <script src="javascript/jQuery/Slimbox2/js/slimbox2.js" type="text/javascript"></script>'.LF;
-              }
+              #} else {
+              #   $retour .= '   <script src="javascript/jQuery/Slimbox2/js/slimbox2.js" type="text/javascript"></script>'.LF;
+              #}
            }
             // jQuery
             $retour .= '   <script type="text/javascript" src="javascript/colorpicker/script.js"></script>'.LF;
