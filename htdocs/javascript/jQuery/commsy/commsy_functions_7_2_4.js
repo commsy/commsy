@@ -2299,7 +2299,27 @@ function turn_portlet_buzzwords(id, portlet){
         	      if(!insert){
                   jQuery('#portlet_buzzword_preferences_list').find('div').last().after('<div><input type="text" class="portlet_buzzword_textfield" id="portlet_buzzword_'+resultJSON['new_buzzword_id']+'" value="'+resultJSON['new_buzzword_name']+'" size="40">&nbsp;<input type="submit" class="portlet_buzzword_change_button" id="'+resultJSON['new_buzzword_id']+'" value="Ändern">&nbsp;<input type="submit" class="portlet_buzzword_delete_button" id="'+resultJSON['new_buzzword_id']+'" value="Löschen"></div>');
                }
-        	      activate_buzzword_buttons();
+        	   activate_buzzword_buttons();
+        	   var insert = false;
+        	   jQuery('#portal_buzzword_combine_first').find('option').each(function(){
+            	   if((jQuery(this).html().toLowerCase() > resultJSON['new_buzzword_name'].toLowerCase()) && !insert){
+            		   jQuery(this).before('<option value="'+resultJSON['new_buzzword_id']+'">'+resultJSON['new_buzzword_name']+'</option>');
+            		   insert = true;
+            	   }
+               });
+        	   if(!insert){
+        		   jQuery('#portal_buzzword_combine_first').find('option').last().after('<option value="'+resultJSON['new_buzzword_id']+'">'+resultJSON['new_buzzword_name']+'</option>');
+        	   }
+        	   var insert = false;
+        	   jQuery('#portal_buzzword_combine_second').find('option').each(function(){
+            	   if((jQuery(this).html().toLowerCase() > resultJSON['new_buzzword_name'].toLowerCase()) && !insert){
+            		   jQuery(this).before('<option value="'+resultJSON['new_buzzword_id']+'">'+resultJSON['new_buzzword_name']+'</option>');
+            		   insert = true;
+            	   }
+               });
+        	   if(!insert){
+        		   jQuery('#portal_buzzword_combine_second').find('option').last().after('<option value="'+resultJSON['new_buzzword_id']+'">'+resultJSON['new_buzzword_name']+'</option>');
+        	   }
             }
 	     }
 	  });
@@ -2317,7 +2337,32 @@ function turn_portlet_buzzwords(id, portlet){
           var resultJSON = eval('(' + msg + ')');
             if (resultJSON === undefined){
             }else{
-               portlet_data['buzzwords_combine'].push(new BuzzwordCombineItem(resultJSON['combine_first_id'], resultJSON['combine_second_id'], resultJSON['combine_name']))
+               //portlet_data['buzzwords_combine'].push(new BuzzwordCombineItem(resultJSON['combine_first_id'], resultJSON['combine_second_id'], resultJSON['combine_name']));
+               portlet_data['buzzwords_change'].push(new BuzzwordItem(resultJSON['combine_first_id'], resultJSON['combine_name']));
+               portlet_data['buzzwords_delete'].push(new BuzzwordItem(resultJSON['combine_second_id'], resultJSON['combine_name']));
+               jQuery('#portlet_buzzword_preferences_list').find('div').each(function(){
+            	  var temp_id_array = jQuery(this).find('.portlet_buzzword_textfield').attr('id').split('_');
+       			  var temp_id = temp_id_array[2];
+                  if(temp_id == resultJSON['combine_first_id']){
+                	  jQuery(this).find('.portlet_buzzword_textfield').val(resultJSON['combine_name'])
+                  } else if(temp_id == resultJSON['combine_second_id']){
+                	  jQuery(this).remove();
+                  }
+               });
+               jQuery('#portal_buzzword_combine_first').find('option').each(function(){
+            	   if(jQuery(this).val() == resultJSON['combine_first_id']){
+            		   jQuery(this).html(resultJSON['combine_name']);
+            	   } else if (jQuery(this).val() == resultJSON['combine_second_id']){
+            		   jQuery(this).remove();
+            	   }
+               });
+               jQuery('#portal_buzzword_combine_second').find('option').each(function(){
+            	   if(jQuery(this).val() == resultJSON['combine_first_id']){
+            		   jQuery(this).html(resultJSON['combine_name']);
+            	   } else if (jQuery(this).val() == resultJSON['combine_second_id']){
+            		   jQuery(this).remove();
+            	   }
+               });
             }
         }
      });
@@ -2413,6 +2458,16 @@ function activate_buzzword_buttons(){
                if (resultJSON === undefined){
                }else{
                   portlet_data['buzzwords_change'].push(new BuzzwordItem(resultJSON['change_buzzword_id'], resultJSON['change_buzzword_name']));
+                  jQuery('#portal_buzzword_combine_first').find('option').each(function(){
+               	     if(jQuery(this).val() == resultJSON['change_buzzword_id']){
+               		    jQuery(this).html(resultJSON['change_buzzword_name']);
+               	     }
+                  });
+                  jQuery('#portal_buzzword_combine_second').find('option').each(function(){
+            	     if(jQuery(this).val() == resultJSON['change_buzzword_id']){
+            		    jQuery(this).html(resultJSON['change_buzzword_name']);
+            	     }
+                  });
                }
            }
         }); 
@@ -2431,7 +2486,17 @@ function activate_buzzword_buttons(){
              var resultJSON = eval('(' + msg + ')');
                if (resultJSON === undefined){
                }else{
-                  portlet_data['buzzwords_delete'].push(new BuzzwordItem(resultJSON['delete_buzzword_id'], resultJSON['delete_buzzword_name']))
+                  portlet_data['buzzwords_delete'].push(new BuzzwordItem(resultJSON['delete_buzzword_id'], resultJSON['delete_buzzword_name']));
+                  jQuery('#portal_buzzword_combine_first').find('option').each(function(){
+                     if(jQuery(this).val() == resultJSON['delete_buzzword_id']){
+                	    jQuery(this).remove();
+                	 }
+                  });
+                  jQuery('#portal_buzzword_combine_second').find('option').each(function(){
+                     if(jQuery(this).val() == resultJSON['delete_buzzword_id']){
+                 	    jQuery(this).remove();
+                 	 }
+                  });
                }
            }
         });
