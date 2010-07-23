@@ -2091,7 +2091,14 @@ class cs_page_room_view extends cs_page_view {
                   $html .= '&nbsp;&nbsp;|&nbsp;&nbsp;'.ahref_curl($this->_environment->getCurrentContextID(), $this->_environment->getCurrentModule(), $this->_environment->getCurrentFunction(), $params,$this->_translator->getMessage('MYAREA_PROFILE'),'','','','','','','style="color:#800000"').''.LF;
                   $html .= $this->_getCopyLinkAsHTML();
                }
-               $html .= '&nbsp;'.$this->_getFlagsAsHTML();
+
+               // plugins for users
+               $plugin_html = plugin_hook_output_all('getMyAreaActionAsHTML',array(),'&nbsp;');
+               if ( !empty($plugin_html) ) {
+                  $html .= '&nbsp;&nbsp;|&nbsp;&nbsp;'.$plugin_html;
+               }
+
+               $html .= $this->_getFlagsAsHTML();
 
          }
       }

@@ -1861,7 +1861,7 @@ class cs_context_item extends cs_item {
       if ($type == 'whole') {
          $this->_addExtra('PLUGIN_CONFIG_DATA',$value);
       } else {
-         $config_array = $this->_getPluginConfig('whole');
+         $config_array = $this->getPluginConfigForPlugin('whole');
          $config_array[mb_strtoupper($type, 'UTF-8')] = $value;
          $this->setPluginConfigForPlugin('whole',$config_array);
       }
