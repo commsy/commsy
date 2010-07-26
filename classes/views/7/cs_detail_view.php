@@ -392,103 +392,98 @@ class cs_detail_view extends cs_view {
    }
 
    function _initDropDownMenus(){
-      global $c_use_linked_dropdown_rooms;
       $action_array = array();
       $html = '';
       $current_context = $this->_environment->getCurrentContextItem();
       $current_portal = $this->_environment->getCurrentPortalItem();
 
-      if ( isset($c_use_linked_dropdown_rooms)
-           and (in_array($current_context->getItemID(), $c_use_linked_dropdown_rooms) or in_array($current_portal->getItemID(), $c_use_linked_dropdown_rooms))
-         ) {
-         if ( $current_context->isOpen() ) {
-            $image_new  = '';
-            $href_new = '';
-            $params = array();
-            $params['iid'] = 'NEW';
-            if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-               $image_new = 'images/commsyicons_msie6/22x22/new.gif';
-            } else {
-               $image_new = 'images/commsyicons/22x22/new.png';
-            }
-            $href_new = curl($this->_environment->getCurrentContextID(),
-                             $this->_environment->getCurrentModule(),
-                             'edit',
-                             $params);
-            unset($params);
+      if ( $current_context->isOpen() ) {
+         $image_new  = '';
+         $href_new = '';
+         $params = array();
+         $params['iid'] = 'NEW';
+         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+            $image_new = 'images/commsyicons_msie6/22x22/new.gif';
+         } else {
+            $image_new = 'images/commsyicons/22x22/new.png';
+         }
+         $href_new = curl($this->_environment->getCurrentContextID(),
+                          $this->_environment->getCurrentModule(),
+                          'edit',
+                          $params);
+         unset($params);
 
-            if(isset($_GET['mod'])){
-               $dropdown_mod = $_GET['mod'];
-            } elseif(isset($_POST['mod'])){
-               $dropdown_mod = $_POST['mod'];
-            } else {
-               $dropdown_mod = '';
-            }
-
-            if($dropdown_mod == 'announcement'){
-               $text_new = $this->_translator->getMessage('COMMON_ENTER_NEW_ANNOUNCEMENT');
-            } elseif($dropdown_mod == 'date'){
-               $text_new = $this->_translator->getMessage('COMMON_ENTER_NEW_DATE');
-            } elseif($dropdown_mod == 'material'){
-               $text_new = $this->_translator->getMessage('COMMON_ENTER_NEW_MATERIAL');
-            } elseif($dropdown_mod == 'discussion'){
-               $text_new = $this->_translator->getMessage('COMMON_ENTER_NEW_DISCUSSION');
-            } elseif($dropdown_mod == 'group'){
-               $text_new = $this->_translator->getMessage('COMMON_ENTER_NEW_GROUP');
-            } elseif($dropdown_mod == 'todo'){
-               $text_new = $this->_translator->getMessage('COMMON_ENTER_NEW_TODO');
-            } elseif($dropdown_mod == 'topic'){
-               $text_new = $this->_translator->getMessage('COMMON_ENTER_NEW_TOPIC');
-            } elseif($dropdown_mod == 'institution'){
-               $text_new = $this->_translator->getMessage('COMMON_ENTER_NEW_INSTITUTION');
-            }
-
-            if ( !empty($text_new)
-                 and !empty($image_new)
-                 and !empty($href_new)
-               ) {
-               $temp_array = array();
-               $temp_array['dropdown_image']  = "new_icon";
-               $temp_array['text']  = $text_new;
-               $temp_array['image'] = $image_new;
-               $temp_array['href']  = $href_new;
-               $action_array[] = $temp_array;
-               unset($temp_array);
-            }
+         if(isset($_GET['mod'])){
+            $dropdown_mod = $_GET['mod'];
+         } elseif(isset($_POST['mod'])){
+            $dropdown_mod = $_POST['mod'];
+         } else {
+            $dropdown_mod = '';
          }
 
-         unset($current_context);
+         if($dropdown_mod == 'announcement'){
+            $text_new = $this->_translator->getMessage('COMMON_ENTER_NEW_ANNOUNCEMENT');
+         } elseif($dropdown_mod == 'date'){
+            $text_new = $this->_translator->getMessage('COMMON_ENTER_NEW_DATE');
+         } elseif($dropdown_mod == 'material'){
+            $text_new = $this->_translator->getMessage('COMMON_ENTER_NEW_MATERIAL');
+         } elseif($dropdown_mod == 'discussion'){
+            $text_new = $this->_translator->getMessage('COMMON_ENTER_NEW_DISCUSSION');
+         } elseif($dropdown_mod == 'group'){
+            $text_new = $this->_translator->getMessage('COMMON_ENTER_NEW_GROUP');
+         } elseif($dropdown_mod == 'todo'){
+            $text_new = $this->_translator->getMessage('COMMON_ENTER_NEW_TODO');
+         } elseif($dropdown_mod == 'topic'){
+            $text_new = $this->_translator->getMessage('COMMON_ENTER_NEW_TOPIC');
+         } elseif($dropdown_mod == 'institution'){
+            $text_new = $this->_translator->getMessage('COMMON_ENTER_NEW_INSTITUTION');
+         }
 
-         $temp_array = array();
-         $temp_array['dropdown_image']  = "new_icon";
-         $temp_array['text']  = '';
-         $temp_array['image'] = 'seperator';
-         $temp_array['href']  = '';
-         $action_array[] = $temp_array;
-
-         $action_array = array_merge($action_array, $this->_getAdditionalDropDownEntries());
-
-         // init drop down menu
-         if ( !empty($action_array)
-              and count($action_array) > 1
+         if ( !empty($text_new)
+              and !empty($image_new)
+              and !empty($href_new)
             ) {
-            $html .= '<script type="text/javascript">'.LF;
-            $html .= '<!--'.LF;
-            #$html .= 'var dropDownMenus = new Array(new Array("new_icon",new Array(';
-            $html .= 'var dropDownMenus = new Array(';
-            $first = true;
-            foreach ($action_array as $action) {
-               if ( $first ) {
-                  $first = false;
-               } else {
-                  $html .= ',';
-               }
-               $html .= 'new Array("'.$action['dropdown_image'].'","'.$action['image'].'","'.$action['text'].'","'.$action['href'].'")';
-            }
-            $html .= ');'.LF;
-            $html .= '-->'.LF;
-            $html .= '</script>'.LF;
+            $temp_array = array();
+            $temp_array['dropdown_image']  = "new_icon";
+            $temp_array['text']  = $text_new;
+            $temp_array['image'] = $image_new;
+            $temp_array['href']  = $href_new;
+            $action_array[] = $temp_array;
+            unset($temp_array);
          }
+      }
+
+      unset($current_context);
+
+      $temp_array = array();
+      $temp_array['dropdown_image']  = "new_icon";
+      $temp_array['text']  = '';
+      $temp_array['image'] = 'seperator';
+      $temp_array['href']  = '';
+      $action_array[] = $temp_array;
+
+      $action_array = array_merge($action_array, $this->_getAdditionalDropDownEntries());
+
+      // init drop down menu
+      if ( !empty($action_array)
+           and count($action_array) > 1
+         ) {
+         $html .= '<script type="text/javascript">'.LF;
+         $html .= '<!--'.LF;
+         #$html .= 'var dropDownMenus = new Array(new Array("new_icon",new Array(';
+         $html .= 'var dropDownMenus = new Array(';
+         $first = true;
+         foreach ($action_array as $action) {
+            if ( $first ) {
+               $first = false;
+            } else {
+               $html .= ',';
+            }
+            $html .= 'new Array("'.$action['dropdown_image'].'","'.$action['image'].'","'.$action['text'].'","'.$action['href'].'")';
+         }
+         $html .= ');'.LF;
+         $html .= '-->'.LF;
+         $html .= '</script>'.LF;
       }
       return $html;
    }

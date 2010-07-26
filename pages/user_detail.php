@@ -86,6 +86,7 @@ if ($type != CS_USER_TYPE) {
       $history = $session->getValue('history');
       $cookie = $session->getValue('cookie');
       $javascript = $session->getValue('javascript');
+      $https = $session->getValue('https');
       $session_id = $session->getSessionID();
       $session = new cs_session_item();
       $session->createSessionID($user_item->getUserID());
@@ -102,6 +103,11 @@ if ($type != CS_USER_TYPE) {
          $session->setValue('javascript',1);
       } elseif ($javascript == '-1') {
          $session->setValue('javascript',-1);
+      }
+      if ($https == '1') {
+         $session->setValue('https',1);
+      } elseif ($https == '-1') {
+         $session->setValue('https',-1);
       }
 
       // save portal id in session to be sure, that user didn't

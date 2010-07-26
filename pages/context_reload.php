@@ -56,7 +56,12 @@ $url2 = curl( $environment->getCurrentContextID(),
       <script type="text/javascript">
          <!--
             function reload () {
-               document.location.href="<?PHP echo($url1); ?>"
+               var ssl = -1;
+               var https = document.URL.substring(0,5);
+               if ( https == "https" ) {
+                  var ssl = 1;
+               }
+               document.location.href="<?PHP echo($url1); ?>&https="+ssl;
             }
          -->
       </script>

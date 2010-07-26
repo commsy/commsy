@@ -382,19 +382,19 @@ class cs_index_view extends cs_view {
    // @segment-end 81876
 
    function setSelectedColor ($value) {
-   	  $this->_selected_color = $value;
+        $this->_selected_color = $value;
    }
 
    function getSelectedColor () {
-   	  return $this->_selected_color;
+        return $this->_selected_color;
    }
 
    function setSelectedStatus ($value) {
-   	  $this->_selected_status = $value;
+        $this->_selected_status = $value;
    }
 
    function getSelectedStatus () {
-   	  return $this->_selected_status;
+        return $this->_selected_status;
    }
 
    function setAvailableGroups ($group_list) {
@@ -789,8 +789,8 @@ class cs_index_view extends cs_view {
          }
       }
       if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-	     $with_javascript = false;
-	  }
+        $with_javascript = false;
+     }
       // UMSTELLUNG MUSEUM
       if($with_javascript){
          $html_text .= $this->_getTagContentAsHTMLWithJavascript($root_item,0,$selected_id, $father_id_array,0,true);
@@ -981,11 +981,11 @@ class cs_index_view extends cs_view {
          $list = $item->getChildrenList();
          if ( isset($list) and !$list->isEmpty() ) {
             if($with_div){
-            	if(isset($_GET['seltag'])){
+               if(isset($_GET['seltag'])){
                   $html .= '<div id="tag_tree" name="tag_tree_detail">';
-            	} else {
-            		$html .= '<div id="tag_tree">';
-            	}
+               } else {
+                  $html .= '<div id="tag_tree">';
+               }
             }
             $html .= '<ul>'.LF;
             $current_item = $list->getFirst();
@@ -1092,7 +1092,7 @@ class cs_index_view extends cs_view {
                                          $title,'','','','','','style="color:#545454; font-size:9pt;"').LF;
                   }
                }else{
-               	$params['name'] = $link_name;
+                  $params['name'] = $link_name;
                   $link = curl($this->_environment->getCurrentContextID(),
                                          $this->_environment->getCurrentModule(),
                                          $this->_environment->getCurrentFunction(),
@@ -1210,15 +1210,15 @@ EOD;
       } else {
          $html = '';
       }
-      
+
       $text2 = '';
       if($this->_environment->getCurrentUserItem()->isModerator()) {
          $text2 = $this->_translator->getMessage("COMMON_DELETE_BOX_DESCRIPTION_MODERATOR");
       }
-      
+
       $html .= "
           <script type='text/javascript'>
-	      <!--
+         <!--
               var headline = '" . $this->_translator->getMessage("COMMON_DELETE_BOX_TITLE") . "';
               var text1 = '" . $this->_translator->getMessage("COMMON_DELETE_BOX_DESCRIPTION") . "';
               var text2 = '" . $text2 . "';
@@ -2399,7 +2399,7 @@ EOD;
    }
 
    function _initDropDownMenus(){
-   	$action_array = array();
+      $action_array = array();
       $html = '';
       $current_context = $this->_environment->getCurrentContextItem();
 
@@ -2418,7 +2418,15 @@ EOD;
                           'edit',
                           $params);
          unset($params);
-         $text_new = $this->_translator->getMessage('COMMON_NEW_ITEM');
+         if ( $current_context->isOpen()
+              and $current_context->isPrivateRoom()
+              and $this->_environment->getConfiguration('c_use_new_private_room')
+              and $this->_environment->getCurrentModule() == type2module(CS_DATE_TYPE)
+            ) {
+            $text_new = $this->_translator->getMessage('DATES_ENTER_NEW');
+         } else {
+            $text_new = $this->_translator->getMessage('COMMON_NEW_ITEM');
+         }
          if ( !empty($text_new)
               and !empty($image_new)
               and !empty($href_new)
@@ -2458,11 +2466,11 @@ EOD;
          $html .= '-->'.LF;
          $html .= '</script>'.LF;
       }
-   	return $html;
+      return $html;
    }
 
    function _getAdditionalDropDownEntries() {
-   	return array();
+      return array();
    }
 
    function _getListInfosAsHTML ($title) {
@@ -2684,13 +2692,13 @@ EOD;
          $html .= '   <input type="hidden" name="selgroup" value="'.$params['selgroup'].'"/>'.LF;
       }
       if ( isset($params['selcolor']) ){
-      	 $html .= '   <input type="hidden" name="selcolor" value="'.$params['selcolor'].'"/>'.LF;
+          $html .= '   <input type="hidden" name="selcolor" value="'.$params['selcolor'].'"/>'.LF;
       }
       if ( isset($params['selstatus']) ){
-      	 $html .= '   <input type="hidden" name="selstatus" value="'.$params['selstatus'].'"/>'.LF;
+          $html .= '   <input type="hidden" name="selstatus" value="'.$params['selstatus'].'"/>'.LF;
       }
       if ( isset($params['seluser']) ){
-      	 $html .= '   <input type="hidden" name="seluser" value="'.$params['seluser'].'"/>'.LF;
+          $html .= '   <input type="hidden" name="seluser" value="'.$params['seluser'].'"/>'.LF;
       }
       if ( isset($params['selinstitution']) ){
          $html .= '   <input type="hidden" name="selinstitution" value="'.$params['selinstitution'].'"/>'.LF;
@@ -2802,32 +2810,32 @@ EOD;
      $html .= '   <input type="hidden" name="selrubric" value="'.$this->_environment->getCurrentModule().'"/>'.LF;
      // Abfrage von Kategorien... Schleife für jeden seltag_i
      if (isset($_GET['seltag'])){
-     	$i = 0;
-     	// Schleife: Alles Tags, die gesetzt sind abfragen
-     	while(isset($_GET['seltag'])) {
-     		if(isset($_GET['seltag_'.$i.''])) {
-     			$html .= '<input type="hidden" name="seltag_'.$i.'" value="'.$_GET['seltag_'.$i.''].'">'.LF;
-     			$html .= '<input type="hidden" name="seltag" value="yes">'.LF;
+        $i = 0;
+        // Schleife: Alles Tags, die gesetzt sind abfragen
+        while(isset($_GET['seltag'])) {
+           if(isset($_GET['seltag_'.$i.''])) {
+              $html .= '<input type="hidden" name="seltag_'.$i.'" value="'.$_GET['seltag_'.$i.''].'">'.LF;
+              $html .= '<input type="hidden" name="seltag" value="yes">'.LF;
 
-     			break;
-     		}
-     		$i++;
-     	}
+              break;
+           }
+           $i++;
+        }
      }
      if (isset($_GET['selbuzzword'])) {
-     	$html .= '<input type="hidden" name="selbuzzword" value="'.$_GET['selbuzzword'].'">'.LF;
+        $html .= '<input type="hidden" name="selbuzzword" value="'.$_GET['selbuzzword'].'">'.LF;
      }
      if (isset($_GET['seluser'])) {
-     	$html .= '<input type="hidden" name="seluser" value="'.$_GET['seluser'].'">'.LF;
+        $html .= '<input type="hidden" name="seluser" value="'.$_GET['seluser'].'">'.LF;
      }
      if (isset($_GET['selgroup'])) {
-     	$html .= '<input type="hidden" name="selgroup" value="'.$_GET['selgroup'].'">'.LF;
+        $html .= '<input type="hidden" name="selgroup" value="'.$_GET['selgroup'].'">'.LF;
      }
      if (isset($_GET['selcolor'])) {
-     	$html .= '<input type="hidden" name="selcolor" value="'.$_GET['selcolor'].'">'.LF;
+        $html .= '<input type="hidden" name="selcolor" value="'.$_GET['selcolor'].'">'.LF;
      }
      if (isset($_GET['selstatus'])) {
-     	$html .= '<input type="hidden" name="selstatus" value="'.$_GET['selstatus'].'">'.LF;
+        $html .= '<input type="hidden" name="selstatus" value="'.$_GET['selstatus'].'">'.LF;
      }
      #$html .= '	  <input type="hidden" name="seltag" value="'.$_GET['seltag_0'].'"'.LF;
      $html .= '<input id="searchtext" onclick="javascript:resetSearchText(\'searchtext\');" style="width:'.$search_with.'px; font-size:10pt; margin-bottom:0px;" name="search" type="text" size="20" value="'.$this->_text_as_form($this->getSearchText()).'"/>'.LF;
@@ -3298,16 +3306,16 @@ EOD;
       if ( !empty($this->_search_array) ){
          foreach ($this->_search_array as $search_text) {
             if ( mb_stristr($value,$search_text) ) {
-            	// $replace = '(:mainsearch_text:)$0(:mainsearch_text_end:)';
-            	include_once('functions/misc_functions.php');
+               // $replace = '(:mainsearch_text:)$0(:mainsearch_text_end:)';
+               include_once('functions/misc_functions.php');
                 if ( getMarkerColor() == 'green') {
-               	$replace = '(:mainsearch_text_green:)$0(:mainsearch_text_green_end:)';
+                  $replace = '(:mainsearch_text_green:)$0(:mainsearch_text_green_end:)';
                 }
                 else if (getMarkerColor() == 'yellow') {
-               	$replace = '(:mainsearch_text_yellow:)$0(:mainsearch_text_yellow_end:)';
+                  $replace = '(:mainsearch_text_yellow:)$0(:mainsearch_text_yellow_end:)';
                 }
-            	// $replace = '(:searchedtext:)$0(:searchedtext_end:)';
-            	$value = preg_replace('~'.preg_quote($search_text,'/').'~iu',$replace,$value);
+               // $replace = '(:searchedtext:)$0(:searchedtext_end:)';
+               $value = preg_replace('~'.preg_quote($search_text,'/').'~iu',$replace,$value);
                // $value = preg_replace('~'.preg_quote($search_text,'/').'~iu','*$0*',$value);
             }
          }

@@ -643,9 +643,6 @@ class cs_date_calendar_index_view extends cs_room_index_view {
      return $html;
    }
 
-
-
-
    function _getAdditionalActionsAsHTML(){
       $current_context = $this->_environment->getCurrentContextItem();
       $current_user = $this->_environment->getCurrentUserItem();
@@ -653,9 +650,9 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $hash_manager = $this->_environment->getHashManager();
       $params = $this->_environment->getCurrentParameterArray();
       if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-         $image = '<img src="images/commsyicons_msie6/22x22/abbo.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('DATES_ABBO').'"/>';
+         $image = '<img src="images/commsyicons_msie6/22x22/abbo.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('DATES_ABBO').'" id="abbo_icon"/>';
       } else {
-         $image = '<img src="images/commsyicons/22x22/abbo.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('DATES_ABBO').'"/>';
+         $image = '<img src="images/commsyicons/22x22/abbo.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('DATES_ABBO').'" id="abbo_icon"/>';
       }
       $ical_url = '<a title="'.$this->_translator->getMessage('DATES_ABBO').'"  href="webcal://';
       $ical_url .= $_SERVER['HTTP_HOST'];
@@ -663,44 +660,59 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $ical_url .= str_replace($c_single_entry_point,'ical.php',$_SERVER['PHP_SELF']);
       $ical_url .= '?cid='.$_GET['cid'].'&amp;hid='.$hash_manager->getICalHashForUser($current_user->getItemID()).'">'.$image.'</a>'.LF;
       $html .= $ical_url;
-      if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-         $image = '<img src="images/commsyicons_msie6/22x22/export.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('DATES_EXPORT').'"/>';
+      if ( $current_context->isOpen()
+           and $current_context->isPrivateRoom()
+           and $this->_environment->getConfiguration('c_use_new_private_room')
+         ) {
+         // do nothing
       } else {
-         $image = '<img src="images/commsyicons/22x22/export.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('DATES_EXPORT').'"/>';
-      }
-      $html .= '<a title="'.$this->_translator->getMessage('DATES_EXPORT').'"  href="ical.php?cid='.$_GET['cid'].'&amp;hid='.$hash_manager->getICalHashForUser($current_user->getItemID()).'">'.$image.'</a>'.LF;
-      unset($params);
-      if ( $this->_environment->inPrivateRoom() ) {
-         if ( $this->_with_modifying_actions ) {
-            $params['import'] = 'yes';
-            if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-               $image = '<img src="images/commsyicons_msie6/22x22/import.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('MATERIAL_IMS_IMPORT').'"/>';
-            } else {
-               $image = '<img src="images/commsyicons/22x22/import.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('MATERIAL_IMS_IMPORT').'"/>';
-            }
-            $html .= ahref_curl($this->_environment->getCurrentContextID(),
-                                CS_DATE_TYPE,
-                                'import',
-                                $params,
-                                $image,
-                                $this->_translator->getMessage('COMMON_IMPORT_DATES')).LF;
-            unset($params);
+         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+            $image = '<img src="images/commsyicons_msie6/22x22/export.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('DATES_EXPORT').'"/>';
          } else {
-            if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-               $image = '<img src="images/commsyicons_msie6/22x22/import_grey.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_IMPORT_DATES').'"/>';
+            $image = '<img src="images/commsyicons/22x22/export.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('DATES_EXPORT').'"/>';
+         }
+         $html .= '<a title="'.$this->_translator->getMessage('DATES_EXPORT').'"  href="ical.php?cid='.$_GET['cid'].'&amp;hid='.$hash_manager->getICalHashForUser($current_user->getItemID()).'">'.$image.'</a>'.LF;
+      }
+      unset($params);
+      if ( $current_context->isOpen()
+           and $current_context->isPrivateRoom()
+           and $this->_environment->getConfiguration('c_use_new_private_room')
+         ) {
+         // do nothing
+      } else {
+         if ( $this->_environment->inPrivateRoom() ) {
+            if ( $this->_with_modifying_actions ) {
+               $params['import'] = 'yes';
+               if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+                  $image = '<img src="images/commsyicons_msie6/22x22/import.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('MATERIAL_IMS_IMPORT').'"/>';
+               } else {
+                  $image = '<img src="images/commsyicons/22x22/import.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('MATERIAL_IMS_IMPORT').'"/>';
+               }
+               $html .= ahref_curl($this->_environment->getCurrentContextID(),
+                                   CS_DATE_TYPE,
+                                   'import',
+                                   $params,
+                                   $image,
+                                   $this->_translator->getMessage('COMMON_IMPORT_DATES')).LF;
+               unset($params);
             } else {
-               $image = '<img src="images/commsyicons/22x22/import_grey.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_IMPORT_DATES').'"/>';
+               if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+                  $image = '<img src="images/commsyicons_msie6/22x22/import_grey.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_IMPORT_DATES').'"/>';
+               } else {
+                  $image = '<img src="images/commsyicons/22x22/import_grey.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_IMPORT_DATES').'"/>';
+               }
+               $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION_NEW',$this->_translator->getMessage('COMMON_IMPORT_DATES')).' "class="disabled">'.$image.'</a>'.LF;
             }
-            $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION_NEW',$this->_translator->getMessage('COMMON_IMPORT_DATES')).' "class="disabled">'.$image.'</a>'.LF;
          }
       }
       return $html;
    }
 
    function _getToDoActionsAsHTML(){
+      $html  = '';
+      /*
       $current_context = $this->_environment->getCurrentContextItem();
       $current_user = $this->_environment->getCurrentUserItem();
-      $html  = '';
       $hash_manager = $this->_environment->getHashManager();
       $params = $this->_environment->getCurrentParameterArray();
       if ($current_user->isUser() and $this->_with_modifying_actions ) {
@@ -726,6 +738,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
          }
          $html .= '&nbsp;&nbsp;<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION_NEW',$this->_translator->getMessage('COMMON_NEW_ITEM')).' "class="disabled">'.$image.'</a>'.LF;
       }
+      */
       return $html;
    }
 
@@ -4632,6 +4645,234 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $html .= '-->'.LF;
       $html .= '</script>'.LF;
       return $html;
+   }
+
+   function _getAdditionalDropDownEntries() {
+      $action_array = array();
+      $current_context = $this->_environment->getCurrentContextItem();
+
+      // new private room
+      if ( $current_context->isOpen()
+           and $current_context->isPrivateRoom()
+           and $this->_environment->getConfiguration('c_use_new_private_room')
+         ) {
+
+         // dates import
+         if ( $this->_with_modifying_actions ) {
+            $params = $this->_environment->getCurrentParameterArray();
+            $params['import'] = 'yes';
+            if ( $this->_environment->getCurrentBrowser() == 'MSIE'
+                 and mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6'
+               ) {
+               $image_import = 'images/commsyicons_msie6/22x22/import.gif';
+            } else {
+               $image_import = 'images/commsyicons/22x22/import.png';
+            }
+            $href_import = curl($this->_environment->getCurrentContextID(),
+                                CS_DATE_TYPE,
+                                'import',
+                                $params);
+            $text_import = $this->_translator->getMessage('COMMON_IMPORT_DATES');
+            unset($params);
+         } else {
+            if ( $this->_environment->getCurrentBrowser() == 'MSIE'
+                 and mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6'
+               ) {
+               $image_import = 'images/commsyicons_msie6/22x22/import_grey.gif';
+            } else {
+               $image_import = 'images/commsyicons/22x22/import_grey.png';
+            }
+            $text_import = $this->_translator->getMessage('COMMON_NO_ACTION_NEW',$this->_translator->getMessage('COMMON_IMPORT_DATES'));
+            $href_import = 'grey';
+         }
+         if ( !empty($text_import)
+              and !empty($image_import)
+              and !empty($href_import)
+            ) {
+            $temp_array = array();
+            $temp_array['dropdown_image']  = "new_icon";
+            $temp_array['text']  = $text_import;
+            $temp_array['image'] = $image_import;
+            $temp_array['href']  = $href_import;
+            $action_array[] = $temp_array;
+            unset($temp_array);
+         }
+         unset($text_import);
+         unset($image_import);
+         unset($href_import);
+
+         $temp_array = array();
+         $temp_array['dropdown_image']  = "new_icon";
+         $temp_array['text']  = '';
+         $temp_array['image'] = 'seperator';
+         $temp_array['href']  = '';
+         $action_array[] = $temp_array;
+
+         // todo new
+         $image_new  = '';
+         $href_new = '';
+         $params = array();
+         $params['iid'] = 'NEW';
+         if ( $this->_environment->getCurrentBrowser() == 'MSIE'
+              and mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6'
+            ) {
+            $image_new = 'images/commsyicons_msie6/22x22/new.gif';
+         } else {
+            $image_new = 'images/commsyicons/22x22/new.png';
+         }
+         $href_new = curl($this->_environment->getCurrentContextID(),
+                          'todo',
+                          'edit',
+                          $params);
+         unset($params);
+         $text_new = $this->_translator->getMessage('COMMON_ENTER_NEW_TODO');
+         if ( !empty($text_new)
+              and !empty($image_new)
+              and !empty($href_new)
+            ) {
+            $temp_array = array();
+            $temp_array['dropdown_image']  = "new_icon";
+            $temp_array['text']  = $text_new;
+            $temp_array['image'] = $image_new;
+            $temp_array['href']  = $href_new;
+            $action_array[] = $temp_array;
+            unset($temp_array);
+         }
+         unset($text_new);
+         unset($image_new);
+         unset($href_new);
+
+         // dates abbo
+         $hash_manager = $this->_environment->getHashManager();
+         $current_user = $this->_environment->getCurrentUserItem();
+         $params = $this->_environment->getCurrentParameterArray();
+         if ( $this->_environment->getCurrentBrowser() == 'MSIE'
+              and mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6'
+            ) {
+            $image_abbo = 'images/commsyicons_msie6/22x22/abbo.gif';
+         } else {
+            $image_abbo = 'images/commsyicons/22x22/abbo.png';
+         }
+         $text_abbo = $this->_translator->getMessage('DATES_ABBO');
+         $ical_url = 'webcal://';
+         $ical_url .= $_SERVER['HTTP_HOST'];
+         global $c_single_entry_point;
+         $ical_url .= str_replace($c_single_entry_point,'ical.php',$_SERVER['PHP_SELF']);
+         $ical_url .= '?cid='.$_GET['cid'].'&amp;hid='.$hash_manager->getICalHashForUser($current_user->getItemID());
+         $href_abbo = $ical_url;
+         if ( !empty($text_abbo)
+              and !empty($image_abbo)
+              and !empty($href_abbo)
+            ) {
+            $temp_array = array();
+            $temp_array['dropdown_image']  = "abbo_icon";
+            $temp_array['text']  = $text_abbo;
+            $temp_array['image'] = $image_abbo;
+            $temp_array['href']  = $href_abbo;
+            $action_array[] = $temp_array;
+            unset($temp_array);
+         }
+         unset($text_abbo);
+         unset($image_abbo);
+         unset($href_abbo);
+
+         // dates export
+         if ( $this->_environment->getCurrentBrowser() == 'MSIE'
+              and mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6'
+            ) {
+            $image_export = 'images/commsyicons_msie6/22x22/export.gif';
+         } else {
+            $image_export = 'images/commsyicons/22x22/export.png';
+         }
+         $href_export = 'ical.php?cid='.$_GET['cid'].'&amp;hid='.$hash_manager->getICalHashForUser($current_user->getItemID());
+         $text_export = $this->_translator->getMessage('DATES_EXPORT');
+         if ( !empty($text_export)
+              and !empty($image_export)
+              and !empty($href_export)
+            ) {
+            $temp_array = array();
+            $temp_array['dropdown_image']  = "abbo_icon";
+            $temp_array['text']  = $text_export;
+            $temp_array['image'] = $image_export;
+            $temp_array['href']  = $href_export;
+            $action_array[] = $temp_array;
+            unset($temp_array);
+         }
+         unset($text_export);
+         unset($image_export);
+         unset($href_export);
+
+         $temp_array = array();
+         $temp_array['dropdown_image']  = "abbo_icon";
+         $temp_array['text']  = '';
+         $temp_array['image'] = 'seperator';
+         $temp_array['href']  = '';
+         $action_array[] = $temp_array;
+
+         // todo abbo
+         $params = $this->_environment->getCurrentParameterArray();
+         if ( $this->_environment->getCurrentBrowser() == 'MSIE'
+              and mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6'
+            ) {
+            $image_abbo = 'images/commsyicons_msie6/22x22/abbo.gif';
+         } else {
+            $image_abbo = 'images/commsyicons/22x22/abbo.png';
+         }
+         $text_abbo = $this->_translator->getMessage('TODO_ABBO');
+         $ical_url = 'webcal://';
+         $ical_url .= $_SERVER['HTTP_HOST'];
+         global $c_single_entry_point;
+         $ical_url .= str_replace($c_single_entry_point,'ical.php',$_SERVER['PHP_SELF']);
+         $ical_url .= '?cid='.$_GET['cid'].'&amp;mod=todo&amp;hid='.$hash_manager->getICalHashForUser($current_user->getItemID());
+         $href_abbo = $ical_url;
+         if ( !empty($text_abbo)
+              and !empty($image_abbo)
+              and !empty($href_abbo)
+            ) {
+            $temp_array = array();
+            $temp_array['dropdown_image']  = "abbo_icon";
+            $temp_array['text']  = $text_abbo;
+            $temp_array['image'] = $image_abbo;
+            $temp_array['href']  = $href_abbo;
+            $action_array[] = $temp_array;
+            unset($temp_array);
+         }
+         unset($text_abbo);
+         unset($image_abbo);
+         unset($href_abbo);
+
+         // todo export
+         if ( $this->_environment->getCurrentBrowser() == 'MSIE'
+              and mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6'
+            ) {
+            $image_export = 'images/commsyicons_msie6/22x22/export.gif';
+         } else {
+            $image_export = 'images/commsyicons/22x22/export.png';
+         }
+         $text_export = $this->_translator->getMessage('TODO_EXPORT');
+         $href_export = 'ical.php?cid='.$_GET['cid'].'&amp;mod=todo&amp;hid='.$hash_manager->getICalHashForUser($current_user->getItemID());
+         if ( !empty($text_export)
+              and !empty($image_export)
+              and !empty($href_export)
+            ) {
+            $temp_array = array();
+            $temp_array['dropdown_image']  = "abbo_icon";
+            $temp_array['text']  = $text_export;
+            $temp_array['image'] = $image_export;
+            $temp_array['href']  = $href_export;
+            $action_array[] = $temp_array;
+            unset($temp_array);
+         }
+         unset($text_export);
+         unset($image_export);
+         unset($href_export);
+         unset($params);
+         unset($hash_manager);
+         unset($current_user);
+      }
+
+      unset($current_context);
+      return $action_array;
    }
 }
 ?>

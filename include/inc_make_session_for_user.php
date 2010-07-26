@@ -27,12 +27,14 @@ if ( isset($session) ) {
    $history = $session->getValue('history');
    $cookie = $session->getValue('cookie');
    $javascript = $session->getValue('javascript');
+   $https = $session->getValue('https');
 }
 // case: login with external login box
 else {
    $history = array();
    $cookie = '';
    $javascript = '';
+   $https = '';
 }
 
 $session = new cs_session_item();
@@ -48,6 +50,11 @@ if ($javascript == '1') {
    $session->setValue('javascript',1);
 } elseif ($javascript == '-1') {
    $session->setValue('javascript',-1);
+}
+if ($https == '1') {
+   $session->setValue('https',1);
+} elseif ($javascript == '-1') {
+   $https->setValue('https',-1);
 }
 
 // save portal id in session to be sure, that user didn't

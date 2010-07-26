@@ -87,9 +87,9 @@ class cs_todo_index_view extends cs_room_index_view {
    }
 
    function _getAdditionalActionsAsHTML(){
+      $html  = '';
       $current_context = $this->_environment->getCurrentContextItem();
       $current_user = $this->_environment->getCurrentUserItem();
-      $html  = '';
       $hash_manager = $this->_environment->getHashManager();
       $params = $this->_environment->getCurrentParameterArray();
       if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
@@ -109,12 +109,9 @@ class cs_todo_index_view extends cs_room_index_view {
          $image = '<img src="images/commsyicons/22x22/export.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('TODO_EXPORT').'"/>';
       }
       $html .= '<a title="'.$this->_translator->getMessage('TODO_EXPORT').'"  href="ical.php?cid='.$_GET['cid'].'&amp;mod=todo&amp;hid='.$hash_manager->getICalHashForUser($current_user->getItemID()).'">'.$image.'</a>'.LF;
-     unset($params);
-     return $html;
+      unset($params);
+      return $html;
    }
-
-
-
 
    function _getTableheadAsHTML () {
       include_once('functions/misc_functions.php');
@@ -424,7 +421,7 @@ class cs_todo_index_view extends cs_room_index_view {
          $date = '<span class="required">'.$date.'</span>';
       }
       if ($original_date == '9999-00-00 00:00:00'){
-      	 $date = $this->_translator->getMessage('TODO_NO_END_DATE');
+          $date = $this->_translator->getMessage('TODO_NO_END_DATE');
       }
       return $date;
    }
@@ -543,7 +540,7 @@ class cs_todo_index_view extends cs_room_index_view {
       if ($item->getPlannedTime() > 0){
          $process = $done_time;
       }else{
-      	$process = $shown_time;
+         $process = $shown_time;
       }
       return $process;
    }

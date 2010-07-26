@@ -46,13 +46,13 @@ class cs_entry_index_view extends cs_index_view {
    var $_dropdown_message_array = array();
 
    var $_dropdown_rubrics_new = array();
-   
+
    public function __construct ($params) {
       $this->cs_index_view($params);
       $this->setTitle($this->_translator->getMessage('COMMON_ENTRIES'));
       $this->setActionTitle($this->_translator->getMessage('COMMON_ENTRY'));
       $this->_colspan = '4';
-      
+
       $this->_dropdown_image_array[CS_ANNOUNCEMENT_TYPE] = 'announcement';
       $this->_dropdown_image_array[CS_DATE_TYPE] = 'date';
       $this->_dropdown_image_array[CS_MATERIAL_TYPE] = 'material';
@@ -129,11 +129,11 @@ class cs_entry_index_view extends cs_index_view {
    function setInterval($interval){
       $this->_interval = $interval;
    }
-   
+
    function setPos($pos){
       $this->_pos = $pos;
    }
-   
+
    function setMaxPos($max_pos){
       $this->_max_pos = $max_pos;
    }
@@ -141,11 +141,11 @@ class cs_entry_index_view extends cs_index_view {
    function setBrowsePrev($browse_prev){
       $this->_browse_prev = $browse_prev;
    }
-   
+
    function setBrowseNext($browse_next){
       $this->_browse_next = $browse_next;
    }
-   
+
    function _getSearchBoxAsHTML(){
       $html = '<div class="portlet" id="my_search_box">'.LF;
       $html .= '<div class="portlet-header" style="cursor:default;">'.LF;
@@ -260,9 +260,9 @@ class cs_entry_index_view extends cs_index_view {
          $count = $mylist_item->getCountLinks();
          $html .= '<div '.$style.' style="display:block; margin:0px;'.$font_style.'" >'.LF;
          $html .= '<div style="float:right; padding-top:2px;">'.LF;
-         
+
          $html .= '<a href="#"><img src="images/commsyicons/16x16/new_home.png" id="new_icon_'.$mylist_item->getItemID().'" style="vertical-align:top;" alt=""/></a>';
-         
+
          $image = '<img src="images/commsyicons/16x16/copy.png" style="vertical-align:top;" alt="'.$this->_translator->getMessage('ENTRY_COPY_MYLIST').'"/>'.LF;
          $params['copy_list'] = $mylist_item->getItemID();
          $html .= ahref_curl(  $this->_environment->getCurrentContextID(),
@@ -394,14 +394,14 @@ class cs_entry_index_view extends cs_index_view {
 
 
    function asHTML () {
-   	$privateroom_item = $this->_environment->getCurrentContextItem();
-   	$myentries_array = $privateroom_item->getMyEntriesDisplayConfig();
-   	
+      $privateroom_item = $this->_environment->getCurrentContextItem();
+      $myentries_array = $privateroom_item->getMyEntriesDisplayConfig();
+
       $html  = LF.'<!-- BEGIN OF LIST VIEW -->'.LF;
 
       $html .= $this->_getIndexPageHeaderAsHTML().LF;
       $html .= '<div style="width:100%; clear:both; margin-top: 10px;">';
-      
+
       if(!empty($myentries_array)){
          $html .= '<div id="myentries_left" class="column" style="width:50%; float:left;">'.LF;
          foreach($myentries_array as $myentry){
@@ -422,14 +422,14 @@ class cs_entry_index_view extends cs_index_view {
          $html .= '<div id="myentries_right" style="width:50%; float:right;">'.LF;
          $html .= $this->_getSearchBoxAsHTML().LF;
          $html .= $this->_getContentBoxAsHTML().LF;
-	      $html .= '</div>'.LF;
+         $html .= '</div>'.LF;
       } else {
-      	$html .= '<div style="width:100%; float:left;">'.LF;
-      	$html .= $this->_getSearchBoxAsHTML().LF;
+         $html .= '<div style="width:100%; float:left;">'.LF;
+         $html .= $this->_getSearchBoxAsHTML().LF;
          $html .= $this->_getContentBoxAsHTML().LF;
          $html .= '</div>'.LF;
       }
-      
+
       $html .= '</div>';
       $html .='<div style="clear:both;">'.LF;
       $html .='</div>'.LF;
@@ -444,7 +444,7 @@ class cs_entry_index_view extends cs_index_view {
       $html = '';
 
       $myentries_array = $privateroom_item->getMyEntriesDisplayConfig();
-      
+
       $temp_array = array();
       $temp_array['dropdown_image']  = "new_icon";
       $temp_array['text']  = $this->_translator->getMessage('PRIVATEROOM_MY_LISTS_BOX');
@@ -455,7 +455,7 @@ class cs_entry_index_view extends cs_index_view {
          $temp_array['checked']  = "";
       }
       $action_array[] = $temp_array;
-      
+
       $temp_array = array();
       $temp_array['dropdown_image']  = "new_icon";
       $temp_array['text']  = $this->_translator->getMessage('PRIVATEROOM_MY_ENTRIES_BUZZWORD_BOX');
@@ -466,7 +466,7 @@ class cs_entry_index_view extends cs_index_view {
          $temp_array['checked']  = "";
       }
       $action_array[] = $temp_array;
-      
+
       $temp_array = array();
       $temp_array['dropdown_image']  = "new_icon";
       $temp_array['text']  = $this->_translator->getMessage('PRIVATEROOM_MY_ENTRIES_MATRIX_BOX');
@@ -477,7 +477,7 @@ class cs_entry_index_view extends cs_index_view {
          $temp_array['checked']  = "";
       }
       $action_array[] = $temp_array;
-      
+
       #$temp_array = array();
       #$temp_array['dropdown_image']  = "new_icon";
       #$temp_array['text']  = $this->_translator->getMessage('PRIVATEROOM_MY_ENTRIES_SEARCH_BOX');
@@ -488,7 +488,7 @@ class cs_entry_index_view extends cs_index_view {
       #   $temp_array['checked']  = "";
       #}
       #$action_array[] = $temp_array;
-      
+
       #$temp_array = array();
       #$temp_array['dropdown_image']  = "new_icon";
       #$temp_array['text']  = $this->_translator->getMessage('PRIVATEROOM_MY_ENTRIES_LIST_BOX');
@@ -499,7 +499,7 @@ class cs_entry_index_view extends cs_index_view {
       #   $temp_array['checked']  = "";
       #}
       #$action_array[] = $temp_array;
-      
+
       // init drop down menu
       if ( !empty($action_array)
            and count($action_array) >= 1
@@ -550,11 +550,11 @@ class cs_entry_index_view extends cs_index_view {
             $html .= '<div>'.LF;
             if ($this->_sellist == 'new'){
                $html .= $this->_translator->getMessage('COMMON_MYLIST_RESTRICTION').': "'.$this->_translator->getMessage('COMMON_NEWEST_ENTRIES').'"';
-      	    }else{
-      	       $list_manager = $this->_environment->getMyListManager();
-      	       $list_item = $list_manager->getItem($this->_sellist);
-      	       $html .= $this->_translator->getMessage('COMMON_MYLIST_RESTRICTION').': "'.$list_item->getName().'"';
-      	   }
+             }else{
+                $list_manager = $this->_environment->getMyListManager();
+                $list_item = $list_manager->getItem($this->_sellist);
+                $html .= $this->_translator->getMessage('COMMON_MYLIST_RESTRICTION').': "'.$list_item->getName().'"';
+            }
            $new_aparams = $params;
            unset($new_aparams['sellist']);
            $image = '<img src="images/delete_restriction.gif" style="padding-top:3px;" alt="'.$this->_translator->getMessage('ENTRY_DELETE_RESTRICTION').'"/>'.LF;
@@ -568,9 +568,9 @@ class cs_entry_index_view extends cs_index_view {
          }
          if (!empty($this->_selbuzzword)){
             $html .= '<div>'.LF;
-         	$buzzword_manager = $this->_environment->getBuzzwordManager();
-      	    $buzzword_item = $buzzword_manager->getItem($this->_selbuzzword);
-      	    $html .= $this->_translator->getMessage('COMMON_BUZZWORD_RESTRICTION').': "'.$buzzword_item->getName().'"';
+            $buzzword_manager = $this->_environment->getBuzzwordManager();
+             $buzzword_item = $buzzword_manager->getItem($this->_selbuzzword);
+             $html .= $this->_translator->getMessage('COMMON_BUZZWORD_RESTRICTION').': "'.$buzzword_item->getName().'"';
             $new_aparams = $params;
             unset($new_aparams['selbuzzword']);
             $image = '<img src="images/delete_restriction.gif" style="padding-top:3px;" alt="'.$this->_translator->getMessage('ENTRY_DELETE_RESTRICTION').'"/>'.LF;
@@ -584,7 +584,7 @@ class cs_entry_index_view extends cs_index_view {
          }
          if (!empty($this->_search_text) and $this->_search_text != $this->_translator->getMessage('COMMON_SEARCH_IN_ENTRIES')){
             $html .= '<div>'.LF;
-      	    $html .= $this->_translator->getMessage('COMMON_SEARCH_RESTRICTION').': "'.$this->_search_text.'"';
+             $html .= $this->_translator->getMessage('COMMON_SEARCH_RESTRICTION').': "'.$this->_search_text.'"';
             $new_aparams = $params;
             unset($new_aparams['search']);
             $image = '<img src="images/delete_restriction.gif" style="padding-top:3px;" alt="'.$this->_translator->getMessage('ENTRY_DELETE_RESTRICTION').'"/>'.LF;
@@ -601,29 +601,29 @@ class cs_entry_index_view extends cs_index_view {
       }
 
       if ( isset($list) && !($list->isEmpty()) ) {
-      	$interval_20 = '20';
-      	if($this->_interval != '20'){
-      	  $params['interval'] = 20;
-      	  $params['pos'] = 0;
-      	  $interval_20 = ahref_curl(  $this->_environment->getCurrentContextID(),
+         $interval_20 = '20';
+         if($this->_interval != '20'){
+           $params['interval'] = 20;
+           $params['pos'] = 0;
+           $interval_20 = ahref_curl(  $this->_environment->getCurrentContextID(),
                                           'entry',
                                           'index',
                                           $params,
                                           '20').LF;
-      	}
-      	$interval_50 = '50';
-      	if($this->_interval != '50'){
-      		$params['interval'] = 50;
+         }
+         $interval_50 = '50';
+         if($this->_interval != '50'){
+            $params['interval'] = 50;
             $params['pos'] = 0;
             $interval_50 = ahref_curl(  $this->_environment->getCurrentContextID(),
                                           'entry',
                                           'index',
                                           $params,
                                           '50').LF;
-      	}
-      	$interval_all = $this->_translator->getMessage('COMMON_PAGE_ENTRIES_ALL');
+         }
+         $interval_all = $this->_translator->getMessage('COMMON_PAGE_ENTRIES_ALL');
          if($this->_interval != 'all'){
-         	$params['interval'] = 'all';
+            $params['interval'] = 'all';
             $params['pos'] = 0;
             $interval_all = ahref_curl(  $this->_environment->getCurrentContextID(),
                                           'entry',
@@ -634,53 +634,53 @@ class cs_entry_index_view extends cs_index_view {
 
          $browse_first = '&lt;&lt;';
          $browse_prev = '&lt;';
-      	if($this->_browse_prev){
-      		$params['interval'] = $this->_interval;
+         if($this->_browse_prev){
+            $params['interval'] = $this->_interval;
             $params['pos'] = 0;
-	         $browse_first = ahref_curl(  $this->_environment->getCurrentContextID(),
-	                                       'entry',
-	                                       'index',
-	                                       $params,
-	                                       '&lt;&lt;',
-	                                       $this->_translator->getMessage('COMMON_BROWSE_START_DESC')).LF;
-	         $params['interval'] = $this->_interval;
+            $browse_first = ahref_curl(  $this->_environment->getCurrentContextID(),
+                                          'entry',
+                                          'index',
+                                          $params,
+                                          '&lt;&lt;',
+                                          $this->_translator->getMessage('COMMON_BROWSE_START_DESC')).LF;
+            $params['interval'] = $this->_interval;
             $params['pos'] = $this->_pos - 1;
-	         $browse_prev = ahref_curl(  $this->_environment->getCurrentContextID(),
-	                                       'entry',
-	                                       'index',
-	                                       $params,
-	                                       '&lt;',
-	                                       $this->_translator->getMessage('COMMON_BROWSE_LEFT_DESC')).LF;
-      	}
-      	
-      	$browse_next = '&gt;';
+            $browse_prev = ahref_curl(  $this->_environment->getCurrentContextID(),
+                                          'entry',
+                                          'index',
+                                          $params,
+                                          '&lt;',
+                                          $this->_translator->getMessage('COMMON_BROWSE_LEFT_DESC')).LF;
+         }
+
+         $browse_next = '&gt;';
          $browse_last = '&gt;&gt;';
          if($this->_browse_next){
-         	$params['interval'] = $this->_interval;
+            $params['interval'] = $this->_interval;
             $params['pos'] = $this->_pos + 1;
-	         $browse_next = ahref_curl(  $this->_environment->getCurrentContextID(),
-	                                       'entry',
-	                                       'index',
-	                                       $params,
-	                                       '&gt;',
-	                                       $this->_translator->getMessage('COMMON_BROWSE_RIGHT_DESC')).LF;
-	         $params['interval'] = $this->_interval;
+            $browse_next = ahref_curl(  $this->_environment->getCurrentContextID(),
+                                          'entry',
+                                          'index',
+                                          $params,
+                                          '&gt;',
+                                          $this->_translator->getMessage('COMMON_BROWSE_RIGHT_DESC')).LF;
+            $params['interval'] = $this->_interval;
             $params['pos'] = $this->_max_pos;
-	         $browse_last = ahref_curl(  $this->_environment->getCurrentContextID(),
-	                                       'entry',
-	                                       'index',
-	                                       $params,
-	                                       '&gt;&gt;',
-	                                       $this->_translator->getMessage('COMMON_BROWSE_END_DESC')).LF;
+            $browse_last = ahref_curl(  $this->_environment->getCurrentContextID(),
+                                          'entry',
+                                          'index',
+                                          $params,
+                                          '&gt;&gt;',
+                                          $this->_translator->getMessage('COMMON_BROWSE_END_DESC')).LF;
          }
-         
-      	$current_pos = $this->_pos + 1;
-      	$whole_ammount = $this->_max_pos+1;
-         
+
+         $current_pos = $this->_pos + 1;
+         $whole_ammount = $this->_max_pos+1;
+
          $html .= '<tr><td style="text-align:left; font-weight:bold;">'.$interval_20.' | '.$interval_50.' | '.$interval_all.'</td><td style="text-align:right; font-weight:bold;">'.$current_pos.' / '.$whole_ammount.'&nbsp;&nbsp;&nbsp;'.$browse_first.' | '.$browse_prev.' | '.$browse_next.' | '.$browse_last.'</td></tr>';
       }
       $html .= '</table>'.LF;
-         
+
       if ( !isset($list) || $list->isEmpty() ) {
          $html .= '<div class="odd" style="border-bottom: 0px;">'.$this->_translator->getMessage('COMMON_NO_ENTRIES').'</div>';
       } else {
@@ -725,13 +725,13 @@ class cs_entry_index_view extends cs_index_view {
       $matrix_row_title_array = array();
       $matrix_item = $matrix_row_list->getFirst();
       while($matrix_item){
-      	 $matrix_row_title_array[$matrix_item->getItemID()] = $matrix_item->getName();
+          $matrix_row_title_array[$matrix_item->getItemID()] = $matrix_item->getName();
          $matrix_item = $matrix_row_list->getNext();
       }
       $matrix_column_title_array = array();
       $matrix_item = $matrix_column_list->getFirst();
       while($matrix_item){
-      	 $matrix_column_title_array[$matrix_item->getItemID()] = $matrix_item->getName();
+          $matrix_column_title_array[$matrix_item->getItemID()] = $matrix_item->getName();
          $matrix_item = $matrix_column_list->getNext();
       }
 
@@ -763,23 +763,23 @@ class cs_entry_index_view extends cs_index_view {
       $html .= $html_table.LF;
 
       // form
-      
+
       // /form
-      
+
       $html .= '</div>'.LF;
-      
+
       // Preferences link
       $html .= '<div class="portlet-turn portlet-front" style="float:right;">'.LF;
       $html .= '<a class="preferences_flip" name="portlet_preferences" style="cursor:pointer;"><img src="images/config_home.png" /></a>'.LF;
       $html .= '&nbsp;</div>'.LF;
-      
+
       $html .= '</div>'.LF;
-      
+
       // Preferences content
       $html .= '<div class="portlet" style="display:none;" id="my_matrix_box_preferences">'.LF;
       $html .= '<div class="portlet-header">'.$this->_translator->getMessage('PRIVATEROOM_MY_ENTRIES_MATRIX_BOX').' - Einstellungen</div>'.LF;
       $html .= '<div class="portlet-content">'.LF;
-      
+
       // form
       #$html .= '<form style="padding:0px; margin:0px;" action="'.curl($this->_environment->getCurrentContextID(), 'entry', 'index','').'" method="post" name="matrix-form">'.LF;
       $html .= '   <input type="hidden" name="cid" value="'.$this->_text_as_form($this->_environment->getCurrentContextID()).'"/>'.LF;
@@ -834,18 +834,18 @@ class cs_entry_index_view extends cs_index_view {
       $html .= '   <input name="option" value="'.$this->_text_as_form($this->_translator->getMessage('PRIVATEROOM_MATRIX_SAVE_BUTTON')).'" style="width: 250px; font-size: 10pt;" type="submit"/>'.LF;
       #$html .='</form>'.LF;
       // /form
-      
+
       $html .= '</div>'.LF;
       $html .= '<div class="portlet-turn portlet-back" style="float:right;"><a class="preferences_flip" name="portlet_preferences_back_button" style="cursor:pointer;"><img src="images/commsyicons/16x16/room.png" height="18" width="18"/></a>&nbsp;</div>'.LF;
       $html .= '</div>'.LF;
-      
+
       $html .= '<script type="text/javascript">'.LF;
       $html .= '<!--'.LF;
       $html .= 'var new_row_message = "'.$this->_translator->getMessage('PRIVATEROOM_MATRIX_NEW_ROW_ENTRY').'";'.LF;
       $html .= 'var new_column_message = "'.$this->_translator->getMessage('PRIVATEROOM_MATRIX_NEW_COLUMN_ENTRY').'";'.LF;
       $html .= '-->'.LF;
       $html .= '</script>'.LF;
-      
+
       return $html;
 
    }
@@ -882,7 +882,7 @@ class cs_entry_index_view extends cs_index_view {
             $style_text  = 'style="margin-left:2px; margin-right:2px;';
             if (!empty($this->_selbuzzword) and $this->_selbuzzword == $buzzword->getItemID()){
                $style_text .= ' color:#000000;';
-            	$style_text .= ' font-weight:bold;';
+               $style_text .= ' font-weight:bold;';
             }else{
                $style_text .= ' color: rgb('.$font_color.'%,'.$font_color.'%,'.$font_color.'%);';
             }
@@ -911,60 +911,60 @@ class cs_entry_index_view extends cs_index_view {
       #}
       #$html .= '</div>'.LF;
       $html .= '</div>'.LF;
-      
+
       // Preferences link
       $html .= '<div class="portlet-turn portlet-front" style="float:right;">'.LF;
       $html .= '<a class="preferences_flip" name="portlet_preferences" style="cursor:pointer;"><img src="images/config_home.png" /></a>'.LF;
       $html .= '&nbsp;</div>'.LF;
-      
+
       $html .= '</div>'.LF;
-      
+
       // Preferences content
       $html .= '<div class="portlet" style="display:none;" id="my_buzzword_box_preferences">'.LF;
       $html .= '<div class="portlet-header">'.$this->_translator->getMessage('PRIVATEROOM_MY_ENTRIES_BUZZWORD_BOX').' - Einstellungen</div>'.LF;
       $html .= '<div class="portlet-content">'.LF;
-      
+
       // form
       $html .= '<input type="text" id="portlet_buzzword_new" size="40">';
       $html .= '<input type="submit" id="portlet_buzzword_new_button" value="'.$this->_translator->getMessage('BUZZWORDS_NEW_BUTTON').'">';
       $html .= '<br/><br/>'.LF;
-      
+
       $html .= '<div id="portlet_buzzword_combine">';
-	      $html .= '<select id="portal_buzzword_combine_first" size="1" tabindex="15">'.LF;
-	      $buzzword = $buzzword_list->getFirst();
-	      while($buzzword){
-	         $html .= '<option value="'.$buzzword->getItemID().'">'.$buzzword->getName().'</option>'.LF;
-	         $buzzword = $buzzword_list->getNext();
-	      }
-	      $html .= '</select>'.LF;
-	      $html .= '<select id="portal_buzzword_combine_second" size="1" tabindex="15">'.LF;
-	      $buzzword = $buzzword_list->getFirst();
-	      while($buzzword){
-	         $html .= '<option value="'.$buzzword->getItemID().'">'.$buzzword->getName().'</option>'.LF;
-	         $buzzword = $buzzword_list->getNext();
-	      }
-	      $html .= '</select>'.LF;
-	      $html .= '<input type="submit" id="portlet_buzzword_combine_button" value="'.$this->_translator->getMessage('BUZZWORDS_COMBINE_BUTTON').'">';
+         $html .= '<select id="portal_buzzword_combine_first" size="1" tabindex="15">'.LF;
+         $buzzword = $buzzword_list->getFirst();
+         while($buzzword){
+            $html .= '<option value="'.$buzzword->getItemID().'">'.$buzzword->getName().'</option>'.LF;
+            $buzzword = $buzzword_list->getNext();
+         }
+         $html .= '</select>'.LF;
+         $html .= '<select id="portal_buzzword_combine_second" size="1" tabindex="15">'.LF;
+         $buzzword = $buzzword_list->getFirst();
+         while($buzzword){
+            $html .= '<option value="'.$buzzword->getItemID().'">'.$buzzword->getName().'</option>'.LF;
+            $buzzword = $buzzword_list->getNext();
+         }
+         $html .= '</select>'.LF;
+         $html .= '<input type="submit" id="portlet_buzzword_combine_button" value="'.$this->_translator->getMessage('BUZZWORDS_COMBINE_BUTTON').'">';
       $html .= '</div><br/>';
-      
+
       $html .= '<div id="portlet_buzzword_preferences_list">';
       $buzzword = $buzzword_list->getFirst();
       while($buzzword){
-      	$html .= '<div>';
-      	$html .= '<input type="text" class="portlet_buzzword_textfield" id="portlet_buzzword_'.$buzzword->getItemID().'" value="'.$buzzword->getName().'" size="40">&nbsp;';
-      	$html .= '<input type="submit" class="portlet_buzzword_change_button" id="'.$buzzword->getItemID().'" value="'.$this->_translator->getMessage('BUZZWORDS_CHANGE_BUTTON').'">&nbsp;';
-      	$html .= '<input type="submit" class="portlet_buzzword_delete_button" id="'.$buzzword->getItemID().'" value="'.$this->_translator->getMessage('COMMON_DELETE_BUTTON').'">';
-      	$html .= '</div>';
-      	$buzzword = $buzzword_list->getNext();
+         $html .= '<div>';
+         $html .= '<input type="text" class="portlet_buzzword_textfield" id="portlet_buzzword_'.$buzzword->getItemID().'" value="'.$buzzword->getName().'" size="40">&nbsp;';
+         $html .= '<input type="submit" class="portlet_buzzword_change_button" id="'.$buzzword->getItemID().'" value="'.$this->_translator->getMessage('BUZZWORDS_CHANGE_BUTTON').'">&nbsp;';
+         $html .= '<input type="submit" class="portlet_buzzword_delete_button" id="'.$buzzword->getItemID().'" value="'.$this->_translator->getMessage('COMMON_DELETE_BUTTON').'">';
+         $html .= '</div>';
+         $buzzword = $buzzword_list->getNext();
       }
       $html .= '</div>';
-      
+
       // /form
-      
+
       $html .= '</div>'.LF;
       $html .= '<div class="portlet-turn portlet-back" style="float:right;"><a class="preferences_flip" name="portlet_preferences_back_button" style="cursor:pointer;"><img src="images/commsyicons/16x16/room.png" height="18" width="18"/></a>&nbsp;</div>'.LF;
       $html .= '</div>'.LF;
-      
+
       $html .= '<script type="text/javascript">'.LF;
       $html .= '<!--'.LF;
       $html .= 'var buzzword_cid = "'.$this->_environment->getCurrentContextID().'";'.LF;
@@ -972,8 +972,8 @@ class cs_entry_index_view extends cs_index_view {
       $html .= 'var buzzword_message = "'.$this->_translator->getMessage('COMMON_NO_ENTRIES').'";'.LF;
       $html .= '-->'.LF;
       $html .= '</script>'.LF;
-      
-      
+
+
       unset($current_user);
       return $html;
    }
@@ -1005,7 +1005,7 @@ class cs_entry_index_view extends cs_index_view {
 
 
    function _getIndexPageHeaderAsHTML(){
-   	$html ='<div style="width:100%;">'.LF;
+      $html ='<div style="width:100%;">'.LF;
       $html .='<div style="height:30px;">'.LF;
       if (!$this->_environment->inPrivateRoom()){
          $html .= '<h2 class="pagetitle">'.$this->_translator->getMessage('ENTRY_INDEX');
@@ -1198,7 +1198,7 @@ class cs_entry_index_view extends cs_index_view {
          $file = $files->getNext();
       }
       if (!empty($file_list)){
-      	$file_list = '</td><td style="float:right; padding:3px;">'.$file_list;
+         $file_list = '</td><td style="float:right; padding:3px;">'.$file_list;
 
       }
       return $retour.$file_list;
@@ -1448,22 +1448,19 @@ class cs_entry_index_view extends cs_index_view {
    }
 
    function _initDropDownMenuForList($list){
-   	$action_array = array();
+      $action_array = array();
       $html = '';
       $current_context = $this->_environment->getCurrentContextItem();
       //$current_portal = $this->_environment->getCurrentPortalItem();
-      
+
       $html .= '<script type="text/javascript">'.LF;
       $html .= '<!--'.LF;
       $html .= 'var dropDownForLists = new Array(';
-      
+
       $list_item = $list->getFirst();
-      
+
       $first_list = true;
       while($list_item){
-      //if ( isset($c_use_linked_dropdown_rooms)
-      //     and (in_array($current_context->getItemID(), $c_use_linked_dropdown_rooms) or in_array($current_portal->getItemID(), $c_use_linked_dropdown_rooms))
-      //   ) {
          //if ( $current_context->isOpen() ) {
             $action_array = array();
             $image_new  = '';
@@ -1531,36 +1528,36 @@ class cs_entry_index_view extends cs_index_view {
          #$action_array[] = $temp_array;
 
          foreach($this->_dropdown_rubrics_new as $rubric){
-	         //if ( $current_context->isOpen()) {
-	            if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-	               $image_import = 'images/commsyicons_msie6/22x22/'.$this->_dropdown_image_array[$rubric].'.gif';
-	            } else {
-	               $image_import = 'images/commsyicons/22x22/'.$this->_dropdown_image_array[$rubric].'.png';
-	            }
-	            $params = array();
-	            $params['iid'] = 'NEW';
-	            //$params['linked_item'] = $this->_item->getItemID();
-	            $params['mylist_id'] = $list_item->getItemID();
-	            $href_import = curl($this->_environment->getCurrentContextID(),
-	                               $rubric,
-	                               'edit',
-	                               $params);
-	            $text_import = $this->_translator->getMessage($this->_dropdown_message_array[$rubric]);
-	            if ( !empty($text_import)
-	                 and !empty($image_import)
-	                 and !empty($href_import)
-	               ) {
-	               $temp_array = array();
-	               $temp_array['dropdown_image']  = "new_icon_".$list_item->getItemID();
-	               $temp_array['text']  = $text_import;
-	               $temp_array['image'] = $image_import;
-	               $temp_array['href']  = $href_import;
-	               $action_array[] = $temp_array;
-	               unset($temp_array);
-	            }
-	         //}
-	      }
-         
+            //if ( $current_context->isOpen()) {
+               if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+                  $image_import = 'images/commsyicons_msie6/22x22/'.$this->_dropdown_image_array[$rubric].'.gif';
+               } else {
+                  $image_import = 'images/commsyicons/22x22/'.$this->_dropdown_image_array[$rubric].'.png';
+               }
+               $params = array();
+               $params['iid'] = 'NEW';
+               //$params['linked_item'] = $this->_item->getItemID();
+               $params['mylist_id'] = $list_item->getItemID();
+               $href_import = curl($this->_environment->getCurrentContextID(),
+                                  $rubric,
+                                  'edit',
+                                  $params);
+               $text_import = $this->_translator->getMessage($this->_dropdown_message_array[$rubric]);
+               if ( !empty($text_import)
+                    and !empty($image_import)
+                    and !empty($href_import)
+                  ) {
+                  $temp_array = array();
+                  $temp_array['dropdown_image']  = "new_icon_".$list_item->getItemID();
+                  $temp_array['text']  = $text_import;
+                  $temp_array['image'] = $image_import;
+                  $temp_array['href']  = $href_import;
+                  $action_array[] = $temp_array;
+                  unset($temp_array);
+               }
+            //}
+         }
+
          #$action_array = array_merge($action_array, $this->_getAdditionalDropDownEntries());
 
          // init drop down menu
@@ -1597,7 +1594,6 @@ class cs_entry_index_view extends cs_index_view {
       $html .= ');'.LF;
       $html .= '-->'.LF;
       $html .= '</script>'.LF;
-      //}
       return $html;
    }
 }

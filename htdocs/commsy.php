@@ -661,6 +661,15 @@ if ( isset($_GET['jscheck'])
          $session->setValue('javascript',-1);
       }
    }
+   if ( isset($session) and !$session->issetValue('https')) {
+      if ( isset($_GET['https']) ) {
+         if ( !empty($_GET['https']) and $_GET['https'] == 1 ) {
+            $session->setValue('https',1);
+         } else {
+            $session->setValue('https',-1);
+         }
+      }
+   }
 }
 
 $current_user_item = $environment->getCurrentUserItem();

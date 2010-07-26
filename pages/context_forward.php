@@ -62,6 +62,9 @@ if ( $external_tool == 'homepage' ) {
       if ( $session_item->issetValue('javascript') ) {
          $new_session->setValue('javascript',$session_item->getValue('javascript'));
       }
+      if ( $session_item->issetValue('https') ) {
+         $new_session->setValue('https',$session_item->getValue('https'));
+      }
       if ( $session_item->issetValue('auth_source') ) {
          $new_session->setValue('auth_source',$session_item->getValue('auth_source'));
       }
@@ -106,6 +109,9 @@ if ( $external_tool == 'homepage' ) {
    if ( isset($session_item) ) {
       if ( $session_item->issetValue('javascript') ) {
          $new_session->setValue('javascript',$session_item->getValue('javascript'));
+      }
+      if ( $session_item->issetValue('https') ) {
+         $new_session->setValue('https',$session_item->getValue('https'));
       }
       if ( $session_item->issetValue('auth_source') ) {
          $new_session->setValue('auth_source',$session_item->getValue('auth_source'));

@@ -30,6 +30,7 @@ $session = $environment->getSessionItem();
 $history = $session->getValue('history');
 $cookie = $session->getValue('cookie');
 $javascript = $session->getValue('javascript');
+$https = $session->getValue('https');
 if ( $session->issetValue('root_session_id') ) {
    $root_session_id = $session->getValue('root_session_id');
 }
@@ -48,6 +49,11 @@ if ($javascript == '1') {
    $session->setValue('javascript',1);
 } elseif ($javascript == '-1') {
    $session->setValue('javascript',-1);
+}
+if ($https == '1') {
+   $session->setValue('https',1);
+} elseif ($https == '-1') {
+   $session->setValue('https',-1);
 }
 
 if ( !empty($_GET['back_tool']) ) {
