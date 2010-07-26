@@ -103,6 +103,9 @@ class cs_configuration_informationbox_form extends cs_rubric_form {
             case 'todo':
                $is_entry = true;
                break;
+            case 'label':
+               $is_entry = true;
+               break;
             default:
                $is_entry = false;
                break;
