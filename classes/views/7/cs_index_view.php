@@ -2378,7 +2378,15 @@ EOD;
          } else {
             $image = '<img src="images/commsyicons/22x22/new.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_NEW_ITEM').'" id="new_icon"/>';
          }
-         $html .= '&nbsp;&nbsp;'.ahref_curl($this->_environment->getCurrentContextID(),
+         if ( $current_context->isOpen()
+              and $current_context->isPrivateRoom()
+              and $this->_environment->getConfiguration('c_use_new_private_room')
+            ) {
+            // do nothing
+         } else {
+            $html .= '&nbsp;';
+         }
+         $html .= '&nbsp;'.ahref_curl($this->_environment->getCurrentContextID(),
                            $this->_environment->getCurrentModule(),
                             'edit',
                             $params,

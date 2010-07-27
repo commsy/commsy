@@ -658,7 +658,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $ical_url .= $_SERVER['HTTP_HOST'];
       global $c_single_entry_point;
       $ical_url .= str_replace($c_single_entry_point,'ical.php',$_SERVER['PHP_SELF']);
-      $ical_url .= '?cid='.$_GET['cid'].'&amp;hid='.$hash_manager->getICalHashForUser($current_user->getItemID()).'">'.$image.'</a>'.LF;
+      $ical_url .= '?cid='.$_GET['cid'].'&amp;hid='.$hash_manager->getICalHashForUser($current_user->getItemID()).'">'.$image.'</a>';
       $html .= $ical_url;
       if ( $current_context->isOpen()
            and $current_context->isPrivateRoom()
@@ -666,6 +666,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
          ) {
          // do nothing
       } else {
+         $html .= LF;
          if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
             $image = '<img src="images/commsyicons_msie6/22x22/export.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('DATES_EXPORT').'"/>';
          } else {
