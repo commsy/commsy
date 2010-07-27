@@ -159,7 +159,13 @@ else {
       $session->unsetValue('linked_items_post_vars');
       cleanup_session($current_iid);
       if ( $current_iid == 'NEW' ) {
-         redirect($environment->getCurrentContextID(), 'todo', 'index', '');
+         if ( $environment->inPrivateRoom()
+              and $environment->getConfiguration('c_use_new_private_room')
+            ) {
+            redirect($environment->getCurrentContextID(), 'date', 'index', '');
+         } else {
+            redirect($environment->getCurrentContextID(), 'todo', 'index', '');
+         }
       } else {
          $params = array();
          $params['iid'] = $current_iid;
@@ -386,7 +392,7 @@ else {
               $mylist_item->saveLinksByIDArray($id_array);
            }
            $session->unsetValue('cid'.$environment->getCurrentContextID().'_linked_items_mylist_id');
-           
+
             // Redirect
             cleanup_session($current_iid);
             $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_buzzword_ids');
