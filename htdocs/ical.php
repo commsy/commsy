@@ -154,7 +154,92 @@ if ( isset($_GET['cid']) ) {
          $item_list = $dates_manager->get();
       }else{
          $todo_manager = $environment->getToDoManager();
-         $todo_manager->setContextLimit($context_item->getItemID());
+         $context_item = $environment->getCurrentContextItem();
+         $todo_sel_status = $context_item->getRubrikSelection(CS_TODO_TYPE,'status');
+         if ( isset($todo_sel_status) ) {
+            if ( $todo_sel_status > 9 ) {
+               $todo_sel_status = $todo_sel_status - 10;
+            }
+            if ( !empty($todo_sel_status) ) {
+               $todo_manager->setStatusLimit($todo_sel_status);
+            }
+         } else {
+            $todo_manager->setStatusLimit(4);
+         }
+         $todo_sel_room = $context_item->getRubrikSelection(CS_TODO_TYPE,'room');
+         if ( !empty($todo_sel_room) ) {
+            if ( $todo_sel_room > 99 ) {
+               $room_id_array = array();
+               $room_id_array[] = $todo_sel_room;
+               $todo_manager->setContextArrayLimit($room_id_array);
+            } elseif ( $todo_sel_room == 2 ) {
+               $current_user_item = $environment->getCurrentUser();
+               $room_id_array = array();
+               $room_id_array[] = $context_item->getItemID();
+               $grouproom_list = $current_user_item->getRelatedGroupList();
+               if ( isset($grouproom_list) and $grouproom_list->isNotEmpty()) {
+                  $grouproom_list->reverse();
+                  $grouproom_item = $grouproom_list->getFirst();
+                  while ($grouproom_item) {
+                     $project_room_id = $grouproom_item->getLinkedProjectItemID();
+                     if ( in_array($project_room_id,$room_id_array) ) {
+                        $room_id_array_temp = array();
+                        foreach ($room_id_array as $value) {
+                           $room_id_array_temp[] = $value;
+                           if ( $value == $project_room_id) {
+                               $room_id_array_temp[] = $grouproom_item->getItemID();
+                           }
+                        }
+                        $room_id_array = $room_id_array_temp;
+                     }
+                     $grouproom_item = $grouproom_list->getNext();
+                  }
+               }
+               $project_list = $current_user_item->getRelatedProjectList();
+               if ( isset($project_list) and $project_list->isNotEmpty()) {
+                  $project_item = $project_list->getFirst();
+                  while ($project_item) {
+                      $room_id_array[] = $project_item->getItemID();
+                      $project_item = $project_list->getNext();
+                  }
+               }
+               $community_list = $current_user_item->getRelatedcommunityList();
+               if ( isset($community_list) and $community_list->isNotEmpty()) {
+                  $community_item = $community_list->getFirst();
+                  while ($community_item) {
+                      $room_id_array[] = $community_item->getItemID();
+                      $community_item = $community_list->getNext();
+                  }
+               }
+               $todo_manager->setContextArrayLimit($room_id_array);
+            } else {
+               $room_id_array = array();
+               $room_id_array[] = $context_item->getItemID();
+               $todo_manager->setContextArrayLimit($room_id_array);
+            }
+         } else {
+            $room_id_array = array();
+            $room_id_array[] = $context_item->getItemID();
+            $todo_manager->setContextArrayLimit($room_id_array);
+         }
+         $todo_sel_assignment = $context_item->getRubrikSelection(CS_TODO_TYPE,'assignment');
+         if ( !empty($todo_sel_assignment) ) {
+            if ($todo_sel_assignment == '3'){
+               $current_user = $environment->getCurrentUserItem();
+               $user_list = $current_user->getRelatedUserList();
+               $user_item = $user_list->getFirst();
+               $user_id_array = array();
+               while ($user_item){
+                  $user_id_array[] = $user_item->getItemID();
+                  $user_item = $user_list->getNext();
+               }
+               if ( !empty($user_id_array) ) {
+                  $todo_manager->setAssignmentLimit($user_id_array);
+               }
+               unset($user_id_array);
+               unset($user_list);
+            }
+         }
          $todo_manager->select();
          $item_list = $todo_manager->get();
       }

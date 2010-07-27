@@ -951,7 +951,7 @@ if ($current_context->isPrivateRoom()){
    }
 
    $todo_sel_status_for_manager = 4;
-   if ( !empty($_GET[CS_TODO_TYPE.'_selstatus'])
+   if ( isset($_GET[CS_TODO_TYPE.'_selstatus'])
         and $_GET[CS_TODO_TYPE.'_selstatus'] != '-2'
       ) {
       $todo_sel_status = $_GET[CS_TODO_TYPE.'_selstatus'];
@@ -960,6 +960,8 @@ if ($current_context->isPrivateRoom()){
       $context_item->save();
       if ( $todo_sel_status > 9 ) {
          $todo_sel_status_for_manager = $todo_sel_status - 10;
+      } else {
+         $todo_sel_status_for_manager = $todo_sel_status;
       }
    } elseif ( empty($_GET[CS_TODO_TYPE.'_selstatus']) ) {
       $todo_sel_status = $context_item->getRubrikSelection(CS_TODO_TYPE,'status');
@@ -967,6 +969,8 @@ if ($current_context->isPrivateRoom()){
          $view->setSelectedStatus($todo_sel_status,CS_TODO_TYPE);
          if ( $todo_sel_status > 9 ) {
             $todo_sel_status_for_manager = $todo_sel_status - 10;
+         } else {
+            $todo_sel_status_for_manager = $todo_sel_status;
          }
       }
    }
@@ -992,7 +996,9 @@ if ($current_context->isPrivateRoom()){
    $count_all_todos = count($todo_ids);
    $todo_manager->showNoNotActivatedEntries();
    $todo_manager->setSortOrder('date');
-   $todo_manager->setStatusLimit($todo_sel_status_for_manager);
+   if ( !empty($todo_sel_status_for_manager) ) {
+      $todo_manager->setStatusLimit($todo_sel_status_for_manager);
+   }
    if ($todo_sel_assignment == '3'){
       $current_user = $environment->getCurrentUserItem();
       $user_list = $current_user->getRelatedUserList();

@@ -1195,8 +1195,8 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       //$html .= '   <select name="selstatus" size="1" style="width:150px;" onChange="javascript:document.indexform.submit()">'.LF;
       $html .= '   <select name="'.$form_prefix.'selstatus" size="1" style="width:185px;" id="submit_form">'.LF;
       // jQuery
-      $html .= '      <option value="2"';
-      if ( empty($selstatus) || $selstatus == 2 ) {
+      $html .= '      <option value="0"';
+      if ( empty($selstatus) or $selstatus == 0 ) {
          $html .= ' selected="selected"';
       }
       $html .= '>*'.$this->_translator->getMessage('COMMON_NO_SELECTION').'</option>'.LF;

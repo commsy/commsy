@@ -338,7 +338,8 @@ class cs_todos_manager extends cs_manager {
       // perform query
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) ) {
-         include_once('functions/error_functions.php');trigger_error('Problems selecting todos from query: "'.$query.'"',E_USER_WARNING);
+         include_once('functions/error_functions.php');
+         trigger_error('Problems selecting todos from query: "'.$query.'"',E_USER_WARNING);
       } else {
          $i=0;
          while( isset($result[$i]) ){
