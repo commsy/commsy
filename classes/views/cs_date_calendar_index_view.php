@@ -328,6 +328,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
          $html .= '</div>';
 
       }
+
       $width = '';
       $current_browser = mb_strtolower($this->_environment->getCurrentBrowser(), 'UTF-8');
       $current_browser_version = $this->_environment->getCurrentBrowserVersion();
@@ -358,6 +359,10 @@ class cs_date_calendar_index_view extends cs_room_index_view {
          }else{
             $html .= '<div class="right_box_main" style="'.$width.' height:278px; overflow-y:auto; padding:0px;">'.LF;
          }
+
+         // show selections
+         $html .= $this->_getTodoSelectionsAsHTML();
+
          if ( isset($todo_list) and !$todo_list->isEmpty()){
            $todo_array_for_jQuery = array();
            $todo_tooltip_array = array();
@@ -4874,6 +4879,107 @@ class cs_date_calendar_index_view extends cs_room_index_view {
 
       unset($current_context);
       return $action_array;
+   }
+
+   private function _getTodoSelectionsAsHTML () {
+      $html  = LF;
+      $assignment = $this->getSelectedAssignment(CS_TODO_TYPE);
+      $status = $this->getSelectedStatus(CS_TODO_TYPE);
+      $room = $this->getSelectedRoom(CS_TODO_TYPE);
+      if ( ( !empty($assignment)
+             and $assignment != 2
+           )
+           or !empty($status)
+           or ( !empty($room)
+                and $room != 2
+              )
+         ) {
+         $html .= '<div id="contentbox" class="portlet-content">'.LF;
+         $html .= '<table class="description-background" style="width:100%;">'.LF;
+         $html .= '<tr>'.LF;
+         $html .= '<td style="vertical-align:top;">'.LF;
+         $html .= $this->_translator->getMessage('COMMON_RESTRICTIONS_SHORT').': '.LF;
+         $html .= '</td>'.LF;
+         $html .= '</tr>'.LF;
+         if ( !empty($assignment)
+              and $assignment != 2
+            ) {
+            $html .= '<tr>'.LF;
+            $html .= '<td style="text-align:right;">'.LF;
+            if ( $assignment == 3 ) {
+               $html .= $this->_translator->getMessage('PRIVATEROOM_ASSIGNED_TO_ME_TODO');
+               $new_aparams = $this->_environment->getCurrentParameterArray();
+               $new_aparams['todo_selassignment'] = 2;
+               $image = '<img src="images/delete_restriction.gif" style="padding-top:3px;" alt="'.$this->_translator->getMessage('ENTRY_DELETE_RESTRICTION').'"/>'.LF;
+               $html .= ' '.ahref_curl(  $this->_environment->getCurrentContextID(),
+                                          CS_DATE_TYPE,
+                                          'index',
+                                          $new_aparams,
+                                          $image,
+                                          $this->_translator->getMessage('ENTRY_DELETE_RESTRICTION')).LF;
+            }
+            $html .= '</td>'.LF;
+            $html .= '</tr>'.LF;
+         }
+         if ( !empty($room)
+              and $room != 2
+            ) {
+            $html .= '<tr>'.LF;
+            $html .= '<td style="text-align:right;">'.LF;
+
+            if ( $this->_environment->getCurrentContextID() == $room ) {
+               $html .= $this->_translator->getMessage('COMMON_FOREIGN_ROOM');
+            } else {
+               $room_manager = $this->_environment->getRoomManager();
+               $room_item = $room_manager->getItem($room);
+               if ( !empty($room_item) ) {
+                  $html .= encode(AS_HTML_SHORT,chunkText($room_item->getTitle(),20));
+                  unset($room_item);
+               }
+               unset($room_manager);
+            }
+            $new_aparams = $this->_environment->getCurrentParameterArray();
+            $new_aparams['todo_selroom'] = 2;
+            $image = '<img src="images/delete_restriction.gif" style="padding-top:3px;" alt="'.$this->_translator->getMessage('ENTRY_DELETE_RESTRICTION').'"/>'.LF;
+            $html .= ' '.ahref_curl(  $this->_environment->getCurrentContextID(),
+                                       CS_DATE_TYPE,
+                                       'index',
+                                       $new_aparams,
+                                       $image,
+                                       $this->_translator->getMessage('ENTRY_DELETE_RESTRICTION')).LF;
+            $html .= '</td>'.LF;
+            $html .= '</tr>'.LF;
+         }
+         if ( !empty($status) ) {
+            $html .= '<tr>'.LF;
+            $html .= '<td style="text-align:right;">'.LF;
+
+            if ( $status == 11 ) {
+               $html .= $this->_translator->getMessage('TODO_NOT_STARTED');
+            } elseif ( $status == 12 ) {
+               $html .= $this->_translator->getMessage('TODO_IN_POGRESS');
+            } elseif ( $status == 13 ) {
+               $html .= $this->_translator->getMessage('TODO_DONE');
+            } elseif ( $status == 14 ) {
+               $html .= $this->_translator->getMessage('TODO_NOT_DONE');
+            }
+
+            $new_aparams = $this->_environment->getCurrentParameterArray();
+            $new_aparams['todo_selstatus'] = 0;
+            $image = '<img src="images/delete_restriction.gif" style="padding-top:3px;" alt="'.$this->_translator->getMessage('ENTRY_DELETE_RESTRICTION').'"/>'.LF;
+            $html .= ' '.ahref_curl(  $this->_environment->getCurrentContextID(),
+                                       CS_DATE_TYPE,
+                                       'index',
+                                       $new_aparams,
+                                       $image,
+                                       $this->_translator->getMessage('ENTRY_DELETE_RESTRICTION')).LF;
+            $html .= '</td>'.LF;
+            $html .= '</tr>'.LF;
+         }
+         $html .= '</table>'.LF;
+         $html .= '</div>'.LF;
+      }
+      return $html;
    }
 }
 ?>
