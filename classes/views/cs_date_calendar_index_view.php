@@ -54,6 +54,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
    var $_selected_assignment = NULL;
    private $_selected_assignment_array = array();
    private $_tooltip_div_array = array();
+   private $_search_text_array = array();
 
    // SUNBIRD
    var $use_sunbird = true;
@@ -212,6 +213,18 @@ class cs_date_calendar_index_view extends cs_room_index_view {
            and $rubric == CS_DATE_TYPE
          ) {
          $retour = $this->_selected_assignment;
+      }
+      return $retour;
+   }
+
+   function setSearchText2 ($value,$rubric = CS_DATE_TYPE) {
+      $this->_search_text_array[$rubric] = $value;
+   }
+
+   function getSearchText2 ( $rubric = CS_DATE_TYPE ) {
+      $retour = '';
+      if ( !empty($this->_search_text_array[$rubric]) ) {
+         $retour = $this->_search_text_array[$rubric];
       }
       return $retour;
    }
@@ -2245,8 +2258,8 @@ class cs_date_calendar_index_view extends cs_room_index_view {
     * @return string title
     */
    function _getDateItemLinkWithJavascript($item, $text) {
-      $title = $this->_compareWithSearchText($item->getTitle());
-      $text = $this->_compareWithSearchText($text);
+      $title = encode(AS_HTML_SHORT,$this->_compareWithSearchText($item->getTitle()));
+      $text = encode(AS_HTML_SHORT,$this->_compareWithSearchText($text));
       $params = array();
       $params['iid'] = $item->getItemID();
       $params['mode'] = 'private';
@@ -2276,7 +2289,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
          }
       }
       if ( $item->issetPrivatDate() ){
-           $title ='<i>'.$title.'</i>';
+           $title ='<i>'.$title.'</i>'; // ???
            $title = ahref_curl( $item->getContextID(),
                            CS_DATE_TYPE,
                            'detail',
@@ -4096,10 +4109,10 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       foreach($tooltips as $id => $tooltip){
          $html .= '<div id="' . $id . '" class="atip" style="padding:5px; border:2px solid ' . $tooltip['color'] . '">'.LF;
          $html .= '<table>'.LF;
-         $html .= '<tr><td colspan="2"><b>' . $tooltip['title'] . '</b></td></tr>'.LF;
+         $html .= '<tr><td colspan="2"><b>' . encode(AS_HTML_SHORT,$tooltip['title']) . '</b></td></tr>'.LF;
          $html .= '<tr><td style="vertical-align:top;"><b>' . $this->_translator->getMessage('DATES_DATETIME') . ':</b></td><td>' .  $tooltip['date'][1] . '</td></tr>'.LF;
          if($tooltip['place'] != ''){
-            $html .= '<tr><td style="vertical-align:top;"><b>' . $this->_translator->getMessage('DATES_PLACE') . ':</b></td><td>' . $tooltip['place'] . '</td></tr>'.LF;
+            $html .= '<tr><td style="vertical-align:top;"><b>' . $this->_translator->getMessage('DATES_PLACE') . ':</b></td><td>' . encode(AS_HTML_SHORT,$tooltip['place']) . '</td></tr>'.LF;
          }
          $html .= '<tr><td style="vertical-align:top;"><b>' . $this->_translator->getMessage('DATE_PARTICIPANTS') . ':</b></td><td>'.LF;
          if($tooltip['participants']->isEmpty()){
@@ -4895,12 +4908,17 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $assignment = $this->getSelectedAssignment(CS_TODO_TYPE);
       $status = $this->getSelectedStatus(CS_TODO_TYPE);
       $room = $this->getSelectedRoom(CS_TODO_TYPE);
+      $search = $this->getSearchText(CS_TODO_TYPE);
       if ( ( !empty($assignment)
              and $assignment != 2
            )
            or !empty($status)
            or ( !empty($room)
                 and $room != 2
+              )
+           or ( !empty($search)
+                and $search != $this->_translator->getMessage('COMMON_SEARCH_IN_ROOM')
+                and $search != $this->_translator->getMessage('COMMON_SEARCH_IN_ENTRIES')
               )
          ) {
          $html .= '<div id="contentbox" class="portlet-content">'.LF;
@@ -4985,6 +5003,27 @@ class cs_date_calendar_index_view extends cs_room_index_view {
             $html .= '</td>'.LF;
             $html .= '</tr>'.LF;
          }
+         if ( !empty($search)
+              and $search != $this->_translator->getMessage('COMMON_SEARCH_IN_ROOM')
+              and $search != $this->_translator->getMessage('COMMON_SEARCH_IN_ENTRIES')
+            ) {
+            $html .= '<tr>'.LF;
+            $html .= '<td style="text-align:right;">'.LF;
+
+            $html .= encode(AS_HTML_SHORT,$search);
+
+            $new_aparams = $this->_environment->getCurrentParameterArray();
+            unset($new_aparams['search']);
+            $image = '<img src="images/delete_restriction.gif" style="padding-top:3px;" alt="'.$this->_translator->getMessage('ENTRY_DELETE_RESTRICTION').'"/>'.LF;
+            $html .= ' '.ahref_curl(  $this->_environment->getCurrentContextID(),
+                                       CS_DATE_TYPE,
+                                       'index',
+                                       $new_aparams,
+                                       $image,
+                                       $this->_translator->getMessage('ENTRY_DELETE_RESTRICTION')).LF;
+            $html .= '</td>'.LF;
+            $html .= '</tr>'.LF;
+         }
          $html .= '</table>'.LF;
          $html .= '</div>'.LF;
       }
@@ -4996,12 +5035,19 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $assignment = $this->getSelectedAssignment(CS_DATE_TYPE);
       $status = $this->getSelectedStatus(CS_DATE_TYPE);
       $room = $this->getSelectedRoom(CS_DATE_TYPE);
+      $search = $this->getSearchText(CS_DATE_TYPE);
       if ( ( !empty($assignment)
              and $assignment != 2
            )
-           or !empty($status)
+           or ( !empty($status)
+                and $status != 2
+              )
            or ( !empty($room)
                 and $room != 2
+              )
+           or ( !empty($search)
+                and $search != $this->_translator->getMessage('COMMON_SEARCH_IN_ROOM')
+                and $search != $this->_translator->getMessage('COMMON_SEARCH_IN_ENTRIES')
               )
          ) {
          $html .= '<div id="contentbox" class="portlet-content">'.LF;
@@ -5060,7 +5106,9 @@ class cs_date_calendar_index_view extends cs_room_index_view {
             $html .= '</td>'.LF;
             $html .= '</tr>'.LF;
          }
-         if ( !empty($status) ) {
+         if ( !empty($status)
+              and $status != 2
+            ) {
             $html .= '<tr>'.LF;
             $html .= '<td style="text-align:right;">'.LF;
 
@@ -5072,6 +5120,27 @@ class cs_date_calendar_index_view extends cs_room_index_view {
 
             $new_aparams = $this->_environment->getCurrentParameterArray();
             $new_aparams['selstatus'] = 0;
+            $image = '<img src="images/delete_restriction.gif" style="padding-top:3px;" alt="'.$this->_translator->getMessage('ENTRY_DELETE_RESTRICTION').'"/>'.LF;
+            $html .= ' '.ahref_curl(  $this->_environment->getCurrentContextID(),
+                                       CS_DATE_TYPE,
+                                       'index',
+                                       $new_aparams,
+                                       $image,
+                                       $this->_translator->getMessage('ENTRY_DELETE_RESTRICTION')).LF;
+            $html .= '</td>'.LF;
+            $html .= '</tr>'.LF;
+         }
+         if ( !empty($search)
+              and $search != $this->_translator->getMessage('COMMON_SEARCH_IN_ROOM')
+              and $search != $this->_translator->getMessage('COMMON_SEARCH_IN_ENTRIES')
+            ) {
+            $html .= '<tr>'.LF;
+            $html .= '<td style="text-align:right;">'.LF;
+
+            $html .= encode(AS_HTML_SHORT,$search);
+
+            $new_aparams = $this->_environment->getCurrentParameterArray();
+            unset($new_aparams['search']);
             $image = '<img src="images/delete_restriction.gif" style="padding-top:3px;" alt="'.$this->_translator->getMessage('ENTRY_DELETE_RESTRICTION').'"/>'.LF;
             $html .= ' '.ahref_curl(  $this->_environment->getCurrentContextID(),
                                        CS_DATE_TYPE,

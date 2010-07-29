@@ -307,7 +307,13 @@ class cs_index_view extends cs_view {
     */
     function getSearchText (){
        if (empty($this->_search_text)){
-        $this->_search_text = $this->_translator->getMessage('COMMON_SEARCH_IN_ROOM');
+          $this->_search_text = $this->_translator->getMessage('COMMON_SEARCH_IN_ROOM');
+          if ( $this->_environment->inPrivateRoom()
+               and $this->_environment->getConfiguration('c_use_new_private_room')
+               and $this->_environment->getCurrentModule() == type2module(CS_DATE_TYPE)
+             ) {
+             $this->_search_text = $this->_translator->getMessage('COMMON_SEARCH_IN_ENTRIES');
+          }
        }
        return $this->_search_text;
     }
@@ -2810,9 +2816,15 @@ EOD;
 
   function _getSearchAsHTML ($search_with='220') {
      $html  = '';
-     $html .= '<form style="padding:0px; margin:0px;" action="'.curl($this->_environment->getCurrentContextID(), 'campus_search', 'index','').'" method="get" name="searchform">'.LF;
+     $search_module = 'campus_search';
+     if ( $this->_environment->inPrivateRoom()
+          and $this->_environment->getConfiguration('c_use_new_private_room')
+        ) {
+        $search_module = type2module(CS_DATE_TYPE);
+     }
+     $html .= '<form style="padding:0px; margin:0px;" action="'.curl($this->_environment->getCurrentContextID(), $search_module, 'index','').'" method="get" name="searchform">'.LF;
      $html .= '   <input type="hidden" name="cid" value="'.$this->_text_as_form($this->_environment->getCurrentContextID()).'"/>'.LF;
-     $html .= '   <input type="hidden" name="mod" value="campus_search"/>'.LF;
+     $html .= '   <input type="hidden" name="mod" value="'.$search_module.'"/>'.LF;
      $html .= '   <input type="hidden" name="SID" value="'.$this->_environment->getSessionItem()->getSessionID().'"/>'.LF;
      $html .= '   <input type="hidden" name="fct" value="index"/>'.LF;
      $html .= '   <input type="hidden" name="selrubric" value="'.$this->_environment->getCurrentModule().'"/>'.LF;

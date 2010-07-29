@@ -869,7 +869,9 @@ foreach($sel_array as $rubric => $value){
 //********************************
 
 
-if ($current_context->isPrivateRoom()){
+if ( $current_context->isPrivateRoom()
+     and $environment->getConfiguration('c_use_new_private_room')
+   ) {
    $current_user_item = $environment->getCurrentUser();
    $room_id_array = array();
    $room_id_array[] = $current_context->getItemID();
@@ -1011,6 +1013,9 @@ if ($current_context->isPrivateRoom()){
       $todo_manager->setAssignmentLimit($user_id_array);
       unset($user_id_array);
       unset($user_list);
+   }
+   if ( !empty($search) ) {
+      $todo_manager->setSearchLimit($search);
    }
    $todo_manager->select();
    $todo_list = $todo_manager->get();
