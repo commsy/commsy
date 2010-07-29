@@ -107,7 +107,13 @@ jQuery(document).ready(function() {
 });
 
 function resetSearchText(id){
-   jQuery('#' + id).val("");
+   if(typeof(reset_search_text_message) !== 'undefined'){
+      if(jQuery('#' + id).val() == reset_search_text_message){
+         jQuery('#' + id).val("");
+      }
+   } else {
+      jQuery('#' + id).val("");
+   }
 }
 
 function handleWidth_new(id,max_width,link_name){

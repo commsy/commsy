@@ -196,6 +196,11 @@ class cs_entry_index_view extends cs_index_view {
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
+      $html .= '<script type="text/javascript">'.LF;
+      $html .= '<!--'.LF;
+      $html .= 'var reset_search_text_message = "'.$this->_text_as_form($this->getSearchText()).'"'.LF;
+      $html .= '-->'.LF;
+      $html .= '</script>'.LF;
       return $html;
    }
 
