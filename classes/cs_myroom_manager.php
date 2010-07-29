@@ -202,7 +202,8 @@ class cs_myroom_manager extends cs_context_manager {
      // perform query
      $result = $this->_db_connector->performQuery($query);
      if (!isset($result)) {
-        include_once('functions/error_functions.php');trigger_error('Problems selecting '.$this->_db_table.' items from query: "'.$query.'"',E_USER_ERROR);
+        include_once('functions/error_functions.php');
+        trigger_error('Problems selecting '.$this->_db_table.' items from query: "'.$query.'"',E_USER_ERROR);
      } else {
         return $result;
      }

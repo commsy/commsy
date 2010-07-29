@@ -84,6 +84,7 @@ if ( isset($_GET['option']) and isOption($_GET['option'],$translator->getMessage
    if ( isset($_POST['search']) ) {
       $search = $_POST['search'];
       $from = 1;
+      $environment->setCurrentParameter('search',$_POST['search']);
    } elseif ( isset($_GET['search']) ) {
       $search = $_GET['search'];
    }  else {
@@ -338,6 +339,34 @@ foreach($sel_array as $rubric => $value){
    unset($rubric_list);
 }
 
+// translation of entry to rubrics for new private room
+if ( $environment->inPrivateRoom()
+     and in_array(CS_ENTRY_TYPE,$rubric_array)
+   ) {
+   $temp_array = array();
+   $temp_array2 = array();
+   $rubric_array2 = array();
+   $temp_array[] = CS_ANNOUNCEMENT_TYPE;
+   $temp_array[] = CS_TODO_TYPE;
+   $temp_array[] = CS_DISCUSSION_TYPE;
+   $temp_array[] = CS_MATERIAL_TYPE;
+   $temp_array[] = CS_DATE_TYPE;
+   foreach ( $temp_array as $temp_rubric ) {
+      if ( !in_array($temp_rubric,$rubric_array) ) {
+         $temp_array2[] = $temp_rubric;
+      }
+   }
+   foreach ( $rubric_array as $temp_rubric ) {
+      if ( $temp_rubric != CS_ENTRY_TYPE ) {
+         $rubric_array2[] = $temp_rubric;
+      } else {
+         $rubric_array2 = array_merge($rubric_array2,$temp_array2);
+      }
+   }
+   $rubric_array = $rubric_array2;
+   unset($rubric_array2);
+}
+
 // Get data from database
 global $c_plugin_array;
 foreach ($rubric_array as $rubric) {
@@ -414,12 +443,13 @@ foreach ($rubric_array as $rubric) {
       if ( $rubric != CS_MYROOM_TYPE ) {
          $rubric_manager->selectDistinct();
          $rubric_list = $rubric_manager->get();
+         $temp_rubric_ids = $rubric_manager->getIDArray();
       } else {
          $rubric_list = $rubric_manager->getRelatedContextListForUser($current_user->getUserID(),$current_user->getAuthSource(),$environment->getCurrentPortalID());;
+         $temp_rubric_ids = $rubric_list->getIDArray();
       }
 
       $search_list->addList($rubric_list);
-      $temp_rubric_ids = $rubric_manager->getIDArray();
       if (!empty($temp_rubric_ids)){
          $rubric_ids = $temp_rubric_ids;
       }
@@ -431,7 +461,7 @@ foreach ($rubric_array as $rubric) {
 // Set data for view
 $sublist = $search_list->getSubList($from-1,$interval);
 $view->setList($sublist);
-$view->setCountAllShown(count($campus_search_ids));
+$view->setCountAllShown($search_list->getCount());
 $view->setCountAll($count_all);
 $view->setFrom($from);
 $view->setInterval($interval);
