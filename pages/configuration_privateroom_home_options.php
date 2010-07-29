@@ -167,6 +167,7 @@ else {
          
          if ( isset($_POST['column_count']) and !empty($_POST['column_count']) ) {
             $item->setPortletColumnCount($_POST['column_count']);
+            $column_count = $_POST['column_count'];
          }
 
          if ( isset($_POST['new_entry_list']) and !empty($_POST['new_entry_list']) ) {
@@ -328,6 +329,28 @@ else {
          }
          $item->setPortletRSSArray($portlet_rss_array);
 
+         
+	      if($column_count == sizeof($home_config_array)){
+	      } elseif($column_count < sizeof($home_config_array)){
+	         // 3 -> 2
+	         $last_column = $home_config_array[sizeof($home_config_array)-1];
+	         unset($home_config_array[sizeof($home_config_array)-1]);
+	         foreach($last_column as $switch_column_portlet){
+	            $smallest = 0;
+	            $size = sizeof($home_config_array[0]);
+	            foreach($home_config_array as $key => $column){
+	               if((sizeof($column) < $size) and ($column[0] != 'null') and ($column[0] != 'empty')){
+	                  $smallest = $key;
+	                  $size = sizeof($column);
+	               }
+	            }
+	            $home_config_array[$smallest][] = $switch_column_portlet;  
+	         }
+	      } elseif($column_count > sizeof($home_config_array)){
+	         // 2 -> 3
+	         $home_config_array[] = array();
+	      }
+         
          foreach($add_to_home_config_array as $add_to_home_portlet){
 	         $smallest = 0;
 	         $size = sizeof($home_config_array[0]);

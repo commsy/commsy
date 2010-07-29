@@ -81,9 +81,9 @@ class cs_privateroom_home_portlet_view extends cs_view{
       $html = '<div style="margin-top:10px;">';
       $column_count = 0;
       $html_array = array();
-      for ($i = 0; $i < ($columns+1); $i++){
-         $width[$i]= 100/$columns;
-      }
+      //for ($i = 0; $i < ($columns+1); $i++){
+      //   $width[$i]= 100/$columns;
+      //}
       switch ($columns){
          case 2:
             $width[0] = 60;
@@ -96,12 +96,16 @@ class cs_privateroom_home_portlet_view extends cs_view{
          	break;
       }
       
-      for ($i=0; $i< ($columns + 1); $i++){
-         if ($i < ($columns -1)){
-            $html_array[$i] = '<div class="column" style="width:'.$width[$i].'%;">';
-         }else{
-            $html_array[$i] = '<div class="column" style="width:'.$width[$i].'%;">';
-         }
+      //for ($i=0; $i< ($columns + 1); $i++){
+      //   if ($i < ($columns -1)){
+      //      $html_array[$i] = '<div class="column" style="width:'.$width[$i].'%;">';
+      //   }else{
+      //      $html_array[$i] = '<div class="column" style="width:'.$width[$i].'%;">';
+      //   }
+      //}
+      // -->
+      for ($i=0; $i<$columns; $i++){
+         $html_array[$i] = '<div class="column" style="width:'.$width[$i].'%;">';
       }
       
       $privateroom_item = $this->_environment->getCurrentContextItem();
@@ -129,7 +133,11 @@ class cs_privateroom_home_portlet_view extends cs_view{
 	      }	
       }
 
-      for ($i=0; $i< ($columns + 1); $i++){
+      //for ($i=0; $i< ($columns + 1); $i++){
+      //   $html_array[$i] .= '</div>';
+      //}
+      // -->
+      for ($i=0; $i<$columns; $i++){
          $html_array[$i] .= '</div>';
       }
       foreach ($html_array as $html_entry){

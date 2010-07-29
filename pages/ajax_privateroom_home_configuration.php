@@ -33,6 +33,8 @@ if(isset($_GET['do'])){
 		foreach($get_keys as $get_key){
 			if(stristr($get_key, 'portlets')){
 				$column_array = $_GET[$get_key];
+			} elseif(stristr($get_key, 'column_count')){
+				$column_count = $_GET[$get_key];
 			}
 		}
       
@@ -116,17 +118,19 @@ if(isset($_GET['do'])){
       }
       
       $home_config_array = $privateroom_item->getHomeConfig();
-	   foreach($home_config_array as $key_top => $column){
+      
+	   // remove unset portlets
+      foreach($home_config_array as $key_top => $column){
          foreach($column as $key => $column_entry){
             if(($column_entry != 'null') && ($column_entry != 'empty')){
-            	if(!in_array($column_entry, $column_array)){
-            		unset($home_config_array[$key_top][$key]);
-            	}
+               if(!in_array($column_entry, $column_array)){
+                  unset($home_config_array[$key_top][$key]);
+               }
             }
          }
       }
-      
-      $portlet_array = array();
+      // get new portlets
+	   $portlet_array = array();
       foreach($home_config_array as $column){
          foreach($column as $column_entry){
             if(($column_entry != 'null') && ($column_entry != 'empty')){
@@ -134,12 +138,32 @@ if(isset($_GET['do'])){
             }
          }
       }
-      
       $add_to_home_config_array = array();
       foreach($column_array as $portlet){
          if(!in_array($portlet, $portlet_array)){
             $add_to_home_config_array[] = $portlet;
          }
+      }
+      
+      if($column_count == sizeof($home_config_array)){
+      } elseif($column_count < sizeof($home_config_array)){
+      	// 3 -> 2
+         $last_column = $home_config_array[sizeof($home_config_array)-1];
+         unset($home_config_array[sizeof($home_config_array)-1]);
+         foreach($last_column as $switch_column_portlet){
+            $smallest = 0;
+            $size = sizeof($home_config_array[0]);
+            foreach($home_config_array as $key => $column){
+               if((sizeof($column) < $size) and ($column[0] != 'null') and ($column[0] != 'empty')){
+                  $smallest = $key;
+                  $size = sizeof($column);
+               }
+            }
+            $home_config_array[$smallest][] = $switch_column_portlet;  
+         }
+      } elseif($column_count > sizeof($home_config_array)){
+      	// 2 -> 3
+         $home_config_array[] = array();
       }
       
       foreach($add_to_home_config_array as $add_to_home_portlet){
@@ -149,11 +173,10 @@ if(isset($_GET['do'])){
             if((sizeof($column) < $size) and ($column[0] != 'null') and ($column[0] != 'empty')){
                $smallest = $key;
                $size = sizeof($column);
+               }
             }
-         }
          $home_config_array[$smallest][] = $add_to_home_portlet;
       }
-         
       $privateroom_item->setHomeConfig($home_config_array);
       
       $privateroom_item->setPortletColumnCount($_GET['column_count']);
