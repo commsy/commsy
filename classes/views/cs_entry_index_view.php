@@ -228,7 +228,7 @@ class cs_entry_index_view extends cs_index_view {
       $html .= '   <input type="hidden" name="cid" value="'.$this->_text_as_form($this->_environment->getCurrentContextID()).'"/>'.LF;
       $html .= '   <input type="hidden" name="mod" value="entry"/>'.LF;
       $html .= '   <input type="hidden" name="fct" value="index"/>'.LF;
-      $html .= '   <input id="new_list" onclick="javascript:resetSearchText(\'new_list\');" style="width:160px; font-size:10pt; margin-bottom:0px;" name="new_list" type="text" size="20" value="'.$this->_text_as_form($this->_translator->getMessage('PRIVATEROOM_MY_LISTS_BOX_NEW_ENTRY')).'"/>';
+      $html .= '   <input id="new_list" onclick="javascript:resetMyListText(\'new_list\');" style="width:160px; font-size:10pt; margin-bottom:0px;" name="new_list" type="text" size="20" value="'.$this->_text_as_form($this->_translator->getMessage('PRIVATEROOM_MY_LISTS_BOX_NEW_ENTRY')).'"/>';
       $html .= '   <input name="option" value="'.$this->_text_as_form($this->_translator->getMessage('PRIVATEROOM_MY_LISTS_BOX_NEW_ENTRY_BUTTON')).'" tabindex="23" style="width: 150px; font-size: 10pt;" type="submit"/>'.LF;
       $html .='</form>'.LF;
 

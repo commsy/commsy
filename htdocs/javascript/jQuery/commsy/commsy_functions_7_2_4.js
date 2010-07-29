@@ -116,6 +116,10 @@ function resetSearchText(id){
    }
 }
 
+function resetMyListText(id){
+   jQuery('#' + id).val("");
+}
+
 function handleWidth_new(id,max_width,link_name){
    var div = jQuery('#' + id);
    var inner_div = jQuery('#' + 'inner_'+id);
