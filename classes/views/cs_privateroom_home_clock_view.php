@@ -45,7 +45,14 @@ var  $_config_boxes = false;
    }
 
    function asHTML () {
-     $html  = ' <div id="'.get_class($this).'" style="margin:0px auto; padding: 5px; text-align:center;"><div style="width:180px; margin:0px auto;"><ul id="clock"> <li id="sec"></li><li id="hour"></li><li id="min"></li></ul></div></div>';
+     $session = $this->_environment->getSessionItem();
+     if($session->issetValue('cookie')){
+        if($session->getValue('cookie') == '1'){
+           $html = ' <div id="'.get_class($this).'" style="margin:0px auto; padding: 5px; text-align:center;"><div style="width:180px; margin:0px auto;"><ul id="clock"> <li id="sec"></li><li id="hour"></li><li id="min"></li></ul></div></div>';
+        } else {
+        	  $html = $this->_translator->getMessage('COMMON_COOKIES_NEEDED');
+        }
+     }
      return $html;
    }
 }

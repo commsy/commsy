@@ -218,6 +218,7 @@ $message["COMMON_CONFINGURATION_ARCHIVE"]["en"] = "Archive workspace / set up te
 $message["COMMON_CONFINGURATION_ARCHIVE_SHORT"]["en"] = "Archive workspace / template";
 $message["COMMON_CONTENT"]["en"] = "Content";
 $message["COMMON_CONTINUOUS"]["en"] = "continuous";
+$message["COMMON_COOKIES_NEEDED"]["en"] = "Cookies must be enabled to use this function";
 $message["COMMON_COPY_LIST_ACTION_BUTTON_GO"]["en"] = "Apply";
 $message["COMMON_CREATED_BY"]["en"] = "created by";
 $message["COMMON_CREATE_ANNOTATION"]["en"] = "Add comment";

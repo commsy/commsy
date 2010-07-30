@@ -51,15 +51,22 @@ class cs_privateroom_home_weather_view extends cs_view {
    }
 
    function asHTML(){
-      $html = '<div id="'.get_class($this).'">'.LF;
-      $html .= '<div id="weather_widget"></div>'.LF;
-      $html .= '</div>'.LF;
-      $html .= '<script type="text/javascript">'.LF;
-      $html .= '<!--'.LF;
-      $html .= 'var portlet_weather_temp = "'.$this->_translator->getMessage('COMMON_WEATHER_TEMP').'"'.LF;
-      $html .= 'var portlet_weather_humidity = "'.$this->_translator->getMessage('COMMON_WEATHER_HUMIDITY').'"'.LF;
-      $html .= '-->'.LF;
-      $html .= '</script>'.LF;
+   	$session = $this->_environment->getSessionItem();
+      if($session->issetValue('cookie')){
+         if($session->getValue('cookie') == '1'){
+		      $html = '<div id="'.get_class($this).'">'.LF;
+		      $html .= '<div id="weather_widget"></div>'.LF;
+		      $html .= '</div>'.LF;
+		      $html .= '<script type="text/javascript">'.LF;
+		      $html .= '<!--'.LF;
+		      $html .= 'var portlet_weather_temp = "'.$this->_translator->getMessage('COMMON_WEATHER_TEMP').'"'.LF;
+		      $html .= 'var portlet_weather_humidity = "'.$this->_translator->getMessage('COMMON_WEATHER_HUMIDITY').'"'.LF;
+		      $html .= '-->'.LF;
+		      $html .= '</script>'.LF;
+         } else {
+            $html = $this->_translator->getMessage('COMMON_COOKIES_NEEDED');
+         }
+      }
       return $html;
    }
    
