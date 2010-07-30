@@ -93,6 +93,9 @@ else {
                $room_item->setTemplateAvailability($_POST['template_availability']);
             }
          }
+         if ( !empty($_POST['template_title']) ) {
+            $room_item->setTemplateTitle($_POST['template_title']);
+         }
          if ( isset($_POST['description'])){
             $room_item->setTemplateDescription($_POST['description']);
          }

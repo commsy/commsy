@@ -215,6 +215,35 @@ class cs_privateroom_item extends cs_room_item {
       $this->_addExtra('TEMPLATE_ID',$value);
    }
 
+   /** get template title for private room
+    * this method returns the Templatetitle of the private room
+    *
+    * @return string the title of the template
+    */
+   function getTemplateTitle () {
+      $retour = '';
+      if ($this->_issetExtra('TEMPLATE_TITLE')) {
+         $retour = $this->_getExtra('TEMPLATE_TITLE');
+      } else {
+         $translator = $this->_environment->getTranslationObject();
+         $retour = $translator->getMessage('PRIVATE_ROOM_TITLE');
+         unset($translator);
+         $owner = $this->getOwnerUserItem();
+         $retour .= ' '.$owner->getFullname();
+         unset($owner);
+      }
+      return $retour;
+   }
+
+   /** set template title for private room
+    * this method sets the template title of the private room
+    *
+    * @param string value title of template
+    */
+   function setTemplateTitle ($value) {
+      $this->_addExtra('TEMPLATE_TITLE',$value);
+   }
+
   /** set projects of a project item by item id and version id
    * this method sets a list of project item_ids and version_ids which are linked to the project
    *

@@ -45,36 +45,37 @@ class cs_configuration_template_options_form extends cs_rubric_form {
 
       // disable template checkbox
       $this->_disable_template_form_element = $current_context->isOpen();
-          // room templates 2 - select
-          $current_portal = $this->_environment->getCurrentPortalItem();
-          if ( ( empty($this->_type) or empty($_GET['iid']) )
-               and isset($current_portal)
-               and ( ( $this->_environment->inCommunityRoom()
-                        and $this->_environment->getCurrentModule() == CS_PROJECT_TYPE
-                     )
-                     or ( $this->_environment->inPortal()
-                           and $this->_environment->getCurrentModule() == CS_PROJECT_TYPE
-                         )
+
+      // room templates 2 - select
+      $current_portal = $this->_environment->getCurrentPortalItem();
+      if ( ( empty($this->_type) or empty($_GET['iid']) )
+             and isset($current_portal)
+             and ( ( $this->_environment->inCommunityRoom()
+                     and $this->_environment->getCurrentModule() == CS_PROJECT_TYPE
                    )
-             ) {
-                 $room_manager = $this->_environment->getProjectManager();
-                 $room_manager->setContextLimit($current_portal->getItemID());
-                 $room_manager->setTemplateLimit();
-                 if ( $this->_environment->inCommunityRoom() ) {
-                    global $c_cache_cr_pr;
-                    if ( !isset($c_cache_cr_pr) or !$c_cache_cr_pr ) {
-                       $room_manager->setCommunityRoomLimit($this->_environment->getCurrentContextID());
-                    } else {
-                       /**
-                        * use redundant infos in community room
-                        */
-                       $current_community_item = $this->_environment->getCurrentContextItem();
-                       $room_manager->setIDArrayLimit($current_community_item->getInternalProjectIDArray());
-                       unset($current_community_item);
-                    }
-                 }
-                 $room_manager->select();
-                 $room_list = $room_manager->get();
+                   or ( $this->_environment->inPortal()
+                        and $this->_environment->getCurrentModule() == CS_PROJECT_TYPE
+                      )
+                 )
+         ) {
+         $room_manager = $this->_environment->getProjectManager();
+         $room_manager->setContextLimit($current_portal->getItemID());
+         $room_manager->setTemplateLimit();
+         if ( $this->_environment->inCommunityRoom() ) {
+            global $c_cache_cr_pr;
+            if ( !isset($c_cache_cr_pr) or !$c_cache_cr_pr ) {
+               $room_manager->setCommunityRoomLimit($this->_environment->getCurrentContextID());
+            } else {
+               /**
+                * use redundant infos in community room
+                */
+               $current_community_item = $this->_environment->getCurrentContextItem();
+               $room_manager->setIDArrayLimit($current_community_item->getInternalProjectIDArray());
+               unset($current_community_item);
+            }
+         }
+         $room_manager->select();
+         $room_list = $room_manager->get();
          $default_id = $this->_environment->getCurrentPortalItem()->getDefaultProjectTemplateID();
          if ($room_list->isNotEmpty() or $default_id != '-1' ) {
             $temp_array = array();
@@ -231,6 +232,12 @@ class cs_configuration_template_options_form extends cs_rubric_form {
                        and $item->getItemID() != $current_context->getItemID()
                      ) {
                      $temp_array['text'] = $item->getTitle();
+                     if ( $item->getTitle() == $this->_translator->getMessage('COMMON_PRIVATEROOM') ) {
+                        $template_title = $item->getTemplateTitle();
+                        if ( !empty($template_title) ) {
+                           $temp_array['text'] = $template_title;
+                        }
+                     }
                      $temp_array['value'] = $item->getItemID();
                      $this->_with_template_form_element_select = true;
                      $this->_template_array[] = $temp_array;
@@ -243,7 +250,6 @@ class cs_configuration_template_options_form extends cs_rubric_form {
          unset($room_manager);
       }
    }
-
 
    function _createForm () {
       // specials in private room
@@ -277,40 +283,45 @@ class cs_configuration_template_options_form extends cs_rubric_form {
          }
       }
 
-        // template functions
-        if ($this->_with_template_form_element) {
-           $this->_form->addCheckbox('template',
-                                     1,
-                                     '',
-                                     $this->_translator->getMessage('ROOM_STATUS'),
-                                     $this->_translator->getMessage('CONFIGURATION_TEMPLATE_FORM_ELEMENT_VALUE'),
-                                     $this->_translator->getMessage('CONFIGURATION_TEMPLATE_FORM_ELEMENT_DESC'),
-                                     '',
-                                     ''
-                                    );
-           $user_array = array();
-           $user_array['0']['text'] = $this->_translator->getMessage('CONFIGURATION_TEMPLATE_FORM_AVAILABILITY_ALL_USERS');
-           $user_array['0']['value'] = '0';
-           $current_context = $this->_environment->getCurrentContextItem();
-           if ( !$current_context->isPrivateRoom() ) {
-              if ($current_context->isProjectRoom()){
-                 $community_list = $current_context->getCommunityList();
-                 if ( $community_list->isNotEmpty() ) {
-                    $user_array['1']['text'] = $this->_translator->getMessage('CONFIGURATION_TEMPLATE_FORM_AVAILABILITY_COMMUNITY_ROOM_USERS');
-                    $user_array['1']['value'] = '3';
-                 }
-              }
-              $user_array['2']['text'] = $this->_translator->getMessage('CONFIGURATION_TEMPLATE_FORM_AVAILABILITY_ROOM_USERS');
-              $user_array['2']['value'] = '1';
-              $user_array['3']['text'] = $this->_translator->getMessage('CONFIGURATION_TEMPLATE_FORM_AVAILABILITY_ROOM_MODERATORS');
-              $user_array['3']['value'] = '2';
-           }
-           $this->_form->addSelect('template_availability',
-                               $user_array,
-                               '',
-                               $this->_translator->getMessage('CONFIGURATION_TEMPLATE_GROUP'),
-                               '',0,'','','','','','','','','','');
+      // template functions
+      if ($this->_with_template_form_element) {
+         $this->_form->addCheckbox('template',
+                                   1,
+                                   '',
+                                   $this->_translator->getMessage('ROOM_STATUS'),
+                                   $this->_translator->getMessage('CONFIGURATION_TEMPLATE_FORM_ELEMENT_VALUE'),
+                                   $this->_translator->getMessage('CONFIGURATION_TEMPLATE_FORM_ELEMENT_DESC'),
+                                   '',
+                                   ''
+                                  );
+         $user_array = array();
+         $user_array['0']['text'] = $this->_translator->getMessage('CONFIGURATION_TEMPLATE_FORM_AVAILABILITY_ALL_USERS');
+         $user_array['0']['value'] = '0';
+         $current_context = $this->_environment->getCurrentContextItem();
+         if ( !$current_context->isPrivateRoom() ) {
+            if ($current_context->isProjectRoom()){
+               $community_list = $current_context->getCommunityList();
+               if ( $community_list->isNotEmpty() ) {
+                  $user_array['1']['text'] = $this->_translator->getMessage('CONFIGURATION_TEMPLATE_FORM_AVAILABILITY_COMMUNITY_ROOM_USERS');
+                  $user_array['1']['value'] = '3';
+               }
+            }
+            $user_array['2']['text'] = $this->_translator->getMessage('CONFIGURATION_TEMPLATE_FORM_AVAILABILITY_ROOM_USERS');
+            $user_array['2']['value'] = '1';
+            $user_array['3']['text'] = $this->_translator->getMessage('CONFIGURATION_TEMPLATE_FORM_AVAILABILITY_ROOM_MODERATORS');
+            $user_array['3']['value'] = '2';
+         }
+         $this->_form->addSelect('template_availability',
+                                 $user_array,
+                                 '',
+                                 $this->_translator->getMessage('CONFIGURATION_TEMPLATE_GROUP'),
+                                 '',0,'','','','','','','','','','');
 
+      }
+      if ( $this->_environment->inPrivateRoom()
+           and $this->_environment->getConfiguration('c_use_new_private_room')
+         ) {
+         $this->_form->addTextfield('template_title','',$this->_translator->getMessage('CONFIGURATION_TEMPLATE_NAME'),'',100,50,false);
       }
       $this->_form->addTextArea('description','',$this->_translator->getMessage('COMMON_TEMPLATE_DESCRIPTION'),'','','10','virtual',false,'');
       $this->_form->addButtonBar('option',$this->_translator->getMessage('PREFERENCES_SAVE_BUTTON'),'');
@@ -340,6 +351,9 @@ class cs_configuration_template_options_form extends cs_rubric_form {
          // templates in private rooms
          if ( $current_context->isPrivateRoom() ) {
             $this->_values['template_select'] = $current_context->getTemplateID();
+            if ( $this->_environment->getConfiguration('c_use_new_private_room') ) {
+               $this->_values['template_title'] = $current_context->getTemplateTitle();
+            }
          }
       }
    }

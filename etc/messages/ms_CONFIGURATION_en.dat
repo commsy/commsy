@@ -277,6 +277,7 @@ $message["CONFIGURATION_TEMPLATE_FORM_SELECT_DESC_PRIVATEROOM"]["en"] = "If you 
 $message["CONFIGURATION_TEMPLATE_FORM_TITLE_MAKE"]["en"] = "Make template";
 $message["CONFIGURATION_TEMPLATE_FORM_TITLE_SELECT"]["en"] = "Select template";
 $message["CONFIGURATION_TEMPLATE_GROUP"]["en"] = "Target group";
+$message["CONFIGURATION_TEMPLATE_NAME"]["en"] = "Name of template";
 $message["CONFIGURATION_TEMPLATE_NO_CHOICE"]["en"] = "empty workspace";
 $message["CONFIGURATION_TEMPLATE_NO_CHOICE_PRIVATEROOM"]["en"] = "standard template";
 $message["CONFIGURATION_TEXTAREA_TITLE"]["en"] = "Configure text editor";

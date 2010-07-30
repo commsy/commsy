@@ -275,6 +275,7 @@ $message["CONFIGURATION_TEMPLATE_FORM_SELECT_DESC_PRIVATEROOM"]["de"] = "Sofern 
 $message["CONFIGURATION_TEMPLATE_FORM_TITLE_MAKE"]["de"] = "Vorlage erstellen";
 $message["CONFIGURATION_TEMPLATE_FORM_TITLE_SELECT"]["de"] = "Vorlage auswählen";
 $message["CONFIGURATION_TEMPLATE_GROUP"]["de"] = "Zielgruppe";
+$message["CONFIGURATION_TEMPLATE_NAME"]["de"] = "Name der Vorlage";
 $message["CONFIGURATION_TEMPLATE_NO_CHOICE"]["de"] = "leerer Raum";
 $message["CONFIGURATION_TEMPLATE_NO_CHOICE_PRIVATEROOM"]["de"] = "Standardvorlage";
 $message["CONFIGURATION_TEXTAREA_TITLE"]["de"] = "Textformatierung";
