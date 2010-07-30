@@ -50,7 +50,7 @@ jQuery(document).ready(function() {
       jQuery(".droppable_matrix").droppable({
 			hoverClass: 'droppable_item_hover',
 			drop: function(event, ui) {
-			   drop_to_matrix(this.id);
+			   drop_to_matrix(this.id, ui.draggable[0].id.replace(/[^0-9]/g,''));
 			}
 		});
       jQuery(".droppable_buzzword").droppable({
@@ -2087,6 +2087,7 @@ function turn_portlet_matrix(id, portlet){
 	     jQuery(this).click(function(){
 	    	   portlet_data['current_matrix_rows'] = new Array();
 	    	   portlet_data['current_matrix_columns'] = new Array();
+	    	   portlet_data['change'] = new Array();
 	    	 
 	    	   var json_data = new Object();
 	    	   json_data['new_matrix_row'] = jQuery('#new_matrix_row').val();
@@ -2094,7 +2095,7 @@ function turn_portlet_matrix(id, portlet){
 	    	   
 	    	   var checked_array = new Array();
 	    	   jQuery(this).parent().find('[name^="matrix_"]:checked').each(function(){
-	    	      checked_array.push(jQuery(this).attr('value'));
+	    		  checked_array.push(new Array(jQuery(this).attr('value'), jQuery('[name=matrixtext_'+jQuery(this).attr('value')+']').val()));
 	    	   });
 	    	   json_data['current_matrix'] = checked_array;
 	    	   portlet_data['current_matrix'] = checked_array;
@@ -2103,6 +2104,7 @@ function turn_portlet_matrix(id, portlet){
 	    	   url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct=privateroom_matrix_configuration&output=json&do=save_config',
 	    	      data: json_data,
 	    	      success: function(msg){
+	    		   //alert(msg);
 	    	         portlet_data['matrix_save'] = true;
 	    	         //portlet.revertFlip();
 	    	         
@@ -2118,12 +2120,15 @@ function turn_portlet_matrix(id, portlet){
                      if (resultJSON === undefined){
                      }else{
                 	    if(resultJSON['new_row']){
-                		   jQuery('#matrix_rows').append('<div><input name="matrix_'+resultJSON['new_row']+'" value="'+resultJSON['new_row']+'" checked="checked" type="checkbox">'+resultJSON['new_row_name']+'</div>');
+                		   jQuery('#matrix_rows').append('<div><input name="matrix_'+resultJSON['new_row']+'" value="'+resultJSON['new_row']+'" checked="checked" type="checkbox"><input type="text" value="'+resultJSON['new_row_name']+'" name="matrixtext_'+resultJSON['new_row']+'" class="matrix_text"></div>');
                 		   portlet_data['current_matrix_rows_new'].push(new MatrixItem(resultJSON['new_row'], resultJSON['new_row_name']));
                 	    }
                 	    if(resultJSON['new_column']){
-                	       jQuery('#matrix_columns').append('<div><input name="matrix_'+resultJSON['new_column']+'" value="'+resultJSON['new_column']+'" checked="checked" type="checkbox">'+resultJSON['new_column_name']+'</div>');
+                	       jQuery('#matrix_columns').append('<div><input name="matrix_'+resultJSON['new_column']+'" value="'+resultJSON['new_column']+'" checked="checked" type="checkbox"><input type="text" value="'+resultJSON['new_column_name']+'" name="matrixtext_'+resultJSON['new_column']+'" class="matrix_text"></div>');
                 	       portlet_data['current_matrix_columns_new'].push(new MatrixItem(resultJSON['new_column'], resultJSON['new_column_name']));
+                	    }
+                	    if(resultJSON['change']){
+                	       portlet_data['change'].push(resultJSON['change']);
                 	    }
                         //jQuery("#buzzword_"+buzzwordId).css('font-size',resultJSON[itemId]+"px");
                      }
@@ -2158,6 +2163,19 @@ function return_portlet_matrix(id, portlet){
 			  }
 		  }
 	  });
+	  
+	  //jQuery('#matrix_table').find('tr').each(function(){
+	  //	  if(jQuery(this).attr('id') != 'matrix_table_header'){
+	  //		  // Beschriftungen anpassen.
+	  //		  //portlet_data['change'];
+	  //		  var change = portlet_data['change'];
+	  //		  //for ( var int3 = 0; int3 < change.length; int3++) {
+	  //			alert(change);
+	  //		  //}
+	  //		  jQuery(this).find('td').first().html();
+	  //	  }
+	  //});
+	  
 	  for ( var int = 0; int < portlet_data['current_matrix_rows_new'].length; int++) {
 		var temp_row = portlet_data['current_matrix_rows_new'][int];
 		jQuery('#matrix_table').append('<tr id="'+temp_row.id+'"><td name="matrix_table_left" style="background-color:#CCCCCC;">'+temp_row.name+'</td></tr>');
@@ -2213,21 +2231,37 @@ function return_portlet_matrix(id, portlet){
 		  });
 	  }
 	  
-	  jQuery(".droppable_matrix").droppable({
-	     hoverClass: 'droppable_item_hover',
-		 drop: function(event, ui) {
-		    drop_to_matrix(this.id);
-		 }
-	  });
-	  
 	  portlet_data['matrix_save'] = false;
 	  portlet_data['current_matrix_rows_new'] = new Array();
 	  portlet_data['current_matrix_columns_new'] = new Array();
    }
+   jQuery(".droppable_matrix").droppable({
+	  hoverClass: 'droppable_item_hover',
+      drop: function(event, ui) {
+	     drop_to_matrix(this.id, ui.draggable[0].id.replace(/[^0-9]/g,''));
+	  }
+   });
 }
 
-function drop_to_matrix(id){
-	alert('drop_to_matrix: '+id);
+function drop_to_matrix(id, item_id){
+   var json_data = new Object();
+   var id_array = id.split('_');
+   json_data['row_id'] = id_array[1];
+   json_data['column_id'] = id_array[2];
+   json_data['item_id'] = item_id;
+   
+   jQuery.ajax({
+   url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct=privateroom_entry&output=json&do=update_matrix&action=add_item',
+      data: json_data,
+      success: function(msg){
+	     //alert(msg);
+         var resultJSON = eval('(' + msg + ')');
+         if (resultJSON === undefined){
+         }else{
+    	  
+         }
+      }
+   });
 }
 
 function turn_portlet_new_entries(id, portlet){
