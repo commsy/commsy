@@ -29,6 +29,9 @@ if(isset($_GET['do'])){
 		$json_return_array = array();
 	   $get_keys = array_keys($_GET);
       $matrix_array = array();
+      $matrix_id_array = array();
+      $matrix_text_array = array();
+      $change_array = array();
       $new_matrix_column = '';
       $new_matrix_row = '';
       foreach($get_keys as $get_key){
@@ -40,6 +43,12 @@ if(isset($_GET['do'])){
             $new_matrix_row = $_GET[$get_key];
          }
       }
+      
+      foreach($matrix_array as $matrix_entry){
+      	$matrix_id_array[] = $matrix_entry[0];
+      	$matrix_text_array[$matrix_entry[0]] = $matrix_entry[1];
+      }
+      
 		$matrix_manager = $environment->getMatrixManager();
 	   $matrix_manager->resetLimits();
 	   $matrix_manager->setContextLimit($environment->getCurrentContextID());
@@ -49,8 +58,12 @@ if(isset($_GET['do'])){
 	   $matrix_item = $matrix_column_list->getFirst();
 	   while($matrix_item){
 	      $id = $matrix_item->getItemID();
-	      if(!in_array($id, $matrix_array)){
+	      if(!in_array($id, $matrix_id_array)){
 	      	$matrix_item->delete();
+	      } else {
+	      	$matrix_item->setName($matrix_text_array[$id]);
+	      	$matrix_item->save();
+	      	$change_array[] = array($id, $matrix_text_array[$id]);
 	      }
 	      $matrix_item = $matrix_column_list->getNext();
 	   }
@@ -75,8 +88,12 @@ if(isset($_GET['do'])){
 	   $matrix_item = $matrix_row_list->getFirst();
 	   while($matrix_item){
 	      $id = $matrix_item->getItemID();
-	      if(!in_array($id, $matrix_array)){
+	      if(!in_array($id, $matrix_id_array)){
             $matrix_item->delete();
+         } else {
+            $matrix_item->setName($matrix_text_array[$id]);
+            $matrix_item->save();
+            $change_array[] = array($id, $matrix_text_array[$id]);
          }
 	      $matrix_item = $matrix_row_list->getNext();
 	   }
@@ -94,10 +111,21 @@ if(isset($_GET['do'])){
 	      $json_return_array['new_row_name'] = $new_matrix_row;
 	   }
 	   
-	   $page->add('new_column', $json_return_array['new_column']);
-      $page->add('new_column_name', $json_return_array['new_column_name']);
-	   $page->add('new_row', $json_return_array['new_row']);
-	   $page->add('new_row_name', $json_return_array['new_row_name']);
+	   if(!empty($json_return_array['new_column'])){
+	      $page->add('new_column', $json_return_array['new_column']);
+	   }
+	   if(!empty($json_return_array['new_column_name'])){
+         $page->add('new_column_name', $json_return_array['new_column_name']);
+      }
+      if(!empty($json_return_array['new_row'])){
+	      $page->add('new_row', $json_return_array['new_row']);
+	   }
+      if(!empty($json_return_array['new_row_name'])){
+	      $page->add('new_row_name', $json_return_array['new_row_name']);
+	   }
+	   foreach($change_array as $change){
+	      $page->add($change[0], $change[1]);
+	   }
 	}
 }
 ?>

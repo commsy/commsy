@@ -2082,6 +2082,20 @@ function MatrixItem(id, name) {
 portlet_data['current_matrix_rows_new'] = new Array();
 portlet_data['current_matrix_columns_new'] = new Array();
 function turn_portlet_matrix(id, portlet){
+   if(typeof(portlet_data['change']) !== 'undefined'){
+      jQuery('#matrix_rows').find('.matrix_text').each(function(){
+         var id_array = jQuery(this).attr('name').split('_');
+         if(portlet_data['change'][0][id_array[1]]){
+            jQuery(this).val(portlet_data['change'][0][id_array[1]]);
+         }
+      });
+      jQuery('#matrix_columns').find('.matrix_text').each(function(){
+          var id_array = jQuery(this).attr('name').split('_');
+          if(portlet_data['change'][0][id_array[1]]){
+             jQuery(this).val(portlet_data['change'][0][id_array[1]]);
+          }
+       });
+   }
    jQuery("#"+id).find('input').each(function(){
       if(jQuery(this).attr('type') == 'submit'){
 	     jQuery(this).click(function(){
@@ -2104,7 +2118,7 @@ function turn_portlet_matrix(id, portlet){
 	    	   url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct=privateroom_matrix_configuration&output=json&do=save_config',
 	    	      data: json_data,
 	    	      success: function(msg){
-	    		   //alert(msg);
+	    		     //alert(msg);
 	    	         portlet_data['matrix_save'] = true;
 	    	         //portlet.revertFlip();
 	    	         
@@ -2127,10 +2141,7 @@ function turn_portlet_matrix(id, portlet){
                 	       jQuery('#matrix_columns').append('<div><input name="matrix_'+resultJSON['new_column']+'" value="'+resultJSON['new_column']+'" checked="checked" type="checkbox"><input type="text" value="'+resultJSON['new_column_name']+'" name="matrixtext_'+resultJSON['new_column']+'" class="matrix_text"></div>');
                 	       portlet_data['current_matrix_columns_new'].push(new MatrixItem(resultJSON['new_column'], resultJSON['new_column_name']));
                 	    }
-                	    if(resultJSON['change']){
-                	       portlet_data['change'].push(resultJSON['change']);
-                	    }
-                        //jQuery("#buzzword_"+buzzwordId).css('font-size',resultJSON[itemId]+"px");
+                	    portlet_data['change'].push(resultJSON);
                      }
                      jQuery('#matrix_rows').find('[name^="matrix_"]:not(:checked)').each(function(){
        	    	        jQuery(this).parent().remove();
@@ -2164,17 +2175,12 @@ function return_portlet_matrix(id, portlet){
 		  }
 	  });
 	  
-	  //jQuery('#matrix_table').find('tr').each(function(){
-	  //	  if(jQuery(this).attr('id') != 'matrix_table_header'){
-	  //		  // Beschriftungen anpassen.
-	  //		  //portlet_data['change'];
-	  //		  var change = portlet_data['change'];
-	  //		  //for ( var int3 = 0; int3 < change.length; int3++) {
-	  //			alert(change);
-	  //		  //}
-	  //		  jQuery(this).find('td').first().html();
-	  //	  }
-	  //});
+	  jQuery('#matrix_table').find('tr').each(function(){
+	  	  if(jQuery(this).attr('id') != 'matrix_table_header'){
+	  		  var change = portlet_data['change'][0];
+	  		  jQuery(this).find('td').first().html(change[jQuery(this).attr('id')]);
+	  	  }
+	  });
 	  
 	  for ( var int = 0; int < portlet_data['current_matrix_rows_new'].length; int++) {
 		var temp_row = portlet_data['current_matrix_rows_new'][int];
@@ -2215,6 +2221,12 @@ function return_portlet_matrix(id, portlet){
 					  if(!column_exists){
 					     jQuery(this).remove();
 					  }
+				  }
+			  });
+			  jQuery(this).find('td').each(function(){
+				  if(jQuery(this).attr('id') != 'matrix_table_top_left'){
+					  var change = portlet_data['change'][0];
+			  		  jQuery(this).html(change[jQuery(this).attr('id')]);
 				  }
 			  });
 		  }

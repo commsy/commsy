@@ -811,7 +811,7 @@ class cs_entry_index_view extends cs_index_view {
       $html .= '<div id="matrix_rows">'.LF;
       while($matrix_item){
          $html .= '<div><input name="matrix_'.$matrix_item->getItemID().'" value="'.$matrix_item->getItemID().'" checked="checked" type="checkbox">';
-         $html .= $matrix_item->getName().'</div>';
+         $html .= '<input class="matrix_text" name="matrixtext_'.$matrix_item->getItemID().'" type="text" value="'.$matrix_item->getName().'"></div>';
          $matrix_item = $matrix_row_list->getNext();
          $count_rows++;
       }
@@ -829,7 +829,7 @@ class cs_entry_index_view extends cs_index_view {
       $html .= '<div id="matrix_columns">'.LF;
       while($matrix_item){
          $html .= '<div><input name="matrix_'.$matrix_item->getItemID().'" value="'.$matrix_item->getItemID().'" checked="checked" type="checkbox">';
-         $html .= $matrix_item->getName().'</div>';
+         $html .= '<input class="matrix_text" name="matrixtext_'.$matrix_item->getItemID().'" type="text" value="'.$matrix_item->getName().'"></div>';
          $matrix_item = $matrix_column_list->getNext();
          $count_columns++;
       }
