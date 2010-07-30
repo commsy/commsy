@@ -60,6 +60,13 @@ if(isset($_GET['do'])and isset($_GET['action'])){
 	      $mylist_item->saveLinksByIDArray($id_array);
 	      $page->add($_GET['item_id'],count($id_array));
 	   }
-	}
+	}elseif($_GET['do'] == 'update_matrix' and $_GET['action']= 'add_item'){
+      if (isset($_GET['row_id']) and isset($_GET['column_id']) and isset($_GET['item_id'])){
+      	$matrix_manager = $environment->getMatrixManager();
+         //
+         
+      	//$page->add('matrix_counter',$count);
+      }
+   }
 }
 ?>
