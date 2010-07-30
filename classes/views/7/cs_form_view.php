@@ -654,6 +654,7 @@ class cs_form_view extends cs_view {
 //      $with_flash = true;
       //http://www.uploadify.com/documentation/
 //      $with_flash = false;
+//      $session->getValue('flash')
       $val = $this->_environment->getCurrentContextItem()->getMaxUploadSizeInBytes();
       if ($c_new_upload){
          // this div holds the list of files, which upload is finished(+checkbox)

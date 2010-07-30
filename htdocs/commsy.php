@@ -670,6 +670,13 @@ if ( isset($_GET['jscheck'])
          }
       }
    }
+   if ( isset($session) and !$session->issetValue('flash')) {
+      if (isset($_GET['flash'])) {
+         $session->setValue('flash',1);
+      } else {
+         $session->setValue('flash',-1);
+      }
+   }
 }
 
 $current_user_item = $environment->getCurrentUserItem();

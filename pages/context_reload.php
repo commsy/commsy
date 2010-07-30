@@ -36,7 +36,7 @@ if ( !empty($_POST['password']) ) {
 $params1 = $params2;
 $params1['isJS'] = '1';
 $url1 = _curl( false,
-               $environment->getCurrentContextID(),
+             $environment->getCurrentContextID(),
              $environment->getCurrentModule(),
              $environment->getCurrentFunction(),
              $params1
@@ -53,6 +53,7 @@ $url2 = curl( $environment->getCurrentContextID(),
      <noscript>
        <meta http-equiv="refresh" content="0; URL=<?PHP echo($url2); ?>">
       </noscript>
+      <script src="javascript/Adobe/AC_OETags.js" language="javascript"></script>
       <script type="text/javascript">
          <!--
             function reload () {
@@ -61,7 +62,12 @@ $url2 = curl( $environment->getCurrentContextID(),
                if ( https == "https" ) {
                   var ssl = 1;
                }
-               document.location.href="<?PHP echo($url1); ?>&https="+ssl;
+               var flash = -1;
+               var hasReqestedVersionForUploadify = DetectFlashVer(9, 0, 24);
+               if(hasReqestedVersionForUploadify){
+            	   var flash = 1;
+               }
+               document.location.href="<?PHP echo($url1); ?>&https="+ssl+"&flash="+flash;
             }
          -->
       </script>
