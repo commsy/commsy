@@ -160,10 +160,15 @@ if(isset($_GET['portlet'])){
          }
       }
       
-      if($count != '' and $user != ''){
+      #if($count != '' and $user != ''){
+      #   $privateroom_item->setPortletNewEntryListCount($count);
+      #   $privateroom_item->setPortletNewEntryListShowUser($user);
+      #}
+      
+      if($count != ''){
          $privateroom_item->setPortletNewEntryListCount($count);
-         $privateroom_item->setPortletNewEntryListShowUser($user);
       }
+      
       $privateroom_item->save();
    }
 }
