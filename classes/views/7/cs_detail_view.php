@@ -847,6 +847,7 @@ class cs_detail_view extends cs_view {
          $params = array();
          $params['back_to_index'] = 'true';
          $link_text = $this->_translator->getMessage('COMMON_BACK_TO_LIST');
+         $link_module = $this->_environment->getCurrentModule();
          if ( module2type($this->_environment->getCurrentModule()) == CS_DATE_TYPE
               and !empty($display_mod)
               and $display_mod == 'calendar'
@@ -855,11 +856,30 @@ class cs_detail_view extends cs_view {
          }
          if ( module2type($this->_environment->getCurrentModule()) == CS_DATE_TYPE
               and $this->_environment->inPrivateRoom()
+              and $this->_environment->getConfiguration('c_use_new_private_room')
             ) {
             $link_text = $this->_translator->getMessage('COMMON_BACK_TO_INDEX');
          }
+         if ( module2type($this->_environment->getCurrentModule()) == CS_TODO_TYPE
+              and $this->_environment->inPrivateRoom()
+              and $this->_environment->getConfiguration('c_use_new_private_room')
+            ) {
+            $link_text = $this->_translator->getMessage('COMMON_BACK_TO_INDEX');
+            $link_module = type2module(CS_DATE_TYPE);
+         }
+         if ( $this->_environment->inPrivateRoom()
+              and $this->_environment->getConfiguration('c_use_new_private_room')
+              and ( module2type($this->_environment->getCurrentModule()) == CS_MATERIAL_TYPE
+                    or module2type($this->_environment->getCurrentModule()) == CS_DISCUSSION_TYPE
+                    or module2type($this->_environment->getCurrentModule()) == CS_ANNOUNCEMENT_TYPE
+                    or module2type($this->_environment->getCurrentModule()) == CS_TOPIC_TYPE
+                  )
+            ) {
+            $link_text = $this->_translator->getMessage('COMMON_BACK_TO_INDEX');
+            $link_module = type2module(CS_ENTRY_TYPE);
+         }
          $html .= ahref_curl( $this->_environment->getCurrentContextID(),
-                           $this->_environment->getCurrentModule(),
+                           $link_module,
                            'index',
                            $params,
                            $link_text
