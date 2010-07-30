@@ -1768,11 +1768,17 @@ EOD;
             }
             break;
          case 'DATE':
-            $tempMessage = $this->_translator->getMessage('DATE_INDEX');
-            if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-               $tempMessage = '<img src="images/commsyicons_msie6/32x32/date.gif" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
+            if ( $this->_environment->inPrivateRoom()
+                 and $this->_environment->getConfiguration('c_use_new_private_room')
+               ) {
+               $tempMessage = $this->_translator->getMessage('MYCALENDAR_INDEX');
             } else {
-               $tempMessage = '<img src="images/commsyicons/32x32/date.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
+               $tempMessage = $this->_translator->getMessage('DATE_INDEX');
+               if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+                  $tempMessage = '<img src="images/commsyicons_msie6/32x32/date.gif" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
+               } else {
+                  $tempMessage = '<img src="images/commsyicons/32x32/date.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
+               }
             }
             break;
          case 'DISCUSSION':
