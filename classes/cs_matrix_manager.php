@@ -70,15 +70,17 @@ class cs_matrix_manager extends cs_labels_manager {
   }
 
   function getEntriesInPosition($id1,$id2){
-     $query = 'SELECT DISTINCT count('.$this->addDatabasePrefix('links').'.from_item_id) as count';
-     $query .= ' FROM '.$this->addDatabasePrefix('links');
+     $query  = 'SELECT count( DISTINCT li1.first_item_id) as count';
+     $query .= ' FROM '.$this->addDatabasePrefix('link_items').' AS li1';
+     $query .= ' INNER JOIN '.$this->addDatabasePrefix('link_items').' AS li2 ON li1.first_item_id = li2.first_item_id';
      $query .= ' WHERE 1';
-     $query .= ' AND (';
-     $query .= ' ('.$this->addDatabasePrefix('links').'.x = "'.$id1.'" AND '.$this->addDatabasePrefix('links').'.y = "'.$id2.'" )';
-     $query .= ' OR';
-     $query .= ' ('.$this->addDatabasePrefix('links').'.x = "'.$id2.'" AND '.$this->addDatabasePrefix('links').'.y = "'.$id1.'" )';
-     $query .= ' )';
+     $query .= ' AND';
+     $query .= ' li1.second_item_id = "'.$id1.'"';
+     $query .= ' AND';
+     $query .= ' li2.second_item_id = "'.$id2.'" ';
      $result = $this->_db_connector->performQuery($query);
+     include_once('functions/development_functions.php');
+     #debugToFile($query);
      if ( !isset($result[0]['count']) ) {
         trigger_error('Problems counting matrix entries.', E_USER_WARNING);
      } else {
@@ -287,6 +289,77 @@ class cs_matrix_manager extends cs_labels_manager {
      }
   }
 
+   public function insertItem ( $item_id, $column_id, $row_id ) {
+      $retour = 0;
+      if ( !empty($item_id)
+           and $item_id > 99
+           and !empty($column_id)
+           and $column_id > 99
+           and !empty($row_id)
+           and $row_id > 99
+           and !$this->_isInsert($item_id, $column_id, $row_id)
+         ) {
+         $item_manager = $this->_environment->getItemManager();
+         $item_type = $item_manager->getItemType($item_id);
+         unset($item_manager);
 
+         $link_item_manager = $this->_environment->getLinkItemManager();
+         $link_item = $link_item_manager->getNewItem();
+         $link_item->setFirstLinkedItemID($item_id);
+         $link_item->setFirstLinkedItemType($item_type);
+         $link_item->setSecondLinkedItemID($column_id);
+         $link_item->setSecondLinkedItemType(CS_LABEL_TYPE);
+         $link_item->save();
+         unset($link_item);
+         $link_item = $link_item_manager->getNewItem();
+         $link_item->setFirstLinkedItemID($item_id);
+         $link_item->setFirstLinkedItemType($item_type);
+         $link_item->setSecondLinkedItemID($row_id);
+         $link_item->setSecondLinkedItemType(CS_LABEL_TYPE);
+         $link_item->save();
+         unset($link_item);
+         unset($link_item_manager);
+
+         $retour = $this->getEntriesInPosition($column_id,$row_id);
+      }
+      return $retour;
+   }
+
+   private function _isInsert ( $item_id, $column_id, $row_id ) {
+      $retour = false;
+
+      if ( !empty($item_id)
+           and $item_id > 99
+           and !empty($column_id)
+           and $column_id > 99
+           and !empty($row_id)
+           and $row_id > 99
+         ) {
+         $query  = 'SELECT count( DISTINCT li1.first_item_id) as count';
+         $query .= ' FROM '.$this->addDatabasePrefix('link_items').' AS li1';
+         $query .= ' INNER JOIN '.$this->addDatabasePrefix('link_items').' AS li2 ON li1.first_item_id = li2.first_item_id';
+         $query .= ' WHERE 1';
+         $query .= ' AND';
+         $query .= ' li1.first_item_id = "'.$item_id.'"';
+         $query .= ' AND';
+         $query .= ' li1.second_item_id = "'.$column_id.'"';
+         $query .= ' AND';
+         $query .= ' li2.second_item_id = "'.$row_id.'" ';
+         $result = $this->_db_connector->performQuery($query);
+         include_once('functions/development_functions.php');
+         debugToFile($query);
+         if ( !isset($result[0]['count']) ) {
+            trigger_error('Problems counting matrix entries.', E_USER_WARNING);
+         } else {
+            if (!empty($result[0]['count'])) {
+               $retour = true;
+            }
+         }
+      } else {
+      	$retour = NULL;
+      }
+
+      return $retour;
+   }
 }
 ?>
