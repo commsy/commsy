@@ -663,6 +663,7 @@ class cs_form_view extends cs_view {
          global $c_virus_scan;
          global $c_virus_scan_cron;
          $session = $this->_environment->getSessionItem();
+         $file_upload_rubric = $this->_environment->getCurrentModule();
          if($session->issetValue($file_upload_rubric . '_add_files')) {
             $file_array = $session->getValue($file_upload_rubric . '_add_files');
          } else {
