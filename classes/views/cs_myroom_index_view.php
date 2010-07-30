@@ -74,15 +74,21 @@ class cs_myroom_index_view extends cs_context_index_view {
  #     $html .='<div style="width:70%;">'.LF;
       $html .='<div style="width:100%;">'.LF;
       $html .='<div style="vertical-align:bottom;">'.LF;
-      if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-         $image = '<img src="images/commsyicons_msie6/32x32/room.gif" style="vertical-align:bottom;"/>';
+      if ( $this->_environment->inPrivateRoom()
+           and $this->_environment->getConfiguration('c_use_new_private_room')
+         ) {
+         $image = '';
       } else {
-         $image = '<img src="images/commsyicons/32x32/room.png" style="vertical-align:bottom;"/>';
+         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+            $image = '<img src="images/commsyicons_msie6/32x32/room.gif" style="vertical-align:bottom;"/>';
+         } else {
+            $image = '<img src="images/commsyicons/32x32/room.png" style="vertical-align:bottom;"/>';
+         }
       }
       $html .= '<div style="float:left;"><h2 class="pagetitle">'.$image.' '.$this->_translator->getMessage('MYROOM_INDEX');
       $html .= '</h2></div>'.LF;
       #$html .= '<div style="float:right;"><a href="#"><img id="new_icon" src="images/commsyicons/48x48/config/privateroom_home_options.png" height=24></a></div>';
-      
+
       $html .= '<div style="float:right;">'.LF;
       $html .= '<div class="portlet-configuration">'.LF;
       $html .= '<div class="portlet-header-configuration ui-widget-header" style="width:200px;">'.LF;
@@ -93,7 +99,7 @@ class cs_myroom_index_view extends cs_context_index_view {
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
-         
+
       $html .='</div>'.LF;
       $html .='</div>'.LF;
       $html .='</div>'.LF;
@@ -243,7 +249,7 @@ class cs_myroom_index_view extends cs_context_index_view {
       $html  = LF.'<!-- BEGIN OF LIST VIEW -->'.LF;
       $html .= $this->_getIndexPageHeaderAsHTML();
       #$html .= '<div style="width:100%; float:right;"><div style="float:right;"><a href="#"><img id="new_icon" src="images/commsyicons/22x22/new.png"></a></div></div>';
-      
+
       if(!(isset($_GET['mode']) and $_GET['mode']=='print')){
          $html .='<div class="index_content_display_width" style="width:100%; padding-top:5px; vertical-align:bottom;">'.LF;
       }else{
@@ -906,23 +912,23 @@ class cs_myroom_index_view extends cs_context_index_view {
       $html = '';
 
       $myroom_array = $privateroom_item->getMyroomDisplayConfig();
-      
+
       $list = $this->_list;
       $room_item = $list->getFirst();
       while($room_item){
-	      $temp_array = array();
-	      $temp_array['dropdown_image']  = "new_icon";
-	      $temp_array['text']  = $room_item->getTitle();
-	      $temp_array['value'] = $room_item->getItemID();
-	      if(in_array($room_item->getItemID(), $myroom_array)){
-	         $temp_array['checked']  = "checked";
-	      } else {
-	         $temp_array['checked']  = "";
-	      }
-	      $action_array[] = $temp_array;
-	      $room_item = $list->getNext();
+         $temp_array = array();
+         $temp_array['dropdown_image']  = "new_icon";
+         $temp_array['text']  = $room_item->getTitle();
+         $temp_array['value'] = $room_item->getItemID();
+         if(in_array($room_item->getItemID(), $myroom_array)){
+            $temp_array['checked']  = "checked";
+         } else {
+            $temp_array['checked']  = "";
+         }
+         $action_array[] = $temp_array;
+         $room_item = $list->getNext();
       }
-      
+
       // init drop down menu
       if ( !empty($action_array)
            and count($action_array) >= 1
