@@ -598,6 +598,30 @@ class cs_page_room_view extends cs_page_view {
                       and !empty($c_use_new_private_room)
                       and $c_use_new_private_room
                     )
+                 or ( $this->_module == 'discussion'
+                      and $link['module'] == 'entry'
+                      and $this->_environment->inPrivateRoom()
+                      and !empty($c_use_new_private_room)
+                      and $c_use_new_private_room
+                    )
+                 or ( $this->_module == 'material'
+                      and $link['module'] == 'entry'
+                      and $this->_environment->inPrivateRoom()
+                      and !empty($c_use_new_private_room)
+                      and $c_use_new_private_room
+                    )
+                 or ( $this->_module == 'announcement'
+                      and $link['module'] == 'entry'
+                      and $this->_environment->inPrivateRoom()
+                      and !empty($c_use_new_private_room)
+                      and $c_use_new_private_room
+                    )
+                 or ( $this->_module == 'topic'
+                      and $link['module'] == 'entry'
+                      and $this->_environment->inPrivateRoom()
+                      and !empty($c_use_new_private_room)
+                      and $c_use_new_private_room
+                    )
             ) {
                $ahref = ahref_curl($this->_environment->getCurrentContextID(), $link['module'], $link['function'], $link['parameter'], $link_title, $link['explanation'],'','','','','','class="navlist_current"');
             } elseif ( $this->_module =='annotation' ) {
