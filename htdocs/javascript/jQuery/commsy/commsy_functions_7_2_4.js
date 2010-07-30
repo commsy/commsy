@@ -2270,7 +2270,7 @@ function drop_to_matrix(id, item_id){
          var resultJSON = eval('(' + msg + ')');
          if (resultJSON === undefined){
          }else{
-    	  
+    	    jQuery('#'+id).find('.matrix_current_count').html(resultJSON['matrix_counter']);
          }
       }
    });

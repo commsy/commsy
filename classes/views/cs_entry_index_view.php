@@ -756,10 +756,10 @@ class cs_entry_index_view extends cs_index_view {
          $html_table .= '<td name="matrix_table_left" style="background-color:#CCCCCC;">'.$row.LF;
          $html_table .= '</td>'.LF;
          foreach($matrix_column_title_array as $column_key => $column){
-            $html_table .= '<td class="droppable_matrix" id="id_'.$row_key.'_'.$column_key.'" style="text-align:center;"><a></a>'.LF;
+            $html_table .= '<td class="droppable_matrix" id="id_'.$row_key.'_'.$column_key.'" style="text-align:center;"><a></a><span class="matrix_current_count">';
             $count = $matrix_manager->getEntriesInPosition($column_key,$row_key);
             $html_table .= $count;
-            $html_table .= '</td>'.LF;
+            $html_table .= '</span></td>'.LF;
          }
          $html_table .= '</tr>'.LF;
       }
