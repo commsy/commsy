@@ -157,26 +157,32 @@ class cs_disc_manager {
    }
 
    function copyImageFromRoomToRoom ($picture_name, $new_room_id) {
-      $retour = false;
-      $this->_makeFolder($this->_first_id, $new_room_id);
+      if ( !empty($picture_name)
+           and !empty($new_room_id)
+         ) {
+         $retour = false;
+         $this->_makeFolder($this->_first_id, $new_room_id);
 
-      $value_array = explode('_',$picture_name);
-      $old_room_id = $value_array[0];
-      $old_room_id = str_replace('cid','',$old_room_id);
-      $value_array[0] = 'cid'.$new_room_id;
+         $value_array = explode('_',$picture_name);
+         $old_room_id = $value_array[0];
+         $old_room_id = str_replace('cid','',$old_room_id);
+         $value_array[0] = 'cid'.$new_room_id;
 
-      $new_picture_name = implode('_',$value_array);
+         $new_picture_name = implode('_',$value_array);
 
-      // source file
-      $source_file = str_replace('//','/',$this->_getFilePath('',$old_room_id).'/'.$picture_name);
-      $target_file = str_replace('//','/',$this->_getFilePath('',$new_room_id).'/'.$new_picture_name);
+         // source file
+         $source_file = str_replace('//','/',$this->_getFilePath('',$old_room_id).'/'.$picture_name);
+         $target_file = str_replace('//','/',$this->_getFilePath('',$new_room_id).'/'.$new_picture_name);
 
-      // copy
-      if ( file_exists($source_file) ) {
-         if ($source_file != $target_file){
-            $retour = copy($source_file,$target_file);
-            if ( $retour ) {
-               $this->_last_saved_filename = $new_picture_name;
+         // copy
+         if ( file_exists($source_file) ) {
+            if ($source_file != $target_file){
+               $retour = copy($source_file,$target_file);
+               if ( $retour ) {
+                  $this->_last_saved_filename = $new_picture_name;
+               }
+            } else {
+               $retour = true;
             }
          } else {
             $retour = true;
