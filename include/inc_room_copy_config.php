@@ -23,136 +23,234 @@
 // warning: this script must copy data from all room types
 //          be carefull when coding
 
-// copy room settings
+// copy this room settings
+$copy_array = array();
+$copy_array['context'] = true;
+$copy_array['homeconf'] = true;
+$copy_array['timespread'] = true;
+$copy_array['extras'] = true;
+$copy_array['plugins'] = true;
+$copy_array['color'] = true;
+$copy_array['todostatus'] = true;
+$copy_array['usageinfo'] = true;
+$copy_array['topicpath'] = true;
+$copy_array['tag'] = true;
+$copy_array['chat'] = true;
+$copy_array['discussionstatus'] = true;
+$copy_array['todomanagementstatus'] = true;
+$copy_array['detailboxconf'] = true;
+$copy_array['listboxconf'] = true;
+$copy_array['homerightconf'] = true;
+$copy_array['datespresentationstatus'] = true;
+$copy_array['htmltextareastatus'] = true;
+$copy_array['buzzword'] = true;
+$copy_array['netnavigation'] = true;
+$copy_array['emailtext'] = true;
+$copy_array['title'] = true;
+$copy_array['logo'] = true;
+$copy_array['wiki'] = true;
+$copy_array['informationbox'] = true;
+
+if ( !$old_room->isPrivateRoom() ) {
+   $copy_array['title'] = false;
+}
+
+// new private room
+// only copy entry rubric
+if ( $old_room->isPrivateRoom()
+     and $environment->getConfiguration('c_use_new_private_room')
+   ) {
+   $copy_array['homeconf'] = false;
+   $copy_array['timespread'] = false;
+   $copy_array['plugins'] = false;
+   $copy_array['color'] = false;
+   $copy_array['usageinfo'] = false;
+   $copy_array['chat'] = false;
+   $copy_array['detailboxconf'] = false;
+   $copy_array['listboxconf'] = false;
+   $copy_array['homerightconf'] = false;
+   $copy_array['datespresentationstatus'] = false;
+   $copy_array['htmltextareastatus'] = false;
+   $copy_array['emailtext'] = false;
+   $copy_array['title'] = false;
+   $copy_array['logo'] = false;
+   $copy_array['wiki'] = false;
+   $copy_array['informationbox'] = false;
+}
 
 // room context
-$new_room->setRoomContext($old_room->getRoomContext());
+if ( $copy_array['context'] ) {
+   $new_room->setRoomContext($old_room->getRoomContext());
+}
 
 // config of home
-$new_room->setHomeConf($old_room->getHomeConf());
+if ( $copy_array['homeconf'] ) {
+   $new_room->setHomeConf($old_room->getHomeConf());
+}
 
 // time spread
-if ( $old_room->isProjectRoom()
-     or $old_room->isGroupRoom()
-   ) {
-   $new_room->setTimeSpread($old_room->getTimeSpread());
+if ( $copy_array['timespread'] ) {
+   if ( $old_room->isProjectRoom()
+        or $old_room->isGroupRoom()
+      ) {
+      $new_room->setTimeSpread($old_room->getTimeSpread());
+   }
 }
 
 // config of extras
-$extra_config = $old_room->getExtraConfig();
-unset($extra_config['TEMPLATE']);
-$new_room->setExtraConfig($extra_config);
+if ( $copy_array['extras'] ) {
+   $extra_config = $old_room->getExtraConfig();
+   unset($extra_config['TEMPLATE']);
+   $new_room->setExtraConfig($extra_config);
+}
 
 // config of plugins
-$new_room->setPluginConfig($old_room->getPluginConfig());
+if ( $copy_array['plugins'] ) {
+   $new_room->setPluginConfig($old_room->getPluginConfig());
+}
 
 // config of colors
-$new_room->setColorArray($old_room->getColorArray());
-$new_room->generateLayoutImages();
+if ( $copy_array['color'] ) {
+   $new_room->setColorArray($old_room->getColorArray());
+   $new_room->generateLayoutImages();
+}
 
 //ToDos
-$new_room->setExtraToDoStatusArray($old_room->getExtraToDoStatusArray());
+if ( $copy_array['todostatus'] ) {
+   $new_room->setExtraToDoStatusArray($old_room->getExtraToDoStatusArray());
+}
 
 // config of usage infos
-$new_room->setUsageInfoArray($old_room->getUsageInfoArray());
-$new_room->setUsageInfoHeaderArray($old_room->getUsageInfoHeaderArray());
-$new_room->setUsageInfoTextArray($old_room->getUsageInfoTextArray());
-$new_room->setUsageInfoFormArray($old_room->getUsageInfoFormArray());
-$new_room->setUsageInfoFormHeaderArray($old_room->getUsageInfoFormHeaderArray());
-$new_room->setUsageInfoFormTextArray($old_room->getUsageInfoFormTextArray());
+if ( $copy_array['usageinfo'] ) {
+   $new_room->setUsageInfoArray($old_room->getUsageInfoArray());
+   $new_room->setUsageInfoHeaderArray($old_room->getUsageInfoHeaderArray());
+   $new_room->setUsageInfoTextArray($old_room->getUsageInfoTextArray());
+   $new_room->setUsageInfoFormArray($old_room->getUsageInfoFormArray());
+   $new_room->setUsageInfoFormHeaderArray($old_room->getUsageInfoFormHeaderArray());
+   $new_room->setUsageInfoFormTextArray($old_room->getUsageInfoFormTextArray());
+}
 
 // config of path
-if ( $old_room->withPath() ) {
-   $new_room->setWithPath();
-} else {
-   $new_room->setWithoutPath();
+if ( $copy_array['topicpath'] ) {
+   if ( $old_room->withPath() ) {
+      $new_room->setWithPath();
+   } else {
+      $new_room->setWithoutPath();
+   }
 }
 
 // config of tags
-if ( $old_room->isTagMandatory() ) {
-   $new_room->setTagMandatory();
-} else {
-   $new_room->unsetTagMandatory();
-}
-if ( $old_room->isTagEditedByAll() ) {
-   $new_room->setTagEditedByAll();
-} else {
-   $new_room->setTagEditedByModerator();
-}
-if ( $old_room->withTags() ) {
-   $new_room->setWithTags();
-} else {
-   $new_room->setWithoutTags();
-}
-if ( $old_room->isTagsShowExpanded() ) {
-   $new_room->setTagsShowExpanded();
-} else {
-   $new_room->unsetTagsShowExpanded();
+if ( $copy_array['tag'] ) {
+   if ( $old_room->isTagMandatory() ) {
+      $new_room->setTagMandatory();
+   } else {
+      $new_room->unsetTagMandatory();
+   }
+   if ( $old_room->isTagEditedByAll() ) {
+      $new_room->setTagEditedByAll();
+   } else {
+      $new_room->setTagEditedByModerator();
+   }
+   if ( $old_room->withTags() ) {
+      $new_room->setWithTags();
+   } else {
+      $new_room->setWithoutTags();
+   }
+   if ( $old_room->isTagsShowExpanded() ) {
+      $new_room->setTagsShowExpanded();
+   } else {
+      $new_room->unsetTagsShowExpanded();
+   }
 }
 
 // chat
-if ( $old_room->withChatLink() ) {
-   $new_room->setWithChatLink();
-} else {
-   $new_room->setWithoutChatLink();
+if ( $copy_array['chat'] ) {
+   if ( $old_room->withChatLink() ) {
+      $new_room->setWithChatLink();
+   } else {
+      $new_room->setWithoutChatLink();
+   }
+   if ( $old_room->isChatLinkActive() ) {
+      $new_room->setChatLinkActive();
+   } else {
+      $new_room->setChatLinkInactive();
+   }
 }
-if ( $old_room->isChatLinkActive() ) {
-   $new_room->setChatLinkActive();
-} else {
-   $new_room->setChatLinkInactive();
-}
-$new_room->setDiscussionStatus($old_room->getDiscussionStatus());
-$new_room->setTodoManagmentStatus($old_room->getTodoManagmentStatus());
-$new_room->setDetailBoxConf($old_room->getDetailBoxConf());
-$new_room->setListBoxConf($old_room->getListBoxConf());
-$new_room->setHomeRightConf($old_room->getHomeRightConf());
-$new_room->setDatesPresentationStatus($old_room->getDatesPresentationStatus());
-$new_room->setHtmlTextAreaStatus($old_room->getHtmlTextAreaStatus());
 
+if ( $copy_array['discussionstatus'] ) {
+   $new_room->setDiscussionStatus($old_room->getDiscussionStatus());
+}
+if ( $copy_array['todomanagementstatus'] ) {
+   $new_room->setTodoManagmentStatus($old_room->getTodoManagmentStatus());
+}
+if ( $copy_array['detailboxconf'] ) {
+   $new_room->setDetailBoxConf($old_room->getDetailBoxConf());
+}
+if ( $copy_array['listboxconf'] ) {
+   $new_room->setListBoxConf($old_room->getListBoxConf());
+}
+if ( $copy_array['homerightconf'] ) {
+   $new_room->setHomeRightConf($old_room->getHomeRightConf());
+}
+if ( $copy_array['datespresentationstatus'] ) {
+   $new_room->setDatesPresentationStatus($old_room->getDatesPresentationStatus());
+}
+if ( $copy_array['htmltextareastatus'] ) {
+   $new_room->setHtmlTextAreaStatus($old_room->getHtmlTextAreaStatus());
+}
 // config of buzzwords
-if ( $old_room->isBuzzwordMandatory() ) {
-   $new_room->setBuzzwordMandatory();
-} else {
-   $new_room->unsetBuzzwordMandatory();
-}
-if ( $old_room->withBuzzwords() ) {
-   $new_room->setWithBuzzwords();
-} else {
-   $new_room->setWithoutBuzzwords();
-}
-if ( $old_room->isBuzzwordShowExpanded() ) {
-   $new_room->setBuzzwordShowExpanded();
-} else {
-   $new_room->unsetBuzzwordShowExpanded();
+if ( $copy_array['buzzword'] ) {
+   if ( $old_room->isBuzzwordMandatory() ) {
+      $new_room->setBuzzwordMandatory();
+   } else {
+      $new_room->unsetBuzzwordMandatory();
+   }
+   if ( $old_room->withBuzzwords() ) {
+      $new_room->setWithBuzzwords();
+   } else {
+      $new_room->setWithoutBuzzwords();
+   }
+   if ( $old_room->isBuzzwordShowExpanded() ) {
+      $new_room->setBuzzwordShowExpanded();
+   } else {
+      $new_room->unsetBuzzwordShowExpanded();
+   }
 }
 
 // config of netnavigation
-if ( $old_room->isNetnavigationShowExpanded() ) {
-   $new_room->setNetnavigationShowExpanded();
-} else {
-   $new_room->unsetNetnavigationShowExpanded();
-}
-if ( $old_room->withNetnavigation() ) {
-   $new_room->setWithNetnavigation();
-} else {
-   $new_room->setWithoutNetnavigation();
+if ( $copy_array['netnavigation'] ) {
+   if ( $old_room->isNetnavigationShowExpanded() ) {
+      $new_room->setNetnavigationShowExpanded();
+   } else {
+      $new_room->unsetNetnavigationShowExpanded();
+   }
+   if ( $old_room->withNetnavigation() ) {
+      $new_room->setWithNetnavigation();
+   } else {
+      $new_room->setWithoutNetnavigation();
+   }
 }
 
 // config of email message tags
-$new_room->setEmailTextArray($old_room->getEmailTextArray());
+if ( $copy_array['emailtext'] ) {
+   $new_room->setEmailTextArray($old_room->getEmailTextArray());
+}
 
 // title and logo
-if ( $old_room->isPrivateRoom() or $old_room->isProjectRoom()) {
+if ( $copy_array['title'] ) {
    if($old_room->isPrivateRoom()) {
-   	  $title = $old_room->getTitlePure();
+      $title = $old_room->getTitlePure();
       if ( empty($title)
            or $title == $translator->getMessage('COMMON_PRIVATEROOM')
          ) {
-      $title = 'PRIVATEROOM';
+         $title = 'PRIVATEROOM';
       }
-   $new_room->setTitle($title);
+      $new_room->setTitle($title);
+   } else {
+      $new_room->setTitle($old_room->getTitle());
    }
-
+}
+if ( $copy_array['logo'] ) {
    $disc_manager = $environment->getDiscManager();
    if ( $old_room->getItemID() > 99 ) {
       if ( $disc_manager->copyImageFromRoomToRoom($old_room->getLogoFilename(),$new_room->getItemID()) ) {
@@ -166,19 +264,25 @@ if ( $old_room->isPrivateRoom() or $old_room->isProjectRoom()) {
 }
 
 // wiki
-if ( $old_room->existWiki() ) {
-   $wiki_manager = $environment->getWikiManager();
-   $wiki_manager->copyWiki($old_room,$new_room);
-   unset($wiki_manager);
-} else {
-   $new_room->unsetWikiExists();
-   // wiki config and wiki data will not be deleted
+if ( $copy_array['wiki'] ) {
+   if ( $old_room->existWiki() ) {
+      $wiki_manager = $environment->getWikiManager();
+      $wiki_manager->copyWiki($old_room,$new_room);
+      unset($wiki_manager);
+   } else {
+      $new_room->unsetWikiExists();
+      // wiki config and wiki data will not be deleted
+   }
 }
 
 // information box
-if ( $old_room->withInformationBox() ) {
-   $new_room->setwithInformationBox('yes');
-} else {
-   $new_room->setwithInformationBox('no');
+if ( $copy_array['informationbox'] ) {
+   if ( $old_room->withInformationBox() ) {
+      $new_room->setwithInformationBox('yes');
+   } else {
+      $new_room->setwithInformationBox('no');
+   }
 }
+
+unset($copy_array);
 ?>
