@@ -202,7 +202,7 @@ if ( !empty($deleteitem) ) {
    }
    if (!empty($from_id)){
       $link_manager = $environment->getLinkManager();
-   	$link_manager->deleteLink($deleteitem,$from_id);
+      $link_manager->deleteLink($deleteitem,$from_id);
    }
    $params = $environment->getCurrentParameterArray();
    unset($params['delete_item']);
@@ -477,7 +477,7 @@ foreach ($rubric_array as $rubric) {
    if ( (!isset($c_plugin_array)
         or !in_array(strtolower($rubric),$c_plugin_array)
       )and $rubric != CS_ENTRY_TYPE) {
-      	
+
       $user_id_array = array();
       #$user_list = $current_user->getRelatedUserList();
       #$temp_user_item = $user_list->getFirst();
@@ -486,7 +486,7 @@ foreach ($rubric_array as $rubric) {
       #	$temp_user_item = $user_list->getNext();
       #}
       $user_id_array[]= $current_user->getItemID();
-      
+
       $privatroom_id_array = array();
       $privatroom_id_array[]= $current_context->getItemID();
 
@@ -613,35 +613,34 @@ $browse_prev = true;
 $browse_next = true;
 $temp_list = new cs_list();
 if($interval != 'all'){
-	$temp_start = $pos * $interval;
-	$temp_index = 0;
-	$temp_item = $new_entry_list->getFirst();
-	while($temp_item){
-	   if(($temp_index >= $temp_start) and ($temp_index < ($temp_start + $interval))){
-	      $temp_list->add($temp_item);
-	   }
-	   $temp_index++;
-	   $temp_item = $new_entry_list->getNext();
-	}
-	if($pos == 0){
-	   $browse_prev = false;
-	}
-	if(($temp_start + $interval) >= $temp_index){
-	   $browse_next = false;
-	}
-	if($temp_index % $interval == 0){
-	   $max_pos = ($temp_index / $interval) - 1;
-	} else {
-	   $max_pos = (($temp_index - ($temp_index % $interval)) / $interval);
-	}
+   $temp_start = $pos * $interval;
+   $temp_index = 0;
+   $temp_item = $new_entry_list->getFirst();
+   while($temp_item){
+      if(($temp_index >= $temp_start) and ($temp_index < ($temp_start + $interval))){
+         $temp_list->add($temp_item);
+      }
+      $temp_index++;
+      $temp_item = $new_entry_list->getNext();
+   }
+   if($pos == 0){
+      $browse_prev = false;
+   }
+   if(($temp_start + $interval) >= $temp_index){
+      $browse_next = false;
+   }
+   if($temp_index % $interval == 0){
+      $max_pos = ($temp_index / $interval) - 1;
+   } else {
+      $max_pos = (($temp_index - ($temp_index % $interval)) / $interval);
+   }
 } else {
-	$temp_list = $new_entry_list;
-	$browse_prev = false;
-	$browse_next = false;
-	$pos = 0;
-	$max_pos = 0;
+   $temp_list = $new_entry_list;
+   $browse_prev = false;
+   $browse_next = false;
+   $pos = 0;
+   $max_pos = 0;
 }
-
 
 $params = array();
 $params['environment'] = $environment;

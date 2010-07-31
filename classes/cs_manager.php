@@ -1273,10 +1273,23 @@ class cs_manager {
                         } else {
                            $retour[$old_item_id] = $new_item_id;
                         }
-                        unset($new_item_id);
                      }
                      unset($old_item_id);
                   }
+
+                  // link_item_modifier
+                  if ( !empty($new_item_id)
+                       and !empty($user_id)
+                       and DBTable2Type($this->_db_table) != CS_FILE_TYPE
+                       and DBTable2Type($this->_db_table) != CS_LINKITEMFILE_TYPE
+                       and DBTable2Type($this->_db_table) != CS_LINK_TYPE
+                       and DBTable2Type($this->_db_table) != CS_TAG2TAG_TYPE
+                     ) {
+                     $this->_createEntryInLinkItemModifier($new_item_id,$user_id);
+                  }
+               }
+               if ( !empty($new_item_id) ) {
+                  unset($new_item_id);
                }
                unset($result_insert);
                unset($insert_query);
@@ -1285,6 +1298,11 @@ class cs_manager {
          unset($result);
       }
       return $retour;
+   }
+
+   function _createEntryInLinkItemModifier ($item_id,$user_id) {
+      $manager = $this->_environment->getLinkModifierItemManager();
+      $manager->markEdited($item_id,$user_id);
    }
 
    public function refreshInDescLinks ($context_id, $id_array) {

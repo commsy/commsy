@@ -24,6 +24,7 @@
 //          be carefull when coding
 
 // copy this room settings
+// standard
 $copy_array = array();
 $copy_array['context'] = true;
 $copy_array['homeconf'] = true;
@@ -50,7 +51,9 @@ $copy_array['title'] = true;
 $copy_array['logo'] = true;
 $copy_array['wiki'] = true;
 $copy_array['informationbox'] = true;
+$copy_array['myentrydisplayconf'] = false;
 
+// now adaption for special rooms
 if ( !$old_room->isPrivateRoom() ) {
    $copy_array['title'] = false;
 }
@@ -76,6 +79,7 @@ if ( $old_room->isPrivateRoom()
    $copy_array['logo'] = false;
    $copy_array['wiki'] = false;
    $copy_array['informationbox'] = false;
+   $copy_array['myentrydisplayconf'] = true;
 }
 
 // room context
@@ -282,6 +286,11 @@ if ( $copy_array['informationbox'] ) {
    } else {
       $new_room->setwithInformationBox('no');
    }
+}
+
+// my entry display configuration
+if ( $copy_array['myentrydisplayconf'] ) {
+   $new_room->setMyEntriesDisplayConfig($old_room->getMyEntriesDisplayConfig());
 }
 
 unset($copy_array);
