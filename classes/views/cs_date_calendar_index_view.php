@@ -32,7 +32,6 @@ include_once('functions/date_functions.php');
  *  class for CommSy list view: date
  */
 class cs_date_calendar_index_view extends cs_room_index_view {
-
    var $_clipboard_id_array = array();
    var $_month;
    var $_year;
@@ -267,81 +266,11 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $html = '';
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
-      $html .= '<div class="right_box" style="margin-top:10px;">'.LF;
-      $html .= '<div id="tabs_frame_todo_right_box">'.LF;
-      $html .= '<div id="tabs_todo_right_box">'.LF;
-      $html .= '<div style="float:right;">'.$this->_getToDoActionsAsHTML().'</div>'.LF;
-      $html .= '<div id="tablist_todo_right_box">'.LF;
-      $parameter_array = $this->_environment->getCurrentParameterArray();
-      if (isset($parameter_array['show_todo_selections']) and $parameter_array['show_todo_selections'] == 'true'){
-         $new_parameter_array = $parameter_array;
-         unset($new_parameter_array['show_todo_selections']);
-         $html .= ahref_curl(
-                             $this->_environment->getCurrentContextID(),
-                             $this->_environment->getCurrentModule(),
-                             'index',
-                             $new_parameter_array,
-                             $this->_translator->getMessage('TODO_INDEX').' ',
-                             '',
-                             '',
-                             '',
-                             '',
-                             '',
-                             '',
-                             'class="navlist"').LF;
-         $new_parameter_array['show_todo_selections'] = 'true';
-         $html .= ahref_curl(
-                             $this->_environment->getCurrentContextID(),
-                             $this->_environment->getCurrentModule(),
-                             'index',
-                             $new_parameter_array,
-                             $this->_translator->getMessage('COMMON_RESTRICTION_SHORT'),
-                             '',
-                             '',
-                             '',
-                             '',
-                             '',
-                             '',
-                             'class="navlist_current"').LF;
-         $html .= '</div>';
-         $html .= '</div>';
-         $html .= '</div>';
-      }else{
-         $new_parameter_array = $parameter_array;
-         unset($new_parameter_array['show_todo_selections']);
-         $html .= ahref_curl(
-                             $this->_environment->getCurrentContextID(),
-                             $this->_environment->getCurrentModule(),
-                             'index',
-                             $new_parameter_array,
-                             $this->_translator->getMessage('TODO_INDEX').' ',
-                             '',
-                             '',
-                             '',
-                             '',
-                             '',
-                             '',
-                             'class="navlist_current"').LF;
-         $new_parameter_array['show_todo_selections'] = 'true';
-         $html .= ahref_curl(
-                             $this->_environment->getCurrentContextID(),
-                             $this->_environment->getCurrentModule(),
-                             'index',
-                             $new_parameter_array,
-                             $this->_translator->getMessage('COMMON_RESTRICTION_SHORT'),
-                             '',
-                             '',
-                             '',
-                             '',
-                             '',
-                             '',
-                             'class="navlist"').LF;
-         $html .= '</div>';
-         $html .= '</div>';
-         $html .= '</div>';
-
-      }
-
+      $html .= '<div class="portlet" style="width:220px;">'.LF;
+      $html .= '<div class="portlet-header">'.LF;
+      $html .= $this->_translator->getMessage('TODO_INDEX');
+      $html .= '</div>'.LF;
+      $html .= '<div class="portlet-content">'.LF;
       $width = '';
       $current_browser = mb_strtolower($this->_environment->getCurrentBrowser(), 'UTF-8');
       $current_browser_version = $this->_environment->getCurrentBrowserVersion();
@@ -360,17 +289,17 @@ class cs_date_calendar_index_view extends cs_room_index_view {
             $width = 'width:190px;';
          }
          if ($this->_presentation_mode == '2'){
-            $html .= '<div class="right_box_main" style="'.$width.' height:393px; overflow-y:auto;">'.LF;
+            $html .= '<div class="" style="'.$width.' height:393px; overflow-y:auto;">'.LF;
          }else{
-            $html .= '<div class="right_box_main" style="'.$width.' height:273px; overflow-y:auto;">'.LF;
+            $html .= '<div class="" style="'.$width.' height:273px; overflow-y:auto;">'.LF;
          }
          $html .= $this->_getAdditionalFormFieldsForPrivateRoomAsHTML(CS_TODO_TYPE);
          $html .= '</div>'.LF;
       }else{
          if ($this->_presentation_mode == '2'){
-            $html .= '<div class="right_box_main" style="'.$width.' height:398px; overflow-y:auto; padding:0px;">'.LF;
+            $html .= '<div class="" style="'.$width.' height:398px; overflow-y:auto; padding:0px;">'.LF;
          }else{
-            $html .= '<div class="right_box_main" style="'.$width.' height:278px; overflow-y:auto; padding:0px;">'.LF;
+            $html .= '<div class="" style="'.$width.' height:278px; overflow-y:auto; padding:0px;">'.LF;
          }
 
          // show selections
@@ -486,6 +415,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
 
       }
       $html .= '</div>'.LF;
+      $html .= '</div>'.LF;
       return $html;
    }
 
@@ -504,91 +434,16 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       if ($current_context->isPrivateRoom() and (isset($c_use_new_private_room) and $c_use_new_private_room)){
          $html .= '<div class="right_box">'.LF;
          if($this->calendar_with_javascript()){
-
-            $html .= '<div id="tabs_frame_right_box">'.LF;
-            $html .= '<div id="tabs_right_box">'.LF;
-            $html .= '<div id="tablist_right_box">'.LF;
+         	$html .= '<div class="portlet" style="width:220px;">'.LF;
+         	$html .= '<div class="portlet-header">'.LF;
+         	$html .=$this->_translator->getMessage('DATES_END_DAY');
             $parameter_array = $this->_environment->getCurrentParameterArray();
-            if (isset($parameter_array['show_selections']) and $parameter_array['show_selections'] == 'true'){
-               $new_parameter_array = $parameter_array;
-               unset($new_parameter_array['show_selections']);
-               $html .= ahref_curl(
-                                   $this->_environment->getCurrentContextID(),
-                                   $this->_environment->getCurrentModule(),
-                                   'index',
-                                   $new_parameter_array,
-                                   $this->_translator->getMessage('DATES_END_DAY'),
-                                   '',
-                                   '',
-                                   '',
-                                   '',
-                                   '',
-                                   '',
-                                   'class="navlist"').LF;
-               $new_parameter_array['show_selections'] = 'true';
-               $html .= ahref_curl(
-                                   $this->_environment->getCurrentContextID(),
-                                   $this->_environment->getCurrentModule(),
-                                   'index',
-                                   $new_parameter_array,
-                                   $this->_translator->getMessage('COMMON_RESTRICTION_SHORT'),
-                                   '',
-                                   '',
-                                   '',
-                                   '',
-                                   '',
-                                   '',
-                                   'class="navlist_current"').LF;
-               $html .= '</div>';
-               $html .= '</div>';
-               $html .= '</div>';
-               $html .= '<div class="right_box_main" style="height: 180px; '.$width.'">'.LF;
-               $html .= $this->_getAdditionalFormFieldsForPrivateRoomAsHTML().LF;
-#              $html .= '</div>';
-            }else{
-
-               $new_parameter_array = $parameter_array;
-               unset($new_parameter_array['show_selections']);
-               $html .= ahref_curl(
-                                   $this->_environment->getCurrentContextID(),
-                                   $this->_environment->getCurrentModule(),
-                                   'index',
-                                   $new_parameter_array,
-                                   $this->_translator->getMessage('DATES_END_DAY'),
-                                   '',
-                                   '',
-                                   '',
-                                   '',
-                                   '',
-                                   '',
-                                   'class="navlist_current"').LF;
-               $new_parameter_array['show_selections'] = 'true';
-               $html .= ahref_curl(
-                                   $this->_environment->getCurrentContextID(),
-                                   $this->_environment->getCurrentModule(),
-                                   'index',
-                                   $new_parameter_array,
-                                   $this->_translator->getMessage('COMMON_RESTRICTION_SHORT'),
-                                   '',
-                                   '',
-                                   '',
-                                   '',
-                                   '',
-                                   '',
-                                   'class="navlist"').LF;
-               $html .= '</div>';
-               $html .= '</div>';
-               $html .= '</div>';
-
-               $html .= '<div class="right_box_main" style="'.$width.'">'.LF;
-
-               // show date selections
-               $html .= $this->_getDateSelectionsAsHTML();
-
-               $html .= '<div style="height: 180px; '.$width.'">'.LF;
-               $html .= $this->_getAdditionalCalendarAsHTML().LF;
-               $html .= '</div>';
-            }
+            $html .= '</div>'.LF;
+            $html .= '<div class="portlet-content">'.LF;
+            $html .= $this->_getDateSelectionsAsHTML();
+            $html .= $this->_getAdditionalCalendarAsHTML().LF;
+            $html .= '</div>'.LF;
+            $html .= '</div>'.LF;
          }else{
             $html .= '<div class="right_box">'.LF;
             $html .= '<div class="right_box_title">'.LF;
@@ -809,6 +664,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
          $width= ' width:'.$left_width.'%;';
       }
 
+      
       if(!(isset($_GET['mode']) and $_GET['mode']=='print')){
          $html .='</div>'.LF;
          $html .='<div class="index_content_display_width" style="'.$width.'padding-top:5px; vertical-align:bottom; font-size:10pt;">'.LF;
