@@ -583,6 +583,7 @@ class cs_page_view extends cs_view {
          $retour .= '   <link rel="stylesheet" media="screen" type="text/css" href="javascript/slimbox/css/slimbox.css"/>'.LF;
       }
       //global $c_new_upload;
+      $use_new_upload = false;
       $session = $this->_environment->getSession();
       if($session->issetValue('javascript') and $session->issetValue('flash')){
          if(($session->getValue('javascript') == '1') and ($session->getValue('flash') == '1')){
