@@ -650,13 +650,21 @@ class cs_form_view extends cs_view {
     */
    function _getFileFieldAsHTML ($form_element) {
       $html  = '';
-      global $c_new_upload;
+      //global $c_new_upload;
 //      $with_flash = true;
       //http://www.uploadify.com/documentation/
 //      $with_flash = false;
 //      $session->getValue('flash')
       $val = $this->_environment->getCurrentContextItem()->getMaxUploadSizeInBytes();
-      if ($c_new_upload){
+      
+      $use_new_upload = false;
+      $session = $this->_environment->getSession();
+      if($session->issetValue('javascript') and $session->issetValue('flash')){
+      	if(($session->getValue('javascript') == '1') and ($session->getValue('flash') == '1')){
+      		$use_new_upload = true;
+      	}
+      }
+      if ($use_new_upload){
          // this div holds the list of files, which upload is finished(+checkbox)
          $html .= '<div id="fileFinished"></div>';
 
