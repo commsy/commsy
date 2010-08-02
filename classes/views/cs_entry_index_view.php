@@ -153,7 +153,7 @@ class cs_entry_index_view extends cs_index_view {
       #$html .= '<div style="float:right;"><a name="myentries_remove" style="cursor:pointer;"><img src="images/commsyicons/16x16/delete.png" /></a></div>';
       $html .= '</div>'.LF;
       $html .= '<div class="portlet-content">'.LF;
-      $html .= '<div id="search_left" style="width:75%; float:left;">'.LF;
+      $html .= '<div id="search_left" style="width:50%; float:left;">'.LF;
       $html .= '<form style="padding:0px; margin:0px;" action="'.curl($this->_environment->getCurrentContextID(), 'entry', 'index','').'" method="get" name="form">'.LF;
       $html .= '   <input type="hidden" name="cid" value="'.$this->_text_as_form($this->_environment->getCurrentContextID()).'"/>'.LF;
       $html .= '   <input type="hidden" name="mod" value="entry"/>'.LF;
@@ -165,7 +165,7 @@ class cs_entry_index_view extends cs_index_view {
       if (isset($params['sellist']) and !empty($params['sellist'])){
          $html .= '   <input type="hidden" name="sellist" value="'.$params['sellist'].'"/>'.LF;
       }
-      $html .= '<input id="searchtext" onclick="javascript:resetSearchText(\'searchtext\');" style="width:80%; font-size:10pt; margin-bottom:0px;" name="search" type="text" size="20" value="'.$this->_text_as_form($this->getSearchText()).'"/>';
+      $html .= '<input id="searchtext" onclick="javascript:resetSearchText(\'searchtext\');" style="font-size:10pt; margin-bottom:0px;" name="search" type="text" size="20" value="'.$this->_text_as_form($this->getSearchText()).'"/>';
       if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
          $html .= '<input type="image" src="images/commsyicons_msie6/22x22/search.gif" style="vertical-align:top;" alt="'.$this->_translator->getMessage('COMMON_SEARCH_BUTTON').'"/>';
       } else {
@@ -173,7 +173,7 @@ class cs_entry_index_view extends cs_index_view {
       }
       $html .='</form>'.LF;
       $html .= '</div>'.LF;
-      $html .= '<div id="search_right" style="width:25%; float:right; text-align:right;">'.LF;
+      $html .= '<div id="search_right" style="width:50%; float:right; text-align:right;">'.LF;
       if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
          $image_new_material = '<img src="images/commsyicons_msie6/22x22/material.gif" style="vertical-align:bottom;"/>';
          $image_new_date = '<img src="images/commsyicons_msie6/22x22/date.gif" style="vertical-align:bottom;"/>';
