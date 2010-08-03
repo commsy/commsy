@@ -463,6 +463,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
 	            $html .= $this->_getTodosListAsHTML($this->_todo_list);
 	         }
          }
+         $html .= $this->_initDropDownConfiguration();
       }else{
          $html .= '<div class="right_box">'.LF;
          $html .= '<div class="right_box_title">'.LF;
@@ -634,7 +635,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       return $html;
    }
 
-   function _initDropDownMenus(){
+   function _initDropDownConfiguration(){
       $privateroom_item = $this->_environment->getCurrentContextItem();
       $action_array = array();
       $html = '';
