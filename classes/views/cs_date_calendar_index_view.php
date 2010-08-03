@@ -278,7 +278,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       #if ( $current_browser == 'msie' and (strstr($current_browser_version,'5.') or (strstr($current_browser_version,'6.'))) ){
       #   $width = 'width:170px;';
       #} else {
-         $width = 'width:170px;';
+      #   $width = 'width:170px;';
       #}
 
       #if ( isset($parameter_array['show_todo_selections'])
@@ -302,7 +302,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
          #}else{
          #   $html .= '<div class="" style="'.$width.' height:278px; overflow-y:auto; padding:0px;">'.LF;
          #}
-         $html .= '<div class="" style="'.$width.' height:250px; overflow-y:auto; padding:0px;">'.LF;
+         $html .= '<div class="" style="height:250px; overflow-y:auto; padding:0px;">'.LF;
          
          // show selections
          $html .= $this->_getTodoSelectionsAsHTML();
@@ -435,28 +435,33 @@ class cs_date_calendar_index_view extends cs_room_index_view {
 
       if ($current_context->isPrivateRoom() and (isset($c_use_new_private_room) and $c_use_new_private_room)){
          #$html .= '<div class="right_box">'.LF;
-         if($this->calendar_with_javascript()){
-         	$html .= '<div class="portlet" style="width:200px;">'.LF;
-         	$html .= '<div id="mycalendar_dates_portlet" class="portlet-header">'.LF;
-         	$html .=$this->_translator->getMessage('DATES_END_DAY');
-         	$html .= '<div style="float:right;"><a name="mycalendar_remove" style="cursor:pointer;"><img src="images/commsyicons/16x16/delete.png" /></a></div>';
-            #$parameter_array = $this->_environment->getCurrentParameterArray();
-            $html .= '</div>'.LF;
-            $html .= '<div class="portlet-content">'.LF;
-            $html .= $this->_getDateSelectionsAsHTML();
-            $html .= $this->_getAdditionalCalendarAsHTML().LF;
-            $html .= '</div>'.LF;
-            $html .= '</div>'.LF;
-         }else{
-            $html .= '<div class="right_box">'.LF;
-            $html .= '<div class="right_box_title">'.LF;
-            $html .= '</div>';
-            $html .= '<div class="right_box_main" style="height: 170px; '.$width.'">'.LF;
-            $html .= $this->_getAdditionalFormFieldsForPrivateRoomAsHTML().LF;
-            $html .= '</div>';
-            $html .= '</div>';
+         $mycalendar_array = $current_context->getMyCalendarDisplayConfig();
+         if(in_array("mycalendar_dates_portlet", $mycalendar_array)){
+	         if($this->calendar_with_javascript()){
+	         	$html .= '<div class="portlet" style="width:200px;">'.LF;
+	         	$html .= '<div id="mycalendar_dates_portlet" class="portlet-header">'.LF;
+	         	$html .=$this->_translator->getMessage('DATES_END_DAY');
+	         	$html .= '<div style="float:right;"><a name="mycalendar_remove" style="cursor:pointer;"><img src="images/commsyicons/16x16/delete.png" /></a></div>';
+	            #$parameter_array = $this->_environment->getCurrentParameterArray();
+	            $html .= '</div>'.LF;
+	            $html .= '<div class="portlet-content">'.LF;
+	            $html .= $this->_getDateSelectionsAsHTML();
+	            $html .= $this->_getAdditionalCalendarAsHTML().LF;
+	            $html .= '</div>'.LF;
+	            $html .= '</div>'.LF;
+	         }else{
+	            $html .= '<div class="right_box">'.LF;
+	            $html .= '<div class="right_box_title">'.LF;
+	            $html .= '</div>';
+	            $html .= '<div class="right_box_main" style="height: 170px; '.$width.'">'.LF;
+	            $html .= $this->_getAdditionalFormFieldsForPrivateRoomAsHTML().LF;
+	            $html .= '</div>';
+	            $html .= '</div>';
+	         }
          }
-         $html .= $this->_getTodosListAsHTML($this->_todo_list);
+         if(in_array("mycalendar_todo_portlet", $mycalendar_array)){
+            $html .= $this->_getTodosListAsHTML($this->_todo_list);
+         }
       }else{
          $html .= '<div class="right_box">'.LF;
          $html .= '<div class="right_box_title">'.LF;
@@ -628,7 +633,60 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       return $html;
    }
 
+   function _initDropDownMenus(){
+      $privateroom_item = $this->_environment->getCurrentContextItem();
+      $action_array = array();
+      $html = '';
 
+      $myentries_array = $privateroom_item->getMyCalendarDisplayConfig();
+
+      $temp_array = array();
+      $temp_array['dropdown_image']  = "mycalendar_icon";
+      $temp_array['text']  = $this->_translator->getMessage('PRIVATEROOM_MYCALENDAR_DATES_BOX');
+      $temp_array['value'] = "mycalendar_dates_portlet";
+      if(in_array("mycalendar_dates_portlet", $myentries_array)){
+         $temp_array['checked']  = "checked";
+      } else {
+         $temp_array['checked']  = "";
+      }
+      $action_array[] = $temp_array;
+
+      $temp_array = array();
+      $temp_array['dropdown_image']  = "mycalendar_icon";
+      $temp_array['text']  = $this->_translator->getMessage('PRIVATEROOM_MYCALENDAR_TODO_BOX');
+      $temp_array['value'] = "mycalendar_todo_portlet";
+      if(in_array("mycalendar_todo_portlet", $myentries_array)){
+         $temp_array['checked']  = "checked";
+      } else {
+         $temp_array['checked']  = "";
+      }
+      $action_array[] = $temp_array;
+
+      // init drop down menu
+      if ( !empty($action_array)
+           and count($action_array) >= 1
+         ) {
+         $html .= '<script type="text/javascript">'.LF;
+         $html .= '<!--'.LF;
+         $html .= 'var dropDownMyCalendar = new Array(';
+         $first = true;
+         foreach ($action_array as $action) {
+            if ( $first ) {
+               $first = false;
+            } else {
+               $html .= ',';
+            }
+            $html .= 'new Array("'.$action['dropdown_image'].'","'.$action['checked'].'","'.$action['text'].'","'.$action['value'].'")';
+         }
+         $html .= ');'.LF;
+         $html .= 'var myentriesSaveButton = "'.$this->_translator->getMessage('PREFERENCES_SAVE_BUTTON').'";'.LF;
+         $html .= 'var ajax_cid = "'.$privateroom_item->getItemID().'";'.LF;
+         $html .= 'var ajax_function = "privateroom_myentries";'.LF;
+         $html .= '-->'.LF;
+         $html .= '</script>'.LF;
+      }
+      return $html;
+   }
 
    /** get list view as HTML
     * this method returns the list view in HTML-Code

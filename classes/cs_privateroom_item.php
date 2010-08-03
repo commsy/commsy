@@ -1632,6 +1632,18 @@ class cs_privateroom_item extends cs_room_item {
       return $retour;
    }
 
+   function setMyCalendarDisplayConfig ($my_calendar_array) {
+      $this->_addExtra('MY_CALENDAR_DISPLAY_CONFIG',$my_calendar_array);
+   }
+
+   function getMyCalendarDisplayConfig(){
+      $retour = array();
+      if ($this->_issetExtra('MY_CALENDAR_DISPLAY_CONFIG')) {
+         $retour = $this->_getExtra('MY_CALENDAR_DISPLAY_CONFIG');
+      }
+      return $retour;
+   }
+   
    /* END OF PORTLET FUNCTIONS
     * *****************
     */

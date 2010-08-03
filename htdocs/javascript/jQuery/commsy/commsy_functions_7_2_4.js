@@ -3062,6 +3062,145 @@ jQuery(document).ready(function() {
 	}
 });
 
+jQuery(document).ready(function() {
+	if(typeof(dropDownMyCalendar) !== 'undefined'){
+		if(dropDownMyCalendar.length){
+			// how many different menus?
+			var dropdown_menus = new Array();
+			for ( var int = 0; int < dropDownMyCalendar.length; int++) {
+				var tempDropDownMenu = dropDownMyCalendar[int];
+				var tempImage = tempDropDownMenu[0];
+				var in_array = false;
+				for ( var int2 = 0; int2 < dropdown_menus.length; int2++) {
+					var array_element = dropdown_menus[int2];
+					if(array_element == tempImage){
+						in_array = true;
+					}
+				}
+				if(!in_array){
+					dropdown_menus.push(tempImage);
+				}
+			}
+
+			// sort menu_entries to menus
+			for ( var int3 = 0; int3 < dropdown_menus.length; int3++) {
+				var current_menu = dropdown_menus[int3];
+
+				var tempImage = current_menu;
+				var disabled = false;
+				if (jQuery('#'+tempImage).length){
+					var image = jQuery('#'+tempImage);
+				} else if (jQuery('#'+tempImage+'_disabled').length){
+					var image = jQuery('#'+tempImage+'_disabled');
+					disabled = true;
+				}
+				image.attr('id',image.attr('id')+'_dropdown_menu_'+int3);
+				image.attr('alt','');
+				image.parent().attr('title','');
+
+				var button = jQuery('<img id="dropdown_button_'+int3+'" src="images/commsyicons/dropdownmenu.png" />');
+
+				var html = jQuery('<div id="dropdown_menu_'+int3+'" class="dropdown_menu"></div>');
+				var offset = image.offset();
+
+				var ul = jQuery('<ul></ul>');
+				
+				for ( var int4 = 0; int4 < dropDownMyCalendar.length; int4++) {
+					var temp_menu_entry = dropDownMyCalendar[int4];
+					if(temp_menu_entry[0] == current_menu){
+						if(temp_menu_entry[1] != 'seperator'){
+							var tempActionChecked = temp_menu_entry[1];
+							var tempActionText = temp_menu_entry[2];
+							var tempActionValue = temp_menu_entry[3];
+							ul.append('<li class="dropdown"><input type="checkbox" name="mycalendar" value="'+tempActionValue+'" '+tempActionChecked+'>'+tempActionText+'</li>');
+						} else {
+							ul.append('<li class="dropdown_seperator"><hr class="dropdown_seperator"></li>');
+						}
+					}
+				}
+				ul.append('<li class="dropdown_seperator"><hr class="dropdown_seperator"></li>');
+				
+				var ok_button = jQuery('<li class="dropdown" style="text-align:center;"><input type="submit" value="'+myentriesSaveButton+'"></li>');
+				ul.append(ok_button);
+				
+				html.append(ul);
+				image.parent().wrap('<div style="display:inline;"></div>');
+				image.parent().parent().append(button);
+				image.parent().parent().append(html);
+
+				image.mouseover(function(){
+					var id = this.id;
+					var this_image = this;
+					this_image.mouse_is_over = true;
+					setTimeout(function() {
+						if(this_image.mouse_is_over){
+							var id_parts = id.split('_');
+							//var offset = jQuery('#dropdown_button_'+id_parts[4]).parent().offset();
+							var offset = jQuery('#dropdown_button_'+id_parts[4]).parent().parent().parent().offset();
+							var width = jQuery('#dropdown_button_'+id_parts[4]).parent().parent().parent().css('width');
+							if(jQuery('#dropdown_menu_'+id_parts[4]).css('display') == 'none'){
+								dropdown_portlets(jQuery('#dropdown_menu_'+id_parts[4]), offset, id_parts[4], width);
+							}
+						}
+					}, 2000);
+				});
+
+				image.mouseout(function(){
+					this.mouse_is_over = false;
+				});
+
+				jQuery('#dropdown_button_'+int3).click(function(){
+					var id_parts = this.id.split('_');
+					//var offset = jQuery('#'+this.id).parent().offset();
+					var offset = jQuery('#'+this.id).parent().parent().parent().offset();
+					var width = jQuery('#'+this.id).parent().parent().parent().css('width');
+					dropdown_portlets(jQuery('#dropdown_menu_'+id_parts[2]), offset, id_parts[2], width);
+				});
+
+				jQuery('#dropdown_button_'+int3).mouseover(function(){
+					var id = this.id;
+					var this_image = this;
+					this_image.mouse_is_over = true;
+					setTimeout(function() {
+						if(this_image.mouse_is_over){
+							var id_parts = id.split('_');
+							//var offset = jQuery('#dropdown_button_'+id_parts[2]).parent().offset();
+							var offset = jQuery('#dropdown_button_'+id_parts[2]).parent().parent().parent().offset();
+							var width = jQuery('#dropdown_button_'+id_parts[2]).parent().parent().parent().css('width');
+							if(jQuery('#dropdown_menu_'+id_parts[2]).css('display') == 'none'){
+								dropdown_portlets(jQuery('#dropdown_menu_'+id_parts[2]), offset, id_parts[2], width);
+							}
+						}
+					}, 2000);
+				});
+
+				jQuery('#dropdown_button_'+int3).mouseout(function(){
+					this.mouse_is_over = false;
+				});
+				
+				ok_button.click(function(){
+					var json_data = new Object();
+
+					var portlet_array = new Array();
+					jQuery('[name=mycalendar]:checked').each(function(){
+						portlet_array.push(jQuery(this).attr('value'));
+					});
+					json_data['mycalendar'] = portlet_array;
+					
+					jQuery.ajax({
+					   url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct=privateroom_mycalendar_configuration&output=json&do=save_config',
+					   data: json_data,
+					   success: function(msg){
+					      //window.location = 'commsy.php?cid='+window.ajax_cid+'&mod=entry&fct=index';
+						  window.location = window.location.href; 
+					   }
+					});
+				});
+			}
+		}
+	}
+});
+
 function uploadify_onComplete(event, queueID, fileObj, response, data) {
 	// add checkbox and file name to finished list
 	jQuery("div[id='fileFinished']").append(

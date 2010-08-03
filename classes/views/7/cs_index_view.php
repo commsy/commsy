@@ -1742,9 +1742,23 @@ EOD;
       $html = '';
       $html .='<div style="width:100%;">'.LF;
       $html .='<div style="height:30px;">'.LF;
-      $html .= '<div id="search_box" style="float:right; width:'.$right_width.'%; white-space:nowrap; text-align-left; padding-top:5px; margin:0px;">'.LF;
-      $html .= $this->_getSearchAsHTML($search_width);
-      $html .= '</div>'.LF;
+      $current_context = $this->_environment->getCurrentContextItem();
+      if ( $current_context->isOpen() and $current_context->isPrivateRoom() and $this->_environment->getConfiguration('c_use_new_private_room')) {
+         $html .= '<div style="float:right;">'.LF;
+         $html .= '<div class="portlet-configuration">'.LF;
+         $html .= '<div class="portlet-header-configuration ui-widget-header" style="width:200px;">'.LF;
+         $html .= $this->_translator->getMessage('MYCALENDAR_CONFIGURATION').LF;
+         $html .= '<div style="float:right;">'.LF;
+         $html .= '<a href="#"><img id="mycalendar_icon" src="images/commsyicons/48x48/config/privateroom_home_options.png" height=0></a>'.LF;
+         $html .= '</div>'.LF;
+         $html .= '</div>'.LF;
+         $html .= '</div>'.LF;
+         $html .= '</div>'.LF;
+      } else {
+         $html .= '<div id="search_box" style="float:right; width:'.$right_width.'%; white-space:nowrap; text-align-left; padding-top:5px; margin:0px;">'.LF;
+         $html .= $this->_getSearchAsHTML($search_width);
+         $html .= '</div>'.LF;
+      }
       $current_browser = mb_strtolower($this->_environment->getCurrentBrowser(), 'UTF-8');
       $current_browser_version = $this->_environment->getCurrentBrowserVersion();
       if ( $current_browser == 'msie' and (strstr($current_browser_version,'5.') or (strstr($current_browser_version,'6.'))) ){
