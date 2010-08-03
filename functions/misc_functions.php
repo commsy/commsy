@@ -849,6 +849,7 @@ function isURLValid () {
          $funct != 'privateroom_matrix_configuration' and
          $funct != 'privateroom_buzzword_configuration' and
          $funct != 'privateroom_mycalendar_configuration' and
+         $funct != 'privateroom_mycalendar' and
          $funct != 'uploadify'
        ) {
        return false;

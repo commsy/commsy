@@ -436,31 +436,32 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       if ($current_context->isPrivateRoom() and (isset($c_use_new_private_room) and $c_use_new_private_room)){
          #$html .= '<div class="right_box">'.LF;
          $mycalendar_array = $current_context->getMyCalendarDisplayConfig();
-         if(in_array("mycalendar_dates_portlet", $mycalendar_array)){
-	         if($this->calendar_with_javascript()){
-	         	$html .= '<div class="portlet" style="width:200px;">'.LF;
-	         	$html .= '<div id="mycalendar_dates_portlet" class="portlet-header">'.LF;
-	         	$html .=$this->_translator->getMessage('DATES_END_DAY');
-	         	$html .= '<div style="float:right;"><a name="mycalendar_remove" style="cursor:pointer;"><img src="images/commsyicons/16x16/delete.png" /></a></div>';
-	            #$parameter_array = $this->_environment->getCurrentParameterArray();
-	            $html .= '</div>'.LF;
-	            $html .= '<div class="portlet-content">'.LF;
-	            $html .= $this->_getDateSelectionsAsHTML();
-	            $html .= $this->_getAdditionalCalendarAsHTML().LF;
-	            $html .= '</div>'.LF;
-	            $html .= '</div>'.LF;
-	         }else{
-	            $html .= '<div class="right_box">'.LF;
-	            $html .= '<div class="right_box_title">'.LF;
-	            $html .= '</div>';
-	            $html .= '<div class="right_box_main" style="height: 170px; '.$width.'">'.LF;
-	            $html .= $this->_getAdditionalFormFieldsForPrivateRoomAsHTML().LF;
-	            $html .= '</div>';
-	            $html .= '</div>';
+         foreach($mycalendar_array as $mycalendar){
+	         if($mycalendar == "mycalendar_dates_portlet"){
+		         if($this->calendar_with_javascript()){
+		         	$html .= '<div class="portlet" style="width:200px;">'.LF;
+		         	$html .= '<div id="mycalendar_dates_portlet" class="portlet-header">'.LF;
+		         	$html .=$this->_translator->getMessage('DATES_END_DAY');
+		         	$html .= '<div style="float:right;"><a name="mycalendar_remove" style="cursor:pointer;"><img src="images/commsyicons/16x16/delete.png" /></a></div>';
+		            #$parameter_array = $this->_environment->getCurrentParameterArray();
+		            $html .= '</div>'.LF;
+		            $html .= '<div class="portlet-content">'.LF;
+		            $html .= $this->_getDateSelectionsAsHTML();
+		            $html .= $this->_getAdditionalCalendarAsHTML().LF;
+		            $html .= '</div>'.LF;
+		            $html .= '</div>'.LF;
+		         }else{
+		            $html .= '<div class="right_box">'.LF;
+		            $html .= '<div class="right_box_title">'.LF;
+		            $html .= '</div>';
+		            $html .= '<div class="right_box_main" style="height: 170px; '.$width.'">'.LF;
+		            $html .= $this->_getAdditionalFormFieldsForPrivateRoomAsHTML().LF;
+		            $html .= '</div>';
+		            $html .= '</div>';
+		         }
+	         } elseif ($mycalendar == "mycalendar_todo_portlet"){
+	            $html .= $this->_getTodosListAsHTML($this->_todo_list);
 	         }
-         }
-         if(in_array("mycalendar_todo_portlet", $mycalendar_array)){
-            $html .= $this->_getTodosListAsHTML($this->_todo_list);
          }
       }else{
          $html .= '<div class="right_box">'.LF;
@@ -642,7 +643,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
 
       $temp_array = array();
       $temp_array['dropdown_image']  = "mycalendar_icon";
-      $temp_array['text']  = $this->_translator->getMessage('PRIVATEROOM_MYCALENDAR_DATES_BOX');
+      $temp_array['text']  = $this->_translator->getMessage('DATES_END_DAY');
       $temp_array['value'] = "mycalendar_dates_portlet";
       if(in_array("mycalendar_dates_portlet", $myentries_array)){
          $temp_array['checked']  = "checked";
@@ -653,7 +654,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
 
       $temp_array = array();
       $temp_array['dropdown_image']  = "mycalendar_icon";
-      $temp_array['text']  = $this->_translator->getMessage('PRIVATEROOM_MYCALENDAR_TODO_BOX');
+      $temp_array['text']  = $this->_translator->getMessage('TODO_INDEX');
       $temp_array['value'] = "mycalendar_todo_portlet";
       if(in_array("mycalendar_todo_portlet", $myentries_array)){
          $temp_array['checked']  = "checked";
@@ -679,9 +680,9 @@ class cs_date_calendar_index_view extends cs_room_index_view {
             $html .= 'new Array("'.$action['dropdown_image'].'","'.$action['checked'].'","'.$action['text'].'","'.$action['value'].'")';
          }
          $html .= ');'.LF;
-         $html .= 'var myentriesSaveButton = "'.$this->_translator->getMessage('PREFERENCES_SAVE_BUTTON').'";'.LF;
+         $html .= 'var mycalendarSaveButton = "'.$this->_translator->getMessage('PREFERENCES_SAVE_BUTTON').'";'.LF;
          $html .= 'var ajax_cid = "'.$privateroom_item->getItemID().'";'.LF;
-         $html .= 'var ajax_function = "privateroom_myentries";'.LF;
+         $html .= 'var ajax_function = "privateroom_mycalendar";'.LF;
          $html .= '-->'.LF;
          $html .= '</script>'.LF;
       }

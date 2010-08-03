@@ -1097,6 +1097,8 @@ jQuery(document).ready(function() {
 								column_portlets.push(portlet.find('.portlet-header').attr('id'));
 							} else if (window.ajax_function == 'privateroom_myentries') {
 								column_portlets.push(portlet.find('.portlet-header').parent().attr('id'));
+							} else if (window.ajax_function == 'privateroom_mycalendar') {
+								column_portlets.push(portlet.find('.portlet-header').attr('id'));
 							}
 						}
 						if(column_portlets.length == 0){
@@ -3120,7 +3122,7 @@ jQuery(document).ready(function() {
 				}
 				ul.append('<li class="dropdown_seperator"><hr class="dropdown_seperator"></li>');
 				
-				var ok_button = jQuery('<li class="dropdown" style="text-align:center;"><input type="submit" value="'+myentriesSaveButton+'"></li>');
+				var ok_button = jQuery('<li class="dropdown" style="text-align:center;"><input type="submit" value="'+mycalendarSaveButton+'"></li>');
 				ul.append(ok_button);
 				
 				html.append(ul);
@@ -3199,6 +3201,43 @@ jQuery(document).ready(function() {
 			}
 		}
 	}
+});
+
+jQuery(document).ready(function() {
+	jQuery("[name=mycalendar_remove]").each(function (i) {
+		var id = jQuery(this).parent().parent().attr('id');
+		jQuery(this).click(function() {
+			jQuery('#'+id).parent().remove();
+			jQuery('#'+id+'_preferences').remove();
+			
+			// Haken im DropDown-Menu entfernen!
+			jQuery('[name=mycalendar]:checked').each(function(){
+				if(id == jQuery(this).attr('value')){
+					jQuery(this).attr('checked', false);
+				}
+			});
+			
+			var json_data = new Object();
+		    var portlet_columns = jQuery(".column");
+		    for ( var int = 0; int < portlet_columns.length; int++) {
+		    	column_portlets = new Array();
+				var portlet_column = jQuery(portlet_columns[int]);
+				portlets = portlet_column.children();
+				for ( var int2 = 0; int2 < portlets.length; int2++) {
+					var portlet = jQuery(portlets[int2]);
+					column_portlets.push(portlet.find('.portlet-header').attr('id'));
+				}
+				json_data['column_'+int] = column_portlets;
+			}
+			
+			jQuery.ajax({
+		       url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct=privateroom_mycalendar&output=json&do=save_config',
+			   data: json_data,
+			   success: function(msg){
+			   }
+			});
+		});
+	});
 });
 
 function uploadify_onComplete(event, queueID, fileObj, response, data) {
