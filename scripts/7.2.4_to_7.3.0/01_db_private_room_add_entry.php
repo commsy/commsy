@@ -67,6 +67,13 @@ while ( $portal ) {
          $room->setHomeConf($home_conf);
          $room->save();
       }
+      $mycalendar_conf = $room->getMyCalendarDisplayConfig();
+      if(empty($mycalendar_conf)){
+      	$mycalendar_conf[] = 'mycalendar_dates_portlet';
+      	$mycalendar_conf[] = 'mycalendar_todo_portlet';
+      	$room->setMyCalendarDisplayConfig($mycalendar_conf);
+      	$room->save();
+      }
       $this->_updateProgressBar($count);
       $room = $room_list->getNext();
    }
