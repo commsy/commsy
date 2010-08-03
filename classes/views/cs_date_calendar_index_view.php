@@ -640,6 +640,10 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $action_array = array();
       $html = '';
 
+      $myroom_array = $privateroom_item->getMyroomDisplayConfig();
+      $room_manager = $this->_environment->getPrivateRoomManager();
+      $user = $this->_environment->getCurrentUserItem();
+      $list = $room_manager->getRelatedContextListForUserOnPrivateRoomHome($user);
       $myentries_array = $privateroom_item->getMyCalendarDisplayConfig();
 
       $temp_array = array();
@@ -664,6 +668,58 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       }
       $action_array[] = $temp_array;
 
+      $temp_array = array();
+      $temp_array['dropdown_image']  = "mycalendar_icon";
+      $temp_array['checked']  = "seperator";
+      $action_array[] = $temp_array;
+      
+      $temp_array = array();
+      $temp_array['dropdown_image']  = "mycalendar_icon";
+      $temp_array['checked']  = "text";
+      $temp_array['text']  = $this->_translator->getMessage('DATES_END_DAY');
+      $action_array[] = $temp_array;
+
+      $room_item = $list->getFirst();
+      while($room_item){
+         $temp_array = array();
+         $temp_array['dropdown_image']  = "mycalendar_icon";
+         $temp_array['text']  = $room_item->getTitle();
+         $temp_array['value'] = $room_item->getItemID().'_dates';
+         if(in_array($room_item->getItemID(), $myroom_array)){
+            $temp_array['checked']  = "checked";
+         } else {
+            $temp_array['checked']  = "";
+         }
+         $action_array[] = $temp_array;
+         $room_item = $list->getNext();
+      }
+      
+      $temp_array = array();
+      $temp_array['dropdown_image']  = "mycalendar_icon";
+      $temp_array['checked']  = "seperator";
+      $action_array[] = $temp_array;
+      
+      $temp_array = array();
+      $temp_array['dropdown_image']  = "mycalendar_icon";
+      $temp_array['checked']  = "text";
+      $temp_array['text']  = $this->_translator->getMessage('TODO_INDEX');
+      $action_array[] = $temp_array;
+      
+      $room_item = $list->getFirst();
+      while($room_item){
+         $temp_array = array();
+         $temp_array['dropdown_image']  = "mycalendar_icon";
+         $temp_array['text']  = $room_item->getTitle();
+         $temp_array['value'] = $room_item->getItemID().'_todo';
+         if(in_array($room_item->getItemID(), $myroom_array)){
+            $temp_array['checked']  = "checked";
+         } else {
+            $temp_array['checked']  = "";
+         }
+         $action_array[] = $temp_array;
+         $room_item = $list->getNext();
+      }
+      
       // init drop down menu
       if ( !empty($action_array)
            and count($action_array) >= 1

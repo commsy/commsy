@@ -3110,13 +3110,15 @@ jQuery(document).ready(function() {
 				for ( var int4 = 0; int4 < dropDownMyCalendar.length; int4++) {
 					var temp_menu_entry = dropDownMyCalendar[int4];
 					if(temp_menu_entry[0] == current_menu){
-						if(temp_menu_entry[1] != 'seperator'){
+						if (temp_menu_entry[1] == 'seperator') {
+							ul.append('<li class="dropdown_seperator"><hr class="dropdown_seperator"></li>');
+						} else if (temp_menu_entry[1] == 'text') {
+							ul.append('<li class="dropdown_text">'+temp_menu_entry[2]+'</li>');
+						} else {
 							var tempActionChecked = temp_menu_entry[1];
 							var tempActionText = temp_menu_entry[2];
 							var tempActionValue = temp_menu_entry[3];
 							ul.append('<li class="dropdown"><input type="checkbox" name="mycalendar" value="'+tempActionValue+'" '+tempActionChecked+'>'+tempActionText+'</li>');
-						} else {
-							ul.append('<li class="dropdown_seperator"><hr class="dropdown_seperator"></li>');
 						}
 					}
 				}
