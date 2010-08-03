@@ -1628,8 +1628,6 @@ class cs_privateroom_item extends cs_room_item {
       $retour = array();
       if ($this->_issetExtra('MY_ENTRIES_DISPLAY_CONFIG')) {
          $retour = $this->_getExtra('MY_ENTRIES_DISPLAY_CONFIG');
-      } else {
-      	$retour[] = 'configuration_not_set';
       }
       return $retour;
    }
@@ -1642,6 +1640,8 @@ class cs_privateroom_item extends cs_room_item {
       $retour = array();
       if ($this->_issetExtra('MY_CALENDAR_DISPLAY_CONFIG')) {
          $retour = $this->_getExtra('MY_CALENDAR_DISPLAY_CONFIG');
+      } else {
+         $retour[] = 'configuration_not_set';
       }
       return $retour;
    }
