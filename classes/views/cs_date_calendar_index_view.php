@@ -436,6 +436,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       if ($current_context->isPrivateRoom() and (isset($c_use_new_private_room) and $c_use_new_private_room)){
          #$html .= '<div class="right_box">'.LF;
          $mycalendar_array = $current_context->getMyCalendarDisplayConfig();
+         pr($mycalendar_array);
          foreach($mycalendar_array as $mycalendar){
 	         if($mycalendar == "mycalendar_dates_portlet"){
 		         if($this->calendar_with_javascript()){
