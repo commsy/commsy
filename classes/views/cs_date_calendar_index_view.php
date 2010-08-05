@@ -672,18 +672,21 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $temp_array['dropdown_image']  = "mycalendar_icon";
       $temp_array['checked']  = "seperator";
       $temp_array['text']  = "";
+      $temp_array['value']  = "";
       $action_array[] = $temp_array;
       
       $temp_array = array();
       $temp_array['dropdown_image']  = "mycalendar_icon";
       $temp_array['checked']  = "text";
       $temp_array['text']  = $this->_translator->getMessage('DATES_END_DAY');
+      $temp_array['value']  = "";
       $action_array[] = $temp_array;
 
       $temp_array = array();
       $temp_array['dropdown_image']  = "mycalendar_icon";
       $temp_array['checked']  = "scroll_start";
       $temp_array['text']  = "";
+      $temp_array['value']  = "";
       $action_array[] = $temp_array;
       
       $room_item = $list->getFirst();
@@ -705,24 +708,28 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $temp_array['dropdown_image']  = "mycalendar_icon";
       $temp_array['checked']  = "scroll_end";
       $temp_array['text']  = "";
+      $temp_array['value']  = "";
       $action_array[] = $temp_array;
       
       $temp_array = array();
       $temp_array['dropdown_image']  = "mycalendar_icon";
       $temp_array['checked']  = "seperator";
       $temp_array['text']  = "";
+      $temp_array['value']  = "";
       $action_array[] = $temp_array;
       
       $temp_array = array();
       $temp_array['dropdown_image']  = "mycalendar_icon";
       $temp_array['checked']  = "text";
       $temp_array['text']  = $this->_translator->getMessage('TODO_INDEX');
+      $temp_array['value']  = "";
       $action_array[] = $temp_array;
       
       $temp_array = array();
       $temp_array['dropdown_image']  = "mycalendar_icon";
       $temp_array['checked']  = "scroll_start";
       $temp_array['text']  = "";
+      $temp_array['value']  = "";
       $action_array[] = $temp_array;
       
       $room_item = $list->getFirst();
@@ -744,6 +751,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $temp_array['dropdown_image']  = "mycalendar_icon";
       $temp_array['checked']  = "scroll_end";
       $temp_array['text']  = "";
+      $temp_array['value']  = "";
       $action_array[] = $temp_array;
       
       // init drop down menu
