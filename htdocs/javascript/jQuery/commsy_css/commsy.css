@@ -18,6 +18,11 @@ div.dropdown_menu ul {
    background: #ffffff;
 }
 
+div.dropdown_scroll{
+   height:100px;
+   overflow-y:scroll;
+}
+
 li.dropdown {
    padding: 2px 2px 2px 2px;
    color: #000000;

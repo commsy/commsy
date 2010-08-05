@@ -3106,6 +3106,10 @@ jQuery(document).ready(function() {
 				var offset = image.offset();
 
 				var ul = jQuery('<ul></ul>');
+				var scroll_li;
+				var scroll_div;
+				var scroll_ul;
+				var scroll = false;
 				
 				for ( var int4 = 0; int4 < dropDownMyCalendar.length; int4++) {
 					var temp_menu_entry = dropDownMyCalendar[int4];
@@ -3114,11 +3118,25 @@ jQuery(document).ready(function() {
 							ul.append('<li class="dropdown_seperator"><hr class="dropdown_seperator"></li>');
 						} else if (temp_menu_entry[1] == 'text') {
 							ul.append('<li class="dropdown_text">'+temp_menu_entry[2]+'</li>');
+						} else if (temp_menu_entry[1] == 'scroll_start') {
+							scroll_ul = jQuery('<ul></ul>');
+							scroll = true;
+						} else if (temp_menu_entry[1] == 'scroll_end') {
+							scroll_li = jQuery('<li class="dropdown_text"></li>');
+							scroll_div = jQuery('<div class="dropdown_scroll"></div>');
+							scroll_div.append(scroll_ul);
+							scroll_li.append(scroll_div);
+							ul.append(scroll_li);
+							scroll = false;
 						} else {
 							var tempActionChecked = temp_menu_entry[1];
 							var tempActionText = temp_menu_entry[2];
 							var tempActionValue = temp_menu_entry[3];
-							ul.append('<li class="dropdown"><input type="checkbox" name="mycalendar" value="'+tempActionValue+'" '+tempActionChecked+'>'+tempActionText+'</li>');
+							if(!scroll){
+							   ul.append('<li class="dropdown"><input type="checkbox" name="mycalendar" value="'+tempActionValue+'" '+tempActionChecked+'>'+tempActionText+'</li>');
+							} else {
+							   scroll_ul.append('<li class="dropdown"><input type="checkbox" name="mycalendar" value="'+tempActionValue+'" '+tempActionChecked+'>'+tempActionText+'</li>');
+							}
 						}
 					}
 				}

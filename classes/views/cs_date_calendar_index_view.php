@@ -671,6 +671,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $temp_array = array();
       $temp_array['dropdown_image']  = "mycalendar_icon";
       $temp_array['checked']  = "seperator";
+      $temp_array['text']  = "";
       $action_array[] = $temp_array;
       
       $temp_array = array();
@@ -682,6 +683,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $temp_array = array();
       $temp_array['dropdown_image']  = "mycalendar_icon";
       $temp_array['checked']  = "scroll_start";
+      $temp_array['text']  = "";
       $action_array[] = $temp_array;
       
       $room_item = $list->getFirst();
@@ -702,11 +704,13 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $temp_array = array();
       $temp_array['dropdown_image']  = "mycalendar_icon";
       $temp_array['checked']  = "scroll_end";
+      $temp_array['text']  = "";
       $action_array[] = $temp_array;
       
       $temp_array = array();
       $temp_array['dropdown_image']  = "mycalendar_icon";
       $temp_array['checked']  = "seperator";
+      $temp_array['text']  = "";
       $action_array[] = $temp_array;
       
       $temp_array = array();
@@ -718,6 +722,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $temp_array = array();
       $temp_array['dropdown_image']  = "mycalendar_icon";
       $temp_array['checked']  = "scroll_start";
+      $temp_array['text']  = "";
       $action_array[] = $temp_array;
       
       $room_item = $list->getFirst();
@@ -738,6 +743,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $temp_array = array();
       $temp_array['dropdown_image']  = "mycalendar_icon";
       $temp_array['checked']  = "scroll_end";
+      $temp_array['text']  = "";
       $action_array[] = $temp_array;
       
       // init drop down menu
