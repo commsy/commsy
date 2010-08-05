@@ -262,7 +262,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $this->_display_mode = $status;
    }
 
-   function _getTodosListAsHTML($todo_list){
+   function _getTodosListAsHTML($todo_list, $number_of_portlets){
       $html = '';
       #$html .= '</div>'.LF;
       #$html .= '</div>'.LF;
@@ -302,7 +302,15 @@ class cs_date_calendar_index_view extends cs_room_index_view {
          #}else{
          #   $html .= '<div class="" style="'.$width.' height:278px; overflow-y:auto; padding:0px;">'.LF;
          #}
-         $html .= '<div class="" style="height:250px; overflow-y:auto; padding:0px;">'.LF;
+         $height = '300px';
+         if($number_of_portlets == 1){
+         	$height = '614px';
+         } elseif ($number_of_portlets == 2){
+            $height = '369px';
+         } elseif ($number_of_portlets == 3){
+            $height = '200px';
+         }
+         $html .= '<div class="" style="height:'.$height.'; overflow-y:auto; padding:0px;">'.LF;
          
          // show selections
          $html .= $this->_getTodoSelectionsAsHTML();
@@ -421,6 +429,22 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       return $html;
    }
 
+   function _getPreferencesListAsHTML($todo_list){
+      $html = '';
+      #$html .= '</div>'.LF;
+      #$html .= '</div>'.LF;
+      $html .= '<div class="portlet" style="width:200px;">'.LF;
+      $html .= '<div id="mycalendar_preferences_portlet" class="portlet-header">';
+      $html .= $this->_translator->getMessage('COMMON_RESTRICTIONS_SHORT');
+      $html .= '<div style="float:right;"><a name="mycalendar_remove" style="cursor:pointer;"><img src="images/commsyicons/16x16/delete.png" /></a></div>';
+      $html .= '</div>'.LF;
+      $html .= '<div class="portlet-content">'.LF;
+      $html .= '...'.LF;
+      $html .= '</div>'.LF;
+      $html .= '</div>'.LF;
+      return $html;
+   }
+   
    function _getListInfosAsHTML ($title) {
       global $c_use_new_private_room;
       $current_context = $this->_environment->getCurrentContextItem();
@@ -436,6 +460,16 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       if ($current_context->isPrivateRoom() and (isset($c_use_new_private_room) and $c_use_new_private_room)){
          #$html .= '<div class="right_box">'.LF;
          $mycalendar_array = $current_context->getMyCalendarDisplayConfig();
+         $number_of_portlets = 0;
+         if(in_array("mycalendar_dates_portlet", $mycalendar_array)){
+         	$number_of_portlets++;
+         }
+         if(in_array("mycalendar_todo_portlet", $mycalendar_array)){
+            $number_of_portlets++;
+         }
+         if(in_array("mycalendar_preferences_portlet", $mycalendar_array)){
+            $number_of_portlets++;
+         }
          foreach($mycalendar_array as $mycalendar){
 	         if($mycalendar == "mycalendar_dates_portlet"){
 		         if($this->calendar_with_javascript()){
@@ -460,8 +494,10 @@ class cs_date_calendar_index_view extends cs_room_index_view {
 		            $html .= '</div>';
 		         }
 	         } elseif ($mycalendar == "mycalendar_todo_portlet"){
-	            $html .= $this->_getTodosListAsHTML($this->_todo_list);
-	         }
+	            $html .= $this->_getTodosListAsHTML($this->_todo_list, $number_of_portlets);
+	         } elseif ($mycalendar == "mycalendar_preferences_portlet"){
+               $html .= $this->_getPreferencesListAsHTML($this->_todo_list);
+            }
          }
          $html .= $this->_initDropDownConfiguration();
       }else{
@@ -668,6 +704,17 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       }
       $action_array[] = $temp_array;
 
+      $temp_array = array();
+      $temp_array['dropdown_image']  = "mycalendar_icon";
+      $temp_array['text']  = $this->_translator->getMessage('COMMON_RESTRICTIONS_SHORT');
+      $temp_array['value'] = "mycalendar_preferences_portlet";
+      if(in_array("mycalendar_preferences_portlet", $myentries_array)){
+         $temp_array['checked']  = "checked";
+      } else {
+         $temp_array['checked']  = "";
+      }
+      $action_array[] = $temp_array;
+      
       $temp_array = array();
       $temp_array['dropdown_image']  = "mycalendar_icon";
       $temp_array['checked']  = "seperator";
