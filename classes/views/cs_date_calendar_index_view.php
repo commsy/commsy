@@ -641,9 +641,9 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $html = '';
 
       $myroom_array = $privateroom_item->getMyroomDisplayConfig();
-      $room_manager = $this->_environment->getPrivateRoomManager();
+      $room_manager = $this->_environment->getRoomManager();
       $user = $this->_environment->getCurrentUserItem();
-      $list = $room_manager->getRelatedContextListForUserOnPrivateRoomHome($user);
+      $list = $room_manager->getAllRelatedRoomListForUser($user);
       $myentries_array = $privateroom_item->getMyCalendarDisplayConfig();
 
       $temp_array = array();
@@ -679,6 +679,11 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $temp_array['text']  = $this->_translator->getMessage('DATES_END_DAY');
       $action_array[] = $temp_array;
 
+      $temp_array = array();
+      $temp_array['dropdown_image']  = "mycalendar_icon";
+      $temp_array['checked']  = "scroll_start";
+      $action_array[] = $temp_array;
+      
       $room_item = $list->getFirst();
       while($room_item){
          $temp_array = array();
@@ -696,6 +701,11 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       
       $temp_array = array();
       $temp_array['dropdown_image']  = "mycalendar_icon";
+      $temp_array['checked']  = "scroll_end";
+      $action_array[] = $temp_array;
+      
+      $temp_array = array();
+      $temp_array['dropdown_image']  = "mycalendar_icon";
       $temp_array['checked']  = "seperator";
       $action_array[] = $temp_array;
       
@@ -703,6 +713,11 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $temp_array['dropdown_image']  = "mycalendar_icon";
       $temp_array['checked']  = "text";
       $temp_array['text']  = $this->_translator->getMessage('TODO_INDEX');
+      $action_array[] = $temp_array;
+      
+      $temp_array = array();
+      $temp_array['dropdown_image']  = "mycalendar_icon";
+      $temp_array['checked']  = "scroll_start";
       $action_array[] = $temp_array;
       
       $room_item = $list->getFirst();
@@ -719,6 +734,11 @@ class cs_date_calendar_index_view extends cs_room_index_view {
          $action_array[] = $temp_array;
          $room_item = $list->getNext();
       }
+      
+      $temp_array = array();
+      $temp_array['dropdown_image']  = "mycalendar_icon";
+      $temp_array['checked']  = "scroll_end";
+      $action_array[] = $temp_array;
       
       // init drop down menu
       if ( !empty($action_array)
