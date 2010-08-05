@@ -19,12 +19,13 @@ div.dropdown_menu ul {
 }
 
 div.dropdown_scroll{
-   height:100px;
-   overflow-y:scroll;
+   height:125px;
+   overflow-y:auto;
 }
 
 li.dropdown {
-   padding: 2px 2px 2px 2px;
+   font-size: 8pt;
+   padding: 1px 1px 1px 1px;
    color: #000000;
 }
 
@@ -37,6 +38,7 @@ li.dropdown_seperator {
 }
 
 li.dropdown_text {
+   font-size: 8pt;
    padding: 2px 2px 2px 2px;
    color: #000000;
 }

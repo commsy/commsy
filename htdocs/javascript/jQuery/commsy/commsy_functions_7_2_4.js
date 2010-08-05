@@ -3122,7 +3122,7 @@ jQuery(document).ready(function() {
 							scroll_ul = jQuery('<ul></ul>');
 							scroll = true;
 						} else if (temp_menu_entry[1] == 'scroll_end') {
-							scroll_li = jQuery('<li class="dropdown_text"></li>');
+							scroll_li = jQuery('<li></li>');
 							scroll_div = jQuery('<div class="dropdown_scroll"></div>');
 							scroll_div.append(scroll_ul);
 							scroll_li.append(scroll_div);

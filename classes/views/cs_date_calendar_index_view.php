@@ -441,7 +441,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
 		         if($this->calendar_with_javascript()){
 		         	$html .= '<div class="portlet" style="width:200px;">'.LF;
 		         	$html .= '<div id="mycalendar_dates_portlet" class="portlet-header">'.LF;
-		         	$html .=$this->_translator->getMessage('DATES_END_DAY');
+		         	$html .=$this->_translator->getMessage('COMMON_DATE_INDEX');
 		         	$html .= '<div style="float:right;"><a name="mycalendar_remove" style="cursor:pointer;"><img src="images/commsyicons/16x16/delete.png" /></a></div>';
 		            #$parameter_array = $this->_environment->getCurrentParameterArray();
 		            $html .= '</div>'.LF;
@@ -648,7 +648,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
 
       $temp_array = array();
       $temp_array['dropdown_image']  = "mycalendar_icon";
-      $temp_array['text']  = $this->_translator->getMessage('DATES_END_DAY');
+      $temp_array['text']  = $this->_translator->getMessage('COMMON_DATE_INDEX');
       $temp_array['value'] = "mycalendar_dates_portlet";
       if(in_array("mycalendar_dates_portlet", $myentries_array)){
          $temp_array['checked']  = "checked";
@@ -678,7 +678,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $temp_array = array();
       $temp_array['dropdown_image']  = "mycalendar_icon";
       $temp_array['checked']  = "text";
-      $temp_array['text']  = $this->_translator->getMessage('DATES_END_DAY');
+      $temp_array['text']  = $this->_translator->getMessage('COMMON_DATE_INDEX');
       $temp_array['value']  = "";
       $action_array[] = $temp_array;
 
