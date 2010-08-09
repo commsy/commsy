@@ -83,6 +83,14 @@ For licensing, see LICENSE.html or http://ckeditor.com/license
 					if ( command.state != CKEDITOR.TRISTATE_DISABLED )
 						command.refresh( editor );
 				});
+
+			editor.on( 'removeFormatCleanup', function( evt )
+				{
+					var element = evt.data;
+					if ( editor.getCommand( 'showborders' ).state == CKEDITOR.TRISTATE_ON &&
+						element.is( 'table' ) && ( !element.hasAttribute( 'border' ) || parseInt( element.getAttribute( 'border' ), 10 ) <= 0 ) )
+							element.addClass( showBorderClassName );
+				});
 		},
 
 		afterInit : function( editor )
@@ -129,36 +137,33 @@ For licensing, see LICENSE.html or http://ckeditor.com/license
 					}
 				} );
 			}
-
-			// Table dialog must be aware of it.
-			CKEDITOR.on( 'dialogDefinition', function( ev )
-				{
-					if ( ev.editor != editor )
-						return;
-
-					var dialogName = ev.data.name;
-
-					if ( dialogName == 'table' || dialogName == 'tableProperties' )
-					{
-						var dialogDefinition = ev.data.definition,
-							infoTab = dialogDefinition.getContents( 'info' ),
-							borderField = infoTab.get( 'txtBorder' ),
-							originalCommit = borderField.commit;
-
-						borderField.commit = CKEDITOR.tools.override( originalCommit, function( org )
-						{
-							return function( data, selectedTable )
-								{
-									org.apply( this, arguments );
-									var value = parseInt( this.getValue(), 10 );
-									selectedTable[ ( !value || value <= 0 ) ? 'addClass' : 'removeClass' ]( showBorderClassName );
-								};
-						} );
-					}
-				});
 		}
-
 	});
+
+	// Table dialog must be aware of it.
+	CKEDITOR.on( 'dialogDefinition', function( ev )
+	{
+		var dialogName = ev.data.name;
+
+		if ( dialogName == 'table' || dialogName == 'tableProperties' )
+		{
+			var dialogDefinition = ev.data.definition,
+				infoTab = dialogDefinition.getContents( 'info' ),
+				borderField = infoTab.get( 'txtBorder' ),
+				originalCommit = borderField.commit;
+
+			borderField.commit = CKEDITOR.tools.override( originalCommit, function( org )
+			{
+				return function( data, selectedTable )
+					{
+						org.apply( this, arguments );
+						var value = parseInt( this.getValue(), 10 );
+						selectedTable[ ( !value || value <= 0 ) ? 'addClass' : 'removeClass' ]( showBorderClassName );
+					};
+			} );
+		}
+	});
+
 } )();
 
 /**
