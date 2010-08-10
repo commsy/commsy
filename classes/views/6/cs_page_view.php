@@ -301,7 +301,7 @@ class cs_page_view extends cs_view {
       }else{
          $retour .= '   <link rel="stylesheet" type="text/css" href="commsy_room_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
          $retour .= '   <link rel="stylesheet" type="text/css" href="commsy_right_boxes_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
-         $retour .= '   <link rel="stylesheet" type="text/css" href="javascript/jQuery/Slimbox2/css/slimbox2.css"/>'.LF;
+         #$retour .= '   <link rel="stylesheet" type="text/css" href="javascript/jQuery/Slimbox2/css/slimbox2.css"/>'.LF;
       }
       if ($left_menue_status !='disapear'){
          $retour .= '   <link rel="stylesheet" type="text/css" href="commsy_myarea_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
@@ -388,7 +388,7 @@ class cs_page_view extends cs_view {
       }else{
          $retour .= '   <link rel="stylesheet" type="text/css" href="commsy_room_ie5_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
          $retour .= '   <link rel="stylesheet" type="text/css" href="commsy_right_boxes_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
-         $retour .= '   <link rel="stylesheet" type="text/css" href="javascript/slimbox/css/slimbox2.css"/>'.LF;
+         #$retour .= '   <link rel="stylesheet" type="text/css" href="javascript/slimbox/css/slimbox2.css"/>'.LF;
       }
       if ($left_menue_status !='disapear'){
          $retour .= '   <link rel="stylesheet" type="text/css" href="commsy_myarea_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
@@ -519,7 +519,7 @@ class cs_page_view extends cs_view {
          $retour .= '   var message = \''.$this->_translator->getMessage('COMMON_PICTURE_DOWNLOADFILE').'\';'.LF;
          $retour .= '      -->'.LF;
          $retour .= '   </script>'.LF;
-         $retour .= '   <script src="javascript/slimbox/js/slimbox.js" type="text/javascript"></script>'.LF;
+         #$retour .= '   <script src="javascript/slimbox/js/slimbox.js" type="text/javascript"></script>'.LF;
          $retour .= '   <script type="text/javascript" src="javascript/swfobject.js"></script>'.LF;
       }elseif ($this->_environment->getCurrentFunction() == 'detail'){
          // jQuery
@@ -532,7 +532,7 @@ class cs_page_view extends cs_view {
          $retour .= '   var message = \''.$this->_translator->getMessage('COMMON_PICTURE_DOWNLOADFILE').'\';'.LF;
          $retour .= '      -->'.LF;
          $retour .= '   </script>'.LF;
-         $retour .= '   <script src="javascript/slimbox/js/slimbox.js" type="text/javascript"></script>'.LF;
+         #$retour .= '   <script src="javascript/slimbox/js/slimbox.js" type="text/javascript"></script>'.LF;
          $retour .= '   <script type="text/javascript" src="javascript/swfobject.js"></script>'.LF;
          if ($this->_environment->getCurrentModule() == CS_DISCUSSION_TYPE){
             $retour .= '   <script type="text/javascript" src="javascript/CommSyTextFormatingInformation.js"></script>'.LF;
@@ -581,7 +581,7 @@ class cs_page_view extends cs_view {
          $retour .= '      -->'.LF;
          $retour .= '   </script>'.LF;
          if ( !$this->_environment->getCurrentModule() == 'configuration' ) {
-            $retour .= '   <script src="javascript/slimbox/js/slimbox.js" type="text/javascript"></script>'.LF;
+            #$retour .= '   <script src="javascript/slimbox/js/slimbox.js" type="text/javascript"></script>'.LF;
          }
       }elseif ( $this->_environment->getCurrentFunction() == 'edit'
                or $this->_environment->getCurrentModule() == 'mail'
@@ -607,7 +607,7 @@ class cs_page_view extends cs_view {
             $retour .= '   var message = \''.$this->_translator->getMessage('COMMON_PICTURE_DOWNLOADFILE').'\';'.LF;
             $retour .= '      -->'.LF;
             $retour .= '   </script>'.LF;
-            $retour .= '   <script src="javascript/slimbox/js/slimbox.js" type="text/javascript"></script>'.LF;
+            #$retour .= '   <script src="javascript/slimbox/js/slimbox.js" type="text/javascript"></script>'.LF;
          }
          //autosave: BEGIN
          $current_user = $this->_environment->getCurrentUser();
@@ -660,16 +660,17 @@ class cs_page_view extends cs_view {
          include_once('functions/misc_functions.php');
          $commsy_functions = getCurrentCommSyFunctions();
          $retour .= '   <script type="text/javascript" src="javascript/jQuery/commsy/' . $commsy_functions . '"></script>'.LF;
+         $retour .= '   <script src="javascript/jQuery/jquery.fancybox-1.3.1/fancybox/jquery.fancybox-1.3.1.js" type="text/javascript"></script>'.LF;
       } else {
          $retour .= '   <script type="text/javascript" src="javascript/CommSyFunctions.js"></script>'.LF;
          $retour .= '   <script src="javascript/mootools-release-1.11.js" type="text/javascript"></script>'.LF;
          $retour .= '   <script type="text/javascript" src="javascript/CommSyPanels7.js"></script>'.LF;
          $retour .= '   <script type="text/javascript" src="javascript/CommSyTemplateInformation.js"></script>'.LF;
-         $retour .= '   <script src="javascript/slimbox/js/slimbox.js" type="text/javascript"></script>'.LF;
+         #$retour .= '   <script src="javascript/slimbox/js/slimbox.js" type="text/javascript"></script>'.LF;
          $retour .= '   <script type="text/javascript" src="javascript/CommSyNetnavigation.js"></script>'.LF;
          $retour .= '   <script type="text/javascript" src="javascript/CommSyCreatorInformation.js"></script>'.LF;
          $retour .= '   <script type="text/javascript" src="javascript/CommSyTextFormatingInformation.js"></script>'.LF;
-         $retour .= '   <link rel="stylesheet" media="screen" type="text/css" href="javascript/slimbox/css/slimbox.css"/>'.LF;
+         #$retour .= '   <link rel="stylesheet" media="screen" type="text/css" href="javascript/slimbox/css/slimbox.css"/>'.LF;
       }
       // jQuery
       return $retour;
