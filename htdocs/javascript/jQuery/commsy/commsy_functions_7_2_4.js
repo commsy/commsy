@@ -3278,6 +3278,46 @@ function uploadify_onComplete(event, queueID, fileObj, response, data) {
 	);
 }
 
+var uploadify_onAllCompleteSubmitForm = false;
+
+function uploadify_onAllComplete(event, data) {
+	if(uploadify_onAllCompleteSubmitForm) {
+		jQuery("input[type='submit']")[0].click();
+	}
+	
+	return true;
+}
+
+/*
+ * this functions checks if all files are uploaded when the form submit button is pressed
+ */
+jQuery(document).ready(function() {
+	// if there is uploadify
+	if(jQuery("object[id='uploadifyUploader']")) {
+		// observe the submit button
+		jQuery(jQuery("input[type='submit']")[0]).bind('click', function(eventObject) {
+			// if there are files in upload queue
+			if(	jQuery("div[id='uploadifyQueue'] > div").length > 0 &&
+				uploadify_onAllCompleteSubmitForm == false) {
+				// if all uploads completed, submit the form
+				uploadify_onAllCompleteSubmitForm = true;
+				
+				// start upload process
+				jQuery('#uploadify').uploadifyUpload();
+				
+				// stop form submit
+				return false;
+			} else {
+				uploadify_onAllCompleteSubmitForm = false;
+				jQuery("input[type='submit']")[0].unbind();
+				return true;
+			}
+		});
+	}
+	
+	return true;
+});
+
 jQuery(document).ready(function() {
 
 	/* This is basic - uses default settings */
@@ -3464,4 +3504,37 @@ function dropdown_liste(object, offset, button, liste){
 			jQuery('#list_'+liste+'_dropdown_button_'+button).attr('src', 'images/commsyicons/dropdownmenu.png');
 		}, 2000);
 	});
+}
+
+/*
+ * this script handles the room selection in the portals data upload form
+ */
+jQuery(document).ready(function() {
+	jQuery("select[name='configuration_data_upload_room_select']").bind('change', function(eventObject) {
+		var room_id = eventObject.target.value;
+		
+		// get according room limit from hidden fields
+		var room_limit = jQuery("input[name='room_limit_" + room_id + "']").attr('value');
+		
+		// set limit in text field
+		jQuery("input[name='configuration_data_upload_room_value']").attr('value', room_limit);
+	});
+});
+
+/*
+ * this is the new uploadify error handler to provide multi-language support
+ */
+function uploadify_onError(event, queueID, fileObj, errorObj) {
+	var error_text = '';
+	jQuery.each(uploadify_errorLang, function() {
+		if(this.type == errorObj.type) {
+			error_text = this.text;
+			return false;
+		}
+	});
+	
+	jQuery("#uploadify" + queueID + " .percentage").text(" - " + error_text);
+	jQuery("#uploadify" + queueID).addClass('uploadifyError');
+	
+	return false;
 }

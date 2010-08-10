@@ -166,6 +166,7 @@ $message["COMMON_CONFIGURATION_MOVE_FORM_TITLE"]["de"] = "Raum auf anderes Porta
 $message["COMMON_CONFIGURATION_NEWS_FORM_TITLE"]["de"] = "Ankündigungen bearbeiten";
 $message["COMMON_CONFIGURATION_PLUGIN_FORM_TITLE"]["de"] = "Sponsoren und Werbung";
 $message["COMMON_CONFIGURATION_PORTALHOME_FORM_TITLE"]["de"] = "Gestaltung der Portalstartseite";
+$message["COMMON_CONFIGURATION_PORTALUPLOAD_FORM_TITLE"]["de"] = "Konfiguration des Dateiuploads";
 $message["COMMON_CONFIGURATION_PORTAL_OPTIONS"]["de"] = "Portaleinrichtung";
 $message["COMMON_CONFIGURATION_PREFERENCES_FORM_TITLE"]["de"] = "Allgemeine Einstellungen bearbeiten";
 $message["COMMON_CONFIGURATION_PRIVATEROOM_NEWSLETTER_FORM_TITLE"]["de"] = "E-Mail-Newsletter";

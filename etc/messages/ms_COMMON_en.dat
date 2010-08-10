@@ -166,6 +166,7 @@ $message["COMMON_CONFIGURATION_MOVE_FORM_TITLE"]["en"] = "Move workspace to anot
 $message["COMMON_CONFIGURATION_NEWS_FORM_TITLE"]["en"] = "Edit news";
 $message["COMMON_CONFIGURATION_PLUGIN_FORM_TITLE"]["en"] = "Sponsoring and ads";
 $message["COMMON_CONFIGURATION_PORTALHOME_FORM_TITLE"]["en"] = "Portal overview configuration";
+$message["COMMON_CONFIGURATION_PORTALUPLOAD_FORM_TITLE"]["en"] = "Data upload configuration";
 $message["COMMON_CONFIGURATION_PORTAL_OPTIONS"]["en"] = "Portal settings";
 $message["COMMON_CONFIGURATION_PREFERENCES_FORM_TITLE"]["en"] = "Edit general settings";
 $message["COMMON_CONFIGURATION_PRIVATEROOM_NEWSLETTER_FORM_TITLE"]["en"] = "E-mail newsletter";

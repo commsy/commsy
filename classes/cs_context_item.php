@@ -246,6 +246,32 @@ class cs_context_item extends cs_item {
    function getMaxUploadSizeInBytes(){
       $val = ini_get('upload_max_filesize');
       $val = trim($val);
+      
+      // if this is in portal context
+      if(   $this->_environment->inPortal()) {
+         // check for portal limit
+         if($this->_issetExtra('MAX_UPLOAD_SIZE')) {
+            $val = $this->_getExtra('MAX_UPLOAD_SIZE');
+         }
+      }
+      
+      // if this is in room context
+      if(   $this->_environment->inGroupRoom() ||
+            $this->_environment->inPrivateRoom() ||
+            $this->_environment->inProjectRoom()) {
+         // check for portal limit
+         $portal_item = $this->_environment->getCurrentPortalItem();
+         $portal_limit = $portal_item->getMaxUploadSizeExtraOnly();
+         if($portal_limit != '') {
+            $val = $portal_limit;
+         }
+         
+         // check for room limit
+         if($this->_issetExtra('MAX_UPLOAD_SIZE')) {
+            $val = $this->_getExtra('MAX_UPLOAD_SIZE');
+         }
+      }
+      
       $last = $val[mb_strlen($val)-1];
       switch($last) {
          case 'k':
@@ -257,15 +283,24 @@ class cs_context_item extends cs_item {
             $val = $val * 1048576;
             break;
       }
-      $retour = $val;
-      if ($this->_issetExtra('MAX_UPLOAD_SIZE')) {
-         $retour = $this->_getExtra('MAX_UPLOAD_SIZE');
-      }
-      return $retour;
+      
+      return $val;
    }
 
    function setMaxUploadSizeInBytes($val){
-     $this->_addExtra('MAX_UPLOAD_SIZE',$val);
+      if($val != '') {
+         $this->_addExtra('MAX_UPLOAD_SIZE',$val);
+      } else {
+         $this->_unsetExtra('MAX_UPLOAD_SIZE');
+      }
+   }
+   
+   function getMaxUploadSizeExtraOnly() {
+      $retour = '';
+      if($this->_issetExtra('MAX_UPLOAD_SIZE')) {
+         $retour = $this->_getExtra('MAX_UPLOAD_SIZE');
+      }
+      return $retour;
    }
 
    function setNotShownInPrivateRoomHome ($user_id) {
