@@ -156,7 +156,11 @@ function getContextIDForItemID($id){
      $query .= ' WHERE 1';
      $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.item_id = "'.$id.'"';
      $result = $this->_db_connector->performQuery($query);
-     return $result[0]['context_id'];
+     if (isset($result[0]['context_id'])){
+        return $result[0]['context_id'];
+     }else{
+     	return '0';
+     }
 }
 
 
