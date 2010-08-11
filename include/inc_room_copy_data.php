@@ -38,7 +38,7 @@ if ( $old_room->isProjectRoom() ) {
 // new private room
 // only copy entry rubric
 if ( $old_room->isPrivateRoom()
-     and $environment->getConfiguration('c_use_new_private_room')
+     and  $environment->inConfigArray('c_use_new_private_room',$environment->getCurrentContextID())
    ) {
    $copy_array['usageinfo'] = false;
    $copy_array['informationbox'] = false;

@@ -48,7 +48,7 @@ if ( !isset($environment) and isset($this->_environment) ) {
    $link_item->setParameter(array());
    $configuration_important_link_list->add($link_item);
 
-     $new_private_room = $this->_environment->inConfigArray('c_use_new_private_room',$environment->getCurrentContextID());
+     $new_private_room = $environment->inConfigArray('c_use_new_private_room',$environment->getCurrentContextID());
      $current_context_id = $environment->getCurrentContextID();
      $current_portal_id = $environment->getCurrentPortalID();
      if ($new_private_room){

@@ -2243,6 +2243,11 @@ class cs_environment {
          ) {
          $retour = true;
       }
+      if (!is_array($$config_array_name) and $$config_array_name == 'c_use_new_private_room'){
+         if($$config_array_name == true){
+         	$retour = true;
+         }
+      }
       return $retour;
    }
 

@@ -61,7 +61,8 @@ if ( !$old_room->isPrivateRoom() ) {
 // new private room
 // only copy entry rubric
 if ( $old_room->isPrivateRoom()
-     and $environment->getConfiguration('c_use_new_private_room')
+     and  $environment->inConfigArray('c_use_new_private_room',$environment->getCurrentContextID())
+
    ) {
    $copy_array['homeconf'] = false;
    $copy_array['timespread'] = false;
