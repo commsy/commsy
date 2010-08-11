@@ -148,6 +148,19 @@ class cs_privateroom_manager extends cs_room2_manager {
     $this->_template_limit = NULL;
   }
 
+
+function getContextIDForItemID($id){
+     $query = '';
+     $query .= 'SELECT DISTINCT '.$this->addDatabasePrefix($this->_db_table).'.context_id';
+     $query .= ' FROM '.$this->addDatabasePrefix($this->_db_table);
+     $query .= ' WHERE 1';
+     $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.item_id = "'.$id.'"';
+     $result = $this->_db_connector->performQuery($query);
+     return $result[0]['context_id'];
+}
+
+
+
   /** select privatrooms limited by limits
     * this method returns a list (cs_list) of privatrooms within the database limited by the limits. the select statement is a bit tricky, see source code for further information
     */

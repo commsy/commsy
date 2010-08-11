@@ -2243,11 +2243,19 @@ class cs_environment {
          ) {
          $retour = true;
       }
-      if (!is_array($$config_array_name) and $$config_array_name == 'c_use_new_private_room'){
-         if($$config_array_name == true){
-         	$retour = true;
+      if($config_array_name == 'c_use_new_private_room'){
+         $room_manager = $this->getPrivateRoomManager();
+         $context_id = $room_manager->getContextIDForItemID($this->getCurrentContextID());
+         if (!is_array($$config_array_name)){
+            if($$config_array_name == true){
+         	   $retour = true;
+            }
+         }
+         elseif(is_array($$config_array_name) and in_array($context_id,$$config_array_name)){
+            $retour = true;
          }
       }
+
       return $retour;
    }
 
