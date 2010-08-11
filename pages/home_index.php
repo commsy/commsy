@@ -23,15 +23,8 @@
 //    along with CommSy.
 
 
-$current_context_id = $environment->getCurrentContextID();
-$current_portal_id = $environment->getCurrentPortalID();
-if ($environment->inPrivateRoom() and
-    isset($c_use_new_private_room)  and
-    is_array($c_use_new_private_room) and (
-    in_array($current_context_id,$c_use_new_private_room)
-    or in_array($current_portal_id,$c_use_new_private_room)
-    )
-){
+$new_private_room = $environment->inConfigArray('c_use_new_private_room',$environment->getCurrentContextID());
+if ($new_private_room){
 
 $context_item = $environment->getCurrentContextItem();
 

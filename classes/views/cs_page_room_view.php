@@ -210,7 +210,7 @@ class cs_page_room_view extends cs_page_view {
     * @return string linkbar as HTML
     */
    function _getLinkRowAsHTML ($bottom=false) {
-      global $c_use_new_private_room;
+      $new_private_room = $this->_environment->inConfigArray('c_use_new_private_room',$this->_environment->getCurrentContextID());
       $html  = LF.'<!-- BEGIN TABS -->'.LF;
       $html .= '<div id="tabs_frame" >'.LF;
       if ($bottom){
@@ -546,14 +546,7 @@ class cs_page_room_view extends cs_page_view {
             $link_title .= $link['title'];
          }
 
-         $current_context_id = $this->_environment->getCurrentContextID();
-         $current_portal_id = $this->_environment->getCurrentPortalID();
-         if (isset($c_use_new_private_room)  and
-            is_array($c_use_new_private_room) and (
-            in_array($current_context_id,$c_use_new_private_room)
-            or in_array($current_portal_id,$c_use_new_private_room)
-           )
-         ){
+         if ($new_private_room){
          if ($this->_environment->inPrivateRoom() and ($link['module'] == 'date' or $link['module'] == 'todo') ){
             $link_title = '<img src="images/commsyicons/16x16/date.png" style="vertical-align:bottom;"/>';
             $link_title = $this->_translator->getMessage('MYCALENDAR_INDEX');
@@ -606,52 +599,27 @@ class cs_page_room_view extends cs_page_view {
                  or ( $this->_module == 'todo'
                       and $link['module'] == 'date'
                       and $this->_environment->inPrivateRoom()
-                      and (isset($c_use_new_private_room) and
-                         is_array($c_use_new_private_room) and (
-                         in_array($current_context_id,$c_use_new_private_room)
-                         or in_array($current_portal_id,$c_use_new_private_room)
-                         )
-                      )
+                      and ($new_private_room)
                     )
                  or ( $this->_module == 'discussion'
                       and $link['module'] == 'entry'
                       and $this->_environment->inPrivateRoom()
-                      and (isset($c_use_new_private_room) and
-                         is_array($c_use_new_private_room) and (
-                         in_array($current_context_id,$c_use_new_private_room)
-                         or in_array($current_portal_id,$c_use_new_private_room)
-                         )
-                      )
+                      and ($new_private_room)
                     )
                  or ( $this->_module == 'material'
                       and $link['module'] == 'entry'
                       and $this->_environment->inPrivateRoom()
-                      and (isset($c_use_new_private_room) and
-                         is_array($c_use_new_private_room) and (
-                         in_array($current_context_id,$c_use_new_private_room)
-                         or in_array($current_portal_id,$c_use_new_private_room)
-                         )
-                      )
+                      and ($new_private_room)
                     )
                  or ( $this->_module == 'announcement'
                       and $link['module'] == 'entry'
                       and $this->_environment->inPrivateRoom()
-                      and (isset($c_use_new_private_room) and
-                         is_array($c_use_new_private_room) and (
-                         in_array($current_context_id,$c_use_new_private_room)
-                         or in_array($current_portal_id,$c_use_new_private_room)
-                         )
-                      )
+                      and ($new_private_room)
                     )
                  or ( $this->_module == 'topic'
                       and $link['module'] == 'entry'
                       and $this->_environment->inPrivateRoom()
-                      and (isset($c_use_new_private_room) and
-                         is_array($c_use_new_private_room) and (
-                         in_array($current_context_id,$c_use_new_private_room)
-                         or in_array($current_portal_id,$c_use_new_private_room)
-                         )
-                      )
+                      and ($new_private_room)
                     )
             ) {
                $ahref = ahref_curl($this->_environment->getCurrentContextID(), $link['module'], $link['function'], $link['parameter'], $link_title, $link['explanation'],'','','','','','class="navlist_current"');
@@ -1747,14 +1715,8 @@ class cs_page_room_view extends cs_page_view {
                $html .= '</table>'.LF;
             }
          }else{
-            $current_context_id = $this->_environment->getCurrentContextID();
-            $current_portal_id = $this->_environment->getCurrentPortalID();
-            if (isset($c_use_new_private_room)  and
-               is_array($c_use_new_private_room) and (
-               in_array($current_context_id,$c_use_new_private_room)
-               or in_array($current_portal_id,$c_use_new_private_room)
-               )
-            ){
+            $new_private_room = $this->_environment->inConfigArray('c_use_new_private_room',$this->_environment->getCurrentContextID());
+            if ($new_private_room){
             $html .= '<div style="clear:both"/></div>'.LF;
             }
          }

@@ -58,7 +58,10 @@ class cs_configuration_rubric_options_form extends cs_rubric_form {
    function _createForm () {
      $new_private_room = false;
      if ( $this->_environment->inPrivateRoom() ) {
-        $new_private_room = $this->_environment->getConfiguration('c_use_new_private_room');
+        $new_private_room = $this->_environment->inConfigArray('c_use_new_private_room',$this->_environment->getCurrentContextID());
+        if (!isset($new_private_room)){
+           $new_private_room = $this->_environment->inConfigArray('c_use_new_private_room',$this->_environment->getCurrentPortalID());
+        }
         if ( !isset($new_private_room) ) {
            $new_private_room = false;
         }

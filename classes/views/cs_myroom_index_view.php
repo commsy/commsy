@@ -63,15 +63,10 @@ class cs_myroom_index_view extends cs_context_index_view {
    }
 
    function _getIndexPageHeaderAsHTML(){
-     global $c_use_new_private_room;
+     $new_private_room = $this->_environment->inConfigArray('c_use_new_private_room',$this->_environment->getCurrentContextID());
      $current_context_id = $this->_environment->getCurrentContextID();
      $current_portal_id = $this->_environment->getCurrentPortalID();
-     if (isset($c_use_new_private_room)  and
-         is_array($c_use_new_private_room) and (
-         in_array($current_context_id,$c_use_new_private_room)
-         or in_array($current_portal_id,$c_use_new_private_room)
-        )
-        ){
+     if ($new_private_room){
       $html = '';
       $html .='<div style="width:100%;">'.LF;
       $html .='<div style="height:30px;">'.LF;
@@ -82,7 +77,7 @@ class cs_myroom_index_view extends cs_context_index_view {
       $html .='<div style="width:100%;">'.LF;
       $html .='<div style="vertical-align:bottom;">'.LF;
       if ( $this->_environment->inPrivateRoom()
-           and $this->_environment->getConfiguration('c_use_new_private_room')
+           and $this->_environment->inConfigArray('c_use_new_private_room',$this->_environment->getCurrentContextID())
          ) {
          $image = '';
       } else {
@@ -251,8 +246,8 @@ class cs_myroom_index_view extends cs_context_index_view {
 
 
    function asHTML () {
-     global $c_use_new_private_room;
-     if (isset($c_use_new_private_room) and $c_use_new_private_room){
+     $new_private_room = $this->_environment->inConfigArray('c_use_new_private_room',$this->_environment->getCurrentContextID());
+     if ($new_private_room){
       $html  = LF.'<!-- BEGIN OF LIST VIEW -->'.LF;
       $html .= $this->_getIndexPageHeaderAsHTML();
       #$html .= '<div style="width:100%; float:right;"><div style="float:right;"><a href="#"><img id="new_icon" src="images/commsyicons/22x22/new.png"></a></div></div>';
@@ -581,9 +576,9 @@ class cs_myroom_index_view extends cs_context_index_view {
     * param cs_project_item project room item
     */
    function _getRoomWindowAsHTML ($item) {
-     global $c_use_new_private_room;
      global $c_single_entry_point;
-     if (isset($c_use_new_private_room) and $c_use_new_private_room){
+     $new_private_room = $this->_environment->inConfigArray('c_use_new_private_room',$this->_environment->getCurrentContextID());
+     if ($new_private_room){
       $current_user = $this->_environment->getCurrentUserItem();
       $may_enter = $item->mayEnter($current_user);
       $title = $item->getTitle();

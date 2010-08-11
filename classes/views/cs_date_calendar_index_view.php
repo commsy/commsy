@@ -446,7 +446,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
    }
 
    function _getListInfosAsHTML ($title) {
-      global $c_use_new_private_room;
+      $new_private_room = $this->_environment->inConfigArray('c_use_new_private_room',$this->_environment->getCurrentContextID());
       $current_context = $this->_environment->getCurrentContextItem();
       $current_user = $this->_environment->getCurrentUserItem();
       $html  = '';
@@ -459,12 +459,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $current_context_id = $this->_environment->getCurrentContextID();
       $current_portal_id = $this->_environment->getCurrentPortalID();
       if ($current_context->isPrivateRoom() and
-         (isset($c_use_new_private_room)  and
-            is_array($c_use_new_private_room) and (
-            in_array($current_context_id,$c_use_new_private_room)
-            or in_array($current_portal_id,$c_use_new_private_room)
-            )
-         )
+         $new_private_room
         ){
          #$html .= '<div class="right_box">'.LF;
          $mycalendar_array = $current_context->getMyCalendarDisplayConfig();
@@ -598,7 +593,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $html .= $ical_url;
       if ( $current_context->isOpen()
            and $current_context->isPrivateRoom()
-           and $this->_environment->getConfiguration('c_use_new_private_room')
+           and $this->_environment->inConfigArray('c_use_new_private_room',$this->_environment->getCurrentContextID())
          ) {
          // do nothing
       } else {
@@ -613,7 +608,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       unset($params);
       if ( $current_context->isOpen()
            and $current_context->isPrivateRoom()
-           and $this->_environment->getConfiguration('c_use_new_private_room')
+           and $this->_environment->inConfigArray('c_use_new_private_room',$this->_environment->getCurrentContextID())
          ) {
          // do nothing
       } else {
@@ -4752,7 +4747,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       // new private room
       if ( $current_context->isOpen()
            and $current_context->isPrivateRoom()
-           and $this->_environment->getConfiguration('c_use_new_private_room')
+           and $this->_environment->inConfigArray('c_use_new_private_room',$this->_environment->getCurrentContextID())
          ) {
 
          // dates import

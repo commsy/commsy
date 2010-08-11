@@ -48,15 +48,10 @@ if ( !isset($environment) and isset($this->_environment) ) {
    $link_item->setParameter(array());
    $configuration_important_link_list->add($link_item);
 
-   global $c_use_new_private_room;
+     $new_private_room = $this->_environment->inConfigArray('c_use_new_private_room',$environment->getCurrentContextID());
      $current_context_id = $environment->getCurrentContextID();
      $current_portal_id = $environment->getCurrentPortalID();
-     if (isset($c_use_new_private_room)  and
-         is_array($c_use_new_private_room) and (
-         in_array($current_context_id,$c_use_new_private_room)
-         or in_array($current_portal_id,$c_use_new_private_room)
-        )
-        ){
+     if ($new_private_room){
        $link_item = new cs_link();
       $link_item->setTitle($translator->getMessage('CONFIGURATION_PRIVATEROOM_HOME_OPTIONS_TITLE'));
       $current_context = $environment->getCurrentContextItem();

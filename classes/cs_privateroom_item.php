@@ -45,7 +45,7 @@ class cs_privateroom_item extends cs_room_item {
       $this->_type = CS_PRIVATEROOM_TYPE;
 
       // new private room
-      $new_private_room = $this->_environment->getConfiguration('c_use_new_private_room');
+      $new_private_room = $environment->inConfigArray('c_use_new_private_room',$environment->getCurrentContextID());
       if ( !isset($new_private_room) ) {
          $new_private_room = false;
       }
@@ -100,7 +100,7 @@ class cs_privateroom_item extends cs_room_item {
    }
 
    function getHomeConf () {
-      $new_private_room = $this->_environment->getConfiguration('c_use_new_private_room');
+      $new_private_room = $this->_environment->inConfigArray('c_use_new_private_room',$this->_environment->getCurrentContextID());
       $this->_addPluginInRubricArray();
       $rubrics = parent::getHomeConf();
       $retour = array();
@@ -1643,7 +1643,7 @@ class cs_privateroom_item extends cs_room_item {
       }
       return $retour;
    }
-   
+
    /* END OF PORTLET FUNCTIONS
     * *****************
     */

@@ -1743,7 +1743,11 @@ EOD;
       $html .='<div style="width:100%;">'.LF;
       $html .='<div style="height:30px;">'.LF;
       $current_context = $this->_environment->getCurrentContextItem();
-      if ( $current_context->isOpen() and $current_context->isPrivateRoom() and $this->_environment->getConfiguration('c_use_new_private_room')) {
+      $new_private_room = $this->_environment->inConfigArray('c_use_new_private_room',$this->_environment->getCurrentContextID());
+      $current_context_id = $this->_environment->getCurrentContextID();
+      $current_portal_id = $this->_environment->getCurrentPortalID();
+      if ( $current_context->isOpen() and $current_context->isPrivateRoom()
+         and $new_private_room) {
          $html .= '<div style="float:right;">'.LF;
          $html .= '<div class="portlet-configuration">'.LF;
          $html .= '<div class="portlet-header-configuration ui-widget-header" style="width:200px;">'.LF;
@@ -1783,7 +1787,7 @@ EOD;
             break;
          case 'DATE':
             if ( $this->_environment->inPrivateRoom()
-                 and $this->_environment->getConfiguration('c_use_new_private_room')
+                 and $this->_environment->inConfigArray('c_use_new_private_room',$this->_environment->getCurrentContextID())
                ) {
                $tempMessage = $this->_translator->getMessage('MYCALENDAR_INDEX');
             } else {
@@ -2406,7 +2410,7 @@ EOD;
          }
          if ( $current_context->isOpen()
               and $current_context->isPrivateRoom()
-              and $this->_environment->getConfiguration('c_use_new_private_room')
+              and $this->_environment->inConfigArray('c_use_new_private_room',$this->_environment->getCurrentContextID())
             ) {
             // do nothing
          } else {
@@ -2454,7 +2458,7 @@ EOD;
          unset($params);
          if ( $current_context->isOpen()
               and $current_context->isPrivateRoom()
-              and $this->_environment->getConfiguration('c_use_new_private_room')
+              and $this->_environment->inConfigArray('c_use_new_private_room',$this->_environment->getCurrentContextID())
               and $this->_environment->getCurrentModule() == type2module(CS_DATE_TYPE)
             ) {
             $text_new = $this->_translator->getMessage('DATES_ENTER_NEW');
@@ -2838,7 +2842,7 @@ EOD;
      $html  = '';
      $search_module = 'campus_search';
      if ( $this->_environment->inPrivateRoom()
-          and $this->_environment->getConfiguration('c_use_new_private_room')
+          and $this->_environment->inConfigArray('c_use_new_private_room',$this->_environment->getCurrentContextID())
         ) {
         $search_module = type2module(CS_DATE_TYPE);
      }

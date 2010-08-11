@@ -518,8 +518,8 @@ class cs_page_view extends cs_view {
 
    function _includedJavascriptAsHTML(){
       global $c_commsy_url_path;
-      global $c_use_new_private_room;
       global $c_use_new_lightbox;
+      $new_private_room = $this->_environment->inConfigArray('c_use_new_private_room',$this->_environment->getCurrentContextID());
       $module   = $this->_environment->getCurrentModule();
       $current_user   = $this->_environment->getCurrentUserItem();
       $function = $this->_environment->getCurrentFunction();
@@ -597,14 +597,7 @@ class cs_page_view extends cs_view {
       }
 
 
-     $current_context_id = $this->_environment->getCurrentContextID();
-     $current_portal_id = $this->_environment->getCurrentPortalID();
-     if (isset($c_use_new_private_room)  and
-         is_array($c_use_new_private_room) and (
-         in_array($current_context_id,$c_use_new_private_room)
-         or in_array($current_portal_id,$c_use_new_private_room)
-        )
-        ){
+     if ($new_private_room){
      /**********/
      /*PORTLETS*/
       if ($this->_environment->inPrivateRoom()){
