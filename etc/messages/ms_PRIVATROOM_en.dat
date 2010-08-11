@@ -1,0 +1,3 @@
+<?php
+$message["PRIVATROOM_SEARCH_BOX"]["en"] = "Serach in my repository";
+?>

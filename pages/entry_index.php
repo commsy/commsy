@@ -80,6 +80,12 @@ if ( isset($_GET['selbuzzword']) and $_GET['selbuzzword'] !='-2') {
    $selbuzzword = 0;
 }
 
+if ( isset($_GET['selmatrix']) and $_GET['selmatrix'] !='-2') {
+   $selmatrix = $_GET['selmatrix'];
+} else {
+   $selmatrix = 0;
+}
+
 if ( isset($_GET['sellist']) and $_GET['sellist'] !='-2') {
    $sellist = $_GET['sellist'];
 } else {
@@ -508,6 +514,9 @@ foreach ($rubric_array as $rubric) {
       if (!empty($selbuzzword)){
          $item_manager->setBuzzwordLimit($selbuzzword);
       }
+      if (!empty($selmatrix)){
+         $item_manager->setMatrixLimit($selmatrix);
+      }
       if (!empty($searchtext)){
          $item_manager->setSearchLimit($searchtext);
       }
@@ -646,7 +655,7 @@ $params = array();
 $params['environment'] = $environment;
 $params['with_modifying_actions'] = $current_context->isOpen();
 $my_entries_view = $class_factory->getClass(PRIVATEROOM_HOME_NEW_ENTRIES_VIEW,$params);
-#$my_entries_view->setList($new_entry_list);
+$my_entries_view->setList($new_entry_list);
 $my_entries_view->setList($temp_list);
 unset($params);
 
@@ -656,6 +665,7 @@ unset($params);
 $view->setList($temp_list);
 $view->setSelectedMyList($sellist);
 $view->setSelectedBuzzword($selbuzzword);
+$view->setSelectedMatrix($selmatrix);
 $view->setSearchText($searchtext);
 $view->setInterval($interval);
 $view->setPos($pos);

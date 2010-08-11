@@ -112,7 +112,7 @@ $c_annonymous_account_array = array();
 $c_read_account_array = array();
 
 //Flag for new Version of private_room
-$c_use_new_private_room = false;
+$c_use_new_private_room = array();
 $c_new_upload = false;
 
 //Flag for dropdown-menus

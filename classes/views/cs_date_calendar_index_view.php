@@ -311,7 +311,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
             $height = '200px';
          }
          $html .= '<div class="" style="height:'.$height.'; overflow-y:auto; padding:0px;">'.LF;
-         
+
          // show selections
          $html .= $this->_getTodoSelectionsAsHTML();
 
@@ -444,7 +444,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $html .= '</div>'.LF;
       return $html;
    }
-   
+
    function _getListInfosAsHTML ($title) {
       global $c_use_new_private_room;
       $current_context = $this->_environment->getCurrentContextItem();
@@ -456,8 +456,16 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       if ( $current_browser == 'msie' and (strstr($current_browser_version,'5.') or (strstr($current_browser_version,'6.'))) ){
          $width = 'width:170px;';
       }
-
-      if ($current_context->isPrivateRoom() and (isset($c_use_new_private_room) and $c_use_new_private_room)){
+      $current_context_id = $this->_environment->getCurrentContextID();
+      $current_portal_id = $this->_environment->getCurrentPortalID();
+      if ($current_context->isPrivateRoom() and
+         (isset($c_use_new_private_room)  and
+            is_array($c_use_new_private_room) and (
+            in_array($current_context_id,$c_use_new_private_room)
+            or in_array($current_portal_id,$c_use_new_private_room)
+            )
+         )
+        ){
          #$html .= '<div class="right_box">'.LF;
          $mycalendar_array = $current_context->getMyCalendarDisplayConfig();
          $number_of_portlets = 0;
@@ -714,14 +722,14 @@ class cs_date_calendar_index_view extends cs_room_index_view {
          $temp_array['checked']  = "";
       }
       $action_array[] = $temp_array;
-      
+
       $temp_array = array();
       $temp_array['dropdown_image']  = "mycalendar_icon";
       $temp_array['checked']  = "seperator";
       $temp_array['text']  = "";
       $temp_array['value']  = "";
       $action_array[] = $temp_array;
-      
+
       $temp_array = array();
       $temp_array['dropdown_image']  = "mycalendar_icon";
       $temp_array['checked']  = "text";
@@ -735,7 +743,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $temp_array['text']  = "";
       $temp_array['value']  = "";
       $action_array[] = $temp_array;
-      
+
       $room_item = $list->getFirst();
       while($room_item){
          $temp_array = array();
@@ -750,35 +758,35 @@ class cs_date_calendar_index_view extends cs_room_index_view {
          $action_array[] = $temp_array;
          $room_item = $list->getNext();
       }
-      
+
       $temp_array = array();
       $temp_array['dropdown_image']  = "mycalendar_icon";
       $temp_array['checked']  = "scroll_end";
       $temp_array['text']  = "";
       $temp_array['value']  = "";
       $action_array[] = $temp_array;
-      
+
       $temp_array = array();
       $temp_array['dropdown_image']  = "mycalendar_icon";
       $temp_array['checked']  = "seperator";
       $temp_array['text']  = "";
       $temp_array['value']  = "";
       $action_array[] = $temp_array;
-      
+
       $temp_array = array();
       $temp_array['dropdown_image']  = "mycalendar_icon";
       $temp_array['checked']  = "text";
       $temp_array['text']  = $this->_translator->getMessage('TODO_INDEX');
       $temp_array['value']  = "";
       $action_array[] = $temp_array;
-      
+
       $temp_array = array();
       $temp_array['dropdown_image']  = "mycalendar_icon";
       $temp_array['checked']  = "scroll_start";
       $temp_array['text']  = "";
       $temp_array['value']  = "";
       $action_array[] = $temp_array;
-      
+
       $room_item = $list->getFirst();
       while($room_item){
          $temp_array = array();
@@ -793,14 +801,14 @@ class cs_date_calendar_index_view extends cs_room_index_view {
          $action_array[] = $temp_array;
          $room_item = $list->getNext();
       }
-      
+
       $temp_array = array();
       $temp_array['dropdown_image']  = "mycalendar_icon";
       $temp_array['checked']  = "scroll_end";
       $temp_array['text']  = "";
       $temp_array['value']  = "";
       $action_array[] = $temp_array;
-      
+
       // init drop down menu
       if ( !empty($action_array)
            and count($action_array) >= 1
@@ -870,7 +878,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
          $width= ' width:'.$left_width.'%;';
       }
 
-      
+
       if(!(isset($_GET['mode']) and $_GET['mode']=='print')){
          $html .='</div>'.LF;
          $html .='<div class="index_content_display_width" style="'.$width.'padding-top:5px; vertical-align:bottom; font-size:10pt;">'.LF;

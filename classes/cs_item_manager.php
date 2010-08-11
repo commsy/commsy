@@ -43,6 +43,8 @@ class cs_item_manager extends cs_manager {
 
    var $_list_limit = NULL;
 
+   var $_matrix_limit = NULL;
+
    var $_interval_limit = NULL;
 
    var $_type_array_limit = array();
@@ -77,6 +79,7 @@ class cs_item_manager extends cs_manager {
       $this->_type_limit = NULL;
       $this->_order_limit = NULL;
       $this->_list_limit = NULL;
+      $this->_matrix_limit = NULL;
       $this->_label_limit = NULL;
       $this->_interval_limit = NULL;
       $this->_type_array_limit = array();
@@ -110,6 +113,10 @@ class cs_item_manager extends cs_manager {
 
    function setListLimit ($limit) {
      $this->_list_limit = $limit;
+   }
+
+   function setMatrixLimit ($limit) {
+     $this->_matrix_limit = $limit;
    }
 
    function setUserUserIDLimit ($limit) {
@@ -385,6 +392,12 @@ class cs_item_manager extends cs_manager {
              $query .= ' INNER JOIN '.$this->addDatabasePrefix('labels').' AS mylists ON links.to_item_id=mylists.item_id AND mylists.type="mylist"';
           }
        }
+       if (isset($this->_matrix_limit)) {
+          $query .= ' INNER JOIN '.$this->addDatabasePrefix('link_items').' AS matrix_x ON matrix_x.first_item_id='.$this->addDatabasePrefix('items').'.item_id';
+          $query .= ' INNER JOIN '.$this->addDatabasePrefix('link_items').' AS matrix_y ON matrix_y.first_item_id='.$this->addDatabasePrefix('items').'.item_id';
+       }
+
+
 
        if (isset($this->_buzzword_limit)) {
           if ($this->_buzzword_limit == -1){
@@ -428,6 +441,14 @@ class cs_item_manager extends cs_manager {
               $query .= ' AND mylists.item_id="'.encode(AS_DB,$this->_list_limit).'"';
            }
         }
+        if (isset($this->_matrix_limit)) {
+           $array = explode('_',$this->_matrix_limit);
+           $pos_x = $array[0];
+           $pos_y = $array[1];
+           if ($this->_matrix_limit !=-1){
+              $query .= ' AND matrix_x.second_item_id="'.$pos_x.'" AND  matrix_y.second_item_id="'.$pos_y.'"';
+           }
+        }
         if (isset($this->_buzzword_limit)) {
            if ($this->_buzzword_limit ==-1){
               $query .= ' AND (buzzword_links.to_item_id IS NULL OR buzzword_links.deletion_date IS NOT NULL)';
@@ -463,7 +484,6 @@ class cs_item_manager extends cs_manager {
         }else{
            $query .= '';
         }
-
         // perform query
         $result = $this->_db_connector->performQuery($query);
          if ( !isset($result) ) {

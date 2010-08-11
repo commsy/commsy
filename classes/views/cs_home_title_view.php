@@ -118,9 +118,16 @@ class cs_home_title_view extends cs_view {
 
 
    function asHTML () {
-      global $c_use_new_private_room;
-      if (isset($c_use_new_private_room) and $c_use_new_private_room){
-      $html ='<div style="width:100%; height:30px;">'.LF;
+     global $c_use_new_private_room;
+     $current_context_id = $this->_environment->getCurrentContextID();
+     $current_portal_id = $this->_environment->getCurrentPortalID();
+     if (isset($c_use_new_private_room)  and
+         is_array($c_use_new_private_room) and (
+         in_array($current_context_id,$c_use_new_private_room)
+         or in_array($current_portal_id,$c_use_new_private_room)
+        )
+        ){
+    $html ='<div style="width:100%; height:30px;">'.LF;
       if ( $this->_environment->inProjectRoom() ) {
          $home_title  = $this->_translator->getMessage('HOME_ROOM_INDEX');
          $home_title .= ' ('.$this->_translator->getMessage('COMMON_PROJECT').')';
@@ -157,8 +164,8 @@ class cs_home_title_view extends cs_view {
          #$html .= '<div style="float:right;"><a href="#"><img id="new_icon" src="images/commsyicons/48x48/config/privateroom_home_options.png" height=24></a></div>';
          $html .= '<div style="float:right;">'.LF;
          $html .= '<div class="portlet-configuration">'.LF;
-         $html .= '<div class="portlet-header-configuration ui-widget-header" style="width:200px;">'.LF;
-         $html .= $this->_translator->getMessage('HOME_PORTLET_CONFIGURATION').LF;
+         $html .= '<div class="portlet-header-configuration ui-widget-header" style="width:200px; font-weight:normal;">'.LF;
+         $html .= '<span style="font-weight:bold;">'.$this->_translator->getMessage('HOME_PORTLET_CONFIGURATION').'</span>'.LF;
          $html .= '<div style="float:right;">'.LF;
          $html .= '<a href="#"><img id="new_icon" src="images/commsyicons/48x48/config/privateroom_home_options.png" height=0></a>'.LF;
          $html .= '</div>'.LF;

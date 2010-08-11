@@ -40,6 +40,7 @@ class cs_entry_index_view extends cs_index_view {
 
    var $_sellist = '';
    var $_selbuzzword = '';
+   var $_selmatrix = '';
 
    var $_dropdown_image_array = array();
 
@@ -114,6 +115,10 @@ class cs_entry_index_view extends cs_index_view {
     $this->_selbuzzword = $limit;
    }
 
+   function setSelectedMatrix($limit){
+    $this->_selmatrix = $limit;
+   }
+
 
     function setList ($list) {
        $this->_list = $list;
@@ -173,7 +178,7 @@ class cs_entry_index_view extends cs_index_view {
       }
       $html .='</form>'.LF;
       $html .= '</div>'.LF;
-      $html .= '<div id="search_right" style="width:50%; float:right; text-align:right;">'.LF;
+      $html .= '<div id="search_right" style="width:50%; float:right; text-align:right; margin-bottom:3px;">'.LF;
       if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
          $image_new_material = '<img src="images/commsyicons_msie6/22x22/material.gif" style="vertical-align:bottom;"/>';
          $image_new_date = '<img src="images/commsyicons_msie6/22x22/date.gif" style="vertical-align:bottom;"/>';
@@ -264,10 +269,11 @@ class cs_entry_index_view extends cs_index_view {
          }
          $count = $mylist_item->getCountLinks();
          $html .= '<div '.$style.' style="display:block; margin:0px;'.$font_style.'" >'.LF;
-         $html .= '<div style="float:right; padding-top:2px;">'.LF;
+         $html .= '<div id="mylist_action_'.$mylist_item->getItemID().'" style="float:right; padding-top:2px;">'.LF;
 
+/*
          $html .= '<a href="#"><img src="images/commsyicons/16x16/new_home.png" id="new_icon_'.$mylist_item->getItemID().'" style="vertical-align:top;" alt=""/></a>';
-
+*/
          $image = '<img src="images/commsyicons/16x16/copy.png" style="vertical-align:top;" alt="'.$this->_translator->getMessage('ENTRY_COPY_MYLIST').'"/>'.LF;
          $params['copy_list'] = $mylist_item->getItemID();
          $html .= ahref_curl(  $this->_environment->getCurrentContextID(),
@@ -277,6 +283,7 @@ class cs_entry_index_view extends cs_index_view {
                                        $image,
                                        $this->_translator->getMessage('ENTRY_COPY_MYLIST')).LF;
          unset($params['copy_list']);
+
          $params['delete_list'] = $mylist_item->getItemID();
          $image = '<img src="images/commsyicons/16x16/delete.png" style="vertical-align:top;" alt="'.$this->_translator->getMessage('ENTRY_DELETE_MYLIST').'"/>'.LF;
          $html .= ahref_curl(  $this->_environment->getCurrentContextID(),
@@ -285,8 +292,10 @@ class cs_entry_index_view extends cs_index_view {
                                        $params,
                                        $image,
                                        $this->_translator->getMessage('ENTRY_DELETE_MYLIST')).LF;
-         $html .= '</div>'.LF;
          unset($params['delete_list']);
+
+         $html .= '</div>'.LF;
+
          $html .= ' <p class="droppable_list" id="mylist_'.$mylist_item->getItemID().'">'.LF;
          $params['sellist'] = $mylist_item->getItemID();
          $params['pos'] = 0;
@@ -303,10 +312,16 @@ class cs_entry_index_view extends cs_index_view {
       }
       $html .= $this->_initDropDownMenuForList($mylist_list);
       $html .= '</div>'.LF;
-
-
-
       $html .= '</div>'.LF;
+
+      // Preferences link
+#      $html .= '<div class="portlet-turn portlet-front" style="float:right;">'.LF;
+#      $html .= '<a class="preferences_flip" name="portlet_preferences" style="cursor:pointer;"><img src="images/config_home.png" /></a>'.LF;
+#      $html .= '&nbsp;</div>'.LF;
+
+
+
+
       $html .= '</div>'.LF;
       return $html;
    }
@@ -438,6 +453,7 @@ class cs_entry_index_view extends cs_index_view {
       $html .= '</div>';
       $html .='<div style="clear:both;">'.LF;
       $html .='</div>'.LF;
+      $html .='</div>'.LF;
       $html .= '<!-- END OF PLAIN LIST VIEW -->'.LF.LF;
       $html .= $this->_initDropDownMenus();
       return $html;
@@ -541,70 +557,6 @@ class cs_entry_index_view extends cs_index_view {
       $html .= '</div>'.LF;
       $html .= '<div id="contentbox" class="portlet-content">'.LF;
       $html .= '<table class="description-background" style="width:100%;">'.LF;
-      if (
-          !empty($this->_sellist)
-          or !empty($this->_selbuzzword)
-          or (!empty($this->_search_text) and $this->_search_text != $this->_translator->getMessage('COMMON_SEARCH_IN_ENTRIES'))
-      ){
-         $html .= '<tr>'.LF;
-         $html .= '<td style="vertical-align:top;">'.LF;
-         $html .= $this->_translator->getMessage('COMMON_RESTRICTIONS').': ';
-         $html .= '</td>'.LF;
-         $html .= '<td style="text-align:right;">';
-         if (!empty($this->_sellist)){
-            $html .= '<div>'.LF;
-            if ($this->_sellist == 'new'){
-               $html .= $this->_translator->getMessage('COMMON_MYLIST_RESTRICTION').': "'.$this->_translator->getMessage('COMMON_NEWEST_ENTRIES').'"';
-             }else{
-                $list_manager = $this->_environment->getMyListManager();
-                $list_item = $list_manager->getItem($this->_sellist);
-                $html .= $this->_translator->getMessage('COMMON_MYLIST_RESTRICTION').': "'.$list_item->getName().'"';
-            }
-           $new_aparams = $params;
-           unset($new_aparams['sellist']);
-           $image = '<img src="images/delete_restriction.gif" style="padding-top:3px;" alt="'.$this->_translator->getMessage('ENTRY_DELETE_RESTRICTION').'"/>'.LF;
-           $html .= ' '.ahref_curl(  $this->_environment->getCurrentContextID(),
-                                       CS_ENTRY_TYPE,
-                                       'index',
-                                       $new_aparams,
-                                       $image,
-                                       $this->_translator->getMessage('ENTRY_DELETE_RESTRICTION')).LF;
-           $html .= '</div>'.LF;
-         }
-         if (!empty($this->_selbuzzword)){
-            $html .= '<div>'.LF;
-            $buzzword_manager = $this->_environment->getBuzzwordManager();
-             $buzzword_item = $buzzword_manager->getItem($this->_selbuzzword);
-             $html .= $this->_translator->getMessage('COMMON_BUZZWORD_RESTRICTION').': "'.$buzzword_item->getName().'"';
-            $new_aparams = $params;
-            unset($new_aparams['selbuzzword']);
-            $image = '<img src="images/delete_restriction.gif" style="padding-top:3px;" alt="'.$this->_translator->getMessage('ENTRY_DELETE_RESTRICTION').'"/>'.LF;
-            $html .= ' '.ahref_curl(  $this->_environment->getCurrentContextID(),
-                                       CS_ENTRY_TYPE,
-                                       'index',
-                                       $new_aparams,
-                                       $image,
-                                       $this->_translator->getMessage('ENTRY_DELETE_RESTRICTION')).LF;
-            $html .= '</div>'.LF;
-         }
-         if (!empty($this->_search_text) and $this->_search_text != $this->_translator->getMessage('COMMON_SEARCH_IN_ENTRIES')){
-            $html .= '<div>'.LF;
-             $html .= $this->_translator->getMessage('COMMON_SEARCH_RESTRICTION').': "'.$this->_search_text.'"';
-            $new_aparams = $params;
-            unset($new_aparams['search']);
-            $image = '<img src="images/delete_restriction.gif" style="padding-top:3px;" alt="'.$this->_translator->getMessage('ENTRY_DELETE_RESTRICTION').'"/>'.LF;
-            $html .= ' '.ahref_curl(  $this->_environment->getCurrentContextID(),
-                                       CS_ENTRY_TYPE,
-                                       'index',
-                                       $new_aparams,
-                                       $image,
-                                       $this->_translator->getMessage('ENTRY_DELETE_RESTRICTION')).LF;
-            $html .= '</div>'.LF;
-         }
-         $html .= '<td>';
-         $html .= '</tr>'.LF;
-      }
-
       if ( isset($list) && !($list->isEmpty()) ) {
          $interval_20 = '20';
          if($this->_interval != '20'){
@@ -626,7 +578,7 @@ class cs_entry_index_view extends cs_index_view {
                                           $params,
                                           '50').LF;
          }
-         $interval_all = $this->_translator->getMessage('COMMON_PAGE_ENTRIES_ALL');
+/*         $interval_all = $this->_translator->getMessage('COMMON_PAGE_ENTRIES_ALL');
          if($this->_interval != 'all'){
             $params['interval'] = 'all';
             $params['pos'] = 0;
@@ -635,7 +587,7 @@ class cs_entry_index_view extends cs_index_view {
                                           'index',
                                           $params,
                                           $this->_translator->getMessage('COMMON_PAGE_ENTRIES_ALL')).LF;
-         }
+         }*/
 
          $browse_first = '&lt;&lt;';
          $browse_prev = '&lt;';
@@ -682,9 +634,115 @@ class cs_entry_index_view extends cs_index_view {
          $current_pos = $this->_pos + 1;
          $whole_ammount = $this->_max_pos+1;
 
-         $html .= '<tr><td style="text-align:left; font-weight:bold;">'.$interval_20.' | '.$interval_50.' | '.$interval_all.'</td><td style="text-align:right; font-weight:bold;">'.$current_pos.' / '.$whole_ammount.'&nbsp;&nbsp;&nbsp;'.$browse_first.' | '.$browse_prev.' | '.$browse_next.' | '.$browse_last.'</td></tr>';
+#         $html .= '<tr><td style="text-align:left; font-weight:bold;">'.$interval_20.' | '.$interval_50.' | '.$interval_all.'</td><td style="text-align:right; font-weight:bold;">'.$current_pos.' / '.$whole_ammount.'&nbsp;&nbsp;&nbsp;'.$browse_first.' | '.$browse_prev.' | '.$browse_next.' | '.$browse_last.'</td></tr>';
+         $html .= '<tr><td style="text-align:left;">'.$this->_translator->getMessage('COMMON_PAGE_ENTRIES').': '.$interval_20.' | '.$interval_50.'</td><td style="text-align:right;">'.$this->_translator->getMessage('COMMON_PAGE').': '.$current_pos.' / '.$whole_ammount.'&nbsp;&nbsp;&nbsp;'.$browse_first.' | '.$browse_prev.' | '.$browse_next.' | '.$browse_last.'</td></tr>';
       }
       $html .= '</table>'.LF;
+      $html .= '<table class="description-background" style="width:100%;">'.LF;
+      if (
+          !empty($this->_sellist)
+          or !empty($this->_selbuzzword)
+          or !empty($this->_selmatrix)
+          or (!empty($this->_search_text) and $this->_search_text != $this->_translator->getMessage('COMMON_SEARCH_IN_ENTRIES'))
+      ){
+/*         $html .= '<tr>'.LF;
+         $html .= '<td colspan="2" style="vertical-align:top; width:180px;">'.LF;
+         $html .= $this->_translator->getMessage('COMMON_RESTRICTIONS').': ';
+         $html .= '</td>'.LF;
+         $html .= '</tr>'.LF;
+*/
+         if (!empty($this->_sellist)){
+            $html .= '<tr>'.LF;
+            $html .= '<td style="vertical-align:top; white-space:nowrap; width:60px;">'.LF;
+            if ($this->_sellist == 'new'){
+               $html .= $this->_translator->getMessage('COMMON_MYLIST_RESTRICTION').': ';
+            }else{
+                $list_manager = $this->_environment->getMyListManager();
+                $list_item = $list_manager->getItem($this->_sellist);
+                $html .= $this->_translator->getMessage('COMMON_MYLIST_RESTRICTION').': ';
+            }
+            $html .= '</td>'.LF;
+            $html .= '<td style="text-align:right;">';
+            $html .= '"'.$list_item->getName().'"';
+            $new_aparams = $params;
+            unset($new_aparams['sellist']);
+            $image = '<img src="images/delete_restriction.gif" style="padding-top:3px;" alt="'.$this->_translator->getMessage('ENTRY_DELETE_RESTRICTION').'"/>'.LF;
+            $html .= ' '.ahref_curl(  $this->_environment->getCurrentContextID(),
+                                       CS_ENTRY_TYPE,
+                                       'index',
+                                       $new_aparams,
+                                       $image,
+                                       $this->_translator->getMessage('ENTRY_DELETE_RESTRICTION')).LF;
+            $html .= '</td>'.LF;
+            $html .= '</tr>'.LF;
+         }
+         if (!empty($this->_selbuzzword)){
+            $html .= '<tr>'.LF;
+            $html .= '<td style="vertical-align:top; white-space:nowrap; width:60px;">'.LF;
+            $buzzword_manager = $this->_environment->getBuzzwordManager();
+            $buzzword_item = $buzzword_manager->getItem($this->_selbuzzword);
+            $html .= $this->_translator->getMessage('COMMON_BUZZWORD_RESTRICTION').': ';
+            $html .= '</td>'.LF;
+            $html .= '<td style="text-align:right;">';
+            $html .= '"'.$buzzword_item->getName().'"'.LF;
+            $new_aparams = $params;
+            unset($new_aparams['selbuzzword']);
+            $image = '<img src="images/delete_restriction.gif" style="padding-top:3px;" alt="'.$this->_translator->getMessage('ENTRY_DELETE_RESTRICTION').'"/>'.LF;
+            $html .= ' '.ahref_curl(  $this->_environment->getCurrentContextID(),
+                                       CS_ENTRY_TYPE,
+                                       'index',
+                                       $new_aparams,
+                                       $image,
+                                       $this->_translator->getMessage('ENTRY_DELETE_RESTRICTION')).LF;
+            $html .= '</td>'.LF;
+            $html .= '</tr>'.LF;
+         }
+         if (!empty($this->_selmatrix)){
+            $html .= '<tr>'.LF;
+            $html .= '<td style="vertical-align:top; white-space:nowrap; width:60px;">'.LF;
+            $matrix_manager = $this->_environment->getMatrixManager();
+            $id_array = explode('_',$this->_selmatrix);
+            $matrix_item_x = $matrix_manager->getItem($id_array[0]);
+            $matrix_item_y = $matrix_manager->getItem($id_array[1]);
+            $html .= $this->_translator->getMessage('PRIVATEROOM_MY_ENTRIES_MATRIX_BOX').': ';
+            $html .= '</td>'.LF;
+            $html .= '<td style="text-align:right;">';
+            $html .= '"'.$matrix_item_x->getName().' / '.$matrix_item_y->getName().'"'.LF;
+            $new_aparams = $params;
+            unset($new_aparams['selmatrix']);
+            $image = '<img src="images/delete_restriction.gif" style="padding-top:3px;" alt="'.$this->_translator->getMessage('ENTRY_DELETE_RESTRICTION').'"/>'.LF;
+            $html .= ' '.ahref_curl(  $this->_environment->getCurrentContextID(),
+                                       CS_ENTRY_TYPE,
+                                       'index',
+                                       $new_aparams,
+                                       $image,
+                                       $this->_translator->getMessage('ENTRY_DELETE_RESTRICTION')).LF;
+            $html .= '</td>'.LF;
+            $html .= '</tr>'.LF;
+         }
+         if (!empty($this->_search_text) and $this->_search_text != $this->_translator->getMessage('COMMON_SEARCH_IN_ENTRIES')){
+            $html .= '<tr>'.LF;
+            $html .= '<td style="vertical-align:top; white-space:nowrap; width:60px;">'.LF;
+            $html .= $this->_translator->getMessage('COMMON_SEARCH_RESTRICTION').': ';
+            $html .= '</td>'.LF;
+            $html .= '<td style="text-align:right;">';
+            $html .= '"'.$this->_search_text.'"'.LF;
+            $new_aparams = $params;
+            unset($new_aparams['search']);
+            $image = '<img src="images/delete_restriction.gif" style="padding-top:3px;" alt="'.$this->_translator->getMessage('ENTRY_DELETE_RESTRICTION').'"/>'.LF;
+            $html .= ' '.ahref_curl(  $this->_environment->getCurrentContextID(),
+                                       CS_ENTRY_TYPE,
+                                       'index',
+                                       $new_aparams,
+                                       $image,
+                                       $this->_translator->getMessage('ENTRY_DELETE_RESTRICTION')).LF;
+            $html .= '</td>'.LF;
+            $html .= '</tr>'.LF;
+          }
+      }
+      $html .= '</table>'.LF;
+
+
 
       if ( !isset($list) || $list->isEmpty() ) {
          $html .= '<div class="odd" style="border-bottom: 0px;">'.$this->_translator->getMessage('COMMON_NO_ENTRIES').'</div>';
@@ -751,6 +809,7 @@ class cs_entry_index_view extends cs_index_view {
 
       }
       $html_table .= '</tr>'.LF;
+      $params = $this->_environment->getCurrentParameterArray();
       foreach($matrix_row_title_array as $row_key => $row){
          $html_table .= '<tr id="'.$row_key.'">'.LF;
          $html_table .= '<td name="matrix_table_left" style="background-color:#CCCCCC;">'.$row.LF;
@@ -758,7 +817,14 @@ class cs_entry_index_view extends cs_index_view {
          foreach($matrix_column_title_array as $column_key => $column){
             $html_table .= '<td class="droppable_matrix" id="id_'.$row_key.'_'.$column_key.'" style="text-align:center;"><a></a><span class="matrix_current_count">';
             $count = $matrix_manager->getEntriesInPosition($column_key,$row_key);
-            $html_table .= $count;
+          	$params['selmatrix'] = $row_key.'_'.$column_key;
+            $html_table .= ahref_curl($this->_environment->getCurrentContextID(),
+                                'entry',
+                                'index',
+                                $params,
+                                $count,
+                                '').LF;
+            unset($params['selmatrix']);
             $html_table .= '</span></td>'.LF;
          }
          $html_table .= '</tr>'.LF;
@@ -951,8 +1017,12 @@ class cs_entry_index_view extends cs_index_view {
          $html .= '</select>'.LF;
          $html .= '<input type="submit" id="portlet_buzzword_combine_button" value="'.$this->_translator->getMessage('BUZZWORDS_COMBINE_BUTTON').'">';
       $html .= '</div><br/>';
-
-      $html .= '<div id="portlet_buzzword_preferences_list">';
+      $length = $buzzword_list->getCount();
+      if ($length > 7){
+         $html .= '<div id="portlet_buzzword_preferences_list" style="height:120px; overflow-y: scroll;">';
+      }else{
+         $html .= '<div id="portlet_buzzword_preferences_list">';
+      }
       $buzzword = $buzzword_list->getFirst();
       while($buzzword){
          $html .= '<div>';
@@ -1021,10 +1091,10 @@ class cs_entry_index_view extends cs_index_view {
          #$html .= '<div style="float:right;"><a href="#"><img id="new_icon" src="images/commsyicons/48x48/config/privateroom_home_options.png" height=24></a></div></div>';
          $html .= '<div style="float:right;">'.LF;
          $html .= '<div class="portlet-configuration">'.LF;
-         $html .= '<div class="portlet-header-configuration ui-widget-header" style="width:200px;">'.LF;
-         $html .= $this->_translator->getMessage('HOME_ENTRY_CONFIGURATION').LF;
+         $html .= '<div class="portlet-header-configuration ui-widget-header" style="width:200px; font-weight:normal;">'.LF;
+         $html .= '<span style="font-weight:bold;">'.$this->_translator->getMessage('HOME_ENTRY_CONFIGURATION').'</span>'.LF;
          $html .= '<div style="float:right;">'.LF;
-         $html .= '<a href="#"><img id="new_icon" src="images/commsyicons/48x48/config/privateroom_home_options.png" height=0></a>'.LF;
+         $html .= '<a href="#"><img id="new_icon" src="images/commsyicons/48x48/config/privateroom_home_options.png" style="height:0px;"/></a>'.LF;
          $html .= '</div>'.LF;
          $html .= '</div>'.LF;
          $html .= '</div>'.LF;

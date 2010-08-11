@@ -127,7 +127,7 @@ class cs_privateroom_home_buzzword_view extends cs_view {
          }
          $buzzword = $buzzword_list->getNext();
       }
-      
+
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
       unset($current_user);
@@ -168,7 +168,7 @@ class cs_privateroom_home_buzzword_view extends cs_view {
       $html = '<input type="text" id="portlet_buzzword_new" size="40">';
       $html .= '<input type="submit" id="portlet_buzzword_new_button" value="'.$this->_translator->getMessage('BUZZWORDS_NEW_BUTTON').'">';
       $html .= '<br/><br/>'.LF;
-      
+
       $html .= '<div id="portlet_buzzword_combine">';
       $html .= '<select id="portal_buzzword_combine_first" size="1" tabindex="15">'.LF;
       $buzzword = $buzzword_list->getFirst();
@@ -186,8 +186,13 @@ class cs_privateroom_home_buzzword_view extends cs_view {
       $html .= '</select>'.LF;
       $html .= '<input type="submit" id="portlet_buzzword_combine_button" value="'.$this->_translator->getMessage('BUZZWORDS_COMBINE_BUTTON').'">';
       $html .= '</div><br/>';
-      
-      $html .= '<div id="portlet_buzzword_preferences_list">';
+
+      $length = $buzzword_list->getCount();
+      if ($length > 7){
+         $html .= '<div id="portlet_buzzword_preferences_list" style="height:120px; overflow-y: scroll;">';
+      }else{
+         $html .= '<div id="portlet_buzzword_preferences_list">';
+      }
       $buzzword = $buzzword_list->getFirst();
       while($buzzword){
          $html .= '<div>';

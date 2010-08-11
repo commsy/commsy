@@ -49,8 +49,15 @@ if ( !isset($environment) and isset($this->_environment) ) {
    $configuration_important_link_list->add($link_item);
 
    global $c_use_new_private_room;
-   if ($environment->inPrivateRoom() and $c_use_new_private_room){
-      $link_item = new cs_link();
+     $current_context_id = $environment->getCurrentContextID();
+     $current_portal_id = $environment->getCurrentPortalID();
+     if (isset($c_use_new_private_room)  and
+         is_array($c_use_new_private_room) and (
+         in_array($current_context_id,$c_use_new_private_room)
+         or in_array($current_portal_id,$c_use_new_private_room)
+        )
+        ){
+       $link_item = new cs_link();
       $link_item->setTitle($translator->getMessage('CONFIGURATION_PRIVATEROOM_HOME_OPTIONS_TITLE'));
       $current_context = $environment->getCurrentContextItem();
       if(($environment->getCurrentBrowser() == 'MSIE') && (mb_substr($environment->getCurrentBrowserVersion(),0,1) == '6')){

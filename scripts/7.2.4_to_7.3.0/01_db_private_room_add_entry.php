@@ -33,9 +33,14 @@ set_time_limit(0);
 
 $toggle_c_use_new_private_room = false;
 global $c_use_new_private_room;
-if ( !empty($c_use_new_private_room)
-     and $c_use_new_private_room
-   ) {
+$current_context_id = $this->_environment->getCurrentContextID();
+$current_portal_id = $this->_environment->getCurrentPortalID();
+if (isset($c_use_new_private_room)  and
+     is_array($c_use_new_private_room) and (
+     in_array($current_context_id,$c_use_new_private_room)
+     or in_array($current_portal_id,$c_use_new_private_room)
+    )
+){
    $c_use_new_private_room = false;
    $toggle_c_use_new_private_room = true;
 }
