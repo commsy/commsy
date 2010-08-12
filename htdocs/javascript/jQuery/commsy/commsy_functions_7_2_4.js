@@ -3308,10 +3308,13 @@ jQuery(document).ready(function() {
 				// stop form submit
 				return false;
 			} else {
-				uploadify_onAllCompleteSubmitForm = false;
-				jQuery("input[type='submit']")[0].unbind();
-				return true;
+				if(uploadify_onAllCompleteSubmitForm == true) {
+					uploadify_onAllCompleteSubmitForm = false;
+					jQuery("input[type='submit']")[0].unbind();
+					return true;
+				}
 			}
+			return true;
 		});
 	}
 	
