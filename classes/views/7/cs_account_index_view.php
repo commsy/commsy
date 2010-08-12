@@ -974,6 +974,7 @@ class cs_account_index_view extends cs_index_view {
             $show_entry = '0';
          }elseif ($this->_environment->getCurrentFunction() == 'preferences' or
              $this->_environment->getCurrentFunction() == 'portalhome' or
+             $this->_environment->getCurrentFunction() == 'portalupload' or
              $this->_environment->getCurrentFunction() == 'rubric' or
              $this->_environment->getCurrentFunction() == 'defaults' or
              $this->_environment->getCurrentFunction() == 'home' or

@@ -281,6 +281,9 @@ class cs_configuration_form_view extends cs_form_view {
                case 'CONFIGURATION_PORTALHOME':
                   $tempMessage = $this->_translator->getMessage('COMMON_CONFIGURATION_PORTALHOME_FORM_TITLE');	// Gestaltung der Raumübersicht (Portal)
                   break;
+               case 'CONFIGURATION_PORTALUPLOAD':
+                  $tempMessage = $this->_translator->getMessage('COMMON_CONFIGURATION_PORTALUPLOAD_FORM_TITLE');	// Konfiguration des Uploads(Portal)
+                  break;
                case 'CONFIGURATION_PREFERENCES':
                   $tempMessage = $this->_translator->getMessage('COMMON_CONFIGURATION_PREFERENCES_FORM_TITLE');	// Allgemeine Einstellungen bearbeiten (pers. Raum)
                   break;
@@ -475,6 +478,7 @@ class cs_configuration_form_view extends cs_form_view {
             $show_entry = '0';
          }elseif ($this->_environment->getCurrentFunction() == 'preferences' or
              $this->_environment->getCurrentFunction() == 'portalhome' or
+             $this->_environment->getCurrentFunction() == 'portalupload' or
              $this->_environment->getCurrentFunction() == 'rubric' or
              $this->_environment->getCurrentFunction() == 'defaults' or
              $this->_environment->getCurrentFunction() == 'home' or

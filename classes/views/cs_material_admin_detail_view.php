@@ -111,6 +111,7 @@ class cs_material_admin_detail_view extends cs_material_detail_view {
             $show_entry = '0';
          }elseif ($this->_environment->getCurrentFunction() == 'preferences' or
              $this->_environment->getCurrentFunction() == 'portalhome' or
+             $this->_environment->getCurrentFunction() == 'portalupload' or
              $this->_environment->getCurrentFunction() == 'rubric' or
              $this->_environment->getCurrentFunction() == 'defaults' or
              $this->_environment->getCurrentFunction() == 'home' or

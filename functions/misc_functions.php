@@ -771,6 +771,7 @@ function isURLValid () {
          $funct != 'archive' and
          $funct != 'grouproom' and
          $funct != 'portalhome' and
+         $funct != 'portalupload' and
          $funct != 'scribd' and
 
          $funct != 'account_options' and

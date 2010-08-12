@@ -1292,6 +1292,9 @@ class cs_portal_item extends cs_guide_item {
                case 'CONFIGURATION_PORTALHOME': // getestet
                   $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_PORTALHOME_FORM');
                   break;
+               case 'CONFIGURATION_PORTALUPLOAD':
+                  $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_PORTALUPLOAD_FORM');
+                  break;
                case 'CONFIGURATION_PREFERENCES': // getestet
                   $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_PREFERENCES_FORM');
                   break;

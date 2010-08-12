@@ -1909,6 +1909,9 @@ class cs_form_view extends cs_view {
                case 'CONFIGURATION_PORTALHOME': // Gestaltung der Raumübersicht (Portal)
                   $tempMessage = $this->_translator->getMessage('COMMON_CONFIGURATION_PORTALHOME_FORM_TITLE');
                   break;
+               case 'CONFIGURATION_PORTALUPLOAD': // Konfiguration des Uploads(Portal)
+                  $tempMessage = $this->_translator->getMessage('COMMON_CONFIGURATION_PORTALUPLOAD_FORM_TITLE');
+                  break;
                case 'CONFIGURATION_PREFERENCES': // Allgemeine Einstellungen bearbeiten (pers. Raum)
                   $tempMessage = $this->_translator->getMessage('COMMON_CONFIGURATION_PREFERENCES_FORM_TITLE');
                   break;
