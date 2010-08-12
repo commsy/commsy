@@ -95,7 +95,7 @@ class cs_privateroom_home_portlet_view extends cs_view{
             $width[2] = 25;
          	break;
       }
-      
+
       //for ($i=0; $i< ($columns + 1); $i++){
       //   if ($i < ($columns -1)){
       //      $html_array[$i] = '<div class="column" style="width:'.$width[$i].'%;">';
@@ -107,21 +107,23 @@ class cs_privateroom_home_portlet_view extends cs_view{
       for ($i=0; $i<$columns; $i++){
          $html_array[$i] = '<div class="column" style="width:'.$width[$i].'%;">';
       }
-      
+
       $privateroom_item = $this->_environment->getCurrentContextItem();
       $home_config = $privateroom_item->getHomeConfig();
-      
+
       if(!empty($home_config)){
 	      for ($i=0; $i< sizeof($home_config); $i++){
-	      	$temp_column_config = $home_config[$i];
-	      	foreach($temp_column_config as $portlet_class){
-	      		foreach ($portlet_array as $portlet){
+	      	if (isset($home_config[$i])){
+	      	   $temp_column_config = $home_config[$i];
+	      	   foreach($temp_column_config as $portlet_class){
+	      		  foreach ($portlet_array as $portlet){
 	      			if($portlet['class'] == $portlet_class){
 	      				$html_array[$i] .= $this->_getPortletAsHTML($portlet['title'],$portlet['content'],$portlet['preferences'],$portlet['class']);
 	      			}
 	      		}
+	      	  }
 	      	}
-	      }
+	     }
       } else {
          foreach ($portlet_array as $portlet){
 	         if ($column_count == $columns){
@@ -130,7 +132,7 @@ class cs_privateroom_home_portlet_view extends cs_view{
 	         $html_array[$column_count] .= $this->_getPortletAsHTML($portlet['title'],$portlet['content'],$portlet['preferences'],$portlet['class']);
 #            $html_array[$column_count % $columns] .= $this->_getPortletAsHTML($portlet['title'],$portlet['content']);
 	         $column_count++;
-	      }	
+	      }
       }
 
       //for ($i=0; $i< ($columns + 1); $i++){
@@ -158,7 +160,7 @@ class cs_privateroom_home_portlet_view extends cs_view{
          $html .= '&nbsp;</div>'.LF;
       }
       $html .= '</div>'.LF;
-      
+
       if(isset($preferences) and !empty($preferences)){
          $html .= '<div class="portlet" style="display:none;" id="'.$class.'_preferences">'.LF;
          $html .= '<div class="portlet-header">'.$title.' - Einstellungen</div>'.LF;
@@ -191,7 +193,7 @@ class cs_privateroom_home_portlet_view extends cs_view{
 
       #$html .= '<div style="width:100%; float:right;"><div style="float:right;"><a href="#"><img id="new_icon" src="images/commsyicons/22x22/new.png"></a></div></div>';
       #$html .= '<div style="width:100%; float:right;"><div style="float:right;"><a href="#"><img id="new_icon" src="images/commsyicons/48x48/config/privateroom_home_options.png"></a></div></div>';
-      
+
       $html .= $this->_getPortletsAsHTML($portlet_array,$this->_column_count);
       foreach($this->_portlet_views as $portlet_view){
          $html .= $portlet_view->getPortletJavascriptAsHTML();
@@ -267,9 +269,9 @@ class cs_privateroom_home_portlet_view extends cs_view{
          $retour .= '   </style>'."\n";
          $retour .= '   <!-- END Styles -->'."\n".LF;
       }
-      
+
       $retour .= $this->_initDropDownMenus();
-      
+
       return $retour;
    }
 
@@ -288,7 +290,7 @@ class cs_privateroom_home_portlet_view extends cs_view{
       	$temp_array['checked']  = "";
       }
       $action_array[] = $temp_array;
-      
+
       $temp_array = array();
       $temp_array['dropdown_image']  = "new_icon";
       $temp_array['text']  = $this->_translator->getMessage('PORTLET_CONFIGURATION_ACTIVE_ROOMS');
@@ -299,7 +301,7 @@ class cs_privateroom_home_portlet_view extends cs_view{
          $temp_array['checked']  = "";
       }
       $action_array[] = $temp_array;
-      
+
       $temp_array = array();
       $temp_array['dropdown_image']  = "new_icon";
       $temp_array['text']  = $this->_translator->getMessage('PORTLET_CONFIGURATION_SEARCH_BOX');
@@ -310,7 +312,7 @@ class cs_privateroom_home_portlet_view extends cs_view{
          $temp_array['checked']  = "";
       }
       $action_array[] = $temp_array;
-      
+
       #$temp_array = array();
       #$temp_array['dropdown_image']  = "new_icon";
       #$temp_array['text']  = $this->_translator->getMessage('PORTLET_CONFIGURATION_DOKUVERSER_BOX');
@@ -321,7 +323,7 @@ class cs_privateroom_home_portlet_view extends cs_view{
       #   $temp_array['checked']  = "";
       #}
       #$action_array[] = $temp_array;
-      
+
       $temp_array = array();
       $temp_array['dropdown_image']  = "new_icon";
       $temp_array['text']  = $this->_translator->getMessage('PORTLET_CONFIGURATION_BUZZWORD_BOX');
@@ -332,7 +334,7 @@ class cs_privateroom_home_portlet_view extends cs_view{
          $temp_array['checked']  = "";
       }
       $action_array[] = $temp_array;
-      
+
       $temp_array = array();
       $temp_array['dropdown_image']  = "new_icon";
       $temp_array['text']  = $this->_translator->getMessage('PORTLET_CONFIGURATION_CONFIGURATION_BOX');
@@ -343,7 +345,7 @@ class cs_privateroom_home_portlet_view extends cs_view{
          $temp_array['checked']  = "";
       }
       $action_array[] = $temp_array;
-      
+
       $temp_array = array();
       $temp_array['dropdown_image']  = "new_icon";
       $temp_array['text']  = $this->_translator->getMessage('PORTLET_CONFIGURATION_NEW_ITEM_BOX');
@@ -354,7 +356,7 @@ class cs_privateroom_home_portlet_view extends cs_view{
          $temp_array['checked']  = "";
       }
       $action_array[] = $temp_array;
-      
+
       $temp_array = array();
       $temp_array['dropdown_image']  = "new_icon";
       $temp_array['text']  = $this->_translator->getMessage('PORTLET_CONFIGURATION_WEATHER_BOX');
@@ -365,7 +367,7 @@ class cs_privateroom_home_portlet_view extends cs_view{
          $temp_array['checked']  = "";
       }
       $action_array[] = $temp_array;
-      
+
       $temp_array = array();
       $temp_array['dropdown_image']  = "new_icon";
       $temp_array['text']  = $this->_translator->getMessage('PORTLET_CONFIGURATION_CLOCK_BOX');
@@ -376,7 +378,7 @@ class cs_privateroom_home_portlet_view extends cs_view{
          $temp_array['checked']  = "";
       }
       $action_array[] = $temp_array;
-      
+
       $temp_array = array();
       $temp_array['dropdown_image']  = "new_icon";
       $temp_array['text']  = $this->_translator->getMessage('PORTLET_CONFIGURATION_YOUTUBE');
@@ -387,7 +389,7 @@ class cs_privateroom_home_portlet_view extends cs_view{
          $temp_array['checked']  = "";
       }
       $action_array[] = $temp_array;
-      
+
       $temp_array = array();
       $temp_array['dropdown_image']  = "new_icon";
       $temp_array['text']  = $this->_translator->getMessage('PORTLET_CONFIGURATION_FLICKR');
@@ -398,7 +400,7 @@ class cs_privateroom_home_portlet_view extends cs_view{
          $temp_array['checked']  = "";
       }
       $action_array[] = $temp_array;
-      
+
       $temp_array = array();
       $temp_array['dropdown_image']  = "new_icon";
       $temp_array['text']  = $this->_translator->getMessage('COMMON_TWITTER_FRIENDS');
@@ -409,7 +411,7 @@ class cs_privateroom_home_portlet_view extends cs_view{
          $temp_array['checked']  = "";
       }
       $action_array[] = $temp_array;
-      
+
       $temp_array = array();
       $temp_array['dropdown_image']  = "new_icon";
       $temp_array['text']  = $this->_translator->getMessage('PORTLET_CONFIGURATION_RSS');
@@ -420,7 +422,7 @@ class cs_privateroom_home_portlet_view extends cs_view{
          $temp_array['checked']  = "";
       }
       $action_array[] = $temp_array;
-      
+
       // init drop down menu
       if ( !empty($action_array)
            and count($action_array) >= 1
