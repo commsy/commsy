@@ -179,7 +179,7 @@ CKEDITOR.dialog.add( 'CommSyImages', function( editor )
             	label : editor.lang.image.upload,
             	elements :
             		[
-            			{
+            			/
             				type : 'file',
             				id : 'upload',
             				label : editor.lang.image.btnUpload,
@@ -192,7 +192,8 @@ CKEDITOR.dialog.add( 'CommSyImages', function( editor )
             				filebrowser : 'info:txtUrl',
             				label : editor.lang.image.btnUpload,
             				'for' : [ 'Upload', 'upload' ]
-            			}
+            			},
+            			commsyImageSelector
             		]
             	}*/
 		],
@@ -200,22 +201,24 @@ CKEDITOR.dialog.add( 'CommSyImages', function( editor )
 		buttons : [ CKEDITOR.dialog.okButton, CKEDITOR.dialog.cancelButton ],
 		onOk : function()
 		{
-		    var selected_file = document.getElementById('select_file').value;
-		    
-		    var selected_width_temp = document.getElementById('select_width').value;
-		    if(selected_width_temp != 'original'){
-		    	selected_width = 'width='+selected_width_temp;
-		    } else {
-		    	selected_width = '';
-		    }
-		    
-		    var selected_alignment = document.getElementById('select_alignment').value;
-		    
-			var image = CKEDITOR.dom.element.createFromHtml('<span>(:image '+selected_file+' '+selected_width+' '+selected_alignment+' alt=\''+selected_file+'\':)</span>');
-			
-			//var image = CKEDITOR.dom.element.createFromHtml('<img src="commsy.php/Finland.gif?cid=107&amp;mod=material&amp;fct=getfile&amp;iid=28" />');
-			
-			editor.insertElement(image);
+			if(document.getElementById('select_file')){
+			    var selected_file = document.getElementById('select_file').value;
+			    
+			    var selected_width_temp = document.getElementById('select_width').value;
+			    if(selected_width_temp != 'original'){
+			    	selected_width = 'width='+selected_width_temp;
+			    } else {
+			    	selected_width = '';
+			    }
+			    
+			    var selected_alignment = document.getElementById('select_alignment').value;
+			    
+				var image = CKEDITOR.dom.element.createFromHtml('<span>(:image '+selected_file+' '+selected_width+' '+selected_alignment+' alt=\''+selected_file+'\':)</span>');
+				
+				//var image = CKEDITOR.dom.element.createFromHtml('<img src="commsy.php/Finland.gif?cid=107&amp;mod=material&amp;fct=getfile&amp;iid=28" />');
+				
+				editor.insertElement(image);
+			}
 		},
 		onCancel : function(){
 			

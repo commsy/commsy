@@ -851,6 +851,7 @@ function isURLValid () {
          $funct != 'privateroom_mycalendar_configuration' and
          $funct != 'privateroom_mycalendar' and
          $funct != 'ckeditor_image_upload' and
+         $funct != 'ckeditor_image_browse' and
          $funct != 'uploadify'
        ) {
        return false;

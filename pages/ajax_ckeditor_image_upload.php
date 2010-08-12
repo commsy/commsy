@@ -113,8 +113,16 @@ if(!empty($_FILES)) {
    // Text im Textfeld nach Dateinamen parsen und passende Dateien aus der files-Tabelle mit dem Item verlinken.
    // Extras temp und id zurücksetzen.
    // cron für das regelmäßige löschen von temp-files.
+
+	$callback_function  = '';
+	$callback_function .= '<script type="text/javascript">'.LF;
+	$callback_function .= '<!--'.LF;
+	$callback_function .= 'window.parent.CKEDITOR.tools.callFunction('.$_GET['CKEditorFuncNum'].', "commsy.php/'.$file_item->getFileName().'?cid='.$environment->getCurrentContextID().'&mod=material&fct=getfile&iid='.$file_item->getFileID().'", "");'.LF;
+	$callback_function .= '-->'.LF;
+	$callback_function .= '</script>'.LF;
+	echo $callback_function;
+	#echo $_FILES['upload']['name'];
 }
 $environment->getSessionManager()->save($session);
-echo $_FILES['upload']['name'];
 exit;
 ?>
