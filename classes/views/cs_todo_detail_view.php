@@ -508,7 +508,13 @@ class cs_todo_detail_view extends cs_detail_view {
                                        $image,
                                        '',
                                        '',
-                                       'anchor'.$subitem->getItemID()).LF;
+                                       'anchor'.$subitem->getItemID(),
+                                       '',
+                                       '',
+                                       '',
+                                       '',
+                                       '',
+                                       'delete_confirm_entry').LF;
         unset($params);
       } else {
          if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
