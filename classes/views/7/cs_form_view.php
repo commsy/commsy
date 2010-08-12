@@ -696,7 +696,26 @@ class cs_form_view extends cs_view {
          $scriptData .= '"file_upload_rubric"	: "' . $target_module . '",';
          $scriptData .= '"SID"					: "' . $session->getSessionID() . '",';
          $scriptData .= '"security_token"		: "' . getToken() . '"';
-
+         
+         /*
+          * this object array specifies the uploadify error message translations 
+          * add more if needed
+          * 
+          * type: uploadify error type
+          * text: translation
+          */   
+         $html .='<script type="text/javascript">';
+         $html .='	var uploadify_errorLang = [';
+         $html .='                              {"type" : "File Size", "text" : "' . $this->_translator->getMessage('ERROR_UPLOADIFY_FILE_SIZE') . '"}';
+         $html .='							  ]';
+         $html .='</script>';
+         
+         // define the buttons
+         $selected_lang = $this->_translator->getSelectedLanguage();
+         $button_browse = "javascript/jQuery/jquery.uploadify-v2.1.0/button_browse_" . $selected_lang . ".png";
+         $button_upload = "javascript/jQuery/jquery.uploadify-v2.1.0/button_upload_" . $selected_lang . ".png";
+         $button_abort = "javascript/jQuery/jquery.uploadify-v2.1.0/button_abort_" . $selected_lang . ".png";
+         
          $html .='<script type="text/javascript">';
          $html .='$(document).ready(function() {';
          $html .='   $("#uploadify").uploadify({';
@@ -708,20 +727,22 @@ class cs_form_view extends cs_view {
          $html .='		"scriptData"	 : ({'.$scriptData.'}),';
          $html .='      "multi"          : true,';
          $html .='      "wmode"          : "transparent",';
-         $html .='      "buttonImg"      : "javascript/jQuery/jquery.uploadify-v2.1.0/button.png",';
+         $html .='      "buttonImg"      : "' . $button_browse . '",';
          $html .='      "width"          : 160,';
          $html .='      "height"         : 25,';
          $html .='      "sizeLimit"      : '.$val.',';
-         $html .='      "buttonText"     : "'.$this->_translator->getMessage('COMMON_UPLOAD_SEARCH_BUTTON').'",';
+         //$html .='      "buttonText"     : "'.$this->_translator->getMessage('COMMON_UPLOAD_SEARCH_BUTTON').'",';
          $html .='      "cancelImg"      : "images/commsyicons/16x16/delete.png",';
-         $html .='		"onComplete"	 : uploadify_onComplete';
+         $html .='		"onComplete"	 : uploadify_onComplete,';
+         $html .='		"onAllComplete"	 : uploadify_onAllComplete,';
+         $html .='		"onError"		 : uploadify_onError';
          $html .='   });';
          $html .='});';
          $html .='</script>';
          $html .= '<div id="fileQueue"></div>';
          $html .= '<input type="file" name="uploadify" id="uploadify" />';
-         $html .= '<a href="javascript:$(\'#uploadify\').uploadifyUpload();"><img src="javascript/jQuery/jquery.uploadify-v2.1.0/button2.png"></a>&nbsp;';
-         $html .= '<a href="javascript:jQuery(\'#uploadify\').uploadifyClearQueue()"><img src="javascript/jQuery/jquery.uploadify-v2.1.0/button3.png"></a>';
+         $html .= '<a href="javascript:$(\'#uploadify\').uploadifyUpload();"><img src="' . $button_upload . '"></a>&nbsp;';
+         $html .= '<a href="javascript:jQuery(\'#uploadify\').uploadifyClearQueue()"><img src="' . $button_abort . '"></a>';
       }else{
          if ( !isset($form_element['multi_upload'])
               or !$form_element['multi_upload']
@@ -731,6 +752,7 @@ class cs_form_view extends cs_view {
             $html .= ' tabindex="'.$this->_count_form_elements.'"';
             $this->_count_form_elements++;
             $html .= '/>';
+            
             if (!empty($form_element['button_text']) and !empty($form_element['button_name'])) {
                $html .= '&nbsp;'.$this->_getButtonAsHTML($form_element['button_text'],$form_element['button_name'],'125');
             }
@@ -2261,6 +2283,9 @@ class cs_form_view extends cs_view {
                   break;
                case 'CONFIGURATION_PORTALHOME': // Gestaltung der Raumübersicht (Portal)
                   $tempMessage = $this->_translator->getMessage('COMMON_CONFIGURATION_PORTALHOME_FORM_TITLE');
+                  break;
+               case 'CONFIGURATION_PORTALUPLOAD': // Konfiguration des Uploads(Portal)
+                  $tempMessage = $this->_translator->getMessage('COMMON_CONFIGURATION_PORTALUPLOAD_FORM_TITLE');
                   break;
                case 'CONFIGURATION_PREFERENCES': // Allgemeine Einstellungen bearbeiten (pers. Raum)
                   $tempMessage = $this->_translator->getMessage('COMMON_CONFIGURATION_PREFERENCES_FORM_TITLE');
