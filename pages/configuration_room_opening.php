@@ -30,7 +30,7 @@ $is_saved = false;
 // Get the translator object
 $translator = $environment->getTranslationObject();
 
-if (!$current_user->isModerator()) {
+if (!$current_user->isModerator() || !$environment->inPortal()) {
    $params = array();
    $params['environment'] = $environment;
    $params['with_modifying_actions'] = true;

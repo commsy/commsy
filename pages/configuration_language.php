@@ -51,7 +51,7 @@ if ($current_user->isGuest()) {
    $errorbox->setText($translator->getMessage('PROJECT_ROOM_IS_CLOSED', $context_item->getTitle()));
    $page->add($errorbox);
    $command = 'error';
-} elseif (!$current_user->isModerator()) {
+} elseif (!$current_user->isModerator() || !$environment->inPortal()) {
    $params = array();
    $params['environment'] = $environment;
    $params['with_modifying_actions'] = true;

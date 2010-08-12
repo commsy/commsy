@@ -22,7 +22,7 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-// get room item and current user
+// get portal item and current user
 $portal_item = $environment->getCurrentPortalItem();
 $current_user = $environment->getCurrentUserItem();
 $is_saved = false;
@@ -30,7 +30,7 @@ $is_saved = false;
 // Get the translator object
 $translator = $environment->getTranslationObject();
 
-if (!$current_user->isModerator()) {
+if(!$current_user->isModerator() || !$environment->inPortal()) {
    $params = array();
    $params['environment'] = $environment;
    $params['with_modifying_actions'] = true;

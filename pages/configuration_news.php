@@ -42,7 +42,8 @@ if ($current_user->isGuest()) {
    $errorbox->setText($translator->getMessage('PROJECT_ROOM_IS_CLOSED', $room_item->getTitle()));
    $page->add($errorbox);
 } elseif ( ($room_item->isPortal() and !$current_user->isModerator())
-           or ($room_item->isServer() and !$current_user->isRoot())
+           or ($room_item->isServer() and !$current_user->isRoot()
+           or(!$room_item->isPortal() and !$room_item->isServer()))
          ) {
    $params = array();
    $params['environment'] = $environment;
