@@ -664,6 +664,16 @@ class cs_form_view extends cs_view {
       		$use_new_upload = true;
       	}
       }
+      
+      // do not use new upload in case of room picture, user picuture, ...
+      $module = $this->_environment->getCurrentModule();
+      $fct = $this->_environment->getCurrentFunction();
+      if(   isset($_GET['show_profile']) ||
+            ($module == 'configuration' && $fct == 'room_options') ||
+            ($module == 'group' && $fct == 'edit')) {
+         $use_new_upload = false;
+      }
+      
       if ($use_new_upload){
          // this div holds the list of files, which upload is finished(+checkbox)
          $html .= '<div id="fileFinished"></div>';
