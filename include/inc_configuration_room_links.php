@@ -225,6 +225,19 @@ if ( !isset($environment) and isset($this->_environment) ) {
       $link_item->setParameter(array());
       $room_link_list->add($link_item);
    }
+   
+   if ($environment->inPortal()){
+      $link_item = new cs_link();
+      $link_item->setTitle($translator->getMessage('CONFIGURATION_PORTAL_UPLOAD'));
+      $link_item->setDescription($translator->getMessage('CONFIGURATION_PORTAL_UPLOAD_DESC'));
+      $link_item->setIconPath('images/cs_config/COMMON_ROOM_META.gif');
+      $link_item->setContextID($environment->getCurrentContextID());
+      $link_item->setModule('configuration');
+      $link_item->setFunction('portalupload');
+      $link_item->setParameter(array());
+      $room_link_list->add($link_item);
+      unset($link_item);
+   }
 
    $room_link_list->sortby('title');
 ?>
