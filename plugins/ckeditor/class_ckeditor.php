@@ -64,6 +64,7 @@ class class_ckeditor extends cs_plugin {
    public function getTextAreaAsHTML ($form_element) {
       $current_context = $this->_environment->getCurrentContextItem();
       $color = $current_context->getColorArray();
+      $cid = $current_context->getItemID();
       unset($current_context);
       if ( !empty($color['content_background']) ) {
          $background_color = $color['content_background'];
@@ -111,8 +112,9 @@ class class_ckeditor extends cs_plugin {
                      [
                         [ \'Cut\', \'Copy\', \'Paste\', \'PasteFromWord\', \'-\', \'Undo\', \'Redo\', \'-\', \'Bold\', \'Italic\', \'Underline\', \'Strike\', \'Subscript\', \'Superscript\', \'-\', \'NumberedList\', \'BulletedList\', \'Outdent\', \'Indent\', \'Blockquote\', \'-\', \'TextColor\', \'BGColor\', \'-\', \'RemoveFormat\']
                         ,\'/\',
-                        [ \'Format\', \'Font\', \'FontSize\', \'-\', \'JustifyLeft\', \'JustifyCenter\', \'JustifyRight\', \'JustifyBlock\', \'-\', \'Link\', \'Unlink\', \'-\', \'Table\', \'HorizontalRule\', \'Smiley\', \'-\', \'Maximize\', \'About\', \'-\', \'CommSyImages\',\'CommSyFiles\']
-                     ]
+                        [ \'Format\', \'Font\', \'FontSize\', \'-\', \'JustifyLeft\', \'JustifyCenter\', \'JustifyRight\', \'JustifyBlock\', \'-\', \'Link\', \'Unlink\', \'-\', \'Table\', \'HorizontalRule\', \'Smiley\', \'-\', \'Maximize\', \'About\', \'-\', \'CommSyImages\',\'CommSyFiles\',\'CommSyUpload\']
+                     ],
+                     filebrowserUploadUrl : \'commsy.php?cid='.$cid.'&mod=ajax&fct=ckeditor_image_upload&output=json&do=save_file\'
                   });'.LF;
       $retour  .= 'var ckeditor_images = "'.$this->_translator->getMessage('CKEDITOR_IMAGES').'";'.LF;
       $retour  .= 'var ckeditor_images_select = "'.$this->_translator->getMessage('CKEDITOR_IMAGES_SELECT').'";'.LF;
@@ -138,6 +140,7 @@ class class_ckeditor extends cs_plugin {
       $retour  .= 'var ckeditor_links = "'.$this->_translator->getMessage('CKEDITOR_LINKS').'";'.LF;
       $retour  .= 'var ckeditor_links_select = "'.$this->_translator->getMessage('CKEDITOR_LINKS_SELECT').'";'.LF;
       $retour  .= 'var ckeditor_links_no_links = "'.$this->_translator->getMessage('CKEDITOR_LINKS_NO_LINKS').'";'.LF;
+      
       $retour .= '</script>'.LF;
       $retour .= LF;
       unset($color);

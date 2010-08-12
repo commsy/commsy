@@ -22,6 +22,21 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
+// temp files
+$temp_files_array = array();
+$file_manager = $environment->getFileManager();
+$file_manager->resetLimits();
+$file_manager->setTempUploadSessionIdLimit($environment->getSessionId());
+$file_manager->select();
+$file_list = $file_manager->get();
+$file_item = $file_list->getFirst();
+while($file_item){
+	$temp_files_array[] = $file_item->getFileID();
+	$file_manager->resetTempUpload($file_item);
+	$file_item = $file_list->getNext();
+}
+unset($file_manager);
+
 // Files
 if ( isset($post_file_ids)
      and !empty($post_file_ids)
@@ -50,7 +65,9 @@ if ( !empty($files)
          }
       }
    }
-   $item_files_upload_to->setFileIDArray($file_id_array);
+   #$item_files_upload_to->setFileIDArray($file_id_array);
+   $temp_merge_array = array_merge($file_id_array, $temp_files_array);
+   $item_files_upload_to->setFileIDArray($temp_merge_array);
 } elseif ( !empty($file_ids) ) {
    $temp_array = array();
    foreach ($file_ids as $file_id) {
@@ -81,8 +98,11 @@ if ( !empty($files)
       }
    }
    unset($file_manager);
-   $item_files_upload_to->setFileIDArray($temp_array);
+   #$item_files_upload_to->setFileIDArray($temp_array);
+   $temp_merge_array = array_merge($temp_array, $temp_files_array);
+   $item_files_upload_to->setFileIDArray($temp_merge_array);
 } else {
-   $item_files_upload_to->setFileIDArray(array());
+   #$item_files_upload_to->setFileIDArray(array());
+   $item_files_upload_to->setFileIDArray($temp_files_array);
 }
 ?>

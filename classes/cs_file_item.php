@@ -656,5 +656,13 @@ class cs_file_item extends cs_item {
       }
       return $retour;
    }
+   
+   function setTempUploadFromEditorSessionID ($value) {
+      $this->_setValue('temp_upload_session_id', $value);
+   }
+
+   function getTempUploadFromEditorSessionID(){
+      return $this->_getValue('temp_upload_session_id');
+   }
 }
 ?>

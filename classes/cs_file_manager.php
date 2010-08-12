@@ -59,6 +59,7 @@ class cs_file_manager extends cs_manager {
    var $_mime = array();
    var $_limit_scan = '';
    var $_limit_newer = '';
+   var $_limit_temp_upload_session_id = '';
 
   /** constructor: cs_file_manager
     * the only available constructor, initial values for internal variables
@@ -209,6 +210,23 @@ class cs_file_manager extends cs_manager {
        return $saved;
     }
 
+    function resetTempUpload($file_item) {
+      $saved = false;
+      $current_user = $this->_environment->getCurrentUser();
+        $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET'.
+                 ' temp_upload_session_id=null'.
+                 ' WHERE files_id = "'.encode(AS_DB,$file_item->getFileID()).'"';
+      $result = $this->_db_connector->performQuery($query);
+      if ( !isset($result) ) {
+          include_once('functions/error_functions.php');
+          trigger_error("Filemanager: Problem creating file entry: ".$query, E_USER_ERROR);
+      } else {
+         $saved = true;
+      }
+       unset($file_item);
+       return $saved;
+    }
+    
    function saveItem($file_item) {
       $saved = false;
       $current_user = $this->_environment->getCurrentUser();
@@ -221,6 +239,11 @@ class cs_file_manager extends cs_manager {
       $has_html = $file_item->getHasHTML();
       if ( !empty($has_html) ) {
          $query .= ' has_html="'.encode(AS_DB,$has_html).'", ';
+      }
+      $temp_upload_session_id = $file_item->getTempUploadFromEditorSessionID();
+      if(!empty($temp_upload_session_id)){
+         #$query .= ' temp_upload="'.encode(AS_DB,$is_temp_upload).'", ';
+         $query .= ' temp_upload_session_id="'.encode(AS_DB,$file_item->getTempUploadFromEditorSessionID()).'", ';
       }
       $query .= ' extras="'.encode(AS_DB,serialize($file_item->getExtraInformation())).'"';
       unset($current_user);
@@ -290,6 +313,10 @@ class cs_file_manager extends cs_manager {
       $this->_limit_newer = $datetime;
    }
 
+   function setTempUploadSessionIdLimit ( $session_id ) {
+      $this->_limit_temp_upload_session_id = $session_id;
+   }
+   
    function resetLimits () {
       $this->_limit_scan = '';
       $this->_limit_newer = '';
@@ -328,6 +355,10 @@ class cs_file_manager extends cs_manager {
           $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.creation_date>"'.encode(AS_DB,$this->_limit_newer).'"';
       }
 
+      if ( !empty($this->_limit_temp_upload_session_id) ) {
+          $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.temp_upload_session_id="'.encode(AS_DB,$this->_limit_temp_upload_session_id).'"';
+      }
+      
       if (isset($this->_order)) {
          $query .= ' ORDER BY '.$this->_order;
       } else {

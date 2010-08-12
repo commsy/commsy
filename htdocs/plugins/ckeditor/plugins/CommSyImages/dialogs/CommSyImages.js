@@ -77,7 +77,7 @@ CKEDITOR.dialog.add( 'CommSyImages', function( editor )
 			//}
 			
 			if(image_array.length == 0){
-				html = ckeditor_images_no_files;
+				html += ckeditor_images_no_files;
 				onClick = function( evt ){};
 			} else {
 				// Bildauswahl
@@ -131,6 +131,7 @@ CKEDITOR.dialog.add( 'CommSyImages', function( editor )
 			html = ckeditor_images_no_files;
 			onClick = function( evt ){};
 		}
+		//html += '<br/><br/><br/><form><input type="file"><input type="submit" id="ckeditor_commsy_image_upload_button" onClick="image_button()" value="Bild hochladen"></form>';
 	} else {
 		html = ckeditor_images_no_files;
 		onClick = function( evt ){};
@@ -144,9 +145,17 @@ CKEDITOR.dialog.add( 'CommSyImages', function( editor )
 		{
 			dialog = event.sender;
 		},
-		//onClick : onClick,
 		style : 'width: 100%; height: 100%; border-collapse: separate;'
 	};
+	
+	var commsyImageUploadFileSelection =
+	{
+	   type : 'file',
+	   id : 'upload',
+	   label : editor.lang.image.btnUpload,
+	   style: 'height:40px',
+	   size : 38
+    };
 	
 	return {
 		title : ckeditor_images_select,
@@ -155,15 +164,39 @@ CKEDITOR.dialog.add( 'CommSyImages', function( editor )
 		contents : [
 			{
 				id : 'tab1',
-				label : '',
-				title : '',
+				label : 'CommSy',
+				title : 'CommSy',
 				expand : false,
 				padding : 0,
 				elements : [
-			            commsyImageSelector
+			            commsyImageSelector,
 					]
-			}
+			}/*,
+			{
+            	id : 'Upload',
+            	hidden : true,
+            	filebrowser : 'uploadButton',
+            	label : editor.lang.image.upload,
+            	elements :
+            		[
+            			{
+            				type : 'file',
+            				id : 'upload',
+            				label : editor.lang.image.btnUpload,
+            				style: 'height:40px',
+            				size : 38
+            			},
+            			{
+            				type : 'fileButton',
+            				id : 'uploadButton',
+            				filebrowser : 'info:txtUrl',
+            				label : editor.lang.image.btnUpload,
+            				'for' : [ 'Upload', 'upload' ]
+            			}
+            		]
+            	}*/
 		],
+		
 		buttons : [ CKEDITOR.dialog.okButton, CKEDITOR.dialog.cancelButton ],
 		onOk : function()
 		{
@@ -180,9 +213,12 @@ CKEDITOR.dialog.add( 'CommSyImages', function( editor )
 		    
 			var image = CKEDITOR.dom.element.createFromHtml('<span>(:image '+selected_file+' '+selected_width+' '+selected_alignment+' alt=\''+selected_file+'\':)</span>');
 			
-			//var image = CKEDITOR.dom.element.createFromHtml('<img src="commsy.php/Canada.gif?cid=107&mod=material&fct=getfile&iid=1" />');
+			//var image = CKEDITOR.dom.element.createFromHtml('<img src="commsy.php/Finland.gif?cid=107&amp;mod=material&amp;fct=getfile&amp;iid=28" />');
 			
 			editor.insertElement(image);
+		},
+		onCancel : function(){
+			
 		}
 	};
 

@@ -9,6 +9,6 @@ CKEDITOR.editorConfig = function( config )
 	// config.language = 'fr';
 	// config.uiColor = '#AADC6E';
 	if(typeof(ckeditor_show_icons) !== 'undefined'){
-		config.extraPlugins = 'CommSyImages,CommSyFiles';
+		config.extraPlugins = 'CommSyImages,CommSyFiles,CommSyUpload';
 	}
 };
