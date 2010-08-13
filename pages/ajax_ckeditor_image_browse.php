@@ -29,23 +29,19 @@ $item = $item_manager->getItem($_GET['iid']);
 
 $temp_files = array();
 $file_list_files = $item->getFileList();
-
-$file_list_files_array = $file_list_files->to_array();
-pr(sizeof($file_list_files_array));
-
-#if ( !$file_list_files->isEmpty() ) {
-#   $file = $file_list_files->getFirst();
-#   while( $file ) {
-#   	$filename = $file->getFilename();
-#   	if(mb_stristr(mb_strtolower($filename, 'UTF-8'),'png')
-#         or mb_stristr(mb_strtolower($filename, 'UTF-8'),'jpg')
-#         or mb_stristr(mb_strtolower($filename, 'UTF-8'),'jpeg')
-#         or mb_stristr(mb_strtolower($filename, 'UTF-8'),'gif')){
-#         $temp_files[$file->getFileID()] = $filename;
-#         $file = $file_list_files->getNext();
-#      }
-#   }
-#}
+if ( !$file_list_files->isEmpty() ) {
+   $file = $file_list_files->getFirst();
+   while( $file ) {
+   	$filename = $file->getFilename();
+   	if(mb_stristr(mb_strtolower($filename, 'UTF-8'),'png')
+         or mb_stristr(mb_strtolower($filename, 'UTF-8'),'jpg')
+         or mb_stristr(mb_strtolower($filename, 'UTF-8'),'jpeg')
+         or mb_stristr(mb_strtolower($filename, 'UTF-8'),'gif')){
+         $temp_files[$file->getFileID()] = $filename;
+      }
+      $file = $file_list_files->getNext();
+   }
+}
 
 $temp_files_upload = array();
 $file_manager = $environment->getFileManager();
