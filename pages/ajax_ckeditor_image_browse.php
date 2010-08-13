@@ -32,11 +32,12 @@ $file_list_files = $item->getFileList();
 if ( !$file_list_files->isEmpty() ) {
    $file = $file_list_files->getFirst();
    while( $file ) {
-   	if(mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'png')
-         or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'jpg')
-         or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'jpeg')
-         or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'gif')){
-         $temp_files[$file->getFileID()] = $file->getFilename();
+   	$filename = $file->getFilename();
+   	if(mb_stristr(mb_strtolower($filename, 'UTF-8'),'png')
+         or mb_stristr(mb_strtolower($filename, 'UTF-8'),'jpg')
+         or mb_stristr(mb_strtolower($filename, 'UTF-8'),'jpeg')
+         or mb_stristr(mb_strtolower($filename, 'UTF-8'),'gif')){
+         $temp_files[$file->getFileID()] = $filename;
          $file = $file_list_files->getNext();
       }
    }
