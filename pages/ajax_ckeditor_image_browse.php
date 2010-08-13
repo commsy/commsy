@@ -27,7 +27,7 @@ include_once('functions/development_functions.php');
 $item_manager = $environment->getItemManager();
 $item = $item_manager->getItem($_GET['iid']);
 
-$temp_files = array();
+$files = array();
 $file_list_files = $item->getFileList();
 if ( !$file_list_files->isEmpty() ) {
    $file = $file_list_files->getFirst();
@@ -36,7 +36,7 @@ if ( !$file_list_files->isEmpty() ) {
          or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'jpg')
          or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'jpeg')
          or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'gif')){
-         $temp_files[$file->getFileID()] = $file->getFilename();
+         $files[$file->getFileID()] = $file->getFilename();
       }
       $file = $file_list_files->getNext();
    }
@@ -44,18 +44,13 @@ if ( !$file_list_files->isEmpty() ) {
 
 $temp_files_upload = array();
 $file_manager = $environment->getFileManager();
-$file_manager->reset();
-$file_manager->setTempUploadSessionIdLimit($environment->getSessionId());
-$file_manager->select();
-$file_list_files_upload = $file_manager->get();
+$file_list_files_upload = $file_manager->getTempItemListBySessionID($environment->getSessionID());
 $file_item = $file_list_files_upload->getFirst();
 while($file_item){
-   $temp_files_upload[$file_item->getFileID()] = $file_item->getFilename();
+   $files[$file_item->getFileID()] = $file_item->getFilename();
    $file_item = $file_list_files_upload->getNext();
 }
 unset($file_manager);
-
-$files = array_merge($temp_files, $temp_files_upload);
 
 $page->addHtml();
 $html  = '';

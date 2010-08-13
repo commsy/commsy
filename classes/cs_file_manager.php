@@ -835,5 +835,24 @@ class cs_file_manager extends cs_manager {
       }
       return $retour;
    }
+   
+   function getTempItemListBySessionID( $session_id ) {
+      $file_list = new cs_list();
+      $query  = 'SELECT * FROM '.$this->addDatabasePrefix('files');
+      $query .= ' WHERE 1';
+      $query .= ' AND '.$this->addDatabasePrefix('files').'.temp_upload_session_id="'.encode(AS_DB,$session_id).'"';
+      $result = $this->_db_connector->performQuery($query);
+      if ( !isset($result) ) {
+         include_once('functions/error_functions.php');
+         trigger_error('Problems getting temp files with session id ['.$session_id.'].',E_USER_WARNING);
+         $file = array();
+      } elseif ( !empty($result[0]) ) {
+         foreach($result as $file_results){
+            $temp_file = $this->_buildItem($file_results);
+            $file_list->add($temp_file);
+         }
+      }
+      return $file_list;
+   }
 }
 ?>
