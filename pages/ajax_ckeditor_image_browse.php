@@ -28,7 +28,7 @@ $item_manager = $environment->getItemManager();
 $item = $item_manager->getItem($_GET['iid']);
 
 $temp_files = array();
-#$file_list_files = $item->getFileList();
+$file_list_files = $item->getFileList();
 #if ( !$file_list_files->isEmpty() ) {
 #   $files = array();
 #   $file = $file_list_files->getFirst();
