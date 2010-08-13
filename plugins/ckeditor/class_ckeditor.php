@@ -101,6 +101,10 @@ class class_ckeditor extends cs_plugin {
       }
       $retour .= LF.'</textarea>'.LF;
       $retour .= '<script type="text/javascript">'.LF;
+      $temp_iid = '';
+      if(isset($_GET['iid'])){
+      	$temp_iid = '&iid='.$_GET['iid'];
+      }
       $retour .= '   CKEDITOR.replace( \''.$form_element['name'].'_'.$form_element['tabindex'].'\' ,
                   {
                      language : \''.$this->_environment->getSelectedLanguage().'\',
@@ -115,7 +119,7 @@ class class_ckeditor extends cs_plugin {
                         [ \'Format\', \'Font\', \'FontSize\', \'-\', \'JustifyLeft\', \'JustifyCenter\', \'JustifyRight\', \'JustifyBlock\', \'-\', \'Link\', \'Unlink\', \'-\', \'Table\', \'HorizontalRule\', \'Smiley\', \'-\', \'Maximize\', \'About\', \'-\', \'CommSyImages\',\'CommSyFiles\',\'Image\']
                      ],
                      filebrowserUploadUrl : \'commsy.php?cid='.$cid.'&mod=ajax&fct=ckeditor_image_upload&output=json&do=save_file\',
-                     filebrowserBrowseUrl : \'commsy.php?cid='.$cid.'&mod=ajax&fct=ckeditor_image_browse&output=blank&iid='.$_GET['iid'].'\',
+                     filebrowserBrowseUrl : \'commsy.php?cid='.$cid.'&mod=ajax&fct=ckeditor_image_browse&output=blank'.$temp_iid.'\',
                      filebrowserWindowWidth : \'100\',
                      filebrowserWindowHeight : \'50\'
                   });'.LF;
