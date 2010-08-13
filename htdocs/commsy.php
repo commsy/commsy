@@ -627,6 +627,7 @@ if ( !empty($_POST)
 if ( !$outofservice
      and $environment->isOutputModeNot('XML')
      and $environment->isOutputModeNot('JSON')
+     and $environment->isOutputModeNot('BLANK')
 #     and !$environment->getCurrentModule() == 'ajax'
      and !($environment->getCurrentModule() == 'ajax')
      and !$session->issetValue('javascript')
@@ -647,6 +648,7 @@ if ( !$outofservice
 if ( isset($_GET['jscheck'])
      and $environment->isOutputModeNot('XML')
      and $environment->isOutputModeNot('JSON')
+     and $environment->isOutputModeNot('BLANK')
      and ( empty($_POST)
            or ( count($_POST) == 1
                 and !empty($_POST['HTTP_ACCEPT_LANGUAGE']) // bugfix: php configuration
@@ -715,6 +717,12 @@ if ( $environment->isOutputMode('XML') ) {
    $params['environment'] = $environment;
    $params['with_modifying_actions'] = $with_modifying_actions;
    $page = $class_factory->getClass(PAGE_JSON_VIEW,$params);
+   unset($params);
+} elseif ( $environment->isOutputMode('BLANK') ) {
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = $with_modifying_actions;
+   $page = $class_factory->getClass(PAGE_BLANK_VIEW,$params);
    unset($params);
 } else {
    $parameters = $environment->getCurrentParameterArray();
@@ -796,7 +804,7 @@ if ( isset($session) ) {
    }
 }
 
-if ( $environment->isOutputModeNot('XML') and $environment->isOutputModeNot('JSON')) {
+if ( $environment->isOutputModeNot('XML') and $environment->isOutputModeNot('JSON') and $environment->isOutputModeNot('BLANK')) {
    $page->setCurrentUser($environment->getCurrentUserItem());
 
    // set title
@@ -974,7 +982,7 @@ if ( $current_context->isLocked()
    }
 }
 
-if ( $environment->isOutputModeNot('XML') and $environment->isOutputModeNot('JSON')) {
+if ( $environment->isOutputModeNot('XML') and $environment->isOutputModeNot('JSON') and $environment->isOutputModeNot('BLANK')) {
 
    // set navigation links
    $current_room_modules = $context_item_current->getHomeConf();
@@ -1093,7 +1101,7 @@ if ( $environment->isOutputModeNot('XML') and $environment->isOutputModeNot('JSO
 
 // display page
 header("Content-Type: text/html; charset=utf-8");
-if ( $environment->isOutputMode('XML') or $environment->isOutputMode('JSON') ) {
+if ( $environment->isOutputMode('XML') or $environment->isOutputMode('JSON') or $environment->isOutputMode('BLANK')) {
    echo($page->getContent());
 } else {
    include_once('functions/security_functions.php');
@@ -1292,7 +1300,7 @@ if ( isset($c_show_debug_infos) and $c_show_debug_infos ) {
    echo('<span style="font-weight:bold;">Session Object</span>'.BRLF);
    pr($session);
 }
-if ( $environment->isOutputModeNot('XML') and $environment->isOutputModeNot('JSON') ) {
+if ( $environment->isOutputModeNot('XML') and $environment->isOutputModeNot('JSON') and $environment->isOutputModeNot('BLANK')) {
    echo('<!-- Total execution time: '.$time.' seconds -->');
 }
 ?>

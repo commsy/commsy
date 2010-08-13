@@ -60,6 +60,7 @@ class cs_file_manager extends cs_manager {
    var $_limit_scan = '';
    var $_limit_newer = '';
    var $_limit_temp_upload_session_id = '';
+   var $_limit_include_temp_upload_session_id = '';
 
   /** constructor: cs_file_manager
     * the only available constructor, initial values for internal variables
@@ -317,6 +318,10 @@ class cs_file_manager extends cs_manager {
       $this->_limit_temp_upload_session_id = $session_id;
    }
    
+   function setIncludeTempUploadSessionIdLimit ( $session_id ) {
+      $this->_limit_include_temp_upload_session_id = $session_id;
+   }
+   
    function resetLimits () {
       $this->_limit_scan = '';
       $this->_limit_newer = '';
@@ -357,6 +362,9 @@ class cs_file_manager extends cs_manager {
 
       if ( !empty($this->_limit_temp_upload_session_id) ) {
           $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.temp_upload_session_id="'.encode(AS_DB,$this->_limit_temp_upload_session_id).'"';
+      }
+      if ( !empty($this->_limit_include_temp_upload_session_id) ) {
+          $query .= ' OR '.$this->addDatabasePrefix($this->_db_table).'.temp_upload_session_id="'.encode(AS_DB,$this->_limit_include_temp_upload_session_id).'"';
       }
       
       if (isset($this->_order)) {

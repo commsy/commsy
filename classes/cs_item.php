@@ -1958,6 +1958,35 @@ class cs_item {
       return $file_new_list;
    }
 
+   function getFileListIncludingTempUploads() {
+      $file_list = new cs_list;
+      if ( !empty($this->_data['file_list']) ) {
+         $file_list = $this->_data['file_list'];
+      } else {
+         if ( isset($this->_data['file_id_array']) and !empty($this->_data['file_id_array']) ) {
+            $file_id_array = $this->_data['file_id_array'];
+         } else {
+            $link_manager = $this->_environment->getLinkManager();
+            $file_links = $link_manager->getFileLinks($this);
+            if ( !empty($file_links) ) {
+               foreach ($file_links as $link) {
+                  $file_id_array[] = $link['file_id'];
+               }
+            }
+         }
+         if ( !empty($file_id_array) ) {
+            $file_manager = $this->_environment->getFileManager();
+            $file_manager->setIDArrayLimit($file_id_array);
+            $file_manager->setContextLimit('');
+            $file_manager->setIncludeTempUploadSessionIdLimit($this->_environment->getSessionId());
+            $file_manager->select();
+            $file_list = $file_manager->get();
+         }
+      }
+      $file_list->sortby('filename');
+      return $file_list;
+   }
+   
    function isPublished () {
       return true;
    }
