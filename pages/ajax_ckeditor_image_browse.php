@@ -44,17 +44,17 @@ if ( !$file_list_files->isEmpty() ) {
 }
 
 $temp_files_upload = array();
-$file_manager = $environment->getFileManager();
-$file_manager->reset();
-$file_manager->setTempUploadSessionIdLimit($environment->getSessionId());
-$file_manager->select();
-$file_list_files_upload = $file_manager->get();
-$file_item = $file_list_files_upload->getFirst();
-while($file_item){
-   $temp_files_upload[$file_item->getFileID()] = $file_item->getFilename();
-   $file_item = $file_list_files_upload->getNext();
-}
-unset($file_manager);
+#$file_manager = $environment->getFileManager();
+#$file_manager->reset();
+#$file_manager->setTempUploadSessionIdLimit($environment->getSessionId());
+#$file_manager->select();
+#$file_list_files_upload = $file_manager->get();
+#$file_item = $file_list_files_upload->getFirst();
+#while($file_item){
+#   $temp_files_upload[$file_item->getFileID()] = $file_item->getFilename();
+#   $file_item = $file_list_files_upload->getNext();
+#}
+#unset($file_manager);
 
 $files = array_merge($temp_files, $temp_files_upload);
 
