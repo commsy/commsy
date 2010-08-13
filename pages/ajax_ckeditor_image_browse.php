@@ -29,6 +29,10 @@ $item = $item_manager->getItem($_GET['iid']);
 
 $temp_files = array();
 $file_list_files = $item->getFileList();
+
+$file_list_files_array = $file_list_files->to_array();
+pr(size_of($file_list_files_array));
+
 if ( !$file_list_files->isEmpty() ) {
    $file = $file_list_files->getFirst();
    while( $file ) {
