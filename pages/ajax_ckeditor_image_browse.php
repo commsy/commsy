@@ -24,22 +24,24 @@
 
 include_once('functions/development_functions.php');
 
-$item_manager = $environment->getItemManager();
-$item = $item_manager->getItem($_GET['iid']);
-
 $files = array();
-$file_list_files = $item->getFileList();
-if ( !$file_list_files->isEmpty() ) {
-   $file = $file_list_files->getFirst();
-   while( $file ) {
-   	if(mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'png')
-         or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'jpg')
-         or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'jpeg')
-         or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'gif')){
-         $files[$file->getFileID()] = $file->getFilename();
-      }
-      $file = $file_list_files->getNext();
-   }
+
+if(isset($_GET['iid']) and $_GET['iid'] != 'NEW'){
+	$item_manager = $environment->getItemManager();
+	$item = $item_manager->getItem($_GET['iid']);
+	$file_list_files = $item->getFileList();
+	if ( !$file_list_files->isEmpty() ) {
+	   $file = $file_list_files->getFirst();
+	   while( $file ) {
+	   	if(mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'png')
+	         or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'jpg')
+	         or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'jpeg')
+	         or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'gif')){
+	         $files[$file->getFileID()] = $file->getFilename();
+	      }
+	      $file = $file_list_files->getNext();
+	   }
+	}
 }
 
 $temp_files_upload = array();

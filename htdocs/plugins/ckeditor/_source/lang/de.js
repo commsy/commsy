@@ -63,11 +63,13 @@ CKEDITOR.lang['de'] =
 	// Common messages and labels.
 	common :
 	{
-		browseServer	: 'Server durchsuchen',
+		//browseServer	: 'Server durchsuchen',
+	    browseServer	: 'Angehängte Dateien durchsuchen',
 		url				: 'URL',
 		protocol		: 'Protokoll',
 		upload			: 'Upload',
-		uploadSubmit	: 'Zum Server senden',
+		//uploadSubmit	: 'Zum Server senden',
+		uploadSubmit	: 'Bild anhängen',
 		image			: 'Bild',
 		flash			: 'Flash',
 		form			: 'Formular',
