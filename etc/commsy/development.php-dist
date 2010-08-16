@@ -49,6 +49,9 @@ $c_enable_logging_to_file = false;
 $c_logging_file = '';
 
 // enable security for HTML textarea
+// this feature is old and not stable
+// please don't turn this on
+// IJ, 16.08.2010
 $c_enable_htmltextarea_security = false;
 
 // use cron new
