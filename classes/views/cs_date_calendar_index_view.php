@@ -3981,8 +3981,14 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                      $is_date_for_whole_day = true;
                   }
                } else {
-                  $end_hour = mb_substr($date->getEndingTime(),0,2);
-                  $end_minutes = mb_substr($date->getEndingTime(),3,2);
+               	if($date->getEndingTime() != ''){
+               		$end_hour = mb_substr($date->getEndingTime(),0,2);
+                  	$end_minutes = mb_substr($date->getEndingTime(),3,2);
+               	} else {
+               		$end_hour = $start_hour + 1;
+                  	$end_minutes = $start_minutes;
+               	}
+
                }
                if(mb_substr($end_hour,0,1) == '0'){
                   $end_hour = mb_substr($end_hour,1,1);
