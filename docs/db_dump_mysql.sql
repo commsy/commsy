@@ -820,11 +820,16 @@ CREATE TABLE IF NOT EXISTS `room` (
   `template` tinyint(4) NOT NULL DEFAULT '-1',
   `contact_persons` varchar(255) DEFAULT NULL,
   `description` text,
+  `room_description` varchar(10000) default NULL,
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`),
   KEY `type` (`type`),
-  KEY `activity` (`activity`)
+  KEY `activity` (`activity`),
+  KEY `deletion_date` (`deletion_date`),
+  KEY `deleter_id` (`deleter_id`),
+  KEY `room_description` (`room_description`(333)),
+  KEY `contact_persons` (`contact_persons`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
@@ -1660,11 +1665,16 @@ CREATE TABLE IF NOT EXISTS `zzz_room` (
   `template` tinyint(4) NOT NULL DEFAULT '-1',
   `contact_persons` varchar(255) DEFAULT NULL,
   `description` text,
+  `room_description` varchar(10000) default NULL,
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`),
   KEY `type` (`type`),
-  KEY `activity` (`activity`)
+  KEY `activity` (`activity`),
+  KEY `deletion_date` (`deletion_date`),
+  KEY `deleter_id` (`deleter_id`),
+  KEY `room_description` (`room_description`(333)),
+  KEY `contact_persons` (`contact_persons`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
