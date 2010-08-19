@@ -1902,7 +1902,7 @@ function return_portlet_youtube(id, portlet){
 	     channel: "favorites",
 	     hideAuthor: true,
 	     numberToDisplay: 3,
-	     linksInNewWindow: true,
+	     linksInNewWindow: true
 	  });
 	  portlet_data['youtube_save'] = false;
    }
@@ -3276,6 +3276,9 @@ function uploadify_onComplete(event, queueID, fileObj, response, data) {
 		jQuery("<br/>"
 		)
 	);
+	
+	// this is for browser compatibility
+	jQuery("div[id='fileFinished'] input:last").attr('checked', 'checked');
 }
 
 var uploadify_onAllCompleteSubmitForm = false;
