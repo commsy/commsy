@@ -265,7 +265,7 @@ class cs_mail extends Mail
                   if (!$result) {
                      $this->_error_array[] = $email;
                   }
-                  $success = $success and $result;
+                  $success = $success && $result;
                } elseif ( $c_send_email === 'print' ) {
                   echo('<hr/>'.LF);
                   echo('TO: '.$email.BRLF);
@@ -289,7 +289,7 @@ class cs_mail extends Mail
                if (!$result) {
                   $this->_error_array[] = $this->recipients;
                }
-               $success = $success and $result;
+               $success = $success && $result;
             } elseif ( $c_send_email === 'print' ) {
                echo('<hr/>'.LF);
                echo('TO: '.$this->recipients.BRLF);

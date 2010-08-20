@@ -22,6 +22,8 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 $formal_data = array();
+$mail_success = true;
+$mail_error_array = array();
 
 // because email to all accounts
 if ($environment->inPortal()) {
@@ -30,6 +32,8 @@ if ($environment->inPortal()) {
 
 function performAction ( $environment, $action_array, $post_array ) {
    global $formal_data;
+   global $mail_success;
+   global $mail_error_array;
 
    // Get the translator object
    $translator = $environment->getTranslationObject();
@@ -522,7 +526,8 @@ function performAction ( $environment, $action_array, $post_array ) {
          unset($cc_string);
          unset($bcc_string);
 
-         $mail->send();
+         $mail_success = $mail->send();
+         $mail_error_array = $mail->getErrorArray();
          unset($mail);
       }
       unset($user);
@@ -611,13 +616,41 @@ if ( $command != 'error' ) {
             if($environment->getCurrentModule() != 'user'){
                redirect($action_array['backlink']['cid'],$action_array['backlink']['mod'],$action_array['backlink']['fct'],$action_array['backlink']['par']);
             } else {
-               $params = array();
-               $params['environment'] = $environment;
-               $params['with_modifying_actions'] = false;
-               $detail_view = $class_factory->getClass(MAIL_VIEW,$params);
-               unset($params);
-               $detail_view->setFormalData($formal_data);
-               $page->add($detail_view);
+               if($mail_success) {
+	               $params = array();
+	               $params['environment'] = $environment;
+	               $params['with_modifying_actions'] = false;
+	               $detail_view = $class_factory->getClass(MAIL_VIEW,$params);
+	               unset($params);
+	               $detail_view->setFormalData($formal_data);
+	               $page->add($detail_view);
+               } else {
+                  $params = array();
+		            $params['environment'] = $environment;
+		            $params['with_modifying_actions'] = true;
+		            $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+		            unset($params);
+		            if ( !empty($mail_error_array) ) {
+		               $error_string = $translator->getMessage('ERROR_SEND_EMAIL_TO');
+		               foreach ($mail_error_array as $error) {
+		                  $error = htmlentities($error, ENT_NOQUOTES, 'UTF-8');
+		                  $error = str_replace(',',BRLF,$error);
+		                  $error_string .= BRLF.$error;
+		               }
+		            } else {
+		               $error_string = $translator->getMessage('ERROR_SEND_MAIL');
+		            }
+		
+		            $params = array();
+		            $params['environment'] = $environment;
+		            $params['with_modifying_actions'] = false;
+		            $detail_view = $class_factory->getClass(MAIL_VIEW,$params);
+		            unset($params);
+		            $detail_view->setFormalData($formal_data);
+		            $errorbox->setText($error_string);
+		            $page->add($errorbox);
+		            $page->add($detail_view);
+               }
             }
          }
       } else {
