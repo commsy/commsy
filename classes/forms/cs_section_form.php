@@ -247,7 +247,16 @@ class cs_section_form extends cs_rubric_form {
       }
       $this->_form->combine('vertical');
       $this->_form->addText('max_size',$val,$this->_translator->getMessage('MATERIAL_MAX_FILE_SIZE',$meg_val));
-
+      
+      $session = $this->_environment->getSession();
+      $new_upload = false;
+      if($session->issetValue('javascript') and $session->issetValue('flash')) {
+      	if(($session->getValue('javascript') == '1') and ($session->getValue('flash') == '1')) {
+      	   $new_upload = true;
+      	}
+      }
+      if(!$new_upload) $this->_form->addText('old_upload', '', $this->_translator->getMessage('COMMON_UPLOAD_OLD'));
+      
       // buttons
       $id = 0;
       if (isset($this->_item)) {

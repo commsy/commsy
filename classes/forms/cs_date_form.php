@@ -590,7 +590,16 @@ class cs_date_form extends cs_rubric_form {
       }
       $this->_form->combine('vertical');
       $this->_form->addText('max_size',$val,$this->_translator->getMessage('MATERIAL_MAX_FILE_SIZE',$meg_val));
-
+      
+      $session = $this->_environment->getSession();
+      $new_upload = false;
+      if($session->issetValue('javascript') and $session->issetValue('flash')) {
+      	if(($session->getValue('javascript') == '1') and ($session->getValue('flash') == '1')) {
+      	   $new_upload = true;
+      	}
+      }
+      if(!$new_upload) $this->_form->addText('old_upload', '', $this->_translator->getMessage('COMMON_UPLOAD_OLD'));
+      
       #$this->_form->addTextfield('colour','',$this->_translator->getMessage('DATES_COLOUR'),$this->_translator->getMessage('DATES_COLOUR_DESC'),'',10,false,'','','','left','','',false,'',10,true,true);
       #$this->_form->combine();
       #pr('--->'.$this->_color.'<---');
