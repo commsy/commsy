@@ -393,6 +393,7 @@ if ( isset($_GET['selroom'])
       }
    }
 }
+
 if ( isset($_GET['selassignment'])
      and $_GET['selassignment'] != '-2'
      and $_GET['selassignment'] != '3'
@@ -1061,7 +1062,10 @@ if ( empty($only_show_array) ) {
       }
       $dates_manager->setDateModeLimit($selstatus);
    }
-   if ($sel_assignment != '2'){
+   if ( $sel_assignment != '2'
+        and $environment->inPrivateRoom()
+        and $environment->inConfigArray('c_use_new_private_room',$environment->getCurrentContextID())
+      ) {
       $current_user = $environment->getCurrentUserItem();
       $user_list = $current_user->getRelatedUserList();
       $user_item = $user_list->getFirst();
