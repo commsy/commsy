@@ -424,10 +424,10 @@ jQuery.fn.jScrollPane = function(settings)
 						$target = $(e.target);
 						if ($target.is('a')) {
 							var h = $target.attr('href');
-							console.log(h);
+							//console.log(h);
 							if (h.substr(0, 1) == '#') {
 								$linkedEle = $(h, $this);
-								console.log($linkedEle);
+								//console.log($linkedEle);
 								if ($linkedEle.length) {
 									$linkedEle.trigger('focus');
 									return false;
