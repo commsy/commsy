@@ -399,5 +399,14 @@ class cs_grouproom_manager extends cs_room2_manager {
    public function getUserRelatedGroupListForUser ($user_item) {
       return $this->_getRelatedContextListForUser($user_item->getUserID(),$user_item->getAuthSource(),$this->_environment->getCurrentPortalID(),false,true);
    }
+
+   function saveActivityPoints ($item) {
+      parent::saveActivityPoints($item);
+
+      // portal item -> save max activity points
+      $portal = $item->getContextItem();
+      $portal->saveMaxRoomActivityPoints($item->getActivityPoints());
+      unset($portal);
+   }
 }
 ?>

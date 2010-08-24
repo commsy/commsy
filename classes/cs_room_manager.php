@@ -509,14 +509,15 @@ class cs_room_manager extends cs_context_manager {
 
    function getMaxActivityPoints () {
       $retour = 0;
-      $query = 'SELECT MAX(activity) AS max FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE deleter_id IS NULL AND deletion_date is NULL and (type = "project" or type = "community")';
+      $query = 'SELECT MAX(activity) AS max FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE deleter_id IS NULL AND deletion_date is NULL';
       if ( !empty($this->_room_limit) ) {
          $query .= ' and context_id = '.encode(AS_DB,$this->_room_limit);
       }
       $query .= ';';
       $result = $this->_db_connector->performQuery($query);
       if (!isset($result)) {
-         include_once('functions/error_functions.php');trigger_error('Problems selecting '.$this->_db_table.' max activity from query: "'.$query.'"',E_USER_WARNING);
+         include_once('functions/error_functions.php');
+         trigger_error('Problems selecting '.$this->_db_table.' max activity from query: "'.$query.'"',E_USER_WARNING);
       } else {
          if (!empty($result[0]['max'])) {
             $retour = $result[0]['max'];
