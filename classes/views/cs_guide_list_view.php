@@ -71,6 +71,13 @@ class cs_guide_list_view extends cs_list_view_plain {
       if ( $this->_environment->inServer() ) {
          $manager = $this->_environment->getPortalManager();
          $this->_max_activity = $manager->getMaxActivityPoints();
+      } elseif ( $this->_environment->inPortal() ) {
+         #$manager = $this->_environment->getRoomManager();
+         #$this->_max_activity = $manager->getMaxActivityPoints();
+         // maybe get max activity out of portal item?
+         $portal = $this->_environment->getCurrentContextItem();
+         $this->_max_activity = $portal->getMaxRoomActivityPoints();
+         unset($portal);
       } else {
          $manager = $this->_environment->getRoomManager();
          $this->_max_activity = $manager->getMaxActivityPoints();

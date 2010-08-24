@@ -69,6 +69,34 @@ class cs_portal_item extends cs_guide_item {
       return true;
    }
 
+   /** get max activity points of rooms
+    *
+    * @return int max activity points of rooms
+    */
+   function getMaxRoomActivityPoints () {
+      $retour = 0;
+      if ($this->_issetExtra('MAX_ROOM_ACTIVITY')) {
+         $retour = $this->_getExtra('MAX_ROOM_ACTIVITY');
+      }
+      return $retour;
+   }
+
+   /** set max activity points of rooms
+    *
+    * @param int max activity points of rooms
+    */
+   function setMaxRoomActivityPoints ($value) {
+      $this->_addExtra('MAX_ROOM_ACTIVITY',(int)$value);
+   }
+
+   function saveMaxRoomActivityPoints ($value) {
+      $current_value = $this->getMaxRoomActivityPoints();
+      if ( $current_value < $value ) {
+         $this->setMaxRoomActivityPoints($value);
+         $this->saveWithoutChangingModificationInformation();
+      }
+   }
+
    /** get filename of picture
     *
     * @return string filename of picture

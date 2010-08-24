@@ -1204,6 +1204,7 @@ if ( isset($context_item_current) ) {
    if ( $context_item_current->isProjectRoom()
         or $context_item_current->isCommunityRoom()
         or $environment->inPrivateRoom()
+        or $environment->inGroupRoom()
       ) {
       $current_portal_item = $environment->getCurrentPortalItem();
       if ( isset($current_portal_item) ) {

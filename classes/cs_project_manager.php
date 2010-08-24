@@ -529,5 +529,14 @@ class cs_project_manager extends cs_room2_manager {
 
       return $retour;
    }
+
+   function saveActivityPoints ($item) {
+      parent::saveActivityPoints($item);
+
+      // portal item -> save max activity points
+      $portal = $item->getContextItem();
+      $portal->saveMaxRoomActivityPoints($item->getActivityPoints());
+      unset($portal);
+   }
 }
 ?>

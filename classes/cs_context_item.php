@@ -246,7 +246,7 @@ class cs_context_item extends cs_item {
    function getMaxUploadSizeInBytes(){
       $val = ini_get('upload_max_filesize');
       $val = trim($val);
-      
+
       // if this is in portal context
       if(   $this->_environment->inPortal()) {
          // check for portal limit
@@ -254,7 +254,7 @@ class cs_context_item extends cs_item {
             $val = $this->_getExtra('MAX_UPLOAD_SIZE');
          }
       }
-      
+
       // if this is in room context
       if(   $this->_environment->inGroupRoom() ||
             $this->_environment->inPrivateRoom() ||
@@ -265,13 +265,13 @@ class cs_context_item extends cs_item {
          if($portal_limit != '') {
             $val = $portal_limit;
          }
-         
+
          // check for room limit
          if($this->_issetExtra('MAX_UPLOAD_SIZE')) {
             $val = $this->_getExtra('MAX_UPLOAD_SIZE');
          }
       }
-      
+
       $last = $val[mb_strlen($val)-1];
       switch($last) {
          case 'k':
@@ -283,7 +283,7 @@ class cs_context_item extends cs_item {
             $val = $val * 1048576;
             break;
       }
-      
+
       return $val;
    }
 
@@ -294,7 +294,7 @@ class cs_context_item extends cs_item {
          $this->_unsetExtra('MAX_UPLOAD_SIZE');
       }
    }
-   
+
    function getMaxUploadSizeExtraOnly() {
       $retour = '';
       if($this->_issetExtra('MAX_UPLOAD_SIZE')) {

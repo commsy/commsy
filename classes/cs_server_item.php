@@ -179,6 +179,7 @@ class cs_server_item extends cs_guide_item {
       if ( $success ) {
          $success = $disc_manager->makeDirectory($temp_folder);
       }
+      unset($disc_manager);
 
       if ( $success ) {
          $cron_array['success'] = true;
@@ -219,51 +220,51 @@ class cs_server_item extends cs_guide_item {
          $portal_item = $portal_list->getFirst();
          while ($portal_item) {
             $room_list = $portal_item->getRoomList();
-            
+
             if ($room_list->isNotEmpty()) {
                $room_item = $room_list->getFirst();
-               while ($room_item) {               	
-               	  // get latest timestamp of page impressions and user actitivty
-               	  // from extra field PIUA_LAST
-               	  $piua_last = $room_item->getPageImpressionAndUserActivityLast();
-               	  
-               	  if(!empty($piua_last)) {
-               	  	 $oldest_date = $piua_last;
-               	  } else {
-               	  	 // if there is no entry take creation_date
-               	  	 $creation_date = $room_item->getCreationDate();
-               	  	 $oldest_date = getYearFromDateTime($creation_date) . 
-	              					getMonthFromDateTime($creation_date) . 
-	              					getDayFromDateTime($creation_date);
-               	  }
-               	  
-	              $current_date = getCurrentDate();
-	              $day_diff = getDifference($oldest_date, $current_date);
-	              $pi_array = $room_item->getPageImpressionArray();
-	              $ua_array = $room_item->getUserActivityArray();
-	              $pi_input = array();
-	              $ua_input = array();
-	              	
-	              // for each day, get page impressions and user activity
-	              for($i=1;$i < $day_diff;$i++) {
-	              	 $log_manager->resetLimits();
-	              	 $log_manager->setContextLimit($room_item->getItemID());
-	              	 $log_manager->setRequestLimit("commsy.php");
-	              	 $older_limit_stamp = datetime2Timestamp(date("Y-m-d 00:00:00"))-($i-1)*86400;
-	              	 $older_limit = date('Y-m-d', $older_limit_stamp);
-	              	 $log_manager->setTimestampOlderLimit($older_limit);
-	              	 $log_manager->setTimestampNotOlderLimit($i);
-	              	   
-	              	 $pi_input[] = $log_manager->getCountAll();
-	              	 $ua_input[] = $log_manager->countWithUserDistinction();
-	              }
-	              
-	              // put actual date in extra field PIUA_LAST
-	              $room_item->setPageImpressionAndUserActivityLast($current_date);
-	              $room_item->setPageImpressionArray(array_merge($pi_input, $pi_array));
-	              $room_item->setUserActivityArray(array_merge($ua_input, $ua_array));
-	              $room_item->saveWithoutChangingModificationInformation();
-	              
+               while ($room_item) {
+                  // get latest timestamp of page impressions and user actitivty
+                  // from extra field PIUA_LAST
+                  $piua_last = $room_item->getPageImpressionAndUserActivityLast();
+
+                  if(!empty($piua_last)) {
+                     $oldest_date = $piua_last;
+                  } else {
+                     // if there is no entry take creation_date
+                     $creation_date = $room_item->getCreationDate();
+                     $oldest_date = getYearFromDateTime($creation_date) .
+                          getMonthFromDateTime($creation_date) .
+                          getDayFromDateTime($creation_date);
+                  }
+
+                  $current_date = getCurrentDate();
+                  $day_diff = getDifference($oldest_date, $current_date);
+                  $pi_array = $room_item->getPageImpressionArray();
+                  $ua_array = $room_item->getUserActivityArray();
+                  $pi_input = array();
+                  $ua_input = array();
+
+                  // for each day, get page impressions and user activity
+                  for($i=1;$i < $day_diff;$i++) {
+                     $log_manager->resetLimits();
+                     $log_manager->setContextLimit($room_item->getItemID());
+                     $log_manager->setRequestLimit("commsy.php");
+                     $older_limit_stamp = datetime2Timestamp(date("Y-m-d 00:00:00"))-($i-1)*86400;
+                     $older_limit = date('Y-m-d', $older_limit_stamp);
+                     $log_manager->setTimestampOlderLimit($older_limit);
+                     $log_manager->setTimestampNotOlderLimit($i);
+
+                     $pi_input[] = $log_manager->getCountAll();
+                     $ua_input[] = $log_manager->countWithUserDistinction();
+                  }
+
+                  // put actual date in extra field PIUA_LAST
+                  $room_item->setPageImpressionAndUserActivityLast($current_date);
+                  $room_item->setPageImpressionArray(array_merge($pi_input, $pi_array));
+                  $room_item->setUserActivityArray(array_merge($ua_input, $ua_array));
+                  $room_item->saveWithoutChangingModificationInformation();
+
                   $count_rooms++;
                   unset($room_item);
                   $room_item = $room_list->getNext();
@@ -284,32 +285,32 @@ class cs_server_item extends cs_guide_item {
 
       return $cron_array;
    }
-   
+
    /**
     * cron log, INTERNAL
     * daily cron, delete old entries in item_backup
-    * 
+    *
     * @return array results of running this cron
     */
    private function _cronItemBackup() {
-   	  include_once('functions/misc_functions.php');
-   	  $time_start = getmicrotime();
-   	  
-   	  $cron_array = array();
-   	  $cron_array['title'] = 'item backup cron';
-   	  $cron_array['description'] = 'delete old entries in item_backup';
-   	  $cron_array['success'] = false;
-   	  $cron_array['success_text'] = 'cron failed';
-   	  
-   	  $backupItem_manager = $this->_environment->getBackupItemManager();
-   	  if($backupItem_manager->deleteOlderThan(14)) {
-   	  	 $cron_array['success'] = true;
-   	  	 $cron_array['success_text'] = 'table cleaned up';
-   	  }
-   	  unset($backupItem_manager);
-   	  
-   	  $time_end = getmicrotime();
-   	  $time = round($time_end - $time_start,0);
+      include_once('functions/misc_functions.php');
+      $time_start = getmicrotime();
+
+      $cron_array = array();
+      $cron_array['title'] = 'item backup cron';
+      $cron_array['description'] = 'delete old entries in item_backup';
+      $cron_array['success'] = false;
+      $cron_array['success_text'] = 'cron failed';
+
+      $backupItem_manager = $this->_environment->getBackupItemManager();
+      if($backupItem_manager->deleteOlderThan(14)) {
+         $cron_array['success'] = true;
+         $cron_array['success_text'] = 'table cleaned up';
+      }
+      unset($backupItem_manager);
+
+      $time_end = getmicrotime();
+      $time = round($time_end - $time_start,0);
       $cron_array['time'] = $time;
 
       return $cron_array;
@@ -433,6 +434,20 @@ class cs_server_item extends cs_guide_item {
 
       $portal_manager = $this->_environment->getPortalManager();
       $success2 = $portal_manager->minimizeActivityPoints($quotient);
+
+      $portal_list = $this->getPortalList();
+      if ( !empty($portal_list)
+           and $portal_list->isNotEmpty()
+         ) {
+        $portal_item = $portal_list->getFirst();
+         while ($portal_item) {
+            $portal_item->setMaxRoomActivityPoints(round(($portal_item->getMaxRoomActivityPoints()/$quotient),0));
+            $portal_item->saveWithoutChangingModificationInformation();
+            unset($portal_item);
+            $portal_item = $portal_list->getNext();
+         }
+      }
+      unset($portal_list);
 
       if ( $success1 and $success2 ) {
          $cron_array['success'] = true;

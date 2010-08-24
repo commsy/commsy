@@ -250,5 +250,14 @@ class cs_community_manager extends cs_room2_manager {
          return $list;
       }
    }
+
+   function saveActivityPoints ($item) {
+      parent::saveActivityPoints($item);
+
+      // portal item -> save max activity points
+      $portal = $item->getContextItem();
+      $portal->saveMaxRoomActivityPoints($item->getActivityPoints());
+      unset($portal);
+   }
 }
 ?>
