@@ -45,10 +45,15 @@ $manager = $environment->getRoomManager();
 $room = $manager->getItem($iid);
 $archive = false;
 if ( !isset($room) ) {
-   $zzz_manager = $environment->getZzzRoomManager();
-   $room = $zzz_manager->getItem($iid);
-   unset($zzz_manager);
-   $archive = true;
+   $manager = $environment->getPrivateRoomManager();
+   $room = $manager->getItem($iid);
+   unset($manager);
+   if ( !isset($room) ) {
+      $zzz_manager = $environment->getZzzRoomManager();
+      $room = $zzz_manager->getItem($iid);
+      unset($zzz_manager);
+      $archive = true;
+   }
 }
 $current_user = $environment->getCurrentUserItem();
 $context_item = $environment->getCurrentContextItem();
