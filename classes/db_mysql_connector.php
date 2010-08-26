@@ -29,36 +29,87 @@ class db_mysql_connector {
    private $_log_query = false;
    private $_display = true;
    private $_db_connect_data = array();
+   private $_connect_failed = 0;
+   private $_connect_failed_border = 10;
+   private $_query_failed = 0;
+   private $_query_failed_border = 10;
+   private $_db_data = array();
 
    public function __construct ($data) {
-      $this->_db_link = mysql_connect($data['host'],$data['user'],$data['password'],true);
+      $this->_db_data = $data;
+      $this->_connect();
+   }
+
+   private function _connect () {
+      $retour = true;
+      $data = $this->_db_data;
+      if ( isset($this->_db_link) ) {
+         @mysql_close($this->_db_link);
+         $this->_db_link = NULL;
+      }
+      $this->_db_link = @mysql_connect($data['host'],$data['user'],$data['password'],true);
       if ( empty($this->_db_link) or !$this->_db_link ) {
-         include_once('functions/error_functions.php');
-         trigger_error('can not connect zu mysql database: '.$data['host'],E_USER_ERROR);
+         if ( $this->_connect_failed < $this->_connect_failed_border ) {
+            $this->_connect_failed++;
+            usleep(500000);
+            $retour = $this->_connect();
+         } else {
+            $this->_db_link = NULL;
+            $retour = false;
+            include_once('functions/error_functions.php');
+            trigger_error('can not connect ('.$this->_connect_failed_border.' times) to mysql database: '.$data['host'],E_USER_ERROR);
+         }
       } else {
          mysql_select_db($data['database'], $this->_db_link);
          mysql_query("SET NAMES 'utf8'");
          mysql_query("SET CHARACTER SET 'utf8'");
+         $this->_connect_failed = 0;
       }
+      return $retour;
    }
 
    public function performQuery ($query) {
       // ------------------
       // --->UTF8 - OK<----
       // ------------------
+
+      if ( !isset($this->_db_link) ) {
+         if ( !$this->_connect() ) {
+            include_once('functions/error_functions.php');
+            trigger_error('no connection to to mysql database available - query: '.$query,E_USER_ERROR);
+         }
+      }
+
       $result = mysql_query($query,$this->_db_link);
+      $this->_db_errno = mysql_errno($this->_db_link);
+      $this->_db_error = mysql_error($this->_db_link);
       if ( $this->_log_query ) {
          $this->_query_array[] = $query;
       }
-      $this->_db_errno = mysql_errno($this->_db_link);
-      $this->_db_error = mysql_error($this->_db_link);
       $retour = NULL;
 
       if ( !empty($this->_db_errno) ) {
+         if ( $this->_db_errno == 1317
+              and $this->_db_error == 'Query execution was interrupted'
+            ) {
+            if ( $this->_query_failed < $this->_query_failed_border ) {
+               $this->_query_failed++;
+               return $this->performQuery($query);
+            }
+         }
+         if ( $this->_db_errno == 2006
+              and $this->_db_error == 'MySQL server has gone away'
+            ) {
+            if ( $this->_connect() ) {
+               return $this->performQuery($query);
+            }
+         }
          if ( $this->_display ) {
             echo('<br/><hr/> **** DB - ERROR **** <br/>'."\n");
             echo('Error-Number: '.$this->_db_errno.'<br/>'."\n");
             echo('Error-Text: '.$this->_db_error.'<br/>'."\n");
+            include_once('functions/date_functions.php');
+            echo('Error-Time: '.getCurrentDateTimeInMySQL().'<br/>'."\n");
             echo('Query: '.$query.'<br/><hr/>'."\n");
          }
       } else {
@@ -90,6 +141,7 @@ class db_mysql_connector {
          } else {
             $retour = $result;
          }
+         $this->_query_failed = 0;
          unset($result);
       }
       unset($query);
