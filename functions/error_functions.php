@@ -94,7 +94,7 @@ function commSyErrorHandler ($errno, $errmsg, $filename, $linenum, $vars) {
       }
 
       if ( ini_get('display_errors') ) {
-         header("HTTP/1.1 400 Bad Request");
+         @header("HTTP/1.1 400 Bad Request");
 
          $err  = '<br /><CENTER><TABLE BORDER="1" CELLSPACING="0" CELLPADDING="2" WIDTH="70%" summary="Layout">'."\n";
          $err .= "\t".'<TR><TD COLSPAN="2"><B>PHP Error</B></TD></TR>'."\n";
@@ -106,6 +106,8 @@ function commSyErrorHandler ($errno, $errmsg, $filename, $linenum, $vars) {
          $err .= "\t".'<TR><TD>Module: </TD><TD>'.$module.'</TD></TR>'."\n";
          $err .= "\t".'<TR><TD>Function: </TD><TD>'.$function.'</TD></TR>'."\n";
          $err .= "\t".'<TR><TD>User: </TD><TD>'.$user.'</TD></TR>'."\n";
+         include_once('functions/date_functions.php');
+         $err .= "\t".'<TR><TD>Time: </TD><TD>'.getCurrentDateTimeInMySQL().'</TD></TR>'."\n";
          $err .= '</TABLE></CENTER><br />'."\n";
          echo($err);
 
