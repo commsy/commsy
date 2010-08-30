@@ -740,7 +740,7 @@ class cs_detail_view extends cs_view {
                $html .='<li class="detail_list_entry" style="'.$style.'">';
                $html .= '<span>'.($count_items+1).'. '.chunkText($link_title,35).'</span>';
                $html .='</li>';
-            } elseif ( isset($item) and $item->isNotActivated() and isset($_GET['path'])){
+            } elseif ( isset($item) and $item->isNotActivated() ){
                $activating_date = $item->getActivatingDate();
                if (strstr($activating_date,'9999-00-00')){
                   $activating_text = $this->_translator->getMessage('COMMON_NOT_ACTIVATED');
@@ -1838,50 +1838,54 @@ class cs_detail_view extends cs_view {
    }
 
    function _getItemPicture($item){
-      $picture = $item->getPicture();
-      $linktext = '';
-      if ( !empty($picture) ) {
-         $disc_manager = $this->_environment->getDiscManager();
-         if ($disc_manager->existsFile($picture)){
-            $image_array = getimagesize($disc_manager->getFilePath().$picture);
-            $pict_height = $image_array[1];
-            if ($pict_height > 60){
-               $height = 60;
+      if (isset($item)){
+         $picture = $item->getPicture();
+         $linktext = '';
+         if ( !empty($picture) ) {
+            $disc_manager = $this->_environment->getDiscManager();
+            if ($disc_manager->existsFile($picture)){
+               $image_array = getimagesize($disc_manager->getFilePath().$picture);
+               $pict_height = $image_array[1];
+               if ($pict_height > 60){
+                  $height = 60;
+               }else{
+                  $height = $pict_height;
+               }
             }else{
-               $height = $pict_height;
+                $height = 60;
+            }
+            $params = array();
+            $params['picture'] = $picture;
+            $curl = curl($this->_environment->getCurrentContextID(),
+                      'picture', 'getfile', $params,'');
+            unset($params);
+            $html = '<img alt="'.$this->_translator->getMessage('USER_PICTURE_UPLOADFILE').'" src="'.$curl.'" style="vertical-align:middle; width: '.$height.'px;"/>'.LF;
+            if ($item->isA(CS_USER_TYPE)) {
+               $linktext = str_replace('"','&quot;',encode(AS_HTML_SHORT,$item->getFullName()));
+            } else {
+               $linktext = $this->_translator->getMessage('USER_PICTURE_UPLOADFILE');
             }
          }else{
-             $height = 60;
+            $html = '<img alt="'.$this->_translator->getMessage('USER_PICTURE_UPLOADFILE').'" src="images/commsyicons/common/user_unknown.gif" style="vertical-align:middle;  width: 60px;"/>'.LF;
+            if ($item->isA(CS_USER_TYPE)) {
+               $linktext = $this->_translator->getMessage('USER_PICTURE_NO_PICTURE',str_replace('"','&quot;',encode(AS_HTML_SHORT,$item->getFullName())));
+            } else {
+               $linktext = $this->_translator->getMessage('USER_PICTURE_UPLOADFILE');
+            }
          }
          $params = array();
-         $params['picture'] = $picture;
-         $curl = curl($this->_environment->getCurrentContextID(),
-                      'picture', 'getfile', $params,'');
-         unset($params);
-         $html = '<img alt="'.$this->_translator->getMessage('USER_PICTURE_UPLOADFILE').'" src="'.$curl.'" style="vertical-align:middle; width: '.$height.'px;"/>'.LF;
-         if ($item->isA(CS_USER_TYPE)) {
-            $linktext = str_replace('"','&quot;',encode(AS_HTML_SHORT,$item->getFullName()));
-         } else {
-            $linktext = $this->_translator->getMessage('USER_PICTURE_UPLOADFILE');
-         }
-      }else{
-         $html = '<img alt="'.$this->_translator->getMessage('USER_PICTURE_UPLOADFILE').'" src="images/commsyicons/common/user_unknown.gif" style="vertical-align:middle;  width: 60px;"/>'.LF;
-         if ($item->isA(CS_USER_TYPE)) {
-            $linktext = $this->_translator->getMessage('USER_PICTURE_NO_PICTURE',str_replace('"','&quot;',encode(AS_HTML_SHORT,$item->getFullName())));
-         } else {
-            $linktext = $this->_translator->getMessage('USER_PICTURE_UPLOADFILE');
-         }
-      }
-      $params = array();
-      $params['iid'] = $item->getItemID();
-      $html = ahref_curl( $this->_environment->getCurrentContextID(),
+         $params['iid'] = $item->getItemID();
+         $html = ahref_curl( $this->_environment->getCurrentContextID(),
                            CS_USER_TYPE,
                            'detail',
                            $params,
                            $html,
                            $linktext,'', '', '', '', '', '', '',
                            '');
-      return $html;
+         return $html;
+      }else{
+   	     return '';
+      }
    }
 
 
