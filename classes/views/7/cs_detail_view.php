@@ -736,12 +736,13 @@ class cs_detail_view extends cs_view {
             }else{
                 $style='padding:0px 5px 0px 5px;';
             }
+            $current_user_item = $this->_environment->getCurrentUserItem();
             if ( isset($item) and $item->getItemID()== $this->_item->getItemID()){
                $html .='<li class="detail_list_entry" style="'.$style.'">';
                $html .= '<span>'.($count_items+1).'. '.chunkText($link_title,35).'</span>';
                $html .='</li>';
-            } elseif ( isset($item) and $item->isNotActivated() ){
-               $activating_date = $item->getActivatingDate();
+            } elseif ( isset($item) and $item->isNotActivated() and !($item->getCreatorID() == $current_user_item->getItemID()) and !($current_user_item->isModerator())){
+              $activating_date = $item->getActivatingDate();
                if (strstr($activating_date,'9999-00-00')){
                   $activating_text = $this->_translator->getMessage('COMMON_NOT_ACTIVATED');
                }else{
