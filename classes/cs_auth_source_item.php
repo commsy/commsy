@@ -329,5 +329,45 @@ class cs_auth_source_item extends cs_item {
       $authentication = $this->_environment->getAuthenticationObject();
       return $authentication->getAuthManagerByAuthSourceItem($this);
    }
+
+   public function getMinmalPasswordLength() {
+   	$retour = '';
+      $value = $this->_getExtra('PASSWORD_LENGTH');
+      if ( !empty($value) ) {
+          $retour = $value;
+      }
+      return $retour;
+   }
+
+   public function setMinimalPasswordLength($value) {
+   	$this->_addExtra('PASSWORD_LENGTH',$value);
+   }
+
+   public function getPasswordSecureBigchar() {
+   	$retour = '';
+      $value = $this->_getExtra('PASSWORD_BIGCHAR');
+      if ( !empty($value) ) {
+          $retour = $value;
+      }
+      return $retour;
+   }
+
+   public function setPasswordSecureBigchar($value) {
+   	$this->_addExtra('PASSWORD_BIGCHAR',$value);
+   }
+
+   public function getPasswordSecureSpecialchar() {
+   	$retour = '';
+      $value = $this->_getExtra('PASSWORD_SPECIALCHAR');
+      if ( !empty($value) ) {
+          $retour = $value;
+      }
+      return $retour;
+   }
+
+   public function setPasswordSecureSpecialchar($value) {
+   	$this->_addExtra('PASSWORD_SPECIALCHAR',$value);
+   }
+
 }
 ?>

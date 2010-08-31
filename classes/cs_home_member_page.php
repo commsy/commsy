@@ -52,6 +52,7 @@ class cs_home_member_page extends cs_left_page {
          $this->_redirect_back();
       }
 
+
       // Save item
       if ( !empty($this->_command)
           and isOption($this->_command, $this->_translator->getMessage('ACCOUNT_GET_BUTTON'))

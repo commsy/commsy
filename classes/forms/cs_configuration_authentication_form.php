@@ -378,6 +378,10 @@ class cs_configuration_authentication_form extends cs_rubric_form {
       } else {
          $this->_form->addRadioGroup('deleteAccount',$translator->getMessage('CONFIGURATION_AUTHENTICATION_DELETE_ACCOUNT_TITLE'),'',$this->_yes_no_array,'','',true,'','',$disabled);
       }
+      $this->_form->addEmptyLine();
+      $this->_form->addRadioGroup('password_bigchar','Großbuchstaben','',$this->_yes_no_array,'','',true,'','',$disabled);
+      $this->_form->addRadioGroup('password_specialchar','Sonderzeichen','',$this->_yes_no_array,'','',true,'','',$disabled);
+      $this->_form->addTextfield('password_length','','Minimale Passwortlänge','',2,10,false,'','','','','','',$disabled);
 
       // specific options
       if ( !$this->_commsy_default ) {
@@ -428,13 +432,29 @@ class cs_configuration_authentication_form extends cs_rubric_form {
             }
          }
 
+
       } elseif ( !empty($this->_item) ) {
          $this->_values['auth_source'] = $this->_item->getItemID();
          $this->_values['title'] = $this->_item->getTitle();
          $this->_values['change_password_url'] = $this->_item->getPasswordChangeLink();
          $this->_values['contact_mail'] = $this->_item->getContactEMail();
          $this->_values['contact_fon'] = $this->_item->getContactFon();
+         $this->_values['password_bigchar'] = $this->_item->getPasswordSecureBigchar();
+         $this->_values['password_specialchar'] = $this->_item->getPasswordSecureSpecialchar();
+         $this->_values['password_length'] = $this->_item->getMinmalPasswordLength();
          $current_context = $this->_environment->getCurrentContextItem();
+
+
+         if( empty($this->_values['password_length'])){
+         	$this->_values['password_length'] = 1;
+         }
+         if( empty($this->_values['password_bigchar'])){
+         	$this->_values['password_bigchar'] = 2;
+         }
+         if( empty($this->_values['password_specialchar'])){
+         	$this->_values['password_specialchar'] = 2;
+         }
+
          if ( $this->_item->getItemID() == $current_context->getAuthDefault() ) {
             $this->_values['default'] = 1;
          } else {

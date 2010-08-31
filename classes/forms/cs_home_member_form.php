@@ -97,7 +97,6 @@ class cs_home_member_form extends cs_rubric_form {
     */
    function _createForm () {
       $this->_form->addHeadline('title',$this->_translator->getMessage('ACCOUNT_FORM_TITLE'));
-
       // auth source
       if ( $this->_count_auth_source_list_enabled == 1
            and $this->_count_auth_source_list_add_account == 1 ) {
@@ -121,6 +120,7 @@ class cs_home_member_form extends cs_rubric_form {
          $this->_form->addTextField('email_confirmation','',$this->_translator->getMessage('USER_EMAIL_CONFIRMATION'),'','',21,true,'','','','left','',13);
          $this->_form->addHidden('language','');
          $this->_form->addTextField('user_id','',$this->_translator->getMessage('USER_USER_ID'),'',100,21,true,'','','','left','',13);
+         // Hinweis für das bauen des Passwortes
          $this->_form->addPassword('password','',$this->_translator->getMessage('USER_PASSWORD'),'','',21,true,13);
          $this->_form->addPassword('password2','',$this->_translator->getMessage('USER_PASSWORD2'),'','',21,true,13);
 
@@ -158,12 +158,34 @@ class cs_home_member_form extends cs_rubric_form {
             $this->_form->setFailure('email_confirmation','');
          }
       }
+
       // password check
       if ($this->_form_post['password'] != $this->_form_post['password2']) {
          $this->_error_array[] = $this->_translator->getMessage('USER_PASSWORD_ERROR');
          $this->_form->setFailure('password','');
          $this->_form->setFailure('password2','');
       }
+      if(isset($this->_form_post['auth_source'])) {
+	      $auth_source_manager = $this->_environment->getAuthSourceManager();
+	      $auth_source_item = $auth_source_manager->getItem($this->_form_post['auth_source']);
+	      if($auth_source_item->getMinmalPasswordLength() > 0){
+		      if(strlen($this->_form_post['password']) < $auth_source_item->getMinmalPasswordLength()) {
+		      	$this->_error_array[] = 'Das Passwort ist nicht lang genug(Minimal: '.$auth_source_item->getMinmalPasswordLength().' Buchstaben)';
+		      }
+	      }
+	      if($auth_source_item->getPasswordSecureBigchar() == 1){
+		      if(!preg_match('~^[A-Z]+~u', $this->_form_post['password'])) {
+		      	$this->_error_array[] = 'Bitte mindestens einen Großbuchstaben verwenden';
+		      }
+	      }
+	      if($auth_source_item->getPasswordSecureSpecialchar() == 1){
+		      if(!preg_match('~[^a-zA-Z0-9]+~u',$this->_form_post['password'])){
+		      	$this->_error_array[] = 'Bitte mindestens ein Sonderzeichen im Passwort verwenden';
+		      }
+	      }
+	      unset($auth_source_manager);
+      }
+
 
       // is user id free?
       if ( !empty($this->_form_post['auth_source'])
