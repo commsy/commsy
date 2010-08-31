@@ -613,7 +613,6 @@ class cs_form_view_left extends cs_view {
       	$auth_source_manager = $this->_environment->getAuthSourceManager();
 	      $auth_source = $auth_source_manager->_performQuery();
 	      $auth_source_item = $auth_source_manager->getItem($auth_source[0][item_id]);
-	      #print_r($auth_source_item->getMinmalPasswordLength());
       	$html .= '<script type="text/javascript">
 						$.fn.passwordStrength = function( options ){
 							return this.each(function(){

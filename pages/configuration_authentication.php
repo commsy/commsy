@@ -195,6 +195,15 @@ else {
             if ( isset($_POST['contact_fon']) ) {
                $auth_item->setContactFon($_POST['contact_fon']);
             }
+            if ( isset($_POST['password_bigchar']) ) {
+               $auth_item->setPasswordSecureBigchar($_POST['password_bigchar']);
+            }
+            if ( isset($_POST['password_specialchar']) ) {
+               $auth_item->setPasswordSecureSpecialchar($_POST['password_specialchar']);
+            }
+            if ( isset($_POST['password_length']) ) {
+               $auth_item->setMinimalPasswordLength($_POST['password_length']);
+            }
 
             // special data
             $auth_data_array = array();

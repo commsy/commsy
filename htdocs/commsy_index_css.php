@@ -161,3 +161,45 @@ span.select_link{
    font-weight:bold;
    text-align: right;
 }
+
+<?php
+// Password Security Check Javascript
+?>
+#iSM
+{margin:0 0 15px 0;padding:0;height:14px;}
+#iSM ul
+{border:0;margin:4px 0 0 0;padding:0;list-style-type:none;text-align:center;}
+#iSM ul li
+{display:block;float:left;text-align:center;padding:1px 0 0 0;margin:0;height:14px;}
+#iWeak,#iMedium,#iStrong
+{width:38px;font-size:.8em;color:#adadad;text-align:center;padding:2px;background-color:#F1F1F1;display:block;}
+#iWeak,#iMedium
+{border-right:solid 1px #DEDEDE;}
+#iMedium
+{width:74px;}
+#iMedium,#iStrong
+{border-left-width:0;}
+
+div.strong #iWeak, div.strong #iMedium, div.strong #iStrong  {
+	background: #00CC66;
+	color: #00CC66;
+}
+
+div.medium #iWeak, div.medium #iMedium {
+	background: #FFFF99;
+	color: #FFFF99;
+}
+
+div.medium #iWeak, div.medium #iMedium {
+	background: #FFFF99;
+	color: #FFFF99;
+}
+
+div.weak #iWeak {
+	background: #FF0000;
+	color: #FF0000;
+}
+
+div.strong #iStrong, div.medium #iMedium, div.weak #iWeak {
+	color:#000;
+}
