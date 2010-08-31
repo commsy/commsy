@@ -242,14 +242,20 @@ if (isOption($option, $translator->getMessage('ACCOUNT_GET_MEMBERSHIP_BUTTON')))
 
    // build new user_item
    if ( !$room_item->checkNewMembersWithCode()
-        or $room_item->checkNewMembersWithCode()
-            and ( $room_item->getCheckNewMemberCode() == $_POST['code'])
-        or $room_item->checkNewMembersWithCode()
-            and (empty($_POST['code'])
-        	and isset($_POST['description_user']))
+        or ( $room_item->checkNewMembersWithCode()
+             and $room_item->getCheckNewMemberCode() == $_POST['code']
+           )
+        or ( $room_item->checkNewMembersWithCode()
+             and empty($_POST['code'])
+             and isset($_POST['description_user'])
+           )
       ) {
 
-      if ($room_item->getCheckNewMemberCode() == $_POST['code']) {
+      $room_check_code = $room_item->getCheckNewMemberCode();
+      if ( !empty($_POST['code'])
+           and !empty($room_check_code)
+           and $room_check_code == $_POST['code']
+         ) {
          unset($_POST['description_user']);
       }
        $user_manager = $environment->getUserManager();
@@ -282,7 +288,7 @@ if (isOption($option, $translator->getMessage('ACCOUNT_GET_MEMBERSHIP_BUTTON')))
             and !$room_item->checkNewMembersWithCode())
            or $room_item->checkNewMembersWithCode()
             and (empty($_POST['code'])
-        	and isset($_POST['description_user']))
+          and isset($_POST['description_user']))
           ) {
           $user_item->request();
           $check_message = 'YES'; // for mail body
@@ -317,7 +323,7 @@ if (isOption($option, $translator->getMessage('ACCOUNT_GET_MEMBERSHIP_BUTTON')))
                and !$room_item->checkNewMembersWithCode()
              or $room_item->checkNewMembersWithCode()
                and (empty($_POST['code'])
-        	   and isset($_POST['description_user']))
+             and isset($_POST['description_user']))
              ) {
              // save task
              $task_manager = $environment->getTaskManager();
