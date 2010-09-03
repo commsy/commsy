@@ -212,6 +212,13 @@ class cs_community_item extends cs_room_item {
          // send mail to moderation
          $this->_sendMailRoomOpen();
          $this->generateLayoutImages();
+
+         // sync count room redundancy
+         $current_portal_item = $this->getContextItem();
+         if ( $current_portal_item->isCountRoomRedundancy() ) {
+            $current_portal_item->syncCountCommunityRoomRedundancy(true);
+         }
+         unset($current_portal_item);
       }
 
       else {
@@ -246,6 +253,13 @@ class cs_community_item extends cs_room_item {
 
       $manager = $this->_environment->getCommunityManager();
       $this->_delete($manager);
+
+      // sync count room redundancy
+      $current_portal_item = $this->getContextItem();
+      if ( $current_portal_item->isCountRoomRedundancy() ) {
+         $current_portal_item->syncCountCommunityRoomRedundancy(true);
+      }
+      unset($current_portal_item);
    }
 
    function undelete () {
@@ -254,6 +268,13 @@ class cs_community_item extends cs_room_item {
 
       // send mail to moderation
       $this->_sendMailRoomUnDelete();
+
+      // sync count room redundancy
+      $current_portal_item = $this->getContextItem();
+      if ( $current_portal_item->isCountRoomRedundancy() ) {
+         $current_portal_item->syncCountCommunityRoomRedundancy(true);
+      }
+      unset($current_portal_item);
    }
 
    function getTimeSpread () {

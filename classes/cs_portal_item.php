@@ -205,35 +205,35 @@ class cs_portal_item extends cs_guide_item {
    }
 
    function getShowRoomsOnHome(){
-     $retour = 'normal';
-     if ($this->_issetExtra('SHOWROOMSONHOME')) {
-        $retour = $this->_getExtra('SHOWROOMSONHOME');
-     }
-     return $retour;
+      $retour = 'normal';
+      if ($this->_issetExtra('SHOWROOMSONHOME')) {
+         $retour = $this->_getExtra('SHOWROOMSONHOME');
+      }
+      return $retour;
    }
 
    function setShowRoomsOnHome($value){
-       $this->_addExtra('SHOWROOMSONHOME',$value);
+      $this->_addExtra('SHOWROOMSONHOME',$value);
    }
 
    function getNumberRoomsOnHome(){
-     $retour = 10;
-     if ($this->_issetExtra('NUMBERROOMSONHOME')) {
-        $retour = $this->_getExtra('NUMBERROOMSONHOME');
-     }
-     return $retour;
+      $retour = 10;
+      if ($this->_issetExtra('NUMBERROOMSONHOME')) {
+         $retour = $this->_getExtra('NUMBERROOMSONHOME');
+      }
+      return $retour;
    }
 
    function setNumberRoomsOnHome($value){
-       $this->_addExtra('NUMBERROOMSONHOME',$value);
+      $this->_addExtra('NUMBERROOMSONHOME',$value);
    }
 
    function setSortRoomsByActivityOnHome(){
-       $this->_addExtra('SORTROOMSONHOME','activity');
+      $this->_addExtra('SORTROOMSONHOME','activity');
    }
 
    function setSortRoomsByTitleOnHome(){
-       $this->_addExtra('SORTROOMSONHOME','title');
+      $this->_addExtra('SORTROOMSONHOME','title');
    }
 
    function isSortRoomsByTitleOnHome(){
@@ -337,16 +337,6 @@ class cs_portal_item extends cs_guide_item {
       return $this->_community_list;
    }
 
-   function getCountCommunityRooms () {
-      if (!isset($this->_community_list_count)) {
-         $manager = $this->_environment->getCommunityManager();
-         $manager->setContextLimit($this->getItemID());
-         $this->_community_list_count = $manager->getCountAll();
-         unset($manager);
-      }
-      return $this->_community_list_count;
-   }
-
    function getProjectList () {
       if (!isset($this->_project_list)) {
          $manager = $this->_environment->getProjectManager();
@@ -369,36 +359,12 @@ class cs_portal_item extends cs_guide_item {
       return $this->_privateroom_list;
    }
 
-   function getCountProjectRooms () {
-      if (!isset($this->_project_list_count)) {
-         $manager = $this->_environment->getProjectManager();
-         $manager->setContextLimit($this->getItemID());
-         $this->_project_list_count = $manager->getCountAll();
-         unset($manager);
-      }
-      return $this->_project_list_count;
-   }
-
-   function getCountGroupRooms () {
-      if (!isset($this->_grouproom_list_count)) {
-         $manager = $this->_environment->getGrouproomManager();
-         $manager->setContextLimit($this->getItemID());
-         $this->_grouproom_list_count = $manager->getCountAll();
-         unset($manager);
-      }
-      return $this->_grouproom_list_count;
-   }
-
    function getRoomList () {
       if (!isset($this->_room_list)) {
          $this->_room_list = $this->getCommunityList();
          $this->_room_list->addList($this->getProjectList());
       }
       return $this->_room_list;
-   }
-
-   function getCountRooms () {
-      return $this->getCountCommunityRooms() + $this->getCountProjectRooms() + $this->getCountGroupRooms();
    }
 
    function getContinuousRoomList () {
@@ -905,6 +871,9 @@ class cs_portal_item extends cs_guide_item {
          $cron_array[] = $this->_cronCheckTimeLabels();
          $cron_array[] = $this->_cronRenewContinuousLinks();
       }
+      if ( $this->isCountRoomRedundancy() ) {
+         $cron_array[] = $this->_cronSyncCountRooms();
+      }
 
       return $cron_array;
    }
@@ -1009,6 +978,32 @@ class cs_portal_item extends cs_guide_item {
             $retour['success'] = true;
             $retour['success_text'] = 'nothing to do';
          }
+      }
+
+      $time_end = getmicrotime();
+      $time = round($time_end - $time_start,0);
+      $retour['time'] = $time;
+
+      return $retour;
+   }
+
+   function _cronSyncCountRooms () {
+      include_once('functions/misc_functions.php');
+      $time_start = getmicrotime();
+
+      $retour = array();
+      $retour['title'] = 'sync count rooms';
+      $retour['description'] = 'sync redundancy saved count rooms in portal item';
+      $retour['success'] = false;
+      $retour['success_text'] = 'cron failed';
+
+      if ( $this->isCountRoomRedundancy() ) {
+         $this->syncCountRoomRedundancy();
+         $retour['success'] = true;
+         $retour['success_text'] = 'sync count rooms successfully';
+      } else {
+         $retour['success'] = true;
+         $retour['success_text'] = 'nothing to do';
       }
 
       $time_end = getmicrotime();
@@ -1715,5 +1710,461 @@ class cs_portal_item extends cs_guide_item {
       }
       return $retour;
    }
+
+   ############################################
+   # count rooms
+   ############################################
+
+   /** get count project rooms in extras
+    *
+    * @return int count project rooms
+    */
+   private function _getCountProjectRoomsExtra () {
+      $retour = 0;
+      if ($this->_issetExtra('COUNT_ROOM_PROJECT')) {
+         $retour = (int)$this->_getExtra('COUNT_ROOM_PROJECT');
+      }
+      return $retour;
+   }
+
+   /** set count project rooms in extras
+    *
+    * @param int count project rooms
+    */
+   private function _setCountProjectRoomsExtra ($value) {
+      $this->_addExtra('COUNT_ROOM_PROJECT',(int)$value);
+   }
+
+   /** increase count project rooms in extras
+    *
+    * @param boolean save portal item? default = false
+    */
+   public function increaseCountProjectRoomsExtra ( $save = false ) {
+      $this->_setCountProjectRoomsExtra((int)($this->_getCountProjectRoomsExtra()+1));
+      if ( $save ) {
+         $this->save();
+      }
+   }
+
+   /** decrease count project rooms in extras
+    *
+    * @param boolean save portal item? default = false
+    */
+   public function decreaseCountProjectRoomsExtra ( $save = false ) {
+    $this->_setCountProjectRoomsExtra((int)($this->_getCountProjectRoomsExtra()-1));
+      if ( $save ) {
+        $this->save();
+      }
+   }
+
+   /** get count community rooms in extras
+    *
+    * @return int count community rooms
+    */
+   private function _getCountCommunityRoomsExtra () {
+      $retour = 0;
+      if ($this->_issetExtra('COUNT_ROOM_COMMUNITY')) {
+         $retour = (int)$this->_getExtra('COUNT_ROOM_COMMUNITY');
+      }
+      return $retour;
+   }
+
+   /** set count community rooms in extras
+    *
+    * @param int count community rooms
+    */
+   private function _setCountCommunityRoomsExtra ($value) {
+      $this->_addExtra('COUNT_ROOM_COMMUNITY',(int)$value);
+   }
+
+   /** increase count community rooms in extras
+    *
+    * @param boolean save portal item? default = false
+    */
+   public function increaseCountCommunityRoomsExtra ( $save = false ) {
+      $this->_setCountCommunityRoomsExtra((int)($this->_getCountCommunityRoomsExtra()+1));
+      if ( $save ) {
+         $this->save();
+      }
+   }
+
+   /** decrease count community rooms in extras
+    *
+    * @param boolean save portal item? default = false
+    */
+   public function decreaseCountCommunityRoomsExtra ( $save = false ) {
+      $this->_setCountCommunityRoomsExtra((int)($this->_getCountCommunityRoomsExtra()-1));
+      if ( $save ) {
+         $this->save();
+      }
+   }
+
+   /** get count group rooms in extras
+    *
+    * @return int count group rooms
+    */
+   private function _getCountGroupRoomsExtra () {
+      $retour = 0;
+      if ($this->_issetExtra('COUNT_ROOM_GROUP')) {
+         $retour = (int)$this->_getExtra('COUNT_ROOM_GROUP');
+      }
+      return $retour;
+   }
+
+   /** set count group rooms in extras
+    *
+    * @param int count group rooms
+    */
+   private function _setCountGroupRoomsExtra ($value) {
+      $this->_addExtra('COUNT_ROOM_GROUP',(int)$value);
+   }
+
+   /** increase count group rooms in extras
+    *
+    * @param boolean save portal item? default = false
+    */
+   public function increaseCountGroupRoomsExtra ( $save = false ) {
+      $this->_setCountGroupRoomsExtra((int)($this->_getCountGroupRoomsExtra()+1));
+      if ( $save ) {
+         $this->save();
+      }
+   }
+
+   /** decrease count group rooms in extras
+    *
+    * @param boolean save portal item? default = false
+    */
+   public function decreaseCountGroupRoomsExtra ( $save = false ) {
+      $this->_setCountGroupRoomsExtra((int)($this->_getCountGroupRoomsExtra()-1));
+      if ( $save ) {
+         $this->save();
+      }
+   }
+
+   /** get count private rooms in extras
+    *
+    * @return int count private rooms
+    */
+   private function _getCountPrivateRoomsExtra () {
+      $retour = 0;
+      if ($this->_issetExtra('COUNT_ROOM_PRIVATE')) {
+         $retour = (int)$this->_getExtra('COUNT_ROOM_PRIVATE');
+      }
+      return $retour;
+   }
+
+   /** set count private rooms
+    *
+    * @param int count private rooms
+    */
+   private function _setCountPrivateRoomsExtra ($value) {
+      $this->_addExtra('COUNT_ROOM_PRIVATE',(int)$value);
+   }
+
+   /** increase count private rooms in extras
+    *
+    * @param boolean save portal item? default = false
+    */
+   public function increaseCountPrivateRoomsExtra ( $save = false ) {
+      $this->_setCountPrivateRoomsExtra((int)($this->_getCountPrivateRoomsExtra()+1));
+      if ( $save ) {
+         $this->save();
+      }
+   }
+
+   /** decrease count private rooms in extras
+    *
+    * @param boolean save portal item? default = false
+    */
+   public function decreaseCountPrivateRoomsExtra ( $save = false ) {
+      $this->_setCountPrivateRoomsExtra((int)($this->_getCountPrivateRoomsExtra()-1));
+      if ( $save ) {
+         $this->save();
+      }
+   }
+
+   /** get count project rooms from manager
+    *
+    * @return int count project rooms
+    */
+   private function _getCountProjectRoomsManager () {
+      if (!isset($this->_project_list_count)) {
+         $manager = $this->_environment->getProjectManager();
+         $manager->setContextLimit($this->getItemID());
+         $this->_project_list_count = $manager->getCountAll();
+         unset($manager);
+      }
+      return $this->_project_list_count;
+   }
+
+   /** get count community rooms from manager
+    *
+    * @return int count community rooms
+    */
+   private function _getCountCommunityRoomsManager () {
+      if (!isset($this->_community_list_count)) {
+         $manager = $this->_environment->getCommunityManager();
+         $manager->setContextLimit($this->getItemID());
+         $this->_community_list_count = $manager->getCountAll();
+         unset($manager);
+      }
+      return $this->_community_list_count;
+   }
+
+   /** get count group rooms from manager
+    *
+    * @return int count group rooms
+    */
+   private function _getCountGroupRoomsManager () {
+      if (!isset($this->_grouproom_list_count)) {
+         $manager = $this->_environment->getGrouproomManager();
+         $manager->setContextLimit($this->getItemID());
+         $this->_grouproom_list_count = $manager->getCountAll();
+         unset($manager);
+      }
+      return $this->_grouproom_list_count;
+   }
+
+   /** get count private rooms from manager
+    *
+    * @return int count private rooms
+    */
+   private function _getCountPrivateRoomsManager () {
+      if (!isset($this->_private_list_count)) {
+         $manager = $this->_environment->getPrivateRoomManager();
+         $manager->setContextLimit($this->getItemID());
+         $this->_private_list_count = $manager->getCountAll();
+         unset($manager);
+      }
+      return $this->_private_list_count;
+   }
+
+   function getCountProjectRooms () {
+      $retour = 0;
+      if ( $this->isCountRoomRedundancy() ) {
+         $retour = $this->_getCountProjectRoomsExtra();
+         if ( empty($retour) ) {
+            $this->_syncCountProjectRoomRedundancy(true);
+            $retour = $this->_getCountProjectRoomsExtra();
+         }
+      } else {
+         $retour = $this->_getCountProjectRoomsManager();
+      }
+      return $retour;
+   }
+
+   function getCountCommunityRooms () {
+      $retour = 0;
+      if ( $this->isCountRoomRedundancy() ) {
+         $retour = $this->_getCountCommunityRoomsExtra();
+         if ( empty($retour) ) {
+            $this->_syncCountCommunityRoomRedundancy(true);
+            $retour = $this->_getCountCommunityRoomsExtra();
+         }
+      } else {
+         $retour = $this->_getCountCommunityRoomsManager();
+      }
+      return $retour;
+   }
+
+   function getCountGroupRooms () {
+      $retour = 0;
+      if ( $this->isCountRoomRedundancy() ) {
+         $retour = $this->_getCountGroupRoomsExtra();
+         if ( empty($retour) ) {
+            $this->_syncCountGroupRoomRedundancy(true);
+            $retour = $this->_getCountGroupRoomsExtra();
+         }
+      } else {
+         $retour = $this->_getCountGroupRoomsManager();
+      }
+      return $retour;
+   }
+
+   function getCountPrivateRooms () {
+      $retour = 0;
+      if ( $this->isCountRoomRedundancy() ) {
+         $retour = $this->_getCountPrivateRoomsExtra();
+         if ( empty($retour) ) {
+            $this->_syncCountPrivateRoomRedundancy(true);
+            $retour = $this->_getCountPrivateRoomsExtra();
+         }
+      } else {
+         $retour = $this->_getCountPrivateRoomsManager();
+      }
+      return $retour;
+   }
+
+   public function getCountRooms ( $type_array = '' ) {
+      $retour = 0;
+      if ( empty($type_array) ) {
+         $retour = $this->getCountCommunityRooms() + $this->getCountProjectRooms() + $this->getCountGroupRooms();
+      } else {
+         foreach ( $type_array as $type_room ) {
+            if ( $type_room == CS_PROJECT_TYPE ) {
+               $retour += $this->getCountProjectRooms();
+            } elseif ( $type_room == CS_COMMUNITY_TYPE ) {
+               $retour += $this->getCountCommunityRooms();
+            } elseif ( $type_room == CS_GROUPROOM_TYPE ) {
+               $retour += $this->getCountGroupRooms();
+            } elseif ( $type_room == CS_PRIVATEROOM_TYPE ) {
+               $retour += $this->getCountPrivateRooms();
+            }
+         }
+      }
+      return $retour;
+   }
+
+   public function getCountProjectAndCommunityRooms () {
+      $retour = 0;
+      if ( $this->isCountRoomRedundancy() ) {
+         $retour = $this->getCountRooms(array(CS_PROJECT_TYPE,CS_COMMUNITY_TYPE));
+      } else {
+         $manager = $this->_environment->getRoomManager();
+         $manager->setContextLimit($this->getItemID());
+         $retour = $manager->getCountAll();
+         unset($manager);
+      }
+      return $retour;
+   }
+
+   private function _getCountRoomRedundancy () {
+      $retour = -1;
+      if ($this->_issetExtra('COUNT_ROOM_REDUNDANCY')) {
+         $value = (int)$this->_getExtra('COUNT_ROOM_REDUNDANCY');
+      }
+      return $retour;
+   }
+
+   private function _setCountRoomRedundancy ( $value ) {
+      $this->_addExtra('COUNT_ROOM_REDUNDANCY',(int)$value);
+   }
+
+   public function isCountRoomRedundancy () {
+      $retour = false;
+      $value = $this->_getCountRoomRedundancy();
+      if ( $value == 1
+           # with "or" only this switch needed to active this function
+           or $this->_environment->getConfiguration('c_room_count_redundancy')
+           # with "and" there is an second switch, maybe turned on by cron
+           # if count rooms is over a limit
+           # this is not implemented yet
+           #and $this->_environment->getConfiguration('c_room_count_redundancy')
+         ) {
+         $retour = true;
+      }
+      return $retour;
+   }
+
+   public function turnOnCountRoomRedundancy ( $save = false ) {
+      $this->_setCountRoomRedundancy(1);
+      if ( $save ) {
+         $this->save();
+      }
+   }
+
+   public function turnOffCountRoomRedundancy ( $save = false ) {
+      $this->_setCountRoomRedundancy(-1);
+      if ( $save ) {
+         $this->save();
+      }
+   }
+
+   public function syncCountRoomRedundancy ( $save = false ) {
+      $this->_syncCountRoomRedundancy();
+      if ( $save ) {
+         $this->save();
+      }
+   }
+
+   private function _syncCountRoomRedundancy ( $save = false ) {
+      $this->_syncCountProjectRoomRedundancy();
+      $this->_syncCountCommunityRoomRedundancy();
+      $this->_syncCountGroupRoomRedundancy();
+      $this->_syncCountPrivateRoomRedundancy();
+      if ( $save ) {
+         $this->save();
+      }
+   }
+
+   public function syncCountProjectRoomRedundancy ( $save = false ) {
+      $this->_syncCountProjectRoomRedundancy();
+      if ( $save ) {
+         $this->save();
+      }
+   }
+
+   private function _syncCountProjectRoomRedundancy ( $save = false ) {
+      $value1 = $this->_getCountProjectRoomsManager();
+      $value2 = $this->_getCountProjectRoomsExtra();
+      if ( $value1 != $value2 ) {
+         $this->_setCountProjectRoomsExtra($value1);
+      }
+      if ( $save ) {
+         $this->save();
+      }
+   }
+
+   public function syncCountCommunityRoomRedundancy ( $save = false ) {
+      $this->_syncCountCommunityRoomRedundancy();
+      if ( $save ) {
+         $this->save();
+      }
+   }
+
+   private function _syncCountCommunityRoomRedundancy ( $save = false ) {
+      $value1 = $this->_getCountCommunityRoomsManager();
+      $value2 = $this->_getCountCommunityRoomsExtra();
+      if ( $value1 != $value2 ) {
+         $this->_setCountCommunityRoomsExtra($value1);
+      }
+      if ( $save ) {
+         $this->save();
+      }
+   }
+
+   public function syncCountGroupRoomRedundancy ( $save = false ) {
+      $this->_syncCountGroupRoomRedundancy();
+      if ( $save ) {
+         $this->save();
+      }
+   }
+
+   private function _syncCountGroupRoomRedundancy ( $save = false ) {
+      $value1 = $this->_getCountGroupRoomsManager();
+      $value2 = $this->_getCountGroupRoomsExtra();
+      if ( $value1 != $value2 ) {
+         $this->_setCountGroupRoomsExtra($value1);
+      }
+      if ( $save ) {
+         $this->save();
+      }
+   }
+
+   public function syncCountPrivateRoomRedundancy ( $save = false ) {
+      $this->_syncCountPrivateRoomRedundancy();
+      if ( $save ) {
+         $this->save();
+      }
+   }
+
+   private function _syncCountPrivateRoomRedundancy ( $save = false ) {
+      $value1 = $this->_getCountPrivateRoomsManager();
+      $value2 = $this->_getCountPrivateRoomsExtra();
+      if ( $value1 != $value2 ) {
+         $this->_setCountPrivateRoomsExtra($value1);
+      }
+      if ( $save ) {
+         $this->save();
+      }
+   }
+
+/*
+   public function getCountProjectRoomsNew () {
+      pr($this->_getCountPrivateRoomsExtra());
+      pr($this->_getCountPrivateRoomsManager());
+      pr($this->getCountPrivateRooms());
+   }
+*/
 }
 ?>

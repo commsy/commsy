@@ -64,4 +64,9 @@ $c_enable_htmltextarea_security = false;
 // use project ids stored in community room items
 // default = false -> use LEFT JOIN room -> link_items -> room
 //$c_cache_cr_pr = true;
+
+// count room redundancy
+// turn this on, if you have performance problems with
+// room list on portal
+// $c_room_count_redundancy = true;
 ?>

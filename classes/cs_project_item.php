@@ -282,6 +282,13 @@ class cs_project_item extends cs_room_item {
             $this->_changed_room_link = false;
          }
          $this->generateLayoutImages();
+
+         // sync count room redundancy
+         $current_portal_item = $this->getContextItem();
+         if ( $current_portal_item->isCountRoomRedundancy() ) {
+            $current_portal_item->syncCountProjectRoomRedundancy(true);
+         }
+         unset($current_portal_item);
       }
 
       else {
@@ -358,6 +365,13 @@ class cs_project_item extends cs_room_item {
          $id_manager->deleteByCommSyID($this->getItemID());
          unset($id_manager);
       }
+
+      // sync count room redundancy
+      $current_portal_item = $this->getContextItem();
+      if ( $current_portal_item->isCountRoomRedundancy() ) {
+         $current_portal_item->syncCountProjectRoomRedundancy(true);
+      }
+      unset($current_portal_item);
    }
 
    function undelete () {
@@ -382,6 +396,13 @@ class cs_project_item extends cs_room_item {
          }
       }
       unset($com_list);
+
+      // sync count room redundancy
+      $current_portal_item = $this->getContextItem();
+      if ( $current_portal_item->isCountRoomRedundancy() ) {
+         $current_portal_item->syncCountProjectRoomRedundancy(true);
+      }
+      unset($current_portal_item);
    }
 
    function setRoomContext ($value) {

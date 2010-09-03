@@ -293,6 +293,13 @@ class cs_privateroom_item extends cs_room_item {
          $new_room_user->save();
          $new_room_user->setCreatorID2ItemID();
          $this->generateLayoutImages();
+
+         // sync count room redundancy
+         $current_portal_item = $this->getContextItem();
+         if ( $current_portal_item->isCountRoomRedundancy() ) {
+            $current_portal_item->syncCountPrivateRoomRedundancy(true);
+         }
+         unset($current_portal_item);
       }
 
       // why saving for the second time?
@@ -309,11 +316,25 @@ class cs_privateroom_item extends cs_room_item {
    function delete() {
       $manager = $this->_environment->getPrivateRoomManager();
       $this->_delete($manager);
+
+      // sync count room redundancy
+      $current_portal_item = $this->getContextItem();
+      if ( $current_portal_item->isCountRoomRedundancy() ) {
+         $current_portal_item->syncCountPrivateRoomRedundancy(true);
+      }
+      unset($current_portal_item);
    }
 
    function undelete () {
       $manager = $this->_environment->getPrivateRoomManager();
       $this->_undelete($manager);
+
+      // sync count room redundancy
+      $current_portal_item = $this->getContextItem();
+      if ( $current_portal_item->isCountRoomRedundancy() ) {
+         $current_portal_item->syncCountPrivateRoomRedundancy(true);
+      }
+      unset($current_portal_item);
    }
 
    function setRoomContext ($value) {

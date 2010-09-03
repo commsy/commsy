@@ -66,8 +66,15 @@ class cs_guide_room_list_page extends cs_page {
       if ($this->_environment->inPortal()) {
          if (!empty($this->_values['selroom'])) {
             $selroom = $this->_values['selroom'];
+            $show_rooms = '';
+            if ( $selroom == 3 ) {
+               $show_rooms = 'onlyprojectrooms';
+            } elseif ( $selroom == 4 ) {
+               $show_rooms = 'onlycommunityrooms';
+            }
          } else {
             $selroom = '';
+            $show_rooms = '';
          }
 
          if (!empty($this->_values['sel_archive_room'])) {
@@ -89,20 +96,32 @@ class cs_guide_room_list_page extends cs_page {
          // get data
          $manager = $this->_environment->getRoomManager();
          $manager->setContextLimit($this->_environment->getCurrentContextID());
-         $show_rooms = $current_context->getShowRoomsOnHome();
+         $show_rooms_save = $current_context->getShowRoomsOnHome();
          if ( empty($selroom)
               and !empty($show_rooms)
-              and $show_rooms == 'preselectmyrooms'
+              and $show_rooms_save == 'preselectmyrooms'
               and $this->_environment->getCurrentUserItem()->isUser()
             ) {
             $selroom = 5;
+            $show_rooms = $show_rooms_save;
          }
          if ($show_rooms == 'onlycommunityrooms'){
             $manager->setRoomTypeLimit(CS_COMMUNITY_TYPE);
          } elseif ($show_rooms == 'onlyprojectrooms'){
             $manager->setRoomTypeLimit(CS_PROJECT_TYPE);
          }
-         $count_all = $manager->getCountAll();
+
+         # old
+         # $count_all = $manager->getCountAll();
+         # new - changes for count room redundancy
+         if ( $show_rooms == 'onlycommunityrooms' ) {
+            $count_all = $current_context->getCountCommunityRooms();
+         } elseif ( $show_rooms == 'onlyprojectrooms' ) {
+            $count_all = $current_context->getCountProjectRooms();
+         } else {
+            $count_all = $current_context->getCountProjectAndCommunityRooms();
+         }
+
          if (empty($sel_archive_room)) {
             $manager->setOpenedLimit();
          }
@@ -117,7 +136,7 @@ class cs_guide_room_list_page extends cs_page {
                $manager->setAuthSourceLimit($current_user->getAuthSource());
             } elseif ($selroom == 6) {
                $manager->setRoomTypeLimit(CS_GROUPROOM_TYPE);
-               $count_all = $manager->getCountAll();
+               $count_all = $current_context->getCountGroupRooms();
             } elseif ($selroom == 8) {
                $manager->setArchiveLimit();
                $count_all = $manager->getCountAll();
