@@ -18,6 +18,7 @@ $message["PORTLET_CONFIGURATION_NEWEST_ENTRIES_VALUE"]["de"] = "Auf der Home anz
 $message["PORTLET_CONFIGURATION_NEW_ENTRIES_COUNT"]["de"] = "Anzahl der angezeigten Einträge";
 $message["PORTLET_CONFIGURATION_NEW_ENTRIES_SHOW_USER"]["de"] = "Personen anzeigen";
 $message["PORTLET_CONFIGURATION_NEW_ITEM_BOX"]["de"] = "Neuer Eintrag";
+$message["PORTLET_CONFIGURATION_ROOMWIDE_SEARCH_BOX"]["de"] = "Raumübergreifende Suche";
 $message["PORTLET_CONFIGURATION_RSS"]["de"] = "RSS Feeds";
 $message["PORTLET_CONFIGURATION_RSS_ADD_BUTTON"]["de"] = "hinzufügen";
 $message["PORTLET_CONFIGURATION_RSS_DESCRIPTION"]["de"] = "Titel (z.B. MeinRSS), Adresse (z.B. http://www.xyz.de/rss)";

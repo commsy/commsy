@@ -164,7 +164,7 @@ else {
             }
          }
          $add_to_home_config_array = array();
-         
+
          if ( isset($_POST['column_count']) and !empty($_POST['column_count']) ) {
             $item->setPortletColumnCount($_POST['column_count']);
             $column_count = $_POST['column_count'];
@@ -203,6 +203,15 @@ else {
             $item->unsetPortletShowSearchBox();
          }
 
+         if ( isset($_POST['roomwide_search_box']) and !empty($_POST['roomwide_search_box']) ) {
+            $item->setPortletShowRoomWideSearchBox();
+	         if(!in_array('cs_privateroom_home_roomwide_search_view', $portlet_array)){
+	            $add_to_home_config_array[] = 'cs_privateroom_home_roomwide_search_view';
+	         }
+         }else{
+            $item->unsetPortletShowRoomWideSearchBox();
+         }
+
          if ( isset($_POST['dokuverser_box']) and !empty($_POST['dokuverser_box']) ) {
             $item->setPortletShowDokuverserBox();
 	         if(!in_array('cs_privateroom_home_dokuverser_view', $portlet_array)){
@@ -229,7 +238,7 @@ else {
          }else{
             $item->unsetPortletShowConfigurationBox();
          }
-         
+
          if ( isset($_POST['new_item_box']) and !empty($_POST['new_item_box']) ) {
             $item->setPortletShowNewItemBox();
 	         if(!in_array('cs_privateroom_home_new_item_view', $portlet_array)){
@@ -329,7 +338,7 @@ else {
          }
          $item->setPortletRSSArray($portlet_rss_array);
 
-         
+
 	      if($column_count == sizeof($home_config_array)){
 	      } elseif($column_count < sizeof($home_config_array)){
 	         // 3 -> 2
@@ -344,13 +353,13 @@ else {
 	                  $size = sizeof($column);
 	               }
 	            }
-	            $home_config_array[$smallest][] = $switch_column_portlet;  
+	            $home_config_array[$smallest][] = $switch_column_portlet;
 	         }
 	      } elseif($column_count > sizeof($home_config_array)){
 	         // 2 -> 3
 	         $home_config_array[] = array();
 	      }
-         
+
          foreach($add_to_home_config_array as $add_to_home_portlet){
 	         $smallest = 0;
 	         $size = sizeof($home_config_array[0]);
@@ -362,9 +371,9 @@ else {
 	         }
 	         $home_config_array[$smallest][] = $add_to_home_portlet;
          }
-         
+
          $item->setHomeConfig($home_config_array);
-         
+
          $item->save();
          $session->unsetValue($current_iid.'_add_rss');
 

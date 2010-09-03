@@ -1238,6 +1238,23 @@ class cs_privateroom_item extends cs_room_item {
       return $retour;
    }
 
+   function setPortletShowRoomWideSearchBox () {
+      $this->_addExtra('PORTLET_SHOW_ROOMWIDE_SEARCH_BOX','1');
+   }
+   function unsetPortletSRoomWidehowSearchBox () {
+      $this->_addExtra('PORTLET_SHOW_ROOMWIDE_SEARCH_BOX','-1');
+   }
+
+   function getPortletShowRoomWideSearchBox () {
+      $retour = true;
+      if ($this->_issetExtra('PORTLET_SHOW_ROOMWIDE_SEARCH_BOX')) {
+         if($this->_getExtra('PORTLET_SHOW_ROOMWIDE_SEARCH_BOX') == '-1'){
+            $retour = false;
+         }
+      }
+      return $retour;
+   }
+
 
 
 

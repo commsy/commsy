@@ -136,6 +136,17 @@ if ($current_context->getPortletShowSearchBox()){
 }
 /* SEARCH END */
 
+/* ROOMWIDE SEARCH */
+if ($current_context->getPortletShowRoomWideSearchBox()){
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = $current_context->isOpen();
+   $search_view = $class_factory->getClass(PRIVATEROOM_HOME_ROOMWIDE_SEARCH_VIEW,$params);
+   unset($params);
+   $portlet_array[] = $search_view;
+}
+/* ROOMWIDE SEARCH END */
+
 /* WEATHER */
 if ($current_context->getPortletShowWeatherBox()){
    $params = array();

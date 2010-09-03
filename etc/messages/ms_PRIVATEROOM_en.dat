@@ -31,5 +31,6 @@ $message["PRIVATEROOM_MY_LISTS_BOX"]["en"] = "My lists";
 $message["PRIVATEROOM_MY_LISTS_BOX_DESCRIPTION"]["en"] = "Add an entry by using drag n drop.";
 $message["PRIVATEROOM_MY_LISTS_BOX_NEW_ENTRY"]["en"] = "name of new list";
 $message["PRIVATEROOM_MY_LISTS_BOX_NEW_ENTRY_BUTTON"]["en"] = "Add new list";
+$message["PRIVATEROOM_ROOMWIDE_SEARCH_BOX"]["en"] = "Search overall my workspaces";
 $message["PRIVATEROOM_UNLOCK"]["en"] = "Unlock private workspace";
 ?>

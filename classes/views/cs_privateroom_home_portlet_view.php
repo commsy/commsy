@@ -191,9 +191,6 @@ class cs_privateroom_home_portlet_view extends cs_view{
          $portlet_array[] = $tmp_array;
       }
 
-      #$html .= '<div style="width:100%; float:right;"><div style="float:right;"><a href="#"><img id="new_icon" src="images/commsyicons/22x22/new.png"></a></div></div>';
-      #$html .= '<div style="width:100%; float:right;"><div style="float:right;"><a href="#"><img id="new_icon" src="images/commsyicons/48x48/config/privateroom_home_options.png"></a></div></div>';
-
       $html .= $this->_getPortletsAsHTML($portlet_array,$this->_column_count);
       foreach($this->_portlet_views as $portlet_view){
          $html .= $portlet_view->getPortletJavascriptAsHTML();

@@ -18,6 +18,7 @@ $message["PORTLET_CONFIGURATION_NEWEST_ENTRIES_VALUE"]["en"] = "Show on home / t
 $message["PORTLET_CONFIGURATION_NEW_ENTRIES_COUNT"]["en"] = "Number of displayed entries";
 $message["PORTLET_CONFIGURATION_NEW_ENTRIES_SHOW_USER"]["en"] = "Show user";
 $message["PORTLET_CONFIGURATION_NEW_ITEM_BOX"]["en"] = "New item";
+$message["PORTLET_CONFIGURATION_ROOMWIDE_SEARCH_BOX"]["en"] = "Search overall my workspaces";
 $message["PORTLET_CONFIGURATION_RSS"]["en"] = "RSS feeds";
 $message["PORTLET_CONFIGURATION_RSS_ADD_BUTTON"]["en"] = "add";
 $message["PORTLET_CONFIGURATION_RSS_DESCRIPTION"]["en"] = "Title (e.g. MyRss), adress (e.g. http://www.xyz.com/rss)";
