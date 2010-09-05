@@ -172,7 +172,7 @@ span.select_link{
 #iSM ul li
 {display:block;float:left;text-align:center;padding:1px 0 0 0;margin:0;height:14px;}
 #iWeak,#iMedium,#iStrong
-{width:38px;font-size:.8em;color:#adadad;text-align:center;padding:2px;background-color:#F1F1F1;display:block;}
+{width:40px;font-size:.8em;color:#adadad;text-align:center;padding:2px;background-color:#F1F1F1;display:block;}
 #iWeak,#iMedium
 {border-right:solid 1px #DEDEDE;}
 #iMedium

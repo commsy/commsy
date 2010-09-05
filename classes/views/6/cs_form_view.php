@@ -910,11 +910,11 @@ class cs_form_view extends cs_view {
    	  if(!empty($form_element['before_form_text'])) {
          $html .= $form_element['before_form_text'].'&nbsp;'.LF;
       }
-      
+
       if ($form_element['multiple']) {
          $form_element['name'] .= '[]';
       }
-      
+
       if (!empty($form_element['descriptionText'])){
          $html .='<table summary="Layout"><tr><td style="border-bottom: none;">';
          $html .= $this->_text_as_html_short_coding_format($form_element['descriptionText']).'</td><td style="border-bottom: none;">';
@@ -1032,6 +1032,13 @@ class cs_form_view extends cs_view {
       $this->_count_form_elements++;
       $html .= ' class="password"';
       $html .= '/>';
+
+      // Passwort Securitycheck
+      if($form_element['name'] == 'password'){
+      $html .= '<div id="iSM"><ul class="weak"><li id="iWeak">zu leicht</li>
+		<li id="iMedium">erlaubt</li><li id="iStrong">sicher</li></ul></div>';
+      }
+
       $html .= LF;
       return $html;
    }

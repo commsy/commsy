@@ -626,6 +626,32 @@ class cs_profile_form extends cs_rubric_form {
                $this->_error_array[] = $this->_translator->getMessageInLang($this->_language,'USER_PASSWORD_ERROR');
                $this->_form->setFailure('password');
                $this->_form->setFailure('password2');
+            } else {
+            	if(isset($this->_form_post['auth_source'])) {
+				      $auth_source_manager = $this->_environment->getAuthSourceManager();
+				      $auth_source_item = $auth_source_manager->getItem($this->_form_post['auth_source']);
+				      if($auth_source_item->getPasswordLength() > 0){
+					      if(strlen($this->_form_post['password']) < $auth_source_item->getPasswordLength()) {
+					      	$this->_error_array[] = 'Das Passwort ist nicht lang genug(Minimal: '.$auth_source_item->getPasswordLength().' Buchstaben)';
+					      	$this->_form->setFailure('password');
+               			$this->_form->setFailure('password2');
+					      }
+				      }
+				      if($auth_source_item->getPasswordSecureBigchar() == 1){
+					      if(!preg_match('~^[A-Z]+~u', $this->_form_post['password'])) {
+					      	$this->_error_array[] = 'Bitte mindestens einen Großbuchstaben verwenden';
+					      	$this->_form->setFailure('password');
+               			$this->_form->setFailure('password2');
+					      }
+				      }
+				      if($auth_source_item->getPasswordSecureSpecialchar() == 1){
+					      if(!preg_match('~[^a-zA-Z0-9]+~u',$this->_form_post['password'])){
+					      	$this->_error_array[] = 'Bitte mindestens ein Sonderzeichen im Passwort verwenden';
+					      	$this->_form->setFailure('password');
+               			$this->_form->setFailure('password2');
+					      }
+				      }
+            	}
             }
          }
       }
