@@ -839,7 +839,7 @@ class cs_discussion_detail_view extends cs_detail_view {
       $html  = '';
       $discussion_type = $item->getDiscussionType();
       if($discussion_type == 'threaded') {
-         if ( $item->mayEdit($user) and $this->_with_modifying_actions ) {
+         if ( $subitem->mayEdit($user) and $this->_with_modifying_actions ) {
             $params = array();
             $params['iid'] = $item->getItemID();
             $params['discarticle_action'] = 'edit';
@@ -1373,7 +1373,7 @@ class cs_discussion_detail_view extends cs_detail_view {
       if($this->_environment->getCurrentUserItem()->isModerator()) {
          $text2 = $this->_translator->getMessage("COMMON_DELETE_BOX_DESCRIPTION_MODERATOR");
       }
-      
+
       $return = "
           <script type='text/javascript'>
           <!--

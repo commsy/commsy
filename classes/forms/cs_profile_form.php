@@ -632,21 +632,21 @@ class cs_profile_form extends cs_rubric_form {
 				      $auth_source_item = $auth_source_manager->getItem($this->_form_post['auth_source']);
 				      if($auth_source_item->getPasswordLength() > 0){
 					      if(strlen($this->_form_post['password']) < $auth_source_item->getPasswordLength()) {
-					      	$this->_error_array[] = $this->_translator->getMessageInLang($this->_language,'USER_PASSWORD_LENGTH_ERROR');
+					      	$this->_error_array[] = $this->_translator->getMessageInLang($this->_language,'USER_NEW_PASSWORD_LENGTH_ERROR');
 					      	$this->_form->setFailure('password');
                			$this->_form->setFailure('password2');
 					      }
 				      }
 				      if($auth_source_item->getPasswordSecureBigchar() == 1){
-					      if(!preg_match('~^[A-Z]+~u', $this->_form_post['password'])) {
-					      	$this->_error_array[] = $this->_translator->getMessageInLang($this->_language,'USER_PASSWORD_BIGCHAR_ERROR');
+					      if(preg_match('~^[A-Z]+~u', $this->_form_post['password'])) {
+					      	$this->_error_array[] = $this->_translator->getMessageInLang($this->_language,'USER_NEW_PASSWORD_BIGCHAR_ERROR');
 					      	$this->_form->setFailure('password');
                			$this->_form->setFailure('password2');
 					      }
 				      }
 				      if($auth_source_item->getPasswordSecureSpecialchar() == 1){
 					      if(!preg_match('~[^a-zA-Z0-9]+~u',$this->_form_post['password'])){
-					      	$this->_error_array[] = $this->_translator->getMessageInLang($this->_language,'USER_PASSWORD_SPECIALCHAR_ERROR');
+					      	$this->_error_array[] = $this->_translator->getMessageInLang($this->_language,'USER_NEW_PASSWORD_SPECIALCHAR_ERROR');
 					      	$this->_form->setFailure('password');
                			$this->_form->setFailure('password2');
 					      }
