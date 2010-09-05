@@ -168,9 +168,9 @@ class cs_home_member_form extends cs_rubric_form {
       if(isset($this->_form_post['auth_source'])) {
 	      $auth_source_manager = $this->_environment->getAuthSourceManager();
 	      $auth_source_item = $auth_source_manager->getItem($this->_form_post['auth_source']);
-	      if($auth_source_item->getMinmalPasswordLength() > 0){
-		      if(strlen($this->_form_post['password']) < $auth_source_item->getMinmalPasswordLength()) {
-		      	$this->_error_array[] = 'Das Passwort ist nicht lang genug(Minimal: '.$auth_source_item->getMinmalPasswordLength().' Buchstaben)';
+	      if($auth_source_item->getPasswordLength() > 0){
+		      if(strlen($this->_form_post['password']) < $auth_source_item->getPasswordLength()) {
+		      	$this->_error_array[] = 'Das Passwort ist nicht lang genug(Minimal: '.$auth_source_item->getPasswordLength().' Buchstaben)';
 		      }
 	      }
 	      if($auth_source_item->getPasswordSecureBigchar() == 1){

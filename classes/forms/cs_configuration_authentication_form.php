@@ -441,7 +441,7 @@ class cs_configuration_authentication_form extends cs_rubric_form {
          $this->_values['contact_fon'] = $this->_item->getContactFon();
          $this->_values['password_bigchar'] = $this->_item->getPasswordSecureBigchar();
          $this->_values['password_specialchar'] = $this->_item->getPasswordSecureSpecialchar();
-         $this->_values['password_length'] = $this->_item->getMinmalPasswordLength();
+         $this->_values['password_length'] = $this->_item->getPasswordLength();
          $current_context = $this->_environment->getCurrentContextItem();
 
 

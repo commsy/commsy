@@ -877,6 +877,7 @@ class cs_page_view extends cs_view {
       if ( !($current_browser == 'msie' and strstr($current_browser_version,'5.')) ){
          $retour .= $this->_getIncludedCSSAsHTML();
          $retour .= $this->_includedJavascriptAsHTML();
+
       }else{
          $retour .= $this->_getIncludedCSSIE5AsHTML();
          $retour .= $this->_includedJavascriptIE5AsHTML();

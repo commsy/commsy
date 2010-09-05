@@ -330,7 +330,7 @@ class cs_auth_source_item extends cs_item {
       return $authentication->getAuthManagerByAuthSourceItem($this);
    }
 
-   public function getMinmalPasswordLength() {
+   public function getPasswordLength() {
    	$retour = '';
       $value = $this->_getExtra('PASSWORD_LENGTH');
       if ( !empty($value) ) {
@@ -339,7 +339,7 @@ class cs_auth_source_item extends cs_item {
       return $retour;
    }
 
-   public function setMinimalPasswordLength($value) {
+   public function setPasswordLength($value) {
    	$this->_addExtra('PASSWORD_LENGTH',$value);
    }
 
@@ -367,6 +367,16 @@ class cs_auth_source_item extends cs_item {
 
    public function setPasswordSecureSpecialchar($value) {
    	$this->_addExtra('PASSWORD_SPECIALCHAR',$value);
+   }
+   
+   public function isPasswordSecureActivated(){
+   	if($this->getPasswordLength() > 0
+   	   OR $this->getPasswordSecureBigChar()
+   	   OR $this->getPasswordSecureSpecialchar()){
+   	   	return true;
+   	   } else {
+   	   	return false;
+   	   }
    }
 
 }
