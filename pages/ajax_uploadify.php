@@ -24,12 +24,21 @@
 
 include_once('functions/development_functions.php');
 
+// debugging file output
+/*
+$file = fopen("output.txt", "w+");
+error_reporting(E_ALL);
+ob_start();
+if(!isset($_FILES)) fputs($file, "not set\n");
+else fputs($file, "set\n");
+fputs($file, pr($_FILES));
+*/
+
 if(!empty($_FILES)) {
    $post_file_ids = array();
    $tempFile = $_FILES['Filedata']['tmp_name'];
    
    $file_upload_rubric = $_REQUEST['file_upload_rubric'];
-   $focus_element_onload = 'Filedata';
    
    if($session->issetValue($file_upload_rubric . '_add_files')) {
       $file_array = $session->getValue($file_upload_rubric . '_add_files');
@@ -37,7 +46,6 @@ if(!empty($_FILES)) {
       $file_array = array();
    }
    
-//   $new_file_ids = array();
    if(   !empty($tempFile) &&
          $_FILES['Filedata']['size'] > 0) {
       if(   isset($_REQUEST['c_virus_scan']) &&
@@ -55,18 +63,6 @@ if(!empty($_FILES)) {
             $temp_array['tmp_name'] = $tempFile. 'commsy3';
             $temp_array['file_id'] = $temp_array['name'].'_' . getCurrentDateTimeInMySQL();
             $file_array[] = $temp_array;
-//            $new_file_ids[] = $temp_array['file_id'];
-         } else {
-            $params = array();
-            $params['environment'] = $environment;
-            $params['with_modifying_actions'] = true;
-            $params['width'] = 500;
-            $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
-            unset($params);
-            $errorbox->setText($virus_scanner->getOutput());
-            $page->add($errorbox);
-            $focus_element_onload = '';
-            $error_on_upload = true;
          }
       } else {
          // do not use virus scanner
@@ -77,7 +73,6 @@ if(!empty($_FILES)) {
          $temp_array['tmp_name'] = $tempFile . 'commsy3';
          $temp_array['file_id'] = $temp_array['name'] . '_' . getCurrentDateTimeInMySQL();
          $file_array[] = $temp_array;
-//         $new_file_ids[] = $temp_array['file_id'];
       }
    }
    if(count($file_array) > 0) {
@@ -90,5 +85,11 @@ if(!empty($_FILES)) {
 }
 
 $environment->getSessionManager()->save($session);
+
+/*
+fputs($file, ob_get_clean());
+fclose($file);
+*/
+
 exit;
 ?>

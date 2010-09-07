@@ -281,5 +281,30 @@ class cs_material_short_view extends cs_home_view {
       unset($item);
       return $retour.$file_list;
    }
+   
+	/**
+    * returns the html link when list is shortened on home view
+    * 
+    * @return string $html		- the html link code
+    */
+   function _getListShortenedLink() {
+      $html = '';
+      $style = '';
+      if($this->getList()->getCount() % 2 == 0) {
+         $style = 'class="odd"';
+      } else {
+         $style = 'class="even"';
+      }
+      
+      $link = ahref_curl(   $this->_environment->getCurrentContextID(),
+                            CS_MATERIAL_TYPE,
+                            'index',
+                            array(),
+                            $this->_translator->getMessage("HOME_RUBRIC_LIST_SHORTENED"));
+      
+      $html .= '<tr class="list"><td ' . $style . ' colspan="4">' . $link . '</td></tr>';
+      
+      return $html;
+   }
 }
 ?>

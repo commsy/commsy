@@ -28,6 +28,7 @@ $message["HOME_PORTLET_CONFIGURATION"]["de"] = "Überblick konfigurieren";
 $message["HOME_PROJECT_ENTER_NEW"]["de"] = "Raum einrichten";
 $message["HOME_ROOM_INDEX"]["de"] = "Überblick";
 $message["HOME_ROOM_MEMBER_ADMIN_DESC"]["de"] = "Hier können Sie Kennungen freischalten oder den Status von TeilnehmerInnen ändern.";
+$message["HOME_RUBRIC_LIST_SHORTENED"]["de"] = "Diese Liste wurde gekürzt. Klicken Sie hier, um alle Einträge zu sehen.";
 $message["HOME_SEARCH_ALL_RUBRICS"]["de"] = "alle Rubriken";
 $message["HOME_SEARCH_ONLY_FILES_TEXT"]["de"] = "nur Einträge mit Dateien";
 $message["HOME_SEARCH_SHORT_BUTTON"]["de"] = "Suchen";

@@ -23,6 +23,7 @@
 //    along with CommSy.
 
 
+$home_rubric_limit = CS_HOME_RUBRIC_LIST_LIMIT;
 $new_private_room = $environment->inConfigArray('c_use_new_private_room',$environment->getCurrentContextID());
 if ($new_private_room){
 
@@ -120,6 +121,11 @@ if ( $context_item->isProjectroom()
                         $manager->setDateLimit(getCurrentDateTimeInMySQL());
                         $manager->setSortOrder('modified');
                         $manager->showNoNotActivatedEntries();
+                        
+                        $count_select = $manager->getCountAll();
+                        $manager->setIntervalLimit(0, $home_rubric_limit);
+                        if($home_rubric_limit < $count_select) $short_list_view->setListShortened(true);
+                        
                         $manager->select();
                         $list = $manager->get();
                         $short_list_view->setList($list);
@@ -135,6 +141,11 @@ if ( $context_item->isProjectroom()
                         $manager->setFutureLimit();
                         $manager->setDateModeLimit(3);
                         $manager->showNoNotActivatedEntries();
+                        
+                        $count_select = $manager->getCountAll();
+                        $manager->setIntervalLimit(0, $home_rubric_limit);
+                        if($home_rubric_limit < $count_select) $short_list_view->setListShortened(true);
+                        
                         $manager->select();
                         $list = $manager->get();
                         $short_list_view->setList($list);
@@ -183,6 +194,11 @@ if ( $context_item->isProjectroom()
                         $manager->setStatusLimit(4);
                         $manager->setSortOrder('date');
                         $manager->showNoNotActivatedEntries();
+                        
+                        $count_select = $manager->getCountAll();
+                        $manager->setIntervalLimit(0, $home_rubric_limit);
+                        if($home_rubric_limit < $count_select) $short_list_view->setListShortened(true);
+                        
                         $manager->select();
                         $list = $manager->get();
                         $short_list_view->setList($list);
@@ -258,6 +274,11 @@ if ( $context_item->isProjectroom()
                            $manager->setIntervalLimit(0, 5);
                         }
                         $manager->showNoNotActivatedEntries();
+                        
+                        $count_select = $manager->getCountAll();
+                        $manager->setIntervalLimit(0, $home_rubric_limit);
+                        if($home_rubric_limit < $count_select) $short_list_view->setListShortened(true);
+                        
                         $manager->select();
                         $list = $manager->get();
                         $manager->delete_tmp_table();
@@ -290,6 +311,11 @@ if ( $context_item->isProjectroom()
                            $manager->setIntervalLimit(0,5);
                         }
                         $manager->showNoNotActivatedEntries();
+                        
+                        $count_select = $manager->getCountAll();
+                        $manager->setIntervalLimit(0, $home_rubric_limit);
+                        if($home_rubric_limit < $count_select) $short_list_view->setListShortened(true);
+                        
                         $manager->select();
                         $list = $manager->get();
                         $short_list_view->setList($list);
@@ -504,6 +530,11 @@ if ( $context_item->isProjectroom()
                         $manager->setDateLimit(getCurrentDateTimeInMySQL());
                         $manager->setSortOrder('modified');
                         $manager->showNoNotActivatedEntries();
+                        
+                        $count_select = $manager->getCountAll();
+                        $manager->setIntervalLimit(0, $home_rubric_limit);
+                        if($home_rubric_limit < $count_select) $short_list_view->setListShortened(true);
+                        
                         $manager->select();
                         $list = $manager->get();
                         $short_list_view->setList($list);
@@ -519,6 +550,11 @@ if ( $context_item->isProjectroom()
                         $manager->setFutureLimit();
                         $manager->setDateModeLimit(3);
                         $manager->showNoNotActivatedEntries();
+                        
+                        $count_select = $manager->getCountAll();
+                        $manager->setIntervalLimit(0, $home_rubric_limit);
+                        if($home_rubric_limit < $count_select) $short_list_view->setListShortened(true);
+                        
                         $manager->select();
                         $list = $manager->get();
                         $short_list_view->setList($list);
@@ -569,6 +605,11 @@ if ( $context_item->isProjectroom()
                         $manager->setSortOrder('date');
                         $manager->showNoNotActivatedEntries();
                         $manager->select();
+                        
+                        $count_select = $manager->getCountAll();
+                        $manager->setIntervalLimit(0, $home_rubric_limit);
+                        if($home_rubric_limit < $count_select) $short_list_view->setListShortened(true);
+                        
                         $list = $manager->get();
                         $short_list_view->setList($list);
                         $short_list_view->setCountAll($count_all);
@@ -643,6 +684,11 @@ if ( $context_item->isProjectroom()
                            $manager->setIntervalLimit(0, 5);
                         }
                         $manager->showNoNotActivatedEntries();
+                        
+                        $count_select = $manager->getCountAll();
+                        $manager->setIntervalLimit(0, $home_rubric_limit);
+                        if($home_rubric_limit < $count_select) $short_list_view->setListShortened(true);
+                        
                         $manager->select();
                         $list = $manager->get();
                         $manager->delete_tmp_table();
@@ -676,6 +722,11 @@ if ( $context_item->isProjectroom()
                         }
                         $manager->showNoNotActivatedEntries();
                         $manager->select();
+                        
+                        $count_select = $manager->getCountAll();
+                        $manager->setIntervalLimit(0, $home_rubric_limit);
+                        if($home_rubric_limit < $count_select) $short_list_view->setListShortened(true);
+                        
                         $list = $manager->get();
                         $short_list_view->setList($list);
                         $short_list_view->setCountAll($count_all);

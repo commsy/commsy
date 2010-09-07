@@ -35,6 +35,11 @@ class cs_home_view extends cs_view {
     * int - length of whole list
     */
    var $_count_all = NULL;
+   
+   /**
+    * bool - is the list shortened?
+    */
+   var $_is_list_shortened = false;
 
    /**
     * list - containing the content of the list view
@@ -70,6 +75,17 @@ class cs_home_view extends cs_view {
     */
     function setCountAll ($count_all) {
        $this->_count_all = (int)$count_all;
+    }
+    
+    /**
+     * set wheather the list is shortened or not
+     * 
+     * @param bool $shortened			is list shortened?
+     */
+    function setListShortened($shortened = false) {
+       if($shortened) {
+          $this->_is_list_shortened = true;
+       }
     }
 
    /** get count_all counter of the list view
@@ -162,6 +178,9 @@ class cs_home_view extends cs_view {
             $i++;
             unset($current_item);
             $current_item = $list->getNext();
+         }
+         if($this->_is_list_shortened) {
+            $html .= $this->_getListShortenedLink();
          }
       }
       unset($list);

@@ -205,4 +205,7 @@ if ( !isset($_SERVER['HTTP_REFERER']) ) {
    $_SERVER['HTTP_REFERER'] = $retour;
 }
 */
+
+// home rubric list limit
+define('CS_HOME_RUBRIC_LIST_LIMIT', 50);
 ?>

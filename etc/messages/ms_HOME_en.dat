@@ -28,6 +28,7 @@ $message["HOME_PORTLET_CONFIGURATION"]["en"] = "Configure home";
 $message["HOME_PROJECT_ENTER_NEW"]["en"] = "Create new workspace";
 $message["HOME_ROOM_INDEX"]["en"] = "Home - The notice board";
 $message["HOME_ROOM_MEMBER_ADMIN_DESC"]["en"] = "Approve memberships or change the status of users in your workspace.";
+$message["HOME_RUBRIC_LIST_SHORTENED"]["en"] = "This list is shortened. Please click here to see all entries.";
 $message["HOME_SEARCH_ALL_RUBRICS"]["en"] = "*Limit search";
 $message["HOME_SEARCH_ONLY_FILES_TEXT"]["en"] = "with attachments only";
 $message["HOME_SEARCH_SHORT_BUTTON"]["en"] = "Search";
