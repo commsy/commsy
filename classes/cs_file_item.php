@@ -188,7 +188,11 @@ class cs_file_item extends cs_item {
       $this->_icon['swf']      = "movie.png";
       $this->_mime['swf']      = 'application/x-shockwave-flash';
 
-
+      // Consideo Modeler
+      $this->_icon['cons']      = "consideo.png";
+      $this->_mime['cons']      = 'application/consideo';
+      
+      
       $this->_icon['unknown'] = "unknown.png";
 
       $this->cs_item($environment);
