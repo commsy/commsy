@@ -1035,8 +1035,15 @@ class cs_form_view extends cs_view {
 
       // Passwort Securitycheck
       if($form_element['name'] == 'password'){
-      $html .= '<div id="iSM"><ul class="weak"><li id="iWeak">zu leicht</li>
-		<li id="iMedium">erlaubt</li><li id="iStrong">sicher</li></ul></div>';
+      	$auth_source_manager = $this->_environment->getAuthSourceManager();
+      	$auth_source = $auth_source_manager->_performQuery();
+	      $auth_source_item = $auth_source_manager->getItem($auth_source[0]['item_id']);
+	      if(!empty($auth_source_item) AND $auth_source_item->isPasswordSecureActivated()){
+	      	$html .= '<div id="iSM"><ul class="weak"><li id="iWeak">zu leicht</li>
+				<li id="iMedium">erlaubt</li><li id="iStrong">sicher</li></ul></div>';
+	      }
+	      unset($auth_source_manager);
+	      unset($auth_source_item);
       }
 
       $html .= LF;

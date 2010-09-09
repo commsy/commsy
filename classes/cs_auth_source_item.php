@@ -368,11 +368,23 @@ class cs_auth_source_item extends cs_item {
    public function setPasswordSecureSpecialchar($value) {
    	$this->_addExtra('PASSWORD_SPECIALCHAR',$value);
    }
-   
+
+
+   public function getPasswordSecureCheck() {
+   	$retour = '';
+      $value = $this->_getExtra('PASSWORD_SECURE_CHECK');
+      if ( !empty($value) ) {
+          $retour = $value;
+      }
+      return $retour;
+   }
+
+   public function setPasswordSecureCheck($value) {
+   	$this->_addExtra('PASSWORD_SECURE_CHECK',$value);
+   }
+
    public function isPasswordSecureActivated(){
-   	if($this->getPasswordLength() > 0
-   	   OR $this->getPasswordSecureBigChar()
-   	   OR $this->getPasswordSecureSpecialchar()){
+   	if(($this->getPasswordSecureCheck() == 1)){
    	   	return true;
    	   } else {
    	   	return false;

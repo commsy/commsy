@@ -656,7 +656,7 @@ class cs_form_view extends cs_view {
 //      $with_flash = false;
 //      $session->getValue('flash')
       $val = $this->_environment->getCurrentContextItem()->getMaxUploadSizeInBytes();
-      
+
       $use_new_upload = false;
       $session = $this->_environment->getSession();
       if($session->issetValue('javascript') and $session->issetValue('flash')){
@@ -664,7 +664,7 @@ class cs_form_view extends cs_view {
       		$use_new_upload = true;
       	}
       }
-      
+
       // do not use new upload in case of room picture, user picuture, ...
       $module = $this->_environment->getCurrentModule();
       $fct = $this->_environment->getCurrentFunction();
@@ -673,7 +673,7 @@ class cs_form_view extends cs_view {
             ($module == 'group' && $fct == 'edit')) {
          $use_new_upload = false;
       }
-      
+
       if ($use_new_upload){
          // this div holds the list of files, which upload is finished(+checkbox)
          $html .= '<div id="fileFinished"></div>';
@@ -706,26 +706,26 @@ class cs_form_view extends cs_view {
          $scriptData .= '"file_upload_rubric"	: "' . $target_module . '",';
          $scriptData .= '"SID"					: "' . $session->getSessionID() . '",';
          $scriptData .= '"security_token"		: "' . getToken() . '"';
-         
+
          /*
-          * this object array specifies the uploadify error message translations 
+          * this object array specifies the uploadify error message translations
           * add more if needed
-          * 
+          *
           * type: uploadify error type
           * text: translation
-          */   
+          */
          $html .='<script type="text/javascript">';
          $html .='	var uploadify_errorLang = [';
          $html .='                              {"type" : "File Size", "text" : "' . $this->_translator->getMessage('ERROR_UPLOADIFY_FILE_SIZE') . '"}';
          $html .='							  ]';
          $html .='</script>';
-         
+
          // define the buttons
          $selected_lang = $this->_translator->getSelectedLanguage();
          $button_browse = "javascript/jQuery/jquery.uploadify-v2.1.0/button_browse_" . $selected_lang . ".png";
          $button_upload = "javascript/jQuery/jquery.uploadify-v2.1.0/button_upload_" . $selected_lang . ".png";
          $button_abort = "javascript/jQuery/jquery.uploadify-v2.1.0/button_abort_" . $selected_lang . ".png";
-         
+
          $html .='<script type="text/javascript">';
          $html .='$(document).ready(function() {';
          $html .='   $("#uploadify").uploadify({';
@@ -762,7 +762,7 @@ class cs_form_view extends cs_view {
             $html .= ' tabindex="'.$this->_count_form_elements.'"';
             $this->_count_form_elements++;
             $html .= '/>';
-            
+
             if (!empty($form_element['button_text']) and !empty($form_element['button_name'])) {
                $html .= '&nbsp;'.$this->_getButtonAsHTML($form_element['button_text'],$form_element['button_name'],'125');
             }
@@ -1184,6 +1184,18 @@ class cs_form_view extends cs_view {
       $this->_count_form_elements++;
       $html .= ' class="password"';
       $html .= '/>';
+
+      // Passwort Securitycheck
+      if($form_element['name'] == 'password'){
+      	$auth_source_manager = $this->_environment->getAuthSourceManager();
+	      $auth_source_item = $auth_source_manager->getItem($this->_environment->getCurrentUserItem()->getAuthSource());
+	      if(!empty($auth_source_item) AND $auth_source_item->isPasswordSecureActivated()){
+	      	$html .= '<div id="iSM"><ul class="weak"><li id="iWeak">zu leicht</li>
+				<li id="iMedium">erlaubt</li><li id="iStrong">sicher</li></ul></div>';
+	      }
+	      unset($auth_source_manager);
+	      unset($auth_source_item);
+      }
       $html .= LF;
       return $html;
    }

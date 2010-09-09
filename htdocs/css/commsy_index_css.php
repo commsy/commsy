@@ -189,3 +189,4 @@ table.list, div.index_flash {
    font-weight:bold;
    text-align: right;
 }
+

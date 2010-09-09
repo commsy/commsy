@@ -60,6 +60,7 @@ class cs_configuration_authentication_form extends cs_rubric_form {
    var $_disable_change_user_data = false;
    var $_disable_add_user = false;
    var $_disable_delete_user = false;
+   var $_disable_password_check = false;
 
   /** constructor
     * the only available constructor
@@ -210,6 +211,17 @@ class cs_configuration_authentication_form extends cs_rubric_form {
             $this->_disable_add_user = true;
             $this->_disable_delete_user = true;
          }
+         $param = $this->_environment->getCurrentPostParameterArray();
+         if(isset($param['auth_source'])){
+	         $auth_source_manager = $this->_environment->getAuthSourceManager();
+		      $auth_source_item = $auth_source_manager->getItem($param['auth_source']);
+		      if($auth_source_item->isPasswordSecureActivated()){
+		      	$this->_disable_password_check = false;
+		      } else {
+		      	$this->_disable_password_check = true;
+		      }
+         }
+	      #$this->_disable_password_check = true;
       }
    }
 
@@ -372,16 +384,25 @@ class cs_configuration_authentication_form extends cs_rubric_form {
       } else {
          $this->_form->addRadioGroup('addAccount',$translator->getMessage('CONFIGURATION_AUTHENTICATION_ADD_ACCOUNT_TITLE'),'',$this->_yes_no_array,'','',true,'','',$disabled);
       }
-      if ( $this->_disable_delete_user ) {
+      if ( $this->_disable_delete_user) {
          $this->_form->addhidden('deleteAccount',2);
          $this->_form->addText('textdeleteAccount',$translator->getMessage('CONFIGURATION_AUTHENTICATION_DELETE_ACCOUNT_TITLE'),$translator->getMessage('CONFIGURATION_AUTHENTICATION_NOT_IMPLEMENTED'));
       } else {
          $this->_form->addRadioGroup('deleteAccount',$translator->getMessage('CONFIGURATION_AUTHENTICATION_DELETE_ACCOUNT_TITLE'),'',$this->_yes_no_array,'','',true,'','',$disabled);
       }
       $this->_form->addEmptyLine();
-      $this->_form->addRadioGroup('password_bigchar','Großbuchstaben','',$this->_yes_no_array,'','',true,'','',$disabled);
-      $this->_form->addRadioGroup('password_specialchar','Sonderzeichen','',$this->_yes_no_array,'','',true,'','',$disabled);
-      $this->_form->addTextfield('password_length','','Minimale Passwortlänge','',2,10,false,'','','','','','',$disabled);
+      $this->_form->addRadioGroup('password_secure_check','Passwortkontrolle','',$this->_yes_no_array,'','',true,'','',$disabled);
+
+      if(!$this->_disable_password_check){
+	      $this->_form->addRadioGroup('password_bigchar','Großbuchstaben','',$this->_yes_no_array,'','',true,'','',$disabled);
+	      $this->_form->addRadioGroup('password_specialchar','Sonderzeichen','',$this->_yes_no_array,'','',true,'','',$disabled);
+	      $this->_form->addTextfield('password_length','','Passwortlänge','',1,10,false,'','','','','','',$disabled);
+      } else {
+      	$this->_form->addRadioGroup('password_bigchar','Großbuchstaben','',$this->_yes_no_array,'','',true,'','',true);
+	      $this->_form->addRadioGroup('password_specialchar','Sonderzeichen','',$this->_yes_no_array,'','',true,'','',true);
+	      $this->_form->addTextfield('password_length','','Passwortlänge','',1,10,false,'','','','','','',true);
+      }
+
 
       // specific options
       if ( !$this->_commsy_default ) {
@@ -431,6 +452,11 @@ class cs_configuration_authentication_form extends cs_rubric_form {
                $this->_values['port'] = '389';
             }
          }
+         if($this->_values['password_secure_check']){
+         	$this->_disable_password_check = false;
+         } else {
+         	$this->_disable_password_check = true;
+         }
 
 
       } elseif ( !empty($this->_item) ) {
@@ -439,11 +465,21 @@ class cs_configuration_authentication_form extends cs_rubric_form {
          $this->_values['change_password_url'] = $this->_item->getPasswordChangeLink();
          $this->_values['contact_mail'] = $this->_item->getContactEMail();
          $this->_values['contact_fon'] = $this->_item->getContactFon();
+         $this->_values['password_secure_check'] = $this->_item->getPasswordSecureCheck();
          $this->_values['password_bigchar'] = $this->_item->getPasswordSecureBigchar();
          $this->_values['password_specialchar'] = $this->_item->getPasswordSecureSpecialchar();
          $this->_values['password_length'] = $this->_item->getPasswordLength();
          $current_context = $this->_environment->getCurrentContextItem();
 
+         if( empty($this->_values['password_secure_check'])){
+         	$this->_values['password_secure_check'] = 2;
+         	$this->_disable_password_check = true;
+         }
+         if($this->_values['password_secure_check'] == 2){
+         	$this->_disable_password_check = true;
+         } else {
+         	$this->_disable_password_check = false;
+         }
 
          if( empty($this->_values['password_length'])){
          	$this->_values['password_length'] = 1;
