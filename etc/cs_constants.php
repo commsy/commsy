@@ -180,6 +180,35 @@ define ("HELP_AS_HTML_LONG", 21);
 
 
 // IIS - microsoft compatibility
+if ( empty( $_SERVER['REQUEST_URI'] ) ) {
+
+    // IIS Mod-Rewrite
+    if (isset($_SERVER['HTTP_X_ORIGINAL_URL'])) {
+        $_SERVER['REQUEST_URI'] = $_SERVER['HTTP_X_ORIGINAL_URL'];
+    }
+    // IIS Isapi_Rewrite
+    else if (isset($_SERVER['HTTP_X_REWRITE_URL'])) {
+        $_SERVER['REQUEST_URI'] = $_SERVER['HTTP_X_REWRITE_URL'];
+    }
+    else
+    {
+        // Some IIS + PHP configurations puts the script-name in the path-info (No need to append it twice)
+        if ( isset($_SERVER['PATH_INFO']) ) {
+            if ( $_SERVER['PATH_INFO'] == $_SERVER['SCRIPT_NAME'] )
+                $_SERVER['REQUEST_URI'] = $_SERVER['PATH_INFO'];
+            else
+                $_SERVER['REQUEST_URI'] = $_SERVER['SCRIPT_NAME'] . $_SERVER['PATH_INFO'];
+        }
+
+        // Append the query string if it exists and isn't null
+        $_SERVER['REQUEST_URI'] = substr($_SERVER['PHP_SELF'],0);
+
+        if (isset($_SERVER['QUERY_STRING']) && !empty($_SERVER['QUERY_STRING'])) {
+            $_SERVER['REQUEST_URI'] .= '?' . $_SERVER['QUERY_STRING'];
+        }
+    }
+}
+
 /*
 if ( !isset($_SERVER['HTTP_REFERER']) ) {
    if ( isset($_SERVER['SERVER_PORT'])

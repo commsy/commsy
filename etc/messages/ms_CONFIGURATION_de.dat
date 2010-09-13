@@ -122,6 +122,7 @@ $message["CONFIGURATION_DISCUSSION_DESC_1"]["de"] = "Lineare Darstellung";
 $message["CONFIGURATION_DISCUSSION_DESC_2"]["de"] = "Verzweigte Darstellung (Threaded)";
 $message["CONFIGURATION_DISCUSSION_DESC_3"]["de"] = "Beide Darstellungen";
 $message["CONFIGURATION_DISCUSSION_WARNING"]["de"] = "Wählen Sie zwischen linearen (Option 1) und verzweigten Diskussionen (Option 2). Das Aktivieren beider Darstellungen wird nicht empfohlen, da es auf Grund der unterschiedlichen Handhabungen der beiden Diskussionsarten zu Irritation bei den Benutzern führen kann.";
+$message["CONFIGURATION_ERROR_PORTAL_URL"]["de"] = "Die URL %1 ist bereits vergeben. Sie wird schon vom Portal %2 auf diesem Server verwendet.";
 $message["CONFIGURATION_ERROR_TIME_SPREAD_LONG"]["de"] = "Es dürfen nur Tage bis zu einem Jahr (= 365 Tage) gewählt werden.";
 $message["CONFIGURATION_EXTRA_ACTIVATING_CONTENT"]["de"] = "Einträge freischalten";
 $message["CONFIGURATION_EXTRA_ACTIVATING_CONTENT_DESC"]["de"] = "Durch Eingabe eines Datum können Einträge bis zu dem Zeitpunkt verborgen werden. Sie sind zwar in der Liste sichtbar, jedoch nicht zugreifbar.";
@@ -226,6 +227,7 @@ $message["CONFIGURATION_ROOM_OPENING_LINK"]["de"] = "Raumeröffnungen";
 $message["CONFIGURATION_ROOM_OPENING_LINK_DESC"]["de"] = "Geben Sie an, unter welchen Bedingungen wer welche Räume eröffnen darf.";
 $message["CONFIGURATION_ROOM_OPTIONS_DESC"]["de"] = "Stellen Sie z.B. <span class=&quot;bold&quot;>Raumname</span>, <span class=&quot;bold&quot;>Logo</span>, <span class=&quot;bold&quot;>Farbschema</span> ein.";
 $message["CONFIGURATION_ROOM_OPTIONS_TITLE"]["de"] = "Raumgestaltung";
+$message["CONFIGURATION_ROOM_URL"]["de"] = "URL";
 $message["CONFIGURATION_RUBRIC_DESC"]["de"] = "Die Auswahl der Rubriken erfolgt über die Select-Boxen, die nachfolgend nebeneinander dargestellt sind. Mit Hilfe dieser Select-Boxen können Sie einstellen,
 <ul>
 <li><b>welche Rubriken</b> Sie im Raum verwenden möchten und

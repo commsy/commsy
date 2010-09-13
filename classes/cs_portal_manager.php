@@ -31,6 +31,8 @@ include_once('classes/cs_context_manager.php');
  */
 class cs_portal_manager extends cs_context_manager {
 
+  private $_url_limit = NULL;
+
   /** constructor: cs_server_manager
     * the only available constructor, initial values for internal variables
     *
@@ -41,6 +43,20 @@ class cs_portal_manager extends cs_context_manager {
      $this->_room_type = CS_PORTAL_TYPE;
      $this->cs_context_manager($environment);
   }
+
+   /** reset limits
+    * reset limits of this class
+    */
+   function resetLimits () {
+      parent::resetLimits();
+      $this->_url_limit = NULL;
+   }
+
+   /** set url limit
+    */
+   function setUrlLimit($limit) {
+      $this->_url_limit = (string)$limit;
+   }
 
    /** select communities limited by limits
     * this method returns a list (cs_list) of communities within the database limited by the limits. the select statement is a bit tricky, see source code for further information
@@ -63,6 +79,9 @@ class cs_portal_manager extends cs_context_manager {
       }
       if (isset($this->_status_limit)) {
          $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.status = "'.encode(AS_DB,$this->_status_limit).'"';
+      }
+      if (isset($this->_url_limit)) {
+         $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.url LIKE "%'.encode(AS_DB,$this->_url_limit).'%"';
       }
 
       if (isset($this->_order)) {

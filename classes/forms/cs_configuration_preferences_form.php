@@ -471,9 +471,9 @@ class cs_configuration_preferences_form extends cs_rubric_form {
                      $this->_template_array[] = $temp_array;
 
                      /*
-                      * Fix:	text functions causes problems with javascript and <br /> tag
-                      * 		anyway, they are not need for displaying the content, because
-                      * 		mysql holds these information already escaped
+                      * Fix:   text functions causes problems with javascript and <br /> tag
+                      *        anyway, they are not need for displaying the content, because
+                      *        mysql holds these information already escaped
                       */
                      //$this->_javascript_array[$item->getItemID()] = $this->_environment->getTextConverter()->text_as_html_long($this->_environment->getTextConverter()->cleanDataFromTextArea($item->getTemplateDescription()));
                      $this->_javascript_array[$item->getItemID()] = nl2br($item->getTemplateDescription());
@@ -1200,9 +1200,12 @@ class cs_configuration_preferences_form extends cs_rubric_form {
          }
 
          $this->_form->addTextArea('description','',$this->_translator->getMessage('CONFIGURATION_ROOM_DESCRIPTION'),'','48','15','virtual',false,false,true,$html_status);
-   }
+      }
 
-
+      // portal: URL
+      if ( $this->_environment->inPortal() and $this->_type == CS_PORTAL_TYPE ) {
+         $this->_form->addTextField('url','',$this->_translator->getMessage('CONFIGURATION_ROOM_URL'),'',255,35,false,'','','','left','http(s)://','',false,'/commsy.php');
+      }
 
         // rubric connections
         if ( $this->_environment->getCurrentModule() == CS_PROJECT_TYPE
@@ -1263,9 +1266,14 @@ class cs_configuration_preferences_form extends cs_rubric_form {
             $this->_values['template_availability'] = $this->_item->getTemplateAvailability();
          }
          if ( $this->_item->isPortal() ) {
-                 $this->_values['picture'] = $this->_item->getPictureFilename();
-                 $this->_values['picture_hidden'] = $this->_item->getPictureFilename();
-              }
+            $this->_values['picture'] = $this->_item->getPictureFilename();
+            $this->_values['picture_hidden'] = $this->_item->getPictureFilename();
+            $url = $this->_item->getURL();
+            if ( isset($url) ) {
+               $this->_values['url'] = $url;
+            }
+            unset($url);
+         }
          if ($this->_item->isCommunityRoom()){
             if ($this->_item->isTemplate()) {
                $this->_values['template'] = 1;
@@ -1490,6 +1498,40 @@ class cs_configuration_preferences_form extends cs_rubric_form {
                $this->_form->setFailure('communityrooms','mandatory');
                $this->_error_array[] = $this->_translator->getMessage('COMMON_ERROR_COMMUNITY_ROOM_ENTRY',$this->_translator->getMessage('PREFERENCES_COMMUNITY_ROOMS'));
             }
+         }
+      }
+
+      // url: portal
+      if ( !empty($this->_form_post['url']) ) {
+         $portal_manager = $this->_environment->getPortalManager();
+         $url = $this->_form_post['url'];
+         $url = str_replace('http://','',$url);
+         $url = str_replace('https://','',$url);
+         if ( strstr($url,'?') ) {
+            $url = mb_substr($url,0,strpos($url,'?'));
+         }
+         $url = str_replace('/commsy.php','',$url);
+         $url = str_replace('/index.php','',$url);
+         if ( !empty($url) ) {
+            $portal_manager->setUrlLimit($url);
+            $portal_manager->select();
+            $portal_list = $portal_manager->get();
+            if ( !empty($portal_list)
+                 and $portal_list->isNotEmpty()
+               ) {
+               $portal_item = $portal_list->getFirst();
+               $portal_id = $portal_item->getItemID();
+               $current_id = $this->_form_post['iid'];
+               if ( $portal_id != $current_id ) {
+                  $this->_form->setFailure('url','');
+                  $this->_error_array[] = $this->_translator->getMessage('CONFIGURATION_ERROR_PORTAL_URL',$this->_form_post['url'],$portal_item->getTitle());
+               }
+               unset($portal_id);
+               unset($current_id);
+               unset($portal_item);
+            }
+            unset($portal_manager);
+            unset($portal_list);
          }
       }
    }

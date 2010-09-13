@@ -518,8 +518,17 @@ class cs_context_manager extends cs_manager {
                 "extras='".encode(AS_DB,serialize($item->getExtraInformation()))."',".
                 "status='".encode(AS_DB,$item->getStatus())."',".
                 "activity='".encode(AS_DB,$activity_points)."',".
-                "is_open_for_guests='".encode(AS_DB,$open_for_guests)."'".
-                ' WHERE item_id="'.encode(AS_DB,$item->getItemID()).'"';
+                "is_open_for_guests='".encode(AS_DB,$open_for_guests)."'";
+
+      // maybe move this to method to portal item
+      if ( $item->isPortal() ) {
+         $url = $item->getUrl();
+         if ( isset($url) ) {
+            $query .= ", url='".encode(AS_DB,$url)."'";
+         }
+      }
+
+      $query .= ' WHERE item_id="'.encode(AS_DB,$item->getItemID()).'"';
 
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) or !$result ) {
@@ -551,6 +560,15 @@ class cs_context_manager extends cs_manager {
                'extras="'.encode(AS_DB,serialize($item->getExtraInformation())).'",'.
                'type="'.encode(AS_DB,$item->getRoomType()).'",'.
                'status="'.encode(AS_DB,$item->getStatus()).'"';
+
+      // maybe move this to method to portal item
+      if ( $item->isPortal() ) {
+         $url = $item->getUrl();
+         if ( isset($url) ) {
+            $query .= ", url='".encode(AS_DB,$url)."'";
+         }
+      }
+
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) ) {
          include_once('functions/error_functions.php');

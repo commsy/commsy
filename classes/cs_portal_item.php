@@ -2159,12 +2159,24 @@ class cs_portal_item extends cs_guide_item {
       }
    }
 
-/*
-   public function getCountProjectRoomsNew () {
-      pr($this->_getCountPrivateRoomsExtra());
-      pr($this->_getCountPrivateRoomsManager());
-      pr($this->getCountPrivateRooms());
+   /** get url of a portal
+    * this method returns the url of the portal
+    * - without http(s)://
+    * - without /commsy.php?....
+    *
+    * @return string url of a portal
+    */
+   function getUrl () {
+      return $this->_getValue('url');
    }
-*/
+
+   /** set url of a portal
+    * this method sets the url of the portal
+    *
+    * @param string value url of the portal
+    */
+   function setUrl ($value) {
+      $this->_setValue('url', $value, TRUE);
+   }
 }
 ?>

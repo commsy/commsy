@@ -816,13 +816,6 @@ if ($current_user->isGuest()) {
           }
        }
        $languages = $environment->getAvailableLanguageArray();
-#      if ( $item->isPortal() ) {
-#       $description = $item->getDescription();
-#       if (!empty($_POST['description'])) {
-#          $description = $_POST['description'];
-#       }
-#       // TBD: portal geht nicht
-#       $item->setDescription($description);
        if ( $item->isPortal() ) {
           $description = $item->getDescriptionWellcome1Array();
           foreach ($languages as $language) {
@@ -870,7 +863,7 @@ if ($current_user->isGuest()) {
              $item->setDescriptionArray($desc_array);
           }
        }else{
-       	  $description = $item->getDescription();
+          $description = $item->getDescription();
           if (!empty($_POST['description'])) {
              $description = $_POST['description'];
           }
@@ -975,6 +968,20 @@ if ($current_user->isGuest()) {
               and !empty($_POST['server_portal_option'])
             ) {
             $item->setDefaultPortalItemID($_POST['server_portal_option']);
+         }
+
+         // URL for PORTAL
+         if ( isset($_POST['url']) ) {
+            $url = $_POST['url'];
+            $url = str_replace('http://','',$url);
+            $url = str_replace('https://','',$url);
+            if ( strstr($url,'?') ) {
+               $url = mb_substr($url,0,strpos($url,'?'));
+            }
+            $url = str_replace('/commsy.php','',$url);
+            $url = str_replace('/index.php','',$url);
+            $item->setUrl($url);
+            unset($url);
          }
 
                   //******************************************//
