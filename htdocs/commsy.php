@@ -233,6 +233,19 @@ if ( !empty($cid_not_set) and $cid_not_set) {
       }
       unset($portal_manager);
       unset($portal_list);
+
+      // check url from server_item
+      if ( !$set_cid ) {
+         $server_item = $environment->getServerItem();
+         $server_url = $server_item->getURL();
+         if ( !empty($server_url)
+              and $server_url == $search_url
+            ) {
+            $environment->setCurrentContextID($server_item->getItemID());
+            # don't set cid_set to true, because default portal id should work
+         }
+         unset($server_item);
+      }
    }
 
    // default portal id

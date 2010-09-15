@@ -765,6 +765,7 @@ CREATE TABLE IF NOT EXISTS `portal` (
   `activity` int(11) NOT NULL DEFAULT '0',
   `type` varchar(10) NOT NULL DEFAULT 'portal',
   `is_open_for_guests` tinyint(4) NOT NULL DEFAULT '1',
+  `url` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`)
@@ -926,6 +927,7 @@ CREATE TABLE IF NOT EXISTS `server` (
   `activity` int(11) NOT NULL DEFAULT '0',
   `type` varchar(10) NOT NULL DEFAULT 'server',
   `is_open_for_guests` tinyint(4) NOT NULL DEFAULT '1',
+  `url` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`)

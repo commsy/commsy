@@ -21,12 +21,17 @@
 //    along with CommSy.
 
 // headline
-$this->_flushHeadline('db: add url to portals');
+$this->_flushHeadline('db: add url to table portal and server');
 
 $success = true;
 
 if ( !$this->_existsField('portal','url') ) {
    $sql = "ALTER TABLE portal ADD url VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL;";
+   $success = $success AND $this->_select($sql);
+}
+
+if ( !$this->_existsField('server','url') ) {
+   $sql = "ALTER TABLE server ADD url VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL;";
    $success = $success AND $this->_select($sql);
 }
 

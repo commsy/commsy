@@ -137,5 +137,25 @@ class cs_guide_item extends cs_context_item {
       }
       return $retour;
    }
+
+   /** get url of a portal/server
+    * this method returns the url of the portal/server
+    * - without http(s)://
+    * - without /commsy.php?....
+    *
+    * @return string url of a portal/server
+    */
+   function getUrl () {
+      return $this->_getValue('url');
+   }
+
+   /** set url of a portal
+    * this method sets the url of the portal/server
+    *
+    * @param string value url of the portal/server
+    */
+   function setUrl ($value) {
+      $this->_setValue('url', $value, TRUE);
+   }
 }
 ?>

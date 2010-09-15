@@ -980,6 +980,9 @@ if ($current_user->isGuest()) {
             }
             $url = str_replace('/commsy.php','',$url);
             $url = str_replace('/index.php','',$url);
+            if ( substr($url,strlen($url)-1) == '/' ) {
+               $url = substr($url,0,strlen($url)-1);
+            }
             $item->setUrl($url);
             unset($url);
          }

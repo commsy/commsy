@@ -520,8 +520,10 @@ class cs_context_manager extends cs_manager {
                 "activity='".encode(AS_DB,$activity_points)."',".
                 "is_open_for_guests='".encode(AS_DB,$open_for_guests)."'";
 
-      // maybe move this to method to portal item
-      if ( $item->isPortal() ) {
+      // maybe move this to method to portal/server manager
+      if ( $item->isPortal()
+           or $item->isServer()
+         ) {
          $url = $item->getUrl();
          if ( isset($url) ) {
             $query .= ", url='".encode(AS_DB,$url)."'";
@@ -561,8 +563,10 @@ class cs_context_manager extends cs_manager {
                'type="'.encode(AS_DB,$item->getRoomType()).'",'.
                'status="'.encode(AS_DB,$item->getStatus()).'"';
 
-      // maybe move this to method to portal item
-      if ( $item->isPortal() ) {
+      // maybe move this to method to portal/server manager
+      if ( $item->isPortal()
+           or $item->isServer()
+         ) {
          $url = $item->getUrl();
          if ( isset($url) ) {
             $query .= ", url='".encode(AS_DB,$url)."'";

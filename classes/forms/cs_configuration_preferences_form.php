@@ -1202,8 +1202,12 @@ class cs_configuration_preferences_form extends cs_rubric_form {
          $this->_form->addTextArea('description','',$this->_translator->getMessage('CONFIGURATION_ROOM_DESCRIPTION'),'','48','15','virtual',false,false,true,$html_status);
       }
 
-      // portal: URL
-      if ( $this->_environment->inPortal() and $this->_type == CS_PORTAL_TYPE ) {
+      // portal/server: URL
+      if ( $this->_environment->inServer()
+           or ( $this->_environment->inPortal()
+                and $this->_type == CS_PORTAL_TYPE
+              )
+         ) {
          $this->_form->addTextField('url','',$this->_translator->getMessage('CONFIGURATION_ROOM_URL'),'',255,35,false,'','','','left','http(s)://','',false,'/commsy.php');
       }
 
@@ -1300,6 +1304,11 @@ class cs_configuration_preferences_form extends cs_rubric_form {
          if ( $this->_item->isServer() ) {
             $this->_values['server_default_sender_address'] = $this->_item->getDefaultSenderAddress();
             $this->_values['server_portal_option'] = $this->_item->getDefaultPortalItemID();
+            $url = $this->_item->getURL();
+            if ( isset($url) ) {
+               $this->_values['url'] = $url;
+            }
+            unset($url);
          }
          if ( $this->_item->isPortal() ) {
             $description_array = $this->_item->getDescriptionWellcome1Array();
@@ -1501,7 +1510,7 @@ class cs_configuration_preferences_form extends cs_rubric_form {
          }
       }
 
-      // url: portal
+      // url: portal/server
       if ( !empty($this->_form_post['url']) ) {
          $portal_manager = $this->_environment->getPortalManager();
          $url = $this->_form_post['url'];
@@ -1512,26 +1521,44 @@ class cs_configuration_preferences_form extends cs_rubric_form {
          }
          $url = str_replace('/commsy.php','',$url);
          $url = str_replace('/index.php','',$url);
+         if ( substr($url,strlen($url)-1) == '/' ) {
+            $url = substr($url,0,strlen($url)-1);
+         }
          if ( !empty($url) ) {
-            $portal_manager->setUrlLimit($url);
-            $portal_manager->select();
-            $portal_list = $portal_manager->get();
-            if ( !empty($portal_list)
-                 and $portal_list->isNotEmpty()
+
+            // check server
+            $server_item = $this->_environment->getServerItem();
+            $server_url = $server_item->getUrl();
+            $server_id = $server_item->getItemID();
+            $current_id = $this->_form_post['iid'];
+            if ( $current_id != $server_id
+                 and $server_url == $url
                ) {
-               $portal_item = $portal_list->getFirst();
-               $portal_id = $portal_item->getItemID();
-               $current_id = $this->_form_post['iid'];
-               if ( $portal_id != $current_id ) {
-                  $this->_form->setFailure('url','');
-                  $this->_error_array[] = $this->_translator->getMessage('CONFIGURATION_ERROR_PORTAL_URL',$this->_form_post['url'],$portal_item->getTitle());
+               $this->_form->setFailure('url','');
+               $this->_error_array[] = $this->_translator->getMessage('CONFIGURATION_ERROR_SERVER_URL',$this->_form_post['url']);
+            } else {
+
+               // check portal
+               $portal_manager->setUrlLimit($url);
+               $portal_manager->select();
+               $portal_list = $portal_manager->get();
+               if ( !empty($portal_list)
+                    and $portal_list->isNotEmpty()
+                  ) {
+                  $portal_item = $portal_list->getFirst();
+                  $portal_id = $portal_item->getItemID();
+                  $current_id = $this->_form_post['iid'];
+                  if ( $portal_id != $current_id ) {
+                     $this->_form->setFailure('url','');
+                     $this->_error_array[] = $this->_translator->getMessage('CONFIGURATION_ERROR_PORTAL_URL',$this->_form_post['url'],$portal_item->getTitle());
+                  }
+                  unset($portal_id);
+                  unset($current_id);
+                  unset($portal_item);
                }
-               unset($portal_id);
-               unset($current_id);
-               unset($portal_item);
+               unset($portal_manager);
+               unset($portal_list);
             }
-            unset($portal_manager);
-            unset($portal_list);
          }
       }
    }
