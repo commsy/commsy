@@ -210,6 +210,9 @@ if ( !empty($cid_not_set) and $cid_not_set) {
       if ( !empty($_SERVER['REQUEST_URI']) ) {
          $search_url .= dirname($_SERVER['REQUEST_URI']);
       }
+      if ( substr($search_url,strlen($search_url)-1) == '/' ) {
+         $search_url = substr($search_url,0,strlen($search_url)-1);
+      }
       $portal_manager = $environment->getPortalManager();
       $portal_manager->setUrlLimit($search_url);
       $portal_manager->select();
