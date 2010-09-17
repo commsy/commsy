@@ -934,9 +934,9 @@ class cs_page_view extends cs_view {
 									if(I>3){I=3}
 									var E=((D*10)-20)+(G*10)+(C*15)+(I*10);';
 									if($auth_source_item->isPasswordSecureActivated()){
-										$retour .= 'if(';
+										$retour .= 'if(1';
 										if($auth_source_item->getPasswordSecureSpecialchar() == 1){
-											$retour .= '(C >= 1) ';
+											$retour .= '&& (C >= 1) ';
 										}
 										if($auth_source_item->getPasswordSecureBigchar() == 1){
 											$retour .= '&& (I >= 1) ';

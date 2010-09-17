@@ -390,17 +390,18 @@ class cs_configuration_authentication_form extends cs_rubric_form {
       } else {
          $this->_form->addRadioGroup('deleteAccount',$translator->getMessage('CONFIGURATION_AUTHENTICATION_DELETE_ACCOUNT_TITLE'),'',$this->_yes_no_array,'','',true,'','',$disabled);
       }
-      $this->_form->addEmptyLine();
-      $this->_form->addRadioGroup('password_secure_check','Passwortkontrolle','',$this->_yes_no_array,'','',true,'','',$disabled);
-
-      if(!$this->_disable_password_check){
-	      $this->_form->addRadioGroup('password_bigchar','Großbuchstaben','',$this->_yes_no_array,'','',true,'','',$disabled);
-	      $this->_form->addRadioGroup('password_specialchar','Sonderzeichen','',$this->_yes_no_array,'','',true,'','',$disabled);
-	      $this->_form->addTextfield('password_length','','Passwortlänge','',1,10,false,'','','','','','',$disabled);
-      } else {
-      	$this->_form->addRadioGroup('password_bigchar','Großbuchstaben','',$this->_yes_no_array,'','',true,'','',true);
-	      $this->_form->addRadioGroup('password_specialchar','Sonderzeichen','',$this->_yes_no_array,'','',true,'','',true);
-	      $this->_form->addTextfield('password_length','','Passwortlänge','',1,10,false,'','','','','','',true);
+      if($this->_commsy_default){
+      	$this->_form->addEmptyLine();
+      	$this->_form->addRadioGroup('password_secure_check',$translator->getMessage('CONFIGURATION_AUTHENTICATION_PW_CONTROL'),'',$this->_yes_no_array,'','',true,'','',$disabled);
+	      if(!$this->_disable_password_check){
+		      $this->_form->addRadioGroup('password_bigchar',$translator->getMessage('CONFIGURATION_AUTHENTICATION_PW_BIGCHAR'),'',$this->_yes_no_array,'','',true,'','',$disabled);
+		      $this->_form->addRadioGroup('password_specialchar',$translator->getMessage('CONFIGURATION_AUTHENTICATION_PW_SPECIALCHAR'),'',$this->_yes_no_array,'','',true,'','',$disabled);
+		      $this->_form->addTextfield('password_length','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_PW_LENGTH'),'',1,10,false,'','','','','','',$disabled);
+	      } else {
+	      	$this->_form->addRadioGroup('password_bigchar',$translator->getMessage('CONFIGURATION_AUTHENTICATION_PW_BIGCHAR'),'',$this->_yes_no_array,'','',true,'','',true);
+		      $this->_form->addRadioGroup('password_specialchar',$translator->getMessage('CONFIGURATION_AUTHENTICATION_PW_SPECIALCHAR'),'',$this->_yes_no_array,'','',true,'','',true);
+		      $this->_form->addTextfield('password_length','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_PW_LENGTH'),'',1,10,false,'','','','','','',true);
+	      }
       }
 
 
