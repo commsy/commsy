@@ -106,7 +106,7 @@ if ($command != 'error') { // only if user is allowed to edit user
       ) {
       $form->setFailure('email','',$error_message_for_profile_form);
    }
-   
+
    $form->setProfilePageName($profile_page);
 
    $current_portal_item = $environment->getCurrentPortalItem();
@@ -170,7 +170,7 @@ if ($command != 'error') { // only if user is allowed to edit user
       $class_params['with_modifying_actions'] = true;
       global $class_factory;
       $profile_view = $class_factory->getClass(PROFILE_FORM_VIEW,$class_params);
-      if ( $change_language ) {
+      if ( isset($change_language) and $change_language ) {
          $profile_view->setLanguage($portal_language);
       }
       unset($class_params);
