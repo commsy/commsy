@@ -212,13 +212,15 @@ class cs_configuration_authentication_form extends cs_rubric_form {
             $this->_disable_delete_user = true;
          }
          $param = $this->_environment->getCurrentPostParameterArray();
-         if(isset($param['auth_source'])){
+         if(isset($param['auth_source']) AND $this->_commsy_default){
 	         $auth_source_manager = $this->_environment->getAuthSourceManager();
 		      $auth_source_item = $auth_source_manager->getItem($param['auth_source']);
-		      if($auth_source_item->isPasswordSecureActivated()){
-		      	$this->_disable_password_check = false;
-		      } else {
-		      	$this->_disable_password_check = true;
+		      if(isset($auth_source_item)){
+			      if($auth_source_item->isPasswordSecureActivated()){
+			      	$this->_disable_password_check = false;
+			      } else {
+			      	$this->_disable_password_check = true;
+			      }
 		      }
          }
 	      #$this->_disable_password_check = true;
