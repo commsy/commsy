@@ -2064,7 +2064,7 @@ class misc_text_converter {
          $ext = cs_strtolower(mb_substr(strrchr($source,'.'),1));
       }
       $source = $source.'&amp;SID='.$this->_environment->getSessionID();
-      
+
       if ( !empty($array[3]) ) {
          $args = $this->_parseArgs($array[3]);
       } else {
@@ -2240,7 +2240,7 @@ class misc_text_converter {
             if ( !empty($array[2]) and !empty($file_name_array[$temp_file_name]) ) {
                $file = $file_name_array[$temp_file_name];
             } elseif (!empty($array[2]) and !empty($file_name_array[$array[2]])){
-            	$file = $file_name_array[$array[2]];
+               $file = $file_name_array[$array[2]];
             }
             if ( isset($file) ) {
                if ( mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'png')
@@ -2399,7 +2399,7 @@ class misc_text_converter {
           $type = $item_manager->getItemType($word);
           unset($item_manager);
 
-          if(	$type == CS_ROOM_TYPE ||
+          if(   $type == CS_ROOM_TYPE ||
                 $type == CS_COMMUNITY_TYPE ||
                 $type == CS_PRIVATEROOM_TYPE ||
                 $type == CS_GROUPROOM_TYPE ||
@@ -3237,6 +3237,92 @@ class misc_text_converter {
             }
          }
       }
+      return $retour;
+   }
+
+   private function _addFCKHash ( $value ) {
+      global $c_html_textarea;
+      if ( isset($c_html_textarea)
+           and $c_html_textarea
+         ) {
+         $current_context_item = $this->_environment->getCurrentContextItem();
+         if ( ( isset($current_context_item)
+                and $current_context_item->withHtmlTextArea()
+              ) or plugin_hook_method_active('getTextAreaAsHTML')
+            ) {
+            $hack = false;
+            if ( !empty($_SERVER['HTTP_REFERER']) ) {
+               $http_referer = $_SERVER['HTTP_REFERER'];
+               if ( strstr($_SERVER['HTTP_REFERER'],'?')) {
+                  $http_referer = substr($_SERVER['HTTP_REFERER'],0,strpos($_SERVER['HTTP_REFERER'],'?'));
+               }
+               global $c_commsy_domain;
+               global $c_commsy_url_path;
+               global $c_single_entry_point;
+               if ( $http_referer != $c_commsy_domain.$c_commsy_url_path.'/'.$c_single_entry_point ) {
+                  $hack = true;
+               }
+            }
+            if ( !$hack ) {
+               // security KFC
+               include_once('functions/security_functions.php');
+               $fck_text = '<!-- KFC TEXT '.getSecurityHash($value).' -->';
+               $value = $fck_text.$value.$fck_text;
+            }
+         }
+      }
+      return $value;
+   }
+
+   public function cleanTextFromWord ( $value, $force = false ) {
+      $retour = $value;
+      if ( $force
+           or stristr($value,'<w:WordDocument>')
+           or stristr($value,'class="Mso')
+         ) {
+         $retour = mb_eregi_replace('<!-- KFC TEXT [A-Za-z0-9]* -->','',$retour);
+         $retour = str_replace(' style=""','',$retour);
+         $retour = str_replace('<o:p></o:p>','',$retour);
+         $retour = mb_eregi_replace(' class="[A-Za-z0-9-]*"','',$retour);
+         $retour = mb_eregi_replace(' lang="[A-Za-z0-9-]*"','',$retour);
+         $retour = mb_eregi_replace('<[/]{0,1}st1:[^>]*>','',$retour);
+         $retour = mb_eregi_replace('<[/]{0,1}o:[^>]*>','',$retour);
+         $retour = mb_eregi_replace('<[/]{0,1}meta[^>]*>','',$retour);
+         $retour = mb_eregi_replace('<[/]{0,1}link[^>]*>','',$retour);
+         $retour = mb_eregi_replace('<!--[{}A-Za-z0-9 ]*-->','',$retour);
+
+         // ms word if - statements
+         while ( stristr($retour,'<![endif]-->') ) {
+            $pos1 = strpos($retour,'<!--[');
+            $pos2 = strpos($retour,'<![endif]-->');
+            $len = (int)($pos2 - $pos1) + strlen('<![endif]-->');
+            $sub = substr($retour,$pos1,$len);
+            $retour = str_replace($sub,'',$retour);
+         }
+         $retour = str_replace('<!--[if !supportLists]-->','',$retour);
+         $retour = str_replace('<!--[if !supportEmptyParas]-->','',$retour);
+         $retour = str_replace('<!--[endif]-->','',$retour);
+
+         // ms word style definitions
+         while ( stristr($retour,'</style>') ) {
+            $pos1 = strpos($retour,'<style');
+            $pos2 = strpos($retour,'</style>');
+            $len = (int)($pos2 - $pos1) + strlen('</style>');
+            $sub = substr($retour,$pos1,$len);
+            $retour = str_replace($sub,'',$retour);
+         }
+         $retour = mb_eregi_replace(' style="[^"]*"','',$retour);
+
+         // HTML-tags
+         $retour = mb_eregi_replace('<[/]{0,1}font[^>]*>','',$retour);
+         $retour = mb_eregi_replace('<[/]{0,1}span>','',$retour);
+
+         $retour = trim($retour);
+
+         // FCK security
+         $retour = $this->_addFCKHash($retour);
+      }
+
       return $retour;
    }
 }
