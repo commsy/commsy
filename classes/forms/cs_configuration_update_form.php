@@ -105,6 +105,7 @@ class cs_configuration_update_form extends cs_rubric_form {
             while ( false !== ( $entry = readdir($directory_handle) ) ) {
                if ( !is_dir($path.'/'.$entry)
                     and !strstr($entry,'master_update')
+                    and !strstr($entry,'.cvsignore') // development
                     and !strstr($entry,'_old') // migration
                   ) {
                   $retour[$folder][] = $entry;
