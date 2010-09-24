@@ -92,15 +92,17 @@ if ( !empty($column_array) ) {
                $this->_flushHTML($table);
                $this->_initProgressBar($count_rows);
                foreach ( $result as $row ) {
-                  $item_id = $row['item_id'];
-                  $data = $row[$column];
-                  $data = $this->_text_converter->cleanTextFromWord($data);
-                  $sql = 'UPDATE '.$table.' SET '.$column.'="'.mysql_real_escape_string($data).'" WHERE item_id="'.$item_id.'";';
-                  $result = $this->_select($sql);
-                  if ( !$result ) {
-                     include_once('functions/error_functions.php');
-                     trigger_error('can not save cleaned data ('.$column.') for '.$item_id.' ('.$table.')',E_USER_NOTICE);
-                     $success = false;
+                  if ( !empty($row['item_id']) ) {
+                     $item_id = $row['item_id'];
+                     $data = $row[$column];
+                     $data = $this->_text_converter->cleanTextFromWord($data);
+                     $sql = 'UPDATE '.$table.' SET '.$column.'="'.mysql_real_escape_string($data).'" WHERE item_id="'.$item_id.'";';
+                     $result = $this->_select($sql);
+                     if ( !$result ) {
+                        include_once('functions/error_functions.php');
+                        trigger_error('can not save cleaned data ('.$column.') for '.$item_id.' ('.$table.')',E_USER_NOTICE);
+                        $success = false;
+                     }
                   }
                   $this->_updateProgressBar($count_rows);
                }
