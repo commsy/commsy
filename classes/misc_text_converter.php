@@ -3192,6 +3192,9 @@ class misc_text_converter {
          }
       }
 
+      // clean text from word
+      $text = $this->cleanTextFromWord($text);
+
       return $text;
    }
 
@@ -3280,16 +3283,16 @@ class misc_text_converter {
            or stristr($value,'<w:WordDocument>')
            or stristr($value,'class="Mso')
          ) {
-         $retour = mb_eregi_replace('<!-- KFC TEXT [A-Za-z0-9]* -->','',$retour);
-         $retour = str_replace(' style=""','',$retour);
          $retour = str_replace('<o:p></o:p>','',$retour);
          $retour = mb_eregi_replace(' class="[A-Za-z0-9-]*"','',$retour);
          $retour = mb_eregi_replace(' lang="[A-Za-z0-9-]*"','',$retour);
+         $retour = mb_eregi_replace('<[/]{0,1}u[0-9]{1}:[^>]*>','',$retour);
          $retour = mb_eregi_replace('<[/]{0,1}st1:[^>]*>','',$retour);
          $retour = mb_eregi_replace('<[/]{0,1}o:[^>]*>','',$retour);
+         $retour = mb_eregi_replace('<[/]{0,1}v:[^>]*>','',$retour);
          $retour = mb_eregi_replace('<[/]{0,1}meta[^>]*>','',$retour);
          $retour = mb_eregi_replace('<[/]{0,1}link[^>]*>','',$retour);
-         $retour = mb_eregi_replace('<!--[{}A-Za-z0-9 ]*-->','',$retour);
+         $retour = mb_eregi_replace('<!--[{}A-Za-z0-9 \[\]\!&]*-->','',$retour);
 
          // ms word if - statements
          while ( stristr($retour,'<![endif]-->') ) {
@@ -3299,11 +3302,9 @@ class misc_text_converter {
             $sub = substr($retour,$pos1,$len);
             $retour = str_replace($sub,'',$retour);
          }
-         $retour = str_replace('<!--[if !supportLists]-->','',$retour);
-         $retour = str_replace('<!--[if !supportEmptyParas]-->','',$retour);
-         $retour = str_replace('<!--[endif]-->','',$retour);
 
          // ms word style definitions
+         $retour = str_replace(' style=""','',$retour);
          while ( stristr($retour,'</style>') ) {
             $pos1 = strpos($retour,'<style');
             $pos2 = strpos($retour,'</style>');
@@ -3316,6 +3317,8 @@ class misc_text_converter {
          // HTML-tags
          $retour = mb_eregi_replace('<[/]{0,1}font[^>]*>','',$retour);
          $retour = mb_eregi_replace('<[/]{0,1}span>','',$retour);
+         $retour = str_replace('<p></p>','',$retour);
+         $retour = str_replace('<blink></blink>','',$retour);
 
          $retour = trim($retour);
 
