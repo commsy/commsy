@@ -48,8 +48,8 @@ $sql = 'SHOW TABLES;';
 $result = $this->_select($sql);
 if ( !empty($result) ) {
    foreach ( $result as $table ) {
-      if ( !empty($table['Tables_in_commsy']) ) {
-         $table_array[] = $table['Tables_in_commsy'];
+      if ( !empty($table) ) {
+         $table_array[] = array_pop($table);
       }
    }
 } else {
