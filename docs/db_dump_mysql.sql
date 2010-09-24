@@ -830,7 +830,9 @@ CREATE TABLE IF NOT EXISTS `room` (
   KEY `deletion_date` (`deletion_date`),
   KEY `deleter_id` (`deleter_id`),
   KEY `room_description` (`room_description`(333)),
-  KEY `contact_persons` (`contact_persons`)
+  KEY `contact_persons` (`contact_persons`),
+  KEY `title` (`title`),
+  KEY `modifier_id` (`modifier_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
@@ -1676,7 +1678,9 @@ CREATE TABLE IF NOT EXISTS `zzz_room` (
   KEY `deletion_date` (`deletion_date`),
   KEY `deleter_id` (`deleter_id`),
   KEY `room_description` (`room_description`(333)),
-  KEY `contact_persons` (`contact_persons`)
+  KEY `contact_persons` (`contact_persons`),
+  KEY `title` (`title`),
+  KEY `modifier_id` (`modifier_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --

@@ -37,5 +37,25 @@ if ( !$this->_existsIndex('zzz_room','contact_persons') ) {
    $success = $success AND $this->_select($sql);
 }
 
+if ( !$this->_existsIndex('room','title') ) {
+   $sql = "ALTER TABLE room ADD INDEX ( title );";
+   $success = $success AND $this->_select($sql);
+}
+
+if ( !$this->_existsIndex('zzz_room','title') ) {
+   $sql = "ALTER TABLE zzz_room ADD INDEX ( title );";
+   $success = $success AND $this->_select($sql);
+}
+
+if ( !$this->_existsIndex('room','modifier_id') ) {
+   $sql = "ALTER TABLE room ADD INDEX ( modifier_id );";
+   $success = $success AND $this->_select($sql);
+}
+
+if ( !$this->_existsIndex('zzz_room','modifier_id') ) {
+   $sql = "ALTER TABLE zzz_room ADD INDEX ( modifier_id );";
+   $success = $success AND $this->_select($sql);
+}
+
 $this->_flushHTML(BRLF);
 ?>
