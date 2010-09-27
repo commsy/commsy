@@ -916,9 +916,10 @@ class cs_page_view extends cs_view {
 								});
 
 								function getPasswordStrength(H){
+									var L=(H.length);
 									var D=(H.length);
 									if (D<4) { D=0 }
-									if(D>6){
+									if(D>5){
 										D=5
 									}';
 									// Zahlen
@@ -934,7 +935,7 @@ class cs_page_view extends cs_view {
 									if(I>3){I=3}
 									var E=((D*10)-20)+(G*10)+(C*15)+(I*10);';
 									if($auth_source_item->isPasswordSecureActivated()){
-										$retour .= 'if(1';
+										$retour .= 'if(1 ';
 										if($auth_source_item->getPasswordSecureSpecialchar() == 1){
 											$retour .= '&& (C >= 1) ';
 										}
@@ -942,9 +943,9 @@ class cs_page_view extends cs_view {
 											$retour .= '&& (I >= 1) ';
 										}
 										if($auth_source_item->getPasswordLength() > 0){
-											$retour .= '&& (D >= '.$auth_source_item->getPasswordLength().')';
+											$retour .= '&& (L >= '.$auth_source_item->getPasswordLength().')';
 										}
-										$retour .= '){if(E >= 100){E = 100}}else{E=0}';
+										$retour .= '){if(E >= 100){E = 100}else{E=50}}else{E=0}';
 									}
 									$retour .= '
 									if(E<0){E=0}
