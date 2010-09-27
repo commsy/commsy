@@ -85,7 +85,13 @@ if ( !empty($column_array) ) {
    foreach ( $column_array as $table => $columns) {
       if ( !empty($columns) ) {
          foreach ($columns as $column) {
-            $sql = 'SELECT item_id,'.$column.' FROM '.$table.' WHERE '.$column.' LIKE "%<w:WordDocument>%" OR '.$column.' LIKE "%class=\"Mso%";';
+            if ( stristr($table,'section')
+                 or stristr($table,'material')
+               ) {
+               $sql = 'SELECT item_id,version_id,'.$column.' FROM '.$table.' WHERE '.$column.' LIKE "%<w:WordDocument>%" OR '.$column.' LIKE "%class=\"Mso%";';
+            } else {
+               $sql = 'SELECT item_id,'.$column.' FROM '.$table.' WHERE '.$column.' LIKE "%<w:WordDocument>%" OR '.$column.' LIKE "%class=\"Mso%";';
+            }
             $result = $this->_select($sql);
             if ( !empty($result) ) {
                $count_rows = count($result);
@@ -94,9 +100,17 @@ if ( !empty($column_array) ) {
                foreach ( $result as $row ) {
                   if ( !empty($row['item_id']) ) {
                      $item_id = $row['item_id'];
+                     $version_id = 0;
+                     if ( !empty($row['version_id']) ) {
+                        $version_id = $row['version_id'];
+                     }
                      $data = $row[$column];
                      $data = $this->_text_converter->cleanTextFromWord($data);
-                     $sql = 'UPDATE '.$table.' SET '.$column.'="'.mysql_real_escape_string($data).'" WHERE item_id="'.$item_id.'";';
+                     $sql = 'UPDATE '.$table.' SET '.$column.'="'.mysql_real_escape_string($data).'" WHERE item_id="'.$item_id.'"';
+                     if ( !empty($version_id) ) {
+                        $sql .= ' AND version_id="'.$version_id.'"';
+                     }
+                     $sql .= ';';
                      $result = $this->_select($sql);
                      if ( !$result ) {
                         include_once('functions/error_functions.php');

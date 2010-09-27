@@ -3059,6 +3059,7 @@ class misc_text_converter {
 
    private function _text_get2php ($text) {
       $text = rawurldecode($text);
+      #pr($text);
       return $text;
    }
 
@@ -3305,14 +3306,14 @@ class misc_text_converter {
 
          // ms word style definitions
          $retour = str_replace(' style=""','',$retour);
-         while ( stristr($retour,'</style>') ) {
+         $retour = mb_eregi_replace(' style="[^"]*"','',$retour);
+         while ( stristr($retour,'</style>') and stristr($retour,'<style') ) {
             $pos1 = strpos($retour,'<style');
             $pos2 = strpos($retour,'</style>');
             $len = (int)($pos2 - $pos1) + strlen('</style>');
             $sub = substr($retour,$pos1,$len);
             $retour = str_replace($sub,'',$retour);
          }
-         $retour = mb_eregi_replace(' style="[^"]*"','',$retour);
 
          // HTML-tags
          $retour = mb_eregi_replace('<[/]{0,1}font[^>]*>','',$retour);
