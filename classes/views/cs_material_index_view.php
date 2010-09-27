@@ -375,7 +375,10 @@ class cs_material_index_view extends cs_index_view {
                $html .= '      <td colspan="2" '.$style.'>'.$title.LF;
             }
       }
-      if ( !$item->isNotActivated() ) {
+      if ( !$item->isNotActivated()
+           or $item->getCreatorID() == $user->getItemID()
+           or $user->isModerator()
+         ) {
          $html .= '          '.$this->_getItemFiles($item, $with_links);
       }
       $html .= '</td>'.LF;
@@ -422,7 +425,10 @@ class cs_material_index_view extends cs_index_view {
       $author_text = $this->_getItemAuthor($item);
       $year_text = $this->_getItemPublishingDate($item);
       $bib_kind = $item->getBibKind() ? $item->getBibKind() : 'none';
-      if ( $item->isNotActivated()
+      if ( ( $item->isNotActivated()
+             and $item->getCreatorID() != $user->getItemID()
+             and !$user->isModerator()
+           )
            or ( !$this->_environment->inProjectRoom()
                 and !$item->isPublished()
                 and !$user->isUser()
