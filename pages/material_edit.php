@@ -443,6 +443,15 @@ else {
             if ( isset($_POST['url_date']) and $material_item->getURL() != $_POST['url_date'] ) {
                $material_item->setURLDate($_POST['url_date']);
             }
+
+            if ( isset($_POST['external_viewer']) and isset($_POST['external_viewer_accounts']) ) {
+               $user_ids = explode(" ",$_POST['external_viewer_accounts']);
+               $material_item->setExternalViewerAccounts($user_ids);
+            }else{
+               $material_item->unsetExternalViewerAccounts();
+            }
+
+
             if ( $context_item->isCommunityRoom() and $context_item->isOpenForGuests() ) {
                $old_world_public = $material_item->getWorldPublic();
                if ( ( isset($_POST['world_public']) and $old_world_public == 0) or

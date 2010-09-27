@@ -749,6 +749,40 @@ class cs_item_manager extends cs_manager {
       }
    }
 
+   function getExternalViewerUserStringForItem($iid) {
+      $retour = NULL;
+      $query = 'SELECT user_id';
+      $query .= ' FROM '.$this->addDatabasePrefix('external_viewer');
+      $query .= ' WHERE item_id="'.$iid.'"';
+      $result = $this->_db_connector->performQuery($query);
+      if ( isset($result) and !empty($result) ) {
+         foreach ( $result as $query_result ) {
+            $retour .= $query_result['user_id'].' ';
+         }
+         return $retour;
+      } else {
+         return '';
+      }
+   }
+
+   function deleteExternalViewerEntry($iid,$user_id){
+      $query = 'DELETE';
+      $query .= ' FROM '.$this->addDatabasePrefix('external_viewer');
+      $query .= ' WHERE item_id="'.$iid.'" and user_id = "'.$user_id.'"';
+      $result = $this->_db_connector->performQuery($query);
+   }
+
+   function setExternalViewerEntry($iid,$user_id){
+      $query = 'INSERT INTO '.$this->addDatabasePrefix('external_viewer').' SET '.
+                 'item_id="'.encode(AS_DB,$iid).'",'.
+                 'user_id="'.encode(AS_DB,$user_id).'"';
+      $result = $this->_db_connector->performQuery($query);
+      if ( !isset($result) ) {
+         include_once('functions/error_functions.php');trigger_error('Problems creating external_view entry from query: "'.$query.'"',E_USER_WARNING);
+      }
+   }
+
+
 
   /** Prepares the db_array for the item
     *

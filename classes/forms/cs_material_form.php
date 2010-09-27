@@ -528,6 +528,8 @@ class cs_material_form extends cs_rubric_form {
          $this->_values['title'] = $this->_item->getTitle();
          $this->_values['description'] = $this->_item->getDescription();
 
+         $this->_values['external_viewer'] = $this->_item->issetExternalViewerStatus();
+         $this->_values['external_viewer_accounts'] = $this->_item->getExternalViewerString();
          // file
          $file_array = array();
          $file_list = $this->_item->getFileList();
@@ -624,6 +626,11 @@ class cs_material_form extends cs_rubric_form {
          if (count($buzzword_ids) == 0){
             $this->_error_array[] = $this->_translator->getMessage('COMMON_ERROR_BUZZWORD_ENTRY',$this->_translator->getMessage('MATERIAL_BUZZWORDS'));
          }
+      }
+
+      if ( isset($this->_form_post['external_viewer']) and !empty($this->_form_post['external_viewer']) and !isset($this->_form_post['external_viewer_accounts'])){
+         $this->_error_array[] = $this->_translator->getMessage('COMMON_ERROR_EXTERNAL_VIEWER_ACCOUNT_MISSED');
+         $this->_form->setFailure('external_viewer_accounts','');
       }
 
       if ($current_context->withActivatingContent() and !empty($this->_form_post['dayStart']) and !empty($this->_form_post['hide'])){

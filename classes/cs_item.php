@@ -62,6 +62,8 @@ class cs_item {
    var $_filelist_changed_empty = false;
    var $_cache_on = true;
 
+   var $_external_viewer_user_array = NULL;
+
   /**
    * boolean - if true the modification_date will be updated - else not
    */
@@ -1052,6 +1054,33 @@ class cs_item {
          }
          $saved = $manager->saveItem($this);
       }
+      if (isset($this->_external_viewer_user_array)){
+         $item_manager = $this->_environment->getItemManager();
+         $user_id_string = $item_manager->getExternalViewerUserStringForItem($this->getItemID());
+         $user_id_array = array();
+         if (!empty($user_id_string)){
+            $user_id_array = explode(" ",$user_id_string);
+         }
+         foreach ($this->_external_viewer_user_array as $user_id){
+            if (!in_array($user_id,$user_id_array)){
+               $item_manager->setExternalViewerEntry($this->getItemID(),$user_id);
+            }
+         }
+         foreach($user_id_array as $user_id){
+            if (!in_array($user_id,$this->_external_viewer_user_array)){
+               $item_manager->deleteExternalViewerEntry($this->getItemID(),$user_id);
+            }
+         }
+      }else{
+         $item_manager = $this->_environment->getItemManager();
+         $retour = $item_manager->getExternalViewerUserStringForItem($this->getItemID());
+      	if (!empty($retour)){
+      	   $user_id_array = explode(" ",$retour);
+            foreach ($user_id_array as $user_id){
+               $item_manager->deleteExternalViewerEntry($this->getItemID(),$user_id);
+            }
+      	}
+      }
       foreach ($this->_changed as $changed_key => $is_changed) {
          if ($is_changed) {
             if ($changed_key != 'general' and $changed_key !='section_for' and $changed_key !='task_item' and $changed_key !='copy_of') {
@@ -2030,6 +2059,27 @@ class cs_item {
       $institution_list = $this->getLinkedItemList(CS_INSTITUTION_TYPE);
       $institution_list->sortBy('name');
       return $institution_list;
+   }
+
+
+   function setExternalViewerAccounts($user_id_array) {
+       $this->_external_viewer_user_array = $user_id_array;
+   }
+   function unsetExternalViewerAccounts() {
+       $this->_external_viewer_user_array = NULL;
+   }
+   function issetExternalViewerStatus(){
+      $retour = false;
+      $user_string = $this->getExternalViewerString();
+      if (!empty($user_string)){
+      	$retour = true;
+      }
+      return $retour;
+   }
+   function getExternalViewerString(){
+      $item_manager = $this->_environment->getItemManager();
+      $retour = $item_manager->getExternalViewerUserStringForItem($this->getItemID());
+      return $retour;
    }
 
    function setInstitutionListByID ($value) {
