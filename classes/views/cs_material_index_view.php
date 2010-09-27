@@ -336,7 +336,9 @@ class cs_material_index_view extends cs_index_view {
             $title = $this->_getItemTitle($item);
             $title = $this->_compareWithSearchText($title);
             $user = $this->_environment->getCurrentUser();
-            if($item->getCreatorID() == $user->getItemID() or $user->isModerator()){
+            if ( $item->getCreatorID() == $user->getItemID()
+                 or $user->isModerator()
+               ) {
                $params = array();
                $params['iid'] = $item->getItemID();
                $title = ahref_curl( $this->_environment->getCurrentContextID(),
@@ -373,7 +375,10 @@ class cs_material_index_view extends cs_index_view {
                $html .= '      <td colspan="2" '.$style.'>'.$title.LF;
             }
       }
-      $html .= '          '.$this->_getItemFiles($item, $with_links).'</td>'.LF;
+      if ( !$item->isNotActivated() ) {
+         $html .= '          '.$this->_getItemFiles($item, $with_links);
+      }
+      $html .= '</td>'.LF;
       $html .= '      <td '.$style.' style="font-size:8pt;">'.$this->_getItemModificationDate($item).'</td>'.LF;
 
       ########################
@@ -417,7 +422,12 @@ class cs_material_index_view extends cs_index_view {
       $author_text = $this->_getItemAuthor($item);
       $year_text = $this->_getItemPublishingDate($item);
       $bib_kind = $item->getBibKind() ? $item->getBibKind() : 'none';
-      if (!$this->_environment->inProjectRoom() and !$item->isPublished() and !$user->isUser() ){
+      if ( $item->isNotActivated()
+           or ( !$this->_environment->inProjectRoom()
+                and !$item->isPublished()
+                and !$user->isUser()
+              )
+         ) {
          if (!empty($author_text) and $bib_kind !='none'){
             if (!empty($year_text)){
                 $year_text = ', '.$year_text;
@@ -602,7 +612,7 @@ class cs_material_index_view extends cs_index_view {
             unset($temp_array);
          }
       }
-      
+
       unset($current_context);
       return $action_array;
    }
