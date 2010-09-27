@@ -223,7 +223,7 @@ if ( isset($_GET['cid']) ) {
             include_once('classes/cs_user_manager.php');
             $manager = new cs_user_manager($environment);
             $item = $manager->getItem($row['item_id']);
-            if ($item->isNotActivated()) {
+            if (isset($item) and $item->isNotActivated()) {
             	$newIntervalLimit++;
                }
             unset($item);
@@ -233,7 +233,7 @@ if ( isset($_GET['cid']) ) {
             include_once('classes/cs_annotations_manager.php');
             $manager = new cs_annotations_manager($environment);
             $item = $manager->getItem($row['item_id']);
-            if ($item->isNotActivated()) {
+            if (isset($item) and $item->isNotActivated()) {
             	$newIntervalLimit++;
                }
             unset($item);
@@ -243,7 +243,7 @@ if ( isset($_GET['cid']) ) {
             include_once('classes/cs_discussion_manager.php');
             $manager = new cs_discussion_manager($environment);
             $item = $manager->getItem($row['item_id']);
-            if ($item->isNotActivated()) {
+            if (isset($item) and $item->isNotActivated()) {
             	$newIntervalLimit++;
                }
             unset($item);
@@ -253,7 +253,7 @@ if ( isset($_GET['cid']) ) {
             include_once('classes/cs_discussionarticles_manager.php');
             $manager = new cs_discussionarticles_manager($environment);
             $item = $manager->getItem($row['item_id']);
-            if ($item->isNotActivated()) {
+            if (isset($item) and $item->isNotActivated()) {
             	$newIntervalLimit++;
                }
             unset($item);
@@ -263,7 +263,7 @@ if ( isset($_GET['cid']) ) {
             include_once('classes/cs_material_manager.php');
             $manager = new cs_material_manager($environment);
             $item = $manager->getItem($row['item_id']);
-            if ($item->isNotActivated()) {
+            if (isset($item) and $item->isNotActivated()) {
             	$newIntervalLimit++;
             }
             unset($item);
@@ -273,7 +273,7 @@ if ( isset($_GET['cid']) ) {
             include_once('classes/cs_announcement_manager.php');
             $manager = new cs_announcement_manager($environment);
             $item = $manager->getItem($row['item_id']);
-            if ($item->isNotActivated()) {
+            if (isset($item) and $item->isNotActivated()) {
             	$newIntervalLimit++;
                }
             unset($item);
@@ -283,7 +283,7 @@ if ( isset($_GET['cid']) ) {
             include_once('classes/cs_section_manager.php');
             $manager = new cs_section_manager($environment);
             $item = $manager->getItem($row['item_id']);
-            if ($item->isNotActivated()) {
+            if (isset($item) and $item->isNotActivated()) {
             	$newIntervalLimit++;
                }
             unset($item);
@@ -293,7 +293,7 @@ if ( isset($_GET['cid']) ) {
             include_once('classes/cs_dates_manager.php');
             $manager = new cs_dates_manager($environment);
             $item = $manager->getItem($row['item_id']);
-			if ($item->isNotActivated()) {
+			if (isset($item) and $item->isNotActivated()) {
             	$newIntervalLimit++;
                }
             unset($manager);
@@ -303,7 +303,7 @@ if ( isset($_GET['cid']) ) {
             include_once('classes/cs_labels_manager.php');
             $manager = new cs_labels_manager($environment);
             $item = $manager->getItem($row['item_id']);
-            if ($item->isNotActivated()) {
+            if (isset($item) and $item->isNotActivated()) {
             	$newIntervalLimit++;
                }
             unset($manager);
@@ -313,7 +313,7 @@ if ( isset($_GET['cid']) ) {
             include_once('classes/cs_todos_manager.php');
             $manager = new cs_todos_manager($environment);
             $item = $manager->getItem($row['item_id']);
-            if ($item->isNotActivated()) {
+            if (isset($item) and $item->isNotActivated()) {
             	$newIntervalLimit++;
                }
             unset($manager);
@@ -322,7 +322,7 @@ if ( isset($_GET['cid']) ) {
       case 'step':
             $manager = $environment->getManager(CS_STEP_TYPE);
             $item = $manager->getItem($row['item_id']);
-            if ($item->isNotActivated()) {
+            if (isset($item) and $item->isNotActivated()) {
             	$newIntervalLimit++;
                }
             unset($item);
