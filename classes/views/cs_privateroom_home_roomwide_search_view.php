@@ -98,11 +98,12 @@ class cs_privateroom_home_roomwide_search_view extends cs_view {
 
    function asHTML(){
       $html = '<div id="'.get_class($this).'">'.LF;
-      $html .= '<form style="padding:0px; margin:0px;" action="'.curl($this->_environment->getCurrentContextID(), 'campus_search', 'index','').'" method="get" name="form">'.LF;
+      #$html .= '<form style="padding:0px; margin:0px;" action="'.curl($this->_environment->getCurrentContextID(), 'campus_search', 'index','').'" method="get" name="form">'.LF;
+      $html .= '<form style="padding:0px; margin:0px;" id="privateroom_home_roomwide_search_form">'.LF;
       $html .= '   <input type="hidden" name="cid" value="'.$this->_text_as_form($this->_environment->getCurrentContextID()).'"/>'.LF;
       $html .= '   <input type="hidden" name="mod" value="entry"/>'.LF;
       $html .= '   <input type="hidden" name="fct" value="index"/>'.LF;
-      $html .= '<input id="selsearch" onclick="javascript:resetSearchText(\'selsearch\');" style="width:80%; font-size:10pt; margin-bottom:0px;" name="search" type="text" size="20" value="'.$this->_text_as_form($this->getSearchText()).'"/>';
+      $html .= '<input id="privateroom_home_roomwide_search_text" onclick="javascript:resetSearchText(\'selsearch\');" style="width:80%; font-size:10pt; margin-bottom:0px;" name="search" type="text" size="20" value="'.$this->_text_as_form($this->getSearchText()).'"/>';
       if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
          $html .= '<input type="image" src="images/commsyicons_msie6/22x22/search.gif" style="vertical-align:top;" alt="'.$this->_translator->getMessage('COMMON_SEARCH_BUTTON').'"/>';
       } else {
@@ -115,6 +116,8 @@ class cs_privateroom_home_roomwide_search_view extends cs_view {
       $html .= 'var reset_search_text_message = "'.$this->_text_as_form($this->getSearchText()).'"'.LF;
       $html .= '-->'.LF;
       $html .= '</script>'.LF;
+      $html .= '<table id="privateroom_home_roomwide_search_table">';
+      $html .= '</table>';
       return $html;
    }
 }

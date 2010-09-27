@@ -851,6 +851,7 @@ function isURLValid () {
          $funct != 'privateroom_buzzword_configuration' and
          $funct != 'privateroom_mycalendar_configuration' and
          $funct != 'privateroom_mycalendar' and
+         $funct != 'privateroom_roomwide_search' and
          $funct != 'ckeditor_image_upload' and
          $funct != 'ckeditor_image_browse' and
          $funct != 'uploadify'

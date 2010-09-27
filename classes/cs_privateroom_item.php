@@ -1262,7 +1262,7 @@ class cs_privateroom_item extends cs_room_item {
    function setPortletShowRoomWideSearchBox () {
       $this->_addExtra('PORTLET_SHOW_ROOMWIDE_SEARCH_BOX','1');
    }
-   function unsetPortletSRoomWidehowSearchBox () {
+   function unsetPortletShowRoomWideSearchBox () {
       $this->_addExtra('PORTLET_SHOW_ROOMWIDE_SEARCH_BOX','-1');
    }
 
