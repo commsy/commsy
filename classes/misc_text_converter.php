@@ -3059,7 +3059,9 @@ class misc_text_converter {
 
    private function _text_get2php ($text) {
       $text = rawurldecode($text);
-      #pr($text);
+      if ( strstr($text,'<') ) {
+         $text = $this->_cleanBadCode($text);
+      }
       return $text;
    }
 
