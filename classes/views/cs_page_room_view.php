@@ -785,8 +785,14 @@ class cs_page_room_view extends cs_page_view {
       }
       $html .= '</td>'.LF;
       $html .= '</tr>'.LF;
+      $authentication = $this->_environment->getAuthenticationObject();
+      $external_view = false;
+      if (isset($_GET['iid'])){
+         $current_user = $this->_environment->getCurrentUserItem();
+         $external_view = $authentication->_isExternalUserAllowedToSee($current_user->getUserID(),$_GET['iid']);
+      }
 
-      if ( !isset($this->_with_navigation_links) or $this->_with_navigation_links) {
+      if ( !isset($this->_with_navigation_links) or $this->_with_navigation_links or $external_view) {
          $html .= '<tr class="header_room_path">'.LF;
          $html .= '<td colspan="2" style="padding:0px; margin:0px; vertical-align:bottom;">'.LF;
          $breadcrump = '';
@@ -928,7 +934,13 @@ class cs_page_room_view extends cs_page_view {
       }
 
       $html .= '<div id="page_header">';
-      if ( !isset($this->_with_navigation_links) or $this->_with_navigation_links) {
+      $authentication = $this->_environment->getAuthenticationObject();
+      $external_view = false;
+      if (isset($_GET['iid'])){
+         $current_user = $this->_environment->getCurrentUserItem();
+         $external_view = $authentication->_isExternalUserAllowedToSee($current_user->getUserID(),$_GET['iid']);
+      }
+      if ( !isset($this->_with_navigation_links) or $this->_with_navigation_links or $external_view) {
          $html .= '<div class="page_header_personal_area">'.LF;
          $html .= '<div style="float:right;">'.LF;
          $html .= $this->getMyAreaAsHTML().LF;
@@ -2051,6 +2063,7 @@ class cs_page_room_view extends cs_page_view {
 
 
    function getMyAreaAsHTML() {
+
       $get_vars  = $this->_environment->getCurrentParameterArray();
       $post_vars = $this->_environment->getCurrentPostParameterArray();
       $current_context = $this->_environment->getCurrentContextItem();

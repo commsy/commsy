@@ -1401,12 +1401,16 @@ class cs_detail_view extends cs_view {
 
 
    function _getDetailPageHeaderAsHTML(){
+      $item = $this->getItem();
+      $current_user_item = $this->_environment->getCurrentUserItem();
       $html = '';
       $html .='<div style="width:100%;">'.LF;
       $html .='<div style="height:30px;">'.LF;
-      $html .= '<div id="search_box" style="float:right; width:28%; white-space:nowrap; text-align-left; padding-top:5px; margin:0px;">'.LF;
-      $html .= $this->_getSearchAsHTML();
-      $html .= '</div>'.LF;
+      if ($item->maySee($current_user_item)){
+         $html .= '<div id="search_box" style="float:right; width:28%; white-space:nowrap; text-align-left; padding-top:5px; margin:0px;">'.LF;
+         $html .= $this->_getSearchAsHTML();
+         $html .= '</div>'.LF;
+      }
       $current_browser = mb_strtolower($this->_environment->getCurrentBrowser(), 'UTF-8');
       $current_browser_version = $this->_environment->getCurrentBrowserVersion();
       if ( $current_browser == 'msie' and (strstr($current_browser_version,'5.') or (strstr($current_browser_version,'6.'))) ){
@@ -1550,6 +1554,7 @@ class cs_detail_view extends cs_view {
     */
    function asHTML () {
       $item = $this->getItem();
+      $current_user_item = $this->_environment->getCurrentUserItem();
       $html  = LF.'<!-- BEGIN OF DETAIL VIEW -->'.LF;
       $html .='<div style="width:100%;">'.LF;
       $rubric = $this->_environment->getCurrentModule();
@@ -1558,7 +1563,7 @@ class cs_detail_view extends cs_view {
 
       $html .= $this->_getDetailPageHeaderAsHTML();
 
-      if(!(isset($_GET['mode']) and $_GET['mode']=='print')){
+      if(!(isset($_GET['mode']) and $_GET['mode']=='print') and $item->maySee($current_user_item)){
          $this->_right_box_config['size_string'] = '';
          $current_context = $this->_environment->getCurrentContextItem();
          $html .='<div style="float:right; font-size:10pt; width:28%; margin-top:5px; vertical-align:top; text-align:left;">'.LF;

@@ -924,6 +924,11 @@ class cs_authentication {
       return $granted;
    }
 
+   function _isExternalUserAllowedToSee($uid,$iid){
+   	 $item_manager = $this->_environment->getItemManager();
+   	 return $item_manager->getExternalViewerForItem($iid,$uid);
+   }
+
    function check ($uid, $auth_source) {
       $value = false;
       $context_user = NULL;
@@ -947,7 +952,9 @@ class cs_authentication {
                      $this->_error_array[] = $translator->getMessage('LOGIN_NOT_ALLOWED');
                   }
                }
-            } elseif ($context->isOpenForGuests() OR $this->_module_limit == 'agb') {
+            } elseif(isset($_GET['iid']) and ($this->_environment->getCurrentFunction() == 'detail') and $this->_isExternalUserAllowedToSee($uid, $_GET['iid'])){
+               $value = true;
+            }elseif ($context->isOpenForGuests() OR $this->_module_limit == 'agb') {
                $value = true;
             } else {
                $context = $this->_environment->getCurrentContextItem();

@@ -47,7 +47,6 @@ include_once('include/inc_delete_entry.php');
 
 // Get the translator object
 $translator = $environment->getTranslationObject();
-
 if ($type != CS_MATERIAL_TYPE) {
    $params = array();
    $params['environment'] = $environment;
@@ -90,7 +89,7 @@ if ($type != CS_MATERIAL_TYPE) {
       unset($params);
       $errorbox->setText($translator->getMessage('ACCESS_NOT_GRANTED'));
       $page->add($errorbox);
-   } elseif ( !$material_item->maySee($current_user) ) {
+   } elseif ( !$material_item->maySee($current_user) and !$material_item->mayExternalSee($current_user)) {
       $params = array();
       $params['environment'] = $environment;
       $params['with_modifying_actions'] = true;

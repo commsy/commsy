@@ -735,6 +735,21 @@ class cs_item_manager extends cs_manager {
       return $retour;
    }
 
+
+   function getExternalViewerForItem($iid, $uid) {
+      $retour = NULL;
+      $query = 'SELECT user_id';
+      $query .= ' FROM '.$this->addDatabasePrefix('external_viewer');
+      $query .= ' WHERE item_id="'.$iid.'" AND user_id = "'.$uid.'"';
+      $result = $this->_db_connector->performQuery($query);
+      if ( isset($result) and !empty($result) ) {
+         return true;
+      } else {
+         return false;
+      }
+   }
+
+
   /** Prepares the db_array for the item
     *
     * @param $db_array Contains the data from the database

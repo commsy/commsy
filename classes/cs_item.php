@@ -1378,6 +1378,13 @@ class cs_item {
       }
    }
 
+
+   function mayExternalSee($user){
+   	 $item_manager = $this->_environment->getItemManager();
+   	 return $item_manager->getExternalViewerForItem($this->getItemID(),$user->getUserID());
+   }
+
+
    function maySee ($user_item) {
       if ( $user_item->isRoot()
            or ( $user_item->getContextID() == $this->_environment->getCurrentContextID()
@@ -1957,7 +1964,7 @@ class cs_item {
       }
       return $file_new_list;
    }
-   
+
    function isPublished () {
       return true;
    }

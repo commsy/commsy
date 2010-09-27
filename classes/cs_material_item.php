@@ -791,7 +791,7 @@ class cs_material_item extends cs_item {
       // delete links to files
       $link_manager = $this->_environment->getLinkItemFileManager();
       $link_manager->deleteByItem($this->getItemID(),$this->getVersionID());
-      
+
       // delete associated annotations
       $this->deleteAssociatedAnnotations();
    }

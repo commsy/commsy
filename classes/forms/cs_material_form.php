@@ -422,7 +422,7 @@ class cs_material_form extends cs_rubric_form {
       }
       $this->_form->combine('vertical');
       $this->_form->addText('max_size',$val,$this->_translator->getMessage('MATERIAL_MAX_FILE_SIZE',$meg_val));
-      
+
       $session = $this->_environment->getSession();
       $new_upload = false;
       if($session->issetValue('javascript') and $session->issetValue('flash')) {
@@ -431,7 +431,7 @@ class cs_material_form extends cs_rubric_form {
       	}
       }
       if(!$new_upload) $this->_form->addText('old_upload', '', $this->_translator->getMessage('COMMON_UPLOAD_OLD'));
-      
+
       $current_context = $this->_environment->getCurrentContextItem();
       // world public
       if ($current_context->isOpenForGuests() and $this->_environment->inCommunityRoom() ) {
@@ -479,6 +479,9 @@ class cs_material_form extends cs_rubric_form {
 
       } else {
          $this->_form->addHidden('public','');
+         $this->_form->addCheckbox('external_viewer',1,'',$this->_translator->getMessage('COMMON_RIGHTS'),$this->_translator->getMessage('EXTERNAL_VIEWER_DESCRIPTION'),$this->_translator->getMessage('COMMON_RIGHTS_DESCRIPTION'),false,false,'','',true,false);
+         $this->_form->combine();
+         $this->_form->addTextField('external_viewer_accounts','',$this->_translator->getMessage('EXTERNAL_VIEWER'),$this->_translator->getMessage('EXTERNAL_VIEWER_DESC'),200,35,false);
       }
 
       // buttons
