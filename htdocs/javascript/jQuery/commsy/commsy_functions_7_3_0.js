@@ -3553,13 +3553,22 @@ var roomwide_search_state = new Object();
 roomwide_search_state['interval'] = 0;
 roomwide_search_state['last'] = 0;
 jQuery(document).ready(function() {
+    roomwide_search_extended_search(false);
 	jQuery('#privateroom_home_roomwide_search_form').bind('submit', function(event){
 		event.preventDefault();
 		jQuery('#privateroom_home_roomwide_search_table').children().remove();
 		jQuery('#privateroom_home_roomwide_search_table').append('<tr><td>Suche...</td></tr>');
 		json_data = new Object();
+		json_data['search'] = jQuery('#privateroom_home_roomwide_search_text').val();
+		json_data['interval'] = roomwide_search_state['interval'];
+		var item_types = new Array();
+		jQuery('[name=roomwide_search_type]:checked').each(function(){
+			item_types.push(jQuery(this).attr('value'));
+		});
+		json_data['roomwide_search_type'] = item_types;
+		
 	    jQuery.ajax({
-	       url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct=privateroom_roomwide_search&output=json&search='+jQuery('#privateroom_home_roomwide_search_text').val()+'&interval='+roomwide_search_state['interval'],
+	       url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct=privateroom_roomwide_search&output=json',
 		   data: json_data,
 		   success: function(msg){
 	          var resultJSON = eval('(' + msg + ')');
@@ -3595,7 +3604,7 @@ jQuery(document).ready(function() {
 					var json_element = resultJSON['roomwide_search_results'][int];
 					var temp_icon = '<img src="images/commsyicons/netnavigation/'+json_element['type']+'.png">';
 					var temp_link = '<a href="commsy.php?cid='+json_element['cid']+'&mod='+json_element['type']+'&fct=detail&iid='+json_element['iid']+'" title="'+json_element['hover']+'">'+json_element['title']+'</a>';
-					jQuery('#privateroom_home_roomwide_search_table').append(jQuery('<tr><td>'+temp_icon+'</td><td>'+temp_link+'</td></tr>'));
+					jQuery('#privateroom_home_roomwide_search_table').append(jQuery('<tr><td style="width:12px;">'+temp_icon+'</td><td>'+temp_link+'</td></tr>'));
 				}
               }
 		   }
@@ -3618,3 +3627,25 @@ function roomwide_search_last(){
 	roomwide_search_state['interval'] = roomwide_search_state['last'];
 	jQuery('#privateroom_home_roomwide_search_form').submit();
 }
+function roomwide_search_extended_search(is_shown){
+	   if (is_shown == false){
+	      jQuery('#privateroom_home_roomwide_search_extended').hide();
+	   }else{
+	      jQuery('#privateroom_home_roomwide_search_toggle').attr('src', jQuery('#privateroom_home_roomwide_search_toggle').attr('src').replace('more','less'));
+	   }
+	   jQuery('#privateroom_home_roomwide_search_toggle').click(function(){
+	      if(jQuery('#privateroom_home_roomwide_search_toggle').attr('src').toLowerCase().indexOf('less') >= 0){
+	         jQuery('#privateroom_home_roomwide_search_extended').slideUp(200);
+	         jQuery('#privateroom_home_roomwide_search_toggle').attr('src', jQuery('#privateroom_home_roomwide_search_toggle').attr('src').replace('less','more'));
+	      } else {
+	         jQuery('#privateroom_home_roomwide_search_extended').slideDown(200);
+	         jQuery('#privateroom_home_roomwide_search_toggle').attr('src', jQuery('#privateroom_home_roomwide_search_toggle').attr('src').replace('more','less'));
+	      }
+	   });
+	   jQuery('#privateroom_home_roomwide_search_toggle').mouseover(function(){
+	      jQuery('#privateroom_home_roomwide_search_toggle').attr('src', jQuery('#privateroom_home_roomwide_search_toggle').attr('src').replace('.gif','_over.gif'));
+	   });
+	   jQuery('#privateroom_home_roomwide_search_toggle').mouseout(function(){
+	      jQuery('#privateroom_home_roomwide_search_toggle').attr('src', jQuery('#privateroom_home_roomwide_search_toggle').attr('src').replace('_over.gif','.gif'));
+	   });
+	}

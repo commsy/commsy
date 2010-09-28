@@ -109,15 +109,36 @@ class cs_privateroom_home_roomwide_search_view extends cs_view {
       } else {
          $html .= '<input type="image" src="images/commsyicons/22x22/search.png" style="vertical-align:top;" alt="'.$this->_translator->getMessage('COMMON_SEARCH_BUTTON').'"/>';
       }
-      $html .='</form>'.LF;
       $html .= '</div>'.LF;
-      $html .= '<script type="text/javascript">'.LF;
-      $html .= '<!--'.LF;
-      $html .= 'var reset_search_text_message = "'.$this->_text_as_form($this->getSearchText()).'"'.LF;
-      $html .= '-->'.LF;
-      $html .= '</script>'.LF;
+      $html .= '<div style="padding-top:5px;"><img id="privateroom_home_roomwide_search_toggle" src="images/more.gif"/>&nbsp;Erweiterte Suche';
+      $html .= '<div id="privateroom_home_roomwide_search_extended" style="display: block;">';
+      $html .= '<div style="padding: 2px;">';
+      $html .= '<div style="width: 97%;" id="form_formatting_box">';
+      
+      $html .= '<div style="padding-bottom: 5px;">'.$this->_translator->getMessage('PRIVATE_ROOM_ROOMWIDE_SEARCH_EXT_TYPES').':</div>';
+      
+      $html .= '<input type="checkbox" name="roomwide_search_type" value="announcement">'.$this->_translator->getMessage('ANNOUNCEMENTS').'<br/>';
+      $html .= '<input type="checkbox" name="roomwide_search_type" value="date">'.$this->_translator->getMessage('DATES').'<br/>';
+      $html .= '<input type="checkbox" name="roomwide_search_type" value="material">'.$this->_translator->getMessage('MATERIALS').'<br/>';
+      $html .= '<input type="checkbox" name="roomwide_search_type" value="discussion">'.$this->_translator->getMessage('DISCUSSIONS').'<br/>';
+      $html .= '<input type="checkbox" name="roomwide_search_type" value="todo">'.$this->_translator->getMessage('TODOS').'<br/>';
+      $html .= '<input type="checkbox" name="roomwide_search_type" value="topic">'.$this->_translator->getMessage('TOPICS').'<br/>';
+      
+      $html .= '</div>';
+      $html .= '</div>';
+      $html .= '</div>';
+      $html .= '</div>';
+      $html .='</form>'.LF;
+      
       $html .= '<table id="privateroom_home_roomwide_search_table">';
       $html .= '</table>';
+      
+      $html .= '<script type="text/javascript">'.LF;
+      $html .= '<!--'.LF;
+      //$html .= 'var reset_search_text_message = "'.$this->_text_as_form($this->getSearchText()).'";'.LF;
+      $html .= 'var reset_search_text_message = "";'.LF;
+      $html .= '-->'.LF;
+      $html .= '</script>'.LF;
       return $html;
    }
 }

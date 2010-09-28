@@ -56,4 +56,11 @@ function debugArrayToFile($array, $var_name = 'ARRAY'){
       }
    }
 }
+
+function debugSqlToFile(){
+	global $environment;
+	$db_connector = $environment->getDBConnector();
+   $sql_query_array = $db_connector->getQueryArray();
+   debugToFile($sql_query_array);
+}
 ?>
