@@ -3556,8 +3556,9 @@ jQuery(document).ready(function() {
     roomwide_search_extended_search(false);
 	jQuery('#privateroom_home_roomwide_search_form').bind('submit', function(event){
 		event.preventDefault();
+		jQuery('#privateroom_home_roomwide_search_toggle').click();
 		jQuery('#privateroom_home_roomwide_search_table').children().remove();
-		jQuery('#privateroom_home_roomwide_search_table').append('<tr><td>Suche...</td></tr>');
+		jQuery('#privateroom_home_roomwide_search_table').append('<tr><td>...</td></tr>');
 		json_data = new Object();
 		json_data['search'] = jQuery('#privateroom_home_roomwide_search_text').val();
 		json_data['page'] = roomwide_search_state['page'];
