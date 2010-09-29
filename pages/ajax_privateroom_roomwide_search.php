@@ -272,7 +272,7 @@ function getTooltipDate($date){
             if ($parse_time_start['conforms'] == true) {
                $start_time_print .= ' '.$translator->getMessage('DATES_OCLOCK');
             }
-            $date_print = $translator->getMessage('DATES_AS_OF').' '.$start_day_print.', '.$start_time_print.'<br />'.
+            $date_print = $translator->getMessage('DATES_AS_OF').' '.$start_day_print.', '.$start_time_print.
                           $translator->getMessage('DATES_TILL').' '.$end_day_print.', '.$end_time_print;
             if ($parse_day_start['conforms']
                 and $parse_day_end['conforms']) {
