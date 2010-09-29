@@ -24,6 +24,12 @@
 
 include_once('functions/development_functions.php');
 
+if(isset($_GET['interval'])){
+	$interval = $_GET['interval'];
+} else {
+   $interval = 20;
+}
+
 $user_item = $environment->getCurrentUserItem();
 
 $context_array = array();
@@ -46,6 +52,9 @@ while($community_item){
    $community_item = $community_list->getNext();
 }
 
+$private_room_item = $environment->getCurrentContextItem();
+$context_array[] = $private_room_item->getItemID();
+$room_name_array[$private_room_item->getItemID()] = $private_room_item->getTitle();
 
 $file_rubric_array = array();
 if(isset($_GET['roomwide_search_type'])){
@@ -124,20 +133,49 @@ if((isset($_GET['roomwide_search_type']) and in_array(CS_MATERIAL_TYPE, $_GET['r
 $complete_list->sortby('modification_date');
 $complete_list->reverse();
 
-// Interval abfangen
-$result_list = $complete_list->getSubList(0, 20);
+$count = $complete_list->getCount();
+
+$number_of_pages = 0;
+if($count % $interval == 0){
+   $number_of_pages = $count / $interval;
+} else {
+   $number_of_pages = (($count - ($count % $interval)) / $interval);
+}
+
+$result_page = $_GET['page'];
+if($result_page > $number_of_pages){
+   $result_page = $number_of_pages;
+}
+
+if($count > $interval){
+	$from = $interval * $result_page;
+	if(($from + ($interval-1)) <= $count){
+		$to = $from + ($interval-1);
+		$to_display = $to+1;
+	} else {
+	   $to = $count;
+	   $to_display = $to;
+	}
+} else {
+	$from = 0;
+	$to = $count;
+	$to_display = $count;
+}
+
+$from_display = $from+1;
+
+$result_list = $complete_list->getSubList($from, $interval);
 
 $result_array = array();
 $item = $result_list->getFirst();
 
 while($item){
-	$room_name = $room_name_array[$item->getContextID()];
-	$hover_text = 'Raum: '.$room_name.'';
-	$result_array[] = array('title' => $item->getTitle(), 'type' => $item->getItemType(), 'iid' => $item->getItemId(), 'cid' => $item->getContextID(), 'hover' => $hover_text);
-	$item = $result_list->getNext();
+   $room_name = $room_name_array[$item->getContextID()];
+   $hover_text = $translator->getMessage('COMMON_ROOM').': &quot;'.$room_name.'&quot;';
+   $result_array[] = array('title' => $item->getTitle(), 'type' => $item->getItemType(), 'iid' => $item->getItemId(), 'cid' => $item->getContextID(), 'hover' => $hover_text);
+   $item = $result_list->getNext();
 }
 
-$info_array = array('interval' => '0', 'last' => '2', 'from' => '0', 'to' => '20', 'count' => '50');
-$page->add('roomwide_search_info', $info_array);
+$page->add('roomwide_search_info', array('page' => $result_page, 'last' => $number_of_pages, 'from' => $from_display, 'to' => $to_display, 'count' => $count));
 $page->add('roomwide_search_results', $result_array);
 ?>

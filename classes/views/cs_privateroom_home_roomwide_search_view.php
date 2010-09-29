@@ -52,7 +52,8 @@ class cs_privateroom_home_roomwide_search_view extends cs_view {
     */
     function getSearchText (){
        if (empty($this->_search_text)){
-       	$this->_search_text = $this->_translator->getMessage('PRIVATROOM_ROOMWIDE_SEARCH_BOX_TEXT');
+       	//$this->_search_text = $this->_translator->getMessage('PRIVATROOM_ROOMWIDE_SEARCH_BOX_TEXT');
+       	$this->_search_text = '';
        }
        return $this->_search_text;
     }
@@ -116,13 +117,17 @@ class cs_privateroom_home_roomwide_search_view extends cs_view {
       $html .= '<div style="width: 97%;" id="form_formatting_box">';
       
       $html .= '<div style="padding-bottom: 5px;">'.$this->_translator->getMessage('PRIVATE_ROOM_ROOMWIDE_SEARCH_EXT_TYPES').':</div>';
-      
       $html .= '<input type="checkbox" name="roomwide_search_type" value="announcement">'.$this->_translator->getMessage('ANNOUNCEMENTS').'<br/>';
       $html .= '<input type="checkbox" name="roomwide_search_type" value="date">'.$this->_translator->getMessage('DATES').'<br/>';
       $html .= '<input type="checkbox" name="roomwide_search_type" value="material">'.$this->_translator->getMessage('MATERIALS').'<br/>';
       $html .= '<input type="checkbox" name="roomwide_search_type" value="discussion">'.$this->_translator->getMessage('DISCUSSIONS').'<br/>';
       $html .= '<input type="checkbox" name="roomwide_search_type" value="todo">'.$this->_translator->getMessage('TODOS').'<br/>';
-      $html .= '<input type="checkbox" name="roomwide_search_type" value="topic">'.$this->_translator->getMessage('TOPICS').'<br/>';
+      $html .= '<input type="checkbox" name="roomwide_search_type" value="topic">'.$this->_translator->getMessage('TOPICS').'<br/><br/>';
+      
+      $html .= '<div style="padding-bottom: 5px;">'.$this->_translator->getMessage('COMMON_PAGE_ENTRIES').':</div>';
+      $html .= '<input type="radio" name="roomwide_search_interval" value="10">10';
+      $html .= '<input type="radio" name="roomwide_search_interval" value="20" checked>20';
+      $html .= '<input type="radio" name="roomwide_search_interval" value="50">50';
       
       $html .= '</div>';
       $html .= '</div>';
@@ -135,8 +140,7 @@ class cs_privateroom_home_roomwide_search_view extends cs_view {
       
       $html .= '<script type="text/javascript">'.LF;
       $html .= '<!--'.LF;
-      //$html .= 'var reset_search_text_message = "'.$this->_text_as_form($this->getSearchText()).'";'.LF;
-      $html .= 'var reset_search_text_message = "";'.LF;
+      $html .= 'var reset_search_text_message = "'.$this->_text_as_form($this->getSearchText()).'";'.LF;
       $html .= '-->'.LF;
       $html .= '</script>'.LF;
       return $html;

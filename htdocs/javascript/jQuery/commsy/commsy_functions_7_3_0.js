@@ -3550,7 +3550,7 @@ function uploadify_onError(event, queueID, fileObj, errorObj) {
  * Room-wide search
  */
 var roomwide_search_state = new Object();
-roomwide_search_state['interval'] = 0;
+roomwide_search_state['page'] = 0;
 roomwide_search_state['last'] = 0;
 jQuery(document).ready(function() {
     roomwide_search_extended_search(false);
@@ -3560,7 +3560,8 @@ jQuery(document).ready(function() {
 		jQuery('#privateroom_home_roomwide_search_table').append('<tr><td>Suche...</td></tr>');
 		json_data = new Object();
 		json_data['search'] = jQuery('#privateroom_home_roomwide_search_text').val();
-		json_data['interval'] = roomwide_search_state['interval'];
+		json_data['page'] = roomwide_search_state['page'];
+		json_data['interval'] = jQuery('[name=roomwide_search_interval]:checked').val();
 		var item_types = new Array();
 		jQuery('[name=roomwide_search_type]:checked').each(function(){
 			item_types.push(jQuery(this).attr('value'));
@@ -3576,25 +3577,28 @@ jQuery(document).ready(function() {
               }else{
             	jQuery('#privateroom_home_roomwide_search_table').children().remove();
             	
-            	if(resultJSON['roomwide_search_info']['interval'] == '0'){
+            	if((resultJSON['roomwide_search_info']['page'] == '0') && (resultJSON['roomwide_search_info']['last'] > 0) && (resultJSON['roomwide_search_info']['page'] < resultJSON['roomwide_search_info']['last'])){
             		var first_link = '&lt;&lt;';
             		var prev_link = '&lt;';
             		var next_link = '<a href="#" onclick="roomwide_search_next()">&gt;</a>';
             		var last_link = '<a href="#" onclick="roomwide_search_last()">&gt;&gt;</a>';
-            	}
-            	if((resultJSON['roomwide_search_info']['interval'] > '0') && (resultJSON['roomwide_search_info']['interval'] < resultJSON['roomwide_search_info']['last'])){
+            	} else if((resultJSON['roomwide_search_info']['page'] > '0') && (resultJSON['roomwide_search_info']['page'] < resultJSON['roomwide_search_info']['last'])){
             		var first_link = '<a href="#" onclick="roomwide_search_first()">&lt;&lt;</a>';
             		var prev_link = '<a href="#" onclick="roomwide_search_prev()">&lt;</a>';
             		var next_link = '<a href="#" onclick="roomwide_search_next()">&gt;</a>';
             		var last_link = '<a href="#" onclick="roomwide_search_last()">&gt;&gt;</a>';
-            	}
-            	if(resultJSON['roomwide_search_info']['interval'] == resultJSON['roomwide_search_info']['last']){
+            	} else if((resultJSON['roomwide_search_info']['page'] == resultJSON['roomwide_search_info']['last']) && (resultJSON['roomwide_search_info']['last'] > 0)){
             		var first_link = '<a href="#" onclick="roomwide_search_first()">&lt;&lt;</a>';
             		var prev_link = '<a href="#" onclick="roomwide_search_prev()">&lt;</a>';
             		var next_link = '&gt;';
             		var last_link = '&gt;&gt;';
+            	} else {
+            		var first_link = '&lt;&lt;';
+            		var prev_link = '&lt;';
+            		var next_link = '&gt;';
+            		var last_link = '&gt;&gt;';
             	}
-            	roomwide_search_state['interval'] = resultJSON['roomwide_search_info']['interval'];
+            	roomwide_search_state['page'] = resultJSON['roomwide_search_info']['page'];
             	roomwide_search_state['last'] = resultJSON['roomwide_search_info']['last'];
             	var from = resultJSON['roomwide_search_info']['from'];
         		var to = resultJSON['roomwide_search_info']['to'];
@@ -3612,19 +3616,19 @@ jQuery(document).ready(function() {
 	});
 });
 function roomwide_search_first(){
-	roomwide_search_state['interval'] = 0;
+	roomwide_search_state['page'] = 0;
 	jQuery('#privateroom_home_roomwide_search_form').submit();
 }
 function roomwide_search_prev(){
-	roomwide_search_state['interval']--;
+	roomwide_search_state['page']--;
 	jQuery('#privateroom_home_roomwide_search_form').submit();
 }
 function roomwide_search_next(){
-	roomwide_search_state['interval']++;
+	roomwide_search_state['page']++;
 	jQuery('#privateroom_home_roomwide_search_form').submit();
 }
 function roomwide_search_last(){
-	roomwide_search_state['interval'] = roomwide_search_state['last'];
+	roomwide_search_state['page'] = roomwide_search_state['last'];
 	jQuery('#privateroom_home_roomwide_search_form').submit();
 }
 function roomwide_search_extended_search(is_shown){
