@@ -317,7 +317,7 @@ function getTooltipDate($date){
       $temp_array = array();
       $temp_array[] = $translator->getMessage('DATES_DATETIME');
       if ($time_print != '') {
-         $temp_array[] = $date_print.BRLF.$time_print;
+         $temp_array[] = $date_print.' '.$time_print;
       } else {
          $temp_array[] = $date_print;
       }
