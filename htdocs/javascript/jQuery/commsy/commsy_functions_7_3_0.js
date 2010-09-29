@@ -3567,6 +3567,11 @@ jQuery(document).ready(function() {
 			item_types.push(jQuery(this).attr('value'));
 		});
 		json_data['roomwide_search_type'] = item_types;
+		var rooms = new Array();
+		jQuery('[name=roomwide_search_room]:checked').each(function(){
+			rooms.push(jQuery(this).attr('value'));
+		});
+		json_data['roomwide_search_room'] = rooms;
 		
 	    jQuery.ajax({
 	       url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct=privateroom_roomwide_search&output=json',

@@ -30,31 +30,45 @@ if(isset($_GET['interval'])){
    $interval = 20;
 }
 
-$user_item = $environment->getCurrentUserItem();
-
-$context_array = array();
-$room_name_array = array();
-// Projekt- und Gruppenraeume
-$project_list = $user_item->getRelatedProjectList();
-$project_item = $project_list->getFirst();
-while($project_item){
-	$context_array[] = $project_item->getItemID();
-	$room_name_array[$project_item->getItemID()] = $project_item->getTitle();
-	$project_item = $project_list->getNext();
-}
-
-// Gemeinschaftsraeume
-$community_list = $user_item->getUserRelatedCommunityList();
-$community_item = $community_list->getFirst();
-while($community_item){
-   $context_array[] = $community_item->getItemID();
-   $room_name_array[$community_item->getItemID()] = $community_item->getTitle();
-   $community_item = $community_list->getNext();
-}
-
 $private_room_item = $environment->getCurrentContextItem();
-$context_array[] = $private_room_item->getItemID();
-$room_name_array[$private_room_item->getItemID()] = $private_room_item->getTitle();
+$user_item = $environment->getCurrentUserItem();
+if(!isset($_GET['roomwide_search_room'])){
+	$context_array = array();
+	$room_name_array = array();
+	// Projekt- und Gruppenraeume
+	$project_list = $user_item->getRelatedProjectList();
+	$project_item = $project_list->getFirst();
+	while($project_item){
+		$context_array[] = $project_item->getItemID();
+		$room_name_array[$project_item->getItemID()] = $project_item->getTitle();
+		$project_item = $project_list->getNext();
+	}
+	
+	// Gemeinschaftsraeume
+	$community_list = $user_item->getUserRelatedCommunityList();
+	$community_item = $community_list->getFirst();
+	while($community_item){
+	   $context_array[] = $community_item->getItemID();
+	   $room_name_array[$community_item->getItemID()] = $community_item->getTitle();
+	   $community_item = $community_list->getNext();
+	}
+	
+	// Privater Raum
+	$context_array[] = $private_room_item->getItemID();
+	$room_name_array[$private_room_item->getItemID()] = $private_room_item->getTitle();
+} else {
+	$context_array = $_GET['roomwide_search_room'];
+	$room_manager = $environment->getRoomManager();
+	$private_room_id = $private_room_item->getItemId();
+	foreach($context_array as $context_temp){
+		if($context_temp != $private_room_id){
+		   $temp_room = $room_manager->getItem($context_temp);
+		   $room_name_array[$context_temp] = $temp_room->getTitle();
+		} else {
+			$room_name_array[$private_room_id] = $private_room_item->getTitle();
+		}
+	}
+}
 
 $file_rubric_array = array();
 if(isset($_GET['roomwide_search_type'])){
@@ -162,7 +176,11 @@ if($count > $interval){
 	$to_display = $count;
 }
 
-$from_display = $from+1;
+if($to > 0){
+   $from_display = $from+1;
+} else {
+	$from_display = 0;
+}
 
 $result_list = $complete_list->getSubList($from, $interval);
 
