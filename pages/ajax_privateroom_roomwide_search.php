@@ -151,7 +151,7 @@ $count = $complete_list->getCount();
 
 $number_of_pages = 0;
 if($count % $interval == 0){
-   $number_of_pages = $count / $interval;
+   $number_of_pages = ($count / $interval)-1;
 } else {
    $number_of_pages = (($count - ($count % $interval)) / $interval);
 }
