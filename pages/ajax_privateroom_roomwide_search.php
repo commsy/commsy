@@ -198,8 +198,8 @@ while($item){
    	$type = 'COMMON_'.strtoupper($item->getItemType());
    	$hover_text .= $translator->getMessage($type);
    }
-   $hover_text .= ' ('.$translator->getMessage('COMMON_ROOM').': &quot;'.$room_name.'&quot;)';
-   $result_array[] = array('title' => $item->getTitle(), 'type' => $item->getItemType(), 'iid' => $item->getItemId(), 'cid' => $item->getContextID(), 'hover' => $hover_text);
+   #$hover_text .= ' ('.$translator->getMessage('COMMON_ROOM').': &quot;'.$room_name.'&quot;)';
+   $result_array[] = array('title' => $item->getTitle(), 'type' => $item->getItemType(), 'iid' => $item->getItemId(), 'cid' => $item->getContextID(), 'hover' => $hover_text, 'room_name' => $room_name);
    $item = $result_list->getNext();
 }
 

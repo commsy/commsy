@@ -166,8 +166,10 @@ class cs_privateroom_home_roomwide_search_view extends cs_view {
       $html .= '</div>';
       $html .='</form>'.LF;
       
-      $html .= '<table id="privateroom_home_roomwide_search_table">';
+      $html .= '<div id="privateroom_home_roomwide_search_div">';
+      $html .= '<table id="privateroom_home_roomwide_search_table" style="width:100%;">';
       $html .= '</table>';
+      $html .= '</div>';
       
       $html .= '<script type="text/javascript">'.LF;
       $html .= '<!--'.LF;
