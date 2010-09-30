@@ -3559,7 +3559,7 @@ jQuery(document).ready(function() {
 		jQuery('#privateroom_home_roomwide_search_extended').hide();
 		jQuery('#privateroom_home_roomwide_search_toggle').attr('src', jQuery('#privateroom_home_roomwide_search_toggle').attr('src').replace('less','more'));
 		jQuery('#privateroom_home_roomwide_search_table').children().remove();
-		jQuery('#privateroom_home_roomwide_search_table').append('<tr><td>...</td></tr>');
+		jQuery('#privateroom_home_roomwide_search_table').append('<tr><td><div id="roomwide_search_animation"></div></td></tr>');
 		json_data = new Object();
 		json_data['search'] = jQuery('#privateroom_home_roomwide_search_text').val();
 		json_data['page'] = roomwide_search_state['page'];
@@ -3582,8 +3582,6 @@ jQuery(document).ready(function() {
 	          var resultJSON = eval('(' + msg + ')');
               if (resultJSON === undefined){
               }else{
-            	jQuery('#privateroom_home_roomwide_search_table').children().remove();
-            	
             	if((resultJSON['roomwide_search_info']['page'] == '0') && (resultJSON['roomwide_search_info']['last'] > 0) && (resultJSON['roomwide_search_info']['page'] < resultJSON['roomwide_search_info']['last'])){
             		var first_link = '&lt;&lt;';
             		var prev_link = '&lt;';
@@ -3610,8 +3608,11 @@ jQuery(document).ready(function() {
             	var from = resultJSON['roomwide_search_info']['from'];
         		var to = resultJSON['roomwide_search_info']['to'];
         		var count = resultJSON['roomwide_search_info']['count'];
+        		
+        		jQuery('#privateroom_home_roomwide_search_table').children().remove();
             	jQuery('#privateroom_home_roomwide_search_table').append(jQuery('<tr><td colspan="2">'+first_link+' '+prev_link+' '+from+' bis '+to+' von '+count+' '+next_link+' '+last_link+' '+'</td></tr>'));
-                for ( var int = 0; int < resultJSON['roomwide_search_results'].length; int++) {
+            	
+            	for ( var int = 0; int < resultJSON['roomwide_search_results'].length; int++) {
 					var json_element = resultJSON['roomwide_search_results'][int];
 					var temp_icon = '<img src="images/commsyicons/netnavigation/'+json_element['type']+'.png">';
 					var temp_link = '<a href="commsy.php?cid='+json_element['cid']+'&mod='+json_element['type']+'&fct=detail&iid='+json_element['iid']+'" title="'+json_element['hover']+'">'+json_element['title']+'</a>';

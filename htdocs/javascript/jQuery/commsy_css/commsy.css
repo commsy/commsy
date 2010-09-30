@@ -83,3 +83,12 @@ div.delete_confirm_box {
 	top: 0px;
 	display: none;
 }
+
+
+/*----- Roomwide search -----*/
+
+#roomwide_search_animation {
+   width: 40px;
+   height: 40px;
+   background-image: url('../commsy_images/roomwide_search_animation.gif');
+}
