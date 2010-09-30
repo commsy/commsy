@@ -122,12 +122,14 @@ class cs_privateroom_home_roomwide_search_view extends cs_view {
       $html .= '<input type="radio" name="roomwide_search_interval" value="50">50<br/><br/>';
       
       $html .= '<div style="padding-bottom: 5px;">'.$this->_translator->getMessage('PRIVATE_ROOM_ROOMWIDE_SEARCH_EXT_TYPES').':</div>';
+      $html .= '<div style="height:60px; overflow-y:auto; border:1px dashed #bbbbbb; background-color:#ffffff;">';
       $html .= '<input type="checkbox" name="roomwide_search_type" value="announcement">'.$this->_translator->getMessage('ANNOUNCEMENTS').'<br/>';
       $html .= '<input type="checkbox" name="roomwide_search_type" value="date">'.$this->_translator->getMessage('DATES').'<br/>';
       $html .= '<input type="checkbox" name="roomwide_search_type" value="material">'.$this->_translator->getMessage('MATERIALS').'<br/>';
       $html .= '<input type="checkbox" name="roomwide_search_type" value="discussion">'.$this->_translator->getMessage('DISCUSSIONS').'<br/>';
       $html .= '<input type="checkbox" name="roomwide_search_type" value="todo">'.$this->_translator->getMessage('TODOS').'<br/>';
-      $html .= '<input type="checkbox" name="roomwide_search_type" value="topic">'.$this->_translator->getMessage('TOPICS').'<br/><br/>';
+      $html .= '<input type="checkbox" name="roomwide_search_type" value="topic">'.$this->_translator->getMessage('TOPICS').'<br/>';
+      $html .= '</div><br/>';
       
       $context_array = array();
 		$room_name_array = array();
@@ -156,9 +158,11 @@ class cs_privateroom_home_roomwide_search_view extends cs_view {
 		}
       
       $html .= '<div style="padding-bottom: 5px;">'.$this->_translator->getMessage('PRIVATE_ROOM_ROOMWIDE_SEARCH_EXT_ROOMS').':</div>';
+      $html .= '<div style="height:60px; overflow-y:auto; border:1px dashed #bbbbbb; background-color:#ffffff;">';
       foreach($context_array as $context_temp){
       	$html .= '<input type="checkbox" name="roomwide_search_room" value="'.$context_temp.'">'.$room_name_array[$context_temp].'<br/>';
       }
+      $html .= '</div>';
       
       $html .= '</div>';
       $html .= '</div>';
