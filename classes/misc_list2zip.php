@@ -208,9 +208,6 @@ class misc_list2zip extends misc_2zip {
                $disc_manager->setContextID($this->_environment->getCurrentContextID());
                $orig_img_file = $disc_manager->getFilePath();
                unset($disc_manager);
-               #$orig_img_file  = 'var/';
-               #$orig_img_file .= $this->_environment->getCurrentPortalID().'/';
-               #$orig_img_file .= $this->_environment->getCurrentContextID().'/';
                $orig_img_file .= $img_name;
                if ( file_exists($orig_img_file) ) {
                   copy($orig_img_file,$directory.'/images/'.$img_name);

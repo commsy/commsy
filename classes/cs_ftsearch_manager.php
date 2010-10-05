@@ -263,7 +263,6 @@ class cs_ftsearch_manager extends cs_manager {
          $disc_manager->setPortalID($this->_environment->getCurrentPortalID());
          $disc_manager->setContextID($this->_environment->getCurrentContextID());
          unset($disc_manager);
-         #$searchsite_index = 'var/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/ft.index';
          $this->_cmdline = $search_engine . escapeshellcmd(" -m $maxhits_offset -f $searchsite_index -w ") . $this->_words;
 
          // perform search
@@ -299,7 +298,6 @@ class cs_ftsearch_manager extends cs_manager {
          $disc_manager->setPortalID($this->_environment->getCurrentPortalID());
          $disc_manager->setContextID($this->_environment->getCurrentContextID());
          unset($disc_manager);
-         #$index_base = 'var/' . $this->_getPortalID() . '/' . $this->_getRoomID() . '/';
          $index_result = array();
          $return = '';
          $cmdline = $this->_getCMDLine2($index_base);

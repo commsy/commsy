@@ -192,7 +192,6 @@ else {
             $backuppath = $disc_manager->getFilePath();
             $disc_manager->setContextID($environment->getCurrentContextID());
             unset($disc_manager);
-            #$backuppath = 'var/'.$environment->getCurrentPortalID().'/'.$_POST['iid'].'';
 
             if ( class_exists('ZipArchive') ) {
                include_once('functions/misc_functions.php');

@@ -270,9 +270,6 @@ class misc_item2zip extends misc_2zip {
                      $disc_manager->setContextID($this->_environment->getCurrentContextID());
                      $orig_img_file = $disc_manager->getFilePath();
                      unset($disc_manager);
-                     #$orig_img_file  = 'var/';
-                     #$orig_img_file .= $this->_environment->getCurrentPortalID().'/';
-                     #$orig_img_file .= $this->_environment->getCurrentContextID().'/';
                      $orig_img_file .= $img_name;
                   } elseif ( stristr($link,'images/disc1') ) {
                      $orig_img_file  = 'htdocs/images/';
