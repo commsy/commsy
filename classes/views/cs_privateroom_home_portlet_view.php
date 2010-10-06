@@ -431,6 +431,17 @@ class cs_privateroom_home_portlet_view extends cs_view{
       }
       $action_array[] = $temp_array;
 
+      $temp_array = array();
+      $temp_array['dropdown_image']  = "new_icon";
+      $temp_array['text']  = $this->_translator->getMessage('PORTLET_CONFIGURATION_NOTE_BOX');
+      $temp_array['value'] = "cs_privateroom_home_note_view";
+      if($privateroom_item->getPortletShowNoteBox()){
+         $temp_array['checked']  = "checked";
+      } else {
+         $temp_array['checked']  = "";
+      }
+      $action_array[] = $temp_array;
+      
       // init drop down menu
       if ( !empty($action_array)
            and count($action_array) >= 1

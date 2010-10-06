@@ -123,6 +123,12 @@ if(isset($_GET['do'])){
          $privateroom_item->unsetPortletShowRSS();
       }
 
+	   if(in_array('cs_privateroom_home_note_view', $column_array)){
+         $privateroom_item->setPortletShowNoteBox();
+      } else {
+         $privateroom_item->unsetPortletShowNoteBox();
+      }
+      
       $home_config_array = $privateroom_item->getHomeConfig();
 
 	   // remove unset portlets

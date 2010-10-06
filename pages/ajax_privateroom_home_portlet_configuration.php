@@ -170,6 +170,29 @@ if(isset($_GET['portlet'])){
       }
       
       $privateroom_item->save();
+   } elseif($_GET['portlet'] == 'note'){
+   	$privateroom_item = $environment->getCurrentContextItem();
+   	
+      $get_keys = array_keys($_GET);
+      $text = '';
+
+      foreach($get_keys as $get_key){
+         if(stristr($get_key, 'portlet_note_content')){
+            if(!empty($_GET[$get_key])){
+               $text = $_GET[$get_key];
+            }
+         }
+      }
+   	
+      $text_html = $text;
+      
+      if($text != ''){
+         $privateroom_item->setPortletNoteContent($text);
+      }
+      $privateroom_item->save();
+      
+   	$page->add('content', $text);
+   	$page->add('content_html', $text_html);
    }
 }
 ?>

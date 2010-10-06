@@ -1842,6 +1842,8 @@ function portlet_turn_action(preferences, id, portlet){
          turn_portlet_new_entries(id, portlet);
       } else if ((id == 'my_buzzword_box') || (id == 'cs_privateroom_home_buzzword_view')){
          turn_portlet_buzzwords(id, portlet);
+      } else if (id == 'cs_privateroom_home_note_view'){
+         turn_portlet_note(id, portlet);
       }
    } else {
       if(id == 'cs_privateroom_home_youtube_view'){
@@ -1860,6 +1862,8 @@ function portlet_turn_action(preferences, id, portlet){
          return_portlet_new_entries(id, portlet);
       } else if ((id == 'my_buzzword_box') || (id == 'cs_privateroom_home_buzzword_view')){
          return_portlet_buzzwords(id, portlet);
+      } else if (id == 'cs_privateroom_home_note_view'){
+         return_portlet_note(id, portlet);
       }
    }
 }
@@ -2307,6 +2311,39 @@ function turn_portlet_new_entries(id, portlet){
 function return_portlet_new_entries(id, portlet){
    if(portlet_data['new_entries_save']){
 	  portlet_data['new_entries_save'] = false;
+   }
+}
+
+function turn_portlet_note(id, portlet){
+   jQuery('#portlet_note_content').val(jQuery('#portlet_note_content_p_hidden').val());
+   jQuery('#portlet_note_save_button').click(function(){
+	  if(jQuery('#portlet_note_content').val() != ''){
+         var json_data = new Object();
+    	 json_data['portlet_note_content'] = jQuery('#portlet_note_content').val();
+    	 portlet_data['note_content'] = jQuery('#portlet_note_content').val();
+    	 jQuery.ajax({
+    	    url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct=privateroom_home_portlet_configuration&output=json&portlet=note',
+    	    data: json_data,
+    	    success: function(msg){
+    		   var resultJSON = eval('(' + msg + ')');
+               if (resultJSON === undefined){
+               }else{
+    		      portlet_data['note_content_html'] = resultJSON['content_html'];
+    		      portlet_data['note_content'] = resultJSON['content'];
+    	          portlet_data['note_save'] = true;
+               }
+    	    }
+    	 });
+	  }
+   });
+}
+
+function return_portlet_note(id, portlet){
+   if(portlet_data['note_save']){
+	  if(typeof(portlet_data['note_content_html']) !== 'undefined'){
+	     jQuery('#portlet_note_content_p').html(portlet_data['note_content_html']);
+         portlet_data['note_save'] = false;
+	  }
    }
 }
 

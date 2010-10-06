@@ -1532,7 +1532,35 @@ class cs_privateroom_item extends cs_room_item {
       return $retour;
    }
 
+   function setPortletShowNoteBox () {
+      $this->_addExtra('PORTLET_SHOW_NOTE','1');
+   }
+   function unsetPortletShowNoteBox () {
+      $this->_addExtra('PORTLET_SHOW_NOTE','-1');
+   }
 
+   function getPortletShowNoteBox () {
+      $retour = true;
+      if ($this->_issetExtra('PORTLET_SHOW_NOTE')) {
+         if($this->_getExtra('PORTLET_SHOW_NOTE') == '-1'){
+            $retour = false;
+         }
+      }
+      return $retour;
+   }   
+
+   function setPortletNoteContent ($content) {
+      $this->_addExtra('PORTLET_NOTE_CONTENT',$content);
+   }
+   
+   function getPortletNoteContent () {
+      $retour = '';
+      if ($this->_issetExtra('PORTLET_NOTE_CONTENT')) {
+         $retour = $this->_getExtra('PORTLET_NOTE_CONTENT');
+      }
+      return $retour;
+   }   
+   
    function setHomeConfig ($column_array) {
       $this->_addExtra('HOME_CONFIG',$column_array);
    }
@@ -1644,6 +1672,11 @@ class cs_privateroom_item extends cs_room_item {
          $this->unsetPortletShowNewItemBox();
       }
 
+      if(in_array('cs_privateroom_home_note_view', $portlet_array)){
+         $this->setPortletShowNoteBox();
+      } else {
+         $this->unsetPortletShowNoteBox();
+      }
    }
 
    function setMyroomDisplayConfig ($myroom_array) {
