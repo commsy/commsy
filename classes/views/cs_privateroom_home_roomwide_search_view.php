@@ -52,8 +52,7 @@ class cs_privateroom_home_roomwide_search_view extends cs_view {
     */
     function getSearchText (){
        if (empty($this->_search_text)){
-       	//$this->_search_text = $this->_translator->getMessage('PRIVATROOM_ROOMWIDE_SEARCH_BOX_TEXT');
-       	$this->_search_text = '';
+       	$this->_search_text = $this->_translator->getMessage('PRIVATROOM_ROOMWIDE_SEARCH_BOX_TEXT');
        }
        return $this->_search_text;
     }
@@ -104,7 +103,7 @@ class cs_privateroom_home_roomwide_search_view extends cs_view {
       $html .= '   <input type="hidden" name="cid" value="'.$this->_text_as_form($this->_environment->getCurrentContextID()).'"/>'.LF;
       $html .= '   <input type="hidden" name="mod" value="entry"/>'.LF;
       $html .= '   <input type="hidden" name="fct" value="index"/>'.LF;
-      $html .= '<input id="privateroom_home_roomwide_search_text" onclick="javascript:resetSearchText(\'selsearch\');" style="width:80%; font-size:10pt; margin-bottom:0px;" name="search" type="text" size="20" value="'.$this->_text_as_form($this->getSearchText()).'"/>';
+      $html .= '<input id="privateroom_home_roomwide_search_text" onclick="javascript:resetSearchText(\'privateroom_home_roomwide_search_text\');" style="width:80%; font-size:10pt; margin-bottom:0px;" name="search" type="text" size="20" value="'.$this->_text_as_form($this->getSearchText()).'"/>';
       if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
          $html .= '<input type="image" src="images/commsyicons_msie6/22x22/search.gif" style="vertical-align:top;" alt="'.$this->_translator->getMessage('COMMON_SEARCH_BUTTON').'"/>';
       } else {

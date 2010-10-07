@@ -1133,7 +1133,7 @@ jQuery(document).ready(function() {
 //			$(this).parents(".portlet:first").find(".portlet-content").toggle();
 //		});
 
-		jQuery(".column").disableSelection();
+		//jQuery(".column").disableSelection();
 });
 
 jQuery(document).ready(function() {
