@@ -455,11 +455,11 @@ class cs_configuration_authentication_form extends cs_rubric_form {
                $this->_values['port'] = '389';
             }
          }
-         if($this->_values['password_secure_check']){
-         	$this->_disable_password_check = false;
-         } else {
-         	$this->_disable_password_check = true;
-         }
+         #if($this->_values['password_secure_check'] AND isset($this->_values['password_secure_check'])){
+         #	$this->_disable_password_check = false;echo 'test1';
+         #} else {
+         #	$this->_disable_password_check = true;echo 'test2';
+         #}
 
 
       } elseif ( !empty($this->_item) ) {
