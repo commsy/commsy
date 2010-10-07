@@ -2315,12 +2315,17 @@ function return_portlet_new_entries(id, portlet){
 }
 
 function turn_portlet_note(id, portlet){
-   jQuery('#portlet_note_content').val(jQuery('#portlet_note_content_p_hidden').val());
+   if(typeof(portlet_data['note_content']) !== 'undefined'){
+	  jQuery('#portlet_note_content').html(portlet_data['note_content']);
+   } else {
+	  jQuery('#portlet_note_content').html(jQuery('#portlet_note_content').html().replace(/COMMSY_BR/g, '\n'));
+   }
    jQuery('#portlet_note_save_button').click(function(){
 	  if(jQuery('#portlet_note_content').val() != ''){
          var json_data = new Object();
-    	 json_data['portlet_note_content'] = jQuery('#portlet_note_content').val();
-    	 portlet_data['note_content'] = jQuery('#portlet_note_content').val();
+         var content = jQuery('#portlet_note_content').val().replace(/(\r\n)|(\r)|(\n)/g, 'COMMSY_BR');
+    	 json_data['portlet_note_content'] = content;
+    	 portlet_data['note_content'] = content;
     	 jQuery.ajax({
     	    url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct=privateroom_home_portlet_configuration&output=json&portlet=note',
     	    data: json_data,
@@ -2329,7 +2334,7 @@ function turn_portlet_note(id, portlet){
                if (resultJSON === undefined){
                }else{
     		      portlet_data['note_content_html'] = resultJSON['content_html'];
-    		      portlet_data['note_content'] = resultJSON['content'];
+    		      portlet_data['note_content'] = resultJSON['content'].replace(/COMMSY_BR/g, '\n');
     	          portlet_data['note_save'] = true;
                }
     	    }

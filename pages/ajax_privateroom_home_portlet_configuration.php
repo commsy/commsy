@@ -184,7 +184,7 @@ if(isset($_GET['portlet'])){
          }
       }
    	
-      $text_html = $text;
+      $text_html = str_ireplace('COMMSY_BR', '<br/>', $text);
       
       if($text != ''){
          $privateroom_item->setPortletNoteContent($text);

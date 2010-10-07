@@ -477,6 +477,7 @@ $message["COMMON_NEW_VERSION_MATERIAL"]["en"] = "new version of material";
 $message["COMMON_NEXT"]["en"] = "Next";
 $message["COMMON_NO"]["en"] = "No";
 $message["COMMON_NONE"]["en"] = "(none)";
+$message["COMMON_NOTE_PORTLET"]["en"] = "Note";
 $message["COMMON_NOTHING_ATTACHED"]["en"] = "not linked";
 $message["COMMON_NOT_ACCESSIBLE"]["en"] = "private event - detail view is not accesible for other users";
 $message["COMMON_NOT_ACTIVATED"]["en"] = "not accessible yet";

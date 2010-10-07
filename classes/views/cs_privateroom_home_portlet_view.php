@@ -433,7 +433,7 @@ class cs_privateroom_home_portlet_view extends cs_view{
 
       $temp_array = array();
       $temp_array['dropdown_image']  = "new_icon";
-      $temp_array['text']  = $this->_translator->getMessage('PORTLET_CONFIGURATION_NOTE_BOX');
+      $temp_array['text']  = $this->_translator->getMessage('COMMON_NOTE_PORTLET');
       $temp_array['value'] = "cs_privateroom_home_note_view";
       if($privateroom_item->getPortletShowNoteBox()){
          $temp_array['checked']  = "checked";

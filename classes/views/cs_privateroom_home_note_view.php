@@ -47,15 +47,15 @@ class cs_privateroom_home_note_view extends cs_view {
    function asHTML(){
    	$room = $this->_environment->getCurrentContextItem();
       $html = '';
-      $html .= '<p id="portlet_note_content_p">'.$room->getPortletNoteContent().'</p>';
-      $html .= '<input type="hidden" id="portlet_note_content_p_hidden" style="display:none;" value="'.$room->getPortletNoteContent().'">';
+      $html .= '<p id="portlet_note_content_p">'.str_ireplace('COMMSY_BR', '<br/>', $room->getPortletNoteContent()).'</p>';
       return $html;
    }
    
    function getPreferencesAsHTML(){
+   	$room = $this->_environment->getCurrentContextItem();
       $html = '';
-      $html .= '<textarea rows="10" style="width:99%;" id="portlet_note_content"></textarea><br/><br/>';
-      $html .= '<input type="submit" id="portlet_note_save_button" value="'.$this->_translator->getMessage('PORTLET_CONFIGURATION_NOTE').'">';
+      $html .= '<textarea rows="10" style="width:99%;" id="portlet_note_content">'.$room->getPortletNoteContent().'</textarea><br/><br/>';
+      $html .= '<input type="submit" id="portlet_note_save_button" value="'.$this->_translator->getMessage('COMMON_SAVE_BUTTON').'">';
       return $html;
    }
 }

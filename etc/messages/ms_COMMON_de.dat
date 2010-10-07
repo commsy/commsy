@@ -486,6 +486,7 @@ $message["COMMON_NEW_VERSION_MATERIAL"]["de"] = "neue Version vom Material";
 $message["COMMON_NEXT"]["de"] = "Weiter";
 $message["COMMON_NO"]["de"] = "Nein";
 $message["COMMON_NONE"]["de"] = "(keine)";
+$message["COMMON_NOTE_PORTLET"]["de"] = "Notizzettel";
 $message["COMMON_NOTHING_ATTACHED"]["de"] = "nichts zugeordnet";
 $message["COMMON_NOT_ACCESSIBLE"]["de"] = "privater Termin - Detailansicht nicht für andere sichtbar";
 $message["COMMON_NOT_ACTIVATED"]["de"] = "noch nicht freigeschaltet";
