@@ -282,9 +282,9 @@ if ($current_context->getPortletShowNoteBox()){
    $params = array();
    $params['environment'] = $environment;
    $params['with_modifying_actions'] = $current_context->isOpen();
-   $search_view = $class_factory->getClass(PRIVATEROOM_HOME_NOTE_VIEW,$params);
+   $note_view = $class_factory->getClass(PRIVATEROOM_HOME_NOTE_VIEW,$params);
    unset($params);
-   $portlet_array[] = $search_view;
+   $portlet_array[] = $note_view;
 }
 /* NOTE END */
 
