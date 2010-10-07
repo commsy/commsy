@@ -177,6 +177,9 @@ class cs_privateroom_home_roomwide_search_view extends cs_view {
       $html .= '<script type="text/javascript">'.LF;
       $html .= '<!--'.LF;
       $html .= 'var reset_search_text_message = "'.$this->_text_as_form($this->getSearchText()).'";'.LF;
+      $html .= 'var roomwide_search_empty_result = "'.$this->_translator->getMessage('PRIVATE_ROOM_ROOMWIDE_SEARCH_EMPTY_RESULT').'";'.LF;
+      $html .= 'var roomwide_search_from = "'.$this->_translator->getMessage('COMMON_FROM2').'";'.LF;
+      $html .= 'var roomwide_search_to = "'.$this->_translator->getMessage('COMMON_TO').'";'.LF;
       $html .= '-->'.LF;
       $html .= '</script>'.LF;
       return $html;

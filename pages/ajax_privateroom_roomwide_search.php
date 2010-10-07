@@ -155,11 +155,20 @@ if($count % $interval == 0){
 } else {
    $number_of_pages = (($count - ($count % $interval)) / $interval);
 }
+if($number_of_pages == -1){
+	$number_of_pages++;
+}
+
+debugToFile('$number_of_pages '.$number_of_pages);
 
 $result_page = $_GET['page'];
 if($result_page > $number_of_pages){
    $result_page = $number_of_pages;
+} else if($result_page == -1){
+	$result_page = 1;
 }
+
+debugToFile('$result_page '.$result_page);
 
 if($count > $interval){
 	$from = $interval * $result_page;
@@ -192,13 +201,11 @@ while($item){
    $hover_text = '';
    if($item->getItemType() == CS_DATE_TYPE){
    	$hover_date_array = getTooltipDate($item);
-   	debugToFile($hover_date_array);
       $hover_text .= $hover_date_array[0].' '.$hover_date_array[1];
    } else {
    	$type = 'COMMON_'.strtoupper($item->getItemType());
    	$hover_text .= $translator->getMessage($type);
    }
-   #$hover_text .= ' ('.$translator->getMessage('COMMON_ROOM').': &quot;'.$room_name.'&quot;)';
    $result_array[] = array('title' => $item->getTitle(), 'type' => $item->getItemType(), 'iid' => $item->getItemId(), 'cid' => $item->getContextID(), 'hover' => $hover_text, 'room_name' => $room_name);
    $item = $result_list->getNext();
 }
