@@ -159,16 +159,12 @@ if($number_of_pages == -1){
 	$number_of_pages++;
 }
 
-debugToFile('$number_of_pages '.$number_of_pages);
-
 $result_page = $_GET['page'];
 if($result_page > $number_of_pages){
    $result_page = $number_of_pages;
 } else if($result_page == -1){
 	$result_page = 1;
 }
-
-debugToFile('$result_page '.$result_page);
 
 if($count > $interval){
 	$from = $interval * $result_page;
