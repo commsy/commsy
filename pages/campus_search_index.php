@@ -205,7 +205,7 @@ if ( isset($_GET['option']) and isOption($_GET['option'],$translator->getMessage
    } else if (isset($_GET['selstatus'])){
       $selstatus = $_GET['selstatus'];
    } else {
-      $selstatus = '';
+      $selstatus = 2;
    }
 
 
