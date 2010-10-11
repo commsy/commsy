@@ -251,7 +251,7 @@ class cs_context_item extends cs_item {
       if(   $this->_environment->inPortal()) {
          // check for portal limit
          if($this->_issetExtra('MAX_UPLOAD_SIZE')) {
-            $val = $this->_getExtra('MAX_UPLOAD_SIZE');
+				$val = $this->_getExtra('MAX_UPLOAD_SIZE');
          }
       }
 
@@ -282,6 +282,23 @@ class cs_context_item extends cs_item {
          case 'M':
             $val = $val * 1048576;
             break;
+      }
+      
+      // check if limit is beyond server maximum
+      $server_limit = ini_get('upload_max_filesize');
+      $server_last = $server_limit[mb_strlen($server_limit)-1];
+      switch($server_last) {
+         case 'k':
+         case 'K':
+            $server_limit *= 1024;
+            break;
+         case 'm':
+         case 'M':
+            $server_limit *= 1048576;
+            break;
+      }
+      if($server_limit < $val) {
+         return $server_limit;
       }
 
       return $val;

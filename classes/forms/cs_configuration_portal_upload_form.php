@@ -52,10 +52,13 @@ class cs_configuration_portal_upload_form extends cs_rubric_form {
       $room_list = $portal->getRoomList();
       $room_list->reset();
       $item = $room_list->getFirst();
-      $room_name_array = array();
       while($item) {
          // add room name to name array
-         $this->room_array[] = array(   'text'   =>   $item->getTitle(),
+         $limit_text = '';
+         if($item->getMaxUploadSizeExtraOnly() != '') {
+            $limit_text = '(' . $item->getMaxUploadSizeExtraOnly() . ')';
+         }
+         $this->room_array[] = array(   'text'   =>   $item->getTitle() . $limit_text,
                                         'value'	 =>   $item->getItemId());
          
          // save room limits
