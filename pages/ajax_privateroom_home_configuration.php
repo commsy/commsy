@@ -129,6 +129,12 @@ if(isset($_GET['do'])){
          $privateroom_item->unsetPortletShowNoteBox();
       }
       
+	   if(in_array('cs_privateroom_home_released_entries_view', $column_array)){
+         $privateroom_item->setPortletShowReleasedEntriesBox();
+      } else {
+         $privateroom_item->unsetPortletShowReleasedEntriesBox();
+      }
+      
       $home_config_array = $privateroom_item->getHomeConfig();
 
 	   // remove unset portlets

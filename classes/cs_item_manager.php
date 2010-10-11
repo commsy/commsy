@@ -782,7 +782,43 @@ class cs_item_manager extends cs_manager {
       }
    }
 
-
+   function getExternalViewerEntriesForRoom($room_id) {
+   	$result_array = array();
+   	$query_ids = 'SELECT item_id';
+      $query_ids .= ' FROM '.$this->addDatabasePrefix('materials');
+      $query_ids .= ' WHERE context_id="'.$room_id.'"';
+      $result_ids = $this->_db_connector->performQuery($query_ids);
+      if ( isset($result_ids) and !empty($result_ids) ) {
+      	$id_array = array();
+         foreach ( $result_ids as $result_id ) {
+            $id_array[] = $result_id['item_id'].' ';
+         }
+         $query = 'SELECT item_id';
+         $query .= ' FROM '.$this->addDatabasePrefix('external_viewer');
+         $query .= ' WHERE item_id IN ('.implode(',', $id_array).')';
+         $result = $this->_db_connector->performQuery($query);
+         if ( isset($result) and !empty($result) ) {
+	         foreach ( $result as $query_result ) {
+	            $result_array[] .= $query_result['item_id'];
+	         }
+         }
+      }
+      return $result_array;
+   }
+   
+   function getExternalViewerEntriesForUser($user_id) {
+      $result_array = array();
+      $query = 'SELECT item_id';
+      $query .= ' FROM '.$this->addDatabasePrefix('external_viewer');
+      $query .= ' WHERE user_id="'.$user_id.'"';
+      $result = $this->_db_connector->performQuery($query);
+      if ( isset($result) and !empty($result) ) {
+      	foreach($result as $query_result){
+            $result_array[] .= $query_result['item_id'];
+      	}
+      }
+      return $result_array;
+   }
 
   /** Prepares the db_array for the item
     *

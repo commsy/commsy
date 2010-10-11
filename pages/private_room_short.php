@@ -288,6 +288,17 @@ if ($current_context->getPortletShowNoteBox()){
 }
 /* NOTE END */
 
+/* RELEASED_ENTRIES */
+if ($current_context->getPortletShowReleasedEntriesBox()){
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = $current_context->isOpen();
+   $released_entries_view = $class_factory->getClass(PRIVATEROOM_HOME_RELEASED_ENTRIES_VIEW,$params);
+   unset($params);
+   $portlet_array[] = $released_entries_view;
+}
+/* RELEASED_ENTRIES END */
+
 $portlet_view->setPortletViewArray($portlet_array);
 
 
