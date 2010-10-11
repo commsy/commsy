@@ -667,6 +667,10 @@ class cs_profile_form extends cs_rubric_form {
             $this->_error_array[] = $this->_translator->getMessageInLang($this->_language,'COMMON_ERROR_FIELD_CORRECT',$this->_translator->getMessageInLang($this->_language,'USER_EMAIL'));
             $this->_form->setFailure('email');
          }
+         if(!preg_match('~^[0-9]+$~u', $this->_form_post['icq'])){
+         	$this->_error_array[] = $this->_translator->getMessageInLang($this->_language,'USER_ICQ_ERROR');
+         	$this->_form->setFailure('icq');
+         }
       }
 
       if ( !empty($this->_form_post['user_id']) ) {
