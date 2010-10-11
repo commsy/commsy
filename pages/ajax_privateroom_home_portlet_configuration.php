@@ -194,9 +194,7 @@ if(isset($_GET['portlet'])){
          $privateroom_item->setPortletNoteContent($text);
       }
       $privateroom_item->save();
-      
-      debugToFile($text_html);
-      
+           
    	$page->add('content', $text);
    	$page->add('content_html', $text_html);
    }
