@@ -46,8 +46,13 @@ class cs_privateroom_home_note_view extends cs_view {
 
    function asHTML(){
    	$room = $this->_environment->getCurrentContextItem();
+      $text_converter = $this->_environment->getTextConverter();
+      
+      $content = str_ireplace('COMMSY_BR', "\n\r", $room->getPortletNoteContent());
+      $content = $text_converter->text_as_html_long($text_converter->cleanDataFromTextArea($content));
+      
       $html = '';
-      $html .= '<p id="portlet_note_content_p">'.str_ireplace('COMMSY_BR', '<br/>', $room->getPortletNoteContent()).'</p>';
+      $html .= '<p id="portlet_note_content_p">'.$content.'</p>';
       return $html;
    }
    
