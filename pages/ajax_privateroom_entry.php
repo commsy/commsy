@@ -63,7 +63,8 @@ if(isset($_GET['do'])and isset($_GET['action'])){
 	}elseif($_GET['do'] == 'update_matrix' and $_GET['action']= 'add_item'){
       if (isset($_GET['row_id']) and isset($_GET['column_id']) and isset($_GET['item_id'])){
       	$matrix_manager = $environment->getMatrixManager();
-         $count = $matrix_manager->insertItem($_GET['item_id'],$_GET['column_id'],$_GET['row_id']);
+         $counter = $matrix_manager->insertItem($_GET['item_id'],$_GET['column_id'],$_GET['row_id']);
+         $count = '<a href=\"commsy.php?cid='.$environment->getCurrentContextID().'&mod=entry&fct=index&selmatrix='.$_GET['column_id'].'_'.$_GET['row_id'].'\">'.$counter.'</a>';
       	$page->add('matrix_counter',$count);
       }
    }
