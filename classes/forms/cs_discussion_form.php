@@ -294,7 +294,7 @@ class cs_discussion_form extends cs_rubric_form {
          }
          $this->_form->combine('vertical');
          $this->_form->addText('max_size',$val,$this->_translator->getMessage('MATERIAL_MAX_FILE_SIZE',$meg_val));
-         
+
          $session = $this->_environment->getSession();
 	      $new_upload = false;
 	      if($session->issetValue('javascript') and $session->issetValue('flash')) {
@@ -303,7 +303,7 @@ class cs_discussion_form extends cs_rubric_form {
 	         }
 	      }
 	      if(!$new_upload) $this->_form->addText('old_upload', '', $this->_translator->getMessage('COMMON_UPLOAD_OLD'));
-         
+
          $current_context = $this->_environment->getCurrentContextItem();
          $discussion_status = $current_context->getDiscussionStatus();
          if ($discussion_status == 3){
@@ -336,6 +336,9 @@ class cs_discussion_form extends cs_rubric_form {
          }
       } else {
          $this->_form->addHidden('public','');
+         $this->_form->addCheckbox('external_viewer',1,'',$this->_translator->getMessage('COMMON_RIGHTS'),$this->_translator->getMessage('EXTERNAL_VIEWER_DESCRIPTION'),$this->_translator->getMessage('COMMON_RIGHTS_DESCRIPTION'),false,false,'','',true,false);
+         $this->_form->combine();
+         $this->_form->addTextField('external_viewer_accounts','',$this->_translator->getMessage('EXTERNAL_VIEWER'),$this->_translator->getMessage('EXTERNAL_VIEWER_DESC'),200,35,false);
       }
 
       // buttons
@@ -386,6 +389,8 @@ class cs_discussion_form extends cs_rubric_form {
          $this->_values['title'] = $this->_item->getTitle();
          $this->_values['public'] = $this->_item->isPublic();
          $this->_setValuesForRubricConnections();
+         $this->_values['external_viewer'] = $this->_item->issetExternalViewerStatus();
+         $this->_values['external_viewer_accounts'] = $this->_item->getExternalViewerString();
 
          if ($current_context->withActivatingContent()){
             if ($this->_item->isPrivateEditing()){
@@ -434,6 +439,10 @@ class cs_discussion_form extends cs_rubric_form {
          if (count($tag_ids) == 0){
             $this->_error_array[] = $this->_translator->getMessage('COMMON_ERROR_TAG_ENTRY',$this->_translator->getMessage('MATERIAL_TAGS'));
          }
+      }
+      if ( isset($this->_form_post['external_viewer']) and !empty($this->_form_post['external_viewer']) and !isset($this->_form_post['external_viewer_accounts'])){
+         $this->_error_array[] = $this->_translator->getMessage('COMMON_ERROR_EXTERNAL_VIEWER_ACCOUNT_MISSED');
+         $this->_form->setFailure('external_viewer_accounts','');
       }
       if ( $current_context->isBuzzwordMandatory() ){
          $session = $this->_environment->getSessionItem();

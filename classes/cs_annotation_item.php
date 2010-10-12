@@ -223,6 +223,28 @@ class cs_annotation_item extends cs_item {
          include_once('functions/error_functions.php');trigger_error('At least one mandatory field is not set', E_USER_ERROR);
       }
    }
+
+   function mayEdit ($user_item) {
+      $access = false;
+      if ( !$user_item->isOnlyReadUser() ) {
+         if ( $user_item->isRoot() or
+              ($user_item->getContextID() == $this->getContextID()
+               and ($user_item->isModerator()
+                    or ($user_item->isUser()
+                        and ($user_item->getItemID() == $this->getCreatorID()
+                             or $this->isPublic()))))
+            ) {
+            $access = true;
+         }
+      }
+      if (!$access){
+         $item_manager = $this->_environment->getItemManager();
+         $item = $this->getLinkedItem();
+         $access = $item_manager->getExternalViewerForItem($item->getItemID(),$this->_environment->getCurrentUserID());
+      }
+      return $access;
+   }
+
 }
 
 ?>

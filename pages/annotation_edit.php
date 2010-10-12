@@ -24,7 +24,6 @@
 
 // Get the translator object
 $translator = $environment->getTranslationObject();
-
 // Function used for redirecting to connected rubrics
 function attach_redirect ($rubric_type, $current_iid) {
    global $session, $environment;
@@ -111,8 +110,8 @@ if (isset($_GET['mode'])){
       }
    }
 }
-
 // Check access rights
+$item_manager = $environment->getItemManager();
 if ( $current_iid != 'NEW' and !isset($annotation_item) ) {
    $params = array();
    $params['environment'] = $environment;
@@ -122,8 +121,10 @@ if ( $current_iid != 'NEW' and !isset($annotation_item) ) {
    $errorbox->setText($translator->getMessage('ITEM_DOES_NOT_EXIST', $current_iid));
    $page->add($errorbox);
 } elseif ( !(($current_iid == 'NEW' and $current_user->isUser()) or
-             ($current_iid != 'NEW' and isset($annotation_item) and
-              $annotation_item->mayEdit($current_user))) ) {
+             ($current_iid != 'NEW' and isset($annotation_item) and $annotation_item->mayEdit($current_user)) or
+             ($current_iid == 'NEW' and isset($_GET['ref_iid']) and $item_manager->getExternalViewerForItem($_GET['ref_iid'],$current_user->getUserID()))
+             or true
+             ) ) {
    $params = array();
    $params['environment'] = $environment;
    $params['with_modifying_actions'] = true;

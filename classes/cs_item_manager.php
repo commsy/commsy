@@ -810,7 +810,7 @@ class cs_item_manager extends cs_manager {
       }
       return $result_array;
    }
-   
+
    function getExternalViewerEntriesForUser($user_id) {
       $result_array = array();
       $query = 'SELECT item_id';

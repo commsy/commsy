@@ -293,8 +293,14 @@ class cs_detail_view extends cs_view {
       $current_user = $this->_environment->getCurrentUserItem();
       $annotated_item = $this->getItem();
       $annotated_item_type = $annotated_item->getItemType();
+   	  $item_manager = $this->_environment->getItemManager();
       $html  = '';
-      if ( $item->mayEdit($current_user) and $this->_with_modifying_actions ) {
+      if ( (
+            $item->mayEdit($current_user) or
+            $item_manager->getExternalViewerForItem($annotated_item->getItemID(),$current_user->getUserId())
+         )
+
+         and $this->_with_modifying_actions ) {
          $params = array();
          $params['iid'] = $item->getItemID();
          $params['mode'] = 'annotate';
@@ -318,7 +324,12 @@ class cs_detail_view extends cs_view {
          }
          $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION_NEW',$this->_translator->getMessage('COMMON_EDIT_ITEM')).' "class="disabled">'.$image.'</a>'.LF;
       }
-      if ( $item->mayEdit($current_user)  and $this->_with_modifying_actions ) {
+      if ( (
+         $item->mayEdit($current_user)
+         or
+         $item_manager->getExternalViewerForItem($annotated_item->getItemID(),$current_user->getUserId())
+         )
+         and $this->_with_modifying_actions ) {
          $params = $this->_environment->getCurrentParameterArray();
          if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
             $image = '<img src="images/commsyicons_msie6/22x22/delete.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_DELETE_ITEM').'"/>';
@@ -1403,10 +1414,11 @@ class cs_detail_view extends cs_view {
    function _getDetailPageHeaderAsHTML(){
       $item = $this->getItem();
       $current_user_item = $this->_environment->getCurrentUserItem();
+      $current_context = $this->_environment->getCurrentContextItem();
       $html = '';
       $html .='<div style="width:100%;">'.LF;
       $html .='<div style="height:30px;">'.LF;
-      if ($item->maySee($current_user_item)){
+      if ($item->maySee($current_user_item) and ((!$current_context->isPrivateRoom()) or $current_user_item->getContextID() == $current_context->getItemID())){
          $html .= '<div id="search_box" style="float:right; width:28%; white-space:nowrap; text-align-left; padding-top:5px; margin:0px;">'.LF;
          $html .= $this->_getSearchAsHTML();
          $html .= '</div>'.LF;
@@ -1562,8 +1574,11 @@ class cs_detail_view extends cs_view {
       $detail_box_conf = $current_context->getDetailBoxConf();
 
       $html .= $this->_getDetailPageHeaderAsHTML();
+      if(!(isset($_GET['mode']) and $_GET['mode']=='print') and
 
-      if(!(isset($_GET['mode']) and $_GET['mode']=='print') and $item->maySee($current_user_item)){
+           $item->maySee($current_user_item) and ((!$current_context->isPrivateRoom()) or $current_user_item->getContextID() == $current_context->getItemID())
+
+      ){
          $this->_right_box_config['size_string'] = '';
          $current_context = $this->_environment->getCurrentContextItem();
          $html .='<div style="float:right; font-size:10pt; width:28%; margin-top:5px; vertical-align:top; text-align:left;">'.LF;
@@ -1708,9 +1723,11 @@ class cs_detail_view extends cs_view {
 ############SQL-Statements reduzieren
 
          $html .= $this->_getSubItemsAsHTML($item);
+         $current_user = $this->_environment->getCurrentUser();
          if ( $rubric == CS_DISCUSSION_TYPE
               and !$item->isClosed()
               and $this->_with_modifying_actions
+              and ($current_user->isUser())
             ) {
             $html .= $this->_getDiscussionFormAsHTML();
             $html .= '</div>'.LF;
@@ -1731,11 +1748,14 @@ class cs_detail_view extends cs_view {
            and $rubric != CS_DISCUSSION_TYPE
            and $this->_environment->getCurrentModule() !='account'
          ) {
-         if (!$current_context->isPrivateRoom()){
-            $html .= $this->_getAnnotationsAsHTML();
-            $html .= $this->_getAnnotationFormAsHTML();
-         }
+           $html .= $this->_getAnnotationsAsHTML();
+           $html .= $this->_getAnnotationFormAsHTML();
       }
+      if($rubric == CS_DISCUSSION_TYPE and $current_context->isPrivateRoom()){
+         $html .= $this->_getAnnotationsAsHTML();
+         $html .= $this->_getAnnotationFormAsHTML();
+      }
+
       if($rubric == CS_TOPIC_TYPE){
          $anno_list = $item->getAnnotationList();
          $anno_item = $anno_list->getFirst();
@@ -2900,7 +2920,6 @@ class cs_detail_view extends cs_view {
       $formal_data = array();
       // Modificator
       $modificator = $item->getModificatorItem();
-
       // Calculate number / percentage of users who read this item
       if ( $context->isProjectRoom()
            and !in_array($item->getType(), array(CS_SECTION_TYPE,
@@ -2966,6 +2985,7 @@ class cs_detail_view extends cs_view {
                                      'style="font-size:10pt;"');
          } elseif ( isset($modificator) and !$modificator->isDeleted() ) {
             $temp_html = '<span class="disabled">'.$modificator->getFullname().'</span>';
+
          } elseif ( $item->isA(CS_USER_TYPE)
                     and $item->getUserID() == $modificator->getUserID()
                     and $item->getAuthSource() == $modificator->getAuthSource()
@@ -3002,11 +3022,13 @@ class cs_detail_view extends cs_view {
                     and $item->getAuthSource() == $modificator->getAuthSource()
                   ) {
             $temp_html = $this->_compareWithSearchText($modificator->getFullname());
-         } else {
+         }  else {
             $temp_html = '<span class="disabled">'.$this->_translator->getMessage('COMMON_DELETED_USER').'</span>';
          }
          unset($params);
-      } else {
+      }elseif ( $item->mayExternalSee($this->_environment->getCurrentUserItem())) {
+            $temp_html = $this->_compareWithSearchText($modificator->getFullname());
+      }else {
          if(isset($modificator) and !$modificator->isDeleted()){
             $current_user_item = $this->_environment->getCurrentUserItem();
             if ( $current_user_item->isGuest() or  !$modificator->maySee($user) ) {
@@ -3089,6 +3111,8 @@ class cs_detail_view extends cs_view {
             $temp_html = '<span class="disabled">'.$this->_translator->getMessage('COMMON_DELETED_USER').'</span>';
          }
          unset($params);
+      } elseif ( $item->mayExternalSee($this->_environment->getCurrentUserItem())) {
+            $temp_html = $this->_compareWithSearchText($modificator->getFullname());
       } else {
          if(isset($creator) and !$creator->isDeleted()){
             $current_user_item = $this->_environment->getCurrentUserItem();
@@ -3158,6 +3182,8 @@ class cs_detail_view extends cs_view {
                   $modifier_array[] = '<span class="disabled">'.$this->_translator->getMessage('COMMON_DELETED_USER').'</span>';
                }
                unset($params);
+            } elseif ( $item->mayExternalSee($this->_environment->getCurrentUserItem())) {
+               $modifier_array[] = $this->_compareWithSearchText($modificator->getFullname());
             } else {
                if(isset($modificator) and !$modificator->isDeleted()){
                   $current_user_item = $this->_environment->getCurrentUserItem();

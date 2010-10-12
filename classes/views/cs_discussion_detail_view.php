@@ -1224,6 +1224,9 @@ class cs_discussion_detail_view extends cs_detail_view {
 
 
    function _getSubItemTitleAsHTML ($item, $pos_number) {
+      if ($item->getItemType() == 'annotation'){
+          return  parent::_getSubItemTitleAsHTML ($item, $pos_number);
+      }
       $retour = '';
       if ( !empty($pos_number) ) {
          $retour .= $pos_number.'. ';

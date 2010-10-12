@@ -954,6 +954,26 @@ class cs_authentication {
                }
             } elseif(isset($_GET['iid']) and ($this->_environment->getCurrentFunction() == 'detail') and $this->_isExternalUserAllowedToSee($uid, $_GET['iid'])){
                $value = true;
+            }elseif($this->_environment->getCurrentModule() == 'annotation') {
+            	 $value = false;
+            	 if (($this->_environment->getCurrentFunction() == 'edit') and isset($_GET['ref_iid']) and $this->_isExternalUserAllowedToSee($uid, $_GET['ref_iid'])){
+            	    $value = true;
+            	 }elseif(($this->_environment->getCurrentModule() == 'annotation') and ($this->_environment->getCurrentFunction() == 'edit') and isset($_GET['iid'])){
+                    $annotation_manager = $this->_environment->getAnnotationManager();
+                    $annotation_item = $annotation_manager->getItem($_GET['iid']);
+                    $linked_item = $annotation_item->getLinkedItem();
+                    if ($this->_isExternalUserAllowedToSee($uid, $linked_item->getItemID())){
+                       $value = true;
+                    }
+            	 }elseif(($this->_environment->getCurrentModule() == 'annotation') and ($this->_environment->getCurrentFunction() == 'edit') and isset($_POST['iid'])){
+                    $annotation_manager = $this->_environment->getAnnotationManager();
+                    $annotation_item = $annotation_manager->getItem($_POST['iid']);
+                    $linked_item = $annotation_item->getLinkedItem();
+                    if ($this->_isExternalUserAllowedToSee($uid, $linked_item->getItemID())){
+                       $value = true;
+                    }
+            	 }
+               $value = true;
             }elseif ($context->isOpenForGuests() OR $this->_module_limit == 'agb') {
                $value = true;
             } else {

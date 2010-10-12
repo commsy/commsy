@@ -1409,17 +1409,24 @@ class cs_item {
 
 
    function mayExternalSee($user){
+
    	 $item_manager = $this->_environment->getItemManager();
-   	 return $item_manager->getExternalViewerForItem($this->getItemID(),$user->getUserID());
+   	 $retour = $item_manager->getExternalViewerForItem($this->getItemID(),$user->getUserID());
+   	 if ($retour){
+   	 	return true;
+   	 }else{
+   	 	return false;
+   	 }
    }
 
 
    function maySee ($user_item) {
+      $current_context = $this->_environment->getCurrentContextItem();
       if ( $user_item->isRoot()
            or ( $user_item->getContextID() == $this->_environment->getCurrentContextID()
                 and $user_item->isUser()
               )
-           or $user_item->isGuest()
+           or ($user_item->isGuest())
          ) {
          $access = true;
       } else {

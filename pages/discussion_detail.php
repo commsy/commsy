@@ -229,6 +229,35 @@ if ($type != CS_DISCUSSION_TYPE) {
          }
       }
       $detail_view->setRubricConnections($rubric_connections);
+
+      if ( $context_item->isPrivateRoom() ) {
+         // add annotations to detail view
+         $annotations = $discussion_item->getAnnotationList();
+         $reader_manager = $environment->getReaderManager();
+         $noticed_manager = $environment->getNoticedManager();
+         $annotation = $annotations->getFirst();
+         $id_array = array();
+         while($annotation){
+            $id_array[] = $annotation->getItemID();
+            $annotation = $annotations->getNext();
+         }
+         $reader_manager->getLatestReaderByIDArray($id_array);
+         $noticed_manager->getLatestNoticedByIDArray($id_array);
+         $annotation = $annotations->getFirst();
+         while($annotation ){
+            $reader = $reader_manager->getLatestReader($annotation->getItemID());
+            if ( empty($reader) or $reader['read_date'] < $annotation->getModificationDate() ) {
+               $reader_manager->markRead($annotation->getItemID(),0);
+            }
+            $noticed = $noticed_manager->getLatestNoticed($annotation->getItemID());
+            if ( empty($noticed) or $noticed['read_date'] < $annotation->getModificationDate() ) {
+               $noticed_manager->markNoticed($annotation->getItemID(),0);
+            }
+            $annotation = $annotations->getNext();
+         }
+         $detail_view->setAnnotationList($annotations);
+      }
+
       if ( $context_item->withRubric(CS_MATERIAL_TYPE) ) {
          $detail_view->setSubItemRubricConnections(array(CS_MATERIAL_TYPE));
       }

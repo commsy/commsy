@@ -298,6 +298,13 @@ else {
                   $discussion_item->setPrivateEditing('1');
                }
             }
+            if ( isset($_POST['external_viewer']) and isset($_POST['external_viewer_accounts']) ) {
+               $user_ids = explode(" ",$_POST['external_viewer_accounts']);
+               $discussion_item->setExternalViewerAccounts($user_ids);
+            }else{
+               $discussion_item->unsetExternalViewerAccounts();
+            }
+
             if ( isset($_POST['hide']) ) {
                 // variables for datetime-format of end and beginning
                 $dt_hiding_time = '00:00:00';
@@ -398,7 +405,7 @@ else {
                $mylist_item->saveLinksByIDArray($id_array);
             }
             $session->unsetValue('cid'.$environment->getCurrentContextID().'_linked_items_mylist_id');
-            
+
             // Redirect
             cleanup_session($current_iid);
             $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_buzzword_ids');
