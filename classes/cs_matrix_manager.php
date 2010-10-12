@@ -290,7 +290,8 @@ class cs_matrix_manager extends cs_labels_manager {
   }
 
    public function insertItem ( $item_id, $column_id, $row_id ) {
-      $retour = 0;
+      //$retour = 0;
+      $retour = $this->getEntriesInPosition($column_id,$row_id);
       if ( !empty($item_id)
            and $item_id > 99
            and !empty($column_id)
