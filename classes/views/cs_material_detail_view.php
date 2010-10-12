@@ -154,6 +154,8 @@ class cs_material_detail_view extends cs_detail_view {
 
       // wiki
       $html .= $this->_getWikiAction($item,$current_user,$current_context);
+      // wordpress
+      $html .= $this->_getWordpressAction($item,$current_user,$current_context);
 
       return $html;
    }
@@ -637,6 +639,14 @@ class cs_material_detail_view extends cs_detail_view {
 	         $temp_array = array();
 	         $temp_array[] = $this->_translator->getMessage('MATERIAL_EXPORT_TO_WIKI_LINK');
 	         $temp_array[] = $item->getExportToWikiLink();
+	         $formal_data1[] = $temp_array;
+	      }
+      }
+     if($context_item->isWordpressActive()){
+         if ($item->isExportToWordpress()) {
+	         $temp_array = array();
+	         $temp_array[] = $this->_translator->getMessage('MATERIAL_EXPORT_TO_WORDPRESS_LINK');
+	         $temp_array[] = $item->getExportToWordpressLink();
 	         $formal_data1[] = $temp_array;
 	      }
       }

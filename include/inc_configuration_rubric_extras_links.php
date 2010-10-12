@@ -73,6 +73,29 @@ $translator = $environment->getTranslationObject();
       $configuration_rubric_extras_link_list->add($link_item);
    }
 
+   #########################################
+   # Wordpress - Raum-Wordpress
+   #########################################
+   $context_item = $environment->getCurrentContextItem();
+   if ( $context_item->withWordpressFunctions() and !$context_item->isServer() ) {
+      $link_item = new cs_link();
+      $link_item->setTitle($translator->getMessage('WORDPRESS_CONFIGURATION_LINK'));
+      if(($environment->getCurrentBrowser() == 'MSIE') && (mb_substr($environment->getCurrentBrowserVersion(),0,1) == '6')){
+         $link_item->setIconPath('images/commsyicons_msie6/48x48/config/wordpress.gif');
+         $link_item->setIconPathForNavigation('images/commsyicons_msie6/22x22/config/wordpress.gif');
+      } else {
+         $link_item->setIconPath('images/commsyicons/48x48/config/wordpress.png');
+         $link_item->setIconPathForNavigation('images/commsyicons/22x22/config/wordpress.png');
+      }
+      $link_item->setDescription($translator->getMessage('WORDPRESS_CONFIGURATION_DESC'));
+      $link_item->setContextID($environment->getCurrentContextID());
+      $link_item->setModule('configuration');
+      $link_item->setFunction('wordpress');
+      $link_item->setParameter(array('iid' => $environment->getCurrentContextID()));
+      $configuration_rubric_extras_link_list->add($link_item);
+   }
+   
+   
    ############################################
    # Chat
    ############################################
@@ -124,60 +147,41 @@ $translator = $environment->getTranslationObject();
       $configuration_rubric_extras_link_list->add($link_item);
    }
 
-   $show_option = true;
-   if ( $environment->inPrivateRoom() ) {
-      $new_private_room = $environment->inConfigArray('c_use_new_private_room',$environment->getCurrentContextID());
-      if ( isset($new_private_room) and $new_private_room ) {
-         $show_option = false;
-      }
+   $link_item = new cs_link();
+   $link_item->setTitle($translator->getMessage('CONFIGURATION_RUBRIC_EXTRAS_TITLE'));
+   $current_context = $environment->getCurrentContextItem();
+   if(($environment->getCurrentBrowser() == 'MSIE') && (mb_substr($environment->getCurrentBrowserVersion(),0,1) == '6')){
+      $link_item->setIconPath('images/commsyicons_msie6/48x48/config/rubric_extras.gif');
+      $link_item->setIconPathForNavigation('images/commsyicons_msie6/22x22/config/rubric_extras.gif');
+   } else {
+      $link_item->setIconPath('images/commsyicons/48x48/config/rubric_extras.png');
+      $link_item->setIconPathForNavigation('images/commsyicons/22x22/config/rubric_extras.png');
    }
-   if ($show_option) {
-      $link_item = new cs_link();
-      $link_item->setTitle($translator->getMessage('CONFIGURATION_RUBRIC_EXTRAS_TITLE'));
-      $current_context = $environment->getCurrentContextItem();
-      if(($environment->getCurrentBrowser() == 'MSIE') && (mb_substr($environment->getCurrentBrowserVersion(),0,1) == '6')){
-         $link_item->setIconPath('images/commsyicons_msie6/48x48/config/rubric_extras.gif');
-         $link_item->setIconPathForNavigation('images/commsyicons_msie6/22x22/config/rubric_extras.gif');
-      } else {
-         $link_item->setIconPath('images/commsyicons/48x48/config/rubric_extras.png');
-         $link_item->setIconPathForNavigation('images/commsyicons/22x22/config/rubric_extras.png');
-      }
-      $link_item->setDescription($translator->getMessage('CONFIGURATION_RUBRIC_EXTRAS_DESC'));
-      $link_item->setContextID($environment->getCurrentContextID());
-      $link_item->setModule('configuration');
-      $link_item->setFunction('rubric_extras');
-      $link_item->setParameter(array());
-      $configuration_rubric_extras_link_list->add($link_item);
-   }
-   unset($show_option);
+   $link_item->setDescription($translator->getMessage('CONFIGURATION_RUBRIC_EXTRAS_DESC'));
+   $link_item->setContextID($environment->getCurrentContextID());
+   $link_item->setModule('configuration');
+   $link_item->setFunction('rubric_extras');
+   $link_item->setParameter(array());
+   $configuration_rubric_extras_link_list->add($link_item);
 
-   $show_option = true;
-   if ( $environment->inPrivateRoom() ) {
-      $new_private_room = $environment->getConfiguration('c_use_new_private_room');
-      if ( isset($new_private_room) and $new_private_room ) {
-         $show_option = false;
-      }
+   $context_item = $environment->getCurrentContextItem();
+   $link_item = new cs_link();
+   $link_item->setTitle($translator->getMessage('CONFIGURATION_SERVICE_LINK'));
+   if ( ( $environment->getCurrentBrowser() == 'MSIE' )
+        and ( mb_substr($environment->getCurrentBrowserVersion(),0,1) == '6' )
+      ) {
+      $link_item->setIconPath('images/commsyicons_msie6/48x48/config/service.gif');
+      $link_item->setIconPathForNavigation('images/commsyicons_msie6/22x22/config/service.gif');
+   } else {
+      $link_item->setIconPath('images/commsyicons/48x48/config/service.png');
+      $link_item->setIconPathForNavigation('images/commsyicons/22x22/config/service.png');
    }
-   if ($show_option) {
-      $context_item = $environment->getCurrentContextItem();
-      $link_item = new cs_link();
-      $link_item->setTitle($translator->getMessage('CONFIGURATION_SERVICE_LINK'));
-      if ( ( $environment->getCurrentBrowser() == 'MSIE' )
-           and ( mb_substr($environment->getCurrentBrowserVersion(),0,1) == '6' )
-         ) {
-         $link_item->setIconPath('images/commsyicons_msie6/48x48/config/service.gif');
-         $link_item->setIconPathForNavigation('images/commsyicons_msie6/22x22/config/service.gif');
-      } else {
-         $link_item->setIconPath('images/commsyicons/48x48/config/service.png');
-         $link_item->setIconPathForNavigation('images/commsyicons/22x22/config/service.png');
-      }
-      $link_item->setDescription($translator->getMessage('CONFIGURATION_SERVICE_DESC'));
-      $link_item->setContextID($environment->getCurrentContextID());
-      $link_item->setModule('configuration');
-      $link_item->setFunction('service');
-      #$link_item->setParameter(array('iid' => $environment->getCurrentContextID()));
-      $configuration_rubric_extras_link_list->add($link_item);
-   }
+   $link_item->setDescription($translator->getMessage('CONFIGURATION_SERVICE_DESC'));
+   $link_item->setContextID($environment->getCurrentContextID());
+   $link_item->setModule('configuration');
+   $link_item->setFunction('service');
+   #$link_item->setParameter(array('iid' => $environment->getCurrentContextID()));
+   $configuration_rubric_extras_link_list->add($link_item);
 
 #############################################
 # plugins - active and deactivate plugins

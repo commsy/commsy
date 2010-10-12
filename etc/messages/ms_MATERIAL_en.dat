@@ -55,6 +55,8 @@ You can view the published version in the room-wiki at:<br/>
 <br/>
 %4";
 $message["MATERIAL_EXPORT_WIKI_MAIL_SUBJECT"]["en"] = "Material-export to wiki";
+$message["MATERIAL_EXPORT_TO_WORDPRESS_LINK"]["en"] = "Page in wordpress";
+$message["MATERIAL_EXPORT_WORDPRESS_MAIL_SUBJECT"]["en"] = "Material-export to wordpress";
 $message["MATERIAL_EXPORT_ZIP"]["en"] = "Materials";
 $message["MATERIAL_FACULTY"]["en"] = "Faculty";
 $message["MATERIAL_FACULTY_DESC"]["en"] = "/Faculty of Informatics/";

@@ -1403,6 +1403,15 @@ class cs_environment {
    function getWikiManager() {
       return $this->_getInstance('cs_wiki_manager');
    }
+   
+	/** get instance of cs_wordpress_manager
+   *
+   * @return cs_wordpress_manager
+   * @access public
+   */
+   function getWordpressManager() {
+      return $this->_getInstance('cs_wordpress_manager');
+   }
 
   /** get instance of cs_homepagelink_manager
    *
@@ -1921,9 +1930,8 @@ class cs_environment {
       global $_SERVER;
 
       $browser = array ( //reversed array
-      //   "IPAD",
-		//	"IPHONE",
-		 	"OPERA",
+         "IPHONE",
+		 "OPERA",
          "MSIE",            // parent
          "NETSCAPE",
          "FIREFOX",
@@ -1947,18 +1955,11 @@ class cs_environment {
             break; // first match wins
          }
       }
-      // IPHONE Textarea without FCK-/ CK-Editor
-//      if($this->_browser == 'IPHONE' OR $this->_browser == 'IPAD'){
-//      	$currentContextItem = $this->getCurrentContextItem();
-//      	if($currentContextItem->isPluginOn('ckeditor')){
-//      		$currentContextItem->setPluginOff('ckeditor');
-//      	}
-//      	if($currentContextItem->withHtmlTextArea()){
-//      		$currentContextItem->setHtmlTextAreaStatus(3);
-//      	}
-//      	unset($currentContextItem);
-//      }
-	$this->getCurrentOperatingSystem();
+      if($this->_browser == 'IPHONE'){
+      	// IPHONE Textarea without FCK-/ CK-Editor
+      	$currentContextItem = $this->getCurrentContextItem();
+      	$currentContextItem->setHtmlTextAreaStatus(3);
+      }
    }
 
    function getCurrentOperatingSystem () {
@@ -1991,30 +1992,6 @@ class cs_environment {
       }
       if ( $os == 'UNKNOWN' and (mb_strpos($HTTP_USER_AGENT, "Macintosh") || mb_strpos($HTTP_USER_AGENT, "Mac_PowerPC")) ) {
          $os = "Mac OS";
-      }
-      if ( $os == 'UNKNOWN' and (mb_strpos($HTTP_USER_AGENT, "iPhone") || mb_strpos($HTTP_USER_AGENT, "Mac_PowerPC")) ) {
-         $os = "iPhone";
-         // iPhone Textarea without FCK-/ CK-Editor
-         $currentContextItem = $this->getCurrentContextItem();
-      	if($currentContextItem->isPluginOn('ckeditor')){
-      		$currentContextItem->setPluginOff('ckeditor');
-      	}
-      	if($currentContextItem->withHtmlTextArea()){
-      		$currentContextItem->setHtmlTextAreaStatus(3);
-      	}
-      	unset($currentContextItem);
-      }
-      if ( $os == 'UNKNOWN' and (mb_strpos($HTTP_USER_AGENT, "iPad") || mb_strpos($HTTP_USER_AGENT, "Mac_PowerPC")) ) {
-         $os = "iPad";
-         // iPad Textarea without FCK-/ CK-Editor
-         $currentContextItem = $this->getCurrentContextItem();
-      	if($currentContextItem->isPluginOn('ckeditor')){
-      		$currentContextItem->setPluginOff('ckeditor');
-      	}
-      	if($currentContextItem->withHtmlTextArea()){
-      		$currentContextItem->setHtmlTextAreaStatus(3);
-      	}
-      	unset($currentContextItem);
       }
       return $os;
    }
@@ -2243,19 +2220,6 @@ class cs_environment {
          ) {
          $retour = true;
       }
-      if($config_array_name == 'c_use_new_private_room'){
-         $room_manager = $this->getPrivateRoomManager();
-         $context_id = $room_manager->getContextIDForItemID($this->getCurrentContextID());
-         if (!is_array($$config_array_name)){
-            if($$config_array_name == true){
-         	   $retour = true;
-            }
-         }
-         elseif(is_array($$config_array_name) and in_array($context_id,$$config_array_name)){
-            $retour = true;
-         }
-      }
-
       return $retour;
    }
 

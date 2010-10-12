@@ -47,6 +47,7 @@ include_once('include/inc_delete_entry.php');
 
 // Get the translator object
 $translator = $environment->getTranslationObject();
+
 if ($type != CS_MATERIAL_TYPE) {
    $params = array();
    $params['environment'] = $environment;
@@ -89,7 +90,7 @@ if ($type != CS_MATERIAL_TYPE) {
       unset($params);
       $errorbox->setText($translator->getMessage('ACCESS_NOT_GRANTED'));
       $page->add($errorbox);
-   } elseif ( !$material_item->maySee($current_user) and !$material_item->mayExternalSee($current_user)) {
+   } elseif ( !$material_item->maySee($current_user) ) {
       $params = array();
       $params['environment'] = $environment;
       $params['with_modifying_actions'] = true;
@@ -122,6 +123,18 @@ if ($type != CS_MATERIAL_TYPE) {
          unset($params['remove_from_wiki']);
          redirect($environment->getCurrentContextID(),'material', 'detail', $params);
       }
+      
+     if(isset($_GET['export_to_wordpress'])){
+         $wordpress_manager = $environment->getWordpressManager();
+
+         $wordpress_manager->exportItemToWordpress($current_item_iid,CS_MATERIAL_TYPE);
+         $params = $environment->getCurrentParameterArray();
+         unset($params['export_to_wordpress']);
+         redirect($environment->getCurrentContextID(),'material', 'detail', $params);
+      }
+
+      
+      
 
       // Get clipboard
       if ( $session->issetValue('material_clipboard') ) {

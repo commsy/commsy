@@ -597,7 +597,6 @@ function isURLValid () {
    } else {
       $funct = 'index';
    }
-
    if (
         // context
         $module != 'context' and
@@ -743,6 +742,7 @@ function isURLValid () {
          $funct != 'defaults' and
          $funct != 'upload' and
          $funct != 'wiki' and
+         $funct != 'wordpress' and
          $funct != 'path' and
          $funct != 'tags' and
          $funct != 'ims_import' and
@@ -771,7 +771,6 @@ function isURLValid () {
          $funct != 'archive' and
          $funct != 'grouproom' and
          $funct != 'portalhome' and
-         $funct != 'portalupload' and
          $funct != 'scribd' and
 
          $funct != 'account_options' and
@@ -840,21 +839,8 @@ function isURLValid () {
 
          // ajax
          $funct != 'privateroom_home' and
-         $funct != 'privateroom_home_configuration' and
-         $funct != 'privateroom_home_portlet_configuration' and
-         $funct != 'privateroom_myroom_configuration' and
-         $funct != 'privateroom_my_entries_configuration' and
          $funct != 'privateroom_entry' and
-         $funct != 'privateroom_myroom' and
-         $funct != 'privateroom_myentries' and
-         $funct != 'privateroom_matrix_configuration' and
-         $funct != 'privateroom_buzzword_configuration' and
-         $funct != 'privateroom_mycalendar_configuration' and
-         $funct != 'privateroom_mycalendar' and
-         $funct != 'privateroom_roomwide_search' and
-         $funct != 'ckeditor_image_upload' and
-         $funct != 'ckeditor_image_browse' and
-         $funct != 'uploadify'
+         $funct != 'privateroom_myroom'
        ) {
        return false;
     }

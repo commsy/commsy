@@ -62,8 +62,6 @@ class cs_item {
    var $_filelist_changed_empty = false;
    var $_cache_on = true;
 
-   var $_external_viewer_user_array = NULL;
-
   /**
    * boolean - if true the modification_date will be updated - else not
    */
@@ -1054,33 +1052,6 @@ class cs_item {
          }
          $saved = $manager->saveItem($this);
       }
-      if (isset($this->_external_viewer_user_array)){
-         $item_manager = $this->_environment->getItemManager();
-         $user_id_string = $item_manager->getExternalViewerUserStringForItem($this->getItemID());
-         $user_id_array = array();
-         if (!empty($user_id_string)){
-            $user_id_array = explode(" ",$user_id_string);
-         }
-         foreach ($this->_external_viewer_user_array as $user_id){
-            if (!in_array($user_id,$user_id_array)){
-               $item_manager->setExternalViewerEntry($this->getItemID(),$user_id);
-            }
-         }
-         foreach($user_id_array as $user_id){
-            if (!in_array($user_id,$this->_external_viewer_user_array)){
-               $item_manager->deleteExternalViewerEntry($this->getItemID(),$user_id);
-            }
-         }
-      }else{
-         $item_manager = $this->_environment->getItemManager();
-         $retour = $item_manager->getExternalViewerUserStringForItem($this->getItemID());
-      	if (!empty($retour)){
-      	   $user_id_array = explode(" ",$retour);
-            foreach ($user_id_array as $user_id){
-               $item_manager->deleteExternalViewerEntry($this->getItemID(),$user_id);
-            }
-      	}
-      }
       foreach ($this->_changed as $changed_key => $is_changed) {
          if ($is_changed) {
             if ($changed_key != 'general' and $changed_key !='section_for' and $changed_key !='task_item' and $changed_key !='copy_of') {
@@ -1407,13 +1378,6 @@ class cs_item {
       }
    }
 
-
-   function mayExternalSee($user){
-   	 $item_manager = $this->_environment->getItemManager();
-   	 return $item_manager->getExternalViewerForItem($this->getItemID(),$user->getUserID());
-   }
-
-
    function maySee ($user_item) {
       if ( $user_item->isRoot()
            or ( $user_item->getContextID() == $this->_environment->getCurrentContextID()
@@ -1463,44 +1427,11 @@ class cs_item {
 
       $context_item = $this->_environment->getCurrentContextItem();
       $conf = $context_item->getHomeConf();
-
-      // translation of entry to rubrics for new private room
-      if ( $this->_environment->inPrivateRoom()
-           and mb_stristr($conf,CS_ENTRY_TYPE)
-         ) {
-         $temp_array = array();
-         $temp_array2 = array();
-         $temp_array3 = array();
-         $rubric_array2 = array();
-         $temp_array[] = CS_ANNOUNCEMENT_TYPE;
-         $temp_array[] = CS_TODO_TYPE;
-         $temp_array[] = CS_DISCUSSION_TYPE;
-         $temp_array[] = CS_MATERIAL_TYPE;
-         $temp_array[] = CS_DATE_TYPE;
-         foreach ( $temp_array as $temp_rubric ) {
-            if ( !mb_stristr($conf,$temp_rubric) ) {
-               $temp_array2[] = $temp_rubric;
-               $temp_array3[] = $temp_rubric.'_nodisplay';
-            }
-         }
-         $rubric_array = explode(',',$conf);
-         foreach ( $rubric_array as $temp_rubric ) {
-            if ( !mb_stristr($temp_rubric,CS_ENTRY_TYPE) ) {
-               $rubric_array2[] = $temp_rubric;
-            } else {
-               $rubric_array2 = array_merge($rubric_array2,$temp_array3);
-            }
-         }
-         $conf = implode(',',$rubric_array2);
-         unset($rubric_array2);
-      }
-
       if ( !empty($conf) ) {
          $rubrics = explode(',', $conf);
       } else {
          $rubrics = array();
       }
-
       $type_array = array();
       foreach ( $rubrics as $rubric ) {
          $rubric_array = explode('_', $rubric);
@@ -1522,7 +1453,6 @@ class cs_item {
 
 
    function getLinkItemList ($type) {
-      $context_limit =
       $link_list = new cs_list();
       $link_item_manager = $this->_environment->getLinkItemManager();
       $link_item_manager->setLinkedItemLimit($this);
@@ -1543,15 +1473,10 @@ class cs_item {
             )
          ) {
          $link_item_manager->setRoomLimit($this->getContextID());
-      } elseif ( $this->isA(CS_LABEL_TYPE)
-                 and $this->getLabelType() == CS_GROUP_TYPE
-               ) {
+      } elseif ( $this->isA(CS_LABEL_TYPE) and $this->getLabelType() == CS_GROUP_TYPE ) {
          // müsste dies nicht für alle Fälle gelten ???
          $link_item_manager->setRoomLimit($this->getContextID());
-      } elseif ( $this->isA(CS_USER_TYPE)
-                 or $this->isA(CS_DATE_TYPE)
-                 or $this->isA(CS_TODO_TYPE)
-               ) {
+      } elseif ( $this->isA(CS_USER_TYPE) ) {
          $link_item_manager->setRoomLimit($this->getContextID());
       } else {
          $link_item_manager->setRoomLimit($this->_environment->getCurrentContextID() );
@@ -1681,34 +1606,6 @@ class cs_item {
          unset($rubric_sorted_array[CS_USER_TYPE]);
       }
       */
-
-      // translation of entry to rubrics for new private room
-      if ( $this->_environment->inPrivateRoom()
-           and in_array(CS_ENTRY_TYPE,$rubric_array)
-         ) {
-         $temp_array = array();
-         $temp_array2 = array();
-         $rubric_array2 = array();
-         $temp_array[] = CS_ANNOUNCEMENT_TYPE;
-         $temp_array[] = CS_TODO_TYPE;
-         $temp_array[] = CS_DISCUSSION_TYPE;
-         $temp_array[] = CS_MATERIAL_TYPE;
-         $temp_array[] = CS_DATE_TYPE;
-         foreach ( $temp_array as $temp_rubric ) {
-            if ( !in_array($temp_rubric,$rubric_array) ) {
-               $temp_array2[] = $temp_rubric;
-            }
-         }
-         foreach ( $rubric_array as $temp_rubric ) {
-            if ( $temp_rubric != CS_ENTRY_TYPE ) {
-               $rubric_array2[] = $temp_rubric;
-            } else {
-               $rubric_array2 = array_merge($rubric_array2,$temp_array2);
-            }
-         }
-         $rubric_array = $rubric_array2;
-         unset($rubric_array2);
-      }
 
       foreach($rubric_array as $rubric){
          if ($rubric !=CS_USER_TYPE  or
@@ -2061,27 +1958,6 @@ class cs_item {
       return $institution_list;
    }
 
-
-   function setExternalViewerAccounts($user_id_array) {
-       $this->_external_viewer_user_array = $user_id_array;
-   }
-   function unsetExternalViewerAccounts() {
-       $this->_external_viewer_user_array = NULL;
-   }
-   function issetExternalViewerStatus(){
-      $retour = false;
-      $user_string = $this->getExternalViewerString();
-      if (!empty($user_string)){
-      	$retour = true;
-      }
-      return $retour;
-   }
-   function getExternalViewerString(){
-      $item_manager = $this->_environment->getItemManager();
-      $retour = $item_manager->getExternalViewerUserStringForItem($this->getItemID());
-      return $retour;
-   }
-
    function setInstitutionListByID ($value) {
       $this->setLinkedItemsByID (CS_INSTITUTION_TYPE, $value);
    }
@@ -2146,7 +2022,28 @@ class cs_item {
    //------------------------------------------
 
 
-
+//------------------------------------------
+   //------------- Wordpressexport -------------
+   function setExportToWordpress($value) {
+      $this->_addExtra('EXPORT_TO_WORDPRESS', (string)$value);
+   }
+   function getExportToWordpress() {
+      return (string) $this->_getExtra('EXPORT_TO_WORDPRESS');
+   }
+   function isExportToWordpress() {
+      if($this->getExportToWordpress() == '1'){
+         $wordpress_manager = $this->_environment->getWordpressManager();
+         return $wordpress_manager->existsItemToWordpress($this->getItemID());
+      } else {
+         return false;
+      }
+   }
+   function getExportToWordpressLink(){
+      $wiki_manager = $this->_environment->getWordpressManager();
+      return $wiki_manager->getExportToWordpressLink($this->getItemID());
+   }
+   //------------- Wordpressexport -------------
+   //------------------------------------------
 
    public function getDataAsXMLForFlash () {
       $type = $this->getType();

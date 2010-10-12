@@ -1,0 +1,6 @@
+<?php
+$message["WORDPRESS_CONFIGURATION_DESC"]["de"] = "Einstellungen für das angebundene Wordpress.";
+$message["WORDPRESS_CONFIGURATION_LINK"]["de"] = "Raum-Wordpress";
+$message["WORDPRESS_CONFIGURATION_SECTION_EDIT"]["de"] = "SectionEdit<br/>(Erweiterung)";
+$message["WORDPRESS_CONFIGURATION_SECTION_EDIT_VALUE"]["de"] = "Abschnittsfunktionen aktivieren.";
+?>

@@ -41,10 +41,6 @@ $message["CONFIGURATION_AUTHENTICATION_PATH"]["de"] = "Pfad";
 $message["CONFIGURATION_AUTHENTICATION_PATH_DESC"]["de"] = "/pfad/zu/cas/login";
 $message["CONFIGURATION_AUTHENTICATION_PORT"]["de"] = "Port";
 $message["CONFIGURATION_AUTHENTICATION_PW"]["de"] = "Passwort";
-$message["CONFIGURATION_AUTHENTICATION_PW_BIGCHAR"]["de"] = "Großbuchstaben";
-$message["CONFIGURATION_AUTHENTICATION_PW_CONTROL"]["de"] = "Passwortkontrolle";
-$message["CONFIGURATION_AUTHENTICATION_PW_LENGTH"]["de"] = "Passwortlänge";
-$message["CONFIGURATION_AUTHENTICATION_PW_SPECIALCHAR"]["de"] = "Sonderzeichen";
 $message["CONFIGURATION_AUTHENTICATION_TYPO3_ENCRYPTION"]["de"] = "Verschlüsselung";
 $message["CONFIGURATION_AUTHENTICATION_TYPO3_MD5"]["de"] = "MD5";
 $message["CONFIGURATION_AUTHENTICATION_USER"]["de"] = "Benutzername";
@@ -114,7 +110,6 @@ einbarungen";
 $message["CONFIGURATION_DATES"]["de"] = "Voreinstellung";
 $message["CONFIGURATION_DATES_CHANGE"]["de"] = "Termindarstellung";
 $message["CONFIGURATION_DATES_DESC"]["de"] = "Wählen Sie zwischen der Listendarstellung (Option 1), dem Terminkalender in der Wochenansicht (Option 2) oder dem Terminkalender in der Monatsansicht (Option 3) als voreingestellte Darstellung der Termine in diesem Raum.";
-$message["CONFIGURATION_DATES_DESC2"]["de"] = "Wählen Sie beim Terminkalender zwischen der Wochenansicht (Option 1) oder der Monatsansicht (Option 2) als voreingestellte Darstellung.";
 $message["CONFIGURATION_DATES_DESC_0"]["de"] = "als Liste";
 $message["CONFIGURATION_DATES_DESC_1"]["de"] = "als Kalender";
 $message["CONFIGURATION_DATES_PRESENTATION_CALENDAR"]["de"] = "Monatsansicht";
@@ -126,8 +121,6 @@ $message["CONFIGURATION_DISCUSSION_DESC_1"]["de"] = "Lineare Darstellung";
 $message["CONFIGURATION_DISCUSSION_DESC_2"]["de"] = "Verzweigte Darstellung (Threaded)";
 $message["CONFIGURATION_DISCUSSION_DESC_3"]["de"] = "Beide Darstellungen";
 $message["CONFIGURATION_DISCUSSION_WARNING"]["de"] = "Wählen Sie zwischen linearen (Option 1) und verzweigten Diskussionen (Option 2). Das Aktivieren beider Darstellungen wird nicht empfohlen, da es auf Grund der unterschiedlichen Handhabungen der beiden Diskussionsarten zu Irritation bei den Benutzern führen kann.";
-$message["CONFIGURATION_ERROR_PORTAL_URL"]["de"] = "Die URL %1 ist bereits vergeben. Sie wird schon vom Portal %2 auf diesem Server verwendet.";
-$message["CONFIGURATION_ERROR_SERVER_URL"]["de"] = "Die URL %1 ist bereits vergeben. Sie wird schon vom CommSy-Server (Portalübersicht) verwendet.";
 $message["CONFIGURATION_ERROR_TIME_SPREAD_LONG"]["de"] = "Es dürfen nur Tage bis zu einem Jahr (= 365 Tage) gewählt werden.";
 $message["CONFIGURATION_EXTRA_ACTIVATING_CONTENT"]["de"] = "Einträge freischalten";
 $message["CONFIGURATION_EXTRA_ACTIVATING_CONTENT_DESC"]["de"] = "Durch Eingabe eines Datum können Einträge bis zu dem Zeitpunkt verborgen werden. Sie sind zwar in der Liste sichtbar, jedoch nicht zugreifbar.";
@@ -150,9 +143,10 @@ $message["CONFIGURATION_EXTRA_PDA_DESC"]["de"] = "Mit dieser Option lassen sich 
 $message["CONFIGURATION_EXTRA_SPONSORING"]["de"] = "Sponsoring / Werbung";
 $message["CONFIGURATION_EXTRA_SPONSORING_DESC"]["de"] = "Die Auswahl des Extras Sponsoring bedeutet, dass in diesem Raum Sponsoren konfiguriert (eingestellt) werden können und dass die Sponsoreneinstellungen aus dem übergeordneten Raum nicht übernommen werden.";
 $message["CONFIGURATION_EXTRA_WIKI"]["de"] = "Raum-Wiki";
-$message["CONFIGURATION_EXTRA_WIKI_DESC"]["de"] = "Mit dieser Einstellung wird die Anbindung an ein externes Wiki (pmWiki) ermöglicht, das sich aus einem Raum heraus einrichten lässt.
+$message["CONFIGURATION_EXTRA_WIKI_DESC"]["de"] = "Mit dieser Einstellung wird die Anbindung an ein externes Wiki (pmWiki) ermöglicht, das sich aus einem Raum heraus einrichten lässt. Wird die Funktion für das Portal aktiviert, steht sie automatisch in allen Räumen bereit.";
+$message["CONFIGURATION_EXTRA_WORDPRESS"]["de"] = "Raum-Wordpress";
+$message["CONFIGURATION_EXTRA_WORDPRESS_DESC"]["de"] = "Mit dieser Einstellung wird die Anbindung an ein externes Wordpress ermöglicht, das sich aus einem Raum heraus einrichten lässt. Wird die Funktion für das Portal aktiviert, steht sie automatisch in allen Räumen bereit.";
 
-Wird die Funktion für das Portal aktiviert, steht sie automatisch in allen Räumen bereit.";
 $message["CONFIGURATION_GROUPROOM_LINK"]["de"] = "Gruppenräume";
 $message["CONFIGURATION_GROUPROOM_LINK_DESC"]["de"] = "Aktivieren oder deaktivieren Sie hier die Möglichkeit, Gruppen- räume einrichten zu können.";
 $message["CONFIGURATION_HOME_STATUS"]["de"] = "Art der Darstellung";
@@ -196,15 +190,6 @@ $message["CONFIGURATION_PLUGIN_HOMEPAGE"]["de"] = "Homepage";
 $message["CONFIGURATION_PLUGIN_LINK"]["de"] = "Plugins";
 $message["CONFIGURATION_PORTAL_HOME"]["de"] = "Gestaltung der Portalstartseite";
 $message["CONFIGURATION_PORTAL_HOME_DESC"]["de"] = "Hier können Sie die Darstellung der Portalstartseite bearbeiten.";
-$message["CONFIGURATION_PORTAL_UPLOAD"]["de"] = "Dateiupload";
-$message["CONFIGURATION_PORTAL_UPLOAD_DESC"]["de"] = "Konfigurieren Sie den Dateiupload und legen Sie eine maximale Dateigröße fest.";
-$message["CONFIGURATION_PORTAL_UPLOAD_INPUT_DESC"]["de"] = "(Eingabe in MB(z.B.: 5m), KB(z.B.: 512k) oder direkt in Bytes)";
-$message["CONFIGURATION_PORTAL_UPLOAD_PVALUE"]["de"] = "Portalwert";
-$message["CONFIGURATION_PORTAL_UPLOAD_PVALUE_DESC"]["de"] = "Die maximale Dateigröße wird durch folgenden Wert portalweit eingeschränkt.";
-$message["CONFIGURATION_PORTAL_UPLOAD_PVALUE_THRESHOLD"]["de"] = "Grenzwert";
-$message["CONFIGURATION_PORTAL_UPLOAD_ROOM_SELECT"]["de"] = "Raumauswahl";
-$message["CONFIGURATION_PORTAL_UPLOAD_RVALUE_DESC"]["de"] = "Zusätlich zum eingestellten Portalwert kann ein Limit für jeden Raum festgelegt werden. Dieser Wert bindet stärker, als der Portalwert.";
-$message["CONFIGURATION_PORTAL_UPLOAD_RVALUE_THRESHOLD"]["de"] = "Raumlimit";
 $message["CONFIGURATION_PRESELECT_COMMUNITY_ROOMS"]["de"] = "Vorauswahl der %_COMMUNITY_SUB_NOMPL_BIG in der Liste aller Räume";
 $message["CONFIGURATION_PRESELECT_MY_ROOMS"]["de"] = "meine Räume (sofern der Nutzende eingeloggt ist)";
 $message["CONFIGURATION_PRIVATEROOM_HOME_DAILY"]["de"] = "Tag";
@@ -232,7 +217,6 @@ $message["CONFIGURATION_ROOM_OPENING_LINK"]["de"] = "Raumeröffnungen";
 $message["CONFIGURATION_ROOM_OPENING_LINK_DESC"]["de"] = "Geben Sie an, unter welchen Bedingungen wer welche Räume eröffnen darf.";
 $message["CONFIGURATION_ROOM_OPTIONS_DESC"]["de"] = "Stellen Sie z.B. <span class=&quot;bold&quot;>Raumname</span>, <span class=&quot;bold&quot;>Logo</span>, <span class=&quot;bold&quot;>Farbschema</span> ein.";
 $message["CONFIGURATION_ROOM_OPTIONS_TITLE"]["de"] = "Raumgestaltung";
-$message["CONFIGURATION_ROOM_URL"]["de"] = "URL";
 $message["CONFIGURATION_RUBRIC_DESC"]["de"] = "Die Auswahl der Rubriken erfolgt über die Select-Boxen, die nachfolgend nebeneinander dargestellt sind. Mit Hilfe dieser Select-Boxen können Sie einstellen,
 <ul>
 <li><b>welche Rubriken</b> Sie im Raum verwenden möchten und
@@ -291,7 +275,6 @@ $message["CONFIGURATION_TEMPLATE_FORM_SELECT_DESC_PRIVATEROOM"]["de"] = "Sofern 
 $message["CONFIGURATION_TEMPLATE_FORM_TITLE_MAKE"]["de"] = "Vorlage erstellen";
 $message["CONFIGURATION_TEMPLATE_FORM_TITLE_SELECT"]["de"] = "Vorlage auswählen";
 $message["CONFIGURATION_TEMPLATE_GROUP"]["de"] = "Zielgruppe";
-$message["CONFIGURATION_TEMPLATE_NAME"]["de"] = "Name der Vorlage";
 $message["CONFIGURATION_TEMPLATE_NO_CHOICE"]["de"] = "leerer Raum";
 $message["CONFIGURATION_TEMPLATE_NO_CHOICE_PRIVATEROOM"]["de"] = "Standardvorlage";
 $message["CONFIGURATION_TEXTAREA_TITLE"]["de"] = "Textformatierung";

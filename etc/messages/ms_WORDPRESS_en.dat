@@ -1,0 +1,6 @@
+<?php
+$message["WORDPRESS_CONFIGURATION_DESC"]["en"] = "Wordpress settings";
+$message["WORDPRESS_CONFIGURATION_LINK"]["en"] = "Workspace Wordpress";
+$message["WORDPRESS_CONFIGURATION_SECTION_EDIT"]["en"] = "SectionEdit<br/>(Addon)";
+$message["WORDPRESS_CONFIGURATION_SECTION_EDIT_VALUE"]["en"] = "Activate section edit.";
+?>
