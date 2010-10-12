@@ -210,6 +210,11 @@ if ( !empty($deleteitem) ) {
       $link_manager = $environment->getLinkManager();
       $link_manager->deleteLink($deleteitem,$from_id);
    }
+   if ( !empty($selmatrix) ) {
+      $temp_matrix_array = explode('_', $selmatrix);
+      $matrix_manager = $environment->getMatrixManager();
+      $matrix_manager->removeItem($deleteitem, $temp_matrix_array[1], $temp_matrix_array[0]);
+   }
    $params = $environment->getCurrentParameterArray();
    unset($params['delete_item']);
    redirect($environment->getCurrentContextID(),CS_ENTRY_TYPE, 'index',$params);

@@ -59,6 +59,7 @@ class cs_configuration_extra_form extends cs_rubric_form {
     * this methods init the data for the form
     */
    function _initForm () {
+
       // headline
       $this->_headline = $this->_translator->getMessage('CONFIGURATION_EXTRA_FORM_HEADLINE');
 
@@ -110,20 +111,10 @@ class cs_configuration_extra_form extends cs_rubric_form {
       $this->_array_extra[22]['value'] = 'HOMEPAGE_CONFIGURATION_EXTRA_HOMEPAGE';
       #$this->_array_extra[23]['text']  = $this->_translator->getMessage('CONFIGURATION_EXTRA_PDA');
       #$this->_array_extra[23]['value'] = 'CONFIGURATION_EXTRA_PDA';
-      
       global $c_pmwiki;
       if ( isset($c_pmwiki) and  $c_pmwiki ) {
          $this->_array_extra[23]['text']  = $this->_translator->getMessage('CONFIGURATION_EXTRA_WIKI');
          $this->_array_extra[23]['value'] = 'CONFIGURATION_EXTRA_WIKI';
-      }
-      
-      /*
-       * commsywordpress
-       */
-      global $c_wordpress;
-      if ( isset($c_wordpress) and  $c_wordpress ) {
-         $this->_array_extra[24]['text']  = $this->_translator->getMessage('CONFIGURATION_EXTRA_WORDPRESS');
-         $this->_array_extra[24]['value'] = 'CONFIGURATION_EXTRA_WORDPRESS';
       }
 
       global $c_plugin_array;

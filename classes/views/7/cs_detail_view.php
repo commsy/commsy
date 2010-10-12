@@ -224,6 +224,35 @@ class cs_detail_view extends cs_view {
             $rubric_connections[] = $link_name[0];
          }
       }
+      /*
+      // translation of entry to rubrics for new private room
+      if ( $this->_environment->inPrivateRoom()
+           and in_array(CS_ENTRY_TYPE,$rubric_connections)
+         ) {
+         $temp_array = array();
+         $temp_array2 = array();
+         $rubric_array2 = array();
+         $temp_array[] = CS_ANNOUNCEMENT_TYPE;
+         $temp_array[] = CS_TODO_TYPE;
+         $temp_array[] = CS_DISCUSSION_TYPE;
+         $temp_array[] = CS_MATERIAL_TYPE;
+         $temp_array[] = CS_DATE_TYPE;
+         foreach ( $temp_array as $temp_rubric ) {
+            if ( !in_array($temp_rubric,$rubric_connections) ) {
+               $temp_array2[] = $temp_rubric;
+            }
+         }
+         foreach ( $rubric_connections as $temp_rubric ) {
+            if ( $temp_rubric != CS_ENTRY_TYPE ) {
+               $rubric_array2[] = $temp_rubric;
+            } else {
+               $rubric_array2 = array_merge($rubric_array2,$temp_array2);
+            }
+         }
+         $rubric_connections = $rubric_array2;
+         unset($rubric_array2);
+      }
+      */
       $this->_rubric_connections = $rubric_connections;
    }
 
@@ -363,103 +392,98 @@ class cs_detail_view extends cs_view {
    }
 
    function _initDropDownMenus(){
-      global $c_use_linked_dropdown_rooms;
       $action_array = array();
       $html = '';
       $current_context = $this->_environment->getCurrentContextItem();
       $current_portal = $this->_environment->getCurrentPortalItem();
 
-      if ( isset($c_use_linked_dropdown_rooms)
-           and (in_array($current_context->getItemID(), $c_use_linked_dropdown_rooms) or in_array($current_portal->getItemID(), $c_use_linked_dropdown_rooms))
-         ) {
-         if ( $current_context->isOpen() ) {
-            $image_new  = '';
-            $href_new = '';
-            $params = array();
-            $params['iid'] = 'NEW';
-            if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-               $image_new = 'images/commsyicons_msie6/22x22/new.gif';
-            } else {
-               $image_new = 'images/commsyicons/22x22/new.png';
-            }
-            $href_new = curl($this->_environment->getCurrentContextID(),
-                             $this->_environment->getCurrentModule(),
-                             'edit',
-                             $params);
-            unset($params);
+      if ( $current_context->isOpen() ) {
+         $image_new  = '';
+         $href_new = '';
+         $params = array();
+         $params['iid'] = 'NEW';
+         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+            $image_new = 'images/commsyicons_msie6/22x22/new.gif';
+         } else {
+            $image_new = 'images/commsyicons/22x22/new.png';
+         }
+         $href_new = curl($this->_environment->getCurrentContextID(),
+                          $this->_environment->getCurrentModule(),
+                          'edit',
+                          $params);
+         unset($params);
 
-            if(isset($_GET['mod'])){
-               $dropdown_mod = $_GET['mod'];
-            } elseif(isset($_POST['mod'])){
-               $dropdown_mod = $_POST['mod'];
-            } else {
-               $dropdown_mod = '';
-            }
-
-            if($dropdown_mod == 'announcement'){
-               $text_new = $this->_translator->getMessage('COMMON_ENTER_NEW_ANNOUNCEMENT');
-            } elseif($dropdown_mod == 'date'){
-               $text_new = $this->_translator->getMessage('COMMON_ENTER_NEW_DATE');
-            } elseif($dropdown_mod == 'material'){
-               $text_new = $this->_translator->getMessage('COMMON_ENTER_NEW_MATERIAL');
-            } elseif($dropdown_mod == 'discussion'){
-               $text_new = $this->_translator->getMessage('COMMON_ENTER_NEW_DISCUSSION');
-            } elseif($dropdown_mod == 'group'){
-               $text_new = $this->_translator->getMessage('COMMON_ENTER_NEW_GROUP');
-            } elseif($dropdown_mod == 'todo'){
-               $text_new = $this->_translator->getMessage('COMMON_ENTER_NEW_TODO');
-            } elseif($dropdown_mod == 'topic'){
-               $text_new = $this->_translator->getMessage('COMMON_ENTER_NEW_TOPIC');
-            } elseif($dropdown_mod == 'institution'){
-               $text_new = $this->_translator->getMessage('COMMON_ENTER_NEW_INSTITUTION');
-            }
-
-            if ( !empty($text_new)
-                 and !empty($image_new)
-                 and !empty($href_new)
-               ) {
-               $temp_array = array();
-               $temp_array['dropdown_image']  = "new_icon";
-               $temp_array['text']  = $text_new;
-               $temp_array['image'] = $image_new;
-               $temp_array['href']  = $href_new;
-               $action_array[] = $temp_array;
-               unset($temp_array);
-            }
+         if(isset($_GET['mod'])){
+            $dropdown_mod = $_GET['mod'];
+         } elseif(isset($_POST['mod'])){
+            $dropdown_mod = $_POST['mod'];
+         } else {
+            $dropdown_mod = '';
          }
 
-         unset($current_context);
+         if($dropdown_mod == 'announcement'){
+            $text_new = $this->_translator->getMessage('COMMON_ENTER_NEW_ANNOUNCEMENT');
+         } elseif($dropdown_mod == 'date'){
+            $text_new = $this->_translator->getMessage('COMMON_ENTER_NEW_DATE');
+         } elseif($dropdown_mod == 'material'){
+            $text_new = $this->_translator->getMessage('COMMON_ENTER_NEW_MATERIAL');
+         } elseif($dropdown_mod == 'discussion'){
+            $text_new = $this->_translator->getMessage('COMMON_ENTER_NEW_DISCUSSION');
+         } elseif($dropdown_mod == 'group'){
+            $text_new = $this->_translator->getMessage('COMMON_ENTER_NEW_GROUP');
+         } elseif($dropdown_mod == 'todo'){
+            $text_new = $this->_translator->getMessage('COMMON_ENTER_NEW_TODO');
+         } elseif($dropdown_mod == 'topic'){
+            $text_new = $this->_translator->getMessage('COMMON_ENTER_NEW_TOPIC');
+         } elseif($dropdown_mod == 'institution'){
+            $text_new = $this->_translator->getMessage('COMMON_ENTER_NEW_INSTITUTION');
+         }
 
-         $temp_array = array();
-         $temp_array['dropdown_image']  = "new_icon";
-         $temp_array['text']  = '';
-         $temp_array['image'] = 'seperator';
-         $temp_array['href']  = '';
-         $action_array[] = $temp_array;
-
-         $action_array = array_merge($action_array, $this->_getAdditionalDropDownEntries());
-
-         // init drop down menu
-         if ( !empty($action_array)
-              and count($action_array) > 1
+         if ( !empty($text_new)
+              and !empty($image_new)
+              and !empty($href_new)
             ) {
-            $html .= '<script type="text/javascript">'.LF;
-            $html .= '<!--'.LF;
-            #$html .= 'var dropDownMenus = new Array(new Array("new_icon",new Array(';
-            $html .= 'var dropDownMenus = new Array(';
-            $first = true;
-            foreach ($action_array as $action) {
-               if ( $first ) {
-                  $first = false;
-               } else {
-                  $html .= ',';
-               }
-               $html .= 'new Array("'.$action['dropdown_image'].'","'.$action['image'].'","'.$action['text'].'","'.$action['href'].'")';
-            }
-            $html .= ');'.LF;
-            $html .= '-->'.LF;
-            $html .= '</script>'.LF;
+            $temp_array = array();
+            $temp_array['dropdown_image']  = "new_icon";
+            $temp_array['text']  = $text_new;
+            $temp_array['image'] = $image_new;
+            $temp_array['href']  = $href_new;
+            $action_array[] = $temp_array;
+            unset($temp_array);
          }
+      }
+
+      unset($current_context);
+
+      $temp_array = array();
+      $temp_array['dropdown_image']  = "new_icon";
+      $temp_array['text']  = '';
+      $temp_array['image'] = 'seperator';
+      $temp_array['href']  = '';
+      $action_array[] = $temp_array;
+
+      $action_array = array_merge($action_array, $this->_getAdditionalDropDownEntries());
+
+      // init drop down menu
+      if ( !empty($action_array)
+           and count($action_array) > 1
+         ) {
+         $html .= '<script type="text/javascript">'.LF;
+         $html .= '<!--'.LF;
+         #$html .= 'var dropDownMenus = new Array(new Array("new_icon",new Array(';
+         $html .= 'var dropDownMenus = new Array(';
+         $first = true;
+         foreach ($action_array as $action) {
+            if ( $first ) {
+               $first = false;
+            } else {
+               $html .= ',';
+            }
+            $html .= 'new Array("'.$action['dropdown_image'].'","'.$action['image'].'","'.$action['text'].'","'.$action['href'].'")';
+         }
+         $html .= ');'.LF;
+         $html .= '-->'.LF;
+         $html .= '</script>'.LF;
       }
       return $html;
    }
@@ -712,12 +736,13 @@ class cs_detail_view extends cs_view {
             }else{
                 $style='padding:0px 5px 0px 5px;';
             }
+            $current_user_item = $this->_environment->getCurrentUserItem();
             if ( isset($item) and $item->getItemID()== $this->_item->getItemID()){
                $html .='<li class="detail_list_entry" style="'.$style.'">';
                $html .= '<span>'.($count_items+1).'. '.chunkText($link_title,35).'</span>';
                $html .='</li>';
-            } elseif ( isset($item) and $item->isNotActivated() and isset($_GET['path'])){
-               $activating_date = $item->getActivatingDate();
+            } elseif ( isset($item) and $item->isNotActivated() and !($item->getCreatorID() == $current_user_item->getItemID()) and !($current_user_item->isModerator())){
+              $activating_date = $item->getActivatingDate();
                if (strstr($activating_date,'9999-00-00')){
                   $activating_text = $this->_translator->getMessage('COMMON_NOT_ACTIVATED');
                }else{
@@ -823,14 +848,39 @@ class cs_detail_view extends cs_view {
          $params = array();
          $params['back_to_index'] = 'true';
          $link_text = $this->_translator->getMessage('COMMON_BACK_TO_LIST');
+         $link_module = $this->_environment->getCurrentModule();
          if ( module2type($this->_environment->getCurrentModule()) == CS_DATE_TYPE
               and !empty($display_mod)
               and $display_mod == 'calendar'
             ) {
             $link_text = $this->_translator->getMessage('DATE_BACK_TO_CALENDAR');
          }
+         if ( module2type($this->_environment->getCurrentModule()) == CS_DATE_TYPE
+              and $this->_environment->inPrivateRoom()
+              and $this->_environment->getConfiguration('c_use_new_private_room')
+            ) {
+            $link_text = $this->_translator->getMessage('COMMON_BACK_TO_INDEX');
+         }
+         if ( module2type($this->_environment->getCurrentModule()) == CS_TODO_TYPE
+              and $this->_environment->inPrivateRoom()
+              and $this->_environment->getConfiguration('c_use_new_private_room')
+            ) {
+            $link_text = $this->_translator->getMessage('COMMON_BACK_TO_INDEX');
+            $link_module = type2module(CS_DATE_TYPE);
+         }
+         if ( $this->_environment->inPrivateRoom()
+              and $this->_environment->getConfiguration('c_use_new_private_room')
+              and ( module2type($this->_environment->getCurrentModule()) == CS_MATERIAL_TYPE
+                    or module2type($this->_environment->getCurrentModule()) == CS_DISCUSSION_TYPE
+                    or module2type($this->_environment->getCurrentModule()) == CS_ANNOUNCEMENT_TYPE
+                    or module2type($this->_environment->getCurrentModule()) == CS_TOPIC_TYPE
+                  )
+            ) {
+            $link_text = $this->_translator->getMessage('COMMON_BACK_TO_INDEX');
+            $link_module = type2module(CS_ENTRY_TYPE);
+         }
          $html .= ahref_curl( $this->_environment->getCurrentContextID(),
-                           $this->_environment->getCurrentModule(),
+                           $link_module,
                            'index',
                            $params,
                            $link_text
@@ -1113,7 +1163,7 @@ class cs_detail_view extends cs_view {
       if ( isset($item) ) {
          $list = $item->getChildrenList();
          if ( isset($list) and !$list->isEmpty() ) {
-         	$this->_tagBoxInitialized = true;
+            $this->_tagBoxInitialized = true;
             $tag_list = $tagged_item->getTagList();
             if($with_div){
                $current_user = $this->_environment->getCurrentUserItem();
@@ -1351,12 +1401,16 @@ class cs_detail_view extends cs_view {
 
 
    function _getDetailPageHeaderAsHTML(){
+      $item = $this->getItem();
+      $current_user_item = $this->_environment->getCurrentUserItem();
       $html = '';
       $html .='<div style="width:100%;">'.LF;
       $html .='<div style="height:30px;">'.LF;
-      $html .= '<div id="search_box" style="float:right; width:28%; white-space:nowrap; text-align-left; padding-top:5px; margin:0px;">'.LF;
-      $html .= $this->_getSearchAsHTML();
-      $html .= '</div>'.LF;
+      if ($item->maySee($current_user_item)){
+         $html .= '<div id="search_box" style="float:right; width:28%; white-space:nowrap; text-align-left; padding-top:5px; margin:0px;">'.LF;
+         $html .= $this->_getSearchAsHTML();
+         $html .= '</div>'.LF;
+      }
       $current_browser = mb_strtolower($this->_environment->getCurrentBrowser(), 'UTF-8');
       $current_browser_version = $this->_environment->getCurrentBrowserVersion();
       if ( $current_browser == 'msie' and (strstr($current_browser_version,'5.') or (strstr($current_browser_version,'6.'))) ){
@@ -1500,6 +1554,7 @@ class cs_detail_view extends cs_view {
     */
    function asHTML () {
       $item = $this->getItem();
+      $current_user_item = $this->_environment->getCurrentUserItem();
       $html  = LF.'<!-- BEGIN OF DETAIL VIEW -->'.LF;
       $html .='<div style="width:100%;">'.LF;
       $rubric = $this->_environment->getCurrentModule();
@@ -1508,7 +1563,7 @@ class cs_detail_view extends cs_view {
 
       $html .= $this->_getDetailPageHeaderAsHTML();
 
-      if(!(isset($_GET['mode']) and $_GET['mode']=='print')){
+      if(!(isset($_GET['mode']) and $_GET['mode']=='print') and $item->maySee($current_user_item)){
          $this->_right_box_config['size_string'] = '';
          $current_context = $this->_environment->getCurrentContextItem();
          $html .='<div style="float:right; font-size:10pt; width:28%; margin-top:5px; vertical-align:top; text-align:left;">'.LF;
@@ -1546,7 +1601,7 @@ class cs_detail_view extends cs_view {
                   $with_javascript = false;
                }
             } else {
-            	$with_javascript = true;
+               $with_javascript = true;
             }
             if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
               $with_javascript = false;
@@ -1789,50 +1844,54 @@ class cs_detail_view extends cs_view {
    }
 
    function _getItemPicture($item){
-      $picture = $item->getPicture();
-      $linktext = '';
-      if ( !empty($picture) ) {
-         $disc_manager = $this->_environment->getDiscManager();
-         if ($disc_manager->existsFile($picture)){
-            $image_array = getimagesize($disc_manager->getFilePath().$picture);
-            $pict_height = $image_array[1];
-            if ($pict_height > 60){
-               $height = 60;
+      if (isset($item)){
+         $picture = $item->getPicture();
+         $linktext = '';
+         if ( !empty($picture) ) {
+            $disc_manager = $this->_environment->getDiscManager();
+            if ($disc_manager->existsFile($picture)){
+               $image_array = getimagesize($disc_manager->getFilePath().$picture);
+               $pict_height = $image_array[1];
+               if ($pict_height > 60){
+                  $height = 60;
+               }else{
+                  $height = $pict_height;
+               }
             }else{
-               $height = $pict_height;
+                $height = 60;
+            }
+            $params = array();
+            $params['picture'] = $picture;
+            $curl = curl($this->_environment->getCurrentContextID(),
+                      'picture', 'getfile', $params,'');
+            unset($params);
+            $html = '<img alt="'.$this->_translator->getMessage('USER_PICTURE_UPLOADFILE').'" src="'.$curl.'" style="vertical-align:middle; width: '.$height.'px;"/>'.LF;
+            if ($item->isA(CS_USER_TYPE)) {
+               $linktext = str_replace('"','&quot;',encode(AS_HTML_SHORT,$item->getFullName()));
+            } else {
+               $linktext = $this->_translator->getMessage('USER_PICTURE_UPLOADFILE');
             }
          }else{
-             $height = 60;
+            $html = '<img alt="'.$this->_translator->getMessage('USER_PICTURE_UPLOADFILE').'" src="images/commsyicons/common/user_unknown.gif" style="vertical-align:middle;  width: 60px;"/>'.LF;
+            if ($item->isA(CS_USER_TYPE)) {
+               $linktext = $this->_translator->getMessage('USER_PICTURE_NO_PICTURE',str_replace('"','&quot;',encode(AS_HTML_SHORT,$item->getFullName())));
+            } else {
+               $linktext = $this->_translator->getMessage('USER_PICTURE_UPLOADFILE');
+            }
          }
          $params = array();
-         $params['picture'] = $picture;
-         $curl = curl($this->_environment->getCurrentContextID(),
-                      'picture', 'getfile', $params,'');
-         unset($params);
-         $html = '<img alt="'.$this->_translator->getMessage('USER_PICTURE_UPLOADFILE').'" src="'.$curl.'" style="vertical-align:middle; width: '.$height.'px;"/>'.LF;
-         if ($item->isA(CS_USER_TYPE)) {
-            $linktext = str_replace('"','&quot;',encode(AS_HTML_SHORT,$item->getFullName()));
-         } else {
-            $linktext = $this->_translator->getMessage('USER_PICTURE_UPLOADFILE');
-         }
-      }else{
-         $html = '<img alt="'.$this->_translator->getMessage('USER_PICTURE_UPLOADFILE').'" src="images/commsyicons/common/user_unknown.gif" style="vertical-align:middle;  width: 60px;"/>'.LF;
-         if ($item->isA(CS_USER_TYPE)) {
-            $linktext = $this->_translator->getMessage('USER_PICTURE_NO_PICTURE',str_replace('"','&quot;',encode(AS_HTML_SHORT,$item->getFullName())));
-         } else {
-            $linktext = $this->_translator->getMessage('USER_PICTURE_UPLOADFILE');
-         }
-      }
-      $params = array();
-      $params['iid'] = $item->getItemID();
-      $html = ahref_curl( $this->_environment->getCurrentContextID(),
+         $params['iid'] = $item->getItemID();
+         $html = ahref_curl( $this->_environment->getCurrentContextID(),
                            CS_USER_TYPE,
                            'detail',
                            $params,
                            $html,
                            $linktext,'', '', '', '', '', '', '',
                            '');
-      return $html;
+         return $html;
+      }else{
+   	     return '';
+      }
    }
 
 
@@ -2117,20 +2176,20 @@ class cs_detail_view extends cs_view {
       $item = $this->getItem();
       $link_items = $item->getAllLinkItemList();
       // Löschen der gesperrten Kennungen für die RightBox
-     $countItem = $link_items->getFirst();
-     while($countItem) {
-        $linked_item = $countItem->getLinkedItem($item);
-        if ( isset($linked_item) ) {
-               $fragment = '';    // there is no anchor defined by default
-               $type = $linked_item->getType();
-        }
-        $module = Type2Module($type);
-               $user = $this->_environment->getCurrentUser();
-               if ($module == CS_USER_TYPE and (!$linked_item->isUser() or !$linked_item->maySee($user))){
+      $countItem = $link_items->getFirst();
+      while($countItem) {
+         $linked_item = $countItem->getLinkedItem($item);
+         if ( isset($linked_item) ) {
+            $fragment = '';    // there is no anchor defined by default
+            $type = $linked_item->getType();
+         }
+         $module = Type2Module($type);
+         $user = $this->_environment->getCurrentUser();
+         if ($module == CS_USER_TYPE and (!$linked_item->isUser() or !$linked_item->maySee($user))){
             $link_items->removeElement($countItem);
-               }
-      $countItem = $link_items->getNext();
-     }
+         }
+         $countItem = $link_items->getNext();
+      }
       $count_link_item = $link_items->getCount();
       $this->_right_box_config['title_string'] .= $separator.'"'.$this->_translator->getMessage('COMMON_NETNAVIGATION_ENTRIES').' ('.$count_link_item.')"';
       $this->_right_box_config['desc_string'] .= $separator.'""';
@@ -3709,11 +3768,11 @@ class cs_detail_view extends cs_view {
             $image = '<img src="images/commsyicons/22x22/delete.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_DELETE_ITEM').'"/>';
          }
          $html .= ahref_curl( $this->_environment->getCurrentContextID(),
-         					  $this->_environment->getCurrentModule(),
+                          $this->_environment->getCurrentModule(),
                               'detail',
-         					  $params,
-         					  $image,
-         					  $this->_translator->getMessage('COMMON_DELETE_ITEM').LF,
+                          $params,
+                          $image,
+                          $this->_translator->getMessage('COMMON_DELETE_ITEM').LF,
                               '',
                               '',
                               '',
@@ -3740,12 +3799,17 @@ class cs_detail_view extends cs_view {
     * @return string javascipt needed for the form
     */
    function getInfoForHeaderAsHTML() {
+      $text2 = '';
+      if($this->_environment->getCurrentUserItem()->isModerator()) {
+         $text2 = $this->_translator->getMessage("COMMON_DELETE_BOX_DESCRIPTION_MODERATOR");
+      }
+
       $return = "
           <script type='text/javascript'>
           <!--
               var headline = '" . $this->_translator->getMessage("COMMON_DELETE_BOX_TITLE") . "';
               var text1 = '" . $this->_translator->getMessage("COMMON_DELETE_BOX_DESCRIPTION") . "';
-              var text2 = '" . $this->_translator->getMessage("COMMON_DELETE_BOX_DESCRIPTION_MODERATOR") . "';
+              var text2 = '" . $text2 . "';
               var button_delete = '" . $this->_translator->getMessage("COMMON_DELETE_BUTTON") . "';
               var button_cancel = '" . $this->_translator->getMessage("COMMON_CANCEL_BUTTON") . "';
           -->
@@ -3788,42 +3852,6 @@ class cs_detail_view extends cs_view {
          $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION_NEW',$this->_translator->getMessage('ITEM_EXPORT_TO_WIKI')).' "class="disabled">'.$image.'</a>'.LF;
       }
       return $html;
-   }
-   
-   
-	function _getWordpressAction ( $item, $user, $context ) {
-	      $html  = '';
-	      if ( $item->mayEdit($user)
-	           and $context->isWordpressActive()
-	           and $this->_with_modifying_actions
-	           and ( !$item->isA(CS_DISCUSSION_TYPE)
-	                 or $item->getDiscussionType() == 'simple'
-	               )
-	         ) {
-	         $params = array();
-	         $params['iid'] = $item->getItemID();
-	         $params['export_to_wordpress'] = 'true';
-	         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-	            $image = '<img src="images/commsyicons_msie6/22x22/export_wordpress.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('MATERIAL_EXPORT_TO_WORDPRESS').'"/>';
-	         } else {
-	            $image = '<img src="images/commsyicons/22x22/export_wordpress.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('MATERIAL_EXPORT_TO_WORDPRESS').'"/>';
-	         }
-	         $html .= ahref_curl( $this->_environment->getCurrentContextID(),
-	                                   $this->_environment->getCurrentModule(),
-	                                   'detail',
-	                                   $params,
-	                                   $image,
-	                                   $this->_translator->getMessage('ITEM_EXPORT_TO_WORDPRESS')).LF;
-	         unset($params);
-	      } elseif($context->isWordpressActive()) {
-	         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-	            $image = '<img src="images/commsyicons_msie6/22x22/export_wordpress_grey.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('ITEM_EXPORT_TO_WORDPRESS').'"/>';
-	         } else {
-	            $image = '<img src="images/commsyicons/22x22/export_wordpress_grey.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('ITEM_EXPORT_TO_WORDPRESS').'"/>';
-	         }
-	         $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION_NEW',$this->_translator->getMessage('ITEM_EXPORT_TO_WORDPRESS')).' "class="disabled">'.$image.'</a>'.LF;
-	      }
-	      return $html;
    }
 
    function _getPrintAction ( $item, $user ) {

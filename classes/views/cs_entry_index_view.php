@@ -1479,6 +1479,7 @@ class cs_entry_index_view extends cs_index_view {
       if (
            (!empty($this->_sellist) and $this->_sellist !='new')
            or !empty($this->_selbuzzword)
+           or !empty($this->_selmatrix)
          ){
          $params = $this->_environment->getCurrentParameterArray();
          $params['delete_item'] = $item->getItemID();
@@ -1487,6 +1488,8 @@ class cs_entry_index_view extends cs_index_view {
             $text = $this->_translator->getMessage('ENTRY_DELETE_ENTRY_FROM_BUZZWORD');
          }elseif(!empty($this->_sellist)){
             $text = $this->_translator->getMessage('ENTRY_DELETE_ENTRY_FROM_MYLIST');
+         }elseif(!empty($this->_selmatrix)){
+            $text = $this->_translator->getMessage('ENTRY_DELETE_ENTRY_FROM_MATRIX');
          }
          $image = '<img src="images/commsyicons/16x16/delete.png" style="vertical-align:top;" alt="'.$this->_translator->getMessage('ENTRY_DELETE_MYLIST').'"/>'.LF;
          $html .= '</td><td style="padding:3px; width:25px; text-align:right;">'.LF;

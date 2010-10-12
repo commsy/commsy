@@ -76,7 +76,6 @@ $message["USER_GET_MAIL_SUBJECT"]["en"] = "Account request [%1]";
 $message["USER_HEADER"]["en"] = "Members";
 $message["USER_HOMEPAGE"]["en"] = "Homepage";
 $message["USER_ICQ"]["en"] = "ICQ";
-$message["USER_ICQ_ERROR"]["de"] = "The ICQ number should only contain digits.";
 $message["USER_INDEX"]["en"] = "Members";
 $message["USER_JABBER"]["en"] = "Jabber";
 $message["USER_JOIN_COMMUNITY_MAIL_BODY"]["en"] = "%1 requests an account [%2] for the %_COMMUNITY_SUB_NOMS_BIG %4.

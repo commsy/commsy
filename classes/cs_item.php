@@ -62,6 +62,8 @@ class cs_item {
    var $_filelist_changed_empty = false;
    var $_cache_on = true;
 
+   var $_external_viewer_user_array = NULL;
+
   /**
    * boolean - if true the modification_date will be updated - else not
    */
@@ -1405,13 +1407,13 @@ class cs_item {
       }
    }
 
+
    function mayExternalSee($user){
    	 $item_manager = $this->_environment->getItemManager();
    	 return $item_manager->getExternalViewerForItem($this->getItemID(),$user->getUserID());
    }
 
 
- 
    function maySee ($user_item) {
       if ( $user_item->isRoot()
            or ( $user_item->getContextID() == $this->_environment->getCurrentContextID()
@@ -1493,12 +1495,12 @@ class cs_item {
          unset($rubric_array2);
       }
 
-
       if ( !empty($conf) ) {
          $rubrics = explode(',', $conf);
       } else {
          $rubrics = array();
       }
+
       $type_array = array();
       foreach ( $rubrics as $rubric ) {
          $rubric_array = explode('_', $rubric);
@@ -1520,7 +1522,7 @@ class cs_item {
 
 
    function getLinkItemList ($type) {
-      $context_limit = '';
+      $context_limit =
       $link_list = new cs_list();
       $link_item_manager = $this->_environment->getLinkItemManager();
       $link_item_manager->setLinkedItemLimit($this);
@@ -1541,13 +1543,15 @@ class cs_item {
             )
          ) {
          $link_item_manager->setRoomLimit($this->getContextID());
-      } elseif ( $this->isA(CS_LABEL_TYPE) and $this->getLabelType() == CS_GROUP_TYPE ) {
+      } elseif ( $this->isA(CS_LABEL_TYPE)
+                 and $this->getLabelType() == CS_GROUP_TYPE
+               ) {
          // müsste dies nicht für alle Fälle gelten ???
          $link_item_manager->setRoomLimit($this->getContextID());
-      } elseif ( $this->isA(CS_USER_TYPE) 
+      } elseif ( $this->isA(CS_USER_TYPE)
                  or $this->isA(CS_DATE_TYPE)
                  or $this->isA(CS_TODO_TYPE)
-                ) {
+               ) {
          $link_item_manager->setRoomLimit($this->getContextID());
       } else {
          $link_item_manager->setRoomLimit($this->_environment->getCurrentContextID() );
@@ -1677,6 +1681,7 @@ class cs_item {
          unset($rubric_sorted_array[CS_USER_TYPE]);
       }
       */
+
       // translation of entry to rubrics for new private room
       if ( $this->_environment->inPrivateRoom()
            and in_array(CS_ENTRY_TYPE,$rubric_array)
@@ -1704,6 +1709,7 @@ class cs_item {
          $rubric_array = $rubric_array2;
          unset($rubric_array2);
       }
+
       foreach($rubric_array as $rubric){
          if ($rubric !=CS_USER_TYPE  or
                ($this->_environment->getCurrentModule() == CS_DATE_TYPE or
@@ -2054,7 +2060,8 @@ class cs_item {
       $institution_list->sortBy('name');
       return $institution_list;
    }
-   
+
+
    function setExternalViewerAccounts($user_id_array) {
        $this->_external_viewer_user_array = $user_id_array;
    }
@@ -2139,28 +2146,7 @@ class cs_item {
    //------------------------------------------
 
 
-//------------------------------------------
-   //------------- Wordpressexport -------------
-   function setExportToWordpress($value) {
-      $this->_addExtra('EXPORT_TO_WORDPRESS', (string)$value);
-   }
-   function getExportToWordpress() {
-      return (string) $this->_getExtra('EXPORT_TO_WORDPRESS');
-   }
-   function isExportToWordpress() {
-      if($this->getExportToWordpress() == '1'){
-         $wordpress_manager = $this->_environment->getWordpressManager();
-         return $wordpress_manager->existsItemToWordpress($this->getItemID());
-      } else {
-         return false;
-      }
-   }
-   function getExportToWordpressLink(){
-      $wiki_manager = $this->_environment->getWordpressManager();
-      return $wiki_manager->getExportToWordpressLink($this->getItemID());
-   }
-   //------------- Wordpressexport -------------
-   //------------------------------------------
+
 
    public function getDataAsXMLForFlash () {
       $type = $this->getType();

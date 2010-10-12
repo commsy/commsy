@@ -1496,13 +1496,6 @@ class cs_page_guide_view extends cs_page_view {
          $html .= '</h2>'.LF;
          $html .= '<p style="text-align:left;">'.$this->_translator->getMessage('COMMON_DELETE_BOX_DESCRIPTION_WIKI');
          $html .= '</p>'.LF;
-      }elseif ( $this->_environment->getCurrentModule() == 'configuration'
-                   and $this->_environment->getCurrentFunction() == 'wordpress'
-               ) {
-         $html .= '<h2>'.$this->_translator->getMessage('COMMON_DELETE_WORDPRESS_TITLE');
-         $html .= '</h2>'.LF;
-         $html .= '<p style="text-align:left;">'.$this->_translator->getMessage('COMMON_DELETE_BOX_DESCRIPTION_WORDPRESS');
-         $html .= '</p>'.LF;
       } elseif ( $this->_environment->getCurrentModule() == 'configuration'
                  and ( $this->_environment->getCurrentFunction() == 'room_options'
                        or $this->_environment->getCurrentFunction() == 'account_options'

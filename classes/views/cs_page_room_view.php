@@ -210,7 +210,7 @@ class cs_page_room_view extends cs_page_view {
     * @return string linkbar as HTML
     */
    function _getLinkRowAsHTML ($bottom=false) {
-      global $c_use_new_private_room;
+      $new_private_room = $this->_environment->inConfigArray('c_use_new_private_room',$this->_environment->getCurrentContextID());
       $html  = LF.'<!-- BEGIN TABS -->'.LF;
       $html .= '<div id="tabs_frame" >'.LF;
       if ($bottom){
@@ -352,35 +352,6 @@ class cs_page_room_view extends cs_page_view {
             }
          }
       }
-      
-      
-      // Wordpress
-      $current_context = $this->_environment->getCurrentContextItem();
-        if (
-            ( $current_context->showWordpressLink() and $current_context->existWordpress() and $current_context->issetWordpressHomeLink() )
-            or ( $current_context->showChatLink() )
-            or ( $current_context->showHomepageLink() )
-            ){
-
-         $current_context = $this->_environment->getCurrentContextItem();
-         if ( $current_context->showWordpressLink() and $current_context->existWordpress() and $current_context->issetWordpressHomeLink() ) {
-            global $c_wordpress_path_url;
-            if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-               $image = '<img src="images/commsyicons_msie6/wordpress_home.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_WORDPRESS_LINK').'"/>';
-            } else {
-               $image = '<img src="images/wordpress_home.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_WORDPRESS_LINK').'"/>';
-            }
-            $title = $this->_translator->getMessage('COMMON_WORDPRESS_LINK').': '.$current_context->getWikiTitle();
-            $url_session_id = '';
-            if ( $current_context->withWordpressUseCommSyLogin() ) {
-               $session_item = $this->_environment->getSessionItem();
-               $url_session_id = '?commsy_session_id='.$session_item->getSessionID();
-               unset($session_item);
-            }
-            $html .= ' '.'<a title="'.$title.'" href="'.$c_wordpress_path_url.'/wp/'.$current_context->getContextID().'/'.$current_context->getItemID().'/'.$url_session_id.'" target="_blank">'.$image.'</a>'.LF;
-         }
-      }
-
 
       // plugins for moderators an users
       $html .= plugin_hook_output_all('getExtraActionAsHTML',array(),LF).LF;
@@ -575,7 +546,7 @@ class cs_page_room_view extends cs_page_view {
             $link_title .= $link['title'];
          }
 
-         if (isset($c_use_new_private_room) and $c_use_new_private_room){
+         if ($new_private_room){
          if ($this->_environment->inPrivateRoom() and ($link['module'] == 'date' or $link['module'] == 'todo') ){
             $link_title = '<img src="images/commsyicons/16x16/date.png" style="vertical-align:bottom;"/>';
             $link_title = $this->_translator->getMessage('MYCALENDAR_INDEX');
@@ -606,6 +577,10 @@ class cs_page_room_view extends cs_page_view {
                $linked_rubric = '';
             }
          }
+
+         $current_context_id = $this->_environment->getCurrentContextID();
+         $current_portal_id = $this->_environment->getCurrentPortalID();
+
          if ( $current_context_item->isOpenForGuests() or $this->_current_user->isUser() ) {
             if ( $this->_module == $link['module']
                  or ($this->_module == 'discarticle' and $link['module'] == 'discussion')
@@ -621,6 +596,31 @@ class cs_page_room_view extends cs_page_view {
                  or ($this->_module == 'auth' and $link['module'] == 'contact')
                  or ($this->_module == 'user' and $link['module'] == 'contact')
                  or ($this->_module == 'rubric' and $this->_function =='mail' and $link['module'] == $h_module )
+                 or ( $this->_module == 'todo'
+                      and $link['module'] == 'date'
+                      and $this->_environment->inPrivateRoom()
+                      and ($new_private_room)
+                    )
+                 or ( $this->_module == 'discussion'
+                      and $link['module'] == 'entry'
+                      and $this->_environment->inPrivateRoom()
+                      and ($new_private_room)
+                    )
+                 or ( $this->_module == 'material'
+                      and $link['module'] == 'entry'
+                      and $this->_environment->inPrivateRoom()
+                      and ($new_private_room)
+                    )
+                 or ( $this->_module == 'announcement'
+                      and $link['module'] == 'entry'
+                      and $this->_environment->inPrivateRoom()
+                      and ($new_private_room)
+                    )
+                 or ( $this->_module == 'topic'
+                      and $link['module'] == 'entry'
+                      and $this->_environment->inPrivateRoom()
+                      and ($new_private_room)
+                    )
             ) {
                $ahref = ahref_curl($this->_environment->getCurrentContextID(), $link['module'], $link['function'], $link['parameter'], $link_title, $link['explanation'],'','','','','','class="navlist_current"');
             } elseif ( $this->_module =='annotation' ) {
@@ -785,8 +785,14 @@ class cs_page_room_view extends cs_page_view {
       }
       $html .= '</td>'.LF;
       $html .= '</tr>'.LF;
+      $authentication = $this->_environment->getAuthenticationObject();
+      $external_view = false;
+      if (isset($_GET['iid'])){
+         $current_user = $this->_environment->getCurrentUserItem();
+         $external_view = $authentication->_isExternalUserAllowedToSee($current_user->getUserID(),$_GET['iid']);
+      }
 
-      if ( !isset($this->_with_navigation_links) or $this->_with_navigation_links) {
+      if ( !isset($this->_with_navigation_links) or $this->_with_navigation_links or $external_view) {
          $html .= '<tr class="header_room_path">'.LF;
          $html .= '<td colspan="2" style="padding:0px; margin:0px; vertical-align:bottom;">'.LF;
          $breadcrump = '';
@@ -928,7 +934,13 @@ class cs_page_room_view extends cs_page_view {
       }
 
       $html .= '<div id="page_header">';
-      if ( !isset($this->_with_navigation_links) or $this->_with_navigation_links) {
+      $authentication = $this->_environment->getAuthenticationObject();
+      $external_view = false;
+      if (isset($_GET['iid'])){
+         $current_user = $this->_environment->getCurrentUserItem();
+         $external_view = $authentication->_isExternalUserAllowedToSee($current_user->getUserID(),$_GET['iid']);
+      }
+      if ( !isset($this->_with_navigation_links) or $this->_with_navigation_links or $external_view) {
          $html .= '<div class="page_header_personal_area">'.LF;
          $html .= '<div style="float:right;">'.LF;
          $html .= $this->getMyAreaAsHTML().LF;
@@ -1195,11 +1207,36 @@ class cs_page_room_view extends cs_page_view {
    function getDeleteBoxAsHTML(){
       $session = $this->_environment->getSession();
       $left_menue_status = $session->getValue('left_menue_status');
-      $left = '0em';
-      $width = '100%';
-      $html  = '<div style="position: absolute; z-index:1000; top:95px; left:'.$left.'; width:'.$width.'; height: 100%;">'.LF;
+
+      // background div
+      $html = '<div style="	position: fixed;
+                        z-index: 1000;
+                        top: 0px;
+                        left: 0px;
+                        width: 100%;
+                        height: 100%;
+                        background-color: white;
+                        opacity: 0.7;
+                        filter: alpha(opacity=70);
+                        -moz-opacity: 0.7;
+                        -khtml-opacity: 0.7;"></div>'.LF;
+
+      // box div
+      $html .= '<div style="	position: fixed;
+                           z-index: 1100;
+                           margin-top: 100px;
+                           margin-left: 30%;
+                           width: 400px;
+                           padding: 20px;
+                           background-color: white;
+                           border: 2px solid red;
+                           top: 0px;">'.LF;
+
+      //$left = '0em';
+      //$width = '100%';
+      //$html  = '<div style="position: absolute; z-index:1000; top:95px; left:'.$left.'; width:'.$width.'; height: 100%;">'.LF;
       $html .= '<center>';
-      $html .= '<div style="position:fixed; left:'.$left.'; z-index:1000; margin-top:10px; margin-left: 30%; width:400px; padding:20px; background-color:#FFF; border:2px solid red;">';
+      //$html .= '<div style="position:fixed; left:'.$left.'; z-index:1000; margin-top:10px; margin-left: 30%; width:400px; padding:20px; background-color:#FFF; border:2px solid red;">';
       $html .= '<form style="margin-bottom:50px;" method="post" action="'.$this->_delete_box_action_url.'">'.LF;
       foreach ( $this->_delete_box_hidden_values as $key => $value ) {
          $html .= '<input type="hidden" name="'.$key.'" value="'.$value.'"/>'.LF;
@@ -1248,14 +1285,6 @@ class cs_page_room_view extends cs_page_view {
          $html .= '</h2>'.LF;
          $html .= '<p style="text-align:left;">'.$this->_translator->getMessage('COMMON_DELETE_BOX_DESCRIPTION_WIKI');
          $html .= '</p>'.LF;
-                     
-      }elseif ( $this->_environment->getCurrentModule() == 'configuration'
-                   and $this->_environment->getCurrentFunction() == 'wordpress'
-               ) {
-         $html .= '<h2>'.$this->_translator->getMessage('COMMON_DELETE_WORDPRESS_TITLE');
-         $html .= '</h2>'.LF;
-         $html .= '<p style="text-align:left;">'.$this->_translator->getMessage('COMMON_DELETE_BOX_DESCRIPTION_WORDPRESS');
-         $html .= '</p>'.LF;                     
       } elseif ( $this->_environment->getCurrentModule() == 'configuration'
                  and ( $this->_environment->getCurrentFunction() == 'room_options'
                        or $this->_environment->getCurrentFunction() == 'account_options'
@@ -1341,7 +1370,7 @@ class cs_page_room_view extends cs_page_view {
       $html .= '</form>'.LF;
       $html .= '</div>'.LF;
       $html .= '</center>'.LF;
-      $html .= '</div>'.LF;
+      //$html .= '</div>'.LF;
       $html .= '<div id="delete" style="position: absolute; z-index:900; top:95px; left:'.$left.'; width:'.$width.'; height: 100%; background-color:#FFF; opacity:0.7; filter:Alpha(opacity=70);">';
       $html .= '</div>'.LF;
       return $html;
@@ -1698,7 +1727,8 @@ class cs_page_room_view extends cs_page_view {
                $html .= '</table>'.LF;
             }
          }else{
-            if (isset($c_use_new_private_room) and $c_use_new_private_room){
+            $new_private_room = $this->_environment->inConfigArray('c_use_new_private_room',$this->_environment->getCurrentContextID());
+            if ($new_private_room){
             $html .= '<div style="clear:both"/></div>'.LF;
             }
          }
@@ -1755,11 +1785,14 @@ class cs_page_room_view extends cs_page_view {
               and isset($_GET['attach_type'])
               and !empty($_GET['attach_type'])
               and $_GET['attach_type'] == 'buzzword')
-              or(
-                 isset($_POST['right_box_option'])
-                 and isOption($_POST['right_box_option'], $this->_translator->getMessage('COMMON_BUZZWORD_NEW_ATTACH'))
-                 and (!isset($_POST['return_attach_buzzword_list']))
-              )
+              or (
+                   isset($_POST['right_box_option'])
+                   and isOption($_POST['right_box_option'], $this->_translator->getMessage('COMMON_BUZZWORD_NEW_ATTACH'))
+                   and (!isset($_POST['return_attach_buzzword_list']))
+                 )
+              or ( !empty($_POST['option'])
+                   and isOption($_POST['option'], $this->_translator->getMessage('COMMON_BUZZWORD_ADD'))
+                 )
             ) {
             $html .= $this->getBuzzwordBoxAsHTML();
          }
@@ -2030,6 +2063,7 @@ class cs_page_room_view extends cs_page_view {
 
 
    function getMyAreaAsHTML() {
+
       $get_vars  = $this->_environment->getCurrentParameterArray();
       $post_vars = $this->_environment->getCurrentPostParameterArray();
       $current_context = $this->_environment->getCurrentContextItem();
@@ -2094,7 +2128,14 @@ class cs_page_room_view extends cs_page_view {
                   $html .= '&nbsp;&nbsp;|&nbsp;&nbsp;'.ahref_curl($this->_environment->getCurrentContextID(), $this->_environment->getCurrentModule(), $this->_environment->getCurrentFunction(), $params,$this->_translator->getMessage('MYAREA_PROFILE'),'','','','','','','style="color:#800000"').''.LF;
                   $html .= $this->_getCopyLinkAsHTML();
                }
-               $html .= '&nbsp;'.$this->_getFlagsAsHTML();
+
+               // plugins for users
+               $plugin_html = plugin_hook_output_all('getMyAreaActionAsHTML',array(),'&nbsp;');
+               if ( !empty($plugin_html) ) {
+                  $html .= '&nbsp;&nbsp;|&nbsp;&nbsp;'.$plugin_html;
+               }
+
+               $html .= $this->_getFlagsAsHTML();
 
          }
       }

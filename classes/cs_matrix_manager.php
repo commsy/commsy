@@ -69,7 +69,7 @@ class cs_matrix_manager extends cs_labels_manager {
      $this->_row_limit = true;
   }
 
-  function getEntriesInPosition($id1,$id2){
+  /*function getEntriesInPosition($id1,$id2){
      $query  = 'SELECT count( DISTINCT li1.first_item_id) as count';
      $query .= ' FROM '.$this->addDatabasePrefix('link_items').' AS li1';
      $query .= ' INNER JOIN '.$this->addDatabasePrefix('link_items').' AS li2 ON li1.first_item_id = li2.first_item_id';
@@ -86,8 +86,32 @@ class cs_matrix_manager extends cs_labels_manager {
      } else {
         return $result[0]['count'];
      }
-  }
+  }*/
 
+  function getEntriesInPosition($id1,$id2){
+     $query  = 'SELECT count( DISTINCT li1.first_item_id) as count';
+     $query .= ' FROM '.$this->addDatabasePrefix('link_items').' AS li1';
+     $query .= ' INNER JOIN '.$this->addDatabasePrefix('link_items').' AS li2 ON li1.first_item_id = li2.first_item_id';
+     $query .= ' WHERE 1';
+     $query .= ' AND';
+     $query .= ' li1.second_item_id = "'.$id1.'"';
+     $query .= ' AND';
+     $query .= ' li2.second_item_id = "'.$id2.'" ';
+     $query .= ' AND';
+     $query .= ' ((li1.extras LIKE "%'.$id1.'_'.$id2.'%") OR (li2.extras LIKE "%'.$id1.'_'.$id2.'%")) ';
+     $query .= ' AND';
+     $query .= ' li1.deleter_id IS NULL ';
+     #pr($query);
+     $result = $this->_db_connector->performQuery($query);
+     include_once('functions/development_functions.php');
+     #debugToFile($query);
+     if ( !isset($result[0]['count']) ) {
+        trigger_error('Problems counting matrix entries.', E_USER_WARNING);
+     } else {
+        return $result[0]['count'];
+     }
+  }
+  
   function _performQuery ($mode = 'select') {
      if ($mode == 'count') {
         $query = 'SELECT DISTINCT count('.$this->addDatabasePrefix('labels').'.item_id) as count';
@@ -310,6 +334,68 @@ class cs_matrix_manager extends cs_labels_manager {
          $link_item->setFirstLinkedItemType($item_type);
          $link_item->setSecondLinkedItemID($column_id);
          $link_item->setSecondLinkedItemType(CS_LABEL_TYPE);
+         $link_item->setMatrixCell($column_id.'_'.$row_id);
+         $link_item->save();
+         unset($link_item);
+         $link_item = $link_item_manager->getNewItem();
+         $link_item->setFirstLinkedItemID($item_id);
+         $link_item->setFirstLinkedItemType($item_type);
+         $link_item->setSecondLinkedItemID($row_id);
+         $link_item->setSecondLinkedItemType(CS_LABEL_TYPE);
+         $link_item->setMatrixCell($column_id.'_'.$row_id);
+         $link_item->save();
+         unset($link_item);
+         unset($link_item_manager);
+
+         $retour = $this->getEntriesInPosition($column_id,$row_id);
+      }
+      return $retour;
+   }
+
+   public function removeItem ( $item_id, $column_id, $row_id ) {
+      $retour = false;
+      if ( !empty($item_id)
+           and $item_id > 99
+           and !empty($column_id)
+           and $column_id > 99
+           and !empty($row_id)
+           and $row_id > 99
+           and $this->_isInsert($item_id, $column_id, $row_id)
+         ) {
+         /*$item_manager = $this->_environment->getItemManager();
+         $item_type = $item_manager->getItemType($item_id);
+         unset($item_manager);*/
+
+         $item_manager = $this->_environment->getItemManager();
+         $temp_item = $item_manager->getItem($item_id);
+         	
+         $link_item_manager = $this->_environment->getLinkItemManager();
+         $link_item_manager->setLinkedItemLimit($temp_item);
+         $link_item_manager->select();
+         $link_item_list = $link_item_manager->get();
+         $link_item_item = $link_item_list->getFirst();
+         while($link_item_item){
+         	pr($link_item_item->getMatrixCell().' '.$column_id.'_'.$row_id);
+         	if($link_item_item->getMatrixCell() == $column_id.'_'.$row_id){
+         		pr(1);
+         		$link_item_manager->delete($link_item_item->getItemID());
+         	}
+         	$link_item_item = $link_item_list->getNext();
+         }
+         
+         /*$column_item = $link_item_manager->getItemByFirstAndSecondID($item_id, $column_id);
+         pr($column_item->getItemID());
+         $link_item_manager->delete($column_item->getItemID());
+         
+         $row_item = $link_item_manager->getItemByFirstAndSecondID($item_id, $row_id);
+         pr($row_item->getItemID());
+         $link_item_manager->delete($row_item->getItemID());*/
+         
+         /*$link_item = $link_item_manager->getNewItem();
+         $link_item->setFirstLinkedItemID($item_id);
+         $link_item->setFirstLinkedItemType($item_type);
+         $link_item->setSecondLinkedItemID($column_id);
+         $link_item->setSecondLinkedItemType(CS_LABEL_TYPE);
          $link_item->save();
          unset($link_item);
          $link_item = $link_item_manager->getNewItem();
@@ -321,12 +407,13 @@ class cs_matrix_manager extends cs_labels_manager {
          unset($link_item);
          unset($link_item_manager);
 
-         $retour = $this->getEntriesInPosition($column_id,$row_id);
+         $retour = $this->getEntriesInPosition($column_id,$row_id);*/
+         $retour = true;
       }
       return $retour;
    }
-
-   private function _isInsert ( $item_id, $column_id, $row_id ) {
+   
+   /*private function _isInsert ( $item_id, $column_id, $row_id ) {
       $retour = false;
 
       if ( !empty($item_id)
@@ -348,7 +435,6 @@ class cs_matrix_manager extends cs_labels_manager {
          $query .= ' li2.second_item_id = "'.$row_id.'" ';
          $result = $this->_db_connector->performQuery($query);
          include_once('functions/development_functions.php');
-         debugToFile($query);
          if ( !isset($result[0]['count']) ) {
             trigger_error('Problems counting matrix entries.', E_USER_WARNING);
          } else {
@@ -358,6 +444,46 @@ class cs_matrix_manager extends cs_labels_manager {
          }
       } else {
       	$retour = NULL;
+      }
+
+      return $retour;
+   }*/
+   
+   private function _isInsert ( $item_id, $column_id, $row_id ) {
+      $retour = false;
+
+      if ( !empty($item_id)
+           and $item_id > 99
+           and !empty($column_id)
+           and $column_id > 99
+           and !empty($row_id)
+           and $row_id > 99
+         ) {
+         $query  = 'SELECT count( DISTINCT li1.first_item_id) as count';
+         $query .= ' FROM '.$this->addDatabasePrefix('link_items').' AS li1';
+         $query .= ' INNER JOIN '.$this->addDatabasePrefix('link_items').' AS li2 ON li1.first_item_id = li2.first_item_id';
+         $query .= ' WHERE 1';
+         $query .= ' AND';
+         $query .= ' li1.first_item_id = "'.$item_id.'"';
+         $query .= ' AND';
+         $query .= ' li1.second_item_id = "'.$column_id.'"';
+         $query .= ' AND';
+         $query .= ' li2.second_item_id = "'.$row_id.'" ';
+         $query .= ' AND';
+         $query .= ' ((li1.extras LIKE "%'.$column_id.'_'.$row_id.'%") OR (li2.extras LIKE "%'.$column_id.'_'.$row_id.'%")) ';
+         $query .= ' AND';
+         $query .= ' li1.deleter_id IS NULL ';
+         $result = $this->_db_connector->performQuery($query);
+         include_once('functions/development_functions.php');
+         if ( !isset($result[0]['count']) ) {
+            trigger_error('Problems counting matrix entries.', E_USER_WARNING);
+         } else {
+            if (!empty($result[0]['count'])) {
+               $retour = true;
+            }
+         }
+      } else {
+         $retour = NULL;
       }
 
       return $retour;

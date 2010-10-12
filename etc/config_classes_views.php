@@ -227,6 +227,13 @@ $class_config[$class_name]['filename'] = $class_name.'.php';
 $class_config[$class_name]['folder'] = $main_folder.$view_folder;
 $class_config[$class_name]['switchable'] = false;
 
+$class_name = 'cs_privateroom_home_roomwide_search_view';
+define('PRIVATEROOM_HOME_ROOMWIDE_SEARCH_VIEW',$class_name);
+$class_config[$class_name]['name'] = $class_name;
+$class_config[$class_name]['filename'] = $class_name.'.php';
+$class_config[$class_name]['folder'] = $main_folder.$view_folder;
+$class_config[$class_name]['switchable'] = false;
+
 $class_name = 'cs_home_tag_view';
 define('HOME_TAG_VIEW',$class_name);
 $class_config[$class_name]['name'] = $class_name;
@@ -236,6 +243,20 @@ $class_config[$class_name]['switchable'] = false;
 
 $class_name = 'cs_privateroom_home_new_item_view';
 define('PRIVATEROOM_HOME_NEW_ITEM_VIEW',$class_name);
+$class_config[$class_name]['name'] = $class_name;
+$class_config[$class_name]['filename'] = $class_name.'.php';
+$class_config[$class_name]['folder'] = $main_folder.$view_folder;
+$class_config[$class_name]['switchable'] = false;
+
+$class_name = 'cs_privateroom_home_note_view';
+define('PRIVATEROOM_HOME_NOTE_VIEW',$class_name);
+$class_config[$class_name]['name'] = $class_name;
+$class_config[$class_name]['filename'] = $class_name.'.php';
+$class_config[$class_name]['folder'] = $main_folder.$view_folder;
+$class_config[$class_name]['switchable'] = false;
+
+$class_name = 'cs_privateroom_home_released_entries_view';
+define('PRIVATEROOM_HOME_RELEASED_ENTRIES_VIEW',$class_name);
 $class_config[$class_name]['name'] = $class_name;
 $class_config[$class_name]['filename'] = $class_name.'.php';
 $class_config[$class_name]['folder'] = $main_folder.$view_folder;
@@ -732,6 +753,13 @@ $class_config[$class_name]['filename'] = $class_name.'.php';
 $class_config[$class_name]['folder'] = $main_folder.$view_folder;
 $class_config[$class_name]['switchable'] = false;
 
+$class_name = 'cs_page_blank_view';
+define('PAGE_BLANK_VIEW',$class_name);
+$class_config[$class_name]['name'] = $class_name;
+$class_config[$class_name]['filename'] = $class_name.'.php';
+$class_config[$class_name]['folder'] = $main_folder.$view_folder;
+$class_config[$class_name]['switchable'] = false;
+
 $class_name = 'cs_page_help_view';
 define('PAGE_HELP_VIEW',$class_name);
 $class_config[$class_name]['name'] = $class_name;
@@ -818,13 +846,6 @@ $class_config[$class_name]['switchable'] = false;
 
 $class_name = 'cs_wiki_view';
 define('WIKI_VIEW',$class_name);
-$class_config[$class_name]['name'] = $class_name;
-$class_config[$class_name]['filename'] = $class_name.'.php';
-$class_config[$class_name]['folder'] = $main_folder.$view_folder;
-$class_config[$class_name]['switchable'] = false;
-
-$class_name = 'cs_wordpress_view';
-define('WORDPRESS_VIEW',$class_name);
 $class_config[$class_name]['name'] = $class_name;
 $class_config[$class_name]['filename'] = $class_name.'.php';
 $class_config[$class_name]['folder'] = $main_folder.$view_folder;

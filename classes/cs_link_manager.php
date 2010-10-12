@@ -728,7 +728,8 @@ class cs_link_manager extends cs_manager {
                   'first_item_id="'.encode(AS_DB,$first_item_id).'",'.
                   'second_item_id="'.encode(AS_DB,$second_item_id).'",'.
                   'first_item_type="'.encode(AS_DB,$first_item_type).'",'.
-                  'second_item_type="'.encode(AS_DB,$second_item_type).'"';
+                  'second_item_type="'.encode(AS_DB,$second_item_type).'",'.
+                  'extras="'.encode(AS_DB,serialize($link_item->getExtraInformation())).'"';
         $result = $this->_db_connector->performQuery($query);
         if ( !isset($result) ) {
            include_once('functions/error_functions.php');

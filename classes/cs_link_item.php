@@ -287,6 +287,16 @@ class cs_link_item extends cs_item {
       return $retour;
    }
 
+
+   function getMatrixCell () {
+      $retour = $this->_getExtra('MATRIX_CELL');
+      return $retour;
+   }
+   
+   function setMatrixCell ($value) {
+      $this->_addExtra('MATRIX_CELL', $value);
+   }
+   
 /** other methods **/
 
   /** save link item
