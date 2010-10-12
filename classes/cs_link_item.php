@@ -288,13 +288,13 @@ class cs_link_item extends cs_item {
    }
 
 
-   function getMatrixCell () {
-      $retour = $this->_getExtra('MATRIX_CELL');
+   function getMatrixKey () {
+      $retour = $this->_getExtra('MATRIX_KEY');
       return $retour;
    }
    
-   function setMatrixCell ($value) {
-      $this->_addExtra('MATRIX_CELL', $value);
+   function setMatrixKey ($value) {
+      $this->_addExtra('MATRIX_KEY', $value);
    }
    
 /** other methods **/

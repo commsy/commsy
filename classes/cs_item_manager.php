@@ -395,6 +395,7 @@ class cs_item_manager extends cs_manager {
        if (isset($this->_matrix_limit)) {
           $query .= ' INNER JOIN '.$this->addDatabasePrefix('link_items').' AS matrix_x ON matrix_x.first_item_id='.$this->addDatabasePrefix('items').'.item_id';
           $query .= ' INNER JOIN '.$this->addDatabasePrefix('link_items').' AS matrix_y ON matrix_y.first_item_id='.$this->addDatabasePrefix('items').'.item_id';
+          $query .= ' INNER JOIN '.$this->addDatabasePrefix('link_items').' AS matrix_key ON matrix_x.extras=matrix_y.extras';
        }
 
 
@@ -447,6 +448,10 @@ class cs_item_manager extends cs_manager {
            $pos_y = $array[1];
            if ($this->_matrix_limit !=-1){
               $query .= ' AND matrix_x.second_item_id="'.$pos_x.'" AND  matrix_y.second_item_id="'.$pos_y.'"';
+              $query .= ' AND matrix_x.deleter_id IS NULL';
+              $query .= ' AND matrix_x.deletion_date IS NULL';
+              $query .= ' AND matrix_y.deleter_id IS NULL';
+              $query .= ' AND matrix_y.deletion_date IS NULL';
            }
         }
         if (isset($this->_buzzword_limit)) {

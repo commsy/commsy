@@ -91,17 +91,14 @@ class cs_matrix_manager extends cs_labels_manager {
   function getEntriesInPosition($id1,$id2){
      $query  = 'SELECT count( DISTINCT li1.first_item_id) as count';
      $query .= ' FROM '.$this->addDatabasePrefix('link_items').' AS li1';
-     $query .= ' INNER JOIN '.$this->addDatabasePrefix('link_items').' AS li2 ON li1.first_item_id = li2.first_item_id';
+     $query .= ' INNER JOIN '.$this->addDatabasePrefix('link_items').' AS li2 ON li1.extras = li2.extras';
      $query .= ' WHERE 1';
      $query .= ' AND';
      $query .= ' li1.second_item_id = "'.$id1.'"';
      $query .= ' AND';
      $query .= ' li2.second_item_id = "'.$id2.'" ';
      $query .= ' AND';
-     $query .= ' ((li1.extras LIKE "%'.$id1.'_'.$id2.'%") OR (li2.extras LIKE "%'.$id1.'_'.$id2.'%")) ';
-     $query .= ' AND';
      $query .= ' li1.deleter_id IS NULL ';
-     #pr($query);
      $result = $this->_db_connector->performQuery($query);
      include_once('functions/development_functions.php');
      #debugToFile($query);
@@ -111,6 +108,23 @@ class cs_matrix_manager extends cs_labels_manager {
         return $result[0]['count'];
      }
   }
+  
+  /*function getEntriesInPosition($id1,$id2){
+  	  $return = 0;
+     $link_item_manager = $this->_environment->getLinkItemManager();
+     #$link_item_manager->setTypeArrayLimit(CS_LABEL_TYPE);
+     $link_item_manager->select();
+     $link_item_list = $link_item_manager->get();
+     $link_item_item = $link_item_list->getFirst();
+     while($link_item_item){
+        if($link_item_item->getMatrixCell() == $id1.'_'.$id2){
+            pr($link_item_item->getItemID());
+            $return++;
+        }
+        $link_item_item = $link_item_list->getNext();
+     }
+     return $return;
+  }*/
   
   function _performQuery ($mode = 'select') {
      if ($mode == 'count') {
@@ -334,7 +348,7 @@ class cs_matrix_manager extends cs_labels_manager {
          $link_item->setFirstLinkedItemType($item_type);
          $link_item->setSecondLinkedItemID($column_id);
          $link_item->setSecondLinkedItemType(CS_LABEL_TYPE);
-         $link_item->setMatrixCell($column_id.'_'.$row_id);
+         $link_item->setMatrixKey($item_id.'_'.$column_id.'_'.$row_id);
          $link_item->save();
          unset($link_item);
          $link_item = $link_item_manager->getNewItem();
@@ -342,7 +356,7 @@ class cs_matrix_manager extends cs_labels_manager {
          $link_item->setFirstLinkedItemType($item_type);
          $link_item->setSecondLinkedItemID($row_id);
          $link_item->setSecondLinkedItemType(CS_LABEL_TYPE);
-         $link_item->setMatrixCell($column_id.'_'.$row_id);
+         $link_item->setMatrixKey($item_id.'_'.$column_id.'_'.$row_id);
          $link_item->save();
          unset($link_item);
          unset($link_item_manager);
@@ -375,10 +389,9 @@ class cs_matrix_manager extends cs_labels_manager {
          $link_item_list = $link_item_manager->get();
          $link_item_item = $link_item_list->getFirst();
          while($link_item_item){
-         	pr($link_item_item->getMatrixCell().' '.$column_id.'_'.$row_id);
-         	if($link_item_item->getMatrixCell() == $column_id.'_'.$row_id){
-         		pr(1);
+         	if($link_item_item->getMatrixKey() == $item_id.'_'.$column_id.'_'.$row_id){
          		$link_item_manager->delete($link_item_item->getItemID());
+         		$item_manager->delete($link_item_item->getItemID());
          	}
          	$link_item_item = $link_item_list->getNext();
          }
@@ -470,7 +483,7 @@ class cs_matrix_manager extends cs_labels_manager {
          $query .= ' AND';
          $query .= ' li2.second_item_id = "'.$row_id.'" ';
          $query .= ' AND';
-         $query .= ' ((li1.extras LIKE "%'.$column_id.'_'.$row_id.'%") OR (li2.extras LIKE "%'.$column_id.'_'.$row_id.'%")) ';
+         $query .= ' ((li1.extras LIKE "%'.$column_id.'_'.$row_id.'%") OR (li2.extras LIKE "%'.$item_id.'_'.$column_id.'_'.$row_id.'%")) ';
          $query .= ' AND';
          $query .= ' li1.deleter_id IS NULL ';
          $result = $this->_db_connector->performQuery($query);
