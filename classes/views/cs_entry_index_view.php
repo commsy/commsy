@@ -815,7 +815,18 @@ class cs_entry_index_view extends cs_index_view {
          $html_table .= '<td name="matrix_table_left" style="background-color:#CCCCCC;">'.$row.LF;
          $html_table .= '</td>'.LF;
          foreach($matrix_column_title_array as $column_key => $column){
-            $html_table .= '<td class="droppable_matrix" id="id_'.$row_key.'_'.$column_key.'" style="text-align:center;"><a></a><span class="matrix_current_count">';
+         	$selected_cell = false;
+         	if(isset($this->_selmatrix)){
+         		$selmatrix_array = explode('_', $this->_selmatrix);
+         		if($selmatrix_array[1] == $column_key and $selmatrix_array[0] == $row_key){
+         			$selected_cell = true;
+         		}
+         	}
+         	if($selected_cell){
+         		$html_table .= '<td class="droppable_matrix" id="id_'.$row_key.'_'.$column_key.'" style="text-align:center; background-color:#eeeeee; font-weight:bold;"><a></a><span class="matrix_current_count">';
+         	} else {
+               $html_table .= '<td class="droppable_matrix" id="id_'.$row_key.'_'.$column_key.'" style="text-align:center;"><a></a><span class="matrix_current_count">';
+         	}
             $count = $matrix_manager->getEntriesInPosition($column_key,$row_key);
           	$params['selmatrix'] = $row_key.'_'.$column_key;
             $html_table .= ahref_curl($this->_environment->getCurrentContextID(),
