@@ -790,7 +790,7 @@ class cs_item_manager extends cs_manager {
    function getExternalViewerEntriesForRoom($room_id) {
    	$result_array = array();
    	$query_ids = 'SELECT item_id';
-      $query_ids .= ' FROM '.$this->addDatabasePrefix('materials');
+      $query_ids .= ' FROM '.$this->addDatabasePrefix('items');
       $query_ids .= ' WHERE context_id="'.$room_id.'"';
       $result_ids = $this->_db_connector->performQuery($query_ids);
       if ( isset($result_ids) and !empty($result_ids) ) {

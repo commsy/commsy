@@ -63,7 +63,7 @@ var $_list = NULL;
       $full_item = $item_manager->getItem($item->getItemID());
       if (is_object($full_item)){
          $html .= '   <tr class="list">'.LF;
-         $html .= '   <td '.$style.'>'.LF;
+         $html .= '   <td '.$style.' style="font-size:8pt;">'.LF;
          $type = $full_item->getType();
          if ($type =='label'){
             $type = $full_item->getLabelType();
@@ -260,12 +260,12 @@ var $_list = NULL;
       return $html;
 
    }
-   
+
    function getPreferencesAsHTML(){
    	$current_context = $this->_environment->getCurrentContextItem();
    	$count = $current_context->getPortletNewEntryListCount();
    	$user = $current_context->getPortletNewEntryListShowUser();
-   	
+
       $html = $this->_translator->getMessage('PORTLET_CONFIGURATION_NEW_ENTRIES_COUNT').': ';
       $html .= '<select id="portlet_new_entries_count" size="0" tabindex="30" style="font-size:10pt;">';
       if($count == '10'){
@@ -283,7 +283,7 @@ var $_list = NULL;
          $html .= '<option value="20">20</option>';
       }
       $html .= '</select><br/>';
-      
+
       #$html .= $this->_translator->getMessage('PORTLET_CONFIGURATION_NEW_ENTRIES_SHOW_USER').': ';
       #$html .= '<select id="portlet_new_entries_show_user" size="0" tabindex="30" style="font-size:10pt;">';
       #if($user == '1'){
@@ -297,7 +297,7 @@ var $_list = NULL;
       #   $html .= '<option value="-1">'.$this->_translator->getMessage('COMMON_NO').'</option>';
       #}
       #$html .= '</select><br/>';
-      
+
       $html .= '<input type="submit" id="portlet_new_entries_button" value="'.$this->_translator->getMessage('COMMON_SAVE_BUTTON').'">';
       return $html;
    }
