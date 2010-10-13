@@ -59,9 +59,9 @@ class cs_privateroom_home_released_entries_view extends cs_view {
       $html = '';
       $user = $this->_environment->getCurrentUser();
       $html .= '<table style="width:100%;">';
-      $html .= '<tr colspan="2">';
+      $html .= '<tr><td colspan="2">';
       $html .= '<div id="'.get_class($this).'" style="margin:0px 5px 5px 0px; font-weight:bold;">'.$this->_translator->getMessage('COMMON_RELEASED_ENTRIES_FOR_OTHER_USERS',$user->getFullName()).'</div>'.LF;
-      $html .= '</tr>';
+      $html .= '</td></tr>';
       if(!empty($released_ids)){
          $released_item = $item_list->getFirst();
           $i = 0;
@@ -72,15 +72,15 @@ class cs_privateroom_home_released_entries_view extends cs_view {
             $released_item = $item_list->getNext();
           }
       } else {
-         $html .= '<tr  class="list"><td class="odd" style="border-bottom: 0px;">'.$this->_translator->getMessage('COMMON_NO_ENTRIES').'</td></tr>';
+         $html .= '<tr  class="list"><td class="odd" style="border-bottom: 0px; font-size:8pt;">'.$this->_translator->getMessage('COMMON_NO_ENTRIES').'</td></tr>';
       }
       $html .= '</table>';
 
       $html .= '<hr/>';
       $html .= '<table style="width:100%;">';
-      $html .= '<tr colspan="2">';
+      $html .= '<tr><td colspan="2">';
       $html .= '<div id="'.get_class($this).'" style="margin:0px 5px 5px 0px; font-weight:bold;">'.$this->_translator->getMessage('COMMON_RELEASED_ENTRIES_FOR_CURRENT_USER').'</div>'.LF;
-      $html .= '</tr>';
+      $html .= '</td></tr>';
       if(!empty($viewable_ids)){
           $viewable_item = $item_list->getFirst();
           $i = 0;
@@ -91,7 +91,7 @@ class cs_privateroom_home_released_entries_view extends cs_view {
             $viewable_item = $item_list->getNext();
           }
       } else {
-         $html .= '<tr  class="list"><td class="odd" style="border-bottom: 0px;">'.$this->_translator->getMessage('COMMON_NO_ENTRIES').'</td></tr>';
+         $html .= '<tr  class="list"><td class="odd"  style="border-bottom: 0px; font-size:8pt;">'.$this->_translator->getMessage('COMMON_NO_ENTRIES').'</td></tr>';
       }
       $html .= '</table>';
       $html .= '</div>'.LF;

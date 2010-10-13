@@ -450,7 +450,7 @@ class cs_annotations_manager extends cs_manager {
    	  $this->backupItem($uid, array(	'title'				=>	'title',
    	  									'description'		=>	'description',
    	  									'modification_date'	=>	'modification_date'));
-   	  
+
       $current_datetime = getCurrentDateTimeInMySQL();
       $query  = 'SELECT '.$this->addDatabasePrefix('annotations').'.* FROM '.$this->addDatabasePrefix('annotations').' WHERE '.$this->addDatabasePrefix('annotations').'.creator_id = "'.encode(AS_DB,$uid).'"';
       $result = $this->_db_connector->performQuery($query);

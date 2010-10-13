@@ -839,6 +839,7 @@ class cs_item {
       $annotation_manager = $this->_environment->getAnnotationManager();
       $annotation_manager->resetLimits();
       $annotation_manager->setLinkedItemID($this->getItemID());
+      $annotation_manager->setContextLimit($this->getContextID());
       $annotation_manager->select();
       return $annotation_manager->get();
    }
