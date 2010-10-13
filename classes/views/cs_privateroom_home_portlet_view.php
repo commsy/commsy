@@ -196,7 +196,7 @@ class cs_privateroom_home_portlet_view extends cs_view{
          $html .= $portlet_view->getPortletJavascriptAsHTML();
       }
 
-      $html .='</div>'.LF;
+#      $html .='</div>'.LF;
       $html .='<div style="clear:both;"></div>'.LF;
       $html .= '<script type="text/javascript">'.LF;
       $html .= '<!--'.LF;
@@ -320,7 +320,7 @@ class cs_privateroom_home_portlet_view extends cs_view{
          $temp_array['checked']  = "";
       }
       $action_array[] = $temp_array;
-      
+
       #$temp_array = array();
       #$temp_array['dropdown_image']  = "new_icon";
       #$temp_array['text']  = $this->_translator->getMessage('PORTLET_CONFIGURATION_DOKUVERSER_BOX');
@@ -441,7 +441,7 @@ class cs_privateroom_home_portlet_view extends cs_view{
          $temp_array['checked']  = "";
       }
       $action_array[] = $temp_array;
-      
+
       $temp_array = array();
       $temp_array['dropdown_image']  = "new_icon";
       $temp_array['text']  = $this->_translator->getMessage('COMMON_RELEASED_ENTRIES_PORTLET');
@@ -452,7 +452,7 @@ class cs_privateroom_home_portlet_view extends cs_view{
          $temp_array['checked']  = "";
       }
       $action_array[] = $temp_array;
-      
+
       // init drop down menu
       if ( !empty($action_array)
            and count($action_array) >= 1

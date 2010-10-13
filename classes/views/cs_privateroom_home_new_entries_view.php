@@ -244,7 +244,7 @@ var $_list = NULL;
       $list = $this->_list;
       $html = '';
       $user = $this->_environment->getCurrentUser();
-      $html .= '<div id="'.get_class($this).'" style="margin:0px 5px 5px 5px;">'.$this->_translator->getMessage('COMMON_NEWEST_ENTRIES_IN_ROOMS',$user->getFullName()).'</div>'.LF;
+      $html .= '<div  id="'.get_class($this).'" style="margin:0px 5px 5px 5px;">'.$this->_translator->getMessage('COMMON_NEWEST_ENTRIES_IN_ROOMS',$user->getFullName()).'</div>'.LF;
       $html .= '<table style="width:100%;">';
       if ( !isset($list) || $list->isEmpty() ) {
          $html .= '<tr  class="list"><td class="odd" style="border-bottom: 0px;">'.$this->_translator->getMessage('COMMON_NO_ENTRIES').'</td></tr>';
@@ -298,7 +298,7 @@ var $_list = NULL;
       #}
       #$html .= '</select><br/>';
 
-      $html .= '<input type="submit" id="portlet_new_entries_button" value="'.$this->_translator->getMessage('COMMON_SAVE_BUTTON').'">';
+      $html .= '<input type="submit" id="portlet_new_entries_button" value="'.$this->_translator->getMessage('COMMON_SAVE_BUTTON').'"/>';
       return $html;
    }
 }

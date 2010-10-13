@@ -165,8 +165,8 @@ class cs_privateroom_home_buzzword_view extends cs_view {
       $buzzword_manager->setGetCountLinks();
       $buzzword_manager->select();
       $buzzword_list = $buzzword_manager->get();
-      $html = '<input type="text" id="portlet_buzzword_new" size="40">';
-      $html .= '<input type="submit" id="portlet_buzzword_new_button" value="'.$this->_translator->getMessage('BUZZWORDS_NEW_BUTTON').'">';
+      $html = '<input type="text" id="portlet_buzzword_new" size="40" />';
+      $html .= '<input type="submit" id="portlet_buzzword_new_button" value="'.$this->_translator->getMessage('BUZZWORDS_NEW_BUTTON').'" />';
       $html .= '<br/><br/>'.LF;
 
       $html .= '<div id="portlet_buzzword_combine">';
@@ -184,7 +184,7 @@ class cs_privateroom_home_buzzword_view extends cs_view {
          $buzzword = $buzzword_list->getNext();
       }
       $html .= '</select>'.LF;
-      $html .= '<input type="submit" id="portlet_buzzword_combine_button" value="'.$this->_translator->getMessage('BUZZWORDS_COMBINE_BUTTON').'">';
+      $html .= '<input type="submit" id="portlet_buzzword_combine_button" value="'.$this->_translator->getMessage('BUZZWORDS_COMBINE_BUTTON').'"/>';
       $html .= '</div><br/>';
 
       $length = $buzzword_list->getCount();
@@ -196,9 +196,9 @@ class cs_privateroom_home_buzzword_view extends cs_view {
       $buzzword = $buzzword_list->getFirst();
       while($buzzword){
          $html .= '<div>';
-         $html .= '<input type="text" class="portlet_buzzword_textfield" id="portlet_buzzword_'.$buzzword->getItemID().'" value="'.$buzzword->getName().'" size="40">&nbsp;';
-         $html .= '<input type="submit" class="portlet_buzzword_change_button" id="'.$buzzword->getItemID().'" value="'.$this->_translator->getMessage('BUZZWORDS_CHANGE_BUTTON').'">&nbsp;';
-         $html .= '<input type="submit" class="portlet_buzzword_delete_button" id="'.$buzzword->getItemID().'" value="'.$this->_translator->getMessage('COMMON_DELETE_BUTTON').'">';
+         $html .= '<input type="text" class="portlet_buzzword_textfield" id="portlet_buzzword_'.$buzzword->getItemID().'" value="'.$buzzword->getName().'" size="40"/>&nbsp;';
+         $html .= '<input type="submit" class="portlet_buzzword_change_button" id="'.$buzzword->getItemID().'" value="'.$this->_translator->getMessage('BUZZWORDS_CHANGE_BUTTON').'"/>&nbsp;';
+         $html .= '<input type="submit" class="portlet_buzzword_delete_button" id="'.$buzzword->getItemID().'" value="'.$this->_translator->getMessage('COMMON_DELETE_BUTTON').'"/>';
          $html .= '</div>';
          $buzzword = $buzzword_list->getNext();
       }

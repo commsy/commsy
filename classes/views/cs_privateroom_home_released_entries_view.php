@@ -94,7 +94,6 @@ class cs_privateroom_home_released_entries_view extends cs_view {
          $html .= '<tr  class="list"><td class="odd"  style="border-bottom: 0px; font-size:8pt;">'.$this->_translator->getMessage('COMMON_NO_ENTRIES').'</td></tr>';
       }
       $html .= '</table>';
-      $html .= '</div>'.LF;
       return $html;
    }
 
@@ -275,6 +274,7 @@ class cs_privateroom_home_released_entries_view extends cs_view {
       }
       if ($related_user->isUser()) {
          $noticed_manager = $this->_environment->getNoticedManager();
+         $noticed_manager->_current_user_id = $related_user->getItemID();
          $annotation_list = $item->getItemAnnotationList();
          $anno_item = $annotation_list->getFirst();
          $new = false;

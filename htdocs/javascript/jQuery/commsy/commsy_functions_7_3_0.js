@@ -825,7 +825,7 @@ jQuery(document).ready(function() {
 //			draw_dates_month();
 //		});
 	}
-	
+
 	// set commsy body to a fixed size
 	var body_width = jQuery('[class=commsy_body]').width();
 	jQuery('[class=commsy_body]').css('width', body_width);
@@ -1142,14 +1142,14 @@ jQuery(document).ready(function() {
 		jQuery(this).click(function() {
 			jQuery('#'+id).remove();
 			jQuery('#'+id+'_preferences').remove();
-			
+
 			// Haken im DropDown-Menu entfernen!
 			jQuery('[name=myentries]:checked').each(function(){
 				if(id == jQuery(this).attr('value')){
 					jQuery(this).attr('checked', false);
 				}
 			});
-			
+
 			var json_data = new Object();
 		    var portlet_columns = jQuery(".column");
 		    for ( var int = 0; int < portlet_columns.length; int++) {
@@ -1172,7 +1172,7 @@ jQuery(document).ready(function() {
 				}
 				json_data['column_'+int] = column_portlets;
 			}
-			
+
 			jQuery.ajax({
 		       url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct='+window.ajax_function+'&output=json&do=save_config',
 			   data: json_data,
@@ -1459,7 +1459,7 @@ function dropdown(object, offset, button){
 function delete_overlay(element, html_element, click_extra_action) {
 	var extra = '';
 	delete_overlay.element = element;
-	
+
 	jQuery('body').append(
     	    jQuery("<div/>", {
     	    	"id"	: "delete_confirm_overlay_background",
@@ -1492,10 +1492,10 @@ function delete_overlay(element, html_element, click_extra_action) {
     	        	        "click" : function() {
     	        	    		jQuery("[id='delete_confirm_overlay_background']").remove();
     	        	    		jQuery("[id='delete_confirm_overlay_box']").remove();
-    	        	    		
+
     	        	    		// remove event handler
     	        	    		delete_overlay.element.unbind();
-    	        	    		
+
     	        	    		// click for buttons and redirect for links
     	        	    		if(html_element.type == 'submit') {
     	        	    			/*
@@ -1505,26 +1505,26 @@ function delete_overlay(element, html_element, click_extra_action) {
         	        	    		 * To avoid visual effects(change of value), the submit button will be
         	        	    		 * renamed and replaced by an invisible pendant.
         	        	    		 */
-        	        	    		
+
     	        	    			// set button parameters
     	        	    			var id = html_element.id;
     	        	    			var name = 'delete_option';
-    	        	    			
+
     	        	    			// Look for '#' in button-name
     	        	    			var rSplit = html_element.name.split('#');
     	        	    			if(rSplit.length > 1) {
     	        	    				name += '#' + rSplit[1];
     	        	    			}
-    	        	    			
+
     	        	    			// change id of original button
 	        	    				html_element.id = html_element.id + '_fake';
-	        	    				
+
     	        	    			// get form of originial button
     	        	    			var form = jQuery("input[id='" + html_element.id + "']").parent();
     	        	    			while(form[0].nodeName.substr(0, 4) != 'FORM') {
     	        	    				form = form.parent();
     	        	    			}
-    	        	    			
+
     	        	    			// add new invisible button to form
     	        	    			form.append(
     	        	    			    jQuery("<input/>", {
@@ -1535,37 +1535,37 @@ function delete_overlay(element, html_element, click_extra_action) {
         	        	    			    "id" : id
         	        	    			})
     	        	    			);
-    	        	    			
+
     	        	    			// click button
     	        	    			jQuery("input[id='" + id + "']").click();
     	        	    		} else {
     	        	    			var href = html_element.href;
     	        	    			var href_new = '';
-    	        	    			
+
     	        	    			// remove anchor
     	        	    			var split = href.split('#');
     	        	    			var anchor = '';
     	        	    			if(split.length > 1) {
     	        	    				anchor = split[1];
     	        	    			}
-    	        	    			
+
     	        	    			// remove 'action=delete'
     	        	    			split = split[0].split('&');
-    	        	    			
+
     	        	    			for(var i in split) {
     	        	    				if(split[i] != 'action=delete') {
     	        	    					href_new += split[i] + '&';
     	        	    				}
     	        	    			}
     	        	    			href_new += 'delete_option=' + button_delete;
-    	        	    			
+
     	        	    			if(anchor != '') {
     	        	    				href_new += '#' + anchor;
     	        	    			}
-    	        	    			
+
     	        	    			jQuery(location).attr('href', href_new);
     	        	    		}
-    	        	    		
+
     	        	    		return false;
     	        	    	}
     	        	    })
@@ -1585,9 +1585,9 @@ function delete_overlay(element, html_element, click_extra_action) {
     	        				return false;
     	        		    }
     	        		})))));
-    	
+
     	jQuery("[id='delete_confirm_overlay_box']").fadeIn('slow');
-    	
+
     	return false;
 }
 
@@ -1600,11 +1600,11 @@ jQuery(document).ready(function() {
 	jQuery("[id^='delete_confirmselect_']").click(function() {
 		var element = jQuery(this);
 		var html_element = this;
-		
+
 		if(jQuery("[id^='delete_check_']").attr('selected')) {
 			// add overlay
 		   	delete_overlay(element, html_element, function() {});
-		   	
+
 		    return false;
 		}
 	});
@@ -1623,48 +1623,48 @@ jQuery(document).ready(function() {
     	delete_overlay(element, html_element, function() {
     		return false;
     	});
-    	
+
     	return false;
 	});
 });
 
 function formatDiscussionTreeWithProgress(div_width, iteration, creators, dates) {
 	var total = creators.length;
-	
+
 	if(iteration == total) {
 		setupDiscussionTree();
 		return false;
 	}
-	
+
 	// do css stuff
 	// set all creator texts at 50%
 	var creator_width = (Math.floor(div_width / 2) * 1);
 	jQuery(creators[iteration]).css('position', 'absolute');
 	jQuery(creators[iteration]).css('display', 'inline');
 	jQuery(creators[iteration]).css('left', creator_width);
-	
+
 	// set all date texts at 80%
 	var date_width = (Math.floor(div_width / 5) * 4);
 	jQuery(dates[iteration]).css('position', 'absolute');
 	jQuery(dates[iteration]).css('display', 'inline');
 	jQuery(dates[iteration]).css('left', date_width);
-	
+
 	// update progressbar
 	var percent = (iteration+1) * 100 / total;
 	jQuery('[id=discussion_tree_progressbar]').progressbar("value", percent);
 	jQuery('[id=discussion_tree_progressbar_percent]').html(Math.floor(percent));
-	
+
 	// call recursivly
 	setTimeout(function() {
 		formatDiscussionTreeWithProgress(div_width, ++iteration, creators, dates);
 	}, 1);
-	
+
 	return false;
 }
 
 function setupDiscussionTree() {
 	var tree = jQuery('[id=discussion_tree]');
-	
+
 	tree.dynatree({
 		fx: { height: "toggle", duration: 200 },
 		onActivate: function(dtnode) {
@@ -1683,46 +1683,46 @@ function setupDiscussionTree() {
 					event.target.className != 'ui-dynatree-expander')) {
 				return false;
 			}
-			
+
 			// set max tree depth
 			if(dtnode.getLevel() > 11) return false;
-			
+
 			if(event.target.nodeName == 'A') {
 				jQuery(location).attr('href', event.target.href);
-				
+
 				return false;
 			}
 		}
 	});
-	
+
 	var max_visible_nodes = 10;
 	var max_expand_level = getExpandLevel(tree, max_visible_nodes);
-	
+
 	// root immer ausklappen
 	if(max_expand_level < 2) max_expand_level = 2;
-	
+
 	tree.dynatree("getRoot").visit(function(dtnode) {
 		if(dtnode.getLevel() < max_expand_level) {
 			dtnode.expand(true);
 		}
 	});
-	
+
 	// "geänderte" und "neue" Einträge ausklappen
 	jQuery('[id=discussion_tree]').dynatree("getRoot").visit(function(dtnode) {
 	    var title = dtnode.data.title;
 	    var regexp = /(change_status_text)/g;
-	    
+
 	    if(regexp.test(title) == true) {
 	    	dtnode.focus();
 	    }
 	});
-	
+
 	// make tree visible
 	jQuery('[id=discussion_tree]').fadeIn(200);
-	
+
 	// remove progressbar
 	jQuery('[id=discussion_tree_progressbar_wrap]').remove();
-	
+
 	// set commsy body to a fixed size
 	var body_width = jQuery('[class=commsy_body]').width();
 	jQuery('[class=commsy_body]').css('width', body_width);
@@ -1730,21 +1730,21 @@ function setupDiscussionTree() {
 
 jQuery(document).ready(function() {
 	var tree = jQuery('[id=discussion_tree]');
-	
+
 	if(tree.length) {
 		jQuery.ui.dynatree.nodedatadefaults["icon"] = false;
-		
+
 		// set progressbar
 		jQuery('[id=discussion_tree_progressbar]').progressbar();
-		
+
 		// get div width
 		var div_width = jQuery('[class=infoborder]').width();
-		
+
 		var creators = jQuery('[id=discussion_tree] [class=discussion_detail_view_threaded_tree_creator]');
 		var dates = jQuery('[id=discussion_tree] [class=discussion_detail_view_threaded_tree_date]');
-		
+
 		formatDiscussionTreeWithProgress(div_width, 0, creators, dates);
-		
+
 		return false;
 	}
 });
@@ -1786,14 +1786,14 @@ jQuery(document).ready(function() {
 		var id = jQuery(this).parent().parent().parent().attr('id');
 		jQuery(this).click(function() {
 			jQuery('#'+id).remove();
-			
+
 			// Haken im DropDown-Menu entfernen!
 			jQuery('[name=portlets]:checked').each(function(){
 				if(id == jQuery(this).attr('value')){
 					jQuery(this).attr('checked', false);
 				}
 			});
-			
+
 			var json_data = new Object();
 		    var portlet_columns = jQuery(".column");
 		    for ( var int = 0; int < portlet_columns.length; int++) {
@@ -1813,7 +1813,7 @@ jQuery(document).ready(function() {
 				}
 				json_data['column_'+int] = column_portlets;
 			}
-			
+
 			jQuery.ajax({
 		       url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct='+window.ajax_function+'&output=json&do=save_config',
 			   data: json_data,
@@ -1877,7 +1877,7 @@ function turn_portlet_youtube(id, portlet){
 	     jQuery(this).click(function(){
 	        portlet_data['youtube_channel'] = jQuery('#portlet_youtube_channel').val();
 	    	var json_data = new Object();
-	    	json_data['youtube_channel'] = jQuery('#portlet_youtube_channel').val();	
+	    	json_data['youtube_channel'] = jQuery('#portlet_youtube_channel').val();
 	    	jQuery.ajax({
 	    	   url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct=privateroom_home_portlet_configuration&output=json&portlet=youtube',
 	    	   data: json_data,
@@ -1897,10 +1897,10 @@ function return_portlet_youtube(id, portlet){
 		  var message = youtube_message.replace('TEMP_CHANNEL', portlet_data['youtube_channel']);
 		  jQuery('[name="youtube_message"]').html(message);
 	  }
-	  
+
 	  $("#youtubevideos_portlet").find('#channel_div').remove();
 	  $("#youtubevideos_portlet").find('p.loader').remove();
-	
+
 	  $("#youtubevideos_portlet").youTubeChannel({
 	     userName: portlet_data['youtube_channel'],
 	     channel: "favorites",
@@ -1926,7 +1926,7 @@ function turn_portlet_flickr(id, portlet){
          jQuery(this).click(function(){
             portlet_data['flickr_id'] = jQuery('#portlet_flickr_id').val();
             var json_data = new Object();
-            json_data['flickr_id'] = jQuery('#portlet_flickr_id').val();	
+            json_data['flickr_id'] = jQuery('#portlet_flickr_id').val();
             jQuery.ajax({
                url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct=privateroom_home_portlet_configuration&output=json&portlet=flickr',
                data: json_data,
@@ -1946,7 +1946,7 @@ function return_portlet_flickr(id, portlet){
          var message = flickr_message.replace('TEMP_ID', portlet_data['flickr_id']);
          jQuery('[name="flickr_message"]').html(message);
       }
-		  
+
       var url = "http://api.flickr.com/services/feeds/photos_faves.gne?format=json&id="+portlet_data['flickr_id']+"&jsoncallback=?";
       var bridge = new ctRotatorBridgeFlickr(url, function(dataSource){
          $("#flickr").ctRotator(dataSource, {
@@ -1972,7 +1972,7 @@ function turn_portlet_twitter(id, portlet){
          jQuery(this).click(function(){
             portlet_data['twitter_channel_id'] = jQuery('#portlet_twitter_channel_id').val();
             var json_data = new Object();
-            json_data['twitter_channel_id'] = jQuery('#portlet_twitter_channel_id').val();	
+            json_data['twitter_channel_id'] = jQuery('#portlet_twitter_channel_id').val();
             jQuery.ajax({
                url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct=privateroom_home_portlet_configuration&output=json&portlet=twitter',
                data: json_data,
@@ -1992,12 +1992,12 @@ function return_portlet_twitter(id, portlet){
          var message = twitter_message.replace('TEMP_TWITTER_CHANNEL_ID', portlet_data['twitter_channel_id']);
          jQuery('[name="twitter_message"]').html(message);
       }
-			  
+
       $("#twitter_friends").twitterFriends({
          debug:1,
          username:portlet_data['twitter_channel_id']
       });
-			  
+
       portlet_data['twitter_save'] = false;
    }
 }
@@ -2006,7 +2006,7 @@ function turn_portlet_rss(id, portlet){
    jQuery('#portlet_rss_add_button').click(function(){
 	  if(jQuery('#portlet_rss_title').val() != '' && jQuery('#portlet_rss_adress').val() != ''){
          jQuery('#portlet_rss_list').append('<div class="rss_list_div" name="'+jQuery('#portlet_rss_title').val()+'"><input type="checkbox" name="portlet_rss[]" value="'+jQuery('#portlet_rss_title').val()+'" checked >'+jQuery('#portlet_rss_title').val()+' ('+jQuery('#portlet_rss_adress').val()+')</div>');
-         
+
          var json_data = new Object();
     	 json_data['rss_add_titel'] = jQuery('#portlet_rss_title').val();
     	 json_data['rss_add_adress'] = jQuery('#portlet_rss_adress').val();
@@ -2017,7 +2017,7 @@ function turn_portlet_rss(id, portlet){
     	       portlet_data['rss_save'] = true;
     	    }
     	 });
-         
+
          jQuery('#portlet_rss_title').val('');
          jQuery('#portlet_rss_adress').val('');
 	  }
@@ -2028,18 +2028,18 @@ function turn_portlet_rss(id, portlet){
 	  jQuery(this).parent().find('[name="portlet_rss[]"]:checked').each(function(){
 		  checked_array.push(jQuery(this).attr('value'));
 	  });
-	  
+
 	  if(jQuery('#portlet_rss_title').val() != '' && jQuery('#portlet_rss_adress').val() != ''){
 		  json_data['rss_add_titel'] = jQuery('#portlet_rss_title').val();
 		  json_data['rss_add_adress'] = jQuery('#portlet_rss_adress').val();
 		  jQuery('#portlet_rss_list').append('<div class="rss_list_div" name="'+jQuery('#portlet_rss_title').val()+'"><input type="checkbox" name="portlet_rss[]" value="'+jQuery('#portlet_rss_title').val()+'" checked >'+jQuery('#portlet_rss_title').val()+' ('+jQuery('#portlet_rss_adress').val()+')</div>');
 	      checked_array.push(jQuery('#portlet_rss_title').val());
 	  }
-	  
+
 	  portlet_data['rss_checked'] = checked_array;
 	  json_data['rss_checked'] = checked_array;
-	  
-  	  
+
+
 	  jQuery.ajax({
 	     url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct=privateroom_home_portlet_configuration&output=json&portlet=rss_save',
 	     data: json_data,
@@ -2069,13 +2069,13 @@ function return_portlet_rss(id, portlet){
 	  if(typeof(portlet_data['rss_checked']) !== 'undefined'){
 	     var temp_div = jQuery('.ticker').parent();
 	     jQuery(temp_div).children().remove();
-	  
+
 	     for ( var int = 0; int < portlet_data['rss_checked'].length; int++) {
 		    var rss = portlet_data['rss_checked'][int];
 		    jQuery(temp_div).append('<h4 style="margin-bottom: 0px; margin-top: 0px;">'+rss+'</h4><div id="'+rss+'" class="ticker"></div>');
 		    new rssticker_ajax(rss, 0, rss, "ticker", 10000, "date",rss_ticker_cid,rss_ticker_sid);
 	     }
-	  
+
          portlet_data['rss_save'] = false;
 	  }
    }
@@ -2108,18 +2108,18 @@ function turn_portlet_matrix(id, portlet){
 	    	   portlet_data['current_matrix_rows'] = new Array();
 	    	   portlet_data['current_matrix_columns'] = new Array();
 	    	   portlet_data['change'] = new Array();
-	    	 
+
 	    	   var json_data = new Object();
 	    	   json_data['new_matrix_row'] = jQuery('#new_matrix_row').val();
 	    	   json_data['new_matrix_column'] = jQuery('#new_matrix_column').val();
-	    	   
+
 	    	   var checked_array = new Array();
 	    	   jQuery(this).parent().find('[name^="matrix_"]:checked').each(function(){
 	    		  checked_array.push(new Array(jQuery(this).attr('value'), jQuery('[name=matrixtext_'+jQuery(this).attr('value')+']').val()));
 	    	   });
 	    	   json_data['current_matrix'] = checked_array;
 	    	   portlet_data['current_matrix'] = checked_array;
-	    	   
+
 	    	   jQuery.ajax({
 	    	   url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct=privateroom_matrix_configuration&output=json&do=save_config',
 	    	      data: json_data,
@@ -2127,15 +2127,15 @@ function turn_portlet_matrix(id, portlet){
 	    		     //alert(msg);
 	    	         portlet_data['matrix_save'] = true;
 	    	         //portlet.revertFlip();
-	    	         
+
 	    	         jQuery('#matrix_rows').find('[name^="matrix_"]:checked').each(function(){
         	    		 portlet_data['current_matrix_rows'].push(new MatrixItem(jQuery(this).val(), ''));
         	    	 });
-        	    	 
+
                      jQuery('#matrix_columns').find('[name^="matrix_"]:checked').each(function(){
                     	 portlet_data['current_matrix_columns'].push(new MatrixItem(jQuery(this).val(),''));
          	    	 });
-	    	         
+
 	    	         var resultJSON = eval('(' + msg + ')');
                      if (resultJSON === undefined){
                      }else{
@@ -2156,7 +2156,7 @@ function turn_portlet_matrix(id, portlet){
         	    	    jQuery(this).parent().remove();
         	    	 });
                      jQuery('#new_matrix_row').val(new_row_message);
-                     jQuery('#new_matrix_column').val(new_column_message);  
+                     jQuery('#new_matrix_column').val(new_column_message);
 	    	     }
 	         });
 		 });
@@ -2180,14 +2180,14 @@ function return_portlet_matrix(id, portlet){
 			  }
 		  }
 	  });
-	  
+
 	  jQuery('#matrix_table').find('tr').each(function(){
 	  	  if(jQuery(this).attr('id') != 'matrix_table_header'){
 	  		  var change = portlet_data['change'][0];
 	  		  jQuery(this).find('td').first().html(change[jQuery(this).attr('id')]);
 	  	  }
 	  });
-	  
+
 	  for ( var int = 0; int < portlet_data['current_matrix_rows_new'].length; int++) {
 		var temp_row = portlet_data['current_matrix_rows_new'][int];
 		jQuery('#matrix_table').append('<tr id="'+temp_row.id+'"><td name="matrix_table_left" style="background-color:#CCCCCC;">'+temp_row.name+'</td></tr>');
@@ -2196,7 +2196,7 @@ function return_portlet_matrix(id, portlet){
 			jQuery('#'+temp_row.id).append('<td class="droppable_matrix" id="id_'+temp_row.id+'_'+temp_column+'" style="text-align:center;">0</td>');
 		}
 	  }
-	  
+
 	  // Spalten
 	  jQuery('#matrix_table').find('tr').each(function(){
 		  if(jQuery(this).attr('id') != 'matrix_table_header'){
@@ -2237,7 +2237,7 @@ function return_portlet_matrix(id, portlet){
 			  });
 		  }
 	  });
-	  
+
 	  for ( var int = 0; int < portlet_data['current_matrix_columns_new'].length; int++) {
 	     var temp_column = portlet_data['current_matrix_columns_new'][int];
 	     jQuery('#matrix_table').find('tr').each(function(){
@@ -2248,7 +2248,7 @@ function return_portlet_matrix(id, portlet){
 			  }
 		  });
 	  }
-	  
+
 	  portlet_data['matrix_save'] = false;
 	  portlet_data['current_matrix_rows_new'] = new Array();
 	  portlet_data['current_matrix_columns_new'] = new Array();
@@ -2267,7 +2267,7 @@ function drop_to_matrix(id, item_id){
    json_data['row_id'] = id_array[1];
    json_data['column_id'] = id_array[2];
    json_data['item_id'] = item_id;
-   
+
    jQuery.ajax({
    url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct=privateroom_entry&output=json&do=update_matrix&action=add_item',
       data: json_data,
@@ -2367,13 +2367,13 @@ portlet_data['buzzwords_delete'] = new Array();
 portlet_data['buzzwords_combine'] = new Array();
 function turn_portlet_buzzwords(id, portlet){
    jQuery('#portlet_buzzword_new').val('');
-   
+
    for ( var int = 0; int < portlet_data['buzzwords_change'].length; int++) {
       var temp_change_buzzword = portlet_data['buzzwords_change'][int];
       jQuery('#portlet_buzzword_'+temp_change_buzzword.id).val(temp_change_buzzword.name)
    }
    //portlet_data['buzzwords_change'] = new Array();
-   
+
    jQuery('#portlet_buzzword_new_button').click(function(){
       portlet_data['new_buzzword'] = jQuery('#portlet_buzzword_new').val();
 	  var json_data = new Object();
@@ -2390,7 +2390,7 @@ function turn_portlet_buzzwords(id, portlet){
             }else{
         	   portlet_data['buzzwords_new'].push(new BuzzwordItem(resultJSON['new_buzzword_id'], resultJSON['new_buzzword_name']));
         	   var insert = false;
-        	   jQuery('#portlet_buzzword_preferences_list').find('div').each(function(){	  
+        	   jQuery('#portlet_buzzword_preferences_list').find('div').each(function(){
                if(jQuery(this).find('.portlet_buzzword_textfield').val().toLowerCase() > resultJSON['new_buzzword_name'].toLowerCase() && !insert){
                   jQuery(this).before('<div><input type="text" class="portlet_buzzword_textfield" id="portlet_buzzword_'+resultJSON['new_buzzword_id']+'" value="'+resultJSON['new_buzzword_name']+'" size="40">&nbsp;<input type="submit" class="portlet_buzzword_change_button" id="'+resultJSON['new_buzzword_id']+'" value="Ändern">&nbsp;<input type="submit" class="portlet_buzzword_delete_button" id="'+resultJSON['new_buzzword_id']+'" value="Löschen"></div>');
                	  insert = true;
@@ -2436,7 +2436,7 @@ function turn_portlet_buzzwords(id, portlet){
 	     }
 	  });
    });
-   
+
    jQuery('#portlet_buzzword_combine_button').click(function(){
      var json_data = new Object();
      json_data['buzzword_combine_first'] = jQuery('#portal_buzzword_combine_first').find(':selected').val();
@@ -2479,7 +2479,7 @@ function turn_portlet_buzzwords(id, portlet){
         }
      });
    });
-   
+
    activate_buzzword_buttons();
 }
 
@@ -2505,7 +2505,7 @@ function return_portlet_buzzwords(id, portlet){
 			}
 		 }
 	  }
-	  
+
 	  for ( var int = 0; int < portlet_data['buzzwords_delete'].length; int++) {
 		var temp_delete_buzzword = portlet_data['buzzwords_delete'][int];
 		jQuery(portlet).find('.portlet-content').find('a').each(function(){
@@ -2519,7 +2519,7 @@ function return_portlet_buzzwords(id, portlet){
 			jQuery(portlet).find('.portlet-content').append('<span class="disabled" style="font-size:10pt;">'+buzzword_message+'</span></div><div id="null"></div>');
 		}
 	  }
-	  
+
 	  for ( var int = 0; int < portlet_data['buzzwords_change'].length; int++) {
 		var temp_change_buzzword = portlet_data['buzzwords_change'][int];
 		jQuery(portlet).find('.portlet-content').find('a').each(function(){
@@ -2531,7 +2531,7 @@ function return_portlet_buzzwords(id, portlet){
 			}
 		});
 	  }
-	  
+
 	  jQuery(".droppable_buzzword").droppable({
 		 hoverClass: 'droppable_item_hover',
 		 drop: function(event, ui) {
@@ -2555,7 +2555,7 @@ function return_portlet_buzzwords(id, portlet){
 			});
 		 }
 	  });
-	  
+
 	  portlet_data['buzzwords_new'] = new Array();
 	  //portlet_data['buzzwords_change'] = new Array();
 	  portlet_data['buzzwords_delete'] = new Array();
@@ -2591,7 +2591,7 @@ function activate_buzzword_buttons(){
                   });
                }
            }
-        }); 
+        });
       });
    });
    jQuery('.portlet_buzzword_delete_button').each(function(){
@@ -2665,7 +2665,7 @@ jQuery(document).ready(function() {
 
 				var html = jQuery('<div id="dropdown_menu_'+int3+'" class="dropdown_menu"></div>');
 				var offset = image.offset();
-				
+
 				var ul = jQuery('<ul></ul>');
 
 				if(portletsColumnCount == 2){
@@ -2673,7 +2673,7 @@ jQuery(document).ready(function() {
 				} else if (portletsColumnCount == 3){
 					ul.append(jQuery('<li class="dropdown" style="text-align:center;">'+portletsColumnText+': <input type="radio" name="column_count" value="2">2 <input type="radio" name="column_count" value="3" checked>3</li>'));
 				}
-				
+
 				ul.append('<li class="dropdown_seperator"><hr class="dropdown_seperator"></li>');
 				for ( var int4 = 0; int4 < dropDownPortlets.length; int4++) {
 					var temp_menu_entry = dropDownPortlets[int4];
@@ -2689,10 +2689,10 @@ jQuery(document).ready(function() {
 					}
 				}
 				ul.append('<li class="dropdown_seperator"><hr class="dropdown_seperator"></li>');
-				
+
 				var ok_button = jQuery('<li class="dropdown" style="text-align:center;"><input type="submit" value="'+portletsSaveButton+'"></li>');
 				ul.append(ok_button);
-				
+
 				html.append(ul);
 				image.parent().wrap('<div style="display:inline;"></div>');
 				image.parent().parent().append(button);
@@ -2748,17 +2748,17 @@ jQuery(document).ready(function() {
 				jQuery('#dropdown_button_'+int3).mouseout(function(){
 					this.mouse_is_over = false;
 				});
-				
+
 				ok_button.click(function(){
 					var json_data = new Object();
 					json_data['column_count'] = jQuery('[name=column_count]:checked').attr('value');
-					
+
 					var portlet_array = new Array();
 					jQuery('[name=portlets]:checked').each(function(){
 						portlet_array.push(jQuery(this).attr('value'));
 					});
 					json_data['portlets'] = portlet_array;
-					
+
 					jQuery.ajax({
 					   url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct=privateroom_home_configuration&output=json&do=save_config',
 					   data: json_data,
@@ -2791,14 +2791,14 @@ jQuery(document).ready(function() {
 		var id = jQuery(this).parent().parent().attr('id');
 		jQuery(this).click(function() {
 			jQuery('#'+id).parent().remove();
-			
+
 			// Haken im DropDown-Menu entfernen!
 			jQuery('[name=myrooms]:checked').each(function(){
 				if(id == jQuery(this).attr('value')){
 					jQuery(this).attr('checked', false);
 				}
 			});
-			
+
 			var json_data = new Object();
 		    var portlet_columns = jQuery(".column");
 		    for ( var int = 0; int < portlet_columns.length; int++) {
@@ -2818,7 +2818,7 @@ jQuery(document).ready(function() {
 				}
 				json_data['column_'+int] = column_portlets;
 			}
-			
+
 			jQuery.ajax({
 		       url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct='+window.ajax_function+'&output=json&do=save_config',
 		       data: json_data,
@@ -2871,7 +2871,7 @@ jQuery(document).ready(function() {
 				var offset = image.offset();
 
 				var ul = jQuery('<ul></ul>');
-				
+
 				for ( var int4 = 0; int4 < dropDownMyRooms.length; int4++) {
 					var temp_menu_entry = dropDownMyRooms[int4];
 					if(temp_menu_entry[0] == current_menu){
@@ -2886,10 +2886,10 @@ jQuery(document).ready(function() {
 					}
 				}
 				ul.append('<li class="dropdown_seperator"><hr class="dropdown_seperator"></li>');
-				
+
 				var ok_button = jQuery('<li class="dropdown" style="text-align:center;"><input type="submit" value="'+myroomSaveButton+'"></li>');
 				ul.append(ok_button);
-				
+
 				html.append(ul);
 				image.parent().wrap('<div style="display:inline;"></div>');
 				image.parent().parent().append(button);
@@ -2944,7 +2944,7 @@ jQuery(document).ready(function() {
 				jQuery('#dropdown_button_'+int3).mouseout(function(){
 					this.mouse_is_over = false;
 				});
-				
+
 				ok_button.click(function(){
 					var json_data = new Object();
 
@@ -2953,7 +2953,7 @@ jQuery(document).ready(function() {
 						portlet_array.push(jQuery(this).attr('value'));
 					});
 					json_data['myrooms'] = portlet_array;
-					
+
 					jQuery.ajax({
 					   url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct=privateroom_myroom_configuration&output=json&do=save_config',
 					   data: json_data,
@@ -3009,7 +3009,7 @@ jQuery(document).ready(function() {
 				var offset = image.offset();
 
 				var ul = jQuery('<ul></ul>');
-				
+
 				for ( var int4 = 0; int4 < dropDownMyEntries.length; int4++) {
 					var temp_menu_entry = dropDownMyEntries[int4];
 					if(temp_menu_entry[0] == current_menu){
@@ -3024,10 +3024,10 @@ jQuery(document).ready(function() {
 					}
 				}
 				ul.append('<li class="dropdown_seperator"><hr class="dropdown_seperator"></li>');
-				
+
 				var ok_button = jQuery('<li class="dropdown" style="text-align:center;"><input type="submit" value="'+myentriesSaveButton+'"></li>');
 				ul.append(ok_button);
-				
+
 				html.append(ul);
 				image.parent().wrap('<div style="display:inline;"></div>');
 				image.parent().parent().append(button);
@@ -3082,7 +3082,7 @@ jQuery(document).ready(function() {
 				jQuery('#dropdown_button_'+int3).mouseout(function(){
 					this.mouse_is_over = false;
 				});
-				
+
 				ok_button.click(function(){
 					var json_data = new Object();
 
@@ -3091,13 +3091,13 @@ jQuery(document).ready(function() {
 						portlet_array.push(jQuery(this).attr('value'));
 					});
 					json_data['myentries'] = portlet_array;
-					
+
 					jQuery.ajax({
 					   url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct=privateroom_my_entries_configuration&output=json&do=save_config',
 					   data: json_data,
 					   success: function(msg){
 					      //window.location = 'commsy.php?cid='+window.ajax_cid+'&mod=entry&fct=index';
-						  window.location = window.location.href; 
+						  window.location = window.location.href;
 					   }
 					});
 				});
@@ -3152,7 +3152,7 @@ jQuery(document).ready(function() {
 				var scroll_div;
 				var scroll_ul;
 				var scroll = false;
-				
+
 				for ( var int4 = 0; int4 < dropDownMyCalendar.length; int4++) {
 					var temp_menu_entry = dropDownMyCalendar[int4];
 					if(temp_menu_entry[0] == current_menu){
@@ -3183,10 +3183,10 @@ jQuery(document).ready(function() {
 					}
 				}
 				ul.append('<li class="dropdown_seperator"><hr class="dropdown_seperator"></li>');
-				
+
 				var ok_button = jQuery('<li class="dropdown" style="text-align:center;"><input type="submit" value="'+mycalendarSaveButton+'"></li>');
 				ul.append(ok_button);
-				
+
 				html.append(ul);
 				image.parent().wrap('<div style="display:inline;"></div>');
 				image.parent().parent().append(button);
@@ -3241,7 +3241,7 @@ jQuery(document).ready(function() {
 				jQuery('#dropdown_button_'+int3).mouseout(function(){
 					this.mouse_is_over = false;
 				});
-				
+
 				ok_button.click(function(){
 					var json_data = new Object();
 
@@ -3250,13 +3250,13 @@ jQuery(document).ready(function() {
 						portlet_array.push(jQuery(this).attr('value'));
 					});
 					json_data['mycalendar'] = portlet_array;
-					
+
 					jQuery.ajax({
 					   url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct=privateroom_mycalendar_configuration&output=json&do=save_config',
 					   data: json_data,
 					   success: function(msg){
 					      //window.location = 'commsy.php?cid='+window.ajax_cid+'&mod=entry&fct=index';
-						  window.location = window.location.href; 
+						  window.location = window.location.href;
 					   }
 					});
 				});
@@ -3271,14 +3271,14 @@ jQuery(document).ready(function() {
 		jQuery(this).click(function() {
 			jQuery('#'+id).parent().remove();
 			jQuery('#'+id+'_preferences').remove();
-			
+
 			// Haken im DropDown-Menu entfernen!
 			jQuery('[name=mycalendar]:checked').each(function(){
 				if(id == jQuery(this).attr('value')){
 					jQuery(this).attr('checked', false);
 				}
 			});
-			
+
 			var json_data = new Object();
 		    var portlet_columns = jQuery(".column");
 		    for ( var int = 0; int < portlet_columns.length; int++) {
@@ -3291,7 +3291,7 @@ jQuery(document).ready(function() {
 				}
 				json_data['column_'+int] = column_portlets;
 			}
-			
+
 			jQuery.ajax({
 		       url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct=privateroom_mycalendar&output=json&do=save_config',
 			   data: json_data,
@@ -3318,7 +3318,7 @@ function uploadify_onComplete(event, queueID, fileObj, response, data) {
 		jQuery("<br/>"
 		)
 	);
-	
+
 	// this is for browser compatibility
 	jQuery("div[id='fileFinished'] input:last").attr('checked', 'checked');
 }
@@ -3329,7 +3329,7 @@ function uploadify_onAllComplete(event, data) {
 	if(uploadify_onAllCompleteSubmitForm) {
 		jQuery("input[type='submit']")[0].click();
 	}
-	
+
 	return true;
 }
 
@@ -3346,10 +3346,10 @@ jQuery(document).ready(function() {
 				uploadify_onAllCompleteSubmitForm == false) {
 				// if all uploads completed, submit the form
 				uploadify_onAllCompleteSubmitForm = true;
-				
+
 				// start upload process
 				jQuery('#uploadify').uploadifyUpload();
-				
+
 				// stop form submit
 				return false;
 			} else {
@@ -3362,29 +3362,29 @@ jQuery(document).ready(function() {
 			return true;
 		});
 	}
-	
+
 	return true;
 });
 
 jQuery(document).ready(function() {
 
 	/* This is basic - uses default settings */
-	
+
 	//jQuery("a[rel^='lightbox']").fancybox();
-	
+
 	/* Using custom settings */
-	
+
 	//jQuery("a[rel^='lightbox']").fancybox({
 	//	'hideOnContentClick': true
 	//});
 
 	/* Apply fancybox to multiple items */
-	
+
 	jQuery("a[rel^='lightbox']").fancybox({
 		'transitionIn'	:	'fade',
 		'transitionOut'	:	'fade',
-		'speedIn'		:	600, 
-		'speedOut'		:	200, 
+		'speedIn'		:	600,
+		'speedOut'		:	200,
 		'overlayShow'	:	true,
 		'titleShow'	    :   false,
 		'autoScale'     :   true,
@@ -3394,7 +3394,7 @@ jQuery(document).ready(function() {
 		'downloadShow'	:   true
 		// CommSy
 	});
-	
+
 });
 
 function ListeID(id) {
@@ -3409,7 +3409,7 @@ jQuery(document).ready(function() {
 				var dropDownMenus = dropDownForLists[i][1];
 				if(typeof(dropDownMenus) !== 'undefined'){
 					if(dropDownMenus.length){
-						
+
 						// how many different menus?
 						var dropdown_menus = new Array();
 						for ( var int = 0; int < dropDownMenus.length; int++) {
@@ -3426,7 +3426,7 @@ jQuery(document).ready(function() {
 								dropdown_menus.push(tempImage);
 							}
 						}
-			
+
 						// sort menu_entries to menus
 						for ( var int3 = 0; int3 < dropdown_menus.length; int3++) {
 							var current_menu = dropdown_menus[int3];
@@ -3442,14 +3442,14 @@ jQuery(document).ready(function() {
 							image.attr('id',image.attr('id')+'_list_'+list_id+'_dropdown_menu_'+int3);
 							image.attr('alt','');
 							image.parent().attr('title','');
-			
+
 							var button = jQuery('<img id="list_'+list_id+'_dropdown_button_'+int3+'" class="dropdown_button" src="images/commsyicons/dropdownmenu.png" />');
-			
+
 							var html = jQuery('<div id="list_'+list_id+'_dropdown_menu_'+int3+'" class="dropdown_menu"></div>');
 							var offset = image.offset();
-			
+
 							var ul = jQuery('<ul></ul>');
-			
+
 							for ( var int4 = 0; int4 < dropDownMenus.length; int4++) {
 								var temp_menu_entry = dropDownMenus[int4];
 								if(temp_menu_entry[0] == current_menu){
@@ -3463,12 +3463,12 @@ jQuery(document).ready(function() {
 									}
 								}
 							}
-			
+
 							html.append(ul);
 							image.parent().wrap('<div style="display:inline;"></div>');
 							image.parent().parent().append(button);
 							image.parent().parent().append(html);
-			
+
 							image.mouseover(function(){
 								var id = this.id;
 								var this_image = this;
@@ -3483,17 +3483,17 @@ jQuery(document).ready(function() {
 									}
 								}, 2000);
 							});
-			
+
 							image.mouseout(function(){
 								this.mouse_is_over = false;
 							});
-			
+
 							jQuery('#list_'+list_id+'_dropdown_button_'+int3).click(function(){
 								var id_parts = this.id.split('_');
 								var offset = jQuery('#'+this.id).parent().offset();
 								dropdown_liste(jQuery('#list_'+id_parts[1]+'_dropdown_menu_'+id_parts[4]), offset, id_parts[4], id_parts[1]);
 							});
-			
+
 							jQuery('#list_'+list_id+'_dropdown_button_'+int3).mouseover(function(){
 								var id = this.id;
 								var this_image = this;
@@ -3508,11 +3508,11 @@ jQuery(document).ready(function() {
 									}
 								}, 2000);
 							});
-							
+
 							jQuery('#list_'+list_id+'_dropdown_button_'+int3).mouseout(function(){
 								this.mouse_is_over = false;
 							});
-			
+
 							jQuery(document).mousedown(function(event) {
 								var target = jQuery(event.target);
 								var parents = target.parents();
@@ -3560,10 +3560,10 @@ function dropdown_liste(object, offset, button, liste){
 jQuery(document).ready(function() {
 	jQuery("select[name='configuration_data_upload_room_select']").bind('change', function(eventObject) {
 		var room_id = eventObject.target.value;
-		
+
 		// get according room limit from hidden fields
 		var room_limit = jQuery("input[name='room_limit_" + room_id + "']").attr('value');
-		
+
 		// set limit in text field
 		jQuery("input[name='configuration_data_upload_room_value']").attr('value', room_limit);
 	});
@@ -3580,10 +3580,10 @@ function uploadify_onError(event, queueID, fileObj, errorObj) {
 			return false;
 		}
 	});
-	
+
 	jQuery("#uploadify" + queueID + " .percentage").text(" - " + error_text);
 	jQuery("#uploadify" + queueID).addClass('uploadifyError');
-	
+
 	return false;
 }
 
@@ -3621,7 +3621,7 @@ jQuery(document).ready(function() {
 			rooms.push(jQuery(this).attr('value'));
 		});
 		json_data['roomwide_search_room'] = rooms;
-		
+
 	    jQuery.ajax({
 	       url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct=privateroom_roomwide_search&output=json',
 		   data: json_data,
@@ -3655,7 +3655,7 @@ jQuery(document).ready(function() {
             	var from = resultJSON['roomwide_search_info']['from'];
         		var to = resultJSON['roomwide_search_info']['to'];
         		var count = resultJSON['roomwide_search_info']['count'];
-        		
+
         		jQuery('#privateroom_home_roomwide_search_table').children().remove();
         		if(to > 0){
         			jQuery('#privateroom_home_roomwide_search_table').append(jQuery('<tr><td colspan="2" style="height:20px;">'+first_link+' '+prev_link+' '+from+' '+roomwide_search_to+' '+to+' '+roomwide_search_from+' '+count+' '+next_link+' '+last_link+' '+'</td></tr>'));
@@ -3665,9 +3665,9 @@ jQuery(document).ready(function() {
 						var temp_item_link = '<a href="commsy.php?cid='+json_element['cid']+'&mod='+json_element['type']+'&fct=detail&iid='+json_element['iid']+'" title="'+json_element['hover']+'" target="_self">'+json_element['title']+'</a>';
 						var temp_room_link = '<a href="commsy.php?cid='+json_element['cid']+'&amp;mod=home&amp;fct=index" title="'+json_element['room_name']+'" target="_self">'+json_element['room_name']+'</a>';
 						if((int % 2) == 0){
-							html = jQuery('<tr class="list"><td class="even" style="height:20px;"><div style="float: left;">'+temp_icon_link+'</div>'+temp_item_link+'<br><span style="font-size: 8pt;">(Raum: '+temp_room_link+')</span></td></tr>');
+							html = jQuery('<tr class="list"><td class="even" style="height:20px; font-size:8pt;"><div style="float: left;">'+temp_icon_link+'</div>'+temp_item_link+'<br><span style="font-size: 8pt;">(Raum: '+temp_room_link+')</span></td></tr>');
 						} else {
-							html = jQuery('<tr class="list"><td class="odd" style="height:20px;"><div style="float: left;">'+temp_icon_link+'</div>'+temp_item_link+'<br><span style="font-size: 8pt;">(Raum: '+temp_room_link+')</span></td></tr>');
+							html = jQuery('<tr class="list"><td class="odd" style="height:20px; font-size:8pt;"><div style="float: left;">'+temp_icon_link+'</div>'+temp_item_link+'<br><span style="font-size: 8pt;">(Raum: '+temp_room_link+')</span></td></tr>');
 						}
 						jQuery('#privateroom_home_roomwide_search_table').append(html);
 					}
