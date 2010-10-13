@@ -331,6 +331,7 @@ $message["COMMON_ENTRY_NEW"]["en"] = "This is a new item.";
 $message["COMMON_ERROR_BUZZWORD_ENTRY"]["en"] = "Please select a <span style=&quot;font-weight:bold;&quot;>tag</span> or create a new one.";
 $message["COMMON_ERROR_COMMUNITY_ROOM_ENTRY"]["en"] = "Please fill in the field <b>Association</b>.";
 $message["COMMON_ERROR_DATABASE"]["en"] = "Sorry, a database error occured. The  item you entered has not been saved. Please contact moderator/s oder support service.";
+$message["COMMON_ERROR_EXTERNAL_VIEWER_ACCOUNT_NOT_EXISTS"]["en"] = "Account %1 does not exist.";
 $message["COMMON_ERROR_FIELD"]["en"] = "Please fill in field <span style=&quot;font-weight:bold;&quot;>%1</span>.";
 $message["COMMON_ERROR_FIELD_CORRECT"]["en"] = "Please correct the field <span style=&quot;font-weight:bold;&quot;>%1</span>.";
 $message["COMMON_ERROR_FIELD_DATE_INVALID"]["en"] = "Please provide valid date format MM/DD/YYYY.";
@@ -339,6 +340,7 @@ $message["COMMON_ERROR_MANIPULATION"]["en"] = "Manipulation of values at: <span 
 $message["COMMON_ERROR_MINUTES_INT"]["en"] = "Use the field minutes with numaries.";
 $message["COMMON_ERROR_SELECT"]["en"] = "Please select something for <span style=&quot;font-weight:bold;&quot;>%1</span>.";
 $message["COMMON_ERROR_TAG_ENTRY"]["en"] = "Please select a <span style=&quot;font-weight:bold;&quot;>category</span>.";
+$message["COMMON_EXTERNAL_VIEWER"]["en"] = "This entry is released for";
 $message["COMMON_FACTS"]["en"] = "Basics";
 $message["COMMON_FADE_IN"]["en"] = "Show left panel";
 $message["COMMON_FADE_OUT"]["en"] = "Hide left panel";

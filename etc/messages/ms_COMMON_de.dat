@@ -339,6 +339,7 @@ $message["COMMON_ENTRY_NEW"]["de"] = "Der Eintrag ist neu.";
 $message["COMMON_ERROR_BUZZWORD_ENTRY"]["de"] = "Bitte wählen Sie ein existierendes <span style=&quot;font-weight:bold;&quot;>Schlagwort</span> aus der Liste oder geben Sie ein neues Schlagwort ein.";
 $message["COMMON_ERROR_COMMUNITY_ROOM_ENTRY"]["de"] = "Bitte füllen Sie das Feld <b>Zuordnung</b> aus.";
 $message["COMMON_ERROR_DATABASE"]["de"] = "Ein Datenbankproblem ist aufgetreten. Leider konnten Ihre Informationen nicht gespeichert werden.";
+$message["COMMON_ERROR_EXTERNAL_VIEWER_ACCOUNT_NOT_EXISTS"]["de"] = "Die Kennung %1 existiert nicht.";
 $message["COMMON_ERROR_FIELD"]["de"] = "Bitte füllen Sie das Feld <span style=&quot;font-weight:bold;&quot;>%1</span> aus.";
 $message["COMMON_ERROR_FIELD_CORRECT"]["de"] = "Bitte korrigieren Sie das Feld <span style=&quot;font-weight:bold;&quot;>%1</span>.";
 $message["COMMON_ERROR_FIELD_DATE_INVALID"]["de"] = "Bitte geben Sie ein gültiges Datum in der Form TT.MM.JJJJ an.";
@@ -347,6 +348,7 @@ $message["COMMON_ERROR_MANIPULATION"]["de"] = "Manipulation der Daten bei: <span
 $message["COMMON_ERROR_MINUTES_INT"]["de"] = "Geben Sie die Zeit bitte als Zahl in Minuten an.";
 $message["COMMON_ERROR_SELECT"]["de"] = "Bitte wählen Sie bei <span style=&quot;font-weight:bold;&quot;>%1</span> etwas aus.";
 $message["COMMON_ERROR_TAG_ENTRY"]["de"] = "Bitte wählen Sie eine <span style=&quot;font-weight:bold;&quot;>Kategorie</span> aus.";
+$message["COMMON_EXTERNAL_VIEWER"]["de"] = "Der Eintrag ist freigegeben für";
 $message["COMMON_FACTS"]["de"] = "Fakten";
 $message["COMMON_FADE_IN"]["de"] = "Meinen Bereich einblenden";
 $message["COMMON_FADE_OUT"]["de"] = "Meinen Bereich ausblenden";

@@ -2089,6 +2089,11 @@ class cs_item {
       $retour = $item_manager->getExternalViewerUserStringForItem($this->getItemID());
       return $retour;
    }
+function getExternalViewerArray(){
+      $item_manager = $this->_environment->getItemManager();
+      $retour = $item_manager->getExternalViewerUserArrayForItem($this->getItemID());
+      return $retour;
+   }
 
    function setInstitutionListByID ($value) {
       $this->setLinkedItemsByID (CS_INSTITUTION_TYPE, $value);

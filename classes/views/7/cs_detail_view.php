@@ -297,7 +297,7 @@ class cs_detail_view extends cs_view {
       $html  = '';
       if ( (
             $item->mayEdit($current_user) or
-            $item_manager->getExternalViewerForItem($annotated_item->getItemID(),$current_user->getUserId())
+            $item_manager->getExternalViewerForItem($annotated_item->getItemID(),$current_user->getUserID())
          )
 
          and $this->_with_modifying_actions ) {
@@ -1695,6 +1695,32 @@ class cs_detail_view extends cs_view {
          $temp_array[]  = $this->_translator->getMessage('COMMON_PRIVATE_DATE');
          $title = $this->_translator->getMessage('COMMON_NOT_ACCESSIBLE');
          $temp_array[] = $title;
+         $formal_data1[] = $temp_array;
+      }
+      if (!empty($formal_data1)){
+         $html .= $this->_getFormalDataAsHTML($formal_data1);
+      }
+      $formal_data1 = array();
+      if ($this->_item->issetExternalViewerStatus()){
+         $temp_array = array();
+         $temp_array[]  = $this->_translator->getMessage('COMMON_EXTERNAL_VIEWER');
+         $external_viewer_array = $this->_item->getExternalViewerArray();
+         $user_manager = $this->_environment->getUserManager();
+         $tmp_html = '';
+         foreach($external_viewer_array as $external_viewer){
+             $user_manager->setUserIDLimit($external_viewer);
+             $user_manager->setContextLimit($this->_environment->getCurrentPortalID());
+             $user_manager->select();
+             $user_list = $user_manager->get();
+             $user_item = $user_list->getFirst();
+             if (isset($user_item)){
+                $tmp_html .= $user_item->getFullname().', ';
+             }
+         }
+         if (!empty($tmp_html)){
+             $tmp_html = substr($tmp_html, 0, -2);
+         }
+         $temp_array[] = $tmp_html;
          $formal_data1[] = $temp_array;
       }
       if (!empty($formal_data1)){

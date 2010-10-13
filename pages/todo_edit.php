@@ -293,6 +293,12 @@ else {
                   $todo_item->setPrivateEditing('1');
                }
             }
+            if ( isset($_POST['external_viewer']) and isset($_POST['external_viewer_accounts']) ) {
+               $user_ids = explode(" ",$_POST['external_viewer_accounts']);
+               $todo_item->setExternalViewerAccounts($user_ids);
+            }else{
+               $todo_item->unsetExternalViewerAccounts();
+            }
             if ( isset($_POST['hide']) ) {
                 // variables for datetime-format of end and beginning
                 $dt_hiding_time = '00:00:00';

@@ -382,6 +382,9 @@ class cs_todo_form extends cs_rubric_form {
          }
       } else {
          $this->_form->addHidden('public','');
+         $this->_form->addCheckbox('external_viewer',1,'',$this->_translator->getMessage('COMMON_RIGHTS'),$this->_translator->getMessage('EXTERNAL_VIEWER_DESCRIPTION'),$this->_translator->getMessage('COMMON_RIGHTS_DESCRIPTION'),false,false,'','',true,false);
+         $this->_form->combine();
+         $this->_form->addTextField('external_viewer_accounts','',$this->_translator->getMessage('EXTERNAL_VIEWER'),$this->_translator->getMessage('EXTERNAL_VIEWER_DESC'),200,35,false);
       }
 
       // buttons
@@ -429,6 +432,8 @@ class cs_todo_form extends cs_rubric_form {
          }
          $this->_values['start_date_time'] = $tmp_array;
       } elseif ( isset($this->_item) ) {
+         $this->_values['external_viewer'] = $this->_item->issetExternalViewerStatus();
+         $this->_values['external_viewer_accounts'] = $this->_item->getExternalViewerString();
          $this->_values['iid'] = $this->_item->getItemID();
          $this->_values['title'] = $this->_item->getTitle();
          $this->_values['description'] = $this->_item->getDescription();
@@ -534,6 +539,31 @@ class cs_todo_form extends cs_rubric_form {
             $this->_error_array[] = $this->_translator->getMessage('DATES_DATE_NOT_VALID');
             $this->_form->setFailure('end_date_time','');
          }
+      }
+      if ($current_context->withActivatingContent() and !empty($this->_form_post['dayActivateStart']) and !empty($this->_form_post['hide'])){
+         if ( !isDatetimeCorrect($this->_environment->getSelectedLanguage(),$this->_form_post['dayActivateStart'],$this->_form_post['timeActivateStart']) ) {
+            $this->_error_array[] = $this->_translator->getMessage('DATES_DATE_NOT_VALID');
+            $this->_form->setFailure('start_activate_date_time','');
+         }
+      }
+      if ( isset($this->_form_post['external_viewer']) and !empty($this->_form_post['external_viewer']) and !isset($this->_form_post['external_viewer_accounts'])){
+         $this->_error_array[] = $this->_translator->getMessage('COMMON_ERROR_EXTERNAL_VIEWER_ACCOUNT_MISSED');
+         $this->_form->setFailure('external_viewer_accounts','');
+      }
+      if ( isset($this->_form_post['external_viewer']) and isset($this->_form_post['external_viewer_accounts'])){
+          $user_id_array = explode(' ',$this->_form_post['external_viewer_accounts']);
+          $user_manager = $this->_environment->getUserManager();
+          foreach($user_id_array as $user_id){
+             $user_manager->setUserIDLimit($user_id);
+             $user_manager->setContextLimit($this->_environment->getCurrentPortalID());
+             $user_manager->select();
+             $user_list = $user_manager->get();
+             $user_item = $user_list->getFirst();
+             if (!is_object($user_item)){
+                $this->_error_array[] = $this->_translator->getMessage('COMMON_ERROR_EXTERNAL_VIEWER_ACCOUNT_NOT_EXISTS',$user_id);
+                $this->_form->setFailure('external_viewer_accounts','');
+             }
+          }
       }
       if ($current_context->withActivatingContent() and !empty($this->_form_post['dayStart']) and !empty($this->_form_post['hide'])){
          include_once('functions/date_functions.php');

@@ -124,8 +124,6 @@ class cs_privateroom_home_released_entries_view extends cs_view {
          } else {
             $fullname = $this->_translator->getMessage('COMMON_DELETED_USER');
          }
-         $room = $full_item->getContextItem();
-         $room_title = $room->getTitle();
          switch ( $type ) {
             case CS_DISCARTICLE_TYPE:
                $linked_iid = $full_item->getDiscussionID();
@@ -240,22 +238,30 @@ class cs_privateroom_home_released_entries_view extends cs_view {
                                        '',
                                        '',
                                        '').$this->_getItemChangeStatus($full_item,$full_item->getContextID(),$view_type).$this->_getItemAnnotationChangeStatus($full_item,$full_item->getContextID(),$view_type);
-         $html .= '<br/><span style="font-size:8pt;">('.$this->_translator->getMessage('COMMON_ROOM').': ';
-         $html .= ahref_curl( $full_item->getContextID(),
-                                       'home',
-                                       'detail',
-                                       $params,
-                                       $room_title,
-                                       $room_title,
-                                       '_self',
-                                       $fragment,
-                                       '',
-                                       '',
-                                       '',
-                                       '',
-                                       '',
-                                       '',
-                                       '');
+
+         if ($view_type == 'released'){
+            $html .= '<br/><span style="font-size:8pt;">('.$this->_translator->getMessage('PRIVATEROOM_RELEASED_FOR').': ';
+            $external_viewer_array = $full_item->getExternalViewerArray();
+            $user_manager = $this->_environment->getUserManager();
+            $tmp_html = '';
+            foreach($external_viewer_array as $external_viewer){
+                $user_manager->setUserIDLimit($external_viewer);
+                $user_manager->setContextLimit($this->_environment->getCurrentPortalID());
+                $user_manager->select();
+                $user_list = $user_manager->get();
+                $user_item = $user_list->getFirst();
+                if (isset($user_item)){
+                   $tmp_html .= $user_item->getFullname().', ';
+                }
+            }
+            if (!empty($tmp_html)){
+            	$html .= substr($tmp_html, 0, -2);
+            }
+         }else{
+            $modifier_item = $full_item->getModificatorItem();
+            $html .= '<br/><span style="font-size:8pt;">('.$this->_translator->getMessage('PRIVATEROOM_RELEASED_FROM').': ';
+            $html .= $modifier_item->getFullname();
+         }
          $html .= ')</span>'.LF;
          $html .= '   </td>'.LF;
          $html .= '   </tr>'.LF;

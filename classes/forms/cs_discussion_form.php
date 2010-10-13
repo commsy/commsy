@@ -444,6 +444,21 @@ class cs_discussion_form extends cs_rubric_form {
          $this->_error_array[] = $this->_translator->getMessage('COMMON_ERROR_EXTERNAL_VIEWER_ACCOUNT_MISSED');
          $this->_form->setFailure('external_viewer_accounts','');
       }
+      if ( isset($this->_form_post['external_viewer']) and isset($this->_form_post['external_viewer_accounts'])){
+          $user_id_array = explode(' ',$this->_form_post['external_viewer_accounts']);
+          $user_manager = $this->_environment->getUserManager();
+          foreach($user_id_array as $user_id){
+             $user_manager->setUserIDLimit($user_id);
+             $user_manager->setContextLimit($this->_environment->getCurrentPortalID());
+             $user_manager->select();
+             $user_list = $user_manager->get();
+             $user_item = $user_list->getFirst();
+             if (!is_object($user_item)){
+                $this->_error_array[] = $this->_translator->getMessage('COMMON_ERROR_EXTERNAL_VIEWER_ACCOUNT_NOT_EXISTS',$user_id);
+                $this->_form->setFailure('external_viewer_accounts','');
+             }
+          }
+      }
       if ( $current_context->isBuzzwordMandatory() ){
          $session = $this->_environment->getSessionItem();
          $buzzword_ids = $session->getValue('cid'.$this->_environment->getCurrentContextID().'_'.$this->_environment->getCurrentModule().'_buzzword_ids');

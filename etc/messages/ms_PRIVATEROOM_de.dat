@@ -31,6 +31,8 @@ $message["PRIVATEROOM_MY_LISTS_BOX"]["de"] = "Meine Listen";
 $message["PRIVATEROOM_MY_LISTS_BOX_DESCRIPTION"]["de"] = "Legen Sie Listen mit persönlichen Zusammenstellungen von Einträgen an. Um einen Eintrag einer Liste hinzuzufügen, ziehen Sie einfach den Eintrag auf den Listennamen.";
 $message["PRIVATEROOM_MY_LISTS_BOX_NEW_ENTRY"]["de"] = "Name einer neuen Liste";
 $message["PRIVATEROOM_MY_LISTS_BOX_NEW_ENTRY_BUTTON"]["de"] = "Neue Liste erstellen";
+$message["PRIVATEROOM_RELEASED_FOR"]["de"] = "freigegeben für";
+$message["PRIVATEROOM_RELEASED_FROM"]["de"] = "freigegeben durch";
 $message["PRIVATEROOM_ROOMWIDE_SEARCH_BOX"]["de"] = "Raumübergreifende Suche";
 $message["PRIVATEROOM_UNLOCK"]["de"] = "Persönlichen Raum entsperren";
 ?>
