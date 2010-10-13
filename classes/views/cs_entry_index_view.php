@@ -816,7 +816,7 @@ class cs_entry_index_view extends cs_index_view {
          $html_table .= '</td>'.LF;
          foreach($matrix_column_title_array as $column_key => $column){
          	$selected_cell = false;
-         	if(isset($this->_selmatrix)){
+         	if(isset($this->_selmatrix) and !empty($this->_selmatrix)){
          		$selmatrix_array = explode('_', $this->_selmatrix);
          		if($selmatrix_array[1] == $column_key and $selmatrix_array[0] == $row_key){
          			$selected_cell = true;
