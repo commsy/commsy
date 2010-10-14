@@ -31,6 +31,8 @@ $this->includeClass(VIEW);
  */
 class cs_privateroom_home_buzzword_view extends cs_view {
 
+var $_buzzword_list = NULL;
+
    /** constructor
     * the only available constructor, initial values for internal variables
     *
@@ -42,10 +44,6 @@ class cs_privateroom_home_buzzword_view extends cs_view {
       $user = $this->_environment->getCurrentUserItem();
       $room = $this->_environment->getCurrentContextItem();
       $this->_view_title = $this->_translator->getMessage('COMMON_BUZZWORD_BOX');
-   }
-
-
-   function asHTML(){
       $current_user = $this->_environment->getCurrentUserItem();
       $buzzword_manager = $this->_environment->getLabelManager();
       $buzzword_manager->resetLimits();
@@ -53,48 +51,18 @@ class cs_privateroom_home_buzzword_view extends cs_view {
       $buzzword_manager->setTypeLimit('buzzword');
       $buzzword_manager->setGetCountLinks();
       $buzzword_manager->select();
-      $buzzword_list = $buzzword_manager->get();
+      $this->_buzzword_list = $buzzword_manager->get();
+      unset($current_user);
+   }
+
+
+   function asHTML(){
+      $buzzword_list = $this->_buzzword_list;
       $html  = '';
       $html .= '<div id="'.get_class($this).'">'.LF;
       $html .= '<div style="font-size:8pt; width:100%">'.LF;
       $buzzword = $buzzword_list->getFirst();
       $params = $this->_environment->getCurrentParameterArray();
-      #if (!$buzzword){
-      #   $html .= '<span class="disabled" style="font-size:10pt;">'.$this->_translator->getMessage('COMMON_NO_ENTRIES').'</span>';
-      #}
-      #while ($buzzword){
-      #   $count = $buzzword->getCountLinks();
-      #   if ($count > 0 and true){
-      #      $font_size = $this->getBuzzwordSizeLogarithmic($count);
-      #      $font_color = 100 - $this->getBuzzwordColorLogarithmic($count);
-      #      $params['selbuzzword'] = $buzzword->getItemID();
-      #      $temp_text = '';
-      #      $style_text  = 'style="margin-left:2px; margin-right:2px;';
-      #      $style_text .= ' color: rgb('.$font_color.'%,'.$font_color.'%,'.$font_color.'%);';
-      #      $style_text .= 'font-size:'.$font_size.'px;"';
-      #      $title  = '<span  '.$style_text.'>'.LF;
-      #      $title .= $this->_text_as_html_short($buzzword->getName()).LF;
-      #      $title .= '</span> ';
-
-      #      $html .= ahref_curl($this->_environment->getCurrentContextID(),
-      #                          'campus_search',
-      #                          'index',
-      #                          $params,
-      #                          $title,$title).LF;
-      #   }
-      #   $buzzword = $buzzword_list->getNext();
-      #}
-      #$html .= '<div style="width:100%; text-align:right; padding-right:2px; padding-top:5px;">';
-      #if ($current_user->isUser() and $this->_with_modifying_actions ) {
-      #   $params = array();
-      #   $params['module'] = $this->_environment->getCurrentModule();
-      #   $html .= ahref_curl($this->_environment->getCurrentContextID(),'buzzwords','edit',$params,$this->_translator->getMessage('COMMON_EDIT')).LF;
-      #   unset($params);
-      #} else {
-      #   $html .= '<span class="disabled">'.$this->_translator->getMessage('COMMON_EDIT').'</span>'.LF;
-      #}
-      #$html .= '</div>'.LF;
-
       $buzzword = $buzzword_list->getFirst();
       if (!$buzzword){
          $html .= '<span class="disabled" style="font-size:10pt;">'.$this->_translator->getMessage('COMMON_NO_ENTRIES').'</span>';
@@ -130,7 +98,6 @@ class cs_privateroom_home_buzzword_view extends cs_view {
 
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
-      unset($current_user);
       return $html;
    }
 
@@ -158,13 +125,7 @@ class cs_privateroom_home_buzzword_view extends cs_view {
    }
 
    function getPreferencesAsHTML(){
-   	$buzzword_manager = $this->_environment->getLabelManager();
-      $buzzword_manager->resetLimits();
-      $buzzword_manager->setContextLimit($this->_environment->getCurrentContextID());
-      $buzzword_manager->setTypeLimit('buzzword');
-      $buzzword_manager->setGetCountLinks();
-      $buzzword_manager->select();
-      $buzzword_list = $buzzword_manager->get();
+      $buzzword_list = $this->_buzzword_list;
       $html = '<input type="text" id="portlet_buzzword_new" size="40" />';
       $html .= '<input type="submit" id="portlet_buzzword_new_button" value="'.$this->_translator->getMessage('BUZZWORDS_NEW_BUTTON').'" />';
       $html .= '<br/><br/>'.LF;
