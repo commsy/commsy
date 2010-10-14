@@ -122,6 +122,18 @@ if ($type != CS_MATERIAL_TYPE) {
          unset($params['remove_from_wiki']);
          redirect($environment->getCurrentContextID(),'material', 'detail', $params);
       }
+      
+     if(isset($_GET['export_to_wordpress'])){
+         $wordpress_manager = $environment->getWordpressManager();
+
+         $wordpress_manager->exportItemToWordpress($current_item_iid,CS_MATERIAL_TYPE);
+         $params = $environment->getCurrentParameterArray();
+         unset($params['export_to_wordpress']);
+         redirect($environment->getCurrentContextID(),'material', 'detail', $params);
+      }
+
+      
+      
 
       // Get clipboard
       if ( $session->issetValue('material_clipboard') ) {

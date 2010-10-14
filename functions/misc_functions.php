@@ -597,7 +597,6 @@ function isURLValid () {
    } else {
       $funct = 'index';
    }
-
    if (
         // context
         $module != 'context' and
@@ -743,6 +742,7 @@ function isURLValid () {
          $funct != 'defaults' and
          $funct != 'upload' and
          $funct != 'wiki' and
+         $funct != 'wordpress' and
          $funct != 'path' and
          $funct != 'tags' and
          $funct != 'ims_import' and

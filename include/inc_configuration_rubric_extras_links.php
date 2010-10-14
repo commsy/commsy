@@ -73,6 +73,29 @@ $translator = $environment->getTranslationObject();
       $configuration_rubric_extras_link_list->add($link_item);
    }
 
+   #########################################
+   # Wordpress - Raum-Wordpress
+   #########################################
+   $context_item = $environment->getCurrentContextItem();
+   if ( $context_item->withWordpressFunctions() and !$context_item->isServer() ) {
+      $link_item = new cs_link();
+      $link_item->setTitle($translator->getMessage('WORDPRESS_CONFIGURATION_LINK'));
+      if(($environment->getCurrentBrowser() == 'MSIE') && (mb_substr($environment->getCurrentBrowserVersion(),0,1) == '6')){
+         $link_item->setIconPath('images/commsyicons_msie6/48x48/config/wordpress.gif');
+         $link_item->setIconPathForNavigation('images/commsyicons_msie6/22x22/config/wordpress.gif');
+      } else {
+         $link_item->setIconPath('images/commsyicons/48x48/config/wordpress.png');
+         $link_item->setIconPathForNavigation('images/commsyicons/22x22/config/wordpress.png');
+      }
+      $link_item->setDescription($translator->getMessage('WORDPRESS_CONFIGURATION_DESC'));
+      $link_item->setContextID($environment->getCurrentContextID());
+      $link_item->setModule('configuration');
+      $link_item->setFunction('wordpress');
+      $link_item->setParameter(array('iid' => $environment->getCurrentContextID()));
+      $configuration_rubric_extras_link_list->add($link_item);
+   }
+   
+   
    ############################################
    # Chat
    ############################################

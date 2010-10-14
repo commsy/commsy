@@ -1403,6 +1403,15 @@ class cs_environment {
    function getWikiManager() {
       return $this->_getInstance('cs_wiki_manager');
    }
+   
+	/** get instance of cs_wordpress_manager
+   *
+   * @return cs_wordpress_manager
+   * @access public
+   */
+   function getWordpressManager() {
+      return $this->_getInstance('cs_wordpress_manager');
+   }
 
   /** get instance of cs_homepagelink_manager
    *

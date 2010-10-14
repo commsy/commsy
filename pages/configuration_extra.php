@@ -85,6 +85,9 @@ else {
       } elseif ($_POST['extra'] == 'CONFIGURATION_EXTRA_WIKI') {
          $extra = $_POST['extra'];
          $values['description'] = $translator->getMessage('CONFIGURATION_EXTRA_WIKI_DESC');
+      } elseif ($_POST['extra'] == 'CONFIGURATION_EXTRA_WORDPRESS') {
+         $extra = $_POST['extra'];
+         $values['description'] = $translator->getMessage('CONFIGURATION_EXTRA_WORDPRESS_DESC');
       } elseif ($_POST['extra'] == 'CHAT_CONFIGURATION_EXTRA_CHAT') {
          $extra = $_POST['extra'];
          $values['description'] = $translator->getMessage('CHAT_CONFIGURATION_EXTRA_CHAT_DESC');
@@ -117,6 +120,7 @@ else {
               ( $extra == 'CONFIGURATION_EXTRA_PDA'          and $portal->withPDAView() ) or
               ( $extra == 'HOMEPAGE_CONFIGURATION_EXTRA_HOMEPAGE' and $portal->withHomepageLink() ) or
               ( $extra == 'CONFIGURATION_EXTRA_WIKI' and $portal->withWikiFunctions() ) or
+              ( $extra == 'CONFIGURATION_EXTRA_WORDPRESS' and $portal->withWordpressFunctions() ) or
               ( $extra == 'CHAT_CONFIGURATION_EXTRA_CHAT'    and $portal->withChatLink() ) or
               ( $extra == 'CHAT_CONFIGURATION_EXTRA_MATERIALIMPORT'    and $portal->withMaterialImportLink() ) or
               ( $extra == 'CONFIGURATION_EXTRA_ACTIVATING_CONTENT'    and $portal->withActivatingContent() )
@@ -139,6 +143,7 @@ else {
                     ( $extra == 'CONFIGURATION_EXTRA_PDA'          and $room->withPDAView() ) or
                     ( $extra == 'HOMEPAGE_CONFIGURATION_EXTRA_HOMEPAGE' and $room->withHomepageLink() ) or
                     ( $extra == 'CONFIGURATION_EXTRA_WIKI' and $room->withWikiFunctions() ) or
+                    ( $extra == 'CONFIGURATION_EXTRA_WORDPRESS' and $room->withWordpressFunctions() ) or
                     ( $extra == 'CONFIGURATION_EXTRA_MATERIALIMPORT' and $room->withMaterialImportLink() ) or
                     ( $extra == 'CHAT_CONFIGURATION_EXTRA_CHAT'    and $room->withChatLink() ) or
                     ( $extra == 'CONFIGURATION_EXTRA_ACTIVATING_CONTENT'    and $room->withActivatingContent() )
@@ -183,6 +188,7 @@ else {
               $_POST['extra'] == 'CONFIGURATION_EXTRA_PDA' or
               $_POST['extra'] == 'HOMEPAGE_CONFIGURATION_EXTRA_HOMEPAGE' or
               $_POST['extra'] == 'CONFIGURATION_EXTRA_WIKI' or
+              $_POST['extra'] == 'CONFIGURATION_EXTRA_WORDPRESS' or
               $_POST['extra'] == 'CONFIGURATION_EXTRA_MATERIALIMPORT' or
               $_POST['extra'] == 'CHAT_CONFIGURATION_EXTRA_CHAT' or
               $_POST['extra'] == 'CONFIGURATION_EXTRA_ACTIVATING_CONTENT'
@@ -209,6 +215,8 @@ else {
                   $portal->setWithHomepageLink();
                } elseif ( $extra == 'CONFIGURATION_EXTRA_WIKI' ) {
                   $portal->setWithWikiFunctions();
+               } elseif ( $extra == 'CONFIGURATION_EXTRA_WORDPRESS' ) {
+                  $portal->setWithWordpressFunctions();
                } elseif ( $extra == 'CHAT_CONFIGURATION_EXTRA_CHAT' ) {
                   $portal->setWithChatLink();
                } elseif ( $extra == 'CONFIGURATION_EXTRA_PDA' ) {
@@ -229,6 +237,8 @@ else {
                   $portal->setWithoutHomepageLink();
                } elseif ( $extra == 'CONFIGURATION_EXTRA_WIKI' ) {
                   $portal->setWithoutWikiFunctions();
+               } elseif ( $extra == 'CONFIGURATION_EXTRA_WORDPRESS' ) {
+                  $portal->setWithoutWordpressFunctions();
                } elseif ( $extra == 'CHAT_CONFIGURATION_EXTRA_CHAT' ) {
                   $portal->setWithoutChatLink();
                } elseif ( $extra == 'CONFIGURATION_EXTRA_PDA' ) {
@@ -263,6 +273,9 @@ else {
                      } elseif ( $extra == 'CONFIGURATION_EXTRA_WIKI' and !$room->WithWikiFunctions() ) {
                         $room->setWithWikiFunctions();
                         $save_flag = true;
+                     } elseif ( $extra == 'CONFIGURATION_EXTRA_WORDPRESS' and !$room->WithWordpressFunctions() ) {
+                        $room->setWithWordpressFunctions();
+                        $save_flag = true;
                      } elseif ( $extra == 'CHAT_CONFIGURATION_EXTRA_CHAT' and !$room->WithChatLink() ) {
                         $room->setWithChatLink();
                         $save_flag = true;
@@ -291,6 +304,9 @@ else {
                         $save_flag = true;
                      } elseif ( $extra == 'CONFIGURATION_EXTRA_WIKI' and $room->WithWikiFunctions() ) {
                         $room->setWithoutWikiFunctions();
+                        $save_flag = true;
+                     } elseif ( $extra == 'CONFIGURATION_EXTRA_WORDPRESS' and $room->WithWordpressFunctions() ) {
+                        $room->setWithoutWordpressFunctions();
                         $save_flag = true;
                      } elseif ( $extra == 'CHAT_CONFIGURATION_EXTRA_CHAT' and $room->WithChatLink() ) {
                         $room->setWithoutChatLink();

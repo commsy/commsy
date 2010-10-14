@@ -150,9 +150,10 @@ $message["CONFIGURATION_EXTRA_PDA_DESC"]["de"] = "Mit dieser Option lassen sich 
 $message["CONFIGURATION_EXTRA_SPONSORING"]["de"] = "Sponsoring / Werbung";
 $message["CONFIGURATION_EXTRA_SPONSORING_DESC"]["de"] = "Die Auswahl des Extras Sponsoring bedeutet, dass in diesem Raum Sponsoren konfiguriert (eingestellt) werden können und dass die Sponsoreneinstellungen aus dem übergeordneten Raum nicht übernommen werden.";
 $message["CONFIGURATION_EXTRA_WIKI"]["de"] = "Raum-Wiki";
-$message["CONFIGURATION_EXTRA_WIKI_DESC"]["de"] = "Mit dieser Einstellung wird die Anbindung an ein externes Wiki (pmWiki) ermöglicht, das sich aus einem Raum heraus einrichten lässt.
+$message["CONFIGURATION_EXTRA_WIKI_DESC"]["de"] = "Mit dieser Einstellung wird die Anbindung an ein externes Wiki (pmWiki) ermöglicht, das sich aus einem Raum heraus einrichten lässt. Wird die Funktion für das Portal aktiviert, steht sie automatisch in allen Räumen bereit.";
+$message["CONFIGURATION_EXTRA_WORDPRESS"]["de"] = "Raum-Wordpress";
+$message["CONFIGURATION_EXTRA_WORDPRESS_DESC"]["de"] = "Mit dieser Einstellung wird die Anbindung an ein externes Wordpress ermöglicht, das sich aus einem Raum heraus einrichten lässt. Wird die Funktion für das Portal aktiviert, steht sie automatisch in allen Räumen bereit.";
 
-Wird die Funktion für das Portal aktiviert, steht sie automatisch in allen Räumen bereit.";
 $message["CONFIGURATION_GROUPROOM_LINK"]["de"] = "Gruppenräume";
 $message["CONFIGURATION_GROUPROOM_LINK_DESC"]["de"] = "Aktivieren oder deaktivieren Sie hier die Möglichkeit, Gruppen- räume einrichten zu können.";
 $message["CONFIGURATION_HOME_STATUS"]["de"] = "Art der Darstellung";

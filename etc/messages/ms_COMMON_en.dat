@@ -215,6 +215,7 @@ $message["COMMON_CONFIGURATION_WIKI_ROOM_MOD_WRITE_ACCESS_VALUE"]["en"] = "only 
 $message["COMMON_CONFIGURATION_WIKI_SHOW_LOGIN_BOX"]["en"] = "Login-box";
 $message["COMMON_CONFIGURATION_WIKI_SHOW_LOGIN_BOX_VALUE"]["en"] = "Display a CommSy login-box on the wiki navigation";
 $message["COMMON_CONFIGURATION_WIKI_USE_COMMSY_LOGIN_VALUE"]["en"] = "Also use the CommSy-Accounts of this room to log in to the wiki. The wiki-account &quot;admin&quot;, &quot;edit&quot; and &quot;read&quot; will be created. They will use the passwords set above.";
+$message["COMMON_CONFIGURATION_WORDPRESS_FORM_TITLE"]["en"] = "Wordpress settings";
 $message["COMMON_CONFINGURATION_ARCHIVE"]["en"] = "Archive workspace / set up template";
 $message["COMMON_CONFINGURATION_ARCHIVE_SHORT"]["en"] = "Archive workspace / template";
 $message["COMMON_CONTENT"]["en"] = "Content";

@@ -523,11 +523,11 @@ class cs_material_item extends cs_item {
 
 
    function getSectionList() {
-      $section_list = $this->_getValue('section_for');
+      $section_list = $this->_getValue('section_for');      
       if (empty($section_list) ) {
          $this->_data['section_for'] = $this->_getSectionListForCurrentVersion();
          $section_list = $this->_data['section_for'];
-      }
+      }      
       return $section_list;
    }
 
