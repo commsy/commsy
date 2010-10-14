@@ -157,7 +157,7 @@ function getContextIDForItemID($id){
      $query .= ' FROM '.$this->addDatabasePrefix($this->_db_table);
      $query .= ' WHERE 1';
      $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.item_id = "'.$id.'"';
-     if (isset($this->_query_cache_array[$query]) and !empty($this->_query_cache_array[$query])){
+     if (isset($this->_query_cache_array[$query])){
         return $this->_query_cache_array[$query];
      }
      $result = $this->_db_connector->performQuery($query);
@@ -167,6 +167,9 @@ function getContextIDForItemID($id){
         }
         return $result[0]['context_id'];
      }else{
+        if (!isset($this->_query_cache_array[$query])){
+          $this->_query_cache_array[$query] = 0;
+        }
      	return '0';
      }
 }
