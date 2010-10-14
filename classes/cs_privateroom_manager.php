@@ -41,6 +41,8 @@ class cs_privateroom_manager extends cs_room2_manager {
    */
   var $_age_limit = NULL;
 
+  var $_query_cache_array = array();
+
   /**
    * integer - containing a start point for the select community
    */
@@ -155,8 +157,14 @@ function getContextIDForItemID($id){
      $query .= ' FROM '.$this->addDatabasePrefix($this->_db_table);
      $query .= ' WHERE 1';
      $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.item_id = "'.$id.'"';
+     if (isset($this->_query_cache_array[$query]) and !empty($this->_query_cache_array[$query])){
+        return $this->_query_cache_array[$query];
+     }
      $result = $this->_db_connector->performQuery($query);
      if (isset($result[0]['context_id'])){
+        if (!isset($this->_query_cache_array[$query])){
+          $this->_query_cache_array[$query] = $result[0]['context_id'];
+        }
         return $result[0]['context_id'];
      }else{
      	return '0';
