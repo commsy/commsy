@@ -3674,7 +3674,7 @@ jQuery(document).ready(function() {
             	} else {
             		jQuery('#privateroom_home_roomwide_search_table').append(jQuery('<tr><td colspan="2" style="height:20px;">'+roomwide_search_empty_result+'</td></tr>'));
             	}
-                jQuery('#privateroom_home_roomwide_search_div').css('height',jQuery('#privateroom_home_roomwide_search_table').height());
+                jQuery('#privateroom_home_roomwide_search_div').css('height',jQuery('#privateroom_home_roomwide_search_table').height()+1);
               }
 		   }
 		});

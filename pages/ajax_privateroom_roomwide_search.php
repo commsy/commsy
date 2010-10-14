@@ -204,7 +204,7 @@ while($item){
    }
    $status_change = getItemChangeStatus($item, $item->getContextID());
    $annotation_change = getItemAnnotationChangeStatus($item, $item->getContextID());
-   $result_array[] = array('title' => $item->getTitle().' '.$status_change.''.$annotation_change, 'type' => $item->getItemType(), 'iid' => $item->getItemId(), 'cid' => $item->getContextID(), 'hover' => $hover_text, 'room_name' => $room_name);
+   $result_array[] = array('title' => $item->getTitle(), 'status' => $status_change.''.$annotation_change, 'type' => $item->getItemType(), 'iid' => $item->getItemId(), 'cid' => $item->getContextID(), 'hover' => $hover_text, 'room_name' => $room_name);
    $item = $result_list->getNext();
 }
 
