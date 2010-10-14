@@ -1012,13 +1012,7 @@ class cs_entry_index_view extends cs_index_view {
          $temp_array['text'] = '*'.$this->_translator->getMessage('TAG_FORM_ROOT_LEVEL');
          $values_tree[] = $temp_array;
          unset($temp_array);
-         #$temp_array = array();
-         #$temp_array['value'] = 'disabled';
-         #$temp_array['text'] = '--------------------';
-         #$values_tree[] = $temp_array;
-         #unset($temp_array);
-         #$values_tree = array_merge($values_tree,$this->_initFormChildren($this->_root_tag,0));
-         #$this->_second_sort_tree = $this->_values_tree;
+         $values_tree = array_merge($values_tree,$this->_initFormChildren($root_item,0));
       }
       
       $html .= '<tr>'.LF;
@@ -2060,6 +2054,35 @@ class cs_entry_index_view extends cs_index_view {
 
    public function setSelectedTagArray ($array) {
       $this->_selected_tag_array = $array;
+   }
+   
+   private function _initFormChildren ( $item, $depth ) {
+      $retour = array();
+      if ( isset($item) ) {
+         $children_list = $item->getChildrenList();
+         if ( isset($children_list) and $children_list->isNotEmpty() ) {
+            $child = $children_list->getFirst();
+            $arrows = '';
+            $depth_temp = $depth;
+            while ( $depth_temp > 0 ) {
+               $arrows .= '> ';
+               $depth_temp = $depth_temp-1;
+            }
+            while ( $child ) {
+               $temp_array = array();
+               $temp_array['value'] = $child->getItemID();
+               $temp_array['text']  = $arrows.$child->getTitle();
+               $retour[] = $temp_array;
+               $retour = array_merge($retour,$this->_initFormChildren($child,$depth+1));
+               unset($child);
+               $child = $children_list->getNext();
+            }
+
+         }
+         unset($children_list);
+      }
+      $this->_first_sort_tree = $retour;
+      return $retour;
    }
 }
 ?>
