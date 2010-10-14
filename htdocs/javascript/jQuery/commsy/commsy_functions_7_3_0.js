@@ -2357,11 +2357,9 @@ function return_portlet_note(id, portlet){
 }
 
 function turn_portlet_tag(id, portlet){
-   alert('turn tag');
 }
 
 function return_portlet_tag(id, portlet){
-	alert('return tag');
 }
 
 function BuzzwordItem(id, name) {
