@@ -417,31 +417,38 @@ class cs_entry_index_view extends cs_index_view {
 
    function asHTML () {
       $privateroom_item = $this->_environment->getCurrentContextItem();
-      $myentries_array = $privateroom_item->getMyEntriesDisplayConfig();
+      $myentries_array_original = $privateroom_item->getMyEntriesDisplayConfig();
 
       $html  = LF.'<!-- BEGIN OF LIST VIEW -->'.LF;
 
       $html .= $this->_getIndexPageHeaderAsHTML().LF;
       $html .= '<div style="width:100%; clear:both; margin-top: 10px;">';
 
+      $myentries_array = array();
+      foreach($myentries_array_original as $myentries_array_original_entry){
+         if(($myentries_array_original_entry == 'my_tag_box' or $myentries_array_original_entry == 'my_tag_box_preferences') and !$privateroom_item->withTags()){   
+         } else if(($myentries_array_original_entry == 'my_buzzword_box' or $myentries_array_original_entry == 'my_buzzword_box_preferences') and !$privateroom_item->withBuzzwords()){   
+         } else if($myentries_array_original_entry == 'null'){
+         } else {
+         	$myentries_array[] = $myentries_array_original_entry;
+         }
+      }
+      
       if(!empty($myentries_array)){
          $html .= '<div id="myentries_left" class="column" style="width:50%; float:left;">'.LF;
          foreach($myentries_array as $myentry){
             if($myentry == "my_list_box"){
                $html .= $this->_getMylistsBoxAsHTML().LF;
             }
-            if($myentry == "my_buzzword_box"){
+            if($myentry == "my_buzzword_box" and $privateroom_item->withBuzzwords()){
                $html .= $this->_getBuzzwordBoxAsHTML().LF;
             }
             if($myentry == "my_matrix_box"){
                $html .= $this->_getMatrixBoxAsHTML().LF;
             }
-            if($myentry == "my_tag_box"){
+            if($myentry == "my_tag_box" and $privateroom_item->withTags()){
                $html .= $this->_getTagBoxAsHTML().LF;
             }
-            #if($myentry == "my_search_box"){
-            #   $html .= $this->_getSearchBoxAsHTML().LF;
-            #}
          }
          $html .= '</div>'.LF;
          $html .= '<div id="myentries_right" style="width:50%; float:right;">'.LF;
@@ -482,27 +489,31 @@ class cs_entry_index_view extends cs_index_view {
       }
       $action_array[] = $temp_array;
 
-      $temp_array = array();
-      $temp_array['dropdown_image']  = "new_icon";
-      $temp_array['text']  = $this->_translator->getMessage('PRIVATEROOM_MY_ENTRIES_BUZZWORD_BOX');
-      $temp_array['value'] = "my_buzzword_box";
-      if(in_array("my_buzzword_box", $myentries_array)){
-         $temp_array['checked']  = "checked";
-      } else {
-         $temp_array['checked']  = "";
+      if ($privateroom_item->withBuzzwords()){
+	      $temp_array = array();
+	      $temp_array['dropdown_image']  = "new_icon";
+	      $temp_array['text']  = $this->_translator->getMessage('PRIVATEROOM_MY_ENTRIES_BUZZWORD_BOX');
+	      $temp_array['value'] = "my_buzzword_box";
+	      if(in_array("my_buzzword_box", $myentries_array)){
+	         $temp_array['checked']  = "checked";
+	      } else {
+	         $temp_array['checked']  = "";
+	      }
+	      $action_array[] = $temp_array;
       }
-      $action_array[] = $temp_array;
 
-      $temp_array = array();
-      $temp_array['dropdown_image']  = "new_icon";
-      $temp_array['text']  = $this->_translator->getMessage('PRIVATEROOM_MY_ENTRIES_TAG_BOX');
-      $temp_array['value'] = "my_tag_box";
-      if(in_array("my_tag_box", $myentries_array)){
-         $temp_array['checked']  = "checked";
-      } else {
-         $temp_array['checked']  = "";
+      if ($privateroom_item->withTags()){
+	      $temp_array = array();
+	      $temp_array['dropdown_image']  = "new_icon";
+	      $temp_array['text']  = $this->_translator->getMessage('PRIVATEROOM_MY_ENTRIES_TAG_BOX');
+	      $temp_array['value'] = "my_tag_box";
+	      if(in_array("my_tag_box", $myentries_array)){
+	         $temp_array['checked']  = "checked";
+	      } else {
+	         $temp_array['checked']  = "";
+	      }
+	      $action_array[] = $temp_array;
       }
-      $action_array[] = $temp_array;
       
       $temp_array = array();
       $temp_array['dropdown_image']  = "new_icon";
@@ -990,19 +1001,36 @@ class cs_entry_index_view extends cs_index_view {
       $html .= '<table id="my_tag_form_table" summary="layout">'.LF;
       $html .= '<tr>'.LF;
       $html .= '<td class="formfield">'.LF;
-      $html .= 'Hinzufügen'.LF;
+      $html .= cs_ucfirst($this->_translator->getMessage('COMMON_ADD_BUTTON')).LF;
       $html .= '</td>'.LF;
       $html .= '</tr>'.LF;
-               
+
+      $values_tree = array();
+      if ( isset($root_item) ) {
+         $temp_array = array();
+         $temp_array['value'] = $root_item->getItemID();
+         $temp_array['text'] = '*'.$this->_translator->getMessage('TAG_FORM_ROOT_LEVEL');
+         $values_tree[] = $temp_array;
+         unset($temp_array);
+         #$temp_array = array();
+         #$temp_array['value'] = 'disabled';
+         #$temp_array['text'] = '--------------------';
+         #$values_tree[] = $temp_array;
+         #unset($temp_array);
+         #$values_tree = array_merge($values_tree,$this->_initFormChildren($this->_root_tag,0));
+         #$this->_second_sort_tree = $this->_values_tree;
+      }
+      
       $html .= '<tr>'.LF;
       $html .= '<td class="formfield">'.LF;
       $html .= '<input type="text" id="my_tag_form_new_tag" value="" maxlength="255" size="30" tabindex="18" class="text"/>'.LF;
       $html .= 'zu'.LF;
       $html .= '<select id="my_tag_form_father_id" size="1" tabindex="19">'.LF;
-      $html .= '<option value="558">*oberster Ebene</option>'.LF;
-      $html .= '<option class="disabled" disabled="disabled">--------------------</option>'.LF;
+      foreach($values_tree as $value){
+      	$html .= '<option value="'.$value['value'].'">'.$value['text'].'</option>'.LF;
+      }
       $html .= '</select>'.LF;
-      $html .= '<input type="submit" id="my_tag_form_button_add" name="option" value="hinzufügen" tabindex="20"/>'.LF;
+      $html .= '<input type="submit" id="my_tag_form_button_add" value="'.$this->_translator->getMessage('COMMON_ADD_BUTTON').'" tabindex="20"/>'.LF;
       $html .= '</td>'.LF;
       $html .= '</tr>'.LF;
                

@@ -2357,6 +2357,24 @@ function return_portlet_note(id, portlet){
 }
 
 function turn_portlet_tag(id, portlet){
+	 jQuery('#my_tag_form_button_add').click(function(){
+		if(jQuery('#my_tag_form_new_tag').val() != ''){
+	         var json_data = new Object();
+	    	 json_data['new_tag_name'] = jQuery('#my_tag_form_new_tag').val();
+	    	 json_data['new_tag_father'] = jQuery('#my_tag_form_father_id').find(':selected').val();
+	    	 jQuery.ajax({
+	    	    url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct=privateroom_tag_configuration&output=json&do=save_new_tag',
+	    	    data: json_data,
+	    	    success: function(msg){
+	    		   var resultJSON = eval('(' + msg + ')');
+	               if (resultJSON === undefined){
+	               }else{
+
+	               }
+	    	    }
+	    	 });
+		  }
+	 });
 }
 
 function return_portlet_tag(id, portlet){
