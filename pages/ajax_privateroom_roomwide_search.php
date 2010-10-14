@@ -202,7 +202,9 @@ while($item){
    	$type = 'COMMON_'.strtoupper($item->getItemType());
    	$hover_text .= $translator->getMessage($type);
    }
-   $result_array[] = array('title' => $item->getTitle(), 'type' => $item->getItemType(), 'iid' => $item->getItemId(), 'cid' => $item->getContextID(), 'hover' => $hover_text, 'room_name' => $room_name);
+   $status_change = getItemChangeStatus($item, $item->getContextID());
+   $annotation_change = getItemAnnotationChangeStatus($item, $item->getContextID());
+   $result_array[] = array('title' => $item->getTitle().' '.$status_change.''.$annotation_change, 'type' => $item->getItemType(), 'iid' => $item->getItemId(), 'cid' => $item->getContextID(), 'hover' => $hover_text, 'room_name' => $room_name);
    $item = $result_list->getNext();
 }
 
@@ -326,5 +328,71 @@ function getTooltipDate($date){
       }
       $tooltip_date = $temp_array;
       return $tooltip_date;
-   }
+}
+   
+function getItemAnnotationChangeStatus($item,$context_id) {
+	   global $environment;
+	   $translator = $environment->getTranslationObject();
+      $current_user = $environment->getCurrentUserItem();
+      $related_user = $current_user->getRelatedUserItemInContext($context_id);
+      if ($related_user->isUser()) {
+         $noticed_manager = $environment->getNoticedManager();
+         $noticed_manager->_current_user_id = $related_user->getItemID();
+         $annotation_list = $item->getItemAnnotationList();
+         $anno_item = $annotation_list->getFirst();
+         $new = false;
+         $changed = false;
+         $date = "0000-00-00 00:00:00";
+         while ( $anno_item ) {
+            $noticed = $noticed_manager->getLatestNoticed($anno_item->getItemID());
+            if ( empty($noticed) ) {
+               if ($date < $anno_item->getModificationDate() ) {
+                   $new = true;
+                   $changed = false;
+                   $date = $anno_item->getModificationDate();
+               }
+            } elseif ( $noticed['read_date'] < $anno_item->getModificationDate() ) {
+               if ($date < $anno_item->getModificationDate() ) {
+                   $new = false;
+                   $changed = true;
+                   $date = $anno_item->getModificationDate();
+               }
+            }
+            $anno_item = $annotation_list->getNext();
+         }
+         if ( $new ) {
+            $info_text =' <span class="changed">['.$translator->getMessage('COMMON_NEW_ANNOTATION').']</span>';
+         } elseif ( $changed ) {
+            $info_text = ' <span class="changed">['.$translator->getMessage('COMMON_CHANGED_ANNOTATION').']</span>';
+         } else {
+            $info_text = '';
+         }
+      } else {
+         $info_text = '';
+      }
+      return $info_text;
+}
+
+
+function getItemChangeStatus($item,$context_id) {
+	   global $environment;
+	   $translator = $environment->getTranslationObject();
+      $current_user = $environment->getCurrentUserItem();
+      $related_user = $current_user->getRelatedUserItemInContext($context_id);
+      if ($related_user->isUser()) {
+         $noticed_manager = $environment->getNoticedManager();
+         $noticed = $noticed_manager->getLatestnoticedByUser($item->getItemID(),$related_user->getItemID());
+         if ( empty($noticed) ) {
+            $info_text = ' <span class="changed">['.$translator->getMessage('COMMON_NEW').']</span>';
+         } elseif ( $noticed['read_date'] < $item->getModificationDate() ) {
+            $info_text = ' <span class="changed">['.$translator->getMessage('COMMON_CHANGED').']</span>';
+         } else {
+            $info_text = '';
+         }
+         // Add change info for annotations (TBD)
+      } else {
+         $info_text = '';
+      }
+      return $info_text;
+}
 ?>
