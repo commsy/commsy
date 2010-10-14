@@ -966,7 +966,7 @@ class cs_entry_index_view extends cs_index_view {
       $html .= '<div style="float:right;"><a name="myentries_remove" style="cursor:pointer;"><img src="images/commsyicons/16x16/delete.png" /></a></div>';
       $html .= '</div>'.LF;
       $html .= '<div class="portlet-content">'.LF;
-
+      $html .= '<div id="my_tag_content_div">'.LF;
       $tag_manager = $this->_environment->getTagManager();
       $root_item = $tag_manager->getRootTagItem();
       
@@ -981,7 +981,7 @@ class cs_entry_index_view extends cs_index_view {
       }
       
       $html .= $this->_getTagContentAsHTMLWithJavascript($root_item,0,$selected_id, $father_id_array,0,true);
-      
+      $html .= '</div>'.LF;
       $html .= '</div>'.LF;
 
       // Preferences link

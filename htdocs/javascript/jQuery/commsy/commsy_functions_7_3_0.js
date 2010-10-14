@@ -2369,7 +2369,8 @@ function turn_portlet_tag(id, portlet){
 	    		   var resultJSON = eval('(' + msg + ')');
 	               if (resultJSON === undefined){
 	               }else{
-
+	            	   portlet_data['tree_update'] = resultJSON['tree_update'];
+	            	   portlet_data['tag_save'] = true;
 	               }
 	    	    }
 	    	 });
@@ -2378,6 +2379,52 @@ function turn_portlet_tag(id, portlet){
 }
 
 function return_portlet_tag(id, portlet){
+	if(portlet_data['tag_save']){
+		if(typeof(portlet_data['tree_update']) !== 'undefined'){
+		    jQuery('#my_tag_content_div').html(portlet_data['tree_update']);
+		    
+		    if(jQuery('[id^=tag_tree]').length){
+				jQuery.ui.dynatree.nodedatadefaults["icon"] = false;
+				jQuery('[id^=tag_tree]').each(function(){
+					jQuery(this).dynatree({
+						fx: { height: "toggle", duration: 200 },
+						checkbox: true,
+						onActivate: function(dtnode){
+							if( dtnode.data.url ){
+								window.location(dtnode.data.url);
+							}
+							if( dtnode.data.StudyLog ){
+								callStudyLogSortByTagId(dtnode.data.StudyLog);
+							}
+						},
+						onSelect: function(select, dtnode){
+							if( dtnode.data.checkbox ){
+								jQuery("[#taglist_" + dtnode.data.checkbox).attr('checked', select);
+							}
+						}
+					});
+					var max_visible_nodes = 20;
+					var max_expand_level = getExpandLevel(jQuery(this), max_visible_nodes);
+					jQuery(this).dynatree("getRoot").visit(function(dtnode){
+						if(dtnode.getLevel() < max_expand_level){
+							dtnode.expand(true);
+						}
+						if( !dtnode.data.checkbox ){
+							dtnode.data.hideCheckbox = true;
+							dtnode.render(true);
+						} else {
+							dtnode.select(jQuery("[#taglist_" + dtnode.data.checkbox).attr('checked'));
+						}
+					});
+					if(jQuery(this).attr('name') == 'tag_tree_detail'){
+						collapseTree(jQuery(this).dynatree("getRoot"), true);
+					}
+				});
+			}
+		    
+	        portlet_data['tag_save'] = false;
+		}
+	}
 }
 
 function BuzzwordItem(id, name) {
