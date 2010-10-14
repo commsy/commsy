@@ -70,8 +70,8 @@ if(isset($_GET['do'])){
 }
 
 function getTagContentAsHTMLWithJavascript($item = NULL, $ebene = 0,$selected_id = 0, $father_id_array, $distance = 0, $with_div=false) {
-	   // http://localhost/commsy/htdocs/commsy.php?cid=551&mod=entry&fct=index&seltag_0=829&seltag=yes
 	   global $environment;
+	   $display_mode = '';
       // MUSEUM
       $html = '';
       #$params = $environment->getCurrentParameterArray();
@@ -183,7 +183,7 @@ function getTagContentAsHTMLWithJavascript($item = NULL, $ebene = 0,$selected_id
                   $params['seltag'] = 'yes';
                   if ( $environment->inPrivateRoom()
                        and $environment->getCurrentModule() == CS_MATERIAL_TYPE
-                       and $this->_display_mode == 'flash'
+                       and $display_mode == 'flash'
                      ) {
                      $html .= '<li id="' . $current_item->getItemID() . '" data="StudyLog: \'' . $current_item->getItemID() . '\'" style="color:#545454; font-style:normal; font-size:9pt; font-weight:normal;">';
                      $html .= '<a href="javascript:callStudyLogSortByTagId('.$current_item->getItemID().')">'.$title.'</a>';
