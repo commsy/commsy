@@ -3665,9 +3665,9 @@ jQuery(document).ready(function() {
 						var temp_item_link = '<a href="commsy.php?cid='+json_element['cid']+'&mod='+json_element['type']+'&fct=detail&iid='+json_element['iid']+'" title="'+json_element['hover']+'" target="_self">'+json_element['title']+'</a>';
 						var temp_room_link = '<a href="commsy.php?cid='+json_element['cid']+'&amp;mod=home&amp;fct=index" title="'+json_element['room_name']+'" target="_self">'+json_element['room_name']+'</a>';
 						if((int % 2) == 0){
-							html = jQuery('<tr class="list"><td class="even" style="height:20px; font-size:8pt;"><div style="float: left;">'+temp_icon_link+'</div>'+temp_item_link+'<br><span style="font-size: 8pt;">(Raum: '+temp_room_link+')</span></td></tr>');
+							html = jQuery('<tr class="list"><td class="even" style="height:20px; font-size:8pt;"><div style="float: left;">'+temp_icon_link+'</div>'+temp_item_link+' '+json_element['status']+'<br><span style="font-size: 8pt;">(Raum: '+temp_room_link+')</span></td></tr>');
 						} else {
-							html = jQuery('<tr class="list"><td class="odd" style="height:20px; font-size:8pt;"><div style="float: left;">'+temp_icon_link+'</div>'+temp_item_link+'<br><span style="font-size: 8pt;">(Raum: '+temp_room_link+')</span></td></tr>');
+							html = jQuery('<tr class="list"><td class="odd" style="height:20px; font-size:8pt;"><div style="float: left;">'+temp_icon_link+'</div>'+temp_item_link+' '+json_element['status']+'<br><span style="font-size: 8pt;">(Raum: '+temp_room_link+')</span></td></tr>');
 						}
 						jQuery('#privateroom_home_roomwide_search_table').append(html);
 					}
