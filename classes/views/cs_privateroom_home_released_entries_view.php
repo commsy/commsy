@@ -31,6 +31,9 @@ $this->includeClass(VIEW);
  */
 class cs_privateroom_home_released_entries_view extends cs_view {
 
+
+var $_related_user = NULL;
+
    /** constructor
     * the only available constructor, initial values for internal variables
     *
@@ -47,6 +50,7 @@ class cs_privateroom_home_released_entries_view extends cs_view {
    function asHTML(){
    	$room_id = $this->_environment->getCurrentContextID();
    	$user = $this->_environment->getCurrentUser();
+
    	$item_manager = $this->_environment->getItemManager();
    	$released_ids = $item_manager->getExternalViewerEntriesForRoom($room_id);
    	$viewable_ids = $item_manager->getExternalViewerEntriesForUser($user->getUserID());
@@ -63,6 +67,9 @@ class cs_privateroom_home_released_entries_view extends cs_view {
       $html .= '<div id="'.get_class($this).'" style="margin:0px 5px 5px 0px; font-weight:bold;">'.$this->_translator->getMessage('COMMON_RELEASED_ENTRIES_FOR_OTHER_USERS',$user->getFullName()).'</div>'.LF;
       $html .= '</td></tr>';
       if(!empty($released_ids)){
+         $noticed_manager = $this->_environment->getNoticedManager();
+         $noticed_manager->getLatestNoticedByIDArray($released_ids);
+         $noticed_manager->getLatestNoticedAnnotationsByIDArray($released_ids);
          $released_item = $item_list->getFirst();
           $i = 0;
           while($released_item){
@@ -82,14 +89,18 @@ class cs_privateroom_home_released_entries_view extends cs_view {
       $html .= '<div id="'.get_class($this).'" style="margin:0px 5px 5px 0px; font-weight:bold;">'.$this->_translator->getMessage('COMMON_RELEASED_ENTRIES_FOR_CURRENT_USER').'</div>'.LF;
       $html .= '</td></tr>';
       if(!empty($viewable_ids)){
-          $viewable_item = $item_list->getFirst();
-          $i = 0;
-          while($viewable_item){
+         $this->_related_user = $user->getRelatedUserItemInContext($this->_environment->getCurrentPortalID());
+         $noticed_manager = $this->_environment->getNoticedManager();
+         $noticed_manager->getLatestNoticedByIDArray($viewable_ids,$this->_related_user->getItemID());
+         $noticed_manager->getLatestNoticedAnnotationsByIDArrayAndUser($viewable_ids,$this->_related_user->getItemID());
+         $viewable_item = $item_list->getFirst();
+         $i = 0;
+         while($viewable_item){
             if(in_array($viewable_item->getItemID(), $viewable_ids)){
                $html .= $this->_getItemAsHTML($viewable_item, $i++, true, 'viewable');
             }
             $viewable_item = $item_list->getNext();
-          }
+         }
       } else {
          $html .= '<tr  class="list"><td class="odd"  style="border-bottom: 0px; font-size:8pt;">'.$this->_translator->getMessage('COMMON_NO_ENTRIES').'</td></tr>';
       }
@@ -237,7 +248,8 @@ class cs_privateroom_home_released_entries_view extends cs_view {
                                        '',
                                        '',
                                        '',
-                                       '').$this->_getItemChangeStatus($full_item,$full_item->getContextID(),$view_type).$this->_getItemAnnotationChangeStatus($full_item,$full_item->getContextID(),$view_type);
+                                       '');
+         $html .=$this->_getItemChangeStatus($full_item,$full_item->getContextID(),$view_type).$this->_getItemAnnotationChangeStatus($full_item,$full_item->getContextID(),$view_type);
 
          if ($view_type == 'released'){
             $html .= '<br/><span style="font-size:8pt;">('.$this->_translator->getMessage('PRIVATEROOM_RELEASED_FOR').': ';
@@ -274,7 +286,7 @@ class cs_privateroom_home_released_entries_view extends cs_view {
    function _getItemAnnotationChangeStatus($item,$context_id,$view_type) {
       $current_user = $this->_environment->getCurrentUserItem();
       if ($view_type == 'viewable'){
-         $related_user = $current_user->getRelatedUserItemInContext($this->_environment->getCurrentPortalID());
+         $related_user = $this->_related_user;
       }else{
          $related_user = $current_user->getRelatedUserItemInContext($context_id);
       }

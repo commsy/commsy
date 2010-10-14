@@ -40,7 +40,7 @@ class cs_noticed_manager {
   var $_cache_on = true;
 
   public $_db_prefix = '';
-  
+
    /**
     * Environment - the environment of the CommSy
     */
@@ -135,10 +135,13 @@ class cs_noticed_manager {
 
 
 
-   function getLatestNoticedByIDArray ($id_array) {
+   function getLatestNoticedByIDArray ($id_array,$user_id = 0) {
       // ------------------
       // --->UTF8 - OK<----
       // ------------------
+      if (empty($user_id)){
+      	 $user_id = $this->_current_user_id;
+      }
       if ($this->_cache_on and count($id_array)>0){
          foreach($id_array as $id){
             if (!in_array($id,$this->_rubric_id_array)){
@@ -147,7 +150,7 @@ class cs_noticed_manager {
          }
          $query  = 'SELECT item_id, version_id, MAX(read_date) as read_date FROM '.$this->addDatabasePrefix('noticed').
                 ' WHERE item_id IN ('.implode(",",encode(AS_DB,$id_array)).')'.
-                ' AND   user_id="'.encode(AS_DB,$this->_current_user_id).'"'.
+                ' AND   user_id="'.encode(AS_DB,$user_id).'"'.
                 ' GROUP BY item_id';
          $result = $this->_db_connector->performQuery($query);
          if ( !isset($result) ) {
@@ -363,11 +366,11 @@ class cs_noticed_manager {
          }
       }
    }
-   
+
    function addDatabasePrefix($db_table){
       return $this->_db_prefix . $db_table;
    }
-   
+
    function moveFromDbToBackup($context_id){
       $id_array_items = array();
       $item_manager = $this->_environment->getItemManager();
@@ -390,7 +393,7 @@ class cs_noticed_manager {
          $id_array_users[] = $temp_user->getItemID();
          $temp_user = $user_list->getNext();
       }
-      
+
       global $c_db_backup_prefix;
       $retour = false;
       if(!empty($id_array_items) and !empty($id_array_users)){
@@ -407,7 +410,7 @@ class cs_noticed_manager {
       }
       return $retour;
    }
-   
+
    function moveFromBackupToDb($context_id){
       $id_array_items = array();
       $zzz_item_manager = $this->_environment->getZzzItemManager();
@@ -430,7 +433,7 @@ class cs_noticed_manager {
          $id_array_users[] = $temp_user->getItemID();
          $temp_user = $user_list->getNext();
       }
-      
+
       global $c_db_backup_prefix;
       $retour = false;
       if(!empty($id_array_items) and !empty($id_array_users)){
@@ -447,11 +450,11 @@ class cs_noticed_manager {
       }
       return $retour;
    }
-   
+
    function deleteFromDb($context_id, $from_backup = false){
    	global $c_db_backup_prefix;
       $retour = false;
-      
+
       $db_prefix = '';
       $id_array_items = array();
       $id_array_users = array();
@@ -495,7 +498,7 @@ class cs_noticed_manager {
 	         $temp_user = $user_list->getNext();
 	      }
       }
-      
+
       if(!empty($id_array_items) and !empty($id_array_users)){
 	      $query = 'DELETE FROM '.$this->addDatabasePrefix($db_prefix.'noticed').' WHERE '.$this->addDatabasePrefix($db_prefix.'noticed').'.item_id IN ('.implode(",", $id_array_items).') OR '.$this->addDatabasePrefix($db_prefix.'noticed').'.user_id IN ('.implode(",", $id_array_users).')';
 	      $result = $this->_db_connector->performQuery($query);
