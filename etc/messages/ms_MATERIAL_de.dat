@@ -47,6 +47,7 @@ $message["MATERIAL_ENTER_NEW"]["de"] = "Material eingeben";
 $message["MATERIAL_EXPORT_ITEM_ZIP"]["de"] = "Material";
 $message["MATERIAL_EXPORT_TO_WIKI"]["de"] = "Im Wiki darstellen";
 $message["MATERIAL_EXPORT_TO_WIKI_LINK"]["de"] = "Seite im Wiki";
+$message["MATERIAL_EXPORT_TO_WORDPRESS_LINK"]["de"] = "Seite in Wordpress";
 $message["MATERIAL_EXPORT_WIKI_MAIL_BODY"]["de"] = "Im CommSy-Raum &quot;%1&quot; hat %2 folgendes, auch von Ihnen bearbeitete, Material im Raum-Wiki veröffentlicht:<br/>
 <br/>
 &quot;%3&quot;<br/>
@@ -55,7 +56,6 @@ Die öffentliche Version im Raum-Wiki finden Sie unter:<br/>
 <br/>
 %4";
 $message["MATERIAL_EXPORT_WIKI_MAIL_SUBJECT"]["de"] = "Material-Export ins Wiki";
-$message["MATERIAL_EXPORT_TO_WORDPRESS_LINK"]["de"] = "Seite in Wordpress";
 $message["MATERIAL_EXPORT_WORDPRESS_MAIL_SUBJECT"]["de"] = "Material-Export in Wordpress";
 $message["MATERIAL_EXPORT_ZIP"]["de"] = "Materialien";
 $message["MATERIAL_FACULTY"]["de"] = "Fakultät";

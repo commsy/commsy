@@ -153,7 +153,6 @@ $message["CONFIGURATION_EXTRA_WIKI"]["de"] = "Raum-Wiki";
 $message["CONFIGURATION_EXTRA_WIKI_DESC"]["de"] = "Mit dieser Einstellung wird die Anbindung an ein externes Wiki (pmWiki) ermöglicht, das sich aus einem Raum heraus einrichten lässt. Wird die Funktion für das Portal aktiviert, steht sie automatisch in allen Räumen bereit.";
 $message["CONFIGURATION_EXTRA_WORDPRESS"]["de"] = "Raum-Wordpress";
 $message["CONFIGURATION_EXTRA_WORDPRESS_DESC"]["de"] = "Mit dieser Einstellung wird die Anbindung an ein externes Wordpress ermöglicht, das sich aus einem Raum heraus einrichten lässt. Wird die Funktion für das Portal aktiviert, steht sie automatisch in allen Räumen bereit.";
-
 $message["CONFIGURATION_GROUPROOM_LINK"]["de"] = "Gruppenräume";
 $message["CONFIGURATION_GROUPROOM_LINK_DESC"]["de"] = "Aktivieren oder deaktivieren Sie hier die Möglichkeit, Gruppen- räume einrichten zu können.";
 $message["CONFIGURATION_HOME_STATUS"]["de"] = "Art der Darstellung";

@@ -1838,6 +1838,8 @@ function portlet_turn_action(preferences, id, portlet){
          turn_portlet_rss(id, portlet);
       } else if (id == 'my_matrix_box'){
          turn_portlet_matrix(id, portlet);
+      } else if (id == 'my_tag_box'){
+         turn_portlet_tag(id, portlet);
       } else if (id == 'cs_privateroom_home_new_entries_view'){
          turn_portlet_new_entries(id, portlet);
       } else if ((id == 'my_buzzword_box') || (id == 'cs_privateroom_home_buzzword_view')){
@@ -1858,6 +1860,8 @@ function portlet_turn_action(preferences, id, portlet){
          return_portlet_rss(id, portlet);
       } else if (id == 'my_matrix_box'){
          return_portlet_matrix(id, portlet);
+      } else if (id == 'my_tag_box'){
+         return_portlet_tag(id, portlet);
       } else if (id == 'cs_privateroom_home_new_entries_view'){
          return_portlet_new_entries(id, portlet);
       } else if ((id == 'my_buzzword_box') || (id == 'cs_privateroom_home_buzzword_view')){
@@ -2350,6 +2354,14 @@ function return_portlet_note(id, portlet){
          portlet_data['note_save'] = false;
 	  }
    }
+}
+
+function turn_portlet_tag(id, portlet){
+   alert('turn tag');
+}
+
+function return_portlet_tag(id, portlet){
+	alert('return tag');
 }
 
 function BuzzwordItem(id, name) {

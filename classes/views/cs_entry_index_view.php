@@ -48,6 +48,8 @@ class cs_entry_index_view extends cs_index_view {
 
    var $_dropdown_rubrics_new = array();
 
+   var $_selected_tag_array = array();
+   
    public function __construct ($params) {
       $this->cs_index_view($params);
       $this->setTitle($this->_translator->getMessage('COMMON_ENTRIES'));
@@ -434,6 +436,9 @@ class cs_entry_index_view extends cs_index_view {
             if($myentry == "my_matrix_box"){
                $html .= $this->_getMatrixBoxAsHTML().LF;
             }
+            if($myentry == "my_tag_box"){
+               $html .= $this->_getTagBoxAsHTML().LF;
+            }
             #if($myentry == "my_search_box"){
             #   $html .= $this->_getSearchBoxAsHTML().LF;
             #}
@@ -490,6 +495,17 @@ class cs_entry_index_view extends cs_index_view {
 
       $temp_array = array();
       $temp_array['dropdown_image']  = "new_icon";
+      $temp_array['text']  = $this->_translator->getMessage('PRIVATEROOM_MY_ENTRIES_TAG_BOX');
+      $temp_array['value'] = "my_tag_box";
+      if(in_array("my_tag_box", $myentries_array)){
+         $temp_array['checked']  = "checked";
+      } else {
+         $temp_array['checked']  = "";
+      }
+      $action_array[] = $temp_array;
+      
+      $temp_array = array();
+      $temp_array['dropdown_image']  = "new_icon";
       $temp_array['text']  = $this->_translator->getMessage('PRIVATEROOM_MY_ENTRIES_MATRIX_BOX');
       $temp_array['value'] = "my_matrix_box";
       if(in_array("my_matrix_box", $myentries_array)){
@@ -498,7 +514,7 @@ class cs_entry_index_view extends cs_index_view {
          $temp_array['checked']  = "";
       }
       $action_array[] = $temp_array;
-
+      
       #$temp_array = array();
       #$temp_array['dropdown_image']  = "new_icon";
       #$temp_array['text']  = $this->_translator->getMessage('PRIVATEROOM_MY_ENTRIES_SEARCH_BOX');
@@ -932,6 +948,181 @@ class cs_entry_index_view extends cs_index_view {
 
    }
 
+   function _getTagBoxAsHTML () {
+      $html = '<div class="portlet" id="my_tag_box">'.LF;
+      $html .= '<div class="portlet-header">'.LF;
+      $html .= $this->_translator->getMessage('PRIVATEROOM_MY_ENTRIES_TAG_BOX').LF;
+      $html .= '<div style="float:right;"><a name="myentries_remove" style="cursor:pointer;"><img src="images/commsyicons/16x16/delete.png" /></a></div>';
+      $html .= '</div>'.LF;
+      $html .= '<div class="portlet-content">'.LF;
+
+      $tag_manager = $this->_environment->getTagManager();
+      $root_item = $tag_manager->getRootTagItem();
+      
+      $selected_id = '';
+      $father_id_array = array();
+      $tag_array = $this->_getSelectedTagArray();
+      $count = (count($tag_array));
+      if ($count >0){
+         $selected_id = $tag_array[0];
+         $tag2tag_manager =  $this->_environment->getTag2TagManager();
+         $father_id_array = $tag2tag_manager->getFatherItemIDArray($selected_id);
+      }
+      
+      $html .= $this->_getTagContentAsHTMLWithJavascript($root_item,0,$selected_id, $father_id_array,0,true);
+      
+      $html .= '</div>'.LF;
+
+      // Preferences link
+      $html .= '<div class="portlet-turn portlet-front" style="float:right;">'.LF;
+      $html .= '<a class="preferences_flip" name="portlet_preferences" style="cursor:pointer;"><img src="images/config_home.png" /></a>'.LF;
+      $html .= '&nbsp;</div>'.LF;
+
+      $html .= '</div>'.LF;
+
+      // Preferences content
+      $html .= '<div class="portlet" style="display:none;" id="my_tag_box_preferences">'.LF;
+      $html .= '<div class="portlet-header">'.$this->_translator->getMessage('PRIVATEROOM_MY_ENTRIES_TAG_BOX').' - Einstellungen</div>'.LF;
+      $html .= '<div class="portlet-content">'.LF;
+
+      // form
+      
+      $html .= '<table id="my_tag_form_table" summary="layout">'.LF;
+      $html .= '<tr>'.LF;
+      $html .= '<td class="formfield">'.LF;
+      $html .= 'Hinzufügen'.LF;
+      $html .= '</td>'.LF;
+      $html .= '</tr>'.LF;
+               
+      $html .= '<tr>'.LF;
+      $html .= '<td class="formfield">'.LF;
+      $html .= '<input type="text" id="my_tag_form_new_tag" value="" maxlength="255" size="30" tabindex="18" class="text"/>'.LF;
+      $html .= 'zu'.LF;
+      $html .= '<select id="my_tag_form_father_id" size="1" tabindex="19">'.LF;
+      $html .= '<option value="558">*oberster Ebene</option>'.LF;
+      $html .= '<option class="disabled" disabled="disabled">--------------------</option>'.LF;
+      $html .= '</select>'.LF;
+      $html .= '<input type="submit" id="my_tag_form_button_add" name="option" value="hinzufügen" tabindex="20"/>'.LF;
+      $html .= '</td>'.LF;
+      $html .= '</tr>'.LF;
+               
+      /*$html .= '<tr>'.LF;
+      $html .= '<td class="formfield">'.LF;
+      $html .= 'Sortieren'.LF;
+      $html .= '</td>'.LF;
+      $html .= '</tr>'.LF;
+               
+      $html .= '<tr>'.LF;
+      $html .= '<td class="formfield">'.LF;
+      $html .= '<select name="sort1" size="1" tabindex="21">'.LF;
+      $html .= '</select>'.LF;
+      $html .= '<select name="sort_action" size="1" tabindex="22">'.LF;
+      $html .= '<option value="3">unter</option>'.LF;
+      $html .= '<option value="1">vor</option>'.LF;
+      $html .= '<option value="2">nach</option>'.LF;
+      $html .= '</select>'.LF;
+      $html .= '<select name="sort2" size="1" tabindex="23">'.LF;
+      $html .= '<option value="558">*oberster Ebene</option>'.LF;
+      $html .= '<option class="disabled" disabled="disabled">--------------------</option>'.LF;
+      $html .= '</select>'.LF;
+      $html .= '<input type="submit" name="option" value="einfügen" tabindex="24"/>'.LF;
+      $html .= '</td>'.LF;
+      $html .= '</tr>'.LF;
+               
+      $html .= '<tr>'.LF;
+      $html .= '<td class="formfield">'.LF;
+      $html .= '<input type="submit" name="option" value="Alphabetisch sortieren" tabindex="25"/>'.LF;
+      $html .= '</td>'.LF;
+      $html .= '</tr>'.LF;
+               
+      $html .= '<tr>'.LF;
+      $html .= '<td class="formfield">'.LF;
+      $html .= 'Zusammenlegen'.LF;
+      $html .= '</td>'.LF;
+      $html .= '</tr>'.LF;
+               
+      $html .= '<tr>'.LF;
+      $html .= '<td class="formfield">'.LF;
+      $html .= '<select name="sel1" size="1" tabindex="26">'.LF;
+      $html .= '</select>'.LF;
+      $html .= '<select name="sel2" size="1" tabindex="27">'.LF;
+      $html .= '</select>'.LF;
+      $html .= 'zu&nbsp;'.LF;
+      $html .= '<select name="combine_father_id" size="1" tabindex="28">'.LF;
+      $html .= '<option value="558">*oberster Ebene</option>'.LF;
+      $html .= '<option class="disabled" disabled="disabled">--------------------</option>'.LF;
+      $html .= '</select>'.LF;
+      $html .= '<input type="submit" name="option" value="zusammenlegen" tabindex="29"/>'.LF;
+      $html .= '</td>'.LF;
+      $html .= '</tr>'.LF;
+
+      $html .= '<tr>'.LF;
+      $html .= '<td class="infoborder" style="width: 70%;">'.LF;
+      $html .= '</td>'.LF;
+      $html .= '</tr>'.LF;
+   
+      $html .= '<tr>'.LF;
+      $html .= '<td class="formfield">'.LF;
+      $html .= 'Bearbeiten'.LF;
+      $html .= '</td>'.LF;
+      $html .= '</tr>'.LF;
+               
+      $html .= '<tr>'.LF;
+      $html .= '<td class="formfield">'.LF;
+      $html .= '<input type="text" name="tag#816" value="2" maxlength="255" size="30" tabindex="41" class="text"/>'.LF;
+      $html .= '&nbsp;'.LF;
+      $html .= '<input type="submit" name="option#816" value="Ändern" tabindex="42"/>'.LF;
+      $html .= '<input type="submit" name="right_box_option#816" value="Einträge zuordnen" tabindex="43"/>'.LF;
+      $html .= '<input type="submit" name="option#816" id="delete_confirm_option#816" value="Löschen" tabindex="44"/>'.LF;
+      $html .= '</td>'.LF;
+      $html .= '</tr>'.LF;
+
+      $html .= '<tr>'.LF;
+      $html .= '<td class="formfield">'.LF;
+      $html .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.LF;
+      $html .= '<input type="text" name="tag#817" value="1" maxlength="255" size="25" tabindex="45" class="text"/>'.LF;
+      $html .= '&nbsp;<input type="submit" name="option#817" value="Ändern" tabindex="46"/>'.LF;
+      $html .= '<input type="submit" name="right_box_option#817" value="Einträge zuordnen" tabindex="47"/>'.LF;
+      $html .= '<input type="submit" name="option#817" id="delete_confirm_option#817" value="Löschen" tabindex="48"/>'.LF;
+      $html .= '</td>'.LF;
+      $html .= '</tr>'.LF;
+               
+      $html .= '<tr>'.LF;
+      $html .= '<td class="formfield">'.LF;
+      $html .= '<input type="text" name="tag#814" value="1" maxlength="255" size="30" tabindex="49" class="text"/>'.LF;
+      $html .= '&nbsp;<input type="submit" name="option#814" value="Ändern" tabindex="50"/>'.LF;
+      $html .= '<input type="submit" name="right_box_option#814" value="Einträge zuordnen" tabindex="51"/>'.LF;
+      $html .= '<input type="submit" name="option#814" id="delete_confirm_option#814" value="Löschen" tabindex="52"/>'.LF;
+      $html .= '</td>'.LF;
+      $html .= '</tr>'.LF;
+        
+      $html .= '<tr>'.LF;
+      $html .= '<td class="formfield">'.LF;
+      $html .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.LF;
+      $html .= '<input type="text" name="tag#815" value="1" maxlength="255" size="25" tabindex="53" class="text"/>'.LF;
+      $html .= '&nbsp;<input type="submit" name="option#815" value="Ändern" tabindex="54"/>'.LF;
+      $html .= '<input type="submit" name="right_box_option#815" value="Einträge zuordnen" tabindex="55"/>'.LF;
+      $html .= '<input type="submit" name="option#815" id="delete_confirm_option#815" value="Löschen" tabindex="56"/>'.LF;
+      $html .= '</td>'.LF;
+      $html .= '</tr>'.LF;*/
+      $html .= '</table>'.LF;
+      
+      // /form
+      
+      $html .= '</div>'.LF;
+      $html .= '<div class="portlet-turn portlet-back" style="float:right;"><a class="preferences_flip" name="portlet_preferences_back_button" style="cursor:pointer;"><img src="images/commsyicons/16x16/room.png" height="18" width="18"/></a>&nbsp;</div>'.LF;
+      $html .= '</div>'.LF;
+
+      $html .= '<script type="text/javascript">'.LF;
+      $html .= '<!--'.LF;
+      $html .= 'var tag_message = "";'.LF;
+      $html .= '-->'.LF;
+      $html .= '</script>'.LF;
+
+      return $html;
+
+   }
+   
 
    function _getBuzzwordBoxasHTML(){
       $params = $this->_environment->getCurrentParameterArray();
@@ -1684,6 +1875,163 @@ class cs_entry_index_view extends cs_index_view {
       $html .= '-->'.LF;
       $html .= '</script>'.LF;
       return $html;
+   }
+   
+   function _getTagContentAsHTMLWithJavascript($item = NULL, $ebene = 0,$selected_id = 0, $father_id_array, $distance = 0, $with_div=false) {
+      // MUSEUM
+      $html = '';
+      $params = $this->_environment->getCurrentParameterArray();
+      unset($params['from']);
+      $i = 0;
+      while($i <= count($father_id_array)){
+        if (isset($params['seltag_'.$i])){
+           unset($params['seltag_'.$i]);
+        }
+        $i++;
+      }
+      $is_selected = false;
+      if ( isset($item) ) {
+         $list = $item->getChildrenList();
+         if ( isset($list) and !$list->isEmpty() ) {
+            if($with_div){
+               if(isset($_GET['seltag'])){
+                  $html .= '<div id="tag_tree" name="tag_tree_detail">';
+               } else {
+                  $html .= '<div id="tag_tree">';
+               }
+            }
+            $html .= '<ul>'.LF;
+            $current_item = $list->getFirst();
+            $distance = $distance +1;
+            $font_weight ='normal';
+            $font_color = 30;
+            $font_style = 'normal';
+            while ( $current_item ) {
+               $is_selected = false;
+               $id = $current_item->getItemID();
+               $link_name = '';
+               if ( empty($selected_id) ){
+                  $tag2tag_manager = $this->_environment->getTag2TagManager();
+                  $count = count($tag2tag_manager->getFatherItemIDArray($id));
+                  $font_size = round(13 - (($count*0.2)+$count));
+                  if ($font_size < 8){
+                     $font_size = 8;
+                  }
+                  $font_color = 20 + $this->getTagColorLogarithmic($count);
+               }else{
+                  if ( in_array($id,$father_id_array) ){
+                     $tag2tag_manager = $this->_environment->getTag2TagManager();
+                     $id_array = $tag2tag_manager->getFatherItemIDArray($id);
+                     $count = 0;
+                     foreach($id_array as $temp_id){
+                        if ( !in_array($temp_id,$father_id_array) ){
+                           $count ++;
+                        }
+                     }
+                     if( !isset($id_array[0]) and isset($father_id_array[0]) ){
+                        $count = 1;
+                     }
+                     $font_size = round(13 - (($count*0.2)+$count));
+                     if ($font_size < 8){
+                        $font_size = 8;
+                     }
+                     $font_color = 20 + $this->getTagColorLogarithmic($count);
+                     $font_weight = 'bold';
+                     $font_style = 'normal';
+                  }else{
+                     $tag2tag_manager = $this->_environment->getTag2TagManager();
+                     $id_array = $tag2tag_manager->getFatherItemIDArray($id);
+                     $count = 0;
+                     $found = false;
+                     if ( isset($id_array[0]) ){
+                        foreach($id_array as $temp_id){
+                           if ( !in_array($temp_id,$father_id_array) ){
+                              $count ++;
+                           }else{
+                             $found = true;
+                           }
+                        }
+                        if (!$found){
+                           $count = $count + count($father_id_array);
+                        }
+                     }elseif( !isset($id_array[0]) and isset($father_id_array[0]) ){
+                        $count = count($father_id_array);
+                     }
+                     $font_size = round(13 - (($count*0.2)+$count));
+                     if ($font_size < 8){
+                        $font_size = 8;
+                     }
+                     $font_color = 20 + $this->getTagColorLogarithmic($count);
+                     $font_weight='normal';
+                     $font_style = 'normal';
+                  }
+               }
+               if ($current_item->getItemID() == $selected_id){
+                  $is_selected = true;
+                  $font_size = 14;
+                  $font_color = 20;
+                  #$font_style = 'normal';
+                  $link_name = 'selected';
+               }
+               $color = 'rgb('.$font_color.'%,'.$font_color.'%,'.$font_color.'%);';
+               $title = $this->_text_as_html_short($current_item->getTitle());
+               if (!$is_selected){
+                  $params['seltag_'.$ebene] = $current_item->getItemID();
+                  if( isset($params['seltag']) ){
+                     $i = $ebene+1;
+                     while( isset($params['seltag_'.$i]) ){
+                        unset($params['seltag_'.$i]);
+                        $i++;
+                     }
+                  }
+                  $params['seltag'] = 'yes';
+                  if ( $this->_environment->inPrivateRoom()
+                       and $this->_environment->getCurrentModule() == CS_MATERIAL_TYPE
+                       and $this->_display_mode == 'flash'
+                     ) {
+                     $html .= '<li id="' . $current_item->getItemID() . '" data="StudyLog: \'' . $current_item->getItemID() . '\'" style="color:#545454; font-style:normal; font-size:9pt; font-weight:normal;">'.LF;
+                     $html .= '<a href="javascript:callStudyLogSortByTagId('.$current_item->getItemID().')">'.$title.'</a>'.LF;
+                  } else {
+                     $link = curl($this->_environment->getCurrentContextID(),
+                                         $this->_environment->getCurrentModule(),
+                                         $this->_environment->getCurrentFunction(),
+                                         $params);
+                     $html .= '<li id="' . $current_item->getItemID() . '" data="url: \'' . $link . '\'" style="color:#545454; font-style:normal; font-size:9pt; font-weight:normal;">'.LF;
+                     $html .= ahref_curl($this->_environment->getCurrentContextID(),
+                                         $this->_environment->getCurrentModule(),
+                                         $this->_environment->getCurrentFunction(),
+                                         $params,
+                                         $title,
+                                         $title,'','','','','','style="color:#545454; font-size:9pt;"').LF;
+                  }
+               }else{
+                  $params['name'] = $link_name;
+                  $link = curl($this->_environment->getCurrentContextID(),
+                                         $this->_environment->getCurrentModule(),
+                                         $this->_environment->getCurrentFunction(),
+                                         $params);
+                  $html .= '<li id="' . $current_item->getItemID() . '" data="url: \'' . $link . '\'" style="color:#000000; font-style:normal; font-size:9pt; font-weight:bold;">'.LF;
+                  $html .= $title.LF;
+               }
+               $html .= $this->_getTagContentAsHTMLWithJavascript($current_item, $ebene+1, $selected_id, $father_id_array, $distance);
+               $current_item = $list->getNext();
+               $html.='</li>'.LF;
+            }
+            $html.='</ul>'.LF;
+            if($with_div){
+               $html .= '</div>'.LF;
+            }
+         }
+      }
+      return $html;
+   }
+   
+   private function _getSelectedTagArray () {
+      return $this->_selected_tag_array;
+   }
+
+   public function setSelectedTagArray ($array) {
+      $this->_selected_tag_array = $array;
    }
 }
 ?>
