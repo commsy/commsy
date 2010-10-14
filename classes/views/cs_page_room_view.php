@@ -352,6 +352,35 @@ class cs_page_room_view extends cs_page_view {
             }
          }
       }
+      
+      
+      // Wordpress
+      $current_context = $this->_environment->getCurrentContextItem();
+        if (
+            ( $current_context->showWordpressLink() and $current_context->existWordpress() and $current_context->issetWordpressHomeLink() )
+            or ( $current_context->showChatLink() )
+            or ( $current_context->showHomepageLink() )
+            ){
+
+         $current_context = $this->_environment->getCurrentContextItem();
+         if ( $current_context->showWordpressLink() and $current_context->existWordpress() and $current_context->issetWordpressHomeLink() ) {
+            global $c_wordpress_path_url;
+            if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+               $image = '<img src="images/commsyicons_msie6/wordpress_home.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_WORDPRESS_LINK').'"/>';
+            } else {
+               $image = '<img src="images/wordpress_home.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_WORDPRESS_LINK').'"/>';
+            }
+            $title = $this->_translator->getMessage('COMMON_WORDPRESS_LINK').': '.$current_context->getWikiTitle();
+            $url_session_id = '';
+            if ( $current_context->withWordpressUseCommSyLogin() ) {
+               $session_item = $this->_environment->getSessionItem();
+               $url_session_id = '?commsy_session_id='.$session_item->getSessionID();
+               unset($session_item);
+            }
+            $html .= ' '.'<a title="'.$title.'" href="'.$c_wordpress_path_url.'/'.$current_context->getContextID().'_'.$current_context->getItemID().'/'.$url_session_id.'" target="_blank">'.$image.'</a>'.LF;
+         }
+      }
+
 
       // plugins for moderators an users
       $html .= plugin_hook_output_all('getExtraActionAsHTML',array(),LF).LF;
@@ -1285,6 +1314,14 @@ class cs_page_room_view extends cs_page_view {
          $html .= '</h2>'.LF;
          $html .= '<p style="text-align:left;">'.$this->_translator->getMessage('COMMON_DELETE_BOX_DESCRIPTION_WIKI');
          $html .= '</p>'.LF;
+                     
+      }elseif ( $this->_environment->getCurrentModule() == 'configuration'
+                   and $this->_environment->getCurrentFunction() == 'wordpress'
+               ) {
+         $html .= '<h2>'.$this->_translator->getMessage('COMMON_DELETE_WORDPRESS_TITLE');
+         $html .= '</h2>'.LF;
+         $html .= '<p style="text-align:left;">'.$this->_translator->getMessage('COMMON_DELETE_BOX_DESCRIPTION_WORDPRESS');
+         $html .= '</p>'.LF;                     
       } elseif ( $this->_environment->getCurrentModule() == 'configuration'
                  and ( $this->_environment->getCurrentFunction() == 'room_options'
                        or $this->_environment->getCurrentFunction() == 'account_options'

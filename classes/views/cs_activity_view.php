@@ -26,7 +26,6 @@ $this->includeClass(VIEW);
 include_once('functions/text_functions.php');
 
 
-
 /**
  *  class for CommSy activity panel
  */
@@ -148,6 +147,7 @@ class cs_activity_view extends cs_view {
          $time_spread = $context->getTimeSpread();
       }
       $current_context = $this->_environment->getCurrentContextItem();
+      
 
       $width = '';
       $current_browser = mb_strtolower($this->_environment->getCurrentBrowser(), 'UTF-8');
@@ -205,8 +205,6 @@ class cs_activity_view extends cs_view {
       $html .= '         </table>'.LF;
 
 
-
-
      if (
          ( $current_context->showWikiLink() and $current_context->existWiki() and $current_context->issetWikiHomeLink() )
          or ( $current_context->showChatLink() )
@@ -237,6 +235,22 @@ class cs_activity_view extends cs_view {
             unset($session_item);
          }
          $html .= ' '.'<a title="'.$title.'" href="'.$c_pmwiki_path_url.'/wikis/'.$current_context->getContextID().'/'.$current_context->getItemID().'/'.$url_session_id.'" target="_blank">'.$image.'</a>'.LF;
+      }
+      if ( $current_context->showWordpressLink() and $current_context->existWordpress() and $current_context->issetWordpressHomeLink() ) {
+         global $c_wordpress_path_url;
+         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+            $image = '<img src="images/commsyicons_msie6/22x22/wordpress.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_WORDPRESS_LINK').'"/>';
+         } else {
+            $image = '<img src="images/commsyicons/22x22/wordpress.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_WORDPRESS_LINK').'"/>';
+         }
+         $title = $this->_translator->getMessage('COMMON_WORDPRESS_LINK').': '.$current_context->getWordpressTitle();
+         $url_session_id = '';
+         if ( $current_context->withWordpressUseCommSyLogin() ) {
+            $session_item = $this->_environment->getSessionItem();
+            $url_session_id = '?commsy_session_id='.$session_item->getSessionID();
+            unset($session_item);
+         }
+         $html .= ' '.'<a title="'.$title.'" href="'.$c_wordpress_path_url.'/wp/'.$current_context->getContextID().'/'.$current_context->getItemID().'/'.$url_session_id.'" target="_blank">'.$image.'</a>'.LF;
       }
       if ( $current_context->showHomepageLink() ) {
          if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){

@@ -3905,6 +3905,42 @@ class cs_detail_view extends cs_view {
       }
       return $html;
    }
+   
+   
+	function _getWordpressAction ( $item, $user, $context ) {
+	      $html  = '';
+	      if ( $item->mayEdit($user)
+	           and $context->isWordpressActive()
+	           and $this->_with_modifying_actions
+	           and ( !$item->isA(CS_DISCUSSION_TYPE)
+	                 or $item->getDiscussionType() == 'simple'
+	               )
+	         ) {
+	         $params = array();
+	         $params['iid'] = $item->getItemID();
+	         $params['export_to_wordpress'] = 'true';
+	         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+	            $image = '<img src="images/commsyicons_msie6/22x22/export_wordpress.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('MATERIAL_EXPORT_TO_WORDPRESS').'"/>';
+	         } else {
+	            $image = '<img src="images/commsyicons/22x22/export_wordpress.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('MATERIAL_EXPORT_TO_WORDPRESS').'"/>';
+	         }
+	         $html .= ahref_curl( $this->_environment->getCurrentContextID(),
+	                                   $this->_environment->getCurrentModule(),
+	                                   'detail',
+	                                   $params,
+	                                   $image,
+	                                   $this->_translator->getMessage('ITEM_EXPORT_TO_WORDPRESS')).LF;
+	         unset($params);
+	      } elseif($context->isWordpressActive()) {
+	         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+	            $image = '<img src="images/commsyicons_msie6/22x22/export_wordpress_grey.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('ITEM_EXPORT_TO_WORDPRESS').'"/>';
+	         } else {
+	            $image = '<img src="images/commsyicons/22x22/export_wordpress_grey.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('ITEM_EXPORT_TO_WORDPRESS').'"/>';
+	         }
+	         $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION_NEW',$this->_translator->getMessage('ITEM_EXPORT_TO_WORDPRESS')).' "class="disabled">'.$image.'</a>'.LF;
+	      }
+	      return $html;
+   }
 
    function _getPrintAction ( $item, $user ) {
       $html  = '';

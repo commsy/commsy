@@ -202,7 +202,7 @@ class cs_configuration_form_view extends cs_form_view {
          if ( !empty($form_headline) ) {
             $tempMessage = $form_headline;
          }
-
+                  
          if ( empty($tempMessage) ) {
             switch( $temp_mod_func  )
             {
@@ -330,6 +330,14 @@ class cs_configuration_form_view extends cs_form_view {
                      $image = '<img src="images/commsyicons/32x32/config/pmwiki.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_FORM_TITLE').'"/>';
                   }
                   $tempMessage = $image.' '.$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_FORM_TITLE');                break;
+                  break;
+               case 'CONFIGURATION_WORDPRESS':
+                  if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+                     $image = '<img src="images/commsyicons_msie6/32x32/config/pmwiki.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_CONFIGURATION_WORDPRESS_FORM_TITLE').'"/>';
+                  } else {
+                     $image = '<img src="images/commsyicons/32x32/config/pmwiki.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_CONFIGURATION_WORDPRESS_FORM_TITLE').'"/>';
+                  }
+                  $tempMessage = $image.' '.$this->_translator->getMessage('COMMON_CONFIGURATION_WORDPRESS_FORM_TITLE');  
                   break;
                case 'CONFIGURATION_OUTOFSERVICE':
                   $tempMessage = $this->_translator->getMessage('CONFIGURATION_OUTOFSERVICE_FORM_TITLE');	// Wartungsseite OK

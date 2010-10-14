@@ -76,7 +76,7 @@ $translator = $environment->getTranslationObject();
    #########################################
    # Wordpress - Raum-Wordpress
    #########################################
-   /*$context_item = $environment->getCurrentContextItem();
+   $context_item = $environment->getCurrentContextItem();
    if ( $context_item->withWordpressFunctions() and !$context_item->isServer() ) {
       $link_item = new cs_link();
       $link_item->setTitle($translator->getMessage('WORDPRESS_CONFIGURATION_LINK'));
@@ -93,7 +93,7 @@ $translator = $environment->getTranslationObject();
       $link_item->setFunction('wordpress');
       $link_item->setParameter(array('iid' => $environment->getCurrentContextID()));
       $configuration_rubric_extras_link_list->add($link_item);
-   }*/
+   }
    
    
    ############################################
