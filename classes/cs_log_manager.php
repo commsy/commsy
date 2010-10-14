@@ -179,7 +179,6 @@ class cs_log_manager extends cs_manager {
             $query .= ' LIMIT '.encode(AS_DB,$this->_limit_from).','.encode(AS_DB,$this->_limit_range);
          }
       }
-
       // perform query
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) ) {
@@ -189,6 +188,26 @@ class cs_log_manager extends cs_manager {
          return $result;
       }
    }
+
+
+   function selectTotalCountsForContextIDArray($id_array) {
+      $query = 'SELECT count(id), cid FROM '.$this->addDatabasePrefix('log');
+      $query .= ' WHERE 1 AND cid IN  ('.encode(AS_DB,implode(',',$id_array)).')';
+      $query .= ' GROUP BY cid ORDER BY timestamp ASC';
+      // perform query
+      $result = $this->_db_connector->performQuery($query);
+      if ( !isset($result) ) {
+         include_once('functions/error_functions.php');
+         trigger_error('Problems log from query: "'.$query.'"',E_USER_WARNING);
+      } else {
+      	 $return_array = array();
+      	 foreach ($result as $r){
+      	 	$return_array[$r['cid']]= $r['count(id)'];
+      	 }
+         return $return_array;
+      }
+   }
+
 
    public function saveArray ( $array ) {
       $retour = false;

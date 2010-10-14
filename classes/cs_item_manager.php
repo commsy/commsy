@@ -239,7 +239,6 @@ class cs_item_manager extends cs_manager {
             }
          }
       }
-
      // perform query
      $result = $this->_db_connector->performQuery($query);
      if (!isset($result)) {
@@ -248,6 +247,8 @@ class cs_item_manager extends cs_manager {
          return $result;
      }
    }
+
+
 
   function getItemList ($id_array) {
      return $this->_getItemList('items', $id_array);

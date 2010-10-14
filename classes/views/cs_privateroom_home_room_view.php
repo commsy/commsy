@@ -31,6 +31,7 @@ include_once('functions/text_functions.php');
 class cs_privateroom_home_room_view extends cs_view {
 
    var $_list = NULL;
+   var $_page_impressions_for_room_id_array = NULL;
 
    /** constructor
     * the only available constructor, initial values for internal variables
@@ -62,13 +63,20 @@ class cs_privateroom_home_room_view extends cs_view {
     }
 
    function asHTML () {
-   	$html = '<div id="'.get_class($this).'">'.LF;
+   	  $html = '<div id="'.get_class($this).'">'.LF;
       $html .= LF.'<!-- BEGIN OF LIST VIEW -->'.LF;
       $html .= '<table style="width: 100%; border-collapse: collapse;" summary="Layout">'.LF;
       $context = $this->_environment->getCurrentContextItem();
       $html .= '<tr>';
       $list = $this->_list;
       $user = $this->_environment->getCurrentUserItem();
+
+      /*Get Page Impressions for all rooms */
+      $id_array = $list->getIDArray();
+      $log_manager = $this->_environment->getLogManager();
+      $this->_page_impressions_for_room_id_array = $log_manager->selectTotalCountsForContextIDArray($id_array);
+      unset($log_manager);
+
       if ( isset($list)) {
          $current_item = $list->getFirst();
          $count = 0;
@@ -157,7 +165,12 @@ class cs_privateroom_home_room_view extends cs_view {
 
       $html .= '<tr><td class="detail_view_content_room_window'.$item->getItemID().'">'.LF;
       $context = $this->_environment->getCurrentContextItem();
-      $count_total = $item->getPageImpressions($context->getTimeSpread());
+      $this->_page_impressions_for_room_id_array;
+      if (isset($this->_page_impressions_for_room_id_array[$item->getItemID()])){
+         $count_total = $item->getPageImpressions($context->getTimeSpread(),$this->_page_impressions_for_room_id_array[$item->getItemID()]);
+      }else{
+         $count_total = $item->getPageImpressions($context->getTimeSpread());
+      }
       if ( $count_total == 1 ) {
          $html .= $count_total.'&nbsp;'.$this->_translator->getMessage('ACTIVITY_PAGE_IMPRESSIONS_SINGULAR').'';
          $html .= BRLF;
