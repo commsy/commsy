@@ -2369,6 +2369,68 @@ function turn_portlet_tag(id, portlet){
 	    		   var resultJSON = eval('(' + msg + ')');
 	               if (resultJSON === undefined){
 	               }else{
+	            	   update_tag_form(resultJSON);
+	            	   portlet_data['tree_update'] = resultJSON['tree_update'];
+	            	   portlet_data['tag_save'] = true;
+	               }
+	    	    }
+	    	 });
+		  }
+	 });
+	 
+	 jQuery('#my_tag_form_button_sort').click(function(){
+		if(jQuery('#my_tag_form_sort_1').find(':selected').val() != jQuery('#my_tag_form_sort_2').find(':selected').val()){
+			 var json_data = new Object();
+	    	 json_data['tag_sort_1'] = jQuery('#my_tag_form_sort_1').find(':selected').val();
+	    	 json_data['tag_sort_2'] = jQuery('#my_tag_form_sort_2').find(':selected').val();
+	    	 json_data['tag_sort_action'] = jQuery('#my_tag_form_sort_action').find(':selected').val();
+	    	 jQuery.ajax({
+	    	    url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct=privateroom_tag_configuration&output=json&do=sort_tag',
+	    	    data: json_data,
+	    	    success: function(msg){
+	    		   var resultJSON = eval('(' + msg + ')');
+	               if (resultJSON === undefined){
+	               }else{
+	            	   update_tag_form(resultJSON);
+	            	   portlet_data['tree_update'] = resultJSON['tree_update'];
+	            	   portlet_data['tag_save'] = true;
+	               }
+	    	    }
+	    	 });
+		  }
+	 });
+	 
+	 jQuery('#my_tag_form_button_sort_abc').click(function(){
+		 var json_data = new Object();
+    	 jQuery.ajax({
+    	    url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct=privateroom_tag_configuration&output=json&do=sort_tag_abc',
+    	    data: json_data,
+    	    success: function(msg){
+    		   var resultJSON = eval('(' + msg + ')');
+               if (resultJSON === undefined){
+               }else{
+            	   update_tag_form(resultJSON);
+            	   portlet_data['tree_update'] = resultJSON['tree_update'];
+            	   portlet_data['tag_save'] = true;
+               }
+    	    }
+    	 });
+	 });
+	 
+	 jQuery('#my_tag_form_button_combine').click(function(){
+		if(jQuery('#my_tag_form_combine_1').find(':selected').val() != jQuery('#my_tag_form_combine_2').find(':selected').val()){
+			 var json_data = new Object();
+	    	 json_data['tag_combine_1'] = jQuery('#my_tag_form_combine_1').find(':selected').val();
+	    	 json_data['tag_combine_2'] = jQuery('#my_tag_form_combine_2').find(':selected').val();
+	    	 json_data['tag_combine_father'] = jQuery('#my_tag_form_combine_father').find(':selected').val();
+	    	 jQuery.ajax({
+	    	    url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct=privateroom_tag_configuration&output=json&do=combine_tag',
+	    	    data: json_data,
+	    	    success: function(msg){
+	    		   var resultJSON = eval('(' + msg + ')');
+	               if (resultJSON === undefined){
+	               }else{
+	            	   update_tag_form(resultJSON);
 	            	   portlet_data['tree_update'] = resultJSON['tree_update'];
 	            	   portlet_data['tag_save'] = true;
 	               }
@@ -2378,52 +2440,70 @@ function turn_portlet_tag(id, portlet){
 	 });
 }
 
+function update_tag_form(json_data){
+	jQuery('#my_tag_form_father_id').html(json_data['values_update']);
+	jQuery('#my_tag_form_sort_1').html(json_data['first_sort_update']);
+	jQuery('#my_tag_form_sort_2').html(json_data['second_sort_update']);
+	jQuery('#my_tag_form_combine_1').html(json_data['first_sort_update']);
+	jQuery('#my_tag_form_combine_2').html(json_data['first_sort_update']);
+	jQuery('#my_tag_form_combine_father').html(json_data['second_sort_update']);
+}
+
 function return_portlet_tag(id, portlet){
 	if(portlet_data['tag_save']){
 		if(typeof(portlet_data['tree_update']) !== 'undefined'){
 		    jQuery('#my_tag_content_div').html(portlet_data['tree_update']);
 		    
-		    if(jQuery('[id^=tag_tree]').length){
-				jQuery.ui.dynatree.nodedatadefaults["icon"] = false;
-				jQuery('[id^=tag_tree]').each(function(){
-					jQuery(this).dynatree({
-						fx: { height: "toggle", duration: 200 },
-						checkbox: true,
-						onActivate: function(dtnode){
-							if( dtnode.data.url ){
-								window.location(dtnode.data.url);
-							}
-							if( dtnode.data.StudyLog ){
-								callStudyLogSortByTagId(dtnode.data.StudyLog);
-							}
-						},
-						onSelect: function(select, dtnode){
-							if( dtnode.data.checkbox ){
-								jQuery("[#taglist_" + dtnode.data.checkbox).attr('checked', select);
-							}
-						}
-					});
-					var max_visible_nodes = 20;
-					var max_expand_level = getExpandLevel(jQuery(this), max_visible_nodes);
-					jQuery(this).dynatree("getRoot").visit(function(dtnode){
-						if(dtnode.getLevel() < max_expand_level){
-							dtnode.expand(true);
-						}
-						if( !dtnode.data.checkbox ){
-							dtnode.data.hideCheckbox = true;
-							dtnode.render(true);
-						} else {
-							dtnode.select(jQuery("[#taglist_" + dtnode.data.checkbox).attr('checked'));
-						}
-					});
-					if(jQuery(this).attr('name') == 'tag_tree_detail'){
-						collapseTree(jQuery(this).dynatree("getRoot"), true);
-					}
-				});
-			}
+		    activate_tag_tree_privateroom();
 		    
+		    portlet_data['tree_update'] = null;
 	        portlet_data['tag_save'] = false;
 		}
+	}
+}
+
+jQuery(document).ready(function() {
+	activate_tag_tree_privateroom();
+});
+
+function activate_tag_tree_privateroom(){
+	if(jQuery('[id^=tag_tree_privateroom]').length){
+		jQuery.ui.dynatree.nodedatadefaults["icon"] = false;
+		jQuery('[id^=tag_tree_privateroom]').each(function(){
+			jQuery(this).dynatree({
+				fx: { height: "toggle", duration: 200 },
+				checkbox: true,
+				onActivate: function(dtnode){
+					if( dtnode.data.url ){
+						window.location(dtnode.data.url);
+					}
+					if( dtnode.data.StudyLog ){
+						callStudyLogSortByTagId(dtnode.data.StudyLog);
+					}
+				},
+				onSelect: function(select, dtnode){
+					if( dtnode.data.checkbox ){
+						jQuery("[#taglist_" + dtnode.data.checkbox).attr('checked', select);
+					}
+				}
+			});
+			var max_visible_nodes = 20;
+			var max_expand_level = getExpandLevel(jQuery(this), max_visible_nodes);
+			jQuery(this).dynatree("getRoot").visit(function(dtnode){
+				if(dtnode.getLevel() < max_expand_level){
+					dtnode.expand(true);
+				}
+				if( !dtnode.data.checkbox ){
+					dtnode.data.hideCheckbox = true;
+					dtnode.render(true);
+				} else {
+					dtnode.select(jQuery("[#taglist_" + dtnode.data.checkbox).attr('checked'));
+				}
+			});
+			if(jQuery(this).attr('name') == 'tag_tree_detail'){
+				collapseTree(jQuery(this).dynatree("getRoot"), true);
+			}
+		});
 	}
 }
 

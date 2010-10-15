@@ -1006,19 +1006,23 @@ class cs_entry_index_view extends cs_index_view {
       $html .= '</tr>'.LF;
 
       $values_tree = array();
+      $first_sort_tree = array();
+      $second_sort_tree = array();
       if ( isset($root_item) ) {
          $temp_array = array();
          $temp_array['value'] = $root_item->getItemID();
          $temp_array['text'] = '*'.$this->_translator->getMessage('TAG_FORM_ROOT_LEVEL');
          $values_tree[] = $temp_array;
          unset($temp_array);
-         $values_tree = array_merge($values_tree,$this->_initFormChildren($root_item,0));
+         $first_sort_tree = $this->_initFormChildren($root_item,0);
+         $values_tree = array_merge($values_tree, $first_sort_tree);
+         $second_sort_tree = $values_tree;
       }
       
       $html .= '<tr>'.LF;
       $html .= '<td class="formfield">'.LF;
       $html .= '<input type="text" id="my_tag_form_new_tag" value="" maxlength="255" size="30" tabindex="18" class="text"/>'.LF;
-      $html .= 'zu'.LF;
+      $html .= $this->_translator->getMessage('TAG_WORD_TO').LF;
       $html .= '<select id="my_tag_form_father_id" size="1" tabindex="19">'.LF;
       foreach($values_tree as $value){
       	$html .= '<option value="'.$value['value'].'">'.$value['text'].'</option>'.LF;
@@ -1028,53 +1032,66 @@ class cs_entry_index_view extends cs_index_view {
       $html .= '</td>'.LF;
       $html .= '</tr>'.LF;
                
-      /*$html .= '<tr>'.LF;
+      $html .= '<tr>'.LF;
       $html .= '<td class="formfield">'.LF;
-      $html .= 'Sortieren'.LF;
+      $html .= '<br/>'.LF;
+      $html .= ''.$this->_translator->getMessage('COMMON_SORT_BUTTON').''.LF;
       $html .= '</td>'.LF;
       $html .= '</tr>'.LF;
                
       $html .= '<tr>'.LF;
       $html .= '<td class="formfield">'.LF;
-      $html .= '<select name="sort1" size="1" tabindex="21">'.LF;
+      $html .= '<select id="my_tag_form_sort_1" size="1" tabindex="21">'.LF;
+      foreach($first_sort_tree as $value){
+         $html .= '<option value="'.$value['value'].'">'.$value['text'].'</option>'.LF;
+      }
       $html .= '</select>'.LF;
-      $html .= '<select name="sort_action" size="1" tabindex="22">'.LF;
-      $html .= '<option value="3">unter</option>'.LF;
-      $html .= '<option value="1">vor</option>'.LF;
-      $html .= '<option value="2">nach</option>'.LF;
+      $html .= '<select id="my_tag_form_sort_action" size="1" tabindex="22">'.LF;
+      $html .= '<option value="3">'.$this->_translator->getMessage('TAG_ACTIONS_UNDER').'</option>'.LF;
+      $html .= '<option value="1">'.$this->_translator->getMessage('TAG_ACTIONS_BEFORE').'</option>'.LF;
+      $html .= '<option value="2">'.$this->_translator->getMessage('TAG_ACTIONS_AFTER').'</option>'.LF;
       $html .= '</select>'.LF;
-      $html .= '<select name="sort2" size="1" tabindex="23">'.LF;
-      $html .= '<option value="558">*oberster Ebene</option>'.LF;
-      $html .= '<option class="disabled" disabled="disabled">--------------------</option>'.LF;
+      $html .= '<select id="my_tag_form_sort_2" size="1" tabindex="23">'.LF;
+      foreach($second_sort_tree as $value){
+         $html .= '<option value="'.$value['value'].'">'.$value['text'].'</option>'.LF;
+      }
       $html .= '</select>'.LF;
-      $html .= '<input type="submit" name="option" value="einfügen" tabindex="24"/>'.LF;
+      $html .= '<input type="submit" id="my_tag_form_button_sort" value="'.$this->_translator->getMessage('TAG_SORT_BUTTON').'" tabindex="24"/>'.LF;
       $html .= '</td>'.LF;
       $html .= '</tr>'.LF;
                
       $html .= '<tr>'.LF;
       $html .= '<td class="formfield">'.LF;
-      $html .= '<input type="submit" name="option" value="Alphabetisch sortieren" tabindex="25"/>'.LF;
+      $html .= '<input type="submit" id="my_tag_form_button_sort_abc" value="'.$this->_translator->getMessage('TAG_SORT_ABC').'" tabindex="25"/>'.LF;
       $html .= '</td>'.LF;
       $html .= '</tr>'.LF;
                
       $html .= '<tr>'.LF;
       $html .= '<td class="formfield">'.LF;
-      $html .= 'Zusammenlegen'.LF;
+      $html .= '<br/>'.LF;
+      $html .= cs_ucfirst($this->_translator->getMessage('TAG_COMBINE_BUTTON')).LF;
       $html .= '</td>'.LF;
       $html .= '</tr>'.LF;
                
       $html .= '<tr>'.LF;
       $html .= '<td class="formfield">'.LF;
-      $html .= '<select name="sel1" size="1" tabindex="26">'.LF;
+      $html .= '<select id="my_tag_form_combine_1" size="1" tabindex="26">'.LF;
+      foreach($first_sort_tree as $value){
+         $html .= '<option value="'.$value['value'].'">'.$value['text'].'</option>'.LF;
+      }
       $html .= '</select>'.LF;
-      $html .= '<select name="sel2" size="1" tabindex="27">'.LF;
+      $html .= '<select id="my_tag_form_combine_2" size="1" tabindex="27">'.LF;
+      foreach($first_sort_tree as $value){
+         $html .= '<option value="'.$value['value'].'">'.$value['text'].'</option>'.LF;
+      }
       $html .= '</select>'.LF;
-      $html .= 'zu&nbsp;'.LF;
-      $html .= '<select name="combine_father_id" size="1" tabindex="28">'.LF;
-      $html .= '<option value="558">*oberster Ebene</option>'.LF;
-      $html .= '<option class="disabled" disabled="disabled">--------------------</option>'.LF;
+      $html .= $this->_translator->getMessage('TAG_WORD_TO').LF;
+      $html .= '<select id="my_tag_form_combine_father" size="1" tabindex="28">'.LF;
+      foreach($second_sort_tree as $value){
+         $html .= '<option value="'.$value['value'].'">'.$value['text'].'</option>'.LF;
+      }
       $html .= '</select>'.LF;
-      $html .= '<input type="submit" name="option" value="zusammenlegen" tabindex="29"/>'.LF;
+      $html .= '<input type="submit" id="my_tag_form_button_combine" value="'.$this->_translator->getMessage('TAG_COMBINE_BUTTON').'" tabindex="29"/>'.LF;
       $html .= '</td>'.LF;
       $html .= '</tr>'.LF;
 
@@ -1083,7 +1100,7 @@ class cs_entry_index_view extends cs_index_view {
       $html .= '</td>'.LF;
       $html .= '</tr>'.LF;
    
-      $html .= '<tr>'.LF;
+      /*$html .= '<tr>'.LF;
       $html .= '<td class="formfield">'.LF;
       $html .= 'Bearbeiten'.LF;
       $html .= '</td>'.LF;
@@ -1917,9 +1934,9 @@ class cs_entry_index_view extends cs_index_view {
          if ( isset($list) and !$list->isEmpty() ) {
             if($with_div){
                if(isset($_GET['seltag'])){
-                  $html .= '<div id="tag_tree" name="tag_tree_detail">';
+                  $html .= '<div id="tag_tree_privateroom" name="tag_tree_detail">';
                } else {
-                  $html .= '<div id="tag_tree">';
+                  $html .= '<div id="tag_tree_privateroom">';
                }
             }
             $html .= '<ul>'.LF;

@@ -24,6 +24,8 @@
 
 include_once('functions/development_functions.php');
 if(isset($_GET['do'])){
+	$translator = $environment->getTranslationObject();
+   
 	if($_GET['do'] == 'save_new_tag'){
       $new_tag_name = '';
       $new_tag_father = '';
@@ -36,7 +38,6 @@ if(isset($_GET['do'])){
             $new_tag_father = $_GET[$get_key];
          }
       }
-      
       $tag_manager = $environment->getTagManager();
       $tag_item = $tag_manager->getNewItem();
       $tag_item->setTitle($new_tag_name);
@@ -47,12 +48,126 @@ if(isset($_GET['do'])){
       $tag_item->setCreationDate(getCurrentDateTimeInMySQL());
       $tag_item->setPosition($new_tag_father,1);
       $tag_item->save();
+	} else if($_GET['do'] == 'sort_tag'){
+      $tag_sort_1 = '';
+      $tag_sort_2 = '';
+      $tag_sort_action = '';
+      $get_keys = array_keys($_GET);
+      foreach($get_keys as $get_key){
+         if(stristr($get_key, 'tag_sort_1')){
+            $tag_sort_1 = $_GET[$get_key];
+         }
+         if(stristr($get_key, 'tag_sort_2')){
+            $tag_sort_2 = $_GET[$get_key];
+         }
+         if(stristr($get_key, 'tag_sort_action')){
+            $tag_sort_action = $_GET[$get_key];
+         }
+      }
+	   $tag2tag_manager = $environment->getTag2TagManager();
+      $cat_1 = $tag_sort_1;
+      $children_id_array_cat1 = $tag2tag_manager->getRecursiveChildrenItemIDArray($cat_1);
+      if ( !in_array($tag_sort_2,$children_id_array_cat1) ) {
+         if ($tag_sort_action == 3) {
+            $cat_2 = $tag_sort_2;
+            $place = 1;
+         } else {
+            $cat_2 = $tag2tag_manager->getFatherItemID($tag_sort_2);
+            $children_id_array = $tag2tag_manager->getChildrenItemIDArray($cat_2);
+            $place = 0;
+            foreach ($children_id_array as $children_item_id) {
+               $place++;
+               if ( $children_item_id == $tag_sort_2 ) {
+                  break;
+               }
+            }
+            if ( $tag_sort_action == 2 ) {
+               $place++;
+            }
+         }
+         $tag2tag_manager->change($cat_1,$cat_2,$place);
+      }
+      unset($tag2tag_manager);
+   } else if($_GET['do'] == 'sort_tag_abc'){
+   	$tag_manager = $environment->getTagManager();
+      $root_item = $tag_manager->getRootTagItem();
+      $tag2tag_manager = $environment->getTag2TagManager();
+      $children_id_array = $tag2tag_manager->getRecursiveChildrenItemIDArray($root_item->getItemID());
+      $tag2tag_manager->sortRecursiveABC($root_item->getItemID());
+      unset($tag2tag_manager);
+   } else if($_GET['do'] == 'combine_tag'){
+      $tag_combine_1 = '';
+      $tag_combine_2 = '';
+      $tag_combine_father = '';
+      $get_keys = array_keys($_GET);
+      foreach($get_keys as $get_key){
+         if(stristr($get_key, 'tag_combine_1')){
+            $tag_combine_1 = $_GET[$get_key];
+         }
+         if(stristr($get_key, 'tag_combine_2')){
+            $tag_combine_2 = $_GET[$get_key];
+         }
+         if(stristr($get_key, 'tag_combine_father')){
+            $tag_combine_father = $_GET[$get_key];
+         }
+      }
+      $tag2tag_manager = $environment->getTag2TagManager();
+      $sel_1 = $tag_combine_1;
+      $sel_2 = $tag_combine_2;
+      $put = $tag_combine_father;
+      $childrenIdArray_1 = $tag2tag_manager->getRecursiveChildrenItemIDArray($sel_1);
+      $childrenIdArray_2 = $tag2tag_manager->getRecursiveChildrenItemIDArray($sel_2);
       
-      $page->add('tag_created', '1');
-	}
-	
+      if(   !in_array($put, $childrenIdArray_1) &&
+            !in_array($put, $childrenIdArray_2) &&
+            $put != $sel_1 &&
+            $put != $sel_2) {
+         $tag2tag_manager->combine($sel_1, $sel_2, $put);
+      }
+      unset($tag2tag_manager);
+   }
+   
 	$tag_manager = $environment->getTagManager();
    $root_item = $tag_manager->getRootTagItem();
+   
+   $values_tree = array();
+   $first_sort_tree = array();
+   $second_sort_tree = array();
+   if ( isset($root_item) ) {
+      $temp_array = array();
+      $temp_array['value'] = $root_item->getItemID();
+      $temp_array['text'] = '*'.$translator->getMessage('TAG_FORM_ROOT_LEVEL');
+      $values_tree[] = $temp_array;
+      unset($temp_array);
+      $first_sort_tree = initFormChildren($root_item,0);
+      $values_tree = array_merge($values_tree, $first_sort_tree);
+      $second_sort_tree = $values_tree;
+   }
+   
+   $values_html = '';
+   foreach($values_tree as $value){
+      $values_html .= '<option value="'.$value['value'].'">'.$value['text'].'</option>';
+   }
+   $values_html = str_ireplace("'", "\'", $values_html);
+   $values_html = str_ireplace('"', '\"', $values_html);
+   $page->add('values_update', $values_html);
+   
+   $first_sort_html = '';
+   foreach($first_sort_tree as $value){
+      $first_sort_html .= '<option value="'.$value['value'].'">'.$value['text'].'</option>';
+   }
+   $first_sort_html = str_ireplace("'", "\'", $first_sort_html);
+   $first_sort_html = str_ireplace('"', '\"', $first_sort_html);
+   $page->add('first_sort_update', $first_sort_html);
+   
+   $second_sort_html = '';
+   foreach($second_sort_tree as $value){
+      $second_sort_html .= '<option value="'.$value['value'].'">'.$value['text'].'</option>';
+   }
+   $second_sort_html = str_ireplace("'", "\'", $second_sort_html);
+   $second_sort_html = str_ireplace('"', '\"', $second_sort_html);
+   $page->add('second_sort_update', $second_sort_html);
+   
 	$selected_id = '';
    $father_id_array = array();
    #$tag_array = $this->_getSelectedTagArray();
@@ -90,9 +205,9 @@ function getTagContentAsHTMLWithJavascript($item = NULL, $ebene = 0,$selected_id
          if ( isset($list) and !$list->isEmpty() ) {
             if($with_div){
                if(isset($_GET['seltag'])){
-                  $html .= '<div id="tag_tree" name="tag_tree_detail">';
+                  $html .= '<div id="tag_tree_privateroom" name="tag_tree_detail">';
                } else {
-                  $html .= '<div id="tag_tree">';
+                  $html .= '<div id="tag_tree_privateroom">';
                }
             }
             $html .= '<ul>';
@@ -231,5 +346,33 @@ function getTagContentAsHTMLWithJavascript($item = NULL, $ebene = 0,$selected_id
       }
       $a = $tresholds*log($count - $mincount+2)/log($maxcount - $mincount+2)-1;
       return round($minsize+round($a)*$treshold);
+   }
+   
+   function initFormChildren ( $item, $depth ) {
+      $retour = array();
+      if ( isset($item) ) {
+         $children_list = $item->getChildrenList();
+         if ( isset($children_list) and $children_list->isNotEmpty() ) {
+            $child = $children_list->getFirst();
+            $arrows = '';
+            $depth_temp = $depth;
+            while ( $depth_temp > 0 ) {
+               $arrows .= '> ';
+               $depth_temp = $depth_temp-1;
+            }
+            while ( $child ) {
+               $temp_array = array();
+               $temp_array['value'] = $child->getItemID();
+               $temp_array['text']  = $arrows.$child->getTitle();
+               $retour[] = $temp_array;
+               $retour = array_merge($retour,initFormChildren($child,$depth+1));
+               unset($child);
+               $child = $children_list->getNext();
+            }
+
+         }
+         unset($children_list);
+      }
+      return $retour;
    }
 ?>
