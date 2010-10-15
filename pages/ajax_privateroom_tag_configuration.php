@@ -125,6 +125,37 @@ if(isset($_GET['do'])){
          $tag2tag_manager->combine($sel_1, $sel_2, $put);
       }
       unset($tag2tag_manager);
+   } else if($_GET['do'] == 'change_tag'){
+      $tag_change_value = '';
+      $tag_change_id = '';
+      $get_keys = array_keys($_GET);
+      foreach($get_keys as $get_key){
+         if(stristr($get_key, 'tag_change_id')){
+            $tag_change_id = $_GET[$get_key];
+         }
+         if(stristr($get_key, 'tag_change_value')){
+            $tag_change_value = $_GET[$get_key];
+         }
+      }
+      $tag_manager = $environment->getTagManager();
+      $tag_item = $tag_manager->getItem($tag_change_id);
+      if(!empty($tag_item)) {
+         $tag_item->setTitle($tag_change_value);
+         $tag_item->save();
+      }
+   } else if($_GET['do'] == 'delete_tag'){
+      $tag_delete_id = '';
+      $get_keys = array_keys($_GET);
+      foreach($get_keys as $get_key){
+         if(stristr($get_key, 'tag_delete_id')){
+            $tag_delete_id = $_GET[$get_key];
+         }
+      }
+      $tag_manager = $environment->getTagManager();
+      $tag_item = $tag_manager->getItem($tag_delete_id);
+      if(!empty($tag_item)) {
+         $tag_item->delete();
+      }
    }
    
 	$tag_manager = $environment->getTagManager();
@@ -167,6 +198,11 @@ if(isset($_GET['do'])){
    $second_sort_html = str_ireplace("'", "\'", $second_sort_html);
    $second_sort_html = str_ireplace('"', '\"', $second_sort_html);
    $page->add('second_sort_update', $second_sort_html);
+   
+   $change_html = createFormForChildren($root_item,0);
+   $change_html = str_ireplace("'", "\'", $change_html);
+   $change_html = str_ireplace('"', '\"', $change_html);
+   $page->add('change_update', $change_html);
    
 	$selected_id = '';
    $father_id_array = array();
@@ -374,5 +410,48 @@ function getTagContentAsHTMLWithJavascript($item = NULL, $ebene = 0,$selected_id
          unset($children_list);
       }
       return $retour;
+   }
+   
+   function createFormForChildren ( $item, $depth ) {
+   	global $environment;
+   	$translator = $environment->getTranslationObject();
+      $html = '';
+      if ( isset($item) ) {
+         $children_list = $item->getChildrenList();
+         if ( isset($children_list) and $children_list->isNotEmpty() ) {
+            $arrows = '';
+            $px = 0;
+            $width = 250;
+            $depth_temp = $depth;
+            while ( $depth_temp > 0 ) {
+               $arrows .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ';
+               $px += 20;
+               $width -= 20;
+               $depth_temp = $depth_temp-1;
+            }
+            $len_text_field = 30-($depth*4);
+            if ( $depth > 0 ) {
+               $len_text_field = $len_text_field - 1;
+            }
+            $child = $children_list->getFirst();
+            while ( $child ) {
+               $html .= '<tr>';
+               $html .= '<td class="formfield" style="padding-left:'.$px.'px;">';
+               $html .= '<input type="text" id="my_tag_form_change_value-'.$child->getItemID().'" value="'.$child->getTitle().'" maxlength="255" tabindex="49" class="text" style="width:'.$width.'px;"/>';
+               $html .= '</td><td>';
+               $html .= '<input type="submit" id="my_tag_form_change_button-'.$child->getItemID().'" value="'.$translator->getMessage('BUZZWORDS_CHANGE_BUTTON').'" tabindex="50"/>';
+               $html .= '</td><td>';
+               $html .= '<input type="submit" id="my_tag_form_delete_button-'.$child->getItemID().'" value="'.$translator->getMessage('COMMON_DELETE_BUTTON').'" tabindex="52"/>';
+               $html .= '</td>';
+               $html .= '</tr>';                  
+               $html .= createFormForChildren($child,$depth+1);
+               unset($child);
+               $child = $children_list->getNext();
+            }
+         }
+         unset($children_list);
+      }
+      unset($item);
+      return $html;
    }
 ?>
