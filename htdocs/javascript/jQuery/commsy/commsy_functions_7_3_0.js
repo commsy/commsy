@@ -2438,6 +2438,47 @@ function turn_portlet_tag(id, portlet){
 	    	 });
 		  }
 	 });
+	 
+	 jQuery('[id^=my_tag_form_change_button]').click(function(){
+		var id_array = jQuery(this).attr('id').split('-');
+		if(jQuery('#my_tag_form_change_value-'+id_array[1]).val() != ''){
+			 var json_data = new Object();
+			 json_data['tag_change_id'] = id_array[1];
+	    	 json_data['tag_change_value'] = jQuery('#my_tag_form_change_value-'+id_array[1]).val();
+	    	 jQuery.ajax({
+	    	    url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct=privateroom_tag_configuration&output=json&do=change_tag',
+	    	    data: json_data,
+	    	    success: function(msg){
+	    		   var resultJSON = eval('(' + msg + ')');
+	               if (resultJSON === undefined){
+	               }else{
+	            	   update_tag_form(resultJSON);
+	            	   portlet_data['tree_update'] = resultJSON['tree_update'];
+	            	   portlet_data['tag_save'] = true;
+	               }
+	    	    }
+	    	 });
+		  }
+	 });
+	 
+	 jQuery('[id^=my_tag_form_delete_button]').click(function(){
+		 var id_array = jQuery(this).attr('id').split('-');
+		 var json_data = new Object();
+		 json_data['tag_delete_id'] = id_array[1];
+    	 jQuery.ajax({
+    	    url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct=privateroom_tag_configuration&output=json&do=delete_tag',
+    	    data: json_data,
+    	    success: function(msg){
+    		   var resultJSON = eval('(' + msg + ')');
+               if (resultJSON === undefined){
+               }else{
+            	   update_tag_form(resultJSON);
+            	   portlet_data['tree_update'] = resultJSON['tree_update'];
+            	   portlet_data['tag_save'] = true;
+               }
+    	    }
+    	 });
+	 });
 }
 
 function update_tag_form(json_data){
@@ -2447,6 +2488,7 @@ function update_tag_form(json_data){
 	jQuery('#my_tag_form_combine_1').html(json_data['first_sort_update']);
 	jQuery('#my_tag_form_combine_2').html(json_data['first_sort_update']);
 	jQuery('#my_tag_form_combine_father').html(json_data['second_sort_update']);
+	jQuery('#my_tag_form_change_table').html(json_data['change_update']);
 }
 
 function return_portlet_tag(id, portlet){

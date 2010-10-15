@@ -1000,7 +1000,7 @@ class cs_entry_index_view extends cs_index_view {
       
       $html .= '<table id="my_tag_form_table" summary="layout">'.LF;
       $html .= '<tr>'.LF;
-      $html .= '<td class="formfield">'.LF;
+      $html .= '<td class="formfield" colspan="3">'.LF;
       $html .= cs_ucfirst($this->_translator->getMessage('COMMON_ADD_BUTTON')).LF;
       $html .= '</td>'.LF;
       $html .= '</tr>'.LF;
@@ -1020,7 +1020,7 @@ class cs_entry_index_view extends cs_index_view {
       }
       
       $html .= '<tr>'.LF;
-      $html .= '<td class="formfield">'.LF;
+      $html .= '<td class="formfield" colspan="3">'.LF;
       $html .= '<input type="text" id="my_tag_form_new_tag" value="" maxlength="255" size="30" tabindex="18" class="text"/>'.LF;
       $html .= $this->_translator->getMessage('TAG_WORD_TO').LF;
       $html .= '<select id="my_tag_form_father_id" size="1" tabindex="19">'.LF;
@@ -1033,14 +1033,14 @@ class cs_entry_index_view extends cs_index_view {
       $html .= '</tr>'.LF;
                
       $html .= '<tr>'.LF;
-      $html .= '<td class="formfield">'.LF;
+      $html .= '<td class="formfield" colspan="3">'.LF;
       $html .= '<br/>'.LF;
       $html .= ''.$this->_translator->getMessage('COMMON_SORT_BUTTON').''.LF;
       $html .= '</td>'.LF;
       $html .= '</tr>'.LF;
                
       $html .= '<tr>'.LF;
-      $html .= '<td class="formfield">'.LF;
+      $html .= '<td class="formfield" colspan="3">'.LF;
       $html .= '<select id="my_tag_form_sort_1" size="1" tabindex="21">'.LF;
       foreach($first_sort_tree as $value){
          $html .= '<option value="'.$value['value'].'">'.$value['text'].'</option>'.LF;
@@ -1061,20 +1061,20 @@ class cs_entry_index_view extends cs_index_view {
       $html .= '</tr>'.LF;
                
       $html .= '<tr>'.LF;
-      $html .= '<td class="formfield">'.LF;
+      $html .= '<td class="formfield" colspan="3">'.LF;
       $html .= '<input type="submit" id="my_tag_form_button_sort_abc" value="'.$this->_translator->getMessage('TAG_SORT_ABC').'" tabindex="25"/>'.LF;
       $html .= '</td>'.LF;
       $html .= '</tr>'.LF;
                
       $html .= '<tr>'.LF;
-      $html .= '<td class="formfield">'.LF;
+      $html .= '<td class="formfield" colspan="3">'.LF;
       $html .= '<br/>'.LF;
       $html .= cs_ucfirst($this->_translator->getMessage('TAG_COMBINE_BUTTON')).LF;
       $html .= '</td>'.LF;
       $html .= '</tr>'.LF;
                
       $html .= '<tr>'.LF;
-      $html .= '<td class="formfield">'.LF;
+      $html .= '<td class="formfield" colspan="3">'.LF;
       $html .= '<select id="my_tag_form_combine_1" size="1" tabindex="26">'.LF;
       foreach($first_sort_tree as $value){
          $html .= '<option value="'.$value['value'].'">'.$value['text'].'</option>'.LF;
@@ -1091,59 +1091,29 @@ class cs_entry_index_view extends cs_index_view {
          $html .= '<option value="'.$value['value'].'">'.$value['text'].'</option>'.LF;
       }
       $html .= '</select>'.LF;
-      $html .= '<input type="submit" id="my_tag_form_button_combine" value="'.$this->_translator->getMessage('TAG_COMBINE_BUTTON').'" tabindex="29"/>'.LF;
+      $html .= '<input type="submit" id="my_tag_form_button_combine" value="'.$this->_translator->getMessage('TAG_COMBINE_BUTTON').'" tabindex="29"/><br/><br/>'.LF;
       $html .= '</td>'.LF;
       $html .= '</tr>'.LF;
 
       $html .= '<tr>'.LF;
-      $html .= '<td class="infoborder" style="width: 70%;">'.LF;
+      $html .= '<td class="infoborder" style="width: 70%;" colspan="3">'.LF;
       $html .= '</td>'.LF;
       $html .= '</tr>'.LF;
    
-      /*$html .= '<tr>'.LF;
-      $html .= '<td class="formfield">'.LF;
+      $html .= '<tr>'.LF;
+      $html .= '<td class="formfield" colspan="3">'.LF;
       $html .= 'Bearbeiten'.LF;
       $html .= '</td>'.LF;
       $html .= '</tr>'.LF;
                
       $html .= '<tr>'.LF;
-      $html .= '<td class="formfield">'.LF;
-      $html .= '<input type="text" name="tag#816" value="2" maxlength="255" size="30" tabindex="41" class="text"/>'.LF;
-      $html .= '&nbsp;'.LF;
-      $html .= '<input type="submit" name="option#816" value="Ändern" tabindex="42"/>'.LF;
-      $html .= '<input type="submit" name="right_box_option#816" value="Einträge zuordnen" tabindex="43"/>'.LF;
-      $html .= '<input type="submit" name="option#816" id="delete_confirm_option#816" value="Löschen" tabindex="44"/>'.LF;
+      $html .= '<td class="formfield" colspan="3">'.LF;
+      $html .= '<table id="my_tag_form_change_table">'.LF;
+      $html .= $this->_createFormForChildren($root_item, 0);
+      $html .= '</table>'.LF;
       $html .= '</td>'.LF;
       $html .= '</tr>'.LF;
-
-      $html .= '<tr>'.LF;
-      $html .= '<td class="formfield">'.LF;
-      $html .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.LF;
-      $html .= '<input type="text" name="tag#817" value="1" maxlength="255" size="25" tabindex="45" class="text"/>'.LF;
-      $html .= '&nbsp;<input type="submit" name="option#817" value="Ändern" tabindex="46"/>'.LF;
-      $html .= '<input type="submit" name="right_box_option#817" value="Einträge zuordnen" tabindex="47"/>'.LF;
-      $html .= '<input type="submit" name="option#817" id="delete_confirm_option#817" value="Löschen" tabindex="48"/>'.LF;
-      $html .= '</td>'.LF;
-      $html .= '</tr>'.LF;
-               
-      $html .= '<tr>'.LF;
-      $html .= '<td class="formfield">'.LF;
-      $html .= '<input type="text" name="tag#814" value="1" maxlength="255" size="30" tabindex="49" class="text"/>'.LF;
-      $html .= '&nbsp;<input type="submit" name="option#814" value="Ändern" tabindex="50"/>'.LF;
-      $html .= '<input type="submit" name="right_box_option#814" value="Einträge zuordnen" tabindex="51"/>'.LF;
-      $html .= '<input type="submit" name="option#814" id="delete_confirm_option#814" value="Löschen" tabindex="52"/>'.LF;
-      $html .= '</td>'.LF;
-      $html .= '</tr>'.LF;
-        
-      $html .= '<tr>'.LF;
-      $html .= '<td class="formfield">'.LF;
-      $html .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.LF;
-      $html .= '<input type="text" name="tag#815" value="1" maxlength="255" size="25" tabindex="53" class="text"/>'.LF;
-      $html .= '&nbsp;<input type="submit" name="option#815" value="Ändern" tabindex="54"/>'.LF;
-      $html .= '<input type="submit" name="right_box_option#815" value="Einträge zuordnen" tabindex="55"/>'.LF;
-      $html .= '<input type="submit" name="option#815" id="delete_confirm_option#815" value="Löschen" tabindex="56"/>'.LF;
-      $html .= '</td>'.LF;
-      $html .= '</tr>'.LF;*/
+      
       $html .= '</table>'.LF;
       
       // /form
@@ -1162,6 +1132,46 @@ class cs_entry_index_view extends cs_index_view {
 
    }
    
+   private function _createFormForChildren ( $item, $depth ) {
+   	$html = '';
+      if ( isset($item) ) {
+         $children_list = $item->getChildrenList();
+         if ( isset($children_list) and $children_list->isNotEmpty() ) {
+            $arrows = '';
+            $px = 0;
+            $width = 250;
+            $depth_temp = $depth;
+            while ( $depth_temp > 0 ) {
+               $arrows .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ';
+               $px += 20;
+               $width -= 20;
+               $depth_temp = $depth_temp-1;
+            }
+            $len_text_field = 30-($depth*4);
+            if ( $depth > 0 ) {
+               $len_text_field = $len_text_field - 1;
+            }
+            $child = $children_list->getFirst();
+            while ( $child ) {
+               $html .= '<tr>'.LF;
+			      $html .= '<td class="formfield" style="padding-left:'.$px.'px;">'.LF;
+			      $html .= '<input type="text" id="my_tag_form_change_value-'.$child->getItemID().'" value="'.$child->getTitle().'" maxlength="255" tabindex="49" class="text" style="width:'.$width.'px;"/>'.LF;
+			      $html .= '</td><td>'.LF;
+			      $html .= '<input type="submit" id="my_tag_form_change_button-'.$child->getItemID().'" value="'.$this->_translator->getMessage('BUZZWORDS_CHANGE_BUTTON').'" tabindex="50"/>'.LF;
+			      $html .= '</td><td>'.LF;
+			      $html .= '<input type="submit" id="my_tag_form_delete_button-'.$child->getItemID().'" value="'.$this->_translator->getMessage('COMMON_DELETE_BUTTON').'" tabindex="52"/>'.LF;
+			      $html .= '</td>'.LF;
+			      $html .= '</tr>'.LF;                  
+               $html .= $this->_createFormForChildren($child,$depth+1);
+               unset($child);
+               $child = $children_list->getNext();
+            }
+         }
+         unset($children_list);
+      }
+      unset($item);
+      return $html;
+   }
 
    function _getBuzzwordBoxasHTML(){
       $params = $this->_environment->getCurrentParameterArray();
