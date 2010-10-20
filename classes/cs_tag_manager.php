@@ -196,6 +196,12 @@ class cs_tag_manager extends cs_manager {
       return $retour;
    }
 
+   public function resetCache(){
+   	$this->_internal_data = NULL;
+      $this->_object_data = NULL;
+      $this->_cached_sql = array();
+   }
+   
   /** select labels limited by limits
     * this method returns a list (cs_list) of labels within the database limited by the limits. the select statement is a bit tricky, see source code for further information
     */

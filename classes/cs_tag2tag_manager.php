@@ -327,6 +327,11 @@ class cs_tag2tag_manager extends cs_manager {
       return $retour;
    }
 
+   public function resetCachedChildrenIdArray(){
+   	unset($this->_cached_children_id_array_array);
+   	$this->_cached_rows = array();
+   }
+   
    public function getChildrenItemIDArray ($item_id) {
       $retour = array();
       if ( !isset($this->_cached_children_id_array_array) ) {

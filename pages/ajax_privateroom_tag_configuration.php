@@ -158,8 +158,11 @@ if(isset($_GET['do'])){
       }
    }
    
+   $tag2tag_manager =  $environment->getTag2TagManager();
+   $tag2tag_manager->resetCachedChildrenIdArray();
 	$tag_manager = $environment->getTagManager();
-   $root_item = $tag_manager->getRootTagItem();
+	$tag_manager->resetCache();
+	$root_item = $tag_manager->getRootTagItem();
    
    $values_tree = array();
    $first_sort_tree = array();
@@ -211,7 +214,6 @@ if(isset($_GET['do'])){
    $count = (count($tag_array));
    if ($count >0){
       $selected_id = $tag_array[0];
-      $tag2tag_manager =  $environment->getTag2TagManager();
       $father_id_array = $tag2tag_manager->getFatherItemIDArray($selected_id);
    }
    $tree_update = getTagContentAsHTMLWithJavascript($root_item,0,$selected_id, $father_id_array,0,true);
