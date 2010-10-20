@@ -411,6 +411,12 @@ class cs_item_manager extends cs_manager {
           }
        }
 
+       if ( isset($this->_tag_limit) ) {
+          $tag_id_array = $this->_getTagIDArrayByTagID($this->_tag_limit);
+          $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l41 ON ( l41.deletion_date IS NULL AND ((l41.first_item_id='.$this->addDatabasePrefix('items').'.item_id AND l41.second_item_type="'.CS_TAG_TYPE.'"))) ';
+          $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l42 ON ( l42.deletion_date IS NULL AND ((l42.second_item_id='.$this->addDatabasePrefix('items').'.item_id AND l42.first_item_type="'.CS_TAG_TYPE.'"))) ';
+       }
+       
         if (isset($this->_search_array)) {
            $query .= ' LEFT JOIN '.$this->addDatabasePrefix('materials').' AS materials ON materials.item_id='.$this->addDatabasePrefix('items').'.item_id';
            $query .= ' LEFT JOIN '.$this->addDatabasePrefix('todos').' AS todos ON todos.item_id='.$this->addDatabasePrefix('items').'.item_id';
@@ -462,6 +468,19 @@ class cs_item_manager extends cs_manager {
               $query .= ' AND buzzwords.item_id="'.encode(AS_DB,$this->_buzzword_limit).'"';
            }
         }
+        
+        if ( isset($this->_tag_limit) ) {
+           $tag_id_array = $this->_getTagIDArrayByTagID($this->_tag_limit);
+           $id_string = implode(', ',$tag_id_array);
+           if( isset($tag_id_array[0]) and $tag_id_array[0] == -1 ){
+              $query .= ' AND (l41.first_item_id IS NULL AND l41.second_item_id IS NULL)';
+              $query .= ' AND (l42.first_item_id IS NULL AND l42.second_item_id IS NULL)';
+           }else{
+              $query .= ' AND ( (l41.first_item_id IN ('.encode(AS_DB,$id_string).') OR l41.second_item_id IN ('.encode(AS_DB,$id_string).') )';
+              $query .= ' OR (l42.first_item_id IN ('.encode(AS_DB,$id_string).') OR l42.second_item_id IN ('.encode(AS_DB,$id_string).') ))';
+           }
+        }
+        
         if (isset($this->_search_array) AND !empty($this->_search_array)) {
            $query .= ' AND (';
            $field_array = array('materials.description',
