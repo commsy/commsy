@@ -76,23 +76,26 @@ class cs_privateroom_home_room_view extends cs_view {
       $log_manager = $this->_environment->getLogManager();
       $this->_page_impressions_for_room_id_array = $log_manager->selectTotalCountsForContextIDArray($id_array);
       unset($log_manager);
-
-      if ( isset($list)) {
+      if ( isset($list)  ){
          $current_item = $list->getFirst();
-         $count = 0;
-         while ( $current_item ) {
-            if ( $count == 2 ){
-               $count = 0;
-               $html .= '</tr><tr>'.LF;
+         if (isset($current_item) and !empty($current_item)){
+            $count = 0;
+            while ( $current_item ) {
+               if ( $count == 2 ){
+                  $count = 0;
+                  $html .= '</tr><tr>'.LF;
+               }
+               $item_text = $this->_getRoomWindowAsHTML($current_item);
+               $html .= $item_text;
+               $count++;
+               $current_item = $list->getNext();
             }
-            $item_text = $this->_getRoomWindowAsHTML($current_item);
-            $html .= $item_text;
-            $count++;
-            $current_item = $list->getNext();
-         }
-         while ( $count < 2 ){
-            $html .= '<td width="50%" style="vertical-align: top;"></td>';
-            $count++;
+            while ( $count < 2 ){
+               $html .= '<td width="50%" style="vertical-align: top;"></td>';
+               $count++;
+            }
+         }else{
+      	    $html .='<td>'.$this->_translator->getMessage('COMMON_NO_ENTRIES').'</td>'.LF;
          }
       }else{
       	$html .='<td>'.$this->_translator->getMessage('COMMON_NO_ENTRIES').'</td>'.LF;

@@ -192,7 +192,12 @@ class cs_log_manager extends cs_manager {
 
    function selectTotalCountsForContextIDArray($id_array) {
       $query = 'SELECT count(id), cid FROM '.$this->addDatabasePrefix('log');
-      $query .= ' WHERE 1 AND cid IN  ('.encode(AS_DB,implode(',',$id_array)).')';
+      $query .= ' WHERE 1 ';
+      if (!empty($id_array)){
+      	$query .= 'AND cid IN  ('.encode(AS_DB,implode(',',$id_array)).')';
+      }else{
+      	$query .= 'AND 1=0';
+      }
       $query .= ' GROUP BY cid ORDER BY timestamp ASC';
       // perform query
       $result = $this->_db_connector->performQuery($query);
