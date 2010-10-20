@@ -41,6 +41,7 @@ class cs_entry_index_view extends cs_index_view {
    var $_sellist = '';
    var $_selbuzzword = '';
    var $_selmatrix = '';
+   var $_seltag = '';
 
    var $_dropdown_image_array = array();
 
@@ -121,6 +122,9 @@ class cs_entry_index_view extends cs_index_view {
     $this->_selmatrix = $limit;
    }
 
+   function setSelectedTag($limit){
+    $this->_seltag = $limit;
+   }
 
     function setList ($list) {
        $this->_list = $list;
@@ -670,6 +674,7 @@ class cs_entry_index_view extends cs_index_view {
           !empty($this->_sellist)
           or !empty($this->_selbuzzword)
           or !empty($this->_selmatrix)
+          or !empty($this->_seltag)
           or (!empty($this->_search_text) and $this->_search_text != $this->_translator->getMessage('COMMON_SEARCH_IN_ENTRIES'))
       ){
 /*         $html .= '<tr>'.LF;
@@ -737,6 +742,32 @@ class cs_entry_index_view extends cs_index_view {
             $html .= '"'.$matrix_item_x->getName().' / '.$matrix_item_y->getName().'"'.LF;
             $new_aparams = $params;
             unset($new_aparams['selmatrix']);
+            $image = '<img src="images/delete_restriction.gif" style="padding-top:3px;" alt="'.$this->_translator->getMessage('ENTRY_DELETE_RESTRICTION').'"/>'.LF;
+            $html .= ' '.ahref_curl(  $this->_environment->getCurrentContextID(),
+                                       CS_ENTRY_TYPE,
+                                       'index',
+                                       $new_aparams,
+                                       $image,
+                                       $this->_translator->getMessage('ENTRY_DELETE_RESTRICTION')).LF;
+            $html .= '</td>'.LF;
+            $html .= '</tr>'.LF;
+         }
+         if (!empty($this->_seltag)){
+            $html .= '<tr>'.LF;
+            $html .= '<td style="vertical-align:top; white-space:nowrap; width:60px;">'.LF;
+            $tag_manager = $this->_environment->getTagManager();
+            $tag_item = $tag_manager->getItem($this->_seltag);
+            $html .= $this->_translator->getMessage('COMMON_TAG_RESTRICTION').': ';
+            $html .= '</td>'.LF;
+            $html .= '<td style="text-align:right;">';
+            $html .= '"'.$tag_item->getTitle().'"'.LF;
+            $new_aparams = $params;
+            unset($new_aparams['seltag']);
+            $i = 0;
+            while ( !isset($new_aparams['seltag_'.$i]) ){
+               $i++;
+            }
+            unset($new_aparams['seltag_'.$i]);
             $image = '<img src="images/delete_restriction.gif" style="padding-top:3px;" alt="'.$this->_translator->getMessage('ENTRY_DELETE_RESTRICTION').'"/>'.LF;
             $html .= ' '.ahref_curl(  $this->_environment->getCurrentContextID(),
                                        CS_ENTRY_TYPE,

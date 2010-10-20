@@ -92,6 +92,26 @@ if ( isset($_GET['sellist']) and $_GET['sellist'] !='-2') {
    $sellist = 0;
 }
 
+if ( isset($_GET['seltag']) and $_GET['seltag'] =='yes') {
+      $i = 0;
+      while ( !isset($_GET['seltag_'.$i]) ){
+         $i++;
+      }
+      $seltag_array[] = $_GET['seltag_'.$i];
+      $j = 0;
+      while(isset($_GET['seltag_'.$i]) and $_GET['seltag_'.$i] !='-2'){
+         if (!empty($_GET['seltag_'.$i])){
+            $seltag_array[$i] = $_GET['seltag_'.$i];
+            $j++;
+         }
+         $i++;
+      }
+      $last_selected_tag = $seltag_array[$j-1];
+   }else{
+      $last_selected_tag = '';
+      $seltag_array = array();
+   }
+
 if ( isset($_GET['delete_list'])) {
    $deletelist = $_GET['delete_list'];
 } else {
@@ -525,6 +545,9 @@ foreach ($rubric_array as $rubric) {
       if (!empty($searchtext)){
          $item_manager->setSearchLimit($searchtext);
       }
+      if (!empty($last_selected_tag)){
+         $item_manager->setTagLimit($last_selected_tag);
+      }
       #$item_manager->setIntervalLimit($interval);
       $new_entry_list = $item_manager->getAllPrivateRoomEntriesOfUserList($privatroom_id_array,$user_id_array);
 
@@ -671,6 +694,8 @@ $view->setList($temp_list);
 $view->setSelectedMyList($sellist);
 $view->setSelectedBuzzword($selbuzzword);
 $view->setSelectedMatrix($selmatrix);
+$view->setSelectedTagArray($seltag_array);
+$view->setSelectedTag($last_selected_tag);
 $view->setSearchText($searchtext);
 $view->setInterval($interval);
 $view->setPos($pos);
