@@ -125,16 +125,6 @@ if ($current_context->getPortletShowActiveRoomList()){
 }
 /* ROOMS END */
 
-/* SEARCH */
-if ($current_context->getPortletShowSearchBox()){
-   $params = array();
-   $params['environment'] = $environment;
-   $params['with_modifying_actions'] = $current_context->isOpen();
-   $search_view = $class_factory->getClass(PRIVATEROOM_HOME_SEARCH_VIEW,$params);
-   unset($params);
-   $portlet_array[] = $search_view;
-}
-/* SEARCH END */
 
 /* ROOMWIDE SEARCH */
 if ($current_context->getPortletShowRoomWideSearchBox()){
@@ -276,6 +266,17 @@ if ($current_context->getPortletShowNewItemBox()){
    $portlet_array[] = $search_view;
 }
 /* NEW_ITEM END */
+
+/* SEARCH */
+if ($current_context->getPortletShowSearchBox()){
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = $current_context->isOpen();
+   $search_view = $class_factory->getClass(PRIVATEROOM_HOME_SEARCH_VIEW,$params);
+   unset($params);
+   $portlet_array[] = $search_view;
+}
+/* SEARCH END */
 
 /* NOTE */
 if ($current_context->getPortletShowNoteBox()){

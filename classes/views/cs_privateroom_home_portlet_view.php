@@ -301,17 +301,6 @@ class cs_privateroom_home_portlet_view extends cs_view{
 
       $temp_array = array();
       $temp_array['dropdown_image']  = "new_icon";
-      $temp_array['text']  = $this->_translator->getMessage('PORTLET_CONFIGURATION_SEARCH_BOX');
-      $temp_array['value'] = "cs_privateroom_home_search_view";
-      if($privateroom_item->getPortletShowSearchBox()){
-         $temp_array['checked']  = "checked";
-      } else {
-         $temp_array['checked']  = "";
-      }
-      $action_array[] = $temp_array;
-
-      $temp_array = array();
-      $temp_array['dropdown_image']  = "new_icon";
       $temp_array['text']  = $this->_translator->getMessage('PORTLET_CONFIGURATION_ROOMWIDE_SEARCH_BOX');
       $temp_array['value'] = "cs_privateroom_home_roomwide_search_view";
       if($privateroom_item->getPortletShowRoomWideSearchBox()){
@@ -359,6 +348,17 @@ class cs_privateroom_home_portlet_view extends cs_view{
       $temp_array['text']  = $this->_translator->getMessage('PORTLET_CONFIGURATION_NEW_ITEM_BOX');
       $temp_array['value'] = "cs_privateroom_home_new_item_view";
       if($privateroom_item->getPortletShowNewItemBox()){
+         $temp_array['checked']  = "checked";
+      } else {
+         $temp_array['checked']  = "";
+      }
+      $action_array[] = $temp_array;
+
+      $temp_array = array();
+      $temp_array['dropdown_image']  = "new_icon";
+      $temp_array['text']  = $this->_translator->getMessage('PORTLET_CONFIGURATION_SEARCH_BOX');
+      $temp_array['value'] = "cs_privateroom_home_search_view";
+      if($privateroom_item->getPortletShowSearchBox()){
          $temp_array['checked']  = "checked";
       } else {
          $temp_array['checked']  = "";

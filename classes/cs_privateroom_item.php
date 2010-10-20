@@ -1250,10 +1250,10 @@ class cs_privateroom_item extends cs_room_item {
    }
 
    function getPortletShowSearchBox () {
-      $retour = true;
+      $retour = false;
       if ($this->_issetExtra('PORTLET_SHOW_SEARCH_BOX')) {
-         if($this->_getExtra('PORTLET_SHOW_SEARCH_BOX') == '-1'){
-            $retour = false;
+         if($this->_getExtra('PORTLET_SHOW_SEARCH_BOX') == '1'){
+            $retour = true;
          }
       }
       return $retour;
@@ -1288,10 +1288,10 @@ class cs_privateroom_item extends cs_room_item {
    }
 
    function getPortletShowWeatherBox () {
-      $retour = true;
+      $retour = false;
       if ($this->_issetExtra('PORTLET_SHOW_WEATHER_BOX')) {
-         if($this->_getExtra('PORTLET_SHOW_WEATHER_BOX') == '-1'){
-            $retour = false;
+         if($this->_getExtra('PORTLET_SHOW_WEATHER_BOX') == '1'){
+            $retour = true;
          }
       }
       return $retour;
@@ -1339,10 +1339,10 @@ class cs_privateroom_item extends cs_room_item {
    }
 
    function getPortletShowClockBox () {
-      $retour = true;
+      $retour = false;
       if ($this->_issetExtra('PORTLET_SHOW_CLOCK_BOX')) {
-         if($this->_getExtra('PORTLET_SHOW_CLOCK_BOX') == '-1'){
-            $retour = false;
+         if($this->_getExtra('PORTLET_SHOW_CLOCK_BOX') == '1'){
+            $retour = true;
          }
       }
       return $retour;
@@ -1540,27 +1540,27 @@ class cs_privateroom_item extends cs_room_item {
    }
 
    function getPortletShowNoteBox () {
-      $retour = true;
+      $retour = false;
       if ($this->_issetExtra('PORTLET_SHOW_NOTE')) {
-         if($this->_getExtra('PORTLET_SHOW_NOTE') == '-1'){
-            $retour = false;
+         if($this->_getExtra('PORTLET_SHOW_NOTE') == '1'){
+            $retour = true;
          }
       }
       return $retour;
-   }   
+   }
 
    function setPortletNoteContent ($content) {
       $this->_addExtra('PORTLET_NOTE_CONTENT',$content);
    }
-   
+
    function getPortletNoteContent () {
       $retour = '';
       if ($this->_issetExtra('PORTLET_NOTE_CONTENT')) {
          $retour = $this->_getExtra('PORTLET_NOTE_CONTENT');
       }
       return $retour;
-   }   
-   
+   }
+
    function setPortletShowReleasedEntriesBox () {
       $this->_addExtra('PORTLET_SHOW_RELEASED_ENTRIES','1');
    }
@@ -1569,15 +1569,15 @@ class cs_privateroom_item extends cs_room_item {
    }
 
    function getPortletShowReleasedEntriesBox () {
-      $retour = true;
+      $retour = false;
       if ($this->_issetExtra('PORTLET_SHOW_RELEASED_ENTRIES')) {
-         if($this->_getExtra('PORTLET_SHOW_RELEASED_ENTRIES') == '-1'){
-            $retour = false;
+         if($this->_getExtra('PORTLET_SHOW_RELEASED_ENTRIES') == '1'){
+            $retour = true;
          }
       }
       return $retour;
-   }  
-   
+   }
+
    function setHomeConfig ($column_array) {
       $this->_addExtra('HOME_CONFIG',$column_array);
    }
@@ -1694,7 +1694,7 @@ class cs_privateroom_item extends cs_room_item {
       } else {
          $this->unsetPortletShowNoteBox();
       }
-      
+
       if(in_array('cs_privateroom_home_released_entries_view', $portlet_array)){
          $this->setPortletShowReleasedEntriesBox();
       } else {
