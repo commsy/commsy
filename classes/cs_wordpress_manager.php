@@ -136,7 +136,7 @@ class cs_wordpress_manager extends cs_manager {
       $wpBlog = array('title' => $this->_environment->getCurrentContextItem()->getTitle(), 'path' => $this->_environment->getCurrentPortalID().'_'.$this->_environment->getCurrentContextID());
       $result = $this->CW->createBlog($wpUser, $wpBlog);
       $contextItem = $this->_environment->getCurrentContextItem();
-      var_export($result);
+      //var_export($result);
       $contextItem->setWordpressId($result['blog_id']);
       $contextItem->save();
     } catch(Exception $e) {
