@@ -2393,7 +2393,6 @@ class cs_context_item extends cs_item {
   }
 
   function setWithWordpressFunctions () {
-    echo "enabling wordpress";
     $this->_setExtraConfig('WORDPRESS',1);
   }
 

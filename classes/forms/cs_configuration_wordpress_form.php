@@ -56,11 +56,13 @@ class cs_configuration_wordpress_form extends cs_rubric_form {
   function _initForm () {
     $this->_item = $this->_environment->getCurrentContextItem();
     $this->_array_info_text = array();
-    foreach($this->_skin_array as $skin){
-      $temp_array = array();
-      $temp_array['text']  = $skin;
-      $temp_array['value'] = $skin; //hvv
-      $this->_array_info_text[$skin] = $temp_array;
+    if(!empty($this->_skin_array)){
+	    foreach($this->_skin_array as $skin){
+	      $temp_array = array();
+	      $temp_array['text']  = $skin;
+	      $temp_array['value'] = $skin; //hvv
+	      $this->_array_info_text[$skin] = $temp_array;
+	    }
     }
     ksort($this->_array_info_text);
   }
