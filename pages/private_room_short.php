@@ -301,7 +301,7 @@ if ($current_context->getPortletShowReleasedEntriesBox()){
 /* RELEASED_ENTRIES END */
 
 /* TAG */
-if ($current_context->getPortletShowTagBox()){
+if ($current_context->getPortletShowTagBox() and  $current_context->withTags()){
    $params = array();
    $params['environment'] = $environment;
    $params['with_modifying_actions'] = $current_context->isOpen();

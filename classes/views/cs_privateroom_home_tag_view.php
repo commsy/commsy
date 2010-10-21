@@ -315,12 +315,12 @@ class cs_privateroom_home_tag_view extends cs_view {
                      $html .= '<a href="javascript:callStudyLogSortByTagId('.$current_item->getItemID().')">'.$title.'</a>'.LF;
                   } else {
                      $link = curl($this->_environment->getCurrentContextID(),
-                                         $this->_environment->getCurrentModule(),
+                                         'entry',
                                          $this->_environment->getCurrentFunction(),
                                          $params);
                      $html .= '<li id="' . $current_item->getItemID() . '" data="url: \'' . $link . '\'" style="color:#545454; font-style:normal; font-size:9pt; font-weight:normal;">'.LF;
                      $html .= ahref_curl($this->_environment->getCurrentContextID(),
-                                         $this->_environment->getCurrentModule(),
+                                         'entry',
                                          $this->_environment->getCurrentFunction(),
                                          $params,
                                          $title,
@@ -329,7 +329,7 @@ class cs_privateroom_home_tag_view extends cs_view {
                }else{
                   $params['name'] = $link_name;
                   $link = curl($this->_environment->getCurrentContextID(),
-                                         $this->_environment->getCurrentModule(),
+                                         'entry',
                                          $this->_environment->getCurrentFunction(),
                                          $params);
                   $html .= '<li id="' . $current_item->getItemID() . '" data="url: \'' . $link . '\'" style="color:#000000; font-style:normal; font-size:9pt; font-weight:bold;">'.LF;

@@ -1881,7 +1881,7 @@ function portlet_turn_action(preferences, id, portlet){
       } else if (id == 'my_matrix_box'){
          turn_portlet_matrix(id, portlet);
       } else if (id == 'my_tag_box'){
-         turn_portlet_tag(id, portlet);
+         turn_portlet_tag(id, portlet, 'entries');
       } else if (id == 'cs_privateroom_home_new_entries_view'){
          turn_portlet_new_entries(id, portlet);
       } else if ((id == 'my_buzzword_box') || (id == 'cs_privateroom_home_buzzword_view')){
@@ -1889,7 +1889,7 @@ function portlet_turn_action(preferences, id, portlet){
       } else if (id == 'cs_privateroom_home_note_view'){
          turn_portlet_note(id, portlet);
       } else if (id == 'cs_privateroom_home_tag_view'){
-         turn_portlet_tag(id, portlet);
+         turn_portlet_tag(id, portlet, 'home');
       }
    } else {
       if(id == 'cs_privateroom_home_youtube_view'){
@@ -1905,7 +1905,7 @@ function portlet_turn_action(preferences, id, portlet){
       } else if (id == 'my_matrix_box'){
          return_portlet_matrix(id, portlet);
       } else if (id == 'my_tag_box'){
-         return_portlet_tag(id, portlet);
+         return_portlet_tag(id, portlet, 'entries');
       } else if (id == 'cs_privateroom_home_new_entries_view'){
          return_portlet_new_entries(id, portlet);
       } else if ((id == 'my_buzzword_box') || (id == 'cs_privateroom_home_buzzword_view')){
@@ -1913,7 +1913,7 @@ function portlet_turn_action(preferences, id, portlet){
       } else if (id == 'cs_privateroom_home_note_view'){
          return_portlet_note(id, portlet);
       } else if (id == 'cs_privateroom_home_tag_view'){
-         return_portlet_tag(id, portlet);
+         return_portlet_tag(id, portlet, 'home');
       }
    }
 }
@@ -2402,12 +2402,13 @@ function return_portlet_note(id, portlet){
    }
 }
 
-function turn_portlet_tag(id, portlet){
+function turn_portlet_tag(id, portlet, page){
 	 jQuery('#my_tag_form_button_add').click(function(){
 		if(jQuery('#my_tag_form_new_tag').val() != ''){
 	         var json_data = new Object();
 	    	 json_data['new_tag_name'] = jQuery('#my_tag_form_new_tag').val();
 	    	 json_data['new_tag_father'] = jQuery('#my_tag_form_father_id').find(':selected').val();
+	    	 json_data['tag_page'] = page;
 	    	 jQuery.ajax({
 	    	    url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct=privateroom_tag_configuration&output=json&do=save_new_tag',
 	    	    data: json_data,
@@ -2430,6 +2431,7 @@ function turn_portlet_tag(id, portlet){
 	    	 json_data['tag_sort_1'] = jQuery('#my_tag_form_sort_1').find(':selected').val();
 	    	 json_data['tag_sort_2'] = jQuery('#my_tag_form_sort_2').find(':selected').val();
 	    	 json_data['tag_sort_action'] = jQuery('#my_tag_form_sort_action').find(':selected').val();
+	    	 json_data['tag_page'] = page;
 	    	 jQuery.ajax({
 	    	    url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct=privateroom_tag_configuration&output=json&do=sort_tag',
 	    	    data: json_data,
@@ -2448,6 +2450,7 @@ function turn_portlet_tag(id, portlet){
 	 
 	 jQuery('#my_tag_form_button_sort_abc').click(function(){
 		 var json_data = new Object();
+		 json_data['tag_page'] = page;
     	 jQuery.ajax({
     	    url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct=privateroom_tag_configuration&output=json&do=sort_tag_abc',
     	    data: json_data,
@@ -2469,6 +2472,7 @@ function turn_portlet_tag(id, portlet){
 	    	 json_data['tag_combine_1'] = jQuery('#my_tag_form_combine_1').find(':selected').val();
 	    	 json_data['tag_combine_2'] = jQuery('#my_tag_form_combine_2').find(':selected').val();
 	    	 json_data['tag_combine_father'] = jQuery('#my_tag_form_combine_father').find(':selected').val();
+	    	 json_data['tag_page'] = page;
 	    	 jQuery.ajax({
 	    	    url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct=privateroom_tag_configuration&output=json&do=combine_tag',
 	    	    data: json_data,
@@ -2485,7 +2489,7 @@ function turn_portlet_tag(id, portlet){
 		  }
 	 });
 	 
-	 activate_tag_change_form();
+	 activate_tag_change_form(page);
 }
 
 function update_tag_form(json_data){
@@ -2499,7 +2503,7 @@ function update_tag_form(json_data){
 	activate_tag_change_form();
 }
 
-function return_portlet_tag(id, portlet){
+function return_portlet_tag(id, portlet, page){
 	if(portlet_data['tag_save']){
 		if(typeof(portlet_data['tree_update']) !== 'undefined'){
 		    jQuery('#my_tag_content_div').html(portlet_data['tree_update']);
@@ -2557,13 +2561,14 @@ function activate_tag_tree_privateroom(){
 	}
 }
 
-function activate_tag_change_form(){
+function activate_tag_change_form(page){
 	jQuery('[id^=my_tag_form_change_button]').click(function(){
 		var id_array = jQuery(this).attr('id').split('-');
 		if(jQuery('#my_tag_form_change_value-'+id_array[1]).val() != ''){
 			 var json_data = new Object();
 			 json_data['tag_change_id'] = id_array[1];
 	    	 json_data['tag_change_value'] = jQuery('#my_tag_form_change_value-'+id_array[1]).val();
+	    	 json_data['tag_page'] = page;
 	    	 jQuery.ajax({
 	    	    url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct=privateroom_tag_configuration&output=json&do=change_tag',
 	    	    data: json_data,

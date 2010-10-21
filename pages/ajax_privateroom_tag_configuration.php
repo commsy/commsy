@@ -26,6 +26,14 @@ include_once('functions/development_functions.php');
 if(isset($_GET['do'])){
 	$translator = $environment->getTranslationObject();
    
+	$tag_page = '';
+   $get_keys = array_keys($_GET);
+   foreach($get_keys as $get_key){
+      if(stristr($get_key, 'tag_page')){
+         $tag_page = $_GET[$get_key];
+      }
+   }
+	
 	if($_GET['do'] == 'save_new_tag'){
       $new_tag_name = '';
       $new_tag_father = '';

@@ -321,17 +321,32 @@ class cs_privateroom_home_portlet_view extends cs_view{
       #}
       #$action_array[] = $temp_array;
 
-      $temp_array = array();
-      $temp_array['dropdown_image']  = "new_icon";
-      $temp_array['text']  = $this->_translator->getMessage('PORTLET_CONFIGURATION_BUZZWORD_BOX');
-      $temp_array['value'] = "cs_privateroom_home_buzzword_view";
-      if($privateroom_item->getPortletShowBuzzwordBox()){
-         $temp_array['checked']  = "checked";
-      } else {
-         $temp_array['checked']  = "";
+      if($privateroom_item->withBuzzwords()){
+	      $temp_array = array();
+	      $temp_array['dropdown_image']  = "new_icon";
+	      $temp_array['text']  = $this->_translator->getMessage('PORTLET_CONFIGURATION_BUZZWORD_BOX');
+	      $temp_array['value'] = "cs_privateroom_home_buzzword_view";
+	      if($privateroom_item->getPortletShowBuzzwordBox()){
+	         $temp_array['checked']  = "checked";
+	      } else {
+	         $temp_array['checked']  = "";
+	      }
+	      $action_array[] = $temp_array;
       }
-      $action_array[] = $temp_array;
 
+      if($privateroom_item->withTags()){
+	      $temp_array = array();
+	      $temp_array['dropdown_image']  = "new_icon";
+	      $temp_array['text']  = $this->_translator->getMessage('COMMON_TAGS');
+	      $temp_array['value'] = "cs_privateroom_home_tag_view";
+	      if($privateroom_item->getPortletShowTagBox()){
+	         $temp_array['checked']  = "checked";
+	      } else {
+	         $temp_array['checked']  = "";
+	      }
+	      $action_array[] = $temp_array;
+      }
+      
       $temp_array = array();
       $temp_array['dropdown_image']  = "new_icon";
       $temp_array['text']  = $this->_translator->getMessage('PORTLET_CONFIGURATION_CONFIGURATION_BOX');
@@ -447,17 +462,6 @@ class cs_privateroom_home_portlet_view extends cs_view{
       $temp_array['text']  = $this->_translator->getMessage('COMMON_RELEASED_ENTRIES_PORTLET');
       $temp_array['value'] = "cs_privateroom_home_released_entries_view";
       if($privateroom_item->getPortletShowReleasedEntriesBox()){
-         $temp_array['checked']  = "checked";
-      } else {
-         $temp_array['checked']  = "";
-      }
-      $action_array[] = $temp_array;
-
-      $temp_array = array();
-      $temp_array['dropdown_image']  = "new_icon";
-      $temp_array['text']  = $this->_translator->getMessage('COMMON_TAGS');
-      $temp_array['value'] = "cs_privateroom_home_tag_view";
-      if($privateroom_item->getPortletShowTagBox()){
          $temp_array['checked']  = "checked";
       } else {
          $temp_array['checked']  = "";
