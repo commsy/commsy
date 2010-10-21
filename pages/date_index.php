@@ -482,8 +482,6 @@ if ( isset($_GET['option'])
       $seltag_array = array();
    }
 
-
-
    // Find current status selection
    if ( isset($_GET['selstatus'])
         and $_GET['selstatus'] != '-2'

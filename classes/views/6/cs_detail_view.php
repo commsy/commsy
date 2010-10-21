@@ -2029,12 +2029,7 @@ class cs_detail_view extends cs_view {
                       or $_GET['download'] != 'zip'
                     )
                     and
-                    (
-                       mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'png')
-                       or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'jpg')
-                       or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'jpeg')
-                       or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'gif')
-                    )
+                       in_array($file->getExtension(), array('png', 'jpg', 'jpeg', 'gif'))
                   ) {
                   $this->_with_slimbox = true;
                   $file_string = '<a href="'.$file->getUrl().'" rel="lightbox[gallery'.$item->getItemID().']">'.

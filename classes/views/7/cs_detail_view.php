@@ -1557,8 +1557,35 @@ class cs_detail_view extends cs_view {
       $html .='</div>'.LF;
       return $html;
    }
-
-
+   
+   function _getAdditionalCalendarAsHTML(){
+      $params = array();
+      $additional_calendar_href = curl($this->_environment->getCurrentContextID(),
+                                       CS_DATE_TYPE,
+                                       'index',
+                                       $params);
+      $additional_calendar_href = str_replace('&amp;', '&', $additional_calendar_href);
+      $additional_calendar_href .= '&presentation_mode=' . '2&month=';//$this->_presentation_mode;
+      /*
+       * if($this->_presentation_mode == 1){
+         $additional_calendar_href .= '&week=';
+      } elseif ($this->_presentation_mode == 2) {
+         $additional_calendar_href .= '&month=';
+      }
+      */
+      $date_explode = explode('-', $this->_item->getStartingDay());
+      $additional_calendar_href .= $date_explode[0] . $date_explode[1] . $date_explode[2];
+      $html = '<div id="additional_calendar" class="additional_calendar" style="width:100%; margin:auto; padding:3px 0px 3px 0px;"></div>';
+      $html .= '<script type="text/javascript">'.LF;
+      $html .= '<!--'.LF;
+      $html .= 'var additional_calendar_href = "' . $additional_calendar_href . '"'.LF;
+      $html .= 'var presentation_mode = "' . '2'/*$this->_presentation_mode*/ . '"'.LF;
+      $html .= '-->'.LF;
+      $html .= '</script>'.LF;
+      
+      return $html;
+   }
+   
    /** get detail view as HTML
     * this method returns the detail view in HTML-Code
     *
@@ -1588,11 +1615,74 @@ class cs_detail_view extends cs_view {
 
          if(!isset($this->_browse_ids) or count($this->_browse_ids) ==0){
              $this->_browse_ids[] = $this->_item->getItemID();
-         }
+         }  
          $html .= '<div class="commsy_no_panel" style="margin-bottom:1px;">'.LF;
-         $html .= $this->_getForwardBoxAsHTML($item);
+         
+         $session = $this->_environment->getSessionItem();
+         $from_display_mode = $session->getValue($this->_environment->getCurrentContextID() . '_dates_seldisplay_mode');
+         unset($session);
+         
+         // display calendar in date detail view, when request came from calendar
+         if($rubric == CS_DATE_TYPE && $from_display_mode == 'calendar') {
+            $html .= '<div class="column">'.LF;
+            $html .= '<div class="right_box">'.LF;
+            $html .= '<div class="right_box_title">'.LF;
+                     
+            $date = $this->_item->getStartingDay();
+	         $date_array = explode('-',$date);
+	         $month = $date_array[1];
+	         $year = $date_array[0];
+	         $first_char = mb_substr($month,0,1);
+	         if ($first_char == '0'){
+	            $month = mb_substr($month,1,2);
+	         }
+	         $month_array = array($this->_translator->getMessage('DATES_JANUARY_LONG'),
+								         $this->_translator->getMessage('DATES_FEBRUARY_LONG'),
+								         $this->_translator->getMessage('DATES_MARCH_LONG'),
+								         $this->_translator->getMessage('DATES_APRIL_LONG'),
+								         $this->_translator->getMessage('DATES_MAY_LONG'),
+								         $this->_translator->getMessage('DATES_JUNE_LONG'),
+								         $this->_translator->getMessage('DATES_JULY_LONG'),
+								         $this->_translator->getMessage('DATES_AUGUST_LONG'),
+								         $this->_translator->getMessage('DATES_SEPTEMBER_LONG'),
+								         $this->_translator->getMessage('DATES_OCTOBER_LONG'),
+								         $this->_translator->getMessage('DATES_NOVEMBER_LONG'),
+								         $this->_translator->getMessage('DATES_DECEMBER_LONG'));
+	         $tempMessage = $month_array[$month-1].' '.$year;
+	         
+	         $html .= '<div style="white-space:nowrap;">'.$tempMessage.'</div>'.LF;
+            $html .='</div>'.LF;
+            $html .= '<div class="right_box_main">'.LF;
+            $html .= '<div style="margin-left: 20px;">'.LF;
+            $html .= $this->_getAdditionalCalendarAsHTML();
+            $html .= '</div>'.LF;
+            
+            
+            $html .= '<div style="float:right; font-size:8pt; padding: 5px 3px 3px 0px;">'.LF;
+	         $params = array();
+	         $params['back_to_index'] = 'true';
+	         $link_module = $this->_environment->getCurrentModule();
+	         $link_text = $this->_translator->getMessage('DATE_BACK_TO_CALENDAR');
+	         $html .= ahref_curl( $this->_environment->getCurrentContextID(),
+	                           $link_module,
+	                           'index',
+	                           $params,
+	                           $link_text
+	                           );
+				$html .= '</div>'.LF;
+				$html .='<div style="clear:both;"></div>'.LF;
+            
+            $html .='</div>'.LF;
+            $html .='</div>'.LF;
+            $html .='</div>'.LF;
+         }
+         
+         // display forward box
+         else {
+            $html .= $this->_getForwardBoxAsHTML($item);
+         }
          $html .='</div>'.LF;
-         $separator = '';
+         
          /***********Buzzwords*************/
          if ( $this->showBuzzwords() ) {
             $html .= '<div class="commsy_panel" style="margin-bottom:1px;">'.LF;
@@ -3387,12 +3477,7 @@ class cs_detail_view extends cs_view {
                       or $_GET['download'] != 'zip'
                     )
                     and
-                    (
-                       mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'png')
-                       or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'jpg')
-                       or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'jpeg')
-                       or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'gif')
-                    )
+                       in_array($file->getExtension(), array('png', 'jpg', 'jpeg', 'gif'))
                   ) {
                   $this->_with_slimbox = true;
                   // jQuery
