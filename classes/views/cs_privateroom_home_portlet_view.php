@@ -349,7 +349,7 @@ class cs_privateroom_home_portlet_view extends cs_view{
       
       $temp_array = array();
       $temp_array['dropdown_image']  = "new_icon";
-      $temp_array['text']  = $this->_translator->getMessage('PORTLET_CONFIGURATION_CONFIGURATION_BOX');
+      $temp_array['text']  = $this->_translator->getMessage('HOME_EXTRA_TOOLS');
       $temp_array['value'] = "cs_privateroom_home_configuration_view";
       if($privateroom_item->getPortletShowConfigurationBox()){
          $temp_array['checked']  = "checked";
