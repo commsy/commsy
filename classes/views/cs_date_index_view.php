@@ -240,7 +240,6 @@ class cs_date_index_view extends cs_index_view {
          $html .='</div>';
       }
 
-
       return $html;
    }
 

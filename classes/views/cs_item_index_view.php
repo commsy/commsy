@@ -871,11 +871,7 @@ var $_sel_rubric = '';
             if ( isset($_GET['mode']) and $_GET['mode']=='print' ) {
                $file_list .= '<span class="disabled">'.$fileicon.'</span>'."\n";
             } else {
-               if ( mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'png')
-                 or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'jpg')
-                 or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'jpeg')
-                 or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'gif')
-               ) {
+               if(in_array($file->getExtension(), array('png', 'jpg', 'jpeg', 'gif'))) {
                    $this->_with_slimbox = true;
                    // jQuery
                    //$file_list.='<a href="'.$url.'" rel="lightbox[gallery'.$item->getItemID().']" title="'.$this->_text_as_html_short($displayname).' ('.$filesize.' kb)" >'.$fileicon.'</a> ';
