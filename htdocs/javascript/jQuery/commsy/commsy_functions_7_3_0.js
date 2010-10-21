@@ -1456,8 +1456,42 @@ function dropdown(object, offset, button){
 	});
 }
 
-function delete_overlay(element, html_element, click_extra_action) {
-	var extra = '';
+function delete_date_recurring() {
+	var href = jQuery("[id='delete_confirm_entry']").attr('href');
+	var href_new = '';
+	
+	// remove anchor
+	var split = href.split('#');
+	var anchor = '';
+	if(split.length > 1) {
+		anchor = split[1];
+	}
+	
+	// remove 'action=delete'
+	split = split[0].split('&');
+	
+	for(var i in split) {
+		if(split[i] != 'action=delete') {
+			href_new += split[i] + '&';
+		}
+	}
+	href_new += 'delete_option=' + extra_text;
+	
+	if(anchor != '') {
+		href_new += '#' + anchor;
+	}
+	
+	jQuery(location).attr('href', href_new);
+	
+	return false;
+}
+
+function delete_overlay(element, html_element, extra_object) {
+	var delete_content_extra = '';
+	if(extra_object != null) {
+		delete_content_extra = extra_object.content;
+	}
+	
 	delete_overlay.element = element;
 
 	jQuery('body').append(
@@ -1570,7 +1604,7 @@ function delete_overlay(element, html_element, click_extra_action) {
     	        	    	}
     	        	    })
     	        	).append(
-    	        		extra
+    	        		delete_content_extra
     	        	).append(
     	        		jQuery("<input/>", {
     	        			"type" : "submit",
@@ -1603,7 +1637,7 @@ jQuery(document).ready(function() {
 
 		if(jQuery("[id^='delete_check_']").attr('selected')) {
 			// add overlay
-		   	delete_overlay(element, html_element, function() {});
+		   	delete_overlay(element, html_element, null);
 
 		    return false;
 		}
@@ -1618,12 +1652,20 @@ jQuery(document).ready(function() {
 	jQuery("[id^='delete_confirm_']").click(function() {
     	var element = jQuery(this);
     	var html_element = this;
-
+    	
+    	var extra_object = null;
+    	
+    	// create extra object
+    	if( typeof(extra_text) != 'undefined' &&
+    		typeof(extra_content) != 'undefined') {
+    			extra_object = new Object();
+    			extra_object.text = extra_text;
+    			extra_object.content = extra_content;
+    	}
+    	
     	// add overlay
-    	delete_overlay(element, html_element, function() {
-    		return false;
-    	});
-
+    	delete_overlay(element, html_element, extra_object);
+    	
     	return false;
 	});
 });
@@ -2537,7 +2579,7 @@ function activate_tag_change_form(){
 	    	 });
 		  }
 	 });
-	 
+
 	 jQuery('[id^=my_tag_form_delete_button]').click(function(){
 		 var id_array = jQuery(this).attr('id').split('-');
 		 var json_data = new Object();

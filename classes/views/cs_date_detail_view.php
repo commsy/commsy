@@ -379,6 +379,33 @@ var $_clipboard_id_array=array();
       $html  .= '<!-- END OF DATE ITEM DETAIL -->'."\n\n";
       return $html;
    }
+   
+	/** get information for header as HTML
+    * this method returns information in HTML-Code needs for the header of the HTML-Page
+    *
+    * @return string javascipt needed for the form
+    */
+   function getInfoForHeaderAsHTML() {
+      $text2 = '';
+      if($this->_environment->getCurrentUserItem()->isModerator()) {
+         $text2 = $this->_translator->getMessage("COMMON_DELETE_BOX_DESCRIPTION_MODERATOR");
+      }
+      $return = "
+          <script type='text/javascript'>
+          <!--
+              var headline = '" . $this->_translator->getMessage("COMMON_DELETE_BOX_TITLE") . "';
+              var text1 = '" . $this->_translator->getMessage("COMMON_DELETE_BOX_DESCRIPTION") . "';
+              var text2 = '" . $text2 . "';
+              var extra_text = '" . $this->_translator->getMessage("COMMON_DELETE_RECURRENCE_BUTTON") . "';
+              var extra_content = '<input type=\"submit\" value=\"" . $this->_translator->getMessage("COMMON_DELETE_RECURRENCE_BUTTON") . "\" name=\"delete_option\" style=\"float: right; margin-right: 3px;\" onClick=\"delete_date_recurring(); return false;\">';
+              var button_delete = '" . $this->_translator->getMessage("COMMON_DELETE_BUTTON") . "';
+              var button_cancel = '" . $this->_translator->getMessage("COMMON_CANCEL_BUTTON") . "';
+          -->
+          </script>
+      ";
+
+      return $return;
+   }
 
 /*
    function _getTitleAsHTML () {

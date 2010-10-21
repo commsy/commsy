@@ -429,7 +429,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       return $html;
    }
 
-   function _getPreferencesListAsHTML($todo_list){
+   function _getPreferencesListAsHTML(){
       $html = '';
       #$html .= '</div>'.LF;
       #$html .= '</div>'.LF;
@@ -439,9 +439,345 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $html .= '<div style="float:right;"><a name="mycalendar_remove" style="cursor:pointer;"><img src="images/commsyicons/16x16/delete.png" /></a></div>';
       $html .= '</div>'.LF;
       $html .= '<div class="portlet-content">'.LF;
-      $html .= '...'.LF;
+      
+      $privateroom_item = $this->_environment->getCurrentContextItem();
+      $config = $privateroom_item->getMyCalendarDisplayConfig();
+      
+      // dates
+      if(in_array('mycalendar_dates_portlet', $config)) {
+//	      $html .= '<div class="portlet-header-configuration ui-widget-header">'.LF;
+//	      $html .= 'Add Restriction'.LF;
+//	      $html .= '<div style="float:right;">'.LF;
+//	      $html .= '<a href="#"><img id="mycalendar_restrictions_date" src="images/commsyicons/48x48/config/privateroom_home_options.png" height=0></a>'.LF;
+//	      $html .= '</div>'.LF;
+//	      $html .= '</div>'.LF;
+         $html .= $this->_getDatesRestrictionBoxAsHTML().LF;
+      }
+      
+      // todo's
+      if(in_array('mycalendar_todo_portlet', $config)) {
+//	      $html .= '<div class="portlet-header-configuration ui-widget-header">'.LF;
+//	      $html .= 'Add Restriction'.LF;
+//	      $html .= '<div style="float:right;">'.LF;
+//	      $html .= '<a href="#"><img id="mycalendar_restrictions_todo" src="images/commsyicons/48x48/config/privateroom_home_options.png" height=0></a>'.LF;
+//	      $html .= '</div>'.LF;
+//	      $html .= '</div>'.LF;
+         $html .= $this->_getTodoRestrictionBoxAsHTML().LF;
+      }
+      
+      unset($privateroom_item);
+      
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
+      return $html;
+   }
+   
+   function _getDatesRestrictionBoxAsHTML($field_length=14.5) {
+      $current_context = $this->_environment->getCurrentContextItem();
+      $session = $this->_environment->getSession();
+      $width = '170';
+      $context_item = $this->_environment->getCurrentContextItem();
+      $html = '';
+      
+      //$html .= '<form action="commsy.php?cid=' . $context_item->getItemID() . '&mod=date&fct=index" method="post">'.LF;
+      $html .= '<fieldset style="border: 1px solid Gainsboro; -moz-border-radius: 5px;">'.LF;
+	   $html .= '<legend style="color: DarkSlateGray;">' . $this->_translator->getMessage('COMMON_DATE_INDEX') . '</legend>'.LF;
+      $html .= '<input type="hidden" name="cid" value="' . $context_item->getItemID() . '"/>'.LF;
+      $html .= '<input type="hidden" name="mod" value="date"/>'.LF;
+      $html .= '<input type="hidden" name="fct" value="index"/>'.LF;
+	   
+	   #################
+      ## date type
+      #
+      $selstatus = $this->getSelectedStatus();
+      $html .= '<div class="infocolor" style="text-align:left; padding-bottom:5px; font-size: 10pt;">'.$this->_translator->getMessage('COMMON_DATE_STATUS').BRLF;
+      // jQuery
+      //$html .= '   <select style="width: '.$width.'px; font-size:10pt; margin-bottom:5px;" name="selstatus" size="1" onChange="javascript:document.indexform.submit()">'.LF;
+      $html .= '   <select style="width: '.$width.'px; font-size:10pt; margin-bottom:5px;" name="selstatus" size="1" id="submit_form">'.LF;
+      // jQuery
+      $html .= '      <option value="2"';
+      if ( empty($selstatus) || $selstatus == 2 ) {
+         $html .= ' selected="selected"';
+      }
+      $html .= '>*'.$this->_translator->getMessage('COMMON_NO_SELECTION').'</option>'.LF;
+
+      $html .= '   <option class="disabled" disabled="disabled" value="-2">------------------------------</option>'.LF;
+      $html .= '      <option value="3"';
+      if ( !empty($selstatus) and $selstatus == 3 ) {
+         $html .= ' selected="selected"';
+      }
+      $text = $this->_translator->getMessage('DATES_PUBLIC');
+      $html .= '>'.$text.'</option>'.LF;
+
+      $html .= '      <option value="4"';
+      if ( !empty($selstatus) and $selstatus == 4 ) {
+         $html .= ' selected="selected"';
+      }
+      $text = $this->_translator->getMessage('DATES_NON_PUBLIC');
+      $html .= '>'.$text.'</option>'.LF;
+
+      $html .= '   </select>'.LF;
+      $html .='</div>';
+      
+      #################
+      ## date color
+      #
+      if (isset($this->_used_color_array[0])){
+         $selcolor = $this->_selected_color;
+         $html .= '<div class="infocolor" style="text-align:left; padding-bottom:5px; font-size: 10pt;">'.$this->_translator->getMessage('COMMON_DATE_COLOR').BRLF;
+         if ( !empty($selcolor)) {
+            $style_color = '#'.$selcolor;
+         }else{
+           $style_color = '#000000';
+         }
+         $html .= '   <select style="color:'.$style_color.'; width: '.$width.'px; font-size:10pt; margin-bottom:5px;" name="selcolor" size="1" id="submit_form">'.LF;
+
+         $html .= '      <option style="color:#000000;" value="2"';
+         if ( empty($selcolor) || $selcolor == 2 ) {
+            $html .= ' selected="selected"';
+         }
+         $html .= '>*'.$this->_translator->getMessage('COMMON_NO_SELECTION').'</option>'.LF;
+
+         $html .= '   <option class="disabled" disabled="disabled" value="-2">------------------------------</option>'.LF;
+         $color_array = $this->getAvailableColorArray();
+         foreach ($color_array as $color){
+            $html .= '      <option style="color:'.$color.'" value="'.str_replace('#','',$color).'"';
+            if ( !empty($selcolor) and $selcolor == str_replace('#','',$color) ) {
+               $html .= ' selected="selected"';
+            }
+            $color_text = '';
+            switch ($color){
+               case '#999999': $color_text = getMessage('DATE_COLOR_GREY');break;
+               case '#CC0000': $color_text = getMessage('DATE_COLOR_RED');break;
+               case '#FF6600': $color_text = getMessage('DATE_COLOR_ORANGE');break;
+               case '#FFCC00': $color_text = getMessage('DATE_COLOR_DEFAULT_YELLOW');break;
+               case '#FFFF66': $color_text = getMessage('DATE_COLOR_LIGHT_YELLOW');break;
+               case '#33CC00': $color_text = getMessage('DATE_COLOR_GREEN');break;
+               case '#00CCCC': $color_text = getMessage('DATE_COLOR_TURQUOISE');break;
+               case '#3366FF': $color_text = getMessage('DATE_COLOR_BLUE');break;
+               case '#6633FF': $color_text = getMessage('DATE_COLOR_DARK_BLUE');break;
+               case '#CC33CC': $color_text = getMessage('DATE_COLOR_PURPLE');break;
+               default: $color_text = getMessage('DATE_COLOR_UNKNOWN');
+            }
+            $html .= '>'.$color_text.'</option>'.LF;
+         }
+         $html .= '   </select>'.LF;
+         $html .='</div>';
+      }
+      
+      #################
+      ## rooms
+      #
+      $html .= '<div class="infocolor" style="text-align:left; padding-bottom:5px; font-size: 10pt;">'.$this->_translator->getMessage('COMMON_ROOMS').BRLF;
+      $html .= '   <select style="width: '.$width.'px; font-size:10pt; margin-bottom:5px;" name="selroom" size="1" id="submit_form">'.LF;
+      $html .= '      <option style="color:#000000;" value="2"';
+      
+      $selroom = $this->_selected_room;
+      if(empty($selroom) || $selroom == 2) {
+         $html .= ' selected="selected"';
+      }
+      $html .= '>*'.$this->_translator->getMessage('COMMON_NO_SELECTION').'</option>'.LF;
+      $html .= '   <option class="disabled" disabled="disabled" value="-2">------------------------------</option>'.LF;
+      
+      $user = $this->_environment->getCurrentUserItem();
+      $room_manager = $this->_environment->getRoomManager();
+      $room_list = $room_manager->getAllRelatedRoomListForUser($user);
+      $room = $room_list->getFirst();
+      while($room) {
+         $html .= '      <option value="' . $room->getItemID() . '"';
+         if(!empty($selroom) && $selroom == $room->getItemID()) {
+            $html .= ' selected="selected"';
+         }
+         $html .= '>' . $room->getTitle() . '</option>'.LF;
+         
+         $room = $room_list->getNext();
+      }
+      
+      $html .= '   </select>'.LF;
+      $html .= '</div>';
+      
+      #################
+      ## assignment
+      #
+      $html .= '<div class="infocolor" style="text-align:left; padding-bottom:5px; font-size: 10pt;">'.$this->_translator->getMessage('COMMON_REFERENCED_ENTRIES').BRLF;
+      $html .= '   <select style="width: '.$width.'px; font-size:10pt; margin-bottom:5px;" name="selassignment" size="1" id="submit_form">'.LF;
+      
+      $selassignment = $this->getSelectedAssignment();
+      
+      // "no selection"
+      $html .= '      <option style="color:#000000;" value="2"';
+      if(!empty($selassignment) && $selassignment == '2') {
+         $html .= ' selected="selected"';
+      }
+      $html .= '>*' . $this->_translator->getMessage("COMMON_NO_SELECTION") . '</option>'.LF;
+      
+      // "disabled"
+      $html .= '      <option value="-2" disabled="disabled"';
+      $html .= '>------------------</option>'.LF;
+      
+      // "personal assignment"
+      $html .= '      <option style="color:#000000;" value="3"';
+      if(!empty($selassignment) && $selassignment == '3') {
+         $html .= ' selected="selected"';
+      }
+      $html .= '>' . $this->_translator->getMessage("PRIVATEROOM_CALENDAR_ASSIGNMENT_STATUS") . '</option>'.LF;
+      
+      $html .= '   </select>'.LF;
+      $html .= '</div>';
+      
+      $html .= '</fieldset>'.LF;
+      //$html .= '</form>'.LF;
+      
+      return $html;
+   }
+   
+   function _getTodoRestrictionBoxAsHTML($field_length=14.5) {
+      $current_context = $this->_environment->getCurrentContextItem();
+      $session = $this->_environment->getSession();
+      $width = '170';
+      $context_item = $this->_environment->getCurrentContextItem();
+      $html = '';
+      
+      //$html .= '<form action="commsy.php?cid=' . $context_item->getItemID() . '&mod=date&fct=index" method="post">'.LF;
+      $html .= '<fieldset style="border: 1px solid Gainsboro; -moz-border-radius: 5px;">'.LF;
+	   $html .= '<legend style="color: DarkSlateGray;">' . $this->_translator->getMessage('COMMON_TODO_INDEX') . '</legend>'.LF;
+      $html .= '<input type="hidden" name="cid" value="' . $context_item->getItemID() . '"/>'.LF;
+      $html .= '<input type="hidden" name="mod" value="date"/>'.LF;
+      $html .= '<input type="hidden" name="fct" value="index"/>'.LF;
+      
+      #################
+      ## rooms
+      #
+      $html .= '<div class="infocolor" style="text-align:left; padding-bottom:5px; font-size: 10pt;">'.$this->_translator->getMessage('COMMON_ROOMS').BRLF;
+      $html .= '   <select style="width: '.$width.'px; font-size:10pt; margin-bottom:5px;" name="todo_selroom" size="1" id="submit_form">'.LF;
+      $html .= '      <option style="color:#000000;" value="2"';
+      
+      $selroom = $this->getSelectedRoom(CS_TODO_TYPE);
+      if(empty($selroom) || $selroom == 2) {
+         $html .= ' selected="selected"';
+      }
+      $html .= '>*'.$this->_translator->getMessage('COMMON_NO_SELECTION').'</option>'.LF;
+      $html .= '   <option class="disabled" disabled="disabled" value="-2">------------------------------</option>'.LF;
+      
+      $user = $this->_environment->getCurrentUserItem();
+      $room_manager = $this->_environment->getRoomManager();
+      $room_list = $room_manager->getAllRelatedRoomListForUser($user);
+      $room = $room_list->getFirst();
+      while($room) {
+         $html .= '      <option value="' . $room->getItemID() . '"';
+         if(!empty($selroom) && $selroom == $room->getItemID()) {
+            $html .= ' selected="selected"';
+         }
+         $html .= '>' . $room->getTitle() . '</option>'.LF;
+         
+         $room = $room_list->getNext();
+      }
+      
+      $html .= '   </select>'.LF;
+      $html .= '</div>';
+      
+      #################
+      ## status
+      #
+      $html .= '<div class="infocolor" style="text-align:left; padding-bottom:5px; font-size: 10pt;">'.$this->_translator->getMessage('COMMON_STATUS').BRLF;
+      $html .= '   <select style="width: '.$width.'px; font-size:10pt; margin-bottom:5px;" name="todo_selstatus" size="1" id="submit_form">'.LF;
+      
+      $selstatus = $this->getSelectedStatus(CS_TODO_TYPE);
+      
+      // "ALL"
+      $html .= '      <option value="0"';
+      if ( !isset($selstatus) || $selstatus == 0 ) {
+         $html .= ' selected="selected"';
+      }
+      $html .= '>*'.$this->_translator->getMessage('ALL').'</option>'.LF;
+      
+      // "disabled"
+      $html .= '      <option value="-2" disabled="disabled"';
+      $html .= '>------------------</option>'.LF;
+      
+      // "not started"
+      $html .= '      <option value="11"';
+      if ( isset($selstatus) and $selstatus == 11 ) {
+         $html .= ' selected="selected"';
+      }
+      $html .= '>'.$this->_translator->getMessage('TODO_NOT_STARTED').'</option>'.LF;
+      
+      // "in progress"
+      $html .= '      <option value="12"';
+      if ( isset($selstatus) and $selstatus == 12 ) {
+         $html .= ' selected="selected"';
+      }
+      $html .= '>'.$this->_translator->getMessage('TODO_IN_POGRESS').'</option>'.LF;
+      
+      // "done"
+      $html .= '      <option value="13"';
+      if (  isset($selstatus) and $selstatus == 13 ) {
+         $html .= ' selected="selected"';
+      }
+      $html .= '>'.$this->_translator->getMessage('TODO_DONE').'</option>'.LF;
+      
+      // extra status
+      // if laters used, take care of offset 10 in todo context
+//      $context_item = $this->_environment->getCurrentContextItem();
+//      $extra_status_array = $context_item->getExtraToDoStatusArray();
+//      if (!empty($extra_status_array)){
+//         $html .= '      <option value="-2" disabled="disabled"';
+//         $html .= '>------------------</option>'.LF;
+//         foreach ($extra_status_array as $key => $value){
+//            $html .= '      <option value="'.$key.'"';
+//            if (  isset($selstatus) and $selstatus == $key ) {
+//               $html .= ' selected="selected"';
+//            }
+//            $html .= '>'.$value.'</option>'.LF;
+//         }
+//      }
+      
+      // "disabled"
+      $html .= '      <option value="-2" disabled="disabled"';
+      $html .= '>------------------</option>'.LF;
+      
+      // "not done"
+      $html .= '      <option value="14"';
+      if (  isset($selstatus) and $selstatus == 14 ) {
+         $html .= ' selected="selected"';
+      }
+      $html .= '>'.$this->_translator->getMessage('TODO_NOT_DONE').'</option>'.LF;
+      
+      $html .= '   </select>'.LF;
+      $html .= '</div>';
+      
+      #################
+      ## assignment
+      #
+      $html .= '<div class="infocolor" style="text-align:left; padding-bottom:5px; font-size: 10pt;">'.$this->_translator->getMessage('COMMON_REFERENCED_ENTRIES').BRLF;
+      $html .= '   <select style="width: '.$width.'px; font-size:10pt; margin-bottom:5px;" name="todo_selassignment" size="1" id="submit_form">'.LF;
+      
+      $selassignment = $this->getSelectedAssignment(CS_TODO_TYPE);
+      
+      // "no selection"
+      $html .= '      <option style="color:#000000;" value="2"';
+      if(!empty($selassignment) && $selassignment == '2') {
+         $html .= ' selected="selected"';
+      }
+      $html .= '>*' . $this->_translator->getMessage("COMMON_NO_SELECTION") . '</option>'.LF;
+      
+      // "disabled"
+      $html .= '      <option value="-2" disabled="disabled"';
+      $html .= '>------------------</option>'.LF;
+      
+      // "personal assignment"
+      $html .= '      <option style="color:#000000;" value="3"';
+      if(!empty($selassignment) && $selassignment == '3') {
+         $html .= ' selected="selected"';
+      }
+      $html .= '>' . $this->_translator->getMessage("PRIVATEROOM_CALENDAR_ASSIGNMENT_STATUS") . '</option>'.LF;
+      
+      $html .= '   </select>'.LF;
+      $html .= '</div>';
+      
+      $html .= '</fieldset>'.LF;
+      //$html .= '</form>'.LF;
+      
       return $html;
    }
 
@@ -499,7 +835,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
 	         } elseif ($mycalendar == "mycalendar_todo_portlet"){
 	            $html .= $this->_getTodosListAsHTML($this->_todo_list, $number_of_portlets);
 	         } elseif ($mycalendar == "mycalendar_preferences_portlet"){
-               $html .= $this->_getPreferencesListAsHTML($this->_todo_list);
+               $html .= $this->_getPreferencesListAsHTML();
             }
          }
          $html .= $this->_initDropDownConfiguration();
@@ -827,6 +1163,162 @@ class cs_date_calendar_index_view extends cs_room_index_view {
          $html .= '-->'.LF;
          $html .= '</script>'.LF;
       }
+      
+      ///////////////////////////
+      // Restrictions
+      ///////////////////////////
+      
+//      $session_item = $this->_environment->getSessionItem();
+//      $restrictions = array();
+//      if($session_item->issetValue($this->_environment->getCurrentContextId() . '_date_restrictions')) {
+//         $restrictions = $session_item->getValue($this->_environment->getCurrentContextId() . '_date_restrictions');
+//      }
+//      unset($sesion_item);
+//      
+//      #######################
+//      ## build list entries
+//      #
+//      $dropdown_array[] = array(	'dropdown_image'	   =>   'mycalendar_restrictions_date',
+//                                 'type'					=>   'text',
+//      									'text'	            =>   'Terminart',
+//                                 'value'              =>   '');
+//      
+//      $checked = '';
+//      if(in_array('restrictions_datetype_nonprivate', $restrictions)) $checked = 'checked';  
+//      $dropdown_array[] = array(	'dropdown_image'	   =>   'mycalendar_restrictions_date',
+//                                 'type'					=>   $checked,
+//      									'text'	            =>   'keine privaten Termine',
+//                                 'value'              =>   'restrictions_datetype_nonprivate');
+//      
+//      $checked = '';
+//      if(in_array('restrictions_datetype_onlyprivate', $restrictions)) $checked = 'checked';
+//      $dropdown_array[] = array(	'dropdown_image'	   =>   'mycalendar_restrictions_date',
+//                                 'type'					=>   $checked,
+//      									'text'	            =>   'nur private Termine',
+//                                 'value'              =>   'restrictions_datetype_onlyprivate');
+//      
+//      $dropdown_array[] = array(	'dropdown_image'	   =>   'mycalendar_restrictions_date',
+//                                 'type'					=>   'seperator',
+//      									'text'	            =>   '',
+//                                 'value'              =>   '');
+//      
+//      ####################################################################################
+//      
+//      $dropdown_array[] = array(	'dropdown_image'	   =>   'mycalendar_restrictions_date',
+//                                 'type'					=>   'text',
+//      									'text'	            =>   'Terminfarbe',
+//                                 'value'              =>   '');
+//      
+//      $dropdown_array[] = array(	'dropdown_image'	   =>   'mycalendar_restrictions_date',
+//                                 'type'					=>   'scroll_start',
+//      									'text'	            =>   '',
+//                                 'value'              =>   '');
+//      
+//      $color_array = $this->getAvailableColorArray();
+//      foreach($color_array as $color) {
+//         $color_text = '';
+//         switch ($color){
+//            case '#999999': $color_text = getMessage('DATE_COLOR_GREY');break;
+//            case '#CC0000': $color_text = getMessage('DATE_COLOR_RED');break;
+//            case '#FF6600': $color_text = getMessage('DATE_COLOR_ORANGE');break;
+//            case '#FFCC00': $color_text = getMessage('DATE_COLOR_DEFAULT_YELLOW');break;
+//            case '#FFFF66': $color_text = getMessage('DATE_COLOR_LIGHT_YELLOW');break;
+//            case '#33CC00': $color_text = getMessage('DATE_COLOR_GREEN');break;
+//            case '#00CCCC': $color_text = getMessage('DATE_COLOR_TURQUOISE');break;
+//            case '#3366FF': $color_text = getMessage('DATE_COLOR_BLUE');break;
+//            case '#6633FF': $color_text = getMessage('DATE_COLOR_DARK_BLUE');break;
+//            case '#CC33CC': $color_text = getMessage('DATE_COLOR_PURPLE');break;
+//            default: $color_text = getMessage('DATE_COLOR_UNKNOWN');
+//         }
+//         
+//         $checked = '';
+//         if(in_array('restrictions_datecolor' . $color, $restrictions)) $checked = 'checked';
+//         $dropdown_array[] = array(	'dropdown_image'	   =>   'mycalendar_restrictions_date',
+//                                 	'type'					=>   $checked,
+//      										'text'	            =>   $color_text,
+//                                 	'value'              =>   'restrictions_datecolor' . $color);
+//      }
+//      
+//      $dropdown_array[] = array(	'dropdown_image'	   =>   'mycalendar_restrictions_date',
+//                                 'type'					=>   'scroll_end',
+//      									'text'	            =>   '',
+//                                 'value'              =>   '');
+//      
+//      $dropdown_array[] = array(	'dropdown_image'	   =>   'mycalendar_restrictions_date',
+//                                 'type'					=>   'seperator',
+//      									'text'	            =>   '',
+//                                 'value'              =>   '');
+//      
+//      ####################################################################################
+//      
+//      $dropdown_array[] = array(	'dropdown_image'	   =>   'mycalendar_restrictions_date',
+//                                 'type'					=>   'text',
+//      									'text'	            =>   'Raum',
+//                                 'value'              =>   '');
+//      
+//      $dropdown_array[] = array(	'dropdown_image'	   =>   'mycalendar_restrictions_date',
+//                                 'type'					=>   'scroll_start',
+//      									'text'	            =>   '',
+//                                 'value'              =>   '');
+//      
+//      $room_manager = $this->_environment->getRoomManager();
+//      $room_list = $room_manager->getAllRelatedRoomListForUser($user);
+//      $room = $room_list->getFirst();
+//      while($room) {
+//         $checked = '';
+//         if(in_array('restrictions_dateroom' . $room->getItemId(), $restrictions)) $checked = 'checked';
+//         $dropdown_array[] = array(	'dropdown_image'	   =>   'mycalendar_restrictions_date',
+//                                 	'type'					=>   $checked,
+//      										'text'	            =>   $room->getTitle(),
+//                                 	'value'              =>   'restrictions_dateroom' . $room->getItemId());
+//         
+//         $room = $room_list->getNext();
+//      }
+//      
+//      $dropdown_array[] = array(	'dropdown_image'	   =>   'mycalendar_restrictions_date',
+//                                 'type'					=>   'scroll_end',
+//      									'text'	            =>   '',
+//                                 'value'              =>   '');
+//      
+//      $dropdown_array[] = array(	'dropdown_image'	   =>   'mycalendar_restrictions_date',
+//                                 'type'					=>   'seperator',
+//      									'text'	            =>   '',
+//                                 'value'              =>   '');
+//      
+//      ####################################################################################
+//      
+//      $checked = '';
+//      if(in_array('restrictions_dateassigned', $restrictions)) $checked = 'checked';
+//      $dropdown_array[] = array(	'dropdown_image'	   =>   'mycalendar_restrictions_date',
+//                                 'type'					=>   $checked,
+//      									'text'	            =>   'mir zugeordnet',
+//                                 'value'              =>   'restrictions_dateassigned');
+//      #
+//      ## ~build list entries
+//      #######################
+//      
+//      // init drop down menu
+//      if(!empty($dropdown_array) && count($dropdown_array) >= 1) {
+//         $html .= '<script type="text/javascript">'.LF;
+//         $html .= '<!--'.LF;
+//         $html .= 'var dropDownMyCalendarRestrictions = new Array(';
+//         $first = true;
+//         foreach ($dropdown_array as $action) {
+//            if ( $first ) {
+//               $first = false;
+//            } else {
+//               $html .= ',';
+//            }
+//            $html .= 'new Array("'.$action['dropdown_image'].'","'.$action['type'].'","'.$action['text'].'","'.$action['value'].'")';
+//         }
+//         $html .= ');'.LF;
+//         #$html .= 'var mycalendarSaveButton = "'.$this->_translator->getMessage('PREFERENCES_SAVE_BUTTON').'";'.LF;
+//         #$html .= 'var ajax_cid = "'.$privateroom_item->getItemID().'";'.LF;
+//         #$html .= 'var ajax_function = "privateroom_mycalendar";'.LF;
+//         $html .= '-->'.LF;
+//         $html .= '</script>'.LF;
+//      }
+      
       return $html;
    }
 
@@ -5106,6 +5598,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $assignment = $this->getSelectedAssignment(CS_DATE_TYPE);
       $status = $this->getSelectedStatus(CS_DATE_TYPE);
       $room = $this->getSelectedRoom(CS_DATE_TYPE);
+      $color = $this->getSelectedColor(CS_DATE_TYPE);
       $search = $this->getSearchText(CS_DATE_TYPE);
       if ( ( !empty($assignment)
              and $assignment != 2
@@ -5115,6 +5608,9 @@ class cs_date_calendar_index_view extends cs_room_index_view {
               )
            or ( !empty($room)
                 and $room != 2
+              )
+           or ( !empty($color)
+                and $color != 2
               )
            or ( !empty($search)
                 and $search != $this->_translator->getMessage('COMMON_SEARCH_IN_ROOM')
@@ -5167,6 +5663,41 @@ class cs_date_calendar_index_view extends cs_room_index_view {
             }
             $new_aparams = $this->_environment->getCurrentParameterArray();
             $new_aparams['selroom'] = 2;
+            $image = '<img src="images/delete_restriction.gif" style="padding-top:3px;" alt="'.$this->_translator->getMessage('ENTRY_DELETE_RESTRICTION').'"/>'.LF;
+            $html .= ' '.ahref_curl(  $this->_environment->getCurrentContextID(),
+                                       CS_DATE_TYPE,
+                                       'index',
+                                       $new_aparams,
+                                       $image,
+                                       $this->_translator->getMessage('ENTRY_DELETE_RESTRICTION')).LF;
+            $html .= '</td>'.LF;
+            $html .= '</tr>'.LF;
+         }
+         if ( !empty($color)
+              and $color != 2
+            ) {
+            $html .= '<tr>'.LF;
+            $html .= '<td style="text-align:right;">'.LF;
+            
+            $html .= $this->_translator->getMessage('COMMON_DATE_COLOR');
+            $color_text = '';
+            switch ('#' . $color){
+               case '#999999': $color_text = getMessage('DATE_COLOR_GREY');break;
+               case '#CC0000': $color_text = getMessage('DATE_COLOR_RED');break;
+               case '#FF6600': $color_text = getMessage('DATE_COLOR_ORANGE');break;
+               case '#FFCC00': $color_text = getMessage('DATE_COLOR_DEFAULT_YELLOW');break;
+               case '#FFFF66': $color_text = getMessage('DATE_COLOR_LIGHT_YELLOW');break;
+               case '#33CC00': $color_text = getMessage('DATE_COLOR_GREEN');break;
+               case '#00CCCC': $color_text = getMessage('DATE_COLOR_TURQUOISE');break;
+               case '#3366FF': $color_text = getMessage('DATE_COLOR_BLUE');break;
+               case '#6633FF': $color_text = getMessage('DATE_COLOR_DARK_BLUE');break;
+               case '#CC33CC': $color_text = getMessage('DATE_COLOR_PURPLE');break;
+               default: $color_text = getMessage('DATE_COLOR_UNKNOWN');
+            }
+            $html .= ' ' . $color_text . LF;
+            
+            $new_aparams = $this->_environment->getCurrentParameterArray();
+            $new_aparams['selcolor'] = 2;
             $image = '<img src="images/delete_restriction.gif" style="padding-top:3px;" alt="'.$this->_translator->getMessage('ENTRY_DELETE_RESTRICTION').'"/>'.LF;
             $html .= ' '.ahref_curl(  $this->_environment->getCurrentContextID(),
                                        CS_DATE_TYPE,
