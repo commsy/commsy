@@ -1578,6 +1578,23 @@ class cs_privateroom_item extends cs_room_item {
       return $retour;
    }
 
+   function setPortletShowTagBox () {
+      $this->_addExtra('PORTLET_SHOW_TAG','1');
+   }
+   function unsetPortletShowTagBox () {
+      $this->_addExtra('PORTLET_SHOW_TAG','-1');
+   }
+
+   function getPortletShowTagBox () {
+      $retour = false;
+      if ($this->_issetExtra('PORTLET_SHOW_TAG')) {
+         if($this->_getExtra('PORTLET_SHOW_TAG') == '1'){
+            $retour = true;
+         }
+      }
+      return $retour;
+   }
+   
    function setHomeConfig ($column_array) {
       $this->_addExtra('HOME_CONFIG',$column_array);
    }
@@ -1699,6 +1716,12 @@ class cs_privateroom_item extends cs_room_item {
          $this->setPortletShowReleasedEntriesBox();
       } else {
          $this->unsetPortletShowReleasedEntriesBox();
+      }
+      
+      if(in_array('cs_privateroom_home_tag_view', $portlet_array)){
+         $this->setPortletShowTagBox();
+      } else {
+         $this->unsetPortletShowTagBox();
       }
    }
 

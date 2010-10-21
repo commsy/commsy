@@ -300,6 +300,17 @@ if ($current_context->getPortletShowReleasedEntriesBox()){
 }
 /* RELEASED_ENTRIES END */
 
+/* TAG */
+if ($current_context->getPortletShowTagBox()){
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = $current_context->isOpen();
+   $tag_view = $class_factory->getClass(PRIVATEROOM_HOME_TAG_VIEW,$params);
+   unset($params);
+   $portlet_array[] = $tag_view;
+}
+/* TAG END */
+
 $portlet_view->setPortletViewArray($portlet_array);
 
 
