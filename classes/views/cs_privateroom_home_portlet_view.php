@@ -455,7 +455,7 @@ class cs_privateroom_home_portlet_view extends cs_view{
 
       $temp_array = array();
       $temp_array['dropdown_image']  = "new_icon";
-      $temp_array['text']  = $this->_translator->getMessage('COMMON_TAG_PORTLET');
+      $temp_array['text']  = $this->_translator->getMessage('COMMON_TAGS');
       $temp_array['value'] = "cs_privateroom_home_tag_view";
       if($privateroom_item->getPortletShowTagBox()){
          $temp_array['checked']  = "checked";

@@ -1846,6 +1846,8 @@ function portlet_turn_action(preferences, id, portlet){
          turn_portlet_buzzwords(id, portlet);
       } else if (id == 'cs_privateroom_home_note_view'){
          turn_portlet_note(id, portlet);
+      } else if (id == 'cs_privateroom_home_tag_view'){
+         turn_portlet_tag(id, portlet);
       }
    } else {
       if(id == 'cs_privateroom_home_youtube_view'){
@@ -1868,6 +1870,8 @@ function portlet_turn_action(preferences, id, portlet){
          return_portlet_buzzwords(id, portlet);
       } else if (id == 'cs_privateroom_home_note_view'){
          return_portlet_note(id, portlet);
+      } else if (id == 'cs_privateroom_home_tag_view'){
+         return_portlet_tag(id, portlet);
       }
    }
 }
