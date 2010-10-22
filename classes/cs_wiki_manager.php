@@ -2355,8 +2355,8 @@ function getExportToWikiLink($current_item_id){
 
 function getGroupsForWiki($complete){
    global $c_pmwiki_path_file;
-//	$old_dir = getcwd();
-//	chdir($c_pmwiki_path_file . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/wiki.d');
+//   $old_dir = getcwd();
+//   chdir($c_pmwiki_path_file . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/wiki.d');
 //    chdir($old_dir);
 
     $result = array('groups' => array(), 'public' => array());
@@ -2507,7 +2507,14 @@ function getSoapWsdlUrl(){
 }
 
 function getSoapClient(){
-   return new SoapClient($this->getSoapWsdlUrl(), array("trace" => 1, "exceptions" => 0));
+    $options = array("trace" => 1, "exceptions" => 0);
+    if ( $this->_environment->getConfiguration('c_proxy_ip') ) {
+       $options['proxy_host'] = $this->_environment->getConfuguration('c_proxy_ip');
+    }
+    if ( $this->_environment->getConfiguration('c_proxy_port') ) {
+       $options['proxy_port'] = $this->_environment->getConfuguration('c_proxy_port');
+    }
+    return new SoapClient($this->getSoapWsdlUrl(), $options);
 }
 
 function getGroupsForWiki_soap($complete){
@@ -2555,21 +2562,21 @@ function getWikiNavigation(){
 
 function soapCallToWiki(){
    $client = new SoapClient($this->getSoapWsdlUrl(), array("trace" => 1, "exceptions" => 0));
-   //$test = $client->getPage('Main.GroupAttributes');		// - OK - UTF-8 check
-   //$test = $client->getPageSource('Main.HomePage');	// - OK - UTF-8 check
-   //$test = $client->getGroupNames();					// - OK
-   //$test = $client->getPageNames();					// - OK
-   //$test = $client->getPageData();					// - OK
-   //$test = $client->getRevision('Main.HomePage');	// - OK
-   //$test = $client->getMinRevision('Main.HomePage');	// - OK
-   //$test = $client->getRevisions('Main.HomePage');	// - OK
-   //$test = $client->getChanges('Main', '0');			// - OK
-   //$test = $client->getFileStorageMethod();			// - OK
-   //$test = $client->getFileList('Main.HomePage');	// - OK
-   //$test = $client->getFileInfo('Main.HomePage', 'Main.CommSyMaterial131.html');	// - OK
+   //$test = $client->getPage('Main.GroupAttributes');      // - OK - UTF-8 check
+   //$test = $client->getPageSource('Main.HomePage');   // - OK - UTF-8 check
+   //$test = $client->getGroupNames();               // - OK
+   //$test = $client->getPageNames();               // - OK
+   //$test = $client->getPageData();               // - OK
+   //$test = $client->getRevision('Main.HomePage');   // - OK
+   //$test = $client->getMinRevision('Main.HomePage');   // - OK
+   //$test = $client->getRevisions('Main.HomePage');   // - OK
+   //$test = $client->getChanges('Main', '0');         // - OK
+   //$test = $client->getFileStorageMethod();         // - OK
+   //$test = $client->getFileList('Main.HomePage');   // - OK
+   //$test = $client->getFileInfo('Main.HomePage', 'Main.CommSyMaterial131.html');   // - OK
    //$test = $client->getUploadInfo('Main.HomePage', 'Main.CommSyMaterial131.html'); // - check Auth!
-   //$test = $client->getProperties();					// - OK
-   //$test = $client->getVersion();						// - OK
+   //$test = $client->getProperties();               // - OK
+   //$test = $client->getVersion();                  // - OK
 
    #pr($client->__getLastRequestHeaders());
    #pr($client->__getLastResponseHeaders());
