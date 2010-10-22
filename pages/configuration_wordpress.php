@@ -130,26 +130,27 @@ else {
     $item->setWordpressSkin('twentyten');
     $item->setWordpressTitle($item->getTitle());
     $item->setWordpressDescription('');
-
-    // Save item
-    $item->save();
-
+    
     // delete wordpress
     $wordpress_manager = $environment->getWordpressManager();
-    $wordpress_manager->deleteWordpress($item);
+    $wordpress_manager->delete($item);
+
+    $item->setWordpressId(0);
+    // Save item
+    $item->save();
     $form_view->setItemIsSaved();
     $form->setDeletionValues();
     $is_saved = true;
+    redirect($environment->getCurrentContextID(),$environment->getCurrentModule(),'index','');
+
   }
   // Cancel editing
   elseif ( !empty($delete_command) and
   isOption($delete_command, $translator->getMessage('COMMON_CANCEL_BUTTON'))    ) {
-    var_dump('cancel');
-    die;
     redirect($environment->getCurrentContextID(),$environment->getCurrentModule(),$environment->getCurrentFunction(),'');
   }
 
-  // get all availabla skins
+  // get all available skins
   $skin_array = array();
   $wordpress_manager = $environment->getWordpressManager();
   $skin_array = $wordpress_manager->getSkins();

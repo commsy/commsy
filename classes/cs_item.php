@@ -2165,19 +2165,20 @@ function getExternalViewerArray(){
       $this->_addExtra('EXPORT_TO_WORDPRESS', (string)$value);
    }
    function getExportToWordpress() {
+     $exportedId = $this->_getExtra('EXPORT_TO_WORDPRESS');
       return (string) $this->_getExtra('EXPORT_TO_WORDPRESS');
    }
    function isExportToWordpress() {
-      if($this->getExportToWordpress() == '1'){
+      if($this->_issetExtra('EXPORT_TO_WORDPRESS')){
          $wordpress_manager = $this->_environment->getWordpressManager();
-         return $wordpress_manager->existsItemToWordpress($this->getItemID());
+         return $wordpress_manager->existsItemToWordpress($this->_getExtra('EXPORT_TO_WORDPRESS'));
       } else {
          return false;
       }
    }
    function getExportToWordpressLink(){
-      $wiki_manager = $this->_environment->getWordpressManager();
-      return $wiki_manager->getExportToWordpressLink($this->getItemID());
+      $wordpress_manager = $this->_environment->getWordpressManager();
+      return $wordpress_manager->getExportToWordpressLink($this->_getExtra('EXPORT_TO_WORDPRESS'));
    }
    //------------- Wordpressexport -------------
    //------------------------------------------

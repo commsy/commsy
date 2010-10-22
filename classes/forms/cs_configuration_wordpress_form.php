@@ -57,9 +57,9 @@ class cs_configuration_wordpress_form extends cs_rubric_form {
     $this->_item = $this->_environment->getCurrentContextItem();
     $this->_array_info_text = array();
     if(!empty($this->_skin_array)){
-	    foreach($this->_skin_array as $skin){
+	    foreach($this->_skin_array as $name => $skin){
 	      $temp_array = array();
-	      $temp_array['text']  = $skin;
+	      $temp_array['text']  = $name;
 	      $temp_array['value'] = $skin; //hvv
 	      $this->_array_info_text[$skin] = $temp_array;
 	    }
@@ -118,25 +118,25 @@ class cs_configuration_wordpress_form extends cs_rubric_form {
     // comments
     $this->_form->addEmptyline();
     if (!$this->_item->isPortal()){
-      $this->_form->addCheckbox('use_comments',1,'',$this->_translator->getMessage('COMMON_CONFIGURATION_COMMENTS'),$this->_translator->getMessage('COMMON_CONFIGURATION_WORDPRESS_USE_COMMENTS'),$this->_translator->getMessage('COMMON_CONFIGURATION_WORDPRESS_COMMENTS_DESC'),false,false,'','',true,false);
+      $this->_form->addCheckbox('use_comments',1,'',$this->_translator->getMessage('WORDPRESS_CONFIGURATION_COMMENTS'),$this->_translator->getMessage('WORDPRESS_CONFIGURATION_USE_COMMENTS'),$this->_translator->getMessage('WORDPRESS_CONFIGURATION_COMMENTS_DESC'),false,false,'','',true,false);
       $this->_form->combine();
-      $this->_form->addCheckbox('use_comments_moderation',1,'',$this->_translator->getMessage('COMMON_CONFIGURATION_COMMENTS'),$this->_translator->getMessage('COMMON_CONFIGURATION_WORDPRESS_USE_COMMENTS_MODERATION'),$this->_translator->getMessage('COMMON_CONFIGURATION_WORDPRESS_COMMENTS_DESC'),false,false,'','',true,false);
+      $this->_form->addCheckbox('use_comments_moderation',1,'',$this->_translator->getMessage('WORDPRESS_CONFIGURATION_COMMENTS'),$this->_translator->getMessage('WORDPRESS_CONFIGURATION_USE_COMMENTS_MODERATION'),$this->_translator->getMessage('WORDPRESS_CONFIGURATION_WORDPRESS_COMMENTS_DESC'),false,false,'','',true,false);
        
     }
 
-    // plugins
-    $this->_form->addEmptyline();
-    if (!$this->_item->isPortal()){
-      $this->_form->addCheckbox('use_calendar',1,'',$this->_translator->getMessage('COMMON_CONFIGURATION_PLUGIN'),$this->_translator->getMessage('COMMON_CONFIGURATION_PLUGIN_CALENDAR'),$this->_translator->getMessage('COMMON_CONFIGURATION_PLUGIN_DESC'),false,false,'','',true,false);
-      $this->_form->combine();
-      $this->_form->addCheckbox('use_tagcloud',1,'',$this->_translator->getMessage('COMMON_CONFIGURATION_PLUGIN'),$this->_translator->getMessage('COMMON_CONFIGURATION_PLUGIN_TAGCLOUD'),$this->_translator->getMessage('COMMON_CONFIGURATION_PLUGIN_DESC'),false,false,'','',true,false);
-       
-    }
+//    // plugins
+//    $this->_form->addEmptyline();
+//    if (!$this->_item->isPortal()){
+//      $this->_form->addCheckbox('use_calendar',1,'',$this->_translator->getMessage('WORDPRESS_CONFIGURATION_PLUGIN'),$this->_translator->getMessage('WORDPRESS_CONFIGURATION_PLUGIN_CALENDAR'),$this->_translator->getMessage('WORDPRESS_CONFIGURATION_PLUGIN_DESC'),false,false,'','',true,false);
+//      $this->_form->combine();
+//      $this->_form->addCheckbox('use_tagcloud',1,'',$this->_translator->getMessage('WORDPRESS_CONFIGURATION_PLUGIN'),$this->_translator->getMessage('WORDPRESS_CONFIGURATION_PLUGIN_TAGCLOUD'),$this->_translator->getMessage('WORDPRESS_CONFIGURATION_PLUGIN_DESC'),false,false,'','',true,false);
+//
+//    }
 
     $this->_form->addEmptyline();
     if (!$this->_item->isPortal()){
        
-      $this->_form->addCheckbox('wordpresslink',1,'',$this->_translator->getMessage('COMMON_CONFIGURATION_WORDPRESS'),$this->_translator->getMessage('COMMON_CONFIGURATION_WORDPRESS_HOMELINK_VALUE'),$this->_translator->getMessage('COMMON_CONFIGURATION_WORDPRESS_DESC'),false,false,'','',true,false);
+      $this->_form->addCheckbox('wordpresslink',1,'',$this->_translator->getMessage('WORDPRESS_CONFIGURATION_COMMON'),$this->_translator->getMessage('WORDPRESS_CONFIGURATION_SHOW_HOMELINK'),$this->_translator->getMessage('WORDPRESS_CONFIGURATION_COMMON_DESC'),false,false,'','',true,false);
        
        
     }
