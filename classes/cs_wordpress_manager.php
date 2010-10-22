@@ -329,8 +329,10 @@ class cs_wordpress_manager extends cs_manager {
     try {
       $skins = $this->CW->getSkins();
       $skinOptions = array();
-      foreach($skins as $name => $skin) {
-        $skinOptions[$name] = $skin['Template'];
+      if(!empty($skins)){
+         foreach($skins as $name => $skin) {
+           $skinOptions[$name] = $skin['Template'];
+         }
       }
       return $skinOptions;
     } catch (Exception $e) {
