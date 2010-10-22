@@ -2509,10 +2509,10 @@ function getSoapWsdlUrl(){
 function getSoapClient(){
     $options = array("trace" => 1, "exceptions" => 0);
     if ( $this->_environment->getConfiguration('c_proxy_ip') ) {
-       $options['proxy_host'] = $this->_environment->getConfuguration('c_proxy_ip');
+       $options['proxy_host'] = $this->_environment->getConfiguration('c_proxy_ip');
     }
     if ( $this->_environment->getConfiguration('c_proxy_port') ) {
-       $options['proxy_port'] = $this->_environment->getConfuguration('c_proxy_port');
+       $options['proxy_port'] = $this->_environment->getConfiguration('c_proxy_port');
     }
     return new SoapClient($this->getSoapWsdlUrl(), $options);
 }
