@@ -61,6 +61,7 @@ class cs_context_manager extends cs_manager {
    var $_status_limit = NULL;
 
    var $_id_array_limit = NULL;
+   var $_cache_extras = array();
    var $_cache_list = array();
    var $_cache_row = array();
    var $_sql_with_extra = true;
@@ -443,24 +444,47 @@ class cs_context_manager extends cs_manager {
       if ( !empty($item_id)
            and is_numeric($item_id)
          ) {
-         $query = "SELECT extras FROM ".$this->addDatabasePrefix($this->_db_table)." WHERE ".$this->addDatabasePrefix($this->_db_table).".item_id='".encode(AS_DB,$item_id)."'";
-         $result = $this->_db_connector->performQuery($query);
-         unset($query);
-         if ( !isset($result) ) {
-            include_once('functions/error_functions.php');
-            trigger_error('Problems selecting '.$this->_db_table.' item.',E_USER_WARNING);
-         } elseif ( !empty($result[0]) ) {
-            $data_array = $result[0];
-            if ( !empty($data_array['extras']) ) {
-               include_once('functions/text_functions.php');
-               $retour = mb_unserialize($data_array['extras']);
+         if (isset($this->_cache_extras[$item_id])){
+            $retour = mb_unserialize($this->_cache_extras[$item_id]);
+         }else{
+            $query = "SELECT extras FROM ".$this->addDatabasePrefix($this->_db_table)." WHERE ".$this->addDatabasePrefix($this->_db_table).".item_id='".encode(AS_DB,$item_id)."'";
+            $result = $this->_db_connector->performQuery($query);
+            unset($query);
+            if ( !isset($result) ) {
+               include_once('functions/error_functions.php');
+               trigger_error('Problems selecting '.$this->_db_table.' item.',E_USER_WARNING);
+            } elseif ( !empty($result[0]) ) {
+               $data_array = $result[0];
+               if ( !empty($data_array['extras']) ) {
+                  include_once('functions/text_functions.php');
+                  $retour = mb_unserialize($data_array['extras']);
+               }
+               unset($data_array);
+               unset($result);
             }
-            unset($data_array);
-            unset($result);
          }
       }
       return $retour;
    }
+
+   function loadExtrasForContextArrayInCache ($id_array) {
+      $retour = array();
+      $query = "SELECT extras, item_id FROM ".$this->addDatabasePrefix($this->_db_table)." WHERE ";
+      $query .= $this->addDatabasePrefix($this->_db_table).".item_id IN (".implode(', ', $id_array).")";
+      $result = $this->_db_connector->performQuery($query);
+      unset($query);
+      if ( !isset($result) ) {
+         include_once('functions/error_functions.php');
+         trigger_error('Problems selecting '.$this->_db_table.' item.',E_USER_WARNING);
+      } else{
+         foreach($result as $r){
+            $this->_cache_extras[$r['item_id']]=$r['extras'];
+         }
+      }
+
+      return $retour;
+   }
+
 
   /** create a project - internal, do not use -> use method save
     * this method creates a project

@@ -69,6 +69,8 @@ class cs_user_manager extends cs_manager {
 
    var $_room_limit = NULL;
 
+   var $_is_user_in_context_cache = array();
+
 
    /**
     * string - containing a string as a search limit for accounts
@@ -439,6 +441,49 @@ class cs_user_manager extends cs_manager {
       $retour .= ' AND '.$tmp_db_name.'.auth_source IS NULL';
       return $retour;
    }
+
+   function isUserInContext($user_id, $context_id, $auth_source){
+      if (isset($this->_is_user_in_context_cache[$user_id.$auth_source])){
+         if (isset($this->_is_user_in_context_cache[$user_id.$auth_source][$context_id]) and $this->_is_user_in_context_cache[$user_id.$auth_source][$context_id] == 'is_user'){
+            return true;
+         }else{
+         	return false;
+         }
+      }else{
+         $query = 'SELECT DISTINCT '.$this->addDatabasePrefix('user').'.context_id FROM '.$this->addDatabasePrefix('user');
+         $query .= ' WHERE 1 AND user.user_id = "'.$user_id.'" AND user.auth_source = "'.$auth_source.'"';
+         $query .= ' AND user.deleter_id IS NULL AND user.deletion_date IS NULL AND user.status >= "2" ORDER BY user.lastname, user.firstname DESC, user.user_id ASC';
+         if ( isset($this->_cache_sql[$query]) ) {
+            $result = $this->_cache_sql[$query];
+         } else {
+            $result = $this->_db_connector->performQuery($query);
+            if ( !isset($result) ) {
+               include_once('functions/error_functions.php');
+               trigger_error('Problems selecting user.',E_USER_WARNING);
+            } else {
+               if ( $this->_cache_on ) {
+                  $this->_cache_sql[$query] = $result;
+               }
+            }
+          }
+          if (isset($result)){
+             foreach ($result as $r){
+#                pr($r);
+                $this->_is_user_in_context_cache[$user_id.$auth_source][$r['context_id']] = 'is_user';
+             }
+             if (isset($this->_is_user_in_context_cache[$user_id.$auth_source][$context_id]) and $this->_is_user_in_context_cache[$user_id.$auth_source][$context_id] == 'is_user'){
+                return true;
+             }else{
+                return false;
+             }
+          }else{
+          	   return false;
+          }
+      }
+   }
+
+
+
 
    /** INTERNAL: perform database query to get user data
      *
@@ -1192,7 +1237,7 @@ class cs_user_manager extends cs_manager {
 	           // get all grouprooms of this user
 	           $grouproom_manager = $this->_environment->getGroupRoomManager();
 	           $grouproom_list = $grouproom_manager->getUserRelatedGroupListForUser($user_item);
-	           
+
 	           if(!$grouproom_list->isEmpty()) {
 	              $grouproom_ids = array();
 	              $grouproom = $grouproom_list->getFirst();
@@ -1203,27 +1248,27 @@ class cs_user_manager extends cs_manager {
 		                // add grouproom id to array of ids
 		                $grouproom_ids[] = $grouproom->getItemID();
 		             }
-		             
+
 		             $grouproom = $grouproom_list->getNext();
 		          }
-		          
+
 		          // delete related users
 		          if(!empty($grouproom_ids)) {
 		             $user_manager = $this->_environment->getUserManager();
 		             $user_manager->resetLimits();
 		             $user_manager->setContextArrayLimit($grouproom_ids);
-		             $user_manager->setUserIDLimit($user_item->getUserID());   
+		             $user_manager->setUserIDLimit($user_item->getUserID());
 		             $user_manager->setAuthSourceLimit($user_item->getAuthSource());
 		             $user_manager->select();
 		             $user_list = $user_manager->get();
 		             unset($user_manager);
-		             
+
 		             if(!$user_list->isEmpty()) {
 		                $user = $user_list->getFirst();
 		                while($user) {
 		                   // delete user
 		                   $user->delete();
-		                   
+
 		                   $user = $user_list->getNext();
 		                }
 		             }
