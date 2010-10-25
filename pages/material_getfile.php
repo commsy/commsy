@@ -108,6 +108,7 @@ if ( !empty($_GET['iid']) ) {
             #header('Expires: 0');
             #@readfile($file->getDiskFileName());
 
+            // see: http://de.php.net/manual/de/function.readfile.php (25.10.2010)
             $realpath = $file->getDiskFileName();
             $mtime = ($mtime = filemtime($realpath)) ? $mtime : gmtime();
             $size = intval(sprintf("%u", filesize($realpath)));
@@ -123,13 +124,12 @@ if ( !empty($_GET['iid']) ) {
             header('Content-Type: application/octet-stream');
             header('Content-Type: '.$file->getMime());
             if (strstr($_SERVER["HTTP_USER_AGENT"], "MSIE") != false) {
-               header("Content-Disposition: attachment; filename=\"" . urlencode($file->getDisplayName()) . '"; modification-date="' . date('r', $mtime) . '";');
+               header("Content-Disposition: attachment; filename=\"" . urlencode($file->getDisplayName()) . '"; modification-date="' . date('r', $mtime) . '"');
             } else {
-               header("Content-Disposition: attachment; filename=\"" . $file->getDisplayName() . '"; modification-date="' . date('r', $mtime) . '";');
+               header("Content-Disposition: attachment; filename=\"" . $file->getDisplayName() . '"; modification-date="' . date('r', $mtime) . '"');
             }
             // Set the length so the browser can set the download timers
-            // PROBLEMS at downloading PDFs
-            #header("Content-Length: " . (string)$size);
+            header("Content-Length: " . (string)$size);
             // If it's a large file we don't want the script to timeout, so:
             set_time_limit(300);
             // If it's a large file, readfile might not be able to do it in one go, so:
@@ -140,7 +140,6 @@ if ( !empty($_GET['iid']) ) {
                while (!feof($handle)) {
                   $buffer = fread($handle, $chunksize);
                   echo($buffer);
-                  ob_flush();
                   flush();
                }
                fclose($handle);
@@ -156,7 +155,7 @@ if ( !empty($_GET['iid']) ) {
             include_once('functions/error_functions.php');
             trigger_error("material_getfile: File ".$file->getDiskFileName()." does not seem to be on disk
             <br />environment reports context id ".$environment->getCurrentContextID()."
-            <br />file item reports room id ".$file->getContextID()." and context id ".$file->getContextID(), E_USER_ERROR);
+            <br />file item reports room id ".$file->getContextID(), E_USER_ERROR);
          }
          exit();
       } else {
