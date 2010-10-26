@@ -117,14 +117,34 @@ function resetSearchText(id){
 }
 
 function resetSearchTextEntries(id){
-	   if(typeof(reset_search_text_message_entries) !== 'undefined'){
-	      if(jQuery('#' + id).val() == reset_search_text_message_entries){
-	         jQuery('#' + id).val("");
-	      }
-	   } else {
-	      jQuery('#' + id).val("");
-	   }
-	}
+   if(typeof(reset_search_text_message_entries) !== 'undefined'){
+      if(jQuery('#' + id).val() == reset_search_text_message_entries){
+         jQuery('#' + id).val("");
+      }
+   } else {
+      jQuery('#' + id).val("");
+   }
+}
+
+function resetSearchTextMatrixColumn(id){
+   if(typeof(new_column_message) !== 'undefined'){
+      if(jQuery('#' + id).val() == new_column_message){
+         jQuery('#' + id).val("");
+      }
+   } else {
+      jQuery('#' + id).val("");
+   }
+}
+
+function resetSearchTextMatrixRow(id){
+   if(typeof(new_row_message) !== 'undefined'){
+      if(jQuery('#' + id).val() == new_row_message){
+         jQuery('#' + id).val("");
+      }
+   } else {
+      jQuery('#' + id).val("");
+   }
+}
 
 function resetMyListText(id){
    jQuery('#' + id).val("");
