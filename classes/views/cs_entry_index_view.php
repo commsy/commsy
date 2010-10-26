@@ -280,6 +280,7 @@ class cs_entry_index_view extends cs_index_view {
 /*
          $html .= '<a href="#"><img src="images/commsyicons/16x16/new_home.png" id="new_icon_'.$mylist_item->getItemID().'" style="vertical-align:top;" alt=""/></a>';
 */
+/*       
          $image = '<img src="images/commsyicons/16x16/copy.png" style="vertical-align:top;" alt="'.$this->_translator->getMessage('ENTRY_COPY_MYLIST').'"/>'.LF;
          $params['copy_list'] = $mylist_item->getItemID();
          $html .= ahref_curl(  $this->_environment->getCurrentContextID(),
@@ -289,7 +290,7 @@ class cs_entry_index_view extends cs_index_view {
                                        $image,
                                        $this->_translator->getMessage('ENTRY_COPY_MYLIST')).LF;
          unset($params['copy_list']);
-
+*/
          $params['delete_list'] = $mylist_item->getItemID();
          $image = '<img src="images/commsyicons/16x16/delete.png" style="vertical-align:top;" alt="'.$this->_translator->getMessage('ENTRY_DELETE_MYLIST').'"/>'.LF;
          $html .= ahref_curl(  $this->_environment->getCurrentContextID(),
