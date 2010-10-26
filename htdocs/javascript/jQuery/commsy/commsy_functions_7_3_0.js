@@ -1850,8 +1850,8 @@ jQuery(document).ready(function() {
 		    var portlet_columns = jQuery(".column");
 		    for ( var int = 0; int < portlet_columns.length; int++) {
 		    	column_portlets = new Array();
-				//var portlet_column = jQuery(portlet_columns[int]);
-				portlets = jQuery(portlet_columns[int]).children('div');
+				var portlet_column = jQuery(portlet_columns[int]);
+				portlets = portlet_column.children();
 				for ( var int2 = 0; int2 < portlets.length; int2++) {
 					var portlet = jQuery(portlets[int2]);
 					if(window.ajax_function == 'privateroom_home'){
@@ -1867,7 +1867,7 @@ jQuery(document).ready(function() {
 			}
 
 			jQuery.ajax({
-		       url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct=privateroom_home&output=json&do=save_config',
+		       url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct='+window.ajax_function+'&output=json&do=save_config',
 			   data: json_data,
 			   success: function(msg){
 			   }
