@@ -186,15 +186,18 @@ if(isset($_GET['portlet'])){
       
       $text_converter = $environment->getTextConverter();
       $text_html = str_ireplace('COMMSY_BR', "\n\r", $text);
+      $text_html = str_ireplace('COMMSY_DOUBLE_QUOTE', '"', $text_html);
+      $text_html = str_ireplace('COMMSY_SINGLE_QUOTE', "'", $text_html);
       $text_html = $text_converter->text_as_html_long($text_converter->cleanDataFromTextArea($text_html));
       $text_html = str_ireplace("\n\r", '', $text_html);
       $text_html = str_ireplace('"', '\"', $text_html);
+      $text_html = str_ireplace("'", "\'", $text_html);
       
-      if($text != ''){
+      //if($text != ''){
          $privateroom_item->setPortletNoteContent($text);
-      }
+      //}
       $privateroom_item->save();
-           
+      
    	$page->add('content', $text);
    	$page->add('content_html', $text_html);
    }

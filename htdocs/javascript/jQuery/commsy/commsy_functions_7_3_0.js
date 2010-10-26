@@ -2633,66 +2633,68 @@ function turn_portlet_buzzwords(id, portlet){
    //portlet_data['buzzwords_change'] = new Array();
 
    jQuery('#portlet_buzzword_new_button').click(function(){
-      portlet_data['new_buzzword'] = jQuery('#portlet_buzzword_new').val();
-	  var json_data = new Object();
-	  json_data['new_buzzword'] = jQuery('#portlet_buzzword_new').val();
-	  jQuery.ajax({
-	     url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct=privateroom_buzzword_configuration&output=json&do=save_new_buzzword',
-	     data: json_data,
-	     success: function(msg){
-		    portlet_data['buzzwords_save'] = true;
-		    jQuery('#portlet_buzzword_new').val('');
-	        //portlet.revertFlip();
-		    var resultJSON = eval('(' + msg + ')');
-            if (resultJSON === undefined){
-            }else{
-        	   portlet_data['buzzwords_new'].push(new BuzzwordItem(resultJSON['new_buzzword_id'], resultJSON['new_buzzword_name']));
-        	   var insert = false;
-        	   jQuery('#portlet_buzzword_preferences_list').find('div').each(function(){
-               if(jQuery(this).find('.portlet_buzzword_textfield').val().toLowerCase() > resultJSON['new_buzzword_name'].toLowerCase() && !insert){
-                  jQuery(this).before('<div><input type="text" class="portlet_buzzword_textfield" id="portlet_buzzword_'+resultJSON['new_buzzword_id']+'" value="'+resultJSON['new_buzzword_name']+'" size="40">&nbsp;<input type="submit" class="portlet_buzzword_change_button" id="'+resultJSON['new_buzzword_id']+'" value="Ändern">&nbsp;<input type="submit" class="portlet_buzzword_delete_button" id="'+resultJSON['new_buzzword_id']+'" value="Löschen"></div>');
-               	  insert = true;
-               }
-               });
-        	   if(!insert){
-        		  if(jQuery('#portlet_buzzword_preferences_list').find('div').size() == 0){
-        			 jQuery('#portlet_buzzword_preferences_list').append('<div><input type="text" class="portlet_buzzword_textfield" id="portlet_buzzword_'+resultJSON['new_buzzword_id']+'" value="'+resultJSON['new_buzzword_name']+'" size="40">&nbsp;<input type="submit" class="portlet_buzzword_change_button" id="'+resultJSON['new_buzzword_id']+'" value="Ändern">&nbsp;<input type="submit" class="portlet_buzzword_delete_button" id="'+resultJSON['new_buzzword_id']+'" value="Löschen"></div>');
-        		  } else {
-                     jQuery('#portlet_buzzword_preferences_list').find('div').last().after('<div><input type="text" class="portlet_buzzword_textfield" id="portlet_buzzword_'+resultJSON['new_buzzword_id']+'" value="'+resultJSON['new_buzzword_name']+'" size="40">&nbsp;<input type="submit" class="portlet_buzzword_change_button" id="'+resultJSON['new_buzzword_id']+'" value="Ändern">&nbsp;<input type="submit" class="portlet_buzzword_delete_button" id="'+resultJSON['new_buzzword_id']+'" value="Löschen"></div>');
-        		  }
-        	   }
-        	   activate_buzzword_buttons();
-        	   var insert = false;
-        	   jQuery('#portal_buzzword_combine_first').find('option').each(function(){
-            	   if((jQuery(this).html().toLowerCase() > resultJSON['new_buzzword_name'].toLowerCase()) && !insert){
-            		   jQuery(this).before('<option value="'+resultJSON['new_buzzword_id']+'">'+resultJSON['new_buzzword_name']+'</option>');
-            		   insert = true;
-            	   }
-               });
-        	   if(!insert){
-        		   if(jQuery('#portal_buzzword_combine_first').find('option').size() == 0){
-        			   jQuery('#portal_buzzword_combine_first').append('<option value="'+resultJSON['new_buzzword_id']+'">'+resultJSON['new_buzzword_name']+'</option>');
-        		   } else {
-        			   jQuery('#portal_buzzword_combine_first').find('option').last().after('<option value="'+resultJSON['new_buzzword_id']+'">'+resultJSON['new_buzzword_name']+'</option>');
-        		   }
-        	   }
-        	   var insert = false;
-        	   jQuery('#portal_buzzword_combine_second').find('option').each(function(){
-            	   if((jQuery(this).html().toLowerCase() > resultJSON['new_buzzword_name'].toLowerCase()) && !insert){
-            		   jQuery(this).before('<option value="'+resultJSON['new_buzzword_id']+'">'+resultJSON['new_buzzword_name']+'</option>');
-            		   insert = true;
-            	   }
-               });
-        	   if(!insert){
-        		   if(jQuery('#portal_buzzword_combine_second').find('option').size() == 0){
-        			   jQuery('#portal_buzzword_combine_second').append('<option value="'+resultJSON['new_buzzword_id']+'">'+resultJSON['new_buzzword_name']+'</option>');
-        		   } else {
-        			   jQuery('#portal_buzzword_combine_second').find('option').last().after('<option value="'+resultJSON['new_buzzword_id']+'">'+resultJSON['new_buzzword_name']+'</option>');
-        		   }
-        	   }
-            }
-	     }
-	  });
+	  if(jQuery('#portlet_buzzword_new').val() != ''){
+	      portlet_data['new_buzzword'] = jQuery('#portlet_buzzword_new').val();
+		  var json_data = new Object();
+		  json_data['new_buzzword'] = jQuery('#portlet_buzzword_new').val();
+		  jQuery.ajax({
+		     url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct=privateroom_buzzword_configuration&output=json&do=save_new_buzzword',
+		     data: json_data,
+		     success: function(msg){
+			    portlet_data['buzzwords_save'] = true;
+			    jQuery('#portlet_buzzword_new').val('');
+		        //portlet.revertFlip();
+			    var resultJSON = eval('(' + msg + ')');
+	            if (resultJSON === undefined){
+	            }else{
+	        	   portlet_data['buzzwords_new'].push(new BuzzwordItem(resultJSON['new_buzzword_id'], resultJSON['new_buzzword_name']));
+	        	   var insert = false;
+	        	   jQuery('#portlet_buzzword_preferences_list').find('div').each(function(){
+	               if(jQuery(this).find('.portlet_buzzword_textfield').val().toLowerCase() > resultJSON['new_buzzword_name'].toLowerCase() && !insert){
+	                  jQuery(this).before('<div><input type="text" class="portlet_buzzword_textfield" id="portlet_buzzword_'+resultJSON['new_buzzword_id']+'" value="'+resultJSON['new_buzzword_name']+'" size="40">&nbsp;<input type="submit" class="portlet_buzzword_change_button" id="'+resultJSON['new_buzzword_id']+'" value="Ändern">&nbsp;<input type="submit" class="portlet_buzzword_delete_button" id="'+resultJSON['new_buzzword_id']+'" value="Löschen"></div>');
+	               	  insert = true;
+	               }
+	               });
+	        	   if(!insert){
+	        		  if(jQuery('#portlet_buzzword_preferences_list').find('div').size() == 0){
+	        			 jQuery('#portlet_buzzword_preferences_list').append('<div><input type="text" class="portlet_buzzword_textfield" id="portlet_buzzword_'+resultJSON['new_buzzword_id']+'" value="'+resultJSON['new_buzzword_name']+'" size="40">&nbsp;<input type="submit" class="portlet_buzzword_change_button" id="'+resultJSON['new_buzzword_id']+'" value="Ändern">&nbsp;<input type="submit" class="portlet_buzzword_delete_button" id="'+resultJSON['new_buzzword_id']+'" value="Löschen"></div>');
+	        		  } else {
+	                     jQuery('#portlet_buzzword_preferences_list').find('div').last().after('<div><input type="text" class="portlet_buzzword_textfield" id="portlet_buzzword_'+resultJSON['new_buzzword_id']+'" value="'+resultJSON['new_buzzword_name']+'" size="40">&nbsp;<input type="submit" class="portlet_buzzword_change_button" id="'+resultJSON['new_buzzword_id']+'" value="Ändern">&nbsp;<input type="submit" class="portlet_buzzword_delete_button" id="'+resultJSON['new_buzzword_id']+'" value="Löschen"></div>');
+	        		  }
+	        	   }
+	        	   activate_buzzword_buttons();
+	        	   var insert = false;
+	        	   jQuery('#portal_buzzword_combine_first').find('option').each(function(){
+	            	   if((jQuery(this).html().toLowerCase() > resultJSON['new_buzzword_name'].toLowerCase()) && !insert){
+	            		   jQuery(this).before('<option value="'+resultJSON['new_buzzword_id']+'">'+resultJSON['new_buzzword_name']+'</option>');
+	            		   insert = true;
+	            	   }
+	               });
+	        	   if(!insert){
+	        		   if(jQuery('#portal_buzzword_combine_first').find('option').size() == 0){
+	        			   jQuery('#portal_buzzword_combine_first').append('<option value="'+resultJSON['new_buzzword_id']+'">'+resultJSON['new_buzzword_name']+'</option>');
+	        		   } else {
+	        			   jQuery('#portal_buzzword_combine_first').find('option').last().after('<option value="'+resultJSON['new_buzzword_id']+'">'+resultJSON['new_buzzword_name']+'</option>');
+	        		   }
+	        	   }
+	        	   var insert = false;
+	        	   jQuery('#portal_buzzword_combine_second').find('option').each(function(){
+	            	   if((jQuery(this).html().toLowerCase() > resultJSON['new_buzzword_name'].toLowerCase()) && !insert){
+	            		   jQuery(this).before('<option value="'+resultJSON['new_buzzword_id']+'">'+resultJSON['new_buzzword_name']+'</option>');
+	            		   insert = true;
+	            	   }
+	               });
+	        	   if(!insert){
+	        		   if(jQuery('#portal_buzzword_combine_second').find('option').size() == 0){
+	        			   jQuery('#portal_buzzword_combine_second').append('<option value="'+resultJSON['new_buzzword_id']+'">'+resultJSON['new_buzzword_name']+'</option>');
+	        		   } else {
+	        			   jQuery('#portal_buzzword_combine_second').find('option').last().after('<option value="'+resultJSON['new_buzzword_id']+'">'+resultJSON['new_buzzword_name']+'</option>');
+	        		   }
+	        	   }
+	            }
+		     }
+		  });
+	   }
    });
 
    jQuery('#portlet_buzzword_combine_button').click(function(){
