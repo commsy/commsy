@@ -1870,7 +1870,7 @@ jQuery(document).ready(function() {
 		       url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct=privateroom_home&output=json&do=save_config',
 			   data: json_data,
 			   success: function(msg){
-				  
+				  alert(msg);
 			   }
 			});
 		});
