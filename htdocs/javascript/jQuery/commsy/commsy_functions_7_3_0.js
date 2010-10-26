@@ -1855,6 +1855,7 @@ jQuery(document).ready(function() {
 				for ( var int2 = 0; int2 < portlets.length; int2++) {
 					var portlet = jQuery(portlets[int2]);
 					if(window.ajax_function == 'privateroom_home'){
+						alert(portlet.find('.portlet-content').find('div').attr('id'));
 						column_portlets.push(portlet.find('.portlet-content').find('div').attr('id'));
 					} else if (window.ajax_function == 'privateroom_myroom') {
 						column_portlets.push(portlet.find('.portlet-header').attr('id'));
