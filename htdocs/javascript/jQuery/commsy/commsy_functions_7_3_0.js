@@ -1851,6 +1851,7 @@ jQuery(document).ready(function() {
 		    for ( var int = 0; int < portlet_columns.length; int++) {
 		    	column_portlets = new Array();
 				var portlet_column = jQuery(portlet_columns[int]);
+
 				portlets = portlet_column.children();
 				alert(portlets);
 				for ( var int2 = 0; int2 < portlets.length; int2++) {
