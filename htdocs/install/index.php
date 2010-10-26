@@ -805,24 +805,8 @@ $schreibe6 = deleteLastSlash($schreibe6);
 // security key
 $schreibe12 = \"".$sec_key."\";
 
-// include first default commsy settings
-@include_once('etc/commsy/default.php');
-
-// include second special commsy settings
-@include_once('etc/commsy/settings.php');
-
-/** include then special config files **/
-@include_once('etc/commsy/cookie.php');
-@include_once('etc/commsy/etchat.php');
-@include_once('etc/commsy/jsmath.php');
-@include_once('etc/commsy/pmwiki.php');
-@include_once('etc/commsy/swish-e.php');
-@include_once('etc/commsy/ims.php');
-@include_once('etc/commsy/fckeditor.php');
-@include_once('etc/commsy/clamscan.php');
-@include_once('etc/commsy/development.php');
-@include_once('etc/commsy/autosave.php');
-@include_once('etc/commsy/plugin.php');
+// include more commsy settings
+@include_once('config_meta.php');
 ?>";
    $mysqlfile = "../../etc/cs_config.php";
    if (!file_put_contents($mysqlfile,$daten)) {
