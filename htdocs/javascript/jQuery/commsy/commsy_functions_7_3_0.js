@@ -1837,16 +1837,15 @@ jQuery(document).ready(function() {
 	jQuery("[name=portlet_remove]").each(function (i) {
 		var id = jQuery(this).parent().parent().parent().attr('id');
 		jQuery(this).click(function() {
-			alert(1);
 			jQuery('#'+id).remove();
-			alert(2);
+
 			// Haken im DropDown-Menu entfernen!
 			jQuery('[name=portlets]:checked').each(function(){
 		       if(id == jQuery(this).attr('value')){
 			      jQuery(this).attr('checked', false);
 			   }
 			});
-            alert(3);
+
 			var json_data = new Object();
 		    var portlet_columns = jQuery(".column");
 		    for ( var int = 0; int < portlet_columns.length; int++) {
@@ -1866,12 +1865,11 @@ jQuery(document).ready(function() {
 				}
 				json_data['column_'+int] = column_portlets;
 			}
-		    alert(4);
+
 			jQuery.ajax({
 		       url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct=privateroom_home&output=json&do=save_config',
 			   data: json_data,
 			   success: function(msg){
-				  alert(msg);
 			   }
 			});
 		});
