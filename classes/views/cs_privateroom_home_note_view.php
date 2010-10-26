@@ -49,6 +49,8 @@ class cs_privateroom_home_note_view extends cs_view {
       $text_converter = $this->_environment->getTextConverter();
       
       $content = str_ireplace('COMMSY_BR', "\n\r", $room->getPortletNoteContent());
+      $content = str_ireplace('COMMSY_DOUBLE_QUOTE', '"', $content);
+      $content = str_ireplace('COMMSY_SINGLE_QUOTE', "'", $content);
       $content = $text_converter->text_as_html_long($text_converter->cleanDataFromTextArea($content));
       
       $html = '';
@@ -60,8 +62,12 @@ class cs_privateroom_home_note_view extends cs_view {
    
    function getPreferencesAsHTML(){
    	$room = $this->_environment->getCurrentContextItem();
+   	
+   	$content = str_ireplace('COMMSY_DOUBLE_QUOTE', '"', $room->getPortletNoteContent());
+      $content = str_ireplace('COMMSY_SINGLE_QUOTE', "'", $content);
+      
       $html = '';
-      $html .= '<textarea rows="10" style="width:99%;" id="portlet_note_content">'.$room->getPortletNoteContent().'</textarea><br/><br/>'.LF;
+      $html .= '<textarea rows="10" style="width:99%;" id="portlet_note_content">'.$content.'</textarea><br/><br/>'.LF;
       $html .= '<input type="submit" id="portlet_note_save_button" value="'.$this->_translator->getMessage('COMMON_SAVE_BUTTON').'">'.LF;
       return $html;
    }

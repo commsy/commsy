@@ -2371,9 +2371,11 @@ function turn_portlet_note(id, portlet){
 	  jQuery('#portlet_note_content').html(jQuery('#portlet_note_content').html().replace(/COMMSY_BR/g, '\n'));
    }
    jQuery('#portlet_note_save_button').click(function(){
-	  if(jQuery('#portlet_note_content').val() != ''){
+	  //if(jQuery('#portlet_note_content').val() != ''){
          var json_data = new Object();
          var content = jQuery('#portlet_note_content').val().replace(/(\r\n)|(\r)|(\n)/g, 'COMMSY_BR');
+         content = content.replace(/["]/g, 'COMMSY_DOUBLE_QUOTE');
+         content = content.replace(/[']/g, 'COMMSY_SINGLE_QUOTE');
     	 json_data['portlet_note_content'] = content;
     	 portlet_data['note_content'] = content;
     	 jQuery.ajax({
@@ -2385,11 +2387,14 @@ function turn_portlet_note(id, portlet){
                }else{
     		      portlet_data['note_content_html'] = resultJSON['content_html'];
     		      portlet_data['note_content'] = resultJSON['content'].replace(/COMMSY_BR/g, '\n');
+    		      portlet_data['note_content'] = portlet_data['note_content'].replace(/COMMSY_DOUBLE_QUOTE/g, '"');
+    		      portlet_data['note_content'] = portlet_data['note_content'].replace(/COMMSY_SINGLE_QUOTE/g, "'");
     	          portlet_data['note_save'] = true;
+    	          portlet.revertFlip();
                }
     	    }
     	 });
-	  }
+	  //}
    });
 }
 
