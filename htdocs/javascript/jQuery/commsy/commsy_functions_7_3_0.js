@@ -1841,9 +1841,9 @@ jQuery(document).ready(function() {
 
 			// Haken im DropDown-Menu entfernen!
 			jQuery('[name=portlets]:checked').each(function(){
-				if(id == jQuery(this).attr('value')){
-					jQuery(this).attr('checked', false);
-				}
+		       if(id == jQuery(this).attr('value')){
+			      jQuery(this).attr('checked', false);
+			   }
 			});
 
 			var json_data = new Object();
@@ -1867,9 +1867,10 @@ jQuery(document).ready(function() {
 			}
 
 			jQuery.ajax({
-		       url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct='+window.ajax_function+'&output=json&do=save_config',
+		       url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct=privateroom_home&output=json&do=save_config',
 			   data: json_data,
 			   success: function(msg){
+				  
 			   }
 			});
 		});
