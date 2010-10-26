@@ -1493,9 +1493,7 @@ class cs_user_item extends cs_item {
                $room_id = $user_item->getContextID();
                $room_manager = $this->_environment->getRoomManager();
                $room_item = $room_manager->getItem($room_id);
-               $room_item->unsetContactPerson($old_fullname);
-               $room_item->setContactPerson($user_item->getFullName());
-               $room_item->save();
+               $room_item->renewContactPersonString();
             }
 
             $user_item = $related_user->getNext();
@@ -1720,18 +1718,18 @@ class cs_user_item extends cs_item {
    }
 
    function deleteAllEntriesOfUser(){
-   	  $announcement_manager = $this->_environment->getAnnouncementManager();
-   	  $dates_manager = $this->_environment->getDatesManager();
-   	  $discussion_manager = $this->_environment->getDiscussionManager();
-   	  $discarticle_manager = $this->_environment->getDiscussionarticleManager();
-   	  $material_manager = $this->_environment->getMaterialManager();
-   	  $section_manager = $this->_environment->getSectionManager();
-   	  $annotation_manager = $this->_environment->getAnnotationManager();
-   	  $label_manager = $this->_environment->getLabelManager();
-   	  $tag_manager = $this->_environment->getTagManager();
-   	  $todo_manager = $this->_environment->getToDoManager();
-      
-   	  // replace users entries with the standart message for deleted entries
+        $announcement_manager = $this->_environment->getAnnouncementManager();
+        $dates_manager = $this->_environment->getDatesManager();
+        $discussion_manager = $this->_environment->getDiscussionManager();
+        $discarticle_manager = $this->_environment->getDiscussionarticleManager();
+        $material_manager = $this->_environment->getMaterialManager();
+        $section_manager = $this->_environment->getSectionManager();
+        $annotation_manager = $this->_environment->getAnnotationManager();
+        $label_manager = $this->_environment->getLabelManager();
+        $tag_manager = $this->_environment->getTagManager();
+        $todo_manager = $this->_environment->getToDoManager();
+
+        // replace users entries with the standart message for deleted entries
       $announcement_manager->deleteAnnouncementsofUser($this->getItemID());
       $dates_manager->deleteDatesOfUser($this->getItemID());
       $discussion_manager->deleteDiscussionsOfUser($this->getItemID());

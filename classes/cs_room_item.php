@@ -200,48 +200,6 @@ class cs_room_item extends cs_context_item {
       return $retour;
    }
 
-//   function setContactPerson ($fullname) {
-//      if ( !empty($fullname) ) {
-//         $value = '';
-//         if ($this->_issetExtra('CONTACT_PERSONS')) {
-//            $value = $this->_getExtra('CONTACT_PERSONS');
-//         }
-//         if(!mb_stristr($value,$fullname)){
-//            $value .= $fullname.', ';
-//            $this->_setExtra('CONTACT_PERSONS',$value);
-//         }
-//      }
-//   }
-//
-//   function getContactPersonString () {
-//      $return = '';
-//      if ($this->_issetExtra('CONTACT_PERSONS')) {
-//         $return = $this->_getExtra('CONTACT_PERSONS');
-//      }
-//      if(mb_strlen($return)>2 and mb_strstr($return,', ')){
-//         $return = mb_substr($return,0,(mb_strlen($return)-2));
-//      }
-//      return $return;
-//   }
-//
-//
-//   function unsetContactPerson ($fullname) {
-//      if ( !empty($fullname) ) {
-//         $value = '';
-//         if ($this->_issetExtra('CONTACT_PERSONS')) {
-//            $value = $this->_getExtra('CONTACT_PERSONS');
-//         }
-//         if(mb_stristr($value,$fullname.', ')){
-//            $value = str_replace($fullname.', ','',$value);
-//         }
-//         $this->_setExtra('CONTACT_PERSONS',$value);
-//      }
-//   }
-//
-//   public function emptyContactPersonString () {
-//      $this->_unsetExtra('CONTACT_PERSONS');
-//   }
-
    function setContactPerson ($fullname) {
       if ( !empty($fullname) ) {
          $value = '';
@@ -263,18 +221,6 @@ class cs_room_item extends cs_context_item {
          $return = mb_substr($return,0,(mb_strlen($return)-1));
       }
       return $return;
-   }
-
-
-   function unsetContactPerson ($fullname) {
-      if ( !empty($fullname) ) {
-         $value = '';
-         $value = $this->_getValue('contact_persons');
-         if(mb_stristr($value,$fullname.', ')){
-            $value = str_replace($fullname.', ','',$value);
-         }
-         $this->_setValue('contact_persons',$value);
-      }
    }
 
    public function emptyContactPersonString () {
