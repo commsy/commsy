@@ -1096,9 +1096,9 @@ jQuery(document).ready(function() {
 				    var json_data = new Object();
 				    var portlet_columns = jQuery(".column");
 				    for ( var int = 0; int < portlet_columns.length; int++) {
-				    	column_portlets = new Array();
+				    	var column_portlets = new Array();
 						var portlet_column = jQuery(portlet_columns[int]);
-						portlets = portlet_column.children();
+						var portlets = portlet_column.children();
 						for ( var int2 = 0; int2 < portlets.length; int2++) {
 							var portlet = jQuery(portlets[int2]);
 							if(window.ajax_function == 'privateroom_home'){
@@ -1163,9 +1163,9 @@ jQuery(document).ready(function() {
 			var json_data = new Object();
 		    var portlet_columns = jQuery(".column");
 		    for ( var int = 0; int < portlet_columns.length; int++) {
-		    	column_portlets = new Array();
+		    	var column_portlets = new Array();
 				var portlet_column = jQuery(portlet_columns[int]);
-				portlets = portlet_column.children();
+				var portlets = portlet_column.children();
 				for ( var int2 = 0; int2 < portlets.length; int2++) {
 					var portlet = jQuery(portlets[int2]);
 					if(window.ajax_function == 'privateroom_home'){
@@ -1849,11 +1849,9 @@ jQuery(document).ready(function() {
 			var json_data = new Object();
 		    var portlet_columns = jQuery(".column");
 		    for ( var int = 0; int < portlet_columns.length; int++) {
-		    	column_portlets = new Array();
+		    	var column_portlets = new Array();
 				var portlet_column = jQuery(portlet_columns[int]);
-
 				var portlets = portlet_column.children();
-				//alert(portlets);
 				for ( var int2 = 0; int2 < portlets.length; int2++) {
 					var portlet = jQuery(portlets[int2]);
 					if(window.ajax_function == 'privateroom_home'){
@@ -3074,9 +3072,9 @@ jQuery(document).ready(function() {
 			var json_data = new Object();
 		    var portlet_columns = jQuery(".column");
 		    for ( var int = 0; int < portlet_columns.length; int++) {
-		    	column_portlets = new Array();
+		    	var column_portlets = new Array();
 				var portlet_column = jQuery(portlet_columns[int]);
-				portlets = portlet_column.children();
+				var portlets = portlet_column.children();
 				for ( var int2 = 0; int2 < portlets.length; int2++) {
 					var portlet = jQuery(portlets[int2]);
 					//if(window.ajax_function == 'privateroom_home'){
@@ -3554,9 +3552,9 @@ jQuery(document).ready(function() {
 			var json_data = new Object();
 		    var portlet_columns = jQuery(".column");
 		    for ( var int = 0; int < portlet_columns.length; int++) {
-		    	column_portlets = new Array();
+		    	var column_portlets = new Array();
 				var portlet_column = jQuery(portlet_columns[int]);
-				portlets = portlet_column.children();
+				var portlets = portlet_column.children();
 				for ( var int2 = 0; int2 < portlets.length; int2++) {
 					var portlet = jQuery(portlets[int2]);
 					column_portlets.push(portlet.find('.portlet-header').attr('id'));
