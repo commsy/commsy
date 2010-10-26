@@ -917,7 +917,7 @@ class cs_entry_index_view extends cs_index_view {
 
       // Preferences content
       $html .= '<div class="portlet" style="display:none;" id="my_matrix_box_preferences">'.LF;
-      $html .= '<div class="portlet-header">'.$this->_translator->getMessage('PRIVATEROOM_MY_ENTRIES_MATRIX_BOX').' - Einstellungen</div>'.LF;
+      $html .= '<div class="portlet-header">'.$this->_translator->getMessage('PRIVATEROOM_MY_ENTRIES_MATRIX_BOX').' - '.$this->_translator->getMessage('COMMON_CONFIGURATION').'</div>'.LF;
       $html .= '<div class="portlet-content">'.LF;
 
       // form
@@ -1024,7 +1024,7 @@ class cs_entry_index_view extends cs_index_view {
 
       // Preferences content
       $html .= '<div class="portlet" style="display:none;" id="my_tag_box_preferences">'.LF;
-      $html .= '<div class="portlet-header">'.$this->_translator->getMessage('PRIVATEROOM_MY_ENTRIES_TAG_BOX').' - Einstellungen</div>'.LF;
+      $html .= '<div class="portlet-header">'.$this->_translator->getMessage('PRIVATEROOM_MY_ENTRIES_TAG_BOX').' - '.$this->_translator->getMessage('COMMON_CONFIGURATION').'</div>'.LF;
       $html .= '<div class="portlet-content">'.LF;
 
       // form
@@ -1274,7 +1274,7 @@ class cs_entry_index_view extends cs_index_view {
 
       // Preferences content
       $html .= '<div class="portlet" style="display:none;" id="my_buzzword_box_preferences">'.LF;
-      $html .= '<div class="portlet-header">'.$this->_translator->getMessage('PRIVATEROOM_MY_ENTRIES_BUZZWORD_BOX').' - Einstellungen</div>'.LF;
+      $html .= '<div class="portlet-header">'.$this->_translator->getMessage('PRIVATEROOM_MY_ENTRIES_BUZZWORD_BOX').' - '.$this->_translator->getMessage('COMMON_CONFIGURATION').'</div>'.LF;
       $html .= '<div class="portlet-content">'.LF;
 
       // form

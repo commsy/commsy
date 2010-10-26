@@ -47,8 +47,8 @@ var  $_config_boxes = false;
    function asHTML () {
      $current_context = $this->_environment->getCurrentContextItem();
      $html  = '';
-     $html .='<div id="'.get_class($this).'">'.LF;
-     
+     $html .= '<div id="'.get_class($this).'">'.LF;
+     $html .= '<table>'.LF;
      if (( $current_context->showWikiLink() and $current_context->existWiki() and $current_context->issetWikiHomeLink() ) or ( $current_context->showChatLink() )){
         if ( $current_context->showWikiLink() and $current_context->existWiki() and $current_context->issetWikiHomeLink() ) {
            global $c_pmwiki_path_url;
@@ -64,40 +64,10 @@ var  $_config_boxes = false;
               $url_session_id = '?commsy_session_id='.$session_item->getSessionID();
               unset($session_item);
            }
-           $html .= ' '.'<a title="'.$title.'" href="'.$c_pmwiki_path_url.'/wikis/'.$current_context->getContextID().'/'.$current_context->getItemID().'/'.$url_session_id.'" target="_blank">'.$image.'</a>'.LF;
-        }
-        if ( $current_context->showChatLink() ) {
-           global $c_etchat_enable;
-           if ( !empty($c_etchat_enable)
-                and $c_etchat_enable
-              ) {
-              $current_user = $this->_environment->getCurrentUserItem();
-              if ( isset($current_user) and $current_user->isReallyGuest() ) {
-                 if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-                    $image = '<img src="images/commsyicons_msie6/22x22/etchat.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('CHAT_CHAT').'" title="'.$this->_translator->getMessage('CHAT_CHAT').'"/>';
-                 } else {
-                    $image = '<img src="images/commsyicons/22x22/etchat.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('CHAT_CHAT').'" title="'.$this->_translator->getMessage('CHAT_CHAT').'"/>';
-                 }
-                 $html .= ' '.$image;
-                 // TBD: icon ausgrauen
-              } else {
-                 if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-                    $image = '<img src="images/commsyicons_msie6/etchat_home.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('CHAT_CHAT').'" title="'.$this->_translator->getMessage('CHAT_CHAT').'"/>';
-                 } else {
-                    $image = '<img src="images/etchat_home.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('CHAT_CHAT').'" title="'.$this->_translator->getMessage('CHAT_CHAT').'"/>';
-                 }
-                 $html .=  ' '.ahref_curl($this->_environment->getCurrentContextID(),
-                                     'context',
-                                     'forward',
-                                     array('tool' => 'etchat'),
-                                     $image,
-                                     '',
-                                     'chat',
-                                     '',
-                                     '',
-                                     'onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=yes, width=970, height=600\');"').LF;
-              }
-           }
+           $html .= '<tr>'.LF;
+           $html .= '<td>'.'<a title="'.$title.'" href="'.$c_pmwiki_path_url.'/wikis/'.$current_context->getContextID().'/'.$current_context->getItemID().'/'.$url_session_id.'" target="_blank">'.$image.'</a></td>'.LF;
+           $html .= '<td>(<a href="http://localhost/commsy/htdocs/commsy.php?cid='.$current_context->getItemID().'&mod=configuration&fct=wiki">'.$this->_translator->getMessage('COMMON_CONFIGURATION').'</a>)</td>'.LF;
+           $html .= '</tr>'.LF;
         }
       }
 
@@ -117,17 +87,21 @@ var  $_config_boxes = false;
                $url_session_id = '?commsy_session_id='.$session_item->getSessionID();
                unset($session_item);
             }
-            $html .= ' '.'<a title="'.$title.'" href="'.$c_wordpress_path_url.'/'.$current_context->getContextID().'_'.$current_context->getItemID().'/'.$url_session_id.'" target="_blank">'.$image.'</a>'.LF;
+            $html .= '<tr>'.LF;
+            $html .= '<td>'.'<a title="'.$title.'" href="'.$c_wordpress_path_url.'/'.$current_context->getContextID().'_'.$current_context->getItemID().'/'.$url_session_id.'" target="_blank">'.$image.'</a></td>'.LF;
+            $html .= '<td>(<a href="http://localhost/commsy/htdocs/commsy.php?cid='.$current_context->getItemID().'&mod=configuration&fct=wordpress">'.$this->_translator->getMessage('COMMON_CONFIGURATION').'</a>)</td>';
+            $html .= '</tr>'.LF;
          }
       }
+      $html .= '</table>'.LF;
      
      $html .= '</div>';
      return $html;
    }
    
-   function getPreferencesAsHTML(){
-      $html = '&nbsp;';
-      return $html;
-   }
+   #function getPreferencesAsHTML(){
+   #   $html = '&nbsp;';
+   #   return $html;
+   #}
 }
 ?>
