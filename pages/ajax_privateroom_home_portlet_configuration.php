@@ -39,9 +39,9 @@ if(isset($_GET['portlet'])){
 			}
 		}
 
-		if($channel != ''){
+		#if($channel != ''){
 			$privateroom_item->setPortletYouTubeAccount($channel);
-		}
+		#}
       $privateroom_item->save();
 	} elseif($_GET['portlet'] == 'flickr'){
 		$privateroom_item = $environment->getCurrentContextItem();

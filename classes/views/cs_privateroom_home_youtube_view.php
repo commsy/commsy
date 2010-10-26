@@ -84,8 +84,12 @@ var $_channel_id = '';
    }
 
    function asHTML () {
-     $html  = '<div id="'.get_class($this).'" name="youtube_message" style="margin-top:0px; margin-bottom:5px;">'.$this->_translator->getMessage('PORTLET_YOUTUBE_CHANNEL_ID',$this->_channel_id).'</div>'.LF;
-     //$html .= '<div id="youtubevideos_'.$this->_channel_id.'"></div>'.LF;
+     if($this->_channel_id != ''){
+        $channel = $this->_channel_id;
+     } else {
+     	  $channel = ' ... ';
+     }
+     $html  = '<div id="'.get_class($this).'" name="youtube_message" style="margin-top:0px; margin-bottom:5px;">'.$this->_translator->getMessage('PORTLET_YOUTUBE_CHANNEL_ID',$channel).'</div>'.LF;
      $html .= '<div id="youtubevideos_portlet"></div>'.LF;
      return $html;
    }

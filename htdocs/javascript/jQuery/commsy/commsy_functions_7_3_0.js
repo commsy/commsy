@@ -1974,7 +1974,11 @@ function turn_portlet_youtube(id, portlet){
 function return_portlet_youtube(id, portlet){
    if(portlet_data['youtube_save']){
 	  if(typeof(youtube_message) !== 'undefined'){
-		  var message = youtube_message.replace('TEMP_CHANNEL', portlet_data['youtube_channel']);
+		  if(portlet_data['youtube_channel'] != ''){
+			  var message = youtube_message.replace('TEMP_CHANNEL', portlet_data['youtube_channel']);
+		  } else {
+			  var message = youtube_message.replace('TEMP_CHANNEL', ' ... ');
+		  }
 		  jQuery('[name="youtube_message"]').html(message);
 	  }
 
