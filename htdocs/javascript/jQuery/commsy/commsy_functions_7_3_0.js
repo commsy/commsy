@@ -1852,6 +1852,7 @@ jQuery(document).ready(function() {
 		    	column_portlets = new Array();
 				var portlet_column = jQuery(portlet_columns[int]);
 				portlets = portlet_column.children();
+				alert(portlets);
 				for ( var int2 = 0; int2 < portlets.length; int2++) {
 					var portlet = jQuery(portlets[int2]);
 					if(window.ajax_function == 'privateroom_home'){
