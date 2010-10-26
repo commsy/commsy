@@ -1,13 +1,4 @@
 <?php
 $message["WORDPRESS_CONFIGURATION_DESC"]["en"] = "Blog settings";
 $message["WORDPRESS_CONFIGURATION_LINK"]["en"] = "Workspace Blog";
-$message["WORDPRESS_CONFIGURATION_COMMENTS"]["de"] = "Comments";
-$message["WORDPRESS_CONFIGURATION_COMMENTS_DESC"]["de"] = "Settings for User Comments";
-$message["WORDPRESS_CONFIGURATION_USE_COMMENTS"]["de"] = "Allow Comments";
-$message["WORDPRESS_CONFIGURATION_USE_COMMENTS_DESC"]["de"] = "Enable Comments on Blog Posts";
-$message["WORDPRESS_CONFIGURATION_USE_COMMENTS_MODERATION"]["de"] = "Moderate Comments";
-$message["WORDPRESS_CONFIGURATION_COMMON"]["de"] = "Blog Settings";
-$message["WORDPRESS_CONFIGURATION_COMMON_DESC"]["de"] = "Common Options";
-$message["WORDPRESS_CONFIGURATION_SHOW_HOMELINK"]["de"] = "Show Link to Blog in Workspace";
-$message["WORDPRESS_DELETE_BUTTON"]["de"] = "delete Blog";
 ?>

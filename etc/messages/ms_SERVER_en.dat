@@ -36,8 +36,48 @@ $message["SERVER_STATISTIC_CHOICE_ROOM_USED"]["en"] = "used workspaces";
 $message["SERVER_STATISTIC_CHOICE_YEAR"]["en"] = "Year";
 $message["SERVER_STATISTIC_COMMUNITYROOM"]["en"] = "%_COMMUNITY_SUB_NOMS_BIG";
 $message["SERVER_STATISTIC_LEGEND"]["en"] = "<h3>Legend</h3>
+<span style=&quot;font-weight:bold;&quot;>rooms</span>
 
-coming soon";
+<ul>
+
+<li><span style=&quot;font-weight:bold;&quot;>all</span> = all rooms</li>
+
+<li><span style=&quot;font-weight:bold;&quot;>used</span> = one person has loggind in within the period</li>
+
+<li><span style=&quot;font-weight:bold;&quot;>active</span> = more the 10 items new or changed within the period</li>
+
+</ul>
+<ul>
+
+<li><span style=&quot;font-weight:bold;&quot;>cr</span> = community room / workspace</li>
+
+<li><span style=&quot;font-weight:bold;&quot;>pr</span> = project room / workspace</li>
+
+<li><span style=&quot;font-weight:bold;&quot;>gr</span> = group room / workspace</li>
+
+</ul>
+
+<span style=&quot;font-weight:bold;&quot;>User (email addresses)</span><br />
+
+<br />
+
+User will be distinct by their email addresses.<br />
+
+<ul>
+
+<li><span style=&quot;font-weight:bold;&quot;>active</span> = has logged in within the period</li>
+
+<li><span style=&quot;font-weight:bold;&quot;>open</span> = User with open (not locked) accounts</li>
+
+<li><span style=&quot;font-weight:bold;&quot;>all</span> = all registered accounts</li>
+
+</ul>
+
+<span style=&quot;font-weight:bold;&quot;>Attention</span><br />
+
+<br />
+
+CommSy stored only the last login per user. So if the period is go to far in the past, the result is inexact.";
 $message["SERVER_STATISTIC_LINK"]["en"] = "Server statistics";
 $message["SERVER_STATISTIC_LINK_DESC"]["en"] = "Statistical information on workspaces and users.";
 $message["SERVER_STATISTIC_NAME"]["en"] = "Name";

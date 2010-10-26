@@ -38,21 +38,25 @@ $message["SERVER_STATISTIC_CHOICE_ROOM_NONE"]["de"] = "keine Räume";
 $message["SERVER_STATISTIC_CHOICE_ROOM_USED"]["de"] = "benutzte Räume";
 $message["SERVER_STATISTIC_CHOICE_YEAR"]["de"] = "Jahr";
 $message["SERVER_STATISTIC_COMMUNITYROOM"]["de"] = "%_COMMUNITY_SUB_NOMS_BIG";
-$message["SERVER_STATISTIC_LEGEND"]["de"] = "<h3>Legende</h3><span style=&quot;font-weight:bold;&quot;>Räume</span><br />
+$message["SERVER_STATISTIC_LEGEND"]["de"] = "<h3>Legende</h3>
+<span style=&quot;font-weight:bold;&quot;>Räume</span>
 
 <ul>
 
-<li><span style=&quot;font-weight:bold;&quot;>offen</span> bedeutet, dass der Raum nicht archivert ist</li>
+<li><span style=&quot;font-weight:bold;&quot;>alle</span> bezeichnet alle Räume</li>
 
-<li><span style=&quot;font-weight:bold;&quot;>benutzt (offen)</span> bedeutet, dass mindestens einmal sich jemand in dem offenen Raum innerhalb des Zeitraumes aufgehalten hat</li>
+<li><span style=&quot;font-weight:bold;&quot;>benutzt</span> bedeutet, dass mindestens einmal sich jemand in dem Raum (ob offen oder archiviert) innerhalb des Zeitraumes aufgehalten hat</li>
 
-<li><span style=&quot;font-weight:bold;&quot;>aktive</span> bedeutet, dass innerhalb des Zeitraums 10 oder mehr Einträge gemacht oder verändert wurden</li>
+<li><span style=&quot;font-weight:bold;&quot;>aktiv</span> bedeutet, dass innerhalb des Zeitraums 10 oder mehr Einträge gemacht oder verändert wurden</li>
 
-<li><span style=&quot;font-weight:bold;&quot;>archiviert</span> deutet, dass der Raum archiviert ist</li>
+</ul>
+<ul>
 
-<li><span style=&quot;font-weight:bold;&quot;>benutzt (archiviert)</span> bedeutet, dass mindestens einmal sich jemand in dem archivierten Raum innerhalb des Zeitraumes aufgehalten hat</li>
+<li><span style=&quot;font-weight:bold;&quot;>cr</span> = Gemeinschaftsraum (community room)</li>
 
-<li>unter <span style=&quot;font-weight:bold;&quot;>alle</span> sind alle jemals initierten Räume zu finden</li>
+<li><span style=&quot;font-weight:bold;&quot;>pr</span> = Projektraum</li>
+
+<li><span style=&quot;font-weight:bold;&quot;>gr</span> = Gruppenraum</li>
 
 </ul>
 
@@ -60,7 +64,7 @@ $message["SERVER_STATISTIC_LEGEND"]["de"] = "<h3>Legende</h3><span style=&quot;f
 
 <br />
 
-Nutzenden werden anhand verschiedenen E-Mail-Adressen identifiziert.<br />
+Nutzenden werden anhand verschiedenen E-Mail-Adressen pro Portal identifiziert.<br />
 
 <ul>
 
