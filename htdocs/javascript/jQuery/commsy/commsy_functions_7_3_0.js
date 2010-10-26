@@ -116,6 +116,16 @@ function resetSearchText(id){
    }
 }
 
+function resetSearchTextEntries(id){
+	   if(typeof(reset_search_text_message_entries) !== 'undefined'){
+	      if(jQuery('#' + id).val() == reset_search_text_message_entries){
+	         jQuery('#' + id).val("");
+	      }
+	   } else {
+	      jQuery('#' + id).val("");
+	   }
+	}
+
 function resetMyListText(id){
    jQuery('#' + id).val("");
 }
