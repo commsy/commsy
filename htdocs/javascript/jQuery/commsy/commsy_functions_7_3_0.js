@@ -26,7 +26,7 @@ jQuery(document).ready(function() {
       jQuery(".droppable_list").droppable({
 			hoverClass: 'droppable_item_hover',
 			drop: function(event, ui) {
-				 var $_GET = getQueryParams(document.location.search);
+				 //var $_GET = getQueryParams(document.location.search);
 				 var json_data = new Object();
 			    json_data['action'] = 'add_item';
 			    var mylistId = this.id.replace(/[^0-9]/g,'');
@@ -34,7 +34,7 @@ jQuery(document).ready(function() {
 			    json_data['mylist_id'] = mylistId;
 			    json_data['item_id'] = itemId;
 			    jQuery.ajax({
-				   url: 'commsy.php?cid='+$_GET["cid"]+'&mod=ajax&fct=privateroom_entry&output=json&do=update_mylist',
+				   url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct=privateroom_entry&output=json&do=update_mylist',
 				   data: json_data,
 				   success: function(msg){
 			    	   var resultJSON = eval('(' + msg + ')');
@@ -56,7 +56,7 @@ jQuery(document).ready(function() {
       jQuery(".droppable_buzzword").droppable({
 			hoverClass: 'droppable_item_hover',
 			drop: function(event, ui) {
-				 var $_GET = getQueryParams(document.location.search);
+				 //var $_GET = getQueryParams(document.location.search);
 				 var json_data = new Object();
 			    json_data['action'] = 'add_item';
 			    var buzzwordId = this.id.replace(/[^0-9]/g,'');
@@ -64,7 +64,7 @@ jQuery(document).ready(function() {
 			    json_data['buzzword_id'] = buzzwordId;
 			    json_data['item_id'] = itemId;
 			    jQuery.ajax({
-				   url: 'commsy.php?cid='+$_GET["cid"]+'&mod=ajax&fct=privateroom_entry&output=json&do=update_buzzwords',
+				   url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct=privateroom_entry&output=json&do=update_buzzwords',
 				   data: json_data,
 				   success: function(msg){
 			    	   var resultJSON = eval('(' + msg + ')');
@@ -2805,7 +2805,7 @@ function return_portlet_buzzwords(id, portlet){
 	  jQuery(".droppable_buzzword").droppable({
 		 hoverClass: 'droppable_item_hover',
 		 drop: function(event, ui) {
-			var $_GET = getQueryParams(document.location.search);
+			//var $_GET = getQueryParams(document.location.search);
 			var json_data = new Object();
 		    json_data['action'] = 'add_item';
 		    var buzzwordId = this.id.replace(/[^0-9]/g,'');
@@ -2813,7 +2813,7 @@ function return_portlet_buzzwords(id, portlet){
 		    json_data['buzzword_id'] = buzzwordId;
 		    json_data['item_id'] = itemId;
 		    jQuery.ajax({
-			   url: 'commsy.php?cid='+$_GET["cid"]+'&mod=ajax&fct=privateroom_entry&output=json&do=update_buzzwords',
+			   url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct=privateroom_entry&output=json&do=update_buzzwords',
 			   data: json_data,
 			   success: function(msg){
 		    	   var resultJSON = eval('(' + msg + ')');
