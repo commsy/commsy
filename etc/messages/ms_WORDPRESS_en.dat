@@ -1,13 +1,13 @@
 <?php
-$message["WORDPRESS_CONFIGURATION_DESC"]["en"] = "Blog settings";
-$message["WORDPRESS_CONFIGURATION_LINK"]["en"] = "Workspace Blog";
 $message["WORDPRESS_CONFIGURATION_COMMENTS"]["en"] = "Comments";
 $message["WORDPRESS_CONFIGURATION_COMMENTS_DESC"]["en"] = "Settings for User Comments";
+$message["WORDPRESS_CONFIGURATION_COMMON"]["en"] = "Blog Settings";
+$message["WORDPRESS_CONFIGURATION_COMMON_DESC"]["en"] = "Common Options";
+$message["WORDPRESS_CONFIGURATION_DESC"]["en"] = "Blog settings";
+$message["WORDPRESS_CONFIGURATION_LINK"]["en"] = "Workspace Blog";
+$message["WORDPRESS_CONFIGURATION_SHOW_HOMELINK"]["en"] = "Show Link to Blog in Workspace";
 $message["WORDPRESS_CONFIGURATION_USE_COMMENTS"]["en"] = "Allow Comments";
 $message["WORDPRESS_CONFIGURATION_USE_COMMENTS_DESC"]["en"] = "Enable Comments on Blog Posts";
 $message["WORDPRESS_CONFIGURATION_USE_COMMENTS_MODERATION"]["en"] = "Moderate Comments";
-$message["WORDPRESS_CONFIGURATION_COMMON"]["en"] = "Blog Settings";
-$message["WORDPRESS_CONFIGURATION_COMMON_DESC"]["en"] = "Common Options";
-$message["WORDPRESS_CONFIGURATION_SHOW_HOMELINK"]["en"] = "Show Link to Blog in Workspace";
 $message["WORDPRESS_DELETE_BUTTON"]["en"] = "delete Blog";
 ?>
