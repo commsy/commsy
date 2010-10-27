@@ -1737,6 +1737,10 @@ class cs_privateroom_item extends cs_room_item {
       return $retour;
    }
 
+   function issetMyroomDisplayConfig(){
+      return $this->_issetExtra('MYROOM_DISPLAY_CONFIG');
+   }
+   
    function setMyEntriesDisplayConfig ($my_entries_array) {
       $this->_addExtra('MY_ENTRIES_DISPLAY_CONFIG',$my_entries_array);
    }

@@ -36,6 +36,10 @@ if(isset($_GET['do'])){
 			}
 		}
       
+		if(empty($myroom_array)){
+			$myroom_array[] = 'empty';
+		}
+		
       $privateroom_item->setMyroomDisplayConfig($myroom_array);
       
 	   $myroom_config_array = $privateroom_item->getMyroomConfig();

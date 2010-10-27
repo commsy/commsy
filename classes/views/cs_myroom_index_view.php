@@ -913,6 +913,7 @@ class cs_myroom_index_view extends cs_context_index_view {
       $action_array = array();
       $html = '';
 
+      $isset_display_config = $privateroom_item->issetMyroomDisplayConfig();
       $myroom_array = $privateroom_item->getMyroomDisplayConfig();
 
       $temp_array = array();
@@ -929,7 +930,7 @@ class cs_myroom_index_view extends cs_context_index_view {
          $temp_array['dropdown_image']  = "new_icon";
          $temp_array['text']  = $room_item->getTitle();
          $temp_array['value'] = $room_item->getItemID();
-         if(in_array($room_item->getItemID(), $myroom_array)){
+         if(in_array($room_item->getItemID(), $myroom_array) or !$isset_display_config){
             $temp_array['checked']  = "checked";
          } else {
             $temp_array['checked']  = "";
