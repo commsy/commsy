@@ -1700,6 +1700,12 @@ class cs_privateroom_item extends cs_room_item {
          $this->unsetPortletShowSearchBox();
       }
 
+      if(in_array('cs_privateroom_home_roomwide_search_view', $portlet_array)){
+         $this->setPortletShowRoomWideSearchBox();
+      } else {
+         $this->unsetPortletShowRoomWideSearchBox();
+      }
+      
       if(in_array('cs_privateroom_home_new_item_view', $portlet_array)){
          $this->setPortletShowNewItemBox();
       } else {
