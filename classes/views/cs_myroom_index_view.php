@@ -915,6 +915,13 @@ class cs_myroom_index_view extends cs_context_index_view {
 
       $myroom_array = $privateroom_item->getMyroomDisplayConfig();
 
+      $temp_array = array();
+      $temp_array['dropdown_image']  = "new_icon";
+      $temp_array['checked']  = "scroll_start";
+      $temp_array['text']  = "";
+      $temp_array['value']  = "";
+      $action_array[] = $temp_array;
+      
       $list = $this->_list;
       $room_item = $list->getFirst();
       while($room_item){
@@ -931,6 +938,13 @@ class cs_myroom_index_view extends cs_context_index_view {
          $room_item = $list->getNext();
       }
 
+      $temp_array = array();
+      $temp_array['dropdown_image']  = "new_icon";
+      $temp_array['checked']  = "scroll_end";
+      $temp_array['text']  = "";
+      $temp_array['value']  = "";
+      $action_array[] = $temp_array;
+      
       // init drop down menu
       if ( !empty($action_array)
            and count($action_array) >= 1
