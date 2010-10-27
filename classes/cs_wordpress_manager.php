@@ -57,10 +57,11 @@ class cs_wordpress_manager extends cs_manager {
 
       $wordpressId = $contextItem->getWordpressId();
       if($wordpressId == 0) {
-        $currentUser = $this->_environment->getCurrentUserItem();
-        $wpUser = array();
-        $wpUser['login'] = $currentUser->getUserId();
-        $wpUser['email'] = $currentUser->getEmail();
+//        $currentUser = $this->_environment->getCurrentUserItem();
+//        $wpUser = array();
+//        $wpUser['login'] = $currentUser->getUserId();
+//        $wpUser['email'] = $currentUser->getEmail();
+        $wpUser = $this->_getCurrentAuthItem();
         $wpBlog = array('title' => $this->_environment->getCurrentContextItem()->getTitle(), 'path' => $this->_environment->getCurrentPortalID().'_'.$this->_environment->getCurrentContextID());
         $result = $this->CW->createBlog($wpUser, $wpBlog);
         $contextItem->setWordpressId($result['blog_id']);
@@ -223,10 +224,12 @@ class cs_wordpress_manager extends cs_manager {
     $link_modifier_item_manager = $this->_environment->getLinkModifierItemManager();
     $modifiers = $link_modifier_item_manager->getModifiersOfItem($item->getItemID());
 
-    $currentUser = $this->_environment->getCurrentUserItem();
-    $wpUser = array();
-    $wpUser['login'] = $currentUser->getUserId();
-    $wpUser['email'] = $currentUser->getEmail();
+//    $currentUser = $this->_environment->getCurrentUserItem();
+//    $wpUser = array();
+//    $wpUser['login'] = $currentUser->getUserId();
+//    $wpUser['email'] = $currentUser->getEmail();
+//
+    $wpUser = $this->_getCurrentAuthItem();
     //$this->updateExportLists($rubric);
     // write posts
 
@@ -327,6 +330,28 @@ class cs_wordpress_manager extends cs_manager {
 
   protected function _getWordpressOption($option_name) {
     return $this->CW->getOption($option_name, $this->_environment->getCurrentContextItem()->getWordpressId());
+  }
+
+  protected function _getCurrentAuthItem() {
+
+    $session_manager = $this->_environment->getSessionManager();
+    $session_item = $session_manager->get($this->_environment->getSessionID());
+    $user_id = $session_item->getValue('user_id');
+    $auth_source = $session_item->getValue('auth_source');
+    $commsy_id = $session_item->getValue('commsy_id');
+    $authentication = $this->_environment->getAuthenticationObject();
+    $authManager = $authentication->getAuthManager($auth_source);
+    $authManager->setContextID($commsy_id);
+    $user_item = $authManager->getItem($user_id);
+    $result = array(
+            'login' => $user_id,
+            'email' => $user_item->getEmail(),
+            'firstname'  => $user_item->getFirstName(),
+            'lastname'  => $user_item->getLastName(),
+            'password'  => $user_item->getPasswordMD5(),
+            'commsy_id' => $commsy_id
+    );
+    return $result;
   }
 
   // returns an array of default skins
