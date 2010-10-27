@@ -42,11 +42,11 @@ class cs_configuration_wordpress_form extends cs_rubric_form {
     $this->_translator = $this->_environment->getTranslationObject();
   }
 
-  function setDeletionValues(){
+  function setDeletionValues() {
     $this->_set_deletion_values = true;
   }
 
-  function setSkinArray($array){
+  function setSkinArray($array) {
     $this->_skin_array = $array;
   }
 
@@ -56,13 +56,13 @@ class cs_configuration_wordpress_form extends cs_rubric_form {
   function _initForm () {
     $this->_item = $this->_environment->getCurrentContextItem();
     $this->_array_info_text = array();
-    if(!empty($this->_skin_array)){
-	    foreach($this->_skin_array as $name => $skin){
-	      $temp_array = array();
-	      $temp_array['text']  = $name;
-	      $temp_array['value'] = $skin; //hvv
-	      $this->_array_info_text[$skin] = $temp_array;
-	    }
+    if(!empty($this->_skin_array)) {
+      foreach($this->_skin_array as $name => $skin) {
+        $temp_array = array();
+        $temp_array['text']  = $name;
+        $temp_array['value'] = $skin; //hvv
+        $this->_array_info_text[$skin] = $temp_array;
+      }
     }
     ksort($this->_array_info_text);
   }
@@ -80,48 +80,70 @@ class cs_configuration_wordpress_form extends cs_rubric_form {
 
 
     $this->_form->addSelect( 'skin_choice',
-    $this->_array_info_text,
-                               '',
-    $this->_translator->getMessage('CONFIGURATION_SKIN_FORM_CHOOSE_TEXT'),
-                               '',
-                               '',
-                               '',
-                               '',
-    true,
-    $this->_translator->getMessage('COMMON_CHOOSE_BUTTON'),
-                               'option',
-               '',
-               '',
-               '15',
-    true);
+            $this->_array_info_text,
+            '',
+            $this->_translator->getMessage('CONFIGURATION_SKIN_FORM_CHOOSE_TEXT'),
+            '',
+            '',
+            '',
+            '',
+            true,
+            $this->_translator->getMessage('COMMON_CHOOSE_BUTTON'),
+            'option',
+            '',
+            '',
+            '15',
+            true);
     $this->_form->combine();
     if ( !empty($this->_form_post['skin_choice']) ) {
       $desc = '<img src="'.$c_wordpress_path_url.'/default/wp-content/themes/'.$this->_form_post['skin_choice'].'/screenshot.png" alt="'.$this->_translator->getMessage('COMMON_SKIN').'" style=" border:1px solid black; vertical-align: middle;"/>';
       $this->_form->addText('example','',$desc);
     }elseif( isset($this->_item) and !$this->_set_deletion_values) {
       $skin = $this->_item->getWordpressSkin();
-      if (!empty ($skin) ){
+      if (!empty ($skin) ) {
         $desc = '<img src="'.$c_wordpress_path_url.'/default/wp-content/themes/'.$this->_item->getWordpressSkin().'/screenshot.png" alt="'.$this->_translator->getMessage('COMMON_SKIN').'" style=" border:1px solid black; vertical-align: middle;"/>';
         $this->_form->addText('example','',$desc);
-      }else{
+      }else {
         $desc = '<img src="'.$c_wordpress_path_url.'/default/wp-content/themes/'.$this->_translator->getMessage('COMMON_SKIN').'" style=" border:1px solid black; vertical-align: middle;"/>';
         $this->_form->addText('example','',$desc);
       }
-    }else{
+    }else {
       $desc = '<img src="'.$c_wordpress_path_url.'/default/wp-content/themes/'.$this->_item->getWordpressSkin().'/screenshot.png" style=" border:1px solid black; vertical-align: middle;"/>';
       $this->_form->addText('example','',$desc);
     }
 
+
+    $this->_form->addEmptyline();
+
+    // member role in wordpress
+    $this->_form->addSelect( 'member_role',
+            array(
+            array('text' => 'keine Rolle', 'value' => 'subscriber'),
+            array('text' => 'Redaktion', 'value' => 'editor'),
+            array('text' => 'Administration', 'value' => 'administrator'),
+            ),
+            '',
+            $this->_translator->getMessage('WORDPRESS_SELECT_MEMBER_ROLE'),
+            '',
+            '',
+            '',
+            '',
+            true,
+            $this->_translator->getMessage('COMMON_CHOOSE_BUTTON'),
+            'option',
+            '',
+            '',
+            '15',
+            true);
     $wordpress_manager = $this->_environment->getWordpressManager();
-
-
+    
     // comments
     $this->_form->addEmptyline();
-    if (!$this->_item->isPortal()){
+    if (!$this->_item->isPortal()) {
       $this->_form->addCheckbox('use_comments',1,'',$this->_translator->getMessage('WORDPRESS_CONFIGURATION_COMMENTS'),$this->_translator->getMessage('WORDPRESS_CONFIGURATION_USE_COMMENTS'),$this->_translator->getMessage('WORDPRESS_CONFIGURATION_COMMENTS_DESC'),false,false,'','',true,false);
       $this->_form->combine();
       $this->_form->addCheckbox('use_comments_moderation',1,'',$this->_translator->getMessage('WORDPRESS_CONFIGURATION_COMMENTS'),$this->_translator->getMessage('WORDPRESS_CONFIGURATION_USE_COMMENTS_MODERATION'),$this->_translator->getMessage('WORDPRESS_CONFIGURATION_WORDPRESS_COMMENTS_DESC'),false,false,'','',true,false);
-       
+
     }
 
 //    // plugins
@@ -134,23 +156,23 @@ class cs_configuration_wordpress_form extends cs_rubric_form {
 //    }
 
     $this->_form->addEmptyline();
-    if (!$this->_item->isPortal()){
-       
+    if (!$this->_item->isPortal()) {
+
       $this->_form->addCheckbox('wordpresslink',1,'',$this->_translator->getMessage('WORDPRESS_CONFIGURATION_COMMON'),$this->_translator->getMessage('WORDPRESS_CONFIGURATION_SHOW_HOMELINK'),$this->_translator->getMessage('WORDPRESS_CONFIGURATION_COMMON_DESC'),false,false,'','',true,false);
-       
-       
+
+
     }
 
     global $c_wordpress_path_file;
 
 
-     
-     
+
+
 
     // /new features
 
     // buttons
-    if ( isset($this->_item) and $this->_item->existWordpress() )  {
+    if ( isset($this->_item) and $this->_item->existWordpress() ) {
       $this->_form->addButtonBar('option',$this->_translator->getMessage('COMMON_CHANGE_BUTTON'),'',$this->_translator->getMessage('WORDPRESS_DELETE_BUTTON'),'','');
     } else {
       $this->_form->addButtonBar('option',$this->_translator->getMessage('WORDPRESS_SAVE_BUTTON'));
@@ -173,30 +195,30 @@ class cs_configuration_wordpress_form extends cs_rubric_form {
       $this->_values['wordpressdescription'] = $this->_item->getWordpressDescription();
 
       $use_comments = $this->_item->getWordpressUseComments();
-      if ($use_comments=='1'){
+      if ($use_comments=='1') {
         $this->_values['use_comments'] = 1;
       }
       $use_comments_moderation = $this->_item->getWordpressUseCommentsModeration();
-      if ($use_comments_moderation=='1'){
+      if ($use_comments_moderation=='1') {
         $this->_values['use_comments_moderation'] = 1;
       }
 
       $use_calendar = $this->_item->getWordpressUseCalendar();
-      if ($use_calendar=='1'){
+      if ($use_calendar=='1') {
         $this->_values['use_calendar'] = 1;
       }
       $use_tagcloud = $this->_item->getWordpressUseTagCloud();
-      if ($use_tagcloud=='1'){
+      if ($use_tagcloud=='1') {
         $this->_values['use_tagcloud'] = 1;
       }
 
       $wordpresslink = $this->_item->getWordpressHomeLink();
-      if ($wordpresslink=='1'){
+      if ($wordpresslink=='1') {
         $this->_values['wordpresslink'] = 1;
       }
       $this->_values['skin_choice'] = $this->_item->getWordpressSkin();
     } else {
-       
+
       $this->_values['wordpresstitle'] = $this->_item->getWordpressTitle();
       $this->_values['skin_choice'] = 'twentyten';
       $this->_values['admin'] = 'admin';
@@ -209,57 +231,58 @@ class cs_configuration_wordpress_form extends cs_rubric_form {
       $this->_values['use_calendar'] = '1';
       $this->_values['use_tagcloud'] = '1';
       $this->_values['use_commsy_login'] = '1';
+      $this->_values['member_role'] = 'subscriber';
     }
   }
 
   function _checkValues () {
     $context_item = $this->_environment->getCurrentContextItem();
-    $discussion_array = $context_item->getWordpressDiscussionArray();
-
-    if ( !empty($this->_form_post['enable_discussion'])
-    and !empty($this->_form_post['new_discussion'])
-    and isset($discussion_array[0])
-    ) {
-      $wordpress_manager = $this->_environment->getWordpressManager();
-      $tempDiscussion = $wordpress_manager->getDiscussionWordpressName($this->_form_post['new_discussion']);
-
-      $exists = false;
-
-      foreach($discussion_array as $discussion){
-        $discussion = $wordpress_manager->getDiscussionWordpressName($discussion);
-        if ($discussion == $tempDiscussion){
-          $exists = true;
-        }
-      }
-
-      if($exists){
-        $this->_error_array[] = $this->_translator->getMessage('WORDPRESS_DISCUSSION_EXISTS_ERROR');
-        $this->_form->setFailure('new_discussion','');
-      }
-
-    }
-    if ( empty($this->_form_post['enable_discussion'])
-    and (!empty($this->_form_post['enable_discussion_notification']) or !empty($this->_form_post['enable_discussion_notification_groups']))
-    ) {
-      $this->_error_array[] = $this->_translator->getMessage('WORDPRESS_DISCUSSION_NOT_SELECTED_ERROR');
-      $this->_form->setFailure('enable_discussion','');
-    }
-
-    if ( !empty($this->_form_post['enable_discussion'])
-    and empty($this->_form_post['enable_discussion_notification'])
-    and !empty($this->_form_post['enable_discussion_notification_groups'])
-    ) {
-      $this->_error_array[] = $this->_translator->getMessage('WORDPRESS_DISCUSSION_NOTIFICATION_NOT_SELECTED_ERROR');
-      $this->_form->setFailure('enable_discussion_notification','');
-    }
-
-
-    if ( empty($this->_form_post['community_read_access'])
-    and (!empty($this->_form_post['community_write_access']))
-    ) {
-      $this->_error_array[] = $this->_translator->getMessage('WORDPRESS_COOMUNITY_NO_READ_ACCESS_ERROR');
-      $this->_form->setFailure('community_read_access','');
-    }
+//    $discussion_array = $context_item->getWordpressDiscussionArray();
+//
+//    if ( !empty($this->_form_post['enable_discussion'])
+//            and !empty($this->_form_post['new_discussion'])
+//            and isset($discussion_array[0])
+//    ) {
+//      $wordpress_manager = $this->_environment->getWordpressManager();
+//      $tempDiscussion = $wordpress_manager->getDiscussionWordpressName($this->_form_post['new_discussion']);
+//
+//      $exists = false;
+//
+//      foreach($discussion_array as $discussion) {
+//        $discussion = $wordpress_manager->getDiscussionWordpressName($discussion);
+//        if ($discussion == $tempDiscussion) {
+//          $exists = true;
+//        }
+//      }
+//
+//      if($exists) {
+//        $this->_error_array[] = $this->_translator->getMessage('WORDPRESS_DISCUSSION_EXISTS_ERROR');
+//        $this->_form->setFailure('new_discussion','');
+//      }
+//
+//    }
+//    if ( empty($this->_form_post['enable_discussion'])
+//            and (!empty($this->_form_post['enable_discussion_notification']) or !empty($this->_form_post['enable_discussion_notification_groups']))
+//    ) {
+//      $this->_error_array[] = $this->_translator->getMessage('WORDPRESS_DISCUSSION_NOT_SELECTED_ERROR');
+//      $this->_form->setFailure('enable_discussion','');
+//    }
+//
+//    if ( !empty($this->_form_post['enable_discussion'])
+//            and empty($this->_form_post['enable_discussion_notification'])
+//            and !empty($this->_form_post['enable_discussion_notification_groups'])
+//    ) {
+//      $this->_error_array[] = $this->_translator->getMessage('WORDPRESS_DISCUSSION_NOTIFICATION_NOT_SELECTED_ERROR');
+//      $this->_form->setFailure('enable_discussion_notification','');
+//    }
+//
+//
+//    if ( empty($this->_form_post['community_read_access'])
+//            and (!empty($this->_form_post['community_write_access']))
+//    ) {
+//      $this->_error_array[] = $this->_translator->getMessage('WORDPRESS_COOMUNITY_NO_READ_ACCESS_ERROR');
+//      $this->_form->setFailure('community_read_access','');
+//    }
   }
 }
 ?>

@@ -247,6 +247,12 @@
 <message name='authenticateViaSessionOUT'>
   <part name='user_id' type='xsd:string'/>
 </message>
+<message name='wordpressAuthenticateViaSessionIN'>
+  <part name='session_id' type='xsd:string'/>
+</message>
+<message name='wordpressAuthenticateViaSessionOUT'>
+  <part name='user_id' type='xsd:string'/>
+</message>
 <message name='changeUserEmailIN'>
   <part name='session_id' type='xsd:string'/>
   <part name='email' type='xsd:string'/>
@@ -435,6 +441,10 @@
   <operation name='authenticateViaSession'>
     <input message='tns:authenticateViaSessionIN'/>
     <output message='tns:authenticateViaSessionOUT'/>
+  </operation>
+  <operation name='wordpressAuthenticateViaSession'>
+    <input message='tns:wordpressAuthenticateViaSessionIN'/>
+    <output message='tns:wordpressAuthenticateViaSessionOUT'/>
   </operation>
   <operation name='changeUserEmail'>
     <input message='tns:changeUserEmailIN'/>
@@ -817,6 +827,17 @@
   </operation>
   <operation name='authenticateViaSession'>
     <soap:operation soapAction='urn:xmethodsCommSy#authenticateViaSession'/>
+    <input>
+      <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+    </input>
+    <output>
+      <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+    </output>
+  </operation>
+  <operation name='wordpressAuthenticateViaSession'>
+    <soap:operation soapAction='urn:xmethodsCommSy#wordpressAuthenticateViaSession'/>
     <input>
       <soap:body use='encoded' namespace='urn:xmethodsCommSy'
         encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>

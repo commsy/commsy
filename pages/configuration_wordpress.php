@@ -121,7 +121,6 @@ else {
   //local delete in commsy
   if ( !empty($delete_command) and
   isOption($delete_command, $translator->getMessage('COMMON_DELETE_BUTTON'))   ) {
-
     $current_user = $environment->getCurrentUserItem();
     $item->setModificatorItem($current_user);
     $item->setModificationDate(getCurrentDateTimeInMySQL());
@@ -216,10 +215,17 @@ else {
       } else {
         $item->setWordpressTitle($item->getTitle());
       }
+
       if ( isset($_POST['wordpressdescription']) and !empty($_POST['wordpressdescription']) ) {
         $item->setWordpressDescription($_POST['wordpressdescription']);
       } else {
         $item->setWordpressDescription('');
+      }
+
+      if ( isset($_POST['member_role']) and !empty($_POST['member_role']) ) {
+        $item->setWordpressMemberRole($_POST['member_role']);
+      } else {
+        $item->setWordpressMemberRole();
       }
 
       $item->setWordpressExists();

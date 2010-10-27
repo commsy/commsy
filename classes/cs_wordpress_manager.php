@@ -60,7 +60,6 @@ class cs_wordpress_manager extends cs_manager {
         $wpUser = array('name' => $this->wp_user['user_id'], 'password' => uniqid()); // random password
         $wpBlog = array('title' => $this->_environment->getCurrentContextItem()->getTitle(), 'path' => $this->_environment->getCurrentPortalID().'_'.$this->_environment->getCurrentContextID());
         $result = $this->CW->createBlog($wpUser, $wpBlog);
-        //var_export($result);
         $contextItem->setWordpressId($result['blog_id']);
         $contextItem->save();
       }
@@ -70,6 +69,8 @@ class cs_wordpress_manager extends cs_manager {
       $this->_setWordpressOption('blogname', $item->getWordpressTitle());
 //    // set Description
       $this->_setWordpressOption('blogdescription', $item->getWordpressDescription());
+      // set default role
+      $this->_setWordpressOption('default_role', $item->getWordpressMemberRole());
 //    // set Comments
       $this->_setWordpressOption('default_comment_status', ($item->getWordpressUseComments()==1)?'open':'closed');
       $this->_setWordpressOption('comment_moderation', ($item->getWordpressUseCommentsModeration()==1)?'1':'');
@@ -119,10 +120,6 @@ class cs_wordpress_manager extends cs_manager {
   }
 
   function deleteWordpress ($wordpress_id) {
-
-    #if (!$item->isPortal()) {
-    #  $this->CW->deleteBlog($item->getWordpressId());
-    #}
     $this->CW->deleteBlog($wordpress_id);
   }
 
@@ -234,8 +231,6 @@ class cs_wordpress_manager extends cs_manager {
     $comment_status = $context->getWordpressUseComments();
 //    include_once($c_wordpress_absolute_path_file.'/commsy/commsy_wordpress.php');
     $post = array(
-//            'post_date'            => $item->getCreationDate(), // zeit ohne zeitverschiebung
-//            'post_date_gmt'        => $item->getCreationDate(), // zeit ohne zeitverschiebung
             'post_content'         => mysql_escape_string($post_content_complete),
             'post_content_filtered'=> '',
             'post_title'           => mysql_escape_string($post_title),
@@ -310,10 +305,10 @@ class cs_wordpress_manager extends cs_manager {
   function getSoapClient() {
     $options = array("trace" => 1, "exceptions" => 1);
     if ( $this->_environment->getConfiguration('c_proxy_ip') ) {
-       $options['proxy_host'] = $this->_environment->getConfiguration('c_proxy_ip');
+      $options['proxy_host'] = $this->_environment->getConfiguration('c_proxy_ip');
     }
     if ( $this->_environment->getConfiguration('c_proxy_port') ) {
-       $options['proxy_port'] = $this->_environment->getConfiguration('c_proxy_port');
+      $options['proxy_port'] = $this->_environment->getConfiguration('c_proxy_port');
     }
     return new SoapClient($this->getSoapWsdlUrl(), $options);
   }
@@ -336,10 +331,10 @@ class cs_wordpress_manager extends cs_manager {
     try {
       $skins = $this->CW->getSkins();
       $skinOptions = array();
-      if(!empty($skins)){
-         foreach($skins as $name => $skin) {
-           $skinOptions[$name] = $skin['Template'];
-         }
+      if(!empty($skins)) {
+        foreach($skins as $name => $skin) {
+          $skinOptions[$name] = $skin['Template'];
+        }
       }
       return $skinOptions;
     } catch (Exception $e) {

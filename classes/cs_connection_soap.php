@@ -839,6 +839,33 @@ class cs_connection_soap {
       }
    }
 
+   public function wordpressAuthenticateViaSession($session_id) {
+     $result = null;
+     $session_id = $this->_encode_input($session_id);
+      if ($this->_isSessionValid($session_id)) {
+         $this->_updateSessionCreationDate($session_id);
+         $session_manager = $this->_environment->getSessionManager();
+         $session_item = $session_manager->get($session_id);
+         $user_id = $session_item->getValue('user_id');
+         $auth_source = $session_item->getValue('auth_source');
+         $commsy_id = $session_item->getValue('commsy_id');
+//         $result = array($user_id, $auth_source);
+         $authentication = $this->_environment->getAuthenticationObject();
+         $authManager = $authentication->getAuthManager($auth_source);
+         $authManager->setContextID($commsy_id);
+//         $result = array(get_class($authManager));
+         $user_item = $authManager->getItem($user_id);
+         $result = array(
+           'login' => $user_id,
+           'email' => $user_item->getEmail(),
+           'firstname'  => $user_item->getFirstName(),
+           'lastname'  => $user_item->getLastName(),
+           'password'  => $user_item->getPasswordMD5(),
+                 );
+      }
+      return $result;
+   }
+
    private function _isSessionActive ($user_id, $portal_id) {
       $retour = false;
       if ( !empty($this->_session_id_array[$portal_id][$user_id]) ) {

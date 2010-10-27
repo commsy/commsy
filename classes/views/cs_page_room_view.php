@@ -370,7 +370,7 @@ class cs_page_room_view extends cs_page_view {
             } else {
                $image = '<img src="images/wordpress_home.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_WORDPRESS_LINK').'"/>';
             }
-            $title = $this->_translator->getMessage('COMMON_WORDPRESS_LINK').': '.$current_context->getWikiTitle();
+            $title = $this->_translator->getMessage('COMMON_WORDPRESS_LINK').': '.$current_context->getWordpressTitle();
             $url_session_id = '';
             if ( $current_context->withWordpressUseCommSyLogin() ) {
                $session_item = $this->_environment->getSessionItem();

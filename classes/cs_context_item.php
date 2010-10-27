@@ -2525,6 +2525,18 @@ class cs_context_item extends cs_item {
     $this->_addExtra('WORDPRESSUSETAGCLOUD','-1');
   }
 
+  function setWordpressMemberRole($role='subscriber'){
+    $this->_addExtra('WORDPRESSMEMBERROLE',$role);
+  }
+
+  function getWordpressMemberRole(){
+    if ( $this->_issetExtra('WORDPRESSMEMBERROLE') ) {
+      $retour = $this->_getExtra('WORDPRESSMEMBERROLE');
+    } else {
+      $retour = 'subscriber';
+    }
+    return $retour;
+  }
 
   function setWordpressHomeLink(){
     $this->_addExtra('WORDPRESSHOMELINK','1');
@@ -2653,491 +2665,490 @@ class cs_context_item extends cs_item {
     return $retour;
   }
 
-
-  function setWordpressAdminPW($pw){
-    $this->_addExtra('WORDPRESSADMINPW',$pw);
-  }
-
-  function getWordpressAdminPW(){
-    if ( $this->_issetExtra('WORDPRESSADMINPW') ) {
-      $retour = $this->_getExtra('WORDPRESSADMINPW');
-    } else {
-      $retour = 'admin';
-    }
-    return $retour;
-  }
-
-
-  function setWordpressShowCommSyLogin(){
-    $this->_addExtra('WORDPRESSSHOWLOGIN','1');
-  }
-
-  function unsetWordpressShowCommSyLogin(){
-    $this->_addExtra('WORDPRESSSHOWLOGIN','-1');
-  }
-
-  function WordpressShowCommSyLogin(){
-    if ( $this->_issetExtra('WORDPRESSSHOWLOGIN') ) {
-      $retour = $this->_getExtra('WORDPRESSSHOWLOGIN');
-    } else {
-      $retour ='-1';
-    }
-    return $retour;
-  }
-
-  //  new features
-  function setWordpressEnableFCKEditor(){
-    $this->_addExtra('WORDPRESSENABLEFCKEDITOR','1');
-  }
-
-  function unsetWordpressEnableFCKEditor(){
-    $this->_addExtra('WORDPRESSENABLEFCKEDITOR','-1');
-  }
-
-  function WordpressEnableFCKEditor(){
-    if ( $this->_issetExtra('WORDPRESSENABLEFCKEDITOR') ) {
-      $retour = $this->_getExtra('WORDPRESSENABLEFCKEDITOR');
-    } else {
-      $retour ='-1';
-    }
-    return $retour;
-  }
-
-  function setWordpressEnableSitemap(){
-    $this->_addExtra('WORDPRESSENABLESITEMAP','1');
-  }
-
-  function unsetWordpressEnableSitemap(){
-    $this->_addExtra('WORDPRESSENABLESITEMAP','-1');
-  }
-
-  function WordpressEnableSitemap(){
-    if ( $this->_issetExtra('WORDPRESSENABLESITEMAP') ) {
-      $retour = $this->_getExtra('WORDPRESSENABLESITEMAP');
-    } else {
-      $retour ='-1';
-    }
-    return $retour;
-  }
-
-  function setWordpressEnableStatistic(){
-    $this->_addExtra('WORDPRESSENABLESTATISTIC','1');
-  }
-
-  function unsetWordpressEnableStatistic(){
-    $this->_addExtra('WORDPRESSENABLESTATISTIC','-1');
-  }
-
-  function WordpressEnableStatistic(){
-    if ( $this->_issetExtra('WORDPRESSENABLESTATISTIC') ) {
-      $retour = $this->_getExtra('WORDPRESSENABLESTATISTIC');
-    } else {
-      $retour ='-1';
-    }
-    return $retour;
-  }
-
-  function setWordpressEnableSearch(){
-    $this->_addExtra('WORDPRESSENABLESEARCH','1');
-  }
-
-  function unsetWordpressEnableSearch(){
-    $this->_addExtra('WORDPRESSENABLESEARCH','-1');
-  }
-
-  function WordpressEnableSearch(){
-    if ( $this->_issetExtra('WORDPRESSENABLESEARCH') ) {
-      $retour = $this->_getExtra('WORDPRESSENABLESEARCH');
-    } else {
-      $retour ='-1';
-    }
-    return $retour;
-  }
-
-  function setWordpressEnableRss(){
-    $this->_addExtra('WORDPRESSENABLERSS','1');
-  }
-
-  function unsetWordpressEnableRss(){
-    $this->_addExtra('WORDPRESSENABLERSS','-1');
-  }
-
-  function WordpressEnableRss(){
-    if ( $this->_issetExtra('WORDPRESSENABLERSS') ) {
-      $retour = $this->_getExtra('WORDPRESSENABLERSS');
-    } else {
-      $retour ='-1';
-    }
-    return $retour;
-  }
-
-  function setWordpressEnableCalendar(){
-    $this->_addExtra('WORDPRESSENABLECALENDAR','1');
-  }
-
-  function unsetWordpressEnableCalendar(){
-    $this->_addExtra('WORDPRESSENABLECALENDAR','-1');
-  }
-
-  function WordpressEnableCalendar(){
-    if ( $this->_issetExtra('WORDPRESSENABLECALENDAR') ) {
-      $retour = $this->_getExtra('WORDPRESSENABLECALENDAR');
-    } else {
-      $retour ='-1';
-    }
-    return $retour;
-  }
-
-  function setWordpressEnableGallery(){
-    $this->_addExtra('WORDPRESSENABLEGALLERY','1');
-  }
-
-  function unsetWordpressEnableGallery(){
-    $this->_addExtra('WORDPRESSENABLEGALLERY','-1');
-  }
-
-  function WordpressEnableGallery(){
-    if ( $this->_issetExtra('WORDPRESSENABLEGALLERY') ) {
-      $retour = $this->_getExtra('WORDPRESSENABLEGALLERY');
-    } else {
-      $retour ='-1';
-    }
-    return $retour;
-  }
-
-  function setWordpressEnableNotice(){
-    $this->_addExtra('WORDPRESSENABLENOTICE','1');
-  }
-
-  function unsetWordpressEnableNotice(){
-    $this->_addExtra('WORDPRESSENABLENOTICE','-1');
-  }
-
-  function WordpressEnableNotice(){
-    if ( $this->_issetExtra('WORDPRESSENABLENOTICE') ) {
-      $retour = $this->_getExtra('WORDPRESSENABLENOTICE');
-    } else {
-      $retour ='-1';
-    }
-    return $retour;
-  }
-
-  function setWordpressEnablePdf(){
-    $this->_addExtra('WORDPRESSENABLEPDF','1');
-  }
-
-  function unsetWordpressEnablePdf(){
-    $this->_addExtra('WORDPRESSENABLEPDF','-1');
-  }
-
-
-  function WordpressEnablePdf(){
-    if ( $this->_issetExtra('WORDPRESSENABLEPDF') ) {
-      $retour = $this->_getExtra('WORDPRESSENABLEPDF');
-    } else {
-      $retour ='-1';
-    }
-    return $retour;
-  }
-
-  function setWordpressEnableRater(){
-    $this->_addExtra('WORDPRESSENABLERATER','1');
-  }
-
-  function unsetWordpressEnableRater(){
-    $this->_addExtra('WORDPRESSENABLERATER','-1');
-  }
-
-  function WordpressEnableRater(){
-    if ( $this->_issetExtra('WORDPRESSENABLERATER') ) {
-      $retour = $this->_getExtra('WORDPRESSENABLERATER');
-    } else {
-      $retour ='-1';
-    }
-    return $retour;
-  }
-
-  function setWordpressEnableListCategories(){
-    $this->_addExtra('WORDPRESSENABLELISTCATEGORIES','1');
-  }
-
-  function unsetWordpressEnableListCategories(){
-    $this->_addExtra('WORDPRESSENABLELISTCATEGORIES','-1');
-  }
-
-  function WordpressEnableListCategories(){
-    if ( $this->_issetExtra('WORDPRESSENABLELISTCATEGORIES') ) {
-      $retour = $this->_getExtra('WORDPRESSENABLELISTCATEGORIES');
-    } else {
-      $retour ='-1';
-    }
-    return $retour;
-  }
-
-  function setWordpressNewPageTemplate($template){
-    $this->_addExtra('WORDPRESSNEWPAGETEMPLATE',$template);
-  }
-
-  function unsetWordpressNewPageTemplate(){
-    $this->_addExtra('WORDPRESSNEWPAGETEMPLATE','-1');
-  }
-
-  function WordpressNewPageTemplate(){
-    if (($this->_issetExtra('WORDPRESSNEWPAGETEMPLATE')) &&  ($this->_getExtra('WORDPRESSNEWPAGETEMPLATE') != '-1')) {
-      $retour = $this->_getExtra('WORDPRESSNEWPAGETEMPLATE');
-    } else {
-      $retour ='-1';
-    }
-    return $retour;
-  }
-
-  function setWordpressEnableSwf(){
-    $this->_addExtra('WORDPRESSENABLESWF','1');
-  }
-
-  function unsetWordpressEnableSwf(){
-    $this->_addExtra('WORDPRESSENABLESWF','-1');
-  }
-
-  function WordpressEnableSwf(){
-    if ( $this->_issetExtra('WORDPRESSENABLESWF') ) {
-      $retour = $this->_getExtra('WORDPRESSENABLESWF');
-    } else {
-      $retour ='-1';
-    }
-    return $retour;
-  }
-
-  function setWordpressEnableWmplayer(){
-    $this->_addExtra('WORDPRESSENABLEWMPLAYER','1');
-  }
-
-  function unsetWordpressEnableWmplayer(){
-    $this->_addExtra('WORDPRESSENABLEWMPLAYER','-1');
-  }
-
-  function WordpressEnableWmplayer(){
-    if ( $this->_issetExtra('WORDPRESSENABLEWMPLAYER') ) {
-      $retour = $this->_getExtra('WORDPRESSENABLEWMPLAYER');
-    } else {
-      $retour ='-1';
-    }
-    return $retour;
-  }
-
-  function setWordpressEnableQuicktime(){
-    $this->_addExtra('WORDPRESSENABLEQUICKTIME','1');
-  }
-
-  function unsetWordpressEnableQuicktime(){
-    $this->_addExtra('WORDPRESSENABLEQUICKTIME','-1');
-  }
-
-  function WordpressEnableQuicktime(){
-    if ( $this->_issetExtra('WORDPRESSENABLEQUICKTIME') ) {
-      $retour = $this->_getExtra('WORDPRESSENABLEQUICKTIME');
-    } else {
-      $retour ='-1';
-    }
-    return $retour;
-  }
-
-  function setWordpressEnableYoutubeGoogleVimeo(){
-    $this->_addExtra('WORDPRESSENABLEYOUTUBEGOOGLEVIMOEO','1');
-  }
-
-  function unsetWordpressEnableYoutubeGoogleVimeo(){
-    $this->_addExtra('WORDPRESSENABLEYOUTUBEGOOGLEVIMOEO','-1');
-  }
-
-  function WordpressEnableYoutubeGoogleVimeo(){
-    if ( $this->_issetExtra('WORDPRESSENABLEYOUTUBEGOOGLEVIMOEO') ) {
-      $retour = $this->_getExtra('WORDPRESSENABLEYOUTUBEGOOGLEVIMOEO');
-    } else {
-      $retour ='-1';
-    }
-    return $retour;
-  }
-
-  // /new features
-
-  function setWordpressEditPW($pw){
-    $this->_addExtra('WORDPRESSEDITPW',$pw);
-  }
-
-  function getWordpressEditPW(){
-    if ( $this->_issetExtra('WORDPRESSEDITPW') ) {
-      $retour = $this->_getExtra('WORDPRESSEDITPW');
-    } else {
-      $retour ='edit';
-    }
-    return $retour;
-  }
-
-
-  function setWordpressReadPW($pw){
-    $this->_addExtra('WORDPRESSREADPW',$pw);
-  }
-
-  function getWordpressReadPW(){
-    if ( $this->_issetExtra('WORDPRESSREADPW') ) {
-      $retour = $this->_getExtra('WORDPRESSREADPW');
-    } else {
-      $retour = '';
-    }
-    return $retour;
-  }
-
-  function setWordpressWithSectionEdit () {
-    $this->_addExtra('WORDPRESS_SECTIONEDIT','1');
-  }
-
-  function setWordpressWithoutSectionEdit () {
-    $this->_addExtra('WORDPRESS_SECTIONEDIT','-1');
-  }
-
-  function setWordpressWithHeaderForSectionEdit () {
-    $this->_addExtra('WORDPRESS_SECTIONEDIT_HEADER','1');
-  }
-
-  function setWordpressWithoutHeaderForSectionEdit () {
-    $this->_addExtra('WORDPRESS_SECTIONEDIT_HEADER','-1');
-  }
-
-  function wordpressWithSectionEdit () {
-    $retour = false;
-    if ( $this->_issetExtra('WORDPRESS_SECTIONEDIT') ) {
-      $value = $this->_getExtra('WORDPRESS_SECTIONEDIT');
-      if ( $value == 1 ) {
-        $retour = true;
-      }
-    }
-    return $retour;
-  }
-
-  function wordpressWithHeaderForSectionEdit () {
-    $retour = false;
-    if ( $this->_issetExtra('WORDPRESS_SECTIONEDIT_HEADER') ) {
-      $value = $this->_getExtra('WORDPRESS_SECTIONEDIT_HEADER');
-      if ( $value == 1 ) {
-        $retour = true;
-      }
-    }
-    return $retour;
-  }
-
-  // Wordpress Discussion
-
-  function setWordpressEnableDiscussion(){
-    $this->_addExtra('WORDPRESSENABLEDISCUSSION','1');
-  }
-
-  function unsetWordpressEnableDiscussion(){
-    $this->_addExtra('WORDPRESSENABLEDISCUSSION','-1');
-  }
-
-  function WordpressEnableDiscussion(){
-    if ( $this->_issetExtra('WORDPRESSENABLEDISCUSSION') ) {
-      $retour = $this->_getExtra('WORDPRESSENABLEDISCUSSION');
-    } else {
-      $retour ='-1';
-    }
-    return $retour;
-  }
-
-  function setWordpressEnableDiscussionNotification(){
-    $this->_addExtra('WORDPRESSENABLEDISCUSSIONNOTIFICATION','1');
-  }
-
-  function unsetWordpressEnableDiscussionNotification(){
-    $this->_addExtra('WORDPRESSENABLEDISCUSSIONNOTIFICATION','-1');
-  }
-
-  function WordpressEnableDiscussionNotification(){
-    if ( $this->_issetExtra('WORDPRESSENABLEDISCUSSIONNOTIFICATION') ) {
-      $retour = $this->_getExtra('WORDPRESSENABLEDISCUSSIONNOTIFICATION');
-    } else {
-      $retour ='-1';
-    }
-    return $retour;
-  }
-
-  function setWordpressEnableDiscussionNotificationGroups(){
-    $this->_addExtra('WORDPRESSENABLEDISCUSSIONNOTIFICATIONGROUPS','1');
-  }
-
-  function unsetWordpressEnableDiscussionNotificationGroups(){
-    $this->_addExtra('WORDPRESSENABLEDISCUSSIONNOTIFICATIONGROUPS','-1');
-  }
-
-  function WordpressEnableDiscussionNotificationGroups(){
-    if ( $this->_issetExtra('WORDPRESSENABLEDISCUSSIONNOTIFICATIONGROUPS') ) {
-      $retour = $this->_getExtra('WORDPRESSENABLEDISCUSSIONNOTIFICATIONGROUPS');
-    } else {
-      $retour ='-1';
-    }
-    return $retour;
-  }
-
-  function WordpressSetNewDiscussion($new_discussion){
-    if(!empty($new_discussion)){
-      if(!$this->_issetExtra('WORDPRESSDISCUSSIONARRAY')){
-        $this->_addExtra('WORDPRESSDISCUSSIONARRAY', $new_discussion);
-      } else {
-        if ( $this->_issetExtra('WORDPRESSDISCUSSIONARRAY') && !mb_stristr($this->_getExtra('WORDPRESSDISCUSSIONARRAY'), $new_discussion)) {
-          $discussion_string = $this->_getExtra('WORDPRESSDISCUSSIONARRAY');
-          if(!empty($discussion_string)){
-            $discussion_array = explode('$CSDW$', $discussion_string);
-          } else {
-            $discussion_array = array();
-          }
-          $discussion_array[] = $new_discussion;
-          $discussion_string = implode('$CSDW$', $discussion_array);
-          $this->_addExtra('WORDPRESSDISCUSSIONARRAY',$discussion_string);
-        }
-      }
-    }
-  }
-
-  function WordpressRemoveDiscussion($old_discussion){
-    if ( $this->_issetExtra('WORDPRESSDISCUSSIONARRAY') && mb_stristr($this->_getExtra('WORDPRESSDISCUSSIONARRAY'), $old_discussion)) {
-      $discussion_string = $this->_getExtra('WORDPRESSDISCUSSIONARRAY');
-      if(!empty($discussion_string)){
-        $discussion_array = explode('$CSDW$', $discussion_string);
-        $new_discussion_array = array();
-        foreach($discussion_array as $discussion){
-          if($discussion != $old_discussion){
-            $new_discussion_array[] = $discussion;
-          }
-        }
-        $discussion_string = implode('$CSDW$', $new_discussion_array);
-      }
-      $this->_addExtra('WORDPRESSDISCUSSIONARRAY',$discussion_string);
-    }
-  }
-
-  function getWordpressDiscussionArray(){
-    if ( $this->_issetExtra('WORDPRESSDISCUSSIONARRAY') ) {
-      $discussion_string = $this->_getExtra('WORDPRESSDISCUSSIONARRAY');
-    } else {
-      $discussion_string ='';
-    }
-    $discussion_array = explode('$CSDW$', $discussion_string);
-    if($discussion_array[0] == ''){
-      return false;
-    } else {
-      return $discussion_array;
-    }
-  }
-
-  function unsetWordpressDiscussionArray(){
-    $this->_addExtra('WORDPRESSDISCUSSIONARRAY','');
-  }
-
-  function setWordpressUseCommSyLogin(){
-    $this->_addExtra('WORDPRESSUSECOMMSYLOGIN','1');
-  }
-
+//  function setWordpressAdminPW($pw){
+//    $this->_addExtra('WORDPRESSADMINPW',$pw);
+//  }
+//
+//  function getWordpressAdminPW(){
+//    if ( $this->_issetExtra('WORDPRESSADMINPW') ) {
+//      $retour = $this->_getExtra('WORDPRESSADMINPW');
+//    } else {
+//      $retour = 'admin';
+//    }
+//    return $retour;
+//  }
+//
+//
+//  function setWordpressShowCommSyLogin(){
+//    $this->_addExtra('WORDPRESSSHOWLOGIN','1');
+//  }
+//
+//  function unsetWordpressShowCommSyLogin(){
+//    $this->_addExtra('WORDPRESSSHOWLOGIN','-1');
+//  }
+//
+//  function WordpressShowCommSyLogin(){
+//    if ( $this->_issetExtra('WORDPRESSSHOWLOGIN') ) {
+//      $retour = $this->_getExtra('WORDPRESSSHOWLOGIN');
+//    } else {
+//      $retour ='-1';
+//    }
+//    return $retour;
+//  }
+//
+//  //  new features
+//  function setWordpressEnableFCKEditor(){
+//    $this->_addExtra('WORDPRESSENABLEFCKEDITOR','1');
+//  }
+//
+//  function unsetWordpressEnableFCKEditor(){
+//    $this->_addExtra('WORDPRESSENABLEFCKEDITOR','-1');
+//  }
+//
+//  function WordpressEnableFCKEditor(){
+//    if ( $this->_issetExtra('WORDPRESSENABLEFCKEDITOR') ) {
+//      $retour = $this->_getExtra('WORDPRESSENABLEFCKEDITOR');
+//    } else {
+//      $retour ='-1';
+//    }
+//    return $retour;
+//  }
+//
+//  function setWordpressEnableSitemap(){
+//    $this->_addExtra('WORDPRESSENABLESITEMAP','1');
+//  }
+//
+//  function unsetWordpressEnableSitemap(){
+//    $this->_addExtra('WORDPRESSENABLESITEMAP','-1');
+//  }
+//
+//  function WordpressEnableSitemap(){
+//    if ( $this->_issetExtra('WORDPRESSENABLESITEMAP') ) {
+//      $retour = $this->_getExtra('WORDPRESSENABLESITEMAP');
+//    } else {
+//      $retour ='-1';
+//    }
+//    return $retour;
+//  }
+//
+//  function setWordpressEnableStatistic(){
+//    $this->_addExtra('WORDPRESSENABLESTATISTIC','1');
+//  }
+//
+//  function unsetWordpressEnableStatistic(){
+//    $this->_addExtra('WORDPRESSENABLESTATISTIC','-1');
+//  }
+//
+//  function WordpressEnableStatistic(){
+//    if ( $this->_issetExtra('WORDPRESSENABLESTATISTIC') ) {
+//      $retour = $this->_getExtra('WORDPRESSENABLESTATISTIC');
+//    } else {
+//      $retour ='-1';
+//    }
+//    return $retour;
+//  }
+//
+//  function setWordpressEnableSearch(){
+//    $this->_addExtra('WORDPRESSENABLESEARCH','1');
+//  }
+//
+//  function unsetWordpressEnableSearch(){
+//    $this->_addExtra('WORDPRESSENABLESEARCH','-1');
+//  }
+//
+//  function WordpressEnableSearch(){
+//    if ( $this->_issetExtra('WORDPRESSENABLESEARCH') ) {
+//      $retour = $this->_getExtra('WORDPRESSENABLESEARCH');
+//    } else {
+//      $retour ='-1';
+//    }
+//    return $retour;
+//  }
+//
+//  function setWordpressEnableRss(){
+//    $this->_addExtra('WORDPRESSENABLERSS','1');
+//  }
+//
+//  function unsetWordpressEnableRss(){
+//    $this->_addExtra('WORDPRESSENABLERSS','-1');
+//  }
+//
+//  function WordpressEnableRss(){
+//    if ( $this->_issetExtra('WORDPRESSENABLERSS') ) {
+//      $retour = $this->_getExtra('WORDPRESSENABLERSS');
+//    } else {
+//      $retour ='-1';
+//    }
+//    return $retour;
+//  }
+//
+//  function setWordpressEnableCalendar(){
+//    $this->_addExtra('WORDPRESSENABLECALENDAR','1');
+//  }
+//
+//  function unsetWordpressEnableCalendar(){
+//    $this->_addExtra('WORDPRESSENABLECALENDAR','-1');
+//  }
+//
+//  function WordpressEnableCalendar(){
+//    if ( $this->_issetExtra('WORDPRESSENABLECALENDAR') ) {
+//      $retour = $this->_getExtra('WORDPRESSENABLECALENDAR');
+//    } else {
+//      $retour ='-1';
+//    }
+//    return $retour;
+//  }
+//
+//  function setWordpressEnableGallery(){
+//    $this->_addExtra('WORDPRESSENABLEGALLERY','1');
+//  }
+//
+//  function unsetWordpressEnableGallery(){
+//    $this->_addExtra('WORDPRESSENABLEGALLERY','-1');
+//  }
+//
+//  function WordpressEnableGallery(){
+//    if ( $this->_issetExtra('WORDPRESSENABLEGALLERY') ) {
+//      $retour = $this->_getExtra('WORDPRESSENABLEGALLERY');
+//    } else {
+//      $retour ='-1';
+//    }
+//    return $retour;
+//  }
+//
+//  function setWordpressEnableNotice(){
+//    $this->_addExtra('WORDPRESSENABLENOTICE','1');
+//  }
+//
+//  function unsetWordpressEnableNotice(){
+//    $this->_addExtra('WORDPRESSENABLENOTICE','-1');
+//  }
+//
+//  function WordpressEnableNotice(){
+//    if ( $this->_issetExtra('WORDPRESSENABLENOTICE') ) {
+//      $retour = $this->_getExtra('WORDPRESSENABLENOTICE');
+//    } else {
+//      $retour ='-1';
+//    }
+//    return $retour;
+//  }
+//
+//  function setWordpressEnablePdf(){
+//    $this->_addExtra('WORDPRESSENABLEPDF','1');
+//  }
+//
+//  function unsetWordpressEnablePdf(){
+//    $this->_addExtra('WORDPRESSENABLEPDF','-1');
+//  }
+//
+//
+//  function WordpressEnablePdf(){
+//    if ( $this->_issetExtra('WORDPRESSENABLEPDF') ) {
+//      $retour = $this->_getExtra('WORDPRESSENABLEPDF');
+//    } else {
+//      $retour ='-1';
+//    }
+//    return $retour;
+//  }
+//
+//  function setWordpressEnableRater(){
+//    $this->_addExtra('WORDPRESSENABLERATER','1');
+//  }
+//
+//  function unsetWordpressEnableRater(){
+//    $this->_addExtra('WORDPRESSENABLERATER','-1');
+//  }
+//
+//  function WordpressEnableRater(){
+//    if ( $this->_issetExtra('WORDPRESSENABLERATER') ) {
+//      $retour = $this->_getExtra('WORDPRESSENABLERATER');
+//    } else {
+//      $retour ='-1';
+//    }
+//    return $retour;
+//  }
+//
+//  function setWordpressEnableListCategories(){
+//    $this->_addExtra('WORDPRESSENABLELISTCATEGORIES','1');
+//  }
+//
+//  function unsetWordpressEnableListCategories(){
+//    $this->_addExtra('WORDPRESSENABLELISTCATEGORIES','-1');
+//  }
+//
+//  function WordpressEnableListCategories(){
+//    if ( $this->_issetExtra('WORDPRESSENABLELISTCATEGORIES') ) {
+//      $retour = $this->_getExtra('WORDPRESSENABLELISTCATEGORIES');
+//    } else {
+//      $retour ='-1';
+//    }
+//    return $retour;
+//  }
+//
+//  function setWordpressNewPageTemplate($template){
+//    $this->_addExtra('WORDPRESSNEWPAGETEMPLATE',$template);
+//  }
+//
+//  function unsetWordpressNewPageTemplate(){
+//    $this->_addExtra('WORDPRESSNEWPAGETEMPLATE','-1');
+//  }
+//
+//  function WordpressNewPageTemplate(){
+//    if (($this->_issetExtra('WORDPRESSNEWPAGETEMPLATE')) &&  ($this->_getExtra('WORDPRESSNEWPAGETEMPLATE') != '-1')) {
+//      $retour = $this->_getExtra('WORDPRESSNEWPAGETEMPLATE');
+//    } else {
+//      $retour ='-1';
+//    }
+//    return $retour;
+//  }
+//
+//  function setWordpressEnableSwf(){
+//    $this->_addExtra('WORDPRESSENABLESWF','1');
+//  }
+//
+//  function unsetWordpressEnableSwf(){
+//    $this->_addExtra('WORDPRESSENABLESWF','-1');
+//  }
+//
+//  function WordpressEnableSwf(){
+//    if ( $this->_issetExtra('WORDPRESSENABLESWF') ) {
+//      $retour = $this->_getExtra('WORDPRESSENABLESWF');
+//    } else {
+//      $retour ='-1';
+//    }
+//    return $retour;
+//  }
+//
+//  function setWordpressEnableWmplayer(){
+//    $this->_addExtra('WORDPRESSENABLEWMPLAYER','1');
+//  }
+//
+//  function unsetWordpressEnableWmplayer(){
+//    $this->_addExtra('WORDPRESSENABLEWMPLAYER','-1');
+//  }
+//
+//  function WordpressEnableWmplayer(){
+//    if ( $this->_issetExtra('WORDPRESSENABLEWMPLAYER') ) {
+//      $retour = $this->_getExtra('WORDPRESSENABLEWMPLAYER');
+//    } else {
+//      $retour ='-1';
+//    }
+//    return $retour;
+//  }
+//
+//  function setWordpressEnableQuicktime(){
+//    $this->_addExtra('WORDPRESSENABLEQUICKTIME','1');
+//  }
+//
+//  function unsetWordpressEnableQuicktime(){
+//    $this->_addExtra('WORDPRESSENABLEQUICKTIME','-1');
+//  }
+//
+//  function WordpressEnableQuicktime(){
+//    if ( $this->_issetExtra('WORDPRESSENABLEQUICKTIME') ) {
+//      $retour = $this->_getExtra('WORDPRESSENABLEQUICKTIME');
+//    } else {
+//      $retour ='-1';
+//    }
+//    return $retour;
+//  }
+//
+//  function setWordpressEnableYoutubeGoogleVimeo(){
+//    $this->_addExtra('WORDPRESSENABLEYOUTUBEGOOGLEVIMOEO','1');
+//  }
+//
+//  function unsetWordpressEnableYoutubeGoogleVimeo(){
+//    $this->_addExtra('WORDPRESSENABLEYOUTUBEGOOGLEVIMOEO','-1');
+//  }
+//
+//  function WordpressEnableYoutubeGoogleVimeo(){
+//    if ( $this->_issetExtra('WORDPRESSENABLEYOUTUBEGOOGLEVIMOEO') ) {
+//      $retour = $this->_getExtra('WORDPRESSENABLEYOUTUBEGOOGLEVIMOEO');
+//    } else {
+//      $retour ='-1';
+//    }
+//    return $retour;
+//  }
+//
+//  // /new features
+//
+//  function setWordpressEditPW($pw){
+//    $this->_addExtra('WORDPRESSEDITPW',$pw);
+//  }
+//
+//  function getWordpressEditPW(){
+//    if ( $this->_issetExtra('WORDPRESSEDITPW') ) {
+//      $retour = $this->_getExtra('WORDPRESSEDITPW');
+//    } else {
+//      $retour ='edit';
+//    }
+//    return $retour;
+//  }
+//
+//
+//  function setWordpressReadPW($pw){
+//    $this->_addExtra('WORDPRESSREADPW',$pw);
+//  }
+//
+//  function getWordpressReadPW(){
+//    if ( $this->_issetExtra('WORDPRESSREADPW') ) {
+//      $retour = $this->_getExtra('WORDPRESSREADPW');
+//    } else {
+//      $retour = '';
+//    }
+//    return $retour;
+//  }
+//
+//  function setWordpressWithSectionEdit () {
+//    $this->_addExtra('WORDPRESS_SECTIONEDIT','1');
+//  }
+//
+//  function setWordpressWithoutSectionEdit () {
+//    $this->_addExtra('WORDPRESS_SECTIONEDIT','-1');
+//  }
+//
+//  function setWordpressWithHeaderForSectionEdit () {
+//    $this->_addExtra('WORDPRESS_SECTIONEDIT_HEADER','1');
+//  }
+//
+//  function setWordpressWithoutHeaderForSectionEdit () {
+//    $this->_addExtra('WORDPRESS_SECTIONEDIT_HEADER','-1');
+//  }
+//
+//  function wordpressWithSectionEdit () {
+//    $retour = false;
+//    if ( $this->_issetExtra('WORDPRESS_SECTIONEDIT') ) {
+//      $value = $this->_getExtra('WORDPRESS_SECTIONEDIT');
+//      if ( $value == 1 ) {
+//        $retour = true;
+//      }
+//    }
+//    return $retour;
+//  }
+//
+//  function wordpressWithHeaderForSectionEdit () {
+//    $retour = false;
+//    if ( $this->_issetExtra('WORDPRESS_SECTIONEDIT_HEADER') ) {
+//      $value = $this->_getExtra('WORDPRESS_SECTIONEDIT_HEADER');
+//      if ( $value == 1 ) {
+//        $retour = true;
+//      }
+//    }
+//    return $retour;
+//  }
+//
+//  // Wordpress Discussion
+//
+//  function setWordpressEnableDiscussion(){
+//    $this->_addExtra('WORDPRESSENABLEDISCUSSION','1');
+//  }
+//
+//  function unsetWordpressEnableDiscussion(){
+//    $this->_addExtra('WORDPRESSENABLEDISCUSSION','-1');
+//  }
+//
+//  function WordpressEnableDiscussion(){
+//    if ( $this->_issetExtra('WORDPRESSENABLEDISCUSSION') ) {
+//      $retour = $this->_getExtra('WORDPRESSENABLEDISCUSSION');
+//    } else {
+//      $retour ='-1';
+//    }
+//    return $retour;
+//  }
+//
+//  function setWordpressEnableDiscussionNotification(){
+//    $this->_addExtra('WORDPRESSENABLEDISCUSSIONNOTIFICATION','1');
+//  }
+//
+//  function unsetWordpressEnableDiscussionNotification(){
+//    $this->_addExtra('WORDPRESSENABLEDISCUSSIONNOTIFICATION','-1');
+//  }
+//
+//  function WordpressEnableDiscussionNotification(){
+//    if ( $this->_issetExtra('WORDPRESSENABLEDISCUSSIONNOTIFICATION') ) {
+//      $retour = $this->_getExtra('WORDPRESSENABLEDISCUSSIONNOTIFICATION');
+//    } else {
+//      $retour ='-1';
+//    }
+//    return $retour;
+//  }
+//
+//  function setWordpressEnableDiscussionNotificationGroups(){
+//    $this->_addExtra('WORDPRESSENABLEDISCUSSIONNOTIFICATIONGROUPS','1');
+//  }
+//
+//  function unsetWordpressEnableDiscussionNotificationGroups(){
+//    $this->_addExtra('WORDPRESSENABLEDISCUSSIONNOTIFICATIONGROUPS','-1');
+//  }
+//
+//  function WordpressEnableDiscussionNotificationGroups(){
+//    if ( $this->_issetExtra('WORDPRESSENABLEDISCUSSIONNOTIFICATIONGROUPS') ) {
+//      $retour = $this->_getExtra('WORDPRESSENABLEDISCUSSIONNOTIFICATIONGROUPS');
+//    } else {
+//      $retour ='-1';
+//    }
+//    return $retour;
+//  }
+//
+//  function WordpressSetNewDiscussion($new_discussion){
+//    if(!empty($new_discussion)){
+//      if(!$this->_issetExtra('WORDPRESSDISCUSSIONARRAY')){
+//        $this->_addExtra('WORDPRESSDISCUSSIONARRAY', $new_discussion);
+//      } else {
+//        if ( $this->_issetExtra('WORDPRESSDISCUSSIONARRAY') && !mb_stristr($this->_getExtra('WORDPRESSDISCUSSIONARRAY'), $new_discussion)) {
+//          $discussion_string = $this->_getExtra('WORDPRESSDISCUSSIONARRAY');
+//          if(!empty($discussion_string)){
+//            $discussion_array = explode('$CSDW$', $discussion_string);
+//          } else {
+//            $discussion_array = array();
+//          }
+//          $discussion_array[] = $new_discussion;
+//          $discussion_string = implode('$CSDW$', $discussion_array);
+//          $this->_addExtra('WORDPRESSDISCUSSIONARRAY',$discussion_string);
+//        }
+//      }
+//    }
+//  }
+//
+//  function WordpressRemoveDiscussion($old_discussion){
+//    if ( $this->_issetExtra('WORDPRESSDISCUSSIONARRAY') && mb_stristr($this->_getExtra('WORDPRESSDISCUSSIONARRAY'), $old_discussion)) {
+//      $discussion_string = $this->_getExtra('WORDPRESSDISCUSSIONARRAY');
+//      if(!empty($discussion_string)){
+//        $discussion_array = explode('$CSDW$', $discussion_string);
+//        $new_discussion_array = array();
+//        foreach($discussion_array as $discussion){
+//          if($discussion != $old_discussion){
+//            $new_discussion_array[] = $discussion;
+//          }
+//        }
+//        $discussion_string = implode('$CSDW$', $new_discussion_array);
+//      }
+//      $this->_addExtra('WORDPRESSDISCUSSIONARRAY',$discussion_string);
+//    }
+//  }
+//
+//  function getWordpressDiscussionArray(){
+//    if ( $this->_issetExtra('WORDPRESSDISCUSSIONARRAY') ) {
+//      $discussion_string = $this->_getExtra('WORDPRESSDISCUSSIONARRAY');
+//    } else {
+//      $discussion_string ='';
+//    }
+//    $discussion_array = explode('$CSDW$', $discussion_string);
+//    if($discussion_array[0] == ''){
+//      return false;
+//    } else {
+//      return $discussion_array;
+//    }
+//  }
+//
+//  function unsetWordpressDiscussionArray(){
+//    $this->_addExtra('WORDPRESSDISCUSSIONARRAY','');
+//  }
+//
+//  function setWordpressUseCommSyLogin(){
+//    $this->_addExtra('WORDPRESSUSECOMMSYLOGIN','1');
+//  }
+//
   function unsetWordpressUseCommSyLogin(){
     $this->_addExtra('WORDPRESSUSECOMMSYLOGIN','-1');
   }
@@ -3158,90 +3169,90 @@ class cs_context_item extends cs_item {
     }
     return $retour;
   }
-
-  function setWordpressCommunityReadAccess(){
-    $this->_addExtra('WORDPRESSCOMMUNITYREADACCESS','1');
-  }
-
-  function unsetWordpressCommunityReadAccess(){
-    $this->_addExtra('WORDPRESSCOMMUNITYREADACCESS','-1');
-  }
-
-  function WordpressCommunityReadAccess(){
-    if ( $this->_issetExtra('WORDPRESSCOMMUNITYREADACCESS') ) {
-      $retour = $this->_getExtra('WORDPRESSCOMMUNITYREADACCESS');
-    } else {
-      $retour ='-1';
-    }
-    return $retour;
-  }
-
-  function setWordpressCommunityWriteAccess(){
-    $this->_addExtra('WORDPRESSCOMMUNITYWRITEACCESS','1');
-  }
-
-  function unsetWordpressCommunityWriteAccess(){
-    $this->_addExtra('WORDPRESSCOMMUNITYWRITEACCESS','-1');
-  }
-
-  function WordpressCommunityWriteAccess(){
-    if ( $this->_issetExtra('WORDPRESSCOMMUNITYWRITEACCESS') ) {
-      $retour = $this->_getExtra('WORDPRESSCOMMUNITYWRITEACCESS');
-    } else {
-      $retour ='-1';
-    }
-    return $retour;
-  }
-
-  function setWordpressPortalReadAccess(){
-    $this->_addExtra('WORDPRESSPORTALREADACCESS','1');
-  }
-
-  function unsetWordpressPortalReadAccess(){
-    $this->_addExtra('WORDPRESSPORTALREADACCESS','-1');
-  }
-
-  function WordpressPortalReadAccess(){
-    if ( $this->_issetExtra('WORDPRESSPORTALREADACCESS') ) {
-      $retour = $this->_getExtra('WORDPRESSPORTALREADACCESS');
-    } else {
-      $retour ='-1';
-    }
-    return $retour;
-  }
-
-  function isWordpressPortalReadAccess () {
-    $retour = false;
-    if ( $this->WordpressPortalReadAccess() == 1 ) {
-      $retour = true;
-    }
-    return $retour;
-  }
-
-  function setWordpressRoomModWriteAccess(){
-    $this->_addExtra('WORDPRESSROOMWRITEMODACCESS','1');
-  }
-
-  function unsetWordpressRoomModWriteAccess(){
-    $this->_addExtra('WORDPRESSROOMWRITEMODACCESS','-1');
-  }
-
-  function WordpressRoomModWriteAccess(){
-    if ( $this->_issetExtra('WORDPRESSROOMWRITEMODACCESS') ) {
-      $retour = $this->_getExtra('WORDPRESSROOMWRITEMODACCESS');
-    } else {
-      $retour ='-1';
-    }
-    return $retour;
-  }
-
-  function isWordpressRoomModWriteAccess () {
-    $retour = false;
-    if ( $this->WordpressRoomModWriteAccess() == 1 ) {
-      $retour = true;
-    }
-    return $retour;
-  }
+//
+//  function setWordpressCommunityReadAccess(){
+//    $this->_addExtra('WORDPRESSCOMMUNITYREADACCESS','1');
+//  }
+//
+//  function unsetWordpressCommunityReadAccess(){
+//    $this->_addExtra('WORDPRESSCOMMUNITYREADACCESS','-1');
+//  }
+//
+//  function WordpressCommunityReadAccess(){
+//    if ( $this->_issetExtra('WORDPRESSCOMMUNITYREADACCESS') ) {
+//      $retour = $this->_getExtra('WORDPRESSCOMMUNITYREADACCESS');
+//    } else {
+//      $retour ='-1';
+//    }
+//    return $retour;
+//  }
+//
+//  function setWordpressCommunityWriteAccess(){
+//    $this->_addExtra('WORDPRESSCOMMUNITYWRITEACCESS','1');
+//  }
+//
+//  function unsetWordpressCommunityWriteAccess(){
+//    $this->_addExtra('WORDPRESSCOMMUNITYWRITEACCESS','-1');
+//  }
+//
+//  function WordpressCommunityWriteAccess(){
+//    if ( $this->_issetExtra('WORDPRESSCOMMUNITYWRITEACCESS') ) {
+//      $retour = $this->_getExtra('WORDPRESSCOMMUNITYWRITEACCESS');
+//    } else {
+//      $retour ='-1';
+//    }
+//    return $retour;
+//  }
+//
+//  function setWordpressPortalReadAccess(){
+//    $this->_addExtra('WORDPRESSPORTALREADACCESS','1');
+//  }
+//
+//  function unsetWordpressPortalReadAccess(){
+//    $this->_addExtra('WORDPRESSPORTALREADACCESS','-1');
+//  }
+//
+//  function WordpressPortalReadAccess(){
+//    if ( $this->_issetExtra('WORDPRESSPORTALREADACCESS') ) {
+//      $retour = $this->_getExtra('WORDPRESSPORTALREADACCESS');
+//    } else {
+//      $retour ='-1';
+//    }
+//    return $retour;
+//  }
+//
+//  function isWordpressPortalReadAccess () {
+//    $retour = false;
+//    if ( $this->WordpressPortalReadAccess() == 1 ) {
+//      $retour = true;
+//    }
+//    return $retour;
+//  }
+//
+//  function setWordpressRoomModWriteAccess(){
+//    $this->_addExtra('WORDPRESSROOMWRITEMODACCESS','1');
+//  }
+//
+//  function unsetWordpressRoomModWriteAccess(){
+//    $this->_addExtra('WORDPRESSROOMWRITEMODACCESS','-1');
+//  }
+//
+//  function WordpressRoomModWriteAccess(){
+//    if ( $this->_issetExtra('WORDPRESSROOMWRITEMODACCESS') ) {
+//      $retour = $this->_getExtra('WORDPRESSROOMWRITEMODACCESS');
+//    } else {
+//      $retour ='-1';
+//    }
+//    return $retour;
+//  }
+//
+//  function isWordpressRoomModWriteAccess () {
+//    $retour = false;
+//    if ( $this->WordpressRoomModWriteAccess() == 1 ) {
+//      $retour = true;
+//    }
+//    return $retour;
+//  }
 
 
   ##########################################
