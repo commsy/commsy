@@ -1408,7 +1408,7 @@ class cs_page_room_view extends cs_page_view {
       $html .= '</div>'.LF;
       $html .= '</center>'.LF;
       //$html .= '</div>'.LF;
-      $html .= '<div id="delete" style="position: absolute; z-index:900; top:95px; left:'.$left.'; width:'.$width.'; height: 100%; background-color:#FFF; opacity:0.7; filter:Alpha(opacity=70);">';
+      $html .= '<div id="delete" style="position: absolute; z-index:900; top:95px; left:0em; width:100%; height: 100%; background-color:#FFF; opacity:0.7; filter:Alpha(opacity=70);">';
       $html .= '</div>'.LF;
       return $html;
    }

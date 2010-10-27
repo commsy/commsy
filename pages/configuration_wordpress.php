@@ -133,7 +133,7 @@ else {
     
     // delete wordpress
     $wordpress_manager = $environment->getWordpressManager();
-    $wordpress_manager->delete($item);
+    $wordpress_manager->deleteWordpress($item->getWordpressId());
 
     $item->setWordpressId(0);
     // Save item

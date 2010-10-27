@@ -118,12 +118,12 @@ class cs_wordpress_manager extends cs_manager {
     }
   }
 
-  function deleteWordpress ($item) {
+  function deleteWordpress ($wordpress_id) {
 
-    if (!$item->isPortal()) {
-      $this->CW->deleteBlog($item->getWordpressId());
-    }
-
+    #if (!$item->isPortal()) {
+    #  $this->CW->deleteBlog($item->getWordpressId());
+    #}
+    $this->CW->deleteBlog($wordpress_id);
   }
 
 
