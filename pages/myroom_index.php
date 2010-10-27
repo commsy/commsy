@@ -480,8 +480,8 @@ $manager->select();
 unset($list);
 if( $environment->inPrivateRoom() ){
    $user = $environment->getCurrentUserItem();
+   $manager->resetLimits();
    $list = $manager->getRelatedContextListForUser($user->getUserID(),$user->getAuthSource(),$environment->getCurrentPortalID());
-   pr($list->getCount());
 } else {
    $list = $manager->get();        // returns a cs_list items
 }
