@@ -443,6 +443,10 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $privateroom_item = $this->_environment->getCurrentContextItem();
       $config = $privateroom_item->getMyCalendarDisplayConfig();
       
+      $html .= '<input type="hidden" name="cid" value="' . $privateroom_item->getItemID() . '"/>'.LF;
+      $html .= '<input type="hidden" name="mod" value="date"/>'.LF;
+      $html .= '<input type="hidden" name="fct" value="index"/>'.LF;
+      
       // dates
       if(in_array('mycalendar_dates_portlet', $config)) {
 //	      $html .= '<div class="portlet-header-configuration ui-widget-header">'.LF;
@@ -476,15 +480,14 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $current_context = $this->_environment->getCurrentContextItem();
       $session = $this->_environment->getSession();
       $width = '170';
-      $context_item = $this->_environment->getCurrentContextItem();
       $html = '';
       
       //$html .= '<form action="commsy.php?cid=' . $context_item->getItemID() . '&mod=date&fct=index" method="post">'.LF;
       $html .= '<fieldset style="border: 1px solid Gainsboro; -moz-border-radius: 5px;">'.LF;
 	   $html .= '<legend style="color: DarkSlateGray;">' . $this->_translator->getMessage('COMMON_DATE_INDEX') . '</legend>'.LF;
-      $html .= '<input type="hidden" name="cid" value="' . $context_item->getItemID() . '"/>'.LF;
-      $html .= '<input type="hidden" name="mod" value="date"/>'.LF;
-      $html .= '<input type="hidden" name="fct" value="index"/>'.LF;
+      //$html .= '<input type="hidden" name="cid" value="' . $current_context->getItemID() . '"/>'.LF;
+      //$html .= '<input type="hidden" name="mod" value="date"/>'.LF;
+      //$html .= '<input type="hidden" name="fct" value="index"/>'.LF;
 	   
 	   #################
       ## date type
@@ -579,16 +582,28 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $html .= '>*'.$this->_translator->getMessage('COMMON_NO_SELECTION').'</option>'.LF;
       $html .= '   <option class="disabled" disabled="disabled" value="-2">------------------------------</option>'.LF;
       
+	   // get my calendar display configuration
+	   $configuration = $current_context->getMyCalendarDisplayConfig();
+	   $configuration_room_limit = array();
+	   foreach($configuration as $entry) {
+	      $exp_entry = explode('_', $entry);
+	      if(sizeof($exp_entry) == 2 && $exp_entry[1] == 'dates') {
+	         $configuration_room_limit[] = $exp_entry[0];
+	      }
+	   }
+      
       $user = $this->_environment->getCurrentUserItem();
       $room_manager = $this->_environment->getRoomManager();
       $room_list = $room_manager->getAllRelatedRoomListForUser($user);
       $room = $room_list->getFirst();
       while($room) {
-         $html .= '      <option value="' . $room->getItemID() . '"';
-         if(!empty($selroom) && $selroom == $room->getItemID()) {
-            $html .= ' selected="selected"';
+         if(in_array($room->getItemID(), $configuration_room_limit)) {
+            $html .= '      <option value="' . $room->getItemID() . '"';
+	         if(!empty($selroom) && $selroom == $room->getItemID()) {
+	            $html .= ' selected="selected"';
+	         }
+	         $html .= '>' . $room->getTitle() . '</option>'.LF; 
          }
-         $html .= '>' . $room->getTitle() . '</option>'.LF;
          
          $room = $room_list->getNext();
       }
@@ -635,15 +650,14 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $current_context = $this->_environment->getCurrentContextItem();
       $session = $this->_environment->getSession();
       $width = '170';
-      $context_item = $this->_environment->getCurrentContextItem();
       $html = '';
       
       //$html .= '<form action="commsy.php?cid=' . $context_item->getItemID() . '&mod=date&fct=index" method="post">'.LF;
       $html .= '<fieldset style="border: 1px solid Gainsboro; -moz-border-radius: 5px;">'.LF;
 	   $html .= '<legend style="color: DarkSlateGray;">' . $this->_translator->getMessage('COMMON_TODO_INDEX') . '</legend>'.LF;
-      $html .= '<input type="hidden" name="cid" value="' . $context_item->getItemID() . '"/>'.LF;
-      $html .= '<input type="hidden" name="mod" value="date"/>'.LF;
-      $html .= '<input type="hidden" name="fct" value="index"/>'.LF;
+//      $html .= '<input type="hidden" name="cid" value="' . $current_context->getItemID() . '"/>'.LF;
+//      $html .= '<input type="hidden" name="mod" value="date"/>'.LF;
+//      $html .= '<input type="hidden" name="fct" value="index"/>'.LF;
       
       #################
       ## rooms
@@ -659,16 +673,28 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $html .= '>*'.$this->_translator->getMessage('COMMON_NO_SELECTION').'</option>'.LF;
       $html .= '   <option class="disabled" disabled="disabled" value="-2">------------------------------</option>'.LF;
       
+      // get my calendar display configuration
+	   $configuration = $current_context->getMyCalendarDisplayConfig();
+	   $configuration_room_limit = array();
+	   foreach($configuration as $entry) {
+	      $exp_entry = explode('_', $entry);
+	      if(sizeof($exp_entry) == 2 && $exp_entry[1] == 'todo') {
+	         $configuration_room_limit[] = $exp_entry[0];
+	      }
+	   }
+	   
       $user = $this->_environment->getCurrentUserItem();
       $room_manager = $this->_environment->getRoomManager();
       $room_list = $room_manager->getAllRelatedRoomListForUser($user);
       $room = $room_list->getFirst();
       while($room) {
-         $html .= '      <option value="' . $room->getItemID() . '"';
-         if(!empty($selroom) && $selroom == $room->getItemID()) {
-            $html .= ' selected="selected"';
+         if(in_array($room->getItemID(), $configuration_room_limit)) {
+            $html .= '      <option value="' . $room->getItemID() . '"';
+	         if(!empty($selroom) && $selroom == $room->getItemID()) {
+	            $html .= ' selected="selected"';
+	         }
+	         $html .= '>' . $room->getTitle() . '</option>'.LF;
          }
-         $html .= '>' . $room->getTitle() . '</option>'.LF;
          
          $room = $room_list->getNext();
       }
@@ -1015,11 +1041,20 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $action_array = array();
       $html = '';
 
-      $myroom_array = $privateroom_item->getMyroomDisplayConfig();
+      
       $room_manager = $this->_environment->getRoomManager();
       $user = $this->_environment->getCurrentUserItem();
       $list = $room_manager->getAllRelatedRoomListForUser($user);
       $myentries_array = $privateroom_item->getMyCalendarDisplayConfig();
+      $myroom_array = array();
+      foreach($myentries_array as $entry) {
+         $exp_entry = explode('_', $entry);
+         if(sizeof($exp_entry) == 2) {
+            if($exp_entry[1] == 'dates' || $exp_entry[1] == 'todo') {
+               $myroom_array[] = $entry;
+            }
+         }
+      }
 
       $temp_array = array();
       $temp_array['dropdown_image']  = "mycalendar_icon";
@@ -1081,7 +1116,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
          $temp_array['dropdown_image']  = "mycalendar_icon";
          $temp_array['text']  = $room_item->getTitle();
          $temp_array['value'] = $room_item->getItemID().'_dates';
-         if(in_array($room_item->getItemID(), $myroom_array)){
+         if(in_array($room_item->getItemID() . '_dates', $myroom_array)){
             $temp_array['checked']  = "checked";
          } else {
             $temp_array['checked']  = "";
@@ -1124,7 +1159,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
          $temp_array['dropdown_image']  = "mycalendar_icon";
          $temp_array['text']  = $room_item->getTitle();
          $temp_array['value'] = $room_item->getItemID().'_todo';
-         if(in_array($room_item->getItemID(), $myroom_array)){
+         if(in_array($room_item->getItemID() . '_todo', $myroom_array)){
             $temp_array['checked']  = "checked";
          } else {
             $temp_array['checked']  = "";
@@ -5619,6 +5654,30 @@ class cs_date_calendar_index_view extends cs_room_index_view {
          ) {
          $html .= '<div id="contentbox" class="portlet-content">'.LF;
          $html .= '<table class="description-background" style="width:100%;">'.LF;
+//         $html .= '<tr>'.LF;
+//         $html .= '<td style="vertical-align:top;">'.LF;
+//         $html .= $this->_translator->getMessage('COMMON_PAGETITLE_CONFIGURATION').': '.LF;
+//         $html .= '</td>'.LF;
+//         $html .= '</tr>'.LF;
+//         $current_context = $this->_environment->getCurrentContextItem();
+//         $mycalendar_conf = $current_context->getMyCalendarDisplayConfig();
+//         $room_manager = $this->_environment->getRoomManager();
+//         foreach($mycalendar_conf as $entry) {
+//            $exp_entry = explode('_', $entry);
+//            if(sizeof($exp_entry) == 2) {
+//               if($exp_entry[1] == 'dates') {
+//                  $room_id = $exp_entry[0];
+//                  $conf_room = $room_manager->getItem($room_id);
+//                  
+//                  $html .= '<tr>'.LF;
+//                  $html .= '<td style="text-align:right;">'.LF;
+//                  $html .= $conf_room->getTitle() . LF;
+//                  $html .= '</td>' . LF;
+//                  $html .= '</tr>' . LF;
+//               }
+//            }
+//         }
+//         unset($room_manager);
          $html .= '<tr>'.LF;
          $html .= '<td style="vertical-align:top;">'.LF;
          $html .= $this->_translator->getMessage('COMMON_RESTRICTIONS_SHORT').': '.LF;
@@ -5721,7 +5780,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
             }
 
             $new_aparams = $this->_environment->getCurrentParameterArray();
-            $new_aparams['selstatus'] = 0;
+            $new_aparams['selstatus'] = 2;
             $image = '<img src="images/delete_restriction.gif" style="padding-top:3px;" alt="'.$this->_translator->getMessage('ENTRY_DELETE_RESTRICTION').'"/>'.LF;
             $html .= ' '.ahref_curl(  $this->_environment->getCurrentContextID(),
                                        CS_DATE_TYPE,

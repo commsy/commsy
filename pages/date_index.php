@@ -874,7 +874,26 @@ if ( $current_context->isPrivateRoom()
    ) {
    $current_user_item = $environment->getCurrentUser();
    $room_id_array = array();
+   
+   // get my calendar display configuration
+   $configuration = $current_context->getMyCalendarDisplayConfig();
+   $configuration_room_dates_limit = array();
+   $configuration_room_todo_limit = array();
+   foreach($configuration as $entry) {
+      $exp_entry = explode('_', $entry);
+      if(sizeof($exp_entry) == 2) {
+         if($exp_entry[1] == 'dates') {
+	         $configuration_room_dates_limit[] = $exp_entry[0];
+	      } else if($exp_entry[1] == 'todo') {
+	         $configuration_room_todo_limit[] = $exp_entry[0];
+	      }
+      }
+   }
+   
+   // add privateroom itself
    $room_id_array[] = $current_context->getItemID();
+   
+   // add related group rooms
    $grouproom_list = $current_user_item->getRelatedGroupList();
    if ( isset($grouproom_list) and $grouproom_list->isNotEmpty()) {
       $grouproom_list->reverse();
@@ -894,6 +913,8 @@ if ( $current_context->isPrivateRoom()
          $grouproom_item = $grouproom_list->getNext();
       }
    }
+   
+   // add related project rooms 
    $project_list = $current_user_item->getRelatedProjectList();
    if ( isset($project_list) and $project_list->isNotEmpty()) {
       $project_item = $project_list->getFirst();
@@ -902,6 +923,8 @@ if ( $current_context->isPrivateRoom()
           $project_item = $project_list->getNext();
       }
    }
+   
+   // add related community rooms
    $community_list = $current_user_item->getRelatedcommunityList();
    if ( isset($community_list) and $community_list->isNotEmpty()) {
       $community_item = $community_list->getFirst();
@@ -910,12 +933,23 @@ if ( $current_context->isPrivateRoom()
           $community_item = $community_list->getNext();
       }
    }
+   
+   // filter room id array
+   $temp = array();
+   foreach($configuration_room_dates_limit as $limit) {
+      if(in_array($limit, $room_id_array)) {
+         $temp[] = $limit;
+      }
+   }
+   $temp[] = $current_context->getItemID();
+   $dates_room_id_array = $temp;
+   
    if ($sel_room != "2"){
       $room_id = array();
       $room_id[] = $sel_room;
       $dates_manager->setContextArrayLimit($room_id);
    }else{
-      $dates_manager->setContextArrayLimit($room_id_array);
+      $dates_manager->setContextArrayLimit($dates_room_id_array);
    }
    $view->setRoomIDArray($room_id_array);
    $view->setSelectedRoom($sel_room);
@@ -991,9 +1025,19 @@ if ( $current_context->isPrivateRoom()
          $view->setSelectedAssignment($todo_sel_assignment,CS_TODO_TYPE);
       }
    }
+   
+   // filter room id array
+   $temp = array();
+   foreach($configuration_room_todo_limit as $limit) {
+      if(in_array($limit, $room_id_array)) {
+         $temp[] = $limit;
+      }
+   }
+   $temp[] = $current_context->getItemID();
+   $todo_room_id_array = $temp;
 
    $todo_manager = $environment->getToDoManager();
-   $todo_manager->setContextArrayLimit($room_id_array);
+   $todo_manager->setContextArrayLimit($todo_room_id_array);
    $todo_ids = $todo_manager->getIDArray();
    $count_all_todos = count($todo_ids);
    $todo_manager->showNoNotActivatedEntries();

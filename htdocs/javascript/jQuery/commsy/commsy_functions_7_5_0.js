@@ -3092,9 +3092,9 @@ jQuery(document).ready(function() {
 					jQuery(this).attr('checked', false);
 				}
 			});
-			
+
 			var json_data = new Object();
-			
+
 			var portlet_array = new Array();
 			jQuery('[name=myrooms]:checked').each(function(){
 				portlet_array.push(jQuery(this).attr('value'));
@@ -3119,7 +3119,7 @@ jQuery(document).ready(function() {
 				}
 				json_data['column_'+int] = column_portlets;
 			}
-		    
+
 			jQuery.ajax({
 		       url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct='+window.ajax_function+'&output=json&do=save_config',
 		       data: json_data,
@@ -3445,10 +3445,17 @@ jQuery(document).ready(function() {
 					dropdown_menus.push(tempImage);
 				}
 			}
+			
+			// check for other dropdown's
+			var dropdown_count_all = jQuery("img[id^='dropdown_button_']").length;
+			var offset = 0;
+			if(dropdown_count_all > dropdown_menus.length) {
+				offset = dropdown_count_all;
+			}
 
 			// sort menu_entries to menus
-			for ( var int3 = 0; int3 < dropdown_menus.length; int3++) {
-				var current_menu = dropdown_menus[int3];
+			for ( var int3 = offset; int3 < dropdown_menus.length + offset; int3++) {
+				var current_menu = dropdown_menus[int3-offset];
 
 				var tempImage = current_menu;
 				var disabled = false;
