@@ -37,11 +37,10 @@ if(isset($_GET['do'])){
 		}
       
 		if(empty($myroom_array)){
-			$myroom_array[] = 'empty';
-		}
-		
+         $myroom_array[] = 'empty';
+      }
       $privateroom_item->setMyroomDisplayConfig($myroom_array);
-      
+		
 	   $myroom_config_array = $privateroom_item->getMyroomConfig();
       foreach($myroom_config_array as $key_top => $column){
          foreach($column as $key => $column_entry){

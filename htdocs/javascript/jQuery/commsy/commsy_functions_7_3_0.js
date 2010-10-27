@@ -3092,8 +3092,15 @@ jQuery(document).ready(function() {
 					jQuery(this).attr('checked', false);
 				}
 			});
-
+			
 			var json_data = new Object();
+			
+			var portlet_array = new Array();
+			jQuery('[name=myrooms]:checked').each(function(){
+				portlet_array.push(jQuery(this).attr('value'));
+			});
+			json_data['myrooms'] = portlet_array;
+			
 		    var portlet_columns = jQuery(".column");
 		    for ( var int = 0; int < portlet_columns.length; int++) {
 		    	var column_portlets = new Array();
@@ -3112,7 +3119,7 @@ jQuery(document).ready(function() {
 				}
 				json_data['column_'+int] = column_portlets;
 			}
-
+		    
 			jQuery.ajax({
 		       url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct='+window.ajax_function+'&output=json&do=save_config',
 		       data: json_data,
