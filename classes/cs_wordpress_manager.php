@@ -57,7 +57,10 @@ class cs_wordpress_manager extends cs_manager {
 
       $wordpressId = $contextItem->getWordpressId();
       if($wordpressId == 0) {
-        $wpUser = array('name' => $this->wp_user['user_id'], 'password' => uniqid()); // random password
+        $currentUser = $this->_environment->getCurrentUserItem();
+        $wpUser = array();
+        $wpUser['login'] = $currentUser->getUserId();
+        $wpUser['email'] = $currentUser->getEmail();
         $wpBlog = array('title' => $this->_environment->getCurrentContextItem()->getTitle(), 'path' => $this->_environment->getCurrentPortalID().'_'.$this->_environment->getCurrentContextID());
         $result = $this->CW->createBlog($wpUser, $wpBlog);
         $contextItem->setWordpressId($result['blog_id']);
@@ -222,7 +225,7 @@ class cs_wordpress_manager extends cs_manager {
 
     $currentUser = $this->_environment->getCurrentUserItem();
     $wpUser = array();
-    $wpUser['name'] = $currentUser->getUserId();
+    $wpUser['login'] = $currentUser->getUserId();
     $wpUser['email'] = $currentUser->getEmail();
     //$this->updateExportLists($rubric);
     // write posts
