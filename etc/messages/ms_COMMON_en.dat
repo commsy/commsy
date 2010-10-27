@@ -789,6 +789,7 @@ $message["COMMON_WIKI_LINK"]["en"] = "Wiki";
 $message["COMMON_WIKI_PWS"]["en"] = "Passwords";
 $message["COMMON_WIKI_PWS_DESC"]["en"] = "Set different passwords.";
 $message["COMMON_WIKI_READ_PW"]["en"] = "<div style=&quot;float:left; width:120px;&quot;>Read:</div>";
+$message["COMMON_WORDPRESS_LINK"]["en"] = "Wordpress blog";
 $message["COMMON_X_ANNOTATIONS"]["en"] = "%1 total";
 $message["COMMON_X_ENTRIES"]["en"] = "%1";
 $message["COMMON_X_ENTRIES_FROM_ALL"]["en"] = "Listed: %1 items (of %2 total)";

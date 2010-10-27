@@ -10,4 +10,5 @@ $message["WORDPRESS_CONFIGURATION_USE_COMMENTS"]["en"] = "Allow Comments";
 $message["WORDPRESS_CONFIGURATION_USE_COMMENTS_DESC"]["en"] = "Enable Comments on Blog Posts";
 $message["WORDPRESS_CONFIGURATION_USE_COMMENTS_MODERATION"]["en"] = "Moderate Comments";
 $message["WORDPRESS_DELETE_BUTTON"]["en"] = "delete Blog";
+$message["WORDPRESS_SAVE_BUTTON"]["en"] = "Create wordpress blog";
 ?>
