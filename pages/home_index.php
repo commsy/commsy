@@ -721,12 +721,13 @@ if ( $context_item->isProjectroom()
                            $manager->setAgeLimit($context_item->getTimeSpread());
                         } elseif ($environment->inCommunityRoom()) {
                            $manager->setIntervalLimit(0,5);
+                           $home_rubric_limit = 5;
                         }
                         $manager->showNoNotActivatedEntries();
                         $manager->select();
-
                         $count_select = $manager->getCountAll();
                         $manager->setIntervalLimit(0, $home_rubric_limit);
+                        $home_rubric_limit = CS_HOME_RUBRIC_LIST_LIMIT;
                         if($home_rubric_limit < $count_select) $short_list_view->setListShortened(true);
 
                         $list = $manager->get();
