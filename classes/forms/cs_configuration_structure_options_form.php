@@ -135,7 +135,8 @@ var $_with_tags = false;
 
    function getInfoForHeaderAsHTML () {
       $retour  = '';
-      $retour .= '        window.addEvent(\'domready\', function(){'.LF;
+      //$retour .= '        window.addEvent(\'domready\', function(){'.LF;
+      $retour .= '			jQuery(document).ready( function() {' . LF;
       $retour .= '           if (document.edit.buzzword.checked) {'.LF;
       $retour .= '               cs_enable_buzzword();'.LF;
       $retour .= '            } else {'.LF;
