@@ -544,6 +544,11 @@ class cs_page_view extends cs_view {
       $session = $this->_environment->getSession();
       $left_menue_status = $session->getValue('left_menue_status');
       $retour  = '';
+      
+      /**/
+      $retour .= '   <script type="text/javascript" src="javascript/jQuery/commsy/uploadify_7_5_0_fix.js"></script>'.LF;
+      /**/
+      
       // jQuery
       if(!(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6'))){
          #$retour .= '   <script type="text/javascript" src="javascript/jQuery/jquery-1.3.2.min.js"></script>'.LF;

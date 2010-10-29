@@ -725,7 +725,14 @@ class cs_form_view extends cs_view {
          $button_browse = "javascript/jQuery/jquery.uploadify-v2.1.0/button_browse_" . $selected_lang . ".png";
          $button_upload = "javascript/jQuery/jquery.uploadify-v2.1.0/button_upload_" . $selected_lang . ".png";
          $button_abort = "javascript/jQuery/jquery.uploadify-v2.1.0/button_abort_" . $selected_lang . ".png";
-
+         
+         $html .= '<div id="fileQueue"></div>';
+         $html .= '<input type="file" name="uploadify" id="uploadify" />';
+         $html .= '<a id="uploadify_doUpload" href="javascript:$(\'#uploadify\').uploadifyUpload();"><img src="' . $button_upload . '"></a>&nbsp;';
+         $html .= '<a id="uploadify_clearQuery" href="javascript:jQuery(\'#uploadify\').uploadifyClearQueue()"><img src="' . $button_abort . '"></a>';
+         
+         $html .= '&nbsp;'.$this->_getButtonAsHTML($form_element['button_text'],$form_element['button_name'],'125',false,'','','','','uploadify_fixSubmitButton');
+         
          $html .='<script type="text/javascript">';
          $html .='$(document).ready(function() {';
          $html .='   $("#uploadify").uploadify({';
@@ -747,12 +754,14 @@ class cs_form_view extends cs_view {
          $html .='		"onAllComplete"	 : uploadify_onAllComplete,';
          $html .='		"onError"		 : uploadify_onError';
          $html .='   });';
+         
+         $html .= 'jQuery(\'input[id="uploadify_fixSubmitButton"]\').attr(\'style\', \'display: none;\');';
+         
+         $html .= 'window.setTimeout("check_upload_form()",2000);';
+         //$html .= 'check_upload_form()';
+         
          $html .='});';
          $html .='</script>';
-         $html .= '<div id="fileQueue"></div>';
-         $html .= '<input type="file" name="uploadify" id="uploadify" />';
-         $html .= '<a href="javascript:$(\'#uploadify\').uploadifyUpload();"><img src="' . $button_upload . '"></a>&nbsp;';
-         $html .= '<a href="javascript:jQuery(\'#uploadify\').uploadifyClearQueue()"><img src="' . $button_abort . '"></a>';
       }else{
          if ( !isset($form_element['multi_upload'])
               or !$form_element['multi_upload']
