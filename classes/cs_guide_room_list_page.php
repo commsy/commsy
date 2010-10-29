@@ -97,6 +97,7 @@ class cs_guide_room_list_page extends cs_page {
          $manager = $this->_environment->getRoomManager();
          $manager->setContextLimit($this->_environment->getCurrentContextID());
          $show_rooms_save = $current_context->getShowRoomsOnHome();
+         $show_rooms = $show_rooms_save;
          if ( empty($selroom)
               and !empty($show_rooms)
               and $show_rooms_save == 'preselectmyrooms'
