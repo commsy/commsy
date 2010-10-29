@@ -270,11 +270,14 @@ if ( $context_item->isProjectroom()
                            $manager->setAgeLimit($context_item->getTimeSpread());
                         } else {
                            $manager->setIntervalLimit(0,5);
+                           $home_rubric_limit = 5;
                         }
                         $manager->showNoNotActivatedEntries();
 
                         $count_select = $manager->getCountAll();
                         $manager->setIntervalLimit(0, $home_rubric_limit);
+                        $home_rubric_limit = CS_HOME_RUBRIC_LIST_LIMIT;
+                        
                         if($home_rubric_limit < $count_select) $short_list_view->setListShortened(true);
 
                         $manager->select();
@@ -303,7 +306,7 @@ if ( $context_item->isProjectroom()
                         $manager->reset();
                         $manager->setContextLimit($environment->getCurrentContextID());
                         $count_all = $manager->getCountAll();
-                        if ($environment->inProjectRoom() or $environment->inPrivateRoom() ) {
+                        if ($environment->inProjectRoom() or $environment->inGroupRoom() ) {
                            $manager->setAgeLimit($context_item->getTimeSpread());
                         } elseif ($environment->inCommunityRoom()) {
                            $manager->setIntervalLimit(0,5);
@@ -717,7 +720,7 @@ if ( $context_item->isProjectroom()
                         $manager->reset();
                         $manager->setContextLimit($environment->getCurrentContextID());
                         $count_all = $manager->getCountAll();
-                        if ($environment->inProjectRoom() or $environment->inPrivateRoom() ) {
+                        if ($environment->inProjectRoom() or $environment->inGroupRoom() ) {
                            $manager->setAgeLimit($context_item->getTimeSpread());
                         } elseif ($environment->inCommunityRoom()) {
                            $manager->setIntervalLimit(0,5);
