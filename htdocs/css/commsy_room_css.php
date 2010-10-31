@@ -247,6 +247,8 @@ div.content{
            }else{
               echo('background: '.$color['content_background'].' url(../'.$c_single_entry_point.'?cid='.$cid.'&mod=picture&fct=getfile&picture='.$room->getBGImageFilename().') no-repeat;');
            }
+       }else{
+          echo('background-color: '.$color['content_background'].';');
        }
     }else{
         if (!isset($color['background_image'])){
