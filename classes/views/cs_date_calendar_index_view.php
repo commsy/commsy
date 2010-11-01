@@ -1189,7 +1189,9 @@ class cs_date_calendar_index_view extends cs_room_index_view {
             } else {
                $html .= ',';
             }
-            $html .= 'new Array("'.$action['dropdown_image'].'","'.$action['checked'].'","'.$action['text'].'","'.$action['value'].'")';
+            $action_text = str_ireplace('"', '\"', $action['text']);
+            $action_text = str_ireplace("'", "\'", $action_text);
+            $html .= 'new Array("'.$action['dropdown_image'].'","'.$action['checked'].'","'.$action_text.'","'.$action['value'].'")';
          }
          $html .= ');'.LF;
          $html .= 'var mycalendarSaveButton = "'.$this->_translator->getMessage('PREFERENCES_SAVE_BUTTON').'";'.LF;
