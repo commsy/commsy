@@ -670,7 +670,8 @@ class cs_form_view extends cs_view {
       $fct = $this->_environment->getCurrentFunction();
       if(   isset($_GET['show_profile']) ||
             ($module == 'configuration' && $fct == 'room_options') ||
-            ($module == 'group' && $fct == 'edit')) {
+            ($module == 'group' && $fct == 'edit') || 
+            ($module == 'user' && $fct == 'edit')) {
          $use_new_upload = false;
       }
 
