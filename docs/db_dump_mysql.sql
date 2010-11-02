@@ -256,6 +256,18 @@ CREATE TABLE IF NOT EXISTS `external2commsy_id` (
 -- --------------------------------------------------------
 
 --
+-- Tabellenstruktur für Tabelle `external_viewer`
+--
+
+CREATE TABLE IF NOT EXISTS `external_viewer` (
+  `item_id` int(11) NOT NULL,
+  `user_id` varchar(32) NOT NULL,
+  KEY `item_id` (`item_id`,`user_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
 -- Tabellenstruktur für Tabelle `files`
 --
 

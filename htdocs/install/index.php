@@ -1,9 +1,4 @@
 <?php
-
-error_reporting(E_ALL);
-include('includes/language.php');
-session_start();
-
 // Copyright (c)2002-2008 Dirk Blössl, Matthias Finck, Dirk Fust, Franz Grünig,
 // Oliver Hankel, Iver Jackewitz, Michael Janneck, Martti Jeenicke,
 // Detlev Krause, Irina L. Marinescu, Frithjof Meyer, Timo Nolte, Bernd Pape,
@@ -24,7 +19,12 @@ session_start();
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-$filename = '../../etc/cs_config.php';
+chdir('../..');
+error_reporting(E_ALL);
+include('htdocs/install/includes/language.php');
+session_start();
+
+$filename = 'etc/cs_config.php';
 
 if (file_exists($filename)) {
 
@@ -293,7 +293,7 @@ if (!isset($action)) {
    echo "<h1>".$language[$lang]['license']."</h1>";
    echo '<div id="lizenz">';
    echo '<p><pre>';
-   $licensetext = file_get_contents('../../docs/LICENSE');
+   $licensetext = file_get_contents('docs/LICENSE');
    echo $licensetext;
    echo '</pre></p>';
    echo '</div>';
@@ -433,7 +433,7 @@ if (!isset($action)) {
 
    echo "<h1>".$language[$lang]['chmod']."</h1>";
 
-   if (is_writable("../../etc")) {
+   if (is_writable("etc")) {
 
       $checketc = "<font style=\"color: #32C040;\"><strong>".$language[$lang]['ok']."</strong></font>\n";
       $checketc1 = 1;
@@ -443,7 +443,7 @@ if (!isset($action)) {
       $checketc = "<font style=\"color: #FF0030;\"><strong>".$language[$lang]['error']."</strong></font>\n";
    }
 
-   if (is_writable("../../var")) {
+   if (is_writable("var")) {
 
       $checkvar = "<font style=\"color: #32C040;\"><strong>".$language[$lang]['ok']."</strong></font>\n";
       $checkvar1 = 1;
@@ -453,9 +453,9 @@ if (!isset($action)) {
       $checkvar = "<font style=\"color: #FF0030;\"><strong>".$language[$lang]['error']."</strong></font>\n";
    }
 
-   if(file_exists("../../var/temp"))
+   if(file_exists("var/temp"))
    {
-      if (is_writable("../../var/temp")) {
+      if (is_writable("var/temp")) {
 
          $checkvartemp = "<font style=\"color: #32C040;\"><strong>".$language[$lang]['ok']."</strong></font>\n";
          $checkvartemp1 = 1;
@@ -466,7 +466,7 @@ if (!isset($action)) {
 
       }
    } else {
-      if (mkdir("../../var/temp",0770)) {
+      if (mkdir("var/temp",0770)) {
 
          $checkvartemp = "<font style=\"color: #32C040;\"><strong>".$language[$lang]['ok']."</strong></font>\n";
          $checkvartemp1 = 1;
@@ -796,6 +796,7 @@ $schreibe5 = deleteLastSlash($schreibe5);
 if ( !empty($schreibe15) ) {
    $schreibe6 = dirname($schreibe15);
    $schreibe6 = str_replace('/htdocs','',$schreibe6);
+   $schreibe6 = str_replace('/install','',$schreibe6);
    $schreibe6 = str_replace('/',DIRECTORY_SEPARATOR,$schreibe6);
 } else {
    $schreibe6 = \"".$_POST['abspath']."\";
@@ -806,18 +807,18 @@ $schreibe6 = deleteLastSlash($schreibe6);
 $schreibe12 = \"".$sec_key."\";
 
 // include more commsy settings
-@include_once('config_meta.php');
+@include_once('etc/config_meta.php');
 ?>";
-   $mysqlfile = "../../etc/cs_config.php";
+   $mysqlfile = "etc/cs_config.php";
    if (!file_put_contents($mysqlfile,$daten)) {
       echo('ERROR: can not write config file');
    }
 
    // DATENBANK INSTALLIEREN
-   $file_rows = file("../../docs/db_dump_mysql.sql");
-   include_once("../../etc/cs_config.php");
-   include_once("../../etc/commsy/default.php");
-   include_once('../../classes/db_mysql_connector.php');
+   $file_rows = file("docs/db_dump_mysql.sql");
+   include_once("etc/cs_config.php");
+   include_once("etc/commsy/default.php");
+   include_once('classes/db_mysql_connector.php');
    $db_connector = new db_mysql_connector($db["normal"]);
    $statement = "";
    foreach ($file_rows as $file_row) {
