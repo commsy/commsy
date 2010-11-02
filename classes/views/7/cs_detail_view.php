@@ -3482,7 +3482,12 @@ class cs_detail_view extends cs_view {
                   $this->_with_slimbox = true;
                   // jQuery
                   //$file_string = '<a href="'.$file->getUrl().'" rel="lightbox[gallery'.$item->getItemID().']">'.
-                  $file_string = '<a href="'.$file->getUrl().'" rel="lightbox-gallery_'.$item->getItemID().'">'.
+                  //$file_string = '<a href="'.$file->getUrl().'" rel="lightbox-gallery_'.$item->getItemID().'">'.
+                  $displayname = $file->getDisplayName();
+                  $filesize = $file->getFileSize();
+                  $fileicon = $file->getFileIcon();
+                  $file_string = '<a href="'.$file->getUrl().'" rel="lightbox-gallery'.$item->getItemID().'" title="'.$this->_text_as_html_short($displayname).' ('.$filesize.' kb)">'.
+                  
                   // jQuery
                   $file->getFileIcon().' '.($this->_text_as_html_short($this->_compareWithSearchText($file->getDisplayName()))).'</a> ('.$file->getFileSize().' KB)';
                } else {
