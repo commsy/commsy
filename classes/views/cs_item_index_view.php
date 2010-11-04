@@ -1092,21 +1092,44 @@ var $_sel_rubric = '';
     * @return string title
     */
    function _getItemTitle ($item) {
+      // check if item is not activated
       $title = $item->getTitle();
-      $title = $this->_compareWithSearchText($title);
-      $module = $item->getItemType();
-      $params = array();
-      $params['iid'] = $item->getItemID();
-      $params['search_path'] = 'true';
-      $title = ahref_curl( $this->_environment->getCurrentContextID(),
-                           $module,
-                           'detail',
-                           $params,
-                           $this->_text_as_html_short($title));
-      unset($params);
-      $title .= $this->_getItemChangeStatus($item);
-      $title .= $this->_getItemAnnotationChangeStatus($item);
-      $title .= ' '.$this->_getItemFiles($item);
+	   $title = $this->_compareWithSearchText($title);
+      if($item->isNotActivated()) {
+         $user = $this->_environment->getCurrentUser();
+         if($item->getCreatorID() == $user->getItemID() or $user->isModerator()) {
+            $params = array();
+		      $params['iid'] = $item->getItemID();
+		      $params['search_path'] = 'true';
+		      $title = ahref_curl( $this->_environment->getCurrentContextID(),
+		                           $item->getItemType(),
+		                           'detail',
+		                           $params,
+		                           $this->_text_as_html_short($title));
+		      unset($params);
+         }
+         $activating_date = $item->getActivatingDate();
+         if (strstr($activating_date,'9999-00-00')){
+            $title .= BR.$this->_translator->getMessage('COMMON_NOT_ACTIVATED');
+         }else{
+            $title .= BR.$this->_translator->getMessage('COMMON_ACTIVATING_DATE').' '.getDateInLang($item->getActivatingDate());
+         }
+         $title = '<span class="disabled">'.$title.'</span>';
+      } else {
+	      $params = array();
+	      $params['iid'] = $item->getItemID();
+	      $params['search_path'] = 'true';
+	      $title = ahref_curl( $this->_environment->getCurrentContextID(),
+	                           $item->getItemType(),
+	                           'detail',
+	                           $params,
+	                           $this->_text_as_html_short($title));
+	      unset($params);
+	      $title .= $this->_getItemChangeStatus($item);
+	      $title .= $this->_getItemAnnotationChangeStatus($item);
+	      $title .= ' '.$this->_getItemFiles($item);
+      }
+      
       return $title;
    }
 
