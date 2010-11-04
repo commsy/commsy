@@ -1092,7 +1092,7 @@ var $_sel_rubric = '';
     * @return string title
     */
    function _getItemTitle ($item) {
-      // check if item is not activated
+     // check if item is not activated
       $title = $item->getTitle();
 	   $title = $this->_compareWithSearchText($title);
       if($item->isNotActivated()) {
@@ -1107,6 +1107,8 @@ var $_sel_rubric = '';
 		                           $params,
 		                           $this->_text_as_html_short($title));
 		      unset($params);
+         }else{
+            $title = $this->_text_as_html_short($title);
          }
          $activating_date = $item->getActivatingDate();
          if (strstr($activating_date,'9999-00-00')){
@@ -1129,7 +1131,7 @@ var $_sel_rubric = '';
 	      $title .= $this->_getItemAnnotationChangeStatus($item);
 	      $title .= ' '.$this->_getItemFiles($item);
       }
-      
+
       return $title;
    }
 
@@ -1141,29 +1143,58 @@ var $_sel_rubric = '';
       $year_text = $this->_text_as_html_short($this->_compareWithSearchText($this->_getItemPublishingDate($item)));
       $bib_kind = $item->getBibKind() ? $item->getBibKind() : 'none';
       $title_text = '';
-      if (!empty($author_text) and $bib_kind !='none'){
-         if (!empty($year_text)){
-             $year_text = ', '.$year_text;
+      $user = $this->_environment->getCurrentUser();
+      if ( ( $item->isNotActivated()
+             and $item->getCreatorID() != $user->getItemID()
+             and !$user->isModerator()
+           )
+           or ( !$this->_environment->inProjectRoom()
+                and !$item->isPublished()
+                and !$user->isUser()
+              )
+         ) {
+         $title_text = $this->_text_as_html_short($title);
+         $activating_date = $item->getActivatingDate();
+         if (strstr($activating_date,'9999-00-00')){
+            $title_text .= BR.$this->_translator->getMessage('COMMON_NOT_ACTIVATED');
          }else{
-             $year_text = '';
+            $title_text .= BR.$this->_translator->getMessage('COMMON_ACTIVATING_DATE').' '.getDateInLang($item->getActivatingDate());
          }
-         $title_text = '<span style="font-size:8pt;"> ('.$this->_getItemAuthor($item).$year_text.')'.'</span>';
+         if (!empty($author_text) and $bib_kind !='none'){
+            if (!empty($year_text)){
+                $year_text = ', '.$year_text;
+            }else{
+                $year_text = '';
+            }
+            $title = '<span class="disabled">'.$title_text.'</span>'.'<span class="disabled" style="font-size:8pt;"> ('.$this->_getItemAuthor($item).$year_text.')'.'</span>';
+         }else{
+            $title = '<span class="disabled">'.$title_text.'</span>'.LF;
+         }
       }else{
-         $title_text = ''.LF;
-      }
-      $params = array();
-      $params['iid'] = $item->getItemID();
-      $params['search_path'] = 'true';
-      $title = ahref_curl( $this->_environment->getCurrentContextID(),
+         if (!empty($author_text) and $bib_kind !='none'){
+            if (!empty($year_text)){
+               $year_text = ', '.$year_text;
+            }else{
+               $year_text = '';
+            }
+            $title_text = '<span style="font-size:8pt;"> ('.$this->_getItemAuthor($item).$year_text.')'.'</span>';
+         }else{
+            $title_text = ''.LF;
+         }
+         $params = array();
+         $params['iid'] = $item->getItemID();
+         $params['search_path'] = 'true';
+         $title = ahref_curl( $this->_environment->getCurrentContextID(),
                            $module,
                            'detail',
                            $params,
                            $this->_text_as_html_short($title));
-      unset($params);
-      $title .= $title_text;
-      $title .= $this->_getItemChangeStatus($item);
-      $title .= $this->_getItemAnnotationChangeStatus($item);
-      $title .= ' '.$this->_getItemFiles($item);
+         unset($params);
+         $title .= $title_text;
+         $title .= $this->_getItemChangeStatus($item);
+         $title .= $this->_getItemAnnotationChangeStatus($item);
+         $title .= ' '.$this->_getItemFiles($item);
+      }
       return $title;
    }
 
