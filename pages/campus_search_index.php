@@ -457,7 +457,9 @@ foreach ($rubric_array as $rubric) {
       $campus_search_ids = array_merge($campus_search_ids, $rubric_ids);
    }
 }
-
+if($interval == 0){
+	$interval = $search_list->getCount();
+}
 // Set data for view
 $sublist = $search_list->getSubList($from-1,$interval);
 $view->setList($sublist);
