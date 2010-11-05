@@ -262,7 +262,7 @@ var $_related_user = NULL;
                 $user_manager->select();
                 $user_list = $user_manager->get();
                 $user_item = $user_list->getFirst();
-                if (isset($user_item)){
+                if (isset($user_item) and is_object($user_item)){
                    $tmp_html .= $user_item->getFullname().', ';
                 }
             }

@@ -1557,7 +1557,7 @@ class cs_detail_view extends cs_view {
       $html .='</div>'.LF;
       return $html;
    }
-   
+
    function _getAdditionalCalendarAsHTML(){
       $params = array();
       $additional_calendar_href = curl($this->_environment->getCurrentContextID(),
@@ -1582,10 +1582,10 @@ class cs_detail_view extends cs_view {
       $html .= 'var presentation_mode = "' . '2'/*$this->_presentation_mode*/ . '"'.LF;
       $html .= '-->'.LF;
       $html .= '</script>'.LF;
-      
+
       return $html;
    }
-   
+
    /** get detail view as HTML
     * this method returns the detail view in HTML-Code
     *
@@ -1615,19 +1615,19 @@ class cs_detail_view extends cs_view {
 
          if(!isset($this->_browse_ids) or count($this->_browse_ids) ==0){
              $this->_browse_ids[] = $this->_item->getItemID();
-         }  
+         }
          $html .= '<div class="commsy_no_panel" style="margin-bottom:1px;">'.LF;
-         
+
          $session = $this->_environment->getSessionItem();
          $from_display_mode = $session->getValue($this->_environment->getCurrentContextID() . '_dates_seldisplay_mode');
          unset($session);
-         
+
          // display calendar in date detail view, when request came from calendar
          if($rubric == CS_DATE_TYPE && $from_display_mode == 'calendar') {
             $html .= '<div class="column">'.LF;
             $html .= '<div class="right_box">'.LF;
             $html .= '<div class="right_box_title">'.LF;
-                     
+
             $date = $this->_item->getStartingDay();
 	         $date_array = explode('-',$date);
 	         $month = $date_array[1];
@@ -1649,15 +1649,15 @@ class cs_detail_view extends cs_view {
 								         $this->_translator->getMessage('DATES_NOVEMBER_LONG'),
 								         $this->_translator->getMessage('DATES_DECEMBER_LONG'));
 	         $tempMessage = $month_array[$month-1].' '.$year;
-	         
+
 	         $html .= '<div style="white-space:nowrap;">'.$tempMessage.'</div>'.LF;
             $html .='</div>'.LF;
             $html .= '<div class="right_box_main">'.LF;
             $html .= '<div style="margin-left: 20px;">'.LF;
             $html .= $this->_getAdditionalCalendarAsHTML();
             $html .= '</div>'.LF;
-            
-            
+
+
             $html .= '<div style="float:right; font-size:8pt; padding: 5px 3px 3px 0px;">'.LF;
 	         $params = array();
 	         $params['back_to_index'] = 'true';
@@ -1671,18 +1671,18 @@ class cs_detail_view extends cs_view {
 	                           );
 				$html .= '</div>'.LF;
 				$html .='<div style="clear:both;"></div>'.LF;
-            
+
             $html .='</div>'.LF;
             $html .='</div>'.LF;
             $html .='</div>'.LF;
          }
-         
+
          // display forward box
          else {
             $html .= $this->_getForwardBoxAsHTML($item);
          }
          $html .='</div>'.LF;
-         
+
          /***********Buzzwords*************/
          if ( $this->showBuzzwords() ) {
             $html .= '<div class="commsy_panel" style="margin-bottom:1px;">'.LF;
@@ -1803,7 +1803,7 @@ class cs_detail_view extends cs_view {
              $user_manager->select();
              $user_list = $user_manager->get();
              $user_item = $user_list->getFirst();
-             if (isset($user_item)){
+             if (isset($user_item) and is_object($user_item)){
                 $tmp_html .= $user_item->getFullname().', ';
              }
          }
@@ -3487,7 +3487,7 @@ class cs_detail_view extends cs_view {
                   $filesize = $file->getFileSize();
                   $fileicon = $file->getFileIcon();
                   $file_string = '<a href="'.$file->getUrl().'" rel="lightbox-gallery'.$item->getItemID().'" title="'.$this->_text_as_html_short($displayname).' ('.$filesize.' kb)">'.
-                  
+
                   // jQuery
                   $file->getFileIcon().' '.($this->_text_as_html_short($this->_compareWithSearchText($file->getDisplayName()))).'</a> ('.$file->getFileSize().' KB)';
                } else {
@@ -3995,8 +3995,8 @@ class cs_detail_view extends cs_view {
       }
       return $html;
    }
-   
-   
+
+
 	function _getWordpressAction ( $item, $user, $context ) {
 	      $html  = '';
 	      if ( $item->mayEdit($user)
