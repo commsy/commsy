@@ -3,6 +3,9 @@ Copyright (c) 2003-2010, CKSource - Frederico Knabben. All rights reserved.
 For licensing, see LICENSE.html or http://ckeditor.com/license
 */
 
+/**
+ * @class
+ */
 CKEDITOR.dom.range = function( document )
 {
 	this.startContainer	= null;
@@ -305,7 +308,7 @@ CKEDITOR.dom.range = function( document )
 		return node.type != CKEDITOR.NODE_TEXT
 			    && node.getName() in CKEDITOR.dtd.$removeEmpty
 			    || !CKEDITOR.tools.trim( node.getText() )
-			    || node.getParent().hasAttribute( '_fck_bookmark' );
+			    || node.getParent().hasAttribute( '_cke_bookmark' );
 	}
 
 	var whitespaceEval = new CKEDITOR.dom.walker.whitespaces(),
@@ -397,9 +400,10 @@ CKEDITOR.dom.range = function( document )
 			var startNode, endNode;
 			var baseId;
 			var clone;
+			var collapsed = this.collapsed;
 
 			startNode = this.document.createElement( 'span' );
-			startNode.setAttribute( '_fck_bookmark', 1 );
+			startNode.setAttribute( '_cke_bookmark', 1 );
 			startNode.setStyle( 'display', 'none' );
 
 			// For IE, it must have something inside, otherwise it may be
@@ -413,7 +417,7 @@ CKEDITOR.dom.range = function( document )
 			}
 
 			// If collapsed, the endNode will not be created.
-			if ( !this.collapsed )
+			if ( !collapsed )
 			{
 				endNode = startNode.clone();
 				endNode.setHtml( '&nbsp;' );
@@ -442,7 +446,8 @@ CKEDITOR.dom.range = function( document )
 			return {
 				startNode : serializable ? baseId + 'S' : startNode,
 				endNode : serializable ? baseId + 'E' : endNode,
-				serializable : serializable
+				serializable : serializable,
+				collapsed : collapsed
 			};
 		},
 
@@ -464,6 +469,8 @@ CKEDITOR.dom.range = function( document )
 
 			var startOffset	= this.startOffset,
 				endOffset	= this.endOffset;
+
+			var collapsed = this.collapsed;
 
 			var child, previous;
 
@@ -501,7 +508,7 @@ CKEDITOR.dom.range = function( document )
 				}
 
 				// Process the end only if not normalized.
-				if ( !this.isCollapsed )
+				if ( !collapsed )
 				{
 					// Find out if the start is pointing to a text node that
 					// will be normalized.
@@ -532,10 +539,11 @@ CKEDITOR.dom.range = function( document )
 
 			return {
 				start		: startContainer.getAddress( normalized ),
-				end			: this.isCollapsed ? null : endContainer.getAddress( normalized ),
+				end			: collapsed ? null : endContainer.getAddress( normalized ),
 				startOffset	: startOffset,
 				endOffset	: endOffset,
 				normalized	: normalized,
+				collapsed	: collapsed,
 				is2			: true		// It's a createBookmark2 bookmark.
 			};
 		},
@@ -705,10 +713,10 @@ CKEDITOR.dom.range = function( document )
 				endNode = this.endContainer;
 
 			if ( startNode.is && startNode.is( 'span' )
-				&& startNode.hasAttribute( '_fck_bookmark' ) )
+				&& startNode.hasAttribute( '_cke_bookmark' ) )
 				this.setStartAt( startNode, CKEDITOR.POSITION_BEFORE_START );
 			if ( endNode && endNode.is && endNode.is( 'span' )
-				&& endNode.hasAttribute( '_fck_bookmark' ) )
+				&& endNode.hasAttribute( '_cke_bookmark' ) )
 				this.setEndAt( endNode,  CKEDITOR.POSITION_AFTER_END );
 		},
 
@@ -914,7 +922,7 @@ CKEDITOR.dom.range = function( document )
 								// If this is a visible element.
 								// We need to check for the bookmark attribute because IE insists on
 								// rendering the display:none nodes we use for bookmarks. (#3363)
-								if ( sibling.$.offsetWidth > 0 && !sibling.getAttribute( '_fck_bookmark' ) )
+								if ( sibling.$.offsetWidth > 0 && !sibling.getAttribute( '_cke_bookmark' ) )
 								{
 									// We'll accept it only if we need
 									// whitespace, and this is an inline
@@ -1073,7 +1081,7 @@ CKEDITOR.dom.range = function( document )
 								// If this is a visible element.
 								// We need to check for the bookmark attribute because IE insists on
 								// rendering the display:none nodes we use for bookmarks. (#3363)
-								if ( sibling.$.offsetWidth > 0 && !sibling.getAttribute( '_fck_bookmark' ) )
+								if ( sibling.$.offsetWidth > 0 && !sibling.getAttribute( '_cke_bookmark' ) )
 								{
 									// We'll accept it only if we need
 									// whitespace, and this is an inline
@@ -1295,7 +1303,8 @@ CKEDITOR.dom.range = function( document )
 					}
 				}
 
-				var walker = new CKEDITOR.dom.walker( walkerRange );
+				var walker = new CKEDITOR.dom.walker( walkerRange ),
+					isBookmark = CKEDITOR.dom.walker.bookmark();
 
 				walker.evaluator = function( node )
 				{
@@ -1306,6 +1315,9 @@ CKEDITOR.dom.range = function( document )
 				var currentElement;
 				walker.guard = function( node, movingOut )
 				{
+					if ( isBookmark( node ) )
+						return true;
+
 					// Stop when we're shrink in element mode while encountering a text node.
 					if ( mode == CKEDITOR.SHRINK_ELEMENT && node.type == CKEDITOR.NODE_TEXT )
 						return false;
@@ -1424,7 +1436,7 @@ CKEDITOR.dom.range = function( document )
 			// Fixing invalid range end inside dtd empty elements.
 			if( endNode.type == CKEDITOR.NODE_ELEMENT
 				&& CKEDITOR.dtd.$empty[ endNode.getName() ] )
-				endNode = endNode.getParent(), endOffset = endNode.getIndex() + 1;
+				endOffset = endNode.getIndex() + 1, endNode = endNode.getParent();
 
 			this.endContainer	= endNode;
 			this.endOffset		= endOffset;
@@ -1632,24 +1644,34 @@ CKEDITOR.dom.range = function( document )
 		},
 
 		/**
-		 * Check whether current range is on the inner edge of the specified element.
-		 * @param {Number} checkType ( CKEDITOR.START | CKEDITOR.END ) The checking side.
+		 * Check whether a range boundary is at the inner boundary of a given
+		 * element.
 		 * @param {CKEDITOR.dom.element} element The target element to check.
+		 * @param {Number} checkType The boundary to check for both the range
+		 *		and the element. It can be CKEDITOR.START or CKEDITOR.END.
+		 * @returns {Boolean} "true" if the range boundary is at the inner
+		 *		boundary of the element.
 		 */
 		checkBoundaryOfElement : function( element, checkType )
 		{
-			var walkerRange = this.clone();
-			// Expand the range to element boundary.
-			walkerRange[ checkType == CKEDITOR.START ?
-			 'setStartAt' : 'setEndAt' ]
-			 ( element, checkType == CKEDITOR.START ?
-			   CKEDITOR.POSITION_AFTER_START
-			   : CKEDITOR.POSITION_BEFORE_END );
+			var checkStart = ( checkType == CKEDITOR.START );
 
+			// Create a copy of this range, so we can manipulate it for our checks.
+			var walkerRange = this.clone();
+
+			// Collapse the range at the proper size.
+			walkerRange.collapse( checkStart );
+
+			// Expand the range to element boundary.
+			walkerRange[ checkStart ? 'setStartAt' : 'setEndAt' ]
+			 ( element, checkStart ? CKEDITOR.POSITION_AFTER_START : CKEDITOR.POSITION_BEFORE_END );
+
+			// Create the walker, which will check if we have anything useful
+			// in the range.
 			var walker = new CKEDITOR.dom.walker( walkerRange );
 			walker.evaluator = elementBoundaryEval;
-			return walker[ checkType == CKEDITOR.START ?
-				'checkBackward' : 'checkForward' ]();
+
+			return walker[ checkStart ? 'checkBackward' : 'checkForward' ]();
 		},
 
 		// Calls to this function may produce changes to the DOM. The range may
@@ -1849,17 +1871,13 @@ CKEDITOR.ENLARGE_ELEMENT = 1;
 CKEDITOR.ENLARGE_BLOCK_CONTENTS = 2;
 CKEDITOR.ENLARGE_LIST_ITEM_CONTENTS = 3;
 
-/**
- * Check boundary types.
- * @see CKEDITOR.dom.range.prototype.checkBoundaryOfElement
- */
+// Check boundary types.
+// @see CKEDITOR.dom.range.prototype.checkBoundaryOfElement
 CKEDITOR.START = 1;
 CKEDITOR.END = 2;
 CKEDITOR.STARTEND = 3;
 
-/**
- * Shrink range types.
- * @see CKEDITOR.dom.range.prototype.shrink
- */
+// Shrink range types.
+// @see CKEDITOR.dom.range.prototype.shrink
 CKEDITOR.SHRINK_ELEMENT = 1;
 CKEDITOR.SHRINK_TEXT = 2;

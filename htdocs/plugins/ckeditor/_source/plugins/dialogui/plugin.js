@@ -59,9 +59,9 @@ CKEDITOR.plugins.add( 'dialogui' );
 			return this.getValue() != this.getInitValue();
 		},
 
-		reset : function()
+		reset : function( noChangeEvent )
 		{
-			this.setValue( this.getInitValue() );
+			this.setValue( this.getInitValue(), noChangeEvent );
 		},
 
 		setInitValue : function()
@@ -147,7 +147,7 @@ CKEDITOR.plugins.add( 'dialogui' );
 					return;
 
 				var _ = initPrivateObject.call( this, elementDefinition );
-				_.labelId = CKEDITOR.tools.getNextNumber() + '_label';
+				_.labelId = CKEDITOR.tools.getNextId() + '_label';
 				var children = this._.children = [];
 				/** @ignore */
 				var innerHTML = function()
@@ -223,7 +223,7 @@ CKEDITOR.plugins.add( 'dialogui' );
 					return;
 
 				initPrivateObject.call( this, elementDefinition );
-				var domId = this._.inputId = CKEDITOR.tools.getNextNumber() + '_textInput',
+				var domId = this._.inputId = CKEDITOR.tools.getNextId() + '_textInput',
 					attributes = { 'class' : 'cke_dialog_ui_input_' + elementDefinition.type, id : domId, type : 'text' },
 					i;
 
@@ -313,7 +313,7 @@ CKEDITOR.plugins.add( 'dialogui' );
 
 				initPrivateObject.call( this, elementDefinition );
 				var me = this,
-					domId = this._.inputId = CKEDITOR.tools.getNextNumber() + '_textarea',
+					domId = this._.inputId = CKEDITOR.tools.getNextId() + '_textarea',
 					attributes = {};
 
 				if ( elementDefinition.validate )
@@ -370,17 +370,17 @@ CKEDITOR.plugins.add( 'dialogui' );
 				{
 					var myDefinition = CKEDITOR.tools.extend( {}, elementDefinition,
 							{
-								id : elementDefinition.id ? elementDefinition.id + '_checkbox' : CKEDITOR.tools.getNextNumber() + '_checkbox'
+								id : elementDefinition.id ? elementDefinition.id + '_checkbox' : CKEDITOR.tools.getNextId() + '_checkbox'
 							}, true ),
 						html = [];
 
-					var labelId = CKEDITOR.tools.getNextNumber() + '_label';
+					var labelId = CKEDITOR.tools.getNextId() + '_label';
 					var attributes = { 'class' : 'cke_dialog_ui_checkbox_input', type : 'checkbox', 'aria-labelledby' : labelId };
 					cleanInnerDefinition( myDefinition );
 					if ( elementDefinition[ 'default' ] )
 						attributes.checked = 'checked';
 
-					if (typeof myDefinition.controlStyle != 'undefined')
+					if ( typeof myDefinition.controlStyle != 'undefined' )
 						myDefinition.style = myDefinition.controlStyle;
 
 					_.checkbox = new CKEDITOR.ui.dialog.uiElement( dialog, myDefinition, html, 'input', null, attributes );
@@ -430,13 +430,13 @@ CKEDITOR.plugins.add( 'dialogui' );
 				{
 					var inputHtmlList = [], html = [],
 						commonAttributes = { 'class' : 'cke_dialog_ui_radio_item', 'aria-labelledby' : this._.labelId },
-						commonName = elementDefinition.id ? elementDefinition.id + '_radio' : CKEDITOR.tools.getNextNumber() + '_radio';
+						commonName = elementDefinition.id ? elementDefinition.id + '_radio' : CKEDITOR.tools.getNextId() + '_radio';
 					for ( var i = 0 ; i < elementDefinition.items.length ; i++ )
 					{
 						var item = elementDefinition.items[i],
 							title = item[2] !== undefined ? item[2] : item[0],
 							value = item[1] !== undefined ? item[1] : item[0],
-							inputId = CKEDITOR.tools.getNextNumber() + '_radio_input',
+							inputId = CKEDITOR.tools.getNextId() + '_radio_input',
 							labelId = inputId + '_label',
 							inputDefinition = CKEDITOR.tools.extend( {}, elementDefinition,
 									{
@@ -462,7 +462,7 @@ CKEDITOR.plugins.add( 'dialogui' );
 						cleanInnerDefinition( inputDefinition );
 						cleanInnerDefinition( labelDefinition );
 
-						if (typeof inputDefinition.controlStyle != 'undefined')
+						if ( typeof inputDefinition.controlStyle != 'undefined' )
 							inputDefinition.style = inputDefinition.controlStyle;
 
 						children.push( new CKEDITOR.ui.dialog.uiElement( dialog, inputDefinition, inputHtml, 'input', null, inputAttributes ) );
@@ -540,7 +540,7 @@ CKEDITOR.plugins.add( 'dialogui' );
 				var outerDefinition = CKEDITOR.tools.extend( {}, elementDefinition );
 				delete outerDefinition.style;
 
-				var labelId = CKEDITOR.tools.getNextNumber() + '_label';
+				var labelId = CKEDITOR.tools.getNextId() + '_label';
 				CKEDITOR.ui.dialog.uiElement.call(
 					this,
 					dialog,
@@ -596,13 +596,13 @@ CKEDITOR.plugins.add( 'dialogui' );
 				if ( elementDefinition.validate )
 					this.validate = elementDefinition.validate;
 
-				_.inputId = CKEDITOR.tools.getNextNumber() + '_select';
+				_.inputId = CKEDITOR.tools.getNextId() + '_select';
 				/** @ignore */
 				var innerHTML = function()
 				{
 					var myDefinition = CKEDITOR.tools.extend( {}, elementDefinition,
 							{
-								id : elementDefinition.id ? elementDefinition.id + '_select' : CKEDITOR.tools.getNextNumber() + '_select'
+								id : elementDefinition.id ? elementDefinition.id + '_select' : CKEDITOR.tools.getNextId() + '_select'
 							}, true ),
 						html = [],
 						innerHTML = [],
@@ -622,7 +622,7 @@ CKEDITOR.plugins.add( 'dialogui' );
 							CKEDITOR.tools.htmlEncode( item[0] ) );
 					}
 
-					if (typeof myDefinition.controlStyle != 'undefined')
+					if ( typeof myDefinition.controlStyle != 'undefined' )
 						myDefinition.style = myDefinition.controlStyle;
 
 					_.select = new CKEDITOR.ui.dialog.uiElement( dialog, myDefinition, html, 'select', null, attributes, innerHTML.join( '' ) );
@@ -663,7 +663,7 @@ CKEDITOR.plugins.add( 'dialogui' );
 				/** @ignore */
 				var innerHTML = function()
 				{
-					_.frameId = CKEDITOR.tools.getNextNumber() + '_fileInput';
+					_.frameId = CKEDITOR.tools.getNextId() + '_fileInput';
 
 					// Support for custom document.domain in IE.
 					var isCustomDomain = CKEDITOR.env.isCustomDomain();
@@ -931,7 +931,7 @@ CKEDITOR.plugins.add( 'dialogui' );
 				{
 					this._.disabled = false;
 					var element = this.getElement();
-					element && element.removeClass( 'disabled' );
+					element && element.removeClass( 'cke_disabled' );
 				},
 
 				/**
@@ -941,7 +941,7 @@ CKEDITOR.plugins.add( 'dialogui' );
 				disable : function()
 				{
 					this._.disabled = true;
-					this.getElement().addClass( 'disabled' );
+					this.getElement().addClass( 'cke_disabled' );
 				},
 
 				isVisible : function()
@@ -1061,7 +1061,7 @@ CKEDITOR.plugins.add( 'dialogui' );
 				setValue : function( value )
 				{
 					!value && ( value = '' );
-					return CKEDITOR.ui.dialog.uiElement.prototype.setValue.call( this, value );
+					return CKEDITOR.ui.dialog.uiElement.prototype.setValue.apply( this, arguments );
 				},
 
 				keyboardFocusable : true
@@ -1156,11 +1156,12 @@ CKEDITOR.plugins.add( 'dialogui' );
 				 * Sets the state of the checkbox.
 				 * @example
 				 * @param {Boolean} true to tick the checkbox, false to untick it.
+				 * @param {Boolean} noChangeEvent Internal commit, to supress 'change' event on this element.
 				 */
-				setValue : function( checked )
+				setValue : function( checked, noChangeEvent )
 				{
 					this.getInputElement().$.checked = checked;
-					this.fire( 'change', { value : checked } );
+					!noChangeEvent && this.fire( 'change', { value : checked } );
 				},
 
 				/**
@@ -1222,14 +1223,15 @@ CKEDITOR.plugins.add( 'dialogui' );
 				 * Checks one of the radio buttons in this button group.
 				 * @example
 				 * @param {String} value The value of the button to be chcked.
+				 * @param {Boolean} noChangeEvent Internal commit, to supress 'change' event on this element.
 				 */
-				setValue : function( value )
+				setValue : function( value, noChangeEvent )
 				{
 					var children = this._.children,
 						item;
 					for ( var i = 0 ; ( i < children.length ) && ( item = children[i] ) ; i++ )
 						item.getElement().$.checked = ( item.getValue() == value );
-					this.fire( 'change', { value : value } );
+					!noChangeEvent && this.fire( 'change', { value : value } );
 				},
 
 				/**
@@ -1382,18 +1384,19 @@ CKEDITOR.plugins.add( 'dialogui' );
 				 */
 				reset : function()
 				{
-					var frameElement = CKEDITOR.document.getById( this._.frameId ),
+					var _ = this._,
+						frameElement = CKEDITOR.document.getById( _.frameId ),
 						frameDocument = frameElement.getFrameDocument(),
-						elementDefinition = this._.definition,
-						buttons = this._.buttons,
+						elementDefinition = _.definition,
+						buttons = _.buttons,
 						callNumber = this.formLoadedNumber,
 						unloadNumber = this.formUnloadNumber,
-						langDir = this._.dialog._.editor.lang.dir,
-						langCode = this._.dialog._.editor.langCode;
+						langDir = _.dialog._.editor.lang.dir,
+						langCode = _.dialog._.editor.langCode;
 
 					// The callback function for the iframe, but we must call tools.addFunction only once
 					// so we store the function number in this.formLoadedNumber
-					if (!callNumber)
+					if ( !callNumber )
 					{
 						callNumber = this.formLoadedNumber = CKEDITOR.tools.addFunction(
 							function()
