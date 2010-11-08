@@ -43,7 +43,7 @@ if(!isset($_GET['roomwide_search_room'])){
 		$room_name_array[$project_item->getItemID()] = $project_item->getTitle();
 		$project_item = $project_list->getNext();
 	}
-	
+
 	// Gemeinschaftsraeume
 	$community_list = $user_item->getUserRelatedCommunityList();
 	$community_item = $community_list->getFirst();
@@ -52,7 +52,7 @@ if(!isset($_GET['roomwide_search_room'])){
 	   $room_name_array[$community_item->getItemID()] = $community_item->getTitle();
 	   $community_item = $community_list->getNext();
 	}
-	
+
 	// Privater Raum
 	$context_array[] = $private_room_item->getItemID();
 	$room_name_array[$private_room_item->getItemID()] = $private_room_item->getTitle();
@@ -97,6 +97,7 @@ foreach($file_rubric_array as $file_rubric){
    if(!empty($_GET['search'])){
       $rubric_manager->setSearchLimit($_GET['search']);
    }
+   $rubric_manager->showNoNotActivatedEntries();
 	$rubric_manager->select();
    $item_list = $rubric_manager->get();
    $complete_list->addList($item_list);
@@ -110,6 +111,7 @@ if((isset($_GET['roomwide_search_type']) and in_array(CS_ANNOUNCEMENT_TYPE, $_GE
 	   if(!empty($_GET['search'])){
 	      $rubric_manager->setSearchLimit($_GET['search']);
 	   }
+      $rubric_manager->showNoNotActivatedEntries();
 	   $rubric_manager->select();
 	   $item_list = $rubric_manager->get();
 	   $complete_list->addList($item_list);
@@ -124,6 +126,7 @@ if((isset($_GET['roomwide_search_type']) and in_array(CS_TOPIC_TYPE, $_GET['room
 	   if(!empty($_GET['search'])){
 	      $rubric_manager->setSearchLimit($_GET['search']);
 	   }
+      $rubric_manager->showNoNotActivatedEntries();
 	   $rubric_manager->select();
 	   $item_list = $rubric_manager->get();
 	   $complete_list->addList($item_list);
@@ -138,6 +141,7 @@ if((isset($_GET['roomwide_search_type']) and in_array(CS_MATERIAL_TYPE, $_GET['r
 	   if(!empty($_GET['search'])){
 	      $rubric_manager->setSearchLimit($_GET['search']);
 	   }
+      $rubric_manager->showNoNotActivatedEntries();
 	   $rubric_manager->select();
 	   $item_list = $rubric_manager->get();
 	   $complete_list->addList($item_list);
@@ -217,7 +221,7 @@ function getTooltipDate($date){
 	global $environment;
 	$text_converter = $environment->getTextConverter();
 	$translator = $environment->getTranslationObject();
-	
+
       $parse_time_start = convertTimeFromInput($date->getStartingTime());
       $conforms = $parse_time_start['conforms'];
       if ($conforms == TRUE) {
@@ -329,7 +333,7 @@ function getTooltipDate($date){
       $tooltip_date = $temp_array;
       return $tooltip_date;
 }
-   
+
 function getItemAnnotationChangeStatus($item,$context_id) {
 	   global $environment;
 	   $translator = $environment->getTranslationObject();
