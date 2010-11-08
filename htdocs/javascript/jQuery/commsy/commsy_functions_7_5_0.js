@@ -1489,30 +1489,30 @@ function dropdown(object, offset, button){
 function delete_date_recurring() {
 	var href = jQuery("[id='delete_confirm_entry']").attr('href');
 	var href_new = '';
-	
+
 	// remove anchor
 	var split = href.split('#');
 	var anchor = '';
 	if(split.length > 1) {
 		anchor = split[1];
 	}
-	
+
 	// remove 'action=delete'
 	split = split[0].split('&');
-	
+
 	for(var i in split) {
 		if(split[i] != 'action=delete') {
 			href_new += split[i] + '&';
 		}
 	}
 	href_new += 'delete_option=' + extra_text;
-	
+
 	if(anchor != '') {
 		href_new += '#' + anchor;
 	}
-	
+
 	jQuery(location).attr('href', href_new);
-	
+
 	return false;
 }
 
@@ -1521,7 +1521,7 @@ function delete_overlay(element, html_element, extra_object) {
 	if(extra_object != null) {
 		delete_content_extra = extra_object.content;
 	}
-	
+
 	delete_overlay.element = element;
 
 	jQuery('body').append(
@@ -1682,9 +1682,9 @@ jQuery(document).ready(function() {
 	jQuery("[id^='delete_confirm_']").click(function() {
     	var element = jQuery(this);
     	var html_element = this;
-    	
+
     	var extra_object = null;
-    	
+
     	// create extra object
     	if( typeof(extra_text) != 'undefined' &&
     		typeof(extra_content) != 'undefined') {
@@ -1692,10 +1692,10 @@ jQuery(document).ready(function() {
     			extra_object.text = extra_text;
     			extra_object.content = extra_content;
     	}
-    	
+
     	// add overlay
     	delete_overlay(element, html_element, extra_object);
-    	
+
     	return false;
 	});
 });
@@ -2463,7 +2463,7 @@ function turn_portlet_tag(id, portlet, page){
 	    	 });
 		  }
 	 });
-	 
+
 	 jQuery('#my_tag_form_button_sort').click(function(){
 		if(jQuery('#my_tag_form_sort_1').find(':selected').val() != jQuery('#my_tag_form_sort_2').find(':selected').val()){
 			 var json_data = new Object();
@@ -2486,7 +2486,7 @@ function turn_portlet_tag(id, portlet, page){
 	    	 });
 		  }
 	 });
-	 
+
 	 jQuery('#my_tag_form_button_sort_abc').click(function(){
 		 var json_data = new Object();
 		 json_data['tag_page'] = page;
@@ -2504,7 +2504,7 @@ function turn_portlet_tag(id, portlet, page){
     	    }
     	 });
 	 });
-	 
+
 	 jQuery('#my_tag_form_button_combine').click(function(){
 		if(jQuery('#my_tag_form_combine_1').find(':selected').val() != jQuery('#my_tag_form_combine_2').find(':selected').val()){
 			 var json_data = new Object();
@@ -2527,7 +2527,7 @@ function turn_portlet_tag(id, portlet, page){
 	    	 });
 		  }
 	 });
-	 
+
 	 activate_tag_change_form(page);
 }
 
@@ -2546,9 +2546,9 @@ function return_portlet_tag(id, portlet, page){
 	if(portlet_data['tag_save']){
 		if(typeof(portlet_data['tree_update']) !== 'undefined'){
 		    jQuery('#my_tag_content_div').html(portlet_data['tree_update']);
-		    
+
 		    activate_tag_tree_privateroom();
-		    
+
 		    portlet_data['tree_update'] = null;
 	        portlet_data['tag_save'] = false;
 		}
@@ -3100,7 +3100,7 @@ jQuery(document).ready(function() {
 				portlet_array.push(jQuery(this).attr('value'));
 			});
 			json_data['myrooms'] = portlet_array;
-			
+
 		    var portlet_columns = jQuery(".column");
 		    for ( var int = 0; int < portlet_columns.length; int++) {
 		    	var column_portlets = new Array();
@@ -3176,13 +3176,13 @@ jQuery(document).ready(function() {
 				var scroll_div;
 				var scroll_ul;
 				var scroll = false;
-				
+
 				for ( var int4 = 0; int4 < dropDownMyRooms.length; int4++) {
 					var temp_menu_entry = dropDownMyRooms[int4];
 					if(temp_menu_entry[0] == current_menu){
 						if(temp_menu_entry[1] == 'seperator'){
 							ul.append('<li class="dropdown_seperator"><hr class="dropdown_seperator"></li>');
-							
+
 						} else if (temp_menu_entry[1] == 'scroll_start') {
 							scroll_ul = jQuery('<ul></ul>');
 							scroll = true;
@@ -3445,7 +3445,7 @@ jQuery(document).ready(function() {
 					dropdown_menus.push(tempImage);
 				}
 			}
-			
+
 			// check for other dropdown's
 			var dropdown_count_all = jQuery("img[id^='dropdown_button_']").length;
 			var offset = 0;
@@ -3988,8 +3988,8 @@ jQuery(document).ready(function() {
         			jQuery('#privateroom_home_roomwide_search_table').append(jQuery('<tr><td colspan="2" style="height:20px;">'+first_link+' '+prev_link+' '+from+' '+roomwide_search_to+' '+to+' '+roomwide_search_from+' '+count+' '+next_link+' '+last_link+' '+'</td></tr>'));
         			for ( var int = 0; int < resultJSON['roomwide_search_results'].length; int++) {
 						var json_element = resultJSON['roomwide_search_results'][int];
-						var temp_icon_link = '<a href="commsy.php?cid='+json_element['cid']+'&mod='+json_element['type']+'&fct=detail&iid='+json_element['iid']+'" title="'+json_element['hover']+'" target="_self"><img src="images/commsyicons/32x32/'+json_element['type']+'.png" style="padding-right: 3px;" title="'+json_element['hover']+'"></a>';
-						var temp_item_link = '<a href="commsy.php?cid='+json_element['cid']+'&mod='+json_element['type']+'&fct=detail&iid='+json_element['iid']+'" title="'+json_element['hover']+'" target="_self">'+json_element['title']+'</a>';
+						var temp_icon_link = '<a href="commsy.php?cid='+json_element['cid']+'&mod='+json_element['type']+'&fct=detail&iid='+json_element['iid']+'&search_path=true" title="'+json_element['hover']+'" target="_self"><img src="images/commsyicons/32x32/'+json_element['type']+'.png" style="padding-right: 3px;" title="'+json_element['hover']+'"></a>';
+						var temp_item_link = '<a href="commsy.php?cid='+json_element['cid']+'&mod='+json_element['type']+'&fct=detail&iid='+json_element['iid']+'&search_path=true" title="'+json_element['hover']+'" target="_self">'+json_element['title']+'</a>';
 						var temp_room_link = '<a href="commsy.php?cid='+json_element['cid']+'&amp;mod=home&amp;fct=index" title="'+json_element['room_name']+'" target="_self">'+json_element['room_name']+'</a>';
 						if((int % 2) == 0){
 							html = jQuery('<tr class="list"><td class="even" style="height:20px; font-size:8pt;"><div style="float: left;">'+temp_icon_link+'</div>'+temp_item_link+' '+json_element['status']+'<br><span style="font-size: 8pt;">(Raum: '+temp_room_link+')</span></td></tr>');
