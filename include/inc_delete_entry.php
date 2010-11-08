@@ -170,41 +170,41 @@ elseif ( isOption($delete_command, $translator->getMessage('COMMON_DELETE_BUTTON
          }
          $params = array();
          $params['iid'] = $current_item_iid;
-         
+
          // delete all childs too
          if($disc_type == 'threaded') {
             $position = $discarticle_item->getPosition();
             $position_length = mb_strlen($position);
-            
+
             // find discarticles: delete children, rename descendants
             $discarticle_manager = $environment->getDiscussionArticlesManager();
             $discussion_articles = $discarticle_manager->getAllArticlesForItem($discussion_item);
-            
+
             $discussion_article = $discussion_articles->getFirst();
-            while($discussion_article) {          
+            while($discussion_article) {
                $discussion_article_position = $discussion_article->getPosition();
                $discussion_article_position_length = mb_strlen($discussion_article_position);
-               
+
                // children
                if(   $discussion_article_position_length  > $position_length &&
                      mb_substr($discussion_article_position, 0, $position_length) == $position) {
                   // delete discarticles
                   $discussion_article->delete();
-                  
+
                // descendants
                } else if(   $discussion_article_position_length >= $position_length &&
                      mb_substr($position, $position_length-4, 4) < mb_substr($discussion_article_position, $position_length-4, 4)) {
                   // rename elements
-                  $discussion_article_new_position = 
-                     mb_substr($discussion_article_position, 0, $position_length-4) . 
-                     ((string) ((int) mb_substr($discussion_article_position, $position_length-4, 4))-1) . 
+                  $discussion_article_new_position =
+                     mb_substr($discussion_article_position, 0, $position_length-4) .
+                     ((string) ((int) mb_substr($discussion_article_position, $position_length-4, 4))-1) .
                      mb_substr($discussion_article_position, $position_length);
-                  
+
                   $discussion_article->setPosition($discussion_article_new_position);
                   $discussion_article->setModificationDate(getCurrentDateTimeInMySQL());
                   $discussion_article->save();
                }
-               
+
                $discussion_article = $discussion_articles->getNext();
             }
             unset($discarticle_manager);
@@ -350,7 +350,13 @@ elseif ( isOption($delete_command, $translator->getMessage('COMMON_DELETE_BUTTON
    // Serientermine löschen
    $dates_manager = $environment->getDatesManager();
    $dates_manager->resetLimits();
-   $dates_manager->setRecurrenceLimit($_GET['recurrence_id']);
+   if (isset($_GET['recurrence_id']) and !empty($_GET['recurrence_id'])){
+      $dates_manager->setRecurrenceLimit($_GET['recurrence_id']);
+   }elseif(isset($_GET['iid']) and !empty($_GET['iid'])){
+   	  $date_item = $dates_manager->getItem($_GET['iid']);
+   	  $recurrence_id = $date_item->getRecurrenceId();
+      $dates_manager->setRecurrenceLimit($recurrence_id);
+   }
    $dates_manager->setWithoutDateModeLimit();
    $dates_manager->select();
    $dates_list = $dates_manager->get();

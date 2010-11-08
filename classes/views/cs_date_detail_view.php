@@ -264,7 +264,7 @@ var $_clipboard_id_array=array();
          $temp_array[] = $this->_text_as_html_short($place);
          $formal_data[] = $temp_array;
       }
-      
+
       // Color
       $color = $item->getColor();
       if (!empty($color)) {
@@ -379,7 +379,7 @@ var $_clipboard_id_array=array();
       $html  .= '<!-- END OF DATE ITEM DETAIL -->'."\n\n";
       return $html;
    }
-   
+
 	/** get information for header as HTML
     * this method returns information in HTML-Code needs for the header of the HTML-Page
     *
@@ -395,9 +395,19 @@ var $_clipboard_id_array=array();
           <!--
               var headline = '" . $this->_translator->getMessage("COMMON_DELETE_BOX_TITLE") . "';
               var text1 = '" . $this->_translator->getMessage("COMMON_DELETE_BOX_DESCRIPTION") . "';
-              var text2 = '" . $text2 . "';
-              var extra_text = '" . $this->_translator->getMessage("COMMON_DELETE_RECURRENCE_BUTTON") . "';
-              var extra_content = '<input type=\"submit\" value=\"" . $this->_translator->getMessage("COMMON_DELETE_RECURRENCE_BUTTON") . "\" name=\"delete_option\" style=\"float: right; margin-right: 3px;\" onClick=\"delete_date_recurring(); return false;\">';
+              var text2 = '" . $text2 . "';";
+              if(isset($_GET['iid']) and !empty($_GET['iid'])){
+   	             $dates_manager = $this->_environment->getDatesManager();
+   	             $date_item = $dates_manager->getItem($_GET['iid']);
+   	             $recurrence_id = $date_item->getRecurrenceId();
+   	             if (!empty($recurrence_id)){
+                    $return .= "
+                    var extra_text = '" . $this->_translator->getMessage("COMMON_DELETE_RECURRENCE_BUTTON") . "';
+                    var extra_content = '<input type=\"submit\" value=\"" . $this->_translator->getMessage("COMMON_DELETE_RECURRENCE_BUTTON") . "\" name=\"delete_option\" style=\"float: right; margin-right: 3px;\" onClick=\"delete_date_recurring(); return false;\">';
+                    ";
+   	             }
+              }
+              $return .= "
               var button_delete = '" . $this->_translator->getMessage("COMMON_DELETE_BUTTON") . "';
               var button_cancel = '" . $this->_translator->getMessage("COMMON_CANCEL_BUTTON") . "';
           -->
