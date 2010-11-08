@@ -534,6 +534,10 @@ class cs_item_manager extends cs_manager {
            $query = 'SELECT DISTINCT '.$this->addDatabasePrefix('items').'.item_id, label.type';
            $query .= ' FROM '.$this->addDatabasePrefix('items');
            $query .= ' LEFT JOIN '.$this->addDatabasePrefix('labels').' AS label ON '.$this->addDatabasePrefix('items').'.item_id=label.item_id';
+           $query .= ' LEFT JOIN '.$this->addDatabasePrefix('materials').' AS materials ON '.$this->addDatabasePrefix('items').'.item_id=materials.item_id';
+           $query .= ' LEFT JOIN '.$this->addDatabasePrefix('dates').' AS dates ON '.$this->addDatabasePrefix('items').'.item_id=dates.item_id';
+           $query .= ' LEFT JOIN '.$this->addDatabasePrefix('todos').' AS todos ON '.$this->addDatabasePrefix('items').'.item_id=todos.item_id';
+           $query .= ' LEFT JOIN '.$this->addDatabasePrefix('discussions').' AS discussions ON '.$this->addDatabasePrefix('items').'.item_id=discussions.item_id';
            $query .= ' WHERE 1';
            $query .= ' AND (label.type IS NULL OR label.type="group" OR label.type="topic" OR label.type="group")';
            $query .= ' AND '.$this->addDatabasePrefix('items').'.context_id IN ('.implode(",",encode(AS_DB,$room_ids)).')';
@@ -553,6 +557,10 @@ class cs_item_manager extends cs_manager {
            if (isset($this->_age_limit)) {
               $query .= ' AND '.$this->addDatabasePrefix('items').'.modification_date > DATE_SUB(CURRENT_DATE,interval '.encode(AS_DB,$this->_age_limit).' day)';
            }
+           $query .= ' AND ('.$this->addDatabasePrefix('materials').'.modification_date IS NULL OR '.$this->addDatabasePrefix('materials').'.modification_date <= "'.getCurrentDateTimeInMySQL().'")';
+           $query .= ' AND ('.$this->addDatabasePrefix('dates').'.modification_date IS NULL OR '.$this->addDatabasePrefix('dates').'.modification_date <= "'.getCurrentDateTimeInMySQL().'")';
+           $query .= ' AND ('.$this->addDatabasePrefix('todos').'.modification_date IS NULL OR '.$this->addDatabasePrefix('todos').'.modification_date <= "'.getCurrentDateTimeInMySQL().'")';
+           $query .= ' AND ('.$this->addDatabasePrefix('discussions').'.modification_date IS NULL OR '.$this->addDatabasePrefix('discussions').'.modification_date <= "'.getCurrentDateTimeInMySQL().'")';
            $query .= ' ORDER BY '.$this->addDatabasePrefix('items').'.modification_date DESC';
            $query .= ' LIMIT ';
            if (isset($this->_interval_limit)) {
