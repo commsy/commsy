@@ -30,7 +30,7 @@ class class_ckeditor extends cs_plugin {
     */
    public function __construct ($environment) {
       parent::__construct($environment);
-      $this->_identifier = 'ckeditor';
+      $this->_identifier = 'ckeditor_3.4.2';
       $this->_title      = 'CKEditor';
       $this->_image_path = 'plugins/'.$this->getIdentifier();
       $this->_translator->addMessageDatFolder('plugins/'.$this->getIdentifier().'/messages');
@@ -111,6 +111,7 @@ class class_ckeditor extends cs_plugin {
                      skin : \'kama\',
                      uiColor: \''.$color['content_background'].'\',
                      startupFocus: false,
+                     dialog_startupFocusTab: false,
                      resize_enabled: false,
                      toolbar :
                      [
