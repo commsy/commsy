@@ -196,6 +196,11 @@ $result_list = $complete_list->getSubList($from, $interval);
 $result_array = array();
 $item = $result_list->getFirst();
 
+$params = array();
+$params['environment'] = $environment;
+$view = $class_factory->getClass(INDEX_VIEW,$params);
+
+
 while($item){
    $room_name = $room_name_array[$item->getContextID()];
    $hover_text = '';
@@ -208,7 +213,8 @@ while($item){
    }
    $status_change = getItemChangeStatus($item, $item->getContextID());
    $annotation_change = getItemAnnotationChangeStatus($item, $item->getContextID());
-   $result_array[] = array('title' => $item->getTitle(), 'status' => $status_change.''.$annotation_change, 'type' => $item->getItemType(), 'iid' => $item->getItemId(), 'cid' => $item->getContextID(), 'hover' => $hover_text, 'room_name' => $room_name);
+
+   $result_array[] = array('title' => $view->_text_as_html_short(_compareWithSearchText($item->getTitle())), 'status' => $status_change.''.$annotation_change, 'type' => $item->getItemType(), 'iid' => $item->getItemId(), 'cid' => $item->getContextID(), 'hover' => $hover_text, 'room_name' => $room_name);
    $item = $result_list->getNext();
 }
 
@@ -216,6 +222,27 @@ $page->add('roomwide_search_info', array('page' => $result_page, 'last' => $numb
 $page->add('roomwide_search_results', $result_array);
 
 // Functions
+
+function _compareWithSearchText($value){
+   if(!empty($_GET['search'])){
+      if ( mb_stristr($value,$_GET['search']) ) {
+         // $replace = '(:mainsearch_text:)$0(:mainsearch_text_end:)';
+         include_once('functions/misc_functions.php');
+         if ( getMarkerColor() == 'green') {
+            $replace = '(:mainsearch_text_green:)$0(:mainsearch_text_green_end:)';
+         }
+         else if (getMarkerColor() == 'yellow') {
+            $replace = '(:mainsearch_text_yellow:)$0(:mainsearch_text_yellow_end:)';
+         }
+         // $replace = '(:searchedtext:)$0(:searchedtext_end:)';
+         $value = preg_replace('~'.preg_quote($_GET['search'],'/').'~iu',$replace,$value);
+         // $value = preg_replace('~'.preg_quote($search_text,'/').'~iu','*$0*',$value);
+      }
+   }
+   return $value;
+}
+
+
 
 function getTooltipDate($date){
 	global $environment;
