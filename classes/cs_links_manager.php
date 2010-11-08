@@ -832,10 +832,11 @@ class cs_links_manager extends cs_manager {
       $query = "SELECT * FROM ".$this->addDatabasePrefix("item_link_file");
       $query .= " WHERE item_iid=".encode(AS_DB,$from_item->getItemID());
       $query .= " AND item_vid=".encode(AS_DB,$version_id);
-      $query .= " AND file_id=".encode(AS_DB,$file_id);
-        $result = $this->_db_connector->performQuery($query);
+      $query .= ' AND file_id="'.encode(AS_DB,$file_id).'"';
+      $result = $this->_db_connector->performQuery($query);
       if (!isset($result)) {
-         include_once('functions/error_functions.php');trigger_error("Problems loading file links: ".$query, E_USER_WARNING);
+         include_once('functions/error_functions.php');
+         trigger_error("Problems loading file links: ".$query, E_USER_WARNING);
       } elseif(empty($result[0])) {
          $retour = false;
       } else {
