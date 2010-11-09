@@ -3667,7 +3667,7 @@ jQuery(document).ready(function() {
 	// if there is uploadify
 	if(jQuery("object[id='uploadifyUploader']")) {
 		// observe the submit button
-		jQuery(jQuery("input[type='submit']")[0]).bind('click', function(eventObject) {
+		jQuery(jQuery("td[class='buttonbar'] input[type='submit'][name='option']")[0]).bind('click', function(eventObject) {
 			// if there are files in upload queue
 			if(	jQuery("div[id='uploadifyQueue'] > div").length > 0 &&
 				uploadify_onAllCompleteSubmitForm == false) {
