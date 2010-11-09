@@ -30,10 +30,12 @@ class class_ckeditor extends cs_plugin {
     */
    public function __construct ($environment) {
       parent::__construct($environment);
-      $this->_identifier = 'ckeditor_3.4.2';
+      $this->_identifier = 'ckeditor';
       $this->_title      = 'CKEditor';
       $this->_image_path = 'plugins/'.$this->getIdentifier();
       $this->_translator->addMessageDatFolder('plugins/'.$this->getIdentifier().'/messages');
+      
+      $this->_htdocs_identifier = 'ckeditor_3.4.2';
    }
 
    public function getDescription () {
@@ -46,9 +48,9 @@ class class_ckeditor extends cs_plugin {
 
    public function getInfosForHeaderAsHTML () {
       $retour  = '';
-      $retour .= '   <script type="text/javascript" src="plugins/'.$this->getIdentifier().'/ckeditor.js"></script>'.LF;
-      $retour .= '   <link rel="stylesheet" href="plugins/'.$this->getIdentifier().'/commsy_css.php?cid='.$this->_environment->getCurrentContextID().'" />'.LF;
-      $retour .= '   <link rel="stylesheet" href="plugins/'.$this->getIdentifier().'/commsy.css" />'.LF;
+      $retour .= '   <script type="text/javascript" src="plugins/'./*$this->getIdentifier()*/$this->_htdocs_identifier.'/ckeditor.js"></script>'.LF;
+      $retour .= '   <link rel="stylesheet" href="plugins/'./*$this->getIdentifier()*/$this->_htdocs_identifier.'/commsy_css.php?cid='.$this->_environment->getCurrentContextID().'" />'.LF;
+      $retour .= '   <link rel="stylesheet" href="plugins/'./*$this->getIdentifier()*/$this->_htdocs_identifier.'/commsy.css" />'.LF;
       return $retour;
    }
 
