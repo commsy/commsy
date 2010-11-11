@@ -3,4 +3,4 @@ Install as normal plugin:
 
 Install in /wp-content/mu-plugins
 - commsy_auth.php
-- http://wordpress.org/extend/plugins/md5-password-hashes/
+- md5-password-hashes.zip
