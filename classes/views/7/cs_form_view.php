@@ -660,9 +660,9 @@ class cs_form_view extends cs_view {
       $use_new_upload = false;
       $session = $this->_environment->getSession();
       if($session->issetValue('javascript') and $session->issetValue('flash')){
-      	if(($session->getValue('javascript') == '1') and ($session->getValue('flash') == '1')){
-      		$use_new_upload = true;
-      	}
+         if(($session->getValue('javascript') == '1') and ($session->getValue('flash') == '1')){
+            $use_new_upload = true;
+         }
       }
 
       // do not use new upload in case of room picture, user picuture, ...
@@ -670,7 +670,7 @@ class cs_form_view extends cs_view {
       $fct = $this->_environment->getCurrentFunction();
       if(   isset($_GET['show_profile']) ||
             ($module == 'configuration' && $fct == 'room_options') ||
-            ($module == 'group' && $fct == 'edit') || 
+            ($module == 'group' && $fct == 'edit') ||
             ($module == 'user' && $fct == 'edit')) {
          $use_new_upload = false;
       }
@@ -699,14 +699,14 @@ class cs_form_view extends cs_view {
          }
 
          $scriptData = '';
-         $scriptData .= '"cid"					: "' . $this->_environment->getCurrentContextID() . '",';
-         $scriptData .= '"mod"					: "ajax",';
-         $scriptData .= '"fct"					: "uploadify",';
-         $scriptData .= '"c_virus_scan"			: "' . $c_virus_scan . '",';
-         $scriptData .= '"c_virus_scan_cron"	: "' . $c_virus_scan_cron . '",';
-         $scriptData .= '"file_upload_rubric"	: "' . $target_module . '",';
-         $scriptData .= '"SID"					: "' . $session->getSessionID() . '",';
-         $scriptData .= '"security_token"		: "' . getToken() . '"';
+         $scriptData .= '"cid"               : "' . $this->_environment->getCurrentContextID() . '",';
+         $scriptData .= '"mod"               : "ajax",';
+         $scriptData .= '"fct"               : "uploadify",';
+         $scriptData .= '"c_virus_scan"         : "' . $c_virus_scan . '",';
+         $scriptData .= '"c_virus_scan_cron"   : "' . $c_virus_scan_cron . '",';
+         $scriptData .= '"file_upload_rubric"   : "' . $target_module . '",';
+         $scriptData .= '"SID"               : "' . $session->getSessionID() . '",';
+         $scriptData .= '"security_token"      : "' . getToken() . '"';
 
          /*
           * this object array specifies the uploadify error message translations
@@ -716,9 +716,9 @@ class cs_form_view extends cs_view {
           * text: translation
           */
          $html .='<script type="text/javascript">';
-         $html .='	var uploadify_errorLang = [';
+         $html .='   var uploadify_errorLang = [';
          $html .='                              {"type" : "File Size", "text" : "' . $this->_translator->getMessage('ERROR_UPLOADIFY_FILE_SIZE') . '"}';
-         $html .='							  ]';
+         $html .='                       ]';
          $html .='</script>';
 
          // define the buttons
@@ -726,23 +726,23 @@ class cs_form_view extends cs_view {
          $button_browse = "javascript/jQuery/jquery.uploadify-v2.1.0/button_browse_" . $selected_lang . ".png";
          $button_upload = "javascript/jQuery/jquery.uploadify-v2.1.0/button_upload_" . $selected_lang . ".png";
          $button_abort = "javascript/jQuery/jquery.uploadify-v2.1.0/button_abort_" . $selected_lang . ".png";
-         
+
          $html .= '<div id="fileQueue"></div>';
          $html .= '<input type="file" name="uploadify" id="uploadify" />';
          $html .= '<a id="uploadify_doUpload" href="javascript:$(\'#uploadify\').uploadifyUpload();"><img src="' . $button_upload . '"></a>&nbsp;';
          $html .= '<a id="uploadify_clearQuery" href="javascript:jQuery(\'#uploadify\').uploadifyClearQueue()"><img src="' . $button_abort . '"></a>';
-         
+
          $html .= '&nbsp;'.$this->_getButtonAsHTML($form_element['button_text'],$form_element['button_name'],'125',false,'','','','','uploadify_fixSubmitButton');
-         
+
          $html .='<script type="text/javascript">';
          $html .='$(document).ready(function() {';
          $html .='   $("#uploadify").uploadify({';
          $html .='      "uploader"       : "javascript/jQuery/jquery.uploadify-v2.1.0/uploadify.swf",';
          //$html .='      "script"         : "javascript/jQuery/jquery.uploadify-v2.1.0/uploadify.php",';
-         $html .='		"script"		 : "commsy.php",';
-         $html .='		"method"		 : "GET",';
+         $html .='      "script"       : "'.$this->_environment->getConfiguration('c_single_entry_point').'",';
+         $html .='      "method"       : "GET",';
          $html .='      "folder"         : "javascript/jQuery/jquery.uploadify-v2.1.0/uploads",';
-         $html .='		"scriptData"	 : ({'.$scriptData.'}),';
+         $html .='      "scriptData"    : ({'.$scriptData.'}),';
          $html .='      "multi"          : true,';
          $html .='      "wmode"          : "transparent",';
          $html .='      "buttonImg"      : "' . $button_browse . '",';
@@ -751,16 +751,16 @@ class cs_form_view extends cs_view {
          $html .='      "sizeLimit"      : '.$val.',';
          //$html .='      "buttonText"     : "'.$this->_translator->getMessage('COMMON_UPLOAD_SEARCH_BUTTON').'",';
          $html .='      "cancelImg"      : "images/commsyicons/16x16/delete.png",';
-         $html .='		"onComplete"	 : uploadify_onComplete,';
-         $html .='		"onAllComplete"	 : uploadify_onAllComplete,';
-         $html .='		"onError"		 : uploadify_onError';
+         $html .='      "onComplete"    : uploadify_onComplete,';
+         $html .='      "onAllComplete"    : uploadify_onAllComplete,';
+         $html .='      "onError"       : uploadify_onError';
          $html .='   });';
-         
+
          $html .= 'jQuery(\'input[id="uploadify_fixSubmitButton"]\').attr(\'style\', \'display: none;\');';
-         
+
          $html .= 'window.setTimeout("check_upload_form()",2000);';
          //$html .= 'check_upload_form()';
-         
+
          $html .='});';
          $html .='</script>';
       }else{
@@ -1197,14 +1197,14 @@ class cs_form_view extends cs_view {
 
       // Passwort Securitycheck
       if($form_element['name'] == 'password'){
-      	$auth_source_manager = $this->_environment->getAuthSourceManager();
-	      $auth_source_item = $auth_source_manager->getItem($this->_environment->getCurrentUserItem()->getAuthSource());
-	      if(!empty($auth_source_item) AND $auth_source_item->isPasswordSecureActivated()){
-	      	$html .= '<div id="iSM"><ul class="weak"><li id="iWeak">zu leicht</li>
-				<li id="iMedium">erlaubt</li><li id="iStrong">sicher</li></ul></div>';
-	      }
-	      unset($auth_source_manager);
-	      unset($auth_source_item);
+         $auth_source_manager = $this->_environment->getAuthSourceManager();
+         $auth_source_item = $auth_source_manager->getItem($this->_environment->getCurrentUserItem()->getAuthSource());
+         if(!empty($auth_source_item) AND $auth_source_item->isPasswordSecureActivated()){
+            $html .= '<div id="iSM"><ul class="weak"><li id="iWeak">zu leicht</li>
+            <li id="iMedium">erlaubt</li><li id="iStrong">sicher</li></ul></div>';
+         }
+         unset($auth_source_manager);
+         unset($auth_source_item);
       }
       $html .= LF;
       return $html;
