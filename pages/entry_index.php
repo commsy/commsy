@@ -497,145 +497,40 @@ $count_all = 0;
 }*/
 
 // Get data from database
-global $c_plugin_array;
+
+$user_id_array = array();
+$user_id_array[]= $current_user->getItemID();
+$privatroom_id_array = array();
+$privatroom_id_array[]= $current_context->getItemID();
+
+$item_manager = $environment->getItemManager();
+$item_manager->setOrderLimit(true);
+if (!empty($sellist) and $sellist != 'new'){
+   $item_manager->setListLimit($sellist);
+}
+if (!empty($selbuzzword)){
+   $item_manager->setBuzzwordLimit($selbuzzword);
+}
+if (!empty($selmatrix)){
+   $item_manager->setMatrixLimit($selmatrix);
+}
+if (!empty($searchtext)){
+   $item_manager->setSearchLimit($searchtext);
+}
+if (!empty($last_selected_tag)){
+   $item_manager->setTagLimit($last_selected_tag);
+}
+$new_entry_list = $item_manager->getAllPrivateRoomEntriesOfUserList($privatroom_id_array,$user_id_array);
+$search_list->addList($new_entry_list);
+
+// ToDo: Nur Einträge in der Liste belassen, die auch angezeigt werden -> sonst gibt es leere Seiten über die geblättert wird!
 $rubric_array = array();
 $rubric_array[] = CS_ANNOUNCEMENT_TYPE;
 $rubric_array[] = CS_DISCUSSION_TYPE;
 $rubric_array[] = CS_DATE_TYPE;
 $rubric_array[] = CS_MATERIAL_TYPE;
 $rubric_array[] = CS_TODO_TYPE;
-foreach ($rubric_array as $rubric) {
-   if ( (!isset($c_plugin_array)
-        or !in_array(strtolower($rubric),$c_plugin_array)
-      )and $rubric != CS_ENTRY_TYPE) {
 
-      $user_id_array = array();
-      #$user_list = $current_user->getRelatedUserList();
-      #$temp_user_item = $user_list->getFirst();
-      #while($temp_user_item){
-      #	$user_id_array[] = $temp_user_item->getItemID();
-      #	$temp_user_item = $user_list->getNext();
-      #}
-      $user_id_array[]= $current_user->getItemID();
-
-      $privatroom_id_array = array();
-      $privatroom_id_array[]= $current_context->getItemID();
-
-/*      $user_manager = $environment->getUserManager();
-      $user_manager->resetLimits();
-
-      $user_manager->setContextArrayLimit($room_id_array);
-      $user_manager->setUserIDLimit($current_user->getUserID());
-      $user_manager->select();
-      $user_id_array =  $user_manager->getIDArray();
-      unset($user_manager);
-      */
-
-      $item_manager = $environment->getItemManager();
-      $item_manager->setOrderLimit(true);
-      if (!empty($sellist) and $sellist != 'new'){
-         $item_manager->setListLimit($sellist);
-      }
-      if (!empty($selbuzzword)){
-         $item_manager->setBuzzwordLimit($selbuzzword);
-      }
-      if (!empty($selmatrix)){
-         $item_manager->setMatrixLimit($selmatrix);
-      }
-      if (!empty($searchtext)){
-         $item_manager->setSearchLimit($searchtext);
-      }
-      if (!empty($last_selected_tag)){
-         $item_manager->setTagLimit($last_selected_tag);
-      }
-      #$item_manager->setIntervalLimit($interval);
-      $new_entry_list = $item_manager->getAllPrivateRoomEntriesOfUserList($privatroom_id_array,$user_id_array);
-
-
-#      $new_entry_list = $item_manager->getPrivateRoomItemList($new_entry_array,$user_id_array);
-
-
-/*
-      $rubric_ids = array();
-      $rubric_list = new cs_list();
-      $rubric_manager = $environment->getManager($rubric);
-      //Vorbereitung der Manager und Abzählen aller Einträge
-      if ($rubric!=CS_PROJECT_TYPE and $rubric!=CS_MYROOM_TYPE){
-         $rubric_manager->setContextLimit($environment->getCurrentContextID());
-      } elseif ( $rubric == CS_PROJECT_TYPE
-                 and $environment->inCommunityRoom()
-               ) {
-         $rubric_manager->setContextLimit($environment->getCurrentPortalID());
-         $current_community_item = $environment->getCurrentContextItem();
-         $rubric_manager->setIDArrayLimit($current_community_item->getInternalProjectIDArray());
-         unset($current_community_item);
-      }
-      if ($rubric == CS_DATE_TYPE) {
-         $rubric_manager->setWithoutDateModeLimit();
-      }
-      if ($rubric==CS_USER_TYPE) {
-         $rubric_manager->setUserLimit();
-         $current_user= $environment->getCurrentUser();
-         if ( $current_user->isUser() ) {
-            $rubric_manager->setVisibleToAllAndCommsy();
-         } else {
-            $rubric_manager->setVisibleToAll();
-         }
-      }
-      $count_all = $count_all + $rubric_manager->getCountAll();
-
-      foreach($sel_array as $rubric => $value){
-         if (!empty($value)){
-            $rubric_manager->setRubricLimit($rubric,$value);
-         }
-      }
-
-      if ( $sel_activating_status != '1') {
-         $rubric_manager->showNoNotActivatedEntries();
-      }
-      $rubric_manager->setSearchLimit($search);
-      $rubric_manager->setAttributeLimit($selrestriction);
-      if ( !empty($selbuzzword) ) {
-         $rubric_manager->setBuzzwordLimit($selbuzzword);
-      }
-      if ( !empty($last_selected_tag) ){
-         $rubric_manager->setTagLimit($last_selected_tag);
-      }
-
-      if ( !empty($selfiles) ) {
-         $rubric_manager->setOnlyFilesLimit();
-      }
-
-      if ( $rubric != CS_MYROOM_TYPE ) {
-         $rubric_manager->selectDistinct();
-         $rubric_list = $rubric_manager->get();
-      } else {
-         $rubric_list = $rubric_manager->getRelatedContextListForUser($current_user->getUserID(),$current_user->getAuthSource(),$environment->getCurrentPortalID());;
-      }*/
-
-/*      $search_list->addList($rubric_list);
-      $temp_rubric_ids = $rubric_manager->getIDArray();
-      if (!empty($temp_rubric_ids)){
-         $rubric_ids = $temp_rubric_ids;
-      }
-      $session->setValue('cid'.$environment->getCurrentContextID().'_'.$rubric.'_index_ids', $rubric_ids);
-      $campus_search_ids = array_merge($campus_search_ids, $rubric_ids);*/
-
-      $search_list->addList($new_entry_list);
-#      $temp_rubric_ids = $rubric_manager->getIDArray();
-#      if (!empty($temp_rubric_ids)){
-#         $rubric_ids = $temp_rubric_ids;
-#      }
-#      $session->setValue('cid'.$environment->getCurrentContextID().'_'.$rubric.'_index_ids', $rubric_ids);
-#      $campus_search_ids = array_merge($campus_search_ids, $rubric_ids);
-
-
-   }
-
-
-}
-
-// ToDo: Nur Einträge in der Liste belassen, die auch angezeigt werden -> sonst gibt es leere Seiten über die geblättert wird!
 $sort_list = new cs_list();
 $sort_item = $new_entry_list->getFirst();
 while($sort_item){

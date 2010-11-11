@@ -373,7 +373,7 @@ class cs_item_manager extends cs_manager {
    function getAllPrivateRoomEntriesOfUserList($room_ids,$user_ids){
         $rs = array();
         $query = 'SELECT DISTINCT '.$this->addDatabasePrefix('items').'.*, modifier.modifier_id';
-        if (isset($this->_search_array)) {
+        if (isset($this->_search_array[0])) {
            $query .= ', materials.title, materials.description, materials.extras'.LF;
            $query .= ', todos.title, todos.description';
            $query .= ', discarticles.subject, discarticles.description';
@@ -418,7 +418,7 @@ class cs_item_manager extends cs_manager {
           $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l42 ON ( l42.deletion_date IS NULL AND ((l42.second_item_id='.$this->addDatabasePrefix('items').'.item_id AND l42.first_item_type="'.CS_TAG_TYPE.'"))) ';
        }
 
-        if (isset($this->_search_array)) {
+        if (isset($this->_search_array[0])) {
            $query .= ' LEFT JOIN '.$this->addDatabasePrefix('materials').' AS materials ON materials.item_id='.$this->addDatabasePrefix('items').'.item_id';
            $query .= ' LEFT JOIN '.$this->addDatabasePrefix('todos').' AS todos ON todos.item_id='.$this->addDatabasePrefix('items').'.item_id';
            $query .= ' LEFT JOIN '.$this->addDatabasePrefix('discussionarticles').' AS discarticles ON discarticles.item_id='.$this->addDatabasePrefix('items').'.item_id';
