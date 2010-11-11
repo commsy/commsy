@@ -397,7 +397,6 @@ class cs_item_manager extends cs_manager {
        if (isset($this->_matrix_limit)) {
           $query .= ' INNER JOIN '.$this->addDatabasePrefix('link_items').' AS matrix_x ON matrix_x.first_item_id='.$this->addDatabasePrefix('items').'.item_id';
           $query .= ' INNER JOIN '.$this->addDatabasePrefix('link_items').' AS matrix_y ON matrix_y.first_item_id='.$this->addDatabasePrefix('items').'.item_id';
-          $query .= ' INNER JOIN '.$this->addDatabasePrefix('link_items').' AS matrix_key ON matrix_x.extras=matrix_y.extras';
        }
 
 
@@ -427,7 +426,7 @@ class cs_item_manager extends cs_manager {
         }
 
         $query .= ' WHERE 1';
-        $query .= ' AND (label.type IS NULL OR label.type="group" OR label.type="topic" OR label.type="group")';
+        $query .= ' AND (label.type IS NULL OR label.type="group" OR label.type="topic")';
         $query .= ' AND '.$this->addDatabasePrefix('items').'.context_id IN ('.implode(",",encode(AS_DB,$room_ids)).')';
         $query .= ' AND '.$this->addDatabasePrefix('items').'.deleter_id IS NULL';
         $query .= ' AND '.$this->addDatabasePrefix('items').'.deletion_date IS NULL';
@@ -510,6 +509,7 @@ class cs_item_manager extends cs_manager {
         }else{
            $query .= '';
         }
+        pr($query);
         // perform query
         $result = $this->_db_connector->performQuery($query);
          if ( !isset($result) ) {
