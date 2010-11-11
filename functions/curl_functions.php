@@ -148,6 +148,10 @@ function curl( $context_id, $module, $function, $parameter, $fragment='', $fileh
 function _curl( $amp_flag, $context_id, $module, $function, $parameter, $fragment='', $filehack='', $file='' ) {
    if ( empty($file) ) {
       $address = mb_substr($_SERVER['SCRIPT_NAME'],mb_strrpos($_SERVER['SCRIPT_NAME'],'/')+1);
+      global $c_single_entry_point;
+      if ( $address != $c_single_entry_point) {
+         $address = $c_single_entry_point;
+      }
    } else {
       $address = $file;
       if ( !strstr($file,'.php') ) {
