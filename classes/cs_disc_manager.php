@@ -25,6 +25,7 @@ class cs_disc_manager {
    var $_first_id = NULL;
    var $_second_id = NULL;
    var $_file_path_basic = 'var/';
+   private $_folder_temp = 'temp';
    private $_last_saved_filename = '';
 
    function cs_disc_manager () {
@@ -343,8 +344,22 @@ class cs_disc_manager {
       return $retour;
    }
 
+   public function moveUploadedFileToTempFolder ($tempFile) {
+      $retour = false;
+      $this->_makeTempFolder();
+      if ( move_uploaded_file($tempFile, $this->getTempFolder().'/'.basename($tempFile)) ) {
+         $retour = $this->getTempFolder().'/'.basename($tempFile);
+      }
+      return $retour;
+   }
+
+   public function getTempFolder () {
+      $retour = $this->_file_path_basic.$this->_folder_temp;
+      return $retour;
+   }
+
    function _makeTempFolder () {
-      $first_folder_string = $this->_file_path_basic.'temp';
+      $first_folder_string = $this->getTempFolder();
       $first_folder = @opendir($first_folder_string);
       if (!$first_folder) {
          mkdir($first_folder_string);
@@ -354,9 +369,9 @@ class cs_disc_manager {
    public function saveFileFromBase64 ($file, $base64_data) {
       $data = base64_decode($base64_data);
       $this->_makeTempFolder();
-      $retour = file_put_contents($this->_file_path_basic.'temp/'.$file,$data);
+      $retour = file_put_contents($this->getTempFolder().'/'.$file,$data);
       if ( $retour ) {
-         $retour = $this->_file_path_basic.'temp/'.$file;
+         $retour = $this->getTempFolder().'/'.$file;
       }
       return $retour;
    }
