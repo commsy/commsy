@@ -293,7 +293,7 @@ class cs_detail_view extends cs_view {
       $current_user = $this->_environment->getCurrentUserItem();
       $annotated_item = $this->getItem();
       $annotated_item_type = $annotated_item->getItemType();
-   	  $item_manager = $this->_environment->getItemManager();
+        $item_manager = $this->_environment->getItemManager();
       $html  = '';
       if ( (
             $item->mayEdit($current_user) or
@@ -760,7 +760,7 @@ class cs_detail_view extends cs_view {
                   $activating_text = $this->_translator->getMessage('COMMON_ACTIVATING_DATE').' '.getDateInLang($item->getActivatingDate());
                }
                $html .='<li class="disabled" style="'.$style.'">';
-               $params['iid'] =	$item->getItemID();
+               $params['iid'] =   $item->getItemID();
                $html .= ($count_items+1).'. '.ahref_curl( $this->_environment->getCurrentContextID(),
                                  $type,
                                  $this->_environment->getCurrentFunction(),
@@ -779,7 +779,7 @@ class cs_detail_view extends cs_view {
                $html .='</li>';
             } elseif ( isset($item) ) {
                $html .='<li style="'.$style.'">';
-               $params['iid'] =	$item->getItemID();
+               $params['iid'] =   $item->getItemID();
                $html .= ($count_items+1).'. '.ahref_curl( $this->_environment->getCurrentContextID(),
                                  $type,
                                  $this->_environment->getCurrentFunction(),
@@ -1629,28 +1629,28 @@ class cs_detail_view extends cs_view {
             $html .= '<div class="right_box_title">'.LF;
 
             $date = $this->_item->getStartingDay();
-	         $date_array = explode('-',$date);
-	         $month = $date_array[1];
-	         $year = $date_array[0];
-	         $first_char = mb_substr($month,0,1);
-	         if ($first_char == '0'){
-	            $month = mb_substr($month,1,2);
-	         }
-	         $month_array = array($this->_translator->getMessage('DATES_JANUARY_LONG'),
-								         $this->_translator->getMessage('DATES_FEBRUARY_LONG'),
-								         $this->_translator->getMessage('DATES_MARCH_LONG'),
-								         $this->_translator->getMessage('DATES_APRIL_LONG'),
-								         $this->_translator->getMessage('DATES_MAY_LONG'),
-								         $this->_translator->getMessage('DATES_JUNE_LONG'),
-								         $this->_translator->getMessage('DATES_JULY_LONG'),
-								         $this->_translator->getMessage('DATES_AUGUST_LONG'),
-								         $this->_translator->getMessage('DATES_SEPTEMBER_LONG'),
-								         $this->_translator->getMessage('DATES_OCTOBER_LONG'),
-								         $this->_translator->getMessage('DATES_NOVEMBER_LONG'),
-								         $this->_translator->getMessage('DATES_DECEMBER_LONG'));
-	         $tempMessage = $month_array[$month-1].' '.$year;
+            $date_array = explode('-',$date);
+            $month = $date_array[1];
+            $year = $date_array[0];
+            $first_char = mb_substr($month,0,1);
+            if ($first_char == '0'){
+               $month = mb_substr($month,1,2);
+            }
+            $month_array = array($this->_translator->getMessage('DATES_JANUARY_LONG'),
+                                 $this->_translator->getMessage('DATES_FEBRUARY_LONG'),
+                                 $this->_translator->getMessage('DATES_MARCH_LONG'),
+                                 $this->_translator->getMessage('DATES_APRIL_LONG'),
+                                 $this->_translator->getMessage('DATES_MAY_LONG'),
+                                 $this->_translator->getMessage('DATES_JUNE_LONG'),
+                                 $this->_translator->getMessage('DATES_JULY_LONG'),
+                                 $this->_translator->getMessage('DATES_AUGUST_LONG'),
+                                 $this->_translator->getMessage('DATES_SEPTEMBER_LONG'),
+                                 $this->_translator->getMessage('DATES_OCTOBER_LONG'),
+                                 $this->_translator->getMessage('DATES_NOVEMBER_LONG'),
+                                 $this->_translator->getMessage('DATES_DECEMBER_LONG'));
+            $tempMessage = $month_array[$month-1].' '.$year;
 
-	         $html .= '<div style="white-space:nowrap;">'.$tempMessage.'</div>'.LF;
+            $html .= '<div style="white-space:nowrap;">'.$tempMessage.'</div>'.LF;
             $html .='</div>'.LF;
             $html .= '<div class="right_box_main">'.LF;
             $html .= '<div style="margin-left: 20px;">'.LF;
@@ -1659,18 +1659,18 @@ class cs_detail_view extends cs_view {
 
 
             $html .= '<div style="float:right; font-size:8pt; padding: 5px 3px 3px 0px;">'.LF;
-	         $params = array();
-	         $params['back_to_index'] = 'true';
-	         $link_module = $this->_environment->getCurrentModule();
-	         $link_text = $this->_translator->getMessage('DATE_BACK_TO_CALENDAR');
-	         $html .= ahref_curl( $this->_environment->getCurrentContextID(),
-	                           $link_module,
-	                           'index',
-	                           $params,
-	                           $link_text
-	                           );
-				$html .= '</div>'.LF;
-				$html .='<div style="clear:both;"></div>'.LF;
+            $params = array();
+            $params['back_to_index'] = 'true';
+            $link_module = $this->_environment->getCurrentModule();
+            $link_text = $this->_translator->getMessage('DATE_BACK_TO_CALENDAR');
+            $html .= ahref_curl( $this->_environment->getCurrentContextID(),
+                              $link_module,
+                              'index',
+                              $params,
+                              $link_text
+                              );
+            $html .= '</div>'.LF;
+            $html .='<div style="clear:both;"></div>'.LF;
 
             $html .='</div>'.LF;
             $html .='</div>'.LF;
@@ -2026,7 +2026,7 @@ class cs_detail_view extends cs_view {
                            '');
          return $html;
       }else{
-   	     return '';
+           return '';
       }
    }
 
@@ -2341,7 +2341,7 @@ class cs_detail_view extends cs_view {
       $html .= '         <noscript>';
       $html .= '<div class="right_box_title">'.$this->_translator->getMessage('COMMON_ATTACHED_ENTRIES').'</div>';
       $html .= '         </noscript>';
-      $html .='		<div class="right_box_main">     '.LF;
+      $html .='      <div class="right_box_main">     '.LF;
       if ($link_items->isEmpty()) {
          $html .= '  <div style="padding:0px 5px; font-size:8pt;" class="disabled">'.$this->_translator->getMessage('COMMON_NONE').'&nbsp;</div>'.LF;
       } else {
@@ -3037,7 +3037,9 @@ class cs_detail_view extends cs_view {
       // Modificator
       $modificator = $item->getModificatorItem();
       // Calculate number / percentage of users who read this item
-      if ( $context->isProjectRoom()
+      if ( ( $context->isProjectRoom()
+             or $context->isGroupRoom()
+           )
            and !in_array($item->getType(), array(CS_SECTION_TYPE,
                                                  CS_DISCARTICLE_TYPE,
                                                  CS_STEP_TYPE,
@@ -3171,7 +3173,9 @@ class cs_detail_view extends cs_view {
 
 
       // Read count (for improved awareness)
-      if ( $context->isProjectRoom()
+      if ( ( $context->isProjectRoom()
+             or $context->isGroupRoom()
+           )
               and !in_array($item->getType(), array(CS_SECTION_TYPE,
                                                     CS_DISCARTICLE_TYPE,
                                                     CS_STEP_TYPE,
@@ -3345,7 +3349,9 @@ class cs_detail_view extends cs_view {
       $html .='<script type="text/javascript">document.onload = initCreatorInformations("'.$item->getItemID().'",false);</script>';
 
       //Read percentage gauge (for improved awareness)
-      if ( $context->isProjectRoom()
+      if ( ( $context->isProjectRoom()
+             or $context->isGroupRoom()
+           )
            and !in_array($item->getType(), array(CS_SECTION_TYPE,
                                                  CS_DISCARTICLE_TYPE,
                                                  CS_STEP_TYPE,
@@ -3997,39 +4003,39 @@ class cs_detail_view extends cs_view {
    }
 
 
-	function _getWordpressAction ( $item, $user, $context ) {
-	      $html  = '';
-	      if ( $item->mayEdit($user)
-	           and $context->isWordpressActive()
-	           and $this->_with_modifying_actions
-	           and ( !$item->isA(CS_DISCUSSION_TYPE)
-	                 or $item->getDiscussionType() == 'simple'
-	               )
-	         ) {
-	         $params = array();
-	         $params['iid'] = $item->getItemID();
-	         $params['export_to_wordpress'] = 'true';
-	         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-	            $image = '<img src="images/commsyicons_msie6/22x22/export_wordpress.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('MATERIAL_EXPORT_TO_WORDPRESS').'"/>';
-	         } else {
-	            $image = '<img src="images/commsyicons/22x22/export_wordpress.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('MATERIAL_EXPORT_TO_WORDPRESS').'"/>';
-	         }
-	         $html .= ahref_curl( $this->_environment->getCurrentContextID(),
-	                                   $this->_environment->getCurrentModule(),
-	                                   'detail',
-	                                   $params,
-	                                   $image,
-	                                   $this->_translator->getMessage('ITEM_EXPORT_TO_WORDPRESS')).LF;
-	         unset($params);
-	      } elseif($context->isWordpressActive()) {
-	         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-	            $image = '<img src="images/commsyicons_msie6/22x22/export_wordpress_grey.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('ITEM_EXPORT_TO_WORDPRESS').'"/>';
-	         } else {
-	            $image = '<img src="images/commsyicons/22x22/export_wordpress_grey.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('ITEM_EXPORT_TO_WORDPRESS').'"/>';
-	         }
-	         $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION_NEW',$this->_translator->getMessage('ITEM_EXPORT_TO_WORDPRESS')).' "class="disabled">'.$image.'</a>'.LF;
-	      }
-	      return $html;
+   function _getWordpressAction ( $item, $user, $context ) {
+         $html  = '';
+         if ( $item->mayEdit($user)
+              and $context->isWordpressActive()
+              and $this->_with_modifying_actions
+              and ( !$item->isA(CS_DISCUSSION_TYPE)
+                    or $item->getDiscussionType() == 'simple'
+                  )
+            ) {
+            $params = array();
+            $params['iid'] = $item->getItemID();
+            $params['export_to_wordpress'] = 'true';
+            if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+               $image = '<img src="images/commsyicons_msie6/22x22/export_wordpress.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('MATERIAL_EXPORT_TO_WORDPRESS').'"/>';
+            } else {
+               $image = '<img src="images/commsyicons/22x22/export_wordpress.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('MATERIAL_EXPORT_TO_WORDPRESS').'"/>';
+            }
+            $html .= ahref_curl( $this->_environment->getCurrentContextID(),
+                                      $this->_environment->getCurrentModule(),
+                                      'detail',
+                                      $params,
+                                      $image,
+                                      $this->_translator->getMessage('ITEM_EXPORT_TO_WORDPRESS')).LF;
+            unset($params);
+         } elseif($context->isWordpressActive()) {
+            if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+               $image = '<img src="images/commsyicons_msie6/22x22/export_wordpress_grey.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('ITEM_EXPORT_TO_WORDPRESS').'"/>';
+            } else {
+               $image = '<img src="images/commsyicons/22x22/export_wordpress_grey.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('ITEM_EXPORT_TO_WORDPRESS').'"/>';
+            }
+            $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION_NEW',$this->_translator->getMessage('ITEM_EXPORT_TO_WORDPRESS')).' "class="disabled">'.$image.'</a>'.LF;
+         }
+         return $html;
    }
 
    function _getPrintAction ( $item, $user ) {
