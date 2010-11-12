@@ -3654,7 +3654,7 @@ var uploadify_onAllCompleteSubmitForm = false;
 
 function uploadify_onAllComplete(event, data) {
 	if(uploadify_onAllCompleteSubmitForm) {
-		jQuery("input[type='submit']")[0].click();
+		jQuery("td[class='buttonbar'] input[type='submit'][name='option']")[0].click();
 	}
 
 	return true;
