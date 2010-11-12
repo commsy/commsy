@@ -30,7 +30,7 @@
 // 2. install the jsMath at your server
 // 3. set url to the installation of jsMath (main folder)
 //    e.g. http://www.xyz.de/jsMath
-//    $c_jsmath_url = $c_commsy_domain.$c_commsy_url_path.'/jsMath'; // if jsMath is in htdocs folder of commsy
+//    $c_jsmath_url = $c_commsy_url_path.'/jsMath'; // if jsMath is in htdocs folder of commsy
 //    $c_jsmath_url = $c_pmwiki_path_url.'/pub/jsMath'; // if you are using commsy_wiki with jsMath
 //    $c_jsmath_url = 'http://www.xyz.de/jsMath';
 // 4. enable jsMath in CommSy with setting $c_jsmath_enable = true;

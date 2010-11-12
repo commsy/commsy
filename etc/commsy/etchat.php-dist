@@ -31,7 +31,7 @@
 
 // 3. set url to the installation of etchat (main folder)
 //    e.g. http://www.xyz.de/etchat
-//    $c_etchat_url = $c_commsy_domain.$c_commsy_url_path.'/etchat'; // if etchat is in htdocs folder of commsy
+//    $c_etchat_url = $c_commsy_url_path.'/etchat'; // if etchat is in htdocs folder of commsy
 //    $c_etchat_url = 'http://www.xyz.de/etchat'; // if etchat is in htdocs folder of your webserver
 // 4. enable etchat in CommSy with setting $c_etchat_enable = true;
 $c_etchat_enable = true;
