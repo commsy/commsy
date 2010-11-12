@@ -3267,6 +3267,14 @@ class misc_text_converter {
                global $c_single_entry_point;
                if ( $http_referer != $c_commsy_domain.$c_commsy_url_path.'/'.$c_single_entry_point ) {
                   $hack = true;
+
+                  // non hack, if only https is the difference
+                  if ( mb_stristr($http_referer,'https://')
+                       and !mb_stristr($c_commsy_domain,'https://')
+                       and $http_referer == str_replace('http://','https://',$c_commsy_domain).$c_commsy_url_path.'/'.$c_single_entry_point
+                     ) {
+                     $hack = false;
+                  }
                }
             }
             if ( !$hack ) {
