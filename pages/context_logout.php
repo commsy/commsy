@@ -31,6 +31,7 @@ $history = $session->getValue('history');
 $cookie = $session->getValue('cookie');
 $javascript = $session->getValue('javascript');
 $https = $session->getValue('https');
+$flash = $session->getValue('flash');
 if ( $session->issetValue('root_session_id') ) {
    $root_session_id = $session->getValue('root_session_id');
 }
@@ -54,6 +55,11 @@ if ($https == '1') {
    $session->setValue('https',1);
 } elseif ($https == '-1') {
    $session->setValue('https',-1);
+}
+if ($flash == '1') {
+   $session->setValue('flash',1);
+} elseif ($flash == '-1') {
+   $session->setValue('flash',-1);
 }
 
 if ( !empty($_GET['back_tool']) ) {

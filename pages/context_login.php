@@ -40,6 +40,7 @@ if ( isset($session) ) {
    $cookie = $session->getValue('cookie');
    $javascript = $session->getValue('javascript');
    $https = $session->getValue('https');
+   $flash = $session->getValue('flash');
 }
 // case: login with external login box
 else {
@@ -47,6 +48,7 @@ else {
    $cookie = '';
    $javascript = '';
    $https = '';
+   $flash = '';
 }
 
 // user_id and password
@@ -90,6 +92,11 @@ if (!empty($user_id) and !empty($password) ) {
          $session->setValue('https',1);
       } elseif ($https == '-1') {
          $session->setValue('https',-1);
+      }
+      if ($flash == '1') {
+         $session->setValue('flash',1);
+      } elseif ($flash == '-1') {
+         $session->setValue('flash',-1);
       }
 
       // save portal id in session to be sure, that user didn't
