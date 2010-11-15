@@ -116,6 +116,16 @@ class cs_disc_manager {
       return $retour;
    }
 
+   function existsTempFile ($filename) {
+      $retour = false;
+      if ( !empty($filename)
+           and file_exists($this->getTempFolder().'/'.$filename)
+         ) {
+         $retour = true;
+      }
+      return $retour;
+   }
+
    function unlinkFile ($filename) {
       $retour = false;
       if (!empty($filename)
@@ -396,6 +406,43 @@ class cs_disc_manager {
    public function removeRoomDir($first_id, $second_id){
       $dir = $this->_getFilePath($first_id,$second_id);
       $this->_full_rmdir($dir);
+   }
+
+   public function saveURL2Temp ( $url, $filename ) {
+      $out = fopen($this->getTempFolder().'/'.$filename,'wb');
+      if ( $out == false ) {
+         include_once('functions/error_functions.php');
+         trigger_error('can not open destination file: '.$this->getTempFolder().'/'.$filename.' - '.__FILE__.' - '.__LINE__,E_USER_ERROR);
+      }
+      if ( function_exists('curl_init') ) {
+         $ch = curl_init();
+         curl_setopt($ch,CURLOPT_FILE,$out);
+         curl_setopt($ch,CURLOPT_HEADER,0);
+         curl_setopt($ch,CURLOPT_URL,$url);
+         curl_setopt($ch,CURLOPT_SSL_VERIFYPEER,false);
+         curl_setopt($ch,CURLOPT_SSL_VERIFYHOST,false);
+         global $c_proxy_ip;
+         if ( !empty($c_proxy_ip) ) {
+            $proxy = $c_proxy_ip;
+            global $c_proxy_port;
+            if ( !empty($c_proxy_port) ) {
+               $proxy .= ':'.$c_proxy_port;
+            }
+            curl_setopt($ch,CURLOPT_PROXY,$proxy);
+         }
+         curl_exec($ch);
+         $error = curl_error($ch);
+         if ( !empty($error) ) {
+            include_once('functions/error_functions.php');
+            trigger_error('curl error: '.$error.' - '.$url.' - '.__FILE__.' - '.__LINE__,E_USER_ERROR);
+         }
+         curl_close($ch);
+      } else {
+         include_once('functions/error_functions.php');
+         trigger_error('curl library php5-curl is not installed - '.__FILE__.' - '.__LINE__,E_USER_ERROR);
+      }
+      fclose($out);
+      return file_exists($this->getTempFolder().'/'.$filename);
    }
 }
 ?>
