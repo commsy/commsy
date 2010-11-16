@@ -1105,6 +1105,31 @@ class cs_date_calendar_index_view extends cs_room_index_view {
 
       $temp_array = array();
       $temp_array['dropdown_image']  = "mycalendar_icon";
+      $temp_array['checked']  = "seperator_75";
+      $temp_array['text']  = "";
+      $temp_array['value']  = "";
+      $action_array[] = $temp_array;
+      
+      $temp_array = array();
+      $temp_array['dropdown_image']  = "mycalendar_icon";
+      $temp_array['text']  = $this->_translator->getMessage('PRIVATEROOM_ASSIGNED_TO_ME_ONLY');
+      $temp_array['value'] = "mycalendar_dates_assigned_to_me";
+      if(in_array("mycalendar_dates_assigned_to_me", $myentries_array)){
+         $temp_array['checked']  = "checked";
+      } else {
+         $temp_array['checked']  = "";
+      }
+      $action_array[] = $temp_array;
+      
+      $temp_array = array();
+      $temp_array['dropdown_image']  = "mycalendar_icon";
+      $temp_array['checked']  = "seperator_75";
+      $temp_array['text']  = "";
+      $temp_array['value']  = "";
+      $action_array[] = $temp_array;
+      
+      $temp_array = array();
+      $temp_array['dropdown_image']  = "mycalendar_icon";
       $temp_array['checked']  = "scroll_start";
       $temp_array['text']  = "";
       $temp_array['value']  = "";
@@ -1146,6 +1171,31 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $temp_array['value']  = "";
       $action_array[] = $temp_array;
 
+      /*$temp_array = array();
+      $temp_array['dropdown_image']  = "mycalendar_icon";
+      $temp_array['checked']  = "seperator_75";
+      $temp_array['text']  = "";
+      $temp_array['value']  = "";
+      $action_array[] = $temp_array;
+      
+      $temp_array = array();
+      $temp_array['dropdown_image']  = "mycalendar_icon";
+      $temp_array['text']  = $this->_translator->getMessage('PRIVATEROOM_ASSIGNED_TO_ME_TODO_ONLY');
+      $temp_array['value'] = "mycalendar_todos_assigned_to_me";
+      if(in_array("mycalendar_todos_assigned_to_me", $myentries_array)){
+         $temp_array['checked']  = "checked";
+      } else {
+         $temp_array['checked']  = "";
+      }
+      $action_array[] = $temp_array;
+      
+      $temp_array = array();
+      $temp_array['dropdown_image']  = "mycalendar_icon";
+      $temp_array['checked']  = "seperator_75";
+      $temp_array['text']  = "";
+      $temp_array['value']  = "";
+      $action_array[] = $temp_array;*/
+      
       $temp_array = array();
       $temp_array['dropdown_image']  = "mycalendar_icon";
       $temp_array['checked']  = "scroll_start";

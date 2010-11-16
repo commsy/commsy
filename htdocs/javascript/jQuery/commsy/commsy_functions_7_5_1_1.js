@@ -3485,6 +3485,8 @@ jQuery(document).ready(function() {
 					if(temp_menu_entry[0] == current_menu){
 						if (temp_menu_entry[1] == 'seperator') {
 							ul.append('<li class="dropdown_seperator"><hr class="dropdown_seperator"></li>');
+						} else if (temp_menu_entry[1] == 'seperator_75') {
+							ul.append('<li class="dropdown_seperator"><hr class="dropdown_seperator_75"></li>');
 						} else if (temp_menu_entry[1] == 'text') {
 							ul.append('<li class="dropdown_text">'+temp_menu_entry[2]+'</li>');
 						} else if (temp_menu_entry[1] == 'scroll_start') {

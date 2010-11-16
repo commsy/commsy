@@ -1132,6 +1132,27 @@ if (($seldisplay_mode=='calendar' or $seldisplay_mode == 'calendar_month') and !
 $list = $dates_manager->get();        // returns a cs_list of dates_items
 
 if (($seldisplay_mode=='calendar' or $seldisplay_mode == 'calendar_month') and !($mode == 'formattach' or $mode == 'detailattach') ){
+   $myentries_array = $current_context->getMyCalendarDisplayConfig();
+	
+	if(in_array("mycalendar_dates_assigned_to_me", $myentries_array)){
+		$temp_list = new cs_list();
+	   $current_user = $environment->getCurrentUserItem();
+	   $current_user_list = $current_user->getRelatedUserList();
+	   
+	   $temp_element = $list->getFirst();
+	   while($temp_element){
+	   	$temp_user = $current_user_list->getFirst();
+	   	while($temp_user){
+	   	   if($temp_element->isParticipant($temp_user)){
+	   		   $temp_list->add($temp_element);
+	   	   }
+	   	   $temp_user = $current_user_list->getNext();
+	   	}
+	   	$temp_element = $list->getNext();
+	   }
+	   
+	   $list = $temp_list;
+	}
    $list->sortby('date');
 }
 if (($seldisplay_mode=='calendar' or $seldisplay_mode == 'calendar_month') and !($mode == 'formattach' or $mode == 'detailattach') ){
