@@ -152,6 +152,27 @@ if ( isset($_GET['cid']) ) {
          $dates_manager->setNotOlderThanMonthLimit(3);
          $dates_manager->select();
          $item_list = $dates_manager->get();
+         
+         if ( $environment->inPrivateRoom() ) {
+	         $myentries_array = $context_item->getMyCalendarDisplayConfig();
+			   if(in_array("mycalendar_dates_assigned_to_me", $myentries_array)){
+			      $temp_list = new cs_list();
+			      $current_user_list = $current_user_item->getRelatedUserList();
+			      $temp_element = $item_list->getFirst();
+			      while($temp_element){
+			         $temp_user = $current_user_list->getFirst();
+			         while($temp_user){
+			            if($temp_element->isParticipant($temp_user)){
+			               $temp_list->add($temp_element);
+			            }
+			            $temp_user = $current_user_list->getNext();
+			         }
+			         $temp_element = $item_list->getNext();
+			      }
+			      $item_list = $temp_list;
+			   }
+         }
+         
       }else{
          $todo_manager = $environment->getToDoManager();
          $context_item = $environment->getCurrentContextItem();
