@@ -1747,7 +1747,8 @@ EOD;
       $current_context_id = $this->_environment->getCurrentContextID();
       $current_portal_id = $this->_environment->getCurrentPortalID();
       if ( $current_context->isOpen() and $current_context->isPrivateRoom()
-         and $new_private_room) {
+         and $new_private_room
+         and !(isset($_GET['mode']) and $_GET['mode']=='print')) {
          $html .= '<div style="float:right;">'.LF;
          $html .= '<div class="portlet-configuration">'.LF;
          $html .= '<div class="portlet-header-configuration ui-widget-header" style="width:200px;">'.LF;

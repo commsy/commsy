@@ -864,7 +864,9 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                $html .= $this->_getPreferencesListAsHTML();
             }
          }
-         $html .= $this->_initDropDownConfiguration();
+         if(!(isset($_GET['mode']) and $_GET['mode']=='print')){
+            $html .= $this->_initDropDownConfiguration();
+         }
       }else{
          $html .= '<div class="right_box">'.LF;
          $html .= '<div class="right_box_title">'.LF;
@@ -1458,7 +1460,8 @@ class cs_date_calendar_index_view extends cs_room_index_view {
          $html .='<div class="index_content_display_width" style="'.$width.'padding-top:5px; vertical-align:bottom; font-size:10pt;">'.LF;
       }else{
          $html .='</div>'.LF;
-         $html .='<div style="width:100%; padding-top:5px; vertical-align:bottom; font-size:10pt;">'.LF;
+         #$html .='<div style="width:100%; padding-top:5px; vertical-align:bottom; font-size:10pt;">'.LF;
+         $html .='<div style="width:100%; vertical-align:bottom; font-size:10pt;">'.LF;
       }
 
       $html .= '<table style="width: 100%; border-collapse: collapse;">'.LF;
@@ -1510,7 +1513,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
          if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
             $with_javascript = false;
          }
-         if($with_javascript and $this->use_sunbird){
+         if($with_javascript and $this->use_sunbird and !(isset($_GET['mode']) and $_GET['mode']=='print')){
             $html .= $this->_getMonthContentAsHTMLWithJavaScript();
          } else {
             $html .= '<table class="list" style="width: 100%; border-collapse: collapse;" summary="Layout">'.LF;
@@ -1528,7 +1531,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
          if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
             $with_javascript = false;
          }
-         if($with_javascript and $this->use_sunbird){
+         if($with_javascript and $this->use_sunbird and !(isset($_GET['mode']) and $_GET['mode']=='print')){
             $html .= $this->_getWeekContentAsHTMLWithJavaScript();
          } else {
             $html .= '<table class="list" style="width: 100%; border-collapse: collapse;" summary="Layout">'.LF;
@@ -2421,7 +2424,9 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $return .= '</span>';
       $return .= '</div>';
       $return .= '<div style="position:absolute; bottom:0px; left:0px; width:100%; text-align:center;">';
-      $return .= $this->_getSwitchIconBar();
+      if(!(isset($_GET['mode']) and $_GET['mode']=='print')){
+         $return .= $this->_getSwitchIconBar();
+      }
       $return .= '</div>';
       $return .= '<div id="calendar_calendarweek" style="position:absolute; bottom:0px; right:0px;">';
       $return .= '<span style="color: #2e4e73; font-size:1.3em;">';
@@ -2667,7 +2672,9 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $return .= '</span>';
       $return .= '</div>';
       $return .= '<div style="position:absolute; bottom:0px; left:0px; width:100%; text-align:center;">';
-      $return .= $this->_getSwitchIconBar();
+      if(!(isset($_GET['mode']) and $_GET['mode']=='print')){
+         $return .= $this->_getSwitchIconBar();
+      }
       $return .= '</div>';
       $return .= '<div id="calendar_calendarweek" style="position:absolute; bottom:0px; right:0px;">';
       $return .= '<span style="color: #2e4e73; font-size:1.3em;">';
