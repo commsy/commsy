@@ -99,7 +99,7 @@ if ( isset($_GET['cid']) ) {
                unset($user_id_array);
                unset($user_list);
             }
-            $date_sel_room = $context_item->getRubrikSelection(CS_DATE_TYPE,'room');
+            /*$date_sel_room = $context_item->getRubrikSelection(CS_DATE_TYPE,'room');
             if ( !empty($date_sel_room) ) {
                if ( $date_sel_room != "2" ) {
                   $room_id = array();
@@ -147,7 +147,20 @@ if ( isset($_GET['cid']) ) {
                   }
                   $dates_manager->setContextArrayLimit($room_id_array);
                }
-            }
+            }*/
+            $myentries_array = $context_item->getMyCalendarDisplayConfig();
+            $myroom_array = array();
+		      foreach($myentries_array as $entry) {
+		         $exp_entry = explode('_', $entry);
+		         if(sizeof($exp_entry) == 2) {
+		            if($exp_entry[1] == 'dates' || $exp_entry[1] == 'todo') {
+		            	$entry = str_replace('_dates', '', $entry);
+		            	$entry = str_replace('_todo', '', $entry);
+		               $myroom_array[] = $entry;
+		            }
+		         }
+		      }
+		      $dates_manager->setContextArrayLimit($myroom_array);
          }
          $dates_manager->setNotOlderThanMonthLimit(3);
          $dates_manager->select();
@@ -157,6 +170,7 @@ if ( isset($_GET['cid']) ) {
 	         $myentries_array = $context_item->getMyCalendarDisplayConfig();
 			   if(in_array("mycalendar_dates_assigned_to_me", $myentries_array)){
 			      $temp_list = new cs_list();
+			      $current_user_item = $environment->getCurrentUserItem();
 			      $current_user_list = $current_user_item->getRelatedUserList();
 			      $temp_element = $item_list->getFirst();
 			      while($temp_element){
