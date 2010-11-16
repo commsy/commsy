@@ -196,8 +196,10 @@ class cs_list {
                $temp_array2[$sort_by] = $this->_translateUmlaute($old_list[$i]->getTitle());
             } elseif ($sort_by == 'sorting') {
                $temp_array2[$sort_by] = $old_list[$i]->getSortingFieldContent();
-            }elseif ($sort_by == 'filename') {
+            } elseif ($sort_by == 'filename') {
                $temp_array2[$sort_by] = $old_list[$i]->getDisplayName();
+            } elseif ($sort_by == 'date') {
+               $temp_array2[$sort_by] = $old_list[$i]->getDateTime_start().$old_list[$i]->getDateTime_end();
             } else {
                include_once('functions/error_functions.php');
                trigger_error('Problems sorting list because '.$sort_by.' is not implemented yet.',E_USER_ERROR);

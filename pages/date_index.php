@@ -1128,10 +1128,17 @@ if (($seldisplay_mode=='calendar' or $seldisplay_mode == 'calendar_month') and !
 } else {
    $dates_manager->select();
 }
+
 $list = $dates_manager->get();        // returns a cs_list of dates_items
+
+if (($seldisplay_mode=='calendar' or $seldisplay_mode == 'calendar_month') and !($mode == 'formattach' or $mode == 'detailattach') ){
+   $list->sortby('date');
+}
 if (($seldisplay_mode=='calendar' or $seldisplay_mode == 'calendar_month') and !($mode == 'formattach' or $mode == 'detailattach') ){
    $count_all_shown = $list->getCount();
 }
+
+
 
 if (isset($_GET['select']) and $_GET['select']=='all'){
    $item = $list->getFirst();
@@ -1980,6 +1987,11 @@ if (($seldisplay_mode=='calendar' or $seldisplay_mode == 'calendar_month') and !
    $dates_manager->select();
 }
 $list = $dates_manager->get();        // returns a cs_list of dates_items
+
+if (($seldisplay_mode=='calendar' or $seldisplay_mode == 'calendar_month') and !($mode == 'formattach' or $mode == 'detailattach') ){
+   $list->sortby('date');
+}
+
 if (($seldisplay_mode=='calendar' or $seldisplay_mode == 'calendar_month') and !($mode == 'formattach' or $mode == 'detailattach') ){
    $count_all_shown = $list->getCount();
 }
