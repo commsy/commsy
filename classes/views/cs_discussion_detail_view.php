@@ -423,6 +423,9 @@ class cs_discussion_detail_view extends cs_detail_view {
             }
          }
 
+         // full length for tooltip
+         $display_subject_fulllength = $display_subject;
+
          // limit display length of subject
          if ($length > $max){
             $display_subject = mb_substr($display_subject,0,$max).'...';
@@ -461,7 +464,7 @@ class cs_discussion_detail_view extends cs_detail_view {
                                    'detail',
                                    $params,
                                    $display,
-                                   $display,'',
+                                   $display_subject_fulllength,'',
                                    'anchor' . $article->getItemID(),'','','',
                                    'style="color:#545454; font-size:10pt; font-weight:' . $font_weight . ';"').LF;
          } else {

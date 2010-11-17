@@ -1779,10 +1779,10 @@ function setupDiscussionTree() {
 		}
 	});
 
-	// "ge√§nderte" und "neue" Eintr√§ge ausklappen
+	// "ge‰nderte" und "neue" Eintr‰ge ausklappen
 	jQuery('[id=discussion_tree]').dynatree("getRoot").visit(function(dtnode) {
 	    var title = dtnode.data.title;
-	    var regexp = /(change_status_text)/g;
+	    var regexp = /(change)/g;
 
 	    if(regexp.test(title) == true) {
 	    	dtnode.focus();
