@@ -87,13 +87,17 @@ function performAction ( $environment, $action_array, $post_array ) {
             ################################
             # FLAG: group room
             ################################
+            $hash_manager = $environment->getHashManager();
+            $hash_manager->deleteHashesForUser($user->getItemID());
             $user->delete();
          }
          $send_to = $user->getEmail();
       } elseif ( $action_array['action'] == 'USER_ACCOUNT_LOCK' ) {
+      	$hash_manager = $environment->getHashManager();
+         $hash_manager->deleteHashesForUser($user->getItemID());
          $user->reject();
          $user->save();
-
+         
          ################################
          # FLAG: group room
          ################################
