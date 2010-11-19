@@ -11,4 +11,8 @@ $message["WORDPRESS_CONFIGURATION_USE_COMMENTS_DESC"]["en"] = "Enable Comments o
 $message["WORDPRESS_CONFIGURATION_USE_COMMENTS_MODERATION"]["en"] = "Moderate Comments";
 $message["WORDPRESS_DELETE_BUTTON"]["en"] = "delete Blog";
 $message["WORDPRESS_SAVE_BUTTON"]["en"] = "Create wordpress blog";
+$message["WORDPRESS_SELECT_MEMBER_ROLE"]["en"] = "Role of new room members in blog";
+$message["WORDPRESS_SELECT_MEMBER_ROLE_ADMINISTRATOR"]["en"] = "Admin";
+$message["WORDPRESS_SELECT_MEMBER_ROLE_EDITOR"]["en"] = "Editor";
+$message["WORDPRESS_SELECT_MEMBER_ROLE_SUBSCRIBER"]["en"] = "Read access / subscriber";
 ?>

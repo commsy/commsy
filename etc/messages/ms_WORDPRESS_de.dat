@@ -11,5 +11,8 @@ $message["WORDPRESS_CONFIGURATION_USE_COMMENTS_DESC"]["de"] = "Kommentare zu Blo
 $message["WORDPRESS_CONFIGURATION_USE_COMMENTS_MODERATION"]["de"] = "Kommentare moderieren";
 $message["WORDPRESS_DELETE_BUTTON"]["de"] = "Blog löschen";
 $message["WORDPRESS_SAVE_BUTTON"]["de"] = "Wordpress-Blog anlegen";
-$message["WORDPRESS_SELECT_MEMBER_ROLE"]["de"] = "Role of Room Members in Blog";
+$message["WORDPRESS_SELECT_MEMBER_ROLE"]["de"] = "Rolle neuer Blog-Benutzer";
+$message["WORDPRESS_SELECT_MEMBER_ROLE_ADMINISTRATOR"]["de"] = "Administrator";
+$message["WORDPRESS_SELECT_MEMBER_ROLE_EDITOR"]["de"] = "Redakteur";
+$message["WORDPRESS_SELECT_MEMBER_ROLE_SUBSCRIBER"]["de"] = "Lesender Zugriff / Abbonent";
 ?>

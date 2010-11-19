@@ -118,9 +118,9 @@ class cs_configuration_wordpress_form extends cs_rubric_form {
     // member role in wordpress
     $this->_form->addSelect( 'member_role',
             array(
-            array('text' => 'keine Rolle', 'value' => 'subscriber'),
-            array('text' => 'Redaktion', 'value' => 'editor'),
-            array('text' => 'Administration', 'value' => 'administrator'),
+            array('text' => $this->_translator->getMessage('WORDPRESS_SELECT_MEMBER_ROLE_SUBSCRIBER'), 'value' => 'subscriber'),
+            array('text' => $this->_translator->getMessage('WORDPRESS_SELECT_MEMBER_ROLE_EDITOR'), 'value' => 'editor'),
+            array('text' => $this->_translator->getMessage('WORDPRESS_SELECT_MEMBER_ROLE_ADMINISTRATOR'), 'value' => 'administrator'),
             ),
             '',
             $this->_translator->getMessage('WORDPRESS_SELECT_MEMBER_ROLE'),
