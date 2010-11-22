@@ -649,7 +649,7 @@ var $_room_type = 'context';
                   $retour .= 'background: url('.$c_single_entry_point.'?cid='.$this->_item->getItemID().'&mod=picture&fct=getfile&picture='.$this->_item->getBGImageFilename().') no-repeat; ';
                }
             }
-         }else{
+         } elseif ( file_exists('htdocs/css/images/bg-'.$color_array['schema'].'.jpg') ) {
             if (isset($color_array['repeat_background']) and $color_array['repeat_background'] == 'xy'){
                $retour .= 'background: url(css/images/bg-'.$color_array['schema'].'.jpg) repeat; ';
             }elseif (isset($color_array['repeat_background']) and $color_array['repeat_background'] == 'x'){

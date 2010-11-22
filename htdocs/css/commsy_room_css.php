@@ -208,7 +208,7 @@ div.content_fader{
               echo('background: url(../'.$c_single_entry_point.'?cid='.$cid.'&mod=picture&fct=getfile&picture='.$room->getBGImageFilename().') no-repeat;');
            }
        }
-    }else{
+    }elseif ( file_exists('htdocs/css/images/bg-'.$color['schema'].'.jpg') ){
         if (!isset($color['background_image'])){
            if (isset($color['repeat_background']) and $color['repeat_background'] == 'xy'){
               echo('background: url(images/bg-'.$color['schema'].'.jpg) repeat;');
@@ -250,7 +250,7 @@ div.content{
        }else{
           echo('background-color: '.$color['content_background'].';');
        }
-    }else{
+    }elseif ( file_exists('htdocs/css/images/bg-'.$color['schema'].'.jpg') ){
         if (!isset($color['background_image'])){
            if (isset($color['repeat_background']) and $color['repeat_background'] == 'xy'){
               echo('background: '.$color['content_background'].' url(images/bg-'.$color['schema'].'.jpg) repeat;');
@@ -684,7 +684,7 @@ table.configuration_table{
 }
 
 .cs-box-content{
-	border: 1px solid <?php echo($color['tabs_background'])?>;
+   border: 1px solid <?php echo($color['tabs_background'])?>;
    background-color:#FFFFFF;
    margin:0px 0px 20px 0px;
    padding:5px;
@@ -723,27 +723,27 @@ table.configuration_table{
 {border-left-width:0;}
 
 div.strong #iWeak, div.strong #iMedium, div.strong #iStrong  {
-	background: #00CC66;
-	color: #00CC66;
+   background: #00CC66;
+   color: #00CC66;
 }
 
 div.medium #iWeak, div.medium #iMedium {
-	background: #FFFF99;
-	color: #FFFF99;
+   background: #FFFF99;
+   color: #FFFF99;
 }
 
 div.medium #iWeak, div.medium #iMedium {
-	background: #FFFF99;
-	color: #FFFF99;
+   background: #FFFF99;
+   color: #FFFF99;
 }
 
 div.weak #iWeak {
-	background: #FF0000;
-	color: #FF0000;
+   background: #FF0000;
+   color: #FF0000;
 }
 
 div.strong #iStrong, div.medium #iMedium, div.weak #iWeak {
-	color:#000;
+   color:#000;
 }
 
 
