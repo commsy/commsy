@@ -201,8 +201,8 @@ elseif ( isOption($delete_command, $translator->getMessage('COMMON_DELETE_BUTTON
                      mb_substr($discussion_article_position, $position_length);
 
                   $discussion_article->setPosition($discussion_article_new_position);
-                  $discussion_article->setModificationDate(getCurrentDateTimeInMySQL());
-                  $discussion_article->save();
+                  // don't save modifier and modification date at deleting article item
+                  $discussion_article->saveWithoutChangingModificationInformation();
                }
 
                $discussion_article = $discussion_articles->getNext();
@@ -353,8 +353,8 @@ elseif ( isOption($delete_command, $translator->getMessage('COMMON_DELETE_BUTTON
    if (isset($_GET['recurrence_id']) and !empty($_GET['recurrence_id'])){
       $dates_manager->setRecurrenceLimit($_GET['recurrence_id']);
    }elseif(isset($_GET['iid']) and !empty($_GET['iid'])){
-   	  $date_item = $dates_manager->getItem($_GET['iid']);
-   	  $recurrence_id = $date_item->getRecurrenceId();
+      $date_item = $dates_manager->getItem($_GET['iid']);
+      $recurrence_id = $date_item->getRecurrenceId();
       $dates_manager->setRecurrenceLimit($recurrence_id);
    }
    $dates_manager->setWithoutDateModeLimit();

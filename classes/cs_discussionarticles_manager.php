@@ -338,16 +338,22 @@ class cs_discussionarticles_manager extends cs_manager {
     * @param object cs_item discussion_item the discussion
     */
   function _update ($discussionarticle_item) {
-     parent::_update($discussionarticle_item);
+     if ( $this->_update_with_changing_modification_information ) {
+        parent::_update($discussionarticle_item);
+     }
      $this->_current_article_modification_date = getCurrentDateTimeInMySQL();
      $this->_current_article_id = $discussionarticle_item->getItemID();
-     $query = 'UPDATE '.$this->addDatabasePrefix('discussionarticles').' SET '.
-              'modification_date="'.$this->_current_article_modification_date.'",'.
-              'subject="'.encode(AS_DB,$discussionarticle_item->getSubject()).'",'.
-              'description="'.encode(AS_DB,$discussionarticle_item->getDescription()).'",'.
-              'position="'.encode(AS_DB,$discussionarticle_item->getPosition()).'",'.
-              'modifier_id="'.encode(AS_DB,$this->_current_user->getItemID()).'"'.
-              ' WHERE item_id="'.encode(AS_DB,$discussionarticle_item->getItemID()).'"';
+     $query  = 'UPDATE '.$this->addDatabasePrefix('discussionarticles').' SET ';
+     if ( $this->_update_with_changing_modification_information ) {
+        $query .= 'modification_date="'.$this->_current_article_modification_date.'",';
+     }
+     $query .= 'subject="'.encode(AS_DB,$discussionarticle_item->getSubject()).'",'.
+               'description="'.encode(AS_DB,$discussionarticle_item->getDescription()).'",'.
+               'position="'.encode(AS_DB,$discussionarticle_item->getPosition()).'"';
+     if ( $this->_update_with_changing_modification_information ) {
+        $query .= ', modifier_id="'.encode(AS_DB,$this->_current_user->getItemID()).'"';
+     }
+     $query .= ' WHERE item_id="'.encode(AS_DB,$discussionarticle_item->getItemID()).'"';
      $result = $this->_db_connector->performQuery($query);
      if ( !isset($result) or !$result ) {
         include_once('functions/error_functions.php');trigger_error('Problems updating discussionarticle item: "'.$this->_dberror.'" from query: "'.$query.'"',E_USER_WARNING);
@@ -393,7 +399,7 @@ class cs_discussionarticles_manager extends cs_manager {
               'discussion_id="'.encode(AS_DB,$discussionarticle_item->getDiscussionID()).'",'.
               'creator_id="'.encode(AS_DB,$this->_current_user->getItemID()).'",'.
               'creation_date="'.$current_datetime.'",'.
-     		  'modifier_id="'.encode(AS_DB,$modificator->getItemID()).'",'.
+             'modifier_id="'.encode(AS_DB,$modificator->getItemID()).'",'.
               'modification_date="'.$current_datetime.'",'.
               'subject="'.encode(AS_DB,$discussionarticle_item->getSubject()).'",'.
               'position="'.encode(AS_DB,$discussionarticle_item->getPosition()).'",'.
@@ -477,10 +483,10 @@ class cs_discussionarticles_manager extends cs_manager {
    }
 
    function deleteDiscarticlesOfUser($uid) {
-   	  // create backup of item
-   	  $this->backupItem($uid, array(	'subject'			=>	'title',
-   	  									'description'		=>	'description',
-   	  									'modification_date'	=>	'modification_date'));
+        // create backup of item
+        $this->backupItem($uid, array(   'subject'         =>   'title',
+                                   'description'      =>   'description',
+                                   'modification_date'   =>   'modification_date'));
       $current_datetime = getCurrentDateTimeInMySQL();
       $query  = 'SELECT '.$this->addDatabasePrefix('discussionarticles').'.* FROM '.$this->addDatabasePrefix('discussionarticles').' WHERE '.$this->addDatabasePrefix('discussionarticles').'.creator_id = "'.encode(AS_DB,$uid).'"';
       $result = $this->_db_connector->performQuery($query);

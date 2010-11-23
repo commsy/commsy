@@ -222,5 +222,12 @@ class cs_discussionarticle_item extends cs_item {
       $clone_item = clone $this; // "clone" needed for php5
       return $clone_item;
    }
+
+   public function saveWithoutChangingModificationInformation () {
+      $manager = $this->_environment->getManager($this->_type);
+      $manager->saveWithoutChangingModificationInformation();
+      $this->_save($manager);
+      $this->_changes = array();
+   }
 }
 ?>
