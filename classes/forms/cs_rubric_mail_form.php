@@ -129,19 +129,20 @@ class cs_rubric_mail_form extends cs_rubric_form {
       $article = '';
       // Wenn man mit HTTPS auf Commsy surft und eine Email generiert
       // sollte diese Mail auch https links erstellen.
-      if ($_SERVER["HTTPS"]) {
-      	$url = 'https://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']
-      		   .'?cid='.$this->_environment->getCurrentContextID()
-               .'&mod='.$link_module
-               .'&fct=detail'
-               .'&iid='.$item->getItemID();
+      if ( !empty($_SERVER["HTTPS"])
+           and $_SERVER["HTTPS"]
+         ) {
+         $url = 'https://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']
+                .'?cid='.$this->_environment->getCurrentContextID()
+                .'&mod='.$link_module
+                .'&fct=detail'
+                .'&iid='.$item->getItemID();
       } else {
-      	$url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']
-             .'?cid='.$this->_environment->getCurrentContextID()
-             .'&mod='.$link_module
-             .'&fct=detail'
-             .'&iid='.$item->getItemID();
-
+         $url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']
+                .'?cid='.$this->_environment->getCurrentContextID()
+                .'&mod='.$link_module
+                .'&fct=detail'
+                .'&iid='.$item->getItemID();
       }
 
       $link = $url;
