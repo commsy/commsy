@@ -221,7 +221,7 @@ var $_list = NULL;
    function _getItemChangeStatus($item,$context_id) {
       $current_user = $this->_environment->getCurrentUserItem();
       $related_user = $current_user->getRelatedUserItemInContext($context_id);
-      if ($related_user->isUser()) {
+      if (isset($related_user) and is_object($related_user) and $related_user->isUser()) {
          $noticed_manager = $this->_environment->getNoticedManager();
          $noticed = $noticed_manager->getLatestnoticedByUser($item->getItemID(),$related_user->getItemID());
          if ( empty($noticed) ) {
