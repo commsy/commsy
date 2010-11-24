@@ -675,6 +675,11 @@ class cs_form_view extends cs_view {
             ($module == 'user' && $fct == 'edit')) {
          $use_new_upload = false;
       }
+      $current_user = $this->_environment->getCurrentUserItem();
+      $portal_user = $current_user->getRelatedPortalUserItem();
+      if (!$portal_user->isNewUploadOn()){
+         $use_new_upload = false;
+      }
 
       if ($use_new_upload){
          // this div holds the list of files, which upload is finished(+checkbox)
