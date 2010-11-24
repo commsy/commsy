@@ -14,5 +14,5 @@ $message["WORDPRESS_SAVE_BUTTON"]["de"] = "Wordpress-Blog anlegen";
 $message["WORDPRESS_SELECT_MEMBER_ROLE"]["de"] = "Rolle neuer Blog-Benutzer";
 $message["WORDPRESS_SELECT_MEMBER_ROLE_ADMINISTRATOR"]["de"] = "Administrator";
 $message["WORDPRESS_SELECT_MEMBER_ROLE_EDITOR"]["de"] = "Redakteur";
-$message["WORDPRESS_SELECT_MEMBER_ROLE_SUBSCRIBER"]["de"] = "Lesender Zugriff / Abbonent";
+$message["WORDPRESS_SELECT_MEMBER_ROLE_SUBSCRIBER"]["de"] = "Lesender Zugriff / Abonnent";
 ?>

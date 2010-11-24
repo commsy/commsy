@@ -239,6 +239,9 @@ $message["CONFIGURATION_ROOM_OPENING_LINK_DESC"]["de"] = "Geben Sie an, unter we
 $message["CONFIGURATION_ROOM_OPTIONS_DESC"]["de"] = "Stellen Sie z.B. <span class=&quot;bold&quot;>Raumname</span>, <span class=&quot;bold&quot;>Logo</span>, <span class=&quot;bold&quot;>Farbschema</span> ein.";
 $message["CONFIGURATION_ROOM_OPTIONS_TITLE"]["de"] = "Raumgestaltung";
 $message["CONFIGURATION_ROOM_URL"]["de"] = "URL";
+$message["CONFIGURATION_RSS"]["de"] = "RSS-Feed";
+$message["CONFIGURATION_RSS_NO"]["de"] = "ausschalten (kein RSS-Abo für diesen Raum)";
+$message["CONFIGURATION_RSS_YES"]["de"] = "einschalten (RSS-Abo für diesen Raum möglich)";
 $message["CONFIGURATION_RUBRIC_DESC"]["de"] = "Die Auswahl der Rubriken erfolgt über die Select-Boxen, die nachfolgend nebeneinander dargestellt sind. Mit Hilfe dieser Select-Boxen können Sie einstellen,
 <ul>
 <li><b>welche Rubriken</b> Sie im Raum verwenden möchten und

@@ -84,29 +84,37 @@ if ( isset($_GET['cid']) ) {
          }
       }
    }
+
+   if (!$context_item->isRSSOn()){
+      $validated = false;
+   }
    $translator = $environment->getTranslationObject();
    if (!$validated) {
-      $title = $context_item->getTitle();
-      if ( $context_item->isPrivateRoom()) {
-         $title = '';
-         $current_portal_item = $environment->getCurrentPortalItem();
-         if ( isset($current_portal_item) ) {
-            $title .= $current_portal_item->getTitle();
-         }
-         $owner_user_item = $context_item->getOwnerUserItem();
-         $owner_fullname = $owner_user_item->getFullName();
-         if ( !empty($owner_fullname) ) {
-            if ( !empty($title) ) {
-               $title .= ': ';
+   	  if (!$context_item->isRSSOn()){
+         die ($translator->getMessage('RSS_NOT_ACTIVATED'));
+   	  }else{
+         $title = $context_item->getTitle();
+         if ( $context_item->isPrivateRoom()) {
+            $title = '';
+            $current_portal_item = $environment->getCurrentPortalItem();
+            if ( isset($current_portal_item) ) {
+               $title .= $current_portal_item->getTitle();
             }
-            $title .= $owner_fullname;
+            $owner_user_item = $context_item->getOwnerUserItem();
+            $owner_fullname = $owner_user_item->getFullName();
+            if ( !empty($owner_fullname) ) {
+               if ( !empty($title) ) {
+                  $title .= ': ';
+               }
+               $title .= $owner_fullname;
+            }
+            unset($owner_user_item);
+            unset($current_portal_item);
          }
-         unset($owner_user_item);
-         unset($current_portal_item);
+         header('WWW-Authenticate: Basic realm="'.$translator->getMessage('RSS_TITLE',$title).'"');
+         header('HTTP/1.0 401 Unauthorized');
+         die ($translator->getMessage('RSS_NOT_ALLOWED'));
       }
-      header('WWW-Authenticate: Basic realm="'.$translator->getMessage('RSS_TITLE',$title).'"');
-      header('HTTP/1.0 401 Unauthorized');
-      die ($translator->getMessage('RSS_NOT_ALLOWED'));
    }
 
    if ( $validated

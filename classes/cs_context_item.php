@@ -4544,6 +4544,37 @@ class cs_context_item extends cs_item {
   }
 
 
+   public function isRSSOn () {
+      $retour = true;
+      $value = $this->getRSSStatus();
+      if ( !empty($value) and $value == -1 ) {
+         $retour = false;
+      }
+      return $retour;
+   }
+
+   public function getRSSStatus () {
+      $retour = '';
+      if ($this->_issetExtra('RSS_STATUS')) {
+         $retour = $this->_getExtra('RSS_STATUS');
+      }
+      return $retour;
+   }
+
+   public function _setRSSStatus ($value) {
+      $this->_addExtra('RSS_STATUS',$value);
+   }
+
+   public function turnRSSOn () {
+      $this->_setRSSStatus(1);
+   }
+
+   public function turnRSSOff () {
+      $this->_setRSSStatus(-1);
+   }
+
+
+
   ##########################################
   # ads
   ##########################################

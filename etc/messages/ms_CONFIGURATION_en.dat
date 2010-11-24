@@ -191,7 +191,7 @@ $message["CONFIGURATION_NEWSLETTER_NOTE_LABEL"]["en"] = "Notice";
 $message["CONFIGURATION_NEWSLETTER_TITLE"]["en"] = "E-mail newsletter";
 $message["CONFIGURATION_NEWSLETTER_WEEKLY"]["en"] = "Weekly newsletter";
 $message["CONFIGURATION_NEW_UPLOAD"]["en"] = "New file upload";
-$message["CONFIGURATION_NEW_UPLOAD_NO"]["en"] = "switch off (simple upload activatet)";
+$message["CONFIGURATION_NEW_UPLOAD_NO"]["en"] = "switch off (simple upload activated)";
 $message["CONFIGURATION_NEW_UPLOAD_YES"]["en"] = "Switch on (requires flash and javascript)";
 $message["CONFIGURATION_NO_SELECTION"]["en"] = "show all joined workspaces (default)";
 $message["CONFIGURATION_NUMBER"]["en"] = "Number of<br/>rooms";
@@ -243,6 +243,9 @@ $message["CONFIGURATION_ROOM_OPENING_LINK_DESC"]["en"] = "Define who is permitte
 $message["CONFIGURATION_ROOM_OPTIONS_DESC"]["en"] = "Please define workspace basics, i.e. <span class=&quot;bold&quot;>title</span>, <span class=&quot;bold&quot;>logo</span>, <span class=&quot;bold&quot;>color theme</span>.";
 $message["CONFIGURATION_ROOM_OPTIONS_TITLE"]["en"] = "Design workspace";
 $message["CONFIGURATION_ROOM_URL"]["en"] = "URL";
+$message["CONFIGURATION_RSS"]["en"] = "RSS Feed";
+$message["CONFIGURATION_RSS_NO"]["en"] = "switch off";
+$message["CONFIGURATION_RSS_YES"]["en"] = "switch on";
 $message["CONFIGURATION_RUBRIC_DESC"]["en"] = "Use the following select boxes to
 <ul>
 <li><b>enable</b> workspace rubrics for this workspace and

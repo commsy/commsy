@@ -352,8 +352,8 @@ class cs_page_room_view extends cs_page_view {
             }
          }
       }
-      
-      
+
+
       // Wordpress
       $current_context = $this->_environment->getCurrentContextItem();
         if (
@@ -405,7 +405,9 @@ class cs_page_room_view extends cs_page_view {
          $hash_manager = $this->_environment->getHashManager();
          $hash_string = '&amp;hid='.$hash_manager->getRSSHashForUser($current_user_item->getItemID());
       }
-
+      if (!$current_context_item->isRSSOn()){
+         $show_rss_link =  false;
+      }
       if ( $show_rss_link ) {
          if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
             $html .= '<a href="rss.php?cid='.$current_context_item->getItemID().$hash_string.'" target="_blank"><img src="images/rss.gif" style="vertical-align:bottom;" alt="' . $this->_translator->getMessage('RSS_SUBSCRIBE_LINK') . '" title="' . $this->_translator->getMessage('RSS_SUBSCRIBE_LINK') . '"/></a>';
@@ -1314,14 +1316,14 @@ class cs_page_room_view extends cs_page_view {
          $html .= '</h2>'.LF;
          $html .= '<p style="text-align:left;">'.$this->_translator->getMessage('COMMON_DELETE_BOX_DESCRIPTION_WIKI');
          $html .= '</p>'.LF;
-                     
+
       }elseif ( $this->_environment->getCurrentModule() == 'configuration'
                    and $this->_environment->getCurrentFunction() == 'wordpress'
                ) {
          $html .= '<h2>'.$this->_translator->getMessage('COMMON_DELETE_WORDPRESS_TITLE');
          $html .= '</h2>'.LF;
          $html .= '<p style="text-align:left;">'.$this->_translator->getMessage('COMMON_DELETE_BOX_DESCRIPTION_WORDPRESS');
-         $html .= '</p>'.LF;                     
+         $html .= '</p>'.LF;
       } elseif ( $this->_environment->getCurrentModule() == 'configuration'
                  and ( $this->_environment->getCurrentFunction() == 'room_options'
                        or $this->_environment->getCurrentFunction() == 'account_options'

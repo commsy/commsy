@@ -16,6 +16,7 @@ $message["RSS_NEW_SECTION_TITLE"]["de"] = "Abschnitt &quot;%1&quot; zum Material
 $message["RSS_NEW_STEP_TITLE"]["de"] = "Arbeitsschritt &quot;%1&quot; zur Aufgabe &quot;%2&quot;";
 $message["RSS_NEW_TODO_TITLE"]["de"] = "Aufgabe: %1 (fällig am %2)";
 $message["RSS_NEW_TOPIC_TITLE"]["de"] = "%_TOPIC_SUB_NOMS_BIG: %1";
+$message["RSS_NOT_ACTIVATED"]["de"] = "RSS-Feed ist in diesen Raum deaktiviert.";
 $message["RSS_NOT_ALLOWED"]["de"] = "Bitte melden Sie sich mit Ihrer CommSy-Kennung an!";
 $message["RSS_NO_CONTEXT"]["de"] = "Kein Kontext gewählt!";
 $message["RSS_OBJECT_TAG_REPLACE"]["de"] = "An dieser Stelle befindet sich im Original eine Medieneinbettung";

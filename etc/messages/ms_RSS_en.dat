@@ -16,6 +16,7 @@ $message["RSS_NEW_SECTION_TITLE"]["en"] = "Section &quot;%1&quot; to material &q
 $message["RSS_NEW_STEP_TITLE"]["en"] = "Step &quot;%1&quot; to todo &quot;%2&quot;";
 $message["RSS_NEW_TODO_TITLE"]["en"] = "Task: %1 (due date %2)";
 $message["RSS_NEW_TOPIC_TITLE"]["en"] = "%_TOPIC_SUB_NOMS_BIG: %1";
+$message["RSS_NOT_ACTIVATED"]["en"] = "rss is not activated for this room";
 $message["RSS_NOT_ALLOWED"]["en"] = "Please login with your CommSy user ID!";
 $message["RSS_NO_CONTEXT"]["en"] = "No context selected!";
 $message["RSS_OBJECT_TAG_REPLACE"]["en"] = "In original there is an embedded media at this position";

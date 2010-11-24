@@ -766,6 +766,12 @@ class cs_configuration_room_options_form extends cs_rubric_form {
       }
       $this->_form->addTextArea('description','',$this->_translator->getMessage('CONFIGURATION_ROOM_DESCRIPTION'),'','','5','virtual',false,false,true,$html_status);
 
+      $radio_values = array();
+      $radio_values[0]['text'] = $this->_translator->getMessage('CONFIGURATION_RSS_YES');
+      $radio_values[0]['value'] = 'yes';
+      $radio_values[1]['text'] = $this->_translator->getMessage('CONFIGURATION_RSS_NO');
+      $radio_values[1]['value'] = 'no';
+      $this->_form->addRadioGroup('rss',$this->_translator->getMessage('CONFIGURATION_RSS'),'',$radio_values,'',true,false);
 
       /******** buttons***********/
       $this->_form->addButtonBar('option',$this->_translator->getMessage('PREFERENCES_SAVE_BUTTON'),'',$this->_translator->getMessage('COMMON_DELETE_ROOM'));
@@ -843,6 +849,11 @@ class cs_configuration_room_options_form extends cs_rubric_form {
       }
       if ($context_item->getLogoFilename()){
          $this->_values['logo'] = $context_item->getLogoFilename();
+      }
+      if ($context_item->isRSSOn()) {
+         $this->_values['rss'] = 'yes';
+      } else {
+         $this->_values['rss'] = 'no';
       }
       if ($context_item->getBGImageFilename()){
          $this->_values['bgimage'] = $context_item->getBGImageFilename();

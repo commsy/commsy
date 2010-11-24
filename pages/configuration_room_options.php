@@ -382,6 +382,15 @@ if ($command != 'error') { // only if user is allowed to edit colors
          }else{
             $context_item->setDescription('');
          }
+
+         if ( !empty($_POST['rss'])) {
+            if ($_POST['rss'] == 'yes') {
+               $context_item->turnRSSOn();
+            }elseif ($_POST['rss'] == 'no') {
+               $context_item->turnRSSOff();
+            }
+         }
+
          $redirect = false;
 
          // save room_item
