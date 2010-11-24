@@ -348,8 +348,6 @@ class cs_profile_form extends cs_rubric_form {
          $this->_form->addButtonBar('option',$this->_translator->getMessage('PREFERENCES_SAVE_BUTTON'),'');
 
       }elseif($this->getProfilePageName() == 'room_list'){
-#         $this->_form->addHidden('place_array',$this->_link_item_place_array);
-#         $this->_form->combine('vertical');
          $this->_form->addText('activate_path','',$this->_translator->getMessageInLang($this->_language,'PROFILE_ROOMLIST_CUSTOMIZING_DESCRIPTION'));
          $this->_form->addCheckboxGroup('sorting',$this->_link_item_array,$this->_link_item_check_array,'','','','','','','','',50,true,false,true);
          $this->_form->addEmptyline();
@@ -415,6 +413,18 @@ class cs_profile_form extends cs_rubric_form {
             $this->_form->addCheckbox('email_account_want','1',false,$this->_translator->getMessageInLang($this->_language,'USER_EMAIL'),$this->_translator->getMessageInLang($this->_language,'USER_MAIL_GET_ACCOUNT'),'','','','','');
             $this->_form->addCheckbox('email_room_want','1',false,$this->_translator->getMessageInLang($this->_language,'USER_EMAIL'),$this->_translator->getMessageInLang($this->_language,'USER_MAIL_OPEN_ROOM_PO'),'','','','','');
          }
+         $radio_values = array();
+         $radio_values[0]['text'] = $this->_translator->getMessage('CONFIGURATION_NEW_UPLOAD_YES');
+         $radio_values[0]['value'] = 'yes';
+         $radio_values[1]['text'] = $this->_translator->getMessage('CONFIGURATION_NEW_UPLOAD_NO');
+         $radio_values[1]['value'] = 'no';
+         $this->_form->addRadioGroup('new_upload',$this->_translator->getMessage('CONFIGURATION_NEW_UPLOAD'),'',$radio_values,'',true,false);
+         $radio_values = array();
+         $radio_values[0]['text'] = $this->_translator->getMessage('CONFIGURATION_AUTO_SAVE_YES');
+         $radio_values[0]['value'] = 'yes';
+         $radio_values[1]['text'] = $this->_translator->getMessage('CONFIGURATION_AUTO_SAVE_NO');
+         $radio_values[1]['value'] = 'no';
+         $this->_form->addRadioGroup('auto_save',$this->_translator->getMessage('CONFIGURATION_AUTO_SAVE'),'',$radio_values,'',true,false);
 
          // buttons
          $this->_form->addButtonBar('option',$this->_translator->getMessageInLang($this->_language,'PREFERENCES_SAVE_BUTTON'),$this->_translator->getMessageInLang($this->_language,'PREFERENCES_DELETE_BUTTON'));
@@ -476,6 +486,16 @@ class cs_profile_form extends cs_rubric_form {
             $this->_values['skype'] = $this->_item->getSkype();
             $this->_values['jabber'] = $this->_item->getJabber();
             $this->_values['yahoo'] = $this->_item->getYahoo();
+            if ($this->_item->isNewUploadOn()) {
+               $this->_values['new_upload'] = 'yes';
+            } else {
+               $this->_values['new_upload'] = 'no';
+            }
+            if ($this->_item->isAutoSaveOn()) {
+               $this->_values['auto_save'] = 'yes';
+            } else {
+               $this->_values['auto_save'] = 'no';
+            }
             $this->_setValuesForRubricConnections();
 
             if ($this->_item->isModerator()) {
@@ -544,7 +564,17 @@ class cs_profile_form extends cs_rubric_form {
             $this->_values['lastname_hidden'] = $this->_item->getLastname();
             $this->_values['user_id'] = $this->_item->getUserID();
             $this->_values['user_id_text'] = $this->_item->getUserID();
-            $this->_values['language'] = $this->_user->getLanguage();
+            $this->_values['language'] = $this->_item->getLanguage();
+            if ($this->_item->isNewUploadOn()) {
+               $this->_values['new_upload'] = 'yes';
+            } else {
+               $this->_values['new_upload'] = 'no';
+            }
+            if ($this->_item->isAutoSaveOn()) {
+               $this->_values['auto_save'] = 'yes';
+            } else {
+               $this->_values['auto_save'] = 'no';
+            }
          } else {
             include_once('functions/error_functions.php');
             trigger_error('lost values',E_USER_WARNING);

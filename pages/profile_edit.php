@@ -280,6 +280,7 @@ if ($command != 'error') { // only if user is allowed to edit user
           $form->prepareForm();
           $form->loadValues();
 
+
           if ( !empty($command) AND isOption($command,$translator->getMessage('COMMON_CHANGE_BUTTON')) ) {
 
              $correct = $form->check();
@@ -467,12 +468,14 @@ if ($command != 'error') { // only if user is allowed to edit user
                    $portal_user_item->setModificationDate(getCurrentDateTimeInMySQL());
                 }
 
-          // email visibility
-          if (isset($_POST['email_visibility']) and !empty($_POST['email_visibility'])) {
-             $user_item->setEmailNotVisible();
-          } else {
-             $user_item->setEmailVisible();
-          }
+                // email visibility
+                if (isset($_POST['email_visibility']) and !empty($_POST['email_visibility'])) {
+                   $user_item->setEmailNotVisible();
+                } else {
+                   $user_item->setEmailVisible();
+                }
+
+
 
                 // save user
                 $user_item->save();
@@ -744,6 +747,7 @@ if ($command != 'error') { // only if user is allowed to edit user
                   $success_1 = false;
                   $success_2 = false;
                   $success_3 = false;
+
                   if ( !empty($_POST['user_id'])
                        and $_POST['user_id'] != $portal_user->getUserID()
                      ) {
@@ -813,6 +817,23 @@ if ($command != 'error') { // only if user is allowed to edit user
                      ) {
                      $portal_user->setLastName($_POST['lastname']);
                      $change_name = true;
+                     $save = true;
+                  }
+                  if ( !empty($_POST['auto_save'])) {
+                     if ($_POST['auto_save'] == 'yes') {
+                        $portal_user->turnAutoSaveOn();
+                     }elseif ($_POST['auto_save'] == 'no') {
+                        $portal_user->turnAutoSaveOff();
+                     }
+                     $save = true;
+                  }
+
+                  if (isset($_POST['new_upload'])) {
+                     if ($_POST['new_upload'] == 'yes') {
+                        $portal_user->turnNewUploadOn();
+                     }elseif ($_POST['new_upload'] == 'no') {
+                        $portal_user->turnNewUploadOff();
+                     }
                      $save = true;
                   }
 

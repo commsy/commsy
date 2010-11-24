@@ -98,6 +98,9 @@ $message["CONFIGURATION_AUTOACCOUNTS_UPLOAD_FILE_TEMPLATES"]["en"] = "Templates 
 <a href=&quot;templates/CommSyAutomatischeKennungenVorlage.xls&quot;>Excel (.xls)</a>
 Attention: After inserting the data into the OpenOffice- or Excel-files, you have to export a csv-file.";
 $message["CONFIGURATION_AUTOSAVE_STATUS"]["en"] = "Save automatically";
+$message["CONFIGURATION_AUTO_SAVE"]["en"] = "Save automatically";
+$message["CONFIGURATION_AUTO_SAVE_NO"]["en"] = "switch off";
+$message["CONFIGURATION_AUTO_SAVE_YES"]["en"] = "switch on";
 $message["CONFIGURATION_BACKUP_LINK"]["en"] = "Workspace backup";
 $message["CONFIGURATION_BACKUP_LINK_DESC"]["en"] = "Upload a backup of a CommSy workspace.";
 $message["CONFIGURATION_BGIMAGE_REPEAT"]["en"] = "Repeat background image";
@@ -187,6 +190,9 @@ Please note that the e-mails will be delivered in HTML format.";
 $message["CONFIGURATION_NEWSLETTER_NOTE_LABEL"]["en"] = "Notice";
 $message["CONFIGURATION_NEWSLETTER_TITLE"]["en"] = "E-mail newsletter";
 $message["CONFIGURATION_NEWSLETTER_WEEKLY"]["en"] = "Weekly newsletter";
+$message["CONFIGURATION_NEW_UPLOAD"]["en"] = "New file upload";
+$message["CONFIGURATION_NEW_UPLOAD_NO"]["en"] = "switch off (simple upload activatet)";
+$message["CONFIGURATION_NEW_UPLOAD_YES"]["en"] = "Switch on (requires flash and javascript)";
 $message["CONFIGURATION_NO_SELECTION"]["en"] = "show all joined workspaces (default)";
 $message["CONFIGURATION_NUMBER"]["en"] = "Number of<br/>rooms";
 $message["CONFIGURATION_ONLY_COMMUNITY_ROOMS"]["en"] = "show %_COMMUNITY_SUB_AKKPL_BIG only  (no %_PROJECT_SUB_AKKPL_BIG)";

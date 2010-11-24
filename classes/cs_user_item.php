@@ -1661,6 +1661,23 @@ class cs_user_item extends cs_item {
      return $retour;
   }
 
+  function getRelatedPortalUserItem() {
+     $retour = NULL;
+     $user_manager = $this->_environment->getUserManager();
+     $user_manager->resetLimits();
+     $user_manager->setContextLimit($this->_environment->getCurrentPortalID());
+     $user_manager->setUserIDLimit($this->getUserID());
+     $user_manager->setAuthSourceLimit($this->getAuthSource());
+     $user_manager->select();
+     $user_list = $user_manager->get();
+     unset($user_manager);
+     if ($user_list->getCount() == 1) {
+        $retour = $user_list->getFirst();
+     }
+     unset($user_list);
+     return $retour;
+  }
+
    function getModifiedItemIDArray($type, $creator_id) {
       $id_array = array();
       $link_manager = $this->_environment->getLinkItemManager();
@@ -1762,7 +1779,7 @@ class cs_user_item extends cs_item {
       }
       return $retour;
    }
-
+/** OLD FUNCTION
    public function isAutoSaveOn () {
       $retour = false;
       if ( $this->_environment->inPrivateRoom() ) {
@@ -1776,6 +1793,21 @@ class cs_user_item extends cs_item {
             $value = -1;
          }
       }
+      if ( !empty($value) and $value == 1 ) {
+         $retour = true;
+      }
+      return $retour;
+   }
+**/
+   public function isAutoSaveOn () {
+      $retour = false;
+       $portal_user = $this->getRelatedPortalUserItem();
+       if ( isset($portal_user) and !empty($portal_user) ) {
+          $value = $portal_user->getAutoSaveStatus();
+          unset($portal_user);
+       } else {
+          $value = -1;
+       }
       if ( !empty($value) and $value == 1 ) {
          $retour = true;
       }
@@ -1801,6 +1833,42 @@ class cs_user_item extends cs_item {
    public function turnAutoSaveOff () {
       $this->_setAutoSaveStatus(-1);
    }
+
+   public function isNewUploadOn () {
+      $retour = true;
+       $portal_user = $this->getRelatedPortalUserItem();
+       if ( isset($portal_user) and !empty($portal_user) ) {
+          $value = $portal_user->getNewUploadStatus();
+          unset($portal_user);
+       } else {
+          $value = 1;
+       }
+      if ( !empty($value) and $value == -1 ) {
+         $retour = false;
+      }
+      return $retour;
+   }
+
+   public function getNewUploadStatus () {
+      $retour = '';
+      if ($this->_issetExtra('CONFIG_NEW_UPLOAD_STATUS')) {
+         $retour = $this->_getExtra('CONFIG_NEW_UPLOAD_STATUS');
+      }
+      return $retour;
+   }
+
+   public function _setNewUploadStatus ($value) {
+      $this->_addExtra('CONFIG_NEW_UPLOAD_STATUS',$value);
+   }
+
+   public function turnNewUploadOn () {
+      $this->_setNewUploadStatus(1);
+   }
+
+   public function turnNewUploadOff () {
+      $this->_setNewUploadStatus(-1);
+   }
+
 
    public function setICQ($number)
    {
