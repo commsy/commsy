@@ -1492,7 +1492,9 @@ class cs_environment {
    public function getSessionID () {
       $retour = '';
       $session_item = $this->getSessionItem();
-      $retour = $session_item->getSessionID();
+      if ( isset($session_item) ) {
+         $retour = $session_item->getSessionID();
+      }
       return $retour;
    }
 
