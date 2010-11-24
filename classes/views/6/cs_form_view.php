@@ -1039,8 +1039,12 @@ class cs_form_view extends cs_view {
       	$auth_source = $auth_source_manager->_performQuery();
 	      $auth_source_item = $auth_source_manager->getItem($auth_source[0]['item_id']);
 	      if(!empty($auth_source_item) AND $auth_source_item->isPasswordSecureActivated()){
-	      	$html .= '<div id="iSM"><ul class="weak"><li id="iWeak">zu leicht</li>
-				<li id="iMedium">erlaubt</li><li id="iStrong">sicher</li></ul></div>';
+            $html .= '<div id="iSM">';
+            $html .= '<ul class="weak">';
+            $html .= '<li id="iWeak">'.$this->_translator->getMessage('COMMON_PASSWORD_SECURE_WEAK').'</li>';
+            $html .= '<li id="iMedium">'.$this->_translator->getMessage('COMMON_PASSWORD_SECURE_MEDIUM').'</li>';
+            $html .= '<li id="iStrong">'.$this->_translator->getMessage('COMMON_PASSWORD_SECURE_STRONG').'</li>';
+            $html .= '</ul></div>';
 	      }
 	      unset($auth_source_manager);
 	      unset($auth_source_item);
