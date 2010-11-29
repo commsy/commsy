@@ -316,7 +316,14 @@ class cs_wordpress_manager extends cs_manager {
     if ( $this->_environment->getConfiguration('c_proxy_port') ) {
       $options['proxy_port'] = $this->_environment->getConfiguration('c_proxy_port');
     }
-    return new SoapClient($this->getSoapWsdlUrl(), $options);
+    $retour = NULL;
+    try {
+       $retour = new SoapClient($this->getSoapWsdlUrl(), $options);
+    } catch ( SoapFault $sf ) {
+       include_once('functions/error_functions.php');
+       trigger_error('SOAP Error: '.$sf->faultstring,E_USER_ERROR);
+    }
+    return $retour;
   }
 
   protected function _setWordpressOption($option_name, $option_value, $update=true) {

@@ -1,6 +1,0 @@
-Install as normal plugin:
-- commsyblog.zip
-
-Install in /wp-content/mu-plugins
-- commsy_auth.php
-- md5-password-hashes.zip

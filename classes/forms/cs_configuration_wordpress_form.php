@@ -96,19 +96,19 @@ class cs_configuration_wordpress_form extends cs_rubric_form {
             true);
     $this->_form->combine();
     if ( !empty($this->_form_post['skin_choice']) ) {
-      $desc = '<img src="'.$c_wordpress_path_url.'/default/wp-content/themes/'.$this->_form_post['skin_choice'].'/screenshot.png" alt="'.$this->_translator->getMessage('COMMON_SKIN').'" style=" border:1px solid black; vertical-align: middle;"/>';
+      $desc = '<img src="'.$c_wordpress_path_url.'wp-content/themes/'.$this->_form_post['skin_choice'].'/screenshot.png" alt="'.$this->_translator->getMessage('COMMON_SKIN').'" style=" border:1px solid black; vertical-align: middle;"/>';
       $this->_form->addText('example','',$desc);
     }elseif( isset($this->_item) and !$this->_set_deletion_values) {
       $skin = $this->_item->getWordpressSkin();
       if (!empty ($skin) ) {
-        $desc = '<img src="'.$c_wordpress_path_url.'/default/wp-content/themes/'.$this->_item->getWordpressSkin().'/screenshot.png" alt="'.$this->_translator->getMessage('COMMON_SKIN').'" style=" border:1px solid black; vertical-align: middle;"/>';
+        $desc = '<img src="'.$c_wordpress_path_url.'wp-content/themes/'.$this->_item->getWordpressSkin().'/screenshot.png" alt="'.$this->_translator->getMessage('COMMON_SKIN').'" style=" border:1px solid black; vertical-align: middle;"/>';
         $this->_form->addText('example','',$desc);
       }else {
-        $desc = '<img src="'.$c_wordpress_path_url.'/default/wp-content/themes/'.$this->_translator->getMessage('COMMON_SKIN').'" style=" border:1px solid black; vertical-align: middle;"/>';
+        $desc = '<img src="'.$c_wordpress_path_url.'wp-content/themes/'.$this->_translator->getMessage('COMMON_SKIN').'" style=" border:1px solid black; vertical-align: middle;"/>';
         $this->_form->addText('example','',$desc);
       }
     }else {
-      $desc = '<img src="'.$c_wordpress_path_url.'/default/wp-content/themes/'.$this->_item->getWordpressSkin().'/screenshot.png" style=" border:1px solid black; vertical-align: middle;"/>';
+      $desc = '<img src="'.$c_wordpress_path_url.'/wp-content/themes/'.$this->_item->getWordpressSkin().'/screenshot.png" style=" border:1px solid black; vertical-align: middle;"/>';
       $this->_form->addText('example','',$desc);
     }
 
@@ -128,15 +128,15 @@ class cs_configuration_wordpress_form extends cs_rubric_form {
             '',
             '',
             '',
-            true,
+            false,
             $this->_translator->getMessage('COMMON_CHOOSE_BUTTON'),
             'option',
             '',
             '',
             '15',
-            true);
+            false);
     $wordpress_manager = $this->_environment->getWordpressManager();
-    
+
     // comments
     $this->_form->addEmptyline();
     if (!$this->_item->isPortal()) {
