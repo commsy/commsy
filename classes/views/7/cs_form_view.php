@@ -665,7 +665,7 @@ class cs_form_view extends cs_view {
             $use_new_upload = true;
          }
       }
-
+      
       // do not use new upload in case of room picture, user picuture, ...
       $module = $this->_environment->getCurrentModule();
       $fct = $this->_environment->getCurrentFunction();
@@ -729,9 +729,9 @@ class cs_form_view extends cs_view {
 
          // define the buttons
          $selected_lang = $this->_translator->getSelectedLanguage();
-         $button_browse = "javascript/jQuery/jquery.uploadify-v2.1.0/button_browse_" . $selected_lang . ".png";
-         $button_upload = "javascript/jQuery/jquery.uploadify-v2.1.0/button_upload_" . $selected_lang . ".png";
-         $button_abort = "javascript/jQuery/jquery.uploadify-v2.1.0/button_abort_" . $selected_lang . ".png";
+         $button_browse = "javascript/jQuery/jquery.uploadify-v2.1.4/button_browse_" . $selected_lang . ".png";
+         $button_upload = "javascript/jQuery/jquery.uploadify-v2.1.4/button_upload_" . $selected_lang . ".png";
+         $button_abort = "javascript/jQuery/jquery.uploadify-v2.1.4/button_abort_" . $selected_lang . ".png";
 
          $html .= '<div id="fileQueue"></div>';
          $html .= '<input type="file" name="uploadify" id="uploadify" />';
@@ -743,11 +743,11 @@ class cs_form_view extends cs_view {
          $html .='<script type="text/javascript">';
          $html .='$(document).ready(function() {';
          $html .='   $("#uploadify").uploadify({';
-         $html .='      "uploader"       : "javascript/jQuery/jquery.uploadify-v2.1.0/uploadify.swf",';
-         //$html .='      "script"         : "javascript/jQuery/jquery.uploadify-v2.1.0/uploadify.php",';
+         $html .='      "uploader"       : "javascript/jQuery/jquery.uploadify-v2.1.4/uploadify.swf",';
+         //$html .='      "script"         : "javascript/jQuery/jquery.uploadify-v2.1.4/uploadify.php",';
          $html .='      "script"       : "'.$this->_environment->getConfiguration('c_single_entry_point').'",';
          $html .='      "method"       : "GET",';
-         $html .='      "folder"         : "javascript/jQuery/jquery.uploadify-v2.1.0/uploads",';
+         $html .='      "folder"         : "javascript/jQuery/jquery.uploadify-v2.1.4/uploads",';
          $html .='      "scriptData"    : ({'.$scriptData.'}),';
          $html .='      "multi"          : true,';
          $html .='      "wmode"          : "transparent",';

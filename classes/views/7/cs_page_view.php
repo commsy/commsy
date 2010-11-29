@@ -596,9 +596,9 @@ class cs_page_view extends cs_view {
          }
       }
       if(/*$this->_environment->getCurrentFunction() == 'edit' and*/ $use_new_upload){
-         $retour .= '   <script type="text/javascript" src="javascript/jQuery/jquery.uploadify-v2.1.0/jquery.uploadify.v2.1.0.min.js"></script>'.LF;
-         $retour .= '   <script type="text/javascript" src="javascript/jQuery/jquery.uploadify-v2.1.0/swfobject.js"></script>'.LF;
-         $retour .= '   <link rel="stylesheet" type="text/css" href="javascript/jQuery/jquery.uploadify-v2.1.0/uploadify_commsy.css"/>'.LF;
+         $retour .= '   <script type="text/javascript" src="javascript/jQuery/jquery.uploadify-v2.1.4/jquery.uploadify.v2.1.4.min.js"></script>'.LF;
+         $retour .= '   <script type="text/javascript" src="javascript/jQuery/jquery.uploadify-v2.1.4/swfobject.js"></script>'.LF;
+         $retour .= '   <link rel="stylesheet" type="text/css" href="javascript/jQuery/jquery.uploadify-v2.1.4/uploadify_commsy.css"/>'.LF;
       }
 
 
