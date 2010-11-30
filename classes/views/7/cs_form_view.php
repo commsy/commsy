@@ -680,6 +680,12 @@ class cs_form_view extends cs_view {
       if (!$portal_user->isNewUploadOn()){
          $use_new_upload = false;
       }
+      
+      // do not use new upload if browsing with https
+      if(   ($session->issetValue('https') && $session->getValue('https') == '1') || 
+            (isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off')) {
+         $use_new_upload = false;
+      }
 
       if ($use_new_upload){
          // this div holds the list of files, which upload is finished(+checkbox)
@@ -1887,6 +1893,19 @@ class cs_form_view extends cs_view {
             if ( isset($form_element['combine']) and $form_element['combine'] == 'vertical') {
                $html .= '</div><div style="padding-top: 3px;">';
             }
+            
+            /** TODO: remove this if not longer used ***********************/
+            // add info text if browsing with https
+            if($form_element['type'] == 'file') {
+               $session = $this->_environment->getSessionItem();
+               if(   ($session->issetValue('https') && $session->getValue('https') == '1') || 
+                     (isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off')) {
+                  //$html .= LF;
+                  $html .= '<span class="key">' . $this->_translator->getMessage('COMMON_UPLOAD_OLD_HTTPS') . '</span><br>' . LF;
+               }
+            }
+            
+            /***************************************************************/
          }
       }
       if ($show_drop_down){

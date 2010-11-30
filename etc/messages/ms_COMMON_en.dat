@@ -759,6 +759,7 @@ $message["COMMON_UNKNOWN"]["en"] = "Unknown";
 $message["COMMON_UNREAD"]["en"] = "unread";
 $message["COMMON_UPLOAD"]["en"] = "Upload file";
 $message["COMMON_UPLOAD_OLD"]["en"] = "<span class=&quot;key&quot; style=&quot;white-space: normal;&quot;>By using Javascript and a current version of Flash, you can take advantage of improved upload features!</span>";
+$message["COMMON_UPLOAD_OLD_HTTPS"]["en"] = "Unfortunately, the new flash-based upload does not work with secure connections(https).";
 $message["COMMON_USAGE_INFO_BODY"]["en"] = "Description (list view)";
 $message["COMMON_USAGE_INFO_FORM_BODY"]["en"] = "Description (form)";
 $message["COMMON_USER"]["en"] = "Member";

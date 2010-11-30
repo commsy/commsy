@@ -769,6 +769,7 @@ $message["COMMON_UNKNOWN"]["de"] = "Unbekannt";
 $message["COMMON_UNREAD"]["de"] = "ungelesen";
 $message["COMMON_UPLOAD"]["de"] = "Datei hochladen";
 $message["COMMON_UPLOAD_OLD"]["de"] = "<span class=&quot;key&quot; style=&quot;white-space: normal;&quot;>Wenn Sie Javascript aktivert haben und eine aktuelle Flash-Version benutzen, stehen Ihnen verbesserte Uploadfunktionen zur Verfügung!</span>";
+$message["COMMON_UPLOAD_OLD_HTTPS"]["de"] = "Der flashbasierte neue Upload funktioniert leider nicht unter einer sicheren Internetverbindung(https).";
 $message["COMMON_USAGE_INFO_BODY"]["de"] = "Inhalt (Listenansicht)";
 $message["COMMON_USAGE_INFO_FORM_BODY"]["de"] = "Inhalt (Formular)";
 $message["COMMON_USER"]["de"] = "Person";
