@@ -69,4 +69,7 @@ $c_enable_htmltextarea_security = false;
 // turn this on, if you have performance problems with
 // room list on portal
 // $c_room_count_redundancy = true;
+
+// use minimized javascript
+// $c_minimized_js = false;
 ?>

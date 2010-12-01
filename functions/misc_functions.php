@@ -1926,27 +1926,65 @@ function checkColorArray($color_array){
 function getCurrentCommSyFunctions(){
    $functions_file = '';
    $files_found = array();
-   if($dir=opendir('htdocs/javascript/jQuery/commsy')){
-      while($file=readdir($dir)) {
-         if(stripos($file, 'commsy_functions') !== false){
+   
+   // check for using min js version
+   global $c_minimized_js;
+   $search_dir = 'htdocs/javascript/jQuery/';
+   $search_dir_sub = '';
+   if(isset($c_minimized_js) && $c_minimized_js === false) {
+      // use normal js
+      $search_dir_sub = 'commsy/';
+   } else {
+      // use minimized js
+      $search_dir_sub = 'commsy_min/';
+   }
+   
+   // look for files in search_dir
+   if($dir = opendir($search_dir . $search_dir_sub)) {
+      while($file = readdir($dir)) {
+         if(stripos($file, 'commsy_functions') !== false) {
             $files_found[] = $file;
          }
       }
    }
-   if(sizeof($files_found) > 1){
+   
+   // more than one file
+   if(sizeof($files_found) > 1) {
       $modification_time = 0;
       $current_file = '';
       foreach($files_found as $file_found){
-         $modification_time_temp = filemtime('htdocs/javascript/jQuery/commsy/'.$file_found);
+         $modification_time_temp = filemtime($search_dir . $search_dir_sub . $file_found);
          if($modification_time < $modification_time_temp){
             $modification_time = $modification_time_temp;
             $current_file = $file_found;
          }
       }
-      $functions_file = $current_file;
-   } else {
-      $functions_file = $files_found[0];
+      $functions_file = $search_dir_sub . $current_file;
+   
+   // only one file found
+   } else if(sizeof($files_found) == 1) {
+      $functions_file = $search_dir_sub . $files_found[0];
+   
+   // using min version and no file was found? - try using normal version
+   } elseif(!isset($c_minimized_js) || (isset($c_minimized_js) && $c_minimized_js === true)) {
+      $c_minimized_js = false;
+      $functions_file = getCurrentCommSyFunctions();
    }
+   
+   // check wheather min file version matches normal file version
+   if( (!isset($c_minimized_js) || (isset($c_minimized_js) && $c_minimized_js === true)) && sizeof($files_found) >= 1) {
+      $pattern = "/.*\/commsy_functions_(.*?)(\.js|\.min\.js)/";
+      $matches = array();
+      preg_match($pattern, $functions_file, $matches);
+      if( sizeof($matches) > 1 ) {
+         if(!file_exists($search_dir . 'commsy/commsy_functions_' . $matches[1] . '.js')) {
+            // min version is not equal to normal version - try using normal version
+            $c_minimized_js = false;
+            $functions_file = getCurrentCommSyFunctions();
+         }
+      }
+   }
+   
    return $functions_file;
 }
 
