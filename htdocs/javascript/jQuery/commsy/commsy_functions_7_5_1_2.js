@@ -1044,7 +1044,7 @@ function draw_dates_month(){
 			var href = calendar_dates[i][6];
 			var tooltip = calendar_dates[i][7];
 			if(day+month != current_date){
-				current_date = day+month
+				current_date = day+month;
 				top_position = 0;
 				//added_scrollpane = false;
 				//added_jscrollpane = false;
@@ -1063,7 +1063,7 @@ function draw_dates_month(){
 			//}
 			var top = (20 * top_position) + (1 * top_position);
 			var width = jQuery('#calendar_month_entry_' + day + '_' + month).width() -2;
-			jQuery('#calendar_month_entry_' + day + '_' + month + '_scroll').append('<div style="position: absolute; top:' + top + 'px; left:0px; width:' + width + 'px; height:18px; background-color:' + color + '; border:1px solid ' + color_border + '; overflow:hidden;"><div style="position:absolute; top:0px; left:0px; width:1000px;">' + title + '</div><div style="position:absolute; top:0px; left:0px; height:18px; width:100%; z-index:10000;"><a href="' + href + '" data-tooltip="' + tooltip + '"><img src="images/spacer.gif" style="height:100%; width:100%;"/></a></div></div>')
+			jQuery('#calendar_month_entry_' + day + '_' + month + '_scroll').append('<div style="position: absolute; top:' + top + 'px; left:0px; width:' + width + 'px; height:18px; background-color:' + color + '; border:1px solid ' + color_border + '; overflow:hidden;"><div style="position:absolute; top:0px; left:0px; width:1000px;">' + title + '</div><div style="position:absolute; top:0px; left:0px; height:18px; width:100%; z-index:10000;"><a href="' + href + '" data-tooltip="' + tooltip + '"><img src="images/spacer.gif" style="height:100%; width:100%;"/></a></div></div>');
 			top_position++;
 			//if(dates_on_day >= 4 && !added_scrollpane){
 			//	jQuery('#calendar_month_entry_' + day + '_' + month + '_scroll').jScrollPane();
@@ -1075,7 +1075,7 @@ function draw_dates_month(){
 	}
 	if(typeof(today) != 'undefined'){
       if(today != ''){
-         var today_color = '#fff0c0'
+         var today_color = '#fff0c0';
          var day = today.substring(0,2);
          if(day.substring(0,1) == 0){
             day = day.substring(1,2);
@@ -1779,7 +1779,7 @@ function setupDiscussionTree() {
 		}
 	});
 
-	// "geänderte" und "neue" Einträge ausklappen
+	// "geï¿½nderte" und "neue" Eintrï¿½ge ausklappen
 	jQuery('[id=discussion_tree]').dynatree("getRoot").visit(function(dtnode) {
 	    var title = dtnode.data.title;
 	    var regexp = /(change)/g;
@@ -2662,7 +2662,7 @@ function turn_portlet_buzzwords(id, portlet){
 
    for ( var int = 0; int < portlet_data['buzzwords_change'].length; int++) {
       var temp_change_buzzword = portlet_data['buzzwords_change'][int];
-      jQuery('#portlet_buzzword_'+temp_change_buzzword.id).val(temp_change_buzzword.name)
+      jQuery('#portlet_buzzword_'+temp_change_buzzword.id).val(temp_change_buzzword.name);
    }
    //portlet_data['buzzwords_change'] = new Array();
 
@@ -2750,7 +2750,7 @@ function turn_portlet_buzzwords(id, portlet){
             	  var temp_id_array = jQuery(this).find('.portlet_buzzword_textfield').attr('id').split('_');
        			  var temp_id = temp_id_array[2];
                   if(temp_id == resultJSON['combine_first_id']){
-                	  jQuery(this).find('.portlet_buzzword_textfield').val(resultJSON['combine_name'])
+                	  jQuery(this).find('.portlet_buzzword_textfield').val(resultJSON['combine_name']);
                   } else if(temp_id == resultJSON['combine_second_id']){
                 	  jQuery(this).remove();
                   }
