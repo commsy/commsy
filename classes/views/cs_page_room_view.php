@@ -415,6 +415,25 @@ class cs_page_room_view extends cs_page_view {
             $html .= '<a href="rss.php?cid='.$current_context_item->getItemID().$hash_string.'" target="_blank"><img src="images/rss.png" style="vertical-align:bottom;" alt="' . $this->_translator->getMessage('RSS_SUBSCRIBE_LINK') . '" title="' . $this->_translator->getMessage('RSS_SUBSCRIBE_LINK') . '"/></a>';
          }
       }
+      
+      // my profile(if user rubric is not active)
+      $available_rubrics = $current_context_item->getAvailableRubrics();
+      if(!in_array('user', $available_rubrics)) {
+         // user rubric is not active, so add link in tablist
+         if(!$current_context_item->isOpenForGuests() && $current_user_item->isUser() && $this->_with_modifying_actions) {
+            $params = array();
+            $params['iid'] = $current_user_item->getItemID();
+	         $image = '<img src="images/user.png" style="vertical-align:bottom; padding-left: 2px;" alt="'.$this->_translator->getMessage('USER_OWN_INFORMATION').'"/>';
+	         $html .= ahref_curl(   $current_context_item->getItemID(),
+	                                CS_USER_TYPE,
+	                                'detail',
+	                                $params,
+	                                $image,
+	                                $this->_translator->getMessage('USER_OWN_INFORMATION')).LF;
+	         unset($params);
+            //$html .= '<a href="commsy.php?cid=' . $current_context_item->getItemID() . '&mod=user&fct=detail&iid=' . $current_user_item->getItemID() . '">keks</a>';
+         }
+      }
 
       $html .= '</div>'.LF;
       $html .= '<div id="tablist">'.LF;
@@ -2175,7 +2194,6 @@ class cs_page_room_view extends cs_page_view {
                }
 
                $html .= $this->_getFlagsAsHTML();
-
          }
       }
       if ( $this->_with_personal_area and empty($cs_mod)) {

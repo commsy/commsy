@@ -1273,7 +1273,16 @@ class cs_user_item extends cs_item {
                ) {
                $access = true;
             } else {
-               $access = false;
+               // if user rubric is not active, user can always see himself
+               if(!$room->withRubric(CS_USER_TYPE)) {
+                  if( $user_item->getUserID() == $this->getUserID() && $user_item->getAuthSource() == $this->getAuthSource() ) {
+                     $access = true;
+                  } else {
+                     $access = false;
+                  }
+               } else {
+                  $access = false;
+               }
             }
          }
       }
