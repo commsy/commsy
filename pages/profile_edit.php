@@ -439,7 +439,9 @@ if ($command != 'error') { // only if user is allowed to edit user
                    }
                 }
                 if ( !empty($_FILES['upload']['name']) and !empty($_FILES['upload']['tmp_name']) ) {
-                   $filename = 'cid'.$environment->getCurrentContextID().'_'.$user_item->getUserID().'_'.$_FILES['upload']['name'];
+                   //$filename = 'cid'.$environment->getCurrentContextID().'_'.$user_item->getUserID().'_'.$_FILES['upload']['name'];
+                   $filename_info = pathinfo($_FILES['upload']['name']);
+                   $filename = 'cid' . $environment->getCurrentContextID() . '_' . $user_item->getItemID() . '.' . $filename_info['extension'];
                    $disc_manager = $environment->getDiscManager();
                    $disc_manager->copyFile($_FILES['upload']['tmp_name'],$filename,true);
                    $user_item->setPicture($filename);
