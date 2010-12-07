@@ -187,7 +187,11 @@ div.content_fader{
     width: 100%;
     margin:0px;
     padding:0px;
-    background: url(images/layout/bg-fader_<?php echo($color['schema'])?>.gif) repeat-x;
+    <?php
+       if ( file_exists('htdocs/images/layout/bg-fader_'.$color['schema'].'.gif') ) {
+           echo('    background:url(images/layout/bg-fader_'.$color['schema'].'.gif) repeat-x;');
+       }
+    ?>
     background-color: <?php echo($color['content_background'])?>;
 }
 
@@ -552,25 +556,25 @@ a.titlelink{
 {border-left-width:0;}
 
 div.strong #iWeak, div.strong #iMedium, div.strong #iStrong  {
-	background: #00CC66;
-	color: #00CC66;
+   background: #00CC66;
+   color: #00CC66;
 }
 
 div.medium #iWeak, div.medium #iMedium {
-	background: #FFFF99;
-	color: #FFFF99;
+   background: #FFFF99;
+   color: #FFFF99;
 }
 
 div.medium #iWeak, div.medium #iMedium {
-	background: #FFFF99;
-	color: #FFFF99;
+   background: #FFFF99;
+   color: #FFFF99;
 }
 
 div.weak #iWeak {
-	background: #FF0000;
-	color: #FF0000;
+   background: #FF0000;
+   color: #FF0000;
 }
 
 div.strong #iStrong, div.medium #iMedium, div.weak #iWeak {
-	color:#000;
+   color:#000;
 }
