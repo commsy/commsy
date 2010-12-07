@@ -447,7 +447,7 @@ class cs_user_manager extends cs_manager {
          if (isset($this->_is_user_in_context_cache[$user_id.$auth_source][$context_id]) and $this->_is_user_in_context_cache[$user_id.$auth_source][$context_id] == 'is_user'){
             return true;
          }else{
-         	return false;
+            return false;
          }
       }else{
          $query = 'SELECT DISTINCT '.$this->addDatabasePrefix('user').'.context_id FROM '.$this->addDatabasePrefix('user');
@@ -477,7 +477,7 @@ class cs_user_manager extends cs_manager {
                 return false;
              }
           }else{
-          	   return false;
+                return false;
           }
       }
    }
@@ -1232,49 +1232,51 @@ class cs_user_manager extends cs_manager {
               and !empty($user_item)
               and $user_item->getContextID() == $this->_environment->getCurrentContextID()
          ) {
-	        // delete related user in group rooms
-	        if($this->_environment->getCurrentPortalItem()->withGrouproomFunctions()) {
-	           // get all grouprooms of this user
-	           $grouproom_manager = $this->_environment->getGroupRoomManager();
-	           $grouproom_list = $grouproom_manager->getUserRelatedGroupListForUser($user_item);
+           // delete related user in group rooms
+           if($this->_environment->getCurrentPortalItem()->withGrouproomFunctions()) {
+              // get all grouprooms of this user
+              $grouproom_manager = $this->_environment->getGroupRoomManager();
+              $grouproom_list = $grouproom_manager->getUserRelatedGroupListForUser($user_item);
 
-	           if(!$grouproom_list->isEmpty()) {
-	              $grouproom_ids = array();
-	              $grouproom = $grouproom_list->getFirst();
-		          while($grouproom) {
-		             // is a group room of this project room?
-		             $project_room_id = $grouproom->getLinkedProjectItem()->getItemID();
-		             if($this->_environment->getCurrentContextID() == $project_room_id) {
-		                // add grouproom id to array of ids
-		                $grouproom_ids[] = $grouproom->getItemID();
-		             }
+              if(!$grouproom_list->isEmpty()) {
+                 $grouproom_ids = array();
+                 $grouproom = $grouproom_list->getFirst();
+                while($grouproom) {
+                   // is a group room of this project room?
+                   $project_room = $grouproom->getLinkedProjectItem();
+                   if ( !empty($project_room) ) {
+                      $project_room_id = $project_room->getItemID();
+                      if($this->_environment->getCurrentContextID() == $project_room_id) {
+                         // add grouproom id to array of ids
+                         $grouproom_ids[] = $grouproom->getItemID();
+                      }
+                   }
+                   $grouproom = $grouproom_list->getNext();
+                }
 
-		             $grouproom = $grouproom_list->getNext();
-		          }
+                // delete related users
+                if(!empty($grouproom_ids)) {
+                   $user_manager = $this->_environment->getUserManager();
+                   $user_manager->resetLimits();
+                   $user_manager->setContextArrayLimit($grouproom_ids);
+                   $user_manager->setUserIDLimit($user_item->getUserID());
+                   $user_manager->setAuthSourceLimit($user_item->getAuthSource());
+                   $user_manager->select();
+                   $user_list = $user_manager->get();
+                   unset($user_manager);
 
-		          // delete related users
-		          if(!empty($grouproom_ids)) {
-		             $user_manager = $this->_environment->getUserManager();
-		             $user_manager->resetLimits();
-		             $user_manager->setContextArrayLimit($grouproom_ids);
-		             $user_manager->setUserIDLimit($user_item->getUserID());
-		             $user_manager->setAuthSourceLimit($user_item->getAuthSource());
-		             $user_manager->select();
-		             $user_list = $user_manager->get();
-		             unset($user_manager);
+                   if(!$user_list->isEmpty()) {
+                      $user = $user_list->getFirst();
+                      while($user) {
+                         // delete user
+                         $user->delete();
 
-		             if(!$user_list->isEmpty()) {
-		                $user = $user_list->getFirst();
-		                while($user) {
-		                   // delete user
-		                   $user->delete();
-
-		                   $user = $user_list->getNext();
-		                }
-		             }
-		          }
-	           }
-	        }
+                         $user = $user_list->getNext();
+                      }
+                   }
+                }
+              }
+           }
          }
       }
 
