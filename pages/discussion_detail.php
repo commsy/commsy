@@ -156,6 +156,19 @@ if ($type != CS_DISCUSSION_TYPE) {
       $detail_view->setItem($discussion_item);
       $detail_view->setSubItemList($articles_list);
 
+      // for performance reasons, pre-fetch latest noticed and reader(for all files)
+      $articles_id_array = array();
+      $article = $articles_list->getFirst();
+      while($article) {
+         $articles_id_array[] = $article->getItemID();
+         
+         $article = $articles_list->getNext();
+      }
+      $noticed_manager = $environment->getNoticedManager();
+      $reader_manager = $environment->getReaderManager();
+      $noticed_manager->getLatestNoticedByIDArray($articles_id_array);
+      $reader_manager->getLatestReaderByIDArray($articles_id_array);
+
       // Set up browsing order
       if ( $session->issetValue('cid'.$environment->getCurrentContextID().'_discussion_index_ids') ) {
          $discussion_ids = $session->getValue('cid'.$environment->getCurrentContextID().'_discussion_index_ids');

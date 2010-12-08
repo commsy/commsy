@@ -1001,6 +1001,10 @@ class cs_discussion_detail_view extends cs_detail_view {
             }
          }
 
+         $reader_manager = $this->_environment->getReaderManager();
+         $noticed_manager = $this->_environment->getNoticedManager();
+         $marked_reader_ids = array();
+         $marked_noticed_ids = array();
          while ( $current_item ) {
             $discussion_type = $item->getDiscussionType();
             $html .='<tr class="detail_discussion_entries">'.LF;
@@ -1202,22 +1206,26 @@ class cs_discussion_detail_view extends cs_detail_view {
                 $html .='</tr>'.LF;
                 }*/
             }
-            // set reader
-            $reader_manager = $this->_environment->getReaderManager();
-            $reader = $reader_manager->getLatestReader($current_item->getItemID());
-            if ( empty($reader) or $reader['read_date'] < $current_item->getModificationDate() ) {
-               $reader_manager->markRead($current_item->getItemID(),0);
+
+            // collection ids for reader and noticed update
+            if(   empty($reader) ||
+                  $reader['read_date'] < $current_item->getModificationDate() ) {
+               $marked_reader_ids[] = $current_item->getItemID();
             }
-            // set Noticed
-            $noticed_manager = $this->_environment->getNoticedManager();
-            $noticed = $noticed_manager->getLatestNoticed($current_item->getItemID());
-            if ( empty($noticed) or $noticed['read_date'] < $current_item->getModificationDate() ) {
-               $noticed_manager->markNoticed($current_item->getItemID(),0);
+            if(   empty($noticed) ||
+                  $noticed['read_date'] < $current_item->getModificationDate() ) {
+               $marked_noticed_ids[] = $current_item->getItemID();
             }
 
             $current_item = $subitems->getNext();
             $pos_number++;
          } // end while
+         
+         // update reader and noticed entries
+         $reader_manager->markReadArray($marked_reader_ids, 0);
+         $noticed_manager->markNoticedArray($marked_noticed_ids, 0);
+         unset($reader_manager);
+         unset($noticed_manager);
       }
 
       $html .= '</table>'.LF;

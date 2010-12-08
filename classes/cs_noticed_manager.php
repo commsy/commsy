@@ -315,6 +315,29 @@ class cs_noticed_manager {
          }
       }
    }
+   
+   /**
+    * mark an array of items/version as read by the current user
+    * 
+    * @param $id_array
+    * @param $version_id
+    */
+   function markNoticedArray($id_array, $version_id) {
+      if( !empty($this->_current_user_id) ) {
+         $query = 'INSERT IGNORE INTO ' . $this->addDatabasePrefix('noticed') . ' (item_id, version_id, user_id, read_date) VALUES ';
+         foreach($id_array as $key => $id) {
+            $query .= '("' . encode(AS_DB, $id) . '", "' . encode(AS_DB, $version_id) . '", "' . encode(AS_DB, $this->_current_user_id) . '", "' . getCurrentDateTimeInMySQL() . '")';
+            if( isset($id_array[$key+1]) ) {
+               $query .= ', ';
+            }
+         }
+         $result = $this->_db_connector->performQuery($query);
+         if ( !isset($result) ) {
+            include_once('functions/error_functions.php');
+            trigger_error('Problems marking item as read from query: "'.$query.'"');
+         }
+      }
+   }
 
    function mergeAccounts($new_id,$old_id) {
       $select = "SELECT * FROM ".$this->addDatabasePrefix("noticed")." WHERE user_id = '".encode(AS_DB,$old_id)."'";
