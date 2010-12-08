@@ -194,9 +194,10 @@ var $_list = NULL;
                                        '',
                                        '').$this->_getItemChangeStatus($full_item,$full_item->getContextID());
          $html .= '<br/><span style="font-size:8pt;">('.$this->_translator->getMessage('COMMON_ROOM').': ';
+         $params = array();
          $html .= ahref_curl( $full_item->getContextID(),
                                        'home',
-                                       'detail',
+                                       'index',
                                        $params,
                                        $room_title,
                                        $room_title,
