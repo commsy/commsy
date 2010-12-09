@@ -108,6 +108,20 @@ if ( !empty($_GET['iid']) ) {
             #header('Expires: 0');
             #@readfile($file->getDiskFileName());
 
+         	// List of mime-types that should not be forced to be downloaded, but handled by the browser.
+         	$no_force_download = array('text/plain',
+         	                           'image/jpeg',
+         	                           'image/gif',
+         	                           'image/png',
+         	                           'audio/wav',
+         	                           'audio/mpeg',
+         	                           'video/mp4',
+         	                           'video/avi',
+         	                           'video/quicktime',
+         	                           'video/mpeg',
+         	                           'application/pdf',
+         	                           'application/x-shockwave-flash');
+         	
             // see: http://de.php.net/manual/de/function.readfile.php (25.10.2010)
             $realpath = $file->getDiskFileName();
             $mtime = ($mtime = filemtime($realpath)) ? $mtime : gmtime();
@@ -120,14 +134,21 @@ if ( !empty($_GET['iid']) ) {
             @apache_setenv('no-gzip', 1);
             @ini_set('zlib.output_compression', 0);
             // Maybe the client doesn't know what to do with the output so send a bunch of these headers:
-            header("Content-Type: application/force-download");
-            header('Content-Type: application/octet-stream');
+            
+            #if(!in_array($file->getMime(), $no_force_download)){
+	            header("Content-Type: application/force-download");
+	            header('Content-Type: application/octet-stream');
+            #}
             header('Content-Type: '.$file->getMime());
-            if (strstr($_SERVER["HTTP_USER_AGENT"], "MSIE") != false) {
-               header("Content-Disposition: attachment; filename=\"" . urlencode($file->getDisplayName()) . '"; modification-date="' . date('r', $mtime) . '"');
-            } else {
-               header("Content-Disposition: attachment; filename=\"" . $file->getDisplayName() . '"; modification-date="' . date('r', $mtime) . '"');
+            
+            if(!in_array($file->getMime(), $no_force_download)){
+	            if (strstr($_SERVER["HTTP_USER_AGENT"], "MSIE") != false) {
+	               header("Content-Disposition: attachment; filename=\"" . urlencode($file->getDisplayName()) . '"; modification-date="' . date('r', $mtime) . '"');
+	            } else {
+	               header("Content-Disposition: attachment; filename=\"" . $file->getDisplayName() . '"; modification-date="' . date('r', $mtime) . '"');
+	            }
             }
+            
             // Set the length so the browser can set the download timers
             header("Content-Length: " . (string)$size);
             // If it's a large file we don't want the script to timeout, so:
