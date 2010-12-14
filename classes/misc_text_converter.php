@@ -1596,7 +1596,7 @@ class misc_text_converter {
          $play = 'false';
       }
 
-      $factor = 0.625; // orig = 1;
+      $factor = 0.655; // orig = 1;
       if ( !empty($args['width']) ) {
          $width = $args['width'];
       } else {
@@ -1605,7 +1605,7 @@ class misc_text_converter {
       if ( !empty($args['height']) ) {
          $height = $args['height'];
       } else {
-         $height = 500*$factor+(14/$factor)-6;
+         $height = 500*$factor+(14/$factor)-10;
       }
 
       if ( !empty($args['image']) ) {
@@ -1618,6 +1618,12 @@ class misc_text_converter {
          $server = $args['server'];
       } else {
          $server = 'rtmp://fms.rrz.uni-hamburg.de:1936/vod';
+      }
+
+      if ( !empty($args['bufferlength']) ) {
+         $bufferlength = $args['bufferlength'];
+      } else {
+         $bufferlength = 2;
       }
 
       if ( !empty($args['float'])
@@ -1638,98 +1644,44 @@ class misc_text_converter {
       $current_context_item = $this->_environment->getCurrentContextItem();
       $color_array = $current_context_item->getColorArray();
       if ( !empty($color_array['tabs_background']) ) {
-         $color = $color_array['tabs_background'];
-         $color = str_replace('#','0x',$color);
+         $backcolor = $color_array['tabs_background'];
+         $backcolor = str_replace('#','',$backcolor);
+         $screencolor = $backcolor;
+         $frontcolor = $color_array['tabs_title'];
+         $frontcolor = str_replace('#','',$frontcolor);
+         $lightcolor = $frontcolor;
       } else {
-         $color = '0xF17B0D';
+         $backcolor = 'FFFFFF';
+         $screencolor = 'FFFFFF';
+         $frontcolor = '000000';
+         $lightcolor = '000000';
       }
 
       if ( !empty($source) ) {
          $image_text = '';
          $div_number = $this->_getDivNumber();
-         if ( $this->_environment->getCurrentBrowser() != 'MSIE' ) {
-            $image_text .= '<script type="text/javascript" src="http://lecture2go.rrz.uni-hamburg.de/flowplayer/js/flashembed.min.js"></script>'.LF;
-            $image_text .= '<script src="http://lecture2go.rrz.uni-hamburg.de/dini/flash_detect/new_detection_kit/AC_OETags.js" language="javascript" type="text/javascript"></script>'.LF;
-            $image_text .= '<script type="text/javascript">'.LF;
-            $image_text .= 'function insertFile(serv,file){'.LF;
-            $image_text .= '    flashembed("id'.$div_number.'",'.LF;
-            $image_text .= '                {'.LF;
-            $image_text .= '                    wmode: "opaque",'.LF;
-            $image_text .= '                    src:"http://lecture2go.rrz.uni-hamburg.de/flowplayer/FlowPlayerDark.swf",'.LF;
-            // breite und hoehe definieren
-            $image_text .= '                    width: '.$width.','.LF;
-            $image_text .= '                    height: '.$height.''.LF;
-            $image_text .= '                },'.LF;
-            $image_text .= '                {config: {'.LF;
-            $image_text .= '                    autoPlay: '.$play.','.LF;
-            $image_text .= '                    controlBarBackgroundColor: "'.$color.'",'.LF;
-            $image_text .= '                    controlBarGloss: "yes",'.LF;
-            // logo
-            $image_text .= '                    splashImageFile: "'.$image.'",'.LF;
-            // mp4 datei
-            $image_text .= '                    videoFile: "mp4:"+file,'.LF;
-            // hier streamer, dieser ist variabel:
-            // beispiel: rtmp://fms.rrz.uni-hamburg.de:1936/vod
-            //           rtmp://fms.rrz.uni-hamburg.de:1938/vod
-            //           rtmp://fms.rrz.uni-hamburg.de:1942/vod
-            $image_text .= '                    streamingServerURL: serv,'.LF;
-            // hier wasserzeichen, wird nach lizenzaktivierung angezeigt
-            $image_text .= '                    showWatermark:"always",'.LF;
-            $image_text .= '                    watermarkUrl:"http://lecture2go.uni-hamburg.de/wasserzeichen/l2g.jpg",'.LF;
-            $image_text .= '                    watermarkLinkUrl:"http://lecture2go.uni-hamburg.de"'.LF;
-            $image_text .= '                }}'.LF;
-            $image_text .= '            );'.LF;
-            $image_text .= '}'.LF;
+         $translator = $this->_environment->getTranslationObject();
 
-            // @serv pfad zum streamer
-            // @file pfad zur datei
-            $image_text .= 'function showPlayer(serv,file){'.LF;
-            $image_text .= '    var requiredMajorVersion=9;'.LF;
-            $image_text .= '    var requiredMinorVersion=0;'.LF;
-            $image_text .= '    var requiredRevision=115;'.LF;
+         $image_text .= '<script type="text/javascript" src="http://lecture2go.uni-hamburg.de/jw/swfobject.js"></script>'.LF;
+         $image_text .= '<div id="id'.$div_number.'" style="'.$float.' padding:10px;">'.$translator->getMessage('COMMON_GET_FLASH').'</div>'.LF;
+         $image_text .= '<script type="text/javascript">'.LF;
+         $image_text .= '  var so = new SWFObject(\'http://lecture2go.uni-hamburg.de/jw5.0/player-licensed.swf\',\'ply\',\''.$width.'\',\''.$height.'\',\'9\',\''.$screencolor.'\');'.LF;
+         $image_text .= '  so.addParam(\'allowfullscreen\',\'true\');'.LF;
+         $image_text .= '  so.addParam(\'allowscriptaccess\',\'always\');'.LF;
+         $image_text .= '  so.addParam(\'wmode\',\'opaque\');'.LF;
+         $image_text .= '  so.addVariable(\'autostart\',\''.$play.'\');'.LF;
+         $image_text .= '  so.addVariable(\'image\',"'.$image.'");'.LF;
+         $image_text .= '  so.addVariable(\'bufferlength\',"'.$bufferlength.'");'.LF;
+         $image_text .= '  so.addVariable(\'streamer\',"'.$server.'");'.LF;
+         $image_text .= '  so.addVariable(\'file\',"'.$source.'");'.LF;
+         $image_text .= '  so.addVariable(\'backcolor\',"'.$backcolor.'");'.LF;
+         $image_text .= '  so.addVariable(\'frontcolor\',"'.$frontcolor.'");'.LF;
+         $image_text .= '  so.addVariable(\'lightcolor\',"'.$lightcolor.'");'.LF;
+         $image_text .= '  so.addVariable(\'screencolor\',"'.$screencolor.'");'.LF;
+         $image_text .= '  so.addVariable(\'id\',"id'.$div_number.'");'.LF;
+         $image_text .= '  so.write(\'id'.$div_number.'\');'.LF;
+         $image_text .= '</script>'.LF;
 
-            // Version check based upon the values entered above in "Globals"
-            $image_text .= '    var hasReqestedVersion = DetectFlashVer(requiredMajorVersion, requiredMinorVersion, requiredRevision);'.LF;
-
-            // Check to see if the version meets the requirements for playback
-            $image_text .= '    if (hasReqestedVersion) {'.LF;
-            $image_text .= '        insertFile(serv,file);'.LF;
-            $image_text .= '    }'.LF;
-            $image_text .= '}'.LF;
-            $image_text .= '</script>'.LF;
-            $translator = $this->_environment->getTranslationObject();
-            $text_without_flash = '<div>'.$translator->getMessage('COMMON_GET_FLASH_LECTURE2GO').'</div>';
-            $image_text .= '<div id="id'.$div_number.'" style="'.$float.' padding:10px; width:'.$width.'px; height:'.$height.'px;">'.LF.$text_without_flash.LF.'</div>'.LF;
-            $image_text .= '<script type="text/javascript">showPlayer("'.$server.'","'.$source.'")</script>'.LF;
-         }
-
-         // in IE7 occur problems with mootools and flashembed.min.js
-         // so embed flowplayer directly into html
-         else {
-            $image_text .= LF.'<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" '.LF;
-            $image_text .= 'width="'.$width.'" height="'.$height.'" id="'.$div_number.'"'.LF;
-            $image_text .= '>'.LF;
-            $image_text .= '   <param name="movie" value="http://lecture2go.rrz.uni-hamburg.de/flowplayer/FlowPlayerDark.swf" />'.LF;
-            $image_text .= '   <param name="quality" value="high" />'.LF;
-            $image_text .= '   <param name="bgcolor" value="#ffffff" />'.LF;
-            $image_text .= '   <param name="wmode" value="opaque" />'.LF;
-            $image_text .= '   <param name="allowfullscreen" value="true" />'.LF;
-            $image_text .= '   <param name="allowscriptaccess" value="always" />'.LF;
-            $image_text .= '   <param name="type" value="application/x-shockwave-flash" />'.LF;
-            $image_text .= '   <param name="pluginspage" value="http://www.adobe.com/go/getflashplayer" />'.LF;
-            $image_text .= '   <param name="flashvars" value=\'config={
-                    autoPlay: '.$play.',
-                    controlBarBackgroundColor: "'.$color.'",
-                    controlBarGloss: "yes",
-                    splashImageFile: "'.$image.'",
-                    videoFile: "mp4:'.$source.'",
-                    streamingServerURL: "'.$server.'",
-                    showWatermark:"always",
-                    watermarkUrl:"http://lecture2go.uni-hamburg.de/wasserzeichen/l2g.jpg",
-                    watermarkLinkUrl:"http://lecture2go.uni-hamburg.de"
-                }\' />'.LF;
-            $image_text .= '</object>'.LF;
-         }
          $text = str_replace($array[0],$image_text,$text);
       }
       $retour = $text;
