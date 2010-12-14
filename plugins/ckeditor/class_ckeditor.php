@@ -34,7 +34,7 @@ class class_ckeditor extends cs_plugin {
       $this->_title      = 'CKEditor';
       $this->_image_path = 'plugins/'.$this->getIdentifier();
       $this->_translator->addMessageDatFolder('plugins/'.$this->getIdentifier().'/messages');
-      
+
       $this->_htdocs_identifier = 'ckeditor_3.4.2';
    }
 
@@ -75,7 +75,11 @@ class class_ckeditor extends cs_plugin {
          }
          $r = hexdec($background_color[0].$background_color[1]);
          $g = hexdec($background_color[2].$background_color[3]);
-         $b = hexdec($background_color[4].$background_color[5]);
+         if ( isset($background_color[4]) and isset($background_color[5]) ) {
+            $b = hexdec($background_color[4].$background_color[5]);
+         } else {
+            $b = '';
+         }
          $hsv = $this->_RGB_TO_HSV($r,$g,$b);
          if ( $hsv['V'] > 0.9 ) {
             $hsv['V'] = 0.9;
@@ -105,7 +109,7 @@ class class_ckeditor extends cs_plugin {
       $retour .= '<script type="text/javascript">'.LF;
       $temp_iid = '';
       if(isset($_GET['iid'])){
-      	$temp_iid = '&iid='.$_GET['iid'];
+         $temp_iid = '&iid='.$_GET['iid'];
       }
       $retour .= '   CKEDITOR.replace( \''.$form_element['name'].'_'.$form_element['tabindex'].'\' ,
                   {
@@ -126,32 +130,32 @@ class class_ckeditor extends cs_plugin {
                      filebrowserWindowWidth : \'100\',
                      filebrowserWindowHeight : \'50\'
                   });'.LF;
-      
+
       $retour  .= 'var ckeditor_images = "'.$this->_translator->getMessage('CKEDITOR_IMAGES').'";'.LF;
       $retour  .= 'var ckeditor_images_select = "'.$this->_translator->getMessage('CKEDITOR_IMAGES_SELECT').'";'.LF;
       $retour  .= 'var ckeditor_images_no_files = "'.$this->_translator->getMessage('CKEDITOR_IMAGES_NO_FILES').'";'.LF;
-      
-      $retour  .= 'var ckeditor_images_select_file = "'.$this->_translator->getMessage('CKEDITOR_IMAGES_SELECT_FILE').'";'.LF;   
-      
+
+      $retour  .= 'var ckeditor_images_select_file = "'.$this->_translator->getMessage('CKEDITOR_IMAGES_SELECT_FILE').'";'.LF;
+
       $retour  .= 'var ckeditor_images_select_width = "'.$this->_translator->getMessage('CKEDITOR_IMAGES_SELECT_WIDTH').'";'.LF;
       $retour  .= 'var ckeditor_images_size_small = "'.$this->_translator->getMessage('CKEDITOR_IMAGES_SIZE_SMALL').'";'.LF;
       $retour  .= 'var ckeditor_images_size_medium = "'.$this->_translator->getMessage('CKEDITOR_IMAGES_SIZE_MEDIUM').'";'.LF;
       $retour  .= 'var ckeditor_images_size_large = "'.$this->_translator->getMessage('CKEDITOR_IMAGES_SIZE_LARGE').'";'.LF;
       $retour  .= 'var ckeditor_images_size_original = "'.$this->_translator->getMessage('CKEDITOR_IMAGES_SIZE_ORIGINAL').'";'.LF;
-      
+
       $retour  .= 'var ckeditor_images_select_alignment = "'.$this->_translator->getMessage('CKEDITOR_IMAGES_SELECT_ALIGNMENT').'";'.LF;
       $retour  .= 'var ckeditor_images_alignment_left = "'.$this->_translator->getMessage('CKEDITOR_IMAGES_ALIGNMENT_LEFT').'";'.LF;
       $retour  .= 'var ckeditor_images_alignment_center = "'.$this->_translator->getMessage('CKEDITOR_IMAGES_ALIGNMENT_CENTER').'";'.LF;
       $retour  .= 'var ckeditor_images_alignment_right = "'.$this->_translator->getMessage('CKEDITOR_IMAGES_ALIGNMENT_RIGHT').'";'.LF;
-      
+
       $retour  .= 'var ckeditor_files = "'.$this->_translator->getMessage('CKEDITOR_FILES').'";'.LF;
       $retour  .= 'var ckeditor_files_select = "'.$this->_translator->getMessage('CKEDITOR_FILES_SELECT').'";'.LF;
       $retour  .= 'var ckeditor_files_no_files = "'.$this->_translator->getMessage('CKEDITOR_FILES_NO_FILES').'";'.LF;
-      
+
       $retour  .= 'var ckeditor_links = "'.$this->_translator->getMessage('CKEDITOR_LINKS').'";'.LF;
       $retour  .= 'var ckeditor_links_select = "'.$this->_translator->getMessage('CKEDITOR_LINKS_SELECT').'";'.LF;
       $retour  .= 'var ckeditor_links_no_links = "'.$this->_translator->getMessage('CKEDITOR_LINKS_NO_LINKS').'";'.LF;
-      
+
       $retour .= '</script>'.LF;
       $retour .= LF;
       unset($color);
