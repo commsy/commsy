@@ -688,7 +688,10 @@ function isURLValid () {
         $module != 'plugin' and
 
         // ajax
-        $module != 'ajax'
+        $module != 'ajax' and
+        
+        // Scorm
+        $module != 'scorm'
       ) {
       return false;
     }

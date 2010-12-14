@@ -977,6 +977,7 @@ class misc_text_converter {
       $reg_exp_array['(:slideshare']  = '~\\(:slideshare (.*?):\\)~eu';
       $reg_exp_array['[slideshare']   = '~\[slideshare (.*?)\]~eu';
       $reg_exp_array['(:flickr']      = '~\\(:flickr (.*?):\\)~eu';
+      $reg_exp_array['(:scorm']  = '~\\(:scorm (.*?):\\)~eu';
 
       // Test auf erforderliche Software; Windows-Server?
       //$reg_exp_array['(:pdf']       = '/\\(:pdf (.*?)(\\s.*?)?\\s*?:\\)/e';
@@ -1105,6 +1106,9 @@ class misc_text_converter {
                         break;
                      } elseif ( $key == '(:flickr' and mb_stristr($value_new,'(:flickr') ) {
                         $value_new = $this->_formatFlickr($value_new,$args_array);
+                        break;
+                     } elseif ( $key == '(:scorm' and mb_stristr($value_new,'(:scorm') ) {
+                        $value_new = $this->_formatScorm($value_new,$args_array,$file_array);
                         break;
                      }
                   }
@@ -2592,6 +2596,19 @@ class misc_text_converter {
       return $retour;
    }
 
+   private function _formatScorm ($text, $array, $file_name_array){
+      $retour = '';
+      if ( !empty($array[1]) ) {
+         if ( !empty($file_name_array[$array[1]]) ) {
+            $file = $file_name_array[$array[1]];
+            $params['iid'] = $file->getFileID();
+            $params['output'] = 'blank';
+            $retour .= ahref_curl($this->_environment->getCurrentContextID(), 'scorm', 'index', $params, 'Scorm:'.$file->getFileName(), $file->getFileName(), '_NEW');
+         }
+      }
+      return $retour;
+   }
+   
    /**
     * Displays png, jpg and gif images in the description area of the materials
     * Images have to be attached to the material in order to be displayed!

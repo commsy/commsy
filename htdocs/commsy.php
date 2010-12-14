@@ -169,6 +169,7 @@ if ( ($environment->getCurrentFunction() == 'index'
       and $environment->getCurrentModule() == type2Module(CS_MATERIAL_TYPE)
      )
      or $environment->getCurrentModule() == 'ajax'
+     or $environment->getCurrentModule() == 'scorm'
    ) {
    if ( !empty($_GET['output']) ) {
       $environment->setOutputMode($_GET['output']);
