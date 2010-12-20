@@ -2600,9 +2600,9 @@ class misc_text_converter {
       $retour = '';
       if ( !empty($array[1]) ) {
          if ( !empty($file_name_array[$array[1]]) ) {
+         	global $c_scorm_dir;
+         	
             $temp_file = $file_name_array[$array[1]];
-            
-            global $c_scorm_dir;
             
             $file_manager = $this->_environment->getFileManager();
 			   $file = $file_manager->getItem($temp_file->getFileID());
@@ -2628,26 +2628,28 @@ class misc_text_converter {
 			      unset($zip);
 			   }
 			   
-			   $manifest_file = './htdocs/'.$c_scorm_dir.'/'.$path_to_file.'scorm_'.$file->getDiskFileNameWithoutFolder().'/imsmanifest.xml';
-			   $manifest_file_xml = file_get_contents($manifest_file);
-			   
-			   $manifest_file_xml_array = explode("\n", $manifest_file_xml);
-			   
-			   $html_file = '';
-			   foreach($manifest_file_xml_array as $manifest_file_xml_line){
-			      if(stristr($manifest_file_xml_line, 'type="webcontent"')){
-			         $matches = array();
-			         preg_match('~href="([^"])*"~isu', $manifest_file_xml_line, $matches);
-			         if(isset($matches[0])){
-			            if(stristr($matches[0], 'href')){
-			               $href_array = explode('"', $matches[0]);
-			               $html_file = $href_array[1];
-			            }
-			         }
-			      }
+			   // create link
+			   if(file_exists('./htdocs/'.$c_scorm_dir.'/'.$path_to_file.'scorm_'.$file->getDiskFileNameWithoutFolder().'/ReloadContentPreview.htm')){
+			   	$retour .= '<a href="'.$c_scorm_dir.'/'.$path_to_file.'scorm_'.$file->getDiskFileNameWithoutFolder().'/ReloadContentPreview.htm" target="_NEW">Scorm:'.$file->getFileName().'</a>';
+			   } else {
+				   $manifest_file = './htdocs/'.$c_scorm_dir.'/'.$path_to_file.'scorm_'.$file->getDiskFileNameWithoutFolder().'/imsmanifest.xml';
+				   $manifest_file_xml = file_get_contents($manifest_file);
+				   $manifest_file_xml_array = explode("\n", $manifest_file_xml);
+				   $html_file = '';
+				   foreach($manifest_file_xml_array as $manifest_file_xml_line){
+				      if(stristr($manifest_file_xml_line, 'type="webcontent"')){
+				         $matches = array();
+				         preg_match('~href="([^"])*"~isu', $manifest_file_xml_line, $matches);
+				         if(isset($matches[0])){
+				            if(stristr($matches[0], 'href')){
+				               $href_array = explode('"', $matches[0]);
+				               $html_file = $href_array[1];
+				            }
+				         }
+				      }
+				   }
+				   $retour .= '<a href="'.$c_scorm_dir.'/'.$path_to_file.'scorm_'.$file->getDiskFileNameWithoutFolder().'/'.$html_file.'" target="_NEW">Scorm:'.$file->getFileName().'</a>';
 			   }
-            
-			   $retour .= '<a href="'.$c_scorm_dir.'/'.$path_to_file.'scorm_'.$file->getDiskFileNameWithoutFolder().'/'.$html_file.'" target="_NEW">Scorm:'.$file->getFileName().'</a>';
 			   
             #$params['iid'] = $file->getFileID();
             #$params['output'] = 'blank';
