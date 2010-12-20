@@ -3,6 +3,8 @@ include_once('classes/external_classes/scorm/scormlib.php');
 include_once('classes/external_classes/scorm/weblib.php');
 
 if ( !empty($_GET['iid']) ) {
+	global $c_scorm_dir;
+	
    $file_manager = $environment->getFileManager();
    $file = $file_manager->getItem($_GET['iid']);
 
@@ -12,15 +14,15 @@ if ( !empty($_GET['iid']) ) {
    $disc_manager->setContextID($environment->getCurrentContextID());
    $path_to_file = $disc_manager->getFilePath();
    unset($disc_manager);
-   $dir = './'.$path_to_file.'scorm_'.$file->getDiskFileNameWithoutFolder();
+   
+   #if ( !is_dir('./'.$c_scorm_dir.'/') ) {
+   #	mkdir('./'.$c_scorm_dir.'/');
+   #}
+   
+   $dir = './htdocs/'.$c_scorm_dir.'/'.$path_to_file.'scorm_'.$file->getDiskFileNameWithoutFolder();
    if ( !is_dir($dir) ) {
       $zip = new ZipArchive;
-		$target_directory = $path_to_file.'scorm_'.$file->getDiskFileNameWithoutFolder().'/';
-		
-		global $export_temp_folder;
-		if ( !isset($export_temp_folder) ) {
-		   $export_temp_folder = 'var/temp/scorm_export';
-		}
+		$target_directory = './htdocs/'.$c_scorm_dir.'/'.$path_to_file.'scorm_'.$file->getDiskFileNameWithoutFolder().'/';
 
 		$source_file = $file->getDiskFileName();
 		$res = $zip->open($source_file);
@@ -31,12 +33,31 @@ if ( !empty($_GET['iid']) ) {
 		unset($zip);
    }
    
-   $manifest_file = './'.$path_to_file.'scorm_'.$file->getDiskFileNameWithoutFolder().'/imsmanifest.xml';
+   $manifest_file = './htdocs/'.$c_scorm_dir.'/'.$path_to_file.'scorm_'.$file->getDiskFileNameWithoutFolder().'/imsmanifest.xml';
    $manifest_file_xml = file_get_contents($manifest_file);
+   
+   $manifest_file_xml_array = explode("\n", $manifest_file_xml);
+   
+   $html_file = '';
+   foreach($manifest_file_xml_array as $manifest_file_xml_line){
+   	if(stristr($manifest_file_xml_line, 'type="webcontent"')){
+   		$matches = array();
+   		preg_match('~href="([^"])*"~isu', $manifest_file_xml_line, $matches);
+   		if(isset($matches[0])){
+   			if(stristr($matches[0], 'href')){
+   			   $href_array = explode('"', $matches[0]);
+   			   $html_file = $href_array[1];
+   			}
+   		}
+   	}
+   }
+   
+   #$html_include = file_get_contents('./'.$c_scorm_dir.'/'.$path_to_file.'scorm_'.$file->getDiskFileNameWithoutFolder().'/'.$html_file);
+   
    
    //resource identifier
    
-   $pattern = '/&(?!\w{2,6};)/';
+   /*$pattern = '/&(?!\w{2,6};)/';
    $replacement = '&amp;';
    $xmltext = preg_replace($pattern, $replacement, $manifest_file_xml);
 
@@ -50,9 +71,14 @@ if ( !empty($_GET['iid']) ) {
 
    #pr($scorm);
    
-   $toc = get_scorm_toc($scorm);
+   $toc = get_scorm_toc($scorm);*/
    
-   $html = '';
+   $html  = '';
+   $html .= '<html>';
+   $html .= '<frameset rows="100%">';
+   $html .= '<frame src="'.$c_scorm_dir.'/'.$path_to_file.'scorm_'.$file->getDiskFileNameWithoutFolder().'/'.$html_file.'">';
+   $html .= '</frameset>';
+   $html .= '</html>';
    
    $page->add($html);
 }

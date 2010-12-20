@@ -2600,10 +2600,58 @@ class misc_text_converter {
       $retour = '';
       if ( !empty($array[1]) ) {
          if ( !empty($file_name_array[$array[1]]) ) {
-            $file = $file_name_array[$array[1]];
-            $params['iid'] = $file->getFileID();
-            $params['output'] = 'blank';
-            $retour .= ahref_curl($this->_environment->getCurrentContextID(), 'scorm', 'index', $params, 'Scorm:'.$file->getFileName(), $file->getFileName(), '_NEW');
+            $temp_file = $file_name_array[$array[1]];
+            
+            global $c_scorm_dir;
+            
+            $file_manager = $this->_environment->getFileManager();
+			   $file = $file_manager->getItem($temp_file->getFileID());
+			
+			   // is zip unpacked?
+			   $disc_manager = $this->_environment->getDiscManager();
+			   $disc_manager->setPortalID($this->_environment->getCurrentPortalID());
+			   $disc_manager->setContextID($this->_environment->getCurrentContextID());
+			   $path_to_file = $disc_manager->getFilePath();
+			   unset($disc_manager);
+			   
+			   $dir = './htdocs/'.$c_scorm_dir.'/'.$path_to_file.'scorm_'.$file->getDiskFileNameWithoutFolder();
+			   if ( !is_dir($dir) ) {
+			      $zip = new ZipArchive;
+			      $target_directory = './htdocs/'.$c_scorm_dir.'/'.$path_to_file.'scorm_'.$file->getDiskFileNameWithoutFolder().'/';
+			
+			      $source_file = $file->getDiskFileName();
+			      $res = $zip->open($source_file);
+			      if ( $res === TRUE ) {
+			         $zip->extractTo($target_directory);
+			         $zip->close();
+			      }
+			      unset($zip);
+			   }
+			   
+			   $manifest_file = './htdocs/'.$c_scorm_dir.'/'.$path_to_file.'scorm_'.$file->getDiskFileNameWithoutFolder().'/imsmanifest.xml';
+			   $manifest_file_xml = file_get_contents($manifest_file);
+			   
+			   $manifest_file_xml_array = explode("\n", $manifest_file_xml);
+			   
+			   $html_file = '';
+			   foreach($manifest_file_xml_array as $manifest_file_xml_line){
+			      if(stristr($manifest_file_xml_line, 'type="webcontent"')){
+			         $matches = array();
+			         preg_match('~href="([^"])*"~isu', $manifest_file_xml_line, $matches);
+			         if(isset($matches[0])){
+			            if(stristr($matches[0], 'href')){
+			               $href_array = explode('"', $matches[0]);
+			               $html_file = $href_array[1];
+			            }
+			         }
+			      }
+			   }
+            
+			   $retour .= '<a href="'.$c_scorm_dir.'/'.$path_to_file.'scorm_'.$file->getDiskFileNameWithoutFolder().'/'.$html_file.'" target="_NEW">Scorm:'.$file->getFileName().'</a>';
+			   
+            #$params['iid'] = $file->getFileID();
+            #$params['output'] = 'blank';
+            #$retour .= ahref_curl($this->_environment->getCurrentContextID(), 'scorm', 'index', $params, 'Scorm:'.$file->getFileName(), $file->getFileName(), '_NEW');
          }
       }
       return $retour;
