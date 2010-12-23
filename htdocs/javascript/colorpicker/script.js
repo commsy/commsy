@@ -1,7 +1,7 @@
-var CROSSHAIRS_LOCATION = 'javascript/colorpicker/selector.gif';
-var HUE_SLIDER_LOCATION = 'javascript/colorpicker/hue.png';
-var HUE_SLIDER_ARROWS_LOCATION = 'javascript/colorpicker/arrows.png';
-var SAT_VAL_SQUARE_LOCATION = 'javascript/colorpicker/bg.png';
+var CROSSHAIRS_LOCATION = 'images/colorpicker/selector.gif';
+var HUE_SLIDER_LOCATION = 'images/colorpicker/hue.png';
+var HUE_SLIDER_ARROWS_LOCATION = 'images/colorpicker/arrows.png';
+var SAT_VAL_SQUARE_LOCATION = 'images/colorpicker/bg.png';
 function hexToRgb(hex_string, default_)
 {
     if (default_ == undefined)
@@ -13,7 +13,7 @@ function hexToRgb(hex_string, default_)
     {
         hex_string = hex_string.substr(1);
     }
-    
+
     var r;
     var g;
     var b;
@@ -36,7 +36,7 @@ function hexToRgb(hex_string, default_)
     {
         return default_;
     }
-    
+
     r = parseInt(r, 16);
     g = parseInt(g, 16);
     b = parseInt(b, 16);
@@ -59,7 +59,7 @@ function rgbToHex(r, g, b, includeHash)
     {
         includeHash = true;
     }
-    
+
     r = r.toString(16);
     if (r.length == 1)
     {
@@ -83,7 +83,7 @@ var version = parseFloat(arVersion[1]);
 
 function fixPNG(myImage)
 {
-    if ((version >= 5.5) && (version < 7) && (document.body.filters)) 
+    if ((version >= 5.5) && (version < 7) && (document.body.filters))
     {
         var node = document.createElement('span');
         node.id = myImage.id;
@@ -189,7 +189,7 @@ function removeEventListenerIndex(index)
 {
     var eventListener = eventListeners[index];
     delete eventListeners[index];
-    
+
     if (!eventListener.node.removeEventListener)
     {
         eventListener.node.detachEvent('on' + eventListener.event,
@@ -235,7 +235,7 @@ AddEventListener(window, 'unload', cleanupEventListeners);
 //
 // The above copyright notice and this permission notice shall be
 // included in all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 // MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -370,7 +370,7 @@ crossHairsImg.style.position = 'absolute';
 function makeColorSelector(inputData)
 {
     var rgb, hsv
-    
+
 
     function colorChanged()
     {
@@ -378,7 +378,7 @@ function makeColorSelector(inputData)
         var hueRgb = hsvToRgb(hsv.h, 1, 1);
         var hueHex = rgbToHex(hueRgb.r, hueRgb.g, hueRgb.b);
         previewDiv.style.background = hex;
-	inputData.style.color = hex;
+   inputData.style.color = hex;
         inputData.value = hex;
 
 
@@ -399,13 +399,13 @@ function makeColorSelector(inputData)
         rgb = hsvToRgb(hsv.h, hsv.s, hsv.v);
         colorChanged();
     }
-    
+
     var colorSelectorDiv = document.createElement('div');
     colorSelectorDiv.style.padding = '15px';
     colorSelectorDiv.style.position = 'relative';
     colorSelectorDiv.style.height = '275px';
     colorSelectorDiv.style.width = '250px';
-    
+
     var satValDiv = document.createElement('div');
     satValDiv.style.position = 'relative';
     satValDiv.style.width = '250px';
@@ -442,7 +442,7 @@ function makeColorSelector(inputData)
     }
     trackDrag(hueDiv, hueDragged);
     colorSelectorDiv.appendChild(hueDiv);
-    
+
     var previewDiv = document.createElement('div');
     previewDiv.style.height = '50px'
     previewDiv.style.width = '50px';
@@ -451,7 +451,7 @@ function makeColorSelector(inputData)
     previewDiv.style.left = '333px';
     previewDiv.style.border = '1px solid black';
     colorSelectorDiv.appendChild(previewDiv);
-    
+
     function inputDataChanged()
     {
         rgb = hexToRgb(inputData.value, {r: 0, g: 0, b: 0});
@@ -463,9 +463,9 @@ function makeColorSelector(inputData)
     inputData.style.right = '105px';
     inputData.style.top = '-15px';
     colorSelectorDiv.appendChild(inputData);
-    
+
     inputDataChanged();
-    
+
     return colorSelectorDiv;
 }
 
