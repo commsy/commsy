@@ -61,7 +61,7 @@ if ( isset($item) and !$item->mayEdit($current_user) ) {
   unset($params);
   $errorbox->setText($translator->getMessage('ACCESS_NOT_GRANTED'));
   $page->add($errorbox);
-} elseif ( !$item->isOpen() and !$item->isTemplate() ) {
+} elseif ( isset($item) and !$item->isOpen() and !$item->isTemplate() ) {
   $params = array();
   $params['environment'] = $environment;
   $params['with_modifying_actions'] = true;
@@ -129,7 +129,7 @@ else {
     $item->setWordpressSkin('twentyten');
     $item->setWordpressTitle($item->getTitle());
     $item->setWordpressDescription('');
-    
+
     // delete wordpress
     $wordpress_manager = $environment->getWordpressManager();
     $wordpress_manager->deleteWordpress($item->getWordpressId());
@@ -199,17 +199,17 @@ else {
       }
 
 
-       
+
       if ( isset($_POST['wordpresslink']) and !empty($_POST['wordpresslink']) and $_POST['wordpresslink'] == 1) {
         $item->setWordpressHomeLink();
       } else {
         $item->unsetWordpressHomeLink();
       }
-       
+
       if ( isset($_POST['skin_choice']) and !empty($_POST['skin_choice']) ) {
         $item->setWordpressSkin($_POST['skin_choice']);
       }
-       
+
       if ( isset($_POST['wordpresstitle']) and !empty($_POST['wordpresstitle']) ) {
         $item->setWordpressTitle($_POST['wordpresstitle']);
       } else {
