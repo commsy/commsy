@@ -512,7 +512,7 @@ class cs_connection_soap {
                         $user_item->setAGBAcceptance();
                      }
 #                     if ($room_item->checkNewMembersNever()){
-#                     	$user_item->setStatus(2);
+#                        $user_item->setStatus(2);
 #                     }
                      $user_item->save();
                      $user_item->setCreatorID2ItemID();
@@ -840,28 +840,40 @@ class cs_connection_soap {
    }
 
    public function wordpressAuthenticateViaSession($session_id) {
-     $result = null;
-     $session_id = $this->_encode_input($session_id);
+      $result = null;
+      $session_id = $this->_encode_input($session_id);
       if ($this->_isSessionValid($session_id)) {
          $this->_updateSessionCreationDate($session_id);
-         $session_manager = $this->_environment->getSessionManager();
-         $session_item = $session_manager->get($session_id);
-         $user_id = $session_item->getValue('user_id');
-         $auth_source = $session_item->getValue('auth_source');
-         $commsy_id = $session_item->getValue('commsy_id');
-//         $result = array($user_id, $auth_source);
-         $authentication = $this->_environment->getAuthenticationObject();
-         $authManager = $authentication->getAuthManager($auth_source);
-         $authManager->setContextID($commsy_id);
-//         $result = array(get_class($authManager));
-         $user_item = $authManager->getItem($user_id);
+         $this->_environment->setSessionID($session_id);
+         $session_item = $this->_environment->getSessionItem();
+         $this->_environment->setCurrentContextID($session_item->getValue('commsy_id'));
+
+         // get user data from portal user item
+         $user_manager = $this->_environment->getUserManager();
+         $user_item = $user_manager->getItemByUserIDAuthSourceID($session_item->getValue('user_id'),$session_item->getValue('auth_source'));
          $result = array(
-           'login' => $user_id,
-           'email' => $user_item->getEmail(),
-           'firstname'  => $user_item->getFirstName(),
-           'lastname'  => $user_item->getLastName(),
-           'password'  => $user_item->getPasswordMD5(),
-                 );
+                          'login'     => $user_item->getUserID(),
+                          'email'     => $user_item->getEmail(),
+                          'firstname' => $user_item->getFirstName(),
+                          'lastname'  => $user_item->getLastName()
+                        );
+
+         // get md5-password for commsy internal accounts
+         $auth_source_id = $session_item->getValue('auth_source');
+         $auth_source_manager = $this->_environment->getAuthSourceManager();
+         $auth_source_item = $auth_source_manager->getItem($auth_source_id);
+         if ( $auth_source_item->isCommSyDefault() ) {
+            $user_id = $session_item->getValue('user_id');
+            $auth_source = $session_item->getValue('auth_source');
+            $commsy_id = $session_item->getValue('commsy_id');
+            //$result = array($user_id, $auth_source);
+            $authentication = $this->_environment->getAuthenticationObject();
+            $authManager = $authentication->getAuthManagerByAuthSourceItem($auth_source_item);
+            $authManager->setContextID($commsy_id);
+            //$result = array(get_class($authManager));
+            $auth_item = $authManager->getItem($user_id);
+            $result['password']  = $auth_item->getPasswordMD5();
+         }
       }
       return $result;
    }

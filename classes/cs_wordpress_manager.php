@@ -340,24 +340,37 @@ class cs_wordpress_manager extends cs_manager {
   }
 
   protected function _getCurrentAuthItem() {
+    // get user data out of the current portal user object
+    $current_user_item = $this->_environment->getPortalUserItem();
+    $result = array(
+            'login' => $current_user_item->getUserID(),
+            'email' => $current_user_item->getEmail(),
+            'firstname'  => $current_user_item->getFirstName(),
+            'lastname'  => $current_user_item->getLastName(),
+            'commsy_id' => $this->_environment->getCurrentPortalID()
+    );
+    unset($current_user_item);
 
+    // for commsy internal accounts get md5-password
     $session_manager = $this->_environment->getSessionManager();
     $session_item = $session_manager->get($this->_environment->getSessionID());
-    $user_id = $session_item->getValue('user_id');
-    $auth_source = $session_item->getValue('auth_source');
-    $commsy_id = $session_item->getValue('commsy_id');
-    $authentication = $this->_environment->getAuthenticationObject();
-    $authManager = $authentication->getAuthManager($auth_source);
-    $authManager->setContextID($commsy_id);
-    $user_item = $authManager->getItem($user_id);
-    $result = array(
-            'login' => $user_id,
-            'email' => $user_item->getEmail(),
-            'firstname'  => $user_item->getFirstName(),
-            'lastname'  => $user_item->getLastName(),
-            'password'  => $user_item->getPasswordMD5(),
-            'commsy_id' => $commsy_id
-    );
+    $auth_source_id = $session_item->getValue('auth_source');
+    $auth_source_manager = $this->_environment->getAuthSourceManager();
+    $auth_source_item = $auth_source_manager->getItem($auth_source_id);
+    if ( $auth_source_item->isCommSyDefault() ) {
+      $user_id = $session_item->getValue('user_id');
+      $commsy_id = $session_item->getValue('commsy_id');
+      $authentication = $this->_environment->getAuthenticationObject();
+      $authManager = $authentication->getAuthManagerByAuthSourceItem($auth_source_item);
+      $authManager->setContextID($commsy_id);
+      $auth_item = $authManager->getItem($user_id);
+      $result['password'] = $auth_item->getPasswordMD5();
+      unset($auth_item);
+      unset($authManager);
+      unset($authentication);
+    }
+    unset($auth_source_manager);
+    unset($auth_source_item);
     return $result;
   }
 
