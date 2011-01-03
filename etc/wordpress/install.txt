@@ -33,7 +33,7 @@ to the wordpress plugin folder wordpress/wp-content/plugins.
 ----------------
 Please rename commsy_auth_config.php-dist to commsy_auth_config.php
 in wordpress/wp-content/plugins/commsy and configure the path to commsy
-in the config file.
+server in the config file.
 
 3) Activation
 -------------

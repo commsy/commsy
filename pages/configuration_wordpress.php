@@ -121,27 +121,44 @@ else {
   //local delete in commsy
   if ( !empty($delete_command) and
   isOption($delete_command, $translator->getMessage('COMMON_DELETE_BUTTON'))   ) {
-    $current_user = $environment->getCurrentUserItem();
-    $item->setModificatorItem($current_user);
-    $item->setModificationDate(getCurrentDateTimeInMySQL());
-    $item->unsetWordpressExists();
-    $item->setWordpressInActive();
-    $item->setWordpressSkin('twentyten');
-    $item->setWordpressTitle($item->getTitle());
-    $item->setWordpressDescription('');
 
     // delete wordpress
     $wordpress_manager = $environment->getWordpressManager();
-    $wordpress_manager->deleteWordpress($item->getWordpressId());
+    if ( $wordpress_manager->deleteWordpress($item->getWordpressId()) ) {
+       $current_user = $environment->getCurrentUserItem();
+       $item->setModificatorItem($current_user);
+       $item->setModificationDate(getCurrentDateTimeInMySQL());
+       $item->unsetWordpressExists();
+       $item->setWordpressInActive();
+       $item->setWordpressSkin('twentyten');
+       $item->setWordpressTitle($item->getTitle());
+       $item->setWordpressDescription('');
+       $item->setWordpressId(0);
 
-    $item->setWordpressId(0);
-    // Save item
-    $item->save();
-    $form_view->setItemIsSaved();
-    $form->setDeletionValues();
-    $is_saved = true;
-    redirect($environment->getCurrentContextID(),$environment->getCurrentModule(),'index','');
+       // Save item
+       $item->save();
+       $form_view->setItemIsSaved();
+       $form->setDeletionValues();
+       $is_saved = true;
+       redirect($environment->getCurrentContextID(),$environment->getCurrentModule(),'index','');
+    } else {
+       $is_saved = false;
 
+       // errorbox
+       $params = array();
+       $params['environment'] = $environment;
+       $params['with_modifying_actions'] = true;
+       $params['width'] = 500;
+       $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+       unset($params);
+       $errorbox->setText($translator->getMessage('WORDPRESS_DELETE_ERROR_TEXT'));
+       $page->add($errorbox);
+
+       if ( isset($item) ) {
+          $form->setItem($item);
+          $form->setFormPost(NULL);
+       }
+    }
   }
   // Cancel editing
   elseif ( !empty($delete_command) and

@@ -63,7 +63,7 @@ class cs_wordpress_manager extends cs_manager {
 //        $wpUser['email'] = $currentUser->getEmail();
         $wpUser = $this->_getCurrentAuthItem();
         $wpBlog = array('title' => $this->_environment->getCurrentContextItem()->getTitle(), 'path' => $this->_environment->getCurrentPortalID().'_'.$this->_environment->getCurrentContextID());
-        $result = $this->CW->createBlog($wpUser, $wpBlog);
+        $result = $this->CW->createBlog($this->_environment->getSessionID(),$wpUser, $wpBlog);
         $contextItem->setWordpressId($result['blog_id']);
         $contextItem->save();
       }
@@ -124,9 +124,12 @@ class cs_wordpress_manager extends cs_manager {
   }
 
   function deleteWordpress ($wordpress_id) {
-    $this->CW->deleteBlog($wordpress_id);
+    $retour = $this->CW->deleteBlog($this->_environment->getSessionID(),$wordpress_id);
+    if ( is_soap_fault($retour) ) {
+       $retour = false;
+    }
+    return $retour;
   }
-
 
   //------------------------------------------
   //------------- Materialexport -------------
@@ -166,12 +169,17 @@ class cs_wordpress_manager extends cs_manager {
       foreach ($file_array as $file) {
 //        array($file->getUrl(), $file->getMime());
 //        $rel_path = '/wp/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/wp-content/uploads/commsy/'.$current_item_id.'/';
-        $fileUrl  = $this->CW->insertFile(array('name' => $file->getDisplayName(), 'data' => base64_encode(file_get_contents($file->getDiskFileName()))), $wordpressId);//$this->exportFileToWordpress($file, $current_item_id, $rel_path);
+        $fileUrl  = $this->CW->insertFile($this->_environment->getSessionID(),array('name' => $file->getDisplayName(), 'data' => base64_encode(file_get_contents($file->getDiskFileName()))), $wordpressId);//$this->exportFileToWordpress($file, $current_item_id, $rel_path);
+        if ( !is_soap_fault($fileUrl) ) {
 //        $fileUrl  = 'http://'.$_SERVER['HTTP_HOST'].'/'.$file->getUrl();//$this->exportFileToWordpress($file, $current_item_id, $rel_path);
-        $file_link_array[] = '<a href="'.$fileUrl.'" title="'.$file->getDisplayName().'">'.$file->getDisplayName().'</a>' ;
+          $file_link_array[] = '<a href="'.$fileUrl.'" title="'.$file->getDisplayName().'">'.$file->getDisplayName().'</a>' ;
+        }
       }
-      $file_links = '<br />Dateien:<br /> '.implode(' | ', $file_link_array);
-      $post_content .= $file_links;
+      if ( !empty($file_link_array) ) {
+        $file_links = '<br />Dateien:<br /> '.implode(' | ', $file_link_array);
+        $post_content .= $file_links;
+        unset($file_links);
+      }
     }
     // Abschnitte
     $sub_item_list = $item->getSectionList();
@@ -201,15 +209,24 @@ class cs_wordpress_manager extends cs_manager {
           foreach ($file_array as $file) {
 //            $rel_path = '/wp/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/wp-content/uploads/commsy/'.$current_item_id.'/';
 //            $new_filename  = $this->exportFileToWordpress($file, $current_item_id, $rel_path);
-            $fileUrl  = $this->CW->insertFile(array('name' => $file->getDisplayName(), 'data' => base64_encode(file_get_contents($file->getDiskFileName()))), $wordpressId);//$this->exportFileToWordpress($file, $current_item_id, $rel_path);
-            $file_link_array[] = '<a href="'.$fileUrl.'" title="'.$file->getDisplayName().'">'.$file->getDisplayName().'</a>' ;
-//           $file_link_array[] = '<a href="'.$c_wordpress_path_url . $rel_path . $new_filename.'" title="'.$new_filename.'">'.$new_filename.'</a>';
+            $fileUrl  = $this->CW->insertFile($this->_environment->getSessionID(),array('name' => $file->getDisplayName(), 'data' => base64_encode(file_get_contents($file->getDiskFileName()))), $wordpressId);
+            //$this->exportFileToWordpress($file, $current_item_id, $rel_path);
+            if ( !is_soap_fault($fileUrl) ) {
+              $file_link_array[] = '<a href="'.$fileUrl.'" title="'.$file->getDisplayName().'">'.$file->getDisplayName().'</a>' ;
+              //$file_link_array[] = '<a href="'.$c_wordpress_path_url . $rel_path . $new_filename.'" title="'.$new_filename.'">'.$new_filename.'</a>';
+            }
           }
-          $file_links = '<br />Dateien:<br /> '.implode(' | ', $file_link_array);
+          $file_links = '';
+          if ( !empty($file_link_array) ) {
+            $file_links = '<br />Dateien:<br /> '.implode(' | ', $file_link_array);
+          }
         }
 
-        $sub_item_description_array[] = $description.$file_links;
-
+        if ( !empty($file_links) ) {
+          $sub_item_description_array[] = $description.$file_links;
+        } else {
+          $sub_item_description_array[] = $description;
+        }
       }
 
       $sub_item_links = 'Abschnitte: <br />'.implode('<br />', $sub_item_link_array);
@@ -236,6 +253,10 @@ class cs_wordpress_manager extends cs_manager {
 
     $comment_status = $context->getWordpressUseComments();
 //    include_once($c_wordpress_absolute_path_file.'/commsy/commsy_wordpress.php');
+
+    // delete rn out of post_content
+    $post_content_complete = str_replace("\r\n",'',$post_content_complete);
+
     $post = array(
             'post_content'         => mysql_escape_string($post_content_complete),
             'post_content_filtered'=> '',
@@ -255,9 +276,11 @@ class cs_wordpress_manager extends cs_manager {
             'menu_order'           =>'0',
             'guid'                 =>'');
 
-    $wpPostId = $this->CW->insertPost($post, $wpUser, $wordpressId, 'Material');
-    $item->setExportToWordpress($wpPostId);
-    $item->save();
+    $wpPostId = $this->CW->insertPost($this->_environment->getSessionID(),$post, $wpUser, $wordpressId, 'Material');
+    if ( !is_soap_fault($wpPostId) ) {
+       $item->setExportToWordpress($wpPostId);
+       $item->save();
+    }
   }
 
   function encodeUmlaute($html) {
@@ -295,7 +318,11 @@ class cs_wordpress_manager extends cs_manager {
 
   function existsItemToWordpress($wordpress_post_id) {
     $contextItem = $this->_environment->getCurrentContextItem();
-    return $this->CW->getPostExists((int)$wordpress_post_id, $contextItem->getWordpressId());
+    $retour = $this->CW->getPostExists($this->_environment->getSessionID(),(int)$wordpress_post_id, $contextItem->getWordpressId());
+    if ( is_soap_fault($retour) ) {
+       $retour = false;
+    }
+    return $retour;
   }
 
   function getExportToWordpressLink($wordpress_post_id) {
@@ -327,16 +354,17 @@ class cs_wordpress_manager extends cs_manager {
   }
 
   protected function _setWordpressOption($option_name, $option_value, $update=true) {
+    // TBD: error handling
     $option_value = is_array($option_value) ? serialize($option_value) : $option_value;
     if($update==true) {
-      $this->CW->updateOption($option_name, $option_value, $this->_environment->getCurrentContextItem()->getWordpressId());
+      $this->CW->updateOption($this->_environment->getSessionID(),$option_name, $option_value, $this->_environment->getCurrentContextItem()->getWordpressId());
     }else {
-      $this->CW->insertOption($option_name, $option_value, $this->_environment->getCurrentContextItem()->getWordpressId());
+      $this->CW->insertOption($this->_environment->getSessionID(),$option_name, $option_value, $this->_environment->getCurrentContextItem()->getWordpressId());
     }
   }
 
   protected function _getWordpressOption($option_name) {
-    return $this->CW->getOption($option_name, $this->_environment->getCurrentContextItem()->getWordpressId());
+    return $this->CW->getOption($this->_environment->getSessionID(), $option_name, $this->_environment->getCurrentContextItem()->getWordpressId());
   }
 
   protected function _getCurrentAuthItem() {
@@ -377,7 +405,7 @@ class cs_wordpress_manager extends cs_manager {
   // returns an array of default skins
   public function getSkins() {
     try {
-      $skins = $this->CW->getSkins();
+      $skins = $this->CW->getSkins($this->_environment->getSessionID());
       $skinOptions = array();
       if(!empty($skins)) {
         foreach($skins as $name => $skin) {
@@ -390,7 +418,5 @@ class cs_wordpress_manager extends cs_manager {
       exit;
     }
   }
-
 }
-
 ?>
