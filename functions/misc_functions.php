@@ -1927,65 +1927,72 @@ function checkColorArray($color_array){
 }
 
 function getCurrentCommSyFunctions(){
-   $functions_file = '';
+   global $environment;
+   global $c_minimized_js;
+   
+   $path_norm = 'htdocs/javascript/jQuery/commsy/';
+   $path_min = 'htdocs/javascript/jQuery/commsy_min/';
+   
+   // search normal commsy_functions
    $files_found = array();
+   $pattern = '/commsy_functions_(.*?)\.js/';
+   if( $dir = opendir($path_norm) ) {
+      while( $file = readdir($dir) ) {
+         $matches = array();
+         preg_match($pattern, $file, $matches);
+         if( sizeof($matches) > 1 ) {
+            $files_found[] = array(   'path'      =>   $path_norm . $matches[0],
+                                      'inc_path'  =>   'commsy/' . $matches[0],
+                                      'version'   =>   $matches[1]);
+         }
+      }
+   }
+   
+   // no files found?
+   if( empty($files_found) ) {
+      include_once('functions/error_functions.php');
+      trigger_error('commsy_functions is missing', E_USER_ERROR);
+   }
+   
+   // multiple files found?
+   if( sizeof($files_found) > 1 ) {
+      $modification_time = 0;
+      $temp_file = '';
+      foreach($files_found as $file) {
+         $modification_time_temp = filemtime($file['path']);
+         if( $modification_time < $modification_time_temp ) {
+            $modification_time = $modification_time_temp;
+            $temp_file = $file;
+         }
+      }
+      $files_found = array($temp_file);
+   }
+   
+   // create min version if not existing or out of date
+   $min_file_path = $path_min . 'commsy_functions_' . $files_found[0]['version'] . '.min.js';
+   if(   !file_exists($min_file_path) ||
+         filemtime($files_found[0]['path']) >= filemtime($min_file_path) ) {
+      include_once ('classes/external_classes/class.JavaScriptPacker.php');
+      $unpacked = file_get_contents($files_found[0]['path']);
+      $packer = new JavaScriptPacker($unpacked, 62, true, false);
+      $packed = $packer->pack();
+      unset($packer);
+      
+      if( !is_dir($path_min) ) {
+         mkdir($path_min);
+      }
+      $file_handle = fopen($min_file_path, 'w');
+      fwrite($file_handle, $packed);
+      fclose($file_handle);
+   }
    
    // check for using min js version
-   global $c_minimized_js;
-   $search_dir = 'htdocs/javascript/jQuery/';
-   $search_dir_sub = '';
    if(isset($c_minimized_js) && $c_minimized_js === false) {
       // use normal js
-      $search_dir_sub = 'commsy/';
+      return $files_found[0]['inc_path'];
    } else {
       // use minimized js
-      $search_dir_sub = 'commsy_min/';
-   }
-   
-   // look for files in search_dir
-   if($dir = opendir($search_dir . $search_dir_sub)) {
-      while($file = readdir($dir)) {
-         if(stripos($file, 'commsy_functions') !== false) {
-            $files_found[] = $file;
-         }
-      }
-   }
-   
-   // more than one file
-   if(sizeof($files_found) > 1) {
-      $modification_time = 0;
-      $current_file = '';
-      foreach($files_found as $file_found){
-         $modification_time_temp = filemtime($search_dir . $search_dir_sub . $file_found);
-         if($modification_time < $modification_time_temp){
-            $modification_time = $modification_time_temp;
-            $current_file = $file_found;
-         }
-      }
-      $functions_file = $search_dir_sub . $current_file;
-   
-   // only one file found
-   } else if(sizeof($files_found) == 1) {
-      $functions_file = $search_dir_sub . $files_found[0];
-   
-   // using min version and no file was found? - try using normal version
-   } elseif(!isset($c_minimized_js) || (isset($c_minimized_js) && $c_minimized_js === true)) {
-      $c_minimized_js = false;
-      $functions_file = getCurrentCommSyFunctions();
-   }
-   
-   // check wheather min file version matches normal file version
-   if( (!isset($c_minimized_js) || (isset($c_minimized_js) && $c_minimized_js === true)) && sizeof($files_found) >= 1) {
-      $pattern = "/.*\/commsy_functions_(.*?)(\.js|\.min\.js)/";
-      $matches = array();
-      preg_match($pattern, $functions_file, $matches);
-      if( sizeof($matches) > 1 ) {
-         if(!file_exists($search_dir . 'commsy/commsy_functions_' . $matches[1] . '.js')) {
-            // min version is not equal to normal version - try using normal version
-            $c_minimized_js = false;
-            $functions_file = getCurrentCommSyFunctions();
-         }
-      }
+      return 'commsy_min/commsy_functions_' . $files_found[0]['version'] . '.min.js';
    }
    
    return $functions_file;
