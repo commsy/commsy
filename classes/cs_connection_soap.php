@@ -858,6 +858,8 @@ class cs_connection_soap {
                           'lastname'  => $user_item->getLastName()
                         );
 
+         // TBD: commsy authentication via soap
+
          // get md5-password for commsy internal accounts
          $auth_source_id = $session_item->getValue('auth_source');
          $auth_source_manager = $this->_environment->getAuthSourceManager();
@@ -873,6 +875,10 @@ class cs_connection_soap {
             //$result = array(get_class($authManager));
             $auth_item = $authManager->getItem($user_id);
             $result['password']  = $auth_item->getPasswordMD5();
+         } else {
+            // dummy password for external accounts
+            include_once('functions/date_functions.php');
+            $result['password'] = md5(getCurrentDateTimeInMySQL().rand(1,999).$this->_environment->getConfiguration('c_security_key'));
          }
       }
       return $result;

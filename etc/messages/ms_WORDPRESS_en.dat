@@ -9,6 +9,7 @@ $message["WORDPRESS_CONFIGURATION_SHOW_HOMELINK"]["en"] = "Show Link to Blog in 
 $message["WORDPRESS_CONFIGURATION_USE_COMMENTS"]["en"] = "Allow Comments";
 $message["WORDPRESS_CONFIGURATION_USE_COMMENTS_DESC"]["en"] = "Enable Comments on Blog Posts";
 $message["WORDPRESS_CONFIGURATION_USE_COMMENTS_MODERATION"]["en"] = "Moderate Comments";
+$message["WORDPRESS_CREATE_ERROR_EXISTING_USER_EMAIL"]["en"] = "WordPress not allow 2 accounts with the same email address. Please change your email address of your other account in WordPress or of your current CommSy account in your profile at the portal site.";
 $message["WORDPRESS_DELETE_BUTTON"]["en"] = "delete Blog";
 $message["WORDPRESS_DELETE_ERROR_TEXT"]["en"] = "Your blog can not be deleted at the wordpress installation. Please try again later or contact your CommSy administration.";
 $message["WORDPRESS_SAVE_BUTTON"]["en"] = "Create wordpress blog";

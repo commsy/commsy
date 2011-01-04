@@ -9,6 +9,7 @@ $message["WORDPRESS_CONFIGURATION_SHOW_HOMELINK"]["de"] = "Link zum Blog im Proj
 $message["WORDPRESS_CONFIGURATION_USE_COMMENTS"]["de"] = "Kommentare erlauben";
 $message["WORDPRESS_CONFIGURATION_USE_COMMENTS_DESC"]["de"] = "Kommentare zu Blog-Einträgen ermöglichen";
 $message["WORDPRESS_CONFIGURATION_USE_COMMENTS_MODERATION"]["de"] = "Kommentare moderieren";
+$message["WORDPRESS_CREATE_ERROR_EXISTING_USER_EMAIL"]["de"] = "WordPress erlaubt keine 2 Accounts mit der gleichen E-Mail-Adresse und Ihre E-Mail-Adresse wird schon in WordPress verwendet. Bitte ändern Sie Ihre E-Mail-Adresse in CommSy in Ihrem Profil auf Portal-Ebene oder bei Ihrer anderen Kennung in WordPress.";
 $message["WORDPRESS_DELETE_BUTTON"]["de"] = "Blog löschen";
 $message["WORDPRESS_DELETE_ERROR_TEXT"]["de"] = "Ihr Blog konnte auf der Seite von WordPress nicht gelöscht werden. Bitte versuchen Sie es später noch einmal oder wenden Sie sich an die CommSy-Administration.";
 $message["WORDPRESS_SAVE_BUTTON"]["de"] = "Wordpress-Blog anlegen";

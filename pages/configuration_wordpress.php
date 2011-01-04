@@ -215,8 +215,6 @@ else {
         $item->unsetWordpressUseTagCloud();
       }
 
-
-
       if ( isset($_POST['wordpresslink']) and !empty($_POST['wordpresslink']) and $_POST['wordpresslink'] == 1) {
         $item->setWordpressHomeLink();
       } else {
@@ -245,18 +243,42 @@ else {
         $item->setWordpressMemberRole();
       }
 
+      $item_wp_exists = $item->existWordpress();
       $item->setWordpressExists();
       $item->setWordpressActive();
 
-      // create new wordpress
+      // create or change new wordpress
       $wordpress_manager = $environment->getWordpressManager();
-      $wordpress_manager->createWordpress($item);
+      $success = $wordpress_manager->createWordpress($item);
 
-      // Save item - after createWiki() -> old discussions might be deleted
-      $item->save();
+      // Save item
+      if ( isset($success)
+           and !is_soap_fault($success)
+           and $success
+         ) {
+        $item->save();
+        $form_view->setItemIsSaved();
+        $is_saved = true;
+      } else {
+        if ( !$item_wp_exists ) {
+          $item->unsetWordpressExists();
+        }
 
-      $form_view->setItemIsSaved();
-      $is_saved = true;
+        $error_message = $success->getMessage();
+        if ( stristr($error_message,'existing_user_mail') ) {
+          $error_message = $translator->getMessage('WORDPRESS_CREATE_ERROR_EXISTING_USER_EMAIL');
+        }
+
+        // errorbox
+        $params = array();
+        $params['environment'] = $environment;
+        $params['with_modifying_actions'] = true;
+        $params['width'] = 500;
+        $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+        unset($params);
+        $errorbox->setText($error_message);
+        $page->add($errorbox);
+      }
     }
   }
   $form->setSkinArray($skin_array);

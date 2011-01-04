@@ -115,12 +115,10 @@ class cs_wordpress_manager extends cs_manager {
         }
         $this->_setWordpressOption('active_plugins', $pluginsArray, true);
       }
-//
     } catch(Exception $e) {
-      echo 'Es ist ein Fehler aufgetreten:'.$e->getMessage();
-      echo $e->getTraceAsString();
-      exit;
+      return new SoapFault('createWordpress', $e->getMessage());
     }
+    return true;
   }
 
   function deleteWordpress ($wordpress_id) {
@@ -255,7 +253,11 @@ class cs_wordpress_manager extends cs_manager {
 //    include_once($c_wordpress_absolute_path_file.'/commsy/commsy_wordpress.php');
 
     // delete rn out of post_content
-    $post_content_complete = str_replace("\r\n",'',$post_content_complete);
+    if ( stristr($post_content_complete,'<!-- KFC TEXT') ) {
+       $post_content_complete = str_replace("\r\n",'',$post_content_complete);
+    } else {
+       $post_content_complete = str_replace("\r\n",'<br/>',$post_content_complete);
+    }
 
     $post = array(
             'post_content'         => mysql_escape_string($post_content_complete),
@@ -379,6 +381,8 @@ class cs_wordpress_manager extends cs_manager {
     );
     unset($current_user_item);
 
+    // TBD: change to soap authentication at WP
+
     // for commsy internal accounts get md5-password
     $session_manager = $this->_environment->getSessionManager();
     $session_item = $session_manager->get($this->_environment->getSessionID());
@@ -396,6 +400,10 @@ class cs_wordpress_manager extends cs_manager {
       unset($auth_item);
       unset($authManager);
       unset($authentication);
+    } else {
+      // dummy password for external accounts
+      include_once('functions/date_functions.php');
+      $result['password'] = md5(getCurrentDateTimeInMySQL().rand(1,999).$this->_environment->getConfiguration('c_security_key'));
     }
     unset($auth_source_manager);
     unset($auth_source_item);
