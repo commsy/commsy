@@ -1618,12 +1618,16 @@ class cs_detail_view extends cs_view {
          }
          $html .= '<div class="commsy_no_panel" style="margin-bottom:1px;">'.LF;
 
-         $session = $this->_environment->getSessionItem();
-         $from_display_mode = $session->getValue($this->_environment->getCurrentContextID() . '_dates_seldisplay_mode');
+         $from_display_mode = "";
+         if($session->issetValue($this->_environment->getCurrentContextID() . '_dates_seldisplay_mode')) {
+            $from_display_mode = $session->getValue($this->_environment->getCurrentContextID() . '_dates_seldisplay_mode');
+         } else {
+            $from_display_mode = $current_context->getDatesPresentationStatus();
+         }
          unset($session);
 
          // display calendar in date detail view, when request came from calendar
-         if($rubric == CS_DATE_TYPE && $from_display_mode == 'calendar') {
+         if($rubric == CS_DATE_TYPE && $from_display_mode != 'normal') {
             $html .= '<div class="column">'.LF;
             $html .= '<div class="right_box">'.LF;
             $html .= '<div class="right_box_title">'.LF;
