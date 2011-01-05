@@ -64,7 +64,7 @@ class cs_configuration_wordpress_form extends cs_rubric_form {
         $this->_array_info_text[$skin] = $temp_array;
       }
     }
-    ksort($this->_array_info_text);
+    asort($this->_array_info_text);
   }
 
   /** create the form, INTERNAL
@@ -95,20 +95,32 @@ class cs_configuration_wordpress_form extends cs_rubric_form {
             '15',
             true);
     $this->_form->combine();
+
+    // screenshot filename
+    $wp_manager = $this->_environment->getWordpressManager();
     if ( !empty($this->_form_post['skin_choice']) ) {
-      $desc = '<img src="'.$c_wordpress_path_url.'wp-content/themes/'.$this->_form_post['skin_choice'].'/screenshot.png" alt="'.$this->_translator->getMessage('COMMON_SKIN').'" style=" border:1px solid black; vertical-align: middle;"/>';
+       $screenshot_file_name = $wp_manager->getScreenshotFilenameForTheme($this->_form_post['skin_choice']);
+    } elseif ( isset($this->_item) ) {
+       $screenshot_file_name = $wp_manager->getScreenshotFilenameForTheme($this->_item->getWordpressSkin());
+    } else {
+       $screenshot_file_name = 'screenshot.png';
+    }
+    unset($wp_manager);
+
+    if ( !empty($this->_form_post['skin_choice']) ) {
+      $desc = '<img src="'.$c_wordpress_path_url.'wp-content/themes/'.$this->_form_post['skin_choice'].'/'.$screenshot_file_name.'" alt="'.$this->_translator->getMessage('COMMON_SKIN').'" style=" border:1px solid black; vertical-align: middle;"/>';
       $this->_form->addText('example','',$desc);
     }elseif( isset($this->_item) and !$this->_set_deletion_values) {
       $skin = $this->_item->getWordpressSkin();
       if (!empty ($skin) ) {
-        $desc = '<img src="'.$c_wordpress_path_url.'wp-content/themes/'.$this->_item->getWordpressSkin().'/screenshot.png" alt="'.$this->_translator->getMessage('COMMON_SKIN').'" style=" border:1px solid black; vertical-align: middle;"/>';
+        $desc = '<img src="'.$c_wordpress_path_url.'wp-content/themes/'.$this->_item->getWordpressSkin().'/'.$screenshot_file_name.'" alt="'.$this->_translator->getMessage('COMMON_SKIN').'" style=" border:1px solid black; vertical-align: middle;"/>';
         $this->_form->addText('example','',$desc);
       }else {
         $desc = '<img src="'.$c_wordpress_path_url.'wp-content/themes/'.$this->_translator->getMessage('COMMON_SKIN').'" style=" border:1px solid black; vertical-align: middle;"/>';
         $this->_form->addText('example','',$desc);
       }
     }else {
-      $desc = '<img src="'.$c_wordpress_path_url.'/wp-content/themes/'.$this->_item->getWordpressSkin().'/screenshot.png" style=" border:1px solid black; vertical-align: middle;"/>';
+      $desc = '<img src="'.$c_wordpress_path_url.'/wp-content/themes/'.$this->_item->getWordpressSkin().'/'.$screenshot_file_name.'" style=" border:1px solid black; vertical-align: middle;"/>';
       $this->_form->addText('example','',$desc);
     }
 

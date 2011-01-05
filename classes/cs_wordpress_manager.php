@@ -35,7 +35,8 @@ class cs_wordpress_manager extends cs_manager {
 
   protected $CW = false;
   protected $wp_user = false;
-
+  private $_wp_screenshot_array = array();
+  private $_wp_skin_option_array = array();
 
   function cs_wordpress_manager($environment) {
     global $c_use_soap_for_wordpress, $c_wordpress_path_url;
@@ -410,21 +411,41 @@ class cs_wordpress_manager extends cs_manager {
     return $result;
   }
 
-  // returns an array of default skins
-  public function getSkins() {
-    try {
-      $skins = $this->CW->getSkins($this->_environment->getSessionID());
-      $skinOptions = array();
-      if(!empty($skins)) {
-        foreach($skins as $name => $skin) {
-          $skinOptions[$name] = $skin['Template'];
-        }
+   // returns an array of default skins
+   public function getSkins () {
+      $retour = '';
+      if ( !empty($this->_wp_skin_option_array) ) {
+         $retour = $this->_wp_skin_option_array;
+      } else {
+         try {
+            $skins = $this->CW->getSkins($this->_environment->getSessionID());
+            $skinOptions = array();
+            if ( !empty($skins) ) {
+               foreach($skins as $name => $skin) {
+                  $skinOptions[$name] = $skin['Template'];
+                  if ( !empty($skin['Screenshot']) ) {
+                     $this->_wp_screenshot_array[$skin['Template']] = $skin['Screenshot'];
+                  } else {
+                     $this->_wp_screenshot_array[$skin['Template']] = 'screenshot.png';
+                  }
+               }
+            }
+            $this->_wp_skin_option_array = $skinOptions;
+            $retour = $this->_wp_skin_option_array;
+         } catch (Exception $e) {
+            echo $e->getMessage();
+            exit;
+         }
       }
-      return $skinOptions;
-    } catch (Exception $e) {
-      echo $e->getMessage();
-      exit;
-    }
-  }
+      return $retour;
+   }
+
+   public function getScreenshotFilenameForTheme ( $name ) {
+      $retour = 'screenshot.png';
+      if ( !empty($this->_wp_screenshot_array[$name]) ) {
+         $retour = $this->_wp_screenshot_array[$name];
+      }
+      return $retour;
+   }
 }
 ?>
