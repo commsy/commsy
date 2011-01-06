@@ -1619,6 +1619,7 @@ class cs_detail_view extends cs_view {
          $html .= '<div class="commsy_no_panel" style="margin-bottom:1px;">'.LF;
 
          $from_display_mode = "";
+         $session = $this->_environment->getSessionItem();
          if($session->issetValue($this->_environment->getCurrentContextID() . '_dates_seldisplay_mode')) {
             $from_display_mode = $session->getValue($this->_environment->getCurrentContextID() . '_dates_seldisplay_mode');
          } else {
