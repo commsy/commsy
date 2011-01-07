@@ -41,16 +41,6 @@ if (!empty($_GET['cid'])) {
 }
 ?>
 
-/*Special Styles*/
-div.indexdate{
-   color:<?php echo($color['date_title'])?>;
-   font-weight: bold;
-}
-div.restriction {
-   padding: 1px 1px;
-   font-weight:normal;
-   font-size:10pt;
-}
 div.gauge {
    background-color: <?php echo($color['boxes_background'])?>;
    height:5px;
@@ -69,33 +59,8 @@ div.gauge-bar {
    font-size:10px;
 }
 
-
 /*Font and Hyperlinks*/
-.closed {
-   color: <?php echo($color['hyperlink'])?>;
-   font-size: 8pt;
-}
-.list span.desc, .desc, .desc_usage {
-   font-size: 8pt;
-}
-span.small_font{
-   font-weight:normal;
-   font-size:8pt;
-}
-a.head, a.head:hover{
-   color: <?php echo($color['headline_text'])?>;
-   font-weight:bold;
-}
-span.index_description{
-   font-size:10pt;
-   font-weight:normal;
-}
-a.index_link, a.index_link:hover{
-   color: <?php echo($color['index_td_head_title'])?>;
-}
-span.index_system_link, a.index_system_link{
-   color: <?php echo($color['tabs_title'])?>;
-}
+
 a.select_link{
    font-size:8pt;
    color: <?php echo($color['headline_text'])?>;
