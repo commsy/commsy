@@ -2247,7 +2247,7 @@ EOD;
          $bgcolor = '#ffffff';
          unset($color_array);
 
-         $html .= '<div id ="docuverser" class="index_flash" style="height: '.$height.'; background-color: '.$bgcolor.';">'.LF;
+         $html .= '<div id ="docuverser" class="index_flash" style="height: '.$height.'; background-color: '.$bgcolor.'; border: none;">'.LF;
          $html .= '<noscript>'.LF;
          $html .= '    <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"'.LF;
          $html .= '            id="study_log" width="100%" height="'.$height.'"'.LF;

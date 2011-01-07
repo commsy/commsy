@@ -1270,7 +1270,7 @@ unset($context_item_current);
 $time_end = getmicrotime();
 $time = round($time_end - $time_start,3);
 
-if ( isset($c_show_debug_infos) and $c_show_debug_infos ) {
+if ( isset($c_show_debug_infos) and $c_show_debug_infos and $environment->getCurrentModule() != 'ajax') {
 
    $db_connector = $environment->getDBConnector();
    $sql_query_array = $db_connector->getQueryArray();

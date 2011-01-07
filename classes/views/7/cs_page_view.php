@@ -298,33 +298,26 @@ class cs_page_view extends cs_view {
              $retour .= '   <link rel="stylesheet" media="screen" type="text/css" href="css/external_portal_styles/'.$portal_item->getItemID().'/css/commsy_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
          }
       }
+      
       $retour .= '   <link rel="stylesheet" media="print" type="text/css" href="css/commsy_print_css.php?cid='.$this->_environment->getCurrentContextID().'"/>'.LF;
-
+      
+      // print page
       if ($this->_is_print_page) {
          $retour .= '   <link rel="stylesheet" media="screen" type="text/css" href="css/commsy_print_css.php?cid='.$this->_environment->getCurrentContextID().'"/>'.LF;
-      } elseif ( isset($_GET['mod']) and $_GET['mod']=='agb' and isset($_GET['fct']) and $_GET['fct']=='index' ) {
-         $retour .= '   <link rel="stylesheet" media="screen" type="text/css" href="css/commsy_room_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
-      } elseif ( $show_agb_again ) {
-         $retour .= '   <link rel="stylesheet" media="screen" type="text/css" href="css/commsy_room_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
-      } elseif ( isset($module) and $module=='home' and isset($function) and $function=='outofservice' ) {
-         $retour .= '   <link rel="stylesheet" media="screen" type="text/css" href="css/commsy_room_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
+
+      // portal / server
       } elseif ( $this->_environment->inPortal() or $this->_environment->inServer() ) {
          $retour .= '   <link rel="stylesheet" media="screen" type="text/css" href="css/commsy_portal_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
-         $retour .= '   <link rel="stylesheet" media="screen" type="text/css" href="css/commsy_right_boxes_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
-      }else{
-         $retour .= '   <link rel="stylesheet" media="screen" type="text/css" href="css/commsy_room_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
-         $retour .= '   <link rel="stylesheet" media="screen" type="text/css" href="css/commsy_right_boxes_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
-         // jQuery
-         //$retour .= '   <link rel="stylesheet" media="screen" type="text/css" href="javascript/slimbox/css/slimbox.css"/>'.LF;
-         #if (isset($c_use_new_lightbox) and $c_use_new_lightbox){
-            $retour .= '   <link rel="stylesheet" media="screen" type="text/css" href="javascript/jQuery/jquery.fancybox-1.3.1/fancybox/jquery.fancybox-1.3.1.css"/>'.LF;
-         #} else {
-         #   $retour .= '   <link rel="stylesheet" media="screen" type="text/css" href="javascript/jQuery/Slimbox2/css/slimbox2.css"/>'.LF;
-         #}
-         // jQuery
+
+      // room
+      } else {
+         $retour .= '   <link rel="stylesheet" media="screen" type="text/css" href="css/commsy_room_merged_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
+         $retour .= '   <link rel="stylesheet" media="screen" type="text/css" href="javascript/jQuery/jquery.fancybox-1.3.1/fancybox/jquery.fancybox-1.3.1.css"/>'.LF;
       }
-      if ($left_menue_status !='disapear'){
-         $retour .= '   <link rel="stylesheet" media="screen" type="text/css" href="css/commsy_myarea_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
+
+      // portal / server / room
+      if( !$this->_is_print_page) {
+         $retour .= '   <link rel="stylesheet" media="screen" type="text/css" href="css/commsy_portal_room_merged_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
       }
 
       if (($this->_environment->getCurrentFunction() == 'detail' and !$this->_is_print_page) or $this->_environment->getCurrentModule() == 'help' and !$this->_is_print_page){
@@ -344,29 +337,7 @@ class cs_page_view extends cs_view {
       }elseif( ($this->_environment->getCurrentFunction() == 'index' and !$this->_is_print_page) or $this->_environment->getCurrentFunction() == 'clipboard_index'){
          $retour .= '   <link media="screen" rel="stylesheet" type="text/css" href="css/commsy_index_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
       }
-      if ( ($this->_environment->getCurrentFunction() == 'edit'
-               or $this->_environment->getCurrentModule() == 'mail'
-               or $this->_environment->getCurrentFunction() == 'mail'
-               or $this->_environment->getCurrentFunction() == 'info_text_edit'
-               or $this->_environment->getCurrentFunction() == 'info_text_form_edit'
-               or $this->_environment->getCurrentFunction() =='close'
-               or $this->_environment->getCurrentFunction() =='import'
-               or $this->_environment->getCurrentFunction() =='ims_import'
-               or $this->_environment->getCurrentFunction() =='preferences'
-               or ($this->_environment->getCurrentModule() =='user' and $this->_environment->getCurrentFunction() =='preferences')
-               or ($this->_environment->getCurrentModule() =='user' and $this->_environment->getCurrentFunction() =='action')
-               or $this->_environment->getCurrentModule() == 'configuration'
-               or $this->_environment->getCurrentModule() == 'account'
-               or $this->_environment->getCurrentModule() == 'material_admin'
-               or (isset($_GET['show_profile']) and $_GET['show_profile'] == 'yes'))
-               and !$this->_is_print_page
-         ){
-         $retour .= '   <link media="screen" rel="stylesheet" type="text/css" href="css/commsy_form_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
-      }
 
-      if ($this->_environment->getCurrentModule() == 'home' and !$this->_is_print_page){
-         $retour .= '   <link media="screen" rel="stylesheet" type="text/css" href="css/commsy_home_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
-      }
       if ($this->_environment->getCurrentModule() == 'date' and $this->_environment->getCurrentFunction() == 'index'){
          $retour .= '   <link media="screen" rel="stylesheet" type="text/css" href="css/commsy_calender_index_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
       }
@@ -388,130 +359,6 @@ class cs_page_view extends cs_view {
       }
       if ( $current_browser == 'msie' and strstr($current_browser_version,'6.') ){
          $retour .= '   <link media="screen" rel="stylesheet" type="text/css" href="css/commsy_room_ie6_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
-      }
-      return $retour;
-   }
-
-   function _getIncludedCSSIE5AsHTML(){
-      global $c_commsy_url_path;
-      global $c_use_new_lightbox;
-      $module   = $this->_environment->getCurrentModule();
-      $current_user   = $this->_environment->getCurrentUserItem();
-      $function = $this->_environment->getCurrentFunction();
-      $url_addon = '';
-      if ( isset($_GET['mode']) and $_GET['mode']=='print' ) {
-         $this->_is_print_page = true;
-      }
-      $session = $this->_environment->getSession();
-      $left_menue_status = $session->getValue('left_menue_status');
-      $retour  = '';
-      $show_agb_again = false;
-      if ( $current_user->isUser() and !$current_user->isRoot() ) {
-         $current_context = $this->_environment->getCurrentContextItem();
-         if ( $current_context->withAGB() ) {
-            $user_agb_date = $current_user->getAGBAcceptanceDate();
-            $context_agb_date = $current_context->getAGBChangeDate();
-            if ($user_agb_date < $context_agb_date) {
-               $show_agb_again = true;
-            }
-         }
-      }
-      if ($this->_is_print_page){
-         $retour .= '   <link rel="stylesheet" type="text/css" href="commsy_print_css.php?cid='.$this->_environment->getCurrentContextID().'"/>'.LF;
-      }elseif ( isset($_GET['mod']) and $_GET['mod']=='agb' and isset($_GET['fct']) and $_GET['fct']=='index' ) {
-         $retour .= '   <link rel="stylesheet" type="text/css" href="commsy_room_ie5_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
-      }elseif($show_agb_again){
-         $retour .= '   <link rel="stylesheet" type="text/css" href="commsy_room_ie5_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
-      } elseif ( $this->_environment->inPortal() or $this->_environment->inServer() ) {
-         $retour .= '   <link rel="stylesheet" type="text/css" href="commsy_portal_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
-         $retour .= '   <link rel="stylesheet" type="text/css" href="commsy_right_boxes_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
-      }else{
-         $retour .= '   <link rel="stylesheet" type="text/css" href="commsy_room_ie5_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
-         $retour .= '   <link rel="stylesheet" type="text/css" href="commsy_right_boxes_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
-         // jQuery
-         //$retour .= '   <link rel="stylesheet" type="text/css" href="javascript/slimbox/css/slimbox.css"/>'.LF;
-         #if (isset($c_use_new_lightbox) and $c_use_new_lightbox){
-            $retour .= '   <link rel="stylesheet" media="screen" type="text/css" href="javascript/jQuery/jquery.fancybox-1.3.1/fancybox/jquery.fancybox-1.3.1.css"/>'.LF;
-         #} else {
-         #   $retour .= '   <link rel="stylesheet" type="text/css" href="javascript/jQuery/Slimbox2/css/slimbox2.css"/>'.LF;
-         #}
-         // jQuery
-      }
-      if ($left_menue_status !='disapear'){
-         $retour .= '   <link rel="stylesheet" type="text/css" href="commsy_myarea_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
-      }
-
-      if ($this->_environment->getCurrentFunction() == 'detail' or $this->_environment->getCurrentModule() == 'help' and !$this->_is_print_page){
-         $retour .= '   <link rel="stylesheet" type="text/css" href="commsy_detail_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
-         // for tex in commsy
-         // see http://www.math.union.edu/~dpvc/jsMath/
-         global $c_jsmath_enable;
-         if ( isset($c_jsmath_enable)
-              and $c_jsmath_enable
-            ) {
-            $retour .= '   <style type="text/css"> #jsMath_Warning {display: none} </style>'.LF;
-            $retour .= '   <style type="text/css"> #jsMath_button  {display: none} </style>'.LF;
-         }
-      }elseif($this->_environment->getCurrentFunction() == 'index' and !$this->_is_print_page){
-         $retour .= '   <link rel="stylesheet" type="text/css" href="commsy_index_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
-      }
-      if ( ($this->_environment->getCurrentFunction() == 'edit'
-               or $this->_environment->getCurrentModule() == 'mail'
-               or $this->_environment->getCurrentFunction() == 'mail'
-               or $this->_environment->getCurrentFunction() == 'info_text_edit'
-               or $this->_environment->getCurrentFunction() == 'info_text_form_edit'
-               or $this->_environment->getCurrentFunction() =='close'
-               or $this->_environment->getCurrentFunction() =='import'
-               or $this->_environment->getCurrentFunction() =='preferences'
-               or ($this->_environment->getCurrentModule() =='user' and $this->_environment->getCurrentFunction() =='preferences')
-               or ($this->_environment->getCurrentModule() =='user' and $this->_environment->getCurrentFunction() =='action')
-               or $this->_environment->getCurrentModule() == 'configuration'
-               or $this->_environment->getCurrentModule() == 'account'
-               or $this->_environment->getCurrentModule() == 'material_admin')
-               and !$this->_is_print_page
-      ){
-         $retour .= '   <link rel="stylesheet" type="text/css" href="commsy_form_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
-      }
-
-      if ($this->_environment->getCurrentModule() == 'home' and !$this->_is_print_page){
-         $retour .= '   <link rel="stylesheet" type="text/css" href="commsy_home_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
-      }
-      if ($this->_environment->getCurrentModule() == 'date' and $this->_environment->getCurrentFunction() == 'index'){
-         $retour .= '   <link rel="stylesheet" type="text/css" href="commsy_calender_index_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
-      }
-      return $retour;
-   }
-   function _includedJavascriptIE5AsHTML(){
-      global $c_commsy_url_path;
-      $module   = $this->_environment->getCurrentModule();
-      $current_user   = $this->_environment->getCurrentUserItem();
-      $function = $this->_environment->getCurrentFunction();
-      $url_addon = '';
-      if ( isset($_GET['mode']) and $_GET['mode']=='print' ) {
-         $this->_is_print_page = true;
-      }
-      $views = array_merge($this->_views, $this->_views_left, $this->_views_right, $this->_views_overlay);
-      if ( isset($this->_form_view) ) {
-            $views[] = $this->_form_view;
-      }
-      $view = reset($views);
-      $needed_javascript_array = array();
-      while ($view) {
-         $needed_javascript_array = $view->getJavaScriptInfoArrayForHeaderAsHTML($needed_javascript_array);
-         $view = next($views);
-      }
-      unset($views);
-      unset($view);
-      if ( !$this->_environment->inServer() and !$this->_environment->inPortal() ){
-         // jQuery
-         //$retour .= '   <script type="text/javascript" src="javascript/CommSyFunctions.js"></script>'.LF;
-         // jQuery
-         $retour .= '   <script type="text/javascript" src="javascript/CommSyPanelsIe5.js"></script>'.LF;
-         // jQuery
-         //$retour .= '   <script src="javascript/mootools-release-1.11.js" type="text/javascript"></script>'.LF;
-         //$retour .= '   <script type="text/javascript" src="javascript/CommSyNetnavigation.js"></script>'.LF;
-         //$retour .= '   <script type="text/javascript" src="javascript/CommSyCreatorInformation.js"></script>'.LF;
-         // jQuery
       }
       return $retour;
    }
@@ -877,16 +724,8 @@ class cs_page_view extends cs_view {
       $retour .= '   <meta http-equiv="pragma" content="no-cache"/>'.LF;
       $retour .= '   <meta name="MSSmartTagsPreventParsing" content="TRUE"/>'.LF;
       $retour .= '   <meta name="CommsyBaseURL" content="'.$c_commsy_url_path.'"/>'.LF;
-      $current_browser = mb_strtolower($this->_environment->getCurrentBrowser(), 'UTF-8');
-      $current_browser_version = $this->_environment->getCurrentBrowserVersion();
-      if ( !($current_browser == 'msie' and strstr($current_browser_version,'5.')) ){
-         $retour .= $this->_getIncludedCSSAsHTML();
-         $retour .= $this->_includedJavascriptAsHTML();
-
-      }else{
-         $retour .= $this->_getIncludedCSSIE5AsHTML();
-         $retour .= $this->_includedJavascriptIE5AsHTML();
-      }
+      $retour .= $this->_getIncludedCSSAsHTML();
+      $retour .= $this->_includedJavascriptAsHTML();
 
       	$auth_source_manager = $this->_environment->getAuthSourceManager();
 	      $auth_source_item = $auth_source_manager->getItem($this->_environment->getCurrentUserItem()->getAuthSource());

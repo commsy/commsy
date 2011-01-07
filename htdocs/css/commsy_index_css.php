@@ -41,16 +41,6 @@ if (!empty($_GET['cid'])) {
 }
 ?>
 
-/*Special Styles*/
-div.indexdate{
-   color:<?php echo($color['date_title'])?>;
-   font-weight: bold;
-}
-div.restriction {
-   padding: 1px 1px;
-   font-weight:normal;
-   font-size:10pt;
-}
 div.gauge {
    background-color: <?php echo($color['boxes_background'])?>;
    height:12px;
@@ -69,33 +59,7 @@ div.gauge-bar {
    font-size:10px;
 }
 
-
 /*Font and Hyperlinks*/
-.closed {
-   color: <?php echo($color['hyperlink'])?>;
-   font-size: 8pt;
-}
-.list span.desc, .desc, .desc_usage {
-   font-size: 8pt;
-}
-span.small_font{
-   font-weight:normal;
-   font-size:8pt;
-}
-a.head, a.head:hover{
-   color: <?php echo($color['headline_text'])?>;
-   font-weight:bold;
-}
-span.index_description{
-   font-size:10pt;
-   font-weight:normal;
-}
-a.index_link, a.index_link:hover{
-   color: <?php echo($color['index_td_head_title'])?>;
-}
-span.index_system_link, a.index_system_link{
-   color: <?php echo($color['tabs_title'])?>;
-}
 a.select_link{
    font-size:8pt;
    color: <?php echo($color['headline_text'])?>;
@@ -105,88 +69,3 @@ span.select_link{
    font-size:8pt;
    color: <?php echo($color['headline_text'])?>;
 }
-/* background for the search text yellow */
-span.searched_text_yellow{
-	font-weight:bold;
-	/* font-size:9pt; */
-	background-color:#FFFF00;
-	color:#000000;
-	padding:0px;
-}
-/* background for the search text green */
-span.searched_text_green{
-	font-weight:bold;
-	/* font-size:9pt; */
-	background-color:#77FF00;
-	color:#000000;
-	padding:0px;
-}
-
-
-
-/*List Layout*/
-.list {
-   border-collapse: collapse;
-   width: 100%;
-   font-size:10pt;
-}
-
-.list tr{
-}
-
-table.list, div.index_flash {
-   width: 100%;
-   font-size:10pt;
-   border: 1px solid <?php echo($color['tabs_background'])?>;
-}
-
-.list td, td.odd {
-   background-color: #FFFFFF;
-   padding: 2px 3px;
-   font-size:10pt;
-}
-.list td.even  {
-   background-color: <?php echo($color['list_entry_even'])?>;
-}
-
-.even{
-   background-color: <?php echo($color['list_entry_even'])?>;
-}
-.list td.head {
-   <?php
-   echo('background: url(../'.$c_single_entry_point.'?cid='.$cid.'&mod=picture&fct=getfile&picture=' . $color['schema'] . '_cs_gradient_24.png) repeat-x;');
-   ?>
-   background-color:<?php echo($color['tabs_background'])?>;
-   color: <?php echo($color['headline_text'])?>;
-   border-bottom: none;
-   line-height:17px;
-   padding: 3px 3px;
-   font-weight:bold;
-   white-space:nowrap;
-}
-.list td.head_nav {
-   border-bottom: none;
-   padding: 3px 3px;
-   font-weight:bold;
-   text-align: right;
-}
-.list td.foot_left {
-   <?php
-   echo('background: url(../'.$c_single_entry_point.'?cid='.$cid.'&mod=picture&fct=getfile&picture=' . $color['schema'] . '_cs_gradient_32.png) repeat-x;');
-   ?>background-color: <?php echo($color['tabs_background'])?>;
-   color: <?php echo($color['headline_text'])?>;
-   border-bottom: none;
-   padding: 2px 2px;
-   font-weight:bold;
-}
-.list td.foot_right {
-   <?php
-   echo('background: url(../'.$c_single_entry_point.'?cid='.$cid.'&mod=picture&fct=getfile&picture=' . $color['schema'] . '_cs_gradient_32.png) repeat-x;');
-   ?>background-color: <?php echo($color['tabs_background'])?>;
-   color: <?php echo($color['headline_text'])?>;
-   border-bottom: none;
-   padding: 2px 2px;
-   font-weight:bold;
-   text-align: right;
-}
-
