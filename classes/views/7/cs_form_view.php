@@ -462,8 +462,8 @@ class cs_form_view extends cs_view {
 
       $current_user = $this->_environment->getCurrentUser();
       $portal_user = $current_user->getRelatedPortalUserItem();
-      if ( $portal_user->isAutoSaveOn()
-           and $this->_environment->getCurrentFunction() == 'edit'
+      if ( $this->_environment->getCurrentFunction() == 'edit'
+           and $portal_user->isAutoSaveOn()
            and ( $this->_environment->getCurrentModule() == CS_ANNOUNCEMENT_TYPE
                  or $this->_environment->getCurrentModule() == CS_DATE_TYPE
                  or $this->_environment->getCurrentModule() == CS_TODO_TYPE
