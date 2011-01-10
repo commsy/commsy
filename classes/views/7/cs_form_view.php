@@ -463,6 +463,7 @@ class cs_form_view extends cs_view {
       $current_user = $this->_environment->getCurrentUser();
       $portal_user = $current_user->getRelatedPortalUserItem();
       if ( $this->_environment->getCurrentFunction() == 'edit'
+           and !$current_user->isRoot()
            and $portal_user->isAutoSaveOn()
            and ( $this->_environment->getCurrentModule() == CS_ANNOUNCEMENT_TYPE
                  or $this->_environment->getCurrentModule() == CS_DATE_TYPE
@@ -677,7 +678,7 @@ class cs_form_view extends cs_view {
       }
       $current_user = $this->_environment->getCurrentUserItem();
       $portal_user = $current_user->getRelatedPortalUserItem();
-      if (!$portal_user->isNewUploadOn()){
+      if (!$current_user->isRoot() && !$portal_user->isNewUploadOn()){
          $use_new_upload = false;
       }
       
