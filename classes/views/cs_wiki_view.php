@@ -336,6 +336,49 @@ class cs_wiki_view extends cs_view {
       return $retour;
    }
 
+   function _format_link ( $text, $array ) {
+      $retour = '';
+      $image_text = '';
+      if ( !empty($array[3]) ) {
+         $args = $this->_parseArgs($array[3]);
+      } else {
+         $args = array();
+      }
+
+      if ( !empty($args['text']) ) {
+         $word = $args['text'];
+      } else {
+         $word = '';
+      }
+
+      if ( !empty($args['target']) ) {
+         $target = ' target="'.$args['target'].'"';
+      } elseif ( !empty($args['newwin']) ) {
+         $target = ' target=_blank;';
+      } else {
+         $target = '';
+      }
+
+      if ( empty($array[1]) ) {
+         $source = 'http://'.$array[2];
+      } else {
+         $source = $array[1].$array[2];
+      }
+
+      if ( !empty($source) ) {
+          if ( empty($word) ) {
+             $word = $source;
+          }
+          $image_text = '<a href="'.$source.'"'.$target.'>'.$word.'</a>';
+      }
+      if ( !empty($image_text) ) {
+         $text = str_replace($array[0],$image_text,$text);
+      }
+
+      $retour = $text;
+      return $retour;
+   }
+   
    function formatForWiki($text){
       $reg_exp_father_array = array();
       $reg_exp_father_array[]       = '~\\(:(.*?):\\)~eu';
