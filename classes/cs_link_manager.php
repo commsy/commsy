@@ -376,7 +376,7 @@ class cs_link_manager extends cs_manager {
       if ( isset($this->_id_array_limit) or isset($this->_link_type_limit) ) { // id-Array // user
          $query .= ' AND ((';
       }
-      if ( isset($this->_id_array_limit) ) { // id-Array
+      if ( isset($this->_id_array_limit) and !empty($this->_id_array_limit) ) { // id-Array
          $query .= ' first_item_id IN ('.implode(',',$this->_id_array_limit).')';
       }
       if (isset($this->_second_linked_item) ) {
@@ -407,7 +407,7 @@ class cs_link_manager extends cs_manager {
          $query .= ')';
          $query .= ' OR (';
       }
-      if ( isset($this->_id_array_limit) ) { // id-Array
+      if ( isset($this->_id_array_limit) and !empty($this->_id_array_limit) ) { // id-Array
          $query .= ' second_item_id IN ('.implode(',',$this->_id_array_limit).')'; // id-Array
       }
       if (isset($this->_second_linked_item) ) {

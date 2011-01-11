@@ -320,7 +320,7 @@ class cs_dates_manager extends cs_manager {
          $date = date("Y-m-d").' 00:00:00';
          $query .= ' AND ('.$this->addDatabasePrefix('dates').'.datetime_end >= "'.encode(AS_DB,$date).'" OR ('.$this->addDatabasePrefix('dates').'.datetime_end="0000-00-00 00:00:00" AND '.$this->addDatabasePrefix('dates').'.datetime_start >= "'.encode(AS_DB,$date).'") )';
       }
-      if (isset($this->_room_array_limit)) {
+      if (isset($this->_room_array_limit) and !empty($this->_room_array_limit)) {
          $query .= ' AND '.$this->addDatabasePrefix('dates').'.context_id IN ('.implode(", ", $this->_room_array_limit).')';
       }elseif (isset($this->_room_limit)) {
          $query .= ' AND '.$this->addDatabasePrefix('dates').'.context_id = "'.encode(AS_DB,$this->_room_limit).'"';
@@ -862,10 +862,10 @@ class cs_dates_manager extends cs_manager {
 
    function deleteDatesOfUser($uid) {
         // create backup of item
-        $this->backupItem($uid, array(	'title'				=>	'title',
-                                        'description'		=>	'description',
-                                        'modification_date'	=>	'modification_date',
-                                        'public'			=>	'public'), array('place'));
+        $this->backupItem($uid, array(   'title'            =>   'title',
+                                        'description'      =>   'description',
+                                        'modification_date'   =>   'modification_date',
+                                        'public'         =>   'public'), array('place'));
 
       $current_datetime = getCurrentDateTimeInMySQL();
       $query  = 'SELECT '.$this->addDatabasePrefix('dates').'.* FROM '.$this->addDatabasePrefix('dates').' WHERE '.$this->addDatabasePrefix('dates').'.creator_id = "'.encode(AS_DB,$uid).'"';
