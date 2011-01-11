@@ -12,6 +12,7 @@ $message["WORDPRESS_CONFIGURATION_USE_COMMENTS_MODERATION"]["en"] = "Moderate Co
 $message["WORDPRESS_CREATE_ERROR_EXISTING_USER_EMAIL"]["en"] = "WordPress not allow 2 accounts with the same email address. Please change your email address of your other account in WordPress or of your current CommSy account in your profile at the portal site.";
 $message["WORDPRESS_DELETE_BUTTON"]["en"] = "delete Blog";
 $message["WORDPRESS_DELETE_ERROR_TEXT"]["en"] = "Your blog can not be deleted at the wordpress installation. Please try again later or contact your CommSy administration.";
+$message["WORDPRESS_MODIFY_ERROR_NOT_ALLOWED"]["en"] = "You are not allowed in WordPress to change the configuration of this blog. Please contact the person who created this blog. This person should change your status in WordPress to administrator.";
 $message["WORDPRESS_SAVE_BUTTON"]["en"] = "Create wordpress blog";
 $message["WORDPRESS_SELECT_MEMBER_ROLE"]["en"] = "Role of new room members in blog";
 $message["WORDPRESS_SELECT_MEMBER_ROLE_ADMINISTRATOR"]["en"] = "Admin";

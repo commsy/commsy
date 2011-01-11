@@ -267,6 +267,8 @@ else {
         $error_message = $success->getMessage();
         if ( stristr($error_message,'existing_user_mail') ) {
           $error_message = $translator->getMessage('WORDPRESS_CREATE_ERROR_EXISTING_USER_EMAIL');
+        } elseif ( stristr($error_message,'is not allowed to') ) {
+          $error_message = $translator->getMessage('WORDPRESS_MODIFY_ERROR_NOT_ALLOWED');
         }
 
         // errorbox

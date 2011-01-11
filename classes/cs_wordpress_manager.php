@@ -63,12 +63,18 @@ class cs_wordpress_manager extends cs_manager {
 //        $wpUser['login'] = $currentUser->getUserId();
 //        $wpUser['email'] = $currentUser->getEmail();
         $wpUser = $this->_getCurrentAuthItem();
-        $wpBlog = array('title' => $this->_environment->getCurrentContextItem()->getTitle(), 'path' => $this->_environment->getCurrentPortalID().'_'.$this->_environment->getCurrentContextID());
+        $wpBlog = array('title' => $this->_environment->getCurrentContextItem()->getTitle(),
+                        'path' => $this->_environment->getCurrentPortalID().'_'.$this->_environment->getCurrentContextID(),
+                        'cid' => $this->_environment->getCurrentContextID(),
+                        'pid' => $this->_environment->getCurrentPortalID()
+                       );
         $result = $this->CW->createBlog($this->_environment->getSessionID(),$wpUser, $wpBlog);
         $contextItem->setWordpressId($result['blog_id']);
         $contextItem->save();
       }
 
+      // set commsy context id
+      $this->_setWordpressOption('commsy_context_id', $item->getItemID());
 
 ////    // set Title
       $this->_setWordpressOption('blogname', $item->getWordpressTitle());
@@ -372,6 +378,7 @@ class cs_wordpress_manager extends cs_manager {
 
   protected function _getCurrentAuthItem() {
     // get user data out of the current portal user object
+    // and status from the current user in the current context
     $current_user_item = $this->_environment->getPortalUserItem();
     $result = array(
             'login' => $current_user_item->getUserID(),
