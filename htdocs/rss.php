@@ -46,11 +46,11 @@ if ( isset($_GET['cid']) ) {
    }
 
    function setFileArray($item) {
-   	global $environment;
-   	$file_array = $item->getFileList()->to_Array();
+      global $environment;
+      $file_array = $item->getFileList()->to_Array();
     $file_name_array = array();
     foreach($file_array as $file) {
-    	$file_name_array[htmlentities($file->getDisplayName(), ENT_NOQUOTES, 'UTF-8')] = $file;
+       $file_name_array[htmlentities($file->getDisplayName(), ENT_NOQUOTES, 'UTF-8')] = $file;
     }
     $environment->getTextConverter()->setFileArray($file_name_array);
    }
@@ -90,9 +90,9 @@ if ( isset($_GET['cid']) ) {
    }
    $translator = $environment->getTranslationObject();
    if (!$validated) {
-   	  if (!$context_item->isRSSOn()){
+        if (!$context_item->isRSSOn()){
          die ($translator->getMessage('RSS_NOT_ACTIVATED'));
-   	  }else{
+        }else{
          $title = $context_item->getTitle();
          if ( $context_item->isPrivateRoom()) {
             $title = '';
@@ -219,7 +219,7 @@ if ( isset($_GET['cid']) ) {
       while($flag){
       $counter = 0;
       $newIntervalLimit = 10;
-   	  foreach($result as $row) {
+        foreach($result as $row) {
       if ( $counter == 10 ) {
          break;
       }
@@ -232,17 +232,17 @@ if ( isset($_GET['cid']) ) {
             $manager = new cs_user_manager($environment);
             $item = $manager->getItem($row['item_id']);
             if (isset($item) and $item->isNotActivated()) {
-            	$newIntervalLimit++;
+               $newIntervalLimit++;
                }
             unset($item);
             unset($manager);
-      		break;
-      	case 'annotation':
+            break;
+         case 'annotation':
             include_once('classes/cs_annotations_manager.php');
             $manager = new cs_annotations_manager($environment);
             $item = $manager->getItem($row['item_id']);
             if (isset($item) and $item->isNotActivated()) {
-            	$newIntervalLimit++;
+               $newIntervalLimit++;
                }
             unset($item);
             unset($manager);
@@ -252,7 +252,7 @@ if ( isset($_GET['cid']) ) {
             $manager = new cs_discussion_manager($environment);
             $item = $manager->getItem($row['item_id']);
             if (isset($item) and $item->isNotActivated()) {
-            	$newIntervalLimit++;
+               $newIntervalLimit++;
                }
             unset($item);
             unset($manager);
@@ -262,7 +262,7 @@ if ( isset($_GET['cid']) ) {
             $manager = new cs_discussionarticles_manager($environment);
             $item = $manager->getItem($row['item_id']);
             if (isset($item) and $item->isNotActivated()) {
-            	$newIntervalLimit++;
+               $newIntervalLimit++;
                }
             unset($item);
             unset($manager);
@@ -272,7 +272,7 @@ if ( isset($_GET['cid']) ) {
             $manager = new cs_material_manager($environment);
             $item = $manager->getItem($row['item_id']);
             if (isset($item) and $item->isNotActivated()) {
-            	$newIntervalLimit++;
+               $newIntervalLimit++;
             }
             unset($item);
             unset($manager);
@@ -282,7 +282,7 @@ if ( isset($_GET['cid']) ) {
             $manager = new cs_announcement_manager($environment);
             $item = $manager->getItem($row['item_id']);
             if (isset($item) and $item->isNotActivated()) {
-            	$newIntervalLimit++;
+               $newIntervalLimit++;
                }
             unset($item);
             unset($manager);
@@ -292,7 +292,7 @@ if ( isset($_GET['cid']) ) {
             $manager = new cs_section_manager($environment);
             $item = $manager->getItem($row['item_id']);
             if (isset($item) and $item->isNotActivated()) {
-            	$newIntervalLimit++;
+               $newIntervalLimit++;
                }
             unset($item);
             unset($manager);
@@ -301,8 +301,8 @@ if ( isset($_GET['cid']) ) {
             include_once('classes/cs_dates_manager.php');
             $manager = new cs_dates_manager($environment);
             $item = $manager->getItem($row['item_id']);
-			if (isset($item) and $item->isNotActivated()) {
-            	$newIntervalLimit++;
+         if (isset($item) and $item->isNotActivated()) {
+               $newIntervalLimit++;
                }
             unset($manager);
             unset($item);
@@ -312,7 +312,7 @@ if ( isset($_GET['cid']) ) {
             $manager = new cs_labels_manager($environment);
             $item = $manager->getItem($row['item_id']);
             if (isset($item) and $item->isNotActivated()) {
-            	$newIntervalLimit++;
+               $newIntervalLimit++;
                }
             unset($manager);
             unset($item);
@@ -322,7 +322,7 @@ if ( isset($_GET['cid']) ) {
             $manager = new cs_todos_manager($environment);
             $item = $manager->getItem($row['item_id']);
             if (isset($item) and $item->isNotActivated()) {
-            	$newIntervalLimit++;
+               $newIntervalLimit++;
                }
             unset($manager);
             unset($item);
@@ -331,30 +331,30 @@ if ( isset($_GET['cid']) ) {
             $manager = $environment->getManager(CS_STEP_TYPE);
             $item = $manager->getItem($row['item_id']);
             if (isset($item) and $item->isNotActivated()) {
-            	$newIntervalLimit++;
+               $newIntervalLimit++;
                }
             unset($item);
             unset($manager);
             break;
 
       }
-   	  }
+        }
 
-   	  if ($n * 10 - ($newIntervalLimit - $n * 10) >= 10){
-	   	$item_manager->resetLimits();
-	    $item_manager->setTypeArrayLimit($type_limit_array);
-	    $item_manager->showNoNotActivatedEntries();
-	    $item_manager->setIntervalLimit($newIntervalLimit);
-	    $result = $item_manager->_performQuery();
-	    $flag = false;
-   	  } else {
-   	  	$item_manager->resetLimits();
-	    $item_manager->setTypeArrayLimit($type_limit_array);
-	    $item_manager->showNoNotActivatedEntries();
-	    $item_manager->setIntervalLimit($newIntervalLimit);
-	    $result = $item_manager->_performQuery();
-   	  }
-   	  $n++;
+        if ($n * 10 - ($newIntervalLimit - $n * 10) >= 10){
+         $item_manager->resetLimits();
+       $item_manager->setTypeArrayLimit($type_limit_array);
+       $item_manager->showNoNotActivatedEntries();
+       $item_manager->setIntervalLimit($newIntervalLimit);
+       $result = $item_manager->_performQuery();
+       $flag = false;
+        } else {
+           $item_manager->resetLimits();
+       $item_manager->setTypeArrayLimit($type_limit_array);
+       $item_manager->showNoNotActivatedEntries();
+       $item_manager->setIntervalLimit($newIntervalLimit);
+       $result = $item_manager->_performQuery();
+        }
+        $n++;
       }
    } else {
       $project_list = $user_item->getUserRelatedProjectList();
@@ -391,7 +391,7 @@ if ( isset($_GET['cid']) ) {
       while($flag){
       $counter = 0;
       $newIntervalLimit = 10;
-   	  foreach($result as $row) {
+        foreach($result as $row) {
       if ( $counter == 10 ) {
          break;
       }
@@ -404,17 +404,17 @@ if ( isset($_GET['cid']) ) {
             $manager = new cs_user_manager($environment);
             $item = $manager->getItem($row['item_id']);
             if ($item->isNotActivated()) {
-            	$newIntervalLimit++;
+               $newIntervalLimit++;
                }
             unset($item);
             unset($manager);
-      		break;
-      	case 'annotation':
+            break;
+         case 'annotation':
             include_once('classes/cs_annotations_manager.php');
             $manager = new cs_annotations_manager($environment);
             $item = $manager->getItem($row['item_id']);
             if ($item->isNotActivated()) {
-            	$newIntervalLimit++;
+               $newIntervalLimit++;
                }
             unset($item);
             unset($manager);
@@ -424,7 +424,7 @@ if ( isset($_GET['cid']) ) {
             $manager = new cs_discussion_manager($environment);
             $item = $manager->getItem($row['item_id']);
             if ($item->isNotActivated()) {
-            	$newIntervalLimit++;
+               $newIntervalLimit++;
                }
             unset($item);
             unset($manager);
@@ -434,7 +434,7 @@ if ( isset($_GET['cid']) ) {
             $manager = new cs_discussionarticles_manager($environment);
             $item = $manager->getItem($row['item_id']);
             if ($item->isNotActivated()) {
-            	$newIntervalLimit++;
+               $newIntervalLimit++;
                }
             unset($item);
             unset($manager);
@@ -444,7 +444,7 @@ if ( isset($_GET['cid']) ) {
             $manager = new cs_material_manager($environment);
             $item = $manager->getItem($row['item_id']);
             if ($item->isNotActivated()) {
-            	$newIntervalLimit++;
+               $newIntervalLimit++;
             }
             unset($item);
             unset($manager);
@@ -454,7 +454,7 @@ if ( isset($_GET['cid']) ) {
             $manager = new cs_announcement_manager($environment);
             $item = $manager->getItem($row['item_id']);
             if ($item->isNotActivated()) {
-            	$newIntervalLimit++;
+               $newIntervalLimit++;
                }
             unset($item);
             unset($manager);
@@ -464,7 +464,7 @@ if ( isset($_GET['cid']) ) {
             $manager = new cs_section_manager($environment);
             $item = $manager->getItem($row['item_id']);
             if ($item->isNotActivated()) {
-            	$newIntervalLimit++;
+               $newIntervalLimit++;
                }
             unset($item);
             unset($manager);
@@ -473,8 +473,8 @@ if ( isset($_GET['cid']) ) {
             include_once('classes/cs_dates_manager.php');
             $manager = new cs_dates_manager($environment);
             $item = $manager->getItem($row['item_id']);
-			if ($item->isNotActivated()) {
-            	$newIntervalLimit++;
+         if ($item->isNotActivated()) {
+               $newIntervalLimit++;
                }
             unset($manager);
             unset($item);
@@ -484,7 +484,7 @@ if ( isset($_GET['cid']) ) {
             $manager = new cs_labels_manager($environment);
             $item = $manager->getItem($row['item_id']);
             if ($item->isNotActivated()) {
-            	$newIntervalLimit++;
+               $newIntervalLimit++;
                }
             unset($manager);
             unset($item);
@@ -494,7 +494,7 @@ if ( isset($_GET['cid']) ) {
             $manager = new cs_todos_manager($environment);
             $item = $manager->getItem($row['item_id']);
             if ($item->isNotActivated()) {
-            	$newIntervalLimit++;
+               $newIntervalLimit++;
                }
             unset($manager);
             unset($item);
@@ -503,30 +503,30 @@ if ( isset($_GET['cid']) ) {
             $manager = $environment->getManager(CS_STEP_TYPE);
             $item = $manager->getItem($row['item_id']);
             if ($item->isNotActivated()) {
-            	$newIntervalLimit++;
+               $newIntervalLimit++;
                }
             unset($item);
             unset($manager);
             break;
 
       }
-   	  }
-   	  if($n * 10 - ($newIntervalLimit - $n * 10) >= 10){
-	   	$item_manager->resetLimits();
-	   	$item_manager->setContextArrayLimit($room_array);
-	    $item_manager->setTypeArrayLimit($type_limit_array);
-	    $item_manager->showNoNotActivatedEntries();
-	    $item_manager->setIntervalLimit($newIntervalLimit);
-	    $result = $item_manager->_performQuery();
-	    $flag = false;
-   	  } else {
-   	  	$item_manager->resetLimits();
-      	$item_manager->setContextArrayLimit($room_array);
-      	$item_manager->setTypeArrayLimit($type_limit_array);
-      	$item_manager->setIntervalLimit($newIntervalLimit);
-      	$result = $item_manager->_performQuery();
-   	  }
-   	  $n++;
+        }
+        if($n * 10 - ($newIntervalLimit - $n * 10) >= 10){
+         $item_manager->resetLimits();
+         $item_manager->setContextArrayLimit($room_array);
+       $item_manager->setTypeArrayLimit($type_limit_array);
+       $item_manager->showNoNotActivatedEntries();
+       $item_manager->setIntervalLimit($newIntervalLimit);
+       $result = $item_manager->_performQuery();
+       $flag = false;
+        } else {
+           $item_manager->resetLimits();
+         $item_manager->setContextArrayLimit($room_array);
+         $item_manager->setTypeArrayLimit($type_limit_array);
+         $item_manager->setIntervalLimit($newIntervalLimit);
+         $result = $item_manager->_performQuery();
+        }
+        $n++;
 
       }
 
@@ -641,18 +641,31 @@ if ( isset($_GET['cid']) ) {
                   setFileArray($item);
                   $description = $environment->getTextConverter()->text_as_html_long($environment->getTextConverter()->cleanDataFromTextArea($item->getDescription()));
                   $user_item = $item->getModificatorItem();
-                  $fullname = $user_item->getFullName();
-                  $email = $user_item->getEmail();
+                  if ( isset($user_item) ) {
+                     $fullname = $user_item->getFullName();
+                     $email = $user_item->getEmail();
+                  } else {
+                     $fullname = '';
+                     $email = '';
+                  }
                   if ( $context_item->isCommunityRoom() ) {
                      if ( empty($_GET['hid']) and !$user_item->isVisibleForAll() ) {
                         $fullname = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
                         $email = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
                      }
                   }
-                  if ( !$user_item->isEmailVisible() ) {
+                  if ( isset($user_item)
+                       and !$user_item->isEmailVisible()
+                     ) {
                      $email = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
                   }
-                  $author = $email.' ('.$fullname.')';
+                  $author = '';
+                  if ( !empty($email) ) {
+                     $author .= $email;
+                  }
+                  if ( !empty($fullname) ) {
+                     $author .= ' ('.$fullname.')';
+                  }
                   unset($email);
                   unset($fullname);
                   $link = $path.$c_single_entry_point.'?cid='.$cid.'&amp;mod='.$linked_item->getItemType().'&amp;fct=detail&amp;iid='.$linked_item->getItemID();
@@ -909,7 +922,7 @@ if ( isset($_GET['cid']) ) {
                switch($item->getLabelType()) {
                   case 'group':
                      $title = $translator->getMessage('RSS_NEW_GROUP_TITLE',$item->getTitle());
-                  	 setFileArray($item);
+                      setFileArray($item);
                      $description = $environment->getTextConverter()->text_as_html_long($environment->getTextConverter()->cleanDataFromTextArea($item->getDescription()));
                      $user_item = $item->getModificatorItem();
                      $fullname = $user_item->getFullName();
@@ -930,7 +943,7 @@ if ( isset($_GET['cid']) ) {
                   break;
                   case 'institution':
                      $title = $translator->getMessage('RSS_NEW_INSTITUTION_TITLE',$item->getTitle());
-                  	 setFileArray($item);
+                      setFileArray($item);
                      $description = $environment->getTextConverter()->text_as_html_long($environment->getTextConverter()->cleanDataFromTextArea($item->getDescription()));
                      $user_item = $item->getModificatorItem();
                      $fullname = $user_item->getFullName();
@@ -951,7 +964,7 @@ if ( isset($_GET['cid']) ) {
                   break;
                   case 'topic':
                      $title = $translator->getMessage('RSS_NEW_TOPIC_TITLE',$item->getTitle());
-                  	 setFileArray($item);
+                      setFileArray($item);
                      $description = $environment->getTextConverter()->text_as_html_long($environment->getTextConverter()->cleanDataFromTextArea($item->getDescription()));
                      $user_item = $item->getModificatorItem();
                      $fullname = $user_item->getFullName();
@@ -1086,7 +1099,9 @@ if ( isset($_GET['cid']) ) {
            <description>'.encode(AS_RSS,$description).'</description>
            <link>'.$link.'</link>
            <pubDate>'.encode(AS_RSS,$date).'</pubDate>'.LF;
-         $rss_item .= '           <author>'.encode(AS_RSS,trim($author)).'</author>'.LF;
+         if ( !empty($author) ) {
+            $rss_item .= '           <author>'.encode(AS_RSS,trim($author)).'</author>'.LF;
+         }
          $rss_item .= '           <guid isPermaLink="false">'.$row['item_id'].'</guid>'.LF;
          $rss_item .= '         </item>';
          $counter++;
