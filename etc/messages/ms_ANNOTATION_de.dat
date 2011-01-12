@@ -6,5 +6,6 @@ $message["ANNOTATION_EDIT"]["de"] = "Anmerkung bearbeiten";
 $message["ANNOTATION_ENTER_NEW"]["de"] = "Anmerkung hinzufügen";
 $message["ANNOTATION_FOR_NEWER_VERSION"]["de"] = "Anmerkung zu einer neueren Version";
 $message["ANNOTATION_FOR_OLDER_VERSION"]["de"] = "Anmerkung zu einer älteren Version";
+$message["ANNOTATION_INDEX"]["de"] = "Anmerkungen";
 $message["ANNOTATION_SAVE_BUTTON"]["de"] = "Anmerkung speichern";
 ?>

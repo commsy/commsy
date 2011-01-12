@@ -439,8 +439,20 @@ class cs_privateroom_item extends cs_room_item {
                }
 
                $translator = $this->_environment->getTranslationObject();
+               // translate newsletter in portal user language
+               if(!$this->_environment->getCurrentUserItem()->isUser()){
+               	// cron translator object
+               	$portal_user = $user->getRelatedCommSyUserItem();
+               	if($translator->isLanguageAvailable($portal_user->getLanguage())){
+               		#$translator->setSessionLanguage($portal_user->getLanguage());
+               		#$translator->setSelectedLanguage($portal_user->getLanguage());
+               		$translator->setSelectedLanguage($portal_user->getLanguage());
+               		unset($portal_user);
+               	}
+               }
                $translator->setRubricTranslationArray($this->getRubricTranslationArray());
                $mail_sequence = $this->getPrivateRoomNewsletterActivity();
+
 
                $body = '';
                $item  = $list2->getFirst();
@@ -452,7 +464,7 @@ class cs_privateroom_item extends cs_room_item {
                   } else {
                      $rubrics = array();
                   }
-                  $count = count($rubrics);
+                  $count = count($rubrics);$count++; // Erhöhung für die Annotations
                   $check_managers = array();
                   $check_rubrics = array();
                   foreach ( $rubrics as $rubric ) {
@@ -468,6 +480,8 @@ class cs_privateroom_item extends cs_room_item {
                      }
                   }
                   $check_managers[] = 'annotation';
+                  $rubrics[] = 'annotation';
+                  pr($rubrics);
 
                   $title = '<a href="'.$curl_text.$item->getItemID().'&amp;mod=home&amp;fct=index">'.$item->getTitle().'</a>';
                   $body_title = BR.BR.$title.''.LF;
@@ -493,6 +507,15 @@ class cs_privateroom_item extends cs_room_item {
                      if ( $rubric_array[1] != 'none' ) {
 
                         $rubric_manager = $this->_environment->getManager($rubric_array[0]);
+                        // translate newsletter to portal user language
+                        if(!$this->_environment->getCurrentUserItem()->isUser()){
+               				$portal_user = $user->getRelatedCommSyUserItem();
+               				if($translator->isLanguageAvailable($portal_user->getLanguage())){
+               					$translator->setSelectedLanguage($portal_user->getLanguage());
+               					unset($portal_user);
+               				}
+               			}
+
                         $rubric_manager->reset();
                         $rubric_manager->setContextLimit($item->getItemID());
                         if ( $mail_sequence =='daily' ) {
@@ -506,9 +529,10 @@ class cs_privateroom_item extends cs_room_item {
                         if ( $rubric_manager instanceof cs_user_manager ) {
                            $rubric_manager->setUserLimit();
                         }
+
                         $rubric_manager->showNoNotActivatedEntries();
                         $rubric_manager->select();
-                        $rubric_list = $rubric_manager->get();        // returns a cs_list of announcement_items
+                        $rubric_list = $rubric_manager->get();       // returns a cs_list of announcement_items
                         $ids = $rubric_manager->getIDs();
                         $rubric_item = $rubric_list->getFirst();
                         $user_manager = $this->_environment->getUserManager();
@@ -518,6 +542,7 @@ class cs_privateroom_item extends cs_room_item {
                         $user_manager->setContextLimit($item->getItemID());
                         $user_manager->select();
                         $user_list = $user_manager->get();
+
                         if ( isset($user_list)
                              and $user_list->isNotEmpty()
                              and $user_list->getCount() == 1
@@ -563,6 +588,9 @@ class cs_privateroom_item extends cs_room_item {
                         }
                         $tempMessage = '';
                         switch ( mb_strtoupper($rubric_array[0], 'UTF-8') ){
+                        	case 'ANNOTATION':
+                        		$tempMessage = $translator->getMessage('ANNOTATION_INDEX');
+                        		break;
                            case 'ANNOUNCEMENT':
                               $tempMessage = $translator->getMessage('ANNOUNCEMENT_INDEX');
                               break;
@@ -904,6 +932,7 @@ class cs_privateroom_item extends cs_room_item {
       $cron_array = array();
 
       $father_cron_array = parent::_cronDaily();
+      #print_r($father_cron_array);
       $cron_array = array_merge($father_cron_array,$cron_array);
 
       ################ BEGIN ###################
@@ -1594,7 +1623,7 @@ class cs_privateroom_item extends cs_room_item {
       }
       return $retour;
    }
-   
+
    function setHomeConfig ($column_array) {
       $this->_addExtra('HOME_CONFIG',$column_array);
    }
@@ -1705,7 +1734,7 @@ class cs_privateroom_item extends cs_room_item {
       } else {
          $this->unsetPortletShowRoomWideSearchBox();
       }
-      
+
       if(in_array('cs_privateroom_home_new_item_view', $portlet_array)){
          $this->setPortletShowNewItemBox();
       } else {
@@ -1723,7 +1752,7 @@ class cs_privateroom_item extends cs_room_item {
       } else {
          $this->unsetPortletShowReleasedEntriesBox();
       }
-      
+
       if(in_array('cs_privateroom_home_tag_view', $portlet_array)){
          $this->setPortletShowTagBox();
       } else {
@@ -1746,7 +1775,7 @@ class cs_privateroom_item extends cs_room_item {
    function issetMyroomDisplayConfig(){
       return $this->_issetExtra('MYROOM_DISPLAY_CONFIG');
    }
-   
+
    function setMyEntriesDisplayConfig ($my_entries_array) {
       $this->_addExtra('MY_ENTRIES_DISPLAY_CONFIG',$my_entries_array);
    }
