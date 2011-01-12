@@ -36,7 +36,7 @@ if(!isset($_GET['roomwide_search_room'])){
 	$context_array = array();
 	$room_name_array = array();
 	// Projekt- und Gruppenraeume
-	$project_list = $user_item->getRelatedProjectList();
+	$project_list = $user_item->getUserRelatedProjectList();
 	$project_item = $project_list->getFirst();
 	while($project_item){
 		$context_array[] = $project_item->getItemID();

@@ -28,7 +28,7 @@ if ($new_private_room){
 
 
 $room_id_array = array();
-$grouproom_list = $current_user_item->getRelatedGroupList();
+$grouproom_list = $current_user_item->getUserRelatedGroupList();
 if ( isset($grouproom_list) and $grouproom_list->isNotEmpty()) {
    $grouproom_list->reverse();
    $grouproom_item = $grouproom_list->getFirst();
@@ -47,7 +47,7 @@ if ( isset($grouproom_list) and $grouproom_list->isNotEmpty()) {
       $grouproom_item = $grouproom_list->getNext();
    }
 }
-$project_list = $current_user_item->getRelatedProjectList();
+$project_list = $current_user_item->getUserRelatedProjectList();
 if ( isset($project_list) and $project_list->isNotEmpty()) {
    $project_item = $project_list->getFirst();
    while ($project_item) {
@@ -55,7 +55,7 @@ if ( isset($project_list) and $project_list->isNotEmpty()) {
        $project_item = $project_list->getNext();
    }
 }
-$community_list = $current_user_item->getRelatedcommunityList();
+$community_list = $current_user_item->getUserRelatedCommunityList();
 if ( isset($community_list) and $community_list->isNotEmpty()) {
    $community_item = $community_list->getFirst();
    while ($community_item) {
