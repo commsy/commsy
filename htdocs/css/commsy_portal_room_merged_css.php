@@ -44,9 +44,9 @@ if (!empty($_GET['cid'])) {
 }
 ?>
 
-#######################################
-#### commsy_right_boxes_css ###########
-#######################################
+/**************************************
+**** commsy_right_boxes_css ***********
+**************************************/
 /*Panel Style*/
 #commsy_panels .commsy_panel, #commsy_panel_form .commsy_panel{
    margin:0px;
@@ -202,9 +202,9 @@ div.div_line{
    border-top:1px solid black;
 }
 
-#######################################
-#### commsy_form_css ##################
-#######################################
+/**************************************
+**** commsy_form_css ******************
+**************************************/
 td {
 }
 
@@ -266,7 +266,7 @@ span.select_link{
 }
 
 td.buttonbar{
-   background-color: none;
+   /*background-color: none;*/
    padding-bottom:2px;
    padding-top:0px;
    white-space:nowrap;
@@ -585,9 +585,9 @@ table.list, div.index_flash {
    background-color: <?php echo($color['list_entry_even'])?>;
 }
 
-#######################################
-#### commsy_index_css #################
-#######################################
+/**************************************
+**** commsy_index_css *****************
+**************************************/
 /*Special Styles*/
 div.indexdate{
    color:<?php echo($color['date_title'])?>;
@@ -632,9 +632,9 @@ span.searched_text_green{
   padding:0px;
 }
 
-#######################################
-#### commsy_home_css ##################
-#######################################
+/**************************************
+**** commsy_home_css ******************
+**************************************/
 h2.pagetitle{
   margin-bottom:0px;
   margin-top: 0px;
@@ -740,9 +740,9 @@ table.homelist {
    font-size:10pt;
 }
 
-#######################################
-#### commsy_myarea_css ################
-#######################################
+/**************************************
+**** commsy_myarea_css ****************
+**************************************/
 div.myarea_frame {
    position:relative;
    width: 13.5em;
