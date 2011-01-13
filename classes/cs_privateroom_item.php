@@ -464,7 +464,7 @@ class cs_privateroom_item extends cs_room_item {
                   } else {
                      $rubrics = array();
                   }
-                  $count = count($rubrics);$count++; // Erhöhung für die Annotations
+                  $count = count($rubrics);
                   $check_managers = array();
                   $check_rubrics = array();
                   foreach ( $rubrics as $rubric ) {
@@ -480,8 +480,6 @@ class cs_privateroom_item extends cs_room_item {
                      }
                   }
                   $check_managers[] = 'annotation';
-                  $rubrics[] = 'annotation';
-                  pr($rubrics);
 
                   $title = '<a href="'.$curl_text.$item->getItemID().'&amp;mod=home&amp;fct=index">'.$item->getTitle().'</a>';
                   $body_title = BR.BR.$title.''.LF;
@@ -588,9 +586,6 @@ class cs_privateroom_item extends cs_room_item {
                         }
                         $tempMessage = '';
                         switch ( mb_strtoupper($rubric_array[0], 'UTF-8') ){
-                        	case 'ANNOTATION':
-                        		$tempMessage = $translator->getMessage('ANNOTATION_INDEX');
-                        		break;
                            case 'ANNOUNCEMENT':
                               $tempMessage = $translator->getMessage('ANNOUNCEMENT_INDEX');
                               break;
