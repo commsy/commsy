@@ -165,6 +165,12 @@ class cs_file_item extends cs_item {
       $this->_icon['pptx']    = "ppt.png";
       //Lassi-Dateien
       $this->_icon['lsi']     = "lassi_commsy.png";
+
+      //smartboard
+      $this->_icon['rtf']     = "notebook.png";
+      $this->_mime['rtf']     = 'aapplication/x-smarttech-notebook';
+
+
       // open office
       $this->_mime['odf']     = 'application/smath';
       $this->_icon['odf']     = "ooo_formula_commsy.png";
@@ -191,8 +197,8 @@ class cs_file_item extends cs_item {
       // Consideo Modeler
       $this->_icon['cons']      = "consideo.png";
       $this->_mime['cons']      = 'application/consideo';
-      
-      
+
+
       $this->_icon['unknown'] = "unknown.png";
 
       $this->cs_item($environment);
@@ -660,7 +666,7 @@ class cs_file_item extends cs_item {
       }
       return $retour;
    }
-   
+
    function setTempUploadFromEditorSessionID ($value) {
       $this->_setValue('temp_upload_session_id', $value);
    }
