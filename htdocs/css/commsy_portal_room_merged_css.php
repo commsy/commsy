@@ -338,28 +338,28 @@ span.key {
    border-collapse:collapse;
 }
 
-#form tr.textarea, td {
+#form tr.textarea, #form td {
    position:relative;
    vertical-align: top;
 }
 
-#form tr.textarea, td.key {
+#form tr.textarea, #form td.key {
    position:relative;
    padding-top: 13px; }
 
-#form tr.textarea, td.example {
+#form tr.textarea, #form td.example {
    position:relative;
    padding-top: 13px; }
 
-#form tr.radio, td {
+#form tr.radio, #form td {
    position:relative;
    vertical-align: top; }
 
-#form tr.radio, td.key {
+#form tr.radio, #form td.key {
    position:relative;
    padding-top: 13px; }
 
-#form tr.radio, td.example {
+#form tr.radio, #form td.example {
    position:relative;
    padding-top: 13px; }
 
