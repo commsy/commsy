@@ -1,6 +1,6 @@
 <?php
-include_once('classes/external_classes/scorm/scormlib.php');
-include_once('classes/external_classes/scorm/weblib.php');
+//include_once('classes/external_classes/scorm/scormlib.php');
+//include_once('classes/external_classes/scorm/weblib.php');
 
 if ( !empty($_GET['iid']) ) {
 	global $c_scorm_dir;
@@ -15,90 +15,97 @@ if ( !empty($_GET['iid']) ) {
    $path_to_file = $disc_manager->getFilePath();
    unset($disc_manager);
    
-   #if ( !is_dir('./'.$c_scorm_dir.'/') ) {
-   #	mkdir('./'.$c_scorm_dir.'/');
-   #}
-   
    $dir = './htdocs/'.$c_scorm_dir.'/'.$path_to_file.'scorm_'.$file->getDiskFileNameWithoutFolder();
    if ( !is_dir($dir) ) {
       $zip = new ZipArchive;
-		$target_directory = './htdocs/'.$c_scorm_dir.'/'.$path_to_file.'scorm_'.$file->getDiskFileNameWithoutFolder().'/';
-
-		$source_file = $file->getDiskFileName();
-		$res = $zip->open($source_file);
-		if ( $res === TRUE ) {
-		   $zip->extractTo($target_directory);
-		   $zip->close();
-		}
-		unset($zip);
+  
+  		$source_file = $file->getDiskFileName();
+  		$res = $zip->open($source_file);
+  		if ( $res === TRUE ) {
+  		   $zip->extractTo($target_directory);
+  		   $zip->close();
+  		}
+  		unset($zip);
    }
    
-   $manifest_file = './htdocs/'.$c_scorm_dir.'/'.$path_to_file.'scorm_'.$file->getDiskFileNameWithoutFolder().'/imsmanifest.xml';
-   $manifest_file_xml = file_get_contents($manifest_file);
+   // read xml manifest and create object
+   $manifest_file = $dir. '/imsmanifest.xml';
+   $xml_object = simplexml_load_file($manifest_file);
+   $namespaces = $xml_object->getDocNamespaces();
+   $xml_object->registerXPathNamespace('ns', $namespaces['']);
    
-   $manifest_file_xml_array = explode("\n", $manifest_file_xml);
-   
-   $html_file = '';
-   foreach($manifest_file_xml_array as $manifest_file_xml_line){
-   	if(stristr($manifest_file_xml_line, 'type="webcontent"')){
-   		$matches = array();
-   		preg_match('~href="([^"])*"~isu', $manifest_file_xml_line, $matches);
-   		if(isset($matches[0])){
-   			if(stristr($matches[0], 'href')){
-   			   $href_array = explode('"', $matches[0]);
-   			   $html_file = $href_array[1];
-   			}
-   		}
-   	}
+   // find organization
+   $result = $xml_object->xpath('//ns:organizations[@default]');
+   $organization = '';
+   if(sizeof($result) == 0) {
+     // use first
+     $xpath_first_organization = $xml_object->xpath('//ns:organizations/ns:organization[position() = 1]');
+     $organization = (string) $xpath_first_organization[0]->attributes()->identifier;
+     
+   } else {
+     // use default
+     $organization = (string) $result[0]->attributes()->default;
    }
    
-   #$html_include = file_get_contents('./'.$c_scorm_dir.'/'.$path_to_file.'scorm_'.$file->getDiskFileNameWithoutFolder().'/'.$html_file);
+   // find entry point
+   $result = $xml_object->xpath('//ns:organizations/ns:organization[@identifier="' . $organization . '"]//ns:item[@identifierref][position() = 1]');
+   $entry_identifier = (string) $result[0]->attributes()->identifierref;
    
+   // get href for entry point
+   $result = $xml_object->xpath('//ns:resources/ns:resource[@identifier="' . $entry_identifier . '"]');
+   $html_file = $result[0]->attributes()->href;
    
-   //resource identifier
+   // create navigation html
+   if(true/*!file_exists($dir . '/navigation.html')*/) {
+     $navigation = '';
+     $navigation .= '<html>' . LF;
+     $navigation .= '<body>' . LF;
+     $navigation .= '123' . LF;
+     $navigation .= '</body>' . LF;
+     $navigation .= '</html>' . LF;
+     
+     // write to disk
+     $handle = fopen($dir . '/navigation_generated.html', 'w');
+     fwrite($handle, $navigation);
+     fclose($handle);
+   }
    
-   /*$pattern = '/&(?!\w{2,6};)/';
-   $replacement = '&amp;';
-   $xmltext = preg_replace($pattern, $replacement, $manifest_file_xml);
-
-   $objXML = new xml2Array();
-   $blocks = $objXML->parse($xmltext);
-    
-   $scoes = new stdClass();
-   $scoes->version = '';
+   include_once('functions/misc_functions.php');
    
-   $scorm = scorm_get_manifest($blocks,$scoes);
-
-   #pr($scorm);
-   
-   $toc = get_scorm_toc($scorm);*/
-   
+   // set output mode
+   $environment->setOutputMode('BLANK');
+         
    $html  = '';
-   $html .= '<html>';
-   $html .= '<frameset rows="100%">';
-   $html .= '<frame src="'.$c_scorm_dir.'/'.$path_to_file.'scorm_'.$file->getDiskFileNameWithoutFolder().'/'.$html_file.'">';
-   $html .= '</frameset>';
-   $html .= '</html>';
+   $html .= '<html>' . LF;
+   $html .= '<head>' . LF;
+   $html .= '<script type="text/javascript" src="javascript/jQuery/commsy/' . 'scorm_functions_7_5_1_2.js"></script>' . LF;
+   $html .= '</head>' . LF;
+   $html .= '<frameset rows="100%" framespacing="0" frameborder="0" border="0" cols="300,*">' . LF;
+   $html .= '<frame name="scorm_navigation" marginwidth="0" marginheight="0" style="background-color: rgb(200, 200, 200);" src="'.$c_scorm_dir.'/'.$path_to_file.'scorm_'.$file->getDiskFilenameWithoutFolder().'/navigation_generated.html"/>' . LF;
+   $html .= '<frame name="scorm_content" marginwidth="0" marginheight="0" src="'.$c_scorm_dir.'/'.$path_to_file.'scorm_'.$file->getDiskFileNameWithoutFolder().'/'.$html_file.'"/>' . LF;
+   $html .= '</frameset>' . LF;
+   $html .= '</html>' . LF;
    
-   $page->add($html);
+   //$page->add($html);
+   echo $html;
 }
 
-function get_scorm_toc($scorm){
-	$manifest_array = array();
-	$keys = array_keys($scorm->elements);
-   foreach($keys as $key){
-   	if(stristr($key, 'MANIFEST')){
-   		$manifest_array = $scorm->elements[$key];
-   	}
-   }
-   #pr($manifest_array);
-   $organisation_array = array();
-   $organisation_keys = array_keys($manifest_array);
-   foreach($organisation_keys as $key){
-      if(stristr($key, 'ORG')){
-         $organisation_array[] = $manifest_array[$key];
-      }
-   }
-   #pr($organisation_array);
-}
+// function get_scorm_toc($scorm){
+// 	$manifest_array = array();
+// 	$keys = array_keys($scorm->elements);
+//    foreach($keys as $key){
+//    	if(stristr($key, 'MANIFEST')){
+//    		$manifest_array = $scorm->elements[$key];
+//    	}
+//    }
+//    #pr($manifest_array);
+//    $organisation_array = array();
+//    $organisation_keys = array_keys($manifest_array);
+//    foreach($organisation_keys as $key){
+//       if(stristr($key, 'ORG')){
+//          $organisation_array[] = $manifest_array[$key];
+//       }
+//    }
+//    #pr($organisation_array);
+// }
 ?>

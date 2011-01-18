@@ -244,4 +244,37 @@ if ( !empty($c_plugin_array) ) {
       $configuration_rubric_extras_link_list->add($link_item);
    }
 }
+
+   ################################################
+   # media integration
+   ################################################
+   global $c_media_integration;
+   // !!!!
+   // NOTE: when opening media integration for all room contexts, make sure that mediadistribution online is only accessable for community rooms(see cs_configuration_mediaintegration_form)
+   // this restriction should always be implemented
+   // test it
+   // remove page protection in configuration_mediaintegration.php
+   // !!!!
+   if(  $environment->inCommunityRoom() &&
+        isset($c_media_integration) &&
+        (
+          $c_media_integration === true ||                                                                            // activ in all community rooms
+          (
+            is_array($c_media_integration) && in_array($environment->getCurrentContextID(), $c_media_integration)     // restricted community rooms
+          )
+        )
+     ) {
+      $link_item = new cs_link();
+      $link_item->setTitle($translator->getMessage('CONFIGURATION_MEDIA_INTEGRATION'));
+      $link_item->setDescription($translator->getMessage('CONFIGURATION_MEDIA_INTEGRATION_DESC'));
+      $link_item->setIconPath('images/commsyicons/48x48/config/video.png');
+      $link_item->setIconPathForNavigation('images/commsyicons/22x22/config/video.png');
+      $link_item->setContextID($environment->getCurrentContextID());
+      $link_item->setModule('configuration');
+      $link_item->setFunction('mediaintegration');
+      $link_item->setParameter(array());
+      $configuration_rubric_extras_link_list->add($link_item);
+      unset($link_item);
+   }
+  
 ?>

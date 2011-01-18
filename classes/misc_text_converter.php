@@ -977,7 +977,8 @@ class misc_text_converter {
       $reg_exp_array['(:slideshare']  = '~\\(:slideshare (.*?):\\)~eu';
       $reg_exp_array['[slideshare']   = '~\[slideshare (.*?)\]~eu';
       $reg_exp_array['(:flickr']      = '~\\(:flickr (.*?):\\)~eu';
-      $reg_exp_array['(:scorm']  = '~\\(:scorm (.*?):\\)~eu';
+      $reg_exp_array['(:scorm']       = '~\\(:scorm (.*?):\\)~eu';
+      $reg_exp_array['(:mdo']        = '~\\(:mdo (.*?):\\)~eu';
 
       // Test auf erforderliche Software; Windows-Server?
       //$reg_exp_array['(:pdf']       = '/\\(:pdf (.*?)(\\s.*?)?\\s*?:\\)/e';
@@ -1110,6 +1111,8 @@ class misc_text_converter {
                      } elseif ( $key == '(:scorm' and mb_stristr($value_new,'(:scorm') ) {
                         $value_new = $this->_formatScorm($value_new,$args_array,$file_array);
                         break;
+                     } elseif ( $key == '(:mdo' and mb_stristr($value_new,'(:mdo') ) {
+                        $value_new = $this->_formatMDO($value_new,$args_array);
                      }
                   }
 
@@ -2602,61 +2605,61 @@ class misc_text_converter {
          if ( !empty($file_name_array[$array[1]]) ) {
          	global $c_scorm_dir;
          	
-            $temp_file = $file_name_array[$array[1]];
-            
-            $file_manager = $this->_environment->getFileManager();
-			   $file = $file_manager->getItem($temp_file->getFileID());
-			
-			   // is zip unpacked?
-			   $disc_manager = $this->_environment->getDiscManager();
-			   $disc_manager->setPortalID($this->_environment->getCurrentPortalID());
-			   $disc_manager->setContextID($this->_environment->getCurrentContextID());
-			   $path_to_file = $disc_manager->getFilePath();
-			   unset($disc_manager);
-			   
-			   $dir = './htdocs/'.$c_scorm_dir.'/'.$path_to_file.'scorm_'.$file->getDiskFileNameWithoutFolder();
-			   if ( !is_dir($dir) ) {
-			      $zip = new ZipArchive;
-			      $target_directory = './htdocs/'.$c_scorm_dir.'/'.$path_to_file.'scorm_'.$file->getDiskFileNameWithoutFolder().'/';
-			
-			      $source_file = $file->getDiskFileName();
-			      $res = $zip->open($source_file);
-			      if ( $res === TRUE ) {
-			         $zip->extractTo($target_directory);
-			         $zip->close();
-			      }
-			      unset($zip);
-			   }
-			   
-			   // create link
-			   if(file_exists('./htdocs/'.$c_scorm_dir.'/'.$path_to_file.'scorm_'.$file->getDiskFileNameWithoutFolder().'/ReloadContentPreview.htm')){
-			   	$retour .= '<a href="'.$c_scorm_dir.'/'.$path_to_file.'scorm_'.$file->getDiskFileNameWithoutFolder().'/ReloadContentPreview.htm" target="_NEW">Scorm:'.$file->getFileName().'</a>';
-			   } else {
-				   $manifest_file = './htdocs/'.$c_scorm_dir.'/'.$path_to_file.'scorm_'.$file->getDiskFileNameWithoutFolder().'/imsmanifest.xml';
-				   $manifest_file_xml = file_get_contents($manifest_file);
-				   $manifest_file_xml_array = explode("\n", $manifest_file_xml);
-				   $html_file = '';
-				   foreach($manifest_file_xml_array as $manifest_file_xml_line){
-				      if(stristr($manifest_file_xml_line, 'type="webcontent"')){
-				         $matches = array();
-				         preg_match('~href="([^"])*"~isu', $manifest_file_xml_line, $matches);
-				         if(isset($matches[0])){
-				            if(stristr($matches[0], 'href')){
-				               $href_array = explode('"', $matches[0]);
-				               $html_file = $href_array[1];
-				            }
-				         }
-				      }
-				   }
-				   $retour .= '<a href="'.$c_scorm_dir.'/'.$path_to_file.'scorm_'.$file->getDiskFileNameWithoutFolder().'/'.$html_file.'" target="_NEW">Scorm:'.$file->getFileName().'</a>';
-			   }
-			   
-            #$params['iid'] = $file->getFileID();
-            #$params['output'] = 'blank';
-            #$retour .= ahref_curl($this->_environment->getCurrentContextID(), 'scorm', 'index', $params, 'Scorm:'.$file->getFileName(), $file->getFileName(), '_NEW');
+          $temp_file = $file_name_array[$array[1]];
+          $file_manager = $this->_environment->getFileManager();
+          $file = $file_manager->getItem($temp_file->getFileID());
+          
+          $retour .= ahref_curl(  $this->_environment->getCurrentContextID(),
+                                  'scorm',
+                                  'index',
+                                  array('iid' => $temp_file->getFileID()),
+                                  'Scorm:' . $file->getFileName(),
+                                  'Scorm',
+                                  '_NEW');
          }
       }
       return $retour;
+   }
+   
+   private function _formatMDO($value_new, $args_array) {
+     $retour = '';
+     $access = false;
+     
+     if(!empty($args_array[1])) {
+       $mdo_id = $args_array[1];
+       
+       // check for rights for mdo
+       $current_context_item = $this->_environment->getCurrentContextItem();
+       if($current_context_item->isProjectRoom()) {
+         // does this project room has any community room?
+         $community_list = $current_context_item->getCommunityList();
+         if($community_list->isNotEmpty()) {
+           // check for community rooms activated the mdo feature
+           $community = $community_list->getFirst();
+           while($community) {
+             $mdo_active = $community->getMDOActive();
+             if(!empty($mdo_active) && $mdo_active != '-1') {
+               // mdo access granted, get content from Mediendistribution-Online
+               $access = true;
+               
+               // stop searching here
+               break;
+             }
+             
+             $community = $community_list->getNext();
+           }
+         }
+       }
+       
+       if($access === true) {
+         // create div for content
+         $retour .= '<div id="mdo_content" style="overflow: scroll;">' . LF;
+         $retour .= "show content with id: " . $mdo_id . LF;
+         $retour .= '</div>';
+       }
+     }
+     
+     return $retour;
    }
    
    /**
