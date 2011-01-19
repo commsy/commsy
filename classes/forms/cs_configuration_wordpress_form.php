@@ -31,6 +31,7 @@ $_skin_array = array();
 class cs_configuration_wordpress_form extends cs_rubric_form {
 
   var $_set_deletion_values = false;
+  private $_saving_allowed = true;
 
   /** constructor
    * the only available constructor
@@ -65,6 +66,18 @@ class cs_configuration_wordpress_form extends cs_rubric_form {
       }
     }
     asort($this->_array_info_text);
+
+    $wordpress_manager = $this->_environment->getWordPressManager();
+    $current_user = $this->_environment->getCurrentUserItem();
+    if ( isset($this->_item)
+         and !$wordpress_manager->isUserAllowedToConfig($this->_item->getWordpressId(),$current_user->getUserID())
+       ) {
+       $this->_saving_allowed = false;
+       $this->_error_array[] = $this->_translator->getMessage('WORDPRESS_CONFIG_ACCESS_NOT_GRANTED');
+       $this->_form->setFailure('option','');
+    }
+    unset($wordpress_manager);
+    unset($current_user);
   }
 
   /** create the form, INTERNAL
@@ -141,8 +154,8 @@ class cs_configuration_wordpress_form extends cs_rubric_form {
             '',
             '',
             false,
-            $this->_translator->getMessage('COMMON_CHOOSE_BUTTON'),
-            'option',
+            '',
+            '',
             '',
             '',
             '15',
@@ -185,7 +198,7 @@ class cs_configuration_wordpress_form extends cs_rubric_form {
 
     // buttons
     if ( isset($this->_item) and $this->_item->existWordpress() ) {
-      $this->_form->addButtonBar('option',$this->_translator->getMessage('COMMON_CHANGE_BUTTON'),'',$this->_translator->getMessage('WORDPRESS_DELETE_BUTTON'),'','');
+      $this->_form->addButtonBar('option',$this->_translator->getMessage('COMMON_CHANGE_BUTTON'),'',$this->_translator->getMessage('WORDPRESS_DELETE_BUTTON'),'','','',!$this->_saving_allowed);
     } else {
       $this->_form->addButtonBar('option',$this->_translator->getMessage('WORDPRESS_SAVE_BUTTON'));
     }
@@ -229,8 +242,8 @@ class cs_configuration_wordpress_form extends cs_rubric_form {
         $this->_values['wordpresslink'] = 1;
       }
       $this->_values['skin_choice'] = $this->_item->getWordpressSkin();
+      $this->_values['member_role'] = $this->_item->getWordpressMemberRole();
     } else {
-
       $this->_values['wordpresstitle'] = $this->_item->getWordpressTitle();
       $this->_values['skin_choice'] = 'twentyten';
       $this->_values['admin'] = 'admin';

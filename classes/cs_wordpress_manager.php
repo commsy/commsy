@@ -27,16 +27,24 @@ include_once('functions/text_functions.php');
  */
 include_once('functions/date_functions.php');
 
+/*
+ * some spezific constants
+ */
+define('CS_STATUS_WP_ADMIN',  'administrator');
+define('CS_STATUS_WP_EDITOR', 'editor');
+define('CS_STATUS_WP_AUTHOR', 'author');
+define('CS_STATUS_WP_CONTRI', 'contributor');
+
 /** class for database connection to the database table "homepage"
  * this class implements a database manager for the table "homepage_page"
  */
-
 class cs_wordpress_manager extends cs_manager {
 
   protected $CW = false;
   protected $wp_user = false;
   private $_wp_screenshot_array = array();
   private $_wp_skin_option_array = array();
+  private $_with_session_caching = false;
 
   function cs_wordpress_manager($environment) {
     global $c_use_soap_for_wordpress, $c_wordpress_path_url;
@@ -451,6 +459,124 @@ class cs_wordpress_manager extends cs_manager {
       $retour = 'screenshot.png';
       if ( !empty($this->_wp_screenshot_array[$name]) ) {
          $retour = $this->_wp_screenshot_array[$name];
+      }
+      return $retour;
+   }
+
+  /** ask, if user is allowed to export an item to wordpress
+   * this method returns a boolean, if an user is allowed to export an item
+   *
+   * @param int wordpress_id the id of the wordpress blog
+   * @param string user_login the user_id of the user
+   * @return bool retour true: user is allowed, false: user is not allowed
+   */
+   public function isUserAllowedToExportItem ( $wordpress_id, $user_login ) {
+      $retour = false;
+      if ( !empty($wordpress_id) ) {
+         $session_item = $this->_environment->getSessionItem();
+         if ( $this->_with_session_caching
+              and $session_item->issetValue('wordpress_allowed_export_item_'.$wordpress_id)
+            ) {
+            $value = $session_item->getValue('wordpress_allowed_export_item_'.$wordpress_id);
+            if ( $value == 1 ) {
+               $retour = true;
+            }
+         } else {
+            $role = $this->CW->getUserRole($session_item->getSessionID(),$wordpress_id,$user_login);
+            if ( empty($role)
+                 or is_soap_fault($role)
+               ) {
+               $current_context = $this->_environment->getCurrentContextItem();
+               $role = $current_context->getWordpressMemberRole();
+            }
+            if ( !empty($role) ) {
+               if ( $role == CS_STATUS_WP_ADMIN
+                    or $role == CS_STATUS_WP_EDITOR
+                    or $role == CS_STATUS_WP_AUTHOR
+                    or $role == CS_STATUS_WP_CONTRI
+                  ) {
+                  $retour = true;
+               }
+               if ( $this->_with_session_caching ) {
+                  $session_value = -1;
+                  if ( $retour ) {
+                     $session_value = 1;
+                  }
+                  $session_item->setValue('wordpress_allowed_export_item_'.$wordpress_id,$session_value);
+               }
+            }
+         }
+         unset($session_item);
+      }
+      return $retour;
+   }
+
+  /** ask, if user is allowed to configure the wordpress blog
+   * this method returns a boolean, if an user is allowed to configure a wordpress blog
+   *
+   * @param int wordpress_id the id of the wordpress blog
+   * @param string user_login the user_id of the user
+   * @return bool retour true: user is allowed, false: user is not allowed
+   */
+   public function isUserAllowedToConfig ( $wordpress_id, $user_login ) {
+      $retour = false;
+      if ( !empty($wordpress_id) ) {
+         $session_item = $this->_environment->getSessionItem();
+         if ( $this->_with_session_caching
+              and $session_item->issetValue('wordpress_allowed_config_'.$wordpress_id)
+            ) {
+            $value = $session_item->getValue('wordpress_allowed_config_'.$wordpress_id);
+            if ( $value == 1 ) {
+               $retour = true;
+            }
+         } else {
+            $role = $this->CW->getUserRole($session_item->getSessionID(),$wordpress_id,$user_login);
+            if ( empty($role)
+                 or is_soap_fault($role)
+               ) {
+               $current_context = $this->_environment->getCurrentContextItem();
+               $role = $current_context->getWordpressMemberRole();
+               unset($current_context);
+            }
+            if ( empty($role) ) {
+               $current_user_item = $this->_environment->getCurrentUserItem();
+               if ( $current_user_item->isModerator() ) {
+                  $role = CS_STATUS_WP_ADMIN;
+               }
+               unset($current_user_item);
+            }
+            if ( !empty($role) ) {
+               if ( $role == CS_STATUS_WP_ADMIN ) {
+                  $retour = true;
+               }
+               if ( $this->_with_session_caching ) {
+                  $session_value = -1;
+                  if ( $retour ) {
+                     $session_value = 1;
+                  }
+                  $session_item->setValue('wordpress_allowed_config_'.$wordpress_id,$session_value);
+               }
+            }
+         }
+         unset($session_item);
+      } else {
+         $current_user_item = $this->_environment->getCurrentUserItem();
+         if ( $current_user_item->isModerator() ) {
+            $role = CS_STATUS_WP_ADMIN;
+         }
+         unset($current_user_item);
+         if ( !empty($role) ) {
+            if ( $role == CS_STATUS_WP_ADMIN ) {
+               $retour = true;
+            }
+            if ( $this->_with_session_caching ) {
+               $session_value = -1;
+               if ( $retour ) {
+                  $session_value = 1;
+               }
+               $session_item->setValue('wordpress_allowed_config_'.$wordpress_id,$session_value);
+            }
+         }
       }
       return $retour;
    }
