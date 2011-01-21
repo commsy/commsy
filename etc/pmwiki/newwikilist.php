@@ -10,13 +10,15 @@ if ($handle = opendir('.')) {
           chdir($file.'/local');
           $temp_array = array();
           $temp_array['dir'] = $file;
-          $temp_array['time'] = filemtime($file);
+          #$temp_array['time'] = filemtime($file);
           if ( file_exists('inc_config.php') ){
+             $temp_array['time'] = filemtime('inc_config.php');
              include('inc_config.php');
              $temp_array['title'] = $WIKI_WIKI_TITLE;
              $wiki_array[] = $temp_array;
              $wiki_array[] = $temp_array;
           } elseif ( file_exists('commsy_config.php') ) {
+             $temp_array['time'] = filemtime('commsy_config.php');
              $commsy_config = file_get_contents('commsy_config.php');
              if ( !empty($commsy_config) ) {
                 $treffer = array();
