@@ -119,7 +119,7 @@ class class_ckeditor extends cs_plugin {
                      startupFocus: false,
                      dialog_startupFocusTab: false,
                      resize_enabled: false,
-                     extraPlugins: "CommSyImages,CommSyFiles,CommSyMDO",
+                     extraPlugins: "CommSyImages,CommSyMDO",
                      toolbar :
                      [
                         [ \'Cut\', \'Copy\', \'Paste\', \'PasteFromWord\', \'-\', \'Undo\', \'Redo\', \'-\', \'Bold\', \'Italic\', \'Underline\', \'Strike\', \'Subscript\', \'Superscript\', \'-\', \'NumberedList\', \'BulletedList\', \'Outdent\', \'Indent\', \'Blockquote\', \'-\', \'TextColor\', \'BGColor\', \'-\', \'RemoveFormat\']
