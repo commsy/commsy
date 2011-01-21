@@ -808,3 +808,11 @@ div.myarea_content_bottom {
    padding:0px;
    background-color: <?php echo($color['myarea_content_backround'])?>;
 }
+
+/**************************************
+**** commsy_scorm_css *****************
+**************************************/
+
+div.scorm_navigation_block {
+  margin-top: 5px;
+  margin-left: 10px;

@@ -22,7 +22,7 @@ if ( !empty($_GET['iid']) ) {
   		$source_file = $file->getDiskFileName();
   		$res = $zip->open($source_file);
   		if ( $res === TRUE ) {
-  		   $zip->extractTo($target_directory);
+  		   $zip->extractTo($dir);
   		   $zip->close();
   		}
   		unset($zip);
@@ -59,8 +59,36 @@ if ( !empty($_GET['iid']) ) {
    if(true/*!file_exists($dir . '/navigation.html')*/) {
      $navigation = '';
      $navigation .= '<html>' . LF;
+     $navgiation .= '<head>' . LF;
+     $navigation .= '<link rel="stylesheet" media="screen" type="text/css" href="'.$c_commsy_url_path.'/css/commsy_portal_room_merged_css.php?cid='.$environment->getCurrentContextID().'"/>'.LF;
+     $navigatio .= '</head>' . LF;
      $navigation .= '<body>' . LF;
-     $navigation .= '123' . LF;
+     
+     // create navigation from active organization
+     $result = $xml_object->xpath('//ns:organizations/ns:organization[@identifier="' . $organization . '"]/ns:title');
+     $organization_title = (string) $result[0];
+     
+     $navigation .= '<div class="scorm_navigation_block">' . LF;
+     $navigation .= $organization_title . LF;
+     
+     // get items in organization hierarchie(first level)
+     $result = $xml_object->xpath('//ns:organizations/ns:organization[@identifier="' . $organization . '"]/ns:item');
+     foreach($result as $item) {
+       $identifier = (string) $item->attributes()->identifier;
+       $navigation .= '<div class="scorm_navigation_block">' . LF;
+       $navigation .= (string) $item->title . LF;
+       
+       // get sub-items
+       $sub_result = $xml_object->xpath('//ns:organizations/ns:organization[@identifier="' . $organization . '"]/ns:item[@identifier="' . $identifier . '"]/ns:item/ns:title');
+       foreach($sub_result as $title) {
+         $navigation .= '<div class="scorm_navigation_block">' . LF;
+         $navigation .= (string) $title . LF;
+         $navigation .= '</div>' . LF;
+       }
+       $navigation .= '</div>' . LF;
+     }
+     $navigation .= '</div>' . LF;
+     
      $navigation .= '</body>' . LF;
      $navigation .= '</html>' . LF;
      
