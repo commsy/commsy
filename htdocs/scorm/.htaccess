@@ -1,0 +1,6 @@
+RewriteEngine on
+RewriteRule ^(.*)$ route.php
+
+#order deny,allow
+#deny from all
+#Options -Indexes
