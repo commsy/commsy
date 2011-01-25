@@ -70,6 +70,8 @@ class cs_links_manager extends cs_manager {
   var $_version_id_limit = NULL;
 
   var $_all_link_file_data = array();
+  
+  var $_file_to_material_data = array();
 
   var $_item_id_array = array();
 
@@ -716,7 +718,30 @@ class cs_links_manager extends cs_manager {
          include_once('functions/error_functions.php');trigger_error("Problem creating File-Link query: ".$query, E_USER_WARNING);
       }
    }
-
+   
+   function getMaterialIDForFileID($file_id) {
+      if(isset($this->_file_to_material_data[$file_id])) {
+        return $this->_file_to_material_data[$file_id];
+      } else {
+        $query = '
+          SELECT
+            item_iid
+          FROM
+            ' . $this->addDatabasePrefix("item_link_file") . '
+          WHERE
+            file_id="' . encode(AS_DB, $file_id) . '" AND
+            deletion_date IS NULL
+        ';
+        $result = $this->_db_connector->performQuery($query);
+        if(!isset($result)) {
+          include_once('functions/error_functions.php');
+          trigger_error("Problems loading file links: ".$query, E_USER_WARNING);
+        } else {
+          $this->_file_to_material_data[$file_id] = $result[0]['item_iid'];
+          return $result[0]['item_iid'];
+        }
+      }
+   }
 
    function getFileLinks ($from_item) {
       $data = array();
@@ -736,7 +761,7 @@ class cs_links_manager extends cs_manager {
                }
             }
          } else {
-        $query = "SELECT * FROM ".$this->addDatabasePrefix("item_link_file");
+            $query = "SELECT * FROM ".$this->addDatabasePrefix("item_link_file");
             $query .= " WHERE item_iid=".encode(AS_DB,$from_item->getItemID());
             $query .= " AND item_vid=".encode(AS_DB,$version_id);
             $query .= " AND deletion_date IS NULL";

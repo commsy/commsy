@@ -73,9 +73,6 @@ $c_enable_htmltextarea_security = false;
 // use minimized javascript
 // $c_minimized_js = false;
 
-// subfolder in /htdocs für SCORM-content
-// $c_scorm_dir = 'scorm';
-
 // use new private room
 //$c_use_new_private_room = true;
 
