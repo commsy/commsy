@@ -713,7 +713,7 @@ $message["COMMON_TEXT_INCLUDING_MEDIA_TEXT"]["de"] = "<ol style=&quot;font-weigh
     <li>(:flash DATEINAME play=true width=ZAHL:) für swf und flv</li>
     <li>(:youtube FILM-ID:) oder (:wmplayer FILM-ID:) für Videos auf youtube</li>
     <li>(:googlevideo FILM-ID:) für Videos bei google</li>
-    <li>(:lecture2go DATEINAME server=SERVER:) für Veranstaltungsaufzeichnungen von Lecture2Go [<a href=&quot;http://www.commsy.net/pmwiki.php?n=Software/Features&id=81&quot; target=&quot;_blank&quot;>Details</a>]</li>
+    <li>(:lecture2go DATEINAME:) für Veranstaltungsaufzeichnungen von Lecture2Go [<a href=&quot;http://www.commsy.net/pmwiki.php?n=Software/Features&id=81&quot; target=&quot;_blank&quot;>Details</a>]</li>
     <li>Argumente:
     <ul>
         <li>lfloat bzw. rfloat: Textumfluss von rechts bzw. links</li>

@@ -17,6 +17,12 @@ $message["WORDPRESS_MODIFY_ERROR_NOT_ALLOWED"]["en"] = "You are not allowed in W
 $message["WORDPRESS_SAVE_BUTTON"]["en"] = "Create wordpress blog";
 $message["WORDPRESS_SELECT_MEMBER_ROLE"]["en"] = "Role of new room members in blog";
 $message["WORDPRESS_SELECT_MEMBER_ROLE_ADMINISTRATOR"]["en"] = "Admin";
+$message["WORDPRESS_SELECT_MEMBER_ROLE_AUTHOR"]["en"] = "Author";
+$message["WORDPRESS_SELECT_MEMBER_ROLE_DESCRIPTION"]["en"] = "Administrator - Somebody who has access to all the administration features
+Editor - Somebody who can publish and manage posts and pages as well as manage other users' posts, etc.
+Author - Somebody who can publish and manage their own posts
+Subscriber - Somebody who can only manage their profile";
 $message["WORDPRESS_SELECT_MEMBER_ROLE_EDITOR"]["en"] = "Editor";
 $message["WORDPRESS_SELECT_MEMBER_ROLE_SUBSCRIBER"]["en"] = "Read access / subscriber";
+$message["WORDPRESS_SKIN_DESCRIPTION"]["en"] = "There are more informations about this themes in your %1.";
 ?>

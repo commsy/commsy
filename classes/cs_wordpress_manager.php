@@ -66,10 +66,6 @@ class cs_wordpress_manager extends cs_manager {
 
       $wordpressId = $contextItem->getWordpressId();
       if($wordpressId == 0) {
-//        $currentUser = $this->_environment->getCurrentUserItem();
-//        $wpUser = array();
-//        $wpUser['login'] = $currentUser->getUserId();
-//        $wpUser['email'] = $currentUser->getEmail();
         $wpUser = $this->_getCurrentAuthItem();
         $wpBlog = array('title' => $this->_environment->getCurrentContextItem()->getTitle(),
                         'path' => $this->_environment->getCurrentPortalID().'_'.$this->_environment->getCurrentContextID(),
@@ -79,6 +75,9 @@ class cs_wordpress_manager extends cs_manager {
         $result = $this->CW->createBlog($this->_environment->getSessionID(),$wpUser, $wpBlog);
         $contextItem->setWordpressId($result['blog_id']);
         $contextItem->save();
+
+        // set timezone
+        $this->_setWordpressOption('timezone_string', date_default_timezone_get());
       }
 
       // set commsy context id
@@ -393,7 +392,8 @@ class cs_wordpress_manager extends cs_manager {
             'email' => $current_user_item->getEmail(),
             'firstname'  => $current_user_item->getFirstName(),
             'lastname'  => $current_user_item->getLastName(),
-            'commsy_id' => $this->_environment->getCurrentPortalID()
+            'commsy_id' => $this->_environment->getCurrentPortalID(),
+            'display_name' => trim($current_user_item->getFirstName()).' '.trim($current_user_item->getLastName())
     );
     unset($current_user_item);
 

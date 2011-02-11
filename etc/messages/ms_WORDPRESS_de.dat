@@ -17,6 +17,12 @@ $message["WORDPRESS_MODIFY_ERROR_NOT_ALLOWED"]["de"] = "Sie haben leider keine a
 $message["WORDPRESS_SAVE_BUTTON"]["de"] = "Wordpress-Blog anlegen";
 $message["WORDPRESS_SELECT_MEMBER_ROLE"]["de"] = "Rolle neuer Blog-Benutzer";
 $message["WORDPRESS_SELECT_MEMBER_ROLE_ADMINISTRATOR"]["de"] = "Administrator";
+$message["WORDPRESS_SELECT_MEMBER_ROLE_AUTHOR"]["de"] = "Autor";
+$message["WORDPRESS_SELECT_MEMBER_ROLE_DESCRIPTION"]["de"] = "Der Abonnent darf nur lesend auf den Blog zugreifen.
+Der Autor darf darüber hinaus eigene Beiträge publizieren.
+Der Redakteur darf eigene und fremde Beiträge und Seiten bearbeiten und veröffentlichen.
+Der Administrator darf darüber hinaus den Blog konfigurieren und administrieren.";
 $message["WORDPRESS_SELECT_MEMBER_ROLE_EDITOR"]["de"] = "Redakteur";
 $message["WORDPRESS_SELECT_MEMBER_ROLE_SUBSCRIBER"]["de"] = "Lesender Zugriff / Abonnent";
+$message["WORDPRESS_SKIN_DESCRIPTION"]["de"] = "Detaillierte Informationen zu den Themes erhalten Sie in Ihrem %1.";
 ?>

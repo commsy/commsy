@@ -61,7 +61,7 @@ class cs_configuration_wordpress_form extends cs_rubric_form {
       foreach($this->_skin_array as $name => $skin) {
         $temp_array = array();
         $temp_array['text']  = $name;
-        $temp_array['value'] = $skin; //hvv
+        $temp_array['value'] = $skin;
         $this->_array_info_text[$skin] = $temp_array;
       }
     }
@@ -137,6 +137,22 @@ class cs_configuration_wordpress_form extends cs_rubric_form {
       $this->_form->addText('example','',$desc);
     }
 
+    // description for themes
+    $this->_form->combine();
+    if ( isset($this->_item) and $this->_item->existWordpress() ) {
+       $title = $this->_translator->getMessage('COMMON_WORDPRESS_LINK').': '.$this->_item->getWordpressTitle();
+       $session_item = $this->_environment->getSessionItem();
+       $url_session_id = '?commsy_session_id='.$session_item->getSessionID();
+       unset($session_item);
+       # direkte Verlinkung geht nicht, da die Authentifizierung über die Session zu spät erfolgt
+       #$url = '<a title="'.$title.'" href="'.$c_wordpress_path_url.'/'.$this->_item->getContextID().'_'.$this->_item->getItemID().'/wp-admin/themes.php'.$url_session_id.'" target="_blank">'.$this->_translator->getMessage('COMMON_WORDPRESS_LINK').'</a>';
+       $url = '<a title="'.$title.'" href="'.$c_wordpress_path_url.'/'.$this->_item->getContextID().'_'.$this->_item->getItemID().'/'.$url_session_id.'" target="_blank">'.$this->_translator->getMessage('COMMON_WORDPRESS_LINK').'</a>';
+    } else {
+       $url = $this->_translator->getMessage('COMMON_WORDPRESS_LINK');
+    }
+    $text = $this->_translator->getMessage('WORDPRESS_SKIN_DESCRIPTION',$url);
+    $this->_form->addText('skin_desc','','<span class="disabled">'.$text.'</span>');
+
 
     $this->_form->addEmptyline();
 
@@ -144,6 +160,7 @@ class cs_configuration_wordpress_form extends cs_rubric_form {
     $this->_form->addSelect( 'member_role',
             array(
             array('text' => $this->_translator->getMessage('WORDPRESS_SELECT_MEMBER_ROLE_SUBSCRIBER'), 'value' => 'subscriber'),
+            array('text' => $this->_translator->getMessage('WORDPRESS_SELECT_MEMBER_ROLE_AUTHOR'), 'value' => 'author'),
             array('text' => $this->_translator->getMessage('WORDPRESS_SELECT_MEMBER_ROLE_EDITOR'), 'value' => 'editor'),
             array('text' => $this->_translator->getMessage('WORDPRESS_SELECT_MEMBER_ROLE_ADMINISTRATOR'), 'value' => 'administrator'),
             ),
@@ -161,6 +178,8 @@ class cs_configuration_wordpress_form extends cs_rubric_form {
             '15',
             false);
     $wordpress_manager = $this->_environment->getWordpressManager();
+    $this->_form->combine();
+    $this->_form->addText('member_role_desc','','<span class="disabled">'.$this->_translator->getMessage('WORDPRESS_SELECT_MEMBER_ROLE_DESCRIPTION').'</span>');
 
     // comments
     $this->_form->addEmptyline();
