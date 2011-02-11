@@ -444,8 +444,6 @@ class cs_privateroom_item extends cs_room_item {
                	// cron translator object
                	$portal_user = $user->getRelatedCommSyUserItem();
                	if($translator->isLanguageAvailable($portal_user->getLanguage())){
-               		#$translator->setSessionLanguage($portal_user->getLanguage());
-               		#$translator->setSelectedLanguage($portal_user->getLanguage());
                		$translator->setSelectedLanguage($portal_user->getLanguage());
                		unset($portal_user);
                	}
@@ -527,11 +525,38 @@ class cs_privateroom_item extends cs_room_item {
                         if ( $rubric_manager instanceof cs_user_manager ) {
                            $rubric_manager->setUserLimit();
                         }
-
-                        $rubric_manager->showNoNotActivatedEntries();
+								$rubric_manager->showNoNotActivatedEntries();
                         $rubric_manager->select();
                         $rubric_list = $rubric_manager->get();       // returns a cs_list of announcement_items
                         $ids = $rubric_manager->getIDs();
+
+                        // Annotations selected for Newsletter
+                        if ($rubric_manager instanceof cs_todos_manager
+                        	 OR $rubric_manager instanceof cs_material_manager
+                        	 OR $rubric_manager instanceof cs_dates_manager
+                            ){
+                           $annotation_manager = $this->_environment->getAnnotationManager();
+                           if ( $mail_sequence =='daily' ) {
+                           	$annotation_manager->setAgeLimit(1);
+                        	} else {
+                        		$annotation_manager->setAgeLimit(7);
+                        	}
+                        	$annotation_manager->setContextLimit($item->getItemID());
+                        	$annotation_manager->select();
+									$annotation_list = $annotation_manager->get();
+									$annotation_item = $annotation_list->getFirst();
+									$mainItem_list = new cs_list();
+									while($annotation_item){
+										if(($rubric_manager->existsItem($annotation_item->getLinkedItemID()))){
+											$annotation_mainItem = $rubric_manager->getItem($annotation_item->getLinkedItemID());
+											$mainItem_list->add($annotation_mainItem);
+										}
+										$annotation_item = $annotation_list->getNext();
+									}
+									$rubric_list->addList($mainItem_list);
+                        	$rubric_list->unique();
+                        }
+
                         $rubric_item = $rubric_list->getFirst();
                         $user_manager = $this->_environment->getUserManager();
                         $user_manager->resetLimits();
@@ -554,18 +579,30 @@ class cs_privateroom_item extends cs_room_item {
                               while ( $rubric_item ) {
                                  $noticed_manager = $this->_environment->getNoticedManager();
                                  $noticed = $noticed_manager->getLatestNoticedForUserByID($rubric_item->getItemID(),$ref_user->getItemID());
-                                 if ( empty($noticed) ) {
+                                 $new_annotation = false;
+                                 $anno_list = $rubric_item->getItemAnnotationList();
+                                 $anno_item = $anno_list->getFirst();
+                                 if($rubric_item->getModificationDate() < $anno_item->getModificationDate()){
+                                 	$new_annotation = true;
+                                 }
+
+                                 if ( empty($noticed)) {
                                     $info_text = ' <span class="changed">['.$translator->getMessage('COMMON_NEW').']</span>';
-                                 } elseif ( $noticed['read_date'] < $rubric_item->getModificationDate() ) {
+                                 } elseif ( $noticed['read_date'] < $rubric_item->getModificationDate()) {
                                     $info_text = ' <span class="changed">['.$translator->getMessage('COMMON_CHANGED').']</span>';
                                  } else {
                                     $info_text = '';
                                  }
+                                 if($new_annotation){
+                                 	$info_text .= ' <span class="changed">['.$translator->getMessage('COMMON_NEW_ANNOTATION').']</span>';
+                                 }
+
                                  if (!empty($info_text)){
                                     $count_entries++;
                                     $params = array();
                                     $params['iid'] = $rubric_item->getItemID();
                                     $title ='';
+                                    $linkedItemTitle = '';
                                     if ($rubric_item->isA(CS_USER_TYPE)){
                                        $title .= $this->_environment->getTextConverter()->text_as_html_short($rubric_item->getFullname());
                                     } else {
@@ -576,7 +613,7 @@ class cs_privateroom_item extends cs_room_item {
                                     } else {
                                        $mod = $rubric_item->getType();
                                     }
-                                    $ahref_curl = '<a href="'.$curl_text.$item->getItemID().'&amp;mod='.$mod.'&amp;fct=detail&amp;iid='.$params['iid'].'">'.$title.'</a>';
+                                    $ahref_curl = '<a href="'.$curl_text.$item->getItemID().'&amp;mod='.$mod.'&amp;fct=detail&amp;iid='.$params['iid'].'">'.$title.' '.$linkedItemTitle.'</a>';
 
                                     $temp_body .= BR.'&nbsp;&nbsp;- '.$ahref_curl;
                                  }
@@ -627,11 +664,11 @@ class cs_privateroom_item extends cs_room_item {
                               break;
                         }
                         if ( $count_entries == 1 ) {
-                           $ahref_curl = '<a href="'.$curl_text.$item->getItemID().'&amp;mod='.$rubric_array[0].'&amp;fct=index">'.$tempMessage.'</a>';
-                           $body2 .= '&nbsp;&nbsp;'.$ahref_curl;
-                           $body2 .= ' <span style="font-size:8pt;">('.$count_entries.' '.$translator->getMessage('NEWSLETTER_NEW_SINGLE_ENTRY').')</span>';
-                        }elseif($count_entries > 1){
-                           $ahref_curl = '<a href="'.$curl_text.$item->getItemID().'&amp;mod='.$rubric_array[0].'&amp;fct=index">'.$tempMessage.'</a>';
+                        	$ahref_curl = '<a href="'.$curl_text.$item->getItemID().'&amp;mod='.$rubric_array[0].'&amp;fct=index">'.$tempMessage.'</a>';
+                        	$body2 .= '&nbsp;&nbsp;'.$ahref_curl;
+                        	$body2 .= ' <span style="font-size:8pt;">('.$count_entries.' '.$translator->getMessage('NEWSLETTER_NEW_SINGLE_ENTRY').')</span>';
+                        } elseif($count_entries > 1) {
+                        	$ahref_curl = '<a href="'.$curl_text.$item->getItemID().'&amp;mod='.$rubric_array[0].'&amp;fct=index">'.$tempMessage.'</a>';
                            $body2 .= '&nbsp;&nbsp;'.$ahref_curl;
                            $body2 .= ' <span style="font-size:8pt;">('.$count_entries.' '.$translator->getMessage('NEWSLETTER_NEW_ENTRIES').')</span>';
                         }

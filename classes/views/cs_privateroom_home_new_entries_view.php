@@ -225,6 +225,9 @@ var $_list = NULL;
       if (isset($related_user) and is_object($related_user) and $related_user->isUser()) {
          $noticed_manager = $this->_environment->getNoticedManager();
          $noticed = $noticed_manager->getLatestnoticedByUser($item->getItemID(),$related_user->getItemID());
+
+         $anno_change_status = $this->_getItemAnnotationChangeStatus($item);
+
          if ( empty($noticed) ) {
             $info_text = ' <span class="changed">['.$this->_translator->getMessage('COMMON_NEW').']</span>';
          } elseif ( $noticed['read_date'] < $item->getModificationDate() ) {
@@ -233,9 +236,60 @@ var $_list = NULL;
             $info_text = '';
          }
          // Add change info for annotations (TBD)
+         if ( !empty($anno_change_status) ) {
+            //$info_text .= ' <span class="changed">['.$this->_translator->getMessage('COMMON_NEW_ANNOTATION').']</span>';
+            $info_text .= $anno_change_status;
+         }
       } else {
          $info_text = '';
       }
+      return $info_text;
+   }
+
+
+   function _getItemAnnotationChangeStatus($item) {
+      $current_user = $this->_environment->getCurrentUserItem();
+      $related_user = $current_user->getRelatedUserItemInContext($item->getContextID());
+      if ($related_user->isUser()) {
+         $noticed_manager = $this->_environment->getNoticedManager();
+         $noticed_manager->_current_user_id = $related_user->getItemID();
+         $annotation_list = $item->getItemAnnotationList();
+         $anno_item = $annotation_list->getFirst();
+         $new = false;
+         $changed = false;
+         $date = "0000-00-00 00:00:00";
+         while ( $anno_item ) {
+            $noticed = $noticed_manager->getLatestNoticed($anno_item->getItemID());
+            if ( empty($noticed) ) {
+               if ($date < $anno_item->getModificationDate() ) {
+                   $new = true;
+                   $changed = false;
+                   $date = $anno_item->getModificationDate();
+               }
+            } elseif ( $noticed['read_date'] < $anno_item->getModificationDate() ) {
+               if ($date < $anno_item->getModificationDate() ) {
+                   $new = false;
+                   $changed = true;
+                   $date = $anno_item->getModificationDate();
+               }
+            }
+            unset($anno_item);
+            $anno_item = $annotation_list->getNext();
+         }
+         if ( $new ) {
+            $info_text =' <span class="changed">['.$this->_translator->getMessage('COMMON_NEW_ANNOTATION').']</span>';
+         } elseif ( $changed ) {
+            $info_text = ' <span class="changed">['.$this->_translator->getMessage('COMMON_CHANGED_ANNOTATION').']</span>';
+         } else {
+            $info_text = '';
+         }
+         unset($noticed_manager);
+         unset($annotation_list);
+      } else {
+         $info_text = '';
+      }
+      unset($item);
+      unset($current_user);
       return $info_text;
    }
 

@@ -151,6 +151,9 @@ class cs_annotations_manager extends cs_manager {
      if ( isset($this->_room_limit) and !empty($this->_room_limit) ) {
         $query .= ' AND '.$this->addDatabasePrefix('annotations').'.context_id='.encode(AS_DB,$this->_room_limit);
      }
+     if ( isset($this->_age_limit) and !empty($this->_age_limit) ) {
+     	  $query .= ' AND '.$this->addDatabasePrefix('annotations').'.modification_date >= DATE_SUB(CURRENT_DATE,interval '.encode(AS_DB,$this->_age_limit).' day)';
+     }
      if ($this->_delete_limit == true) {
         $query .= ' AND '.$this->addDatabasePrefix('annotations').'.deleter_id IS NULL';
      }

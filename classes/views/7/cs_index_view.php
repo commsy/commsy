@@ -307,7 +307,44 @@ class cs_index_view extends cs_view {
     */
     function getSearchText (){
        if (empty($this->_search_text)){
-          $this->_search_text = $this->_translator->getMessage('COMMON_SEARCH_IN_ROOM');
+       	$tempMessage = '';
+       	switch (mb_strtoupper($this->_environment->getCurrentModule(), 'UTF-8')){
+         	case 'ANNOUNCEMENT':
+         		$tempMessage = $this->_translator->getMessage('ANNOUNCEMENT_INDEX');
+         		break;
+         	case 'DATE':
+            	$tempMessage = $this->_translator->getMessage('DATE_INDEX');
+            	break;
+            case 'DISCUSSION':
+            	$tempMessage = $this->_translator->getMessage('DISCUSSION_INDEX');
+            	break;
+            case 'GROUP':
+            	$tempMessage = $this->_translator->getMessage('GROUP_INDEX');
+            	break;
+            case 'INSTITUTION':
+            	$tempMessage = $this->_translator->getMessage('INSTITUTION_INDEX');
+            	break;
+            case 'MATERIAL':
+            	$tempMessage = $this->_translator->getMessage('MATERIAL_INDEX');
+            	break;
+            case 'PROJECT':
+            	$tempMessage = $this->_translator->getMessage('PROJECT_INDEX');
+            	break;
+            case 'TODO':
+            	$tempMessage = $this->_translator->getMessage('TODO_INDEX');
+            	break;
+            case 'TOPIC':
+            	$tempMessage = $this->_translator->getMessage('TOPIC_INDEX');
+            	break;
+            case 'USER':
+            	$tempMessage = $this->_translator->getMessage('USER_INDEX');
+            	break;
+            default:
+            	$tempMessage = $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR' . ' cs_configuration_home_form(139)');
+            	break;
+            }
+          //$this->_search_text = $this->_translator->getMessage('COMMON_SEARCH_IN_ROOM');
+          $this->_search_text = $this->_translator->getMessage('COMMON_SEARCH_IN_RUBRIC').$tempMessage;
           if ( $this->_environment->inPrivateRoom()
                and $this->_environment->getConfiguration('c_use_new_private_room')
                and $this->_environment->getCurrentModule() == type2module(CS_DATE_TYPE)
