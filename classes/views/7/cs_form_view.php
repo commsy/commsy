@@ -464,6 +464,7 @@ class cs_form_view extends cs_view {
       $portal_user = $current_user->getRelatedPortalUserItem();
       if ( $this->_environment->getCurrentFunction() == 'edit'
            and !$current_user->isRoot()
+           and isset($portal_user)
            and $portal_user->isAutoSaveOn()
            and ( $this->_environment->getCurrentModule() == CS_ANNOUNCEMENT_TYPE
                  or $this->_environment->getCurrentModule() == CS_DATE_TYPE
@@ -666,7 +667,7 @@ class cs_form_view extends cs_view {
             $use_new_upload = true;
          }
       }
-      
+
       // do not use new upload in case of room picture, user picuture, ...
       $module = $this->_environment->getCurrentModule();
       $fct = $this->_environment->getCurrentFunction();
@@ -678,12 +679,15 @@ class cs_form_view extends cs_view {
       }
       $current_user = $this->_environment->getCurrentUserItem();
       $portal_user = $current_user->getRelatedPortalUserItem();
-      if (!$current_user->isRoot() && !$portal_user->isNewUploadOn()){
+      if ( !$current_user->isRoot()
+           and isset($portal_user)
+           and !$portal_user->isNewUploadOn()
+         ) {
          $use_new_upload = false;
       }
-      
+
       // do not use new upload if browsing with https
-      if(   ($session->issetValue('https') && $session->getValue('https') == '1') || 
+      if(   ($session->issetValue('https') && $session->getValue('https') == '1') ||
             (isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off')) {
          $use_new_upload = false;
       }
@@ -1894,18 +1898,18 @@ class cs_form_view extends cs_view {
             if ( isset($form_element['combine']) and $form_element['combine'] == 'vertical') {
                $html .= '</div><div style="padding-top: 3px;">';
             }
-            
+
             /** TODO: remove this if not longer used ***********************/
             // add info text if browsing with https
             if($form_element['type'] == 'file') {
                $session = $this->_environment->getSessionItem();
-               if(   ($session->issetValue('https') && $session->getValue('https') == '1') || 
+               if(   ($session->issetValue('https') && $session->getValue('https') == '1') ||
                      (isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off')) {
                   //$html .= LF;
                   $html .= '<span class="key">' . $this->_translator->getMessage('COMMON_UPLOAD_OLD_HTTPS') . '</span><br>' . LF;
                }
             }
-            
+
             /***************************************************************/
          }
       }
