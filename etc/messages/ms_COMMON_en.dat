@@ -625,7 +625,6 @@ $message["COMMON_SEARCH_BUTTON"]["en"] = "Search";
 $message["COMMON_SEARCH_ENTRIES"]["en"] = "Search entry";
 $message["COMMON_SEARCH_IN_ENTRIES"]["en"] = "Search";
 $message["COMMON_SEARCH_IN_ROOM"]["en"] = "Search in workspace";
-$message["COMMON_SEARCH_IN_RUBRIC"]["en"] = "Search in ";
 $message["COMMON_SEARCH_RESTRICTION"]["en"] = "Appl. search term";
 $message["COMMON_SECTION_EDIT"]["en"] = "Edit section";
 $message["COMMON_SELECTED"]["en"] = "%1 items selected";
