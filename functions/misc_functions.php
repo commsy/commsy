@@ -860,7 +860,8 @@ function isURLValid () {
          $funct != 'privateroom_tag_configuration' and
          $funct != 'ckeditor_image_upload' and
          $funct != 'ckeditor_image_browse' and
-         $funct != 'uploadify'
+         $funct != 'uploadify' and
+         $funct != 'mdo_perform_search'
        ) {
        return false;
     }

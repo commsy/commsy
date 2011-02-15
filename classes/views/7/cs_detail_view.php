@@ -1386,7 +1386,7 @@ class cs_detail_view extends cs_view {
 
     function getSearchText (){
        if (empty($this->_search_text)){
-        $this->_search_text = $this->_translator->getMessage('COMMON_SEARCH_IN_ROOM');
+        $this->_search_text = $this->_translator->getMessage('COMMON_SEARCH_IN_RUBRIC');
        }
        return $this->_search_text;
     }

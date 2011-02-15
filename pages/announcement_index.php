@@ -148,7 +148,7 @@ if ( isset($_GET['option']) and isOption($_GET['option'],$translator->getMessage
    $sel_activating_status = '';
 
    // Find current search text
-   if ( isset($_GET['search']) and $_GET['search'] != $translator->getMessage('COMMON_SEARCH_IN_ROOM')) {
+   if ( isset($_GET['search']) and ($_GET['search'] != $translator->getMessage('COMMON_SEARCH_IN_ROOM') || $_GET['search'] != $translator->getMessage('COMMON_SEARCH_IN_RUBRIC'))) {
       $search = $_GET['search'];
    }  else {
       $search = '';

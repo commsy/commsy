@@ -307,7 +307,7 @@ class cs_index_view extends cs_view {
     */
     function getSearchText (){
        if (empty($this->_search_text)){
-          $this->_search_text = $this->_translator->getMessage('COMMON_SEARCH_IN_ROOM');
+          $this->_search_text = $this->_translator->getMessage('COMMON_SEARCH_IN_RUBRIC');
           if ( $this->_environment->inPrivateRoom()
                and $this->_environment->getConfiguration('c_use_new_private_room')
                and $this->_environment->getCurrentModule() == type2module(CS_DATE_TYPE)

@@ -494,7 +494,7 @@ class cs_environment {
          }
       }
       $translator = $this->getTranslationObject();
-      if (isset($retour['search']) and $retour['search'] == $translator->getMessage('COMMON_SEARCH_IN_ROOM')){
+      if (isset($retour['search']) and ($retour['search'] == $translator->getMessage('COMMON_SEARCH_IN_ROOM') || $retour['search'] == $translator->getMessage('COMMON_SEARCH_IN_RUBRIC'))){
          unset($retour['search']);
       }
       return $retour;

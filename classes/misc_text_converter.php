@@ -978,7 +978,7 @@ class misc_text_converter {
       $reg_exp_array['[slideshare']   = '~\[slideshare (.*?)\]~eu';
       $reg_exp_array['(:flickr']      = '~\\(:flickr (.*?):\\)~eu';
       $reg_exp_array['(:scorm']       = '~\\(:scorm (.*?):\\)~eu';
-      $reg_exp_array['(:mdo']        = '~\\(:mdo (.*?):\\)~eu';
+      $reg_exp_array['(:mdo']        = '~\\(:mdo (.*?)(\\s.*?)?:\\)~eu';
 
       // Test auf erforderliche Software; Windows-Server?
       //$reg_exp_array['(:pdf']       = '/\\(:pdf (.*?)(\\s.*?)?\\s*?:\\)/e';
@@ -2694,7 +2694,7 @@ class misc_text_converter {
            $id = (string) $result[0]->attributes()->id;
            $notch = (string) $result[0];
            unset($xml_object);
-           
+		   
            // request link
            $data = '<link id="' . $id . '">' . md5($notch . ":6515656658198") . '</link>';
            curl_setopt($curl_handler, CURLOPT_POSTFIELDS, array('xmlstatement' => $data));

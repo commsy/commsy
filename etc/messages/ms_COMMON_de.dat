@@ -634,6 +634,7 @@ $message["COMMON_SEARCH_BUTTON"]["de"] = "Suchen";
 $message["COMMON_SEARCH_ENTRIES"]["de"] = "Sucheintrag";
 $message["COMMON_SEARCH_IN_ENTRIES"]["de"] = "Suchbegriff";
 $message["COMMON_SEARCH_IN_ROOM"]["de"] = "Suche im Raum";
+$message["COMMON_SEARCH_IN_RUBRIC"]["de"] = "Suche in Rubrik";
 $message["COMMON_SEARCH_RESTRICTION"]["de"] = "Suchbegriff";
 $message["COMMON_SECTION_EDIT"]["de"] = "Abschnitt bearbeiten";
 $message["COMMON_SELECTED"]["de"] = "%1 Einträge ausgewählt";

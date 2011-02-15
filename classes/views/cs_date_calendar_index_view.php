@@ -5579,6 +5579,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
            or ( !empty($search)
                 and $search != $this->_translator->getMessage('COMMON_SEARCH_IN_ROOM')
                 and $search != $this->_translator->getMessage('COMMON_SEARCH_IN_ENTRIES')
+				and $search != $this->_translator->getMessage('COMMON_SEARCH_IN_ROOM')
               )
          ) {
          $html .= '<div id="contentbox" class="portlet-content">'.LF;
