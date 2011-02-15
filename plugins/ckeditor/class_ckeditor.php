@@ -124,7 +124,41 @@ class class_ckeditor extends cs_plugin {
                      [
                         [ \'Cut\', \'Copy\', \'Paste\', \'PasteFromWord\', \'-\', \'Undo\', \'Redo\', \'-\', \'Bold\', \'Italic\', \'Underline\', \'Strike\', \'Subscript\', \'Superscript\', \'-\', \'NumberedList\', \'BulletedList\', \'Outdent\', \'Indent\', \'Blockquote\', \'-\', \'TextColor\', \'BGColor\', \'-\', \'RemoveFormat\']
                         ,\'/\',
-                        [ \'Format\', \'Font\', \'FontSize\', \'-\', \'JustifyLeft\', \'JustifyCenter\', \'JustifyRight\', \'JustifyBlock\', \'-\', \'Link\', \'Unlink\', \'-\', \'Table\', \'HorizontalRule\', \'Smiley\', \'-\', \'Maximize\', \'About\', \'-\', \'CommSyImages\',\'CommSyFiles\',\'CommSyMDO\']
+                        [ \'Format\', \'Font\', \'FontSize\', \'-\', \'JustifyLeft\', \'JustifyCenter\', \'JustifyRight\', \'JustifyBlock\', \'-\', \'Link\', \'Unlink\', \'-\', \'Table\', \'HorizontalRule\', \'Smiley\', \'-\', \'Maximize\', \'About\', \'-\', \'CommSyImages\'';
+      
+      // show mdo plug only if access is granted
+      global $c_media_integration;
+      $mdo_access = false;
+	  
+      // check for rights for mdo
+      $current_context_item = $this->_environment->getCurrentContextItem();
+      if($current_context_item->isProjectRoom()) {
+        // does this project room has any community room?
+        $community_list = $current_context_item->getCommunityList();
+        if($community_list->isNotEmpty()) {
+          // check for community rooms activated the mdo feature
+          $community = $community_list->getFirst();
+          while($community) {
+            $mdo_active = $community->getMDOActive();
+            if(in_array($community->getItemID(), $c_media_integration) && !empty($mdo_active) && $mdo_active != '-1') {
+              // mdo access granted, get content from Mediendistribution-Online
+              $mdo_access = true;
+              
+              // stop searching here
+              break;
+            }
+            
+            $community = $community_list->getNext();
+          }
+        }
+      }
+	  
+	  if($mdo_access === true) {
+	  	$retour .= ',\'CommSyMDO\'';
+	  }
+      
+      $retour .= '
+	  					]
                      ],
                      filebrowserUploadUrl : \'commsy.php?cid='.$cid.'&mod=ajax&fct=ckeditor_image_upload&output=json&do=save_file\',
                      filebrowserBrowseUrl : \'commsy.php?cid='.$cid.'&mod=ajax&fct=ckeditor_image_browse&output=blank'.$temp_iid.'\',
@@ -156,6 +190,27 @@ class class_ckeditor extends cs_plugin {
       $retour  .= 'var ckeditor_links = "'.$this->_translator->getMessage('CKEDITOR_LINKS').'";'.LF;
       $retour  .= 'var ckeditor_links_select = "'.$this->_translator->getMessage('CKEDITOR_LINKS_SELECT').'";'.LF;
       $retour  .= 'var ckeditor_links_no_links = "'.$this->_translator->getMessage('CKEDITOR_LINKS_NO_LINKS').'";'.LF;
+      
+	  $retour  .= 'var ckeditor_mdo_access = "' . $mdo_access . '";'.LF;
+      $retour  .= 'var ckeditor_mdo = "'.$this->_translator->getMessage('CKEDITOR_MDO').'";'.LF;
+      $retour  .= 'var ckeditor_mdo_select = "'.$this->_translator->getMessage('CKEDITOR_MDO_SELECT').'";'.LF;
+      $retour  .= 'var ckeditor_mdo_tab_search = "'.$this->_translator->getMessage('CKEDITOR_MDO_SEARCH').'";'.LF;
+      $retour  .= 'var ckeditor_mdo_tab_integration = "'.$this->_translator->getMessage('CKEDITOR_MDO_INTEGRATION').'";'.LF;
+      $retour  .= 'var ckeditor_mdo_search_label = "'.$this->_translator->getMessage('CKEDITOR_MDO_SEARCH_LABEL').'";'.LF;
+      $retour  .= 'var ckeditor_mdo_andor_label = "'.$this->_translator->getMessage('CKEDITOR_MDO_ANDOR_LABEL').'";'.LF;
+	  $retour  .= 'var ckeditor_mdo_and_label = "'.$this->_translator->getMessage('CKEDITOR_MDO_AND_LABEL').'";'.LF;
+	  $retour  .= 'var ckeditor_mdo_or_label = "'.$this->_translator->getMessage('CKEDITOR_MDO_OR_LABEL').'";'.LF;
+	  $retour  .= 'var ckeditor_mdo_wordbegin_label = "'.$this->_translator->getMessage('CKEDITOR_MDO_WORDBEGIN_LABEL').'";'.LF;
+	  $retour  .= 'var ckeditor_mdo_word_label = "'.$this->_translator->getMessage('CKEDITOR_MDO_WORD_LABEL').'";'.LF;
+	  $retour  .= 'var ckeditor_mdo_begin_label = "'.$this->_translator->getMessage('CKEDITOR_MDO_BEGIN_LABEL').'";'.LF;
+	  $retour  .= 'var ckeditor_mdo_titletext_label = "'.$this->_translator->getMessage('CKEDITOR_MDO_TITLETEXT_LABEL').'";'.LF;
+	  $retour  .= 'var ckeditor_mdo_title_label = "'.$this->_translator->getMessage('CKEDITOR_MDO_TITLE_LABEL').'";'.LF;
+	  $retour  .= 'var ckeditor_mdo_text_label = "'.$this->_translator->getMessage('CKEDITOR_MDO_TEXT_LABEL').'";'.LF;
+	  $retour  .= 'var ckeditor_mdo_submit_label = "'.$this->_translator->getMessage('CKEDITOR_MDO_SUBMIT_LABEL').'";'.LF;
+	  $retour  .= 'var ckeditor_mdo_integration_label = "'.$this->_translator->getMessage('CKEDITOR_MDO_INTEGRATION_LABEL').'";'.LF;
+	  $retour  .= 'var ckeditor_mdo_embedded_label = "'.$this->_translator->getMessage('CKEDITOR_MDO_EMBEDDED_LABEL').'";'.LF;
+	  $retour  .= 'var ckeditor_mdo_newpage_label = "'.$this->_translator->getMessage('CKEDITOR_MDO_NEWPAGE_LABEL').'";'.LF;
+	  $retour  .= 'var ckeditor_mdo_results = "'.$this->_translator->getMessage('CKEDITOR_MDO_RESULTS').'";'.LF;
 
       $retour .= '</script>'.LF;
       $retour .= LF;
