@@ -2601,10 +2601,11 @@ class misc_text_converter {
 
    private function _formatScorm ($text, $array, $file_name_array){
       $retour = '';
-      if ( !empty($array[1]) ) {
+      
+      global $c_scorm;
+      if(in_array($this->_environment->getCurrentContextID(), $c_scorm)) {
+        if ( !empty($array[1]) ) {
          if ( !empty($file_name_array[$array[1]]) ) {
-         	global $c_scorm_dir;
-         	
           $temp_file = $file_name_array[$array[1]];
           $file_manager = $this->_environment->getFileManager();
           $file = $file_manager->getItem($temp_file->getFileID());
@@ -2617,13 +2618,16 @@ class misc_text_converter {
                                   'Scorm',
                                   '_NEW');
          }
+        } 
       }
       return $retour;
    }
    
    private function _formatMDO($value_new, $args_array) {
+   	 global $c_media_integration;
      $retour = '';
      $access = false;
+     $mdo_key = '';
      
      if(!empty($args_array[1])) {
        $mdo_id = $args_array[1];
@@ -2638,9 +2642,12 @@ class misc_text_converter {
            $community = $community_list->getFirst();
            while($community) {
              $mdo_active = $community->getMDOActive();
-             if(!empty($mdo_active) && $mdo_active != '-1') {
+             if(in_array($community->getItemID(), $c_media_integration) && !empty($mdo_active) && $mdo_active != '-1') {
                // mdo access granted, get content from Mediendistribution-Online
                $access = true;
+               
+               // get key for later use
+               $mdo_key = $community->getMDOKey();
                
                // stop searching here
                break;
@@ -2652,10 +2659,66 @@ class misc_text_converter {
        }
        
        if($access === true) {
-         // create div for content
-         $retour .= '<div id="mdo_content" style="overflow: scroll;">' . LF;
-         $retour .= "show content with id: " . $mdo_id . LF;
-         $retour .= '</div>';
+         $curl_handler = curl_init('http://arix.datenbank-bildungsmedien.net/HH');
+         curl_setopt($curl_handler, CURLOPT_RETURNTRANSFER, true);
+         curl_setopt($curl_handler, CURLOPT_POST, true);
+         
+         ############################
+         ## 1. CommSy -> Arix: <notch type='commsy' />
+         ## 2. Arix -> CommSy: <notch id='SESSION_ID'>NOTCH</notch> 
+         ############################
+         $data = '<notch type="commsy" />';
+         curl_setopt($curl_handler, CURLOPT_POSTFIELDS, array('xmlstatement' => $data));
+         $response = curl_exec($curl_handler);
+         $xml_object = simplexml_load_string($response);
+         $result = $xml_object->xpath('/notch[@id]');
+         $session_id = (string) $result[0]->attributes()->id;
+         $notch = (string) $result[0];
+         unset($xml_object);
+         
+         ############################
+         ## 3. CommSy -> Arix: <commsy id='SESSION_ID' passphrase='passphrase' name='Name des Leheres' uid='userid' customer='schulid' /> 
+         ## 2. Arix -> CommSy: <ok /> oder Error
+         ############################
+         $data = '<commsy id="' . $session_id . '" passphrase="' . md5($notch . ":6515656658198") . '" customer="' . $mdo_key . '"/>';
+         curl_setopt($curl_handler, CURLOPT_POSTFIELDS, array('xmlstatement' => $data));
+         $response = curl_exec($curl_handler);
+         
+         if($response === '<ok />') {
+           // request notch
+           $data = '<notch identifier="' . $args_array[1] . '" />';
+           curl_setopt($curl_handler, CURLOPT_POSTFIELDS, array('xmlstatement' => $data));
+           $response = curl_exec($curl_handler);
+           $xml_object = simplexml_load_string($response);
+           $result = $xml_object->xpath('/notch[@id]');
+           $id = (string) $result[0]->attributes()->id;
+           $notch = (string) $result[0];
+           unset($xml_object);
+           
+           // request link
+           $data = '<link id="' . $id . '">' . md5($notch . ":6515656658198") . '</link>';
+           curl_setopt($curl_handler, CURLOPT_POSTFIELDS, array('xmlstatement' => $data));
+           $response = curl_exec($curl_handler);
+           $xml_object = simplexml_load_string($response);
+           $result = $xml_object->xpath('/link/a[position() = 1]');
+           $direct_link = (string) $result[0]->attributes()->href;
+           unset($xml_object);
+           
+           // create link(new window)
+           if(isset($args_array[2]) && $args_array[2] === 'target=new') {
+           	 // request title
+           	 $data = '<record identifier="' . $args_array[1] . '"/>';
+           	 curl_setopt($curl_handler, CURLOPT_POSTFIELDS, array('xmlstatement' => $data));
+           	 $response = curl_exec($curl_handler);
+			 $xml_object = simplexml_load_string($response);
+			 $result = $xml_object->xpath('/record/f[@n = "titel"]');
+			 $title = (string) $result[0];
+             $retour .= '<a href="' . $direct_link . '" target="_blank">' . $title . '</a>';
+           } else {
+             // create iframe
+             $retour .= '<iframe src="' . $direct_link . '" width="99%" height="400px"></iframe>';
+           }
+         }
        }
      }
      
