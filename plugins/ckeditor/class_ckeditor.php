@@ -140,7 +140,7 @@ class class_ckeditor extends cs_plugin {
           $community = $community_list->getFirst();
           while($community) {
             $mdo_active = $community->getMDOActive();
-            if(in_array($community->getItemID(), $c_media_integration) && !empty($mdo_active) && $mdo_active != '-1') {
+            if(is_array($c_media_integration) && in_array($community->getItemID(), $c_media_integration) && !empty($mdo_active) && $mdo_active != '-1') {
               // mdo access granted, get content from Mediendistribution-Online
               $mdo_access = true;
               
