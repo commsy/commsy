@@ -23,13 +23,26 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-// chdir('..');
+#############################################################
+### Usage
+### ---------------------
+### Truncates all zzz tables in CommSy Database
+###
+### 1. It is recommended to use this script in simulation
+### mode first, this is the standard option. If you want
+### to delete the collected files set $_GET['work'] to
+### true
+#############################################################
+
 chdir('../..');
 
 include_once('etc/cs_config.php');
 include_once('functions/misc_functions.php');
 
-$time_start = getmicrotime();
+$work = false;
+if(isset($_GET['work']) && $_GET['work'] === 'true') {
+	$work = true;
+}
 
 // disable timeout
 set_time_limit(0);
@@ -53,8 +66,12 @@ foreach($result as $table) {
 	$table_name = array_values($table);
 	$table_name = $table_name[0];
 	
-	echo 'truncate table ' . $table_name . "<br>\n";
-	//$db_connector->performQuery('TRUNCATE TABLE ' . $table_name);
+	echo 'truncate table ' . $table_name;
+	if($work) {
+		$db_connector->performQuery('TRUNCATE TABLE ' . $table_name);
+		echo ' ...done';
+	}
+	echo "<br>\n";
 }
 
 ?>

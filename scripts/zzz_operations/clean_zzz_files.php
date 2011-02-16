@@ -23,13 +23,53 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-// chdir('..');
+
+#############################################################
+### Usage
+### ---------------------
+### This script needs some GET-Parameters to work
+###
+### 1. To collect a list of all files you must specify some
+### MySQL information. Expecting that this script uses
+### the same login like CommSy, only the database can differ
+### for expample when collection information from a backup
+### database:
+### $_GET['database'] = 'commsy' or a backup database
+###
+###
+### 2. It is recommended to use this script in simulation
+### mode first, this is the standard option. If you want
+### to delete the collected files set $_GET['delete'] to
+### true
+###
+###
+### 3. This script deletes the collected files but does also
+### scan for filepath_thumb to get the thumb images too.
+###
+###
+### 4. For deleting files the php function unlink is used.
+### Unlinking is not the same as a remove command on the
+### shell, see php.net for more information
+###
+###
+### 5. Please ensure correct rights for the apache owner.
+### Locally tested, seems not to work under windows???
+#############################################################
+
 chdir('../..');
 
 include_once('etc/cs_config.php');
 include_once('functions/misc_functions.php');
+include_once('classes/db_mysql_connector.php');
 
-$time_start = getmicrotime();
+if(!isset($_GET['database']) || empty($_GET['database'])) {
+	die("You must specify a database to work on: \$_GET['database']");
+}
+
+$delete = false;
+if(isset($_GET['delete']) && $_GET['delete'] === 'true') {
+	$delete = true;
+}
 
 // disable timeout
 set_time_limit(0);
@@ -39,7 +79,11 @@ include_once('classes/cs_environment.php');
 $environment = new cs_environment();
 
 // get a list of all files, used in zzz-rooms
-$db_connector = $environment->getDBConnector();
+global $db;
+$db_connector = new db_mysql_connector(array(	"host"		=>	$db['normal']['host'],
+												"user"		=>	$db['normal']['user'],
+												"password"	=>	$db['normal']['password'],
+												"database"	=>	$_GET['database']));
 $qry = '
 	SELECT
 		zzz_files.files_id as fileid,
@@ -55,25 +99,37 @@ $qry = '
 ';
 $result = $db_connector->performQuery($qry);
 
-foreach($result as $file) {
-	// create path
-	$path = './var/' . $file['portalid'] . '/' . $file['roomid'] . '_/';
-	
-	// extract file extension from filename
-	$file_extension = pathinfo($file['filename'], PATHINFO_EXTENSION);
-	$file_path = $path . $file['fileid'] . '.' . $file_extension;
-	
-	// unlink file
-	if(file_exists($file_path)) {
-		echo "unlinking " . $file_path . "<br>\n";
-		//unlink($filepath);
+if(sizeof($result) > 0) {
+	foreach($result as $file) {
+		// create path
+		$path = './var/' . $file['portalid'] . '/' . $file['roomid'] . '_/';
 		
-		// maybe there is some thumb-file
-		if(file_exists($file_path . '_thumb')) {
-			echo "unlinking " . $file_path . "_thumb<br>\n";
-			//unlink($filepath . '_thumb');
+		// extract file extension from filename
+		$file_extension = pathinfo($file['filename'], PATHINFO_EXTENSION);
+		$file_path = $path . $file['fileid'] . '.' . $file_extension;
+		
+		// unlink file
+		if(file_exists($file_path)) {
+			echo "unlinking " . $file_path;
+			if($delete) {
+				unlink($filepath);
+				echo ' ...done';
+			}
+			echo "<br>\n";
+			
+			// maybe there is some thumb-file
+			if(file_exists($file_path . '_thumb')) {
+				echo "unlinking " . $file_path . "_thumb";
+				if($delete) {
+					unlink($filepath . '_thumb');
+					echo ' ...done';
+				}
+				echo "<br>\n";
+			}
 		}
 	}
+} else {
+	echo "no entries found";
 }
 
 ?>
