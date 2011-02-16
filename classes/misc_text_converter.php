@@ -2603,7 +2603,7 @@ class misc_text_converter {
       $retour = '';
       
       global $c_scorm;
-      if(in_array($this->_environment->getCurrentContextID(), $c_scorm)) {
+      if(is_array($c_scorm) && in_array($this->_environment->getCurrentContextID(), $c_scorm)) {
         if ( !empty($array[1]) ) {
          if ( !empty($file_name_array[$array[1]]) ) {
           $temp_file = $file_name_array[$array[1]];
@@ -2629,7 +2629,7 @@ class misc_text_converter {
      $access = false;
      $mdo_key = '';
      
-     if(!empty($args_array[1])) {
+     if(is_array($c_media_integration) && !empty($args_array[1])) {
        $mdo_id = $args_array[1];
        
        // check for rights for mdo
