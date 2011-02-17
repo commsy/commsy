@@ -191,6 +191,11 @@ class cs_discussion_manager extends cs_manager {
      if ((isset($this->_search_array) AND !empty($this->_search_array)) OR isset($this->_sort_order)) {
         // join to user database table
         $query .= ' LEFT JOIN '.$this->addDatabasePrefix('user').' AS people ON (people.item_id='.$this->addDatabasePrefix('discussions').'.creator_id )'; // modificator_id (TBD)
+
+        //look in filenames of linked files for the search_limit
+         $query .= ' LEFT JOIN '.$this->addDatabasePrefix('item_link_file').' ON '.$this->addDatabasePrefix('discussionarticles').'.item_id = '.$this->addDatabasePrefix('item_link_file').'.item_iid'.
+                   ' LEFT JOIN '.$this->addDatabasePrefix('files').' ON '.$this->addDatabasePrefix('item_link_file').'.file_id = '.$this->addDatabasePrefix('files').'.files_id';
+         //look in filenames of linked files for the search_limit
      }
      if ((isset($this->_search_array) AND !empty($this->_search_array))) {
         // join to user database table
@@ -317,7 +322,7 @@ class cs_discussion_manager extends cs_manager {
       // restrict sql-statement by search limit, create wheres
       if (isset($this->_search_array) AND !empty($this->_search_array)) {
          $query .= ' AND (';
-         $field_array = array('TRIM(CONCAT(people.firstname," ",people.lastname))','TRIM(CONCAT(people2.firstname," ",people2.lastname))',$this->addDatabasePrefix('discussions').'.title',$this->addDatabasePrefix('discussions').'.modification_date',$this->addDatabasePrefix('discussionarticles').'.subject',$this->addDatabasePrefix('discussionarticles').'.description');
+         $field_array = array('TRIM(CONCAT(people.firstname," ",people.lastname))','TRIM(CONCAT(people2.firstname," ",people2.lastname))',$this->addDatabasePrefix('discussions').'.title',$this->addDatabasePrefix('discussions').'.modification_date',$this->addDatabasePrefix('discussionarticles').'.subject',$this->addDatabasePrefix('discussionarticles').'.description',$this->addDatabasePrefix('files').'.filename');
          $search_limit_query_code = $this->_generateSearchLimitCode($field_array);
          $query .= $search_limit_query_code;
          $query .= ')';

@@ -169,6 +169,11 @@ class cs_announcement_manager extends cs_manager {
            (isset($this->_sort_order) and
            ($this->_sort_order == 'modificator' || $this->_sort_order == 'modificator_rev')) ) {
          $query .= ' INNER JOIN '.$this->addDatabasePrefix('user').' AS people ON (people.item_id='.$this->addDatabasePrefix('announcement').'.creator_id )'; // modificator_id (TBD)
+
+         //look in filenames of linked files for the search_limit
+         $query .= ' LEFT JOIN '.$this->addDatabasePrefix('item_link_file').' ON '.$this->addDatabasePrefix('announcement').'.item_id = '.$this->addDatabasePrefix('item_link_file').'.item_iid'.
+                   ' LEFT JOIN '.$this->addDatabasePrefix('files').' ON '.$this->addDatabasePrefix('item_link_file').'.file_id = '.$this->addDatabasePrefix('files').'.files_id';
+         //look in filenames of linked files for the search_limit
       }
 
       // restrict material by annotations
@@ -286,7 +291,7 @@ class cs_announcement_manager extends cs_manager {
       // restrict sql-statement by search limit, create wheres
       if (isset($this->_search_array) AND !empty($this->_search_array)) {
          $query .= ' AND (';
-         $field_array = array('TRIM(CONCAT(people.firstname," ",people.lastname))',$this->addDatabasePrefix('announcement').'.description',$this->addDatabasePrefix('announcement').'.title');
+         $field_array = array('TRIM(CONCAT(people.firstname," ",people.lastname))',$this->addDatabasePrefix('announcement').'.description',$this->addDatabasePrefix('announcement').'.title',$this->addDatabasePrefix('files').'.filename');
          $search_limit_query_code = $this->_generateSearchLimitCode($field_array);
          $query .= $search_limit_query_code;
          $query .= ')';
@@ -581,7 +586,7 @@ class cs_announcement_manager extends cs_manager {
    	  									'description'		=>	'description',
    	  									'modification_date'	=>	'modification_date',
    	  									'public'			=>	'public'));
-   	
+
       $current_datetime = getCurrentDateTimeInMySQL();
       $query  = 'SELECT '.$this->addDatabasePrefix($this->_db_table).'.* FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).'.creator_id = "'.encode(AS_DB,$uid).'"';
       $result = $this->_db_connector->performQuery($query);

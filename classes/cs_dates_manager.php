@@ -232,6 +232,11 @@ class cs_dates_manager extends cs_manager {
            (isset($this->_sort_order) and
            ($this->_sort_order == 'modificator' || $this->_sort_order == 'modificator_rev')) ) {
          $query .= ' LEFT JOIN '.$this->addDatabasePrefix('user').' AS people ON (people.item_id='.$this->addDatabasePrefix('dates').'.creator_id)'; // modificator_id (TBD)
+
+         //look in filenames of linked files for the search_limit
+         $query .= ' LEFT JOIN '.$this->addDatabasePrefix('item_link_file').' ON '.$this->addDatabasePrefix('dates').'.item_id = '.$this->addDatabasePrefix('item_link_file').'.item_iid'.
+                   ' LEFT JOIN '.$this->addDatabasePrefix('files').' ON '.$this->addDatabasePrefix('item_link_file').'.file_id = '.$this->addDatabasePrefix('files').'.files_id';
+         //look in filenames of linked files for the search_limit
       }
 
      // dates restricted by topics
@@ -486,7 +491,7 @@ class cs_dates_manager extends cs_manager {
       // restrict sql-statement by search limit, create wheres
       if (isset($this->_search_array) AND !empty($this->_search_array)) {
          $query .= ' AND (';
-         $field_array = array('TRIM(CONCAT(people.firstname," ",people.lastname))',$this->addDatabasePrefix('dates').'.end_day',$this->addDatabasePrefix('dates').'.start_day',$this->addDatabasePrefix('dates').'.end_time',$this->addDatabasePrefix('dates').'.start_time',$this->addDatabasePrefix('dates').'.title',$this->addDatabasePrefix('dates').'.description',$this->addDatabasePrefix('dates').'.place');
+         $field_array = array('TRIM(CONCAT(people.firstname," ",people.lastname))',$this->addDatabasePrefix('dates').'.end_day',$this->addDatabasePrefix('dates').'.start_day',$this->addDatabasePrefix('dates').'.end_time',$this->addDatabasePrefix('dates').'.start_time',$this->addDatabasePrefix('dates').'.title',$this->addDatabasePrefix('dates').'.description',$this->addDatabasePrefix('dates').'.place',$this->addDatabasePrefix('files').'.filename');
          $search_limit_query_code = $this->_generateSearchLimitCode($field_array);
          $query .= $search_limit_query_code;
          $query .= ' )';

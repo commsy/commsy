@@ -119,7 +119,7 @@ class cs_labels_manager extends cs_manager {
   var $_commsy_context = 'uni';
 
   var $_count_links = false;
-  
+
   /*
    * Translation Object
    */
@@ -380,12 +380,22 @@ class cs_labels_manager extends cs_manager {
      	   $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l42 ON (l42.deletion_date IS NULL AND ((l42.second_item_id='.$this->addDatabasePrefix('labels').'.item_id AND l42.first_item_type="'.CS_USER_TYPE.'")))';
            $query .= ' LEFT JOIN '.$this->addDatabasePrefix('user').' AS user1 ON user1.item_id = l41.second_item_id';
            $query .= ' LEFT JOIN '.$this->addDatabasePrefix('user').' AS user2 ON user2.item_id = l42.first_item_id';
+
+           //look in filenames of linked files for the search_limit
+         $query .= ' LEFT JOIN '.$this->addDatabasePrefix('item_link_file').' ON '.$this->addDatabasePrefix('labels').'.item_id = '.$this->addDatabasePrefix('item_link_file').'.item_iid'.
+                   ' LEFT JOIN '.$this->addDatabasePrefix('files').' ON '.$this->addDatabasePrefix('item_link_file').'.file_id = '.$this->addDatabasePrefix('files').'.files_id';
+         //look in filenames of linked files for the search_limit
         }elseif ( (isset($this->_order) and $this->_order == 'creator') or (isset($this->_search_array) and !empty($this->_search_array))) {
            $query .= ' LEFT JOIN '.$this->addDatabasePrefix('user').' ON '.$this->addDatabasePrefix('labels').'.creator_id = '.$this->addDatabasePrefix('user').'.item_id';
            $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l41 ON (l41.deletion_date IS NULL AND ((l41.first_item_id='.$this->addDatabasePrefix('labels').'.item_id AND l41.second_item_type="'.CS_USER_TYPE.'")))';
      	   $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l42 ON (l42.deletion_date IS NULL AND ((l42.second_item_id='.$this->addDatabasePrefix('labels').'.item_id AND l42.first_item_type="'.CS_USER_TYPE.'")))';
      	   $query .= ' LEFT JOIN '.$this->addDatabasePrefix('user').' AS user1 ON user1.item_id = l41.second_item_id';
      	   $query .= ' LEFT JOIN '.$this->addDatabasePrefix('user').' AS user2 ON user2.item_id = l42.first_item_id';
+
+     	   //look in filenames of linked files for the search_limit
+         $query .= ' LEFT JOIN '.$this->addDatabasePrefix('item_link_file').' ON '.$this->addDatabasePrefix('labels').'.item_id = '.$this->addDatabasePrefix('item_link_file').'.item_iid'.
+                   ' LEFT JOIN '.$this->addDatabasePrefix('files').' ON '.$this->addDatabasePrefix('item_link_file').'.file_id = '.$this->addDatabasePrefix('files').'.files_id';
+         //look in filenames of linked files for the search_limit
         }
      }
 
@@ -487,7 +497,8 @@ class cs_labels_manager extends cs_manager {
                            						$this->addDatabasePrefix('labels').'.modification_date',
                            						'TRIM(CONCAT('.$this->addDatabasePrefix('user').'.firstname," ",'.$this->addDatabasePrefix('user').'.lastname))',
                            						'TRIM(CONCAT(user1.firstname," ",user1.lastname))',
-                           						'TRIM(CONCAT(user2.firstname," ",user2.lastname))');
+                           						'TRIM(CONCAT(user2.firstname," ",user2.lastname))',
+                           						$this->addDatabasePrefix('files').'.filename');
                            $search_limit_query_code = $this->_generateSearchLimitCode($field_array);
                            $query .= ' AND '.$search_limit_query_code;
                         } else {
@@ -1107,7 +1118,7 @@ class cs_labels_manager extends cs_manager {
    	  									'description'		=>	'description',
    	  									'modification_date'	=>	'modification_date',
    	  									'public'			=>	'public'));
-   	  
+
       $current_datetime = getCurrentDateTimeInMySQL();
       $query  = 'SELECT '.$this->addDatabasePrefix('labels').'.* FROM '.$this->addDatabasePrefix('labels').' WHERE '.$this->addDatabasePrefix('labels').'.creator_id = "'.$uid.'"';
       $result = $this->_db_connector->performQuery($query);
