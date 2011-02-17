@@ -261,9 +261,11 @@ if ( isset($_GET['cid']) ) {
             include_once('classes/cs_discussionarticles_manager.php');
             $manager = new cs_discussionarticles_manager($environment);
             $item = $manager->getItem($row['item_id']);
-            if (isset($item) and $item->isNotActivated()) {
+            $disc_item = $item->getLinkedItem();
+            if (isset($disc_item) and $disc_item->isNotActivated()) {
                $newIntervalLimit++;
                }
+            unset($disc_item);
             unset($item);
             unset($manager);
             break;
@@ -433,11 +435,15 @@ if ( isset($_GET['cid']) ) {
             include_once('classes/cs_discussionarticles_manager.php');
             $manager = new cs_discussionarticles_manager($environment);
             $item = $manager->getItem($row['item_id']);
-            if ($item->isNotActivated()) {
+            $disc_manager = new cs_discussion_manager($environment);
+            $disc_item = $manager->getItem($item->getLinkedItem());
+            if ($disc_item->isNotActivated()) {
                $newIntervalLimit++;
                }
             unset($item);
             unset($manager);
+            unset($disc_item);
+            unset($disc_manager);
             break;
         case 'material':
             include_once('classes/cs_material_manager.php');
@@ -514,11 +520,11 @@ if ( isset($_GET['cid']) ) {
         if($n * 10 - ($newIntervalLimit - $n * 10) >= 10){
          $item_manager->resetLimits();
          $item_manager->setContextArrayLimit($room_array);
-       $item_manager->setTypeArrayLimit($type_limit_array);
-       $item_manager->showNoNotActivatedEntries();
-       $item_manager->setIntervalLimit($newIntervalLimit);
-       $result = $item_manager->_performQuery();
-       $flag = false;
+         $item_manager->setTypeArrayLimit($type_limit_array);
+         $item_manager->showNoNotActivatedEntries();
+         $item_manager->setIntervalLimit($newIntervalLimit);
+         $result = $item_manager->_performQuery();
+         $flag = false;
         } else {
            $item_manager->resetLimits();
          $item_manager->setContextArrayLimit($room_array);
@@ -730,8 +736,9 @@ if ( isset($_GET['cid']) ) {
             include_once('classes/cs_discussionarticles_manager.php');
             $manager = new cs_discussionarticles_manager($environment);
             $item = $manager->getItem($row['item_id']);
-            if ( isset($item)
-                 and !$item->isNotActivated()
+            $disc_item = $item->getLinkedItem();
+            if ( isset($disc_item)
+                 and !$disc_item->isNotActivated()
                ) {
                $linked_item = $item->getLinkedItem();
                if ( !empty($linked_item) ) {
@@ -739,16 +746,20 @@ if ( isset($_GET['cid']) ) {
                   setFileArray($item);
                   $description = $environment->getTextConverter()->text_as_html_long($environment->getTextConverter()->cleanDataFromTextArea($item->getDescription()));
                   $user_item = $item->getModificatorItem();
-                  $fullname = $user_item->getFullName();
-                  $email = $user_item->getEmail();
-                  if ( $context_item->isCommunityRoom() ) {
-                     if ( empty($_GET['hid']) and !$user_item->isVisibleForAll() ) {
-                        $fullname = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+                  $fullname = '';
+                  $email = '';
+                  if (isset($user_item) and is_object($user_item)){
+                     $fullname = $user_item->getFullName();
+                     $email = $user_item->getEmail();
+                     if ( $context_item->isCommunityRoom() ) {
+                        if ( empty($_GET['hid']) and !$user_item->isVisibleForAll() ) {
+                           $fullname = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+                           $email = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+                        }
+                     }
+                     if ( !$user_item->isEmailVisible() ) {
                         $email = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
                      }
-                  }
-                  if ( !$user_item->isEmailVisible() ) {
-                     $email = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
                   }
                   $author = $email.' ('.$fullname.')';
                   unset($email);
