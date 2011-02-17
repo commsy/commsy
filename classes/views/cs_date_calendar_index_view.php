@@ -439,14 +439,14 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $html .= '<div style="float:right;"><a name="mycalendar_remove" style="cursor:pointer;"><img src="images/commsyicons/16x16/delete.png" /></a></div>';
       $html .= '</div>'.LF;
       $html .= '<div class="portlet-content">'.LF;
-      
+
       $privateroom_item = $this->_environment->getCurrentContextItem();
       $config = $privateroom_item->getMyCalendarDisplayConfig();
-      
+
       $html .= '<input type="hidden" name="cid" value="' . $privateroom_item->getItemID() . '"/>'.LF;
       $html .= '<input type="hidden" name="mod" value="date"/>'.LF;
       $html .= '<input type="hidden" name="fct" value="index"/>'.LF;
-      
+
       // dates
       if(in_array('mycalendar_dates_portlet', $config)) {
 //	      $html .= '<div class="portlet-header-configuration ui-widget-header">'.LF;
@@ -457,7 +457,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
 //	      $html .= '</div>'.LF;
          $html .= $this->_getDatesRestrictionBoxAsHTML().LF;
       }
-      
+
       // todo's
       if(in_array('mycalendar_todo_portlet', $config)) {
 //	      $html .= '<div class="portlet-header-configuration ui-widget-header">'.LF;
@@ -468,27 +468,27 @@ class cs_date_calendar_index_view extends cs_room_index_view {
 //	      $html .= '</div>'.LF;
          $html .= $this->_getTodoRestrictionBoxAsHTML().LF;
       }
-      
+
       unset($privateroom_item);
-      
+
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
       return $html;
    }
-   
+
    function _getDatesRestrictionBoxAsHTML($field_length=14.5) {
       $current_context = $this->_environment->getCurrentContextItem();
       $session = $this->_environment->getSession();
       $width = '170';
       $html = '';
-      
+
       //$html .= '<form action="commsy.php?cid=' . $context_item->getItemID() . '&mod=date&fct=index" method="post">'.LF;
       $html .= '<fieldset style="border: 1px solid Gainsboro; -moz-border-radius: 5px;">'.LF;
 	   $html .= '<legend style="color: DarkSlateGray;">' . $this->_translator->getMessage('COMMON_DATE_INDEX') . '</legend>'.LF;
       //$html .= '<input type="hidden" name="cid" value="' . $current_context->getItemID() . '"/>'.LF;
       //$html .= '<input type="hidden" name="mod" value="date"/>'.LF;
       //$html .= '<input type="hidden" name="fct" value="index"/>'.LF;
-	   
+
 	   #################
       ## date type
       #
@@ -521,7 +521,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
 
       $html .= '   </select>'.LF;
       $html .='</div>';
-      
+
       #################
       ## date color
       #
@@ -567,21 +567,21 @@ class cs_date_calendar_index_view extends cs_room_index_view {
          $html .= '   </select>'.LF;
          $html .='</div>';
       }
-      
+
       #################
       ## rooms
       #
       $html .= '<div class="infocolor" style="text-align:left; padding-bottom:5px; font-size: 10pt;">'.$this->_translator->getMessage('COMMON_ROOMS').BRLF;
       $html .= '   <select style="width: '.$width.'px; font-size:10pt; margin-bottom:5px;" name="selroom" size="1" id="submit_form">'.LF;
       $html .= '      <option style="color:#000000;" value="2"';
-      
+
       $selroom = $this->_selected_room;
       if(empty($selroom) || $selroom == 2) {
          $html .= ' selected="selected"';
       }
       $html .= '>*'.$this->_translator->getMessage('COMMON_NO_SELECTION').'</option>'.LF;
       $html .= '   <option class="disabled" disabled="disabled" value="-2">------------------------------</option>'.LF;
-      
+
 	   // get my calendar display configuration
 	   $configuration = $current_context->getMyCalendarDisplayConfig();
 	   $configuration_room_limit = array();
@@ -591,98 +591,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
 	         $configuration_room_limit[] = $exp_entry[0];
 	      }
 	   }
-      
-      $user = $this->_environment->getCurrentUserItem();
-      $room_manager = $this->_environment->getRoomManager();
-      $room_list = $room_manager->getAllRelatedRoomListForUser($user);
-      $room = $room_list->getFirst();
-      while($room) {
-         if(in_array($room->getItemID(), $configuration_room_limit)) {
-            $html .= '      <option value="' . $room->getItemID() . '"';
-	         if(!empty($selroom) && $selroom == $room->getItemID()) {
-	            $html .= ' selected="selected"';
-	         }
-	         $html .= '>' . $room->getTitle() . '</option>'.LF; 
-         }
-         
-         $room = $room_list->getNext();
-      }
-      
-      $html .= '   </select>'.LF;
-      $html .= '</div>';
-      
-      #################
-      ## assignment
-      #
-      $html .= '<div class="infocolor" style="text-align:left; padding-bottom:5px; font-size: 10pt;">'.$this->_translator->getMessage('COMMON_REFERENCED_ENTRIES').BRLF;
-      $html .= '   <select style="width: '.$width.'px; font-size:10pt; margin-bottom:5px;" name="selassignment" size="1" id="submit_form">'.LF;
-      
-      $selassignment = $this->getSelectedAssignment();
-      
-      // "no selection"
-      $html .= '      <option style="color:#000000;" value="2"';
-      if(!empty($selassignment) && $selassignment == '2') {
-         $html .= ' selected="selected"';
-      }
-      $html .= '>*' . $this->_translator->getMessage("COMMON_NO_SELECTION") . '</option>'.LF;
-      
-      // "disabled"
-      $html .= '      <option value="-2" disabled="disabled"';
-      $html .= '>------------------</option>'.LF;
-      
-      // "personal assignment"
-      $html .= '      <option style="color:#000000;" value="3"';
-      if(!empty($selassignment) && $selassignment == '3') {
-         $html .= ' selected="selected"';
-      }
-      $html .= '>' . $this->_translator->getMessage("PRIVATEROOM_CALENDAR_ASSIGNMENT_STATUS") . '</option>'.LF;
-      
-      $html .= '   </select>'.LF;
-      $html .= '</div>';
-      
-      $html .= '</fieldset>'.LF;
-      //$html .= '</form>'.LF;
-      
-      return $html;
-   }
-   
-   function _getTodoRestrictionBoxAsHTML($field_length=14.5) {
-      $current_context = $this->_environment->getCurrentContextItem();
-      $session = $this->_environment->getSession();
-      $width = '170';
-      $html = '';
-      
-      //$html .= '<form action="commsy.php?cid=' . $context_item->getItemID() . '&mod=date&fct=index" method="post">'.LF;
-      $html .= '<fieldset style="border: 1px solid Gainsboro; -moz-border-radius: 5px;">'.LF;
-	   $html .= '<legend style="color: DarkSlateGray;">' . $this->_translator->getMessage('COMMON_TODO_INDEX') . '</legend>'.LF;
-//      $html .= '<input type="hidden" name="cid" value="' . $current_context->getItemID() . '"/>'.LF;
-//      $html .= '<input type="hidden" name="mod" value="date"/>'.LF;
-//      $html .= '<input type="hidden" name="fct" value="index"/>'.LF;
-      
-      #################
-      ## rooms
-      #
-      $html .= '<div class="infocolor" style="text-align:left; padding-bottom:5px; font-size: 10pt;">'.$this->_translator->getMessage('COMMON_ROOMS').BRLF;
-      $html .= '   <select style="width: '.$width.'px; font-size:10pt; margin-bottom:5px;" name="todo_selroom" size="1" id="submit_form">'.LF;
-      $html .= '      <option style="color:#000000;" value="2"';
-      
-      $selroom = $this->getSelectedRoom(CS_TODO_TYPE);
-      if(empty($selroom) || $selroom == 2) {
-         $html .= ' selected="selected"';
-      }
-      $html .= '>*'.$this->_translator->getMessage('COMMON_NO_SELECTION').'</option>'.LF;
-      $html .= '   <option class="disabled" disabled="disabled" value="-2">------------------------------</option>'.LF;
-      
-      // get my calendar display configuration
-	   $configuration = $current_context->getMyCalendarDisplayConfig();
-	   $configuration_room_limit = array();
-	   foreach($configuration as $entry) {
-	      $exp_entry = explode('_', $entry);
-	      if(sizeof($exp_entry) == 2 && $exp_entry[1] == 'todo') {
-	         $configuration_room_limit[] = $exp_entry[0];
-	      }
-	   }
-	   
+
       $user = $this->_environment->getCurrentUserItem();
       $room_manager = $this->_environment->getRoomManager();
       $room_list = $room_manager->getAllRelatedRoomListForUser($user);
@@ -695,53 +604,144 @@ class cs_date_calendar_index_view extends cs_room_index_view {
 	         }
 	         $html .= '>' . $room->getTitle() . '</option>'.LF;
          }
-         
+
          $room = $room_list->getNext();
       }
-      
+
       $html .= '   </select>'.LF;
       $html .= '</div>';
-      
+
+      #################
+      ## assignment
+      #
+      $html .= '<div class="infocolor" style="text-align:left; padding-bottom:5px; font-size: 10pt;">'.$this->_translator->getMessage('COMMON_REFERENCED_ENTRIES').BRLF;
+      $html .= '   <select style="width: '.$width.'px; font-size:10pt; margin-bottom:5px;" name="selassignment" size="1" id="submit_form">'.LF;
+
+      $selassignment = $this->getSelectedAssignment();
+
+      // "no selection"
+      $html .= '      <option style="color:#000000;" value="2"';
+      if(!empty($selassignment) && $selassignment == '2') {
+         $html .= ' selected="selected"';
+      }
+      $html .= '>*' . $this->_translator->getMessage("COMMON_NO_SELECTION") . '</option>'.LF;
+
+      // "disabled"
+      $html .= '      <option value="-2" disabled="disabled"';
+      $html .= '>------------------</option>'.LF;
+
+      // "personal assignment"
+      $html .= '      <option style="color:#000000;" value="3"';
+      if(!empty($selassignment) && $selassignment == '3') {
+         $html .= ' selected="selected"';
+      }
+      $html .= '>' . $this->_translator->getMessage("PRIVATEROOM_CALENDAR_ASSIGNMENT_STATUS") . '</option>'.LF;
+
+      $html .= '   </select>'.LF;
+      $html .= '</div>';
+
+      $html .= '</fieldset>'.LF;
+      //$html .= '</form>'.LF;
+
+      return $html;
+   }
+
+   function _getTodoRestrictionBoxAsHTML($field_length=14.5) {
+      $current_context = $this->_environment->getCurrentContextItem();
+      $session = $this->_environment->getSession();
+      $width = '170';
+      $html = '';
+
+      //$html .= '<form action="commsy.php?cid=' . $context_item->getItemID() . '&mod=date&fct=index" method="post">'.LF;
+      $html .= '<fieldset style="border: 1px solid Gainsboro; -moz-border-radius: 5px;">'.LF;
+	   $html .= '<legend style="color: DarkSlateGray;">' . $this->_translator->getMessage('COMMON_TODO_INDEX') . '</legend>'.LF;
+//      $html .= '<input type="hidden" name="cid" value="' . $current_context->getItemID() . '"/>'.LF;
+//      $html .= '<input type="hidden" name="mod" value="date"/>'.LF;
+//      $html .= '<input type="hidden" name="fct" value="index"/>'.LF;
+
+      #################
+      ## rooms
+      #
+      $html .= '<div class="infocolor" style="text-align:left; padding-bottom:5px; font-size: 10pt;">'.$this->_translator->getMessage('COMMON_ROOMS').BRLF;
+      $html .= '   <select style="width: '.$width.'px; font-size:10pt; margin-bottom:5px;" name="todo_selroom" size="1" id="submit_form">'.LF;
+      $html .= '      <option style="color:#000000;" value="2"';
+
+      $selroom = $this->getSelectedRoom(CS_TODO_TYPE);
+      if(empty($selroom) || $selroom == 2) {
+         $html .= ' selected="selected"';
+      }
+      $html .= '>*'.$this->_translator->getMessage('COMMON_NO_SELECTION').'</option>'.LF;
+      $html .= '   <option class="disabled" disabled="disabled" value="-2">------------------------------</option>'.LF;
+
+      // get my calendar display configuration
+	   $configuration = $current_context->getMyCalendarDisplayConfig();
+	   $configuration_room_limit = array();
+	   foreach($configuration as $entry) {
+	      $exp_entry = explode('_', $entry);
+	      if(sizeof($exp_entry) == 2 && $exp_entry[1] == 'todo') {
+	         $configuration_room_limit[] = $exp_entry[0];
+	      }
+	   }
+
+      $user = $this->_environment->getCurrentUserItem();
+      $room_manager = $this->_environment->getRoomManager();
+      $room_list = $room_manager->getAllRelatedRoomListForUser($user);
+      $room = $room_list->getFirst();
+      while($room) {
+         if(in_array($room->getItemID(), $configuration_room_limit)) {
+            $html .= '      <option value="' . $room->getItemID() . '"';
+	         if(!empty($selroom) && $selroom == $room->getItemID()) {
+	            $html .= ' selected="selected"';
+	         }
+	         $html .= '>' . $room->getTitle() . '</option>'.LF;
+         }
+
+         $room = $room_list->getNext();
+      }
+
+      $html .= '   </select>'.LF;
+      $html .= '</div>';
+
       #################
       ## status
       #
       $html .= '<div class="infocolor" style="text-align:left; padding-bottom:5px; font-size: 10pt;">'.$this->_translator->getMessage('COMMON_STATUS').BRLF;
       $html .= '   <select style="width: '.$width.'px; font-size:10pt; margin-bottom:5px;" name="todo_selstatus" size="1" id="submit_form">'.LF;
-      
+
       $selstatus = $this->getSelectedStatus(CS_TODO_TYPE);
-      
+
       // "ALL"
       $html .= '      <option value="0"';
       if ( !isset($selstatus) || $selstatus == 0 ) {
          $html .= ' selected="selected"';
       }
       $html .= '>*'.$this->_translator->getMessage('ALL').'</option>'.LF;
-      
+
       // "disabled"
       $html .= '      <option value="-2" disabled="disabled"';
       $html .= '>------------------</option>'.LF;
-      
+
       // "not started"
       $html .= '      <option value="11"';
       if ( isset($selstatus) and $selstatus == 11 ) {
          $html .= ' selected="selected"';
       }
       $html .= '>'.$this->_translator->getMessage('TODO_NOT_STARTED').'</option>'.LF;
-      
+
       // "in progress"
       $html .= '      <option value="12"';
       if ( isset($selstatus) and $selstatus == 12 ) {
          $html .= ' selected="selected"';
       }
       $html .= '>'.$this->_translator->getMessage('TODO_IN_POGRESS').'</option>'.LF;
-      
+
       // "done"
       $html .= '      <option value="13"';
       if (  isset($selstatus) and $selstatus == 13 ) {
          $html .= ' selected="selected"';
       }
       $html .= '>'.$this->_translator->getMessage('TODO_DONE').'</option>'.LF;
-      
+
       // extra status
       // if laters used, take care of offset 10 in todo context
 //      $context_item = $this->_environment->getCurrentContextItem();
@@ -757,53 +757,53 @@ class cs_date_calendar_index_view extends cs_room_index_view {
 //            $html .= '>'.$value.'</option>'.LF;
 //         }
 //      }
-      
+
       // "disabled"
       $html .= '      <option value="-2" disabled="disabled"';
       $html .= '>------------------</option>'.LF;
-      
+
       // "not done"
       $html .= '      <option value="14"';
       if (  isset($selstatus) and $selstatus == 14 ) {
          $html .= ' selected="selected"';
       }
       $html .= '>'.$this->_translator->getMessage('TODO_NOT_DONE').'</option>'.LF;
-      
+
       $html .= '   </select>'.LF;
       $html .= '</div>';
-      
+
       #################
       ## assignment
       #
       $html .= '<div class="infocolor" style="text-align:left; padding-bottom:5px; font-size: 10pt;">'.$this->_translator->getMessage('COMMON_REFERENCED_ENTRIES').BRLF;
       $html .= '   <select style="width: '.$width.'px; font-size:10pt; margin-bottom:5px;" name="todo_selassignment" size="1" id="submit_form">'.LF;
-      
+
       $selassignment = $this->getSelectedAssignment(CS_TODO_TYPE);
-      
+
       // "no selection"
       $html .= '      <option style="color:#000000;" value="2"';
       if(!empty($selassignment) && $selassignment == '2') {
          $html .= ' selected="selected"';
       }
       $html .= '>*' . $this->_translator->getMessage("COMMON_NO_SELECTION") . '</option>'.LF;
-      
+
       // "disabled"
       $html .= '      <option value="-2" disabled="disabled"';
       $html .= '>------------------</option>'.LF;
-      
+
       // "personal assignment"
       $html .= '      <option style="color:#000000;" value="3"';
       if(!empty($selassignment) && $selassignment == '3') {
          $html .= ' selected="selected"';
       }
       $html .= '>' . $this->_translator->getMessage("PRIVATEROOM_CALENDAR_ASSIGNMENT_STATUS") . '</option>'.LF;
-      
+
       $html .= '   </select>'.LF;
       $html .= '</div>';
-      
+
       $html .= '</fieldset>'.LF;
       //$html .= '</form>'.LF;
-      
+
       return $html;
    }
 
@@ -933,6 +933,47 @@ class cs_date_calendar_index_view extends cs_room_index_view {
          #$html .='</tr>'.LF;
          $html .='</table>'.LF;
          $html .= '</div>'.LF;
+
+
+         /*****************Usage Information*************/
+         $user = $this->_environment->getCurrentUserItem();
+         $room = $this->_environment->getCurrentContextItem();
+         $act_rubric = $this->_environment->getCurrentModule();
+         $info_text = $room->getUsageInfoTextForRubric($act_rubric);
+         if (!strstr($info_text, $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR'))
+             and !strstr($info_text, $this->_translator->getMessage('USAGE_INFO_COMING_SOON'))
+             and !empty($info_text)
+            ){
+             $rubric_info_array = $room->getUsageInfoArray();
+             if (!is_array($rubric_info_array)) {
+                $rubric_info_array = array();
+             }
+             // kann man dies noch über die oberfläche schalten ??? (2009.07.24 ij)
+             #if ( !strstr($list_box_conf,'usage_nodisplay') ){
+                if ( $first_box ){
+                   $first_box = false;
+                   $additional_text ='';
+                }else{
+                   $additional_text =',';
+                }
+                $html .= '<div style="margin-bottom:1px;">'.LF;
+                $html .= '<div style="position:relative; top:12px;">'.LF;
+                if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+                   $html .= '<img src="images/commsyicons_msie6/usage_info_3.gif"/>';
+                } else {
+                   $html .= '<img src="images/commsyicons/usage_info_3.png"/>';
+                }
+                $html .= '</div>'.LF;
+                $html .= '<div class="right_box_title" style="font-weight:bold;">'.$this->_text_as_html_short($room->getUsageInfoHeaderForRubric($act_rubric)).'</div>';
+                $html .= '<div class="usage_info">'.LF;
+                $info_text = $room->getUsageInfoTextForRubric($act_rubric);
+                $html .= $this->_text_as_html_long($this->_cleanDataFromTextArea($info_text)).BRLF;
+                $html .= '</div>'.LF;
+                $html .= '</div>'.LF;
+             #} // end if
+         }
+
+
          $html .= '</div>'.LF;
      }
      return $html;
@@ -1043,7 +1084,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $action_array = array();
       $html = '';
 
-      
+
       $room_manager = $this->_environment->getRoomManager();
       $user = $this->_environment->getCurrentUserItem();
       $list = $room_manager->getAllRelatedRoomListForUser($user);
@@ -1111,7 +1152,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $temp_array['text']  = "";
       $temp_array['value']  = "";
       $action_array[] = $temp_array;
-      
+
       $temp_array = array();
       $temp_array['dropdown_image']  = "mycalendar_icon";
       $temp_array['text']  = $this->_translator->getMessage('PRIVATEROOM_ASSIGNED_TO_ME_ONLY');
@@ -1122,14 +1163,14 @@ class cs_date_calendar_index_view extends cs_room_index_view {
          $temp_array['checked']  = "";
       }
       $action_array[] = $temp_array;
-      
+
       $temp_array = array();
       $temp_array['dropdown_image']  = "mycalendar_icon";
       $temp_array['checked']  = "seperator_75";
       $temp_array['text']  = "";
       $temp_array['value']  = "";
       $action_array[] = $temp_array;
-      
+
       $temp_array = array();
       $temp_array['dropdown_image']  = "mycalendar_icon";
       $temp_array['checked']  = "scroll_start";
@@ -1179,7 +1220,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $temp_array['text']  = "";
       $temp_array['value']  = "";
       $action_array[] = $temp_array;
-      
+
       $temp_array = array();
       $temp_array['dropdown_image']  = "mycalendar_icon";
       $temp_array['text']  = $this->_translator->getMessage('PRIVATEROOM_ASSIGNED_TO_ME_TODO_ONLY');
@@ -1190,14 +1231,14 @@ class cs_date_calendar_index_view extends cs_room_index_view {
          $temp_array['checked']  = "";
       }
       $action_array[] = $temp_array;
-      
+
       $temp_array = array();
       $temp_array['dropdown_image']  = "mycalendar_icon";
       $temp_array['checked']  = "seperator_75";
       $temp_array['text']  = "";
       $temp_array['value']  = "";
       $action_array[] = $temp_array;*/
-      
+
       $temp_array = array();
       $temp_array['dropdown_image']  = "mycalendar_icon";
       $temp_array['checked']  = "scroll_start";
@@ -1252,18 +1293,18 @@ class cs_date_calendar_index_view extends cs_room_index_view {
          $html .= '-->'.LF;
          $html .= '</script>'.LF;
       }
-      
+
       ///////////////////////////
       // Restrictions
       ///////////////////////////
-      
+
 //      $session_item = $this->_environment->getSessionItem();
 //      $restrictions = array();
 //      if($session_item->issetValue($this->_environment->getCurrentContextId() . '_date_restrictions')) {
 //         $restrictions = $session_item->getValue($this->_environment->getCurrentContextId() . '_date_restrictions');
 //      }
 //      unset($sesion_item);
-//      
+//
 //      #######################
 //      ## build list entries
 //      #
@@ -1271,38 +1312,38 @@ class cs_date_calendar_index_view extends cs_room_index_view {
 //                                 'type'					=>   'text',
 //      									'text'	            =>   'Terminart',
 //                                 'value'              =>   '');
-//      
+//
 //      $checked = '';
-//      if(in_array('restrictions_datetype_nonprivate', $restrictions)) $checked = 'checked';  
+//      if(in_array('restrictions_datetype_nonprivate', $restrictions)) $checked = 'checked';
 //      $dropdown_array[] = array(	'dropdown_image'	   =>   'mycalendar_restrictions_date',
 //                                 'type'					=>   $checked,
 //      									'text'	            =>   'keine privaten Termine',
 //                                 'value'              =>   'restrictions_datetype_nonprivate');
-//      
+//
 //      $checked = '';
 //      if(in_array('restrictions_datetype_onlyprivate', $restrictions)) $checked = 'checked';
 //      $dropdown_array[] = array(	'dropdown_image'	   =>   'mycalendar_restrictions_date',
 //                                 'type'					=>   $checked,
 //      									'text'	            =>   'nur private Termine',
 //                                 'value'              =>   'restrictions_datetype_onlyprivate');
-//      
+//
 //      $dropdown_array[] = array(	'dropdown_image'	   =>   'mycalendar_restrictions_date',
 //                                 'type'					=>   'seperator',
 //      									'text'	            =>   '',
 //                                 'value'              =>   '');
-//      
+//
 //      ####################################################################################
-//      
+//
 //      $dropdown_array[] = array(	'dropdown_image'	   =>   'mycalendar_restrictions_date',
 //                                 'type'					=>   'text',
 //      									'text'	            =>   'Terminfarbe',
 //                                 'value'              =>   '');
-//      
+//
 //      $dropdown_array[] = array(	'dropdown_image'	   =>   'mycalendar_restrictions_date',
 //                                 'type'					=>   'scroll_start',
 //      									'text'	            =>   '',
 //                                 'value'              =>   '');
-//      
+//
 //      $color_array = $this->getAvailableColorArray();
 //      foreach($color_array as $color) {
 //         $color_text = '';
@@ -1319,7 +1360,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
 //            case '#CC33CC': $color_text = getMessage('DATE_COLOR_PURPLE');break;
 //            default: $color_text = getMessage('DATE_COLOR_UNKNOWN');
 //         }
-//         
+//
 //         $checked = '';
 //         if(in_array('restrictions_datecolor' . $color, $restrictions)) $checked = 'checked';
 //         $dropdown_array[] = array(	'dropdown_image'	   =>   'mycalendar_restrictions_date',
@@ -1327,29 +1368,29 @@ class cs_date_calendar_index_view extends cs_room_index_view {
 //      										'text'	            =>   $color_text,
 //                                 	'value'              =>   'restrictions_datecolor' . $color);
 //      }
-//      
+//
 //      $dropdown_array[] = array(	'dropdown_image'	   =>   'mycalendar_restrictions_date',
 //                                 'type'					=>   'scroll_end',
 //      									'text'	            =>   '',
 //                                 'value'              =>   '');
-//      
+//
 //      $dropdown_array[] = array(	'dropdown_image'	   =>   'mycalendar_restrictions_date',
 //                                 'type'					=>   'seperator',
 //      									'text'	            =>   '',
 //                                 'value'              =>   '');
-//      
+//
 //      ####################################################################################
-//      
+//
 //      $dropdown_array[] = array(	'dropdown_image'	   =>   'mycalendar_restrictions_date',
 //                                 'type'					=>   'text',
 //      									'text'	            =>   'Raum',
 //                                 'value'              =>   '');
-//      
+//
 //      $dropdown_array[] = array(	'dropdown_image'	   =>   'mycalendar_restrictions_date',
 //                                 'type'					=>   'scroll_start',
 //      									'text'	            =>   '',
 //                                 'value'              =>   '');
-//      
+//
 //      $room_manager = $this->_environment->getRoomManager();
 //      $room_list = $room_manager->getAllRelatedRoomListForUser($user);
 //      $room = $room_list->getFirst();
@@ -1360,22 +1401,22 @@ class cs_date_calendar_index_view extends cs_room_index_view {
 //                                 	'type'					=>   $checked,
 //      										'text'	            =>   $room->getTitle(),
 //                                 	'value'              =>   'restrictions_dateroom' . $room->getItemId());
-//         
+//
 //         $room = $room_list->getNext();
 //      }
-//      
+//
 //      $dropdown_array[] = array(	'dropdown_image'	   =>   'mycalendar_restrictions_date',
 //                                 'type'					=>   'scroll_end',
 //      									'text'	            =>   '',
 //                                 'value'              =>   '');
-//      
+//
 //      $dropdown_array[] = array(	'dropdown_image'	   =>   'mycalendar_restrictions_date',
 //                                 'type'					=>   'seperator',
 //      									'text'	            =>   '',
 //                                 'value'              =>   '');
-//      
+//
 //      ####################################################################################
-//      
+//
 //      $checked = '';
 //      if(in_array('restrictions_dateassigned', $restrictions)) $checked = 'checked';
 //      $dropdown_array[] = array(	'dropdown_image'	   =>   'mycalendar_restrictions_date',
@@ -1385,7 +1426,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
 //      #
 //      ## ~build list entries
 //      #######################
-//      
+//
 //      // init drop down menu
 //      if(!empty($dropdown_array) && count($dropdown_array) >= 1) {
 //         $html .= '<script type="text/javascript">'.LF;
@@ -1407,7 +1448,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
 //         $html .= '-->'.LF;
 //         $html .= '</script>'.LF;
 //      }
-      
+
       return $html;
    }
 
@@ -5731,7 +5772,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
 //               if($exp_entry[1] == 'dates') {
 //                  $room_id = $exp_entry[0];
 //                  $conf_room = $room_manager->getItem($room_id);
-//                  
+//
 //                  $html .= '<tr>'.LF;
 //                  $html .= '<td style="text-align:right;">'.LF;
 //                  $html .= $conf_room->getTitle() . LF;
@@ -5800,7 +5841,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
             ) {
             $html .= '<tr>'.LF;
             $html .= '<td style="text-align:right;">'.LF;
-            
+
             $html .= $this->_translator->getMessage('COMMON_DATE_COLOR');
             $color_text = '';
             switch ('#' . $color){
@@ -5817,7 +5858,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                default: $color_text = getMessage('DATE_COLOR_UNKNOWN');
             }
             $html .= ' ' . $color_text . LF;
-            
+
             $new_aparams = $this->_environment->getCurrentParameterArray();
             $new_aparams['selcolor'] = 2;
             $image = '<img src="images/delete_restriction.gif" style="padding-top:3px;" alt="'.$this->_translator->getMessage('ENTRY_DELETE_RESTRICTION').'"/>'.LF;
