@@ -582,8 +582,11 @@ class cs_privateroom_item extends cs_room_item {
                                  $new_annotation = false;
                                  $anno_list = $rubric_item->getItemAnnotationList();
                                  $anno_item = $anno_list->getFirst();
-                                 if($rubric_item->getModificationDate() < $anno_item->getModificationDate()){
-                                 	$new_annotation = true;
+                                 while($anno_item){
+	                                 if($rubric_item->getModificationDate() < $anno_item->getModificationDate()){
+	                                 	$new_annotation = true;
+	                                 }
+	                                 $anno_item = $anno_list->getNext();
                                  }
 
                                  if ( empty($noticed)) {
