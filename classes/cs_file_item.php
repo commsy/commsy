@@ -170,6 +170,10 @@ class cs_file_item extends cs_item {
       $this->_icon['rtf']     = "notebook.png";
       $this->_mime['rtf']     = 'aapplication/x-smarttech-notebook';
 
+      //promethean
+      $this->_icon['flp']     = "flipchart.png";
+      $this->_mime['flp']     = 'aapplication/application/x-asstudio';
+
 
       // open office
       $this->_mime['odf']     = 'application/smath';
