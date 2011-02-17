@@ -51,7 +51,11 @@ class cs_wordpress_manager extends cs_manager {
     parent::cs_manager($environment);
 
     $this->wp_user = $this->_environment->getCurrentUser()->_getItemData();
-    $this->CW = $this->getSoapClient();
+    
+    global $c_wordpress;
+    if($c_wordpress){
+       $this->CW = $this->getSoapClient();
+    }
   }
 
 
