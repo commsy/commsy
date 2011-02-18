@@ -38,12 +38,40 @@ $translator = $environment->getTranslationObject();
 
 if ( !empty($_GET['iid']) ) {
 
+
+      $current_context_item = $environment->getCurrentContextItem();
+      $current_user_item = $environment->getCurrentUserItem();
+      $user_id = $current_user_item->getUserID();
+      $is_external_allowed = false;
+      $manager = $environment->getLinkItemFileManager();
+      $manager->setFileIDLimit($_GET['iid']);
+      $manager->select();
+      $list = $manager->get();
+      if ( isset($list) and  $list->isNotEmpty() ) {
+         $item = $list->getFirst();
+         $item_id = $item->getLinkedItemID();
+         $item_manager = $environment->getItemManager();
+         $item_item = $item_manager->getItem($item_id);
+	     $item_type = $item_item->getItemType();
+         if ($item_type == 'section'){
+		    $section_manager = $environment->getSectionManager();
+		    $section_item = $section_manager->getItem($item_item->getItemID());
+		    $material_id = $section_item->getLinkedItemID();
+		    $material_manager = $environment->getMaterialManager();
+		    $material_item = $material_manager->getItem($material_id);
+            $is_external_allowed = $material_item->mayExternalSee($current_user_item);
+		 }else{
+            $is_external_allowed = $item_item->mayExternalSee($current_user_item);
+		 }
+      }
+
+
    $send_file = false;
 
    // security
    $current_context_item = $environment->getCurrentContextItem();
    $current_user_item = $environment->getCurrentUserItem();
-   if ( $current_user_item->isUser() ) {
+   if ( $current_user_item->isUser() or $is_external_allowed) {
       $send_file = true;
    } elseif ( $current_context_item->isOpenForGuests() ) {
       $send_file = true;
@@ -86,7 +114,10 @@ if ( !empty($_GET['iid']) ) {
          $link_item = $link_list->getNext();
       }
       unset($link_list);
+   }elseif ( $item->mayExternalSee($current_user_item) ) {
+      $send_file = true;
    }
+
    unset($current_context_item);
    unset($current_user_item);
 
@@ -121,7 +152,7 @@ if ( !empty($_GET['iid']) ) {
          	                           'video/mpeg',
          	                           'application/pdf',
          	                           'application/x-shockwave-flash');
-         	
+
             // see: http://de.php.net/manual/de/function.readfile.php (25.10.2010)
             $realpath = $file->getDiskFileName();
             $mtime = ($mtime = filemtime($realpath)) ? $mtime : gmtime();
@@ -134,13 +165,13 @@ if ( !empty($_GET['iid']) ) {
             @apache_setenv('no-gzip', 1);
             @ini_set('zlib.output_compression', 0);
             // Maybe the client doesn't know what to do with the output so send a bunch of these headers:
-            
+
             #if(!in_array($file->getMime(), $no_force_download)){
 	            header("Content-Type: application/force-download");
 	            header('Content-Type: application/octet-stream');
             #}
             header('Content-Type: '.$file->getMime());
-            
+
             if(!in_array($file->getMime(), $no_force_download)){
 	            if (strstr($_SERVER["HTTP_USER_AGENT"], "MSIE") != false) {
 	               header("Content-Disposition: attachment; filename=\"" . urlencode($file->getDisplayName()) . '"; modification-date="' . date('r', $mtime) . '"');
@@ -148,7 +179,7 @@ if ( !empty($_GET['iid']) ) {
 	               header("Content-Disposition: attachment; filename=\"" . $file->getDisplayName() . '"; modification-date="' . date('r', $mtime) . '"');
 	            }
             }
-            
+
             // Set the length so the browser can set the download timers
             header("Content-Length: " . (string)$size);
             // If it's a large file we don't want the script to timeout, so:

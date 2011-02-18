@@ -938,10 +938,11 @@ class cs_authentication {
       if (!$this->_environment->inServer() and $uid != 'root') {
          $portal_user = $this->_getPortalUserItem($uid,$auth_source);
          if ( isset($portal_user) and $portal_user->isUser() ) {
-            $context_user = $this->_getContextUserItem($uid,$auth_source);
+             $context_user = $this->_getContextUserItem($uid,$auth_source);
             if (isset($context_user)) {
                $this->_environment->setCurrentUserItem($context_user);
                $value = $this->_isUserAllowedHere($context_user);
+
                if (!$value) {
                   $translator = $this->_environment->getTranslationObject();
                   if ($context_user->isRejected()) {
@@ -954,7 +955,27 @@ class cs_authentication {
                }
             } elseif(isset($_GET['iid']) and ($this->_environment->getCurrentFunction() == 'detail') and $this->_isExternalUserAllowedToSee($uid, $_GET['iid'])){
                $value = true;
-            }elseif($this->_environment->getCurrentModule() == 'annotation') {
+            }elseif(($this->_environment->getCurrentModule() == 'material') and ($this->_environment->getCurrentFunction() == 'getfile') and isset($_GET['iid'])){
+               $current_user_item = $this->_environment->getCurrentUserItem();
+               $manager = $this->_environment->getLinkItemFileManager();
+               $manager->setFileIDLimit($_GET['iid']);
+               $manager->select();
+               $list = $manager->get();
+               if ( isset($list) and  $list->isNotEmpty() ) {
+                  $item = $list->getFirst();
+                  $item_manager = $this->_environment->getItemManager();
+                  $item_item = $item_manager->getItem($item->getLinkedItemID());
+				  $item_type = $item_item->getItemType();
+				  if ($item_type == 'section'){
+				  	  $section_manager = $this->_environment->getSectionManager();
+				  	  $section_item = $section_manager->getItem($item_item->getItemID());
+				  	  $material_id = $section_item->getLinkedItemID();
+                      $value = $this->_isExternalUserAllowedToSee($uid,$material_id);
+				  }else{
+                     $value = $this->_isExternalUserAllowedToSee($uid,$item->getLinkedItemID());
+				  }
+               }
+             }elseif($this->_environment->getCurrentModule() == 'annotation') {
             	 $value = false;
             	 if (($this->_environment->getCurrentFunction() == 'edit') and isset($_GET['ref_iid']) and $this->_isExternalUserAllowedToSee($uid, $_GET['ref_iid'])){
             	    $value = true;
@@ -976,7 +997,7 @@ class cs_authentication {
                $value = true;
             }elseif ($context->isOpenForGuests() OR $this->_module_limit == 'agb') {
                $value = true;
-            } else {
+            }else {
                $context = $this->_environment->getCurrentContextItem();
                $portal = $this->_environment->getCurrentPortalItem();
                $translator = $this->_environment->getTranslationObject();
@@ -999,6 +1020,7 @@ class cs_authentication {
          } elseif ($this->_environment->getCurrentModule() == 'homepage' and $this->_environment->getCurrentFunction() == 'detail') {
             $value = true;
          } else {
+
             $value = $this->_isUserAllowedHere($portal_user);
             $this->_environment->setCurrentUserItem($portal_user);
             if (!$value) {
