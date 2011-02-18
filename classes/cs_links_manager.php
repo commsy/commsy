@@ -70,7 +70,7 @@ class cs_links_manager extends cs_manager {
   var $_version_id_limit = NULL;
 
   var $_all_link_file_data = array();
-  
+
   var $_file_to_material_data = array();
 
   var $_item_id_array = array();
@@ -718,7 +718,7 @@ class cs_links_manager extends cs_manager {
          include_once('functions/error_functions.php');trigger_error("Problem creating File-Link query: ".$query, E_USER_WARNING);
       }
    }
-   
+
    function getMaterialIDForFileID($file_id) {
       if(isset($this->_file_to_material_data[$file_id])) {
         return $this->_file_to_material_data[$file_id];
@@ -1094,6 +1094,7 @@ class cs_links_manager extends cs_manager {
       $rows = array();
 
       $sql1 = 'SELECT '.$this->addDatabasePrefix($this->_db_table).'.* AS item_id FROM '.$this->addDatabasePrefix($this->_db_table).' LEFT JOIN '.$this->addDatabasePrefix('items').' ON '.$this->addDatabasePrefix($this->_db_table).'.to_item_id='.$this->addDatabasePrefix('items').'.item_id WHERE '.$this->addDatabasePrefix($this->_db_table).'.context_id="'.$context_id.'"AND '.$this->addDatabasePrefix('items').'.context_id IS NULL;';
+#      $sql1 = 'SELECT '.$this->addDatabasePrefix($this->_db_table).'.* FROM '.$this->addDatabasePrefix($this->_db_table).' LEFT JOIN '.$this->addDatabasePrefix('items').' ON '.$this->addDatabasePrefix($this->_db_table).'.to_item_id='.$this->addDatabasePrefix('items').'.item_id WHERE '.$this->addDatabasePrefix($this->_db_table).'.context_id="'.$context_id.'"AND '.$this->addDatabasePrefix('items').'.context_id IS NULL;';
       $result = $this->_db_connector->performQuery($sql1);
       if ( !empty($result) ) {
          foreach ( $result as $row ) {
