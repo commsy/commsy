@@ -167,8 +167,8 @@ class cs_file_item extends cs_item {
       $this->_icon['lsi']     = "lassi_commsy.png";
 
       //smartboard
-      $this->_icon['rtf']     = "notebook.png";
-      $this->_mime['rtf']     = 'aapplication/x-smarttech-notebook';
+      $this->_icon['notebook']     = "notebook.png";
+      $this->_mime['notebook']     = 'aapplication/x-smarttech-notebook';
 
       //promethean
       $this->_icon['flp']     = "flipchart.png";
@@ -201,8 +201,7 @@ class cs_file_item extends cs_item {
       // Consideo Modeler
       $this->_icon['cons']      = "consideo.png";
       $this->_mime['cons']      = 'application/consideo';
-
-
+      
       $this->_icon['unknown'] = "unknown.png";
 
       $this->cs_item($environment);
