@@ -9,7 +9,7 @@ CKEDITOR.plugins.add( 'CommSyMDO',
 			{
 				label : ckeditor_mdo,
 				command : 'CommSyMDO',
-				icon: this.path + 'images/CommSyMDO.png'
+				icon: this.path + 'images/logoMDO.png'
 			});
 		CKEDITOR.dialog.add( 'CommSyMDO', this.path + 'dialogs/CommSyMDO.js' );
 	}

@@ -81,7 +81,7 @@ class cs_configuration_mediaintegration_form extends cs_rubric_form {
           $this->_form->combine();
           $this->_form->addText('description', '', $this->_translator->getMessage('CONFIGURATION_MEDIA_MEDIENINTEGRATIONONLINE_DESC'));
           
-          $this->_form->addTextfield('mdo_key', '', $this->_translator->getMessage('CONFIGURATION_MEDIA_MEDIENINTEGRATIONONLINE_KEY'), '', 40, 40);
+          $this->_form->addTextfield('mdo_key', '', $this->_translator->getMessage('CONFIGURATION_MEDIA_MEDIENINTEGRATIONONLINE_KEY'), '', 40, 40, true);
         }
       }
       

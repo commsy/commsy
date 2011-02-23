@@ -158,14 +158,13 @@ CKEDITOR.dialog.add( 'CommSyMDO', function( editor )
               
               // register click events
               jQuery('a[id^="ckeditor_mdo_link_"]').click(function(object) {
-                var text = '<span>(:mdo ' + object.currentTarget.id.substr(18);
-                
-                // embedded or new page
-                if(jQuery('select[name="ckeditor_mdo_integration"]').attr('value') === 'newpage') {
-                  text += ' target=new';
-                }
-                text += ':)</span>';
-                editor.insertElement(CKEDITOR.dom.element.createFromHtml(text));
+              	// remove all highlights
+              	jQuery('table[id="ckeditor_search_results"] td').each(function(item) {
+              		item.css('background-color', 'white');
+              	});
+              	
+              	// highlight selection
+              	object.currentTarget.css('background-color', 'Gainsboro');
               });
               
               // set number of results
@@ -212,8 +211,23 @@ CKEDITOR.dialog.add( 'CommSyMDO', function( editor )
 			],
 			
 			buttons : [ CKEDITOR.dialog.okButton ],
-			onOk : function()
-			{
+			onOk : function() {
+				// close and add entry
+				
+				// find selected entry
+				var text = '';
+				jQuery('table[id="ckeditor_search_results"] td').each(function(item) {
+              		if(item.css('background-color', 'Gainsboro')) {
+              			text += '<span>(:mdo ' + item.id.substr(18);
+              		}
+              	});
+                
+                // embedded or new page
+                if(jQuery('select[name="ckeditor_mdo_integration"]').attr('value') === 'newpage') {
+                  text += ' target=new';
+                }
+                text += ':)</span>';
+                editor.insertElement(CKEDITOR.dom.element.createFromHtml(text));
 			},
 			onCancel : function(){
 				
