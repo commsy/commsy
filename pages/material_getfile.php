@@ -60,6 +60,16 @@ if ( !empty($_GET['iid']) ) {
 		    $material_manager = $environment->getMaterialManager();
 		    $material_item = $material_manager->getItem($material_id);
             $is_external_allowed = $material_item->mayExternalSee($current_user_item);
+		 }elseif ($item_type == 'discarticle'){
+		    $discarticle_manager = $environment->getDiscussionArticleManager();
+		    $discarticle_item = $discarticle_manager->getItem($item_item->getItemID());
+			$discussion_item = $discarticle_item->getLinkedItem();
+            $is_external_allowed = $discussion_item->mayExternalSee($current_user_item);
+		 }elseif ($item_type == 'step'){
+		    $step_manager = $environment->getStepManager();
+		    $step_item = $step_manager->getItem($item_item->getItemID());
+			$step_item = $step_item->getLinkedItem();
+            $is_external_allowed = $step_item->mayExternalSee($current_user_item);
 		 }else{
             $is_external_allowed = $item_item->mayExternalSee($current_user_item);
 		 }

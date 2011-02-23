@@ -971,8 +971,16 @@ class cs_authentication {
 				  	  $section_item = $section_manager->getItem($item_item->getItemID());
 				  	  $material_id = $section_item->getLinkedItemID();
                       $value = $this->_isExternalUserAllowedToSee($uid,$material_id);
-				  }else{
-                     $value = $this->_isExternalUserAllowedToSee($uid,$item->getLinkedItemID());
+				  }elseif ($item_type == 'discarticle'){
+				  	  $discarticle_manager = $this->_environment->getDiscussionArticleManager();
+				  	  $discarticle_item = $discarticle_manager->getItem($item_item->getItemID());
+				  	  $discussion_item = $discarticle_item->getLinkedItem();
+                      $value = $this->_isExternalUserAllowedToSee($uid,$discussion_item->getItemID());
+				  }elseif ($item_type == 'step'){
+				  	  $step_manager = $this->_environment->getStepManager();
+				  	  $step_item = $step_manager->getItem($item_item->getItemID());
+				  	  $step_item = $step_item->getLinkedItem();
+                      $value = $this->_isExternalUserAllowedToSee($uid,$step_item->getItemID());
 				  }
                }
              }elseif($this->_environment->getCurrentModule() == 'annotation') {
