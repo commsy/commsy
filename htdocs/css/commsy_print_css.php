@@ -312,3 +312,11 @@ div.gauge-bar {
    color:<?php echo($color['headline_text'])?>;
    font-size:10px;
 }
+
+td.calendar_content {
+    background-color: #FDFDFD;
+    border: 1px solid #827F76;
+    color: black;
+    font-size: 8pt;
+    font-weight: normal;
+}
