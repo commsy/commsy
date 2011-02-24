@@ -66,7 +66,7 @@ var  $_config_boxes = false;
            }
            $html .= '<tr>'.LF;
            $html .= '<td>'.'<a title="'.$title.'" href="'.$c_pmwiki_path_url.'/wikis/'.$current_context->getContextID().'/'.$current_context->getItemID().'/'.$url_session_id.'" target="_blank">'.$image.'</a></td>'.LF;
-           $html .= '<td>(<a href="http://localhost/commsy/htdocs/commsy.php?cid='.$current_context->getItemID().'&mod=configuration&fct=wiki">'.$this->_translator->getMessage('COMMON_CONFIGURATION').'</a>)</td>'.LF;
+           $html .= '<td>(<a href="http://localhost/commsy/htdocs/commsy.php?cid='.$current_context->getItemID().'&amp;mod=configuration&amp;fct=wiki">'.$this->_translator->getMessage('COMMON_CONFIGURATION').'</a>)</td>'.LF;
            $html .= '</tr>'.LF;
         }
       }
@@ -89,16 +89,16 @@ var  $_config_boxes = false;
             }
             $html .= '<tr>'.LF;
             $html .= '<td>'.'<a title="'.$title.'" href="'.$c_wordpress_path_url.'/'.$current_context->getContextID().'_'.$current_context->getItemID().'/'.$url_session_id.'" target="_blank">'.$image.'</a></td>'.LF;
-            $html .= '<td>(<a href="http://localhost/commsy/htdocs/commsy.php?cid='.$current_context->getItemID().'&mod=configuration&fct=wordpress">'.$this->_translator->getMessage('COMMON_CONFIGURATION').'</a>)</td>';
+            $html .= '<td>(<a href="http://localhost/commsy/htdocs/commsy.php?cid='.$current_context->getItemID().'&amp;mod=configuration&amp;fct=wordpress">'.$this->_translator->getMessage('COMMON_CONFIGURATION').'</a>)</td>';
             $html .= '</tr>'.LF;
          }
       }
       $html .= '</table>'.LF;
-     
+
      $html .= '</div>';
      return $html;
    }
-   
+
    #function getPreferencesAsHTML(){
    #   $html = '&nbsp;';
    #   return $html;

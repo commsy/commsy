@@ -52,7 +52,7 @@ class cs_privateroom_home_search_view extends cs_view {
     */
     function getSearchText (){
        if (empty($this->_search_text)){
-       	$this->_search_text = $this->_translator->getMessage('PRIVATROOM_SEARCH_BOX');
+          $this->_search_text = $this->_translator->getMessage('PRIVATROOM_SEARCH_BOX');
        }
        return $this->_search_text;
     }

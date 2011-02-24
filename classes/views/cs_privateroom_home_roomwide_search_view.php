@@ -52,7 +52,7 @@ class cs_privateroom_home_roomwide_search_view extends cs_view {
     */
     function getSearchText (){
        if (empty($this->_search_text)){
-       	$this->_search_text = $this->_translator->getMessage('PRIVATROOM_ROOMWIDE_SEARCH_BOX_TEXT');
+          $this->_search_text = $this->_translator->getMessage('PRIVATROOM_ROOMWIDE_SEARCH_BOX_TEXT');
        }
        return $this->_search_text;
     }
@@ -116,50 +116,50 @@ class cs_privateroom_home_roomwide_search_view extends cs_view {
       $html .= '<div style="width: 97%;" id="form_formatting_box">';
 
       $html .= '<div style="padding-bottom: 5px;">'.$this->_translator->getMessage('COMMON_PAGE_ENTRIES').':</div>';
-      $html .= '<input type="radio" name="roomwide_search_interval" value="10">10';
-      $html .= '<input type="radio" name="roomwide_search_interval" value="20" checked>20';
-      $html .= '<input type="radio" name="roomwide_search_interval" value="50">50<br/><br/>';
+      $html .= '<input type="radio" name="roomwide_search_interval" value="10" />10';
+      $html .= '<input type="radio" name="roomwide_search_interval" value="20" checked />20';
+      $html .= '<input type="radio" name="roomwide_search_interval" value="50" />50<br/><br/>';
 
       $html .= '<div style="padding-bottom: 5px;">'.$this->_translator->getMessage('PRIVATE_ROOM_ROOMWIDE_SEARCH_EXT_TYPES').':</div>';
       $html .= '<div style="height:60px; overflow-y:auto; border:1px dashed #bbbbbb; background-color:#ffffff;">';
-      $html .= '<input type="checkbox" name="roomwide_search_type" value="announcement">'.$this->_translator->getMessage('ANNOUNCEMENTS').'<br/>';
-      $html .= '<input type="checkbox" name="roomwide_search_type" value="date">'.$this->_translator->getMessage('DATES').'<br/>';
-      $html .= '<input type="checkbox" name="roomwide_search_type" value="material">'.$this->_translator->getMessage('MATERIALS').'<br/>';
-      $html .= '<input type="checkbox" name="roomwide_search_type" value="discussion">'.$this->_translator->getMessage('DISCUSSIONS').'<br/>';
-      $html .= '<input type="checkbox" name="roomwide_search_type" value="todo">'.$this->_translator->getMessage('TODOS').'<br/>';
-      $html .= '<input type="checkbox" name="roomwide_search_type" value="topic">'.$this->_translator->getMessage('TOPICS').'<br/>';
+      $html .= '<input type="checkbox" name="roomwide_search_type" value="announcement"/>'.$this->_translator->getMessage('ANNOUNCEMENTS').'<br/>';
+      $html .= '<input type="checkbox" name="roomwide_search_type" value="date"/>'.$this->_translator->getMessage('DATES').'<br/>';
+      $html .= '<input type="checkbox" name="roomwide_search_type" value="material"/>'.$this->_translator->getMessage('MATERIALS').'<br/>';
+      $html .= '<input type="checkbox" name="roomwide_search_type" value="discussion"/>'.$this->_translator->getMessage('DISCUSSIONS').'<br/>';
+      $html .= '<input type="checkbox" name="roomwide_search_type" value="todo"/>'.$this->_translator->getMessage('TODOS').'<br/>';
+      $html .= '<input type="checkbox" name="roomwide_search_type" value="topic"/>'.$this->_translator->getMessage('TOPICS').'<br/>';
       $html .= '</div><br/>';
 
       $context_array = array();
-		$room_name_array = array();
+      $room_name_array = array();
 
-		$user_item = $this->_environment->getCurrentUserItem();
-		$private_room_item = $this->_environment->getCurrentContextItem();
+      $user_item = $this->_environment->getCurrentUserItem();
+      $private_room_item = $this->_environment->getCurrentContextItem();
       $context_array[] = $private_room_item->getItemID();
       $room_name_array[$private_room_item->getItemID()] = $private_room_item->getTitle();
 
-		// Projekt- und Gruppenraeume
-		$project_list = $user_item->getRelatedProjectList();
-		$project_item = $project_list->getFirst();
-		while($project_item){
-		   $context_array[] = $project_item->getItemID();
-		   $room_name_array[$project_item->getItemID()] = $project_item->getTitle();
-		   $project_item = $project_list->getNext();
-		}
+      // Projekt- und Gruppenraeume
+      $project_list = $user_item->getRelatedProjectList();
+      $project_item = $project_list->getFirst();
+      while($project_item){
+         $context_array[] = $project_item->getItemID();
+         $room_name_array[$project_item->getItemID()] = $project_item->getTitle();
+         $project_item = $project_list->getNext();
+      }
 
-		// Gemeinschaftsraeume
-		$community_list = $user_item->getUserRelatedCommunityList();
-		$community_item = $community_list->getFirst();
-		while($community_item){
-		   $context_array[] = $community_item->getItemID();
-		   $room_name_array[$community_item->getItemID()] = $community_item->getTitle();
-		   $community_item = $community_list->getNext();
-		}
+      // Gemeinschaftsraeume
+      $community_list = $user_item->getUserRelatedCommunityList();
+      $community_item = $community_list->getFirst();
+      while($community_item){
+         $context_array[] = $community_item->getItemID();
+         $room_name_array[$community_item->getItemID()] = $community_item->getTitle();
+         $community_item = $community_list->getNext();
+      }
 
       $html .= '<div style="padding-bottom: 5px;">'.$this->_translator->getMessage('PRIVATE_ROOM_ROOMWIDE_SEARCH_EXT_ROOMS').':</div>';
       $html .= '<div style="height:60px; overflow-y:auto; border:1px dashed #bbbbbb; background-color:#ffffff;">';
       foreach($context_array as $context_temp){
-      	$html .= '<input type="checkbox" name="roomwide_search_room" value="'.$context_temp.'">'.$room_name_array[$context_temp].'<br/>';
+         $html .= '<input type="checkbox" name="roomwide_search_room" value="'.$context_temp.'"/>'.$this->_text_as_form($room_name_array[$context_temp]).'<br/>';
       }
       $html .= '</div>';
 
