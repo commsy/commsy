@@ -1018,5 +1018,79 @@ class cs_item_manager extends cs_manager {
       }
       return $retour;
    }
+
+     function getItemsForNewsletter ($room_id_array, $user_id_array,$age_limit){
+     $query1 = 'SELECT '.$this->addDatabasePrefix('items').'.item_id, '.$this->addDatabasePrefix('items').'.context_id, '.$this->addDatabasePrefix('items').'.type FROM '.$this->addDatabasePrefix('items');
+     $query1 .= ' WHERE '.$this->addDatabasePrefix('items').'.context_id IN ('.implode(", ",encode(AS_DB,$room_id_array)).')';
+     $query1 .= ' AND modification_date >= DATE_SUB(CURRENT_DATE,interval '.encode(AS_DB,$age_limit).' day) AND '.$this->addDatabasePrefix('items').'.deleter_id IS NULL and '.$this->addDatabasePrefix('items').'.deletion_date IS NULL';
+     $query1 .= ' AND '.$this->addDatabasePrefix('items').'.type !="task" AND '.$this->addDatabasePrefix('items').'.type !="link_item"';
+     $query1 .= ' ORDER BY context_id, type';
+     // perform query
+     $result1 = array();
+     $result1 = $this->_db_connector->performQuery($query1);
+     if (!isset($result1)) {
+         include_once('functions/error_functions.php');trigger_error('Problems selecting items from query: "'.$query.'"',E_USER_WARNING);
+     }
+     $query2 = 'SELECT '.$this->addDatabasePrefix('items').'.item_id FROM '.$this->addDatabasePrefix('items');
+     $query2 .= ' INNER JOIN '.$this->addDatabasePrefix('noticed').' ON '.$this->addDatabasePrefix('noticed').'.item_id = '.$this->addDatabasePrefix('items').'.item_id';
+     $query2 .= ' WHERE '.$this->addDatabasePrefix('items').'.context_id IN ('.implode(", ",encode(AS_DB,$room_id_array)).')';
+     $query2 .= ' AND '.$this->addDatabasePrefix('noticed').'.user_id IN ('.implode(", ",encode(AS_DB,$user_id_array)).')';
+     $query2 .= ' AND '.$this->addDatabasePrefix('items').'.modification_date <= '.$this->addDatabasePrefix('noticed').'.read_date';
+     $query2 .= ' AND '.$this->addDatabasePrefix('items').'.deleter_id IS NULL and '.$this->addDatabasePrefix('items').'.deletion_date IS NULL';
+     // perform query
+     $r2 = array();
+     $r2 = $this->_db_connector->performQuery($query2);
+     if (!isset($r2)) {
+         include_once('functions/error_functions.php');trigger_error('Problems selecting items from query: "'.$query.'"',E_USER_WARNING);
+     }
+     $result2 = array();
+     foreach($r2 as $r){
+     	$result2[] = $r['item_id'];
+     }
+     $tmp_result = array();
+     $annotation_manager = $this->_environment->getAnnotationManager();
+     $discarticle_manager = $this->_environment->getDiscussionArticleManager();
+     $section_manager = $this->_environment->getSectionManager();
+     $step_manager = $this->_environment->getStepManager();
+     $result = array();
+     foreach($result1 as $r){
+     	if (!in_array($r['item_id'],$result2)){
+     	   if (isset($r['type']) and $r['type'] == 'annotation'){
+     	      $anno_item = $annotation_manager->getItem($r['item_id']);
+     	      $linked_item = $anno_item->getLinkedItem();
+     	      $result[$linked_item->getContextID()][$linked_item->getItemType()][$linked_item->getItemID()][] = 'annotation';
+     	      unset($anno_item);
+     	      unset($linked_item);
+     	   }elseif (isset($r['type']) and $r['type'] == 'discarticle'){
+     	      $discarticle_item = $discarticle_manager->getItem($r['item_id']);
+     	      $linked_item = $discarticle_item->getLinkedItem();
+     	      $result[$linked_item->getContextID()][$linked_item->getItemType()][$linked_item->getItemID()][] = 'discarticle';
+      	      unset($discarticle_item);
+     	      unset($linked_item);
+     	   }elseif (isset($r['type']) and $r['type'] == 'section'){
+     	      $section_item = $section_manager->getItem($r['item_id']);
+     	      $linked_item = $section_item->getLinkedItem();
+     	      $result[$linked_item->getContextID()][$linked_item->getItemType()][$linked_item->getItemID()][] = 'section';
+     	      unset($section_item);
+     	      unset($linked_item);
+     	   }elseif (isset($r['type']) and $r['type'] == 'step'){
+     	      $step_item = $step_manager->getItem($r['item_id']);
+     	      $linked_item = $step_item->getLinkedItem();
+     	      $result[$linked_item->getContextID()][$linked_item->getItemType()][$linked_item->getItemID()][] = 'section';
+     	      unset($step_item);
+     	      unset($linked_item);
+     	   }else{
+     	      $result[$r['context_id']][$r['type']][$r['item_id']][] = 'entry';
+     	   }
+     	}
+     }
+     unset($step_manager);
+     unset($section_manager);
+     unset($discarticle_manager);
+     unset($annotation_manager);
+     #pr($result);
+     return $result;
+  }
+
 }
 ?>
