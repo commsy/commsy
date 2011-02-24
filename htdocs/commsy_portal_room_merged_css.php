@@ -44,7 +44,6 @@ if (!empty($_GET['cid'])) {
 
 
 .small_font {8pt;}
-.gauge .gauge-bar{height:14px;} 
 
 /**************************************
 **** commsy_right_boxes_css ***********
