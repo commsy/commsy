@@ -112,7 +112,7 @@ class cs_privateroom_home_search_view extends cs_view {
       $html .= '</div>'.LF;
       $html .= '<script type="text/javascript">'.LF;
       $html .= '<!--'.LF;
-      $html .= 'var reset_search_text_message_entries = "'.$this->_text_as_form($this->getSearchText()).'"'.LF;
+      $html .= 'var reset_search_text_message_entries = "'.$this->_text_as_html_short($this->getSearchText()).'"'.LF;
       $html .= '-->'.LF;
       $html .= '</script>'.LF;
       return $html;

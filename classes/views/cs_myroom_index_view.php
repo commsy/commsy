@@ -922,13 +922,13 @@ class cs_myroom_index_view extends cs_context_index_view {
       $temp_array['text']  = "";
       $temp_array['value']  = "";
       $action_array[] = $temp_array;
-      
+
       $list = $this->_list;
       $room_item = $list->getFirst();
       while($room_item){
          $temp_array = array();
          $temp_array['dropdown_image']  = "new_icon";
-         $temp_array['text']  = $room_item->getTitle();
+         $temp_array['text']  = str_replace('"','&quot;',$this->_text_as_html_short($room_item->getTitle()));
          $temp_array['value'] = $room_item->getItemID();
          if(in_array($room_item->getItemID(), $myroom_array) or !$isset_display_config){
             $temp_array['checked']  = "checked";
@@ -945,7 +945,7 @@ class cs_myroom_index_view extends cs_context_index_view {
       $temp_array['text']  = "";
       $temp_array['value']  = "";
       $action_array[] = $temp_array;
-      
+
       // init drop down menu
       if ( !empty($action_array)
            and count($action_array) >= 1
