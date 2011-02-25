@@ -874,7 +874,7 @@ if ( $current_context->isPrivateRoom()
    ) {
    $current_user_item = $environment->getCurrentUser();
    $room_id_array = array();
-   
+
    // get my calendar display configuration
    $configuration = $current_context->getMyCalendarDisplayConfig();
    $configuration_room_dates_limit = array();
@@ -883,16 +883,16 @@ if ( $current_context->isPrivateRoom()
       $exp_entry = explode('_', $entry);
       if(sizeof($exp_entry) == 2) {
          if($exp_entry[1] == 'dates') {
-	         $configuration_room_dates_limit[] = $exp_entry[0];
-	      } else if($exp_entry[1] == 'todo') {
-	         $configuration_room_todo_limit[] = $exp_entry[0];
-	      }
+            $configuration_room_dates_limit[] = $exp_entry[0];
+         } else if($exp_entry[1] == 'todo') {
+            $configuration_room_todo_limit[] = $exp_entry[0];
+         }
       }
    }
-   
+
    // add privateroom itself
    $room_id_array[] = $current_context->getItemID();
-   
+
    // add related group rooms
    $grouproom_list = $current_user_item->getRelatedGroupList();
    if ( isset($grouproom_list) and $grouproom_list->isNotEmpty()) {
@@ -913,8 +913,8 @@ if ( $current_context->isPrivateRoom()
          $grouproom_item = $grouproom_list->getNext();
       }
    }
-   
-   // add related project rooms 
+
+   // add related project rooms
    $project_list = $current_user_item->getRelatedProjectList();
    if ( isset($project_list) and $project_list->isNotEmpty()) {
       $project_item = $project_list->getFirst();
@@ -923,7 +923,7 @@ if ( $current_context->isPrivateRoom()
           $project_item = $project_list->getNext();
       }
    }
-   
+
    // add related community rooms
    $community_list = $current_user_item->getRelatedcommunityList();
    if ( isset($community_list) and $community_list->isNotEmpty()) {
@@ -933,7 +933,7 @@ if ( $current_context->isPrivateRoom()
           $community_item = $community_list->getNext();
       }
    }
-   
+
    // filter room id array
    $temp = array();
    foreach($configuration_room_dates_limit as $limit) {
@@ -943,7 +943,7 @@ if ( $current_context->isPrivateRoom()
    }
    $temp[] = $current_context->getItemID();
    $dates_room_id_array = $temp;
-   
+
    if ($sel_room != "2"){
       $room_id = array();
       $room_id[] = $sel_room;
@@ -1025,7 +1025,7 @@ if ( $current_context->isPrivateRoom()
          $view->setSelectedAssignment($todo_sel_assignment,CS_TODO_TYPE);
       }
    }
-   
+
    // filter room id array
    $temp = array();
    foreach($configuration_room_todo_limit as $limit) {
@@ -1133,16 +1133,16 @@ $list = $dates_manager->get();        // returns a cs_list of dates_items
 
 if (($seldisplay_mode=='calendar' or $seldisplay_mode == 'calendar_month') and !($mode == 'formattach' or $mode == 'detailattach') ){
    $current_user = $environment->getCurrentUserItem();
-   
+
    // only access display config, if user is not root
-   if( !$current_user->isRoot() ) {
+   if( !$current_user->isRoot() and $environment->inPrivateRoom() ) {
      $myentries_array = $current_context->getMyCalendarDisplayConfig();
-  
+
      if(in_array("mycalendar_dates_assigned_to_me", $myentries_array)){
       $temp_list = new cs_list();
        $current_user = $environment->getCurrentUserItem();
        $current_user_list = $current_user->getRelatedUserList();
-       
+
        $temp_element = $list->getFirst();
        while($temp_element){
         $temp_user = $current_user_list->getFirst();
@@ -1154,7 +1154,7 @@ if (($seldisplay_mode=='calendar' or $seldisplay_mode == 'calendar_month') and !
         }
         $temp_element = $list->getNext();
        }
-       
+
        $list = $temp_list;
      }
      $list->sortby('date');
