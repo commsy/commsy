@@ -304,7 +304,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
          #}
          $height = '300px';
          if($number_of_portlets == 1){
-         	$height = '614px';
+            $height = '614px';
          } elseif ($number_of_portlets == 2){
             $height = '369px';
          } elseif ($number_of_portlets == 3){
@@ -449,23 +449,23 @@ class cs_date_calendar_index_view extends cs_room_index_view {
 
       // dates
       if(in_array('mycalendar_dates_portlet', $config)) {
-//	      $html .= '<div class="portlet-header-configuration ui-widget-header">'.LF;
-//	      $html .= 'Add Restriction'.LF;
-//	      $html .= '<div style="float:right;">'.LF;
-//	      $html .= '<a href="#"><img id="mycalendar_restrictions_date" src="images/commsyicons/48x48/config/privateroom_home_options.png" height=0></a>'.LF;
-//	      $html .= '</div>'.LF;
-//	      $html .= '</div>'.LF;
+//         $html .= '<div class="portlet-header-configuration ui-widget-header">'.LF;
+//         $html .= 'Add Restriction'.LF;
+//         $html .= '<div style="float:right;">'.LF;
+//         $html .= '<a href="#"><img id="mycalendar_restrictions_date" src="images/commsyicons/48x48/config/privateroom_home_options.png" height=0></a>'.LF;
+//         $html .= '</div>'.LF;
+//         $html .= '</div>'.LF;
          $html .= $this->_getDatesRestrictionBoxAsHTML().LF;
       }
 
       // todo's
       if(in_array('mycalendar_todo_portlet', $config)) {
-//	      $html .= '<div class="portlet-header-configuration ui-widget-header">'.LF;
-//	      $html .= 'Add Restriction'.LF;
-//	      $html .= '<div style="float:right;">'.LF;
-//	      $html .= '<a href="#"><img id="mycalendar_restrictions_todo" src="images/commsyicons/48x48/config/privateroom_home_options.png" height=0></a>'.LF;
-//	      $html .= '</div>'.LF;
-//	      $html .= '</div>'.LF;
+//         $html .= '<div class="portlet-header-configuration ui-widget-header">'.LF;
+//         $html .= 'Add Restriction'.LF;
+//         $html .= '<div style="float:right;">'.LF;
+//         $html .= '<a href="#"><img id="mycalendar_restrictions_todo" src="images/commsyicons/48x48/config/privateroom_home_options.png" height=0></a>'.LF;
+//         $html .= '</div>'.LF;
+//         $html .= '</div>'.LF;
          $html .= $this->_getTodoRestrictionBoxAsHTML().LF;
       }
 
@@ -484,12 +484,12 @@ class cs_date_calendar_index_view extends cs_room_index_view {
 
       //$html .= '<form action="commsy.php?cid=' . $context_item->getItemID() . '&mod=date&fct=index" method="post">'.LF;
       $html .= '<fieldset style="border: 1px solid Gainsboro; -moz-border-radius: 5px;">'.LF;
-	   $html .= '<legend style="color: DarkSlateGray;">' . $this->_translator->getMessage('COMMON_DATE_INDEX') . '</legend>'.LF;
+      $html .= '<legend style="color: DarkSlateGray;">' . $this->_translator->getMessage('COMMON_DATE_INDEX') . '</legend>'.LF;
       //$html .= '<input type="hidden" name="cid" value="' . $current_context->getItemID() . '"/>'.LF;
       //$html .= '<input type="hidden" name="mod" value="date"/>'.LF;
       //$html .= '<input type="hidden" name="fct" value="index"/>'.LF;
 
-	   #################
+      #################
       ## date type
       #
       $selstatus = $this->getSelectedStatus();
@@ -582,15 +582,15 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $html .= '>*'.$this->_translator->getMessage('COMMON_NO_SELECTION').'</option>'.LF;
       $html .= '   <option class="disabled" disabled="disabled" value="-2">------------------------------</option>'.LF;
 
-	   // get my calendar display configuration
-	   $configuration = $current_context->getMyCalendarDisplayConfig();
-	   $configuration_room_limit = array();
-	   foreach($configuration as $entry) {
-	      $exp_entry = explode('_', $entry);
-	      if(sizeof($exp_entry) == 2 && $exp_entry[1] == 'dates') {
-	         $configuration_room_limit[] = $exp_entry[0];
-	      }
-	   }
+      // get my calendar display configuration
+      $configuration = $current_context->getMyCalendarDisplayConfig();
+      $configuration_room_limit = array();
+      foreach($configuration as $entry) {
+         $exp_entry = explode('_', $entry);
+         if(sizeof($exp_entry) == 2 && $exp_entry[1] == 'dates') {
+            $configuration_room_limit[] = $exp_entry[0];
+         }
+      }
 
       $user = $this->_environment->getCurrentUserItem();
       $room_manager = $this->_environment->getRoomManager();
@@ -599,10 +599,10 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       while($room) {
          if(in_array($room->getItemID(), $configuration_room_limit)) {
             $html .= '      <option value="' . $room->getItemID() . '"';
-	         if(!empty($selroom) && $selroom == $room->getItemID()) {
-	            $html .= ' selected="selected"';
-	         }
-	         $html .= '>' . $room->getTitle() . '</option>'.LF;
+            if(!empty($selroom) && $selroom == $room->getItemID()) {
+               $html .= ' selected="selected"';
+            }
+            $html .= '>' . $room->getTitle() . '</option>'.LF;
          }
 
          $room = $room_list->getNext();
@@ -654,7 +654,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
 
       //$html .= '<form action="commsy.php?cid=' . $context_item->getItemID() . '&mod=date&fct=index" method="post">'.LF;
       $html .= '<fieldset style="border: 1px solid Gainsboro; -moz-border-radius: 5px;">'.LF;
-	   $html .= '<legend style="color: DarkSlateGray;">' . $this->_translator->getMessage('COMMON_TODO_INDEX') . '</legend>'.LF;
+      $html .= '<legend style="color: DarkSlateGray;">' . $this->_translator->getMessage('COMMON_TODO_INDEX') . '</legend>'.LF;
 //      $html .= '<input type="hidden" name="cid" value="' . $current_context->getItemID() . '"/>'.LF;
 //      $html .= '<input type="hidden" name="mod" value="date"/>'.LF;
 //      $html .= '<input type="hidden" name="fct" value="index"/>'.LF;
@@ -674,14 +674,14 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $html .= '   <option class="disabled" disabled="disabled" value="-2">------------------------------</option>'.LF;
 
       // get my calendar display configuration
-	   $configuration = $current_context->getMyCalendarDisplayConfig();
-	   $configuration_room_limit = array();
-	   foreach($configuration as $entry) {
-	      $exp_entry = explode('_', $entry);
-	      if(sizeof($exp_entry) == 2 && $exp_entry[1] == 'todo') {
-	         $configuration_room_limit[] = $exp_entry[0];
-	      }
-	   }
+      $configuration = $current_context->getMyCalendarDisplayConfig();
+      $configuration_room_limit = array();
+      foreach($configuration as $entry) {
+         $exp_entry = explode('_', $entry);
+         if(sizeof($exp_entry) == 2 && $exp_entry[1] == 'todo') {
+            $configuration_room_limit[] = $exp_entry[0];
+         }
+      }
 
       $user = $this->_environment->getCurrentUserItem();
       $room_manager = $this->_environment->getRoomManager();
@@ -690,10 +690,10 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       while($room) {
          if(in_array($room->getItemID(), $configuration_room_limit)) {
             $html .= '      <option value="' . $room->getItemID() . '"';
-	         if(!empty($selroom) && $selroom == $room->getItemID()) {
-	            $html .= ' selected="selected"';
-	         }
-	         $html .= '>' . $room->getTitle() . '</option>'.LF;
+            if(!empty($selroom) && $selroom == $room->getItemID()) {
+               $html .= ' selected="selected"';
+            }
+            $html .= '>' . $room->getTitle() . '</option>'.LF;
          }
 
          $room = $room_list->getNext();
@@ -827,7 +827,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
          $mycalendar_array = $current_context->getMyCalendarDisplayConfig();
          $number_of_portlets = 0;
          if(in_array("mycalendar_dates_portlet", $mycalendar_array)){
-         	$number_of_portlets++;
+            $number_of_portlets++;
          }
          if(in_array("mycalendar_todo_portlet", $mycalendar_array)){
             $number_of_portlets++;
@@ -836,31 +836,31 @@ class cs_date_calendar_index_view extends cs_room_index_view {
             $number_of_portlets++;
          }
          foreach($mycalendar_array as $mycalendar){
-	         if($mycalendar == "mycalendar_dates_portlet"){
-		         if($this->calendar_with_javascript()){
-		         	$html .= '<div class="portlet" style="width:200px;">'.LF;
-		         	$html .= '<div id="mycalendar_dates_portlet" class="portlet-header">'.LF;
-		         	$html .=$this->_translator->getMessage('COMMON_DATE_INDEX');
-		         	$html .= '<div style="float:right;"><a name="mycalendar_remove" style="cursor:pointer;"><img src="images/commsyicons/16x16/delete.png" /></a></div>';
-		            #$parameter_array = $this->_environment->getCurrentParameterArray();
-		            $html .= '</div>'.LF;
-		            $html .= '<div class="portlet-content">'.LF;
-		            $html .= $this->_getDateSelectionsAsHTML();
-		            $html .= $this->_getAdditionalCalendarAsHTML().LF;
-		            $html .= '</div>'.LF;
-		            $html .= '</div>'.LF;
-		         }else{
-		            $html .= '<div class="right_box">'.LF;
-		            $html .= '<div class="right_box_title">'.LF;
-		            $html .= '</div>';
-		            $html .= '<div class="right_box_main" style="height: 170px; '.$width.'">'.LF;
-		            $html .= $this->_getAdditionalFormFieldsForPrivateRoomAsHTML().LF;
-		            $html .= '</div>';
-		            $html .= '</div>';
-		         }
-	         } elseif ($mycalendar == "mycalendar_todo_portlet"){
-	            $html .= $this->_getTodosListAsHTML($this->_todo_list, $number_of_portlets);
-	         } elseif ($mycalendar == "mycalendar_preferences_portlet"){
+            if($mycalendar == "mycalendar_dates_portlet"){
+               if($this->calendar_with_javascript()){
+                  $html .= '<div class="portlet" style="width:200px;">'.LF;
+                  $html .= '<div id="mycalendar_dates_portlet" class="portlet-header">'.LF;
+                  $html .=$this->_translator->getMessage('COMMON_DATE_INDEX');
+                  $html .= '<div style="float:right;"><a name="mycalendar_remove" style="cursor:pointer;"><img src="images/commsyicons/16x16/delete.png" /></a></div>';
+                  #$parameter_array = $this->_environment->getCurrentParameterArray();
+                  $html .= '</div>'.LF;
+                  $html .= '<div class="portlet-content">'.LF;
+                  $html .= $this->_getDateSelectionsAsHTML();
+                  $html .= $this->_getAdditionalCalendarAsHTML().LF;
+                  $html .= '</div>'.LF;
+                  $html .= '</div>'.LF;
+               }else{
+                  $html .= '<div class="right_box">'.LF;
+                  $html .= '<div class="right_box_title">'.LF;
+                  $html .= '</div>';
+                  $html .= '<div class="right_box_main" style="height: 170px; '.$width.'">'.LF;
+                  $html .= $this->_getAdditionalFormFieldsForPrivateRoomAsHTML().LF;
+                  $html .= '</div>';
+                  $html .= '</div>';
+               }
+            } elseif ($mycalendar == "mycalendar_todo_portlet"){
+               $html .= $this->_getTodosListAsHTML($this->_todo_list, $number_of_portlets);
+            } elseif ($mycalendar == "mycalendar_preferences_portlet"){
                $html .= $this->_getPreferencesListAsHTML();
             }
          }
@@ -1182,7 +1182,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       while($room_item){
          $temp_array = array();
          $temp_array['dropdown_image']  = "mycalendar_icon";
-         $temp_array['text']  = $room_item->getTitle();
+         $temp_array['text']  = str_replace('"','&quot;',$this->_text_as_html_short($room_item->getTitle()));
          $temp_array['value'] = $room_item->getItemID().'_dates';
          if(in_array($room_item->getItemID() . '_dates', $myroom_array)){
             $temp_array['checked']  = "checked";
@@ -1250,7 +1250,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       while($room_item){
          $temp_array = array();
          $temp_array['dropdown_image']  = "mycalendar_icon";
-         $temp_array['text']  = $room_item->getTitle();
+         $temp_array['text']  = str_replace('"','&quot;',$this->_text_as_html_short($room_item->getTitle()));
          $temp_array['value'] = $room_item->getItemID().'_todo';
          if(in_array($room_item->getItemID() . '_todo', $myroom_array)){
             $temp_array['checked']  = "checked";
@@ -1308,40 +1308,40 @@ class cs_date_calendar_index_view extends cs_room_index_view {
 //      #######################
 //      ## build list entries
 //      #
-//      $dropdown_array[] = array(	'dropdown_image'	   =>   'mycalendar_restrictions_date',
-//                                 'type'					=>   'text',
-//      									'text'	            =>   'Terminart',
+//      $dropdown_array[] = array(   'dropdown_image'      =>   'mycalendar_restrictions_date',
+//                                 'type'               =>   'text',
+//                                 'text'               =>   'Terminart',
 //                                 'value'              =>   '');
 //
 //      $checked = '';
 //      if(in_array('restrictions_datetype_nonprivate', $restrictions)) $checked = 'checked';
-//      $dropdown_array[] = array(	'dropdown_image'	   =>   'mycalendar_restrictions_date',
-//                                 'type'					=>   $checked,
-//      									'text'	            =>   'keine privaten Termine',
+//      $dropdown_array[] = array(   'dropdown_image'      =>   'mycalendar_restrictions_date',
+//                                 'type'               =>   $checked,
+//                                 'text'               =>   'keine privaten Termine',
 //                                 'value'              =>   'restrictions_datetype_nonprivate');
 //
 //      $checked = '';
 //      if(in_array('restrictions_datetype_onlyprivate', $restrictions)) $checked = 'checked';
-//      $dropdown_array[] = array(	'dropdown_image'	   =>   'mycalendar_restrictions_date',
-//                                 'type'					=>   $checked,
-//      									'text'	            =>   'nur private Termine',
+//      $dropdown_array[] = array(   'dropdown_image'      =>   'mycalendar_restrictions_date',
+//                                 'type'               =>   $checked,
+//                                 'text'               =>   'nur private Termine',
 //                                 'value'              =>   'restrictions_datetype_onlyprivate');
 //
-//      $dropdown_array[] = array(	'dropdown_image'	   =>   'mycalendar_restrictions_date',
-//                                 'type'					=>   'seperator',
-//      									'text'	            =>   '',
+//      $dropdown_array[] = array(   'dropdown_image'      =>   'mycalendar_restrictions_date',
+//                                 'type'               =>   'seperator',
+//                                 'text'               =>   '',
 //                                 'value'              =>   '');
 //
 //      ####################################################################################
 //
-//      $dropdown_array[] = array(	'dropdown_image'	   =>   'mycalendar_restrictions_date',
-//                                 'type'					=>   'text',
-//      									'text'	            =>   'Terminfarbe',
+//      $dropdown_array[] = array(   'dropdown_image'      =>   'mycalendar_restrictions_date',
+//                                 'type'               =>   'text',
+//                                 'text'               =>   'Terminfarbe',
 //                                 'value'              =>   '');
 //
-//      $dropdown_array[] = array(	'dropdown_image'	   =>   'mycalendar_restrictions_date',
-//                                 'type'					=>   'scroll_start',
-//      									'text'	            =>   '',
+//      $dropdown_array[] = array(   'dropdown_image'      =>   'mycalendar_restrictions_date',
+//                                 'type'               =>   'scroll_start',
+//                                 'text'               =>   '',
 //                                 'value'              =>   '');
 //
 //      $color_array = $this->getAvailableColorArray();
@@ -1363,32 +1363,32 @@ class cs_date_calendar_index_view extends cs_room_index_view {
 //
 //         $checked = '';
 //         if(in_array('restrictions_datecolor' . $color, $restrictions)) $checked = 'checked';
-//         $dropdown_array[] = array(	'dropdown_image'	   =>   'mycalendar_restrictions_date',
-//                                 	'type'					=>   $checked,
-//      										'text'	            =>   $color_text,
-//                                 	'value'              =>   'restrictions_datecolor' . $color);
+//         $dropdown_array[] = array(   'dropdown_image'      =>   'mycalendar_restrictions_date',
+//                                    'type'               =>   $checked,
+//                                    'text'               =>   $color_text,
+//                                    'value'              =>   'restrictions_datecolor' . $color);
 //      }
 //
-//      $dropdown_array[] = array(	'dropdown_image'	   =>   'mycalendar_restrictions_date',
-//                                 'type'					=>   'scroll_end',
-//      									'text'	            =>   '',
+//      $dropdown_array[] = array(   'dropdown_image'      =>   'mycalendar_restrictions_date',
+//                                 'type'               =>   'scroll_end',
+//                                 'text'               =>   '',
 //                                 'value'              =>   '');
 //
-//      $dropdown_array[] = array(	'dropdown_image'	   =>   'mycalendar_restrictions_date',
-//                                 'type'					=>   'seperator',
-//      									'text'	            =>   '',
+//      $dropdown_array[] = array(   'dropdown_image'      =>   'mycalendar_restrictions_date',
+//                                 'type'               =>   'seperator',
+//                                 'text'               =>   '',
 //                                 'value'              =>   '');
 //
 //      ####################################################################################
 //
-//      $dropdown_array[] = array(	'dropdown_image'	   =>   'mycalendar_restrictions_date',
-//                                 'type'					=>   'text',
-//      									'text'	            =>   'Raum',
+//      $dropdown_array[] = array(   'dropdown_image'      =>   'mycalendar_restrictions_date',
+//                                 'type'               =>   'text',
+//                                 'text'               =>   'Raum',
 //                                 'value'              =>   '');
 //
-//      $dropdown_array[] = array(	'dropdown_image'	   =>   'mycalendar_restrictions_date',
-//                                 'type'					=>   'scroll_start',
-//      									'text'	            =>   '',
+//      $dropdown_array[] = array(   'dropdown_image'      =>   'mycalendar_restrictions_date',
+//                                 'type'               =>   'scroll_start',
+//                                 'text'               =>   '',
 //                                 'value'              =>   '');
 //
 //      $room_manager = $this->_environment->getRoomManager();
@@ -1397,31 +1397,31 @@ class cs_date_calendar_index_view extends cs_room_index_view {
 //      while($room) {
 //         $checked = '';
 //         if(in_array('restrictions_dateroom' . $room->getItemId(), $restrictions)) $checked = 'checked';
-//         $dropdown_array[] = array(	'dropdown_image'	   =>   'mycalendar_restrictions_date',
-//                                 	'type'					=>   $checked,
-//      										'text'	            =>   $room->getTitle(),
-//                                 	'value'              =>   'restrictions_dateroom' . $room->getItemId());
+//         $dropdown_array[] = array(   'dropdown_image'      =>   'mycalendar_restrictions_date',
+//                                    'type'               =>   $checked,
+//                                    'text'               =>   $room->getTitle(),
+//                                    'value'              =>   'restrictions_dateroom' . $room->getItemId());
 //
 //         $room = $room_list->getNext();
 //      }
 //
-//      $dropdown_array[] = array(	'dropdown_image'	   =>   'mycalendar_restrictions_date',
-//                                 'type'					=>   'scroll_end',
-//      									'text'	            =>   '',
+//      $dropdown_array[] = array(   'dropdown_image'      =>   'mycalendar_restrictions_date',
+//                                 'type'               =>   'scroll_end',
+//                                 'text'               =>   '',
 //                                 'value'              =>   '');
 //
-//      $dropdown_array[] = array(	'dropdown_image'	   =>   'mycalendar_restrictions_date',
-//                                 'type'					=>   'seperator',
-//      									'text'	            =>   '',
+//      $dropdown_array[] = array(   'dropdown_image'      =>   'mycalendar_restrictions_date',
+//                                 'type'               =>   'seperator',
+//                                 'text'               =>   '',
 //                                 'value'              =>   '');
 //
 //      ####################################################################################
 //
 //      $checked = '';
 //      if(in_array('restrictions_dateassigned', $restrictions)) $checked = 'checked';
-//      $dropdown_array[] = array(	'dropdown_image'	   =>   'mycalendar_restrictions_date',
-//                                 'type'					=>   $checked,
-//      									'text'	            =>   'mir zugeordnet',
+//      $dropdown_array[] = array(   'dropdown_image'      =>   'mycalendar_restrictions_date',
+//                                 'type'               =>   $checked,
+//                                 'text'               =>   'mir zugeordnet',
 //                                 'value'              =>   'restrictions_dateassigned');
 //      #
 //      ## ~build list entries
@@ -4608,16 +4608,16 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                      $is_date_for_whole_day = true;
                   }
                } else {
-               	if($date->getEndingTime() != ''){
-               		$end_hour = mb_substr($date->getEndingTime(),0,2);
-                  	$end_minutes = mb_substr($date->getEndingTime(),3,2);
-               	} elseif($date->getStartingTime() != '' and $date->getEndingTime() == ''){
-               		$end_hour = $start_hour + 1;
+                  if($date->getEndingTime() != ''){
+                     $end_hour = mb_substr($date->getEndingTime(),0,2);
+                     $end_minutes = mb_substr($date->getEndingTime(),3,2);
+                  } elseif($date->getStartingTime() != '' and $date->getEndingTime() == ''){
+                     $end_hour = $start_hour + 1;
                      $end_minutes = $start_minutes;
-               	} else {
-               		$end_hour = $start_hour;
-                  	$end_minutes = $start_minutes;
-               	}
+                  } else {
+                     $end_hour = $start_hour;
+                     $end_minutes = $start_minutes;
+                  }
 
                }
                if(mb_substr($end_hour,0,1) == '0'){
@@ -4947,11 +4947,11 @@ class cs_date_calendar_index_view extends cs_room_index_view {
 
       $last = count($date_array_for_jQuery)-1;
       #for ($index = 0; $index < count($date_array_for_jQuery); $index++) {
-      #	$html .= $date_array_for_jQuery[$index];
-      #	#pr($date_array_for_jQuery[$index]);
-      #	if($index < $last){
-      #	  $html .= ',';
-      #	}
+      #   $html .= $date_array_for_jQuery[$index];
+      #   #pr($date_array_for_jQuery[$index]);
+      #   if($index < $last){
+      #     $html .= ',';
+      #   }
       #}
       for ($index = 0; $index < count($date_array_for_jQuery_php_with_position); $index++) {
          $day_entries = $date_array_for_jQuery_php_with_position[$index][0];
@@ -5620,7 +5620,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
            or ( !empty($search)
                 and $search != $this->_translator->getMessage('COMMON_SEARCH_IN_ROOM')
                 and $search != $this->_translator->getMessage('COMMON_SEARCH_IN_ENTRIES')
-				and $search != $this->_translator->getMessage('COMMON_SEARCH_IN_ROOM')
+            and $search != $this->_translator->getMessage('COMMON_SEARCH_IN_ROOM')
               )
          ) {
          $html .= '<div id="contentbox" class="portlet-content">'.LF;
