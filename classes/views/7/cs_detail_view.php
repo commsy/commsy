@@ -1629,7 +1629,7 @@ class cs_detail_view extends cs_view {
 
          // display calendar in date detail view, when request came from calendar
          if($rubric == CS_DATE_TYPE && $from_display_mode != 'normal') {
-            $html .= '<div class="column">'.LF;
+            $html .= '<div class="column" style="width: 100%;">'.LF;
             $html .= '<div class="right_box">'.LF;
             $html .= '<div class="right_box_title">'.LF;
 
@@ -1680,13 +1680,16 @@ class cs_detail_view extends cs_view {
             $html .='</div>'.LF;
             $html .='</div>'.LF;
             $html .='</div>'.LF;
+
+            $html .='</div>'.LF; // end div commsy_no_panel
+            $html .='<div style="clear:both;"></div>'.LF;
          }
 
          // display forward box
          else {
             $html .= $this->_getForwardBoxAsHTML($item);
+            $html .='</div>'.LF;
          }
-         $html .='</div>'.LF;
 
          /***********Buzzwords*************/
          if ( $this->showBuzzwords() ) {
