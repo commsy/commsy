@@ -1573,8 +1573,8 @@ class cs_detail_view extends cs_view {
          $additional_calendar_href .= '&month=';
       }
       */
-      $date_explode = explode('-', $this->_item->getStartingDay());
-      $additional_calendar_href .= $date_explode[0] . $date_explode[1] . $date_explode[2];
+      #$date_explode = explode('-', $this->_item->getStartingDay());
+      #$additional_calendar_href .= $date_explode[0] . $date_explode[1] . $date_explode[2];
       $html = '<div id="additional_calendar" class="additional_calendar" style="width:100%; margin:auto; padding:3px 0px 3px 0px;"></div>';
       $html .= '<script type="text/javascript">'.LF;
       $html .= '<!--'.LF;
