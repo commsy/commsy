@@ -52,8 +52,13 @@ $copy_array['logo'] = true;
 $copy_array['wiki'] = true;
 $copy_array['informationbox'] = true;
 $copy_array['myentrydisplayconf'] = false;
+$copy_array['grouproomfct'] = false;
 
 // now adaption for special rooms
+if ( $old_room->isProjectRoom() ) {
+   $copy_array['grouproomfct'] = true;
+}
+
 if ( !$old_room->isPrivateRoom() ) {
    $copy_array['title'] = false;
 }
@@ -61,8 +66,7 @@ if ( !$old_room->isPrivateRoom() ) {
 // new private room
 // only copy entry rubric
 if ( $old_room->isPrivateRoom()
-     and  $environment->inConfigArray('c_use_new_private_room',$environment->getCurrentContextID())
-
+     and $environment->inConfigArray('c_use_new_private_room',$environment->getCurrentContextID())
    ) {
    $copy_array['homeconf'] = false;
    $copy_array['timespread'] = false;
@@ -292,6 +296,20 @@ if ( $copy_array['informationbox'] ) {
 // my entry display configuration
 if ( $copy_array['myentrydisplayconf'] ) {
    $new_room->setMyEntriesDisplayConfig($old_room->getMyEntriesDisplayConfig());
+}
+
+// grouproom functions
+if ( $copy_array['grouproomfct'] ) {
+   if ( $old_room->withGrouproomFunctions() ) {
+      $new_room->setWithGrouproomFunctions();
+   } else {
+      $new_room->setWithGrouproomFunctions();
+   }
+   if ( $old_room->isGrouproomActive() ) {
+      $new_room->setGrouproomActive();
+   } else {
+      $new_room->setGrouproomInactive();
+   }
 }
 
 unset($copy_array);
