@@ -238,6 +238,11 @@ class cs_project_manager extends cs_room2_manager {
        }
      }
 
+	  // join annotations if needed
+	  if(!isset($this->_order)) {
+		$query .= ' LEFT JOIN '.$this->addDatabasePrefix('annotations').' AS annotations ON '.$this->addDatabasePrefix($this->_db_table).'.item_id=annotations.linked_item_id';
+	  }
+
       $query .= ' WHERE 1';
       if ( isset($this->_room_type) ) {
          ############################################
@@ -392,7 +397,7 @@ class cs_project_manager extends cs_room2_manager {
            $query .= ' ORDER BY '.$this->addDatabasePrefix($this->_db_table).'.title, '.$this->addDatabasePrefix($this->_db_table).'.creation_date DESC';
         }
      } else {
-        $query .= ' ORDER BY '.$this->addDatabasePrefix($this->_db_table).'.title, '.$this->addDatabasePrefix($this->_db_table).'.creation_date DESC';
+        $query .= ' ORDER BY '.$this->addDatabasePrefix('annotations').'.modification_date DESC, '.$this->addDatabasePrefix($this->_db_table).'.title, '.$this->addDatabasePrefix($this->_db_table).'.creation_date DESC';
      }
 
      if ($mode == 'select') {

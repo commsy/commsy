@@ -216,6 +216,11 @@ class cs_announcement_manager extends cs_manager {
       if ( isset($this->_only_files_limit) and $this->_only_files_limit ) {
          $query .= ' INNER JOIN '.$this->addDatabasePrefix('item_link_file').' AS lf ON '.$this->addDatabasePrefix($this->_db_table).'.item_id = lf.item_iid';
       }
+	  
+	  // join annotations if needed
+	  if(!isset($this->_order)) {
+		$query .= ' LEFT JOIN '.$this->addDatabasePrefix('annotations').' AS annotations ON '.$this->addDatabasePrefix('announcement').'.item_id=annotations.linked_item_id';
+	  }
 
       $query .= ' WHERE 1';
       if (!$this->_show_not_activated_entries_limit) {
@@ -322,7 +327,7 @@ class cs_announcement_manager extends cs_manager {
             $query .= ' ORDER BY people.lastname DESC';
          }
       } else {
-         $query .= ' ORDER BY '.$this->addDatabasePrefix('announcement').'.modification_date DESC';
+         $query .= ' ORDER BY '.$this->addDatabasePrefix('annotations').'.modification_date DESC, '.$this->addDatabasePrefix('announcement').'.modification_date DESC';
       }
 
       if ( $mode == 'select' ) {
