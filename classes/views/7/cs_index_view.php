@@ -1656,7 +1656,7 @@ EOD;
             $html .= $html_text;
          }
 
-         if ( isset($params['selcolor']) and $params['selcolor'] != 2 ){
+         if ( isset($params['selcolor']) and !empty($params['selcolor']) and $params['selcolor'] != 2 ){
          $this->_additional_selects = true;
          $html_text ='<tr>'.LF;
          $html_text .='<td>'.LF;
