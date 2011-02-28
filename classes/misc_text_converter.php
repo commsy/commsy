@@ -966,7 +966,7 @@ class misc_text_converter {
       $reg_exp_array['(:file']        = '~\\(:file (.*?)(\\s.*?)?\\s*?:\\)~eu';
       $reg_exp_array['(:zip']         = '~\\(:zip (.*?)(\\s.*?)?\\s*?:\\)~eu';
       $reg_exp_array['(:youtube']     = '~\\(:youtube (.*?)(\\s.*?)?\\s*?:\\)~eu';
-      #$reg_exp_array['(:podcampus']   = '~\\(:podcampus (.*?)(\\s.*?)?\\s*?:\\)~eu';
+      $reg_exp_array['(:podcampus']   = '~\\(:podcampus (.*?)(\\s.*?)?\\s*?:\\)~eu';
       $reg_exp_array['(:googlevideo'] = '~\\(:googlevideo (.*?)(\\s.*?)?\\s*?:\\)~eu';
       $reg_exp_array['(:vimeo']       = '~\\(:vimeo (.*?)(\\s.*?)?\\s*?:\\)~eu';
       $reg_exp_array['(:mp3']         = '~\\(:mp3 (.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)~eu';
@@ -978,7 +978,7 @@ class misc_text_converter {
       $reg_exp_array['[slideshare']   = '~\[slideshare (.*?)\]~eu';
       $reg_exp_array['(:flickr']      = '~\\(:flickr (.*?):\\)~eu';
       $reg_exp_array['(:scorm']       = '~\\(:scorm (.*?):\\)~eu';
-      $reg_exp_array['(:mdo']        = '~\\(:mdo (.*?)(\\s.*?)?:\\)~eu';
+      $reg_exp_array['(:mdo']        = '~\\(:mdo (.*?):\\)~eu';
 
       // Test auf erforderliche Software; Windows-Server?
       //$reg_exp_array['(:pdf']       = '/\\(:pdf (.*?)(\\s.*?)?\\s*?:\\)/e';
@@ -1291,9 +1291,23 @@ class misc_text_converter {
          $float = '';
       }
 
+      if ( !empty($args['width']) ) {
+         $width = $args['width'];
+      } else {
+         $width = 630;
+      }
+      if ( !empty($args['height']) ) {
+         $height = $args['height'];
+      } else {
+         $height = 384;
+      }
+
       if ( !empty($source) ) {
          $image_text = '';
          $image_text .= LF.'<div style="'.$float.' padding:10px;">'.LF;
+
+         if ( true ) { // only for development, remove after change to new style
+         # old style
          $image_text .= '<object '.LF;
          if ($this->_environment->getCurrentBrowser() == 'MSIE' ) {
             $image_text .= '   type="application/x-shockwave-flash"'.LF;
@@ -1319,6 +1333,10 @@ class misc_text_converter {
          $image_text .= '>'.LF;
          $image_text .= '</embed>'.LF;
          $image_text .= '</object>';
+         } else { // only for development, remove after change to new style
+         # new code, not stable now
+         $image_text .= '<iframe class="youtube-player" type="text/html" width="'.$width.'" height="'.$height.'" src="http://www.youtube.com/embed/'.$source.'?showinfo=0&showsearch=0&iv_load_policy=3" frameborder="0"></iframe>';
+         } // only for development, remove after change to new style
          $image_text .= '</div>'.LF;
          $text = str_replace($array[0],$image_text,$text);
       }
@@ -1354,21 +1372,23 @@ class misc_text_converter {
       if ( !empty($source) ) {
          $image_text = '';
          $image_text .= LF.'<div style="'.$float.' padding:10px;">'.LF;
-         /*
          $image_text .= '<object '.LF;
          if ($this->_environment->getCurrentBrowser() == 'MSIE' ) {
             $image_text .= '   type="application/x-shockwave-flash"'.LF;
          }
          if ( !empty($args['width']) ) {
             $image_text .= '   width="'.$args['width'].'"'.LF;
+         } else {
+            $image_text .= '   width="240px"'.LF;
          }
          if ( !empty($args['height']) ) {
             $image_text .= '   height="'.$args['height'].'"'.LF;
+         } else {
+            $image_text .= '   height="180px"'.LF;
          }
          $image_text .= '>'.LF;
          $image_text .= '<param name="movie" value="http://www.podcampus.de/nodes/'.$source.'.swf" />'.LF;
-         $image_text .= '<param name="wmode" value="opaque" />'.LF;
-         */
+         #$image_text .= '<param name="wmode" value="opaque" />'.LF;
          $image_text .= '<embed src="http://www.podcampus.de/nodes/'.$source.'.swf"'.LF;
          $image_text .= '   type="application/x-shockwave-flash"'.LF;
          #$image_text .= '   wmode="opaque"'.LF;
@@ -1381,8 +1401,7 @@ class misc_text_converter {
          $image_text .= '   allowscriptaccess="always"'.LF;
          $image_text .= '   allowfullscreen="true"'.LF;
          $image_text .= ' />'.LF;
-         #$image_text .= '</embed>'.LF;
-         #$image_text .= '</object>';
+         $image_text .= '</object>';
          $image_text .= '</div>'.LF;
          $text = str_replace($array[0],$image_text,$text);
       }
@@ -1624,7 +1643,8 @@ class misc_text_converter {
       if ( !empty($args['server']) ) {
          $server = $args['server'];
       } else {
-         $server = 'rtmp://fms.rrz.uni-hamburg.de:1936/vod';
+         $server = 'rtmp://fms.rrz.uni-hamburg.de:80/vod';
+         #$server = 'http://fms.rrz.uni-hamburg.de:80/vod';
       }
 
       if ( !empty($args['bufferlength']) ) {
@@ -2601,15 +2621,14 @@ class misc_text_converter {
 
    private function _formatScorm ($text, $array, $file_name_array){
       $retour = '';
-      
-      global $c_scorm;
-      if(is_array($c_scorm) && in_array($this->_environment->getCurrentContextID(), $c_scorm)) {
-        if ( !empty($array[1]) ) {
+      if ( !empty($array[1]) ) {
          if ( !empty($file_name_array[$array[1]]) ) {
+            global $c_scorm_dir;
+
           $temp_file = $file_name_array[$array[1]];
           $file_manager = $this->_environment->getFileManager();
           $file = $file_manager->getItem($temp_file->getFileID());
-          
+
           $retour .= ahref_curl(  $this->_environment->getCurrentContextID(),
                                   'scorm',
                                   'index',
@@ -2618,20 +2637,17 @@ class misc_text_converter {
                                   'Scorm',
                                   '_NEW');
          }
-        } 
       }
       return $retour;
    }
-   
+
    private function _formatMDO($value_new, $args_array) {
-   	 global $c_media_integration;
      $retour = '';
      $access = false;
-     $mdo_key = '';
-     
-     if(is_array($c_media_integration) && !empty($args_array[1])) {
+
+     if(!empty($args_array[1])) {
        $mdo_id = $args_array[1];
-       
+
        // check for rights for mdo
        $current_context_item = $this->_environment->getCurrentContextItem();
        if($current_context_item->isProjectRoom()) {
@@ -2642,89 +2658,30 @@ class misc_text_converter {
            $community = $community_list->getFirst();
            while($community) {
              $mdo_active = $community->getMDOActive();
-             if(in_array($community->getItemID(), $c_media_integration) && !empty($mdo_active) && $mdo_active != '-1') {
+             if(!empty($mdo_active) && $mdo_active != '-1') {
                // mdo access granted, get content from Mediendistribution-Online
                $access = true;
-               
-               // get key for later use
-               $mdo_key = $community->getMDOKey();
-               
+
                // stop searching here
                break;
              }
-             
+
              $community = $community_list->getNext();
            }
          }
        }
-       
+
        if($access === true) {
-         $curl_handler = curl_init('http://arix.datenbank-bildungsmedien.net/HH');
-         curl_setopt($curl_handler, CURLOPT_RETURNTRANSFER, true);
-         curl_setopt($curl_handler, CURLOPT_POST, true);
-         
-         ############################
-         ## 1. CommSy -> Arix: <notch type='commsy' />
-         ## 2. Arix -> CommSy: <notch id='SESSION_ID'>NOTCH</notch> 
-         ############################
-         $data = '<notch type="commsy" />';
-         curl_setopt($curl_handler, CURLOPT_POSTFIELDS, array('xmlstatement' => $data));
-         $response = curl_exec($curl_handler);
-         $xml_object = simplexml_load_string($response);
-         $result = $xml_object->xpath('/notch[@id]');
-         $session_id = (string) $result[0]->attributes()->id;
-         $notch = (string) $result[0];
-         unset($xml_object);
-         
-         ############################
-         ## 3. CommSy -> Arix: <commsy id='SESSION_ID' passphrase='passphrase' name='Name des Leheres' uid='userid' customer='schulid' /> 
-         ## 2. Arix -> CommSy: <ok /> oder Error
-         ############################
-         $data = '<commsy id="' . $session_id . '" passphrase="' . md5($notch . ":6515656658198") . '" customer="' . $mdo_key . '"/>';
-         curl_setopt($curl_handler, CURLOPT_POSTFIELDS, array('xmlstatement' => $data));
-         $response = curl_exec($curl_handler);
-         
-         if($response === '<ok />') {
-           // request notch
-           $data = '<notch identifier="' . $args_array[1] . '" />';
-           curl_setopt($curl_handler, CURLOPT_POSTFIELDS, array('xmlstatement' => $data));
-           $response = curl_exec($curl_handler);
-           $xml_object = simplexml_load_string($response);
-           $result = $xml_object->xpath('/notch[@id]');
-           $id = (string) $result[0]->attributes()->id;
-           $notch = (string) $result[0];
-           unset($xml_object);
-		   
-           // request link
-           $data = '<link id="' . $id . '">' . md5($notch . ":6515656658198") . '</link>';
-           curl_setopt($curl_handler, CURLOPT_POSTFIELDS, array('xmlstatement' => $data));
-           $response = curl_exec($curl_handler);
-           $xml_object = simplexml_load_string($response);
-           $result = $xml_object->xpath('/link/a[position() = 1]');
-           $direct_link = (string) $result[0]->attributes()->href;
-           unset($xml_object);
-           
-           // create link(new window)
-           if(isset($args_array[2]) && $args_array[2] === 'target=new') {
-           	 // request title
-           	 $data = '<record identifier="' . $args_array[1] . '"/>';
-           	 curl_setopt($curl_handler, CURLOPT_POSTFIELDS, array('xmlstatement' => $data));
-           	 $response = curl_exec($curl_handler);
-			 $xml_object = simplexml_load_string($response);
-			 $result = $xml_object->xpath('/record/f[@n = "titel"]');
-			 $title = (string) $result[0];
-             $retour .= '<a href="' . $direct_link . '" target="_blank">' . $title . '</a>';
-           } else {
-             // create iframe
-             $retour .= '<iframe src="' . $direct_link . '" width="99%" height="400px"></iframe>';
-           }
-         }
+         // create div for content
+         $retour .= '<div id="mdo_content" style="overflow: scroll;">' . LF;
+         $retour .= "show content with id: " . $mdo_id . LF;
+         $retour .= '</div>';
        }
      }
-     
+
      return $retour;
    }
-   
+
    /**
     * Displays png, jpg and gif images in the description area of the materials
     * Images have to be attached to the material in order to be displayed!

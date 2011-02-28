@@ -715,6 +715,7 @@ $message["COMMON_TEXT_INCLUDING_MEDIA_TEXT"]["de"] = "<ol style=&quot;font-weigh
     <li>(:youtube FILM-ID:) oder (:wmplayer FILM-ID:) für Videos auf youtube</li>
     <li>(:googlevideo FILM-ID:) für Videos bei google</li>
     <li>(:lecture2go DATEINAME:) für Veranstaltungsaufzeichnungen von Lecture2Go [<a href=&quot;http://www.commsy.net/pmwiki.php?n=Software/Features&id=81&quot; target=&quot;_blank&quot;>Details</a>]</li>
+<li>(:podcampus FILM-ID:) für Filme auf <a href=&quot;http://www.podcampus.de&quot; target=&quot;_blank&quot;>www.podcampus.de</a></li>
     <li>Argumente:
     <ul>
         <li>lfloat bzw. rfloat: Textumfluss von rechts bzw. links</li>
@@ -728,6 +729,7 @@ $message["COMMON_TEXT_INCLUDING_MEDIA_TEXT"]["de"] = "<ol style=&quot;font-weigh
     <li>Bsp: (:youtube pQHX-SjgQvQ play=false:)</li>
 </ul><br/><span style=&quot;font-weight:bold&quot;>Musik:</span>
 <ul style=&quot;font-weight:normal; padding-left:15px; margin:0px;&quot;>
+<li>(:podcampus AUDIO-ID:) für Audio-Pods auf <a href=&quot;http://www.podcampus.de&quot; target=&quot;_blank&quot;>www.podcampus.de</a></li>
     <li>(:wmplayer DATEINAME play=true width=ZAHL:) für wma-Dateien</li>
     <li>(:mp3 DATEINAME.mp3:) für mp3-Dateien</li>
     <li>Argumente:
