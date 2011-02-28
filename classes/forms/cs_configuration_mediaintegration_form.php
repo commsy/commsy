@@ -50,11 +50,8 @@ class cs_configuration_mediaintegration_form extends cs_rubric_form {
 
       // headline
       $this->_headline = $this->_translator->getMessage('CONFIGURATION_MEDIA_INTEGRATION');
-      if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-         $image = '<img src="images/commsyicons_msie6/32x32/config/plugin.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_CONFIGURATION_HTMLTEXTAREA_FORM_TITLE').'"/>';
-      } else {
-         $image = '<img src="images/commsyicons/32x32/config/plugin.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_CONFIGURATION_HTMLTEXTAREA_FORM_TITLE').'"/>';
-      }
+	  $image = '<img src="images/commsyicons/48x48/config/video.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_CONFIGURATION_HTMLTEXTAREA_FORM_TITLE').'"/>';
+	  
       if ( !empty($image) ) {
          $this->_headline = $image.' '.$this->_headline;
       }
