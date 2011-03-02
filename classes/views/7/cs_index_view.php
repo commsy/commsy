@@ -580,7 +580,7 @@ class cs_index_view extends cs_view {
       $params['from'] = $this->_from;
       $params['interval'] = $this->_interval;
       $params['sort'] = $this->_sort_key;
-      if (isset($this->_search_text) and $this->_search_text != $this->_translator->getMessage('COMMON_SEARCH_IN_ROOM')){
+      if (isset($this->_search_text) and $this->_search_text != $this->_translator->getMessage('COMMON_SEARCH_IN_ROOM') and $this->_search_text != $this->_translator->getMessage('COMMON_SEARCH_IN_RUBRIC')){
          $params['search'] = rawurlencode($this->_search_text);
       }
       if ( $this->_environment->inProjectRoom() ) {
