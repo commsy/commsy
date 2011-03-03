@@ -1076,7 +1076,7 @@ class cs_item_manager extends cs_manager {
      	   }elseif (isset($r['type']) and $r['type'] == 'step'){
      	      $step_item = $step_manager->getItem($r['item_id']);
      	      $linked_item = $step_item->getLinkedItem();
-     	      $result[$linked_item->getContextID()][$linked_item->getItemType()][$linked_item->getItemID()][] = 'section';
+     	      $result[$linked_item->getContextID()][$linked_item->getItemType()][$linked_item->getItemID()][] = 'step';
      	      unset($step_item);
      	      unset($linked_item);
      	   }else{
