@@ -675,7 +675,8 @@ class cs_form_view extends cs_view {
             ($module == 'configuration' && $fct == 'room_options') ||
             ($module == 'group' && $fct == 'edit') ||
             ($module == 'user' && $fct == 'edit') ||
-			($module == 'date' && $fct == 'import')) {
+            ($module == 'material' && $fct == 'ims_import') ||
+         ($module == 'date' && $fct == 'import')) {
          $use_new_upload = false;
       }
       $current_user = $this->_environment->getCurrentUserItem();
