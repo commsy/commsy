@@ -16,6 +16,16 @@ include_once('htdocs/javascript/jQuery/rsstickerajax/lastrss/lastRSS.php'); //pa
 // Create lastRSS object
 $rss = new lastRSS();
 
+// proxy support
+$proxy_ip = $environment->getConfiguration('c_proxy_ip');
+if ( !empty($proxy_ip) ) {
+   $rss->setProxyIP($proxy_ip);
+}
+$proxy_port = $environment->getConfiguration('c_proxy_port');
+if ( !empty($proxy_port) ) {
+   $rss->setProxyPort($proxy_port);
+}
+
 $rss->cache_dir = 'cache'; //path to cache directory on your server from this script. Chmod 777!
 $rss->date_format = 'M d, Y g:i:s A'; //date format of RSS item. See PHP date() function for possible input.
 
