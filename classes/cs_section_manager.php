@@ -255,7 +255,8 @@ class cs_section_manager extends cs_manager {
      // perform query
      $result = $this->_db_connector->performQuery($query);
      if (!isset($result)) {
-         include_once('functions/error_functions.php');trigger_error('Problems selecting section from query: "'.$query.'"',E_USER_WARNING);
+         include_once('functions/error_functions.php');
+         trigger_error('Problems selecting section from query: "'.$query.'"',E_USER_WARNING);
      } else {
          return $result;
      }
@@ -281,9 +282,10 @@ class cs_section_manager extends cs_manager {
         $query = "SELECT * FROM ".$this->addDatabasePrefix("section")." WHERE ".$this->addDatabasePrefix("section").".item_id = '".encode(AS_DB,$item_id)."'";
         $query .= " ORDER BY ".$this->addDatabasePrefix("section").".version_id DESC";
         $result = $this->_db_connector->performQuery($query);
-        if (!isset($result) or empty($result[0])) {
-           include_once('functions/error_functions.php');trigger_error('Problems selecting one section item from query: "'.$query.'"',E_USER_WARNING);
-        } else {
+        if ( !isset($result) ) {
+           include_once('functions/error_functions.php');
+           trigger_error('Problems selecting one section item from query: "'.$query.'"',E_USER_WARNING);
+        } elseif ( !empty($result[0]) ) {
            $section = $this->_buildItem($result[0]);
         }
         return $section;
@@ -298,7 +300,8 @@ class cs_section_manager extends cs_manager {
       $query .=" AND ".$this->addDatabasePrefix("section").".version_id = '".$version_id."'";
       $result = $this->_db_connector->performQuery($query);
       if (!isset($result) or empty($result[0])) {
-          include_once('functions/error_functions.php');trigger_error('Problems selecting one materials item from query: "'.$query.'"',E_USER_WARNING);
+          include_once('functions/error_functions.php');
+          trigger_error('Problems selecting one materials item from query: "'.$query.'"',E_USER_WARNING);
       } else {
           $section = $this->_buildItem($result[0]);
       }
@@ -585,9 +588,9 @@ class cs_section_manager extends cs_manager {
 
    function deleteSectionsOfUser($uid) {
          // create backup of item
-        $this->backupItem($uid, array(	'title'				=>	'title',
-                                   'description'		=>	'description',
-                                   'modification_date'	=>	'modification_date'));
+        $this->backupItem($uid, array(   'title'            =>   'title',
+                                   'description'      =>   'description',
+                                   'modification_date'   =>   'modification_date'));
 
       $current_datetime = getCurrentDateTimeInMySQL();
       $query  = 'SELECT '.$this->addDatabasePrefix('section').'.* FROM '.$this->addDatabasePrefix('section').' WHERE '.$this->addDatabasePrefix('section').'.creator_id = "'.encode(AS_DB,$uid).'"';
