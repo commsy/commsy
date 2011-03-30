@@ -137,7 +137,7 @@ class class_voyeur extends cs_plugin {
          } else {
             $url .= '?';
          }
-         $url .= 'inputFormat=ZIP';
+         $url .= 'inputFormat=zip';
          $url .= '&input='.urlencode($url_to_zip);
          $url = str_replace('&&','&',$url);
       }
