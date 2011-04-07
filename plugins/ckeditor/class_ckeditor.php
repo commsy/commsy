@@ -118,7 +118,8 @@ class class_ckeditor extends cs_plugin {
                      uiColor: \''.$color['content_background'].'\',
                      startupFocus: false,
                      dialog_startupFocusTab: false,
-                     resize_enabled: false,
+                     resize_enabled: true,
+                     resize_maxWidth: "100%",
                      extraPlugins: "CommSyImages,CommSyMDO",
                      toolbar :
                      [
