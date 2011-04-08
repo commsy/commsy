@@ -120,6 +120,8 @@ class class_ckeditor extends cs_plugin {
                      dialog_startupFocusTab: false,
                      resize_enabled: true,
                      resize_maxWidth: "100%",
+                     enterMode: CKEDITOR.ENTER_BR,
+                     shiftEnterMode: CKEDITOR.ENTER_P,
                      extraPlugins: "CommSyImages,CommSyMDO",
                      toolbar :
                      [
