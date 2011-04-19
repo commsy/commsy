@@ -226,7 +226,7 @@ class cs_file_manager extends cs_manager {
        unset($file_item);
        return $saved;
     }
-    
+
    function saveItem($file_item) {
       $saved = false;
       $current_user = $this->_environment->getCurrentUser();
@@ -316,7 +316,7 @@ class cs_file_manager extends cs_manager {
    function setTempUploadSessionIdLimit ( $session_id ) {
       $this->_limit_temp_upload_session_id = $session_id;
    }
-   
+
    function resetLimits () {
       $this->_limit_scan = '';
       $this->_limit_newer = '';
@@ -358,7 +358,7 @@ class cs_file_manager extends cs_manager {
       if ( !empty($this->_limit_temp_upload_session_id) ) {
           $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.temp_upload_session_id="'.encode(AS_DB,$this->_limit_temp_upload_session_id).'"';
       }
-      
+
       if (isset($this->_order)) {
          $query .= ' ORDER BY '.$this->_order;
       } else {
@@ -778,10 +778,18 @@ class cs_file_manager extends cs_manager {
                   }
 
                   if ( !empty($portal_id) ) {
-                     $filename = 'cid'.$query_result['context_id'].'_'.$query_result['files_id'].'_'.$query_result['filename'];
                      $disc_manager->setPortalID($portal_id);
                      $disc_manager->setContextID($query_result['context_id']);
-                     if ($disc_manager->existsFile($filename)) {
+                     $file_info = array();
+                     if ( !empty($query_result['filename']) ) {
+                        $file_info = pathinfo($query_result['filename']);
+                     }
+                     $file_ext = '';
+                     if ( !empty($file_info['extension']) ) {
+                        $file_ext = $file_info['extension'];
+                     }
+                     $filename = $disc_manager->getCurrentFileName($query_result['context_id'], $query_result['files_id'], $query_result['filename'], $file_ext);
+                     if ( !empty($filename) and $disc_manager->existsFile($filename) ) {
                         $retour = $retour and $disc_manager->unlinkFile($filename);
                      }
                   }
@@ -835,7 +843,7 @@ class cs_file_manager extends cs_manager {
       }
       return $retour;
    }
-   
+
    function getTempItemListBySessionID( $session_id ) {
       $file_list = new cs_list();
       $query  = 'SELECT * FROM '.$this->addDatabasePrefix('files');
