@@ -638,6 +638,7 @@ class cs_wiki_manager extends cs_manager {
             }
             global $c_pmwiki_path_url;
             $temp_pmwiki_path_url = str_replace('http://', '', $c_pmwiki_path_url);
+            $temp_pmwiki_path_url = str_replace('https://', '', $c_pmwiki_path_url);
             $temp_pmwiki_path_url = mb_stristr($temp_pmwiki_path_url, '/');
                $file_forum_contents_array[$index] = 'RewriteBase '.$temp_pmwiki_path_url.'/wikis/'.$temp_portal_id.'/'.$temp_room_id.'/';
             }
