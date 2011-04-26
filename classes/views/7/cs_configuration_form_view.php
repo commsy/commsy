@@ -895,7 +895,7 @@ class cs_configuration_form_view extends cs_form_view {
       $this->_count_form_elements++;
 
       include_once('functions/misc_functions.php');
-      if($this->_environment->getCurrentModule() != 'account'){
+      if($this->_environment->getCurrentModule() != 'account' and $form_element['with_html_area']){
          $html = plugin_hook_output_all('getTextAreaAsHTML',$form_element);
       }
 
