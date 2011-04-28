@@ -250,7 +250,7 @@ class cs_activity_view extends cs_view {
             $url_session_id = '?commsy_session_id='.$session_item->getSessionID();
             unset($session_item);
          }
-         $html .= ' '.'<a title="'.$title.'" href="'.$c_wordpress_path_url.'/wp/'.$current_context->getContextID().'/'.$current_context->getItemID().'/'.$url_session_id.'" target="_blank">'.$image.'</a>'.LF;
+         $html .= ' '.'<a title="'.$title.'" href="'.$c_wordpress_path_url.'/'.$current_context->getContextID().'_'.$current_context->getItemID().'/'.$url_session_id.'" target="_blank">'.$image.'</a>'.LF;
       }
       if ( $current_context->showHomepageLink() ) {
          if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
