@@ -208,7 +208,11 @@ class cs_material_detail_view extends cs_detail_view {
       $user = $this->_environment->getCurrentUserItem();
       $item = $this->getItem();
       $creator = $subitem->getCreatorItem();
-      $creator_uid = $creator->getUserID();
+      if ( isset($creator) ) {
+         $creator_uid = $creator->getUserID();
+      } else {
+         $creator_uid = '';
+      }
       $current_uid = $user->getUserID();
       //get Version ID of current version
       $material_manager = $this->_environment->getMaterialManager();
@@ -635,20 +639,20 @@ class cs_material_detail_view extends cs_detail_view {
          $formal_data1[] = $temp_array;
       }
       if($context_item->isWikiActive()){
-	      if ($item->isExportToWiki()) {
-	         $temp_array = array();
-	         $temp_array[] = $this->_translator->getMessage('MATERIAL_EXPORT_TO_WIKI_LINK');
-	         $temp_array[] = $item->getExportToWikiLink();
-	         $formal_data1[] = $temp_array;
-	      }
+         if ($item->isExportToWiki()) {
+            $temp_array = array();
+            $temp_array[] = $this->_translator->getMessage('MATERIAL_EXPORT_TO_WIKI_LINK');
+            $temp_array[] = $item->getExportToWikiLink();
+            $formal_data1[] = $temp_array;
+         }
       }
      if($context_item->isWordpressActive()){
          if ($item->isExportToWordpress()) {
-	         $temp_array = array();
-	         $temp_array[] = $this->_translator->getMessage('MATERIAL_EXPORT_TO_WORDPRESS_LINK');
-	         $temp_array[] = $item->getExportToWordpressLink();
-	         $formal_data1[] = $temp_array;
-	      }
+            $temp_array = array();
+            $temp_array[] = $this->_translator->getMessage('MATERIAL_EXPORT_TO_WORDPRESS_LINK');
+            $temp_array[] = $item->getExportToWordpressLink();
+            $formal_data1[] = $temp_array;
+         }
       }
 
       // Sections
@@ -899,41 +903,41 @@ class cs_material_detail_view extends cs_detail_view {
       }
       return $file_list;
    }
-   
+
    function _getAdditionalDropDownEntries() {
       $action_array = array();
       $current_context = $this->_environment->getCurrentContextItem();
-      
+
       foreach($this->_dropdown_rubrics_new as $rubric){
-	      if ( $current_context->isOpen()) {
-	         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-	            $image_import = 'images/commsyicons_msie6/22x22/'.$this->_dropdown_image_array[$rubric].'.gif';
-	         } else {
-	            $image_import = 'images/commsyicons/22x22/'.$this->_dropdown_image_array[$rubric].'.png';
-	         }
-	         $params = array();
-	         $params['iid'] = 'NEW';
-	         $params['linked_item'] = $this->_item->getItemID();
-	         $href_import = curl($this->_environment->getCurrentContextID(),
-	                            $rubric,
-	                            'edit',
-	                            $params);
-	         $text_import = $this->_translator->getMessage($this->_dropdown_message_array[$rubric]);
-	         if ( !empty($text_import)
-	              and !empty($image_import)
-	              and !empty($href_import)
-	            ) {
-	            $temp_array = array();
-	            $temp_array['dropdown_image']  = "new_icon";
-	            $temp_array['text']  = $text_import;
-	            $temp_array['image'] = $image_import;
-	            $temp_array['href']  = $href_import;
-	            $action_array[] = $temp_array;
-	            unset($temp_array);
-	         }
-	      }
+         if ( $current_context->isOpen()) {
+            if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+               $image_import = 'images/commsyicons_msie6/22x22/'.$this->_dropdown_image_array[$rubric].'.gif';
+            } else {
+               $image_import = 'images/commsyicons/22x22/'.$this->_dropdown_image_array[$rubric].'.png';
+            }
+            $params = array();
+            $params['iid'] = 'NEW';
+            $params['linked_item'] = $this->_item->getItemID();
+            $href_import = curl($this->_environment->getCurrentContextID(),
+                               $rubric,
+                               'edit',
+                               $params);
+            $text_import = $this->_translator->getMessage($this->_dropdown_message_array[$rubric]);
+            if ( !empty($text_import)
+                 and !empty($image_import)
+                 and !empty($href_import)
+               ) {
+               $temp_array = array();
+               $temp_array['dropdown_image']  = "new_icon";
+               $temp_array['text']  = $text_import;
+               $temp_array['image'] = $image_import;
+               $temp_array['href']  = $href_import;
+               $action_array[] = $temp_array;
+               unset($temp_array);
+            }
+         }
       }
-      
+
       unset($current_context);
       return $action_array;
    }
