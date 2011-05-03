@@ -172,8 +172,11 @@ if ( !empty($_GET['iid']) ) {
                ini_set('memory_limit', intval($size * 1.5));
             }
             // Maybe the problem is Apache is trying to compress the output, so:
-            @apache_setenv('no-gzip', 1);
-            @ini_set('zlib.output_compression', 0);
+            global $c_webserver;
+            if(isset($c_webserver) and $c_webserver != 'lighttpd'){
+            	@apache_setenv('no-gzip', 1);
+               @ini_set('zlib.output_compression', 0);
+            }
             // Maybe the client doesn't know what to do with the output so send a bunch of these headers:
 
             #if(!in_array($file->getMime(), $no_force_download)){

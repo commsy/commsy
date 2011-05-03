@@ -24,7 +24,13 @@
 
 mb_internal_encoding('UTF-8');
 if ( isset($_GET['cid']) ) {
-   $path = 'http://'.$_SERVER['SERVER_NAME'].$_SERVER['PHP_SELF'];
+	global $c_webserver;
+   if(isset($c_webserver) and $c_webserver == 'lighttpd'){
+	   $path = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'];
+   } else {
+      $path = 'http://'.$_SERVER['SERVER_NAME'].$_SERVER['PHP_SELF'];
+   }
+   
    $path = str_replace('rss.php','',$path);
    chdir('..');
    include_once('etc/cs_constants.php');
