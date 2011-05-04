@@ -786,7 +786,9 @@ class cs_privateroom_item extends cs_room_item {
             $age_limit = 7;
          }
          $newsletter_entry_array = $item_manager->getItemsForNewsletter($room_id_array, $user_id_array,$age_limit);
-
+         ############################
+         #pr($newsletter_entry_array);
+         ############################
          if ( isset($user)
               and $this->isPrivateRoomNewsletterActive()
               and $this->isPrivateroom()
@@ -808,6 +810,16 @@ class cs_privateroom_item extends cs_room_item {
                $translator = $this->_environment->getTranslationObject();
                $translator->setRubricTranslationArray($this->getRubricTranslationArray());
                $mail_sequence = $this->getPrivateRoomNewsletterActivity();
+               ##############################################################
+               // translate newsletter to portal user language
+               if(!$this->_environment->getCurrentUserItem()->isUser()){
+               	$portal_user = $user->getRelatedCommSyUserItem();
+               	if($translator->isLanguageAvailable($portal_user->getLanguage())){
+               		$translator->setSelectedLanguage($portal_user->getLanguage());
+               		unset($portal_user);
+               	}
+               }
+               ##############################################################
 
                $body = '';
                $item  = $room_list->getFirst();
@@ -846,11 +858,27 @@ class cs_privateroom_item extends cs_room_item {
                         if(isset($newsletter_entry_array[$item->getItemID()][$rubric_array[0]])){
                      	   $rubric_manager = $this->_environment->getManager($rubric_array[0]);
                      	   $rubric_item_id_array = array();
+                     	   ########
+                     	   $noticed_array = array();
+                     	   #pr($newsletter_entry_array);
+                     	   #pr($newsletter_entry_array[$item->getItemID()]);
+                     	   #pr($rubric_array[0]);
+                     	   ########
                      	   foreach($newsletter_entry_array[$item->getItemID()][$rubric_array[0]] as $item_id => $entry){
                      	      $rubric_item_id_array[] = $item_id;
+                     	      #########
+                     	      if(isset($entry['noticed'])){
+                     	      	$noticed_array[$item_id] = $entry['noticed'];
+                     	      }
+                     	      #########
                      	   }
+                     	   #pr($noticed_array);
+                     	   #pr($newsletter_entry_array[$item->getItemID()][$rubric_array[0]]);
+
                      	   $rubric_item_list = $rubric_manager->getItemList($rubric_item_id_array);
                      	   $rubric_item = $rubric_item_list->getFirst();
+                     	   $count_entries = 0;
+                     	   $temp_body = '';
                      	   while($rubric_item){
                               $params = array();
                               $params['iid'] = $rubric_item->getItemID();
@@ -865,128 +893,197 @@ class cs_privateroom_item extends cs_room_item {
                               } else {
                                  $mod = $rubric_item->getType();
                               }
+                              ###############
+                              if(isset($noticed_array[$rubric_item->getItemID()])){
+                              	if($noticed_array[$rubric_item->getItemID()] == 'new'){
+                              		$info_text = ' <span class="changed">['.$translator->getMessage('COMMON_NEW').']</span>';
+                              	} elseif($noticed_array[$rubric_item->getItemID()] == 'changed'){
+                              		$info_text = ' <span class="changed">['.$translator->getMessage('COMMON_CHANGED').']</span>';
+                              	} else {
+                              		$info_text = '';
+                              	}
+                              }
+                              $count_entries++;
+                              ###############
                               $ahref_curl = '<a href="'.$curl_text.$item->getItemID().'&amp;mod='.$mod.'&amp;fct=detail&amp;iid='.$params['iid'].'">'.$title.'</a>';
 
                               $temp_body .= BR.'&nbsp;&nbsp;- '.$ahref_curl;
                      	      $rubric_item = $rubric_item_list->getNext();
                      	   }
+                     	   $tempMessage = '';
+	                        switch ( mb_strtoupper($rubric_array[0], 'UTF-8') ){
+	                           case 'ANNOUNCEMENT':
+	                              $tempMessage = $translator->getMessage('ANNOUNCEMENT_INDEX');
+	                              break;
+	                           case 'DATE':
+	                              $tempMessage = $translator->getMessage('DATES_INDEX');
+	                              break;
+	                           case 'DISCUSSION':
+	                              $tempMessage = $translator->getMessage('DISCUSSION_INDEX');
+	                              break;
+	                           case 'GROUP':
+	                              $tempMessage = $translator->getMessage('GROUP_INDEX');
+	                              break;
+	                           case 'INSTITUTION':
+	                              $tempMessage = $translator->getMessage('INSTITUTION_INDEX');
+	                              break;
+	                           case 'MATERIAL':
+	                              $tempMessage = $translator->getMessage('MATERIAL_INDEX');
+	                              break;
+	                           case 'MYROOM':
+	                              $tempMessage = $translator->getMessage('MYROOM_INDEX');
+	                              break;
+	                           case 'PROJECT':
+	                              $tempMessage = $translator->getMessage('PROJECT_INDEX');
+	                              break;
+	                           case 'TODO':
+	                              $tempMessage = $translator->getMessage('TODO_INDEX');
+	                              break;
+	                           case 'TOPIC':
+	                              $tempMessage = $translator->getMessage('TOPIC_INDEX');
+	                              break;
+	                           case 'USER':
+	                              $tempMessage = $translator->getMessage('USER_INDEX');
+	                              break;
+	                           case 'ENTRY':
+	                              $tempMessage = $translator->getMessage('ENTRY_INDEX');
+	                              break;
+	                           default:
+	                              $tempMessage = $translator->getMessage('COMMON_MESSAGETAG_ERROR'.' cs_privateroom_item(456) ');
+	                              break;
+	                        }
+	                        if ( $count_entries == 1 ) {
+	                           $ahref_curl = '<a href="'.$curl_text.$item->getItemID().'&amp;mod='.$rubric_array[0].'&amp;fct=index">'.$tempMessage.'</a>';
+	                           $body2 .= '&nbsp;&nbsp;'.$ahref_curl;
+	                           $body2 .= ' <span style="font-size:8pt;">('.$count_entries.' '.$translator->getMessage('NEWSLETTER_NEW_SINGLE_ENTRY').')</span>';
+	                        }elseif($count_entries > 1){
+	                           $ahref_curl = '<a href="'.$curl_text.$item->getItemID().'&amp;mod='.$rubric_array[0].'&amp;fct=index">'.$tempMessage.'</a>';
+	                           $body2 .= '&nbsp;&nbsp;'.$ahref_curl;
+	                           $body2 .= ' <span style="font-size:8pt;">('.$count_entries.' '.$translator->getMessage('NEWSLETTER_NEW_ENTRIES').')</span>';
+	                        }
+	                        if (!empty($body2) and !empty($temp_body)){
+	                           $body2 .= $temp_body.BRLF.LF;
+	                        }
+
+
                         }
 
 
 //Fehlt noch als Info im Array!!
-                                if ( empty($noticed) ) {
-                                    $info_text = ' <span class="changed">['.$translator->getMessage('COMMON_NEW').']</span>';
-                                 } elseif ( $noticed['read_date'] < $rubric_item->getModificationDate() ) {
-                                    $info_text = ' <span class="changed">['.$translator->getMessage('COMMON_CHANGED').']</span>';
-                                 } else {
-                                    $info_text = '';
-                                 }
+//                                if ( empty($noticed) ) {
+//                                    $info_text = ' <span class="changed">['.$translator->getMessage('COMMON_NEW').']</span>';
+//                                 } elseif ( $noticed['read_date'] < $rubric_item->getModificationDate() ) {
+//                                    $info_text = ' <span class="changed">['.$translator->getMessage('COMMON_CHANGED').']</span>';
+//                                 } else {
+//                                    $info_text = '';
+//                                 }
 //Fehlt noch als Info im Array!!
 
 
 
 
-                     if ( isset($user_list)
-                             and $user_list->isNotEmpty()
-                             and $user_list->getCount() == 1
-                           ) {
-                           $ref_user = $user_list->getFirst();
-                           if ( isset($ref_user)
-                                and $ref_user->getItemID() > 0
-                              ) {
-                              $temp_body = '';
-                              $count_entries = 0;
-                              while ( $rubric_item ) {
-                                 $noticed_manager = $this->_environment->getNoticedManager();
-                                 $noticed = $noticed_manager->getLatestNoticedForUserByID($rubric_item->getItemID(),$ref_user->getItemID());
-                                 if ( empty($noticed) ) {
-                                    $info_text = ' <span class="changed">['.$translator->getMessage('COMMON_NEW').']</span>';
-                                 } elseif ( $noticed['read_date'] < $rubric_item->getModificationDate() ) {
-                                    $info_text = ' <span class="changed">['.$translator->getMessage('COMMON_CHANGED').']</span>';
-                                 } else {
-                                    $info_text = '';
-                                 }
-                                 if (!empty($info_text)){
-                                    $count_entries++;
-                                    $params = array();
-                                    $params['iid'] = $rubric_item->getItemID();
-                                    $title ='';
-                                    if ($rubric_item->isA(CS_USER_TYPE)){
-                                       $title .= $this->_environment->getTextConverter()->text_as_html_short($rubric_item->getFullname());
-                                    } else {
-                                       $title .= $this->_environment->getTextConverter()->text_as_html_short($rubric_item->getTitle());
-                                    }
-                                    if ( $rubric_item->isA(CS_LABEL_TYPE) ) {
-                                       $mod = $rubric_item->getLabelType();
-                                    } else {
-                                       $mod = $rubric_item->getType();
-                                    }
-                                    $ahref_curl = '<a href="'.$curl_text.$item->getItemID().'&amp;mod='.$mod.'&amp;fct=detail&amp;iid='.$params['iid'].'">'.$title.'</a>';
-
-                                    $temp_body .= BR.'&nbsp;&nbsp;- '.$ahref_curl;
-                                 }
-                                 $rubric_item = $rubric_list->getNext();
-                              }
-                           }
-                        }
-                        $tempMessage = '';
-                        switch ( mb_strtoupper($rubric_array[0], 'UTF-8') ){
-                           case 'ANNOUNCEMENT':
-                              $tempMessage = $translator->getMessage('ANNOUNCEMENT_INDEX');
-                              break;
-                           case 'DATE':
-                              $tempMessage = $translator->getMessage('DATES_INDEX');
-                              break;
-                           case 'DISCUSSION':
-                              $tempMessage = $translator->getMessage('DISCUSSION_INDEX');
-                              break;
-                           case 'GROUP':
-                              $tempMessage = $translator->getMessage('GROUP_INDEX');
-                              break;
-                           case 'INSTITUTION':
-                              $tempMessage = $translator->getMessage('INSTITUTION_INDEX');
-                              break;
-                           case 'MATERIAL':
-                              $tempMessage = $translator->getMessage('MATERIAL_INDEX');
-                              break;
-                           case 'MYROOM':
-                              $tempMessage = $translator->getMessage('MYROOM_INDEX');
-                              break;
-                           case 'PROJECT':
-                              $tempMessage = $translator->getMessage('PROJECT_INDEX');
-                              break;
-                           case 'TODO':
-                              $tempMessage = $translator->getMessage('TODO_INDEX');
-                              break;
-                           case 'TOPIC':
-                              $tempMessage = $translator->getMessage('TOPIC_INDEX');
-                              break;
-                           case 'USER':
-                              $tempMessage = $translator->getMessage('USER_INDEX');
-                              break;
-                           case 'ENTRY':
-                              $tempMessage = $translator->getMessage('ENTRY_INDEX');
-                              break;
-                           default:
-                              $tempMessage = $translator->getMessage('COMMON_MESSAGETAG_ERROR'.' cs_privateroom_item(456) ');
-                              break;
-                        }
-                        if ( $count_entries == 1 ) {
-                           $ahref_curl = '<a href="'.$curl_text.$item->getItemID().'&amp;mod='.$rubric_array[0].'&amp;fct=index">'.$tempMessage.'</a>';
-                           $body2 .= '&nbsp;&nbsp;'.$ahref_curl;
-                           $body2 .= ' <span style="font-size:8pt;">('.$count_entries.' '.$translator->getMessage('NEWSLETTER_NEW_SINGLE_ENTRY').')</span>';
-                        }elseif($count_entries > 1){
-                           $ahref_curl = '<a href="'.$curl_text.$item->getItemID().'&amp;mod='.$rubric_array[0].'&amp;fct=index">'.$tempMessage.'</a>';
-                           $body2 .= '&nbsp;&nbsp;'.$ahref_curl;
-                           $body2 .= ' <span style="font-size:8pt;">('.$count_entries.' '.$translator->getMessage('NEWSLETTER_NEW_ENTRIES').')</span>';
-                        }
-                        if (!empty($body2) and !empty($temp_body)){
-                           $body2 .= $temp_body.BRLF.LF;
-                        }
+//                     if ( isset($user_list)
+//                             and $user_list->isNotEmpty()
+//                             and $user_list->getCount() == 1
+//                           ) {
+//                           $ref_user = $user_list->getFirst();
+//                           if ( isset($ref_user)
+//                                and $ref_user->getItemID() > 0
+//                              ) {
+//                              $temp_body = '';
+//                              $count_entries = 0;
+//                              while ( $rubric_item ) {
+//                                 $noticed_manager = $this->_environment->getNoticedManager();
+//                                 $noticed = $noticed_manager->getLatestNoticedForUserByID($rubric_item->getItemID(),$ref_user->getItemID());
+//                                 if ( empty($noticed) ) {
+//                                    $info_text = ' <span class="changed">['.$translator->getMessage('COMMON_NEW').']</span>';
+//                                 } elseif ( $noticed['read_date'] < $rubric_item->getModificationDate() ) {
+//                                    $info_text = ' <span class="changed">['.$translator->getMessage('COMMON_CHANGED').']</span>';
+//                                 } else {
+//                                    $info_text = '';
+//                                 }
+//                                 if (!empty($info_text)){
+//                                    $count_entries++;
+//                                    $params = array();
+//                                    $params['iid'] = $rubric_item->getItemID();
+//                                    $title ='';
+//                                    if ($rubric_item->isA(CS_USER_TYPE)){
+//                                       $title .= $this->_environment->getTextConverter()->text_as_html_short($rubric_item->getFullname());
+//                                    } else {
+//                                       $title .= $this->_environment->getTextConverter()->text_as_html_short($rubric_item->getTitle());
+//                                    }
+//                                    if ( $rubric_item->isA(CS_LABEL_TYPE) ) {
+//                                       $mod = $rubric_item->getLabelType();
+//                                    } else {
+//                                       $mod = $rubric_item->getType();
+//                                    }
+//                                    $ahref_curl = '<a href="'.$curl_text.$item->getItemID().'&amp;mod='.$mod.'&amp;fct=detail&amp;iid='.$params['iid'].'">'.$title.'</a>';
+//
+//                                    $temp_body .= BR.'&nbsp;&nbsp;- '.$ahref_curl;
+//                                 }
+//                                 $rubric_item = $rubric_list->getNext();
+//                              }
+//                           }
+//                        }
+//                        pr($rubric_array[0]);
+//                        $tempMessage = '';
+//                        switch ( mb_strtoupper($rubric_array[0], 'UTF-8') ){
+//                           case 'ANNOUNCEMENT':
+//                              $tempMessage = $translator->getMessage('ANNOUNCEMENT_INDEX');
+//                              break;
+//                           case 'DATE':
+//                              $tempMessage = $translator->getMessage('DATES_INDEX');
+//                              break;
+//                           case 'DISCUSSION':
+//                              $tempMessage = $translator->getMessage('DISCUSSION_INDEX');
+//                              break;
+//                           case 'GROUP':
+//                              $tempMessage = $translator->getMessage('GROUP_INDEX');
+//                              break;
+//                           case 'INSTITUTION':
+//                              $tempMessage = $translator->getMessage('INSTITUTION_INDEX');
+//                              break;
+//                           case 'MATERIAL':
+//                              $tempMessage = $translator->getMessage('MATERIAL_INDEX');
+//                              break;
+//                           case 'MYROOM':
+//                              $tempMessage = $translator->getMessage('MYROOM_INDEX');
+//                              break;
+//                           case 'PROJECT':
+//                              $tempMessage = $translator->getMessage('PROJECT_INDEX');
+//                              break;
+//                           case 'TODO':
+//                              $tempMessage = $translator->getMessage('TODO_INDEX');
+//                              break;
+//                           case 'TOPIC':
+//                              $tempMessage = $translator->getMessage('TOPIC_INDEX');
+//                              break;
+//                           case 'USER':
+//                              $tempMessage = $translator->getMessage('USER_INDEX');
+//                              break;
+//                           case 'ENTRY':
+//                              $tempMessage = $translator->getMessage('ENTRY_INDEX');
+//                              break;
+//                           default:
+//                              $tempMessage = $translator->getMessage('COMMON_MESSAGETAG_ERROR'.' cs_privateroom_item(456) ');
+//                              break;
+//                        }
+//                        if ( $count_entries == 1 ) {
+//                           $ahref_curl = '<a href="'.$curl_text.$item->getItemID().'&amp;mod='.$rubric_array[0].'&amp;fct=index">'.$tempMessage.'</a>';
+//                           $body2 .= '&nbsp;&nbsp;'.$ahref_curl;
+//                           $body2 .= ' <span style="font-size:8pt;">('.$count_entries.' '.$translator->getMessage('NEWSLETTER_NEW_SINGLE_ENTRY').')</span>';
+//                        }elseif($count_entries > 1){
+//                           $ahref_curl = '<a href="'.$curl_text.$item->getItemID().'&amp;mod='.$rubric_array[0].'&amp;fct=index">'.$tempMessage.'</a>';
+//                           $body2 .= '&nbsp;&nbsp;'.$ahref_curl;
+//                           $body2 .= ' <span style="font-size:8pt;">('.$count_entries.' '.$translator->getMessage('NEWSLETTER_NEW_ENTRIES').')</span>';
+//                        }
+//                        if (!empty($body2) and !empty($temp_body)){
+//                           $body2 .= $temp_body.BRLF.LF;
+//                        }
                      }
                      $j = $i+1;
                   }
-                  $item = $list2->getNext();
+                  $item = $room_list->getNext();
                   if (!empty($body2)){
                      $body  .= $body_title;
                      $body2 .= BRLF;
@@ -1022,6 +1119,7 @@ class cs_privateroom_item extends cs_room_item {
                   $subject = $translator->getMessage('PRIVATEROOM_MAIL_SUBJECT_WEEKLY').': '.$portal_title;
                }
 
+					#pr($body);
                // send email
                include_once('classes/cs_mail.php');
                $mail = new cs_mail();
@@ -1042,6 +1140,9 @@ class cs_privateroom_item extends cs_room_item {
                   $retour['success_text'] = 'send newsletter to '.$to;
                   $this->_send_newsletter = true;
                }
+               #################
+               unset($noticed_array);
+               #################
                unset($mail);
                unset($body);
                unset($subject);
@@ -1644,7 +1745,6 @@ class cs_privateroom_item extends cs_room_item {
       ################ BEGIN ###################
       # email newsletter
       ##########################################
-
       if ( $this->isPrivateRoomNewsletterActive() and $this->isOpen() ) {
          $period = $this->getPrivateRoomNewsletterActivity();
          if ($period=='weekly'){
@@ -1652,7 +1752,6 @@ class cs_privateroom_item extends cs_room_item {
          }
          unset($period);
       }
-
       ##########################################
       # email newsletter
       ################# END ####################

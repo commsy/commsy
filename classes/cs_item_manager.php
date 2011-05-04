@@ -1031,7 +1031,7 @@ class cs_item_manager extends cs_manager {
      if (!isset($result1)) {
          include_once('functions/error_functions.php');trigger_error('Problems selecting items from query: "'.$query.'"',E_USER_WARNING);
      }
-     $query2 = 'SELECT '.$this->addDatabasePrefix('items').'.item_id FROM '.$this->addDatabasePrefix('items');
+     $query2 = 'SELECT '.$this->addDatabasePrefix('items').'.item_id,'.$this->addDatabasePrefix('noticed').'.read_date,'.$this->addDatabasePrefix('noticed').'.user_id FROM '.$this->addDatabasePrefix('items');
      $query2 .= ' INNER JOIN '.$this->addDatabasePrefix('noticed').' ON '.$this->addDatabasePrefix('noticed').'.item_id = '.$this->addDatabasePrefix('items').'.item_id';
      $query2 .= ' WHERE '.$this->addDatabasePrefix('items').'.context_id IN ('.implode(", ",encode(AS_DB,$room_id_array)).')';
      $query2 .= ' AND '.$this->addDatabasePrefix('noticed').'.user_id IN ('.implode(", ",encode(AS_DB,$user_id_array)).')';
@@ -1044,14 +1044,34 @@ class cs_item_manager extends cs_manager {
          include_once('functions/error_functions.php');trigger_error('Problems selecting items from query: "'.$query.'"',E_USER_WARNING);
      }
      $result2 = array();
+     $read_date_array = array();
      foreach($r2 as $r){
      	$result2[] = $r['item_id'];
      }
+
+     $query3 = 'SELECT '.$this->addDatabasePrefix('items').'.item_id, '.$this->addDatabasePrefix('noticed').'.read_date,'.$this->addDatabasePrefix('noticed').'.user_id FROM '.$this->addDatabasePrefix('items');
+     $query3 .= ' INNER JOIN '.$this->addDatabasePrefix('noticed').' ON '.$this->addDatabasePrefix('noticed').'.item_id = '.$this->addDatabasePrefix('items').'.item_id';
+     $query3 .= ' WHERE '.$this->addDatabasePrefix('items').'.context_id IN ('.implode(", ",encode(AS_DB,$room_id_array)).')';
+     $query3 .= ' AND '.$this->addDatabasePrefix('noticed').'.user_id IN ('.implode(", ",encode(AS_DB,$user_id_array)).')';
+     #$query3 .= ' AND '.$this->addDatabasePrefix('items').'.modification_date <= '.$this->addDatabasePrefix('noticed').'.read_date';
+     $query3 .= ' AND '.$this->addDatabasePrefix('items').'.deleter_id IS NULL and '.$this->addDatabasePrefix('items').'.deletion_date IS NULL';
+	  #pr($read_date_array);
+     #pr($query2);
+
+     $r3 = $this->_db_connector->performQuery($query3);
+     foreach($r3 as $r){
+     	$read_date_array[$r['user_id']][$r['item_id']] = $r['read_date'];
+     }
+     #pr($read_date_array);
+
      $tmp_result = array();
      $annotation_manager = $this->_environment->getAnnotationManager();
      $discarticle_manager = $this->_environment->getDiscussionArticleManager();
      $section_manager = $this->_environment->getSectionManager();
      $step_manager = $this->_environment->getStepManager();
+     ######################################################
+     $label_manager = $this->_environment->getLabelManager();
+     ######################################################
      $result = array();
      foreach($result1 as $r){
      	if (!in_array($r['item_id'],$result2)){
@@ -1059,31 +1079,82 @@ class cs_item_manager extends cs_manager {
      	      $anno_item = $annotation_manager->getItem($r['item_id']);
      	      $linked_item = $anno_item->getLinkedItem();
      	      $result[$linked_item->getContextID()][$linked_item->getItemType()][$linked_item->getItemID()][] = 'annotation';
+
+     	      if(empty($read_date_array[$user_id_array[0]][$linked_item->getItemID()])){
+     	      	$result[$linked_item->getContextID()][$linked_item->getItemType()][$linked_item->getItemID()]['noticed'] = 'new';
+     	      } elseif(isset($read_date_array[$user_id_array[0]][$linked_item->getItemID()])){
+     	      	$result[$linked_item->getContextID()][$linked_item->getItemType()][$linked_item->getItemID()]['noticed'] = 'changed';
+     	      }
+
      	      unset($anno_item);
      	      unset($linked_item);
      	   }elseif (isset($r['type']) and $r['type'] == 'discarticle'){
      	      $discarticle_item = $discarticle_manager->getItem($r['item_id']);
      	      $linked_item = $discarticle_item->getLinkedItem();
      	      $result[$linked_item->getContextID()][$linked_item->getItemType()][$linked_item->getItemID()][] = 'discarticle';
-      	      unset($discarticle_item);
+
+     	      if(empty($read_date_array[$user_id_array[0]][$linked_item->getItemID()])){
+     	      	$result[$linked_item->getContextID()][$linked_item->getItemType()][$linked_item->getItemID()]['noticed'] = 'new';
+     	      } elseif(isset($read_date_array[$user_id_array[0]][$linked_item->getItemID()])){
+     	      	$result[$linked_item->getContextID()][$linked_item->getItemType()][$linked_item->getItemID()]['noticed'] = 'changed';
+     	      }
+
+      	   unset($discarticle_item);
      	      unset($linked_item);
      	   }elseif (isset($r['type']) and $r['type'] == 'section'){
      	      $section_item = $section_manager->getItem($r['item_id']);
      	      $linked_item = $section_item->getLinkedItem();
      	      $result[$linked_item->getContextID()][$linked_item->getItemType()][$linked_item->getItemID()][] = 'section';
+
+     	      if(empty($read_date_array[$user_id_array[0]][$linked_item->getItemID()])){
+     	      	$result[$linked_item->getContextID()][$linked_item->getItemType()][$linked_item->getItemID()]['noticed'] = 'new';
+     	      } elseif(isset($read_date_array[$user_id_array[0]][$linked_item->getItemID()])){
+     	      	$result[$linked_item->getContextID()][$linked_item->getItemType()][$linked_item->getItemID()]['noticed'] = 'changed';
+     	      }
+
      	      unset($section_item);
      	      unset($linked_item);
      	   }elseif (isset($r['type']) and $r['type'] == 'step'){
      	      $step_item = $step_manager->getItem($r['item_id']);
      	      $linked_item = $step_item->getLinkedItem();
      	      $result[$linked_item->getContextID()][$linked_item->getItemType()][$linked_item->getItemID()][] = 'step';
+
+     	      if(empty($read_date_array[$user_id_array[0]][$linked_item->getItemID()])){
+     	      	$result[$linked_item->getContextID()][$linked_item->getItemType()][$linked_item->getItemID()]['noticed'] = 'new';
+     	      } elseif(isset($read_date_array[$user_id_array[0]][$linked_item->getItemID()])){
+     	      	$result[$linked_item->getContextID()][$linked_item->getItemType()][$linked_item->getItemID()]['noticed'] = 'changed';
+     	      }
+
      	      unset($step_item);
      	      unset($linked_item);
+     	   }elseif (isset($r['type']) and $r['type'] == 'label'){
+     	   	$label_item = $label_manager->getItem($r['item_id']);
+     	   	$result[$label_item->getContextID()][$label_item->getItemType()][$label_item->getItemID()][] = $label_item->getLabelType();
+
+     	      if(empty($read_date_array[$user_id_array[0]][$label_item->getItemID()])){
+     	      	$result[$label_item->getContextID()][$label_item->getItemType()][$label_item->getItemID()]['noticed'] = 'new';
+     	      } elseif(isset($read_date_array[$user_id_array[0]][$label_item->getItemID()])){
+     	      	$result[$label_item->getContextID()][$label_item->getItemType()][$label_item->getItemID()]['noticed'] = 'changed';
+     	      }
+
+     	      unset($label_item);
      	   }else{
      	      $result[$r['context_id']][$r['type']][$r['item_id']][] = 'entry';
+     	      $linked_item = $this->getItem($r['item_id']);
+
+     	      if(empty($read_date_array[$user_id_array[0]][$r['item_id']])){
+     	      	$result[$r['context_id']][$r['type']][$r['item_id']]['noticed'] = 'new';
+     	      } elseif(isset($read_date_array[$user_id_array[0]][$r['item_id']])){
+     	      	$result[$r['context_id']][$r['type']][$r['item_id']]['noticed'] = 'changed';
+     	      }
+
+     	      unset($linked_item);
      	   }
      	}
      }
+     #########################
+     unset($label_manager);
+     #########################
      unset($step_manager);
      unset($section_manager);
      unset($discarticle_manager);
