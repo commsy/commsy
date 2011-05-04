@@ -710,7 +710,7 @@ class cs_privateroom_item extends cs_room_item {
       }
    }
 
-
+// Achtung das ist die neue Newsletterfunktion!!!
    function _sendPrivateRoomNewsletter2 () {
       if ( !$this->_send_newsletter ) {
          include_once('functions/misc_functions.php');
