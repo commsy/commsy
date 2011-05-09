@@ -223,7 +223,16 @@ class cs_dates_manager extends cs_manager {
       } elseif ($mode == 'distinct') {
          $query = 'SELECT DISTINCT '.$this->addDatabasePrefix($this->_db_table).'.*';
       } else {
-         $query = 'SELECT '.$this->addDatabasePrefix('dates').'.*';
+         $query = 'SELECT '.$this->addDatabasePrefix('dates').'.*,
+         				(
+         					SELECT
+         						COUNT('. $this->addDatabasePrefix('annotations') .'.item_id)
+         					FROM
+         						'. $this->addDatabasePrefix('annotations') .'
+         					WHERE
+         						'. $this->addDatabasePrefix('annotations') .'.linked_item_id = '.$this->addDatabasePrefix('dates').'.item_id
+         				) as count_annotations
+         ';
       }
 
       $query .= ' FROM '.$this->addDatabasePrefix('dates');
@@ -313,11 +322,6 @@ class cs_dates_manager extends cs_manager {
       if ( isset($this->_only_files_limit) and $this->_only_files_limit ) {
          $query .= ' INNER JOIN '.$this->addDatabasePrefix('item_link_file').' AS lf ON '.$this->addDatabasePrefix($this->_db_table).'.item_id = lf.item_iid';
       }
-
-	  // join annotations if needed
-	  if(!isset($this->_order)) {
-		$query .= ' LEFT JOIN '.$this->addDatabasePrefix('annotations').' AS annotations ON '.$this->addDatabasePrefix('dates').'.item_id=annotations.linked_item_id';
-	  }
 
       $query .= ' WHERE 1';
 
@@ -534,7 +538,7 @@ class cs_dates_manager extends cs_manager {
       } elseif ($this->_future_limit) {
          $query .= ' ORDER BY '.$this->addDatabasePrefix('dates').'.datetime_start ASC';
       } else {
-         $query .= ' ORDER BY '.$this->addDatabasePrefix('annotations').'.modification_date DESC, '.$this->addDatabasePrefix('dates').'.datetime_start DESC';
+         $query .= ' ORDER BY '.$this->addDatabasePrefix('dates').'.cout_annotations DESC, '.$this->addDatabasePrefix('dates').'.datetime_start DESC';
       }
 
       if ($mode == 'select') {
