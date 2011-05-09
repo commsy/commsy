@@ -553,18 +553,18 @@ class cs_material_manager extends cs_manager {
                      OR (l5.second_item_id='.$this->addDatabasePrefix('materials').'.item_id AND l5.first_item_id="'.encode(AS_DB,$this->_ref_id_limit).'") ) AND l5.deletion_date IS NULL';
       }
 
-	  // join annotations if needed
-	  if(!isset($this->_order) || (isset($this->_order) && !in_array($this->_order, array(	'date_rev',
-	  																						'publishing_date',
-	  																						'publishing_date_rev',
-	  																						'author',
-	  																						'author_rev',
-																							'modificator',
-																							'modificator_rev',
-																							'title',
-																							'title_rev')))) {
-		$query .= ' LEFT JOIN '.$this->addDatabasePrefix('annotations').' AS annotations ON '.$this->addDatabasePrefix('materials').'.item_id=annotations.linked_item_id';
-	  }
+//	  // join annotations if needed
+//	  if(!isset($this->_order) || (isset($this->_order) && !in_array($this->_order, array(	'date_rev',
+//	  																						'publishing_date',
+//	  																						'publishing_date_rev',
+//	  																						'author',
+//	  																						'author_rev',
+//																							'modificator',
+//																							'modificator_rev',
+//																							'title',
+//																							'title_rev')))) {
+//		$query .= ' LEFT JOIN '.$this->addDatabasePrefix('annotations').' AS annotations ON '.$this->addDatabasePrefix('materials').'.item_id=annotations.linked_item_id';
+//	  }
 
       // restrict sql-statement by search limit, create joins
       if (isset($this->_search_array) AND !empty($this->_search_array)) {
@@ -783,10 +783,10 @@ class cs_material_manager extends cs_manager {
          } elseif ($this->_order == 'title_rev') {
             $query .= ' ORDER BY '.$this->addDatabasePrefix('materials').'.title DESC, '.$this->addDatabasePrefix('materials').'.modification_date ASC';
          } else {
-            $query .= ' ORDER BY '.$this->addDatabasePrefix('annotations').'.modification_date DESC, '.$this->addDatabasePrefix('materials').'.modification_date DESC, '.$this->addDatabasePrefix('materials').'.title ASC'; // default: sort by annotations, date, title
+            $query .= ' ORDER BY '.$this->addDatabasePrefix('materials').'.modification_date DESC, '.$this->addDatabasePrefix('materials').'.title ASC'; // default: sort by date
          }
       } else {
-         $query .= ' ORDER BY '.$this->addDatabasePrefix('annotations').'.modification_date DESC, '.$this->addDatabasePrefix('materials').'.modification_date DESC, '.$this->addDatabasePrefix('materials').'.title ASC'; // default: sort by annotations, date, title
+         $query .= ' ORDER BY '.$this->addDatabasePrefix('materials').'.modification_date DESC, '.$this->addDatabasePrefix('materials').'.title ASC'; // default: sort by date
       }
       if ($mode == 'select') {
          if (isset($this->_interval_limit) and isset($this->_from_limit)) {

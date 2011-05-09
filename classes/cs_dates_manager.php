@@ -538,7 +538,7 @@ class cs_dates_manager extends cs_manager {
       } elseif ($this->_future_limit) {
          $query .= ' ORDER BY '.$this->addDatabasePrefix('dates').'.datetime_start ASC';
       } else {
-         $query .= ' ORDER BY '.$this->addDatabasePrefix('dates').'.cout_annotations DESC, '.$this->addDatabasePrefix('dates').'.datetime_start DESC';
+         $query .= ' ORDER BY '.$this->addDatabasePrefix('dates').'.datetime_start DESC';
       }
 
       if ($mode == 'select') {
