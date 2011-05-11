@@ -315,7 +315,11 @@ class misc_text_converter {
 
    #private function _activate_urls ($text) {
    public function _activate_urls ($text) {
-        $text = ' '.$text;
+      preg_match('~<!-- KFC TEXT [a-z0-9]* -->~u',$text,$values);
+      foreach ($values as $key => $value) {
+         $text = str_replace($value,'COMMSY_FCKEDITOR'.$key.' ',$text);
+      }
+      $text = ' '.$text;
       $url_string = '^(?<=([\s|\n|>|\(]{1}))((http://|https://|ftp://|www\.)'; //everything starting with http, https or ftp followed by "://" or www. is a url and will be avtivated
       #$url_string = '^(?<=([\s|\n|>|\(]{1}))((http://|https://|ftp://|www\.)'; //everything starting with http, https or ftp followed by "://" or www. is a url and will be avtivated
       $url_string .= "([".RFC1738_CHARS."]+?))"; //All characters allowed for FTP an HTTP URL's by RFC 1738 (non-greedy because of potential trailing punctuation marks)
@@ -327,6 +331,9 @@ class misc_text_converter {
       // mailto. A space or a linebreak has to be in front of everymail link. No links in bigger words (especially in urls) will be activated
       $text = preg_replace('^( |\^|>|\n)(mailto:)?((['.RFC2822_CHARS.']+(\.['.RFC2822_CHARS.']+)*)@(['.RFC2822_CHARS.']+(\.['.RFC2822_CHARS.']+)*\.([A-z]{2,})))^u', ' <a href="mailto:$3">$3</a>', $text);
       $text = substr($text, 1, strlen($text));
+      foreach ($values as $key => $value) {
+         $text = str_replace('COMMSY_FCKEDITOR'.$key.' ',$value,$text);
+      }
       return $text;
    }
 
