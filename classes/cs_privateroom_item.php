@@ -758,24 +758,27 @@ class cs_privateroom_item extends cs_room_item {
              unset($item);
              unset($tmp_room_list);
          }
-         $room_id_array = $this->getCustomizedRoomIDArray();
-         if ( !isset($room_id_array[0]) ) {
-            $list = $room_manager->_getRelatedContextListForUser($user->getUserID(),$user->getAuthSource(),$portal->getItemID());
-            $room_id_array = array();
-            if ( !$list->isEmpty() ) {
-               $item = $list->getFirst();
-               while ( $item ) {
-                  if ( $item->isPrivateRoom() or !$item->isShownInPrivateRoomHomeByItemID($id) or !$item->isOpen() or $item->getItemID() < 0 ) {
-                        // do nothing
-                     } else {
-                        $room_id_array[]=$item->getItemID();
-                     }
-                     $item = $list->getNext();
-                  }
-                  unset($item);
-                  unset($list);
-               }
-         }
+//         $room_id_array = $this->getCustomizedRoomIDArray();
+//         if ( !isset($room_id_array[0]) ) {
+//            $list = $room_manager->_getRelatedContextListForUser($user->getUserID(),$user->getAuthSource(),$portal->getItemID());
+//            $room_id_array = array();
+//            if ( !$list->isEmpty() ) {
+//               $item = $list->getFirst();
+//               while ( $item ) {
+//                  if ( $item->isPrivateRoom()
+//                  	or !$item->isShownInPrivateRoomHomeByItemID($id)
+//                  	or !$item->isOpen()
+//                  	or $item->getItemID() < 0 ) {
+//                        // do nothing
+//                     } else {
+//                        $room_id_array[]=$item->getItemID();
+//                     }
+//                     $item = $list->getNext();
+//                  }
+//                  unset($item);
+//                  unset($list);
+//               }
+//         }
          $user_array = $user_manager->getUserArrayByUserAndRoomIDLimit($user->getUserID(),$room_id_array,$user->getAuthSource());
          foreach($user_array as $tmp_user){
          	$user_id_array[] = $tmp_user['item_id'];
@@ -804,8 +807,8 @@ class cs_privateroom_item extends cs_room_item {
                // email
                $id = $user->getItemID();
 
-               $portal = $this->getContextItem();
-               $room_manager = $this->_environment->getRoomManager();
+               #$portal = $this->getContextItem();
+               #$room_manager = $this->_environment->getRoomManager();
 
                $translator = $this->_environment->getTranslationObject();
                $translator->setRubricTranslationArray($this->getRubricTranslationArray());
@@ -969,19 +972,6 @@ class cs_privateroom_item extends cs_room_item {
                         }
 
 
-//Fehlt noch als Info im Array!!
-//                                if ( empty($noticed) ) {
-//                                    $info_text = ' <span class="changed">['.$translator->getMessage('COMMON_NEW').']</span>';
-//                                 } elseif ( $noticed['read_date'] < $rubric_item->getModificationDate() ) {
-//                                    $info_text = ' <span class="changed">['.$translator->getMessage('COMMON_CHANGED').']</span>';
-//                                 } else {
-//                                    $info_text = '';
-//                                 }
-//Fehlt noch als Info im Array!!
-
-
-
-
 //                     if ( isset($user_list)
 //                             and $user_list->isNotEmpty()
 //                             and $user_list->getCount() == 1
@@ -1098,7 +1088,7 @@ class cs_privateroom_item extends cs_room_item {
                   $translator->getMessage('COMMON_NO_NEW_ENTRIES').LF;
                }
                $body .= LF;
-               $portal = $this->getContextItem();
+               #$portal = $this->getContextItem();
                $portal_title = '';
                if (isset($portal)){
                   $portal_title = $portal->getTitle();
