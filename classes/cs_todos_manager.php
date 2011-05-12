@@ -153,11 +153,6 @@ class cs_todos_manager extends cs_manager {
            (isset($this->_sort_order) and
            ($this->_sort_order == 'modificator' || $this->_sort_order == 'modificator_rev')) ) {
          $query .= ' LEFT JOIN '.$this->addDatabasePrefix('user').' AS people ON (people.item_id='.$this->addDatabasePrefix('todos').'.creator_id )'; // modificator_id (TBD)
-
-         //look in filenames of linked files for the search_limit
-         $query .= ' LEFT JOIN '.$this->addDatabasePrefix('item_link_file').' ON '.$this->addDatabasePrefix('todos').'.item_id = '.$this->addDatabasePrefix('item_link_file').'.item_iid'.
-                   ' LEFT JOIN '.$this->addDatabasePrefix('files').' ON '.$this->addDatabasePrefix('item_link_file').'.file_id = '.$this->addDatabasePrefix('files').'.files_id';
-         //look in filenames of linked files for the search_limit
      }
      if ( isset($this->_topic_limit) ) {
         $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l21 ON ( l21.deletion_date IS NULL AND ((l21.first_item_id='.$this->addDatabasePrefix('todos').'.item_id AND l21.second_item_type="'.CS_TOPIC_TYPE.'"))) ';
@@ -296,7 +291,7 @@ class cs_todos_manager extends cs_manager {
       if (isset($this->_search_array) AND !empty($this->_search_array)) {
          $query .= ' AND '.$this->addDatabasePrefix('step').'.deletion_date IS NULL';
          $query .= ' AND (';
-         $field_array = array('TRIM(CONCAT(people.firstname," ",people.lastname))',$this->addDatabasePrefix('todos').'.description',$this->addDatabasePrefix('todos').'.title',$this->addDatabasePrefix('step').'.title',$this->addDatabasePrefix('step').'.description',$this->addDatabasePrefix('files').'.filename');
+         $field_array = array('TRIM(CONCAT(people.firstname," ",people.lastname))',$this->addDatabasePrefix('todos').'.description',$this->addDatabasePrefix('todos').'.title',$this->addDatabasePrefix('step').'.title',$this->addDatabasePrefix('step').'.description');
          $search_limit_query_code = $this->_generateSearchLimitCode($field_array);
          $query .= $search_limit_query_code;
          $query .= ')';

@@ -16,16 +16,6 @@ include_once('htdocs/javascript/jQuery/rsstickerajax/lastrss/lastRSS.php'); //pa
 // Create lastRSS object
 $rss = new lastRSS();
 
-// proxy support
-$proxy_ip = $environment->getConfiguration('c_proxy_ip');
-if ( !empty($proxy_ip) ) {
-   $rss->setProxyIP($proxy_ip);
-}
-$proxy_port = $environment->getConfiguration('c_proxy_port');
-if ( !empty($proxy_port) ) {
-   $rss->setProxyPort($proxy_port);
-}
-
 $rss->cache_dir = 'cache'; //path to cache directory on your server from this script. Chmod 777!
 $rss->date_format = 'M d, Y g:i:s A'; //date format of RSS item. See PHP date() function for possible input.
 
@@ -49,11 +39,7 @@ function outputRSS_XML($url,$rss) {
    $cacheseconds=(int) $_GET["cachetime"]; //typecast "cachetime" parameter as integer (0 or greater)
    $rss->cache_time = $cacheseconds;
    if ($rs = $rss->get($url)) {
-      $encoding = 'ISO-8859-1';
-      if ( !empty($rs['encoding']) ) {
-         $encoding = $rs['encoding'];
-      }
-      echo "<?xml version=\"1.0\" encoding=\"".$encoding."\"?>\n<rss version=\"2.0\">\n<channel>\n";
+      echo "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n<rss version=\"2.0\">\n<channel>\n";
       foreach ($rs['items'] as $item) {
          if (isset($item['description'])){
             echo "<item>\n<link>$item[link]</link>\n<title>$item[title]</title>\n<description>$item[description]</description>\n<pubDate>$item[pubDate]</pubDate>\n</item>\n\n";
