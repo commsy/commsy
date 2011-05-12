@@ -27,10 +27,19 @@ function commsy_auth() {
         }
         $soapClient = new SoapClient($commsy_auth_commsy_url.'/soap_wsdl.php',$options);
         $user = $soapClient->wordpressAuthenticateViaSession($_GET['commsy_session_id']);
+        
         if(isset($user['login'])) {
-          $addUserToBlog = (false == get_user_by('login', $user['login']));
+          #$addUserToBlog = (false == get_user_by('login', $user['login']));
           $user_id = cs_update_user($user);
           // $blogId ??? (15.11.2010 IJ)
+          $blogId = $GLOBALS['blog_id']; // (12.05.2011 js)
+          $blogusers = get_users(array('blog_id' => $blogId));
+          $addUserToBlog = true;
+          foreach($blogusers as $bloguser){
+          	if($bloguser->ID == $user_id){
+          		$addUserToBlog = false;
+          	}
+          }
           if($addUserToBlog) add_user_to_blog($blogId, $user_id, get_option('default_role'));
         }
 
