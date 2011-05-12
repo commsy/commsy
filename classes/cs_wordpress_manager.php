@@ -154,6 +154,7 @@ class cs_wordpress_manager extends cs_manager {
     global $c_commsy_domain;
     global $c_commsy_url_path;
     global $c_single_entry_point;
+    global $class_factory;
 
     $context = $this->_environment->getCurrentContextItem();
     $wordpressId = $context->getWordpressId();
@@ -170,18 +171,13 @@ class cs_wordpress_manager extends cs_manager {
       $author = $item->getModificatorItem()->getFullName();
     }
 
-
-    $post_content = $this->encodeUmlaute($description);
-    $post_content = 'Author: '.$author.'<br />'.$this->encodeUrl($post_content);
-    $post_title = $item->getTitle();
-
-    $post_content_complete = '';
-
     // Dateien
+    $file_links = '';
     $file_list = $item->getFileList();
     if(!$file_list->isEmpty()) {
       $file_array = $file_list->to_array();
       $file_link_array = array();
+      $file_link_array_images = array();
       foreach ($file_array as $file) {
 //        array($file->getUrl(), $file->getMime());
 //        $rel_path = '/wp/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/wp-content/uploads/commsy/'.$current_item_id.'/';
@@ -189,14 +185,30 @@ class cs_wordpress_manager extends cs_manager {
         if ( !is_soap_fault($fileUrl) ) {
 //        $fileUrl  = 'http://'.$_SERVER['HTTP_HOST'].'/'.$file->getUrl();//$this->exportFileToWordpress($file, $current_item_id, $rel_path);
           $file_link_array[] = '<a href="'.$fileUrl.'" title="'.$file->getDisplayName().'">'.$file->getDisplayName().'</a>' ;
+          $file_link_array_images[$file->getDisplayName()] = $fileUrl;
         }
       }
       if ( !empty($file_link_array) ) {
         $file_links = '<br />Dateien:<br /> '.implode(' | ', $file_link_array);
-        $post_content .= $file_links;
-        unset($file_links);
+        #$post_content .= $file_links;
+        #unset($file_links);
       }
     }
+    
+    $params = array();
+    $params['environment'] = $this->_environment;
+    $wordpress_view = $class_factory->getClass(WORDPRESS_VIEW,$params);
+    $wordpress_view->setItem($item);
+    $description = $wordpress_view->formatForWordpress($description, $file_link_array_images);
+    
+    $post_content = $this->encodeUmlaute($description);
+    $post_content = 'Author: '.$author.'<br />'.$this->encodeUrl($post_content);
+    $post_title = $item->getTitle();
+
+    $post_content_complete = '';
+    
+    $post_content .= $file_links;
+    
     // Abschnitte
     $sub_item_list = $item->getSectionList();
     $sub_item_descriptions = '';
