@@ -1151,10 +1151,10 @@ if ( $environment->isOutputModeNot('XML') and $environment->isOutputModeNot('JSO
 }
 
 // display page
-header("Content-Type: text/html; charset=utf-8");
 if ( $environment->isOutputMode('XML') or $environment->isOutputMode('JSON') or $environment->isOutputMode('BLANK')) {
    echo($page->getContent());
 } else {
+	header("Content-Type: text/html; charset=utf-8");
    include_once('functions/security_functions.php');
    if ( isset($_GET['download']) and ($_GET['download'] == 'zip') ) {
       include_once('pages/rubric_download.php');

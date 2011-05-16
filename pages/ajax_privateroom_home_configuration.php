@@ -143,13 +143,21 @@ if(isset($_GET['do'])){
       
       $home_config_array = $privateroom_item->getHomeConfig();
 
+      if(empty($home_config_array) or sizeof($home_config_array) < $column_count){
+      	for ($i = sizeof($home_config_array); $i < $column_count; $i++) {
+      		$home_config_array[] = array();
+      	}
+      }
+      
 	   // remove unset portlets
       foreach($home_config_array as $key_top => $column){
          foreach($column as $key => $column_entry){
-            if(($column_entry != 'null') && ($column_entry != 'empty')){
+            if(($column_entry != 'null') && ($column_entry != 'empty') && ($column_entry != null)){
                if(!in_array($column_entry, $column_array)){
                   unset($home_config_array[$key_top][$key]);
                }
+            } else {
+            	unset($home_config_array[$key_top][$key]);
             }
          }
       }

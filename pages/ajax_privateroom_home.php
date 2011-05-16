@@ -34,6 +34,16 @@ if(isset($_GET['do'])){
 				$column_array[] = $_GET[$get_key];
 			}
 		}
+	   // remove null-entries from jQuery
+      foreach($column_array as $key_top => $column){
+         foreach($column as $key => $column_entry){
+            if(($column_entry != 'null') && ($column_entry != 'empty') && ($column_entry != null)){
+            } else {
+            	unset($column_array[$key_top][$key]);
+            }
+         }
+      }
+		
       $privateroom_item = $environment->getCurrentContextItem();
       $privateroom_item->setHomeConfig($column_array);
       $privateroom_item->updateHomeConfiguration($column_array);
