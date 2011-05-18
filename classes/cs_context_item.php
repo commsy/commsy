@@ -4242,6 +4242,10 @@ class cs_context_item extends cs_item {
       if ($re == 2) {
         $retour = true;
       }
+    } else {
+    	if($this->_environment->inPrivateRoom()){
+         $retour = true;
+    	}
     }
     return $retour;
   }
