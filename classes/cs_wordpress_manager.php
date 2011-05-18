@@ -156,14 +156,18 @@ class cs_wordpress_manager extends cs_manager {
     global $c_single_entry_point;
     global $class_factory;
 
+    $wpUser = $this->_getCurrentAuthItem();
+    
     $context = $this->_environment->getCurrentContextItem();
     $wordpressId = $context->getWordpressId();
-
+    $comment_status = $context->getWordpressUseComments();
+    #$wordpress_post_id = '';
+    
     // Material Item
     $material_manager = $this->_environment->getMaterialManager();
     $material_version_list = $material_manager->getVersionList($current_item_id);
     $item = $material_version_list->getFirst();
-
+    
     // Informationen
     $author = $item->getAuthor();
     $description = $item->getDescription();
@@ -181,11 +185,42 @@ class cs_wordpress_manager extends cs_manager {
       foreach ($file_array as $file) {
 //        array($file->getUrl(), $file->getMime());
 //        $rel_path = '/wp/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/wp-content/uploads/commsy/'.$current_item_id.'/';
+      	
         $fileUrl  = $this->CW->insertFile($this->_environment->getSessionID(),array('name' => $file->getDisplayName(), 'data' => base64_encode(file_get_contents($file->getDiskFileName()))), $wordpressId);//$this->exportFileToWordpress($file, $current_item_id, $rel_path);
         if ( !is_soap_fault($fileUrl) ) {
 //        $fileUrl  = 'http://'.$_SERVER['HTTP_HOST'].'/'.$file->getUrl();//$this->exportFileToWordpress($file, $current_item_id, $rel_path);
           $file_link_array[] = '<a href="'.$fileUrl.'" title="'.$file->getDisplayName().'">'.$file->getDisplayName().'</a>' ;
           $file_link_array_images[$file->getDisplayName()] = $fileUrl;
+          
+          // Add files to Wordpress media-library
+          $file_post = array(
+            'post_content'         =>'',
+            'post_content_filtered'=>'',
+            'post_title'           =>mysql_escape_string($file->getDisplayName()),
+            'post_excerpt'         =>'',
+            'post_status'          =>'inherit',
+            'post_type'            =>'attachment',
+            'comment_status'       =>(($comment_status=='1')?'open':'closed'), // aus einstellungen übernehmen
+            'ping_status'          =>'open',
+            'post_password'        =>'',
+            'post_name'            =>mysql_escape_string($file->getDisplayName()),
+            'to_ping'              =>'',
+            'pinged'               =>'',
+            'post_modified'        =>$item->getModificationDate(),
+            'post_modified_gmt'    =>$item->getModificationDate(),
+            'post_parent'          =>'0',  // wenn kein parent
+            'menu_order'           =>'0',
+            'guid'                 =>$fileUrl,
+      	   'post_mime_type'		  =>mysql_escape_string($file->getMime()));
+          
+          
+          $wordpress_post_id = $file->getWordpressPostId();
+          $wpPostId = $this->CW->insertPost($this->_environment->getSessionID(),$file_post, $wpUser, $wordpressId, 'Material', $wordpress_post_id);
+          if($wordpress_post_id == ''){
+             $file->setWordpressPostId($wpPostId);
+             $file->update();
+          }
+          
         }
       }
       if ( !empty($file_link_array) ) {
@@ -274,12 +309,12 @@ class cs_wordpress_manager extends cs_manager {
 //    $wpUser['login'] = $currentUser->getUserId();
 //    $wpUser['email'] = $currentUser->getEmail();
 //
-    $wpUser = $this->_getCurrentAuthItem();
+    #$wpUser = $this->_getCurrentAuthItem();
     //$this->updateExportLists($rubric);
     // write posts
 
 
-    $comment_status = $context->getWordpressUseComments();
+    #$comment_status = $context->getWordpressUseComments();
 //    include_once($c_wordpress_absolute_path_file.'/commsy/commsy_wordpress.php');
 
     // delete rn out of post_content
@@ -308,7 +343,8 @@ class cs_wordpress_manager extends cs_manager {
             'menu_order'           =>'0',
             'guid'                 =>'');
 
-    $wpPostId = $this->CW->insertPost($this->_environment->getSessionID(),$post, $wpUser, $wordpressId, 'Material');
+    $wordpress_post_id = $item->getExportToWordpress();
+    $wpPostId = $this->CW->insertPost($this->_environment->getSessionID(),$post, $wpUser, $wordpressId, 'Material', $wordpress_post_id);
     if ( !is_soap_fault($wpPostId) ) {
        $item->setExportToWordpress($wpPostId);
        $item->save();

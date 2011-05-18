@@ -172,6 +172,7 @@
     <part name="user" type="soap-enc:Array"/>
     <part name="blogId" type="xsd:int"/>
     <part name="category" type="xsd:string"/>
+    <part name="postId" type="xsd:string"/>
   </message>
   <message name="insertPostOut">
     <part name="return" type="xsd:int"/>

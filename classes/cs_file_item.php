@@ -449,6 +449,13 @@ class cs_file_item extends cs_item {
       $saved = $this->_save($manager);
       return $saved;
    }
+   
+   function update() {
+      $saved = false;
+      $manager = $this->_environment->getFileManager();
+      $saved = $manager->updateItem($this);
+      return $saved;
+   }
 
    function saveHasHTML() {
       $saved = false;
@@ -678,6 +685,13 @@ class cs_file_item extends cs_item {
 
    function getTempUploadFromEditorSessionID(){
       return $this->_getValue('temp_upload_session_id');
+   }
+   
+   function setWordpressPostId($value) {
+      $this->_setExtra('WORDPRESS_POST_ID', (string)$value);
+   }
+   function getWordpressPostId() {
+      return (string) $this->_getExtra('WORDPRESS_POST_ID');
    }
 }
 ?>

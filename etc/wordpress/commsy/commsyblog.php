@@ -292,7 +292,7 @@ class commsy_blog {
    * @param string $category Data to insert
    * @return int Id of Post or 0 on error
    */
-  public function insertPost($session_id,$post, $user, $blogId, $category) {
+  public function insertPost($session_id,$post, $user, $blogId, $category, $postId) {
     if ( $this->_isSessionValid($session_id)
          and $this->_isUserAllowed($session_id,CS_ROLE_USER,$blogId)
        ) {
@@ -305,15 +305,18 @@ class commsy_blog {
           $catId = wp_create_category( $category );
         }
         $post['post_category'] = array($catId);
-        #$addUserToBlog = (false == get_user_by('login', $user['login']));
         $post['post_author'] = cs_update_user($user);
 
-#        if ( $addUserToBlog ) {
         if ( !$this->_isUserOfBlog($user['login'],$blogId) ) {
            $success = add_user_to_blog($blogId, $post['post_author'], get_option('default_role'));
         }
 
-        $postId = wp_insert_post($post);
+        if($postId != ''){
+        	  $post['ID'] = $postId;
+           wp_update_post($post);
+        } else {
+           $postId = wp_insert_post($post);
+        }
         restore_current_blog();
       } catch (Exception $e) {
         throw new SoapFault('insertpost', 'Insert Post failed: '.$e->getMessage());

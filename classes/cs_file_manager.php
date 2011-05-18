@@ -265,6 +265,17 @@ class cs_file_manager extends cs_manager {
        return $saved;
     }
 
+    function updateItem($file_item){
+       $query = 'UPDATE '.$this->addDatabasePrefix('files').' SET '.
+                'extras="'.encode(AS_DB,serialize($file_item->getExtraInformation())).'"'.
+                ' WHERE files_id="'.encode(AS_DB,$file_item->getFileID()).'"';
+         $result = $this->_db_connector->performQuery($query);
+         if ( !isset($result) or !$result ) {
+            include_once('functions/error_functions.php');
+            trigger_error('Problems updating file from query: "'.$query.'"',E_USER_WARNING);
+         }
+    }
+    
    function _saveOnDisk($file_item) {
       $success = false;
       $tempname = $file_item->_getTempName();
