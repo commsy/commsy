@@ -130,7 +130,7 @@ var $_buzzword_list = NULL;
       $html .= '<input type="submit" id="portlet_buzzword_new_button" value="'.$this->_translator->getMessage('BUZZWORDS_NEW_BUTTON').'" />';
       $html .= '<br/><br/>'.LF;
 
-      $html .= '<div id="portlet_buzzword_combine">';
+      #$html .= '<div id="portlet_buzzword_combine">';
       $html .= '<select id="portal_buzzword_combine_first" size="1" tabindex="15">'.LF;
       $buzzword = $buzzword_list->getFirst();
       while($buzzword){
@@ -163,7 +163,7 @@ var $_buzzword_list = NULL;
          $html .= '</div>';
          $buzzword = $buzzword_list->getNext();
       }
-      $html .= '</div>';
+      #$html .= '</div>';
       $html .= '<script type="text/javascript">'.LF;
       $html .= '<!--'.LF;
       $html .= 'var buzzword_cid = "'.$this->_environment->getCurrentContextID().'";'.LF;

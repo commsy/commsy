@@ -152,7 +152,7 @@ if(isset($_GET['do'])){
 	   // remove unset portlets
       foreach($home_config_array as $key_top => $column){
          foreach($column as $key => $column_entry){
-            if(($column_entry != 'null') && ($column_entry != 'empty') && ($column_entry != null)){
+            if(($column_entry != 'null') && ($column_entry != null)){ // && ($column_entry != 'empty')
                if(!in_array($column_entry, $column_array)){
                   unset($home_config_array[$key_top][$key]);
                }
@@ -195,7 +195,7 @@ if(isset($_GET['do'])){
          }
       } elseif($column_count > sizeof($home_config_array)){
       	// 2 -> 3
-         $home_config_array[] = array();
+         $home_config_array[] = array('empty');
       }
 
       foreach($add_to_home_config_array as $add_to_home_portlet){
@@ -209,8 +209,12 @@ if(isset($_GET['do'])){
             }
          $home_config_array[$smallest][] = $add_to_home_portlet;
       }
+	   foreach($home_config_array as $key_top => $column){
+         if(empty($home_config_array[$key_top])){
+         	$home_config_array[$key_top] = array('empty');
+         }
+      }
       $privateroom_item->setHomeConfig($home_config_array);
-
       $privateroom_item->setPortletColumnCount($_GET['column_count']);
       $privateroom_item->save();
 	}

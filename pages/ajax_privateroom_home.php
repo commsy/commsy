@@ -37,10 +37,13 @@ if(isset($_GET['do'])){
 	   // remove null-entries from jQuery
       foreach($column_array as $key_top => $column){
          foreach($column as $key => $column_entry){
-            if(($column_entry != 'null') && ($column_entry != 'empty') && ($column_entry != null)){
+            if(($column_entry != 'null') && ($column_entry != null)){ //&& ($column_entry != 'empty')
             } else {
             	unset($column_array[$key_top][$key]);
             }
+         }
+         if(empty($column_array[$key_top])){
+         	$column_array[$key_top] = array('empty');
          }
       }
 		

@@ -110,9 +110,9 @@ class cs_privateroom_home_portlet_view extends cs_view{
 
       $privateroom_item = $this->_environment->getCurrentContextItem();
       $home_config = $privateroom_item->getHomeConfig();
-
+      
       if(!empty($home_config)){
-	      for ($i=0; $i <= sizeof($home_config); $i++){
+	      for ($i=0; $i < sizeof($home_config); $i++){
 	      	if (isset($home_config[$i])){
 	      	   $temp_column_config = $home_config[$i];
 	      	   foreach($temp_column_config as $portlet_class){
