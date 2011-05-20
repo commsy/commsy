@@ -2126,6 +2126,22 @@ class cs_context_item extends cs_item {
     return $this->_getExtra('SERVICEEMAIL');
   }
 
+  /**
+   *  set external service link
+   */
+
+  function setServiceLinkExternal($email) {
+    $this->_addExtra('SERVICELINKEXTERNAL',(string)$email);
+  }
+
+  /**
+   *  get external service link
+   */
+
+  function getServiceLinkExternal() {
+    return $this->_getExtra('SERVICELINKEXTERNAL');
+  }
+
   /** is service link active ?
    * can be switched at room configuration
    *
@@ -4243,9 +4259,9 @@ class cs_context_item extends cs_item {
         $retour = true;
       }
     } else {
-    	if($this->_environment->inPrivateRoom()){
+       if($this->_environment->inPrivateRoom()){
          $retour = true;
-    	}
+       }
     }
     return $retour;
   }

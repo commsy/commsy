@@ -3404,5 +3404,70 @@ class misc_text_converter {
 
       return $retour;
    }
+
+   public function convertPercent ( $text, $empty = true ) {
+      if ( strstr($text,'%') ) {
+         $current_user = $this->_environment->getCurrentUserItem();
+         if ( isset($current_user) ) {
+            $user_id = $current_user->getUserID();
+            if ( !empty($user_id) ) {
+               $text = str_replace('%USERID%',$user_id,$text);
+            } elseif ($empty) {
+               $text = str_replace('%USERID%','',$text);
+            }
+            $firstname = $current_user->getFirstName();
+            if ( !empty($firstname) ) {
+               $text = str_replace('%FIRSTNAME%',$firstname,$text);
+            } elseif ($empty) {
+               $text = str_replace('%FIRSTNAME%','',$text);
+            }
+            $lastname = $current_user->getLastName();
+            if ( !empty($lastname) ) {
+               $text = str_replace('%LASTNAME%',$lastname,$text);
+            } elseif ($empty) {
+               $text = str_replace('%LASTNAME%','',$text);
+            }
+            $email = $current_user->getEMail();
+            if ( !empty($email) ) {
+               $text = str_replace('%EMAIL%',$email,$text);
+            } elseif ($empty) {
+               $text = str_replace('%EMAIL%','',$text);
+            }
+            unset($current_user);
+         } elseif ( $empty ) {
+            $text = str_replace('%USERID%','',$text);
+            $text = str_replace('%FIRSTNAME%','',$text);
+            $text = str_replace('%LASTNAME%','',$text);
+            $text = str_replace('%EMAIL%','',$text);
+         }
+
+         $current_context = $this->_environment->getCurrentContextItem();
+         if ( isset($current_context) ) {
+            $title = $current_context->getTitle();
+            if ( !empty($title) ) {
+               $text = str_replace('%TITLE%',$title,$text);
+            } elseif ($empty) {
+               $text = str_replace('%TITLE%','',$text);
+            }
+            unset($current_context);
+         } elseif ( $empty ) {
+            $text = str_replace('%TITLE%','',$text);
+         }
+
+         $current_portal = $this->_environment->getCurrentPortalItem();
+         if ( isset($current_portal) ) {
+            $title = $current_portal->getTitle();
+            if ( !empty($title) ) {
+               $text = str_replace('%PORTAL%',$title,$text);
+            } elseif ($empty) {
+               $text = str_replace('%PORTAL%','',$text);
+            }
+            unset($current_portal);
+         } elseif ( $empty ) {
+            $text = str_replace('%PORTAL%','',$text);
+         }
+      }
+      return $text;
+   }
 }
 ?>

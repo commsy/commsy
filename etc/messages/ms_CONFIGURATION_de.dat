@@ -268,6 +268,8 @@ $message["CONFIGURATION_SERVICE_EMAIL_RESET"]["de"] = "Zurücksetzen?";
 $message["CONFIGURATION_SERVICE_EMAIL_ROOM"]["de"] = "raumweit";
 $message["CONFIGURATION_SERVICE_EMAIL_SERVER"]["de"] = "serverweit";
 $message["CONFIGURATION_SERVICE_LINK"]["de"] = "Supportanfragen";
+$message["CONFIGURATION_SERVICE_LINK_EXTERNAL"]["de"] = "Eigenes Formular";
+$message["CONFIGURATION_SERVICE_LINK_EXTERNAL_DESC"]["de"] = "Hier können Sie einen Link auf ein eigenes Support-Formular eintragen. Dabei stehen folgende Variablen zur Verfügung:<ul><li>%FIRSTNAME% = Vorname</li><li>%LASTNAME% = Nachname</li><li>%EMAIL% = E-Mail-Adresse</li><li>%USERID% = Kennung</li><li>%PORTAL% = Name des Portals</li><li>%TITLE% = Name des aktuellen Kontext (z.B. des Raumes)</li></ul>";
 $message["CONFIGURATION_SERVICE_TITLE"]["de"] = "Supportanfragen";
 $message["CONFIGURATION_SHOW_ANNOUNCEMENT"]["de"] = "als Bereich anzeigen (Standard)";
 $message["CONFIGURATION_SHOW_ANNOUNCEMENT_NOT"]["de"] = "keine Ankündigungen anzeigen";

@@ -272,6 +272,8 @@ $message["CONFIGURATION_SERVICE_EMAIL_RESET"]["en"] = "Reset?";
 $message["CONFIGURATION_SERVICE_EMAIL_ROOM"]["en"] = "throughout the workspace";
 $message["CONFIGURATION_SERVICE_EMAIL_SERVER"]["en"] = "throughout the server";
 $message["CONFIGURATION_SERVICE_LINK"]["en"] = "Configure user support";
+$message["CONFIGURATION_SERVICE_LINK_EXTERNAL"]["en"] = "Own Formular";
+$message["CONFIGURATION_SERVICE_LINK_EXTERNAL_DESC"]["en"] = "You can enter a link to an own support formular here. in this link you can use the following variables:<ul><li>%FIRSTNAME% = firstname</li><li>%LASTNAME% = lastname</li><li>%EMAIL% = email address</li><li>%USERID% = account</li><li>%PORTAL% = name of the portal</li><li>%TITLE% = name of the current workspace</li></ul>";
 $message["CONFIGURATION_SERVICE_TITLE"]["en"] = "User support";
 $message["CONFIGURATION_SHOW_ANNOUNCEMENT"]["en"] = "display announcements (default)";
 $message["CONFIGURATION_SHOW_ANNOUNCEMENT_NOT"]["en"] = "do not display announcements";

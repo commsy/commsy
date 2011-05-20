@@ -109,10 +109,12 @@ else {
 
          $item2 = $item;
          $temp_service_mail = '';
+         $temp_service_link_external = '';
          while ( isset($item2) and !$item2->isServer() and empty($temp_service_mail) ) {
             $item2 = $item2->getContextItem();
             if ( isset($item2) ) {
                $temp_service_mail = $item2->getServiceEmail();
+               $temp_service_link_external = $item2->getServiceLinkExternal();
             }
          }
 
@@ -142,6 +144,20 @@ else {
                   $item->setServiceEmail($_POST['serviceemail']);
             } else {
                   $item->setServiceEmail('');
+            }
+
+            // external link to support formular
+            if ( !empty($_POST['service_link_external'])
+                 and ( !isset($_POST['reset'])
+                       or !$_POST['reset']
+                     )
+                 and ( empty($temp_service_link_external)
+                       or $temp_service_link_external != $_POST['service_link_external']
+                     )
+               ) {
+               $item->setServiceLinkExternal($_POST['service_link_external']);
+            } else {
+               $item->setServiceLinkExternal('');
             }
          }
 
