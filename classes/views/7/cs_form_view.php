@@ -689,10 +689,26 @@ class cs_form_view extends cs_view {
       }
 
       // do not use new upload if browsing with https
-      if(   ($session->issetValue('https') && $session->getValue('https') == '1') ||
-            (isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off')) {
+      $config_uload_with_ssl = $this->_environment->getConfiguration('c_enable_flash_upload_with_ssl');
+      if ( ( $session->issetValue('https')
+             and $session->getValue('https') == '1'
+             and ( !isset($config_uload_with_ssl)
+                   or !$config_uload_with_ssl
+                 )
+           )
+           or
+           ( isset($_SERVER['HTTPS'])
+             and !empty($_SERVER['HTTPS'])
+             and $_SERVER['HTTPS'] != 'off')
+             and ( !isset($config_uload_with_ssl)
+                   or !$config_uload_with_ssl
+                 )
+           ) {
+#      if(   ($session->issetValue('https') && $session->getValue('https') == '1') ||
+#            (isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off')) {
          $use_new_upload = false;
       }
+      unset($config_uload_with_ssl);
 
       if ($use_new_upload){
          // this div holds the list of files, which upload is finished(+checkbox)
@@ -1903,7 +1919,13 @@ class cs_form_view extends cs_view {
 
             /** TODO: remove this if not longer used ***********************/
             // add info text if browsing with https
-            if($form_element['type'] == 'file') {
+            $config_uload_with_ssl = $this->_environment->getConfiguration('c_enable_flash_upload_with_ssl');
+            if ( $form_element['type'] == 'file'
+                 and ( !isset($config_uload_with_ssl)
+                       or !$config_uload_with_ssl
+                     )
+               ) {
+#            if($form_element['type'] == 'file') {
                $session = $this->_environment->getSessionItem();
                if(   ($session->issetValue('https') && $session->getValue('https') == '1') ||
                      (isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off')) {

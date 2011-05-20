@@ -82,4 +82,7 @@ $c_enable_htmltextarea_security = false;
 
 // use scorm in following room id's
 //$c_scorm = array();
+
+// use flash file upload with ssl
+//$c_enable_flash_upload_with_ssl = true;
 ?>
