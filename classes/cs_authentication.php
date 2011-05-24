@@ -971,6 +971,8 @@ class cs_authentication {
 				  	  $section_item = $section_manager->getItem($item_item->getItemID());
 				  	  $material_id = $section_item->getLinkedItemID();
                       $value = $this->_isExternalUserAllowedToSee($uid,$material_id);
+				  }elseif ($item_type == 'material'){
+                  $value = $this->_isExternalUserAllowedToSee($uid,$item_item->getItemID());
 				  }elseif ($item_type == 'discarticle'){
 				  	  $discarticle_manager = $this->_environment->getDiscussionArticleManager();
 				  	  $discarticle_item = $discarticle_manager->getItem($item_item->getItemID());
