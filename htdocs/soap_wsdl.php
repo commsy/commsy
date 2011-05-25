@@ -312,6 +312,14 @@
 <message name='getAGBFromRoomOUT'>
   <part name='result' type='xsd:string'/>
 </message>
+<message name='getStatisticsIN'>
+  <part name='session_id' type='xsd:string'/>
+  <part name='start_date' type='xsd:string'/>
+  <part name='end_date' type='xsd:string'/>
+</message>
+<message name='getStatisticsOUT'>
+  <part name='result' type='xsd:string'/>
+</message>
 
 <portType name='CommSyPortType'>
   <operation name='getGuestSession'>
@@ -477,6 +485,10 @@
   <operation name='getAGBFromRoom'>
     <input message='tns:getAGBFromRoomIN'/>
     <output message='tns:getAGBFromRoomOUT'/>
+  </operation>
+  <operation name='getStatistics'>
+    <input message='tns:getStatisticsIN'/>
+    <output message='tns:getStatisticsOUT'/>
   </operation>
 </portType>
 
@@ -926,6 +938,17 @@
   </operation>
   <operation name='getAGBFromRoom'>
     <soap:operation soapAction='urn:xmethodsCommSy#getAGBFromRoom'/>
+    <input>
+      <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+    </input>
+    <output>
+      <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+    </output>
+  </operation>
+  <operation name='getStatistics'>
+    <soap:operation soapAction='urn:xmethodsCommSy#getStatistics'/>
     <input>
       <soap:body use='encoded' namespace='urn:xmethodsCommSy'
         encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>

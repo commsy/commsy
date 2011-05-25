@@ -1043,5 +1043,10 @@ class cs_server_item extends cs_guide_item {
       #}
       return $retour;
    }
+
+   public function getStatistics ($date_start,$date_end) {
+      $manager = $this->_environment->getServerManager();
+      return $manager->getStatistics($this,$date_start,$date_end);
+   }
 }
 ?>
