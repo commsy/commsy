@@ -178,10 +178,10 @@ class cs_wordpress_manager extends cs_manager {
     // Dateien
     $file_links = '';
     $file_list = $item->getFileList();
+    $file_link_array_images = array();
     if(!$file_list->isEmpty()) {
       $file_array = $file_list->to_array();
       $file_link_array = array();
-      $file_link_array_images = array();
       foreach ($file_array as $file) {
 //        array($file->getUrl(), $file->getMime());
 //        $rel_path = '/wp/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/wp-content/uploads/commsy/'.$current_item_id.'/';
