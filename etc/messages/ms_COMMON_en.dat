@@ -700,7 +700,7 @@ $message["COMMON_TEXT_INCLUDING_MEDIA_TEXT"]["en"] = "<ol style=&quot;font-weigh
 </ul><br/><span style=&quot;font-weight:bold&quot;>Videos:</span>
 <ul style=&quot;font-weight:normal; padding-left:15px; margin:0px;&quot;>
     <li>(:wmplayer FILEINAME play=true width=ZAHL:) for wma, wmv, avi, ...</li>
-    <li>(:quicktime FILEINAME play=true width=ZAHL:) for mov, wav, mpeg, ...</li>
+    <li>(:quicktime FILEINAME play=true width=ZAHL:) for mov, wav, mpeg, mp4...</li>
     <li>(:flash FILEINAME play=true width=ZAHL:) for swf, flv</li>
     <li>(:youtube FILM-ID:) oder (:wmplayer FILM-ID:) for youtube videos</li>
     <li>(:googlevideo FILM-ID:) for google videos</li>
