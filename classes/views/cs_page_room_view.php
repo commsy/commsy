@@ -1946,7 +1946,7 @@ class cs_page_room_view extends cs_page_view {
             if ( !empty($service_link_ext) ) {
                if ( strstr($service_link_ext,'%') ) {
                   $text_convert = $this->_environment->getTextConverter();
-                  $service_link_ext = $text_convert->convertPercent($service_link_ext);
+                  $service_link_ext = $text_convert->convertPercent($service_link_ext,false,true);
                }
                $email_to_service = '<a href="'.$service_link_ext.'" title="'.$this->_translator->getMessage('COMMON_MAIL_TO_SERVICE2_LINK_TITLE').'" target="_blank">'.$this->_translator->getMessage('COMMON_MAIL_TO_SERVICE2').'</a>';
             } else {

@@ -2708,17 +2708,17 @@ class misc_text_converter {
                    $found_geogebra = true;
                 }
                 if($found_geogebra){
-             	    $retour .= $file_forum_contents_array[$index];
+                    $retour .= $file_forum_contents_array[$index];
                 }
                 if(stripos($file_forum_contents_array[$index], '</applet>') !== false){
-             	    $found_geogebra = false;
-             	 }
-          	 }
+                    $found_geogebra = false;
+                 }
+              }
           }
       }
       return $retour;
    }
-   
+
    /**
     * Displays png, jpg and gif images in the description area of the materials
     * Images have to be attached to the material in order to be displayed!
@@ -3435,29 +3435,41 @@ class misc_text_converter {
       return $retour;
    }
 
-   public function convertPercent ( $text, $empty = true ) {
+   public function convertPercent ( $text, $empty = true, $urlencode = false ) {
       if ( strstr($text,'%') ) {
          $current_user = $this->_environment->getCurrentUserItem();
          if ( isset($current_user) ) {
             $user_id = $current_user->getUserID();
+            if ( $urlencode ) {
+               $user_id = rawurlencode($user_id);
+            }
             if ( !empty($user_id) ) {
                $text = str_replace('%USERID%',$user_id,$text);
             } elseif ($empty) {
                $text = str_replace('%USERID%','',$text);
             }
             $firstname = $current_user->getFirstName();
+            if ( $urlencode ) {
+               $firstname = rawurlencode($firstname);
+            }
             if ( !empty($firstname) ) {
                $text = str_replace('%FIRSTNAME%',$firstname,$text);
             } elseif ($empty) {
                $text = str_replace('%FIRSTNAME%','',$text);
             }
             $lastname = $current_user->getLastName();
+            if ( $urlencode ) {
+               $lastname = rawurlencode($lastname);
+            }
             if ( !empty($lastname) ) {
                $text = str_replace('%LASTNAME%',$lastname,$text);
             } elseif ($empty) {
                $text = str_replace('%LASTNAME%','',$text);
             }
             $email = $current_user->getEMail();
+            if ( $urlencode ) {
+               $email = rawurlencode($email);
+            }
             if ( !empty($email) ) {
                $text = str_replace('%EMAIL%',$email,$text);
             } elseif ($empty) {
@@ -3474,6 +3486,9 @@ class misc_text_converter {
          $current_context = $this->_environment->getCurrentContextItem();
          if ( isset($current_context) ) {
             $title = $current_context->getTitle();
+            if ( $urlencode ) {
+               $title = rawurlencode($title);
+            }
             if ( !empty($title) ) {
                $text = str_replace('%TITLE%',$title,$text);
             } elseif ($empty) {
@@ -3487,6 +3502,9 @@ class misc_text_converter {
          $current_portal = $this->_environment->getCurrentPortalItem();
          if ( isset($current_portal) ) {
             $title = $current_portal->getTitle();
+            if ( $urlencode ) {
+               $title = rawurlencode($title);
+            }
             if ( !empty($title) ) {
                $text = str_replace('%PORTAL%',$title,$text);
             } elseif ($empty) {
