@@ -985,7 +985,8 @@ class misc_text_converter {
       $reg_exp_array['[slideshare']   = '~\[slideshare (.*?)\]~eu';
       $reg_exp_array['(:flickr']      = '~\\(:flickr (.*?):\\)~eu';
       $reg_exp_array['(:scorm']       = '~\\(:scorm (.*?):\\)~eu';
-      $reg_exp_array['(:mdo']        = '~\\(:mdo (.*?):\\)~eu';
+      $reg_exp_array['(:mdo']         = '~\\(:mdo (.*?):\\)~eu';
+      $reg_exp_array['(:geogebra']    = '~\\(:geogebra (.*?):\\)~eu';
 
       // Test auf erforderliche Software; Windows-Server?
       //$reg_exp_array['(:pdf']       = '/\\(:pdf (.*?)(\\s.*?)?\\s*?:\\)/e';
@@ -1120,6 +1121,9 @@ class misc_text_converter {
                         break;
                      } elseif ( $key == '(:mdo' and mb_stristr($value_new,'(:mdo') ) {
                         $value_new = $this->_formatMDO($value_new,$args_array);
+                        break;
+                     } elseif ( $key == '(:geogebra' and mb_stristr($value_new,'(:geogebra') ) {
+                        $value_new = $this->_formatGeogebra($value_new,$args_array,$file_array);
                      }
                   }
 
@@ -2689,6 +2693,32 @@ class misc_text_converter {
      return $retour;
    }
 
+   private function _formatGeogebra ($text, $array, $file_name_array){
+      $retour = '';
+      if ( !empty($array[1]) ) {
+         if ( !empty($file_name_array[$array[1]]) ) {
+             $temp_file = $file_name_array[$array[1]];
+             $file_manager = $this->_environment->getFileManager();
+             $file = $file_manager->getItem($temp_file->getFileID());
+             $file_forum_contents = file_get_contents($file->getDiskFileName());
+             $file_forum_contents_array = explode("\n", $file_forum_contents);
+             $found_geogebra = false;
+             for ($index = 0; $index < sizeof($file_forum_contents_array); $index++) {
+                if(stripos($file_forum_contents_array[$index], 'geogebra.GeoGebraApplet') !== false){
+                   $found_geogebra = true;
+                }
+                if($found_geogebra){
+             	    $retour .= $file_forum_contents_array[$index];
+                }
+                if(stripos($file_forum_contents_array[$index], '</applet>') !== false){
+             	    $found_geogebra = false;
+             	 }
+          	 }
+          }
+      }
+      return $retour;
+   }
+   
    /**
     * Displays png, jpg and gif images in the description area of the materials
     * Images have to be attached to the material in order to be displayed!
