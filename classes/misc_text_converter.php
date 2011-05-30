@@ -2697,23 +2697,43 @@ class misc_text_converter {
       $retour = '';
       if ( !empty($array[1]) ) {
          if ( !empty($file_name_array[$array[1]]) ) {
-             $temp_file = $file_name_array[$array[1]];
-             $file_manager = $this->_environment->getFileManager();
-             $file = $file_manager->getItem($temp_file->getFileID());
-             $file_forum_contents = file_get_contents($file->getDiskFileName());
-             $file_forum_contents_array = explode("\n", $file_forum_contents);
-             $found_geogebra = false;
-             for ($index = 0; $index < sizeof($file_forum_contents_array); $index++) {
-                if(stripos($file_forum_contents_array[$index], 'geogebra.GeoGebraApplet') !== false){
-                   $found_geogebra = true;
-                }
-                if($found_geogebra){
-                    $retour .= $file_forum_contents_array[$index];
-                }
-                if(stripos($file_forum_contents_array[$index], '</applet>') !== false){
-                    $found_geogebra = false;
-                 }
-              }
+         	 if(stristr($array[1], '.html') or stristr($array[1], '.htm')){
+	         	 // geogebra attached as HTML-File
+	             $temp_file = $file_name_array[$array[1]];
+	             $file_manager = $this->_environment->getFileManager();
+	             $file = $file_manager->getItem($temp_file->getFileID());
+	             $file_contents = file_get_contents($file->getDiskFileName());
+	             
+	             $html = new DOMDocument();
+	    			 $html->loadHTML($file_contents);
+	    			 $applet_list = $html->getElementsByTagName('applet');
+	    			 #pr('-----------------------------');
+	    			 for ($i = 0; $i < $applet_list->length; $i++) {
+	    			 	 $temp_applet = $applet_list->item($i);
+	    			 	 $temp_applet_attributes = $temp_applet->attributes;
+	    			 	 $found_geogebra = false;
+	    			 	 for ($j = 0; $j < $temp_applet_attributes->length; $j++) {
+	    			 	    $temp_attribute = $temp_applet_attributes->item($j);
+	    			 	    #pr($temp_attribute->nodeName . ' - ' . $temp_attribute->nodeValue);
+	    			 	    if(isset($temp_attribute->nodeName)){
+	    			 	       if($temp_attribute->nodeName == 'name' and $temp_attribute->nodeValue == 'ggbApplet'){
+	    			 	          $found_geogebra = true;
+	    			 	       }
+	    			 	       if($temp_attribute->nodeName == 'codebase' and $temp_attribute->nodeValue == './'){
+	    			 	          #$temp_attribute->nodeName = 'http://www.geogebra.org/webstart/3.2/unsigned/';
+	    			 	          $temp_applet->setAttribute('codebase', 'http://www.geogebra.org/webstart/3.2/unsigned/');
+	    			 	       }
+	    			 	    }
+	    			 	    #pr($temp_attribute->nodeName . ' - ' . $temp_attribute->nodeValue);
+	    			 	 }
+	    			    if($found_geogebra){
+	    			       $retour .= $html->saveXML($temp_applet);
+	    			    }
+	    			 }
+         	 } elseif (stristr($array[1], '.ggb')) {
+         	    // geogebra attached as ggb-File
+         	    pr('.ggb');
+         	 }
           }
       }
       return $retour;
