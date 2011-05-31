@@ -2707,24 +2707,20 @@ class misc_text_converter {
 	             $html = new DOMDocument();
 	    			 $html->loadHTML($file_contents);
 	    			 $applet_list = $html->getElementsByTagName('applet');
-	    			 #pr('-----------------------------');
 	    			 for ($i = 0; $i < $applet_list->length; $i++) {
 	    			 	 $temp_applet = $applet_list->item($i);
 	    			 	 $temp_applet_attributes = $temp_applet->attributes;
 	    			 	 $found_geogebra = false;
 	    			 	 for ($j = 0; $j < $temp_applet_attributes->length; $j++) {
 	    			 	    $temp_attribute = $temp_applet_attributes->item($j);
-	    			 	    #pr($temp_attribute->nodeName . ' - ' . $temp_attribute->nodeValue);
 	    			 	    if(isset($temp_attribute->nodeName)){
 	    			 	       if($temp_attribute->nodeName == 'name' and $temp_attribute->nodeValue == 'ggbApplet'){
 	    			 	          $found_geogebra = true;
 	    			 	       }
 	    			 	       if($temp_attribute->nodeName == 'codebase' and $temp_attribute->nodeValue == './'){
-	    			 	          #$temp_attribute->nodeName = 'http://www.geogebra.org/webstart/3.2/unsigned/';
 	    			 	          $temp_applet->setAttribute('codebase', 'http://www.geogebra.org/webstart/3.2/unsigned/');
 	    			 	       }
 	    			 	    }
-	    			 	    #pr($temp_attribute->nodeName . ' - ' . $temp_attribute->nodeValue);
 	    			 	 }
 	    			    if($found_geogebra){
 	    			       $retour .= $html->saveXML($temp_applet);
@@ -2732,7 +2728,33 @@ class misc_text_converter {
 	    			 }
          	 } elseif (stristr($array[1], '.ggb')) {
          	    // geogebra attached as ggb-File
-         	    pr('.ggb');
+         	    $temp_file = $file_name_array[$array[1]];
+	             $file_manager = $this->_environment->getFileManager();
+	             $file = $file_manager->getItem($temp_file->getFileID());
+	             $url = $file->getUrl();
+	             $file_contents = file_get_contents($file->getDiskFileName());
+	             
+         	    $retour .= '<applet name="ggbApplet" code="geogebra.GeoGebraApplet" archive="geogebra.jar"';
+					 $retour .= '	codebase="http://www.geogebra.org/webstart/3.2/unsigned/"';
+					 $retour .= '	width="450" height="400"mayscript="true">';
+					 $retour .= '	<param name="filename" value=""/>';
+					 $retour .= '	<param name="java_arguments" value="-Xmx512m -Djnlp.packEnabled=true" />';
+					 $retour .= '	<param name="cache_archive" value="geogebra.jar, geogebra_main.jar, geogebra_gui.jar, geogebra_cas.jar, geogebra_export.jar, geogebra_properties.jar" />';
+					 $retour .= '	<param name="cache_version" value="3.2.46.0, 3.2.46.0, 3.2.46.0, 3.2.46.0, 3.2.46.0, 3.2.46.0" />';
+					 $retour .= '	<param name="framePossible" value="false" />';
+					 $retour .= '	<param name="showResetIcon" value="false" />';
+					 $retour .= '	<param name="showAnimationButton" value="true" />';
+					 $retour .= '	<param name="enableRightClick" value="false" />';
+					 $retour .= '	<param name="errorDialogsActive" value="true" />';
+					 $retour .= '	<param name="enableLabelDrags" value="false" />';
+					 $retour .= '	<param name="showMenuBar" value="false" />';
+					 $retour .= '	<param name="showToolBar" value="false" />';
+					 $retour .= '	<param name="showToolBarHelp" value="false" />';
+					 $retour .= '	<param name="showAlgebraInput" value="false" />';
+					 $retour .= '	<param name="allowRescaling" value="true" />';
+					 $retour .= '   Sorry, the GeoGebra Applet could not be started. Please make sure that Java 1.4.2 (or later) is installed and active in your browser (<a href="http://java.sun.com/getjava">Click here to install Java now</a>)';
+					 $retour .= '</applet>';
+         	    
          	 }
           }
       }
