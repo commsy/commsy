@@ -2733,11 +2733,12 @@ class misc_text_converter {
 	             $file = $file_manager->getItem($temp_file->getFileID());
 	             $url = $file->getUrl();
 	             $file_contents = file_get_contents($file->getDiskFileName());
-	             
+	             $gbb_base_64 = base64_encode($file_contents);
+
          	    $retour .= '<applet name="ggbApplet" code="geogebra.GeoGebraApplet" archive="geogebra.jar"';
 					 $retour .= '	codebase="http://www.geogebra.org/webstart/3.2/unsigned/"';
-					 $retour .= '	width="450" height="400"mayscript="true">';
-					 $retour .= '	<param name="filename" value=""/>';
+					 $retour .= '	width="640" height="400"mayscript="true">';
+					 $retour .= '	<param name="ggbBase64" value="'.$gbb_base_64.'">';
 					 $retour .= '	<param name="java_arguments" value="-Xmx512m -Djnlp.packEnabled=true" />';
 					 $retour .= '	<param name="cache_archive" value="geogebra.jar, geogebra_main.jar, geogebra_gui.jar, geogebra_cas.jar, geogebra_export.jar, geogebra_properties.jar" />';
 					 $retour .= '	<param name="cache_version" value="3.2.46.0, 3.2.46.0, 3.2.46.0, 3.2.46.0, 3.2.46.0, 3.2.46.0" />';
