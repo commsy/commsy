@@ -174,7 +174,7 @@ class cs_home_member_form extends cs_rubric_form {
 		      }
 	      }
 	      if($auth_source_item->getPasswordSecureBigchar() == 1){
-		      if(preg_match('~^[A-Z]+~u', $this->_form_post['password'])) {
+		      if(!preg_match('~^[A-Z]+~u', $this->_form_post['password'])) {
 		      	$this->_error_array[] = $this->_translator->getMessageInLang($this->_language,'USER_NEW_PASSWORD_BIGCHAR_ERROR');
 		      }
 	      }
