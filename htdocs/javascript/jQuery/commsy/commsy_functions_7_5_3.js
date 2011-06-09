@@ -12,6 +12,17 @@ function getQueryParams(qs) {
     return params;
 }
 
+function getURLParam(name) {
+  name = name.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
+  var regexS = "[\\?&]"+name+"=([^&#]*)";
+  var regex = new RegExp( regexS );
+  var results = regex.exec( window.location.href );
+  if( results == null )
+    return "";
+  else
+    return results[1];
+}
+
 jQuery(document).ready(function() {
   		jQuery(".dragable_item").draggable({
   		   cursor:"move",
@@ -3899,6 +3910,66 @@ jQuery(document).ready(function() {
 });
 
 /*
+ * assessment vote function
+ */
+jQuery(document).ready(function() {
+	var stars = new Object;
+	var stars = jQuery('span[id^=assessment_vote_star_] img');
+	
+	// register mouseover
+	stars.each(function() {
+		jQuery(this).mouseover(function() {
+			// get id of parent span
+			var regexp = new RegExp('assessment_vote_star_(.*)');
+			var matches = regexp.exec(jQuery(this).parent().attr('id'));
+			
+			// set all stars up to the overed one to full
+			for(var i = 0; i <= matches[1]; i++) {
+				jQuery('span[id=assessment_vote_star_' + i + '] img').attr('src', 'images/commsyicons/32x32/star_filled.png');
+			}
+		});
+	});
+	
+	// register mouseout
+	stars.each(function() {
+		jQuery(this).mouseout(function() {
+			// set all stars to unfilled
+			stars.each(function() {
+				jQuery(this).attr('src', 'images/commsyicons/32x32/star_unfilled.png');
+			});
+		});
+	});
+	
+	// register click
+	stars.each(function() {
+		jQuery(this).click(function() {
+			// perform ajax call to register voting
+			var json_data = new Object();
+		    json_data['do'] = 'vote';
+		    json_data['item_id'] = getURLParam('iid');
+		    
+		    // get value of vote
+		    var regexp = new RegExp('assessment_vote_star_(.*)');
+		    var matches = regexp.exec(jQuery(this).parent().attr('id'));
+		    json_data['vote'] = parseInt(matches[1]) + 1;
+		    
+		    jQuery.ajax({
+			   url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct=assessment&output=json',
+			   data: json_data,
+			   success: function(msg) {
+		    	    var resultJSON = eval('(' + msg + ')');
+	            	if (resultJSON === undefined) {
+	            	} else {
+	               		// page reload
+	               		location.reload();
+	            	}
+	           }
+			});
+		});
+	});
+});
+
+/*
  * this is the new uploadify error handler to provide multi-language support
  */
 function uploadify_onError(event, queueID, fileObj, errorObj) {
@@ -3915,7 +3986,6 @@ function uploadify_onError(event, queueID, fileObj, errorObj) {
 
 	return false;
 }
-
 
 /*
  * Room-wide search

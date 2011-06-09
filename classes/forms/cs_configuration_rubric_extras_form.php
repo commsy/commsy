@@ -179,6 +179,12 @@ class cs_configuration_rubric_extras_form extends cs_rubric_form {
         $this->_form->combine();
         $this->_form->addExplanation('groups',$this->_translator->getMessage('GROUPROOM_EXPLANATION_VALUE'));
      }
+	
+	// Bewertungsfunktion
+	$this->_form->addEmptyline();
+	$this->_form->addCheckbox('assessment',1,'',$this->_translator->getMessage('COMMON_ASSESSMENT_INDEX'),$this->_translator->getMessage('COMMON_ASSESSMENT_CONFIGURATION_CHOICE_VALUE'),'');
+	$this->_form->combine();
+	$this->_form->addExplanation('assessments',$this->_translator->getMessage('COMMON_ASSESSMENT_EXPLANATION_VALUE'));
 
       // buttons
       $this->_form->addButtonBar('option',$this->_translator->getMessage('PREFERENCES_SAVE_BUTTON'),'');
@@ -196,6 +202,7 @@ class cs_configuration_rubric_extras_form extends cs_rubric_form {
          $this->_values['discussion_status'] = $this->_item->getDiscussionStatus();
          $this->_values['todo_management'] = $this->_item->getTodoManagmentStatus();
          $this->_values['grouproom'] = $this->_item->isGrouproomActive();
+		 $this->_values['assessment'] = $this->_item->isAssessmentActive();
         } elseif (isset($this->_form_post)) {
          $this->_values = $this->_form_post;
          if ( !isset($this->_values['dates_status']) ) {

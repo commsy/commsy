@@ -313,6 +313,15 @@ if ($type != CS_MATERIAL_TYPE) {
                $annotation = $annotations->getNext();
             }
             $detail_view->setAnnotationList($annotations);
+			
+			$assessment_manager = $environment->getAssessmentManager();
+			//$assessment_manager->addAssessmentForItem($version_item, 2.0);
+			$assessment = $assessment_manager->getAssessmentForItemAverage($version_item);
+			$voted = $assessment_manager->hasCurrentUserAlreadyVoted($version_item);
+			unset($assessment_manager);
+			if($assessment !== '') {
+				$detail_view->setAssessment($assessment, $voted);
+			}
          }
 
          // highlight search words in detail views

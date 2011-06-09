@@ -2014,6 +2014,28 @@ class cs_context_item extends cs_item {
     $this->_setExtraConfig('LOGARCHIVE',-1);
   }
 
+  ##########################################
+  # assessment flag
+  ##########################################
+  
+  function setAssessmentActive() {
+  	$this->_addExtra('ASSESSMENT', (int) 1);
+  }
+  
+  function setAssessmentInactive() {
+  	$this->_addExtra('ASSESSMENT', (int) -1);
+  }
+
+  function isAssessmentActive() {
+  	$retour = false;
+    if ( $this->_issetExtra('ASSESSMENT') ) {
+      $active = $this->_getExtra('ASSESSMENT');
+      if ( $active == 1 ) {
+        $retour = true;
+      }
+    }
+    return $retour;
+  }
 
   ##########################################
   # grouproom flag

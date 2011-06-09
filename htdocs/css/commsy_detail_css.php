@@ -217,6 +217,23 @@ div.sub_item_main{
    width: 100%;
 }
 
+#detail_assessments_headline {
+   <?php
+   echo('background: url(../'.$c_single_entry_point.'?cid='.$cid.'&mod=picture&fct=getfile&picture=' . $color['schema'] . '_cs_gradient_32.png) repeat-x;');
+   ?>background-color:<?php echo($color['tabs_background'])?>;
+   color:<?php echo($color['headline_text'])?>;
+   padding:4px 5px 5px 5px;
+   border:0px;
+}
+
+#detail_assessments {
+   margin:40px 0px 0px 0px;
+   padding:0px;
+   background-color: #FFFFFF;
+   border: 1px solid <?php echo($color['tabs_background'])?>;
+   width: 100%;
+}
+
 #detail_headline{
    <?php
    echo('background: url(../'.$c_single_entry_point.'?cid='.$cid.'&mod=picture&fct=getfile&picture=' . $color['schema'] . '_cs_gradient_32.png) repeat-x;');

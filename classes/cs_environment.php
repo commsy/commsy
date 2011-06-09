@@ -547,6 +547,14 @@ class cs_environment {
          return $this->getZzzAnnotationManager();
       }
    }
+   
+   function getAssessmentManager() {
+   	  if(!$this->isArchiveMode()) {
+   	  	return $this->_getInstance('cs_assessments_manager');
+   	  } else {
+   	  	return $this->_getInstance('cs_zzz_assessments_manager');
+   	  }
+   }
 
   /** get instance of cs_zzz_annotation_manager
    *
@@ -1575,6 +1583,8 @@ class cs_environment {
             return $this->getMaterialManager();
          } elseif ($type == CS_ANNOTATION_TYPE or $type == 'annotations') {
             return $this->getAnnotationManager();
+		 } elseif ($type == CS_ASSESSMENT_TYPE or $type == 'assessments') {
+		 	return $this->getAssessmentManager();
          } elseif ($type == 'discussion' or $type == 'discussions') {
             return $this->getDiscussionManager();
          } elseif ($type == 'discarticle' or $type == 'discarticles') {

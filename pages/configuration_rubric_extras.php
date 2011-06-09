@@ -138,7 +138,17 @@ if ($command != 'error') {
                    $context_item->setGrouproomInactive();
                }
             }
-
+			
+			// Bewertungsfunktion
+			$current_user = $environment->getCurrentUserItem();
+			$context_item->setModificatorItem($current_user);
+			$context_item->setModificationDate(getCurrentDateTimeInMySQL());
+			if(isset($_POST['assessment']) && !empty($_POST['assessment']) && $_POST['assessment'] == 1) {
+				$context_item->setAssessmentActive();
+			} else {
+				$context_item->setAssessmentInactive();
+			}
+			
             // Save item
             $context_item->save();
             $form_view->setItemIsSaved();

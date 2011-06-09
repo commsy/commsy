@@ -242,6 +242,17 @@ if ($type != CS_DISCUSSION_TYPE) {
          }
       }
       $detail_view->setRubricConnections($rubric_connections);
+	  
+	  $current_context = $environment->getCurrentContextItem();
+      if($current_context->isAssessmentActive()) {
+		 $assessment_manager = $environment->getAssessmentManager();
+		 $assessment = $assessment_manager->getAssessmentForItemAverage($discussion_item);
+		 $voted = $assessment_manager->hasCurrentUserAlreadyVoted($discussion_item);
+		 unset($assessment_manager);
+		 if($assessment !== '') {
+			$detail_view->setAssessment($assessment, $voted);
+		 }
+	  }
 
       if ( $context_item->isPrivateRoom() ) {
          // add annotations to detail view

@@ -40,6 +40,8 @@ class cs_detail_view extends cs_view {
    var $_sub_rubric_connections = array();
 
    var $_annotation_list = null;
+   
+   var $_assessment = null;
 
    var $_openCreatorInfo = null;
 
@@ -162,6 +164,11 @@ class cs_detail_view extends cs_view {
 
    function setAnnotationList($annotation_list) {
       $this->_annotation_list = $annotation_list;
+   }
+   
+   function setAssessment($assessment, $has_current_user_already_voted) {
+   	  $this->_assessment = array(	'assessment'	=> $assessment,
+   	  								'already_voted'	=> $has_current_user_already_voted);
    }
 
    function setExtraHorizontalLineNumbers($count) {
@@ -1865,6 +1872,19 @@ class cs_detail_view extends cs_view {
             $html .= '</div>'.LF;
          }
       }
+	  if(	$rubric == CS_MATERIAL_TYPE ||
+	  		$rubric == CS_DISCUSSION_TYPE) {
+	  	 // check if assessment is active for this room
+         $current_context = $this->_environment->getCurrentContextItem();
+         if($current_context->isAssessmentActive()) {
+         	$html .= '<script type="text/javascript">'.LF;
+			$html .= '<!--'.LF;
+			$html .= 'var ajax_cid = "' . $current_context->getItemID() . '"'.LF;
+			$html .= '-->'.LF;
+         	$html .= '</script>'.LF;
+		   	$html .= $this->_getAssessmentsAsHTML();
+		 }
+	  }
       if ( $rubric != CS_GROUP_TYPE
            and $rubric != CS_TOPIC_TYPE
            and $rubric != CS_INSTITUTION_TYPE
@@ -2081,6 +2101,69 @@ class cs_detail_view extends cs_view {
          }
       }
       return $html;
+   }
+
+   function _getAssessmentsAsHTML() {
+      $html = '';
+	  if(!(isset($_GET['mode']) && $_GET['mode'] == 'print')) {
+	  	if(!$this->_show_content_without_window) {
+	  		$html .= '</div>'.LF.LF;
+			$html .= '</div>'.LF.LF;
+	  	}
+	  }
+	  
+	  $html .= '<!-- BEGIN OF ASSESSMENT VIEW -->'.LF.LF;
+	  $html .= '<div id="detail_assessments">'.LF;
+	  //$desc = ' (' . $this->_translator->getMessage('COMMON_ASSESSMENTS') . ')'.LF;
+	  $html .= '<div id="detail_assessments_headline">'.LF;
+	  $html .= '<h3>'.$this->_translator->getMessage('COMMON_ASSESSMENT');//.$desc;
+	  $html .= '</h3>'.LF;
+	  $html .= '</div>'.LF;
+      if(!(isset($_GET['mode']) && $_GET['mode']=='print')) {
+        $html .='<div class="sub_item_main">'.LF;
+      } else {
+        $html .='<div class="sub_item_main" style="background-color:#FFFFFF;">'.LF;
+      }
+	  $html .= '<a name="assessments"></a>'.LF;
+	  $html .= '<div style="background-color: #FFFFFF; padding: 5px;">'.LF;
+	  
+	  if($this->_assessment !== null) {
+	  	// display assessments
+	  	$assessment = sprintf('%1.1f', (float) $this->_assessment['assessment']);
+		$html .= '<div style="float: left;">';
+	  	$html .= $this->_translator->getMessage('COMMON_ASSESSMENT_PREVIOUS') . ' ' . $assessment.LF;
+		$html .= '<br>';
+		
+		// display stars
+		$stars_full = round($assessment, 0, PHP_ROUND_HALF_UP);
+		for($i = 0; $i < $stars_full; $i++) {
+			$html .= '<img src="images/commsyicons/32x32/star_filled.png"/>'.LF;
+		}
+		for($i = 0; $i < 5 - $stars_full; $i++) {
+			$html .= '<img src="images/commsyicons/32x32/star_unfilled.png"/>'.LF;
+		}
+		
+		$html .= '</div>';
+	  } else {
+	  	// no assessments
+	  	$html .= $this->_translator->getMessage('COMMON_ASSESSMENT_NO');
+	  }
+	  
+	  // display voting
+	  if($this->_assessment['already_voted'] === false || $this->_assessment === null) {
+	  	$html .= '<div style="float: right;">'.LF;
+		$html .= '<div>' . $this->_translator->getMessage('COMMON_ASSESSMENT_VOTE') . '</div>'.LF;
+		for($i = 0; $i < 5; $i++) {
+			$html .= '<span id="assessment_vote_star_' . $i . '"><img src="images/commsyicons/32x32/star_unfilled.png"/></span>'.LF;
+		}
+		$html .= '</div>'.LF;
+	  }
+	  
+	  $html .= '<div style="clear: both;"></div>';
+	  $html .= '</div>'.LF;
+	  $html .= '<!-- END OF ASSESSMENT VIEW -->'.LF.LF;
+	  
+	  return $html;
    }
 
    function _getAnnotationsAsHTML () {
