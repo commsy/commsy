@@ -709,6 +709,12 @@ class cs_form_view extends cs_view {
          $use_new_upload = false;
       }
       unset($config_uload_with_ssl);
+	  
+	  // check operation system
+	  $os = $this->_environment->getCurrentOperatingSystem();
+	  if($os == 'iPad') {
+	  	$use_new_upload = false;
+	  }
 
       if ($use_new_upload){
          // this div holds the list of files, which upload is finished(+checkbox)
