@@ -23,6 +23,7 @@
   preg_match($pattern, $uri, $matches);
   if(isset($matches[1])) {
     $file_id = $matches[1];
+	
     // authentification
     $file_manager = $environment->getFileManager();
     $file = $file_manager->getItem($file_id);
