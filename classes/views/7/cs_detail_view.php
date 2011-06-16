@@ -2119,8 +2119,8 @@ class cs_detail_view extends cs_view {
 	  $html .= '<h3>'.$this->_translator->getMessage('COMMON_ASSESSMENT');//.$desc;
 	  $html .= '</h3>'.LF;
 	  $html .= '</div>'.LF;
-      if(!(isset($_GET['mode']) && $_GET['mode']=='print')) {
-        $html .='<div class="sub_item_main">'.LF;
+      if(!(isset($_GET['mode']) && $_GET['mode'] == 'print')) {
+        $html .='<div class="sub_item_main"; height: 50px>'.LF;
       } else {
         $html .='<div class="sub_item_main" style="background-color:#FFFFFF; height: 50px">'.LF;
       }
