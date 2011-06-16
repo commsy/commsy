@@ -2119,13 +2119,13 @@ class cs_detail_view extends cs_view {
 	  $html .= '<h3>'.$this->_translator->getMessage('COMMON_ASSESSMENT');//.$desc;
 	  $html .= '</h3>'.LF;
 	  $html .= '</div>'.LF;
-      if(!(isset($_GET['mode']) && $_GET['mode'] == 'print')) {
-        $html .='<div class="sub_item_main"; style="height: 50px">'.LF;
+      if(!(isset($_GET['mode']) && $_GET['mode']=='print')) {
+        $html .='<div class="sub_item_main">'.LF;
       } else {
-        $html .='<div class="sub_item_main" style="background-color:#FFFFFF; height: 50px">'.LF;
+        $html .='<div class="sub_item_main" style="background-color:#FFFFFF;">'.LF;
       }
 	  $html .= '<a name="assessments"></a>'.LF;
-	  $html .= '<div style="background-color: #FFFFFF; padding: 5px;">'.LF;
+	  $html .= '<div style="background-color: #FFFFFF; padding: 5px; height: 50px;">'.LF;
 	  
 	  if($this->_assessment !== null) {
 	  	// display assessments
