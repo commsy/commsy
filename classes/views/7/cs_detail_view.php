@@ -2122,7 +2122,7 @@ class cs_detail_view extends cs_view {
       if(!(isset($_GET['mode']) && $_GET['mode']=='print')) {
         $html .='<div class="sub_item_main">'.LF;
       } else {
-        $html .='<div class="sub_item_main" style="background-color:#FFFFFF;">'.LF;
+        $html .='<div class="sub_item_main" style="background-color:#FFFFFF; height: 50px">'.LF;
       }
 	  $html .= '<a name="assessments"></a>'.LF;
 	  $html .= '<div style="background-color: #FFFFFF; padding: 5px;">'.LF;
