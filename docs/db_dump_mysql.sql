@@ -84,7 +84,7 @@ CREATE TABLE IF NOT EXISTS `assessments` (
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`),
   KEY `deleter_id` (`deleter_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
