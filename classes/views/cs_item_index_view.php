@@ -109,10 +109,66 @@ var $_sel_rubric = '';
 
 
    function _getTablefootAsHTML() {
+   	// If a user was found use _getTablefootAsHTML2 (ViewActions)
+   	if(!$this->_first_user){
+   		$html = $this->_getTablefootAsHTML2();
+   	} else {
+	      $html  = '   <tr class="list">'.LF;
+	      $html .= '      <td class="head" colspan="5" style="vertical-align:middle;">&nbsp;'.LF;
+	      $html .= '      </td>'.LF;
+	      $html .= '   </tr>'.LF;
+   	}
+   	return $html;
+   }
+
+   function _getTablefootAsHTML2() {
       $html  = '   <tr class="list">'.LF;
-      $html .= '      <td class="head" colspan="5" style="vertical-align:middle;">&nbsp;'.LF;
-      $html .= '      </td>'.LF;
+      if ( $this->hasCheckboxes() and $this->_has_checkboxes != 'list_actions') {
+         $html .= '<td class="foot_left" colspan="3"><input style="font-size:8pt;" type="submit" name="option" value="'.$this->_translator->getMessage('COMMON_ATTACH_BUTTON').'" /> <input type="submit"  style="font-size:8pt;" name="option" value="'.$this->_translator->getMessage('COMMON_CANCEL_BUTTON').'"/>';
+      }else{
+         $html .= '<td class="foot_left" colspan="3" style="vertical-align:middle;">'.LF;
+         $html .= '<span class="select_link">[</span>';
+         $params = $this->_environment->getCurrentParameterArray();
+         $params['select'] = 'all';
+         $html .= ahref_curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,
+                          $params, $this->_translator->getMessage('COMMON_ALL_ENTRIES'), '', '', $this->getFragment(),'','','','class="select_link"');
+         $html .= '<span class="select_link">]</span>'.LF;
+
+         $html .= $this->_getViewActionsAsHTML();
+      }
+      $html .= '</td>'.LF;
+      $html .= '<td class="foot_right" style="vertical-align:middle; text-align:right; font-size:8pt;">'.LF;
+      if ( $this->hasCheckboxes() ) {
+         if (count($this->getCheckedIDs())=='1'){
+            $html .= ''.$this->_translator->getMessage('COMMON_SELECTED_ONE',count($this->getCheckedIDs()));
+         }else{
+            $html .= ''.$this->_translator->getMessage('COMMON_SELECTED',count($this->getCheckedIDs()));
+         }
+      }
+      $html .= '</td>'.LF;
       $html .= '   </tr>'.LF;
+      return $html;
+
+   }
+
+   /** get View-Actions of this index view
+    * this method returns the index actions as html
+    *
+    * @return string index actions
+    */
+   function _getViewActionsAsHTML () {
+      $html  = '';
+      $html .= '<select name="index_view_action" size="1" style="width:160px; font-size:8pt; font-weight:normal;">'.LF;
+      $html .= '   <option selected="selected" value="-1">*'.$this->_translator->getMessage('COMMON_LIST_ACTION_NO').'</option>'.LF;
+      $html .= '   <option class="disabled" disabled="disabled">------------------------------</option>'.LF;
+      $html .= '   <option value="1">'.$this->_translator->getMessage('COMMON_LIST_ACTION_MARK_AS_READ').'</option>'.LF;
+      $html .= '   <option class="disabled" disabled="disabled">------------------------------</option>'.LF;
+      $html .= '   <option value="2">'.$this->_translator->getMessage('USER_LIST_ACTION_EMAIL_SEND').'</option>'.LF;
+      $html .= '</select>'.LF;
+      $html .= '<input type="submit" style="width:70px; font-size:8pt;" name="option"';
+      $html .= ' value="'.$this->_translator->getMessage('COMMON_LIST_ACTION_BUTTON_GO').'"';
+      $html .= '/>'.LF;
+
       return $html;
    }
 
@@ -203,6 +259,10 @@ var $_sel_rubric = '';
       }else{
          $style='class="even"';
       }
+      $checked_ids = $this->getCheckedIDs();
+      $dontedit_ids = $this->getDontEditIDs();
+      $key = $item->getItemID();
+
       $item_type = $item->getType();
       if ($item_type == 'label'){
          $item_type = $item->getItemType();
@@ -256,7 +316,8 @@ var $_sel_rubric = '';
               $html .= $this->_translator->getMessage('COMMON_USERS');
               $html .= '</td>'.LF;
             }
-            $html .= $this->_getUserItemAsLongHtml($item,$style);
+            #$html .= $this->_getUserItemAsLongHtml($item,$style);
+            $html .= $this->_getUserItemAsHtml($item,0,$style);
             break;
          case CS_PROJECT_TYPE:
             if ( $this->_environment->inPrivateRoom() ){
@@ -911,6 +972,68 @@ var $_sel_rubric = '';
       }
       $html .= '      <td  '.$style.' style="font-size:8pt; width:35%;">'.$this->_getItemEmail($item).'</td>'.LF;
       $html .= '   </tr>'.LF;
+      return $html;
+   }
+
+   /** get the item of the list view as HTML
+    * this method returns the single item in HTML-Code
+    *
+    * overwritten method form the upper class
+    *
+    * @return string item as HMTL
+    *
+    * @author CommSy Development Group
+    */
+   function _getUserItemAsHTML($item,$pos=0,$style) {
+      $shown_entry_number = $pos;
+      $phone = $this->_compareWithSearchText($item->getTelephone());
+      $handy = $this->_compareWithSearchText($item->getCellularphone());
+//      if ($shown_entry_number%2 == 0){
+//         $style='class="odd"';
+//      }else{
+//         $style='class="even"';
+//      }
+      $html  = '   <tr class="list">'.LF;
+      $checked_ids = $this->getCheckedIDs();
+      $dontedit_ids = $this->getDontEditIDs();
+      $key = $item->getItemID();
+      if(!(isset($_GET['mode']) and $_GET['mode']=='print')){
+         #$html .= '      <td '.$style.' style="vertical-align:middle;" width="2%">'.LF;
+         $html .= '      <td '.$style.' style="font-size:10pt;" colspan="2">'.LF;
+         $html .= '         <input style="font-size:8pt; padding-left:0px; padding-right:0px; margin-left:0px; margin-right:0px;" type="checkbox" onClick="quark(this)" name="attach['.$key.']" value="1"';
+         if ( in_array($key, $checked_ids) ) {
+            $html .= ' checked="checked"'.LF;
+            if ( in_array($key, $dontedit_ids) ) {
+               $html .= ' disabled="disabled"'.LF;
+            }
+         }
+         $html .= '/>'.LF;
+         $html .= '         <input type="hidden" name="shown['.$this->_text_as_form($key).']" value="1"/>'.LF;
+         #$html .= '      </td>'.LF;
+
+         // Item Change Status
+         if ( !$this->_environment->inPrivateRoom() ) {
+         	$name .= $this->_getItemChangeStatus($item);
+      	}
+         $html .= $this->_getItemFullname($item).$name.LF;
+         $html .= '</td>'.LF;
+      }else{
+         $html .= '      <td colspan="4"'.$style.' style="font-size:10pt;">'.$this->_getItemFullname($item).'</td>'.LF;
+      }
+      $html .= '      <td '.$style.' style="font-size:8pt;">';
+      if ( !empty($phone) ){
+         $html .= $this->_text_as_html_short($phone).LF;
+      }
+      if (!empty($phone) and !empty($handy)) {
+         $html .= BRLF;
+      }
+      if ( !empty($handy) ){
+         $html .= $this->_text_as_html_short($handy).LF;
+      }
+      $html .= '</td>'.LF;
+      $html .= '      <td '.$style.' style="font-size:8pt;">'.$this->_getItemEmail($item).'</td>'.LF;
+      $html .= '   </tr>'.LF;
+
       return $html;
    }
 
