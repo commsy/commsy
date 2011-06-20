@@ -103,6 +103,15 @@ CREATE TABLE IF NOT EXISTS `auth` (
   PRIMARY KEY (`commsy_id`,`user_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+--
+-- Daten für Tabelle `auth`
+--
+
+INSERT INTO `auth` (`commsy_id`, `user_id`, `password_md5`, `firstname`, `lastname`, `email`, `language`) VALUES
+(99, 'root', '63a9f0ea7bb98050796b649e85481845', 'CommSy', 'Administrator', '', 'de');
+
+
+
 -- --------------------------------------------------------
 
 --
@@ -124,6 +133,13 @@ CREATE TABLE IF NOT EXISTS `auth_source` (
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+--
+-- Daten für Tabelle `auth_source`
+--
+
+INSERT INTO `auth_source` (`item_id`, `context_id`, `creator_id`, `modifier_id`, `deleter_id`, `creation_date`, `modification_date`, `deletion_date`, `title`, `extras`) VALUES
+(100, 99, 99, 99, NULL, '2006-09-14 12:32:24', '2006-09-14 12:32:24', NULL, 'CommSy', 'a:4:{s:14:"COMMSY_DEFAULT";s:1:"1";s:6:"SOURCE";s:5:"MYSQL";s:13:"CONFIGURATION";a:5:{s:11:"ADD_ACCOUNT";s:1:"0";s:13:"CHANGE_USERID";s:1:"0";s:14:"DELETE_ACCOUNT";s:1:"0";s:15:"CHANGE_USERDATA";s:1:"1";s:15:"CHANGE_PASSWORD";s:1:"1";}s:4:"SHOW";s:1:"1";}');
 
 -- --------------------------------------------------------
 
@@ -355,6 +371,15 @@ CREATE TABLE IF NOT EXISTS `items` (
   KEY `context_id` (`context_id`),
   KEY `type` (`type`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=160 ;
+
+--
+-- Daten für Tabelle `items`
+--
+
+INSERT INTO `items` (`item_id`, `context_id`, `type`, `deleter_id`, `deletion_date`, `modification_date`) VALUES
+(98, 99, 'user', NULL, NULL, NULL),
+(99, 0, 'server', NULL, NULL, NULL),
+(100, 99, 'auth_source', NULL, NULL, '2006-09-14 12:32:24');
 
 -- --------------------------------------------------------
 
@@ -799,6 +824,13 @@ CREATE TABLE IF NOT EXISTS `server` (
   KEY `creator_id` (`creator_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+--
+-- Daten für Tabelle `server`
+--
+
+INSERT INTO `server` (`item_id`, `context_id`, `creator_id`, `modifier_id`, `deleter_id`, `creation_date`, `modification_date`, `deletion_date`, `title`, `extras`, `status`, `activity`, `type`, `is_open_for_guests`) VALUES
+(99, 0, 99, 0, NULL, '2006-09-13 12:16:38', '2006-09-13 12:16:38', NULL, 'CommSy-Server', 'a:2:{s:8:"HOMECONF";s:0:"";s:12:"DEFAULT_AUTH";s:3:"100";}', '1', 30, 'server', 1);
+
 -- --------------------------------------------------------
 
 --
@@ -967,6 +999,14 @@ CREATE TABLE IF NOT EXISTS `user` (
   KEY `creator_id` (`creator_id`),
   KEY `user_id` (`user_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+--
+-- Daten für Tabelle `user`
+--
+
+INSERT INTO `user` (`item_id`, `context_id`, `creator_id`, `modifier_id`, `deleter_id`, `creation_date`, `modification_date`, `deletion_date`, `user_id`, `status`, `is_contact`, `firstname`, `lastname`, `email`, `city`, `lastlogin`, `visible`, `extras`, `auth_source`, `description`) VALUES
+(98, 99, 99, 99, NULL, '2006-09-13 12:17:17', '2006-09-13 12:17:17', NULL, 'root', 3, 1, 'CommSy', 'Administrator', '', '', NULL, 1, '', 100, NULL);
+
 
 -- --------------------------------------------------------
 
