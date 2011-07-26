@@ -391,6 +391,19 @@ if ($command != 'error') { // only if user is allowed to edit colors
             }
          }
 
+         if ($context_item->isPrivateRoom()) {
+	         if ( (isset($_POST['email_to_commsy']) and !empty($_POST['email_to_commsy'])) ) {
+	            $context_item->setEmailToCommSy();
+	         } else {
+	            $context_item->unsetEmailToCommSy();
+	         }
+            if ( (isset($_POST['email_to_commsy_secret']) and !empty($_POST['email_to_commsy_secret'])) ) {
+	            $context_item->setEmailToCommSySecret($_POST['email_to_commsy_secret']);
+	         } else {
+	            $context_item->setEmailToCommSySecret('');
+	         }
+         }
+         
          $redirect = false;
 
          // save room_item

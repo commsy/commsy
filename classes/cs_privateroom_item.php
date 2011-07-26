@@ -2627,5 +2627,35 @@ class cs_privateroom_item extends cs_room_item {
     * *****************
     */
 
+   function setEmailToCommSy () {
+      $this->_addExtra('EMAIL_TO_COMMSY','1');
+   }
+   function unsetEmailToCommSy () {
+      $this->_addExtra('EMAIL_TO_COMMSY','-1');
+   }
+
+   function getEmailToCommSy () {
+      $retour = false;
+      if ($this->_issetExtra('EMAIL_TO_COMMSY')) {
+         if($this->_getExtra('EMAIL_TO_COMMSY') == '1'){
+            $retour = true;
+         }
+      }
+      return $retour;
+   }
+   
+   
+   function setEmailToCommSySecret ($value) {
+      $this->_addExtra('EMAIL_TO_COMMSY_SECRET', $value);
+   }
+
+   function getEmailToCommSySecret() {
+      $retour = false;
+      if ($this->_issetExtra('EMAIL_TO_COMMSY_SECRET')) {
+         $retour = $this->_getExtra('EMAIL_TO_COMMSY_SECRET');
+      }
+      return $retour;
+   }
+   
 }
 ?>

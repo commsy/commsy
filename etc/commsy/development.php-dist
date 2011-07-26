@@ -85,4 +85,11 @@ $c_enable_htmltextarea_security = false;
 
 // use flash file upload with ssl
 //$c_enable_flash_upload_with_ssl = true;
+
+// enable upload via e-mail
+//$c_email_upload = false;
+//$c_email_upload_server = 'mail.server.com';
+//$c_email_upload_server_port = '25';
+//$c_email_upload_email_adress = 'mail@server.com';
+//$c_email_upload_email_password = 'secret';
 ?>

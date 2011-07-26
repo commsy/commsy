@@ -33,7 +33,6 @@ $message["COMMON_ASSESSMENT"]["en"] = "Assessments";
 $message["COMMON_ASSESSMENT_CONFIGURATION_CHOICE_VALUE"]["en"] = "activate assessment of entries";
 $message["COMMON_ASSESSMENT_EXPLANATION_VALUE"]["en"] = "If this function is activated, entries in this room can be assessed.";
 $message["COMMON_ASSESSMENT_INDEX"]["en"] = "Assessment";
-$message["COMMON_ASSESSMENT_INDEX"]["de"] = "No Assessments";
 $message["COMMON_ASSESSMENT_PREVIOUS"]["en"] = "Previous Assessments:";
 $message["COMMON_ASSESSMENT_VOTE"]["en"] = "Give an assessment:";
 $message["COMMON_ASSIGMENT_OFF"]["en"] = "only by members of this %_COMMUNITY_SUB_GENS_LOW";

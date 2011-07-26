@@ -1,4 +1,7 @@
 <?php
+$message["PRIVATE_ROOM_EMAIL_TO_COMMSY"]["en"] = "Upload via e-mail";
+$message["PRIVATE_ROOM_EMAIL_TO_COMMSY_CHECKBOX"]["en"] = "(Send e-amils to the following address: %1)";
+$message["PRIVATE_ROOM_EMAIL_TO_COMMSY_TEXT"]["en"] = "Please insert a keyword. This has to be enclosed in the subject of the e-mail.";
 $message["PRIVATE_ROOM_PROJECTROOM_CLOSED"]["en"] = "archived";
 $message["PRIVATE_ROOM_PROJECTROOM_LOCKED"]["en"] = "blocked";
 $message["PRIVATE_ROOM_PROJECTROOM_TEMPLATE"]["en"] = "Template";

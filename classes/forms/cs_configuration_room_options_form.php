@@ -773,6 +773,22 @@ class cs_configuration_room_options_form extends cs_rubric_form {
       $radio_values[1]['value'] = 'no';
       $this->_form->addRadioGroup('rss',$this->_translator->getMessage('CONFIGURATION_RSS'),'',$radio_values,'',true,false);
 
+      // specials in private room - E-Mail to CommSy
+      global $c_email_upload;
+      if ($c_email_upload && $this->_environment->inPrivateRoom()) {
+      	global $c_email_upload_email_account;
+         $this->_form->addCheckbox('email_to_commsy',
+                                   'value',
+                                   false,
+                                   $this->_translator->getMessage('PRIVATE_ROOM_EMAIL_TO_COMMSY'),
+                                   $this->_translator->getMessage('PRIVATE_ROOM_EMAIL_TO_COMMSY_CHECKBOX', $c_email_upload_email_account)
+                                   );
+         $this->_form->combine();
+         $this->_form->addTextField('email_to_commsy_secret','',$this->_translator->getMessage('PRIVATE_ROOM_EMAIL_TO_COMMSY_SECRET'),'',60,48);
+         $this->_form->combine();
+         $this->_form->addText('email_to_commsy_text','',$this->_translator->getMessage('PRIVATE_ROOM_EMAIL_TO_COMMSY_TEXT'));
+      }
+      
       /******** buttons***********/
       $this->_form->addButtonBar('option',$this->_translator->getMessage('PREFERENCES_SAVE_BUTTON'),'',$this->_translator->getMessage('COMMON_DELETE_ROOM'));
 
@@ -910,6 +926,12 @@ class cs_configuration_room_options_form extends cs_rubric_form {
       }
 
       $this->_values['description'] = $context_item->getDescription();
+      
+      global $c_email_upload;
+      if ($c_email_upload && $this->_environment->inPrivateRoom()) {
+         $this->_values['email_to_commsy'] = $context_item->getEmailToCommSy();
+         $this->_values['email_to_commsy_secret'] = $context_item->getEmailToCommSySecret();
+      }
    }
 
    function _checkValues () {
@@ -923,6 +945,14 @@ class cs_configuration_room_options_form extends cs_rubric_form {
             }
          }
       }
+      
+      if ($this->_environment->inPrivateRoom()) {
+      	if (isset($this->_form_post['email_to_commsy']) and !isset($this->_form_post['email_to_commsy_secret'])){
+	         $this->_form->setFailure('email_to_commsy_secret','');
+            $this->_error_array[] = $this->_translator->getMessage('PRIVATE_ROOM_EMAIL_TO_COMMSY_NO_SECRET',$this->_translator->getMessage('PREFERENCES_COMMUNITY_ROOMS'));
+         }
+      }
+      
    }
 
    function getInfoForHeaderAsHTML () {
