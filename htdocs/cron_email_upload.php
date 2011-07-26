@@ -175,8 +175,9 @@ function email_to_commsy($mbox,$msgno){
 	   $material_item->setTitle(trim(str_replace($email_to_commsy_secret, '', $subject)));
 	   $material_item->setDescription($body);
 	   $material_item->save();
+	   
+	   imap_delete($mbox,$msgno);
 	}
-	
 }
 
 function email_to_commsy_auth($sender, $subject){

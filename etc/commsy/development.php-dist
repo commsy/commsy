@@ -88,8 +88,8 @@ $c_enable_htmltextarea_security = false;
 
 // enable upload via e-mail
 //$c_email_upload = false;
-//$c_email_upload_server = 'mail.server.com';
-//$c_email_upload_server_port = '25';
-//$c_email_upload_email_adress = 'mail@server.com';
+//$c_email_upload_server = 'mail.example.com';
+//$c_email_upload_server_port = '143';
+//$c_email_upload_email_account = 'email@example.com';
 //$c_email_upload_email_password = 'secret';
 ?>
