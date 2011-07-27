@@ -977,6 +977,14 @@ class cs_environment {
          return $this->getZzzLinkModifierItemManager();
       }
    }
+   
+   function unsetLinkModifierItemManager() {
+      if ( !$this->isArchiveMode() ) {
+         $this->_unsetInstance('cs_link_modifier_item_manager');
+      } else {
+         $this->unsetZzzLinkModifierItemManager();
+      }
+   }
 
    /** get instance of cs_zzz_link_modifier_item_manager
    *
@@ -985,6 +993,10 @@ class cs_environment {
    */
    function getZzzLinkModifierItemManager() {
       return $this->_getInstance('cs_zzz_link_modifier_item_manager');
+   }
+   
+   function unsetZzzLinkModifierItemManager() {
+      return _unsetInstance('cs_zzz_link_modifier_item_manager');
    }
 
   /** get instance of cs_link_item_file_manager
@@ -1543,6 +1555,12 @@ class cs_environment {
       return $this->instance[$name];
    }
 
+   function _unsetInstance($name) {
+      if ( isset($this->instance[$name]) ) {
+      	unset($this->instance[$name]);
+      }
+   }
+   
    /** get Instance of the authentication object
     * returns an object for authentication users in commsy
     *
