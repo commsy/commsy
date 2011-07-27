@@ -104,8 +104,6 @@ function email_to_commsy($mbox,$msgno){
    $subject = $header->subject;
    $body = imap_fetchbody($mbox,$msgno,1);
    
-   #$room_id = email_to_commsy_auth($sender, $subject);
-   
 	$auth = false;
 	$private_room_id = '';
 	$private_room_user_item = '';
@@ -143,12 +141,10 @@ function email_to_commsy($mbox,$msgno){
    	$files = array();
    	
 	   if($struct->subtype == 'PLAIN'){
-	   	#$body = imap_body($mbox,$msgno);
 	   } else if ($struct->subtype == 'MIXED') {
 	      // with attachment 
 		   $contentParts = count($struct->parts);
 		   if ($contentParts >= 2) {
-				#$body = imap_fetchbody($mbox,$msgno,1);
 			   for ($i=2;$i<=$contentParts;$i++) {
 		   	   $att[$i-2] = imap_bodystruct($mbox,$msgno,$i);
 		   	}
@@ -163,7 +159,17 @@ function email_to_commsy($mbox,$msgno){
 		   		}
 		   		$strFileType = strrev(substr(strrev($strFileName),0,4));
 		   		$fileContent = imap_fetchbody($mbox,$msgno,$k+2);
-		   		$files[] = getFile($strFileType, $strFileName, $fileContent);
+		   		$file = getFile($strFileType, $strFileName, $fileContent);
+		   		
+		   		// copy file to temp
+		   		$temp_file = 'var/temp/'.$strFileName.'_'.getCurrentDateTimeInMySQL();
+		   		file_put_contents($temp_file, $file);
+		   		
+		   		$temp_array = array();
+         		$temp_array['name'] = utf8_encode($strFileName);
+         		$temp_array['tmp_name'] = $temp_file;
+         		$temp_array['file_id'] = $temp_array['name'].'_'.getCurrentDateTimeInMySQL();
+         		$files[] = $temp_array;
 		   	}
 		   }
 	   }
@@ -174,13 +180,29 @@ function email_to_commsy($mbox,$msgno){
 	   $material_item = $material_manager->getNewItem();
 	   $material_item->setTitle(trim(str_replace($email_to_commsy_secret, '', $subject)));
 	   $material_item->setDescription($body);
-	   $material_item->save();
 	   
+      // attach files to the material
+	   $file_manager = $environment->getFileManager();
+      $file_manager->setContextLimit($private_room_id);
+      
+      $file_id_array = array();
+      foreach($files as $file){
+		   $file_item = $file_manager->getNewItem();
+	      $file_item->setTempKey($file["file_id"]);
+         $file_item->setPostFile($file);
+	      $file_item->save();
+	      $file_id_array[] = $file_item->getFileID();
+      }
+	   $material_item->setFileIDArray($file_id_array);
+
+	   $material_item->save();
+      
+	   // mark e-mail for deletion
 	   imap_delete($mbox,$msgno);
 	}
 }
 
-function email_to_commsy_auth($sender, $subject){
+/*function email_to_commsy_auth($sender, $subject){
 	global $environment;
 	global $portal_id_array;
 	$result = false;
@@ -212,7 +234,7 @@ function email_to_commsy_auth($sender, $subject){
 	}
 	
 	return $result;
-}
+}*/
 
 chdir('..');
 
@@ -236,6 +258,9 @@ $message_count = imap_num_msg($mbox);
 for ($msgno = 1; $msgno <= $message_count; ++$msgno) {
    email_to_commsy($mbox,$msgno);
 }
+
+// remove deleted e-mails
+imap_expunge($mbox);
 
 // close connection
 imap_close($mbox);
