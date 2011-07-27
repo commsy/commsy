@@ -103,11 +103,6 @@ function email_to_commsy($mbox,$msgno){
    $sender = $header->from[0]->mailbox.'@'.$header->from[0]->host;
    $subject = $header->subject;
    $body = imap_fetchbody($mbox,$msgno,1);
-   
-	#$auth = false;
-	#$private_room_id = '';
-	#$private_room_user_item = '';
-	#$email_to_commsy_secret = '';
 	
 	foreach($portal_id_array as $portal_id){
 		$environment->setCurrentPortalID($portal_id);
@@ -124,78 +119,87 @@ function email_to_commsy($mbox,$msgno){
 		}
 		
 		foreach($found_users as $found_user){
-			print_r($found_user->getFullName());
-			
 			$private_room_user = $found_user->getRelatedPrivateRoomUserItem();
 			$private_room = $private_room_user->getOwnRoom();
-			
-			print_r($private_room->getItemID());
-			
+
 			if($private_room->getEmailToCommSy()){
 			   $email_to_commsy_secret = $private_room->getEmailToCommSySecret();
-			   if(stristr($subject, $email_to_commsy_secret)){
-			   	#$auth = true;
+			   
+			   if(stripos($subject, $email_to_commsy_secret.':') == 0){
 			   	$private_room_id = $private_room->getItemID();
 			   	
-			   	#if($auth){
-				   	$files = array();
-				   	
-					   if($struct->subtype == 'PLAIN'){
-					   } else if ($struct->subtype == 'MIXED') {
-					      // with attachment 
-						   $contentParts = count($struct->parts);
-						   if ($contentParts >= 2) {
-							   for ($i=2;$i<=$contentParts;$i++) {
-						   	   $att[$i-2] = imap_bodystruct($mbox,$msgno,$i);
-						   	}
-						   	for ($k=0;$k<sizeof($att);$k++) {
-						   		$strFileName = $att[$k]->dparameters[0]->value;
-						   		$strFileType = strrev(substr(strrev($strFileName),0,4));
-						   		$fileContent = imap_fetchbody($mbox,$msgno,$k+2);
-						   		$file = getFile($strFileType, $strFileName, $fileContent);
-						   		
-						   		// copy file to temp
-						   		$temp_file = 'var/temp/'.$strFileName.'_'.getCurrentDateTimeInMySQL();
-						   		file_put_contents($temp_file, $file);
-						   		
-						   		$temp_array = array();
-				         		$temp_array['name'] = utf8_encode($strFileName);
-				         		$temp_array['tmp_name'] = $temp_file;
-				         		$temp_array['file_id'] = $temp_array['name'].'_'.getCurrentDateTimeInMySQL();
-				         		$files[] = $temp_array;
-						   	}
-						   }
+			   	$files = array();
+			   	
+				   if($struct->subtype == 'PLAIN'){
+				   } else if ($struct->subtype == 'MIXED') {
+				      // with attachment 
+					   $contentParts = count($struct->parts);
+					   if ($contentParts >= 2) {
+						   for ($i=2;$i<=$contentParts;$i++) {
+					   	   $att[$i-2] = imap_bodystruct($mbox,$msgno,$i);
+					   	}
+					   	for ($k=0;$k<sizeof($att);$k++) {
+					   		$strFileName = $att[$k]->dparameters[0]->value;
+					   		$strFileType = strrev(substr(strrev($strFileName),0,4));
+					   		$fileContent = imap_fetchbody($mbox,$msgno,$k+2);
+					   		$file = getFile($strFileType, $strFileName, $fileContent);
+					   		
+					   		// copy file to temp
+					   		$temp_file = 'var/temp/'.$strFileName.'_'.getCurrentDateTimeInMySQL();
+					   		file_put_contents($temp_file, $file);
+					   		
+					   		$temp_array = array();
+			         		$temp_array['name'] = utf8_encode($strFileName);
+			         		$temp_array['tmp_name'] = $temp_file;
+			         		$temp_array['file_id'] = $temp_array['name'].'_'.getCurrentDateTimeInMySQL();
+			         		$files[] = $temp_array;
+					   	}
 					   }
-					   
-					   $environment->setCurrentContextID($private_room_id);
-					   $environment->setCurrentUser($private_room_user);
-					   $environment->unsetLinkModifierItemManager();
-					   $material_manager = $environment->getMaterialManager();
-					   $material_item = $material_manager->getNewItem();
-					   $material_item->setTitle(trim(str_replace($email_to_commsy_secret, '', $subject)));
-					   
-					   // get additional Information from e-mail body
-					   // ...
-					   
-					   $material_item->setDescription($body);
-					   
-				      // attach files to the material
-					   $file_manager = $environment->getFileManager();
-				      $file_manager->setContextLimit($private_room_id);
-				      
-				      $file_id_array = array();
-				      foreach($files as $file){
-						   $file_item = $file_manager->getNewItem();
-					      $file_item->setTempKey($file["file_id"]);
-				         $file_item->setPostFile($file);
-					      $file_item->save();
-					      $file_id_array[] = $file_item->getFileID();
-				      }
-					   $material_item->setFileIDArray($file_id_array);
-				
-					   $material_item->save();
+				   }
+				   
+				   $environment->setCurrentContextID($private_room_id);
+				   $environment->setCurrentUser($private_room_user);
+				   $environment->unsetLinkModifierItemManager();
+				   $material_manager = $environment->getMaterialManager();
+				   $material_item = $material_manager->getNewItem();
+				   $material_item->setTitle(trim(str_replace($email_to_commsy_secret.':', '', $subject)));
+				   
+				   // get additional Information from e-mail body
+				   #$body = preg_replace('/\r\n|\r/', "\n", $body);
+				   #$body_array = explode("\n", $body);
+				   #foreach($body_array as $body_line){
+				   #	if(!empty($body_line)){
+					#   	if(stristr('Kennung:', $body_line)){ // add translation
+					#   		$temp_body_line = str_ireplace('Kennung:', '', $body_line);
+					#   		$temp_body_line_array = explode(' ', $temp_body_line);
+					#   		$account = $temp_body_line_array[0];
+					#   		pr($account);
+					#   	}
+				   #	}
+				   #}
+				   
+				   $material_item->setDescription($body);
+				   
+			      // attach files to the material
+				   $file_manager = $environment->getFileManager();
+			      $file_manager->setContextLimit($private_room_id);
+			      
+			      $file_id_array = array();
+			      foreach($files as $file){
+					   $file_item = $file_manager->getNewItem();
+				      $file_item->setTempKey($file["file_id"]);
+			         $file_item->setPostFile($file);
+				      $file_item->save();
+				      $file_id_array[] = $file_item->getFileID();
+			      }
+				   $material_item->setFileIDArray($file_id_array);
+			
+				   #$material_item->save();
 
-					#}
+				   // send e-mail with 'material created in your private room' back to sender
+				   // ...
+			   } else {
+			   	// send e-mail with 'password or subject not correct' back to sender
 			   }
 			}
 		}
