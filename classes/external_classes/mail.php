@@ -93,7 +93,7 @@ class Mail extends PEAR
         if (isset($headers['Subject'])) {
            mb_language('uni');
            mb_internal_encoding("UTF-8");
-           $subject = mb_encode_mimeheader($headers['Subject'],"UTF-8");
+           $subject = mb_encode_mimeheader($headers['Subject'],"UTF-8","B","\n");
            unset($headers['Subject']);
         }
 
