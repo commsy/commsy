@@ -96,6 +96,7 @@ function getFile($strFileType,$strFileName,$fileContent) {
 function email_to_commsy($mbox,$msgno){
 	global $environment;
 	global $portal_id_array;
+	global $c_email_upload_email_account;
 	
    $struct = imap_fetchstructure($mbox,$msgno);
 
@@ -104,6 +105,26 @@ function email_to_commsy($mbox,$msgno){
    $subject = $header->subject;
    $body = imap_fetchbody($mbox,$msgno,1);
 	
+   // get additional Information from e-mail body
+   $account = '';
+   $secret = '';
+   
+   $body = preg_replace('/\r\n|\r/', "\n", $body);
+   $body_array = explode("\n", $body);
+   foreach($body_array as $body_line){
+   	if(!empty($body_line)){
+	   	if(stristr($body_line, 'Kennung:')){ // add translation
+	   		$temp_body_line = str_ireplace('Kennung:', '', $body_line);
+	   		$temp_body_line_array = explode(' ', trim($temp_body_line));
+	   		$account = $temp_body_line_array[0];
+	   	} else if(stristr($body_line, 'Passwort:')){ // add translation
+	   		$temp_body_line = str_ireplace('Passwort:', '', $body_line);
+	   		$temp_body_line_array = explode(' ', trim($temp_body_line));
+	   		$secret = $temp_body_line_array[0];
+	   	}
+   	}
+   }
+   
 	foreach($portal_id_array as $portal_id){
 		$environment->setCurrentPortalID($portal_id);
 		$user_manager = $environment->getUserManager();
@@ -114,7 +135,13 @@ function email_to_commsy($mbox,$msgno){
 		$user = $user_list->getfirst();
 		$found_users = array();
 		while($user){
-			$found_users[] = $user;
+			if($account != ''){
+				if($account == $user->getUserID()){
+			   	$found_users[] = $user;
+				}
+			} else {
+				$found_users[] = $user;
+			}
 			$user = $user_list->getnext();
 		}
 		
@@ -125,7 +152,12 @@ function email_to_commsy($mbox,$msgno){
 			if($private_room->getEmailToCommSy()){
 			   $email_to_commsy_secret = $private_room->getEmailToCommSySecret();
 			   
-			   if(stripos($subject, $email_to_commsy_secret.':') == 0){
+			   $result_mail = new cs_mail();
+            $result_mail->set_to($sender);
+            $result_mail->set_from_name('CommSy');
+				$result_mail->set_from_email('commsy@commsy.net');
+			   
+			   if($secret == $email_to_commsy_secret){
 			   	$private_room_id = $private_room->getItemID();
 			   	
 			   	$files = array();
@@ -163,21 +195,7 @@ function email_to_commsy($mbox,$msgno){
 				   $material_manager = $environment->getMaterialManager();
 				   $material_item = $material_manager->getNewItem();
 				   $material_item->setTitle(trim(str_replace($email_to_commsy_secret.':', '', $subject)));
-				   
-				   // get additional Information from e-mail body
-				   #$body = preg_replace('/\r\n|\r/', "\n", $body);
-				   #$body_array = explode("\n", $body);
-				   #foreach($body_array as $body_line){
-				   #	if(!empty($body_line)){
-					#   	if(stristr('Kennung:', $body_line)){ // add translation
-					#   		$temp_body_line = str_ireplace('Kennung:', '', $body_line);
-					#   		$temp_body_line_array = explode(' ', $temp_body_line);
-					#   		$account = $temp_body_line_array[0];
-					#   		pr($account);
-					#   	}
-				   #	}
-				   #}
-				   
+
 				   $material_item->setDescription($body);
 				   
 			      // attach files to the material
@@ -194,13 +212,18 @@ function email_to_commsy($mbox,$msgno){
 			      }
 				   $material_item->setFileIDArray($file_id_array);
 			
-				   #$material_item->save();
+				   $material_item->save();
 
 				   // send e-mail with 'material created in your private room' back to sender
-				   // ...
+				   $result_mail->set_subject('Upload2CommSy - erfolgreich');
+               $result_mail->set_message($body);
 			   } else {
 			   	// send e-mail with 'password or subject not correct' back to sender
+			   	$result_mail->set_subject('Upload2CommSy - fehlgeschlagen');
+               $result_mail->set_message($body);
 			   }
+			   
+			   $result_mail->send();
 			}
 		}
 	}
@@ -212,6 +235,7 @@ function email_to_commsy($mbox,$msgno){
 chdir('..');
 
 include_once('etc/commsy/development.php');
+include_once('classes/cs_mail.php');
 
 // setup commsy-environment
 include_once('etc/cs_constants.php');
