@@ -216,7 +216,7 @@ function email_to_commsy($mbox,$msgno){
 				   
 				   // send e-mail with 'material created in your private room' back to sender
 				   $params['iid'] = $material_item->getItemID();
-				   $link_to_new_material = ahref_curl($private_room_id, 'material', 'detail', $params, $material_item->getTitle());
+				   $link_to_new_material = curl($private_room_id, 'material', 'detail', $params);
 				   
 				   $body = $translator->getMessage('EMAIL_TO_COMMSY_RESULT_SUCCESS', $private_room_user->getFullName(), $link_to_new_material);
 				   $result_mail->set_subject('Upload2CommSy - erfolgreich');
@@ -228,7 +228,7 @@ function email_to_commsy($mbox,$msgno){
                $result_mail->set_message($body);
 			   }
 			   
-			   $result_mail->setSendAsHTML();
+			   #$result_mail->setSendAsHTML();
 			   $result_mail->send();
 			}
 		}
