@@ -215,9 +215,15 @@ function email_to_commsy($mbox,$msgno){
 				   $material_item->save();
 				   
 				   // send e-mail with 'material created in your private room' back to sender
-				   $params['iid'] = $material_item->getItemID();
-				   $link_to_new_material = curl($private_room_id, 'material', 'detail', $params);
+				   $file = $_SERVER['PHP_SELF'];
+               $file = str_replace('cron','commsy',$file);
+               $curl_text = 'http://'.$_SERVER['HTTP_HOST'].$file.'?cid=';
 				   
+				   #$params['iid'] = $material_item->getItemID();
+				   #$link_to_new_material = curl($private_room_id, 'material', 'detail', $params);
+				   
+               $link_to_new_material = '<a href="'.$curl_text.$private_room_id.'&amp;mod=material&amp;fct=detail&amp;iid='.$material_item->getItemID().'">'.$material_item->getTitle().'</a>';
+               
 				   $body = $translator->getMessage('EMAIL_TO_COMMSY_RESULT_SUCCESS', $private_room_user->getFullName(), $link_to_new_material);
 				   $result_mail->set_subject('Upload2CommSy - erfolgreich');
                $result_mail->set_message($body);
