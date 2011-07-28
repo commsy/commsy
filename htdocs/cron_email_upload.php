@@ -216,11 +216,11 @@ function email_to_commsy($mbox,$msgno){
 
 				   // send e-mail with 'material created in your private room' back to sender
 				   $result_mail->set_subject('Upload2CommSy - erfolgreich');
-               $result_mail->set_message($body);
+               $result_mail->set_message();
 			   } else {
 			   	// send e-mail with 'password or subject not correct' back to sender
 			   	$result_mail->set_subject('Upload2CommSy - fehlgeschlagen');
-               $result_mail->set_message($body);
+               $result_mail->set_message();
 			   }
 			   
 			   $result_mail->send();
