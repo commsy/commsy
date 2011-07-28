@@ -156,7 +156,8 @@ function email_to_commsy($mbox,$msgno){
             $result_mail->set_to($sender);
             $result_mail->set_from_name('CommSy');
 				$result_mail->set_from_email('commsy@commsy.net');
-			   
+			   $translator = $environment->getTranslationObject();
+				
 			   if($secret == $email_to_commsy_secret){
 			   	$private_room_id = $private_room->getItemID();
 			   	
@@ -210,17 +211,21 @@ function email_to_commsy($mbox,$msgno){
 				      $file_item->save();
 				      $file_id_array[] = $file_item->getFileID();
 			      }
-				   $material_item->setFileIDArray($file_id_array);
-			
+				   $material_item->setFileIDArray($file_id_array);			
 				   $material_item->save();
-
+				   
 				   // send e-mail with 'material created in your private room' back to sender
+				   $params['iid'] = $material_item->getItemID();
+				   $link_to_new_material = ahref_curl($private_room_id, 'material', 'detail', $params, $material_item->getTitle());
+				   
+				   $body = $translator->getMessage('EMAIL_TO_COMMSY_RESULT_SUCCESS', $private_room_user->getFullName(), $link_to_new_material);
 				   $result_mail->set_subject('Upload2CommSy - erfolgreich');
-               $result_mail->set_message('');
+               $result_mail->set_message($body);
 			   } else {
 			   	// send e-mail with 'password or subject not correct' back to sender
+			   	$body = $translator->getMessage('EMAIL_TO_COMMSY_RESULT_FAILURE', $private_room_user->getFullName());
 			   	$result_mail->set_subject('Upload2CommSy - fehlgeschlagen');
-               $result_mail->set_message('');
+               $result_mail->set_message($body);
 			   }
 			   
 			   $result_mail->send();
@@ -236,6 +241,7 @@ chdir('..');
 
 include_once('etc/commsy/development.php');
 include_once('classes/cs_mail.php');
+include_once('functions/curl_functions.php');
 
 // setup commsy-environment
 include_once('etc/cs_constants.php');
