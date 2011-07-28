@@ -228,6 +228,7 @@ function email_to_commsy($mbox,$msgno){
                $result_mail->set_message($body);
 			   }
 			   
+			   $result_mail->setSendAsHTML();
 			   $result_mail->send();
 			}
 		}
