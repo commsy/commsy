@@ -216,7 +216,7 @@ function email_to_commsy($mbox,$msgno){
 				   
 				   // send e-mail with 'material created in your private room' back to sender
 				   $file = $_SERVER['PHP_SELF'];
-               $file = str_replace('cron','commsy',$file);
+               $file = str_replace('cron_email_upload','commsy',$file);
                $curl_text = 'http://'.$_SERVER['HTTP_HOST'].$file.'?cid=';
 				   
 				   #$params['iid'] = $material_item->getItemID();
