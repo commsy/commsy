@@ -229,7 +229,7 @@ function email_to_commsy($mbox,$msgno){
 	}
    
 	// mark e-mail for deletion
-	#imap_delete($mbox,$msgno);
+	imap_delete($mbox,$msgno);
 }
 
 chdir('..');
