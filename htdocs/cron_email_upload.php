@@ -98,6 +98,8 @@ function email_to_commsy($mbox,$msgno){
 	global $portal_id_array;
 	global $c_email_upload_email_account;
 	
+	$translator = $environment->getTranslationObject();
+	
    $struct = imap_fetchstructure($mbox,$msgno);
 
    $header = imap_headerinfo($mbox,$msgno);
@@ -106,6 +108,13 @@ function email_to_commsy($mbox,$msgno){
    $body = imap_fetchbody($mbox,$msgno,1);
 	
    // get additional Information from e-mail body
+   $translator->setSelectedLanguage('de');
+   $translation['de']['password'] = $translator->getMessage('EMAIL_TO_COMMSY_PASSWORD');
+   $translation['de']['account'] = $translator->getMessage('EMAIL_TO_COMMSY_ACCOUNT');
+   $translator->setSelectedLanguage('en');
+   $translation['en']['password'] = $translator->getMessage('EMAIL_TO_COMMSY_PASSWORD');
+   $translation['en']['account'] = $translator->getMessage('EMAIL_TO_COMMSY_ACCOUNT');
+   
    $account = '';
    $secret = '';
    
@@ -113,12 +122,20 @@ function email_to_commsy($mbox,$msgno){
    $body_array = explode("\n", $body);
    foreach($body_array as $body_line){
    	if(!empty($body_line)){
-	   	if(stristr($body_line, 'Kennung:')){ // add translation
-	   		$temp_body_line = str_ireplace('Kennung:', '', $body_line);
+	   	if(stristr($body_line, $translation['de']['account'])){
+	   		$temp_body_line = str_ireplace($translation['de']['account'].':', '', $body_line);
 	   		$temp_body_line_array = explode(' ', trim($temp_body_line));
 	   		$account = $temp_body_line_array[0];
-	   	} else if(stristr($body_line, 'Passwort:')){ // add translation
-	   		$temp_body_line = str_ireplace('Passwort:', '', $body_line);
+	   	} else if(stristr($body_line, $translation['en']['account'])){
+	   		$temp_body_line = str_ireplace($translation['en']['account'].':', '', $body_line);
+	   		$temp_body_line_array = explode(' ', trim($temp_body_line));
+	   		$account = $temp_body_line_array[0];
+	   	} else if(stristr($body_line, $translation['de']['password'])){
+	   		$temp_body_line = str_ireplace($translation['de']['password'].':', '', $body_line);
+	   		$temp_body_line_array = explode(' ', trim($temp_body_line));
+	   		$secret = $temp_body_line_array[0];
+	   	} else if(stristr($body_line, $translation['en']['password'])){
+	   		$temp_body_line = str_ireplace($translation['en']['password'].':', '', $body_line);
 	   		$temp_body_line_array = explode(' ', trim($temp_body_line));
 	   		$secret = $temp_body_line_array[0];
 	   	}
@@ -148,7 +165,8 @@ function email_to_commsy($mbox,$msgno){
 		foreach($found_users as $found_user){
 			$private_room_user = $found_user->getRelatedPrivateRoomUserItem();
 			$private_room = $private_room_user->getOwnRoom();
-
+			$translator->setSelectedLanguage($private_room->getLanguage());
+			
 			if($private_room->getEmailToCommSy()){
 			   $email_to_commsy_secret = $private_room->getEmailToCommSySecret();
 			   
@@ -156,7 +174,6 @@ function email_to_commsy($mbox,$msgno){
             $result_mail->set_to($sender);
             $result_mail->set_from_name('CommSy');
 				$result_mail->set_from_email('commsy@commsy.net');
-			   $translator = $environment->getTranslationObject();
 				
 			   if($secret == $email_to_commsy_secret){
 			   	$private_room_id = $private_room->getItemID();
@@ -256,14 +273,13 @@ include_once('etc/cs_config.php');
 include_once('classes/cs_environment.php');
 $environment = new cs_environment();
 $environment->setCacheOff();
-
 $server_item = $environment->getServerItem();
 $portal_id_array = $server_item->getPortalIDArray();
 
 // open connection
 $mbox = imap_open('{'.$c_email_upload_server.':'.$c_email_upload_server_port.'}', $c_email_upload_email_account, $c_email_upload_email_password);
 
-// get messages
+// get and process e-mails
 $message_count = imap_num_msg($mbox);
 for ($msgno = 1; $msgno <= $message_count; ++$msgno) {
    email_to_commsy($mbox,$msgno);

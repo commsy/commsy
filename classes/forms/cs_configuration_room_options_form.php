@@ -786,7 +786,7 @@ class cs_configuration_room_options_form extends cs_rubric_form {
          $this->_form->combine();
          $this->_form->addTextField('email_to_commsy_secret','',$this->_translator->getMessage('PRIVATE_ROOM_EMAIL_TO_COMMSY_SECRET'),'',60,48);
          $this->_form->combine();
-         $this->_form->addText('email_to_commsy_text','',$this->_translator->getMessage('PRIVATE_ROOM_EMAIL_TO_COMMSY_TEXT'));
+         $this->_form->addText('email_to_commsy_text','',$this->_translator->getMessage('PRIVATE_ROOM_EMAIL_TO_COMMSY_TEXT', $this->_translator->getMessage('EMAIL_TO_COMMSY_PASSWORD'), $this->_translator->getMessage('EMAIL_TO_COMMSY_ACCOUNT')));
       }
       
       /******** buttons***********/
@@ -929,8 +929,17 @@ class cs_configuration_room_options_form extends cs_rubric_form {
       
       global $c_email_upload;
       if ($c_email_upload && $this->_environment->inPrivateRoom()) {
-         $this->_values['email_to_commsy'] = $context_item->getEmailToCommSy();
-         $this->_values['email_to_commsy_secret'] = $context_item->getEmailToCommSySecret();
+         if ( isset($this->_form_post['email_to_commsy']) ) {
+            $this->_values['email_to_commsy'] = $this->_form_post['email_to_commsy'];
+         } else {
+            $this->_values['email_to_commsy'] = $context_item->getEmailToCommSy();
+         }
+         
+         if ( isset($this->_form_post['email_to_commsy_secret']) ) {
+            $this->_values['email_to_commsy_secret'] = $this->_form_post['email_to_commsy_secret'];
+         } else {
+            $this->_values['email_to_commsy_secret'] = $context_item->getEmailToCommSySecret();
+         }
       }
    }
 
@@ -947,7 +956,7 @@ class cs_configuration_room_options_form extends cs_rubric_form {
       }
       
       if ($this->_environment->inPrivateRoom()) {
-      	if (isset($this->_form_post['email_to_commsy']) and !isset($this->_form_post['email_to_commsy_secret'])){
+      	if (isset($this->_form_post['email_to_commsy']) and empty($this->_form_post['email_to_commsy_secret'])){
 	         $this->_form->setFailure('email_to_commsy_secret','');
             $this->_error_array[] = $this->_translator->getMessage('PRIVATE_ROOM_EMAIL_TO_COMMSY_NO_SECRET',$this->_translator->getMessage('PREFERENCES_COMMUNITY_ROOMS'));
          }
