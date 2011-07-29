@@ -120,6 +120,7 @@ function email_to_commsy($mbox,$msgno){
    
    $body = preg_replace('/\r\n|\r/', "\n", $body);
    $body_array = explode("\n", $body);
+   $temp_body = array();
    foreach($body_array as $body_line){
    	if(!empty($body_line)){
 	   	if(stristr($body_line, $translation['de']['account'])){
@@ -138,9 +139,14 @@ function email_to_commsy($mbox,$msgno){
 	   		$temp_body_line = str_ireplace($translation['en']['password'].':', '', $body_line);
 	   		$temp_body_line_array = explode(' ', trim($temp_body_line));
 	   		$secret = $temp_body_line_array[0];
+	   	} else {
+	   		$temp_body[] = $body_line;
 	   	}
+   	} else {
+   		$temp_body[] = $body_line;
    	}
    }
+   $body = implode("\n", $temp_body);
    
 	foreach($portal_id_array as $portal_id){
 		$environment->setCurrentPortalID($portal_id);
@@ -241,14 +247,14 @@ function email_to_commsy($mbox,$msgno){
 				   
                $link_to_new_material = '<a href="'.$curl_text.$private_room_id.'&amp;mod=material&amp;fct=detail&amp;iid='.$material_item->getItemID().'">'.$material_item->getTitle().'</a>';
                
-				   $body = $translator->getMessage('EMAIL_TO_COMMSY_RESULT_SUCCESS', $private_room_user->getFullName(), $link_to_new_material);
+				   $result_body = $translator->getMessage('EMAIL_TO_COMMSY_RESULT_SUCCESS', $private_room_user->getFullName(), $link_to_new_material);
 				   $result_mail->set_subject('Upload2CommSy - erfolgreich');
-               $result_mail->set_message($body);
+               $result_mail->set_message($result_body);
 			   } else {
 			   	// send e-mail with 'password or subject not correct' back to sender
-			   	$body = $translator->getMessage('EMAIL_TO_COMMSY_RESULT_FAILURE', $private_room_user->getFullName());
+			   	$result_body = $translator->getMessage('EMAIL_TO_COMMSY_RESULT_FAILURE', $private_room_user->getFullName());
 			   	$result_mail->set_subject('Upload2CommSy - fehlgeschlagen');
-               $result_mail->set_message($body);
+               $result_mail->set_message($result_body);
 			   }
 			   
 			   #$result_mail->setSendAsHTML();
