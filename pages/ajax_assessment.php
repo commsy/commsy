@@ -40,6 +40,12 @@ if(isset($_GET['do'])){
 		}
 		
 		unset($assessment_manager);
+	} else if($_GET['do'] == 'delete_own') {
+		$item_link_id = $_GET['item_id'];
+		
+		$assessment_manager = $environment->getAssessmentManager();
+		$item_id = $assessment_manager->getItemIDForOwn($item_link_id);
+		$assessment_manager->delete($item_id);
 	}
 }
 ?>
