@@ -314,13 +314,17 @@ if ($type != CS_MATERIAL_TYPE) {
             }
             $detail_view->setAnnotationList($annotations);
 			
-			$assessment_manager = $environment->getAssessmentManager();
-			//$assessment_manager->addAssessmentForItem($version_item, 2.0);
-			$assessment = $assessment_manager->getAssessmentForItemAverage($version_item);
-			$voted = $assessment_manager->hasCurrentUserAlreadyVoted($version_item);
-			unset($assessment_manager);
-			if($assessment !== '') {
-				$detail_view->setAssessment($assessment, $voted);
+			// assessment
+			$current_context = $environment->getCurrentContextItem();
+         	if($current_context->isAssessmentActive()) {
+				$assessment_manager = $environment->getAssessmentManager();
+				$assessment = $assessment_manager->getAssessmentForItemAverage($version_item);
+				$voted = $assessment_manager->hasCurrentUserAlreadyVoted($version_item);
+				$own_vote = $assessment_manager->getAssessmentForItemOwn($version_item);
+				unset($assessment_manager);
+				if($assessment !== '') {
+					$detail_view->setAssessment($assessment[0], $assessment[1], $voted, $own_vote);
+				}
 			}
          }
 

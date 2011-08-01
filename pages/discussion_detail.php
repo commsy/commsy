@@ -248,9 +248,10 @@ if ($type != CS_DISCUSSION_TYPE) {
 		 $assessment_manager = $environment->getAssessmentManager();
 		 $assessment = $assessment_manager->getAssessmentForItemAverage($discussion_item);
 		 $voted = $assessment_manager->hasCurrentUserAlreadyVoted($discussion_item);
+		 $own_vote = $assessment_manager->getAssessmentForItemOwn($discussion_item);
 		 unset($assessment_manager);
 		 if($assessment !== '') {
-			$detail_view->setAssessment($assessment, $voted);
+			$detail_view->setAssessment($assessment[0], $assessment[1], $voted, $own_vote);
 		 }
 	  }
 
@@ -301,6 +302,19 @@ if ($type != CS_DISCUSSION_TYPE) {
          }
          unset($search_array);
       }
+	  
+	  	// assessment
+		$current_context = $environment->getCurrentContextItem();
+        if($current_context->isAssessmentActive()) {
+			$assessment_manager = $environment->getAssessmentManager();
+			$assessment = $assessment_manager->getAssessmentForItemAverage($discussion_item);
+			$voted = $assessment_manager->hasCurrentUserAlreadyVoted($discussion_item);
+			$own_vote = $assessment_manager->getAssessmentForItemOwn($discussion_item);
+			unset($assessment_manager);
+			if($assessment !== '') {
+				$detail_view->setAssessment($assessment[0], $assessment[1], $voted, $own_vote);
+			}
+		}
 
       $page->add($detail_view);
 
