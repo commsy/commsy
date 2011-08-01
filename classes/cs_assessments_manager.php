@@ -52,9 +52,8 @@ class cs_assessments_manager extends cs_manager {
     * @return object link
     */
   public function getItem ($item_id) {
-  	/*
      $retour = NULL;
-     $query = "SELECT * FROM ".$this->addDatabasePrefix($this->_db_table)." WHERE ".$this->addDatabasePrefix($this->_db_table).".from_item_id = '".encode(AS_DB,$father_id)."' AND ".$this->addDatabasePrefix($this->_db_table).".to_item_id = '".encode(AS_DB,$child_id)."'";
+     $query = "SELECT * FROM ".$this->addDatabasePrefix($this->_db_table)." WHERE ".$this->addDatabasePrefix($this->_db_table).".item_id = '".encode(AS_DB,$item_id)."'";
      $result = $this->_db_connector->performQuery($query);
      if (!isset($result) or empty($result[0])) {
         include_once('functions/error_functions.php');trigger_error('Problems selecting one homepage link item from query: "'.$query.'"',E_USER_WARNING);
@@ -62,7 +61,6 @@ class cs_assessments_manager extends cs_manager {
         $retour = $this->_buildItem($result[0]);
      }
      return $retour;
-	 * */
   }
 
    /** build a new assessments item
@@ -112,15 +110,19 @@ class cs_assessments_manager extends cs_manager {
   function getAssessmentForItemAverage($item) {
   	$query = '
   		SELECT
-  			AVG(assessment) AS average_assessment
+  			AVG(assessment) AS average_assessment,
+  			COUNT(item_id) AS count_assessment
 		FROM
 			assessments
 		WHERE
-			item_link_id = "' . encode(AS_DB, $item->getItemID())  . '"
+			item_link_id = "' . encode(AS_DB, $item->getItemID())  . '" AND
+			deletion_date IS NULL
+		GROUP BY
+			item_link_id
   	';
 	$result = $this->_db_connector->performQuery($query);
-	if(isset($result[0]['average_assessment'])) {
-		return $result[0]['average_assessment'];
+	if(isset($result[0])) {
+		return array($result[0]['average_assessment'], $result[0]['count_assessment']);
 	} else {
 		return '';
 	}
@@ -134,7 +136,8 @@ class cs_assessments_manager extends cs_manager {
   			assessments
   		WHERE
   			creator_id = "' . encode(AS_DB, $this->_environment->getCurrentUserID()) . '" AND
-  			item_link_id = "' . encode(AS_DB, $item->getItemID()) . '"
+  			item_link_id = "' . encode(AS_DB, $item->getItemID()) . '" AND
+			deletion_date IS NULL
   	';
 	$result = $this->_db_connector->performQuery($query);
 	if(sizeof($result) > 0) {
@@ -142,6 +145,25 @@ class cs_assessments_manager extends cs_manager {
 	}
 	
 	return false;
+  }
+  
+  function getAssessmentForItemOwn($item) {
+  	$query = '
+  		SELECT
+  			assessment
+		FROM
+			assessments
+		WHERE
+			item_link_id = "' . encode(AS_DB, $item->getItemID())  . '" AND
+			creator_id = "' . encode(AS_DB, $this->_environment->getCurrentUserID()) . '" AND
+			deletion_date IS NULL
+  	';
+	$result = $this->_db_connector->performQuery($query);
+	if(isset($result[0]['assessment'])) {
+		return $result[0]['assessment'];
+	} else {
+		return '';
+	}
   }
 
   /** create an assessment - internal, do not use -> use method save
@@ -222,36 +244,38 @@ class cs_assessments_manager extends cs_manager {
      unset($item);
   }
 
-  function delete($father_id, $child_id) {
+  function delete($item_id) {
      $current_datetime = getCurrentDateTimeInMySQL();
      $user_id = $this->_current_user->getItemID();
      $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET '.
               'deletion_date="'.$current_datetime.'",'.
               'deleter_id="'.encode(AS_DB,$user_id).'"'.
-              ' WHERE from_item_id="'.encode(AS_DB,$father_id).'" AND to_item_id="'.encode(AS_DB,$child_id).'"';
+              ' WHERE item_id = "' . encode(AS_DB, $item_id) . '"';
      $result = $this->_db_connector->performQuery($query);
      if ( !isset($result) or !$result ) {
-        include_once('functions/error_functions.php');trigger_error('Problems deleting homepage link from query: "'.$query.'"',E_USER_WARNING);
+        include_once('functions/error_functions.php');trigger_error('Problems deleting assessment from query: "'.$query.'"',E_USER_WARNING);
+     } else {
+           parent::delete($item_id);
      }
   }
-
-  function deleteHomepageLinks ($link_id) {
-     $link_item = $this->_getItemTo($link_id);
-     $father_id = $link_item->getFatherItemID();
-
-     $current_datetime = getCurrentDateTimeInMySQL();
-     $user_id = $this->_current_user->getItemID();
-     $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET '.
-              'deletion_date="'.$current_datetime.'",'.
-              'deleter_id="'.encode(AS_DB,$user_id).'"'.
-              ' WHERE from_item_id="'.encode(AS_DB,$link_id).'" OR to_item_id="'.encode(AS_DB,$link_id).'"';
-     $result = $this->_db_connector->performQuery($query);
-     if ( !isset($result) or !$result ) {
-        include_once('functions/error_functions.php');trigger_error('Problems deleting homepage link from query: "'.$query.'"',E_USER_WARNING);
-     } else {
-        $this->_cleanSortingPlaces($father_id);
-     }
-     unset($link_item);
+  
+  function getItemIDForOwn($item_link_id) {
+  	$query = '
+  		SELECT
+  			item_id
+		FROM
+			assessments
+		WHERE
+			item_link_id = "' . encode(AS_DB, $item_link_id)  . '" AND
+			creator_id = "' . encode(AS_DB, $this->_environment->getCurrentUserID()) . '" AND
+			deletion_date IS NULL
+  	';
+	$result = $this->_db_connector->performQuery($query);
+	if(isset($result[0]['item_id'])) {
+		return $result[0]['item_id'];
+	} else {
+		return '';
+	}
   }
 
   /** get all links
