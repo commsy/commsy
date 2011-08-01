@@ -121,7 +121,23 @@ function email_to_commsy($mbox,$msgno){
    $body = preg_replace('/\r\n|\r/', "\n", $body);
    $body_array = explode("\n", $body);
    $temp_body = array();
+   
+   $with_footer = false;
+   $footer_line = 0;
+   $index = 0;
    foreach($body_array as $body_line){
+   	if($body_line == '-- '){ // start of e-mail signature
+   		$with_footer = true;
+   		$footer_line = $index;
+   	}
+   	$index++;
+   }
+   
+   $index = 0;
+   foreach($body_array as $body_line){
+   	if($with_footer and $index == $footer_line){
+   		break;
+   	}
    	if(!empty($body_line)){
 	   	if(stristr($body_line, $translation['de']['account'])){
 	   		$temp_body_line = str_ireplace($translation['de']['account'].':', '', $body_line);
@@ -145,6 +161,7 @@ function email_to_commsy($mbox,$msgno){
    	} else {
    		$temp_body[] = $body_line;
    	}
+   	$index++;
    }
    $body = implode("\n", $temp_body);
    
@@ -181,6 +198,8 @@ function email_to_commsy($mbox,$msgno){
             $result_mail->set_from_name('CommSy');
 				$result_mail->set_from_email('commsy@commsy.net');
 				
+				$errors = array();
+				
 			   if($secret == $email_to_commsy_secret){
 			   	$private_room_id = $private_room->getItemID();
 			   	
@@ -208,6 +227,7 @@ function email_to_commsy($mbox,$msgno){
 			         		$temp_array['name'] = utf8_encode($strFileName);
 			         		$temp_array['tmp_name'] = $temp_file;
 			         		$temp_array['file_id'] = $temp_array['name'].'_'.getCurrentDateTimeInMySQL();
+			         		$temp_array['file_size'] = filesize($temp_file);
 			         		$files[] = $temp_array;
 					   	}
 					   }
@@ -226,14 +246,23 @@ function email_to_commsy($mbox,$msgno){
 				   $file_manager = $environment->getFileManager();
 			      $file_manager->setContextLimit($private_room_id);
 			      
+			      $portal_item = $environment->getCurrentPortalItem();
+			      $portal_max_file_size = $portal_item->getMaxUploadSizeInBytes();
+			      
 			      $file_id_array = array();
+			      $error['files_to_large'] = array();
 			      foreach($files as $file){
-					   $file_item = $file_manager->getNewItem();
-				      $file_item->setTempKey($file["file_id"]);
-			         $file_item->setPostFile($file);
-				      $file_item->save();
-				      $file_id_array[] = $file_item->getFileID();
+			      	if($file["file_size"] <= $portal_max_file_size){
+						   $file_item = $file_manager->getNewItem();
+					      $file_item->setTempKey($file["file_id"]);
+				         $file_item->setPostFile($file);
+					      $file_item->save();
+					      $file_id_array[] = $file_item->getFileID();
+			      	} else {
+			      		$error['files_to_large'][] = array('name' => $file['name'], 'size' => $file["file_size"]);
+			      	}
 			      }
+			      
 				   $material_item->setFileIDArray($file_id_array);			
 				   $material_item->save();
 				   
@@ -247,7 +276,18 @@ function email_to_commsy($mbox,$msgno){
 				   
                $link_to_new_material = '<a href="'.$curl_text.$private_room_id.'&amp;mod=material&amp;fct=detail&amp;iid='.$material_item->getItemID().'">'.$material_item->getTitle().'</a>';
                
-				   $result_body = $translator->getMessage('EMAIL_TO_COMMSY_RESULT_SUCCESS', $private_room_user->getFullName(), $link_to_new_material);
+				   $result_body = $translator->getMessage('EMAIL_TO_COMMSY_RESULT_SUCCESS', $private_room_user->getFullName(), $link_to_new_material)."\n\n";
+				   
+				   if(!empty($error['files_to_large'])){
+				   	$files_to_large = '';
+				   	foreach($error['files_to_large'] as $file_to_large){
+				   		$files_to_large .= '- '.$file_to_large['name'].' ('.round($file_to_large['size'] / (1024*1024), 2).' MB)'."\n";
+				   	}
+				   	$result_body .= $translator->getMessage('EMAIL_TO_COMMSY_RESULT_FILES_TO_LARGE', $portal_max_file_size / (1024*1024), $files_to_large)."\n\n";
+				   }
+				   
+				   $result_body .= $translator->getMessage('EMAIL_TO_COMMSY_RESULT_REGARDS');
+				   
 				   $result_mail->set_subject('Upload2CommSy - erfolgreich');
                $result_mail->set_message($result_body);
 			   } else {
