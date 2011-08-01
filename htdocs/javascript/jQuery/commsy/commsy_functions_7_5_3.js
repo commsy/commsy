@@ -3916,6 +3916,12 @@ jQuery(document).ready(function() {
 	var stars = new Object;
 	var stars = jQuery('span[id^=assessment_vote_star_] img');
 	
+	// store old status
+	var old_status = new Object;
+	stars.each(function() {
+		old_status[jQuery(this).parent().attr('id')] = jQuery(this).attr('src');
+	});
+	
 	// register mouseover
 	stars.each(function() {
 		jQuery(this).mouseover(function() {
@@ -3923,9 +3929,9 @@ jQuery(document).ready(function() {
 			var regexp = new RegExp('assessment_vote_star_(.*)');
 			var matches = regexp.exec(jQuery(this).parent().attr('id'));
 			
-			// set all stars up to the overed one to full
+			// set all stars up to the hovered one to full
 			for(var i = 0; i <= matches[1]; i++) {
-				jQuery('span[id=assessment_vote_star_' + i + '] img').attr('src', 'images/commsyicons/32x32/star_filled.png');
+				jQuery('span[id=assessment_vote_star_' + i + '] img').attr('src', 'images/commsyicons/32x32/star_select.png');
 			}
 		});
 	});
@@ -3933,9 +3939,9 @@ jQuery(document).ready(function() {
 	// register mouseout
 	stars.each(function() {
 		jQuery(this).mouseout(function() {
-			// set all stars to unfilled
+			// set all stars to there previous status
 			stars.each(function() {
-				jQuery(this).attr('src', 'images/commsyicons/32x32/star_unfilled.png');
+				jQuery(this).attr('src', old_status[jQuery(this).parent().attr('id')]);
 			});
 		});
 	});
@@ -3965,6 +3971,31 @@ jQuery(document).ready(function() {
 	            	}
 	           }
 			});
+		});
+	});
+});
+
+/*
+ * assessment delete function
+ */
+jQuery(document).ready(function() {
+	jQuery('a[id="assessment_delete_own"]').click(function() {
+		// perform ajax call to delete own voting
+		var json_data = new Object();
+		json_data['do'] = 'delete_own';
+		json_data['item_id'] = getURLParam('iid');
+		
+		jQuery.ajax({
+			url: 'commsy.php?cid='+window.ajax_cid+'&mod=ajax&fct=assessment&output=json',
+			   data: json_data,
+			   success: function(msg) {
+		    	    var resultJSON = eval('(' + msg + ')');
+	            	if (resultJSON === undefined) {
+	            	} else {
+	               		// page reload
+	               		location.reload();
+	            	}
+	           }
 		});
 	});
 });
@@ -4117,3 +4148,39 @@ function roomwide_search_extended_search(is_shown){
 	      jQuery('#privateroom_home_roomwide_search_toggle').attr('src', jQuery('#privateroom_home_roomwide_search_toggle').attr('src').replace('_over.gif','.gif'));
 	   });
 	}
+	
+/* AJAX Search */
+jQuery(document).ready(function() {
+	var treshhold = 3;
+	var last_length = 0;
+	
+	// register change function
+	jQuery('input[id="searchtext"]').keyup(function() {
+		// get length of insert text
+		var searchtext = jQuery(this).val();
+		var length = searchtext.length;
+		
+		// trigger search if last_length was below treshhold
+		if(last_length == treshhold - 1 && length == treshhold) {
+			// perform ajax call to delete own voting
+			var json_data = new Object();
+			json_data['do'] = 'search';
+			json_data['selrubric'] = jQuery(this).parent().find('input[name="selrubric"]').val();
+			json_data['searchtext'] = searchtext;
+			
+			jQuery.ajax({
+				url: 'commsy.php?cid=' + getURLParam('cid') + '&mod=ajax&fct=search&output=json',
+				   data: json_data,
+				   success: function(data) {
+				   		var response = jQuery.parseJSON(data);
+				   		if(response) {
+				   			console.log(response);
+				   		}
+		           }
+			});
+		}
+		
+		// update last length
+		last_length = length;
+	});
+});
