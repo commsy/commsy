@@ -388,7 +388,11 @@ class cs_discussion_index_view extends cs_room_index_view {
 			 // display stars
 			 $assessment_manager = $this->_environment->getAssessmentManager();
 			 $assessment = $assessment_manager->getAssessmentForItemAverage($item);
-			 $assessment = sprintf('%1.1f', (float) $assessment[0]);
+			 if(isset($assessment[0])) {
+			 	$assessment = sprintf('%1.1f', (float) $assessment[0]);
+			 } else {
+			 	$assessment = 0;
+			 }
 			 $stars_full = round($assessment, 0, PHP_ROUND_HALF_UP);
 			 $stars = '';
 			 for($i = 0; $i < $stars_full; $i++) {
