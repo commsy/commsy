@@ -508,6 +508,11 @@ class cs_material_manager extends cs_manager {
       } else {
          $query .= 'SELECT DISTINCT '.$this->addDatabasePrefix('materials').'.*';
       }
+	  
+	  if((isset($this->_order) && ($this->_order == 'assessment' || $this->_order == 'assessment_rev'))) {
+	  	$query .= ', AVG(assessments.assessment) AS assessments_avg';
+	  }
+	  
       $query .= ' FROM '.$this->addDatabasePrefix('materials');
       $query .= ' INNER JOIN tmp3'.$temp_number.' ON '.$this->addDatabasePrefix('materials').'.item_id=tmp3'.$temp_number.'.item_id AND '.$this->addDatabasePrefix('materials').'.version_id=tmp3'.$temp_number.'.version_id';
 
@@ -585,6 +590,8 @@ class cs_material_manager extends cs_manager {
       }elseif((isset($this->_order) and
            ($this->_order == 'modificator' || $this->_order == 'modificator_rev'))){
          $query .= ' INNER JOIN '.$this->addDatabasePrefix('user').' AS people ON '.$this->addDatabasePrefix('materials').'.modifier_id=people.item_id';
+      } elseif((isset($this->_order) && ($this->_order == 'assessment' || $this->_order == 'assessment_rev'))) {
+      	$query .= ' LEFT JOIN ' . $this->addDatabasePrefix('assessments') . ' ON ' . $this->addDatabasePrefix('materials') . '.item_id=assessments.item_link_id';
       }
 
       // only files limit -> entries with files (material)
@@ -762,6 +769,10 @@ class cs_material_manager extends cs_manager {
       if (isset($this->_search_array) AND !empty($this->_search_array)) {
          $query .= ' GROUP BY '.$this->addDatabasePrefix('materials').'.item_id';
       }
+	  
+	  if((isset($this->_order) && ($this->_order == 'assessment' || $this->_order == 'assessment_rev'))) {
+	  	$query .= ' GROUP BY '.$this->addDatabasePrefix('materials').'.item_id';
+	  }
 
       if ( isset($this->_order) ) {
          if ( $this->_order == 'date_rev' ) {
@@ -778,6 +789,10 @@ class cs_material_manager extends cs_manager {
             $query .= ' ORDER BY people.lastname';
          } elseif ( $this->_order == 'modificator_rev' ) {
             $query .= ' ORDER BY people.lastname DESC';
+		 } elseif( $this->_order == 'assessment' ) {
+		 	$query .= ' ORDER BY assessments_avg';
+		 } elseif( $this->_order == 'assessment_rev') {
+		 	$query .= ' ORDER BY assessments_avg DESC';
          } elseif ($this->_order == 'title') {
             $query .= ' ORDER BY '.$this->addDatabasePrefix('materials').'.title ASC, '.$this->addDatabasePrefix('materials').'.modification_date DESC';
          } elseif ($this->_order == 'title_rev') {

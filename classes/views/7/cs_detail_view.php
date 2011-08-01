@@ -1780,9 +1780,7 @@ class cs_detail_view extends cs_view {
 		 
 		 if($rubric == CS_MATERIAL_TYPE ||
 	  		$rubric == CS_DISCUSSION_TYPE ||
-			$rubric == CS_ANNOUNCEMENT_TYPE ||
-			$rubric == CS_MATERIAL_TYPE ||
-			$rubric == CS_TODO_TYPE) {
+			$rubric == CS_ANNOUNCEMENT_TYPE) {
 		  	 // check if assessment is active for this room
 	         $current_context = $this->_environment->getCurrentContextItem();
 	         if($current_context->isAssessmentActive()) {

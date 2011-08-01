@@ -102,7 +102,18 @@ class cs_announcement_index_view extends cs_index_view {
       $params = $this->_environment->getCurrentParameterArray();
       $params['from'] = 1;
       $html = '   <tr class="head">'.LF;
-      $html .= '      <td class="head" style="width:53%;" colspan="2">';
+	  $current_context = $this->_environment->getCurrentContextItem();
+	  $with_assessment = false;
+	  if($current_context->isAssessmentActive()) {
+	  	$with_assessment = true;
+	  }
+	  
+	  if($with_assessment) {
+	  	 $html .= '      <td class="head" style="width:45%;" colspan="2">';
+	  } else {
+	  	 $html .= '      <td class="head" style="width:53%;" colspan="2">';
+	  }
+     
       if ( $this->getSortKey() == 'title' ) {
          $params['sort'] = 'title_rev';
          $picture = '&nbsp;<img src="' . getSortImage('up') . '" alt="&lt;" border="0"/>';
@@ -167,6 +178,31 @@ class cs_announcement_index_view extends cs_index_view {
       }
       $html .= $picture;
       $html .= '</td>'.LF;
+      
+      // assessment
+	  if($with_assessment) {
+	  	  $html .= '<td style="15%; font-size:8pt;" class="head">';
+		  if($this->getSortKey() == 'assessment') {
+		  	$params['sort'] = 'assessment_rev';
+			$picture = '&nbsp;<img src="' . getSortImage('up') . '" alt="&lt;" border="0"/>';
+		  } elseif($this->getSortKey() == 'assessment_rev') {
+		  	$params['sort'] = 'assessment';
+			$picture = '&nbsp;<img src="' . getSortImage('down') . '" alt="&lt;" border="0"/>';
+		  } else {
+		  	$params['sort'] = 'assessment';
+			$picture = '&nbsp;';
+		  }
+	      if ( empty($params['download'])
+	           or $params['download'] != 'zip'
+	         ) {
+	         $html .= ahref_curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,
+	                             $params, $this->_translator->getMessage('COMMON_ASSESSMENT'), '', '', $this->getFragment(),'','','','class="head"');
+	      } else {
+	         $html .= $this->_translator->getMessage('COMMON_ASSESSMENT');
+	      }
+	      $html .= $picture;
+	      $html .= '</td>'.LF;
+	  }
 
       $html .= '   </tr>'.LF;
 
@@ -192,7 +228,12 @@ class cs_announcement_index_view extends cs_index_view {
          $html .= $this->_getViewActionsAsHTML();
       }
       $html .= '</td>'.LF;
-      $html .= '<td class="foot_right" colspan="2" style="vertical-align:middle; text-align:right; font-size:8pt;">'.LF;
+	  $current_context = $this->_environment->getCurrentContextItem();
+	  if($current_context->isAssessmentActive()) {
+	  	$html .= '<td class="foot_right" colspan="3" style="vertical-align:middle; text-align:right; font-size:8pt;">'.LF;
+	  } else {
+	  	$html .= '<td class="foot_right" colspan="2" style="vertical-align:middle; text-align:right; font-size:8pt;">'.LF;
+	  }
       if ( $this->hasCheckboxes() ) {
          if (count($this->getCheckedIDs())=='1'){
             $html .= ''.$this->_translator->getMessage('COMMON_SELECTED_ONE',count($this->getCheckedIDs()));
@@ -328,6 +369,25 @@ class cs_announcement_index_view extends cs_index_view {
 
       $html .= '      <td '.$style.' style="font-size:8pt;">'.$this->_getItemModificationDate($item).'</td>'.LF;
       $html .= '      <td '.$style.' style="font-size:8pt;">'.$this->_getItemModificator($item).'</td>'.LF;
+	  
+	  // assessment
+		 $current_context = $this->_environment->getCurrentContextItem();
+	  	 if($current_context->isAssessmentActive()) {
+			 // display stars
+			 $assessment_manager = $this->_environment->getAssessmentManager();
+			 $assessment = $assessment_manager->getAssessmentForItemAverage($item);
+			 $assessment = sprintf('%1.1f', (float) $assessment[0]);
+			 $stars_full = round($assessment, 0, PHP_ROUND_HALF_UP);
+			 $stars = '';
+			 for($i = 0; $i < $stars_full; $i++) {
+			  	$stars .= '<span><img src="images/commsyicons/32x32/star_filled.png" style="width:14px; height:14px"/></span>'.LF;
+			 }
+			 for($i = $stars_full; $i < 5; $i++) {
+			 	$stars .= '<span><img src="images/commsyicons/32x32/star_unfilled.png" style="width:14px; height:14px"/></span>'.LF;
+			 }
+			 $html .= '<td ' . $style . '>' . $stars . '</td>'.LF;
+		 }
+		 
       $html .= '   </tr>'.LF;
 
       return $html;

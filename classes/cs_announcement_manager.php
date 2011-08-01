@@ -163,6 +163,11 @@ class cs_announcement_manager extends cs_manager {
       } else {
          $query = 'SELECT '.$this->addDatabasePrefix($this->_db_table).'.*';
       }
+	  
+	  if((isset($this->_sort_order) && ($this->_sort_order == 'assessment' || $this->_sort_order == 'assessment_rev'))) {
+	  	$query .= ', AVG(assessments.assessment) AS assessments_avg';
+	  }
+	  
       $query .= ' FROM '.$this->addDatabasePrefix($this->_db_table);
 
       if ( isset($this->_search_array) AND !empty($this->_search_array) ||
@@ -215,6 +220,10 @@ class cs_announcement_manager extends cs_manager {
       // only files limit -> entries with files
       if ( isset($this->_only_files_limit) and $this->_only_files_limit ) {
          $query .= ' INNER JOIN '.$this->addDatabasePrefix('item_link_file').' AS lf ON '.$this->addDatabasePrefix($this->_db_table).'.item_id = lf.item_iid';
+      }
+	  
+	  if((isset($this->_sort_order) && ($this->_sort_order == 'assessment' || $this->_sort_order == 'assessment_rev'))) {
+      	$query .= ' LEFT JOIN ' . $this->addDatabasePrefix('assessments') . ' ON ' . $this->addDatabasePrefix('announcement') . '.item_id=assessments.item_link_id';
       }
 
       $query .= ' WHERE 1';
@@ -306,6 +315,10 @@ class cs_announcement_manager extends cs_manager {
       if ( isset($this->_only_files_limit) and $this->_only_files_limit ) {
          $query .= ' AND lf.deleter_id IS NULL AND lf.deletion_date IS NULL';
       }
+	  
+	  if((isset($this->_sort_order) && ($this->_sort_order == 'assessment' || $this->_sort_order == 'assessment_rev'))) {
+	  	$query .= ' GROUP BY '.$this->addDatabasePrefix('announcement').'.item_id';
+	  }
 
       if ( isset($this->_sort_order) ) {
          if ( $this->_sort_order == 'modified' ) {
@@ -316,6 +329,10 @@ class cs_announcement_manager extends cs_manager {
             $query .= ' ORDER BY '.$this->addDatabasePrefix('announcement').'.title';
          } elseif ( $this->_sort_order == 'title_rev' ) {
             $query .= ' ORDER BY '.$this->addDatabasePrefix('announcement').'.title DESC';
+		 } elseif( $this->_sort_order == 'assessment' ) {
+		 	$query .= ' ORDER BY assessments_avg';
+		 } elseif( $this->_sort_order == 'assessment_rev') {
+		 	$query .= ' ORDER BY assessments_avg DESC';
          } elseif ( $this->_sort_order == 'modificator' ) {
             $query .= ' ORDER BY people.lastname';
          } elseif ( $this->_sort_order == 'modificator_rev' ) {
@@ -608,5 +625,31 @@ class cs_announcement_manager extends cs_manager {
          unset($result);
       }
    }
+	
+	public function updateSearchIndices($languages) {
+		$query = '
+			SELECT
+				announcement.item_id,
+				search_time.st_id,
+				CONCAT(announcement.title, " ", announcement.description, " ", user.firstname, " ", user.lastname) AS search_data
+			FROM
+				announcement
+			LEFT JOIN
+				user
+			ON
+				user.item_id = announcement.modifier_id
+			LEFT JOIN
+				search_time
+			ON
+				search_time.st_item_id = announcement.item_id
+			WHERE
+				announcement.public = 1 AND
+				(
+					search_time.st_id IS NULL OR
+					announcement.modification_date > search_time.st_date
+				)
+		';
+		parent::updateSearchIndices($languages, $query);
+	}
 }
 ?>

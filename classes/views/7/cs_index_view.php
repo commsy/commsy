@@ -130,7 +130,7 @@ class cs_index_view extends cs_view {
    var $_attribute_limit = Null;
    var $_activation_limit = 2;
 
-   var $_colspan = 4;
+   var $_colspan = 5;
 
    /** constructor
     * the only available constructor, initial values for internal variables

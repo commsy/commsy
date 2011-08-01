@@ -165,6 +165,11 @@ class cs_discussion_manager extends cs_manager {
      } else {
         $query = 'SELECT DISTINCT '.$this->addDatabasePrefix('discussions').'.*';
      }
+	 
+	 if((isset($this->_sort_order) && ($this->_sort_order == 'assessment' || $this->_sort_order == 'assessment_rev'))) {
+	  	$query .= ', AVG(assessments.assessment) AS assessments_avg';
+	  }
+	 
      $query .= ' FROM '.$this->addDatabasePrefix('discussions');
 
      if ( ( isset($this->_search_array) AND !empty($this->_search_array) )
@@ -240,6 +245,10 @@ class cs_discussion_manager extends cs_manager {
       // only files limit -> entries with files
       if ( isset($this->_only_files_limit) and $this->_only_files_limit ) {
          $query .= ' INNER JOIN '.$this->addDatabasePrefix('item_link_file').' AS lf ON '.$this->addDatabasePrefix('discussionarticles').'.item_id = lf.item_iid';
+      }
+	
+	  if((isset($this->_sort_order) && ($this->_sort_order == 'assessment' || $this->_sort_order == 'assessment_rev'))) {
+      	$query .= ' LEFT JOIN ' . $this->addDatabasePrefix('assessments') . ' ON ' . $this->addDatabasePrefix('discussions') . '.item_id=assessments.item_link_id';
       }
 
      $query .= ' WHERE 1';
@@ -341,6 +350,11 @@ class cs_discussion_manager extends cs_manager {
      if (isset($this->_search_array) AND !empty($this->_search_array)) {
         $query .= ' GROUP BY '.$this->addDatabasePrefix('discussions').'.item_id';
      }
+
+	 if((isset($this->_sort_order) && ($this->_sort_order == 'assessment' || $this->_sort_order == 'assessment_rev'))) {
+	  	$query .= ' GROUP BY '.$this->addDatabasePrefix('discussions').'.item_id';
+	 }
+
      if ( isset($this->_sort_order) ) {
         if ( $this->_sort_order == 'latest' ) {
            $query .= ' ORDER BY '.$this->addDatabasePrefix('discussions').'.latest_article_modification_date DESC';
@@ -350,6 +364,10 @@ class cs_discussion_manager extends cs_manager {
            $query .= ' ORDER BY '.$this->addDatabasePrefix('discussions').'.title';
         } elseif ( $this->_sort_order == 'title_rev' ) {
            $query .= ' ORDER BY '.$this->addDatabasePrefix('discussions').'.title DESC';
+		} elseif( $this->_sort_order == 'assessment' ) {
+		 	$query .= ' ORDER BY assessments_avg';
+		} elseif( $this->_sort_order == 'assessment_rev') {
+		 	$query .= ' ORDER BY assessments_avg DESC';
         } elseif ( $this->_sort_order == 'creator' ) {
            $query .= ' ORDER BY people.lastname';
         } elseif ( $this->_sort_order == 'creator_rev' ) {
