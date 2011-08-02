@@ -134,27 +134,33 @@ function email_to_commsy($mbox,$msgno){
    }
    
    $index = 0;
+   $secret_found = false;
+   $account_found = false;
    foreach($body_array as $body_line){
    	if($with_footer and $index == $footer_line){
    		break;
    	}
    	if(!empty($body_line)){
-	   	if(stristr($body_line, $translation['de']['account'])){
+	   	if(stristr($body_line, $translation['de']['account']) and !$account_found){
 	   		$temp_body_line = str_ireplace($translation['de']['account'].':', '', $body_line);
 	   		$temp_body_line_array = explode(' ', trim($temp_body_line));
 	   		$account = $temp_body_line_array[0];
-	   	} else if(stristr($body_line, $translation['en']['account'])){
+	   		$account_found = true;
+	   	} else if(stristr($body_line, $translation['en']['account']) and !$account_found){
 	   		$temp_body_line = str_ireplace($translation['en']['account'].':', '', $body_line);
 	   		$temp_body_line_array = explode(' ', trim($temp_body_line));
 	   		$account = $temp_body_line_array[0];
-	   	} else if(stristr($body_line, $translation['de']['password'])){
+	   		$account_found = true;
+	   	} else if(stristr($body_line, $translation['de']['password']) and !$secret_found){
 	   		$temp_body_line = str_ireplace($translation['de']['password'].':', '', $body_line);
 	   		$temp_body_line_array = explode(' ', trim($temp_body_line));
 	   		$secret = $temp_body_line_array[0];
-	   	} else if(stristr($body_line, $translation['en']['password'])){
+	   		$secret_found = true;
+	   	} else if(stristr($body_line, $translation['en']['password']) and !$secret_found){
 	   		$temp_body_line = str_ireplace($translation['en']['password'].':', '', $body_line);
 	   		$temp_body_line_array = explode(' ', trim($temp_body_line));
 	   		$secret = $temp_body_line_array[0];
+	   		$secret_found = true;
 	   	} else {
 	   		$temp_body[] = $body_line;
 	   	}
