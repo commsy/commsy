@@ -33,6 +33,7 @@ $message["COMMON_ASSESSMENT"]["de"] = "Bewertungen";
 $message["COMMON_ASSESSMENT_CONFIGURATION_CHOICE_VALUE"]["de"] = "Bewertungen von Einträgen aktivieren";
 $message["COMMON_ASSESSMENT_EXPLANATION_VALUE"]["de"] = "Wenn diese Funktion aktiviert ist, können Einträge innerhalb von Räumen bewertet werden.";
 $message["COMMON_ASSESSMENT_INDEX"]["de"] = "Bewertung";
+$message["COMMON_ASSESSMENT_OVERLAY_DESCRIPTION"]["de"] = "Dieser Eintrag wurde bisher wie folgt bewertet:";
 $message["COMMON_ASSESSMENT_OWN"]["de"] = "Eigene Bewertung:";
 $message["COMMON_ASSESSMENT_OWN_NO"]["de"] = "Noch keine eigene Bewertung abgegeben";
 $message["COMMON_ASSESSMENT_PREVIOUS"]["de"] = "Bisherige Bewertung:";

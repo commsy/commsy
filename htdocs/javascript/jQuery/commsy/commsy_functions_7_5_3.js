@@ -3910,11 +3910,14 @@ jQuery(document).ready(function() {
 });
 
 /*
- * assessment vote function
+ * assessment vote function and tooltip initialization
  */
 jQuery(document).ready(function() {
+	// init sticky tooltip
+	stickytooltip.init("*[data-tooltip]", "assessment_tooltip");
+	
 	var stars = new Object;
-	var stars = jQuery('span[id^=assessment_vote_star_] img');
+	stars = jQuery('span[id^=assessment_vote_star_] img');
 	
 	// store old status
 	var old_status = new Object;

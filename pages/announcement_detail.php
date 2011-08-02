@@ -203,9 +203,10 @@ if ($type != CS_ANNOUNCEMENT_TYPE) {
 			$assessment = $assessment_manager->getAssessmentForItemAverage($announcement_item);
 			$voted = $assessment_manager->hasCurrentUserAlreadyVoted($announcement_item);
 			$own_vote = $assessment_manager->getAssessmentForItemOwn($announcement_item);
+			$detail = $assessment_manager->getAssessmentForItemDetail($announcement_item);
 			unset($assessment_manager);
 			if($assessment !== '') {
-				$detail_view->setAssessment($assessment[0], $assessment[1], $voted, $own_vote);
+				$detail_view->setAssessment($assessment[0], $assessment[1], $voted, $own_vote, $detail);
 			}
 		 }
 

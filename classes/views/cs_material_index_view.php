@@ -240,13 +240,13 @@ class cs_material_index_view extends cs_index_view {
 	              or $params['download'] != 'zip'
 	            ) {
 	            $html .= ahref_curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,
-	                                $params, $this->_translator->getMessage('COMMON_ASSESSMENT'), '', '', $this->getFragment(),'','','','class="head"');
+	                                $params, $this->_translator->getMessage('COMMON_ASSESSMENT_INDEX'), '', '', $this->getFragment(),'','','','class="head"');
 	         } else {
-	            $html .= $this->_translator->getMessage('COMMON_ASSESSMENT');
+	            $html .= $this->_translator->getMessage('COMMON_ASSESSMENT_INDEX');
 	         }
 	         $html .= $picture;
 	      } else {
-	         $html .= '<span class="index_link">'.$this->_translator->getMessage('COMMON_ASSESSMENT').'</span>';
+	         $html .= '<span class="index_link">'.$this->_translator->getMessage('COMMON_ASSESSMENT_INDEX').'</span>';
 	         $html .= $picture;
 	      }
 	      $html .= '</td>'.LF;

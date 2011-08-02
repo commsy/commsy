@@ -128,6 +128,31 @@ class cs_assessments_manager extends cs_manager {
 	}
   }
   
+  function getAssessmentForItemDetail($item) {
+  	$query = '
+  		SELECT
+  			count(item_link_id) as count,
+  			assessment
+  		FROM
+  			assessments
+  		WHERE
+  			item_link_id = "' . encode(AS_DB, $item->getItemID())  . '" AND
+			deletion_date IS NULL
+		GROUP BY
+			assessment
+  	';
+  	$result = $this->_db_connector->performQuery($query);
+  	if(!empty($result)) {
+  		$return = array();
+  		foreach($result as $value) {
+  			$return[$value['assessment']] = $value['count'];
+  		}
+  		return $return;
+  	} else {
+  		return '';
+  	}
+  }
+  
   function hasCurrentUserAlreadyVoted($item) {
   	$query = '
   		SELECT

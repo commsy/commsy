@@ -166,11 +166,12 @@ class cs_detail_view extends cs_view {
       $this->_annotation_list = $annotation_list;
    }
    
-   function setAssessment($assessment, $num_votes, $has_current_user_already_voted, $own_vote = -1) {
+   function setAssessment($assessment, $num_votes, $has_current_user_already_voted, $own_vote = -1, $detail) {
    	  $this->_assessment = array(	'assessment'	=> $assessment,
    	  								'num_votes'		=> $num_votes,
    	  								'already_voted'	=> $has_current_user_already_voted,
-									'own_vote'		=> $own_vote);
+									'own_vote'		=> $own_vote,
+   	  								'detail'		=> $detail);
    }
 
    function setExtraHorizontalLineNumbers($count) {
@@ -2121,19 +2122,58 @@ class cs_detail_view extends cs_view {
 	}
 	
 	$span_pre = '';
+	$tooltip = '';
 	if($this->_assessment['already_voted'] === false || $this->_assessment === null) {
 		$span_pre = 'assessment_vote_star_';
 	} else {
 		$span_pre = 'assessment_overlay_star_';
+		$tooltip = 'assessment_overlay_tooltip';
+		
+		// create tooltip
+		$html .= '<div id="assessment_tooltip" class="stickytooltip" style="width: 250px; border-width: 1px;">'.LF;
+		$html .= '	<div style="padding: 5px;">'.LF;
+		$html .= '		<div id="assessment_overlay_tooltip">'.LF;
+		$html .= $this->_translator->getMessage('COMMON_ASSESSMENT_OVERLAY_DESCRIPTION');
+		
+		// show information about all votes
+		for($i = 1; $i <= 5; $i++) {
+			$html .= '		<div style="margin-top: 5px;">'.LF;
+			for($j = 0; $j < $i; $j++) {
+				$html .= '		<span style="width: 200px;"><img src="images/commsyicons/32x32/star_filled.png" style="width:18px; height:18px"/></span>'.LF;
+			}
+			for($j = $i; $j < 5; $j++) {
+				$html .= '		<span style="width: 200px;"><img src="images/commsyicons/32x32/star_unfilled.png" style="width:18px; height:18px"/></span>'.LF;
+			}
+			
+			$votes = 0;
+			if(isset($this->_assessment['detail'][$i])) {
+				$votes = $this->_assessment['detail'][$i];
+			}
+			
+			$assessment_text = '';
+			if($votes == 1) {
+				$assessment_text = $this->_translator->getMessage('COMMON_ASSESSMENT_INDEX');
+			} else {
+				$assessment_text = $this->_translator->getMessage('COMMON_ASSESSMENT');
+			}
+			$html .= '			<span>' . $votes . ' ' . $assessment_text . '</span>'.LF;
+			$html .= '		</div>'.LF;
+		}
+		
+		$html .= '		</div>'.LF;
+		$html .= '	</div>'.LF;
+		//$html .= '	<div class="stickystatus">'.LF;
+		//$html .= '	</div>'.LF;
+		$html .= '</div>'.LF;
 	}
 	
 	// display stars
 	$stars_full = round($assessment, 0, PHP_ROUND_HALF_UP);
 	for($i = 0; $i < $stars_full; $i++) {
-		$html .= '<span id="' . $span_pre . $i . '"><img src="images/commsyicons/32x32/star_filled.png" style="width:18px; height:18px"/></span>'.LF;
+		$html .= '<span id="' . $span_pre . $i . '"><img src="images/commsyicons/32x32/star_filled.png" data-tooltip="' . $tooltip . '" style="width:18px; height:18px"/></span>'.LF;
 	}
 	for($i = $stars_full; $i < 5; $i++) {
-		$html .= '<span id="' . $span_pre . $i . '"><img src="images/commsyicons/32x32/star_unfilled.png" style="width:18px; height:18px"/></span>'.LF;
+		$html .= '<span id="' . $span_pre . $i . '"><img src="images/commsyicons/32x32/star_unfilled.png" data-tooltip="' . $tooltip . '" style="width:18px; height:18px"/></span>'.LF;
 	}
 	
 	if($this->_assessment['already_voted'] === false || $this->_assessment === null) {

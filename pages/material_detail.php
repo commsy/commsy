@@ -321,9 +321,10 @@ if ($type != CS_MATERIAL_TYPE) {
 				$assessment = $assessment_manager->getAssessmentForItemAverage($version_item);
 				$voted = $assessment_manager->hasCurrentUserAlreadyVoted($version_item);
 				$own_vote = $assessment_manager->getAssessmentForItemOwn($version_item);
+				$detail = $assessment_manager->getAssessmentForItemDetail($version_item);
 				unset($assessment_manager);
 				if($assessment !== '') {
-					$detail_view->setAssessment($assessment[0], $assessment[1], $voted, $own_vote);
+					$detail_view->setAssessment($assessment[0], $assessment[1], $voted, $own_vote, $detail);
 				}
 			}
          }
