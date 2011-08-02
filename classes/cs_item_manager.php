@@ -553,6 +553,7 @@ class cs_item_manager extends cs_manager {
            $query .= ' AND '.$this->addDatabasePrefix('items').'.type != "section"';
            $query .= ' AND '.$this->addDatabasePrefix('items').'.type != "step"';
            $query .= ' AND '.$this->addDatabasePrefix('items').'.type != "user"';
+           $query .= ' AND '.$this->addDatabasePrefix('items').'.type != "assessments"';
            if (isset($this->_age_limit)) {
               $query .= ' AND '.$this->addDatabasePrefix('items').'.modification_date > DATE_SUB(CURRENT_DATE,interval '.encode(AS_DB,$this->_age_limit).' day)';
            }
