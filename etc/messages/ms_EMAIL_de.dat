@@ -10,7 +10,7 @@ der Upload per E-Mail in Ihren pers&ouml;nlichen Raum war leider nicht erfolgrei
 
 Bitte &uuml;berpr&uuml;fen Sie, ob Sie im Text der E-Mail das entsprechende Upload-Kennwort mit folgender Zeile angegeben haben:
 
-Kennwort: IHR_UPLOAD_KENNWORT
+%2: IHR_UPLOAD_KENNWORT
 
 Gru&szlig; ... CommSy Administrator";
 $message["EMAIL_TO_COMMSY_RESULT_FILES_TO_LARGE"]["de"] = "Folgende Dateien waren leider gr&ouml;&szlig;er als die erlaubte Upload-Grenze des Portals (%1 MB):

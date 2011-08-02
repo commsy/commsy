@@ -10,7 +10,7 @@ the upload via e-mail to CommSy was not successful.
 
 Please make sure that you stated your upload-password in the following manner in a single line:
 
-Password: YOUR_UPLOAD_PASSWORT
+%2: YOUR_UPLOAD_PASSWORT
 
 Best regards ... CommSy Administrator";
 $message["EMAIL_TO_COMMSY_RESULT_FILES_TO_LARGE"]["en"] = "The following files exceeded the upload-limit of the portal (%1 MB):

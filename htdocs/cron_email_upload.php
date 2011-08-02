@@ -298,7 +298,7 @@ function email_to_commsy($mbox,$msgno){
                $result_mail->set_message($result_body);
 			   } else {
 			   	// send e-mail with 'password or subject not correct' back to sender
-			   	$result_body = $translator->getMessage('EMAIL_TO_COMMSY_RESULT_FAILURE', $private_room_user->getFullName());
+			   	$result_body = $translator->getMessage('EMAIL_TO_COMMSY_RESULT_FAILURE', $private_room_user->getFullName(), $translator->getMessage('EMAIL_TO_COMMSY_PASSWORD'));
 			   	$result_mail->set_subject('Upload2CommSy - fehlgeschlagen');
                $result_mail->set_message($result_body);
 			   }
