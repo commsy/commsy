@@ -105,8 +105,20 @@ function email_to_commsy($mbox,$msgno){
    $header = imap_headerinfo($mbox,$msgno);
    $sender = $header->from[0]->mailbox.'@'.$header->from[0]->host;
    $subject = $header->subject;
-   $body = imap_fetchbody($mbox,$msgno,1);
+   #$body = imap_fetchbody($mbox,$msgno,1);
 	
+   // just use the plain part of the e-mail
+   $body_plain = get_part($mbox, $msgno, "TEXT/PLAIN");
+   $body_html = get_part($mbox, $msgno, "TEXT/HTML");
+   $body_is_plain = true;
+   
+   if(!empty($body_plain)){
+   	$body = $body_plain;
+   } else {
+   	$body_is_plain = false;
+   	$body = $body_html;
+   }
+   
    // get additional Information from e-mail body
    $translator->setSelectedLanguage('de');
    $translation['de']['password'] = $translator->getMessage('EMAIL_TO_COMMSY_PASSWORD');
@@ -126,7 +138,7 @@ function email_to_commsy($mbox,$msgno){
    $footer_line = 0;
    $index = 0;
    foreach($body_array as $body_line){
-   	if($body_line == '-- '){ // start of e-mail signature
+   	if(strip_tags($body_line) == '-- '){ // start of e-mail signature
    		$with_footer = true;
    		$footer_line = $index;
    	}
@@ -141,6 +153,7 @@ function email_to_commsy($mbox,$msgno){
    		break;
    	}
    	if(!empty($body_line)){
+   		$body_line = strip_tags($body_line);
 	   	if(stristr($body_line, $translation['de']['account']) and !$account_found){
 	   		$temp_body_line = str_ireplace($translation['de']['account'].':', '', $body_line);
 	   		$temp_body_line_array = explode(' ', trim($temp_body_line));
