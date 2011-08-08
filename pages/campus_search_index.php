@@ -631,7 +631,7 @@ if ( !empty($ref_iid) and $mode =='attached'){
    }
 
 
-   if ( isset($mode) && $mode == 'formattach' or $mode == 'detailattach' ) {
+   if ( isset($mode) && ($mode == 'formattach' or $mode == 'detailattach' )) {
       $view->setRefIID($ref_iid);
       $view->setHasCheckboxes($mode);
       $view->setCheckedIDs($new_attach_ids);
