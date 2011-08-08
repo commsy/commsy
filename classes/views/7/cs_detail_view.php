@@ -1778,6 +1778,10 @@ class cs_detail_view extends cs_view {
            $html .= '<h2 class="contenttitle">'.$this->_text_as_html_short($this->_compareWithSearchText($item->getFullName(),false));
          }
          $html .= '</h2>'.LF;
+         $html .= '</div>'.LF;
+         $html .= '</div>'.LF;
+         
+         $html .='<div id="detail_content" style="font-size:10pt; '.$width.'">'.LF;
 		 
 		 if($rubric == CS_MATERIAL_TYPE ||
 	  		$rubric == CS_DISCUSSION_TYPE ||
@@ -1790,15 +1794,11 @@ class cs_detail_view extends cs_view {
 				$html .= 'var ajax_cid = "' . $current_context->getItemID() . '"'.LF;
 				$html .= '-->'.LF;
 	         	$html .= '</script>'.LF;
+	         	//$html .= '<div class="detail_content" style="border: none;">'.LF;
 			   	$html .= $this->_getAssessmentsAsHTML();
+			   	//$html .= '</div>'.LF;
 			 }
 		  }
-		 
-		 
-         $html .= '</div>'.LF;
-         $html .= '</div>'.LF;
-
-         $html .='<div id="detail_content" style="font-size:10pt; '.$width.'">'.LF;
       }
 
       $formal_data1 = array();

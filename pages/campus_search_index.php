@@ -231,7 +231,7 @@ if ( isset($_GET['option']) and isOption($_GET['option'],$translator->getMessage
    }
 
    // Handle attaching
-   if ( $mode == 'formattach' or $mode == 'detailattach' ) {
+   if ( isset($mode) && ($mode == 'formattach' or $mode == 'detailattach') ) {
       $attach_type = CS_USER_TYPE;
       include('pages/index_attach_inc.php');
    }
@@ -336,11 +336,11 @@ if ( isset($_GET['attribute_limit']) ) {
    // LIST ACTIONS
    // initiate selected array of IDs
    $selected_ids = array();
-   if ($mode == '') {
+   if ( isset($mode) && $mode == '') {
       $session->unsetValue('cid'.$environment->getCurrentContextID().
                               '_'.$environment->getCurrentModule().
                               '_selected_ids');
-   }elseif ($mode == 'list_actions') {
+   }elseif ( isset($mode) && $mode == 'list_actions') {
       if ($session->issetValue('cid'.$environment->getCurrentContextID().
                                   '_'.$environment->getCurrentModule().
                                  '_selected_ids')) {
@@ -631,12 +631,12 @@ if ( !empty($ref_iid) and $mode =='attached'){
    }
 
 
-   if ( $mode == 'formattach' or $mode == 'detailattach' ) {
+   if ( isset($mode) && $mode == 'formattach' or $mode == 'detailattach' ) {
       $view->setRefIID($ref_iid);
       $view->setHasCheckboxes($mode);
       $view->setCheckedIDs($new_attach_ids);
       $view->setDontEditIDs($dontedit_attach_ids);
-   }elseif ($mode == 'attach'){
+   }elseif (isset($mode) && $mode == 'attach'){
       $view->setHasCheckboxes('list_actions');
    }else{
       $view->setCheckedIDs($selected_ids);
