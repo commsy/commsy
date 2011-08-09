@@ -330,9 +330,9 @@ class cs_announcement_manager extends cs_manager {
          } elseif ( $this->_sort_order == 'title_rev' ) {
             $query .= ' ORDER BY '.$this->addDatabasePrefix('announcement').'.title DESC';
 		 } elseif( $this->_sort_order == 'assessment' ) {
-		 	$query .= ' ORDER BY assessments_avg';
-		 } elseif( $this->_sort_order == 'assessment_rev') {
 		 	$query .= ' ORDER BY assessments_avg DESC';
+		 } elseif( $this->_sort_order == 'assessment_rev') {
+		 	$query .= ' ORDER BY assessments_avg ASC';
          } elseif ( $this->_sort_order == 'modificator' ) {
             $query .= ' ORDER BY people.lastname';
          } elseif ( $this->_sort_order == 'modificator_rev' ) {

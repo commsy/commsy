@@ -3249,10 +3249,61 @@ EOD;
       } else {
          $current_item = $list->getFirst();
          $i = 0;
+		 $html_assessment_tooltip = '';
+		 $current_context = $this->_environment->getCurrentContextItem();
+		 if($current_context->isAssessmentActive()) {
+		 	// create tooltip
+			$html_assessment_tooltip .= '<div id="assessment_tooltip" class="stickytooltip" style="width: 250px; border-width: 1px;">'.LF;
+			$html_assessment_tooltip .= '	<div style="padding: 5px;">'.LF;
+		 }
+		 
          while ( $current_item ) {
             $html .= $this->_getItemAsHTML($current_item, $i++);
+			
+			// assessment tooltip
+			if($current_context->isAssessmentActive()) {
+				// get assessment information
+				$assessment_manager = $this->_environment->getAssessmentManager();
+				$assessment = $assessment_manager->getAssessmentForItemDetail($current_item);
+				$html_assessment_tooltip .= '	<div id="sticky_' . $current_item->getItemID() . '" class="atip">'.LF;
+				$html_assessment_tooltip .= $this->_translator->getMessage('COMMON_ASSESSMENT_OVERLAY_DESCRIPTION');
+				
+				// show information about all votes
+				for($i = 1; $i <= 5; $i++) {
+					$html_assessment_tooltip .= '<div style="margin-top: 5px;">'.LF;
+					for($j = 0; $j < $i; $j++) {
+						$html_assessment_tooltip .= '<span style="width: 200px;"><img src="images/commsyicons/32x32/star_filled.png" style="width:18px; height:18px"/></span>'.LF;
+					}
+					for($j = $i; $j < 5; $j++) {
+						$html_assessment_tooltip .= '<span style="width: 200px;"><img src="images/commsyicons/32x32/star_unfilled.png" style="width:18px; height:18px"/></span>'.LF;
+					}
+					
+					$votes = 0;
+					
+					if(isset($assessment[$i])) {
+						$votes = $assessment[$i];
+					}
+					
+					$assessment_text = '';
+					if($votes == 1) {
+						$assessment_text = $this->_translator->getMessage('COMMON_ASSESSMENT_INDEX');
+					} else {
+						$assessment_text = $this->_translator->getMessage('COMMON_ASSESSMENT');
+					}
+					$html_assessment_tooltip .= '	<span>' . $votes . ' ' . $assessment_text . '</span>'.LF;
+					$html_assessment_tooltip .= '</div>'.LF;
+				}
+				
+				$html_assessment_tooltip .= '	</div>'.LF;
+			}
+			
             $current_item = $list->getNext();
          }
+		 
+		 if($current_context->isAssessmentActive()) {
+			$html_assessment_tooltip .= '</div>'.LF;
+			$html .= $html_assessment_tooltip;
+		 }
       }
       return $html;
    }

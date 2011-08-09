@@ -790,9 +790,9 @@ class cs_material_manager extends cs_manager {
          } elseif ( $this->_order == 'modificator_rev' ) {
             $query .= ' ORDER BY people.lastname DESC';
 		 } elseif( $this->_order == 'assessment' ) {
-		 	$query .= ' ORDER BY assessments_avg';
-		 } elseif( $this->_order == 'assessment_rev') {
 		 	$query .= ' ORDER BY assessments_avg DESC';
+		 } elseif( $this->_order == 'assessment_rev') {
+		 	$query .= ' ORDER BY assessments_avg ASC';
          } elseif ($this->_order == 'title') {
             $query .= ' ORDER BY '.$this->addDatabasePrefix('materials').'.title ASC, '.$this->addDatabasePrefix('materials').'.modification_date DESC';
          } elseif ($this->_order == 'title_rev') {

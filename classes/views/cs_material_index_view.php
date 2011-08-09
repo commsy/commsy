@@ -445,27 +445,27 @@ class cs_material_index_view extends cs_index_view {
 
          $html .= '      <td '.$style.' style="font-size:8pt;">'.$this->_getItemModificator($item).'</td>'.LF;
 		 
-		 // assessment
-		 $current_context = $this->_environment->getCurrentContextItem();
-	  	 if($current_context->isAssessmentActive()) {
-			 // display stars
-			 $assessment_manager = $this->_environment->getAssessmentManager();
-			 $assessment = $assessment_manager->getAssessmentForItemAverage($item);
-			 if(isset($assessment[0])) {
-			 	$assessment = sprintf('%1.1f', (float) $assessment[0]);
-			 } else {
+		// assessment
+		$current_context = $this->_environment->getCurrentContextItem();
+	  	if($current_context->isAssessmentActive()) {
+			// display stars
+			$assessment_manager = $this->_environment->getAssessmentManager();
+			$assessment = $assessment_manager->getAssessmentForItemAverage($item);
+			if(isset($assessment[0])) {
+				$assessment = sprintf('%1.1f', (float) $assessment[0]);
+			} else {
 			 	$assessment = 0;
-			 }
-			 $stars_full = round($assessment, 0, PHP_ROUND_HALF_UP);
-			 $stars = '';
-			 for($i = 0; $i < $stars_full; $i++) {
-			  	$stars .= '<span><img src="images/commsyicons/32x32/star_filled.png" style="width:14px; height:14px"/></span>'.LF;
-			 }
-			 for($i = $stars_full; $i < 5; $i++) {
-			 	$stars .= '<span><img src="images/commsyicons/32x32/star_unfilled.png" style="width:14px; height:14px"/></span>'.LF;
-			 }
-			 $html .= '<td ' . $style . '>' . $stars . '</td>'.LF;
-		 }
+			}
+			$stars_full = round($assessment, 0, PHP_ROUND_HALF_UP);
+			$stars = '';
+			for($i = 0; $i < $stars_full; $i++) {
+			  	$stars .= '<span><img src="images/commsyicons/32x32/star_filled.png" data-tooltip="sticky_' . $item->getItemID() . '" style="width:14px; height:14px"/></span>'.LF;
+			}
+			for($i = $stars_full; $i < 5; $i++) {
+			 	$stars .= '<span><img src="images/commsyicons/32x32/star_unfilled.png" data-tooltip="sticky_' . $item->getItemID() . '" style="width:14px; height:14px"/></span>'.LF;
+			}
+			$html .= '<td ' . $style . '>' . $stars . '</td>'.LF;
+		}
 
       ########################
       # EDU HACK - BEGIN

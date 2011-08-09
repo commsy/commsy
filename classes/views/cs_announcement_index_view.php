@@ -384,10 +384,10 @@ class cs_announcement_index_view extends cs_index_view {
 			 $stars_full = round($assessment, 0, PHP_ROUND_HALF_UP);
 			 $stars = '';
 			 for($i = 0; $i < $stars_full; $i++) {
-			  	$stars .= '<span><img src="images/commsyicons/32x32/star_filled.png" style="width:14px; height:14px"/></span>'.LF;
+			  	$stars .= '<span><img src="images/commsyicons/32x32/star_filled.png" data-tooltip="sticky_' . $item->getItemID() . '" style="width:14px; height:14px"/></span>'.LF;
 			 }
 			 for($i = $stars_full; $i < 5; $i++) {
-			 	$stars .= '<span><img src="images/commsyicons/32x32/star_unfilled.png" style="width:14px; height:14px"/></span>'.LF;
+			 	$stars .= '<span><img src="images/commsyicons/32x32/star_unfilled.png" data-tooltip="sticky_' . $item->getItemID() . '" style="width:14px; height:14px"/></span>'.LF;
 			 }
 			 $html .= '<td ' . $style . '>' . $stars . '</td>'.LF;
 		 }
