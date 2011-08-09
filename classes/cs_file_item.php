@@ -208,6 +208,10 @@ class cs_file_item extends cs_item {
       $this->_icon['ggb']      = "geogebra.png";
       $this->_mime['ggb']      = 'application/geogebra';
       
+      // Scratch
+      $this->_icon['sb']      = "scratch.png";
+      $this->_mime['sb']      = 'application/scratch';
+      
       $this->_icon['unknown'] = "unknown.png";
 
       $this->cs_item($environment);
