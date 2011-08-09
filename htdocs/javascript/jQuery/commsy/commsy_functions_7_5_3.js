@@ -1799,6 +1799,59 @@ function setupDiscussionTree() {
 	    	dtnode.focus();
 	    }
 	});
+	
+	// build show all / hide all link
+	
+	var showAndHide = {
+		status: "hide",
+		
+		init: function(tree, span_id) {
+			jQuery(document).ready(function($) {
+				jQuery('span[id="' + span_id + '"]').append('<a id="dicussion_threaded_show_hide_a" href="#"></a>');
+			
+				var link = jQuery('a[id="dicussion_threaded_show_hide_a"]');
+				
+				// get actual dynatree status - try to find a not expanded node
+				tree.dynatree("getRoot").visit(function(node) {
+					if(!node.isVisible()) {
+						showAndHide.status = 'show';
+						return false;
+					}
+				}, false);
+				
+				// set link text
+				if(showAndHide.status == 'show') {
+					link.text(show_all);
+				} else {
+					link.text(hide_all);
+				}
+				
+				// bind onClick
+				link.bind('click', function(e) {
+					showAndHide.onClick($, tree, link, e);
+				});
+			});
+		},
+		
+		onClick: function($, tree, link, e) {
+			// switch status - expand / compress tree
+			if(showAndHide.status == 'show') {
+				link.text(hide_all);
+				showAndHide.status = 'hide';
+				tree.dynatree("getRoot").visit(function(node) {
+					node.expand(true);
+				});
+			} else {
+				link.text(show_all);
+				showAndHide.status = 'show';
+				tree.dynatree("getRoot").visit(function(node) {
+					node.expand(false);
+				}, false);
+			}
+		}
+	};
+	
+	showAndHide.init(tree, "discussion_show_hide_all");
 
 	// make tree visible
 	jQuery('[id=discussion_tree]').fadeIn(200);

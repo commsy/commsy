@@ -375,6 +375,10 @@ class cs_discussion_detail_view extends cs_detail_view {
       $html .= '%</div>' . LF;
       $html .= '<div id="discussion_tree_progressbar" style="margin-left: 180px; margin-right: 50px;"></div>' . LF;
       $html .= '</div>' . LF;
+	  
+	  // show all / hide all link
+	  $html .= '<span id="discussion_show_hide_all"></span>';
+	  
       $html .= '<div id="discussion_tree" style="position: relative; display:none;">'.LF;
 
       // build list of articles
@@ -975,30 +979,35 @@ class cs_discussion_detail_view extends cs_detail_view {
          if(isset($_GET['answer_to'])) {
             $father_position = $_GET['ref_position'];
             $father_position_length = mb_strlen($father_position);
+			
 
             $max = 1000;
             $insert_after_id = 0;
             $subitems_list = clone($this->getSubItemList());
-            $subitem = $subitems_list->getFirst();
-            while($subitem) {
-               $subitem_position = $subitem->getPosition();
-               $subitem_position_length = mb_strlen($subitem_position);
-
-               if(   $subitem_position_length > $father_position_length &&
-               mb_substr($subitem_position, 0, $father_position_length) == $father_position) {
-                  $postfix = mb_substr($subitem_position, $father_position_length+1);
-
-                  if(((int) $postfix) > $max) {
-                     $max = (int) $postfix;
-                     $insert_after_id = $subitem->getItemID();
-                  }
-               }
-
-               $subitem = $subitems_list->getNext();
-            }
-            if($insert_after_id == 0) {
-               $insert_after_id = $_GET['answer_to'];
-            }
+			if($father_position == 1) {
+				$insert_after_id = $subitems_list->getLast()->getItemID();
+			} else {
+				 $subitem = $subitems_list->getFirst();
+	            while($subitem) {
+	               $subitem_position = $subitem->getPosition();
+	               $subitem_position_length = mb_strlen($subitem_position);
+	
+	               if(   $subitem_position_length > $father_position_length &&
+	               mb_substr($subitem_position, 0, $father_position_length) == $father_position) {
+	                  $postfix = mb_substr($subitem_position, $father_position_length+1);
+	
+	                  if(((int) $postfix) > $max) {
+	                     $max = (int) $postfix;
+	                     $insert_after_id = $subitem->getItemID();
+	                  }
+	               }
+	
+	               $subitem = $subitems_list->getNext();
+	            }
+	            if($insert_after_id == 0) {
+	               $insert_after_id = $_GET['answer_to'];
+	            }
+			}
          }
 
          $reader_manager = $this->_environment->getReaderManager();
@@ -1392,6 +1401,8 @@ class cs_discussion_detail_view extends cs_detail_view {
               var text2 = '" . $text2 . "';
               var button_delete = '" . $this->_translator->getMessage("COMMON_DELETE_BUTTON") . "';
               var button_cancel = '" . $this->_translator->getMessage("COMMON_CANCEL_BUTTON") . "';
+              var show_all = '" . $this->_translator->getMessage("DISCUSSION_THREADED_SHOW_ALL") . "';
+              var hide_all = '" . $this->_translator->getMessage("DISCUSSION_THREADED_HIDE_ALL") . "';
           -->
           </script>
       ";
