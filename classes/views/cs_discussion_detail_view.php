@@ -994,10 +994,13 @@ class cs_discussion_detail_view extends cs_detail_view {
 	            
 	            // if the father item had some childs before, the subitems position must be larger then the fathers position
 	            if($subitem_position_length > $father_position_length) {
-	            	// compare position
-	            	if($subitem_position > $last_position) {
-	            		$last_position = $subitem_position;
-	            		$insert_after_id = $subitem->getItemID();
+	            	// father position must be included in the new item	            	
+	            	if(mb_substr($subitem_position, 0, $father_position_length) == $father_position) {
+		            	// compare position
+		            	if($subitem_position > $last_position) {
+		            		$last_position = $subitem_position;
+		            		$insert_after_id = $subitem->getItemID();
+		            	}
 	            	}
 	            }
 				
