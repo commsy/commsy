@@ -212,6 +212,7 @@ class cs_topic_index_view extends cs_index_view {
    }
 
    function _getTablefootAsHTML() {
+
       $html  = '   <tr class="list">'.LF;
       if ( $this->hasCheckboxes() and $this->_has_checkboxes != 'list_actions') {
          $html .= '<td class="foot_left" colspan="2"><input style="font-size:8pt;" type="submit" name="option" value="'.$this->_translator->getMessage('COMMON_ATTACH_BUTTON').'" /> <input type="submit"  style="font-size:8pt;" name="option" value="'.$this->_translator->getMessage('COMMON_CANCEL_BUTTON').'"/>';
@@ -223,8 +224,12 @@ class cs_topic_index_view extends cs_index_view {
          $html .= ahref_curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,
                            $params, $this->_translator->getMessage('COMMON_ALL_ENTRIES'), '', '', $this->getFragment(),'','','','class="select_link"');
          $html .= '<span class="select_link">]</span>'.LF;
-
-         $html .= $this->_getViewActionsAsHTML();
+// if room is archived deactivate dropdown
+         $context = $this->_environment->getCurrentContextItem();
+         if(!($context->isProjectRoom() and $context->isClosed())){
+         	$html .= $this->_getViewActionsAsHTML();
+         }
+         unset($context);
       }
       $html .= '</td>'.LF;
       $html .= '<td class="foot_right" style="vertical-align:middle; text-align:right; font-size:8pt;">'.LF;
@@ -276,7 +281,7 @@ class cs_topic_index_view extends cs_index_view {
          $html .= '/>'.LF;
          $html .= '         <input type="hidden" name="shown['.$this->_text_as_form($key).']" value="1"/>'.LF;
          $html .= '      </td>'.LF;
-         
+
          if ($item->isNotActivated()) {
             $title = $item->getTitle();
             $title = $this->_compareWithSearchText($title);

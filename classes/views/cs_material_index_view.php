@@ -133,7 +133,7 @@ class cs_material_index_view extends cs_index_view {
 	  if($current_context->isAssessmentActive()) {
 	  	$with_assessment = true;
 	  }
-	  
+
 	  if($with_assessment) {
 	  	$html .= '      <td style="width:50%;" class="head" colspan="2">';
 	  } else {
@@ -221,7 +221,7 @@ class cs_material_index_view extends cs_index_view {
          $html .= $picture;
       }
       $html .= '</td>'.LF;
-	  
+
 	  // assessment
 	  if($with_assessment) {
 	  	  $html .= '<td style="15%; font-size:8pt;" class="head">';
@@ -277,7 +277,11 @@ class cs_material_index_view extends cs_index_view {
                           $params, $this->_translator->getMessage('COMMON_ALL_ENTRIES'), '', '', $this->getFragment(),'','','','class="select_link"');
          $html .= '<span class="select_link">]</span>'.LF;
 
+// if room is archived deactivate dropdown
+		if(!($current_context->isProjectRoom() and $current_context->isClosed())){
          $html .= $this->_getViewActionsAsHTML();
+		}
+
       }
       $html .= '</td>'.LF;
       $html .= '<td class="foot_right"  style="vertical-align:middle; text-align:right; font-size:8pt;">'.LF;
@@ -444,7 +448,7 @@ class cs_material_index_view extends cs_index_view {
       ########################
 
          $html .= '      <td '.$style.' style="font-size:8pt;">'.$this->_getItemModificator($item).'</td>'.LF;
-		 
+
 		// assessment
 		$current_context = $this->_environment->getCurrentContextItem();
 	  	if($current_context->isAssessmentActive()) {

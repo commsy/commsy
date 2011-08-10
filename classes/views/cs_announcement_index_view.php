@@ -107,13 +107,13 @@ class cs_announcement_index_view extends cs_index_view {
 	  if($current_context->isAssessmentActive()) {
 	  	$with_assessment = true;
 	  }
-	  
+
 	  if($with_assessment) {
 	  	 $html .= '      <td class="head" style="width:45%;" colspan="2">';
 	  } else {
 	  	 $html .= '      <td class="head" style="width:53%;" colspan="2">';
 	  }
-     
+
       if ( $this->getSortKey() == 'title' ) {
          $params['sort'] = 'title_rev';
          $picture = '&nbsp;<img src="' . getSortImage('up') . '" alt="&lt;" border="0"/>';
@@ -178,7 +178,7 @@ class cs_announcement_index_view extends cs_index_view {
       }
       $html .= $picture;
       $html .= '</td>'.LF;
-      
+
       // assessment
 	  if($with_assessment) {
 	  	  $html .= '<td style="15%; font-size:8pt;" class="head">';
@@ -224,8 +224,13 @@ class cs_announcement_index_view extends cs_index_view {
          $html .= ahref_curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,
                           $params, $this->_translator->getMessage('COMMON_ALL_ENTRIES'), '', '', $this->getFragment(),'','','','class="select_link"');
          $html .= '<span class="select_link">]</span>'.LF;
+// if room is archived deactivate dropdown
+		 $context = $this->_environment->getCurrentContextItem();
+         if(!($context->isProjectRoom() and $context->isClosed())){
+         	$html .= $this->_getViewActionsAsHTML();
+         }
+         unset($context);
 
-         $html .= $this->_getViewActionsAsHTML();
       }
       $html .= '</td>'.LF;
 	  $current_context = $this->_environment->getCurrentContextItem();
@@ -369,7 +374,7 @@ class cs_announcement_index_view extends cs_index_view {
 
       $html .= '      <td '.$style.' style="font-size:8pt;">'.$this->_getItemModificationDate($item).'</td>'.LF;
       $html .= '      <td '.$style.' style="font-size:8pt;">'.$this->_getItemModificator($item).'</td>'.LF;
-	  
+
 	  // assessment
 		 $current_context = $this->_environment->getCurrentContextItem();
 	  	 if($current_context->isAssessmentActive()) {
@@ -391,7 +396,7 @@ class cs_announcement_index_view extends cs_index_view {
 			 }
 			 $html .= '<td ' . $style . '>' . $stars . '</td>'.LF;
 		 }
-		 
+
       $html .= '   </tr>'.LF;
 
       return $html;

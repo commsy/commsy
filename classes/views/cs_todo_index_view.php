@@ -232,8 +232,10 @@ class cs_todo_index_view extends cs_room_index_view {
          $html .= ahref_curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,
                           $params, $this->_translator->getMessage('COMMON_ALL_ENTRIES'), '', '', $this->getFragment(),'','','','class="select_link"');
          $html .= '<span class="select_link">]</span>'.LF;
-
-         $html .= $this->_getViewActionsAsHTML();
+// if room is archived deactivate dropdown
+         if(!($context->isProjectRoom() and $context->isClosed())){
+         	$html .= $this->_getViewActionsAsHTML();
+         }
       }
       $html .= '</td>'.LF;
       $html .= '<td class="foot_right" colspan="2" style="vertical-align:middle; text-align:right; font-size:8pt;">'.LF;
