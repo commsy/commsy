@@ -85,7 +85,12 @@ function performRoomIDArray ($id_array,$portal_name,$privatrooms = false) {
       #$result_html .= '<h4>'.$title.' - '.$type.' - '.$environment->getTextConverter()->text_as_html_short($portal_name).'<h4>'.LF;
       fwrite($file, '<h4>'.$title.' - '.$type.' - '.$environment->getTextConverter()->text_as_html_short($portal_name).'<h4>'.LF);
       if ( $active ) {
-         displayCronResults($room->runCron());
+         #displayCronResults($room->runCron());
+         if($room->isPrivateRoom()){
+      	   passthru('php htdocs/cron_single_room.php '.$room->getItemID().' private');
+         } else {
+         	passthru('php htdocs/cron_single_room.php '.$room->getItemID());
+         }
       } else {
          #echo('not active'.BRLF);
          #$result_html .= 'not active'.BRLF;

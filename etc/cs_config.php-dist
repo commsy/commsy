@@ -72,4 +72,7 @@ $c_security_key = "3a2a14dbbab21710e78f7091af0f70dd";
 
 // include more commsy settings
 @include_once('config_meta.php');
+
+// use, if cron_new.php is started from the commanline
+//$c_commsy_cron_path = "http://localhost/commsy/htdocs/";
 ?>
