@@ -402,6 +402,7 @@ class cs_privateroom_item extends cs_room_item {
               and $this->isPrivateroom()
             ) {
             $file = $_SERVER['PHP_SELF'];
+            $file = str_replace('cron_new','commsy',$file);
             $file = str_replace('cron','commsy',$file);
             $curl_text = 'http://'.$_SERVER['HTTP_HOST'].$file.'?cid=';
 

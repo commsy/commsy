@@ -91,6 +91,10 @@ function performRoomIDArray ($id_array,$portal_name,$privatrooms = false) {
          #$result_html .= 'not active'.BRLF;
          fwrite($file, 'not active'.BRLF);
       }
+      fwrite($file, 'Current time: '.date('d.m.Y H:i:s').BRLF);
+      fwrite($file, 'Peak of allocated memory: '.memory_get_peak_usage(true).BRLF);
+      fwrite($file, 'Current allocated memory: '.memory_get_usage(true).BRLF);
+      fwrite($file, '----------------------------------------------------------'.BRLF);
       unset($room);
    }
    unset($room_manager);
@@ -165,7 +169,10 @@ header("Content-Type: text/html; charset=utf-8");
 #$result_html = '';
 if ( !empty($_GET['cid']) ) {
    $context_id = $_GET['cid'];
+} else if ( !empty($_SERVER["argv"][1]) ) {
+   $context_id = $_SERVER["argv"][1];
 }
+
 if ( !isset($context_id) ) {
    $filename = 'cronresult';
 } else {
