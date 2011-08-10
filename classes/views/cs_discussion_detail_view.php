@@ -979,34 +979,29 @@ class cs_discussion_detail_view extends cs_detail_view {
          if(isset($_GET['answer_to'])) {
             $father_position = $_GET['ref_position'];
             $father_position_length = mb_strlen($father_position);
-			
-
-            $max = 1000;
-            $insert_after_id = 0;
+            
             $subitems_list = clone($this->getSubItemList());
-			if($father_position == 1) {
-				$insert_after_id = $subitems_list->getLast()->getItemID();
-			} else {
-				 $subitem = $subitems_list->getFirst();
-	            while($subitem) {
-	               $subitem_position = $subitem->getPosition();
-	               $subitem_position_length = mb_strlen($subitem_position);
-	
-	               if(   $subitem_position_length > $father_position_length &&
-	               mb_substr($subitem_position, 0, $father_position_length) == $father_position) {
-	                  $postfix = mb_substr($subitem_position, $father_position_length+1);
-	
-	                  if(((int) $postfix) > $max) {
-	                     $max = (int) $postfix;
-	                     $insert_after_id = $subitem->getItemID();
-	                  }
-	               }
-	
-	               $subitem = $subitems_list->getNext();
+        	$subitem = $subitems_list->getFirst();
+        	
+        	// if father didnt had some childs before, the answer after id, is the id of the father itselfs
+        	$insert_after_id = $_GET['answer_to'];
+        	$last_position = $father_position;
+        	
+        	// go through each item
+			while($subitem) {
+				$subitem_position = $subitem->getPosition();
+	            $subitem_position_length = mb_strlen($subitem_position);
+	            
+	            // if the father item had some childs before, the subitems position must be larger then the fathers position
+	            if($subitem_position_length > $father_position_length) {
+	            	// compare position
+	            	if($subitem_position > $last_position) {
+	            		$last_position = $subitem_position;
+	            		$insert_after_id = $subitem->getItemID();
+	            	}
 	            }
-	            if($insert_after_id == 0) {
-	               $insert_after_id = $_GET['answer_to'];
-	            }
+				
+				$subitem = $subitems_list->getNext();
 			}
          }
 
