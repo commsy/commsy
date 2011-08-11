@@ -75,4 +75,7 @@ $c_security_key = "3a2a14dbbab21710e78f7091af0f70dd";
 
 // use, if cron_new.php is started from the commanline
 //$c_commsy_cron_path = "http://localhost/commsy/htdocs/";
+// cron_new.php must be run as root to make changing user and group for commsy/var/temp possible!
+//$c_commsy_cron_var_temp_user = "www-data";
+//$c_commsy_cron_var_temp_group = "www-data";
 ?>

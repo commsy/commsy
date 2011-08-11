@@ -178,6 +178,14 @@ class cs_server_item extends cs_guide_item {
       $success = $disc_manager->removeDirectory($temp_folder);
       if ( $success ) {
          $success = $disc_manager->makeDirectory($temp_folder);
+         if( $success ){
+            global $c_commsy_cron_var_temp_user;
+				global $c_commsy_cron_var_temp_group;
+				if(isset($c_commsy_cron_var_temp_user) && isset($c_commsy_cron_var_temp_group)){
+					chown($temp_folder, $c_commsy_cron_var_temp_user);
+					chgrp($temp_folder, $c_commsy_cron_var_temp_group);
+				}
+         }
       }
       unset($disc_manager);
 
