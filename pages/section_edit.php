@@ -286,6 +286,10 @@ else {
             $section_list->set($section_item);
             $material_item->setSectionList($section_list);
             $material_item->setSectionSaveID($section_item->getItemId());
+            
+            $external_view_array = $material_item->getExternalViewerArray();
+            $material_item->setExternalViewerAccounts($external_view_array);
+            
             $material_item->save();
 
             // redirect

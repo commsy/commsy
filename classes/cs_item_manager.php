@@ -806,7 +806,7 @@ class cs_item_manager extends cs_manager {
       $result = $this->_db_connector->performQuery($query);
       if ( isset($result) and !empty($result) ) {
          foreach ( $result as $query_result ) {
-            $retour[] = $query_result['user_id'].' ';
+            $retour[] = $query_result['user_id'];
          }
          return $retour;
       } else {
