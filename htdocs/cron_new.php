@@ -82,12 +82,16 @@ function performRoomIDArray ($id_array,$portal_name,$privatrooms = false) {
       }
       fwrite($file, '<h4>'.$title.' - '.$type.' - '.$environment->getTextConverter()->text_as_html_short($portal_name).'<h4>'.LF);
       if ( $active ) {
-         #displayCronResults($room->runCron());
-         if($room->isPrivateRoom()){
-      	   passthru('php htdocs/cron_single_room.php '.$room->getItemID().' private');
-         } else {
-         	passthru('php htdocs/cron_single_room.php '.$room->getItemID());
-         }
+      	global $c_commsy_cron_split_scripts;
+      	if(isset($c_commsy_cron_split_scripts) and $c_commsy_cron_split_scripts){
+	         if($room->isPrivateRoom()){
+	      	   passthru('php htdocs/cron_single_room.php '.$room->getItemID().' private');
+	         } else {
+	         	passthru('php htdocs/cron_single_room.php '.$room->getItemID());
+	         }
+      	} else {
+      		displayCronResults($room->runCron());
+      	}
       } else {
          fwrite($file, 'not active'.BRLF);
       }
