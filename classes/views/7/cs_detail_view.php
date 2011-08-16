@@ -2168,7 +2168,15 @@ class cs_detail_view extends cs_view {
 	}
 	
 	// display stars
-	$stars_full = round($assessment, 0, PHP_ROUND_HALF_UP);
+	$php_version = explode('.', phpversion());
+	if($php_version[0] >= 5 && $php_version[1] >= 3) {
+		// if php version is equal to or above 5.3
+		$stars_full = round($assessment, 0, PHP_ROUND_HALF_UP);
+	} else {
+		// if php version is below 5.3
+		$stars_full = round($assessment);
+	}
+	
 	for($i = 0; $i < $stars_full; $i++) {
 		$html .= '<span id="' . $span_pre . $i . '"><img src="images/commsyicons/32x32/star_filled.png" data-tooltip="' . $tooltip . '" style="width:18px; height:18px"/></span>'.LF;
 	}
