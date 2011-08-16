@@ -397,7 +397,14 @@ class cs_discussion_index_view extends cs_room_index_view {
 			 } else {
 			 	$assessment = 0;
 			 }
-			 $stars_full = round($assessment, 0, PHP_ROUND_HALF_UP);
+		  	 $php_version = explode('.', phpversion());
+			 if($php_version[0] >= 5 && $php_version[1] >= 3) {
+			 	// if php version is equal to or above 5.3
+				$stars_full = round($assessment, 0, PHP_ROUND_HALF_UP);
+			 } else {
+				// if php version is below 5.3
+				$stars_full = round($assessment);
+			 }
 			 $stars = '';
 			 for($i = 0; $i < $stars_full; $i++) {
 			  	$stars .= '<span><img src="images/commsyicons/32x32/star_filled.png" data-tooltip="sticky_' . $item->getItemID() . '" style="width:14px; height:14px"/></span>'.LF;
