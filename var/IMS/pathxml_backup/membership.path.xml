@@ -15,6 +15,4 @@
    <path>membership/member/role[@roletype]</path></var>
    <var name="SOURCE">
    <path>membership/sourcedid/source</path><path>membership/member/sourcedid/source</path></var>
-<pathinfo>
-
-
+</pathinfo>
