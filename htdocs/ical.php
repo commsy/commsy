@@ -26,11 +26,11 @@ mb_internal_encoding('UTF-8');
 if ( isset($_GET['cid']) ) {
    global $c_webserver;
    if(isset($c_webserver) and $c_webserver == 'lighttpd'){
-	   $path = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'];
+      $path = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'];
    } else {
       $path = 'http://'.$_SERVER['SERVER_NAME'].$_SERVER['PHP_SELF'];
    }
-   
+
    $path = str_replace('ical.php','',$path);
    chdir('..');
    include_once('etc/cs_constants.php');
@@ -156,58 +156,65 @@ if ( isset($_GET['cid']) ) {
             }*/
             $myentries_array = $context_item->getMyCalendarDisplayConfig();
             $myroom_array = array();
-		      foreach($myentries_array as $entry) {
-		         $exp_entry = explode('_', $entry);
-		         if(sizeof($exp_entry) == 2) {
-		            if($exp_entry[1] == 'dates' || $exp_entry[1] == 'todo') {
-		            	$entry = str_replace('_dates', '', $entry);
-		            	$entry = str_replace('_todo', '', $entry);
-		               $myroom_array[] = $entry;
-		            }
-		         }
-		      }
-		      $dates_manager->setContextArrayLimit($myroom_array);
+            foreach($myentries_array as $entry) {
+               $exp_entry = explode('_', $entry);
+               if(sizeof($exp_entry) == 2) {
+                  if($exp_entry[1] == 'dates' || $exp_entry[1] == 'todo') {
+                     $entry = str_replace('_dates', '', $entry);
+                     $entry = str_replace('_todo', '', $entry);
+                     $myroom_array[] = $entry;
+                  }
+               }
+            }
+            $dates_manager->setContextArrayLimit($myroom_array);
          }
          $dates_manager->setNotOlderThanMonthLimit(3);
          $dates_manager->select();
          $item_list = $dates_manager->get();
-         
+
          if ( $environment->inPrivateRoom() ) {
-	         $myentries_array = $context_item->getMyCalendarDisplayConfig();
-			   if(in_array("mycalendar_dates_assigned_to_me", $myentries_array)){
-			      $temp_list = new cs_list();
-			      $current_user_item = $environment->getCurrentUserItem();
-			      $current_user_list = $current_user_item->getRelatedUserList();
-			      $temp_element = $item_list->getFirst();
-			      while($temp_element){
-			         $temp_user = $current_user_list->getFirst();
-			         while($temp_user){
-			            if($temp_element->isParticipant($temp_user)){
-			               $temp_list->add($temp_element);
-			            }
-			            $temp_user = $current_user_list->getNext();
-			         }
-			         $temp_element = $item_list->getNext();
-			      }
-			      $item_list = $temp_list;
-			   }
+            $myentries_array = $context_item->getMyCalendarDisplayConfig();
+            if(in_array("mycalendar_dates_assigned_to_me", $myentries_array)){
+               $temp_list = new cs_list();
+               $current_user_item = $environment->getCurrentUserItem();
+               $current_user_list = $current_user_item->getRelatedUserList();
+               $temp_element = $item_list->getFirst();
+               while($temp_element){
+                  $temp_user = $current_user_list->getFirst();
+                  while($temp_user){
+                     if($temp_element->isParticipant($temp_user)){
+                        $temp_list->add($temp_element);
+                     }
+                     $temp_user = $current_user_list->getNext();
+                  }
+                  $temp_element = $item_list->getNext();
+               }
+               $item_list = $temp_list;
+            }
          }
-         
+
       }else{
          $todo_manager = $environment->getToDoManager();
          $context_item = $environment->getCurrentContextItem();
-         $todo_sel_status = $context_item->getRubrikSelection(CS_TODO_TYPE,'status');
-         if ( isset($todo_sel_status) ) {
-            if ( $todo_sel_status > 9 ) {
-               $todo_sel_status = $todo_sel_status - 10;
-            }
-            if ( !empty($todo_sel_status) ) {
-               $todo_manager->setStatusLimit($todo_sel_status);
+         if ( isset($context_item) and $context_item->isPrivateRoom() ) {
+            $todo_sel_status = $context_item->getRubrikSelection(CS_TODO_TYPE,'status');
+            if ( isset($todo_sel_status) ) {
+               if ( $todo_sel_status > 9 ) {
+                  $todo_sel_status = $todo_sel_status - 10;
+               }
+               if ( !empty($todo_sel_status) ) {
+                  $todo_manager->setStatusLimit($todo_sel_status);
+               }
+            } else {
+               $todo_manager->setStatusLimit(4);
             }
          } else {
             $todo_manager->setStatusLimit(4);
          }
-         $todo_sel_room = $context_item->getRubrikSelection(CS_TODO_TYPE,'room');
+         $todo_sel_room = '';
+         if ( isset($context_item) and $context_item->isPrivateRoom() ) {
+            $todo_sel_room = $context_item->getRubrikSelection(CS_TODO_TYPE,'room');
+         }
          if ( !empty($todo_sel_room) ) {
             if ( $todo_sel_room > 99 ) {
                $room_id_array = array();
@@ -263,7 +270,10 @@ if ( isset($_GET['cid']) ) {
             $room_id_array[] = $context_item->getItemID();
             $todo_manager->setContextArrayLimit($room_id_array);
          }
-         $todo_sel_assignment = $context_item->getRubrikSelection(CS_TODO_TYPE,'assignment');
+         $todo_sel_assignment = '';
+         if ( isset($context_item) and $context_item->isPrivateRoom() ) {
+            $todo_sel_assignment = $context_item->getRubrikSelection(CS_TODO_TYPE,'assignment');
+         }
          if ( !empty($todo_sel_assignment) ) {
             if ($todo_sel_assignment == '3'){
                $current_user = $environment->getCurrentUserItem();
@@ -333,7 +343,7 @@ if ( isset($_GET['cid']) ) {
 
       #$user_item = $user_list->getFirst();
       #while($user_item){
-      #	$user_item = $user_list->getNext();
+      #   $user_item = $user_list->getNext();
       #}
 
       $item = $item_list->getFirst();
@@ -349,8 +359,8 @@ if ( isset($_GET['cid']) ) {
          }
          if ($current_module==CS_TODO_TYPE){
             $categories = array('CommSy .'.$translator->getMessage('COMMON_TODOS'));
-###				$attendees = $item->getProcessorItemList();
-###				$attendee = $attendees->getFirst();
+###            $attendees = $item->getProcessorItemList();
+###            $attendee = $attendees->getFirst();
             $temp_array = array();
             $attendee_array = array();
             $temp_array = array();
@@ -368,25 +378,25 @@ if ( isset($_GET['cid']) ) {
                   $temp_user_item = $user_list->getNext();
                }
             }
-###				while($attendee)
-###				{
-###					$temp_array['name'] = $attendee->getFullName();
-###					$temp_array['email'] = $attendee->getEmail();
-###					$temp_array['role'] = '0';
-###					$attendee_array[] = $temp_array;
-###					$attendee = $attendees->getNext();
-###				}
+###            while($attendee)
+###            {
+###               $temp_array['name'] = $attendee->getFullName();
+###               $temp_array['email'] = $attendee->getEmail();
+###               $temp_array['role'] = '0';
+###               $attendee_array[] = $temp_array;
+###               $attendee = $attendees->getNext();
+###            }
 
             $alarm = array();
-            //			$alarm = (array) array(
-            //								  0, // Action: 0 = DISPLAY, 1 = EMAIL, (not supported: 2 = AUDIO, 3 = PROCEDURE)
-            //								  30,  // Trigger: alarm before the event in minutes
-            //								  'Wake Up!', // Title
-            //								  '...and go shopping', // Description
-            //								  $attendees, // Array (key = attendee name, value = e-mail, second value = role of the attendee [0 = CHAIR | 1 = REQ | 2 = OPT | 3 =NON])
-            //								  5, // Duration between the alarms in minutes
-            //								  3  // How often should the alarm be repeated
-            //								  );
+            //         $alarm = (array) array(
+            //                          0, // Action: 0 = DISPLAY, 1 = EMAIL, (not supported: 2 = AUDIO, 3 = PROCEDURE)
+            //                          30,  // Trigger: alarm before the event in minutes
+            //                          'Wake Up!', // Title
+            //                          '...and go shopping', // Description
+            //                          $attendees, // Array (key = attendee name, value = e-mail, second value = role of the attendee [0 = CHAIR | 1 = REQ | 2 = OPT | 3 =NON])
+            //                          5, // Duration between the alarms in minutes
+            //                          3  // How often should the alarm be repeated
+            //                          );
             $enddate = '';
             $recurrency_end = strtotime($item->getDate());
             $language = $environment->getSelectedLanguage();
@@ -447,8 +457,8 @@ if ( isset($_GET['cid']) ) {
 
          }else{
             $categories = array('CommSy .'.$translator->getMessage('COMMON_DATES'));
-###				$attendees = $item->getParticipantsItemList();
-###				$attendee = $attendees->getFirst();
+###            $attendees = $item->getParticipantsItemList();
+###            $attendee = $attendees->getFirst();
             $temp_array = array();
             $attendee_array = array();
             $user_item_id_array = $item_id_array_with_users[$item->getItemID()];
@@ -464,24 +474,24 @@ if ( isset($_GET['cid']) ) {
                   $temp_user_item = $user_list->getNext();
                }
             }
-###				while($attendee)
-###				{
-###					$temp_array['name'] = $attendee->getFullName();
-###					$temp_array['email'] = $attendee->getEmail();
-###					$temp_array['role'] = '0';
-###					$attendee_array[] = $temp_array;
-###					$attendee = $attendees->getNext();
-###				}
+###            while($attendee)
+###            {
+###               $temp_array['name'] = $attendee->getFullName();
+###               $temp_array['email'] = $attendee->getEmail();
+###               $temp_array['role'] = '0';
+###               $attendee_array[] = $temp_array;
+###               $attendee = $attendees->getNext();
+###            }
             $alarm = array();
-            //			$alarm = (array) array(
-            //								  0, // Action: 0 = DISPLAY, 1 = EMAIL, (not supported: 2 = AUDIO, 3 = PROCEDURE)
-            //								  30,  // Trigger: alarm before the event in minutes
-            //								  'Wake Up!', // Title
-            //								  '...and go shopping', // Description
-            //								  $attendees, // Array (key = attendee name, value = e-mail, second value = role of the attendee [0 = CHAIR | 1 = REQ | 2 = OPT | 3 =NON])
-            //								  5, // Duration between the alarms in minutes
-            //								  3  // How often should the alarm be repeated
-            //								  );
+            //         $alarm = (array) array(
+            //                          0, // Action: 0 = DISPLAY, 1 = EMAIL, (not supported: 2 = AUDIO, 3 = PROCEDURE)
+            //                          30,  // Trigger: alarm before the event in minutes
+            //                          'Wake Up!', // Title
+            //                          '...and go shopping', // Description
+            //                          $attendees, // Array (key = attendee name, value = e-mail, second value = role of the attendee [0 = CHAIR | 1 = REQ | 2 = OPT | 3 =NON])
+            //                          5, // Duration between the alarms in minutes
+            //                          3  // How often should the alarm be repeated
+            //                          );
 
             $starttime = strtotime($item->getDateTime_start());
             $endtime = strtotime($item->getDateTime_end());
