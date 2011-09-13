@@ -950,6 +950,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
              }
              // kann man dies noch über die oberfläche schalten ??? (2009.07.24 ij)
              #if ( !strstr($list_box_conf,'usage_nodisplay') ){
+                $first_box = true;
                 if ( $first_box ){
                    $first_box = false;
                    $additional_text ='';
