@@ -2504,7 +2504,13 @@ function setWikiGroupsAsPublic_soap($groups){
 
 function getSoapWsdlUrl(){
    global $c_pmwiki_path_url;
-   return $c_pmwiki_path_url . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/index.php?action=soap&wsdl=1';
+   $portal_id = $this->_environment->getCurrentPortalID();
+   $context_id = $this->_environment->getCurrentContextID();
+   if ( $portal_id == $context_id ) {
+      return $c_pmwiki_path_url . '/wikis/' . $this->_environment->getCurrentPortalID() . '/index.php?action=soap&wsdl=1';
+   } else {
+      return $c_pmwiki_path_url . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/index.php?action=soap&wsdl=1';
+   }
 }
 
 function getSoapClient(){
