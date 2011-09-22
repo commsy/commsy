@@ -41,7 +41,7 @@ class cs_form {
         * array - containing strings of error messages
         */
         var $_error_array = array();
-        
+
         /*
          * Translation Object
          */
@@ -54,7 +54,7 @@ class cs_form {
          */
         function cs_form() {
            $this->_formElements = new cs_array_list();
-           
+
            global $environment;
            $this->_translator = $environment->getTranslationObject();
         }
@@ -1333,7 +1333,7 @@ class cs_form {
                   $value_from_form = $selected;
                   foreach ($current['value'] as $value) {
                      if ( is_numeric($value_from_form)
-                          or $value_from_form == $value['value']
+                          or $value_from_form == trim($value['value']) //trim file space
                         ) {
                         $found_array[] = $value_from_form;
                         break;

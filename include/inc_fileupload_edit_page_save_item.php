@@ -52,10 +52,12 @@ if ( !empty($files)
    ) {
    $file_man = $environment->getFileManager();
    foreach ( $files as $file_data ) {
-      if ( in_array($file_data["file_id"], $file_ids) ) {
+      if ( in_array(trim($file_data["file_id"]), $file_ids) ) {
          if ( isset($file_data["tmp_name"]) and file_exists($file_data["tmp_name"]) ) { // create file entries for uploaded files
             $file_item = $file_man->getNewItem();
             $file_item->setTempKey($file_data["file_id"]);
+            // trim space
+            $file_data['name'] = trim($file_data['name']);
             $file_item->setPostFile($file_data);
             $file_item->save();
             unlink($file_data["tmp_name"]);  // Currently, the file manager does not unlink a file in its _saveOnDisk() method, because it is also used for copying files when copying material.
