@@ -343,7 +343,7 @@ class cs_todo_detail_view extends cs_detail_view {
                   $step_minutes = str_replace('.',',',$step_minutes);
                }
                $done_time .= $step_minutes;
-               
+
             }else{
                $step_minutes = round($step_minutes,1);
                if ($this->_translator->getSelectedLanguage() == 'de'){
@@ -398,6 +398,75 @@ class cs_todo_detail_view extends cs_detail_view {
          $html .= $this->getScrollableContent($desc,$item,'',true).LF;
       }
 
+      // creator, modificator and reference number for printing
+      if(isset($_GET['mode']) and $_GET['mode']=='print'){
+	      $modificator = $item->getModificatorItem();
+	      $creator = $item->getCreatorItem();
+
+	      if(isset($modificator) and !$modificator->isDeleted()){
+	      	  $current_user_item = $this->_environment->getCurrentUserItem();
+	          if ( $current_user_item->isGuest() ) {
+	             $temp_modificator = $this->_translator->getMessage('COMMON_USER_NOT_VISIBLE');
+	          } else {
+	             $temp_modificator = $modificator->getFullname();
+	          }
+              unset($current_user_item);
+	      } else {
+	      	  $temp_modificator = $this->_translator->getMessage('COMMON_DELETED_USER');
+	      }
+
+	      if(isset($creator) and !$creator->isDeleted()){
+	      	$current_user_item = $this->_environment->getCurrentUserItem();
+	            if ( $current_user_item->isGuest() ) {
+	               $temp_creator = $this->_translator->getMessage('COMMON_USER_NOT_VISIBLE');
+	            } else {
+	               $temp_creator = $creator->getFullname();
+	            }
+            unset($current_user_item);
+	      } else {
+	      	  $temp_creator = $this->_translator->getMessage('COMMON_DELETED_USER');
+	      }
+
+	      $html .= '<table class="creator_info" summary="Layout" style="padding-top:20px">'.LF;
+
+      	  // Modificator information
+
+      	  $html .= '   <tr>'.LF;
+      	  $html .= '      <td></td>'.LF;
+      	  $html .= '      <td class="key"  style="padding-left:8px;">'.LF;
+      	  $html .= '         '.$this->_translator->getMessage('COMMON_LAST_MODIFIED_BY').':&nbsp;'.LF;
+      	  $html .= '      </td>'.LF;
+      	  $html .= '      <td class="value">'.LF;
+      	  $html .= '         '.$temp_modificator.', '.$this->_translator->getDateTimeInLang($item->getModificationDate()).LF;
+      	  $html .= '      </td>'.LF;
+      	  $html .= '   </tr>'.LF;
+
+      	  // Creator information
+
+	      $html .= '   <tr>'.LF;
+      	  $html .= '      <td></td>'.LF;
+      	  $html .= '      <td class="key"  style="padding-left:8px;">'.LF;
+      	  $html .= '         '.$this->_translator->getMessage('COMMON_CREATED_BY').':&nbsp;'.LF;
+      	  $html .= '      </td>'.LF;
+      	  $html .= '      <td class="value">'.LF;
+      	  $html .= '         '.$temp_creator.', '.$this->_translator->getDateTimeInLang($item->getCreationDate()).LF;
+      	  $html .= '      </td>'.LF;
+      	  $html .= '   </tr>'.LF;
+
+      	  // Reference number
+
+      	  $html .= '   <tr>'.LF;
+      	  $html .= '      <td></td>'.LF;
+      	  $html .= '      <td class="key"  style="padding-left:8px;">'.LF;
+      	  $html .= '         '.$this->_translator->getMessage('COMMON_REFNUMBER').':&nbsp;'.LF;
+      	  $html .= '      </td>'.LF;
+      	  $html .= '      <td class="value">'.LF;
+      	  $html .= '         '.$item->getItemID();
+      	  $html .= '      </td>'.LF;
+      	  $html .= '   </tr>'.LF;
+      	  $html .= '</table>'.LF;
+
+      }
 
       $html  .= '<!-- END OF TODO ITEM DETAIL -->'.LF.LF;
       return $html;
@@ -671,6 +740,64 @@ class cs_todo_detail_view extends cs_detail_view {
 
       if ( !empty($formal_data) ) {
          $retour .= $this->_getFormalDataAsHTML($formal_data);
+      }
+
+
+      // Creator / Modificator information
+      if(isset($_GET['mode']) and $_GET['mode']=='print'){
+      	$modificator = $item->getModificatorItem();
+      	$creator = $item->getCreatorItem();
+
+      	if(isset($modificator) and !$modificator->isDeleted()){
+	      	  $current_user_item = $this->_environment->getCurrentUserItem();
+	          if ( $current_user_item->isGuest() ) {
+	             $temp_modificator = $this->_translator->getMessage('COMMON_USER_NOT_VISIBLE');
+	          } else {
+	             $temp_modificator = $modificator->getFullname();
+	          }
+              unset($current_user_item);
+	      } else {
+	      	  $temp_modificator = $this->_translator->getMessage('COMMON_DELETED_USER');
+	      }
+
+	      if(isset($creator) and !$creator->isDeleted()){
+	      	$current_user_item = $this->_environment->getCurrentUserItem();
+	            if ( $current_user_item->isGuest() ) {
+	               $temp_creator = $this->_translator->getMessage('COMMON_USER_NOT_VISIBLE');
+	            } else {
+	               $temp_creator = $creator->getFullname();
+	            }
+            unset($current_user_item);
+	      } else {
+	      	  $temp_creator = $this->_translator->getMessage('COMMON_DELETED_USER');
+	      }
+
+	      $retour .= '<table class="creator_info" summary="Layout" style="padding-top:20px">'.LF;
+
+      	  // Modificator information
+      	  $retour .= '   <tr>'.LF;
+      	  $retour .= '      <td></td>'.LF;
+      	  $retour .= '      <td class="key"  style="padding-left:8px;">'.LF;
+      	  $retour .= '         '.$this->_translator->getMessage('COMMON_LAST_MODIFIED_BY').':&nbsp;'.LF;
+      	  $retour .= '      </td>'.LF;
+      	  $retour .= '      <td class="value">'.LF;
+      	  $retour .= '         '.$temp_modificator.', '.$this->_translator->getDateTimeInLang($item->getModificationDate()).LF;
+      	  $retour .= '      </td>'.LF;
+      	  $retour .= '   </tr>'.LF;
+
+      	  // Creator information
+	      $retour .= '   <tr>'.LF;
+      	  $retour .= '      <td></td>'.LF;
+      	  $retour .= '      <td class="key"  style="padding-left:8px;">'.LF;
+      	  $retour .= '         '.$this->_translator->getMessage('COMMON_CREATED_BY').':&nbsp;'.LF;
+      	  $retour .= '      </td>'.LF;
+      	  $retour .= '      <td class="value">'.LF;
+      	  $retour .= '         '.$temp_creator.', '.$this->_translator->getDateTimeInLang($item->getCreationDate()).LF;
+      	  $retour .= '      </td>'.LF;
+      	  $retour .= '   </tr>'.LF;
+
+      	  $retour .= '</table>'.LF;
+
       }
       return $retour;
    }
