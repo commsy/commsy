@@ -1755,6 +1755,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
 
       $context_item = $this->_environment->getCurrentContextItem();
       $current_room_modules = $context_item->getHomeConf();
+      $current_user = $this->_environment->getCurrentUser();
       if ( !empty($current_room_modules) ){
          $room_modules = explode(',',$current_room_modules);
       } else {
@@ -1762,7 +1763,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       }
       foreach ( $room_modules as $module ) {
          $link_name = explode('_', $module);
-         if ( $link_name[1] != 'none' ) {
+         if ( $link_name[1] != 'none' AND ($link_name[0] == 'user' AND $current_user->isUser() OR $link_name[0] != 'user')) {
             if (($context_item->_is_perspective($link_name[0]) and $context_item->withRubric($link_name[0]))
                 or ( $link_name[0] == CS_USER_TYPE and $context_item->withRubric($link_name[0]))
             ) {
@@ -1781,7 +1782,9 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                      $html .= '<div class="infocolor" style="padding-bottom:5px;">'.$this->_translator->getMessage('COMMON_TOPIC');
                      break;
                   case 'USER':
-                     $html .= '<div class="infocolor" style="padding-bottom:5px;">'.$this->_translator->getMessage('COMMON_USER');
+                  	 if($current_user->isUser()){
+                  	 	$html .= '<div class="infocolor" style="padding-bottom:5px;">'.$this->_translator->getMessage('COMMON_USER');
+                  	 }
                      break;
                   default:
                      $html .= $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR').' cs_datescalendar_index_view(341) ';
@@ -1822,7 +1825,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                  $html .= '>*'.$this->_translator->getMessage('COMMON_NOT_LINKED').'</option>'.LF;
                  $html .= '   </select>'.LF;
              } else {
-           $html.='';
+           		$html.='';
              }
              $html .='</div>';
             }
