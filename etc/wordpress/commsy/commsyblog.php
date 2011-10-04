@@ -4,7 +4,7 @@
 */
 /*
 Plugin Name: CommSy Gateway
-Description: This plugin connects CommSy with WordPress via WSDL. One WordPress-Blog for one CommSy workspace. This plugin you should only activate for the root blog, if you are in a multu-user context. Attention: you must configure and active the plugin CommSy Authentication first.
+Description: This plugin connects CommSy with WordPress via WSDL. One WordPress-Blog for one CommSy workspace. If you are in a multi-user context, this plugin should only be activated for the root blog. Attention: you must configure and activate the plugin "CommSy Authentication" first.
 Author: Edouard J. Simon, Dr. Iver Jackewitz
 Version: 0.5
 */

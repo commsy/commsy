@@ -4,7 +4,7 @@
 */
 /*
 Plugin Name: CommSy Authentication
-Description: Allows authentication via CommSy, using either a commsy_session_id or CommSy login data. If you are in a multi-user context, please activate this plugin for all blogs and configure the path to commsy in the file commsy_auth_config.php in the plugin folder. To be able to use this plugin, you must also install the "md5-password-hashes" plugin.
+Description: Allows authentication via CommSy, using either a commsy_session_id or CommSy login data. If you are in a multi-user context, please activate this plugin for all blogs and configure the path to CommSy in the file commsy_auth_config.php in the plugin folder. To be able to use this plugin, you must also install and activate the plugins "md5-password-hashes".
 Author: Edouard J. Simon, Dr. Iver Jackewitz
 Version: 0.3
 */
