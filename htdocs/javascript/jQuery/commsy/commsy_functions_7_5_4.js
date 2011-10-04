@@ -4207,7 +4207,7 @@ function roomwide_search_extended_search(is_shown){
 	
 /* AJAX Search */
 jQuery(document).ready(function() {
-	if(indexed_search === true) {
+	if(typeof(indexed_search) !== 'undefined' && indexed_search === true) {
 		var treshhold = 3;
 		var last_search = '';
 		var input_search = jQuery('input[id="searchtext"]');
