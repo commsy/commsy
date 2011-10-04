@@ -330,9 +330,9 @@ class cs_announcement_manager extends cs_manager {
          } elseif ( $this->_sort_order == 'title_rev' ) {
             $query .= ' ORDER BY '.$this->addDatabasePrefix('announcement').'.title DESC';
 		 } elseif( $this->_sort_order == 'assessment' ) {
-		 	$query .= ' ORDER BY assessments_avg DESC';
+		 	$query .= ' ORDER BY assessments_avg';
 		 } elseif( $this->_sort_order == 'assessment_rev') {
-		 	$query .= ' ORDER BY assessments_avg ASC';
+		 	$query .= ' ORDER BY assessments_avg DESC';
          } elseif ( $this->_sort_order == 'modificator' ) {
             $query .= ' ORDER BY people.lastname';
          } elseif ( $this->_sort_order == 'modificator_rev' ) {
@@ -626,7 +626,20 @@ class cs_announcement_manager extends cs_manager {
       }
    }
 	
-	public function updateSearchIndices($languages) {
+	/**
+	 * gives the appropriate query to the updateSearchIndices function of cs_manager
+	 * 
+	 * @see cs_manager::updateSearchIndices()
+	 */
+	public function updateSearchIndices() {
+		/*
+		 * this query selects all needed data
+		 * 	- the item id
+		 * 	- a string to be indexed by the algorithm, the search data
+		 *  - an search time index, if existing
+		 * for entries which
+		 *  - has been modified since the last index operation
+		 */
 		$query = '
 			SELECT
 				announcement.item_id,
@@ -637,19 +650,18 @@ class cs_announcement_manager extends cs_manager {
 			LEFT JOIN
 				user
 			ON
-				user.item_id = announcement.modifier_id
+				user.item_id = announcement.creator_id
 			LEFT JOIN
 				search_time
 			ON
 				search_time.st_item_id = announcement.item_id
 			WHERE
-				announcement.public = 1 AND
 				(
 					search_time.st_id IS NULL OR
 					announcement.modification_date > search_time.st_date
 				)
 		';
-		parent::updateSearchIndices($languages, $query);
+		parent::updateSearchIndices($query, CS_ANNOUNCEMENT_TYPE);
 	}
 }
 ?>

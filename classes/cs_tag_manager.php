@@ -760,5 +760,43 @@ class cs_tag_manager extends cs_manager {
          unset($result);
       }
    }
+   
+	/**
+	 * gives the appropriate query to the updateSearchIndices function of cs_manager
+	 * 
+	 * @see cs_manager::updateSearchIndices()
+	 */
+	public function updateSearchIndices() {
+		/*
+		 * this query selects all needed data
+		 * 	- the item id
+		 * 	- a string to be indexed by the algorithm, the search data
+		 *  - an search time index, if existing
+		 * for entries which
+		 *  - has been modified since the last index operation
+		 */
+		$query = '
+			SELECT
+				tag.item_id,
+				search_time.st_id,
+				CONCAT(tag.title, " ", user.firstname, " ", user.lastname) AS search_data
+			FROM
+				tag
+			LEFT JOIN
+				user
+			ON
+				user.item_id = tag.creator_id
+			LEFT JOIN
+				search_time
+			ON
+				search_time.st_item_id = tag.item_id
+			WHERE
+				(
+					search_time.st_id IS NULL OR
+					tag.modification_date > search_time.st_date
+				)
+		';
+		parent::updateSearchIndices($query, CS_TAG_TYPE);
+	}
 }
 ?>

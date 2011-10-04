@@ -819,3 +819,21 @@ div.myarea_content_bottom {
 div.scorm_navigation_block {
   margin-top: 5px;
   margin-left: 10px;
+}
+
+/**************************************
+**** fast search results **************
+**************************************/
+div.search_fast_results {
+	background: #FFFFFF;
+	border: 1px solid black;
+	margin-left: -10px;
+	margin-top: 5px;
+	position: absolute;
+	width: 17%;
+	z-index: 50;
+}
+
+
+
+background-color:<?php echo($color['tabs_background'])?>;

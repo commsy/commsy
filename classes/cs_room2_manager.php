@@ -163,5 +163,47 @@ class cs_room2_manager extends cs_context_manager {
          trigger_error('Problems creating new '.$this->_room_type.' item from query: "'.$query.'"', E_USER_ERROR);
       }
    }
+   
+	/**
+	 * gives the appropriate query to the updateSearchIndices function of cs_manager
+	 * 
+	 * @param String $room_type - the type of the room
+	 * @see cs_manager::updateSearchIndices()
+	 */
+	public function updateSearchIndices($room_type) {
+		/*
+		 * this query selects all needed data
+		 * 	- the item id
+		 * 	- a string to be indexed by the algorithm, the search data
+		 *  - an search time index, if existing
+		 * for entries which
+		 *  - has been modified since the last index operation
+		 *  - have the given type
+		 */
+		$query = '
+			SELECT
+				room.item_id,
+				search_time.st_id,
+				CONCAT(room.title, " ", room.room_description, " ", user.firstname, " ", user.lastname) AS search_data
+			FROM
+				room
+			LEFT JOIN
+				user
+			ON
+				user.item_id = room.creator_id
+			LEFT JOIN
+				search_time
+			ON
+				search_time.st_item_id = room.item_id
+			WHERE
+				room.type = "' . encode(AS_DB, $room_type) . '" AND
+				(
+					search_time.st_id IS NULL OR
+					room.modification_date > search_time.st_date
+				)
+		';
+		
+		parent::updateSearchIndices($query, $room_type);
+	}
 }
 ?>

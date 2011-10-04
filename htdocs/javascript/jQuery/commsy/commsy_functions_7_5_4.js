@@ -4207,36 +4207,139 @@ function roomwide_search_extended_search(is_shown){
 	
 /* AJAX Search */
 jQuery(document).ready(function() {
-	var treshhold = 3;
-	var last_length = 0;
-	
-	// register change function
-	jQuery('input[id="searchtext"]').keyup(function() {
-		// get length of insert text
-		var searchtext = jQuery(this).val();
-		var length = searchtext.length;
+	if(indexed_search === true) {
+		var treshhold = 3;
+		var last_search = '';
+		var input_search = jQuery('input[id="searchtext"]');
 		
-		// trigger search if last_length was below treshhold
-		if(last_length == treshhold - 1 && length == treshhold) {
-			// perform ajax call to delete own voting
-			var json_data = new Object();
-			json_data['do'] = 'search';
-			json_data['selrubric'] = jQuery(this).parent().find('input[name="selrubric"]').val();
-			json_data['searchtext'] = searchtext;
+		// turn autocomplete off
+		input_search.attr('autocomplete', 'off');
+		
+		// change css style
+		input_search.css('position', 'absolute');
+		input_search.css('z-index', '5');
+		input_search.css('background-color', 'transparent');
+		
+		// inject another input form for autocompletion
+		jQuery('<input>', {
+			"id":		"search_autocomplete",
+			"style":	"width:220px; font-size:10pt; margin-bottom:0px; border:0 none; color:silver; margin: 0; outline: 0 none; padding: 3px 0px 1px 2px;"
+		}).insertAfter(input_search);
+		
+		// register change function
+		input_search.keyup(function() {
+			// get length of insert text
+			var searchtext = jQuery(this).val();
+			var length = searchtext.length;
 			
-			jQuery.ajax({
-				url: 'commsy.php?cid=' + getURLParam('cid') + '&mod=ajax&fct=search&output=json',
-				   data: json_data,
-				   success: function(data) {
-				   		var response = jQuery.parseJSON(data);
-				   		if(response) {
-				   			console.log(response);
-				   		}
-		           }
-			});
-		}
-		
-		// update last length
-		last_length = length;
-	});
+			// reset autocomplete
+			jQuery('input[id="search_autocomplete"]').attr('value', '');
+			
+			// trigger search if last_length was below treshhold
+			if(length >= treshhold) {
+				// wait for 1 seconde and ensure, there is no new user input
+				jQuery(this).oneTime(500, function() {
+					if(searchtext == jQuery(this).val()) {
+						// only process, if search text changed
+						if(last_search != searchtext) {
+							last_search = jQuery(this).val();
+							
+							// perform ajax call to delete own voting
+							var json_data = new Object();
+							json_data['do'] = 'search';
+							json_data['selrubric'] = jQuery(this).parent().find('input[name="selrubric"]').val();
+							json_data['searchtext'] = searchtext;
+							
+							// remove old results
+				   			jQuery('div[class="search_fast_results"]').remove();
+							
+							// create fast search results div
+							jQuery('<div/>', {
+				   				"class":	"search_fast_results"
+				   			})
+				   				.append(jQuery('<div/>', {
+				   					"id":		"loading_animation"
+				   				})
+				   					.append(jQuery('<img/>', {
+				   						"src":		"javascript/jQuery/commsy_images/roomwide_search_animation.gif"
+				   					}))).appendTo(jQuery('input[id="searchtext"]').parent().parent());
+							
+							jQuery.ajax({
+								url: 'commsy.php?cid=' + getURLParam('cid') + '&mod=ajax&fct=search&output=json',
+								   data: json_data,
+								   success: function(data) {
+								   		var response = jQuery.parseJSON(data);
+								   		if(response) {
+								   			console.log(response);
+								   			
+								   			// autocompletion
+								   			var tmp = response[0].complete;
+								   			var auto_complete = '';
+								   			jQuery.each(response, function(index, element) {
+								   				if(searchtext == element.complete.slice(0, searchtext.length) && (element.complete.length < auto_complete.length || auto_complete == 0)) {
+								   					auto_complete = element.complete;
+								   				}
+								   			});
+								   			auto_complete = searchtext + auto_complete.slice(searchtext.length);
+								   			jQuery('input[id="search_autocomplete"]').attr('value', auto_complete);
+								   			
+								   			// fadeout loading animation from fast search results
+								   			jQuery('div[class="search_fast_results"] div[id="loading_animation"] img').fadeOut('slow', function() {
+								   				// present fast search results
+								   				jQuery('<div/>', {
+								   					"id":		"results"
+								   				})
+								   					.append(jQuery('<table/>', {
+								   						"class":		"list"
+								   					})
+								   						.append(jQuery('<tr/>', {
+								   							
+								   						})
+								   							.append(jQuery('<td/>', {
+									   							"class":		"head"
+									   						})))).appendTo('div[class="search_fast_results"]');
+								   				
+								   				// show the first ten results
+								   				var count = 1;
+								   				var css_class = 'odd';
+								   				jQuery.each(response, function(index, element) {
+								   					if(count > 10) return false;
+								   					
+								   					// determ css class
+								   					if(count % 2 == 0) {
+								   						css_class = 'even';
+								   					} else {
+								   						css_class = 'odd';
+								   					}
+								   					
+								   					jQuery('<tr/>', {
+								   						
+								   					})
+									   					.append(jQuery('<td/>', {
+									   						"class":		css_class
+									   					})
+									   						.append(jQuery('<a/>', {
+									   							"href":		'commsy.php?cid=' + getURLParam('cid') + '&mod=' + element.type + '&fct=detail&iid=' + element.id + '&search_path=true',
+									   							"text":		element.title
+									   						}))).appendTo('div[class="search_fast_results"] div[id="results"] table');
+								   					
+								   					count++;
+								   				});
+								   				
+								   				jQuery('<tr/>', {
+								   					
+								   				})
+									   				.append(jQuery('<td/>', {
+							   							"class":		"head"
+							   						})).appendTo('div[class="search_fast_results"] div[id="results"] table');
+								   			});
+								   		}
+						           }
+							});
+						}
+					}
+				});
+			}
+		});
+	}
 });

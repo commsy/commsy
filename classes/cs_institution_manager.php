@@ -48,5 +48,14 @@ class cs_institution_manager extends cs_labels_manager {
 		$this->_type_limit = CS_INSTITUTION_TYPE;
 		$this->_context_limit = $this->_environment->getCurrentContextID();
 	}
+	
+	/**
+	 * calls cs_label_manager parent function
+	 * 
+	 * @see cs_label_manager::updateSearchIndices()
+	 */
+	public function updateSearchIndices() {
+		parent::updateSearchIndices(CS_INSTITUTION_TYPE);
+	}
 }
 ?>

@@ -684,5 +684,44 @@ class cs_discussion_manager extends cs_manager {
          }
       }
    }
+   
+	/**
+	 * gives the appropriate query to the updateSearchIndices function of cs_manager
+	 * 
+	 * @see cs_manager::updateSearchIndices()
+	 */
+	public function updateSearchIndices() {
+		/*
+		 * this query selects all needed data
+		 * 	- the item id
+		 * 	- a string to be indexed by the algorithm, the search data
+		 *  - an search time index, if existing
+		 * for entries which
+		 *  - has been modified since the last index operation
+		 */
+		$query = '
+			SELECT
+				discussions.item_id,
+				search_time.st_id,
+				CONCAT(discussions.title, " ", user.firstname, " ", user.lastname) AS search_data
+			FROM
+				discussions
+			LEFT JOIN
+				user
+			ON
+				user.item_id = discussions.creator_id
+			LEFT JOIN
+				search_time
+			ON
+				search_time.st_item_id = discussions.item_id
+			WHERE
+				(
+					search_time.st_id IS NULL OR
+					discussions.modification_date > search_time.st_date
+				)
+		';
+		
+		parent::updateSearchIndices($query, CS_DISCUSSION_TYPE);
+	}
 }
 ?>

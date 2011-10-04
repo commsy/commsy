@@ -625,5 +625,44 @@ class cs_todos_manager extends cs_manager {
          }
       }
    }
+   
+	/**
+	 * gives the appropriate query to the updateSearchIndices function of cs_manager
+	 * 
+	 * @see cs_manager::updateSearchIndices()
+	 */
+	public function updateSearchIndices() {
+		/*
+		 * this query selects all needed data
+		 * 	- the item id
+		 * 	- a string to be indexed by the algorithm, the search data
+		 *  - an search time index, if existing
+		 * for entries which
+		 *  - has been modified since the last index operation
+		 */
+		$query = '
+			SELECT
+				todos.item_id,
+				search_time.st_id,
+				CONCAT(todos.title, " ", todos.description, " ", user.firstname, " ", user.lastname) AS search_data
+			FROM
+				todos
+			LEFT JOIN
+				user
+			ON
+				user.item_id = todos.creator_id
+			LEFT JOIN
+				search_time
+			ON
+				search_time.st_item_id = todos.item_id
+			WHERE
+				(
+					search_time.st_id IS NULL OR
+					todos.modification_date > search_time.st_date
+				)
+		';
+		
+		parent::updateSearchIndices($query, CS_TODO_TYPE);
+	}
 }
 ?>

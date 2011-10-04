@@ -1144,5 +1144,48 @@ class cs_labels_manager extends cs_manager {
    public function resetCache () {
       $this->_internal_data = array();
    }
+   
+	/**
+	 * gives the appropriate query to the updateSearchIndices function of cs_manager
+	 * 
+	 * @param String $label_type - the type of the label
+	 * @see cs_manager::updateSearchIndices()
+	 */
+	public function updateSearchIndices($label_type) {
+		/*
+		 * this query selects all needed data
+		 * 	- the item id
+		 * 	- a string to be indexed by the algorithm, the search data
+		 *  - an search time index, if existing
+		 * for entries which
+		 *  - has been modified since the last index operation
+		 *  - have the given type
+		 */
+		$query = '
+			SELECT
+				labels.item_id,
+				search_time.st_id,
+				CONCAT(labels.name, " ", labels.description, " ", user.firstname, " ", user.lastname) AS search_data
+			FROM
+				labels
+			LEFT JOIN
+				user
+			ON
+				user.item_id = labels.creator_id
+			LEFT JOIN
+				search_time
+			ON
+				search_time.st_item_id = labels.item_id
+
+			WHERE
+				labels.type = "' . encode(AS_DB, $label_type) . '" AND
+				(
+					search_time.st_id IS NULL OR
+					labels.modification_date > search_time.st_date
+				)
+		';
+		
+		parent::updateSearchIndices($query, $label_type);
+	}
 }
 ?>

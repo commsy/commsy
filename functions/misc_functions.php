@@ -862,7 +862,9 @@ function isURLValid () {
          $funct != 'ckeditor_image_browse' and
          $funct != 'uploadify' and
          $funct != 'mdo_perform_search' and
-         $funct != 'assessment'
+         $funct != 'assessment' and
+         $funct != 'search' and
+         $funct != 'search_index'
        ) {
        return false;
     }

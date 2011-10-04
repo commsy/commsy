@@ -408,5 +408,14 @@ class cs_grouproom_manager extends cs_room2_manager {
       $portal->saveMaxRoomActivityPoints($item->getActivityPoints());
       unset($portal);
    }
+   
+	/**
+	 * calls cs_room2_manager parent function
+	 * 
+	 * @see cs_room2_manager::updateSearchIndices()
+	 */
+	public function updateSearchIndices() {
+		parent::updateSearchIndices(CS_GROUPROOM_TYPE);
+	}
 }
 ?>

@@ -113,5 +113,43 @@ class cs_portal_manager extends cs_context_manager {
          return $result;
       }
    }
+   
+	/**
+	 * gives the appropriate query to the updateSearchIndices function of cs_manager
+	 * 
+	 * @see cs_manager::updateSearchIndices()
+	 */
+	public function updateSearchIndices() {
+		/*
+		 * this query selects all needed data
+		 * 	- the item id
+		 * 	- a string to be indexed by the algorithm, the search data
+		 *  - an search time index, if existing
+		 * for entries which
+		 *  - has been modified since the last index operation
+		 */
+		$query = '
+			SELECT
+				portal.item_id,
+				search_time.st_id,
+				CONCAT(portal.title, " ", user.firstname, " ", user.lastname) AS search_data
+			FROM
+				portal
+			LEFT JOIN
+				user
+			ON
+				user.item_id = portal.creator_id
+			LEFT JOIN
+				search_time
+			ON
+				search_time.st_item_id = portal.item_id
+			WHERE
+				(
+					search_time.st_id IS NULL OR
+					portal.modification_date > search_time.st_date
+				)
+		';
+		parent::updateSearchIndices($query, CS_PORTAL_TYPE);
+	}
 }
 ?>

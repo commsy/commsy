@@ -50,5 +50,14 @@ class cs_buzzword_manager extends cs_labels_manager {
       $item = new cs_buzzword_item($this->_environment);
       return $item;
    }
+   
+	/**
+	 * calls cs_label_manager parent function
+	 * 
+	 * @see cs_label_manager::updateSearchIndices()
+	 */
+	public function updateSearchIndices() {
+		parent::updateSearchIndices(CS_BUZZWORD_TYPE);
+	}
 }
 ?>

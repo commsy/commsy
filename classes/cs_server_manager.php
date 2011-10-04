@@ -235,5 +235,39 @@ class cs_server_manager extends cs_context_manager {
 
       return $retour;
    }
+   
+	/**
+	 * gives the appropriate query to the updateSearchIndices function of cs_manager
+	 * 
+	 * @see cs_manager::updateSearchIndices()
+	 */
+	public function updateSearchIndices() {
+		/*
+		 * this query selects all needed data
+		 * 	- the item id
+		 * 	- a string to be indexed by the algorithm, the search data
+		 *  - an search time index, if existing
+		 * for entries which
+		 *  - has been modified since the last index operation
+		 */
+		$query = '
+			SELECT
+				server.item_id,
+				search_time.st_id,
+				CONCAT(server.title) AS search_data
+			FROM
+				server
+			LEFT JOIN
+				search_time
+			ON
+				search_time.st_item_id = server.item_id
+			WHERE
+				(
+					search_time.st_id IS NULL OR
+					server.modification_date > search_time.st_date
+				)
+		';
+		parent::updateSearchIndices($query, CS_SERVER_TYPE);
+	}
 }
 ?>

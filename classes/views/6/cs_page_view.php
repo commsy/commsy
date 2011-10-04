@@ -509,6 +509,7 @@ class cs_page_view extends cs_view {
          $retour .= '   <link rel="stylesheet" type="text/css" href="javascript/jQuery/css/jQueryUI/smoothness/jquery-ui-1.7.2.custom.css"/>'.LF;
          $retour .= '   <link rel="stylesheet" type="text/css" href="javascript/jQuery/css/jQueryUI/additional_calendar/jquery-ui-1.7.2.custom.css"/>'.LF;
          $retour .= '   <script type="text/javascript" src="javascript/jQuery/jquery.scrollTo-1.4.2/jquery.scrollTo-min.js"></script>'.LF;
+         $retour .= '   <script type="text/javascript" src="javascript/jQuery/jquery.timers-1.2/jquery.timers.js"></script>'.LF;
          $retour .= '   <script type="text/javascript" src="javascript/jQuery/jScrollPane/jScrollPane-1.2.1.js"></script>'.LF;
          $retour .= '   <link rel="stylesheet" type="text/css" href="javascript/jQuery/jScrollPane/css/jScrollPane.css"/>'.LF;
          $retour .= '   <script type="text/javascript" src="javascript/jQuery/mousewheel/jquery.mousewheel.js"></script>'.LF;

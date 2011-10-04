@@ -113,5 +113,14 @@ class cs_group_manager extends cs_labels_manager {
       $result = $this->_db_connector->performQuery($query);
       $this->resetCache();
    }
+   
+	/**
+	 * calls cs_label_manager parent function
+	 * 
+	 * @see cs_label_manager::updateSearchIndices()
+	 */
+	public function updateSearchIndices() {
+		parent::updateSearchIndices(CS_GROUP_TYPE);
+	}
 }
 ?>

@@ -59,5 +59,14 @@ class cs_topic_manager extends cs_labels_manager {
 		$item = new cs_topic_item($this->_environment);
 		return $item;
 	}
+	
+	/**
+	 * calls cs_label_manager parent function
+	 * 
+	 * @see cs_label_manager::updateSearchIndices()
+	 */
+	public function updateSearchIndices() {
+		parent::updateSearchIndices(CS_TOPIC_TYPE);
+	}
 }
 ?>
