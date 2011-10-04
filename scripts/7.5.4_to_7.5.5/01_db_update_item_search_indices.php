@@ -78,7 +78,7 @@ if(isset($c_indexed_search) && $c_indexed_search === true) {
 	$this->_flushHTML('<div id="indexing_status"></div>');
 	$this->_flushHTML('<script src="javascript/jQuery/commsy/search_index.js" type="text/javascript"></script>'.LF);
 } else {
-	$this->_flusHTML('Indices not updated, feature is not activated!');
+	$this->_flushHTML('Indices not updated, feature is not activated!');
 }
 
 //$success = $success AND $this->_select($sql);
