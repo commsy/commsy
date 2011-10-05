@@ -15,6 +15,11 @@ jQuery(document).ready(function() {
 				break;
 				case 'initGUI':
 					this.initGUI();
+				break;
+				case 'truncate':
+					this.truncate();
+				break;
+				case 'indexing':
 					this.indexing(0);
 				break;
 			}
@@ -38,14 +43,47 @@ jQuery(document).ready(function() {
 		},
 		
 		initGUI: function() {
+			// bar
 			jQuery('<div/>', {
-				style: 'border: 2px solid LightSlateGrey;'
+				style: 'border: 2px solid LightSlateGrey; display: none;'
 			})
 				.append(jQuery('<div/>', {
 					style: 'background-color: BlanchedAlmond; width: 0%;',
 					text: 'Indexing...',
 					id: 'indexing_bar'
 				})).appendTo(jQuery('div[id="indexing_status"]'));
+			
+			// start button
+			jQuery('<input/>', {
+				value: "Start",
+				type: "Button",
+				id: "indexing_start"
+			}).appendTo(jQuery('div[id="indexing_status"]'));
+			
+			jQuery('input[id="indexing_start"]').click(function() {
+				jQuery('div[id="indexing_bar"]').parent().css('display', 'block');
+				Indexer.process('truncate');
+			});
+		},
+		
+		truncate: function(manager) {
+			var json_data = new Object();
+			json_data['do'] = 'truncate';
+			json_data['manager'] = manager;
+			
+			jQuery.ajax({
+				url: 'commsy.php?cid=' + getURLParam('cid') + '&mod=ajax&fct=search_index&output=json',
+				data: json_data,
+				success: function(data) {
+					var response = jQuery.parseJSON(data);
+			   		if(response) {
+			   			if(response.status == 'done') {
+			   				console.log('completed');
+			   				Indexer.process('indexing');
+			   			}
+			   		}
+				}
+			});
 		},
 		
 		indexing: function(manager) {

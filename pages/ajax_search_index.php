@@ -36,6 +36,8 @@ ini_set('max_execution_time', 0);
  * When building indicies for such items, the search time is not written, so that the main item is able to index too and end indexing himself by writing the search time.
  */
 
+$db = $environment->getDBConnector();
+
 $managers = array();
 // create indizes for
 //	- annotations
@@ -106,6 +108,16 @@ $managers[] = $environment->getGroupRoomManager();
 if(isset($_GET['do'])){
 	if($_GET['do'] == 'getNumManagers') {
 		$return['number'] = sizeof($managers);
+	} elseif($_GET['do'] == 'truncate') {
+		// truncate tables
+		$sql = "TRUNCATE `search_index`;";
+		$db->performQuery($sql);
+		$sql = "TRUNCATE `search_time`;";
+		$db->performQuery($sql);
+		$sql = "TRUNCATE `search_word`;";
+		$db->performQuery($sql);
+		
+		$return['status'] = 'done';
 	} elseif($_GET['do'] == 'index') {
 		if(isset($_GET['manager']) && $_GET['manager'] >= 0 && $_GET['manager'] < sizeof($managers)) {
 			$managers[$_GET['manager']]->updateSearchIndices();

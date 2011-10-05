@@ -65,16 +65,9 @@ $sql = "
 ";
 $success = $success AND $this->_select($sql);
 
-// truncate tables
-$sql = "TRUNCATE `search_index`;";
-$success = $success AND $this->_select($sql);
-$sql = "TRUNCATE `search_time`;";
-$success = $success AND $this->_select($sql);
-$sql = "TRUNCATE `search_word`;";
-$success = $success AND $this->_select($sql);
-
 global $c_indexed_search;
 if(isset($c_indexed_search) && $c_indexed_search === true) {
+	$this->_flushHTML('The index process can take a long time - restarting it means loosing all data');
 	$this->_flushHTML('<div id="indexing_status"></div>');
 	$this->_flushHTML('<script src="javascript/jQuery/commsy/search_index.js" type="text/javascript"></script>'.LF);
 } else {

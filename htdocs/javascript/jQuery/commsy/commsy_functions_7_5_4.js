@@ -4273,15 +4273,17 @@ jQuery(document).ready(function() {
 								   			console.log(response);
 								   			
 								   			// autocompletion
-								   			var tmp = response[0].complete;
-								   			var auto_complete = '';
-								   			jQuery.each(response, function(index, element) {
-								   				if(searchtext == element.complete.slice(0, searchtext.length) && (element.complete.length < auto_complete.length || auto_complete == 0)) {
-								   					auto_complete = element.complete;
-								   				}
-								   			});
-								   			auto_complete = searchtext + auto_complete.slice(searchtext.length);
-								   			jQuery('input[id="search_autocomplete"]').attr('value', auto_complete);
+								   			if(response.length > 0) {
+								   				var tmp = response[0].complete;
+									   			var auto_complete = '';
+									   			jQuery.each(response, function(index, element) {
+									   				if(searchtext == element.complete.slice(0, searchtext.length) && (element.complete.length < auto_complete.length || auto_complete == 0)) {
+									   					auto_complete = element.complete;
+									   				}
+									   			});
+									   			auto_complete = searchtext + auto_complete.slice(searchtext.length);
+									   			jQuery('input[id="search_autocomplete"]').attr('value', auto_complete);
+								   			}
 								   			
 								   			// fadeout loading animation from fast search results
 								   			jQuery('div[class="search_fast_results"] div[id="loading_animation"] img').fadeOut('slow', function() {
