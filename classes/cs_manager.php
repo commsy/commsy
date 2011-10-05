@@ -1924,7 +1924,7 @@ class cs_manager {
 				//$i = 0;
 				foreach($word_new as $word) {
 						//' . encode(AS_DB, $result[$i]['sw_id']) . ',
-					$query .= '
+					$query .= '(
 						' . encode(AS_DB, $word['sw_id']) . ',
 						' . encode(AS_DB, $item_id) . ',
 						"' . encode(AS_DB, $item_type_tmp) . '",
