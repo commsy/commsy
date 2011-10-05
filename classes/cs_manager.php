@@ -1871,7 +1871,7 @@ class cs_manager {
 				
 				if(!$existing) {
 					// word is a new word - store it in search_word table
-					$word_new[] = $word;
+					$word_new[] = array('sw_id' => $running_new_id, 'sw_word' => $word);
 					
 					// append this word to the list of word in db
 					$word_result[] = array('sw_id' => $running_new_id, 'sw_word' => $word);
@@ -1881,7 +1881,7 @@ class cs_manager {
 			
 			// insert new words
 			if(!empty($word_new)) {
-				// perform insertion of new word
+				// perform insertion of new words
 				$query = '
 					INSERT INTO
 						search_word(sw_word)
@@ -1892,10 +1892,11 @@ class cs_manager {
 						"' . encode(AS_DB, $word) . '"
 					)';
 					
-					if($word != $word_new[sizeof($word_new) - 1]) $query .= ', ';
+					if($word['sw_id'] != $word_new[sizeof($word_new) - 1]['sw_id']) $query .= ', ';
 				}
 				$result = $this->_db_connector->performQuery($query);
 				
+				/*
 				// get ids of new inserted words
 				$query = '
 					SELECT
@@ -1912,6 +1913,7 @@ class cs_manager {
 					if($word != $word_new[sizeof($word_new) - 1]) $query .= ' OR ';
 				}
 				$result = $this->_db_connector->performQuery($query);
+				*/
 				
 				// write new search_index entries
 				$query = '
@@ -1919,17 +1921,19 @@ class cs_manager {
 						search_index(si_sw_id, si_item_id, si_item_type, si_count)
 					VALUES
 				';
-				$i = 0;
+				//$i = 0;
 				foreach($word_new as $word) {
 					$query .= '(
-						' . encode(AS_DB, $result[$i]['sw_id']) . ',
+						';//' . encode(AS_DB, $result[$i]['sw_id']) . ',
+					$query .= '
+						' . encode(AS_DB, $word['sw_id']) . ',
 						' . encode(AS_DB, $item_id) . ',
 						"' . encode(AS_DB, $item_type_tmp) . '",
 						1
 					)';
 					
-					if($word != $word_new[sizeof($word_new) - 1]) $query .= ', ';
-					$i++;
+					if($word['sw_id'] != $word_new[sizeof($word_new) - 1]['sw_id']) $query .= ', ';
+					//$i++;
 				}
 				$result = $this->_db_connector->performQuery($query);
 			}
