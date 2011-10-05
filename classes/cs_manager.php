@@ -1840,7 +1840,7 @@ class cs_manager {
 			
 			// determ id for new entry
 			$running_new_id = 1;
-			if(!empty($world_result)) {
+			if(!empty($word_result)) {
 				$running_new_id = $word_result[sizeof($word_result) - 1]['sw_id'] + 1;
 			}
 			
