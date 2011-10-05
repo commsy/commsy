@@ -1889,7 +1889,7 @@ class cs_manager {
 				';
 				foreach($word_new as $word) {
 					$query .= '(
-						"' . encode(AS_DB, $word) . '"
+						"' . encode(AS_DB, $word['sw_word']) . '"
 					)';
 					
 					if($word['sw_id'] != $word_new[sizeof($word_new) - 1]['sw_id']) $query .= ', ';
@@ -1923,8 +1923,7 @@ class cs_manager {
 				';
 				//$i = 0;
 				foreach($word_new as $word) {
-					$query .= '(
-						';//' . encode(AS_DB, $result[$i]['sw_id']) . ',
+						//' . encode(AS_DB, $result[$i]['sw_id']) . ',
 					$query .= '
 						' . encode(AS_DB, $word['sw_id']) . ',
 						' . encode(AS_DB, $item_id) . ',
