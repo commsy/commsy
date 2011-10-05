@@ -1839,7 +1839,7 @@ class cs_manager {
 			$word_result = $this->_db_connector->performQuery($query);
 			
 			// determ id for new entry
-			$running_new_id = 0;
+			$running_new_id = 1;
 			if(!empty($world_result)) {
 				$running_new_id = $word_result[sizeof($word_result) - 1]['sw_id'] + 1;
 			}
