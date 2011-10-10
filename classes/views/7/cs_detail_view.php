@@ -1606,16 +1606,7 @@ class cs_detail_view extends cs_view {
       $current_user_item = $this->_environment->getCurrentUserItem();
       $html  = LF.'<!-- BEGIN OF DETAIL VIEW -->'.LF;
       
-      global $c_indexed_search;
-      if(isset($c_indexed_search) && $c_indexed_search === true) {
-      	$html .= "
-          <script type='text/javascript'>
-          <!--
-              var indexed_search = true;
-          -->
-          </script>
-      	";
-      }
+      $html .= $this->addJavaScriptForSearch();
       
       $html .='<div style="width:100%;">'.LF;
       $rubric = $this->_environment->getCurrentModule();

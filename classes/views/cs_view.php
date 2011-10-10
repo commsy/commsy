@@ -163,6 +163,11 @@ class cs_view {
     */
    function getInfoForHeaderAsHTML () {
       $html = '';
+      return $html;
+   }
+   
+   protected function addJavaScriptForSearch() {
+   	  $html = '';
    	  global $c_indexed_search;
       if(isset($c_indexed_search) && $c_indexed_search === true) {
       	$html = "
@@ -173,6 +178,7 @@ class cs_view {
           </script>
       	";
       }
+      
       return $html;
    }
 

@@ -1047,9 +1047,6 @@ class cs_item {
    * @access private
    */
    function _save($manager) {
-	  // invoke indices update
-	  $manager->updateSearchIndices();
-   	  
       $saved = false;
       if(isset($this->_changed['general']) and $this->_changed['general'] == TRUE) {
          $manager->setCurrentContextID($this->getContextID());
@@ -1122,6 +1119,10 @@ class cs_item {
             }
          }
       }
+      
+      // invoke indices update
+	  //$manager->updateSearchIndices();
+	  
       return $saved;
    }
 

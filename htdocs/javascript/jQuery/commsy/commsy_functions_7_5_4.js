@@ -4226,6 +4226,8 @@ jQuery(document).ready(function() {
 			"style":	"width:220px; font-size:10pt; margin-bottom:0px; border:0 none; color:silver; margin: 0; outline: 0 none; padding: 3px 0px 1px 2px;"
 		}).insertAfter(input_search);
 		
+		var response;
+		
 		// register change function
 		input_search.keyup(function() {
 			// get length of insert text
@@ -4268,7 +4270,7 @@ jQuery(document).ready(function() {
 								url: 'commsy.php?cid=' + getURLParam('cid') + '&mod=ajax&fct=search&output=json',
 								   data: json_data,
 								   success: function(data) {
-								   		var response = jQuery.parseJSON(data);
+								   		response = jQuery.parseJSON(data);
 								   		if(response) {
 								   			console.log(response);
 								   			
@@ -4342,6 +4344,14 @@ jQuery(document).ready(function() {
 					}
 				});
 			}
+		});
+		
+		// register submit function
+		jQuery('input[id="search_autocomplete"]').parent().submit(function() {
+			console.log('submit');
+			
+			// cancel page reload
+			return false;
 		});
 	}
 });
