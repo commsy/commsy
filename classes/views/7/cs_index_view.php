@@ -1962,6 +1962,17 @@ EOD;
     */
    function asHTML () {
       $html  = LF.'<!-- BEGIN OF LIST VIEW -->'.LF;
+      
+  	  global $c_indexed_search;
+      if(isset($c_indexed_search) && $c_indexed_search === true) {
+      	$html .= "
+          <script type='text/javascript'>
+          <!--
+              var indexed_search = true;
+          -->
+          </script>
+      	";
+      }
 
        $html .= $this->_getIndexPageHeaderAsHTML();
       /*****************************/

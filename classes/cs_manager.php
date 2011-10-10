@@ -1765,21 +1765,21 @@ class cs_manager {
 		
 		/*
 		 * define some search/replace rules
-		 * 	- remove some special chars and numbers
-		 *  - remove words with length below 3
 		 *  - remove stopwords
 		 *  - remove special html codings
 		 *  - remove commsy tags
+		 * 	- remove some special chars and numbers
+		 *  - remove words with length below 3
 		 *  - remove multiple whitespaces
 		 */
 		include('etc/cs_stopwords.php');
-		$search[] = "=([0-9/.,ü-]*\s)=";									$replace[] = " ";
-		$search[] = "=(\s[A-Za-z]{1,2})\s=";								$replace[] = " ";
    		foreach($stopwords as $language => $word_list) {
    			$search[] = "= " . implode(" | ", $word_list) . " =i";			$replace[] = " ";
    		}
 		$search[] = "=&(.*?);=";											$replace[] = " ";
 		$search[] = "=\\(:(.*?):\\)=";										$replace[] = " ";
+		$search[] = '=(["()0-9/.,ü-]*\s["()0-9/.,ü-]*)=';					$replace[] = " ";
+		$search[] = "=(\s[A-Za-z]{1,2})\s=";								$replace[] = " ";
 		$search[] = "=\s+=";												$replace[] = " ";
 		
 		$words = array();

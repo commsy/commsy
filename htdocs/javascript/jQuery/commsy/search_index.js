@@ -49,7 +49,6 @@ jQuery(document).ready(function() {
 			})
 				.append(jQuery('<div/>', {
 					style: 'background-color: BlanchedAlmond; width: 0%;',
-					text: 'Indexing...',
 					id: 'indexing_bar'
 				})).appendTo(jQuery('div[id="indexing_status"]'));
 			
@@ -70,6 +69,8 @@ jQuery(document).ready(function() {
 			var json_data = new Object();
 			json_data['do'] = 'truncate';
 			json_data['manager'] = manager;
+			
+			jQuery('div[id="indexing_bar"]').text('Indexing...');
 			
 			jQuery.ajax({
 				url: 'commsy.php?cid=' + getURLParam('cid') + '&mod=ajax&fct=search_index&output=json',
@@ -106,8 +107,13 @@ jQuery(document).ready(function() {
 				   			var percent = Indexer.numComplete * 100 / Indexer.numManager;
 				   			jQuery('div[id="indexing_bar"]').css('width', percent+'%');
 				   			
-				   			if(Indexer.numComplete < Indexer.numManager) {
-				   				Indexer.indexing(manager+1);
+				   			if(percent == 100) {
+				   				jQuery('div[id="indexing_bar"]').text('Complete');
+				   				Indexer.numComplete = 0;
+				   			} else {
+				   				if(Indexer.numComplete < Indexer.numManager) {
+					   				Indexer.indexing(manager+1);
+					   			}
 				   			}
 			   			}
 			   		}
