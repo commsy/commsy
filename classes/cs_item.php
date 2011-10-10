@@ -1055,7 +1055,7 @@ class cs_item {
          }
          $saved = $manager->saveItem($this);
       }
-      if (isset($this->_external_viewer_user_array)){
+      if (isset($this->_external_viewer_user_array) and !empty($this->_external_viewer_user_array)){
          $item_manager = $this->_environment->getItemManager();
          $user_id_string = $item_manager->getExternalViewerUserStringForItem($this->getItemID());
          $user_id_array = array();
