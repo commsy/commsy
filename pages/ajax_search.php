@@ -157,11 +157,11 @@ if(isset($_GET['do'])){
 			$item = $rubric_manager->getItem($result['item_id']);			// <- this may be null, if item is deleted
 			
 			if($item) {
-				$title = $item->getTitle();
-				$json_return[] = array(	'title'			=> $title,//$view->_text_as_html_short(compareWithSearchText($search_text, $title)),
-										'complete'		=> $result['complete'],
-										'type'			=> $result['type'],
-										'id'			=> $result['item_id']);
+				$json_return[] = array(	'title'				=> $item->getTitle(),//$view->_text_as_html_short(compareWithSearchText($search_text, $title)),
+										'modification_date'	=> $item->getModificationDate(),
+										'complete'			=> $result['complete'],
+										'type'				=> $result['type'],
+										'id'				=> $result['item_id']);
 			}
 		}
 		

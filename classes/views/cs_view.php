@@ -170,10 +170,24 @@ class cs_view {
    	  $html = '';
    	  global $c_indexed_search;
       if(isset($c_indexed_search) && $c_indexed_search === true) {
+     	$current_room_modules = $this->_environment->getCurrentContextItem()->getHomeConf();
+		$room_modules = array();
+		if(!empty($current_room_modules)) {
+			$room_modules = explode(',', $current_room_modules);
+		}
+		foreach($room_modules as $module) {
+			$link_name = explode('_', $module);
+			if($link_name[1] !== 'none') {
+				$search_rubric[] = $link_name[0];
+			}
+		}
+		
       	$html = "
           <script type='text/javascript'>
           <!--
               var indexed_search = true;
+              var search_rubrics = ['" . implode('\', \'', $search_rubric) . "'];
+              var search_lang_results = '" . $this->_translator->getMessage("COMMON_SEARCH_RESULTS") . "';
           -->
           </script>
       	";

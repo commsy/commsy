@@ -4207,151 +4207,281 @@ function roomwide_search_extended_search(is_shown){
 	
 /* AJAX Search */
 jQuery(document).ready(function() {
-	if(typeof(indexed_search) !== 'undefined' && indexed_search === true) {
-		var treshhold = 3;
-		var last_search = '';
-		var input_search = jQuery('input[id="searchtext"]');
-		
-		// turn autocomplete off
-		input_search.attr('autocomplete', 'off');
-		
-		// change css style
-		input_search.css('position', 'absolute');
-		input_search.css('z-index', '5');
-		input_search.css('background-color', 'transparent');
-		
-		// inject another input form for autocompletion
-		jQuery('<input>', {
-			"id":		"search_autocomplete",
-			"style":	"width:220px; font-size:10pt; margin-bottom:0px; border:0 none; color:silver; margin: 0; outline: 0 none; padding: 3px 0px 1px 2px;"
-		}).insertAfter(input_search);
-		
-		var response;
-		
-		// register change function
-		input_search.keyup(function() {
-			// get length of insert text
-			var searchtext = jQuery(this).val();
-			var length = searchtext.length;
+	var Search = {
+			response: null,
+			treshhold: 3,
+			last_search: "",
+			input_search: null,
+			results_per_page: 20,
+			trigger_display: false,
 			
-			// reset autocomplete
-			jQuery('input[id="search_autocomplete"]').attr('value', '');
+			/* init function */
+			init: function() {
+				if(typeof(indexed_search) !== 'undefined' && indexed_search === true) {
+					this.input_search = jQuery('input[id="searchtext"]');
+					
+					// modify search form
+					this.modifySearchForm();
+					
+					// register change function
+					this.registerChange();
+					
+					// register submit function
+					this.registerSubmit();
+				}
+			},
 			
-			// trigger search if last_length was below treshhold
-			if(length >= treshhold) {
-				// wait for 1 seconde and ensure, there is no new user input
-				jQuery(this).oneTime(500, function() {
-					if(searchtext == jQuery(this).val()) {
-						// only process, if search text changed
-						if(last_search != searchtext) {
-							last_search = jQuery(this).val();
-							
-							// perform ajax call to delete own voting
-							var json_data = new Object();
-							json_data['do'] = 'search';
-							json_data['selrubric'] = jQuery(this).parent().find('input[name="selrubric"]').val();
-							json_data['searchtext'] = searchtext;
-							
-							// remove old results
-				   			jQuery('div[class="search_fast_results"]').remove();
-							
-							// create fast search results div
-							jQuery('<div/>', {
-				   				"class":	"search_fast_results"
-				   			})
-				   				.append(jQuery('<div/>', {
-				   					"id":		"loading_animation"
-				   				})
-				   					.append(jQuery('<img/>', {
-				   						"src":		"javascript/jQuery/commsy_images/roomwide_search_animation.gif"
-				   					}))).appendTo(jQuery('input[id="searchtext"]').parent().parent());
-							
-							jQuery.ajax({
-								url: 'commsy.php?cid=' + getURLParam('cid') + '&mod=ajax&fct=search&output=json',
-								   data: json_data,
-								   success: function(data) {
-								   		response = jQuery.parseJSON(data);
-								   		if(response) {
-								   			console.log(response);
-								   			
-								   			// autocompletion
-								   			if(response.length > 0) {
-								   				var tmp = response[0].complete;
-									   			var auto_complete = '';
-									   			jQuery.each(response, function(index, element) {
-									   				if(searchtext == element.complete.slice(0, searchtext.length) && (element.complete.length < auto_complete.length || auto_complete == 0)) {
-									   					auto_complete = element.complete;
-									   				}
-									   			});
-									   			auto_complete = searchtext + auto_complete.slice(searchtext.length);
-									   			jQuery('input[id="search_autocomplete"]').attr('value', auto_complete);
-								   			}
-								   			
-								   			// fadeout loading animation from fast search results
-								   			jQuery('div[class="search_fast_results"] div[id="loading_animation"] img').fadeOut('slow', function() {
-								   				// present fast search results
-								   				jQuery('<div/>', {
-								   					"id":		"results"
-								   				})
-								   					.append(jQuery('<table/>', {
-								   						"class":		"list"
-								   					})
-								   						.append(jQuery('<tr/>', {
-								   							
-								   						})
-								   							.append(jQuery('<td/>', {
-									   							"class":		"head"
-									   						})))).appendTo('div[class="search_fast_results"]');
-								   				
-								   				// show the first ten results
-								   				var count = 1;
-								   				var css_class = 'odd';
-								   				jQuery.each(response, function(index, element) {
-								   					if(count > 10) return false;
-								   					
-								   					// determ css class
-								   					if(count % 2 == 0) {
-								   						css_class = 'even';
-								   					} else {
-								   						css_class = 'odd';
-								   					}
-								   					
-								   					jQuery('<tr/>', {
-								   						
-								   					})
-									   					.append(jQuery('<td/>', {
-									   						"class":		css_class
-									   					})
-									   						.append(jQuery('<a/>', {
-									   							"href":		'commsy.php?cid=' + getURLParam('cid') + '&mod=' + element.type + '&fct=detail&iid=' + element.id + '&search_path=true',
-									   							"text":		element.title
-									   						}))).appendTo('div[class="search_fast_results"] div[id="results"] table');
-								   					
-								   					count++;
-								   				});
-								   				
-								   				jQuery('<tr/>', {
-								   					
-								   				})
-									   				.append(jQuery('<td/>', {
-							   							"class":		"head"
-							   						})).appendTo('div[class="search_fast_results"] div[id="results"] table');
-								   			});
-								   		}
-						           }
-							});
-						}
+			modifySearchForm: function() {
+				// turn autocomplete off
+				this.input_search.attr('autocomplete', 'off');
+				
+				// change css style
+				this.input_search.css('position', 'absolute');
+				this.input_search.css('z-index', '5');
+				this.input_search.css('background-color', 'transparent');
+				
+				// inject another input form for autocompletion
+				jQuery('<input>', {
+					"id":		"search_autocomplete",
+					"style":	"width:220px; font-size:10pt; margin-bottom:0px; border:0 none; color:silver; margin: 0; outline: 0 none; padding: 3px 0px 1px 2px;"
+				}).insertAfter(this.input_search);
+			},
+			
+			registerChange: function() {
+				// register change function
+				this.input_search.keyup(function() {
+					// get length of insert text
+					var searchtext = jQuery(this).val();
+					var length = searchtext.length;
+					
+					// reset autocomplete
+					jQuery('input[id="search_autocomplete"]').attr('value', '');
+					
+					// trigger search if last_length was below treshhold
+					if(length >= Search.treshhold) {
+						// wait for 300 ms and ensure, there is no new user input
+						jQuery(this).oneTime(300, function() {
+							if(searchtext == jQuery(this).val()) {
+								// only process, if search text changed
+								if(Search.last_search != searchtext) {
+									Search.last_search = jQuery(this).val();
+									
+									// perform ajax call
+									var json_data = new Object();
+									json_data['do'] = 'search';
+									json_data['selrubric'] = jQuery(this).parent().find('input[name="selrubric"]').val();
+									json_data['searchtext'] = searchtext;
+									
+									// remove old results
+						   			jQuery('div[class="search_fast_results"]').remove();
+						   			
+						   			// create fast search results div
+									jQuery('<div/>', {
+						   				class:	"search_fast_results"
+						   			})
+						   				.append(jQuery('<div/>', {
+						   					id:		"loading_animation"
+						   				})
+						   					.append(jQuery('<img/>', {
+						   						src:		"javascript/jQuery/commsy_images/roomwide_search_animation.gif"
+						   					}))).appendTo(jQuery('input[id="searchtext"]').parent().parent());
+									
+									jQuery.ajax({
+										url: 'commsy.php?cid=' + getURLParam('cid') + '&mod=ajax&fct=search&output=json',
+										   data: json_data,
+										   success: function(data) {
+											   Search.response = jQuery.parseJSON(data);
+										   		if(Search.response) {
+										   			console.log(Search.response);
+										   			
+										   			// autocompletion
+										   			if(Search.response.length > 0) {
+										   				var tmp = Search.response[0].complete;
+											   			var auto_complete = '';
+											   			jQuery.each(Search.response, function(index, element) {
+											   				if(searchtext == element.complete.slice(0, searchtext.length) && (element.complete.length < auto_complete.length || auto_complete == 0)) {
+											   					auto_complete = element.complete;
+											   				}
+											   			});
+											   			auto_complete = searchtext + auto_complete.slice(searchtext.length);
+											   			jQuery('input[id="search_autocomplete"]').attr('value', auto_complete);
+										   			}
+										   			
+										   			// fadeout loading animation from fast search results
+										   			jQuery('div[class="search_fast_results"] div[id="loading_animation"] img').fadeOut('slow', function() {
+										   				// present fast search results
+										   				jQuery('<div/>', {
+										   					id:		"results"
+										   				})
+										   					.append(jQuery('<table/>', {
+										   						class:		"list"
+										   					})
+										   						.append(jQuery('<tr/>', {
+										   							
+										   						})
+										   							.append(jQuery('<td/>', {
+											   							class:		"head"
+											   						})))).appendTo('div[class="search_fast_results"]');
+										   				
+										   				// show the first ten results
+										   				var count = 1;
+										   				var css_class = 'odd';
+										   				jQuery.each(Search.response, function(index, element) {
+										   					if(count > 10) return false;
+										   					
+										   					// determ css class
+										   					if(count % 2 == 0) {
+										   						css_class = 'even';
+										   					} else {
+										   						css_class = 'odd';
+										   					}
+										   					
+										   					jQuery('<tr/>', {
+										   						
+										   					})
+											   					.append(jQuery('<td/>', {
+											   						class:		css_class
+											   					})
+											   						.append(jQuery('<a/>', {
+											   							href:		'commsy.php?cid=' + getURLParam('cid') + '&mod=' + element.type + '&fct=detail&iid=' + element.id + '&search_path=true',
+											   							text:		element.title
+											   						}))).appendTo('div[class="search_fast_results"] div[id="results"] table');
+										   					
+										   					count++;
+										   				});
+										   				
+										   				jQuery('<tr/>', {
+										   					
+										   				})
+											   				.append(jQuery('<td/>', {
+									   							class:		"head"
+									   						})).appendTo('div[class="search_fast_results"] div[id="results"] table');
+										   				
+										   				// trigger results in overlay if needed
+											   			if(Search.trigger_display) {
+											   				Search.displayResults();
+											   			}
+										   			});
+										   		}
+								           }
+									});
+								}
+							}
+						});
 					}
 				});
-			}
-		});
-		
-		// register submit function
-		jQuery('input[id="search_autocomplete"]').parent().submit(function() {
-			console.log('submit');
+			},
 			
-			// cancel page reload
-			return false;
-		});
-	}
+			registerSubmit: function() {
+				// register submit function
+				jQuery('input[id="search_autocomplete"]').parent().submit(function() {
+					// skip, if search field is empty
+					if(Search.input_search.val().length == 0) return false;
+					
+					// skip, if window was not closed
+					if(jQuery('div[id="search_overlay_front"]').length != 0) return false;
+					
+					jQuery('<div/>', {
+						id: "search_overlay_background",
+						style: "position: absolute; left: 0px; top: 0px; z-index: 900; width: 100%; height: 100%; background-color: #FFFFFF; opacity: 0.7;"
+					}).appendTo('body');
+					
+					jQuery('<div/>', {
+						id: "search_overlay_front",
+						style: "position: absolute; left: 0px; top: 0px; z-index: 1000; width: 100%; height: 100%;"
+					}).append(
+						jQuery('<div/>', {
+							style: "margin-left: 20%; margin-top: 40px; width: 60%;"
+						}).append(
+							jQuery('<div/>', {
+								id: 'profile_content'
+							}).append(
+								jQuery('<div/>', {
+									
+								}).append(
+									jQuery('<div/>', {
+										class: 'profile_title',
+										style: 'float: right;'
+									}).append(
+										jQuery('<a/>', {
+											id: 'search_overlay_close',
+											class: 'titlelink',
+											href: '#',
+											text: 'X'
+										}))).append(
+								jQuery('<h2/>', {
+									id: 'profile_title',
+									text: search_lang_results
+								}))).append(
+							jQuery('<div/>', {
+							}).append(
+								jQuery('<img/>', {
+									id: "search_overlay_loading_animation",
+									src:		"javascript/jQuery/commsy_images/roomwide_search_animation.gif"
+								})).append(
+								jQuery('<table/>', {
+									class: 'list',
+									id: 'search_overlay_results'
+								}))))).appendTo('body');
+					
+					// register close event
+					jQuery('a[id="search_overlay_close"]').click(function() {
+						jQuery('div[id="search_overlay_background"]').remove();
+						jQuery('div[id="search_overlay_front"]').remove();
+					});
+					
+					// display results if there is already a response
+					if(Search.response != null) {
+						if(Search.last_search != Search.input_search.val()) {
+							Search.trigger_display = true;
+						} else {
+							Search.displayResults();
+						}
+					} else {
+						Search.trigger_display = true;
+					}
+					
+					// cancel page reload
+					return false;
+				});
+			},
+			
+			displayResults: function() {
+				// remove loading animation
+				jQuery('img[id="search_overlay_loading_animation"]').remove();
+				
+				// display rubrics
+				
+				// display results
+				var count = 1;
+   				var css_class = 'odd';
+				jQuery.each(Search.response, function(index, element) {
+					// determ css class
+   					if(count % 2 == 0) {
+   						css_class = 'even';
+   					} else {
+   						css_class = 'odd';
+   					}
+   					
+   					// append table content
+   					jQuery('<tr/>', {
+   					}).append(
+   						jQuery('<td/>', {
+   							class: css_class,
+   							text: element.title
+   						})).append(
+   						jQuery('<td/>', {
+   							class: css_class,
+   							text: element.modification_date
+   						})).appendTo(jQuery('table[id="search_overlay_results"]'));
+   					
+   					count++;
+				});
+				
+				// unset
+				Search.trigger_display = false;
+			}
+	};
+	
+	Search.init();
 });
