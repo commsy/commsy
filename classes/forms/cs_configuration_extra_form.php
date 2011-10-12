@@ -126,6 +126,15 @@ class cs_configuration_extra_form extends cs_rubric_form {
          $this->_array_extra[24]['value'] = 'CONFIGURATION_EXTRA_WORDPRESS';
       }
 
+      /*
+       * workflow
+       */
+      global $c_workflow;
+      if ( isset($c_workflow) and  $c_workflow ) {
+         $this->_array_extra[25]['text']  = $this->_translator->getMessage('CONFIGURATION_EXTRA_WORKFLOW');
+         $this->_array_extra[25]['value'] = 'CONFIGURATION_EXTRA_WORKFLOW';
+      }
+      
       global $c_plugin_array;
       if (isset($c_plugin_array) and !empty($c_plugin_array)) {
          $this->_array_extra[50]['text']  = '----------------------';

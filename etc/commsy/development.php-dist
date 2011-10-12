@@ -95,4 +95,7 @@ $c_enable_htmltextarea_security = false;
 
 // enable new indexed search
 //$c_indexed_search = true;
+
+// enable workflow support
+//$c_workflow = false;
 ?>

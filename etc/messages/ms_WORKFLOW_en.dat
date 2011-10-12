@@ -1,0 +1,4 @@
+<?php
+$message["WORKFLOW_CONFIGURATION_DESC"]["en"] = "Workflow configuration.";
+$message["WORKFLOW_CONFIGURATION_LINK"]["en"] = "Workflow";
+?>

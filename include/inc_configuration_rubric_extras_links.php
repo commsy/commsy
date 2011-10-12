@@ -118,6 +118,28 @@ $translator = $environment->getTranslationObject();
       $configuration_rubric_extras_link_list->add($link_item);
    }
 
+   #########################################
+   # Workflow
+   #########################################
+   $context_item = $environment->getCurrentContextItem();
+   if ( $context_item->withWorkflowFunctions() and !$context_item->isServer() ) {
+      $link_item = new cs_link();
+      $link_item->setTitle($translator->getMessage('WORKFLOW_CONFIGURATION_LINK'));
+      if(($environment->getCurrentBrowser() == 'MSIE') && (mb_substr($environment->getCurrentBrowserVersion(),0,1) == '6')){
+         $link_item->setIconPath('images/commsyicons_msie6/48x48/config/workflow.gif');
+         $link_item->setIconPathForNavigation('images/commsyicons_msie6/22x22/config/workflow.gif');
+      } else {
+         $link_item->setIconPath('images/commsyicons/48x48/config/workflow.png');
+         $link_item->setIconPathForNavigation('images/commsyicons/22x22/config/workflow.png');
+      }
+      $link_item->setDescription($translator->getMessage('WORKFLOW_CONFIGURATION_DESC'));
+      $link_item->setContextID($environment->getCurrentContextID());
+      $link_item->setModule('configuration');
+      $link_item->setFunction('workflow');
+      $link_item->setParameter(array('iid' => $environment->getCurrentContextID()));
+      $configuration_rubric_extras_link_list->add($link_item);
+   }
+   
    if ( !$environment->inServer()
         #and !$environment->inPrivateRoom()
         and !$environment->inPortal()

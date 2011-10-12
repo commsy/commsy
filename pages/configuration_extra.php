@@ -100,6 +100,9 @@ else {
       } elseif ($_POST['extra'] == 'CONFIGURATION_EXTRA_ACTIVATING_CONTENT') {
          $extra = $_POST['extra'];
          $values['description'] = $translator->getMessage('CONFIGURATION_EXTRA_ACTIVATING_CONTENT_DESC');
+      } elseif ($_POST['extra'] == 'CONFIGURATION_EXTRA_WORKFLOW') {
+         $extra = $_POST['extra'];
+         $values['description'] = $translator->getMessage('CONFIGURATION_EXTRA_WORKFLOW_DESC');
       } else {
          include_once('functions/error_functions.php');trigger_error('choice of extra lost',E_USER_WARNING);
       }
@@ -123,7 +126,8 @@ else {
               ( $extra == 'CONFIGURATION_EXTRA_WORDPRESS' and $portal->withWordpressFunctions() ) or
               ( $extra == 'CHAT_CONFIGURATION_EXTRA_CHAT'    and $portal->withChatLink() ) or
               ( $extra == 'CHAT_CONFIGURATION_EXTRA_MATERIALIMPORT'    and $portal->withMaterialImportLink() ) or
-              ( $extra == 'CONFIGURATION_EXTRA_ACTIVATING_CONTENT'    and $portal->withActivatingContent() )
+              ( $extra == 'CONFIGURATION_EXTRA_ACTIVATING_CONTENT'    and $portal->withActivatingContent() ) or
+              ( $extra == 'CONFIGURATION_EXTRA_WORKFLOW' and $portal->withWorkflowFunctions() )
             ) {
             $values['ROOM_'.$portal->getItemID()] = $portal->getItemID();
             unset($post_vars['ROOM_'.$portal->getItemID()]);
@@ -146,7 +150,8 @@ else {
                     ( $extra == 'CONFIGURATION_EXTRA_WORDPRESS' and $room->withWordpressFunctions() ) or
                     ( $extra == 'CONFIGURATION_EXTRA_MATERIALIMPORT' and $room->withMaterialImportLink() ) or
                     ( $extra == 'CHAT_CONFIGURATION_EXTRA_CHAT'    and $room->withChatLink() ) or
-                    ( $extra == 'CONFIGURATION_EXTRA_ACTIVATING_CONTENT'    and $room->withActivatingContent() )
+                    ( $extra == 'CONFIGURATION_EXTRA_ACTIVATING_CONTENT'    and $room->withActivatingContent() ) or
+                    ( $extra == 'CONFIGURATION_EXTRA_WORKFLOW' and $room->withWorkflowFunctions() )
                ) {
                   $values['ROOM_'.$room->getItemID()] = $room->getItemID();
                   unset($post_vars['ROOM_'.$room->getItemID()]);
@@ -191,7 +196,8 @@ else {
               $_POST['extra'] == 'CONFIGURATION_EXTRA_WORDPRESS' or
               $_POST['extra'] == 'CONFIGURATION_EXTRA_MATERIALIMPORT' or
               $_POST['extra'] == 'CHAT_CONFIGURATION_EXTRA_CHAT' or
-              $_POST['extra'] == 'CONFIGURATION_EXTRA_ACTIVATING_CONTENT'
+              $_POST['extra'] == 'CONFIGURATION_EXTRA_ACTIVATING_CONTENT' or
+              $_POST['extra'] == 'CONFIGURATION_EXTRA_WORKFLOW'
             ) {
             $extra = $_POST['extra'];
          } else {
@@ -225,6 +231,8 @@ else {
                   $portal->setWithMaterialImport();
                } elseif ( $extra == 'CONFIGURATION_EXTRA_ACTIVATING_CONTENT' ) {
                   $portal->setWithActivatingContent();
+               } elseif ( $extra == 'CONFIGURATION_EXTRA_WORKFLOW' ) {
+                  $portal->setWithWorkflowFunctions();
                }
             } else {
                if ( $extra == 'CONFIGURATION_EXTRA_SPONSORING' ) {
@@ -247,6 +255,8 @@ else {
                   $portal->setWithoutMaterialImport();
                } elseif ( $extra == 'CONFIGURATION_EXTRA_ACTIVATING_CONTENT' ) {
                   $portal->setWithoutActivatingContent();
+               } elseif ( $extra == 'CONFIGURATION_EXTRA_WORKFLOW' ) {
+                  $portal->setWithoutWorkflowFunctions();
                }
             }
             $portal->save();
@@ -288,6 +298,9 @@ else {
                      } elseif ( $extra == 'CONFIGURATION_EXTRA_ACTIVATING_CONTENT' and !$room->WithActivatingContent() ) {
                         $room->setWithActivatingContent();
                         $save_flag = true;
+                     } elseif ( $extra == 'CONFIGURATION_EXTRA_WORKFLOW' and !$room->WithWorkflowFunctions() ) {
+                        $room->setWithWorkflowFunctions();
+                        $save_flag = true;
                      }
                   } else {
                      if ( $extra == 'CONFIGURATION_EXTRA_SPONSORING' and $room->WithAds() ) {
@@ -319,6 +332,9 @@ else {
                         $room->setWithoutMaterialImport();
                      } elseif ( $extra == 'CONFIGURATION_EXTRA_ACTIVATING_CONTENT' and $room->WithActivatingContent() ) {
                         $room->setWithoutActivatingContent();
+                        $save_flag = true;
+                     } elseif ( $extra == 'CONFIGURATION_EXTRA_WORKFLOW' and $room->WithWorkflowFunctions() ) {
+                        $room->setWithoutWorkflowFunctions();
                         $save_flag = true;
                      }
                   }

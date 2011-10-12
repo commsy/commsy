@@ -662,6 +662,30 @@ class cs_context_item extends cs_item {
   }
 
 
+  
+  function setWithWorkflow() {
+    $this->_addExtra('WITHWORKFLOW',2);
+  }
+
+  function setWithoutWorkflow() {
+    $this->_addExtra('WITHWORKFLOW',1);
+  }
+
+  function withWorkflow() {
+    $retour = false;
+    if ($this->_issetExtra('WITHWORKFLOW') ) {
+      $re = $this->_getExtra('WITHWORKFLOW');
+      if ($re == 2) {
+        $retour = true;
+      }
+    }else {
+      $retour = true;
+    }
+    return $retour;
+  }
+  
+  
+  
   /** get htmltextarea status
    *
    * @return integer discussion status 1 = simple, 2 = threaded,  3 = both
@@ -6386,6 +6410,40 @@ class cs_context_item extends cs_item {
 
   function setPageImpressionAndUserActivityLast($value) {
     $this->_addExtra('PIUA_LAST',$value);
+  }
+  
+  ##################################
+  # Workflow
+  ##################################
+  
+  function withWorkflowFunctions () {
+    global $c_workflow;
+    if ( !isset($c_workflow) or !$c_workflow ) {
+      return false;
+    }
+    $retour = false;
+    $value = $this->_getExtraConfig('WORKFLOW');
+    if ($value == 1) {
+      $retour = true;
+    } elseif ( $this->isProjectRoom()
+    or $this->isCommunityRoom()
+    or $this->isGroupRoom()
+    or $this->isPrivateRoom()
+    ) {
+      $portal_room = $this->getContextItem();
+      if ( $portal_room->withWorkflowFunctions() ) {
+        $retour = true;
+      }
+    }
+    return $retour;
+  }
+
+  function setWithWorkflowFunctions () {
+    $this->_setExtraConfig('WORKFLOW',1);
+  }
+
+  function setWithoutWorkflowFunctions () {
+    $this->_setExtraConfig('WORKFLOW',0);
   }
 }
 ?>

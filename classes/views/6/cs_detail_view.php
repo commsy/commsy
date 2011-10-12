@@ -656,6 +656,21 @@ class cs_detail_view extends cs_view {
                $html .= $this->_getTagBoxAsHTML($item);
                $html .='</div>'.LF;
             }
+            if ( $current_context->withWorkflow()
+                 and !strstr($detail_box_conf,'detailbuzzwords_nodisplay')
+               ){
+               $title_string .= ',"'.$this->_translator->getMessage('COMMON_BUZZWORDS').'"';
+               $desc_string .= ',""';
+               $size_string .= ',"10"';
+               if ( strstr($detail_box_conf,'detailbuzzwords_short') ){
+                  $config_text .= ',true';
+               } else {
+                  $config_text .= ',false';
+               }
+               $html .= '<div class="commsy_panel" style="margin-bottom:1px;">'.LF;
+               $html .= $this->_getWorkflowBoxAsHTML($item);
+               $html .='</div>'.LF;
+            }
          }
 ############SQL-Statements reduzieren
          if ( !strstr($detail_box_conf,'detailnetnavigation_nodisplay') ){

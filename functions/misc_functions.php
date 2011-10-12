@@ -864,7 +864,9 @@ function isURLValid () {
          $funct != 'mdo_perform_search' and
          $funct != 'assessment' and
          $funct != 'search' and
-         $funct != 'search_index'
+         $funct != 'search_index' and
+         
+         $funct != 'workflow'
        ) {
        return false;
     }
