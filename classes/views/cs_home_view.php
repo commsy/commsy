@@ -122,6 +122,8 @@ class cs_home_view extends cs_view {
     */
    function asHTML () {
 	  $html = '';
+	  
+	  $html .= $this->addJavaScriptForSearch();
 
 	  // hack for configuration index
 	  if ( $this->_environment->getCurrentModule() == 'configuration'

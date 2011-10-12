@@ -581,6 +581,51 @@ h1{
    font-size: 14pt;
 }
 
+.search_overlay {
+   background:url(images/detail_fader_<?php echo($color['schema'])?>.gif) center repeat-x;
+   background-color:<?php echo($color['tabs_background'])?>;
+   color:<?php echo($color['headline_text'])?>;
+   margin: 5px;
+   padding: 2px;
+   -moz-border-radius: 5px 5px 0px 0px;
+   font-weight: bold;
+}
+
+#search_overlay_result_message {
+   margin: 5px;
+}
+
+.search_overlay table {
+	background-color: #FFFFFF;
+	color: #000000;
+	width: 100%;
+	font-weight: normal;
+}
+
+.search_overlay td.even {
+	background-color: <?php echo($color['list_entry_even'])?>;
+	padding: 0px 0px 0px 3px;
+}
+
+.search_overlay td.odd {
+	background-color: <?php echo($color['list_entry_odd'])?>;
+	padding: 0px 0px 0px 3px;
+}
+
+.search_overlay_config_label {
+	background-color: #FFFFFF;
+	color: #000000;
+	font-weight: normal;
+	float: left;
+	width: 95%;
+	margin-top: 2px;
+	padding-left: 2px;
+}
+
+.search_overlay_config_form {
+	float: right;
+}
+
 #profile_content{
    margin-bottom:20px;
    padding:0px;

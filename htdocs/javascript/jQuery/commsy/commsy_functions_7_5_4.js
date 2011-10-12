@@ -4209,11 +4209,17 @@ function roomwide_search_extended_search(is_shown){
 jQuery(document).ready(function() {
 	var Search = {
 			response: null,
-			treshhold: 3,
 			last_search: "",
 			input_search: null,
-			results_per_page: 20,
 			trigger_display: false,
+			display: {
+				offset: null
+			},
+			config: {
+				threshold: 3,
+				categorizeByRubrics: true,
+				resultsPerRubric: 10
+			},
 			
 			/* init function */
 			init: function() {
@@ -4258,7 +4264,7 @@ jQuery(document).ready(function() {
 					jQuery('input[id="search_autocomplete"]').attr('value', '');
 					
 					// trigger search if last_length was below treshhold
-					if(length >= Search.treshhold) {
+					if(length >= Search.config.threshold) {
 						// wait for 300 ms and ensure, there is no new user input
 						jQuery(this).oneTime(300, function() {
 							if(searchtext == jQuery(this).val()) {
@@ -4394,7 +4400,8 @@ jQuery(document).ready(function() {
 							style: "margin-left: 20%; margin-top: 40px; width: 60%;"
 						}).append(
 							jQuery('<div/>', {
-								id: 'profile_content'
+								id: 'profile_content',
+								style: '-moz-border-radius: 5px 5px 0px 0px; box-shadow: 8px 8px #dddddd;'
 							}).append(
 								jQuery('<div/>', {
 									
@@ -4409,25 +4416,98 @@ jQuery(document).ready(function() {
 											href: '#',
 											text: 'X'
 										}))).append(
-								jQuery('<h2/>', {
-									id: 'profile_title',
-									text: search_lang_results
+									jQuery('<h2/>', {
+										id: 'profile_title',
+										text: search_lang_results
+									}))).append(
+								jQuery('<div/>', {
+									id: 'search_overlay_result_message',
+									style: 'display: none;',
+									text: search_lang_result_message
+								})).append(
+									jQuery('<img/>', {
+										id: "search_overlay_loading_animation",
+										src:		"javascript/jQuery/commsy_images/roomwide_search_animation.gif"
+									})).append(
+									jQuery('<div/>', {
+										id: 'search_overlay_results',
+										style: 'width: 80%; float: left;'
+									})).append(
+									jQuery('<div/>', {
+										id: 'search_overlay_config',
+										style: 'width: 20%; float: right;'
+									})).append(
+									jQuery('<div/>', {
+										style: 'clear: both;'
+									})))).appendTo('body');
+					
+					// generate config box
+					jQuery('<div/>', {
+						text: search_lang_view_options,
+						class: 'search_overlay'
+					}).append(
+						jQuery('<div/>', {
+							
+						}).append(
+							jQuery('<div/>', {
+								class: 'search_overlay_config_label',
+								text: search_lang_view_options_rubric
+							}).append(
+								jQuery('<input/>', {
+									id: 'search_overlay_config_form_categorize',
+									class: 'search_overlay_config_form',
+									type: 'checkbox'
 								}))).append(
 							jQuery('<div/>', {
+								style: 'clear:both; '
+							})).append(
+							jQuery('<div/>', {
+								class: 'search_overlay_config_label',
+								text: search_lang_view_options_per_rubric
 							}).append(
-								jQuery('<img/>', {
-									id: "search_overlay_loading_animation",
-									src:		"javascript/jQuery/commsy_images/roomwide_search_animation.gif"
-								})).append(
-								jQuery('<table/>', {
-									class: 'list',
-									id: 'search_overlay_results'
-								}))))).appendTo('body');
+								jQuery('<input/>', {
+									id: 'search_overlay_config_form_per_rubric',
+									class: 'search_overlay_config_form',
+									type: 'input',
+									size: 2,
+									style: 'margin: 1px;',
+									value: Search.config.resultsPerRubric
+								}))).append(
+							jQuery('<div/>', {
+								style: 'clear:both; '
+							}))).appendTo('div[id="search_overlay_config"]');
 					
-					// register close event
+					// set default values
+					if(Search.config.categorizeByRubrics == true) {
+						jQuery('input[id="search_overlay_config_form_categorize"]').attr('checked', 'checked');
+					}
+					
+					// register events
 					jQuery('a[id="search_overlay_close"]').click(function() {
 						jQuery('div[id="search_overlay_background"]').remove();
 						jQuery('div[id="search_overlay_front"]').remove();
+					});
+					jQuery('input[id="search_overlay_config_form_categorize"]').click(function() {
+						// clear content of search_overlay_results
+						jQuery('div[id="search_overlay_results"] div').remove();
+						
+						// update config
+						Search.config.categorizeByRubrics = jQuery(this).attr('checked');
+						
+						// redraw
+						Search.displayResults();
+					});
+					jQuery('input[id="search_overlay_config_form_per_rubric"]').change(function() {
+						jQuery(this).oneTime(300, function() {
+							// clear content of search_overlay_results
+							jQuery('div[id="search_overlay_results"] div').remove();
+							
+							// update config
+							Search.config.resultsPerRubric = jQuery(this).val();
+							
+							// redraw
+							Search.displayResults();
+						});
 					});
 					
 					// display results if there is already a response
@@ -4446,16 +4526,115 @@ jQuery(document).ready(function() {
 				});
 			},
 			
-			displayResults: function() {
-				// remove loading animation
-				jQuery('img[id="search_overlay_loading_animation"]').remove();
-				
-				// display rubrics
-				
+			displayResultsByRubric: function() {
 				// display results
+				var empty = true;
+				this.display.offset = new Object();
+				jQuery.each(search_rubrics, function(index, element) {
+					// are there results for actual rubric?
+					empty = true;
+					jQuery.each(Search.response, function(i, e) {
+						if(e.type == element) {
+							empty = false;
+							return false;
+						}
+					});
+					
+					// display rubric
+					if(!empty) {
+						Search.display.offset.element = 0;
+						if(Search)
+						
+						jQuery('<div/>', {
+							id: 'search_overlay_rubric_' + element,
+							class: 'search_overlay',
+							text: search_lang_rubrics[index]
+						}).append(
+							jQuery((Search.display.offset.element == 0 ? '<span/>' : '<a/>'), {
+								text: '<<',
+								style: 'margin-left: 10px;'
+							})).append(
+							jQuery('<span/>', {
+								text: '|'
+							})).append(
+							jQuery('<span/>', {
+								text: '<'
+							})).append(
+							jQuery('<span/>', {
+								text: '|'
+							})).append(
+							jQuery('<span/>', {
+								text: '>'								
+							})).append(
+							jQuery('<span/>', {
+								text: '|'
+							})).append(
+							jQuery('<span/>', {
+								text: '>>'
+							})).append(
+							jQuery('<img/>', {
+								src: 'images/arrow_down.gif',
+								style: 'float: right;'
+							})).append(
+							jQuery('<table/>', {
+								
+							})).appendTo(jQuery('div[id="search_overlay_results"]'));
+						
+						// display results for rubric
+						var count = 1;
+		   				var css_class = 'odd';
+						jQuery.each(Search.response, function(index_entry, element_entry) {
+							// skip, if rubric does not match
+							if(element_entry.type == element) {
+								// break if limit is reached
+								if(count > Search.config.resultsPerRubric) return false;
+								
+								// determ css class
+			   					if(count % 2 == 0) {
+			   						css_class = 'even';
+			   					} else {
+			   						css_class = 'odd';
+			   					}
+			   					
+			   					// append table content
+			   					jQuery('<tr/>', {
+			   					}).append(
+			   						jQuery('<td/>', {
+			   							class: css_class,
+			   							text: element_entry.title,
+			   							style: 'width: 25%;'
+			   						})).append(
+			   						jQuery('<td/>', {
+			   							class: css_class,
+			   							text: element_entry.modification_date
+			   						})).appendTo(jQuery('div[id="search_overlay_rubric_' + element + '"] table'));
+			   					
+			   					count++;
+							}
+						});
+					}
+				});
+			},
+			
+			displayResultsNonCategorized: function() {
+				// display results
+				jQuery('<div/>', {
+					id: 'search_overlay_rubric_none',
+					class: 'search_overlay',
+					text: search_lang_uncategorized
+				}).append(
+					jQuery('<img/>', {
+						src: 'images/arrow_down.gif',
+						style: 'float: right;'
+					})).append(
+					jQuery('<table/>', {
+						
+					})).appendTo(jQuery('div[id="search_overlay_results"]'));
+				
+				// display results for rubric
 				var count = 1;
    				var css_class = 'odd';
-				jQuery.each(Search.response, function(index, element) {
+				jQuery.each(Search.response, function(index_entry, element_entry) {
 					// determ css class
    					if(count % 2 == 0) {
    						css_class = 'even';
@@ -4468,14 +4647,72 @@ jQuery(document).ready(function() {
    					}).append(
    						jQuery('<td/>', {
    							class: css_class,
-   							text: element.title
+   							text: element_entry.title,
+   							style: 'width: 25%;'
    						})).append(
    						jQuery('<td/>', {
    							class: css_class,
-   							text: element.modification_date
-   						})).appendTo(jQuery('table[id="search_overlay_results"]'));
+   							text: element_entry.modification_date
+   						})).appendTo(jQuery('div[id="search_overlay_rubric_none"] table'));
    					
    					count++;
+				});
+			},
+			
+			displayResults: function() {
+				// remove loading animation
+				jQuery('img[id="search_overlay_loading_animation"]').remove();
+				
+				// display categorized or not
+				if(this.config.categorizeByRubrics == true) {
+					this.displayResultsByRubric();
+				} else {
+					this.displayResultsNonCategorized();
+				}
+				
+				// determe how many rubrics has results
+				var numRubrics = 0;
+				jQuery.each(search_rubrics, function(index, element) {
+					// are there results for actual rubric?
+					jQuery.each(Search.response, function(i, e) {
+						if(e.type == element) {
+							numRubrics++;
+							return false;
+						}
+					});
+				});
+				
+				// set num of results and rubrics
+				var result_message = jQuery('div[id="search_overlay_result_message"]');
+				result_message.text(result_message.text().replace(/%1/, this.response.length));
+				result_message.text(result_message.text().replace(/%2/, numRubrics));
+				result_message.show();
+				
+				// register events
+				jQuery('div[id^="search_overlay_rubric_"] img').mouseover(function() {
+					if(jQuery(this).attr('src') == 'images/arrow_up.gif') {
+						jQuery(this).attr('src', 'images/arrow_up_over.gif');
+					} else {
+						jQuery(this).attr('src', 'images/arrow_down_over.gif');
+					}
+				});
+				jQuery('div[id^="search_overlay_rubric_"] img').mouseout(function() {
+					if(jQuery(this).attr('src') == 'images/arrow_up_over.gif') {
+						jQuery(this).attr('src', 'images/arrow_up.gif');
+					} else {
+						jQuery(this).attr('src', 'images/arrow_down.gif');
+					}
+				});
+				jQuery('div[id^="search_overlay_rubric_"] img').click(function() {
+					if(jQuery(this).attr('src') == 'images/arrow_up_over.gif') {
+						// expand
+						jQuery(this).parent().find('table').slideDown();
+						jQuery(this).attr('src', 'images/arrow_down_over.gif');
+					} else {
+						// collapse
+						jQuery(this).parent().find('table').slideUp();
+						jQuery(this).attr('src', 'images/arrow_up_over.gif');
+					}
 				});
 				
 				// unset

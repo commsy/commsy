@@ -167,6 +167,8 @@ class cs_view {
    }
    
    protected function addJavaScriptForSearch() {
+   	  if(isset($this->_javascript_search_output) && $this->_javascript_search_output == true) return '';
+   	  
    	  $html = '';
    	  global $c_indexed_search;
       if(isset($c_indexed_search) && $c_indexed_search === true) {
@@ -188,9 +190,29 @@ class cs_view {
               var indexed_search = true;
               var search_rubrics = ['" . implode('\', \'', $search_rubric) . "'];
               var search_lang_results = '" . $this->_translator->getMessage("COMMON_SEARCH_RESULTS") . "';
+              var search_lang_rubrics = [";
+      	foreach($search_rubric as $rubric) {
+      		$html .= "'" . $this->_translator->getMessage('COMMON_' . strtoupper($rubric) . 'S') . "'";
+      		
+      		if($rubric != $search_rubric[sizeof($search_rubric) - 1]) {
+      			$html .= ', ';
+      		}
+      	}
+      	$html .= "
+      		  ];
+      		  var search_lang_result_message = '" . $this->_translator->getMessage("COMMON_SEARCH_RESULT_MESSAGE") . "';
+      		  var search_lang_view_options = '" . $this->_translator->getMessage("COMMON_SEARCH_OVERLAY_VIEW_OPTIONS") . "';
+      		  var search_lang_view_options_rubric = '" . $this->_translator->getMessage("COMMON_SEARCH_OVERLAY_VIEW_OPTIONS_RUBRICS") . "';
+      		  var search_lang_uncategorized = '" . $this->_translator->getMessage("COMMON_SEARCH_UNCATEGORIZED") . "';
+      		  var search_lang_view_options_per_rubric = '" . $this->_translator->getMessage("COMMON_SEARCH_OVERLAY_VIEW_OPTIONS_PER_RUBRIC") . "';
+      		  
+      		  
+      		  
           -->
           </script>
       	";
+      	
+      	$this->_javascript_search_output = true;
       }
       
       return $html;
