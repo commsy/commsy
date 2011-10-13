@@ -1057,9 +1057,18 @@ class cs_detail_view extends cs_view {
       $html .= '<div class="right_box_main">'.LF;
       $html .= '<div>'.LF;
       
-      $html .= '<div style="width:235px; font-size:8pt; text-align:right; padding-top:5px;">';
+      $traffic_light = '';
+      if($item->getWorkflowTrafficLight() == 0){
+         $traffic_light = '<img src="images/commsyicons/workflow_traffic_light_green.png">';
+      }else if($item->getWorkflowTrafficLight() == 1){
+         $traffic_light = '<img src="images/commsyicons/workflow_traffic_light_yellow.png">';
+      }else if($item->getWorkflowTrafficLight() == 2){
+         $traffic_light = '<img src="images/commsyicons/workflow_traffic_light_red.png">';
+      }
+      $html .= $traffic_light;
       
-      $html .= '</div>'.LF;
+      #$html .= '<div style="width:235px; font-size:8pt; text-align:right; padding-top:5px;">';
+      #$html .= '</div>'.LF;
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
@@ -1435,10 +1444,11 @@ class cs_detail_view extends cs_view {
       $context_item = $this->_environment->getCurrentContextItem();
       if ($context_item->withWorkflow()
           and ( $this->_environment->getCurrentModule() == CS_MATERIAL_TYPE
-                or $this->_environment->getCurrentModule() == CS_ANNOUNCEMENT_TYPE
-                or $this->_environment->getCurrentModule() == CS_DISCUSSION_TYPE
-                or $this->_environment->getCurrentModule() == CS_TODO_TYPE
-                or $this->_environment->getCurrentModule() == CS_DATE_TYPE)
+                #or $this->_environment->getCurrentModule() == CS_ANNOUNCEMENT_TYPE
+                #or $this->_environment->getCurrentModule() == CS_DISCUSSION_TYPE
+                #or $this->_environment->getCurrentModule() == CS_TODO_TYPE
+                #or $this->_environment->getCurrentModule() == CS_DATE_TYPE
+              )
       ){
          $retour = true;
       }

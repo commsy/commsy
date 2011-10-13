@@ -2364,5 +2364,23 @@ function getExternalViewerArray(){
       unset($link_modifier_item_manager);
       return $retour;
    }
+   
+   function setWorkflowTrafficLight($value) {
+      $this->_addExtra('WORKFLOW_TRAFFIC_LIGHT', (string)$value);
+   }
+   function getWorkflowTrafficLight() {
+      if($this->_issetExtra('WORKFLOW_TRAFFIC_LIGHT')){
+         return (string) $this->_getExtra('WORKFLOW_TRAFFIC_LIGHT');
+      } else {
+         return 0;
+      }
+   }
+   function isWorkflowTrafficLight() {
+      if($this->_issetExtra('WORKFLOW_TRAFFIC_LIGHT')){
+         return true;
+      } else {
+         return false;
+      }
+   }
 }
 ?>

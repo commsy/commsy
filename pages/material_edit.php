@@ -451,6 +451,9 @@ else {
                $material_item->unsetExternalViewerAccounts();
             }
 
+            if ( isset($_POST['workflow_traffic_light']) and $material_item->getWorkflowTrafficLight() != $_POST['workflow_traffic_light'] ) {
+               $material_item->setWorkflowTrafficLight($_POST['workflow_traffic_light']);
+            }
 
             if ( $context_item->isCommunityRoom() and $context_item->isOpenForGuests() ) {
                $old_world_public = $material_item->getWorldPublic();

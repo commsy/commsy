@@ -54,7 +54,8 @@ class cs_material_form extends cs_rubric_form {
 
    var $_bib_kind = 'none';            // string holding the kind of bib data to show
 
-
+   var $_workflow_array = array();
+   
   /** constructor: cs_material_form
     * the only available constructor
     *
@@ -197,6 +198,18 @@ class cs_material_form extends cs_rubric_form {
       $temp_array['value'] = 0;
       $public_array[] = $temp_array;
       $this->_public_array = $public_array;
+      
+      $workflow_array = array();
+      $temp_array['text']  = $this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_GREEN');
+      $temp_array['value'] = 0;
+      $workflow_array[] = $temp_array;
+      $temp_array['text']  = $this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_YELLOW');
+      $temp_array['value'] = 1;
+      $workflow_array[] = $temp_array;
+      $temp_array['text']  = $this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_RED');
+      $temp_array['value'] = 2;
+      $workflow_array[] = $temp_array;
+      $this->_workflow_array = $workflow_array;
    }
 
    /** create the form, INTERNAL
@@ -477,6 +490,10 @@ class cs_material_form extends cs_rubric_form {
              }
          }
 
+         if ($current_context->withWorkflow()){
+            $this->_form->addRadioGroup('workflow_traffic_light',$this->_translator->getMessage('COMMON_WORKFLOW'),$this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_DESCRIPTION'),$this->_workflow_array);  
+         }
+         
       } else {
          $this->_form->addHidden('public','');
          $this->_form->addCheckbox('external_viewer',1,'',$this->_translator->getMessage('COMMON_RIGHTS'),$this->_translator->getMessage('EXTERNAL_VIEWER_DESCRIPTION'),$this->_translator->getMessage('COMMON_RIGHTS_DESCRIPTION'),false,false,'','',true,false);
@@ -555,6 +572,11 @@ class cs_material_form extends cs_rubric_form {
          }else{
             $this->_values['public'] = $this->_item->isPublic();
          }
+         
+         if ($current_context->withWorkflow()){
+            $this->_values['workflow_traffic_light'] = $this->_item->getWorkflowTrafficLight();
+         }
+         
          // rubric connections
          $this->_setValuesForRubricConnections();
 
