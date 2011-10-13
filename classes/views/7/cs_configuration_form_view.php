@@ -333,9 +333,9 @@ class cs_configuration_form_view extends cs_form_view {
                   break;
                case 'CONFIGURATION_WORDPRESS':
                   if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-                     $image = '<img src="images/commsyicons_msie6/32x32/config/pmwiki.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_CONFIGURATION_WORDPRESS_FORM_TITLE').'"/>';
+                     $image = '<img src="images/commsyicons_msie6/32x32/config/wordpress.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_CONFIGURATION_WORDPRESS_FORM_TITLE').'"/>';
                   } else {
-                     $image = '<img src="images/commsyicons/32x32/config/pmwiki.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_CONFIGURATION_WORDPRESS_FORM_TITLE').'"/>';
+                     $image = '<img src="images/commsyicons/32x32/config/wordpress.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_CONFIGURATION_WORDPRESS_FORM_TITLE').'"/>';
                   }
                   $tempMessage = $image.' '.$this->_translator->getMessage('COMMON_CONFIGURATION_WORDPRESS_FORM_TITLE');  
                   break;
@@ -418,6 +418,14 @@ class cs_configuration_form_view extends cs_form_view {
                   } else {
                      $tempMessage = $image.' '.$this->_translator->getMessage('CONFIGURATION_TEMPLATE_FORM_ELEMENT_TITLE');
                   }
+                  break;
+               case 'CONFIGURATION_WORKFLOW':
+                  if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+                     $image = '<img src="images/commsyicons_msie6/32x32/config/workflow.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_CONFIGURATION_WORKFLOW_FORM_TITLE').'"/>';
+                  } else {
+                     $image = '<img src="images/commsyicons/32x32/config/workflow.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_CONFIGURATION_WORKFLOW_FORM_TITLE').'"/>';
+                  }
+                  $tempMessage = $image.' '.$this->_translator->getMessage('COMMON_CONFIGURATION_WORKFLOW_FORM_TITLE');  
                   break;
                default:
                   $tempMessage = $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR')." cs_configuration_form_view (".__LINE__.")";

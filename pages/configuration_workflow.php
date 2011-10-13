@@ -1,5 +1,5 @@
 <?PHP
-// $Id $
+//
 //
 // Release $Name$
 //
@@ -22,22 +22,22 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-// Get the translator object
-$translator = $environment->getTranslationObject();
-
 // get room item and current user
 $room_item = $environment->getCurrentContextItem();
 $current_user = $environment->getCurrentUserItem();
 $is_saved = false;
-// Check access rights
-if ($current_user->isGuest()) {
-   if (!$room_item->isOpenForGuests()) {
-      redirect($environment->getCurrentPortalId(),'home','index','');
-   } else {
-      $params = array() ;
-      $params['cid'] = $room_item->getItemId();
-      redirect($environment->getCurrentPortalId(),'home','index',$params);
-   }
+
+// Get the translator object
+$translator = $environment->getTranslationObject();
+
+if (!$current_user->isModerator()) {
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+   unset($params);
+   $errorbox->setText($translator->getMessage('ACCESS_NOT_GRANTED'));
+   $page->add($errorbox);
 } elseif ( !$room_item->isOpen() and !$room_item->isTemplate() ) {
    $params = array();
    $params['environment'] = $environment;
@@ -46,31 +46,23 @@ if ($current_user->isGuest()) {
    unset($params);
    $errorbox->setText($translator->getMessage('PROJECT_ROOM_IS_CLOSED', $room_item->getTitle()));
    $page->add($errorbox);
-} elseif (!$current_user->isModerator()) {
-   $params = array();
-   $params['environment'] = $environment;
-   $params['with_modifying_actions'] = true;
-   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
-   unset($params);
-   $errorbox->setText($translator->getMessage('ACCESS_NOT_GRANTED'));
-   $page->add($errorbox);
+   $command = 'error';
 }
 // Access granted
 else {
+
    // Find out what to do
    if ( isset($_POST['option']) ) {
       $command = $_POST['option'];
-   }  else {
+   } else {
       $command = '';
    }
-   if ( !empty($command) and isOption($command, $translator->getMessage('PREFERENCES_SAVE_BUTTON')) ) {
-      $is_saved = true;
-   }
-   // Show form and/or save item
-   // Initialize the form
-   $form = $class_factory->getClass(CONFIGURATION_WORKFLOW_FORM,array('environment' => $environment));
 
-   // Display form
+   // Initialize the form
+   $class_params= array();
+   $class_params['environment'] = $environment;
+   $form = $class_factory->getClass(CONFIGURATION_WORKFLOW_FORM,$class_params);
+   unset($class_params);
    $params = array();
    $params['environment'] = $environment;
    $params['with_modifying_actions'] = true;
@@ -78,56 +70,73 @@ else {
    unset($params);
 
    // Save item
-      $room_item = $environment->getCurrentContextItem();
-
-   // Load form data from postvars
-   if ( !empty($_POST) ) {
-      $form->setFormPost($_POST);
+   if ( !empty($command) and isOption($command, $translator->getMessage('COMMON_CANCEL_BUTTON')) ) {
+     redirect($environment->getCurrentContextID(),'configuration', 'index', '');
    }
+   elseif ( !empty($command)
+        and ( isOption($command, $translator->getMessage('COMMON_SAVE_BUTTON'))
+              or isOption($command, $translator->getMessage('PREFERENCES_SAVE_BUTTON'))
+             )
+      ) {
 
-   if ( !empty($command) and isOption($command, $translator->getMessage('PREFERENCES_SAVE_BUTTON')) ) {
-      $correct = $form->check();
-      if ( $correct ) {
-         $info_array = array();
-         if (is_array($room_item->_getExtra('INFORMATIONBOX'))) {
-            $info_array = $room_item->_getExtra('INFORMATIONBOX');
+      if ( $form->check() ) {
+
+         /*********save buzzword options******/
+         $isset_workflow = false;
+         
+         if ( isset($_POST['workflow_trafic_light']) and !empty($_POST['workflow_trafic_light']) and $_POST['workflow_trafic_light'] == 'yes') {
+            $room_item->setWithWorkflowTrafficLight();
+            $isset_workflow = true;
+         } else {
+            $room_item->setWithoutWorkflowTrafficLight();
          }
-         if (!empty($_POST['item_id'])) {
-            $room_item->setInformationBoxEntryID($_POST['item_id']);
+         if ( isset($_POST['workflow_resubmission']) and !empty($_POST['workflow_resubmission']) and $_POST['workflow_resubmission'] == 'yes' ) {
+            $room_item->setWithWorkflowResubmission();
+            $isset_workflow = true;
+         } else {
+            $room_item->setWithoutWorkflowResubmission();
+         }
+         if ( isset($_POST['buzzword_reader']) and !empty($_POST['buzzword_reader']) and $_POST['buzzword_reader'] == 'yes' ) {
+            $room_item->setWithWorkflowReader();
+            $isset_workflow = true;
+         } else {
+            $room_item->setWithoutWorkflowReader();
          }
 
-         if ($_POST['show_information_box']== '1') {
-            $room_item->setwithInformationBox('yes');
-         }else{
-            $room_item->setwithInformationBox('no');
+         if($isset_workflow){
+            $room_item->setWithWorkflow();
+         } else {
+            $room_item->setWithoutWorkflow();
          }
-
+         
          // Save item
          $room_item->save();
          $form_view->setItemIsSaved();
          $is_saved = true;
+
       }
    }
 
+   // Load form data from postvars
+   if ( !empty($_POST) and !$is_saved) {
+      $form->setFormPost($_POST);
+   }
 
-   $form->setItem($room_item);
+   // Load form data from database
+   elseif ( isset($room_item) ) {
+      $form->setItem($room_item);
+   }
+
    $form->prepareForm();
    $form->loadValues();
-   if (isset($context_item) and !$context_item->mayEditRegular($current_user)) {
-       $form_view->warnChanger();
-       $params = array();
-       $params['environment'] = $environment;
-       $params['with_modifying_actions'] = true;
-       $params['width'] = 500;
-       $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
-       unset($params);
-       $errorbox->setText($translator->getMessage('COMMON_EDIT_AS_MODERATOR'));
-       $page->add($errorbox);
-    }
-    include_once('functions/curl_functions.php');
-    $form_view->setAction(curl($environment->getCurrentContextID(),'configuration','informationbox',''));
-    $form_view->setForm($form);
-    $page->add($form_view);
-}
 
+   include_once('functions/curl_functions.php');
+   $form_view->setAction(curl($environment->getCurrentContextID(),$environment->getCurrentModule(),$environment->getCurrentFunction(),''));
+   $form_view->setForm($form);
+   if ( $environment->inPortal() or $environment->inServer() ){
+      $page->addForm($form_view);
+   } else {
+      $page->add($form_view);
+   }
+}
 ?>

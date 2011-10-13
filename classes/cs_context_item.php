@@ -678,12 +678,81 @@ class cs_context_item extends cs_item {
       if ($re == 2) {
         $retour = true;
       }
-    }else {
-      $retour = true;
     }
+    #else {
+    #  $retour = true;
+    #}
     return $retour;
   }
   
+  
+  function setWithWorkflowTrafficLight() {
+    $this->_addExtra('WITHWORKFLOWTRAFFICLIGHT',2);
+  }
+
+  function setWithoutWorkflowTrafficLight() {
+    $this->_addExtra('WITHWORKFLOWTRAFFICLIGHT',1);
+  }
+
+  function withWorkflowTrafficLight() {
+    $retour = false;
+    if ($this->_issetExtra('WITHWORKFLOWTRAFFICLIGHT') ) {
+      $re = $this->_getExtra('WITHWORKFLOWTRAFFICLIGHT');
+      if ($re == 2) {
+        $retour = true;
+      }
+    }
+    #else {
+    #  $retour = true;
+    #}
+    return $retour;
+  }
+  
+  
+  function setWithWorkflowResubmission() {
+    $this->_addExtra('WITHWORKFLOWRESUBMISSION',2);
+  }
+
+  function setWithoutWorkflowResubmission() {
+    $this->_addExtra('WITHWORKFLOWRESUBMISSION',1);
+  }
+
+  function withWorkflowResubmission() {
+    $retour = false;
+    if ($this->_issetExtra('WITHWORKFLOWRESUBMISSION') ) {
+      $re = $this->_getExtra('WITHWORKFLOWRESUBMISSION');
+      if ($re == 2) {
+        $retour = true;
+      }
+    }
+    #else {
+    #  $retour = true;
+    #}
+    return $retour;
+  }
+  
+  
+  function setWithWorkflowReader() {
+    $this->_addExtra('WITHWORKFLOWREADER',2);
+  }
+
+  function setWithoutWorkflowReader() {
+    $this->_addExtra('WITHWORKFLOWREADER',1);
+  }
+
+  function withWorkflowReader() {
+    $retour = false;
+    if ($this->_issetExtra('WITHWORKFLOWREADER') ) {
+      $re = $this->_getExtra('WITHWORKFLOWREADER');
+      if ($re == 2) {
+        $retour = true;
+      }
+    }
+    #else {
+    #  $retour = true;
+    #}
+    return $retour;
+  }
   
   
   /** get htmltextarea status

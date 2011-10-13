@@ -27,8 +27,6 @@ $this->includeClass(RUBRIC_FORM);
 
 class cs_configuration_workflow_form extends cs_rubric_form {
 
-   var $_show_information_box_array = array();
-
   /** constructor
     * the only available constructor
     *
@@ -40,86 +38,37 @@ class cs_configuration_workflow_form extends cs_rubric_form {
 
    function _initForm () {
       $current_context= $this->_environment->getCurrentContextItem();
-      $_show_information_box_array = array();
-      $temp_array['text']  = $this->_translator->getMessage('COMMON_SHOW_INFORMATION_BOX_YES');
-      $temp_array['value'] = 1;
-      $_show_information_box_array[] = $temp_array;
-      $temp_array['text']  = $this->_translator->getMessage('COMMON_SHOW_INFORMATION_BOX_NO');
-      $temp_array['value'] = 0;
-      $_show_information_box_array[] = $temp_array;
-      $this->_show_information_box_array = $_show_information_box_array;
    }
 
 
    function _createForm () {
       $current_context= $this->_environment->getCurrentContextItem();
-      $this->_form->addTextField('item_id','',$this->_translator->getMessage('COMMON_ATTACHED_ANNOUNCEMENT_ID'),'',200,35,true);
-      $this->_form->combine('vertical');
-      $this->_form->addText('max_size','',$this->_translator->getMessage('COMMON_INFORMATION_BOX_ID_ENTRY'));
-      $this->_form->addRadioGroup('show_information_box',$this->_translator->getMessage('COMMON_SHOW_INFORMATION_BOX'),'',$this->_show_information_box_array);
-
+      // trafic light
+      $this->_form->addCheckbox('workflow_trafic_light','yes','',$this->_translator->getMessage('PREFERENCES_CONFIGURATION_WORKFLOW'),$this->_translator->getMessage('PREFERENCES_CONFIGURATION_WORKFLOW_TRAFFIC_LIGHT_VALUE'));
+      $this->_form->combine();
+      $this->_form->addCheckbox('workflow_resubmission','yes','',$this->_translator->getMessage('PREFERENCES_CONFIGURATION_WORKFLOW'),$this->_translator->getMessage('PREFERENCES_CONFIGURATION_WORKFLOW_RESUBMISSION_VALUE'));
+      $this->_form->combine();
+      $this->_form->addCheckbox('buzzword_reader','yes','',$this->_translator->getMessage('PREFERENCES_CONFIGURATION_WORKFLOW'),$this->_translator->getMessage('PREFERENCES_CONFIGURATION_WORKFLOW_READER_VALUE'));
+      
       // buttons
       $this->_form->addButtonBar('option',$this->_translator->getMessage('PREFERENCES_SAVE_BUTTON'),'');
    }
 
    function _prepareValues () {
-      $current_context= $this->_environment->getCurrentContextItem();
-      $this->_values = array();
-      if ( !empty($this->_form_post) ) {
+      if (isset($this->_form_post)) {
          $this->_values = $this->_form_post;
-         if ( !isset($this->_values['show_information_box']) ) {
-            $this->_values['show_information_box'] = '0';
+      }else{
+         $room = $this->_environment->getCurrentContextItem();
+         if ($room->withWorkflowTrafficLight()){
+            $this->_values['workflow_trafic_light'] = 'yes';
          }
-      } else {
-         $this->_values['item_id'] = $current_context->getInformationBoxEntryID();
-         if ( $current_context->withInformationBox() ) {
-            $this->_values['show_information_box'] = '1';
-         } else {
-            $this->_values['show_information_box'] = '0';
+         if ($room->withWorkflowResubmission()){
+            $this->_values['workflow_resubmission'] = 'yes';
+         }
+         if ($room->withWorkflowReader()){
+            $this->_values['buzzword_reader'] = 'yes';
          }
       }
    }
-
-    /** specific check the values of the form
-    * this methods check the entered values
-    */
-   function _checkValues () {
-     $id = $this->_form_post['item_id'];
-     $current_context = $this->_environment->getCurrentContextItem();
-     $manager = $this->_environment->getItemManager();
-     $item = $manager->getItem($id);
-     $is_entry = false;
-     if ( $item ) {
-          switch ($item->getItemType()) {
-            case 'announcement':
-               $is_entry = true;
-               break;
-            case 'date':
-               $is_entry = true;
-               break;
-            case 'material':
-               $is_entry = true;
-               break;
-            case 'todo':
-               $is_entry = true;
-               break;
-            case 'label':
-               $is_entry = true;
-               break;
-            default:
-               $is_entry = false;
-               break;
-          }
-        if($item->getContextID() != $current_context->getItemID()){
-           $is_entry = false;
-        }
-     }
-     if(!$is_entry or $item->isDeleted()){
-        $this->_form->setFailure('item_id','mandatory');
-        $this->_error_array[] = $this->_translator->getMessage('COMMON_ERROR_INFORMATION_BOX_ID_ENTRY',$this->_translator->getMessage('COMMON_ATTACHED_ANNOUNCEMENT_ID'));
-     }
-   }
-
-
 }
 ?>

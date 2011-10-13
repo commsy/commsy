@@ -1039,28 +1039,16 @@ class cs_detail_view extends cs_view {
          $separator = '';
       }
       $item = $this->getItem();
-      $buzzword_list = $item->getBuzzwordList();
-      $count_link_item = $buzzword_list->getCount();
-      $this->_right_box_config['title_string'] .= $separator.'"'.$this->_translator->getMessage('COMMON_ATTACHED_BUZZWORDS').' ('.$count_link_item.')"';
+
+      $this->_right_box_config['title_string'] .= $separator.'"'.$this->_translator->getMessage('COMMON_WORKFLOW').'"';
       $this->_right_box_config['desc_string'] .= $separator.'""';
       $this->_right_box_config['size_string'] .= $separator.'"10"';
-      if($current_context->isBuzzwordShowExpanded()){
+      #if($current_context->isWorkflowShowExpanded()){
          $this->_right_box_config['config_string'] .= $separator.'true';
-      } else {
-         $this->_right_box_config['config_string'] .= $separator.'false';
-      }
-      $current_user = $this->_environment->getCurrentUserItem();
-      $params = $this->_environment->getCurrentParameterArray();
-      $buzzword_entry = $buzzword_list->getFirst();
-      $item_id_array = array();
-      while($buzzword_entry){
-         $item_id_array[] = $buzzword_entry->getItemID();
-         $buzzword_entry = $buzzword_list->getNext();
-      }
-      if ( isset($item_id_array[0]) ){
-         $links_manager = $this->_environment->getLinkManager();
-         $count_array = $links_manager->getCountLinksFromItemIDArray($item_id_array,'buzzword');
-      }
+      #} else {
+      #   $this->_right_box_config['config_string'] .= $separator.'false';
+      #}
+      
       $html  = '';
       $html .= '<div class="right_box">'.LF;
       $html .= '         <noscript>';
@@ -1068,54 +1056,13 @@ class cs_detail_view extends cs_view {
       $html .= '         </noscript>';
       $html .= '<div class="right_box_main">'.LF;
       $html .= '<div>'.LF;
-      if ($buzzword_list ->isEmpty()) {
-         $html .= '   <div style="padding:0px 5px; font-size:8pt;" class="disabled">'.$this->_translator->getMessage('COMMON_NONE').'</div>'.LF;
-      }else{
-         $buzzword_entry = $buzzword_list->getFirst();
-         while($buzzword_entry){
-            $count = 0;
-            if ( isset($count_array[$buzzword_entry->getItemID()]) ){
-                $count = $count_array[$buzzword_entry->getItemID()];
-            }
-            $font_size = $this->getBuzzwordSizeLogarithmic($count);
-            $font_color = 100 - $this->getBuzzwordColorLogarithmic($count);
-            $params['selbuzzword'] = $buzzword_entry->getItemID();
-            $temp_text = '';
-            $style_text  = 'style="margin-left:2px; margin-right:2px;';
-            $style_text .= ' color: rgb('.$font_color.'%,'.$font_color.'%,'.$font_color.'%);';
-            $style_text .= 'font-size:'.$font_size.'px;"';
-            $title  = '<span  '.$style_text.'>'.LF;
-            $title .= $this->_text_as_html_short($buzzword_entry->getName()).LF;
-            $title .= '</span> ';
-            $html .= ahref_curl($this->_environment->getCurrentContextID(),
-                                $this->_environment->getCurrentModule(),
-                                'index',
-                                $params,
-                                $title,$title).LF;
-           $buzzword_entry = $buzzword_list->getNext();
-         }
-      }
+      
       $html .= '<div style="width:235px; font-size:8pt; text-align:right; padding-top:5px;">';
-      if ($current_user->isUser() and $this->_with_modifying_actions ) {
-         $params = array();
-         $params = $this->_environment->getCurrentParameterArray();
-         $params['attach_view'] = 'yes';
-         $params['attach_type'] = 'buzzword';
-         $html .= ahref_curl($this->_environment->getCurrentContextID(),
-                             $this->_environment->getCurrentModule(),
-                             $this->_environment->getCurrentFunction(),
-                             $params,
-                             $this->_translator->getMessage('COMMON_BUZZWORD_ATTACH')
-                             ).LF;
-         unset($params);
-      } else {
-         $html .= '<span class="disabled">'.$this->_translator->getMessage('COMMON_BUZZWORD_ATTACH').'</span>'.LF;
-      }
+      
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
-      unset($current_user);
       unset($current_context);
       return $html;
    }
@@ -1483,6 +1430,21 @@ class cs_detail_view extends cs_view {
       return $retour;
    }
 
+   function showWorkflow(){
+      $retour = false;
+      $context_item = $this->_environment->getCurrentContextItem();
+      if ($context_item->withWorkflow()
+          and ( $this->_environment->getCurrentModule() == CS_MATERIAL_TYPE
+                or $this->_environment->getCurrentModule() == CS_ANNOUNCEMENT_TYPE
+                or $this->_environment->getCurrentModule() == CS_DISCUSSION_TYPE
+                or $this->_environment->getCurrentModule() == CS_TODO_TYPE
+                or $this->_environment->getCurrentModule() == CS_DATE_TYPE)
+      ){
+         $retour = true;
+      }
+      return $retour;
+   }
+   
     function getSearchText (){
        if (empty($this->_search_text)){
         $this->_search_text = $this->_translator->getMessage('COMMON_SEARCH_IN_RUBRIC');
@@ -1837,6 +1799,14 @@ class cs_detail_view extends cs_view {
             $html .= $this->_getAllLinkedItemsAsHTML($item);
          }
 
+         
+         /***********Workflow*************/
+         if ( $this->showWorkflow() ) {
+            $html .= '<div class="commsy_panel" style="margin-bottom:1px;">'.LF;
+            $html .= $this->_getWorkflowBoxAsHTML($item);
+            $html .='</div>'.LF;
+         }   
+         
          $html .='<div>&nbsp;'.LF;
          $html .='</div>'.LF;
          $html .='</div>'.LF;
