@@ -645,6 +645,7 @@ $message["COMMON_SEARCH_IN_ENTRIES"]["de"] = "Suchbegriff";
 $message["COMMON_SEARCH_IN_ROOM"]["de"] = "Suche im Raum";
 $message["COMMON_SEARCH_IN_RUBRIC"]["de"] = "Suche in Rubrik";
 $message["COMMON_SEARCH_OVERLAY_VIEW_OPTIONS"]["de"] = "Anzeige konfigurieren";
+$message["COMMON_SEARCH_OVERLAY_VIEW_OPTIONS_PER_PAGE"]["de"] = "Ergebnisse pro Seite";
 $message["COMMON_SEARCH_OVERLAY_VIEW_OPTIONS_PER_RUBRIC"]["de"] = "Ergebnisse pro Rubrik";
 $message["COMMON_SEARCH_OVERLAY_VIEW_OPTIONS_RUBRICS"]["de"] = "nach Rubriken kategorisieren";
 $message["COMMON_SEARCH_RESTRICTION"]["de"] = "Suchbegriff";

@@ -636,6 +636,7 @@ $message["COMMON_SEARCH_IN_ENTRIES"]["en"] = "Search";
 $message["COMMON_SEARCH_IN_ROOM"]["en"] = "Search in workspace";
 $message["COMMON_SEARCH_IN_RUBRIC"]["en"] = "Search in rubric";
 $message["COMMON_SEARCH_OVERLAY_VIEW_OPTIONS"]["en"] = "View config";
+$message["COMMON_SEARCH_OVERLAY_VIEW_OPTIONS_PER_PAGE"]["en"] = "results per page";
 $message["COMMON_SEARCH_OVERLAY_VIEW_OPTIONS_PER_RUBRIC"]["en"] = "results per rubric";
 $message["COMMON_SEARCH_OVERLAY_VIEW_OPTIONS_RUBRICS"]["en"] = "categorize by rubrics";
 $message["COMMON_SEARCH_RESTRICTION"]["en"] = "Appl. search term";

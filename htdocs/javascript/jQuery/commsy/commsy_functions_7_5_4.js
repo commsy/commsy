@@ -4212,8 +4212,10 @@ jQuery(document).ready(function() {
 			last_search: "",
 			input_search: null,
 			trigger_display: false,
+			numRubrics: null,
 			display: {
-				offset: null
+				offset: null,
+				results: null
 			},
 			config: {
 				threshold: 3,
@@ -4401,7 +4403,7 @@ jQuery(document).ready(function() {
 						}).append(
 							jQuery('<div/>', {
 								id: 'profile_content',
-								style: '-moz-border-radius: 5px 5px 0px 0px; box-shadow: 8px 8px #dddddd;'
+								style: '-moz-border-radius: 5px 5px 0px 0px; box-shadow: 8px 8px #dddddd; display: none;'
 							}).append(
 								jQuery('<div/>', {
 									
@@ -4462,9 +4464,12 @@ jQuery(document).ready(function() {
 								style: 'clear:both; '
 							})).append(
 							jQuery('<div/>', {
-								class: 'search_overlay_config_label',
-								text: search_lang_view_options_per_rubric
+								class: 'search_overlay_config_label'
 							}).append(
+								jQuery('<span/>', {
+									id: 'search_overlay_config_form_per_text',
+									text: search_lang_view_options_per_rubric
+								})).append(
 								jQuery('<input/>', {
 									id: 'search_overlay_config_form_per_rubric',
 									class: 'search_overlay_config_form',
@@ -4493,6 +4498,16 @@ jQuery(document).ready(function() {
 						
 						// update config
 						Search.config.categorizeByRubrics = jQuery(this).attr('checked');
+						if(Search.config.categorizeByRubrics == false) {
+							// view changed from categorized to uncategorized
+							Search.config.resultsPerRubric *= Search.numRubrics;
+							jQuery('span[id="search_overlay_config_form_per_text"]').text(search_lang_view_options_per_page);
+						} else {
+							// view changed from uncategorized to categorized
+							Search.config.resultsPerRubric /= Search.numRubrics;
+							jQuery('span[id="search_overlay_config_form_per_text"]').text(search_lang_view_options_per_rubric);
+						}
+						jQuery('input[id="search_overlay_config_form_per_rubric"]').val(Search.config.resultsPerRubric);
 						
 						// redraw
 						Search.displayResults();
@@ -4503,7 +4518,7 @@ jQuery(document).ready(function() {
 							jQuery('div[id="search_overlay_results"] div').remove();
 							
 							// update config
-							Search.config.resultsPerRubric = jQuery(this).val();
+							Search.config.resultsPerRubric = parseInt(jQuery(this).val());
 							
 							// redraw
 							Search.displayResults();
@@ -4521,6 +4536,9 @@ jQuery(document).ready(function() {
 						Search.trigger_display = true;
 					}
 					
+					// fade in
+					jQuery('div[id="profile_content"]').fadeIn();
+					
 					// cancel page reload
 					return false;
 				});
@@ -4529,7 +4547,7 @@ jQuery(document).ready(function() {
 			displayResultsByRubric: function() {
 				// display results
 				var empty = true;
-				this.display.offset = new Object();
+				var offsetEnd = null;
 				jQuery.each(search_rubrics, function(index, element) {
 					// are there results for actual rubric?
 					empty = true;
@@ -4542,34 +4560,43 @@ jQuery(document).ready(function() {
 					
 					// display rubric
 					if(!empty) {
-						Search.display.offset.element = 0;
-						if(Search)
-						
+						offsetEnd = Search.display.offset[index] + Search.config.resultsPerRubric;
+						if(offsetEnd > Search.display.results[index]) {
+							offsetEnd = Search.display.results[index];
+						}
 						jQuery('<div/>', {
 							id: 'search_overlay_rubric_' + element,
 							class: 'search_overlay',
 							text: search_lang_rubrics[index]
 						}).append(
-							jQuery((Search.display.offset.element == 0 ? '<span/>' : '<a/>'), {
+							jQuery('<span/>', {
+								text: Search.display.offset[index] + 1 + ' - ' + offsetEnd,
+								style: 'margin-left: 5px;'
+							})).append(
+							jQuery((Search.display.offset[index] == 0 ? '<span/>' : '<a/>'), {
+								id: 'search_overlay_rubric_page_first_' + index,
 								text: '<<',
 								style: 'margin-left: 10px;'
 							})).append(
 							jQuery('<span/>', {
 								text: '|'
 							})).append(
-							jQuery('<span/>', {
+							jQuery((Search.display.offset[index] == 0 ? '<span/>' : '<a/>'), {
+								id: 'search_overlay_rubric_page_prev_' + index,
 								text: '<'
 							})).append(
 							jQuery('<span/>', {
 								text: '|'
 							})).append(
-							jQuery('<span/>', {
+							jQuery((offsetEnd >= Search.display.results[index] ? '<span/>' : '<a/>'), {
+								id: 'search_overlay_rubric_page_next_' + index,
 								text: '>'								
 							})).append(
 							jQuery('<span/>', {
 								text: '|'
 							})).append(
-							jQuery('<span/>', {
+							jQuery((offsetEnd >= Search.display.results[index] ? '<span/>' : '<a/>'), {
+								id: 'search_overlay_rubric_page_last_' + index,
 								text: '>>'
 							})).append(
 							jQuery('<img/>', {
@@ -4582,37 +4609,75 @@ jQuery(document).ready(function() {
 						
 						// display results for rubric
 						var count = 1;
+						var offset_count = 0;
 		   				var css_class = 'odd';
 						jQuery.each(Search.response, function(index_entry, element_entry) {
 							// skip, if rubric does not match
 							if(element_entry.type == element) {
-								// break if limit is reached
-								if(count > Search.config.resultsPerRubric) return false;
-								
-								// determ css class
-			   					if(count % 2 == 0) {
-			   						css_class = 'even';
-			   					} else {
-			   						css_class = 'odd';
-			   					}
-			   					
-			   					// append table content
-			   					jQuery('<tr/>', {
-			   					}).append(
-			   						jQuery('<td/>', {
-			   							class: css_class,
-			   							text: element_entry.title,
-			   							style: 'width: 25%;'
-			   						})).append(
-			   						jQuery('<td/>', {
-			   							class: css_class,
-			   							text: element_entry.modification_date
-			   						})).appendTo(jQuery('div[id="search_overlay_rubric_' + element + '"] table'));
-			   					
-			   					count++;
+								// skip if offset is not reached
+								if(offset_count >= Search.display.offset[index]) {
+									// break if limit is reached
+									if(count > Search.config.resultsPerRubric) return false;
+									
+									// determ css class
+				   					if(count % 2 == 0) {
+				   						css_class = 'even';
+				   					} else {
+				   						css_class = 'odd';
+				   					}
+				   					
+				   					// append table content
+				   					jQuery('<tr/>', {
+				   					}).append(
+				   						jQuery('<td/>', {
+				   							class: css_class,
+				   							text: element_entry.title,
+				   							style: 'width: 25%;'
+				   						})).append(
+				   						jQuery('<td/>', {
+				   							class: css_class,
+				   							text: element_entry.modification_date
+				   						})).appendTo(jQuery('div[id="search_overlay_rubric_' + element + '"] table'));
+				   					
+				   					count++;
+								} else {
+									offset_count++;
+								}
 							}
 						});
 					}
+				});
+				
+				// add href to all links
+				jQuery('a[id^="search_overlay_rubric_page_"]').attr('href', '#');
+				
+				// page event handling
+				jQuery('a[id^="search_overlay_rubric_page_"]').click(function() {
+					var id = jQuery(this).attr('id');
+					/search_overlay_rubric_page_(.*?)_(.*)/.exec(id);
+					var func = RegExp.$1;
+					var index = RegExp.$2;
+					
+					switch(func) {
+						case "first":
+							Search.display.offset[index] = 0;
+							break;
+						case "prev":
+							Search.display.offset[index] -= Search.config.resultsPerRubric;
+							break;
+						case "next":
+							Search.display.offset[index] += Search.config.resultsPerRubric;
+							break;
+						case "last":
+							Search.display.offset[index] = parseInt(Search.display.results[index] / Search.config.resultsPerRubric) * Search.config.resultsPerRubric;
+							break;
+					}
+					
+					// clear content of search_overlay_results
+					jQuery('div[id="search_overlay_results"] div').remove();
+					
+					// redraw
+					Search.displayResults();
 				});
 			},
 			
@@ -4623,6 +4688,36 @@ jQuery(document).ready(function() {
 					class: 'search_overlay',
 					text: search_lang_uncategorized
 				}).append(
+					jQuery('<span/>', {
+						text: Search.display.offset[index] + 1 + ' - ' + offsetEnd,
+						style: 'margin-left: 5px;'
+					})).append(
+					jQuery((Search.display.offset[index] == 0 ? '<span/>' : '<a/>'), {
+						id: 'search_overlay_rubric_page_first_' + index,
+						text: '<<',
+						style: 'margin-left: 10px;'
+					})).append(
+					jQuery('<span/>', {
+						text: '|'
+					})).append(
+					jQuery((Search.display.offset[index] == 0 ? '<span/>' : '<a/>'), {
+						id: 'search_overlay_rubric_page_prev_' + index,
+						text: '<'
+					})).append(
+					jQuery('<span/>', {
+						text: '|'
+					})).append(
+					jQuery((offsetEnd >= Search.display.results[index] ? '<span/>' : '<a/>'), {
+						id: 'search_overlay_rubric_page_next_' + index,
+						text: '>'								
+					})).append(
+					jQuery('<span/>', {
+						text: '|'
+					})).append(
+					jQuery((offsetEnd >= Search.display.results[index] ? '<span/>' : '<a/>'), {
+						id: 'search_overlay_rubric_page_last_' + index,
+						text: '>>'
+					})).append(
 					jQuery('<img/>', {
 						src: 'images/arrow_down.gif',
 						style: 'float: right;'
@@ -4663,24 +4758,49 @@ jQuery(document).ready(function() {
 				// remove loading animation
 				jQuery('img[id="search_overlay_loading_animation"]').remove();
 				
+				// determe some values
+				var numRubrics = 0;
+				var tmp = false;
+				var init = false;
+				if(Search.display.results == null || Search.numRubrics == null) init = true;
+				jQuery.each(search_rubrics, function(index, element) {
+					// init results and offset arrays
+					if(Search.display.results == null) {
+						Search.display.results = new Array();
+					}
+					if(init == true && typeof(Search.display.results[index]) == 'undefined') {
+						Search.display.results[index] = 0;
+					}
+					
+					if(Search.display.offset == null) {
+						Search.display.offset = new Array();
+					}
+					if(init == true && typeof(Search.display.offset[index]) == 'undefined') {
+						Search.display.offset[index] = 0;
+					}
+					
+					if(init == true) {
+						// are there results for actual rubric?
+						tmp = false;
+						jQuery.each(Search.response, function(i, e) {
+							if(e.type == element) {
+								Search.display.results[index] += 1;
+								tmp = true;
+							}
+						});
+						if(tmp == true) {
+							numRubrics++;
+						}
+					}
+				});
+				if(init == true) Search.numRubrics = numRubrics;
+				
 				// display categorized or not
 				if(this.config.categorizeByRubrics == true) {
 					this.displayResultsByRubric();
 				} else {
 					this.displayResultsNonCategorized();
 				}
-				
-				// determe how many rubrics has results
-				var numRubrics = 0;
-				jQuery.each(search_rubrics, function(index, element) {
-					// are there results for actual rubric?
-					jQuery.each(Search.response, function(i, e) {
-						if(e.type == element) {
-							numRubrics++;
-							return false;
-						}
-					});
-				});
 				
 				// set num of results and rubrics
 				var result_message = jQuery('div[id="search_overlay_result_message"]');
