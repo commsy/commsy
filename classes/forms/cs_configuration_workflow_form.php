@@ -44,8 +44,32 @@ class cs_configuration_workflow_form extends cs_rubric_form {
    function _createForm () {
       $current_context= $this->_environment->getCurrentContextItem();
       // trafic light
-      $this->_form->addCheckbox('workflow_trafic_light','yes','',$this->_translator->getMessage('PREFERENCES_CONFIGURATION_WORKFLOW'),$this->_translator->getMessage('PREFERENCES_CONFIGURATION_WORKFLOW_TRAFFIC_LIGHT_VALUE'));
+      $this->_form->addCheckbox('workflow_trafic_light','yes','',$this->_translator->getMessage('PREFERENCES_CONFIGURATION_WORKFLOW_TRAFFIC_LIGHT_VALUE'),$this->_translator->getMessage('PREFERENCES_CONFIGURATION_WORKFLOW_TRAFFIC_LIGHT_ENABLE'));
+
+      $radio_values = array();
+      $radio_values[0]['text'] = $this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_NONE');
+      $radio_values[0]['value'] = '0';
+      $radio_values[1]['text'] = $this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_GREEN');
+      $radio_values[1]['value'] = '1';
+      $radio_values[2]['text'] = $this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_YELLOW');
+      $radio_values[2]['value'] = '2';
+      $radio_values[3]['text'] = $this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_RED');
+      $radio_values[3]['value'] = '3';
+      $this->_form->addRadioGroup('workflow_trafic_light_default',
+                                  $this->_translator->getMessage('PREFERENCES_CONFIGURATION_WORKFLOW_TRAFFIC_LIGHT_DEFAULT'),
+                                  $this->_translator->getMessage('PREFERENCES_CONFIGURATION_WORKFLOW'),
+                                  $radio_values,
+                                  '',
+                                  false,
+                                  false
+                                  );
+      
+      $this->_form->addTextfield('workflow_trafic_light_green_text','',$this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT'),$this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT'),200,28,false,'','','','left','<div style="float:left; width:30px;">'.$this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_GREEN').':</div>');
       $this->_form->combine();
+      $this->_form->addTextfield('workflow_trafic_light_yellow_text','',$this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT'),$this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT'),200,28,false,'','','','left','<div style="float:left; width:30px;">'.$this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_YELLOW').':</div>');
+      $this->_form->combine();
+      $this->_form->addTextfield('workflow_trafic_light_red_text','',$this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT'),$this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT'),200,28,false,'','','','left','<div style="float:left; width:30px;">'.$this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_RED').':</div>');
+
       $this->_form->addCheckbox('workflow_resubmission','yes','',$this->_translator->getMessage('PREFERENCES_CONFIGURATION_WORKFLOW'),$this->_translator->getMessage('PREFERENCES_CONFIGURATION_WORKFLOW_RESUBMISSION_VALUE'));
       $this->_form->combine();
       $this->_form->addCheckbox('buzzword_reader','yes','',$this->_translator->getMessage('PREFERENCES_CONFIGURATION_WORKFLOW'),$this->_translator->getMessage('PREFERENCES_CONFIGURATION_WORKFLOW_READER_VALUE'));
@@ -61,7 +85,12 @@ class cs_configuration_workflow_form extends cs_rubric_form {
          $room = $this->_environment->getCurrentContextItem();
          if ($room->withWorkflowTrafficLight()){
             $this->_values['workflow_trafic_light'] = 'yes';
+            $this->_values['workflow_trafic_light_default'] = '0';
+            $this->_values['workflow_trafic_light_green_text'] = $this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_GREEN_DEFAULT');
+            $this->_values['workflow_trafic_light_yellow_text'] = $this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_YELLOW_DEFAULT');
+            $this->_values['workflow_trafic_light_red_text'] = $this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_RED_DEFAULT');
          }
+         
          if ($room->withWorkflowResubmission()){
             $this->_values['workflow_resubmission'] = 'yes';
          }
