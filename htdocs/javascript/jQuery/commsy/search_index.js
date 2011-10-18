@@ -3,7 +3,7 @@ jQuery(document).ready(function() {
 		numManager: null,
 		numComplete: 0,
 		numItems: 0,
-		numStep: 20,
+		numStep: 3,
 			
 		/* init function */
 		init: function() {
@@ -121,21 +121,23 @@ jQuery(document).ready(function() {
 							   		if(response) {
 							   			if(response.status == 'done') {
 							   				console.log('completed - ' + response.processed + ' / ' + Indexer.numItems);
+							   				
+							   				// update bar
+							   				var tmp = response.processed;
+							   				if(tmp > Indexer.numItems) tmp = Indexer.numItems;
+							   				var percent = (Indexer.numComplete)	* 100 / Indexer.numManager + (100 / Indexer.numManager) * (tmp * 100 / Indexer.numItems) / 100;
+								   			jQuery('div[id="indexing_bar"]').css('width', percent+'%');
 								   			
 							   				if(response.processed >= Indexer.numItems) {
 							   					Indexer.numComplete += 1;
 							   					console.log('manager done');
-							   					// update bar
-									   			var percent = Indexer.numComplete * 100 / Indexer.numManager;
-									   			jQuery('div[id="indexing_bar"]').css('width', percent+'%');
-									   			
-									   			if(percent == 100) {
+							   					
+									   			if(Indexer.numManager == Indexer.numComplete) {
 									   				jQuery('div[id="indexing_bar"]').text('Complete');
+									   				jQuery('div[id="indexing_bar"]').css('width', '100%');
 									   				Indexer.numComplete = 0;
 									   			} else {
-									   				if(Indexer.numComplete < Indexer.numManager) {
-										   				Indexer.indexing(manager+1);
-										   			}
+									   				Indexer.indexing(manager+1);
 									   			}
 							   				}
 							   			}
