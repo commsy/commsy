@@ -170,7 +170,7 @@ class cs_room2_manager extends cs_context_manager {
 	 * @param String $room_type - the type of the room
 	 * @see cs_manager::updateSearchIndices()
 	 */
-	public function updateSearchIndices($room_type) {
+	public function updateSearchIndices($room_type, $limit = array()) {
 		/*
 		 * this query selects all needed data
 		 * 	- the item id
@@ -202,6 +202,10 @@ class cs_room2_manager extends cs_context_manager {
 					room.modification_date > search_time.st_date
 				)
 		';
+		
+		if(!empty($limit)) {
+			$query .= ' LIMIT ' . $limit[0] . ', ' . $limit[1];
+		}
 		
 		parent::updateSearchIndices($query, $room_type);
 	}

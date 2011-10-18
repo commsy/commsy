@@ -2,6 +2,8 @@ jQuery(document).ready(function() {
 	var Indexer = {
 		numManager: null,
 		numComplete: 0,
+		numItems: 0,
+		numStep: 10000,
 			
 		/* init function */
 		init: function() {
@@ -88,34 +90,58 @@ jQuery(document).ready(function() {
 		},
 		
 		indexing: function(manager) {
+			this.numItems = 0;
+			
 			var json_data = new Object();
-			json_data['do'] = 'index';
+			json_data['do'] = 'getNumItems';
 			json_data['manager'] = manager;
 			
+			// get number of items
 			jQuery.ajax({
 				url: 'commsy.php?cid=' + getURLParam('cid') + '&mod=ajax&fct=search_index&output=json',
 				data: json_data,
 				success: function(data) {
 					var response = jQuery.parseJSON(data);
 			   		if(response) {
-			   			if(response.status == 'done') {
-			   				Indexer.numComplete += 1;
-			   				
-			   				console.log('completed');
-				   			
-				   			// update bar
-				   			var percent = Indexer.numComplete * 100 / Indexer.numManager;
-				   			jQuery('div[id="indexing_bar"]').css('width', percent+'%');
-				   			
-				   			if(percent == 100) {
-				   				jQuery('div[id="indexing_bar"]').text('Complete');
-				   				Indexer.numComplete = 0;
-				   			} else {
-				   				if(Indexer.numComplete < Indexer.numManager) {
-					   				Indexer.indexing(manager+1);
-					   			}
-				   			}
-			   			}
+			   			Indexer.numItems = response.number;
+			   			console.log(Indexer.numItems);
+			   			
+			   			for(i=0; i <= Indexer.numItems; i+=Indexer.numStep) {
+							json_data = new Object();
+							json_data['do'] = 'index';
+							json_data['manager'] = manager;
+							json_data['offset'] = Indexer.numStep * i;
+							json_data['limit'] = Indexer.numStep;
+							jQuery.ajax({
+								url: 'commsy.php?cid=' + getURLParam('cid') + '&mod=ajax&fct=search_index&output=json',
+								data: json_data,
+								success: function(data) {
+									var response = jQuery.parseJSON(data);
+							   		if(response) {
+							   			if(response.status == 'done') {
+							   				Indexer.numComplete += 1;
+							   				
+							   				console.log('completed');
+								   			
+							   				if(response.processed >= Indexer.numItems) {
+							   					// update bar
+									   			var percent = Indexer.numComplete * 100 / Indexer.numManager;
+									   			jQuery('div[id="indexing_bar"]').css('width', percent+'%');
+									   			
+									   			if(percent == 100) {
+									   				jQuery('div[id="indexing_bar"]').text('Complete');
+									   				Indexer.numComplete = 0;
+									   			} else {
+									   				if(Indexer.numComplete < Indexer.numManager) {
+										   				Indexer.indexing(manager+1);
+										   			}
+									   			}
+							   				}
+							   			}
+							   		}
+								}
+							});
+						}
 			   		}
 				}
 			});

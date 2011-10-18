@@ -631,7 +631,7 @@ class cs_announcement_manager extends cs_manager {
 	 * 
 	 * @see cs_manager::updateSearchIndices()
 	 */
-	public function updateSearchIndices() {
+	public function updateSearchIndices($limit = array()) {
 		/*
 		 * this query selects all needed data
 		 * 	- the item id
@@ -661,6 +661,10 @@ class cs_announcement_manager extends cs_manager {
 					announcement.modification_date > search_time.st_date
 				)
 		';
+		if(!empty($limit)) {
+			$query .= ' LIMIT ' . $limit[0] . ', ' . $limit[1];
+		}
+		
 		parent::updateSearchIndices($query, CS_ANNOUNCEMENT_TYPE);
 	}
 }

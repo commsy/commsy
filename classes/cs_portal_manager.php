@@ -119,7 +119,7 @@ class cs_portal_manager extends cs_context_manager {
 	 * 
 	 * @see cs_manager::updateSearchIndices()
 	 */
-	public function updateSearchIndices() {
+	public function updateSearchIndices($limit = array()) {
 		/*
 		 * this query selects all needed data
 		 * 	- the item id
@@ -149,6 +149,11 @@ class cs_portal_manager extends cs_context_manager {
 					portal.modification_date > search_time.st_date
 				)
 		';
+		
+		if(!empty($limit)) {
+			$query .= ' LIMIT ' . $limit[0] . ', ' . $limit[1];
+		}
+		
 		parent::updateSearchIndices($query, CS_PORTAL_TYPE);
 	}
 }

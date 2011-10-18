@@ -65,8 +65,8 @@ class cs_topic_manager extends cs_labels_manager {
 	 * 
 	 * @see cs_label_manager::updateSearchIndices()
 	 */
-	public function updateSearchIndices() {
-		parent::updateSearchIndices(CS_TOPIC_TYPE);
+	public function updateSearchIndices($limit = array()) {
+		parent::updateSearchIndices(CS_TOPIC_TYPE, $limit);
 	}
 }
 ?>

@@ -615,7 +615,7 @@ class cs_section_manager extends cs_manager {
 	 * 
 	 * @see cs_manager::updateSearchIndices()
 	 */
-	public function updateSearchIndices() {
+	public function updateSearchIndices($limit = array()) {
 		/*
 		 * this query selects all needed data
 		 * 	- the item id
@@ -659,6 +659,10 @@ class cs_section_manager extends cs_manager {
 						s2.item_id = section.item_id
 				)
 		';
+		
+		if(!empty($limit)) {
+			$query .= ' LIMIT ' . $limit[0] . ', ' . $limit[1];
+		}
 		
 		parent::updateSearchIndices($query, "from_query");
 	}

@@ -39,54 +39,71 @@ ini_set('max_execution_time', 0);
 $db = $environment->getDBConnector();
 
 $managers = array();
+$query = array();
 // create indizes for
 //	- annotations
 $managers[] = $environment->getAnnotationManager();
+$query[] = 'SELECT COUNT(*) as count FROM annotations';
 
 //	- announcements
 $managers[] = $environment->getAnnouncementManager();
+$query[] = 'SELECT COUNT(*) as count FROM announcement';
 
 //	- section
 $managers[] = $environment->getSectionManager();
+$query[] = 'SELECT COUNT(*) as count FROM section';
 
 //	- materials
 $managers[] = $environment->getMaterialManager();
+$query[] = 'SELECT COUNT(*) as count FROM materials';
 
 //	- institutions
 $managers[] = $environment->getInstitutionManager();
+$query[] = 'SELECT COUNT(*) as count FROM labels WHERE type = "institution"';
 
 //	- topics
 $managers[] = $environment->getTopicManager();
+$query[] = 'SELECT COUNT(*) as count FROM labels WHERE type = "topic"';
 
 //	- user
 $managers[] = $environment->getUserManager();
+$query[] = 'SELECT COUNT(*) as count FROM user';
 
 //	- todos
 $managers[] = $environment->getTodoManager();
+$query[] = 'SELECT COUNT(*) as count FROM todos';
 
 //	- step
 $managers[] = $environment->getStepManager();
+$query[] = 'SELECT COUNT(*) as count FROM step';
 
 //	- date
 $managers[] = $environment->getDateManager();
+$query[] = 'SELECT COUNT(*) as count FROM dates';
 
 //	- discussion
 $managers[] = $environment->getDiscussionManager();
+$query[] = 'SELECT COUNT(*) as count FROM discussions';
 
 //	- group
 $managers[] = $environment->getGroupManager();
+$query[] = 'SELECT COUNT(*) as count FROM labels WHERE type = "group"';
 
 //	- discussionarticle
 $managers[] = $environment->getDiscussionArticleManager();
+$query[] = 'SELECT COUNT(*) as count FROM discussionarticles';
 
 //	- task
 $managers[] = $environment->getTaskManager();
+$query[] = 'SELECT COUNT(*) as count FROM tasks';
 
 //	- buzzword
 $managers[] = $environment->getBuzzwordManager();
+$query[] = 'SELECT COUNT(*) as count FROM discussions';
 
 //	- tag
 $managers[] = $environment->getTagManager();
+$query[] = 'SELECT COUNT(*) as count FROM tag';
 
 //	- community
 //$community_manager = $environment->getCommunityManager();
@@ -96,6 +113,7 @@ $managers[] = $environment->getTagManager();
 
 //	- grouproom
 $managers[] = $environment->getGroupRoomManager();
+$query[] = 'SELECT COUNT(*) as count FROM room WHERE type = "grouproom"';
 
 //	- privateroom - SKIPPED
 
@@ -120,8 +138,18 @@ if(isset($_GET['do'])){
 		$return['status'] = 'done';
 	} elseif($_GET['do'] == 'index') {
 		if(isset($_GET['manager']) && $_GET['manager'] >= 0 && $_GET['manager'] < sizeof($managers)) {
-			$managers[$_GET['manager']]->updateSearchIndices();
+			$managers[$_GET['manager']]->updateSearchIndices(array($_GET['offset'], $_GET['limit']));
 			$return['status'] = 'done';
+			$return['processed'] = $_GET['offset'] + $_GET['limit'];
+		}
+	} elseif($_GET['do'] == "getNumItems") {
+		if(isset($_GET['manager']) && $_GET['manager'] >= 0 && $_GET['manager'] < sizeof($managers)) {
+			$result = $db->performQuery($query[$_GET['manager']]);
+			if(sizeof($result) == 0) {
+				$return['number'] = 0;
+			} else {
+				$return['number'] = $result[0]['count'];
+			}
 		}
 	}
 	

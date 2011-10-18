@@ -1151,7 +1151,7 @@ class cs_labels_manager extends cs_manager {
 	 * @param String $label_type - the type of the label
 	 * @see cs_manager::updateSearchIndices()
 	 */
-	public function updateSearchIndices($label_type) {
+	public function updateSearchIndices($label_type, $limit = array()) {
 		/*
 		 * this query selects all needed data
 		 * 	- the item id
@@ -1184,6 +1184,10 @@ class cs_labels_manager extends cs_manager {
 					labels.modification_date > search_time.st_date
 				)
 		';
+		
+		if(!empty($limit)) {
+			$query .= ' LIMIT ' . $limit[0] . ', ' . $limit[1];
+		}
 		
 		parent::updateSearchIndices($query, $label_type);
 	}

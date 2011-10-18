@@ -206,7 +206,7 @@ class cs_view {
       		  var search_lang_uncategorized = '" . $this->_translator->getMessage("COMMON_SEARCH_UNCATEGORIZED") . "';
       		  var search_lang_view_options_per_rubric = '" . $this->_translator->getMessage("COMMON_SEARCH_OVERLAY_VIEW_OPTIONS_PER_RUBRIC") . "';
       		  var search_lang_view_options_per_page = '" . $this->_translator->getMessage("COMMON_SEARCH_OVERLAY_VIEW_OPTIONS_PER_PAGE") . "';
-      		  
+      		  var search_lang_restriction_options = '" . $this->_translator->getMessage("COMMON_SEARCH_OVERLAY_RESTRICTION_OPTIONS") . "';
       		  
           -->
           </script>
