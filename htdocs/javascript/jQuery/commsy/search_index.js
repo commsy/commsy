@@ -3,7 +3,7 @@ jQuery(document).ready(function() {
 		numManager: null,
 		numComplete: 0,
 		numItems: 0,
-		numStep: 10000,
+		numStep: 20,
 			
 		/* init function */
 		init: function() {
@@ -110,20 +110,21 @@ jQuery(document).ready(function() {
 							json_data = new Object();
 							json_data['do'] = 'index';
 							json_data['manager'] = manager;
-							json_data['offset'] = Indexer.numStep * i;
+							json_data['offset'] = Indexer.numStep * i / Indexer.numStep;
 							json_data['limit'] = Indexer.numStep;
 							jQuery.ajax({
 								url: 'commsy.php?cid=' + getURLParam('cid') + '&mod=ajax&fct=search_index&output=json',
 								data: json_data,
+								async: false,
 								success: function(data) {
 									var response = jQuery.parseJSON(data);
 							   		if(response) {
 							   			if(response.status == 'done') {
-							   				Indexer.numComplete += 1;
-							   				
-							   				console.log('completed');
+							   				console.log('completed - ' + response.processed + ' / ' + Indexer.numItems);
 								   			
 							   				if(response.processed >= Indexer.numItems) {
+							   					Indexer.numComplete += 1;
+							   					console.log('manager done');
 							   					// update bar
 									   			var percent = Indexer.numComplete * 100 / Indexer.numManager;
 									   			jQuery('div[id="indexing_bar"]').css('width', percent+'%');
