@@ -69,6 +69,16 @@ else {
    $form_view = $class_factory->getClass(CONFIGURATION_FORM_VIEW,$params);
    unset($params);
 
+   // Load form data from postvars
+   if ( !empty($_POST) and !$is_saved) {
+      $form->setFormPost($_POST);
+   }
+
+   // Load form data from database
+   elseif ( isset($room_item) ) {
+      $form->setItem($room_item);
+   }
+   
    // Save item
    if ( !empty($command) and isOption($command, $translator->getMessage('COMMON_CANCEL_BUTTON')) ) {
      redirect($environment->getCurrentContextID(),'configuration', 'index', '');
@@ -81,7 +91,6 @@ else {
 
       if ( $form->check() ) {
 
-         /*********save buzzword options******/
          $isset_workflow = false;
          
          if ( isset($_POST['workflow_trafic_light']) and !empty($_POST['workflow_trafic_light']) and $_POST['workflow_trafic_light'] == 'yes') {
@@ -103,6 +112,20 @@ else {
             $room_item->setWithoutWorkflowReader();
          }
 
+         if ( isset($_POST['workflow_trafic_light_default']) and !empty($_POST['workflow_trafic_light_default'])) {
+            $room_item->setWorkflowTrafficLightDefault($_POST['workflow_trafic_light_default']);
+         }
+         
+         if ( isset($_POST['workflow_trafic_light_green_text']) and !empty($_POST['workflow_trafic_light_green_text'])) {
+            $room_item->setWorkflowTrafficLightTextGreen($_POST['workflow_trafic_light_green_text']);
+         }
+         if ( isset($_POST['workflow_trafic_light_yellow_text']) and !empty($_POST['workflow_trafic_light_yellow_text'])) {
+            $room_item->setWorkflowTrafficLightTextYellow($_POST['workflow_trafic_light_yellow_text']);
+         }
+         if ( isset($_POST['workflow_trafic_light_red_text']) and !empty($_POST['workflow_trafic_light_red_text'])) {
+            $room_item->setWorkflowTrafficLightTextRed($_POST['workflow_trafic_light_red_text']);
+         }
+         
          if($isset_workflow){
             $room_item->setWithWorkflow();
          } else {
@@ -115,16 +138,6 @@ else {
          $is_saved = true;
 
       }
-   }
-
-   // Load form data from postvars
-   if ( !empty($_POST) and !$is_saved) {
-      $form->setFormPost($_POST);
-   }
-
-   // Load form data from database
-   elseif ( isset($room_item) ) {
-      $form->setItem($room_item);
    }
 
    $form->prepareForm();

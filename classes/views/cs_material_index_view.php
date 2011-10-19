@@ -134,10 +134,19 @@ class cs_material_index_view extends cs_index_view {
 	  	$with_assessment = true;
 	  }
 
-	  if($with_assessment) {
-	  	$html .= '      <td style="width:50%;" class="head" colspan="2">';
+	  $with_workflow = false;
+	  if($current_context->withWorkflow()){
+	     $with_workflow = true;
+	  }
+	  
+	  if($with_assessment and !$with_workflow) {
+	  	  $html .= '      <td style="width:50%;" class="head" colspan="2">';
+	  } else if (!$with_assessment and $with_workflow){
+	     $html .= '      <td style="width:50%;" class="head" colspan="2">';
+	  } else if ($with_assessment and $with_workflow){
+	     $html .= '      <td style="width:40%;" class="head" colspan="2">';
 	  } else {
-	  	$html .= '      <td style="width:65%;" class="head" colspan="2">';
+	  	  $html .= '      <td style="width:65%;" class="head" colspan="2">';
 	  }
 
       if ( $this->getSortKey() == 'title' ) {
@@ -223,44 +232,91 @@ class cs_material_index_view extends cs_index_view {
       $html .= '</td>'.LF;
 
 	  // assessment
-	  if($with_assessment) {
-	  	  $html .= '<td style="15%; font-size:8pt;" class="head">';
-		  if($this->getSortKey() == 'assessment') {
-		  	$params['sort'] = 'assessment_rev';
-			$picture = '&nbsp;<img src="' . getSortImage('up') . '" alt="&lt;" border="0"/>';
-		  } elseif($this->getSortKey() == 'assessment_rev') {
-		  	$params['sort'] = 'assessment';
-			$picture = '&nbsp;<img src="' . getSortImage('down') . '" alt="&lt;" border="0"/>';
-		  } else {
-		  	$params['sort'] = 'assessment';
-			$picture = '&nbsp;';
-		  }
-		  if($with_links) {
-	         if ( empty($params['download'])
-	              or $params['download'] != 'zip'
-	            ) {
-	            $html .= ahref_curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,
-	                                $params, $this->_translator->getMessage('COMMON_ASSESSMENT_INDEX'), '', '', $this->getFragment(),'','','','class="head"');
-	         } else {
-	            $html .= $this->_translator->getMessage('COMMON_ASSESSMENT_INDEX');
-	         }
-	         $html .= $picture;
-	      } else {
-	         $html .= '<span class="index_link">'.$this->_translator->getMessage('COMMON_ASSESSMENT_INDEX').'</span>';
-	         $html .= $picture;
-	      }
-	      $html .= '</td>'.LF;
+	  if($with_assessment and !$with_workflow) {
+	     // assessment
+	  	  $html .= $this->_getAssessmentTableColumnAsHTML($with_links);
+	  } else if (!$with_assessment and $with_workflow){
+	     // workflow
+	     $html .= $this->_getWorkflowTableColumnAsHTML($with_links);
+	  } else if ($with_assessment and $with_workflow){
+	     // assessment
+	     $html .= $this->_getAssessmentTableColumnAsHTML($with_links);
+	     $html .= $this->_getWorkflowTableColumnAsHTML($with_links);
 	  }
 
       $html .= '   </tr>'.LF;
       return $html;
    }
 
+   function _getAssessmentTableColumnAsHTML($with_links){
+      $html = '<td style="15%; font-size:8pt;" class="head">';
+		if($this->getSortKey() == 'assessment') {
+  	      $params['sort'] = 'assessment_rev';
+			$picture = '&nbsp;<img src="' . getSortImage('up') . '" alt="&lt;" border="0"/>';
+		} elseif($this->getSortKey() == 'assessment_rev') {
+		  	$params['sort'] = 'assessment';
+			$picture = '&nbsp;<img src="' . getSortImage('down') . '" alt="&lt;" border="0"/>';
+		} else {
+		  	$params['sort'] = 'assessment';
+			$picture = '&nbsp;';
+		}
+		if($with_links) {
+	      if ( empty($params['download'])
+	           or $params['download'] != 'zip'
+	      ) {
+	         $html .= ahref_curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,
+            $params, $this->_translator->getMessage('COMMON_ASSESSMENT_INDEX'), '', '', $this->getFragment(),'','','','class="head"');
+         } else {
+            $html .= $this->_translator->getMessage('COMMON_ASSESSMENT_INDEX');
+         }
+	         $html .= $picture;
+	      } else {
+	         $html .= '<span class="index_link">'.$this->_translator->getMessage('COMMON_ASSESSMENT_INDEX').'</span>';
+	         $html .= $picture;
+	      }
+      $html .= '</td>'.LF;
+      return $html;
+   }
+   
+   function _getWorkflowTableColumnAsHTML($with_links){
+      $html = '<td style="10%; font-size:8pt;" class="head">';
+	   if($this->getSortKey() == 'workflow') {
+		  	$params['sort'] = 'workflow_rev';
+			$picture = '&nbsp;<img src="' . getSortImage('up') . '" alt="&lt;" border="0"/>';
+	   } elseif($this->getSortKey() == 'workflow_rev') {
+		  	$params['sort'] = 'workflow';
+			$picture = '&nbsp;<img src="' . getSortImage('down') . '" alt="&lt;" border="0"/>';
+  	   } else {
+		  	$params['sort'] = 'workflow';
+			$picture = '&nbsp;';
+	   }
+	   if($with_links) {
+	         if ( empty($params['download'])
+	              or $params['download'] != 'zip'
+	            ) {
+	            $html .= ahref_curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,
+	                                $params, $this->_translator->getMessage('COMMON_WORKFLOW_INDEX'), '', '', $this->getFragment(),'','','','class="head"');
+	         } else {
+	            $html .= $this->_translator->getMessage('COMMON_WORKFLOW_INDEX');
+	         }
+	         $html .= $picture;
+	      } else {
+	         $html .= '<span class="index_link">'.$this->_translator->getMessage('COMMON_WORKFLOW_INDEX').'</span>';
+	         $html .= $picture;
+	      }
+	      $html .= '</td>'.LF;
+	   return $html;
+   }
+   
    function _getTablefootAsHTML() {
       $html  = '   <tr class="list">'.LF;
 	  $current_context = $this->_environment->getCurrentContextItem();
-	  if($current_context->isAssessmentActive()) {
+	  if($current_context->isAssessmentActive() and !$current_context->withWorkflow()) {
 	  	$html .= '<td colspan="5" style="padding:0px; margin:0px;">'.LF;
+	  } else if(!$current_context->isAssessmentActive() and $current_context->withWorkflow()) {
+	  	$html .= '<td colspan="5" style="padding:0px; margin:0px;">'.LF;
+	  } else if($current_context->isAssessmentActive() and $current_context->withWorkflow()) {
+	  	$html .= '<td colspan="6" style="padding:0px; margin:0px;">'.LF;
 	  } else {
 	  	$html .= '<td colspan="4" style="padding:0px; margin:0px;">'.LF;
 	  }
@@ -478,6 +534,35 @@ class cs_material_index_view extends cs_index_view {
 			$html .= '<td ' . $style . '>' . $stars . '</td>'.LF;
 		}
 
+      // workflow
+		$current_context = $this->_environment->getCurrentContextItem();
+	  	if($current_context->withWorkflow()) {
+			// display status
+			$traffic_light = '';
+         if($item->getWorkflowTrafficLight() == 'none'){
+            #$traffic_light = '<span style="font-size:8pt;">'.$this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_NONE').'</span>';
+         }else if($item->getWorkflowTrafficLight() == 'green'){
+            $alt_title = $this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_GREEN_DEFAULT');
+            if($current_context->getWorkflowTrafficLightTextGreen() != ''){
+               $alt_title = $current_context->getWorkflowTrafficLightTextGreen();
+            }
+            $traffic_light = '<img src="images/commsyicons/workflow_traffic_light_green.png" alt="'.$alt_title.'" title="'.$alt_title.'" style="height:10px;">';
+         }else if($item->getWorkflowTrafficLight() == 'yellow'){
+            $alt_title = $this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_YELLOW_DEFAULT');
+            if($current_context->getWorkflowTrafficLightTextYellow() != ''){
+               $alt_title = $current_context->getWorkflowTrafficLightTextYellow();
+            }
+            $traffic_light = '<img src="images/commsyicons/workflow_traffic_light_yellow.png" alt="'.$alt_title.'" title="'.$alt_title.'" style="height:10px;">';
+         }else if($item->getWorkflowTrafficLight() == 'red'){
+            $alt_title = $this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_RED_DEFAULT');
+            if($current_context->getWorkflowTrafficLightTextRed() != ''){
+               $alt_title = $current_context->getWorkflowTrafficLightTextRed();
+            }
+            $traffic_light = '<img src="images/commsyicons/workflow_traffic_light_red.png" alt="'.$alt_title.'" title="'.$alt_title.'" style="height:10px;">';
+         }
+			$html .= '<td ' . $style . '>' . $traffic_light . '</td>'.LF;
+		}
+		
       ########################
       # EDU HACK - BEGIN
       ########################

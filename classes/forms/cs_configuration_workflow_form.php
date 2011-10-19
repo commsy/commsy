@@ -48,13 +48,13 @@ class cs_configuration_workflow_form extends cs_rubric_form {
 
       $radio_values = array();
       $radio_values[0]['text'] = $this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_NONE');
-      $radio_values[0]['value'] = '0';
+      $radio_values[0]['value'] = 'none';
       $radio_values[1]['text'] = $this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_GREEN');
-      $radio_values[1]['value'] = '1';
+      $radio_values[1]['value'] = 'green';
       $radio_values[2]['text'] = $this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_YELLOW');
-      $radio_values[2]['value'] = '2';
+      $radio_values[2]['value'] = 'yellow';
       $radio_values[3]['text'] = $this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_RED');
-      $radio_values[3]['value'] = '3';
+      $radio_values[3]['value'] = 'red';
       $this->_form->addRadioGroup('workflow_trafic_light_default',
                                   $this->_translator->getMessage('PREFERENCES_CONFIGURATION_WORKFLOW_TRAFFIC_LIGHT_DEFAULT'),
                                   $this->_translator->getMessage('PREFERENCES_CONFIGURATION_WORKFLOW'),
@@ -85,9 +85,23 @@ class cs_configuration_workflow_form extends cs_rubric_form {
          $room = $this->_environment->getCurrentContextItem();
          if ($room->withWorkflowTrafficLight()){
             $this->_values['workflow_trafic_light'] = 'yes';
-            $this->_values['workflow_trafic_light_default'] = '0';
+         }
+         
+         $this->_values['workflow_trafic_light_default'] = $room->getWorkflowTrafficLightDefault();
+         
+         if($room->getWorkflowTrafficLightTextGreen() != ''){
+            $this->_values['workflow_trafic_light_green_text'] = $room->getWorkflowTrafficLightTextGreen();
+         } else {
             $this->_values['workflow_trafic_light_green_text'] = $this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_GREEN_DEFAULT');
+         }
+         if($room->getWorkflowTrafficLightTextYellow() != ''){
+            $this->_values['workflow_trafic_light_yellow_text'] = $room->getWorkflowTrafficLightTextYellow();
+         } else {
             $this->_values['workflow_trafic_light_yellow_text'] = $this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_YELLOW_DEFAULT');
+         }
+         if($room->getWorkflowTrafficLightTextRed() != ''){
+            $this->_values['workflow_trafic_light_red_text'] = $room->getWorkflowTrafficLightTextRed();
+         } else {
             $this->_values['workflow_trafic_light_red_text'] = $this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_RED_DEFAULT');
          }
          
@@ -99,5 +113,22 @@ class cs_configuration_workflow_form extends cs_rubric_form {
          }
       }
    }
+   
+   function _checkValues () {
+      $context_item = $this->_environment->getCurrentContextItem();
+      #pr($this->_form_post);
+      if (empty($this->_form_post['workflow_trafic_light_green_text'])) {
+         $this->_error_array[] = $this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_EMPTY_ERROR');
+         $this->_form->setFailure('workflow_trafic_light_green_text','');
+      }
+      if (empty($this->_form_post['workflow_trafic_light_yellow_text'])) {
+         $this->_error_array[] = $this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_EMPTY_ERROR');
+         $this->_form->setFailure('workflow_trafic_light_yellow_text','');
+      }
+      if (empty($this->_form_post['workflow_trafic_light_red_text'])) {
+         $this->_error_array[] = $this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_EMPTY_ERROR');
+         $this->_form->setFailure('workflow_trafic_light_red_text','');
+      }
+  }
 }
 ?>

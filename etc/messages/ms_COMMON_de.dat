@@ -826,13 +826,16 @@ $message["COMMON_WIKI_READ_PW"]["de"] = "<div style=&quot;float:left; width:120p
 $message["COMMON_WORDPRESS_LINK"]["de"] = "Wordpress-Blog";
 $message["COMMON_WORKFLOW"]["de"] = "Workflow";
 $message["COMMON_WORKFLOW_DESCRIPTION"]["de"] = "Workflow Einstellungen";
+$message["COMMON_WORKFLOW_INDEX"]["de"] = "Status";
 $message["COMMON_WORKFLOW_TRAFFIC_LIGHT"]["de"] = "Ampel";
 $message["COMMON_WORKFLOW_TRAFFIC_LIGHT_DESCRIPTION"]["de"] = "Ampel-Anzeige verwenden";
 $message["COMMON_WORKFLOW_TRAFFIC_LIGHT_GREEN"]["de"] = "gr&uuml;n";
 $message["COMMON_WORKFLOW_TRAFFIC_LIGHT_NONE"]["de"] = "Kein Default-Status";
 $message["COMMON_WORKFLOW_TRAFFIC_LIGHT_RED"]["de"] = "rot";
 $message["COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT"]["de"] = "Status Bezeichnung";
+$message["COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_EMPTY_ERROR"]["de"] = "Bitte geben Sie f&uuml;r jeden Satus eine Bezeichnung ein.";
 $message["COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_GREEN_DEFAULT"]["de"] = "gültig";
+$message["COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_NONE"]["de"] = "Kein Status";
 $message["COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_RED_DEFAULT"]["de"] = "ungültig";
 $message["COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_YELLOW_DEFAULT"]["de"] = "Entwurf";
 $message["COMMON_WORKFLOW_TRAFFIC_LIGHT_YELLOW"]["de"] = "gelb";

@@ -702,9 +702,54 @@ class cs_context_item extends cs_item {
         $retour = true;
       }
     }
-    #else {
-    #  $retour = true;
-    #}
+    return $retour;
+  }
+  
+  function setWorkflowTrafficLightDefault($value) {
+    $this->_addExtra('WORKFLOWTRAFFICLIGHTDEFAULT',$value);
+  }
+
+  function getWorkflowTrafficLightDefault() {
+    $retour = 'none';
+    if ($this->_issetExtra('WORKFLOWTRAFFICLIGHTDEFAULT') ) {
+      $retour = $this->_getExtra('WORKFLOWTRAFFICLIGHTDEFAULT');
+    }
+    return $retour;
+  }
+  
+  function setWorkflowTrafficLightTextGreen($value) {
+    $this->_addExtra('WORKFLOWTRAFFICLIGHTTEXTGREEN',$value);
+  }
+
+  function getWorkflowTrafficLightTextGreen() {
+    $retour = '';
+    if ($this->_issetExtra('WORKFLOWTRAFFICLIGHTTEXTGREEN') ) {
+      $retour = $this->_getExtra('WORKFLOWTRAFFICLIGHTTEXTGREEN');
+    }
+    return $retour;
+  }
+  
+  function setWorkflowTrafficLightTextYellow($value) {
+    $this->_addExtra('WORKFLOWTRAFFICLIGHTTEXTYELLOW',$value);
+  }
+
+  function getWorkflowTrafficLightTextYellow() {
+    $retour = '';
+    if ($this->_issetExtra('WORKFLOWTRAFFICLIGHTTEXTYELLOW') ) {
+      $retour = $this->_getExtra('WORKFLOWTRAFFICLIGHTTEXTYELLOW');
+    }
+    return $retour;
+  }
+  
+  function setWorkflowTrafficLightTextRed($value) {
+    $this->_addExtra('WORKFLOWTRAFFICLIGHTTEXTRED',$value);
+  }
+
+  function getWorkflowTrafficLightTextRed() {
+    $retour = '';
+    if ($this->_issetExtra('WORKFLOWTRAFFICLIGHTTEXTRED') ) {
+      $retour = $this->_getExtra('WORKFLOWTRAFFICLIGHTTEXTRED');
+    }
     return $retour;
   }
   

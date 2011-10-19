@@ -816,13 +816,16 @@ $message["COMMON_WIKI_READ_PW"]["en"] = "<div style=&quot;float:left; width:120p
 $message["COMMON_WORDPRESS_LINK"]["en"] = "Wordpress blog";
 $message["COMMON_WORKFLOW"]["en"] = "Workflow";
 $message["COMMON_WORKFLOW_DESCRIPTION"]["en"] = "Workflow settings";
+$message["COMMON_WORKFLOW_INDEX"]["en"] = "Status";
 $message["COMMON_WORKFLOW_TRAFFIC_LIGHT"]["en"] = "Traffic light";
 $message["COMMON_WORKFLOW_TRAFFIC_LIGHT_DESCRIPTION"]["en"] = "Use traffic light view";
 $message["COMMON_WORKFLOW_TRAFFIC_LIGHT_GREEN"]["en"] = "green";
 $message["COMMON_WORKFLOW_TRAFFIC_LIGHT_NONE"]["en"] = "No default status";
 $message["COMMON_WORKFLOW_TRAFFIC_LIGHT_RED"]["en"] = "red";
 $message["COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT"]["en"] = "Status description";
+$message["COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_EMPTY_ERROR"]["en"] = "Please give a description for each status.";
 $message["COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_GREEN_DEFAULT"]["en"] = "valid";
+$message["COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_NONE"]["en"] = "No status";
 $message["COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_RED_DEFAULT"]["en"] = "invalid";
 $message["COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_YELLOW_DEFAULT"]["en"] = "Draft";
 $message["COMMON_WORKFLOW_TRAFFIC_LIGHT_YELLOW"]["en"] = "yellow";

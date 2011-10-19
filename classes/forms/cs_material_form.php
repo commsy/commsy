@@ -199,15 +199,34 @@ class cs_material_form extends cs_rubric_form {
       $public_array[] = $temp_array;
       $this->_public_array = $public_array;
       
+      $context_item = $this->_environment->getCurrentContextItem();
       $workflow_array = array();
-      $temp_array['text']  = $this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_GREEN');
-      $temp_array['value'] = 0;
+      $temp_array['text']  = $this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_NONE');;
+      $temp_array['value'] = 'none';
       $workflow_array[] = $temp_array;
-      $temp_array['text']  = $this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_YELLOW');
-      $temp_array['value'] = 1;
+      $description = $this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_GREEN_DEFAULT');
+      if($context_item->getWorkflowTrafficLightTextGreen() != ''){
+         $description = $context_item->getWorkflowTrafficLightTextGreen();
+      }
+      #$temp_array['text']  = $this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_GREEN').' ('.$description.')';
+      $temp_array['text']  = '<img src="images/commsyicons/workflow_traffic_light_green.png" alt="'.$description.'" title="'.$description.'" style="height:10px;"> ('.$description.')';
+      $temp_array['value'] = 'green';
       $workflow_array[] = $temp_array;
-      $temp_array['text']  = $this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_RED');
-      $temp_array['value'] = 2;
+      $description = $this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_YELLOW_DEFAULT');
+      if($context_item->getWorkflowTrafficLightTextYellow() != ''){
+         $description = $context_item->getWorkflowTrafficLightTextYellow();
+      }
+      #$temp_array['text']  = $this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_YELLOW').' ('.$description.')';
+      $temp_array['text']  = '<img src="images/commsyicons/workflow_traffic_light_yellow.png" alt="'.$description.'" title="'.$description.'" style="height:10px;"> ('.$description.')';
+      $temp_array['value'] = 'yellow';
+      $workflow_array[] = $temp_array;
+      $description = $this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_RED_DEFAULT');
+      if($context_item->getWorkflowTrafficLightTextRed() != ''){
+         $description = $context_item->getWorkflowTrafficLightTextRed();
+      }
+      #$temp_array['text']  = $this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_RED').' ('.$description.')';
+      $temp_array['text']  = '<img src="images/commsyicons/workflow_traffic_light_red.png" alt="'.$description.'" title="'.$description.'" style="height:10px;"> ('.$description.')';
+      $temp_array['value'] = 'red';
       $workflow_array[] = $temp_array;
       $this->_workflow_array = $workflow_array;
    }
@@ -491,7 +510,7 @@ class cs_material_form extends cs_rubric_form {
          }
 
          if ($current_context->withWorkflow()){
-            $this->_form->addRadioGroup('workflow_traffic_light',$this->_translator->getMessage('COMMON_WORKFLOW'),$this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_DESCRIPTION'),$this->_workflow_array);  
+            $this->_form->addRadioGroup('workflow_traffic_light',$this->_translator->getMessage('COMMON_WORKFLOW'),$this->_translator->getMessage('COMMON_WORKFLOW_DESCRIPTION'),$this->_workflow_array,'',false,false,'','',false,'',true);  
          }
          
       } else {
@@ -623,6 +642,9 @@ class cs_material_form extends cs_rubric_form {
             if ( !isset($this->_values['public']) ) {
                $this->_values['public'] = ($this->_environment->inProjectRoom() OR $this->_environment->inGroupRoom())?'1':'0'; //In projectrooms everybody can edit the item by default, else default is creator only
             }
+         }
+         if ($current_context->withWorkflow()){
+            $this->_values['workflow_traffic_light'] = $current_context->getWorkflowTrafficLightDefault();
          }
       }
    }

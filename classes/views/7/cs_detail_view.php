@@ -1058,12 +1058,26 @@ class cs_detail_view extends cs_view {
       $html .= '<div>'.LF;
       
       $traffic_light = '';
-      if($item->getWorkflowTrafficLight() == 0){
-         $traffic_light = '<img src="images/commsyicons/workflow_traffic_light_green.png">';
-      }else if($item->getWorkflowTrafficLight() == 1){
-         $traffic_light = '<img src="images/commsyicons/workflow_traffic_light_yellow.png">';
-      }else if($item->getWorkflowTrafficLight() == 2){
-         $traffic_light = '<img src="images/commsyicons/workflow_traffic_light_red.png">';
+      if($item->getWorkflowTrafficLight() == 'none'){
+         $traffic_light = $this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_NONE');
+      }else if($item->getWorkflowTrafficLight() == 'green'){
+         $alt_title = $this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_GREEN_DEFAULT');
+         if($current_context->getWorkflowTrafficLightTextGreen() != ''){
+            $alt_title = $current_context->getWorkflowTrafficLightTextGreen();
+         }
+         $traffic_light = '<img src="images/commsyicons/workflow_traffic_light_green.png" alt="'.$alt_title.'" title="'.$alt_title.'">';
+      }else if($item->getWorkflowTrafficLight() == 'yellow'){
+         $alt_title = $this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_YELLOW_DEFAULT');
+         if($current_context->getWorkflowTrafficLightTextYellow() != ''){
+            $alt_title = $current_context->getWorkflowTrafficLightTextYellow();
+         }
+         $traffic_light = '<img src="images/commsyicons/workflow_traffic_light_yellow.png" alt="'.$alt_title.'" title="'.$alt_title.'">';
+      }else if($item->getWorkflowTrafficLight() == 'red'){
+         $alt_title = $this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_RED_DEFAULT');
+         if($current_context->getWorkflowTrafficLightTextRed() != ''){
+            $alt_title = $current_context->getWorkflowTrafficLightTextRed();
+         }
+         $traffic_light = '<img src="images/commsyicons/workflow_traffic_light_red.png" alt="'.$alt_title.'" title="'.$alt_title.'">';
       }
       $html .= $traffic_light;
       

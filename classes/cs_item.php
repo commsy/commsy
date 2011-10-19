@@ -2372,7 +2372,7 @@ function getExternalViewerArray(){
       if($this->_issetExtra('WORKFLOW_TRAFFIC_LIGHT')){
          return (string) $this->_getExtra('WORKFLOW_TRAFFIC_LIGHT');
       } else {
-         return 0;
+         return 'none';
       }
    }
    function isWorkflowTrafficLight() {
