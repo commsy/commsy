@@ -3,7 +3,7 @@ jQuery(document).ready(function() {
 		numManager: null,
 		numComplete: 0,
 		numItems: 0,
-		numStep: 3,
+		numStep: 10,
 			
 		/* init function */
 		init: function() {
