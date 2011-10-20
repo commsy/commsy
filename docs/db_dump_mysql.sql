@@ -482,7 +482,7 @@ CREATE TABLE IF NOT EXISTS `link_items` (
   `first_item_type` varchar(15) DEFAULT NULL,
   `second_item_id` int(11) NOT NULL DEFAULT '0',
   `second_item_type` varchar(15) DEFAULT NULL,
-  `sorting_place` tinyint(4) DEFAULT NULL,
+  `sorting_place` int(11) DEFAULT NULL,
   `extras` text,
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`),
@@ -730,6 +730,7 @@ CREATE TABLE IF NOT EXISTS `room` (
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`),
   KEY `type` (`type`),
+  KEY `status` (`status`),
   KEY `activity` (`activity`),
   KEY `deletion_date` (`deletion_date`),
   KEY `deleter_id` (`deleter_id`),
@@ -767,6 +768,7 @@ CREATE TABLE IF NOT EXISTS `room_privat` (
   `description` text,
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`),
+  KEY `status` (`status`),
   KEY `creator_id` (`creator_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -1335,7 +1337,7 @@ CREATE TABLE IF NOT EXISTS `zzz_link_items` (
   `first_item_type` varchar(15) DEFAULT NULL,
   `second_item_id` int(11) NOT NULL DEFAULT '0',
   `second_item_type` varchar(15) DEFAULT NULL,
-  `sorting_place` tinyint(4) DEFAULT NULL,
+  `sorting_place` int(11) DEFAULT NULL,
   `extras` text,
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`),
@@ -1446,6 +1448,7 @@ CREATE TABLE IF NOT EXISTS `zzz_room` (
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`),
   KEY `type` (`type`),
+  KEY `status` (`status`),
   KEY `activity` (`activity`),
   KEY `deletion_date` (`deletion_date`),
   KEY `deleter_id` (`deleter_id`),
