@@ -105,7 +105,7 @@ else {
          } else {
             $room_item->setWithoutWorkflowResubmission();
          }
-         if ( isset($_POST['buzzword_reader']) and !empty($_POST['buzzword_reader']) and $_POST['buzzword_reader'] == 'yes' ) {
+         if ( isset($_POST['workflow_reader']) and !empty($_POST['workflow_reader']) and $_POST['workflow_reader'] == 'yes' ) {
             $room_item->setWithWorkflowReader();
             $isset_workflow = true;
          } else {
@@ -124,6 +124,21 @@ else {
          }
          if ( isset($_POST['workflow_trafic_light_red_text']) and !empty($_POST['workflow_trafic_light_red_text'])) {
             $room_item->setWorkflowTrafficLightTextRed($_POST['workflow_trafic_light_red_text']);
+         }
+         
+         if ( isset($_POST['workflow_reader_group']) and !empty($_POST['workflow_reader_group'])) {
+            $room_item->setWithWorkflowReaderGroup();
+         } else {
+            $room_item->setWithoutWorkflowReaderGroup();
+         }
+         if ( isset($_POST['workflow_reader_person']) and !empty($_POST['workflow_reader_person'])) {
+            $room_item->setWithWorkflowReaderPerson();
+         } else {
+            $room_item->setWithoutWorkflowReaderPerson();
+         }
+         
+         if ( isset($_POST['workflow_resubmission_show_to']) and !empty($_POST['workflow_resubmission_show_to'])) {
+            $room_item->setWorkflowReaderShowTo($_POST['workflow_resubmission_show_to']);
          }
          
          if($isset_workflow){

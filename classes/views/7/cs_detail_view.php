@@ -3427,18 +3427,66 @@ class cs_detail_view extends cs_view {
          ) {
          $html .= '   <tr>'.LF;
          $html .= '      <td></td>'.LF;
-         $html .= '      <td class="key" style="padding-left:8px;">'.LF;
+         $html .= '      <td class="key" style="padding-left:8px; vertical-align:top;">'.LF;
          $html .= '         '.$this->_translator->getMessage('COMMON_READ_SINCE_MODIFICATION').':&nbsp;'.LF;
          $html .= '      </td>'.LF;
          $html .= '      <td class="value">'.LF;
-         if ( $read_since_modification_count == 1 ) {
-            $html .= ' '.$read_since_modification_count.'&nbsp;'.$this->_translator->getMessage('COMMON_NUMBER_OF_MEMBERS_SINGULAR').''.LF;
-         } else {
-            $html .= '       '.$read_since_modification_count.'&nbsp;'.$this->_translator->getMessage('COMMON_NUMBER_OF_MEMBERS').''.LF;
+         if(!$context->withWorkflowReader() or ($context->withWorkflowReader() and ($context->getWorkflowReaderGroup() == '0') and ($context->getWorkflowReaderPerson() == '0'))){
+            if ( $read_since_modification_count == 1 ) {
+               $html .= ' '.$read_since_modification_count.'&nbsp;'.$this->_translator->getMessage('COMMON_NUMBER_OF_MEMBERS_SINGULAR').''.LF;
+            } else {
+               $html .= '       '.$read_since_modification_count.'&nbsp;'.$this->_translator->getMessage('COMMON_NUMBER_OF_MEMBERS').''.LF;
+            }
+         } else if($context->withWorkflowReader()){
+            if($context->getWorkflowReaderGroup() == '1'){
+               $html .= $this->_translator->getMessage('COMMON_GROUPS').':<br/>';
+            }
+            if($context->getWorkflowReaderPerson() == '1'){
+               $html .= $this->_translator->getMessage('COMMON_USERS').': ';
+               
+            $reader_manager = $environment->getReaderManager();
+            $user_manager = $environment->getUserManager();
+            $user_list = $user_manager->getAllRoomUsersFromCache($environment->getCurrentContextID());
+            $current_user = $user_list->getFirst();
+            $id_array = array();
+            while ( $current_user ) {
+               $id_array[] = $current_user->getItemID();
+               $current_user = $user_list->getNext();
+            }
+            $reader_manager->getLatestReaderByUserIDArray($id_array,$item->getItemID());
+            $current_user = $user_list->getFirst();
+            $persons_array = array();
+            while ( $current_user ) {
+               $current_reader = $reader_manager->getLatestReaderForUserByID($item->getItemID(), $current_user->getItemID());
+               if ( !empty($current_reader) ) {
+                  if ( $current_reader['read_date'] >= $item->getModificationDate() ) {
+                     $persons_array[] = $current_user;
+                  }
+               }
+               $current_user = $user_list->getNext();
+            }
+            $first = true;
+            foreach($persons_array as $person){
+               $params = array();
+               $params['iid'] = $person->getItemID();
+               if(!$first){
+                  $html .= ', ';
+               } else {
+                  $first = false;
+               }
+               $html .= ahref_curl($this->_environment->getCurrentContextID(),
+                                     'user',
+                                     'detail',
+                                     $params,
+                                     $this->_text_as_html_short($this->_compareWithSearchText($person->getFullname())));
+            }
+            
+            }
          }
          $html .= '      </td>'.LF;
          $html .= '   </tr>'.LF;
       }
+      
       // Creator
       $creator = $item->getCreatorItem();
       if ( isset($creator) and $creator->isRoot() ) {

@@ -799,6 +799,49 @@ class cs_context_item extends cs_item {
     return $retour;
   }
   
+  function setWithWorkflowReaderGroup() {
+    $this->_addExtra('WORKFLOWREADERGROUP','1');
+  }
+
+  function setWithoutWorkflowReaderGroup() {
+    $this->_addExtra('WORKFLOWREADERGROUP','0');
+  }
+  
+  function getWorkflowReaderGroup() {
+    $retour = '0';
+    if ($this->_issetExtra('WORKFLOWREADERGROUP') ) {
+      $retour = $this->_getExtra('WORKFLOWREADERGROUP');
+    }
+    return $retour;
+  }
+  
+  function setWithWorkflowReaderPerson() {
+    $this->_addExtra('WORKFLOWREADERPERSON','1');
+  }
+
+  function setWithoutWorkflowReaderPerson() {
+    $this->_addExtra('WORKFLOWREADERPERSON','0');
+  }
+  
+  function getWorkflowReaderPerson() {
+    $retour = '0';
+    if ($this->_issetExtra('WORKFLOWREADERPERSON') ) {
+      $retour = $this->_getExtra('WORKFLOWREADERPERSON');
+    }
+    return $retour;
+  }
+  
+  function setWorkflowReaderShowTo($value) {
+    $this->_addExtra('WORKFLOWREADERSHOWTO',$value);
+  }
+
+  function getWorkflowReaderShowTo() {
+    $retour = 'moderator';
+    if ($this->_issetExtra('WORKFLOWREADERSHOWTO') ) {
+      $retour = $this->_getExtra('WORKFLOWREADERSHOWTO');
+    }
+    return $retour;
+  }
   
   /** get htmltextarea status
    *

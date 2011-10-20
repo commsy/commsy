@@ -63,16 +63,34 @@ class cs_configuration_workflow_form extends cs_rubric_form {
                                   false,
                                   false
                                   );
-      
+
       $this->_form->addTextfield('workflow_trafic_light_green_text','',$this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT'),$this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT'),200,28,false,'','','','left','<img src="images/commsyicons/workflow_traffic_light_green.png" style="height:10px;">');
       $this->_form->combine();
       $this->_form->addTextfield('workflow_trafic_light_yellow_text','',$this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT'),$this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT'),200,28,false,'','','','left','<img src="images/commsyicons/workflow_traffic_light_yellow.png" style="height:10px;">');
       $this->_form->combine();
       $this->_form->addTextfield('workflow_trafic_light_red_text','',$this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT'),$this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT'),200,28,false,'','','','left','<img src="images/commsyicons/workflow_traffic_light_red.png" style="height:10px;">');
 
-      $this->_form->addCheckbox('workflow_resubmission','yes','',$this->_translator->getMessage('PREFERENCES_CONFIGURATION_WORKFLOW'),$this->_translator->getMessage('PREFERENCES_CONFIGURATION_WORKFLOW_RESUBMISSION_VALUE'));
+      $this->_form->addCheckbox('workflow_resubmission','yes','',$this->_translator->getMessage('PREFERENCES_CONFIGURATION_WORKFLOW_RESUBMISSION_VALUE'),$this->_translator->getMessage('PREFERENCES_CONFIGURATION_WORKFLOW_RESUBMISSION_ENABLE'));
+      
+      $this->_form->addCheckbox('workflow_reader','yes','',$this->_translator->getMessage('PREFERENCES_CONFIGURATION_WORKFLOW_READER_VALUE'),$this->_translator->getMessage('PREFERENCES_CONFIGURATION_WORKFLOW_READER_ENABLE'));
+      
+      $this->_form->addCheckbox('workflow_reader_group','yes','',$this->_translator->getMessage('PREFERENCES_CONFIGURATION_WORKFLOW_READER_GROUP_PERSON_VALUE'),$this->_translator->getMessage('PREFERENCES_CONFIGURATION_WORKFLOW_READER_GROUP_VALUE'));
       $this->_form->combine();
-      $this->_form->addCheckbox('buzzword_reader','yes','',$this->_translator->getMessage('PREFERENCES_CONFIGURATION_WORKFLOW'),$this->_translator->getMessage('PREFERENCES_CONFIGURATION_WORKFLOW_READER_VALUE'));
+      $this->_form->addCheckbox('workflow_reader_person','yes','',$this->_translator->getMessage('PREFERENCES_CONFIGURATION_WORKFLOW_READER_GROUP_PERSON_VALUE'),$this->_translator->getMessage('PREFERENCES_CONFIGURATION_WORKFLOW_READER_PERSON_VALUE'));
+      
+      $radio_values = array();
+      $radio_values[0]['text'] = $this->_translator->getMessage('PREFERENCES_CONFIGURATION_WORKFLOW_RESUBMISSION_SHOW_TO_MODERATOR_VALUE');
+      $radio_values[0]['value'] = 'moderator';
+      $radio_values[1]['text'] = $this->_translator->getMessage('PREFERENCES_CONFIGURATION_WORKFLOW_RESUBMISSION_SHOW_TO_ALL_VALUE');
+      $radio_values[1]['value'] = 'all';
+      $this->_form->addRadioGroup('workflow_resubmission_show_to',
+                                  $this->_translator->getMessage('PREFERENCES_CONFIGURATION_WORKFLOW_RESUBMISSION_SHOW_TO_DEFAULT'),
+                                  $this->_translator->getMessage('PREFERENCES_CONFIGURATION_WORKFLOW'),
+                                  $radio_values,
+                                  '',
+                                  false,
+                                  false
+                                  );
       
       // buttons
       $this->_form->addButtonBar('option',$this->_translator->getMessage('PREFERENCES_SAVE_BUTTON'),'');
@@ -83,12 +101,12 @@ class cs_configuration_workflow_form extends cs_rubric_form {
          $this->_values = $this->_form_post;
       }else{
          $room = $this->_environment->getCurrentContextItem();
+         
+         // traffic light
          if ($room->withWorkflowTrafficLight()){
             $this->_values['workflow_trafic_light'] = 'yes';
          }
-         
          $this->_values['workflow_trafic_light_default'] = $room->getWorkflowTrafficLightDefault();
-         
          if($room->getWorkflowTrafficLightTextGreen() != ''){
             $this->_values['workflow_trafic_light_green_text'] = $room->getWorkflowTrafficLightTextGreen();
          } else {
@@ -105,12 +123,19 @@ class cs_configuration_workflow_form extends cs_rubric_form {
             $this->_values['workflow_trafic_light_red_text'] = $this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_RED_DEFAULT');
          }
          
+         // resubmission
          if ($room->withWorkflowResubmission()){
             $this->_values['workflow_resubmission'] = 'yes';
          }
+         
+         // reader
          if ($room->withWorkflowReader()){
-            $this->_values['buzzword_reader'] = 'yes';
+            $this->_values['workflow_reader'] = 'yes';
          }
+         $this->_values['workflow_reader_group'] = $room->getWorkflowReaderGroup();
+         $this->_values['workflow_reader_person'] = $room->getWorkflowReaderPerson();
+         
+         $this->_values['workflow_resubmission_show_to'] = $room->getWorkflowReaderShowTo();
       }
    }
    
