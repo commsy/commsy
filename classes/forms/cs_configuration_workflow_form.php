@@ -49,11 +49,11 @@ class cs_configuration_workflow_form extends cs_rubric_form {
       $radio_values = array();
       $radio_values[0]['text'] = $this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_NONE');
       $radio_values[0]['value'] = '3_none';
-      $radio_values[1]['text'] = $this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_GREEN');
+      $radio_values[1]['text'] = '<img src="images/commsyicons/workflow_traffic_light_green.png" style="height:10px;">';
       $radio_values[1]['value'] = '0_green';
-      $radio_values[2]['text'] = $this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_YELLOW');
+      $radio_values[2]['text'] = '<img src="images/commsyicons/workflow_traffic_light_yellow.png" style="height:10px;">';
       $radio_values[2]['value'] = '1_yellow';
-      $radio_values[3]['text'] = $this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_RED');
+      $radio_values[3]['text'] = '<img src="images/commsyicons/workflow_traffic_light_red.png" style="height:10px;">';
       $radio_values[3]['value'] = '2_red';
       $this->_form->addRadioGroup('workflow_trafic_light_default',
                                   $this->_translator->getMessage('PREFERENCES_CONFIGURATION_WORKFLOW_TRAFFIC_LIGHT_DEFAULT'),
@@ -64,11 +64,11 @@ class cs_configuration_workflow_form extends cs_rubric_form {
                                   false
                                   );
       
-      $this->_form->addTextfield('workflow_trafic_light_green_text','',$this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT'),$this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT'),200,28,false,'','','','left','<div style="float:left; width:30px;">'.$this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_GREEN').':</div>');
+      $this->_form->addTextfield('workflow_trafic_light_green_text','',$this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT'),$this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT'),200,28,false,'','','','left','<img src="images/commsyicons/workflow_traffic_light_green.png" style="height:10px;">');
       $this->_form->combine();
-      $this->_form->addTextfield('workflow_trafic_light_yellow_text','',$this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT'),$this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT'),200,28,false,'','','','left','<div style="float:left; width:30px;">'.$this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_YELLOW').':</div>');
+      $this->_form->addTextfield('workflow_trafic_light_yellow_text','',$this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT'),$this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT'),200,28,false,'','','','left','<img src="images/commsyicons/workflow_traffic_light_yellow.png" style="height:10px;">');
       $this->_form->combine();
-      $this->_form->addTextfield('workflow_trafic_light_red_text','',$this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT'),$this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT'),200,28,false,'','','','left','<div style="float:left; width:30px;">'.$this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_RED').':</div>');
+      $this->_form->addTextfield('workflow_trafic_light_red_text','',$this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT'),$this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT'),200,28,false,'','','','left','<img src="images/commsyicons/workflow_traffic_light_red.png" style="height:10px;">');
 
       $this->_form->addCheckbox('workflow_resubmission','yes','',$this->_translator->getMessage('PREFERENCES_CONFIGURATION_WORKFLOW'),$this->_translator->getMessage('PREFERENCES_CONFIGURATION_WORKFLOW_RESUBMISSION_VALUE'));
       $this->_form->combine();
