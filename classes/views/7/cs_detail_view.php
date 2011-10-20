@@ -3438,12 +3438,6 @@ class cs_detail_view extends cs_view {
                $html .= '       '.$read_since_modification_count.'&nbsp;'.$this->_translator->getMessage('COMMON_NUMBER_OF_MEMBERS').''.LF;
             }
          } else if($context->withWorkflowReader()){
-            if($context->getWorkflowReaderGroup() == '1'){
-               $html .= $this->_translator->getMessage('COMMON_GROUPS').':<br/>';
-            }
-            if($context->getWorkflowReaderPerson() == '1'){
-               $html .= $this->_translator->getMessage('COMMON_USERS').': ';
-               
             $reader_manager = $environment->getReaderManager();
             $user_manager = $environment->getUserManager();
             $user_list = $user_manager->getAllRoomUsersFromCache($environment->getCurrentContextID());
@@ -3465,22 +3459,66 @@ class cs_detail_view extends cs_view {
                }
                $current_user = $user_list->getNext();
             }
-            $first = true;
-            foreach($persons_array as $person){
-               $params = array();
-               $params['iid'] = $person->getItemID();
-               if(!$first){
-                  $html .= ', ';
-               } else {
-                  $first = false;
-               }
-               $html .= ahref_curl($this->_environment->getCurrentContextID(),
-                                     'user',
-                                     'detail',
-                                     $params,
-                                     $this->_text_as_html_short($this->_compareWithSearchText($person->getFullname())));
-            }
             
+            if($context->getWorkflowReaderGroup() == '1'){
+               $html .= $this->_translator->getMessage('COMMON_GROUPS').': ';
+               $group_manager = $environment->getGroupManager();
+               $group_manager->setContextLimit($environment->getCurrentContextID());
+               $group_manager->setTypeLimit('group');
+               $group_manager->select();
+               $group_list = $group_manager->get();
+               $group_item = $group_list->getFirst();
+               $first = true;
+               while($group_item){
+                  $link_user_list = $group_item->getLinkItemList(CS_USER_TYPE);
+                  $user_count_complete = $link_user_list->getCount();
+                  
+                  $user_count = 0;
+                  foreach($persons_array as $person){
+                     $temp_link_list = $person->getLinkItemList(CS_GROUP_TYPE);
+                     $temp_link_item = $temp_link_list->getFirst();
+                     while($temp_link_item){
+                        $temp_group_item = $temp_link_item->getLinkedItem($person);
+                        if($group_item->getItemID() == $temp_group_item->getItemID()){
+                           $user_count++;
+                        }
+                        $temp_link_item = $temp_link_list->getNext();
+                     }
+                  }
+                  
+                  $params = array();
+                  $params['iid'] = $group_item->getItemID();
+                  if(!$first){
+                     $html .= ', ';
+                  } else {
+                     $first = false;
+                  }
+                  $html .= ahref_curl($this->_environment->getCurrentContextID(),
+                                        'group',
+                                        'detail',
+                                        $params,
+                                        $this->_text_as_html_short($this->_compareWithSearchText($group_item->getTitle()).'('.$user_count.' '.$this->_translator->getMessage('COMMON_OF').' '.$user_count_complete.')'));
+                  $group_item = $group_list->getNext();
+               }
+               $html .= '<br/>';
+            }
+            if($context->getWorkflowReaderPerson() == '1'){
+               $html .= $this->_translator->getMessage('COMMON_USERS').': ';
+               $first = true;
+               foreach($persons_array as $person){
+                  $params = array();
+                  $params['iid'] = $person->getItemID();
+                  if(!$first){
+                     $html .= ', ';
+                  } else {
+                     $first = false;
+                  }
+                  $html .= ahref_curl($this->_environment->getCurrentContextID(),
+                                        'user',
+                                        'detail',
+                                        $params,
+                                        $this->_text_as_html_short($this->_compareWithSearchText($person->getFullname())));
+               }
             }
          }
          $html .= '      </td>'.LF;

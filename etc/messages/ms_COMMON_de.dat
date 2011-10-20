@@ -527,6 +527,7 @@ $message["COMMON_NO_SORTING"]["de"] = "*keine";
 $message["COMMON_NO_TOPICS"]["de"] = "Keine %_TOPICS_SUB_NOMPL_BIG vorhanden";
 $message["COMMON_NUMBER_OF_MEMBERS"]["de"] = "Mitgliedern";
 $message["COMMON_NUMBER_OF_MEMBERS_SINGULAR"]["de"] = "Mitglied";
+$message["COMMON_OF"]["de"] = "von";
 $message["COMMON_OFF"]["de"] = "aus";
 $message["COMMON_ON"]["de"] = "ein";
 $message["COMMON_ONE_ANNOTATION"]["de"] = "1 Eintrag";

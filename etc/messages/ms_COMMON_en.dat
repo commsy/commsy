@@ -518,6 +518,7 @@ $message["COMMON_NO_SORTING"]["en"] = "*clear";
 $message["COMMON_NO_TOPICS"]["en"] = "No %_TOPICS_SUB_NOMPL_LOW available";
 $message["COMMON_NUMBER_OF_MEMBERS"]["en"] = "%_PROJECT_SUB_NOMS_LOW members";
 $message["COMMON_NUMBER_OF_MEMBERS_SINGULAR"]["en"] = "%_PROJECT_SUB_NOMS_LOW member";
+$message["COMMON_OF"]["en"] = "of";
 $message["COMMON_OFF"]["en"] = "off";
 $message["COMMON_ON"]["en"] = "on";
 $message["COMMON_ONE_ANNOTATION"]["en"] = "1 item";
