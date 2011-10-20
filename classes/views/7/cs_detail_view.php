@@ -3431,7 +3431,17 @@ class cs_detail_view extends cs_view {
          $html .= '         '.$this->_translator->getMessage('COMMON_READ_SINCE_MODIFICATION').':&nbsp;'.LF;
          $html .= '      </td>'.LF;
          $html .= '      <td class="value">'.LF;
-         if(!$context->withWorkflowReader() or ($context->withWorkflowReader() and ($context->getWorkflowReaderGroup() == '0') and ($context->getWorkflowReaderPerson() == '0'))){
+         
+         $user_allowed_detailed_awareness = false;
+         if($user->isModerator()){
+            $user_allowed_detailed_awareness = true;
+         } else {
+            if($context->getWorkflowReaderShowTo() == 'all'){
+               $user_allowed_detailed_awareness = true;
+            }
+         }
+         
+         if(!$context->withWorkflowReader() or ($context->withWorkflowReader() and ($context->getWorkflowReaderGroup() == '0') and ($context->getWorkflowReaderPerson() == '0')) or !$user_allowed_detailed_awareness){
             if ( $read_since_modification_count == 1 ) {
                $html .= ' '.$read_since_modification_count.'&nbsp;'.$this->_translator->getMessage('COMMON_NUMBER_OF_MEMBERS_SINGULAR').''.LF;
             } else {
