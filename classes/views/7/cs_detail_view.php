@@ -2294,21 +2294,21 @@ class cs_detail_view extends cs_view {
    function _getWorkflowAsHTML(){
       $current_context = $this->_environment->getCurrentContextItem();
       $traffic_light = '';
-      if($this->_item->getWorkflowTrafficLight() == 'none'){
+      if($this->_item->getWorkflowTrafficLight() == '3_none'){
          $traffic_light = $this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_NONE');
-      }else if($this->_item->getWorkflowTrafficLight() == 'green'){
+      }else if($this->_item->getWorkflowTrafficLight() == '0_green'){
          $alt_title = $this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_GREEN_DEFAULT');
          if($current_context->getWorkflowTrafficLightTextGreen() != ''){
             $alt_title = $current_context->getWorkflowTrafficLightTextGreen();
          }
          $traffic_light = '<img src="images/commsyicons/workflow_traffic_light_green.png" alt="'.$alt_title.'" title="'.$alt_title.'">';
-      }else if($this->_item->getWorkflowTrafficLight() == 'yellow'){
+      }else if($this->_item->getWorkflowTrafficLight() == '1_yellow'){
          $alt_title = $this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_YELLOW_DEFAULT');
          if($current_context->getWorkflowTrafficLightTextYellow() != ''){
             $alt_title = $current_context->getWorkflowTrafficLightTextYellow();
          }
          $traffic_light = '<img src="images/commsyicons/workflow_traffic_light_yellow.png" alt="'.$alt_title.'" title="'.$alt_title.'">';
-      }else if($this->_item->getWorkflowTrafficLight() == 'red'){
+      }else if($this->_item->getWorkflowTrafficLight() == '2_red'){
          $alt_title = $this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_RED_DEFAULT');
          if($current_context->getWorkflowTrafficLightTextRed() != ''){
             $alt_title = $current_context->getWorkflowTrafficLightTextRed();

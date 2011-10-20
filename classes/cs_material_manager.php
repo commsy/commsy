@@ -797,6 +797,10 @@ class cs_material_manager extends cs_manager {
             $query .= ' ORDER BY '.$this->addDatabasePrefix('materials').'.title ASC, '.$this->addDatabasePrefix('materials').'.modification_date DESC';
          } elseif ($this->_order == 'title_rev') {
             $query .= ' ORDER BY '.$this->addDatabasePrefix('materials').'.title DESC, '.$this->addDatabasePrefix('materials').'.modification_date ASC';
+         } elseif ($this->_order == 'workflow_status') {
+            $query .= ' ORDER BY '.$this->addDatabasePrefix('materials').'.workflow_status ASC, '.$this->addDatabasePrefix('materials').'.modification_date DESC';
+         } elseif ($this->_order == 'workflow_status_rev') {
+            $query .= ' ORDER BY '.$this->addDatabasePrefix('materials').'.workflow_status DESC, '.$this->addDatabasePrefix('materials').'.modification_date ASC';
          } else {
             $query .= ' ORDER BY '.$this->addDatabasePrefix('materials').'.modification_date DESC, '.$this->addDatabasePrefix('materials').'.title ASC'; // default: sort by date
          }
@@ -940,7 +944,8 @@ class cs_material_manager extends cs_manager {
                   'public="'.encode(AS_DB,$public).'",'.
                   'world_public="'.encode(AS_DB,$world_public).'",'.
                   'copy_of="'.encode(AS_DB,$copy_id).'",'.
-                  'extras="'.encode(AS_DB,serialize($material_item->getExtraInformation())).'"'.
+                  'extras="'.encode(AS_DB,serialize($material_item->getExtraInformation())).'",'.
+                  'workflow_status="'.encode(AS_DB,$material_item->getWorkflowTrafficLight()).'"'.
                   ' WHERE item_id="'.encode(AS_DB,$material_item->getItemID()).'"'.
                   ' AND version_id="'.encode(AS_DB,$material_item->getVersionID()).'"';
          $result = $this->_db_connector->performQuery($query);
@@ -1029,7 +1034,8 @@ class cs_material_manager extends cs_manager {
                  'public="'.encode(AS_DB,$public).'",'.
                  'world_public="'.encode(AS_DB,$world_public).'",'.
                  'copy_of="'.encode(AS_DB,$copy_id).'",'.
-                 'extras="'.encode(AS_DB,serialize($material_item->getExtraInformation())).'"';
+                 'extras="'.encode(AS_DB,serialize($material_item->getExtraInformation())).'",'.
+                 'workflow_status="'.encode(AS_DB,$material_item->getWorkflowTrafficLight()).'"';
         $result = $this->_db_connector->performQuery($query);
         if ( !isset($result) ) {
           include_once('functions/error_functions.php');

@@ -2366,21 +2366,10 @@ function getExternalViewerArray(){
    }
    
    function setWorkflowTrafficLight($value) {
-      $this->_addExtra('WORKFLOW_TRAFFIC_LIGHT', (string)$value);
+      $this->_setValue('workflow_status', (string)$value);
    }
    function getWorkflowTrafficLight() {
-      if($this->_issetExtra('WORKFLOW_TRAFFIC_LIGHT')){
-         return (string) $this->_getExtra('WORKFLOW_TRAFFIC_LIGHT');
-      } else {
-         return 'none';
-      }
-   }
-   function isWorkflowTrafficLight() {
-      if($this->_issetExtra('WORKFLOW_TRAFFIC_LIGHT')){
-         return true;
-      } else {
-         return false;
-      }
+      return $this->_getValue('workflow_status');
    }
 }
 ?>

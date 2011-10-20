@@ -710,7 +710,7 @@ class cs_context_item extends cs_item {
   }
 
   function getWorkflowTrafficLightDefault() {
-    $retour = 'none';
+    $retour = '3_none';
     if ($this->_issetExtra('WORKFLOWTRAFFICLIGHTDEFAULT') ) {
       $retour = $this->_getExtra('WORKFLOWTRAFFICLIGHTDEFAULT');
     }

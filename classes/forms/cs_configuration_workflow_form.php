@@ -48,13 +48,13 @@ class cs_configuration_workflow_form extends cs_rubric_form {
 
       $radio_values = array();
       $radio_values[0]['text'] = $this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_NONE');
-      $radio_values[0]['value'] = 'none';
+      $radio_values[0]['value'] = '3_none';
       $radio_values[1]['text'] = $this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_GREEN');
-      $radio_values[1]['value'] = 'green';
+      $radio_values[1]['value'] = '0_green';
       $radio_values[2]['text'] = $this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_YELLOW');
-      $radio_values[2]['value'] = 'yellow';
+      $radio_values[2]['value'] = '1_yellow';
       $radio_values[3]['text'] = $this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_RED');
-      $radio_values[3]['value'] = 'red';
+      $radio_values[3]['value'] = '2_red';
       $this->_form->addRadioGroup('workflow_trafic_light_default',
                                   $this->_translator->getMessage('PREFERENCES_CONFIGURATION_WORKFLOW_TRAFFIC_LIGHT_DEFAULT'),
                                   $this->_translator->getMessage('PREFERENCES_CONFIGURATION_WORKFLOW'),

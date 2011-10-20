@@ -202,7 +202,7 @@ class cs_material_form extends cs_rubric_form {
       $context_item = $this->_environment->getCurrentContextItem();
       $workflow_array = array();
       $temp_array['text']  = $this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_NONE');;
-      $temp_array['value'] = 'none';
+      $temp_array['value'] = '3_none';
       $workflow_array[] = $temp_array;
       $description = $this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_GREEN_DEFAULT');
       if($context_item->getWorkflowTrafficLightTextGreen() != ''){
@@ -210,7 +210,7 @@ class cs_material_form extends cs_rubric_form {
       }
       #$temp_array['text']  = $this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_GREEN').' ('.$description.')';
       $temp_array['text']  = '<img src="images/commsyicons/workflow_traffic_light_green.png" alt="'.$description.'" title="'.$description.'" style="height:10px;"> ('.$description.')';
-      $temp_array['value'] = 'green';
+      $temp_array['value'] = '0_green';
       $workflow_array[] = $temp_array;
       $description = $this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_YELLOW_DEFAULT');
       if($context_item->getWorkflowTrafficLightTextYellow() != ''){
@@ -218,7 +218,7 @@ class cs_material_form extends cs_rubric_form {
       }
       #$temp_array['text']  = $this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_YELLOW').' ('.$description.')';
       $temp_array['text']  = '<img src="images/commsyicons/workflow_traffic_light_yellow.png" alt="'.$description.'" title="'.$description.'" style="height:10px;"> ('.$description.')';
-      $temp_array['value'] = 'yellow';
+      $temp_array['value'] = '1_yellow';
       $workflow_array[] = $temp_array;
       $description = $this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_RED_DEFAULT');
       if($context_item->getWorkflowTrafficLightTextRed() != ''){
@@ -226,7 +226,7 @@ class cs_material_form extends cs_rubric_form {
       }
       #$temp_array['text']  = $this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_RED').' ('.$description.')';
       $temp_array['text']  = '<img src="images/commsyicons/workflow_traffic_light_red.png" alt="'.$description.'" title="'.$description.'" style="height:10px;"> ('.$description.')';
-      $temp_array['value'] = 'red';
+      $temp_array['value'] = '2_red';
       $workflow_array[] = $temp_array;
       $this->_workflow_array = $workflow_array;
    }

@@ -1,16 +1,22 @@
 -- phpMyAdmin SQL Dump
--- version 3.2.5
+-- version 3.2.4
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Erstellungszeit: 16. Mai 2011 um 13:42
+-- Erstellungszeit: 20. Oktober 2011 um 11:11
 -- Server Version: 5.1.44
--- PHP-Version: 5.3.2
+-- PHP-Version: 5.3.1
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+
 --
--- Datenbank: `commsy`
+-- Datenbank: `commsy_dump`
 --
 
 -- --------------------------------------------------------
@@ -39,6 +45,11 @@ CREATE TABLE IF NOT EXISTS `annotations` (
   KEY `linked_item_id` (`linked_item_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+--
+-- Daten für Tabelle `annotations`
+--
+
+
 -- --------------------------------------------------------
 
 --
@@ -64,6 +75,11 @@ CREATE TABLE IF NOT EXISTS `announcement` (
   KEY `creator_id` (`creator_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+--
+-- Daten für Tabelle `announcement`
+--
+
+
 -- --------------------------------------------------------
 
 --
@@ -85,6 +101,11 @@ CREATE TABLE IF NOT EXISTS `assessments` (
   KEY `creator_id` (`creator_id`),
   KEY `deleter_id` (`deleter_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+--
+-- Daten für Tabelle `assessments`
+--
+
 
 -- --------------------------------------------------------
 
@@ -109,8 +130,6 @@ CREATE TABLE IF NOT EXISTS `auth` (
 
 INSERT INTO `auth` (`commsy_id`, `user_id`, `password_md5`, `firstname`, `lastname`, `email`, `language`) VALUES
 (99, 'root', '63a9f0ea7bb98050796b649e85481845', 'CommSy', 'Administrator', '', 'de');
-
-
 
 -- --------------------------------------------------------
 
@@ -176,6 +195,11 @@ CREATE TABLE IF NOT EXISTS `dates` (
   KEY `creator_id` (`creator_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+--
+-- Daten für Tabelle `dates`
+--
+
+
 -- --------------------------------------------------------
 
 --
@@ -200,6 +224,11 @@ CREATE TABLE IF NOT EXISTS `discussionarticles` (
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+--
+-- Daten für Tabelle `discussionarticles`
+--
+
 
 -- --------------------------------------------------------
 
@@ -228,6 +257,11 @@ CREATE TABLE IF NOT EXISTS `discussions` (
   KEY `creator_id` (`creator_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+--
+-- Daten für Tabelle `discussions`
+--
+
+
 -- --------------------------------------------------------
 
 --
@@ -241,6 +275,11 @@ CREATE TABLE IF NOT EXISTS `external2commsy_id` (
   PRIMARY KEY (`external_id`,`source_system`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+--
+-- Daten für Tabelle `external2commsy_id`
+--
+
+
 -- --------------------------------------------------------
 
 --
@@ -252,6 +291,11 @@ CREATE TABLE IF NOT EXISTS `external_viewer` (
   `user_id` varchar(32) NOT NULL,
   KEY `item_id` (`item_id`,`user_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+--
+-- Daten für Tabelle `external_viewer`
+--
+
 
 -- --------------------------------------------------------
 
@@ -278,6 +322,11 @@ CREATE TABLE IF NOT EXISTS `files` (
   KEY `creator_id` (`creator_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=12 ;
 
+--
+-- Daten für Tabelle `files`
+--
+
+
 -- --------------------------------------------------------
 
 --
@@ -291,6 +340,11 @@ CREATE TABLE IF NOT EXISTS `file_multi_upload` (
   `cid` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+--
+-- Daten für Tabelle `file_multi_upload`
+--
+
 
 -- --------------------------------------------------------
 
@@ -306,6 +360,11 @@ CREATE TABLE IF NOT EXISTS `hash` (
   KEY `rss` (`rss`),
   KEY `ical` (`ical`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+--
+-- Daten für Tabelle `hash`
+--
+
 
 -- --------------------------------------------------------
 
@@ -330,6 +389,11 @@ CREATE TABLE IF NOT EXISTS `homepage_link_page_page` (
   KEY `context_id` (`context_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
+--
+-- Daten für Tabelle `homepage_link_page_page`
+--
+
+
 -- --------------------------------------------------------
 
 --
@@ -353,6 +417,11 @@ CREATE TABLE IF NOT EXISTS `homepage_page` (
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+--
+-- Daten für Tabelle `homepage_page`
+--
+
 
 -- --------------------------------------------------------
 
@@ -398,6 +467,11 @@ CREATE TABLE IF NOT EXISTS `item_backup` (
   PRIMARY KEY (`item_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+--
+-- Daten für Tabelle `item_backup`
+--
+
+
 -- --------------------------------------------------------
 
 --
@@ -412,6 +486,11 @@ CREATE TABLE IF NOT EXISTS `item_link_file` (
   `deletion_date` datetime DEFAULT NULL,
   PRIMARY KEY (`item_iid`,`item_vid`,`file_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+--
+-- Daten für Tabelle `item_link_file`
+--
+
 
 -- --------------------------------------------------------
 
@@ -438,6 +517,11 @@ CREATE TABLE IF NOT EXISTS `labels` (
   KEY `creator_id` (`creator_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+--
+-- Daten für Tabelle `labels`
+--
+
+
 -- --------------------------------------------------------
 
 --
@@ -463,6 +547,11 @@ CREATE TABLE IF NOT EXISTS `links` (
   KEY `to_item_id` (`to_item_id`),
   KEY `to_version_id` (`to_version_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+--
+-- Daten für Tabelle `links`
+--
+
 
 -- --------------------------------------------------------
 
@@ -491,6 +580,11 @@ CREATE TABLE IF NOT EXISTS `link_items` (
   KEY `second_item_id` (`second_item_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+--
+-- Daten für Tabelle `link_items`
+--
+
+
 -- --------------------------------------------------------
 
 --
@@ -502,6 +596,11 @@ CREATE TABLE IF NOT EXISTS `link_modifier_item` (
   `modifier_id` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`item_id`,`modifier_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+--
+-- Daten für Tabelle `link_modifier_item`
+--
+
 
 -- --------------------------------------------------------
 
@@ -531,6 +630,11 @@ CREATE TABLE IF NOT EXISTS `log` (
   KEY `cid` (`cid`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1553 ;
 
+--
+-- Daten für Tabelle `log`
+--
+
+
 -- --------------------------------------------------------
 
 --
@@ -546,6 +650,11 @@ CREATE TABLE IF NOT EXISTS `log_ads` (
   KEY `cid` (`cid`),
   KEY `timestamp` (`timestamp`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+--
+-- Daten für Tabelle `log_ads`
+--
+
 
 -- --------------------------------------------------------
 
@@ -575,6 +684,11 @@ CREATE TABLE IF NOT EXISTS `log_archive` (
   KEY `cid` (`cid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
+--
+-- Daten für Tabelle `log_archive`
+--
+
+
 -- --------------------------------------------------------
 
 --
@@ -598,6 +712,11 @@ CREATE TABLE IF NOT EXISTS `log_error` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=71202 ;
 
+--
+-- Daten für Tabelle `log_error`
+--
+
+
 -- --------------------------------------------------------
 
 --
@@ -612,6 +731,11 @@ CREATE TABLE IF NOT EXISTS `log_message_tag` (
   `language` varchar(10) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=61 ;
+
+--
+-- Daten für Tabelle `log_message_tag`
+--
+
 
 -- --------------------------------------------------------
 
@@ -638,11 +762,17 @@ CREATE TABLE IF NOT EXISTS `materials` (
   `extras` text,
   `new_hack` tinyint(1) NOT NULL DEFAULT '0',
   `copy_of` int(11) DEFAULT NULL,
+  `workflow_status` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT '3_none',
   PRIMARY KEY (`item_id`,`version_id`),
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`),
   KEY `modifier_id` (`modifier_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+--
+-- Daten für Tabelle `materials`
+--
+
 
 -- --------------------------------------------------------
 
@@ -657,6 +787,11 @@ CREATE TABLE IF NOT EXISTS `noticed` (
   `read_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`item_id`,`version_id`,`user_id`,`read_date`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+--
+-- Daten für Tabelle `noticed`
+--
+
 
 -- --------------------------------------------------------
 
@@ -685,6 +820,11 @@ CREATE TABLE IF NOT EXISTS `portal` (
   KEY `creator_id` (`creator_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+--
+-- Daten für Tabelle `portal`
+--
+
+
 -- --------------------------------------------------------
 
 --
@@ -698,6 +838,11 @@ CREATE TABLE IF NOT EXISTS `reader` (
   `read_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`item_id`,`version_id`,`user_id`,`read_date`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+--
+-- Daten für Tabelle `reader`
+--
+
 
 -- --------------------------------------------------------
 
@@ -740,6 +885,11 @@ CREATE TABLE IF NOT EXISTS `room` (
   KEY `modifier_id` (`modifier_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+--
+-- Daten für Tabelle `room`
+--
+
+
 -- --------------------------------------------------------
 
 --
@@ -772,6 +922,11 @@ CREATE TABLE IF NOT EXISTS `room_privat` (
   KEY `creator_id` (`creator_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+--
+-- Daten für Tabelle `room_privat`
+--
+
+
 -- --------------------------------------------------------
 
 --
@@ -798,6 +953,11 @@ CREATE TABLE IF NOT EXISTS `section` (
   KEY `creator_id` (`creator_id`),
   KEY `material_item_id` (`material_item_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+--
+-- Daten für Tabelle `section`
+--
+
 
 -- --------------------------------------------------------
 
@@ -830,8 +990,8 @@ CREATE TABLE IF NOT EXISTS `server` (
 -- Daten für Tabelle `server`
 --
 
-INSERT INTO `server` (`item_id`, `context_id`, `creator_id`, `modifier_id`, `deleter_id`, `creation_date`, `modification_date`, `deletion_date`, `title`, `extras`, `status`, `activity`, `type`, `is_open_for_guests`) VALUES
-(99, 0, 99, 0, NULL, '2006-09-13 12:16:38', '2006-09-13 12:16:38', NULL, 'CommSy-Server', 'a:2:{s:8:"HOMECONF";s:0:"";s:12:"DEFAULT_AUTH";s:3:"100";}', '1', 30, 'server', 1);
+INSERT INTO `server` (`item_id`, `context_id`, `creator_id`, `modifier_id`, `deleter_id`, `creation_date`, `modification_date`, `deletion_date`, `title`, `extras`, `status`, `activity`, `type`, `is_open_for_guests`, `url`) VALUES
+(99, 0, 99, 0, NULL, '2006-09-13 12:16:38', '2006-09-13 12:16:38', NULL, 'CommSy-Server', 'a:2:{s:8:"HOMECONF";s:0:"";s:12:"DEFAULT_AUTH";s:3:"100";}', '1', 30, 'server', 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -848,6 +1008,11 @@ CREATE TABLE IF NOT EXISTS `session` (
   PRIMARY KEY (`id`),
   KEY `session_id` (`session_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=60 ;
+
+--
+-- Daten für Tabelle `session`
+--
+
 
 -- --------------------------------------------------------
 
@@ -876,6 +1041,11 @@ CREATE TABLE IF NOT EXISTS `step` (
   KEY `todo_item_id` (`todo_item_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+--
+-- Daten für Tabelle `step`
+--
+
+
 -- --------------------------------------------------------
 
 --
@@ -895,6 +1065,11 @@ CREATE TABLE IF NOT EXISTS `tag` (
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+--
+-- Daten für Tabelle `tag`
+--
+
 
 -- --------------------------------------------------------
 
@@ -919,6 +1094,11 @@ CREATE TABLE IF NOT EXISTS `tag2tag` (
   KEY `context_id` (`context_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
+--
+-- Daten für Tabelle `tag2tag`
+--
+
+
 -- --------------------------------------------------------
 
 --
@@ -940,6 +1120,11 @@ CREATE TABLE IF NOT EXISTS `tasks` (
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+--
+-- Daten für Tabelle `tasks`
+--
+
 
 -- --------------------------------------------------------
 
@@ -968,6 +1153,11 @@ CREATE TABLE IF NOT EXISTS `todos` (
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+--
+-- Daten für Tabelle `todos`
+--
+
 
 -- --------------------------------------------------------
 
@@ -1009,7 +1199,6 @@ CREATE TABLE IF NOT EXISTS `user` (
 INSERT INTO `user` (`item_id`, `context_id`, `creator_id`, `modifier_id`, `deleter_id`, `creation_date`, `modification_date`, `deletion_date`, `user_id`, `status`, `is_contact`, `firstname`, `lastname`, `email`, `city`, `lastlogin`, `visible`, `extras`, `auth_source`, `description`) VALUES
 (98, 99, 99, 99, NULL, '2006-09-13 12:17:17', '2006-09-13 12:17:17', NULL, 'root', 3, 1, 'CommSy', 'Administrator', '', '', NULL, 1, '', 100, NULL);
 
-
 -- --------------------------------------------------------
 
 --
@@ -1036,6 +1225,11 @@ CREATE TABLE IF NOT EXISTS `zzz_annotations` (
   KEY `linked_item_id` (`linked_item_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+--
+-- Daten für Tabelle `zzz_annotations`
+--
+
+
 -- --------------------------------------------------------
 
 --
@@ -1060,6 +1254,11 @@ CREATE TABLE IF NOT EXISTS `zzz_announcement` (
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+--
+-- Daten für Tabelle `zzz_announcement`
+--
+
 
 -- --------------------------------------------------------
 
@@ -1096,6 +1295,11 @@ CREATE TABLE IF NOT EXISTS `zzz_dates` (
   KEY `creator_id` (`creator_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+--
+-- Daten für Tabelle `zzz_dates`
+--
+
+
 -- --------------------------------------------------------
 
 --
@@ -1120,6 +1324,11 @@ CREATE TABLE IF NOT EXISTS `zzz_discussionarticles` (
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+--
+-- Daten für Tabelle `zzz_discussionarticles`
+--
+
 
 -- --------------------------------------------------------
 
@@ -1148,6 +1357,11 @@ CREATE TABLE IF NOT EXISTS `zzz_discussions` (
   KEY `creator_id` (`creator_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+--
+-- Daten für Tabelle `zzz_discussions`
+--
+
+
 -- --------------------------------------------------------
 
 --
@@ -1173,6 +1387,11 @@ CREATE TABLE IF NOT EXISTS `zzz_files` (
   KEY `creator_id` (`creator_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=11 ;
 
+--
+-- Daten für Tabelle `zzz_files`
+--
+
+
 -- --------------------------------------------------------
 
 --
@@ -1187,6 +1406,11 @@ CREATE TABLE IF NOT EXISTS `zzz_hash` (
   KEY `rss` (`rss`),
   KEY `ical` (`ical`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+--
+-- Daten für Tabelle `zzz_hash`
+--
+
 
 -- --------------------------------------------------------
 
@@ -1210,6 +1434,11 @@ CREATE TABLE IF NOT EXISTS `zzz_homepage_link_page_page` (
   KEY `from_item_id` (`from_item_id`),
   KEY `context_id` (`context_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+--
+-- Daten für Tabelle `zzz_homepage_link_page_page`
+--
+
 
 -- --------------------------------------------------------
 
@@ -1235,6 +1464,11 @@ CREATE TABLE IF NOT EXISTS `zzz_homepage_page` (
   KEY `creator_id` (`creator_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+--
+-- Daten für Tabelle `zzz_homepage_page`
+--
+
+
 -- --------------------------------------------------------
 
 --
@@ -1253,6 +1487,11 @@ CREATE TABLE IF NOT EXISTS `zzz_items` (
   KEY `type` (`type`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=137 ;
 
+--
+-- Daten für Tabelle `zzz_items`
+--
+
+
 -- --------------------------------------------------------
 
 --
@@ -1267,6 +1506,11 @@ CREATE TABLE IF NOT EXISTS `zzz_item_link_file` (
   `deletion_date` datetime DEFAULT NULL,
   PRIMARY KEY (`item_iid`,`item_vid`,`file_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+--
+-- Daten für Tabelle `zzz_item_link_file`
+--
+
 
 -- --------------------------------------------------------
 
@@ -1293,6 +1537,11 @@ CREATE TABLE IF NOT EXISTS `zzz_labels` (
   KEY `creator_id` (`creator_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+--
+-- Daten für Tabelle `zzz_labels`
+--
+
+
 -- --------------------------------------------------------
 
 --
@@ -1318,6 +1567,11 @@ CREATE TABLE IF NOT EXISTS `zzz_links` (
   KEY `to_item_id` (`to_item_id`),
   KEY `to_version_id` (`to_version_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+--
+-- Daten für Tabelle `zzz_links`
+--
+
 
 -- --------------------------------------------------------
 
@@ -1346,6 +1600,11 @@ CREATE TABLE IF NOT EXISTS `zzz_link_items` (
   KEY `second_item_id` (`second_item_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+--
+-- Daten für Tabelle `zzz_link_items`
+--
+
+
 -- --------------------------------------------------------
 
 --
@@ -1357,6 +1616,11 @@ CREATE TABLE IF NOT EXISTS `zzz_link_modifier_item` (
   `modifier_id` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`item_id`,`modifier_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+--
+-- Daten für Tabelle `zzz_link_modifier_item`
+--
+
 
 -- --------------------------------------------------------
 
@@ -1383,11 +1647,17 @@ CREATE TABLE IF NOT EXISTS `zzz_materials` (
   `extras` text,
   `new_hack` tinyint(1) NOT NULL DEFAULT '0',
   `copy_of` int(11) DEFAULT NULL,
+  `workflow_status` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT '3_none',
   PRIMARY KEY (`item_id`,`version_id`),
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`),
   KEY `modifier_id` (`modifier_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+--
+-- Daten für Tabelle `zzz_materials`
+--
+
 
 -- --------------------------------------------------------
 
@@ -1403,6 +1673,11 @@ CREATE TABLE IF NOT EXISTS `zzz_noticed` (
   PRIMARY KEY (`item_id`,`version_id`,`user_id`,`read_date`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+--
+-- Daten für Tabelle `zzz_noticed`
+--
+
+
 -- --------------------------------------------------------
 
 --
@@ -1416,6 +1691,11 @@ CREATE TABLE IF NOT EXISTS `zzz_reader` (
   `read_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`item_id`,`version_id`,`user_id`,`read_date`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+--
+-- Daten für Tabelle `zzz_reader`
+--
+
 
 -- --------------------------------------------------------
 
@@ -1458,6 +1738,11 @@ CREATE TABLE IF NOT EXISTS `zzz_room` (
   KEY `modifier_id` (`modifier_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+--
+-- Daten für Tabelle `zzz_room`
+--
+
+
 -- --------------------------------------------------------
 
 --
@@ -1484,6 +1769,11 @@ CREATE TABLE IF NOT EXISTS `zzz_section` (
   KEY `creator_id` (`creator_id`),
   KEY `material_item_id` (`material_item_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+--
+-- Daten für Tabelle `zzz_section`
+--
+
 
 -- --------------------------------------------------------
 
@@ -1512,6 +1802,11 @@ CREATE TABLE IF NOT EXISTS `zzz_step` (
   KEY `todo_item_id` (`todo_item_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+--
+-- Daten für Tabelle `zzz_step`
+--
+
+
 -- --------------------------------------------------------
 
 --
@@ -1531,6 +1826,11 @@ CREATE TABLE IF NOT EXISTS `zzz_tag` (
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+--
+-- Daten für Tabelle `zzz_tag`
+--
+
 
 -- --------------------------------------------------------
 
@@ -1555,6 +1855,11 @@ CREATE TABLE IF NOT EXISTS `zzz_tag2tag` (
   KEY `context_id` (`context_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
+--
+-- Daten für Tabelle `zzz_tag2tag`
+--
+
+
 -- --------------------------------------------------------
 
 --
@@ -1576,6 +1881,11 @@ CREATE TABLE IF NOT EXISTS `zzz_tasks` (
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+--
+-- Daten für Tabelle `zzz_tasks`
+--
+
 
 -- --------------------------------------------------------
 
@@ -1604,6 +1914,11 @@ CREATE TABLE IF NOT EXISTS `zzz_todos` (
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+--
+-- Daten für Tabelle `zzz_todos`
+--
+
 
 -- --------------------------------------------------------
 
@@ -1637,3 +1952,8 @@ CREATE TABLE IF NOT EXISTS `zzz_user` (
   KEY `creator_id` (`creator_id`),
   KEY `user_id` (`user_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+--
+-- Daten für Tabelle `zzz_user`
+--
+
