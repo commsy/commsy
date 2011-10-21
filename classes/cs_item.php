@@ -2371,5 +2371,10 @@ function getExternalViewerArray(){
    function getWorkflowTrafficLight() {
       return $this->_getValue('workflow_status');
    }
+   
+   function isReadByUser($user){
+      $item_manager = $this->_environment->getItemManager();
+      return $item_manager->isItemMarkedAsWorkflowRead($this->getItemId(), $user->getItemID());
+   }
 }
 ?>

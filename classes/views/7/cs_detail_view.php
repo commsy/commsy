@@ -3425,12 +3425,7 @@ class cs_detail_view extends cs_view {
                                                     CS_STEP_TYPE,
                                                     CS_ANNOTATION_TYPE))
          ) {
-         $html .= '   <tr>'.LF;
-         $html .= '      <td></td>'.LF;
-         $html .= '      <td class="key" style="padding-left:8px; vertical-align:top;">'.LF;
-         $html .= '         '.$this->_translator->getMessage('COMMON_READ_SINCE_MODIFICATION').':&nbsp;'.LF;
-         $html .= '      </td>'.LF;
-         $html .= '      <td class="value">'.LF;
+         
          
          $user_allowed_detailed_awareness = false;
          if($user->isModerator()){
@@ -3442,13 +3437,25 @@ class cs_detail_view extends cs_view {
          }
          
          if(!$context->withWorkflowReader() or ($context->withWorkflowReader() and ($context->getWorkflowReaderGroup() == '0') and ($context->getWorkflowReaderPerson() == '0')) or !$user_allowed_detailed_awareness){
+            $html .= '   <tr>'.LF;
+            $html .= '      <td></td>'.LF;
+            $html .= '      <td class="key" style="padding-left:8px; vertical-align:top;">'.LF;
+            $html .= '         '.$this->_translator->getMessage('COMMON_READ_SINCE_MODIFICATION').':&nbsp;'.LF;
+            $html .= '      </td>'.LF;
+            $html .= '      <td class="value">'.LF;
             if ( $read_since_modification_count == 1 ) {
                $html .= ' '.$read_since_modification_count.'&nbsp;'.$this->_translator->getMessage('COMMON_NUMBER_OF_MEMBERS_SINGULAR').''.LF;
             } else {
                $html .= '       '.$read_since_modification_count.'&nbsp;'.$this->_translator->getMessage('COMMON_NUMBER_OF_MEMBERS').''.LF;
             }
          } else if($context->withWorkflowReader()){
-            $reader_manager = $environment->getReaderManager();
+            $html .= '   <tr>'.LF;
+            $html .= '      <td></td>'.LF;
+            $html .= '      <td class="key" style="padding-left:8px; vertical-align:top;">'.LF;
+            $html .= '         '.$this->_translator->getMessage('COMMON_WORKFLOW_READ_SINCE_MODIFICATION').':&nbsp;'.LF;
+            $html .= '      </td>'.LF;
+            $html .= '      <td class="value">'.LF;
+            $item_manager = $environment->getItemManager();
             $user_manager = $environment->getUserManager();
             $user_list = $user_manager->getAllRoomUsersFromCache($environment->getCurrentContextID());
             $current_user = $user_list->getFirst();
@@ -3457,17 +3464,11 @@ class cs_detail_view extends cs_view {
                $id_array[] = $current_user->getItemID();
                $current_user = $user_list->getNext();
             }
-            $reader_manager->getLatestReaderByUserIDArray($id_array,$item->getItemID());
-            $current_user = $user_list->getFirst();
+            
+            $users_read_array = $item_manager->getUsersMarkedAsWorkflowReadForItem($item->getItemID());
             $persons_array = array();
-            while ( $current_user ) {
-               $current_reader = $reader_manager->getLatestReaderForUserByID($item->getItemID(), $current_user->getItemID());
-               if ( !empty($current_reader) ) {
-                  if ( $current_reader['read_date'] >= $item->getModificationDate() ) {
-                     $persons_array[] = $current_user;
-                  }
-               }
-               $current_user = $user_list->getNext();
+            foreach($users_read_array as $user_read){
+               $persons_array[] = $user_manager->getItem($user_read['user_id']);
             }
             
             if($context->getWorkflowReaderGroup() == '1'){
@@ -4381,6 +4382,40 @@ class cs_detail_view extends cs_view {
       return $html;
    }
 
+   function _getWorkflowReadAction($item, $user, $context){
+      $html = '';
+      if($context->withWorkflow() and $context->withWorkflowReader() == '1'){
+         $params = array();
+         $params['iid'] = $item->getItemID();
+         $workflow_link_text = '';
+         if(!$item->isReadByUser($user)){
+            $params['workflow_read'] = 'true';
+            if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+               $image = '<img src="images/commsyicons_msie6/22x22/workflow_read.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('ITEM_WORKFLOW_MARK_READ').'"/>';
+            } else {
+               $image = '<img src="images/commsyicons/22x22/workflow_read.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('ITEM_WORKFLOW_MARK_READ').'"/>';
+            }
+            $workflow_link_text = $this->_translator->getMessage('ITEM_WORKFLOW_MARK_READ');
+         } else {
+            $params['workflow_not_read'] = 'true';
+            if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+               $image = '<img src="images/commsyicons_msie6/22x22/workflow_not_read.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('ITEM_WORKFLOW_MARK_NOT_READ').'"/>';
+            } else {
+               $image = '<img src="images/commsyicons/22x22/workflow_not_read.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('ITEM_WORKFLOW_MARK_NOT_READ').'"/>';
+            }
+            $workflow_link_text = $this->_translator->getMessage('ITEM_WORKFLOW_MARK_NOT_READ');
+         }
+         $html .= ahref_curl( $this->_environment->getCurrentContextID(),
+                              $this->_environment->getCurrentModule(),
+                              'detail',
+                              $params,
+                              $image,
+                              $workflow_link_text).LF;
+         unset($params);
+      }
+      return $html;
+   }
+   
    function _getPrintAction ( $item, $user ) {
       $html  = '';
       $params = $this->_environment->getCurrentParameterArray();

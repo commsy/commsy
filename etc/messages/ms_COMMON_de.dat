@@ -828,6 +828,7 @@ $message["COMMON_WORDPRESS_LINK"]["de"] = "Wordpress-Blog";
 $message["COMMON_WORKFLOW"]["de"] = "Workflow";
 $message["COMMON_WORKFLOW_DESCRIPTION"]["de"] = "Workflow Einstellungen";
 $message["COMMON_WORKFLOW_INDEX"]["de"] = "Status";
+$message["COMMON_WORKFLOW_READ_SINCE_MODIFICATION"]["de"] = "seither gelesen von";
 $message["COMMON_WORKFLOW_TRAFFIC_LIGHT"]["de"] = "Ampel";
 $message["COMMON_WORKFLOW_TRAFFIC_LIGHT_DESCRIPTION"]["de"] = "Ampel-Anzeige verwenden";
 $message["COMMON_WORKFLOW_TRAFFIC_LIGHT_GREEN"]["de"] = "gr&uuml;n";

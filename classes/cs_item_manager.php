@@ -1164,5 +1164,40 @@ class cs_item_manager extends cs_manager {
      return $result;
   }
 
+  function isItemMarkedAsWorkflowRead($item_id, $user_id){
+     $query = 'SELECT * FROM '.$this->addDatabasePrefix('workflow_read').' WHERE item_id = '.$item_id.' and user_id = '.$user_id.';';
+     $result = $this->_db_connector->performQuery($query);
+     if(empty($result)){
+        return false;
+     } else {
+        return true;
+     }
+  }
+  
+  function getUsersMarkedAsWorkflowReadForItem($item_id){
+     $result = array();
+     $query = 'SELECT * FROM '.$this->addDatabasePrefix('workflow_read').' WHERE item_id = '.$item_id.';';
+     $result = $this->_db_connector->performQuery($query);
+     return $result;
+  }
+  
+  function markItemAsWorkflowRead($item_id, $user_id){
+     if(!$this->isItemMarkedAsWorkflowRead($item_id, $user_id)){
+        $query = 'INSERT INTO '.$this->addDatabasePrefix('workflow_read').' (item_id, user_id) VALUES ('.$item_id.', '.$user_id.');';
+        $result = $this->_db_connector->performQuery($query);
+     }
+  }
+  
+  function markItemAsWorkflowNotRead($item_id, $user_id){
+     if($this->isItemMarkedAsWorkflowRead($item_id, $user_id)){
+        $query = 'DELETE FROM '.$this->addDatabasePrefix('workflow_read').' WHERE item_id = '.$item_id.' AND user_id = '.$user_id.';';
+        $result = $this->_db_connector->performQuery($query);
+     }
+  }
+  
+  function markItemAsWorkflowNotReadForAllUsers($item_id){
+     $query = 'DELETE FROM '.$this->addDatabasePrefix('workflow_read').' WHERE item_id = '.$item_id.';';
+     $result = $this->_db_connector->performQuery($query);
+  }
 }
 ?>

@@ -132,7 +132,18 @@ if ($type != CS_MATERIAL_TYPE) {
          redirect($environment->getCurrentContextID(),'material', 'detail', $params);
       }
 
-      
+      if(isset($_GET['workflow_read'])){
+         $item_manager->markItemAsWorkflowRead($current_item_iid, $current_user->getItemID());
+         $params = $environment->getCurrentParameterArray();
+         unset($params['workflow_read']);
+         redirect($environment->getCurrentContextID(),'material', 'detail', $params);
+      }
+      if(isset($_GET['workflow_not_read'])){
+         $item_manager->markItemAsWorkflowNotRead($current_item_iid, $current_user->getItemID());
+         $params = $environment->getCurrentParameterArray();
+         unset($params['workflow_not_read']);
+         redirect($environment->getCurrentContextID(),'material', 'detail', $params);
+      }
       
 
       // Get clipboard

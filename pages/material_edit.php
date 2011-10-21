@@ -574,6 +574,11 @@ else {
                  $session->setValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_index_ids',$id_array);
              }
 
+               // workflow - unset read markers
+               $item_manager = $environment->getItemManager();
+               $item_manager->markItemAsWorkflowNotReadForAllUsers($material_item->getItemID());
+               $item_manager->markItemAsWorkflowRead($material_item->getItemID(), $current_user->getItemID());
+             
                // send notifications if world public status is requested
                if ( $material_item->getWorldPublic() == 1
                     and isset($context_item)

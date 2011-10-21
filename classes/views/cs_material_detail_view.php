@@ -157,6 +157,9 @@ class cs_material_detail_view extends cs_detail_view {
       // wordpress
       $html .= $this->_getWordpressAction($item,$current_user,$current_context);
 
+      //workflow
+      $html .= $this->_getWorkflowReadAction($item,$current_user,$current_context);
+      
       return $html;
    }
 
