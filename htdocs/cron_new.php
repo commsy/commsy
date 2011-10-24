@@ -170,7 +170,7 @@ function cron_workflow($portal){
    global $file;
    if($c_workflow){
       $material_manager = $environment->getMaterialManager();
-      $item_array = $material_manager->getResubmissionItemIDsByDate('2011', '10', '24');
+      $item_array = $material_manager->getResubmissionItemIDsByDate(date('Y'), date('m'), date('d'));
       foreach($item_array as $item){         
          $temp_material = $material_manager->getItem($item['item_id']);
          $email_receiver_array = array();
@@ -219,10 +219,13 @@ function cron_workflow($portal){
          $link = '<a href="'.$curl_text.$temp_room->getItemID().'&amp;mod=material&amp;fct=detail&amp;iid='.$temp_material->getItemID().'">'.$temp_material->getTitle().'</a>';
          
          $mail->set_message($translator->getMessage('COMMON_WORKFLOW_EMAIL_BODY_RESUBMISSION', $temp_room->getTitle(), $temp_material->getTitle(), $link));
-         #$mail->setSendAsHTML();
+         $mail->setSendAsHTML();
          if ( $mail->send() ) {
             fwrite($file, 'workflow resubmission e-mail send for item: '.$item['item_id']);
          }
+         
+         // change the status of the material
+         // ...
       }
    }
 }
