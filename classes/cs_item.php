@@ -1121,7 +1121,14 @@ class cs_item {
       }
       
       // invoke indices update
-	  //$manager->updateSearchIndices();
+      try {
+      	$reflector = new ReflectionClass($manager);
+      	if($reflector->getMethod('updateSearchIndices')->getDeclaringClass()->getName() == $reflector->getName()) {
+      		$manager->updateSearchIndices();
+      	} 
+      } catch(Exception $e) {
+      	// actual object does not implement Method updateSearchIndices() - so dont call
+      }
 	  
       return $saved;
    }

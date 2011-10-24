@@ -4216,6 +4216,7 @@ jQuery(document).ready(function() {
 			input_search: null,
 			trigger_display: false,
 			numRubrics: null,
+			lock: false,
 			display: {
 				offset: null,
 				results: null
@@ -4301,9 +4302,11 @@ jQuery(document).ready(function() {
 										url: 'commsy.php?cid=' + getURLParam('cid') + '&mod=ajax&fct=search&output=json',
 										   data: json_data,
 										   success: function(data) {
-											   Search.response = jQuery.parseJSON(data);
-										   		if(Search.response) {
-										   			console.log(Search.response);
+											   	var ret = jQuery.parseJSON(data);
+										   		if(ret) {
+										   			console.log(ret);
+										   			
+										   			Search.response = ret.results;
 										   			
 										   			// autocompletion
 										   			if(Search.response.length > 0) {
@@ -4320,6 +4323,8 @@ jQuery(document).ready(function() {
 										   			
 										   			// fadeout loading animation from fast search results
 										   			jQuery('div[class="search_fast_results"] div[id="loading_animation"] img').fadeOut('slow', function() {
+										   				jQuery('div[id="results"]').remove();
+										   				
 										   				// present fast search results
 										   				jQuery('<div/>', {
 										   					id:		"results"
@@ -4354,7 +4359,7 @@ jQuery(document).ready(function() {
 											   						class:		css_class
 											   					})
 											   						.append(jQuery('<a/>', {
-											   							href:		'commsy.php?cid=' + getURLParam('cid') + '&mod=' + element.type + '&fct=detail&iid=' + element.id + '&search_path=true',
+											   							href:		'commsy.php?cid=' + getURLParam('cid') + '&mod=' + element.type + '&fct=detail&iid=' + index + '&search_path=true',
 											   							text:		element.title
 											   						}))).appendTo('div[class="search_fast_results"] div[id="results"] table');
 										   					
@@ -4495,7 +4500,7 @@ jQuery(document).ready(function() {
 						}).append(
 							jQuery('<div/>', {
 								class: 'search_overlay_config_label',
-								text: 123
+								text: search_lang_restriction_categories
 							})).append(
 							jQuery('<div/>', {
 								style: 'clear:both; '
@@ -4865,7 +4870,7 @@ jQuery(document).ready(function() {
 					if(init == true) Search.numRubrics = numRubrics;
 				} else {
 					if(init == true) {
-						Search.display.results = Search.response.length;
+						Search.display.results = jQuery(Search.response).size();
 						Search.display.offset = 0;
 					}
 				}

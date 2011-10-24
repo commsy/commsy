@@ -119,14 +119,14 @@ jQuery(document).ready(function() {
 								success: function(data) {
 									var response = jQuery.parseJSON(data);
 							   		if(response) {
-							   			if(response.status == 'done') {
-							   				console.log('completed - ' + response.processed + ' / ' + Indexer.numItems);
-							   				
+							   			if(response.status == 'done') {				   				
 							   				// update bar
 							   				var tmp = response.processed;
 							   				if(tmp > Indexer.numItems) tmp = Indexer.numItems;
 							   				var percent = (Indexer.numComplete)	* 100 / Indexer.numManager + (100 / Indexer.numManager) * (tmp * 100 / Indexer.numItems) / 100;
 								   			jQuery('div[id="indexing_bar"]').css('width', percent+'%');
+								   			
+								   			console.log('completed - ' + tmp + ' / ' + Indexer.numItems);
 								   			
 							   				if(response.processed >= Indexer.numItems) {
 							   					Indexer.numComplete += 1;

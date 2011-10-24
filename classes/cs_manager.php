@@ -1778,7 +1778,7 @@ class cs_manager {
    		}
 		$search[] = "=&(.*?);=";											$replace[] = " ";
 		$search[] = "=\\(:(.*?):\\)=";										$replace[] = " ";
-		$search[] = '=(["()0-9/.,ü-]*\s["()0-9/.,ü-]*)=';					$replace[] = " ";
+		$search[] = '=(["()!:0-9/.,ü-]*\s["()0-9/.,ü-]*)=';				$replace[] = " ";
 		$search[] = "=(\s[A-Za-z]{1,2})\s=";								$replace[] = " ";
 		$search[] = "=\s+=";												$replace[] = " ";
 		

@@ -47,6 +47,7 @@ if(isset($_GET['do'])){
 		$room_item = $environment->getCurrentContextItem();
 		$user_item = $environment->getCurrentUserItem();
 		$db = $environment->getDBConnector();
+		$ftsearch_manager = $environment->getFTSearchManager();
 		
 		// determe where to search
 		$search_rubric = array();
@@ -147,6 +148,11 @@ if(isset($_GET['do'])){
 		
 		$results = $db->performQuery($query);
 		
+        // FTSearchManager
+        $ftsearch_manager->setSearchStatus(true);
+        $ftsearch_manager->setWords($search_words);
+        $ft_result = $ftsearch_manager->performFTSearch();
+		
 		$params = array();
 		$params['environment'] = $environment;
 		$view = $class_factory->getClass(INDEX_VIEW,$params);
@@ -162,108 +168,45 @@ if(isset($_GET['do'])){
 				} else {
 					$title = $item->getTitle();
 				}
-				$json_return[] = array(	'title'				=> $title,//$view->_text_as_html_short(compareWithSearchText($search_text, $title)),
-										'modification_date'	=> $item->getModificationDate(),
-										'complete'			=> $result['complete'],
-										//'type'				=> $result['type'],
-										'type'				=> $result['si_item_type'],
-										'id'				=> $result['item_id']);
+        		
+				$json_return['results'][$result['item_id']] = array(	'title'				=> $title,//$view->_text_as_html_short(compareWithSearchText($search_text, $title)),
+																		'modification_date'	=> $item->getModificationDate(),
+																		'complete'			=> $result['complete'],
+																		//'type'				=> $result['type'],
+																		'type'				=> $result['si_item_type']);
 			}
 		}
 		
-		/*
-		$item = $search_results->getFirst();
-		while($item) {
-			$json_return[] = array(	'title'			=> $view->_text_as_html_short(compareWithSearchText($search_text, $item->getTitle())),
-									'status'		=> '123',
-									'type'			=> $item->getItemType(),
-									'id'			=> $item->getItemID());
-			
-			$item = $search_results->getNext();
+		// go through each FTSearch result
+		$ft_new = array();
+		foreach($ft_result as $material_id) {
+			// check if the referenced material already exists
+			if(isset($json_return['results'][$material_id])) {
+				// append FTSearch results to array
+				$json_return['results'][$material_id]['file_search'] = true;
+			} else {
+				// create new search result
+				$ft_new[$material_id] = array();
+			}
 		}
-		*/
 		
-		
-//$page->add('roomwide_search_info', array('page' => $result_page, 'last' => $number_of_pages, 'from' => $from_display, 'to' => $to_display, 'count' => $count));
-//$page->add('roomwide_search_results', $result_array);
-		
+		// collect item information for new search results
+		if(!empty($ft_new)) {
+			foreach($ft_new as $material_id => $value) {
+				$rubric_manager = $environment->getMaterialManager();
+				$item = $rubric_manager->getItem($material_id);
+				
+				if($item) {
+					$json_return['results'][$material_id] = array(	'title'				=> $item->getTitle(),//$view->_text_as_html_short(compareWithSearchText($search_text, $title)),
+																	'modification_date'	=> $item->getModificationDate(),
+																	'complete'			=> '',
+																	//'type'				=> $result['type'],
+																	'type'				=> 'material');
+				}
+			}
+		}
 		
 		echo json_encode($json_return);
-		
-		/*
-		if(isset($_GET['interval'])){
-	$interval = $_GET['interval'];
-} else {
-   $interval = 20;
-}
-
-
-$complete_list = new cs_list();
-foreach($file_rubric_array as $file_rubric){
-	$rubric_manager = $environment->getManager($file_rubric);
-   $rubric_manager->setContextArrayLimit($context_array);
-   if ($file_rubric == CS_DATE_TYPE) {
-      $rubric_manager->setWithoutDateModeLimit();
-   }
-   if(!empty($_GET['search'])){
-      $rubric_manager->setSearchLimit($_GET['search']);
-   }
-   $rubric_manager->showNoNotActivatedEntries();
-	$rubric_manager->select();
-   $item_list = $rubric_manager->get();
-   $complete_list->addList($item_list);
-}
-
-
-
-
-
-
-
-$complete_list->sortby('modification_date');
-$complete_list->reverse();
-
-$count = $complete_list->getCount();
-
-$number_of_pages = 0;
-if($count % $interval == 0){
-   $number_of_pages = ($count / $interval)-1;
-} else {
-   $number_of_pages = (($count - ($count % $interval)) / $interval);
-}
-if($number_of_pages == -1){
-	$number_of_pages++;
-}
-
-$result_page = $_GET['page'];
-if($result_page > $number_of_pages){
-   $result_page = $number_of_pages;
-} else if($result_page == -1){
-	$result_page = 1;
-}
-
-if($count > $interval){
-	$from = $interval * $result_page;
-	if(($from + ($interval-1)) <= $count){
-		$to = $from + ($interval-1);
-		$to_display = $to+1;
-	} else {
-	   $to = $count;
-	   $to_display = $to;
-	}
-} else {
-	$from = 0;
-	$to = $count;
-	$to_display = $count;
-}
-
-if($to > 0){
-   $from_display = $from+1;
-} else {
-	$from_display = 0;
-}
-
-*/
 	}
 }
 exit;
