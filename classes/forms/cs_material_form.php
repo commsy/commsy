@@ -621,7 +621,11 @@ class cs_material_form extends cs_rubric_form {
          if ($current_context->withWorkflow()){
             $this->_values['workflow_traffic_light'] = $this->_item->getWorkflowTrafficLight();
             $this->_values['workflow_resubmission'] = $this->_item->getWorkflowResubmission();
-            $this->_values['workflow_resubmission_date']['workflow_resubmission_date'] = getDateInLang($this->_item->getWorkflowResubmissionDate());
+            if($this->_item->getWorkflowResubmissionDate() != '' and $this->_item->getWorkflowResubmissionDate() != '0000-00-00 00:00:00'){
+               $this->_values['workflow_resubmission_date']['workflow_resubmission_date'] = getDateInLang($this->_item->getWorkflowResubmissionDate());
+            } else {
+               $this->_values['workflow_resubmission_date']['workflow_resubmission_date'] = '';
+            }
             $this->_values['workflow_resubmission_who'] = $this->_item->getWorkflowResubmissionWho();
             $this->_values['workflow_resubmission_traffic_light'] = $this->_item->getWorkflowResubmissionTrafficLight();
          }

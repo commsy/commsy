@@ -469,6 +469,8 @@ else {
                   $dt_workflow_resubmission_datetime .= $dt_workflow_resubmission_time;
                }
                $material_item->setWorkflowResubmissionDate($dt_workflow_resubmission_datetime);
+            } else {
+               $material_item->setWorkflowResubmissionDate('');
             }
             if ( isset($_POST['workflow_resubmission_who']) and $material_item->getWorkflowResubmissionWho() != $_POST['workflow_resubmission_who'] ) {
                $material_item->setWorkflowResubmissionWho($_POST['workflow_resubmission_who']);
