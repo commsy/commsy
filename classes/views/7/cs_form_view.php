@@ -579,20 +579,22 @@ class cs_form_view extends cs_view {
          $html .= '         <br />'."\n";
       }
 
-      $textfield['name']  = $form_element['secondName'];
-      $textfield['size']  = $form_element['secondFieldSize'];
-      $textfield['maxlength']  = $form_element['secondFieldMaxLength'];
-      $textfield['value'] = next($form_element['value']);
-      if ($form_element['isSecondMandatory']) {
-         $form_element['secondLabel'] .= '<span class="required">'.$this->_translator->getMessage('MARK').'</span>';
-      }
-      if (!empty($form_element['failure_element']) and in_array('1',$form_element['failure_element'])) {
-         $form_element['secondLabel'] = '<b>'.$form_element['secondLabel'].'</b>';
-      }
-      if (!empty($form_element['second_field_type']) and $form_element['second_field_type'] == 'password') {
-         $html .= '         '.$form_element['secondLabel'].'&nbsp;'.$this->_getPasswordAsHTML($textfield);
-      } else {
-         $html .= '         '.$form_element['secondLabel'].'&nbsp;'.$this->_getTextFieldAsHTML($textfield);
+      if(!$form_element['showOnlyDate']){
+         $textfield['name']  = $form_element['secondName'];
+         $textfield['size']  = $form_element['secondFieldSize'];
+         $textfield['maxlength']  = $form_element['secondFieldMaxLength'];
+         $textfield['value'] = next($form_element['value']);
+         if ($form_element['isSecondMandatory']) {
+            $form_element['secondLabel'] .= '<span class="required">'.$this->_translator->getMessage('MARK').'</span>';
+         }
+         if (!empty($form_element['failure_element']) and in_array('1',$form_element['failure_element'])) {
+            $form_element['secondLabel'] = '<b>'.$form_element['secondLabel'].'</b>';
+         }
+         if (!empty($form_element['second_field_type']) and $form_element['second_field_type'] == 'password') {
+            $html .= '         '.$form_element['secondLabel'].'&nbsp;'.$this->_getPasswordAsHTML($textfield);
+         } else {
+            $html .= '         '.$form_element['secondLabel'].'&nbsp;'.$this->_getTextFieldAsHTML($textfield);
+         }
       }
       return $html;
    }

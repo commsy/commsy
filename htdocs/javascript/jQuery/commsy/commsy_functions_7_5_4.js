@@ -826,6 +826,9 @@ jQuery(document).ready(function() {
 			     jQuery("input[name='recurring_end_date']").datepicker({showOn: 'button', buttonImage: datepicker_image, buttonImageOnly: true, buttonText: datepicker_choose});
 		  	  }
 		   }
+		   if(jQuery("input[name='workflow_resubmission_date']").length){
+			  jQuery("input[name='workflow_resubmission_date']").datepicker({showOn: 'button', buttonImage: datepicker_image, buttonImageOnly: true, buttonText: datepicker_choose});
+		   }
 	   }
    }
 });

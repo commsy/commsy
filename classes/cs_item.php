@@ -2376,5 +2376,49 @@ function getExternalViewerArray(){
       $item_manager = $this->_environment->getItemManager();
       return $item_manager->isItemMarkedAsWorkflowRead($this->getItemId(), $user->getItemID());
    }
+   
+   function setWorkflowResubmission($value) {
+      $this->_setExtra('WORKFLOWRESUBMISSION', (string)$value);
+   }
+   function getWorkflowResubmission() {
+      $result = false;
+      if($this->_issetExtra('WORKFLOWRESUBMISSION')){
+         $result = $this->_getExtra('WORKFLOWRESUBMISSION');
+      }
+      return $result;
+   }
+   
+   function setWorkflowResubmissionDate($value) {
+      $this->_setExtra('WORKFLOWRESUBMISSIONDATE', (string)$value);
+   }
+   function getWorkflowResubmissionDate() {
+      $result = '';
+      if($this->_issetExtra('WORKFLOWRESUBMISSIONDATE')){
+         $result = $this->_getExtra('WORKFLOWRESUBMISSIONDATE');
+      }
+      return $result;
+   }
+   
+   function setWorkflowResubmissionWho($value) {
+      $this->_setExtra('WORKFLOWRESUBMISSIONWHO', (string)$value);
+   }
+   function getWorkflowResubmissionWho() {
+      $result = 'creator';
+      if($this->_issetExtra('WORKFLOWRESUBMISSIONWHO')){
+         $result = $this->_getExtra('WORKFLOWRESUBMISSIONWHO');
+      }
+      return $result;
+   }
+   
+   function setWorkflowResubmissionTrafficLight($value) {
+      $this->_setExtra('WORKFLOWRESUBMISSIONTRAFFICLIGHT', (string)$value);
+   }
+   function getWorkflowResubmissionTrafficLight() {
+      $result = '3_none';
+      if($this->_issetExtra('WORKFLOWRESUBMISSIONTRAFFICLIGHT')){
+         $result = $this->_getExtra('WORKFLOWRESUBMISSIONTRAFFICLIGHT');
+      }
+      return $result;
+   }
 }
 ?>

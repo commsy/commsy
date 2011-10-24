@@ -56,6 +56,8 @@ class cs_material_form extends cs_rubric_form {
 
    var $_workflow_array = array();
    
+   var $_workflow_resubmission_array = array();
+   
   /** constructor: cs_material_form
     * the only available constructor
     *
@@ -229,6 +231,15 @@ class cs_material_form extends cs_rubric_form {
       $temp_array['value'] = '2_red';
       $workflow_array[] = $temp_array;
       $this->_workflow_array = $workflow_array;
+      
+      $workflow_resubmission_array = array();
+      $temp_array['text']  = $this->_translator->getMessage('COMMON_WORKFLOW_RESUBMISSION_CREATOR');
+      $temp_array['value'] = 'creator';
+      $workflow_resubmission_array[] = $temp_array;
+      $temp_array['text']  = $this->_translator->getMessage('COMMON_WORKFLOW_RESUBMISSION_MODIFIER');
+      $temp_array['value'] = 'modifier';
+      $workflow_resubmission_array[] = $temp_array;
+      $this->_workflow_resubmission_array = $workflow_resubmission_array;
    }
 
    /** create the form, INTERNAL
@@ -510,7 +521,22 @@ class cs_material_form extends cs_rubric_form {
          }
 
          if ($current_context->withWorkflow()){
-            $this->_form->addRadioGroup('workflow_traffic_light',$this->_translator->getMessage('COMMON_WORKFLOW'),$this->_translator->getMessage('COMMON_WORKFLOW_DESCRIPTION'),$this->_workflow_array,'',false,false,'','',false,'',true);  
+            $this->_form->addRadioGroup('workflow_traffic_light',$this->_translator->getMessage('COMMON_WORKFLOW'),$this->_translator->getMessage('COMMON_WORKFLOW_DESCRIPTION'),$this->_workflow_array,'',false,false,'','',false,'',true);
+            $this->_form->combine();
+            
+            // resubmission
+            $this->_form->addCheckbox('workflow_resubmission',1,'',$this->_translator->getMessage('COMMON_WORKFLOW_RESUBMISSION'),$this->_translator->getMessage('COMMON_WORKFLOW_RESUBMISSION').':','');
+            $this->_form->combine('horizontal');
+            $this->_form->addDateTimeField('workflow_resubmission_date','','workflow_resubmission_date','',9,4,'','','','',FALSE,FALSE,100,100,true,'left','',FALSE,TRUE);
+            $this->_form->combine();
+            
+            $this->_form->addRadioGroup('workflow_resubmission_who',$this->_translator->getMessage('COMMON_WORKFLOW_RESUBMISSION'),$this->_translator->getMessage('COMMON_WORKFLOW_RESUBMISSION'),$this->_workflow_resubmission_array,'',false,false,'','',false,'',true);
+            $this->_form->combine();
+            
+            $this->_form->addText('workflow_resubmission_traffic_light_text','',$this->_translator->getMessage('COMMON_WORKFLOW_RESUBMISSION_TRAFFIC_LIGHT').':');
+            $this->_form->combine();
+            $this->_form->addRadioGroup('workflow_resubmission_traffic_light',$this->_translator->getMessage('COMMON_WORKFLOW'),$this->_translator->getMessage('COMMON_WORKFLOW_DESCRIPTION'),$this->_workflow_array,'',false,false,'','',false,'',true);
+            
          }
          
       } else {
@@ -594,6 +620,10 @@ class cs_material_form extends cs_rubric_form {
          
          if ($current_context->withWorkflow()){
             $this->_values['workflow_traffic_light'] = $this->_item->getWorkflowTrafficLight();
+            $this->_values['workflow_resubmission'] = $this->_item->getWorkflowResubmission();
+            $this->_values['workflow_resubmission_date']['workflow_resubmission_date'] = getDateInLang($this->_item->getWorkflowResubmissionDate());
+            $this->_values['workflow_resubmission_who'] = $this->_item->getWorkflowResubmissionWho();
+            $this->_values['workflow_resubmission_traffic_light'] = $this->_item->getWorkflowResubmissionTrafficLight();
          }
          
          // rubric connections
@@ -645,6 +675,10 @@ class cs_material_form extends cs_rubric_form {
          }
          if ($current_context->withWorkflow()){
             $this->_values['workflow_traffic_light'] = $current_context->getWorkflowTrafficLightDefault();
+            $this->_values['workflow_resubmission'] = false;
+            $this->_values['workflow_resubmission_date']['workflow_resubmission_date'] = '';
+            $this->_values['workflow_resubmission_who'] = 'moderatos';
+            $this->_values['workflow_resubmission_traffic_light'] = '3_none';
          }
       }
    }
@@ -697,6 +731,10 @@ class cs_material_form extends cs_rubric_form {
             $this->_error_array[] = $this->_translator->getMessage('DATES_DATE_NOT_VALID');
             $this->_form->setFailure('start_date_time','');
          }
+      }
+      if ( !empty($this->_form_post['workflow_resubmission']) and empty($this->_form_post['workflow_resubmission_date'])){
+         $this->_error_array[] = $this->_translator->getMessage('COMMON_ERROR_WORKFLOW_RESUBMISSION_DATE_MISSED');
+         $this->_form->setFailure('workflow_resubmission_date','');
       }
    }
 

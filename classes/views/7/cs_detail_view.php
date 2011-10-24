@@ -3436,7 +3436,12 @@ class cs_detail_view extends cs_view {
             }
          }
          
-         if(!$context->withWorkflowReader() or ($context->withWorkflowReader() and ($context->getWorkflowReaderGroup() == '0') and ($context->getWorkflowReaderPerson() == '0')) or !$user_allowed_detailed_awareness){
+         $is_workflow_type = false;
+         if(in_array($item->getType(), array(CS_SECTION_TYPE,CS_MATERIAL_TYPE))){
+            $is_workflow_type = true;
+         }
+         
+         if(!$context->withWorkflowReader() or ($context->withWorkflowReader() and ($context->getWorkflowReaderGroup() == '0') and ($context->getWorkflowReaderPerson() == '0')) or !$user_allowed_detailed_awareness or !$is_workflow_type){
             $html .= '   <tr>'.LF;
             $html .= '      <td></td>'.LF;
             $html .= '      <td class="key" style="padding-left:8px; vertical-align:top;">'.LF;
@@ -3451,7 +3456,7 @@ class cs_detail_view extends cs_view {
          } else if($context->withWorkflowReader()){
             $html .= '   <tr>'.LF;
             $html .= '      <td></td>'.LF;
-            $html .= '      <td class="key" style="padding-left:8px; vertical-align:top;">'.LF;
+            $html .= '      <td class="key" style="padding-left:8px; vertical-align:top; padding-top:0px;">'.LF;
             $html .= '         '.$this->_translator->getMessage('COMMON_WORKFLOW_READ_SINCE_MODIFICATION').':&nbsp;'.LF;
             $html .= '      </td>'.LF;
             $html .= '      <td class="value">'.LF;
@@ -3508,7 +3513,7 @@ class cs_detail_view extends cs_view {
                                         'group',
                                         'detail',
                                         $params,
-                                        $this->_text_as_html_short($this->_compareWithSearchText($group_item->getTitle()).'('.$user_count.' '.$this->_translator->getMessage('COMMON_OF').' '.$user_count_complete.')'));
+                                        $this->_text_as_html_short($this->_compareWithSearchText($group_item->getTitle()).' ('.$user_count.' '.$this->_translator->getMessage('COMMON_OF').' '.$user_count_complete.')'));
                   $group_item = $group_list->getNext();
                }
                $html .= '<br/>';

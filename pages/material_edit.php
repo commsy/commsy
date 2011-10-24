@@ -454,7 +454,29 @@ else {
             if ( isset($_POST['workflow_traffic_light']) and $material_item->getWorkflowTrafficLight() != $_POST['workflow_traffic_light'] ) {
                $material_item->setWorkflowTrafficLight($_POST['workflow_traffic_light']);
             }
-
+            if ( isset($_POST['workflow_resubmission']) and $material_item->getWorkflowResubmission() != $_POST['workflow_resubmission'] ) {
+               $material_item->setWorkflowResubmission($_POST['workflow_resubmission']);
+            } else if (!isset($_POST['workflow_resubmission'])) {
+               $material_item->setWorkflowResubmission(0);
+            }
+            if ( isset($_POST['workflow_resubmission_date']) and $material_item->getWorkflowResubmissionDate() != $_POST['workflow_resubmission_date'] ) {
+               $dt_workflow_resubmission_time = '00:00:00';
+               $dt_workflow_resubmission_date = $_POST['workflow_resubmission_date'];
+               $dt_workflow_resubmission_datetime = '';
+               $converted_day_start = convertDateFromInput($_POST['workflow_resubmission_date'],$environment->getSelectedLanguage());
+               if ($converted_day_start['conforms'] == TRUE) {
+                  $dt_workflow_resubmission_datetime = $converted_day_start['datetime'].' ';
+                  $dt_workflow_resubmission_datetime .= $dt_workflow_resubmission_time;
+               }
+               $material_item->setWorkflowResubmissionDate($dt_workflow_resubmission_datetime);
+            }
+            if ( isset($_POST['workflow_resubmission_who']) and $material_item->getWorkflowResubmissionWho() != $_POST['workflow_resubmission_who'] ) {
+               $material_item->setWorkflowResubmissionWho($_POST['workflow_resubmission_who']);
+            }
+            if ( isset($_POST['workflow_resubmission_traffic_light']) and $material_item->getWorkflowResubmissionTrafficLight() != $_POST['workflow_resubmission_traffic_light'] ) {
+               $material_item->setWorkflowResubmissionTrafficLight($_POST['workflow_resubmission_traffic_light']);
+            }
+            
             if ( $context_item->isCommunityRoom() and $context_item->isOpenForGuests() ) {
                $old_world_public = $material_item->getWorldPublic();
                if ( ( isset($_POST['world_public']) and $old_world_public == 0) or

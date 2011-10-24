@@ -796,7 +796,8 @@ class cs_form {
                                    $horizontal = true,
                                    $align = 'left',
                                    $secondFieldType = '',
-                                   $withWhiteSpace = true ) {
+                                   $withWhiteSpace = true,
+                                   $showOnlyDate = false) {
 
                 if (empty($values)) {
                         $values = array();
@@ -827,6 +828,7 @@ class cs_form {
                 if (!empty($secondFieldType)) {
                         $element['second_field_type'] = $secondFieldType;
                 }
+                $element['showOnlyDate'] = $showOnlyDate;
                 $this -> _formElements -> addElement($element);
         }
 

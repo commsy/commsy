@@ -352,6 +352,7 @@ $message["COMMON_ERROR_MANIPULATION"]["en"] = "Manipulation of values at: <span 
 $message["COMMON_ERROR_MINUTES_INT"]["en"] = "Use the field minutes with numaries.";
 $message["COMMON_ERROR_SELECT"]["en"] = "Please select something for <span style=&quot;font-weight:bold;&quot;>%1</span>.";
 $message["COMMON_ERROR_TAG_ENTRY"]["en"] = "Please select a <span style=&quot;font-weight:bold;&quot;>category</span>.";
+$message["COMMON_ERROR_WORKFLOW_RESUBMISSION_DATE_MISSED"]["en"] = "Please give a resubmission date";
 $message["COMMON_EXTERNAL_VIEWER"]["en"] = "This entry is released for";
 $message["COMMON_FACTS"]["en"] = "Basics";
 $message["COMMON_FADE_IN"]["en"] = "Show left panel";
@@ -819,6 +820,10 @@ $message["COMMON_WORKFLOW"]["en"] = "Workflow";
 $message["COMMON_WORKFLOW_DESCRIPTION"]["en"] = "Workflow settings";
 $message["COMMON_WORKFLOW_INDEX"]["en"] = "Status";
 $message["COMMON_WORKFLOW_READ_SINCE_MODIFICATION"]["en"] = "since then read by";
+$message["COMMON_WORKFLOW_RESUBMISSION"]["en"] = "Resubmission";
+$message["COMMON_WORKFLOW_RESUBMISSION_CREATOR"]["en"] = "Notify the creator";
+$message["COMMON_WORKFLOW_RESUBMISSION_MODIFIER"]["en"] = "Notify all modifier";
+$message["COMMON_WORKFLOW_RESUBMISSION_TRAFFIC_LIGHT"]["en"] = "Status after the expiration of the resubmission date";
 $message["COMMON_WORKFLOW_TRAFFIC_LIGHT"]["en"] = "Traffic light";
 $message["COMMON_WORKFLOW_TRAFFIC_LIGHT_DESCRIPTION"]["en"] = "Use traffic light view";
 $message["COMMON_WORKFLOW_TRAFFIC_LIGHT_GREEN"]["en"] = "green";
