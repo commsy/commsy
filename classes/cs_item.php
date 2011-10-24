@@ -2396,14 +2396,10 @@ function getExternalViewerArray(){
    }
    
    function setWorkflowResubmissionDate($value) {
-      $this->_setExtra('WORKFLOWRESUBMISSIONDATE', (string)$value);
+      $this->_setValue('workflow_resubmission_date', (string)$value);
    }
    function getWorkflowResubmissionDate() {
-      $result = '';
-      if($this->_issetExtra('WORKFLOWRESUBMISSIONDATE')){
-         $result = $this->_getExtra('WORKFLOWRESUBMISSIONDATE');
-      }
-      return $result;
+      return $result = $this->_getValue('workflow_resubmission_date');
    }
    
    function setWorkflowResubmissionWho($value) {

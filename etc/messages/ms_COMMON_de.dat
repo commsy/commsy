@@ -829,6 +829,10 @@ $message["COMMON_WIKI_READ_PW"]["de"] = "<div style=&quot;float:left; width:120p
 $message["COMMON_WORDPRESS_LINK"]["de"] = "Wordpress-Blog";
 $message["COMMON_WORKFLOW"]["de"] = "Workflow";
 $message["COMMON_WORKFLOW_DESCRIPTION"]["de"] = "Workflow Einstellungen";
+$message["COMMON_WORKFLOW_EMAIL_BODY_RESUBMISSION"]["de"] = "Im Raum &quot;%1&quot; wurde das Wiedervorlage-Datum f&uuml;r den Eintrag &quot;%2&quot; erreicht:
+
+%3";
+$message["COMMON_WORKFLOW_EMAIL_SUBJECT_RESUBMISSION"]["de"] = "%1 - Das Wiedervorlage-Datum eines Eintrags wurde erreicht.";
 $message["COMMON_WORKFLOW_INDEX"]["de"] = "Status";
 $message["COMMON_WORKFLOW_READ_SINCE_MODIFICATION"]["de"] = "seither gelesen von";
 $message["COMMON_WORKFLOW_RESUBMISSION"]["de"] = "Wiedervorlage";
