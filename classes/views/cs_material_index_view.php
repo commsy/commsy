@@ -144,7 +144,7 @@ class cs_material_index_view extends cs_index_view {
 	  } else if (!$with_assessment and $with_workflow){
 	     $html .= '      <td style="width:50%;" class="head" colspan="2">';
 	  } else if ($with_assessment and $with_workflow){
-	     $html .= '      <td style="width:40%;" class="head" colspan="2">';
+	     $html .= '      <td style="width:44%;" class="head" colspan="2">';
 	  } else {
 	  	  $html .= '      <td style="width:65%;" class="head" colspan="2">';
 	  }
@@ -249,7 +249,7 @@ class cs_material_index_view extends cs_index_view {
    }
 
    function _getAssessmentTableColumnAsHTML($with_links){
-      $html = '<td style="15%; font-size:8pt;" class="head">';
+      $html = '<td style="width:15%; font-size:8pt;" class="head">';
 		if($this->getSortKey() == 'assessment') {
   	      $params['sort'] = 'assessment_rev';
 			$picture = '&nbsp;<img src="' . getSortImage('up') . '" alt="&lt;" border="0"/>';
@@ -279,7 +279,7 @@ class cs_material_index_view extends cs_index_view {
    }
    
    function _getWorkflowTableColumnAsHTML($with_links){
-      $html = '<td style="10%; font-size:8pt;" class="head">';
+      $html = '<td style="width:6%; font-size:8pt;" class="head">';
 	   if($this->getSortKey() == 'workflow_status') {
 		  	$params['sort'] = 'workflow_status_rev';
 			$picture = '&nbsp;<img src="' . getSortImage('up') . '" alt="&lt;" border="0"/>';
