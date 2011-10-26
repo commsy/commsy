@@ -462,6 +462,82 @@ if ( !empty($SID) ) {
          }
          unset($portal);
       }
+      
+      $typo3_session_id = '';
+      if ( !empty($_GET['ses_id']) ) {
+         $typo3_session_id = $_GET['ses_id'];
+      } elseif ( !empty($_POST['ses_id']) ) {
+         $typo3_session_id = $_POST['ses_id'];
+      } elseif ( !empty($_COOKIE['ses_id']) ) {
+         $typo3_session_id = $_COOKIE['ses_id'];
+      }
+      if ( !empty($typo3_session_id) ) {
+         $portal = $environment->getCurrentPortalItem();
+         $typo3web_list = $portal->getAuthSourceListTypo3WebEnabled();
+         if ( $typo3web_list->isNotEmpty() ) {
+            $typo3web_auth_source = $typo3web_list->getFirst();
+            while ($typo3web_auth_source) {
+               $authentication = $environment->getAuthenticationObject();
+               $typo3web_manager = $authentication->getAuthManagerByAuthSourceItem($typo3web_auth_source);
+               $user_data_array = $typo3web_manager->validateSessionID($typo3_session_id);
+               if ( isset($user_data_array['user_id']) and !empty($user_data_array['user_id']) ) {
+                  $user_manager = $environment->getUserManager();
+                  $auth_source = $typo3web_auth_source->getItemID();
+                  $portal_item = $environment->getCurrentPortalItem();
+                  if($authentication->exists($user_data_array['user_id'], $auth_source)){
+                     $user_manager = $environment->getUserManager();
+                     $user_manager->setPortalIDLimit($environment->getCurrentPortalID());
+                     $user_manager->setUserIDLimit($user_data_array['user_id']);
+                     $user_manager->select();
+                     $user_list = $user_manager->get();
+                     $user_item = $user_list->getFirst();
+                     $environment->setCurrentUser($user_item);
+                  } else {
+                     $new_account_data = $user_data_array;
+                     if ( !empty($new_account_data)
+                          and !empty($new_account_data['firstname'])
+                          and !empty($new_account_data['lastname'])
+                        ) {
+                        $user_item = $user_manager->getNewItem();
+                        $user_item->setUserID($new_account_data['user_id']);
+                        $user_item->setFirstname($new_account_data['firstname']);
+                        $user_item->setLastname($new_account_data['lastname']);
+                        if(!empty($new_account_data['email'])){
+                           $user_item->setEmail($new_account_data['email']);
+                        } else {
+                           $server_item = $environment->getServerItem();
+                           $email = $server_item->getDefaultSenderAddress();
+                           $user_item->setEmail($email);
+                           $user_item->setHasToChangeEmail();
+                        }
+                        $user_item->setAuthSource($typo3web_manager->getAuthSourceItemID());
+                        $user_item->makeUser();
+                        $user_item->save();
+                        $environment->setCurrentUser($user_item);
+                     }
+                  }
+                  $user_id = $user_data_array['user_id'];
+                  include_once('include/inc_make_session_for_user.php');
+                  $session_manager = $environment->getSessionManager();
+                  $session_manager->save($session);
+                  $environment->setSessionItem($session);
+                  
+                  $params = array();
+                  $params = $environment->getCurrentParameterArray();
+                  unset($params['ses_id']);
+                  redirect( $environment->getCurrentContextID(),
+                            'home',
+                            'index',
+                            $params
+                          );
+                  unset($params);
+                  break;
+               }
+               $typo3web_auth_source = $typo3web_list->getNext();
+            }
+         }
+         unset($portal);
+      }
    }
 
    if (isset($session) and $session->issetValue('user_id')) {       // session is in database, so session is valid and user has already logged on

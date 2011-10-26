@@ -1465,6 +1465,20 @@ class cs_portal_item extends cs_guide_item {
       return $list;
    }
 
+   function getAuthSourceListTypo3WebEnabled () {
+      $list = $this->getAuthSourceList();
+      if ( !$list->isEmpty() ) {
+         $item = $list->getFirst();
+         while ( $item ) {
+            if ( !$item->show() or mb_strtoupper($item->getSourceType(), 'UTF-8') != 'TYPO3WEB' ) {
+               $list->removeElement($item);
+            }
+            $item = $list->getNext();
+         }
+      }
+      return $list;
+   }
+   
    function getAuthSource ($item_id) {
       $manager = $this->_environment->getAuthSourceManager();
       return $manager->getItem($item_id);

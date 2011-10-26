@@ -142,6 +142,9 @@ class cs_configuration_authentication_form extends cs_rubric_form {
          $counter++;
          $this->_auth_type_array[$counter]['text'] = 'MySQL: Typo3';
          $this->_auth_type_array[$counter]['value'] = 'Typo3';
+         $counter++;
+         $this->_auth_type_array[$counter]['text'] = 'Typo3';
+         $this->_auth_type_array[$counter]['value'] = 'Typo3Web';
          $this->_disable_default = false;
          $this->_disable_show = false;
       }
@@ -348,6 +351,23 @@ class cs_configuration_authentication_form extends cs_rubric_form {
          $this->_form->addRadioGroup('encryption',$translator->getMessage('CONFIGURATION_AUTHENTICATION_TYPO3_ENCRYPTION'),'',$this->_encryption_array,'',true,true,'','','');
          $this->_form->combine();
          $this->_form->addText('encryption_text','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_LDAP_ENCRYPTION'));
+
+         $this->_form->addEmptyLine();
+      }
+      // Typo3Web
+      elseif ( $this->_auth_type == 'Typo3Web' ) {
+         $this->_form->addTextfield('host','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_HOST'),'','',21,true,'','','','','','',false,'');
+         #$this->_form->addTextfield('port','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_PORT'),'','',21,true,'','','','','','',false,'');
+         #$this->_form->addTextfield('dbcolumnuserid','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_LDAP_DBCOLUMNUSERID'),'','',21,true,'','','','','','',false,'');
+         #$this->_form->combine();
+         #$this->_form->addText('dbcolumnuserid_text','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_LDAP_DBCOLUMNUSERID_DESC'));
+         #$this->_form->addTextfield('base','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_LDAP_SUBTREE'),'','',21,true,'','','','','','',false,'');
+         #$this->_form->addText('choice','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_LDAP_SUBTREE_OR'));
+         #$this->_form->addTextfield('userid','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_USER'),'','',21,false,'','','','','','',false,'');
+         #$this->_form->addPassword('password','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_PW'),'','',22,false,'','','','','','',false,'');
+         #$this->_form->addRadioGroup('encryption',$translator->getMessage('CONFIGURATION_AUTHENTICATION_TYPO3_ENCRYPTION'),'',$this->_encryption_array,'',true,true,'','','');
+         #$this->_form->combine();
+         #$this->_form->addText('encryption_text','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_LDAP_ENCRYPTION'));
 
          $this->_form->addEmptyLine();
       }
@@ -645,6 +665,32 @@ class cs_configuration_authentication_form extends cs_rubric_form {
             if ( !empty($auth_data_array['DBCOLUMNUSERID']) ) {
                $this->_values['dbcolumnuserid'] = $auth_data_array['DBCOLUMNUSERID'];
             }
+         }
+         
+         // Typo3Web
+         elseif ( $this->_values['auth_type'] == 'Typo3Web' ) {
+            $auth_data_array = $this->_item->getAuthData();
+            if ( !empty($auth_data_array['HOST']) ) {
+               $this->_values['host'] = $auth_data_array['HOST'];
+            }
+            #if ( !empty($auth_data_array['PORT']) ) {
+            #   $this->_values['port'] = $auth_data_array['PORT'];
+            #}
+            #if ( !empty($auth_data_array['USER']) ) {
+            #   $this->_values['userid'] = $auth_data_array['USER'];
+            #}
+            #if ( !empty($auth_data_array['PASSWORD']) ) {
+            #   $this->_values['password'] = $auth_data_array['PASSWORD'];
+            #}
+            #if( !empty($auth_data_array['BASE'])) {
+            #   $this->_values['base'] = $auth_data_array['BASE'];
+            #}
+            #if ( !empty($auth_data_array['ENCRYPTION']) ) {
+            #   $this->_values['encryption'] = $auth_data_array['ENCRYPTION'];
+            #}
+            #if ( !empty($auth_data_array['DBCOLUMNUSERID']) ) {
+            #   $this->_values['dbcolumnuserid'] = $auth_data_array['DBCOLUMNUSERID'];
+            #}
          }
       } else {
          $this->_values['auth_source'] = -1;

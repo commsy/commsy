@@ -205,6 +205,8 @@ class cs_auth_manager {
             $retour = 'LDAP';
          } elseif ( get_class($this) == 'cs_auth_mysql_typo3' ) {
             $retour = 'TYPO3';
+         } elseif ( get_class($this) == 'cs_auth_typo3' ) {
+            $retour = 'TYPO3WEB';
          }
       }
       return $retour;
