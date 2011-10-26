@@ -4397,6 +4397,9 @@ jQuery(document).ready(function() {
 					// skip, if window was not closed
 					if(jQuery('div[id="search_overlay_front"]').length != 0) return false;
 					
+					Search.display.results = null;
+					Search.display.offset = null;
+					
 					jQuery('<div/>', {
 						id: "search_overlay_background",
 						style: "position: absolute; left: 0px; top: 0px; z-index: 900; width: 100%; height: 100%; background-color: #FFFFFF; opacity: 0.7;"
@@ -4655,14 +4658,26 @@ jQuery(document).ready(function() {
 				   						css_class = 'odd';
 				   					}
 				   					
+				   					// file images
+				   					var images = '';
+				   					jQuery.each(element_entry.file_list, function(file_index, file_entry) {
+				   						images += '<img src="' + file_entry.icon + '"/>';
+				   					});
+				   					
 				   					// append table content
 				   					jQuery('<tr/>', {
 				   					}).append(
 				   						jQuery('<td/>', {
 				   							class: css_class,
-				   							text: element_entry.title,
 				   							style: 'width: 25%;'
-				   						})).append(
+				   						}).append(
+			   								jQuery('<a/>', {
+				   								text: element_entry.title,
+				   								href:		'commsy.php?cid=' + getURLParam('cid') + '&mod=' + element_entry.type + '&fct=detail&iid=' + index_entry + '&search_path=true'
+				   							})).append(
+				   							jQuery('<span/>', {
+				   								html: images
+				   							}))).append(
 				   						jQuery('<td/>', {
 				   							class: css_class,
 				   							text: element_entry.modification_date
@@ -4776,14 +4791,26 @@ jQuery(document).ready(function() {
 	   						css_class = 'odd';
 	   					}
 	   					
+	   					// file images
+	   					var images = '';
+	   					jQuery.each(element_entry.file_list, function(file_index, file_entry) {
+	   						images += '<img src="' + file_entry.icon + '"/>';
+	   					});
+	   					
 	   					// append table content
 	   					jQuery('<tr/>', {
 	   					}).append(
 	   						jQuery('<td/>', {
 	   							class: css_class,
-	   							text: element_entry.title,
 	   							style: 'width: 25%;'
-	   						})).append(
+	   						}).append(
+	   							jQuery('<a/>', {
+	   								text: element_entry.title,
+	   								href:		'commsy.php?cid=' + getURLParam('cid') + '&mod=' + element_entry.type + '&fct=detail&iid=' + index_entry + '&search_path=true'
+	   							})).append(
+	   							jQuery('<span/>', {
+	   								html: images
+	   							}))).append(
 	   						jQuery('<td/>', {
 	   							class: css_class,
 	   							text: element_entry.modification_date
@@ -4835,6 +4862,7 @@ jQuery(document).ready(function() {
 				var numRubrics = 0;
 				var tmp = false;
 				var init = false;
+				var numResults = 0;
 				if(Search.display.results == null || Search.numRubrics == null) init = true;
 				if(Search.config.categorizeByRubrics == true) {
 					jQuery.each(search_rubrics, function(index, element) {
@@ -4860,6 +4888,7 @@ jQuery(document).ready(function() {
 								if(e.type == element) {
 									Search.display.results[index] += 1;
 									tmp = true;
+									numResults++;
 								}
 							});
 							if(tmp == true) {
@@ -4870,7 +4899,22 @@ jQuery(document).ready(function() {
 					if(init == true) Search.numRubrics = numRubrics;
 				} else {
 					if(init == true) {
-						Search.display.results = jQuery(Search.response).size();
+						jQuery.each(search_rubrics, function(index, element) {
+							// are there results for actual rubric?
+							jQuery.each(Search.response, function(i, e) {
+								if(e.type == element) {
+									numRubrics++;
+									return false;
+								}
+							});
+						});
+						
+						var tmp = 0;
+						jQuery.each(Search.response, function(i, e) {
+							numResults++;
+						});
+						
+						Search.display.results = numResults;
 						Search.display.offset = 0;
 					}
 				}
@@ -4884,26 +4928,26 @@ jQuery(document).ready(function() {
 				
 				// set num of results and rubrics
 				var result_message = jQuery('div[id="search_overlay_result_message"]');
-				result_message.text(result_message.text().replace(/%1/, this.response.length));
+				result_message.text(result_message.text().replace(/%1/, numResults));
 				result_message.text(result_message.text().replace(/%2/, numRubrics));
 				result_message.show();
 				
 				// register events
-				jQuery('div[id^="search_overlay_rubric_"] img').mouseover(function() {
+				jQuery('div[id^="search_overlay_rubric_"] img[src^="images/arrow"]').mouseover(function() {
 					if(jQuery(this).attr('src') == 'images/arrow_up.gif') {
 						jQuery(this).attr('src', 'images/arrow_up_over.gif');
 					} else {
 						jQuery(this).attr('src', 'images/arrow_down_over.gif');
 					}
 				});
-				jQuery('div[id^="search_overlay_rubric_"] img').mouseout(function() {
+				jQuery('div[id^="search_overlay_rubric_"] img[src^="images/arrow"]').mouseout(function() {
 					if(jQuery(this).attr('src') == 'images/arrow_up_over.gif') {
 						jQuery(this).attr('src', 'images/arrow_up.gif');
 					} else {
 						jQuery(this).attr('src', 'images/arrow_down.gif');
 					}
 				});
-				jQuery('div[id^="search_overlay_rubric_"] img').click(function() {
+				jQuery('div[id^="search_overlay_rubric_"] img[src^="images/arrow"]').click(function() {
 					if(jQuery(this).attr('src') == 'images/arrow_up_over.gif') {
 						// expand
 						jQuery(this).parent().find('table').slideDown();
