@@ -1293,11 +1293,8 @@ class cs_material_manager extends cs_manager {
 	   return $this->_db_connector->performQuery($query);
 	}
 	
-	function setWorkflowStatus($item_id, $status, $version_id = ''){
-	   $query = 'UPDATE '.$this->addDatabasePrefix('materials').' SET workflow_status = "'.$status.'" WHERE item_id = '.$item_id;
-	   if($version_id != ''){
-	      $query .= ' AND version_id = '.$version_id;
-	   }
+	function setWorkflowStatus($item_id, $status, $version_id){
+	   $query = 'UPDATE '.$this->addDatabasePrefix('materials').' SET workflow_status = "'.$status.'" WHERE item_id = '.$item_id.' AND version_id = '.$version_id;
 	   return $this->_db_connector->performQuery($query);
 	}
 } // end of class

@@ -191,6 +191,7 @@ function cron_workflow($portal){
                   $to .= ','.$email_receiver->getEmail();
                }
             }
+
             include_once('classes/cs_mail.php');
             $translator = $environment->getTranslationObject();
             $mail = new cs_mail();
@@ -204,10 +205,10 @@ function cron_workflow($portal){
                $mail->set_from_email('@');
             }
             $mail->set_subject($translator->getMessage('COMMON_WORKFLOW_EMAIL_SUBJECT_RESUBMISSION', $portal->getTitle()));
-            
+
             $room_manager = $environment->getRoomManager();
             $temp_room = $room_manager->getItem($temp_material->getContextID());
-            
+
             global $c_commsy_cron_path;
             if(isset($c_commsy_cron_path)){
                $curl_text = $c_commsy_cron_path.'commsy.php?cid=';
@@ -227,6 +228,7 @@ function cron_workflow($portal){
             
             // change the status of the material
             // ...
+            $material_manager->setWorkflowStatus($temp_material->getItemID(), $temp_material->getWorkflowResubmissionTrafficLight(), $temp_material->getVersionID());
          }
       }
    }
