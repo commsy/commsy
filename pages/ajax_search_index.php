@@ -43,67 +43,67 @@ $query = array();
 // create indizes for
 //	- annotations
 $managers[] = $environment->getAnnotationManager();
-$query[] = 'SELECT COUNT(*) as count FROM annotations';
+$query[] = 'SELECT COUNT(*) as count FROM annotations LEFT JOIN search_time ON item_id = search_time.st_item_id WHERE search_time.st_id = NULL';
 
 //	- announcements
 $managers[] = $environment->getAnnouncementManager();
-$query[] = 'SELECT COUNT(*) as count FROM announcement';
+$query[] = 'SELECT COUNT(*) as count FROM announcement LEFT JOIN search_time ON item_id = search_time.st_item_id WHERE search_time.st_id = NULL';
 
 //	- section
 $managers[] = $environment->getSectionManager();
-$query[] = 'SELECT COUNT(*) as count FROM section';
+$query[] = 'SELECT COUNT(*) as count FROM section LEFT JOIN search_time ON item_id = search_time.st_item_id WHERE search_time.st_id = NULL';
 
 //	- materials
 $managers[] = $environment->getMaterialManager();
-$query[] = 'SELECT COUNT(*) as count FROM materials';
+$query[] = 'SELECT COUNT(*) as count FROM materials LEFT JOIN search_time ON item_id = search_time.st_item_id WHERE search_time.st_id = NULL';
 
 //	- institutions
 $managers[] = $environment->getInstitutionManager();
-$query[] = 'SELECT COUNT(*) as count FROM labels WHERE type = "institution"';
+$query[] = 'SELECT COUNT(*) as count FROM labels LEFT JOIN search_time ON item_id = search_time.st_item_id WHERE search_time.st_id = NULL AND type = "institution"';
 
 //	- topics
 $managers[] = $environment->getTopicManager();
-$query[] = 'SELECT COUNT(*) as count FROM labels WHERE type = "topic"';
+$query[] = 'SELECT COUNT(*) as count FROM labels LEFT JOIN search_time ON item_id = search_time.st_item_id WHERE search_time.st_id = NULL AND type = "topic"';
 
 //	- user
 $managers[] = $environment->getUserManager();
-$query[] = 'SELECT COUNT(*) as count FROM user';
+$query[] = 'SELECT COUNT(*) as count FROM user LEFT JOIN search_time ON item_id = search_time.st_item_id WHERE search_time.st_id = NULL';
 
 //	- todos
 $managers[] = $environment->getTodoManager();
-$query[] = 'SELECT COUNT(*) as count FROM todos';
+$query[] = 'SELECT COUNT(*) as count FROM todos LEFT JOIN search_time ON item_id = search_time.st_item_id WHERE search_time.st_id = NULL';
 
 //	- step
 $managers[] = $environment->getStepManager();
-$query[] = 'SELECT COUNT(*) as count FROM step';
+$query[] = 'SELECT COUNT(*) as count FROM step LEFT JOIN search_time ON item_id = search_time.st_item_id WHERE search_time.st_id = NULL';
 
 //	- date
 $managers[] = $environment->getDateManager();
-$query[] = 'SELECT COUNT(*) as count FROM dates';
+$query[] = 'SELECT COUNT(*) as count FROM dates LEFT JOIN search_time ON item_id = search_time.st_item_id WHERE search_time.st_id = NULL';
 
 //	- discussion
 $managers[] = $environment->getDiscussionManager();
-$query[] = 'SELECT COUNT(*) as count FROM discussions';
+$query[] = 'SELECT COUNT(*) as count FROM discussions LEFT JOIN search_time ON item_id = search_time.st_item_id WHERE search_time.st_id = NULL';
 
 //	- group
 $managers[] = $environment->getGroupManager();
-$query[] = 'SELECT COUNT(*) as count FROM labels WHERE type = "group"';
+$query[] = 'SELECT COUNT(*) as count FROM labels LEFT JOIN search_time ON item_id = search_time.st_item_id WHERE search_time.st_id = NULL AND type = "group"';
 
 //	- discussionarticle
 $managers[] = $environment->getDiscussionArticleManager();
-$query[] = 'SELECT COUNT(*) as count FROM discussionarticles';
+$query[] = 'SELECT COUNT(*) as count FROM discussionarticles LEFT JOIN search_time ON item_id = search_time.st_item_id WHERE search_time.st_id = NULL';
 
 //	- task
 $managers[] = $environment->getTaskManager();
-$query[] = 'SELECT COUNT(*) as count FROM tasks';
+$query[] = 'SELECT COUNT(*) as count FROM tasks LEFT JOIN search_time ON item_id = search_time.st_item_id WHERE search_time.st_id = NULL';
 
 //	- buzzword
 $managers[] = $environment->getBuzzwordManager();
-$query[] = 'SELECT COUNT(*) as count FROM discussions';
+$query[] = 'SELECT COUNT(*) as count FROM discussions LEFT JOIN search_time ON item_id = search_time.st_item_id WHERE search_time.st_id = NULL';
 
 //	- tag
 $managers[] = $environment->getTagManager();
-$query[] = 'SELECT COUNT(*) as count FROM tag';
+$query[] = 'SELECT COUNT(*) as count FROM tag LEFT JOIN search_time ON item_id = search_time.st_item_id WHERE search_time.st_id = NULL';
 
 //	- community
 //$community_manager = $environment->getCommunityManager();
