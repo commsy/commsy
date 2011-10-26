@@ -61,9 +61,23 @@ jQuery(document).ready(function() {
 				id: "indexing_start"
 			}).appendTo(jQuery('div[id="indexing_status"]'));
 			
+			// truncate checkbox
+			jQuery('<input/>', {
+				type: "Checkbox",
+				id: "indexing_truncate"
+			}).appendTo(jQuery('div[id="indexing_status"]'));
+			jQuery('<span/>', {
+				text: 'Delete all previously created indices'
+			}).appendTo(jQuery('div[id="indexing_status"]'));
+			
 			jQuery('input[id="indexing_start"]').click(function() {
 				jQuery('div[id="indexing_bar"]').parent().css('display', 'block');
-				Indexer.process('truncate');
+				
+				if(jQuery('input[id="indexing_truncate"]').attr('checked') == true) {
+					Indexer.process('truncate');
+				} else {
+					Indexer.process('indexing');
+				}
 			});
 		},
 		
@@ -95,6 +109,8 @@ jQuery(document).ready(function() {
 			var json_data = new Object();
 			json_data['do'] = 'getNumItems';
 			json_data['manager'] = manager;
+			
+			jQuery('div[id="indexing_bar"]').text('Indexing...');
 			
 			// get number of items
 			jQuery.ajax({
