@@ -1330,14 +1330,20 @@ class cs_manager {
                   }
                }
             }
-            preg_match_all('~\(:item ([0-9]*) ~u', $query_result['description'], $matches);
+            #preg_match_all('~\(:item ([0-9]*) ~u', $query_result['description'], $matches);
+            // because of html tags from (f)ckeditor
+            preg_match_all('~\(:item[^0-9]*([0-9]*) ~u', $query_result['description'], $matches);
             if ( isset($matches[1])
                  and !empty($matches[1])
                ) {
-               foreach ($matches[1] as $match) {
+               foreach ($matches[1] as $key => $match) {
                   $id = $match;
                   if ( isset($id_array[$id]) ) {
-                     $desc = str_replace('(:item '.$id,'(:item '.$id_array[$id],$desc);
+                     #$desc = str_replace('(:item '.$id,'(:item '.$id_array[$id],$desc);
+                     $match2 = str_replace($id,$id_array[$id],strip_tags($matches[0][$key]));
+                     # if there are html tags, then there are double spaces, don't know why (IJ 27.10.2011) 
+                     $match2 = str_replace('  ',' ',$match2);
+                     $desc = str_replace($matches[0][$key],$match2,$desc);
                      $replace = true;
                   }
                }
