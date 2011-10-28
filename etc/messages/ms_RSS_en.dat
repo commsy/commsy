@@ -1,7 +1,7 @@
 <?php
 $message["RSS_CHANGE_PERSON_DESCRIPTION"]["en"] = "The information of the person %1 has been changed.";
 $message["RSS_DESCRIPTION"]["en"] = "The RSS-feed keeps you up to date with everything that's new in workspace %1.";
-$message["RSS_NEW_ANNOTATION_TITLE"]["en"] = "Comment %1 on: %2";
+$message["RSS_NEW_ANNOTATION_TITLE"]["en"] = "Comment %1 on: %2 %3";
 $message["RSS_NEW_ANNOUNCEMENT_TITLE"]["en"] = "Announcement: %1";
 $message["RSS_NEW_DATE_TITLE"]["en"] = "Event: %1";
 $message["RSS_NEW_DISCUSSIONARTICLE_TITLE"]["en"] = "Post &quot;%1&quot; in discussion &quot;%2&quot;";
