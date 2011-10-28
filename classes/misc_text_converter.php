@@ -99,7 +99,10 @@ class misc_text_converter {
       $text = $this->_cleanDataFromTextAreaNotFromFCK($text);
       foreach ($values as $key => $value) {
          $text = str_replace('COMMSY_FCKEDITOR'.$key,$this->_cleanDataFromTextAreaFromFCK($value),$text);
+
       }
+
+
 
       ### hack ###
       $text = str_replace('COMMSY_BR',BRLF,$text);
@@ -323,7 +326,8 @@ class misc_text_converter {
       $url_string = '^(?<=([\s|\n|>|\(]{1}))((http://|https://|ftp://|www\.)'; //everything starting with http, https or ftp followed by "://" or www. is a url and will be avtivated
       #$url_string = '^(?<=([\s|\n|>|\(]{1}))((http://|https://|ftp://|www\.)'; //everything starting with http, https or ftp followed by "://" or www. is a url and will be avtivated
       $url_string .= "([".RFC1738_CHARS."]+?))"; //All characters allowed for FTP an HTTP URL's by RFC 1738 (non-greedy because of potential trailing punctuation marks)
-      $url_string .= '(?=([\.\?:\),;!]*($|\s|<|&quot;|&nbsp;)))^u'; //after the url is a space character- and perhaps before it a punctuation mark (which does not belong to the url)
+      // separating Links from COMMSY_FCKEDITOR tag
+      $url_string .= '(?=([\.\?:\),;!]*($|\s|<|&quot;|&nbsp;|COMMSY_FCKEDITOR)))^u'; //after the url is a space character- and perhaps before it a punctuation mark (which does not belong to the url)
       #$text = preg_replace($url_string, '$1<a href="$2" target="_blank" title="$2">$2</a>$5', $text);
       $text = preg_replace($url_string, '<a href="$2" target="_blank" title="$2">$2</a>', $text);
       $text = preg_replace_callback('~">(.[^"]+)</a>~u','spezial_chunkURL',$text);
@@ -945,7 +949,6 @@ class misc_text_converter {
    public function _newFormating ( $text ) {
       $file_array = $this->_getFileArray();
 
-
       //////////////////////////////////////////////////////////////
       // this is for preventing parsing of (: and :)
       //////////////////////////////////////////////////////////////
@@ -988,7 +991,7 @@ class misc_text_converter {
       $reg_exp_array['(:mdo']         = '~\\(:mdo (.*?):\\)~eu';
       $reg_exp_array['(:geogebra']    = '~\\(:geogebra (.*?):\\)~eu';
       $reg_exp_array['(:scratch']     = '~\\(:scratch (.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)~eu';
-      
+
       // Test auf erforderliche Software; Windows-Server?
       //$reg_exp_array['(:pdf']       = '/\\(:pdf (.*?)(\\s.*?)?\\s*?:\\)/e';
 
@@ -1053,6 +1056,9 @@ class misc_text_converter {
 
                      // decode file names
                      #$value_new = $this->_decode_file_names($value_new);
+
+                     // replace umlaut for embedding
+                     // $value_new = str_replace (array("ä", "ö", "ü", "ß", "Ä", "Ö", "Ü"), array("%ae%", "%oe%", "%ue%", "%ss%", "%AE%", "%OE%", "%UE%"), $value_new);
 
                      if ( $key == '(:flash' and mb_stristr($value_new,'(:flash') ) {
                         $value_new = $this->_formatFlash($value_new,$args_array,$file_array);
@@ -2707,7 +2713,7 @@ class misc_text_converter {
 	             $file_manager = $this->_environment->getFileManager();
 	             $file = $file_manager->getItem($temp_file->getFileID());
 	             $file_contents = file_get_contents($file->getDiskFileName());
-	             
+
 	             $html = new DOMDocument();
 	    			 $html->loadHTML($file_contents);
 	    			 $applet_list = $html->getElementsByTagName('applet');
@@ -2759,20 +2765,20 @@ class misc_text_converter {
 					 $retour .= '	<param name="allowRescaling" value="true" />';
 					 $retour .= '   Sorry, the GeoGebra Applet could not be started. Please make sure that Java 1.4.2 (or later) is installed and active in your browser (<a href="http://java.sun.com/getjava">Click here to install Java now</a>)';
 					 $retour .= '</applet>';
-         	    
+
          	 }
           }
       }
       return $retour;
    }
-   
+
    private function _formatScratch ($text, $array, $file_name_array){
    	global $c_commsy_url_path;
       $retour = '';
 
       $height = '480';
       $width = '640';
-      
+
       if ( !empty($array[3]) ) {
          $args = $this->_parseArgs($array[3]);
       } else {
@@ -2784,7 +2790,7 @@ class misc_text_converter {
 		if ( !empty($args['width']) and is_numeric($args['width']) ) {
 		   $width = $args['width'];
 		}
-      
+
       if ( !empty($array[2]) ) {
          if ( !empty($file_name_array[$array[2]]) ) {
          	 if (stristr($array[2], '.sb')) {
@@ -2792,12 +2798,12 @@ class misc_text_converter {
 	             $file_manager = $this->_environment->getFileManager();
 	             $file = $file_manager->getItem($temp_file->getFileID());
 	             $url = $file->getUrl();
-	             
+
 	             $params = array();
                 $params['iid'] = $file->getFileID();
                 global $c_single_entry_point;
                 $file_link = curl($this->_environment->getCurrentContextID(),'material', 'getfile', $params,'',$file->getFileName(),$c_single_entry_point);
-         	    $retour .= '<object width="'.$width.'" height="'.$height.'" archive="'.$c_commsy_url_path.'/scratch/ScratchApplet.jar" codebase="'.$file_link.'" code="ScratchApplet" id="ProjectApplet" type="application/x-java-applet">'; 
+         	    $retour .= '<object width="'.$width.'" height="'.$height.'" archive="'.$c_commsy_url_path.'/scratch/ScratchApplet.jar" codebase="'.$file_link.'" code="ScratchApplet" id="ProjectApplet" type="application/x-java-applet">';
 					 $retour .= '<param value="'.$file->getFileName().'" name="project" />';
 					 $retour .= '</object>';
          	 }
