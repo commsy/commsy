@@ -70,7 +70,11 @@ class cs_configuration_workflow_form extends cs_rubric_form {
       $this->_form->combine();
       $this->_form->addTextfield('workflow_trafic_light_red_text','',$this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT'),$this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT'),200,28,false,'','','','left','<img src="images/commsyicons/workflow_traffic_light_red.png" style="height:10px;">');
 
+      $this->_form->addText('','','&nbsp;');
+
       $this->_form->addCheckbox('workflow_resubmission','yes','',$this->_translator->getMessage('PREFERENCES_CONFIGURATION_WORKFLOW_RESUBMISSION_VALUE'),$this->_translator->getMessage('PREFERENCES_CONFIGURATION_WORKFLOW_RESUBMISSION_ENABLE'));
+      
+      $this->_form->addText('','','&nbsp;');
       
       $this->_form->addCheckbox('workflow_reader','yes','',$this->_translator->getMessage('PREFERENCES_CONFIGURATION_WORKFLOW_READER_VALUE'),$this->_translator->getMessage('PREFERENCES_CONFIGURATION_WORKFLOW_READER_ENABLE'));
       

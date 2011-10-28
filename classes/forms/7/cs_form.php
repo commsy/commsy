@@ -1076,7 +1076,8 @@ class cs_form {
                           $anchor='',
                           $extention = '',
                           $drop_down = false,
-                          $show_drop_down = false) {
+                          $show_drop_down = false,
+                          $exampleText = '') {
 
                 $element['type']  = 'text';
                 $element['name']  = $name;
@@ -1098,6 +1099,7 @@ class cs_form {
                 $element['anchor'] = $anchor;
                 $element['drop_down'] = $drop_down;
                 $element['show_drop_down'] = $show_drop_down;
+                $element['example'] = $exampleText;
                 $this -> _formElements -> addElement($element);
         }
 

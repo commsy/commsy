@@ -611,29 +611,46 @@ class cs_material_form extends cs_rubric_form {
          }
 
          if ($current_context->withWorkflow()){
-            $this->_form->addRadioGroup('workflow_traffic_light',$this->_translator->getMessage('COMMON_WORKFLOW'),$this->_translator->getMessage('COMMON_WORKFLOW_DESCRIPTION'),$this->_workflow_array,'',false,false,'','',false,'',true);
-            $this->_form->combine();
-            $this->_form->addText('', '', '&nbsp;');
-            $this->_form->combine();
-            // resubmission
-            $this->_form->addText('workflow_resubmission_text','',$this->_translator->getMessage('COMMON_WORKFLOW_RESUBMISSION').':');
-            $this->_form->combine();
-            $this->_form->addCheckbox('workflow_resubmission',1,'',$this->_translator->getMessage('COMMON_WORKFLOW_RESUBMISSION'),'','');
-            $this->_form->combine('horizontal');
-            $this->_form->addDateTimeField('workflow_resubmission_date','','workflow_resubmission_date','',9,4,'','','','',FALSE,FALSE,100,100,true,'left','',FALSE,TRUE);
-            $this->_form->combine();
-            $this->_form->addText('', '', '&nbsp;');
-            $this->_form->combine();
-            $this->_form->addText('workflow_resubmission_who_text','',$this->_translator->getMessage('COMMON_WORKFLOW_RESUBMISSION_WHO').':');
-            $this->_form->combine();
-            $this->_form->addRadioGroup('workflow_resubmission_who',$this->_translator->getMessage('COMMON_WORKFLOW_RESUBMISSION'),$this->_translator->getMessage('COMMON_WORKFLOW_RESUBMISSION'),$this->_workflow_resubmission_array,'',false,false,'','',false,'',true);
-            $this->_form->combine();
-            $this->_form->addText('', '', '&nbsp;');
-            $this->_form->combine();
-            $this->_form->addText('workflow_resubmission_traffic_light_text','',$this->_translator->getMessage('COMMON_WORKFLOW_RESUBMISSION_TRAFFIC_LIGHT').':');
-            $this->_form->combine();
-            $this->_form->addRadioGroup('workflow_resubmission_traffic_light',$this->_translator->getMessage('COMMON_WORKFLOW'),$this->_translator->getMessage('COMMON_WORKFLOW_DESCRIPTION'),$this->_workflow_array,'',false,false,'','',false,'',true);
-            
+            if($current_context->withWorkflowTrafficLight() or $current_context->withWorkflowResubmission()){
+               $this->_form->addText('',$this->_translator->getMessage('COMMON_WORKFLOW'),'','',false,'','','left','','',true,false,$this->_translator->getMessage('COMMON_WORKFLOW_DESCRIPTION'));
+               $this->_form->combine();
+            }
+            if($current_context->withWorkflowTrafficLight()){
+               $this->_form->addText('','',$this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT'),'',false,'','','left','','',true);
+               $this->_form->combine();
+               $this->_form->addRadioGroup('workflow_traffic_light',$this->_translator->getMessage('COMMON_WORKFLOW'),$this->_translator->getMessage('COMMON_WORKFLOW_DESCRIPTION'),$this->_workflow_array,'',false,false,'','',false,'',true);
+            }
+            if($current_context->withWorkflowTrafficLight() and $current_context->withWorkflowResubmission()){
+               $this->_form->combine();
+               $this->_form->addText('', '', '&nbsp;');
+               $this->_form->combine();
+            }
+            if($current_context->withWorkflowResubmission()){
+               $this->_form->addText('','',$this->_translator->getMessage('COMMON_WORKFLOW_RESUBMISSION'),'',false,'','','left','','',true);
+               $this->_form->combine();
+               $this->_form->addCheckbox('workflow_resubmission',1,'',$this->_translator->getMessage('COMMON_WORKFLOW_RESUBMISSION'),'','');
+               $this->_form->combine('horizontal');
+               $this->_form->addDateTimeField('workflow_resubmission_date','','workflow_resubmission_date','',9,4,'','','','',FALSE,FALSE,100,100,true,'left','',FALSE,TRUE);
+               $this->_form->combine();
+               $this->_form->addText('', '', '&nbsp;');
+               $this->_form->combine();
+               $this->_form->addText('workflow_resubmission_who_text','',$this->_translator->getMessage('COMMON_WORKFLOW_RESUBMISSION_WHO').':');
+               $this->_form->combine();
+               $this->_form->addRadioGroup('workflow_resubmission_who',$this->_translator->getMessage('COMMON_WORKFLOW_RESUBMISSION'),$this->_translator->getMessage('COMMON_WORKFLOW_RESUBMISSION'),$this->_workflow_resubmission_array,'',false,false,'','',false,'',true);
+               $this->_form->combine();
+               $this->_form->addText('', '', '&nbsp;');
+               $this->_form->combine();
+               $this->_form->addText('workflow_resubmission_traffic_light_text','',$this->_translator->getMessage('COMMON_WORKFLOW_RESUBMISSION_TRAFFIC_LIGHT').':');
+               $this->_form->combine();
+               $this->_form->addRadioGroup('workflow_resubmission_traffic_light',$this->_translator->getMessage('COMMON_WORKFLOW'),$this->_translator->getMessage('COMMON_WORKFLOW_DESCRIPTION'),$this->_workflow_array,'',false,false,'','',false,'',true);
+            } else {
+               if (isset($this->_item)) {
+                  #$this->_form->addHidden('workflow_resubmission', $this->_item->getWorkflowResubmission());
+                  #$this->_form->addHidden('workflow_resubmission_date', $this->_item->getWorkflowResubmissionDate());
+                  #$this->_form->addHidden('workflow_resubmission_who', $this->_item->getWorkflowResubmissionWho());
+                  #$this->_form->addHidden('workflow_resubmission_traffic_light', $this->_item->getWorkflowResubmissionTrafficLight());
+               }
+            }
          }
          
       } else {

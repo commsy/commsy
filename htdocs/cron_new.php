@@ -173,7 +173,11 @@ function cron_workflow($portal){
       $item_array = $material_manager->getResubmissionItemIDsByDate(date('Y'), date('m'), date('d'));
       foreach($item_array as $item){         
          $temp_material = $material_manager->getItem($item['item_id']);
-         if($temp_material->getWorkflowResubmission()){
+         
+         $room_manager = $environment->getRoomManager();
+         $temp_room = $room_manager->getItem($temp_material->getContextID());
+         
+         if($temp_material->getWorkflowResubmission() and $temp_room->withWorkflowResubmission()){
             $email_receiver_array = array();
             if($temp_material->getWorkflowResubmissionWho() == 'creator'){
                $email_receiver_array[] = $temp_material->getCreator();
@@ -205,9 +209,6 @@ function cron_workflow($portal){
                $mail->set_from_email('@');
             }
             $mail->set_subject($translator->getMessage('COMMON_WORKFLOW_EMAIL_SUBJECT_RESUBMISSION', $portal->getTitle()));
-
-            $room_manager = $environment->getRoomManager();
-            $temp_room = $room_manager->getItem($temp_material->getContextID());
 
             global $c_commsy_cron_path;
             if(isset($c_commsy_cron_path)){
