@@ -210,7 +210,6 @@ class cs_material_form extends cs_rubric_form {
       if($context_item->getWorkflowTrafficLightTextGreen() != ''){
          $description = $context_item->getWorkflowTrafficLightTextGreen();
       }
-      #$temp_array['text']  = $this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_GREEN').' ('.$description.')';
       $temp_array['text']  = '<img src="images/commsyicons/workflow_traffic_light_green.png" alt="'.$description.'" title="'.$description.'" style="height:10px;"> ('.$description.')';
       $temp_array['value'] = '0_green';
       $workflow_array[] = $temp_array;
@@ -218,7 +217,6 @@ class cs_material_form extends cs_rubric_form {
       if($context_item->getWorkflowTrafficLightTextYellow() != ''){
          $description = $context_item->getWorkflowTrafficLightTextYellow();
       }
-      #$temp_array['text']  = $this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_YELLOW').' ('.$description.')';
       $temp_array['text']  = '<img src="images/commsyicons/workflow_traffic_light_yellow.png" alt="'.$description.'" title="'.$description.'" style="height:10px;"> ('.$description.')';
       $temp_array['value'] = '1_yellow';
       $workflow_array[] = $temp_array;
@@ -226,17 +224,109 @@ class cs_material_form extends cs_rubric_form {
       if($context_item->getWorkflowTrafficLightTextRed() != ''){
          $description = $context_item->getWorkflowTrafficLightTextRed();
       }
-      #$temp_array['text']  = $this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_RED').' ('.$description.')';
       $temp_array['text']  = '<img src="images/commsyicons/workflow_traffic_light_red.png" alt="'.$description.'" title="'.$description.'" style="height:10px;"> ('.$description.')';
       $temp_array['value'] = '2_red';
       $workflow_array[] = $temp_array;
       $this->_workflow_array = $workflow_array;
       
+      // Workflow resubmission
+      
+      // All users who ever edited this item
+      
+      $modifier_array = array();
+      
+      if ( !empty($_GET['iid']) and mb_strtolower($_GET['iid'], 'UTF-8') != 'new') {
+         $manager = $this->_environment->getManager(CS_MATERIAL_TYPE);
+         $item = $manager->getItem($_GET['iid']);
+         if ( isset($item) ) {
+            $creator_item = $item->getCreatorItem();
+            $fullname = $creator_item->getFullname();
+         } else {
+            $current_user = $this->_environment->getCurrentUser();
+            $fullname = $current_user->getFullname();
+         }
+
+         $link_modifier_item_manager = $this->_environment->getLinkModifierItemManager();
+         $user_manager = $this->_environment->getUserManager();
+         $modifiers = $link_modifier_item_manager->getModifiersOfItem($item->getItemID());
+         
+         foreach($modifiers as $modifier_id) {
+            $modificator = $user_manager->getItem($modifier_id);
+            //Links only at accessible contact pages
+            if ( isset($modificator) and $modificator->isRoot() ) {
+               $temp_text = $this->_compareWithSearchText($modificator->getFullname());
+               $modifier_array[] = $temp_text;
+            } elseif ( $modificator->getContextID() == $item->getContextID() ) {
+               if ( $this->_environment->inProjectRoom() ) {
+                  $params = array();
+                  $user = $this->_environment->getCurrentUserItem();
+                  if (isset($modificator) and !empty($modificator) and $modificator->isUser() and !$modificator->isDeleted() and $modificator->maySee($user)){
+                     $params['iid'] = $modificator->getItemID();
+                     $temp_text = ahref_curl($this->_environment->getCurrentContextID(),
+                                        'user',
+                                        'detail',
+                                        $params,
+                                        $modificator->getFullname());
+                  }elseif(isset($modificator) and  !$modificator->isDeleted()){
+                      $temp_text = '<span class="disabled">'.$this->_compareWithSearchText($modificator->getFullname()).'</span>';
+                  }else{
+                      $temp_text = '<span class="disabled">'.$this->_translator->getMessage('COMMON_DELETED_USER').'</span>';
+                  }
+                  $modifier_array[] = $temp_text;
+               } elseif ( ($user->isUser() and isset($modificator) and  $modificator->isVisibleForLoggedIn())
+                             || (!$user->isUser() and isset($modificator) and $modificator->isVisibleForAll())
+                             || (isset($modificator) and $this->_environment->getCurrentUserID() == $modificator->getItemID()) ) {
+                  $params = array();
+                  $params['iid'] = $modificator->getItemID();
+                  if(!$modificator->isDeleted() and $modificator->maySee($user)){
+                     if ( !$this->_environment->inPortal() ){
+                        $modifier_array[] = ahref_curl($this->_environment->getCurrentContextID(),
+                                           'user',
+                                           'detail',
+                                           $params,
+                                           $this->_text_as_html_short($this->_compareWithSearchText($modificator->getFullname())));
+                     }else{
+                        $modifier_array[] = '<span class="disabled">'.$this->_compareWithSearchText($modificator->getFullname()).'</span>';
+                     }
+                  }else{
+                     $modifier_array[] = '<span class="disabled">'.$this->_translator->getMessage('COMMON_DELETED_USER').'</span>';
+                  }
+                  unset($params);
+               } elseif ( $item->mayExternalSee($this->_environment->getCurrentUserItem())) {
+                  $modifier_array[] = $this->_compareWithSearchText($modificator->getFullname());
+               } else {
+                  if(isset($modificator) and !$modificator->isDeleted()){
+                     $current_user_item = $this->_environment->getCurrentUserItem();
+                     if ( $current_user_item->isGuest() ) {
+                        $modifier_array[] = $this->_translator->getMessage('COMMON_USER_NOT_VISIBLE');
+                     } else {
+                        $modifier_array[] = $this->_compareWithSearchText($modificator->getFullname());
+                     }
+                     unset($current_user_item);
+                  }else{
+                     $modifier_array[] = '<span class="disabled">'.$this->_translator->getMessage('COMMON_DELETED_USER').'</span>';
+                  }
+               }
+            }
+         }
+         $modifier_array = array_unique($modifier_array);
+      }
+      
       $workflow_resubmission_array = array();
-      $temp_array['text']  = $this->_translator->getMessage('COMMON_WORKFLOW_RESUBMISSION_CREATOR');
+      $current_user = $this->_environment->getCurrentUserItem();
+      $params['iid'] = $current_user->getItemID();
+      $creator_link = ahref_curl($this->_environment->getCurrentContextID(),
+                                 'user',
+                                 'detail',
+                                 $params,
+                                 $current_user->getFullname());
+      $temp_array['text']  = $this->_translator->getMessage('COMMON_WORKFLOW_RESUBMISSION_CREATOR').' ('.$creator_link.')';
       $temp_array['value'] = 'creator';
       $workflow_resubmission_array[] = $temp_array;
       $temp_array['text']  = $this->_translator->getMessage('COMMON_WORKFLOW_RESUBMISSION_MODIFIER');
+      if(!empty($modifier_array)){
+         $temp_array['text'] .= ' ('.implode(', ',$modifier_array).')';
+      }
       $temp_array['value'] = 'modifier';
       $workflow_resubmission_array[] = $temp_array;
       $this->_workflow_resubmission_array = $workflow_resubmission_array;
@@ -523,16 +613,23 @@ class cs_material_form extends cs_rubric_form {
          if ($current_context->withWorkflow()){
             $this->_form->addRadioGroup('workflow_traffic_light',$this->_translator->getMessage('COMMON_WORKFLOW'),$this->_translator->getMessage('COMMON_WORKFLOW_DESCRIPTION'),$this->_workflow_array,'',false,false,'','',false,'',true);
             $this->_form->combine();
-            
+            $this->_form->addText('', '', '&nbsp;');
+            $this->_form->combine();
             // resubmission
-            $this->_form->addCheckbox('workflow_resubmission',1,'',$this->_translator->getMessage('COMMON_WORKFLOW_RESUBMISSION'),$this->_translator->getMessage('COMMON_WORKFLOW_RESUBMISSION').':','');
+            $this->_form->addText('workflow_resubmission_text','',$this->_translator->getMessage('COMMON_WORKFLOW_RESUBMISSION').':');
+            $this->_form->combine();
+            $this->_form->addCheckbox('workflow_resubmission',1,'',$this->_translator->getMessage('COMMON_WORKFLOW_RESUBMISSION'),'','');
             $this->_form->combine('horizontal');
             $this->_form->addDateTimeField('workflow_resubmission_date','','workflow_resubmission_date','',9,4,'','','','',FALSE,FALSE,100,100,true,'left','',FALSE,TRUE);
             $this->_form->combine();
-            
+            $this->_form->addText('', '', '&nbsp;');
+            $this->_form->combine();
+            $this->_form->addText('workflow_resubmission_who_text','',$this->_translator->getMessage('COMMON_WORKFLOW_RESUBMISSION_WHO').':');
+            $this->_form->combine();
             $this->_form->addRadioGroup('workflow_resubmission_who',$this->_translator->getMessage('COMMON_WORKFLOW_RESUBMISSION'),$this->_translator->getMessage('COMMON_WORKFLOW_RESUBMISSION'),$this->_workflow_resubmission_array,'',false,false,'','',false,'',true);
             $this->_form->combine();
-            
+            $this->_form->addText('', '', '&nbsp;');
+            $this->_form->combine();
             $this->_form->addText('workflow_resubmission_traffic_light_text','',$this->_translator->getMessage('COMMON_WORKFLOW_RESUBMISSION_TRAFFIC_LIGHT').':');
             $this->_form->combine();
             $this->_form->addRadioGroup('workflow_resubmission_traffic_light',$this->_translator->getMessage('COMMON_WORKFLOW'),$this->_translator->getMessage('COMMON_WORKFLOW_DESCRIPTION'),$this->_workflow_array,'',false,false,'','',false,'',true);
@@ -681,7 +778,7 @@ class cs_material_form extends cs_rubric_form {
             $this->_values['workflow_traffic_light'] = $current_context->getWorkflowTrafficLightDefault();
             $this->_values['workflow_resubmission'] = false;
             $this->_values['workflow_resubmission_date']['workflow_resubmission_date'] = '';
-            $this->_values['workflow_resubmission_who'] = 'moderatos';
+            $this->_values['workflow_resubmission_who'] = 'creator';
             $this->_values['workflow_resubmission_traffic_light'] = '3_none';
          }
       }

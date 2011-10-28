@@ -1037,7 +1037,7 @@ class cs_material_manager extends cs_manager {
                  'copy_of="'.encode(AS_DB,$copy_id).'",'.
                  'extras="'.encode(AS_DB,serialize($material_item->getExtraInformation())).'",'.
                  'workflow_status="'.encode(AS_DB,$material_item->getWorkflowTrafficLight()).'",'.
-                 'workflow_resubmission_date="'.encode(AS_DB,$material_item->getWorkflowTrafficLight()).'"';
+                 'workflow_resubmission_date="'.encode(AS_DB,$material_item->getWorkflowResubmissionDate()).'"';
         $result = $this->_db_connector->performQuery($query);
         if ( !isset($result) ) {
           include_once('functions/error_functions.php');

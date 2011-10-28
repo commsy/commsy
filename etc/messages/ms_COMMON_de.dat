@@ -839,6 +839,7 @@ $message["COMMON_WORKFLOW_RESUBMISSION"]["de"] = "Wiedervorlage";
 $message["COMMON_WORKFLOW_RESUBMISSION_CREATOR"]["de"] = "Nur den Ersteller benachrichtigen";
 $message["COMMON_WORKFLOW_RESUBMISSION_MODIFIER"]["de"] = "Alle Bearbeiter benachrichtigen";
 $message["COMMON_WORKFLOW_RESUBMISSION_TRAFFIC_LIGHT"]["de"] = "Status nach Ablauf des Wiedervorlage-Datums";
+$message["COMMON_WORKFLOW_RESUBMISSION_WHO"]["de"] = "Benachrichtigung nach Ablauf des Wiedervorlage-Datums";
 $message["COMMON_WORKFLOW_TRAFFIC_LIGHT"]["de"] = "Ampel";
 $message["COMMON_WORKFLOW_TRAFFIC_LIGHT_DESCRIPTION"]["de"] = "Ampel-Anzeige verwenden";
 $message["COMMON_WORKFLOW_TRAFFIC_LIGHT_GREEN"]["de"] = "gr&uuml;n";
