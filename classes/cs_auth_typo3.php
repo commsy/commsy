@@ -276,7 +276,9 @@ class cs_auth_typo3 extends cs_auth_manager {
    }
    
    function checkAccount($uid, $password){
+      $granted = false;
       $this->_error_array[] = $this->_translator->getMessage('AUTH_ERROR_TYPO3WEB_NOT_YET_IMPLEMENTED');
+      return $granted;
    }
 }
 ?>
