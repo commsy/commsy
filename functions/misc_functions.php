@@ -1042,7 +1042,13 @@ function plugin_hook_plugin ($plugin, $hook_function, $params = null) {
 }
 
 function plugin_hook_output_all ($hook_function, $params = null, $separator = '') {
-   $retour = '';
+   if ( !empty($separator)
+        and $separator == 'ARRAY'
+      ) {
+      $retour = array(); 
+   } else {
+      $retour = '';
+   }
    global $environment;
    global $c_plugin_array;
 
@@ -1054,12 +1060,24 @@ function plugin_hook_output_all ($hook_function, $params = null, $separator = ''
       foreach ($c_plugin_array as $plugin) {
          $output = plugin_hook_output($plugin,$hook_function,$params);
          if ( !empty($output) ) {
-            if ( $first ) {
-               $first = false;
+            if ( !empty($separator)
+                 and $separator == 'ARRAY'
+                 and is_array($output)
+               ) {
+               $retour = array_merge($retour,$output);
+            } elseif ( !empty($separator)
+                       and $separator == 'ONE'
+                     ) {
+               $retour = $output;
+               break;
             } else {
-               $retour .= $separator;
+               if ( $first ) {
+                  $first = false;
+               } else {
+                  $retour .= $separator;
+               }
+               $retour .= $output;
             }
-            $retour .= $output;
          }
       }
    }

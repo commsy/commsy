@@ -995,6 +995,12 @@ class misc_text_converter {
       // Test auf erforderliche Software; Windows-Server?
       //$reg_exp_array['(:pdf']       = '/\\(:pdf (.*?)(\\s.*?)?\\s*?:\\)/e';
 
+      // plugins
+      $plugin_reg_exp_array = plugin_hook_output_all('getMediaRegExp',null,'ARRAY');
+      if ( !empty($plugin_reg_exp_array) ) {
+         $reg_exp_array = array_merge($reg_exp_array,$plugin_reg_exp_array);
+      }     
+      
       // jsMath for latex math fonts
       // see http://www.math.union.edu/~dpvc/jsMath/
       global $c_jsmath_enable;
@@ -1005,7 +1011,7 @@ class misc_text_converter {
          $reg_exp_array['{$$']     = '~\\{\\$\\$(.*?)\\$\$\\}~eu'; // must be before next one
          $reg_exp_array['{$']      = '~\\{\\$(.*?)\\$\\}~eu';
       }
-
+      
       // is there wiki syntax ?
       if ( !empty($reg_exp_array) ) {
          $reg_exp_keys = array_keys($reg_exp_array);
@@ -1135,6 +1141,14 @@ class misc_text_converter {
                      } elseif ( $key == '(:scratch' and mb_stristr($value_new,'(:scratch') ) {
                         $value_new = $this->_formatScratch($value_new,$args_array,$file_array);
                      }
+                     
+                     // plugins
+                     else {
+                        $value_new_plugin = plugin_hook_output_all('formatMedia',array('value_new' => $value_new, 'args_array' => $args_array, 'file_array' => $file_array),'ONE');
+                        if ( !empty($value_new_plugin) ) {
+                           $value_new = $value_new_plugin;
+                        }
+                     }                     
                   }
 
                   $text = str_replace($value,$value_new,$text);
