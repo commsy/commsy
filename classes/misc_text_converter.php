@@ -1144,7 +1144,7 @@ class misc_text_converter {
                      
                      // plugins
                      else {
-                        $value_new_plugin = plugin_hook_output_all('formatMedia',array('value_new' => $value_new, 'args_array' => $args_array, 'file_array' => $file_array),'ONE');
+                        $value_new_plugin = plugin_hook_output_all('formatMedia',array('key' => $key, 'value_new' => $value_new, 'args_array' => $args_array, 'file_array' => $file_array),'ONE');
                         if ( !empty($value_new_plugin) ) {
                            $value_new = $value_new_plugin;
                         }
