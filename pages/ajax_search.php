@@ -42,12 +42,35 @@ function compareWithSearchText($search_text, $value) {
 	return $value;
 }
 
+function getTagArray($root, $sublist) {
+	// prepare return
+	$return = array();
+	$return['children'] = array();
+	
+	// add information for root tag
+	$return['title'] = $root->getTitle();
+	$return['id'] = $root->getItemID();
+	
+	// add children
+	if(isset($sublist) && !empty($sublist)) {
+		$child = $sublist->getFirst();
+		while($child) {
+			$return['children'][] = getTagArray($child, $child->getChildrenList());
+			
+			$child = $sublist->getNext();
+		}
+	}
+	
+	return $return;
+}
+
 if(isset($_GET['do'])){
 	if($_GET['do'] == 'search') {
 		$room_item = $environment->getCurrentContextItem();
 		$user_item = $environment->getCurrentUserItem();
 		$db = $environment->getDBConnector();
 		$ftsearch_manager = $environment->getFTSearchManager();
+		$tag_manager = $environment->getTagManager();
 		
 		// determe where to search
 		$search_rubric = array();
@@ -157,6 +180,7 @@ if(isset($_GET['do'])){
 		$params['environment'] = $environment;
 		$view = $class_factory->getClass(INDEX_VIEW,$params);
 		$json_return = array();
+		$json_return['results'] = array();
 		foreach($results as $result) {
 			$rubric_manager = $environment->getManager($result['si_item_type']);
 			$item = $rubric_manager->getItem($result['item_id']);			// <- this may be null, if item is deleted
@@ -168,12 +192,34 @@ if(isset($_GET['do'])){
 				} else {
 					$title = $item->getTitle();
 				}
+				
+				// linked tags
+				$tag_list = $item->getTagList();
+				$tag_array = array();
+				$tag = $tag_list->getFirst();
+				while($tag) {
+					$tag_array[] = $tag->getItemID();
+					
+					$tag = $tag_list->getNext();
+				}
+				
+				// file list
+				$file_list = $item->getFileList();
+				$file_array = array();
+				$file = $file_list->getFirst();
+				while($file) {
+					$file_array[] = array(	'icon'		=> $file->getIconURL());
+					
+					$file = $file_list->getNext();
+				}
         		
 				$json_return['results'][$result['item_id']] = array(	'title'				=> $title,//$view->_text_as_html_short(compareWithSearchText($search_text, $title)),
 																		'modification_date'	=> $item->getModificationDate(),
 																		'complete'			=> $result['complete'],
 																		//'type'				=> $result['type'],
-																		'type'				=> $result['si_item_type']);
+																		'type'				=> $result['si_item_type'],
+																		'file_list'			=> $file_array,
+																		'tags'				=> $tag_array);
 			}
 		}
 		
@@ -190,21 +236,36 @@ if(isset($_GET['do'])){
 			}
 		}
 		
-		// collect item information for new search results
+		// collect item information for new search results - added by FTSearch
 		if(!empty($ft_new)) {
 			foreach($ft_new as $material_id => $value) {
 				$rubric_manager = $environment->getMaterialManager();
 				$item = $rubric_manager->getItem($material_id);
 				
 				if($item) {
+					// linked tags
+					$tag_list = $item->getTagList();
+					$tag_array = array();
+					$tag = $tag_list->getFirst();
+					while($tag) {
+						$tag_array[] = $tag->getItemID();
+						
+						$tag = $tag_list->getNext();
+					}
+					
 					$json_return['results'][$material_id] = array(	'title'				=> $item->getTitle(),//$view->_text_as_html_short(compareWithSearchText($search_text, $title)),
 																	'modification_date'	=> $item->getModificationDate(),
 																	'complete'			=> '',
 																	//'type'				=> $result['type'],
-																	'type'				=> 'material');
+																	'type'				=> 'material',
+																	'tags'				=> $tag_array);
 				}
 			}
 		}
+		
+		// append categories
+		$root = $tag_manager->getRootTagItem();
+		$json_return['categories'] = getTagArray($root, $root->getChildrenList());
 		
 		echo json_encode($json_return);
 	}

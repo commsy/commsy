@@ -4212,6 +4212,7 @@ function roomwide_search_extended_search(is_shown){
 jQuery(document).ready(function() {
 	var Search = {
 			response: null,
+			categories: null,
 			last_search: "",
 			input_search: null,
 			trigger_display: false,
@@ -4219,7 +4220,9 @@ jQuery(document).ready(function() {
 			lock: false,
 			display: {
 				offset: null,
-				results: null
+				results: null,
+				tags: null,
+				response: null
 			},
 			config: {
 				threshold: 3,
@@ -4240,6 +4243,9 @@ jQuery(document).ready(function() {
 					
 					// register submit function
 					this.registerSubmit();
+					
+					// init tag filter array
+					this.display.tags = new Array();
 				}
 			},
 			
@@ -4307,6 +4313,7 @@ jQuery(document).ready(function() {
 										   			console.log(ret);
 										   			
 										   			Search.response = ret.results;
+										   			Search.categories = ret.categories;
 										   			
 										   			// autocompletion
 										   			if(Search.response.length > 0) {
@@ -4376,6 +4383,7 @@ jQuery(document).ready(function() {
 										   				// trigger results in overlay if needed
 											   			if(Search.trigger_display) {
 											   				Search.displayResults();
+											   				Search.displayCategories();
 											   			}
 										   			});
 										   		}
@@ -4391,8 +4399,8 @@ jQuery(document).ready(function() {
 			registerSubmit: function() {
 				// register submit function
 				jQuery('input[id="search_autocomplete"]').parent().submit(function() {
-					// skip, if search field is empty
-					if(Search.input_search.val().length == 0) return false;
+					// skip, if search field length is below threshold
+					if(Search.input_search.val().length < Search.config.threshold) return false;
 					
 					// skip, if window was not closed
 					if(jQuery('div[id="search_overlay_front"]').length != 0) return false;
@@ -4402,7 +4410,7 @@ jQuery(document).ready(function() {
 					
 					jQuery('<div/>', {
 						id: "search_overlay_background",
-						style: "position: absolute; left: 0px; top: 0px; z-index: 900; width: 100%; height: 100%; background-color: #FFFFFF; opacity: 0.7;"
+						style: "position: absolute; left: 0px; top: 0px; z-index: 900; width: 100%; height: 1000%; background-color: #FFFFFF; opacity: 0.7;"
 					}).appendTo('body');
 					
 					jQuery('<div/>', {
@@ -4435,8 +4443,7 @@ jQuery(document).ready(function() {
 									}))).append(
 								jQuery('<div/>', {
 									id: 'search_overlay_result_message',
-									style: 'display: none;',
-									text: search_lang_result_message
+									style: 'display: none;'
 								})).append(
 									jQuery('<img/>', {
 										id: "search_overlay_loading_animation",
@@ -4472,9 +4479,6 @@ jQuery(document).ready(function() {
 									type: 'checkbox'
 								}))).append(
 							jQuery('<div/>', {
-								style: 'clear:both; '
-							})).append(
-							jQuery('<div/>', {
 								class: 'search_overlay_config_label'
 							}).append(
 								jQuery('<span/>', {
@@ -4504,7 +4508,11 @@ jQuery(document).ready(function() {
 							jQuery('<div/>', {
 								class: 'search_overlay_config_label',
 								text: search_lang_restriction_categories
-							})).append(
+							}).append(
+								jQuery('<div/>', {
+									id: 'tag_tree',
+									style: 'border-top: 1px solid black; margin-right: 3px;'
+								}))).append(
 							jQuery('<div/>', {
 								style: 'clear:both; '
 							}))).appendTo('div[id="search_overlay_config"]');
@@ -4563,6 +4571,7 @@ jQuery(document).ready(function() {
 							Search.trigger_display = true;
 						} else {
 							Search.displayResults();
+							Search.displayCategories();
 						}
 					} else {
 						Search.trigger_display = true;
@@ -4583,7 +4592,7 @@ jQuery(document).ready(function() {
 				jQuery.each(search_rubrics, function(index, element) {
 					// are there results for actual rubric?
 					empty = true;
-					jQuery.each(Search.response, function(i, e) {
+					jQuery.each(Search.display.response, function(i, e) {
 						if(e.type == element) {
 							empty = false;
 							return false;
@@ -4643,7 +4652,7 @@ jQuery(document).ready(function() {
 						var count = 1;
 						var offset_count = 0;
 		   				var css_class = 'odd';
-						jQuery.each(Search.response, function(index_entry, element_entry) {
+						jQuery.each(Search.display.response, function(index_entry, element_entry) {
 							// skip, if rubric does not match
 							if(element_entry.type == element) {
 								// skip if offset is not reached
@@ -4779,7 +4788,7 @@ jQuery(document).ready(function() {
 				var count = 1;
    				var css_class = 'odd';
    				var offset_count = 0;
-				jQuery.each(Search.response, function(index_entry, element_entry) {
+				jQuery.each(Search.display.response, function(index_entry, element_entry) {
 					if(offset_count >= Search.display.offset) {
 						// break if limit is reached
 						if(count > Search.config.resultsPerRubric) return false;
@@ -4854,9 +4863,149 @@ jQuery(document).ready(function() {
 				});
 			},
 			
+			filter: function(result) {
+				var ret = false;
+				
+				// tags
+				if(Search.display.tags.length == 0) {
+					ret = true;
+				} else {
+					jQuery.each(result.tags, function(result_tag_index, result_tag_element) {
+						jQuery.each(Search.display.tags, function(display_tag_index, display_tag_element) {
+							if(result_tag_element == display_tag_element) {
+								ret = true;
+								
+								// break
+								return false;
+							}
+						});
+						
+						// break
+						if(ret == true) return false;
+					});
+				}
+				
+				return ret;
+			},
+			
+			appendTagTree: function(dom_element, root_tag) {
+				if(root_tag.children.length > 0) {
+					// append <ul>
+					jQuery('<ul/>', {
+						
+					}).appendTo(dom_element);
+					var ul = dom_element.find('ul');
+					
+					jQuery.each(root_tag.children, function(index, element) {
+						// append <li/>
+						jQuery('<li/>', {
+							
+						}).append(
+							jQuery('<a/>', {
+								text: element.title,
+								id: 'search_tag_restriction_' + element.id,
+								href: '#'
+							})).appendTo(ul);
+						
+						// recursion
+						var li = ul.find('li:last');
+						Search.appendTagTree(li, element);
+					});
+				}
+			},
+			
+			displayCategories: function() {
+				// insert dynatree for categories
+				Search.appendTagTree(jQuery('div[id="search_overlay_config"] div[id="tag_tree"]'), Search.categories);
+				
+				// handle dynatree
+				if(jQuery('[id^=tag_tree]').length){
+					jQuery.ui.dynatree.nodedatadefaults["icon"] = false;
+					jQuery('[id^=tag_tree]').each(function(){
+						jQuery(this).dynatree({
+							fx: { height: "toggle", duration: 200 },
+							checkbox: true,
+							onClick: function(dtnode, event) {
+								var target = jQuery(event.target);
+								
+								// separate tag id
+								var result = target.attr('id').match(/search_tag_restriction_([0-9]*)/);
+								var tag_id = parseInt(result[1]);
+								
+								// check if tag is already set
+								var insert = true;
+								if(jQuery.inArray(tag_id, Search.display.tags) != -1) insert = false;
+								
+								// insert / remove
+								if(insert == true) {
+									// add tag id
+									Search.display.tags.push(tag_id);
+									
+									// make text bold and underlined
+									target.css('font-weight', 'bold');
+									target.css('text-decoration', 'underline');
+								} else {
+									// remove tag id
+									var tmp = new Array();
+									jQuery.each(Search.display.tags, function(index, element) {
+										if(element != tag_id) {
+											tmp.push(element);
+										}
+									});
+									Search.display.tags = tmp;
+									
+									// remove text styles
+									target.css('font-weight', 'normal');
+									target.css('text-decoration', 'none');
+								}
+								
+								// redraw
+								jQuery('div[id="search_overlay_results"] div').remove();
+								Search.display.results = null;
+								Search.display.offset = null;
+								Search.displayResults();
+								
+								
+								
+								// prevent highlighted background
+								return false;
+							},
+							
+							onSelect: function(select, dtnode){
+								if( dtnode.data.checkbox ){
+									jQuery("[#taglist_" + dtnode.data.checkbox).attr('checked', select);
+								}
+							}
+						});
+						var max_visible_nodes = 20;
+						var max_expand_level = getExpandLevel(jQuery(this), max_visible_nodes);
+						jQuery(this).dynatree("getRoot").visit(function(dtnode){
+							if(dtnode.getLevel() < max_expand_level){
+								dtnode.expand(true);
+							}
+							if( !dtnode.data.checkbox ){
+								dtnode.data.hideCheckbox = true;
+								dtnode.render(true);
+							} else {
+								dtnode.select(jQuery("[#taglist_" + dtnode.data.checkbox).attr('checked'));
+							}
+						});
+						if(jQuery(this).attr('name') == 'tag_tree_detail'){
+							collapseTree(jQuery(this).dynatree("getRoot"), true);
+						}
+					});
+				}
+			},
+			
 			displayResults: function() {
 				// remove loading animation
 				jQuery('img[id="search_overlay_loading_animation"]').remove();
+				
+				// filter results
+				this.display.response = new Array();
+				jQuery.each(Search.response, function(index, element) {
+					if(Search.filter(element)) Search.display.response.push(element);
+				});
 				
 				// determe some values
 				var numRubrics = 0;
@@ -4884,7 +5033,8 @@ jQuery(document).ready(function() {
 						if(init == true) {
 							// are there results for actual rubric?
 							tmp = false;
-							jQuery.each(Search.response, function(i, e) {
+							
+							jQuery.each(Search.display.response, function(i, e) {
 								if(e.type == element) {
 									Search.display.results[index] += 1;
 									tmp = true;
@@ -4901,7 +5051,7 @@ jQuery(document).ready(function() {
 					if(init == true) {
 						jQuery.each(search_rubrics, function(index, element) {
 							// are there results for actual rubric?
-							jQuery.each(Search.response, function(i, e) {
+							jQuery.each(Search.display.response, function(i, e) {
 								if(e.type == element) {
 									numRubrics++;
 									return false;
@@ -4910,7 +5060,7 @@ jQuery(document).ready(function() {
 						});
 						
 						var tmp = 0;
-						jQuery.each(Search.response, function(i, e) {
+						jQuery.each(Search.display.response, function(i, e) {
 							numResults++;
 						});
 						
@@ -4928,6 +5078,7 @@ jQuery(document).ready(function() {
 				
 				// set num of results and rubrics
 				var result_message = jQuery('div[id="search_overlay_result_message"]');
+				result_message.text(search_lang_result_message);
 				result_message.text(result_message.text().replace(/%1/, numResults));
 				result_message.text(result_message.text().replace(/%2/, numRubrics));
 				result_message.show();
