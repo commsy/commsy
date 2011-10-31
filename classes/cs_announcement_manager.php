@@ -223,7 +223,7 @@ class cs_announcement_manager extends cs_manager {
       }
 	  
 	  if((isset($this->_sort_order) && ($this->_sort_order == 'assessment' || $this->_sort_order == 'assessment_rev'))) {
-      	$query .= ' LEFT JOIN ' . $this->addDatabasePrefix('assessments') . ' ON ' . $this->addDatabasePrefix('announcement') . '.item_id=assessments.item_link_id';
+      	$query .= ' LEFT JOIN ' . $this->addDatabasePrefix('assessments') . ' ON ' . $this->addDatabasePrefix('announcement') . '.item_id=assessments.item_link_id AND assessments.deletion_date IS NULL';
       }
 
       $query .= ' WHERE 1';

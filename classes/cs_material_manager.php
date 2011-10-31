@@ -591,7 +591,7 @@ class cs_material_manager extends cs_manager {
            ($this->_order == 'modificator' || $this->_order == 'modificator_rev'))){
          $query .= ' INNER JOIN '.$this->addDatabasePrefix('user').' AS people ON '.$this->addDatabasePrefix('materials').'.modifier_id=people.item_id';
       } elseif((isset($this->_order) && ($this->_order == 'assessment' || $this->_order == 'assessment_rev'))) {
-      	$query .= ' LEFT JOIN ' . $this->addDatabasePrefix('assessments') . ' ON ' . $this->addDatabasePrefix('materials') . '.item_id=assessments.item_link_id';
+      	$query .= ' LEFT JOIN ' . $this->addDatabasePrefix('assessments') . ' ON ' . $this->addDatabasePrefix('materials') . '.item_id=assessments.item_link_id AND assessments.deletion_date IS NULL';
       }
 
       // only files limit -> entries with files (material)
