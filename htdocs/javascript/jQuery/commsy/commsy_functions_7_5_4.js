@@ -5012,7 +5012,9 @@ jQuery(document).ready(function() {
 				var tmp = false;
 				var init = false;
 				var numResults = 0;
-				if(Search.display.results == null || Search.numRubrics == null) init = true;
+				if(Search.display.results == null || Search.numRubrics == null) {
+					init = true;
+				}
 				if(Search.config.categorizeByRubrics == true) {
 					jQuery.each(search_rubrics, function(index, element) {
 						// init results and offset arrays
@@ -5046,7 +5048,10 @@ jQuery(document).ready(function() {
 							}
 						}
 					});
-					if(init == true) Search.numRubrics = numRubrics;
+					if(init == true) {
+						Search.numRubrics = numRubrics;
+						Search.numResults = numResults;
+					}
 				} else {
 					if(init == true) {
 						jQuery.each(search_rubrics, function(index, element) {
@@ -5079,8 +5084,8 @@ jQuery(document).ready(function() {
 				// set num of results and rubrics
 				var result_message = jQuery('div[id="search_overlay_result_message"]');
 				result_message.text(search_lang_result_message);
-				result_message.text(result_message.text().replace(/%1/, numResults));
-				result_message.text(result_message.text().replace(/%2/, numRubrics));
+				result_message.text(result_message.text().replace(/%1/, Search.numResults));
+				result_message.text(result_message.text().replace(/%2/, Search.numRubrics));
 				result_message.show();
 				
 				// register events
