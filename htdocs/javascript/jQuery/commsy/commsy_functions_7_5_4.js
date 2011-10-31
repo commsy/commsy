@@ -4218,6 +4218,7 @@ jQuery(document).ready(function() {
 			last_search: "",
 			input_search: null,
 			trigger_display: false,
+			mouse_was_over: false,
 			numRubrics: null,
 			lock: false,
 			display: {
@@ -4318,17 +4319,19 @@ jQuery(document).ready(function() {
 										   			Search.categories = ret.categories;
 										   			
 										   			// autocompletion
-										   			if(Search.response.length > 0) {
-										   				var tmp = Search.response[0].complete;
-											   			var auto_complete = '';
-											   			jQuery.each(Search.response, function(index, element) {
-											   				if(searchtext == element.complete.slice(0, searchtext.length) && (element.complete.length < auto_complete.length || auto_complete == 0)) {
-											   					auto_complete = element.complete;
-											   				}
-											   			});
-											   			auto_complete = searchtext + auto_complete.slice(searchtext.length);
-											   			jQuery('input[id="search_autocomplete"]').attr('value', auto_complete);
-										   			}
+										   			var first = true;
+										   			var auto_complete = '';
+										   			jQuery.each(Search.response, function(index, element) {
+										   				if(first == true) {
+										   					var tmp = element.complete;
+										   					
+										   				}
+										   				if(searchtext == element.complete.slice(0, searchtext.length) && (element.complete.length < auto_complete.length || auto_complete == 0)) {
+										   					auto_complete = element.complete;
+										   				}
+										   			});
+										   			auto_complete = searchtext + auto_complete.slice(searchtext.length);
+										   			jQuery('input[id="search_autocomplete"]').attr('value', auto_complete);
 										   			
 										   			// fadeout loading animation from fast search results
 										   			jQuery('div[class="search_fast_results"] div[id="loading_animation"] img').fadeOut('slow', function() {
@@ -4377,10 +4380,46 @@ jQuery(document).ready(function() {
 										   				
 										   				jQuery('<tr/>', {
 										   					
-										   				})
-											   				.append(jQuery('<td/>', {
-									   							class:		"head"
+										   				}).append(
+										   					jQuery('<td/>', {
+									   							class:		'head'
 									   						})).appendTo('div[class="search_fast_results"] div[id="results"] table');
+									   					
+									   					jQuery('<tr/>', {
+									   						
+									   					}).append(
+									   						jQuery('<td/>', {
+									   							
+									   						}).append(
+									   							jQuery('<a/>', {
+									   								id:			'search_fast_show_all',
+									   								text:		search_lang_fast_show_all
+									   							}))).appendTo('div[class="search_fast_results"] div[id="results"] table');
+										   				
+										   				// register click function
+										   				jQuery('a[id="search_fast_show_all"]').click(function() {
+										   					Search.input_search.parent().submit();
+										   				});
+										   				
+										   				// register hover function
+														jQuery('div[class="search_fast_results"]').hover(
+															function() {
+																// mouse pointer enters
+																Search.mouse_was_in = true;
+															},
+															function() {
+																// mouse pointer leaves
+																if(Search.mouse_was_in == true) {
+																	var fast_results = jQuery(this);
+																	fast_results.css('display', 'none');
+																	
+																	Search.input_search.hover(function() {
+																		fast_results.css('display', 'block');
+																		Search.mouse_was_in = false;
+																	});
+																}
+															}
+														);
 										   				
 										   				// trigger results in overlay if needed
 											   			if(Search.trigger_display) {

@@ -637,6 +637,7 @@ $message["COMMON_SEARCH_ENTRIES"]["en"] = "Search entry";
 $message["COMMON_SEARCH_IN_ENTRIES"]["en"] = "Search";
 $message["COMMON_SEARCH_IN_ROOM"]["en"] = "Search in workspace";
 $message["COMMON_SEARCH_IN_RUBRIC"]["en"] = "Search in rubric";
+$message["COMMON_SEARCH_OVERLAY_FAST_SHOW_ALL"]["en"] = "show all results";
 $message["COMMON_SEARCH_OVERLAY_RESTRICTION_CATEGORIES"]["en"] = "by categories";
 $message["COMMON_SEARCH_OVERLAY_RESTRICTION_OPTIONS"]["en"] = "limit results";
 $message["COMMON_SEARCH_OVERLAY_VIEW_OPTIONS"]["en"] = "View config";
