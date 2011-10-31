@@ -873,6 +873,7 @@ jQuery(document).ready(function() {
 	// set commsy body to a fixed size
 	var body_width = jQuery('[class=commsy_body]').width();
 	jQuery('[class=commsy_body]').css('width', body_width);
+	jQuery('[class=commsy_footer]').css('width', body_width);
 });
 
 function resize_calendar(){
@@ -1865,6 +1866,7 @@ function setupDiscussionTree() {
 	// set commsy body to a fixed size
 	var body_width = jQuery('[class=commsy_body]').width();
 	jQuery('[class=commsy_body]').css('width', body_width);
+	jQuery('[class=commsy_footer]').css('width', body_width);
 }
 
 jQuery(document).ready(function() {
