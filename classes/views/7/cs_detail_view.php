@@ -4389,7 +4389,7 @@ class cs_detail_view extends cs_view {
 
    function _getWorkflowReadAction($item, $user, $context){
       $html = '';
-      if($context->withWorkflow() and $context->withWorkflowReader() == '1'){
+      if($context->withWorkflow() and $context->withWorkflowReader() == '1' and $user->getUserID() != 'root'){
          $params = array();
          $params['iid'] = $item->getItemID();
          $workflow_link_text = '';
