@@ -3456,10 +3456,10 @@ class cs_detail_view extends cs_view {
          } else if($context->withWorkflowReader()){
             $html .= '   <tr>'.LF;
             $html .= '      <td></td>'.LF;
-            $html .= '      <td class="key" style="padding-left:8px; vertical-align:top; padding-top:0px;">'.LF;
+            $html .= '      <td class="key" style="padding-left:8px; vertical-align:top;">'.LF;
             $html .= '         '.$this->_translator->getMessage('COMMON_WORKFLOW_READ_SINCE_MODIFICATION').':&nbsp;'.LF;
             $html .= '      </td>'.LF;
-            $html .= '      <td class="value">'.LF;
+            $html .= '      <td class="value" style="padding-top:10px; padding-bottom:10px;">'.LF;
             $item_manager = $environment->getItemManager();
             $user_manager = $environment->getUserManager();
             $user_list = $user_manager->getAllRoomUsersFromCache($environment->getCurrentContextID());
