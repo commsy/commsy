@@ -524,7 +524,7 @@ class cs_wordpress_manager extends cs_manager {
    */
    public function isUserAllowedToExportItem ( $wordpress_id, $user_login ) {
       $retour = false;
-      if ( !empty($wordpress_id) ) {
+      if ( !empty($wordpress_id) and $user_login != 'root') {
          $session_item = $this->_environment->getSessionItem();
          if ( $this->_with_session_caching
               and $session_item->issetValue('wordpress_allowed_export_item_'.$wordpress_id)
