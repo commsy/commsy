@@ -508,7 +508,7 @@ class cs_annotations_manager extends cs_manager {
 			LEFT JOIN
 				search_time
 			ON
-				search_time.st_item_id = annotations.item_id
+				search_time.st_item_id = annotations.linked_item_id
 			WHERE
 				search_time.st_id IS NULL OR
 				annotations.modification_date > search_time.st_date

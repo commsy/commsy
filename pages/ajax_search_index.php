@@ -43,7 +43,7 @@ $query = array();
 // create indizes for
 //	- annotations
 $managers[] = $environment->getAnnotationManager();
-$query[] = 'SELECT COUNT(*) as count FROM annotations LEFT JOIN search_time ON item_id = search_time.st_item_id WHERE search_time.st_id IS NULL';
+$query[] = 'SELECT COUNT(*) as count FROM annotations LEFT JOIN search_time ON linked_item_id = search_time.st_item_id WHERE search_time.st_id IS NULL';
 
 //	- announcements
 $managers[] = $environment->getAnnouncementManager();
@@ -51,7 +51,7 @@ $query[] = 'SELECT COUNT(*) as count FROM announcement LEFT JOIN search_time ON 
 
 //	- section
 $managers[] = $environment->getSectionManager();
-$query[] = 'SELECT COUNT(*) as count FROM section LEFT JOIN search_time ON item_id = search_time.st_item_id WHERE search_time.st_id IS NULL';
+$query[] = 'SELECT COUNT(*) as count FROM section LEFT JOIN search_time ON material_item_id = search_time.st_item_id WHERE search_time.st_id IS NULL';
 
 //	- materials
 $managers[] = $environment->getMaterialManager();
@@ -91,7 +91,7 @@ $query[] = 'SELECT COUNT(*) as count FROM labels LEFT JOIN search_time ON item_i
 
 //	- discussionarticle
 $managers[] = $environment->getDiscussionArticleManager();
-$query[] = 'SELECT COUNT(*) as count FROM discussionarticles LEFT JOIN search_time ON item_id = search_time.st_item_id WHERE search_time.st_id IS NULL';
+$query[] = 'SELECT COUNT(*) as count FROM discussionarticles LEFT JOIN search_time ON discussion_id = search_time.st_item_id WHERE search_time.st_id IS NULL';
 
 //	- task
 $managers[] = $environment->getTaskManager();

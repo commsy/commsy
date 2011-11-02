@@ -535,7 +535,7 @@ class cs_discussionarticles_manager extends cs_manager {
 			LEFT JOIN
 				search_time
 			ON
-				search_time.st_item_id = discussionarticles.item_id
+				search_time.st_item_id = discussionarticles.discussion_id
 			WHERE
 				(
 					search_time.st_id IS NULL OR

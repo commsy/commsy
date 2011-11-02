@@ -644,7 +644,7 @@ class cs_section_manager extends cs_manager {
 			LEFT JOIN
 				search_time
 			ON
-				search_time.st_item_id = section.item_id
+				search_time.st_item_id = section.material_item_id
 			WHERE
 				(
 					search_time.st_id IS NULL OR
