@@ -1761,7 +1761,7 @@ class cs_manager {
     * @param $query - the query to get the needed data given by each manager individual
     * @param $item_type - the type of the item
     */
-   protected function updateSearchIndices($query, $item_type = '') {
+protected function updateSearchIndices($query, $item_type = '') {
    	if(!empty($query)) {
    		// every entry in result will be a single item
    		$result = $this->_db_connector->performQuery($query);
@@ -1784,7 +1784,7 @@ class cs_manager {
    		}
 		$search[] = "=&(.*?);=";											$replace[] = " ";
 		$search[] = "=\\(:(.*?):\\)=";										$replace[] = " ";
-		$search[] = '=(["()!:0-9/.,Ã¼-]*\s["()0-9/.,Ã¼-]*)=';				$replace[] = " ";
+		$search[] = '=(["()!:0-9/.,Ÿ-]*\s["()0-9/.,Ÿ-]*)=';					$replace[] = " ";
 		$search[] = "=(\s[A-Za-z]{1,2})\s=";								$replace[] = " ";
 		$search[] = "=\s+=";												$replace[] = " ";
 		
@@ -1801,7 +1801,6 @@ class cs_manager {
 				$item_type_tmp = $result_row['item_type'];
 			}
 			
-			
 			// compress data
 			$search_data = strip_tags($search_data);							// remove html tags
 			$search_search_data = stripslashes($search_data);					// remove slashes
@@ -1811,8 +1810,6 @@ class cs_manager {
 			// replace
 			$search_data = ' ' . str_replace(' ', '  ', $search_data) . ' ';
 			$search_data = trim(preg_replace($search, $replace, $search_data));
-			
-			
 			
 			// catch existing ids
 			if(!empty($searchtime_id)) {
@@ -1827,7 +1824,7 @@ class cs_manager {
 			}
 			
 			// skip empty strings
-			if(empty($search_data)) continue;
+			//if(empty($search_data)) continue;
 			
 			// put string of words into array
 			$words = explode(' ', $search_data);
@@ -1901,25 +1898,6 @@ class cs_manager {
 					if($word['sw_id'] != $word_new[sizeof($word_new) - 1]['sw_id']) $query .= ', ';
 				}
 				$result = $this->_db_connector->performQuery($query);
-				
-				/*
-				// get ids of new inserted words
-				$query = '
-					SELECT
-						sw_id
-					FROM
-						search_word
-					WHERE
-				';
-				foreach($word_new as $word) {
-					$query .= '
-						sw_word = "' . encode(AS_DB, $word) . '"
-					';
-					
-					if($word != $word_new[sizeof($word_new) - 1]) $query .= ' OR ';
-				}
-				$result = $this->_db_connector->performQuery($query);
-				*/
 				
 				// write new search_index entries
 				$query = '
