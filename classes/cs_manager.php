@@ -1824,7 +1824,7 @@ class cs_manager {
 			}
 			
 			// skip empty strings
-			if(empty($search_data)) continue;
+			//if(empty($search_data)) continue;
 			
 			// put string of words into array
 			$words = explode(' ', $search_data);
