@@ -270,6 +270,18 @@ if ($command != 'error') { // only if user is allowed to edit user
          elseif (!empty($iid) and $iid != 'NEW') { // change existing user
              $user_manager = $environment->getUserManager();
              $user_item = $user_manager->getItem($iid);
+             
+             if(isset($_GET['show_profile']) && $_GET['show_profile'] == 'yes') {
+             	$user_manager->setContextLimit($environment->getCurrentPortalID());
+             	$user_manager->setUserIDLimit($user_item->getUserID());
+             	$user_manager->select();
+             	$list = $user_manager->get();
+             	$user_manager->resetLimits();
+             	if($list->isNotEmpty() && $list->getCount() == 1) {
+             		$user_item = $list->getFirst();
+             	}
+             }
+             
              $form->setItem($user_item);
              $form->setIsModerator($current_user->isModerator());
              $picture = $user_item->getPicture();
