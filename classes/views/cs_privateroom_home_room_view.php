@@ -170,9 +170,9 @@ class cs_privateroom_home_room_view extends cs_view {
       $context = $this->_environment->getCurrentContextItem();
       $this->_page_impressions_for_room_id_array;
       if (isset($this->_page_impressions_for_room_id_array[$item->getItemID()])){
-         $count_total = $item->getPageImpressions($context->getTimeSpread(),$this->_page_impressions_for_room_id_array[$item->getItemID()]);
+         $count_total = $item->getPageImpressions($item->getTimeSpread(),$this->_page_impressions_for_room_id_array[$item->getItemID()]);
       }else{
-         $count_total = $item->getPageImpressions($context->getTimeSpread());
+         $count_total = $item->getPageImpressions($item->getTimeSpread());
       }
       if ( $count_total == 1 ) {
          $html .= $count_total.'&nbsp;'.$this->_translator->getMessage('ACTIVITY_PAGE_IMPRESSIONS_SINGULAR').'';
@@ -187,7 +187,7 @@ class cs_privateroom_home_room_view extends cs_view {
       $html .= '<tr><td class="detail_view_content_room_window'.$item->getItemID().'">'.LF;
       // Get number of new entries
 
-      $count_total = $item->getNewEntries($context->getTimeSpread());
+      $count_total = $item->getNewEntries($item->getTimeSpread());
       if ( $count_total == 1 ) {
          $html .= $count_total.'&nbsp;'.$this->_translator->getMessage('ACTIVITY_NEW_ENTRIES_SINGULAR');
          $html .= BRLF;
@@ -200,7 +200,7 @@ class cs_privateroom_home_room_view extends cs_view {
 
       $html .= '<tr><td class="detail_view_content_room_window'.$item->getItemID().'">'.LF;
       // Get percentage of active members
-      $active = $item->getActiveMembers($context->getTimeSpread());
+      $active = $item->getActiveMembers($item->getTimeSpread());
       $all_users = $item->getAllUsers();
       $percentage = round($active / $all_users * 100);
       $html .= $this->_translator->getMessage('ACTIVITY_ACTIVE_MEMBERS').':'.BRLF;
