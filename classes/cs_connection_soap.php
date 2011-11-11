@@ -2702,5 +2702,36 @@ class cs_connection_soap {
       }
       return $result;
    }
+   
+   
+   // ----------------------------------------
+   //  Additional methods for iOS application
+   // ----------------------------------------
+
+   public function getPortalRoomList($session_id, $portal_id, $count) {
+      if($this->_isSessionValid($session_id)) {
+         $room_manager = $this->_environment->getRoomManager();
+         $room_manager->setContextLimit($portal_id);
+         $room_manager->setRoomTypeLimit(CS_PROJECT_TYPE);
+         $room_manager->setOrder('activity_rev');
+         $room_manager->setIntervalLimit(0,$count);
+         $room_manager->select();
+         $test = $room_manager->getLastQuery();
+         $room_list = $room_manager->get();
+
+
+         $room_item = $room_list->getFirst();
+         $xml = "<room_list>\n";
+         while($room_item) {
+            $xml .= $room_item->getXMLData();
+            $room_item = $room_list->getNext();
+         }
+         $xml .= "</room_list>";
+         $xml = $this->_encode_output($xml);
+      } else {
+         return new SoapFault('ERROR','Session not valid!');
+      }
+      return $xml;
+   }
 }
 ?>
