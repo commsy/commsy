@@ -103,7 +103,9 @@ class cs_plugin {
               and !$current_context_item->isPortal()
             ) {
             $current_context_item = $this->_environment->getCurrentPortalItem();
-            $config_array = $current_context_item->getPluginConfigForPlugin($identifier);
+            if ( !empty($current_context_item) ) {            
+               $config_array = $current_context_item->getPluginConfigForPlugin($identifier);
+            }
          }
          if ( !empty($config_array)
               and !empty($config_array[$option])
