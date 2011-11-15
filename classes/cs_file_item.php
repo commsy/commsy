@@ -534,6 +534,14 @@ class cs_file_item extends cs_item {
       return $retour;
    }
 
+   public function getBase64 () {
+      return $this->_getFileAsBase64();
+   }
+   
+   public function getString () {
+      return $this->_getFileAsString();
+   }
+   
    public function _getDataAsXML () {
       $retour = '';
       foreach ($this->_data as $key => $value) {
