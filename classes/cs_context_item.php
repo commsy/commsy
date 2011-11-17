@@ -843,6 +843,28 @@ class cs_context_item extends cs_item {
     return $retour;
   }
   
+  function setWithWorkflowValidity() {
+    $this->_addExtra('WITHWORKFLOWVALIDITY',2);
+  }
+
+  function setWithoutWorkflowValidity() {
+    $this->_addExtra('WITHWORKFLOWVALIDITY',1);
+  }
+
+  function withWorkflowValidity() {
+    $retour = true;
+    if ($this->_issetExtra('WITHWORKFLOWVALIDITY') ) {
+      $re = $this->_getExtra('WITHWORKFLOWVALIDITY');
+      if ($re == 2) {
+        $retour = true;
+      }
+    }
+    #else {
+    #  $retour = true;
+    #}
+    return $retour;
+  }
+  
   /** get htmltextarea status
    *
    * @return integer discussion status 1 = simple, 2 = threaded,  3 = both

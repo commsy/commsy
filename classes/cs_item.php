@@ -2424,5 +2424,34 @@ function getExternalViewerArray(){
       }
       return $result;
    }
+   
+   function setWorkflowValidity($value) {
+      $this->_setExtra('WORKFLOWRESUBMISSION', (string)$value);
+   }
+   function getWorkflowValidity() {
+      $result = false;
+      if($this->_issetExtra('WORKFLOWRESUBMISSION')){
+         $result = $this->_getExtra('WORKFLOWRESUBMISSION');
+      }
+      return $result;
+   }
+   
+   function setWorkflowValidityDate($value) {
+      $this->_setValue('workflow_resubmission_date', (string)$value);
+   }
+   function getWorkflowValidityDate() {
+      return $result = $this->_getValue('workflow_resubmission_date');
+   }
+   
+   function setWorkflowValidityTrafficLight($value) {
+      $this->_setExtra('WORKFLOWRESUBMISSIONTRAFFICLIGHT', (string)$value);
+   }
+   function getWorkflowValidityTrafficLight() {
+      $result = '3_none';
+      if($this->_issetExtra('WORKFLOWRESUBMISSIONTRAFFICLIGHT')){
+         $result = $this->_getExtra('WORKFLOWRESUBMISSIONTRAFFICLIGHT');
+      }
+      return $result;
+   }
 }
 ?>
