@@ -35,7 +35,7 @@ class cs_home_view extends cs_view {
     * int - length of whole list
     */
    var $_count_all = NULL;
-   
+
    /**
     * bool - is the list shortened?
     */
@@ -76,10 +76,10 @@ class cs_home_view extends cs_view {
     function setCountAll ($count_all) {
        $this->_count_all = (int)$count_all;
     }
-    
+
     /**
      * set wheather the list is shortened or not
-     * 
+     *
      * @param bool $shortened			is list shortened?
      */
     function setListShortened($shortened = false) {
@@ -122,7 +122,7 @@ class cs_home_view extends cs_view {
     */
    function asHTML () {
 	  $html = '';
-	  
+
 	  $html .= $this->addJavaScriptForSearch();
 
 	  // hack for configuration index
@@ -224,6 +224,58 @@ class cs_home_view extends cs_view {
          }
          unset($noticed_manager);
          // Add change info for annotations (TBD)
+      } else {
+         $info_text = '';
+      }
+      unset($item);
+      unset($current_user);
+      return $info_text;
+   }
+
+/** return a text indicating the modification state of an item
+    * this method returns a string like [new] or [modified] depending
+    * on the read state of the current user.
+    *
+    * @param  object item       a CommSy item (cs_item)
+    *
+    * @return string value
+    */
+   function _getItemStepChangeStatus($item) {
+      $current_user = $this->_environment->getCurrentUserItem();
+      if ($current_user->isUser()) {
+         $noticed_manager = $this->_environment->getNoticedManager();
+         $step_list = $item->getStepItemList();
+         $step_item = $step_list->getFirst();
+         $new = false;
+         $changed = false;
+         $date = "0000-00-00 00:00:00";
+         while ( $step_item ) {
+            $noticed = $noticed_manager->getLatestNoticed($step_item->getItemID());
+            if ( empty($noticed) ) {
+               if ($date < $step_item->getModificationDate() ) {
+                   $new = true;
+                   $changed = false;
+                   $date = $step_item->getModificationDate();
+               }
+            } elseif ( $noticed['read_date'] < $step_item->getModificationDate() ) {
+               if ($date < $step_item->getModificationDate() ) {
+                   $new = false;
+                   $changed = true;
+                   $date = $step_item->getModificationDate();
+               }
+            }
+            unset($step_item);
+            $step_item = $step_list->getNext();
+         }
+         if ( $new ) {
+            $info_text =' <span class="changed">['.$this->_translator->getMessage('COMMON_NEW_STEP').']</span>';
+         } elseif ( $changed ) {
+            $info_text = ' <span class="changed">['.$this->_translator->getMessage('COMMON_CHANGED_STEP').']</span>';
+         } else {
+            $info_text = '';
+         }
+         unset($noticed_manager);
+         unset($step_list);
       } else {
          $info_text = '';
       }

@@ -212,6 +212,7 @@ class cs_todo_short_view extends cs_home_view {
       unset($params);
       $title .= $this->_getItemChangeStatus($item);
       $title .= $this->_getItemAnnotationChangeStatus($item);
+      $title .= $this->_getItemStepChangeStatus($item);
       return $title;
    }
 
@@ -331,10 +332,10 @@ class cs_todo_short_view extends cs_home_view {
       return $html;
 
    }
-   
+
 	/**
     * returns the html link when list is shortened on home view
-    * 
+    *
     * @return string $html		- the html link code
     */
    function _getListShortenedLink() {
@@ -345,15 +346,15 @@ class cs_todo_short_view extends cs_home_view {
       } else {
          $style = 'class="even"';
       }
-      
+
       $link = ahref_curl(   $this->_environment->getCurrentContextID(),
                             CS_TODO_TYPE,
                             'index',
                             array(),
                             $this->_translator->getMessage("HOME_RUBRIC_LIST_SHORTENED"));
-      
+
       $html .= '<tr class="list"><td ' . $style . ' colspan="5">' . $link . '</td></tr>';
-      
+
       return $html;
    }
 }
