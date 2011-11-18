@@ -1962,7 +1962,7 @@ EOD;
     */
    function asHTML () {
       $html  = LF.'<!-- BEGIN OF LIST VIEW -->'.LF;
-      
+
   	  $html .= $this->addJavaScriptForSearch();
 
        $html .= $this->_getIndexPageHeaderAsHTML();
@@ -3258,10 +3258,10 @@ EOD;
 			$html_assessment_tooltip .= '<div id="assessment_tooltip" class="stickytooltip" style="width: 250px; border-width: 1px;">'.LF;
 			$html_assessment_tooltip .= '	<div style="padding: 5px;">'.LF;
 		 }
-		 
+
          while ( $current_item ) {
             $html .= $this->_getItemAsHTML($current_item, $i++);
-			
+
 			// assessment tooltip
 			if($current_context->isAssessmentActive()) {
 				// get assessment information
@@ -3269,7 +3269,7 @@ EOD;
 				$assessment = $assessment_manager->getAssessmentForItemDetail($current_item);
 				$html_assessment_tooltip .= '	<div id="sticky_' . $current_item->getItemID() . '" class="atip">'.LF;
 				$html_assessment_tooltip .= $this->_translator->getMessage('COMMON_ASSESSMENT_OVERLAY_DESCRIPTION');
-				
+
 				// show information about all votes
 				for($i = 1; $i <= 5; $i++) {
 					$html_assessment_tooltip .= '<div style="margin-top: 5px;">'.LF;
@@ -3279,13 +3279,13 @@ EOD;
 					for($j = $i; $j < 5; $j++) {
 						$html_assessment_tooltip .= '<span style="width: 200px;"><img src="images/commsyicons/32x32/star_unfilled.png" style="width:18px; height:18px"/></span>'.LF;
 					}
-					
+
 					$votes = 0;
-					
+
 					if(isset($assessment[$i])) {
 						$votes = $assessment[$i];
 					}
-					
+
 					$assessment_text = '';
 					if($votes == 1) {
 						$assessment_text = $this->_translator->getMessage('COMMON_ASSESSMENT_INDEX');
@@ -3295,13 +3295,13 @@ EOD;
 					$html_assessment_tooltip .= '	<span>' . $votes . ' ' . $assessment_text . '</span>'.LF;
 					$html_assessment_tooltip .= '</div>'.LF;
 				}
-				
+
 				$html_assessment_tooltip .= '	</div>'.LF;
 			}
-			
+
             $current_item = $list->getNext();
          }
-		 
+
 		 if($current_context->isAssessmentActive()) {
 			$html_assessment_tooltip .= '</div>'.LF;
 			$html .= $html_assessment_tooltip;
@@ -3419,6 +3419,55 @@ EOD;
          }
       }
       return $value;
+   }
+
+   /** return a text indicating the modification state of an item
+    * this method returns a string like [new] or [modified] depending
+    * on the read state of the current user.
+    *
+    * @param  object item       a CommSy item (cs_item)
+    *
+    * @return string value
+    *
+    * @author CommSy Development Group
+    */
+   function _getItemStepChangeStatus($item) {
+      $current_user = $this->_environment->getCurrentUserItem();
+      if ($current_user->isUser()) {
+         $noticed_manager = $this->_environment->getNoticedManager();
+         $step_list = $item->getStepItemList();
+         $step_item = $step_list->getFirst();
+         $new = false;
+         $changed = false;
+         $date = "0000-00-00 00:00:00";
+         while ( $step_item ) {
+            $noticed = $noticed_manager->getLatestNoticed($step_item->getItemID());
+            if ( empty($noticed) ) {
+               if ($date < $step_item->getModificationDate() ) {
+                   $new = true;
+                   $changed = false;
+                   $date = $step_item->getModificationDate();
+               }
+            } elseif ( $noticed['read_date'] < $step_item->getModificationDate() ) {
+               if ($date < $step_item->getModificationDate() ) {
+                   $new = false;
+                   $changed = true;
+                   $date = $step_item->getModificationDate();
+               }
+            }
+            $step_item = $step_list->getNext();
+         }
+         if ( $new ) {
+            $info_text =' <span class="changed">['.$this->_translator->getMessage('COMMON_NEW_STEP').']</span>';
+         } elseif ( $changed ) {
+            $info_text = ' <span class="changed">['.$this->_translator->getMessage('COMMON_CHANGED_STEP').']</span>';
+         } else {
+            $info_text = '';
+         }
+      } else {
+         $info_text = '';
+      }
+      return $info_text;
    }
 
    /** return a text indicating the modification state of an item
