@@ -1991,6 +1991,13 @@ class cs_form_view extends cs_view {
          $text .= $this->_translator->getMessage('COMMON_TEXT_FORMATING_FORMAT_TEXT');
          $text .= '<div class="bold" style="padding-bottom:5px;">'.$this->_translator->getMessage('COMMON_TEXT_INCLUDING_MEDIA').':</div>';
          $text .= $this->_translator->getMessage('COMMON_TEXT_INCLUDING_MEDIA_TEXT');
+         
+         // plugins
+         $plugin_text = plugin_hook_output_all('getTestFormatingInformationAsHTML','',BRLF);
+         if ( !empty($plugin_text) ) {
+            $text .= $plugin_text;
+         }
+         
          //$html .='<img id="toggle'.$item->getItemID().'" src="images/more.gif"/>';
          $html .='<img id="toggle'.$toggle_id.'" src="images/more.gif"/>';
          $html .= $title;
@@ -2008,6 +2015,13 @@ class cs_form_view extends cs_view {
          $html .= '<div style="padding-top:0px;">';
          $text .= '<div class="bold" style="padding-bottom:5px;">'.$this->_translator->getMessage('COMMON_TEXT_INCLUDING_MEDIA').':</div>';
          $text .= $this->_translator->getMessage('COMMON_TEXT_INCLUDING_MEDIA_TEXT');
+         
+         // plugins
+         $plugin_text = plugin_hook_output_all('getTestFormatingInformationAsHTML','',BRLF);
+         if ( !empty($plugin_text) ) {
+            $text .= $plugin_text;
+         }
+         
          //$html .='<img id="toggle'.$item->getItemID().'" src="images/more.gif"/>';
          $html .='<img id="toggle'.$toggle_id.'" src="images/more.gif"/>';
          $html .= $title;
