@@ -26,7 +26,8 @@ class cs_plugin {
    public $_translator  = NULL;
    public $_identifier  = ''; // must be the same as in etc/commsy/plugin.php
    public $_title       = '';
-
+   public $_text_converter = NULL;
+    
    /** constructor
     * the only available constructor
     *
@@ -35,6 +36,7 @@ class cs_plugin {
    public function __construct ($environment) {
       $this->_environment = $environment;
       $this->_translator = $environment->getTranslationObject();
+      $this->_text_converter = $environment->getTextConverter();
    }
 
    public function inStatistics () {
