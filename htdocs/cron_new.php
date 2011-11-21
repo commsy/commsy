@@ -228,8 +228,20 @@ function cron_workflow($portal){
             }
             
             // change the status of the material
-            // ...
             $material_manager->setWorkflowStatus($temp_material->getItemID(), $temp_material->getWorkflowResubmissionTrafficLight(), $temp_material->getVersionID());
+         }
+      }
+      
+      $item_array = $material_manager->getValidityItemIDsByDate(date('Y'), date('m'), date('d'));
+      foreach($item_array as $item){         
+         $temp_material = $material_manager->getItem($item['item_id']);
+         
+         $room_manager = $environment->getRoomManager();
+         $temp_room = $room_manager->getItem($temp_material->getContextID());
+         
+         if($temp_material->getWorkflowValidity() and $temp_room->withWorkflowValidity()){
+            // change the status of the material
+            $material_manager->setWorkflowStatus($temp_material->getItemID(), $temp_material->getWorkflowValidityTrafficLight(), $temp_material->getVersionID());
          }
       }
    }

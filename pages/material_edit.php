@@ -479,6 +479,28 @@ else {
                $material_item->setWorkflowResubmissionTrafficLight($_POST['workflow_resubmission_traffic_light']);
             }
             
+            if ( isset($_POST['workflow_validity']) and $material_item->getWorkflowValidity() != $_POST['workflow_validity'] ) {
+               $material_item->setWorkflowValidity($_POST['workflow_validity']);
+            } else if (!isset($_POST['workflow_validity'])) {
+               $material_item->setWorkflowValidity(0);
+            }
+            if ( isset($_POST['workflow_validity_date']) and $material_item->getWorkflowValidityDate() != $_POST['workflow_validity_date'] ) {
+               $dt_workflow_validity_time = '00:00:00';
+               $dt_workflow_validity_date = $_POST['workflow_validity_date'];
+               $dt_workflow_validity_datetime = '';
+               $converted_day_start = convertDateFromInput($_POST['workflow_validity_date'],$environment->getSelectedLanguage());
+               if ($converted_day_start['conforms'] == TRUE) {
+                  $dt_workflow_validity_datetime = $converted_day_start['datetime'].' ';
+                  $dt_workflow_validity_datetime .= $dt_workflow_resubmission_time;
+               }
+               $material_item->setWorkflowValidityDate($dt_workflow_validity_datetime);
+            } else {
+               $material_item->setWorkflowValidityDate('');
+            }
+            if ( isset($_POST['workflow_validity_traffic_light']) and $material_item->getWorkflowValidityTrafficLight() != $_POST['workflow_validity_traffic_light'] ) {
+               $material_item->setWorkflowValidityTrafficLight($_POST['workflow_validity_traffic_light']);
+            }
+            
             if ( $context_item->isCommunityRoom() and $context_item->isOpenForGuests() ) {
                $old_world_public = $material_item->getWorldPublic();
                if ( ( isset($_POST['world_public']) and $old_world_public == 0) or

@@ -362,6 +362,7 @@ $message["COMMON_ERROR_MINUTES_INT"]["de"] = "Geben Sie die Zeit bitte als Zahl 
 $message["COMMON_ERROR_SELECT"]["de"] = "Bitte wählen Sie bei <span style=&quot;font-weight:bold;&quot;>%1</span> etwas aus.";
 $message["COMMON_ERROR_TAG_ENTRY"]["de"] = "Bitte wählen Sie eine <span style=&quot;font-weight:bold;&quot;>Kategorie</span> aus.";
 $message["COMMON_ERROR_WORKFLOW_RESUBMISSION_DATE_MISSED"]["de"] = "Bitte geben Sie ein Wiedervorlage-Datum an";
+$message["COMMON_ERROR_WORKFLOW_VALIDITY_DATE_MISSED"]["de"] = "Bitte geben Sie ein G&uuml;ltigkeitsdatum an";
 $message["COMMON_EXTERNAL_VIEWER"]["de"] = "Der Eintrag ist freigegeben für";
 $message["COMMON_FACTS"]["de"] = "Fakten";
 $message["COMMON_FADE_IN"]["de"] = "Meinen Bereich einblenden";
@@ -855,6 +856,8 @@ $message["COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_NONE"]["de"] = "Kein Status";
 $message["COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_RED_DEFAULT"]["de"] = "ungültig";
 $message["COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_YELLOW_DEFAULT"]["de"] = "Entwurf";
 $message["COMMON_WORKFLOW_TRAFFIC_LIGHT_YELLOW"]["de"] = "gelb";
+$message["COMMON_WORKFLOW_VALIDITY"]["de"] = "Gültigkeitsdatum";
+$message["COMMON_WORKFLOW_VALIDITY_TRAFFIC_LIGHT"]["de"] = "Status nach Ablauf des Gültigkeitsdatum";
 $message["COMMON_X_ANNOTATIONS"]["de"] = "%1 Einträge";
 $message["COMMON_X_ENTRIES"]["de"] = "%1";
 $message["COMMON_X_ENTRIES_FROM_ALL"]["de"] = "Angezeigt: %1 Einträge (%2 insgesamt)";

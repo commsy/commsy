@@ -852,7 +852,7 @@ class cs_context_item extends cs_item {
   }
 
   function withWorkflowValidity() {
-    $retour = true;
+    $retour = false;
     if ($this->_issetExtra('WITHWORKFLOWVALIDITY') ) {
       $re = $this->_getExtra('WITHWORKFLOWVALIDITY');
       if ($re == 2) {

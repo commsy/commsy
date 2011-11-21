@@ -96,6 +96,10 @@ class cs_configuration_workflow_form extends cs_rubric_form {
                                   false
                                   );
       
+      $this->_form->addText('','','&nbsp;');
+
+      $this->_form->addCheckbox('workflow_validity','yes','',$this->_translator->getMessage('PREFERENCES_CONFIGURATION_WORKFLOW_VALIDITY_VALUE'),$this->_translator->getMessage('PREFERENCES_CONFIGURATION_WORKFLOW_VALIDITY_ENABLE'));
+                                 
       // buttons
       $this->_form->addButtonBar('option',$this->_translator->getMessage('PREFERENCES_SAVE_BUTTON'),'');
    }

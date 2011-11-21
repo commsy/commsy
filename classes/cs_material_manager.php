@@ -946,7 +946,8 @@ class cs_material_manager extends cs_manager {
                   'copy_of="'.encode(AS_DB,$copy_id).'",'.
                   'extras="'.encode(AS_DB,serialize($material_item->getExtraInformation())).'",'.
                   'workflow_status="'.encode(AS_DB,$material_item->getWorkflowTrafficLight()).'",'.
-                  'workflow_resubmission_date="'.encode(AS_DB,$material_item->getWorkflowResubmissionDate()).'"'.
+                  'workflow_resubmission_date="'.encode(AS_DB,$material_item->getWorkflowResubmissionDate()).'",'.
+                  'workflow_validity_date="'.encode(AS_DB,$material_item->getWorkflowValidityDate()).'"'.
                   ' WHERE item_id="'.encode(AS_DB,$material_item->getItemID()).'"'.
                   ' AND version_id="'.encode(AS_DB,$material_item->getVersionID()).'"';
          $result = $this->_db_connector->performQuery($query);
@@ -1037,7 +1038,8 @@ class cs_material_manager extends cs_manager {
                  'copy_of="'.encode(AS_DB,$copy_id).'",'.
                  'extras="'.encode(AS_DB,serialize($material_item->getExtraInformation())).'",'.
                  'workflow_status="'.encode(AS_DB,$material_item->getWorkflowTrafficLight()).'",'.
-                 'workflow_resubmission_date="'.encode(AS_DB,$material_item->getWorkflowResubmissionDate()).'"';
+                 'workflow_resubmission_date="'.encode(AS_DB,$material_item->getWorkflowResubmissionDate()).'",'.
+                 'workflow_validity_date="'.encode(AS_DB,$material_item->getWorkflowValidityDate()).'"';
         $result = $this->_db_connector->performQuery($query);
         if ( !isset($result) ) {
           include_once('functions/error_functions.php');
@@ -1295,6 +1297,11 @@ class cs_material_manager extends cs_manager {
 	
 	function setWorkflowStatus($item_id, $status, $version_id){
 	   $query = 'UPDATE '.$this->addDatabasePrefix('materials').' SET workflow_status = "'.$status.'" WHERE item_id = '.$item_id.' AND version_id = '.$version_id;
+	   return $this->_db_connector->performQuery($query);
+	}
+	
+   function getValidityItemIDsByDate($year, $month, $day){
+	   $query = 'SELECT item_id FROM '.$this->addDatabasePrefix('materials').' WHERE workflow_validity_date = "'.$year.'-'.$month.'-'.$day.'" AND deletion_date IS NULL';
 	   return $this->_db_connector->performQuery($query);
 	}
 } // end of class

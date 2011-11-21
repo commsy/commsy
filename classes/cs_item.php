@@ -2426,30 +2426,30 @@ function getExternalViewerArray(){
    }
    
    function setWorkflowValidity($value) {
-      $this->_setExtra('WORKFLOWRESUBMISSION', (string)$value);
+      $this->_setExtra('WORKFLOWVALIDITY', (string)$value);
    }
    function getWorkflowValidity() {
       $result = false;
-      if($this->_issetExtra('WORKFLOWRESUBMISSION')){
-         $result = $this->_getExtra('WORKFLOWRESUBMISSION');
+      if($this->_issetExtra('WORKFLOWVALIDITY')){
+         $result = $this->_getExtra('WORKFLOWVALIDITY');
       }
       return $result;
    }
    
    function setWorkflowValidityDate($value) {
-      $this->_setValue('workflow_resubmission_date', (string)$value);
+      $this->_setValue('workflow_validity_date', (string)$value);
    }
    function getWorkflowValidityDate() {
-      return $result = $this->_getValue('workflow_resubmission_date');
+      return $result = $this->_getValue('workflow_validity_date');
    }
    
    function setWorkflowValidityTrafficLight($value) {
-      $this->_setExtra('WORKFLOWRESUBMISSIONTRAFFICLIGHT', (string)$value);
+      $this->_setExtra('WORKFLOWVALIDITYTRAFFICLIGHT', (string)$value);
    }
    function getWorkflowValidityTrafficLight() {
       $result = '3_none';
-      if($this->_issetExtra('WORKFLOWRESUBMISSIONTRAFFICLIGHT')){
-         $result = $this->_getExtra('WORKFLOWRESUBMISSIONTRAFFICLIGHT');
+      if($this->_issetExtra('WORKFLOWVALIDITYTRAFFICLIGHT')){
+         $result = $this->_getExtra('WORKFLOWVALIDITYTRAFFICLIGHT');
       }
       return $result;
    }

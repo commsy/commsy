@@ -354,6 +354,7 @@ $message["COMMON_ERROR_MINUTES_INT"]["en"] = "Use the field minutes with numarie
 $message["COMMON_ERROR_SELECT"]["en"] = "Please select something for <span style=&quot;font-weight:bold;&quot;>%1</span>.";
 $message["COMMON_ERROR_TAG_ENTRY"]["en"] = "Please select a <span style=&quot;font-weight:bold;&quot;>category</span>.";
 $message["COMMON_ERROR_WORKFLOW_RESUBMISSION_DATE_MISSED"]["en"] = "Please give a resubmission date";
+$message["COMMON_ERROR_WORKFLOW_VALIDITY_DATE_MISSED"]["en"] = "Please give a validity date";
 $message["COMMON_EXTERNAL_VIEWER"]["en"] = "This entry is released for";
 $message["COMMON_FACTS"]["en"] = "Basics";
 $message["COMMON_FADE_IN"]["en"] = "Show left panel";
@@ -845,6 +846,8 @@ $message["COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_NONE"]["en"] = "No status";
 $message["COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_RED_DEFAULT"]["en"] = "invalid";
 $message["COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_YELLOW_DEFAULT"]["en"] = "Draft";
 $message["COMMON_WORKFLOW_TRAFFIC_LIGHT_YELLOW"]["en"] = "yellow";
+$message["COMMON_WORKFLOW_VALIDITY"]["en"] = "Validity date";
+$message["COMMON_WORKFLOW_VALIDITY_TRAFFIC_LIGHT"]["en"] = "Status after the expiration of the validity date";
 $message["COMMON_X_ANNOTATIONS"]["en"] = "%1 total";
 $message["COMMON_X_ENTRIES"]["en"] = "%1";
 $message["COMMON_X_ENTRIES_FROM_ALL"]["en"] = "Listed: %1 items (of %2 total)";

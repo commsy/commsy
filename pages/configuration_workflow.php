@@ -141,6 +141,13 @@ else {
             $room_item->setWorkflowReaderShowTo($_POST['workflow_resubmission_show_to']);
          }
          
+         if ( isset($_POST['workflow_validity']) and !empty($_POST['workflow_validity']) and $_POST['workflow_validity'] == 'yes' ) {
+            $room_item->setWithWorkflowValidity();
+            $isset_workflow = true;
+         } else {
+            $room_item->setWithoutWorkflowValidity();
+         }
+         
          if($isset_workflow){
             $room_item->setWithWorkflow();
          } else {
