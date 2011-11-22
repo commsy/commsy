@@ -1,0 +1,785 @@
+/* 
+----------------------------------------------------------------------
+build in: November 2011
+copyright: Mark Thabe, banality GmbH
+location: Essen-Germany/Bielefeld-Germany, www.banality.de
+----------------------------------------------------------------------
+*/
+
+
+
+/*
+----------------------------------------------------------------------
+global structure - tag definitions
+----------------------------------------------------------------------
+*/
+
+body {
+    margin: 0px;
+    border: 0px none;
+    padding: 0px;
+    background-color: #FFF; /* Hintergrundbild moeglich, Platzierung ueber Skin-Editor */
+    color: #393939;
+    font-family: verdana, sans-serif;
+    text-align: left;
+    font-size: 12px;
+    line-height: 16px;
+    }
+
+p, form, ul {
+    margin: 0px;
+    border: 0px none;
+    padding: 0px;
+    }
+
+img {
+    border: 0px none;
+    }
+
+li {
+    list-style-type: none;
+    }
+	
+h1, h2, h3, h4, h5, h6 {
+    padding: 0px;
+    margin: 0px;
+    }
+	
+	
+	
+/*
+----------------------------------------------------------------------
+id and class selectors
+----------------------------------------------------------------------
+*/	
+
+.clear {
+    clear: both;
+    }
+
+#wrapper {
+    width: 980px;
+    margin: 0 auto;
+    }
+
+
+
+/*
+----------------------------------------------------------------------
+meta_area
+----------------------------------------------------------------------
+*/	
+
+#meta_area {
+    background: url(img/meta_area_bg.jpg) repeat-x; /* ueber Skin-Editor austauschbar */
+    height: 40px;
+    }
+
+#meta_area_content {
+    border-bottom: 1px solid #689FDE; /* ueber Skin-Editor austauschbar */
+    color: #D5E3FF; /* ueber Skin-Editor austauschbar */
+    text-shadow: #2E405E 0 1px; /* ueber Skin-Editor austauschbar */
+    }
+
+#breadcrumb {
+    float: left;
+    width: 490px;
+    }
+    
+#meta_menu {
+    float: left;
+    width: 490px;
+    text-align: right;
+    }    
+    
+#breadcrumb span {
+    display: block;
+    float: left;
+    padding: 11px 0px 11px 10px;
+    }
+ 
+#meta_menu span {
+    display: block;
+    float: right;
+    padding: 11px 10px;
+    }   
+
+.mm_br {
+    border-right: 1px solid #2E405E; /* ueber Skin-Editor austauschbar */
+    }
+
+.mm_bl {
+    border-left: 1px solid #689FDE; /* ueber Skin-Editor austauschbar */
+    }
+
+#breadcrumb a, #meta_menu a {
+    color: #D5E3FF; /* ueber Skin-Editor austauschbar */
+    text-decoration: none;
+    }    
+
+#breadcrumb a:hover, #meta_menu a:hover {
+    color: #FFF;
+    } 
+
+#mm_logout {
+    background: url(img/meta_area_logout.gif) left 4px no-repeat; /* transparente Grafik hier einsetzen */
+    padding-left: 15px;
+    }
+    
+.mm_dropdown {
+    background: url(img/meta_area_dropdown.gif) right 6px no-repeat; /* transparente Grafik hier einsetzen */
+    padding-right: 15px;  
+    }    
+    
+.mm_right {
+    background: url(img/meta_area_arright.gif) right 5px no-repeat; /* transparente Grafik hier einsetzen */
+    padding-right: 15px;  
+    }    
+    
+
+
+/*
+----------------------------------------------------------------------
+header
+----------------------------------------------------------------------
+*/	    
+
+#header {
+    padding-top: 10px;
+    }    
+
+#logo_area {
+    width: 735px;
+    float: left;
+    }
+
+#logo_area img {
+    padding-left: 10px;
+    }    
+
+#search_area {
+    width: 245px;
+    background: url(img/search_area_bg.gif) no-repeat;
+    height: 70px;
+    float: left;
+    }
+
+#search_navigation span {
+    display: block;
+    float: left;
+    padding: 4px 10px 5px 8px;
+    }
+
+#search_navigation .sa_sep {
+    background: url(img/sa_sep.jpg) right top no-repeat;
+    }    
+
+#search_navigation a {
+    color: #747474;
+    text-decoration: none;
+    font-size: 10px;
+    letter-spacing: -1px;
+    }
+
+#search_navigation a:hover {
+    color: #353535;
+    }
+
+#search_navigation a#sa_active {
+    color: #353535;
+    padding-bottom: 7px;
+    background: url(img/sa_active.gif) center bottom no-repeat;
+    }
+
+#sa_options {
+    padding-top: 10px !important;
+    }    
+
+#commsy_search {
+    background: url(img/search_bg.jpg) no-repeat;
+    margin-left: 10px;
+    height: 35px;
+    }    
+    
+#search_input {
+    background: transparent;
+    padding: 6px 5px 5px 35px;
+    width: 130px;
+    font-size: 12px;
+    font-weight: bold;
+    border: 0px none;
+    }    
+    
+#commsy_search input {
+    vertical-align: middle;
+    }       
+    
+    
+    
+/*
+----------------------------------------------------------------------
+columnset, general settings
+----------------------------------------------------------------------
+*/	    
+
+#columnset {
+    background: url(img/columns_bg.jpg) right top repeat-y #D7D7D9; /* ueber Skin-Editor austauschbar, selbe Grafik fuer footer_right verwenden */
+    }
+    
+#left_column {
+    width: 735px;
+    float: left;
+    border-top: 1px solid #999;
+    }    
+    
+#right_column {
+    width: 245px;
+    float: left;
+    border-top: 1px solid #2E405E; /* ueber Skin-Editor austauschbar */
+    }      
+
+#info_addon {
+    background: url(img/info_addon_bg.png) no-repeat; /* ueber Skin-Editor austauschbar */
+    border-top: 1px solid #689FDE; /* ueber Skin-Editor austauschbar */
+    border-bottom: 1px solid #689FDE; /* ueber Skin-Editor austauschbar */
+    padding: 0px 10px;
+    color: #DEE8FF; /* ueber Skin-Editor austauschbar */
+    text-shadow: #2E405E 0 1px; /* ueber Skin-Editor austauschbar */
+    }    
+
+#info_area {
+    float: left;
+    border-right: 1px solid #2E405E; /* ueber Skin-Editor austauschbar */
+    width: 170px;
+    height: 60px;
+    }
+
+#info_area h2 {
+    font-size: 10px;
+    padding: 5px 0px 2px 0px;
+    }
+
+#info_area p {
+    font-size: 10px;
+    }
+
+#infos_left {
+    float: left;
+    width: 120px;
+    }
+    
+#infos_right {
+    float: left;
+    }    
+
+#info_bar {
+    background: url(img/info_bar_bg.png) no-repeat; /* Grafik dynamisch erzeugen oder aus einem Pool waehlen */
+    width: 40px;
+    height: 42px;
+    margin-top: 10px;
+    }
+
+#info_bar p {
+    font-size: 10px;
+    position: relative;
+    text-align: center;
+    padding-top: 11px;
+    }
+
+#addon_area {
+    float: left;
+    border-left: 1px solid #689FDE; /* ueber Skin-Editor austauschbar */
+    height: 60px;
+    width: 53px;
+    }
+
+#addon_area p {
+    padding-top: 4px;
+    }
+
+#addon_area a {
+    display: block;
+    float: left;
+    width: 16px;
+    height: 20px;
+    margin: 6px 0px 0px 10px;
+    }
+  
+  
+  
+/*
+----------------------------------------------------------------------
+main-navigation
+----------------------------------------------------------------------
+*/
+
+#main_navigation {
+    background: url(img/main_nav_bg.jpg) repeat-x;
+    height: 102px;
+    }
+
+#main_navigation h1 {
+    font-size: 12px;
+    color: #FFF;
+    padding: 12px 10px;
+    border-left: 1px solid #999;
+    }
+
+#main_navigation #site_actions {
+    float: right;
+    background: url(img/site_actions_bg.jpg) no-repeat;
+    padding: 0px 10px 0px 2px;
+    height: 40px;
+    }
+
+#site_actions a {
+    float: left;
+    padding: 12px 0px 0px 10px !important;
+    }
+
+#main_navigation ul {
+    display: inline;
+    border-right: 1px solid #EBEBEB;
+    padding: 0px 0px 35px 0px;
+    }
+
+#main_navigation li {
+    float: left;
+    }
+
+#main_navigation a {
+    padding: 10px 10px 6px 10px;
+    font-size: 10px;
+    line-height: 10px;
+    display: block;
+    text-decoration: none;
+    }
+
+#main_navigation li span span {
+    background: url(img/flag_neu.gif) no-repeat;
+    display: block;
+    width: 100%;
+    position: relative;
+    top: -15px;
+    left: 2px;
+    width: 20px;
+    height: 10px;
+    }
+
+#main_navigation .non_active {
+    background: url(img/nonactive_bg.jpg) repeat-x;  
+    }
+
+#main_navigation #active {
+    background: url(img/active_bg.jpg) repeat-x;
+    border-bottom: 1px solid #5B595A;
+    }   
+
+#main_navigation .non_active a {
+    color: #454545;
+    border-left: 1px solid #EBEBEB;
+    border-right: 1px solid #999;
+    }
+
+#main_navigation #active a {
+    color: #FFF;
+    border-left: 1px solid #999;
+    border-right: 1px solid #999;
+    text-align: center;
+    }      
+
+#main_navigation .non_active a:hover {
+    color: #454545;
+    border-left: 1px solid #EBEBEB;
+    border-right: 1px solid #999;
+    background: #E0DEDF;
+    }
+
+/* Home */
+   
+a span#ho_act, a span#ho_non_act {
+    display: block;
+    height: 25px;
+    width: 25px;
+    margin: 0px auto;
+    }   
+
+a span#ho_act {
+    background: url(img/nav_home.png) no-repeat 0px 0px;  
+    }  
+
+a span#ho_non_act {
+    background: url(img/nav_home.png) no-repeat -25px 0px;  
+    }   
+
+/* Ankuendigungen */
+    
+a span#an_act, a span#an_non_act {
+    display: block;
+    height: 25px;
+    width: 25px;
+    margin: 0px auto;
+    }   
+
+a span#an_act {
+    background: url(img/nav_ankuen.png) no-repeat 0px 0px;  
+    }  
+
+a span#an_non_act {
+    background: url(img/nav_ankuen.png) no-repeat -25px 0px;  
+    } 
+
+/* Termine */
+    
+a span#te_act, a span#te_non_act {
+    display: block;
+    height: 25px;
+    width: 22px;
+    margin: 0px auto;
+    }   
+
+a span#te_act {
+    background: url(img/nav_termine.png) no-repeat 0px 0px;  
+    }  
+
+a span#te_non_act {
+    background: url(img/nav_termine.png) no-repeat -21px 0px;  
+    }     
+    
+/* Material */
+    
+a span#ma_act, a span#ma_non_act {
+    display: block;
+    height: 25px;
+    width: 22px;
+    margin: 0px auto;
+    }   
+
+a span#ma_act {
+    background: url(img/nav_material.png) no-repeat 0px 0px;  
+    }  
+
+a span#ma_non_act {
+    background: url(img/nav_material.png) no-repeat -21px 0px;  
+    }     
+    
+/* Diskussionen */
+    
+a span#di_act, a span#di_non_act {
+    display: block;
+    height: 25px;
+    width: 25px;
+    margin: 0px auto;
+    }   
+
+a span#di_act {
+    background: url(img/nav_diskussionen.png) no-repeat 0px 5px;  
+    }  
+
+a span#di_non_act {
+    background: url(img/nav_diskussionen.png) no-repeat -25px 5px;  
+    }        
+    
+/* Personen */
+    
+a span#pe_act, a span#pe_non_act {
+    display: block;
+    height: 25px;
+    width: 25px;
+    margin: 0px auto;
+    }   
+
+a span#pe_act {
+    background: url(img/nav_personen.png) no-repeat 0px 0px;  
+    }  
+
+a span#pe_non_act {
+    background: url(img/nav_personen.png) no-repeat -25px 0px;  
+    }     
+    
+ /* Gruppen */
+    
+a span#gr_act, a span#gr_non_act {
+    display: block;
+    height: 25px;
+    width: 25px;
+    margin: 0px auto;
+    }   
+
+a span#gr_act {
+    background: url(img/nav_gruppen.png) no-repeat 0px 0px;  
+    }  
+
+a span#gr_non_act {
+    background: url(img/nav_gruppen.png) no-repeat -25px 0px;  
+    }    
+    
+ /* Aufgaben */
+    
+a span#au_act, a span#au_non_act {
+    display: block;
+    height: 25px;
+    width: 25px;
+    margin: 0px auto;
+    }   
+
+a span#au_act {
+    background: url(img/nav_aufgaben.png) no-repeat 0px 2px;  
+    }  
+
+a span#au_non_act {
+    background: url(img/nav_aufgaben.png) no-repeat -25px 2px;  
+    }    
+
+ /* Themen */
+    
+a span#th_act, a span#th_non_act {
+    display: block;
+    height: 25px;
+    width: 25px;
+    margin: 0px auto;
+    }   
+
+a span#th_act {
+    background: url(img/nav_themen.png) no-repeat 0px 0px;  
+    }  
+
+a span#th_non_act {
+    background: url(img/nav_themen.png) no-repeat -25px 0px;  
+    }  
+      
+      
+        
+/*
+----------------------------------------------------------------------
+content, general
+----------------------------------------------------------------------
+*/
+
+#maincontent {
+    border-left: 1px solid #999;
+    }
+
+#full_width_content {
+    width: 100%;
+    }
+
+.content_item {
+    background: url(img/content_item.jpg) repeat-x;
+    }
+
+.content_item h2 {
+    background: url(img/ci_head_bg.png) repeat-x;
+    font-size: 12px;
+    padding: 17px 0px 7px 10px;
+    }
+
+.content_item h2 span {
+    color: #5E5E5E;
+    padding-left: 5px;
+    }
+
+.ci_head_actions {
+    float: right;
+    }
+
+.ci_head_actions a {
+    display: block;
+    padding: 16px 10px 9px 12px;
+    float: left;
+    }
+
+.open_close {
+    background: url(img/open_close_bg.png) no-repeat;
+    }
+
+.row_odd {
+    background-color: #F5F5F5;
+    }
+
+.row_even {
+    background-color: #FFF;
+    }
+
+.row_odd:hover, .row_even:hover {
+    background-color: #DEE8FF; /* ueber Skin-Editor austauschbar */
+    }
+
+.row_odd a, .row_even a {
+    color: #393939;
+    text-decoration: none;
+    }
+
+.row_odd:hover a, .row_even:hover a {
+    color: #DB261D;
+    }
+
+.row_odd:hover a:hover, .row_even:hover a:hover {
+    color: #DB261D;
+    text-decoration: underline;
+    }
+
+.seperator {
+    background: url(img/seperator_bg.gif) repeat-y;
+    overflow: auto;
+    }
+
+span.new_item {
+    background: url(img/flag_neu.gif) no-repeat left center;
+    margin-left: -24px;
+    padding-left: 24px; 
+    }
+
+
+
+/*
+----------------------------------------------------------------------
+content, home desktop
+----------------------------------------------------------------------
+*/
+
+.column_430 {
+    width: 430px;
+    float: left;
+    }
+
+.column_430 p, .column_120 p, .column_184 p {
+    padding: 5px 10px;
+    }
+
+.column_120 {
+    width: 120px;
+    float: left;    
+    }
+
+.column_184 {
+    width: 184px;
+    float: left;      
+    }
+
+
+
+/*
+----------------------------------------------------------------------
+portlets, right_column
+----------------------------------------------------------------------
+*/
+
+#rc_portlet_area {
+    background: url(img/rc_portlet_area_bg.png) no-repeat; /* ueber Skin-Editor austauschbar */
+    padding: 16px 10px 0px 10px;
+    }
+  
+.portlet_rc {
+    margin-bottom: 30px;
+    }
+
+.portlet_rc h2 {
+    color: #DEE8FF; /* ueber Skin-Editor austauschbar */
+    font-size: 12px;
+    border-bottom: 1px solid #2E405E; /* ueber Skin-Editor austauschbar */
+    padding-bottom: 8px;
+    text-shadow: #2E405E 0 1px; /* ueber Skin-Editor austauschbar */ 
+    }
+
+.btn_head_rc {
+    float: right;
+    padding-top: 7px;
+    }
+
+.portlet_rc_body {
+    color: #DEE8FF; /* ueber Skin-Editor austauschbar */
+    border-top: 1px solid #689FDE; /* ueber Skin-Editor austauschbar */
+    padding: 10px 20px 0px 0px;
+    }
+
+.btn_body_rc {
+    float: right;
+    padding-top: 10px;
+    }
+
+a.keywords_s1, a.keywords_s2, a.keywords_s3, a.keywords_s4 {
+    color: #DEE8FF; /* ueber Skin-Editor austauschbar */
+    text-decoration: none;
+    line-height: 20px;
+    text-shadow: #2E405E 0 1px; /* ueber Skin-Editor austauschbar */ 
+    }
+
+a.keywords_s1 {
+    font-size: 12px;
+    }
+
+a.keywords_s2 {
+    font-size: 14px;
+    }
+    
+a.keywords_s3 {
+    font-size: 16px;
+    }
+    
+a.keywords_s4 {
+    font-size: 18px;
+    }          
+
+a:hover.keywords_s1, a:hover.keywords_s2, a:hover.keywords_s3, a:hover.keywords_s4 {
+    color: #FFF;
+    text-decoration: underline;
+    }
+      
+      
+    
+/*
+----------------------------------------------------------------------
+footer
+----------------------------------------------------------------------
+*/	    
+
+#footer {
+    border-bottom: 1px solid #CCC;
+    margin-bottom: 30px;
+    }
+
+#footer_left {
+    width: 734px;
+    background: url(img/footer_left_bg.jpg) repeat-x #D7D7D9;
+    color: #898989;
+    float: left;
+    height: 75px;
+    border-left: 1px solid #999;
+    }
+
+#footer_left p {
+    padding: 50px 0px 0px 10px;
+    }
+    
+#footer_right {
+    width: 245px;
+    color: #DEE8FF; /* ueber Skin-Editor austauschbar */
+    background: url(img/columns_bg.jpg) repeat-y; /* ueber Skin-Editor austauschbar */
+    float: left;
+    height: 75px;
+    }         
+
+#footer_right p {
+    border-top: 1px solid #2E405E; /* ueber Skin-Editor austauschbar */
+    margin: 0px 10px 0px 10px;
+    text-shadow: #2E405E 0 1px; /* ueber Skin-Editor austauschbar */    
+    }
+
+#footer_right span {
+    display: block;
+    padding: 10px 0px 8px 0px;
+    border-top: 1px solid #689FDE; /* ueber Skin-Editor austauschbar */
+    }
+
+#footer_right a {
+    display: block;
+    color: #DEE8FF; /* ueber Skin-Editor austauschbar */
+    font-size: 10px;
+    line-height: 14px;
+    text-decoration: none;
+    }
+    
+#footer_right a:hover {
+    color: #FFF;
+    }       
