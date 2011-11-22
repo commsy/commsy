@@ -853,6 +853,14 @@ if(isset($c_smarty) && $c_smarty === true) {
 /*********** PAGE ***********/
 
 global $c_smarty;
+
+$context_item = $environment->getCurrentContextItem();
+
+// temporary bypass smarty for server and project context
+if($context_item->isServer() || $context_item->isPortal()) {
+	$c_smarty = false;
+}
+
 if(isset($c_smarty) && $c_smarty === true) {
 	$controller_name = 'cs_' . $environment->getCurrentModule() . '_controller';
 	

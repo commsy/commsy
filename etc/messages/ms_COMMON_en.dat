@@ -802,6 +802,7 @@ $message["COMMON_WEATHER_BOX"]["en"] = "Weather";
 $message["COMMON_WEATHER_HUMIDITY"]["en"] = "Humidity";
 $message["COMMON_WEATHER_TEMP"]["en"] = "Temperature";
 $message["COMMON_WEEK"]["en"] = "Week";
+$message["COMMON_WELCOME"]["en"] = "Welcome";
 $message["COMMON_WIKI_ADMIN_PW"]["en"] = "<div style=&quot;float:left; width:120px;&quot;>Admin:</div>";
 $message["COMMON_WIKI_DELETE_EXISTING_DISCUSSIONS"]["en"] = "uncheck checkbox to delete";
 $message["COMMON_WIKI_DISCUSSION"]["en"] = "Wiki forums";
