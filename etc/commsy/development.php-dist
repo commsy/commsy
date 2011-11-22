@@ -98,4 +98,10 @@ $c_enable_htmltextarea_security = false;
 
 // enable workflow support
 //$c_workflow = false;
+
+// smarty
+$c_smarty = false;
+
+// smarty caching
+$c_smarty_caching = false;
 ?>

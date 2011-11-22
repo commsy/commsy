@@ -829,6 +829,27 @@ if ( $environment->getCurrentModule() == 'context'
    exit();
 }
 
+/*********** SMARTY *****************/
+global $c_smarty;
+if(isset($c_smarty) && $c_smarty === true) {
+	require_once('classes/cs_smarty.php');
+	global $c_theme;
+	if(!isset($c_theme) || empty($c_theme)) $c_theme = 'default';
+	$smarty = new cs_smarty($environment, $c_theme);
+	
+	global $c_smarty_caching;
+	if(isset($c_smarty_caching) || $c_smarty_caching === false) {
+		$smarty->caching = Smarty::CACHING_OFF;
+	}
+	//$smarty->debugging = true;
+	
+	// set smarty in environment
+	$environment->setTemplateEngine($smarty);
+	
+	// determ template
+	$tpl = $environment->getCurrentModule() . '_' . $environment->getCurrentFunction();
+}
+
 /*********** PAGE ***********/
 // with or without modifiying options
 $with_modifying_actions = $context_item_current->isOpen();
@@ -1226,37 +1247,50 @@ if ( $environment->isOutputModeNot('XML') and $environment->isOutputModeNot('JSO
    }
 }
 
-// display page
-if ( $environment->isOutputMode('XML') or $environment->isOutputMode('JSON') or $environment->isOutputMode('BLANK')) {
-   echo($page->getContent());
+/*********** SMARTY OUTPUT **********/
+global $c_smarty;
+if(isset($c_smarty) && $c_smarty === true) {
+	try {
+		$smarty->display($tpl, $environment->getOutputMode());
+	} catch(Exception $e) {
+		die($e->getMessage());
+	}
 } else {
-	header("Content-Type: text/html; charset=utf-8");
-   include_once('functions/security_functions.php');
-   if ( isset($_GET['download']) and ($_GET['download'] == 'zip') ) {
-      include_once('pages/rubric_download.php');
-   }
-   if ( empty($_GET['cs_modus']) ) {
-      $html = $page->asHTMLFirstPart();
-      if ( !empty($html) ) {
-         echo(addTokenToPost($html));
-//         if(!$fast_settings){
-//            flush();
-//         }
-      }
-   }
-   $html = $page->asHTMLSecondPart();
-   if ( !empty($html) ) {
-      echo(addTokenToPost($html));
-//      if(!$fast_settings){
-//         flush();
-//      }
-   }
-   echo(addTokenToPost($page->asHTML()));
+
+/************************************/
+
+	// display page
+	if ( $environment->isOutputMode('XML') or $environment->isOutputMode('JSON') or $environment->isOutputMode('BLANK')) {
+	   echo($page->getContent());
+	} else {
+		header("Content-Type: text/html; charset=utf-8");
+	   include_once('functions/security_functions.php');
+	   if ( isset($_GET['download']) and ($_GET['download'] == 'zip') ) {
+	      include_once('pages/rubric_download.php');
+	   }
+	   if ( empty($_GET['cs_modus']) ) {
+	      $html = $page->asHTMLFirstPart();
+	      if ( !empty($html) ) {
+	         echo(addTokenToPost($html));
+	//         if(!$fast_settings){
+	//            flush();
+	//         }
+	      }
+	   }
+	   $html = $page->asHTMLSecondPart();
+	   if ( !empty($html) ) {
+	      echo(addTokenToPost($html));
+	//      if(!$fast_settings){
+	//         flush();
+	//      }
+	   }
+	   echo(addTokenToPost($page->asHTML()));
+	}
+	//if(!$fast_settings){
+	//   flush();
+	//}
+	unset($page);
 }
-//if(!$fast_settings){
-//   flush();
-//}
-unset($page);
 
 /*********** SAVE DATETIME OF LAST ACTIVITY ***********/
 if ($current_user->isUser() and !$current_user->isRoot()) {

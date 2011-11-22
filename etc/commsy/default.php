@@ -29,4 +29,7 @@ $c_db_backup_prefix = 'zzz';
 // Webserver
 // use 'apache' or 'lighttpd'
 $c_webserver = 'apache';
+
+// commsy theme
+$c_theme = 'default';
 ?>

@@ -98,6 +98,8 @@ class cs_environment {
    private $_misc_text_converter = NULL;
    private $_class_factory = NULL;
    private $_archive_mode = false;
+   
+   private $_tpl_engine	 = null;
 
   /** constructor: cs_environment
    * the only available constructor, initial values for internal variables
@@ -2317,6 +2319,14 @@ class cs_environment {
 
    public function isArchiveMode () {
       return $this->_archive_mode;
+   }
+   
+   public function setTemplateEngine($engine) {
+   	$this->_tpl_engine = $engine;
+   }
+   
+   public function getTemplateEngine() {
+   	return $this->_tpl_engine;
    }
 }
 ?>
