@@ -45,8 +45,8 @@ class cs_smarty extends Smarty {
 		$this->translator = $this->environment->getTranslationObject();
 		
 		// set directory paths
-		$this->setTemplateDir('templates/');
-		$this->setCompileDir('templates/templates_c/');
+		$this->setTemplateDir('htdocs/templates/');
+		$this->setCompileDir('htdocs/templates/templates_c/');
 		$this->setConfigDir('etc/smarty/');
 		$this->setCacheDir('cache/');
 		

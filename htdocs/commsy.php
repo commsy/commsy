@@ -838,7 +838,7 @@ if(isset($c_smarty) && $c_smarty === true) {
 	$smarty = new cs_smarty($environment, $c_theme);
 	
 	global $c_smarty_caching;
-	if(isset($c_smarty_caching) || $c_smarty_caching === false) {
+	if(isset($c_smarty_caching) && $c_smarty_caching === false) {
 		$smarty->caching = Smarty::CACHING_OFF;
 	}
 	//$smarty->debugging = true;
@@ -847,411 +847,423 @@ if(isset($c_smarty) && $c_smarty === true) {
 	$environment->setTemplateEngine($smarty);
 	
 	// determ template
-	$tpl = $environment->getCurrentModule() . '_' . $environment->getCurrentFunction();
+	//$tpl = $environment->getCurrentModule() . '_' . $environment->getCurrentFunction();
 }
 
 /*********** PAGE ***********/
-// with or without modifiying options
-$with_modifying_actions = $context_item_current->isOpen();
 
-if ( $environment->isOutputMode('XML') ) {
-   $params = array();
-   $params['environment'] = $environment;
-   $params['with_modifying_actions'] = $with_modifying_actions;
-   $page = $class_factory->getClass(PAGE_XML_VIEW,$params);
-   unset($params);
-} elseif ( $environment->isOutputMode('JSON') ) {
-   $params = array();
-   $params['environment'] = $environment;
-   $params['with_modifying_actions'] = $with_modifying_actions;
-   $page = $class_factory->getClass(PAGE_JSON_VIEW,$params);
-   unset($params);
-} elseif ( $environment->isOutputMode('BLANK') ) {
-   $params = array();
-   $params['environment'] = $environment;
-   $params['with_modifying_actions'] = $with_modifying_actions;
-   $page = $class_factory->getClass(PAGE_BLANK_VIEW,$params);
-   unset($params);
+global $c_smarty;
+if(isset($c_smarty) && $c_smarty === true) {
+	$controller_name = 'cs_' . $environment->getCurrentModule() . '_controller';
+	
+	require_once('classes/controller/' . $controller_name . '.php');
+	$controller = new $controller_name($environment);
+	$controller->processTemplate();
+	$controller->displayTemplate();
+	
 } else {
-   $parameters = $environment->getCurrentParameterArray();
-   if (isset($parameters['mode']) and $parameters['mode']=='print') {
-      if (isset($parameters['view_mode']) and $parameters['view_mode']=='pda') {
-         $params = array();
-         $params['environment'] = $environment;
-         $params['with_modifying_actions'] = $with_modifying_actions;
-         $page = $class_factory->getClass(PAGE_PDA_VIEW,$params);
-         unset($params);
-      } else {
-         $params = array();
-         $params['environment'] = $environment;
-         $params['with_modifying_actions'] = $with_modifying_actions;
-         $page = $class_factory->getClass(PAGE_PRINT_VIEW,$params);
-         unset($params);
-      }
-   } else {
-      $temp_module = $environment->getCurrentModule();
-      if ( isset($parameters['view_mode'])
-           and $parameters['view_mode']=='pda'
-         ) {
-         $params = array();
-         $params['environment'] = $environment;
-         $params['with_modifying_actions'] = $with_modifying_actions;
-         $page = $class_factory->getClass(PAGE_PDA_VIEW,$params);
-         unset($params);
-      }
-      if ( $temp_module == 'help' ) {
-         $params = array();
-         $params['environment'] = $environment;
-         $params['with_modifying_actions'] = $with_modifying_actions;
-         $page = $class_factory->getClass(PAGE_HELP_VIEW,$params);
-         unset($params);
-      } else {
-         // create page object
-         if ( $environment->inProjectRoom()
-              or $environment->inCommunityRoom()
-              or $environment->inPrivateRoom()
-              or $environment->inGroupRoom()
-            ) {
-            $params = array();
-            $params['environment'] = $environment;
-            $params['with_modifying_actions'] = $with_modifying_actions;
-            $page = $class_factory->getClass(PAGE_ROOM_VIEW,$params);
-            unset($params);
-         } elseif ( $environment->inPortal() ) {
-            $context_item = $environment->getCurrentContextItem();
-            $filename = 'external_pages/'.$context_item->getItemID().'/cs_external_page_portal_view.php';
-            if ( file_exists($filename) ) {
-               include_once($filename);
-               $params = array();
-               $params['environment'] = $environment;
-               $params['with_modifying_actions'] = $with_modifying_actions;
-               $page = new cs_external_page_portal_view($params);
-               unset($params);
-            } else {
-               $params = array();
-               $params['environment'] = $environment;
-               $params['with_modifying_actions'] = $with_modifying_actions;
-               $page = $class_factory->getClass(PAGE_GUIDE_VIEW,$params);
-               unset($params);
-            }
-         } else {
-            $params = array();
-            $params['environment'] = $environment;
-            $params['with_modifying_actions'] = $with_modifying_actions;
-            $page = $class_factory->getClass(PAGE_GUIDE_VIEW,$params);
-            unset($params);
-         }
-      }
-   }
-}
-
-if ( isset($session) ) {
-   $left_menue_status = $session->getValue('left_menue_status');
-   if ( isset($_GET['left_menue']) and !empty($_GET['left_menue']) ){
-      $session->setValue('left_menue_status', $_GET['left_menue']);
-   }
-}
-
-if ( $environment->isOutputModeNot('XML') and $environment->isOutputModeNot('JSON') and $environment->isOutputModeNot('BLANK')) {
-   $page->setCurrentUser($environment->getCurrentUserItem());
-
-   // set title
-   $title = $context_item_current->getTitle();
-   if ($context_item_current->isProjectRoom() and $context_item_current->isTemplate()) {
-      $title .= ' ('.$translator->getMessage('PROJECTROOM_TEMPLATE').')';
-   } elseif ($context_item_current->isClosed()) {
-      $title .= ' ('.$translator->getMessage('PROJECTROOM_CLOSED').')';
-   }
-
-   $user = $environment->getCurrentUserItem();
-   if ( $context_item_current->isPrivateRoom() and $user->isGuest() ) {
-      $page->setRoomName($translator->getMessage('COMMON_FOREIGN_ROOM'));
-      $page->setPageName($translator->getMessage('COMMON_FOREIGN_ROOM'));
-   } elseif ( $context_item_current->isPrivateRoom() ) {
-      $page->setRoomName($translator->getMessage('COMMON_PRIVATEROOM'));
-      $tempModule = mb_strtoupper($environment->getCurrentModule(), 'UTF-8');
-      $tempMessage = "";
-      include_once('include/inc_commsy_php_case_pagetitle.php');
-      $page->setPageName($tempMessage);
-   } else {
-      $page->setRoomName($title);
-      $tempModule = mb_strtoupper($environment->getCurrentModule(), 'UTF-8');
-      $tempMessage = "";
-      include_once('include/inc_commsy_php_case_pagetitle.php');
-      $page->setPageName($tempMessage);
-   }
-}
-
-// display login errors
-if ( isset($session) and $session->issetValue('error_array') ) {
-   $params = array();
-   $params['environment'] = $environment;
-   $params['with_modifying_actions'] = $with_modifying_actions;
-   $errorbox_left = $class_factory->getClass(ERRORBOX_VIEW,$params);
-   unset($params);
-   $errorbox_left->setText(implode('<br/>',$session->getValue('error_array')));
-   $session->unsetValue('error_array');
-   $page->setMyAreaErrorBox($errorbox_left);
-}
-
-// check if portal exists
-if ( !$environment->inServer() and !$environment->inPortal() ) {
-   $current_portal = $environment->getCurrentPortalItem();
-   if ( $current_portal->isDeleted() ) {
-      $current_context = $environment->getCurrentContextItem();
-      $params = array();
-      $params['environment'] = $environment;
-      $params['with_modifying_actions'] = true;
-      $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
-      unset($params);
-      $errorbox->setText($translator->getMessage('PORTAL_ERROR_DELETED_ROOM',$current_portal->getTitle(),$current_context->getTitle()));
-      $page->setWithoutLeftMenue();
-   }
-}
-
-// AGB
-$current_user = $environment->getCurrentUserItem();
-
-// portal AGB
-$current_context = $environment->getCurrentContextItem();
-if ( !$current_context->isPortal()
-     and !$current_context->isServer()
-   ) {
-   $portal_user = $current_user->getRelatedCommSyUserItem();
-   if ( isset($portal_user) and $portal_user->isUser() and !$portal_user->isRoot() ) {
-      $current_portal = $environment->getCurrentPortalItem();
-      $user_agb_date = $portal_user->getAGBAcceptanceDate();
-      $portal_agb_date = $current_portal->getAGBChangeDate();
-      if ( $user_agb_date < $portal_agb_date
-           and $current_portal->getAGBStatus() == 1
-         ) {
-         redirect($current_portal->getItemID(),'agb','detail');
-      }
-   }
-}
-
-// room AGB
-$show_agb_again = false;
-if ( $current_user->isUser() and !$current_user->isRoot() ) {
-   $user_agb_date = $current_user->getAGBAcceptanceDate();
-   $context_agb_date = $current_context->getAGBChangeDate();
-   if ( $user_agb_date < $context_agb_date
-        and $current_context->getAGBStatus() == 1
-      ) {
-      $show_agb_again = true;
-   }
-}
-
-// agb, errorbox or include page
-if ( $current_context->isLocked()
-     and !( $environment->getCurrentModule() == 'room'
-            and $environment->getCurrentFunction() == 'change'
-          )
-     and !( $environment->getCurrentModule() == 'picture'
-            and $environment->getCurrentFunction() == 'getfile'
-          )
-     and !$current_user->isRoot()
-   ) {
-   $params = array();
-   $params['environment'] = $environment;
-   $params['with_modifying_actions'] = true;
-   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
-   unset($params);
-   if ( $current_context->isPrivateRoom() ) {
-      $room_name = $translator->getMessage('PRIVATEROOM');
-   } else {
-      $room_name = $current_context->getTitle();
-   }
-   $errorbox->setText($translator->getMessage('CONTEXT_IS_LOCKED',$room_name));
-   $page->add($errorbox);
-} elseif ( $current_context->isDeleted()
-           and !( $environment->getCurrentModule() == 'room'
-                  and $environment->getCurrentFunction() == 'change'
-                )
-           and !( $environment->getCurrentModule() == 'picture'
-                  and $environment->getCurrentFunction() == 'getfile'
-                )
-           and !$current_user->isRoot()
-         ) {
-   $params = array();
-   $params['environment'] = $environment;
-   $params['with_modifying_actions'] = true;
-   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
-   unset($params);
-   if ( $current_context->isPrivateRoom() ) {
-      $room_name = $translator->getMessage('PRIVATEROOM');
-   } else {
-      $room_name = $current_context->getTitle();
-   }
-   if ( $current_context->isPortal() ) {
-      $errorbox->setText($translator->getMessage('PORTAL_ERROR_DELETED',$room_name));
-   } else {
-      $errorbox->setText($translator->getMessage('CONTEXT_IS_DELETED',$room_name));
-   }
-   $page->add($errorbox);
-} elseif ( $show_agb_again ) {
-   if ( ($current_module == 'picture')
-        and ( $current_function == 'getfile'
-              or $current_function == 'getingray'
-            )
-      ) {
-      include('pages/'.$current_module.'_'.$current_function.'.php');
-   } else {
-      include_once('pages/agb_detail.php');
-   }
-} elseif ( !isset($errorbox) ) {
-   if ( $environment->isPlugin($environment->getCurrentModule()) ) {
-      $current_module = 'plugin';
-      $current_function = 'index';
-      $plugin_module = $environment->getCurrentModule();
-      $plugin_function = $environment->getCurrentFunction();
-   }
-
-   if ( !file_exists('pages/'.$current_module.'_'.$current_function.'.php') ) {
-      $params = array();
-      $params['environment'] = $environment;
-      $params['with_modifying_actions'] = $with_modifying_actions;
-      $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
-      unset($params);
-      $errorbox->setText('The page '.$current_module.'_'.$current_function.' cannot be found!');
-      $page->add($errorbox);
-
-      $current_user = $environment->getCurrentUserItem();
-      if (!isset($current_user) or $current_user->getUserID() == '') {
-         $page->setWithoutPersonalArea();
-      }
-   } else {
-      include('pages/'.$current_module.'_'.$current_function.'.php');
-   }
-} else {
-   $page->add($errorbox);
-   if ( $environment->inPortal() ) {
-      include('pages/'.$current_module.'_'.$current_function.'.php');
-   }
-}
-
-if ( $environment->isOutputModeNot('XML') and $environment->isOutputModeNot('JSON') and $environment->isOutputModeNot('BLANK')) {
-
-   // set navigation links
-   $current_room_modules = $context_item_current->getHomeConf();
-   if (!empty($current_room_modules)) {
-      $room_modules =  explode(',',$current_room_modules);
-   }
-
-   // das folgende nur, wenn der Raum auch offen ist
-   // ansonsten hinweis
-   // TBD
-   if ( $environment->inProjectRoom()
-        or $environment->inCommunityRoom()
-        or $environment->inPrivateRoom()
-        or $environment->inGroupRoom()
-      ) {
-      $page->addAction($translator->getMessage('COMMON_HOME_INDEX'),'','home','index');
-      foreach ($room_modules as $item) {
-         $link_name = explode('_',$item);
-         if ( $link_name[1] != 'none' ) {
-            $tempMessage = "";
-            switch ( mb_strtoupper($link_name[0], 'UTF-8') )
-            {
-               case 'ANNOUNCEMENT':
-                  $tempMessage = $translator->getMessage('COMMON_ANNOUNCEMENT_INDEX');
-                  break;
-               case 'DATE':
-                  $tempMessage = $translator->getMessage('COMMON_DATE_INDEX');
-                  break;
-               case 'DISCUSSION':
-                  $tempMessage = $translator->getMessage('COMMON_DISCUSSION_INDEX');
-                  break;
-               case 'GROUP':
-                  $tempMessage = $translator->getMessage('COMMON_GROUP_INDEX');
-                  break;
-               case 'INSTITUTION':
-                  $tempMessage = $translator->getMessage('COMMON_INSTITUTION_INDEX');
-                  break;
-               case 'MATERIAL':
-                  $tempMessage = $translator->getMessage('COMMON_MATERIAL_INDEX');
-                  break;
-               case 'MYROOM':
-                  $tempMessage = $translator->getMessage('COMMON_MYROOM_INDEX');
-                  break;
-               case 'PROJECT':
-                  $tempMessage = $translator->getMessage('COMMON_PROJECT_INDEX');
-                  break;
-               case 'TODO':
-                  $tempMessage = $translator->getMessage('COMMON_TODO_INDEX');
-                  break;
-               case 'TOPIC':
-                  $tempMessage = $translator->getMessage('COMMON_TOPIC_INDEX');
-                  break;
-               case 'USER':
-                  $tempMessage = $translator->getMessage('COMMON_USER_INDEX');
-                  break;
-               case 'ENTRY':
-                  $tempMessage = $translator->getMessage('COMMON_ENTRY_INDEX');
-                  break;
-               default:
-                  $text = '';
-                  if ( $environment->isPlugin($link_name[0]) ) {
-                     $text = plugin_hook_output($link_name[0],'getDisplayName');
-                  }
-                  if ( !empty($text) ) {
-                     $tempMessage = $text;
-                  } else {
-                     $tempMessage = $translator->getMessage('COMMON_MESSAGETAG_ERROR'.' '.__FILE__.' ('.__LINE__.') ');
-                  }
-                  break;
-            }
-            $page->addAction($tempMessage,'',$link_name[0],'index');
-         }
-      }
-   }
-
-   // authentication (bookmarks)
-   $current_user = $environment->getCurrentUserItem();
-   if (!$current_user->isUser() and !$context_item_current->isOpenForGuests()) {
-      $page->setWithoutNavigationLinks();
-   }
-
-   if ( isset($_GET['show_profile']) and ($_GET['show_profile'] == 'yes') ) {
-      include_once('pages/profile_edit.php');
-   }
-
-   if ( isset($_GET['show_copies']) and ($_GET['show_copies'] == 'yes') ) {
-      include_once('pages/copies_index.php');
-   }
-
-   if ( $current_function !='edit'
-        and isset($_GET['attach_view'])
-        and ($_GET['attach_view'] == 'yes')
-        and isset($_GET['attach_type'])
-        and !empty($_GET['attach_type'])
-      ) {
-      switch ( $_GET['attach_type'] ) {
-         case 'buzzword':
-            include_once('pages/buzzword_attach.php');
-            break;
-         case 'tag':
-            include_once('pages/tag_attach.php');
-            break;
-         case 'item':
-            include_once('pages/item_attach.php');
-            break;
-      }
-   }
-
-   $password_param = $environment->getValueOfParameter('cs_modus');
-   if ( !empty($password_param)
-        and $password_param == 'password_change'
-      ) {
-      include_once('pages/user_password_overlay.php');
-   }
+	// with or without modifiying options
+	$with_modifying_actions = $context_item_current->isOpen();
+	
+	if ( $environment->isOutputMode('XML') ) {
+	   $params = array();
+	   $params['environment'] = $environment;
+	   $params['with_modifying_actions'] = $with_modifying_actions;
+	   $page = $class_factory->getClass(PAGE_XML_VIEW,$params);
+	   unset($params);
+	} elseif ( $environment->isOutputMode('JSON') ) {
+	   $params = array();
+	   $params['environment'] = $environment;
+	   $params['with_modifying_actions'] = $with_modifying_actions;
+	   $page = $class_factory->getClass(PAGE_JSON_VIEW,$params);
+	   unset($params);
+	} elseif ( $environment->isOutputMode('BLANK') ) {
+	   $params = array();
+	   $params['environment'] = $environment;
+	   $params['with_modifying_actions'] = $with_modifying_actions;
+	   $page = $class_factory->getClass(PAGE_BLANK_VIEW,$params);
+	   unset($params);
+	} else {
+	   $parameters = $environment->getCurrentParameterArray();
+	   if (isset($parameters['mode']) and $parameters['mode']=='print') {
+	      if (isset($parameters['view_mode']) and $parameters['view_mode']=='pda') {
+	         $params = array();
+	         $params['environment'] = $environment;
+	         $params['with_modifying_actions'] = $with_modifying_actions;
+	         $page = $class_factory->getClass(PAGE_PDA_VIEW,$params);
+	         unset($params);
+	      } else {
+	         $params = array();
+	         $params['environment'] = $environment;
+	         $params['with_modifying_actions'] = $with_modifying_actions;
+	         $page = $class_factory->getClass(PAGE_PRINT_VIEW,$params);
+	         unset($params);
+	      }
+	   } else {
+	      $temp_module = $environment->getCurrentModule();
+	      if ( isset($parameters['view_mode'])
+	           and $parameters['view_mode']=='pda'
+	         ) {
+	         $params = array();
+	         $params['environment'] = $environment;
+	         $params['with_modifying_actions'] = $with_modifying_actions;
+	         $page = $class_factory->getClass(PAGE_PDA_VIEW,$params);
+	         unset($params);
+	      }
+	      if ( $temp_module == 'help' ) {
+	         $params = array();
+	         $params['environment'] = $environment;
+	         $params['with_modifying_actions'] = $with_modifying_actions;
+	         $page = $class_factory->getClass(PAGE_HELP_VIEW,$params);
+	         unset($params);
+	      } else {
+	         // create page object
+	         if ( $environment->inProjectRoom()
+	              or $environment->inCommunityRoom()
+	              or $environment->inPrivateRoom()
+	              or $environment->inGroupRoom()
+	            ) {
+	            $params = array();
+	            $params['environment'] = $environment;
+	            $params['with_modifying_actions'] = $with_modifying_actions;
+	            $page = $class_factory->getClass(PAGE_ROOM_VIEW,$params);
+	            unset($params);
+	         } elseif ( $environment->inPortal() ) {
+	            $context_item = $environment->getCurrentContextItem();
+	            $filename = 'external_pages/'.$context_item->getItemID().'/cs_external_page_portal_view.php';
+	            if ( file_exists($filename) ) {
+	               include_once($filename);
+	               $params = array();
+	               $params['environment'] = $environment;
+	               $params['with_modifying_actions'] = $with_modifying_actions;
+	               $page = new cs_external_page_portal_view($params);
+	               unset($params);
+	            } else {
+	               $params = array();
+	               $params['environment'] = $environment;
+	               $params['with_modifying_actions'] = $with_modifying_actions;
+	               $page = $class_factory->getClass(PAGE_GUIDE_VIEW,$params);
+	               unset($params);
+	            }
+	         } else {
+	            $params = array();
+	            $params['environment'] = $environment;
+	            $params['with_modifying_actions'] = $with_modifying_actions;
+	            $page = $class_factory->getClass(PAGE_GUIDE_VIEW,$params);
+	            unset($params);
+	         }
+	      }
+	   }
+	}
+	
+	if ( isset($session) ) {
+	   $left_menue_status = $session->getValue('left_menue_status');
+	   if ( isset($_GET['left_menue']) and !empty($_GET['left_menue']) ){
+	      $session->setValue('left_menue_status', $_GET['left_menue']);
+	   }
+	}
+	
+	if ( $environment->isOutputModeNot('XML') and $environment->isOutputModeNot('JSON') and $environment->isOutputModeNot('BLANK')) {
+	   $page->setCurrentUser($environment->getCurrentUserItem());
+	
+	   // set title
+	   $title = $context_item_current->getTitle();
+	   if ($context_item_current->isProjectRoom() and $context_item_current->isTemplate()) {
+	      $title .= ' ('.$translator->getMessage('PROJECTROOM_TEMPLATE').')';
+	   } elseif ($context_item_current->isClosed()) {
+	      $title .= ' ('.$translator->getMessage('PROJECTROOM_CLOSED').')';
+	   }
+	
+	   $user = $environment->getCurrentUserItem();
+	   if ( $context_item_current->isPrivateRoom() and $user->isGuest() ) {
+	      $page->setRoomName($translator->getMessage('COMMON_FOREIGN_ROOM'));
+	      $page->setPageName($translator->getMessage('COMMON_FOREIGN_ROOM'));
+	   } elseif ( $context_item_current->isPrivateRoom() ) {
+	      $page->setRoomName($translator->getMessage('COMMON_PRIVATEROOM'));
+	      $tempModule = mb_strtoupper($environment->getCurrentModule(), 'UTF-8');
+	      $tempMessage = "";
+	      include_once('include/inc_commsy_php_case_pagetitle.php');
+	      $page->setPageName($tempMessage);
+	   } else {
+	      $page->setRoomName($title);
+	      $tempModule = mb_strtoupper($environment->getCurrentModule(), 'UTF-8');
+	      $tempMessage = "";
+	      include_once('include/inc_commsy_php_case_pagetitle.php');
+	      $page->setPageName($tempMessage);
+	   }
+	}
+	
+	// display login errors
+	if ( isset($session) and $session->issetValue('error_array') ) {
+	   $params = array();
+	   $params['environment'] = $environment;
+	   $params['with_modifying_actions'] = $with_modifying_actions;
+	   $errorbox_left = $class_factory->getClass(ERRORBOX_VIEW,$params);
+	   unset($params);
+	   $errorbox_left->setText(implode('<br/>',$session->getValue('error_array')));
+	   $session->unsetValue('error_array');
+	   $page->setMyAreaErrorBox($errorbox_left);
+	}
+	
+	// check if portal exists
+	if ( !$environment->inServer() and !$environment->inPortal() ) {
+	   $current_portal = $environment->getCurrentPortalItem();
+	   if ( $current_portal->isDeleted() ) {
+	      $current_context = $environment->getCurrentContextItem();
+	      $params = array();
+	      $params['environment'] = $environment;
+	      $params['with_modifying_actions'] = true;
+	      $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+	      unset($params);
+	      $errorbox->setText($translator->getMessage('PORTAL_ERROR_DELETED_ROOM',$current_portal->getTitle(),$current_context->getTitle()));
+	      $page->setWithoutLeftMenue();
+	   }
+	}
+	
+	// AGB
+	$current_user = $environment->getCurrentUserItem();
+	
+	// portal AGB
+	$current_context = $environment->getCurrentContextItem();
+	if ( !$current_context->isPortal()
+	     and !$current_context->isServer()
+	   ) {
+	   $portal_user = $current_user->getRelatedCommSyUserItem();
+	   if ( isset($portal_user) and $portal_user->isUser() and !$portal_user->isRoot() ) {
+	      $current_portal = $environment->getCurrentPortalItem();
+	      $user_agb_date = $portal_user->getAGBAcceptanceDate();
+	      $portal_agb_date = $current_portal->getAGBChangeDate();
+	      if ( $user_agb_date < $portal_agb_date
+	           and $current_portal->getAGBStatus() == 1
+	         ) {
+	         redirect($current_portal->getItemID(),'agb','detail');
+	      }
+	   }
+	}
+	
+	// room AGB
+	$show_agb_again = false;
+	if ( $current_user->isUser() and !$current_user->isRoot() ) {
+	   $user_agb_date = $current_user->getAGBAcceptanceDate();
+	   $context_agb_date = $current_context->getAGBChangeDate();
+	   if ( $user_agb_date < $context_agb_date
+	        and $current_context->getAGBStatus() == 1
+	      ) {
+	      $show_agb_again = true;
+	   }
+	}
+	
+	// agb, errorbox or include page
+	if ( $current_context->isLocked()
+	     and !( $environment->getCurrentModule() == 'room'
+	            and $environment->getCurrentFunction() == 'change'
+	          )
+	     and !( $environment->getCurrentModule() == 'picture'
+	            and $environment->getCurrentFunction() == 'getfile'
+	          )
+	     and !$current_user->isRoot()
+	   ) {
+	   $params = array();
+	   $params['environment'] = $environment;
+	   $params['with_modifying_actions'] = true;
+	   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+	   unset($params);
+	   if ( $current_context->isPrivateRoom() ) {
+	      $room_name = $translator->getMessage('PRIVATEROOM');
+	   } else {
+	      $room_name = $current_context->getTitle();
+	   }
+	   $errorbox->setText($translator->getMessage('CONTEXT_IS_LOCKED',$room_name));
+	   $page->add($errorbox);
+	} elseif ( $current_context->isDeleted()
+	           and !( $environment->getCurrentModule() == 'room'
+	                  and $environment->getCurrentFunction() == 'change'
+	                )
+	           and !( $environment->getCurrentModule() == 'picture'
+	                  and $environment->getCurrentFunction() == 'getfile'
+	                )
+	           and !$current_user->isRoot()
+	         ) {
+	   $params = array();
+	   $params['environment'] = $environment;
+	   $params['with_modifying_actions'] = true;
+	   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+	   unset($params);
+	   if ( $current_context->isPrivateRoom() ) {
+	      $room_name = $translator->getMessage('PRIVATEROOM');
+	   } else {
+	      $room_name = $current_context->getTitle();
+	   }
+	   if ( $current_context->isPortal() ) {
+	      $errorbox->setText($translator->getMessage('PORTAL_ERROR_DELETED',$room_name));
+	   } else {
+	      $errorbox->setText($translator->getMessage('CONTEXT_IS_DELETED',$room_name));
+	   }
+	   $page->add($errorbox);
+	} elseif ( $show_agb_again ) {
+	   if ( ($current_module == 'picture')
+	        and ( $current_function == 'getfile'
+	              or $current_function == 'getingray'
+	            )
+	      ) {
+	      include('pages/'.$current_module.'_'.$current_function.'.php');
+	   } else {
+	      include_once('pages/agb_detail.php');
+	   }
+	} elseif ( !isset($errorbox) ) {
+	   if ( $environment->isPlugin($environment->getCurrentModule()) ) {
+	      $current_module = 'plugin';
+	      $current_function = 'index';
+	      $plugin_module = $environment->getCurrentModule();
+	      $plugin_function = $environment->getCurrentFunction();
+	   }
+	
+	   if ( !file_exists('pages/'.$current_module.'_'.$current_function.'.php') ) {
+	      $params = array();
+	      $params['environment'] = $environment;
+	      $params['with_modifying_actions'] = $with_modifying_actions;
+	      $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+	      unset($params);
+	      $errorbox->setText('The page '.$current_module.'_'.$current_function.' cannot be found!');
+	      $page->add($errorbox);
+	
+	      $current_user = $environment->getCurrentUserItem();
+	      if (!isset($current_user) or $current_user->getUserID() == '') {
+	         $page->setWithoutPersonalArea();
+	      }
+	   } else {
+	      include('pages/'.$current_module.'_'.$current_function.'.php');
+	   }
+	} else {
+	   $page->add($errorbox);
+	   if ( $environment->inPortal() ) {
+	      include('pages/'.$current_module.'_'.$current_function.'.php');
+	   }
+	}
+	
+	if ( $environment->isOutputModeNot('XML') and $environment->isOutputModeNot('JSON') and $environment->isOutputModeNot('BLANK')) {
+	
+	   // set navigation links
+	   $current_room_modules = $context_item_current->getHomeConf();
+	   if (!empty($current_room_modules)) {
+	      $room_modules =  explode(',',$current_room_modules);
+	   }
+	
+	   // das folgende nur, wenn der Raum auch offen ist
+	   // ansonsten hinweis
+	   // TBD
+	   if ( $environment->inProjectRoom()
+	        or $environment->inCommunityRoom()
+	        or $environment->inPrivateRoom()
+	        or $environment->inGroupRoom()
+	      ) {
+	      $page->addAction($translator->getMessage('COMMON_HOME_INDEX'),'','home','index');
+	      foreach ($room_modules as $item) {
+	         $link_name = explode('_',$item);
+	         if ( $link_name[1] != 'none' ) {
+	            $tempMessage = "";
+	            switch ( mb_strtoupper($link_name[0], 'UTF-8') )
+	            {
+	               case 'ANNOUNCEMENT':
+	                  $tempMessage = $translator->getMessage('COMMON_ANNOUNCEMENT_INDEX');
+	                  break;
+	               case 'DATE':
+	                  $tempMessage = $translator->getMessage('COMMON_DATE_INDEX');
+	                  break;
+	               case 'DISCUSSION':
+	                  $tempMessage = $translator->getMessage('COMMON_DISCUSSION_INDEX');
+	                  break;
+	               case 'GROUP':
+	                  $tempMessage = $translator->getMessage('COMMON_GROUP_INDEX');
+	                  break;
+	               case 'INSTITUTION':
+	                  $tempMessage = $translator->getMessage('COMMON_INSTITUTION_INDEX');
+	                  break;
+	               case 'MATERIAL':
+	                  $tempMessage = $translator->getMessage('COMMON_MATERIAL_INDEX');
+	                  break;
+	               case 'MYROOM':
+	                  $tempMessage = $translator->getMessage('COMMON_MYROOM_INDEX');
+	                  break;
+	               case 'PROJECT':
+	                  $tempMessage = $translator->getMessage('COMMON_PROJECT_INDEX');
+	                  break;
+	               case 'TODO':
+	                  $tempMessage = $translator->getMessage('COMMON_TODO_INDEX');
+	                  break;
+	               case 'TOPIC':
+	                  $tempMessage = $translator->getMessage('COMMON_TOPIC_INDEX');
+	                  break;
+	               case 'USER':
+	                  $tempMessage = $translator->getMessage('COMMON_USER_INDEX');
+	                  break;
+	               case 'ENTRY':
+	                  $tempMessage = $translator->getMessage('COMMON_ENTRY_INDEX');
+	                  break;
+	               default:
+	                  $text = '';
+	                  if ( $environment->isPlugin($link_name[0]) ) {
+	                     $text = plugin_hook_output($link_name[0],'getDisplayName');
+	                  }
+	                  if ( !empty($text) ) {
+	                     $tempMessage = $text;
+	                  } else {
+	                     $tempMessage = $translator->getMessage('COMMON_MESSAGETAG_ERROR'.' '.__FILE__.' ('.__LINE__.') ');
+	                  }
+	                  break;
+	            }
+	            $page->addAction($tempMessage,'',$link_name[0],'index');
+	         }
+	      }
+	   }
+	
+	   // authentication (bookmarks)
+	   $current_user = $environment->getCurrentUserItem();
+	   if (!$current_user->isUser() and !$context_item_current->isOpenForGuests()) {
+	      $page->setWithoutNavigationLinks();
+	   }
+	
+	   if ( isset($_GET['show_profile']) and ($_GET['show_profile'] == 'yes') ) {
+	      include_once('pages/profile_edit.php');
+	   }
+	
+	   if ( isset($_GET['show_copies']) and ($_GET['show_copies'] == 'yes') ) {
+	      include_once('pages/copies_index.php');
+	   }
+	
+	   if ( $current_function !='edit'
+	        and isset($_GET['attach_view'])
+	        and ($_GET['attach_view'] == 'yes')
+	        and isset($_GET['attach_type'])
+	        and !empty($_GET['attach_type'])
+	      ) {
+	      switch ( $_GET['attach_type'] ) {
+	         case 'buzzword':
+	            include_once('pages/buzzword_attach.php');
+	            break;
+	         case 'tag':
+	            include_once('pages/tag_attach.php');
+	            break;
+	         case 'item':
+	            include_once('pages/item_attach.php');
+	            break;
+	      }
+	   }
+	
+	   $password_param = $environment->getValueOfParameter('cs_modus');
+	   if ( !empty($password_param)
+	        and $password_param == 'password_change'
+	      ) {
+	      include_once('pages/user_password_overlay.php');
+	   }
+	}
 }
 
 /*********** SMARTY OUTPUT **********/
 global $c_smarty;
 if(isset($c_smarty) && $c_smarty === true) {
 	try {
-		$smarty->display($tpl, $environment->getOutputMode());
+		//$smarty->display($tpl, $environment->getOutputMode());
 	} catch(Exception $e) {
 		die($e->getMessage());
 	}

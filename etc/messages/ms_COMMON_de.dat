@@ -812,6 +812,7 @@ $message["COMMON_WEATHER_BOX"]["de"] = "Wetter";
 $message["COMMON_WEATHER_HUMIDITY"]["de"] = "Luftfeuchtigkeit";
 $message["COMMON_WEATHER_TEMP"]["de"] = "Temperatur";
 $message["COMMON_WEEK"]["de"] = "Woche";
+$message["COMMON_WELCOME"]["de"] = "Willkommen";
 $message["COMMON_WIKI_ADMIN_PW"]["de"] = "<div style=&quot;float:left; width:120px;&quot;>Administrieren:</div>";
 $message["COMMON_WIKI_DELETE_EXISTING_DISCUSSIONS"]["de"] = "zum Löschen eines Forums den Haken entfernen";
 $message["COMMON_WIKI_DISCUSSION"]["de"] = "Wiki-Foren";
