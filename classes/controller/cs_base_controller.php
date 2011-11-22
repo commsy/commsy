@@ -30,18 +30,41 @@
 		abstract protected function processTemplate();
 		
 		/**
+		 * assigns a new template variable
+		 * 
+		 * @param $categorie
+		 * @param $key
+		 * @param mixed $assignment
+		 */
+		protected function assign($categorie, $key, $assignment) {
+			if(!is_string($categorie) || !is_string($key)) die('categorie and key need to be of type string');
+			
+			$categorie_vars = $this->_tpl_engine->getTemplateVars($categorie);
+			
+			if(isset($categorie_vars) && isset($categorie_vars[$key])) {
+				die('this template variable "' . $key . '" in categorie "' . $categorie . '" is already set');
+			}
+			
+			if(isset($categorie_vars) && !isset($categorie_vars[$key])) {
+				$this->_tpl_engine->append($categorie, array($key => $assignment), true);
+			} else {
+				$assign = array();
+				$assign[$categorie][$key] = $assignment;
+				$this->_tpl_engine->assign($assign);
+			}
+		}
+		
+		/**
 		 * process basic template information
 		 */
 		private function processBaseTemplate() {
 			$tpl_dir = $this->_tpl_engine->getTemplateDir();
 			$current_user = $this->_environment->getCurrentUser();
 			
-			$assign= array();
-			$assign['basic']['tpl_path'] = substr($tpl_dir[0], 6);
-			$assign['environment']['cid'] = $this->_environment->getCurrentContextID();
-			$assign['environment']['username'] = $current_user->getFullName();
-			$assign['environment']['is_guest'] = $current_user->isReallyGuest();
-			$assign['environment']['is_moderator'] = $current_user->isModerator();
-			$this->_tpl_engine->assign($assign);
+			$this->assign('basic', 'tpl_path', substr($tpl_dir[0], 6));
+			$this->assign('environment', 'cid', $this->_environment->getCurrentContextID());
+			$this->assign('environment', 'username', $current_user->getFullName());
+			$this->assign('environment', 'is_guest', $current_user->isReallyGuest());
+			$this->assign('environment', 'is_moderator', $current_user->isModerator());
 		}
 	}

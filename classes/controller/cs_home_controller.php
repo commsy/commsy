@@ -16,5 +16,7 @@
 		 * every derived class needs to implement an processTemplate function
 		 */
 		public function processTemplate() {
+			// call parent
+			parent::processTemplate();
 		}
 	}
