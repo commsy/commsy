@@ -11,101 +11,42 @@
 
 {block name=room_main_content}
 	<div id="full_width_content">
+		{foreach $room.home_content as $rubric}
+			<div class="content_item"> <!-- Start content_item -->
+            	<div class="ci_head_actions">
+	            	<a href="" title="neue Ank&uuml;ndigung erstellen"><img src="{$basic.tpl_path}/img/btn_ci_add.gif" alt="neu" /></a>
+                    <a href="" class="open_close" title="schlie&szlig;en"><img src="{$basic.tpl_path}/img/btn_ci_close.gif" alt="schlie&szlig;en" /></a>
+                </div>
+                <h2>___COMMON_{$rubric.title|upper}_INDEX___<span>(4 g&uuml;ltige von 100)</span></h2>
+                
+                <div class="clear"> </div>
+                
+                {foreach $rubric.items as $item}
+                	<div class="{if $item@iteration is odd}row_odd{else}row_even{/if}">
+                    	<div class="column_430">
+                        	<p>
+                            	<a href="">{$item.title}</a>
+                            </p>
+                        </div>
+                        <div class="seperator">
+                        	<div class="column_120">
+                            	<p>{$item.modification_date}</p>
+                            </div>
+	                        <div class="column_184">
+	                        	<p>
+	                            	<a href="">John Doe</a>
+	                            </p>
+	                        </div>
+	                    </div>
+	                    <div class="clear"> </div>
+                    </div>
+                {/foreach}
+            </div> <!-- Ende content_item -->
+		{/foreach}
+	
+	
+                        {*
                         
-                        <div class="content_item"> <!-- Start content_item -->
-                            <div class="ci_head_actions">
-                                <a href="" title="neue Ank&uuml;ndigung erstellen"><img src="{$basic.tpl_path}/img/btn_ci_add.gif" alt="neu" /></a>
-                                <a href="" class="open_close" title="schlie&szlig;en"><img src="{$basic.tpl_path}/img/btn_ci_close.gif" alt="schlie&szlig;en" /></a>
-                            </div>
-                            <h2>Ank&uuml;ndigungen<span>(4 g&uuml;ltige von 100)</span></h2>
-                            
-                            <div class="clear"> </div>
-                            
-                            <div class="row_odd">
-                                <div class="column_430">
-                                    <p>
-                                    <a href="">Cum sociis natoque penatibus et magnis</a>
-                                    </p>
-                                </div>
-                                <div class="seperator">
-                                    <div class="column_120">
-                                        <p>
-                                        00.00.0000
-                                        </p>
-                                    </div>
-                                    <div class="column_184">
-                                        <p>
-                                        <a href="">John Doe</a>
-                                        </p>
-                                    </div>
-                                </div>
-                                <div class="clear"> </div>
-                            </div>
-                            
-                            <div class="row_even">
-                                <div class="column_430">
-                                    <p>
-                                    <a href="">Lorem ipsum dolor sit amet, consectetuer adipiscing elit</a>
-                                    </p>
-                                </div>
-                                <div class="seperator">
-                                    <div class="column_120">
-                                        <p>
-                                        00.00.0000
-                                        </p>
-                                    </div>
-                                    <div class="column_184">
-                                        <p>
-                                        <a href="">Max Mustermann</a>
-                                        </p>
-                                    </div>
-                                </div>
-                                <div class="clear"> </div>
-                            </div>
-                            
-                            <div class="row_odd">
-                                <div class="column_430">
-                                    <p>
-                                    <a href="">In enim justo, rhoncus ut</a>
-                                    </p>
-                                </div>
-                                <div class="seperator">
-                                    <div class="column_120">
-                                        <p>
-                                        00.00.0000
-                                        </p>
-                                    </div>
-                                    <div class="column_184">
-                                        <p>
-                                        <a href="">Dennis Mustermann</a>
-                                        </p>
-                                    </div>
-                                </div>
-                                <div class="clear"> </div>
-                            </div>
-                            
-                            <div class="row_even">
-                                <div class="column_430">
-                                    <p>
-                                    <a href="">Maecenas tempus, tellus eget condimentum</a>
-                                    </p>
-                                </div>
-                                <div class="seperator">
-                                    <div class="column_120">
-                                        <p>
-                                        00.00.0000
-                                        </p>
-                                    </div>
-                                    <div class="column_184">
-                                        <p>
-                                        <a href="">Max Mustermann</a>
-                                        </p>
-                                    </div>
-                                </div>
-                                <div class="clear"> </div>
-                            </div>
-                            
-                        </div> <!-- Ende content_item -->
                         
                         <div class="content_item"> <!-- Start content_item -->
                             <div class="ci_head_actions">
@@ -315,7 +256,10 @@
                             <h2>Themen<span>(alle 4 Themen)</span></h2>
                             
                             <div class="clear"> </div>
-                        </div> <!-- Ende content_item -->                                                           
+                        </div> <!-- Ende content_item -->        
+                        
+                        
+                        *}                                                   
                         
                     </div>
 {/block}

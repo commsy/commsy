@@ -33,17 +33,15 @@
                 
                 <div id="main_navigation">
                     <ul>
-                    
-                    
-                        <li id="active"><a href="commsy.php?cid={$environment.cid}&mod=home&fct=index"><span id="ho_act"><span> </span></span><br/>Home</a></li>
-                        <li class="non_active"><a href="" ><span id="an_non_act"></span><br/>Ank&uuml;ndigungen</a></li>
-                        <li class="non_active"><a href="" ><span id="te_non_act"></span><br/>Termine</a></li>
-                        <li class="non_active"><a href="" ><span id="ma_non_act"></span><br/>Material</a></li>
-                        <li class="non_active"><a href="" ><span id="di_non_act"><span> </span></span><br/>Diskussionen</a></li>
-                        <li class="non_active"><a href="" ><span id="pe_non_act"></span><br/>Personen</a></li>
-                        <li class="non_active"><a href="" ><span id="gr_non_act"><span> </span></span><br/>Gruppen</a></li>
-                        <li class="non_active"><a href="" ><span id="au_non_act"></span><br/>Aufgaben</a></li>
-                        <li class="non_active"><a href="" ><span id="th_non_act"></span><br/>Themen</a></li>
+                    	<!--  <li id="active"><a href="commsy.php?cid={$environment.cid}&mod=home&fct=index"><span id="ho_act"></span><br/>Home</a></li>-->
+                    	{foreach $room.rubric_information as $rubric}
+                    		<li {if $rubric.active}id="active"{else}class="non_active"{/if}>
+                    			<a href="commsy.php?cid={$environment.cid}&mod={$rubric.name}&fct=index">
+                    				<span id="{if $rubric.active}{$rubric.span_prefix}_act{else}{$rubric.span_prefix}_non_act{/if}"></span><br/>
+                    				{if $rubric.translate}___COMMON_{$rubric.name|upper}_INDEX___{else}{$rubric.name}{/if}
+                    			</a>
+                    		</li>
+                    	{/foreach}
                     </ul>
                     <div class="clear"> </div>
                     
