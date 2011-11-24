@@ -809,6 +809,7 @@ class cs_material_form extends cs_rubric_form {
                $this->_values['workflow_resubmission_date']['workflow_resubmission_date'] = '';
             }
             $this->_values['workflow_resubmission_who'] = $this->_item->getWorkflowResubmissionWho();
+            $this->_values['workflow_resubmission_who_additional'] = $this->_item->getWorkflowResubmissionWhoAdditional();
             $this->_values['workflow_resubmission_traffic_light'] = $this->_item->getWorkflowResubmissionTrafficLight();
             
             $this->_values['workflow_validity'] = $this->_item->getWorkflowValidity();
@@ -818,6 +819,7 @@ class cs_material_form extends cs_rubric_form {
                $this->_values['workflow_validity_date']['workflow_validity_date'] = '';
             }
             $this->_values['workflow_validity_who'] = $this->_item->getWorkflowValidityWho();
+            $this->_values['workflow_validity_who_additional'] = $this->_item->getWorkflowValidityWhoAdditional();
             $this->_values['workflow_validity_traffic_light'] = $this->_item->getWorkflowValidityTrafficLight();
          }
          

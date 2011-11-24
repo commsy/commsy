@@ -2414,6 +2414,17 @@ function getExternalViewerArray(){
       return $result;
    }
    
+   function setWorkflowResubmissionWhoAdditional($value) {
+      $this->_setExtra('WORKFLOWRESUBMISSIONWHOADDITIONAL', (string)$value);
+   }
+   function getWorkflowResubmissionWhoAdditional() {
+      $result = false;
+      if($this->_issetExtra('WORKFLOWRESUBMISSIONWHOADDITIONAL')){
+         $result = $this->_getExtra('WORKFLOWRESUBMISSIONWHOADDITIONAL');
+      }
+      return $result;
+   }
+   
    function setWorkflowResubmissionTrafficLight($value) {
       $this->_setExtra('WORKFLOWRESUBMISSIONTRAFFICLIGHT', (string)$value);
    }
@@ -2450,6 +2461,17 @@ function getExternalViewerArray(){
       $result = 'creator';
       if($this->_issetExtra('WORKFLOWVALIDITYWHO')){
          $result = $this->_getExtra('WORKFLOWVALIDITYWHO');
+      }
+      return $result;
+   }
+   
+   function setWorkflowValidityWhoAdditional($value) {
+      $this->_setExtra('WORKFLOWVALIDITYWHOADDITIONAL', (string)$value);
+   }
+   function getWorkflowValidityWhoAdditional() {
+      $result = false;
+      if($this->_issetExtra('WORKFLOWVALIDITYWHOADDITIONAL')){
+         $result = $this->_getExtra('WORKFLOWVALIDITYWHOADDITIONAL');
       }
       return $result;
    }

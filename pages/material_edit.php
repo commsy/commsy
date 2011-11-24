@@ -475,6 +475,9 @@ else {
             if ( isset($_POST['workflow_resubmission_who']) and $material_item->getWorkflowResubmissionWho() != $_POST['workflow_resubmission_who'] ) {
                $material_item->setWorkflowResubmissionWho($_POST['workflow_resubmission_who']);
             }
+            if ( isset($_POST['workflow_resubmission_who_additional']) and !empty($_POST['workflow_resubmission_who_additional'])) {
+               $material_item->setWorkflowResubmissionWhoAdditional($_POST['workflow_resubmission_who_additional']);
+            }
             if ( isset($_POST['workflow_resubmission_traffic_light']) and $material_item->getWorkflowResubmissionTrafficLight() != $_POST['workflow_resubmission_traffic_light'] ) {
                $material_item->setWorkflowResubmissionTrafficLight($_POST['workflow_resubmission_traffic_light']);
             }
@@ -499,6 +502,9 @@ else {
             }
             if ( isset($_POST['workflow_validity_who']) and $material_item->getWorkflowValidityWho() != $_POST['workflow_validity_who'] ) {
                $material_item->setWorkflowValidityWho($_POST['workflow_validity_who']);
+            }
+            if ( isset($_POST['workflow_validity_who_additional']) and !empty($_POST['workflow_validity_who_additional'])) {
+               $material_item->setWorkflowValidityWhoAdditional($_POST['workflow_validity_who_additional']);
             }
             if ( isset($_POST['workflow_validity_traffic_light']) and $material_item->getWorkflowValidityTrafficLight() != $_POST['workflow_validity_traffic_light'] ) {
                $material_item->setWorkflowValidityTrafficLight($_POST['workflow_validity_traffic_light']);
