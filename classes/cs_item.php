@@ -2443,6 +2443,17 @@ function getExternalViewerArray(){
       return $result = $this->_getValue('workflow_validity_date');
    }
    
+   function setWorkflowValidityWho($value) {
+      $this->_setExtra('WORKFLOWVALIDITYWHO', (string)$value);
+   }
+   function getWorkflowValidityWho() {
+      $result = 'creator';
+      if($this->_issetExtra('WORKFLOWVALIDITYWHO')){
+         $result = $this->_getExtra('WORKFLOWVALIDITYWHO');
+      }
+      return $result;
+   }
+   
    function setWorkflowValidityTrafficLight($value) {
       $this->_setExtra('WORKFLOWVALIDITYTRAFFICLIGHT', (string)$value);
    }

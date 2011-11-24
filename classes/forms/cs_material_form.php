@@ -342,6 +342,7 @@ class cs_material_form extends cs_rubric_form {
       }
       
       $workflow_resubmission_array = array();
+      $workflow_validity_array = array();
       $current_user = $this->_environment->getCurrentUserItem();
       $params['iid'] = $current_user->getItemID();
       $creator_link = ahref_curl($this->_environment->getCurrentContextID(),
@@ -352,13 +353,16 @@ class cs_material_form extends cs_rubric_form {
       $temp_array['text']  = $this->_translator->getMessage('COMMON_WORKFLOW_RESUBMISSION_CREATOR').' ('.$creator_link.')';
       $temp_array['value'] = 'creator';
       $workflow_resubmission_array[] = $temp_array;
+      $workflow_validity_array[] = $temp_array;
       $temp_array['text']  = $this->_translator->getMessage('COMMON_WORKFLOW_RESUBMISSION_MODIFIER');
       if(!empty($modifier_array)){
          $temp_array['text'] .= ' ('.implode(', ',$modifier_array).')';
       }
       $temp_array['value'] = 'modifier';
       $workflow_resubmission_array[] = $temp_array;
+      $workflow_validity_array[] = $temp_array;
       $this->_workflow_resubmission_array = $workflow_resubmission_array;
+      $this->_workflow_validity_array = $workflow_validity_array;
    }
 
    /** create the form, INTERNAL
@@ -649,9 +653,9 @@ class cs_material_form extends cs_rubric_form {
                $this->_form->combine();
                $this->_form->addRadioGroup('workflow_traffic_light',$this->_translator->getMessage('COMMON_WORKFLOW'),$this->_translator->getMessage('COMMON_WORKFLOW_DESCRIPTION'),$this->_workflow_array,'',false,false,'','',false,'',true);
             }
-            if($current_context->withWorkflowTrafficLight() and $current_context->withWorkflowResubmission()){
+            if($current_context->withWorkflowTrafficLight() and ($current_context->withWorkflowResubmission() or $current_context->withWorkflowValidity())){
                $this->_form->combine();
-               $this->_form->addText('', '', '&nbsp;');
+               $this->_form->addText('', '', '<br/><br/><hr/>');
                $this->_form->combine();
             }
             if($current_context->withWorkflowResubmission()){
@@ -666,6 +670,8 @@ class cs_material_form extends cs_rubric_form {
                $this->_form->addText('workflow_resubmission_who_text','',$this->_translator->getMessage('COMMON_WORKFLOW_RESUBMISSION_WHO').':');
                $this->_form->combine();
                $this->_form->addRadioGroup('workflow_resubmission_who',$this->_translator->getMessage('COMMON_WORKFLOW_RESUBMISSION'),$this->_translator->getMessage('COMMON_WORKFLOW_RESUBMISSION'),$this->_workflow_resubmission_array,'',false,false,'','',false,'',true);
+               $this->_form->combine();
+               $this->_form->addTextField('workflow_resubmission_who_additional', '', '', '', 255, 50, false, '', '', '', 'left', $this->_translator->getMessage('COMMON_WORKFLOW_RESUBMISSION_ADDITIONAL').':', '', false, '('.$this->_translator->getMessage('COMMON_WORKFLOW_RESUBMISSION_ADDITIONAL_SEPERATOR').')');
                $this->_form->combine();
                $this->_form->addText('', '', '&nbsp;');
                $this->_form->combine();
@@ -682,7 +688,7 @@ class cs_material_form extends cs_rubric_form {
             }
             if($current_context->withWorkflowResubmission() and $current_context->withWorkflowValidity()){
                $this->_form->combine();
-               $this->_form->addText('', '', '&nbsp;');
+               $this->_form->addText('', '', '<br/><br/><hr/>');
                $this->_form->combine();
             }
             if($current_context->withWorkflowValidity()){
@@ -691,6 +697,14 @@ class cs_material_form extends cs_rubric_form {
                $this->_form->addCheckbox('workflow_validity',1,'',$this->_translator->getMessage('COMMON_WORKFLOW_VALIDITY'),'','');
                $this->_form->combine('horizontal');
                $this->_form->addDateTimeField('workflow_validity_date','','workflow_validity_date','',9,4,'','','','',FALSE,FALSE,100,100,true,'left','',FALSE,TRUE);
+               $this->_form->combine();
+               $this->_form->addText('', '', '&nbsp;');
+               $this->_form->combine();
+               $this->_form->addText('workflow_validity_who_text','',$this->_translator->getMessage('COMMON_WORKFLOW_RESUBMISSION_WHO').':');
+               $this->_form->combine();
+               $this->_form->addRadioGroup('workflow_validity_who',$this->_translator->getMessage('COMMON_WORKFLOW_RESUBMISSION'),$this->_translator->getMessage('COMMON_WORKFLOW_RESUBMISSION'),$this->_workflow_validity_array,'',false,false,'','',false,'',true);
+               $this->_form->combine();
+               $this->_form->addTextField('workflow_validity_who_additional', '', '', '', 255, 50, false, '', '', '', 'left', $this->_translator->getMessage('COMMON_WORKFLOW_RESUBMISSION_ADDITIONAL').':', '', false, '('.$this->_translator->getMessage('COMMON_WORKFLOW_RESUBMISSION_ADDITIONAL_SEPERATOR').')');
                $this->_form->combine();
                $this->_form->addText('', '', '&nbsp;');
                $this->_form->combine();
@@ -803,6 +817,7 @@ class cs_material_form extends cs_rubric_form {
             } else {
                $this->_values['workflow_validity_date']['workflow_validity_date'] = '';
             }
+            $this->_values['workflow_validity_who'] = $this->_item->getWorkflowValidityWho();
             $this->_values['workflow_validity_traffic_light'] = $this->_item->getWorkflowValidityTrafficLight();
          }
          

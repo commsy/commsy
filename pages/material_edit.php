@@ -497,6 +497,9 @@ else {
             } else {
                $material_item->setWorkflowValidityDate('');
             }
+            if ( isset($_POST['workflow_validity_who']) and $material_item->getWorkflowValidityWho() != $_POST['workflow_validity_who'] ) {
+               $material_item->setWorkflowValidityWho($_POST['workflow_validity_who']);
+            }
             if ( isset($_POST['workflow_validity_traffic_light']) and $material_item->getWorkflowValidityTrafficLight() != $_POST['workflow_validity_traffic_light'] ) {
                $material_item->setWorkflowValidityTrafficLight($_POST['workflow_validity_traffic_light']);
             }
