@@ -185,6 +185,7 @@ function cron_workflow($portal){
                $temp_list = $temp_material->getModifierList();
                $email_receiver_array = $temp_list->to_array();
             }
+            
             $to = '';
             $first = true;
             foreach($email_receiver_array as $email_receiver){
@@ -196,6 +197,11 @@ function cron_workflow($portal){
                }
             }
 
+            $additional_receiver = $temp_material->getWorkflowResubmissionWhoAdditional();
+            if(!empty($additional_receiver)){
+               $to .= ','.$additional_receiver;
+            }
+            
             include_once('classes/cs_mail.php');
             $translator = $environment->getTranslationObject();
             $mail = new cs_mail();
@@ -240,6 +246,61 @@ function cron_workflow($portal){
          $temp_room = $room_manager->getItem($temp_material->getContextID());
          
          if($temp_material->getWorkflowValidity() and $temp_room->withWorkflowValidity()){
+            $email_receiver_array = array();
+            if($temp_material->getWorkflowValidityWho() == 'creator'){
+               $email_receiver_array[] = $temp_material->getCreator();
+            } else {
+               $temp_list = $temp_material->getModifierList();
+               $email_receiver_array = $temp_list->to_array();
+            }
+            
+            $to = '';
+            $first = true;
+            foreach($email_receiver_array as $email_receiver){
+               if($first){
+                  $to .= $email_receiver->getEmail();
+                  $first = false;
+               } else {
+                  $to .= ','.$email_receiver->getEmail();
+               }
+            }
+
+            $additional_receiver = $temp_material->getWorkflowValidityWhoAdditional();
+            if(!empty($additional_receiver)){
+               $to .= ','.$additional_receiver;
+            }
+            
+            include_once('classes/cs_mail.php');
+            $translator = $environment->getTranslationObject();
+            $mail = new cs_mail();
+            $mail->set_to($to);
+            $mail->set_from_name($translator->getMessage('SYSTEM_MAIL_MESSAGE', $portal->getTitle()));
+            $server_item = $environment->getServerItem();
+            $default_sender_address = $server_item->getDefaultSenderAddress();
+            if (!empty($default_sender_address)) {
+               $mail->set_from_email($default_sender_address);
+            } else {
+               $mail->set_from_email('@');
+            }
+            $mail->set_subject($translator->getMessage('COMMON_WORKFLOW_EMAIL_SUBJECT_VALIDITY', $portal->getTitle()));
+
+            global $c_commsy_cron_path;
+            if(isset($c_commsy_cron_path)){
+               $curl_text = $c_commsy_cron_path.'commsy.php?cid=';
+            } else {
+               $commsy_file = $_SERVER['PHP_SELF'];
+               $commsy_file = str_replace('cron_new','commsy',$commsy_file);
+               $commsy_file = str_replace('cron','commsy',$commsy_file);
+               $curl_text = 'http://'.$_SERVER['HTTP_HOST'].$commsy_file.'?cid=';
+            }
+            $link = '<a href="'.$curl_text.$temp_room->getItemID().'&amp;mod=material&amp;fct=detail&amp;iid='.$temp_material->getItemID().'">'.$temp_material->getTitle().'</a>';
+            
+            $mail->set_message($translator->getMessage('COMMON_WORKFLOW_EMAIL_BODY_VALIDITY', $temp_room->getTitle(), $temp_material->getTitle(), $link));
+            $mail->setSendAsHTML();
+            if ( $mail->send() ) {
+               fwrite($file, 'workflow validity e-mail send for item: '.$item['item_id']);
+            }
+            
             // change the status of the material
             $material_manager->setWorkflowStatus($temp_material->getItemID(), $temp_material->getWorkflowValidityTrafficLight(), $temp_material->getVersionID());
          }

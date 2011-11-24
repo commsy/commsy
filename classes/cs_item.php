@@ -2415,12 +2415,14 @@ function getExternalViewerArray(){
    }
    
    function setWorkflowResubmissionWhoAdditional($value) {
-      $this->_setExtra('WORKFLOWRESUBMISSIONWHOADDITIONAL', (string)$value);
+      $value = str_replace(array("\t", " "), '', $value);
+      $value_array = explode(',', $value);
+      $this->_setExtra('WORKFLOWRESUBMISSIONWHOADDITIONAL', $value_array);
    }
    function getWorkflowResubmissionWhoAdditional() {
       $result = false;
       if($this->_issetExtra('WORKFLOWRESUBMISSIONWHOADDITIONAL')){
-         $result = $this->_getExtra('WORKFLOWRESUBMISSIONWHOADDITIONAL');
+         $result = implode(', ', $this->_getExtra('WORKFLOWRESUBMISSIONWHOADDITIONAL'));
       }
       return $result;
    }
@@ -2466,12 +2468,14 @@ function getExternalViewerArray(){
    }
    
    function setWorkflowValidityWhoAdditional($value) {
-      $this->_setExtra('WORKFLOWVALIDITYWHOADDITIONAL', (string)$value);
+      $value = str_replace(array("\t", " "), '', $value);
+      $value_array = explode(',', $value);
+      $this->_setExtra('WORKFLOWVALIDITYWHOADDITIONAL', $value_array);
    }
    function getWorkflowValidityWhoAdditional() {
       $result = false;
       if($this->_issetExtra('WORKFLOWVALIDITYWHOADDITIONAL')){
-         $result = $this->_getExtra('WORKFLOWVALIDITYWHOADDITIONAL');
+         $result = implode(', ', $this->_getExtra('WORKFLOWVALIDITYWHOADDITIONAL'));
       }
       return $result;
    }
