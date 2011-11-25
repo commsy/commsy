@@ -14,7 +14,7 @@
     <meta name="description" content="" />
     <meta name="copyright" content="" />
     
-    <link rel="stylesheet" type="text/css" media="screen" href="{$basic.tpl_path}/styles.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="{$basic.tpl_path}styles.css" />
     
     <title>CommSy 8.0 - Home</title>
 
