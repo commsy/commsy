@@ -67,8 +67,12 @@
                     <div id="info_area">
                         <div id="infos_left">
                             <h2>Rauminfos:</h2>
-                            <p>neue Beitr&auml;ge: 17</p>
-                            <p>Seitenaufrufe: 904</p>
+                            <p>
+                            	___ACTIVITY_NEW_ENTRIES___: {$room.room_information.new_entries}
+                            </p>
+                            <p>
+                            	___ACTIVITY_PAGE_IMPRESSIONS___: {$room.room_information.page_impressions}
+                            </p>
                         </div>
                         
                         <div id="infos_right">

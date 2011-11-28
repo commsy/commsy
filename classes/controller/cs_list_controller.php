@@ -2,6 +2,8 @@
 	require_once('classes/controller/cs_room_controller.php');
 	
 	abstract class cs_list_controller extends cs_room_controller {
+		private $_entries_per_page = 20;
+		
 		/**
 		 * constructor
 		 */
@@ -23,12 +25,12 @@
 		 * @param $rubric_array - item types
 		 * @param $limit - optional limit per rubric
 		 */
-		protected function getListContent($rubric_array, $limit = 0) {
+		protected function getListContent($rubric_array, $limit = null) {
 			$list = new cs_list();
 			$return = array();
 			
 			// check limit
-			//if($limit < )
+			if($limit == null) $limit = $this->_entries_per_page;
 			
 			foreach($rubric_array as $rubric) {
 				$count_all = 0;
@@ -218,29 +220,31 @@
 						*/
 						break;
 						
-					/*
 					case CS_DISCUSSION_TYPE:
-						$short_list_view = $class_factory->getClass(DISCUSSION_SHORT_VIEW,$param_class_array);
-						$manager = $environment->getDiscussionManager();
+						$manager = $this->_environment->getDiscussionManager();
 						$manager->reset();
-						$manager->setContextLimit($environment->getCurrentContextID());
+						$manager->setContextLimit($this->_environment->getCurrentContextID());
 						$count_all = $manager->getCountAll();
+						/*
 						if ($environment->inProjectRoom() or $environment->inGroupRoom() ) {
 							$manager->setAgeLimit($context_item->getTimeSpread());
 						} elseif ($environment->inCommunityRoom()) {
 							$manager->setIntervalLimit(0,5);
 							$home_rubric_limit = 5;
 						}
+						*/
 						$manager->showNoNotActivatedEntries();
 							
-						$count_select = $manager->getCountAll();
-						$manager->setIntervalLimit(0, $home_rubric_limit);
+						$manager->setIntervalLimit(0, $limit);
+						/*
 						$home_rubric_limit = CS_HOME_RUBRIC_LIST_LIMIT;
 							
 						if($home_rubric_limit < $count_select) $short_list_view->setListShortened(true);
+						*/
 							
 						$manager->select();
 						$list = $manager->get();
+						/*
 						$short_list_view->setList($list);
 						$short_list_view->setCountAll($count_all);
 						$item = $list->getFirst();
@@ -256,6 +260,7 @@
 							$disc_id_array[] = $item->getItemID();
 							$item = $discarticle_list->getNext();
 						}
+						*/
 						break;
 						
 						/*

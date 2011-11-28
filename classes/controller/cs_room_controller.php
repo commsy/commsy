@@ -25,7 +25,11 @@
 				die('you are not in room context, so no room template should be processed');	
 			}
 			
+			// rubric information for room navigation
 			$this->assign('room', 'rubric_information', $this->getRubricInformation());
+			
+			// room information
+			$this->assign('room', 'room_information', $this->getRoomInformation());
 		}
 		
 		/**
@@ -93,6 +97,27 @@
 				}
 			}
 			
+			return $return;
+		}
+		
+		private function getRoomInformation() {
+			$return = array();
+			$context_item = $this->_environment->getCurrentContextItem();
+			
+			// time spread
+			$return['time_spread'] = $context_item->getTimeSpread();
+			
+			// active persons
+			$time_spread = $context_item->getTimeSpread();
+			$return['active_persons'] = round($context_item->getActiveMembers($time_spread) / $context_item->getAllUsers() * 100);
+			
+			// new entries
+			$return['new_entries'] = $context_item->getNewEntries($time_spread);
+			
+			// page impressions
+			$return['page_impressions'] = $context_item->getPageImpressions($time_spread);
+			
+			//$this->_translator->getMessage('ACTIVITY_ACTIVE_MEMBERS_DESC',$time_spread)
 			return $return;
 		}
 	}
