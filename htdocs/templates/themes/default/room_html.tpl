@@ -82,10 +82,10 @@
                     
                     <div id="addon_area">
                         <p>
-                            <a href="" title="Wiki"><img src="{$basic.tpl_path}/img/addon_wiki.png" alt="Wiki" /></a>
-                            <a href="" title="RSS"><img src="{$basic.tpl_path}/img/addon_rss.png" alt="RSS" /></a>
-                            <a href="" title="Chat"><img src="{$basic.tpl_path}/img/addon_chat.png" alt="Chat" /></a>
-                            <a href="" title="Wordpress"><img src="{$basic.tpl_path}/img/addon_wordpress.png" alt="Wordpress" /></a>
+                            <a href="" title="Wiki"><img src="{$basic.tpl_path}img/addon_wiki.png" alt="Wiki" /></a>
+                            <a href="" title="RSS"><img src="{$basic.tpl_path}img/addon_rss.png" alt="RSS" /></a>
+                            <a href="" title="Chat"><img src="{$basic.tpl_path}img/addon_chat.png" alt="Chat" /></a>
+                            <a href="" title="Wordpress"><img src="{$basic.tpl_path}img/addon_wordpress.png" alt="Wordpress" /></a>
                         </p>
                         <div class="clear"> </div>
                     </div>
@@ -96,12 +96,12 @@
                 <div id="rc_portlet_area">
                 
                     <div class="portlet_rc">
-                        <a href="" title="schlie&szlig;en" class="btn_head_rc"><img src="{$basic.tpl_path}/img/btn_close_rc.gif" alt="close" /></a>
+                        <a href="" title="schlie&szlig;en" class="btn_head_rc"><img src="{$basic.tpl_path}img/btn_close_rc.gif" alt="close" /></a>
                         <h2>Schlagw&ouml;rter</h2>
                         
                         <div class="clear"> </div>
                         
-                        <a href="" title="bearbeiten" class="btn_body_rc"><img src="{$basic.tpl_path}/img/btn_edit_rc.gif" alt="close" /></a>
+                        <a href="" title="bearbeiten" class="btn_body_rc"><img src="{$basic.tpl_path}img/btn_edit_rc.gif" alt="close" /></a>
                         <div class="portlet_rc_body">
                             <a href="" class="keywords_s2">Lorem</a>
                             <a href="" class="keywords_s1">ipsum</a>
@@ -116,15 +116,15 @@
                     </div>
                     
                     <div class="portlet_rc">
-                        <a href="" title="schlie&szlig;en" class="btn_head_rc"><img src="{$basic.tpl_path}/img/btn_close_rc.gif" alt="close" /></a>
+                        <a href="" title="schlie&szlig;en" class="btn_head_rc"><img src="{$basic.tpl_path}img/btn_close_rc.gif" alt="close" /></a>
                         <h2>Kategorien</h2>
                         
                         <div class="clear"> </div>
                         
-                        <a href="" title="bearbeiten" class="btn_body_rc"><img src="{$basic.tpl_path}/img/btn_edit_rc.gif" alt="close" /></a>
+                        <a href="" title="bearbeiten" class="btn_body_rc"><img src="{$basic.tpl_path}img/btn_edit_rc.gif" alt="close" /></a>
                         <div class="portlet_rc_body">
                         
-                        <img src="{$basic.tpl_path}/img/dummy_kategorien.jpg" alt="Dummy - hier die bestehende Architektur einsetzen bitte"/>
+                        <img src="{$basic.tpl_path}img/dummy_kategorien.jpg" alt="Dummy - hier die bestehende Architektur einsetzen bitte"/>
                         </div>
                     </div>   
                      

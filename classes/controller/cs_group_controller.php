@@ -1,7 +1,7 @@
 <?php
 	require_once('classes/controller/cs_list_controller.php');
 	
-	class cs_announcement_controller extends cs_list_controller {
+	class cs_group_controller extends cs_list_controller {
 		/**
 		 * constructor
 		 */
@@ -20,7 +20,7 @@
 			parent::processTemplate();
 			
 			// assign rubric to template
-			$this->assign('room', 'rubric', CS_ANNOUNCEMENT_TYPE);
+			$this->assign('room', 'rubric', CS_GROUP_TYPE);
 		}
 		
 		/*****************************************************************************/
@@ -32,8 +32,8 @@
 		 */
 		public function actionIndex() {
 			// get list content
-			$list_content = $this->getListContent(array(CS_ANNOUNCEMENT_TYPE));
+			$list_content = $this->getListContent(array(CS_GROUP_TYPE));
 			
-			$this->assign('room', 'list_content', $list_content[CS_ANNOUNCEMENT_TYPE]);
+			$this->assign('room', 'list_content', $list_content[CS_GROUP_TYPE]);
 		}
 	}

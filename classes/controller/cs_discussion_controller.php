@@ -18,12 +18,22 @@
 		public function processTemplate() {
 			// call parent
 			parent::processTemplate();
+			
+			// assign rubric to template
+			$this->assign('room', 'rubric', CS_DISCUSSION_TYPE);
 		}
 		
+		/*****************************************************************************/
+		/******************************** ACTIONS ************************************/
+		/*****************************************************************************/
+		
 		/**
-		 * 
+		 * INDEX
 		 */
-		public function actionIndex() {
+		protected function actionIndex() {
+			// get list content
+			$list_content = $this->getListContent(array(CS_DISCUSSION_TYPE));
 			
+			$this->assign('room', 'list_content', $list_content[CS_DISCUSSION_TYPE]);
 		}
 	}

@@ -18,7 +18,13 @@
 		public function processTemplate() {
 			// call parent
 			parent::processTemplate();
-			
+		}
+		
+		/*****************************************************************************/
+		/******************************** ACTIONS ************************************/
+		/*****************************************************************************/
+		
+		public function actionIndex() {
 			$this->assign('room', 'home_content', $this->getContentForHomeList());
 		}
 		
