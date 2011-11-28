@@ -13,7 +13,10 @@
 		/*
 		 * every derived class needs to implement an processTemplate function
 		 */
-		public function processTemplate() {
+		protected function processTemplate() {
+			// call parent
+			parent::processTemplate();
+			
 			// check room context
 			if(	!$this->_environment->inProjectRoom() &&
 				!$this->_environment->inCommunityRoom() &&

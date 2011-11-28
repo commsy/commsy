@@ -61,7 +61,8 @@ class cs_smarty extends Smarty {
 		}
 		
 		// multilanguage support
-		$this->registerFilter('output', array($this, 'smarty_outputfilter_i18n'));
+		//$this->registerFilter('pre', array($this, 'smarty_filter_i18n'));
+		$this->registerFilter('output', array($this, 'smarty_filter_i18n'));
 	}
 	
 	public function setTheme($theme) {
@@ -98,7 +99,7 @@ class cs_smarty extends Smarty {
 		}
 	}
 	
-	public function smarty_outputfilter_i18n($tpl_source, Smarty_Internal_Template $template) {
+	public function smarty_filter_i18n($tpl_source, Smarty_Internal_Template $template) {
 		return preg_replace_callback('/___(.+?)___/', array($this, 'compile_lang'), $tpl_source);
 	}
 	
