@@ -748,7 +748,6 @@ class cs_material_form extends cs_rubric_form {
     * this methods loads the selected and given values to the form from the material item or the form_post data
     */
    function _prepareValues () {
-
       $current_context = $this->_environment->getCurrentContextItem();
       if (isset($this->_form_post)) {
          $this->_values = $this->_form_post;
@@ -764,6 +763,21 @@ class cs_material_form extends cs_rubric_form {
             $tmp_array['timeStart'] = '';
          }
          $this->_values['start_date_time'] = $tmp_array;
+         
+         if ($current_context->withWorkflow()){
+            $this->_values['workflow_traffic_light'] = $this->_form_post['workflow_traffic_light'];
+            
+            $this->_values['workflow_resubmission_date'] = array('workflow_resubmission_date' => $this->_form_post['workflow_resubmission_date']);
+            $this->_values['workflow_resubmission_who'] = $this->_form_post['workflow_resubmission_who'];
+            $this->_values['workflow_resubmission_who_additional'] = $this->_form_post['workflow_resubmission_who_additional'];
+            $this->_values['workflow_resubmission_traffic_light'] = $this->_form_post['workflow_resubmission_traffic_light'];
+            
+            $this->_values['workflow_validity_date'] = array('workflow_validity_date' => $this->_form_post['workflow_validity_date']);
+            $this->_values['workflow_validity_who'] = $this->_form_post['workflow_validity_who'];
+            $this->_values['workflow_validity_who_additional'] = $this->_form_post['workflow_validity_who_additional'];
+            $this->_values['workflow_validity_traffic_light'] = $this->_form_post['workflow_validity_traffic_light'];
+         }
+         
       }elseif (isset($this->_item)) {
          $this->_values['modification_date'] = $this->_item->getModificationDate();
          $this->_values['iid'] = $this->_item->getItemID();
@@ -877,7 +891,8 @@ class cs_material_form extends cs_rubric_form {
             $this->_values['workflow_resubmission_who'] = 'creator';
             $this->_values['workflow_resubmission_traffic_light'] = '3_none';
             $this->_values['workflow_validity'] = false;
-            $this->_values['workflow_validity_date']['workflow_resubmission_date'] = '';
+            $this->_values['workflow_validity_date']['workflow_validity_date'] = '';
+            $this->_values['workflow_validity_who'] = 'creator';
             $this->_values['workflow_validity_traffic_light'] = '3_none';
          }
       }
