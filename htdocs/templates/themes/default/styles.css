@@ -325,6 +325,10 @@ main-navigation
     border-left: 1px solid #999;
     }
 
+#main_navigation h1 span {
+    font-weight: normal;
+    }
+
 #main_navigation #site_actions {
     float: right;
     background: url(img/site_actions_bg.jpg) no-repeat;
@@ -593,6 +597,69 @@ content, general
     background: url(img/open_close_bg.png) no-repeat;
     }
 
+.content_item .item_info {
+    background: url(img/ci_head_bg.png) repeat-x;
+    text-shadow: 0px 1px #F5F5F5;
+    }
+
+.ii_left {
+    width: 367px;
+    float: left; 
+    }
+
+#item_action {
+    padding: 7px 0px 7px 5px;
+    }
+
+.item_info input, .item_info select {
+    vertical-align: middle;
+    }
+
+.item_info select {
+    border-width: 0px 1px;
+    border-color: #919191;
+    background: url(img/select_bg.jpg) repeat-x #FFF;
+    padding: 5px 4px 5px 4px;
+    width: 150px;
+    color: #6B6B6B;
+    }
+
+.ii_right {
+    width: 367px;
+    float: left;
+    text-align: right;    
+    }
+
+.ii_right p {
+    padding: 12px 10px 0px 0px;
+    }
+
+.ii_left p {
+    padding: 8px 0px 8px 10px;
+    }
+    
+.ii_left p a {
+    color: #393939;
+    text-decoration: none;
+    padding: 0px 5px;
+    }
+
+.ii_left p a:hover {
+    color: #666;
+    }
+
+#item_navigation {
+    padding: 8px 10px 8px 0px;
+    }
+
+#item_navigation a {
+    padding: 0px 5px;
+    }
+
+#item_navigation a img {
+    margin-bottom: -2px;
+    }
+
 .row_odd {
     background-color: #F5F5F5;
     }
@@ -622,6 +689,7 @@ content, general
 .seperator {
     background: url(img/seperator_bg.gif) repeat-y;
     overflow: auto;
+    float: left;
     }
 
 span.new_item {
@@ -630,21 +698,38 @@ span.new_item {
     padding-left: 24px; 
     }
 
+span.new_item_2 {
+    background: url(img/flag_neu.gif) no-repeat left center;
+    margin-left: -20px;
+    padding-left: 20px; 
+    }
+
 
 
 /*
 ----------------------------------------------------------------------
-content, home desktop
+content, column-width
 ----------------------------------------------------------------------
 */
 
-.column_430 {
-    width: 430px;
+.column_20 {
+    width: 20px;
     float: left;
     }
 
-.column_430 p, .column_120 p, .column_184 p {
-    padding: 5px 10px;
+.column_45 {
+    width: 45px;
+    float: left;
+    }
+
+.column_90 {
+    width: 90px;
+    float: left;
+    }
+
+.column_100 {
+    width: 90px;
+    float: left;
     }
 
 .column_120 {
@@ -652,9 +737,99 @@ content, home desktop
     float: left;    
     }
 
+.column_155 {
+    width: 150px;
+    float: left;    
+    }
+
 .column_184 {
     width: 184px;
     float: left;      
+    }
+
+.column_244 {
+    width: 244px;
+    float: left;      
+    }
+
+.column_430 {
+    width: 430px;
+    float: left;
+    }
+
+.column_20 p {
+    padding: 3px 5px 0px 5px;
+    }
+
+.column_45 p, .column_90 p, .column_100 p, .column_120 p, .column_155 p, .column_184 p, .column_244 p, .column_430 p {
+    padding: 5px 10px;
+    }
+
+
+/*
+----------------------------------------------------------------------
+content, following pages
+----------------------------------------------------------------------
+*/
+
+.table_head {
+    background: url(img/ci_head_bg.png) repeat-x;    
+    }
+
+.content_item h3 {
+    font-size: 12px;
+    padding: 17px 0px 7px 10px;
+    float: left;
+    font-weight: normal;
+    }
+
+.content_item h3 strong {
+    font-weight: bold;
+    }
+
+.content_item h3 a {
+    color: #393939;
+    text-decoration: none;
+    }
+
+.content_item h3 a:hover {
+    color: #666;
+    }
+
+a.sort_none {
+    background: url(img/sort_none.gif) no-repeat right 4px;
+    padding-right: 12px !important;  
+    }
+
+a#sort_up {
+    background: url(img/sort_up.gif) no-repeat right 4px;
+    padding-right: 12px !important;  
+    }
+
+a#sort_down {
+    background: url(img/sort_down.gif) no-repeat right 4px;
+    padding-right: 12px !important;  
+    }
+
+.w_295 {
+    width: 295px;
+    }
+
+.w_80 {
+    width: 80px;
+    }
+
+.w_85 {
+    width: 85px;
+    }
+    
+.w_135 {
+    width: 135px;
+    }    
+
+.attachment {
+    background: url(img/attachment.gif) no-repeat left 2px;
+    padding-left: 12px;      
     }
 
 
@@ -725,6 +900,21 @@ a:hover.keywords_s1, a:hover.keywords_s2, a:hover.keywords_s3, a:hover.keywords_
     color: #FFF;
     text-decoration: underline;
     }
+
+.portlet_rc_body .change_view {
+    
+    }
+      
+.portlet_rc_body .change_view select {
+    display: block;
+    width: 165px;
+    background: url(img/rc_select_bg.jpg) no-repeat;
+    border: 0px;
+    color: #FFF;
+    padding: 5px;
+    margin: 5px 0px 10px 0px;
+    }      
+      
       
       
     

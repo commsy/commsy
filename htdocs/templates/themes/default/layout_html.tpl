@@ -36,19 +36,19 @@
         
         <div id="header"> <!-- Start header -->
             <div id="logo_area">
-                <a href=""><img src="{$basic.tpl_path}/img/commsy_logo.gif" alt="CommSy" /></a> <!-- Logo-Hoehe 60 Pixel -->
+                <a href=""><img src="{$basic.tpl_path}img/commsy_logo.gif" alt="CommSy" /></a> <!-- Logo-Hoehe 60 Pixel -->
             </div>
             
             <div id="search_area">
                 <div id="search_navigation">
                     <span class="sa_sep"><a href="" id="sa_active">nur dieser Raum</a></span>
                     <span class="sa_sep"><a href="">alle meine R&auml;ume</a></span>
-                    <span id="sa_options"><a href=""><img src="{$basic.tpl_path}/img/sa_dropdown.gif" alt="O" /></a></span>
+                    <span id="sa_options"><a href=""><img src="{$basic.tpl_path}img/sa_dropdown.gif" alt="O" /></a></span>
                     
                     <div class="clear"> </div>
                     
                     <div id="commsy_search">
-                        <input id="search_input" type="text" value="Suche ..." /><input type="image" src="{$basic.tpl_path}/img/btn_search.gif" alt="absenden" />
+                        <input id="search_input" type="text" value="Suche ..." /><input type="image" src="{$basic.tpl_path}img/btn_search.gif" alt="absenden" />
                     </div>
                 </div>
             </div>

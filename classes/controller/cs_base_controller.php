@@ -27,7 +27,15 @@
 		/*
 		 * every derived class needs to implement an processTemplate function
 		 */
-		abstract protected function processTemplate();
+		protected function processTemplate() {
+			// the actual function determes the method call
+			$function = 'action' . ucfirst($this->_environment->getCurrentFunction());
+			
+			if(!method_exists($this, $function)) die('Method ' . $function . ' does not exists!');
+			
+			// call
+			call_user_func_array(array($this, $function));
+		}
 		
 		/**
 		 * assigns a new template variable
