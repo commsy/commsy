@@ -34,7 +34,7 @@
                             </div>
 	                        <div class="column_184">
 	                        	<p>
-	                            	<a href="">John Doe</a>
+	                            	<a href="">{$item.creator}</a>
 	                            </p>
 	                        </div>
 	                    </div>

@@ -68,7 +68,8 @@
 				while($item) {
 					$item_array[] = array(
 						'title'				=> $item->getTitle(),
-						'modification_date'	=> $item->getModificationDate()
+						'modification_date'	=> $this->_environment->getTranslationObject()->getDateInLang($item->getModificationDate()),
+						'creator'			=> $item->getCreatorItem()->getFullName()
 					
 					//$this->_text_as_html_short($this->_translator->getDateInLang($item->getModificationDate()))
 					);
@@ -76,7 +77,7 @@
 					$item = $list->getNext();
 				}
 				
-				var_dump($item_array);
+				//var_dump($item_array);
 /*
 $list = new cs_list();
                $rubric = '';

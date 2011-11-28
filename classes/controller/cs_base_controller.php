@@ -58,10 +58,11 @@
 		 * process basic template information
 		 */
 		private function processBaseTemplate() {
-			$tpl_dir = $this->_tpl_engine->getTemplateDir();
+			$tpl_dir = $this->_tpl_engine->getTemplateDir(0);
+			
 			$current_user = $this->_environment->getCurrentUser();
 			
-			$this->assign('basic', 'tpl_path', substr($tpl_dir[0], 6));
+			$this->assign('basic', 'tpl_path', substr($tpl_dir, 7));
 			$this->assign('environment', 'cid', $this->_environment->getCurrentContextID());
 			$this->assign('environment', 'username', $current_user->getFullName());
 			$this->assign('environment', 'is_guest', $current_user->isReallyGuest());
