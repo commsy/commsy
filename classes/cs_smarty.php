@@ -22,6 +22,8 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
+define('DS', '/');
+
 // load smarty library
 require_once('libs/smarty/Smarty.class.php');
 
@@ -64,6 +66,7 @@ class cs_smarty extends Smarty {
 	
 	public function setTheme($theme) {
 		$this->theme = $theme;
+		
 		if(!empty($theme) && file_exists($this->getTemplateDir(0) . 'themes/' . $theme)) {
 			$this->setTemplateDir($this->getTemplateDir(0) . 'themes/' . $theme);
 			$this->setCompileDir($this->getCompileDir(0) . $theme);
