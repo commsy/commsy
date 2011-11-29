@@ -78,52 +78,148 @@
 			{/foreach}
 		</div> <!-- Ende content_item --> 
 	
-	<div class="content_item"> <!-- Start content_item -->
-		<div class="item_info">
-			<div class="ii_left">
-			 	<div id="item_action">
-			 		<input type="checkbox" name="" value="" /> alle
-			 		
-			 		<select name="" size="1">
-				 		<option>Aktion w&auml;hlen</option>
-				 		<option>Aktion 1</option>
-				 		<option>Aktion 2</option>
-				 		<option>Aktion 3</option>
-				 		<option>Aktion 4</option>
-				 	</select>
-				 	
-				 	<input type="image" src="{$basic.tpl_path}img/btn_go.gif" alt="absenden" />
-				 </div>
+		<div class="content_item"> <!-- Start content_item -->
+			<div class="item_info">
+				<div class="ii_left">
+				 	<div id="item_action">
+				 		<input type="checkbox" name="" value="" /> alle
+				 		
+				 		<select name="" size="1">
+					 		<option>Aktion w&auml;hlen</option>
+					 		<option>Aktion 1</option>
+					 		<option>Aktion 2</option>
+					 		<option>Aktion 3</option>
+					 		<option>Aktion 4</option>
+					 	</select>
+					 	
+					 	<input type="image" src="{$basic.tpl_path}img/btn_go.gif" alt="absenden" />
+					 </div>
+				</div>
+				
+				<div class="ii_right">
+					<p>0 Eintr&auml;ge ausgew&auml;hlt</p>
+				</div>
+				
+				<div class="clear"> </div>
 			</div>
-			
-			<div class="ii_right">
-				<p>0 Eintr&auml;ge ausgew&auml;hlt</p>
+		</div> <!-- Ende content_item -->
+	
+		<div class="content_item"> <!-- Start content_item -->
+			<div class="item_info">
+				<div class="ii_left">
+					<p>Eintr&auml;ge pro Seite <a href=""><strong>20</strong></a>|<a href="">50</a>|<a href="">alle</a></p>
+				</div>
+				
+				<div class="ii_right">
+					<div id="item_navigation">
+						<a href=""><img src="{$basic.tpl_path}img/btn_ar_start.gif" alt="Start" /></a>
+						<a href=""><img src="{$basic.tpl_path}img/btn_ar_left.gif" alt="zur&uuml;ck" /></a>
+						Seite 1/12
+						<a href=""><img src="{$basic.tpl_path}img/btn_ar_right.gif" alt="weiter" /></a>
+						<a href=""><img src="{$basic.tpl_path}img/btn_ar_end.gif" alt="Ende" /></a>
+					</div>
+				</div>
+				
+				<div class="clear"> </div>
 			</div>
 			
 			<div class="clear"> </div>
-		</div>
-	</div> <!-- Ende content_item -->
+		</div> <!-- Ende content_item -->
+	</div>
+{/block}
 
-	<div class="content_item"> <!-- Start content_item -->
-		<div class="item_info">
-			<div class="ii_left">
-				<p>Eintr&auml;ge pro Seite <a href=""><strong>20</strong></a>|<a href="">50</a>|<a href="">alle</a></p>
+{block name=room_right_column}
+	<div id="info_addon">
+		<div id="info_area">
+			<div id="infos_left">
+				<h2>Rauminfos:</h2>
+				<p>
+					___ACTIVITY_NEW_ENTRIES___: {$room.room_information.new_entries}
+				</p>
+				<p>
+					___ACTIVITY_PAGE_IMPRESSIONS___: {$room.room_information.page_impressions}
+				</p>
 			</div>
 			
-			<div class="ii_right">
-				<div id="item_navigation">
-					<a href=""><img src="{$basic.tpl_path}img/btn_ar_start.gif" alt="Start" /></a>
-					<a href=""><img src="{$basic.tpl_path}img/btn_ar_left.gif" alt="zur&uuml;ck" /></a>
-					Seite 1/12
-					<a href=""><img src="{$basic.tpl_path}img/btn_ar_right.gif" alt="weiter" /></a>
-					<a href=""><img src="{$basic.tpl_path}img/btn_ar_end.gif" alt="Ende" /></a>
+			<div id="infos_right">
+				<div id="info_bar">
+					<p>999</p>
 				</div>
 			</div>
 			
 			<div class="clear"> </div>
 		</div>
 		
+		<div id="addon_area">
+			<p>
+				<a href="" title="Wiki"><img src="{$basic.tpl_path}img/addon_wiki.png" alt="Wiki" /></a>
+				<a href="" title="RSS"><img src="{$basic.tpl_path}img/addon_rss.png" alt="RSS" /></a>
+				<a href="" title="Chat"><img src="{$basic.tpl_path}img/addon_chat.png" alt="Chat" /></a>
+				<a href="" title="Wordpress"><img src="{$basic.tpl_path}img/addon_wordpress.png" alt="Wordpress" /></a>
+			</p>
+			<div class="clear"> </div>
+		</div>
+		
 		<div class="clear"> </div>
-	</div> <!-- Ende content_item -->
-</div>
+	</div>
+	
+	<div id="rc_portlet_area">
+	
+		<div class="portlet_rc">
+			<a href="" title="schlie&szlig;en" class="btn_head_rc"><img src="{$basic.tpl_path}img/btn_close_rc.gif" alt="close" /></a>
+			<h2>Einschr&auml;nkungen der Liste</h2>
+			
+			<div class="clear"> </div>
+			
+			<a href="" title="bearbeiten" class="btn_body_rc"><img src="{$basic.tpl_path}img/btn_edit_rc.gif" alt="close" /></a>
+			<div class="portlet_rc_body">
+				<div class="change_view">
+					Gruppe
+					<select name="" size="1">
+						<option>Gruppe w&auml;hlen</option>
+					</select>
+				</div>
+				
+				<div class="change_view">
+					Thema
+					<select name="" size="1">
+						<option>Gruppe w&auml;hlen</option>
+					</select>
+				</div>
+			</div>
+		</div>
+		
+		<div class="portlet_rc">
+			<a href="" title="schlie&szlig;en" class="btn_head_rc"><img src="{$basic.tpl_path}img/btn_close_rc.gif" alt="close" /></a>
+			<h2>Schlagw&ouml;rter</h2>
+			
+			<div class="clear"> </div>
+			
+			<a href="" title="bearbeiten" class="btn_body_rc"><img src="{$basic.tpl_path}img/btn_edit_rc.gif" alt="close" /></a>
+			<div class="portlet_rc_body">
+				<a href="" class="keywords_s2">Lorem</a>
+				<a href="" class="keywords_s1">ipsum</a>
+				<a href="" class="keywords_s4">dolor</a>
+				<a href="" class="keywords_s1">amet</a>
+				<a href="" class="keywords_s3">consectetuer</a>
+				<a href="" class="keywords_s1">Nullam</a>
+				<a href="" class="keywords_s2">luctus</a>
+				<a href="" class="keywords_s4">fringilla</a>
+				<a href="" class="keywords_s3">adipiscing</a>
+			</div>
+		</div>
+		
+		<div class="portlet_rc">
+			<a href="" title="schlie&szlig;en" class="btn_head_rc"><img src="{$basic.tpl_path}img/btn_close_rc.gif" alt="close" /></a>
+			<h2>Kategorien</h2>
+			
+			<div class="clear"> </div>
+			
+			<a href="" title="bearbeiten" class="btn_body_rc"><img src="{$basic.tpl_path}img/btn_edit_rc.gif" alt="close" /></a>
+			<div class="portlet_rc_body">
+			
+				<img src="{$basic.tpl_path}img/dummy_kategorien.jpg" alt="Dummy - hier die bestehende Architektur einsetzen bitte"/>
+			</div>
+		</div>
+	</div>
 {/block}

@@ -15,6 +15,9 @@
     <meta name="copyright" content="" />
     
     <link rel="stylesheet" type="text/css" media="screen" href="{$basic.tpl_path}styles.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="{$basic.tpl_path}ui.dynatree.css" />
+    
+    <script data-main="javascript/commsy8/main.js" src="javascript/commsy8/require.js"></script>
     
     <title>CommSy 8.0 - Home</title>
 
@@ -65,9 +68,10 @@
             
             <div id="footer_right">
                 <p>
-                    <span>15. November 2011, 15:00</span>
-                    <a href="">E-Mail an die Moderation</a>
-                    <a href="">Support-Anfrage stellen</a>
+                    <span>{$smarty.now|date_format:"%d."} {$translation.act_month_long} {$smarty.now|date_format:"%Y, %H:%M"}
+                    {*15. November 2011, 15:00*}</span>
+                    <a href="commsy.php?cid={$environment.cid}&mod=mail&fct=to_moderator">___MAIL_TO_MODERATOR_HEADLINE___</a>
+                    <a href="">TODO: ___COMMON_MAIL_TO_SERVICE2___</a>
                 </p>
             </div>
         
