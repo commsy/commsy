@@ -1,8 +1,8 @@
 {extends file="room_html.tpl"}
 
 {block name=room_site_actions}
-	<a href="" title="Ansicht in Reihen"><img src="{$basic.tpl_path}/img/btn_row_view.gif" alt="Reihen" /></a>
-    <a href="" title="Ansicht in Portlets"><img src="{$basic.tpl_path}/img/btn_portlet_view.gif" alt="Portlets" /></a>
+	<a href="" title="Ansicht in Reihen"><img src="{$basic.tpl_path}img/btn_row_view.gif" alt="Reihen" /></a>
+    <a href="" title="Ansicht in Portlets"><img src="{$basic.tpl_path}img/btn_portlet_view.gif" alt="Portlets" /></a>
 {/block}
 
 {block name=room_navigation_rubric_title}
@@ -15,10 +15,10 @@
 			<div class="content_item"> <!-- Start content_item -->
             	<div class="ci_head_actions">
 	            	<a href="" title="___HOME_SMARTY_{$rubric@key|upper}_ACTION_NEW___">
-	            		<img src="{$basic.tpl_path}/img/btn_ci_add.gif" alt="___HOME_SMARTY_ACTION_NEW___" />
+	            		<img src="{$basic.tpl_path}img/btn_ci_add.gif" alt="___HOME_SMARTY_ACTION_NEW___" />
 	            	</a>
                     <a href="" class="open_close" title="___HOME_SMARTY_ACTION_CLOSE___">
-                    	<img src="{$basic.tpl_path}/img/btn_ci_close.gif" alt="___HOME_SMARTY_ACTION_CLOSE___" />
+                    	<img src="{$basic.tpl_path}img/btn_ci_close.gif" alt="___HOME_SMARTY_ACTION_CLOSE___" />
                     </a>
                 </div>
                 <h2>
@@ -67,8 +67,8 @@
                         
                         <div class="content_item"> <!-- Start content_item -->
                             <div class="ci_head_actions">
-                                <a href="" title="neue Gruppe erstellen"><img src="{$basic.tpl_path}/img/btn_ci_add.gif" alt="neu" /></a>
-                                <a href="" class="open_close" title="&ouml;ffnen"><img src="{$basic.tpl_path}/img/btn_ci_open.gif" alt="&ouml;ffnen" /></a>
+                                <a href="" title="neue Gruppe erstellen"><img src="{$basic.tpl_path}img/btn_ci_add.gif" alt="neu" /></a>
+                                <a href="" class="open_close" title="&ouml;ffnen"><img src="{$basic.tpl_path}img/btn_ci_open.gif" alt="&ouml;ffnen" /></a>
                             </div>
                             <h2>Gruppen<span>(alle 10 Gruppen)</span></h2>
                             
@@ -77,8 +77,8 @@
                         
                         <div class="content_item"> <!-- Start content_item -->
                             <div class="ci_head_actions">
-                                <a href="" title="neues Thema erstellen"><img src="{$basic.tpl_path}/img/btn_ci_add.gif" alt="neu" /></a>
-                                <a href="" class="open_close" title="&ouml;ffnen"><img src="{$basic.tpl_path}/img/btn_ci_open.gif" alt="&ouml;ffnen" /></a>
+                                <a href="" title="neues Thema erstellen"><img src="{$basic.tpl_path}img/btn_ci_add.gif" alt="neu" /></a>
+                                <a href="" class="open_close" title="&ouml;ffnen"><img src="{$basic.tpl_path}img/btn_ci_open.gif" alt="&ouml;ffnen" /></a>
                             </div>
                             <h2>Themen<span>(alle 4 Themen)</span></h2>
                             

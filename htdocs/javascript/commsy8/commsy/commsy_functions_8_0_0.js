@@ -25,17 +25,25 @@ define(["libs/jQuery/jquery-1.7.1.min"], function() {
 			if(this.getURLParam('mod') === 'home') {
 				require(["commsy/div_expander"], function($) {
 					// register the click event on </a>- and </img>-tags(actors) of each rubric to the corresponding div
-					var expanderMapping = [];
 					
 					// go through each list wrap
 					jQuery('div[class="content_item"] div[class="list_wrap"]').each(function() {
 						// find actors
 						var actors = [];
-						actors.push(jQuery(this).parent().find('a[class="open_close"]'));
-						actors.push(actors[0].children());
+						var a = {
+							object: jQuery(this).parent().find('a[class="open_close"]')
+						};
+						var img = {
+							object: a.object.children(),
+							images: ['btn_ci_close.gif', 'btn_ci_open.gif']
+						};
+						a.modify_images = img;
+						
+						actors.push(a);
+						actors.push(img);
 						
 						// register actors to div
-						$.registerEvent(jQuery(this), actors, 'click', false);
+						$.registerEvent(jQuery(this), actors, 'click');
 					});
 				});
 			}
