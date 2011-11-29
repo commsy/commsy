@@ -33,7 +33,7 @@
 					
 					<div class="column_244">
 						<p>
-							 <a href="">Cum sociis natoque penatibus</a>
+							 <a href="">{$item.title}</a>
 						</p>
 					</div>
 					
@@ -51,12 +51,12 @@
 					
 					<div class="seperator">
 						<div class="column_90">
-							<p>00.00.0000</p>
+							<p>{$item.modification_date}</p>
 						</div>
 						
 						<div class="column_155">
 							<p>
-								<a href="">Michael Muster</a>
+								<a href="">{$item.creator}</a>
 							</p>
 						</div>
 					</div>
