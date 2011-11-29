@@ -30,26 +30,30 @@
                 
                 <div class="clear"> </div>
                 
-                {foreach $rubric.items as $item}
-                	<div class="{if $item@iteration is odd}row_odd{else}row_even{/if}">
-                    	<div class="column_430">
-                        	<p>
-                            	<a href="">{$item.title}</a>
-                            </p>
-                        </div>
-                        <div class="seperator">
-                        	<div class="column_120">
-                            	<p>{$item.modification_date}</p>
-                            </div>
-	                        <div class="column_184">
+                <div class="list_wrap">
+                
+	                {foreach $rubric.items as $item}
+	                	<div class="{if $item@iteration is odd}row_odd{else}row_even{/if}">
+	                    	<div class="column_430">
 	                        	<p>
-	                            	<a href="">{$item.creator}</a>
+	                            	<a href="">{$item.title}</a>
 	                            </p>
 	                        </div>
+	                        <div class="seperator">
+	                        	<div class="column_120">
+	                            	<p>{$item.modification_date}</p>
+	                            </div>
+		                        <div class="column_184">
+		                        	<p>
+		                            	<a href="">{$item.creator}</a>
+		                            </p>
+		                        </div>
+		                    </div>
+		                    <div class="clear"> </div>
 	                    </div>
-	                    <div class="clear"> </div>
-                    </div>
-                {/foreach}
+	                {/foreach}
+                
+                </div>
             </div> <!-- Ende content_item -->
 		{/foreach}
 	
