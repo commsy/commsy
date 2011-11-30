@@ -25,16 +25,27 @@
 		/*****************************************************************************/
 
 		public function actionIndex() {
-			$this->assign('room', 'home_content', $this->getContentForHomeList());
+			$this->assign('room', 'home_content', $this->getListContent());
 		}
-
-		/**
-		* gets information for displaying the content in home rubric
-		*/
-		private function getContentForHomeList() {
+		
+		public function getListContent() {
+			$session = $this->_environment->getSessionItem();
+			include_once('classes/cs_list.php');
+			include_once('classes/views/cs_view.php');
+			$environment = $this->_environment;
+			$context_item = $environment->getCurrentContextItem();
+			$current_user = $environment->getCurrentUser();
+			
+			$home_rubric_limit = CS_HOME_RUBRIC_LIST_LIMIT;
+			
+			$id_array = array();
+			$v_id_array = array();
+			$sub_id_array = array();
+			$disc_id_array = array();
+			
 			$rubrics = $this->getRubrics();
 			$rubric_list = array();
-
+			
 			// determe rubrics to show on home list
 			foreach($rubrics as $rubric) {
 				list($rubric_name, $postfix) = explode('_', $rubric);
@@ -47,33 +58,10 @@
 				if($rubric_name === 'activity') continue;
 
 				$rubric_list[] = $rubric_name;
-			}
-
-			// get list information
-			return $this->getListContent($rubric_list, CS_HOME_RUBRIC_LIST_LIMIT);
-		}
-		
-		public function getListContent() {
-			$session = $this->_environment->getSessionItem();
-			include_once('classes/cs_list.php');
-			include_once('classes/views/cs_view.php');
-			$environment = $this->_environment;
-			$context_item = $environment->getCurrentContextItem();
-			$current_user = $environment->getCurrentUser();
-			
-			$rubrics = $this->getRubrics();
-			$home_rubric_limit = CS_HOME_RUBRIC_LIST_LIMIT;
-			
-			foreach ( $rubrics as $rubric ) {
-	         $rubric_array = explode('_', $rubric);
-	         if ( $rubric_array[1] != 'none' and  $rubric_array[1] != 'nodisplay') {
-	            if ( $rubric_array[0] != 'activity') {
-	               $list = new cs_list();
+				
+			$list = new cs_list();
 	               $rubric = '';
-	               $param_class_array = array();
-	               $param_class_array['environment'] = $environment;
-	               $param_class_array['with_modifying_actions'] = $context_item->isOpen();
-	               switch ($rubric_array[0]){
+	               switch ($rubric_name){
 	                  case CS_ANNOUNCEMENT_TYPE:
 	                        $manager = $environment->getAnnouncementManager();
 	                        $manager->reset();
@@ -281,19 +269,47 @@
                   $ids = array();
                   while ($tmp){
 	                  $id_array[] = $tmp->getItemID();
-	                  if ($rubric_array[0] == CS_MATERIAL_TYPE){
+	                  if ($rubric_name == CS_MATERIAL_TYPE){
 	                     $v_id_array[$tmp->getItemID()] = $item->getVersionID();
 	                  }
 	                  $ids[] = $tmp->getItemID();
 	                  $tmp = $list->getNext();
 	               }
 	               if (empty($rubric)){
-	                  $session->setValue('cid'.$environment->getCurrentContextID().'_'.$rubric_array[0].'_index_ids', $ids);
+	                  $session->setValue('cid'.$environment->getCurrentContextID().'_'.$rubric_name.'_index_ids', $ids);
 	               }else{
 	                  $session->setValue('cid'.$environment->getCurrentContextID().'_'.$rubric.'_index_ids', $ids);
 	               }
 	               
-	               $noticed_manager = $environment->getNoticedManager();
+	               
+	               $item = $list->getFirst();
+	               $params = array();
+			$params['environment'] = $environment;
+			$params['with_modifying_actions'] = false;
+			$view = new cs_view($params);
+	           		 while($item) {
+						$item_array[] = array(
+						'iid'				=> $item->getItemID(),
+						'title'				=> $view->_text_as_html_short($item->getTitle()),
+						'modification_date'	=> $this->_environment->getTranslationObject()->getDateInLang($item->getModificationDate()),
+						'creator'			=> $item->getCreatorItem()->getFullName(),
+					//	'attachment_count'	=> $item->getFileList()->getCount()
+		//				'attachment_infos'	=>
+						);
+		
+						$item = $list->getNext();
+					}
+	               
+					$return[$rubric_name]['items'] = $item_array;
+					$return[$rubric_name]['count_all'] = 0;
+					
+					$item_array = array();
+	         
+				}
+				
+				
+	      
+	      $noticed_manager = $environment->getNoticedManager();
 			      $id_array = array_merge($id_array, $disc_id_array);
 			      $noticed_manager->getLatestNoticedByIDArray($id_array);
 			      $noticed_manager->getLatestNoticedAnnotationsByIDArray($id_array);
@@ -302,29 +318,17 @@
 			      $file_id_array = $link_manager->getAllFileLinksForListByIDs($id_array, $v_id_array);
 			      $file_manager = $environment->getFileManager();
 			      $file_manager->setIDArrayLimit($file_id_array);
-	               
-	           		 while($item) {
-						$item_array[] = array(
-						'iid'				=> $item->getItemID(),
-						'title'				=> $view->_text_as_html_short($item->getTitle()),
-						'modification_date'	=> $this->_environment->getTranslationObject()->getDateInLang($item->getModificationDate()),
-						'creator'			=> $item->getCreatorItem()->getFullName(),
-						'attachment_count'	=> $item->getFileList()->getCount()
-		//				'attachment_infos'	=>
-						);
-		
-						$item = $list->getNext();
-					}
-	               
-	            }
-	         }
-	      }
+			      
+			      // TODO attachment_count...
 
 			
 					// append return
+					/*
 					$return = array(
-						'items'		=> $item_array,
-						'count_all'	=> $count_all_shown
-					);
+						'items'		=> $rubric_array/*,
+						'count_all'	=> $count_all_shown*/
+					/*);
+					*/
+			return $return;
 		}
 	}
