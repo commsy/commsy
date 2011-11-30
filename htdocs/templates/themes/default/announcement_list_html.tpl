@@ -7,14 +7,22 @@
 
 {block name=room_navigation_rubric_title}
 	___COMMON_{$room.rubric|upper}_INDEX___
-	<span>(Eintr&auml;ge 1 bis 20 von 225)</span>
+	<span>(___COMMON_ENTRIES___: {$announcement.page_text_fragments.count_entries})</span>
 {/block}
 
 {block name=room_main_content}
 	<div id="full_width_content">
 		<div class="content_item"> <!-- Start content_item -->
 			<div class="table_head">
-				<h3 class="w_380"><a href="" class="sort_none"><strong>___COMMON_TITLE___</strong></a></h3>
+				{if $announcement.list_parameters.sort == "title"}
+				 	<h3 class="w_380"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$environment.params}&sort=title_rev" id="sort_up"><strong>___COMMON_TITLE___</strong></a></h3>
+				{/if}
+				{if $announcement.list_parameters.sort == "title_rev"}
+					<h3 class="w_380"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$environment.params}&sort=title" id="sort_down"><strong>___COMMON_TITLE___</strong></a></h3>
+				{/if}
+				{if $announcement.list_parameters.sort != "title_rev" and $announcement.list_parameters.sort != "title"}
+					<h3 class="w_380"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$environment.params}&sort=title" class="sort_none"><strong>___COMMON_TITLE___</strong></a></h3>
+				{/if}
 				<h3 class="w_80"><a href="" id="sort_up">___COMMON_MODIFIED_AT___</a></h3> <!-- id="sort_down" ist ebenfalls vorhanden -->
 				<h3 class="w_135"><a href="" class="sort_none">___COMMON_ENTERED_BY___</a></h3>
 				<h3><a href="" class="sort_none">___COMMON_ASSESSMENT_INDEX___</a></h3>

@@ -4,6 +4,7 @@
 	abstract class cs_list_controller extends cs_room_controller {
 		private $_entries_per_page = 20;
 		protected $_list_parameter_arrray = array();
+		protected $_page_html_fragment_array = array();
 
 		/**
 		 * constructor
@@ -32,6 +33,33 @@
    				unset($this->_list_parameter_arrray['ref_user']);
 			}
 		}
+
+   		protected function getCountEntriesText($from = 0, $interval = 0, $count_all = 0, $count_all_shown = 0) {
+			$environment = $this->_environment;
+			$translator = $environment->getTranslationObject();
+            $description = '';
+        	if ( $count_all_shown == 0 ) {
+            	$description = $translator->getMessage('COMMON_NO_ENTRIES');
+        	} elseif ( $count_all_shown == 1 ) {
+            	$description = $translator->getMessage('COMMON_ONE_ENTRY');
+        	} elseif ( $interval == 0 || $count_all_shown <= $interval ) {
+            	$description = $translator->getMessage('COMMON_X_ENTRIES', $count_all_shown);
+         	} elseif ( $from == $count_all_shown){
+            	$description = $translator->getMessage('COMMON_X_FROM_Z', $count_all_shown);
+         	} else {
+            	if ( $from + $interval -1 <= $count_all ) {
+               		$to = $from + $interval - 1;
+            	} else {
+               		$to = $count_all_shown;
+            	}
+            	$description = $translator->getMessage('COMMON_X_TO_Y_FROM_Z',
+                                                          $from,
+                                                          $to,
+                                                          $count_all_shown
+                                                         );
+         	}
+      		return $description;
+   		}
 
 
 		protected function performListOption($rubric){

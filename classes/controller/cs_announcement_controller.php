@@ -37,6 +37,7 @@
 			$list_content = $this->getListContent();
 			$this->assign('announcement', 'list_content', $list_content);
 			$this->assign('announcement', 'list_parameters', $this->_list_parameter_arrray);
+			$this->assign('announcement', 'page_text_fragments',$this->_page_text_fragment_array);
 		}
 
 
@@ -100,6 +101,8 @@
 			$list = $announcement_manager->get();        // returns a cs_list of announcement_items
 			$ids = $announcement_manager->getIDArray();
 			$count_all_shown = count($ids);
+
+			$this->_page_text_fragment_array['count_entries'] = $this->getCountEntriesText($this->_list_parameter_arrray['from'],$this->_list_parameter_arrray['interval'], $count_all, $count_all_shown);
 
 			$id_array = array();
 			$item = $list->getFirst();
