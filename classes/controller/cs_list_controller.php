@@ -6,12 +6,23 @@
 		protected $_list_parameter_arrray = array();
 		protected $_page_html_fragment_array = array();
 		protected $_browsing_icons_parameter_array = array();
+		
 		/**
 		 * constructor
 		 */
 		public function __construct(cs_environment $environment) {
 			// call parent
 			parent::__construct($environment);
+			
+			// init variables
+			/*
+			$this->getViewMode() = 'browse';
+			$this->_filter = array();
+			$this->_paging = array(
+				'offset'	=> 0,
+				'limit'		=> 20
+			);
+			*/
 		}
 
 		/*
@@ -20,8 +31,20 @@
 		protected function processTemplate() {
 			// call parent
 			parent::processTemplate();
+			
+			/*
+			// set paging information
+			$paging = array(
+				'num_pages'		=> ceil($this->_num_entries / $this->_paging['limit']),
+				'actual_page'	=> floor($this->_paging['offset'] / $this->_paging['limit']) + 1,
+				'from'			=> $this->_paging['offset'] + 1,
+				'to'			=> $this->_paging['offset'] + $this->_paging['limit']
+			);
+			$this->assign('list', 'paging', $paging);
+			$this->assign('list', 'num_entries', $this->_num_entries);
+			*/
 		}
-
+		
 		protected function getViewMode(){
 			$mode = 'browse';
 			if ( isset($_GET['mode']) ) {
@@ -33,8 +56,22 @@
    				unset($this->_list_parameter_arrray['ref_user']);
 			}
 		}
-
-
+		
+		protected function setNumEntries($num) {
+			$this->_num_entries = $num;
+		}
+		
+		protected function performOptions() {
+			// get parameter array
+			$parameter_array = $this->_environment->getCurrentParameterArray();
+			
+			//pr($parameter_array); exit;
+			// paging
+			if(isset($parameter_array['from'])) {
+				$this->_paging['offset'] = $parameter_array['from'];
+			}
+		}
+		
    		function getBrowsingIconsParameterArray($from = 0, $interval = 0, $count_all_shown = 0){
 			$environment = $this->_environment;
            	$params = $environment->_getCurrentParameterArray();
@@ -98,8 +135,7 @@
       		}
       		return $return_array;
   		}
-
-
+   		
    		protected function getCountEntriesText($from = 0, $interval = 0, $count_all = 0, $count_all_shown = 0) {
 			$environment = $this->_environment;
 			$translator = $environment->getTranslationObject();
@@ -308,8 +344,23 @@
       			}
       		}
 		}
+		
+		protected function initFilter() {
+			// get parameter array
+			$parameter_array = $this->_environment->getCurrentParameterArray();
+			
+			if(isset($parameter_array['ref_iid']))
+				$this->filter['ref_iid'] = $parameter_array['ref_iid'];
+			elseif(isset($_POST['ref_iid']))
+				$this->filter['ref_id'] = $_POST['ref_iid'];
+				
+			if(isset($parameter_array['ref_user']))
+				$this->filter['ref_user'] = $parameter_array['ref_user'];
+			elseif(isset($_POST['ref_user']))
+				$this->filter['ref_user'] = $_POST['ref_user'];
+		}
 
-		protected function initListParameters($rubric){
+		protected function initListParameters($rubric) {
 			$environment = $this->_environment;
 			$session = $environment->getSessionItem();
 			if (isset($_GET['back_to_index']) and $session->issetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index')){
@@ -328,19 +379,8 @@
    				$session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index');
    				redirect($environment->getCurrentContextID(),$environment->getCurrentModule(), 'index', $params);
 			}
-			if ( isset($_GET['ref_iid']) ) {
-   				$this->_list_parameter_arrray['ref_iid'] = $_GET['ref_iid'];
-			} elseif ( isset($_POST['ref_iid']) ) {
-   				$this->_list_parameter_arrray['ref_iid'] = $_POST['ref_iid'];
-			}
-
-			if ( isset($_GET['ref_user']) ) {
-   				$this->_list_parameter_arrray['ref_user'] = $_GET['ref_user'];
-			} elseif ( isset($_POST['ref_user']) ) {
-   				$this->_list_parameter_arrray['ref_user'] = $_POST['ref_user'];
-			}else{
-   				$this->_list_parameter_arrray['ref_user'] ='';
-			}
+			
+			
 
 			// Find clipboard id array
 			if ( $session->issetValue('announcement_clipboard') ) {
@@ -458,312 +498,6 @@
    				$this->_list_parameter_arrray['sel_array'] = $sel_array;
 			}
 		}
-
-		protected function getAvailableBuzzwords(){
-			// Get available buzzwords
-			$buzzword_manager = $environment->getLabelManager();
-			$buzzword_manager->resetLimits();
-			$buzzword_manager->setContextLimit($environment->getCurrentContextID());
-			$buzzword_manager->setTypeLimit('buzzword');
-			$buzzword_manager->setGetCountLinks();
-			$buzzword_manager->select();
-			$buzzword_list = $buzzword_manager->get();
-			return $buzzword_list;
-		}
-
-
-
-		/**
-		 * returns an array, containing the requested list information
-		 * @param $rubric_array - item types
-		 * @param $limit - optional limit per rubric
-		 */
-		protected function getListContent($rubric_array, $limit = null) {
-			$list = new cs_list();
-			$return = array();
-
-			// check limit
-			if($limit == null) $limit = $this->_entries_per_page;
-
-			foreach($rubric_array as $rubric) {
-				$count_all = 0;
-
-				switch($rubric) {
-					case CS_ANNOUNCEMENT_TYPE:
-						$manager = $this->_environment->getAnnouncementManager();
-						$manager->reset();
-						$manager->setContextLimit($this->_environment->getCurrentContextID());
-						$count_all = $manager->getCountAll();
-						//$manager->setDateLimit(getCurrentDateTimeInMySQL());
-						$manager->setSortOrder('modified');
-						$manager->showNoNotActivatedEntries();
-						$manager->setIntervalLimit(0, $limit);
-
-						//if($home_rubric_limit < $count_select) $short_list_view->setListShortened(true);
-
-						$manager->select();
-						$list = $manager->get();
-						break;
-
-					case CS_DATE_TYPE:
-						$manager = $this->_environment->getDatesManager();
-						$manager->reset();
-						$manager->setContextLimit($this->_environment->getCurrentContextID());
-						$manager->setDateModeLimit(2);
-						$count_all = $manager->getCountAll();
-						$manager->setFutureLimit();
-						$manager->setDateModeLimit(3);
-						$manager->showNoNotActivatedEntries();
-
-						$manager->setIntervalLimit(0, $limit);
-						//if($home_rubric_limit < $count_select) $short_list_view->setListShortened(true);
-
-						$manager->select();
-						$list = $manager->get();
-						break;
-						/*
-					case CS_PROJECT_TYPE:
-						$room_type = CS_PROJECT_TYPE;
-						$short_list_view = $class_factory->getClass(PROJECT_SHORT_VIEW,$param_class_array);
-						$manager = $environment->getProjectManager();
-						$manager->reset();
-						$manager->setContextLimit($environment->getCurrentPortalID());
-						if ( !isset($c_cache_cr_pr) or !$c_cache_cr_pr  ) {
-							$manager->setCommunityRoomLimit($environment->getCurrentContextID());
-						} else {
-							# use redundant infos in community room
-							$manager->setIDArrayLimit($context_item->getInternalProjectIDArray());
-						}
-						$count_all = $manager->getCountAll();
-						$manager->setSortOrder('activity_rev');
-						if ( $interval > 0 ) {
-							$manager->setIntervalLimit(0,5);
-						}
-						$manager->select();
-						$list = $manager->get();
-						$short_list_view->setList($list);
-						$short_list_view->setCountAll($count_all);
-						break;
-					case CS_GROUP_TYPE:
-						$short_list_view = $class_factory->getClass(GROUP_SHORT_VIEW,$param_class_array);
-						$manager = $environment->getGroupManager();
-						$manager->reset();
-						$manager->setContextLimit($environment->getCurrentContextID());
-						$manager->select();
-						$list = $manager->get();
-						$count_all = $list->getCount();
-						$short_list_view->setList($list);
-						$short_list_view->setCountAll($count_all);
-						break;
-					case CS_TODO_TYPE:
-						$short_list_view = $class_factory->getClass(TODO_SHORT_VIEW,$param_class_array);
-						$manager = $environment->getTodoManager();
-						$manager->reset();
-						$manager->setContextLimit($environment->getCurrentContextID());
-						$count_all = $manager->getCountAll();
-						$manager->setStatusLimit(4);
-						$manager->setSortOrder('date');
-						$manager->showNoNotActivatedEntries();
-
-						$count_select = $manager->getCountAll();
-						$manager->setIntervalLimit(0, $home_rubric_limit);
-						if($home_rubric_limit < $count_select) $short_list_view->setListShortened(true);
-
-						$manager->select();
-						$list = $manager->get();
-						$short_list_view->setList($list);
-						$short_list_view->setCountAll($count_all);
-						$item = $list->getFirst();
-						$tmp_id_array = array();
-						while ($item){
-							$tmp_id_array[] = $item->getItemID();
-							$item = $list->getNext();
-						}
-						$step_manager = $environment->getStepManager();
-						$step_list = $step_manager->getAllStepItemListByIDArray($tmp_id_array);
-						$item = $step_list->getFirst();
-						while ($item){
-							$sub_id_array[] = $item->getItemID();
-							$item = $step_list->getNext();
-						}
-						unset($step_list);
-						unset($step_manager);
-						unset($manager);
-						break;
-					case CS_TOPIC_TYPE:
-						$short_list_view = $class_factory->getClass(TOPIC_SHORT_VIEW,$param_class_array);
-						$manager = $environment->getTopicManager();
-						$manager->reset();
-						$manager->setContextLimit($environment->getCurrentContextID());
-						$manager->select();
-						$list = $manager->get();
-						$count_all = $list->getCount();
-						$short_list_view->setList($list);
-						$short_list_view->setCountAll($count_all);
-						break;
-					case CS_INSTITUTION_TYPE:
-						$short_list_view = $class_factory->getClass(INSTITUTION_SHORT_VIEW,$param_class_array);
-						$manager = $environment->getInstitutionManager();
-						$manager->reset();
-						$manager->setContextLimit($environment->getCurrentContextID());
-						$manager->select();
-						$list = $manager->get();
-						$count_all = $list->getCount();
-						$short_list_view->setList($list);
-						$short_list_view->setCountAll($count_all);
-						break;
-					case CS_USER_TYPE:
-						$short_list_view = $class_factory->getClass(USER_SHORT_VIEW,$param_class_array);
-						$manager = $environment->getUserManager();
-						$manager->reset();
-						$manager->setContextLimit($environment->getCurrentContextID());
-						$manager->setUserLimit();
-						$count_all = $manager->getCountAll();
-						if (!$current_user->isGuest()){
-							$manager->setVisibleToAllAndCommsy();
-						} else {
-							$manager->setVisibleToAll();
-						}
-						$manager->setAgeLimit($context_item->getTimeSpread());
-						$manager->select();
-						$list = $manager->get();
-						$short_list_view->setList($list);
-						$short_list_view->setCountAll($count_all);
-						break;
-					*/
-					case CS_MATERIAL_TYPE:
-						$manager = $this->_environment->getMaterialManager();
-						$manager->reset();
-						$manager->create_tmp_table($this->_environment->getCurrentContextID());
-						$manager->setContextLimit($this->_environment->getCurrentContextID());
-						$count_all = $manager->getCountAll();
-						$manager->setOrder('date');
-						if ($this->_environment->inProjectRoom()){
-							$manager->setAgeLimit($this->_environment->getCurrentContextItem()->getTimeSpread());
-						} else {
-							$manager->setIntervalLimit(0,5);
-							$home_rubric_limit = 5;
-						}
-						$manager->showNoNotActivatedEntries();
-						$manager->setIntervalLimit(0, $limit);
-						$home_rubric_limit = CS_HOME_RUBRIC_LIST_LIMIT;
-
-						//if($home_rubric_limit < $count_select) $short_list_view->setListShortened(true);
-
-						$manager->select();
-						$list = $manager->get();
-						$manager->delete_tmp_table();
-						/*
-						$short_list_view->setList($list);
-						$short_list_view->setCountAll($count_all);
-						$item = $list->getFirst();
-						$tmp_id_array = array();
-						while ($item){
-							$tmp_id_array[] = $item->getItemID();
-							$item = $list->getNext();
-						}
-						$section_manager = $environment->getSectionManager();
-						$section_list = $section_manager->getAllSectionItemListByIDArray($tmp_id_array);
-						$item = $section_list->getFirst();
-						while ($item){
-							$sub_id_array[] = $item->getItemID();
-							$v_id_array[$item->getItemID()] = $item->getVersionID();
-							$item = $section_list->getNext();
-						}
-						*/
-						break;
-
-					case CS_DISCUSSION_TYPE:
-						$manager = $this->_environment->getDiscussionManager();
-						$manager->reset();
-						$manager->setContextLimit($this->_environment->getCurrentContextID());
-						$count_all = $manager->getCountAll();
-						/*
-						if ($environment->inProjectRoom() or $environment->inGroupRoom() ) {
-							$manager->setAgeLimit($context_item->getTimeSpread());
-						} elseif ($environment->inCommunityRoom()) {
-							$manager->setIntervalLimit(0,5);
-							$home_rubric_limit = 5;
-						}
-						*/
-						$manager->showNoNotActivatedEntries();
-
-						$manager->setIntervalLimit(0, $limit);
-						/*
-						$home_rubric_limit = CS_HOME_RUBRIC_LIST_LIMIT;
-
-						if($home_rubric_limit < $count_select) $short_list_view->setListShortened(true);
-						*/
-
-						$manager->select();
-						$list = $manager->get();
-						/*
-						$short_list_view->setList($list);
-						$short_list_view->setCountAll($count_all);
-						$item = $list->getFirst();
-						$disc_id_array = array();
-						while ($item){
-							$disc_id_array[] = $item->getItemID();
-							$item = $list->getNext();
-						}
-						$discarticle_manager = $environment->getDiscussionArticleManager();
-						$discarticle_list = $discarticle_manager->getAllDiscArticlesItemListByIDArray($disc_id_array);
-						$item = $discarticle_list->getFirst();
-						while ($item){
-							$disc_id_array[] = $item->getItemID();
-							$item = $discarticle_list->getNext();
-						}
-						*/
-						break;
-
-						/*
-						unset($param_class_array);
-						$item = $list->getFirst();
-						$ids = array();
-						while ($item){
-							$id_array[] = $item->getItemID();
-							if ($rubric_array[0] == CS_MATERIAL_TYPE){
-								$v_id_array[$item->getItemID()] = $item->getVersionID();
-							}
-							$ids[] = $item->getItemID();
-							$item = $list->getNext();
-						}
-						if (empty($rubric)){
-							$session->setValue('cid'.$environment->getCurrentContextID().'_'.$rubric_array[0].'_index_ids', $ids);
-						}else{
-							$session->setValue('cid'.$environment->getCurrentContextID().'_'.$rubric.'_index_ids', $ids);
-						}
-						$page->addLeft($short_list_view);
-						*/
-				}
-
-				// prepare item array
-				$item = $list->getFirst();
-				$item_array = array();
-				while($item) {
-					$item_array[] = array(
-					'title'				=> $item->getTitle(),
-					'modification_date'	=> $this->_environment->getTranslationObject()->getDateInLang($item->getModificationDate()),
-					'creator'			=> $item->getCreatorItem()->getFullName()
-
-					//$this->_text_as_html_short($this->_translator->getDateInLang($item->getModificationDate()))
-					);
-
-					$item = $list->getNext();
-				}
-
-				// append return
-				$return[$rubric] = array(
-					'items'		=> $item_array,
-					'count_all'	=> $count_all
-				);
-
-				// reset list and item_array
-				// TODO list->reset() does not work
-				$list = new cs_list();
-				$item_array = array();
-			}
-
-			return $return;
-		}
+		
+		abstract function getListContent();
 	}

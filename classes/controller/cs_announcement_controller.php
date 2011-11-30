@@ -32,19 +32,22 @@
 		 */
 		public function actionIndex() {
 			// get list content
-			$this->initListParameters(CS_ANNOUNCEMENT_TYPE);
-			$this->performListOption(CS_ANNOUNCEMENT_TYPE);
 			$list_content = $this->getListContent();
 			$this->assign('announcement', 'list_content', $list_content);
+			
+			// init list params
+			$this->initListParameters(CS_ANNOUNCEMENT_TYPE);
+			
+			// perform list options
+			$this->performListOption(CS_ANNOUNCEMENT_TYPE);
+			
+			// assign to template
 			$this->assign('announcement', 'list_parameters', $this->_list_parameter_arrray);
 			$this->assign('announcement', 'page_text_fragments',$this->_page_text_fragment_array);
 			$this->assign('announcement', 'browsing_parameters',$this->_browsing_icons_parameter_array);
 		}
-
-
-
-
-		protected function getListContent(){
+		
+		public function getListContent() {
 			include_once('classes/cs_list.php');
 			include_once('classes/views/cs_view.php');
 			$environment = $this->_environment;

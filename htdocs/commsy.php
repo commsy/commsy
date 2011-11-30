@@ -860,6 +860,12 @@ $context_item = $environment->getCurrentContextItem();
 if($context_item->isServer() || $context_item->isPortal()) {
 	$c_smarty = false;
 }
+// and anywhere else if current function is not index
+else {
+	if($environment->getCurrentFunction() !== 'index') {
+		$c_smarty = false;
+	}
+}
 
 if(isset($c_smarty) && $c_smarty === true) {
 	$controller_name = 'cs_' . $environment->getCurrentModule() . '_controller';

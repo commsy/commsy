@@ -36,4 +36,8 @@
 			
 			$this->assign('room', 'list_content', $list_content[CS_MATERIAL_TYPE]);
 		}
+		
+		public function getListContent() {
+			
+		}
 	}

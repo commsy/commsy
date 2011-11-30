@@ -36,4 +36,8 @@
 			
 			$this->assign('room', 'list_content', $list_content[CS_GROUP_TYPE]);
 		}
+		
+		public function getListContent() {
+			
+		}
 	}
