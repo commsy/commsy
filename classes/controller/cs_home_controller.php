@@ -27,7 +27,7 @@
 		public function actionIndex() {
 			$this->assign('room', 'home_content', $this->getListContent());
 		}
-		
+
 		public function getListContent() {
 			$session = $this->_environment->getSessionItem();
 			include_once('classes/cs_list.php');
@@ -35,17 +35,17 @@
 			$environment = $this->_environment;
 			$context_item = $environment->getCurrentContextItem();
 			$current_user = $environment->getCurrentUser();
-			
+
 			$home_rubric_limit = CS_HOME_RUBRIC_LIST_LIMIT;
-			
+
 			$id_array = array();
 			$v_id_array = array();
 			$sub_id_array = array();
 			$disc_id_array = array();
-			
+
 			$rubrics = $this->getRubrics();
 			$rubric_list = array();
-			
+
 			// determe rubrics to show on home list
 			foreach($rubrics as $rubric) {
 				list($rubric_name, $postfix) = explode('_', $rubric);
@@ -58,7 +58,7 @@
 				if($rubric_name === 'activity') continue;
 
 				$rubric_list[] = $rubric_name;
-				
+
 			$list = new cs_list();
 	               $rubric = '';
 	               switch ($rubric_name){
@@ -70,11 +70,11 @@
 	                        $manager->setDateLimit(getCurrentDateTimeInMySQL());
 	                        $manager->setSortOrder('modified');
 	                        $manager->showNoNotActivatedEntries();
-	
+
 	                        $count_select = $manager->getCountAll();
 	                        $manager->setIntervalLimit(0, $home_rubric_limit);
 	                        if($home_rubric_limit < $count_select) $short_list_view->setListShortened(true);
-	
+
 	                        $manager->select();
 	                        $list = $manager->get();
 	                     break;
@@ -87,11 +87,11 @@
 	                        $manager->setFutureLimit();
 	                        $manager->setDateModeLimit(3);
 	                        $manager->showNoNotActivatedEntries();
-	
+
 	                        $count_select = $manager->getCountAll();
 	                        $manager->setIntervalLimit(0, $home_rubric_limit);
 	                        if($home_rubric_limit < $count_select) $short_list_view->setListShortened(true);
-	
+
 	                        $manager->select();
 	                        $list = $manager->get();
 	                        $rubric = 'dates';
@@ -131,11 +131,11 @@
 	                        $manager->setStatusLimit(4);
 	                        $manager->setSortOrder('date');
 	                        $manager->showNoNotActivatedEntries();
-	
+
 	                        $count_select = $manager->getCountAll();
 	                        $manager->setIntervalLimit(0, $home_rubric_limit);
 	                        if($home_rubric_limit < $count_select) $short_list_view->setListShortened(true);
-	
+
 	                        $manager->select();
 	                        $list = $manager->get();
 	                        $item = $list->getFirst();
@@ -187,7 +187,7 @@
 	                        $list = $manager->get();
 	                     break;
 	                  case CS_MATERIAL_TYPE:
-	                        $short_list_view = $class_factory->getClass(MATERIAL_SHORT_VIEW,$param_class_array);
+#	                        $short_list_view = $class_factory->getClass(MATERIAL_SHORT_VIEW,$param_class_array);
 	                        $manager = $environment->getMaterialManager();
 	                        $manager->reset();
 	                        $manager->create_tmp_table($environment->getCurrentContextID());
@@ -201,18 +201,16 @@
 	                           $home_rubric_limit = 5;
 	                        }
 	                        $manager->showNoNotActivatedEntries();
-	
+
 	                        $count_select = $manager->getCountAll();
 	                        $manager->setIntervalLimit(0, $home_rubric_limit);
 	                        $home_rubric_limit = CS_HOME_RUBRIC_LIST_LIMIT;
-	                        
+
 	                        if($home_rubric_limit < $count_select) $short_list_view->setListShortened(true);
-	
+
 	                        $manager->select();
 	                        $list = $manager->get();
 	                        $manager->delete_tmp_table();
-	                        $short_list_view->setList($list);
-	                        $short_list_view->setCountAll($count_all);
 	                        $item = $list->getFirst();
 	                        $tmp_id_array = array();
 	                        while ($item){
@@ -240,13 +238,13 @@
 	                           $home_rubric_limit = 5;
 	                        }
 	                        $manager->showNoNotActivatedEntries();
-	
+
 	                        $count_select = $manager->getCountAll();
 	                        $manager->setIntervalLimit(0, $home_rubric_limit);
 	                        $home_rubric_limit = CS_HOME_RUBRIC_LIST_LIMIT;
-	                        
+
 	                        if($home_rubric_limit < $count_select) $short_list_view->setListShortened(true);
-	
+
 	                        $manager->select();
 	                        $list = $manager->get();
 	                        $item = $list->getFirst();
@@ -264,7 +262,7 @@
 	                        }
 	                     break;
                   }
-                  
+
                   $tmp = $list->getFirst();
                   $ids = array();
                   while ($tmp){
@@ -280,8 +278,8 @@
 	               }else{
 	                  $session->setValue('cid'.$environment->getCurrentContextID().'_'.$rubric.'_index_ids', $ids);
 	               }
-	               
-	               
+
+
 	               $item = $list->getFirst();
 	               $params = array();
 			$params['environment'] = $environment;
@@ -296,19 +294,19 @@
 					//	'attachment_count'	=> $item->getFileList()->getCount()
 		//				'attachment_infos'	=>
 						);
-		
+
 						$item = $list->getNext();
 					}
-	               
+
 					$return[$rubric_name]['items'] = $item_array;
 					$return[$rubric_name]['count_all'] = 0;
-					
+
 					$item_array = array();
-	         
+
 				}
-				
-				
-	      
+
+
+
 	      $noticed_manager = $environment->getNoticedManager();
 			      $id_array = array_merge($id_array, $disc_id_array);
 			      $noticed_manager->getLatestNoticedByIDArray($id_array);
@@ -318,10 +316,10 @@
 			      $file_id_array = $link_manager->getAllFileLinksForListByIDs($id_array, $v_id_array);
 			      $file_manager = $environment->getFileManager();
 			      $file_manager->setIDArrayLimit($file_id_array);
-			      
+
 			      // TODO attachment_count...
 
-			
+
 					// append return
 					/*
 					$return = array(

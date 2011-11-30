@@ -11,25 +11,41 @@
 
 {block name=room_navigation_rubric_title}
 	___COMMON_{$room.rubric|upper}_INDEX___
-	<span>(___COMMON_ENTRIES___: {$announcement.page_text_fragments.count_entries})</span>
+	<span>(___COMMON_ENTRIES___: {$list.page_text_fragments.count_entries})</span>
 {/block}
 
 {block name=room_main_content}
 	<div id="full_width_content">
 		<div class="content_item"> <!-- Start content_item -->
 			<div class="table_head">
-				{if $announcement.list_parameters.sort == "title"}
-				 	<h3 class="w_380"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$environment.params}&sort=title_rev" id="sort_up"><strong>___COMMON_TITLE___</strong></a></h3>
+				{if $list.sorting_parameters.sort_title == "up"}
+				 	<h3 class="w_380"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_title_link}" id="sort_up"><strong>___COMMON_TITLE___</strong></a></h3>
+				{elseif $list.sorting_parameters.sort_title == "down"}
+				 	<h3 class="w_380"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_title_link}" id="sort_down"><strong>___COMMON_TITLE___</strong></a></h3>
+				{else}
+				 	<h3 class="w_380"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_title_link}" class="sort_none">___COMMON_TITLE___</a></h3>
 				{/if}
-				{if $announcement.list_parameters.sort == "title_rev"}
-					<h3 class="w_380"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$environment.params}&sort=title" id="sort_down"><strong>___COMMON_TITLE___</strong></a></h3>
+				{if $list.sorting_parameters.sort_modified == "up"}
+				 	<h3 class="w_80"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_modified_link}" id="sort_up"><strong>___COMMON_MODIFIED_AT___</strong></a></h3>
+				{elseif $list.sorting_parameters.sort_modified == "down"}
+				 	<h3 class="w_80"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_modified_link}" id="sort_down"><strong>___COMMON_MODIFIED_AT___</strong></a></h3>
+				{else}
+				 	<h3 class="w_80"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_modified_link}" class="sort_none">___COMMON_MODIFIED_AT___</a></h3>
 				{/if}
-				{if $announcement.list_parameters.sort != "title_rev" and $announcement.list_parameters.sort != "title"}
-					<h3 class="w_380"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$environment.params}&sort=title" class="sort_none"><strong>___COMMON_TITLE___</strong></a></h3>
+				{if $list.sorting_parameters.sort_modificator == "up"}
+				 	<h3 class="w_135"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_modificator_link}" id="sort_up"><strong>___COMMON_ENTERED_BY___</strong></a></h3>
+				{elseif $list.sorting_parameters.sort_modificator == "down"}
+				 	<h3 class="w_135"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_modificator_link}" id="sort_down"><strong>___COMMON_ENTERED_BY___</strong></a></h3>
+				{else}
+				 	<h3 class="w_135"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_modificator_link}" class="sort_none">___COMMON_ENTERED_BY___</a></h3>
 				{/if}
-				<h3 class="w_80"><a href="" id="sort_up">___COMMON_MODIFIED_AT___</a></h3> <!-- id="sort_down" ist ebenfalls vorhanden -->
-				<h3 class="w_135"><a href="" class="sort_none">___COMMON_ENTERED_BY___</a></h3>
-				<h3><a href="" class="sort_none">___COMMON_ASSESSMENT_INDEX___</a></h3>
+				{if $list.sorting_parameters.sort_assessment == "up"}
+				 	<h3><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_assessment_link}" id="sort_up"><strong>___COMMON_ASSESSMENT_INDEX___</strong></a></h3>
+				{elseif $list.sorting_parameters.sort_assessment == "down"}
+				 	<h3><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_assessment_link}" id="sort_down"><strong>___COMMON_ASSESSMENT_INDEX___</strong></a></h3>
+				{else}
+				 	<h3><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_assessment_link}" class="sort_none">___COMMON_ASSESSMENT_INDEX___</a></h3>
+				{/if}
 
 				<div class="clear"> </div>
 			</div>
@@ -110,46 +126,7 @@
 				<div class="clear"> </div>
 			</div>
 		</div> <!-- Ende content_item -->
-
-		<div class="content_item"> <!-- Start content_item -->
-			<div class="item_info">
-				<div class="ii_left">
-					<p>Eintr&auml;ge pro Seite 
-						<a href=""><strong>20</strong></a>|<a href="">50</a>|<a href="">alle</a>
-					</p>
-				</div>
-
-				<div class="ii_right">
-					<div id="item_navigation">
-					    {if $announcement.browsing_parameters.browse_start != "disabled"}
-						   <a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$announcement.browsing_parameters.browse_start}"><img src="{$basic.tpl_path}img/btn_ar_start.gif" alt="Start" /></a>
-						{else}
-						   <img src="{$basic.tpl_path}img/btn_ar_start.gif" alt="Start" />
-						{/if}
-					    {if $announcement.browsing_parameters.browse_left != "disabled"}
-						   <a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$announcement.browsing_parameters.browse_left}"><img src="{$basic.tpl_path}img/btn_ar_left.gif" alt="zur&uuml;ck" /></a>
-						{else}
-						   <img src="{$basic.tpl_path}img/btn_ar_left.gif" alt="zur&uuml;ck" />
-						{/if}
-						Seite 1/12
-					    {if $announcement.browsing_parameters.browse_right != "disabled"}
-						   <a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$announcement.browsing_parameters.browse_right}"><img src="{$basic.tpl_path}img/btn_ar_right.gif" alt="weiter" /></a>
-						{else}
-						   <img src="{$basic.tpl_path}img/btn_ar_right.gif" alt="weiter" />
-						{/if}
-					    {if $announcement.browsing_parameters.browse_end != "disabled"}
-						   <a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$announcement.browsing_parameters.browse_end}"><img src="{$basic.tpl_path}img/btn_ar_end.gif" alt="Ende" /></a>
-						{else}
-						   <img src="{$basic.tpl_path}img/btn_ar_end.gif" alt="Ende" />
-						{/if}
-					</div>
-				</div>
-
-				<div class="clear"> </div>
-			</div>
-
-			<div class="clear"> </div>
-		</div> <!-- Ende content_item -->
+		{include file="room_list_footer_html.tpl"}
 	</div>
 {/block}
 
@@ -157,9 +134,9 @@
 	<div class="portlet_rc">
 		<a href="" title="schlie&szlig;en" class="btn_head_rc"><img src="{$basic.tpl_path}img/btn_close_rc.gif" alt="close" /></a>
 		<h2>Einschr&auml;nkungen der Liste</h2>
-		
+
 		<div class="clear"> </div>
-		
+
 		<a href="" title="bearbeiten" class="btn_body_rc"><img src="{$basic.tpl_path}img/btn_edit_rc.gif" alt="close" /></a>
 		<div class="portlet_rc_body">
 			<div class="change_view">
@@ -168,7 +145,7 @@
 					<option>Gruppe w&auml;hlen</option>
 				</select>
 			</div>
-			
+
 			<div class="change_view">
 				Thema
 				<select name="" size="1">

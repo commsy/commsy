@@ -31,22 +31,27 @@
 		 * INDEX
 		 */
 		public function actionIndex() {
-			// get list content
-			$list_content = $this->getListContent();
-			$this->assign('announcement', 'list_content', $list_content);
-			
+
 			// init list params
 			$this->initListParameters(CS_ANNOUNCEMENT_TYPE);
-			
+
 			// perform list options
 			$this->performListOption(CS_ANNOUNCEMENT_TYPE);
-			
+
+			// get list content
+			$list_content = $this->getListContent();
+
 			// assign to template
-			$this->assign('announcement', 'list_parameters', $this->_list_parameter_arrray);
-			$this->assign('announcement', 'page_text_fragments',$this->_page_text_fragment_array);
-			$this->assign('announcement', 'browsing_parameters',$this->_browsing_icons_parameter_array);
+			$this->assign('announcement','list_content', $list_content);
+			$this->assign('announcement','list_parameters', $this->_list_parameter_arrray);
+			$this->assign('list','page_text_fragments',$this->_page_text_fragment_array);
+			$this->assign('list','browsing_parameters',$this->_browsing_icons_parameter_array);
+			$this->assign('list','sorting_parameters',$this->getSortingParameterArray());
+			$this->assign('list','list_entries_parameter',$this->getListEntriesParameterArray());
 		}
-		
+
+
+
 		public function getListContent() {
 			include_once('classes/cs_list.php');
 			include_once('classes/views/cs_view.php');

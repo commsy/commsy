@@ -6,14 +6,14 @@
 		protected $_list_parameter_arrray = array();
 		protected $_page_html_fragment_array = array();
 		protected $_browsing_icons_parameter_array = array();
-		
+
 		/**
 		 * constructor
 		 */
 		public function __construct(cs_environment $environment) {
 			// call parent
 			parent::__construct($environment);
-			
+
 			// init variables
 			/*
 			$this->getViewMode() = 'browse';
@@ -31,7 +31,7 @@
 		protected function processTemplate() {
 			// call parent
 			parent::processTemplate();
-			
+
 			/*
 			// set paging information
 			$paging = array(
@@ -44,7 +44,7 @@
 			$this->assign('list', 'num_entries', $this->_num_entries);
 			*/
 		}
-		
+
 		protected function getViewMode(){
 			$mode = 'browse';
 			if ( isset($_GET['mode']) ) {
@@ -56,30 +56,130 @@
    				unset($this->_list_parameter_arrray['ref_user']);
 			}
 		}
-		
+
 		protected function setNumEntries($num) {
 			$this->_num_entries = $num;
 		}
-		
+
 		protected function performOptions() {
 			// get parameter array
 			$parameter_array = $this->_environment->getCurrentParameterArray();
-			
+
 			//pr($parameter_array); exit;
 			// paging
 			if(isset($parameter_array['from'])) {
 				$this->_paging['offset'] = $parameter_array['from'];
 			}
 		}
-		
+
+		protected function getListEntriesParameterArray(){
+			$environment = $this->_environment;
+           	$params = $environment->getCurrentParameterArray();
+      		if (isset($params['interval']) and !empty($params['interval'])){
+      			$interval_parameter = $params['interval'];
+      		}elseif(isset($params['interval']) and empty($params['interval'])){
+      			$interval_parameter = 'all';
+      		}else{
+      			$interval_parameter = '';
+      		}
+      		$link_parameter_text = '';
+      		if ( count($params) > 0 ) {
+         		foreach ($params as $key => $parameter) {
+         			if ($key != 'interval'){
+            			$link_parameter_text .= '&'.$key.'='.$parameter;
+         			}
+         		}
+         	}
+         	$return_array = array();
+      		if ( $interval_parameter == '20' or empty($interval_parameter)) {
+         		$return_array['20'] = 'disabled';
+      		}else{
+         		$return_array['20'] = $link_parameter_text.'&interval=20';
+      		}
+      		if ( $interval_parameter == '50' ) {
+         		$return_array['50'] = 'disabled';
+      		}else{
+         		$return_array['50'] = $link_parameter_text.'&interval=50';
+      		}
+      		if ( $interval_parameter == 'all' ) {
+         		$return_array['all'] = 'disabled';
+      		}else{
+         		$return_array['all'] = $link_parameter_text.'&interval=0';
+      		}
+      		return $return_array;
+		}
+
+		protected function getSortingParameterArray(){
+			$environment = $this->_environment;
+           	$params = $environment->getCurrentParameterArray();
+      		if (isset($params['sort']) and !empty($params['sort'])){
+      			$sort_parameter = $params['sort'];
+      		}else{
+      			$sort_parameter = '';
+      		}
+      		unset($params['sort']);
+      		$link_parameter_text = '';
+      		if ( count($params) > 0 ) {
+         		foreach ($params as $key => $parameter) {
+            		if ($key != 'from'){
+            		   $link_parameter_text .= '&'.$key.'='.$parameter;
+            		}
+         		}
+         	}
+
+      		if ( $sort_parameter == 'title') {
+         		$return_array['sort_title_link'] = $link_parameter_text.'&sort=title_rev';
+         		$return_array['sort_title'] = 'up';
+      		}elseif ( $sort_parameter == 'title_rev'){
+         		$return_array['sort_title_link'] = $link_parameter_text.'&sort=title';
+         		$return_array['sort_title'] = 'down';
+      		}else{
+         		$return_array['sort_title_link'] = $link_parameter_text.'&sort=title';
+         		$return_array['sort_title'] = 'none';
+      		}
+      		if ( $sort_parameter == 'modificator') {
+         		$return_array['sort_modificator_link'] = $link_parameter_text.'&sort=modificator_rev';
+         		$return_array['sort_modificator'] = 'up';
+      		}elseif ($sort_parameter == 'modificator_rev'){
+         		$return_array['sort_modificator_link'] = $link_parameter_text.'&sort=modificator';
+         		$return_array['sort_modificator'] = 'down';
+      		}else{
+         		$return_array['sort_modificator_link'] = $link_parameter_text.'&sort=modificator';
+         		$return_array['sort_modificator'] = 'none';
+      		}
+      		if ( $sort_parameter == 'assessment') {
+         		$return_array['sort_assessment_link'] = $link_parameter_text.'&sort=assessment_rev';
+         		$return_array['sort_assessment'] = 'up';
+      		}elseif ($sort_parameter == 'assessment_rev'){
+         		$return_array['sort_assessment_link'] = $link_parameter_text.'&sort=assessment';
+         		$return_array['sort_assessment'] = 'down';
+      		}else{
+         		$return_array['sort_assessment_link'] = $link_parameter_text.'&sort=assessment';
+         		$return_array['sort_assessment'] = 'none';
+      		}
+      		if ( $sort_parameter == 'modified' or empty($sort_parameter)) {
+         		$return_array['sort_modified_link'] = $link_parameter_text.'&sort=modified_rev';
+         		$return_array['sort_modified'] = 'up';
+      		}elseif($sort_parameter == 'modified_rev'){
+         		$return_array['sort_modified_link'] = $link_parameter_text.'&sort=modified';
+         		$return_array['sort_modified'] = 'down';
+      		}else{
+         		$return_array['sort_modified_link'] = $link_parameter_text.'&sort=modified';
+         		$return_array['sort_modified'] = 'none';
+      		}
+			return $return_array;
+		}
+
    		function getBrowsingIconsParameterArray($from = 0, $interval = 0, $count_all_shown = 0){
 			$environment = $this->_environment;
-           	$params = $environment->_getCurrentParameterArray();
-      		unset($params['from']);
-         	if (!empty($params)) {
-            	$link_parameter_text = implode('&',$params);
-         	} else {
-            	$link_parameter_text = '';
+           	$params = $environment->getCurrentParameterArray();
+      		$link_parameter_text = '';
+      		if ( count($params) > 0 ) {
+         		foreach ($params as $key => $parameter) {
+            		if ($key != 'from'){
+            			$link_parameter_text .= '&'.$key.'='.$parameter;
+            		}
+         		}
          	}
      		if ($interval > 0) {
          		if ($count_all_shown != 0) {
@@ -133,9 +233,22 @@
       		}else{
       			$return_array['browse_end'] = 'disabled';
       		}
+      		if ($interval > 0) {
+         		if ($count_all_shown != 0) {
+            		$num_pages = ceil($count_all_shown / $interval);
+         		} else {
+            		$num_pages = 1;
+         		}
+         		$act_page  = ceil(($from + $interval - 1) / $interval);
+      		} else {
+         		$num_pages = 1;
+         		$act_page  = 1;
+      		}
+      		$return_array['actual_page_number'] = $act_page;
+      		$return_array['page_numbers'] = $num_pages;
       		return $return_array;
   		}
-   		
+
    		protected function getCountEntriesText($from = 0, $interval = 0, $count_all = 0, $count_all_shown = 0) {
 			$environment = $this->_environment;
 			$translator = $environment->getTranslationObject();
@@ -344,16 +457,16 @@
       			}
       		}
 		}
-		
+
 		protected function initFilter() {
 			// get parameter array
 			$parameter_array = $this->_environment->getCurrentParameterArray();
-			
+
 			if(isset($parameter_array['ref_iid']))
 				$this->filter['ref_iid'] = $parameter_array['ref_iid'];
 			elseif(isset($_POST['ref_iid']))
 				$this->filter['ref_id'] = $_POST['ref_iid'];
-				
+
 			if(isset($parameter_array['ref_user']))
 				$this->filter['ref_user'] = $parameter_array['ref_user'];
 			elseif(isset($_POST['ref_user']))
@@ -379,8 +492,8 @@
    				$session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index');
    				redirect($environment->getCurrentContextID(),$environment->getCurrentModule(), 'index', $params);
 			}
-			
-			
+
+
 
 			// Find clipboard id array
 			if ( $session->issetValue('announcement_clipboard') ) {
@@ -408,8 +521,9 @@
 			$context_item = $environment->getCurrentContextItem();
 			if ( isset($_GET['interval']) ) {
    				$this->_list_parameter_arrray['interval'] = $_GET['interval'];
-			} elseif ( $session->issetValue('interval') ) {
-   				$this->_list_parameter_arrray['interval'] = $session->getValue('interval');
+#			}
+#			elseif ( $session->issetValue('interval') ) {
+#   				$this->_list_parameter_arrray['interval'] = $session->getValue('interval');
 			} else{
    				$this->_list_parameter_arrray['interval'] = $context_item->getListLength();
 			}
@@ -498,6 +612,6 @@
    				$this->_list_parameter_arrray['sel_array'] = $sel_array;
 			}
 		}
-		
+
 		abstract function getListContent();
 	}
