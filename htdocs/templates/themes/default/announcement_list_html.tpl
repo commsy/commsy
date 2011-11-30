@@ -113,11 +113,27 @@
 
 				<div class="ii_right">
 					<div id="item_navigation">
-						<a href=""><img src="{$basic.tpl_path}img/btn_ar_start.gif" alt="Start" /></a>
-						<a href=""><img src="{$basic.tpl_path}img/btn_ar_left.gif" alt="zur&uuml;ck" /></a>
+					    {if $announcement.browsing_parameters.browse_start != "disabled"}
+						   <a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$announcement.browsing_parameters.browse_start}"><img src="{$basic.tpl_path}img/btn_ar_start.gif" alt="Start" /></a>
+						{else}
+						   <img src="{$basic.tpl_path}img/btn_ar_start.gif" alt="Start" />
+						{/if}
+					    {if $announcement.browsing_parameters.browse_left != "disabled"}
+						   <a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$announcement.browsing_parameters.browse_left}"><img src="{$basic.tpl_path}img/btn_ar_left.gif" alt="zur&uuml;ck" /></a>
+						{else}
+						   <img src="{$basic.tpl_path}img/btn_ar_left.gif" alt="zur&uuml;ck" />
+						{/if}
 						Seite 1/12
-						<a href=""><img src="{$basic.tpl_path}img/btn_ar_right.gif" alt="weiter" /></a>
-						<a href=""><img src="{$basic.tpl_path}img/btn_ar_end.gif" alt="Ende" /></a>
+					    {if $announcement.browsing_parameters.browse_right != "disabled"}
+						   <a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$announcement.browsing_parameters.browse_right}"><img src="{$basic.tpl_path}img/btn_ar_right.gif" alt="weiter" /></a>
+						{else}
+						   <img src="{$basic.tpl_path}img/btn_ar_right.gif" alt="weiter" />
+						{/if}
+					    {if $announcement.browsing_parameters.browse_end != "disabled"}
+						   <a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$announcement.browsing_parameters.browse_end}"><img src="{$basic.tpl_path}img/btn_ar_end.gif" alt="Ende" /></a>
+						{else}
+						   <img src="{$basic.tpl_path}img/btn_ar_end.gif" alt="Ende" />
+						{/if}
 					</div>
 				</div>
 

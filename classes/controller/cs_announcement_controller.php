@@ -38,6 +38,7 @@
 			$this->assign('announcement', 'list_content', $list_content);
 			$this->assign('announcement', 'list_parameters', $this->_list_parameter_arrray);
 			$this->assign('announcement', 'page_text_fragments',$this->_page_text_fragment_array);
+			$this->assign('announcement', 'browsing_parameters',$this->_browsing_icons_parameter_array);
 		}
 
 
@@ -98,11 +99,12 @@
    				$announcement_manager->setIDArrayLimit($only_show_array);
 			}
 			$announcement_manager->select();
-			$list = $announcement_manager->get();        // returns a cs_list of announcement_items
+			$list = $announcement_manager->get();
 			$ids = $announcement_manager->getIDArray();
 			$count_all_shown = count($ids);
 
 			$this->_page_text_fragment_array['count_entries'] = $this->getCountEntriesText($this->_list_parameter_arrray['from'],$this->_list_parameter_arrray['interval'], $count_all, $count_all_shown);
+            $this->_browsing_icons_parameter_array = $this->getBrowsingIconsParameterArray($this->_list_parameter_arrray['from'],$this->_list_parameter_arrray['interval'], $count_all_shown);
 
 			$id_array = array();
 			$item = $list->getFirst();

@@ -5,7 +5,7 @@
 		private $_entries_per_page = 20;
 		protected $_list_parameter_arrray = array();
 		protected $_page_html_fragment_array = array();
-
+		protected $_browsing_icons_parameter_array = array();
 		/**
 		 * constructor
 		 */
@@ -33,6 +33,72 @@
    				unset($this->_list_parameter_arrray['ref_user']);
 			}
 		}
+
+
+   		function getBrowsingIconsParameterArray($from = 0, $interval = 0, $count_all_shown = 0){
+			$environment = $this->_environment;
+           	$params = $environment->_getCurrentParameterArray();
+      		unset($params['from']);
+         	if (!empty($params)) {
+            	$link_parameter_text = implode('&',$params);
+         	} else {
+            	$link_parameter_text = '';
+         	}
+     		if ($interval > 0) {
+         		if ($count_all_shown != 0) {
+            		$num_pages = ceil($count_all_shown / $interval);
+         		} else {
+            		$num_pages = 1;
+         		}
+         		$act_page  = ceil(($from + $interval - 1) / $interval);
+      		} else {
+         		$num_pages = 1;
+         		$act_page  = 1;
+      		}
+		    // prepare browsing
+      		if ( $from > 1 ) {        // can I browse to the left / start?
+         		$browse_left = $from - $interval;
+         		if ($browse_left < 1) {
+            		$browse_left = 1;
+         		}
+         		$browse_start = 1;
+      		} else {
+         		$browse_left = 0;      // 0 means: do not browse
+         		$browse_start = 0;     // 0 means: do not browse
+      		}
+      		if ( $from + $interval <= $count_all_shown ) {  // can I browse to the right / end?
+         		$browse_right = $from + $interval;
+         		$browse_end = $count_all_shown - $interval + 1;
+      		} else {
+         		$browse_right = 0;     // 0 means: do not browse
+         		$browse_end = 0;       // 0 means: do not browse
+      		}
+
+      		// Set return array values
+      		$return_array = array();
+      		if ( $browse_start > 0) {
+         		$return_array['browse_start'] = $link_parameter_text.'&from='.$browse_start;
+      		}else{
+      			$return_array['browse_start'] = 'disabled';
+      		}
+      		if ( $browse_left > 0 ) {
+         		$return_array['browse_left'] = $link_parameter_text.'&from='.$browse_left;
+      		}else{
+      			$return_array['browse_left'] = 'disabled';
+      		}
+       		if ( $browse_right > 0) {
+         		$return_array['browse_right'] = $link_parameter_text.'&from='.$browse_right;
+      		}else{
+      			$return_array['browse_right'] = 'disabled';
+      		}
+      		if ( $browse_end > 0 ) {
+         		$return_array['browse_end'] = $link_parameter_text.'&from='.$browse_end;
+      		}else{
+      			$return_array['browse_end'] = 'disabled';
+      		}
+      		return $return_array;
+  		}
+
 
    		protected function getCountEntriesText($from = 0, $interval = 0, $count_all = 0, $count_all_shown = 0) {
 			$environment = $this->_environment;
