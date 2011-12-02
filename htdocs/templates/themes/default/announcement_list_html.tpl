@@ -1,6 +1,6 @@
 {extends file="room_list_html.tpl"}
 
-{block=room_list_header}
+{block name=room_list_header}
 	<div class="table_head">
 		{if $list.sorting_parameters.sort_title == "up"}
 		 	<h3 class="w_380"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_title_link}" id="sort_up"><strong>___COMMON_TITLE___</strong></a></h3>
@@ -35,7 +35,7 @@
 {/block}
 
 
-{block=room_list_content}
+{block name=room_list_content}
 	{foreach $announcement.list_content.items as $item }
 		<div class="{if $item@iteration is odd}row_odd{else}row_even{/if}"> <!-- Start Reihe -->
 			<div class="column_20">

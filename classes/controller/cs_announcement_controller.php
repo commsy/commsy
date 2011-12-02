@@ -137,11 +137,34 @@
 			$params['with_modifying_actions'] = false;
 			$view = new cs_view($params);
 			while($item) {
+				$assessment_stars_text_array = array('non_active','non_active','non_active','non_active','non_active');
+				$current_context = $environment->getCurrentContextItem();
+				if($current_context->isAssessmentActive()) {
+					$assessment_manager = $environment->getAssessmentManager();
+					$assessment = $assessment_manager->getAssessmentForItemAverage($item);
+					if(isset($assessment[0])) {
+						$assessment = sprintf('%1.1f', (float) $assessment[0]);
+					} else {
+			 			$assessment = 0;
+					}
+		  			$php_version = explode('.', phpversion());
+					if($php_version[0] >= 5 && $php_version[1] >= 3) {
+						// if php version is equal to or above 5.3
+						$assessment_count_stars = round($assessment, 0, PHP_ROUND_HALF_UP);
+					} else {
+						// if php version is below 5.3
+						$assessment_count_stars = round($assessment);
+					}
+					for ($i=1; $i< $assessment_count_stars; $i++){
+						$assessment_stars_text_array[$i] = 'active';
+					}
+				}
 				$item_array[] = array(
 				'iid'				=> $item->getItemID(),
 				'title'				=> $view->_text_as_html_short($item->getTitle()),
 				'modification_date'	=> $this->_environment->getTranslationObject()->getDateInLang($item->getModificationDate()),
 				'creator'			=> $item->getCreatorItem()->getFullName(),
+				'assessment_array'        => $assessment_stars_text_array,
 				'attachment_count'	=> $item->getFileList()->getCount()
 //				'attachment_infos'	=>
 				);

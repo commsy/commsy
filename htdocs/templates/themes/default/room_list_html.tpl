@@ -14,6 +14,16 @@
 	<span>(___COMMON_ENTRIES___: {$list.page_text_fragments.count_entries})</span>
 {/block}
 
+{block name=room_main_content}
+	<div id="full_width_content">
+		<div class="content_item"> <!-- Start content_item -->
+			{block name=room_list_header}{/block}
+			{block name=room_list_content}{/block}
+		</div> <!-- Ende content_item -->
+		{block name=room_list_footer}{/block}
+	</div>
+{/block}
+
 {block name=room_list_footer}
 	<div class="content_item"> <!-- Start content_item -->
 		<div class="item_info">
@@ -90,17 +100,6 @@
 		</div>
 		<div class="clear"> </div>
 	</div> <!-- Ende content_item -->
-{/block}
-
-
-{block name=room_main_content}
-	<div id="full_width_content">
-		<div class="content_item"> <!-- Start content_item -->
-			{block=room_list_header}{/block}
-			{block=room_list_content}{/block}
-		</div> <!-- Ende content_item -->
-		{block name=room_list_footer}{/block}
-	</div>
 {/block}
 
 
