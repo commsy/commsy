@@ -104,13 +104,53 @@
 
 
 
-{block name=room_right_portlets prepend}
+{block name=room_right_portlets}
 	<div class="portlet_rc">
+		<a href="" title="___HOME_SMARTY_ACTION_CLOSE___" class="btn_head_rc"><img src="{$basic.tpl_path}img/btn_close_rc.gif" alt="close" /></a>
+		<h2>___COMMON_BUZZWORD_BOX___</h2>
+		<div class="clear"> </div>
+		<a href="" title="bearbeiten" class="btn_body_rc"><img src="{$basic.tpl_path}img/btn_edit_rc.gif" alt="close" /></a>
+		<div class="portlet_rc_body">
+			{foreach $room.buzzwords as $buzzword}
+				{if $buzzword.to_item_id != $buzzword.selected_id}
+					<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=index&{$list.restriction_link_parameters}&selbuzzword={$buzzword.to_item_id}" class="keywords_s{$buzzword.class_id}">{$buzzword.name}</a>
+				{else}
+					<a href="" class="keywords_s{$buzzword.class_id}" style="font-weight:bold;">{$buzzword.name}</a>
+				{/if}
+			{/foreach}
+		</div>
+	</div>
+
+	<div class="portlet_rc">
+		<a href="" title="___HOME_SMARTY_ACTION_CLOSE___" class="btn_head_rc"><img src="{$basic.tpl_path}img/btn_close_rc.gif" alt="close" /></a>
+		<h2>___COMMON_TAG_BOX___</h2>
+		<div class="clear"> </div>
+		<a href="" title="bearbeiten" class="btn_body_rc"><img src="{$basic.tpl_path}img/btn_edit_rc.gif" alt="close" /></a>
+		<div class="portlet_rc_body">
+			<div id="tag_tree">
+				{* Tags Function *}
+				{function name=tag_tree}
+					<ul>
+						{foreach $nodes as $node}
+							<li	id="node_{$node.item_id}"
+								{if $node.children|count > 0}class="folder"{/if}
+								data="url:'commsy.php?cid={$environment.cid}&mod=campus_search&fct=index&seltag={$node.item_id}'">{$node.title}
+								{if $node.children|count > 0}	{* recursive call *}
+									{tag_tree nodes=$node.children}
+								{/if}
+						{/foreach}
+					</ul>
+				{/function}
+				{* call function *}
+				{tag_tree nodes=$room.tags}
+			</div>
+		</div>
+	</div>
+
+    <div class="portlet_rc">
 		<a href="" title="schlie&szlig;en" class="btn_head_rc"><img src="{$basic.tpl_path}img/btn_close_rc.gif" alt="close" /></a>
 		<h2>Einschr&auml;nkungen der Liste</h2>
-
 		<div class="clear"> </div>
-
 		<a href="" title="bearbeiten" class="btn_body_rc"><img src="{$basic.tpl_path}img/btn_edit_rc.gif" alt="close" /></a>
 		<div class="portlet_rc_body">
 			<div class="change_view">
@@ -129,3 +169,4 @@
 		</div>
 	</div>
 {/block}
+

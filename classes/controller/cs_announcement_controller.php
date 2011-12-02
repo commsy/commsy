@@ -48,6 +48,7 @@
 			$this->assign('list','browsing_parameters',$this->_browsing_icons_parameter_array);
 			$this->assign('list','sorting_parameters',$this->getSortingParameterArray());
 			$this->assign('list','list_entries_parameter',$this->getListEntriesParameterArray());
+			$this->assign('list','restriction_link_parameters',$this->getRestrictionLinkParameters());
 		}
 
 

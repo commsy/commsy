@@ -170,6 +170,27 @@
 			return $return_array;
 		}
 
+/**************Begin*********************************/
+/*List Restriction (Tags, Buzzwords, SelectionBoxes)*/
+/**************Begin*********************************/
+
+		protected function getRestrictionLinkParameters(){
+			$restriction_array = array();
+			$environment = $this->_environment;
+      		$link_parameter_text = '';
+      		$params = $environment->getCurrentParameterArray();
+      		unset($params['from']);
+      		unset($params['selbuzzword']);
+       		foreach ($params as $key => $parameter) {
+           		$link_parameter_text .= '&'.$key.'='.$parameter;
+       		}
+      		return $link_parameter_text;
+		}
+
+/**************End***********************************/
+/*List Restriction (Tags, Buzzwords, SelectionBoxes)*/
+/**************End***********************************/
+
    		function getBrowsingIconsParameterArray($from = 0, $interval = 0, $count_all_shown = 0){
 			$environment = $this->_environment;
            	$params = $environment->getCurrentParameterArray();

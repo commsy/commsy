@@ -224,11 +224,10 @@ columnset, general settings
 
 #columnset {
     background: url(img/columns_bg.jpg) right top repeat-y #D7D7D9; /* ueber Skin-Editor austauschbar, selbe Grafik fuer footer_right verwenden */
-    border-left:1px solid #999;
     }
 
 #left_column {
-    width: 734px;
+    width: 735px;
     float: left;
     border-top: 1px solid #999;
     }
@@ -323,6 +322,7 @@ main-navigation
     font-size: 12px;
     color: #FFF;
     padding: 12px 10px;
+    border-left: 1px solid #999;
     }
 
 #main_navigation h1 span {
@@ -387,6 +387,7 @@ main-navigation
 
 #main_navigation #active a {
     color: #FFF;
+    border-left: 1px solid #999;
     border-right: 1px solid #999;
     text-align: center;
     }
@@ -560,6 +561,7 @@ content, general
 */
 
 #maincontent {
+    border-left: 1px solid #999;
     }
 
 #full_width_content {
@@ -938,8 +940,7 @@ footer
 
 #footer_left {
     width: 734px;
-    xbackground: url(img/footer_left_bg.jpg) repeat-x #D7D7D9;
-    background-color:#D7D7D9;
+    background: url(img/footer_left_bg.jpg) repeat-x #D7D7D9;
     color: #898989;
     float: left;
     height: 75px;

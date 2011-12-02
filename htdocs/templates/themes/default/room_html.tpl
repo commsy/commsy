@@ -2,12 +2,12 @@
 
 {block name=meta_area}
 	<div id="meta_area_content">
-            
+
                 <div id="breadcrumb">
                     <span><a href="" class="mm_right">CommSy Projekt</a></span>
                     <span><a href="" class="mm_dropdown">CommSy Community</a></span>
                 </div>
-                
+
                 <div id="meta_menu">
                 	{* login / logout *}
                 	{if $environment.is_guest}
@@ -28,9 +28,9 @@
 
 {block name=layout_content}
 	<div id="columnset"> <!-- Start columnset -->
-        
+
             <div id="left_column"> <!-- Start left_column -->
-                
+
                 <div id="main_navigation">
                     <ul>
                     	<!--  <li id="active"><a href="commsy.php?cid={$environment.cid}&mod=home&fct=index"><span id="ho_act"></span><br/>Home</a></li>-->
@@ -44,23 +44,23 @@
                     	{/foreach}
                     </ul>
                     <div class="clear"> </div>
-                    
-                    
+
+
                     <div id="site_actions">
                     	{block name=room_site_actions}{/block}
                     </div>
-                    
+
                     <h1>{block name=room_navigation_rubric_title}{/block}</h1>
-                    
+
                     <div class="clear"> </div>
                 </div>
-                
+
                 <div id="maincontent">
                 	{block name=room_main_content}{/block}
                 </div>
-                
+
             </div> <!-- Ende left_column -->
-            
+
             <div id="right_column"> <!-- Start right_column -->
             	{block name=room_right_info_addon}
 					<div id="info_addon">
@@ -74,16 +74,16 @@
 									___ACTIVITY_PAGE_IMPRESSIONS___: {$room.room_information.page_impressions}
 								</p>
 							</div>
-							
+
 							<div id="infos_right">
 								<div id="info_bar">
 									<p>999</p>
 								</div>
 							</div>
-							
+
 							<div class="clear"> </div>
 						</div>
-						
+
 						<div id="addon_area">
 							<p>
 								<a href="" title="Wiki"><img src="{$basic.tpl_path}img/addon_wiki.png" alt="Wiki" /></a>
@@ -93,18 +93,18 @@
 							</p>
 							<div class="clear"> </div>
 						</div>
-						
+
 						<div class="clear"> </div>
 					</div>
 				{/block}
-				
-				
+
+
            		<div id="rc_portlet_area">
            			{block name=room_right_portlets}
            				<div class="portlet_rc">
 							<a href="" title="___HOME_SMARTY_ACTION_CLOSE___" class="btn_head_rc"><img src="{$basic.tpl_path}img/btn_close_rc.gif" alt="close" /></a>
 							<h2>___COMMON_BUZZWORD_BOX___</h2>
-							
+
 							<div class="clear"> </div>
 							<a href="" title="bearbeiten" class="btn_body_rc"><img src="{$basic.tpl_path}img/btn_edit_rc.gif" alt="close" /></a>
 							<div class="portlet_rc_body">
@@ -113,13 +113,13 @@
 								{/foreach}
 							</div>
 						</div>
-						
+
 						<div class="portlet_rc">
 							<a href="" title="___HOME_SMARTY_ACTION_CLOSE___" class="btn_head_rc"><img src="{$basic.tpl_path}img/btn_close_rc.gif" alt="close" /></a>
 							<h2>___COMMON_TAG_BOX___</h2>
-							
+
 							<div class="clear"> </div>
-							
+
 							<a href="" title="bearbeiten" class="btn_body_rc"><img src="{$basic.tpl_path}img/btn_edit_rc.gif" alt="close" /></a>
 							<div class="portlet_rc_body">
 								<div id="tag_tree">
@@ -136,7 +136,7 @@
 										{/foreach}
 										</ul>
 									{/function}
-									
+
 									{* call function *}
 									{tag_tree nodes=$room.tags}
 								</div>
@@ -145,7 +145,7 @@
 					{/block}
            		</div>
             </div> <!-- Ende right_column -->
-            
+
             <div class="clear"> </div>
         </div> <!-- Ende columnset -->
 {/block}
