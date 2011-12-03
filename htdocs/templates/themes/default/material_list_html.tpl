@@ -36,7 +36,7 @@
 
 
 {block name=room_list_content}
-	{foreach $announcement.list_content.items as $item }
+	{foreach $material.list_content.items as $item }
 		<div class="{if $item@iteration is odd}row_odd{else}row_even{/if}"> <!-- Start Reihe -->
 			<div class="column_20">
 				<p>
