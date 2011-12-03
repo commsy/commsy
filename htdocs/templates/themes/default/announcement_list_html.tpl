@@ -87,6 +87,11 @@
 			<div class="portlet_rc_body">
 				<div class="change_view">
 					<form action="{$rubric.action}" method="get" name="{$rubric.name}_form">
+						<input type="hidden" name="cid" value="{$environment.cid}"/>
+						<input type="hidden" name="mod" value="{$environment.module}"/>
+						<input type="hidden" name="fct" value="{$environment.function}"/>
+						<input type="hidden" name="sort" value="modified"/>
+						<input type="hidden" name="mode" value="list_actions"/>
 						___COMMON_{$rubric.tag}_INDEX___
 						<select name="" size="1" onChange="javascript:document.{$rubric.name}_form.submit()">
 							<option value="0">*___COMMON_NO_SELECTION___</option>

@@ -58,10 +58,6 @@
 			}
 		}
 
-		protected function setNumEntries($num) {
-			$this->_num_entries = $num;
-		}
-
 		protected function performOptions() {
 			// get parameter array
 			$parameter_array = $this->_environment->getCurrentParameterArray();
