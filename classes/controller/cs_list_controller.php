@@ -663,9 +663,9 @@
    						$tmp_array['id'] = $label_item->getItemID();
    						$tmp_array['name'] = $label_item->getTitle();
    						$tmp_array['selected'] = 'no';
-   						if ($params['selgroup'] == $label_item->getItemID()
-   							or $params['seltopic'] == $label_item->getItemID()
-   							or $params['selinstitution'] == $label_item->getItemID()
+   						if (isset($params['selgroup']) and $params['selgroup'] == $label_item->getItemID()
+   							or (isset($params['seltopic']) and $params['seltopic'] == $label_item->getItemID())
+   							or (isset($params['selinstitution']) and $params['selinstitution'] == $label_item->getItemID())
    						){
    						   $tmp_array['selected'] = $label_item->getItemID();
    						}

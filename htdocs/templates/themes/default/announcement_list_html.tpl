@@ -93,7 +93,7 @@
 						<input type="hidden" name="sort" value="modified"/>
 						<input type="hidden" name="mode" value="list_actions"/>
 						___COMMON_{$rubric.tag}_INDEX___
-						<select name="" size="1" onChange="javascript:document.{$rubric.name}_form.submit()">
+						<select name="sel{$rubric.name}" size="1" onChange="javascript:document.{$rubric.name}_form.submit()">
 							<option value="0">*___COMMON_NO_SELECTION___</option>
    							<option class="disabled" disabled="disabled" value="-2">------------------------------</option>
     						{foreach $rubric.items as $item}
