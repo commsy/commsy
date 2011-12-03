@@ -12,8 +12,10 @@ define([	"libs/jQuery/jquery-1.7.1.min",
 			div_object.dynatree({
 				persist: true,
 				onClick: function(node, event) {
-					// follow link
-					window.location.href = node.data.url;
+					// follow link if event was not triggered by an expander
+					if(event.target.className !== 'dynatree-expander') {
+						window.location.href = node.data.url;
+					}
 				}
 			});
 		}
