@@ -6,6 +6,7 @@
 		protected $_list_parameter_arrray = array();
 		protected $_page_html_fragment_array = array();
 		protected $_browsing_icons_parameter_array = array();
+		protected $_perspective_rubric_array = array();
 
 		/**
 		 * constructor
@@ -630,7 +631,37 @@
          				}
       				}
    				}
-   				$this->_list_parameter_arrray['sel_array'] = $sel_array;
+   				$params = $environment->getCurrentParameterArray();
+   				foreach($sel_array as $rubric => $value){
+   					$label_manager = $environment->getManager($rubric);
+   					$label_manager->setContextLimit($environment->getCurrentContextID());
+   					$label_manager->select();
+   					$rubric_list = $label_manager->get();
+   					$temp_rubric_list = clone $rubric_list;
+   					$label_item = $temp_rubric_list->getFirst();
+   					$tmp2_array = array();
+   					while ($label_item){
+   						$tmp_array = array();
+   						$tmp_array['id'] = $label_item->getItemID();
+   						$tmp_array['name'] = $label_item->getTitle();
+   						$tmp_array['selected'] = 'no';
+   						if ($params['selgroup'] == $label_item->getItemID()
+   							or $params['seltopic'] == $label_item->getItemID()
+   							or $params['selinstitution'] == $label_item->getItemID()
+   						){
+   						   $tmp_array['selected'] = $label_item->getItemID();
+   						}
+   						$tmp2_array[] = $tmp_array;
+   						$label_item = $temp_rubric_list->getNext();
+   					}
+   					$tmp3_array = array();
+   					$tmp3_array['items'] = $tmp2_array;
+   					$tmp3_array['action'] = 'commsy.php?cid='.$environment->getCurrentContextID().'&mod='.$environment->getCurrentModule().'&fct='.$environment->getCurrentFunction();
+   					$tmp3_array['tag'] = strtoupper($rubric);
+   					$tmp3_array['name'] = $rubric;
+   					$this->_perspective_rubric_array[] = $tmp3_array;
+   					unset($rubric_list);
+				}
 			}
 		}
 

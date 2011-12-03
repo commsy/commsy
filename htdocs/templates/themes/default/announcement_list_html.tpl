@@ -77,3 +77,31 @@
 	{/foreach}
 {/block}
 
+{block name=room_right_portlets prepend}
+    <div class="portlet_rc">
+		<a href="" title="schlie&szlig;en" class="btn_head_rc"><img src="{$basic.tpl_path}img/btn_close_rc.gif" alt="close" /></a>
+		<h2>Einschr&auml;nkungen der Liste</h2>
+		<div class="clear"> </div>
+    	{foreach $list.perspective_rubric_entries as $rubric}
+			<a href="" title="bearbeiten" class="btn_body_rc"><img src="{$basic.tpl_path}img/btn_edit_rc.gif" alt="close" /></a>
+			<div class="portlet_rc_body">
+				<div class="change_view">
+					<form action="{$rubric.action}" method="get" name="{$rubric.name}_form">
+						___COMMON_{$rubric.tag}_INDEX___
+						<select name="" size="1" onChange="javascript:document.{$rubric.name}_form.submit()">
+							<option value="0">*___COMMON_NO_SELECTION___</option>
+   							<option class="disabled" disabled="disabled" value="-2">------------------------------</option>
+    						{foreach $rubric.items as $item}
+								<option value="{$item.id}" {if $item.id == $item.selected} selected="selected"{/if}>
+									{$item.name}
+								</option>
+    						{/foreach}
+   							<option class="disabled" disabled="disabled" value="-2">------------------------------</option>
+							<option value="-1">*___COMMON_NOT_LINKED___</option>
+						</select>
+					</form>
+				</div>
+			</div>
+    	{/foreach}
+	</div>
+{/block}

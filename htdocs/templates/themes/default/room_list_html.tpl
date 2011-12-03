@@ -147,26 +147,5 @@
 		</div>
 	</div>
 
-    <div class="portlet_rc">
-		<a href="" title="schlie&szlig;en" class="btn_head_rc"><img src="{$basic.tpl_path}img/btn_close_rc.gif" alt="close" /></a>
-		<h2>Einschr&auml;nkungen der Liste</h2>
-		<div class="clear"> </div>
-		<a href="" title="bearbeiten" class="btn_body_rc"><img src="{$basic.tpl_path}img/btn_edit_rc.gif" alt="close" /></a>
-		<div class="portlet_rc_body">
-			<div class="change_view">
-				Gruppe
-				<select name="" size="1">
-					<option>Gruppe w&auml;hlen</option>
-				</select>
-			</div>
-
-			<div class="change_view">
-				Thema
-				<select name="" size="1">
-					<option>Gruppe w&auml;hlen</option>
-				</select>
-			</div>
-		</div>
-	</div>
 {/block}
 
