@@ -113,7 +113,7 @@
 		<div class="portlet_rc_body">
 			{foreach $room.buzzwords as $buzzword}
 				{if $buzzword.to_item_id != $buzzword.selected_id}
-					<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=index&{$list.restriction_link_parameters}&selbuzzword={$buzzword.to_item_id}" class="keywords_s{$buzzword.class_id}">{$buzzword.name}</a>
+					<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=index&{$list.restriction_buzzword_link_parameters}&selbuzzword={$buzzword.to_item_id}" class="keywords_s{$buzzword.class_id}">{$buzzword.name}</a>
 				{else}
 					<a href="" class="keywords_s{$buzzword.class_id}" style="font-weight:bold;">{$buzzword.name}</a>
 				{/if}
@@ -134,7 +134,7 @@
 						{foreach $nodes as $node}
 							<li	id="node_{$node.item_id}"
 								{if $node.children|count > 0}class="folder"{/if}
-								data="url:'commsy.php?cid={$environment.cid}&mod=campus_search&fct=index&seltag={$node.item_id}'">{$node.title}
+								data="url:'commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.restriction_tag_link_parameters}&seltag={$node.item_id}'">{$node.title}
 								{if $node.children|count > 0}	{* recursive call *}
 									{tag_tree nodes=$node.children}
 								{/if}

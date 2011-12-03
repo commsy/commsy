@@ -175,13 +175,27 @@
 /*List Restriction (Tags, Buzzwords, SelectionBoxes)*/
 /**************Begin*********************************/
 
-		protected function getRestrictionLinkParameters(){
+		protected function getRestrictionBuzzwordLinkParameters(){
 			$restriction_array = array();
 			$environment = $this->_environment;
       		$link_parameter_text = '';
       		$params = $environment->getCurrentParameterArray();
       		unset($params['from']);
       		unset($params['selbuzzword']);
+       		foreach ($params as $key => $parameter) {
+           		$link_parameter_text .= '&'.$key.'='.$parameter;
+       		}
+      		return $link_parameter_text;
+		}
+
+		protected function getRestrictionTagLinkParameters(){
+			$restriction_array = array();
+			$environment = $this->_environment;
+      		$link_parameter_text = '';
+      		$params = $environment->getCurrentParameterArray();
+      		unset($params['from']);
+      		unset($params['seltag_array']);
+      		unset($params['seltag']);
        		foreach ($params as $key => $parameter) {
            		$link_parameter_text .= '&'.$key.'='.$parameter;
        		}
@@ -633,6 +647,14 @@
    				}
    				$params = $environment->getCurrentParameterArray();
    				foreach($sel_array as $rubric => $value){
+   					$sel_name = 'sel'.$rubric;
+   					unset($params[$sel_name]);
+      				$link_parameter_text = '';
+      				if ( count($params) > 0 ) {
+         				foreach ($params as $key => $parameter) {
+        					$link_parameter_text .= '&'.$key.'='.$parameter;
+         				}
+         			}
    					$label_manager = $environment->getManager($rubric);
    					$label_manager->setContextLimit($environment->getCurrentContextID());
    					$label_manager->select();
@@ -656,7 +678,7 @@
    					}
    					$tmp3_array = array();
    					$tmp3_array['items'] = $tmp2_array;
-   					$tmp3_array['action'] = 'commsy.php?cid='.$environment->getCurrentContextID().'&mod='.$environment->getCurrentModule().'&fct='.$environment->getCurrentFunction();
+   					$tmp3_array['action'] = 'commsy.php?cid='.$environment->getCurrentContextID().'&mod='.$environment->getCurrentModule().'&fct='.$environment->getCurrentFunction().'&'.$link_parameter_text;
    					$tmp3_array['tag'] = strtoupper($rubric);
    					$tmp3_array['name'] = $rubric;
    					$this->_perspective_rubric_array[] = $tmp3_array;
