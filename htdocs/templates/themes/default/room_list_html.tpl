@@ -105,6 +105,43 @@
 
 
 {block name=room_right_portlets}
+    {if $list.perspective_rubric_entries}
+    <div class="portlet_rc">
+		<a href="" title="___COMMON_CLOSE___" class="btn_head_rc"><img src="{$basic.tpl_path}img/btn_close_rc.gif" alt="___COMMON_CLOSE___" /></a>
+		<h2>___COMMON_RESTRICTIONS___</h2>
+		<div class="clear"> </div>
+			<div class="portlet_rc_body">
+    		{foreach $list.perspective_rubric_entries as $rubric}
+				<div class="change_view">
+					<form action="{$rubric.action}" method="get" name="{$rubric.name}_form">
+						<input type="hidden" name="cid" value="{$environment.cid}"/>
+						<input type="hidden" name="mod" value="{$environment.module}"/>
+						<input type="hidden" name="fct" value="{$environment.function}"/>
+						{foreach $rubric.hidden as $hidden_value}
+						<input type="hidden" name="{$hidden_value.name}" value="{$hidden_value.value}"/>
+						{/foreach}
+						___COMMON_{$rubric.tag}_INDEX___
+						<select name="sel{$rubric.name}" size="1" onChange="javascript:document.{$rubric.name}_form.submit()">
+							<option value="0">*___COMMON_NO_SELECTION___</option>
+   							<option class="disabled" disabled="disabled" value="-2">------------------------------</option>
+    						{foreach $rubric.items as $item}
+								<option value="{$item.id}"
+									{if $item.id == $item.selected}
+										selected="selected"
+									{/if}
+								>
+									{$item.name}
+								</option>
+    						{/foreach}
+   							<option class="disabled" disabled="disabled" value="-2">------------------------------</option>
+							<option value="-1">*___COMMON_NOT_LINKED___</option>
+						</select>
+					</form>
+				</div>
+    		{/foreach}
+		</div>
+	</div>
+	{/if}
 	<div class="portlet_rc">
 		<a href="" title="___HOME_SMARTY_ACTION_CLOSE___" class="btn_head_rc"><img src="{$basic.tpl_path}img/btn_close_rc.gif" alt="close" /></a>
 		<h2>___COMMON_BUZZWORD_BOX___</h2>
