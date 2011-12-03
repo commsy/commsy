@@ -10,7 +10,11 @@ define([	"libs/jQuery/jquery-1.7.1.min",
 	return {
 		buildTree: function(div_object) {
 			div_object.dynatree({
-				persist: true
+				persist: true,
+				onClick: function(node, event) {
+					// follow link
+					window.location.href = node.data.url;
+				}
 			});
 		}
 	};
