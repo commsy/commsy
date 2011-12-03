@@ -96,6 +96,12 @@
 			if ( !empty($this->_list_parameter_arrray['selgroup']) ) {
    				$announcement_manager->setGroupLimit($this->_list_parameter_arrray['selgroup']);
 			}
+			if ( !empty($this->_list_parameter_arrray['seltopic']) ) {
+   				$announcement_manager->setTopicLimit($this->_list_parameter_arrray['seltopic']);
+			}
+			if ( !empty($this->_list_parameter_arrray['selinstitution']) ) {
+   				$announcement_manager->setTopicLimit($this->_list_parameter_arrray['selinstitution']);
+			}
 			if ( !empty($this->_list_parameter_arrray['selbuzzword']) ) {
    				$announcement_manager->setBuzzwordLimit($this->_list_parameter_arrray['selbuzzword']);
 			}

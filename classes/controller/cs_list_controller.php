@@ -566,6 +566,16 @@
    				$this->_list_parameter_arrray['sort'] = 'modified';
 			}
 
+			if ( isset($_GET['selgroup']) ) {
+   				$this->_list_parameter_arrray['selgroup'] = $_GET['selgroup'];
+			}
+			if ( isset($_GET['seltopic']) ) {
+   				$this->_list_parameter_arrray['seltopic'] = $_GET['seltopic'];
+			}
+			if ( isset($_GET['selinstitution']) ) {
+   				$this->_list_parameter_arrray['selinstitution'] = $_GET['selinstitution'];
+			}
+
 			if ( isset($_GET['option']) and isOption($_GET['option'],$translator->getMessage('COMMON_RESET')) ) {
    				$this->_list_parameter_arrray['search'] = '';
    				$this->_list_parameter_arrray['selinstitution'] = '';
@@ -641,16 +651,22 @@
          				}
       				}
    				}
-   				$params = $environment->getCurrentParameterArray();
    				foreach($sel_array as $rubric => $value){
+   					$params = $environment->getCurrentParameterArray();
    					$sel_name = 'sel'.$rubric;
    					unset($params[$sel_name]);
       				$link_parameter_text = '';
+      				$hidden_array = array();
       				if ( count($params) > 0 ) {
          				foreach ($params as $key => $parameter) {
         					$link_parameter_text .= '&'.$key.'='.$parameter;
+         					$tmp_hidden_array = array();
+         					$tmp_hidden_array['name'] = $key;
+         					$tmp_hidden_array['value'] = $parameter;
+         					$hidden_array[] = $tmp_hidden_array;
          				}
          			}
+   					$params = $environment->getCurrentParameterArray();
    					$label_manager = $environment->getManager($rubric);
    					$label_manager->setContextLimit($environment->getCurrentContextID());
    					$label_manager->select();
@@ -675,6 +691,7 @@
    					$tmp3_array = array();
    					$tmp3_array['items'] = $tmp2_array;
    					$tmp3_array['action'] = 'commsy.php?cid='.$environment->getCurrentContextID().'&mod='.$environment->getCurrentModule().'&fct='.$environment->getCurrentFunction().'&'.$link_parameter_text;
+   					$tmp3_array['hidden'] = $hidden_array;
    					$tmp3_array['tag'] = strtoupper($rubric);
    					$tmp3_array['name'] = $rubric;
    					$this->_perspective_rubric_array[] = $tmp3_array;

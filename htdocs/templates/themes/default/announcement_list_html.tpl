@@ -90,14 +90,19 @@
 						<input type="hidden" name="cid" value="{$environment.cid}"/>
 						<input type="hidden" name="mod" value="{$environment.module}"/>
 						<input type="hidden" name="fct" value="{$environment.function}"/>
-						<input type="hidden" name="sort" value="modified"/>
-						<input type="hidden" name="mode" value="list_actions"/>
+						{foreach $rubric.hidden as $hidden_value}
+						<input type="hidden" name="{$hidden_value.name}" value="{$hidden_value.value}"/>
+						{/foreach}
 						___COMMON_{$rubric.tag}_INDEX___
 						<select name="sel{$rubric.name}" size="1" onChange="javascript:document.{$rubric.name}_form.submit()">
 							<option value="0">*___COMMON_NO_SELECTION___</option>
    							<option class="disabled" disabled="disabled" value="-2">------------------------------</option>
     						{foreach $rubric.items as $item}
-								<option value="{$item.id}" {if $item.id == $item.selected} selected="selected"{/if}>
+								<option value="{$item.id}"
+									{if $item.id == $item.selected}
+										selected="selected"
+									{/if}
+								>
 									{$item.name}
 								</option>
     						{/foreach}
