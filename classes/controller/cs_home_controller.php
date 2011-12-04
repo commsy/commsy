@@ -45,7 +45,7 @@
 
 			$rubrics = $this->getRubrics();
 			$rubric_list = array();
-
+			$rubric_list_array = array();
 			// determe rubrics to show on home list
 			foreach($rubrics as $rubric) {
 				list($rubric_name, $postfix) = explode('_', $rubric);
@@ -59,7 +59,7 @@
 
 				$rubric_list[] = $rubric_name;
 
-			$list = new cs_list();
+				$list = new cs_list();
 	               $rubric = '';
 	               switch ($rubric_name){
 	                  case CS_ANNOUNCEMENT_TYPE:
@@ -263,12 +263,13 @@
 	                     break;
                   }
 
+				  $rubric_list_array[$rubric_name] = $list;
                   $tmp = $list->getFirst();
                   $ids = array();
                   while ($tmp){
 	                  $id_array[] = $tmp->getItemID();
 	                  if ($rubric_name == CS_MATERIAL_TYPE){
-	                     $v_id_array[$tmp->getItemID()] = $item->getVersionID();
+	                     $v_id_array[$tmp->getItemID()] = $tmp->getVersionID();
 	                  }
 	                  $ids[] = $tmp->getItemID();
 	                  $tmp = $list->getNext();
@@ -280,34 +281,12 @@
 	               }
 
 
-	               $item = $list->getFirst();
-	               $params = array();
-			$params['environment'] = $environment;
-			$params['with_modifying_actions'] = false;
-			$view = new cs_view($params);
-	           		 while($item) {
-						$item_array[] = array(
-						'iid'				=> $item->getItemID(),
-						'title'				=> $view->_text_as_html_short($item->getTitle()),
-						'modification_date'	=> $this->_environment->getTranslationObject()->getDateInLang($item->getModificationDate()),
-						'creator'			=> $item->getCreatorItem()->getFullName(),
-					//	'attachment_count'	=> $item->getFileList()->getCount()
-		//				'attachment_infos'	=>
-						);
-
-						$item = $list->getNext();
-					}
-
-					$return[$rubric_name]['items'] = $item_array;
-					$return[$rubric_name]['count_all'] = 0;
-
-					$item_array = array();
 
 				}
 
 
 
-	      $noticed_manager = $environment->getNoticedManager();
+	      		  $noticed_manager = $environment->getNoticedManager();
 			      $id_array = array_merge($id_array, $disc_id_array);
 			      $noticed_manager->getLatestNoticedByIDArray($id_array);
 			      $noticed_manager->getLatestNoticedAnnotationsByIDArray($id_array);
@@ -316,6 +295,33 @@
 			      $file_id_array = $link_manager->getAllFileLinksForListByIDs($id_array, $v_id_array);
 			      $file_manager = $environment->getFileManager();
 			      $file_manager->setIDArrayLimit($file_id_array);
+
+				 foreach($rubric_list_array as $key=>$list){
+					$item_array = array();
+	               	$item = $list->getFirst();
+	               	$params = array();
+					$params['environment'] = $environment;
+					$params['with_modifying_actions'] = false;
+					$view = new cs_view($params);
+	           		 while($item) {
+						$noticed_text = $this->_getItemChangeStatus($item);
+
+						$item_array[] = array(
+						'iid'				=> $item->getItemID(),
+						'title'				=> $view->_text_as_html_short($item->getTitle()),
+						'modification_date'	=> $this->_environment->getTranslationObject()->getDateInLang($item->getModificationDate()),
+						'creator'			=> $item->getCreatorItem()->getFullName(),
+						'noticed'			=> $noticed_text,
+					//	'attachment_count'	=> $item->getFileList()->getCount()
+		//				'attachment_infos'	=>
+						);
+
+						$item = $list->getNext();
+					}
+					$return[$key]['items'] = $item_array;
+					$return[$key]['count_all'] = 0;
+				 }
+
 
 			      // TODO attachment_count...
 

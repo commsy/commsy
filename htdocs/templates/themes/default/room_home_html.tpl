@@ -27,15 +27,18 @@
                 		({$rubric.items|count} ___HOME_SMARTY_{$rubric@key|upper}_DESCRIPTION___ {$rubric.count_all})
                 	</span>
                 </h2>
-                
+
                 <div class="clear"> </div>
-                
+
                 <div class="list_wrap">
-                
+
 	                {foreach $rubric.items as $item}
 	                	<div class="{if $item@iteration is odd}row_odd{else}row_even{/if}">
 	                    	<div class="column_430">
 	                        	<p>
+								{if $item.noticed != ''}
+									<a href="" class="new_item"><img title="{$item.noticed}" class="new_item" src="{$basic.tpl_path}img/flag_neu.gif" alt="*" /></a>
+         						{/if}
 	                            	<a href="">{$item.title}</a>
 	                            </p>
 	                        </div>
@@ -52,41 +55,41 @@
 		                    <div class="clear"> </div>
 	                    </div>
 	                {/foreach}
-                
+
                 </div>
             </div> <!-- Ende content_item -->
 		{/foreach}
-	
-	
+
+
                         {*
-                        
-                        
-                       
-                        
-                       
-                        
+
+
+
+
+
+
                         <div class="content_item"> <!-- Start content_item -->
                             <div class="ci_head_actions">
                                 <a href="" title="neue Gruppe erstellen"><img src="{$basic.tpl_path}img/btn_ci_add.gif" alt="neu" /></a>
                                 <a href="" class="open_close" title="&ouml;ffnen"><img src="{$basic.tpl_path}img/btn_ci_open.gif" alt="&ouml;ffnen" /></a>
                             </div>
                             <h2>Gruppen<span>(alle 10 Gruppen)</span></h2>
-                            
+
                             <div class="clear"> </div>
                         </div> <!-- Ende content_item -->
-                        
+
                         <div class="content_item"> <!-- Start content_item -->
                             <div class="ci_head_actions">
                                 <a href="" title="neues Thema erstellen"><img src="{$basic.tpl_path}img/btn_ci_add.gif" alt="neu" /></a>
                                 <a href="" class="open_close" title="&ouml;ffnen"><img src="{$basic.tpl_path}img/btn_ci_open.gif" alt="&ouml;ffnen" /></a>
                             </div>
                             <h2>Themen<span>(alle 4 Themen)</span></h2>
-                            
+
                             <div class="clear"> </div>
-                        </div> <!-- Ende content_item -->        
-                        
-                        
-                        *}                                                   
-                        
+                        </div> <!-- Ende content_item -->
+
+
+                        *}
+
                     </div>
 {/block}
