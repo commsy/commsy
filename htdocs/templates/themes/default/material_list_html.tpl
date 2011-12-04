@@ -40,7 +40,8 @@
 		<div class="{if $item@iteration is odd}row_odd{else}row_even{/if}"> <!-- Start Reihe -->
 			<div class="column_20">
 				<p>
-					<input type="checkbox" name="" value="" />
+         			<input type="checkbox" onClick="quark(this)" name="attach[{$item.iid}]" value="1"/>
+        			<input type="hidden" name="shown[{$item.iid}]" value="1"/>
 				</p>
 			</div>
 			<div class="column_304">

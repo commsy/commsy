@@ -16,11 +16,14 @@
 
 {block name=room_main_content}
 	<div id="full_width_content">
-		<div class="content_item"> <!-- Start content_item -->
-			{block name=room_list_header}{/block}
-			{block name=room_list_content}{/block}
-		</div> <!-- Ende content_item -->
-		{block name=room_list_footer}{/block}
+		<form action="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}" method="post">
+			<input type="hidden" name="option" value="___COMMON_LIST_ACTION_BUTTON_GO___">
+			<div class="content_item"> <!-- Start content_item -->
+				{block name=room_list_header}{/block}
+				{block name=room_list_content}{/block}
+			</div> <!-- Ende content_item -->
+			{block name=room_list_footer}{/block}
+		</form>
 	</div>
 {/block}
 
@@ -36,14 +39,14 @@
 				 		<option value="1">___COMMON_LIST_ACTION_MARK_AS_READ___</option>
 				 		<option value="2">___COMMON_LIST_ACTION_COPY___</option>
 				 		<option value="download">___COMMON_LIST_ACTION_DOWNLOAD___</option>
-				 		<option disabled="disabled">------------------------------</option>
-				 		<option disabled="disabled">___COMMON_LIST_ACTION_DELETE___</option>
+				 		<option value="-2" disabled="disabled">------------------------------</option>
+				 		<option value="3">___COMMON_LIST_ACTION_DELETE___</option>
 				 	</select>
 					 	<input type="image" src="{$basic.tpl_path}img/btn_go.gif" alt="___COMMON_LIST_ACTION_BUTTON_GO___" />
 				 </div>
 			</div>
 				<div class="ii_right">
-				<p>0 Eintr&auml;ge ausgew&auml;hlt</p>
+				<p>0 ___COMMON_SELECTED___</p>
 			</div>
 				<div class="clear"> </div>
 		</div>

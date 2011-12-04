@@ -412,7 +412,6 @@
    				$selected_ids = array();
    				redirect($environment->getCurrentContextID(), $rubric, 'index', $params);
 			}
-
    			if ( isOption($option,$translator->getMessage('COMMON_LIST_ACTION_BUTTON_GO'))
         			and !isset($_GET['show_copies'])
         			and $_POST['index_view_action'] != '-1'
@@ -447,17 +446,20 @@
                   			$this->_list_parameter_arrray['clipboard_id_array'][] = $id;
                			}
             		}
+            		$session->setValue($rubric.'_clipboard', $this->_list_parameter_arrray['clipboard_id_array']);
             		break;
          		case 3:
             		$user = $environment->getCurrentUserItem();
             		if( $user->isModerator() ){
-                		$session->setValue('cid'.$environment->getCurrentContextID().
+                 		$session->setValue('cid'.$environment->getCurrentContextID().
                                                '_'.$environment->getCurrentModule().
                                                '_deleted_ids', $selected_ids);
                			$params = $environment->getCurrentParameterArray();
                			$params['mode'] = 'list_actions';
-               			$page->addDeleteBox(curl($environment->getCurrentContextID(),$rubric,'index',$params),'index',$selected_ids);
-               			unset($params);
+//Reimplementierung notwendig
+#               			$page->addDeleteBox(curl($environment->getCurrentContextID(),$rubric,'index',$params),'index',$selected_ids);
+//               			unset($params);
+
             		}
             		break;
          		case 'download':
