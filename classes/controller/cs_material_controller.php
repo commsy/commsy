@@ -168,11 +168,13 @@
 						$assessment_stars_text_array[$i] = 'active';
 					}
 				}
+				$noticed_text = $this->_getItemChangeStatus($item);
 				$item_array[] = array(
 				'iid'				=> $item->getItemID(),
 				'title'				=> $view->_text_as_html_short($item->getTitle()),
 				'modification_date'	=> $this->_environment->getTranslationObject()->getDateInLang($item->getModificationDate()),
 				'creator'			=> $item->getCreatorItem()->getFullName(),
+				'noticed'			=> $noticed_text,
 				'assessment_array'        => $assessment_stars_text_array,
 				'attachment_count'	=> $item->getFileList()->getCount()
 //				'attachment_infos'	=>

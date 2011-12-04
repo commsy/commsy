@@ -40,8 +40,14 @@
 		<div class="{if $item@iteration is odd}row_odd{else}row_even{/if}"> <!-- Start Reihe -->
 			<div class="column_20">
 				<p>
+				{if $item.noticed != ''}
+					<a href="" class="new_item_2"><img title="{$item.noticed}" class="new_item_2" src="{$basic.tpl_path}img/flag_neu.gif" alt="*" /></a>
+         			<input class="new_item_2" type="checkbox" onClick="quark(this)" name="attach[{$item.iid}]" value="1"/>
+        			<input type="hidden" name="shown[{$item.iid}]" value="1"/>
+				{else}
          			<input type="checkbox" onClick="quark(this)" name="attach[{$item.iid}]" value="1"/>
         			<input type="hidden" name="shown[{$item.iid}]" value="1"/>
+				{/if}
 				</p>
 			</div>
 			<div class="column_304">
