@@ -31,7 +31,6 @@
 		 * INDEX
 		 */
 		public function actionIndex() {
-
 			// init list params
 			$this->initListParameters(CS_ANNOUNCEMENT_TYPE);
 
@@ -62,6 +61,7 @@
 			include_once('classes/views/cs_view.php');
 			$environment = $this->_environment;
 			$context_item = $environment->getCurrentContextItem();
+			$return = array();
 			
 			$last_selected_tag = '';
 			$seltag_array = array();
