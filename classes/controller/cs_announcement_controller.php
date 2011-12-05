@@ -50,28 +50,29 @@
 			$this->assign('list','list_entries_parameter',$this->getListEntriesParameterArray());
 			$this->assign('list','restriction_buzzword_link_parameters',$this->getRestrictionBuzzwordLinkParameters());
 			$this->assign('list','restriction_tag_link_parameters',$this->getRestrictionTagLinkParameters());
+			$this->assign('list','restriction_text_parameters',$this->_getRestrictionTextAsHTML());
 		}
-		
+
 		/*****************************************************************************/
 		/******************************** END ACTIONS ********************************/
 		/*****************************************************************************/
-		
+
 		public function getListContent() {
 			include_once('classes/cs_list.php');
 			include_once('classes/views/cs_view.php');
 			$environment = $this->_environment;
 			$context_item = $environment->getCurrentContextItem();
 			$return = array();
-			
+
 			$last_selected_tag = '';
 			$seltag_array = array();
-			
+
 			// Find current topic selection
 			if(isset($_GET['seltag']) && $_GET['seltag'] == 'yes') {
 				$i = 0;
 				while(!isset($_GET['seltag_' . $i])) {
 					$i++;
-				} 
+				}
 				$seltag_array[] = $_GET['seltag_' . $i];
 				$j = 0;
 				while(isset($_GET['seltag_' . $i]) && $_GET['seltag_' . $i] != '-2') {
@@ -213,7 +214,7 @@
 			);
 			return $return;
 		}
-		
+
 		public function getAdditionalListActions() {
 			return array();
 		}

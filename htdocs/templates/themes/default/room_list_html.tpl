@@ -40,7 +40,7 @@
 			 				{else}
 			 					<option{if $action.id} id="{$action.id}"{/if}{if $action.selected} selected="selected"{/if} value="{$action.value}">{$action.display}</option>
 			 				{/if}
-			 				
+
 			 			{/foreach}
 				 	</select>
 					<input type="image" id="delete_confirmselect_option" name="option" src="{$basic.tpl_path}img/btn_go.gif" alt="___COMMON_LIST_ACTION_BUTTON_GO___" />
@@ -109,10 +109,24 @@
 
 
 {block name=room_right_portlets}
+	{if $list.restriction_text_parameters}
+    <div class="portlet_rc">
+		<h2>___COMMON_RESTRICTIONS___</h2>
+		<div class="clear"> </div>
+		<div class="portlet_rc_body">
+			{foreach $list.restriction_text_parameters as $restriction}
+				{$restriction.name}
+			   	<span style="padding-right:8px;">
+			   		<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$restriction.link_parameter}"><img src="{$basic.tpl_path}img/cross.gif" alt="x" border="0"/></a>
+			   	</span>
+			{/foreach}
+		</div>
+	</div>
+	{/if}
     {if $list.perspective_rubric_entries}
     <div class="portlet_rc">
 		<a href="" title="___COMMON_CLOSE___" class="btn_head_rc"><img src="{$basic.tpl_path}img/btn_close_rc.gif" alt="___COMMON_CLOSE___" /></a>
-		<h2>___COMMON_RESTRICTIONS___</h2>
+		<h2>___COMMON_REFERENCED_ENTRIES___</h2>
 		<div class="clear"> </div>
 			<div class="portlet_rc_body">
     		{foreach $list.perspective_rubric_entries as $rubric}
