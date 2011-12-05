@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Erstellungszeit: 20. Oktober 2011 um 11:11
+-- Erstellungszeit: 05. Dezember 2011 um 10:01
 -- Server Version: 5.1.44
 -- PHP-Version: 5.3.1
 
@@ -16,7 +16,7 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 /*!40101 SET NAMES utf8 */;
 
 --
--- Datenbank: `commsy_dump`
+-- Datenbank: `commsy_db_dump`
 --
 
 -- --------------------------------------------------------
@@ -763,6 +763,8 @@ CREATE TABLE IF NOT EXISTS `materials` (
   `new_hack` tinyint(1) NOT NULL DEFAULT '0',
   `copy_of` int(11) DEFAULT NULL,
   `workflow_status` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT '3_none',
+  `workflow_resubmission_date` datetime DEFAULT NULL,
+  `workflow_validity_date` datetime DEFAULT NULL,
   PRIMARY KEY (`item_id`,`version_id`),
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`),
@@ -882,7 +884,8 @@ CREATE TABLE IF NOT EXISTS `room` (
   KEY `room_description` (`room_description`(333)),
   KEY `contact_persons` (`contact_persons`),
   KEY `title` (`title`),
-  KEY `modifier_id` (`modifier_id`)
+  KEY `modifier_id` (`modifier_id`),
+  KEY `status_2` (`status`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
@@ -919,11 +922,70 @@ CREATE TABLE IF NOT EXISTS `room_privat` (
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`),
   KEY `status` (`status`),
-  KEY `creator_id` (`creator_id`)
+  KEY `creator_id` (`creator_id`),
+  KEY `status_2` (`status`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Daten für Tabelle `room_privat`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `search_index`
+--
+
+CREATE TABLE IF NOT EXISTS `search_index` (
+  `si_id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `si_sw_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `si_item_id` int(11) NOT NULL DEFAULT '0',
+  `si_item_type` varchar(15) NOT NULL,
+  `si_count` smallint(5) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`si_id`),
+  UNIQUE KEY `un_si_sw_id` (`si_item_id`,`si_sw_id`,`si_item_type`),
+  KEY `si_sw_id` (`si_sw_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+--
+-- Daten für Tabelle `search_index`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `search_time`
+--
+
+CREATE TABLE IF NOT EXISTS `search_time` (
+  `st_id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `st_item_id` int(11) NOT NULL DEFAULT '0',
+  `st_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`st_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+--
+-- Daten für Tabelle `search_time`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `search_word`
+--
+
+CREATE TABLE IF NOT EXISTS `search_word` (
+  `sw_id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `sw_word` varchar(32) NOT NULL DEFAULT '',
+  `sw_lang` varchar(5) NOT NULL,
+  PRIMARY KEY (`sw_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+--
+-- Daten für Tabelle `search_word`
 --
 
 
@@ -1198,6 +1260,24 @@ CREATE TABLE IF NOT EXISTS `user` (
 
 INSERT INTO `user` (`item_id`, `context_id`, `creator_id`, `modifier_id`, `deleter_id`, `creation_date`, `modification_date`, `deletion_date`, `user_id`, `status`, `is_contact`, `firstname`, `lastname`, `email`, `city`, `lastlogin`, `visible`, `extras`, `auth_source`, `description`) VALUES
 (98, 99, 99, 99, NULL, '2006-09-13 12:17:17', '2006-09-13 12:17:17', NULL, 'root', 3, 1, 'CommSy', 'Administrator', '', '', NULL, 1, '', 100, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `workflow_read`
+--
+
+CREATE TABLE IF NOT EXISTS `workflow_read` (
+  `item_id` int(11) NOT NULL,
+  `user_id` int(11) DEFAULT NULL,
+  KEY `item_id` (`item_id`),
+  KEY `user_id` (`user_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+--
+-- Daten für Tabelle `workflow_read`
+--
+
 
 -- --------------------------------------------------------
 
@@ -1648,6 +1728,8 @@ CREATE TABLE IF NOT EXISTS `zzz_materials` (
   `new_hack` tinyint(1) NOT NULL DEFAULT '0',
   `copy_of` int(11) DEFAULT NULL,
   `workflow_status` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT '3_none',
+  `workflow_resubmission_date` datetime DEFAULT NULL,
+  `workflow_validity_date` datetime DEFAULT NULL,
   PRIMARY KEY (`item_id`,`version_id`),
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`),
@@ -1735,7 +1817,8 @@ CREATE TABLE IF NOT EXISTS `zzz_room` (
   KEY `room_description` (`room_description`(333)),
   KEY `contact_persons` (`contact_persons`),
   KEY `title` (`title`),
-  KEY `modifier_id` (`modifier_id`)
+  KEY `modifier_id` (`modifier_id`),
+  KEY `status_2` (`status`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
@@ -1955,5 +2038,23 @@ CREATE TABLE IF NOT EXISTS `zzz_user` (
 
 --
 -- Daten für Tabelle `zzz_user`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `zzz_workflow_read`
+--
+
+CREATE TABLE IF NOT EXISTS `zzz_workflow_read` (
+  `item_id` int(11) NOT NULL,
+  `user_id` int(11) DEFAULT NULL,
+  KEY `item_id` (`item_id`),
+  KEY `user_id` (`user_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+--
+-- Daten für Tabelle `zzz_workflow_read`
 --
 
