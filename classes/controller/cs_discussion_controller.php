@@ -40,4 +40,8 @@
 		public function getListContent() {
 			
 		}
+		
+		public function getAdditionalListActions() {
+			return array();
+		}
 	}

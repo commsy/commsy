@@ -335,4 +335,9 @@
 					*/
 			return $return;
 		}
+		
+		// TODO: home view does not have any list actions -> actions could be derived into another subclass
+		public function getAdditionalListActions() {
+			return array();
+		}
 	}

@@ -52,14 +52,37 @@
 			$this->assign('list','restriction_buzzword_link_parameters',$this->getRestrictionBuzzwordLinkParameters());
 			$this->assign('list','restriction_tag_link_parameters',$this->getRestrictionTagLinkParameters());
 		}
-
-
-
+		
+		/*****************************************************************************/
+		/******************************** END ACTIONS ********************************/
+		/*****************************************************************************/
+		
 		public function getListContent() {
 			include_once('classes/cs_list.php');
 			include_once('classes/views/cs_view.php');
 			$environment = $this->_environment;
 			$context_item = $environment->getCurrentContextItem();
+			
+			$last_selected_tag = '';
+			$seltag_array = array();
+			
+			// Find current topic selection
+			if(isset($_GET['seltag']) && $_GET['seltag'] == 'yes') {
+				$i = 0;
+				while(!isset($_GET['seltag_' . $i])) {
+					$i++;
+				} 
+				$seltag_array[] = $_GET['seltag_' . $i];
+				$j = 0;
+				while(isset($_GET['seltag_' . $i]) && $_GET['seltag_' . $i] != '-2') {
+					if(!empty($_GET['seltag_' . $i])) {
+						$seltag_array[$i] = $_GET['seltag_' . $i];
+						$j++;
+					}
+					$i++;
+				}
+				$last_selected_tag = $seltag_array[$j-1];
+			}
 
 			// Get data from database
 			$announcement_manager = $environment->getAnnouncementManager();
@@ -105,8 +128,8 @@
 			if ( !empty($this->_list_parameter_arrray['selbuzzword']) ) {
    				$announcement_manager->setBuzzwordLimit($this->_list_parameter_arrray['selbuzzword']);
 			}
-			if ( !empty($this->_list_parameter_arrray['last_selected_tag']) ){
-   				$announcement_manager->setTagLimit($this->_list_parameter_arrray['last_selected_tag']);
+			if ( !empty($last_selected_tag) ){
+   				$announcement_manager->setTagLimit($last_selected_tag);
 			}
 			if ( $this->_list_parameter_arrray['interval'] > 0 ) {
    				$announcement_manager->setIntervalLimit($this->_list_parameter_arrray['from']-1,$this->_list_parameter_arrray['interval']);
@@ -190,7 +213,10 @@
 			);
 			return $return;
 		}
-
+		
+		public function getAdditionalListActions() {
+			return array();
+		}
 	}
 
 /*

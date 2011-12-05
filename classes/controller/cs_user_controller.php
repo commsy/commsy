@@ -36,4 +36,12 @@
 			
 			$this->assign('room', 'list_content', $list_content[CS_USER_TYPE]);
 		}
+		
+		public function getListContent() {
+			
+		}
+		
+		public function getAdditionalListActions() {
+			return array();
+		}
 	}

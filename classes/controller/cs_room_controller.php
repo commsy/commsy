@@ -284,9 +284,9 @@
             		$anno_item = $annotation_list->getNext();
          		}
          		if ( $new ) {
-            		$info_text = $this->_translator->getMessage('COMMON_NEW_ANNOTATION');
+            		$info_text = $translator->getMessage('COMMON_NEW_ANNOTATION');
          		} elseif ( $changed ) {
-            		$info_text = $this->_translator->getMessage('COMMON_CHANGED_ANNOTATION');
+            		$info_text = $translator->getMessage('COMMON_CHANGED_ANNOTATION');
          		} else {
             		$info_text = '';
          		}

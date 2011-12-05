@@ -18,6 +18,10 @@
 
 		public function displayTemplate() {
 			try {
+				if($this->_environment->getOutputMode() === 'html') {
+					$this->_tpl_engine->setPostToken(true);
+				}
+				
 				$this->_tpl_engine->display($this->_tpl_file, $this->_environment->getOutputMode());
 			} catch(Exception $e) {
 				die($e->getMessage());

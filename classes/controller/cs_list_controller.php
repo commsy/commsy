@@ -32,7 +32,10 @@
 		protected function processTemplate() {
 			// call parent
 			parent::processTemplate();
-
+			
+			// set list actions
+			$this->assign('list', 'actions', $this->getListActions());
+			
 			/*
 			// set paging information
 			$paging = array(
@@ -190,8 +193,13 @@
       		$link_parameter_text = '';
       		$params = $environment->getCurrentParameterArray();
       		unset($params['from']);
-      		unset($params['seltag_array']);
+      		//unset($params['seltag_array']);
       		unset($params['seltag']);
+      		
+      		foreach($params as $param => $value) {
+      			if(mb_substr($param, 0, 6) === 'seltag') unset($params[$param]);
+      		}
+      		
        		foreach ($params as $key => $parameter) {
            		$link_parameter_text .= '&'.$key.'='.$parameter;
        		}
@@ -703,4 +711,45 @@
 		}
 
 		abstract function getListContent();
+		
+		abstract function getAdditionalListActions();
+		
+		private function getListActions() {
+			$return = array();
+			
+			// add no action
+			$return[] = array('selected' => true, 'disabled' => false, 'id' => '', 'value' => -1, 'display' => '___COMMON_LIST_ACTION_NO___');
+			
+			// add separator
+			$return[] = array('selected' => false, 'disabled' => true, 'id' => '', 'value' => '', 'display' => '------------------------------');
+			
+			// TODO: clipboard mode
+			//$session = $this->_environment->getSessionItem();
+			//if(	!isset($this->_list_parameter_arrray['clipboard_id_array']) ||
+			//	!$session->issetValue($this->_environment->getCurrentModule() . '_clipboard', $this->_list_parameter_arrray['clipboard_id_array'])) {
+				// clipboard is empty
+				$return[] = array('selected' => false, 'disabled' => false, 'id' => '', 'value' => 1, 'display' => '___COMMON_LIST_ACTION_MARK_AS_READ___');
+				$return[] = array('selected' => false, 'disabled' => false, 'id' => '', 'value' => 2, 'display' => '___COMMON_LIST_ACTION_COPY___');
+				
+				$this->getAdditionalListActions();
+				
+				$return[] = array('selected' => false, 'disabled' => true, 'id' => '', 'value' => '', 'display' => '------------------------------');
+				if($this->_environment->inPrivateRoom()) {
+					$return[] = array('selected' => false, 'disabled' => false, 'id' => 'delete_check_option', 'value' => 3, 'display' => '___COMMON_LIST_ACTION_DELETE___');
+				} else {
+					$user = $this->_environment->getCurrentUserItem();
+					if($user->isModerator()) {
+						$return[] = array('selected' => false, 'disabled' => false, 'id' => 'delete_check_option', 'value' => 4, 'display' => '___COMMON_LIST_ACTION_DELETE___');
+					} else {
+						$return[] = array('selected' => false, 'disabled' => true, 'id' => '', 'value' => '', 'display' => '___COMMON_LIST_ACTION_DELETE___');
+					}
+				}
+			//} else {
+			//	// clipboard is not empty
+			//	$return[] = array('selected' => false, 'disabled' => false, 'id' => '', 'value' => 1, 'display' => '___CLIPBOARD_PASTE_BUTTON___');
+			//	$return[] = array('selected' => false, 'disabled' => false, 'id' => '', 'value' => 2, 'display' => '___CLIPBOARD_DELETE_BUTTON___');
+			//}
+			
+			return $return;
+		}
 	}

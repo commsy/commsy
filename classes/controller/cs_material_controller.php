@@ -190,6 +190,9 @@
 			);
 			return $return;
 		}
+		
+		public function getAdditionalListActions() {
+			return array();
+		}
 
 	}
-
