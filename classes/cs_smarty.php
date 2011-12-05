@@ -27,6 +27,9 @@ define('DS', '/');
 // load smarty library
 require_once('libs/smarty/Smarty.class.php');
 
+// load security functions
+require_once('functions/security_functions.php');
+
 /**
  * 
  * This class extends the Smarty main class, as an more flexible way to setup Smarty
@@ -63,6 +66,7 @@ class cs_smarty extends Smarty {
 		// multilanguage support
 		//$this->registerFilter('pre', array($this, 'smarty_filter_i18n'));
 		$this->registerFilter('output', array($this, 'smarty_filter_i18n'));
+		$this->registerPlugin('function', 'i18n', array($this, 'smarty_function_i18n'));
 	}
 	
 	public function setTheme($theme) {
@@ -85,6 +89,16 @@ class cs_smarty extends Smarty {
 		return parent::fetch($template, $cache_id, $compile_id, $parent, $display, $merge_tpl_vars, $no_output_filter);
 	}
 	
+	public function setPostToken($active) {		
+		if($active === true) {
+			// register filter
+			$this->registerFilter('output', array($this, 'smarty_filter_post_token'));
+		} else {
+			// unregister filter
+			$this->unregisterFilter('output', array($this, 'smarty_filter_post_token'));;
+		}
+	}
+	
 	public function display($template, $output_mode) {
 		// check if template exists
 		if(!file_exists($this->getTemplateDir(0) . $template . '_' . $output_mode . '.tpl')) {
@@ -101,6 +115,21 @@ class cs_smarty extends Smarty {
 	
 	public function smarty_filter_i18n($tpl_source, Smarty_Internal_Template $template) {
 		return preg_replace_callback('/___(.+?)___/', array($this, 'compile_lang'), $tpl_source);
+	}
+	
+	public function smarty_filter_post_token($tpl_source, Smarty_Internal_template $template) {
+		return addTokenToPost($tpl_source);
+	}
+	
+	public function smarty_function_i18n(array $params, Smarty_Internal_Template $template) {
+		$translator = $this->environment->getTranslationObject();
+		$param1 = isset($params['param1']) ? $params['param1'] : '';
+		$param2 = isset($params['param2']) ? $params['param2'] : '';
+		$param3 = isset($params['param3']) ? $params['param3'] : '';
+		$param4 = isset($params['param4']) ? $params['param4'] : '';
+		$param5 = isset($params['param5']) ? $params['param5'] : '';
+		
+		return $translator->getMessage($params['tag'], $param1, $param2, $param3, $param4, $param5);
 	}
 	
 	public function compile_lang($key) {
