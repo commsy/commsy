@@ -124,14 +124,14 @@
 							<div class="portlet_rc_body">
 								<div id="tag_tree">
 									{* Tags Function *}
-									{function name=tag_tree}
+									{function name=tag_tree level=0}
 										<ul>
 										{foreach $nodes as $node}
 											<li	id="node_{$node.item_id}"
 												{if $node.children|count > 0}class="folder"{/if}
-												data="url:'commsy.php?cid={$environment.cid}&mod=campus_search&fct=index&seltag={$node.item_id}'">{$node.title}
+												data="url:'commsy.php?cid={$environment.cid}&mod=campus_search&fct=index&{$level}_seltag={$node.item_id}&seltag=yes'">{$node.title}
 											{if $node.children|count > 0}	{* recursive call *}
-												{tag_tree nodes=$node.children}
+												{tag_tree nodes=$node.children level=$level+1}
 											{/if}
 										{/foreach}
 										</ul>

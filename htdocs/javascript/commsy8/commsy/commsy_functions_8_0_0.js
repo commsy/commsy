@@ -20,6 +20,31 @@ define(["libs/jQuery/jquery-1.7.1.min"], function() {
 				});
 			});
 			
+			// list selection
+			if(this.getURLParam('fct') === 'index') {
+				require(["commsy/list_selection"], function($) {
+					// get input tags
+					var input_tags = jQuery('input[type="checkbox"][name^="attach"]');
+					
+					// get selection state from cookies
+					input_tags.each(function() {
+						if($.getSelectionStateFromCookie(jQuery(this))) {
+							jQuery(this).attr('checked', 'checked');
+						}
+					});
+					
+					// store selection in cookie
+					input_tags.each(function() {
+						var input_object = jQuery(this);
+						
+						// register onChange
+						input_object.change({input_object: input_object, class_ref: $}, $.storeSelectionInCookie);
+					});
+					
+					//$.storeSelectioninCookie();
+				});
+			}
+			
 			// home list rubric expander
 			// only load on home context
 			if(this.getURLParam('mod') === 'home') {

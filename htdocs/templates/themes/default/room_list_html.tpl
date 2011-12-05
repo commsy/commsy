@@ -16,7 +16,7 @@
 
 {block name=room_main_content}
 	<div id="full_width_content">
-		<form action="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}" method="post">
+		<form action="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.list_entries_parameter.all}" method="post">
 			<input type="hidden" name="option" value="___COMMON_LIST_ACTION_BUTTON_GO___">
 			<div class="content_item"> <!-- Start content_item -->
 				{block name=room_list_header}{/block}
@@ -34,19 +34,20 @@
 			 	<div id="item_action">
 			 		<input type="checkbox" name="" value="" /> ___ALL___
 			 		<select name="index_view_action" size="1">
-				 		<option value="-1">Aktion w&auml;hlen</option>
-				 		<option disabled="disabled">------------------------------</option>
-				 		<option value="1">___COMMON_LIST_ACTION_MARK_AS_READ___</option>
-				 		<option value="2">___COMMON_LIST_ACTION_COPY___</option>
-				 		<option value="download">___COMMON_LIST_ACTION_DOWNLOAD___</option>
-				 		<option value="-2" disabled="disabled">------------------------------</option>
-				 		<option value="3">___COMMON_LIST_ACTION_DELETE___</option>
+			 			{foreach $list.actions as $action}
+			 				{if $action.disabled}
+			 					<option class="disabled" disabled="disabled">{$action.display}</option>
+			 				{else}
+			 					<option{if $action.id} id="{$action.id}"{/if}{if $action.selected} selected="selected"{/if} value="{$action.value}">{$action.display}</option>
+			 				{/if}
+			 				
+			 			{/foreach}
 				 	</select>
-					 	<input type="image" src="{$basic.tpl_path}img/btn_go.gif" alt="___COMMON_LIST_ACTION_BUTTON_GO___" />
+					<input type="image" id="delete_confirmselect_option" name="option" src="{$basic.tpl_path}img/btn_go.gif" alt="___COMMON_LIST_ACTION_BUTTON_GO___" />
 				 </div>
 			</div>
 				<div class="ii_right">
-				<p>0 ___COMMON_SELECTED___</p>
+				<p>{i18n tag=COMMON_SELECTED param1=123}</p>
 			</div>
 				<div class="clear"> </div>
 		</div>
@@ -169,14 +170,14 @@
 		<div class="portlet_rc_body">
 			<div id="tag_tree">
 				{* Tags Function *}
-				{function name=tag_tree}
+				{function name=tag_tree level=0}
 					<ul>
 						{foreach $nodes as $node}
 							<li	id="node_{$node.item_id}"
 								{if $node.children|count > 0}class="folder"{/if}
-								data="url:'commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.restriction_tag_link_parameters}&seltag={$node.item_id}'">{$node.title}
+								data="url:'commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.restriction_tag_link_parameters}&seltag_{$level}={$node.item_id}&seltag=yes'">{$node.title}
 								{if $node.children|count > 0}	{* recursive call *}
-									{tag_tree nodes=$node.children}
+									{tag_tree nodes=$node.children level=$level+1}
 								{/if}
 						{/foreach}
 					</ul>
