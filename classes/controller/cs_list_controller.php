@@ -198,7 +198,7 @@
        			or isset($this->_activation_limit)
        			or (!empty($ref_user) and isset($params['mode']) and $params['mode'] == 'attached')
        			or (!empty($ref_iid) and isset($params['mode']) and $params['mode'] == 'attached')
-       			or $this->_additional_selects
+       			or (isset($this->_additional_selects) && $this->_additional_selects)
        		){
 /* TODO ref_user und ref_item migrieren, wenn klar ist, wofür
          	if ( !empty($ref_user) ){

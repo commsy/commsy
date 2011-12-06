@@ -26,6 +26,9 @@ define(["libs/jQuery/jquery-1.7.1.min"], function() {
 			// list selection
 			if(this.getURLParam('fct') === 'index') {
 				require(["commsy/list_selection"], function($) {
+					// init
+					$.init();
+					
 					// get input tags
 					var input_tags = jQuery('input[type="checkbox"][name^="attach"]');
 					
@@ -36,15 +39,18 @@ define(["libs/jQuery/jquery-1.7.1.min"], function() {
 						}
 					});
 					
-					// store selection in cookie
+					// store selection in cookie and update selection count
+					var counter_object = jQuery('div[class="ii_right"] span[id="selected_items"]');
 					input_tags.each(function() {
 						var input_object = jQuery(this);
 						
 						// register onChange
 						input_object.change({input_object: input_object, class_ref: $}, $.storeSelectionInCookie);
+						input_object.change({update_object: counter_object, class_ref: $}, $.updateCounterHandler);
 					});
 					
-					//$.storeSelectioninCookie();
+					// update counter
+					$.updateCounter(counter_object);
 				});
 			}
 			

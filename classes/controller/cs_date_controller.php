@@ -50,6 +50,7 @@
 			$this->assign('list','list_entries_parameter',$this->getListEntriesParameterArray());
 			$this->assign('list','restriction_buzzword_link_parameters',$this->getRestrictionBuzzwordLinkParameters());
 			$this->assign('list','restriction_tag_link_parameters',$this->getRestrictionTagLinkParameters());
+			$this->assign('list','restriction_text_parameters',$this->_getRestrictionTextAsHTML());
 		}
 		
 		public function getListContent() {
@@ -75,6 +76,20 @@
 			
 			$last_selected_tag = '';
 			$seltag_array = array();
+			
+			// Find current sel_activating_status selection
+			if(isset($_GET['selactivationgstatus']) && $_GET['selactivatingstatus'] != '-2') {
+				$sel_activating_status = $_GET['selactivatingstatus'];
+			} else {
+				$sel_activating_status = 2;
+			}
+			
+			// Find current buzzword selection
+			if(isset($_GET['selbuzzword']) && $_GET['selbuzzword'] != '-2') {
+				$selbuzzword = $_GET['selbuzzword'];
+			} else {
+				$selbuzzword = 0;
+			}
 			
 			// Find current topic selection
 			if(isset($_GET['seltag']) && $_GET['seltag'] == 'yes') {
@@ -182,6 +197,13 @@
 			   if ( !empty($last_selected_tag) ){
 			      $dates_manager->setTagLimit($last_selected_tag);
 			   }
+			   $dates_manager->select();
+			   $list = $dates_manager->get();
+			   $ids = $dates_manager->getIDArray();
+			   $count_all_shown = count($ids);
+			   
+			   $this->_page_text_fragment_array['count_entries'] = $this->getCountEntriesText($this->_list_parameter_arrray['from'],$this->_list_parameter_arrray['interval'], $count_all, $count_all_shown);
+			   $this->_browsing_icons_parameter_array = $this->getBrowsingIconsParameterArray($this->_list_parameter_arrray['from'],$this->_list_parameter_arrray['interval'], $count_all_shown);
 			
 			   // Get available buzzwords
 			   $buzzword_manager = $environment->getLabelManager();

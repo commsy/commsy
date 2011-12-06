@@ -47,7 +47,7 @@
 				 </div>
 			</div>
 				<div class="ii_right">
-				<p>{i18n tag=COMMON_SELECTED param1=123}</p>
+				<p>{i18n tag=COMMON_SELECTED param1='<span id="selected_items"></span>'}</p>
 			</div>
 				<div class="clear"> </div>
 		</div>
