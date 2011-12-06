@@ -282,8 +282,8 @@ ul.dynatree-container a
 ul.dynatree-container a:hover
 {
 /*	text-decoration: underline; */
-	background: #F2F7FD; /* light blue */
-	border-color: #B8D6FB; /* darker light blue */
+	/*background: #F2F7FD;*/ /* light blue */
+	/*border-color: #B8D6FB;*/ /* darker light blue */
 }
 
 span.dynatree-node a
@@ -297,13 +297,13 @@ span.dynatree-node a
 }
 span.dynatree-folder a
 {
-	font-weight: bold;
+	/*font-weight: bold;*/
 }
 
 ul.dynatree-container a:focus,
 span.dynatree-focused a:link  /* @IE */
 {
-	background-color: #EFEBDE; /* gray */
+	/*background-color: #EFEBDE;*/ /* gray */
 }
 
 span.dynatree-has-children a

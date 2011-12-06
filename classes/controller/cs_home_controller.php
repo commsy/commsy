@@ -398,9 +398,9 @@
 						case CS_MATERIAL_TYPE:
 							if($this->_environment->inProjectRoom()) {
 								$period = $context_item->getTimeSpread();
-								$message_tag = $translator->getMessage('COMMON_SHORT_VIEW_DESCRIPTION', $shown, $period, $rubric_count_all_array[$key]);
+								$message_tag = $translator->getMessage('COMMON_SHORT_VIEW_DESCRIPTION', $list->getCount(), $period, $rubric_count_all_array[$key]);
 							} else {
-								$message_tag = $translator->getMessage('COMMON_SHORT_MATERIAL_VIEW_DESCRIPTION', $shown, $rubric_count_all_array[$key]);
+								$message_tag = $translator->getMessage('COMMON_SHORT_MATERIAL_VIEW_DESCRIPTION', $list->getCount(), $rubric_count_all_array[$key]);
 							}
 							break;
 						case CS_DISCUSSION_TYPE:
