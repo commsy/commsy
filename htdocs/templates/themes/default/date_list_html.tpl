@@ -62,7 +62,7 @@
 			</div>
 			<div class="seperator">
 				<div class="column_90">
-					<p>{$item.modification_date}</p>
+					<p>{$item.date}</p>
 				</div>
 				<div class="column_155">
 					<p>

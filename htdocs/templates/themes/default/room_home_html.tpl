@@ -44,7 +44,7 @@
 	                        </div>
 	                        <div class="seperator">
 	                        	<div class="column_120">
-	                            	<p>{$item.modification_date}</p>
+	                            	<p>{$item.date}</p>
 	                            </div>
 		                        <div class="column_184">
 		                        	<p>

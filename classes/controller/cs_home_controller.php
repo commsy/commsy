@@ -307,11 +307,22 @@
 					$view = new cs_view($params);
 	           		 while($item) {
 						$noticed_text = $this->_getItemChangeStatus($item);
-
+						
+						if($key == CS_ANNOUNCEMENT_TYPE) {
+							$parse_day_start = convertDateFromInput($item->getSeconddateTime(), $this->_environment->getSelectedLanguage());
+							$conforms = $parse_day_start['conforms'];
+							if($conforms === true) {
+								$date = $translator->getDateInLang($parse_day_start['datetime']);
+							} else {
+								$date = $item->getSeconddateTime();
+							}
+						} else {
+							$date = $this->_environment->getTranslationObject()->getDateInLang($item->getModificationDate());
+						}
 						$item_array[] = array(
 						'iid'				=> $item->getItemID(),
 						'title'				=> $view->_text_as_html_short($item->getTitle()),
-						'modification_date'	=> $this->_environment->getTranslationObject()->getDateInLang($item->getModificationDate()),
+						'date'				=> $date,
 						'creator'			=> $item->getCreatorItem()->getFullName(),
 						'noticed'			=> $noticed_text
 					//	'attachment_count'	=> $item->getFileList()->getCount()
