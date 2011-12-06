@@ -150,11 +150,6 @@
 			$noticed_manager = $environment->getNoticedManager();
 			$noticed_manager->getLatestNoticedByIDArray($id_array);
 			$noticed_manager->getLatestNoticedAnnotationsByIDArray($id_array);
-			$link_manager = $environment->getLinkManager();
-			$file_id_array = $link_manager->getAllFileLinksForListByIDs($id_array);
-			$file_manager = $environment->getFileManager();
-			$file_manager->setIDArrayLimit($file_id_array);
-			$file_manager->select();
 
 			// prepare item array
 			$item = $list->getFirst();
