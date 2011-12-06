@@ -205,15 +205,60 @@
 			   $this->_page_text_fragment_array['count_entries'] = $this->getCountEntriesText($this->_list_parameter_arrray['from'],$this->_list_parameter_arrray['interval'], $count_all, $count_all_shown);
 			   $this->_browsing_icons_parameter_array = $this->getBrowsingIconsParameterArray($this->_list_parameter_arrray['from'],$this->_list_parameter_arrray['interval'], $count_all_shown);
 			
-			   // Get available buzzwords
-			   $buzzword_manager = $environment->getLabelManager();
-			   $buzzword_manager->resetLimits();
-			   $buzzword_manager->setContextLimit($environment->getCurrentContextID());
-			   $buzzword_manager->setTypeLimit('buzzword');
-			   $buzzword_manager->setGetCountLinks();
-			   $buzzword_manager->select();
-			   $buzzword_list = $buzzword_manager->get();
+			   // prepare item array
+			   $item = $list->getFirst();
+			   $item_array = array();
+				$params = array();
+				$params['environment'] = $environment;
+				$params['with_modifying_actions'] = false;
+				$view = new cs_view($params);
+			   while($item) {
+			   $assessment_stars_text_array = array('non_active','non_active','non_active','non_active','non_active');
+				$current_context = $environment->getCurrentContextItem();
+				if($current_context->isAssessmentActive()) {
+					$assessment_manager = $environment->getAssessmentManager();
+					$assessment = $assessment_manager->getAssessmentForItemAverage($item);
+					if(isset($assessment[0])) {
+						$assessment = sprintf('%1.1f', (float) $assessment[0]);
+					} else {
+			 			$assessment = 0;
+					}
+		  			$php_version = explode('.', phpversion());
+					if($php_version[0] >= 5 && $php_version[1] >= 3) {
+						// if php version is equal to or above 5.3
+						$assessment_count_stars = round($assessment, 0, PHP_ROUND_HALF_UP);
+					} else {
+						// if php version is below 5.3
+						$assessment_count_stars = round($assessment);
+					}
+					for ($i=1; $i< $assessment_count_stars; $i++){
+						$assessment_stars_text_array[$i] = 'active';
+					}
+				}
+			   	$noticed_text = $this->_getItemChangeStatus($item);
+			   	$item_array[] = array(
+				'iid'				=> $item->getItemID(),
+				'title'				=> $view->_text_as_html_short($item->getTitle()),
+				'date'				=> $this->_environment->getTranslationObject()->getDateInLang($item->getModificationDate()),
+				'creator'			=> $item->getCreatorItem()->getFullName(),
+				'assessment_array'  => $assessment_stars_text_array,
+				'noticed'			=> $noticed_text,
+				'attachment_count'	=> $item->getFileList()->getCount()
+//				'attachment_infos'	=>
+				);
+				
+			   	$item = $list->getNext();
+			   }
+			   
+			   
 			}
+			
+			// append return
+			$return = array(
+				'items'		=> $item_array,
+				'count_all'	=> $count_all_shown
+			);
+			return $return;
 		}
 		
 		public function getAdditionalListActions() {

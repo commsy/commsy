@@ -31,7 +31,6 @@
 		 * INDEX
 		 */
 		public function actionIndex() {
-
 			// init list params
 			$this->initListParameters(CS_MATERIAL_TYPE);
 
@@ -51,6 +50,7 @@
 			$this->assign('list','list_entries_parameter',$this->getListEntriesParameterArray());
 			$this->assign('list','restriction_buzzword_link_parameters',$this->getRestrictionBuzzwordLinkParameters());
 			$this->assign('list','restriction_tag_link_parameters',$this->getRestrictionTagLinkParameters());
+			$this->assign('list','restriction_text_parameters',$this->_getRestrictionTextAsHTML());
 		}
 
 
