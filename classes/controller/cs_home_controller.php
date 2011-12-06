@@ -33,6 +33,7 @@
 			include_once('classes/cs_list.php');
 			include_once('classes/views/cs_view.php');
 			$environment = $this->_environment;
+			$translator = $environment->getTranslationObject();
 			$context_item = $environment->getCurrentContextItem();
 			$current_user = $environment->getCurrentUser();
 
@@ -60,8 +61,8 @@
 				$rubric_list[] = $rubric_name;
 
 				$list = new cs_list();
-	               $rubric = '';
-	               switch ($rubric_name){
+				$rubric = '';
+	               switch($rubric_name) {
 	                  case CS_ANNOUNCEMENT_TYPE:
 	                        $manager = $environment->getAnnouncementManager();
 	                        $manager->reset();
@@ -261,9 +262,10 @@
 	                           $item = $discarticle_list->getNext();
 	                        }
 	                     break;
-                  }
+	        	   }
 
 				  $rubric_list_array[$rubric_name] = $list;
+				  $rubric_count_all_array[$rubric_name] = $count_all;
                   $tmp = $list->getFirst();
                   $ids = array();
                   while ($tmp){
@@ -311,7 +313,7 @@
 						'title'				=> $view->_text_as_html_short($item->getTitle()),
 						'modification_date'	=> $this->_environment->getTranslationObject()->getDateInLang($item->getModificationDate()),
 						'creator'			=> $item->getCreatorItem()->getFullName(),
-						'noticed'			=> $noticed_text,
+						'noticed'			=> $noticed_text
 					//	'attachment_count'	=> $item->getFileList()->getCount()
 		//				'attachment_infos'	=>
 						);
@@ -319,7 +321,93 @@
 						$item = $list->getNext();
 					}
 					$return[$key]['items'] = $item_array;
-					$return[$key]['count_all'] = 0;
+					
+					// message tag
+					$message_tag = '';
+					//TODO: complete missing tags
+					switch($key) {
+						case CS_ANNOUNCEMENT_TYPE:
+							$message_tag = $translator->getMessage('COMMON_' . mb_strtoupper($key) . '_SHORT_VIEW_DESCRIPTION', $list->getCount(), $rubric_count_all_array[$key]);
+							break;
+						case CS_DATE_TYPE:
+							$message_tag = $translator->getMessage('HOME_DATES_SHORT_VIEW_DESCRIPTION', $list->getCount(), $rubric_count_all_array[$key]);
+							break;
+						case CS_PROJECT_TYPE:
+							if($this->_environment->inProjectRoom()) {
+								$message_tag = $translator->getMessage('PROJECT_SHORT_DESCRIPTION', 5);
+							} elseif($this->_environment>inCommunityRoom()) {
+								$message_tag = $translator->getMessage('COMMUNITY_SHORT_DESCRIPTION');
+							}
+							break;
+						case CS_GROUP_TYPE:
+							$message_tag = $translator->getMessage('HOME_GROUP_SHORT_VIEW_DESCRIPTION', $shown);
+							break;
+						case CS_TODO_TYPE:
+							$message_tag = $translator->getMessage('TODO_SHORT_VIEW_DESCRIPTION', $shown, $rubric_count_all_array[$key]);
+							break;
+						case CS_TOPIC_TYPE:
+							if(isset($list) && $list->isNotEmpty()) {
+								$shown = $list->getCount();
+							} else {
+								$shown = 0;
+							}
+							$message_tag = $translator->getMessage('HOME_TOPIC_SHORT_VIEW_DESCRIPTION', $shown);
+							break;
+						case CS_INSTITUTION_TYPE:
+							if($rubric_count_all_array[$key] > 0) {
+								$message_tag = $translator->getMessage('HOME_INSTITUTION_SHORT_VIEW_DESCRIPTION', $list->getCount());
+							}
+							break;
+						case CS_USER_TYPE:
+							if($this->_environment->inProjectRoom()) {
+								global $who_is_online;
+								if(isset($who_is_online) && $who_is_online) {
+									$shown = $list->getCount();
+									if($shown > 0) {
+										$days = ($context_item->isProjectRoom() ? $context_item->getTimeSpread() : 90);
+										$item = $list->getFirst();
+										$count_active_now = 0;
+										while($item) {
+											$lastlogin = $item->getLastLogin();
+											if($lastlogin > getCurrentDateTimeMinusMinutesInMySQL($days)) {
+												$count_active_now++;
+											}
+											$item = $list->getNext();
+										}
+									}
+									
+									$message_tag = $translator->getMessage('HOME_USER_SHORT_VIEW_DESCRIPTION2', $shown, $count_active_now, $rubric_count_all_array[$key], $days);
+								} else {
+									$message_tag = $translator->getMessage('HOME_USER_SHORT_VIEW_DESCRIPTION', $shown, $rubric_count_all_array[$key]);
+								}
+							} else {
+								$message_tag = $translator->getMessage('COMMON_SHORT_CONTACT_VIEW_DESCRIPTION', $shown, $rubric_count_all_array[$key]);
+							}
+							break;
+						case CS_MATERIAL_TYPE:
+							if($this->_environment->inProjectRoom()) {
+								$period = $context_item->getTimeSpread();
+								$message_tag = $translator->getMessage('COMMON_SHORT_VIEW_DESCRIPTION', $shown, $period, $rubric_count_all_array[$key]);
+							} else {
+								$message_tag = $translator->getMessage('COMMON_SHORT_MATERIAL_VIEW_DESCRIPTION', $shown, $rubric_count_all_array[$key]);
+							}
+							break;
+						case CS_DISCUSSION_TYPE:
+							$shown = $list->getCount();
+							if($this->_environment->inProjectRoom() || $this->_environment->inGroupRoom()) {
+								$period = $context_item->getTimeSpread();
+								$message_tag = $translator->getMessage('COMMON_SHORT_VIEW_DESCRIPTION', $shown, $period, $rubric_count_all_array[$key]);
+							} elseif($this->_environment->inCommunityRoom()) {
+								if($shown != 1) {
+									$message_tag = $translator->getMessage('COMMON_SHORT_VIEW_DESCRIPTION_CR', $shown, $rubric_count_all_array[$key]);
+								} else {
+									$message_tag = $translator->getMessage('COMMON_SHORT_VIEW_DESCRIPTION_CR_ONE', $shown, $rubric_count_all_array[$key]);
+								}
+							}
+							break;
+					}
+					$return[$key]['message_tag'] = $message_tag;
+					
 				 }
 
 

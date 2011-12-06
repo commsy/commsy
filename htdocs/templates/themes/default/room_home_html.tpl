@@ -24,7 +24,7 @@
                 <h2>
                 	___COMMON_{$rubric@key|upper}_INDEX___
                 	<span>
-                		({$rubric.items|count} ___HOME_SMARTY_{$rubric@key|upper}_DESCRIPTION___ {$rubric.count_all})
+                		({$rubric.message_tag})
                 	</span>
                 </h2>
 

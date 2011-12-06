@@ -133,8 +133,6 @@ class cs_noticed_manager {
       return $noticed;
    }
 
-
-
    function getLatestNoticedByIDArray ($id_array,$user_id = 0) {
       // ------------------
       // --->UTF8 - OK<----
