@@ -348,7 +348,7 @@
 								$column2 = $this->_environment->getTranslationObject()->getDateInLang($item->getModificationDate());
 								$column3 = $item->getModificatorItem()->getFullName();
 								$modificator_id = $item->getModificatorItem()->getItemID();
-								$column1_addon = $item->getAllArticlesCount().'/'.$item->getUnreadArticles();
+								$column1_addon = $item->getAllArticlesCount().' / '.$item->getUnreadArticles();
 								break;
 	                  		case CS_USER_TYPE:
 	                  			$column1 = '';
