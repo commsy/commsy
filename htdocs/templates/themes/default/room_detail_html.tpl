@@ -5,7 +5,7 @@
 
 {block name=room_navigation_rubric_title}
 	___COMMON_{$room.rubric|upper}_INDEX___
-	<strong>___COMMON_{$room.rubric|upper}___ 2 ___COMMON_OF___ 226</strong>
+	<strong>___COMMON_{$room.rubric|upper}___ {$detail.browsing_information.position} ___COMMON_OF___ {$detail.browsing_information.count_all}</strong>
 {/block}
 
 {block name="room_main_content"}

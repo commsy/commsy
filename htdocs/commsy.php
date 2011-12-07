@@ -868,9 +868,14 @@ else {
 }
 
 if(isset($c_smarty) && $c_smarty === true) {
-	$controller_name = 'cs_' . $environment->getCurrentModule() . '_' . $environment->getCurrentFunction() . '_controller';
+	if($environment->getCurrentModule() === 'home') {
+		$controller_name = 'cs_' . $environment->getCurrentModule() . '_controller';
+		require_once('classes/controller/' . $controller_name . '.php');
+	} else {
+		$controller_name = 'cs_' . $environment->getCurrentModule() . '_' . $environment->getCurrentFunction() . '_controller';
+		require_once('classes/controller/' . $environment->getCurrentFunction() . '/' . $controller_name . '.php');
+	}
 	
-	require_once('classes/controller/' . $environment->getCurrentFunction() . '/' . $controller_name . '.php');
 	$controller = new $controller_name($environment);
 	$controller->processTemplate();
 	$controller->displayTemplate();
