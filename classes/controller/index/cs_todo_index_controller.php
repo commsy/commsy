@@ -1,7 +1,7 @@
 <?php
 	require_once('classes/controller/cs_list_controller.php');
 	
-	class cs_group_controller extends cs_list_controller {
+	class cs_todo_index_controller extends cs_list_controller {
 		/**
 		 * constructor
 		 */
@@ -9,7 +9,7 @@
 			// call parent
 			parent::__construct($environment);
 			
-			$this->_tpl_file = 'group_list';
+			$this->_tpl_file = 'todo_list';
 		}
 		
 		/*
@@ -20,7 +20,7 @@
 			parent::processTemplate();
 			
 			// assign rubric to template
-			$this->assign('room', 'rubric', CS_GROUP_TYPE);
+			$this->assign('room', 'rubric', CS_USER_TYPE);
 		}
 		
 		/*****************************************************************************/
@@ -32,17 +32,17 @@
 		 */
 		public function actionIndex() {
 			// init list params
-			$this->initListParameters(CS_GROUP_TYPE);
+			$this->initListParameters(CS_TODO_TYPE);
 
 			// perform list options
-			$this->performListOption(CS_GROUP_TYPE);
+			$this->performListOption(CS_TODO_TYPE);
 
 			// get list content
 			$list_content = $this->getListContent();
 
 			// assign to template
-			$this->assign('group','list_content', $list_content);
-			$this->assign('group','list_parameters', $this->_list_parameter_arrray);
+			$this->assign('todo','list_content', $list_content);
+			$this->assign('todo','list_parameters', $this->_list_parameter_arrray);
 			$this->assign('list','perspective_rubric_entries', $this->_perspective_rubric_array);
 			$this->assign('list','page_text_fragments',$this->_page_text_fragment_array);
 			$this->assign('list','browsing_parameters',$this->_browsing_icons_parameter_array);
@@ -59,6 +59,7 @@
 			$environment = $this->_environment;
 			$context_item = $environment->getCurrentContextItem();
 			$return = array();
+			$translator = $environment->getTranslationObject();
 
 			$last_selected_tag = '';
 			$seltag_array = array();
@@ -82,36 +83,80 @@
 			}
 			
 			// Get data from database
-			$group_manager = $environment->getGroupManager();
-			$group_manager->reset();
-			$group_manager->setContextLimit($environment->getCurrentContextID());
-			$group_manager->setTypeLimit('group');
-			$count_all = $group_manager->getCountAll();
+			$todo_manager = $environment->getToDosManager();
+			//$todo_manager->reset();
 			
-			if ( !empty($this->_list_parameter_arrray['ref_iid']) and $this->getViewMode() == 'attached' ){
-   				$group_manager->setRefIDLimit($this->_list_parameter_arrray['ref_iid']);
+			if(!isset($only_show_array) || empty($only_show_array)) {
+				$todo_manager->setContextLimit($environment->getCurrentContextID());
+				$all_ids = $todo_manager->getIds();
+				$count_all = count($all_ids);
+				
+				if(isset($all_ids[0])) {
+					$newest_id = $all_ids[0];
+					$item = $todo_manager->getItem($newest_id);
+					$date = $item->getModificationDate();
+					$now = getCurrentDateTimeInMySQL();
+					if($date <= $now) {
+						$sel_activating_status = 1;
+					}
+				} elseif($count_all == 0) {
+					$sel_activating_status = 1;
+				}
+				
+				$todo_manager->resetData();
+					
+				if ( !empty($this->_list_parameter_arrray['ref_iid']) and $this->getViewMode() == 'attached' ){
+	   				$todo_manager->setRefIDLimit($this->_list_parameter_arrray['ref_iid']);
+				}
+				if ( !empty($this->_list_parameter_arrray['ref_user']) and $this->getViewMode() == 'attached' ){
+	   				$todo_manager->setRefUserLimit($this->_list_parameter_arrray['ref_user']);
+				}
+				if ( !empty($this->_list_parameter_arrray['sort']) ) {
+	   				$todo_manager->setSortOrder($this->_list_parameter_arrray['sort']);
+				}
+				if ( !empty($this->_list_parameter_arrray['search']) ) {
+	   				$todo_manager->setSearchLimit($this->_list_parameter_arrray['search']);
+				}
+				if($sel_activating_status == 2) {
+					$todo_manager->showNoNotActivatedEntries();
+				}
+				
+				// Find current status selection
+			   	if ( isset($_GET['selstatus']) and $_GET['selstatus'] !='-2') {
+			      	$selstatus = $_GET['selstatus'];
+			   	} else {
+			      	$selstatus = 4;
+			   	}
+			   	if(!empty($selstatus)) {
+			   		$todo_manager->setStatusLimit($selstatus);
+			   	}
+			   	
+				if ( !empty($this->_list_parameter_arrray['selbuzzword']) ) {
+	   				$todo_manager->setBuzzwordLimit($this->_list_parameter_arrray['selbuzzword']);
+				}
+				
+				if(!empty($last_selected_tag)) {
+					$todo_manager->setTagLimit($last_selected_tag);
+				}
+				
+				if ( $this->_list_parameter_arrray['interval'] > 0 ) {
+	   				$todo_manager->setIntervalLimit($this->_list_parameter_arrray['from']-1,$this->_list_parameter_arrray['interval']);
+				}
+			} else {
+				$todo_manager->resetLimits();
+				$todo_manager->setIDArrayLimit($only_show_array);
 			}
-			if ( !empty($this->_list_parameter_arrray['sort']) ) {
-   				$group_manager->setSortOrder($this->_list_parameter_arrray['sort']);
-			}
-			if ( !empty($this->_list_parameter_arrray['search']) ) {
-   				$group_manager->setSearchLimit($this->_list_parameter_arrray['search']);
-			}
-			if ( !empty($this->_list_parameter_arrray['seltopic']) ) {
-   				$group_manager->setTopicLimit($this->_list_parameter_arrray['seltopic']);
-			}
+
 			
-			if ( $this->_list_parameter_arrray['interval'] > 0 ) {
-   				$group_manager->setIntervalLimit($this->_list_parameter_arrray['from']-1,$this->_list_parameter_arrray['interval']);
-			}
-			$group_manager->select();
-			$list = $group_manager->get();
-			$ids = $group_manager->getIDArray();
+
+			$todo_manager->select();
+			$list = $todo_manager->get();
+			$ids = $todo_manager->getIDArray();
 			$count_all_shown = count($ids);
 
 			$this->_page_text_fragment_array['count_entries'] = $this->getCountEntriesText($this->_list_parameter_arrray['from'],$this->_list_parameter_arrray['interval'], $count_all, $count_all_shown);
             $this->_browsing_icons_parameter_array = $this->getBrowsingIconsParameterArray($this->_list_parameter_arrray['from'],$this->_list_parameter_arrray['interval'], $count_all_shown);
-            
+
 			$id_array = array();
 			$item = $list->getFirst();
 			while ($item){
@@ -121,7 +166,45 @@
 			$noticed_manager = $environment->getNoticedManager();
 			$noticed_manager->getLatestNoticedByIDArray($id_array);
 			$noticed_manager->getLatestNoticedAnnotationsByIDArray($id_array);
-
+			
+			$step_manager = $environment->getStepManager();
+			$step_list = $step_manager->getAllStepItemListByIDArray($id_array);
+			$item = $step_list->getFirst();
+			while ($item) {
+			   $id_array[] = $item->getItemID();
+			   $item = $step_list->getNext();
+			}
+			
+			// caching
+			$link_manager = $environment->getLinkManager();
+			$file_id_array = $link_manager->getAllFileLinksForListByIDs($id_array);
+			$file_manager = $environment->getFileManager();
+			$file_manager->setIDArrayLimit($file_id_array);
+			$file_manager->select();
+			
+			if (isset($_GET['select']) and $_GET['select']=='all'){
+			   $item = $list->getFirst();
+			   while($item){
+			      if ( !in_array($item->getItemID(), $selected_ids) ) {
+			         $selected_ids[] = $item->getItemID();
+			      }
+			      $item = $list->getNext();
+			   }
+			}
+			
+			// Find current option
+			if ( isset($_POST['option']) ) {
+			   $option = $_POST['option'];
+			} elseif ( isset($_GET['option']) ) {
+			   $option = $_GET['option'];
+			} else {
+			   $option = '';
+			}
+			
+			if (isOption($option,$translator->getMessage('COMMON_LIST_ACTION_BUTTON_GO')) and $_POST['index_view_action'] != '3'){
+			     $selected_ids = array();
+			}	
+			
 			// prepare item array
 			$item = $list->getFirst();
 			$item_array = array();

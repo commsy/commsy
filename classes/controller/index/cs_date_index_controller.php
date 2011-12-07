@@ -1,7 +1,7 @@
 <?php
 	require_once('classes/controller/cs_list_controller.php');
 	
-	class cs_date_controller extends cs_list_controller {
+	class cs_date_index_controller extends cs_list_controller {
 		/**
 		 * constructor
 		 */

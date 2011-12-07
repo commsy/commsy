@@ -1,7 +1,7 @@
 <?php
 	require_once('classes/controller/cs_list_controller.php');
 	
-	class cs_user_controller extends cs_list_controller {
+	class cs_group_index_controller extends cs_list_controller {
 		/**
 		 * constructor
 		 */
@@ -9,7 +9,7 @@
 			// call parent
 			parent::__construct($environment);
 			
-			$this->_tpl_file = 'user_list';
+			$this->_tpl_file = 'group_list';
 		}
 		
 		/*
@@ -20,7 +20,7 @@
 			parent::processTemplate();
 			
 			// assign rubric to template
-			$this->assign('room', 'rubric', CS_USER_TYPE);
+			$this->assign('room', 'rubric', CS_GROUP_TYPE);
 		}
 		
 		/*****************************************************************************/
@@ -32,17 +32,17 @@
 		 */
 		public function actionIndex() {
 			// init list params
-			$this->initListParameters(CS_USER_TYPE);
+			$this->initListParameters(CS_GROUP_TYPE);
 
 			// perform list options
-			$this->performListOption(CS_USER_TYPE);
+			$this->performListOption(CS_GROUP_TYPE);
 
 			// get list content
 			$list_content = $this->getListContent();
 
 			// assign to template
-			$this->assign('user','list_content', $list_content);
-			$this->assign('user','list_parameters', $this->_list_parameter_arrray);
+			$this->assign('group','list_content', $list_content);
+			$this->assign('group','list_parameters', $this->_list_parameter_arrray);
 			$this->assign('list','perspective_rubric_entries', $this->_perspective_rubric_array);
 			$this->assign('list','page_text_fragments',$this->_page_text_fragment_array);
 			$this->assign('list','browsing_parameters',$this->_browsing_icons_parameter_array);
@@ -82,65 +82,36 @@
 			}
 			
 			// Get data from database
-			$user_manager = $environment->getUserManager();
-			$user_manager->reset();
-			$user_manager->setContextLimit($environment->getCurrentContextID());
-			$user_manager->setUserLimit();
-			$count_all = $user_manager->getCountAll();
+			$group_manager = $environment->getGroupManager();
+			$group_manager->reset();
+			$group_manager->setContextLimit($environment->getCurrentContextID());
+			$group_manager->setTypeLimit('group');
+			$count_all = $group_manager->getCountAll();
 			
 			if ( !empty($this->_list_parameter_arrray['ref_iid']) and $this->getViewMode() == 'attached' ){
-   				$user_manager->setRefIDLimit($this->_list_parameter_arrray['ref_iid']);
+   				$group_manager->setRefIDLimit($this->_list_parameter_arrray['ref_iid']);
 			}
 			if ( !empty($this->_list_parameter_arrray['sort']) ) {
-   				$user_manager->setSortOrder($this->_list_parameter_arrray['sort']);
+   				$group_manager->setSortOrder($this->_list_parameter_arrray['sort']);
 			}
 			if ( !empty($this->_list_parameter_arrray['search']) ) {
-   				$user_manager->setSearchLimit($this->_list_parameter_arrray['search']);
-			}
-			if ( !empty($this->_list_parameter_arrray['selgroup']) ) {
-   				$user_manager->setGroupLimit($this->_list_parameter_arrray['selgroup']);
+   				$group_manager->setSearchLimit($this->_list_parameter_arrray['search']);
 			}
 			if ( !empty($this->_list_parameter_arrray['seltopic']) ) {
-   				$user_manager->setTopicLimit($this->_list_parameter_arrray['seltopic']);
-			}
-			
-			// Find current status selection
-			if(isset($_GET['selstatus']) && $_GET['selstatus'] != 2 && $_GET['selstatus'] != '-2') {
-				$selstatus = $_GET['selstatus'];
-			} else {
-				$selstatus = '';
-			}
-			
-			if(!empty($selstatus)) {
-				if($selstatus == 11) {
-					$user_manager->setUserInProjectLimit();
-				} elseif($selstatus == 12) {
-					$user_manager->setcontactMOderatorInProjectLimit();
-				} else {
-					$user_manager->setStatusLimit($selstatus);
-				}
-			}
-			
-			if($environment->inCommunityRoom()) {
-				$current_user = $environment->getCurrentUser();
-				if($current_user->isUser()) {
-					$user_manager->setVisibleToAllAndCommsy();
-				} else {
-					$user_manager->setVisibleToAll();
-				}
+   				$group_manager->setTopicLimit($this->_list_parameter_arrray['seltopic']);
 			}
 			
 			if ( $this->_list_parameter_arrray['interval'] > 0 ) {
-   				$user_manager->setIntervalLimit($this->_list_parameter_arrray['from']-1,$this->_list_parameter_arrray['interval']);
+   				$group_manager->setIntervalLimit($this->_list_parameter_arrray['from']-1,$this->_list_parameter_arrray['interval']);
 			}
-			$user_manager->select();
-			$list = $user_manager->get();
-			$ids = $user_manager->getIDArray();
+			$group_manager->select();
+			$list = $group_manager->get();
+			$ids = $group_manager->getIDArray();
 			$count_all_shown = count($ids);
 
 			$this->_page_text_fragment_array['count_entries'] = $this->getCountEntriesText($this->_list_parameter_arrray['from'],$this->_list_parameter_arrray['interval'], $count_all, $count_all_shown);
             $this->_browsing_icons_parameter_array = $this->getBrowsingIconsParameterArray($this->_list_parameter_arrray['from'],$this->_list_parameter_arrray['interval'], $count_all_shown);
-
+            
 			$id_array = array();
 			$item = $list->getFirst();
 			while ($item){

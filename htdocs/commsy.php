@@ -860,17 +860,17 @@ $context_item = $environment->getCurrentContextItem();
 if($context_item->isServer() || $context_item->isPortal()) {
 	$c_smarty = false;
 }
-// and anywhere else if current function is not index
+// and anywhere else if current function is not index and module not discussion
 else {
-	if($environment->getCurrentFunction() !== 'index') {
+	if($environment->getCurrentFunction() !== 'index' && $environment->getCurrentModule() !== 'discussion') {
 		$c_smarty = false;
 	}
 }
 
 if(isset($c_smarty) && $c_smarty === true) {
-	$controller_name = 'cs_' . $environment->getCurrentModule() . '_controller';
+	$controller_name = 'cs_' . $environment->getCurrentModule() . '_' . $environment->getCurrentFunction() . '_controller';
 	
-	require_once('classes/controller/' . $controller_name . '.php');
+	require_once('classes/controller/' . $environment->getCurrentFunction() . '/' . $controller_name . '.php');
 	$controller = new $controller_name($environment);
 	$controller->processTemplate();
 	$controller->displayTemplate();
