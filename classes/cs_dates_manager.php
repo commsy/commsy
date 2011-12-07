@@ -546,7 +546,6 @@ class cs_dates_manager extends cs_manager {
             $query .= ' LIMIT '.encode(AS_DB,$this->_from_limit).', '.encode(AS_DB,$this->_interval_limit);
          }
       }
-      #pr($query);
 
       // perform query
       $result = $this->_db_connector->performQuery($query);
@@ -900,10 +899,10 @@ class cs_dates_manager extends cs_manager {
          }
       }
    }
-   
+
 	/**
 	 * gives the appropriate query to the updateSearchIndices function of cs_manager
-	 * 
+	 *
 	 * @see cs_manager::updateSearchIndices()
 	 */
 	public function updateSearchIndices($limit = array()) {
@@ -936,11 +935,11 @@ class cs_dates_manager extends cs_manager {
 					dates.modification_date > search_time.st_date
 				)
 		';
-		
+
 		if(!empty($limit)) {
 			$query .= ' LIMIT ' . $limit[0] . ', ' . $limit[1];
 		}
-		
+
 		parent::updateSearchIndices($query, CS_DATE_TYPE);
 	}
 }

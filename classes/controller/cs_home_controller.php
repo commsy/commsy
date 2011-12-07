@@ -78,6 +78,7 @@
 
 	                        $manager->select();
 	                        $list = $manager->get();
+
 	                     break;
 	                  case CS_DATE_TYPE:
 	                        $manager = $environment->getDatesManager();
@@ -263,7 +264,6 @@
 	                        }
 	                     break;
 	        	   }
-
 				  $rubric_list_array[$rubric_name] = $list;
 				  $rubric_count_all_array[$rubric_name] = $count_all;
                   $tmp = $list->getFirst();
@@ -307,23 +307,50 @@
 					$view = new cs_view($params);
 	           		 while($item) {
 						$noticed_text = $this->_getItemChangeStatus($item);
-						
-						if($key == CS_ANNOUNCEMENT_TYPE) {
-							$parse_day_start = convertDateFromInput($item->getSeconddateTime(), $this->_environment->getSelectedLanguage());
-							$conforms = $parse_day_start['conforms'];
-							if($conforms === true) {
-								$date = $translator->getDateInLang($parse_day_start['datetime']);
-							} else {
-								$date = $item->getSeconddateTime();
-							}
-						} else {
-							$date = $this->_environment->getTranslationObject()->getDateInLang($item->getModificationDate());
-						}
+	               		switch($key) {
+	                  		case CS_ANNOUNCEMENT_TYPE:
+								$column1 = $view->_text_as_html_short($item->getTitle());
+								$parse_day_start = convertDateFromInput($item->getSeconddateTime(), $this->_environment->getSelectedLanguage());
+								$conforms = $parse_day_start['conforms'];
+								if($conforms === true) {
+									$column2 = $translator->getDateInLang($parse_day_start['datetime']);
+								} else {
+									$column2 = $item->getSeconddateTime();
+								}
+								$column3 = $item->getCreatorItem()->getFullName();
+								break;
+	                  		case CS_DATE_TYPE:
+								$column1 = $view->_text_as_html_short($item->getTitle());
+      							$parse_day_start = convertDateFromInput($item->getStartingDay(),$this->_environment->getSelectedLanguage());
+      							$conforms = $parse_day_start['conforms'];
+      							if ($conforms == TRUE) {
+         							$date = $translator->getDateInLang($parse_day_start['datetime']);
+      							} else {
+         							$date = $item->getStartingDay();
+      							}
+      							$parse_time_start = convertTimeFromInput($item->getStartingTime());
+      							$conforms = $parse_time_start['conforms'];
+      							if ($conforms == TRUE) {
+         							$time = getTimeLanguage($parse_time_start['datetime']);
+      							} else {
+         							$time = $item->getStartingTime();
+      							}
+      							if (!empty($time)){
+      								$time = ', '.$time;
+      							}
+      							$column2 = $view->_text_as_html_short($date.$time);
+								$column3 = $view->_text_as_html_short($item->getPlace());
+								break;
+							default:
+								$column1 = $view->_text_as_html_short($item->getTitle());
+								$column2 = $this->_environment->getTranslationObject()->getDateInLang($item->getModificationDate());
+								$column3 = $item->getCreatorItem()->getFullName();
+	               		}
 						$item_array[] = array(
 						'iid'				=> $item->getItemID(),
-						'title'				=> $view->_text_as_html_short($item->getTitle()),
-						'date'				=> $date,
-						'creator'			=> $item->getCreatorItem()->getFullName(),
+						'column_1'				=> $column1,
+						'column_2'				=> $column2,
+						'column_3'			=> $column3,
 						'noticed'			=> $noticed_text
 					//	'attachment_count'	=> $item->getFileList()->getCount()
 		//				'attachment_infos'	=>
@@ -332,7 +359,7 @@
 						$item = $list->getNext();
 					}
 					$return[$key]['items'] = $item_array;
-					
+
 					// message tag
 					$message_tag = '';
 					//TODO: complete missing tags
@@ -386,7 +413,7 @@
 											$item = $list->getNext();
 										}
 									}
-									
+
 									$message_tag = $translator->getMessage('HOME_USER_SHORT_VIEW_DESCRIPTION2', $shown, $count_active_now, $rubric_count_all_array[$key], $days);
 								} else {
 									$message_tag = $translator->getMessage('HOME_USER_SHORT_VIEW_DESCRIPTION', $shown, $rubric_count_all_array[$key]);
@@ -418,7 +445,7 @@
 							break;
 					}
 					$return[$key]['message_tag'] = $message_tag;
-					
+
 				 }
 
 
@@ -434,7 +461,7 @@
 					*/
 			return $return;
 		}
-		
+
 		// TODO: home view does not have any list actions -> actions could be derived into another subclass
 		public function getAdditionalListActions() {
 			return array();

@@ -34,21 +34,21 @@
 
 	                {foreach $rubric.items as $item}
 	                	<div class="{if $item@iteration is odd}row_odd{else}row_even{/if}">
-	                    	<div class="column_430">
+	                    	<div class="column_400">
 	                        	<p>
 								{if $item.noticed != ''}
 									<a href="" class="new_item"><img title="{$item.noticed}" class="new_item" src="{$basic.tpl_path}img/flag_neu.gif" alt="*" /></a>
          						{/if}
-	                            	<a href="">{$item.title}</a>
+	                            	<a href="">{$item.column_1}</a>
 	                            </p>
 	                        </div>
 	                        <div class="seperator">
-	                        	<div class="column_120">
-	                            	<p>{$item.date}</p>
+	                        	<div class="column_140">
+	                            	<p>{$item.column_2}</p>
 	                            </div>
-		                        <div class="column_184">
+		                        <div class="column_194">
 		                        	<p>
-		                            	<a href="">{$item.creator}</a>
+		                            	<a href="">{$item.column_3}</a>
 		                            </p>
 		                        </div>
 		                    </div>

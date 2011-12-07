@@ -737,7 +737,7 @@ a.new_item {
 
 
 span.new_item_2 {
-    background: url(img/flag_neu.gif) no-repeat left center;
+    xbackground: url(img/flag_neu.gif) no-repeat left center;
     margin-left: -20px;
     padding-left: 20px;
     }
@@ -829,6 +829,7 @@ content, column-width
     float: left;
     }
 
+
 .column_45 {
     width: 45px;
     float: left;
@@ -838,6 +839,7 @@ content, column-width
     width: 80px;
     float: left;
     }
+
 
 .column_90 {
     width: 90px;
@@ -854,6 +856,11 @@ content, column-width
     float: left;
     }
 
+.column_140 {
+    width: 140px;
+    float: left;
+    }
+
 .column_155 {
     width: 150px;
     float: left;
@@ -861,6 +868,11 @@ content, column-width
 
 .column_184 {
     width: 184px;
+    float: left;
+    }
+
+.column_194 {
+    width: 194px;
     float: left;
     }
 
@@ -879,9 +891,19 @@ content, column-width
     float: left;
     }
 
+
 .column_430 {
     width: 430px;
     float: left;
+    }
+
+.column_400 {
+    width: 400px;
+    float: left;
+    }
+
+.column_20 p {
+    padding: 3px 5px 0px 5px;
     }
 
 .column_510 {
@@ -894,11 +916,8 @@ content, column-width
     float: left;
     }
 
-.column_20 p {
-    padding: 3px 5px 0px 5px;
-    }
 
-.column_27 p, .column_45 p, .column_80 p, .column_90 p, .column_100 p, .column_120 p, .column_155 p, .column_184 p, .column_244 p, .column_304, .column_320, .column_430 p {
+.column_45 p, .column_590 p, .column_510 p,.column_150 p, .column_90 p, .column_100 p, .column_120 p, .column_140 p, .column_155 p, .column_184 p, .column_194 p, .column_244 p, .column_304, .column_430 p, .column_400 p {
     padding: 5px 10px;
     }
 
