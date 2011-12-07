@@ -865,6 +865,10 @@ else {
 	if($environment->getCurrentFunction() !== 'index' && $environment->getCurrentModule() !== 'discussion') {
 		$c_smarty = false;
 	}
+	
+	if($environment->getCurrentFunction() == 'edit') {
+		$c_smarty = false;
+	}
 }
 
 if(isset($c_smarty) && $c_smarty === true) {
@@ -876,9 +880,11 @@ if(isset($c_smarty) && $c_smarty === true) {
 		require_once('classes/controller/' . $environment->getCurrentFunction() . '/' . $controller_name . '.php');
 	}
 	
-	$controller = new $controller_name($environment);
-	$controller->processTemplate();
-	$controller->displayTemplate();
+	if($c_smarty) {
+		$controller = new $controller_name($environment);
+		$controller->processTemplate();
+		$controller->displayTemplate();
+	}
 	
 } else {
 	// with or without modifiying options

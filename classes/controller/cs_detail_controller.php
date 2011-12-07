@@ -52,6 +52,33 @@
 			$this->assign('detail', 'browsing_information', $this->getBrowseInformation());	
 		}
 		
+		protected function getAssessmentInformation() {
+			$assessment_stars_text_array = array('non_active','non_active','non_active','non_active','non_active');
+			$current_context = $this->_environment->getCurrentContextItem();
+			if($current_context->isAssessmentActive()) {
+				$assessment_manager = $this->_environment->getAssessmentManager();
+				$assessment = $assessment_manager->getAssessmentForItemAverage($this->_item);
+				if(isset($assessment[0])) {
+					$assessment = sprintf('%1.1f', (float) $assessment[0]);
+				} else {
+			 		$assessment = 0;
+				}
+		  		$php_version = explode('.', phpversion());
+				if($php_version[0] >= 5 && $php_version[1] >= 3) {
+					// if php version is equal to or above 5.3
+					$assessment_count_stars = round($assessment, 0, PHP_ROUND_HALF_UP);
+				} else {
+					// if php version is below 5.3
+					$assessment_count_stars = round($assessment);
+				}
+				for ($i=0; $i < $assessment_count_stars; $i++){
+					$assessment_stars_text_array[$i] = 'active';
+				}
+			}
+			
+			return $assessment_stars_text_array;
+		}
+		
 		protected function setItem() {
 			// try to set the item
 			if(!empty($_GET['iid'])) {
@@ -68,6 +95,7 @@
 		}
 		
 		private function getBrowseInformation() {
+			// TODO: see cs_detail_view _getForwardBoxAsHTML() for more to migrate...
 			$return = array();
 			
 			// update position from GET-Vars

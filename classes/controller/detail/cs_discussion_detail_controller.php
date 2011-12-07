@@ -102,8 +102,10 @@
 			
 			// append return
 			$return = array(
-				'title'		=> $this->_item->getTitle(),
-				'creator'	=> $this->_item->getCreatorItem()->getFullName()
+				'title'			=> $this->_item->getTitle(),
+				'creator'		=> $this->_item->getCreatorItem()->getFullName(),
+				'creation_date'	=> getDateTimeInLang($this->_item->getCreationDate()),
+				'assessments'	=> $this->getAssessmentInformation()
 			);
 			
 			return $return;

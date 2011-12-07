@@ -51,6 +51,13 @@
 			$this->assign('list','restriction_buzzword_link_parameters',$this->getRestrictionBuzzwordLinkParameters());
 			$this->assign('list','restriction_tag_link_parameters',$this->getRestrictionTagLinkParameters());
 			$this->assign('list','restriction_text_parameters',$this->_getRestrictionTextAsHTML());
+			
+			// Safe information in session for later use
+			/*
+			$session->setValue('discussion_clipboard', $clipboard_id_array);
+			$session->setValue('interval', $interval); // interval is applied to all rubrics
+			$session->setValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_selected_ids', $selected_ids);
+			*/
 		}
 		
 		public function getListContent() {
@@ -147,7 +154,10 @@
 
 			$this->_page_text_fragment_array['count_entries'] = $this->getCountEntriesText($this->_list_parameter_arrray['from'],$this->_list_parameter_arrray['interval'], $count_all, $count_all_shown);
             $this->_browsing_icons_parameter_array = $this->getBrowsingIconsParameterArray($this->_list_parameter_arrray['from'],$this->_list_parameter_arrray['interval'], $count_all_shown);
-
+            
+            $session = $this->_environment->getSessionItem();
+            $session->setValue('cid'.$environment->getCurrentContextID().'_discussion_index_ids', $ids);
+            
 			$id_array = array();
 			$item = $list->getFirst();
 			while ($item){

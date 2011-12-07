@@ -15,14 +15,12 @@
 		
 		<div id="item_credits">
 			<p id="ic_rating">
-				<img src="{$basic.tpl_path}img/star_active.gif" alt="*" />
-				<img src="{$basic.tpl_path}img/star_active.gif" alt="*" />
-				<img src="{$basic.tpl_path}img/star_non_active.gif" alt="*" />
-				<img src="{$basic.tpl_path}img/star_non_active.gif" alt="*" />
-				<img src="{$basic.tpl_path}img/star_non_active.gif" alt="*" />
+				{foreach $detail.content.discussion.assessments as $assessment}
+					<img src="{$basic.tpl_path}img/star_{$assessment}.gif" alt="*" />
+				{/foreach}
 			</p>
 			<p>
-				___COMMON_CREATED_BY_UPPER___ <a href="">{$detail.content.discussion.creator}</a> ___DATES_ON_DAY___ 00.00.0000 um 00:00h
+				___COMMON_CREATED_BY_UPPER___ <a href="">{$detail.content.discussion.creator}</a> ___DATES_ON_DAY___  {$detail.content.discussion.creation_date}
 			</p>
 			<div class="clear"> </div>
 		</div>
