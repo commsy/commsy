@@ -297,9 +297,10 @@
 			      $file_id_array = $link_manager->getAllFileLinksForListByIDs($id_array, $v_id_array);
 			      $file_manager = $environment->getFileManager();
 			      $file_manager->setIDArrayLimit($file_id_array);
-
 				 foreach($rubric_list_array as $key=>$list){
 					$item_array = array();
+				 	$column1_addon = '';
+				 	$modificator_id = '';
 	               	$item = $list->getFirst();
 	               	$params = array();
 					$params['environment'] = $environment;
@@ -317,7 +318,8 @@
 								} else {
 									$column2 = $item->getSeconddateTime();
 								}
-								$column3 = $item->getCreatorItem()->getFullName();
+								$column3 = $item->getModificatorItem()->getFullName();
+								$modificator_id = $item->getModificatorItem()->getItemID();
 								break;
 	                  		case CS_DATE_TYPE:
 								$column1 = $view->_text_as_html_short($item->getTitle());
@@ -341,15 +343,104 @@
       							$column2 = $view->_text_as_html_short($date.$time);
 								$column3 = $view->_text_as_html_short($item->getPlace());
 								break;
+	                  		case CS_DISCUSSION_TYPE:
+								$column1 = $view->_text_as_html_short($item->getTitle());
+								$column2 = $this->_environment->getTranslationObject()->getDateInLang($item->getModificationDate());
+								$column3 = $item->getModificatorItem()->getFullName();
+								$modificator_id = $item->getModificatorItem()->getItemID();
+								$column1_addon = $item->getAllArticlesCount().'/'.$item->getUnreadArticles();
+								break;
+	                  		case CS_USER_TYPE:
+	                  			$column1 = '';
+	                  			$title = $item->getTitle();
+	                  			if (!empty($title)){
+	                  				$column1 = $view->_text_as_html_short($item->getTitle()).' ';
+	                  			}
+								$column1 .= $view->_text_as_html_short($item->getFullname());
+      							##################################################
+      							# messenger - MUSS NOCH AUFGERÄUMT WERDEN: HTML INS TEMPLATE
+      							##################################################
+							    global $c_commsy_domain;
+         						$host = $c_commsy_domain;
+      							global $c_commsy_url_path;
+      							$url_to_img = $host.$c_commsy_url_path.'/images/messenger';
+      							$icq_number = $item->getICQ();
+      							if ( !empty($icq_number) ){
+         							$column1 .= '   <img style="vertical-align:middle;" src="http://status.icq.com/online.gif?icq='.rawurlencode($icq_number).'&amp;img=5" alt="ICQ Online Status" />'.LF;
+      							}
+      							$msn_number = $item->getMSN();
+      							if ( !empty($msn_number) ){
+         							$column1 .= '<a href="http://www.IMStatusCheck.com/?msn">'.LF;
+         							$column1 .= '   <img style="vertical-align:middle;" src="http://www.IMStatusCheck.com/status/msn/'.rawurlencode($msn_number).'?icons" alt="MSN Online Status" />'.LF;
+         							$column1 .= '</a>'.LF;
+      							}
+      							$skype_number = $item->getSkype();
+      							if ( !empty($skype_number) ){
+         							$column1 .= '<script type="text/javascript" src="http://download.skype.com/share/skypebuttons/js/skypeCheck.js"></script>'.LF;
+         							$column1 .= '<a href="skype:'.rawurlencode($skype_number).'?chat">'.LF;
+         							$column1 .= '   <img src="http://mystatus.skype.com/smallicon/'.rawurlencode($skype_number).'" style="vertical-align:middle; border: none;" width="16" height="16" alt="Skype Online Status" />'.LF;
+         							$column1 .= '</a>'.LF;
+      							}
+      							$yahoo_number = $item->getYahoo();
+      							if ( !empty($yahoo_number) ){
+         							$column1 .= '<a href="http://messenger.yahoo.com/edit/send/?.target='.rawurlencode($yahoo_number).'">'.LF;
+         							$column1 .= '   <img style="vertical-align:middle;" src="http://opi.yahoo.com/yahooonline/u='.rawurlencode($yahoo_number).'/m=g/t=0/l='.$this->_environment->getSelectedLanguage().'/opi.jpg" alt="Yahoo Online Status Indicator" />'.LF;
+         							$column1 .= '</a>'.LF;
+      							}
+		      					##################################################
+      							# messenger - END
+      							##################################################
+								$phone = $item->getTelephone();
+      							$handy = $item->getCellularphone();
+								$column2 = '';
+								if ( !empty($phone) ){
+         							$column2 .= $view->_text_as_html_short($phone).LF;
+      							}
+      							if (!empty($phone) and !empty($handy)) {
+         							$column2 .= BRLF;
+      							}
+      							if ( !empty($handy) ){
+         							$column2 .= $view->_text_as_html_short($handy).LF;
+      							}
+     							if ($item->isEmailVisible()) {
+         							$email = $item->getEmail();
+         							$email_text = $email;
+         							$column3 = curl_mailto( $item->getEmail(), $view->_text_as_html_short(chunkText($email_text,20)),$email_text);
+     							} else {
+         							$column3 = $translator->getMessage('USER_EMAIL_HIDDEN');
+     							}
+								break;
+							case CS_GROUP_TYPE:
+								$column1 = $view->_text_as_html_short($item->getTitle());
+								$members = $item->getMemberItemList();
+            					$column2 = $translator->getMessage(GROUP_MEMBERS).': '.$members->getCount();
+            					$linked_item_array = $item->getAllLinkedItemIDArray();
+								$column3 = $translator->getMessage(COMMON_REFERENCED_LATEST_ENTRIES).': '.count($linked_item_array);
+								break;
+							case CS_TOPIC_TYPE:
+								$column1 = $view->_text_as_html_short($item->getTitle());
+								$column2 = $this->_environment->getTranslationObject()->getDateInLang($item->getModificationDate());
+           						$linked_item_array = $item->getAllLinkedItemIDArray();
+								$column3 = $translator->getMessage(COMMON_REFERENCED_LATEST_ENTRIES).': '.count($linked_item_array);
+								break;
+							case CS_INSTITUTION_TYPE:
+								$column1 = $view->_text_as_html_short($item->getTitle());
+								$column2 = $this->_environment->getTranslationObject()->getDateInLang($item->getModificationDate());
+           						$linked_item_array = $item->getAllLinkedItemIDArray();
+								$column3 = $translator->getMessage(COMMON_REFERENCED_LATEST_ENTRIES).': '.count($linked_item_array);
+								break;
 							default:
 								$column1 = $view->_text_as_html_short($item->getTitle());
 								$column2 = $this->_environment->getTranslationObject()->getDateInLang($item->getModificationDate());
-								$column3 = $item->getCreatorItem()->getFullName();
+								$column3 = $item->getModificatorItem()->getFullName();
+								$modificator_id = $item->getModificatorItem()->getItemID();
 	               		}
 						$item_array[] = array(
 						'iid'				=> $item->getItemID(),
-						'column_1'				=> $column1,
-						'column_2'				=> $column2,
+						'user_iid'			=> $modificator_id,
+						'column_1'			=> $column1,
+						'column_1_addon'	=> $column1_addon,
+						'column_2'			=> $column2,
 						'column_3'			=> $column3,
 						'noticed'			=> $noticed_text
 					//	'attachment_count'	=> $item->getFileList()->getCount()

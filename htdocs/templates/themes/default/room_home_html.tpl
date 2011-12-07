@@ -14,7 +14,7 @@
 		{foreach $room.home_content as $rubric}
 			<div class="content_item"> <!-- Start content_item -->
             	<div class="ci_head_actions">
-	            	<a href="" title="___HOME_SMARTY_{$rubric@key|upper}_ACTION_NEW___">
+	            	<a href="commsy.php?cid={$environment.cid}&mod={$rubric@key}&fct=edit" title="___HOME_SMARTY_{$rubric@key|upper}_ACTION_NEW___">
 	            		<img src="{$basic.tpl_path}img/btn_ci_add.gif" alt="___HOME_SMARTY_ACTION_NEW___" />
 	            	</a>
                     <a href="" class="open_close" title="___HOME_SMARTY_ACTION_CLOSE___">
@@ -34,12 +34,17 @@
 
 	                {foreach $rubric.items as $item}
 	                	<div class="{if $item@iteration is odd}row_odd{else}row_even{/if}">
-	                    	<div class="column_400">
+	                    	<div class="column_380">
+	                        	{if $rubric@key == 'discussion'}
+	                        	<p class="column_addon">
+	                        		{$item.column_1_addon}
+	                        	</p>
+	                        	{/if}
 	                        	<p>
 								{if $item.noticed != ''}
 									<a href="" class="new_item"><img title="{$item.noticed}" class="new_item" src="{$basic.tpl_path}img/flag_neu.gif" alt="*" /></a>
          						{/if}
-	                            	<a href="">{$item.column_1}</a>
+	                            	<a href="commsy.php?cid={$environment.cid}&mod={$rubric@key}&fct=detail&iid={$item.iid}">{$item.column_1}</a>
 	                            </p>
 	                        </div>
 	                        <div class="seperator">
@@ -48,7 +53,11 @@
 	                            </div>
 		                        <div class="column_194">
 		                        	<p>
-		                            	<a href="">{$item.column_3}</a>
+		                        	{if $rubric@key == 'material' or $rubric@key == 'announcement' or $rubric@key == 'discussion'}
+		                            	<a href="commsy.php?cid={$environment.cid}&mod=user&fct=detail&iid={$item.user_iid}">{$item.column_3}</a>
+		                        	{else}
+		                        		{$item.column_3}
+		                            {/if}
 		                            </p>
 		                        </div>
 		                    </div>
