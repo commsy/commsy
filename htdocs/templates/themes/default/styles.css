@@ -329,6 +329,11 @@ main-navigation
     font-weight: normal;
     }
 
+#main_navigation h1 strong {
+    background: url(img/mn_bc_bg.gif) no-repeat 6px 5px;
+    padding-left: 20px;
+    }
+
 #main_navigation #site_actions {
     float: right;
     background: url(img/site_actions_bg.jpg) no-repeat;
@@ -566,12 +571,16 @@ content, general
     width: 100%;
     }
 
+#content_with_actions {
+    background: url(img/cwa_bg.jpg) repeat-y;
+    }
+
 .content_item {
     background: url(img/content_item.jpg) repeat-x;
     }
 
 .content_item h2 {
-    background: url(img/ci_head_bg.png) repeat-x;
+    background: url(img/ci_head_bg.png) left bottom repeat-x;
     font-size: 12px;
     padding: 17px 0px 7px 10px;
     }
@@ -658,6 +667,15 @@ content, general
     margin-bottom: -2px;
     }
 
+h2#item_navigation {
+    text-align: center;
+    padding: 8px 0px 8px 0px !important;
+    }
+
+h2#item_navigation span {
+    padding: 0px 20px;
+    }
+
 .row_odd {
     background-color: #F5F5F5;
     }
@@ -683,6 +701,23 @@ content, general
     color: #DB261D;
     text-decoration: underline;
     }
+
+.odd_sep_disdetail {
+    background: url(img/sep_disdetails.gif) repeat-y #F5F5F5;
+    }
+
+.even_sep_disdetail {
+    background: url(img/sep_disdetails.gif) repeat-y #FFF;
+    }
+
+.odd_sep_390 {
+    background: url(img/sep_390.gif) repeat-y #F5F5F5;
+    }
+
+.even_sep_390 {
+    background: url(img/sep_390.gif) repeat-y #FFF;
+    }
+
 
 .seperator {
     background: url(img/seperator_bg.gif) repeat-y;
@@ -715,6 +750,65 @@ img.new_item_2 {
 input.new_item_2 {
 	margin-left:0px;
 	}
+
+.item_actions {
+    width: 39px;
+    float: left;
+    }
+
+.item_actions a {
+    display: block;
+    padding: 8px 0px;
+    background: url(img/ia_norm_bg.jpg) repeat-y;
+    margin-bottom: 1px;
+    text-align: center;
+    text-decoration: none;
+    }
+
+.item_actions a:hover {
+    display: block;
+    background: url(img/ia_active_bg.jpg) repeat-y;
+    }
+
+.item_actions span {
+    display: block;
+    margin: auto;
+    width: 15px;
+    }
+
+.item_actions a span.edit_set {
+    background: url(img/btn_edit_set.gif) no-repeat;
+    }
+
+.item_actions a:hover span.edit_set {
+    background: url(img/btn_edit_set.gif) -15px 0px no-repeat;
+    }
+
+.item_actions a span.details_ia {
+    background: url(img/btn_details.gif) no-repeat;
+    }
+
+.item_actions a:hover span.details_ia {
+    background: url(img/btn_details.gif) -15px 0px no-repeat;
+    }
+
+.item_actions a span.ref_to_ia {
+    background: url(img/btn_ref.gif) no-repeat;
+    }
+
+.item_actions a:hover span.ref_to_ia {
+    background: url(img/btn_ref.gif) -15px 0px no-repeat;
+    }
+
+#top_item_actions {
+    border-top: 1px solid #F6F6F6;
+    margin-top: 1px;
+    }
+
+.item_body {
+    width: 695px;
+    float: left;
+    }
 
 
 
@@ -854,6 +948,72 @@ a#sort_down {
     padding-left: 12px;
     }
 
+#item_credits {
+    background: #FFF;
+    font-size: 10px;
+    margin-bottom: 1px;
+    }
+
+#item_credits p {
+    padding: 5px 10px;
+    }
+
+#item_credits a {
+    font-weight: bold;
+    color: #393939;
+    text-decoration: none;
+    }
+
+#ic_rating {
+    float: right;
+    }
+
+#item_legend {
+    border-bottom: 1px solid #545454;
+    }
+
+.item_post {
+    margin-top: 1px;
+    border-top: 1px solid #FFF;
+    }
+
+.post_content h4 {
+    font-size: 12px;
+    padding: 5px 0px;
+    }
+
+.post_content span {
+    font-size: 10px;
+    }
+
+.post_content .editor_content {
+    padding: 5px 20px 20px 0px;
+    line-height: 18px;
+    }
+
+.jump_up_down img {
+    padding-top: 3px;
+    }
+
+#item_postnew {
+    background: url(img/ci_head_bg.png) left bottom repeat-x;
+    }
+
+#item_postnew h4 {
+    float: left;
+    width: 20px;
+    }
+
+input#pn_title {
+    border-width: 0px 1px;
+    border-color: #CCC;
+    background: url(img/select_bg.jpg) repeat-x #FFF;
+    padding: 5px 4px 5px 4px;
+    width: 460px;
+    margin: 5px 0px;
+    color: #6B6B6B;
+    }
+
 
 
 /*
@@ -937,6 +1097,24 @@ a:hover.keywords_s1, a:hover.keywords_s2, a:hover.keywords_s3, a:hover.keywords_
     margin: 5px 0px 10px 0px;
     }
 
+#dis_navigation {
+    border-top: 1px solid #689FDE;
+    border-bottom: 1px solid #689FDE;
+    padding: 8px 0px;
+    margin-bottom: 8px;
+    }
+
+#dis_navigation a, a.context_nav {
+    display: block;
+    color: #DEE8FF; /* ueber Skin-Editor austauschbar */
+    text-decoration: none;
+    }
+
+#dis_navigation a:hover, a:hover.context_nav {
+    display: block;
+    color: #FFF;
+    text-decoration: underline;
+    }
 
 
 

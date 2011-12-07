@@ -709,6 +709,9 @@ span.new_item_2 {
 a.new_item_2 {
     margin-left: -20px;
 	}
+img.new_item_2 {
+    padding-bottom: 4px;
+	}
 input.new_item_2 {
 	margin-left:0px;
 	}
