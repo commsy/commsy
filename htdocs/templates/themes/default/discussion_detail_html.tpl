@@ -136,14 +136,7 @@
 {/block}
 
 {block name=room_right_portlets_navigation}
-	{foreach $detail.content.disc_articles as $article}
-		<a href=""></a>
+	{foreach $detail.forward_information as $entry}
+		<a href="">{$entry@iteration}. {if $entry.is_current}<strong>{/if}{$entry.title}{if $entry.is_current}</strong>{/if}</a>
 	{/foreach}
-		
-		
-			<a href="">1. Lorem ipsum dolor sit ...</a>
-			<a href=""><strong>2. Lorem ipsum dolor sit ...</strong></a>
-			<a href="">3. Lorem ipsum dolor sit ...</a>
-			<a href="">4. Lorem ipsum dolor sit ...</a>
-			<a href="">5. Lorem ipsum dolor sit ...</a>
 {/block}
