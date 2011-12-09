@@ -8,11 +8,29 @@ define([	"libs/jQuery/jquery-1.7.1.min",
 	return {
 		cookie_prefix: 'commsy_list_selection_',
 		numSelections: 0,
+		selection: null,
 		
 		init: function() {
 			// get num selections from cookie
 			if(jQuery.cookie(this.cookie_prefix + 'count') !== null)
 				this.numSelections = jQuery.cookie(this.cookie_prefix + 'count');
+			
+			// compare current module with last used
+			var current_module = require("commsy/commsy_functions_8_0_0").getURLParam('mod');
+			if(current_module !== jQuery.cookie(this.cookie_prefix + 'last_module')) {
+				// clear selection count
+				jQuery.cookie(this.cookie_prefix + 'count', null);
+				
+				// clear all selections
+				this.clearSelectionsFromCookie();
+			}
+			
+			// store the current module as last used
+			jQuery.cookie(this.cookie_prefix + 'last_module', current_module);
+		},
+		
+		clearSelectionsFromCookie: function() {
+			
 		},
 		
 		storeSelectionInCookie: function(event) {
@@ -27,10 +45,14 @@ define([	"libs/jQuery/jquery-1.7.1.min",
 				// set cookie
 				jQuery.cookie(class_ref.cookie_prefix + item_id, 'checked');
 				class_ref.numSelections++;
+				
+				// TODO: store (unique) in array
 			} else {
 				// delete cookie
 				jQuery.cookie(class_ref.cookie_prefix + item_id, null);
 				class_ref.numSelections--;
+				
+				// TODO: remove from array
 			}
 			
 			// store number of selections

@@ -31,7 +31,11 @@
 		protected function processTemplate() {
 			// call parent
 			parent::processTemplate();
-
+			
+			// mark as read and noticed
+			$this->markRead();
+			$this->markNoticed();
+			
 			// set list actions
 			//$this->assign('list', 'actions', $this->getListActions());
 
@@ -421,6 +425,24 @@
 				}
 			}
 			return $this->_browse_ids;
+		}
+		
+		private function markRead() {
+			// mark as read
+			$reader_manager = $this->_environment->getReaderManager();
+			$reader = $reader_manager->getLatestReader($this->_item->getItemID());
+			if(empty($reader) || $reader['read_date'] < $this->_item->getModificationDate()) {
+				$reader_manager->markRead($this->_item->getItemID(), 0);
+			}
+		}
+		
+		private function markNoticed() {
+			// mark as noticed
+			$noticed_manager = $this->_environment->getNoticedManager();
+			$noticed = $noticed_manager->getLatestNoticed($this->_item->getItemID());
+			if(empty($noticed) || $noticed['read_date'] < $this->_item->getModificationDate()) {
+				$noticed_manager->markNoticed($this->_item->getItemID(), 0);
+			}
 		}
 		
 		abstract protected function setBrowseIDs();

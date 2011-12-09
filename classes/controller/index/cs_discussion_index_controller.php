@@ -216,7 +216,7 @@
 						// if php version is below 5.3
 						$assessment_count_stars = round($assessment);
 					}
-					for ($i=1; $i< $assessment_count_stars; $i++){
+					for ($i=0; $i< $assessment_count_stars; $i++){
 						$assessment_stars_text_array[$i] = 'active';
 					}
 				}

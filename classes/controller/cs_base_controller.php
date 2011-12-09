@@ -80,6 +80,7 @@
 			$this->assign('environment', 'module', $this->_environment->getCurrentModule());
 			$this->assign('environment', 'params', $this->_environment->getCurrentparameterString());
 			$this->assign('environment', 'username', $current_user->getFullName());
+			$this->assign('environment', 'user_picture', $current_user->getPicture());
 			$this->assign('environment', 'is_guest', $current_user->isReallyGuest());
 			$this->assign('environment', 'is_moderator', $current_user->isModerator());
 			$this->assign('translation', 'act_month_long', getLongMonthName(date("n") - 1));

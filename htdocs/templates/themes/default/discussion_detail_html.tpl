@@ -26,131 +26,84 @@
 		</div>
 		
 		<div id="item_legend"> <!-- Start item_legend -->
-			<div class="row_odd odd_sep_390">
-				<div class="column_320">
-					<p>
-						1. <a href="">Cum sociis natoque penatibus et magnis</a>
-					</p>
+			{section name="articles_short" loop=$detail.content.disc_articles start=-10 max=10}
+				{$article = $detail.content.disc_articles[articles_short]}
+				{$iteration = $smarty.section.articles_short.iteration}
+				<div class="row_{if $iteration is odd}odd{else}even{/if} {if $iteration is odd}odd{else}even{/if}_sep_390">
+					<div class="column_320">
+						<p>
+							{$article.position}.
+							{if $article.noticed == 'new' or $article.noticed == 'changed'}<img src="{$basic.tpl_path}img/flag_neu.gif" alt="NEU"/>{/if}
+							<a href="">{$article.subject}</a>
+						</p>
+					</div>
+					<div class="column_45">
+						<p>
+							<a href="" class="attachment">{$article.num_attachments}</a>
+						</p>
+					</div>
+					<div class="column_155">
+						<p>
+							<a href="">{$article.creator}</a>
+						</p>
+					</div>
+					<div class="column_155">
+						<p>{$article.modification_date}</p>
+					</div>
+					<div class="clear"> </div>
 				</div>
-				<div class="column_45">
-					<p>
-						<a href="" class="attachment">12</a>
-					</p>
-				</div>
-				<div class="column_155">
-					<p>
-						<a href="">Michael Muster</a>
-					</p>
-				</div>
-				<div class="column_155">
-					<p>00.00.0000 00:00h</p>
-				</div>
-				<div class="clear"> </div>
-			</div>
-			
-			<div class="row_even even_sep_390">
-				<div class="column_320">
-					<p>
-						2. <a href="">Lorem ipsum dolor sit amet consectetuer</a>
-					</p>
-				</div>
-				<div class="column_45">&nbsp;</div>
-				<div class="column_155">
-					<p>
-						<a href="">John Doe</a>
-					</p>
-				</div>
-				<div class="column_155">
-					<p>00.00.0000 00:00h</p>
-				</div>
-				<div class="clear"> </div>
-			</div>
-			
-			<div class="row_odd odd_sep_390">
-				<div class="column_320">
-					<p>
-						3. <img src="{$basic.tpl_path}img/flag_neu.gif" alt="NEU"/> <a href="">Cum sociis natoque penatibus et magnis</a>
-					</p>
-				</div>
-				<div class="column_45">
-					<p>
-						<a href="" class="attachment">5</a>
-					</p>
-				</div>
-				<div class="column_155">
-					<p>
-						<a href="">Dennis Muster</a>
-					</p>
-				</div>
-				<div class="column_155">
-					<p>
-						00.00.0000 00:00h
-					</p>
-				</div>
-				<div class="clear"> </div>
-			</div>
-			
-			<div class="row_even even_sep_390">
-				<div class="column_320">
-					<p>
-						4. <img src="{$basic.tpl_path}img/flag_neu.gif" alt="NEU"/> <a href="">Lorem ipsum dolor sit amet consectetuer</a>
-					</p>
-				</div>
-				<div class="column_45">&nbsp;</div>
-				<div class="column_155">
-					<p>
-						<a href="">Silke Musterfrau</a>
-					</p>
-				</div>
-				<div class="column_155">
-					<p>00.00.0000 00:00h</p>
-				</div>
-				<div class="clear"> </div>
-			</div>
+			{/section}
 		</div> <!-- Ende item_legend -->
 	
 	</div> <!-- Ende item body -->
 	<div class="clear"> </div>
 	
-	<div class="item_actions">
-		<a href=""><span class="edit_set"> &nbsp; </span></a>
-		<a href=""><span class="details_ia"> &nbsp; </span></a>
-	</div>
-	
-	<div class="item_body"> <!-- Start item body -->
-		<div class="item_post">
-			<div class="row_odd odd_sep_disdetail">
-				<div class="column_80">
-					<p>
-						<a href="" title="Michael Muster"><img src="{$basic.tpl_path}img/person_01.jpg" alt="Michael Muster" /></a>
-					</p>
-				</div>
-				
-				<div class="column_510">
-					<div class="post_content">
-						<h4>1. <img src="{$basic.tpl_path}img/flag_neu.gif" alt="NEU"/> Cum sociis natoque penatibus et magnis</h4>
-						<span><a href="">Michael Muster</a>, 00.00.0000 00:00h</span>
-						<div class="editor_content">
-							Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus.
+	{foreach $detail.content.disc_articles as $article}
+		<div class="item_actions">
+			<a href=""><span class="edit_set"> &nbsp; </span></a>
+			<a href=""><span class="details_ia"> &nbsp; </span></a>
+		</div>
+		
+		<div class="item_body"> <!-- Start item body -->
+			<a name="disc_article_{$article@iteration}"></a>
+			<div class="item_post">
+				<div class="row_{if $article@iteration is odd}odd{else}even{/if} {if $article@iteration is odd}odd{else}even{/if}_sep_disdetail">
+					<div class="column_80">
+						<p>
+							<a href="" title="{$article.creator}">
+								<img src="commsy.php?cid={$environment.cid}&mod=picture&fct=getfile&picture={$article.modificator_image}" alt="{i18n tag=USER_PICTURE_NO_PICTURE param1=$article.creator}" />
+							</a>
+						</p>
+					</div>
+					
+					<div class="column_510">
+						<div class="post_content">
+							<h4>{$article@iteration}.
+								{if $article.noticed == 'new' or $article.noticed == 'changed'}<img src="{$basic.tpl_path}img/flag_neu.gif" alt="___COMMON_NEW___"/>{/if} {$article.subject}
+							</h4>
+							<span><a href="">{$article.creator}</a>, {$article.modification_date}</span>
+							<div class="editor_content">
+								{$article.description}
+							</div>
 						</div>
 					</div>
+					<div class="column_27">
+						<p class="jump_up_down">
+							{if !$article@first}<a href=""><img src="{$basic.tpl_path}img/btn_jump_up.gif" alt="&lt;" /></a>{/if}
+							{if !$article@last}<a href=""><img src="{$basic.tpl_path}img/btn_jump_down.gif" alt="&gt;" /></a>{/if}
+						</p>
+					</div>
+					<div class="column_45">
+						<p>
+							<a href="" class="attachment">{$article.num_attachments}</a>
+						</p>
+					</div>
+					<div class="clear"> </div>
 				</div>
-				<div class="column_27">
-					<p class="jump_up_down">
-						<a href=""><img src="{$basic.tpl_path}img/btn_jump_up.gif" alt="hoch" /></a>
-						<a href=""><img src="{$basic.tpl_path}img/btn_jump_down.gif" alt="runter" /></a>
-					</p>
-				</div>
-				<div class="column_45">
-					<p>
-						<a href="" class="attachment">12</a>
-					</p>
-				</div>
-				<div class="clear"> </div>
 			</div>
-		</div>
-	</div> <!-- Ende item body -->
-	<div class="clear"> </div>
+		</div> <!-- Ende item body -->
+		<div class="clear"> </div>
+	{/foreach}
 	
 	<div class="item_actions">&nbsp;</div>
 	
@@ -159,15 +112,17 @@
 			<div id="item_postnew">
 				<div class="column_80">
 					<p>
-						<a href="" title="Michael Muster"><img src="{$basic.tpl_path}img/person_01.jpg" alt="Michael Muster" /></a>
+						<a href="" title="{$article.creator}">
+							<img src="commsy.php?cid={$environment.cid}&mod=picture&fct=getfile&picture={$environment.user_picture}" alt="{i18n tag=USER_PICTURE_NO_PICTURE param1=$article.creator}" />
+						</a>
 					</p>
 				</div>
 				
 				<div class="column_590">
 					<div class="post_content">
-						<h4>5.</h4><input id="pn_title" type="text" name="" />
+						<h4>{$detail.content.new_num}.</h4><input id="pn_title" type="text" name="" />
 						<div class="editor_content">
-							<img src="{$basic.tpl_path}img/editor.jpg" alt="" />
+							<div id="ckeditor"></div>
 						</div>
 					</div>
 				</div>
@@ -178,4 +133,17 @@
 	<div class="clear"> </div>
 	
 	<div class="clear"> </div>
+{/block}
+
+{block name=room_right_portlets_navigation}
+	{foreach $detail.content.disc_articles as $article}
+		<a href=""></a>
+	{/foreach}
+		
+		
+			<a href="">1. Lorem ipsum dolor sit ...</a>
+			<a href=""><strong>2. Lorem ipsum dolor sit ...</strong></a>
+			<a href="">3. Lorem ipsum dolor sit ...</a>
+			<a href="">4. Lorem ipsum dolor sit ...</a>
+			<a href="">5. Lorem ipsum dolor sit ...</a>
 {/block}

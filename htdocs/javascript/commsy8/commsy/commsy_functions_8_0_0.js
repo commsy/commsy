@@ -81,6 +81,18 @@ define(["libs/jQuery/jquery-1.7.1.min"], function() {
 					});
 				});
 			}
+			
+			// ckeditor
+			// load on detail context
+			if(this.getURLParam('fct') === 'detail') {
+				require(["commsy/ck_editor"], function($) {
+					$.init();
+					
+					// create ckeditor
+					var div_objects = jQuery('div[id="ckeditor"]');
+					$.create(div_objects);
+				});
+			}
 		},
 		
 		getURLParam: function(name) {
