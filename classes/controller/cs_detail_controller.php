@@ -79,7 +79,8 @@
 				//$html .= $this->_getForwardLinkAsHTML($ids,'link_item');
 				//$params['link_item_path'] = $_GET['link_item_path'];
 			} else {
-				$this->assign('detail', 'browsing_information', $this->getBrowseInformation($this->getBrowseIDs()));	
+				$ids = $this->getBrowseIDs();
+				$this->assign('detail', 'browsing_information', $this->getBrowseInformation($ids));
 				//$html .= $this->_getForwardLinkAsHTML($ids);
 			}
 			
@@ -460,8 +461,8 @@
 			
 			// determe index position values
 			$pos_index_start = 0;
-			$pos_index_left = $pos - 1;
-			$pos_index_right = $pos + 1;
+			$pos_index_left = $this->_position - 1;
+			$pos_index_right = $this->_position + 1;
 			$pos_index_end = $count_all - 1;
 			
 			// prepare browsing
@@ -496,9 +497,9 @@
 			
 			$browse_right = 0;		// 0 means: do not browse
 			$browse_end = 0;		// 0 means: do not browse
-			if($pos >= 0 && $this->_position < $count_all - 1) {
+			if($this->_position >= 0 && $this->_position < $count_all - 1) {
 				// check for browsing to the right / end
-				for($index = $pos + 1, $max_count = $count_all - 1; $index <= $max_count; $index++) {
+				for($index = $this->_position + 1, $max_count = $count_all - 1; $index <= $max_count; $index++) {
 					if(in_array($ids[$index], $ids_not_activated)) {
 						$pos_index_right++;
 					} else {
@@ -730,7 +731,7 @@
 				// set it
 				$this->setBrowseIDs();
 				
-				if(!isset($this->_browse_ids) || sizeof($this->_browse_ids) == 0) {
+				if(!isset($this->_browse_ids) || sizeof($this->_browse_ids) === 0) {
 					$this->_browse_ids[] = $this->_item->getItemID();
 				}
 			}
