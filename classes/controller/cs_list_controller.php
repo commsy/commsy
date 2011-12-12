@@ -934,7 +934,11 @@
 			if ( isset($_GET['sort']) ) {
    				$this->_list_parameter_arrray['sort'] = $_GET['sort'];
 			}  else {
-   				$this->_list_parameter_arrray['sort'] = 'modified';
+				if($context_item->isA(CS_DISCUSSION_TYPE)) {
+					$this->_list_parameter_arrray['sort'] = 'latest';
+				} else {
+					$this->_list_parameter_arrray['sort'] = 'modified';
+				}
 			}
 
 			if ( isset($_GET['selgroup']) ) {
