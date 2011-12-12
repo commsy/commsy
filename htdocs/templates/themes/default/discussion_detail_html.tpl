@@ -112,7 +112,7 @@
 			<div id="item_postnew">
 				<div class="column_80">
 					<p>
-						<a href="" title="{$article.creator}">
+						<a href="" title="{$environment.username}">
 							<img src="commsy.php?cid={$environment.cid}&mod=picture&fct=getfile&picture={$environment.user_picture}" alt="{i18n tag=USER_PICTURE_NO_PICTURE param1=$article.creator}" />
 						</a>
 					</p>

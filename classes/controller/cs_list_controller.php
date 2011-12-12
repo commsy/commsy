@@ -109,13 +109,13 @@
       		return $return_array;
 		}
 
-		protected function getSortingParameterArray(){
+		protected function getSortingParameterArray(){			
 			$environment = $this->_environment;
            	$params = $environment->getCurrentParameterArray();
       		if (isset($params['sort']) and !empty($params['sort'])){
       			$sort_parameter = $params['sort'];
       		}else{
-      			$sort_parameter = '';
+      			$sort_parameter = 'latest';
       		}
       		unset($params['sort']);
       		$link_parameter_text = '';
