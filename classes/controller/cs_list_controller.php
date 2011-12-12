@@ -115,7 +115,7 @@
       		if (isset($params['sort']) and !empty($params['sort'])){
       			$sort_parameter = $params['sort'];
       		}else{
-      			$sort_parameter = 'latest';
+      			$sort_parameter = '';
       		}
       		unset($params['sort']);
       		$link_parameter_text = '';

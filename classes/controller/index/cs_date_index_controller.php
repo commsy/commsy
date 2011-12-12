@@ -41,7 +41,6 @@
 			$list_content = $this->getListContent();
 
 			// assign to template
-			$this->assign('date','list_content', $list_content);
 			$this->assign('date','list_parameters', $this->_list_parameter_arrray);
 			$this->assign('list','perspective_rubric_entries', $this->_perspective_rubric_array);
 			$this->assign('list','page_text_fragments',$this->_page_text_fragment_array);
@@ -51,6 +50,7 @@
 			$this->assign('list','restriction_buzzword_link_parameters',$this->getRestrictionBuzzwordLinkParameters());
 			$this->assign('list','restriction_tag_link_parameters',$this->getRestrictionTagLinkParameters());
 			$this->assign('list','restriction_text_parameters',$this->_getRestrictionTextAsHTML());
+			$this->assign('date','list_content', $list_content);
 		}
 		
 		public function getListContent() {
