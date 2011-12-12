@@ -934,7 +934,7 @@
 			if ( isset($_GET['sort']) ) {
    				$this->_list_parameter_arrray['sort'] = $_GET['sort'];
 			}  else {
-				if($context_item->isA(CS_DISCUSSION_TYPE)) {
+				if($this->_environment->getCurrentModule() == CS_DISCUSSION_TYPE) {
 					$this->_list_parameter_arrray['sort'] = 'latest';
 				} else {
 					$this->_list_parameter_arrray['sort'] = 'modified';
