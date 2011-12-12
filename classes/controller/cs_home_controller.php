@@ -413,21 +413,21 @@
 							case CS_GROUP_TYPE:
 								$column1 = $view->_text_as_html_short($item->getTitle());
 								$members = $item->getMemberItemList();
-            					$column2 = $translator->getMessage(GROUP_MEMBERS).': '.$members->getCount();
+            					$column2 = $translator->getMessage('GROUP_MEMBERS').': '.$members->getCount();
             					$linked_item_array = $item->getAllLinkedItemIDArray();
-								$column3 = $translator->getMessage(COMMON_REFERENCED_LATEST_ENTRIES).': '.count($linked_item_array);
+								$column3 = $translator->getMessage('COMMON_REFERENCED_LATEST_ENTRIES').': '.count($linked_item_array);
 								break;
 							case CS_TOPIC_TYPE:
 								$column1 = $view->_text_as_html_short($item->getTitle());
 								$column2 = $this->_environment->getTranslationObject()->getDateInLang($item->getModificationDate());
            						$linked_item_array = $item->getAllLinkedItemIDArray();
-								$column3 = $translator->getMessage(COMMON_REFERENCED_LATEST_ENTRIES).': '.count($linked_item_array);
+								$column3 = $translator->getMessage('COMMON_REFERENCED_LATEST_ENTRIES').': '.count($linked_item_array);
 								break;
 							case CS_INSTITUTION_TYPE:
 								$column1 = $view->_text_as_html_short($item->getTitle());
 								$column2 = $this->_environment->getTranslationObject()->getDateInLang($item->getModificationDate());
            						$linked_item_array = $item->getAllLinkedItemIDArray();
-								$column3 = $translator->getMessage(COMMON_REFERENCED_LATEST_ENTRIES).': '.count($linked_item_array);
+								$column3 = $translator->getMessage('COMMON_REFERENCED_LATEST_ENTRIES').': '.count($linked_item_array);
 								break;
 							default:
 								$column1 = $view->_text_as_html_short($item->getTitle());
