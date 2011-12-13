@@ -309,7 +309,7 @@
 				
 				// description
 				$converter = $this->_environment->getTextConverter();
-				$description = $converter->cleanDataFromTextArea($item->getDescription());
+				$description = $converter->text_as_html_long($converter->cleanDataFromTextArea($item->getDescription()));
 				$description = $converter->showImages($description, $item, true);
 				
 				// append return
