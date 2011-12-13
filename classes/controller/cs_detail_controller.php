@@ -184,60 +184,62 @@
 						}
 						
 						/*
-						switch ( mb_strtoupper($type, 'UTF-8') ){
-                  case 'ANNOUNCEMENT':
-                     $text .= $this->_translator->getMessage('COMMON_ONE_ANNOUNCEMENT');
-                     break;
-                  case 'DATE':
-                     $text .= $this->_translator->getMessage('COMMON_ONE_DATE');
-                     break;
-                  case 'DISCUSSION':
-                     $text .= $this->_translator->getMessage('COMMON_ONE_DISCUSSION');
-                     break;
-                  case 'GROUP':
-                     $text .= $this->_translator->getMessage('COMMON_ONE_GROUP');
-                     break;
-                  case 'INSTITUTION':
-                     $text .= $this->_translator->getMessage('COMMON_ONE_INSTITUTION');
-                     break;
-                  case 'MATERIAL':
-                     $text .= $this->_translator->getMessage('COMMON_ONE_MATERIAL');
-                     break;
-                  case 'PROJECT':
-                     $text .= $this->_translator->getMessage('COMMON_ONE_PROJECT');
-                     break;
-                  case 'TODO':
-                     $text .= $this->_translator->getMessage('COMMON_ONE_TODO');
-                     break;
-                  case 'TOPIC':
-                     $text .= $this->_translator->getMessage('COMMON_ONE_TOPIC');
-                     break;
-                  case 'USER':
-                     $text .= $this->_translator->getMessage('COMMON_ONE_USER');
-                     break;
-                  case 'ACCOUNT':
-                     $text .= $this->_translator->getMessage('COMMON_ACCOUNTS');
-                     break;
-                  default:
-                     $text .= $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR').' cs_detail_view('.__LINE__.') ';
-                     break;
-               }
+								switch ( mb_strtoupper($type, 'UTF-8') ){
+		                  case 'ANNOUNCEMENT':
+		                     $text .= $this->_translator->getMessage('COMMON_ONE_ANNOUNCEMENT');
+		                     break;
+		                  case 'DATE':
+		                     $text .= $this->_translator->getMessage('COMMON_ONE_DATE');
+		                     break;
+		                  case 'DISCUSSION':
+		                     $text .= $this->_translator->getMessage('COMMON_ONE_DISCUSSION');
+		                     break;
+		                  case 'GROUP':
+		                     $text .= $this->_translator->getMessage('COMMON_ONE_GROUP');
+		                     break;
+		                  case 'INSTITUTION':
+		                     $text .= $this->_translator->getMessage('COMMON_ONE_INSTITUTION');
+		                     break;
+		                  case 'MATERIAL':
+		                     $text .= $this->_translator->getMessage('COMMON_ONE_MATERIAL');
+		                     break;
+		                  case 'PROJECT':
+		                     $text .= $this->_translator->getMessage('COMMON_ONE_PROJECT');
+		                     break;
+		                  case 'TODO':
+		                     $text .= $this->_translator->getMessage('COMMON_ONE_TODO');
+		                     break;
+		                  case 'TOPIC':
+		                     $text .= $this->_translator->getMessage('COMMON_ONE_TOPIC');
+		                     break;
+		                  case 'USER':
+		                     $text .= $this->_translator->getMessage('COMMON_ONE_USER');
+		                     break;
+		                  case 'ACCOUNT':
+		                     $text .= $this->_translator->getMessage('COMMON_ACCOUNTS');
+		                     break;
+		                  default:
+		                     $text .= $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR').' cs_detail_view('.__LINE__.') ';
+		                     break;
+		               }
 						*/
 					}
+					
+					$link_title = '';
+					if(isset($item) && is_object($item) && $item->isA(CS_USER_TYPE)) {
+						$link_title = $item->getFullName();
+					} elseif(isset($item) && is_object($item)) {
+						$link_title = $item->getTitle();
+					}
+					
+					// append to return
+					$return[] = array(
+						'title'			=> $converter->text_as_html_short($link_title),
+						'is_current'	=> $item->getItemID() == $this->_item->getItemID()
+					);
 				}
 				
-				$link_title = '';
-				if(isset($item) && is_object($item) && $item->isA(CS_USER_TYPE)) {
-					$link_title = $item->getFullName();
-				} elseif(isset($item) && is_object($item)) {
-					$link_title = $item->getTitle();
-				}
 				
-				// append to return
-				$return[] = array(
-					'title'			=> $converter->text_as_html_short($link_title),
-					'is_current'	=> $item->getItemID() == $this->_item->getItemID()
-				);
 				
 				/*
 				 * 
