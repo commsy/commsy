@@ -72,9 +72,9 @@
 						<p>
 							<a href="" title="{$article.creator}">
 								{if $article.custom_image}
-									<img height="80" src="commsy.php?cid={$environment.cid}&mod=picture&fct=getfile&picture={$article.modificator_image}" alt="{i18n tag=USER_PICTURE_NO_PICTURE param1=$article.creator}" />
+									<img width="62" src="commsy.php?cid={$environment.cid}&mod=picture&fct=getfile&picture={$article.modificator_image}" alt="{i18n tag=USER_PICTURE_NO_PICTURE param1=$article.creator}" />
 								{else}
-									<img height="80" src="{$basic.tpl_path}img/user_unknown.gif" alt="{i18n tag=USER_PICTURE_NO_PICTURE param1=$article.creator}" />
+									<img width="62" src="{$basic.tpl_path}img/user_unknown.gif" alt="{i18n tag=USER_PICTURE_NO_PICTURE param1=$article.creator}" />
 								{/if}
 							</a>
 						</p>
@@ -118,9 +118,9 @@
 					<p>
 						<a href="" title="{$environment.username}">
 							{if $environment.user_picture != ''}
-								<img height="80" src="commsy.php?cid={$environment.cid}&mod=picture&fct=getfile&picture={$environment.user_picture}" alt="{i18n tag=USER_PICTURE_NO_PICTURE param1=$article.creator}" />
+								<img width="62" src="commsy.php?cid={$environment.cid}&mod=picture&fct=getfile&picture={$environment.user_picture}" alt="{i18n tag=USER_PICTURE_NO_PICTURE param1=$article.creator}" />
 							{else}
-								<img height="80" src="{$basic.tpl_path}img/user_unknown.gif" alt="{i18n tag=USER_PICTURE_NO_PICTURE param1=$article.creator}" />
+								<img width="62" src="{$basic.tpl_path}img/user_unknown.gif" alt="{i18n tag=USER_PICTURE_NO_PICTURE param1=$article.creator}" />
 							{/if}
 						</a>
 					</p>
