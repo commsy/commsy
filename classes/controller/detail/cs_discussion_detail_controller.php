@@ -72,7 +72,6 @@
 		         $session->setValue('discussion_clipboard', $clipboard_id_array);
 		      }
 			
-			
 			$this->assign('detail', 'content', $this->getDetailContent());
 		}
 		
@@ -314,6 +313,7 @@
 				
 				// append return
 				$return[] = array(
+					'item_id'			=> $item->getItemID(),
 					'subject'			=> $item->getSubject(),
 					'description'		=> $description,
 					'creator'			=> $creator_fullname,

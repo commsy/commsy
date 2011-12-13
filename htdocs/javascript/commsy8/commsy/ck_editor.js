@@ -15,8 +15,8 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			dialog_startupFocusTab: false,
 			resize_enabled: true,
 			resize_maxWidth: '100%',
-			enterMODE: CKEDITOR.ENTER_BR,
-			shiftEnterMODE: CKEDITOR.ENTER_P,
+			enterMode: CKEDITOR.ENTER_BR,
+			shiftEnterMode: CKEDITOR.ENTER_P,
 			//extraPlugins: 'CommSyImages,CommSyMDO',
 			toolbar: [
 			    ['Cut', 'Copy', 'Paste', 'PasteFromWord', '-', 'Undo', 'Redo', '-', 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', 'SpecialChar', '-', 'NumberedList', 'BulletedList', 'Outdent', 'Indent', 'Blockquote', '-', 'TextColor', 'BGColor', '-', 'RemoveFormat']
@@ -36,6 +36,19 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			div_objects.each(function() {
 				jQuery(this).ckeditor(function() { /* callback */ }, options);
 			});
+		},
+		
+		form_attach: function(form_object, attach_object) {
+			var handler = this.onSubmit;
+			// register submit handling
+			form_object.bind('submit', {attach_object: attach_object}, handler);
+		},
+		
+		onSubmit: function(event) {
+			var attach_object = event.data.attach_object;
+			
+			var editor = jQuery('div[id="ckeditor"]').ckeditorGet();
+			attach_object.attr('value', editor.getData());
 		}
 	};
 });

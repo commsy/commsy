@@ -853,7 +853,6 @@ if(isset($c_smarty) && $c_smarty === true) {
 /*********** PAGE ***********/
 
 global $c_smarty;
-
 $context_item = $environment->getCurrentContextItem();
 
 // temporary bypass smarty for server and project context
@@ -862,11 +861,11 @@ if($context_item->isServer() || $context_item->isPortal()) {
 }
 // and anywhere else if current function is not index and module not discussion
 else {
-	if($environment->getCurrentFunction() !== 'index' && $environment->getCurrentModule() !== 'discussion') {
+	if($environment->getCurrentFunction() === 'detail' && $environment->getCurrentModule() !== 'discussion') {
 		$c_smarty = false;
 	}
 	
-	if($environment->getCurrentFunction() == 'edit') {
+	if($environment->getCurrentFunction() === 'edit' && $environment->getCurrentModule() !== 'discarticle') {
 		$c_smarty = false;
 	}
 }

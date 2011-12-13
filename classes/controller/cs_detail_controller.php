@@ -84,6 +84,7 @@
 				//$html .= $this->_getForwardLinkAsHTML($ids);
 			}
 			
+			$this->assign('detail', 'item_id', $this->_item->getItemID());
 			$this->assign('detail', 'forward_information', $this->getForwardInformation($ids));
 		}
 		

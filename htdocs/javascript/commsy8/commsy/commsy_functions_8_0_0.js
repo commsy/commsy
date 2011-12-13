@@ -91,6 +91,11 @@ define(["libs/jQuery/jquery-1.7.1.min"], function() {
 					// create ckeditor
 					var div_objects = jQuery('div[id="ckeditor"]');
 					$.create(div_objects);
+					
+					// on form submit, attach editor content
+					var form_object = jQuery('div[id="ckeditor"]').parentsUntil('form').last().parent();
+					var attach_object = jQuery('input[id="ckeditor_content"]');
+					$.form_attach(form_object, attach_object);
 				});
 			}
 		},
