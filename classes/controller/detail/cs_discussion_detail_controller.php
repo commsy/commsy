@@ -276,7 +276,8 @@
 				// creator
 				$creator = $item->getCreatorItem();
 				$creator_fullname = '';
-				$modificator_image = 'images/commsyicons/common/user_unknown.gif';
+				$modificator_image = '';
+				$image = '';
 				if(isset($creator)) {
 					$current_user_item = $this->_environment->getCurrentUserItem();
 					if($current_user_item->isGuest() && $creator->isVisibleForLoggedIn()) {
@@ -286,7 +287,7 @@
 						$modificator_item = $item->getModificatorItem();
 						$image = $modificator_item->getPicture();
 						if(!empty($image)) {
-							if(!$disc_manager->existsFile($image)) {
+							if($disc_manager->existsFile($image)) {
 								$modificator_image = $image;
 							}
 						}
@@ -321,7 +322,8 @@
 					'modification_date'	=> getDateTimeInLang($item->getModificationDate()),
 					'num_attachments'	=> $files->getCount(),
 					'noticed'			=> $noticed,
-					'modificator_image'	=> $modificator_image
+					'modificator_image'	=> $modificator_image,
+					'custom_image'		=> !empty($image)
 				);
 				
 				$position++;

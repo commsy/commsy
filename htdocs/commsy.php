@@ -868,6 +868,10 @@ else {
 	if($environment->getCurrentFunction() === 'edit' && $environment->getCurrentModule() !== 'discarticle') {
 		$c_smarty = false;
 	}
+	
+	if($environment->getCurrentFunction() === 'getfile') {
+		$c_smarty = false;
+	}
 }
 
 if(isset($c_smarty) && $c_smarty === true) {

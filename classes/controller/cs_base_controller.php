@@ -3,6 +3,7 @@
 		protected $_environment = null;
 		protected $_tpl_engine = null;
 		protected $_tpl_file = null;
+		protected $_tpl_path = null;
 
 		/**
 		 * constructor
@@ -11,6 +12,7 @@
 			$this->_environment = $environment;
 			$this->_tpl_engine  = $this->_environment->getTemplateEngine();
 			$this->_tpl_file = null;
+			$this->_tpl_path = substr($this->_tpl_engine->getTemplateDir(0), 7);
 
 			// process basic template information
 			$this->processBaseTemplate();
@@ -70,11 +72,9 @@
 		 * process basic template information
 		 */
 		private function processBaseTemplate() {
-			$tpl_dir = $this->_tpl_engine->getTemplateDir(0);
-
 			$current_user = $this->_environment->getCurrentUser();
 
-			$this->assign('basic', 'tpl_path', substr($tpl_dir, 7));
+			$this->assign('basic', 'tpl_path', $this->_tpl_path);
 			$this->assign('environment', 'cid', $this->_environment->getCurrentContextID());
 			$this->assign('environment', 'function', $this->_environment->getCurrentFunction());
 			$this->assign('environment', 'module', $this->_environment->getCurrentModule());

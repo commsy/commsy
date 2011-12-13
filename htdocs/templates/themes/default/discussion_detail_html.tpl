@@ -71,7 +71,11 @@
 					<div class="column_80">
 						<p>
 							<a href="" title="{$article.creator}">
-								<img src="commsy.php?cid={$environment.cid}&mod=picture&fct=getfile&picture={$article.modificator_image}" alt="{i18n tag=USER_PICTURE_NO_PICTURE param1=$article.creator}" />
+								{if $article.custom_image}
+									<img height="80" src="commsy.php?cid={$environment.cid}&mod=picture&fct=getfile&picture={$article.modificator_image}" alt="{i18n tag=USER_PICTURE_NO_PICTURE param1=$article.creator}" />
+								{else}
+									<img height="80" src="{$basic.tpl_path}img/user_unknown.gif" alt="{i18n tag=USER_PICTURE_NO_PICTURE param1=$article.creator}" />
+								{/if}
 							</a>
 						</p>
 					</div>
@@ -113,7 +117,11 @@
 				<div class="column_80">
 					<p>
 						<a href="" title="{$environment.username}">
-							<img src="commsy.php?cid={$environment.cid}&mod=picture&fct=getfile&picture={$environment.user_picture}" alt="{i18n tag=USER_PICTURE_NO_PICTURE param1=$article.creator}" />
+							{if $environment.user_picture != ''}
+								<img height="80" src="commsy.php?cid={$environment.cid}&mod=picture&fct=getfile&picture={$environment.user_picture}" alt="{i18n tag=USER_PICTURE_NO_PICTURE param1=$article.creator}" />
+							{else}
+								<img height="80" src="{$basic.tpl_path}img/user_unknown.gif" alt="{i18n tag=USER_PICTURE_NO_PICTURE param1=$article.creator}" />
+							{/if}
 						</a>
 					</p>
 				</div>
@@ -121,7 +129,7 @@
 				<div class="column_590">
 					<form action="commsy.php?cid={$environment.cid}&mod=discarticle&fct=edit" method="post">
 						<div class="post_content">
-							<h4>{$detail.content.new_num}.</h4>
+							<h4>{$detail.content.new_num}. </h4>
 							<input type="hidden" value="" name="iid">
 							<input type="hidden" value="{$detail.item_id}" name="discussion_id">
 							<input type="hidden" value="1" name="ref_position">
@@ -145,6 +153,6 @@
 
 {block name=room_right_portlets_navigation}
 	{foreach $detail.forward_information as $entry}
-		<a href="">{$entry@iteration}. {if $entry.is_current}<strong>{/if}{$entry.title}{if $entry.is_current}</strong>{/if}</a>
+		<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&iid={$entry.item_id}">{$entry@iteration}. {if $entry.is_current}<strong>{/if}{$entry.title}{if $entry.is_current}</strong>{/if}</a>
 	{/foreach}
 {/block}

@@ -235,32 +235,37 @@
 					// append to return
 					$return[] = array(
 						'title'			=> $converter->text_as_html_short($link_title),
-						'is_current'	=> $item->getItemID() == $this->_item->getItemID()
+						'is_current'	=> $item->getItemID() == $this->_item->getItemID(),
+						'item_id'		=> $item->getItemID()
 					);
-				}
-				
-				
-				
-				/*
+					
+					
+					
+					/*
 				 * 
 				
-            if ($this->_environment->getCurrentModule() == 'account'){
-               $type = 'account';
-            } elseif ( $this->_environment->getCurrentModule() == type2module(CS_MYROOM_TYPE) ) {
-               $type = CS_MYROOM_TYPE;
-            }
-            if ($count_items < 9){
-               $style='padding:0px 5px 0px 10px;';
-            }else{
-                $style='padding:0px 5px 0px 5px;';
-            }
-            $current_user_item = $this->_environment->getCurrentUserItem();
-            if ( isset($item) and $item->getItemID()== $this->_item->getItemID()){
-               $html .='<li class="detail_list_entry" style="'.$style.'">';
+		            if ($this->_environment->getCurrentModule() == 'account'){
+		               $type = 'account';
+		            } elseif ( $this->_environment->getCurrentModule() == type2module(CS_MYROOM_TYPE) ) {
+		               $type = CS_MYROOM_TYPE;
+		            }
+		            if ($count_items < 9){
+		               $style='padding:0px 5px 0px 10px;';
+		            }else{
+		                $style='padding:0px 5px 0px 5px;';
+		            }
+		            */
+					
+					$current_user_item = $this->_environment->getCurrentUserItem();
+					if(isset($item) && $item->getItemID() === $this->_item->getItemID()) {
+						/*
+						$html .='<li class="detail_list_entry" style="'.$style.'">';
                $html .= '<span>'.($count_items+1).'. '.chunkText($link_title,35).'</span>';
                $html .='</li>';
-            } elseif ( isset($item) and $item->isNotActivated() and !($item->getCreatorID() == $current_user_item->getItemID()) and !($current_user_item->isModerator())){
-              $activating_date = $item->getActivatingDate();
+               			*/
+					} elseif(isset($item) && $item->isNotActivated() && !($item->getCreatorID() === $current_user_item->getItemID()) && !$current_user_item->isModerator()) {
+						/*
+						 $activating_date = $item->getActivatingDate();
                if (strstr($activating_date,'9999-00-00')){
                   $activating_text = $this->_translator->getMessage('COMMON_NOT_ACTIVATED');
                }else{
@@ -284,8 +289,10 @@
                                  '',
                                  true);
                $html .='</li>';
-            } elseif ( isset($item) ) {
-               $html .='<li style="'.$style.'">';
+						*/
+					} elseif(isset($item)) {
+						/*
+						$html .='<li style="'.$style.'">';
                $params['iid'] =   $item->getItemID();
                $html .= ($count_items+1).'. '.ahref_curl( $this->_environment->getCurrentContextID(),
                                  $type,
@@ -300,9 +307,11 @@
                                  '',
                                  'class="detail_list"');
                $html .='</li>';
-            }
-            unset($item);
-				 */
+               */
+					}
+					
+					unset($item);
+				}
 				$count_items++;
 			}
 			
