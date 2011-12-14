@@ -26,7 +26,7 @@
 		</div>
 		
 		<div id="item_legend"> <!-- Start item_legend -->
-			{section name="articles_short" loop=$detail.content.disc_articles start=-10 max=10}
+			{section name="articles_short" loop=$detail.content.disc_articles}
 				{$article = $detail.content.disc_articles[articles_short]}
 				{$iteration = $smarty.section.articles_short.iteration}
 				<div class="row_{if $iteration is odd}odd{else}even{/if} {if $iteration is odd}odd{else}even{/if}_sep_390">

@@ -319,7 +319,7 @@
 					'description'		=> $description,
 					'creator'			=> $creator_fullname,
 					'position'			=> $position,
-					'modification_date'	=> getDateTimeInLang($item->getModificationDate()),
+					'modification_date'	=> getDateTimeInLang($item->getModificationDate(), false),
 					'num_attachments'	=> $files->getCount(),
 					'noticed'			=> $noticed,
 					'modificator_image'	=> $modificator_image,
