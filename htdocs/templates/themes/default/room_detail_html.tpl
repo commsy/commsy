@@ -49,7 +49,11 @@
 		<a href="" title="bearbeiten" class="btn_body_rc"><img src="{$basic.tpl_path}img/btn_edit_rc.gif" alt="close" /></a>
 		<div class="portlet_rc_body">
 			{foreach $room.buzzwords as $buzzword}
-				<a href="commsy.php?cid={$environment.cid}&mod=campus_search&fct=index&selbuzzword={$buzzword.to_item_id}" class="keywords_s{$buzzword.class_id}">{$buzzword.name}</a>
+				<a href="commsy.php?cid={$environment.cid}&mod=campus_search&fct=index&selbuzzword={$buzzword.to_item_id}" class="keywords_s{$buzzword.class_id}">
+					{$buzzword.name}
+				</a>
+			{foreachelse}
+				___COMMON_NONE___
 			{/foreach}
 		</div>
 	</div>
@@ -69,10 +73,12 @@
 					{foreach $nodes as $node}
 						<li	id="node_{$node.item_id}"
 							{if $node.children|count > 0}class="folder"{/if}
-							data="url:'commsy.php?cid={$environment.cid}&mod=campus_search&fct=index&{$level}_seltag={$node.item_id}&seltag=yes'">{$node.title}
+							data="url:'commsy.php?cid={$environment.cid}&mod=campus_search&fct=index&{$level}_seltag={$node.item_id}&seltag=yes'">{if $node.match}<b>{/if}{$node.title}{if $node.match}</b>{/if}
 						{if $node.children|count > 0}	{* recursive call *}
 							{tag_tree nodes=$node.children level=$level+1}
 						{/if}
+					{foreachelse}
+						___COMMON_NONE___
 					{/foreach}
 					</ul>
 				{/function}

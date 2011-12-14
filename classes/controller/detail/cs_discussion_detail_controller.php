@@ -123,15 +123,15 @@
 			
 			$disc_articles_manager = $this->_environment->getDiscussionArticlesManager();
 			$disc_articles_manager->setDiscussionLimit($this->_item->getItemID(), $creatorInfoStatus);
-			/*
-	      $discussion_type = $discussion_item->getDiscussionType();
-	      if ($discussion_type=='threaded'){
-	         $discussionarticles_manager->setSortPosition();
-	      }
-	      if ( isset($_GET['status']) and $_GET['status'] == 'all_articles' ) {
-	         $discussionarticles_manager->setDeleteLimit(false);
-	      }
-	      	*/
+			
+			$discussion_type = $this->_item->getDiscussionType();
+			if($discussion_type == 'threaded') {
+				$disc_articles_manager->setSortPosition();
+			}
+			if(isset($_GET['status']) && $_GET['status'] == 'all_articles') {
+				$disc_articles_manager->setDeleteLimit(false);
+			}
+			
 			$disc_articles_manager->select();
 			$articles_list = $disc_articles_manager->get();
 			

@@ -130,6 +130,90 @@
 			$this->_item = $this->_manager->getItem($current_item_id);
 		}
 		
+		/**
+		 * get data for buzzword portlet
+		 */
+		protected function getBuzzwords() {
+			$return = array();
+			
+			$current_context = $this->_environment->getCurrentContextItem();
+			$current_user = $this->_environment->getCurrentUserItem();
+			$text_converter = $this->_environment->getTextConverter();
+			
+			$buzzword_list = $this->_item->getBuzzwordList();
+			$buzzword_entry = $buzzword_list->getFirst();
+			$item_id_array = array();
+			while($buzzword_entry) {
+				$item_id_array[] = $buzzword_entry->getItemID();
+				
+				$buzzword_entry = $buzzword_list->getNext();
+			}
+			
+			$links_manager = $this->_environment->getLinkManager();
+			if(isset($item_id_array[0])) {
+				$count_array = $links_manager->getCountLinksFromItemIDArray($item_id_array, 'buzzword');
+			}
+			
+			$buzzword_entry = $buzzword_list->getFirst();
+			while($buzzword_entry) {
+				$count = 0;
+				if(isset($count_array[$buzzword_entry->getItemID()])) {
+					$count = $count_array[$buzzword_entry->getItemID()];
+				}
+				$return[] = array(
+							'to_item_id'		=> $buzzword_entry->getItemID(),
+							'name'				=> $text_converter->text_as_html_short($buzzword_entry->getName()),
+							'class_id'			=> $this->getBuzzwordSizeLogarithmic($count, 0, 30, 1, 4),
+							'selected_id'		=> $buzzword_entry->getItemID()
+						);
+				
+				
+				$buzzword_entry = $buzzword_list->getNext();
+			}
+			
+			return $return;
+		}
+			
+		/**
+		 * wrapper for recursive tag call
+		 */
+		protected function getTags() {
+			// get ids of tags associated with this item
+			$item_tag_list = $this->_item->getTagList();
+			$item_tag = $item_tag_list->getFirst();
+			$item_tag_id_array = $item_tag_list->getIDArray();
+			
+			// get all tags like common
+			$tag_array = parent::getTags();
+			
+			// mark tags
+			$this->markTags(&$tag_array, &$item_tag_id_array);					// <- be careful, these values are assigned by reference
+			
+			return $tag_array;
+		}
+		
+		/*
+		 * these values are assigned by reference!!!
+		 */
+		private function markTags($tag_array, $item_tag_id_array) {
+			// compare and mark as highlighted
+			foreach($tag_array as &$tag) {					
+				if(in_array($tag['item_id'], $item_tag_id_array)) {
+					$tag['match'] = true;
+				} else {
+					$tag['match'] = false;
+				}
+				
+				// look for recursive
+				if(!empty($tag['children'])) {
+					$this->markTags(&$tag['children'], $item_tag_id_array);		// <- be careful, these values are assigned by reference
+				}
+			}
+			
+			// break the reference
+			unset($tag);
+		}
+		
 		private function getForwardInformation($ids) {
 			$return = array();
 			

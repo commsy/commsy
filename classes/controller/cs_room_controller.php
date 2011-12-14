@@ -133,7 +133,7 @@
 		/**
 		 * get data for buzzword portlet
 		 */
-		private function getBuzzwords() {
+		protected function getBuzzwords() {
 			$return = array();
 
 			$buzzword_manager = $this->_environment->getLabelManager();
@@ -184,7 +184,7 @@
 		 * @param int $maxsize
 		 * @param int $tresholds
 		 */
-		private function getBuzzwordSizeLogarithmic($count, $mincount = 0, $maxcount = 30, $minsize = 10, $maxsize = 20, $tresholds = 0) {
+		protected function getBuzzwordSizeLogarithmic($count, $mincount = 0, $maxcount = 30, $minsize = 10, $maxsize = 20, $tresholds = 0) {
 			if(empty($tresholds)) {
 				$tresholds = $maxsize - $minsize;
 				$treshold = 1;
@@ -199,7 +199,7 @@
 		/**
 		 * wrapper for recursive tag call
 		 */
-		private function getTags() {
+		protected function getTags() {
 			$tag_manager = $this->_environment->getTagManager();
 			$root_item = $tag_manager->getRootTagItem();
 
@@ -210,7 +210,7 @@
 		 * this method goes through the tree structure and generates a nested array of information
 		 * @param cs_tag_item $item
 		 */
-		private function buildTagArray(cs_tag_item $item) {
+		protected function buildTagArray(cs_tag_item $item) {
 			$return = array();
 
 			if(isset($item)) {

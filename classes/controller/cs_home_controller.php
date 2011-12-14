@@ -50,10 +50,10 @@
 			// determe rubrics to show on home list
 			foreach($rubrics as $rubric) {
 				list($rubric_name, $postfix) = explode('_', $rubric);
-
+				
 				// continue if postfix is none or nodisplay
 				if($postfix === 'none' || $postfix === 'nodisplay') continue;
-
+				
 				// TODO: where does activity come from?
 				// continue if name of rubric is activity
 				if($rubric_name === 'activity') continue;

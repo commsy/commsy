@@ -675,21 +675,6 @@ h2#item_navigation {
 h2#item_navigation span {
     padding: 0px 20px;
     }
-    
-.row_odd_no_hover {
-	background-color: #F5F5F5;
-	}
-
-.row_even_no_hover {
-	background-color: #FFF;
-	}
-
-.row_odd_no_hover a,
-.row_even_no_hover a {
-    color: #393939;
-    text-decoration: none;
-    }
-
 
 .row_odd {
     background-color: #F5F5F5;
