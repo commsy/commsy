@@ -875,7 +875,17 @@ else {
 	}
 }
 
-if(isset($_GET['smarty']) && $_GET['smarty'] === 'false') $c_smarty = false;
+if(isset($_GET['smarty'])) {
+	if($_GET['smarty'] === 'false') {
+		$session->setValue('smarty_off', true);
+	} elseif($_GET['smarty'] === 'true') {
+		$session->setValue('smarty_off', false);
+	}
+}
+
+if(isset($_GET['smarty']) || $session->issetValue('smarty_off')) {
+	$c_smarty = !$session->getValue('smarty_off');
+}
 
 if(isset($c_smarty) && $c_smarty === true) {
 	if($environment->getCurrentModule() === 'home') {
