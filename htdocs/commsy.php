@@ -861,7 +861,8 @@ if($context_item->isServer() || $context_item->isPortal()) {
 }
 // and anywhere else if current function is not index and module not discussion
 else {
-	if($environment->getCurrentFunction() === 'detail' && $environment->getCurrentModule() !== 'discussion') {
+	if(	$environment->getCurrentFunction() === 'detail' && 
+		$environment->getCurrentModule() !== 'discussion') {
 		$c_smarty = false;
 	}
 	
@@ -873,6 +874,8 @@ else {
 		$c_smarty = false;
 	}
 }
+
+if(isset($_GET['smarty']) && $_GET['smarty'] === 'false') $c_smarty = false;
 
 if(isset($c_smarty) && $c_smarty === true) {
 	if($environment->getCurrentModule() === 'home') {
