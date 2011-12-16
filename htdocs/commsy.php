@@ -862,7 +862,8 @@ if($context_item->isServer() || $context_item->isPortal()) {
 // and anywhere else if current function is not index and module not discussion
 else {
 	if(	$environment->getCurrentFunction() === 'detail' && 
-		$environment->getCurrentModule() !== 'discussion') {
+		$environment->getCurrentModule() !== 'discussion' &&
+		$environment->getCurrentModule() !== 'material') {
 		$c_smarty = false;
 	}
 	

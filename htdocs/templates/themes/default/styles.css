@@ -1042,6 +1042,15 @@ a#sort_down {
     border-bottom: 1px solid #545454;
     }
 
+#item_legend table {
+	padding: 5px 10px;
+	}
+
+#item_legend table td {
+	vertical-align: top;
+	padding: 3px 0px 0px 0px;
+	}
+
 .item_post {
     margin-top: 1px;
     border-top: 1px solid #FFF;

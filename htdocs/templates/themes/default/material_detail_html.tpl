@@ -27,47 +27,19 @@
 		
 		<div id="item_legend"> <!-- Start item_legend -->
 			<div class="row_odd">
-				{if empty($detail.content.description)}___COMMON_NONE___{else}{$detail.content.description}{/if}
+				{* formal data *}
+				{if !empty($detail.content.formal)}
+					<table>
+						{foreach $detail.content.formal as $formal}
+							<tr>
+								<td><h4>{$formal[0]}</h4></td>
+								<td>{$formal[1]}</td>
+						{/foreach}
+					</table>
+				{/if}
 			</div>
 		</div> <!-- Ende item_legend -->
 		
-		
-		
-		
-		<div class="item_body"> <!-- Start item body -->
-			<a name="disc_article_{$article.item_id}"></a>
-			<div class="item_post">
-				<div class="row_{if $section@iteration is odd}odd{else}even{/if} {if $section@iteration is odd}odd{else}even{/if}_sep_disdetail">
-					<div class="column_590">
-						<div class="post_content">
-							<h4>
-								{$detail.content.title}
-							
-							{*{if $article.noticed == 'new' or $article.noticed == 'changed'}*}<img src="{$basic.tpl_path}img/flag_neu.gif" alt="___COMMON_NEW___"/>{*{/if}*}
-							</h4>
-							{*<span><a href="">{$article.creator}</a>, {$article.modification_date}</span>*}
-							<div class="editor_content">
-								{$detail.content.description}
-							</div>
-						</div>
-					</div>
-					<div class="column_27">
-						<p class="jump_up_down">
-							{*{if !$article@first}<a href="#disc_article_{$detail.content.disc_articles[$article@index - 1].item_id}"><img src="{$basic.tpl_path}img/btn_jump_up.gif" alt="&lt;" /></a>{/if}*}
-							{*{if !$article@last}<a href="#disc_article_{$detail.content.disc_articles[$article@index + 1].item_id}"><img src="{$basic.tpl_path}img/btn_jump_down.gif" alt="&gt;" /></a>{/if}*}
-						</p>
-					</div>
-					<div class="column_45">
-						<p>
-							<a href="" class="attachment">{*{$article.num_attachments}*}</a>
-						</p>
-					</div>
-					<div class="clear"> </div>
-				</div>
-			</div>
-		</div> <!-- Ende item body -->
-		<div class="clear"> </div>
-	
 	</div> <!-- Ende item body -->
 	<div class="clear"> </div>
 	
@@ -78,10 +50,15 @@
 		</div>
 		
 		<div class="item_body"> <!-- Start item body -->
-			<a name="disc_article_{$article.item_id}"></a>
+			<a name="mat_section_{$section@index}"></a>
 			<div class="item_post">
-				<div class="row_{if $section@iteration is odd}odd{else}even{/if} {if $section@iteration is odd}odd{else}even{/if}_sep_disdetail">
-					<div class="column_590">
+				<div class="row_{if $section@iteration is odd}odd{else}even{/if}_no_hover {if $section@iteration is odd}odd{else}even{/if}_sep_disdetail">
+				
+					<div class="column_80">
+						<p></p>
+					</div>
+				
+					<div class="column_510">
 						<div class="post_content">
 							<h4>
 								{$section.title}
@@ -96,8 +73,8 @@
 					</div>
 					<div class="column_27">
 						<p class="jump_up_down">
-							{*{if !$article@first}<a href="#disc_article_{$detail.content.disc_articles[$article@index - 1].item_id}"><img src="{$basic.tpl_path}img/btn_jump_up.gif" alt="&lt;" /></a>{/if}*}
-							{*{if !$article@last}<a href="#disc_article_{$detail.content.disc_articles[$article@index + 1].item_id}"><img src="{$basic.tpl_path}img/btn_jump_down.gif" alt="&gt;" /></a>{/if}*}
+							{if !$section@first}<a href="#mat_section_{$section@index - 1}"><img src="{$basic.tpl_path}img/btn_jump_up.gif" alt="&lt;" /></a>{/if}
+							{if !$section@last}<a href="#mat_section_{$section@index + 1}"><img src="{$basic.tpl_path}img/btn_jump_down.gif" alt="&gt;" /></a>{/if}
 						</p>
 					</div>
 					<div class="column_45">

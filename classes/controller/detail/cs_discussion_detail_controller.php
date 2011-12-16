@@ -315,13 +315,7 @@
 				//$description = $converter->text_as_html_long($converter->cleanDataFromTextArea($description));
 				//$description = $converter->showImages($description, $item, true);
 				
-				/*
-				 * $this->_text_converter->setFileArray($this->_getItemFileListForView());
-				 * 
-				$desc = $this->_text_as_html_long($this->_compareWithSearchText($this->_cleanDataFromTextArea($desc)));
-         $desc = $this->_show_images($desc,$item,true);
-         $retour .= $this->getScrollableContent($desc,$item,'',true).LF;
-         */
+				//$retour .= $this->getScrollableContent($desc,$item,'',true).LF;
 				
 				// append return
 				$return[] = array(
