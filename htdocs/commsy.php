@@ -855,6 +855,18 @@ if(isset($c_smarty) && $c_smarty === true) {
 global $c_smarty;
 $context_item = $environment->getCurrentContextItem();
 
+if(isset($_GET['smarty'])) {
+	if($_GET['smarty'] === 'false') {
+		$session->setValue('smarty_off', true);
+	} elseif($_GET['smarty'] === 'true') {
+		$session->setValue('smarty_off', false);
+	}
+}
+
+if(isset($_GET['smarty']) || $session->issetValue('smarty_off')) {
+	$c_smarty = !$session->getValue('smarty_off');
+}
+
 // temporary bypass smarty for server and project context
 if($context_item->isServer() || $context_item->isPortal()) {
 	$c_smarty = false;
@@ -874,18 +886,6 @@ else {
 	if($environment->getCurrentFunction() === 'getfile') {
 		$c_smarty = false;
 	}
-}
-
-if(isset($_GET['smarty'])) {
-	if($_GET['smarty'] === 'false') {
-		$session->setValue('smarty_off', true);
-	} elseif($_GET['smarty'] === 'true') {
-		$session->setValue('smarty_off', false);
-	}
-}
-
-if(isset($_GET['smarty']) || $session->issetValue('smarty_off')) {
-	$c_smarty = !$session->getValue('smarty_off');
 }
 
 if(isset($c_smarty) && $c_smarty === true) {
