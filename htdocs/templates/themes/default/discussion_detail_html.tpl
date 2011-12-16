@@ -8,11 +8,11 @@
 			<a href=""><span class="ref_to_ia"> &nbsp; </span></a>
 		</div>
 	</div>
-	
+
 	<div class="item_body"> <!-- Start item body -->
 		<h2>{$detail.content.discussion.title}</h2>
 		<div class="clear"> </div>
-		
+
 		<div id="item_credits">
 			<p id="ic_rating">
 				{foreach $detail.content.discussion.assessments as $assessment}
@@ -24,7 +24,7 @@
 			</p>
 			<div class="clear"> </div>
 		</div>
-		
+
 		<div id="item_legend"> <!-- Start item_legend -->
 			{section name="articles_short" loop=$detail.content.disc_articles}
 				{$article = $detail.content.disc_articles[articles_short]}
@@ -34,7 +34,7 @@
 						<p>
 							{$article.position}.
 							{if $article.noticed == 'new' or $article.noticed == 'changed'}<img src="{$basic.tpl_path}img/flag_neu.gif" alt="NEU"/>{/if}
-							<a href="">{$article.subject}</a>
+							<a href="#disc_article_{$article.item_id}">{$article.subject}</a>
 						</p>
 					</div>
 					<div class="column_45">
@@ -54,16 +54,16 @@
 				</div>
 			{/section}
 		</div> <!-- Ende item_legend -->
-	
+
 	</div> <!-- Ende item body -->
 	<div class="clear"> </div>
-	
+
 	{foreach $detail.content.disc_articles as $article}
 		<div class="item_actions">
 			<a href=""><span class="edit_set"> &nbsp; </span></a>
 			<a href=""><span class="details_ia"> &nbsp; </span></a>
 		</div>
-		
+
 		<div class="item_body"> <!-- Start item body -->
 			<a name="disc_article_{$article.item_id}"></a>
 			<div class="item_post">
@@ -79,7 +79,7 @@
 							</a>
 						</p>
 					</div>
-					
+
 					<div class="column_510">
 						<div class="post_content">
 							<h4>{$article@iteration}.
@@ -108,9 +108,9 @@
 		</div> <!-- Ende item body -->
 		<div class="clear"> </div>
 	{/foreach}
-	
+
 	<div class="item_actions">&nbsp;</div>
-	
+
 	<div class="item_body"> <!-- Start item body -->
 		<div class="item_post">
 			<div id="item_postnew">
@@ -125,7 +125,7 @@
 						</a>
 					</p>
 				</div>
-				
+
 				<div class="column_590">
 					<form action="commsy.php?cid={$environment.cid}&mod=discarticle&fct=edit" method="post">
 						<div class="post_content">
@@ -147,7 +147,7 @@
 		</div>
 	</div> <!-- Ende item body -->
 	<div class="clear"> </div>
-	
+
 	<div class="clear"> </div>
 {/block}
 
