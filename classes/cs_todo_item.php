@@ -204,6 +204,7 @@ class cs_todo_item extends cs_item {
    function getStepItemList(){
       $step_manager = $this->_environment->getStepManager();
       $step_manager->setTodoItemIDLimit($this->getItemID());
+      $step_manager->setContextLimit($this->getContextID());
       $step_manager->select();
       $step_item_list = $step_manager->get();
       return $step_item_list;
