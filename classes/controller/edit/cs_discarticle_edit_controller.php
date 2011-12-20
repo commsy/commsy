@@ -31,6 +31,8 @@
 		public function actionEdit() {
 			//$this->assign('detail', 'content', $this->getDetailContent());
 			
+			$session = $this->_environment->getSessionItem();
+			
 			// get post data
 			$this->getPostData();
 			
@@ -170,9 +172,10 @@
 					 */
 				// show form and/or save item
 				} else {
-					
-					
-					
+					if(	isset($_GET['back_to_discussion_detail_view']) &&
+						!empty($command) &&
+							!(isOption($command, $translator->getMessage('DISCARTICLE_SAVE_BUTTON')) ||
+							isOption($command, $translator->getMessage('DISCARTICLE_CHANGE_BUTTON')))) {	
 					/*
 					// Handle requests from discussion_detail_view   
 			      if(   isset($_GET['back_to_discussion_detail_view']) &&
@@ -180,46 +183,57 @@
 			               !(isOption($command, $translator->getMessage('DISCARTICLE_SAVE_BUTTON')) ||
 			               isOption($command, $translator->getMessage('DISCARTICLE_CHANGE_BUTTON')))
 			            ) {
-			         $session_item = $environment->getSessionItem();
-			         
-			         if(   (!$session_item->issetValue($environment->getCurrentModule().'_add_files') &&
-			               isset($discarticle_item))) {
-				        // get files from database
-				        $file_list = $discarticle_item->getFileList();
-				        if ( !$file_list->isEmpty() ) {
-				           $file_array = array();
-				           $file_item = $file_list->getFirst();
-				           while ( $file_item ) {
-				              $temp_array = array();
-				              $temp_array['name'] = $file_item->getDisplayName();
-				              $temp_array['file_id'] = (int)$file_item->getFileID();
-				              $file_array[] = $temp_array;
-				              $file_item = $file_list->getNext();
-				           }
-				           if ( !empty($file_array)) {
-				              $session->setValue($environment->getCurrentModule().'_add_files', $file_array);
-				           }
-				        }
-			         }
-			         
-         include_once('include/inc_fileupload_edit_page_handling.php');
-         
-         // set session post vars
-         $session_post_vars = $_POST;
-         if ( isset($post_file_ids) AND !empty($post_file_ids) ) {
-            $session_post_vars['filelist'] = $post_file_ids;
-         }
-           
-         $session_item->setValue('back_to_discussion_detail_view_postvars', $session_post_vars);
-         
-         if(isset($discarticle_item)) {
-            $session_item->setValue('back_to_discussion_detail_view_last_upload', "edit" . $discarticle_item->getItemID());
-         } else {
-            $session_item->setValue('back_to_discussion_detail_view_last_upload', "new" . $_GET['answer_to']);
-         }
-         
-         
-         // Redirect
+				         $session_item = $environment->getSessionItem();
+				         
+				         if(   (!$session_item->issetValue($environment->getCurrentModule().'_add_files') &&
+				               isset($discarticle_item))) {
+					        // get files from database
+					        $file_list = $discarticle_item->getFileList();
+					        if ( !$file_list->isEmpty() ) {
+					           $file_array = array();
+					           $file_item = $file_list->getFirst();
+					           while ( $file_item ) {
+					              $temp_array = array();
+					              $temp_array['name'] = $file_item->getDisplayName();
+					              $temp_array['file_id'] = (int)$file_item->getFileID();
+					              $file_array[] = $temp_array;
+					              $file_item = $file_list->getNext();
+					           }
+					           if ( !empty($file_array)) {
+					              $session->setValue($environment->getCurrentModule().'_add_files', $file_array);
+					           }
+					        }
+				         }
+				         
+				         
+						include_once('include/inc_fileupload_edit_page_handling.php');
+						*/
+				
+						$post_file_ids = array();
+						if(isset($_POST['filelist'])) {
+							$post_file_ids = $_POST['filelist'];
+						}
+						
+						// set session post vars
+						$session_post_vars = $_POST;
+						if(isset($post_file_ids) && !empty($post_file_ids)) {
+							$session_post_vars['filelist'] = $post_file_ids;
+						}
+						
+						$session_item->setValue('back_to_discussion_detail_view_postvars', $session_post_vars);
+						
+						if(isset($discarticle_item)) {
+							$session_item->setValue('back_to_discussion_detail_view_last_upload', 'edit' . $discarticle_item->getItemID());
+						} else {
+							$session_item->setValue('back_to_discussion_detail_view_last_upload', 'new' . $_GET['answer_to']);
+						}
+					
+					// redirect
+					//cleanup_session($current_iid);
+					
+					/*
+					 * 
+			// Redirect
          //cleanup_session($current_iid);
          $params = array();
          $params['iid'] = $_POST['discussion_id'];
@@ -240,7 +254,16 @@
                      'detail',
                      $params,
                      'discarticle_form');
-      }
+					 * 
+					 * 
+					 */
+					
+					
+					}
+					/*
+
+         
+
       
       // Initialize the form
       $class_params= array();
@@ -252,19 +275,20 @@
       if (isset($ref_did)){
          $form->setRefDid($ref_did);
       }
-      
-      include_once('include/inc_fileupload_edit_page_handling.php');
 */
+					
+					$post_file_ids = array();
+					if(isset($_POST['filelist'])) {
+						$post_file_ids = $_POST['filelist'];
+					}
 
 					// load form data from postvars
 					if(!empty($_POST)) {
-						/*
 						$session_post_vars = $_POST;
-				         if ( isset($post_file_ids) AND !empty($post_file_ids) ) {
-				            $session_post_vars['filelist'] = $post_file_ids;
-				         }
-				         $form->setFormPost($session_post_vars);
-				         */
+						if(isset($post_file_ids) && !empty($post_file_ids)) {
+							$session_post_vars['filelist'] = $post_file_ids;
+						}
+						//$form->setFormPost($session_post_vars);
 					}
 					
 					// back from multi upload
@@ -305,18 +329,15 @@
 					
 					// create data for new item
 					elseif($this->_item_id === null) {
-						//cleanup_session($current_iid);
+						$this->cleanup_session($this->_item_id);
 					} else {
 						include_once('functions/error_functions.php');trigger_error('discarticle_edit was called in an unknown manner', E_USER_ERROR);
 					}
 					
-					/*
-      if ($session->issetValue($environment->getCurrentModule().'_add_files')) {
-         $form->setSessionFileArray($session->getValue($environment->getCurrentModule().'_add_files'));
-      }
-      $form->prepareForm();
-      $form->loadValues();
-      */
+					if($session->issetValue($this->_environment->getCurrentModule() . '_add_files')) {
+						//$form->setSessionFileArray($session->getValue($environment->getCurrentModule().'_add_files'));
+						//die("UPLOAD");
+					}
 					
 					// save item
 					if($this->_command === 'new') {
@@ -404,8 +425,7 @@
 								$discarticle_item->setMaterialListByID(array());
 							}
 							
-							//$item_files_upload_to = $discarticle_item;
-							//include_once('include/inc_fileupload_edit_page_save_item.php');
+							$this->setFilesForItem($discarticle_item, $post_file_ids);
 							
 							// save item
 							$discarticle_item->save();

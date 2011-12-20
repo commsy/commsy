@@ -387,9 +387,10 @@
 				$temp_array = array();
 				$temp_array[] = $translator->getMessage('MATERIAL_BIBLIOGRAPHIC');
 				if(!empty($biblio)) {
+					$converter->setFileArray($this->getItemFileList());
 					$temp_array[] = $converter->text_as_html_long($converter->cleanDataFromTextArea($biblio));
 				} else {
-					$temp_array[] = '<span class="disabled"> ' . $translator->getMessage('COMON_NONE') . '</span';
+					$temp_array[] = '<span class="disabled"> ' . $translator->getMessage('COMON_NONE') . '</span>';
 				}
 				$return[] = $temp_array;
 			}
@@ -443,6 +444,7 @@
 				$description = $this->_item->getDescription();
 				if(!empty($description)) {
 					$description = $converter->cleanDataFromTextArea($description);
+					$converter->setFileArray($this->getItemFileList());
 					$description = $converter->text_as_html_long($description);
 					$description = $converter->showImages($description, $this->_item, true);
 					$temp_array[] = $description;
@@ -642,6 +644,7 @@
 					// prepare description
 		            $description = $section->getDescription();
 					$description = $converter->cleanDataFromTextArea($description);
+					$converter->setFileArray($this->getItemFileList());
 					$description = $converter->text_as_html_long($description);
 					$description = $converter->showImages($description, $section, true);
 					

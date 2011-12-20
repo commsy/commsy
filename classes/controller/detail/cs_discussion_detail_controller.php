@@ -310,11 +310,11 @@
 				// description
 				$converter = $this->_environment->getTextConverter();
 				$description = $item->getDescription();
-				// TODO: these sanitize functions seem not to work with actual ckeditor :/
-				
-				//$description = $converter->text_as_html_long($converter->cleanDataFromTextArea($description));
-				//$description = $converter->showImages($description, $item, true);
-				
+				$description = $converter->cleanDataFromTextArea($description);
+				$converter->setFileArray($this->getItemFileList());
+				$description = $converter->text_as_html_long($description);
+				$description = $converter->showImages($description, $item, true);
+								
 				//$retour .= $this->getScrollableContent($desc,$item,'',true).LF;
 				
 				// append return

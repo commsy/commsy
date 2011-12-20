@@ -10,16 +10,11 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 		options: {
 			uploader:		'javascript/commsy8/libs/jQuery_plugins/uploadify-v2.1.4/uploadify.swf',
 			method:			'GET',
-			folder:			'javascript/commsy8/libs/jQuery_plugins/uploadify-v2.1.4/uploads',
 			multi:			true,
 			wmode:			'transparent',
 			width:			160,
 			height:			25,
-			sizeLimit:		0,
-			cancelImg:		'',
-			onComplete: 	this.onComplete,
-			onAllComplete:	this.onAllComplete,
-			onError:		this.onError
+			sizeLimit:		0
 		},
 		
 		init: function(commsy_functions, object, parameters) {
@@ -53,8 +48,9 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			data.cid = commsy_functions.getURLParam('cid');
 			data.mod = 'ajax';
 			data.fct = 'uploadify';
-			data.c_virus_scan = preconditions.environment.virus_scan;
-			data.c_virus_scan_cron = preconditions.environment.virus_scan_cron;
+			data.action = 'upload';
+			data.c_virus_scan = preconditions.global.virus_scan;
+			data.c_virus_scan_cron = preconditions.global.virus_scan_cron;
 			
 			var mod = commsy_functions.getURLParam('mod');
 			var fct = commsy_functions.getURLParam('fct');
@@ -74,6 +70,10 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			handle.options.buttonImg = preconditions.template.tpl_path + '/img/uploadify/button_browse_' + preconditions.environment.lang + '.png';
 			handle.options.sizeLimit = preconditions.environment.max_upload_size;
 			handle.options.scriptData = data;
+			handle.options.cancelImg = preconditions.template.tpl_path + '/img/uploadify/delete.png';
+			handle.options.onComplete = handle.onComplete;
+			handle.options.onAllComplete = handle.onAllComplete;
+			handle.options.onError = handle.onError;
 			
 			// create
 			object.uploadify(handle.options);
@@ -87,8 +87,27 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			});
 		},
 		
-		onComplete: function() {
+		onComplete: function(event, queueID, fileObj, response, data) {
 			
+			console.log(fileObj);
+			// add checkbox and file name to finished list
+			jQuery("div[id='file_finished']").append(
+				jQuery("<input/>", {
+					"type"		:	"checkbox",
+					"checked"	:	"checked",
+					"name"		:	"filelist[]",
+					"value"		:	response
+				}),
+				jQuery("<span/>", {
+					"style"		:	"font-size: 10pt;",
+					"innerHTML"	:	fileObj.name
+				}),
+				jQuery("<br/>"
+				)
+			);
+
+			// this is for browser compatibility
+			jQuery("div[id='fileFinished'] input:last").attr('checked', 'checked');
 		},
 		
 		onAllComplete: function() {

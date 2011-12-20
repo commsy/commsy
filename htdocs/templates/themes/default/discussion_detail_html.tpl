@@ -127,7 +127,7 @@
 				</div>
 
 				<div class="column_590">
-					<form action="commsy.php?cid={$environment.cid}&mod=discarticle&fct=edit" method="post">
+					<form action="commsy.php?cid={$environment.cid}&mod=discarticle&fct=edit" method="post" enctype="multipart/form-data">
 						<div class="post_content">
 							<h4>{$detail.content.new_num}. </h4>
 							<input type="hidden" value="" name="iid">
@@ -139,14 +139,16 @@
 								<input type="hidden" id="ckeditor_content" name="form_data[description]" value=""/>
 								
 								<div id="file_finished"></div>
-								<input id="uploadify" name="file_upload" type="file" />
+								<input id="uploadify" name="uploadify" type="file" />
 								
-								<a id="uploadify_doUpload">
-									<img src={$basic.tpl_path}img/uploadify/button_upload_{$environment.lang}.png />
-								</a>
-								<a id="uploadify_clearQuery">
-									<img src={$basic.tpl_path}img/uploadify/button_abort_{$environment.lang}.png />
-								</a>
+								<div>
+									<a id="uploadify_doUpload">
+										<img src={$basic.tpl_path}img/uploadify/button_upload_{$environment.lang}.png />
+									</a>
+									<a id="uploadify_clearQuery">
+										<img src={$basic.tpl_path}img/uploadify/button_abort_{$environment.lang}.png />
+									</a>
+								</div>
 								<input type="image" id="disc_article_submit" name="form_data[option][new]" src="{$basic.tpl_path}img/btn_go.gif" alt="___DISCARTICLE_SAVE_BUTTON___" />
 							</div>
 						</div>
