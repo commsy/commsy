@@ -27,15 +27,33 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			]
 		},
 		
-		init: function() {
+		init: function(commsy_functions, object, parameters) {			
+			parameters.object = object;
+			parameters.handle = this;
+			
+			// set preconditions
+			this.setPreconditions(commsy_functions, this.create, parameters);
 		},
 		
-		create: function(div_objects) {
-			options = this.options;
+		setPreconditions: function(commsy_functions, callback, parameters) {
+			var preconditions = {
+			};
 			
-			div_objects.each(function() {
-				jQuery(this).ckeditor(function() { /* callback */ }, options);
-			});
+			// register preconditions
+			commsy_functions.registerPreconditions(preconditions, callback, parameters);
+		},
+		
+		create: function(preconditions, parameters) {
+			var object = parameters.object;
+			var input_object = parameters.input_object;
+			var handle = parameters.handle;
+			
+			// on form submit, attach editor content
+			var form_object = object.parentsUntil('form').last().parent();
+			handle.form_attach(form_object, input_object);
+			var options = handle.options;
+			
+			object.ckeditor(function() { /* callback */ }, options);
 		},
 		
 		form_attach: function(form_object, attach_object) {

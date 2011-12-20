@@ -137,6 +137,16 @@
 							<div class="editor_content">
 								<div id="ckeditor"></div>
 								<input type="hidden" id="ckeditor_content" name="form_data[description]" value=""/>
+								
+								<div id="file_finished"></div>
+								<input id="uploadify" name="file_upload" type="file" />
+								
+								<a id="uploadify_doUpload">
+									<img src={$basic.tpl_path}img/uploadify/button_upload_{$environment.lang}.png />
+								</a>
+								<a id="uploadify_clearQuery">
+									<img src={$basic.tpl_path}img/uploadify/button_abort_{$environment.lang}.png />
+								</a>
 								<input type="image" id="disc_article_submit" name="form_data[option][new]" src="{$basic.tpl_path}img/btn_go.gif" alt="___DISCARTICLE_SAVE_BUTTON___" />
 							</div>
 						</div>

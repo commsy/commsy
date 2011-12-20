@@ -19,14 +19,36 @@ define([	"libs/jQuery/jquery-1.7.1.min",
 		 * 
 		 * TODO: implement general updating mechanism for attributes(title, alt)
 		 */
-		registerEvent: function(target, actors, event) {
-			// store handler
-			var handler = this.onEvent;
+		init: function(commsy_functions, parameters) {
+			parameters.handle = this;
 			
-			// go through all actors
-			jQuery.each(actors, function() {
-				// bind
-				this.object.bind(event, {actor: this, target: target, images: this.images, modify_images: this.modify_images}, handler);
+			// set preconditions
+			this.setPreconditions(commsy_functions, this.registerEvent, parameters);
+		},
+		
+		setPreconditions: function(commsy_functions, callback, parameters) {
+			var preconditions = {
+			};
+			
+			// register preconditions
+			commsy_functions.registerPreconditions(preconditions, callback, parameters);
+		},
+		
+		registerEvent: function(preconditions, parameters) {
+			var event = parameters.action;
+			
+			// store handler
+			var handler = parameters.handle.onEvent;
+			
+			jQuery(parameters.objects).each(function() {
+				var actors = this.actors;
+				var target = this.div;
+				
+				// go through all actors
+				jQuery.each(actors, function() {
+					// bind
+					this.object.bind(event, {actor: this, target: target, images: this.images, modify_images: this.modify_images}, handler);
+				});
 			});
 		},
 		

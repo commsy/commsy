@@ -624,6 +624,8 @@
 				$section = $section_list->getFirst();
 				
 				while($section) {
+					
+					
 					/*
 					// files
             $fileicons = $this->_getItemFiles( $section,true);
@@ -643,6 +645,31 @@
 					$description = $converter->text_as_html_long($description);
 					$description = $converter->showImages($description, $section, true);
 					
+					// files
+					$files = array();
+					
+					$file_list = $section->getFileList();
+					if(!$file_list->isEmpty()) {
+						$file = $file_list->getFirst();
+						while($file) {
+							if(!(isset($_GET['mode']) && $_GET['mode'] === 'print') || (isset($_GET['download']) && $_GET['download'] === 'zip')) {
+								if((!isset($_GET['download']) || $_GET['download'] != 'zip') && in_array($file->getExtension(), array('png', 'jpg', 'jpeg', 'gif'))) {
+									//$this->_with_slimbox = true;
+									$file_string = '<a href="'.$file->getUrl().'" rel="lightbox[gallery'.$section->getItemID().']">';
+									$file->getFileIcon().' '.($this->_text_as_html_short($file->getDisplayName())).'</a> ('.$file->getFileSize().' KB)';
+								} else {
+									$file_string = '<a href="'.$file->getUrl().'" target="blank">'.
+						                  $file->getFileIcon().' '.($this->_text_as_html_short($file->getDisplayName())).'</a> ('.$file->getFileSize().' KB)';
+								}
+							} else {
+									 $file_string = '<a href="'.$file->getUrl().'" target="blank">'.
+                					  $file->getFileIcon().' '.($this->_text_as_html_short($file->getDisplayName())).'</a> ('.$file->getFileSize().' KB)';
+							}
+							$files[] = $file_string;
+							
+							$file = $file_list->getNext();
+						}
+					}
 					/*
 					 * 
 					 // files

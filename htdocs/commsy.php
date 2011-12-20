@@ -871,7 +871,7 @@ if(isset($_GET['smarty']) || $session->issetValue('smarty_off')) {
 if($context_item->isServer() || $context_item->isPortal()) {
 	$c_smarty = false;
 }
-// and anywhere else if current function is not index and module not discussion
+// and anywhere else if conditions match
 else {
 	if(	$environment->getCurrentFunction() === 'detail' && 
 		$environment->getCurrentModule() !== 'discussion' &&
@@ -889,20 +889,29 @@ else {
 }
 
 if(isset($c_smarty) && $c_smarty === true) {
-	if($environment->getCurrentModule() === 'home') {
-		$controller_name = 'cs_' . $environment->getCurrentModule() . '_controller';
-		require_once('classes/controller/' . $controller_name . '.php');
-	} else {
-		$controller_name = 'cs_' . $environment->getCurrentModule() . '_' . $environment->getCurrentFunction() . '_controller';
-		require_once('classes/controller/' . $environment->getCurrentFunction() . '/' . $controller_name . '.php');
-	}
-	
-	if($c_smarty) {
+	// TODO: get-parameter is checked, because getCurrentModule() returns 'home' when calling 'ajax'
+	// TODO: getCurrentFunction() also fails
+	if($_GET['mod'] === 'ajax') {
+		$controller_name = 'cs_ajax_' . $_GET['fct'] . '_controller';
+		require_once('classes/controller/ajax/' . $controller_name . '.php');
+		
 		$controller = new $controller_name($environment);
-		$controller->processTemplate();
-		$controller->displayTemplate();
+		$controller->process();
+	} else {
+		if($environment->getCurrentModule() === 'home') {
+			$controller_name = 'cs_' . $environment->getCurrentModule() . '_controller';
+			require_once('classes/controller/' . $controller_name . '.php');
+		} else {
+			$controller_name = 'cs_' . $environment->getCurrentModule() . '_' . $environment->getCurrentFunction() . '_controller';
+			require_once('classes/controller/' . $environment->getCurrentFunction() . '/' . $controller_name . '.php');
+		}
+		
+		if($c_smarty) {
+			$controller = new $controller_name($environment);
+			$controller->processTemplate();
+			$controller->displayTemplate();
+		}
 	}
-	
 } else {
 	// with or without modifiying options
 	$with_modifying_actions = $context_item_current->isOpen();

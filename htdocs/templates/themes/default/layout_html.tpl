@@ -16,6 +16,7 @@
     
     <link rel="stylesheet" type="text/css" media="screen" href="{$basic.tpl_path}styles.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="{$basic.tpl_path}ui.dynatree.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="{$basic.tpl_path}uploadify.css" />
     
     <script data-main="javascript/commsy8/main.js" src="javascript/commsy8/require.js"></script>
     

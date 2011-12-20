@@ -84,5 +84,6 @@
 			$this->assign('environment', 'is_guest', $current_user->isReallyGuest());
 			$this->assign('environment', 'is_moderator', $current_user->isModerator());
 			$this->assign('translation', 'act_month_long', getLongMonthName(date("n") - 1));
+			$this->assign('environment', 'lang', $this->_environment->getSelectedLanguage());
 		}
 	}
