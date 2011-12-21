@@ -825,7 +825,23 @@ input.new_item_2 {
     float: left;
     }
 
+/*
+----------------------------------------------------------------------
+edit overlay
+----------------------------------------------------------------------
+*/
 
+.edit_overlay {
+	display: none;
+	position: absolute;
+	z-index: 100;
+	background-color: #f5f5f5;
+	border-right: 1px solid black;
+	border-top: 1px solid black;
+	border-bottom: 1px solid black;
+	opacity: 0.9;
+	padding: 7px;
+	}
 
 /*
 ----------------------------------------------------------------------

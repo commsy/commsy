@@ -193,6 +193,33 @@
 			return $tag_array;
 		}
 		
+		protected function getEditActions($item, $user, $module = '') {
+			$return = array(
+				'edit'		=> false,
+				'delete'	=> false);
+			
+			if($item->mayEdit($user) /* && $this->with_modifying_actions */) {
+				$return['edit'] = true;
+				
+				if(empty($module)) $module = $this->_environment->getCurrentModule();
+				$return['edit_module'] = $module;
+			} else {
+				
+				
+				
+				/*
+				 * if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+            $image = '<img src="images/commsyicons_msie6/22x22/edit_grey.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_EDIT_ITEM').'"/>';
+         } else {
+            $image = '<img src="images/commsyicons/22x22/edit_grey.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_EDIT_ITEM').'"/>';
+         }
+         $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION_NEW',$this->_translator->getMessage('COMMON_EDIT_ITEM')).' "class="disabled">'.$image.'</a>'.LF;
+				 */
+			}
+			
+			return $return;
+		}
+		
 		protected function getItemFileList() {
 			if($this->_item_file_list === null) {
 	          if ( isset($this->_item) ) {

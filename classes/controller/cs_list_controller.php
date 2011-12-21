@@ -316,7 +316,7 @@
             	$html .= $html_text;
          	}
  END TODO ref_user und ref_item migrieren, wenn klar ist, wofür */
-	         	include_once('/classes/views/cs_view.php');
+	         	include_once('classes/views/cs_view.php');
 	         	$parameters = array();
 	   			$parameters['environment'] = $environment;
 	   			$parameters['with_modifying_actions'] = 'no';

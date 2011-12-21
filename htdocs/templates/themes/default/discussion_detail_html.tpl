@@ -60,12 +60,20 @@
 
 	{foreach $detail.content.disc_articles as $article}
 		<div class="item_actions">
-			<a href=""><span class="edit_set"> &nbsp; </span></a>
+			<a class="edit" href=""><span class="edit_set"> &nbsp; </span></a>
 			<a href=""><span class="details_ia"> &nbsp; </span></a>
 		</div>
 
 		<div class="item_body"> <!-- Start item body -->
 			<a name="disc_article_{$article.item_id}"></a>
+			<div class="edit_overlay">
+				{if $article.actions.edit}
+					<a href="commsy.php?cid={$environment.cid}&mod={$article.actions.edit_module}&fct=edit&iid={$article.item_id}">___COMMON_EDIT_ITEM___</a>
+				{/if}
+				{if $article.actions.delete}
+					<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&iid={$detail.content.discussion.item_id}&action=delete&discarticle_iid={$article.item_id}&discarticle_action=delete">___COMMON_DELETE_ITEM___</a>
+				{/if}
+			</div>
 			<div class="item_post">
 				<div class="row_{if $article@iteration is odd}odd{else}even{/if}_no_hover {if $article@iteration is odd}odd{else}even{/if}_sep_disdetail">
 					<div class="column_80">

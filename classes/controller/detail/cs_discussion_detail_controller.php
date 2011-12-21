@@ -105,10 +105,145 @@
 			// append return
 			$return = array(
 				'title'			=> $this->_item->getTitle(),
+				'item_id'		=> $this->_item->getItemID(),
 				'creator'		=> $this->_item->getCreatorItem()->getFullName(),
 				'creation_date'	=> getDateTimeInLang($this->_item->getCreationDate()),
 				'assessments'	=> $this->getAssessmentInformation()
 			);
+			
+			return $return;
+		}
+		
+		protected function getEditActions($item, $user, $module = '') {
+			$return = array(
+				'edit'		=> false,
+				'delete'		=> false
+			);
+			
+			$current_context = $this->_environment->getCurrentContextItem();
+			$current_user = $this->_environment->getCurrentUserItem();
+			$discussion_type = $this->_item->getDiscussionType();
+			
+			if($discussion_type === 'threaded') {
+				/*
+					if ( $subitem->mayEdit($user) and $this->_with_modifying_actions ) {
+		            $params = array();
+		            $params['iid'] = $item->getItemID();
+		            $params['discarticle_action'] = 'edit';
+		            $params['discarticle_iid'] = $subitem->getItemID();
+		            if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+		               $image = '<img src="images/commsyicons_msie6/22x22/edit.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_EDIT_ITEM').'"/>';
+		            } else {
+		               $image = '<img src="images/commsyicons/22x22/edit.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_EDIT_ITEM').'"/>';
+		            }
+		            $html .= ahref_curl(   $this->_environment->getCurrentContextID(),
+		            $this->_environment->getCurrentModule(),
+			                                'detail',
+		            $params,
+		            $image,
+		            $this->_translator->getMessage('COMMON_EDIT_ITEM'),
+			                                '',
+		                                	'discarticle_form') . LF;
+		            unset($params);
+		         } else {
+		            if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+		               $image = '<img src="images/commsyicons_msie6/22x22/edit_grey.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_EDIT_ITEM').'"/>';
+		            } else {
+		               $image = '<img src="images/commsyicons/22x22/edit_grey.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_EDIT_ITEM').'"/>';
+		            }
+		            $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION_NEW',$this->_translator->getMessage('COMMON_EDIT_ITEM')).' "class="disabled">'.$image.'</a>'.LF;
+		         }
+		         */
+			} else {
+				$return = parent::getEditActions($item, $current_user, 'discarticle');
+			}
+			
+			if($user->isUser() && $discussion_type === 'threaded' /*&& $this->_with_modifying_actions*/) {
+				
+				/*
+				$params = array();
+		         //$params['iid'] = 'NEW';
+		         $params['iid'] = $item->GetItemID();
+		         //$params['discussion_id'] = $item->getItemID();
+		
+		         $params['ref_position'] = 1;
+		         $ref_position = $subitem->getPosition();
+		         if(!empty($ref_position)){
+		            $params['ref_position'] = $subitem->getPosition();
+		         }
+		         //$params['ref_did'] = $subitem->getItemID();
+		         $params['answer_to'] = $subitem->getItemID();
+		         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+		            $image = '<img src="images/commsyicons_msie6/22x22/new_section.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('DISCARTICLE_ANSWER_NEW').'"/>';
+		         } else {
+		            $image = '<img src="images/commsyicons/22x22/new_section.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('DISCARTICLE_ANSWER_NEW').'"/>';
+		         }
+		
+		         // in threaded view, we want to put the form directly into the detail view and not on a single page
+		
+		         $html .= ahref_curl(   $this->_environment->getCurrentContextID(),
+		                                'discussion',
+		                                'detail',
+		         $params,
+		         $image,
+		         $this->_translator->getMessage('DISCARTICLE_ANSWER_NEW'),
+		                                '',
+		                                'discarticle_form').LF;
+		         unset($params);
+         */
+			} elseif($discussion_type === 'threaded') {
+				/*
+		         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+		            $image = '<img src="images/commsyicons_msie6/22x22/new_section_grey.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('DISCARTICLE_ANSWER_NEW').'"/>';
+		         } else {
+		            $image = '<img src="images/commsyicons/22x22/new_section_grey.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('DISCARTICLE_ANSWER_NEW').'"/>';
+		         }
+		         $html .= $this->_translator->getMessage('DISCARTICLE_ANSWER_NEW').LF;
+		         $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION_NEW',$this->_translator->getMessage('DISCARTICLE_ANSWER_NEW')).' "class="disabled">'.$image.'</a>'.LF;
+		         */
+			}
+			
+			if($item->mayEdit($user) /*&& $this->_with_modifying_actions*/) {
+				$return['delete'] = true;
+				
+				
+				/*
+				$params = $this->_environment->getCurrentParameterArray();
+         $params['action'] = 'delete';
+         $params['discarticle_iid'] = $subitem->getItemID();
+         $params['iid'] = $item->getItemID();
+         $params['discarticle_action'] = 'delete';
+         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+            $image = '<img src="images/commsyicons_msie6/22x22/delete.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_DELETE_ITEM').'"/>';
+         } else {
+            $image = '<img src="images/commsyicons/22x22/delete.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_DELETE_ITEM').'"/>';
+         }
+         $html .= ahref_curl( 		   $this->_environment->getCurrentContextID(),
+                                       $this->_environment->getCurrentModule(),
+                                       'detail',
+                                       $params,
+                                       $image,
+                                       '',
+                                       '',
+                                       '',//anchor'.$subitem->getItemID(),
+        							   '',
+       								   '',
+       								   '',
+        							   '',
+       								   '',
+        							   'delete_confirm_disarc'.$subitem->getItemID()).LF;
+         unset($params);
+				 */
+			} else {
+				/*
+				 * if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+            $image = '<img src="images/commsyicons_msie6/22x22/delete_grey.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_DELETE_ITEM').'"/>';
+         } else {
+            $image = '<img src="images/commsyicons/22x22/delete_grey.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_DELETE_ITEM').'"/>';
+         }
+         $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION_NEW',$this->_translator->getMessage('COMMON_DELETE_ITEM')).' "class="disabled">'.$image.'</a>'.LF;
+				 */
+			}
 			
 			return $return;
 		}
@@ -328,7 +463,8 @@
 					'num_attachments'	=> $files->getCount(),
 					'noticed'			=> $noticed,
 					'modificator_image'	=> $modificator_image,
-					'custom_image'		=> !empty($image)
+					'custom_image'		=> !empty($image),
+					'actions'			=> $this->getEditActions($item, $current_user)
 				);
 				
 				$position++;

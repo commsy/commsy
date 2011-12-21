@@ -64,6 +64,14 @@ define(["libs/jQuery/jquery-1.7.1.min"], function() {
 				this.registerModule('commsy/div_expander', null, {objects: objects, action: 'click'});
 			}
 			
+			// on detail context
+			if(this.getURLParam('fct') === 'detail') {
+				// action overlay
+				var div_objects = jQuery('div[class="item_actions"]');
+				
+				this.registerModule('commsy/action_overlay', null, {objects: div_objects});
+			}
+			
 			// ckeditor
 			// load on detail context
 			if(this.getURLParam('fct') === 'detail') {
