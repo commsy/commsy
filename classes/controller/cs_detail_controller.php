@@ -586,9 +586,13 @@
 			return $return;
 		}
 		
-		private function getBrowseInformation($ids) {
-			// TODO: see cs_detail_view _getForwardBoxAsHTML() for more to migrate...
+		private function getBrowseInformation($ids, $forward_type = '') {			
 			$return = array();
+			$paging = array();
+			$paging['first']['active'] = false;
+			$paging['prev']['active'] = false;
+			$paging['next']['active'] = false;
+			$paging['last']['active'] = false;
 			
 			// update position from GET-Vars
 			if(isset($_GET['pos'])) {
@@ -699,45 +703,40 @@
 				}
 			}
 			
-			// build return
-			$return = array(
-				'position'			=> $this->_position + 1,
-				'count_all'			=> $count_all
-			);
-			
-			return $return;
-			/*
-
-
-      // create HTML for browsing arrows to left
-      $html = '<div style="float:right;">';
-      if ( $browse_start > 0 ) {
-         $image = '<span class="bold">&lt;&lt;</span>';
-         $params = array();
-         $params = $this->_environment->getCurrentParameterArray();
-         unset($params[$this->_module.'_option']);
-         unset($params['add_to_'.$this->_module.'_clipboard']);
-         $params['iid'] = $browse_start;
-         $params['pos'] = $pos_index_start;
-         if (!empty($forward_type) and ($forward_type =='path' or $forward_type =='search')){
-            $item = $item_manager->getItem($browse_start);
-            $module = $item->getItemType();
-            if ($module == 'label'){
-               $label_manager = $this->_environment->getLabelManager();
-               $label_item = $label_manager->getItem($item->getItemID());
-               $module = $label_item->getLabelType();
-            }
-         }else{
-            $module = $this->_module;
-         }
-         $html .= ahref_curl($this->_environment->getCurrentContextID(),$module, $this->_function,
+			// browsing link first
+			if($browse_end > 0) {
+				$params = $this->_environment->getCurrentParameterArray();
+				unset($params[$this->_environment->getCurrentModule() . '_option']);
+         		unset($params['add_to_' . $this->_environment->getCurrentModule() . '_clipboard']);
+         		$params['iid'] = $browse_start;
+         		$params['pos'] = $pos_index_start;
+         		
+         		if(!empty($forward_type) && ($forward_type === 'path' || $forward_type == 'search')) {
+         			$item = $item_manager->getItem($browse_start);
+         			$module = $item->getItemType();
+         			if($module === 'label') {
+         				$label_manager = $this->_environment->getLabelManager();
+         				$label_item = $label_manager->getItem($item->getItemID());
+         				$module = $label_item->getLabelType();
+         			}
+         		} else {
+         			$module = $this->_environment->getCurrentModule();
+         		}
+         		
+         		$paging['first']['active'] = true;
+         		$paging['first']['params'] = $params;
+         		/*
+         		$html .= ahref_curl($this->_environment->getCurrentContextID(),$module, $this->_function,
                                    $params,
                                    $image, $this->_translator->getMessage('COMMON_BROWSE_START_DESC'),
                                    '','','','','','class="detail_system_link"').LF;
-         unset($params);
-      } else {
-         $html .= '         <span>&lt;&lt;</span>'.LF;
-      }
+                unset($params);
+                */
+			}
+			
+			/**
+			 * 
+
       $html .= '|';
       if ( $browse_left > 0 ) {
          $image = '<span class="bold">&lt;</span>';
@@ -899,6 +898,19 @@
       $html .= '</div>';
 */
 //      return /*$this->_text_as_html_short(*/$html/*)*/;
+			
+			
+			
+			
+			
+			// build return
+			$return = array(
+				'position'			=> $this->_position + 1,
+				'count_all'			=> $count_all,
+				'paging'			=> $paging
+			);
+			
+			return $return;
 		}
 		
 		private function getBrowseIDs() {

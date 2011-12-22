@@ -26,11 +26,29 @@
 {block name=room_right_portlets}
 	<div class="portlet_rc">
 		<h2 id="item_navigation">
+		{if $detail.browsing_information.paging.first.active}
 			<a href=""><img src="{$basic.tpl_path}img/btn_ar_start2.gif" alt="Start" /></a>
+		{else}
+			<img src="{$basic.tpl_path}img/btn_ar_start.gif" alt="Start" />
+		{/if}
+		{if $detail.browsing_information.paging.prev.active}
 			<a href=""><img src="{$basic.tpl_path}img/btn_ar_left2.gif" alt="zur&uuml;ck" /></a>
-			<span>___COMMON_{$room.rubric|upper}_INDEX___</span>
+		{else}
+			<img src="{$basic.tpl_path}img/btn_ar_left.gif" alt="zur&uuml;ck" />
+		{/if}
+		
+		<span>___COMMON_{$room.rubric|upper}_INDEX___</span>
+		
+		{if $detail.browsing_information.paging.next.active}
 			<a href=""><img src="{$basic.tpl_path}img/btn_ar_right2.gif" alt="weiter" /></a>
+		{else}
+			<img src="{$basic.tpl_path}img/btn_ar_right.gif" alt="weiter" />
+		{/if}
+		{if $detail.browsing_information.paging.last.active}
 			<a href=""><img src="{$basic.tpl_path}img/btn_ar_end2.gif" alt="Ende" /></a>
+		{else}
+			<img src="{$basic.tpl_path}img/btn_ar_end2.gif" alt="Ende" />
+		{/if}
 		</h2>
 		<div class="clear"> </div>
 		
