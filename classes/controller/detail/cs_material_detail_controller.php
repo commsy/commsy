@@ -121,6 +121,22 @@
             $converter = $this->_environment->getTextConverter();
             
             // TODO??? $html .= $this->_getPluginInfosForMaterialDetailAsHTML();
+                  
+      		$desc = '';
+      		$num_sections = sizeof($this->getSections());
+      		if($num_sections === 0) {
+      			$desc = $this->_item->getDescription();
+      			if(!empty($desc)) {
+      				$desc = $converter->cleanDataFromTextArea($desc);
+      				$converter->setFileArray($this->getItemFileList());
+      				$desc = $converter->text_as_html_long($desc);
+      				
+      				/*
+					$temp_string = $this->_text_as_html_long($this->_compareWithSearchText($this->_cleanDataFromTextArea($desc)));
+         			  $html .= $this->getScrollableContent($temp_string,$item,'',$with_links);
+         			  */
+      			}
+      		}
 			
 			$return = array(
 				'title'			=> $this->_item->getTitle(),
@@ -128,7 +144,8 @@
 				'creation_date'	=> getDateTimeInLang($this->_item->getCreationDate()),
 				'assessments'	=> $this->getAssessmentInformation(),
 				'formal'		=> $this->getFormalData(),
-				'sections'		=> $this->getSections()
+				'sections'		=> $this->getSections(),
+				'description'	=> $desc
 				//'material'			=> $this->getMaterialContent()
 			);
 			
@@ -477,15 +494,33 @@
 			}
 			
 			// files
-			/*
-		 $files = $this->_getFilesForFormalData($item);
-	      if ( !empty($files) ) {
-	         $temp_array = array();
-	         $temp_array[] = $this->_translator->getMessage('MATERIAL_FILES');
-	         $temp_array[] = implode(BRLF, $files);
-	         $formal_data1[] = $temp_array;
-	      }
-	      */
+			$files = array();
+			
+			$file_list = $this->_item->getFileList();
+			if(!$file_list->isEmpty()) {
+				$file = $file_list->getFirst();
+				while($file) {
+					if(!(isset($_GET['mode']) && $_GET['mode'] === 'print') || (isset($_GET['download']) && $_GET['download'] === 'zip')) {
+						if((!isset($_GET['download']) || $_GET['download'] !== 'zip') && in_array($file->getExtension(), array('png', 'jpg', 'jpeg', 'gif'))) {
+							//$this->_with_slimbox = true;
+							$file_string = '<a href="' . $file->getUrl() . '" rel="lightbox[gallery' . $this->_item->getItemID() . ']">' . $file->getFileIcon() . ' ' . ($converter->text_as_html_short($file->getDisplayName())) . '</a> (' . $file->getFileSize() . ' KB)';
+						} else {
+							$file_string = '<a href="' . $file->getUrl() . '" target="blank">' . $file->getFileIcon() . ' ' . ($converter->text_as_html_short($file->getDisplayName())) . '</a> (' . $file->getFileSize() . ' KB)';
+						}
+					} else {
+						$file_string = $file->getFileIcon() . ' ' . $converter->text_as_html_short($file->getDisplayName());
+					}
+					
+					$files[] = $file_string;
+					
+					$file = $file_list->getNext();
+				}
+				
+				$temp_array = array();
+				$temp_array[] = $translator->getMessage('MATERIAL_FILES');
+				$temp_array[] = implode(BRLF, $files);
+				$return[] = $temp_array;
+			}
 			
 			// world-public status
 			if($context_item->isCommunityRoom() && $context_item->isOpenForGuests()) {
@@ -600,17 +635,6 @@
 			}
 			*/
 			
-			if(!empty($sections)) {
-				// description
-				$desc = $this->_item->getDescription();
-				if(!empty($desc)) {
-					/*
-					$temp_string = $this->_text_as_html_long($this->_compareWithSearchText($this->_cleanDataFromTextArea($desc)));
-         			  $html .= $this->getScrollableContent($temp_string,$item,'',$with_links);
-         			  */
-				}
-			}
-			
 			return $return;
 		}
 		
@@ -693,8 +717,9 @@
 					 */
 					
 					$return[] = array(
-						'title'			=> $converter->text_as_html_short($section->getTitle()),
-						'description'	=> $description
+						'title'				=> $converter->text_as_html_short($section->getTitle()),
+						'description'		=> $description,
+						'num_attachments'	=> sizeof($files)
 					);
 					
 					$section = $section_list->getNext();

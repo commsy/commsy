@@ -34,8 +34,13 @@
 							<tr>
 								<td><h4>{$formal[0]}</h4></td>
 								<td>{$formal[1]}</td>
+							</tr>
 						{/foreach}
 					</table>
+				{/if}
+				
+				{if !empty($detail.content.description)}
+					{$detail.content.description}
 				{/if}
 			</div>
 		</div> <!-- Ende item_legend -->
@@ -79,7 +84,7 @@
 					</div>
 					<div class="column_45">
 						<p>
-							<a href="" class="attachment">{*{$article.num_attachments}*}</a>
+							<a href="" class="attachment">{$section.num_attachments}</a>
 						</p>
 					</div>
 					<div class="clear"> </div>
@@ -134,6 +139,6 @@
 
 {block name=room_right_portlets_navigation}
 	{foreach $detail.forward_information as $entry}
-		<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&iid={$entry.item_id}">{$entry@iteration}. {if $entry.is_current}<strong>{/if}{$entry.title}{if $entry.is_current}</strong>{/if}</a>
+		<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&iid={$entry.item_id}">{$entry.position}. {if $entry.is_current}<strong>{/if}{$entry.title}{if $entry.is_current}</strong>{/if}</a>
 	{/foreach}
 {/block}

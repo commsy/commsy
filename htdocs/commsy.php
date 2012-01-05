@@ -883,6 +883,10 @@ else {
 		$c_smarty = false;
 	}
 	
+	if($environment->getCurrentModule() === 'discarticle' && $environment->getCurrentFunction() === 'edit' && isset($_POST['option']['new'])) {
+		$c_smarty = false;
+	}
+	
 	if($environment->getCurrentFunction() === 'getfile') {
 		$c_smarty = false;
 	}

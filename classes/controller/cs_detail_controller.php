@@ -399,7 +399,8 @@
 					$return[] = array(
 						'title'			=> $converter->text_as_html_short($link_title),
 						'is_current'	=> $item->getItemID() == $this->_item->getItemID(),
-						'item_id'		=> $item->getItemID()
+						'item_id'		=> $item->getItemID(),
+						'position'		=> $count_items + 1
 					);
 					
 					
@@ -703,8 +704,8 @@
 				}
 			}
 			
-			// browsing link first
-			if($browse_end > 0) {
+			// browse first
+			if($browse_start > 0) {
 				$params = $this->_environment->getCurrentParameterArray();
 				unset($params[$this->_environment->getCurrentModule() . '_option']);
          		unset($params['add_to_' . $this->_environment->getCurrentModule() . '_clipboard']);
@@ -724,6 +725,7 @@
          		}
          		
          		$paging['first']['active'] = true;
+         		$paging['first']['module'] = $module;
          		$paging['first']['params'] = $params;
          		/*
          		$html .= ahref_curl($this->_environment->getCurrentContextID(),$module, $this->_function,
@@ -734,96 +736,81 @@
                 */
 			}
 			
+			// browse left
+			if($browse_left > 0) {
+				$params = $this->_environment->getCurrentParameterArray();
+				unset($params[$this->_environment->getCurrentModule() . '_option']);
+         		unset($params['add_to_' . $this->_environment->getCurrentModule() . '_clipboard']);
+         		$params['iid'] = $browse_left;
+         		$params['pos'] = $pos_index_left;
+         		
+         		if(!empty($forward_type) && ($forward_type === 'path' || $forward_type === 'search')) {
+         			$item = $item_manager->getItem($browse_left);
+         			if($module === 'label') {
+         				$label_manager = $this->_environment->getLabelManager();
+         				$label_item = $label_manager->getItem($item->getItemID());
+         				$module = $label_item->getLabelType();
+         			}
+         		} else {
+         			$module = $this->_environment->getCurrentModule();
+         		}
+         		
+         		$paging['prev']['active'] = true;
+         		$paging['prev']['module'] = $module;
+         		$paging['prev']['params'] = $params;
+			}
+			
+			// browse right
+			if($browse_right > 0) {
+				$params = $this->_environment->getCurrentParameterArray();
+				unset($params[$this->_environment->getCurrentModule() . '_option']);
+         		unset($params['add_to_' . $this->_environment->getCurrentModule() . '_clipboard']);
+         		$params['iid'] = $browse_right;
+         		$params['pos'] = $pos_index_right;
+         		
+         		if(!empty($forward_type) && ($forward_type === 'path' || $forward_type === 'search' || $forward_type === 'link_item')) {
+         			$item = $item_manager->getItem($browse_right);
+         			if($module === 'label') {
+         				$label_manager = $this->_environment->getLabelManager();
+         				$label_item = $label_manager->getItem($item->getItemID());
+         				$module = $label_item->getLabelType();
+         			}
+         		} else {
+         			$module = $this->_environment->getCurrentModule();
+         		}
+         		
+         		$paging['next']['active'] = true;
+         		$paging['next']['module'] = $module;
+         		$paging['next']['params'] = $params;
+			}
+			
+			// browse end
+			if($browse_end > 0) {
+				$params = $this->_environment->getCurrentParameterArray();
+				unset($params[$this->_environment->getCurrentModule() . '_option']);
+         		unset($params['add_to_' . $this->_environment->getCurrentModule() . '_clipboard']);
+         		$params['iid'] = $browse_end;
+         		$params['pos'] = $pos_index_end;
+         		
+         		if(!empty($forward_type) && ($forward_type === 'path' || $forward_type === 'search')) {
+         			$item = $item_manager->getItem($browse_right);
+         			if($module === 'label') {
+         				$label_manager = $this->_environment->getLabelManager();
+         				$label_item = $label_manager->getItem($item->getItemID());
+         				$module = $label_item->getLabelType();
+         			}
+         		} else {
+         			$module = $this->_environment->getCurrentModule();
+         		}
+         		
+         		$paging['last']['active'] = true;
+         		$paging['last']['module'] = $module;
+         		$paging['last']['params'] = $params;
+			}
+			
 			/**
 			 * 
 
-      $html .= '|';
-      if ( $browse_left > 0 ) {
-         $image = '<span class="bold">&lt;</span>';
-         $params = array();
-         $params = $this->_environment->getCurrentParameterArray(); // $this->_parameter ???
-         unset($params[$this->_module.'_option']);
-         unset($params['add_to_'.$this->_module.'_clipboard']);
-         $params['iid'] = $browse_left;
-         if (!empty($forward_type) and ($forward_type =='path' or $forward_type =='search')){
-            $item = $item_manager->getItem($browse_left);
-            $module = $item->getItemType();
-            if ($module == 'label'){
-               $label_manager = $this->_environment->getLabelManager();
-               $label_item = $label_manager->getItem($item->getItemID());
-               $module = $label_item->getLabelType();
-            }
-         }else{
-            $module = $this->_module;
-         }
-         //$params['pos'] = $pos-1;
-         $params['pos'] = $pos_index_left;
-         $html .= ahref_curl($this->_environment->getCurrentContextID(), $module, $this->_function,
-                                   $params,
-                                   $image, $this->_translator->getMessage('COMMON_BROWSE_LEFT_DESC'),
-                                   '','','','','','class="detail_system_link"').LF;
-         unset($params);
-      } else {
-         $html .= '         <span>&lt;</span>'.LF;
-      }
-      $html .= '|';
-      // Show position
-
-      // create HTML for browsing arrows to left
-      if ( $browse_right > 0 ) {
-         $image = '<span class="bold">&gt;</span>';
-         $params = array();
-         $params = $this->_environment->getCurrentParameterArray(); // $this->_parameter ???
-         unset($params[$this->_module.'_option']);
-         unset($params['add_to_'.$this->_module.'_clipboard']);
-         $params['iid'] = $browse_right;
-         if (!empty($forward_type) and ($forward_type =='path' or $forward_type =='search' or $forward_type =='link_item')){
-            $item = $item_manager->getItem($browse_right);
-            $module = $item->getItemType();
-            if ($module == 'label'){
-               $label_manager = $this->_environment->getLabelManager();
-               $label_item = $label_manager->getItem($item->getItemID());
-               $module = $label_item->getLabelType();
-            }
-         }else{
-            $module = $this->_module;
-         }
-
-         //$params['pos'] = $pos+1;
-         $params['pos'] = $pos_index_right;
-         $html .= ahref_curl($this->_environment->getCurrentContextID(), $module, $this->_function,
-                                   $params, $image, $this->_translator->getMessage('COMMON_BROWSE_RIGHT_DESC'),'','','','','','class="detail_system_link"').LF;
-         unset($params);
-      } else {
-         $html .= '         <span>&gt;</span>'.LF;
-      }
-      $html .= '|';
-      if ( $browse_end > 0 ) {
-         $image = '<span class="bold">&gt;&gt;</span>';
-         $params = array();
-         $params = $this->_environment->getCurrentParameterArray(); // $this->_parameter ???
-         unset($params[$this->_module.'_option']);
-         unset($params['add_to_'.$this->_module.'_clipboard']);
-         $params['iid'] = $browse_end;
-         if (!empty($forward_type) and ($forward_type =='path' or $forward_type =='search')){
-            $item = $item_manager->getItem($browse_end);
-            $module = $item->getItemType();
-            if ($module == 'label'){
-               $label_manager = $this->_environment->getLabelManager();
-               $label_item = $label_manager->getItem($item->getItemID());
-               $module = $label_item->getLabelType();
-            }
-         }else{
-            $module = $this->_module;
-         }
-         $params['pos'] = $pos_index_end;
-         $html .= ahref_curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,
-                                   $params,
-                                   $image, $this->_translator->getMessage('COMMON_BROWSE_END_DESC'),'','','','','','class="detail_system_link"').LF;
-         unset($params);
-      } else {
-         $html .= '         <span>&gt;&gt;</span>'.LF;
-      }
       $html .= '</div>';
       $html .= '<div id="right_box_page_numbers">';
       if (!empty($forward_type) and $forward_type =='path'){

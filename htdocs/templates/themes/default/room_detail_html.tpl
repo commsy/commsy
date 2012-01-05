@@ -27,27 +27,35 @@
 	<div class="portlet_rc">
 		<h2 id="item_navigation">
 		{if $detail.browsing_information.paging.first.active}
-			<a href=""><img src="{$basic.tpl_path}img/btn_ar_start2.gif" alt="Start" /></a>
+			<a href="commsy.php?cid={$environment.cid}&mod={$detail.browsing_information.paging.first.module}&fct={$environment.function}{params params=$detail.browsing_information.paging.first.params}">
+				<img src="{$basic.tpl_path}img/btn_ar_start2.gif" alt="___COMMON_BROWSE_START_DESC___" />
+			</a>
 		{else}
-			<img src="{$basic.tpl_path}img/btn_ar_start.gif" alt="Start" />
+			<img src="{$basic.tpl_path}img/btn_ar_start.gif" alt="___COMMON_BROWSE_START_DESC___" />
 		{/if}
 		{if $detail.browsing_information.paging.prev.active}
-			<a href=""><img src="{$basic.tpl_path}img/btn_ar_left2.gif" alt="zur&uuml;ck" /></a>
+			<a href="commsy.php?cid={$environment.cid}&mod={$detail.browsing_information.paging.prev.module}&fct={$environment.function}{params params=$detail.browsing_information.paging.prev.params}">
+				<img src="{$basic.tpl_path}img/btn_ar_left2.gif" alt="___COMMON_BROWSE_LEFT_DESC___" />
+			</a>
 		{else}
-			<img src="{$basic.tpl_path}img/btn_ar_left.gif" alt="zur&uuml;ck" />
+			<img src="{$basic.tpl_path}img/btn_ar_left.gif" alt="___COMMON_BROWSE_LEFT_DESC___" />
 		{/if}
 		
 		<span>___COMMON_{$room.rubric|upper}_INDEX___</span>
 		
 		{if $detail.browsing_information.paging.next.active}
-			<a href=""><img src="{$basic.tpl_path}img/btn_ar_right2.gif" alt="weiter" /></a>
+			<a href="commsy.php?cid={$environment.cid}&mod={$detail.browsing_information.paging.next.module}&fct={$environment.function}{params params=$detail.browsing_information.paging.next.params}">
+				<img src="{$basic.tpl_path}img/btn_ar_right2.gif" alt="___COMMON_BROWSE_RIGHT_DESC___" />
+			</a>
 		{else}
-			<img src="{$basic.tpl_path}img/btn_ar_right.gif" alt="weiter" />
+			<img src="{$basic.tpl_path}img/btn_ar_right.gif" alt="___COMMON_BROWSE_RIGHT_DESC___" />
 		{/if}
 		{if $detail.browsing_information.paging.last.active}
-			<a href=""><img src="{$basic.tpl_path}img/btn_ar_end2.gif" alt="Ende" /></a>
+			<a href="commsy.php?cid={$environment.cid}&mod={$detail.browsing_information.paging.last.module}&fct={$environment.function}{params params=$detail.browsing_information.paging.last.params}">
+				<img src="{$basic.tpl_path}img/btn_ar_end2.gif" alt="___COMMON_BROWSE_END_DESC___" />
+			</a>
 		{else}
-			<img src="{$basic.tpl_path}img/btn_ar_end2.gif" alt="Ende" />
+			<img src="{$basic.tpl_path}img/btn_ar_end2.gif" alt="___COMMON_BROWSE_END_DESC___" />
 		{/if}
 		</h2>
 		<div class="clear"> </div>
