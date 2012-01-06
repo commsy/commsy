@@ -15,7 +15,7 @@
 		
 		<div id="item_credits">
 			<p id="ic_rating">
-				{foreach $detail.content.assessments as $assessment}
+				{foreach $detail.assessment as $assessment}
 					<img src="{$basic.tpl_path}img/star_{$assessment}.gif" alt="*" />
 				{/foreach}
 			</p>
@@ -93,6 +93,53 @@
 		</div> <!-- Ende item body -->
 		<div class="clear"> </div>
 	{/foreach}
+	
+	{foreach $detail.annotations as $annotation}
+		<div class="item_actions">
+			<a href=""><span class="edit_set"> &nbsp; </span></a>
+			<a href=""><span class="details_ia"> &nbsp; </span></a>
+		</div>
+		
+		<div class="item_body"> <!-- Start item body -->
+			<a name="mat_section_{$section@index}"></a>
+			<div class="item_post">
+				<div class="row_{if $section@iteration is odd}odd{else}even{/if}_no_hover {if $section@iteration is odd}odd{else}even{/if}_sep_disdetail">
+				
+					<div class="column_80">
+						<p></p>
+					</div>
+				
+					<div class="column_510">
+						<div class="post_content">
+							<h4>
+								{$section.title}
+							
+							{*{if $article.noticed == 'new' or $article.noticed == 'changed'}*}<img src="{$basic.tpl_path}img/flag_neu.gif" alt="___COMMON_NEW___"/>{*{/if}*}
+							</h4>
+							{*<span><a href="">{$article.creator}</a>, {$article.modification_date}</span>*}
+							<div class="editor_content">
+								{$section.description}
+							</div>
+						</div>
+					</div>
+					<div class="column_27">
+						<p class="jump_up_down">
+							{if !$section@first}<a href="#mat_section_{$section@index - 1}"><img src="{$basic.tpl_path}img/btn_jump_up.gif" alt="&lt;" /></a>{/if}
+							{if !$section@last}<a href="#mat_section_{$section@index + 1}"><img src="{$basic.tpl_path}img/btn_jump_down.gif" alt="&gt;" /></a>{/if}
+						</p>
+					</div>
+					<div class="column_45">
+						<p>
+							<a href="" class="attachment">{$section.num_attachments}</a>
+						</p>
+					</div>
+					<div class="clear"> </div>
+				</div>
+			</div>
+		</div> <!-- Ende item body -->
+		<div class="clear"> </div>
+	{/foreach}
+	
 	{*
 	<div class="item_actions">&nbsp;</div>
 	
@@ -132,9 +179,9 @@
 		</div>
 	</div> <!-- Ende item body -->
 	<div class="clear"> </div>
-	*}
 	
 	<div class="clear"> </div>
+	*}
 {/block}
 
 {block name=room_right_portlets_navigation}

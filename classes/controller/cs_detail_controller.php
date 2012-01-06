@@ -34,8 +34,8 @@
 			parent::processTemplate();
 			
 			// mark as read and noticed
-			$this->markRead();
-			$this->markNoticed();
+			//$this->markRead();
+			//$this->markNoticed();
 			
 			// set list actions
 			//$this->assign('list', 'actions', $this->getListActions());
@@ -89,12 +89,15 @@
 			$this->assign('detail', 'forward_information', $this->getForwardInformation($ids));
 		}
 		
-		protected function getAssessmentInformation() {
+		protected function getAssessmentInformation(&$item = null) {
+			$assessment_item =& $this->_item;
+			if(isset($item)) $assessment_item =& $item;
+			
 			$assessment_stars_text_array = array('non_active','non_active','non_active','non_active','non_active');
 			$current_context = $this->_environment->getCurrentContextItem();
 			if($current_context->isAssessmentActive()) {
 				$assessment_manager = $this->_environment->getAssessmentManager();
-				$assessment = $assessment_manager->getAssessmentForItemAverage($this->_item);
+				$assessment = $assessment_manager->getAssessmentForItemAverage($assessment_item);
 				if(isset($assessment[0])) {
 					$assessment = sprintf('%1.1f', (float) $assessment[0]);
 				} else {
@@ -269,6 +272,130 @@
 	         }
 	      }
 	      return $this->_item_file_list;
+		}
+		
+		protected function markAnnotationsReadedAndNoticed(&$annotation_list) {
+			$reader_manager = $this->_environment->getReaderManager();
+			$noticed_manager = $this->_environment->getNoticedManager();
+			
+			// collect an array of all ids and precach
+			$id_array = array();
+			$annotation = $annotation_list->getFirst();
+			while($annotation) {
+				$id_array[] = $annotation->getItemID();
+				
+				$annotation = $annotation_list->getNext();
+			}
+			
+			$reader_manager->getLatestReaderByIDArray($id_array);
+			$noticed_manager->getLatestNoticedByIDArray($id_array);
+			
+			// mark if needed
+			$annotation = $annotation_list->getFirst();
+			while($annotation) {
+				$reader = $reader_manager->getLatestReader($annotation->getItemID());
+				if(empty($reader) || $reader['read_date'] < $annotation->getModificationDate()) {
+					$reader_manager->markRead($annotation->getItemID(), 0);
+				}
+				
+				$noticed = $noticed_manager->getLatestNoticed($annotation->getItemID());
+				if(empty($noticed) || $noticed['read_date'] < $annotation->getModificationDate()) {
+					$noticed_manager->markNoticed($annotation->getItemID(), 0);
+				}
+				
+				$annotation = $annotation_list->getNext();
+			}
+		}
+		
+		protected function getAnnotationInformation(&$annotation_list) {
+			$return = array();
+			
+			$item = $this->_item;
+			$count = $annotation_list->getCount();
+			if(!(isset($_GET['mode']) && $_GET['mode'] === 'print') || $count > 0) {
+				// TODO: add annotation heading to template, specified like here
+				/*
+				 * if ( !empty($this->_annotation_list) ){
+            $count = $this->_annotation_list->getCount();
+            if ($count == 1){
+               $desc = ' ('.$this->_translator->getMessage('COMMON_ONE_ANNOTATION');
+            }else{
+               $desc = ' ('.$this->_translator->getMessage('COMMON_X_ANNOTATIONS',$count);
+            }
+         }else{
+            $desc = ' ('.$this->_translator->getMessage('COMMON_NO_ANNOTATIONS');
+         }
+				 */
+				
+				if(!empty($annotation_list)) {
+					$annotation = $annotation_list->getFirst();
+					$pos_number = 1;
+					
+					while($annotation) {
+						// TODO: get item picture
+						//$image = $this->_getItemPicture($current_item->getModificatorItem());
+						
+						/*
+						 * $image = $this->_getItemPicture($current_item->getModificatorItem());
+						 * 
+                  $html .='<tr>'.LF;
+                  $html .= '<td rowspan="3" style="width:60px; vertical-align:top; padding:20px 5px 5px 5px;">'.$image.'</td>'.LF;
+                  $html .='<td style="width:70%; padding-top:5px; vertical-align:bottom;">'.LF;
+                  $html .= '<a id="annotation_'.$pos_number.'" name="annotation_'.$pos_number.'"></a>'.LF;
+                  $html .='<div style="padding-top:10px;">'.LF;
+                  $html .= '<a id="anchor'.$current_item->getItemID().'" name="anchor'.$current_item->getItemID().'"></a>'.LF;
+                  $html .= '<h3 class="subitemtitle">'.$pos_number.'. '.$this->_getSubItemTitleAsHTML($current_item, $pos_number);
+                  $html .= '</h3>'.LF;
+                  $html .='</div>'.LF;
+                  $html .='</td>'.LF;
+                  if(!(isset($_GET['mode']) and $_GET['mode']=='print')){
+                     $html .='<td style="width:28%; padding-top:5px; padding-left:0px; padding-right:3px; vertical-align:bottom; text-align:right;">'.LF;
+                     $html .= $this->getAnnotationActionsAsHTML($current_item);
+                     $html .='</td>'.LF;
+                  }else{
+                     $html .='<td style="width:28%; padding-top:5px; padding-left:0px; padding-right:3px; vertical-align:bottom; text-align:right;">'.LF;
+                     $html .= '&nbsp';
+                     $html .='</td>'.LF;
+                  }
+                  $html .='</tr>'.LF;
+                  $html .='<tr>'.LF;
+                  $html .='<td colspan="2" class="infoborder" style="padding-top:5px; vertical-align:top; ">'.LF;
+                  if(!(isset($_GET['mode']) and $_GET['mode']=='print')){
+                     $html .='<div style="float:right; height:6px; font-size:2pt;">'.LF;
+                     $html .= $this->_getAnnotationBrowsingIconsAsHTML($current_item, $pos_number,$count);
+                     $html .='</div>'.LF;
+                  }
+                  $html .= $this->_getAnnotationContentAsHTML($current_item).LF;
+                  $html .='</td>'.LF;
+                  $html .='</tr>'.LF;
+                  if(!(isset($_GET['mode']) and $_GET['mode']=='print')){
+                     $html .='<tr>'.LF;
+                     $html .='<td class="annotation_creator_information" style="padding-top:5px; padding-bottom:30px; vertical-align:top; ">'.LF;
+                     $mode = 'short';
+                     if (!$item->isA(CS_USER_TYPE)) {
+                        $mode = 'short';
+                        if (in_array($current_item->getItemId(),$this->_openCreatorInfo)) {
+                           $mode = 'long';
+                        }
+                        $html .= $this->_getCreatorInformationAsHTML($current_item, 6,$mode).LF;
+                     }
+                     $html .='</td>'.LF;
+                     $html .='</tr>'.LF;
+                  }else{
+                     $html .='<tr>'.LF;
+                     $html .='<td style="padding-top:5px; padding-bottom:40px; vertical-align:top; ">'.LF;
+                     $html .='</td>'.LF;
+                     $html .='</tr>'.LF;
+                  }
+						 */
+						
+						$pos_number++;
+						$annotation = $annotation_list->getNext();
+					}
+				}
+			}
+			
+			return $return;
 		}
 		
 		/*
@@ -912,7 +1039,7 @@
 			return $this->_browse_ids;
 		}
 		
-		private function markRead() {
+		protected function markRead() {
 			// mark as read
 			$reader_manager = $this->_environment->getReaderManager();
 			$reader = $reader_manager->getLatestReader($this->_item->getItemID());
@@ -921,7 +1048,7 @@
 			}
 		}
 		
-		private function markNoticed() {
+		protected function markNoticed() {
 			// mark as noticed
 			$noticed_manager = $this->_environment->getNoticedManager();
 			$noticed = $noticed_manager->getLatestNoticed($this->_item->getItemID());

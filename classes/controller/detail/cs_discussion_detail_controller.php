@@ -32,6 +32,10 @@
 			
 			$this->setupInformation();
 			
+			// mark as read and noticed
+			$this->markRead();
+			$this->markNoticed();
+			
 			$session = $this->_environment->getSessionItem();
 			if(isset($_GET['export_to_wiki'])){
 		         $wiki_manager = $this->_environment->getWikiManager();
