@@ -138,9 +138,9 @@
 					<form action="commsy.php?cid={$environment.cid}&mod=discarticle&fct=edit" method="post" enctype="multipart/form-data">
 						<div class="post_content">
 							<h4>{$detail.content.new_num}. </h4>
-							<input type="hidden" value="" name="iid">
-							<input type="hidden" value="{$detail.item_id}" name="discussion_id">
-							<input type="hidden" value="1" name="ref_position">
+							<input type="hidden" value="" name="iid"/>
+							<input type="hidden" value="{$detail.item_id}" name="discussion_id"/>
+							<input type="hidden" value="1" name="ref_position"/>
 							<input id="pn_title" type="text" name="form_data[title]" />
 							<div class="editor_content">
 								<div id="ckeditor"></div>

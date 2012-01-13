@@ -173,6 +173,7 @@
 				// show form and/or save item
 				} else {
 					if(	isset($_GET['back_to_discussion_detail_view']) &&
+					//TODO: command is not defined, use command from parent class($this->_command)
 						!empty($command) &&
 							!(isOption($command, $translator->getMessage('DISCARTICLE_SAVE_BUTTON')) ||
 							isOption($command, $translator->getMessage('DISCARTICLE_CHANGE_BUTTON')))) {	

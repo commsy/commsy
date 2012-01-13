@@ -126,13 +126,15 @@
 				<div class="row_{if $annotation@iteration is odd}odd{else}even{/if}_no_hover {if $annotation@iteration is odd}odd{else}even{/if}_sep_disdetail">
 				
 					<div class="column_80">
-						<a href="" title="{$annotation.creator}">
-							{if $annotation.image}
-								<img width="62" src="commsy.php?cid={$environment.cid}&mod=picture&fct=getfile&picture={$annotation.image.picture}" alt="{i18n tag=USER_PICTURE_NO_PICTURE param1=$annotation.creator}" />
-							{else}
-								<img width="62" src="{$basic.tpl_path}img/user_unknown.gif" alt="{i18n tag=USER_PICTURE_NO_PICTURE param1=$article.creator}" />
-							{/if}
-						</a>
+						<p>
+							<a href="" title="{$annotation.creator}">
+								{if $annotation.image}
+									<img width="62" src="commsy.php?cid={$environment.cid}&mod=picture&fct=getfile&picture={$annotation.image.picture}" alt="{i18n tag=USER_PICTURE_NO_PICTURE param1=$annotation.creator}" />
+								{else}
+									<img width="62" src="{$basic.tpl_path}img/user_unknown.gif" alt="{i18n tag=USER_PICTURE_NO_PICTURE param1=$article.creator}" />
+								{/if}
+							</a>
+						</p>
 					</div>
 				
 					<div class="column_510">
@@ -184,12 +186,14 @@
 				</div>
 				
 				<div class="column_590">
-					<form action="commsy.php?cid={$environment.cid}&mod=annotation&fct=edit&ref_iid={$detail.content.item_id}&mode=annotation&iid=NEW" method="post">
+					<form action="commsy.php?cid={$environment.cid}&mod=annotation&fct=edit&ref_iid={$detail.item_id}&mode=annotation&iid=NEW" method="post">
 						<div class="post_content">
 							<h4>{$annotation@total + 1}. </h4>
-							<input type="hidden" value="" name="iid">
-							<input type="hidden" value="{$detail.item_id}" name="material_id">
-							<input type="hidden" value="1" name="ref_position">
+							<input type="hidden" value="" name="iid"/>
+							<input type="hidden" value="{$detail.item_id}" name="material_id"/>
+							<input type="hidden" value="1" name="ref_position"/>
+							<input type="hidden" value="{$detail.item_id}" name="ref_iid"/>
+							<input type="hidden" value="{$detail.content.version}" name="version"/>
 							<input id="pn_title" type="text" name="form_data[title]" />
 							<div class="editor_content">
 								<div id="ckeditor"></div>

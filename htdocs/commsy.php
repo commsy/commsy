@@ -879,7 +879,9 @@ else {
 		$c_smarty = false;
 	}
 	
-	if($environment->getCurrentFunction() === 'edit' && $environment->getCurrentModule() !== 'discarticle') {
+	if(	$environment->getCurrentFunction() === 'edit' &&
+		$environment->getCurrentModule() !== 'discarticle' &&
+		$environment->getCurrentModule() !== 'annotation') {
 		$c_smarty = false;
 	}
 	
