@@ -7,6 +7,7 @@
 		protected $_item = null;
 		protected $_manager = null;
 		protected $_item_file_list = null;
+		protected $_with_modifying_actions = true;
 
 		/**
 		 * constructor
@@ -24,6 +25,17 @@
 				'limit'		=> 20
 			);
 			*/
+			
+			$params = $this->_environment->getCurrentParameterArray();
+			if(!empty($params['with_modifying_actions'])) {
+				$this->_with_modifying_actions = $params['with_modifying_actions'];
+			}
+			
+			$current_context = $this->_environment->getCurrentContextItem();
+			$current_user = $this->_environment->getCurrentUserItem();
+			if($current_context->isClosed() || $current_user->isOnlyReadUser()) {
+				$this->_with_modifying_actions = false;
+			}
 		}
 
 		/*
@@ -89,9 +101,12 @@
 			$this->assign('detail', 'forward_information', $this->getForwardInformation($ids));
 		}
 		
+		/*
+		 * $item is given by reference!!!
+		 */
 		protected function getAssessmentInformation(&$item = null) {
 			$assessment_item =& $this->_item;
-			if(isset($item)) $assessment_item =& $item;
+			if(isset($item)) $assessment_item = $item;
 			
 			$assessment_stars_text_array = array('non_active','non_active','non_active','non_active','non_active');
 			$current_context = $this->_environment->getCurrentContextItem();
@@ -201,7 +216,7 @@
 				'edit'		=> false,
 				'delete'	=> false);
 			
-			if($item->mayEdit($user) /* && $this->with_modifying_actions */) {
+			if($item->mayEdit($user) && $this->_with_modifying_actions) {
 				$return['edit'] = true;
 				
 				if(empty($module)) $module = $this->_environment->getCurrentModule();
@@ -307,10 +322,65 @@
 			}
 		}
 		
+		protected function getItemPicture(&$item) {
+			$return = array();
+			
+			if(isset($item)) {
+				$picture = $item->getPicture();
+				$linktext = '';
+				
+				if(!empty($picture)) {
+					$disc_manager = $this->_environment->getDiscManager();
+					$height = 60;
+					if($disc_manager->existsFile($picture)) {
+						$image_array = getimagesize($disc_manager->getFilePath() . $picture);
+						$pict_height = $image_array[1];
+						if($pict_height > 60) {
+							$height = 60;
+						} else {
+							$height = $pict_height;
+						}
+					}
+					
+					if($item->isA(CS_USER_TYPE)) {
+						$linktext = str_replace('"', '&quot;', encode(AS_HTML_SHORT, $item->getFullName()));
+					}
+					
+					$return = array(
+						'picture'			=> $picture,
+						'width'				=> $height,
+						'linktext'			=> $linktext
+					);
+					
+					// TODO:	in template file:
+					//			if linktext is empty set USER_PICTURE_UPLOADFILE as linktext
+				} else {
+					// no picture
+					
+					if($item->isA(CS_USER_TYPE)) {
+						$linktext = str_replace('"', '&quot;', encode(AS_HTML_SHORT, $item->getFullName()));
+						
+						// TODO:	in template file
+						//			use i18n USER_PICTURE_NO_PICTURE with param1 linktext
+						//			or if linktext is empty
+						//			USER_PICTURE_UPLOADFILE
+					}
+				}
+			}
+			
+			return $return;
+		}
+		
+		/*
+		 * this annotation_list is given by reference!!!
+		 */
 		protected function getAnnotationInformation(&$annotation_list) {
 			$return = array();
 			
 			$item = $this->_item;
+			$converter = $this->_environment->getTextConverter();
+			$current_user = $this->_environment->getCurrentUser();
+			
 			$count = $annotation_list->getCount();
 			if(!(isset($_GET['mode']) && $_GET['mode'] === 'print') || $count > 0) {
 				// TODO: add annotation heading to template, specified like here
@@ -332,62 +402,67 @@
 					$pos_number = 1;
 					
 					while($annotation) {
-						// TODO: get item picture
-						//$image = $this->_getItemPicture($current_item->getModificatorItem());
+						// get item picture
+						$modificator_ref =& $annotation->getModificatorItem();
+						
+						//$html .= $this->_text_as_html_short($this->_compareWithSearchText($subitem->getTitle()));
+						$subitem_title = $annotation->getTitle();
+						$subitem_title = $converter->text_as_html_short($subitem_title);
 						
 						/*
-						 * $image = $this->_getItemPicture($current_item->getModificatorItem());
 						 * 
-                  $html .='<tr>'.LF;
-                  $html .= '<td rowspan="3" style="width:60px; vertical-align:top; padding:20px 5px 5px 5px;">'.$image.'</td>'.LF;
-                  $html .='<td style="width:70%; padding-top:5px; vertical-align:bottom;">'.LF;
-                  $html .= '<a id="annotation_'.$pos_number.'" name="annotation_'.$pos_number.'"></a>'.LF;
-                  $html .='<div style="padding-top:10px;">'.LF;
-                  $html .= '<a id="anchor'.$current_item->getItemID().'" name="anchor'.$current_item->getItemID().'"></a>'.LF;
-                  $html .= '<h3 class="subitemtitle">'.$pos_number.'. '.$this->_getSubItemTitleAsHTML($current_item, $pos_number);
-                  $html .= '</h3>'.LF;
-                  $html .='</div>'.LF;
-                  $html .='</td>'.LF;
-                  if(!(isset($_GET['mode']) and $_GET['mode']=='print')){
-                     $html .='<td style="width:28%; padding-top:5px; padding-left:0px; padding-right:3px; vertical-align:bottom; text-align:right;">'.LF;
-                     $html .= $this->getAnnotationActionsAsHTML($current_item);
-                     $html .='</td>'.LF;
-                  }else{
-                     $html .='<td style="width:28%; padding-top:5px; padding-left:0px; padding-right:3px; vertical-align:bottom; text-align:right;">'.LF;
-                     $html .= '&nbsp';
-                     $html .='</td>'.LF;
-                  }
-                  $html .='</tr>'.LF;
-                  $html .='<tr>'.LF;
-                  $html .='<td colspan="2" class="infoborder" style="padding-top:5px; vertical-align:top; ">'.LF;
-                  if(!(isset($_GET['mode']) and $_GET['mode']=='print')){
-                     $html .='<div style="float:right; height:6px; font-size:2pt;">'.LF;
-                     $html .= $this->_getAnnotationBrowsingIconsAsHTML($current_item, $pos_number,$count);
-                     $html .='</div>'.LF;
-                  }
-                  $html .= $this->_getAnnotationContentAsHTML($current_item).LF;
-                  $html .='</td>'.LF;
-                  $html .='</tr>'.LF;
-                  if(!(isset($_GET['mode']) and $_GET['mode']=='print')){
-                     $html .='<tr>'.LF;
-                     $html .='<td class="annotation_creator_information" style="padding-top:5px; padding-bottom:30px; vertical-align:top; ">'.LF;
-                     $mode = 'short';
-                     if (!$item->isA(CS_USER_TYPE)) {
-                        $mode = 'short';
-                        if (in_array($current_item->getItemId(),$this->_openCreatorInfo)) {
-                           $mode = 'long';
-                        }
-                        $html .= $this->_getCreatorInformationAsHTML($current_item, 6,$mode).LF;
-                     }
-                     $html .='</td>'.LF;
-                     $html .='</tr>'.LF;
-                  }else{
-                     $html .='<tr>'.LF;
-                     $html .='<td style="padding-top:5px; padding-bottom:40px; vertical-align:top; ">'.LF;
-                     $html .='</td>'.LF;
-                     $html .='</tr>'.LF;
-                  }
-						 */
+
+		                  if(!(isset($_GET['mode']) and $_GET['mode']=='print')){
+		                     $html .='<div style="float:right; height:6px; font-size:2pt;">'.LF;
+		                     $html .= $this->_getAnnotationBrowsingIconsAsHTML($current_item, $pos_number,$count);
+		                     $html .='</div>'.LF;
+		                  }
+		                  
+		                  */
+						
+						
+						
+						
+						$annotated_item = $this->_item;
+						$desc = $annotation->getDescription();
+						if(!empty($desc)) {
+							$desc = $converter->cleanDataFromTextArea($desc);
+							$converter->setFileArray($this->getItemFileList());
+							$desc = $converter->text_as_html_long($desc);
+							//$html .= $this->getScrollableContent($desc,$item,'',true);
+						}
+						
+						$current_version = $annotated_item->getVersionID();
+						$annotated_version = $annotation->getAnnotatedVersionID();
+						
+						
+						/*
+					      if ( $current_version > $annotated_version ) {
+					         $text = '('.$this->_translator->getMessage('ANNOTATION_FOR_OLDER_VERSION').')';
+					      } elseif ( $current_version < $annotated_version ) {
+					         $text = '('.$this->_translator->getMessage('ANNOTATION_FOR_NEWER_VERSION').')';
+					      } else {
+					         $text = '';
+					      }
+					      
+					      
+					      
+					      if ( !empty ($text) ) {
+					         $html .= '<p class="disabled" style="margin-left:3px;">'.$text.'</p>'.LF;
+					      }
+					      $html .= '   </div>'.LF;
+					     */
+						
+						$return[] = array(
+							'image'				=> $this->getItemPicture($modificator_ref),
+							'pos_number'		=> $pos_number,
+							'item_id'			=> $annotation->getItemID(),
+							'title'				=> $subitem_title,
+							'description'		=> $desc,
+							'creator'			=> $annotation->getCreatorItem()->getFullName(),
+							'actions'			=> $this->getAnnotationEditActions($annotation),
+							'num_attachments'	=> $annotation->getFileList()->getCount()
+						);
 						
 						$pos_number++;
 						$annotation = $annotation_list->getNext();
@@ -398,10 +473,57 @@
 			return $return;
 		}
 		
+		private function getAnnotationEditActions($item=null) {
+			$return = array(
+				'edit'		=> false,
+				'delete'	=> false);
+			
+			$current_context = $this->_environment->getCurrentContextItem();
+			$current_user = $this->_environment->getCurrentUserItem();
+			$annotated_item = $this->_item;
+			$annotated_item_type = $annotated_item->getItemType();
+			$item_manager = $this->_environment->getItemManager();
+			
+			if(($item->mayEdit($current_user) || $item_manager->getExternalViewerForItem($annotated_item->getItemID(), $current_user->getUserID())) && $this->_with_modifying_actions === true) {
+				// TODO:	insert in template
+				//			mod: annotation, fct: edit, params(iid => $item->getItemID(), mode => 'annotate')
+				//			message_tag: COMMON_EDIT_ITEM
+				$return['edit'] = true;
+				
+				// TODO:	insert in template
+				//			mod: current_mod, fct: detail, params(current_params, action => detail, annotation_iid => $item->getItemID(),
+				//			iid => $annotated_item->getItemID(), annotation_action => delete)
+				//			message_tag: COMMON_DELETE_ITEM
+				$return['delete'] = true;
+				
+			} else {
+				/*
+				 * else {
+         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+            $image = '<img src="images/commsyicons_msie6/22x22/edit_grey.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_EDIT_ITEM').'"/>';
+         } else {
+            $image = '<img src="images/commsyicons/22x22/edit_grey.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_EDIT_ITEM').'"/>';
+         }
+         $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION_NEW',$this->_translator->getMessage('COMMON_EDIT_ITEM')).' "class="disabled">'.$image.'</a>'.LF;
+				 */
+				
+				/*
+				 * if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+            $image = '<img src="images/commsyicons_msie6/22x22/delete_grey.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_DELETE_ITEM').'"/>';
+         } else {
+            $image = '<img src="images/commsyicons/22x22/delete_grey.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_DELETE_ITEM').'"/>';
+         }
+         $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION_NEW',$this->_translator->getMessage('COMMON_DELETE_ITEM')).' "class="disabled">'.$image.'</a>'.LF;
+				 */
+			}
+			
+			return $return;
+		}
+		
 		/*
 		 * these values are assigned by reference!!!
 		 */
-		private function markTags($tag_array, $item_tag_id_array) {
+		private function markTags(&$tag_array, &$item_tag_id_array) {
 			// compare and mark as highlighted
 			foreach($tag_array as &$tag) {					
 				if(in_array($tag['item_id'], $item_tag_id_array)) {
@@ -412,7 +534,7 @@
 				
 				// look for recursive
 				if(!empty($tag['children'])) {
-					$this->markTags(&$tag['children'], $item_tag_id_array);		// <- be careful, these values are assigned by reference
+					$this->markTags($tag['children'], $item_tag_id_array);		// <- be careful, these values are assigned by reference
 				}
 			}
 			

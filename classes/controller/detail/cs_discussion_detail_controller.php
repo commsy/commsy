@@ -417,6 +417,7 @@
 				$creator_fullname = '';
 				$modificator_image = '';
 				$image = '';
+				// TODO: implement over general detail_controller.php
 				if(isset($creator)) {
 					$current_user_item = $this->_environment->getCurrentUserItem();
 					if($current_user_item->isGuest() && $creator->isVisibleForLoggedIn()) {

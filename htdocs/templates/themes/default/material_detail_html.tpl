@@ -40,7 +40,9 @@
 				{/if}
 				
 				{if !empty($detail.content.description)}
-					{$detail.content.description}
+					<div id="material_description">
+						{$detail.content.description}
+					</div>
 				{/if}
 			</div>
 		</div> <!-- Ende item_legend -->
@@ -94,6 +96,24 @@
 		<div class="clear"> </div>
 	{/foreach}
 	
+	<div class="item_actions">&nbsp;</div>
+	
+	<div class="item_body"> <!-- Start item body -->
+		<h2>
+			___COMMON_ANNOTATIONS___
+			{if $detail.annotations|@count == 1}
+				(___COMMON_ONE_ANNOTATION___)
+			{elseif $detail.annotations|@count == 0}
+				(___COMMON_NO_ANNOTATIONS___)
+			{else}
+				({i18n tag=COMMON_X_ANNOTATIONS param1=$detail.annotations|@count})
+			{/if}
+		</h2>
+		<div class="clear"> </div>
+	</div> <!-- Ende item body -->
+	
+	<div class="clear"> </div>
+	
 	{foreach $detail.annotations as $annotation}
 		<div class="item_actions">
 			<a href=""><span class="edit_set"> &nbsp; </span></a>
@@ -101,36 +121,42 @@
 		</div>
 		
 		<div class="item_body"> <!-- Start item body -->
-			<a name="mat_section_{$section@index}"></a>
+			<a name="annotation_{$annotation@index}"></a>
 			<div class="item_post">
-				<div class="row_{if $section@iteration is odd}odd{else}even{/if}_no_hover {if $section@iteration is odd}odd{else}even{/if}_sep_disdetail">
+				<div class="row_{if $annotation@iteration is odd}odd{else}even{/if}_no_hover {if $annotation@iteration is odd}odd{else}even{/if}_sep_disdetail">
 				
 					<div class="column_80">
-						<p></p>
+						<a href="" title="{$annotation.creator}">
+							{if $annotation.image}
+								<img width="62" src="commsy.php?cid={$environment.cid}&mod=picture&fct=getfile&picture={$annotation.image.picture}" alt="{i18n tag=USER_PICTURE_NO_PICTURE param1=$annotation.creator}" />
+							{else}
+								<img width="62" src="{$basic.tpl_path}img/user_unknown.gif" alt="{i18n tag=USER_PICTURE_NO_PICTURE param1=$article.creator}" />
+							{/if}
+						</a>
 					</div>
 				
 					<div class="column_510">
 						<div class="post_content">
 							<h4>
-								{$section.title}
+								{$annotation.pos_number}. {$annotation.title}
 							
 							{*{if $article.noticed == 'new' or $article.noticed == 'changed'}*}<img src="{$basic.tpl_path}img/flag_neu.gif" alt="___COMMON_NEW___"/>{*{/if}*}
 							</h4>
 							{*<span><a href="">{$article.creator}</a>, {$article.modification_date}</span>*}
 							<div class="editor_content">
-								{$section.description}
+								{$annotation.description}
 							</div>
 						</div>
 					</div>
 					<div class="column_27">
 						<p class="jump_up_down">
-							{if !$section@first}<a href="#mat_section_{$section@index - 1}"><img src="{$basic.tpl_path}img/btn_jump_up.gif" alt="&lt;" /></a>{/if}
-							{if !$section@last}<a href="#mat_section_{$section@index + 1}"><img src="{$basic.tpl_path}img/btn_jump_down.gif" alt="&gt;" /></a>{/if}
+							{if !$annotation@first}<a href="#annotation_{$annotation@index - 1}"><img src="{$basic.tpl_path}img/btn_jump_up.gif" alt="&lt;" /></a>{/if}
+							{if !$annotation@last}<a href="#annotation_{$annotation@index + 1}"><img src="{$basic.tpl_path}img/btn_jump_down.gif" alt="&gt;" /></a>{/if}
 						</p>
 					</div>
 					<div class="column_45">
 						<p>
-							<a href="" class="attachment">{$section.num_attachments}</a>
+							<a href="" class="attachment">{$annotation.num_attachments}</a>
 						</p>
 					</div>
 					<div class="clear"> </div>
@@ -140,7 +166,6 @@
 		<div class="clear"> </div>
 	{/foreach}
 	
-	{*
 	<div class="item_actions">&nbsp;</div>
 	
 	<div class="item_body"> <!-- Start item body -->
@@ -159,9 +184,9 @@
 				</div>
 				
 				<div class="column_590">
-					<form action="commsy.php?cid={$environment.cid}&mod=discarticle&fct=edit" method="post">
+					<form action="commsy.php?cid={$environment.cid}&mod=annotation&fct=edit&ref_iid={$detail.content.item_id}&mode=annotation&iid=NEW" method="post">
 						<div class="post_content">
-							<h4>{$detail.content.new_num}. </h4>
+							<h4>{$annotation@total + 1}. </h4>
 							<input type="hidden" value="" name="iid">
 							<input type="hidden" value="{$detail.item_id}" name="material_id">
 							<input type="hidden" value="1" name="ref_position">
@@ -181,7 +206,6 @@
 	<div class="clear"> </div>
 	
 	<div class="clear"> </div>
-	*}
 {/block}
 
 {block name=room_right_portlets_navigation}

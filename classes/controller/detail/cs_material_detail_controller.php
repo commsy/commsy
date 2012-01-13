@@ -379,6 +379,7 @@
       		}
 			
 			$return = array(
+				'item_id'		=> $this->_item->getItemID(),
 				'title'			=> $this->_item->getTitle(),
 				'creator'		=> $this->_item->getCreatorItem()->getFullName(),
 				'creation_date'	=> getDateTimeInLang($this->_item->getCreationDate()),
