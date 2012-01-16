@@ -661,7 +661,7 @@ if ( isset($_GET['cid']) ) {
                      $fullname = '';
                      $email = '';
                   }
-                  if ( $context_item->isCommunityRoom() ) {
+                  if ( $context_item->isCommunityRoom() and isset($user_item)) {
                      if ( empty($_GET['hid']) and !$user_item->isVisibleForAll() ) {
                         $fullname = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
                         $email = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
