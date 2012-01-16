@@ -213,7 +213,7 @@ div.content_fader{
        }
     } elseif ( file_exists('htdocs/css/images/bg-'.$color['schema'].'.jpg')
                or ( !empty($color['background_image'])
-                    and file_exists('htdocs/css/images/'.$color['background_image'].'.jpg')
+                    and (file_exists('htdocs/css/images/'.$color['background_image'].'.jpg') or file_exists('htdocs/css/images/'.$color['background_image']))
                   )
              ) {
         if ( !isset($color['background_image'])
@@ -229,7 +229,7 @@ div.content_fader{
               echo('background: url(images/bg-'.$color['schema'].'.jpg) no-repeat;');
            }
         } elseif ( !empty($color['background_image'])
-                   and file_exists('htdocs/css/images/'.$color['background_image'].'.jpg')
+                   and (file_exists('htdocs/css/images/'.$color['background_image'].'.jpg') or file_exists('htdocs/css/images/'.$color['background_image']))
                  ) {
            if (isset($color['repeat_background']) and $color['repeat_background'] == 'xy'){
               echo('background: url(images/'.$color['background_image'].') repeat;');
