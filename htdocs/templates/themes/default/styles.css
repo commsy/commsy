@@ -1114,8 +1114,27 @@ input#pn_title {
 special
 ----------------------------------------------------------------------
 */
-div#material_description {
+div.detail_description {
 	padding: 5px 10px;
+	}
+
+div.user_profil_blocks {
+	float: left;
+	clear: left;
+	padding: 0 7px;
+	}
+
+div.user_profil_blocks table {
+	padding: 7px 0;
+	}
+
+div.user_profil_blocks td.label {
+	width: 120px;
+	}
+
+div#user_profil_picture {
+	float: right;
+	padding: 0 7px 7px;
 	}
 
 /*

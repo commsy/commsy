@@ -11,7 +11,7 @@
 			// call parent
 			parent::__construct($environment);
 			
-			$this->_tpl_file = 'discussion_detail';
+			$this->_tpl_file = 'annotation_edit';
 		}
 		
 		
@@ -67,17 +67,20 @@
 			$current_user = $this->_environment->getCurrentUserItem();
 			$room_item = $this->_environment->getCurrentContextItem();
 			
+			// get post data
+			$this->getPostData();
+			
 			// $with_anchor = false;
 			
 			// coming back from attaching something
 			$backfrom = false;
-			if(!$empty($_GET['backfrom'])) {
+			if(!empty($_GET['backfrom'])) {
 				$backfrom = $_GET['backfrom'];
 			}
 			
 			// load item from database
 			$annotation_item = null;
-			if($this->_item_id !== null) {
+			if($this->_item_id !== 'NEW') {
 				$annotation_manager = $this->_environment->getAnnotationManager();
 				$annotation_item = $annotation_manager->getItem($this->_item_id);
 			}
@@ -95,7 +98,7 @@
 			
 			// check access rights
 			$item_manager = $this->_environment->getItemManager();
-			if($this->_item_id !== null && !isset($annotation_item)) {
+			if($this->_item_id !== 'NEW' && !isset($annotation_item)) {
 				/*
 				 * $params = array();
 				   $params['environment'] = $environment;
@@ -105,9 +108,9 @@
 				   $errorbox->setText($translator->getMessage('ITEM_DOES_NOT_EXIST', $current_iid));
 				   $page->add($errorbox);
 				 */
-			} elseif(	!(($this->_item_id === null && $current_user->isUser()) ||
-						($this->_item_id !== null && isset($annotation_item) && $annotation_item->mayEdit($current_user)) ||
-						($this->_item_id === null && isset($_GET['ref_iid']) && $item_manager->getExternalViewerForItem($_GET['ref_iid'], $current_user->getUserID())))) {
+			} elseif(	!(($this->_item_id === 'NEW' && $current_user->isUser()) ||
+						($this->_item_id !== 'NEW' && isset($annotation_item) && $annotation_item->mayEdit($current_user)) ||
+						($this->_item_id === 'NEW' && isset($_GET['ref_iid']) && $item_manager->getExternalViewerForItem($_GET['ref_iid'], $current_user->getUserID())))) {
 						/*
 						 *    $params = array();
 							   $params['environment'] = $environment;
@@ -121,7 +124,7 @@
 				$translator = $this->_environment->getTranslationObject();
 				
 				// cancel editing
-				if(isOption($this->_command, $translator->getMessage('COMMON_CANCEL_BUTTON'))) {
+				if(isOption($this->_command, CS_OPTION_CANCEL)) {
 					$context = $session->getValue('annotation_history_context');
 					$module = $session->getValue('annotation_history_module');
 					$function = $session->getValue('annotation_history_function');
@@ -138,7 +141,7 @@
 				}
 				
 				// delete item
-				if(isOption($this->_command, $translator->getMessage('ANNOTATION_DELETE_BUTTON'))) {
+				if(isOption($this->_command, CS_OPTION_DELETE)) {
 					// go back to the origin
 					$context = $session->getValue('annotation_history_context');
 					$module = $session->getValue('annotation_history_module');
@@ -225,7 +228,7 @@
 				}
 				
 				// create data for a new item
-				elseif($this->_item_id === null) {
+				elseif($this->_item_id === 'NEW') {
 					/*
 					 * $form->setRefID($_GET['ref_iid']);
 				         if ( !empty($_GET['version']) ) {
@@ -250,9 +253,9 @@
 				
 				// save item
 				if(	$this->_command !== null &&
-					(isOption($this->_command, $translator->getMessage('ANNOTATION_SAVE_BUTTION')) ||
-					isOption($this->_command, $translator->getMessage('ANNOTATION_CHANGE_BUTTON')) ||
-					isOption($this->_command, $translator->getMessage('ANNOTATION_ADD_NEW_BUTTON')))) {
+					(isOption($this->_command, CS_OPTION_SAVE) ||
+					isOption($this->_command, CS_OPTION_CHANGE) ||
+					isOption($this->_command, CS_OPTION_NEW))) {
 					
 					// TODO: impelment form check
 					$correct = true;
@@ -312,7 +315,7 @@
 						$manager->markEdited($annotation_item->getItemID());
 						
 						// reset id array
-						$session->setValue('cid' . $environment->getCurrentContextID() . '_annotation_index_ids', array($annotation_item->getItemID()));
+						$session->setValue('cid' . $this->_environment->getCurrentContextID() . '_annotation_index_ids', array($annotation_item->getItemID()));
 						
 						$context = $session->getValue('annotation_history_context');
 						$module = $session->getValue('annotation_history_module');

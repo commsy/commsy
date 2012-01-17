@@ -8,11 +8,11 @@
 			<a href=""><span class="ref_to_ia"> &nbsp; </span></a>
 		</div>
 	</div>
-	
+
 	<div class="item_body"> <!-- Start item body -->
 		<h2>{$detail.content.title}</h2>
 		<div class="clear"> </div>
-		
+
 		<div id="item_credits">
 			<p id="ic_rating">
 				{foreach $detail.assessment as $assessment}
@@ -24,21 +24,9 @@
 			</p>
 			<div class="clear"> </div>
 		</div>
-		
+
 		<div id="item_legend"> <!-- Start item_legend -->
-			<div class="row_odd">
-				{* formal data *}
-				{if !empty($detail.content.formal)}
-					<table>
-						{foreach $detail.content.formal as $formal}
-							<tr>
-								<td><h4>{$formal[0]}</h4></td>
-								<td>{$formal[1]}</td>
-							</tr>
-						{/foreach}
-					</table>
-				{/if}
-				
+			<div class="row_odd">				
 				{if !empty($detail.content.description)}
 					<div class="detail_description">
 						{$detail.content.description}
@@ -46,55 +34,9 @@
 				{/if}
 			</div>
 		</div> <!-- Ende item_legend -->
-		
+
 	</div> <!-- Ende item body -->
 	<div class="clear"> </div>
-	
-	{foreach $detail.content.sections as $section}
-		<div class="item_actions">
-			<a href=""><span class="edit_set"> &nbsp; </span></a>
-			<a href=""><span class="details_ia"> &nbsp; </span></a>
-		</div>
-		
-		<div class="item_body"> <!-- Start item body -->
-			<a name="mat_section_{$section@index}"></a>
-			<div class="item_post">
-				<div class="row_{if $section@iteration is odd}odd{else}even{/if}_no_hover {if $section@iteration is odd}odd{else}even{/if}_sep_disdetail">
-				
-					<div class="column_80">
-						<p></p>
-					</div>
-				
-					<div class="column_510">
-						<div class="post_content">
-							<h4>
-								{$section.title}
-							
-							{*{if $article.noticed == 'new' or $article.noticed == 'changed'}*}<img src="{$basic.tpl_path}img/flag_neu.gif" alt="___COMMON_NEW___"/>{*{/if}*}
-							</h4>
-							{*<span><a href="">{$article.creator}</a>, {$article.modification_date}</span>*}
-							<div class="editor_content">
-								{$section.description}
-							</div>
-						</div>
-					</div>
-					<div class="column_27">
-						<p class="jump_up_down">
-							{if !$section@first}<a href="#mat_section_{$section@index - 1}"><img src="{$basic.tpl_path}img/btn_jump_up.gif" alt="&lt;" /></a>{/if}
-							{if !$section@last}<a href="#mat_section_{$section@index + 1}"><img src="{$basic.tpl_path}img/btn_jump_down.gif" alt="&gt;" /></a>{/if}
-						</p>
-					</div>
-					<div class="column_45">
-						<p>
-							<a href="" class="attachment">{$section.num_attachments}</a>
-						</p>
-					</div>
-					<div class="clear"> </div>
-				</div>
-			</div>
-		</div> <!-- Ende item body -->
-		<div class="clear"> </div>
-	{/foreach}
 	
 	<div class="item_actions">&nbsp;</div>
 	
@@ -113,7 +55,7 @@
 	</div> <!-- Ende item body -->
 	
 	<div class="clear"> </div>
-	
+
 	{foreach $detail.annotations as $annotation}
 		<div class="item_actions">
 			<a href=""><span class="edit_set"> &nbsp; </span></a>
@@ -193,7 +135,6 @@
 							<input type="hidden" value="{$detail.item_id}" name="material_id"/>
 							<input type="hidden" value="1" name="ref_position"/>
 							<input type="hidden" value="{$detail.item_id}" name="ref_iid"/>
-							<input type="hidden" value="{$detail.content.version}" name="version"/>
 							<input id="pn_title" type="text" name="form_data[title]" />
 							<div class="editor_content">
 								<div id="ckeditor"></div>

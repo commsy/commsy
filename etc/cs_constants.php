@@ -38,6 +38,12 @@ define('CS_ALL','all');
 
 define('CS_ITEM_TYPE','item');
 
+define('CS_OPTION_SAVE', 'save');
+define('CS_OPTION_CHANGE', 'change');
+define('CS_OPTION_NEW', 'new');
+define('CS_OPTION_CANCEL', 'cancel');
+define('CS_OPTION_DELETE', 'delete');
+
 define('CS_MATERIAL_TYPE','material');
 define('CS_INSTITUTION_TYPE','institution');
 define('CS_TOPIC_TYPE','topic');

@@ -1,0 +1,235 @@
+<?php
+	require_once('classes/controller/cs_detail_controller.php');
+
+	class cs_announcement_detail_controller extends cs_detail_controller {
+		/**
+		 * constructor
+		 */
+		public function __construct(cs_environment $environment) {
+			// call parent
+			parent::__construct($environment);
+			
+			$this->_tpl_file = 'announcement_detail';
+		}
+
+		/*
+		 * every derived class needs to implement an processTemplate function
+		 */
+		public function processTemplate() {
+			// call parent
+			parent::processTemplate();
+			
+			// assign rubric to template
+			$this->assign('room', 'rubric', CS_ANNOUNCEMENT_TYPE);
+		}
+		
+		/*****************************************************************************/
+		/******************************** ACTIONS ************************************/
+		/*****************************************************************************/
+		public function actionDetail() {
+			$session = $this->_environment->getSessionItem();
+			
+			// try to set the item
+			$this->setItem();
+			
+			$this->setupInformation();
+			
+			// used to signal which "creator ifnos" of annotations are expanded...
+			$creatorInfoStatus = array();
+			if(!empty($_GET['creator_info_max'])) {
+				$creatorInfoStatus = explode('-', $_GET['creator_info_max']);
+			}
+			
+			// TODO: implement deletion handling
+			//include_once('include/inc_delete_entry.php');
+			
+			// check for item type
+			$item_manager = $this->_environment->getItemManager();
+			$type = $item_manager->getItemType($_GET['iid']);
+			if($type !== CS_ANNOUNCEMENT_TYPE) {
+				// TODO: implement error handling
+				/*
+				 * $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+   unset($params);
+   $errorbox->setText($translator->getMessage('ERROR_ILLEGAL_IID'));
+   $page->add($errorbox);
+				 */
+			} else {
+				$current_context = $this->_environment->getCurrentContextItem();
+				$current_user = $this->_environment->getCurrentUser();
+				
+				/*
+				$params = array();
+			   $params['environment'] = $environment;
+			   $params['with_modifying_actions'] = $current_context->isOpen();
+			   $params['creator_info_status'] = $creatorInfoStatus;
+			   $detail_view = $class_factory->getClass(ANNOUNCEMENT_DETAIL_VIEW,$params);
+			   unset($params);
+			    */
+				
+				// check if item exists
+				if($this->_item === null) {
+					include_once('functions/error_functions.php');
+      				trigger_error('Item ' . $_GET['iid'] . ' does not exist!', E_USER_ERROR);
+				}
+				
+				// check if item is deleted
+				elseif($this->_item->isDeleted()) {
+					// TODO: implement error handling
+					/*
+					 * $params = array();
+      $params['environment'] = $environment;
+      $params['with_modifying_actions'] = true;
+      $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+      unset($params);
+      $errorbox->setText($translator->getMessage('ITEM_NOT_AVAILABLE'));
+      $page->add($errorbox);
+					 */
+				}
+				
+				// check for access rights
+				elseif(!$this->_item->maySee($current_user)) {
+					// TODO: implement error handling
+					/*
+					 * $params = array();
+      $params['environment'] = $environment;
+      $params['with_modifying_actions'] = true;
+      $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+      unset($params);
+      $errorbox->setText($translator->getMessage('LOGIN_NOT_ALLOWED'));
+      $page->add($errorbox);
+					 */
+				} else {
+					// get clipboard
+					$clipboard_id_array = array();
+					if($session->issetValue('announcement_clipboard')) {
+						$clipboard_id_array = $session->getValue('announcement_clipboard');
+					}
+					
+					// copy to clipboard
+					if(isset($_GET['add_to_announcement_clipboard']) && !in_array($current_item_id, $clipboard_id_array)) {
+						$clipboard_id_array[] = $current_item_id;
+						$session->setValue('announcement_clipboard', $clipboard_id_array);
+					}
+					
+					/*
+					 * $detail_view->setItem($announcement_item);
+      $detail_view->setClipboardIDArray($clipboard_id_array);
+					 */
+					
+					// mark as read and noticed
+					$this->markRead();
+					$this->markNoticed();
+					
+					$announcement_ids = array();
+					if($session->issetValue('cid' . $this->_environment->getCurrentContextID() . '_announcement_index_ids')) {
+						$announcement_ids = $session->getValue('cid' . $this->_environment->getCurrentContextID() . '_announcement_index_ids');
+					}
+					
+					//$detail_view->setBrowseIDs($announcement_ids);
+					
+					$current_room_modules = $current_context->getHomeConf();
+					if(!empty($current_room_modules)) {
+						$room_modules = explode(',', $current_room_modules);
+					} else {
+						// TODO: this seems to be never set before
+						//$room_modules = $default_room_modules;
+					}
+					
+					$first = array();
+					$second = array();
+					
+					foreach($room_modules as $module) {
+						list($module_name, $display_mode) = explode('_', $module);
+						
+						if($display_mode !== 'none' && $module_name !== $this->_environment->getCurrentModule()) {
+							// TODO:
+							/*
+							 * switch ($detail_view->_is_perspective($link_name[0])) {
+				               case true:
+				                  $first[] = $link_name[0];
+				               break;
+				               case false:
+				                  $second[] = $link_name[0];
+				               break;
+				            }
+							 */
+						}
+					}
+					
+					$room_modules = array_merge($first, $second);
+					$rubric_conntections = array();
+					foreach($room_modules as $module) {
+						if($current_context->withRubric($module)) {
+							$ids = $this->_item->getLinkedItemIDArray($module);
+							$session->setValue('cid' . $this->_environment->getCurrentContextID() . '_' . $module . '_index_ids', $ids);
+							$rubric_connections[] = $module;
+						}
+					}
+					
+					// TODO:
+					//$detail_view->setRubricConnections($announcement_item);
+					
+					// annotations
+					$annotations = $this->_item->getAnnotationList();
+					$this->assign('detail', 'annotations', $this->getAnnotationInformation(&$annotations));
+					
+					/*
+					 *TODO: handle in smarty as post_filter
+				      // highlight search words in detail views
+				      $session_item = $environment->getSessionItem();
+				      if ( $session->issetValue('cid'.$environment->getCurrentContextID().'_campus_search_parameter_array') ) {
+				         $search_array = $session->getValue('cid'.$environment->getCurrentContextID().'_campus_search_parameter_array');
+				         if ( !empty($search_array['search']) ) {
+				            $detail_view->setSearchText($search_array['search']);
+				         }
+				         unset($search_array);
+				      }
+			
+			
+			      $page->add($detail_view);
+					 */
+					
+					// assessment
+					$this->assign('detail', 'assessment', $this->getAssessmentInformation(&$this->_item));
+					
+					$this->assign('detail', 'content', $this->getDetailContent());
+				}
+			}
+		}
+		
+		/*****************************************************************************/
+		/******************************** END ACTIONS ********************************/
+		/*****************************************************************************/
+		
+		protected function setBrowseIDs() {
+			$session = $this->_environment->getSessionItem();
+			
+			if($session->issetValue('cid' . $this->_environment->getCurrentContextID() . '_announcement_index_ids')) {
+				$this->_browse_ids = array_values((array) $session->getValue('cid' . $this->_environment->getCurrentContextID() . '_announcement_index_ids'));
+			}
+		}
+		
+		protected function getDetailContent() {
+			$converter = $this->_environment->getTextConverter();
+			$desc = $this->_item->getDescription();
+			if(!empty($desc)) {
+				$converter->setFileArray($this->getItemFileList());
+				$desc = $converter->cleanDataFromTextArea($desc);
+				//$desc = $converter->compareWithSearchText...
+				$desc = $converter->text_as_html_long($desc);
+				//$desc = $converter->show_images($desc, $this->_item, true);
+				//$html .= $this->getScrollableContent($desc,$item,'',true);
+			}
+			
+			return array(
+				'title'			=> $this->_item->getTitle(),
+				'creator'		=> $this->_item->getCreatorItem()->getFullName(),
+				'creation_date'	=> getDateTimeInLang($this->_item->getCreationDate()),
+				'description'	=> $desc
+			);
+		}
+	}

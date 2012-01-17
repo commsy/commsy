@@ -875,7 +875,9 @@ if($context_item->isServer() || $context_item->isPortal()) {
 else {
 	if(	$environment->getCurrentFunction() === 'detail' && 
 		$environment->getCurrentModule() !== 'discussion' &&
-		$environment->getCurrentModule() !== 'material') {
+		$environment->getCurrentModule() !== 'material' &&
+		$environment->getCurrentModule() !== 'announcement' &&
+		$environment->getCurrentModule() !== 'user') {
 		$c_smarty = false;
 	}
 	
