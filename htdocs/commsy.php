@@ -877,7 +877,8 @@ else {
 		$environment->getCurrentModule() !== 'discussion' &&
 		$environment->getCurrentModule() !== 'material' &&
 		$environment->getCurrentModule() !== 'announcement' &&
-		$environment->getCurrentModule() !== 'user') {
+		$environment->getCurrentModule() !== 'user' &&
+		$environment->getCurrentModule() !== 'group') {
 		$c_smarty = false;
 	}
 	

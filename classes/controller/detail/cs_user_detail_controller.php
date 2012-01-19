@@ -3,6 +3,7 @@
 
 	class cs_user_detail_controller extends cs_detail_controller {
 		private $_display_mod = null;
+		private $_rubric_connections = null;
 		
 		/**
 		 * constructor
@@ -151,6 +152,8 @@
 					redirect($this->_environment->getCurrentContextID(), 'home', 'index', array());
 					
 				} else {
+					$config = array();
+					
 					// mark as read and noticed
 					$this->markRead();
 					$this->markNoticed();
@@ -167,16 +170,13 @@
       unset($params);
 					 */
 					
-					// TODO: implement
-					/*
-			      if ( $user_item->getItemID() == $current_user->getItemID()
-			           or ( isset($display_mod) and $display_mod == 'admin' and $current_user->isModerator() )
-			         ) {
-			         if (!$environment->inPrivateRoom()){
-			            $detail_view->setSubItem($user_item);
-			         }
-			      }
-					 */
+					// configuration overview
+					$config['show_configuration'] = false;
+					if($this->_item->getItemID() === $current_user->getItemID() || (isset($this->_display_mod) && $display_mod === 'admin' && $current_user->isModerator()) || $current_user->isRoot()) {
+						if(!$this->_environment->inPrivateRoom()) {
+							$config['show_configuration'] = true;
+						}
+					}
 					
 					// TODO: check this, should be handled by parent class
 					/*
@@ -277,8 +277,7 @@
 							}
 						}
 						
-						// TODO: implement
-						//$detail_view->setRubricConnections($rubric_connections);
+						$this->_rubric_connections = $rubric_connections;
 					}
 					
 					
@@ -304,6 +303,11 @@
 					 */
 					
 					$this->assign('detail', 'content', $this->getDetailContent());
+					$this->assign('detail', 'config', $config);
+					
+					if($config['show_configuration'] === true) {
+						$this->assign('detail', 'configcontent', $this->getConfigContent());
+					}
 				}
 			}
 		}
@@ -318,6 +322,475 @@
 			if($session->issetValue('cid' . $this->_environment->getCurrentContextID() . '_user_index_ids')) {
 				$this->_browse_ids = array_values((array) $session->getValue('cid' . $this->_environment->getCurrentContextID() . '_user_index_ids'));
 			}
+		}
+		
+		protected function getLinkedItems() {
+			$return = array();
+			
+			$current_context = $this->_environment->getCurrentContextItem();
+			$current_user = $this->_environment->getCurrentUser();
+			$translator = $this->_environment->getTranslationObject();
+			if($this->_item === null) $this->setItem();
+			
+			if($this->_environment->inCommunityRoom()) {
+				$link_items = $this->_item->getLinkItemList(CS_INSTITUTION_TYPE);
+			} else {
+				$link_items = $this->_item->getLinkItemList(CS_GROUP_TYPE);
+			}
+			
+			$return['count'] = $link_items->getCount();
+			
+			$return['is_community'] = false;
+			if($this->_environment->inCommunityRoom()) {
+				$return['is_community'] = true;
+			}
+			
+			
+			/*
+			 * 
+   if ($this->_environment->inCommunityRoom()){
+         $this->_right_box_config['title_string'] .= $separator.'"'.$this->_translator->getMessage('COMMON_ATTACHED_INSTITUTIONS').' ('.$count_link_item.')"';
+      }else{
+         $this->_right_box_config['title_string'] .= $separator.'"'.$this->_translator->getMessage('COMMON_ATTACHED_GROUPS').' ('.$count_link_item.')"';
+      }
+  
+  
+  
+  
+      $this->_right_box_config['desc_string'] .= $separator.'""';
+      $this->_right_box_config['size_string'] .= $separator.'"10"';
+      if($current_context->isNetnavigationShowExpanded()){
+         $this->_right_box_config['config_string'] .= $separator.'true';
+      } else {
+         $this->_right_box_config['config_string'] .= $separator.'false';
+      }
+      $html .= '<div class="commsy_panel" style="margin-bottom:1px;">'.LF;
+      $html .= '<div class="right_box">'.LF;
+      */
+			
+			if(!$link_items->isEmpty()) {
+				$link_item = $link_items->getFirst();
+				
+				while($link_item) {
+					$entry = array(
+						'creator'			=> ''									// TODO: if empty set to COMMON_DELETED_USER
+					);
+					
+					$link_creator = $link_item->getCreatorItem();
+					if(isset($link_creator) && !$link_creator->isDeleted()) {
+						$entry['creator'] = $link_creator->getFullname();
+					}
+					
+					// create the list entry
+					$linked_item = $link_item->getLinkedItem($this->_item);
+					if(isset($linked_item)) {
+						$type = $linked_item->getType();
+						if($type === 'label') {
+							$type = $linked_item->getLabelType();
+						}
+						
+						$link_created = $translator->getDateInLang($link_item->getCreationDate());
+						
+						switch(mb_strtoupper($type, 'UTF-8')) {
+							case 'ANNOUNCEMENT':
+								$text = $translator->getMessage('COMMON_ONE_ANNOUNCEMENT');
+								$img = 'images/commsyicons/netnavigation/announcement.png';
+								break;
+							case 'DATE':
+								$text = $translator->getMessage('COMMON_ONE_DATE');
+								$img = 'images/commsyicons/netnavigation/date.png';
+								break;
+							case 'DISCUSSION':
+								$text = $translator->getMessage('COMMON_ONE_DISCUSSION');
+								$img = 'images/commsyicons/netnavigation/discussion.png';
+								break;
+							case 'GROUP':
+								$text = $translator->getMessage('COMMON_ONE_GROUP');
+								$img = 'images/commsyicons/netnavigation/group.png';
+								break;
+							case 'INSTITUTION':
+								$text = $translator->getMessage('COMMON_ONE_INSTITUTION');
+								$img = '';
+								break;
+							case 'MATERIAL':
+								$text = $translator->getMessage('COMMON_ONE_MATERIAL');
+								$img = 'images/commsyicons/netnavigation/material.png';
+								break;
+							case 'PROJECT':
+								$text = $translator->getMessage('COMMON_ONE_PROJECT');
+								$img = '';
+								break;
+							case 'TODO':
+								$text = $translator->getMessage('COMMON_ONE_TODO');
+								$img = 'images/commsyicons/netnavigation/todo.png';
+								break;
+							case 'TOPIC':
+								$text = $translator->getMessage('COMMON_ONE_TOPIC');
+								$img = 'images/commsyicons/netnavigation/topic.png';
+								break;
+							case 'USER':
+								$text = $translator->getMessage('COMMON_ONE_USER');
+								$img = 'images/commsyicons/netnavigation/user.png';
+								break;
+							default:
+								$text = $translator->getMessage('COMMON_MESSAGETAB_ERROR');
+								$img = '';
+								break;
+						}
+						
+						$link_creator_text = $text . ' - ' . $translator->getMessage('COMMON_LINK_CREATOR') . ' ' . $entry['creator'] . ', ' . $link_created;
+						
+						switch($type) {
+							case CS_DISCARTICLE_TYPE:
+								$linked_iid = $linked_item->getDiscussionID();
+								$discussion_manager = $this->_environment->getDiscussionManager();
+								$linked_item = $discussion_manager->getItem($linked_iid);
+								break;
+							case CS_SECTION_TYPE:
+								$linked_iid = $linked_item->getLinkedItemID();
+								$material_manager = $this->_environment->getMaterialManager();
+								$linked_item = $material_manager->getItem($linked_iid);
+								break;
+							default:
+								$linked_iid = $linked_item->getItemID();
+						}
+						
+						$entry['linked_iid'] = $linked_iid;
+						
+						$module = Type2Module($type);
+						
+						if($linked_item->isNotActivated() && !($linked_item->getCreatorID() === $user->getItemID() || $current_user->isModerator())) {
+							$activating_date = $linked_item->getActivatingDate();
+							if(strstr($activating_date, '9999-00-00')) {
+								$link_creator_text .= ' (' . $translator->getMessage('COMMON_NOT_ACTIVATED') . ')';
+							} else {
+								$link_creator_text .= ' (' . $translator->getMessage('COMMON_ACTIVATING_DATE') . ' ' . getDateInLang($linked_item->getActivatingDate()) . ')';
+							}
+							
+							$entry['module'] = $module;
+							$entry['img'] = $img;
+							$entry['link_creator_text'] = $link_creator_text;
+							$entry['title'] = $linked_item->getTitle();
+							
+							/*
+							 * TODO: check if working
+							 *
+                   $html .= ahref_curl( $this->_environment->getCurrentContextID(),
+                                       $module,
+                                       'detail',
+                                       $params,
+                                       '<img src="' . $img . '" style="padding-right:3px;" title="' . $link_creator_text . '"/>',
+                                       $link_creator_text,
+                                       '_self',
+                                       $fragment,
+                                       '',
+                                       '',
+                                       '',
+                                       'class="disabled"',
+                                       '',
+                                       '',
+                                       true);
+                   $html .= ahref_curl( $this->_environment->getCurrentContextID(),
+                                       $module,
+                                       'detail',
+                                       $params,
+                                       chunkText($linked_item->getTitle(),35),
+                                       $link_creator_text,
+                                       '_self',
+                                       $fragment,
+                                       '',
+                                       '',
+                                       '',
+                                       'class="disabled"',
+                                       '',
+                                       '',
+                                       true);
+                  unset($params);
+							 */
+						} else {
+							$entry['module'] = $module;
+							$entry['img'] = $img;
+							$entry['link_creator_text'] = $link_creator_text;
+							$entry['title'] = $linked_item->getTitle();
+						}
+					}
+					
+					$return['items'][] = $entry;
+					
+					$link_item = $link_items->getNext();
+				}
+			}
+			
+			// TODO:
+		      /*
+		      $html .= '<div style="width:235px; font-size:8pt; text-align:right; padding-top:5px;">';
+		      $current_user = $this->_environment->getCurrentUserItem();
+		      if ($this->_environment->inCommunityRoom()){
+		         $message = $this->_translator->getMessage('COMMON_INSTITUTION_ATTACH');
+		      }else{
+		         $message = $this->_translator->getMessage('COMMON_GROUP_ATTACH');
+		      }
+		      if ($current_user->isUser() and $this->_with_modifying_actions ) {
+		         $params = array();
+		         $params = $this->_environment->getCurrentParameterArray();
+		         $params['attach_view'] = 'yes';
+		         $params['attach_type'] = 'item';
+		         $html .= ahref_curl($this->_environment->getCurrentContextID(),
+		                             $this->_environment->getCurrentModule(),
+		                             $this->_environment->getCurrentFunction(),
+		                             $params,
+		                             $message
+		                             ).LF;
+		         unset($params);
+		      } else {
+		         $html .= '<span class="disabled">'.$message.'</span>'.LF;
+		      }
+		      $html .= '</div>'.LF;
+		      $html .='      </div>';
+		      $html .='      </div>';
+		      $html .='      </div>';
+		      return $html;
+			 */
+			
+			return $return;
+		}
+		
+		private function getConfigContent() {
+			$return = array();
+			
+			$current_context = $this->_environment->getCurrentContextItem();
+			$translator = $this->_environment->getTranslationObject();
+			
+			// user id
+			$return['user_id'] = $this->_item->getUserID();
+			
+			// portal
+			$portal_item = $this->_environment->getCurrentPortalItem();
+			if($portal_item->getCountAuthSourceListEnabled() !== 1) {
+				$return['auth_source'] = $portal_item->getAuthSource($this->_item->getAuthSource())->getTitle();
+			}
+			
+			if(!$this->_environment->inPrivateRoom()) {
+				// status
+				$status = '';
+				if($this->_item->isModerator()) {
+					$status = $translator->getMessage('USER_STATUS_MODERATOR');
+				} elseif($this->_item->isUser()) {
+					$status = $translator->getMessage('USER_STATUS_USER');
+				} elseif($this->_item->isRequested()) {
+					$status = $translator->getMessage('USER_STATUS_REQUESTED');
+				} else {
+					if(!$current_context->isCommunityRoom()) {
+						$status = $translator->getMessage('USER_STATUS_CLOSED');
+					} else {
+						$last_login = $this->_item->getLastlogin();
+						if(!empty($last_login)) {
+							$status = $translator->getMessage('USER_STATUS_CLOSED');
+						} else {
+							$status = $translator->getMessage('USER_STATUS_REJECT');
+						}
+					}
+				}
+				
+				$return['status'] = $status;
+				
+				// contact
+				if($this->_item->isContact()) {
+					$return['contact'] = 'common_yes';
+				} elseif($this->_item->isModerator()) {
+					$return['contact'] = 'common_no';
+				}
+				
+				// language
+				$language = $current_context->getLanguage();
+				if(mb_strtoupper($language, 'UTF-8') === 'USER' || ($this->_display_mod === 'admin' && $this->_environment->inPortal())) {
+					switch(cs_strtoupper($this->_item->getLanguage())) {
+						case 'BROWSER':
+							$return['language'] = 'browser';
+							break;
+						default:
+							$return['language'] = $translator->getLanguageLabelTranslated($this->_item->getLanguage());
+							break;
+					}
+				}
+			}
+			
+			// visibility
+			if($this->_environment->inCommunityRoom()) {
+				if($current_context->isOpenForGuests()) {
+					if($this->_item->isVisibleForAll()) {
+						$return['visibility'] = 'always';
+					} else {
+						$return['visibility'] = 'only_logged';
+					}
+				}
+			}
+			
+			// mailing
+			if($this->_item->isModerator() && !$this->_environment->inPrivateRoom()) {
+				$temp_extra = cs_strtoupper($this->_item->getAccountWantMail());	// text_functions, respectively cs_user_item.php
+				switch($temp_extra) {
+					case 'YES':
+						$return['mailing'] = 'yes';
+						break;
+					case 'NO':
+						$return['mailing'] = 'no';
+						break;
+					default:
+						$return['mailing'] = 'error';
+						break;
+							
+				}
+				
+				$temp_extra = cs_strtoupper($this->_item->getOpenRoomWantMail());
+				switch($temp_extra) {
+					case 'YES':
+						$return['mailing_room'] = 'yes';
+						break;
+					case 'NO':
+						$return['mailing_room'] = 'no';
+						break;
+					default:
+						$return['mailing_room'] = 'error';
+						break;
+				}
+				
+				if($this->_environment->inCommunityRoom()) {
+					if($current_context->isOpenForGuests()) {
+						$temp_extra = cs_strtoupper($this->_item->getPublishMaterialWantMail());
+						switch($temp_extra) {
+							case 'YES':
+								$return['mailing_material'] = 'yes';
+								break;
+							case 'NO':
+								$return['mailing_material'] = 'no';
+								break;
+							default:
+								$return['mailing_material'] = 'error';
+								break;
+						}
+					}
+				}
+			}
+			
+			if($this->_environment->inPortal()) {
+				$related_user_array = array();
+				$Related_user_list = $this->_item->getRelatedUserList();
+				if($related_user_list->isNotEmpty()) {
+					$user_item = $related_user_list->getFirst();
+					
+					while($user_item) {
+						$related_user_array[$user_item->getContextID()] = $user_item;
+						
+						$user_item = $related_user_list->getNext();
+					}
+					unset($related_user_list);
+				}
+				
+				// TODO: migrate
+				
+				/*
+				 * 
+
+       $temp_array = array();
+       $formal_data[] = $temp_array;
+       unset($temp_array);
+
+       $temp_array = array();
+       $temp_array[] = $this->_translator->getMessage('USER_ROOM_MEMBERSHIPS');
+       $formal_data[] = $temp_array;
+       unset($temp_array);
+
+       $temp_array = array();
+       $temp_array[] = $this->_translator->getMessage('COMMUNITYS');
+
+       $community_list = $item->getRelatedCommunityList();
+       if ($community_list->isNotEmpty()) {
+          $community_item = $community_list->getFirst();
+          $first = true;
+          $temp_string = '';
+          while ($community_item) {
+            if ($first) {
+               $first = false;
+            } else {
+               $temp_string .= BRLF;
+            }
+            $temp_string .= $community_item->getTitle();
+
+            // status
+                $status = $this->_getStatus($related_user_array[$community_item->getItemID()],$community_item);
+            if (!empty($status)) {
+               $temp_string .= ' ('.$status.')';
+            }
+            unset($community_item);
+            $community_item = $community_list->getNext();
+         }
+         $temp_array[] = $temp_string;
+         unset($temp_string);
+         unset($community_list);
+       } else {
+          $temp_array[] = '<span class="disabled">'.$this->_translator->getMessage('COMMON_NONE').'</span>';
+       }
+       $formal_data[] = $temp_array;
+       unset($temp_array);
+
+       $temp_array = array();
+       $temp_array[] = $this->_translator->getMessage('PROJECTS');
+
+       $room_list = $item->getRelatedProjectList();
+       if ($room_list->isNotEmpty()) {
+          $room_item = $room_list->getFirst();
+          $first = true;
+          $temp_string = '';
+          while ($room_item) {
+            if ($first) {
+               $first = false;
+            } else {
+               $temp_string .= BRLF;
+            }
+            $temp_string .= $room_item->getTitle();
+            // room status
+                if ($room_item->isLocked()) {
+                   $temp_string .= ' ['.$this->_translator->getMessage('PROJECTROOM_LOCKED').']'.LF;
+                } elseif ($room_item->isClosed()) {
+                   $temp_string .= ' ['.$this->_translator->getMessage('PROJECTROOM_CLOSED').']'.LF;
+                }
+            // status
+                $status = $this->_getStatus($related_user_array[$room_item->getItemID()],$room_item);
+            if (!empty($status)) {
+               $temp_string .= ' ('.$status.')';
+            }
+            unset($room_item);
+            $room_item = $room_list->getNext();
+         }
+         $temp_array[] = $temp_string;
+         unset($temp_string);
+         unset($room_list);
+       } else {
+          $temp_array[] = '<span class="disabled">'.$this->_translator->getMessage('COMMON_NONE').'</span>';
+       }
+       $formal_data[] = $temp_array;
+       unset($temp_array);
+       unset($related_user_list);
+				 */
+			}
+			
+			if($this->_environment->inPrivateRoom()) {
+				// TODO: migrate
+				
+				/*
+				 * $temp_array = array();
+         $temp_array[] = $this->_translator->getMessage('CONFIGURATION_AUTOSAVE_STATUS');
+         if ( $item->isAutoSaveOn() ) {
+            $temp_array[] = $this->_translator->getMessage('COMMON_YES');
+         } else {
+            $temp_array[] = $this->_translator->getMessage('COMMON_NO');
+         }
+         $formal_data[] = $temp_array;
+				 */
+			}
+			
+			return $return;
 		}
 		
 		protected function getDetailContent() {
@@ -501,21 +974,28 @@
 				// icq
 				if(!empty($icq)) {
 					//TODO:
-					//$html_text .= '   <img style="vertical-align:middle; margin-bottom:5px;" src="http://status.icq.com/online.gif?icq='.rawurlencode($icq_number).'&amp;img=2" alt="ICQ Online Status Indicator" />'.LF;
 					//$icq = $converter->compareWithSearchText($icq);
 					$icq = $converter->text_as_html_short($icq);
 					$return['messenger_block']['icq'] = $icq;
+					$return['indicators']['icq'] = 'http://status.icq.com/online.gif?icq=' . rawurlencode($icq) . '&img=2';
+				}
+				
+				// jabber
+				if(!empty($jabber)) {
+					//TODO:
+					//$jabber = $converter->compareWithSearchText($jabber);
+					$jabber = $converter->text_as_html_short($jabber);
+					$return['messenger_block']['jabber'] = $jabber;
+					//$return['indicators']['jabber'] = '';
 				}
 				
 				// msn
 				if(!empty($msn)) {
 					//TODO:
-					//$html_text .= '<a href="http://www.IMStatusCheck.com/?msn">'.LF;
-            		//$html_text .= '   <img style="vertical-align:middle; margin-bottom:5px;" src="http://www.IMStatusCheck.com/status/msn/'.rawurlencode($msn_number).'?icons" alt="MSN Online Status Indicator" />'.LF;
-            		//$html_text .= '</a>'.LF;
             		//$msn = $converter->compareWithSearchText($msn);
             		$msn = $converter->text_as_html_short($msn);
             		$return['messenger_block']['msn'] = $msn;
+            		$return['indicators']['msn'] = 'http://www.IMStatusCheck.com/status/msn/' . rawurlencode($msn) . '?icons';
 				}
 				
 				// skype
@@ -549,8 +1029,6 @@
 			
 			$homepage = $this->_item->getHomepage();
 			$homepage = $converter->text_as_html_short($homepage);
-			// TODO: in template
-			//$homepage_short = chunkText($homepage,60);
 			if(!empty($homepage)) {
 				if(strstr($homepage, '?')) {
 					list($first_part, $second_part) = explode('?', $homepage);

@@ -1128,7 +1128,8 @@ div.user_profil_blocks table {
 	padding: 7px 0;
 	}
 
-div.user_profil_blocks td.label {
+div.user_profil_blocks td.label,
+div.detail_description td.label {
 	width: 120px;
 	}
 

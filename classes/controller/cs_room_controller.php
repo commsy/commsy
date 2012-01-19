@@ -30,7 +30,8 @@
 
 			// room information
 			$this->assign('room', 'room_information', $this->getRoomInformation());
-
+			
+			// TODO: buzzwords and tags are not mandatory in all rubrics(fe. user), move these calls to the child controllers or implement check for rubrics
 			// buzzwords
 			$this->assign('room', 'buzzwords', $this->getBuzzwords());
 

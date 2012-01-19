@@ -11,9 +11,7 @@
 
 	<div class="item_body"> <!-- Start item body -->
 		<h2>
-			{if !empty($detail.content.first_block.fullname)}
-				{$detail.content.first_block.fullname}
-			{/if}
+			{$detail.content.title}
 		</h2>
 		<div class="clear"> </div>
 

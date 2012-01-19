@@ -64,6 +64,28 @@ define(["libs/jQuery/jquery-1.7.1.min"], function() {
 				this.registerModule('commsy/div_expander', null, {objects: objects, action: 'click'});
 			}
 			
+			// portlet expander
+			var objects = [];
+			jQuery('div[class="portlet_rc"]  div[class="portlet_rc_body"]').each(function() {
+				// find actors
+				var actors = [];
+				var a = {
+					object: jQuery(this).parent().find('a[class="btn_head_rc"]')	
+				};
+				var img = {
+					object: a.object.children(),
+					images: ['btn_close_rc.gif', 'btn_open_rc.gif']
+				};
+				a.modify_images = img;
+				
+				actors.push(a);
+				actors.push(img);
+				
+				objects.push({actors: actors, div: jQuery(this)});
+			});
+			
+			this.registerModule('commsy/div_expander', null, {objects: objects, action: 'click'});
+			
 			// on detail context
 			if(this.getURLParam('fct') === 'detail') {
 				// action overlay
