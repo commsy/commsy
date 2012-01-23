@@ -402,9 +402,28 @@ class cs_privateroom_item extends cs_room_item {
               and $this->isPrivateroom()
             ) {
             	
+            $url_to_portal = '';
+            $portal_item = $this->getContextItem();
+            if ( !empty($portal_item) ) {
+               $url_to_portal = $portal_item->getURL();
+            }
             global $c_commsy_cron_path;
             if(isset($c_commsy_cron_path)){
                $curl_text = $c_commsy_cron_path.'commsy.php?cid=';
+            } elseif ( !empty($url_to_portal) ) {
+               $c_commsy_domain = $this->_environment->getConfiguration('c_commsy_domain');
+               if ( stristr($c_commsy_domain,'https://') ) {
+                  $curl_text = 'https://';
+               } else {
+                  $curl_text = 'http://';
+               }
+               $curl_text .= $url_to_portal;
+               $file = 'commsy.php';
+               $c_single_entry_point = $this->_environment->getConfiguration('c_single_entry_point');
+               if ( !empty($c_single_entry_point) ) {
+                  $file = $c_single_entry_point;
+               }
+               $curl_text .= '/'.$file.'?cid=';
             } else {
                $file = $_SERVER['PHP_SELF'];
                $file = str_replace('cron_new','commsy',$file);
@@ -803,9 +822,34 @@ class cs_privateroom_item extends cs_room_item {
               and $this->isPrivateRoomNewsletterActive()
               and $this->isPrivateroom()
             ) {
-            $file = $_SERVER['PHP_SELF'];
-            $file = str_replace('cron','commsy',$file);
-            $curl_text = 'http://'.$_SERVER['HTTP_HOST'].$file.'?cid=';
+
+            
+            $url_to_portal = '';
+            $portal_item = $this->getContextItem();
+            if ( !empty($portal_item) ) {
+               $url_to_portal = $portal_item->getURL();
+            }
+            # cron path ???
+            if ( !empty($url_to_portal) ) {
+               $c_commsy_domain = $this->_environment->getConfiguration('c_commsy_domain');
+               if ( stristr($c_commsy_domain,'https://') ) {
+                  $curl_text = 'https://';
+               } else {
+                  $curl_text = 'http://';
+               }
+               $curl_text .= $url_to_portal;
+               $file = 'commsy.php';
+               $c_single_entry_point = $this->_environment->getConfiguration('c_single_entry_point');
+               if ( !empty($c_single_entry_point) ) {
+                  $file = $c_single_entry_point;
+               }
+               $curl_text .= '/'.$file.'?cid=';
+            } else {
+               $file = $_SERVER['PHP_SELF'];
+               $file = str_replace('cron','commsy',$file);
+               # cron_new ???
+               $curl_text = 'http://'.$_SERVER['HTTP_HOST'].$file.'?cid=';
+            }
 
             $mail_array = array();
             $mail_array[] = $user->getEmail();

@@ -210,9 +210,27 @@ function cron_workflow($portal){
             }
             $mail->set_subject($translator->getMessage('COMMON_WORKFLOW_EMAIL_SUBJECT_RESUBMISSION', $portal->getTitle()));
 
+            $url_to_portal = '';
+            if ( !empty($portal) ) {
+               $url_to_portal = $portal->getURL();
+            }
             global $c_commsy_cron_path;
             if(isset($c_commsy_cron_path)){
                $curl_text = $c_commsy_cron_path.'commsy.php?cid=';
+            } elseif ( !empty($url_to_portal) ) {
+               $c_commsy_domain = $environment->getConfiguration('c_commsy_domain');
+               if ( stristr($c_commsy_domain,'https://') ) {
+                  $curl_text = 'https://';
+               } else {
+                  $curl_text = 'http://';
+               }
+               $curl_text .= $url_to_portal;
+               $file = 'commsy.php';
+               $c_single_entry_point = $environment->getConfiguration('c_single_entry_point');
+               if ( !empty($c_single_entry_point) ) {
+                  $file = $c_single_entry_point;
+               }
+               $curl_text .= '/'.$file.'?cid=';
             } else {
                $commsy_file = $_SERVER['PHP_SELF'];
                $commsy_file = str_replace('cron_new','commsy',$commsy_file);
