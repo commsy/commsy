@@ -502,6 +502,7 @@ function redirect_with_history_save ($context_id, $module, $function, $parameter
 
    $session = $environment->getSessionItem();
 
+   // TODO: maybe it becomes necessary to not store ajax requests in history
    $history = $session->getValue('history');
    $current_page['context'] = $environment->getCurrentContextID();
    $current_page['module'] = $environment->getCurrentModule();

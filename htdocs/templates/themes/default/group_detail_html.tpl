@@ -18,181 +18,60 @@
 		<div id="item_credits">
 			<p id="ic_rating"></p>
 			<p>
-				<div class="user_profil_blocks">
-					{* formal data *}
-					{if !empty($detail.content.first_block)}
-						<table>
-							{if !empty($detail.content.first_block.fullname)}
-								<tr>
-									<td class="label"><h4>___USER_TITLE___</h4></td>
-									<td>{$detail.content.first_block.fullname}</td>
-								</tr>
-							{/if}
-							{if !empty($detail.content.first_block.birthday)}
-								<tr>
-									<td class="label"><h4>___USER_BIRTHDAY___</h4></td>
-									<td>{$detail.content.first_block.birthday}</td>
-								</tr>
-							{/if}
-						</table>
-					{/if}
-					
-					{if !empty($detail.content.second_block)}
-						<table>
-							{if !empty($detail.content.second_block.email)}
-								<tr>
-									<td class="label"><h4>___USER_EMAIL___</h4></td>
-									<td>
-										{if $detail.content.hidden.email == true}
-											___USER_EMAIL_HIDDEN___
-										{else}
-											{$detail.content.second_block.email}
-										{/if}
-									</td>
-								</tr>
-							{/if}
-							
-							{if !empty($detail.content.second_block.telephone)}
-								<tr>
-									<td class="label"><h4>___USER_TELEPHONE___</h4></td>
-									<td>
-										{$detail.content.second_block.telephone}
-									</td>
-								</tr>
-							{/if}
-							
-							{if !empty($detail.content.second_block.cellularphone)}
-								<tr>
-									<td class="label"><h4>___USER_CELLULARPHONE___</h4></td>
-									<td>
-										{$detail.content.second_block.cellularphone}
-									</td>
-								</tr>
-							{/if}
-						</table>
-					{/if}
-					
-					{if !empty($detail.content.third_block)}
-						<table>
-							{if !empty($detail.content.third_block.street)}
-								<tr>
-									<td class="label"><h4>___USER_STREET___</h4></td>
-									<td>
-										{$detail.content.third_block.street}
-									</td>
-								</tr>
-							{/if}
-							
-							{if !empty($detail.content.third_block.city)}
-								<tr>
-									<td class="label"><h4>___USER_CITY___</h4></td>
-									<td>
-										{$detail.content.third_block.city}
-									</td>
-								</tr>
-							{/if}
-							
-							{if !empty($detail.content.third_block.room)}
-								<tr>
-									<td class="label"><h4>___USER_ROOM___</h4></td>
-									<td>
-										{$detail.content.third_block.room}
-									</td>
-								</tr>
-							{/if}
-						</table>
-					{/if}
-					
-					{if !empty($detail.content.fourth_block)}
-						<table>
-							{if !empty($detail.content.fourth_block.organisation)}
-								<tr>
-									<td class="label"><h4>___USER_ORGANISATION___</h4></td>
-									<td>
-										{$detail.content.fourth_block.organisation}
-									</td>
-								</tr>
-							{/if}
-							
-							{if !empty($detail.content.fourth_block.position)}
-								<tr>
-									<td class="label"><h4>___USER_POSITION___</h4></td>
-									<td>
-										{$detail.content.fourth_block.position}
-									</td>
-								</tr>
-							{/if}
-						</table>
-					{/if}
-				</div>
+				{if !empty($detail.content.description)}
+					{$detail.content.description}
+				{/if}
 				
-				<div id="user_profil_picture">
-					{if !empty($detail.content.picture.src)}
-						<img alt="___USER_PICTURE_UPLOADFILE___" src="commsy.php?cid={$environment.cid}&mod=picture&fct=getfile&picture={$detail.content.picture.src}"/>
-					{else}
-						<img alt="___USER_PICTURE_UPLOADFILE___" src="{$basic.tpl_path}img/user_unknown.gif" title="{i18n tag=USER_PICTURE_NO_PICTURE param1=$detail.content.first_block}"/>
+				<div class="user_profil_blocks">
+					{if $detail.content.show_picture}
+						<div id="user_profil_picture">
+							<img alt="Portrait" src="commsy.php?cid={$environment.cid}&mod=picture&fct=getfile&picture={$detail.content.picture}" />
+						</div>
 					{/if}
 				</div>
 				
 				<div class="user_profil_blocks">
-					{if !empty($detail.content.messenger_block)}
-						<table>
-							{if !empty($detail.content.messenger_block.icq)}
-								<tr>
-									<td class="label"><h4>___USER_ICQ___</h4></td>
-									<td>
-										{$detail.content.messenger_block.icq}(<img style="vertical-align:middle; margin-bottom:5px;" src="{$detail.content.indicators.icq}" alt="ICQ Online Status Indicator"/>)
-									</td>
-								</tr>
-							{/if}
-							
-							{if !empty($detail.content.messenger_block.jabber)}
-								<tr>
-									<td class="label"><h4>___USER_JABBER___</h4></td>
-									<td>
-										{$detail.content.messenger_block.jabber}
-									</td>
-								</tr>
-							{/if}
-							
-							{if !empty($detail.content.messenger_block.msn)}
-								<tr>
-									<td class="label"><h4>___USER_MSN___</h4></td>
-									<td>
-										{$detail.content.messenger_block.msn}(<img style="vertical-align:middle; margin-bottom:5px;" src="{$detail.content.indicators.msn}" alt="MSN Online Status Indicator"/>)
-									</td>
-								</tr>
-							{/if}
-							
-							{if !empty($detail.content.messenger_block.skype)}
-								<tr>
-									<td class="label"><h4>___USER_SKYPE___</h4></td>
-									<td>
-										{$detail.content.messenger_block.skype}
-									</td>
-								</tr>
-							{/if}
-							
-							{if !empty($detail.content.messenger_block.yahoo)}
-								<tr>
-									<td class="label"><h4>___USER_YAHOO___</h4></td>
-									<td>
-										{$detail.content.messenger_block.yahoo}
-									</td>
-								</tr>
-							{/if}
-						</table>
-					{/if}
-					
-					{if !empty($detail.content.homepage)}
+					<h4>___GROUP_MEMBERS___</h4>
+					{if !empty($detail.content.members)}
 						<table>
 							<tr>
-								<td class="label"><h4>___USER_HOMEPAGE___</h4></td>
 								<td>
-									{$detail.content.homepage|truncate:60:"...":true}
+									<ul>
+										{section name=members_col1 loop=$detail.content.members start=0 step=3}
+											{$member=$detail.content.members[members_col1]}
+											
+											<li>
+												<a href="commsy.php?cid={$environment.cid}&mod=user&fct=detail&iid={$member.iid}" title="{$member.linktext}">{$member.linktext}</a>
+											</li>
+										{/section}
+									</ul>
+								</td>
+								<td>
+									<ul>
+										{section name=members_col2 loop=$detail.content.members start=1 step=3}
+											{$member=$detail.content.members[members_col2]}
+											
+											<li>
+												<a href="commsy.php?cid={$environment.cid}&mod=user&fct=detail&iid={$member.iid}" title="{$member.linktext}">{$member.linktext}</a>
+											</li>
+										{/section}
+									</ul>
+								</td>
+								<td>
+									<ul>
+										{section name=members_col3 loop=$detail.content.members start=2 step=3}
+											{$member=$detail.content.members[members_col3]}
+											
+											<li>
+												<a href="commsy.php?cid={$environment.cid}&mod=user&fct=detail&iid={$member.iid}" title="{$member.linktext}">{$member.linktext}</a>
+											</li>
+										{/section}
+									</ul>
 								</td>
 							</tr>
 						</table>
+					{else}
+						___COMMON_NONE___
 					{/if}
 				</div>
 			</p>
@@ -201,143 +80,7 @@
 
 		<div id="item_legend"> <!-- Start item_legend -->
 			<div class="row_odd">
-				{if $detail.config.show_configuration}
-					<div class="detail_description">
-						<h4>___USER_PREFERENCES___({i18n tag=COMMON_READABLE_ONLY_USER param1=$detail.content.first_block.fullname})</h4>
-						{*
-							$html .= '<div style="float:right">';
-					         $html .= $this->getAccountActionsAsHTML($item);
-					         $html .= '</div>';
-					    *}
-					    
-					    <table>
-					    	<tr>
-								<td class="label"><h4>___COMMON_ACCOUNT___</h4></td>
-								<td>
-									{$detail.configcontent.user_id}
-								</td>
-							</tr>
-							
-							{if !empty($detail.configcontent.auth_source)}
-								<tr>
-									<td class="label"><h4>___USER_AUTH_SOURCE___</h4></td>
-									<td>
-										{$detail.configcontent.auth_source}
-									</td>
-								</tr>
-							{/if}
-							
-							{if !empty($detail.configcontent.status)}
-								<tr>
-									<td class="label"><h4>___COMMON_STATUS___</h4></td>
-									<td>
-										{$detail.configcontent.status}
-									</td>
-								</tr>
-							{/if}
-							
-							{if !empty($detail.configcontent.contact)}
-								<tr>
-									<td class="label"><h4>___ROOM_CONTACT_SINGULAR___</h4></td>
-									<td>
-										{if $detail.configcontent.contact == 'common_yes'}
-											___COMMON_YES___
-										{else}
-											___COMMON_NO___
-										{/if}
-									</td>
-								</tr>
-							{/if}
-							
-							{if !empty($detail.configcontent.language)}
-								<tr>
-									<td class="label"><h4>___USER_LANGUAGE___</h4></td>
-									<td>
-										{if $detail.configcontent.language == 'browser'}
-											___BROWSER___
-										{else}
-											{$detail.configcontent.language}
-										{/if}
-									</td>
-								</tr>
-							{/if}
-							
-							{if !empty($detail.configcontent.visbility)}
-								<tr>
-									<td class="label"><h4>___ACCOUNT_VISIBLE_PROPERTY___</h4></td>
-									<td>
-										{if $detail.configcontent.visbility == 'always'}
-											___VISIBLE_ALWAYS___
-										{else}
-											___VISIBLE_ONLY_LOGGED___
-										{/if}
-									</td>
-								</tr>
-							{/if}
-							
-							{if !empty($detail.configcontent.mailing)}
-								<tr>
-									<td class="label"><h4>___ACCOUNT_EMAIL_MEMBERSHIP___</h4></td>
-									<td>
-										{if $detail.configcontent.mailing == 'yes'}
-											___COMMON_YES___
-										{elseif $detail.configcontent.mailing == 'no'}
-											___COMMON_NO___
-										{else}
-											___COMMON_MESSAGETAG_ERROR___
-										{/if}
-									</td>
-								</tr>
-							{/if}
-							
-							{if !empty($detail.configcontent.mailing_room)}
-								<tr>
-									<td class="label"><h4>___USER_MAIL_ROOM___</h4></td>
-									<td>
-										{if $detail.configcontent.mailing_room == 'yes'}
-											___COMMON_YES___
-										{elseif $detail.configcontent.mailing_room == 'no'}
-											___COMMON_NO___
-										{else}
-											___COMMON_MESSAGETAG_ERROR___
-										{/if}
-									</td>
-								</tr>
-							{/if}
-							
-							{if !empty($detail.configcontent.mailing_material)}
-								<tr>
-									<td class="label"><h4>___ACCOUNT_EMAIL_MATERIAL___</h4></td>
-									<td>
-										{if $detail.configcontent.mailing_material == 'yes'}
-											___COMMON_YES___
-										{elseif $detail.configcontent.mailing_material == 'no'}
-											___COMMON_NO___
-										{else}
-											___COMMON_MESSAGETAG_ERROR___
-										{/if}
-									</td>
-								</tr>
-							{/if}
-							
-							
-							
-							
-					    </table>
-						
-		{*
-
-         $html .='<div class="detail_content" style=" margin-top: 5px; border-top:1px solid #B0B0B0; border-left:0px solid #B0B0B0; border-right:0px solid #B0B0B0; border-bottom:0px solid #B0B0B0;">'.LF;
-         $html .= $this->_getSubItemAsHTML($current_item,1).LF;
-         $html .='</div>'.LF;
-         $html .='<div style="clear:both;">'.LF;
-         $html .='</div>'.LF;
-         $html .= '<!-- END OF SUB ITEM DETAIL VIEW -->'.LF.LF;
-         *}
-
-						
-					</div>
-				{/if}
+				
 			</div>
 		</div> <!-- Ende item_legend -->
 
@@ -348,6 +91,7 @@
 {/block}
 
 {block name=default_room_portlets}
+	{*
 	<div class="portlet_rc">
 		<a href="" title="___HOME_SMARTY_ACTION_CLOSE___" class="btn_head_rc"><img src="{$basic.tpl_path}img/btn_close_rc.gif" alt="close" /></a>
 		<h2>
@@ -376,6 +120,7 @@
 			</ul>
 		</div>
 	</div>
+	*}
 {/block}
 
 {block name=room_right_portlets_navigation}

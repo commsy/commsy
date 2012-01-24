@@ -878,7 +878,8 @@ else {
 		$environment->getCurrentModule() !== 'material' &&
 		$environment->getCurrentModule() !== 'announcement' &&
 		$environment->getCurrentModule() !== 'user' &&
-		$environment->getCurrentModule() !== 'group') {
+		$environment->getCurrentModule() !== 'group' &&
+		$environment->getCurrentModule() !== 'todo') {
 		$c_smarty = false;
 	}
 	
@@ -1381,9 +1382,12 @@ if ($current_user->isUser() and !$current_user->isRoot()) {
 /*********** SAVE SESSION ***********/
 
 // save session with history information
+// UPDATE: do not store ajax requests in history
+// comparison only works with $_GET['mod'] - not with $environment->getCurrentModule()...
 if ( $environment->getCurrentFunction() != 'getfile'
      and $environment->getCurrentFunction() != 'getingray'
      and $environment->getCurrentModule() != 'help'
+     and $_GET['mod'] != 'ajax'
      and !($environment->getCurrentModule() == 'agb' and $environment->getCurrentFunction() == 'index')
      and !empty($session)
    ) {

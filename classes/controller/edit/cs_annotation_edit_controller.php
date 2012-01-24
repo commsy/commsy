@@ -256,7 +256,7 @@
 					(isOption($this->_command, CS_OPTION_SAVE) ||
 					isOption($this->_command, CS_OPTION_CHANGE) ||
 					isOption($this->_command, CS_OPTION_NEW))) {
-					
+						
 					// TODO: impelment form check
 					$correct = true;
 					
