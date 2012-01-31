@@ -98,8 +98,10 @@ define(["libs/jQuery/jquery-1.7.1.min"], function() {
 			// load on detail context
 			if(this.getURLParam('fct') === 'detail') {
 				var input_object = jQuery('input[id="ckeditor_content"]');
-				
 				this.registerModule('commsy/ck_editor', 'div[id="ckeditor"]', {input_object: input_object});
+				
+				var input_object = jQuery('input[id="ckeditor_content_second"]');
+				this.registerModule('commsy/ck_editor', 'div[id="ckeditor_second"]', {input_object: input_object});
 			}
 		},
 		

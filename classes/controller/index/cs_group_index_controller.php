@@ -58,6 +58,7 @@
 			include_once('classes/views/cs_view.php');
 			$environment = $this->_environment;
 			$context_item = $environment->getCurrentContextItem();
+			$translator = $environment->getTranslationObject();
 			$return = array();
 
 			$last_selected_tag = '';
@@ -130,15 +131,28 @@
 			$params['with_modifying_actions'] = false;
 			$view = new cs_view($params);
 			while($item) {
+				$modificator = $item->getModificatorItem();
+				if(isset($modificator) && !$modificator->isDeleted()) {
+					$current_user_item = $environment->getCurrentUserItem();
+					if($current_user_item->isGuest() && $modificator->isVisibleForLoggedIn()) {
+						$modificator = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+					} else {
+						$modificator = $modificator->getFullName();
+					}
+				} else {
+					$modificator = $translator->getMessage('COMMON_DELETED_USER');
+				}
+				
+				//TODO:
+				//$modificator = $converter->compareWithSearchText($modificator);
+				$modificator = $view->_text_as_html_short($modificator);
+				
 				$noticed_text = $this->_getItemChangeStatus($item);
 				$item_array[] = array(
 				'iid'				=> $item->getItemID(),
 				'title'				=> $view->_text_as_html_short($item->getTitle()),
-				'date'				=> $this->_environment->getTranslationObject()->getDateInLang($item->getModificationDate()),
-				'creator'			=> $item->getCreatorItem()->getFullName(),
 				'noticed'			=> $noticed_text,
-				'attachment_count'	=> $item->getFileList()->getCount()
-//				'attachment_infos'	=>
+				'modificator'		=> $modificator
 				);
 
 				$item = $list->getNext();
@@ -152,7 +166,10 @@
 			return $return;
 		}
 		
-		public function getAdditionalListActions() {
+		protected function getAdditionalActions($perms) {
+		}
+
+		protected function getAdditionalListActions() {
 			return array();
 		}
 	}

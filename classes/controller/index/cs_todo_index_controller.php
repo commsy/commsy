@@ -235,7 +235,36 @@
 			return $return;
 		}
 		
-		public function getAdditionalListActions() {
+		protected function getAdditionalActions($perms) {
+			/*
+			 * $html  = '';
+      $current_context = $this->_environment->getCurrentContextItem();
+      $current_user = $this->_environment->getCurrentUserItem();
+      $hash_manager = $this->_environment->getHashManager();
+      $params = $this->_environment->getCurrentParameterArray();
+      if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+         $image = '<img src="images/commsyicons_msie6/22x22/abbo.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('TODO_ABBO').'"/>';
+      } else {
+         $image = '<img src="images/commsyicons/22x22/abbo.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('TODO_ABBO').'"/>';
+      }
+      $ical_url = '<a title="'.$this->_translator->getMessage('TODO_ABBO').'"  href="webcal://';
+      $ical_url .= $_SERVER['HTTP_HOST'];
+      global $c_single_entry_point;
+      $ical_url .= str_replace($c_single_entry_point,'ical.php',$_SERVER['PHP_SELF']);
+      $ical_url .= '?cid='.$_GET['cid'].'&amp;mod=todo&amp;hid='.$hash_manager->getICalHashForUser($current_user->getItemID()).'">'.$image.'</a>'.LF;
+      $html .= $ical_url;
+      if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+         $image = '<img src="images/commsyicons_msie6/22x22/export.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('TODO_EXPORT').'"/>';
+      } else {
+         $image = '<img src="images/commsyicons/22x22/export.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('TODO_EXPORT').'"/>';
+      }
+      $html .= '<a title="'.$this->_translator->getMessage('TODO_EXPORT').'"  href="ical.php?cid='.$_GET['cid'].'&amp;mod=todo&amp;hid='.$hash_manager->getICalHashForUser($current_user->getItemID()).'">'.$image.'</a>'.LF;
+      unset($params);
+      return $html;
+			 */
+		}
+
+		protected function getAdditionalListActions() {
 			return array();
 		}
 	}

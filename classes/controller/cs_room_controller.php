@@ -2,6 +2,8 @@
 	require_once('classes/controller/cs_base_controller.php');
 
 	abstract class cs_room_controller extends cs_base_controller {
+		protected $_with_modifying_actions = true;
+		
 		/**
 		 * constructor
 		 */
@@ -31,12 +33,24 @@
 			// room information
 			$this->assign('room', 'room_information', $this->getRoomInformation());
 			
-			// TODO: buzzwords and tags are not mandatory in all rubrics(fe. user), move these calls to the child controllers or implement check for rubrics
+			if($this->showTags()) {
+				$this->assign('room', 'tags', $this->getTags());
+			}
+			
+			// TODO: buzzwords are not mandatory in all rubrics(fe. user), move these calls to the child controllers or implement check for rubrics
 			// buzzwords
 			$this->assign('room', 'buzzwords', $this->getBuzzwords());
-
-			// tags
-			$this->assign('room', 'tags', $this->getTags());
+			
+			$params = $this->_environment->getCurrentParameterArray();
+			if(!empty($params['with_modifying_actions'])) {
+				$this->_with_modifying_actions = $params['with_modifying_actions'];
+			}
+			
+			$current_context = $this->_environment->getCurrentContextItem();
+			$current_user = $this->_environment->getCurrentUserItem();
+			if($current_context->isClosed() || $current_user->isOnlyReadUser()) {
+				$this->_with_modifying_actions = false;
+			}
 		}
 
 		/**
@@ -296,7 +310,20 @@
       		}
       		return $info_text;
   	 	}
-
-
-
+  	 	
+		private function showTags() {
+			$context_item = $this->_environment->getCurrentContextItem();
+			if($context_item->withTags() &&
+				( $this->_environment->getCurrentModule() == CS_MATERIAL_TYPE
+	                || $this->_environment->getCurrentModule() == CS_ANNOUNCEMENT_TYPE
+	                || $this->_environment->getCurrentModule() == CS_DISCUSSION_TYPE
+	                || $this->_environment->getCurrentModule() == CS_TODO_TYPE
+	                || $this->_environment->getCurrentModule() == CS_DATE_TYPE
+	                || $this->_environment->getCurrentModule() == 'campus_search'
+	                || $this->_environment->getCurrentModule() === 'home')) {
+				return true;
+			}
+			
+			return false;
+		}
 	}

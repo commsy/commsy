@@ -2,14 +2,30 @@
 
 {block name=room_detail_content}
 	<div class="item_actions">
-		<div id="top_item_actions">
-			<a href=""><span class="edit_set"> &nbsp; </span></a>
-			<a href=""><span class="details_ia"> &nbsp; </span></a>
-			<a href=""><span class="ref_to_ia"> &nbsp; </span></a>
-		</div>
+		<a class="edit" href=""><span class="edit_set"> &nbsp; </span></a>
+		<a href=""><span class="details_ia"> &nbsp; </span></a>
+		<a href=""><span class="ref_to_ia"> &nbsp; </span></a>
 	</div>
 
 	<div class="item_body"> <!-- Start item body -->
+		<div class="edit_overlay">
+			{if $detail.actions.edit}
+				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.content.item_id}">___COMMON_EDIT_ITEM___</a></br>
+			{/if}
+			{if $detail.actions.delete}
+				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.content.item_id}">___COMMON_DELETE_ITEM___</a></br>
+			{/if}
+			{if $detail.actions.mail}
+				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.content.item_id}">___COMMON_EMAIL_TO___</a></br>
+			{/if}
+			{if $detail.actions.copy}
+				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.content.item_id}">___COMMON_ITEM_COPY_TO_CLIPBOARD___</a></br>
+			{/if}
+			{if $detail.actions.new}
+				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.content.item_id}">___COMMON_NEW_ITEM___</a></br>
+			{/if}
+			<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.content.item_id}">___COMMON_DOWNLOAD___</a>
+		</div>
 		<h2>{$detail.content.discussion.title}</h2>
 		<div class="clear"> </div>
 

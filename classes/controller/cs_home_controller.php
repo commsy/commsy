@@ -557,4 +557,7 @@
 		public function getAdditionalListActions() {
 			return array();
 		}
+		
+		protected function getAdditionalActions($perms) {
+		}
 	}

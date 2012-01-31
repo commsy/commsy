@@ -690,7 +690,6 @@ h2#item_navigation span {
     text-decoration: none;
     }
 
-
 .row_odd {
     background-color: #F5F5F5;
     }
@@ -725,6 +724,38 @@ h2#item_navigation span {
     background: url(img/sep_disdetails.gif) repeat-y #FFF;
     }
 
+.odd_sep_home {
+    background: url(img/sep_home.gif) repeat-y #F5F5F5;
+    }
+
+.even_sep_home {
+    background: url(img/sep_home.gif) repeat-y #FFF;
+    }
+
+.odd_sep_announcement {
+    background: url(img/sep_announcement.gif) repeat-y #F5F5F5;
+    }
+
+.even_sep_announcement {
+    background: url(img/sep_announcement.gif) repeat-y #FFF;
+    }
+
+.odd_sep_discussion {
+    background: url(img/sep_discussion.gif) repeat-y #F5F5F5;
+    }
+
+.even_sep_discussion {
+    background: url(img/sep_discussion.gif) repeat-y #FFF;
+    }
+
+.odd_sep_user {
+    background: url(img/sep_user.gif) repeat-y #F5F5F5;
+    }
+
+.even_sep_user {
+    background: url(img/sep_user.gif) repeat-y #FFF;
+    }
+
 .odd_sep_390 {
     background: url(img/sep_390.gif) repeat-y #F5F5F5;
     }
@@ -732,7 +763,6 @@ h2#item_navigation span {
 .even_sep_390 {
     background: url(img/sep_390.gif) repeat-y #FFF;
     }
-
 
 .seperator {
     background: url(img/seperator_bg.gif) repeat-y;
@@ -890,6 +920,11 @@ content, column-width
     float: left;
     }
 
+.column_145 {
+    width: 145px;
+    float: left;
+    }
+
 .column_155 {
     width: 150px;
     float: left;
@@ -946,6 +981,11 @@ content, column-width
     float: left;
     }
 
+.column_563 {
+    width: 563px;
+    float: left;
+    }
+
 .column_590 {
     width: 590px;
     float: left;
@@ -959,7 +999,7 @@ content, column-width
 	}
 
 
-.column_27 p, .column_45 p, .column_80 p, .column_590 p, .column_510 p, .column_150 p, .column_90 p, .column_100 p, .column_120 p, .column_140 p, .column_155 p, .column_184 p, .column_194 p, .column_244 p, .column_304, .column_320, .column_380 p, .column_430 p, .column_400 p {
+.column_27 p, .column_45 p, .column_80 p, .column_590 p, .column_510 p, .column_150 p, .column_90 p, .column_100 p, .column_120 p, .column_140 p, .column_145 p, .column_155 p, .column_184 p, .column_194 p, .column_244 p, .column_304, .column_320, .column_380 p, .column_430 p, .column_400 p {
     padding: 5px 10px;
     }
 
@@ -1011,6 +1051,10 @@ a#sort_down {
 
 .w_380 {
     width: 380px;
+    }
+
+.w_255 {
+    width: 255px;
     }
 
 .w_295 {
@@ -1131,6 +1175,7 @@ div.user_profil_blocks table {
 div.user_profil_blocks td.label,
 div.detail_description td.label {
 	width: 120px;
+	vertical-align: top;
 	}
 
 div#user_profil_picture {

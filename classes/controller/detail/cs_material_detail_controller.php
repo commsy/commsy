@@ -878,6 +878,25 @@
 			return $return;
 		}
 		
+		protected function getAdditionalActions($perms) {
+			//TODO
+			/*
+			 * $current_context = $this->_environment->getCurrentContextItem();
+      $current_user = $this->_environment->getCurrentUserItem();
+      $html  = '';
+
+      // wiki
+      $html .= $this->_getWikiAction($item,$current_user,$current_context);
+      // wordpress
+      $html .= $this->_getWordpressAction($item,$current_user,$current_context);
+
+      //workflow
+      $html .= $this->_getWorkflowReadAction($item,$current_user,$current_context);
+      
+      return $html;
+			 */
+		}
+		
 		private function getSections() {
 			// cache
 			if($this->_sections !== null) return $this->_sections;

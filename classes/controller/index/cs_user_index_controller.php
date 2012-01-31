@@ -159,15 +159,37 @@
 			$params['with_modifying_actions'] = false;
 			$view = new cs_view($params);
 			while($item) {
+				$phone = $item->getTelephone();
+				$handy = $item->getCellularphone();
+				$mail = '';
+				
+				if(!empty($phone)) {
+					//TODO:
+					//$phone = $converter->compareWithSearchText($phone);
+					$phone = $view->_text_as_html_short($phone);
+				}
+				
+				if(!empty($handy)) {
+					//TODO
+					//$handy = $converter->compareWithSearchText($handy);
+					$handy = $view->_text_as_html_short($handy);
+				}
+				
+				if($item->isEmailVisible()) {
+					$mail = $item->getEmail();
+					//TODO:
+					//$mail = $converter->compareWithSearchText($mail);
+					$mail = $view->_text_as_html_short($mail);
+				}
+				
 				$noticed_text = $this->_getItemChangeStatus($item);
 				$item_array[] = array(
 				'iid'				=> $item->getItemID(),
 				'title'				=> $view->_text_as_html_short($item->getFullname()),
-				'date'				=> $this->_environment->getTranslationObject()->getDateInLang($item->getModificationDate()),
-				'creator'			=> $item->getCreatorItem()->getFullName(),
-				'noticed'			=> $noticed_text,
-				'attachment_count'	=> $item->getFileList()->getCount()
-//				'attachment_infos'	=>
+				'phone'				=> $phone,
+				'handy'				=> $handy,
+				'mail'				=> $mail,
+				'noticed'			=> $noticed_text
 				);
 
 				$item = $list->getNext();
@@ -181,7 +203,10 @@
 			return $return;
 		}
 
-		public function getAdditionalListActions() {
+		protected function getAdditionalActions($perms) {
+		}
+
+		protected function getAdditionalListActions() {
 			return array();
 		}
 	}

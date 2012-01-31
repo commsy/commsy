@@ -873,16 +873,6 @@ if($context_item->isServer() || $context_item->isPortal()) {
 }
 // and anywhere else if conditions match
 else {
-	if(	$environment->getCurrentFunction() === 'detail' && 
-		$environment->getCurrentModule() !== 'discussion' &&
-		$environment->getCurrentModule() !== 'material' &&
-		$environment->getCurrentModule() !== 'announcement' &&
-		$environment->getCurrentModule() !== 'user' &&
-		$environment->getCurrentModule() !== 'group' &&
-		$environment->getCurrentModule() !== 'todo') {
-		$c_smarty = false;
-	}
-	
 	if(	$environment->getCurrentFunction() === 'edit' &&
 		$environment->getCurrentModule() !== 'discarticle' &&
 		$environment->getCurrentModule() !== 'annotation') {

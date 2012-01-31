@@ -7,7 +7,8 @@
 		protected $_item = null;
 		protected $_manager = null;
 		protected $_item_file_list = null;
-		protected $_with_modifying_actions = true;
+		protected $_rubric_connections = array();
+		protected $_clipboard_id_array = array();
 
 		/**
 		 * constructor
@@ -25,17 +26,6 @@
 				'limit'		=> 20
 			);
 			*/
-			
-			$params = $this->_environment->getCurrentParameterArray();
-			if(!empty($params['with_modifying_actions'])) {
-				$this->_with_modifying_actions = $params['with_modifying_actions'];
-			}
-			
-			$current_context = $this->_environment->getCurrentContextItem();
-			$current_user = $this->_environment->getCurrentUserItem();
-			if($current_context->isClosed() || $current_user->isOnlyReadUser()) {
-				$this->_with_modifying_actions = false;
-			}
 		}
 
 		/*
@@ -48,6 +38,8 @@
 			if($this->showNetnavigation()) {
 				$this->assign('netnavigation', 'linked_items', $this->getLinkedItems());
 			}
+			
+			$this->assign('detail', 'actions', $this->getDetailActions());
 			
 			// mark as read and noticed
 			//$this->markRead();
@@ -108,7 +100,7 @@
 		/*
 		 * $item is given by reference!!!
 		 */
-		protected function getAssessmentInformation(&$item = null) {
+		protected function getAssessmentInformation($item = null) {
 			$assessment_item =& $this->_item;
 			if(isset($item)) $assessment_item = $item;
 			
@@ -142,6 +134,10 @@
 			// try to set the item
 			if(!empty($_GET['iid'])) {
 				$current_item_id = $_GET['iid'];
+			} elseif(!empty($_POST['pin_iid'])) {
+				$current_item_id = $_POST['pin_iid'];
+			} elseif(!empty($_GET['pin_iid'])) {
+				$current_item_id = $_GET['pin_iid'];
 			} else {
 				include_once('functions/error_functions.php');
 				trigger_error('An item id must be given.', E_USER_ERROR);
@@ -331,6 +327,8 @@
 			
 			$current_context = $this->_environment->getCurrentContextItem();
 			$current_user = $this->_environment->getCurrentUser();
+			$translator = $this->_environment->getTranslationObject();
+			$converter = $this->_environment->getTextConverter();
 			if($this->_item === null) $this->setItem();
 			$link_items = $this->_item->getAllLinkItemList();
 			
@@ -351,15 +349,13 @@
 			}
 			
 			$count_link_item = $link_items->getCount();
-			
-			
-			
-			
+			$return['count'] = $count_link_item;
 			/*
 			 * 
       $this->_right_box_config['title_string'] .= $separator.'"'.$this->_translator->getMessage('COMMON_NETNAVIGATION_ENTRIES').' ('.$count_link_item.')"';
       $this->_right_box_config['desc_string'] .= $separator.'""';
       $this->_right_box_config['size_string'] .= $separator.'"10"';
+
       if($current_context->isNetnavigationShowExpanded()){
          $this->_right_box_config['config_string'] .= $separator.'true';
       } else {
@@ -367,218 +363,232 @@
       }
       $html .= '<div class="commsy_panel" style="margin-bottom:1px;">'.LF;
       $html .= '<div class="right_box">'.LF;
+      */
+
+			/*
       $connections = $this->getRubricConnections();
       $html .= '         <noscript>';
       $html .= '<div class="right_box_title">'.$this->_translator->getMessage('COMMON_ATTACHED_ENTRIES').'</div>';
       $html .= '         </noscript>';
       $html .='      <div class="right_box_main">     '.LF;
-      if ($link_items->isEmpty()) {
-         $html .= '  <div style="padding:0px 5px; font-size:8pt;" class="disabled">'.$this->_translator->getMessage('COMMON_NONE').'&nbsp;</div>'.LF;
-      } else {
-         $html .='     <ul style="list-style-type: circle; font-size:8pt; list-style-position:inside; margin:0px; padding:0px;">'.LF;
-         $link_item = $link_items->getFirst();
-         while($link_item){
-            $link_creator = $link_item->getCreatorItem();
-            if ( isset($link_creator) and !$link_creator->isDeleted()) {
-               $fullname = $this->_text_as_html_short($link_creator->getFullname());
-            } else {
-               $fullname = $this->_translator->getMessage('COMMON_DELETED_USER');
-            }
-          // Create the list entry
-            $linked_item = $link_item->getLinkedItem($item);  // Get the linked item
-            if ( isset($linked_item) ) {
-               $fragment = '';    // there is no anchor defined by default
-               $type = $linked_item->getType();
-               if ($type =='label'){
-                  $type = $linked_item->getLabelType();
-               }
-               $link_created = $this->_translator->getDateInLang($link_item->getCreationDate());
-               $text = '';
-               switch ( mb_strtoupper($type, 'UTF-8') )
-               {
-                  case 'ANNOUNCEMENT':
-                     $text .= $this->_translator->getMessage('COMMON_ONE_ANNOUNCEMENT');
-                     $img = 'images/commsyicons/netnavigation/announcement.png';
-                     break;
-                  case 'DATE':
-                     $text .= $this->_translator->getMessage('COMMON_ONE_DATE');
-                     $img = 'images/commsyicons/netnavigation/date.png';
-                     break;
-                  case 'DISCUSSION':
-                     $text .= $this->_translator->getMessage('COMMON_ONE_DISCUSSION');
-                     $img = 'images/commsyicons/netnavigation/discussion.png';
-                     break;
-                  case 'GROUP':
-                     $text .= $this->_translator->getMessage('COMMON_ONE_GROUP');
-                     $img = 'images/commsyicons/netnavigation/group.png';
-                     break;
-                  case 'INSTITUTION':
-                     $text .= $this->_translator->getMessage('COMMON_ONE_INSTITUTION');
-                     $img = '';
-                     break;
-                  case 'MATERIAL':
-                     $text .= $this->_translator->getMessage('COMMON_ONE_MATERIAL');
-                     $img = 'images/commsyicons/netnavigation/material.png';
-                     break;
-                  case 'PROJECT':
-                     $text .= $this->_translator->getMessage('COMMON_ONE_PROJECT');
-                     $img = '';
-                     break;
-                  case 'TODO':
-                     $text .= $this->_translator->getMessage('COMMON_ONE_TODO');
-                     $img = 'images/commsyicons/netnavigation/todo.png';
-                     break;
-                  case 'TOPIC':
-                     $text .= $this->_translator->getMessage('COMMON_ONE_TOPIC');
-                     $img = 'images/commsyicons/netnavigation/topic.png';
-                     break;
-                  case 'USER':
-                     $text .= $this->_translator->getMessage('COMMON_USER');
-                     $img = 'images/commsyicons/netnavigation/user.png';
-                     break;
-                  default:
-                     $text .= $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR').' cs_detail_view('.__LINE__.') ';
-                     $img = '';
-                     break;
-               }
-               $link_creator_text = $text.' - '.$this->_translator->getMessage('COMMON_LINK_CREATOR').' '.
-                                    $fullname.', '.
-                                    $link_created;
-               switch ( $type ) {
-                  case CS_DISCARTICLE_TYPE:
-                     $linked_iid = $linked_item->getDiscussionID();
-                     $fragment = $linked_item->getItemID();
-                     $discussion_manager = $this->_environment->getDiscussionManager();
-                     $linked_item = $discussion_manager->getItem($linked_iid);
-                     break;
-                  case CS_SECTION_TYPE:
-                     $linked_iid = $linked_item->getLinkedItemID();
-                     $fragment = $linked_item->getItemID();
-                     $material_manager = $this->_environment->getMaterialManager();
-                     $linked_item = $material_manager->getItem($linked_iid);
-                     break;
-                  default:
-                     $linked_iid = $linked_item->getItemID();
-               }
-               $html .= '   <li  style="padding-left:5px; list-style-type:none;">';
-               $params = array();
-               $params['iid'] = $linked_iid;
-               $params['link_item_path'] = $this->getItem()->getItemID();
-               $module = Type2Module($type);
-               $user = $this->_environment->getCurrentUser();
-               if ($module == CS_USER_TYPE and (!$linked_item->isUser() or !$linked_item->maySee($user))){
-                 
-               }else{
-                  if ($linked_item->isNotActivated() and !($linked_item->getCreatorID() == $user->getItemID() or $user->isModerator()) ){
-                      $activating_date = $linked_item->getActivatingDate();
-                      if (strstr($activating_date,'9999-00-00')){
-                         $link_creator_text .= ' ('.$this->_translator->getMessage('COMMON_NOT_ACTIVATED').')';
-                      }else{
-                         $link_creator_text .= ' ('.$this->_translator->getMessage('COMMON_ACTIVATING_DATE').' '.getDateInLang($linked_item->getActivatingDate()).')';
-                      }
-                      if ($module == CS_USER_TYPE){
-                          $link_title = chunkText($this->_text_as_html_short($linked_item->getFullName()),35);
-                      }else{
-                          $link_title = chunkText($this->_text_as_html_short($linked_item->getTitle()),35);
-                      }
-                      $html .= ahref_curl( $this->_environment->getCurrentContextID(),
-                                       $module,
-                                       'detail',
-                                       $params,
-                                       '<img src="' . $img . '" style="padding-right:3px;" title="' . $link_creator_text . '"/>',
-                                       $link_creator_text,
-                                       '_self',
-                                       $fragment,
-                                       '',
-                                       '',
-                                       '',
-                                       'class="disabled"',
-                                       '',
-                                       '',
-                                       true);
-                      $html .= ahref_curl( $this->_environment->getCurrentContextID(),
-                                       $module,
-                                       'detail',
-                                       $params,
-                                       $link_title,
-                                       $link_creator_text,
-                                       '_self',
-                                       $fragment,
-                                       '',
-                                       '',
-                                       '',
-                                       'class="disabled"',
-                                       '',
-                                       '',
-                                       true);
-                     unset($params);
-                  }else{
-                      if ($module == CS_USER_TYPE){
-                          $link_title = chunkText($this->_text_as_html_short($linked_item->getFullName()),35);
-                      }else{
-                          $link_title = chunkText($this->_text_as_html_short($linked_item->getTitle()),35);
-                      }
-                      $html .= ahref_curl( $this->_environment->getCurrentContextID(),
-                                       $module,
-                                       'detail',
-                                       $params,
-                                       '<img src="' . $img . '" style="padding-right:3px;" title="' . $link_creator_text . '"/>',
-                                       $link_creator_text,
-                                       '_self',
-                                       $fragment,
-                                       '',
-                                       '',
-                                       '',
-                                       'style=""');
-                      $html .= ahref_curl( $this->_environment->getCurrentContextID(),
-                                       $module,
-                                       'detail',
-                                       $params,
-                                       $link_title,
-                                       $link_creator_text,
-                                       '_self',
-                                       $fragment,
-                                       '',
-                                       '',
-                                       '',
-                                       'style=""');
-                     unset($params);
-                  }
-               }
-               $html .= '</li>'.LF;
-            }
-            $link_item = $link_items->getNext();
-         }
-         $html .= '</ul>'.LF;
-      }
-      $html .= '<div style="width:235px; font-size:8pt; text-align:right; padding-top:5px;">';
-      $current_user = $this->_environment->getCurrentUserItem();
-      if ($current_user->isUser() and $this->_with_modifying_actions ) {
-          $params = array();
-         $params = $this->_environment->getCurrentParameterArray();
-         $group_manager = $this->_environment->getGroupManager();
-         $group_manager->setContextLimit($this->_environment->getCurrentContextID());
-           $params['attach_view'] = 'yes';
-           $params['attach_type'] = 'item';
-           $html .= ahref_curl($this->_environment->getCurrentContextID(),
-                               $this->_environment->getCurrentModule(),
-                               $this->_environment->getCurrentFunction(),
-                               $params,
-                               $this->_translator->getMessage('COMMON_ITEM_ATTACH')
-                               ).LF;
-           unset($params);
-      } else {
-         $html .= '<span class="disabled">'.$this->_translator->getMessage('COMMON_ITEM_ATTACH').'</span>'.LF;
-      }
-      $html .= '</div>'.LF;
-      $html .='      </div>';
-      $html .='      </div>';
-      $html .='      </div>';
-      return $html;
-			 */
+      */
+      
+			$this->_rubric_connections;
+		      
+			if(!$link_items->isEmpty()) {
+		      	$link_item = $link_items->getFirst();
+		      	
+		      	while($link_item) {
+		      		$entry = array(
+						'creator'			=> ''									// TODO: if empty set to COMMON_DELETED_USER
+					);
+					
+		      		$link_creator = $link_item->getCreatorItem();
+					if(isset($link_creator) && !$link_creator->isDeleted()) {
+						$entry['creator'] = $link_creator->getFullname();
+						
+						// create the list entry
+						$linked_item = $link_item->getLinkedItem($this->_item);
+						if(isset($linked_item)) {
+							$type = $linked_item->getType();
+							if($type === 'label') {
+								$type = $linked_item->getLabelType();
+							}
+							
+							$link_created = $translator->getDateInLang($link_item->getCreationDate());
+							
+							switch(mb_strtoupper($type, 'UTF-8')) {
+								case 'ANNOUNCEMENT':
+									$text = $translator->getMessage('COMMON_ONE_ANNOUNCEMENT');
+									$img = 'images/commsyicons/netnavigation/announcement.png';
+									break;
+								case 'DATE':
+									$text = $translator->getMessage('COMMON_ONE_DATE');
+									$img = 'images/commsyicons/netnavigation/date.png';
+									break;
+								case 'DISCUSSION':
+									$text = $translator->getMessage('COMMON_ONE_DISCUSSION');
+									$img = 'images/commsyicons/netnavigation/discussion.png';
+									break;
+								case 'GROUP':
+									$text = $translator->getMessage('COMMON_ONE_GROUP');
+									$img = 'images/commsyicons/netnavigation/group.png';
+									break;
+								case 'INSTITUTION':
+									$text = $translator->getMessage('COMMON_ONE_INSTITUTION');
+									$img = '';
+									break;
+								case 'MATERIAL':
+									$text = $translator->getMessage('COMMON_ONE_MATERIAL');
+									$img = 'images/commsyicons/netnavigation/material.png';
+									break;
+								case 'PROJECT':
+									$text = $translator->getMessage('COMMON_ONE_PROJECT');
+									$img = '';
+									break;
+								case 'TODO':
+									$text = $translator->getMessage('COMMON_ONE_TODO');
+									$img = 'images/commsyicons/netnavigation/todo.png';
+									break;
+								case 'TOPIC':
+									$text = $translator->getMessage('COMMON_ONE_TOPIC');
+									$img = 'images/commsyicons/netnavigation/topic.png';
+									break;
+								case 'USER':
+									$text = $translator->getMessage('COMMON_ONE_USER');
+									$img = 'images/commsyicons/netnavigation/user.png';
+									break;
+								default:
+									$text = $translator->getMessage('COMMON_MESSAGETAB_ERROR');
+									$img = '';
+									break;
+							}
+							
+							$link_creator_text = $text . ' - ' . $translator->getMessage('COMMON_LINK_CREATOR') . ' ' . $entry['creator'] . ', ' . $link_created;
+								
+							switch($type) {
+								case CS_DISCARTICLE_TYPE:
+									$linked_iid = $linked_item->getDiscussionID();
+									$discussion_manager = $this->_environment->getDiscussionManager();
+									$linked_item = $discussion_manager->getItem($linked_iid);
+									break;
+								case CS_SECTION_TYPE:
+									$linked_iid = $linked_item->getLinkedItemID();
+									$material_manager = $this->_environment->getMaterialManager();
+									$linked_item = $material_manager->getItem($linked_iid);
+									break;
+								default:
+									$linked_iid = $linked_item->getItemID();
+							}
+							
+							$entry['linked_iid'] = $linked_iid;
+								
+							$module = Type2Module($type);
+							$user = $this->_environment->getCurrentUser();
+							
+							if(!($module == CS_USER_TYPE && (!$linked_item->isUser() || !$linked_item->maySee($user)))) {
+								if($linked_item->isNotActivated() && !($linked_item->getCreatorID() === $user->getItemID() || $user->isModerator())) {
+									$activating_date = $linked_item->getActivatingDate();
+									if(strstr($activating_date, '9999-00-00')) {
+										$link_creator_text .= ' (' . $translator->getMessage('COMMON_NOT_ACTIVATED') . ')';
+									} else {
+										$link_creator_text .= ' (' . $translator->getMessage('COMMON_ACTIVATING_DATE') . ' ' . getDateInLang($linked_item->getActivatingDate()) . ')';
+									}
+									
+									if($module === CS_USER_TYPE) {
+										$title = $linked_item->getFullName();
+									} else {
+										$title = $linked_item->getTitle();
+									}
+									$title = $converter->text_as_html_short($title);
+									
+									$entry['module'] = $module;
+									$entry['img'] = $img;
+									$entry['link_creator_text'] = $link_creator_text;
+									$entry['title'] = $title;
+									
+									/*
+									 * TODO: check if working
+		                      $html .= ahref_curl( $this->_environment->getCurrentContextID(),
+		                                       $module,
+		                                       'detail',
+		                                       $params,
+		                                       '<img src="' . $img . '" style="padding-right:3px;" title="' . $link_creator_text . '"/>',
+		                                       $link_creator_text,
+		                                       '_self',
+		                                       $fragment,
+		                                       '',
+		                                       '',
+		                                       '',
+		                                       'class="disabled"',
+		                                       '',
+		                                       '',
+		                                       true);
+		                      $html .= ahref_curl( $this->_environment->getCurrentContextID(),
+		                                       $module,
+		                                       'detail',
+		                                       $params,
+		                                       $link_title,
+		                                       $link_creator_text,
+		                                       '_self',
+		                                       $fragment,
+		                                       '',
+		                                       '',
+		                                       '',
+		                                       'class="disabled"',
+		                                       '',
+		                                       '',
+		                                       true);
+		                     unset($params);
+									 */
+								} else {
+									
+									/*
+									 * TODO: check if needed - $link_creator_text is empty!!!
+									 * 
+									 * 
+									 * if ($module == CS_USER_TYPE){
+		                          $link_title = chunkText($this->_text_as_html_short($linked_item->getFullName()),35);
+		                      }else{
+		                          $link_title = chunkText($this->_text_as_html_short($linked_item->getTitle()),35);
+		                      }
+		                      $html .= ahref_curl( $this->_environment->getCurrentContextID(),
+		                                       $module,
+		                                       'detail',
+		                                       $params,
+		                                       '<img src="' . $img . '" style="padding-right:3px;" title="' . $link_creator_text . '"/>',
+		                                       $link_creator_text,
+		                                       '_self',
+		                                       $fragment,
+		                                       '',
+		                                       '',
+		                                       '',
+		                                       'style=""');
+		                      $html .= ahref_curl( $this->_environment->getCurrentContextID(),
+		                                       $module,
+		                                       'detail',
+		                                       $params,
+		                                       $link_title,
+		                                       $link_creator_text,
+		                                       '_self',
+		                                       $fragment,
+		                                       '',
+		                                       '',
+		                                       '',
+		                                       'style=""');
+		                     unset($params);
+									 */
+								}
+							}
+						}
+					}
+					
+					$return['items'][] = $entry;
+							
+					$link_item = $link_items->getNext();
+		      	}
+			}
+		      
+			$return['edit'] = false;
+			if($current_user->isUser() && $this->_with_modifying_actions) {
+				$return['edit'] = true;
+				
+				$params = $this->_environment->getCurrentParameterArray();
+				$params['attach_view'] = 'yes';
+				$params['attach_type'] = 'item';
+				
+				$link = 'commsy.php?cid=' . $this->_environment->getCurrentContextID() . '&mod=' . $this->_environment->getCurrentModule() . '&fct=' . $this->_environment->getCurrentFunction();
+				foreach($params as $key => $value) {
+					$link .= '&' . $key . '=' . $value;
+				}
+				
+				$return['edit_link'] = $link;
+			}
+	
+			return $return;
 		}
 		
-		protected function getItemPicture(&$item) {
+		protected function getItemPicture($item) {
 			$return = array();
 			
 			if(isset($item)) {
@@ -627,6 +637,200 @@
 			return $return;
 		}
 		
+		abstract protected function getAdditionalActions($perms);
+		
+		private function getDetailActions() {
+			$current_context = $this->_environment->getCurrentContextItem();
+			$current_user = $this->_environment->getCurrentUserItem();
+			
+			$return = array(
+				'edit'		=> false,
+				'delete'	=> false,
+				'mail'		=> false,
+				'copy'		=> false,
+				'new'		=> false
+			);
+			
+			// edit
+			if($this->_item->mayEdit($current_user) && $this->_with_modifying_actions) {
+				$return['edit'] = true;
+				/*
+				 * if ( empty($module) ) {
+		            $module = $this->_environment->getCurrentModule();
+		         }
+		         $params = array();
+		         $params['iid'] = $item->getItemID();
+		         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+		            $image = '<img src="images/commsyicons_msie6/22x22/edit.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_EDIT_ITEM').'"/>';
+		         } else {
+		            $image = '<img src="images/commsyicons/22x22/edit.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_EDIT_ITEM').'"/>';
+		         }
+		         $html .= ahref_curl( $this->_environment->getCurrentContextID(),
+		                                          $module,
+		                                          'edit',
+		                                          $params,
+		                                          $image,
+		                                          $this->_translator->getMessage('COMMON_EDIT_ITEM')).LF;
+		         unset($params);
+				 */
+			} else {
+				/*
+				* if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+		            $image = '<img src="images/commsyicons_msie6/22x22/edit_grey.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_EDIT_ITEM').'"/>';
+		         } else {
+		            $image = '<img src="images/commsyicons/22x22/edit_grey.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_EDIT_ITEM').'"/>';
+		         }
+		         $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION_NEW',$this->_translator->getMessage('COMMON_EDIT_ITEM')).' "class="disabled">'.$image.'</a>'.LF;
+				 */
+			}
+			
+			// delete
+			if($this->_item->mayEdit($current_user) && $this->_with_modifying_actions && (!$this->_item->isA(CS_LABEL_TYPE) || !$this->_item->isSystemLabel())) {
+				$return['delete'] = true;
+				
+				/*
+				 * $params = $this->_environment->getCurrentParameterArray();
+         $params['action'] = 'delete';
+         if($item->getItemType() == CS_DATE_TYPE){
+            if($item->getRecurrenceId() != '' and $item->getRecurrenceId() != 0){
+               $params['recurrence_id'] = $item->getRecurrenceId();
+            }
+         }
+         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+            $image = '<img src="images/commsyicons_msie6/22x22/delete.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_DELETE_ITEM').'"/>';
+         } else {
+            $image = '<img src="images/commsyicons/22x22/delete.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_DELETE_ITEM').'"/>';
+         }
+         $html .= ahref_curl( $this->_environment->getCurrentContextID(),
+                          $this->_environment->getCurrentModule(),
+                              'detail',
+                          $params,
+                          $image,
+                          $this->_translator->getMessage('COMMON_DELETE_ITEM').LF,
+                              '',
+                              '',
+                              '',
+                              '',
+                              '',
+                              '',
+                              '',
+                              'delete_confirm_entry');
+         unset($params);
+				 */
+			} else {
+				/*
+				 * if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+            $image = '<img src="images/commsyicons_msie6/22x22/delete_grey.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_DELETE_ITEM').'"/>';
+         } else {
+            $image = '<img src="images/commsyicons/22x22/delete_grey.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_DELETE_ITEM').'"/>';
+         }
+         $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION_NEW',$this->_translator->getMessage('COMMON_DELETE_ITEM')).' "class="disabled">'.$image.'</a>'.LF;
+				 */
+			}
+			
+			$this->getAdditionalActions(&$return);
+			
+			// mail
+			if(!$this->_environment->inPrivateRoom()) {
+				$module = 'rubric';
+				//$text = $this->_translator->getMessage('COMMON_EMAIL_TO');
+				
+				if($current_user->isUser() && $this->_with_modifying_actions) {
+					$return['mail'] = true;
+					/*
+					 * $params = array();
+         $params['iid'] = $item->getItemID();
+         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+            $image = '<img src="images/commsyicons_msie6/22x22/mail.gif" style="vertical-align:bottom;" alt="'.$text.'"/>';
+         } else {
+            $image = '<img src="images/commsyicons/22x22/mail.png" style="vertical-align:bottom;" alt="'.$text.'"/>';
+         }
+         $html .= ahref_curl(  $this->_environment->getCurrentContextID(),
+                               $module,
+                               'mail',
+                               $params,
+                               $image,
+                               $text).LF;
+         unset($params);
+					 */
+				} else {
+					/*
+					 * if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+            $image = '<img src="images/commsyicons_msie6/22x22/mail_grey.gif" style="vertical-align:bottom;" alt="'.$text.'"/>';
+         } else {
+            $image = '<img src="images/commsyicons/22x22/mail_grey.png" style="vertical-align:bottom;" alt="'.$text.'"/>';
+         }
+         $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION_NEW',$text).' "class="disabled">'.$image.'</a>'.LF;
+					 */
+				}
+			}
+			
+			// copy
+			if($current_user->isUser() && !in_array($this->_item->getItemID(), $this->_clipboard_id_array)) {
+				$return['copy'] = true;
+				
+				/*
+				 * $params = array();
+         $params['iid'] = $item->getItemID();
+         $params['add_to_'.$this->_environment->getCurrentModule().'_clipboard'] = $item->getItemID();
+         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+            $image = '<img src="images/commsyicons_msie6/22x22/copy.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_ITEM_COPY_TO_CLIPBOARD').'"/>';
+         } else {
+            $image = '<img src="images/commsyicons/22x22/copy.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_ITEM_COPY_TO_CLIPBOARD').'"/>';
+         }
+         $html .= ahref_curl(  $this->_environment->getCurrentContextID(),
+                                    $this->_environment->getCurrentModule(),
+                                    'detail',
+                                    $params,
+                                    $image,
+                                    $this->_translator->getMessage('COMMON_ITEM_COPY_TO_CLIPBOARD')).LF;
+         unset($params);
+				 */
+			} else {
+				/*
+				 * if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+            $image = '<img src="images/commsyicons_msie6/22x22/copy_grey.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_ITEM_COPY_TO_CLIPBOARD').'"/>';
+         } else {
+            $image = '<img src="images/commsyicons/22x22/copy_grey.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_ITEM_COPY_TO_CLIPBOARD').'"/>';
+         }
+         $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION_NEW',$this->_translator->getMessage('COMMON_ITEM_COPY_TO_CLIPBOARD')).' "class="disabled">'.$image.'</a>'.LF;
+				 */
+			}
+			
+			// TODO: dont forget print, download - which are always allowed
+			
+			// TODO:  // actions from rubric plugins
+      		//$html .= plugin_hook_output_all('getDetailActionAsHTML',NULL,LF);
+			
+			// new
+			if($current_user->isUser() && $this->_with_modifying_actions) {
+				$return['new'] = true;
+				/*
+				 * $params = array();
+         $params['iid'] = 'NEW';
+         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+            $image = '<img src="images/commsyicons_msie6/22x22/new.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_NEW_ITEM').'" id="new_icon"/>';
+         } else {
+            $image = '<img src="images/commsyicons/22x22/new.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_NEW_ITEM').'" id="new_icon"/>';
+         }
+         $html .= '&nbsp;&nbsp;&nbsp;'.ahref_curl(  $this->_environment->getCurrentContextID(),
+                                    $this->_environment->getCurrentModule(),
+                                    'edit',
+                                    $params,
+                                    $image,
+                                    $this->_translator->getMessage('COMMON_NEW_ITEM')).LF;
+         unset($params);
+				 */
+			} else {
+				//$html .= $this->_getNewActionDisabled();
+			}
+			
+			//TODO:
+			//$html .= $this->_initDropDownMenus();
+			
+			return $return;
+		}
+		
 		/*
 		 * this annotation_list is given by reference!!!
 		 */
@@ -652,6 +856,11 @@
             $desc = ' ('.$this->_translator->getMessage('COMMON_NO_ANNOTATIONS');
          }
 				 */
+				
+				// TODO: get read and noticed information
+				// use prefetch
+				//$reader_manager->getLatestReaderByIDArray($id_array);
+   				//$noticed_manager->getLatestNoticedByIDArray($id_array);
 				
 				if(!empty($annotation_list)) {
 					$annotation = $annotation_list->getFirst();
@@ -1453,6 +1662,32 @@
 			if(empty($noticed) || $noticed['read_date'] < $this->_item->getModificationDate()) {
 				$noticed_manager->markNoticed($this->_item->getItemID(), 0);
 			}
+		}
+		
+		protected function setRubricConnections($array) {
+			$user_manager = $this->_environment->getUserManager();
+			$context_id = $this->_environment->getCurrentContextID();
+			$context_item = $this->_environment->getCurrentContextItem();
+			$current_room_modules = $context_item->getHomeConf();
+			
+			if(!$this->_environment->inPortal() && !$this->_environment->inServer() && $this->_environment->getCurrentModule() !== 'account') {
+				$user_manager->getRoomUserByIDsForCache($context_id);
+			}
+			
+			$room_modules = array();
+			if(!empty($current_room_modules)) {
+				$room_modules = explode(',', $current_room_modules);
+			}
+			
+			foreach($room_modules as $module) {
+				list($name, $view) = explode('_', $module);
+				
+				if($view !== 'none' && $context_item->withRubric($name) && $name !== CS_USER_TYPE && $name !== CS_MYROOM_TYPE) {
+					$rubric_connections[] = $name;
+				}
+			}
+			
+			$this->_rubric_connections = $rubric_connections;
 		}
 		
 		abstract protected function setBrowseIDs();

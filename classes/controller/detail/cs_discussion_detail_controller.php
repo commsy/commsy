@@ -95,12 +95,51 @@
 			$disc_articles = $this->getDiscArticleContent();
 			
 			$return = array(
+				'item_id'			=> $this->_item->getItemID(),
 				'discussion'		=> $this->getDiscussionContent(),
 				'disc_articles'		=> $disc_articles,
 				'new_num'			=> count($disc_articles) + 1
 			);
 			
 			return $return;
+		}
+		
+		protected function getAdditionalActions($perms) {
+			$current_context = $this->_environment->getCurrentContextItem();
+			$current_user = $this->_environment->getCurrentUserItem();
+			
+			$perms['wiki'] = false;
+			
+			if($this->_item->mayEdit($current_user) && $current_context->isWikiActive() && $this->_with_modifying_actions && (!$this->_item->isA(CS_DISUCSSION_TYPE) || $this->_item->getDiscussionType() === 'simple')) {
+				$perms['wiki'] = true;
+				
+				/*
+				 * $params = array();
+         $params['iid'] = $item->getItemID();
+         $params['export_to_wiki'] = 'true';
+         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+            $image = '<img src="images/commsyicons_msie6/22x22/export_wiki.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('MATERIAL_EXPORT_TO_WIKI').'"/>';
+         } else {
+            $image = '<img src="images/commsyicons/22x22/export_wiki.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('MATERIAL_EXPORT_TO_WIKI').'"/>';
+         }
+         $html .= ahref_curl( $this->_environment->getCurrentContextID(),
+                                   $this->_environment->getCurrentModule(),
+                                   'detail',
+                                   $params,
+                                   $image,
+                                   $this->_translator->getMessage('ITEM_EXPORT_TO_WIKI')).LF;
+         unset($params);
+				 */
+			} elseif($current_context->isWikiActive()) {
+				/*
+				 * if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+            $image = '<img src="images/commsyicons_msie6/22x22/export_wiki_grey.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('ITEM_EXPORT_TO_WIKI').'"/>';
+         } else {
+            $image = '<img src="images/commsyicons/22x22/export_wiki_grey.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('ITEM_EXPORT_TO_WIKI').'"/>';
+         }
+         $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION_NEW',$this->_translator->getMessage('ITEM_EXPORT_TO_WIKI')).' "class="disabled">'.$image.'</a>'.LF;
+				 */
+			}
 		}
 		
 		private function getDiscussionContent() {
@@ -255,6 +294,9 @@
 		private function getDiscArticleContent() {
 			$return = array();
 			
+			$context_item = $this->_environment->getCurrentContextItem();
+			$session = $this->_environment->getSessionItem();
+			
 			$creatorInfoStatus = array();
 			if(!empty($_GET['creator_info_max'])) {
 				$creatorInfoStatus = explode('-', $_GET['creator_info_max']);
@@ -287,71 +329,74 @@
 			$noticed_manager->getLatestNoticedByIDArray($articles_id_array);
 			$reader_manager->getLatestReaderByIDArray($articles_id_array);
 			
-			/*
+			// set rubric connections
+			$current_room_modules = $context_item->getHomeConf();
+			$room_modules = explode(',', $current_room_modules);
 			
-		$current_room_modules = $context_item->getHomeConf();
-      if ( !empty($current_room_modules) ){
-         $room_modules = explode(',',$current_room_modules);
-      } else {
-         $room_modules =  $default_room_modules;
-      }
-      $first = '';
-      foreach ( $room_modules as $module ) {
-         $link_name = explode('_', $module);
-         if ( $link_name[1] != 'none' ) {
-            switch ($link_name[0]) {
-               case 'group':
-               if (empty($first)){
-                  $first = 'group';
-               }
-               break;
-               case CS_TOPIC_TYPE:
-               if (empty($first)){
-                  $first = CS_TOPIC_TYPE;
-               }
-               break;
-               case CS_INSTITUTION_TYPE:
-               if (empty($first)){
-                  $first = CS_INSTITUTION_TYPE;
-               }
-               break;
-            }
-         }
-      }
-      if ($context_item->withRubric(CS_TOPIC_TYPE) ) {
-         $ids = $discussion_item->getLinkedItemIDArray(CS_TOPIC_TYPE);
-         $session->setValue('cid'.$environment->getCurrentContextID().'_topics_index_ids', $ids);
-      }
-      if ( $context_item->withRubric(CS_GROUP_TYPE) ) {
-         $ids = $discussion_item->getLinkedItemIDArray(CS_GROUP_TYPE);
-         $session->setValue('cid'.$environment->getCurrentContextID().'_group_index_ids', $ids);
-      }
-      if ( $context_item->withRubric(CS_INSTITUTION_TYPE) ) {
-         $ids = $discussion_item->getLinkedItemIDArray(CS_INSTITUTION_TYPE);
-         $session->setValue('cid'.$environment->getCurrentContextID().'_institutions_index_ids', $ids);
-      }
-      $rubric_connections = array();
-      if ($first == CS_TOPIC_TYPE){
-         $rubric_connections = array(CS_TOPIC_TYPE);
-         if ($context_item->withRubric(CS_GROUP_TYPE) ){
-            $rubric_connections[] = CS_GROUP_TYPE;
-         }
-        if ($context_item->withRubric(CS_INSTITUTION_TYPE)) {
-            $rubric_connections[] = CS_INSTITUTION_TYPE;
-        }
-      } elseif ($first == 'group'){
-         $rubric_connections = array(CS_GROUP_TYPE);
-         if ($context_item->withRubric(CS_TOPIC_TYPE) ){
-            $rubric_connections[] = CS_TOPIC_TYPE;
-         }
-      } elseif ($first == CS_INSTITUTION_TYPE){
-         $rubric_connections = array(CS_INSTITUTION_TYPE);
-         if ($context_item->withRubric(CS_TOPIC_TYPE) ){
-            $rubric_connections[] = CS_TOPIC_TYPE;
-         }
-      }
-      $detail_view->setRubricConnections($rubric_connections);
-
+			$first = '';
+			foreach($room_modules as $module) {
+				list($name, $view) = explode('_', $module);
+				
+				if($view !== 'none') {
+					switch($name) {
+						case 'group':
+							if(empty($first)) {
+								$first = 'group';
+							}
+							break;
+						case CS_TOPIC_TYPE:
+							if(empty($first)) {
+								$first = CS_TOPIC_TYPE;
+							}
+							break;
+						case CS_INSTITUTION_TYPE:
+							if(empty($first)) {
+								$first = CS_INSTITUTION_TYPE;
+							}
+							break;
+					}
+				}
+			}
+			
+			// set up ids of linked items
+			if($context_item->withRubric(CS_TOPIC_TYPE)) {
+				$ids = $this->_item->getLinkedItemIDArray(CS_TOPIC_TYPE);
+				$session->setValue('cid' . $this->_environment->getCurrentContextID() . '_topics_index_ids', $ids);
+			}
+			if($context_item->withRubric(CS_GROUP_TYPE)) {
+				$ids = $this->_item->getLinkedItemIDArray(CS_GROUP_TYPE);
+				$session->setValue('cid' . $this->_environment->getCurrentContextID() . '_group_index_ids', $ids);
+			}
+			if($context_item->withRubric(CS_INSTITUTION_TYPE)) {
+				$ids = $this->_item->getLinkedItemIDArray(CS_INSTITUTION_TYPE);
+				$session->setValue('cid' . $this->_environment->getCurrentContextID() . '_institutions_idnex_ids', $ids);
+			}
+			
+			$rubric_connections = array();
+			if($first === CS_TOPIC_TYPE) {
+				$rubric_connections = array(CS_TOPIC_TYPE);
+				if($context_item->withRubric(CS_GROUP_TYPE)) {
+					$rubric_connections[] = CS_GROUP_TYPE;
+				}
+				if($context_item->withRubric(CS_INSTITUTION_TYPE)) {
+					$rubric_connections[] = CS_INSTITUTION_TYPE;
+				}
+			} elseif($first === 'group') {
+				$rubric_connections = array(CS_GROUP_TYPE);
+				if($context_item->withRubric(CS_TOPIC_TYPE)) {
+					$rubric_connections[] = CS_TOPIC_TYPE;
+				}
+			} elseif($first == CS_INSTITUTION_TYPE) {
+				$rubric_connections = array(CS_INSTITUTION_TYPE);
+				if($context_item->withRubric(CS_TOPIC_TYPE)) {
+					$rubric_connections[] = CS_TOPIC_TYPE;
+				}
+			}
+			$rubric_connections[] = CS_MATERIAL_TYPE;
+			$this->setRubricConnections($rubric_connections);
+			
+			
+			/*
       if ( $context_item->isPrivateRoom() ) {
          // add annotations to detail view
          $annotations = $discussion_item->getAnnotationList();

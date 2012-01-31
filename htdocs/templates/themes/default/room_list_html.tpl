@@ -4,9 +4,12 @@
 	<a href="" title="___COMMON_LIST_PRINTVIEW___">
 		<img src="{$basic.tpl_path}img/btn_print.gif" alt="___COMMON_LIST_PRINTVIEW___" />
 	</a>
-    <a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid=NEW" title="___COMMON_NEW_ITEM___">
-    	<img src="{$basic.tpl_path}img/btn_add_new.gif" alt="___COMMON_NEW_ITEM___" />
-    </a>
+	
+    {if $index.actions.new}
+		<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid=NEW" title="___COMMON_NEW_ITEM___">
+	    	<img src="{$basic.tpl_path}img/btn_add_new.gif" alt="___COMMON_NEW_ITEM___" />
+	    </a>
+    {/if}
 {/block}
 
 {block name=room_navigation_rubric_title}
@@ -175,32 +178,33 @@
 			{/foreach}
 		</div>
 	</div>
-
-	<div class="portlet_rc">
-		<a href="" title="___HOME_SMARTY_ACTION_CLOSE___" class="btn_head_rc"><img src="{$basic.tpl_path}img/btn_close_rc.gif" alt="close" /></a>
-		<h2>___COMMON_TAG_BOX___</h2>
-		<div class="clear"> </div>
-		<a href="" title="bearbeiten" class="btn_body_rc"><img src="{$basic.tpl_path}img/btn_edit_rc.gif" alt="close" /></a>
-		<div class="portlet_rc_body">
-			<div id="tag_tree">
-				{* Tags Function *}
-				{function name=tag_tree level=0}
-					<ul>
-						{foreach $nodes as $node}
-							<li	id="node_{$node.item_id}"
-								{if $node.children|count > 0}class="folder"{/if}
-								data="url:'commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.restriction_tag_link_parameters}&seltag_{$level}={$node.item_id}&seltag=yes'">{$node.title}
-								{if $node.children|count > 0}	{* recursive call *}
-									{tag_tree nodes=$node.children level=$level+1}
-								{/if}
-						{/foreach}
-					</ul>
-				{/function}
-				{* call function *}
-				{tag_tree nodes=$room.tags}
+	
+	{if !empty($room.tags)}
+		<div class="portlet_rc">
+			<a href="" title="___HOME_SMARTY_ACTION_CLOSE___" class="btn_head_rc"><img src="{$basic.tpl_path}img/btn_close_rc.gif" alt="close" /></a>
+			<h2>___COMMON_TAG_BOX___</h2>
+			<div class="clear"> </div>
+			<a href="" title="bearbeiten" class="btn_body_rc"><img src="{$basic.tpl_path}img/btn_edit_rc.gif" alt="close" /></a>
+			<div class="portlet_rc_body">
+				<div id="tag_tree">
+					{* Tags Function *}
+					{function name=tag_tree level=0}
+						<ul>
+							{foreach $nodes as $node}
+								<li	id="node_{$node.item_id}"
+									{if $node.children|count > 0}class="folder"{/if}
+									data="url:'commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.restriction_tag_link_parameters}&seltag_{$level}={$node.item_id}&seltag=yes'">{$node.title}
+									{if $node.children|count > 0}	{* recursive call *}
+										{tag_tree nodes=$node.children level=$level+1}
+									{/if}
+							{/foreach}
+						</ul>
+					{/function}
+					{* call function *}
+					{tag_tree nodes=$room.tags}
+				</div>
 			</div>
 		</div>
-	</div>
-
+	{/if}
 {/block}
 

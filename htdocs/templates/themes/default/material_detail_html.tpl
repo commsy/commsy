@@ -61,11 +61,11 @@
 			<div class="item_post">
 				<div class="row_{if $section@iteration is odd}odd{else}even{/if}_no_hover {if $section@iteration is odd}odd{else}even{/if}_sep_disdetail">
 				
-					<div class="column_80">
+					<div class="column_27">
 						<p></p>
 					</div>
 				
-					<div class="column_510">
+					<div class="column_563">
 						<div class="post_content">
 							<h4>
 								{$section.title}

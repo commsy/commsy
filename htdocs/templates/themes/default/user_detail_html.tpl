@@ -361,8 +361,13 @@
 		</h2>
 
 		<div class="clear"> </div>
-
-		<a href="" title="bearbeiten" class="btn_body_rc"><img src="{$basic.tpl_path}img/btn_edit_rc.gif" alt="close" /></a>
+		
+		{if $netnavigation.linked_items.edit}
+			<a href="{$netnavigation.linked_items.edit_link}" title="{if $netnavigation.linked_items.is_community}___COMMON_ATTACHED_INSTITUTIONS___{else}___COMMON_ATTACHED_GROUPS___{/if}" class="btn_body_rc">
+				<img src="{$basic.tpl_path}img/btn_edit_rc.gif" alt="{if $netnavigation.linked_items.is_community}___COMMON_ATTACHED_INSTITUTIONS___{else}___COMMON_ATTACHED_GROUPS___{/if}" />
+			</a>
+		{/if}
+		
 		<div class="portlet_rc_body">
 			<ul>
 				{foreach $netnavigation.linked_items.items as $item}

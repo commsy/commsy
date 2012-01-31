@@ -37,7 +37,7 @@
 
 {block name=room_list_content}
 	{foreach $material.list_content.items as $item }
-		<div class="{if $item@iteration is odd}row_odd{else}row_even{/if}"> <!-- Start Reihe -->
+		<div class="{if $item@iteration is odd}row_odd{else}row_even{/if} {if $item@iteration is odd}odd_sep_announcement{else}even_sep_announcement{/if}"> <!-- Start Reihe -->
 			<div class="column_20">
 				<p>
 				{if $item.noticed != ''}
@@ -60,24 +60,20 @@
 					<a href="" class="attachment">{$item.attachment_count}</a>
 				</p>
 			</div>
-			<div class="seperator">
-				<div class="column_90">
-					<p>{$item.date}</p>
-				</div>
-				<div class="column_155">
-					<p>
-						<a href="">{$item.creator}</a>
-					</p>
-				</div>
+			<div class="column_90">
+				<p>{$item.date}</p>
 			</div>
-			<div class="seperator">
-				<div class="column_100">
-					<p>
-						{foreach $item.assessment_array as $star_text}
-							<img src="{$basic.tpl_path}img/star_{$star_text}.gif" alt="*" />
-						{/foreach}
-					</p>
-				</div>
+			<div class="column_155">
+				<p>
+					<a href="">{$item.creator}</a>
+				</p>
+			</div>
+			<div class="column_100">
+				<p>
+					{foreach $item.assessment_array as $star_text}
+						<img src="{$basic.tpl_path}img/star_{$star_text}.gif" alt="*" />
+					{/foreach}
+				</p>
 			</div>
 			<div class="clear"> </div>
 		</div> <!-- Ende Reihe -->

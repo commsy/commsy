@@ -3,7 +3,6 @@
 
 	class cs_user_detail_controller extends cs_detail_controller {
 		private $_display_mod = null;
-		private $_rubric_connections = null;
 		
 		/**
 		 * constructor
@@ -324,6 +323,64 @@
 			}
 		}
 		
+		//TODO: redefine getDetailActions
+		/*
+		 * $current_context = $this->_environment->getCurrentContextItem();
+      $current_user = $this->_environment->getCurrentUserItem();
+      $html  = '';
+      $html  = $this->_getDetailItemActionsAsHTML($item);
+      $params = $this->_environment->getCurrentParameterArray();
+      $params['mode']='print';
+      if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+         $image = '<img src="images/commsyicons_msie6/22x22/print.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_LIST_PRINTVIEW').'"/>';
+      } else {
+         $image = '<img src="images/commsyicons/22x22/print.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_LIST_PRINTVIEW').'"/>';
+      }
+      $html .= ahref_curl($this->_environment->getCurrentContextID(),
+                                    $this->_environment->getCurrentModule(),
+                                    'detail',
+                                    $params,
+                                    $image,
+                                    $this->_translator->getMessage('COMMON_LIST_PRINTVIEW'),
+                                    '_blank'
+                         ).LF;
+      unset($params['mode']);
+      $params = $this->_environment->getCurrentParameterArray();
+      $params['download']='zip';
+      $params['mode']='print';
+      if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+         $image = '<img src="images/commsyicons_msie6/22x22/save.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_DOWNLOAD').'"/>';
+      } else {
+         $image = '<img src="images/commsyicons/22x22/save.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_DOWNLOAD').'"/>';
+      }
+      $html .= ahref_curl($this->_environment->getCurrentContextID(),
+                                    $this->_environment->getCurrentModule(),
+                                    'detail',
+                                    $params,
+                                    $image,
+                                    $this->_translator->getMessage('COMMON_DOWNLOAD')).LF;
+      unset($params['download']);
+      unset($params['mode']);
+
+      $params['mode'] = 'take_over';
+      if ( $this->_environment->inPortal()
+           and ( $current_user->isRoot()
+                 or $current_user->isModerator()
+               )
+         ) {
+         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+            $image = '<img src="images/commsyicons_msie6/22x22/take_over.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('ACCOUNT_TAKE_OVER',$item->getFullname()).'"/>';
+         } else {
+            $image = '<img src="images/commsyicons/22x22/take_over.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('ACCOUNT_TAKE_OVER',$item->getFullname()).'"/>';
+         }
+         $html .= ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),'detail',$params,$image,$this->_translator->getMessage('ACCOUNT_TAKE_OVER',$item->getFullname())).LF;
+      }
+      return $html;
+		 */
+		
+		protected function getAdditionalActions($perms) {
+		}
+		
 		protected function getLinkedItems() {
 			$return = array();
 			
@@ -521,36 +578,21 @@
 				}
 			}
 			
-			// TODO:
-		      /*
-		      $html .= '<div style="width:235px; font-size:8pt; text-align:right; padding-top:5px;">';
-		      $current_user = $this->_environment->getCurrentUserItem();
-		      if ($this->_environment->inCommunityRoom()){
-		         $message = $this->_translator->getMessage('COMMON_INSTITUTION_ATTACH');
-		      }else{
-		         $message = $this->_translator->getMessage('COMMON_GROUP_ATTACH');
-		      }
-		      if ($current_user->isUser() and $this->_with_modifying_actions ) {
-		         $params = array();
-		         $params = $this->_environment->getCurrentParameterArray();
-		         $params['attach_view'] = 'yes';
-		         $params['attach_type'] = 'item';
-		         $html .= ahref_curl($this->_environment->getCurrentContextID(),
-		                             $this->_environment->getCurrentModule(),
-		                             $this->_environment->getCurrentFunction(),
-		                             $params,
-		                             $message
-		                             ).LF;
-		         unset($params);
-		      } else {
-		         $html .= '<span class="disabled">'.$message.'</span>'.LF;
-		      }
-		      $html .= '</div>'.LF;
-		      $html .='      </div>';
-		      $html .='      </div>';
-		      $html .='      </div>';
-		      return $html;
-			 */
+			$return['edit'] = false;
+			if($current_user->isUser() && $this->_with_modifying_actions) {
+				$return['edit'] = true;
+				
+				$params = $this->_environment->getCurrentParameterArray();
+				$params['attach_view'] = 'yes';
+				$params['attach_type'] = 'item';
+				
+				$link = 'commsy.php?cid=' . $this->_environment->getCurrentContextID() . '&mod=' . $this->_environment->getCurrentModule() . '&fct=' . $this->_environment->getCurrentFunction();
+				foreach($params as $key => $value) {
+					$link .= '&' . $key . '=' . $value;
+				}
+				
+				$return['edit_link'] = $link;
+			}
 			
 			return $return;
 		}

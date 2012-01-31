@@ -194,8 +194,10 @@
 			return $return;
 		}
 		
-		public function getAdditionalListActions() {
-			return array();
+		protected function getAdditionalActions($perms) {
 		}
 
+		protected function getAdditionalListActions() {
+			return array();
+		}
 	}

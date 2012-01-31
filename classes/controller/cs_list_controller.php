@@ -35,6 +35,9 @@
 
 			// set list actions
 			$this->assign('list', 'actions', $this->getListActions());
+			
+			// set index actions
+			$this->assign('index', 'actions', $this->getIndexActions());
 
 			/*
 			// set paging information
@@ -137,6 +140,18 @@
          		$return_array['sort_title_link'] = $link_parameter_text.'&sort=title';
          		$return_array['sort_title'] = 'none';
       		}
+      		
+      		if($sort_parameter === 'numposts') {
+      			$return_array['sort_numposts_link'] = $link_parameter_text.'&sort=numposts_rev';
+         		$return_array['sort_numposts'] = 'up';
+      		} elseif($sort_parameter === 'numposts_rev') {
+      			$return_array['sort_numposts_link'] = $link_parameter_text.'&sort=numposts';
+         		$return_array['sort_numposts'] = 'down';
+      		} else {
+      			$return_array['sort_numposts_link'] = $link_parameter_text.'&sort=numposts';
+         		$return_array['sort_numposts'] = 'none';
+      		}
+      		
       		if ( $sort_parameter == 'modificator') {
          		$return_array['sort_modificator_link'] = $link_parameter_text.'&sort=modificator_rev';
          		$return_array['sort_modificator'] = 'up';
@@ -860,6 +875,60 @@
       			}
       		}
 		}
+		
+		abstract protected function getAdditionalActions($perms);
+		
+		private function getIndexActions() {
+			$current_context = $this->_environment->getCurrentContextItem();
+			$current_user = $this->_environment->getCurrentUserItem();
+			
+			$return = array(
+				'new'		=> false
+			);
+			
+			$this->getAdditionalActions(&$return);
+			
+			// TODO: dont forget print - which are always allowed
+			
+			if($current_user->isUser() && $this->_with_modifying_actions) {
+				$return['new'] = true;
+				/*
+				 * $params = array();
+         $params['iid'] = 'NEW';
+         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+            $image = '<img src="images/commsyicons_msie6/22x22/new.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_NEW_ITEM').'" id="new_icon"/>';
+         } else {
+            $image = '<img src="images/commsyicons/22x22/new.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_NEW_ITEM').'" id="new_icon"/>';
+         }
+         if ( $current_context->isOpen()
+              and $current_context->isPrivateRoom()
+              and $this->_environment->inConfigArray('c_use_new_private_room',$this->_environment->getCurrentContextID())
+            ) {
+            // do nothing
+         } else {
+            $html .= '&nbsp;';
+         }
+         $html .= '&nbsp;'.ahref_curl($this->_environment->getCurrentContextID(),
+                           $this->_environment->getCurrentModule(),
+                            'edit',
+                            $params,
+                            $image,
+                            $this->_translator->getMessage('COMMON_NEW_ITEM')).LF;
+         unset($params);
+				 */
+			} else {
+				/*
+				 * if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+            $image = '<img src="images/commsyicons_msie6/22x22/new_grey.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_NEW_ITEM').'" id="new_icon_disabled"/>';
+         } else {
+            $image = '<img src="images/commsyicons/22x22/new_grey.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_NEW_ITEM').'" id="new_icon_disabled"/>';
+         }
+         $html .= '&nbsp;&nbsp;<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION_NEW',$this->_translator->getMessage('COMMON_NEW_ITEM')).' "class="disabled">'.$image.'</a>'.LF;
+				 */
+			}
+			
+			return $return;
+		}
 
 		protected function initFilter() {
 			// get parameter array
@@ -934,8 +1003,10 @@
 			if ( isset($_GET['sort']) ) {
    				$this->_list_parameter_arrray['sort'] = $_GET['sort'];
 			}  else {
-				if($this->_environment->getCurrentModule() == CS_DISCUSSION_TYPE) {
+				if($this->_environment->getCurrentModule() === CS_DISCUSSION_TYPE) {
 					$this->_list_parameter_arrray['sort'] = 'latest';
+				} elseif($this->_environment->getCurrentModule() === CS_TOPIC_TYPE) {
+					$this->_list_parameter_arrray['sort'] = 'title';
 				} else {
 					$this->_list_parameter_arrray['sort'] = 'modified';
 				}
@@ -1075,9 +1146,9 @@
 			}
 		}
 
-		abstract function getListContent();
+		abstract protected function getListContent();
 
-		abstract function getAdditionalListActions();
+		abstract protected function getAdditionalListActions();
 
 		private function getListActions() {
 			$return = array();

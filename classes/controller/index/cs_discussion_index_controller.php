@@ -221,15 +221,19 @@
 					}
 				}
 				$noticed_text = $this->_getItemChangeStatus($item);
+				
+				$all_and_unread_articles = $item->getAllAndUnreadArticles();
+				
 				$item_array[] = array(
-				'iid'				=> $item->getItemID(),
-				'title'				=> $view->_text_as_html_short($item->getTitle()),
-				'date'				=> $this->_environment->getTranslationObject()->getDateInLang($item->getModificationDate()),
-				'creator'			=> $item->getCreatorItem()->getFullName(),
-				'assessment_array'  => $assessment_stars_text_array,
-				'noticed'			=> $noticed_text,
-				'attachment_count'	=> $item->getFileList()->getCount()
-//				'attachment_infos'	=>
+					'iid'				=> $item->getItemID(),
+					'title'				=> $view->_text_as_html_short($item->getTitle()),
+					'date'				=> $this->_environment->getTranslationObject()->getDateInLang($item->getModificationDate()),
+					'creator'			=> $item->getCreatorItem()->getFullName(),
+					'assessment_array'  => $assessment_stars_text_array,
+					'noticed'			=> $noticed_text,
+					'attachment_count'	=> $item->getFileList()->getCount(),
+					'article_count'		=> $all_and_unread_articles['count'],
+					'article_unread'	=> $all_and_unread_articles['unread']
 				);
 
 				$item = $list->getNext();
@@ -243,7 +247,18 @@
 			return $return;
 		}
 		
-		public function getAdditionalListActions() {
+		protected function getAdditionalActions($perms) {
+			/*
+			 * TODO
+			 * $retour = '';
+      $retour .= '   <option value="download">'.$this->_translator->getMessage('COMMON_LIST_ACTION_DOWNLOAD').'</option>'.LF;
+      include_once('functions/misc_functions.php');
+      $retour .= plugin_hook_output_all('getAdditionalViewActionsAsHTML',array('module' => CS_MATERIAL_TYPE),LF);
+      return $retour;
+			 */
+		}
+		
+		protected function getAdditionalListActions() {
 			return array();
 		}
 	}

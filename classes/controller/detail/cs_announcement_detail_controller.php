@@ -205,6 +205,10 @@
 		/******************************** END ACTIONS ********************************/
 		/*****************************************************************************/
 		
+		protected function getAdditionalActions($perms) {
+			
+		}
+		
 		protected function setBrowseIDs() {
 			$session = $this->_environment->getSessionItem();
 			

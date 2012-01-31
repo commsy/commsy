@@ -480,6 +480,25 @@
 			$this->_item = $this->_manager->getItem($current_item_id);
 		}
 		
+		protected function getAdditionalActions($perms) {
+			
+		}
+		//TODO: redfine getDetailActions
+		/*
+		 * $current_context = $this->_environment->getCurrentContextItem();
+      $current_user = $this->_environment->getCurrentUserItem();
+      $html  = '';
+      $html .= $this->_getEditAction($item,$current_user);
+      $html .= $this->_getDetailItemActionsAsHTML($item).'&nbsp;&nbsp;&nbsp;';
+      $html .= $this->_getPrintAction($item,$current_user);
+      $html .= $this->_getMailAction($item,$current_user,type2Module(CS_GROUP_TYPE));
+      $html .= $this->_getDownloadAction($item,$current_user);
+      $html .= $this->_getNewAction($item,$current_user);
+      
+      $html .= $this->_initDropDownMenus();
+      return $html;
+		 */
+		
 		protected function getDetailContent() {
 			$converter = $this->_environment->getTextConverter();
 			$translator = $this->_environment->getTranslationObject();

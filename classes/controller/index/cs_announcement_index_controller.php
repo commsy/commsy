@@ -217,8 +217,11 @@
 			);
 			return $return;
 		}
+		
+		protected function getAdditionalActions($perms) {
+		}
 
-		public function getAdditionalListActions() {
+		protected function getAdditionalListActions() {
 			return array();
 		}
 	}

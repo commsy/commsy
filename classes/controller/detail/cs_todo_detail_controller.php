@@ -36,6 +36,7 @@
 			$session = $this->_environment->getSessionItem();
 			
 			$current_user = $this->_environment->getCurrentUserItem();
+			$context_item = $this->_environment->getCurrentContextItem();
 			
 			// TODO: include_once('include/inc_delete_entry.php');
 			
@@ -121,99 +122,61 @@
 				$this->markRead();
 				$this->markNoticed();
 				
-				// set up browsing
-				/*
-				$todo_ids = array();
-				if($session->issetValue('cid' . $this->_environment->getCurrentContextID() . '_todo_index_ids')) {
-					$todo_ids = $session->getValue('cid' . $this->_environment->getCurrentContextID() . '_todo_index_ids');
+				// set rubric connections
+				$current_room_modules = $context_item->getHomeConf();
+				$room_modules = explode(',', $current_room_modules);
+				
+				$first = '';
+				foreach($room_modules as $module) {
+					list($name, $view) = explode('_', $module);
+					
+					if($view !== 'none') {
+						switch($name) {
+							case 'group':
+								if(empty($first)) {
+									$first = 'group';
+								}
+								break;
+							case CS_TOPIC_TYPE:
+								if(empty($first)) {
+									$first = CS_TOPIC_TYPE;
+								}
+								break;
+						}
+					}
 				}
 				
-				/*
-				 *  $detail_view->setBrowseIDs($todo_ids);
-				   if ( isset($_GET['pos']) ) {
-				      $detail_view->setPosition($_GET['pos']);
-				   }
-				 */
+				// set up ids of linked items
+				$material_ids = $this->_item->getLinkedItemIDArray(CS_MATERIAL_TYPE);
+				$session->setValue('cid' . $this->_environment->getCurrentContextID() . '_material_index_ids', $material_ids);
+				if($context_item->withRubric(CS_TOPIC_TYPE)) {
+					$ids = $this->_item->getLinkedItemIDArray(CS_TOPIC_TYPE);
+					$session->setValue('cid' . $this->_environment->getCurrentContextID() . '_topics_index_ids', $ids);
+				}
+				if($context_item->withRubric(CS_GROUP_TYPE)) {
+					$ids = $this->_item->getLinkedItemIDArray(CS_GROUP_TYPE);
+					$session->setValue('cid' . $this->_environment->getCurrentContextID() . '_group_index_ids', $ids);
+				}
 				
-				/*
-
-
-   
-
-   $current_room_modules = $context_item->getHomeConf();
-   if ( !empty($current_room_modules) ){
-      $room_modules = explode(',',$current_room_modules);
-   } else {
-      $room_modules =  $default_room_modules;
-   }
-   $first = '';
-   foreach ( $room_modules as $module ) {
-      $link_name = explode('_', $module);
-      if ( $link_name[1] != 'none' ) {
-         switch ($link_name[0]) {
-            case 'group':
-            if (empty($first)){
-               $first = 'group';
-            }
-            break;
-            case CS_TOPIC_TYPE:
-            if (empty($first)){
-               $first = CS_TOPIC_TYPE;
-            }
-            break;
-         }
-      }
-   }
-   // set up ids of linked items
-   $material_ids = $todo_item->getLinkedItemIDArray(CS_MATERIAL_TYPE);
-   $session->setValue('cid'.$environment->getCurrentContextID().'_material_index_ids', $material_ids);
-   if ($context_item->withRubric(CS_TOPIC_TYPE) ) {
-      $ids = $todo_item->getLinkedItemIDArray(CS_TOPIC_TYPE);
-      $session->setValue('cid'.$environment->getCurrentContextID().'_topics_index_ids', $ids);
-   }
-   if ( $context_item->withRubric(CS_GROUP_TYPE) ) {
-      $ids = $todo_item->getLinkedItemIDArray(CS_GROUP_TYPE);
-      $session->setValue('cid'.$environment->getCurrentContextID().'_group_index_ids', $ids);
-   }
-   $rubric_connections = array();
-   if ($first == CS_TOPIC_TYPE){
-      $rubric_connections = array(CS_TOPIC_TYPE);
-      if ($context_item->withRubric(CS_GROUP_TYPE) ){
-         $rubric_connections[] = CS_GROUP_TYPE;
-      }
-   }elseif($first == 'group'){
-      $rubric_connections = array(CS_GROUP_TYPE);
-      if ($context_item->withRubric(CS_TOPIC_TYPE) ){
-         $rubric_connections[] = CS_TOPIC_TYPE;
-      }
-   }
-   $rubric_connections[] = CS_MATERIAL_TYPE;
-   $detail_view->setRubricConnections($rubric_connections);
-   
-   */
+				$rubric_connections = array();
+				if($first === CS_TOPIC_TYPE) {
+					$rubric_connections = array(CS_TOPIC_TYPE);
+					if($context_item->withRubric(CS_GROUP_TYPE)) {
+						$rubric_connections[] = CS_GROUP_TYPE;
+					}
+				} elseif($first === 'group') {
+					$rubric_connections = array(CS_GROUP_TYPE);
+					if($context_item->withRubric(CS_TOPIC_TYPE)) {
+						$rubric_connections[] = CS_TOPIC_TYPE;
+					}
+				}
+				$rubric_connections[] = CS_MATERIAL_TYPE;
+				$this->setRubricConnections($rubric_connections);
 				
 				// annotations
 				$annotations = $this->_item->getAnnotationList();
+				$this->markAnnotationsReadedAndNoticed(&$annotations);
 				$this->assign('detail', 'annotations', $this->getAnnotationInformation(&$annotations));
-				
-				
-				/*
-				 * $reader_manager->getLatestReaderByIDArray($id_array);
-				   $noticed_manager->getLatestNoticedByIDArray($id_array);
-				   $annotation = $annotations->getFirst();
-				   while($annotation ){
-				      $reader = $reader_manager->getLatestReader($annotation->getItemID());
-				      if ( empty($reader) or $reader['read_date'] < $annotation->getModificationDate() ) {
-				         $reader_manager->markRead($annotation->getItemID(),0);
-				      }
-				      $noticed = $noticed_manager->getLatestNoticed($annotation->getItemID());
-				      if ( empty($noticed) or $noticed['read_date'] < $annotation->getModificationDate() ) {
-				         $noticed_manager->markNoticed($annotation->getItemID(),0);
-				      }
-				      $annotation = $annotations->getNext();
-				   }
-				   $detail_view->setAnnotationList($annotations);
-				 */
 				
 				/*
 
@@ -246,6 +209,246 @@
 			}
 		}
 		
+		protected function getAdditionalActions($perms) {
+		}
+		
+		private function getStepContent() {
+			$return = array();
+			
+			$converter = $this->_environment->getTextConverter();
+			$translator = $this->_environment->getTranslationObject();
+			$subitems = $this->_item->getStepItemList();
+			$count = 0;
+			
+			if(isset($subitems) && !$subitems->isEmpty()) {
+				$count = $subitems->getCount();
+				
+				$current_item = $subitems->getFirst();
+				$pos_number = 1;
+				while($current_item) {
+					$image = $this->getItemPicture($current_item->getModificatorItem());
+					
+					$title = $current_item->getTitle();
+					//TODO:
+					//$title = $converter->compareWithSearchText($title);
+					$title = $converter->text_as_html_short($title);
+					
+					/*
+					 * TODO:
+					 * if(!(isset($_GET['mode']) and $_GET['mode']=='print')){
+                  $html .='<td style="width:28%; padding-top:5px; padding-left:0px; padding-right:3px; vertical-align:bottom; text-align:right;">'.LF;
+                  $html .= $this->_getSubItemDetailActionsAsHTML($current_item);
+                  $html .='</td>'.LF;
+               }else{
+                  $html .='<td style="width:28%; padding-top:5px; padding-left:0px; padding-right:3px; vertical-align:bottom; text-align:right;">'.LF;
+                  $html .= '&nbsp';
+                  $html .='</td>'.LF;
+               }
+					 */
+					
+					$entry = array(
+						'image'			=> $image,
+						'item_id'		=> $current_item->getItemID(),
+						'title'			=> $title
+					);
+					
+					// time
+					$minutes = $current_item->getMinutes();
+					$time_type = $current_item->getTimeType();
+					$tmp_message = $translator->getMessage('COMMON_MINUTES');
+					
+					switch($time_type) {
+						case 2:
+							$minutes = $minutes / 60;
+							$tmp_message = $translator->getMessage('COMMON_HOURS');
+							if($minutes === 1) {
+								$tmp_message = $translator->getMessage('COMMON_HOUR');
+							}
+							break;
+						case 3:
+							$minutes = ($minutes / 60) / 8;
+							$tmp_message = $translator->getMessage('COMMON_DAYS');
+							if($minutes === 1) {
+								$tmp_message = $translator->getMessage('COMMON_DAY');
+							}
+							break;
+					}
+					
+					if($minutes > 0) {
+						if($translator->getSelectedLanguage() === 'de') {
+							$minutes = str_replace('.', ',', $minutes);
+						}
+						$entry['formal']['time'] = $minutes . ' ' . $tmp_message;
+					}
+					
+					// description
+					$desc = $current_item->getDescription();
+					if(!empty($desc)) {
+						$desc = $converter->cleanDataFromTextArea($desc);
+						//TODO:
+						//$desc = $converter->compareWithSearchText($desc);
+						$converter->setFileArray($this->getItemFileList());
+						$desc = $converter->text_as_html_long($desc);
+						//$desc = $this->_show_images($desc,$item,true);
+         				//$retour .= $this->getScrollableContent($desc,$item,'',true).LF;
+         				$entry['description'] = $desc;
+					}
+					
+					// files
+					$files = array();
+					$file_list = $current_item->getFileList();
+					if(!$file_list->isEmpty()) {
+						$file = $file_list->getFirst();
+						while($file) {
+							if(!(isset($_GET['mode']) && $_GET['mode'] === 'print') || (isset($_GET['download']) && $_GET['download'] === 'zip')) {
+								if((!isset($_GET['download']) || $_GET['download'] !== 'zip') && in_array($file->getExtension(), array('png', 'jpg', 'jpeg', 'gif'))) {
+									/*
+									 * $this->_with_slimbox = true;
+				                  // jQuery
+				                  //$file_string = '<a href="'.$file->getUrl().'" rel="lightbox[gallery'.$item->getItemID().']">'.
+				                  //$file_string = '<a href="'.$file->getUrl().'" rel="lightbox-gallery_'.$item->getItemID().'">'.
+				                  $displayname = $file->getDisplayName();
+				                  $filesize = $file->getFileSize();
+				                  $fileicon = $file->getFileIcon();
+				                  $file_string = '<a href="'.$file->getUrl().'" rel="lightbox-gallery'.$item->getItemID().'" title="'.$this->_text_as_html_short($displayname).' ('.$filesize.' kb)">'.
+				
+				                  // jQuery
+				                  $file->getFileIcon().' '.($this->_text_as_html_short($this->_compareWithSearchText($file->getDisplayName()))).'</a> ('.$file->getFileSize().' KB)';
+									 */
+								} else {
+									$file_string = '<a href="' . $file->getUrl() . '" target="blank">';
+									$name = $file->getDisplayName();
+									//TODO:
+									//$name = $converter->compareWithSearchText($name);
+									$name = $converter->text_as_html_short($name);
+									
+									$file_string .= $file->getFileIcon() . ' ' . '</a> (' . $file->getFileSize() . ' KB)';
+								}
+							} else {
+								$name = $file->getDisplayName();
+								//TODO:
+								//$name = $converter->compareWithSearchText($name);
+								$name = $converter->text_as_html_short($name);
+								$file_string = $file->getFileIcon() . ' ' . $name;
+							}
+							
+							$files[] = $file_string;
+							
+							$file = $file_list->getNext();
+						}
+						
+						$entry['formal']['files'] = $files;
+					}
+					
+					$entry['num_files'] = sizeof($files);
+					
+					/*
+					 * 
+
+					// TODO:
+			      // Creator / Modificator information
+			      if(isset($_GET['mode']) and $_GET['mode']=='print'){
+			      	$modificator = $item->getModificatorItem();
+			      	$creator = $item->getCreatorItem();
+			
+			      	if(isset($modificator) and !$modificator->isDeleted()){
+				      	  $current_user_item = $this->_environment->getCurrentUserItem();
+				          if ( $current_user_item->isGuest() ) {
+				             $temp_modificator = $this->_translator->getMessage('COMMON_USER_NOT_VISIBLE');
+				          } else {
+				             $temp_modificator = $modificator->getFullname();
+				          }
+			              unset($current_user_item);
+				      } else {
+				      	  $temp_modificator = $this->_translator->getMessage('COMMON_DELETED_USER');
+				      }
+			
+				      if(isset($creator) and !$creator->isDeleted()){
+				      	$current_user_item = $this->_environment->getCurrentUserItem();
+				            if ( $current_user_item->isGuest() ) {
+				               $temp_creator = $this->_translator->getMessage('COMMON_USER_NOT_VISIBLE');
+				            } else {
+				               $temp_creator = $creator->getFullname();
+				            }
+			            unset($current_user_item);
+				      } else {
+				      	  $temp_creator = $this->_translator->getMessage('COMMON_DELETED_USER');
+				      }
+			
+				      $retour .= '<table class="creator_info" summary="Layout" style="padding-top:20px">'.LF;
+			
+			      	  // Modificator information
+			      	  $retour .= '   <tr>'.LF;
+			      	  $retour .= '      <td></td>'.LF;
+			      	  $retour .= '      <td class="key"  style="padding-left:8px;">'.LF;
+			      	  $retour .= '         '.$this->_translator->getMessage('COMMON_LAST_MODIFIED_BY').':&nbsp;'.LF;
+			      	  $retour .= '      </td>'.LF;
+			      	  $retour .= '      <td class="value">'.LF;
+			      	  $retour .= '         '.$temp_modificator.', '.$this->_translator->getDateTimeInLang($item->getModificationDate()).LF;
+			      	  $retour .= '      </td>'.LF;
+			      	  $retour .= '   </tr>'.LF;
+			
+			      	  // Creator information
+				      $retour .= '   <tr>'.LF;
+			      	  $retour .= '      <td></td>'.LF;
+			      	  $retour .= '      <td class="key"  style="padding-left:8px;">'.LF;
+			      	  $retour .= '         '.$this->_translator->getMessage('COMMON_CREATED_BY').':&nbsp;'.LF;
+			      	  $retour .= '      </td>'.LF;
+			      	  $retour .= '      <td class="value">'.LF;
+			      	  $retour .= '         '.$temp_creator.', '.$this->_translator->getDateTimeInLang($item->getCreationDate()).LF;
+			      	  $retour .= '      </td>'.LF;
+			      	  $retour .= '   </tr>'.LF;
+			
+			      	  $retour .= '</table>'.LF;
+			
+			      }
+			      return $retour;
+					 */
+					
+					// creator / modificator information
+					if(!(isset($_GET['mode']) && $_GET['mode'] === 'print')) {
+						//TODO:
+						/*
+						 * $html .='<tr>'.LF;
+                  $html .='<td style="padding-top:5px; padding-bottom:30px; vertical-align:top; ">'.LF;
+                  $mode = 'short';
+                  if (!$item->isA(CS_USER_TYPE)) {
+                     $mode = 'short';
+                     if (in_array($current_item->getItemId(),$this->_openCreatorInfo)) {
+                        $mode = 'long';
+                     }
+                     $html .= $this->_getCreatorInformationAsHTML($current_item, 6,$mode).LF;
+                  }
+                  $html .='</td>'.LF;
+                  $html .='</tr>'.LF;
+						 */
+					}
+					
+					// set reader
+					$reader_manager = $this->_environment->getReaderManager();
+					$reader = $reader_manager->getLatestReader($current_item->getItemID());
+					if(empty($reader) || $reader['read_date'] < $current_item->getModificationDate()) {
+						$reader_manager->markRead($current_item->getItemID(), 0);
+					}
+					
+					// set noticed
+					$noticed_manager = $this->_environment->getNoticedManager();
+					$noticed = $noticed_manager->getLatestNoticed($current_item->getItemID());
+					if(empty($noticed) || $noticed['read_date'] < $current_item->getModificationDate()) {
+						$noticed_manager->markNoticed($current_item->getItemID(), 0);
+					}
+					
+					// apend to return
+					$return[] = $entry;
+					
+					$current_item = $subitems->getNext();
+					$pos_number++;
+				}
+			}
+			
+			return $return;
+		}
+		
 		protected function getDetailContent() {
             $converter = $this->_environment->getTextConverter();
             
@@ -263,7 +466,9 @@
 			$return = array(
 				'title'			=> $this->_item->getTitle(),
 				'formal'		=> $this->getFormalData(),
-				'description'	=> $desc
+				'description'	=> $desc,
+				'steps'			=> $this->getStepContent(),
+				'item_id'		=> $this->_item->getItemID()
 			/*
 				'creator'		=> $this->_item->getCreatorItem()->getFullName(),
 				'creation_date'	=> getDateTimeInLang($this->_item->getCreationDate()),
@@ -391,7 +596,7 @@
 						
 						if($user->isUser()) {
 							$noticed_manager = $this->_environment->getNoticedManager();
-							$noticed = $notcied_manager->getLatestNoticed($step->getItemID());
+							$noticed = $noticed_manager->getLatestNoticed($step->getItemID());
 							
 							if(empty($noticed)) {
 								$step_html .= ' <span class="changed">[' . $translator->getMessage('COMMON_NEW') . ']</span>';

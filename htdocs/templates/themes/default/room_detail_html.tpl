@@ -4,9 +4,12 @@
 	<a href="" title="___COMMON_LIST_PRINTVIEW___">
 		<img src="{$basic.tpl_path}img/btn_print.gif" alt="___COMMON_LIST_PRINTVIEW___" />
 	</a>
-	<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid=NEW" title="___COMMON_NEW_ITEM___">
-    	<img src="{$basic.tpl_path}img/btn_add_new.gif" alt="___COMMON_NEW_ITEM___" />
-    </a>
+	
+	{if $detail.actions.new}
+		<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid=NEW" title="___COMMON_NEW_ITEM___">
+	    	<img src="{$basic.tpl_path}img/btn_add_new.gif" alt="___COMMON_NEW_ITEM___" />
+	    </a>
+    {/if}
 {/block}
 
 {block name=room_navigation_rubric_title}

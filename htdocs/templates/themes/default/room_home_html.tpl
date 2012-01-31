@@ -33,7 +33,7 @@
                 <div class="list_wrap">
 
 	                {foreach $rubric.items as $item}
-	                	<div class="{if $item@iteration is odd}row_odd{else}row_even{/if}">
+	                	<div class="{if $item@iteration is odd}row_odd{else}row_even{/if} {if $item@iteration is odd}odd_sep_home{else}even_sep_home{/if}">
 	                    	<div class="column_380">
 	                        	{if $rubric@key == 'discussion'}
 	                        	<p class="column_addon">
@@ -47,20 +47,18 @@
 	                            	<a href="commsy.php?cid={$environment.cid}&mod={$rubric@key}&fct=detail&iid={$item.iid}">{$item.column_1}</a>
 	                            </p>
 	                        </div>
-	                        <div class="seperator">
-	                        	<div class="column_140">
-	                            	<p>{$item.column_2}</p>
-	                            </div>
-		                        <div class="column_194">
-		                        	<p>
-		                        	{if $rubric@key == 'material' or $rubric@key == 'announcement' or $rubric@key == 'discussion'}
-		                            	<a href="commsy.php?cid={$environment.cid}&mod=user&fct=detail&iid={$item.user_iid}">{$item.column_3}</a>
-		                        	{else}
-		                        		{$item.column_3}
-		                            {/if}
-		                            </p>
-		                        </div>
-		                    </div>
+                        	<div class="column_140">
+                            	<p>{$item.column_2}</p>
+                            </div>
+	                        <div class="column_194">
+	                        	<p>
+	                        	{if $rubric@key == 'material' or $rubric@key == 'announcement' or $rubric@key == 'discussion'}
+	                            	<a href="commsy.php?cid={$environment.cid}&mod=user&fct=detail&iid={$item.user_iid}">{$item.column_3}</a>
+	                        	{else}
+	                        		{$item.column_3}
+	                            {/if}
+	                            </p>
+	                        </div>
 		                    <div class="clear"> </div>
 	                    </div>
 	                {/foreach}
@@ -68,37 +66,5 @@
                 </div>
             </div> <!-- Ende content_item -->
 		{/foreach}
-
-
-                        {*
-
-
-
-
-
-
-                        <div class="content_item"> <!-- Start content_item -->
-                            <div class="ci_head_actions">
-                                <a href="" title="neue Gruppe erstellen"><img src="{$basic.tpl_path}img/btn_ci_add.gif" alt="neu" /></a>
-                                <a href="" class="open_close" title="&ouml;ffnen"><img src="{$basic.tpl_path}img/btn_ci_open.gif" alt="&ouml;ffnen" /></a>
-                            </div>
-                            <h2>Gruppen<span>(alle 10 Gruppen)</span></h2>
-
-                            <div class="clear"> </div>
-                        </div> <!-- Ende content_item -->
-
-                        <div class="content_item"> <!-- Start content_item -->
-                            <div class="ci_head_actions">
-                                <a href="" title="neues Thema erstellen"><img src="{$basic.tpl_path}img/btn_ci_add.gif" alt="neu" /></a>
-                                <a href="" class="open_close" title="&ouml;ffnen"><img src="{$basic.tpl_path}img/btn_ci_open.gif" alt="&ouml;ffnen" /></a>
-                            </div>
-                            <h2>Themen<span>(alle 4 Themen)</span></h2>
-
-                            <div class="clear"> </div>
-                        </div> <!-- Ende content_item -->
-
-
-                        *}
-
-                    </div>
+	</div>
 {/block}
