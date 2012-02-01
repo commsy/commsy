@@ -68,3 +68,23 @@
 		{/foreach}
 	</div>
 {/block}
+
+
+{block name=sidebar_tagbox_treefunction}
+	{function name=tag_tree level=0}
+		<ul>
+		{foreach $nodes as $node}
+			<li	id="node_{$node.item_id}"
+				{if $node.children|count > 0}class="folder"{/if}
+				data="url:'commsy.php?cid={$environment.cid}&mod=campus_search&fct=index&name=selected&seltag_{$level}={$node.item_id}&seltag=yes'">{$node.title}
+			{if $node.children|count > 0}	{* recursive call *}
+				{tag_tree nodes=$node.children level=$level+1}
+			{/if}
+		{/foreach}
+		</ul>
+	{/function}
+{/block}
+
+{block name=sidebar_buzzwordbox_buzzword}
+	<a href="commsy.php?cid={$environment.cid}&mod=campus_search&fct=index&selbuzzword={$buzzword.to_item_id}" class="keywords_s{$buzzword.class_id}">{$buzzword.name}</a>
+{/block}

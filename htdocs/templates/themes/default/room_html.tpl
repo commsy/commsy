@@ -108,7 +108,7 @@
 									<img src="{$basic.tpl_path}img/{if $h}btn_open_rc.gif{else}btn_close_rc.gif{/if}" alt="{if $h}___COMMON_SHOW___{else}___COMMON_HIDE___{/if}" />
 								</a>
 								<h2>
-									{block  name=sidebar_tagbox_title}
+									{block name=sidebar_buzzwordbox_title}
 										___COMMON_BUZZWORD_BOX___
 									{/block}
 								</h2>
@@ -117,7 +117,11 @@
 								<a href="" title="bearbeiten" class="btn_body_rc"><img src="{$basic.tpl_path}img/btn_edit_rc.gif" alt="close" /></a>
 								<div class="portlet_rc_body{if $h} hidden{/if}">
 									{foreach $room.buzzwords as $buzzword}
-										<a href="commsy.php?cid={$environment.cid}&mod=campus_search&fct=index&selbuzzword={$buzzword.to_item_id}" class="keywords_s{$buzzword.class_id}">{$buzzword.name}</a>
+										{block name=sidebar_buzzwordbox_buzzword}
+											<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=index&selbuzzword={$buzzword.to_item_id}" class="keywords_s{$buzzword.class_id}">{$buzzword.name}</a>
+										{/block}
+									{foreachelse}
+										___COMMON_NONE___
 									{/foreach}
 								</div>
 							</div>
@@ -130,7 +134,7 @@
 									<img src="{$basic.tpl_path}img/{if $h}btn_open_rc.gif{else}btn_close_rc.gif{/if}" alt="{if $h}___COMMON_SHOW___{else}___COMMON_HIDE___{/if}" />
 								</a>
 								<h2>
-									{block  name=sidebar_buzzwordbox_title}
+									{block name=sidebar_tagbox_title}
 										___COMMON_TAG_BOX___
 									{/block}
 								</h2>
@@ -140,20 +144,22 @@
 								<a href="" title="bearbeiten" class="btn_body_rc"><img src="{$basic.tpl_path}img/btn_edit_rc.gif" alt="close" /></a>
 								<div class="portlet_rc_body{if $h} hidden{/if}">
 									<div id="tag_tree">
-										{* Tags Function *}
-										{function name=tag_tree level=0}
-											<ul>
-											{foreach $nodes as $node}
-												<li	id="node_{$node.item_id}"
-													{if $node.children|count > 0}class="folder"{/if}
-													data="url:'commsy.php?cid={$environment.cid}&mod=campus_search&fct=index&name=selected&seltag_{$level}={$node.item_id}&seltag=yes'">{$node.title}
-												{if $node.children|count > 0}	{* recursive call *}
-													{tag_tree nodes=$node.children level=$level+1}
-												{/if}
-											{/foreach}
-											</ul>
-										{/function}
-	
+										{block name=sidebar_tagbox_treefunction}
+											{* Tags Function *}
+											{function name=tag_tree level=0}
+												<ul>
+												{foreach $nodes as $node}
+													<li	id="node_{$node.item_id}"
+														{if $node.children|count > 0}class="folder"{/if}
+														data="url:'commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=index&name=selected&seltag_{$level}={$node.item_id}&seltag=yes'">{if $node.match}<strong>{$node.title}</strong>{else}{$node.title}{/if}
+													{if $node.children|count > 0}	{* recursive call *}
+														{tag_tree nodes=$node.children level=$level+1}
+													{/if}
+												{/foreach}
+												</ul>
+											{/function}
+										{/block}
+										
 										{* call function *}
 										{tag_tree nodes=$room.tags}
 									</div>

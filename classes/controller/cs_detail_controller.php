@@ -1005,7 +1005,7 @@
 		/*
 		 * these values are assigned by reference!!!
 		 */
-		private function markTags(&$tag_array, &$item_tag_id_array) {
+		private function markTags($tag_array, $item_tag_id_array) {
 			// compare and mark as highlighted
 			foreach($tag_array as &$tag) {					
 				if(in_array($tag['item_id'], $item_tag_id_array)) {
@@ -1014,9 +1014,9 @@
 					$tag['match'] = false;
 				}
 				
-				// look for recursive
+				// look recursive
 				if(!empty($tag['children'])) {
-					$this->markTags($tag['children'], $item_tag_id_array);		// <- be careful, these values are assigned by reference
+					$this->markTags(&$tag['children'], &$item_tag_id_array);		// <- be careful, these values are assigned by reference
 				}
 			}
 			
