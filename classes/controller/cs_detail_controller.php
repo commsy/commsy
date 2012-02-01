@@ -35,10 +35,6 @@
 			// call parent
 			parent::processTemplate();
 			
-			if($this->showNetnavigation()) {
-				$this->assign('netnavigation', 'linked_items', $this->getLinkedItems());
-			}
-			
 			$this->assign('detail', 'actions', $this->getDetailActions());
 			
 			// mark as read and noticed
@@ -322,7 +318,7 @@
 			}
 		}
 		
-		protected function getLinkedItems() {
+		protected function getNetnavigation() {
 			$return = array();
 			
 			$current_context = $this->_environment->getCurrentContextItem();
@@ -374,7 +370,8 @@
       */
       
 			$this->_rubric_connections;
-		      
+			
+		    $return['items'] = array();  
 			if(!$link_items->isEmpty()) {
 		      	$link_item = $link_items->getFirst();
 		      	
@@ -985,7 +982,7 @@
 			return $return;
 		}
 		
-		private function showNetnavigation(){
+		protected function showNetnavigation(){
 	      $context_item = $this->_environment->getCurrentContextItem();
 	      if ($context_item->withNetnavigation()
 	          and ( $this->_environment->getCurrentModule() == CS_MATERIAL_TYPE

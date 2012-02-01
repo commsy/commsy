@@ -14,11 +14,11 @@
 		{foreach $room.home_content as $rubric}
 			<div class="content_item"> <!-- Start content_item -->
             	<div class="ci_head_actions">
-	            	<a href="commsy.php?cid={$environment.cid}&mod={$rubric@key}&fct=edit" title="___HOME_SMARTY_{$rubric@key|upper}_ACTION_NEW___">
+	            	<a href="commsy.php?cid={$environment.cid}&mod={$rubric@key}&fct=edit&iid=NEW" title="___HOME_SMARTY_ACTION_NEW___">
 	            		<img src="{$basic.tpl_path}img/btn_ci_add.gif" alt="___HOME_SMARTY_ACTION_NEW___" />
 	            	</a>
-                    <a href="" class="open_close" title="___HOME_SMARTY_ACTION_CLOSE___">
-                    	<img src="{$basic.tpl_path}img/btn_ci_close.gif" alt="___HOME_SMARTY_ACTION_CLOSE___" />
+                    <a href="" class="open_close" title="{if $rubric.hidden}___COMMON_SHOW___{else}___COMMON_HIDE___{/if}">
+                    	<img src="{$basic.tpl_path}img/{if $rubric.hidden}btn_ci_open.gif{else}btn_ci_close.gif{/if}" alt="{if $rubric.hidden}___COMMON_SHOW___{else}___COMMON_HIDE___{/if}" />
                     </a>
                 </div>
                 <h2>
@@ -29,22 +29,22 @@
                 </h2>
 
                 <div class="clear"> </div>
-
-                <div class="list_wrap">
+                
+                <div class="list_wrap{if $rubric.hidden} hidden{/if}">
 
 	                {foreach $rubric.items as $item}
 	                	<div class="{if $item@iteration is odd}row_odd{else}row_even{/if} {if $item@iteration is odd}odd_sep_home{else}even_sep_home{/if}">
 	                    	<div class="column_380">
 	                        	{if $rubric@key == 'discussion'}
-	                        	<p class="column_addon">
-	                        		{$item.column_1_addon}
-	                        	</p>
+		                        	<p class="column_addon">
+		                        		{$item.column_1_addon}
+		                        	</p>
 	                        	{/if}
 	                        	<p>
-								{if $item.noticed != ''}
-									<a href="" class="new_item"><img title="{$item.noticed}" class="new_item" src="{$basic.tpl_path}img/flag_neu.gif" alt="*" /></a>
-         						{/if}
-	                            	<a href="commsy.php?cid={$environment.cid}&mod={$rubric@key}&fct=detail&iid={$item.iid}">{$item.column_1}</a>
+									{if $item.noticed != ''}
+										<a href="" class="new_item"><img title="{$item.noticed}" class="new_item" src="{$basic.tpl_path}img/flag_neu.gif" alt="*" /></a>
+	         						{/if}
+		                            <a href="commsy.php?cid={$environment.cid}&mod={$rubric@key}&fct=detail&iid={$item.iid}">{$item.column_1}</a>
 	                            </p>
 	                        </div>
                         	<div class="column_140">
@@ -52,11 +52,11 @@
                             </div>
 	                        <div class="column_194">
 	                        	<p>
-	                        	{if $rubric@key == 'material' or $rubric@key == 'announcement' or $rubric@key == 'discussion'}
-	                            	<a href="commsy.php?cid={$environment.cid}&mod=user&fct=detail&iid={$item.user_iid}">{$item.column_3}</a>
-	                        	{else}
-	                        		{$item.column_3}
-	                            {/if}
+		                        	{if $rubric@key == 'material' or $rubric@key == 'announcement' or $rubric@key == 'discussion'}
+		                            	<a href="commsy.php?cid={$environment.cid}&mod=user&fct=detail&iid={$item.user_iid}">{$item.column_3}</a>
+		                        	{else}
+		                        		{$item.column_3}
+		                            {/if}
 	                            </p>
 	                        </div>
 		                    <div class="clear"> </div>

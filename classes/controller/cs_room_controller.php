@@ -3,6 +3,7 @@
 
 	abstract class cs_room_controller extends cs_base_controller {
 		protected $_with_modifying_actions = true;
+		protected $_sidebar_configuration = array();
 		
 		/**
 		 * constructor
@@ -10,6 +11,13 @@
 		public function __construct(cs_environment $environment) {
 			// call parent
 			parent::__construct($environment);
+			
+			$this->_sidebar_configuration['active']['buzzwords'] = false;
+			$this->_sidebar_configuration['active']['tags'] = false;
+			$this->_sidebar_configuration['active']['netnavigation'] = false;
+			$this->_sidebar_configuration['hidden']['buzzwords'] = true;
+			$this->_sidebar_configuration['hidden']['tags'] = true;
+			$this->_sidebar_configuration['hidden']['netnavigation'] = true;
 		}
 
 		/*
@@ -18,6 +26,17 @@
 		protected function processTemplate() {
 			// call parent
 			parent::processTemplate();
+			
+			$params = $this->_environment->getCurrentParameterArray();
+			if(!empty($params['with_modifying_actions'])) {
+				$this->_with_modifying_actions = $params['with_modifying_actions'];
+			}
+			
+			$current_context = $this->_environment->getCurrentContextItem();
+			$current_user = $this->_environment->getCurrentUserItem();
+			if($current_context->isClosed() || $current_user->isOnlyReadUser()) {
+				$this->_with_modifying_actions = false;
+			}
 
 			// check room context
 			if(	!$this->_environment->inProjectRoom() &&
@@ -33,24 +52,35 @@
 			// room information
 			$this->assign('room', 'room_information', $this->getRoomInformation());
 			
+			// sidebar information
+			$this->setupSidebarInformation();
+		}
+		
+		private function setupSidebarInformation() {
+			$context_item = $this->_environment->getCurrentContextItem();
+			
+			// buzzwords
+			if($context_item->isBuzzwordShowExpanded()) $this->_sidebar_configuration['hidden']['buzzwords'] = false;
+			if($this->showBuzzwords()) {
+				$this->_sidebar_configuration['active']['buzzwords'] = true;
+				$this->assign('room', 'buzzwords', $this->getBuzzwords());
+			}
+			
+			// tags
+			if($context_item->isTagsShowExpanded()) $this->_sidebar_configuration['hidden']['tags'] = false;
 			if($this->showTags()) {
+				$this->_sidebar_configuration['active']['tags'] = true;
 				$this->assign('room', 'tags', $this->getTags());
 			}
 			
-			// TODO: buzzwords are not mandatory in all rubrics(fe. user), move these calls to the child controllers or implement check for rubrics
-			// buzzwords
-			$this->assign('room', 'buzzwords', $this->getBuzzwords());
-			
-			$params = $this->_environment->getCurrentParameterArray();
-			if(!empty($params['with_modifying_actions'])) {
-				$this->_with_modifying_actions = $params['with_modifying_actions'];
+			// netnavigation
+			if($context_item->isNetnavigationShowExpanded()) $this->_sidebar_configuration['hidden']['netnavigation'] = false;
+			if($this->showNetnavigation()) {
+				$this->_sidebar_configuration['active']['netnavigation'] = true;
+				$this->assign('room', 'netnavigation', $this->getNetnavigation());
 			}
 			
-			$current_context = $this->_environment->getCurrentContextItem();
-			$current_user = $this->_environment->getCurrentUserItem();
-			if($current_context->isClosed() || $current_user->isOnlyReadUser()) {
-				$this->_with_modifying_actions = false;
-			}
+			$this->assign('room', 'sidebar_configuration', $this->_sidebar_configuration);
 		}
 
 		/**
@@ -67,6 +97,7 @@
 
 			return $rubrics;
 		}
+		
 
 		/**
 		 * gets information for displaying room rubrics in navigation bar
@@ -324,6 +355,25 @@
 				return true;
 			}
 			
+			return false;
+		}
+		
+		private function showBuzzwords() {
+			$context_item = $this->_environment->getCurrentContextItem();
+			if($context_item->withBuzzwords() &&
+				(	$this->_environment->getCurrentModule() === CS_ANNOUNCEMENT_TYPE ||
+					$this->_environment->getCurrentModule() === 'home' ||
+					$this->_environment->getCurrentModule() === CS_DATE_TYPE ||
+					$this->_environment->getCurrentModule() === CS_MATERIAL_TYPE ||
+					$this->_environment->getCurrentModule() === CS_DISCUSSION_TYPE ||
+					$this->_environment->getCurrentModule() === CS_TODO_TYPE)) {
+				return true;
+			}
+			
+			return false;
+		}
+		
+		protected function showNetnavigation() {
 			return false;
 		}
 	}

@@ -101,47 +101,110 @@
 
            		<div id="rc_portlet_area">
            			{block name=room_right_portlets}
-           				<div class="portlet_rc">
-							<a href="" title="___HOME_SMARTY_ACTION_CLOSE___" class="btn_head_rc"><img src="{$basic.tpl_path}img/btn_close_rc.gif" alt="close" /></a>
-							<h2>___COMMON_BUZZWORD_BOX___</h2>
-
-							<div class="clear"> </div>
-							<a href="" title="bearbeiten" class="btn_body_rc"><img src="{$basic.tpl_path}img/btn_edit_rc.gif" alt="close" /></a>
-							<div class="portlet_rc_body">
-								{foreach $room.buzzwords as $buzzword}
-									<a href="commsy.php?cid={$environment.cid}&mod=campus_search&fct=index&selbuzzword={$buzzword.to_item_id}" class="keywords_s{$buzzword.class_id}">{$buzzword.name}</a>
-								{/foreach}
-							</div>
-						</div>
-
-						<div class="portlet_rc">
-							<a href="" title="___HOME_SMARTY_ACTION_CLOSE___" class="btn_head_rc"><img src="{$basic.tpl_path}img/btn_close_rc.gif" alt="close" /></a>
-							<h2>___COMMON_TAG_BOX___</h2>
-
-							<div class="clear"> </div>
-
-							<a href="" title="bearbeiten" class="btn_body_rc"><img src="{$basic.tpl_path}img/btn_edit_rc.gif" alt="close" /></a>
-							<div class="portlet_rc_body">
-								<div id="tag_tree">
-									{* Tags Function *}
-									{function name=tag_tree level=0}
-										<ul>
-										{foreach $nodes as $node}
-											<li	id="node_{$node.item_id}"
-												{if $node.children|count > 0}class="folder"{/if}
-												data="url:'commsy.php?cid={$environment.cid}&mod=campus_search&fct=index&{$level}_seltag={$node.item_id}&seltag=yes'">{$node.title}
-											{if $node.children|count > 0}	{* recursive call *}
-												{tag_tree nodes=$node.children level=$level+1}
-											{/if}
-										{/foreach}
-										</ul>
-									{/function}
-
-									{* call function *}
-									{tag_tree nodes=$room.tags}
+           				{if $room.sidebar_configuration.active.buzzwords}
+	           				{$h = $room.sidebar_configuration.hidden.buzzwords}
+							<div class="portlet_rc">
+								<a href="" title="{if $h}___COMMON_SHOW___{else}___COMMON_HIDE___{/if}" class="btn_head_rc">
+									<img src="{$basic.tpl_path}img/{if $h}btn_open_rc.gif{else}btn_close_rc.gif{/if}" alt="{if $h}___COMMON_SHOW___{else}___COMMON_HIDE___{/if}" />
+								</a>
+								<h2>
+									{block  name=sidebar_tagbox_title}
+										___COMMON_BUZZWORD_BOX___
+									{/block}
+								</h2>
+	
+								<div class="clear"> </div>
+								<a href="" title="bearbeiten" class="btn_body_rc"><img src="{$basic.tpl_path}img/btn_edit_rc.gif" alt="close" /></a>
+								<div class="portlet_rc_body{if $h} hidden{/if}">
+									{foreach $room.buzzwords as $buzzword}
+										<a href="commsy.php?cid={$environment.cid}&mod=campus_search&fct=index&selbuzzword={$buzzword.to_item_id}" class="keywords_s{$buzzword.class_id}">{$buzzword.name}</a>
+									{/foreach}
 								</div>
 							</div>
-						</div>
+						{/if}
+						
+						{if $room.sidebar_configuration.active.tags}
+							{$h = $room.sidebar_configuration.hidden.tags}
+							<div class="portlet_rc">
+								<a href="" title="{if $h}___COMMON_SHOW___{else}___COMMON_HIDE___{/if}" class="btn_head_rc">
+									<img src="{$basic.tpl_path}img/{if $h}btn_open_rc.gif{else}btn_close_rc.gif{/if}" alt="{if $h}___COMMON_SHOW___{else}___COMMON_HIDE___{/if}" />
+								</a>
+								<h2>
+									{block  name=sidebar_buzzwordbox_title}
+										___COMMON_TAG_BOX___
+									{/block}
+								</h2>
+								
+								<div class="clear"> </div>
+	
+								<a href="" title="bearbeiten" class="btn_body_rc"><img src="{$basic.tpl_path}img/btn_edit_rc.gif" alt="close" /></a>
+								<div class="portlet_rc_body{if $h} hidden{/if}">
+									<div id="tag_tree">
+										{* Tags Function *}
+										{function name=tag_tree level=0}
+											<ul>
+											{foreach $nodes as $node}
+												<li	id="node_{$node.item_id}"
+													{if $node.children|count > 0}class="folder"{/if}
+													data="url:'commsy.php?cid={$environment.cid}&mod=campus_search&fct=index&name=selected&seltag_{$level}={$node.item_id}&seltag=yes'">{$node.title}
+												{if $node.children|count > 0}	{* recursive call *}
+													{tag_tree nodes=$node.children level=$level+1}
+												{/if}
+											{/foreach}
+											</ul>
+										{/function}
+	
+										{* call function *}
+										{tag_tree nodes=$room.tags}
+									</div>
+								</div>
+							</div>
+						{/if}
+						
+						{if $room.sidebar_configuration.active.netnavigation}
+							{$h = $room.sidebar_configuration.hidden.netnavigation}
+							<div class="portlet_rc">
+								<a href="" title="{if $h}___COMMON_SHOW___{else}___COMMON_HIDE___{/if}" class="btn_head_rc">
+									<img src="{$basic.tpl_path}img/{if $h}btn_open_rc.gif{else}btn_close_rc.gif{/if}" alt="{if $h}___COMMON_SHOW___{else}___COMMON_HIDE___{/if}" />
+								</a>
+								<h2>
+									{if isset($room.netnavigation.is_community)}
+										{if $room.netnavigation.is_community}
+											___COMMON_ATTACHED_INSTITUTIONS___ ({$room.netnavigation.count})
+										{else}
+											___COMMON_ATTACHED_GROUPS___ ({$room.netnavigation.count})
+										{/if}
+									{else}
+										___COMMON_ATTACHED_ENTRIES___
+									{/if}
+								</h2>
+						
+								<div class="clear"> </div>
+								
+								{if $room.netnavigation.edit}
+									<a href="{$room.netnavigation.edit_link}" title="{if isset($room.netnavigation.is_community)}{if $room.netnavigation.is_community}___COMMON_ATTACHED_INSTITUTIONS___{else}___COMMON_ATTACHED_GROUPS___{/if}{else}___COMMON_ATTACHED_ENTRIES___{/if}" class="btn_body_rc">
+										<img src="{$basic.tpl_path}img/btn_edit_rc.gif" alt="{if isset($room.netnavigation.is_community)}{if $room.netnavigation.is_community}___COMMON_ATTACHED_INSTITUTIONS___{else}___COMMON_ATTACHED_GROUPS___{/if}{else}___COMMON_ATTACHED_ENTRIES___{/if}" />
+									</a>
+								{/if}
+								
+								<div class="portlet_rc_body{if $h} hidden{/if}">
+									<ul>
+										{foreach $room.netnavigation.items as $item}
+											<li>
+												<a target="_self" href="commsy.php?cid={$environment.cid}&mod={$item.module}&fct=detail&iid={$item.linked_iid}" title="{$item.link_creator_text}">
+													<img src="{$item.img}" title="{$item.link_creator_text}"/>
+												</a>
+												<a target="_self" href="commsy.php?cid={$environment.cid}&mod={$item.module}&fct=detail&iid={$item.linked_iid}" title="{$item.link_creator_text}">
+													{$item.title|truncate:35:"...":true}
+												</a>
+											</li>
+										{foreachelse}
+											___COMMON_NONE___
+										{/foreach}
+									</ul>
+								</div>
+							</div>
+						{/if}
 					{/block}
            		</div>
             </div> <!-- Ende right_column -->

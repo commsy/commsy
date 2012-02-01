@@ -67,40 +67,6 @@
 	<div class="clear"> </div>
 {/block}
 
-{block name=default_room_portlets append}
-	<div class="portlet_rc">
-		<a href="" title="___HOME_SMARTY_ACTION_CLOSE___" class="btn_head_rc"><img src="{$basic.tpl_path}img/btn_close_rc.gif" alt="close" /></a>
-		<h2>___COMMON_NETNAVIGATION_ENTRIES___ ({$netnavigation.linked_items.count})</h2>
-
-		<div class="clear"> </div>
-
-		{if $netnavigation.linked_items.edit}
-			<a href="{$netnavigation.linked_items.edit_link}" title="___COMMON_ITEM_ATTACH___" class="btn_body_rc">
-				<img src="{$basic.tpl_path}img/btn_edit_rc.gif" alt="___COMMON_ITEM_ATTACH___" />
-			</a>
-		{/if}
-		
-		<div class="portlet_rc_body">
-			{if empty($netnavigation.linked_items.items)}
-				___COMMON_NONE___
-			{else}
-				<ul>
-					{foreach $netnavigation.linked_items.items as $item}
-						<li>
-							<a target="_self" href="commsy.php?cid={$environment.cid}&mod={$item.module}&fct=detail&iid={$item.linked_iid}" title="{$item.link_creator_text}">
-								<img src="{$item.img}" title="{$item.link_creator_text}"/>
-							</a>
-							<a target="_self" href="commsy.php?cid={$environment.cid}&mod={$item.module}&fct=detail&iid={$item.linked_iid}" title="{$item.link_creator_text}">
-								{$item.title|truncate:35:"...":true}
-							</a>
-						</li>
-					{/foreach}
-				</ul>
-			{/if}
-		</div>
-	</div>
-{/block}
-
 {block name=room_right_portlets_navigation}
 	{foreach $detail.forward_information as $entry}
 		<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&iid={$entry.item_id}">{$entry.position}. {if $entry.is_current}<strong>{/if}{$entry.title}{if $entry.is_current}</strong>{/if}</a>

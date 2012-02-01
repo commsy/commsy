@@ -1183,6 +1183,10 @@ div#user_profil_picture {
 	padding: 0 7px 7px;
 	}
 
+.hidden {
+	display: none;
+}
+
 /*
 ----------------------------------------------------------------------
 portlets, right_column

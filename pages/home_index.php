@@ -369,7 +369,7 @@ if ( $context_item->isProjectroom()
       $file_manager = $environment->getFileManager();
       $file_manager->setIDArrayLimit($file_id_array);
       $file_manager->select();
-
+      
       if ( $current_context->withBuzzwords() ){
          $params = array();
          $params['environment'] = $environment;

@@ -43,7 +43,7 @@ define(["libs/jQuery/jquery-1.7.1.min"], function() {
 				
 				// go through each list wrap
 				var objects = [];
-				jQuery('div[class="content_item"] div[class="list_wrap"]').each(function() {
+				jQuery('div[class="content_item"] div[class^="list_wrap"]').each(function() {
 					// find actors
 					var actors = [];
 					var a = {
@@ -66,7 +66,7 @@ define(["libs/jQuery/jquery-1.7.1.min"], function() {
 			
 			// portlet expander
 			var objects = [];
-			jQuery('div[class="portlet_rc"]  div[class="portlet_rc_body"]').each(function() {
+			jQuery('div[class="portlet_rc"]  div[class^="portlet_rc_body"]').each(function() {
 				// find actors
 				var actors = [];
 				var a = {

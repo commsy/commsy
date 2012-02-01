@@ -381,7 +381,7 @@
 		protected function getAdditionalActions($perms) {
 		}
 		
-		protected function getLinkedItems() {
+		protected function getNetnavigation() {
 			$return = array();
 			
 			$current_context = $this->_environment->getCurrentContextItem();

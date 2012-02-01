@@ -47,6 +47,7 @@
 			$rubrics = $this->getRubrics();
 			$rubric_list = array();
 			$rubric_list_array = array();
+			
 			// determe rubrics to show on home list
 			foreach($rubrics as $rubric) {
 				list($rubric_name, $postfix) = explode('_', $rubric);
@@ -57,6 +58,9 @@
 				// TODO: where does activity come from?
 				// continue if name of rubric is activity
 				if($rubric_name === 'activity') continue;
+				
+				// store hidden state
+				$return[$rubric_name]['hidden'] = ($postfix === 'short') ? false : true;
 
 				$rubric_list[] = $rubric_name;
 
@@ -436,17 +440,17 @@
 								$modificator_id = $item->getModificatorItem()->getItemID();
 	               		}
 						$item_array[] = array(
-						'iid'				=> $item->getItemID(),
-						'user_iid'			=> $modificator_id,
-						'column_1'			=> $column1,
-						'column_1_addon'	=> $column1_addon,
-						'column_2'			=> $column2,
-						'column_3'			=> $column3,
-						'noticed'			=> $noticed_text
-					//	'attachment_count'	=> $item->getFileList()->getCount()
-		//				'attachment_infos'	=>
+							'iid'				=> $item->getItemID(),
+							'user_iid'			=> $modificator_id,
+							'column_1'			=> $column1,
+							'column_1_addon'	=> $column1_addon,
+							'column_2'			=> $column2,
+							'column_3'			=> $column3,
+							'noticed'			=> $noticed_text
+						//	'attachment_count'	=> $item->getFileList()->getCount()
+			//				'attachment_infos'	=>
 						);
-
+						
 						$item = $list->getNext();
 					}
 					$return[$key]['items'] = $item_array;
@@ -454,6 +458,7 @@
 					// message tag
 					$message_tag = '';
 					//TODO: complete missing tags
+					$shown = 0;
 					switch($key) {
 						case CS_ANNOUNCEMENT_TYPE:
 							$message_tag = $translator->getMessage('COMMON_' . mb_strtoupper($key) . '_SHORT_VIEW_DESCRIPTION', $list->getCount(), $rubric_count_all_array[$key]);
