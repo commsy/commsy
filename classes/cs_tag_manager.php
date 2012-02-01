@@ -801,7 +801,7 @@ class cs_tag_manager extends cs_manager {
 			$query .= ' LIMIT ' . $limit[0] . ', ' . $limit[1];
 		}
 		
-		parent::updateSearchIndices($query, CS_TAG_TYPE);
+		$this->updateSearchIndicesMain($query, CS_TAG_TYPE);
 	}
 }
 ?>

@@ -57,7 +57,7 @@ class cs_buzzword_manager extends cs_labels_manager {
 	 * @see cs_label_manager::updateSearchIndices()
 	 */
 	public function updateSearchIndices($limit = array()) {
-		parent::updateSearchIndices(CS_BUZZWORD_TYPE, $limit);
+		$this->updateSearchIndicesLabel(CS_BUZZWORD_TYPE, $limit);
 	}
 }
 ?>

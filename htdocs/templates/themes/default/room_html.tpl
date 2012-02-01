@@ -181,7 +181,7 @@
 											___COMMON_ATTACHED_GROUPS___ ({$room.netnavigation.count})
 										{/if}
 									{else}
-										___COMMON_ATTACHED_ENTRIES___
+										___COMMON_ATTACHED_ENTRIES___ ({$room.netnavigation.count})
 									{/if}
 								</h2>
 						
@@ -194,20 +194,22 @@
 								{/if}
 								
 								<div class="portlet_rc_body{if $h} hidden{/if}">
-									<ul>
-										{foreach $room.netnavigation.items as $item}
-											<li>
-												<a target="_self" href="commsy.php?cid={$environment.cid}&mod={$item.module}&fct=detail&iid={$item.linked_iid}" title="{$item.link_creator_text}">
-													<img src="{$item.img}" title="{$item.link_creator_text}"/>
-												</a>
-												<a target="_self" href="commsy.php?cid={$environment.cid}&mod={$item.module}&fct=detail&iid={$item.linked_iid}" title="{$item.link_creator_text}">
-													{$item.title|truncate:35:"...":true}
-												</a>
-											</li>
-										{foreachelse}
-											___COMMON_NONE___
-										{/foreach}
-									</ul>
+									<div id="netnavigation">
+										<ul>
+											{foreach $room.netnavigation.items as $item}
+												<li>
+													<a target="_self" href="commsy.php?cid={$environment.cid}&mod={$item.module}&fct=detail&iid={$item.linked_iid}" title="{$item.title}">
+														<img src="{$item.img}" title="{$item.title}"/>
+													</a>
+													<a target="_self" href="commsy.php?cid={$environment.cid}&mod={$item.module}&fct=detail&iid={$item.linked_iid}" title="{$item.title}">
+														{$item.link_text|truncate:35:"...":true}
+													</a>
+												</li>
+											{foreachelse}
+												___COMMON_NONE___
+											{/foreach}
+										</ul>
+									</div>
 								</div>
 							</div>
 						{/if}

@@ -1721,7 +1721,7 @@ class cs_user_manager extends cs_manager {
 			$query .= ' LIMIT ' . $limit[0] . ', ' . $limit[1];
 		}
 		
-		parent::updateSearchIndices($query, CS_USER_TYPE);
+		parent::updateSearchIndicesMain($query, CS_USER_TYPE);
 	}
 }
 ?>

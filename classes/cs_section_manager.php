@@ -664,7 +664,7 @@ class cs_section_manager extends cs_manager {
 			$query .= ' LIMIT ' . $limit[0] . ', ' . $limit[1];
 		}
 		
-		parent::updateSearchIndices($query, "from_query");
+		$this->updateSearchIndicesMain($query, "from_query");
 	}
 }
 ?>

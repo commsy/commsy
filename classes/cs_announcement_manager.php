@@ -665,7 +665,7 @@ class cs_announcement_manager extends cs_manager {
 			$query .= ' LIMIT ' . $limit[0] . ', ' . $limit[1];
 		}
 		
-		parent::updateSearchIndices($query, CS_ANNOUNCEMENT_TYPE);
+		$this->updateSearchIndicesMain($query, CS_ANNOUNCEMENT_TYPE);
 	}
 }
 ?>

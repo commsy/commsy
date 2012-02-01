@@ -517,7 +517,8 @@ class cs_annotations_manager extends cs_manager {
 		if(!empty($limit)) {
 			$query .= ' LIMIT ' . $limit[0] . ', ' . $limit[1];
 		}
-		parent::updateSearchIndices($query, "from_query");
+		
+		$this->updateSearchIndicesMain($query, "from_query");
 	}
 }
 ?>

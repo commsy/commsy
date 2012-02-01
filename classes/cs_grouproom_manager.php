@@ -415,7 +415,7 @@ class cs_grouproom_manager extends cs_room2_manager {
 	 * @see cs_room2_manager::updateSearchIndices()
 	 */
 	public function updateSearchIndices($limit = array()) {
-		parent::updateSearchIndices(CS_GROUPROOM_TYPE, $limit);
+		$this->updateSearchIndicesRoom(CS_GROUPROOM_TYPE, $limit);
 	}
 }
 ?>

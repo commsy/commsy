@@ -585,7 +585,7 @@ class cs_step_manager extends cs_manager {
 			$query .= ' LIMIT ' . $limit[0] . ', ' . $limit[1];
 		}
 		
-		parent::updateSearchIndices($query, CS_STEP_TYPE);
+		$this->updateSearchIndicesMain($query, CS_STEP_TYPE);
 	}
 }
 ?>

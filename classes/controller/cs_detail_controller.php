@@ -360,16 +360,6 @@
       $html .= '<div class="commsy_panel" style="margin-bottom:1px;">'.LF;
       $html .= '<div class="right_box">'.LF;
       */
-
-			/*
-      $connections = $this->getRubricConnections();
-      $html .= '         <noscript>';
-      $html .= '<div class="right_box_title">'.$this->_translator->getMessage('COMMON_ATTACHED_ENTRIES').'</div>';
-      $html .= '         </noscript>';
-      $html .='      <div class="right_box_main">     '.LF;
-      */
-      
-			$this->_rubric_connections;
 			
 		    $return['items'] = array();  
 			if(!$link_items->isEmpty()) {
@@ -481,8 +471,8 @@
 									
 									$entry['module'] = $module;
 									$entry['img'] = $img;
-									$entry['link_creator_text'] = $link_creator_text;
-									$entry['title'] = $title;
+									$entry['title'] = $link_creator_text;
+									$entry['link_text'] = $title;
 									
 									/*
 									 * TODO: check if working
@@ -519,16 +509,24 @@
 		                     unset($params);
 									 */
 								} else {
+									if($module === CS_USER_TYPE) {
+										$title = $linked_item->getFullName();
+									} else {
+										$title = $linked_item->getTitle();
+									}
+									$title = $converter->text_as_html_short($title);
+									
+									$entry['module'] = $module;
+									$entry['img'] = $img;
+									$entry['title'] = $link_creator_text;
+									$entry['link_text'] = $title;
+									
 									
 									/*
 									 * TODO: check if needed - $link_creator_text is empty!!!
 									 * 
 									 * 
-									 * if ($module == CS_USER_TYPE){
-		                          $link_title = chunkText($this->_text_as_html_short($linked_item->getFullName()),35);
-		                      }else{
-		                          $link_title = chunkText($this->_text_as_html_short($linked_item->getTitle()),35);
-		                      }
+									 * 
 		                      $html .= ahref_curl( $this->_environment->getCurrentContextID(),
 		                                       $module,
 		                                       'detail',
@@ -556,11 +554,11 @@
 		                     unset($params);
 									 */
 								}
+								
+								$return['items'][] = $entry;
 							}
 						}
 					}
-					
-					$return['items'][] = $entry;
 							
 					$link_item = $link_items->getNext();
 		      	}
@@ -865,7 +863,7 @@
 					
 					while($annotation) {
 						// get item picture
-						$modificator_ref =& $annotation->getModificatorItem();
+						$modificator_ref = $annotation->getModificatorItem();
 						
 						//$html .= $this->_text_as_html_short($this->_compareWithSearchText($subitem->getTitle()));
 						$subitem_title = $annotation->getTitle();

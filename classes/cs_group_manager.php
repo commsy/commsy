@@ -120,7 +120,7 @@ class cs_group_manager extends cs_labels_manager {
 	 * @see cs_label_manager::updateSearchIndices()
 	 */
 	public function updateSearchIndices($limit = array()) {
-		parent::updateSearchIndices(CS_GROUP_TYPE, $limit);
+		$this->updateSearchIndicesLabel(CS_GROUP_TYPE, $limit);
 	}
 }
 ?>

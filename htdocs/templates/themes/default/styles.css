@@ -1281,6 +1281,11 @@ a:hover.keywords_s1, a:hover.keywords_s2, a:hover.keywords_s3, a:hover.keywords_
     text-decoration: none;
     }
 
+#netnavigation a {
+    color: #DEE8FF; /* ueber Skin-Editor austauschbar */
+    text-decoration: none;
+    }
+
 #dis_navigation a:hover, a:hover.context_nav {
     display: block;
     color: #FFF;

@@ -940,7 +940,7 @@ class cs_dates_manager extends cs_manager {
 			$query .= ' LIMIT ' . $limit[0] . ', ' . $limit[1];
 		}
 
-		parent::updateSearchIndices($query, CS_DATE_TYPE);
+		$this->updateSearchIndicesMain($query, CS_DATE_TYPE);
 	}
 }
 ?>

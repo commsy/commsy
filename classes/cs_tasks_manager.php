@@ -411,7 +411,7 @@ class cs_tasks_manager extends cs_manager {
 			$query .= ' LIMIT ' . $limit[0] . ', ' . $limit[1];
 		}
 		
-		parent::updateSearchIndices($query, CS_TASK_TYPE);
+		$this->updateSearchIndicesMain($query, CS_TASK_TYPE);
 	}
 }
 ?>

@@ -545,7 +545,7 @@ class cs_project_manager extends cs_room2_manager {
 	 * @see cs_room2_manager::updateSearchIndices()
 	 */
 	public function updateSearchIndices($limit = array()) {
-		parent::updateSearchIndices(CS_PROJECT_TYPE, $limit);
+		$this->updateSearchIndicesRoom(CS_PROJECT_TYPE, $limit);
 	}
 }
 ?>

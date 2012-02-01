@@ -154,7 +154,7 @@ class cs_portal_manager extends cs_context_manager {
 			$query .= ' LIMIT ' . $limit[0] . ', ' . $limit[1];
 		}
 		
-		parent::updateSearchIndices($query, CS_PORTAL_TYPE);
+		$this->updateSearchIndicesMain($query, CS_PORTAL_TYPE);
 	}
 }
 ?>

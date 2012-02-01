@@ -1287,7 +1287,7 @@ class cs_material_manager extends cs_manager {
 			$query .= ' LIMIT ' . $limit[0] . ', ' . $limit[1];
 		}
 		
-		parent::updateSearchIndices($query, CS_MATERIAL_TYPE);
+		$this->updateSearchIndicesMain($query, CS_MATERIAL_TYPE);
 	}
 	
 	function getResubmissionItemIDsByDate($year, $month, $day){

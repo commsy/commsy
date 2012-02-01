@@ -725,7 +725,7 @@ class cs_discussion_manager extends cs_manager {
 			$query .= ' LIMIT ' . $limit[0] . ', ' . $limit[1];
 		}
 		
-		parent::updateSearchIndices($query, CS_DISCUSSION_TYPE);
+		$this->updateSearchIndicesMain($query, CS_DISCUSSION_TYPE);
 	}
 }
 ?>

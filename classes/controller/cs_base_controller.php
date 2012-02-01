@@ -16,7 +16,40 @@
 
 			// process basic template information
 			$this->processBaseTemplate();
+			
+			// setup error handling
+			set_error_handler(array($this, 'errorHandler'));
+			set_exception_handler(array($this, 'exceptionHandler'));
+			//register_shutdown_function(array($this, 'shutdownHandler'));
 		}
+		
+		public function errorHandler($error_code, $error_string, $error_file, $error_line, $error_context) {
+			// create an exception
+			$exception = new ErrorException($error_string, $error_code, 0, $error_file, $error_line);
+			
+			// call exception handler with object
+			$this->exceptionHandler($exception);
+		}
+		
+		/*
+		 * this will catch unhandled exceptions and exceptions from error handler
+		 */
+		public function exceptionHandler($exception) {
+			global $c_show_debug_infos;
+			if(isset($c_show_debug_infos) && $c_show_debug_infos === true) {
+				echo "Error in " . $exception->getFile() . " on line " . $exception->getLine() . "<br>\n";
+				pr($exception->getMessage());
+				echo "-------------------------<br>\n";
+			}
+			//pr($exception);
+			//exit;
+		}
+		
+		/*
+		public function shutdownHandler() {
+			pr("error");
+		}
+		*/
 
 		public function displayTemplate() {
 			try {

@@ -1761,7 +1761,7 @@ class cs_manager {
     * @param $query - the query to get the needed data given by each manager individual
     * @param $item_type - the type of the item
     */
-   protected function updateSearchIndices($query, $item_type = '') {
+   protected function updateSearchIndicesMain($query, $item_type = '') {
    	if(!empty($query)) {
    		// every entry in result will be a single item
    		$result = $this->_db_connector->performQuery($query);

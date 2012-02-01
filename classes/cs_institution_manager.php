@@ -55,7 +55,7 @@ class cs_institution_manager extends cs_labels_manager {
 	 * @see cs_label_manager::updateSearchIndices()
 	 */
 	public function updateSearchIndices($limit = array()) {
-		parent::updateSearchIndices(CS_INSTITUTION_TYPE, $limit);
+		$this->updateSearchIndicesLabel(CS_INSTITUTION_TYPE, $limit);
 	}
 }
 ?>
