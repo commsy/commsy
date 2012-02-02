@@ -292,7 +292,8 @@ foreach ( $room_modules as $module ) {
              or ($link_name[0] != CS_USER_TYPE
                  and $link_name[0] != CS_TOPIC_TYPE
                  and $link_name[0] != CS_GROUP_TYPE
-                 and $link_name[0] != CS_INSTITUTION_TYPE)
+                 and $link_name[0] != CS_INSTITUTION_TYPE
+                 and $link_name[0] != CS_PROJECT_TYPE)
          ){
             $rubric_array[] = $link_name[0];
          }
