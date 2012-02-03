@@ -42,38 +42,41 @@
 		</div>
 
 		<div id="item_legend"> <!-- Start item_legend -->
-			{section name="articles_short" loop=$detail.content.disc_articles}
-				{$article = $detail.content.disc_articles[articles_short]}
-				{$iteration = $smarty.section.articles_short.iteration}
-				<div class="row_{if $iteration is odd}odd{else}even{/if} {if $iteration is odd}odd{else}even{/if}_sep_390">
-					<div class="column_320">
-						<p>
-							{$article.position}.
-							{if $article.noticed == 'new' or $article.noticed == 'changed'}<img src="{$basic.tpl_path}img/flag_neu.gif" alt="NEU"/>{/if}
-							<a href="#disc_article_{$article.item_id}">{$article.subject}</a>
-						</p>
+			{block name=discussion_short_articles}
+				{section name="articles_short" loop=$detail.content.disc_articles}
+					{$article = $detail.content.disc_articles[articles_short]}
+					{$iteration = $smarty.section.articles_short.iteration}
+					<div class="row_{if $iteration is odd}odd{else}even{/if} {if $iteration is odd}odd{else}even{/if}_sep_390">
+						<div class="column_320">
+							<p>
+								{$article.position}.
+								{if $article.noticed == 'new' or $article.noticed == 'changed'}<img src="{$basic.tpl_path}img/flag_neu.gif" alt="NEU"/>{/if}
+								<a href="#disc_article_{$article.item_id}">{$article.subject}</a>
+							</p>
+						</div>
+						<div class="column_45">
+							<p>
+								<a href="" class="attachment">{$article.num_attachments}</a>
+							</p>
+						</div>
+						<div class="column_155">
+							<p>
+								<a href="">{$article.creator}</a>
+							</p>
+						</div>
+						<div class="column_155">
+							<p>{$article.modification_date}</p>
+						</div>
+						<div class="clear"> </div>
 					</div>
-					<div class="column_45">
-						<p>
-							<a href="" class="attachment">{$article.num_attachments}</a>
-						</p>
-					</div>
-					<div class="column_155">
-						<p>
-							<a href="">{$article.creator}</a>
-						</p>
-					</div>
-					<div class="column_155">
-						<p>{$article.modification_date}</p>
-					</div>
-					<div class="clear"> </div>
-				</div>
-			{/section}
+				{/section}
+			{/block}
 		</div> <!-- Ende item_legend -->
 
 	</div> <!-- Ende item body -->
 	<div class="clear"> </div>
-
+	
+	
 	{foreach $detail.content.disc_articles as $article}
 		<div class="item_actions">
 			<a class="edit" href=""><span class="edit_set"> &nbsp; </span></a>
@@ -90,45 +93,48 @@
 					<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&iid={$detail.content.discussion.item_id}&action=delete&discarticle_iid={$article.item_id}&discarticle_action=delete">___COMMON_DELETE_ITEM___</a>
 				{/if}
 			</div>
-			<div class="item_post">
-				<div class="row_{if $article@iteration is odd}odd{else}even{/if}_no_hover {if $article@iteration is odd}odd{else}even{/if}_sep_disdetail">
-					<div class="column_80">
-						<p>
-							<a href="" title="{$article.creator}">
-								{if $article.custom_image}
-									<img width="62" src="commsy.php?cid={$environment.cid}&mod=picture&fct=getfile&picture={$article.modificator_image}" alt="{i18n tag=USER_PICTURE_NO_PICTURE param1=$article.creator}" />
-								{else}
-									<img width="62" src="{$basic.tpl_path}img/user_unknown.gif" alt="{i18n tag=USER_PICTURE_NO_PICTURE param1=$article.creator}" />
-								{/if}
-							</a>
-						</p>
-					</div>
-
-					<div class="column_510">
-						<div class="post_content">
-							<h4>{$article@iteration}.
-								{if $article.noticed == 'new' or $article.noticed == 'changed'}<img src="{$basic.tpl_path}img/flag_neu.gif" alt="___COMMON_NEW___"/>{/if} {$article.subject}
-							</h4>
-							<span><a href="">{$article.creator}</a>, {$article.modification_date}</span>
-							<div class="editor_content">
-								{$article.description}
+			
+			{block name=discussion_articles}
+				<div class="item_post">
+					<div class="row_{if $article@iteration is odd}odd{else}even{/if}_no_hover {if $article@iteration is odd}odd{else}even{/if}_sep_disdetail">
+						<div class="column_80">
+							<p>
+								<a href="" title="{$article.creator}">
+									{if $article.custom_image}
+										<img width="62" src="commsy.php?cid={$environment.cid}&mod=picture&fct=getfile&picture={$article.modificator_image}" alt="{i18n tag=USER_PICTURE_NO_PICTURE param1=$article.creator}" />
+									{else}
+										<img width="62" src="{$basic.tpl_path}img/user_unknown.gif" alt="{i18n tag=USER_PICTURE_NO_PICTURE param1=$article.creator}" />
+									{/if}
+								</a>
+							</p>
+						</div>
+	
+						<div class="column_510">
+							<div class="post_content">
+								<h4>{$article@iteration}.
+									{if $article.noticed == 'new' or $article.noticed == 'changed'}<img src="{$basic.tpl_path}img/flag_neu.gif" alt="___COMMON_NEW___"/>{/if} {$article.subject}
+								</h4>
+								<span><a href="">{$article.creator}</a>, {$article.modification_date}</span>
+								<div class="editor_content">
+									{$article.description}
+								</div>
 							</div>
 						</div>
+						<div class="column_27">
+							<p class="jump_up_down">
+								{if !$article@first}<a href="#disc_article_{$detail.content.disc_articles[$article@index - 1].item_id}"><img src="{$basic.tpl_path}img/btn_jump_up.gif" alt="&lt;" /></a>{/if}
+								{if !$article@last}<a href="#disc_article_{$detail.content.disc_articles[$article@index + 1].item_id}"><img src="{$basic.tpl_path}img/btn_jump_down.gif" alt="&gt;" /></a>{/if}
+							</p>
+						</div>
+						<div class="column_45">
+							<p>
+								<a href="" class="attachment">{$article.num_attachments}</a>
+							</p>
+						</div>
+						<div class="clear"> </div>
 					</div>
-					<div class="column_27">
-						<p class="jump_up_down">
-							{if !$article@first}<a href="#disc_article_{$detail.content.disc_articles[$article@index - 1].item_id}"><img src="{$basic.tpl_path}img/btn_jump_up.gif" alt="&lt;" /></a>{/if}
-							{if !$article@last}<a href="#disc_article_{$detail.content.disc_articles[$article@index + 1].item_id}"><img src="{$basic.tpl_path}img/btn_jump_down.gif" alt="&gt;" /></a>{/if}
-						</p>
-					</div>
-					<div class="column_45">
-						<p>
-							<a href="" class="attachment">{$article.num_attachments}</a>
-						</p>
-					</div>
-					<div class="clear"> </div>
 				</div>
-			</div>
+			{/block}
 		</div> <!-- Ende item body -->
 		<div class="clear"> </div>
 	{/foreach}

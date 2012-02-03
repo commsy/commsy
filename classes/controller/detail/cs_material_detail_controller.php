@@ -290,13 +290,13 @@
 						$annotations = $version_item->getAnnotationList();
 						
 						// mark annotations as readed and noticed
-						$this->markAnnotationsReadedAndNoticed(&$annotations);
+						$this->markAnnotationsReadedAndNoticed($annotations);
 						
 						// get annotations
-						$this->assign('detail', 'annotations', $this->getAnnotationInformation(&$annotations));
+						$this->assign('detail', 'annotations', $this->getAnnotationInformation($annotations));
 						
 						// assessment
-						$this->assign('detail', 'assessment', $this->getAssessmentInformation(&$version_item));
+						$this->assign('detail', 'assessment', $this->getAssessmentInformation($version_item));
 					}
 					
 					/*

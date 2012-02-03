@@ -78,6 +78,21 @@
 {block  name=sidebar_buzzwordbox_title}
 	___COMMON_ATTACHED_BUZZWORDS___
 {/block}
+{block name=sidebar_tagbox_treefunction}
+	{* Tags Function *}
+	{function name=tag_tree level=0}
+		<ul>
+		{foreach $nodes as $node}
+			<li	id="node_{$node.item_id}"
+				{if $node.children|count > 0}class="folder"{/if}
+				data="url:'commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=index&name=selected&seltag_{$level}={$node.item_id}&seltag=yes'">{if $node.match}<strong>{$node.title}</strong>{else}{$node.title}{/if}
+			{if $node.children|count > 0}	{* recursive call *}
+				{tag_tree nodes=$node.children level=$level+1}
+			{/if}
+		{/foreach}
+		</ul>
+	{/function}
+{/block}
 
 {*
 {block name=room_detail_footer}

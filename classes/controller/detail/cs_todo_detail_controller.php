@@ -175,8 +175,8 @@
 				
 				// annotations
 				$annotations = $this->_item->getAnnotationList();
-				$this->markAnnotationsReadedAndNoticed(&$annotations);
-				$this->assign('detail', 'annotations', $this->getAnnotationInformation(&$annotations));
+				$this->markAnnotationsReadedAndNoticed($annotations);
+				$this->assign('detail', 'annotations', $this->getAnnotationInformation($annotations));
 				
 				/*
 

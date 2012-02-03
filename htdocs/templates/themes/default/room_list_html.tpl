@@ -1,4 +1,4 @@
-		{extends file="room_html.tpl"}
+{extends file="room_html.tpl"}
 
 {block name=room_site_actions}
 	<a href="" title="___COMMON_LIST_PRINTVIEW___">
@@ -164,4 +164,3 @@
 		</div>
 	{/if}
 {/block}
-

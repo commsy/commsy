@@ -235,7 +235,7 @@
 			return $return;
 		}
 		
-		protected function getAdditionalActions($perms) {
+		protected function getAdditionalActions(&$perms) {
 			/*
 			 * $html  = '';
       $current_context = $this->_environment->getCurrentContextItem();

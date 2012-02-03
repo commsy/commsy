@@ -247,7 +247,7 @@
 			return $return;
 		}
 		
-		protected function getAdditionalActions($perms) {
+		protected function getAdditionalActions(&$perms) {
 			/*
 			 * TODO
 			 * $retour = '';

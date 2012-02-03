@@ -2,6 +2,8 @@
 	require_once('classes/controller/cs_detail_controller.php');
 
 	class cs_discussion_detail_controller extends cs_detail_controller {
+		const MAX_DEEP_THREADED = 12;
+		
 		/**
 		 * constructor
 		 */
@@ -32,49 +34,105 @@
 			
 			$this->setupInformation();
 			
-			// mark as read and noticed
-			$this->markRead();
-			$this->markNoticed();
+			// set tpl file, if threaded
+			if($this->_item->getDiscussionType() === 'threaded') {
+				$this->_tpl_file = 'discussion_detail_threaded';
+			}
+			
+			
+			/*
+			 * include_once('include/inc_delete_entry.php');
+
+// Get the translator object
+$translator = $environment->getTranslationObject();
+
+$item_manager = $environment->getItemManager();
+$type = $item_manager->getItemType($_GET['iid']);
+if ($type != CS_DISCUSSION_TYPE) {
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+   unset($params);
+   $errorbox->setText($translator->getMessage('ERROR_ILLEGAL_IID'));
+   $page->add($errorbox);
+} else {
+//used to signal which "creator infos" of annotations are expanded...
+   $creatorInfoStatus = array();
+   if (!empty($_GET['creator_info_max'])) {
+     $creatorInfoStatus = explode('-',$_GET['creator_info_max']);
+   }
+   // Load the shown item
+   $discussion_manager = $environment->getDiscussionManager();
+   $discussion_item = $discussion_manager->getItem($current_item_id);
+   $current_user = $environment->getCurrentUser();
+
+   if ( !isset($discussion_item) ) {
+      include_once('functions/error_functions.php');
+       trigger_error('Item '.$current_item_id.' does not exist!', E_USER_ERROR);
+   } elseif ( $discussion_item->isDeleted() ) {
+      $params = array();
+      $params['environment'] = $environment;
+      $params['with_modifying_actions'] = true;
+      $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+      unset($params);
+      $errorbox->setText($translator->getMessage('ITEM_NOT_AVAILABLE'));
+      $page->add($errorbox);
+   } elseif ( !$discussion_item->maySee($current_user) ) {
+      $params = array();
+      $params['environment'] = $environment;
+      $params['with_modifying_actions'] = true;
+      $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+      unset($params);
+      $errorbox->setText($translator->getMessage('LOGIN_NOT_ALLOWED'));
+      $page->add($errorbox);
+   } else {
+			 */
 			
 			$session = $this->_environment->getSessionItem();
 			if(isset($_GET['export_to_wiki'])){
-		         $wiki_manager = $this->_environment->getWikiManager();
-		         //$wiki_manager->exportItemToWiki($current_item_iid,CS_DISCUSSION_TYPE);
-		         global $c_use_soap_for_wiki;
-		         if(!$c_use_soap_for_wiki){
-		            $wiki_manager->exportItemToWiki($current_item_iid,CS_DISCUSSION_TYPE);
-		         } else {
+				$wiki_manager = $this->_environment->getWikiManager();
+		        global $c_use_soap_for_wiki;
+		        if(!$c_use_soap_for_wiki){
+		        	$wiki_manager->exportItemToWiki($current_item_iid,CS_DISCUSSION_TYPE);
+		        } else {
 		            $wiki_manager->exportItemToWiki_soap($current_item_iid,CS_DISCUSSION_TYPE);
-		         }
-		         $params = $this->_environment->getCurrentParameterArray();
-		         unset($params['export_to_wiki']);
-		         redirect($this->_environment->getCurrentContextID(),CS_DISCUSSION_TYPE, 'detail', $params);
-		      }
-		
-		      if(isset($_GET['remove_from_wiki'])){
-		         $wiki_manager = $this->_environment->getWikiManager();
-		         global $c_use_soap_for_wiki;
-		         if($c_use_soap_for_wiki){
-		            $wiki_manager->removeItemFromWiki_soap($current_item_iid,CS_DISCUSSION_TYPE);
-		         }
-		         $params = $this->_environment->getCurrentParameterArray();
-		         unset($params['remove_from_wiki']);
-		         redirect($this->_environment->getCurrentContextID(),CS_DISCUSSION_TYPE, 'detail', $params);
-		      }
-		
-		      // Get clipboard
-		      if ( $session->issetValue('discussion_clipboard') ) {
-		         $clipboard_id_array = $session->getValue('discussion_clipboard');
-		      } else {
-		         $clipboard_id_array = array();
-		      }
-		
-		      // Copy to clipboard
-		      if ( isset($_GET['add_to_discussion_clipboard'])
-		           and !in_array($current_item_id, $clipboard_id_array) ) {
-		         $clipboard_id_array[] = $current_item_id;
-		         $session->setValue('discussion_clipboard', $clipboard_id_array);
-		      }
+		        }
+		        $params = $this->_environment->getCurrentParameterArray();
+		        unset($params['export_to_wiki']);
+		        redirect($this->_environment->getCurrentContextID(),CS_DISCUSSION_TYPE, 'detail', $params);
+			}
+			
+			if(isset($_GET['remove_from_wiki'])){
+				$wiki_manager = $this->_environment->getWikiManager();
+		        global $c_use_soap_for_wiki;
+		        if($c_use_soap_for_wiki){
+		        	$wiki_manager->removeItemFromWiki_soap($current_item_iid,CS_DISCUSSION_TYPE);
+		        }
+		        $params = $this->_environment->getCurrentParameterArray();
+		        unset($params['remove_from_wiki']);
+		        redirect($this->_environment->getCurrentContextID(),CS_DISCUSSION_TYPE, 'detail', $params);
+			}
+			
+			// Get clipboard
+			if ( $session->issetValue('discussion_clipboard') ) {
+				$clipboard_id_array = $session->getValue('discussion_clipboard');
+			} else {
+				$clipboard_id_array = array();
+			}
+			
+			// Copy to clipboard
+			if ( isset($_GET['add_to_discussion_clipboard']) && !in_array($current_item_id, $clipboard_id_array) ) {
+				$clipboard_id_array[] = $current_item_id;
+				$session->setValue('discussion_clipboard', $clipboard_id_array);
+			}
+			
+			// set clipboard ids
+			$this->setClipboardIDArray($clipboard_id_array);
+		    
+			// mark as read and noticed
+			$this->markRead();
+			$this->markNoticed();
 			
 			$this->assign('detail', 'content', $this->getDetailContent());
 		}
@@ -201,7 +259,7 @@
 				$return = parent::getEditActions($item, $current_user, 'discarticle');
 			}
 			
-			if($user->isUser() && $discussion_type === 'threaded' /*&& $this->_with_modifying_actions*/) {
+			if($user->isUser() && $discussion_type === 'threaded' && $this->_with_modifying_actions) {
 				
 				/*
 				$params = array();
@@ -246,7 +304,7 @@
 		         */
 			}
 			
-			if($item->mayEdit($user) /*&& $this->_with_modifying_actions*/) {
+			if($item->mayEdit($user) && $this->_with_modifying_actions) {
 				$return['delete'] = true;
 				
 				
@@ -292,8 +350,6 @@
 		}
 		
 		private function getDiscArticleContent() {
-			$return = array();
-			
 			$context_item = $this->_environment->getCurrentContextItem();
 			$session = $this->_environment->getSessionItem();
 			
@@ -302,6 +358,7 @@
 				$creatorInfoStatus = explode('-', $_GET['creator_info_max']);
 			}
 			
+			// load discussion articles
 			$disc_articles_manager = $this->_environment->getDiscussionArticlesManager();
 			$disc_articles_manager->setDiscussionLimit($this->_item->getItemID(), $creatorInfoStatus);
 			
@@ -312,7 +369,7 @@
 			if(isset($_GET['status']) && $_GET['status'] == 'all_articles') {
 				$disc_articles_manager->setDeleteLimit(false);
 			}
-			
+						
 			$disc_articles_manager->select();
 			$articles_list = $disc_articles_manager->get();
 			
@@ -331,6 +388,13 @@
 			
 			// set rubric connections
 			$current_room_modules = $context_item->getHomeConf();
+			/*
+			 * if ( !empty($current_room_modules) ){
+         $room_modules = explode(',',$current_room_modules);
+      } else {
+         $room_modules =  $default_room_modules;
+      }
+			 */
 			$room_modules = explode(',', $current_room_modules);
 			
 			$first = '';
@@ -369,9 +433,10 @@
 			}
 			if($context_item->withRubric(CS_INSTITUTION_TYPE)) {
 				$ids = $this->_item->getLinkedItemIDArray(CS_INSTITUTION_TYPE);
-				$session->setValue('cid' . $this->_environment->getCurrentContextID() . '_institutions_idnex_ids', $ids);
+				$session->setValue('cid' . $this->_environment->getCurrentContextID() . '_institutions_index_ids', $ids);
 			}
 			
+			/* seems to be unused
 			$rubric_connections = array();
 			if($first === CS_TOPIC_TYPE) {
 				$rubric_connections = array(CS_TOPIC_TYPE);
@@ -393,10 +458,13 @@
 				}
 			}
 			$rubric_connections[] = CS_MATERIAL_TYPE;
-			$this->setRubricConnections($rubric_connections);
+			
+			*/
+			// seems to be not needed
+			//$this->setRubricConnections($rubric_connections);
 			
 			
-			/*
+			/* TODO
       if ( $context_item->isPrivateRoom() ) {
          // add annotations to detail view
          $annotations = $discussion_item->getAnnotationList();
@@ -445,14 +513,202 @@
          unset($search_array);
       }*/
 			
+			if($this->_item->getDiscussionType() === 'threaded') {
+					return $this->getDiscArticleContentThreaded($articles_list);
+			} else {
+					return $this->getDiscArticleContentLinear($articles_list);
+			}
+		}
+		
+		/*
+		 * TODO: Algorithm could be optimized
+		 */
+		private function buildThreadedTree($node_list, $root) {
+			$return = array();
 			
+			$noticed_manager = $this->_environment->getNoticedManager();
+			$reader_manager = $this->_environment->getReaderManager();
+			$translator = $this->_environment->getTranslationObject();
+			$current_user = $this->_environment->getCurrentUserItem();
+			$disc_manager = $this->_environment->getDiscManager();
+			$converter = $this->_environment->getTextConverter();
+			
+			$root_position = $root->getPosition();
+			$root_level = sizeof(explode('.', $root_position)) - 1;
+			
+			// get through
+			$item = $node_list->getFirst();
+			while($item) {
+				$item_position = $item->getPosition();
+				$item_level = sizeof(explode('.', $item_position)) - 1;
+				
+				// skip if item is not a direct child of root
+				if($item_level === $root_level + 1 && $root_position === mb_substr($item_position, 0, sizeof($item_position) - 6)) {
+					// files
+					$files = $item->getFileList();
+					
+					// creator
+					$creator = $item->getCreatorItem();
+					$creator_fullname = '';
+					$modificator_image = '';
+					$image = '';
+					// TODO: implement over general detail_controller.php
+					if(isset($creator)) {
+						$current_user_item = $this->_environment->getCurrentUserItem();
+						if($current_user_item->isGuest() && $creator->isVisibleForLoggedIn()) {
+							$creator_fullname = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+						} else {
+							$creator_fullname = $creator->getFullName();
+							$modificator_item = $item->getModificatorItem();
+							$image = $modificator_item->getPicture();
+							if(!empty($image)) {
+								if($disc_manager->existsFile($image)) {
+									$modificator_image = $image;
+								}
+							}
+						}
+					}
+					
+					// noticed
+					$noticed = '';
+					if($current_user->isUser()) {
+						$noticed = $noticed_manager->getLatestNoticed($item->getItemID());
+						if(empty($noticed)) {
+							// new
+							$noticed = 'new';
+						} elseif($noticed['read_date'] < $item->getModificationDate()) {
+							// changed
+							$noticed = 'changed';
+						}
+					}
+					
+					// description
+					$description = $item->getDescription();
+					$description = $converter->cleanDataFromTextArea($description);
+					$converter->setFileArray($this->getItemFileList());
+					$description = $converter->text_as_html_long($description);
+					$description = $converter->showImages($description, $item, true);
+					//$retour .= $this->getScrollableContent($desc,$item,'',true).LF;
+					
+					$node_list->removeElement($item);
+					$node_list_clone = clone $node_list;
+					
+					// append return and recursive call
+					$return[] = array(
+						'item_id'			=> $item->getItemID(),
+						'position'			=> $item->getPosition(),
+						'subject'			=> $item->getSubject(),
+						'description'		=> $description,
+						'creator'			=> $creator_fullname,
+						'modification_date'	=> getDateTimeInLang($item->getModificationDate(), false),
+						'num_attachments'	=> $files->getCount(),
+						'noticed'			=> $noticed,
+						'modificator_image'	=> $modificator_image,
+						'custom_image'		=> !empty($image),
+						'actions'			=> $this->getEditActions($item, $current_user),
+						'children'			=> $this->buildThreadedTree($node_list_clone, $item)
+					);
+				}
+				
+				$item = $node_list->getNext();
+			}
+			
+			return $return;
+		}
+		
+		private function getDiscArticleContentThreaded($articles_list) {
+			$return = array();
+			
+			$noticed_manager = $this->_environment->getNoticedManager();
+			$reader_manager = $this->_environment->getReaderManager();
+			$translator = $this->_environment->getTranslationObject();
+			$current_user = $this->_environment->getCurrentUserItem();
+			$disc_manager = $this->_environment->getDiscManager();
+			$converter = $this->_environment->getTextConverter();
+			
+			// first is always root
+			$root = $articles_list->getFirst();
+			
+			// files
+			$files = $root->getFileList();
+			
+			// creator
+			$creator = $root->getCreatorItem();
+			$creator_fullname = '';
+			$modificator_image = '';
+			$image = '';
+			// TODO: implement over general detail_controller.php
+			if(isset($creator)) {
+				$current_user_item = $this->_environment->getCurrentUserItem();
+				if($current_user_item->isGuest() && $creator->isVisibleForLoggedIn()) {
+					$creator_fullname = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+				} else {
+					$creator_fullname = $creator->getFullName();
+					$modificator_item = $root->getModificatorItem();
+					$image = $modificator_item->getPicture();
+					if(!empty($image)) {
+						if($disc_manager->existsFile($image)) {
+							$modificator_image = $image;
+						}
+					}
+				}
+			}
+			
+			// noticed
+			$noticed = '';
+			if($current_user->isUser()) {
+				$noticed = $noticed_manager->getLatestNoticed($root->getItemID());
+				if(empty($noticed)) {
+					// new
+					$noticed = 'new';
+				} elseif($noticed['read_date'] < $root->getModificationDate()) {
+					// changed
+					$noticed = 'changed';
+				}
+			}
+			
+			// description
+			$description = $root->getDescription();
+			$description = $converter->cleanDataFromTextArea($description);
+			$converter->setFileArray($this->getItemFileList());
+			$description = $converter->text_as_html_long($description);
+			$description = $converter->showImages($description, $root, true);
+			//$retour .= $this->getScrollableContent($desc,$root,'',true).LF;
+			
+			$return[] = array(
+				'item_id'			=> $root->getItemID(),
+				'position'			=> $root->getPosition(),
+				'subject'			=> $root->getSubject(),
+				'description'		=> $description,
+				'creator'			=> $creator_fullname,
+				'modification_date'	=> getDateTimeInLang($root->getModificationDate(), false),
+				'num_attachments'	=> $files->getCount(),
+				'noticed'			=> $noticed,
+				'modificator_image'	=> $modificator_image,
+				'custom_image'		=> !empty($image),
+				'actions'			=> $this->getEditActions($root, $current_user)
+			);
+			
+			$return[0]['children'] = $this->buildThreadedTree($articles_list, $root);
+			
+			pr($return);
+			
+			return $return;
+		}
+		
+		private function getDiscArticleContentLinear($articles_list) {
+			$noticed_manager = $this->_environment->getNoticedManager();
+			$reader_manager = $this->_environment->getReaderManager();
+			
+			$return = array();
 			
 			// go through list
 			$item = $articles_list->getFirst();
 			$translator = $this->_environment->getTranslationObject();
 			$current_user = $this->_environment->getCurrentUserItem();
 			$disc_manager = $this->_environment->getDiscManager();
-			$position = 1;
+			$position = 0;
+			
 			while($item) {
 				// files
 				$files = $item->getFileList();
@@ -516,8 +772,8 @@
 					'custom_image'		=> !empty($image),
 					'actions'			=> $this->getEditActions($item, $current_user)
 				);
-				
 				$position++;
+				
 				$item = $articles_list->getNext();
 			}
 			

@@ -261,7 +261,7 @@
 			return $return;
 		}
 		
-		protected function getAdditionalActions($perms) {
+		protected function getAdditionalActions(&$perms) {
 			/*
 			 * TODO
 			 * $current_context = $this->_environment->getCurrentContextItem();

@@ -151,7 +151,7 @@
 												{foreach $nodes as $node}
 													<li	id="node_{$node.item_id}"
 														{if $node.children|count > 0}class="folder"{/if}
-														data="url:'commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=index&name=selected&seltag_{$level}={$node.item_id}&seltag=yes'">{if $node.match}<strong>{$node.title}</strong>{else}{$node.title}{/if}
+														data="url:'commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=index&name=selected&seltag_{$level}={$node.item_id}&seltag=yes'">{$node.title}
 													{if $node.children|count > 0}	{* recursive call *}
 														{tag_tree nodes=$node.children level=$level+1}
 													{/if}

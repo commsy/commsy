@@ -93,9 +93,6 @@
 			$this->assign('detail', 'forward_information', $this->getForwardInformation($ids));
 		}
 		
-		/*
-		 * $item is given by reference!!!
-		 */
 		protected function getAssessmentInformation($item = null) {
 			$assessment_item =& $this->_item;
 			if(isset($item)) $assessment_item = $item;
@@ -202,7 +199,7 @@
 			$tag_array = parent::getTags();
 			
 			// mark tags
-			$this->markTags(&$tag_array, &$item_tag_id_array);					// <- be careful, these values are assigned by reference
+			$this->markTags($tag_array, $item_tag_id_array);
 			
 			return $tag_array;
 		}
@@ -826,10 +823,7 @@
 			return $return;
 		}
 		
-		/*
-		 * this annotation_list is given by reference!!!
-		 */
-		protected function getAnnotationInformation(&$annotation_list) {
+		protected function getAnnotationInformation($annotation_list) {
 			$return = array();
 			
 			$item = $this->_item;
@@ -1000,10 +994,7 @@
 	      return false;
 		}
 		
-		/*
-		 * these values are assigned by reference!!!
-		 */
-		private function markTags($tag_array, $item_tag_id_array) {
+		private function markTags(&$tag_array, $item_tag_id_array) {
 			// compare and mark as highlighted
 			foreach($tag_array as &$tag) {					
 				if(in_array($tag['item_id'], $item_tag_id_array)) {
@@ -1014,7 +1005,7 @@
 				
 				// look recursive
 				if(!empty($tag['children'])) {
-					$this->markTags(&$tag['children'], &$item_tag_id_array);		// <- be careful, these values are assigned by reference
+					$this->markTags($tag['children'], $item_tag_id_array);
 				}
 			}
 			
@@ -1641,6 +1632,16 @@
 			return $this->_browse_ids;
 		}
 		
+		protected function isPerspective($rubric) {
+			$in_array = in_array($rubric, array(CS_GROUP_TYPE, CS_TOPIC_TYPE, CS_INSTITUTION_TYPE));
+			if($rubric === CS_INSTITUTION_TYPE) {
+				$context = $this->_environment->getCurrentContextItem();
+				$in_array = $context->withRubric(CS_INSTITUTION_TYPE);
+			}
+			
+			return $in_array;
+		}
+		
 		protected function markRead() {
 			// mark as read
 			$reader_manager = $this->_environment->getReaderManager();
@@ -1683,6 +1684,10 @@
 			}
 			
 			$this->_rubric_connections = $rubric_connections;
+		}
+		
+		protected function setClipboardIDArray($id_array) {
+			$this->_clipboard_id_array = $id_array;
 		}
 		
 		abstract protected function setBrowseIDs();

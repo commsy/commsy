@@ -645,7 +645,7 @@ $session->setValue('cid'.$environment->getCurrentContextID().'_'.$environment->g
 			*/
 		}
 		
-		protected function getAdditionalActions($perms) {
+		protected function getAdditionalActions(&$perms) {
 		}
 
 		protected function getAdditionalListActions() {

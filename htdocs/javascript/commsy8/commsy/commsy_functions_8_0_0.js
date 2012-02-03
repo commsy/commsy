@@ -19,6 +19,11 @@ define(["libs/jQuery/jquery-1.7.1.min"], function() {
 			// Tag Tree
 			this.registerModule('commsy/tag_tree', 'div[id="tag_tree"]');
 			
+			// Threaded Discussion Tree
+			if(this.getURLParam('mod') === 'discussion' && this.getURLParam('fct') === 'detail') {
+				this.registerModule('commsy/discussion_tree', 'div[id="discussion_tree"]');
+			}
+			
 			// Uploadify
 			var upload_object = jQuery('a[id="uploadify_doUpload"]');
 			var clear_object = jQuery('a[id="uploadify_clearQuery"]');

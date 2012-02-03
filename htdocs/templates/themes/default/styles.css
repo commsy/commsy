@@ -1187,6 +1187,12 @@ div#user_profil_picture {
 	display: none;
 }
 
+div.discussion_threaded_tree_subject,
+div.discussion_threaded_tree_creator,
+div.discussion_threaded_tree_date {
+	display: inline;
+}
+
 /*
 ----------------------------------------------------------------------
 portlets, right_column

@@ -876,7 +876,7 @@
       		}
 		}
 		
-		abstract protected function getAdditionalActions($perms);
+		abstract protected function getAdditionalActions(&$perms);
 		
 		private function getIndexActions() {
 			$current_context = $this->_environment->getCurrentContextItem();
@@ -886,9 +886,9 @@
 				'new'		=> false
 			);
 			
-			$this->getAdditionalActions(&$return);
+			$this->getAdditionalActions($return);
 			
-			// TODO: dont forget print - which are always allowed
+			// TODO: dont forget print - which is always allowed
 			
 			if($current_user->isUser() && $this->_with_modifying_actions) {
 				$return['new'] = true;
