@@ -120,6 +120,9 @@ var $_item = NULL;
             }
          }
       }
+      if(isset($_POST['buzzwordlist'])){
+         $checked_buzzword_array = array_keys($_POST['buzzwordlist']);
+      }
       if(empty($checked_buzzword_array)){
          $checked_buzzword_array= array();
       }
