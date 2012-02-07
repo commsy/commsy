@@ -35,7 +35,7 @@
 
 			// set list actions
 			$this->assign('list', 'actions', $this->getListActions());
-			
+
 			// set index actions
 			$this->assign('index', 'actions', $this->getIndexActions());
 
@@ -112,7 +112,7 @@
       		return $return_array;
 		}
 
-		protected function getSortingParameterArray(){			
+		protected function getSortingParameterArray(){
 			$environment = $this->_environment;
            	$params = $environment->getCurrentParameterArray();
       		if (isset($params['sort']) and !empty($params['sort'])){
@@ -140,7 +140,7 @@
          		$return_array['sort_title_link'] = $link_parameter_text.'&sort=title';
          		$return_array['sort_title'] = 'none';
       		}
-      		
+
       		if($sort_parameter === 'numposts') {
       			$return_array['sort_numposts_link'] = $link_parameter_text.'&sort=numposts_rev';
          		$return_array['sort_numposts'] = 'up';
@@ -151,7 +151,7 @@
       			$return_array['sort_numposts_link'] = $link_parameter_text.'&sort=numposts';
          		$return_array['sort_numposts'] = 'none';
       		}
-      		
+
       		if ( $sort_parameter == 'modificator') {
          		$return_array['sort_modificator_link'] = $link_parameter_text.'&sort=modificator_rev';
          		$return_array['sort_modificator'] = 'up';
@@ -875,22 +875,24 @@
       			}
       		}
 		}
-		
+
 		abstract protected function getAdditionalActions(&$perms);
-		
+
 		private function getIndexActions() {
 			$current_context = $this->_environment->getCurrentContextItem();
 			$current_user = $this->_environment->getCurrentUserItem();
-			
+
 			$return = array(
 				'new'		=> false
 			);
-			
+
 			$this->getAdditionalActions($return);
-			
+
 			// TODO: dont forget print - which is always allowed
-			
-			if($current_user->isUser() && $this->_with_modifying_actions) {
+
+			$current_module = $this->_environment->getCurrentModule();
+
+			if($current_user->isUser() && $this->_with_modifying_actions && $current_module != CS_USER_TYPE) {
 				$return['new'] = true;
 				/*
 				 * $params = array();
@@ -926,7 +928,6 @@
          $html .= '&nbsp;&nbsp;<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION_NEW',$this->_translator->getMessage('COMMON_NEW_ITEM')).' "class="disabled">'.$image.'</a>'.LF;
 				 */
 			}
-			
 			return $return;
 		}
 
@@ -1184,7 +1185,7 @@
 				} else {
 				   $return[] = array('selected' => false, 'disabled' => false, 'id' => '', 'value' => CS_LISTOPTION_EMAIL_SEND, 'display' => '___USER_LIST_ACTION_EMAIL_SEND___');
 				}
-				
+
 				// TODO: move to cs_todo_index_controller.php
 				if($this->_environment->getCurrentModule() == 'todo'){
 				   $return[] = array('selected' => false, 'disabled' => true, 'id' => '', 'value' => '', 'display' => '------------------------------');
@@ -1199,7 +1200,7 @@
 						$return[] = array('selected' => false, 'disabled' => true, 'id' => '', 'value' => '', 'display' => '___TODO_LIST_ACTION_NOT_STARTED___');
 					}
 				}
-				
+
 			//} else {
 			//	// clipboard is not empty
 			//	$return[] = array('selected' => false, 'disabled' => false, 'id' => '', 'value' => 1, 'display' => '___CLIPBOARD_PASTE_BUTTON___');
