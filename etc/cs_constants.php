@@ -38,13 +38,6 @@ define('CS_ALL','all');
 
 define('CS_ITEM_TYPE','item');
 
-define('CS_OPTION_SAVE', 'save');
-define('CS_OPTION_CHANGE', 'change');
-define('CS_OPTION_NEW', 'new');
-define('CS_OPTION_CANCEL', 'cancel');
-define('CS_OPTION_DELETE', 'delete');
-define('CS_OPTION_JOIN', 'join');
-
 define('CS_MATERIAL_TYPE','material');
 define('CS_INSTITUTION_TYPE','institution');
 define('CS_TOPIC_TYPE','topic');
@@ -246,4 +239,22 @@ if ( !isset($_SERVER['HTTP_REFERER']) ) {
 
 // home rubric list limit
 define('CS_HOME_RUBRIC_LIST_LIMIT', 50);
+
+// new constants for CommSy8
+define('CS_OPTION_SAVE', 'save');
+define('CS_OPTION_CHANGE', 'change');
+define('CS_OPTION_NEW', 'new');
+define('CS_OPTION_CANCEL', 'cancel');
+define('CS_OPTION_DELETE', 'delete');
+define('CS_OPTION_JOIN', 'join');
+
+define('CS_LISTOPTION_NONE','listoption_none');
+define('CS_LISTOPTION_COPY', 'listoption_copy');
+define('CS_LISTOPTION_DOWNLOAD', 'listoption_download');
+define('CS_LISTOPTION_MARK_AS_READ', 'listoption_mark_as_read');
+define('CS_LISTOPTION_DELETE', 'listoption_delete');
+define('CS_LISTOPTION_EMAIL_SEND', 'listoption_email_send');
+define('CS_LISTOPTION_TODO_DONE', 'listoption_todo_done');
+define('CS_LISTOPTION_TODO_IN_PROGRESS', 'listoption_todo_in_progress');
+define('CS_LISTOPTION_TODO_NOT_STARTED', 'listoption_todo_not_started');
 ?>

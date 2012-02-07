@@ -1154,7 +1154,7 @@
 			$return = array();
 
 			// add no action
-			$return[] = array('selected' => true, 'disabled' => false, 'id' => '', 'value' => -1, 'display' => '___COMMON_LIST_ACTION_NO___');
+			$return[] = array('selected' => true, 'disabled' => false, 'id' => '', 'value' => CS_LISTOPTION_NONE, 'display' => '___COMMON_LIST_ACTION_NO___');
 
 			// add separator
 			$return[] = array('selected' => false, 'disabled' => true, 'id' => '', 'value' => '', 'display' => '------------------------------');
@@ -1164,22 +1164,42 @@
 			//if(	!isset($this->_list_parameter_arrray['clipboard_id_array']) ||
 			//	!$session->issetValue($this->_environment->getCurrentModule() . '_clipboard', $this->_list_parameter_arrray['clipboard_id_array'])) {
 				// clipboard is empty
-				$return[] = array('selected' => false, 'disabled' => false, 'id' => '', 'value' => 1, 'display' => '___COMMON_LIST_ACTION_MARK_AS_READ___');
-				$return[] = array('selected' => false, 'disabled' => false, 'id' => '', 'value' => 2, 'display' => '___COMMON_LIST_ACTION_COPY___');
+				$return[] = array('selected' => false, 'disabled' => false, 'id' => '', 'value' => CS_LISTOPTION_MARK_AS_READ, 'display' => '___COMMON_LIST_ACTION_MARK_AS_READ___');
 
-				$this->getAdditionalListActions();
+				$return = array_merge($return, $this->getAdditionalListActions());
 
 				$return[] = array('selected' => false, 'disabled' => true, 'id' => '', 'value' => '', 'display' => '------------------------------');
-				if($this->_environment->inPrivateRoom()) {
-					$return[] = array('selected' => false, 'disabled' => false, 'id' => 'delete_check_option', 'value' => 3, 'display' => '___COMMON_LIST_ACTION_DELETE___');
+
+				if($this->_environment->getCurrentModule() != 'user'){
+   				if($this->_environment->inPrivateRoom()) {
+   					$return[] = array('selected' => false, 'disabled' => false, 'id' => '', 'value' => CS_LISTOPTION_DELETE, 'display' => '___COMMON_LIST_ACTION_DELETE___');
+   				} else {
+   					$user = $this->_environment->getCurrentUserItem();
+   					if($user->isModerator()) {
+   						$return[] = array('selected' => false, 'disabled' => false, 'id' => '', 'value' => CS_LISTOPTION_DELETE, 'display' => '___COMMON_LIST_ACTION_DELETE___');
+   					} else {
+   						$return[] = array('selected' => false, 'disabled' => true, 'id' => '', 'value' => CS_LISTOPTION_DELETE, 'display' => '___COMMON_LIST_ACTION_DELETE___');
+   					}
+   				}
 				} else {
-					$user = $this->_environment->getCurrentUserItem();
+				   $return[] = array('selected' => false, 'disabled' => false, 'id' => '', 'value' => CS_LISTOPTION_EMAIL_SEND, 'display' => '___USER_LIST_ACTION_EMAIL_SEND___');
+				}
+				
+				// TODO: move to cs_todo_index_controller.php
+				if($this->_environment->getCurrentModule() == 'todo'){
+				   $return[] = array('selected' => false, 'disabled' => true, 'id' => '', 'value' => '', 'display' => '------------------------------');
+				   $user = $this->_environment->getCurrentUserItem();
 					if($user->isModerator()) {
-						$return[] = array('selected' => false, 'disabled' => false, 'id' => 'delete_check_option', 'value' => 4, 'display' => '___COMMON_LIST_ACTION_DELETE___');
+						$return[] = array('selected' => false, 'disabled' => false, 'id' => '', 'value' => CS_LISTOPTION_TODO_DONE, 'display' => '___TODO_LIST_ACTION_DONE___');
+						$return[] = array('selected' => false, 'disabled' => false, 'id' => '', 'value' => CS_LISTOPTION_TODO_IN_PROGRESS, 'display' => '___TODO_LIST_ACTION_IN_PROGRESS___');
+						$return[] = array('selected' => false, 'disabled' => false, 'id' => '', 'value' => CS_LISTOPTION_TODO_NOT_STARTED, 'display' => '___TODO_LIST_ACTION_NOT_STARTED___');
 					} else {
-						$return[] = array('selected' => false, 'disabled' => true, 'id' => '', 'value' => '', 'display' => '___COMMON_LIST_ACTION_DELETE___');
+						$return[] = array('selected' => false, 'disabled' => true, 'id' => '', 'value' => '', 'display' => '___TODO_LIST_ACTION_DONE___');
+						$return[] = array('selected' => false, 'disabled' => true, 'id' => '', 'value' => '', 'display' => '___TODO_LIST_ACTION_IN_PROGRESS___');
+						$return[] = array('selected' => false, 'disabled' => true, 'id' => '', 'value' => '', 'display' => '___TODO_LIST_ACTION_NOT_STARTED___');
 					}
 				}
+				
 			//} else {
 			//	// clipboard is not empty
 			//	$return[] = array('selected' => false, 'disabled' => false, 'id' => '', 'value' => 1, 'display' => '___CLIPBOARD_PASTE_BUTTON___');

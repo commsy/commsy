@@ -20,6 +20,28 @@
 			$this->_sidebar_configuration['hidden']['netnavigation'] = true;
 		}
 
+	   protected function getPostData() {
+			// get item from url
+			if(!empty($_GET['iid'])) {
+				$this->_item_id = $_GET['iid'];
+			} elseif(!empty($_POST['iid'])) {
+				$this->_item_id = $_POST['iid'];
+			}
+			
+			// get command
+			if(isset($_POST['form_data']['option'])) {
+				foreach($_POST['form_data']['option'] as $option => $value) {
+					$this->_command = $option;
+					break;
+				}
+			}
+			
+	      // get list command
+			if(isset($_POST['index_view_action'])) {
+				$this->_list_command = $_POST['index_view_action'];
+			}
+		}
+		
 		/*
 		 * every derived class needs to implement an processTemplate function
 		 */

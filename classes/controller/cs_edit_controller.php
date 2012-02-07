@@ -36,23 +36,6 @@
 			parent::processTemplate();
 		}
 		
-		protected function getPostData() {
-			// get item from url
-			if(!empty($_GET['iid'])) {
-				$this->_item_id = $_GET['iid'];
-			} elseif(!empty($_POST['iid'])) {
-				$this->_item_id = $_POST['iid'];
-			}
-			
-			// get command
-			if(isset($_POST['form_data']['option'])) {
-				foreach($_POST['form_data']['option'] as $option => $value) {
-					$this->_command = $option;
-					break;
-				}
-			}
-		}
-		
 		protected function setFilesForItem(cs_item $item, $post_file_ids) {
 			$session = $this->_environment->getSessionItem();
 			

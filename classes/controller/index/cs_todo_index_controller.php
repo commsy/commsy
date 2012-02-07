@@ -265,6 +265,9 @@
 		}
 
 		protected function getAdditionalListActions() {
-			return array();
+			$return = array();
+			$return[] = array('selected' => false, 'disabled' => false, 'id' => '', 'value' => CS_LISTOPTION_COPY, 'display' => '___COMMON_LIST_ACTION_COPY___');
+		   $return[] = array('selected' => false, 'disabled' => false, 'id' => '', 'value' => CS_LISTOPTION_DOWNLOAD, 'display' => '___COMMON_LIST_ACTION_DOWNLOAD___');
+			return $return;
 		}
 	}
