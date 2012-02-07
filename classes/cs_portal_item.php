@@ -867,6 +867,7 @@ class cs_portal_item extends cs_guide_item {
       $cron_array = array();
 
       $cron_array[] = $this->_cronUnlinkFiles();
+      $cron_array[] = $this->_cronPageImpressionAndUserActivity();
       if ( $this->showTime() and $this->isOpen() ) {
          $cron_array[] = $this->_cronCheckTimeLabels();
          $cron_array[] = $this->_cronRenewContinuousLinks();
@@ -878,6 +879,87 @@ class cs_portal_item extends cs_guide_item {
       return $cron_array;
    }
 
+   /** cron log, INTERNAL
+    *  daily cron
+    *
+    * @return array results of running this cron
+    */
+   function _cronPageImpressionAndUserActivity () {
+      include_once('functions/misc_functions.php');
+      $time_start = getmicrotime();
+
+      $cron_array = array();
+      $cron_array['title'] = 'page impression and user activity cron';
+      $cron_array['description'] = 'count page impressions and user activity';
+      $cron_array['success'] = true;
+      $cron_array['success_text'] = 'cron failed';
+
+      $log_manager = $this->_environment->getLogManager();
+
+      $room_list = $this->getRoomList();
+      $count_rooms = 0;
+      
+      if ($room_list->isNotEmpty()) {
+         $room_item = $room_list->getFirst();
+         while ($room_item) {
+            // get latest timestamp of page impressions and user actitivty
+            // from extra field PIUA_LAST
+            $piua_last = $room_item->getPageImpressionAndUserActivityLast();
+
+            if(!empty($piua_last)) {
+               $oldest_date = $piua_last;
+            } else {
+               // if there is no entry take creation_date
+               $creation_date = $room_item->getCreationDate();
+               $oldest_date = getYearFromDateTime($creation_date) .
+                    getMonthFromDateTime($creation_date) .
+                    getDayFromDateTime($creation_date);
+            }
+
+            $current_date = getCurrentDate();
+            $day_diff = getDifference($oldest_date, $current_date);
+            $pi_array = $room_item->getPageImpressionArray();
+            $ua_array = $room_item->getUserActivityArray();
+            $pi_input = array();
+            $ua_input = array();
+
+            // for each day, get page impressions and user activity
+            for($i=1;$i < $day_diff;$i++) {
+               $log_manager->resetLimits();
+               $log_manager->setContextLimit($room_item->getItemID());
+               $log_manager->setRequestLimit("commsy.php");
+               $older_limit_stamp = datetime2Timestamp(date("Y-m-d 00:00:00"))-($i-1)*86400;
+               $older_limit = date('Y-m-d', $older_limit_stamp);
+               $log_manager->setTimestampOlderLimit($older_limit);
+               $log_manager->setTimestampNotOlderLimit($i);
+
+               $pi_input[] = $log_manager->getCountAll();
+               $ua_input[] = $log_manager->countWithUserDistinction();
+            }
+
+            // put actual date in extra field PIUA_LAST
+            $room_item->setPageImpressionAndUserActivityLast($current_date);
+            $room_item->setPageImpressionArray(array_merge($pi_input, $pi_array));
+            $room_item->setUserActivityArray(array_merge($ua_input, $ua_array));
+            $room_item->saveWithoutChangingModificationInformation();
+
+            $count_rooms++;
+            unset($room_item);
+            $room_item = $room_list->getNext();
+         }
+      }
+      unset($room_list);
+      unset($log_manager);
+      
+      $cron_array['success_text'] = 'count page impressions and user activity of '.$count_rooms.' rooms';
+
+      $time_end = getmicrotime();
+      $time = round($time_end - $time_start,0);
+      $cron_array['time'] = $time;
+
+      return $cron_array;
+   }
+   
    function _cronCheckTimeLabels () {
       include_once('functions/misc_functions.php');
       $time_start = getmicrotime();

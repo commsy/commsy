@@ -154,7 +154,10 @@ class cs_server_item extends cs_guide_item {
     */
    function _cronDaily () {
       $cron_array = array();
-      $cron_array[] = $this->_cronPageImpressionAndUserActivity();
+      
+      # move to portal item
+      #$cron_array[] = $this->_cronPageImpressionAndUserActivity();      
+      
       $cron_array[] = $this->_cronLog();
       $cron_array[] = $this->_cronLogArchive();
       $cron_array[] = $this->_cronRoomActivity();
@@ -209,6 +212,7 @@ class cs_server_item extends cs_guide_item {
     *
     * @return array results of running this cron
     */
+   /*
    function _cronPageImpressionAndUserActivity () {
       include_once('functions/misc_functions.php');
       $time_start = getmicrotime();
@@ -293,6 +297,7 @@ class cs_server_item extends cs_guide_item {
 
       return $cron_array;
    }
+   */
 
    /**
     * cron log, INTERNAL
@@ -348,6 +353,7 @@ class cs_server_item extends cs_guide_item {
       $log_DB->setRangeLimit($from,$range);
       // only archive logs that are older then the beginning of the actual day
       // getCurrentDate() returns date("Ymd");
+      include_once('functions/date_functions.php');
       $log_DB->setTimestampOlderLimit(getCurrentDate());
       $data_array = $log_DB->select();
       $count = count($data_array);
