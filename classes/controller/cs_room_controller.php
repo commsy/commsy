@@ -123,7 +123,8 @@
 				CS_USER_TYPE			=>	'pe',
 				CS_GROUP_TYPE			=>	'gr',
 				CS_TODO_TYPE			=>	'au',
-				CS_TOPIC_TYPE			=>	'th'
+				CS_TOPIC_TYPE			=>	'th',
+				CS_INSTITUTION_TYPE		=>	'in'
 			);
 
 			foreach($rubrics as $rubric) {

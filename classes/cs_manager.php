@@ -1791,6 +1791,18 @@ class cs_manager {
 		$words = array();
 		$store = array();
 		
+		// get all words
+		$query = '
+			SELECT
+				sw_id,
+				sw_word
+			FROM
+				search_word
+			ORDER BY
+				sw_id ASC
+		';
+		$word_result = $this->_db_connector->performQuery($query);
+		
 		foreach($result as $result_row) {
 			$item_id = $result_row['item_id'];
 			$searchtime_id = $result_row['st_id'];
@@ -1829,18 +1841,6 @@ class cs_manager {
 			// put string of words into array
 			$words = explode(' ', $search_data);
 			
-			// get all words
-			$query = '
-				SELECT
-					sw_id,
-					sw_word
-				FROM
-					search_word
-				ORDER BY
-					sw_id ASC
-			';
-			$word_result = $this->_db_connector->performQuery($query);
-			
 			// determ id for new entry
 			$running_new_id = 1;
 			if(!empty($word_result)) {
@@ -1876,7 +1876,7 @@ class cs_manager {
 					// word is a new word - store it in search_word table
 					$word_new[] = array('sw_id' => $running_new_id, 'sw_word' => $word);
 					
-					// append this word to the list of word in db
+					// append this word to the list of words in db
 					$word_result[] = array('sw_id' => $running_new_id, 'sw_word' => $word);
 					$running_new_id++;
 				}

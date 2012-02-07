@@ -13,13 +13,13 @@
 				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.content.item_id}">___COMMON_EDIT_ITEM___</a></br>
 			{/if}
 			{if $detail.actions.delete}
-				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.content.item_id}">___COMMON_DELETE_ITEM___</a></br>
+				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&action=delete&iid={$detail.content.item_id}">___COMMON_DELETE_ITEM___</a></br>
 			{/if}
 			{if $detail.actions.mail}
-				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.content.item_id}">___COMMON_EMAIL_TO___</a></br>
+				<a href="commsy.php?cid={$environment.cid}&mod=rubric&fct=mail&iid={$detail.content.item_id}">___COMMON_EMAIL_TO___</a></br>
 			{/if}
 			{if $detail.actions.copy}
-				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.content.item_id}">___COMMON_ITEM_COPY_TO_CLIPBOARD___</a></br>
+				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.content.item_id}&add_to_discussion_clipboard={$detail.content.item_id}">___COMMON_ITEM_COPY_TO_CLIPBOARD___</a></br>
 			{/if}
 			{if $detail.actions.new}
 				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.content.item_id}">___COMMON_NEW_ITEM___</a></br>
