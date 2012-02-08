@@ -3271,19 +3271,19 @@ EOD;
 				$html_assessment_tooltip .= $this->_translator->getMessage('COMMON_ASSESSMENT_OVERLAY_DESCRIPTION');
 
 				// show information about all votes
-				for($i = 1; $i <= 5; $i++) {
+				for($index = 1; $index <= 5; $index++) {
 					$html_assessment_tooltip .= '<div style="margin-top: 5px;">'.LF;
-					for($j = 0; $j < $i; $j++) {
+					for($j = 0; $j < $index; $j++) {
 						$html_assessment_tooltip .= '<span style="width: 200px;"><img src="images/commsyicons/32x32/star_filled.png" style="width:18px; height:18px"/></span>'.LF;
 					}
-					for($j = $i; $j < 5; $j++) {
+					for($j = $index; $j < 5; $j++) {
 						$html_assessment_tooltip .= '<span style="width: 200px;"><img src="images/commsyicons/32x32/star_unfilled.png" style="width:18px; height:18px"/></span>'.LF;
 					}
 
 					$votes = 0;
 
-					if(isset($assessment[$i])) {
-						$votes = $assessment[$i];
+					if(isset($assessment[$index])) {
+						$votes = $assessment[$index];
 					}
 
 					$assessment_text = '';
