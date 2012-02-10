@@ -20,7 +20,7 @@
 			parent::processTemplate();
 			
 			// assign rubric to template
-			$this->assign('room', 'rubric', CS_USER_TYPE);
+			$this->assign('room', 'rubric', CS_INSTITUTION_TYPE);
 		}
 		
 		/*****************************************************************************/
@@ -160,7 +160,7 @@
 			$session = $this->_environment->getSessionItem();
 			
 			if($session->issetValue('cid' . $this->_environment->getCurrentContextID() . '_institution_index_ids')) {
-				$this->_browse_ids = array_values((array) $session->getValue('cid' . $this->_environment->getCurrentContextID() . '_user_index_ids'));
+				$this->_browse_ids = array_values((array) $session->getValue('cid' . $this->_environment->getCurrentContextID() . '_institution_index_ids'));
 			}
 		}
 		
@@ -252,6 +252,9 @@
 			
 			$return = array();
 			
+			// title
+			$return['title'] = $this->_item->getTitle();
+			
 			// picture
 			$picture = $this->_item->getPicture();
 			if(!empty($picture)) {
@@ -279,8 +282,9 @@
 			if(!$members->isEmpty()) {
 				$member = $members->getFirst();
 				
-				$member_array = array();
 				while($member) {
+					$member_array = array();
+					
 					if($member->isUser()) {
 						$linktext = $member->getFullname();
 						//TODO: compareWithSearchText
@@ -291,49 +295,27 @@
 							//TODO: compareWithSearchText
 						}
 						
+						$member_array['linktext'] = $converter->text_as_html_short($linktext);
+						
 						if($member->maySee($user)) {
 							$member_array['may_see'] = true;
 							$member_array['iid'] = $member->getItemID();
-							$member_array['linktext'] = $converter->text_as_html_short($linktext);
 						} else {
 							$member_array['may_see'] = false;
 							
 							if($user->isGuest() && $member->isVisibleForLoggedIn()) {
-								$member_array['visible'] = false;
-							} else {
 								$member_array['visible'] = true;
+							} else {
+								$member_array['visible'] = false;
 							}
 						}
-						
-						/*
-						 * 
-               $html .= '   <li>';
-               if ($member->maySee($user)) {
-                  $params = array();
-                  $params['iid'] = $member->getItemID();
-                  $html .= ahref_curl($this->_environment->getCurrentContextID(),
-                                   'user',
-                                   'detail',
-                                   $params,
-                                   $this->_text_as_html_short($linktext));
-                  unset($params);
-               } else {
-                  $current_user_item = $this->_environment->getCurrentUserItem();
-                  if ( $current_user_item->isGuest()
-                       and $member->isVisibleForLoggedIn()
-                     ) {
-                     $html .= '<span class="disabled">'.$this->_translator->getMessage('COMMON_USER_NOT_VISIBLE').'</span>';
-                  } else {
-                     $html .= '<span class="disabled">'.$linktext.'</span>';
-                  }
-                  unset($current_user_item);
-               }
-               $html .= '</li>'.LF;
-						 */
 					}
 					
+					$members_array[] = $member_array;
 					$member = $members->getNext();
 				}
+				
+				$return['members'] = $members_array;
 			}
 			
 			return $return;

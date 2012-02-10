@@ -49,6 +49,8 @@
 			// call parent
 			parent::processTemplate();
 			
+			// TODO: implement old commsy check - calling rubrics not set as active
+			
 			$params = $this->_environment->getCurrentParameterArray();
 			if(!empty($params['with_modifying_actions'])) {
 				$this->_with_modifying_actions = $params['with_modifying_actions'];

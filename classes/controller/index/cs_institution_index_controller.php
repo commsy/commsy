@@ -20,7 +20,7 @@
 			parent::processTemplate();
 			
 			// assign rubric to template
-			$this->assign('room', 'rubric', CS_USER_TYPE);
+			$this->assign('room', 'rubric', CS_INSTITUTION_TYPE);
 		}
 		
 		/*****************************************************************************/
@@ -279,6 +279,9 @@ if ($mode == '') {
             
             $this->_page_text_fragment_array['count_entries'] = $this->getCountEntriesText($this->_list_parameter_arrray['from'],$this->_list_parameter_arrray['interval'], $count_all, $count_all_shown);
             $this->_browsing_icons_parameter_array = $this->getBrowsingIconsParameterArray($this->_list_parameter_arrray['from'],$this->_list_parameter_arrray['interval'], $count_all_shown);
+            
+            $session = $this->_environment->getSessionItem();
+            $session->setValue('cid' . $environment->getCurrentContextID().'_institution_index_ids', $ids);
 /*
 if (isset($_GET['select']) and $_GET['select']=='all'){
    $item = $list->getFirst();

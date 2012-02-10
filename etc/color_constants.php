@@ -1000,6 +1000,44 @@ $cs_color['SCHEMA_25']['index_td_head_title']        = 'white';
 #$cs_color['SCHEMA_25']['repeat_background']          = 'xy';
 /*****************************************************************/
 
+//SCHEMA 26: HSK(Ocker / Grau)
+/*****************************************************************/
+$cs_color['SCHEMA_26']['schema']                     = 'SCHEMA_26';
+$cs_color['SCHEMA_26']['tabs_background']            = '#7a7a7a';
+$cs_color['SCHEMA_26']['tabs_focus']                 = '#e8b600';
+$cs_color['SCHEMA_26']['tabs_title']                 = '#ffffff';
+$cs_color['SCHEMA_26']['tabs_separators']            = 'white';
+$cs_color['SCHEMA_26']['tabs_dash']                  = 'white';
+$cs_color['SCHEMA_26']['content_background']         = '#eeeeee';
+$cs_color['SCHEMA_26']['boxes_background']           = '#e8b600';
+$cs_color['SCHEMA_26']['hyperlink']                  = '#a38105';
+$cs_color['SCHEMA_26']['list_entry_even']            = '#dddddd';
+
+$cs_color['SCHEMA_26']['table_background']           = $cs_color['SCHEMA_26']['content_background'];
+$cs_color['SCHEMA_26']['headline_text']              = $cs_color['SCHEMA_26']['tabs_title'];
+$cs_color['SCHEMA_26']['help_background']            = $cs_color['SCHEMA_26']['content_background'];
+$cs_color['SCHEMA_26']['list_entry_odd']             = '#FFFFFF';
+$cs_color['SCHEMA_26']['page_title']                 = '#000000';
+
+$cs_color['SCHEMA_26']['date_title']                 = '#666699';
+$cs_color['SCHEMA_26']['info_color']                 = '#7E7D7B';
+$cs_color['SCHEMA_26']['disabled']                   = '#B0B0B0';
+$cs_color['SCHEMA_26']['warning']                    = 'red';
+$cs_color['SCHEMA_26']['welcome_text']               = '#aabf0a';
+
+$cs_color['SCHEMA_26']['myarea_headline_background'] = '#CDCBC2';
+$cs_color['SCHEMA_26']['myarea_headline_title']      = 'white';
+$cs_color['SCHEMA_26']['myarea_title_backround']     = '#F7F7F7';
+$cs_color['SCHEMA_26']['myarea_content_backround']   = '#EFECE2';
+$cs_color['SCHEMA_26']['myarea_section_title']       = '#666666';
+$cs_color['SCHEMA_26']['portal_tabs_background']     = 'blue';
+$cs_color['SCHEMA_26']['portal_tabs_title']          = 'white';
+$cs_color['SCHEMA_26']['portal_tabs_focus']          = '#EC930D';
+$cs_color['SCHEMA_26']['portal_td_head_background']  = '#F7F7F7';
+$cs_color['SCHEMA_26']['index_td_head_title']        = 'white';
+#$cs_color['SCHEMA_26']['repeat_background']          = 'xy';
+/*****************************************************************/
+
 
 
 ?>
