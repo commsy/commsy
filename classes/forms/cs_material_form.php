@@ -257,9 +257,9 @@ class cs_material_form extends cs_rubric_form {
                $temp_text = $this->_compareWithSearchText($modificator->getFullname());
                $modifier_array[] = $temp_text;
             } elseif ( $modificator->getContextID() == $item->getContextID() ) {
+               $user = $this->_environment->getCurrentUserItem();
                if ( $this->_environment->inProjectRoom() ) {
                   $params = array();
-                  $user = $this->_environment->getCurrentUserItem();
                   if (isset($modificator) and !empty($modificator) and $modificator->isUser() and !$modificator->isDeleted() and $modificator->maySee($user)){
                      $params['iid'] = $modificator->getItemID();
                      $temp_text = ahref_curl($this->_environment->getCurrentContextID(),
@@ -279,12 +279,13 @@ class cs_material_form extends cs_rubric_form {
                   $params = array();
                   $params['iid'] = $modificator->getItemID();
                   if(!$modificator->isDeleted() and $modificator->maySee($user)){
-                     if ( !$this->_environment->inPortal() ){
+                     if ( !$this->_environment->inPortal() ){       
+                        $text_converter = $this->_environment->getTextConverter();                
                         $modifier_array[] = ahref_curl($this->_environment->getCurrentContextID(),
                                            'user',
                                            'detail',
                                            $params,
-                                           $this->_text_as_html_short($this->_compareWithSearchText($modificator->getFullname())));
+                                           $text_converter->encode(AS_HTML_SHORT,$this->_compareWithSearchText($modificator->getFullname())));
                      }else{
                         $modifier_array[] = '<span class="disabled">'.$this->_compareWithSearchText($modificator->getFullname()).'</span>';
                      }
