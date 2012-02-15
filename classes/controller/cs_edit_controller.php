@@ -3,7 +3,6 @@
 
 	abstract class cs_edit_controller extends cs_room_controller {
 		protected $_item_id = null;
-		protected $_command = null;
 		/*
 		protected $_browse_ids = array();
 		protected $_position = -1;

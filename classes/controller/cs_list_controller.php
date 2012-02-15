@@ -694,6 +694,8 @@
 
 
 		protected function performListOption($rubric){
+		   $this->getPostData();
+		   
 			$environment = $this->_environment;
 			$session = $environment->getSessionItem();
 			$translator = $environment->getTranslationObject();

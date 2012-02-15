@@ -36,7 +36,7 @@
 			<div class="ii_left">
 			 	<div id="item_action">
 			 		<input type="checkbox" name="" value="" /> ___ALL___
-			 		<select name="index_view_action" size="1">
+			 		<select name="form_data[option][list]" size="1">
 			 			{foreach $list.actions as $action}
 			 				{if $action.disabled}
 			 					<option class="disabled" disabled="disabled">{$action.display}</option>

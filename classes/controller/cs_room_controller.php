@@ -4,6 +4,8 @@
 	abstract class cs_room_controller extends cs_base_controller {
 		protected $_with_modifying_actions = true;
 		protected $_sidebar_configuration = array();
+		protected $_command = null;
+		protected $_list_command = null;
 		
 		/**
 		 * constructor
@@ -28,18 +30,19 @@
 				$this->_item_id = $_POST['iid'];
 			}
 			
-			// get command
+			// get command / list_command
 			if(isset($_POST['form_data']['option'])) {
 				foreach($_POST['form_data']['option'] as $option => $value) {
-					$this->_command = $option;
-					break;
+				   if($option == 'list'){
+				      $this->_list_command = $value;
+				      break;
+				   } else {
+					   $this->_command = $option;
+					   break;
+				   }
 				}
 			}
 			
-	      // get list command
-			if(isset($_POST['index_view_action'])) {
-				$this->_list_command = $_POST['index_view_action'];
-			}
 		}
 		
 		/*
