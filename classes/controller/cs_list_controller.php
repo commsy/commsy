@@ -696,6 +696,9 @@
 		protected function performListOption($rubric){
 		   $this->getPostData();
 		   
+		   #pr($this->_list_attached_ids);
+		   #pr($_POST);
+		   
 			$environment = $this->_environment;
 			$session = $environment->getSessionItem();
 			$translator = $environment->getTranslationObject();
