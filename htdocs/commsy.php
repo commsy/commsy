@@ -898,7 +898,10 @@ if(isset($c_smarty) && $c_smarty === true) {
 		$controller = new $controller_name($environment);
 		$controller->process();
 	} else {
-		if($environment->getCurrentModule() === 'home') {
+		if($_GET['mod'] === 'search') {
+			$controller_name = 'cs_search_controller';
+			require_once('classes/controller/' . $controller_name . '.php');
+		} elseif($environment->getCurrentModule() === 'home' || $environment->getCurrentModule() === 'search') {
 			$controller_name = 'cs_' . $environment->getCurrentModule() . '_controller';
 			require_once('classes/controller/' . $controller_name . '.php');
 		} else {

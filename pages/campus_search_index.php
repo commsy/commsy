@@ -114,8 +114,6 @@ if ( isset($_GET['option']) and isOption($_GET['option'],$translator->getMessage
    }
    $last_selected_tag = '';
 
-
-
    // Find current topic selection
    if ( isset($_GET['seltag']) and $_GET['seltag'] =='yes') {
       $i = 0;

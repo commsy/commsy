@@ -1,4 +1,11 @@
 <?php
+	function displayProgress($count, $total) {
+		$items_per_step = round($total / 80, 0, PHP_ROUND_HALF_DOWN);
+		if($count % $items_per_step === 0) {
+			echo '.';
+		}
+	}
+	
 	include_once('../../etc/cs_config.php');
 	$DB_Name     = $db['normal']['database'];
 	$DB_Hostname = $db['normal']['host'];
@@ -43,8 +50,8 @@
 		CREATE TABLE IF NOT EXISTS `search_word` (
 		  `sw_id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
 		  `sw_word` varchar(32) NOT NULL DEFAULT '',
-		  `sw_lang` varchar(5) NOT NULL,
-		  PRIMARY KEY (`sw_id`)
+		  PRIMARY KEY (`sw_id`),
+		  KEY `sw_word` (`sw_word`),
 		) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 	";
 	mysql_query($sql);
@@ -65,38 +72,6 @@
 	////// INDEXING //////////////
 	//////////////////////////////
 	$indexing = array();
-	
-	// annotations
-	echo "collecting annotation data...";
-	$query = '
-			SELECT
-				annotations.linked_item_id AS item_id,
-				search_time.st_id,
-				items.type AS item_type,
-				CONCAT(annotations.title, " ", annotations.description, " ", user.firstname, " ", user.lastname) AS search_data
-			FROM
-				annotations
-			LEFT JOIN
-				items
-			ON
-				annotations.linked_item_id = items.item_id
-			LEFT JOIN
-				user
-			ON
-				user.item_id = annotations.creator_id
-			LEFT JOIN
-				search_time
-			ON
-				search_time.st_item_id = annotations.linked_item_id
-			WHERE
-				search_time.st_id IS NULL OR
-				annotations.modification_date > search_time.st_date
-		';
-	$res = mysql_query($query);
-	while($row = mysql_fetch_assoc($res)) {
-		$indexing[] = array('db' => $row, 'type' => $row['item_type']);
-	}
-	echo "done\n";
 	
 	// announcement
 	echo "collecting announcement data...";
@@ -466,7 +441,7 @@
 		';
 	$res = mysql_query($query);
 	while($row = mysql_fetch_assoc($res)) {
-		$indexing[] = array('db' => $row, 'type' => CS_DISCARTICLE_TYPE);
+		$indexing[] = array('db' => $row, 'type' => CS_DISCUSSION_TYPE);
 	}
 	echo "done\n";
 	
@@ -589,76 +564,104 @@
 	}
 	echo "done\n";
 	
+	// annotations
+	echo "collecting annotation data...";
+	$query = '
+			SELECT
+				annotations.linked_item_id AS item_id,
+				search_time.st_id,
+				CONCAT(annotations.title, " ", annotations.description, " ", user.firstname, " ", user.lastname) AS search_data
+			FROM
+				annotations
+			LEFT JOIN
+				user
+			ON
+				user.item_id = annotations.creator_id
+			LEFT JOIN
+				search_time
+			ON
+				search_time.st_item_id = annotations.linked_item_id
+			WHERE
+				search_time.st_id IS NULL OR
+				annotations.modification_date > search_time.st_date
+		';
+	$res = mysql_query($query);
+	while($row = mysql_fetch_assoc($res)) {
+		$indexing[] = array('db' => $row, 'type' => 'inherit');
+	}
+	echo "done\n";
+	
 	echo "found " . sizeof($indexing) . " items\n";
 	echo "\n";
 	echo "indexing...\n";
 	
 	// every entry in result will be a single item
-   		
-   		$search = array();
-		$replace = array();
-
-		// define some search/replace rules
-		include('../../etc/cs_stopwords.php');
-   		foreach($stopwords as $language => $word_list) {
-   			$search[] = "= " . implode(" | ", $word_list) . " =i";			$replace[] = " ";	// remove stopwords
-   		}
-		$search[] = "=&(.*?);=";											$replace[] = " ";	// remove special html codings
-		$search[] = "=\\(:(.*?):\\)=";										$replace[] = " ";	// remove commsy tags
-		$search[] = '=(["()!:0-9/.,-]*\s["()!:0-9/.,-]*)=';					$replace[] = " ";	// remove words of special chars and numbers
-		$search[] = '=\s(\w*["()!:0-9/.,-]+\w*)\s=';						$replace[] = " ";	// remove words containing special chars and numbers
-		$search[] = "=(\s[a-zäöüß]{1,2})\s=";								$replace[] = " ";	// remove words with length below 3
-		$search[] = "=(\s[a-zäöüß]{1,2})\s=";								$replace[] = " ";	// remove words with length below 3
-		$search[] = "=\s+=";												$replace[] = " ";	// remove multiple whitespaces
+   	
+   	$search = array();
+	$replace = array();
+	
+	// define some search/replace rules
+	include('../../etc/cs_stopwords.php');
+   	foreach($stopwords as $language => $word_list) {
+   		$search[] = "= " . implode(" | ", $word_list) . " =i";			$replace[] = " ";	// remove stopwords
+   	}
+	$search[] = "=&(.*?);=";											$replace[] = " ";	// remove special html codings
+	$search[] = "=\\(:(.*?):\\)=";										$replace[] = " ";	// remove commsy tags
+	$search[] = '=([\W0-9_]*\s[\W0-9_]*)=';								$replace[] = " ";	// remove words of special chars and numbers
+	$search[] = '=\s(\w*["()!:0-9/.,-]+\w*)\s=';						$replace[] = " ";	// remove words containing special chars and numbers
+	$search[] = "=(\s[a-zäöüß]{1,2})\s=";								$replace[] = " ";	// remove words with length below 3
+	$search[] = "=(\s[a-zäöüß]{1,2})\s=";								$replace[] = " ";	// remove words with length below 3
+	$search[] = "=\s+=";												$replace[] = " ";	// remove multiple whitespaces
+	
+	$words = array();
+	$index_structure = array();
+	$word_result = array();
+	$word_update = array();
+	$running_new_id = 1;
+	
+	echo "building needed information...\n";
+	$count = 1;
+	foreach($indexing as $result_row) {
+		echo "processing item " . $count . "/" . sizeof($indexing) . " ";
 		
-		$words = array();
-		$index_structure = array();
-		$word_result = array();
-		$word_update = array();
-		$running_new_id = 1;
+		$item_id = $result_row['db']['item_id'];
+		$searchtime_id = $result_row['db']['st_id'];
+		$search_data = $result_row['db']['search_data'];
 		
-		echo "building needed information...\n";
-		$count = 1;
-		foreach($indexing as $result_row) {
-			echo "processing item " . $count . "/" . sizeof($indexing) . " ";
-			
-			$item_id = $result_row['db']['item_id'];
-			$searchtime_id = $result_row['db']['st_id'];
-			$search_data = $result_row['db']['search_data'];
-			
-			$item_type_tmp = $result_row['type'];
-			
-			if(empty($item_type_tmp)) {
-				echo "type is empty\n";
-				continue;
-			}
-			
-			$special = array(
-				'&auml;' => utf8_decode('ä'),
-		        '&Auml;' => utf8_decode('Ä'),
-		        '&szlig;' => utf8_decode('ß'),
-		        '&ouml;' => utf8_decode('ö'),
-		        '&Ouml;' => utf8_decode('Ö'),
-		        '&Uuml;' => utf8_decode('Ü'),
-		        '&uuml;' => utf8_decode('ü')
-			);
-			$search_data = str_replace(array_keys($special), array_values($special), $search_data);
-			
-			// compress data
-			$search_data = strip_tags($search_data);							// remove html tags
-			$search_search_data = stripslashes($search_data);					// remove slashes
-			$search_data = trim($search_data);									// trim
-			$search_data = mb_strtolower($search_data);							// make lower case
-			
-			$before = $search_data;
-			
-			// replace
-			$search_data = ' ' . str_replace(' ', '  ', $search_data) . ' ';
-			$search_data = trim(preg_replace($search, $replace, $search_data));
-			
-			// put string of words into array
-			$words = explode(' ', $search_data);
-			
+		$item_type_tmp = $result_row['type'];
+		
+		if(empty($item_type_tmp)) {
+			echo "type is empty\n";
+			continue;
+		}
+		
+		$special = array(
+			'&auml;' => utf8_decode('ä'),
+			'&Auml;' => utf8_decode('Ä'),
+			'&szlig;' => utf8_decode('ß'),
+			'&ouml;' => utf8_decode('ö'),
+			'&Ouml;' => utf8_decode('Ö'),
+			'&Uuml;' => utf8_decode('Ü'),
+			'&uuml;' => utf8_decode('ü')
+		);
+		$search_data = str_replace(array_keys($special), array_values($special), $search_data);
+		
+		// compress data
+		$search_data = strip_tags($search_data);							// remove html tags
+		$search_search_data = stripslashes($search_data);					// remove slashes
+		$search_data = trim($search_data);									// trim
+		$search_data = mb_strtolower($search_data);							// make lower case
+		
+		$before = $search_data;
+		
+		// replace
+		$search_data = ' ' . str_replace(' ', '  ', $search_data) . ' ';
+		$search_data = trim(preg_replace($search, $replace, $search_data));
+		
+		// put string of words into array
+		$words = explode(' ', $search_data);
+		
+			/*
 			foreach($words as $word) {
 				if(mb_strstr($word, 'ganzadsfasdfasdfst')) {
 					echo "\n\n\n\n";
@@ -679,52 +682,65 @@
 					exit;
 				}
 			}
-			
+			*/
+		
+		if(!isset($index_structure[$item_id]['sw_ids'])) {
 			$index_structure[$item_id]['sw_ids'] = array();
-			
-			// go through all words of item
-			foreach($words as $word) {
-				// trim word length to 32
-				if(mb_strlen($word) > 32) {
-					$word = mb_substr($word, 0, 32);
-				}
-				
-				$md5 = md5($word);
-				
-				if(isset($word_result[$md5])) {
-					$sw_id = $word_result[$md5]['sw_id'];
-					
-					// increase update or set 1 if not set - search_index table
-					if(!isset($word_update[$sw_id]['item_ids'][$item_id])) {
-						$word_update[$sw_id]['item_ids'][$item_id] = 1;
-					} else {
-						$word_update[$sw_id]['item_ids'][$item_id]++;
-					}
-					
-					if(!in_array($sw_id, $index_structure[$item_id]['sw_ids'])) {
-						$index_structure[$item_id]['sw_ids'][] = $sw_id;
-					}
-				} else {
-					// append this word to the list of words in db
-					$word_result[$md5] = array('sw_id' => $running_new_id, 'sw_word' => $word);
-					$index_structure[$item_id]['sw_ids'][] = $running_new_id;
-					
-					$running_new_id++;
-				}
-			}
-			
-			$index_structure[$item_id]['type'] = $item_type_tmp;
-			
-			echo sizeof($word_result) . " words found\n";
-			
-			$count++;
-			
-			if($count === 100000) break;
 		}
 		
+		// go through all words of item
+		foreach($words as $word) {
+			// trim word length to 32
+			if(mb_strlen($word) > 32) {
+				$word = mb_substr($word, 0, 32);
+			}
+			
+			$md5 = md5($word);
+			
+			if(isset($word_result[$md5])) {
+				$sw_id = $word_result[$md5]['sw_id'];
+				
+				// increase update or set 1 if not set - search_index table
+				if(!isset($word_update[$sw_id]['item_ids'][$item_id])) {
+					$word_update[$sw_id]['item_ids'][$item_id] = 1;
+				} else {
+					$word_update[$sw_id]['item_ids'][$item_id]++;
+				}
+				
+				if(!in_array($sw_id, $index_structure[$item_id]['sw_ids'])) {
+					$index_structure[$item_id]['sw_ids'][] = $sw_id;
+				}
+			} else {
+				// append this word to the list of words in db
+				$word_result[$md5] = array('sw_id' => $running_new_id, 'sw_word' => $word);
+				$index_structure[$item_id]['sw_ids'][] = $running_new_id;
+				
+				$running_new_id++;
+			}
+		}
+		
+		if($item_type_tmp === 'inherit') {
+			/*
+			 * this point is reached, when processing annotations
+			 * because annotations always belong to other items, there must be alreandy an entry and the item type stays unchanged
+			 */
+			//$index_structure[$item_id]['type'] = $index_structure[$item_id]['type']
+		} else {
+			$index_structure[$item_id]['type'] = $item_type_tmp;
+		}
+		
+		echo sizeof($word_result) . " words found\n";
+		
+		$count++;
+		
+		//if($count === 100000) break;
+	}
+		
 		// insert new words
-		echo "writing words in database...";
-		if(!empty($word_result)) {
+		echo "writing words in database";
+		$size = sizeof($word_result);
+		$progress = 1;
+		foreach($word_result as $word) {
 			// perform insertion of new words
 			$query = '
 				INSERT INTO
@@ -732,24 +748,22 @@
 				VALUES
 			';
 			
-			$size = sizeof($word_result);
-			$count = 1;
-			foreach($word_result as $word) {
-				$query .= '("' . mysql_real_escape_string($word['sw_word']) . '")';
-				
-				if($count < $size) $query .= ', ';
-				
-				$count++;
-			}
+			$query .= '("' . mysql_real_escape_string($word['sw_word']) . '")';
+			
 			if(!mysql_query($query)) {
+				echo $query . "\n";
 				echo mysql_error(); exit;
 			}
+			
+			displayProgress($progress, $size);
+			$progress++;
+			
 		}
 		echo "done\n";
 		
 		// write index entries
-		echo "writing index entries...";
-		
+		echo "writing index entries";
+		$progress = 1;
 		foreach($index_structure as $item_id => $detail) {			
 			$size = sizeof($detail['sw_ids']);
 			
@@ -774,11 +788,15 @@
 				echo $query . "\n";
 				echo mysql_error(); exit;
 			}
+			
+			displayProgress($progress, sizeof($index_structure));
+			$progress++;
 		}
 		echo "done\n";
 		
 		// update search_index
-		echo "updating index entries...";
+		echo "updating index entries";
+		$progress = 1;
 		foreach($word_update as $id => $detail) {
 			foreach($detail['item_ids'] as $item_id => $inc) {
 				$query = '
@@ -794,12 +812,15 @@
 					echo mysql_error(); exit;
 				}
 			}
+			
+			displayProgress($progress, sizeof($word_update));
+			$progress++;
 		}
 		echo "done\n";
 		
 		// write search time
-		echo "writing search times...";
-		
+		echo "writing search times";
+		$progress = 1;
 		foreach($index_structure as $item_id => $detail) {
 			$query = '
 				INSERT INTO
@@ -809,40 +830,11 @@
 					"' . mysql_real_escape_string(date('Y-m-d H:i:s', time())) . '"
 				)
 			';
-			/*
 			if(!mysql_query($query)) {
 				echo mysql_error(); exit;
 			}
-			*/
+			
+			displayProgress($progress, sizeof($index_structure));
+			$progress++;
 		}
-		
 		echo "done\n";
-		
-		/*
-		// update search_time table for this item
-		if($item_type !== 'from_query') {
-			if($searchtime_id) {
-				// item was already indexed
-				$query = '
-					UPDATE
-						search_time
-					SET
-						st_date = "' . encode(AS_DB, date('Y-m-d H:i:s', time())) . '"
-					WHERE
-						st_id = ' . encode(AS_DB, $searchtime_id) . '
-				';
-				$result = $this->_db_connector->performQuery($query);
-			} else {
-				// item was indexed for the first time
-				$query = '
-					INSERT INTO
-						search_time(st_item_id, st_date)
-					VALUES(
-						' . encode(AS_DB, $item_id) . ',
-						"' . encode(AS_DB, date('Y-m-d H:i:s', time())) . '"
-					)
-				';
-				$result = $this->_db_connector->performQuery($query);
-			}
-		}
-		*/

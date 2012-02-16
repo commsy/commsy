@@ -41,33 +41,30 @@ define(["libs/jQuery/jquery-1.7.1.min"], function() {
 				this.registerModule('commsy/list_selection', null, {input_tags: input_tags, counter_object: counter_object});
 			}
 			
-			// home list rubric expander
-			// only load on home context
-			if(this.getURLParam('mod') === 'home') {
-				// register the click event on </a>- and </img>-tags(actors) of each rubric to the corresponding div
+			// list rubric expander
+			// register the click event on </a>- and </img>-tags(actors) of each rubric to the corresponding div
+			
+			// go through each list wrap
+			var objects = [];
+			jQuery('div[class="content_item"] div[class^="list_wrap"]').each(function() {
+				// find actors
+				var actors = [];
+				var a = {
+					object: jQuery(this).parent().find('a[class="open_close"]')
+				};
+				var img = {
+					object: a.object.children(),
+					images: ['btn_ci_close.gif', 'btn_ci_open.gif']
+				};
+				a.modify_images = img;
 				
-				// go through each list wrap
-				var objects = [];
-				jQuery('div[class="content_item"] div[class^="list_wrap"]').each(function() {
-					// find actors
-					var actors = [];
-					var a = {
-						object: jQuery(this).parent().find('a[class="open_close"]')
-					};
-					var img = {
-						object: a.object.children(),
-						images: ['btn_ci_close.gif', 'btn_ci_open.gif']
-					};
-					a.modify_images = img;
-					
-					actors.push(a);
-					actors.push(img);
-					
-					objects.push({actors: actors, div: jQuery(this)});
-				});
+				actors.push(a);
+				actors.push(img);
 				
-				this.registerModule('commsy/div_expander', null, {objects: objects, action: 'click'});
-			}
+				objects.push({actors: actors, div: jQuery(this)});
+			});
+			
+			this.registerModule('commsy/div_expander', null, {objects: objects, action: 'click'});
 			
 			// portlet expander
 			var objects = [];

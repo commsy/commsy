@@ -131,6 +131,15 @@
 			return $rubrics;
 		}
 		
+		protected function isPerspective($rubric) {
+			$in_array = in_array($rubric, array(CS_GROUP_TYPE, CS_TOPIC_TYPE, CS_INSTITUTION_TYPE));
+			if($rubric === CS_INSTITUTION_TYPE) {
+				$context = $this->_environment->getCurrentContextItem();
+				$in_array = $context->withRubric(CS_INSTITUTION_TYPE);
+			}
+
+			return $in_array;
+		}
 
 		/**
 		 * gets information for displaying room rubrics in navigation bar

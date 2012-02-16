@@ -37,9 +37,11 @@
 		public function exceptionHandler($exception) {
 			global $c_show_debug_infos;
 			if(isset($c_show_debug_infos) && $c_show_debug_infos === true) {
+				/*
 				echo "Problem in " . $exception->getFile() . " on line " . $exception->getLine() . "<br>\n";
 				pr($exception->getMessage());
 				echo "-------------------------<br>\n";
+				*/
 			}
 			//pr($exception);
 			//exit;

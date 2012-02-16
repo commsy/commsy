@@ -312,6 +312,8 @@ class cs_list {
          foreach($this->_data as $pos => $list_item){
             if ($list_item->getItemID()==$item->getItemID() AND $list_item->getVersionID()==$item->getVersionID()) {
                $boolean = true;
+               // optimized:
+               return true;
             }
          }
       }
