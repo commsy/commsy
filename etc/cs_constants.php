@@ -257,4 +257,7 @@ define('CS_LISTOPTION_EMAIL_SEND', 'listoption_email_send');
 define('CS_LISTOPTION_TODO_DONE', 'listoption_todo_done');
 define('CS_LISTOPTION_TODO_IN_PROGRESS', 'listoption_todo_in_progress');
 define('CS_LISTOPTION_TODO_NOT_STARTED', 'listoption_todo_not_started');
+
+define('CS_LISTOPTION_CONFIRM_DELETE', 'listoption_confirm_delete');
+define('CS_LISTOPTION_CONFIRM_CANCEL', 'listoption_confirm_cancel');
 ?>

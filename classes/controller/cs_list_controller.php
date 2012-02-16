@@ -790,7 +790,7 @@
       		}
       		
 			// Cancel editing
-			if ( isOption($delete_command, $translator->getMessage('COMMON_CANCEL_BUTTON')) ) {
+			/*if ( isOption($delete_command, $translator->getMessage('COMMON_CANCEL_BUTTON')) ) {
    				$params = $environment->getCurrentParameterArray();
    				redirect($environment->getCurrentContextID(), $rubric, 'index', $params);
 			}
@@ -817,8 +817,35 @@
    				unset($params['select']);
    				$selected_ids = array();
    				redirect($environment->getCurrentContextID(), $rubric, 'index', $params);
-			}
-			
+			}*/
+      		if ($this->_list_command_confirm == CS_LISTOPTION_CONFIRM_CANCEL) {
+      		   $params = $environment->getCurrentParameterArray();
+      		   redirect($environment->getCurrentContextID(), $rubric, 'index', $params);
+      		}
+      		
+      		// Delete item
+      		elseif ($this->_list_command_confirm == CS_LISTOPTION_CONFIRM_DELETE) {
+      		   if ($session->issetValue('cid'.$environment->getCurrentContextID().
+      		                                  '_'.$environment->getCurrentModule().
+      		                                 '_deleted_ids')) {
+      		   $selected_ids = $session->getValue('cid'.$environment->getCurrentContextID().
+      		                                               '_'.$environment->getCurrentModule().
+      		                                               '_deleted_ids');
+      		   }
+      		   $manager = $environment->getManager($rubric);
+      		   foreach ($selected_ids as $id) {
+      		      $item = $manager->getItem($id);
+      		      $item->delete();
+      		   }
+      		   $session->unsetValue('cid'.$environment->getCurrentContextID().
+      		                              '_'.$environment->getCurrentModule().
+      		                              '_deleted_ids');
+      		   $params = $environment->getCurrentParameterArray();
+      		   unset($params['mode']);
+      		   unset($params['select']);
+      		   $selected_ids = array();
+      		   redirect($environment->getCurrentContextID(), $rubric, 'index', $params);
+      		}
 			
 			
    			/*if ( isOption($option,$translator->getMessage('COMMON_LIST_ACTION_BUTTON_GO'))
@@ -942,7 +969,7 @@
       			         //Reimplementierung notwendig
       			         #               			$page->addDeleteBox(curl($environment->getCurrentContextID(),$rubric,'index',$params),'index',$selected_ids);
       			         //               			unset($params);
-      			
+      			         $this->assign('confirm', 'list_action', $this->_list_command);
       			      }
       			      break;
       			   case CS_LISTOPTION_DOWNLOAD:

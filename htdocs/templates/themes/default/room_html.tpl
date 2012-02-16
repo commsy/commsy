@@ -220,3 +220,19 @@
             <div class="clear"> </div>
         </div> <!-- Ende columnset -->
 {/block}
+
+{block name=room_overlay}
+        {if $confirm}
+		<div id="delete_confirm_overlay_background" class="delete_confirm_background"></div>
+		<div id="delete_confirm_overlay_box" class="delete_confirm_box" style="display: block;">
+			<form method="post">
+				<h2 style="text-align: center;">{i18n tag=COMMON_DELETE_BOX_TITLE}</h2>
+				<p style="text-align: left;">{i18n tag=COMMON_DELETE_BOX_DESCRIPTION}</p>
+				<div>
+					<input type="submit" value="{i18n tag=COMMON_DELETE_BUTTON}" name="form_data[confirm][listoption_confirm_delete]" style="float: right;">
+					<input type="submit" value="{i18n tag=COMMON_CANCEL_BUTTON}" name="form_data[confirm][listoption_confirm_cancel]" style="float: left;">
+				</div>
+			</form>
+		</div>
+		{/if}
+{/block}

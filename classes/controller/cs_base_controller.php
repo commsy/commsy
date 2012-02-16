@@ -89,7 +89,7 @@
 			if(!is_string($categorie) || !is_string($key)) die('categorie and key need to be of type string');
 
 			$categorie_vars = $this->_tpl_engine->getTemplateVars($categorie);
-
+			
 			if(isset($categorie_vars) && isset($categorie_vars[$key])) {
 				die('this template variable "' . $key . '" in categorie "' . $categorie . '" is already set');
 			}

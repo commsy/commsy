@@ -90,6 +90,7 @@
         
         
     </div> <!-- Ende wrapper -->
+    {block name=room_overlay}{/block}
 </body>
 
 </html>

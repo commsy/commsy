@@ -6,6 +6,7 @@
 		protected $_sidebar_configuration = array();
 		protected $_command = null;
 		protected $_list_command = null;
+		protected $_list_command_confirm = null;
 		protected $_list_attached_ids = array();
 		protected $_list_shown_ids = array();
 		
@@ -48,7 +49,11 @@
 				   }
 				}
 			}
-			
+			if(isset($_POST['form_data']['confirm'])) {
+			   foreach($_POST['form_data']['confirm'] as $option => $value) {
+			      $this->_list_command_confirm = $option;
+			   }
+			}
 		}
 		
 		/*
