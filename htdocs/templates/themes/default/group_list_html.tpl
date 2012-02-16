@@ -36,10 +36,10 @@
 				{if $item.noticed != ''}
 					<a href="" class="new_item_2"><img title="{$item.noticed}" class="new_item_2" src="{$basic.tpl_path}img/flag_neu.gif" alt="*" /></a>
          			<input class="new_item_2" type="checkbox" name="form_data[attach][{$item.iid}]" value="1"/>
-        			<input type="hidden" name="shown[{$item.iid}]" value="1"/>
+        			<input type="hidden" name="form_data[shown][{$item.iid}]" value="1"/>
 				{else}
          			<input type="checkbox" name="form_data[attach][{$item.iid}]" value="1"/>
-        			<input type="hidden" name="shown[{$item.iid}]" value="1"/>
+        			<input type="hidden" name="form_data[shown][{$item.iid}]" value="1"/>
 				{/if}
 				</p>
 			</div>

@@ -7,6 +7,7 @@
 		protected $_command = null;
 		protected $_list_command = null;
 		protected $_list_attached_ids = array();
+		protected $_list_shown_ids = array();
 		
 		/**
 		 * constructor
@@ -38,6 +39,7 @@
 				      $this->_list_command = $value;
 				      if(isset($_POST['form_data']['attach'])) {
 				         $this->_list_attached_ids = $_POST['form_data']['attach'];
+				         $this->_list_shown_ids = $_POST['form_data']['shown'];
 				      }
 				      break;
 				   } else {

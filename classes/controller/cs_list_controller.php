@@ -704,14 +704,15 @@
 			$translator = $environment->getTranslationObject();
 
 			// Find current option
-			if ( isset($_POST['option']) ) {
+			/*if ( isset($_POST['option']) ) {
    				$option = $_POST['option'];
 			} elseif ( isset($_GET['option']) ) {
    				$option = $_GET['option'];
 			} else {
    				$option = '';
 			}
-
+            
+			
 			// Find out what to do
 			if ( isset($_POST['delete_option']) ) {
    				$delete_command = $_POST['delete_option'];
@@ -719,7 +720,8 @@
    				$delete_command = $_GET['delete_option'];
 			} else {
    				$delete_command = '';
-			}
+			}*/
+			// $option and $delete_command are replaced by $this->$_list_command
 
 			// LIST ACTIONS
 			// initiate selected array of IDs
@@ -757,7 +759,7 @@
       		}
 
 	      	// Update attached items from form post (works always)
-    	  	if ( isset($_POST['attach']) ) {
+    	  	/*if ( isset($_POST['attach']) ) {
         	 	foreach ( $_POST['shown'] as $shown_key => $shown_val ) {
             		if ( array_key_exists($shown_key, $_POST['attach']) ) {
                			if ( !in_array($shown_key, $selected_ids) ) {
@@ -770,8 +772,23 @@
                			}
             		}
          		}
+      		}*/
+      		// new version
+      		if ( !empty($this->_list_attached_ids) ) {
+      		   foreach ( $this->_list_shown_ids as $shown_key => $shown_val ) {
+      		      if ( array_key_exists($shown_key, $this->_list_attached_ids) ) {
+      		         if ( !in_array($shown_key, $selected_ids) ) {
+      		            $selected_ids[] = $shown_key;
+      		         }
+      		      } else {
+      		         $idx = array_search($shown_key, $selected_ids);
+      		         if ( $idx !== false ) {
+      		            unset($selected_ids[$idx]);
+      		         }
+      		      }
+      		   }
       		}
-
+      		
 			// Cancel editing
 			if ( isOption($delete_command, $translator->getMessage('COMMON_CANCEL_BUTTON')) ) {
    				$params = $environment->getCurrentParameterArray();
@@ -801,7 +818,10 @@
    				$selected_ids = array();
    				redirect($environment->getCurrentContextID(), $rubric, 'index', $params);
 			}
-   			if ( isOption($option,$translator->getMessage('COMMON_LIST_ACTION_BUTTON_GO'))
+			
+			
+			
+   			/*if ( isOption($option,$translator->getMessage('COMMON_LIST_ACTION_BUTTON_GO'))
         			and !isset($_GET['show_copies'])
         			and $_POST['index_view_action'] != '-1'
         			and !empty($selected_ids)
@@ -878,7 +898,81 @@
                               '_'.$environment->getCurrentModule().
                               '_selected_ids');
       			}
-      		}
+      		}*/
+			// prepare action process
+			if(!empty($this->_list_command)){
+      			switch ($this->_list_command) {
+      			   case CS_LISTOPTION_MARK_AS_READ:
+      			      $action = 'ENTRY_MARK_AS_READ';
+      			      $error = false;
+      			      $rubric_manager = $environment->getManager($rubric);
+      			      $noticed_manager = $environment->getNoticedManager();
+      			      foreach ($selected_ids as $id) {
+      			         $item = $rubric_manager->getItem($id);
+      			         $version_id = $item->getVersionID();
+      			         $noticed_manager->markNoticed($id, $version_id );
+      			         $annotation_list =$item->getAnnotationList();
+      			         if ( !empty($annotation_list) ){
+      			            $annotation_item = $annotation_list->getFirst();
+      			            while($annotation_item){
+      			               $noticed_manager->markNoticed($annotation_item->getItemID(),'0');
+      			               $annotation_item = $annotation_list->getNext();
+      			            }
+      			         }
+      			      }
+      			      break;
+      			   case CS_LISTOPTION_COPY:
+      			      $action = 'ENTRY_COPY';
+      			      // Copy to clipboard
+      			      foreach ($selected_ids as $id) {
+      			         if ( !in_array($id, $this->_list_parameter_arrray['clipboard_id_array']) ) {
+      			            $this->_list_parameter_arrray['clipboard_id_array'][] = $id;
+      			         }
+      			      }
+      			      $session->setValue($rubric.'_clipboard', $this->_list_parameter_arrray['clipboard_id_array']);
+      			      break;
+      			   case CS_LISTOPTION_DELETE:
+      			      $user = $environment->getCurrentUserItem();
+      			      if( $user->isModerator() ){
+      			         $session->setValue('cid'.$environment->getCurrentContextID().
+      			                                               '_'.$environment->getCurrentModule().
+      			                                               '_deleted_ids', $selected_ids);
+      			         $params = $environment->getCurrentParameterArray();
+      			         $params['mode'] = 'list_actions';
+      			         //Reimplementierung notwendig
+      			         #               			$page->addDeleteBox(curl($environment->getCurrentContextID(),$rubric,'index',$params),'index',$selected_ids);
+      			         //               			unset($params);
+      			
+      			      }
+      			      break;
+      			   case CS_LISTOPTION_DOWNLOAD:
+      			      include_once('include/inc_rubric_download.php');
+      			      break;
+      			   default:
+      			      if (!empty($this->_list_command)
+      			          and ( $environment->isPlugin($this->_list_command)
+      			          or $environment->isPlugin(substr($this->_list_command,0,strpos($this->_list_command,'_')))
+      			          )) {
+         			      $plugin = '';
+         			      if ( $environment->isPlugin($this->_list_command) ) {
+         			         $plugin = $this->_list_command;
+         			      } else {
+         			         $plugin = substr($this->_list_command,0,strpos($this->_list_command,'_'));
+         			      }
+         			      plugin_hook_plugin($plugin,'performListAction',$_POST); //TODO: Plugins an neue $_POST-Struktur anpassen
+         			   } else {
+         			      $params = $environment->getCurrentParameterArray();
+         			      unset($params['mode']);
+         			      redirect($environment->getCurrentContextID(), $rubric, 'index', $params);
+         			   }
+      			}
+      			if ($this->_list_command != CS_LISTOPTION_DELETE){
+      			   $selected_ids = array();
+      			   $session->unsetValue('cid'.$environment->getCurrentContextID().
+      			                              '_'.$environment->getCurrentModule().
+      			                              '_selected_ids');
+      			}
+			}
 		}
 
 		abstract protected function getAdditionalActions(&$perms);
