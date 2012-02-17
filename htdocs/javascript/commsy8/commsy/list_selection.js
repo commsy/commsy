@@ -76,7 +76,7 @@ define([	"libs/jQuery/jquery-1.7.1.min",
 		storeSelectionInCookie: function(event) {
 			// get item_id
 			var name = event.data.input_object.attr('name');
-			var match = /attach\[([0-9]*)\]/.exec(name);
+			var match = /\[\attach]\[([0-9]*)\]/.exec(name);
 			var item_id = match[1];
 			
 			var class_ref = event.data.class_ref;
@@ -114,7 +114,7 @@ define([	"libs/jQuery/jquery-1.7.1.min",
 		getSelectionStateFromCookie: function(input_object) {
 			// get item_id
 			var name = input_object.attr('name');
-			var match = /attach\[([0-9]*)\]/.exec(name);
+			var match = /\[\attach]\[([0-9]*)\]/.exec(name);
 			var item_id = match[1];
 			
 			var cookie = jQuery.parseJSON(jQuery.cookie(this.cookie_name));

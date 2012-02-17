@@ -32,7 +32,7 @@ define(["libs/jQuery/jquery-1.7.1.min"], function() {
 			// list selection
 			if(this.getURLParam('fct') === 'index') {
 				// get input tags
-				var input_tags = jQuery('input[type="checkbox"][name^="attach"]');
+				var input_tags = jQuery('input[type="checkbox"][name^="form_data[attach]"]');
 				
 				// get counter objects
 				var counter_object = jQuery('div[class="ii_right"] span[id="selected_items"]');
