@@ -973,7 +973,27 @@
       			      }
       			      break;
       			   case CS_LISTOPTION_DOWNLOAD:
+      			      $class_factory = $environment->getClassFactory();
       			      include_once('include/inc_rubric_download.php');
+      			      break;
+      			   case CS_LISTOPTION_EMAIL_SEND:
+                     $current_user = $environment->getCurrentUser();
+                     $user_item_id = $current_user->getItemID();
+                     $action_array = array();
+                     $action_array['user_item_id'] = $user_item_id;
+                     $action_array['action'] = 'USER_EMAIL_SEND';
+                     $action_array['backlink']['cid'] = $environment->getCurrentContextID();
+                     $action_array['backlink']['mod'] = $environment->getCurrentModule();
+                     $action_array['backlink']['fct'] = $environment->getCurrentFunction();
+                     $action_array['backlink']['par'] = '';
+                     $action_array['selected_ids'] = $selected_ids;
+                     $params = array();
+                     $params['step'] = 1;
+                     $session->setValue('index_action',$action_array);
+                     redirect( $environment->getCurrentContextID(),
+                               $environment->getCurrentModule(),
+                               'action',
+                               $params);
       			      break;
       			   default:
       			      if (!empty($this->_list_command)
