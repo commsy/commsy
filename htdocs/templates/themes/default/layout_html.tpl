@@ -57,7 +57,8 @@
                     <div id="commsy_search">
                     	<form action="commsy.php?cid={$environment.cid}&mod=search&fct=index" method="post">
                         	<input name="form_data[keywords]" id="search_input" type="text" value="Suche ..." />
-                        	<input type="image" src="{$basic.tpl_path}img/btn_search.gif" alt="absenden" />
+                        	<input id="search_suggestion" type="text" value="" />
+                        	<input id="search_submit" type="image" src="{$basic.tpl_path}img/btn_search.gif" alt="absenden" />
                         </form>
                     </div>
                 </div>

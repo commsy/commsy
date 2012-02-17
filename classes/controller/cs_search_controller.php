@@ -6,6 +6,7 @@
 		private 	$_params = array();
 		private		$_list = null;
 		private 	$_items = array();
+		private		$_search_words = array();
 		
 		/**
 		 * constructor
@@ -355,7 +356,7 @@ if ( $environment->inPrivateRoom()
 			foreach($search_words as $word) {
 				if(strlen($word) >= 3) $search_words_tmp[] = $word;
 			}
-			$search_words = $search_words_tmp;
+			$this->_search_words = $search_words_tmp;
 			
 			/////////////////////////////////////////
 			// 1. get ids of search words
@@ -368,17 +369,17 @@ if ( $environment->inPrivateRoom()
 				WHERE
 			';
 			
-			$size = sizeof($search_words);
+			$size = sizeof($this->_search_words);
 			for($i = 0; $i < $size; $i++) {
 				$query .= '
-						sw_word LIKE "' . encode(AS_DB, $search_words[$i]) . '%"
+						sw_word LIKE "' . encode(AS_DB, $this->_search_words[$i]) . '%"
 				';
 				
 				if($i < $size - 1) $query .= ' OR ';
 			}
 			$word_ids = $db->performQuery($query);
 			
-			echo sizeof($word_ids) . " words matched this search</br>\n"; //pr($word_ids);
+			//echo sizeof($word_ids) . " words matched this search</br>\n"; //pr($word_ids);
 			
 			/////////////////////////////////////////
 			// 2. find items matching these words
@@ -429,7 +430,7 @@ if ( $environment->inPrivateRoom()
 			
 			$results = $db->performQuery($query);
 			
-			echo sizeof($results) . " indexed items matched this search</br>\n";
+			//echo sizeof($results) . " indexed items matched this search</br>\n";
 			
 			/////////////////////////////////////////
 			// 3. order items by rubric
@@ -587,7 +588,7 @@ if($interval == 0){
 	$interval = $search_list->getCount();
 }
 			 */
-			echo $result_list->getCount() . " results before id filtering<br>\n";
+			//echo $result_list->getCount() . " results before id filtering<br>\n";
 			
 			
 			/////////////////////////////////////////
@@ -601,9 +602,10 @@ if($interval == 0){
 				$entry = $result_list->getNext();
 			}
 			
-			echo $this->_list->getCount() . " final results<br>\n";
+			//echo $this->_list->getCount() . " final results<br>\n";
 			
 			$this->assign('room', 'search_content', $this->getListContent());
+			$this->assign('room', 'search_sidebar', $this->getSidebarContent());
 		}
 		
 		protected function getListContent() {
@@ -614,7 +616,8 @@ if($interval == 0){
 				$return[$entry->getType()][] = array(
 					'title'			=> $entry->getType() === CS_USER_TYPE ? $entry->getFullname() : $entry->getTitle(),
 					'count'			=> $this->_items[$entry->getType()][$entry->getItemID()],
-					'type'			=> $entry->getType()
+					'type'			=> $entry->getType(),
+					'item_id'		=> $entry->getItemID()
 				);
 				
 				$entry = $this->_list->getNext();
@@ -625,6 +628,14 @@ if($interval == 0){
 				usort($entries, array($this, 'sortByRelevanz'));
 				$return[$type] = array_reverse($entries);
 			}
+			
+			return $return;
+		}
+		
+		private function getSidebarContent() {
+			$return = array();
+			
+			$return['search_words'] = $this->_search_words;
 			
 			return $return;
 		}

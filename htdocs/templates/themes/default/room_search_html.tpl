@@ -39,7 +39,7 @@
 									{if $item.noticed != ''}
 										<a href="" class="new_item"><img title="{$item.noticed}" class="new_item" src="{$basic.tpl_path}img/flag_neu.gif" alt="*" /></a>
 		         					{/if}
-			                        <a href="commsy.php?cid={$environment.cid}&mod={$rubric@key}&fct=detail&iid={$item.iid}">{$result.title}</a>
+			                        <a href="commsy.php?cid={$environment.cid}&mod={$rubric@key}&fct=detail&iid={$result.item_id}">{$result.title}</a>
 		                        </p>
 		                    </div>
 	                        <div class="column_140">
@@ -68,16 +68,23 @@
 	<div class="portlet_rc">
 		<a href="" title="{if $h}___COMMON_SHOW___{else}___COMMON_HIDE___{/if}" class="btn_head_rc">
 			<img src="{$basic.tpl_path}img/{if $h}btn_open_rc.gif{else}btn_close_rc.gif{/if}" alt="{if $h}___COMMON_SHOW___{else}___COMMON_HIDE___{/if}" />
-			</a>
-			<h2>
-				Suchoptionen
-			</h2>
+		</a>
+		<h2>
+			Suche
+		</h2>
 
-			<div class="clear"> </div>
-			<a href="" title="bearbeiten" class="btn_body_rc"><img src="{$basic.tpl_path}img/btn_edit_rc.gif" alt="close" /></a>
-			<div class="portlet_rc_body{if $h} hidden{/if}">
-				21345
-			</div>
+		<div class="clear"></div>
+		<div class="portlet_rc_body{if $h} hidden{/if}">
+			Begriffe:
+			{foreach $room.search_sidebar.search_words as $word}
+				{$word}
+			{/foreach}
+			
+			<div class="clear"></div>
+			
+			<input type="checkbox" value="kategorisiert" name="kat"/>
+			<label for="kat">kategorisiert</label>
+		</div>
 	</div>
 {/block}
 

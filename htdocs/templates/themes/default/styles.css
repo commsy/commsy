@@ -203,11 +203,13 @@ header
 
 #search_input {
     background: transparent;
-    padding: 6px 5px 5px 35px;
+    padding: 10px 5px 5px 35px;
     width: 130px;
     font-size: 12px;
     font-weight: bold;
     border: 0px none;
+    position: absolute;
+    z-index: 5;
     }
 
 #commsy_search input {
@@ -1197,13 +1199,30 @@ div#user_profil_picture {
 
 .hidden {
 	display: none;
-}
+	}
 
 div.discussion_threaded_tree_subject,
 div.discussion_threaded_tree_creator,
 div.discussion_threaded_tree_date {
 	display: inline;
-}
+	}
+
+input#search_suggestion {
+	position: absolute;
+	z-index: 0;
+	background: transparent;
+    padding: 10px 5px 5px 35px;
+    width: 130px;
+    font-size: 12px;
+    font-weight: bold;
+    border: 0px none;
+    color: #999999;
+	}
+
+input#search_submit {
+	position: relative;
+	left: 172px;
+	}
 
 /*
 ----------------------------------------------------------------------

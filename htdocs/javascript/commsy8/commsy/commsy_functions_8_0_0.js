@@ -105,6 +105,9 @@ define(["libs/jQuery/jquery-1.7.1.min"], function() {
 				var input_object = jQuery('input[id="ckeditor_content_second"]');
 				this.registerModule('commsy/ck_editor', 'div[id="ckeditor_second"]', {input_object: input_object});
 			}
+			
+			// search
+			this.registerModule('commsy/search', 'input[id="search_input"]');
 		},
 		
 		registerModule: function(module, selector, parameters) {
