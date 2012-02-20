@@ -35,7 +35,7 @@ class class_ckeditor extends cs_plugin {
       $this->_image_path = 'plugins/'.$this->getIdentifier();
       $this->_translator->addMessageDatFolder('plugins/'.$this->getIdentifier().'/messages');
 
-      $this->_htdocs_identifier = 'ckeditor_3.4.2';
+      $this->_htdocs_identifier = 'ckeditor_3.6.2';
    }
 
    public function getDescription () {
