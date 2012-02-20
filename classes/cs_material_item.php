@@ -277,6 +277,34 @@ class cs_material_item extends cs_item {
       return (string) $this->_getExtra('BIB_URL_DATE');
    }
 
+/** Start Dokumentenverwaltung **/
+   function setDocumentEditor($value) {
+      $this->_addExtra('BIB_DOCUMENT_EDITOR', (string)$value);
+   }
+   function getDocumentEditor() {
+      return (string) $this->_getExtra('BIB_DOCUMENT_EDITOR');
+   }
+   function setDocumentMaintainer($value) {
+      $this->_addExtra('BIB_DOCUMENT_MAINTAINER', (string)$value);
+   }
+   function getDocumentMaintainer() {
+      return (string) $this->_getExtra('BIB_DOCUMENT_MAINTAINER');
+   }
+   function setDocumentReleaseNumber($value) {
+      $this->_addExtra('BIB_DOCUMENT_RELEASE_NUMBER', (string)$value);
+   }
+   function getDocumentReleaseNumber() {
+      return (string) $this->_getExtra('BIB_DOCUMENT_RELEASE_NUMBER');
+   }
+   function setDocumentReleaseDate($value) {
+      $this->_addExtra('BIB_DOCUMENT_RELEASE_DATE', (string)$value);
+   }
+   function getDocumentReleaseDate() {
+      return (string) $this->_getExtra('BIB_DOCUMENT_RELEASE_DATE');
+   }
+/** Ende Dokumentenverwaltung **/
+
+
 /** End: detailed bib values **/
 
 
@@ -523,11 +551,11 @@ class cs_material_item extends cs_item {
 
 
    function getSectionList() {
-      $section_list = $this->_getValue('section_for');      
+      $section_list = $this->_getValue('section_for');
       if (empty($section_list) ) {
          $this->_data['section_for'] = $this->_getSectionListForCurrentVersion();
          $section_list = $this->_data['section_for'];
-      }      
+      }
       return $section_list;
    }
 

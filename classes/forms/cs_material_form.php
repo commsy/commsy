@@ -55,11 +55,11 @@ class cs_material_form extends cs_rubric_form {
    var $_bib_kind = 'none';            // string holding the kind of bib data to show
 
    var $_workflow_array = array();
-   
+
    var $_workflow_resubmission_array = array();
-   
+
    var $_workflow_validity_array = array();
-   
+
   /** constructor: cs_material_form
     * the only available constructor
     *
@@ -202,7 +202,7 @@ class cs_material_form extends cs_rubric_form {
       $temp_array['value'] = 0;
       $public_array[] = $temp_array;
       $this->_public_array = $public_array;
-      
+
       $context_item = $this->_environment->getCurrentContextItem();
       $workflow_array = array();
       $temp_array['text']  = $this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_NONE');;
@@ -230,7 +230,7 @@ class cs_material_form extends cs_rubric_form {
       $temp_array['value'] = '2_red';
       $workflow_array[] = $temp_array;
       $this->_workflow_array = $workflow_array;
-      
+
       $validity_array = array();
       $temp_array['text']  = $this->_translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_NONE');;
       $temp_array['value'] = '3_none';
@@ -257,13 +257,13 @@ class cs_material_form extends cs_rubric_form {
       $temp_array['value'] = '2_red';
       $validity_array[] = $temp_array;
       $this->_validity_array = $validity_array;
-      
+
       // Workflow resubmission
-      
+
       // All users who ever edited this item
-      
+
       $modifier_array = array();
-      
+
       if ( !empty($_GET['iid']) and mb_strtolower($_GET['iid'], 'UTF-8') != 'new') {
          $manager = $this->_environment->getManager(CS_MATERIAL_TYPE);
          $item = $manager->getItem($_GET['iid']);
@@ -278,7 +278,7 @@ class cs_material_form extends cs_rubric_form {
          $link_modifier_item_manager = $this->_environment->getLinkModifierItemManager();
          $user_manager = $this->_environment->getUserManager();
          $modifiers = $link_modifier_item_manager->getModifiersOfItem($item->getItemID());
-         
+
          foreach($modifiers as $modifier_id) {
             $modificator = $user_manager->getItem($modifier_id);
             //Links only at accessible contact pages
@@ -309,7 +309,7 @@ class cs_material_form extends cs_rubric_form {
                   $params['iid'] = $modificator->getItemID();
                   if(!$modificator->isDeleted() and $modificator->maySee($user)){
                      if ( !$this->_environment->inPortal() ){
-                        $text_converter = $this->_environment->getTextConverter();                
+                        $text_converter = $this->_environment->getTextConverter();
                         $modifier_array[] = ahref_curl($this->_environment->getCurrentContextID(),
                                            'user',
                                            'detail',
@@ -341,7 +341,7 @@ class cs_material_form extends cs_rubric_form {
          }
          $modifier_array = array_unique($modifier_array);
       }
-      
+
       $workflow_resubmission_array = array();
       $workflow_validity_array = array();
       $current_user = $this->_environment->getCurrentUserItem();
@@ -411,6 +411,10 @@ class cs_material_form extends cs_rubric_form {
                               'value' => 'manuscript');
          $bib_kinds[] = array('text'  => $this->_translator->getMessage('MATERIAL_BIB_WEBSITE'),
                               'value' => 'website');
+      	 /** Start Dokumentenverwaltung **/
+         $bib_kinds[] = array('text'  => $this->_translator->getMessage('MATERIAL_BIB_DOCUMENT'),
+                              'value' => 'document');
+      	 /** Ende Dokumentenverwaltung **/
          $this->_form->addSelect('bib_kind',$bib_kinds,'',$this->_translator->getMessage('MATERIAL_BIBLIOGRAPHIC'),'', 1, false,false,true,$this->_translator->getMessage('MATERIAL_BIB_KIND_BUTTON'),'option','','',18.3,true);
          switch ( $this->_bib_kind ) {
             case 'book':
@@ -524,6 +528,14 @@ class cs_material_form extends cs_rubric_form {
             $this->_form->addTextField('url','',$this->_translator->getMessage('MATERIAL_URL'),'',200,35,true);
             $this->_form->addTextField('url_date','',$this->_translator->getMessage('MATERIAL_URL_DATE'),'',10,20);
             break;
+      		/** Start Dokumentenverwaltung **/
+            case 'document':
+               $this->_form->addTextField('document_editor','',$this->_translator->getMessage('MATERIAL_BIB_DOCUMENT_EDITOR'),$this->_translator->getMessage('MATERIAL_BIB_DOCUMENT_EDITOR'),200,35,false);
+               $this->_form->addTextField('document_maintainer','',$this->_translator->getMessage('MATERIAL_BIB_DOCUMENT_MAINTAINER'),$this->_translator->getMessage('MATERIAL_BIB_DOCUMENT_MAINTAINER'),200,35,false);
+               $this->_form->addTextField('document_release_number','',$this->_translator->getMessage('MATERIAL_BIB_DOCUMENT_RELEASE_NUMBER'),$this->_translator->getMessage('MATERIAL_BIB_DOCUMENT_RELEASE_NUMBER'),200,35,false);
+               $this->_form->addTextField('document_release_date','',$this->_translator->getMessage('MATERIAL_BIB_DOCUMENT_RELEASE_DATE'),$this->_translator->getMessage('MATERIAL_BIB_DOCUMENT_RELEASE_DATE'),200,35,false);
+               break;
+      		/** Ende Dokumentenverwaltung **/
             case 'common':
                   $this->_form->addTextField('author','',$this->_translator->getMessage('MATERIAL_AUTHORS'),$this->_translator->getMessage('MATERIAL_AUTHORS_DESC'),200,35,false);
                   $this->_form->addTextField('publishing_date','',$this->_translator->getMessage('MATERIAL_YEAR'),$this->_translator->getMessage('MATERIAL_YEAR'),4,4,false);
@@ -721,7 +733,7 @@ class cs_material_form extends cs_rubric_form {
                }
             }
          }
-         
+
       } else {
          $this->_form->addHidden('public','');
          $this->_form->addCheckbox('external_viewer',1,'',$this->_translator->getMessage('COMMON_RIGHTS'),$this->_translator->getMessage('EXTERNAL_VIEWER_DESCRIPTION'),$this->_translator->getMessage('COMMON_RIGHTS_DESCRIPTION'),false,false,'','',true,false);
@@ -764,21 +776,21 @@ class cs_material_form extends cs_rubric_form {
             $tmp_array['timeStart'] = '';
          }
          $this->_values['start_date_time'] = $tmp_array;
-         
+
          if ($current_context->withWorkflow()){
             $this->_values['workflow_traffic_light'] = $this->_form_post['workflow_traffic_light'];
-            
+
             $this->_values['workflow_resubmission_date'] = array('workflow_resubmission_date' => $this->_form_post['workflow_resubmission_date']);
             $this->_values['workflow_resubmission_who'] = $this->_form_post['workflow_resubmission_who'];
             $this->_values['workflow_resubmission_who_additional'] = $this->_form_post['workflow_resubmission_who_additional'];
             $this->_values['workflow_resubmission_traffic_light'] = $this->_form_post['workflow_resubmission_traffic_light'];
-            
+
             $this->_values['workflow_validity_date'] = array('workflow_validity_date' => $this->_form_post['workflow_validity_date']);
             $this->_values['workflow_validity_who'] = $this->_form_post['workflow_validity_who'];
             $this->_values['workflow_validity_who_additional'] = $this->_form_post['workflow_validity_who_additional'];
             $this->_values['workflow_validity_traffic_light'] = $this->_form_post['workflow_validity_traffic_light'];
          }
-         
+
       }elseif (isset($this->_item)) {
          $this->_values['modification_date'] = $this->_item->getModificationDate();
          $this->_values['iid'] = $this->_item->getItemID();
@@ -814,7 +826,7 @@ class cs_material_form extends cs_rubric_form {
          }else{
             $this->_values['public'] = $this->_item->isPublic();
          }
-         
+
          if ($current_context->withWorkflow()){
             $this->_values['workflow_traffic_light'] = $this->_item->getWorkflowTrafficLight();
             $this->_values['workflow_resubmission'] = $this->_item->getWorkflowResubmission();
@@ -826,7 +838,7 @@ class cs_material_form extends cs_rubric_form {
             $this->_values['workflow_resubmission_who'] = $this->_item->getWorkflowResubmissionWho();
             $this->_values['workflow_resubmission_who_additional'] = $this->_item->getWorkflowResubmissionWhoAdditional();
             $this->_values['workflow_resubmission_traffic_light'] = $this->_item->getWorkflowResubmissionTrafficLight();
-            
+
             $this->_values['workflow_validity'] = $this->_item->getWorkflowValidity();
             if($this->_item->getWorkflowValidityDate() != '' and $this->_item->getWorkflowValidityDate() != '0000-00-00 00:00:00'){
                $this->_values['workflow_validity_date']['workflow_validity_date'] = getDateInLang($this->_item->getWorkflowValidityDate());
@@ -837,7 +849,7 @@ class cs_material_form extends cs_rubric_form {
             $this->_values['workflow_validity_who_additional'] = $this->_item->getWorkflowValidityWhoAdditional();
             $this->_values['workflow_validity_traffic_light'] = $this->_item->getWorkflowValidityTrafficLight();
          }
-         
+
          // rubric connections
          $this->_setValuesForRubricConnections();
 
@@ -861,6 +873,14 @@ class cs_material_form extends cs_rubric_form {
          $this->_values['common'] = $this->_item->getBibliographicValues();
          $this->_values['url'] = $this->_item->getURL();
          $this->_values['url_date'] = $this->_item->getURLDate();
+
+         /** Start Dokumentenverwaltung **/
+         $this->_values['document_editor'] = $this->_item->getDocumentEditor();
+         $this->_values['document_maintainer'] = $this->_item->getDocumentMaintainer();
+         $this->_values['document_release_number'] = $this->_item->getDocumentReleaseNumber();
+         $this->_values['document_release_date'] = $this->_item->getDocumentReleaseDate();
+      	 /** Ende Dokumentenverwaltung **/
+
          if ( empty($this->_values['bib_kind']) and !empty($this->_values['common']) ) {
             $this->_values['bib_kind'] ='common';
          }

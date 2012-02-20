@@ -159,7 +159,7 @@ class cs_material_detail_view extends cs_detail_view {
 
       //workflow
       $html .= $this->_getWorkflowReadAction($item,$current_user,$current_context);
-      
+
       return $html;
    }
 
@@ -404,7 +404,14 @@ class cs_material_detail_view extends cs_detail_view {
          $biblio = $item->getBibliographicValues();
       }elseif($bib_kind =='website'){
          $biblio = $item->getAuthor().',';
-      }else{
+      }
+      /** Start Dokumentenverwaltung **/
+      elseif($bib_kind =='document'){
+         $biblio = '';
+      }
+      /** Ende Dokumentenverwaltung **/
+
+      else{
          $biblio = $item->getAuthor().' ('.$item->getPublishingDate().'). ';
       }
       if($bib_kind !='common'){
@@ -600,6 +607,39 @@ class cs_material_detail_view extends cs_detail_view {
                   $biblio .= '.';
                }
                break;
+      		/** Start Dokumentenverwaltung **/
+            case 'document':
+                $formal_data_bib = array();
+                $html .= $this->_translator->getMessage('MATERIAL_BIB_DOCUMENT_ADMINISTRATION_INFO');
+        		if ( $item->getDocumentEditor() ) {
+                	$temp_array = array();
+         			$temp_array[] = $this->_translator->getMessage('MATERIAL_BIB_DOCUMENT_EDITOR');
+         			$temp_array[] = $item->getDocumentEditor();
+         			$formal_data_bib[] = $temp_array;
+         		}
+               	if ( $item->getDocumentMaintainer() ) {
+                	$temp_array = array();
+         			$temp_array[] = $this->_translator->getMessage('MATERIAL_BIB_DOCUMENT_MAINTAINER');
+         			$temp_array[] = $item->getDocumentMaintainer();
+         			$formal_data_bib[] = $temp_array;
+               	}
+               	if ( $item->getDocumentReleaseNumber() ) {
+                	$temp_array = array();
+         			$temp_array[] = $this->_translator->getMessage('MATERIAL_BIB_DOCUMENT_RELEASE_NUMBER');
+         			$temp_array[] = $item->getDocumentReleaseNumber();
+         			$formal_data_bib[] = $temp_array;
+               	}
+               	if ( $item->getDocumentReleaseDate() ) {
+                	$temp_array = array();
+         			$temp_array[] = $this->_translator->getMessage('MATERIAL_BIB_DOCUMENT_RELEASE_DATE');
+         			$temp_array[] = $item->getDocumentReleaseDate();
+         			$formal_data_bib[] = $temp_array;
+               	}
+      			if ( !empty($formal_data_bib) ) {
+         			$html .= $this->_getFormalDataAsHTML($formal_data_bib);
+			    }
+               	break;
+      		/** Ende Dokumentenverwaltung **/
             case 'none':
             default:
                $biblio .= $item->getBibliographicValues();

@@ -444,6 +444,23 @@ else {
                $material_item->setURLDate($_POST['url_date']);
             }
 
+            /** Start Dokumentenverwaltung **/
+            if ( isset($_POST['document_editor']) and $material_item->getDocumentEditor() != $_POST['document_editor'] ) {
+               $material_item->setDocumentEditor($_POST['document_editor']);
+            }
+            if ( isset($_POST['document_maintainer']) and $material_item->getDocumentMaintainer() != $_POST['document_maintainer'] ) {
+               $material_item->setDocumentMaintainer($_POST['document_maintainer']);
+            }
+            if ( isset($_POST['document_release_number']) and $material_item->getDocumentReleaseNumber() != $_POST['document_release_number'] ) {
+               $material_item->setDocumentReleaseNumber($_POST['document_release_number']);
+            }
+            if ( isset($_POST['document_release_date']) and $material_item->getDocumentReleaseDate() != $_POST['document_release_date'] ) {
+               $material_item->setDocumentReleaseDate($_POST['document_release_date']);
+            }
+            /** Ende Dokumentenverwaltung **/
+
+
+
             if ( isset($_POST['external_viewer']) and isset($_POST['external_viewer_accounts']) ) {
                $user_ids = explode(" ",$_POST['external_viewer_accounts']);
                $material_item->setExternalViewerAccounts($user_ids);
@@ -481,7 +498,7 @@ else {
             if ( isset($_POST['workflow_resubmission_traffic_light']) and $material_item->getWorkflowResubmissionTrafficLight() != $_POST['workflow_resubmission_traffic_light'] ) {
                $material_item->setWorkflowResubmissionTrafficLight($_POST['workflow_resubmission_traffic_light']);
             }
-            
+
             if ( isset($_POST['workflow_validity']) and $material_item->getWorkflowValidity() != $_POST['workflow_validity'] ) {
                $material_item->setWorkflowValidity($_POST['workflow_validity']);
             } else if (!isset($_POST['workflow_validity'])) {
@@ -509,7 +526,7 @@ else {
             if ( isset($_POST['workflow_validity_traffic_light']) and $material_item->getWorkflowValidityTrafficLight() != $_POST['workflow_validity_traffic_light'] ) {
                $material_item->setWorkflowValidityTrafficLight($_POST['workflow_validity_traffic_light']);
             }
-            
+
             if ( $context_item->isCommunityRoom() and $context_item->isOpenForGuests() ) {
                $old_world_public = $material_item->getWorldPublic();
                if ( ( isset($_POST['world_public']) and $old_world_public == 0) or
@@ -633,7 +650,7 @@ else {
                $item_manager = $environment->getItemManager();
                $item_manager->markItemAsWorkflowNotReadForAllUsers($material_item->getItemID());
                $item_manager->markItemAsWorkflowRead($material_item->getItemID(), $current_user->getItemID());
-             
+
                // send notifications if world public status is requested
                if ( $material_item->getWorldPublic() == 1
                     and isset($context_item)
