@@ -342,7 +342,7 @@
 					
 					// save item
 					if($this->_command === 'new') {
-						// TODO: impelment form check
+						// TODO: implement form check
 						$correct = true;
 						if($correct) {
 							// create new item

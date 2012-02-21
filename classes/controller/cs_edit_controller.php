@@ -35,6 +35,40 @@
 			parent::processTemplate();
 		}
 		
+		protected function checkFormData() {
+			try {
+				$this->checkForm();
+				
+				return false;
+			} catch(cs_form_mandatory_exception $e) {
+				// TODO: implement in edit form
+				echo "mandatory catched";
+			} catch(cs_form_value_exception $e) {
+				// TODO: implement in edit form
+				echo "value catched";
+			}
+		}
+		
+		private function checkForm() {
+			foreach($this->getFieldInformation() as $field) {
+				
+				// check mandatory
+				if(isset($field['mandatory']) || $field['mandatory'] === true) {
+					if(!isset($_POST['form_data'][$field['name']]) || trim($_POST['form_data'][$field['name']]) === '') {
+						throw new cs_form_mandatory_exception('missing mandatory field');
+						
+						return false;
+					}
+				}
+				
+				// check values
+				// TODO:
+				//throw new cs_form_value_exception('value exception');
+			}
+		}
+		
+		abstract protected function getFieldInformation();
+		
 		protected function setFilesForItem(cs_item $item, $post_file_ids) {
 			$session = $this->_environment->getSessionItem();
 			

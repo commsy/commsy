@@ -21,6 +21,10 @@
 			set_error_handler(array($this, 'errorHandler'));
 			set_exception_handler(array($this, 'exceptionHandler'));
 			//register_shutdown_function(array($this, 'shutdownHandler'));
+			
+			// load exceptions
+			require_once('classes/exceptions/cs_form_exceptions.php');
+			require_once('classes/exceptions/cs_detail_exceptions.php');
 		}
 		
 		public function errorHandler($error_code, $error_string, $error_file, $error_line, $error_context) {
@@ -35,13 +39,13 @@
 		 * this will catch unhandled exceptions and exceptions from error handler
 		 */
 		public function exceptionHandler($exception) {
+			echo "an unhandled exception / error occured: </br></br>\n";
+			
 			global $c_show_debug_infos;
 			if(isset($c_show_debug_infos) && $c_show_debug_infos === true) {
-				/*
-				echo "Problem in " . $exception->getFile() . " on line " . $exception->getLine() . "<br>\n";
+				echo "See " . $exception->getFile() . " on line " . $exception->getLine() . "<br>\n";
 				pr($exception->getMessage());
 				echo "-------------------------<br>\n";
-				*/
 			}
 			//pr($exception);
 			//exit;
@@ -75,7 +79,18 @@
 			if(!method_exists($this, $function)) die('Method ' . $function . ' does not exists!');
 
 			// call
-			call_user_func_array(array($this, $function), array());
+			try {
+				call_user_func_array(array($this, $function), array());
+			} catch(cs_detail_item_type_exception $e) {
+				// reset template vars
+				$e->resetTemplateVars($this->_tpl_engine);
+				
+				// set template
+				$this->_tpl_file = 'error';
+				
+				$this->assign('exception', 'message_tag', $e->getErrorMessageTag());
+			}
+			
 		}
 
 		/**
@@ -120,5 +135,7 @@
 			$this->assign('environment', 'is_moderator', $current_user->isModerator());
 			$this->assign('translation', 'act_month_long', getLongMonthName(date("n") - 1));
 			$this->assign('environment', 'lang', $this->_environment->getSelectedLanguage());
+			$this->assign('environment', 'post', $_POST);
+			$this->assign('environment', 'get', $_GET);
 		}
 	}

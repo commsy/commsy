@@ -41,17 +41,10 @@
 			// TODO: include_once('include/inc_delete_entry.php');
 			
 			// check for deleted
-			if($this->_item->isDeleted()) {
-				// TODO: implement error handling
-				/*
-				 * $params = array();
-   $params['environment'] = $environment;
-   $params['with_modifying_actions'] = true;
-   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
-   unset($params);
-   $errorbox->setText($translator->getMessage('ITEM_NOT_AVAILABLE'));
-   $page->add($errorbox);
-				 */
+			if(!($this->_manager instanceof cs_todos_manager)) {
+				throw new cs_detail_item_type_exception('wrong item type', 0);
+			} elseif($this->_item->isDeleted()) {
+				throw new cs_detail_item_type_exception('item deleted', 1);
 			}
 			
 			// check for visibility

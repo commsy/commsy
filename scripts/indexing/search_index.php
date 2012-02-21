@@ -6,7 +6,9 @@
 		}
 	}
 	
-	include_once('../../etc/cs_config.php');
+	chdir('../../');
+	
+	include_once('etc/cs_config.php');
 	$DB_Name     = $db['normal']['database'];
 	$DB_Hostname = $db['normal']['host'];
 	$DB_Username = $db['normal']['user'];
@@ -18,7 +20,11 @@
 	mysql_connect($DB_Hostname, $DB_Username, $DB_Password);
 	mysql_select_db($DB_Name);
 	
-	include_once('../../etc/cs_constants.php');
+	include_once('etc/cs_constants.php');
+	
+	// setup commsy-environment
+	include_once('classes/cs_environment.php');
+	$environment = new cs_environment();
 	
 	// add database tables
 	echo "creating database tables, if not existing...";
@@ -57,16 +63,18 @@
 	mysql_query($sql);
 	echo "done\n";
 	
-	echo "truncating tables...";
-	$sql = "TRUNCATE `search_index`;";
-	mysql_query($sql);
-	
-	$sql = "TRUNCATE `search_time`;";
-	mysql_query($sql);
-	
-	$sql = "TRUNCATE `search_word`;";
-	mysql_query($sql);
-	echo "done\n";
+	if(in_array('-t', $argv)) {
+		echo "truncating tables...";
+		$sql = "TRUNCATE `search_index`;";
+		mysql_query($sql);
+		
+		$sql = "TRUNCATE `search_time`;";
+		mysql_query($sql);
+		
+		$sql = "TRUNCATE `search_word`;";
+		mysql_query($sql);
+		echo "done\n";
+	}
 	
 	//////////////////////////////
 	////// INDEXING //////////////
@@ -416,6 +424,43 @@
 	}
 	echo "done\n";
 	
+	// groups <=> user
+	echo "collecting group <=> user relationships...";
+	$user_manager = $environment->getUserManager();
+	foreach($indexing as &$index) {
+		if($index['type'] !== CS_GROUP_TYPE) continue;
+		
+		$group_id = $index['db']['item_id'];
+		
+		$query = '
+			SELECT DISTINCT
+				CONCAT(user.firstname, " ", user.lastname) AS search_data
+			FROM
+				user
+			LEFT JOIN
+				link_items AS linkA
+			ON
+				linkA.first_item_id = user.item_id AND linkA.second_item_type = "group"
+			LEFT JOIN
+				link_items AS linkB
+			ON
+				linkB.second_item_id = user.item_id AND linkB.first_item_type = "group"
+			WHERE
+				(
+					linkA.first_item_id = ' . mysql_real_escape_string($group_id) . ' OR
+					linkA.second_item_id = ' . mysql_real_escape_string($group_id) . '
+				) OR (
+					linkB.first_item_id = ' . mysql_real_escape_string($group_id) . ' OR
+					linkB.second_item_id = ' . mysql_real_escape_string($group_id) . '
+				)
+		';
+		$res = mysql_query($query);
+		while($row = mysql_fetch_assoc($res)) {
+			$index['db']['search_data'] .= ' ' . $row['search_data'];
+		}
+	}
+	echo "done\n";
+	
 	// discussion articles
 	echo "collecting discussion articles data...";
 	$query = '
@@ -601,7 +646,7 @@
 	$replace = array();
 	
 	// define some search/replace rules
-	include('../../etc/cs_stopwords.php');
+	include('etc/cs_stopwords.php');
    	foreach($stopwords as $language => $word_list) {
    		$search[] = "= " . implode(" | ", $word_list) . " =i";			$replace[] = " ";	// remove stopwords
    	}

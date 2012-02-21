@@ -40,16 +40,7 @@
 			$item_manager = $this->_environment->getItemManager();
 			$type = $item_manager->getItemType($_GET['iid']);
 			if($type !== CS_USER_TYPE) {
-				// TODO: implement error handling
-				/*
-				 * $params = array();
-   $params['environment'] = $environment;
-   $params['with_modifying_actions'] = true;
-   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
-   unset($params);
-   $errorbox->setText($translator->getMessage('ERROR_ILLEGAL_IID'));
-   $page->add($errorbox);
-				 */
+				throw new cs_detail_item_type_exception('wrong item type', 0);
 			} else {
 				// TODO: check if unused
 				// used to signal which "creator infos" of annotations are expanded...
@@ -71,16 +62,7 @@
 				
 				// check if item is deleted
 				elseif($this->_item->isDeleted()) {
-					// TODO: implement error handling
-					/*
-					 * $params = array();
-      $params['environment'] = $environment;
-      $params['with_modifying_actions'] = true;
-      $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
-      unset($params);
-      $errorbox->setText($translator->getMessage('ITEM_NOT_AVAILABLE'));
-      $page->add($errorbox);
-					 */
+					throw new cs_detail_item_type_exception('item deleted', 1);
 				}
 				
 				// check for access rights

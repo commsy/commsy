@@ -14,14 +14,14 @@
 		{foreach $room.search_content as $rubric}
 			<div class="content_item"> <!-- Start content_item -->
 	            <div class="ci_head_actions">
-	                <a href="" class="open_close" title="{if $rubric.hidden}___COMMON_SHOW___{else}___COMMON_HIDE___{/if}">
-	                	<img src="{$basic.tpl_path}img/{if $rubric.hidden}btn_ci_open.gif{else}btn_ci_close.gif{/if}" alt="{if $rubric.hidden}___COMMON_SHOW___{else}___COMMON_HIDE___{/if}" />
+	                <a href="" class="open_close" title="{*{if $rubric.hidden}*}___COMMON_SHOW___{*{else}___COMMON_HIDE___{/if}*}">
+	                	<img src="{$basic.tpl_path}img/{*{if $rubric.hidden}*}btn_ci_open.gif{*{else}btn_ci_close.gif{/if}*}" alt="{*{if $rubric.hidden}*}___COMMON_SHOW___{*{else}___COMMON_HIDE___{/if}*}" />
 	                </a>
 	            </div>
 	            <h2>
 	            	___COMMON_{$rubric@key|upper}_INDEX___
 	                <span>
-	                	({$rubric.message_tag})
+	                	({$rubric|count})
 	                </span>
 	            </h2>
             
@@ -32,13 +32,13 @@
 		                    <div class="column_380">
 		                        {if $rubric@key == 'discussion'}
 			                        <p class="column_addon">
-			                        	{$item.column_1_addon}
+			                        	{*{$item.column_1_addon}*}
 			                        </p>
 		                        {/if}
 		                        <p>
-									{if $item.noticed != ''}
+									{*{if $item.noticed != ''}
 										<a href="" class="new_item"><img title="{$item.noticed}" class="new_item" src="{$basic.tpl_path}img/flag_neu.gif" alt="*" /></a>
-		         					{/if}
+		         					{/if}*}
 			                        <a href="commsy.php?cid={$environment.cid}&mod={$rubric@key}&fct=detail&iid={$result.item_id}">{$result.title}</a>
 		                        </p>
 		                    </div>
@@ -48,11 +48,13 @@
 		                    <div class="column_194">
 		                        <p>
 		                        	{$result.type}
+		                        	{*
 			                        {if $rubric@key == 'material' or $rubric@key == 'announcement' or $rubric@key == 'discussion'}
 			                            <a href="commsy.php?cid={$environment.cid}&mod=user&fct=detail&iid={$item.user_iid}">{$item.column_3}</a>
 			                        {else}
 			                        	{$item.column_3}
 			                        {/if}
+			                        *}
 		                        </p>
 		                    </div>
 			                <div class="clear"> </div>
@@ -67,14 +69,14 @@
 {block name=room_right_portlets prepend}
 	<div class="portlet_rc">
 		<a href="" title="{if $h}___COMMON_SHOW___{else}___COMMON_HIDE___{/if}" class="btn_head_rc">
-			<img src="{$basic.tpl_path}img/{if $h}btn_open_rc.gif{else}btn_close_rc.gif{/if}" alt="{if $h}___COMMON_SHOW___{else}___COMMON_HIDE___{/if}" />
+			<img src="{$basic.tpl_path}img/{*{if $h}*}btn_open_rc.gif{*{else}btn_close_rc.gif{/if}*}" alt="{*{if $h}*}___COMMON_SHOW___{*{else}___COMMON_HIDE___{/if}*}" />
 		</a>
 		<h2>
 			Suche
 		</h2>
 
 		<div class="clear"></div>
-		<div class="portlet_rc_body{if $h} hidden{/if}">
+		<div class="portlet_rc_body{*{if $h} hidden{/if}*}">
 			Begriffe:
 			{foreach $room.search_sidebar.search_words as $word}
 				{$word}

@@ -52,16 +52,7 @@
 			
 			// check for right manager
 			if(!($this->_manager instanceof cs_material_manager)) {
-				//TODO: error handling
-				/*
-				 * $params = array();
-   $params['environment'] = $environment;
-   $params['with_modifying_actions'] = true;
-   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
-   unset($params);
-   $errorbox->setText($translator->getMessage('ERROR_ILLEGAL_IID'));
-   $page->add($errorbox);
-				 */
+				throw new cs_detail_item_type_exception('wrong item type', 0);
 			} else {
 				// load the shown item
 				$material_version_list = $this->_manager->getVersionList($this->_item->getItemID());
@@ -74,17 +65,7 @@
 					$item = $this->_manager->getItem($this->_item->getItemID());
 					$this->_manager->setDeleteLimit(true);
 					if(!empty($item) && $item->isDeleted()) {
-						//TODO: error handlling
-						/*
-						 * 
-						 * $params = array();
-         $params['environment'] = $environment;
-         $params['with_modifying_actions'] = true;
-         $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
-         unset($params);
-         $errorbox->setText($translator->getMessage('ITEM_NOT_AVAILABLE'));
-         $page->add($errorbox);
-						 */
+						throw new cs_detail_item_type_exception('item deleted', 1);
 					}
 				}
 				
@@ -433,6 +414,8 @@
 		         $biblio = $this->_item->getBibliographicValues();
 			} elseif($bib_kind === 'website') {
 				$biblio = $this->_item->getAuthor() . ',';
+			} elseif($bib_kind === 'document') {
+				$biblio = '';
 			} else {
 				$biblio = $this->_item->getAuthor() . ' (' . $this->_item->getPublishingDate() . '). ';
 			}
@@ -631,6 +614,37 @@
                   $biblio .= '.';
                }
                break;
+            case 'document':
+                $formal_data_bib = array();
+                $html .= $this->_translator->getMessage('MATERIAL_BIB_DOCUMENT_ADMINISTRATION_INFO');
+        		if ( $item->getDocumentEditor() ) {
+                	$temp_array = array();
+         			$temp_array[] = $this->_translator->getMessage('MATERIAL_BIB_DOCUMENT_EDITOR');
+         			$temp_array[] = $item->getDocumentEditor();
+         			$formal_data_bib[] = $temp_array;
+         		}
+               	if ( $item->getDocumentMaintainer() ) {
+                	$temp_array = array();
+         			$temp_array[] = $this->_translator->getMessage('MATERIAL_BIB_DOCUMENT_MAINTAINER');
+         			$temp_array[] = $item->getDocumentMaintainer();
+         			$formal_data_bib[] = $temp_array;
+               	}
+               	if ( $item->getDocumentReleaseNumber() ) {
+                	$temp_array = array();
+         			$temp_array[] = $this->_translator->getMessage('MATERIAL_BIB_DOCUMENT_RELEASE_NUMBER');
+         			$temp_array[] = $item->getDocumentReleaseNumber();
+         			$formal_data_bib[] = $temp_array;
+               	}
+               	if ( $item->getDocumentReleaseDate() ) {
+                	$temp_array = array();
+         			$temp_array[] = $this->_translator->getMessage('MATERIAL_BIB_DOCUMENT_RELEASE_DATE');
+         			$temp_array[] = $item->getDocumentReleaseDate();
+         			$formal_data_bib[] = $temp_array;
+               	}
+      			if ( !empty($formal_data_bib) ) {
+         			$return[] = $formal_data_bib;
+			    }
+               	break;
             case 'none':
             default:
                $biblio .= $this->_item->getBibliographicValues();

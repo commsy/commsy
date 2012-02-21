@@ -44,16 +44,7 @@
 			
 			$type = $this->_item->getItemType();
 			if($type !== CS_TOPIC_TYPE) {
-				//TODO: implement error handling
-				/*
-				 *  $params = array();
-   $params['environment'] = $environment;
-   $params['with_modifying_actions'] = true;
-   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
-   unset($params);
-   $errorbox->setText($translator->getMessage('ERROR_ILLEGAL_IID'));
-   $page->add($errorbox);
-				 */
+				throw new cs_detail_item_type_exception('wrong item type', 0);
 			} else {
 				/*
 				 * $mode='browse';
@@ -92,16 +83,7 @@
    */
 				// check for deletion
 				if($this->_item->isDeleted()) {
-					//TODO: implement error handling
-					/*
-					 * $params = array();
-			      $params['environment'] = $environment;
-			      $params['with_modifying_actions'] = true;
-			      $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
-			      unset($params);
-			      $errorbox->setText($translator->getMessage('ITEM_NOT_AVAILABLE'));
-			      $page->add($errorbox);
-					 */
+					throw new cs_detail_item_type_exception('item deleted', 1);
 				}
 				
 				// check for visibility

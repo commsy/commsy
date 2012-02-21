@@ -277,16 +277,7 @@
 			
 			// check for correct type
 			if($type !== CS_GROUP_TYPE) {
-				// TODO: implement error handling
-				/*
-				 * $params = array();
-   $params['environment'] = $environment;
-   $params['with_modifying_actions'] = true;
-   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
-   unset($params);
-   $errorbox->setText($translator->getMessage('ERROR_ILLEGAL_IID'));
-   $page->add($errorbox);
-				 */
+				throw new cs_detail_item_type_exception('wrong item type', 0);
 			} else {
 				// used to signal which "craetor infos" of annotations are expanded...
 				$creatorInfoStatus = array();
@@ -299,16 +290,7 @@
 				
 				// check for deleted
 				if($this->_item->isDeleted()) {
-					// TODO: implement error handling
-					/*
-					 * $params = array();
-      $params['environment'] = $environment;
-      $params['with_modifying_actions'] = true;
-      $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
-      unset($params);
-      $errorbox->setText($translator->getMessage('ITEM_NOT_AVAILABLE'));
-      $page->add($errorbox);
-					 */
+					throw new cs_detail_item_type_exception('item deleted', 1);
 				}
 				
 				// check for visibility

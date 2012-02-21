@@ -385,6 +385,11 @@ if ( $environment->inPrivateRoom()
 			// 2. find items matching these words
 			/////////////////////////////////////////
 			
+			$search_rubrics = $rubric_array;
+			if(!empty($this->_params['selrubric'])) {
+				$search_rubrics = array($this->_params['selrubric']);
+			}
+			
 			/*
 			 * fortunately, it is possible to limit this selection by rubrics, because all indexed entries are
 			 * associated to their proper main item
@@ -404,22 +409,27 @@ if ( $environment->inPrivateRoom()
 					(
 			';
 			
-			$size = sizeof($rubric_array);
+			$size = sizeof($search_rubrics);
 			for($i = 0; $i < $size; $i++) {
 				$query .= '
-					si_item_type = "' . mysql_real_escape_string($rubric_array[$i]) . '"';
+					si_item_type = "' . mysql_real_escape_string($search_rubrics[$i]) . '"';
 				
 				if($i < $size - 1) $query .= ' OR ';
 			}
 			$query .= ') AND (';
 			
-			$size = sizeof($word_ids);
-			for($i = 0; $i < $size; $i++) {
-				$query .= '
-					si_sw_id = ' . $word_ids[$i]['sw_id'];
-				
-				if($i < $size - 1) $query .= ' OR ';
+			if(!empty($word_ids)) {
+				$size = sizeof($word_ids);
+				for($i = 0; $i < $size; $i++) {
+					$query .= '
+						si_sw_id = ' . $word_ids[$i]['sw_id'];
+					
+					if($i < $size - 1) $query .= ' OR ';
+				}
+			} else {
+				$query .= 'FALSE';
 			}
+			
 			$query .= ')';
 			
 			$query .= '
@@ -437,7 +447,7 @@ if ( $environment->inPrivateRoom()
 			/////////////////////////////////////////
 			
 			foreach($results as $result) {
-				$this->_items[$result['si_item_type']][$result['si_item_id']] = $result['si_count'];
+				$this->_items[$this->rubric2ItemType($result['si_item_type'])][$result['si_item_id']] = $result['si_count'];
 			}
 			
 			//pr($items);
@@ -567,7 +577,7 @@ if ( $environment->inPrivateRoom()
 					}
 					
 					$session->setValue('cid' . $this->_environment->getCurrentContextID() . '_' . $rubric . '_index_ids', $rubric_ids);
-					$campus_search_ids = array_merge($compus_search_ids, $rubric_ids);
+					$campus_search_ids = array_merge($campus_search_ids, $rubric_ids);
 					
 					/*
 
@@ -592,16 +602,21 @@ if($interval == 0){
 			
 			
 			/////////////////////////////////////////
-			// 5. sort list by relevanz and filter item ids
+			// 5. filter item ids
 			/////////////////////////////////////////
 			
 			$entry = $result_list->getFirst();
 			while($entry) {
+				/*
+				if($entry instanceof cs_group_item) {
+					$entry->setType(CS_GROUP_TYPE);
+					$this->_list->add($entry);
+				}*/
+				
 				if(isset($this->_items[$entry->getType()][$entry->getItemID()])) $this->_list->add($entry);
 				
 				$entry = $result_list->getNext();
 			}
-			
 			//echo $this->_list->getCount() . " final results<br>\n";
 			
 			$this->assign('room', 'search_content', $this->getListContent());
@@ -613,10 +628,12 @@ if($interval == 0){
 			
 			$entry = $this->_list->getFirst();
 			while($entry) {
-				$return[$entry->getType()][] = array(
+				$type = $entry->getType() === CS_LABEL_TYPE ? $entry->getLabelType() : $entry->getType();
+				
+				$return[$type][] = array(
 					'title'			=> $entry->getType() === CS_USER_TYPE ? $entry->getFullname() : $entry->getTitle(),
+					'type'			=> $type,
 					'count'			=> $this->_items[$entry->getType()][$entry->getItemID()],
-					'type'			=> $entry->getType(),
 					'item_id'		=> $entry->getItemID()
 				);
 				
@@ -648,24 +665,7 @@ if($interval == 0){
 		
 		
 			/*
-			 * // Get data from database
-global $c_plugin_array;
-foreach ($rubric_array as $rubric) {
-   if ( !isset($c_plugin_array)
-        or !in_array(strtolower($rubric),$c_plugin_array)
-      ) {
-      $rubric_ids = array();
-      $rubric_list = new cs_list();
-      $rubric_manager = $environment->getManager($rubric);
-      if ( $rubric == CS_PROJECT_TYPE ) {
-         $rubric_manager->setQueryWithoutExtra();
-      }
-      
-      			';
-      			
-      			
-      			
-	
+			 * 
    }
 }
 if($interval == 0){
@@ -748,7 +748,7 @@ $session->setValue('cid'.$environment->getCurrentContextID().'_campus_search_ind
 		}*/
 		
 		private function rubric2ItemType($rubric_name) {
-			switch($value) {
+			switch($rubric_name) {
 				case "institution":
 				case "group":
 				case "topic":
@@ -762,7 +762,7 @@ $session->setValue('cid'.$environment->getCurrentContextID().'_campus_search_ind
 		
 		private function getParameters() {
 			// find current search text
-			$this->_params['search'];
+			$this->_params['search'] = '';
 			if(isset($_POST['form_data']['keywords'])) {
 				$this->_params['search'] = $_POST['form_data']['keywords'];
 				//$from = 1;
@@ -829,7 +829,7 @@ $session->setValue('cid'.$environment->getCurrentContextID().'_campus_search_ind
 			}
 			
 			// find selected restrictions
-			$_POST['form_data']['selrestriction'] = 'all';
+			$this->_params['selrestriction'] = 'all';
 			if(isset($_POST['form_data']['selrestriction'])) {
 				if($_POST['form_data']['selrestriction'] === 1) {
 					$this->_params['selrestriction'] = 'title';
@@ -887,11 +887,11 @@ $session->setValue('cid'.$environment->getCurrentContextID().'_campus_search_ind
 			}
 			
 			// find selected activating status
-			$this->_params['selactivatingstatus'] = 2;
-			if(isset($_GET['selactivatingstatus']) && $_GET['selactivatingstatus'] !== '-2') {
-				$this->_params['selactivatingstatus'] = $_GET['selactivatingstatus'];
-			} elseif(isset($_POST['form_data']['selactivatingstatus']) && $_POST['form_data']['selactivatingstatus'] !== '-2') {
-				$this->_params['selactivatingstatus'] = $_POST['form_data']['selactivatingstatus'];
+			$this->_params['sel_activating_status'] = 2;
+			if(isset($_GET['sel_activating_status']) && $_GET['sel_activating_status'] !== '-2') {
+				$this->_params['sel_activating_status'] = $_GET['sel_activating_status'];
+			} elseif(isset($_POST['form_data']['sel_activating_status']) && $_POST['form_data']['sel_activating_status'] !== '-2') {
+				$this->_params['sel_activating_status'] = $_POST['form_data']['sel_activating_status'];
 			}
 		}
 		

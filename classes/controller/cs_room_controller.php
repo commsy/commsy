@@ -63,6 +63,29 @@
 			// call parent
 			parent::processTemplate();
 			
+			
+			/**/
+			
+			// get the info bar image
+			//$image = imagecreatefrompng('htdocs/' . $this->_tpl_path . 'img/info_bar_bg.png');
+			
+			//$white = imagecolorallocate($image, 0xff, 0xff, 0xff);
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			/**/
+			
+			
+			
 			// TODO: implement old commsy check - calling rubrics not set as active
 			
 			$params = $this->_environment->getCurrentParameterArray();

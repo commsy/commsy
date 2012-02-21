@@ -57,6 +57,24 @@
 			$this->assign('room', 'rubric', CS_DISCUSSION_TYPE);
 		}
 		
+		protected function getFieldInformation() {
+			return array(
+				array(	'name'		=> 'title',
+						'type'		=> 'text',
+						'mandatory' => true),
+				array(	'name'		=> 'description',
+						'type'		=> 'text',
+						'mandatory'	=> false)
+			);
+			
+			
+			
+			throw new cs_form_value_exception ('error in value');
+			
+			
+			return false;
+		}
+		
 		/*****************************************************************************/
 		/******************************** ACTIONS ************************************/
 		/*****************************************************************************/
@@ -256,11 +274,8 @@
 					(isOption($this->_command, CS_OPTION_SAVE) ||
 					isOption($this->_command, CS_OPTION_CHANGE) ||
 					isOption($this->_command, CS_OPTION_NEW))) {
-						
-					// TODO: impelment form check
-					$correct = true;
 					
-					if($correct === true) {
+					if($this->checkFormData()) {
 						$user = $this->_environment->getCurrentUserItem();
 						
 						// create new item
