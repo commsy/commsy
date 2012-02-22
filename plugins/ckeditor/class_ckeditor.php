@@ -99,7 +99,9 @@ class class_ckeditor extends cs_plugin {
       $retour .= ' id="'.$form_element['name'].'_'.$form_element['tabindex'].'"';
       $retour .= '>'.LF;
       if ( !empty($form_element['value_for_output_html_security']) ) {
-         $retour .= $form_element['value_for_output_html_security'];
+         $temp_retour = preg_replace('~<!-- KFC TEXT ([a-z0-9]*) -->~u','',$form_element['value_for_output_html_security']);
+         $retour .= $temp_retour;
+         #$retour .= $form_element['value_for_output_html_security'];
       } elseif ( !empty($form_element['value_for_output_html']) ) {
          $retour .= $form_element['value_for_output_html'];
       } elseif ( !empty($form_element['value_for_output']) ) {
