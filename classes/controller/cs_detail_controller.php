@@ -1681,6 +1681,54 @@
 		protected function setClipboardIDArray($id_array) {
 			$this->_clipboard_id_array = $id_array;
 		}
+		
+		protected function getFileContent() {
+		    $converter = $this->_environment->getTextConverter();
+		    $files = array();
+			$file_list = $this->_item->getFileList();
+			if(!$file_list->isEmpty()) {
+				$file = $file_list->getFirst();
+				while($file) {
+					if(!(isset($_GET['mode']) && $_GET['mode'] === 'print') || (isset($_GET['download']) && $_GET['download'] === 'zip')) {
+						if((!isset($_GET['download']) || $_GET['download'] !== 'zip') && in_array($file->getExtension(), array('png', 'jpg', 'jpeg', 'gif'))) {
+							// TODO
+							/*
+							 * $this->_with_slimbox = true;
+                  // jQuery
+                  //$file_string = '<a href="'.$file->getUrl().'" rel="lightbox[gallery'.$item->getItemID().']">'.
+                  //$file_string = '<a href="'.$file->getUrl().'" rel="lightbox-gallery_'.$item->getItemID().'">'.
+                  $displayname = $file->getDisplayName();
+                  $filesize = $file->getFileSize();
+                  $fileicon = $file->getFileIcon();
+                  $file_string = '<a href="'.$file->getUrl().'" rel="lightbox-gallery'.$item->getItemID().'" title="'.$this->_text_as_html_short($displayname).' ('.$filesize.' kb)">'.
+
+                  // jQuery
+                  $file->getFileIcon().' '.($this->_text_as_html_short($this->_compareWithSearchText($file->getDisplayName()))).'</a> ('.$file->getFileSize().' KB)';
+							 */
+						} else {
+							$file_string = '<a href="' . $file->getUrl() . '" target ="balnk">';
+							$file_string = $file->getDisplayName();
+							//TODO:
+							//$file_string = $converter->compareWithSearchText($file_string);
+							$file_string = $converter->text_as_html_short($file_string);
+							$file_string = $file->getFileIcon() . ' ' . ($file_string) . '</a> (' . $file->getFileSize() . ' KB)';
+						}
+					} else {
+						$file_string = $file->getDisplayName();
+						//TODO:
+						//$file_string = $converter->compareWithSearchText($file_string);
+						$file_string = $converter->text_as_html_short($file_string);
+						$file_string = $file->getFileIcon() . ' ' . ($file_string);
+					}
+					
+					$files[] = $file_string;
+					
+					$file = $file_list->getNext();
+				}
+			}
+			
+			return $files;
+		}
 
 		abstract protected function setBrowseIDs();
 

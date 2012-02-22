@@ -1309,6 +1309,12 @@ a:hover.keywords_s1, a:hover.keywords_s2, a:hover.keywords_s3, a:hover.keywords_
     margin: 5px 0px 10px 0px;
     }
 
+#color_box {
+	height:10px; 
+	width:10px;
+	border:1px solid #cccccc; 
+}
+
 #dis_navigation {
     border-top: 1px solid #689FDE;
     border-bottom: 1px solid #689FDE;
