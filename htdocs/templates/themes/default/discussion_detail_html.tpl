@@ -2,9 +2,11 @@
 
 {block name=room_detail_content}
 	<div class="item_actions">
-		<a class="edit" href=""><span class="edit_set"> &nbsp; </span></a>
-		<a href=""><span class="details_ia"> &nbsp; </span></a>
-		<a href=""><span class="ref_to_ia"> &nbsp; </span></a>
+		<div id="top_item_actions">
+			<a href=""><span class="edit_set"> &nbsp; </span></a>
+			<a href=""><span class="details_ia"> &nbsp; </span></a>
+			<a href="" class="item_actions_glow"><span class="ref_to_ia_ok"> &nbsp; </span></a>
+		</div>
 	</div>
 
 	<div class="item_body"> <!-- Start item body -->
@@ -39,6 +41,37 @@
 				___COMMON_CREATED_BY_UPPER___ <a href="">{$detail.content.discussion.creator}</a> ___DATES_ON_DAY___  {$detail.content.discussion.creation_date}
 			</p>
 			<div class="clear"> </div>
+			
+			<!-- Start fade_in_ground -->
+			<div class="fade_in_ground">
+				<div class="fi_moredetails">
+					<div class="fi_md_info">
+						<img src="{$basic.tpl_path}img/fi_item_link.gif" alt="Zuordnungen" />
+					</div>
+					
+					<div class="fi_md_content">
+						<div class="fi_mdc_item">
+							<h4>zugeordnete Schlagw&ouml;rter</h4>
+							<a href="">Ipsum</a>, <a href="">Ipsum</a>, <a href="">Ipsum</a>, <a href="">Ipsum</a> 
+						</div>
+						
+						<div class="fi_mdc_item">
+							<h4>zugeordnete Kategorien</h4>
+							<a href="">Ipsum</a>, <a href="">Ipsum</a>, <a href="">Ipsum</a>, <a href="">Ipsum</a>
+						</div>
+						
+						<div class="fi_mdc_item">
+							<h4>zugeordnete Eintr&auml;ge</h4>
+							<a href="">Ipsum</a>, <a href="">Ipsum</a>, <a href="">Ipsum</a>, <a href="">Ipsum</a>
+						</div>
+						
+						<div class="clear"> </div>
+					</div>
+					
+					<div class="clear"> </div>
+				</div>
+			</div>
+			<!-- Ende fade_in_ground -->                                
 		</div>
 
 		<div id="item_legend"> <!-- Start item_legend -->
@@ -76,6 +109,41 @@
 	</div> <!-- Ende item body -->
 	<div class="clear"> </div>
 	
+	<!-- Start fade_in_ground -->
+	<div class="fade_in_ground_panel">
+		<div class="fi_moredetails">
+			<div class="fi_md_info">
+				<img src="{$basic.tpl_path}img/fi_item_detail.gif" alt="Detailansicht" />
+			</div>
+			
+			<div class="fi_md_content">
+				<div class="fi_mdc_item">
+				<h4>zuletzt bearbeitet von</h4>
+				<a href="">Dennis Muster</a>
+				</div>
+				
+				<div class="fi_mdc_item">
+					<h4>bearbeitet von</h4>
+					<a href="">Dennis Muster</a>
+				</div>
+				
+				<div class="fi_mdc_item">
+					<h4>erstellt von</h4>
+					<a href="">Dennis Muster</a>
+				</div>
+				
+				<div class="fi_mdc_item">
+					<h4>Referenznummer</h4>
+					<a href="">2345277</a>
+				</div>
+				
+				<div class="clear"> </div>
+			</div>
+			
+			<div class="clear"> </div>
+		</div>
+	</div>
+	<!-- Ende fade_in_ground --> 
 	
 	{foreach $detail.content.disc_articles as $article}
 		<div class="item_actions">
@@ -93,6 +161,12 @@
 					<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&iid={$detail.content.discussion.item_id}&action=delete&discarticle_iid={$article.item_id}&discarticle_action=delete">___COMMON_DELETE_ITEM___</a>
 				{/if}
 			</div>
+			
+			<!-- Start fade_in_ground -->
+                                        <div class="fade_in_ground_actions">
+                                            <a href="">bearbeiten</a> | <a href="">l&ouml;schen</a> | <a href="">sonstige</a>
+                                        </div>
+                                        <!-- Ende fade_in_ground --> 
 			
 			{block name=discussion_articles}
 				<div class="item_post">
