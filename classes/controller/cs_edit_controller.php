@@ -39,13 +39,17 @@
 			try {
 				$this->checkForm();
 				
-				return false;
+				return true;
 			} catch(cs_form_mandatory_exception $e) {
 				// TODO: implement in edit form
 				echo "mandatory catched";
+				
+				return false;
 			} catch(cs_form_value_exception $e) {
 				// TODO: implement in edit form
 				echo "value catched";
+				
+				return false;
 			}
 		}
 		
@@ -56,8 +60,6 @@
 				if(isset($field['mandatory']) || $field['mandatory'] === true) {
 					if(!isset($_POST['form_data'][$field['name']]) || trim($_POST['form_data'][$field['name']]) === '') {
 						throw new cs_form_mandatory_exception('missing mandatory field');
-						
-						return false;
 					}
 				}
 				
