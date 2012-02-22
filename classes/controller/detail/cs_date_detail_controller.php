@@ -234,9 +234,9 @@ class cs_date_detail_controller extends cs_detail_controller {
         $translator = $this->_environment->getTranslationObject();
         if($this->_item->getStartingDay() < $this->_item->getEndingDay()) {
             //more than one day
-            $timeLine1 = $translator->getMessage('DATES_FROM_TIME_LOWER').' '.$this->getStartingDayStringInLang();
+            $timeLine1 = $translator->getMessage('DATES_AS_OF').' '.$this->_item->getStartingDayName().', '.getDateTimeInLang($this->_item->getDateTime_start());
           
-            $timeLine2 = $translator->getMessage('DATES_TILL').' '.$this->getEndingDayStringInLang().' ('
+            $timeLine2 = $translator->getMessage('DATES_TILL').' '.$this->_item->getEndingDayName().', '.getDateTimeInLang($this->_item->getDateTime_end()).' ('
                 .getDifference(str_replace('-', '',$this->_item->getStartingDay()), str_replace('-', '',$this->_item->getEndingDay()))
                 .' '.$translator->getMessage('DATES_DAYS').')';
         } elseif($this->_item->getStartingDay() > $this->_item->getEndingDay()) {
@@ -247,12 +247,12 @@ class cs_date_detail_controller extends cs_detail_controller {
             if(strlen($this->_item->getEndingTime()) > 0) {
                 //from ... to ...
                 $timeLine1 = $translator->getMessage('DATES_ON_DAY').' '.$this->getStartingDayStringInLang();
-                $timeLine2 = $translator->getMessage('DATES_FROM_TIME_LOWER').' '.$this->_item->getStartingTime().' '
-                    .$translator->getMessage('DATES_TILL').' '.$this->_item->getEndingTime();
+                $timeLine2 = $translator->getMessage('DATES_FROM_TIME_LOWER').' '.getTimeLanguage($this->_item->getStartingTime()).' '
+                    .$translator->getMessage('DATES_TILL').' '.getTimeLanguage($this->_item->getEndingTime());
             } else {
                 //from...
                 $timeLine1 = $translator->getMessage('DATES_ON_DAY').' '.$this->getStartingDayStringInLang();
-                $timeLine2 = $translator->getMessage('DATES_FROM_TIME_LOWER').' '.$this->_item->getStartingTime();
+                $timeLine2 = $translator->getMessage('DATES_FROM_TIME_LOWER').' '.getTimeLanguage($this->_item->getStartingTime());
             }
         }
         
