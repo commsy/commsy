@@ -832,6 +832,9 @@ jQuery(document).ready(function() {
 		   if(jQuery("input[name='workflow_validity_date']").length){
 			  jQuery("input[name='workflow_validity_date']").datepicker({showOn: 'button', buttonImage: datepicker_image, buttonImageOnly: true, buttonText: datepicker_choose});
 		   }
+		   if(jQuery("input[name='document_release_date']").length){
+			  jQuery("input[name='document_release_date']").datepicker({showOn: 'button', buttonImage: datepicker_image, buttonImageOnly: true, buttonText: datepicker_choose});
+		   }
 	   }
    }
 });
