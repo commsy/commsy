@@ -3,6 +3,7 @@
  */
 
 define([	"order!libs/jQuery/jquery-1.7.1.min",
+        	"order!libs/jQuery/jquery-ui-1.8.17.custom.min",
         	"commsy/commsy_functions_8_0_0"], function() {
 	return {
 		threshold: 3,
@@ -28,6 +29,44 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			
 			// register handler
 			object.bind('keyup', {handle: handle, commsy_functions: commsy_functions}, handle.onKeyUp);
+			
+			// setup progressbars for list
+			handle.setupProgressbars();
+		},
+		
+		setupProgressbars: function() {
+			// find progressbars
+			var progressbars = jQuery('div[class="progressbar"]');
+			
+			// find max relevanz value
+			var max = 0;
+			jQuery.each(progressbars, function() {
+				var span = jQuery(this).children('span:first');
+				var value = parseInt(span.text());
+				
+				if(value > max) max = value;
+			});
+			
+			jQuery.each(progressbars, function() {
+				// get value from span-tag
+				var span = jQuery(this).children('span:first');
+				var value = parseInt(span.text());
+				
+				// remove span
+				span.remove();
+				
+				// remove img
+				jQuery(this).children('img:first').remove();
+				
+				// calculate percent
+				var percent = 100 * value / max;
+				
+				// create progressbars
+				jQuery(this).progressbar({
+					disabled: false,
+					value: percent
+				});
+			});
 		},
 		
 		onKeyUp: function(event) {

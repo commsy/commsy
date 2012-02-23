@@ -1,69 +1,86 @@
-{extends file="room_html.tpl"}
-
-{block name=room_site_actions}
-	<a href="" title="Ansicht in Reihen"><img src="{$basic.tpl_path}img/btn_row_view.gif" alt="Reihen" /></a>
-    <a href="" title="Ansicht in Portlets"><img src="{$basic.tpl_path}img/btn_portlet_view.gif" alt="Portlets" /></a>
-{/block}
+{extends file="room_list_html.tpl"}
 
 {block name=room_navigation_rubric_title}
-	&Uuml;bersicht Projektraum (Home)
+	___COMMON_123_INDEX___
+	<span>(___COMMON_ENTRIES___: {123})</span>
 {/block}
 
-{block name=room_main_content}
-	<div id="full_width_content">
-		{foreach $room.search_content as $rubric}
-			<div class="content_item"> <!-- Start content_item -->
-	            <div class="ci_head_actions">
-	                <a href="" class="open_close" title="{*{if $rubric.hidden}*}___COMMON_SHOW___{*{else}___COMMON_HIDE___{/if}*}">
-	                	<img src="{$basic.tpl_path}img/{*{if $rubric.hidden}*}btn_ci_open.gif{*{else}btn_ci_close.gif{/if}*}" alt="{*{if $rubric.hidden}*}___COMMON_SHOW___{*{else}___COMMON_HIDE___{/if}*}" />
-	                </a>
-	            </div>
-	            <h2>
-	            	___COMMON_{$rubric@key|upper}_INDEX___
-	                <span>
-	                	({$rubric|count})
-	                </span>
-	            </h2>
-            
-	            <div class="clear"> </div>
-	            <div class="list_wrap{if $rubric.hidden} hidden{/if}">
-		            {foreach $rubric as $result}
-		            	<div class="{if $result@iteration is odd}row_odd{else}row_even{/if} {if $result@iteration is odd}odd_sep_home{else}even_sep_home{/if}">
-		                    <div class="column_380">
-		                        {if $rubric@key == 'discussion'}
-			                        <p class="column_addon">
-			                        	{*{$item.column_1_addon}*}
-			                        </p>
-		                        {/if}
-		                        <p>
-									{*{if $item.noticed != ''}
-										<a href="" class="new_item"><img title="{$item.noticed}" class="new_item" src="{$basic.tpl_path}img/flag_neu.gif" alt="*" /></a>
-		         					{/if}*}
-			                        <a href="commsy.php?cid={$environment.cid}&mod={$rubric@key}&fct=detail&iid={$result.item_id}">{$result.title}</a>
-		                        </p>
-		                    </div>
-	                        <div class="column_140">
-	                            <p>{$result.count}</p>
-	                        </div>
-		                    <div class="column_194">
-		                        <p>
-		                        	{$result.type}
-		                        	{*
-			                        {if $rubric@key == 'material' or $rubric@key == 'announcement' or $rubric@key == 'discussion'}
-			                            <a href="commsy.php?cid={$environment.cid}&mod=user&fct=detail&iid={$item.user_iid}">{$item.column_3}</a>
-			                        {else}
-			                        	{$item.column_3}
-			                        {/if}
-			                        *}
-		                        </p>
-		                    </div>
-			                <div class="clear"> </div>
-		                </div>
-	                {/foreach}
-	            </div>
-            </div> <!-- Ende content_item -->
-        {/foreach}
+{block name=room_list_header}
+	<div class="table_head">
+	{*
+		{if $list.sorting_parameters.sort_title == "up"}
+		 	<h3 class="w_380"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_title_link}" id="sort_up"><strong>___COMMON_TITLE___</strong></a></h3>
+		{elseif $list.sorting_parameters.sort_title == "down"}
+		 	<h3 class="w_380"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_title_link}" id="sort_down"><strong>___COMMON_TITLE___</strong></a></h3>
+		{else}
+		 	<h3 class="w_380"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_title_link}" class="sort_none">___COMMON_TITLE___</a></h3>
+		{/if}
+		{if $list.sorting_parameters.sort_modified == "up"}
+		 	<h3 class="w_80"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_modified_link}" id="sort_up"><strong>___DATES_TIME___</strong></a></h3>
+		{elseif $list.sorting_parameters.sort_modified == "down"}
+		 	<h3 class="w_80"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_modified_link}" id="sort_down"><strong>___DATES_TIME___</strong></a></h3>
+		{else}
+		 	<h3 class="w_80"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_modified_link}" class="sort_none">___DATES_TIME___</a></h3>
+		{/if}
+		{if $list.sorting_parameters.sort_modificator == "up"}
+		 	<h3 class="w_135"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_modificator_link}" id="sort_up"><strong>___DATES_PLACE___</strong></a></h3>
+		{elseif $list.sorting_parameters.sort_modificator == "down"}
+		 	<h3 class="w_135"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_modificator_link}" id="sort_down"><strong>___DATES_PLACE___</strong></a></h3>
+		{else}
+	 		<h3 class="w_135"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_modificator_link}" class="sort_none">___DATES_PLACE___</a></h3>
+		{/if}
+		<h3></h3>
+		<div class="clear"> </div>
+		*}
 	</div>
+{/block}
+
+
+{block name=room_list_content}
+	{foreach $room.search_content as $item }
+		<div class="{if $item@iteration is odd}row_odd{else}row_even{/if} {if $item@iteration is odd}odd_sep_announcement{else}even_sep_announcement{/if}"> <!-- Start Reihe -->
+			<div class="column_20">
+				<p>
+				{*
+				{if $item.noticed != ''}
+					<a href="" class="new_item_2"><img title="{$item.noticed}" class="new_item_2" src="{$basic.tpl_path}img/flag_neu.gif" alt="*" /></a>
+         			<input class="new_item_2" type="checkbox" name="form_data[attach][{$item.iid}]" value="1"/>
+        			<input type="hidden" name="form_data[shown][{$item.iid}]" value="1"/>
+				{else}
+         			<input type="checkbox" name="form_data[attach][{$item.iid}]" value="1"/>
+        			<input type="hidden" name="form_data[shown][{$item.iid}]" value="1"/>
+				{/if}
+				*}
+				</p>
+			</div>
+			<div class="column_304">
+				<p>
+					 <a href="commsy.php?cid={$environment.cid}&mod={$item.type}&fct=detail&iid={$item.iid}">{$item.title}</a>
+				</p>
+			</div>
+			<div class="column_45">
+				<p>
+					<a href="" class="attachment">123</a>
+				</p>
+			</div>
+			<div class="column_90">
+				<p>{$item.type}</p>
+			</div>
+			<div class="column_155">
+				<p>
+					<div class="progressbar">
+						<img src="{$basic.tpl_path}img/ajax_loader.gif" alt="ajax_loader" />
+						<span class="percent hidden">{$item.count}</span>
+					</div>
+				</p>
+			</div>
+			<div class="column_100">
+				<p>
+				</p>
+			</div>
+			<div class="clear"> </div>
+		</div> <!-- Ende Reihe -->
+	{/foreach}
 {/block}
 
 {block name=room_right_portlets prepend}

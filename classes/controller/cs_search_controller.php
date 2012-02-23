@@ -35,6 +35,9 @@
 			$user_item = $this->_environment->getCurrentUserItem();
 			$db = $this->_environment->getDBConnector();
 			
+			// init list params
+			$this->initListParameters();
+			
 			if(isset($_GET['back_to_search']) && $session->issetValue('cid' . $this->_environment->getCurrentContextID() . '_campus_search_parameter_array')) {
 				$campuser_search_parameter_array = $session->getValue('cid' . $this->_environment->getCurrentContextID() . '_compus_search_parameter_array');
 				$params['search'] = $campus_search_parameter_array['search'];
@@ -630,7 +633,7 @@ if($interval == 0){
 			while($entry) {
 				$type = $entry->getType() === CS_LABEL_TYPE ? $entry->getLabelType() : $entry->getType();
 				
-				$return[$type][] = array(
+				$return/*[$type]*/[] = array(
 					'title'			=> $entry->getType() === CS_USER_TYPE ? $entry->getFullname() : $entry->getTitle(),
 					'type'			=> $type,
 					'count'			=> $this->_items[$entry->getType()][$entry->getItemID()],
@@ -641,10 +644,15 @@ if($interval == 0){
 			}
 			
 			// sort return by relevanz
+			usort($return, array($this, 'sortByRelevanz'));
+			$return = array_reverse($return);
+			
+			/*
 			foreach($return as $type => $entries) {
 				usort($entries, array($this, 'sortByRelevanz'));
 				$return[$type] = array_reverse($entries);
 			}
+			*/
 			
 			return $return;
 		}

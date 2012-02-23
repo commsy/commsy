@@ -17,6 +17,7 @@
     <meta name="description" content="" />
     <meta name="copyright" content="" />
     
+    <link rel="stylesheet" type="text/css" media="screen" href="{$basic.tpl_path}jquery-ui-custom-theme/jquery-ui-1.8.17.custom.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="{$basic.tpl_path}styles.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="{$basic.tpl_path}ui.dynatree.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="{$basic.tpl_path}uploadify.css" />

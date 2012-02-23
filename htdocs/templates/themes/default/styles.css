@@ -1497,3 +1497,15 @@ fade-in
     font-weight: bold;
     font-size: 10px !important;
     }
+
+/*
+----------------------------------------------------------------------
+jQuery UI
+----------------------------------------------------------------------
+*/
+.ui-progressbar {
+    height: 5px;
+    overflow: hidden;
+    text-align: left;
+    margin-right: 15px;
+	}
