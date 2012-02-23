@@ -89,11 +89,25 @@ define(["libs/jQuery/jquery-1.7.1.min"], function() {
 			this.registerModule('commsy/div_expander', null, {objects: objects, action: 'click'});
 			
 			// on detail context
+			var objects = [];
 			if(this.getURLParam('fct') === 'detail') {
-				// action overlay
-				var div_objects = jQuery('div[class="item_actions"]');
+				// action expander
+				var actors = [];
+				var objects = [];
 				
-				this.registerModule('commsy/action_overlay', null, {objects: div_objects});
+				// edit
+				jQuery.merge(actors, jQuery('div[class="item_actions"] a[class="edit"]'));
+				jQuery.merge(objects, jQuery('div[class="content_item"] div[class^="fade_in_ground_actions"]'));
+				
+				// detail
+				jQuery.merge(actors, jQuery('div[class="item_actions"] a[class="detail"]'));
+				jQuery.merge(objects, jQuery('div[class="content_item"] div[class^="fade_in_ground_panel"]'));
+				
+				// linked
+				jQuery.merge(actors, jQuery('div[class="item_actions"] a[class="linked"]'));
+				jQuery.merge(objects, jQuery('div[class="content_item"] div[class^="fade_in_ground_linked"]'));
+				
+				this.registerModule('commsy/action_expander', null, {actors: actors, objects: objects});
 			}
 			
 			// ckeditor
@@ -164,6 +178,14 @@ define(["libs/jQuery/jquery-1.7.1.min"], function() {
 		},
 		
 		registerPreconditions: function(conditions, callback, parameters) {
+			// if preconditions are empty, preprocessing is not needed - call directly
+			if(jQuery.isEmptyObject(conditions)) {
+				this.modules_registered--;
+				callback(null, parameters);
+				
+				return true;
+			}
+			
 			if(this.preconditions_callbacks === null) this.preconditions_callbacks = new Array;
 			
 			var store = {

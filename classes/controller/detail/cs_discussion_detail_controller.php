@@ -168,7 +168,7 @@ if ($type != CS_DISCUSSION_TYPE) {
 			
 			$perms['wiki'] = false;
 			
-			if($this->_item->mayEdit($current_user) && $current_context->isWikiActive() && $this->_with_modifying_actions && (!$this->_item->isA(CS_DISUCSSION_TYPE) || $this->_item->getDiscussionType() === 'simple')) {
+			if($this->_item->mayEdit($current_user) && $current_context->isWikiActive() && $this->_with_modifying_actions && (!$this->_item->isA(CS_DISCUSSION_TYPE) || $this->_item->getDiscussionType() === 'simple')) {
 				$perms['wiki'] = true;
 				
 				/*

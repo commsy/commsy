@@ -3,9 +3,9 @@
 {block name=room_detail_content}
 	<div class="item_actions">
 		<div id="top_item_actions">
-			<a href=""><span class="edit_set"> &nbsp; </span></a>
-			<a href=""><span class="details_ia"> &nbsp; </span></a>
-			<a href="" class="item_actions_glow"><span class="ref_to_ia_ok"> &nbsp; </span></a>
+			<a class="edit" href=""><span class="edit_set"> &nbsp; </span></a>
+			<a class="detail" href=""><span class="details_ia"> &nbsp; </span></a>
+			<a class="linked" href=""><span class="ref_to_ia"> &nbsp; </span></a>
 		</div>
 	</div>
 
@@ -30,6 +30,12 @@
 		</div>
 		<h2>{$detail.content.discussion.title}</h2>
 		<div class="clear"> </div>
+		
+		<!-- Start fade_in_ground -->
+		<div class="fade_in_ground_actions hidden">
+			<a href="">bearbeiten</a> | <a href="">l&ouml;schen</a> | <a href="">sonstige</a>
+		</div>
+		<!-- Ende fade_in_ground --> 
 
 		<div id="item_credits">
 			<p id="ic_rating">
@@ -43,7 +49,7 @@
 			<div class="clear"> </div>
 			
 			<!-- Start fade_in_ground -->
-			<div class="fade_in_ground">
+			<div class="fade_in_ground_linked hidden">
 				<div class="fi_moredetails">
 					<div class="fi_md_info">
 						<img src="{$basic.tpl_path}img/fi_item_link.gif" alt="Zuordnungen" />
@@ -71,7 +77,7 @@
 					<div class="clear"> </div>
 				</div>
 			</div>
-			<!-- Ende fade_in_ground -->                                
+			<!-- Ende fade_in_ground -->
 		</div>
 
 		<div id="item_legend"> <!-- Start item_legend -->
@@ -110,7 +116,7 @@
 	<div class="clear"> </div>
 	
 	<!-- Start fade_in_ground -->
-	<div class="fade_in_ground_panel">
+	<div class="fade_in_ground_panel hidden">
 		<div class="fi_moredetails">
 			<div class="fi_md_info">
 				<img src="{$basic.tpl_path}img/fi_item_detail.gif" alt="Detailansicht" />
@@ -148,7 +154,7 @@
 	{foreach $detail.content.disc_articles as $article}
 		<div class="item_actions">
 			<a class="edit" href=""><span class="edit_set"> &nbsp; </span></a>
-			<a href=""><span class="details_ia"> &nbsp; </span></a>
+			<a class="detail" href=""><span class="details_ia"> &nbsp; </span></a>
 		</div>
 
 		<div class="item_body"> <!-- Start item body -->
@@ -163,10 +169,10 @@
 			</div>
 			
 			<!-- Start fade_in_ground -->
-                                        <div class="fade_in_ground_actions">
-                                            <a href="">bearbeiten</a> | <a href="">l&ouml;schen</a> | <a href="">sonstige</a>
-                                        </div>
-                                        <!-- Ende fade_in_ground --> 
+			<div class="fade_in_ground_actions hidden">
+				<a href="">bearbeiten</a> | <a href="">l&ouml;schen</a> | <a href="">sonstige</a>
+			</div>
+			<!-- Ende fade_in_ground --> 
 			
 			{block name=discussion_articles}
 				<div class="item_post">
@@ -211,6 +217,42 @@
 			{/block}
 		</div> <!-- Ende item body -->
 		<div class="clear"> </div>
+		
+		<!-- Start fade_in_ground -->
+		<div class="fade_in_ground_panel hidden">
+			<div class="fi_moredetails">
+				<div class="fi_md_info">
+					<img src="{$basic.tpl_path}img/fi_item_detail.gif" alt="Detailansicht" />
+				</div>
+				
+				<div class="fi_md_content">
+					<div class="fi_mdc_item">
+					<h4>zuletzt bearbeitet von</h4>
+					<a href="">Dennis Muster</a>
+					</div>
+					
+					<div class="fi_mdc_item">
+						<h4>bearbeitet von</h4>
+						<a href="">Dennis Muster</a>
+					</div>
+					
+					<div class="fi_mdc_item">
+						<h4>erstellt von</h4>
+						<a href="">Dennis Muster</a>
+					</div>
+					
+					<div class="fi_mdc_item">
+						<h4>Referenznummer</h4>
+						<a href="">2345277</a>
+					</div>
+					
+					<div class="clear"> </div>
+				</div>
+				
+				<div class="clear"> </div>
+			</div>
+		</div>
+		<!-- Ende fade_in_ground --> 
 	{/foreach}
 
 	<div class="item_actions">&nbsp;</div>

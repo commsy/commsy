@@ -1428,7 +1428,7 @@ fade-in
 ----------------------------------------------------------------------
 */ 
  
-.fade_in_ground {
+.fade_in_ground_linked {
     background: url(img/fade_in_bg.jpg) repeat-x #D7D7D9;
     border-top: 1px solid #D7D7D9;
     border-bottom: 1px solid #F9F9F9;

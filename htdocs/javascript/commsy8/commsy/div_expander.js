@@ -6,7 +6,7 @@ define([	"libs/jQuery/jquery-1.7.1.min",
         	"commsy/commsy_functions_8_0_0"], function() {
 	return {
 		/*
-		 * this module is an general implementation for expand/collapse-tasks
+		 * this module is a general implementation for expand/collapse-tasks
 		 * target - specifies the div to update
 		 * actors - an array of objects working as trigger specified as following:
 		 * 		actor.object - the trigger object
