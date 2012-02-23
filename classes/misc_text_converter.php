@@ -327,7 +327,9 @@ class misc_text_converter {
       #$url_string = '^(?<=([\s|\n|>|\(]{1}))((http://|https://|ftp://|www\.)'; //everything starting with http, https or ftp followed by "://" or www. is a url and will be avtivated
       $url_string .= "([".RFC1738_CHARS."]+?))"; //All characters allowed for FTP an HTTP URL's by RFC 1738 (non-greedy because of potential trailing punctuation marks)
       // separating Links from COMMSY_FCKEDITOR tag
-      $url_string .= '(?=([\.\?:\),;!]*($|\s|<|&quot;|&nbsp;|COMMSY_FCKEDITOR)))^u'; //after the url is a space character- and perhaps before it a punctuation mark (which does not belong to the url)
+      $url_string .= '(?=([\.\?:\),;!]*($|\s|<|&quot;|&nbsp;|COMMSY_FCKEDITOR)))'; //behind the url is a space character- and perhaps before it a punctuation mark (which does not belong to the url)
+      $url_string .= '(?![\s\w\d]*</a>)^u'; // if there's a </a>-tag behind the link, it is assumed that there's already a complete <a href="">link</a> contruct comming from the editor. These links are omitted.
+      
       #$text = preg_replace($url_string, '$1<a href="$2" target="_blank" title="$2">$2</a>$5', $text);
       $text = preg_replace($url_string, '<a href="$2" target="_blank" title="$2">$2</a>', $text);
       $text = preg_replace_callback('~">(.[^"]+)</a>~u','spezial_chunkURL',$text);
