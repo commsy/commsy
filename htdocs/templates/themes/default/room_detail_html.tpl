@@ -26,7 +26,7 @@
 	</div> <!-- Ende content_with_actions -->
 {/block}
 
-{block name=room_right_portlets prepend}
+{block name=room_right_portlets}
 	<div class="portlet_rc">
 		<h2 id="item_navigation">
 		{if $detail.browsing_information.paging.first.active}

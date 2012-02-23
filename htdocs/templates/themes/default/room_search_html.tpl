@@ -1,8 +1,8 @@
 {extends file="room_list_html.tpl"}
 
 {block name=room_navigation_rubric_title}
-	___COMMON_123_INDEX___
-	<span>(___COMMON_ENTRIES___: {123})</span>
+	___COMMON_SEARCH_RESULTS___:
+	<span>{$room.search_content|count}</span>
 {/block}
 
 {block name=room_list_header}
@@ -60,7 +60,7 @@
 			</div>
 			<div class="column_45">
 				<p>
-					<a href="" class="attachment">123</a>
+					<a href="" class="attachment">{$item.num_files}</a>
 				</p>
 			</div>
 			<div class="column_90">

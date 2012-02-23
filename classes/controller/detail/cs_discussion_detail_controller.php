@@ -13,7 +13,7 @@
 			
 			$this->_tpl_file = 'discussion_detail';
 		}
-
+		
 		/*
 		 * every derived class needs to implement an processTemplate function
 		 */

@@ -17,6 +17,7 @@ define(["libs/jQuery/jquery-1.7.1.min"], function() {
 			var commsy_functions = this;
 			
 			// Tag Tree
+			// TODO: can be limited by module/function
 			this.registerModule('commsy/tag_tree', 'div[id="tag_tree"]');
 			
 			// Threaded Discussion Tree

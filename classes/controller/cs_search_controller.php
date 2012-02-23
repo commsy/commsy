@@ -637,7 +637,8 @@ if($interval == 0){
 					'title'			=> $entry->getType() === CS_USER_TYPE ? $entry->getFullname() : $entry->getTitle(),
 					'type'			=> $type,
 					'count'			=> $this->_items[$entry->getType()][$entry->getItemID()],
-					'item_id'		=> $entry->getItemID()
+					'item_id'		=> $entry->getItemID(),
+					'num_files'		=> $entry->getFileList()->getCount()
 				);
 				
 				$entry = $this->_list->getNext();
