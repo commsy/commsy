@@ -1792,13 +1792,16 @@
 		        $return['read_count'] = $read_count;
 		        $return['read_since_modification_count'] = $read_since_modification_count;
 		    }
+		    
+		    $return['last_modification_date'] = $translator->getDateTimeInLang($item->getModificationDate());
+		    $return['item_id'] = $item->getItemID();
 
 		    if ( isset($modificator)
 		    and $modificator->isRoot()
 		    ) {
 		        //$temp_html = $this->_text_as_html_short($this->_compareWithSearchText($modificator->getFullname()));
-		        $return['modificator'] = $modificator->getFullname();
-		        $return['modificator_status'] = self::USER_IS_ROOT;
+		        $return['last_modificator'] = $modificator->getFullname();
+		        $return['last_modificator_status'] = self::USER_IS_ROOT;
 		    } elseif ( $environment->inProjectRoom()
 		    or $environment->inGroupRoom()
 		    ) {
@@ -1822,24 +1825,24 @@
                                      '',
                                      '',
                                      'style="font-size:10pt;"'); */
-		            $return['modificator'] = $modificator->getFullname();
-		            $return['modificator_status'] = self::USER_HAS_LINK;
-		            $return['modificator_id'] = $modificator->getItemID();
+		            $return['last_modificator'] = $modificator->getFullname();
+		            $return['last_modificator_status'] = self::USER_HAS_LINK;
+		            $return['last_modificator_id'] = $modificator->getItemID();
 		        } elseif ( isset($modificator) and !$modificator->isDeleted() ) {
 		            //$temp_html = '<span class="disabled">'.$modificator->getFullname().'</span>';
-		            $return['modificator'] = $modificator->getFullname();
-		            $return['modificator_status'] = self::USER_DISABLED;
+		            $return['last_modificator'] = $modificator->getFullname();
+		            $return['last_modificator_status'] = self::USER_DISABLED;
 
 		        } elseif ( $item->isA(CS_USER_TYPE)
 		        and $item->getUserID() == $modificator->getUserID()
 		        and $item->getAuthSource() == $modificator->getAuthSource()
 		        ) {
 		            //$temp_html = $this->_compareWithSearchText($modificator->getFullname());
-		            $return['modificator'] = $modificator->getFullname();
+		            $return['last_modificator'] = $modificator->getFullname();
 		        } else {
 		            //$temp_html = '<span class="disabled">'.$translator->getMessage('COMMON_DELETED_USER').'</span>';
-		            $return['modificator'] = $translator->getMessage('COMMON_DELETED_USER');
-		            $return['modificator_status'] = self::USER_IS_DELETED;
+		            $return['last_modificator'] = $translator->getMessage('COMMON_DELETED_USER');
+		            $return['last_modificator_status'] = self::USER_IS_DELETED;
 		        }
 		        unset($params);
 		    } elseif ( ($user->isUser() and isset($modificator) and  $modificator->isVisibleForLoggedIn())
@@ -1861,52 +1864,52 @@
                                      '',
                                      '',
                                      'style="font-size:10pt;"'); */
-		                $return['modificator'] = $modificator->getFullname();
-		                $return['modificator_stats'] = self::USER_HAS_LINK;
+		                $return['last_modificator'] = $modificator->getFullname();
+		                $return['last_modificator_stats'] = self::USER_HAS_LINK;
 		                $return['modifcator_id'] = $modificator->getItemID();
 		            }else{
 		                //$temp_html = '<span class="disabled">'.$this->_compareWithSearchText($modificator->getFullname()).'</span>';
-		                $return['modificator'] = $modificator->getFullname();
-		                $return['modificator_status'] = self::USER_DISABLED;		                
+		                $return['last_modificator'] = $modificator->getFullname();
+		                $return['last_modificator_status'] = self::USER_DISABLED;		                
 		            }
 		        } elseif ( $item->isA(CS_USER_TYPE)
 		        and $item->getUserID() == $modificator->getUserID()
 		        and $item->getAuthSource() == $modificator->getAuthSource()
 		        ) {
 		            //$temp_html = $this->_compareWithSearchText($modificator->getFullname());
-		            $return['modificator'] = $modificator->getFullname();
+		            $return['last_modificator'] = $modificator->getFullname();
 		        }  else {
 		            //$temp_html = '<span class="disabled">'.$translator->getMessage('COMMON_DELETED_USER').'</span>';
-		            $return['modificator'] = $translator->getMessage('COMMON_DELETED_USER');
-		            $return['modificator_status'] = self::USER_IS_DELETED;
+		            $return['last_modificator'] = $translator->getMessage('COMMON_DELETED_USER');
+		            $return['last_modificator_status'] = self::USER_IS_DELETED;
 		        }
 		        unset($params);
 		    }elseif ( $item->mayExternalSee($this->_environment->getCurrentUserItem())) {
 		        //$temp_html = $this->_compareWithSearchText($modificator->getFullname());
-		        $return['modificator'] = $modificator->getFullname();
+		        $return['last_modificator'] = $modificator->getFullname();
 		    }else {
 		        if(isset($modificator) and !$modificator->isDeleted()){
 		            $current_user_item = $this->_environment->getCurrentUserItem();
 		            if ( $current_user_item->isGuest() or  !$modificator->maySee($user) ) {
 		                //$temp_html = '<span class="disabled">'.$translator->getMessage('COMMON_USER_NOT_VISIBLE').'</span>';
-		                $return['modificator'] = $translator->getMessage('COMMON_DELETED_USER');
-		                $return['modificator_status'] = self::USER_IS_DELETED;
+		                $return['last_modificator'] = $translator->getMessage('COMMON_DELETED_USER');
+		                $return['last_modificator_status'] = self::USER_IS_DELETED;
 		            } else {
 		                //$temp_html = '<span class="disabled">'.$this->_compareWithSearchText($modificator->getFullname()).'</span>';
-		                $return['modificator'] = $modificator->getFullname();
-		                $return['modificator_status'] = self::USER_DISABLED;
+		                $return['last_modificator'] = $modificator->getFullname();
+		                $return['last_modificator_status'] = self::USER_DISABLED;
 		            }
 		            unset($current_user_item);
 		        }else{
 		            //$temp_html = '<span class="disabled">'.$translator->getMessage('COMMON_DELETED_USER').'</span>';
-		            $return['modificator'] = $translator->getMessage('COMMON_DELETED_USER');
-		            $return['modificator_status'] = self::USER_IS_DELETED;
+		            $return['last_modificator'] = $translator->getMessage('COMMON_DELETED_USER');
+		            $return['last_modificator_status'] = self::USER_IS_DELETED;
 		        }
 		    }
 		    if ($item->isNotActivated()){
 		        //$title = '&nbsp;<span class="creator_information_key">'.$translator->getMessage('COMMON_CREATED_BY').':</span> '.$temp_html.', '.$translator->getDateTimeInLangWithoutOClock($item->getCreationDate());
-		        $return['creator'] = $return['modificator'];
-		        $return['creator_status'] = $return['modificator_status'];
+		        $return['creator'] = $return['last_modificator'];
+		        $return['creator_status'] = $return['last_modificator_status'];
 		    }
 		    // else{
 		    //    $title = '&nbsp;<span class="creator_information_key">'.$translator->getMessage('COMMON_LAST_MODIFIED_BY').':</span> '.$temp_html.', '.$translator->getDateTimeInLangWithoutOClock($item->getModificationDate());
@@ -2259,6 +2262,7 @@
 		        }
 		    }
 		    $modifier_array = array_unique($userEditArray);
+		    $return['modifier'] = $userEditArray;
 
 		    /*$html .= '   <tr>'.LF;
 		    $html .= '      <td></td>'.LF;
