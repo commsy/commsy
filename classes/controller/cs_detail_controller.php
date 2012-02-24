@@ -1738,8 +1738,10 @@
 		/**
 		 * Internal method for showing the creator or modificator
 		 * of an item or subitem.
+		 * 
+		 * @return array
 		 */
-		protected function getCreatorInformationAsHTML($item, $spacecount=0, $mode = 'short') {
+		protected function getCreatorInformationAsArray($item) {
 		    //TODO: anpassen!
 		    $return = array();
 		    $environment = $this->_environment;
