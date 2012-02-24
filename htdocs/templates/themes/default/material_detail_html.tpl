@@ -3,15 +3,38 @@
 {block name=room_detail_content}
 	<div class="item_actions">
 		<div id="top_item_actions">
-			<a href=""><span class="edit_set"> &nbsp; </span></a>
-			<a href=""><span class="details_ia"> &nbsp; </span></a>
-			<a href=""><span class="ref_to_ia"> &nbsp; </span></a>
+			<a class="edit" href=""><span class="edit_set"> &nbsp; </span></a>
+			<a class="detail" href=""><span class="details_ia"> &nbsp; </span></a>
+			<a class="linked" href=""><span class="ref_to_ia"> &nbsp; </span></a>
+			<a class="annotations" href="#"><span class="edit_set"> &nbsp; </span></a>
 		</div>
 	</div>
 	
 	<div class="item_body"> <!-- Start item body -->
 		<h2>{$detail.content.title}</h2>
 		<div class="clear"> </div>
+		
+		<!-- Start fade_in_ground -->
+		<div class="fade_in_ground_actions hidden">
+			{* TODO: add missing actions *}
+			{if $detail.actions.edit}
+				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.content.item_id}">___COMMON_EDIT_ITEM___</a> |
+			{/if}
+			{if $detail.actions.delete}
+				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.content.item_id}">___COMMON_DELETE_ITEM___</a> |
+			{/if}
+			{if $detail.actions.mail}
+				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.content.item_id}">___COMMON_EMAIL_TO___</a> |
+			{/if}
+			{if $detail.actions.copy}
+				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.content.item_id}">___COMMON_ITEM_COPY_TO_CLIPBOARD___</a> |
+			{/if}
+			{if $detail.actions.new}
+				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.content.item_id}">___COMMON_NEW_ITEM___</a> |
+			{/if}
+			<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.content.item_id}">___COMMON_DOWNLOAD___</a>
+		</div>
+		<!-- Ende fade_in_ground --> 
 		
 		<div id="item_credits">
 			<p id="ic_rating">
@@ -23,6 +46,8 @@
 				___COMMON_CREATED_BY_UPPER___ <a href="">{$detail.content.creator}</a> ___DATES_ON_DAY___  {$detail.content.creation_date}
 			</p>
 			<div class="clear"> </div>
+			
+			{include file="include/detail_linked_html.tpl"}
 		</div>
 		
 		<div id="item_legend"> <!-- Start item_legend -->
@@ -50,14 +75,23 @@
 	</div> <!-- Ende item body -->
 	<div class="clear"> </div>
 	
+	{include file="include/detail_moredetails_html.tpl"}
+	
 	{foreach $detail.content.sections as $section}
 		<div class="item_actions">
-			<a href=""><span class="edit_set"> &nbsp; </span></a>
-			<a href=""><span class="details_ia"> &nbsp; </span></a>
+			<a class="edit" href="#"><span class="edit_set"> &nbsp; </span></a>
+			<a class="detail" href="#"><span class="details_ia"> &nbsp; </span></a>
 		</div>
 		
 		<div class="item_body"> <!-- Start item body -->
 			<a name="mat_section_{$section@index}"></a>
+			
+			<!-- Start fade_in_ground -->
+			<div class="fade_in_ground_actions hidden">
+				actions
+			</div>
+			<!-- Ende fade_in_ground --> 
+			
 			<div class="item_post">
 				<div class="row_{if $section@iteration is odd}odd{else}even{/if}_no_hover {if $section@iteration is odd}odd{else}even{/if}_sep_disdetail">
 				
@@ -94,6 +128,8 @@
 			</div>
 		</div> <!-- Ende item body -->
 		<div class="clear"> </div>
+		
+		{include file="include/detail_moredetails_html.tpl"}
 	{/foreach}
 	
 	{include file='include/annotation_include_html.tpl'}

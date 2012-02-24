@@ -7,23 +7,29 @@
 		
 		<div class="fi_md_content">
 			<div class="fi_mdc_item">
-			<h4>zuletzt bearbeitet von</h4>
-			<a href="">Dennis Muster</a>
+			<h4>___COMMON_LAST_MODIFIED_BY___</h4>
+			<a href="">{$data.modificator}</a>{$data.modification_date}
+			</div>
+			
+			{if !empty($data.modifiers)}
+				<div class="fi_mdc_item">
+					<h4>___COMMON_EDIT_BY___</h4>
+					<a href="">
+						{foreach $data.modifiers as $modifier}
+							{$modifer}{if !$modifier@last}, {/if}
+						{/foreach}
+					</a>
+				</div>
+			{/if}
+			
+			<div class="fi_mdc_item">
+				<h4>___COMMON_CREATED_BY___</h4>
+				<a href="">{$data.creator}</a>
 			</div>
 			
 			<div class="fi_mdc_item">
-				<h4>bearbeitet von</h4>
-				<a href="">Dennis Muster</a>
-			</div>
-			
-			<div class="fi_mdc_item">
-				<h4>erstellt von</h4>
-				<a href="">Dennis Muster</a>
-			</div>
-			
-			<div class="fi_mdc_item">
-				<h4>Referenznummer</h4>
-				<a href="">2345277</a>
+				<h4>___COMMON_REFNUMBER___</h4>
+				<a href="">{$data.reference_number}</a>
 			</div>
 			
 			<div class="clear"> </div>

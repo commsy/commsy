@@ -156,7 +156,8 @@ if ($type != CS_DISCUSSION_TYPE) {
 				'item_id'			=> $this->_item->getItemID(),
 				'discussion'		=> $this->getDiscussionContent(),
 				'disc_articles'		=> $disc_articles,
-				'new_num'			=> count($disc_articles) + 1
+				'new_num'			=> count($disc_articles) + 1,
+				'moredetails'		=> $this->getCreatorInformationAsArray($this->_item)
 			);
 			
 			return $return;
@@ -205,11 +206,12 @@ if ($type != CS_DISCUSSION_TYPE) {
 			
 			// append return
 			$return = array(
-				'title'			=> $this->_item->getTitle(),
-				'item_id'		=> $this->_item->getItemID(),
-				'creator'		=> $this->_item->getCreatorItem()->getFullName(),
-				'creation_date'	=> getDateTimeInLang($this->_item->getCreationDate()),
-				'assessments'	=> $this->getAssessmentInformation()
+				'title'				=> $this->_item->getTitle(),
+				'item_id'			=> $this->_item->getItemID(),
+				'creator'			=> $this->_item->getCreatorItem()->getFullName(),
+				'creation_date'		=> getDateTimeInLang($this->_item->getCreationDate()),
+				'modification_date'	=> getDateTimeInLang($this->_item->getModificationDate()),
+				'assessments'		=> $this->getAssessmentInformation()
 			);
 			
 			return $return;

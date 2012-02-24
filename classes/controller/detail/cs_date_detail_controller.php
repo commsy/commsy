@@ -273,7 +273,7 @@ class cs_date_detail_controller extends cs_detail_controller {
         $this->assign('detail', 'content', $content);
         $this->assign('detail', 'annotations', $this->getAnnotationInformation($annotations));
         $this->assign('detail', 'files', $this->getFileContent());
-        pr($this->getCreatorInformationAsHTML($this->_item));
+        pr($this->getCreatorInformationAsArray($this->_item));
         //$this->assign('detail', 'lastedit', $this->getCreatorInformationAsHTML($this->_item));
 
         //        }

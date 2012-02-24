@@ -3,9 +3,10 @@
 {block name=room_detail_content}
 	<div class="item_actions">
 		<div id="top_item_actions">
-			<a class="edit" href=""><span class="edit_set"> &nbsp; </span></a>
-			<a class="detail" href=""><span class="details_ia"> &nbsp; </span></a>
-			<a class="linked" href=""><span class="ref_to_ia"> &nbsp; </span></a>
+			<a class="edit" href="#"><span class="edit_set"> &nbsp; </span></a>
+			<a class="detail" href="#"><span class="details_ia"> &nbsp; </span></a>
+			<a class="linked" href="#"><span class="ref_to_ia"> &nbsp; </span></a>
+			<a class="annotations" href="#"><span class="edit_set"> &nbsp; </span></a>
 		</div>
 	</div>
 
@@ -83,12 +84,13 @@
 	</div> <!-- Ende item body -->
 	<div class="clear"> </div>
 	
-	{include file="include/detail_moredetails_html.tpl"}
+	
+	{include file="include/detail_moredetails_html.tpl" data=$detail.content.moredetails}
 	
 	{foreach $detail.content.disc_articles as $article}
 		<div class="item_actions">
-			<a class="edit" href=""><span class="edit_set"> &nbsp; </span></a>
-			<a class="detail" href=""><span class="details_ia"> &nbsp; </span></a>
+			<a class="edit" href="#"><span class="edit_set"> &nbsp; </span></a>
+			<a class="detail" href="#"><span class="details_ia"> &nbsp; </span></a>
 		</div>
 
 		<div class="item_body"> <!-- Start item body -->
