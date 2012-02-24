@@ -9,6 +9,11 @@
 		protected $_item_file_list = null;
 		protected $_rubric_connections = array();
 		protected $_clipboard_id_array = array();
+		const USER_IS_ROOT = 'user_is_root';
+		const USER_DISABLED = 'user_disabled';
+		const USER_HAS_LINK = 'user_has_link';
+		const USER_IS_DELETED = 'user_is_deleted';
+		const USER_NOT_VISIBLE = 'user_not_visible';
 
 		/**
 		 * constructor
@@ -220,11 +225,11 @@
 
 				/*
 				 * if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-            $image = '<img src="images/commsyicons_msie6/22x22/edit_grey.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_EDIT_ITEM').'"/>';
+            $image = '<img src="images/commsyicons_msie6/22x22/edit_grey.gif" style="vertical-align:bottom;" alt="'.$translator->getMessage('COMMON_EDIT_ITEM').'"/>';
          } else {
-            $image = '<img src="images/commsyicons/22x22/edit_grey.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_EDIT_ITEM').'"/>';
+            $image = '<img src="images/commsyicons/22x22/edit_grey.png" style="vertical-align:bottom;" alt="'.$translator->getMessage('COMMON_EDIT_ITEM').'"/>';
          }
-         $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION_NEW',$this->_translator->getMessage('COMMON_EDIT_ITEM')).' "class="disabled">'.$image.'</a>'.LF;
+         $html .= '<a title="'.$translator->getMessage('COMMON_NO_ACTION_NEW',$translator->getMessage('COMMON_EDIT_ITEM')).' "class="disabled">'.$image.'</a>'.LF;
 				 */
 			}
 
@@ -1729,6 +1734,585 @@
 			
 			return $files;
 		}
+		
+		/**
+		 * Internal method for showing the creator or modificator
+		 * of an item or subitem.
+		 */
+		protected function getCreatorInformationAsHTML($item, $spacecount=0, $mode = 'short') {
+		    //TODO: anpassen!
+		    $return = array();
+		    $environment = $this->_environment;
+		    $translator = $this->_environment->getTranslationObject();
+		    $context = $environment->getCurrentContextItem();
+		    $user = $environment->getCurrentUserItem();
+		    $formal_data = array();
+		    // Modificator
+		    $modificator = $item->getModificatorItem();
+		    // Calculate number / percentage of users who read this item
+		    if ( ( $context->isProjectRoom()
+		    or $context->isGroupRoom()
+		    )
+		    and !in_array($item->getType(), array(CS_SECTION_TYPE,
+		    CS_DISCARTICLE_TYPE,
+		    CS_STEP_TYPE,
+		    CS_ANNOTATION_TYPE)) ) {
+		        $reader_manager = $environment->getReaderManager();
+		        $user_manager = $environment->getUserManager();
+		        $user_list = $user_manager->getAllRoomUsersFromCache($environment->getCurrentContextID());
+		        $user_count = $user_list->getCount();
+		        $read_count = 0;
+		        $read_since_modification_count = 0;
+		        $current_user = $user_list->getFirst();
+		        $id_array = array();
+		        while ( $current_user ) {
+		            $id_array[] = $current_user->getItemID();
+		            $current_user = $user_list->getNext();
+		        }
+		        $reader_manager->getLatestReaderByUserIDArray($id_array,$item->getItemID());
+		        $current_user = $user_list->getFirst();
+		        while ( $current_user ) {
+		            $current_reader = $reader_manager->getLatestReaderForUserByID($item->getItemID(), $current_user->getItemID());
+		            if ( !empty($current_reader) ) {
+		                if ( $current_reader['read_date'] >= $item->getModificationDate() ) {
+		                    $read_count++;
+		                    $read_since_modification_count++;
+		                } else {
+		                    $read_count++;
+		                }
+		            }
+		            $current_user = $user_list->getNext();
+		        }
+		        $read_percentage = round(($read_count/$user_count) * 100);
+		        $read_since_modification_percentage = round(($read_since_modification_count/$user_count) * 100);
+		        $return['read_percentage'] = $read_percentage;
+		        $return['read_since_modification_percentage'] = $read_since_modification_percentage;
+		        $return['read_count'] = $read_count;
+		        $return['read_since_modification_count'] = $read_since_modification_count;
+		    }
+
+		    if ( isset($modificator)
+		    and $modificator->isRoot()
+		    ) {
+		        //$temp_html = $this->_text_as_html_short($this->_compareWithSearchText($modificator->getFullname()));
+		        $return['modificator'] = $modificator->getFullname();
+		        $return['modificator_status'] = self::USER_IS_ROOT;
+		    } elseif ( $environment->inProjectRoom()
+		    or $environment->inGroupRoom()
+		    ) {
+		        if ( isset($modificator)
+		        and $modificator->isUser()
+		        and !$modificator->isDeleted()
+		        and $modificator->maySee($user)
+		        ) {
+		            /*$params = array();
+		            $params['iid'] = $modificator->getItemID();
+		            $temp_html = ahref_curl($this->_environment->getCurrentContextID(),
+		            CS_USER_TYPE,
+                                    'detail',
+		            $params,
+		            // $this->_compareWithSearchText($modificator->getFullname()),
+		            $this->_text_as_html_short($this->_compareWithSearchText($modificator->getFullname())),
+                                     '',
+                                     '',
+                                     '',
+                                     '',
+                                     '',
+                                     '',
+                                     'style="font-size:10pt;"'); */
+		            $return['modificator'] = $modificator->getFullname();
+		            $return['modificator_status'] = self::USER_HAS_LINK;
+		            $return['modificator_id'] = $modificator->getItemID();
+		        } elseif ( isset($modificator) and !$modificator->isDeleted() ) {
+		            //$temp_html = '<span class="disabled">'.$modificator->getFullname().'</span>';
+		            $return['modificator'] = $modificator->getFullname();
+		            $return['modificator_status'] = self::USER_DISABLED;
+
+		        } elseif ( $item->isA(CS_USER_TYPE)
+		        and $item->getUserID() == $modificator->getUserID()
+		        and $item->getAuthSource() == $modificator->getAuthSource()
+		        ) {
+		            //$temp_html = $this->_compareWithSearchText($modificator->getFullname());
+		            $return['modificator'] = $modificator->getFullname();
+		        } else {
+		            //$temp_html = '<span class="disabled">'.$translator->getMessage('COMMON_DELETED_USER').'</span>';
+		            $return['modificator'] = $translator->getMessage('COMMON_DELETED_USER');
+		            $return['modificator_status'] = self::USER_IS_DELETED;
+		        }
+		        unset($params);
+		    } elseif ( ($user->isUser() and isset($modificator) and  $modificator->isVisibleForLoggedIn())
+		    || (!$user->isUser() and isset($modificator) and $modificator->isVisibleForAll())
+		    || ( isset($modificator) and $environment->getCurrentUserID() == $modificator->getItemID()) ) {
+		        $params = array();
+		        $params['iid'] = $modificator->getItemID();
+		        if( !$modificator->isDeleted() and $modificator->maySee($user) ){
+		            if ( !$this->_environment->inPortal() ){
+		                /*$temp_html = ahref_curl($this->_environment->getCurrentContextID(),
+                                     'user',
+                                     'detail',
+		                $params,
+		                $this->_text_as_html_short($this->_compareWithSearchText($modificator->getFullname())),
+                                     '',
+                                     '',
+                                     '',
+                                     '',
+                                     '',
+                                     '',
+                                     'style="font-size:10pt;"'); */
+		                $return['modificator'] = $modificator->getFullname();
+		                $return['modificator_stats'] = self::USER_HAS_LINK;
+		                $return['modifcator_id'] = $modificator->getItemID();
+		            }else{
+		                //$temp_html = '<span class="disabled">'.$this->_compareWithSearchText($modificator->getFullname()).'</span>';
+		                $return['modificator'] = $modificator->getFullname();
+		                $return['modificator_status'] = self::USER_DISABLED;		                
+		            }
+		        } elseif ( $item->isA(CS_USER_TYPE)
+		        and $item->getUserID() == $modificator->getUserID()
+		        and $item->getAuthSource() == $modificator->getAuthSource()
+		        ) {
+		            //$temp_html = $this->_compareWithSearchText($modificator->getFullname());
+		            $return['modificator'] = $modificator->getFullname();
+		        }  else {
+		            //$temp_html = '<span class="disabled">'.$translator->getMessage('COMMON_DELETED_USER').'</span>';
+		            $return['modificator'] = $translator->getMessage('COMMON_DELETED_USER');
+		            $return['modificator_status'] = self::USER_IS_DELETED;
+		        }
+		        unset($params);
+		    }elseif ( $item->mayExternalSee($this->_environment->getCurrentUserItem())) {
+		        //$temp_html = $this->_compareWithSearchText($modificator->getFullname());
+		        $return['modificator'] = $modificator->getFullname();
+		    }else {
+		        if(isset($modificator) and !$modificator->isDeleted()){
+		            $current_user_item = $this->_environment->getCurrentUserItem();
+		            if ( $current_user_item->isGuest() or  !$modificator->maySee($user) ) {
+		                //$temp_html = '<span class="disabled">'.$translator->getMessage('COMMON_USER_NOT_VISIBLE').'</span>';
+		                $return['modificator'] = $translator->getMessage('COMMON_DELETED_USER');
+		                $return['modificator_status'] = self::USER_IS_DELETED;
+		            } else {
+		                //$temp_html = '<span class="disabled">'.$this->_compareWithSearchText($modificator->getFullname()).'</span>';
+		                $return['modificator'] = $modificator->getFullname();
+		                $return['modificator_status'] = self::USER_DISABLED;
+		            }
+		            unset($current_user_item);
+		        }else{
+		            //$temp_html = '<span class="disabled">'.$translator->getMessage('COMMON_DELETED_USER').'</span>';
+		            $return['modificator'] = $translator->getMessage('COMMON_DELETED_USER');
+		            $return['modificator_status'] = self::USER_IS_DELETED;
+		        }
+		    }
+		    if ($item->isNotActivated()){
+		        //$title = '&nbsp;<span class="creator_information_key">'.$translator->getMessage('COMMON_CREATED_BY').':</span> '.$temp_html.', '.$translator->getDateTimeInLangWithoutOClock($item->getCreationDate());
+		        $return['creator'] = $return['modificator'];
+		        $return['creator_status'] = $return['modificator_status'];
+		    }
+		    // else{
+		    //    $title = '&nbsp;<span class="creator_information_key">'.$translator->getMessage('COMMON_LAST_MODIFIED_BY').':</span> '.$temp_html.', '.$translator->getDateTimeInLangWithoutOClock($item->getModificationDate());
+		    //}
+		    
+		    /*$html .='&nbsp;<img id="toggle'.$item->getItemID().'" src="images/more.gif"/>';
+		    $html .= $title;
+		    $html .= '<div id="creator_information'.$item->getItemID().'">'.LF;
+		    $html .= '<div class="creator_information_panel">     '.LF;
+		    $html .= '<div>'.LF;
+		    $html .= '<table class="creator_info" summary="Layout">'.LF; */
+
+
+		    // Read count (for improved awareness)
+		    if ( ( $context->isProjectRoom()
+		    or $context->isGroupRoom()
+		    )
+		    and !in_array($item->getType(), array(CS_SECTION_TYPE,
+		    CS_DISCARTICLE_TYPE,
+		    CS_STEP_TYPE,
+		    CS_ANNOTATION_TYPE))
+		    ) {
+		         
+		         
+		        $user_allowed_detailed_awareness = false;
+		        if($user->isModerator()){
+		            $user_allowed_detailed_awareness = true;
+		        } else {
+		            if($context->getWorkflowReaderShowTo() == 'all'){
+		                $user_allowed_detailed_awareness = true;
+		            }
+		        }
+		        
+		        $return['user_allowed_detailed_awareness'] = $user_allowed_detailed_awareness;
+		        
+		        $is_workflow_type = false;
+		        if(in_array($item->getType(), array(CS_SECTION_TYPE,CS_MATERIAL_TYPE))){
+		            $is_workflow_type = true;
+		        }
+		        
+		        if ($is_workflow_type) {
+		            $return['is_workflow_type'] = 'true';
+		        } else {
+		            $return['is_workflow_type'] = 'false';
+		        }
+		         
+		        if(!$context->withWorkflowReader() or ($context->withWorkflowReader() and ($context->getWorkflowReaderGroup() == '0') and ($context->getWorkflowReaderPerson() == '0')) or !$user_allowed_detailed_awareness or !$is_workflow_type){
+		           /* $html .= '   <tr>'.LF;
+		            $html .= '      <td></td>'.LF;
+		            $html .= '      <td class="key" style="padding-left:8px; vertical-align:top;">'.LF;
+		            $html .= '         '.$translator->getMessage('COMMON_READ_SINCE_MODIFICATION').':&nbsp;'.LF;
+		            $html .= '      </td>'.LF;
+		            $html .= '      <td class="value">'.LF;
+		            if ( $read_since_modification_count == 1 ) {
+		                $html .= ' '.$read_since_modification_count.'&nbsp;'.$translator->getMessage('COMMON_NUMBER_OF_MEMBERS_SINGULAR').''.LF;
+		            } else {
+		                $html .= '       '.$read_since_modification_count.'&nbsp;'.$translator->getMessage('COMMON_NUMBER_OF_MEMBERS').''.LF;
+		            } */
+		            
+		            $return['read_since_modification_count'] = $read_since_modification_count;
+		            $return['workflow_reader'] = 'false';
+		            
+		        } else if($context->withWorkflowReader()){
+		            $return['workflow_reader'] = 'true';
+		           /* $html .= '   <tr>'.LF;
+		            $html .= '      <td></td>'.LF;
+		            $html .= '      <td class="key" style="padding-left:8px; vertical-align:top;">'.LF;
+		            $html .= '         '.$translator->getMessage('COMMON_WORKFLOW_READ_SINCE_MODIFICATION').':&nbsp;'.LF;
+		            $html .= '      </td>'.LF;
+		            $html .= '      <td class="value" style="padding-top:10px; padding-bottom:10px;">'.LF; */
+		            $item_manager = $environment->getItemManager();
+		            $user_manager = $environment->getUserManager();
+		            $user_list = $user_manager->getAllRoomUsersFromCache($environment->getCurrentContextID());
+		            $current_user = $user_list->getFirst();
+		            $id_array = array();
+		            while ( $current_user ) {
+		                $id_array[] = $current_user->getItemID();
+		                $current_user = $user_list->getNext();
+		            }
+		            $users_read_array = $item_manager->getUsersMarkedAsWorkflowReadForItem($item->getItemID());
+		            $persons_array = array();
+		            foreach($users_read_array as $user_read){
+		                $persons_array[] = $user_manager->getItem($user_read['user_id']);
+		            }
+
+		            if($context->getWorkflowReaderGroup() == '1'){
+		                $groups = array();
+		                $html .= $translator->getMessage('COMMON_GROUPS').': ';
+		                $group_manager = $environment->getGroupManager();
+		                $group_manager->setContextLimit($environment->getCurrentContextID());
+		                $group_manager->setTypeLimit('group');
+		                $group_manager->select();
+		                $group_list = $group_manager->get();
+		                $group_item = $group_list->getFirst();
+		                $first = true;
+		                while($group_item){
+		                    $link_user_list = $group_item->getLinkItemList(CS_USER_TYPE);
+		                    $user_count_complete = $link_user_list->getCount();
+
+		                    $user_count = 0;
+		                    foreach($persons_array as $person){
+		                        $temp_link_list = $person->getLinkItemList(CS_GROUP_TYPE);
+		                        $temp_link_item = $temp_link_list->getFirst();
+		                        while($temp_link_item){
+		                            $temp_group_item = $temp_link_item->getLinkedItem($person);
+		                            if($group_item->getItemID() == $temp_group_item->getItemID()){
+		                                $user_count++;
+		                            }
+		                            $temp_link_item = $temp_link_list->getNext();
+		                        }
+		                    }
+
+		                    $params = array();
+		                    $params['iid'] = $group_item->getItemID();
+		                    if(!$first){
+		                        $html .= ', ';
+		                    } else {
+		                        $first = false;
+		                    }
+		                    /*$html .= ahref_curl($this->_environment->getCurrentContextID(),
+                                        'group',
+                                        'detail',
+		                    $params,
+		                    $this->_text_as_html_short($this->_compareWithSearchText($group_item->getTitle()).' ('.$user_count.' '.$translator->getMessage('COMMON_OF').' '.$user_count_complete.')')); */
+		                    $group_item = $group_list->getNext();
+		                    $group = array(
+		                        'name' => $group_item->getTitle(),
+		                        'user_count' => $user_count,
+		                        'user_count_complete' => $user_count_complete,
+		                        'group_id' => $group_item->getItemID());
+		                    $groups[] = $group;
+		                }
+		                //$html .= '<br/>';
+		            }
+		            $persons = array();
+		            if($context->getWorkflowReaderPerson() == '1'){
+		               // $html .= $translator->getMessage('COMMON_USERS').': ';
+		               // $first = true;
+		                foreach($persons_array as $person){
+		                   /* $params = array();
+		                    $params['iid'] = $person->getItemID();
+		                    if(!$first){
+		                        $html .= ', ';
+		                    } else {
+		                        $first = false;
+		                    }
+		                    $html .= ahref_curl($this->_environment->getCurrentContextID(),
+                                        'user',
+                                        'detail',
+		                    $params,
+		                    $this->_text_as_html_short($this->_compareWithSearchText($person->getFullname()))); */
+		                    $personArray = array(
+		                        'name' => $person->getFullname(),
+		                        'id' => $person->getItemID());
+		                        
+		                    $persons[] = $personArray;
+		                }
+		            }
+		        }
+		      //  $html .= '      </td>'.LF;
+		      //  $html .= '   </tr>'.LF;
+		    }
+
+		    // Creator
+		    $creator = $item->getCreatorItem();
+		    if ( isset($creator) and $creator->isRoot() ) {
+		        //$temp_html = $this->_text_as_html_short($this->_compareWithSearchText($creator->getFullname()));
+		        $return['creator'] = $creator->getFullname();
+		        $return['creator_status'] = self::USER_IS_ROOT;
+		    } elseif ( $environment->inProjectRoom() ) {
+		        if ( isset($creator) and $creator->isUser() and !$creator->isDeleted()  and $creator->maySee($user)){
+		           /* $params = array();
+		            $params['iid'] = $creator->getItemID();
+		            $temp_html = ahref_curl($this->_environment->getCurrentContextID(),
+                                     'user',
+                                     'detail',
+		            $params,
+		            $this->_text_as_html_short($this->_compareWithSearchText($creator->getFullname())));
+		            */
+		            $return['creator'] = $creator->getFullname();
+		            $return['creator_id'] = $creator->getItemID();
+		            $return['creator_status'] = self::USER_HAS_LINK;
+		            
+		        } elseif ( isset($creator) and !$creator->isDeleted()){
+		            //$temp_html = '<span class="disabled">'.$this->_compareWithSearchText($creator->getFullname()).'</span>';
+		            $return['creator'] = $creator->getFullname();
+		            $return['creator_status'] = self::USER_DISABLED;
+		        } else {
+		            //$temp_html = '<span class="disabled">'.$translator->getMessage('COMMON_DELETED_USER').'</span>';
+		            $return['creator'] = $translator->getMessage('COMMON_DELETED_USER');
+		            $return['creator_status'] = self::USER_IS_DELETED;
+		        }
+		    } elseif ( $user->isUser() and isset($creator)  and $creator->maySee($user) and ($creator->isVisibleForLoggedIn())
+		    || (!$user->isUser() and $creator->isVisibleForAll()) ) {
+		        $params = array();
+		        $params['iid'] = $creator->getItemID();
+		        if( !$creator->isDeleted() ){
+		            if ( !$this->_environment->inPortal() ){
+		                /*$temp_html = ahref_curl($this->_environment->getCurrentContextID(),
+                                     'user',
+                                     'detail',
+		                $params,
+		                $this->_text_as_html_short($this->_compareWithSearchText($creator->getFullname()))); */
+		                $return['creator'] = $creator->getFullname();
+		                $return['creator_status'] = self::USER_HAS_LINK;
+		            }else{
+		              //  $temp_html = '<span class="disabled">'.$this->_compareWithSearchText($creator->getFullname()).'</span>';
+		              $return['creator'] = $creator->getFullname();
+		              $return['creator_status'] = self::USER_DISABLED;
+		            }
+		        }else{
+		            //$temp_html = '<span class="disabled">'.$translator->getMessage('COMMON_DELETED_USER').'</span>';
+		            $return['creator'] = $translator->getMessage('COMMON_DELETED_USER');
+		            $return['creator_status'] = self::USER_IS_DELETED;
+		        }
+		        unset($params);
+		    } elseif ( $item->mayExternalSee($this->_environment->getCurrentUserItem())) {
+		        //$temp_html = $this->_compareWithSearchText($modificator->getFullname());
+		        $return['creator'] = $modificator->getFullname();
+		    } else {
+		        if(isset($creator) and !$creator->isDeleted()){
+		            $current_user_item = $this->_environment->getCurrentUserItem();
+		            if ( $current_user_item->isGuest() ) {
+		                //$temp_html = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+		                $return['creator'] = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+		                
+		            } else {
+		                //$temp_html = $this->_compareWithSearchText($creator->getFullname());
+		                $return['creator'] = $creator->getFullname();
+		            }
+		            unset($current_user_item);
+		        }else{
+		           // $temp_html = '<span class="disabled">'.$translator->getMessage('COMMON_DELETED_USER').'</span>';
+		            $return['creator'] = $translator->getMessage('COMMON_DELETED_USER');
+		            $return['creator_status'] = self::USER_IS_DELETED;
+		        }
+		    }
+		   /* $html .= '   <tr>'.LF;
+		    $html .= '      <td></td>'.LF;
+		    $html .= '      <td class="key"  style="padding-left:8px;">'.LF;
+		    $html .= '         '.$translator->getMessage('COMMON_CREATED_BY').':&nbsp;'.LF;
+		    $html .= '      </td>'.LF;
+		    $html .= '      <td class="value">'.LF;
+		    $html .= '         '.$temp_html.', '.$translator->getDateTimeInLang($item->getCreationDate()).LF;
+		    $html .= '      </td>'.LF;
+		    $html .= '   </tr>'.LF; */
+
+		    // All users who ever edited this item
+		    $userEditArray = array();
+		    $link_modifier_item_manager = $environment->getLinkModifierItemManager();
+		    $user_manager = $environment->getUserManager();
+		    $modifiers = $link_modifier_item_manager->getModifiersOfItem($item->getItemID());
+		    $modifier_array = array();
+		    foreach($modifiers as $modifier_id) {
+		        $modificator = $user_manager->getItem($modifier_id);
+		        //Links only at accessible contact pages
+		        if ( isset($modificator) and $modificator->isRoot() ) {
+		            $temp_text = $this->_compareWithSearchText($modificator->getFullname());
+		            $modifier_array[] = $temp_text;
+		        } elseif ( $modificator->getContextID() == $item->getContextID() ) {
+		            if ( $environment->inProjectRoom() ) {
+		                $params = array();
+		                if (isset($modificator) and !empty($modificator) and $modificator->isUser() and !$modificator->isDeleted() and $modificator->maySee($user)){
+		                  /*  $params['iid'] = $modificator->getItemID();
+		                    $temp_text = ahref_curl($this->_environment->getCurrentContextID(),
+                                     'user',
+                                     'detail',
+		                    $params,
+		                    $this->_compareWithSearchText($modificator->getFullname())); */
+		                    $userArray = array(
+		                        'name' => $modificator->getFullName(),
+		                        'id' => $modificator->getItemID(),
+		                        'status' => self::USER_HAS_LINK);
+		                    $userEditArray[] = $userArray;
+		                }elseif(isset($modificator) and  !$modificator->isDeleted()){
+		                    //$temp_text = '<span class="disabled">'.$this->_compareWithSearchText($modificator->getFullname()).'</span>';
+		                    $userArray = array(
+		                        'name' => $modificator->getFullName(),
+		                        'status' => self::USER_DISABLED);
+		                    $userEditArray[] = $userArray;
+		                }else{
+		                    //$temp_text = '<span class="disabled">'.$translator->getMessage('COMMON_DELETED_USER').'</span>';
+		                    $userArray = array(
+		                        'name' => $translator->getMessage('COMMON_DELETED_USER'),
+		                        'status' => self::USER_IS_DELETED);
+		                    $userEditArray[] = $userArray;
+		                }
+		                $modifier_array[] = $temp_text;
+		            } elseif ( ($user->isUser() and isset($modificator) and  $modificator->isVisibleForLoggedIn())
+		            || (!$user->isUser() and isset($modificator) and $modificator->isVisibleForAll())
+		            || (isset($modificator) and $environment->getCurrentUserID() == $modificator->getItemID()) ) {
+		                $params = array();
+		                $params['iid'] = $modificator->getItemID();
+		                if(!$modificator->isDeleted() and $modificator->maySee($user)){
+		                    if ( !$this->_environment->inPortal() ){
+		                        /*$modifier_array[] = ahref_curl($this->_environment->getCurrentContextID(),
+                                        'user',
+                                        'detail',
+		                        $params,
+		                        $this->_text_as_html_short($this->_compareWithSearchText($modificator->getFullname()))); */
+		                        $userArray = array(
+    		                        'name' => $modificator->getFullName(),
+    		                        'id' => $modificator->getItemID(),
+    		                        'status' => self::USER_HAS_LINK);
+    		                    $userEditArray[] = $userArray;
+		                    }else{
+		                        //$modifier_array[] = '<span class="disabled">'.$this->_compareWithSearchText($modificator->getFullname()).'</span>';
+		                        $userArray = array(
+    		                        'name' => $modificator->getFullName(),
+    		                        'status' => self::USER_DISABLED);
+    		                    $userEditArray[] = $userArray;
+		                    }
+		                }else{
+		                   // $modifier_array[] = '<span class="disabled">'.$translator->getMessage('COMMON_DELETED_USER').'</span>';
+		                    $userArray = array(
+		                        'name' => $translator->getMessage('COMMON_DELETED_USER'),
+		                        'status' => self::USER_IS_DELETED);
+		                    $userEditArray[] = $userArray;
+		                }
+		                unset($params);
+		            } elseif ( $item->mayExternalSee($this->_environment->getCurrentUserItem())) {
+		                //$modifier_array[] = $this->_compareWithSearchText($modificator->getFullname());
+                        $userArray = array(
+                            'name' => $modificator->getFullname());
+                        $userEditArray[] = $userArray;
+		            } else {
+		                if(isset($modificator) and !$modificator->isDeleted()){
+		                    $current_user_item = $this->_environment->getCurrentUserItem();
+		                    if ( $current_user_item->isGuest() ) {
+		                        //$modifier_array[] = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+		                        $userArray = array(
+                                    'name' => $translator->getMessage('COMMON_USER_NOT_VISIBLE'),
+		                            'status' => self::USER_NOT_VISIBLE);
+                                $userEditArray[] = $userArray;
+		                    } else {
+		                        //$modifier_array[] = $this->_compareWithSearchText($modificator->getFullname());
+		                        $userArray = array(
+                                    'name' => $modificator->getFullname());
+                                $userEditArray[] = $userArray;
+		                    }
+		                    unset($current_user_item);
+		                }else{
+		                    //$modifier_array[] = '<span class="disabled">'.$translator->getMessage('COMMON_DELETED_USER').'</span>';
+		                    $userArray = array(
+                                'name' => $translator->getMessage('COMMON_DELETED_USER'),
+	                            'status' => self::USER_IS_DELETED);
+                            $userEditArray[] = $userArray;
+		                }
+		            }
+		        }
+		    }
+		    $modifier_array = array_unique($userEditArray);
+
+		    /*$html .= '   <tr>'.LF;
+		    $html .= '      <td></td>'.LF;
+		    $html .= '      <td class="key"  style="padding-left:8px;">'.LF;
+		    $html .= '         '.$translator->getMessage('COMMON_ALL_MODIFIERS').':&nbsp;'.LF;
+		    $html .= '      </td>'.LF;
+		    $html .= '      <td class="value">'.LF;
+		    $html .= '         '.implode(', ',$modifier_array);
+		    $html .= '      </td>'.LF;
+		    $html .= '   </tr>'.LF;
+
+		    // Reference number
+		    $html .= '   <tr>'.LF;
+		    $html .= '      <td></td>'.LF;
+		    $html .= '      <td class="key"  style="padding-left:8px;">'.LF;
+		    $html .= '         '.$translator->getMessage('COMMON_REFNUMBER').':&nbsp;'.LF;
+		    $html .= '      </td>'.LF;
+		    $html .= '      <td class="value">'.LF;
+		    $html .= '         '.$item->getItemID();
+		    $html .= '      </td>'.LF;
+		    $html .= '   </tr>'.LF;
+		    $html .= '</table>'.LF;
+
+		    $html .= '</div>'.LF;
+		    $html .='</div>'.LF;
+		    $html .='</div>'.LF;
+		    $html .='<script type="text/javascript">document.onload = initCreatorInformations("'.$item->getItemID().'",false);</script>';
+
+		    //Read percentage gauge (for improved awareness)
+		    if ( ( $context->isProjectRoom()
+		    or $context->isGroupRoom()
+		    )
+		    and !in_array($item->getType(), array(CS_SECTION_TYPE,
+		    CS_DISCARTICLE_TYPE,
+		    CS_STEP_TYPE,
+		    CS_ANNOTATION_TYPE))
+		    ) {
+		        $html .= '<table class="gauge-wrapper" summary="Layout"><tr>'.LF;
+		        $html .= '   <td id="creator_information_read_text" width="50%">'.$translator->getMessage('COMMON_READ').':</td>'.LF;
+		        $html .= '   <td width="50%">'.LF;
+		        $html .= '      <div class="gauge">'.LF;
+		        if ( $read_percentage >= 5 ) {
+		            $html .= '         <div class="gauge-bar" style="width:'.$read_percentage.'%;">'.$read_count.'</div>'.LF;
+		        } else {
+		            $html .= '         <div class="gauge-bar" style="width:'.$read_percentage.'%">&nbsp;</div>'.LF;
+		        }
+		        $html .= '      </div>'.LF;
+		        $html .= '   </td>'.LF;
+		        $html .= '</tr></table>'.LF; 
+		    } */
+		    return $return;
+		}
+		
+		private function _text_as_html_short ($text) {
+            return $this->_environment->getTextConverter()->text_as_html_short($text);
+        }
 
 		abstract protected function setBrowseIDs();
 

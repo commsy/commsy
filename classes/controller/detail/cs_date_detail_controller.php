@@ -247,8 +247,8 @@ class cs_date_detail_controller extends cs_detail_controller {
             if(strlen($this->_item->getEndingTime()) > 0) {
                 //from ... to ...
                 $timeLine1 = $translator->getMessage('DATES_ON_DAY').' '.$this->getStartingDayStringInLang();
-                $timeLine2 = $translator->getMessage('DATES_FROM_TIME_LOWER').' '.getTimeLanguage($this->_item->getStartingTime()).' '
-                    .$translator->getMessage('DATES_TILL').' '.getTimeLanguage($this->_item->getEndingTime());
+                $timeLine2 = $translator->getMessage('DATES_FROM_TIME_LOWER').' '.getTimeLanguage($this->_item->getStartingTime()).' '.$translator->getMessage('DATES_OCLOCK').' '
+                    .$translator->getMessage('DATES_TILL').' '.getTimeLanguage($this->_item->getEndingTime()).' '.$translator->getMessage('DATES_OCLOCK');
             } else {
                 //from...
                 $timeLine1 = $translator->getMessage('DATES_ON_DAY').' '.$this->getStartingDayStringInLang();
@@ -273,6 +273,8 @@ class cs_date_detail_controller extends cs_detail_controller {
         $this->assign('detail', 'content', $content);
         $this->assign('detail', 'annotations', $this->getAnnotationInformation($annotations));
         $this->assign('detail', 'files', $this->getFileContent());
+        pr($this->getCreatorInformationAsHTML($this->_item));
+        //$this->assign('detail', 'lastedit', $this->getCreatorInformationAsHTML($this->_item));
 
         //        }
     }

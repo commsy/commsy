@@ -79,6 +79,9 @@
 							</tr>
 						{/if}
                     </table>
+                    {if !empty($detail.lastedit)}
+                    	{$detail.lastedit}
+                    {/if}
                 </div>
             </p>
             <div class="clear"> </div>
