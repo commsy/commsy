@@ -584,7 +584,7 @@ content, general
 .content_item h2 {
     background: url(img/ci_head_bg.png) left bottom repeat-x;
     font-size: 12px;
-    padding: 17px 0px 7px 10px;
+    padding: 10px 0px 8px 10px;
     }
 
 .content_item h2 span {
@@ -677,7 +677,7 @@ h2#item_navigation {
 h2#item_navigation span {
     padding: 0px 20px;
     }
-    
+
 .row_odd_no_hover {
 	background-color: #F5F5F5;
 	}
@@ -834,7 +834,7 @@ input.new_item_2 {
 .item_actions a span.edit_set {
     background: url(img/btn_edit_set_2.gif) -15px 0px no-repeat;
     }
-    
+
 .item_actions a:hover span.edit_set, .item_actions a span.edit_set_ok {
     background: url(img/btn_edit_set_2.gif) no-repeat;
     }
@@ -1310,9 +1310,9 @@ a:hover.keywords_s1, a:hover.keywords_s2, a:hover.keywords_s3, a:hover.keywords_
     }
 
 #color_box {
-	height:10px; 
+	height:10px;
 	width:10px;
-	border:1px solid #cccccc; 
+	border:1px solid #cccccc;
 }
 
 #dis_navigation {
@@ -1397,7 +1397,7 @@ footer
 #footer_right a:hover {
     color: #FFF;
     }
-    
+
 div.delete_confirm_background {
     background-color: white;
     height: 100%;
@@ -1426,25 +1426,25 @@ div.delete_confirm_box {
 ----------------------------------------------------------------------
 fade-in
 ----------------------------------------------------------------------
-*/ 
- 
+*/
+
 .fade_in_ground_linked {
     background: url(img/fade_in_bg.jpg) repeat-x #D7D7D9;
     border-top: 1px solid #D7D7D9;
     border-bottom: 1px solid #F9F9F9;
-    } 
+    }
 
 .fade_in_ground_panel {
     background: url(img/fade_in_bg.jpg) repeat-x #D7D7D9;
     border-top: 1px solid #D7D7D9;
     border-bottom: 1px solid #F9F9F9;
-    margin-left: 39px;    
+    margin-left: 39px;
     }
 
 .fade_in_ground_actions {
     background: url(img/fade_in_bg.jpg) repeat-x #D7D7D9;
     border-top: 1px solid #D7D7D9;
-    padding: 7px 10px 7px 5px;
+    padding: 10px 10px 7px 5px;
     }
 
 .fade_in_ground_actions a {
@@ -1452,46 +1452,46 @@ fade-in
     color: #393939 !important;
     text-decoration: none !important;
     }
- 
+
  .fade_in_ground_actions a:hover {
     color: #D8261D !important;
     }
- 
+
 .fi_moredetails {
     background: url(img/fi_md_bg.gif) 3px 0px repeat-y;
-    } 
- 
+    }
+
 .fi_md_info {
     padding-bottom: 15px;
     float: left;
     width: 70px;
-    } 
+    }
 
 .fi_md_content {
     float: left;
     padding: 10px 10px 0px 10px;
     width: 500px;
-    } 
- 
+    }
+
 .fi_mdc_item {
     float: left;
     width: 230px;
     padding: 0px 20px 10px 0px;
     color: #6F6F73 !important;
     font-weight: normal !important;
-    } 
- 
+    }
+
 .fi_mdc_item a {
     font-weight: normal !important;
     font-size: 10px !important;
     color: #6F6F73 !important;
     text-decoration: none !important;
-    } 
- 
+    }
+
 .fi_mdc_item a:hover {
     color: #D8261D !important;
-    }  
- 
+    }
+
 .fi_mdc_item h4 {
     color: #6F6F73;
     font-weight: bold;

@@ -9,11 +9,9 @@
 			<a class="annotations" href="#"><span class="edit_set"> &nbsp; </span></a>
 		</div>
 	</div>
-	
+
 	<div class="item_body"> <!-- Start item body -->
-		<h2>{$detail.content.title}</h2>
-		<div class="clear"> </div>
-		
+
 		<!-- Start fade_in_ground -->
 		<div class="fade_in_ground_actions hidden">
 			{* TODO: add missing actions *}
@@ -34,8 +32,12 @@
 			{/if}
 			<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.content.item_id}">___COMMON_DOWNLOAD___</a>
 		</div>
-		<!-- Ende fade_in_ground --> 
-		
+		<!-- Ende fade_in_ground -->
+
+		<h2>{$detail.content.title}</h2>
+		<div class="clear"> </div>
+
+
 		<div id="item_credits">
 			<p id="ic_rating">
 				{foreach $detail.assessment as $assessment}
@@ -46,10 +48,10 @@
 				___COMMON_CREATED_BY_UPPER___ <a href="">{$detail.content.creator}</a> ___DATES_ON_DAY___  {$detail.content.creation_date}
 			</p>
 			<div class="clear"> </div>
-			
+
 			{include file="include/detail_linked_html.tpl"}
 		</div>
-		
+
 		<div id="item_legend"> <!-- Start item_legend -->
 			<div class="row_odd">
 				{* formal data *}
@@ -63,7 +65,7 @@
 						{/foreach}
 					</table>
 				{/if}
-				
+
 				{if !empty($detail.content.description)}
 					<div class="detail_description">
 						{$detail.content.description}
@@ -71,39 +73,39 @@
 				{/if}
 			</div>
 		</div> <!-- Ende item_legend -->
-		
+
 	</div> <!-- Ende item body -->
 	<div class="clear"> </div>
-	
+
 	{include file="include/detail_moredetails_html.tpl"}
-	
+
 	{foreach $detail.content.sections as $section}
 		<div class="item_actions">
 			<a class="edit" href="#"><span class="edit_set"> &nbsp; </span></a>
 			<a class="detail" href="#"><span class="details_ia"> &nbsp; </span></a>
 		</div>
-		
+
 		<div class="item_body"> <!-- Start item body -->
 			<a name="mat_section_{$section@index}"></a>
-			
+
 			<!-- Start fade_in_ground -->
 			<div class="fade_in_ground_actions hidden">
 				actions
 			</div>
-			<!-- Ende fade_in_ground --> 
-			
+			<!-- Ende fade_in_ground -->
+
 			<div class="item_post">
 				<div class="row_{if $section@iteration is odd}odd{else}even{/if}_no_hover {if $section@iteration is odd}odd{else}even{/if}_sep_disdetail">
-				
+
 					<div class="column_27">
 						<p></p>
 					</div>
-				
+
 					<div class="column_563">
 						<div class="post_content">
 							<h4>
 								{$section.title}
-							
+
 							{*{if $article.noticed == 'new' or $article.noticed == 'changed'}*}<img src="{$basic.tpl_path}img/flag_neu.gif" alt="___COMMON_NEW___"/>{*{/if}*}
 							</h4>
 							{*<span><a href="">{$article.creator}</a>, {$article.modification_date}</span>*}
@@ -128,12 +130,12 @@
 			</div>
 		</div> <!-- Ende item body -->
 		<div class="clear"> </div>
-		
+
 		{include file="include/detail_moredetails_html.tpl"}
 	{/foreach}
-	
+
 	{include file='include/annotation_include_html.tpl'}
-	
+
 	<div class="clear"> </div>
 {/block}
 
