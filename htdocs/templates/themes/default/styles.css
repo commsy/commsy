@@ -584,7 +584,7 @@ content, general
 .content_item h2 {
     background: url(img/ci_head_bg.png) left bottom repeat-x;
     font-size: 12px;
-    padding: 10px 0px 8px 10px;
+    padding: 8px 0px 8px 10px;
     }
 
 .content_item h2 span {
@@ -855,13 +855,22 @@ input.new_item_2 {
     background: url(img/btn_ref_2.gif) no-repeat;
     }
 
+.item_actions a span.ref_to_anno {
+    background: url(img/btn_ref_3.gif) -15px 0px no-repeat;
+    }
+
+.item_actions a:hover span.ref_to_anno, .item_actions a span.ref_to_anno_ok {
+    background: url(img/btn_ref_3.gif) no-repeat;
+    }
+
+
 a.item_actions_glow {
     background: url(img/ia_glow_bg.jpg) no-repeat;
     }
 
 #top_item_actions {
-    border-top: 1px solid #F6F6F6;
-    margin-top: 1px;
+  /*  border-top: 1px solid #F6F6F6;
+    margin-top: 1px;*/
     }
 
 .item_body {
@@ -1436,6 +1445,7 @@ fade-in
     background: url(img/fade_in_bg.jpg) repeat-x #D7D7D9;
     border-top: 1px solid #D7D7D9;
     border-bottom: 1px solid #F9F9F9;
+    height: 97px;
     }
 
 .fade_in_ground_panel {
@@ -1448,7 +1458,7 @@ fade-in
 .fade_in_ground_actions {
     background: url(img/fade_in_bg.jpg) repeat-x #D7D7D9;
     border-top: 1px solid #D7D7D9;
-    padding: 10px 10px 7px 5px;
+    padding: 8px 10px 8px 5px;
     }
 
 .fade_in_ground_actions a {
@@ -1461,8 +1471,14 @@ fade-in
     color: #D8261D !important;
     }
 
+.fade_in_ground_annotations h2{
+    margin-left: 39px;
+    width: 685px;
+}
+
 .fi_moredetails {
     background: url(img/fi_md_bg.gif) 3px 0px repeat-y;
+
     }
 
 .fi_md_info {

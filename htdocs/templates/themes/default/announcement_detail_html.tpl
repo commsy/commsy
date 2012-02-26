@@ -3,8 +3,9 @@
 {block name=room_detail_content}
 	<div class="item_actions">
 		<a class="edit" href=""><span class="edit_set"> &nbsp; </span></a>
-		<a href=""><span class="details_ia"> &nbsp; </span></a>
-		<a href=""><span class="ref_to_ia"> &nbsp; </span></a>
+		<a class="linked" href=""><span class="ref_to_ia"> &nbsp; </span></a>
+		<a class="detail" href=""><span class="details_ia"> &nbsp; </span></a>
+		<a class="annotations" href="#"><span class="edit_set"> &nbsp; </span></a>
 	</div>
 
 	<div class="item_body"> <!-- Start item body -->
@@ -42,7 +43,7 @@
 		</div>
 
 		<div id="item_legend"> <!-- Start item_legend -->
-			<div class="row_odd">				
+			<div class="row_odd">
 				{if !empty($detail.content.description)}
 					<div class="detail_description">
 						{$detail.content.description}
@@ -55,7 +56,7 @@
 	<div class="clear"> </div>
 
 	{include file='include/annotation_include_html.tpl'}
-	
+
 	<div class="clear"> </div>
 {/block}
 

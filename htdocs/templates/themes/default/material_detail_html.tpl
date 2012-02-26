@@ -4,9 +4,9 @@
 	<div class="item_actions">
 		<div id="top_item_actions">
 			<a class="edit" href=""><span class="edit_set"> &nbsp; </span></a>
-			<a class="detail" href=""><span class="details_ia"> &nbsp; </span></a>
 			<a class="linked" href=""><span class="ref_to_ia"> &nbsp; </span></a>
-			<a class="annotations" href="#"><span class="edit_set"> &nbsp; </span></a>
+			<a class="detail" href=""><span class="details_ia"> &nbsp; </span></a>
+			<a class="annotations" href="#"><span class="ref_to_anno"> &nbsp; </span></a>
 		</div>
 	</div>
 
@@ -34,6 +34,8 @@
 		</div>
 		<!-- Ende fade_in_ground -->
 
+	    {include file="include/detail_linked_html.tpl"}
+
 		<h2>{$detail.content.title}</h2>
 		<div class="clear"> </div>
 
@@ -49,7 +51,6 @@
 			</p>
 			<div class="clear"> </div>
 
-			{include file="include/detail_linked_html.tpl"}
 		</div>
 
 		<div id="item_legend"> <!-- Start item_legend -->

@@ -4,8 +4,8 @@
     <div class="item_actions">
         <div id="top_item_actions">
             <a href=""><span class="edit_set"> &nbsp; </span></a>
-            <a href=""><span class="details_ia"> &nbsp; </span></a>
             <a href=""><span class="ref_to_ia"> &nbsp; </span></a>
+            <a href=""><span class="details_ia"> &nbsp; </span></a>
         </div>
     </div>
 
