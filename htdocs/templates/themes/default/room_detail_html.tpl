@@ -4,7 +4,7 @@
 	<a href="" title="___COMMON_LIST_PRINTVIEW___">
 		<img src="{$basic.tpl_path}img/btn_print.gif" alt="___COMMON_LIST_PRINTVIEW___" />
 	</a>
-	
+
 	{if $detail.actions.new}
 		<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid=NEW" title="___COMMON_NEW_ITEM___">
 	    	<img src="{$basic.tpl_path}img/btn_add_new.gif" alt="___COMMON_NEW_ITEM___" />
@@ -28,7 +28,7 @@
 
 {block name=room_right_portlets}
 	<div class="portlet_rc">
-		<h2 id="item_navigation">
+		<h2 id="portlet_rc">
 		{if $detail.browsing_information.paging.first.active}
 			<a href="commsy.php?cid={$environment.cid}&mod={$detail.browsing_information.paging.first.module}&fct={$environment.function}{params params=$detail.browsing_information.paging.first.params}">
 				<img src="{$basic.tpl_path}img/btn_ar_start2.gif" alt="___COMMON_BROWSE_START_DESC___" />
@@ -43,9 +43,8 @@
 		{else}
 			<img src="{$basic.tpl_path}img/btn_ar_left.gif" alt="___COMMON_BROWSE_LEFT_DESC___" />
 		{/if}
-		
-		<span>___COMMON_{$room.rubric|upper}_INDEX___</span>
-		
+
+	    <strong>{$detail.browsing_information.position} ___COMMON_OF___ {$detail.browsing_information.count_all}</strong>
 		{if $detail.browsing_information.paging.next.active}
 			<a href="commsy.php?cid={$environment.cid}&mod={$detail.browsing_information.paging.next.module}&fct={$environment.function}{params params=$detail.browsing_information.paging.next.params}">
 				<img src="{$basic.tpl_path}img/btn_ar_right2.gif" alt="___COMMON_BROWSE_RIGHT_DESC___" />
@@ -62,11 +61,11 @@
 		{/if}
 		</h2>
 		<div class="clear"> </div>
-		
+
 		<div id="dis_navigation">
 			{block name=room_right_portlets_navigation}{/block}
 		</div>
-		
+
 		<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=index&back_to_index=true" class="context_nav">___COMMON_BACK_TO_LIST___</a>
 	</div>
 {/block}

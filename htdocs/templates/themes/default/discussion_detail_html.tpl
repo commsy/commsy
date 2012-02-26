@@ -11,9 +11,7 @@
 	</div>
 
 	<div class="item_body"> <!-- Start item body -->
-		<h2>{$detail.content.discussion.title}</h2>
-		<div class="clear"> </div>
-		
+
 		<!-- Start fade_in_ground -->
 		<div class="fade_in_ground_actions hidden">
 			{if $detail.actions.edit}
@@ -33,7 +31,10 @@
 			{/if}
 			<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.content.item_id}">___COMMON_DOWNLOAD___</a>
 		</div>
-		<!-- Ende fade_in_ground --> 
+		<!-- Ende fade_in_ground -->
+
+		<h2>{$detail.content.discussion.title}</h2>
+		<div class="clear"> </div>
 
 		<div id="item_credits">
 			<p id="ic_rating">
@@ -45,7 +46,7 @@
 				___COMMON_CREATED_BY_UPPER___ <a href="">{$detail.content.discussion.creator}</a> ___DATES_ON_DAY___  {$detail.content.discussion.creation_date}
 			</p>
 			<div class="clear"> </div>
-			
+
 			{include file="include/detail_linked_html.tpl"}
 		</div>
 
@@ -83,10 +84,10 @@
 
 	</div> <!-- Ende item body -->
 	<div class="clear"> </div>
-	
-	
+
+
 	{include file="include/detail_moredetails_html.tpl" data=$detail.content.moredetails}
-	
+
 	{foreach $detail.content.disc_articles as $article}
 		<div class="item_actions">
 			<a class="edit" href="#"><span class="edit_set"> &nbsp; </span></a>
@@ -95,7 +96,7 @@
 
 		<div class="item_body"> <!-- Start item body -->
 			<a name="disc_article_{$article.item_id}"></a>
-			
+
 			<!-- Start fade_in_ground -->
 			<div class="fade_in_ground_actions hidden">
 				{if $article.actions.edit}
@@ -105,8 +106,8 @@
 					<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&iid={$detail.content.discussion.item_id}&action=delete&discarticle_iid={$article.item_id}&discarticle_action=delete">___COMMON_DELETE_ITEM___</a>
 				{/if}
 			</div>
-			<!-- Ende fade_in_ground --> 
-			
+			<!-- Ende fade_in_ground -->
+
 			{block name=discussion_articles}
 				<div class="item_post">
 					<div class="row_{if $article@iteration is odd}odd{else}even{/if}_no_hover {if $article@iteration is odd}odd{else}even{/if}_sep_disdetail">
@@ -121,7 +122,7 @@
 								</a>
 							</p>
 						</div>
-	
+
 						<div class="column_510">
 							<div class="post_content">
 								<h4>{$article@iteration}.
@@ -150,7 +151,7 @@
 			{/block}
 		</div> <!-- Ende item body -->
 		<div class="clear"> </div>
-		
+
 		{include file="include/detail_moredetails_html.tpl"}
 	{/foreach}
 
@@ -182,10 +183,10 @@
 							<div class="editor_content">
 								<div id="ckeditor"></div>
 								<input type="hidden" id="ckeditor_content" name="form_data[description]" value=""/>
-								
+
 								<div id="file_finished"></div>
 								<input id="uploadify" name="uploadify" type="file" />
-								
+
 								<div>
 									<a id="uploadify_doUpload">
 										<img src={$basic.tpl_path}img/uploadify/button_upload_{$environment.lang}.png />

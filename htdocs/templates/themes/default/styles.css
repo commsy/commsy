@@ -1251,6 +1251,10 @@ portlets, right_column
     text-shadow: #2E405E 0 1px; /* ueber Skin-Editor austauschbar */
     }
 
+.portlet_rc h2 a{
+	text-decoration:none;
+}
+
 .btn_head_rc {
     float: right;
     padding-top: 7px;
