@@ -60,7 +60,7 @@
 					<table>
 						{foreach $detail.content.formal as $formal}
 							<tr>
-								<td><h4>{$formal[0]}</h4></td>
+								<td><h4>{$formal[0]}:</h4></td>
 								<td>{$formal[1]}</td>
 							</tr>
 						{/foreach}

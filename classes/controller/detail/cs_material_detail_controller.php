@@ -622,29 +622,26 @@
                 	$temp_array = array();
          			$temp_array[] = $translator->getMessage('MATERIAL_BIB_DOCUMENT_EDITOR');
          			$temp_array[] = $this->_item->getDocumentEditor();
-         			$formal_data_bib[] = $temp_array;
+         			$return[] = $temp_array;
          		}
                	if ( $this->_item->getDocumentMaintainer() ) {
                 	$temp_array = array();
          			$temp_array[] = $translator->getMessage('MATERIAL_BIB_DOCUMENT_MAINTAINER');
          			$temp_array[] = $this->_item->getDocumentMaintainer();
-         			$formal_data_bib[] = $temp_array;
+         			$return[] = $temp_array;
                	}
                	if ( $this->_item->getDocumentReleaseNumber() ) {
                 	$temp_array = array();
          			$temp_array[] = $translator->getMessage('MATERIAL_BIB_DOCUMENT_RELEASE_NUMBER');
          			$temp_array[] = $this->_item->getDocumentReleaseNumber();
-         			$formal_data_bib[] = $temp_array;
+         			$return[] = $temp_array;
                	}
                	if ( $this->_item->getDocumentReleaseDate() ) {
                 	$temp_array = array();
          			$temp_array[] = $translator->getMessage('MATERIAL_BIB_DOCUMENT_RELEASE_DATE');
          			$temp_array[] = $this->_item->getDocumentReleaseDate();
-         			$formal_data_bib[] = $temp_array;
+         			$return[] = $temp_array;
                	}
-      			if ( !empty($formal_data_bib) ) {
-         			$return[] = $formal_data_bib;
-			    }
                	break;
             case 'none':
             default:
