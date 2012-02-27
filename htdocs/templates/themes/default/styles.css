@@ -1478,7 +1478,7 @@ fade-in
 
 .fi_moredetails {
     background: url(img/fi_md_bg.gif) 3px 0px repeat-y;
-
+    min-height: 97px;
     }
 
 .fi_md_info {
