@@ -1463,7 +1463,8 @@ fade-in
     }
 
 .fade_in_ground_actions a {
-    padding: 0px 5px;
+    padding: 0px 0px;
+    font-size: 10px !important;
     color: #393939 !important;
     text-decoration: none !important;
     }
@@ -1496,6 +1497,7 @@ fade-in
 
 .fi_mdc_item {
     float: left;
+    font-size: 10px !important;
     width: 230px;
     padding: 0px 20px 10px 0px;
     color: #6F6F73 !important;

@@ -15,32 +15,35 @@
 		<div class="fi_md_info">
 			<img src="{$basic.tpl_path}img/fi_item_detail.gif" alt="Detailansicht" />
 		</div>
-		
+
 		<div class="fi_md_content">
 			<div class="fi_mdc_item">
+			<h4>___COMMON_REFNUMBER___</h4>
+			<p class="fi_mdc_item">
+				{$data.item_id}
+            </p>
 			<h4>___COMMON_LAST_MODIFIED_BY___</h4>
-			{moredetail_build_link status=$data.last_modificator_status user_name=$data.last_modificator id=$data.last_modificator_id} - {$data.last_modification_date}
+			<p class="fi_mdc_item">
+			   {moredetail_build_link status=$data.last_modificator_status user_name=$data.last_modificator id=$data.last_modificator_id} - {$data.last_modification_date}
+            </p>
 			</div>
-			
+
+			<div class="fi_mdc_item">
+				<h4>___COMMON_CREATED_BY___</h4>
+				<p class="fi_mdc_item">
+				   {moredetail_build_link status=$data.creator_status user_name=$data.creator id=$data.creator_id}
+				</p>
 			{if !empty($data.modifier)}
-				<div class="fi_mdc_item">
 					<h4>___COMMON_EDIT_BY___</h4>
+					<p class="fi_mdc_item">
 					{foreach $data.modifier as $modifier}
 						{moredetail_build_link status=$modifier.status user_name=$modifier.name id=$modifier.id}{if !$modifier@last}, {/if}
 					{/foreach}
-				</div>
+					</p>
 			{/if}
-			
-			<div class="fi_mdc_item">
-				<h4>___COMMON_CREATED_BY___</h4>
-				{moredetail_build_link status=$data.creator_status user_name=$data.creator id=$data.creator_id}
 			</div>
-			
-			<div class="fi_mdc_item">
-				<h4>___COMMON_REFNUMBER___</h4>
-				{$data.item_id}
-			</div>
-			
+
+ <!--
 			<div class="fi_mdc_item_wide">
 				<h4>___COMMON_READ___</h4>
 				<div class="progressbar">
@@ -49,7 +52,7 @@
 					<span class="value hidden">{$data.read_count}</span>
 				</div>
 			</div>
-			
+-->
 			<div class="fi_mdc_item_wide">
 				<h4>___COMMON_READ_SINCE_MODIFICATION___</h4>
 				<div class="progressbar">
@@ -58,10 +61,10 @@
 					<span class="value hidden">{$data.read_since_modification_count}</span>
 				</div>
 			</div>
-			
+
 			<div class="clear"> </div>
 		</div>
-		
+
 		<div class="clear"> </div>
 	</div>
 </div>
