@@ -81,12 +81,12 @@
 				{/section}
 			{/block}
 		</div> <!-- Ende item_legend -->
+		{include file="include/detail_moredetails_html.tpl" data=$detail.content.moredetails}
 
 	</div> <!-- Ende item body -->
 	<div class="clear"> </div>
 
 
-	{include file="include/detail_moredetails_html.tpl" data=$detail.content.moredetails}
 
 	{foreach $detail.content.disc_articles as $article}
 		<div class="item_actions">

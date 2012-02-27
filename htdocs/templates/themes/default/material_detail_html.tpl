@@ -74,11 +74,11 @@
 				{/if}
 			</div>
 		</div> <!-- Ende item_legend -->
+		{include file="include/detail_moredetails_html.tpl" data=$detail.content.moredetails}
 
 	</div> <!-- Ende item body -->
 	<div class="clear"> </div>
 
-	{include file="include/detail_moredetails_html.tpl" data=$detail.content.moredetails}
 
 	{foreach $detail.content.sections as $section}
 		<div class="item_actions">
@@ -129,10 +129,10 @@
 					<div class="clear"> </div>
 				</div>
 			</div>
+			{include file="include/detail_moredetails_html.tpl"}
 		</div> <!-- Ende item body -->
 		<div class="clear"> </div>
 
-		{include file="include/detail_moredetails_html.tpl"}
 	{/foreach}
 
 	{include file='include/annotation_include_html.tpl'}

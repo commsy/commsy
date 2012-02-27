@@ -1464,7 +1464,7 @@ fade-in
     background: url(img/fade_in_bg.jpg) repeat-x #D7D7D9;
     border-top: 1px solid #D7D7D9;
     border-bottom: 1px solid #F9F9F9;
-    margin-left: 39px;
+/*    margin-left: 39px;  */
     }
 
 .fade_in_ground_actions {
