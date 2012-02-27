@@ -22,17 +22,17 @@
 			<p class="fi_mdc_item">
 				{$data.item_id}
             </p>
-			<h4>___COMMON_LAST_MODIFIED_BY___</h4>
-			<p class="fi_mdc_item">
-			   {moredetail_build_link status=$data.last_modificator_status user_name=$data.last_modificator id=$data.last_modificator_id} - {$data.last_modification_date}
-            </p>
-			</div>
-
-			<div class="fi_mdc_item">
 				<h4>___COMMON_CREATED_BY___</h4>
 				<p class="fi_mdc_item">
 				   {moredetail_build_link status=$data.creator_status user_name=$data.creator id=$data.creator_id}
 				</p>
+			</div>
+
+			<div class="fi_mdc_item">
+				<h4>___COMMON_LAST_MODIFIED_BY___</h4>
+				<p class="fi_mdc_item">
+			   		{moredetail_build_link status=$data.last_modificator_status user_name=$data.last_modificator id=$data.last_modificator_id} - {$data.last_modification_date}
+            	</p>
 			{if !empty($data.modifier)}
 					<h4>___COMMON_EDIT_BY___</h4>
 					<p class="fi_mdc_item">
