@@ -171,6 +171,8 @@ class cs_file_item extends cs_item {
       //smartboard
       $this->_icon['notebook']     = "notebook.png";
       $this->_mime['notebook']     = 'aapplication/x-smarttech-notebook';
+      
+      $this->_icon['gallery']      = "notebook.png";
 
       //promethean
       $this->_icon['flp']     = "flipchart.png";
