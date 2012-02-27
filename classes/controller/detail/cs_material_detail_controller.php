@@ -366,7 +366,8 @@
 				'version'		=> $this->_item->getVersionID(),
 				'formal'		=> $this->getFormalData(),
 				'sections'		=> $this->getSections(),
-				'description'	=> $desc
+				'description'	=> $desc,
+				'moredetails'		=> $this->getCreatorInformationAsArray($this->_item)
 				//'material'			=> $this->getMaterialContent()
 			);
 

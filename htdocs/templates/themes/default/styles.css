@@ -1518,6 +1518,31 @@ fade-in
     font-size: 10px !important;
     }
 
+.fi_mdc_item_wide {
+    float: left;
+    width: 500px;
+    padding: 0px 20px 10px 0px;
+    color: #6F6F73 !important;
+    font-weight: normal !important;
+    }
+
+.fi_mdc_item_wide a {
+    font-weight: normal !important;
+    font-size: 10px !important;
+    color: #6F6F73 !important;
+    text-decoration: none !important;
+    } 
+ 
+.fi_mdc_item_wide a:hover {
+    color: #D8261D !important;
+    }  
+ 
+.fi_mdc_item_wide h4 {
+    color: #6F6F73;
+    font-weight: bold;
+    font-size: 10px !important;
+    }
+
 /*
 ----------------------------------------------------------------------
 jQuery UI
@@ -1528,4 +1553,16 @@ jQuery UI
     overflow: hidden;
     text-align: left;
     margin-right: 15px;
+	}
+
+.fi_moredetails .ui-progressbar {
+	height: 11px;
+	}
+
+.fi_moredetails .ui-progressbar .ui-progressbar-value {
+	font-size: 10px;
+	font-weight: normal;
+	width: 100%;
+	text-align: center;
+	line-height: 9px;
 	}

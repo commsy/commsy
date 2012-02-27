@@ -1742,6 +1742,8 @@
 		 * @return array
 		 */
 		protected function getCreatorInformationAsArray($item) {
+			$converter = $this->_environment->getTextConverter();
+			
 		    //TODO: anpassen!
 		    $return = array();
 		    $environment = $this->_environment;
@@ -1752,13 +1754,7 @@
 		    // Modificator
 		    $modificator = $item->getModificatorItem();
 		    // Calculate number / percentage of users who read this item
-		    if ( ( $context->isProjectRoom()
-		    or $context->isGroupRoom()
-		    )
-		    and !in_array($item->getType(), array(CS_SECTION_TYPE,
-		    CS_DISCARTICLE_TYPE,
-		    CS_STEP_TYPE,
-		    CS_ANNOTATION_TYPE)) ) {
+		    if (($context->isProjectRoom() || $context->isGroupRoom()) && !in_array($item->getType(), array(CS_SECTION_TYPE, CS_DISCARTICLE_TYPE, CS_STEP_TYPE, CS_ANNOTATION_TYPE))) {
 		        $reader_manager = $environment->getReaderManager();
 		        $user_manager = $environment->getUserManager();
 		        $user_list = $user_manager->getAllRoomUsersFromCache($environment->getCurrentContextID());
@@ -1800,7 +1796,7 @@
 		    and $modificator->isRoot()
 		    ) {
 		        //$temp_html = $this->_text_as_html_short($this->_compareWithSearchText($modificator->getFullname()));
-		        $return['last_modificator'] = $modificator->getFullname();
+		        $return['last_modificator'] = $converter->text_as_html_short($modificator->getFullname());
 		        $return['last_modificator_status'] = self::USER_IS_ROOT;
 		    } elseif ( $environment->inProjectRoom()
 		    or $environment->inGroupRoom()
@@ -1825,7 +1821,7 @@
                                      '',
                                      '',
                                      'style="font-size:10pt;"'); */
-		            $return['last_modificator'] = $modificator->getFullname();
+		            $return['last_modificator'] = $converter->text_as_html_short($modificator->getFullname());
 		            $return['last_modificator_status'] = self::USER_HAS_LINK;
 		            $return['last_modificator_id'] = $modificator->getItemID();
 		        } elseif ( isset($modificator) and !$modificator->isDeleted() ) {
@@ -2315,10 +2311,6 @@
 		    } */
 		    return $return;
 		}
-		
-		private function _text_as_html_short ($text) {
-            return $this->_environment->getTextConverter()->text_as_html_short($text);
-        }
 
 		abstract protected function setBrowseIDs();
 

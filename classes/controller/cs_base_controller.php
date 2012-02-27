@@ -38,14 +38,15 @@
 		/*
 		 * this will catch unhandled exceptions and exceptions from error handler
 		 */
-		public function exceptionHandler($exception) {
-			echo "an unhandled exception / error occured: </br></br>\n";
-			
+		public function exceptionHandler($exception) {		
 			global $c_show_debug_infos;
 			if(isset($c_show_debug_infos) && $c_show_debug_infos === true) {
+				/*
+				echo "an unhandled exception / error occured: </br></br>\n";
 				echo "See " . $exception->getFile() . " on line " . $exception->getLine() . "<br>\n";
 				pr($exception->getMessage());
 				echo "-------------------------<br>\n";
+				*/
 			}
 			//pr($exception);
 			//exit;
