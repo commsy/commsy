@@ -2030,13 +2030,14 @@
                                         'detail',
 		                    $params,
 		                    $this->_text_as_html_short($this->_compareWithSearchText($group_item->getTitle()).' ('.$user_count.' '.$translator->getMessage('COMMON_OF').' '.$user_count_complete.')')); */
-		                    $group_item = $group_list->getNext();
 		                    $group = array(
 		                        'name' => $group_item->getTitle(),
 		                        'user_count' => $user_count,
 		                        'user_count_complete' => $user_count_complete,
 		                        'group_id' => $group_item->getItemID());
 		                    $groups[] = $group;
+		                    
+		                    $group_item = $group_list->getNext();
 		                }
 		                //$html .= '<br/>';
 		            }
@@ -2163,7 +2164,9 @@
 		        $modificator = $user_manager->getItem($modifier_id);
 		        //Links only at accessible contact pages
 		        if ( isset($modificator) and $modificator->isRoot() ) {
-		            $temp_text = $this->_compareWithSearchText($modificator->getFullname());
+		            // TODO
+		        	//$temp_text = $this->_compareWithSearchText($modificator->getFullname());
+		        	$temp_text = $modificator->getFullname();
 		            $modifier_array[] = $temp_text;
 		        } elseif ( $modificator->getContextID() == $item->getContextID() ) {
 		            if ( $environment->inProjectRoom() ) {
