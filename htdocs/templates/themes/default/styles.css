@@ -598,7 +598,8 @@ content, general
 
 .ci_head_actions a {
     display: block;
-    padding: 16px 10px 9px 12px;
+   /* padding: 16px 10px 9px 12px;*/
+   padding: 8px 10px 9px 12px;
     float: left;
     }
 
@@ -701,7 +702,7 @@ h2#item_navigation span {
     }
 
 .row_odd:hover, .row_even:hover {
-    background-color: #DEE8FF; /* ueber Skin-Editor austauschbar */
+    /*background-color: #DEE8FF; ueber Skin-Editor austauschbar */
     }
 
 .row_odd a, .row_even a {
@@ -710,11 +711,11 @@ h2#item_navigation span {
     }
 
 .row_odd:hover a, .row_even:hover a {
-    color: #DB261D;
+    color: #393939;
     }
 
 .row_odd:hover a:hover, .row_even:hover a:hover {
-    color: #DB261D;
+    color: #393939;
     text-decoration: underline;
     }
 
@@ -1531,12 +1532,12 @@ fade-in
     font-size: 10px !important;
     color: #6F6F73 !important;
     text-decoration: none !important;
-    } 
- 
+    }
+
 .fi_mdc_item_wide a:hover {
     color: #D8261D !important;
-    }  
- 
+    }
+
 .fi_mdc_item_wide h4 {
     color: #6F6F73;
     font-weight: bold;
