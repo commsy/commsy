@@ -856,11 +856,11 @@ input.new_item_2 {
     }
 
 .item_actions a span.ref_to_anno {
-    background: url(img/btn_ref_3.gif) -15px 0px no-repeat;
+    background: url(img/btn_ref_3.png) -15px 0px no-repeat;
     }
 
 .item_actions a:hover span.ref_to_anno, .item_actions a span.ref_to_anno_ok {
-    background: url(img/btn_ref_3.gif) no-repeat;
+    background: url(img/btn_ref_3.png) no-repeat;
     }
 
 
