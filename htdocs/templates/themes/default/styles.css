@@ -1264,6 +1264,11 @@ portlets, right_column
     margin-bottom: 30px;
     }
 
+.portlet_rc_action {
+    font-size:10px;
+    text-align: right;
+}
+
 .portlet_rc h2 {
     color: #DEE8FF; /* ueber Skin-Editor austauschbar */
     font-size: 12px;
@@ -1342,7 +1347,7 @@ a:hover.keywords_s1, a:hover.keywords_s2, a:hover.keywords_s3, a:hover.keywords_
 
 #dis_navigation {
     border-top: 1px solid #689FDE;
-    border-bottom: 1px solid #689FDE;
+/*    border-bottom: 1px solid #689FDE; */
     padding: 8px 0px;
     margin-bottom: 8px;
     }

@@ -64,11 +64,13 @@
 
 		<div id="dis_navigation">
 			{block name=room_right_portlets_navigation}{/block}
+			<div class="portlet_rc_action">
+				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=index&back_to_index=true" class="context_nav">___COMMON_BACK_TO_LIST___</a>
+			</div>
 		</div>
-
-		<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=index&back_to_index=true" class="context_nav">___COMMON_BACK_TO_LIST___</a>
 	</div>
 {/block}
+
 
 {block  name=sidebar_tagbox_title}
 	___COMMON_ATTACHED_TAGS___
