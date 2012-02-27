@@ -4,14 +4,14 @@
 	class cs_material_detail_controller extends cs_detail_controller {
 		private $_sections = null;
 		private $_version_list = null;
-		
+
 		/**
 		 * constructor
 		 */
 		public function __construct(cs_environment $environment) {
 			// call parent
 			parent::__construct($environment);
-			
+
 			$this->_tpl_file = 'material_detail';
 		}
 
@@ -21,22 +21,22 @@
 		public function processTemplate() {
 			// call parent
 			parent::processTemplate();
-			
+
 			// assign rubric to template
 			$this->assign('room', 'rubric', CS_MATERIAL_TYPE);
 		}
-		
+
 		/*****************************************************************************/
 		/******************************** ACTIONS ************************************/
 		/*****************************************************************************/
 		public function actionDetail() {
 			// try to set the item
 			$this->setItem();
-			
+
 			$this->setupInformation();
-			
+
 			$session = $this->_environment->getSessionItem();
-			
+
 			// check for version id
 			if(isset($_GET['version_id'])) {
 				$current_version_id = $_GET['version_id'];
@@ -46,10 +46,10 @@
 			} else {
 				$session->unsetValue('version_index_ids');
 			}
-			
+
 			// TODO: include delete handling
 			//include_once('include/inc_delete_entry.php');
-			
+
 			// check for right manager
 			if(!($this->_manager instanceof cs_material_manager)) {
 				throw new cs_detail_item_type_exception('wrong item type', 0);
@@ -58,7 +58,7 @@
 				$material_version_list = $this->_manager->getVersionList($this->_item->getItemID());
 				$material_item = $material_version_list->getFirst();
 				$current_user = $this->_environment->getCurrentUser();
-				
+
 				// check for deleted item
 				if(empty($material_item)) {
 					$this->_manager->setDeleteLimit(false);
@@ -68,7 +68,7 @@
 						throw new cs_detail_item_type_exception('item deleted', 1);
 					}
 				}
-				
+
 				// check for access
 				elseif($material_item->isNotActivated() && $current_user->getItemID() != $material_item->getCreatorID() && !$current_user->isModerator()) {
 					// TODO: error handling
@@ -82,7 +82,7 @@
       $page->add($errorbox);
 					 */
 				}
-				
+
 				// check for viewing rights
 				elseif(!$material_item->maySee($current_user) && !$material_item->mayExternalSee($current_user)) {
 					//TODO: error handling
@@ -97,7 +97,7 @@
 					 */
 				} else {
 					// all checks passed
-					
+
 					$params = $this->_environment->getCurrentParameterArray();
 					if(isset($_GET['export_to_wiki'])) {
 						$wiki_manager = $this->_environment->getWikiManager();
@@ -107,56 +107,56 @@
 						} else {
 							$wiki_manager->exportItemToWiki_soap($this->_item->getItemID(), CS_MATERIAL_TYPE);
 						}
-						
+
 						unset($params['export_to_wiki']);
 						redirect($this->_environment->getCurrentContextID(), 'material', 'detail', $params);
 					}
-					
+
 					if(isset($_GET['remove_from_wiki'])) {
 						$wiki_manager = $this->_environment->getWikiManager();
 						global $c_use_soap_for_wiki;
 						if($c_use_soap_for_wiki) {
 							$wiki_manager->removeItemFromWiki_soap($this->_item->getItemID(), CS_MATERIAL_TYPE);
 						}
-						
+
 						unset($params['remove_from_wiki']);
 						redirect($this->_environment->getCurrentContextID(), 'material', 'detail', $params);
 					}
-					
+
 					if(isset($_GET['export_to_wordpress'])) {
 						$wordpress_manager = $this->environment->getWordpressManager();
 						$wordpress_manager->exportItemToWordpress($this->_item->getItemID(), CS_MATERIAL_TYPE);
-						
+
 						unset($params['export_to_wordpress']);
 						redirect($this->_environment->getCurrentContextID(), 'material', 'detail', $params);
 					}
-					
+
 					if(isset($_GET['workflow_read'])) {
 						$item_manager->markItemAsWorkflowRead($this->_item->getItemID(), $current_user->getItemID());
-						
+
 						unset($params['workflow_read']);
 						redirect($this->_environment->getCurrentContextID(), 'material', 'detail', $params);
 					}
-					
+
 					if(isset($_GET['workflow_not_read'])) {
 						$item_manager->markItemAsWorkflowNotRead($this->_item->getItemID(), $current_user->getItemID());
-						
+
 						unset($params['workflow_not_read']);
 						redirect($this->_environment->getCurrentContextID(), 'material', 'detail', $params);
 					}
-					
+
 					// get clipboard
 					$clipboard_id_array = array();
 					if($session->issetValue('material_clipboard')) {
 						$clipboard_id_array = $session->getValue('material_clipboard');
 					}
-					
+
 					// copy to clipboard
 					if(isset($_GET['add_to_material_clipboard']) && !in_array($this->_item->getItemID(), $clipboard_id_array)) {
 						$clipboard_id_array[] = $this->_item->getItemID();
 						$session->setValue('material_clipboard', $clipboard_id_array);
 					}
-					
+
 					// make old version current
 					if(isset($_GET['act_version'])) {
 						$latest_version_item = $material_version_list->getFirst();
@@ -164,25 +164,25 @@
 						while($old_version_item && $_GET['act_version'] != $old_version_item->getVersionId()) {
 							$old_version_item = $material_version_list->getNext();
 						}
-						
+
 						$clone_item = $old_version_item->cloneCopy(true);
 						$latest_version_id = $latest_version_item->getVersionID();
 						$clone_item->setVersionID($latest_version_id + 1);
 						$clone_item->save();
 						$old_version_item->delete();
-						
+
 						$params = array();
 						$params['iid'] = $this->_item->getItemID();
 						redirect($this->_environment->getCurrentContextID(), 'material', 'detail', $params);
 					}
-					
+
 					// mark as read and noticed
 					$this->markRead();
 					$this->markNoticed();
-					
+
 					$context_item = $this->_environment->getCurrentContextItem();
 					$latest_version_item = $material_version_list->getFirst();
-					
+
 					$id = $this->_item->getItemID();
 					if(isset($id) && $latest_version_item->getVersionID() != $id) {
 						// old version
@@ -202,7 +202,7 @@
    if (!empty($_GET['creator_info_max'])) {
       $creatorInfoStatus = explode('-',$_GET['creator_info_max']);
    }
-         
+
             //current version
             $params = array();
             $params['environment'] = $environment;
@@ -214,9 +214,9 @@
             $detail_view->setClipboardIDArray($clipboard_id_array);
 						 */
 					}
-					
+
 					// set up rubric connections and browsing
-					
+
 					/*
 					 * $context_item = $environment->getCurrentContextItem();
       $current_room_modules = $context_item->getHomeConf();
@@ -257,7 +257,7 @@
                $detail_view->setSubItemRubricConnections(array(CS_MATERIAL_TYPE));
             }
 					 */
-					
+
 					// set up annotations
 					$version_item = $material_version_list->getFirst();
 					if(isset($current_version_id)) {
@@ -265,21 +265,21 @@
 							$version_item = $material_version_list->getNext();
 						}
 					}
-					
+
 					if(!empty($version_item)) {
 						// get annotations
 						$annotations = $version_item->getAnnotationList();
-						
+
 						// mark annotations as readed and noticed
 						$this->markAnnotationsReadedAndNoticed($annotations);
-						
+
 						// get annotations
 						$this->assign('detail', 'annotations', $this->getAnnotationInformation($annotations));
-						
+
 						// assessment
 						$this->assign('detail', 'assessment', $this->getAssessmentInformation($version_item));
 					}
-					
+
 					/*
 					 * // highlight search words in detail views
          $session_item = $environment->getSessionItem();
@@ -293,12 +293,12 @@
 
          $page->add($detail_view);
 					 */
-					
+
 					$this->assign('detail', 'content', $this->getDetailContent());
 				}
 			}
 		}
-		
+
 		/*****************************************************************************/
 		/******************************** END ACTIONS ********************************/
 		/*****************************************************************************/
@@ -310,7 +310,7 @@
 				include_once('functions/error_functions.php');
 				trigger_error('A discussion item id must be given.', E_USER_ERROR);
 			}
-			
+
 			if(isset($_GET['version_id'])) {
 				$current_version_id = $_GET['version_id'];
 				if(empty($current_version_id)) {
@@ -320,29 +320,29 @@
 				$session = $this->_environment->getSessionItem();
 				$session->unsetValue('version_index_ids');
 			}
-			
+
 			$item_manager = $this->_environment->getItemManager();
 			$current_item_iid = $_GET['iid'];
 			$type = $item_manager->getItemType($_GET['iid']);
-			
+
 			$this->_manager = $this->_environment->getMaterialManager();
 			$this->_version_list = $this->_manager->getVersionList($current_item_id);
 			$this->_item = $this->_version_list->getFirst();
 		}
-		
+
 		protected function setBrowseIDs() {
 			$session = $this->_environment->getSessionItem();
-			
+
 			if($session->issetValue('cid' . $this->_environment->getCurrentContextID() . '_material_index_ids')) {
 				$this->_browse_ids = array_values((array) $session->getValue('cid' . $this->_environment->getCurrentContextID() . '_material_index_ids'));
 			}
 		}
-		
+
 		protected function getDetailContent() {
             $converter = $this->_environment->getTextConverter();
-            
+
             // TODO??? $html .= $this->_getPluginInfosForMaterialDetailAsHTML();
-                  
+
       		$desc = '';
       		$num_sections = sizeof($this->getSections());
       		if($num_sections === 0) {
@@ -351,14 +351,14 @@
       				$desc = $converter->cleanDataFromTextArea($desc);
       				$converter->setFileArray($this->getItemFileList());
       				$desc = $converter->text_as_html_long($desc);
-      				
+
       				/*
 					$temp_string = $this->_text_as_html_long($this->_compareWithSearchText($this->_cleanDataFromTextArea($desc)));
          			  $html .= $this->getScrollableContent($temp_string,$item,'',$with_links);
          			  */
       			}
       		}
-			
+
 			$return = array(
 				'title'			=> $this->_item->getTitle(),
 				'creator'		=> $this->_item->getCreatorItem()->getFullName(),
@@ -369,24 +369,24 @@
 				'description'	=> $desc
 				//'material'			=> $this->getMaterialContent()
 			);
-			
+
 			return $return;
 		}
-		
+
 		private function getFormalData() {
 			$return = array();
 			$translator = $this->_environment->getTranslationObject();
 			$converter = $this->_environment->getTextConverter();
 			$context_item = $this->_environment->getCurrentContextItem();
 			$current_user = $this->_environment->getCurrentUserItem();
-			
+
 			// bibliography
 			$bib_kind = $this->_item->getBibKind() ? $this->_item->getBibKind() : 'none';
 			$biblio = '';
-			
+
 			// author, year
 			$temp_array = array();
-			
+
 			if($bib_kind === 'common') {
 				$author = $this->_item->getAuthor();
 				if(!empty($author)) {
@@ -394,21 +394,21 @@
 					$temp_array[1] = $converter->text_as_html_short($this->_item->getAuthor());
 					$return[] = $temp_array;
 				}
-				
+
 				$pub_date = $this->_item->getPublishingDate();
 				if(!empty($pub_data)) {
 					$temp_array[0] = $translator->getMessage('MATERIAL_PUBLISHING_DATE');
 					$temp_array[1] = $converter->text_as_html_short($this->_item->getPublishingDate());
 					$return[] = $temp_array;
 				}
-				
+
 				if(!empty($return)) {
 					$html .= $this->_getFormalDataAsHTML($return);
 		            if ( isset($html_script) and !empty($html_script) ) {
 		               $html .= $html_script;
 		            }
 				}
-				
+
 				$return = array();
 		         $temp_array = array();
 		         $biblio = $this->_item->getBibliographicValues();
@@ -419,7 +419,7 @@
 			} else {
 				$biblio = $this->_item->getAuthor() . ' (' . $this->_item->getPublishingDate() . '). ';
 			}
-			
+
 			if($bib_kind !== 'common') {
 				// bibliographic
 				switch($bib_kind) {
@@ -455,7 +455,7 @@
 						}
 						$biblio .= $this->_item->getBooktitle() . '. ';
 						$biblio .= $this->_item->getAddress() . ': ' . $this->item->getPublisher();
-						
+
 						if($this->_item->getEdition()) {
 							$biblio .= ', ' . $translator->getMessage('MATERIAL_BIB_EDITION', $this->_item->getEdition());
 						}
@@ -488,7 +488,7 @@
 							$biblio .= ', ' . $this->_Item->getIssue();
 						}
 						$biblio .= ', ' . $translator->getMessage('MATERIAL_BIB_PAGES', $this->_item->getPages()) . '. ';
-						
+
 						$bib2 = '';
 						if($this->_item->getAddress()) {
 							$bib2 .= $this->_item->getAddress();
@@ -502,7 +502,7 @@
 							$bib2 .= $this->_item->getISSN();
 						}
 						$bib2 .= $bib2 ? '. ' : '';
-						
+
 						$biblio .= $bib2 ? $bib2 : '';
 						if($this->_item->getURL()) {
 							$biblio .= ' ' . $translator->getMessage('MATERIAL_BIB_URL', $this->_item->getURL());
@@ -512,7 +512,7 @@
 							$biblio .= '.';
 						}
 						break;
-						
+
 						case 'inpaper':
                $biblio .= $translator->getMessage('MATERIAL_BIB_IN').': '.
                       $this->_item->getJournal();
@@ -616,29 +616,29 @@
                break;
             case 'document':
                 $formal_data_bib = array();
-                $html .= $this->_translator->getMessage('MATERIAL_BIB_DOCUMENT_ADMINISTRATION_INFO');
-        		if ( $item->getDocumentEditor() ) {
+                $html .= $translator->getMessage('MATERIAL_BIB_DOCUMENT_ADMINISTRATION_INFO');
+        		if ( $this->_item->getDocumentEditor() ) {
                 	$temp_array = array();
-         			$temp_array[] = $this->_translator->getMessage('MATERIAL_BIB_DOCUMENT_EDITOR');
-         			$temp_array[] = $item->getDocumentEditor();
+         			$temp_array[] = $translator->getMessage('MATERIAL_BIB_DOCUMENT_EDITOR');
+         			$temp_array[] = $this->_item->getDocumentEditor();
          			$formal_data_bib[] = $temp_array;
          		}
-               	if ( $item->getDocumentMaintainer() ) {
+               	if ( $this->_item->getDocumentMaintainer() ) {
                 	$temp_array = array();
-         			$temp_array[] = $this->_translator->getMessage('MATERIAL_BIB_DOCUMENT_MAINTAINER');
-         			$temp_array[] = $item->getDocumentMaintainer();
+         			$temp_array[] = $translator->getMessage('MATERIAL_BIB_DOCUMENT_MAINTAINER');
+         			$temp_array[] = $this->_item->getDocumentMaintainer();
          			$formal_data_bib[] = $temp_array;
                	}
-               	if ( $item->getDocumentReleaseNumber() ) {
+               	if ( $this->_item->getDocumentReleaseNumber() ) {
                 	$temp_array = array();
-         			$temp_array[] = $this->_translator->getMessage('MATERIAL_BIB_DOCUMENT_RELEASE_NUMBER');
-         			$temp_array[] = $item->getDocumentReleaseNumber();
+         			$temp_array[] = $translator->getMessage('MATERIAL_BIB_DOCUMENT_RELEASE_NUMBER');
+         			$temp_array[] = $this->_item->getDocumentReleaseNumber();
          			$formal_data_bib[] = $temp_array;
                	}
-               	if ( $item->getDocumentReleaseDate() ) {
+               	if ( $this->_item->getDocumentReleaseDate() ) {
                 	$temp_array = array();
-         			$temp_array[] = $this->_translator->getMessage('MATERIAL_BIB_DOCUMENT_RELEASE_DATE');
-         			$temp_array[] = $item->getDocumentReleaseDate();
+         			$temp_array[] = $translator->getMessage('MATERIAL_BIB_DOCUMENT_RELEASE_DATE');
+         			$temp_array[] = $this->_item->getDocumentReleaseDate();
          			$formal_data_bib[] = $temp_array;
                	}
       			if ( !empty($formal_data_bib) ) {
@@ -650,7 +650,7 @@
                $biblio .= $this->_item->getBibliographicValues();
 				}
 			}
-			
+
 			$biblio_pur = strip_tags($biblio);
 			$biblio_pur = str_ireplace('&nbsp;', '', $biblio_pur);
 			$biblio_pur = trim($biblio_pur);
@@ -665,21 +665,21 @@
 				}
 				$return[] = $temp_array;
 			}
-			
+
 			if($this->_item->issetBibTOC()) {
 				$temp_array = array();
 				$temp_array[] = $translator->getMessage('COMMON_TABLE_OF_CONTENT');
 				$temp_array[] = '<a href"' . $this->_item->getBibTOC() . '" target="blank">' . chunkText($this->_item->getBibTOC(), 60) . '</a>';
 				$return[] = $temp_array;
 			}
-			
+
 			if($this->_item->issetBibURL()) {
 				$temp_array = array();
 				$temp_array[] = $translator->getMessage('BELUGA_LINK');
 				$temp_array[] = '<a href="' . $this->_item->getBibURL() . '" target="balnk">' . chunkText($this->_item->getBibURL(), 60) . '</a>';
 				$return[] = $temp_array;
 			}
-			
+
 			if($this->_item->issetBibAvailibility()) {
 				$temp_array = array();
 				$temp_array[] = $translator->getMessage('BELUGA_AVAILABILITY');
@@ -687,7 +687,7 @@
 				$temp_array[] = $link;
 				$return[] = $temp_array;
 			}
-			
+
 			if($context_item->isWikiActive()) {
 				if($this->_item->isExportToWiki()) {
 					$temp_array = array();
@@ -696,7 +696,7 @@
 					$return[] = $temp_array;
 				}
 			}
-			
+
 			if($context_item->isWordpressActive()) {
 				if($this->_item->isExporttoWordpress()) {
 					$temp_array = array();
@@ -705,7 +705,7 @@
 					$return[] = $temp_array;
 				}
 			}
-			
+
 			// sections
 			$sections = $this->getSections();
 			$sections_return = array();
@@ -723,7 +723,7 @@
 					$temp_array[] = $translator->getMessage('COMMON_NONE');
 				}
 				$return[] = $temp_array;
-				
+
 				foreach($sections as $section) {
 					/*
 					 *  // files
@@ -732,7 +732,7 @@
 		               $fileicons = '&nbsp;'.$fileicons;
 		            }
 		            */
-					
+
 					$section_title = $converter->text_as_html_short($section['title']);
 					/*
 					 * if( $with_links and !(isset($_GET['mode']) and $_GET['mode']=='print') ) {
@@ -746,10 +746,10 @@
 				$temp_array[] = implode(BRLF, $sections_return);
 				$return[] = $temp_array;
 			}
-			
+
 			// files
 			$files = array();
-			
+
 			$file_list = $this->_item->getFileList();
 			if(!$file_list->isEmpty()) {
 				$file = $file_list->getFirst();
@@ -764,18 +764,18 @@
 					} else {
 						$file_string = $file->getFileIcon() . ' ' . $converter->text_as_html_short($file->getDisplayName());
 					}
-					
+
 					$files[] = $file_string;
-					
+
 					$file = $file_list->getNext();
 				}
-				
+
 				$temp_array = array();
 				$temp_array[] = $translator->getMessage('MATERIAL_FILES');
 				$temp_array[] = implode(BRLF, $files);
 				$return[] = $temp_array;
 			}
-			
+
 			// world-public status
 			if($context_item->isCommunityRoom() && $context_item->isOpenForGuests()) {
 				$temp_array = array();
@@ -787,30 +787,30 @@
 				} elseif($world_public === 2) {
 					$public_info = $translator->getMessage('MATERIAL_WORLD_PUBLISH_STATUS_2');
 				}
-				
+
 				$temp_array[] = $translator->getMessage('MATERIAL_WROLD_PUBLISH');
 				$temp_array[] = $public_info;
 				$return[] = $temp_array;
 			}
-			
+
 			$version_mode = 'long';
 			$iid = 0;
 			$params = $this->_environment->getCurrentParameterArray();
 			if(isset($params['iid'])) {
 				$iid = $params['iid'];
 			}
-			
+
 			$show_version = 'false';
 			if(isset($params[$iid . 'version_mode']) && $params[$iid . 'version_mode'] === 'long') {
 				$sho_versions = 'true';
 			}
 			$params[$iid . 'version_mode'] = 'long';
-			
+
 			// versions
 			$versions = array();
 			if(!$this->_version_list->isEmpty()) {
 				$version = $this->_version_list->getFirst();
-				
+
 				if($version->getVersionID() === $this->_item->getVersionID()) {
 					$title = '&nbsp;&nbsp;'.$translator->getMessage('MATERIAL_CURRENT_VERSION_DATE').' '.getDateTimeInLang($version->getModificationDate());
 				} else {
@@ -821,13 +821,13 @@
            $title = '&nbsp;&nbsp;'.ahref_curl($this->_environment->getCurrentContextID(), 'material', 'detail', $params,$this->_translator->getMessage('MATERIAL_CURRENT_VERSION_DATE').' '.getDateTimeInLang($version->getModificationDate()));
            unset($params);
 				}
-				
+
 				$version = $this->_version_list->getNext();
 				$is_user = $current_user->isUser();
-				
+
 				while($version) {
 					/*
-					 * 
+					 *
 					 if ( !$with_links
                  or ( !$is_user
                       and $this->_environment->inCommunityRoom()
@@ -844,13 +844,13 @@
                $versions[] = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.ahref_curl($this->_environment->getCurrentContextID(), 'material', 'detail', $params,$this->_translator->getMessage('MATERIAL_VERSION_DATE').' '.getDateTimeInLang($version->getModificationDate()));
                unset($params);
             }
-					 * 
+					 *
 					 */
-					
+
 					$version = $this->_version_list->getNext();
 				}
 				$count = $this->_version_list->getCount();
-				
+
 				if(!empty($version) && $count > 1) {
 					$temp_array = array();
 					$temp_array[] = $this->_translator->getMessage('MATERIAL_VERSION');
@@ -877,8 +877,8 @@
 			            $temp_array[] = $html_string;
 			            $formal_data1[] = $temp_array;
 				}
-			} 
-			
+			}
+
 			// TODO:
 			/*
 			if(!empty($formal_data1)) {
@@ -888,10 +888,10 @@
 		         }
 			}
 			*/
-			
+
 			return $return;
 		}
-		
+
 		protected function getAdditionalActions($perms) {
 			//TODO
 			/*
@@ -906,25 +906,25 @@
 
       //workflow
       $html .= $this->_getWorkflowReadAction($item,$current_user,$current_context);
-      
+
       return $html;
 			 */
 		}
-		
+
 		private function getSections() {
 			// cache
 			if($this->_sections !== null) return $this->_sections;
-			
+
 			$return = array();
 			$converter = $this->_environment->getTextConverter();
-			
+
 			$section_list = $this->_item->getSectionList();
 			if(!$section_list->isEmpty()) {
 				$section = $section_list->getFirst();
-				
+
 				while($section) {
-					
-					
+
+
 					/*
 					// files
             $fileicons = $this->_getItemFiles( $section,true);
@@ -937,17 +937,17 @@
                $section_title = '<a href="#anchor'.$section->getItemID().'">'.$section_title.'</a>'.$fileicons.LF;
             }
             $sections[] = $section_title;
-            */		
+            */
 					// prepare description
 		            $description = $section->getDescription();
 					$description = $converter->cleanDataFromTextArea($description);
 					$converter->setFileArray($this->getItemFileList());
 					$description = $converter->text_as_html_long($description);
 					$description = $converter->showImages($description, $section, true);
-					
+
 					// files
 					$files = array();
-					
+
 					$file_list = $section->getFileList();
 					if(!$file_list->isEmpty()) {
 						$file = $file_list->getFirst();
@@ -966,12 +966,12 @@
                 					  $file->getFileIcon().' '.($this->_text_as_html_short($file->getDisplayName())).'</a> ('.$file->getFileSize().' KB)';
 							}
 							$files[] = $file_string;
-							
+
 							$file = $file_list->getNext();
 						}
 					}
 					/*
-					 * 
+					 *
 					 // files
       $formal_data = array();
       $files = $this->_getFilesForFormalData($item);
@@ -988,16 +988,16 @@
 
       return $html;
 					 */
-					
+
 					$return[] = array(
 						'title'				=> $converter->text_as_html_short($section->getTitle()),
 						'description'		=> $description,
 						'num_attachments'	=> sizeof($files)
 					);
-					
+
 					$section = $section_list->getNext();
 				}
-				
+
 				/*
 
          $temp_array[] = $this->_translator->getMessage('MATERIAL_SECTIONS');
@@ -1005,10 +1005,10 @@
          $formal_data1[] = $temp_array;
 				 */
 			}
-			
+
 			// store for cache
 			$this->_sections = $return;
-			
+
 			return $return;
 		}
 	}
