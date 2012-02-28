@@ -28,7 +28,7 @@
 
 {block name=room_right_portlets}
 	<div class="portlet_rc">
-		<h2 id="portlet_rc">
+		<div class="portlet_rc_list">
 		{if $detail.browsing_information.paging.first.active}
 			<a href="commsy.php?cid={$environment.cid}&mod={$detail.browsing_information.paging.first.module}&fct={$environment.function}{params params=$detail.browsing_information.paging.first.params}">
 				<img src="{$basic.tpl_path}img/btn_ar_start2.gif" alt="___COMMON_BROWSE_START_DESC___" />
@@ -44,7 +44,7 @@
 			<img src="{$basic.tpl_path}img/btn_ar_left.gif" alt="___COMMON_BROWSE_LEFT_DESC___" />
 		{/if}
 
-	    <strong>___COMMON_{$room.rubric|upper}___ {$detail.browsing_information.position} ___COMMON_OF___ {$detail.browsing_information.count_all}</strong>
+	    {$detail.browsing_information.position} / {$detail.browsing_information.count_all}
 		{if $detail.browsing_information.paging.next.active}
 			<a href="commsy.php?cid={$environment.cid}&mod={$detail.browsing_information.paging.next.module}&fct={$environment.function}{params params=$detail.browsing_information.paging.next.params}">
 				<img src="{$basic.tpl_path}img/btn_ar_right2.gif" alt="___COMMON_BROWSE_RIGHT_DESC___" />
@@ -59,6 +59,9 @@
 		{else}
 			<img src="{$basic.tpl_path}img/btn_ar_end2.gif" alt="___COMMON_BROWSE_END_DESC___" />
 		{/if}
+		</div>
+		<h2 id="portlet_rc">
+		<strong>___COMMON_CHANGE_INDEX_VIEW_LIST___</strong>&nbsp;&nbsp;&nbsp;&nbsp;
 		</h2>
 		<div class="clear"> </div>
 

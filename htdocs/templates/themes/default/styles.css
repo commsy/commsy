@@ -689,12 +689,12 @@ h2#item_navigation span {
     }
 
 .row_odd_no_hover {
-	background-color: #F5F5F5;
-	}
+  background-color: #F5F5F5;
+  }
 
 .row_even_no_hover {
-	background-color: #FFF;
-	}
+  background-color: #FFF;
+  }
 
 .row_odd_no_hover a,
 .row_even_no_hover a {
@@ -799,7 +799,7 @@ span.new_item {
 
 a.new_item {
     margin-left: -24px;
-	}
+  }
 
 
 span.new_item_2 {
@@ -809,13 +809,13 @@ span.new_item_2 {
     }
 a.new_item_2 {
     margin-left: -20px;
-	}
+  }
 img.new_item_2 {
     padding-bottom: 4px;
-	}
+  }
 input.new_item_2 {
-	margin-left:0px;
-	}
+  margin-left:0px;
+  }
 
 .item_actions {
     width: 39px;
@@ -896,16 +896,16 @@ edit overlay
 */
 
 .edit_overlay {
-	display: none;
-	position: absolute;
-	z-index: 100;
-	background-color: #f5f5f5;
-	border-right: 1px solid black;
-	border-top: 1px solid black;
-	border-bottom: 1px solid black;
-	opacity: 0.9;
-	padding: 7px;
-	}
+  display: none;
+  position: absolute;
+  z-index: 100;
+  background-color: #f5f5f5;
+  border-right: 1px solid black;
+  border-top: 1px solid black;
+  border-bottom: 1px solid black;
+  opacity: 0.9;
+  padding: 7px;
+  }
 
 /*
 ----------------------------------------------------------------------
@@ -1030,11 +1030,11 @@ content, column-width
     }
 
 .column_addon{
-	float:right;
-	width: 40px;
-	white-space:nowrap;
-	text-align:right;
-	}
+  float:right;
+  width: 40px;
+  white-space:nowrap;
+  text-align:right;
+  }
 
 
 .column_27 p, .column_45 p, .column_80 p, .column_590 p, .column_510 p, .column_150 p, .column_90 p, .column_100 p, .column_120 p, .column_140 p, .column_145 p, .column_155 p, .column_184 p, .column_194 p, .column_244 p, .column_304, .column_320, .column_350, .column_380 p, .column_430 p, .column_400 p {
@@ -1142,13 +1142,13 @@ a#sort_down {
     }
 
 #item_legend table {
-	padding: 5px 10px;
-	}
+  padding: 5px 10px;
+  }
 
 #item_legend table td {
-	vertical-align: top;
-	padding: 3px 3px 0px 0px;
-	}
+  vertical-align: top;
+  padding: 3px 3px 0px 0px;
+  }
 
 .item_post {
     margin-top: 1px;
@@ -1198,56 +1198,56 @@ special
 ----------------------------------------------------------------------
 */
 div.detail_description {
-	padding: 5px 10px;
-	}
+  padding: 5px 10px;
+  }
 
 div.user_profil_blocks {
-	float: left;
-	clear: left;
-	padding: 0 7px;
-	}
+  float: left;
+  clear: left;
+  padding: 0 7px;
+  }
 
 div.user_profil_blocks table {
-	padding: 7px 0;
-	}
+  padding: 7px 0;
+  }
 
 div.user_profil_blocks td.label,
 div.detail_description td.label {
-	width: 120px;
-	vertical-align: top;
-	}
+  width: 120px;
+  vertical-align: top;
+  }
 
 div#user_profil_picture {
-	float: right;
-	padding: 0 7px 7px;
-	}
+  float: right;
+  padding: 0 7px 7px;
+  }
 
 .hidden {
-	display: none;
-	}
+  display: none;
+  }
 
 div.discussion_threaded_tree_subject,
 div.discussion_threaded_tree_creator,
 div.discussion_threaded_tree_date {
-	display: inline;
-	}
+  display: inline;
+  }
 
 input#search_suggestion {
-	position: absolute;
-	z-index: 0;
-	background: transparent;
+  position: absolute;
+  z-index: 0;
+  background: transparent;
     padding: 10px 5px 5px 35px;
     width: 130px;
     font-size: 12px;
     font-weight: bold;
     border: 0px none;
     color: #999999;
-	}
+  }
 
 input#search_submit {
-	position: relative;
-	left: 172px;
-	}
+  position: relative;
+  left: 172px;
+  }
 
 /*
 ----------------------------------------------------------------------
@@ -1278,7 +1278,17 @@ portlets, right_column
     }
 
 .portlet_rc h2 a{
-	text-decoration:none;
+  text-decoration:none;
+}
+
+.portlet_rc_list {
+	float:right;
+	color: #DEE8FF;
+	line-height:16px;
+}
+
+.portlet_rc_list img{
+   padding:0px 5px;
 }
 
 .btn_head_rc {
@@ -1340,9 +1350,9 @@ a:hover.keywords_s1, a:hover.keywords_s2, a:hover.keywords_s3, a:hover.keywords_
     }
 
 #color_box {
-	height:10px;
-	width:10px;
-	border:1px solid #cccccc;
+  height:10px;
+  width:10px;
+  border:1px solid #cccccc;
 }
 
 #dis_navigation {
@@ -1574,16 +1584,16 @@ jQuery UI
     overflow: hidden;
     text-align: left;
     margin-right: 15px;
-	}
+  }
 
 .fi_moredetails .ui-progressbar {
-	height: 11px;
-	}
+  height: 11px;
+  }
 
 .fi_moredetails .ui-progressbar .ui-progressbar-value {
-	font-size: 10px;
-	font-weight: normal;
-	width: 100%;
-	text-align: center;
-	line-height: 9px;
-	}
+  font-size: 10px;
+  font-weight: normal;
+  width: 100%;
+  text-align: center;
+  line-height: 9px;
+  }
