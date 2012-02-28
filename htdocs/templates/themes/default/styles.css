@@ -1358,15 +1358,23 @@ a:hover.keywords_s1, a:hover.keywords_s2, a:hover.keywords_s3, a:hover.keywords_
 #dis_navigation {
     border-top: 1px solid #689FDE;
 /*    border-bottom: 1px solid #689FDE; */
+    overflow: hidden;
     padding: 8px 0px;
     margin-bottom: 8px;
-    }
+    white-space: nowrap;
+ }
 
 #dis_navigation a, a.context_nav {
     display: block;
     color: #DEE8FF; /* ueber Skin-Editor austauschbar */
     text-decoration: none;
     }
+
+#netnavigation {
+    color: #DEE8FF; /* ueber Skin-Editor austauschbar */
+    padding: 8px 0px;
+    margin-bottom: 8px;
+}
 
 #netnavigation a {
     color: #DEE8FF; /* ueber Skin-Editor austauschbar */
@@ -1472,7 +1480,7 @@ fade-in
     background: url(img/fade_in_bg.jpg) repeat-x #D7D7D9;
     border-top: 1px solid #D7D7D9;
     border-bottom: 1px solid #F9F9F9;
-    height: 97px;
+    height: 64px;
     }
 
 .fade_in_ground_panel {

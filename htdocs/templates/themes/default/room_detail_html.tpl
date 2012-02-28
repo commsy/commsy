@@ -72,12 +72,17 @@
 			</div>
 		</div>
 	</div>
+	<div class="portlet_rc">
+		<h2>
+			___COMMON_ATTACHED_ENTRIES___
+		</h2>
+		<div id="netnavigation">
+			___COMMON_NO_ENTRIES___
+		</div>
+	</div>
 {/block}
 
 
-{block  name=sidebar_tagbox_title}
-	___COMMON_ATTACHED_TAGS___
-{/block}
 
 {block  name=sidebar_buzzwordbox_title}
 	___COMMON_ATTACHED_BUZZWORDS___
