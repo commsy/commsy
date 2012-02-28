@@ -49,6 +49,7 @@ $copy_array['netnavigation'] = true;
 $copy_array['emailtext'] = true;
 $copy_array['title'] = true;
 $copy_array['logo'] = true;
+$copy_array['BGImage'] = true;
 $copy_array['wiki'] = true;
 $copy_array['informationbox'] = true;
 $copy_array['myentrydisplayconf'] = false;
@@ -269,6 +270,19 @@ if ( $copy_array['logo'] ) {
    } else {
       $new_room->setLogoFilename('');
       $disc_manager->unlinkFile($new_room->getLogoFilename());
+   }
+}
+// background image
+if ( $copy_array['BGImage'] ) {
+   $disc_manager = $environment->getDiscManager();
+   if ( $old_room->getItemID() > 99 ) {
+      if ( $disc_manager->copyImageFromRoomToRoom($old_room->getBGImageFilename(),$new_room->getItemID()) ) {
+         $logo_file_name_new = str_replace($old_room->getItemID(),$new_room->getItemID(),$old_room->getBGImageFilename());
+         $new_room->setBGImageFilename($logo_file_name_new);
+      }
+   } else {
+      $new_room->setBGImageFilename('');
+      $disc_manager->unlinkFile($new_room->getBGImageFilename());
    }
 }
 
