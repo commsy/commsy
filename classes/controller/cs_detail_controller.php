@@ -1686,7 +1686,7 @@
 		protected function setClipboardIDArray($id_array) {
 			$this->_clipboard_id_array = $id_array;
 		}
-		
+
 		protected function getFileContent() {
 		    $converter = $this->_environment->getTextConverter();
 		    $files = array();
@@ -1725,25 +1725,25 @@
 						$file_string = $converter->text_as_html_short($file_string);
 						$file_string = $file->getFileIcon() . ' ' . ($file_string);
 					}
-					
+
 					$files[] = $file_string;
-					
+
 					$file = $file_list->getNext();
 				}
 			}
-			
+
 			return $files;
 		}
-		
+
 		/**
 		 * Internal method for showing the creator or modificator
 		 * of an item or subitem.
-		 * 
+		 *
 		 * @return array
 		 */
 		protected function getCreatorInformationAsArray($item) {
 			$converter = $this->_environment->getTextConverter();
-			
+
 		    //TODO: anpassen!
 		    $return = array();
 		    $environment = $this->_environment;
@@ -1788,8 +1788,9 @@
 		        $return['read_count'] = $read_count;
 		        $return['read_since_modification_count'] = $read_since_modification_count;
 		    }
-		    
+
 		    $return['last_modification_date'] = $translator->getDateTimeInLang($item->getModificationDate());
+		    $return['creation_date'] = $translator->getDateTimeInLang($item->getCreationDate());
 		    $return['item_id'] = $item->getItemID();
 
 		    if ( isset($modificator)
@@ -1866,7 +1867,7 @@
 		            }else{
 		                //$temp_html = '<span class="disabled">'.$this->_compareWithSearchText($modificator->getFullname()).'</span>';
 		                $return['last_modificator'] = $modificator->getFullname();
-		                $return['last_modificator_status'] = self::USER_DISABLED;		                
+		                $return['last_modificator_status'] = self::USER_DISABLED;
 		            }
 		        } elseif ( $item->isA(CS_USER_TYPE)
 		        and $item->getUserID() == $modificator->getUserID()
@@ -1910,7 +1911,7 @@
 		    // else{
 		    //    $title = '&nbsp;<span class="creator_information_key">'.$translator->getMessage('COMMON_LAST_MODIFIED_BY').':</span> '.$temp_html.', '.$translator->getDateTimeInLangWithoutOClock($item->getModificationDate());
 		    //}
-		    
+
 		    /*$html .='&nbsp;<img id="toggle'.$item->getItemID().'" src="images/more.gif"/>';
 		    $html .= $title;
 		    $html .= '<div id="creator_information'.$item->getItemID().'">'.LF;
@@ -1928,8 +1929,8 @@
 		    CS_STEP_TYPE,
 		    CS_ANNOTATION_TYPE))
 		    ) {
-		         
-		         
+
+
 		        $user_allowed_detailed_awareness = false;
 		        if($user->isModerator()){
 		            $user_allowed_detailed_awareness = true;
@@ -1938,20 +1939,20 @@
 		                $user_allowed_detailed_awareness = true;
 		            }
 		        }
-		        
+
 		        $return['user_allowed_detailed_awareness'] = $user_allowed_detailed_awareness;
-		        
+
 		        $is_workflow_type = false;
 		        if(in_array($item->getType(), array(CS_SECTION_TYPE,CS_MATERIAL_TYPE))){
 		            $is_workflow_type = true;
 		        }
-		        
+
 		        if ($is_workflow_type) {
 		            $return['is_workflow_type'] = 'true';
 		        } else {
 		            $return['is_workflow_type'] = 'false';
 		        }
-		         
+
 		        if(!$context->withWorkflowReader() or ($context->withWorkflowReader() and ($context->getWorkflowReaderGroup() == '0') and ($context->getWorkflowReaderPerson() == '0')) or !$user_allowed_detailed_awareness or !$is_workflow_type){
 		           /* $html .= '   <tr>'.LF;
 		            $html .= '      <td></td>'.LF;
@@ -1964,10 +1965,10 @@
 		            } else {
 		                $html .= '       '.$read_since_modification_count.'&nbsp;'.$translator->getMessage('COMMON_NUMBER_OF_MEMBERS').''.LF;
 		            } */
-		            
+
 		            $return['read_since_modification_count'] = $read_since_modification_count;
 		            $return['workflow_reader'] = 'false';
-		            
+
 		        } else if($context->withWorkflowReader()){
 		            $return['workflow_reader'] = 'true';
 		           /* $html .= '   <tr>'.LF;
@@ -2036,7 +2037,7 @@
 		                        'user_count_complete' => $user_count_complete,
 		                        'group_id' => $group_item->getItemID());
 		                    $groups[] = $group;
-		                    
+
 		                    $group_item = $group_list->getNext();
 		                }
 		                //$html .= '<br/>';
@@ -2061,7 +2062,7 @@
 		                    $personArray = array(
 		                        'name' => $person->getFullname(),
 		                        'id' => $person->getItemID());
-		                        
+
 		                    $persons[] = $personArray;
 		                }
 		            }
@@ -2089,7 +2090,7 @@
 		            $return['creator'] = $creator->getFullname();
 		            $return['creator_id'] = $creator->getItemID();
 		            $return['creator_status'] = self::USER_HAS_LINK;
-		            
+
 		        } elseif ( isset($creator) and !$creator->isDeleted()){
 		            //$temp_html = '<span class="disabled">'.$this->_compareWithSearchText($creator->getFullname()).'</span>';
 		            $return['creator'] = $creator->getFullname();
@@ -2132,7 +2133,7 @@
 		            if ( $current_user_item->isGuest() ) {
 		                //$temp_html = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
 		                $return['creator'] = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
-		                
+
 		            } else {
 		                //$temp_html = $this->_compareWithSearchText($creator->getFullname());
 		                $return['creator'] = $creator->getFullname();
@@ -2310,7 +2311,7 @@
 		        }
 		        $html .= '      </div>'.LF;
 		        $html .= '   </td>'.LF;
-		        $html .= '</tr></table>'.LF; 
+		        $html .= '</tr></table>'.LF;
 		    } */
 		    return $return;
 		}

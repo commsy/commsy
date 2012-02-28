@@ -17,25 +17,27 @@
 		</div>
 
 		<div class="fi_md_content">
-			<div class="fi_mdc_item">
-			<h4>___COMMON_REFNUMBER___</h4>
-			<p class="fi_mdc_item">
-				{$data.item_id}
-            </p>
-				<h4>___COMMON_CREATED_BY___</h4>
-				<p class="fi_mdc_item">
-				   {moredetail_build_link status=$data.creator_status user_name=$data.creator id=$data.creator_id}
-				</p>
+			<div class="fi_mdc_item_150">
+				<h4>___COMMON_REFNUMBER___</h4>
+				<p class="fi_mdc_item_150">
+					{$data.item_id}
+            	</p>
+				<h4>___COMMON_READ_SINCE_MODIFICATION___</h4>
+				<div class="progressbar">
+					<img src="{$basic.tpl_path}img/ajax_loader.gif" alt="ajax_loader" />
+					<span class="percent hidden">{$data.read_since_modification_percentage}</span>
+					<span class="value hidden">{$data.read_since_modification_count}</span>
+				</div>
 			</div>
 
-			<div class="fi_mdc_item">
-				<h4>___COMMON_LAST_MODIFIED_BY___</h4>
-				<p class="fi_mdc_item">
-			   		{moredetail_build_link status=$data.last_modificator_status user_name=$data.last_modificator id=$data.last_modificator_id} - {$data.last_modification_date}
-            	</p>
+			<div class="fi_mdc_item_380">
+				<h4>___COMMON_CREATED_BY___</h4>
+				<p class="fi_mdc_item_380">
+				   {moredetail_build_link status=$data.creator_status user_name=$data.creator id=$data.creator_id} - {$data.creation_date}
+				</p>
 			{if !empty($data.modifier)}
 					<h4>___COMMON_EDIT_BY___</h4>
-					<p class="fi_mdc_item">
+					<p class="fi_mdc_item_380">
 					{foreach $data.modifier as $modifier}
 						{moredetail_build_link status=$modifier.status user_name=$modifier.name id=$modifier.id}{if !$modifier@last}, {/if}
 					{/foreach}
@@ -52,16 +54,16 @@
 					<span class="value hidden">{$data.read_count}</span>
 				</div>
 			</div>
--->
+
 			<div class="fi_mdc_item_wide">
-				<h4>___COMMON_READ_SINCE_MODIFICATION___</h4>
+				<h4>___COMMON_READ_ENTRY_SINCE_MODIFICATION___</h4>
 				<div class="progressbar">
 					<img src="{$basic.tpl_path}img/ajax_loader.gif" alt="ajax_loader" />
 					<span class="percent hidden">{$data.read_since_modification_percentage}</span>
 					<span class="value hidden">{$data.read_since_modification_count}</span>
 				</div>
 			</div>
-
+-->
 			<div class="clear"> </div>
 		</div>
 

@@ -48,7 +48,7 @@
 				{/foreach}
 			</p>
 			<p>
-				___COMMON_CREATED_BY_UPPER___ <a href="">{$detail.content.creator}</a> ___DATES_ON_DAY___  {$detail.content.creation_date}
+				___COMMON_LAST_MODIFIED_BY_UPPER___ <a href="">{$detail.content.modificator}</a> ___DATES_ON_DAY___  {$detail.content.modification_date}
 			</p>
 			<div class="clear"> </div>
 
