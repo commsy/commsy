@@ -7,6 +7,7 @@
 			<a class="linked" href=""><span class="ref_to_ia"> &nbsp; </span></a>
 			<a class="detail" href=""><span class="details_ia"> &nbsp; </span></a>
 			<a class="annotations" href="#"><span class="ref_to_anno"> &nbsp; </span></a>
+			<div class="anno_count" >{$detail.annotations|@count}</div>
 		</div>
 	</div>
 
