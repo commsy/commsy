@@ -4,7 +4,7 @@
 	<a href="" title="___COMMON_LIST_PRINTVIEW___">
 		<img src="{$basic.tpl_path}img/btn_print.gif" alt="___COMMON_LIST_PRINTVIEW___" />
 	</a>
-	
+
     {if $index.actions.new}
 		<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid=NEW" title="___COMMON_NEW_ITEM___">
 	    	<img src="{$basic.tpl_path}img/btn_add_new.gif" alt="___COMMON_NEW_ITEM___" />
@@ -118,8 +118,7 @@
 			<div class="clear"> </div>
 			<div class="portlet_rc_body">
 				{foreach $list.restriction_text_parameters as $restriction}
-					{$restriction.name}
-				   	<span style="padding-right:8px;">
+					<span title="{$restriction.name}">{$restriction.name|truncate:25:'...':true}
 				   		<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$restriction.link_parameter}"><img src="{$basic.tpl_path}img/cross.gif" alt="x" border="0"/></a>
 				   	</span>
 				{/foreach}
@@ -144,7 +143,7 @@
 							___COMMON_{$rubric.tag}_INDEX___
 							<select name="sel{$rubric.name}" size="1" onChange="javascript:document.{$rubric.name}_form.submit()">
 								<option value="0">*___COMMON_NO_SELECTION___</option>
-	   							<option class="disabled" disabled="disabled" value="-2">------------------------------</option>
+	   							<option class="disabled" disabled="disabled" value="-2">------------------------------------------------------</option>
 	    						{foreach $rubric.items as $item}
 									<option value="{$item.id}"
 										{if $item.id == $item.selected}
@@ -154,7 +153,7 @@
 										{$item.name}
 									</option>
 	    						{/foreach}
-	   							<option class="disabled" disabled="disabled" value="-2">------------------------------</option>
+	   							<option class="disabled" disabled="disabled" value="-2">------------------------------------------------------</option>
 								<option value="-1">*___COMMON_NOT_LINKED___</option>
 							</select>
 						</form>

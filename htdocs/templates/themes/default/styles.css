@@ -1329,7 +1329,7 @@ portlets, right_column
 .portlet_rc_body {
     color: #DEE8FF; /* ueber Skin-Editor austauschbar */
     border-top: 1px solid #689FDE; /* ueber Skin-Editor austauschbar */
-    padding: 10px 20px 0px 0px;
+    padding: 10px 0px 0px 0px;
     }
 
 .btn_body_rc {
@@ -1371,13 +1371,18 @@ a:hover.keywords_s1, a:hover.keywords_s2, a:hover.keywords_s3, a:hover.keywords_
 
 .portlet_rc_body .change_view select {
     display: block;
-    width: 165px;
-    background: url(img/rc_select_bg.jpg) no-repeat;
+    width: 225px;
+    background: url(img/rc_select_bg_225.jpg) no-repeat;
     border: 0px;
     color: #FFF;
+    background-color: #5087c8;
     padding: 5px;
     margin: 5px 0px 10px 0px;
     }
+
+.portlet_rc_body .change_view .disabled{
+    color: #FFF;
+}
 
 #color_box {
   height:10px;
@@ -1477,26 +1482,27 @@ footer
     }
 
 div.delete_confirm_background {
-    background-color: white;
+    background-color: #333;
     height: 100%;
     left: 0;
-    opacity: 0.7;
+    opacity: 0.8;
     position: fixed;
     top: 0;
     width: 100%;
+    margin: 0 auto;
     z-index: 1000;
 }
 
 div.delete_confirm_box {
-    background-color: white;
-    border: 2px solid red;
+    border: 1px solid #D7D7D9;
     display: none;
     margin-left: 30%;
     margin-top: 100px;
     padding: 20px;
     position: fixed;
+    background: url("img/fade_in_bg.jpg") repeat-x scroll 0 0 #D7D7D9;
     top: 0;
-    width: 400px;
+    width: 300px;
     z-index: 1100;
 }
 

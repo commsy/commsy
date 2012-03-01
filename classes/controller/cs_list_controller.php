@@ -348,7 +348,7 @@
 	         		}
 	         		$tmp_array = array();
 	         		$tmp_array['type'] = 'search';
-	         		$tmp_array['name'] = chunkText($view_object->_text_as_html_short(urldecode($params['search'])),12);
+	         		$tmp_array['name'] = $view_object->_text_as_html_short(urldecode($params['search']));
 					$tmp_array['link_parameter'] = $link_parameter_text;
 					$restriction_array[] = $tmp_array();
 	         	}
@@ -368,7 +368,7 @@
 	            	}else{
 	               		$group_manager = $environment->getGroupManager();
 	               		$group_item = $group_manager->getItem($params['selgroup']);
-	        			$tmp_array['name'] = chunkText($view_object->_text_as_html_short($group_item->getTitle()),12);
+	        			$tmp_array['name'] = $view_object->_text_as_html_short($group_item->getTitle());
 		            }
 	         		$tmp_array['type'] = 'selgroup';
 	 				$tmp_array['link_parameter'] = $link_parameter_text;
@@ -389,7 +389,7 @@
 	            	}else{
 	               		$topic_manager = $environment->getTopicManager();
 	               		$topic_item = $topic_manager->getItem($params['seltopic']);
-	        			$tmp_array['name'] = chunkText($view_object->_text_as_html_short($topic_item->getTitle()),12);
+	        			$tmp_array['name'] = $view_object->_text_as_html_short($topic_item->getTitle());
 		            }
 	         		$tmp_array['type'] = 'seltopic';
 	 				$tmp_array['link_parameter'] = $link_parameter_text;
@@ -410,7 +410,7 @@
 	            	}else{
 	               		$institution_manager = $environment->getTopicManager();
 	               		$institution_item = $institution_manager->getItem($params['selinstitution']);
-	        			$tmp_array['name'] = chunkText($view_object->_text_as_html_short($institution_item->getTitle()),12);
+	        			$tmp_array['name'] = $view_object->_text_as_html_short($institution_item->getTitle());
 		            }
 	         		$tmp_array['type'] = 'selinstitution';
 	 				$tmp_array['link_parameter'] = $link_parameter_text;
@@ -431,7 +431,7 @@
 	            	}else{
 	               		$buzzword_manager = $environment->getBuzzwordManager();
 	               		$buzzword_item = $buzzword_manager->getItem($params['selbuzzword']);
-	        			$tmp_array['name'] = chunkText($view_object->_text_as_html_short($buzzword_item->getTitle()),12);
+	        			$tmp_array['name'] = $view_object->_text_as_html_short($buzzword_item->getTitle());
 		            }
 	         		$tmp_array['type'] = 'selbuzzword';
 	 				$tmp_array['link_parameter'] = $link_parameter_text;
@@ -452,7 +452,7 @@
 	            	}else{
 	               		$user_manager = $environment->getUserManager();
 	               		$user_item = $user_manager->getItem($params['seluser']);
-	        			$tmp_array['name'] = chunkText($view_object->_text_as_html_short($user_item->getTitle()),12);
+	        			$tmp_array['name'] = $view_object->_text_as_html_short($user_item->getTitle());
 		            }
 	         		$tmp_array['type'] = 'seluser';
 	 				$tmp_array['link_parameter'] = $link_parameter_text;
@@ -475,7 +475,7 @@
 	         		$tmp_array = array();
 	            	$tag_manager = $environment->getTagManager();
 	               	$tag_item = $tag_manager->getItem($params['seltag_'.$i]);
-	        		$tmp_array['name'] = chunkText($view_object->_text_as_html_short($tag_item->getTitle()),12);
+	        		$tmp_array['name'] = $view_object->_text_as_html_short($tag_item->getTitle());
 	         		$tmp_array['type'] = 'seltag';
 	 				$tmp_array['link_parameter'] = $link_parameter_text;
 					$restriction_array[] = $tmp_array;
@@ -695,10 +695,10 @@
 
 		protected function performListOption($rubric){
 		   $this->getPostData();
-		   
+
 		   #pr($this->_list_attached_ids);
 		   #pr($_POST);
-		   
+
 			$environment = $this->_environment;
 			$session = $environment->getSessionItem();
 			$translator = $environment->getTranslationObject();
@@ -711,8 +711,8 @@
 			} else {
    				$option = '';
 			}
-            
-			
+
+
 			// Find out what to do
 			if ( isset($_POST['delete_option']) ) {
    				$delete_command = $_POST['delete_option'];
@@ -788,7 +788,7 @@
       		      }
       		   }
       		}
-      		
+
 			// Cancel editing
 			/*if ( isOption($delete_command, $translator->getMessage('COMMON_CANCEL_BUTTON')) ) {
    				$params = $environment->getCurrentParameterArray();
@@ -822,7 +822,7 @@
       		   $params = $environment->getCurrentParameterArray();
       		   redirect($environment->getCurrentContextID(), $rubric, 'index', $params);
       		}
-      		
+
       		// Delete item
       		elseif ($this->_list_command_confirm == CS_LISTOPTION_CONFIRM_DELETE) {
       		   if ($session->issetValue('cid'.$environment->getCurrentContextID().
@@ -846,8 +846,8 @@
       		   $selected_ids = array();
       		   redirect($environment->getCurrentContextID(), $rubric, 'index', $params);
       		}
-			
-			
+
+
    			/*if ( isOption($option,$translator->getMessage('COMMON_LIST_ACTION_BUTTON_GO'))
         			and !isset($_GET['show_copies'])
         			and $_POST['index_view_action'] != '-1'
