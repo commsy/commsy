@@ -36,7 +36,7 @@
 
 			// perform list options
 			$this->performListOption(CS_DATE_TYPE);
-
+			
 			// get list content
 			$list_content = $this->getListContent();
 
@@ -197,6 +197,9 @@
 			   if ( !empty($last_selected_tag) ){
 			      $dates_manager->setTagLimit($last_selected_tag);
 			   }
+			   if ( $this->_list_parameter_arrray['interval'] > 0 ) {
+					$dates_manager->setIntervalLimit($this->_list_parameter_arrray['from']-1,$this->_list_parameter_arrray['interval']);
+				}
 			   $dates_manager->select();
 			   $list = $dates_manager->get();
 			   $ids = $dates_manager->getIDArray();
@@ -204,7 +207,10 @@
 			   
 			   $this->_page_text_fragment_array['count_entries'] = $this->getCountEntriesText($this->_list_parameter_arrray['from'],$this->_list_parameter_arrray['interval'], $count_all, $count_all_shown);
 			   $this->_browsing_icons_parameter_array = $this->getBrowsingIconsParameterArray($this->_list_parameter_arrray['from'],$this->_list_parameter_arrray['interval'], $count_all_shown);
-			
+			   
+			   $session = $this->_environment->getSessionItem();
+				$session->setValue('cid'.$environment->getCurrentContextID().'_date_index_ids', $ids);
+			   
 			   // prepare item array
 			   $item = $list->getFirst();
 			   $item_array = array();
