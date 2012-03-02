@@ -42,17 +42,33 @@
                     			</a>
                     		</li>
                     	{/foreach}
-						
-						{* configuration *}
-						{if $room.config_information.access}
-							<li {if $room.config_information.active}id="active"{else}class="non_active"{/if}>
-                    			<a href="commsy.php?cid={$environment.cid}&mod=configuration&fct=index">
-                    				<span id="{if $room.config_information.active}{$room.config_information.span_prefix}_act{else}{$room.config_information.span_prefix}_non_act{/if}"></span><br/>
-                    				___COMMON_CONFIGURATION___
-                    			</a>
-                    		</li>
-						{/if}
                     </ul>
+					
+					{if $room.second_navigation.config || $room.second_navigation.profil}
+						<ul id="right_navigation" class="float-right">
+							{* configuration *}
+							{$entry = $room.second_navigation.config}
+							{if $entry.access}
+								<li {if $entry.active}id="active"{else}class="non_active"{/if}>
+									<a href="commsy.php?cid={$environment.cid}&mod=configuration&fct=index">
+										<span id="{if $entry.active}{$entry.span_prefix}_act{else}{$entry.span_prefix}_non_act{/if}"></span>
+										___COMMON_CONFIGURATION___
+									</a>
+								</li>
+							{/if}
+
+							{* profil *}
+							{$entry = $room.second_navigation.profil}
+							{if $entry.access}
+								<li {if $entry.active}id="active"{else}class="non_active spe"{/if}>
+									<a href="commsy.php?cid={$environment.cid}&mod=user&fct=detail&iid={$entry.item_id}">
+										<span id="{if $entry.active}{$entry.span_prefix}_act{else}{$entry.span_prefix}_non_act{/if}"></span>
+										___USER_OWN_INFORMATION___
+									</a>
+								</li>
+							{/if}
+						</ul>
+					{/if}
                     <div class="clear"> </div>
 
 
@@ -115,12 +131,6 @@
 									{$r = $room.addon_information.rss}
 									<a href="rss.php?cid={$r.item_id}{$r.hash}" title="___RSS_SUBSCRIBE_LINK___" target="_blank">
 										<img src="{$basic.tpl_path}img/addon_rss.png" alt="___RSS_SUBSCRIBE_LINK___" />
-									</a>
-								{/if}
-								{if $room.addon_information.profil.active}
-									{$p = $room.addon_information.profil}
-									<a href="commsy.php?cid={$environment.cid}&module=user&fct=detail&iid={$p.item_id}" title="___USER_OWN_INFORMATION___">
-										<img src="{$basic.tpl_path}img/addon_profil.png" alt="___USER_OWN_INFORMATION___" />
 									</a>
 								{/if}
 							</p>

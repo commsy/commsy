@@ -93,11 +93,11 @@
 			// sidebar information
 			$this->setupSidebarInformation();
 			
-			// config information
-			$this->assign('room', 'config_information', $this->getConfigInformation());
-			
 			// addon information
 			$this->assign('room', 'addon_information', $this->getAddonInformation());
+			
+			// second navigation information
+			$this->assign('room', 'second_navigation', $this->getSecondNavigationInformation());
 		}
 		
 		private function getAddonInformation() {
@@ -113,9 +113,6 @@
 				),
 				'rss'		=> array(
 					'active'	=> false
-				),
-				'profil'	=> array(
-					'acttive'	=> false
 				),
 				'rows'		=> 0
 			);
@@ -215,17 +212,6 @@
 				$return['rss']['hash'] = $hash_string;
 			}
 			
-			// my profile(if user rubric is not active)
-			$available_rubrics = $current_context->getAvailableRubrics();
-			if(!in_array('user', $available_rubrics)) {
-				// user rubric is not active, so add link here
-				if(!$current_context->isOpenForGuests() && $current_user->isUser() && $this->_with_modifying_actions) {
-					$count++;
-					$return['profil']['active'] = true;
-					$return['profil']['item_id'] = $current_user->getItemID();
-				}
-			}
-			
 			$return['rows'] = ceil($count / 2);
 			
 			return $return;
@@ -283,8 +269,10 @@
 			return $in_array;
 		}
 		
-		private function getConfigInformation() {
-			$return = array(
+		
+		private function getSecondNavigationInformation() {
+			// configuration
+			$return['config'] = array(
 				'access'		=> false,
 				'active'		=> false,
 				'span_prefix'	=> 'co'
@@ -292,11 +280,36 @@
 			
 			// access
 			$current_user = $this->_environment->getCurrentUser();
-			if($current_user->isModerator() && !$current_user->isOnlyReadUser()) $return['access'] = true;
+			if($current_user->isModerator() && !$current_user->isOnlyReadUser()) $return['config']['access'] = true;
 			
 			// active
-			if($this->_environment->getCurrentModule() === 'configuration') $return['active'] = true;
+			if($this->_environment->getCurrentModule() === 'configuration') $return['config']['active'] = true;
 			
+			/*
+			* this method provides information, if user rubric is not active,
+			* needed for editing profil settings for this room
+			*/
+			$return['profil'] = array(
+				'access'		=> false,
+				'active'		=> false,
+				'span_prefix'	=> 'spe'
+			);
+			
+			$current_context = $this->_environment->getCurrentContextItem();
+			$current_user = $this->_environment->getCurrentUserItem();
+			
+			// my profile(if user rubric is not active)
+			$available_rubrics = $current_context->getAvailableRubrics();
+			if(!in_array('user', $available_rubrics)) {
+				// user rubric is not active, so add link here
+				if(!$current_context->isOpenForGuests() && $current_user->isUser() && $this->_with_modifying_actions) {
+					$return['profil']['access'] = true;
+					$return['profil']['item_id'] = $current_user->getItemID();
+				}
+			}
+			
+			// active
+			if($this->_environment->getCurrentModule() === 'user') $return['profil']['active'] = true;
 			
 			return $return;
 		}
