@@ -37,7 +37,7 @@
                     	{foreach $room.rubric_information as $rubric}
                     		<li {if $rubric.active}id="active"{else}class="non_active"{/if}>
                     			<a href="commsy.php?cid={$environment.cid}&mod={$rubric.name}&fct=index">
-                    				<span id="{if $rubric.active}{$rubric.span_prefix}_act{else}{$rubric.span_prefix}_non_act{/if}"></span><br/>
+                    				<span id="{if $rubric.active}{$rubric.span_prefix}_act{else}{$rubric.span_prefix}_non_act{/if}"></span>
                     				{if $rubric.translate}___COMMON_{$rubric.name|upper}_INDEX___{else}{$rubric.name}{/if}
                     			</a>
                     		</li>

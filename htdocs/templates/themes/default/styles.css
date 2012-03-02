@@ -456,7 +456,7 @@ main-navigation
 
 a span#ho_act, a span#ho_non_act {
     display: block;
-    height: 25px;
+    height: 35px;
     width: 25px;
     margin: 0px auto;
     }
@@ -473,7 +473,7 @@ a span#ho_non_act {
 
 a span#an_act, a span#an_non_act {
     display: block;
-    height: 25px;
+    height: 35px;
     width: 25px;
     margin: 0px auto;
     }
@@ -490,7 +490,7 @@ a span#an_non_act {
 
 a span#te_act, a span#te_non_act {
     display: block;
-    height: 25px;
+    height: 35px;
     width: 22px;
     margin: 0px auto;
     }
@@ -507,7 +507,7 @@ a span#te_non_act {
 
 a span#ma_act, a span#ma_non_act {
     display: block;
-    height: 25px;
+    height: 35px;
     width: 22px;
     margin: 0px auto;
     }
@@ -524,7 +524,7 @@ a span#ma_non_act {
 
 a span#di_act, a span#di_non_act {
     display: block;
-    height: 25px;
+    height: 35px;
     width: 25px;
     margin: 0px auto;
     }
@@ -541,7 +541,7 @@ a span#di_non_act {
 
 a span#pe_act, a span#pe_non_act {
     display: block;
-    height: 25px;
+    height: 35px;
     width: 25px;
     margin: 0px auto;
     }
@@ -558,7 +558,7 @@ a span#pe_non_act {
 
 a span#gr_act, a span#gr_non_act {
     display: block;
-    height: 25px;
+    height: 35px;
     width: 25px;
     margin: 0px auto;
     }
@@ -575,7 +575,7 @@ a span#gr_non_act {
 
 a span#au_act, a span#au_non_act {
     display: block;
-    height: 25px;
+    height: 35px;
     width: 25px;
     margin: 0px auto;
     }
@@ -592,7 +592,7 @@ a span#au_non_act {
 
 a span#th_act, a span#th_non_act {
     display: block;
-    height: 25px;
+    height: 35px;
     width: 25px;
     margin: 0px auto;
     }
