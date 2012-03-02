@@ -410,7 +410,7 @@ main-navigation
     }
 
 #main_navigation a {
-    padding: 10px 8px 6px 8px;
+    padding: 10px 6px 6px 8px;
     font-size: 10px;
     line-height: 10px;
     display: block;
@@ -481,6 +481,24 @@ a span#ho_act {
 a span#ho_non_act {
     background: url(img/nav_home.png) no-repeat -25px 0px;
     }
+
+/* Konfiguration */
+
+a span#co_act, a span#co_non_act {
+    display: block;
+    height: 35px;
+    width: 25px;
+    margin: 0px auto;
+    }
+
+a span#co_act {
+    background: url(img/nav_admin.png) no-repeat 0px 0px;
+    }
+
+a span#co_non_act {
+    background: url(img/nav_admin.png) no-repeat -25px 0px;
+    }
+
 
 /* Ankuendigungen */
 
