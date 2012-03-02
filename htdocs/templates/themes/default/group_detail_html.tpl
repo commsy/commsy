@@ -53,39 +53,61 @@
 				<div class="detail_description">
 					<h4>___GROUP_MEMBERS___</h4>
 					{if !empty($detail.content.members)}
-						<table>
+						<table class="no_padding">
 							<tr>
 								<td>
-									<ul>
+									<div class="group_member">
 										{section name=members_col1 loop=$detail.content.members start=0 step=3}
 											{$member=$detail.content.members[members_col1]}
-											<li>
-												<a href="commsy.php?cid={$environment.cid}&mod=user&fct=detail&iid={$member.iid}" title="{$member.linktext}">{$member.linktext}</a>
-											</li>
+											<div class="group_member_picture">
+												{if !empty($member.picture)}
+													<img class="group_member_picture" alt="" src="commsy.php?cid={$environment.cid}&mod=picture&fct=getfile&picture={$member.picture}" />
+												{else}
+													<img class="group_member_picture" alt="___USER_PICTURE_UPLOADFILE___" src="images/commsyicons/common/user_unknown.gif" title=""/>
+												{/if}
+											</div>
+											<div>
+												<a href="commsy.php?cid={$environment.cid}&mod=user&fct=detail&iid={$member.iid}" title="{$member.firstname}.' '.{$member.lastname}">{$member.firstname}<br/>{$member.lastname}</a>
+											</div>
+											<div class="clear"> </div>
 										{/section}
-									</ul>
+									</div>
 								</td>
 								<td>
-									<ul>
+									<div class="group_member">
 										{section name=members_col2 loop=$detail.content.members start=1 step=3}
 											{$member=$detail.content.members[members_col2]}
-
-											<li>
-												<a href="commsy.php?cid={$environment.cid}&mod=user&fct=detail&iid={$member.iid}" title="{$member.linktext}">{$member.linktext}</a>
-											</li>
+											<div class="group_member_picture">
+												{if !empty($member.picture)}
+													<img class="group_member_picture" alt="" src="commsy.php?cid={$environment.cid}&mod=picture&fct=getfile&picture={$member.picture}" />
+												{else}
+													<img class="group_member_picture" alt="___USER_PICTURE_UPLOADFILE___" src="images/commsyicons/common/user_unknown.gif" title=""/>
+												{/if}
+											</div>
+											<div>
+												<a href="commsy.php?cid={$environment.cid}&mod=user&fct=detail&iid={$member.iid}" title="{$member.firstname}.' '.{$member.lastname}">{$member.firstname}<br/>{$member.lastname}</a>
+											</div>
+											<div class="clear"> </div>
 										{/section}
-									</ul>
+									</div>
 								</td>
 								<td>
-									<ul>
+									<div class="group_member">
 										{section name=members_col3 loop=$detail.content.members start=2 step=3}
 											{$member=$detail.content.members[members_col3]}
-
-											<li>
-												<a href="commsy.php?cid={$environment.cid}&mod=user&fct=detail&iid={$member.iid}" title="{$member.linktext}">{$member.linktext}</a>
-											</li>
+											<div class="group_member_picture">
+												{if !empty($member.picture)}
+													<img class="group_member_picture" alt="" src="commsy.php?cid={$environment.cid}&mod=picture&fct=getfile&picture={$member.picture}" />
+												{else}
+													<img class="group_member_picture" alt="___USER_PICTURE_UPLOADFILE___" src="images/commsyicons/common/user_unknown.gif" title=""/>
+												{/if}
+											</div>
+											<div>
+												<a href="commsy.php?cid={$environment.cid}&mod=user&fct=detail&iid={$member.iid}" title="{$member.firstname}.' '.{$member.lastname}">{$member.firstname}<br/>{$member.lastname}</a>
+											</div>
+											<div class="clear"> </div>
 										{/section}
-									</ul>
+									</div>
 								</td>
 							</tr>
 						</table>

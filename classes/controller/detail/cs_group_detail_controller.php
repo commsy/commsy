@@ -598,7 +598,7 @@
 							$member_info = array();
 
 							if($member->isUser()) {
-								$linktext = $member->getFullname();
+								$firtsname = $member->getFirstname();
 								// TODO:
 								//$linktext = $converter->compareWithSearchText($linktext);
 								$linktext = $converter->text_as_html_short($linktext);
@@ -611,8 +611,11 @@
 								if(!empty($member_title)) {
 									$linktext .= ', ' . $member_title;
 								}
-
 								$member_info['linktext'] = $linktext;
+								$member_info['firstname'] = $converter->text_as_html_short($member->getFirstname());
+								$member_info['lastname'] = $converter->text_as_html_short($member->getLastname());
+								$member_info['title'] = $converter->text_as_html_short($member->getTitle());
+								$member_info['picture'] =$member->getPicture();
 								$member_info['iid'] = $member->getItemID();
 								/*
 								 * $html1 .= ahref_curl($this->_environment->getCurrentContextID(),

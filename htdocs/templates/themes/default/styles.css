@@ -1214,6 +1214,10 @@ a#sort_down {
     border-bottom: 1px solid #545454;
     }
 
+#item_legend p{
+   	margin-bottom:10px;
+	}
+
 #item_legend table {
   padding: 5px 10px;
   }
@@ -1271,7 +1275,7 @@ special
 ----------------------------------------------------------------------
 */
 div.detail_description {
-  padding: 5px 10px;
+  padding: 5px 10px 10px 10px;
   }
 
 div.user_profil_blocks {
@@ -1294,6 +1298,29 @@ div#user_profil_picture {
   float: right;
   padding: 0 7px 7px;
   }
+
+img.group_member_picture {
+  height: 40px;
+  background-color:#FFF;
+  }
+
+div.group_member {
+	width:220px;
+	}
+
+#item_legend table.no_padding{
+	padding:0px;
+	}
+
+div.group_member_picture {
+  float:left;
+  height: 40px;
+  width: 30px;
+  margin: 0px 5px 10px 0px;
+  overflow:hidden;
+}
+
+
 
 div#group_profil_picture {
   float: right;
