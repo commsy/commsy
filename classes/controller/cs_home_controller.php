@@ -439,6 +439,15 @@
 								$column3 = $item->getModificatorItem()->getFullName();
 								$modificator_id = $item->getModificatorItem()->getItemID();
 	               		}
+						
+						// files
+						$with_files = false;
+						$file_count = 0;
+						if(in_array($key, $this->getRubricsWithFiles())) {
+							$with_files = true;
+							$file_count = $item->getFileList()->getCount();
+						}
+						
 						$item_array[] = array(
 							'iid'				=> $item->getItemID(),
 							'user_iid'			=> $modificator_id,
@@ -446,8 +455,9 @@
 							'column_1_addon'	=> $column1_addon,
 							'column_2'			=> $column2,
 							'column_3'			=> $column3,
-							'noticed'			=> $noticed_text
-						//	'attachment_count'	=> $item->getFileList()->getCount()
+							'noticed'			=> $noticed_text,
+							'has_attachments'	=> $with_files,
+							'attachment_count'	=> $file_count
 			//				'attachment_infos'	=>
 						);
 						
@@ -474,10 +484,10 @@
 							}
 							break;
 						case CS_GROUP_TYPE:
-							$message_tag = $translator->getMessage('HOME_GROUP_SHORT_VIEW_DESCRIPTION', $shown);
+							$message_tag = $translator->getMessage('HOME_GROUP_SHORT_VIEW_DESCRIPTION', $list->getCount());
 							break;
 						case CS_TODO_TYPE:
-							$message_tag = $translator->getMessage('TODO_SHORT_VIEW_DESCRIPTION', $shown, $rubric_count_all_array[$key]);
+							$message_tag = $translator->getMessage('TODO_SHORT_VIEW_DESCRIPTION', $list->getCount(), $rubric_count_all_array[$key]);
 							break;
 						case CS_TOPIC_TYPE:
 							if(isset($list) && $list->isNotEmpty()) {
@@ -493,9 +503,10 @@
 							}
 							break;
 						case CS_USER_TYPE:
+							
 							if($this->_environment->inProjectRoom()) {
 								global $who_is_online;
-								if(isset($who_is_online) && $who_is_online) {
+								if(isset($who_is_online) && $who_is_online) {pr("test");
 									$shown = $list->getCount();
 									if($shown > 0) {
 										$days = ($context_item->isProjectRoom() ? $context_item->getTimeSpread() : 90);
@@ -512,10 +523,10 @@
 
 									$message_tag = $translator->getMessage('HOME_USER_SHORT_VIEW_DESCRIPTION2', $shown, $count_active_now, $rubric_count_all_array[$key], $days);
 								} else {
-									$message_tag = $translator->getMessage('HOME_USER_SHORT_VIEW_DESCRIPTION', $shown, $rubric_count_all_array[$key]);
+									$message_tag = $translator->getMessage('HOME_USER_SHORT_VIEW_DESCRIPTION', $list->getCount(), $rubric_count_all_array[$key]);
 								}
 							} else {
-								$message_tag = $translator->getMessage('COMMON_SHORT_CONTACT_VIEW_DESCRIPTION', $shown, $rubric_count_all_array[$key]);
+								$message_tag = $translator->getMessage('COMMON_SHORT_CONTACT_VIEW_DESCRIPTION', $list->getCount(), $rubric_count_all_array[$key]);
 							}
 							break;
 						case CS_MATERIAL_TYPE:

@@ -57,15 +57,8 @@
 				redirect($environment->getCurrentContextID(),'campus_search', 'index', $params);
 			}
 			
-			// an array of all rubrics, containing files
-			$file_rubric_array = array();
-			$file_rubric_array[] = CS_DISCUSSION_TYPE;
-			$file_rubric_array[] = CS_MATERIAL_TYPE;
-			$file_rubric_array[] = CS_DATE_TYPE;
-			$file_rubric_array[] = CS_ANNOUNCEMENT_TYPE;
-			$file_rubric_array[] = CS_TODO_TYPE;
-			
-			
+			// an array of all rubrics, containing files			
+			$file_rubric_array = $this->getRubricsWithFiles();
 			
 			
 			/*

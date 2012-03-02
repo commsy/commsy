@@ -248,6 +248,18 @@
 			//$this->_translator->getMessage('ACTIVITY_ACTIVE_MEMBERS_DESC',$time_spread)
 			return $return;
 		}
+		
+		protected function getRubricsWithFiles() {
+			// an array of all rubrics, containing files
+			$file_rubric_array = array();
+			$file_rubric_array[] = CS_DISCUSSION_TYPE;
+			$file_rubric_array[] = CS_MATERIAL_TYPE;
+			$file_rubric_array[] = CS_DATE_TYPE;
+			$file_rubric_array[] = CS_ANNOUNCEMENT_TYPE;
+			$file_rubric_array[] = CS_TODO_TYPE;
+			
+			return $file_rubric_array;
+		}
 
 		/**
 		 * get data for buzzword portlet
