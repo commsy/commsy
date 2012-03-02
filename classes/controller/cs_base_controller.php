@@ -16,29 +16,29 @@
 
 			// process basic template information
 			$this->processBaseTemplate();
-			
+
 			// setup error handling
 			set_error_handler(array($this, 'errorHandler'));
 			set_exception_handler(array($this, 'exceptionHandler'));
 			//register_shutdown_function(array($this, 'shutdownHandler'));
-			
+
 			// load exceptions
 			require_once('classes/exceptions/cs_form_exceptions.php');
 			require_once('classes/exceptions/cs_detail_exceptions.php');
 		}
-		
+
 		public function errorHandler($error_code, $error_string, $error_file, $error_line, $error_context) {
 			// create an exception
 			$exception = new ErrorException($error_string, $error_code, 0, $error_file, $error_line);
-			
+
 			// call exception handler with object
 			$this->exceptionHandler($exception);
 		}
-		
+
 		/*
 		 * this will catch unhandled exceptions and exceptions from error handler
 		 */
-		public function exceptionHandler($exception) {		
+		public function exceptionHandler($exception) {
 			global $c_show_debug_infos;
 			if(isset($c_show_debug_infos) && $c_show_debug_infos === true) {
 				/*
@@ -51,7 +51,7 @@
 			//pr($exception);
 			//exit;
 		}
-		
+
 		/*
 		public function shutdownHandler() {
 			pr("error");
@@ -63,7 +63,7 @@
 				if($this->_environment->getOutputMode() === 'html') {
 					$this->_tpl_engine->setPostToken(true);
 				}
-				
+
 				$this->_tpl_engine->display($this->_tpl_file, $this->_environment->getOutputMode());
 			} catch(Exception $e) {
 				die($e->getMessage());
@@ -85,13 +85,13 @@
 			} catch(cs_detail_item_type_exception $e) {
 				// reset template vars
 				$e->resetTemplateVars($this->_tpl_engine);
-				
+
 				// set template
 				$this->_tpl_file = 'error';
-				
+
 				$this->assign('exception', 'message_tag', $e->getErrorMessageTag());
 			}
-			
+
 		}
 
 		/**
@@ -105,7 +105,7 @@
 			if(!is_string($categorie) || !is_string($key)) die('categorie and key need to be of type string');
 
 			$categorie_vars = $this->_tpl_engine->getTemplateVars($categorie);
-			
+
 			if(isset($categorie_vars) && isset($categorie_vars[$key])) {
 				die('this template variable "' . $key . '" in categorie "' . $categorie . '" is already set');
 			}

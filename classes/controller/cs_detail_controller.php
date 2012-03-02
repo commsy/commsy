@@ -340,7 +340,7 @@
 
 				$module = Type2Module($type);
 				if($module === CS_USER_TYPE && (!$linked_item->isUser() || !$linked_item->maySee($current_user))) {
-					$link_items->removeElement($countItem);
+					$link_items->removeElement($count_item);
 				}
 
 				$count_item = $link_items->getNext();

@@ -370,7 +370,7 @@ main-navigation
     }
 
 #main_navigation a {
-    padding: 10px 10px 6px 10px;
+    padding: 10px 8px 6px 8px;
     font-size: 10px;
     line-height: 10px;
     display: block;
@@ -1258,6 +1258,15 @@ div#user_profil_picture {
   float: right;
   padding: 0 7px 7px;
   }
+
+div#group_profil_picture {
+  float: right;
+  padding: 5px 7px ;
+  }
+
+div#group_profil_picture img{
+	width:150px;
+}
 
 .hidden {
   display: none;
