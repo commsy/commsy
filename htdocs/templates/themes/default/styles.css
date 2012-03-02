@@ -1221,7 +1221,7 @@ a#sort_down {
     width: 135px;
     }
 
-.attachment {
+.attachment, .attachment_none_overlay {
     background: url(img/attachment.gif) no-repeat left 2px;
     padding-left: 12px;
     }
@@ -1799,3 +1799,24 @@ div#infos_left .ui-progressbar {
 .ui-corner-all, .ui-corner-bottom, .ui-corner-left, .ui-corner-bl { -moz-border-radius-bottomleft: 0px; -webkit-border-bottom-left-radius: 0px; -khtml-border-bottom-left-radius: 0px; border-bottom-left-radius: 0px; }
 .ui-corner-all, .ui-corner-bottom, .ui-corner-right, .ui-corner-br { -moz-border-radius-bottomright: 0px; -webkit-border-bottom-right-radius: 0px; -khtml-border-bottom-right-radius: 0px; border-bottom-right-radius: 0px; }
 
+/*
+----------------------------------------------------------------------
+Tooltips
+----------------------------------------------------------------------
+*/
+
+/* tooltip styling */
+.tooltip {
+	display: none;
+	background: url(img/tooltips/white_arrow_big.png);
+	height: 163px;
+	padding: 40px 30px 10px 30px;
+	width: 310px;
+	font-size: 11px;
+}
+
+.tooltip .scrollable {
+	overflow-x: hidden;
+	overflow-y: auto;
+	height: 125px;
+}

@@ -40,7 +40,7 @@
 
 	                {foreach $rubric.items as $item}
 	                	<div class="{if $item@iteration is odd}row_odd{else}row_even{/if} {if $item@iteration is odd}odd_sep_home{else}even_sep_home{/if}">
-	                    	<div class="column_380">
+	                    	<div class="column_320">
 	                        	{if $rubric@key == 'discussion'}
 		                        	<p class="column_addon">
 		                        		{$item.column_1_addon}
@@ -53,6 +53,26 @@
 		                            <a href="commsy.php?cid={$environment.cid}&mod={$rubric@key}&fct=detail&iid={$item.iid}">{$item.column_1}</a>
 	                            </p>
 	                        </div>
+							<div class="column_45">
+								<p>
+									{if $item.has_attachments}
+										<a href="" class="attachment{if $item.attachment_count == 0}_none_overlay{/if}">{$item.attachment_count}</a>
+										{if $item.attachment_count > 0}
+											<div class="tooltip">
+												<div class="scrollable">
+													<ul>
+													{foreach $item.attachment_infos as $file}
+														<li>
+															{$file.file_icon} {$file.file_name}
+														</li>
+													{/foreach}
+													</ul>
+												</div>
+											</div>
+										{/if}
+									{/if}
+								</p>
+							</div>
                         	<div class="column_140">
                             	<p>{$item.column_2}</p>
                             </div>

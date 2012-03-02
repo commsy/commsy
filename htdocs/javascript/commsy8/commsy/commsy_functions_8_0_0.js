@@ -135,6 +135,9 @@ define(["libs/jQuery/jquery-1.7.1.min"], function() {
 			if(this.getURLParam('mod') === 'search') {
 				this.registerModule('commsy/search', 'input[id="search_input"]');
 			}
+			
+			// ajax attachment overlay
+			this.registerModule('commsy/attachments_overlay', 'a[class="attachment"]');
 		},
 		
 		registerModule: function(module, selector, parameters) {

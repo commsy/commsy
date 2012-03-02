@@ -445,7 +445,20 @@
 						$file_count = 0;
 						if(in_array($key, $this->getRubricsWithFiles())) {
 							$with_files = true;
+							$attachment_infos = array();
+							
 							$file_count = $item->getFileList()->getCount();
+							$file_list = $item->getFileList();
+							
+							$file = $file_list->getFirst();
+							while($file) {
+								$info = array();
+								$info['file_name'] = $file->getFileName();
+								$info['file_icon'] = $file->getFileIcon();
+								
+								$attachment_infos[] = $info;
+								$file = $file_list->getNext();
+							}
 						}
 						
 						$item_array[] = array(
@@ -457,8 +470,8 @@
 							'column_3'			=> $column3,
 							'noticed'			=> $noticed_text,
 							'has_attachments'	=> $with_files,
-							'attachment_count'	=> $file_count
-			//				'attachment_infos'	=>
+							'attachment_count'	=> $file_count,
+							'attachment_infos'	=> $attachment_infos
 						);
 						
 						$item = $list->getNext();
