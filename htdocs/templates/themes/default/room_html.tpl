@@ -42,6 +42,16 @@
                     			</a>
                     		</li>
                     	{/foreach}
+						
+						{* configuration *}
+						{if $room.config_information.access}
+							<li {if $room.config_information.active}id="active"{else}class="non_active"{/if}>
+                    			<a href="commsy.php?cid={$environment.cid}&mod=configuration&fct=index">
+                    				<span id="{if $room.config_information.active}{$room.config_information.span_prefix}_act{else}{$room.config_information.span_prefix}_non_act{/if}"></span><br/>
+                    				___COMMON_CONFIGURATION___
+                    			</a>
+                    		</li>
+						{/if}
                     </ul>
                     <div class="clear"> </div>
 
@@ -64,7 +74,7 @@
             <div id="right_column"> <!-- Start right_column -->
             	{block name=room_right_info_addon}
 					<div id="info_addon">
-						<div id="info_area">
+						<div id="info_area_row_{$room.addon_information.rows}">
 							<div id="infos_left">
 								<p>
 									{if $room.room_information.new_entries == 1}
@@ -75,23 +85,44 @@
 									
 								</p>
 								<p>___ACTIVITY_PAGE_IMPRESSIONS___: {$room.room_information.page_impressions}</p>
-								<p class="float-left">___ACTIVITY_ACTIVE_MEMBERS_DESC_NEW___: {$room.room_information.active_persons}</p>
-								<div class="progressbar">
-									<img src="{$basic.tpl_path}img/ajax_loader.gif" alt="ajax_loader" />
-									<span class="percent hidden">{$room.room_information.active_persons_percentage}</span>
-									<span class="value hidden"></span>
-								</div>
+								<p class="float-left">___ACTIVITY_ACTIVE_MEMBERS_DESC_NEW___: {$room.room_information.active_persons} / {$room.room_information.all_persons}</p>
 							</div>
 
 							<div class="clear"> </div>
 						</div>
 
-						<div id="addon_area">
+						<div id="addon_area_row_{$room.addon_information.rows}">
 							<p>
-								<a href="" title="Wiki"><img src="{$basic.tpl_path}img/addon_wiki.png" alt="Wiki" /></a>
-								<a href="" title="RSS"><img src="{$basic.tpl_path}img/addon_rss.png" alt="RSS" /></a>
-								<a href="" title="Chat"><img src="{$basic.tpl_path}img/addon_chat.png" alt="Chat" /></a>
-								<a href="" title="Wordpress"><img src="{$basic.tpl_path}img/addon_wordpress.png" alt="Wordpress" /></a>
+								{if $room.addon_information.wiki.active}
+									{$w = $room.addon_information.wiki}
+									<a href="{$w.path}/wikis/{$environment.cid}/{$w.item_id}/{$w.session}" title="___COMMON_WIKI_LINK___: {$room.addon_information.wiki.title}" target="_blank">
+										<img src="{$basic.tpl_path}img/addon_wiki.png" alt="___COMMON_WIKI_LINK___" />
+									</a>
+								{/if}
+								{if $room.addon_information.chat.active}
+									{$c = $room.addon_information.chat}
+									<a href="commsy.php?cid={$environment.cid}&module=context&fct=forward&tool=etchat" title="___CHAT_CHAT___" onclick="window.open(href, target, 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=yes, width=970, height=600');">
+										<img src="{$basic.tpl_path}img/addon_chat.png" alt="___CHAT_CHAT___" />
+									</a>
+								{/if}
+								{if $room.addon_information.wordpress.active}
+									{$wo = $room.addon_information.wordpress}
+									<a href="{$wo.path}/{$environment.cid}_{$wo.item_id}/{$wo.session}" title="___COMMON_WORDPRESS_LINK___: {$wo.title}" target="_blank">
+										<img src="{$basic.tpl_path}img/addon_wordpress.png" alt="___COMMON_WORDPRESS_LINK___" />
+									</a>
+								{/if}
+								{if $room.addon_information.rss.active}
+									{$r = $room.addon_information.rss}
+									<a href="rss.php?cid={$r.item_id}{$r.hash}" title="___RSS_SUBSCRIBE_LINK___" target="_blank">
+										<img src="{$basic.tpl_path}img/addon_rss.png" alt="___RSS_SUBSCRIBE_LINK___" />
+									</a>
+								{/if}
+								{if $room.addon_information.profil.active}
+									{$p = $room.addon_information.profil}
+									<a href="commsy.php?cid={$environment.cid}&module=user&fct=detail&iid={$p.item_id}" title="___USER_OWN_INFORMATION___">
+										<img src="{$basic.tpl_path}img/addon_profil.png" alt="___USER_OWN_INFORMATION___" />
+									</a>
+								{/if}
 							</p>
 							<div class="clear"> </div>
 						</div>

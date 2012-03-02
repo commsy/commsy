@@ -63,29 +63,6 @@
 			// call parent
 			parent::processTemplate();
 			
-			
-			/**/
-			
-			// get the info bar image
-			//$image = imagecreatefrompng('htdocs/' . $this->_tpl_path . 'img/info_bar_bg.png');
-			
-			//$white = imagecolorallocate($image, 0xff, 0xff, 0xff);
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			/**/
-			
-			
-			
 			// TODO: implement old commsy check - calling rubrics not set as active
 			
 			$params = $this->_environment->getCurrentParameterArray();
@@ -115,6 +92,143 @@
 			
 			// sidebar information
 			$this->setupSidebarInformation();
+			
+			// config information
+			$this->assign('room', 'config_information', $this->getConfigInformation());
+			
+			// addon information
+			$this->assign('room', 'addon_information', $this->getAddonInformation());
+		}
+		
+		private function getAddonInformation() {
+			$return = array(
+				'wiki'		=> array(
+					'active'	=> false
+				),
+				'chat'		=> array(
+					'active'	=> false
+				),
+				'wordpress'	=> array(
+					'active'	=> false
+				),
+				'rss'		=> array(
+					'active'	=> false
+				),
+				'profil'	=> array(
+					'acttive'	=> false
+				),
+				'rows'		=> 0
+			);
+			
+			$current_context = $this->_environment->getCurrentContextItem();
+			$current_user = $this->_environment->getCurrentUserItem();
+			$count = 0;
+			
+			// wiki
+			if($current_context->showWikiLink() && $current_context->existWiki() && $current_context->issetWikiHomeLink()) {
+					global $c_pmwiki_path_url;
+					
+					$count++;
+					$return['wiki']['active'] = true;
+					$return['wiki']['title'] = $current_context->getWikiTitle();
+					$return['wiki']['path'] = $c_pmwiki_path_url;
+					$return['wiki']['item_id'] = $current_context->getItemID();
+					
+					$url_session_id = '';
+					if($current_context->withWikiUseCommSyLogin()) {
+						$session_item = $this->_environment->getSessionItem();
+						$url_session_id = '?commsy_session_id=' . $session_item->getSessionID();
+						unset($session_item);
+					}
+					$return['wiki']['session'] = $url_session_id;
+			}
+			
+			// chat
+			if($current_context->showChatLink()) {
+				global $c_etchat_enable;
+				if(!empty($c_etchat_enable) && $c_etchat_enable) {
+					if(isset($current_user) && $current_user->isReallyGuest()) {
+						// TODO:
+						
+						/*
+						 * if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+                     $image = '<img src="images/commsyicons_msie6/etchat_grey_home.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('CHAT_CHAT').'" title="'.$this->_translator->getMessage('CHAT_CHAT').'"/>';
+                  } else {
+                     $image = '<img src="images/etchat_grey_home.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('CHAT_CHAT').'" title="'.$this->_translator->getMessage('CHAT_CHAT').'"/>';
+                  }
+                  $html .= ' '.$image;
+                  // TBD: icon ausgrauen
+						 */
+					} else {
+						$count++;
+						$return['chat']['active'] = true;
+					}
+				}
+			}
+			
+			// wordpress
+			if($current_context->showWordpressLink() && $current_context->existWordpress() && $current_context->issetWordpressHomeLink()) {
+				global $c_wordpress_path_url;
+				
+				$count++;
+				$return['wordpress']['active'] = true;
+				$return['wordpress']['title'] = $current_context->getWordpressTitle();
+				$return['wordpress']['path'] = $c_wordpress_path_url;
+				$return['wordpress']['item_id'] = $current_context->getItemID();
+				
+				$url_session_id = '';
+				if($current_context->withWordpressUseCommSyLogin()) {
+					$session_item = $this->_environment->getSessionItem();
+					$url_session_id = '?commsy_session_id=' . $session_item->getSessionID();
+					unset($session_item);
+				}
+				$return['wordpress']['session'] = $url_session_id;
+			}
+			
+			// plugins for moderators and users
+			// TODO: $html .= plugin_hook_output_all('getExtraActionAsHTML',array(),LF).LF;
+			
+			// rss
+			$show_rss_link = false;
+			if($current_context->isLocked() || $current_context->isClosed()) {
+				// do nothing
+			} elseif($current_context->isOpenForGuests()) {
+				$show_rss_link = true;
+			} elseif($current_user->isUser()) {
+				$show_rss_link = true;
+			}
+			
+			$hash_string = '';
+			if(!$current_context->isOpenForGuests() && $current_user->isUser()) {
+				$hash_manager = $this->_environment->getHashManager();
+				$hash_string = '&amp;hid=' . $hash_manager->getRSSHashForUser($current_user->getItemID());
+			}
+			
+			if(!$current_context->isRSSOn()) {
+				$show_rss_link = false;
+			}
+			
+			if($show_rss_link) {
+				$count++;
+				$return['rss']['active'] = true;
+				$return['rss']['item_id'] = $current_context->getItemID();
+				$return['rss']['hash'] = $hash_string;
+			}
+			
+			// my profile(if user rubric is not active)
+			$available_rubrics = $current_context->getAvailableRubrics();
+			if(!in_array('user', $available_rubrics)) {
+				// user rubric is not active, so add link here
+				if(!$current_context->isOpenForGuests() && $current_user->isUser() && $this->_with_modifying_actions) {
+					$count++;
+					$return['profil']['active'] = true;
+					$return['profil']['item_id'] = $current_user->getItemID();
+				}
+			}
+			
+			$return['rows'] = ceil($count / 2);
+			
+			return $return;
 		}
 		
 		private function setupSidebarInformation() {
@@ -167,6 +281,24 @@
 			}
 
 			return $in_array;
+		}
+		
+		private function getConfigInformation() {
+			$return = array(
+				'access'		=> false,
+				'active'		=> false,
+				'span_prefix'	=> 'co'
+			);
+			
+			// access
+			$current_user = $this->_environment->getCurrentUser();
+			if($current_user->isModerator() && !$current_user->isOnlyReadUser()) $return['access'] = true;
+			
+			// active
+			if($this->_environment->getCurrentModule() === 'configuration') $return['active'] = true;
+			
+			
+			return $return;
 		}
 
 		/**
@@ -237,7 +369,7 @@
 			// active persons
 			$active = $context_item->getActiveMembers($time_spread);
 			$return['active_persons'] = $active;
-			$return['active_persons_percentage'] = round($active / $context_item->getAllUsers() * 100);
+			$return['all_persons'] = $context_item->getAllUsers();
 
 			// new entries
 			$return['new_entries'] = $context_item->getNewEntries($time_spread);

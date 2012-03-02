@@ -261,25 +261,43 @@ columnset, general settings
     text-shadow: #2E405E 0 1px; /* ueber Skin-Editor austauschbar */
     }
 
-#info_area {
+#info_area_row_3 {
     float: left;
     border-right: 1px solid #2E405E; /* ueber Skin-Editor austauschbar */
     width: 151px;
     height: 60px;
-	padding-top: 5px;
     }
 
-#info_area h2 {
+#info_area_row_2 {
+    float: left;
+    border-right: 1px solid #2E405E; /* ueber Skin-Editor austauschbar */
+    width: 175px;
+    height: 60px;
+    }
+
+#info_area_row_1 {
+    float: left;
+    border-right: 1px solid #2E405E; /* ueber Skin-Editor austauschbar */
+    width: 199px;
+    height: 60px;
+    }
+
+#info_area_row_3 h2,
+#info_area_row_2 h2,
+#info_area_row_1 h2 {
     font-size: 10px;
     padding: 5px 0px 2px 0px;
     }
 
-#info_area p {
+#info_area_row_3 p,
+#info_area_row_2 p,
+#info_area_row_1 p {
     font-size: 10px;
     }
 
 #infos_left {
     float: left;
+	padding-top: 8px;
     }
 
 #infos_right {
@@ -300,18 +318,36 @@ columnset, general settings
     padding-top: 11px;
     }
 
-#addon_area {
+#addon_area_row_3 {
     float: right;
     border-left: 1px solid #689FDE; /* ueber Skin-Editor austauschbar */
     height: 60px;
     width: 72px;
     }
 
-#addon_area p {
+#addon_area_row_2 {
+    float: right;
+    border-left: 1px solid #689FDE; /* ueber Skin-Editor austauschbar */
+    height: 60px;
+    width: 48px;
+    }
+
+#addon_area_row_1 {
+    float: right;
+    border-left: 1px solid #689FDE; /* ueber Skin-Editor austauschbar */
+    height: 60px;
+    width: 24px;
+    }
+
+#addon_area_row_3 p,
+#addon_area_row_1 p,
+#addon_area_row_2 p {
     padding-top: 4px;
     }
 
-#addon_area a {
+#addon_area_row_3 a,
+#addon_area_row_2 a,
+#addon_area_row_1 a {
     display: block;
     float: left;
     width: 16px;
