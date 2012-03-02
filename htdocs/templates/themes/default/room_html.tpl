@@ -66,18 +66,20 @@
 					<div id="info_addon">
 						<div id="info_area">
 							<div id="infos_left">
-								<h2>Rauminfos:</h2>
 								<p>
-									___ACTIVITY_NEW_ENTRIES___: {$room.room_information.new_entries}
+									{if $room.room_information.new_entries == 1}
+										{i18n tag=ACTIVITY_NEW_ENTRIES_NEW_SINGULAR param1=$room.room_information.time_spread}: {$room.room_information.new_entries}
+									{else}
+										{i18n tag=ACTIVITY_NEW_ENTRIES_NEW param1=$room.room_information.time_spread}: {$room.room_information.new_entries}
+									{/if}
+									
 								</p>
-								<p>
-									___ACTIVITY_PAGE_IMPRESSIONS___: {$room.room_information.page_impressions}
-								</p>
-							</div>
-
-							<div id="infos_right">
-								<div id="info_bar">
-									<p>999</p>
+								<p>___ACTIVITY_PAGE_IMPRESSIONS___: {$room.room_information.page_impressions}</p>
+								<p class="float-left">___ACTIVITY_ACTIVE_MEMBERS_DESC_NEW___: {$room.room_information.active_persons}</p>
+								<div class="progressbar">
+									<img src="{$basic.tpl_path}img/ajax_loader.gif" alt="ajax_loader" />
+									<span class="percent hidden">{$room.room_information.active_persons_percentage}</span>
+									<span class="value hidden"></span>
 								</div>
 							</div>
 

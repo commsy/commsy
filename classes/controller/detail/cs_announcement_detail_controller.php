@@ -207,7 +207,8 @@
 				'title'			=> $this->_item->getTitle(),
 				'creator'		=> $this->_item->getCreatorItem()->getFullName(),
 				'creation_date'	=> getDateTimeInLang($this->_item->getCreationDate()),
-				'description'	=> $desc
+				'description'	=> $desc,
+				'moredetails'	=> $this->getCreatorInformationAsArray($this->_item)
 			);
 		}
 	}

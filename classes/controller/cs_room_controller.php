@@ -229,13 +229,15 @@
 		private function getRoomInformation() {
 			$return = array();
 			$context_item = $this->_environment->getCurrentContextItem();
+			$time_spread = $context_item->getTimeSpread();
 
 			// time spread
-			$return['time_spread'] = $context_item->getTimeSpread();
+			$return['time_spread'] = $time_spread;
 
 			// active persons
-			$time_spread = $context_item->getTimeSpread();
-			$return['active_persons'] = round($context_item->getActiveMembers($time_spread) / $context_item->getAllUsers() * 100);
+			$active = $context_item->getActiveMembers($time_spread);
+			$return['active_persons'] = $active;
+			$return['active_persons_percentage'] = round($active / $context_item->getAllUsers() * 100);
 
 			// new entries
 			$return['new_entries'] = $context_item->getNewEntries($time_spread);

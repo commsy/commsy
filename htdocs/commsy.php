@@ -838,8 +838,8 @@ if(isset($c_smarty) && $c_smarty === true) {
 	$smarty = new cs_smarty($environment, $c_theme);
 	
 	global $c_smarty_caching;
-	if(isset($c_smarty_caching) && $c_smarty_caching === false) {
-		$smarty->caching = Smarty::CACHING_OFF;
+	if(isset($c_smarty_caching) && $c_smarty_caching === true) {
+		$smarty->caching = Smarty::CACHING_LIFETIME_CURRENT;
 	}
 	//$smarty->debugging = true;
 	

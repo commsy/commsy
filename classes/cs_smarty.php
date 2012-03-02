@@ -56,7 +56,7 @@ class cs_smarty extends Smarty {
 		$this->setCacheDir('cache/');
 		
 		// set caching
-		$this->caching = Smarty::CACHING_LIFETIME_CURRENT;
+		$this->caching = Smarty::CACHING_OFF;
 		
 		// theme support
 		if(!$this->setTheme($theme) && !empty($theme)) {

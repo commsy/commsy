@@ -113,13 +113,13 @@ define(["libs/jQuery/jquery-1.7.1.min"], function() {
 				jQuery.merge(objects, jQuery('div[class="content_item"] div[class^="fade_in_ground_annotations"]'));
 				
 				this.registerModule('commsy/action_expander', null, {actors: actors, objects: objects});
-				
-				// progressbar
-				var objects = [];
-				
-				objects = jQuery('div[class="progressbar"]');
-				this.registerModule('commsy/progressbar', null, {objects: objects});
 			}
+			
+			// progressbar
+			var objects = [];
+			
+			objects = jQuery('div[class="progressbar"]');
+			this.registerModule('commsy/progressbar', null, {objects: objects});
 			
 			// ckeditor
 			// load on detail context

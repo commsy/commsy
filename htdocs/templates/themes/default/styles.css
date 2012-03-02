@@ -71,7 +71,9 @@ id and class selectors
     margin: 0 auto;
     }
 
-
+.float-left {
+	float: left;
+	}
 
 /*
 ----------------------------------------------------------------------
@@ -262,8 +264,9 @@ columnset, general settings
 #info_area {
     float: left;
     border-right: 1px solid #2E405E; /* ueber Skin-Editor austauschbar */
-    width: 170px;
+    width: 151px;
     height: 60px;
+	padding-top: 5px;
     }
 
 #info_area h2 {
@@ -277,7 +280,6 @@ columnset, general settings
 
 #infos_left {
     float: left;
-    width: 120px;
     }
 
 #infos_right {
@@ -299,10 +301,10 @@ columnset, general settings
     }
 
 #addon_area {
-    float: left;
+    float: right;
     border-left: 1px solid #689FDE; /* ueber Skin-Editor austauschbar */
     height: 60px;
-    width: 53px;
+    width: 72px;
     }
 
 #addon_area p {
@@ -314,7 +316,7 @@ columnset, general settings
     float: left;
     width: 16px;
     height: 20px;
-    margin: 6px 0px 0px 10px;
+    margin: 6px 0px 0px 8px;
     }
 
 
@@ -1660,6 +1662,12 @@ jQuery UI
   width: 100%;
   text-align: center;
   line-height: 9px;
+  }
+
+div#infos_left .ui-progressbar {
+	margin-top: 6px;
+	margin-right: 0px;
+	margin-left: 96px;
   }
 
 .ui-widget-header { border: 1px solid #aaaaaa; background: #747474; color: #3d3d3d; font-weight: bold; }

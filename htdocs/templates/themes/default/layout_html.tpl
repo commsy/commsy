@@ -49,9 +49,9 @@
             
             <div id="search_area">
                 <div id="search_navigation">
-                    <span class="sa_sep"><a href="" id="sa_active">nur dieser Raum</a></span>
-                    <span class="sa_sep"><a href="">alle meine R&auml;ume</a></span>
-                    <span id="sa_options"><a href=""><img src="{$basic.tpl_path}img/sa_dropdown.gif" alt="O" /></a></span>
+                    <span class="sa_sep"><a href="" id="sa_active">___CAMPUS_SEARCH_ONLY_THIS_ROOM___</a></span>
+                    {*<span class="sa_sep"><a href="">alle meine R&auml;ume</a></span>*}
+                    {*<span id="sa_options"><a href=""><img src="{$basic.tpl_path}img/sa_dropdown.gif" alt="O" /></a></span>*}
                     
                     <div class="clear"> </div>
                     
