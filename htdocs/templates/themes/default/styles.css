@@ -618,6 +618,11 @@ content, general
     background: url(img/open_close_bg.png) no-repeat;
     }
 
+.open_close .disabled {
+	width: 11px;
+	height: 15px;
+	}
+
 .content_item .item_info {
     background: url(img/ci_head_bg.png) repeat-x;
     text-shadow: 0px 1px #F5F5F5;

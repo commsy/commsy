@@ -17,9 +17,15 @@
 	            	<a href="commsy.php?cid={$environment.cid}&mod={$rubric@key}&fct=edit&iid=NEW" title="___HOME_SMARTY_ACTION_NEW___">
 	            		<img src="{$basic.tpl_path}img/btn_ci_add.gif" alt="___HOME_SMARTY_ACTION_NEW___" />
 	            	</a>
-                    <a href="" class="open_close" title="{if $rubric.hidden}___COMMON_SHOW___{else}___COMMON_HIDE___{/if}">
-                    	<img src="{$basic.tpl_path}img/{if $rubric.hidden}btn_ci_open.gif{else}btn_ci_close.gif{/if}" alt="{if $rubric.hidden}___COMMON_SHOW___{else}___COMMON_HIDE___{/if}" />
-                    </a>
+					{if $rubric.items|count == 0}
+						<a class="open_close">
+							<div class="disabled"></div>
+						</a>
+					{else}
+						<a href="" class="open_close" title="{if $rubric.hidden}___COMMON_SHOW___{else}___COMMON_HIDE___{/if}">
+							<img src="{$basic.tpl_path}img/{if $rubric.hidden}btn_ci_open.gif{else}btn_ci_close.gif{/if}" alt="{if $rubric.hidden}___COMMON_SHOW___{else}___COMMON_HIDE___{/if}" />
+						</a>
+					{/if}
                 </div>
                 <h2>
                 	___COMMON_{$rubric@key|upper}_INDEX___
