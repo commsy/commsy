@@ -410,7 +410,7 @@ main-navigation
     }
 
 #main_navigation a {
-    padding: 10px 6px 6px 8px;
+    padding: 10px 6px 6px 6px;
     font-size: 10px;
     line-height: 10px;
     display: block;
@@ -449,6 +449,14 @@ main-navigation
     text-align: center;
     }
 
+
+#right_navigation ul {
+    display: inline;
+    border-left: 1px solid #999;
+    padding: 0px 0px 35px 0px;
+    }
+
+
 #main_navigation .non_active a:hover {
     color: #454545;
     border-left: 1px solid #EBEBEB;
@@ -458,7 +466,9 @@ main-navigation
 
 #main_navigation ul#right_navigation {
 	padding: 0px;
-	}
+    border-left: 1px solid #999;
+    border-right: 0px solid #EBEBEB;
+}
 
 #main_navigation ul#right_navigation li{
 	width: 80px;
@@ -525,7 +535,6 @@ a span#spe_act {
 a span#spe_non_act {
     background: url(img/nav_person.png) no-repeat -25px 0px;
     }
-
 
 
 /* Ankuendigungen */
