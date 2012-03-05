@@ -146,7 +146,7 @@
 			}
 		}
 		
-		protected function getAdditionalActions($perms) {
+		protected function getAdditionalActions(&$perms) {
 			/*TODO:
 			 * $current_context = $this->_environment->getCurrentContextItem();
       $current_user = $this->_environment->getCurrentUserItem();

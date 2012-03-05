@@ -75,7 +75,7 @@
 			</div>
 			<div class="column_155">
 				<p>
-					<a href="">{$item.creator}</a>
+					<a href="commsy.php?cid={$environment.cid}&mod=user&fct=detail&iid={$item.creator_id}">{$item.creator}</a>
 				</p>
 			</div>
 			<div class="column_100">

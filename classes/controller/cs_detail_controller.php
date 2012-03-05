@@ -639,7 +639,7 @@
 			return $return;
 		}
 
-		abstract protected function getAdditionalActions($perms);
+		abstract protected function getAdditionalActions(&$perms);
 
 		private function getDetailActions() {
 			$current_context = $this->_environment->getCurrentContextItem();
@@ -689,15 +689,17 @@
 			// delete
 			if($this->_item->mayEdit($current_user) && $this->_with_modifying_actions && (!$this->_item->isA(CS_LABEL_TYPE) || !$this->_item->isSystemLabel())) {
 				$return['delete'] = true;
+				
+				$return['delparams'] = $this->_environment->getCurrentParameterArray();
+				$return['delparams']['action'] = 'delete';
+				if($this->_item->getItemType() === CS_DATE_TYPE) {
+					if($this->_item->getRecurrenceId() != '' && $this->_item->getRecurrenceId() != 0) {
+						$return['delparams']['recurrence_id'] = $this->_item->getRecurrenceId();
+					}
+				}
 
 				/*
-				 * $params = $this->_environment->getCurrentParameterArray();
-         $params['action'] = 'delete';
-         if($item->getItemType() == CS_DATE_TYPE){
-            if($item->getRecurrenceId() != '' and $item->getRecurrenceId() != 0){
-               $params['recurrence_id'] = $item->getRecurrenceId();
-            }
-         }
+				 
          if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
             $image = '<img src="images/commsyicons_msie6/22x22/delete.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_DELETE_ITEM').'"/>';
          } else {
@@ -828,6 +830,11 @@
 			} else {
 				//$html .= $this->_getNewActionDisabled();
 			}
+			
+			// download
+			$return['downloadparams'] = $this->_environment->getCurrentParameterArray();
+			$return['downloadparams']['download']='zip';
+			$return['downloadparams']['mode']='print';
 
 			//TODO:
 			//$html .= $this->_initDropDownMenus();
@@ -841,6 +848,8 @@
 			$item = $this->_item;
 			$converter = $this->_environment->getTextConverter();
 			$current_user = $this->_environment->getCurrentUser();
+			$reader_manager = $this->_environment->getReaderManager();
+			$noticed_manager = $this->_environment->getNoticedManager();
 
 			$count = $annotation_list->getCount();
 			if(!(isset($_GET['mode']) && $_GET['mode'] === 'print') || $count > 0) {
@@ -857,13 +866,20 @@
             $desc = ' ('.$this->_translator->getMessage('COMMON_NO_ANNOTATIONS');
          }
 				 */
-
-				// TODO: get read and noticed information
-				// use prefetch
-				//$reader_manager->getLatestReaderByIDArray($id_array);
-   				//$noticed_manager->getLatestNoticedByIDArray($id_array);
+				
 
 				if(!empty($annotation_list)) {
+					// read and noticed information
+					// build id_array
+					$id_array = array();
+					$annotation = $annotation_list->getFirst();
+					while($annotation) {
+						$id_array[] = $annotation->getItemID();
+						
+						$annotation = $annotation_list->getNext();
+					}
+					$noticed_manager->getLatestNoticedAnnotationsByIDArray($id_array);
+					
 					$annotation = $annotation_list->getFirst();
 					$pos_number = 1;
 
@@ -885,8 +901,6 @@
 		                  }
 
 		                  */
-
-
 
 
 						$annotated_item = $this->_item;
@@ -918,14 +932,18 @@
 					      }
 					      $html .= '   </div>'.LF;
 					     */
-
+						
+						$modificator = $annotation->getModificatorItem();
 						$return[] = array(
 							'image'				=> $this->getItemPicture($modificator_ref),
 							'pos_number'		=> $pos_number,
 							'item_id'			=> $annotation->getItemID(),
 							'title'				=> $subitem_title,
 							'description'		=> $desc,
-							'creator'			=> $annotation->getCreatorItem()->getFullName(),
+							'modifier'			=> $modificator->getFullName(),
+							'modifier_id'		=> $modificator->getItemID(),
+							'modification_date'	=> $annotation->getModificationDate(),
+							'noticed'			=> $this->_getItemAnnotationChangeStatus($annotation),
 							'actions'			=> $this->getAnnotationEditActions($annotation),
 							'num_attachments'	=> $annotation->getFileList()->getCount()
 						);
@@ -951,17 +969,14 @@
 			$item_manager = $this->_environment->getItemManager();
 
 			if(($item->mayEdit($current_user) || $item_manager->getExternalViewerForItem($annotated_item->getItemID(), $current_user->getUserID())) && $this->_with_modifying_actions === true) {
-				// TODO:	insert in template
-				//			mod: annotation, fct: edit, params(iid => $item->getItemID(), mode => 'annotate')
-				//			message_tag: COMMON_EDIT_ITEM
 				$return['edit'] = true;
-
-				// TODO:	insert in template
-				//			mod: current_mod, fct: detail, params(current_params, action => detail, annotation_iid => $item->getItemID(),
-				//			iid => $annotated_item->getItemID(), annotation_action => delete)
-				//			message_tag: COMMON_DELETE_ITEM
 				$return['delete'] = true;
-
+				
+				$return['deleteparams'] = $this->_environment->getCurrentParameterArray();
+				$return['deleteparams']['action'] = 'detail';
+				$return['deleteparams']['annotation_iid'] = $this->_item->getItemID();
+				$return['deleteparams']['iid'] = $annotated_item->getItemID();
+				$return['deleteparams']['annotation_action'] = 'delete';
 			} else {
 				/*
 				 * else {

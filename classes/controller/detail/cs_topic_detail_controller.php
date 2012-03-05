@@ -227,7 +227,7 @@
 			}
 		}
 		
-		protected function getAdditionalActions($perms) {
+		protected function getAdditionalActions(&$perms) {
 		}
 		
 		protected function getDetailContent() {

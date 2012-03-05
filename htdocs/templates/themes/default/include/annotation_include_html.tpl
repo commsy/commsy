@@ -17,10 +17,21 @@
 
 	{foreach $detail.annotations as $annotation}
 		<div class="item_actions">
-			<a href=""><span class="edit_set"> &nbsp; </span></a>
+			<a class="edit" href="#"><span class="edit_set"> &nbsp; </span></a>
 		</div>
 
 		<div class="item_body"> <!-- Start item body -->
+			<!-- Start fade_in_ground -->
+			<div class="fade_in_ground_actions hidden">
+				{if $annotation.actions.edit}
+					<a href="commsy.php?cid={$environment.cid}&mod=annotation&fct=edit&iid={$detail.content.item_id}&mode=annotate" title="___COMMON_EDIT_ITEM___">___COMMON_EDIT_ITEM___</a> |
+				{/if}
+				{if $annotation.actions.delete}
+					<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit{params params=$annotation.actions.deleteparams}}" title="___COMMON_DELETE_ITEM___">___COMMON_DELETE_ITEM___</a>
+				{/if}
+			</div>
+			<!-- Ende fade_in_ground -->
+		
 			<a name="annotation_{$annotation@index}"></a>
 			<div class="item_post">
 				<div class="row_{if $annotation@iteration is odd}odd{else}even{/if}_no_hover">
@@ -41,11 +52,10 @@
 						<div class="post_content">
 							<h4>
 								{$annotation.pos_number}. {$annotation.title}
-
-							{*{if $article.noticed == 'new' or $article.noticed == 'changed'}*}<img src="{$basic.tpl_path}img/flag_neu.gif" alt="___COMMON_NEW___"/>{*{/if}*}
+								{if $article.noticed != ''}<img src="{$basic.tpl_path}img/flag_neu.gif" alt="___COMMON_NEW___"/>{/if}
 							</h4>
 							<div class="annotation_credits">
-								___COMMON_LAST_MODIFIED_BY_UPPER___ <a href="">{$annotation.creator}</a> ___DATES_ON_DAY___ {$annotation.modification_date}
+								___COMMON_LAST_MODIFIED_BY_UPPER___ <a href="commsy.php?cid={$environment.cid}&mod=user&fct=detail&iid={$annotation.modifier_id}">{$annotation.modifier}</a> ___DATES_ON_DAY___ {$annotation.modification_date}
 							</div>
 							<div class="editor_content">
 								{$annotation.description}

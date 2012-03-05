@@ -462,7 +462,7 @@
 			$this->_item = $this->_manager->getItem($current_item_id);
 		}
 
-		protected function getAdditionalActions($perms) {
+		protected function getAdditionalActions(&$perms) {
 
 		}
 		//TODO: redfine getDetailActions

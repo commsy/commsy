@@ -163,7 +163,7 @@ if ($type != CS_DISCUSSION_TYPE) {
 			return $return;
 		}
 		
-		protected function getAdditionalActions($perms) {
+		protected function getAdditionalActions(&$perms) {
 			$current_context = $this->_environment->getCurrentContextItem();
 			$current_user = $this->_environment->getCurrentUserItem();
 			

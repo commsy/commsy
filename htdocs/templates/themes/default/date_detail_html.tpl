@@ -14,20 +14,26 @@
     <div class="item_body"> <!-- Start item body -->
 		<!-- Start fade_in_ground -->
 		<div class="fade_in_ground_actions hidden">
-			{* TODO: add missing actions *}
 			{if $detail.actions.edit}
-				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.content.item_id}">___COMMON_EDIT_ITEM___</a> |
+				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.content.item_id}" title="___COMMON_EDIT_ITEM___">___COMMON_EDIT_ITEM___</a> |
 			{/if}
+			{if $detail.actions.date_leave}
+				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&iid={$detail.content.item_id}&date_option=2" title="___DATE_LEAVE___">___DATE_LEAVE___</a> |
+			{/if}
+			
+			{if $detail.actions.date_participate}
+				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&iid={$detail.content.item_id}&date_option=1" title="___DATE_ENTER___">___DATE_ENTER___</a> |
+			{/if}			
 			{if $detail.actions.delete}
-				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.content.item_id}">___COMMON_DELETE_ITEM___</a> |
+				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail{params params=$detail.actions.delparams}" title="___COMMON_DELETE_ITEM___">___COMMON_DELETE_ITEM___</a> |
 			{/if}
 			{if $detail.actions.mail}
-				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.content.item_id}">___COMMON_EMAIL_TO___</a> |
+				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=mail&iid={$detail.content.item_id}" alt="___COMMON_EMAIL_TO___">___COMMON_EMAIL_TO___</a> |
 			{/if}
 			{if $detail.actions.copy}
-				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.content.item_id}">___COMMON_ITEM_COPY_TO_CLIPBOARD___</a> |
+				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&iid={$detail.content.item_id}&add_to_{$environment.module}_clipboard={$detail.content.item_id}" title="___COMMON_ITEM_COPY_TO_CLIPBOARD___">___COMMON_ITEM_COPY_TO_CLIPBOARD___</a> |
 			{/if}
-			<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.content.item_id}">___COMMON_DOWNLOAD___</a>
+			<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail{params params=$detail.actions.downloadparams}" title="___COMMON_DOWNLOAD___">___COMMON_DOWNLOAD___</a>
 		</div>
 		<!-- Ende fade_in_ground -->
 
@@ -115,4 +121,10 @@
     <div class="clear"> </div>
     {include file='include/annotation_include_html.tpl'}
     <div class="clear"> </div>
+{/block}
+
+{block name=room_right_portlets_navigation}
+	{foreach $detail.forward_information as $entry}
+		<a title="{$entry.title}" href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&iid={$entry.item_id}">{$entry.position}. {if $entry.is_current}<strong>{/if}{$entry.title|truncate:25:'...':true}{if $entry.is_current}</strong>{/if}</a>
+	{/foreach}
 {/block}

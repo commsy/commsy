@@ -202,7 +202,7 @@
 			}
 		}
 		
-		protected function getAdditionalActions($perms) {
+		protected function getAdditionalActions(&$perms) {
 		}
 		
 		private function getStepContent() {

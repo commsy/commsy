@@ -265,11 +265,13 @@
 					$file = $file_list->getNext();
 				}
 				
+				$creator = $item->getCreatorItem();
 			   	$item_array[] = array(
 					'iid'				=> $item->getItemID(),
 					'title'				=> $view->_text_as_html_short($item->getTitle()),
 					'date'				=> $this->_environment->getTranslationObject()->getDateInLang($item->getModificationDate()),
-					'creator'			=> $item->getCreatorItem()->getFullName(),
+					'creator'			=> $creator->getFullName(),
+					'creator_id'		=> $creator->getItemID(),
 					'assessment_array'  => $assessment_stars_text_array,
 					'noticed'			=> $noticed_text,
 					'attachment_count'	=> $file_count,
