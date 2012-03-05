@@ -18,17 +18,17 @@ define(["libs/jQuery/jquery-1.7.1.min"], function() {
 			
 			// Tag Tree
 			// TODO: can be limited by module/function
-			this.registerModule('commsy/tag_tree', 'div[id="tag_tree"]');
+			this.registerModule('commsy/tag_tree', {register_on: jQuery('div[id="tag_tree"]')});
 			
 			// Threaded Discussion Tree
 			if(this.getURLParam('mod') === 'discussion' && this.getURLParam('fct') === 'detail') {
-				this.registerModule('commsy/discussion_tree', 'div[id="discussion_tree"]');
+				this.registerModule('commsy/discussion_tree', {register_on: 'div[id="discussion_tree"]'});
 			}
 			
 			// Uploadify
 			var upload_object = jQuery('a[id="uploadify_doUpload"]');
 			var clear_object = jQuery('a[id="uploadify_clearQuery"]');
-			this.registerModule('commsy/uploadify', 'input[id="uploadify"]', {upload_object: upload_object, clear_object: clear_object});
+			this.registerModule('commsy/uploadify', {register_on: jQuery('input[id="uploadify"]'), upload_object: upload_object, clear_object: clear_object});
 			
 			// list selection
 			if(this.getURLParam('fct') === 'index') {
@@ -39,7 +39,7 @@ define(["libs/jQuery/jquery-1.7.1.min"], function() {
 				var counter_object = jQuery('div[class="ii_right"] span[id="selected_items"]');
 				
 				// register moule
-				this.registerModule('commsy/list_selection', null, {input_tags: input_tags, counter_object: counter_object});
+				this.registerModule('commsy/list_selection', {input_tags: input_tags, counter_object: counter_object});
 			}
 			
 			// list rubric expander
@@ -65,7 +65,7 @@ define(["libs/jQuery/jquery-1.7.1.min"], function() {
 				objects.push({actors: actors, div: jQuery(this)});
 			});
 			
-			this.registerModule('commsy/div_expander', null, {objects: objects, action: 'click'});
+			this.registerModule('commsy/div_expander', {objects: objects, action: 'click'});
 			
 			// portlet expander
 			var objects = [];
@@ -87,7 +87,7 @@ define(["libs/jQuery/jquery-1.7.1.min"], function() {
 				objects.push({actors: actors, div: jQuery(this)});
 			});
 			
-			this.registerModule('commsy/div_expander', null, {objects: objects, action: 'click'});
+			this.registerModule('commsy/div_expander', {objects: objects, action: 'click'});
 			
 			// on detail context
 			var objects = [];
@@ -112,23 +112,23 @@ define(["libs/jQuery/jquery-1.7.1.min"], function() {
 				jQuery.merge(actors, jQuery('div[class="item_actions"] a[class="annotations"]'));
 				jQuery.merge(objects, jQuery('div[class="content_item"] div[class^="fade_in_ground_annotations"]'));
 				
-				this.registerModule('commsy/action_expander', null, {actors: actors, objects: objects});
+				this.registerModule('commsy/action_expander', {actors: actors, objects: objects});
 			}
 			
 			// progressbar
 			var objects = [];
 			
 			objects = jQuery('div[class="progressbar"]');
-			this.registerModule('commsy/progressbar', null, {objects: objects});
+			this.registerModule('commsy/progressbar', {objects: objects});
 			
 			// ckeditor
 			// load on detail context
 			if(this.getURLParam('fct') === 'detail') {
 				var input_object = jQuery('input[id="ckeditor_content"]');
-				this.registerModule('commsy/ck_editor', 'div[id="ckeditor"]', {input_object: input_object});
+				this.registerModule('commsy/ck_editor', {register_on: jQuery('div[id="ckeditor"]'), input_object: input_object});
 				
 				var input_object = jQuery('input[id="ckeditor_content_second"]');
-				this.registerModule('commsy/ck_editor', 'div[id="ckeditor_second"]', {input_object: input_object});
+				this.registerModule('commsy/ck_editor', {register_on: jQuery('div[id="ckeditor_second"]'), dinput_object: input_object});
 			}
 			
 			// search
@@ -138,56 +138,32 @@ define(["libs/jQuery/jquery-1.7.1.min"], function() {
 			
 			// ajax attachment overlay
 			this.registerModule('commsy/attachments_overlay', 'a[class="attachment"]');
+			
+			// lightbox
+			this.registerModule('commsy/lightbox', 'a[rel="lightbox"]');
 		},
 		
-		registerModule: function(module, selector, parameters) {
+		registerModule: function(module, parameters) {
 			var commsy_functions = this;	
 			
 			var register = true;
 			
 			// check arguments
 			if(arguments.length === 1) {
-				// selector and parameters not given
+				// parameters not given
 				require([module], function($) {
 					// call init
 					$.init(commsy_functions);
 				});
 			} else if(arguments.length === 2) {
-				// selector given
-				var count = 0;
-				jQuery(selector).each(function() {
-					var object = jQuery(this);
-					count++;
-					
-					require([module], function($) {
-						// call init
-						$.init(commsy_functions, object);
-					});
+				// parameters given
+				require([module], function($) {
+					// call init
+					$.init(commsy_functions, parameters);
 				});
-				
-				if(count === 0) register = false;
 			} else {
-				// parameter given, maybe selector
-				if(selector === null) {
-					// only parameters
-					require([module], function($) {
-						// call init
-						$.init(commsy_functions, parameters);
-					});
-				} else {
-					// all arguments given
-					var count = 0;
-					jQuery(selector).each(function() {
-						var object = jQuery(this);
-						count++;
-						
-						require([module], function($) {
-							// call init
-							$.init(commsy_functions, object, parameters);
-						});
-					});
-					if(count === 0) register = false;
-				}
+				// unknown
+				register = false;
 			}
 			
 			if(register === true) this.modules_registered++;
@@ -196,21 +172,20 @@ define(["libs/jQuery/jquery-1.7.1.min"], function() {
 		registerPreconditions: function(conditions, callback, parameters) {
 			// if preconditions are empty, preprocessing is not needed - call directly
 			if(jQuery.isEmptyObject(conditions)) {
-				this.modules_registered--;
+				this.modules_loaded++;
 				callback(null, parameters);
-				
-				return true;
+			} else {
+				if(this.preconditions_callbacks === null) this.preconditions_callbacks = new Array;
+			
+				var store = {
+						conditions: conditions,
+						callback: callback,
+						parameters: parameters
+				};
+
+				this.preconditions_callbacks.push(store);
+				this.modules_loaded++;
 			}
-			
-			if(this.preconditions_callbacks === null) this.preconditions_callbacks = new Array;
-			
-			var store = {
-					conditions: conditions,
-					callback: callback,
-					parameters: parameters
-			};
-			this.preconditions_callbacks.push(store);
-			this.modules_loaded++;
 			
 			if(this.modules_loaded === this.modules_registered) this.processPreconditions();
 		},

@@ -27,8 +27,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			]
 		},
 		
-		init: function(commsy_functions, object, parameters) {			
-			parameters.object = object;
+		init: function(commsy_functions, parameters) {
 			parameters.handle = this;
 			
 			// set preconditions
@@ -44,7 +43,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 		},
 		
 		create: function(preconditions, parameters) {
-			var object = parameters.object;
+			var object = parameters.register_on;
 			var input_object = parameters.input_object;
 			var handle = parameters.handle;
 			
@@ -52,6 +51,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			var form_object = object.parentsUntil('form').last().parent();
 			handle.form_attach(form_object, input_object);
 			var options = handle.options;
+			
 			
 			object.ckeditor(function() { /* callback */ }, options);
 		},

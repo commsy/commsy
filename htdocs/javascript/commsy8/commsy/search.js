@@ -8,10 +8,10 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 	return {
 		threshold: 3,
 		
-		init: function(commsy_functions, object) {
+		init: function(commsy_functions, parameters) {
 			
 			// set preconditions
-			this.setPreconditions(commsy_functions, this.setup, {commsy_functions: commsy_functions, object: object, handle: this});
+			this.setPreconditions(commsy_functions, this.setup, {commsy_functions: commsy_functions, object: parameters, handle: this});
 		},
 		
 		setPreconditions: function(commsy_functions, callback, parameters) {

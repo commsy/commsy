@@ -8,11 +8,11 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
         	"order!libs/jQuery_plugins/dynatree-1.2.0/jquery.dynatree.min",
         	"commsy/commsy_functions_8_0_0"], function() {
 	return {
-		init: function(commsy_functions, object) {
+		init: function(commsy_functions, parameters) {
 			jQuery.ui.dynatree.nodedatadefaults['icon'] = false;		// Turn off icons by default
 			
 			// set preconditions
-			this.setPreconditions(commsy_functions, this.setup, {object: object, handle: this});
+			this.setPreconditions(commsy_functions, this.setup, {object: parameters, handle: this});
 		},
 		
 		setPreconditions: function(commsy_functions, callback, parameters) {

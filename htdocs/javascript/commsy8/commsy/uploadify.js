@@ -17,8 +17,8 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			sizeLimit:		0
 		},
 		
-		init: function(commsy_functions, object, parameters) {
-			parameters.object = object;
+		init: function(commsy_functions, parameters) {
+			parameters.object = parameters.register_on;
 			parameters.handle = this;
 			parameters.commsy_functions = commsy_functions;
 			
