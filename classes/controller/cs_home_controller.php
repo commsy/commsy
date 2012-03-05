@@ -36,6 +36,7 @@
 			$translator = $environment->getTranslationObject();
 			$context_item = $environment->getCurrentContextItem();
 			$current_user = $environment->getCurrentUser();
+			$converter = $environment->getTextConverter();
 
 			$home_rubric_limit = CS_HOME_RUBRIC_LIST_LIMIT;
 
@@ -452,9 +453,15 @@
 							
 							$file = $file_list->getFirst();
 							while($file) {
+								$lightbox = false;
+								if((!isset($_GET['download']) || $_GET['download'] !== 'zip') && in_array($file->getExtension(), array('png', 'jpg', 'jpeg', 'gif'))) $lightbox = true;
+								
 								$info = array();
-								$info['file_name'] = $file->getFileName();
-								$info['file_icon'] = $file->getFileIcon();
+								$info['file_name']	= $converter->text_as_html_short($file->getDisplayName());
+								$info['file_icon']	= $file->getFileIcon();
+								$info['file_url']	= $file->getURL();
+								$info['file_size']	= $file->getFileSize();
+								$info['lightbox']	= $lightbox;
 								
 								$attachment_infos[] = $info;
 								$file = $file_list->getNext();
