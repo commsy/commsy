@@ -127,6 +127,7 @@ $message["USER_OLD_PASSWORD_ERROR"]["en"] = "The current password ist wrong.";
 $message["USER_OLD_PASSWORD_ERROR2"]["en"] = "Please enter your current password.";
 $message["USER_ORGANISATION"]["en"] = "Organisation";
 $message["USER_OWN_INFORMATION"]["en"] = "My profile";
+$message["USER_OWN_INFORMATION_LINK"]["en"] = "My profile";
 $message["USER_PASSWORD"]["en"] = "Password";
 $message["USER_PASSWORD2"]["en"] = "Repeat password";
 $message["USER_PASSWORD2_DESC"]["en"] = "Please repeat your password.";

@@ -128,6 +128,7 @@ $message["USER_OLD_PASSWORD_ERROR"]["de"] = "Das aktuelle Passwort ist falsch.";
 $message["USER_OLD_PASSWORD_ERROR2"]["de"] = "Bitte geben Sie Ihr aktuelles Passwort an.";
 $message["USER_ORGANISATION"]["de"] = "Organisation/Firma";
 $message["USER_OWN_INFORMATION"]["de"] = "Eigene Personendaten";
+$message["USER_OWN_INFORMATION_LINK"]["de"] = "Eigene Person";
 $message["USER_PASSWORD"]["de"] = "Passwort";
 $message["USER_PASSWORD2"]["de"] = "Passwort wiederholen";
 $message["USER_PASSWORD2_DESC"]["de"] = "Zur Sicherheit müssen Sie das Passwort noch einmal wiederholen.";

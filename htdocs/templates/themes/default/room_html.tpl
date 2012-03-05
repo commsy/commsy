@@ -42,8 +42,18 @@
                     			</a>
                     		</li>
                     	{/foreach}
+							{* profil *}
+							{$entry = $room.second_navigation.profil}
+							{if $entry.access}
+								<li {if $entry.active}id="active" class="active_spe"{else}class="non_active spe"{/if}>
+									<a href="commsy.php?cid={$environment.cid}&mod=user&fct=detail&iid={$entry.item_id}">
+										<span id="{if $entry.active}{$entry.span_prefix}_act{else}{$entry.span_prefix}_non_act{/if}"></span>
+										___USER_OWN_INFORMATION_LINK___
+									</a>
+								</li>
+							{/if}
                     </ul>
-					
+
 					{if $room.second_navigation.config || $room.second_navigation.profil}
 						<ul id="right_navigation" class="float-right">
 							{* configuration *}
@@ -52,21 +62,11 @@
 								<li {if $entry.active}id="active"{else}class="non_active"{/if}>
 									<a href="commsy.php?cid={$environment.cid}&mod=configuration&fct=index">
 										<span id="{if $entry.active}{$entry.span_prefix}_act{else}{$entry.span_prefix}_non_act{/if}"></span>
-										___COMMON_CONFIGURATION___
+										___COMMON_ROOM_CONFIGURATION___
 									</a>
 								</li>
 							{/if}
 
-							{* profil *}
-							{$entry = $room.second_navigation.profil}
-							{if $entry.access}
-								<li {if $entry.active}id="active"{else}class="non_active spe"{/if}>
-									<a href="commsy.php?cid={$environment.cid}&mod=user&fct=detail&iid={$entry.item_id}">
-										<span id="{if $entry.active}{$entry.span_prefix}_act{else}{$entry.span_prefix}_non_act{/if}"></span>
-										___USER_OWN_INFORMATION___
-									</a>
-								</li>
-							{/if}
 						</ul>
 					{/if}
                     <div class="clear"> </div>
@@ -98,7 +98,7 @@
 									{else}
 										{i18n tag=ACTIVITY_NEW_ENTRIES_NEW param1=$room.room_information.time_spread}: {$room.room_information.new_entries}
 									{/if}
-									
+
 								</p>
 								<p>___ACTIVITY_PAGE_IMPRESSIONS___: {$room.room_information.page_impressions}</p>
 								<p class="float-left">___ACTIVITY_ACTIVE_MEMBERS_DESC_NEW___: {$room.room_information.active_persons} / {$room.room_information.all_persons}</p>
@@ -155,7 +155,7 @@
 										___COMMON_BUZZWORD_BOX___
 									{/block}
 								</h2>
-	
+
 								<div class="clear"> </div>
 								<a href="" title="bearbeiten" class="btn_body_rc"><img src="{$basic.tpl_path}img/btn_edit_rc.gif" alt="close" /></a>
 								<div class="portlet_rc_body{if $h} hidden{/if}">
@@ -169,7 +169,7 @@
 								</div>
 							</div>
 						{/if}
-						
+
 						{if $room.sidebar_configuration.active.tags}
 							{$h = $room.sidebar_configuration.hidden.tags}
 							<div class="portlet_rc">
@@ -181,9 +181,9 @@
 										___COMMON_TAG_BOX___
 									{/block}
 								</h2>
-								
+
 								<div class="clear"> </div>
-	
+
 								<a href="" title="bearbeiten" class="btn_body_rc"><img src="{$basic.tpl_path}img/btn_edit_rc.gif" alt="close" /></a>
 								<div class="portlet_rc_body{if $h} hidden{/if}">
 									<div id="tag_tree">
@@ -202,14 +202,14 @@
 												</ul>
 											{/function}
 										{/block}
-										
+
 										{* call function *}
 										{tag_tree nodes=$room.tags}
 									</div>
 								</div>
 							</div>
 						{/if}
-						
+
 						{if $room.sidebar_configuration.active.netnavigation}
 							{$h = $room.sidebar_configuration.hidden.netnavigation}
 							<div class="portlet_rc">
@@ -227,15 +227,15 @@
 										___COMMON_ATTACHED_ENTRIES___ ({$room.netnavigation.count})
 									{/if}
 								</h2>
-						
+
 								<div class="clear"> </div>
-								
+
 								{if $room.netnavigation.edit}
 									<a href="{$room.netnavigation.edit_link}" title="{if isset($room.netnavigation.is_community)}{if $room.netnavigation.is_community}___COMMON_ATTACHED_INSTITUTIONS___{else}___COMMON_ATTACHED_GROUPS___{/if}{else}___COMMON_ATTACHED_ENTRIES___{/if}" class="btn_body_rc">
 										<img src="{$basic.tpl_path}img/btn_edit_rc.gif" alt="{if isset($room.netnavigation.is_community)}{if $room.netnavigation.is_community}___COMMON_ATTACHED_INSTITUTIONS___{else}___COMMON_ATTACHED_GROUPS___{/if}{else}___COMMON_ATTACHED_ENTRIES___{/if}" />
 									</a>
 								{/if}
-								
+
 								<div class="portlet_rc_body{if $h} hidden{/if}">
 									<div id="netnavigation">
 										<ul>

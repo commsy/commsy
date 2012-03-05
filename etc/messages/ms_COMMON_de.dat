@@ -631,6 +631,7 @@ $message["COMMON_RIGHTS"]["de"] = "Zugriffsrechte";
 $message["COMMON_RIGHTS_DESCRIPTION"]["de"] = "Einstellung von Bearbeitungsrechten und Veröffentlichungstermin";
 $message["COMMON_ROOM"]["de"] = "Raum";
 $message["COMMON_ROOMS"]["de"] = "Räume";
+$message["COMMON_ROOM_CONFIGURATION"]["de"] = "Raum Einstellung";
 $message["COMMON_ROOM_EDIT_FORM_TITLE"]["de"] = "Raum bearbeiten";
 $message["COMMON_ROOM_INFORMATION"]["de"] = "Rauminformationen";
 $message["COMMON_ROOM_META"]["de"] = "Allgemeine Portaleinstellungen";

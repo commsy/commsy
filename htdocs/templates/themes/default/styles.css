@@ -432,11 +432,6 @@ main-navigation
     background: url(img/nonactive_bg.jpg) repeat-x;
     }
 
-#main_navigation .spe {
-    width: 90px;
-	text-align: center;
-    }
-
 #main_navigation #active {
     background: url(img/active_bg.jpg) repeat-x;
     border-bottom: 1px solid #5B595A;
@@ -465,6 +460,13 @@ main-navigation
 	padding: 0px;
 	}
 
+#main_navigation ul#right_navigation li{
+	width: 80px;
+	text-align:center;
+	}
+
+
+
 /* Home */
 
 a span#ho_act, a span#ho_non_act {
@@ -486,7 +488,7 @@ a span#ho_non_act {
 
 a span#co_act, a span#co_non_act {
     display: block;
-    height: 35px;
+    height: 25px;
     width: 25px;
     margin: 0px auto;
     }
@@ -498,6 +500,32 @@ a span#co_act {
 a span#co_non_act {
     background: url(img/nav_admin.png) no-repeat -25px 0px;
     }
+
+a span#spe_act, a span#spe_non_act {
+    display: block;
+    height: 25px;
+    width: 25px;
+    margin: 0px auto;
+    }
+
+#main_navigation .active_spe{
+	width:60px;
+	text-align:center;
+	}
+
+#main_navigation .spe {
+    width: 60px;
+	text-align: center;
+    }
+
+a span#spe_act {
+    background: url(img/nav_person.png) no-repeat 0px 0px;
+    }
+
+a span#spe_non_act {
+    background: url(img/nav_person.png) no-repeat -25px 0px;
+    }
+
 
 
 /* Ankuendigungen */
@@ -585,20 +613,6 @@ a span#pe_non_act {
     background: url(img/nav_personen.png) no-repeat -25px 0px;
     }
 
-a span#spe_act, a span#spe_non_act {
-    display: block;
-    height: 25px;
-    width: 25px;
-    margin: 0px auto;
-    }
-
-a span#spe_act {
-    background: url(img/nav_personen.png) no-repeat 0px 0px;
-    }
-
-a span#spe_non_act {
-    background: url(img/nav_personen.png) no-repeat -25px 0px;
-    }
 
  /* Gruppen */
 

@@ -622,6 +622,7 @@ $message["COMMON_RIGHTS"]["en"] = "Access rights";
 $message["COMMON_RIGHTS_DESCRIPTION"]["en"] = "Rights for editing the entry and publishing date";
 $message["COMMON_ROOM"]["en"] = "Workspace";
 $message["COMMON_ROOMS"]["en"] = "Workspaces";
+$message["COMMON_ROOM_CONFIGURATION"]["en"] = "Room Configuration";
 $message["COMMON_ROOM_EDIT_FORM_TITLE"]["en"] = "Edit Workspace";
 $message["COMMON_ROOM_INFORMATION"]["en"] = "Workspace information";
 $message["COMMON_ROOM_META"]["en"] = "Administer portal basics";
