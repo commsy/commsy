@@ -44,26 +44,24 @@
 					</p>
 			{/if}
 			</div>
-
- <!--
-			<div class="fi_mdc_item_wide">
-				<h4>___COMMON_READ___</h4>
-				<div class="progressbar">
-					<img src="{$basic.tpl_path}img/ajax_loader.gif" alt="ajax_loader" />
-					<span class="percent hidden">{$data.read_percentage}</span>
-					<span class="value hidden">{$data.read_count}</span>
+			
+			{if $data.is_workflow_type && !$data.workflow_reader}
+				{*
+				<div class="fi_mdc_item_wide">
+					<h4>___COMMON_READ_ENTRY_SINCE_MODIFICATION___</h4>
+					<div class="progressbar">
+						<img src="{$basic.tpl_path}img/ajax_loader.gif" alt="ajax_loader" />
+						<span class="percent hidden">{$data.read_since_modification_percentage}</span>
+						<span class="value hidden">{$data.read_since_modification_count}</span>
+					</div>
 				</div>
-			</div>
-
-			<div class="fi_mdc_item_wide">
-				<h4>___COMMON_READ_ENTRY_SINCE_MODIFICATION___</h4>
-				<div class="progressbar">
-					<img src="{$basic.tpl_path}img/ajax_loader.gif" alt="ajax_loader" />
-					<span class="percent hidden">{$data.read_since_modification_percentage}</span>
-					<span class="value hidden">{$data.read_since_modification_count}</span>
-				</div>
-			</div>
--->
+				*}
+			{elseif $data.workflow_reader}
+				{* TODO *}
+				{* display workflow reader *}
+				
+				{* persons / groups *}
+			{/if}
 			<div class="clear"> </div>
 		</div>
 

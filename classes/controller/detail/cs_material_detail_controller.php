@@ -360,15 +360,15 @@
       		}
 
 			$return = array(
-				'title'			=> $this->_item->getTitle(),
-				'creator'		=> $this->_item->getCreatorItem()->getFullName(),
-				'creation_date'	=> getDateTimeInLang($this->_item->getCreationDate()),
+				'title'				=> $this->_item->getTitle(),
+				'creator'			=> $this->_item->getCreatorItem()->getFullName(),
+				'creation_date'		=> getDateTimeInLang($this->_item->getCreationDate()),
 				'modificator'		=> $this->_item->getModificatorItem()->getFullName(),
 				'modification_date'	=> getDateTimeInLang($this->_item->getModificationDate()),
-				'version'		=> $this->_item->getVersionID(),
-				'formal'		=> $this->getFormalData(),
-				'sections'		=> $this->getSections(),
-				'description'	=> $desc,
+				'version'			=> $this->_item->getVersionID(),
+				'formal'			=> $this->getFormalData(),
+				'sections'			=> $this->getSections(),
+				'description'		=> $desc,
 				'moredetails'		=> $this->getCreatorInformationAsArray($this->_item)
 				//'material'			=> $this->getMaterialContent()
 			);

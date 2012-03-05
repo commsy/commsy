@@ -256,24 +256,10 @@ class cs_date_detail_controller extends cs_detail_controller {
             }
         }
         
-        $content = array(
-                'private' => $this->_item->issetPrivatDate(),
-                'title' => $this->_item->getTitle(),
-            	'startingday' => $this->getStartingDayStringInLang(),
-            	'timeline1' => $timeLine1,
-                'timeline2' => $timeLine2,
-                'place' => $this->_item->getPlace(),
-                'files' => $this->getFileContent(),
-                'member' => $this->getMember(),
-                'description' => $this->_item->getDescription(),
-                'color' => $this->_item->getColor());
-        
-        
-        
-        $this->assign('detail', 'content', $content);
+        $this->assign('detail', 'content', $this->getDetailContent());
         $this->assign('detail', 'annotations', $this->getAnnotationInformation($annotations));
         $this->assign('detail', 'files', $this->getFileContent());
-        pr($this->getCreatorInformationAsArray($this->_item));
+        //pr($this->getCreatorInformationAsArray($this->_item));
         //$this->assign('detail', 'lastedit', $this->getCreatorInformationAsHTML($this->_item));
 
         //        }
@@ -306,13 +292,22 @@ class cs_date_detail_controller extends cs_detail_controller {
             //$desc = $converter->show_images($desc, $this->_item, true);
             //$html .= $this->getScrollableContent($desc,$item,'',true);
         }
-         
+		
         return array(
+				'private' => $this->_item->issetPrivatDate(),
+            	'startingday' => $this->getStartingDayStringInLang(),
+            	'timeline1' => $timeLine1,
+                'timeline2' => $timeLine2,
+                'place' => $this->_item->getPlace(),
+                'files' => $this->getFileContent(),
+                'member' => $this->getMember(),
+                'color' => $this->_item->getColor(),
 				'item_id'		=> $this->_item->getItemID(),
 				'title'			=> $this->_item->getTitle(),
 				'creator'		=> $this->_item->getCreatorItem()->getFullName(),
 				'creation_date'	=> getDateTimeInLang($this->_item->getCreationDate()),
-				'description'	=> $desc
+				'description'	=> $desc,
+				'moredetails'	=> $this->getCreatorInformationAsArray($this->_item)
         );
     }
 

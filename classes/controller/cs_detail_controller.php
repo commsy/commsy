@@ -60,6 +60,7 @@
 			$this->assign('list', 'paging', $paging);
 			$this->assign('list', 'num_entries', $this->_num_entries);
 			*/
+			$this->assign('item', 'tags', $this->getTags(true));
 		}
 
 		protected function setupInformation() {
@@ -194,17 +195,21 @@
 		/**
 		 * wrapper for recursive tag call
 		 */
-		protected function getTags() {
+		protected function getTags($as_marked_array = false) {
 			// get ids of tags associated with this item
 			$item_tag_list = $this->_item->getTagList();
 			$item_tag = $item_tag_list->getFirst();
 			$item_tag_id_array = $item_tag_list->getIDArray();
+			
 
 			// get all tags like common
 			$tag_array = parent::getTags();
 
 			// mark tags
 			$this->markTags($tag_array, $item_tag_id_array);
+			
+			// convert to marked array if needed
+			if($as_marked_array === true) return $this->convertTagsToMarkedArray($tag_array);
 
 			return $tag_array;
 		}
@@ -1018,6 +1023,28 @@
 
 			// break the reference
 			unset($tag);
+		}
+		
+		private function convertTagsToMarkedArray(&$tag_array, $level = 0) {
+			$return = array();
+			
+			foreach($tag_array as &$tag) {
+				// check match
+				if($tag['match'] === true) {
+					// append
+					$return[] = $tag;
+				}
+				
+				// set level
+				$tag['level'] = $level;
+				
+				// look recursive
+				if(!empty($tag['children'])) {
+					$this->convertTagsToMarkedArray($tag['children'], $level+1);
+				}
+			}
+			
+			return $return;
 		}
 
 		private function getForwardInformation($ids) {

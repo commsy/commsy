@@ -58,6 +58,7 @@
 			include_once('classes/views/cs_view.php');
 			$environment = $this->_environment;
 			$context_item = $environment->getCurrentContextItem();
+			$converter = $environment->getTextConverter();
 			$return = array();
 			
 			if ( isset($_GET['ref_iid']) ) {
@@ -242,15 +243,37 @@
 					}
 				}
 			   	$noticed_text = $this->_getItemChangeStatus($item);
+				
+				// files
+				$attachment_infos = array();	
+				$file_count = $item->getFileList()->getCount();
+				$file_list = $item->getFileList();
+
+				$file = $file_list->getFirst();
+				while($file) {
+					$lightbox = false;
+					if((!isset($_GET['download']) || $_GET['download'] !== 'zip') && in_array($file->getExtension(), array('png', 'jpg', 'jpeg', 'gif'))) $lightbox = true;
+
+					$info = array();
+					$info['file_name']	= $converter->text_as_html_short($file->getDisplayName());
+					$info['file_icon']	= $file->getFileIcon();
+					$info['file_url']	= $file->getURL();
+					$info['file_size']	= $file->getFileSize();
+					$info['lightbox']	= $lightbox;
+
+					$attachment_infos[] = $info;
+					$file = $file_list->getNext();
+				}
+				
 			   	$item_array[] = array(
-				'iid'				=> $item->getItemID(),
-				'title'				=> $view->_text_as_html_short($item->getTitle()),
-				'date'				=> $this->_environment->getTranslationObject()->getDateInLang($item->getModificationDate()),
-				'creator'			=> $item->getCreatorItem()->getFullName(),
-				'assessment_array'  => $assessment_stars_text_array,
-				'noticed'			=> $noticed_text,
-				'attachment_count'	=> $item->getFileList()->getCount()
-//				'attachment_infos'	=>
+					'iid'				=> $item->getItemID(),
+					'title'				=> $view->_text_as_html_short($item->getTitle()),
+					'date'				=> $this->_environment->getTranslationObject()->getDateInLang($item->getModificationDate()),
+					'creator'			=> $item->getCreatorItem()->getFullName(),
+					'assessment_array'  => $assessment_stars_text_array,
+					'noticed'			=> $noticed_text,
+					'attachment_count'	=> $file_count,
+					'attachment_infos'	=> $attachment_infos
 				);
 				
 			   	$item = $list->getNext();

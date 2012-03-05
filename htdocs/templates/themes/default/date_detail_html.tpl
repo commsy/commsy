@@ -2,14 +2,37 @@
 
 {block name=room_detail_content}
     <div class="item_actions">
-        <div id="top_item_actions">
-            <a href=""><span class="edit_set"> &nbsp; </span></a>
-            <a href=""><span class="ref_to_ia"> &nbsp; </span></a>
-            <a href=""><span class="details_ia"> &nbsp; </span></a>
-        </div>
-    </div>
+		<div id="top_item_actions">
+			<a class="edit" href=""><span class="edit_set"> &nbsp; </span></a>
+			<a class="linked" href=""><span class="ref_to_ia"> &nbsp; </span></a>
+			<a class="detail" href=""><span class="details_ia"> &nbsp; </span></a>
+			<a class="annotations" href="#"><span class="ref_to_anno"> &nbsp; </span></a>
+			<div class="anno_count" >{$detail.annotations|@count}</div>
+		</div>
+	</div>
 
     <div class="item_body"> <!-- Start item body -->
+		<!-- Start fade_in_ground -->
+		<div class="fade_in_ground_actions hidden">
+			{* TODO: add missing actions *}
+			{if $detail.actions.edit}
+				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.content.item_id}">___COMMON_EDIT_ITEM___</a> |
+			{/if}
+			{if $detail.actions.delete}
+				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.content.item_id}">___COMMON_DELETE_ITEM___</a> |
+			{/if}
+			{if $detail.actions.mail}
+				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.content.item_id}">___COMMON_EMAIL_TO___</a> |
+			{/if}
+			{if $detail.actions.copy}
+				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.content.item_id}">___COMMON_ITEM_COPY_TO_CLIPBOARD___</a> |
+			{/if}
+			<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.content.item_id}">___COMMON_DOWNLOAD___</a>
+		</div>
+		<!-- Ende fade_in_ground -->
+
+	    {include file="include/detail_linked_html.tpl"}
+		
         <h2>
             {$detail.content.title}
         </h2>
@@ -86,6 +109,7 @@
             </p>
             <div class="clear"> </div>
         </div>
+		{include file="include/detail_moredetails_html.tpl" data=$detail.content.moredetails}
 
     </div> <!-- Ende item body -->
     <div class="clear"> </div>

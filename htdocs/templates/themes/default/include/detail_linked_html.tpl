@@ -23,8 +23,8 @@
 			{if $room.sidebar_configuration.active.tags}
 				<div class="fi_mdc_item">
 					<h4>___COMMON_ATTACHED_TAGS___</h4>
-						{foreach $room.tags as $tag}
-							<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=index&name=selected&seltag_{$level}={$node.item_id}&seltag=yes">{$node.title}</a>{if !$node@last}, {/if}
+						{foreach $item.tags as $tag}
+							<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=index&name=selected&seltag_{$tag.level}={$tag.item_id}&seltag=yes">{$tag.title}</a>{if !$tag@last}, {/if}
 						{foreachelse}
 							___COMMON_NONE___
 						{/foreach}
