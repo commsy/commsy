@@ -1,8 +1,16 @@
 /* Body*/
 
 body {
-    background-image: url("img/background.jpg") repeat;
+    background-image: url("img/Sonnenuntergang.jpg");
+    background-repeat: no-repeat;
+    background-position: center;
     background-color: #fcc7dc /*CS_BG_COLOR*/
+}
+
+#logo_area {
+    float: left;
+    width: 735px;
+    visibility:hidden;
 }
 
 
