@@ -193,24 +193,12 @@ if ( !empty($_GET['cid']) ) {
 echo('<h1>CommSy Cron Jobs</h1>'.LF);
 
 // server
-// cron for server are:
-// - handle page impressions
-// - handle activity
-// - handle logs
 $server_item = $environment->getServerItem();
-if ( !isset($context_id)
-     or ($context_id == $environment->getServerID())
-   ) {
-   echo('<h4>'.$environment->getTextConverter()->text_as_html_short($server_item->getTitle()).' - Server<h4>'.LF);
-   displayCronResults($server_item->runCron());
-   echo('<hr/>'.BRLF);
-}
+// server cron job must be run AFTER all other portral crons
 
 // portals and rooms
 $result_array['portal'] = array();
-
 $portal_id_array = $server_item->getPortalIDArray();
-unset($server_item);
 
 $portal_manager = $environment->getPortalManager();
 $room_manager = $environment->getRoomManager();
@@ -249,6 +237,16 @@ foreach ( $portal_id_array as $portal_id ) {
       unset($portal);
    }
 }
+
+// server cron jobs must be run AFTER all other portal crons
+if ( !isset($context_id)
+or ($context_id == $environment->getServerID())
+) {
+   echo('<h4>'.$environment->getTextConverter()->text_as_html_short($server_item->getTitle()).' - Server<h4>'.LF);
+   displayCronResults($server_item->runCron());
+   echo('<hr/>'.BRLF);
+}
+unset($server_item);
 
 $time_end = getmicrotime();
 $end_time = date('d.m.Y H:i:s');

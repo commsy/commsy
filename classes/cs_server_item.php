@@ -158,7 +158,7 @@ class cs_server_item extends cs_guide_item {
       # move to portal
       #$cron_array[] = $this->_cronPageImpressionAndUserActivity();
       
-      $cron_array[] = $this->_cronLog();
+      $cron_array[] = $this->_cronLog();  // this function must run AFTER all other portal crons
       $cron_array[] = $this->_cronLogArchive();
       $cron_array[] = $this->_cronRoomActivity();
       $cron_array[] = $this->_cronReallyDelete();
