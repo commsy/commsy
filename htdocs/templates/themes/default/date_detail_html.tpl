@@ -50,36 +50,78 @@
                 <div class="user_profil_blocks">
                     {* formal data *}
                     <table>
-                    	{if $detail.content.private}
+						{if $detail.content.privat}
                     		<tr>
                                 <td class="label"><h4>___COMMON_PRIVATE_DATE___</h4></td>
                                 <td>___COMMON_NOT_ACCESSIBLE___</td>
                             </tr>
                     	{/if}
-                        {if !empty($detail.content.timeline1)}
-                            <tr>
-                                <td class="label"><h4>___DATES_DATETIME___</h4></td>
-                                <td>{$detail.content.timeline1}</td>
-                            </tr>
-                        {/if}
-                        {if !empty($detail.content.timeline2)}
-                            <tr>
-                                <td class="label">&nbsp;</td>
-                                <td>{$detail.content.timeline2}</td>
-                            </tr>
-                        {/if}
-                        {if !empty($detail.content.place)}
+						
+						<tr>
+							<td class="label"><h4>___DATES_DATETIME___</h4></td>
+							<td>{$detail.content.datetime}</td>
+						</tr>
+						
+						{if !empty($detail.content.place)}
                             <tr>
                                 <td class="label"><h4>___DATES_PLACE___</h4></td>
                                 <td>{$detail.content.place}</td>
                             </tr>
                         {/if}
+						
                         {if !empty($detail.content.color)}
                             <tr>
                                 <td class="label"><h4>___DATES_COLOR___</h4></td>
+								{* TODO: *}
                                 <td><img id="color_box" src="images/spacer.gif" style="background-color: {$detail.content.color};"/></td>
                             </tr>
                         {/if}
+						
+						{if !empty($detail.files)}
+							<tr>
+								<td class="label"><h4>___MATERIAL_FILES___</h4></td>
+								<td>
+									{foreach $detail.files as $file}
+										{$file}
+									{/foreach}
+								</td>
+							</tr>
+						{/if}
+						
+						<tr>
+							<td class="label"><h4>___DATE_PARTICIPANTS___</h4></td>
+							<td>
+								{foreach $detail.content.member as $member}
+									{if $member.is_user}
+										{if $member.visible}
+											{if $member.as_link}
+												<a href="commsy.php?cid={$environment.cid}&mod=user&fct=detail&iid={$member.item_id}" title="{$member.linktext|truncate:35:'...':true}">{$member.linktext|truncate:35:'...':true}</a>
+											{else}
+												{$member.linktext}
+											{/if}
+										{/if}
+									{else}
+										{if $member.as_link}
+											{* TODO: disabled style? *}
+											<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}" title="{$member.linktext|truncate:35:'...':true}">
+												___USER_STATUS_REJECTED___
+											</a>
+										{else}
+											{$member.linktext}
+										{/if}
+									{/if}
+									
+									{if !$member@last}, {/if}
+								{foreachelse}
+									___TODO_NO_PROCESSOR___
+								{/foreach}
+							</td>
+						</tr>
+						
+						
+						
+						{*
+                        
                         {if !empty($detail.content.member)}
                             <tr>
                                 <td class="label"><h4>___DATE_PARTICIPANTS___</h4></td>
@@ -97,16 +139,8 @@
                                 <td colspan="2">{$detail.content.description}</td>
                             </tr>
                         {/if}
-                        {if !empty($detail.files)}
-							<tr>
-								<td class="label"><h4>___MATERIAL_FILES___</h4></td>
-								<td>
-									{foreach $detail.files as $file}
-									{$file}
-									{/foreach}
-								</td>
-							</tr>
-						{/if}
+                        
+						*}
                     </table>
                     {if !empty($detail.lastedit)}
                     	{$detail.lastedit}
