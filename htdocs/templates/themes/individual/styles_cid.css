@@ -1,7 +1,23 @@
+/* used individual colors */
+/* Sonnenuntergang.jpg -> Background-Image */
+/* #fcc7dc -> CS_BG_COLOR*/
+/* #822248 -> CS_COLOR_ACTIVE_MENUE*/
+/* #dfa5bc -> CS_COLOR_MENUE*/
+/* #b9386c -> CS_COLOR_RIGHT_COLUMN*/
+/* #fd9dc3 -> CS_CONTENT_BG_COLOR*/
+/* #ae2b5f -> CS_LINK_COLOR*/
+/* #881543 -> CS_LINK_HOVER_COLOR*/
+/* #dfa5bc -> CS_ACTION_BG_COLOR*/
+/* #c26b8e -> CS_ACTION_ICON_COLOR*/
+ /*#ac5175 -> CS_ACTION_ICON_HOVER_COLOR*/
+
+/**************************/
+
+
 /* Body*/
 
 body {
-    background-image: url("img/Sonnenuntergang.jpg");
+    background-image: url("img/Sonnenuntergang.jpg"); /* Background-Image */
     background-repeat: no-repeat;
     background-position: center;
     background-color: #fcc7dc /*CS_BG_COLOR*/
