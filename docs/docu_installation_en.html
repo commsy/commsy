@@ -219,7 +219,7 @@
                <code>commsy.php</code></a> in a second browser. You should be "not logged in" and
                register a normal user account within your portal just created.</LI>
            <LI>Activate the normal user account in the first browser (where you still should be logged in as the
-               root user) at <i>configure portal -> accounts</i> and set the status to 'moderator'.
+               root user) at <i>configure portal &rarr; accounts</i> and set the status to 'moderator'.
                On this account the normal user becomes a power user and gets all rights for this portal.
                Now logout as root user.</LI>
            <LI>Change to your second browser and act as a moderator now. Possibly you could set up
@@ -249,11 +249,11 @@
       In this case the cron-Urls looks like this:
    </p>
    <ul>
-      <li>Server with Item-ID 99: <code>http://www.COMMSY-SERVER-URL.de/<I>&lt;your_document_root&gt;</I>/commsy/htdocs/cron.php?cid=99</code></li>
       <li>Portal 1 with Item-ID 101: <code>http://www.COMMSY-PORTAL-1-URL.de/<I>&lt;your_document_root&gt;</I>/commsy/htdocs/cron.php?cid=101</code></li>
       <li>Portal n with Item-ID XYZ: <code>http://www.COMMSY-PORTAL-n-URL.de/<I>&lt;your_document_root&gt;</I>/commsy/htdocs/cron.php?cid=XYZ</code></li>
+      <li>Server with Item-ID 99: <code>http://www.COMMSY-SERVER-URL.de/<I>&lt;your_document_root&gt;</I>/commsy/htdocs/cron.php?cid=99</code></li>
    </ul>
-   <p>Don't forget to configure a cron job for each new portal.</p>
+   <p>Don't forget to configure a cron job for each new portal and the server cron job must start AFTER all other portal cron jobs.</p>
          <h4><A NAME="additional_software"></A>Additional software</h4>
          <p>
             Requirements for additional software:
