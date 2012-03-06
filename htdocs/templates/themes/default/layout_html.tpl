@@ -2,8 +2,8 @@
 {function name=params}{foreach $params as $param}&{$param@key}={$param}{/foreach}{/function}
 
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">  
-	                  
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="de" lang="de">
 
 <head>
@@ -16,15 +16,18 @@
     <meta name="keywords" content="" />
     <meta name="description" content="" />
     <meta name="copyright" content="" />
-    
+
     <link rel="stylesheet" type="text/css" media="screen" href="{$basic.tpl_path}jquery-ui-custom-theme/jquery-ui-1.8.17.custom.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="{$basic.tpl_path}styles.css" />
+<!-- Individuelles Farbschema
+    <link rel="stylesheet" type="text/css" media="screen" href="templates/themes/individual/styles_cid.css" />
+-->
     <link rel="stylesheet" type="text/css" media="screen" href="{$basic.tpl_path}ui.dynatree.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="{$basic.tpl_path}uploadify.css" />
 	<link rel="stylesheet" type="text/css" media="screen" href="{$basic.tpl_path}jquery-lightbox/jquery.lightbox-0.5.css" />
-    
+
     <script data-main="javascript/commsy8/main.js" src="javascript/commsy8/require.js"></script>
-    
+
     <title>CommSy 8.0 - Home</title>
 
     <!--
@@ -37,25 +40,25 @@
 </head>
 
 <body>
-    <div id="wrapper"> 
-    
+    <div id="wrapper">
+
         <div id="meta_area"> <!-- Start meta_area -->
             {block name=meta_area}{/block}
         </div> <!-- Ende meta_area -->
-        
+
         <div id="header"> <!-- Start header -->
             <div id="logo_area">
                 <a href=""><img src="{$basic.tpl_path}img/commsy_logo.gif" alt="CommSy" /></a> <!-- Logo-Hoehe 60 Pixel -->
             </div>
-            
+
             <div id="search_area">
                 <div id="search_navigation">
                     <span class="sa_sep"><a href="" id="sa_active">___CAMPUS_SEARCH_ONLY_THIS_ROOM___</a></span>
                     {*<span class="sa_sep"><a href="">alle meine R&auml;ume</a></span>*}
                     {*<span id="sa_options"><a href=""><img src="{$basic.tpl_path}img/sa_dropdown.gif" alt="O" /></a></span>*}
-                    
+
                     <div class="clear"> </div>
-                    
+
                     <div id="commsy_search">
                     	<form action="commsy.php?cid={$environment.cid}&mod=search&fct=index" method="post">
                     		{if $environment.module != 'home'}
@@ -70,17 +73,17 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="clear"> </div>
         </div> <!-- Ende header -->
-        
+
         {block name=layout_content}{/block}
-        
+
         <div id="footer"> <!-- Start footer -->
             <div id="footer_left">
                 <p>CommSy 8.0</p>
             </div>
-            
+
             <div id="footer_right">
                 <p>
                     <span>{$smarty.now|date_format:"%d."} {$translation.act_month_long} {$smarty.now|date_format:"%Y, %H:%M"}
@@ -89,14 +92,14 @@
                     <a href="">TODO: ___COMMON_MAIL_TO_SERVICE2___</a>
                 </p>
             </div>
-        
+
             <div class="clear"> </div>
         </div> <!-- Ende footer -->
-        
-        
+
+
         <!-- hier Google Adwords -->
-        
-        
+
+
     </div> <!-- Ende wrapper -->
     {block name=room_overlay}{/block}
 </body>
