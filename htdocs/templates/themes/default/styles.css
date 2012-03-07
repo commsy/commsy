@@ -1469,7 +1469,7 @@ portlets, right_column
    padding:0px 5px;
 }
 
-.btn_head_rc {
+.btn_head_rc, .btn_head_rc2 {
     float: right;
     padding-top: 7px;
     }
@@ -1555,7 +1555,6 @@ a:hover.keywords_s1, a:hover.keywords_s2, a:hover.keywords_s3, a:hover.keywords_
 
 #netnavigation {
     color: #DEE8FF; /* ueber Skin-Editor austauschbar */
-    padding: 8px 0px;
     margin-bottom: 8px;
 }
 

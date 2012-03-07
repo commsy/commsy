@@ -126,10 +126,6 @@ body {
     text-shadow: none;
 }
 
-#netnavigation {
-    border-top: 1px solid #999999;
-}
-
 .portlet_rc_body {
     border-top: 1px solid #999999;
     color: #DEE8FF;

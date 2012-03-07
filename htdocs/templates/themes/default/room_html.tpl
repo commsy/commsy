@@ -147,9 +147,12 @@
            				{if $room.sidebar_configuration.active.buzzwords}
 	           				{$h = $room.sidebar_configuration.hidden.buzzwords}
 							<div class="portlet_rc">
+								<a href="" title="___COMMON_EDIT___" class="btn_head_rc2"><img src="{$basic.tpl_path}img/btn_edit_rc.gif" alt="___COMMON_EDIT___" /></a>
+		<!--
 								<a href="" title="{if $h}___COMMON_SHOW___{else}___COMMON_HIDE___{/if}" class="btn_head_rc">
 									<img src="{$basic.tpl_path}img/{if $h}btn_open_rc.gif{else}btn_close_rc.gif{/if}" alt="{if $h}___COMMON_SHOW___{else}___COMMON_HIDE___{/if}" />
 								</a>
+		-->
 								<h2>
 									{block name=sidebar_buzzwordbox_title}
 										___COMMON_BUZZWORD_BOX___
@@ -157,7 +160,9 @@
 								</h2>
 
 								<div class="clear"> </div>
+		<!--
 								<a href="" title="bearbeiten" class="btn_body_rc"><img src="{$basic.tpl_path}img/btn_edit_rc.gif" alt="close" /></a>
+		-->
 								<div class="portlet_rc_body{if $h} hidden{/if}">
 									{foreach $room.buzzwords as $buzzword}
 										{block name=sidebar_buzzwordbox_buzzword}
@@ -173,9 +178,12 @@
 						{if $room.sidebar_configuration.active.tags}
 							{$h = $room.sidebar_configuration.hidden.tags}
 							<div class="portlet_rc">
+								<a href="" title="___COMMON_EDIT___" class="btn_head_rc2"><img src="{$basic.tpl_path}img/btn_edit_rc.gif" alt="___COMMON_EDIT___" /></a>
+		<!--
 								<a href="" title="{if $h}___COMMON_SHOW___{else}___COMMON_HIDE___{/if}" class="btn_head_rc">
 									<img src="{$basic.tpl_path}img/{if $h}btn_open_rc.gif{else}btn_close_rc.gif{/if}" alt="{if $h}___COMMON_SHOW___{else}___COMMON_HIDE___{/if}" />
 								</a>
+		-->
 								<h2>
 									{block name=sidebar_tagbox_title}
 										___COMMON_TAG_BOX___
@@ -184,7 +192,9 @@
 
 								<div class="clear"> </div>
 
-								<a href="" title="bearbeiten" class="btn_body_rc"><img src="{$basic.tpl_path}img/btn_edit_rc.gif" alt="close" /></a>
+		<!--
+									<a href="" title="___COMMON_EDIT___" class="btn_body_rc"><img src="{$basic.tpl_path}img/btn_edit_rc.gif" alt="close" /></a>
+		-->
 								<div class="portlet_rc_body{if $h} hidden{/if}">
 									<div id="tag_tree">
 										{block name=sidebar_tagbox_treefunction}

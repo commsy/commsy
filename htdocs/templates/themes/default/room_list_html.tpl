@@ -127,7 +127,9 @@
 	{/if}
     {if $list.perspective_rubric_entries}
 	    <div class="portlet_rc">
+<!--
 			<a href="" title="___COMMON_CLOSE___" class="btn_head_rc"><img src="{$basic.tpl_path}img/btn_close_rc.gif" alt="___COMMON_CLOSE___" /></a>
+-->
 			<h2>___COMMON_REFERENCED_ENTRIES___</h2>
 			<div class="clear"> </div>
 				<div class="portlet_rc_body">
