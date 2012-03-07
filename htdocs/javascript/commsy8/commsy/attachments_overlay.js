@@ -10,20 +10,22 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			// set preconditions
 			this.setPreconditions(commsy_functions, this.registerEvent, {objects: parameters});
 		},
-		
+
 		setPreconditions: function(commsy_functions, callback, parameters) {
 			var preconditions = {
 			};
-			
+
 			// register preconditions
 			commsy_functions.registerPreconditions(preconditions, callback, parameters);
 		},
-		
+
 		registerEvent: function(preconditions, parameters) {
 			jQuery(parameters.objects).each(function(index) {
 				// tooltip
 				jQuery(this).tooltip({
-					effect: 'slide'
+					effect: 'slide',
+					position: 'center right',
+					opacity: 0.95
 				});
 			});
 		}

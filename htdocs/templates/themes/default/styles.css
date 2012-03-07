@@ -1846,15 +1846,21 @@ Tooltips
 /* tooltip styling */
 .tooltip {
 	display: none;
-	background: url(img/tooltips/white_arrow_big.png);
-	height: 163px;
-	padding: 40px 30px 10px 30px;
-	width: 310px;
+	-moz-border-radius-topleft: 5px; -webkit-border-top-left-radius: 5px; -khtml-border-top-left-radius: 5px; border-top-left-radius: 5px;
+	-moz-border-radius-topright: 5px; -webkit-border-top-right-radius: 5px; -khtml-border-top-right-radius: 5px; border-top-right-radius: 5px;
+	-moz-border-radius-bottomleft: 5px; -webkit-border-bottom-left-radius: 5px; -khtml-border-bottom-left-radius: 5px; border-bottom-left-radius: 5px;
+	-moz-border-radius-bottomright: 5px; -webkit-border-bottom-right-radius: 5px; -khtml-border-bottom-right-radius: 5px; border-bottom-right-radius: 5px;
+	border: 1px solid #F5F5F5;
+	filter: alpha(opacity = 95);
+	box-shadow:2px 2px 2px 2px #666;
+	background: url("img/tooltips/commsy_bg.png") repeat-x 0 0 #e1e1e1;
+	width:250px;
+	padding: 15px;
 	font-size: 11px;
 }
 
 .tooltip .scrollable {
 	overflow-x: hidden;
 	overflow-y: auto;
-	height: 125px;
+	background-color:none;
 }
