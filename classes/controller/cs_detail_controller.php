@@ -64,6 +64,12 @@
 			*/
 			$this->assign('item', 'tags', $this->getTags(true));
 			$this->assign('item','linked_count', $this->_linked_count);
+			
+			$global_changed = false;
+			if($this->_getItemAnnotationChangeStatus($this->_item)) {
+				$global_changed = true;
+			}
+			$this->assign('detail', 'annotations_changed', $global_changed);
 		}
 
 		protected function setupInformation() {
@@ -297,7 +303,7 @@
 	      return $this->_item_file_list;
 		}
 
-		protected function markAnnotationsReadedAndNoticed(&$annotation_list) {
+		protected function markAnnotationsReadedAndNoticed($annotation_list) {
 			$reader_manager = $this->_environment->getReaderManager();
 			$noticed_manager = $this->_environment->getNoticedManager();
 
@@ -886,7 +892,7 @@
 
 						$annotation = $annotation_list->getNext();
 					}
-					$noticed_manager->getLatestNoticedAnnotationsByIDArray($id_array);
+					$noticed_manager->getLatestNoticedByIDArray($id_array);
 
 					$annotation = $annotation_list->getFirst();
 					$pos_number = 1;
@@ -941,13 +947,8 @@
 					      $html .= '   </div>'.LF;
 					     */
 
-						$change_status = $this->_getItemAnnotationChangeStatus($annotation);
-						if($change_status !== '') {
-							$global_changed = true;
-						}
-
 						$modificator = $annotation->getModificatorItem();
-						$return['all'][] = array(
+						$return[] = array(
 							'image'				=> $this->getItemPicture($modificator_ref),
 							'pos_number'		=> $pos_number,
 							'item_id'			=> $annotation->getItemID(),
@@ -956,7 +957,7 @@
 							'modifier'			=> $modificator->getFullName(),
 							'modifier_id'		=> $modificator->getItemID(),
 							'modification_date'	=> $annotation->getModificationDate(),
-							'noticed'			=> $change_status,
+							'noticed'			=> $this->_getAnnotationChangeStatus($annotation),
 							'actions'			=> $this->getAnnotationEditActions($annotation),
 							'num_attachments'	=> $annotation->getFileList()->getCount()
 						);
@@ -967,7 +968,6 @@
 				}
 			}
 
-			$return['global_changed'] = $global_changed;
 			return $return;
 		}
 

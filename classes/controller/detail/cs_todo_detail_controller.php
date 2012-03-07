@@ -167,9 +167,14 @@
 				$this->setRubricConnections($rubric_connections);
 				
 				// annotations
-				$annotations = $this->_item->getAnnotationList();
-				$this->markAnnotationsReadedAndNoticed($annotations);
+				// get annotations
+				$annotations = $version_item->getAnnotationList();
+
+				// assign annotations
 				$this->assign('detail', 'annotations', $this->getAnnotationInformation($annotations));
+
+				// mark annotations as readed and noticed
+				$this->markAnnotationsReadedAndNoticed($annotations);
 				
 				/*
 

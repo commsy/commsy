@@ -217,12 +217,18 @@ class cs_date_detail_controller extends cs_detail_controller {
 		
 		$this->setRubricConnections($this->_item);
 		
-        // annotations
-        $annotations = $this->_item->getAnnotationList();
+		// annotations
+		// get annotations
+		$annotations = $version_item->getAnnotationList();
+
+		// assign annotations
+		$this->assign('detail', 'annotations', $this->getAnnotationInformation($annotations));
+
+		// mark annotations as readed and noticed
+		$this->markAnnotationsReadedAndNoticed($annotations);
 		
 		// assign to template
         $this->assign('detail', 'content', $this->getDetailContent());
-        $this->assign('detail', 'annotations', $this->getAnnotationInformation($annotations));
         $this->assign('detail', 'files', $this->getFileContent());
     }
 

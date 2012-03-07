@@ -532,7 +532,7 @@
       		}
       		return $info_text;
    		}
-
+		
 		protected function _getItemAnnotationChangeStatus($item) {
       		$translator = $this->_environment->getTranslationObject();
       		$current_user = $this->_environment->getCurrentUserItem();
@@ -570,6 +570,45 @@
       		} else {
          		$info_text = '';
       		}
+      		return $info_text;
+  	 	}
+
+		protected function _getAnnotationChangeStatus($annotation) {
+      		$translator = $this->_environment->getTranslationObject();
+      		$current_user = $this->_environment->getCurrentUserItem();
+      		if ($current_user->isUser()) {
+				$noticed_manager = $this->_environment->getNoticedManager();
+				$new = false;
+         		$changed = false;
+         		$date = "0000-00-00 00:00:00";
+				
+				$noticed = $noticed_manager->getLatestNoticed($annotation->getItemID());				
+				
+				if ( empty($noticed) ) {
+					if ($date < $annotation->getModificationDate() ) {
+						$new = true;
+						$changed = false;
+						$date = $annotation->getModificationDate();
+					}
+				} elseif ( $noticed['read_date'] < $annotation->getModificationDate() ) {
+					if ($date < $annotation->getModificationDate() ) {
+						$new = false;
+						$changed = true;
+						$date = $annotation->getModificationDate();
+					}
+				}
+				
+         		if ( $new ) {
+            		$info_text = $translator->getMessage('COMMON_NEW_ANNOTATION');
+         		} elseif ( $changed ) {
+            		$info_text = $translator->getMessage('COMMON_CHANGED_ANNOTATION');
+         		} else {
+            		$info_text = '';
+         		}
+      		} else {
+         		$info_text = '';
+      		}
+			
       		return $info_text;
   	 	}
 

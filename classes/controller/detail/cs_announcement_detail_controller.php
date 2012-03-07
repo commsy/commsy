@@ -147,8 +147,14 @@
 					//$detail_view->setRubricConnections($announcement_item);
 					
 					// annotations
-					$annotations = $this->_item->getAnnotationList();
+					// get annotations
+					$annotations = $version_item->getAnnotationList();
+					
+					// assign annotations
 					$this->assign('detail', 'annotations', $this->getAnnotationInformation($annotations));
+					
+					// mark annotations as readed and noticed
+					$this->markAnnotationsReadedAndNoticed($annotations);
 					
 					/*
 					 *TODO: handle in smarty as post_filter
