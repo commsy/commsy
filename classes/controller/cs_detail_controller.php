@@ -896,6 +896,7 @@
 
 		protected function getAnnotationInformation($annotation_list) {
 			$return = array();
+			$global_changed = false;
 
 			$item = $this->_item;
 			$converter = $this->_environment->getTextConverter();
@@ -933,7 +934,7 @@
 					$noticed_manager->getLatestNoticedAnnotationsByIDArray($id_array);
 
 					$annotation = $annotation_list->getFirst();
-					$pos_number = 1;
+					$pos_number = 1;					
 
 					while($annotation) {
 						// get item picture
@@ -984,9 +985,14 @@
 					      }
 					      $html .= '   </div>'.LF;
 					     */
-
+						
+						$change_status = $this->_getItemAnnotationChangeStatus($annotation);
+						if($change_status !== '') {
+							$global_changed = true;
+						}
+						
 						$modificator = $annotation->getModificatorItem();
-						$return[] = array(
+						$return['all'][] = array(
 							'image'				=> $this->getItemPicture($modificator_ref),
 							'pos_number'		=> $pos_number,
 							'item_id'			=> $annotation->getItemID(),
@@ -995,7 +1001,7 @@
 							'modifier'			=> $modificator->getFullName(),
 							'modifier_id'		=> $modificator->getItemID(),
 							'modification_date'	=> $annotation->getModificationDate(),
-							'noticed'			=> $this->_getItemAnnotationChangeStatus($annotation),
+							'noticed'			=> $change_status,
 							'actions'			=> $this->getAnnotationEditActions($annotation),
 							'num_attachments'	=> $annotation->getFileList()->getCount()
 						);
@@ -1005,7 +1011,8 @@
 					}
 				}
 			}
-
+			
+			$return['global_changed'] = $global_changed;
 			return $return;
 		}
 

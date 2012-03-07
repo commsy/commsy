@@ -182,6 +182,29 @@
          		$return_array['sort_modified_link'] = $link_parameter_text.'&sort=modified';
          		$return_array['sort_modified'] = 'none';
       		}
+			
+			if ( $sort_parameter == 'time') {
+         		$return_array['sort_time_link'] = $link_parameter_text.'&sort=time_rev';
+         		$return_array['sort_time'] = 'up';
+      		}elseif ( $sort_parameter == 'time_rev'){
+         		$return_array['sort_time_link'] = $link_parameter_text.'&sort=time';
+         		$return_array['sort_time'] = 'down';
+      		}else{
+         		$return_array['sort_time_link'] = $link_parameter_text.'&sort=time';
+         		$return_array['sort_time'] = 'none';
+      		}
+			
+			if ( $sort_parameter == 'place') {
+         		$return_array['sort_place_link'] = $link_parameter_text.'&sort=place_rev';
+         		$return_array['sort_place'] = 'up';
+      		}elseif ( $sort_parameter == 'place_rev'){
+         		$return_array['sort_place_link'] = $link_parameter_text.'&sort=place';
+         		$return_array['sort_place'] = 'down';
+      		}else{
+         		$return_array['sort_place_link'] = $link_parameter_text.'&sort=place';
+         		$return_array['sort_place'] = 'none';
+      		}
+			
 			return $return_array;
 		}
 

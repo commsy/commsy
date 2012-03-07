@@ -60,6 +60,7 @@
 			include_once('classes/views/cs_view.php');
 			$environment = $this->_environment;
 			$context_item = $environment->getCurrentContextItem();
+			$converter = $this->_environment->getTextConverter();
 
 			// Get data from database
 			$material_manager = $environment->getMaterialManager();
@@ -171,16 +172,41 @@
 						$assessment_stars_text_array[$i] = 'active';
 					}
 				}
+				
+				// files
+				$attachment_infos = array();	
+				$file_count = $item->getFileList()->getCount();
+				$file_list = $item->getFileList();
+
+				$file = $file_list->getFirst();
+				while($file) {
+					$lightbox = false;
+					if((!isset($_GET['download']) || $_GET['download'] !== 'zip') && in_array($file->getExtension(), array('png', 'jpg', 'jpeg', 'gif'))) $lightbox = true;
+
+					$info = array();
+					$info['file_name']	= $converter->text_as_html_short($file->getDisplayName());
+					$info['file_icon']	= $file->getFileIcon();
+					$info['file_url']	= $file->getURL();
+					$info['file_size']	= $file->getFileSize();
+					$info['lightbox']	= $lightbox;
+
+					$attachment_infos[] = $info;
+					$file = $file_list->getNext();
+				}
+				
+				$modificator = $item->getModificatorItem();
+				
 				$noticed_text = $this->_getItemChangeStatus($item);
 				$item_array[] = array(
 				'iid'				=> $item->getItemID(),
 				'title'				=> $view->_text_as_html_short($item->getTitle()),
 				'date'				=> $this->_environment->getTranslationObject()->getDateInLang($item->getModificationDate()),
-				'creator'			=> $item->getCreatorItem()->getFullName(),
+				'modificator'		=> $modificator->getFullName(),
+				'modificator_id'	=> $modificator->getItemID(),
 				'noticed'			=> $noticed_text,
-				'assessment_array'        => $assessment_stars_text_array,
-				'attachment_count'	=> $item->getFileList()->getCount()
-//				'attachment_infos'	=>
+				'assessment_array'	=> $assessment_stars_text_array,
+				'attachment_count'	=> $file_count,
+				'attachment_infos'	=> $attachment_infos
 				);
 
 				$item = $list->getNext();

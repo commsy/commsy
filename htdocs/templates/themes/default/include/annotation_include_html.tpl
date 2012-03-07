@@ -2,9 +2,9 @@
 	<div class="item_body"> <!-- Start item body -->
 		<h2>
 			___COMMON_ANNOTATIONS___
-			{if $detail.annotations|@count == 1}
+			{if $detail.annotations.all|@count == 1}
 				(___COMMON_ONE_ANNOTATION___)
-			{elseif $detail.annotations|@count == 0}
+			{elseif $detail.annotations.all|@count == 0}
 				(___COMMON_NO_ANNOTATIONS___)
 			{else}
 				({i18n tag=COMMON_X_ANNOTATIONS param1=$detail.annotations|@count})
@@ -15,7 +15,7 @@
 
 	<div class="clear"> </div>
 
-	{foreach $detail.annotations as $annotation}
+	{foreach $detail.annotations.all as $annotation}
 		<div class="item_actions">
 			<a class="edit" href="#"><span class="edit_set"> &nbsp; </span></a>
 		</div>

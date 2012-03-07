@@ -7,7 +7,7 @@
 			<a class="linked" href=""><span class="ref_to_ia"> &nbsp; </span></a>
 			<a class="detail" href=""><span class="details_ia"> &nbsp; </span></a>
 			<a class="annotations" href="#"><span class="ref_to_anno"> &nbsp; </span></a>
-			<div class="anno_count" >{$detail.annotations|@count}</div>
+			<div class="anno_count" >{$detail.annotations.all|@count}</div>
 		</div>
 	</div>
 
@@ -117,38 +117,21 @@
 								{/foreach}
 							</td>
 						</tr>
-						
-						
-						
-						{*
-                        
-                        {if !empty($detail.content.member)}
-                            <tr>
-                                <td class="label"><h4>___DATE_PARTICIPANTS___</h4></td>
-                                <td>{$detail.content.member}</td>
-                            </tr>
-                        {/if}
-                        {if empty($detail.content.member)}
-                            <tr>
-                                <td class="label"><h4>___DATE_PARTICIPANTS___</h4></td>
-                                <td>___TODO_NO_PROCESSOR___</td>
-                            </tr>
-                        {/if}
-                        {if !empty($detail.content.member)}
-                            <tr>
-                                <td colspan="2">{$detail.content.description}</td>
-                            </tr>
-                        {/if}
-                        
-						*}
                     </table>
-                    {if !empty($detail.lastedit)}
-                    	{$detail.lastedit}
-                    {/if}
                 </div>
             </p>
             <div class="clear"> </div>
         </div>
+					
+		<div id="item_legend"> <!-- Start item_legend -->
+			<div class="row_odd">				
+				{if !empty($detail.content.description)}
+					<div class="detail_description">
+						{$detail.content.description}
+					</div>
+				{/if}
+			</div>
+		</div> <!-- Ende item_legend -->
 		{include file="include/detail_moredetails_html.tpl" data=$detail.content.moredetails}
 
     </div> <!-- Ende item body -->

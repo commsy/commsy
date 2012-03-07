@@ -9,19 +9,19 @@
 		{else}
 		 	<h3 class="w_380"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_title_link}" class="sort_none">___COMMON_TITLE___</a></h3>
 		{/if}
-		{if $list.sorting_parameters.sort_modified == "up"}
-		 	<h3 class="w_80"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_modified_link}" id="sort_up"><strong>___DATES_TIME___</strong></a></h3>
-		{elseif $list.sorting_parameters.sort_modified == "down"}
-		 	<h3 class="w_80"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_modified_link}" id="sort_down"><strong>___DATES_TIME___</strong></a></h3>
+		{if $list.sorting_parameters.sort_time == "up"}
+		 	<h3 class="w_80"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_time_link}" id="sort_up"><strong>___DATES_TIME___</strong></a></h3>
+		{elseif $list.sorting_parameters.sort_time == "down"}
+		 	<h3 class="w_80"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_time_link}" id="sort_down"><strong>___DATES_TIME___</strong></a></h3>
 		{else}
-		 	<h3 class="w_80"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_modified_link}" class="sort_none">___DATES_TIME___</a></h3>
+		 	<h3 class="w_80"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_time_link}" class="sort_none">___DATES_TIME___</a></h3>
 		{/if}
-		{if $list.sorting_parameters.sort_modificator == "up"}
-		 	<h3 class="w_135"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_modificator_link}" id="sort_up"><strong>___DATES_PLACE___</strong></a></h3>
-		{elseif $list.sorting_parameters.sort_modificator == "down"}
-		 	<h3 class="w_135"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_modificator_link}" id="sort_down"><strong>___DATES_PLACE___</strong></a></h3>
+		{if $list.sorting_parameters.sort_place== "up"}
+		 	<h3 class="w_135"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_place_link}" id="sort_up"><strong>___DATES_PLACE___</strong></a></h3>
+		{elseif $list.sorting_parameters.sort_place == "down"}
+		 	<h3 class="w_135"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_place_link}" id="sort_down"><strong>___DATES_PLACE___</strong></a></h3>
 		{else}
-	 		<h3 class="w_135"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_modificator_link}" class="sort_none">___DATES_PLACE___</a></h3>
+	 		<h3 class="w_135"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_place_link}" class="sort_none">___DATES_PLACE___</a></h3>
 		{/if}
 		<h3></h3>
 		<div class="clear"> </div>
@@ -71,11 +71,13 @@
 				{/if}
 			</div>
 			<div class="column_90">
-				<p>{$item.date}</p>
+				<p>
+					{$item.date}{if !empty($item.time) && $item.show_time}, {$item.time}{/if}
+				</p>
 			</div>
 			<div class="column_155">
 				<p>
-					<a href="commsy.php?cid={$environment.cid}&mod=user&fct=detail&iid={$item.creator_id}">{$item.creator}</a>
+					{$item.place}
 				</p>
 			</div>
 			<div class="column_100">

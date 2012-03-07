@@ -149,10 +149,10 @@
 				
 				$noticed_text = $this->_getItemChangeStatus($item);
 				$item_array[] = array(
-				'iid'				=> $item->getItemID(),
-				'title'				=> $view->_text_as_html_short($item->getTitle()),
-				'noticed'			=> $noticed_text,
-				'modificator'		=> $modificator
+					'iid'				=> $item->getItemID(),
+					'title'				=> $view->_text_as_html_short($item->getTitle()),
+					'noticed'			=> $noticed_text,
+					'modificator'		=> $modificator
 				);
 
 				$item = $list->getNext();
