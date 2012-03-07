@@ -121,13 +121,13 @@ body {
 }
 
 .portlet_rc h2 {
-    border-bottom: 0px solid #999999;
+    border-bottom: 1px solid #999999;
     color: #DEE8FF;
     text-shadow: none;
 }
 
 .portlet_rc_body {
-    border-top: 1px solid #999999;
+    border-top: 0px solid #999999;
     color: #DEE8FF;
 }
 
@@ -143,7 +143,7 @@ a.keywords_s1, a.keywords_s2, a.keywords_s3, a.keywords_s4 {
 }
 
 #dis_navigation {
-    border-top: 1px solid #999999;
+    border-top: 0px solid #999999;
 }
 
 /*Content*/
