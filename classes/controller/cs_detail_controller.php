@@ -200,14 +200,14 @@
 			$item_tag_list = $this->_item->getTagList();
 			$item_tag = $item_tag_list->getFirst();
 			$item_tag_id_array = $item_tag_list->getIDArray();
-			
+
 
 			// get all tags like common
 			$tag_array = parent::getTags();
 
 			// mark tags
 			$this->markTags($tag_array, $item_tag_id_array);
-			
+
 			// convert to marked array if needed
 			if($as_marked_array === true) return $this->convertTagsToMarkedArray($tag_array);
 
@@ -394,19 +394,19 @@
 							switch(mb_strtoupper($type, 'UTF-8')) {
 								case 'ANNOUNCEMENT':
 									$text = $translator->getMessage('COMMON_ONE_ANNOUNCEMENT');
-									$img = 'images/commsyicons/netnavigation/announcement.png';
+									$img = 'announcement.png';
 									break;
 								case 'DATE':
 									$text = $translator->getMessage('COMMON_ONE_DATE');
-									$img = 'images/commsyicons/netnavigation/date.png';
+									$img = 'date.png';
 									break;
 								case 'DISCUSSION':
 									$text = $translator->getMessage('COMMON_ONE_DISCUSSION');
-									$img = 'images/commsyicons/netnavigation/discussion.png';
+									$img = 'discussion.png';
 									break;
 								case 'GROUP':
 									$text = $translator->getMessage('COMMON_ONE_GROUP');
-									$img = 'images/commsyicons/netnavigation/group.png';
+									$img = 'group.png';
 									break;
 								case 'INSTITUTION':
 									$text = $translator->getMessage('COMMON_ONE_INSTITUTION');
@@ -414,7 +414,7 @@
 									break;
 								case 'MATERIAL':
 									$text = $translator->getMessage('COMMON_ONE_MATERIAL');
-									$img = 'images/commsyicons/netnavigation/material.png';
+									$img = 'material.png';
 									break;
 								case 'PROJECT':
 									$text = $translator->getMessage('COMMON_ONE_PROJECT');
@@ -422,15 +422,15 @@
 									break;
 								case 'TODO':
 									$text = $translator->getMessage('COMMON_ONE_TODO');
-									$img = 'images/commsyicons/netnavigation/todo.png';
+									$img = 'todo.png';
 									break;
 								case 'TOPIC':
 									$text = $translator->getMessage('COMMON_ONE_TOPIC');
-									$img = 'images/commsyicons/netnavigation/topic.png';
+									$img = 'topic.png';
 									break;
 								case 'USER':
 									$text = $translator->getMessage('COMMON_ONE_USER');
-									$img = 'images/commsyicons/netnavigation/user.png';
+									$img = 'user.png';
 									break;
 								default:
 									$text = $translator->getMessage('COMMON_MESSAGETAB_ERROR');
@@ -689,7 +689,7 @@
 			// delete
 			if($this->_item->mayEdit($current_user) && $this->_with_modifying_actions && (!$this->_item->isA(CS_LABEL_TYPE) || !$this->_item->isSystemLabel())) {
 				$return['delete'] = true;
-				
+
 				$return['delparams'] = $this->_environment->getCurrentParameterArray();
 				$return['delparams']['action'] = 'delete';
 				if($this->_item->getItemType() === CS_DATE_TYPE) {
@@ -699,7 +699,7 @@
 				}
 
 				/*
-				 
+
          if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
             $image = '<img src="images/commsyicons_msie6/22x22/delete.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_DELETE_ITEM').'"/>';
          } else {
@@ -830,7 +830,7 @@
 			} else {
 				//$html .= $this->_getNewActionDisabled();
 			}
-			
+
 			// download
 			$return['downloadparams'] = $this->_environment->getCurrentParameterArray();
 			$return['downloadparams']['download']='zip';
@@ -866,7 +866,7 @@
             $desc = ' ('.$this->_translator->getMessage('COMMON_NO_ANNOTATIONS');
          }
 				 */
-				
+
 
 				if(!empty($annotation_list)) {
 					// read and noticed information
@@ -875,11 +875,11 @@
 					$annotation = $annotation_list->getFirst();
 					while($annotation) {
 						$id_array[] = $annotation->getItemID();
-						
+
 						$annotation = $annotation_list->getNext();
 					}
 					$noticed_manager->getLatestNoticedAnnotationsByIDArray($id_array);
-					
+
 					$annotation = $annotation_list->getFirst();
 					$pos_number = 1;
 
@@ -932,7 +932,7 @@
 					      }
 					      $html .= '   </div>'.LF;
 					     */
-						
+
 						$modificator = $annotation->getModificatorItem();
 						$return[] = array(
 							'image'				=> $this->getItemPicture($modificator_ref),
@@ -971,7 +971,7 @@
 			if(($item->mayEdit($current_user) || $item_manager->getExternalViewerForItem($annotated_item->getItemID(), $current_user->getUserID())) && $this->_with_modifying_actions === true) {
 				$return['edit'] = true;
 				$return['delete'] = true;
-				
+
 				$return['deleteparams'] = $this->_environment->getCurrentParameterArray();
 				$return['deleteparams']['action'] = 'detail';
 				$return['deleteparams']['annotation_iid'] = $this->_item->getItemID();
@@ -1039,26 +1039,26 @@
 			// break the reference
 			unset($tag);
 		}
-		
+
 		private function convertTagsToMarkedArray(&$tag_array, $level = 0) {
 			$return = array();
-			
+
 			foreach($tag_array as &$tag) {
 				// check match
 				if($tag['match'] === true) {
 					// append
 					$return[] = $tag;
 				}
-				
+
 				// set level
 				$tag['level'] = $level;
-				
+
 				// look recursive
 				if(!empty($tag['children'])) {
 					$this->convertTagsToMarkedArray($tag['children'], $level+1);
 				}
 			}
-			
+
 			return $return;
 		}
 

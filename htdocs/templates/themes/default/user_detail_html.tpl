@@ -3,8 +3,8 @@
 {block name=room_detail_content}
 	<div class="item_actions">
 		<div id="top_item_actions">
-			<a href=""><span class="edit_set"> &nbsp; </span></a>
-			<a href=""><span class="details_ia"> &nbsp; </span></a>
+			<a class="edit" href=""><span class="edit_set"> &nbsp; </span></a>
+			<a class="detail" href=""><span class="details_ia"> &nbsp; </span></a>
 		</div>
 	</div>
 
@@ -16,9 +16,7 @@
 		</h2>
 		<div class="clear"> </div>
 
-		<div id="item_credits">
-			<p id="ic_rating"></p>
-			<p>
+		<div class="row_odd">
 				<div class="user_profil_blocks">
 					{* formal data *}
 					{if !empty($detail.content.first_block)}
@@ -198,13 +196,13 @@
 				</div>
 			</p>
 			<div class="clear"> </div>
-		</div>
+	</div>
 
+	{if $detail.config.show_configuration}
+		<h2>___USER_PREFERENCES___({i18n tag=COMMON_READABLE_ONLY_USER param1=$detail.content.first_block.fullname})</h2>
 		<div id="item_legend"> <!-- Start item_legend -->
 			<div class="row_odd">
-				{if $detail.config.show_configuration}
-					<div class="detail_description">
-						<h4>___USER_PREFERENCES___({i18n tag=COMMON_READABLE_ONLY_USER param1=$detail.content.first_block.fullname})</h4>
+					<div class="user_account_blocks">
 						{*
 							$html .= '<div style="float:right">';
 					         $html .= $this->getAccountActionsAsHTML($item);
@@ -338,9 +336,9 @@
 
 
 					</div>
-				{/if}
 			</div>
 		</div> <!-- Ende item_legend -->
+	{/if}
 
 	</div> <!-- Ende item body -->
 	<div class="clear"> </div>

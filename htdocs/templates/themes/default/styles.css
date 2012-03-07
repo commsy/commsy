@@ -1357,15 +1357,24 @@ div.user_profil_blocks table {
   padding: 7px 0;
   }
 
-div.user_profil_blocks td.label,
+div.user_account_blocks td.label {
+  width: 250px;
+  vertical-align: top;
+ }
+
+
+div.user_profil_blocks td.label {
+  width: 150px;
+  vertical-align: top;
+ }
 div.detail_description td.label {
-  width: 120px;
+  width: 150px;
   vertical-align: top;
   }
 
 div#user_profil_picture {
   float: right;
-  padding: 0 7px 7px;
+  padding: 10px;
   }
 
 img.group_member_picture {
