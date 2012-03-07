@@ -9,6 +9,7 @@
 		protected $_item_file_list = null;
 		protected $_rubric_connections = array();
 		protected $_clipboard_id_array = array();
+		protected $_linked_count = 0;
 		const USER_IS_ROOT = 'user_is_root';
 		const USER_DISABLED = 'user_disabled';
 		const USER_HAS_LINK = 'user_has_link';
@@ -21,6 +22,7 @@
 		public function __construct(cs_environment $environment) {
 			// call parent
 			parent::__construct($environment);
+
 
 			// init variables
 			/*
@@ -61,6 +63,8 @@
 			$this->assign('list', 'num_entries', $this->_num_entries);
 			*/
 			$this->assign('item', 'tags', $this->getTags(true));
+			$this->assign('item','linked_count', $this->_linked_count);
+			$this->assign('item','annotation_change_info', $this->_getAnnotationInformation($this->_item));
 		}
 
 		protected function setupInformation() {
@@ -188,7 +192,7 @@
 
 				$buzzword_entry = $buzzword_list->getNext();
 			}
-
+			$this->_linked_count += $buzzword_list->getCount();
 			return $return;
 		}
 
@@ -212,6 +216,8 @@
 			if($as_marked_array === true) return $this->convertTagsToMarkedArray($tag_array);
 
 			return $tag_array;
+			$this->_linked_count += count($tag_array);
+
 		}
 
 		protected function getEditActions($item, $user, $module = '') {
@@ -841,6 +847,53 @@
 
 			return $return;
 		}
+
+
+   function _getAnnotationInformation($item) { 
+		$current_user = $this->_environment->getCurrentUserItem();
+      
+      if ($current_user->isUser()) {
+         $noticed_manager = $this->_environment->getNoticedManager();
+         $reader_manager = $this->_environment->getReaderManager();
+         $annotation_list = $item->getItemAnnotationList();
+         $anno_item = $annotation_list->getFirst();
+         $new = false;
+         $changed = false;
+         $date = "0000-00-00 00:00:00";
+         while ( $anno_item ) {
+            $noticed = $noticed_manager->getLatestNoticed($anno_item->getItemID());
+            pr($noticed);
+            if ( empty($noticed) ) {
+               if ($date < $anno_item->getModificationDate() ) {
+                   $new = true;
+                   $changed = false;
+                   $date = $anno_item->getModificationDate();
+                   $reader_manager->markRead($anno_item->getItemID(),0);
+                   $noticed_manager->markNoticed($anno_item->getItemID(),0);
+               }
+            } elseif ( $noticed['read_date'] < $anno_item->getModificationDate() ) {
+               if ($date < $anno_item->getModificationDate() ) {
+                   $new = false;
+                   $changed = true;
+                   $date = $anno_item->getModificationDate();
+                   $reader_manager->markRead($anno_item->getItemID(),0);
+                   $noticed_manager->markNoticed($anno_item->getItemID(),0);
+               }
+            }
+            $anno_item = $annotation_list->getNext();
+         }
+         if ( $new ) {
+            $info_text ='new';
+         } elseif ( $changed ) {
+            $info_text = 'changed';
+         } else {
+            $info_text = '';
+         }
+      } else {
+         $info_text = '';
+      }
+      return $info_text;
+   }
 
 		protected function getAnnotationInformation($annotation_list) {
 			$return = array();
