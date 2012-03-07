@@ -3,14 +3,24 @@
 {block name=room_detail_content}
 	<div class="item_actions">
 		<div id="top_item_actions">
-			<a class="edit" href=""><span class="edit_set"> &nbsp; </span></a>
-			<a class="linked" href=""><span class="ref_to_ia"> &nbsp; </span></a>
-			<a class="detail" href=""><span class="details_ia"> &nbsp; </span></a>
+			<a class="edit" href="#"><span class="edit_set"> &nbsp; </span></a>
+			<a class="linked" href="#"><span class="ref_to_ia"> &nbsp; </span></a>
+			<a class="detail" href="#"><span class="details_ia"> &nbsp; </span></a>
 			<a class="annotations" href="#"><span class="ref_to_anno"> &nbsp; </span></a>
+			{if $detail.annotations|@count}
+			<div class="action_count anno_count" >{$detail.annotations|@count}</div>
+			{else}
+			<div class="action_count anno_count" >&nbsp;</div>
+			{/if}
+			{if $item.linked_count}
+			<div class="action_count linked_count" >{$item.linked_count}</div>
+			{else}
+			<div class="action_count linked_count" >&nbsp;</div>
+			{/if}
 		</div>
 	</div>
 
-	<div class="item_body"> <!-- Start item body -->		
+	<div class="item_body"> <!-- Start item body -->
 		<!-- Start fade_in_ground -->
 		<div class="fade_in_ground_actions hidden">
 			{if $detail.actions.edit}
@@ -33,7 +43,7 @@
 		<!-- Ende fade_in_ground -->
 
 	    {include file="include/detail_linked_html.tpl"}
-		
+
 		<h2>{$detail.content.title}</h2>
 		<div class="clear"> </div>
 
@@ -59,10 +69,10 @@
 			</div>
 		</div> <!-- Ende item_legend -->
 
+	{include file="include/detail_moredetails_html.tpl" data=$detail.content.moredetails}
 	</div> <!-- Ende item body -->
 	<div class="clear"> </div>
-	
-	{include file="include/detail_moredetails_html.tpl" data=$detail.content.moredetails}
+
 
 	{include file='include/annotation_include_html.tpl'}
 

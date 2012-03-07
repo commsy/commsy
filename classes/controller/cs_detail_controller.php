@@ -849,9 +849,9 @@
 		}
 
 
-   function _getAnnotationInformation($item) { 
+   function _getAnnotationInformation($item) {
 		$current_user = $this->_environment->getCurrentUserItem();
-      
+
       if ($current_user->isUser()) {
          $noticed_manager = $this->_environment->getNoticedManager();
          $reader_manager = $this->_environment->getReaderManager();
@@ -862,7 +862,6 @@
          $date = "0000-00-00 00:00:00";
          while ( $anno_item ) {
             $noticed = $noticed_manager->getLatestNoticed($anno_item->getItemID());
-            pr($noticed);
             if ( empty($noticed) ) {
                if ($date < $anno_item->getModificationDate() ) {
                    $new = true;

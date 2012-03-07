@@ -3,11 +3,20 @@
 {block name=room_detail_content}
 	<div class="item_actions">
 		<div id="top_item_actions">
-			<a class="edit" href=""><span class="edit_set"> &nbsp; </span></a>
-			<a class="linked" href=""><span class="ref_to_ia"> &nbsp; </span></a>
-			<a class="detail" href=""><span class="details_ia"> &nbsp; </span></a>
+			<a class="edit" href="#"><span class="edit_set"> &nbsp; </span></a>
+			<a class="linked" href="#"><span class="ref_to_ia"> &nbsp; </span></a>
+			<a class="detail" href="#"><span class="details_ia"> &nbsp; </span></a>
 			<a class="annotations" href="#"><span class="ref_to_anno"> &nbsp; </span></a>
-			<div class="anno_count" >{$detail.annotations|@count}</div>
+			{if $detail.annotations|@count}
+			<div class="action_count anno_count" >{$detail.annotations|@count}</div>
+			{else}
+			<div class="action_count anno_count" >&nbsp;</div>
+			{/if}
+			{if $item.linked_count}
+			<div class="action_count linked_count" >{$item.linked_count}</div>
+			{else}
+			<div class="action_count linked_count" >&nbsp;</div>
+			{/if}
 		</div>
 	</div>
 

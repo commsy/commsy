@@ -9,14 +9,14 @@
 		protected $_list_command_confirm = null;
 		protected $_list_attached_ids = array();
 		protected $_list_shown_ids = array();
-		
+
 		/**
 		 * constructor
 		 */
 		public function __construct(cs_environment $environment) {
 			// call parent
 			parent::__construct($environment);
-			
+
 			$this->_sidebar_configuration['active']['buzzwords'] = false;
 			$this->_sidebar_configuration['active']['tags'] = false;
 			$this->_sidebar_configuration['active']['netnavigation'] = false;
@@ -32,7 +32,7 @@
 			} elseif(!empty($_POST['iid'])) {
 				$this->_item_id = $_POST['iid'];
 			}
-			
+
 			// get command / list_command
 			if(isset($_POST['form_data']['option'])) {
 				foreach($_POST['form_data']['option'] as $option => $value) {
@@ -55,21 +55,21 @@
 			   }
 			}
 		}
-		
+
 		/*
 		 * every derived class needs to implement an processTemplate function
 		 */
 		protected function processTemplate() {
 			// call parent
 			parent::processTemplate();
-			
+
 			// TODO: implement old commsy check - calling rubrics not set as active
-			
+
 			$params = $this->_environment->getCurrentParameterArray();
 			if(!empty($params['with_modifying_actions'])) {
 				$this->_with_modifying_actions = $params['with_modifying_actions'];
 			}
-			
+
 			$current_context = $this->_environment->getCurrentContextItem();
 			$current_user = $this->_environment->getCurrentUserItem();
 			if($current_context->isClosed() || $current_user->isOnlyReadUser()) {
@@ -89,17 +89,17 @@
 
 			// room information
 			$this->assign('room', 'room_information', $this->getRoomInformation());
-			
+
 			// sidebar information
 			$this->setupSidebarInformation();
-			
+
 			// addon information
 			$this->assign('room', 'addon_information', $this->getAddonInformation());
-			
+
 			// second navigation information
 			$this->assign('room', 'second_navigation', $this->getSecondNavigationInformation());
 		}
-		
+
 		private function getAddonInformation() {
 			$return = array(
 				'wiki'		=> array(
@@ -116,21 +116,21 @@
 				),
 				'rows'		=> 0
 			);
-			
+
 			$current_context = $this->_environment->getCurrentContextItem();
 			$current_user = $this->_environment->getCurrentUserItem();
 			$count = 0;
-			
+
 			// wiki
 			if($current_context->showWikiLink() && $current_context->existWiki() && $current_context->issetWikiHomeLink()) {
 					global $c_pmwiki_path_url;
-					
+
 					$count++;
 					$return['wiki']['active'] = true;
 					$return['wiki']['title'] = $current_context->getWikiTitle();
 					$return['wiki']['path'] = $c_pmwiki_path_url;
 					$return['wiki']['item_id'] = $current_context->getItemID();
-					
+
 					$url_session_id = '';
 					if($current_context->withWikiUseCommSyLogin()) {
 						$session_item = $this->_environment->getSessionItem();
@@ -139,14 +139,14 @@
 					}
 					$return['wiki']['session'] = $url_session_id;
 			}
-			
+
 			// chat
 			if($current_context->showChatLink()) {
 				global $c_etchat_enable;
 				if(!empty($c_etchat_enable) && $c_etchat_enable) {
 					if(isset($current_user) && $current_user->isReallyGuest()) {
 						// TODO:
-						
+
 						/*
 						 * if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
                      $image = '<img src="images/commsyicons_msie6/etchat_grey_home.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('CHAT_CHAT').'" title="'.$this->_translator->getMessage('CHAT_CHAT').'"/>';
@@ -162,17 +162,17 @@
 					}
 				}
 			}
-			
+
 			// wordpress
 			if($current_context->showWordpressLink() && $current_context->existWordpress() && $current_context->issetWordpressHomeLink()) {
 				global $c_wordpress_path_url;
-				
+
 				$count++;
 				$return['wordpress']['active'] = true;
 				$return['wordpress']['title'] = $current_context->getWordpressTitle();
 				$return['wordpress']['path'] = $c_wordpress_path_url;
 				$return['wordpress']['item_id'] = $current_context->getItemID();
-				
+
 				$url_session_id = '';
 				if($current_context->withWordpressUseCommSyLogin()) {
 					$session_item = $this->_environment->getSessionItem();
@@ -181,10 +181,10 @@
 				}
 				$return['wordpress']['session'] = $url_session_id;
 			}
-			
+
 			// plugins for moderators and users
 			// TODO: $html .= plugin_hook_output_all('getExtraActionAsHTML',array(),LF).LF;
-			
+
 			// rss
 			$show_rss_link = false;
 			if($current_context->isLocked() || $current_context->isClosed()) {
@@ -194,53 +194,54 @@
 			} elseif($current_user->isUser()) {
 				$show_rss_link = true;
 			}
-			
+
 			$hash_string = '';
 			if(!$current_context->isOpenForGuests() && $current_user->isUser()) {
 				$hash_manager = $this->_environment->getHashManager();
 				$hash_string = '&amp;hid=' . $hash_manager->getRSSHashForUser($current_user->getItemID());
 			}
-			
+
 			if(!$current_context->isRSSOn()) {
 				$show_rss_link = false;
 			}
-			
+
 			if($show_rss_link) {
 				$count++;
 				$return['rss']['active'] = true;
 				$return['rss']['item_id'] = $current_context->getItemID();
 				$return['rss']['hash'] = $hash_string;
 			}
-			
+
 			$return['rows'] = ceil($count / 2);
-			
+
 			return $return;
 		}
-		
+
 		private function setupSidebarInformation() {
 			$context_item = $this->_environment->getCurrentContextItem();
-			
+
 			// buzzwords
 			if($context_item->isBuzzwordShowExpanded()) $this->_sidebar_configuration['hidden']['buzzwords'] = false;
 			if($this->showBuzzwords()) {
 				$this->_sidebar_configuration['active']['buzzwords'] = true;
 				$this->assign('room', 'buzzwords', $this->getBuzzwords());
 			}
-			
+
 			// tags
 			if($context_item->isTagsShowExpanded()) $this->_sidebar_configuration['hidden']['tags'] = false;
 			if($this->showTags()) {
 				$this->_sidebar_configuration['active']['tags'] = true;
 				$this->assign('room', 'tags', $this->getTags());
 			}
-			
+
+
 			// netnavigation
 			if($context_item->isNetnavigationShowExpanded()) $this->_sidebar_configuration['hidden']['netnavigation'] = false;
 			if($this->showNetnavigation()) {
 				$this->_sidebar_configuration['active']['netnavigation'] = true;
 				$this->assign('room', 'netnavigation', $this->getNetnavigation());
 			}
-			
+
 			$this->assign('room', 'sidebar_configuration', $this->_sidebar_configuration);
 		}
 
@@ -258,7 +259,7 @@
 
 			return $rubrics;
 		}
-		
+
 		protected function isPerspective($rubric) {
 			$in_array = in_array($rubric, array(CS_GROUP_TYPE, CS_TOPIC_TYPE, CS_INSTITUTION_TYPE));
 			if($rubric === CS_INSTITUTION_TYPE) {
@@ -268,8 +269,8 @@
 
 			return $in_array;
 		}
-		
-		
+
+
 		private function getSecondNavigationInformation() {
 			// configuration
 			$return['config'] = array(
@@ -277,14 +278,14 @@
 				'active'		=> false,
 				'span_prefix'	=> 'co'
 			);
-			
+
 			// access
 			$current_user = $this->_environment->getCurrentUser();
 			if($current_user->isModerator() && !$current_user->isOnlyReadUser()) $return['config']['access'] = true;
-			
+
 			// active
 			if($this->_environment->getCurrentModule() === 'configuration') $return['config']['active'] = true;
-			
+
 			/*
 			* this method provides information, if user rubric is not active,
 			* needed for editing profil settings for this room
@@ -294,10 +295,10 @@
 				'active'		=> false,
 				'span_prefix'	=> 'spe'
 			);
-			
+
 			$current_context = $this->_environment->getCurrentContextItem();
 			$current_user = $this->_environment->getCurrentUserItem();
-			
+
 			// my profile(if user rubric is not active)
 			$available_rubrics = $current_context->getAvailableRubrics();
 			if(!in_array('user', $available_rubrics)) {
@@ -307,10 +308,10 @@
 					$return['profil']['item_id'] = $current_user->getItemID();
 				}
 			}
-			
+
 			// active
 			if($this->_environment->getCurrentModule() === 'user') $return['profil']['active'] = true;
-			
+
 			return $return;
 		}
 
@@ -393,7 +394,7 @@
 			//$this->_translator->getMessage('ACTIVITY_ACTIVE_MEMBERS_DESC',$time_spread)
 			return $return;
 		}
-		
+
 		protected function getRubricsWithFiles() {
 			// an array of all rubrics, containing files
 			$file_rubric_array = array();
@@ -402,7 +403,7 @@
 			$file_rubric_array[] = CS_DATE_TYPE;
 			$file_rubric_array[] = CS_ANNOUNCEMENT_TYPE;
 			$file_rubric_array[] = CS_TODO_TYPE;
-			
+
 			return $file_rubric_array;
 		}
 
@@ -571,7 +572,7 @@
       		}
       		return $info_text;
   	 	}
-  	 	
+
 		private function showTags() {
 			$context_item = $this->_environment->getCurrentContextItem();
 			if($context_item->withTags() &&
@@ -584,10 +585,10 @@
 	                || $this->_environment->getCurrentModule() === 'home')) {
 				return true;
 			}
-			
+
 			return false;
 		}
-		
+
 		private function showBuzzwords() {
 			$context_item = $this->_environment->getCurrentContextItem();
 			if($context_item->withBuzzwords() &&
@@ -599,10 +600,10 @@
 					$this->_environment->getCurrentModule() === CS_TODO_TYPE)) {
 				return true;
 			}
-			
+
 			return false;
 		}
-		
+
 		protected function showNetnavigation() {
 			return false;
 		}

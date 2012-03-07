@@ -1003,14 +1003,21 @@ a.item_actions_glow {
     margin-top: 1px;*/
     }
 
-#top_item_actions .anno_count {
+#top_item_actions .action_count {
     color: #DEE8FF;
     font-size: 10px;
     font-weight: bold;
     left: 27px;
     position: relative;
-    top: -17px;
 	}
+
+#top_item_actions .anno_count {
+    top: -17px;
+}
+
+#top_item_actions .linked_count{
+    top: -98px;
+}
 
 .item_body {
     width: 695px;
