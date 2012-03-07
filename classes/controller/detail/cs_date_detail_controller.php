@@ -219,7 +219,7 @@ class cs_date_detail_controller extends cs_detail_controller {
 		
 		// annotations
 		// get annotations
-		$annotations = $version_item->getAnnotationList();
+		$annotations = $this->_item->getAnnotationList();
 
 		// assign annotations
 		$this->assign('detail', 'annotations', $this->getAnnotationInformation($annotations));

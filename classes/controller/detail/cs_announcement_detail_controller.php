@@ -148,7 +148,7 @@
 					
 					// annotations
 					// get annotations
-					$annotations = $version_item->getAnnotationList();
+					$annotations = $this->_item->getAnnotationList();
 					
 					// assign annotations
 					$this->assign('detail', 'annotations', $this->getAnnotationInformation($annotations));
