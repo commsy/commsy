@@ -64,7 +64,6 @@
 			*/
 			$this->assign('item', 'tags', $this->getTags(true));
 			$this->assign('item','linked_count', $this->_linked_count);
-			$this->assign('item','annotation_change_info', $this->_getAnnotationInformation($this->_item));
 		}
 
 		protected function setupInformation() {
@@ -849,50 +848,6 @@
 		}
 
 
-   function _getAnnotationInformation($item) {
-		$current_user = $this->_environment->getCurrentUserItem();
-
-      if ($current_user->isUser()) {
-         $noticed_manager = $this->_environment->getNoticedManager();
-         $reader_manager = $this->_environment->getReaderManager();
-         $annotation_list = $item->getItemAnnotationList();
-         $anno_item = $annotation_list->getFirst();
-         $new = false;
-         $changed = false;
-         $date = "0000-00-00 00:00:00";
-         while ( $anno_item ) {
-            $noticed = $noticed_manager->getLatestNoticed($anno_item->getItemID());
-            if ( empty($noticed) ) {
-               if ($date < $anno_item->getModificationDate() ) {
-                   $new = true;
-                   $changed = false;
-                   $date = $anno_item->getModificationDate();
-                   $reader_manager->markRead($anno_item->getItemID(),0);
-                   $noticed_manager->markNoticed($anno_item->getItemID(),0);
-               }
-            } elseif ( $noticed['read_date'] < $anno_item->getModificationDate() ) {
-               if ($date < $anno_item->getModificationDate() ) {
-                   $new = false;
-                   $changed = true;
-                   $date = $anno_item->getModificationDate();
-                   $reader_manager->markRead($anno_item->getItemID(),0);
-                   $noticed_manager->markNoticed($anno_item->getItemID(),0);
-               }
-            }
-            $anno_item = $annotation_list->getNext();
-         }
-         if ( $new ) {
-            $info_text ='new';
-         } elseif ( $changed ) {
-            $info_text = 'changed';
-         } else {
-            $info_text = '';
-         }
-      } else {
-         $info_text = '';
-      }
-      return $info_text;
-   }
 
 		protected function getAnnotationInformation($annotation_list) {
 			$return = array();
@@ -934,7 +889,7 @@
 					$noticed_manager->getLatestNoticedAnnotationsByIDArray($id_array);
 
 					$annotation = $annotation_list->getFirst();
-					$pos_number = 1;					
+					$pos_number = 1;
 
 					while($annotation) {
 						// get item picture
@@ -985,12 +940,12 @@
 					      }
 					      $html .= '   </div>'.LF;
 					     */
-						
+
 						$change_status = $this->_getItemAnnotationChangeStatus($annotation);
 						if($change_status !== '') {
 							$global_changed = true;
 						}
-						
+
 						$modificator = $annotation->getModificatorItem();
 						$return['all'][] = array(
 							'image'				=> $this->getItemPicture($modificator_ref),
@@ -1011,7 +966,7 @@
 					}
 				}
 			}
-			
+
 			$return['global_changed'] = $global_changed;
 			return $return;
 		}

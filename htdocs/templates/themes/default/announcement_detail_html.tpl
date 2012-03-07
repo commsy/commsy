@@ -7,10 +7,13 @@
 			<a class="linked" href="#"><span class="ref_to_ia"> &nbsp; </span></a>
 			<a class="detail" href="#"><span class="details_ia"> &nbsp; </span></a>
 			<a class="annotations" href="#"><span class="ref_to_anno"> &nbsp; </span></a>
-			{if $detail.annotations|@count}
+			{if $detail.annotations.all|@count}
 			<div class="action_count anno_count" >{$detail.annotations.all|@count}</div>
 			{else}
 			<div class="action_count anno_count" >&nbsp;</div>
+			{/if}
+			{if $detail.annotations.global_changed}
+			<div class="action_count anno_count" >Jaja</div>
 			{/if}
 			{if $item.linked_count}
 			<div class="action_count linked_count" >{$item.linked_count}</div>
