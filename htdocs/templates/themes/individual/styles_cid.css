@@ -19,7 +19,7 @@
 body {
     background-image: url("img/Sonnenuntergang.jpg"); /* Background-Image */
     background-repeat: no-repeat;
-    background-position: center;
+    background-position: 50% 50%;
     background-color: #fcc7dc /*CS_BG_COLOR*/
 }
 
