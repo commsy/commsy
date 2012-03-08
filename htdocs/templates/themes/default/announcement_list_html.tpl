@@ -36,8 +36,20 @@
 			<div class="column_20">
 				<p>
 				{if $item.noticed.show_info}
-					<a class="new_item_2"><img title="" class="new_item_2" src="{$basic.tpl_path}img/flag_neu.gif" alt="*" /></a>
-
+					<a class="new_item_2">
+					{if $item.noticed.status == "new" and ($item.noticed.annotation_info.count_new or $item.noticed.annotation_info.count_changed)}
+					<img title="" class="new_item_2" src="{$basic.tpl_path}img/flag_neu_a.gif" alt="*" /></a>
+					{elseif $item.noticed.status == "new"}
+					<img title="" class="new_item_2" src="{$basic.tpl_path}img/flag_neu.gif" alt="*" /></a>
+					{elseif $item.noticed.status == "modified"  and ($item.noticed.annotation_info.count_new or $item.noticed.annotation_info.count_changed)}
+					<img title="" class="new_item_2" src="{$basic.tpl_path}img/flag_neu_2_a.gif" alt="*" /></a>
+					{elseif $item.noticed.status == "modified"}
+					<img title="" class="new_item_2" src="{$basic.tpl_path}img/flag_neu_2.gif" alt="*" /></a>
+					{elseif $item.noticed.annotation_info.count_new}
+					<img title="" class="new_item_2" src="{$basic.tpl_path}img/flag_neu_a.gif" alt="*" /></a>
+					{elseif $item.noticed.annotation_info.count_changed}
+					<img title="" class="new_item_2" src="{$basic.tpl_path}img/flag_neu_2_a.gif" alt="*" /></a>
+					{/if}
 					<span class="tooltip">
 						<span class="header">___COMMON_CHANGE_INFORAMTION___</span><br/>
 						<span class="content">{$item.noticed.item_info}</span>

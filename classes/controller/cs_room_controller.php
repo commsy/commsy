@@ -269,15 +269,15 @@
 
 			return $in_array;
 		}
-		
+
 		protected function getItemModificator($item) {
 			$modificator = $item->getModificatorItem();
 			$translator = $this->_environment->getTranslationObject();
 			$converter = $this->_environment->getTextConverter();
-			
+
 			if(isset($modificator) && !$modificator->isDeleted()) {
 				$current_user = $this->_environment->getCurrentUserItem();
-				
+
 				if($current_user->isGuest() && $modificator->isVisibleForLoggedIn()) {
 					$fullname = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
 				} else {
@@ -286,7 +286,7 @@
 			} else {
 				$fullname = $translator->getMessage('COMMON_DELETED_USER');
 			}
-			
+
 			return $converter->text_as_html_short($fullname);
 		}
 
@@ -539,9 +539,11 @@
          		if ( empty($noticed) ) {
             		$info_text['item_info'] = $translator->getMessage('COMMON_NEW_ENTRY');
          			$info_text['show_info'] = true;
+         			$info_text['status'] = 'new';
          		} elseif ( $noticed['read_date'] < $item->getModificationDate() ) {
             		$info_text['item_info'] = $translator->getMessage('COMMON_CHANGED_ENTRY');
          			$info_text['show_info'] = true;
+         			$info_text['status'] = 'modified';
          		} else {
             		$info_text['item_info'] = '';
          		}
