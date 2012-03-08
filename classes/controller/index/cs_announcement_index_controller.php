@@ -226,8 +226,8 @@
 				'modificator'		=> $this->getItemModificator($item),
 				'assessment_array'  => $assessment_stars_text_array,
 				'noticed'			=> $noticed_text,
-				'attachment_count'	=> $item->getFileList()->getCount()
-//				'attachment_infos'	=>
+				'attachment_count'	=> $file_count,
+				'attachment_infos'	=> $attachment_infos
 				);
 
 				$item = $list->getNext();
