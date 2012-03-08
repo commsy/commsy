@@ -936,6 +936,13 @@ input.new_item_2 {
   margin-left:0px;
   }
 
+img.new_item_detail_annotation {
+    left: -51px;
+    padding-bottom: 0;
+    position: relative;
+    top: -8px;
+}
+
 .item_actions {
     width: 39px;
     float: left;

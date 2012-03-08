@@ -8,7 +8,11 @@
 			<a class="detail" href="#"><span class="details_ia"> &nbsp; </span></a>
 			<a class="annotations" href="#"><span class="ref_to_anno"> &nbsp; </span></a>
 			{if $detail.annotations|@count}
-			<div class="action_count anno_count" >{$detail.annotations|@count}</div>
+			<div class="action_count anno_count" >{$detail.annotations|@count}
+			{if $detail.annotations_changed}
+					<img title="*" class="new_item_detail_annotation" src="{$basic.tpl_path}img/flag_neu.gif" alt="*" />
+			{/if}
+			</div>
 			{else}
 			<div class="action_count anno_count" >&nbsp;</div>
 			{/if}
@@ -17,9 +21,6 @@
 			{else}
 			<div class="action_count linked_count" >&nbsp;</div>
 			{/if}
-			
-			
-			{if $detail.annotations_changed}hier gibts was neues{/if}
 		</div>
 	</div>
 
