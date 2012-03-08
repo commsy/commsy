@@ -64,7 +64,7 @@
 			*/
 			$this->assign('item', 'tags', $this->getTags(true));
 			$this->assign('item','linked_count', $this->_linked_count);
-			
+
 			$global_changed = false;
 			if($this->_getItemAnnotationChangeStatus($this->_item)) {
 				$global_changed = true;
@@ -157,7 +157,7 @@
 				$label_manager = $this->_environment->getLabelManager();
 				$type = $label_manager->getItem($current_item_id)->getLabelType();
 			}
-			
+
 			$this->_manager = $this->_environment->getManager($type);
 			$this->_item = $this->_manager->getItem($current_item_id);
 		}

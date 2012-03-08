@@ -531,30 +531,37 @@
 		protected function _getItemChangeStatus($item) {
       		$current_user = $this->_environment->getCurrentUserItem();
       		$translator = $this->_environment->getTranslationObject();
+      		$info_text = array();
+      		$info_text['show_info'] = false;
       		if ($current_user->isUser()) {
          		$noticed_manager = $this->_environment->getNoticedManager();
          		$noticed = $noticed_manager->getLatestNoticed($item->getItemID());
          		if ( empty($noticed) ) {
-            		$info_text = $translator->getMessage('COMMON_NEW_ENTRY');
+            		$info_text['item_info'] = $translator->getMessage('COMMON_NEW_ENTRY');
+         			$info_text['show_info'] = true;
          		} elseif ( $noticed['read_date'] < $item->getModificationDate() ) {
-            		$info_text = $translator->getMessage('COMMON_CHANGED_ENTRY');
+            		$info_text['item_info'] = $translator->getMessage('COMMON_CHANGED_ENTRY');
+         			$info_text['show_info'] = true;
          		} else {
-            		$info_text = '';
+            		$info_text['item_info'] = '';
          		}
          		// Add change info for annotations (TBD)
       		} else {
-         		$info_text = '';
+         		$info_text['item_info'] = '';
       		}
-      		$info_text2 = $this->_getItemAnnotationChangeStatus($item);
-      		if (!empty($info_text2)){
-      			$info_text .= ', ';
-      		}
+      		$info_text['annotation_info'] = $this->_getItemAnnotationChangeStatus($item);
+            if (!empty($info_text['annotation_info']['count_new']) or !empty($info_text['annotation_info']['count_changed'])){
+            	$info_text['show_info'] = true;
+            }
       		return $info_text;
    		}
-		
+
 		protected function _getItemAnnotationChangeStatus($item) {
       		$translator = $this->_environment->getTranslationObject();
       		$current_user = $this->_environment->getCurrentUserItem();
+      		$info_text = array();
+      		$info_text['count_new'] = 0;
+      		$info_text['count_changed'] = 0;
       		if ($current_user->isUser()) {
          		$noticed_manager = $this->_environment->getNoticedManager();
          		$annotation_list = $item->getItemAnnotationList();
@@ -564,30 +571,30 @@
          		$date = "0000-00-00 00:00:00";
          		while ( $anno_item ) {
             		$noticed = $noticed_manager->getLatestNoticed($anno_item->getItemID());
+            		$temp_array = array();
             		if ( empty($noticed) ) {
                			if ($date < $anno_item->getModificationDate() ) {
-                   			$new = true;
-                   			$changed = false;
-                   			$date = $anno_item->getModificationDate();
+                   			$info_text['count_new']++;
+                   			$temp_array['iid'] = $anno_item->getItemID();
+                   			$temp_array['date'] = $anno_item->getModificationDate();
+                   			$temp_array['date'] = $this->_environment->getTranslationObject()->getDateInLang($anno_item->getModificationDate());
+                   			$temp_array['title'] = $anno_item->getTitle();
+                    		$temp_array['ref_iid'] = $anno_item->getLinkedItemID();
+                    		$info_text['anno_new_items'][] = $temp_array;
                			}
             		} elseif ( $noticed['read_date'] < $anno_item->getModificationDate() ) {
                			if ($date < $anno_item->getModificationDate() ) {
-                   			$new = false;
-                   			$changed = true;
-                   			$date = $anno_item->getModificationDate();
-               			}
+                   			$info_text['count_changed']++;
+                   			$temp_array['iid'] = $anno_item->getItemID();
+                   			$temp_array['date'] = $this->_environment->getTranslationObject()->getDateInLang($anno_item->getModificationDate());
+                   			$temp_array['modificator'] = $anno_item->getModificatorItem()->getFullname();
+                   			$temp_array['title'] = $anno_item->getTitle();
+                    		$temp_array['ref_iid'] = $anno_item->getLinkedItemID();
+                    		$info_text['anno_changed_items'][] = $temp_array;
+                			}
             		}
             		$anno_item = $annotation_list->getNext();
          		}
-         		if ( $new ) {
-            		$info_text = $translator->getMessage('COMMON_NEW_ANNOTATION');
-         		} elseif ( $changed ) {
-            		$info_text = $translator->getMessage('COMMON_CHANGED_ANNOTATION');
-         		} else {
-            		$info_text = '';
-         		}
-      		} else {
-         		$info_text = '';
       		}
       		return $info_text;
   	 	}
@@ -600,9 +607,9 @@
 				$new = false;
          		$changed = false;
          		$date = "0000-00-00 00:00:00";
-				
-				$noticed = $noticed_manager->getLatestNoticed($annotation->getItemID());				
-				
+
+				$noticed = $noticed_manager->getLatestNoticed($annotation->getItemID());
+
 				if ( empty($noticed) ) {
 					if ($date < $annotation->getModificationDate() ) {
 						$new = true;
@@ -616,7 +623,7 @@
 						$date = $annotation->getModificationDate();
 					}
 				}
-				
+
          		if ( $new ) {
             		$info_text = $translator->getMessage('COMMON_NEW_ANNOTATION');
          		} elseif ( $changed ) {
@@ -627,7 +634,7 @@
       		} else {
          		$info_text = '';
       		}
-			
+
       		return $info_text;
   	 	}
 
