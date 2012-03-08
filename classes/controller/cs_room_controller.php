@@ -551,6 +551,12 @@
       		} else {
          		$info_text['item_info'] = '';
       		}
+      		if ($item->getType() == CS_MATERIAL_TYPE){
+      			$info_text['section_info'] = $this->_getItemSectionChangeStatus($item);
+      		}
+      		if ($item->getType() == CS_DISCUSSION_TYPE){
+      			$info_text['article_info'] = $this->_getItemArticleChangeStatus($item);
+      		}
       		$info_text['annotation_info'] = $this->_getItemAnnotationChangeStatus($item);
             if (!empty($info_text['annotation_info']['count_new']) or !empty($info_text['annotation_info']['count_changed'])){
             	$info_text['show_info'] = true;

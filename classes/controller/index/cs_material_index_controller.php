@@ -53,6 +53,48 @@
 			$this->assign('material','list_content', $list_content);
 		}
 
+		protected function _getItemSectionChangeStatus($item) {
+      		$translator = $this->_environment->getTranslationObject();
+      		$current_user = $this->_environment->getCurrentUserItem();
+      		$info_text = array();
+      		$info_text['count_new'] = 0;
+      		$info_text['count_changed'] = 0;
+      		if ($current_user->isUser()) {
+         		$noticed_manager = $this->_environment->getNoticedManager();
+         		$section_list = $item->getSectionList();
+         		$section_item = $section_list->getFirst();
+         		$new = false;
+         		$changed = false;
+         		$date = "0000-00-00 00:00:00";
+         		while ( $section_item ) {
+            		$noticed = $noticed_manager->getLatestNoticed($section_item->getItemID());
+            		$temp_array = array();
+            		if ( empty($noticed) ) {
+               			if ($date < $section_item->getModificationDate() ) {
+                   			$info_text['count_new']++;
+                   			$temp_array['iid'] = $section_item->getItemID();
+                   			$temp_array['date'] = $section_item->getModificationDate();
+                   			$temp_array['date'] = $this->_environment->getTranslationObject()->getDateInLang($section_item->getModificationDate());
+                   			$temp_array['title'] = $section_item->getTitle();
+                    		$temp_array['ref_iid'] = $section_item->getLinkedItemID();
+                    		$info_text['section_new_items'][] = $temp_array;
+               			}
+            		} elseif ( $noticed['read_date'] < $section_item->getModificationDate() ) {
+               			if ($date < $section_item->getModificationDate() ) {
+                   			$info_text['count_changed']++;
+                   			$temp_array['iid'] = $section_item->getItemID();
+                   			$temp_array['date'] = $this->_environment->getTranslationObject()->getDateInLang($section_item->getModificationDate());
+                   			$temp_array['modificator'] = $section_item->getModificatorItem()->getFullname();
+                   			$temp_array['title'] = $section_item->getTitle();
+                    		$temp_array['ref_iid'] = $section_item->getLinkedItemID();
+                    		$info_text['section_changed_items'][] = $temp_array;
+                			}
+            		}
+            		$section_item = $section_list->getNext();
+         		}
+      		}
+      		return $info_text;
+  	 	}
 
 
 		public function getListContent() {
@@ -123,16 +165,18 @@
 
 			$this->_page_text_fragment_array['count_entries'] = $this->getCountEntriesText($this->_list_parameter_arrray['from'],$this->_list_parameter_arrray['interval'], $count_all, $count_all_shown);
             $this->_browsing_icons_parameter_array = $this->getBrowsingIconsParameterArray($this->_list_parameter_arrray['from'],$this->_list_parameter_arrray['interval'], $count_all_shown);
-            
+
             $session = $this->_environment->getSessionItem();
             $session->setValue('cid'.$environment->getCurrentContextID().'_material_index_ids', $ids);
-            
+
 			$id_array = array();
 			$item = $list->getFirst();
 			while ($item){
    				$id_array[] = $item->getItemID();
    				$item = $list->getNext();
 			}
+      		$section_manager = $environment->getSectionManager();
+      		$section_list = $section_manager->getAllSectionItemListByIDArray($id_array);
 			$noticed_manager = $environment->getNoticedManager();
 			$noticed_manager->getLatestNoticedByIDArray($id_array);
 			$noticed_manager->getLatestNoticedAnnotationsByIDArray($id_array);
@@ -141,6 +185,7 @@
 			$file_manager = $environment->getFileManager();
 			$file_manager->setIDArrayLimit($file_id_array);
 			$file_manager->select();
+
 
 			// prepare item array
 			$item = $list->getFirst();
@@ -172,9 +217,9 @@
 						$assessment_stars_text_array[$i] = 'active';
 					}
 				}
-				
+
 				// files
-				$attachment_infos = array();	
+				$attachment_infos = array();
 				$file_count = $item->getFileList()->getCount();
 				$file_list = $item->getFileList();
 
@@ -193,7 +238,7 @@
 					$attachment_infos[] = $info;
 					$file = $file_list->getNext();
 				}
-				
+
 				$noticed_text = $this->_getItemChangeStatus($item);
 				$item_array[] = array(
 				'iid'				=> $item->getItemID(),
@@ -216,7 +261,7 @@
 			);
 			return $return;
 		}
-		
+
 		protected function getAdditionalActions(&$perms) {
 		}
 

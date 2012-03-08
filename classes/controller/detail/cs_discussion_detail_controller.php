@@ -3,43 +3,43 @@
 
 	class cs_discussion_detail_controller extends cs_detail_controller {
 		const MAX_DEEP_THREADED = 12;
-		
+
 		/**
 		 * constructor
 		 */
 		public function __construct(cs_environment $environment) {
 			// call parent
 			parent::__construct($environment);
-			
+
 			$this->_tpl_file = 'discussion_detail';
 		}
-		
+
 		/*
 		 * every derived class needs to implement an processTemplate function
 		 */
 		public function processTemplate() {
 			// call parent
 			parent::processTemplate();
-			
+
 			// assign rubric to template
 			$this->assign('room', 'rubric', CS_DISCUSSION_TYPE);
 		}
-		
+
 		/*****************************************************************************/
 		/******************************** ACTIONS ************************************/
 		/*****************************************************************************/
 		public function actionDetail() {
 			// try to set the item
 			$this->setItem();
-			
+
 			$this->setupInformation();
-			
+
 			// set tpl file, if threaded
 			if($this->_item->getDiscussionType() === 'threaded') {
 				$this->_tpl_file = 'discussion_detail_threaded';
 			}
-			
-			
+
+
 			/*
 			 * include_once('include/inc_delete_entry.php');
 
@@ -88,7 +88,7 @@ if ($type != CS_DISCUSSION_TYPE) {
       $page->add($errorbox);
    } else {
 			 */
-			
+
 			$session = $this->_environment->getSessionItem();
 			if(isset($_GET['export_to_wiki'])){
 				$wiki_manager = $this->_environment->getWikiManager();
@@ -102,7 +102,7 @@ if ($type != CS_DISCUSSION_TYPE) {
 		        unset($params['export_to_wiki']);
 		        redirect($this->_environment->getCurrentContextID(),CS_DISCUSSION_TYPE, 'detail', $params);
 			}
-			
+
 			if(isset($_GET['remove_from_wiki'])){
 				$wiki_manager = $this->_environment->getWikiManager();
 		        global $c_use_soap_for_wiki;
@@ -113,45 +113,45 @@ if ($type != CS_DISCUSSION_TYPE) {
 		        unset($params['remove_from_wiki']);
 		        redirect($this->_environment->getCurrentContextID(),CS_DISCUSSION_TYPE, 'detail', $params);
 			}
-			
+
 			// Get clipboard
 			if ( $session->issetValue('discussion_clipboard') ) {
 				$clipboard_id_array = $session->getValue('discussion_clipboard');
 			} else {
 				$clipboard_id_array = array();
 			}
-			
+
 			// Copy to clipboard
 			if ( isset($_GET['add_to_discussion_clipboard']) && !in_array($current_item_id, $clipboard_id_array) ) {
 				$clipboard_id_array[] = $current_item_id;
 				$session->setValue('discussion_clipboard', $clipboard_id_array);
 			}
-			
+
 			// set clipboard ids
 			$this->setClipboardIDArray($clipboard_id_array);
-		    
+
 			// mark as read and noticed
 			$this->markRead();
 			$this->markNoticed();
-			
+
 			$this->assign('detail', 'content', $this->getDetailContent());
 		}
-		
+
 		/*****************************************************************************/
 		/******************************** END ACTIONS ********************************/
 		/*****************************************************************************/
-		
+
 		protected function setBrowseIDs() {
 			$session = $this->_environment->getSessionItem();
-			
+
 			if($session->issetValue('cid' . $this->_environment->getCurrentContextID() . '_discussion_index_ids')) {
 				$this->_browse_ids = array_values((array) $session->getValue('cid' . $this->_environment->getCurrentContextID() . '_discussion_index_ids'));
 			}
 		}
-		
+
 		protected function getDetailContent() {
 			$disc_articles = $this->getDiscArticleContent();
-			
+
 			$return = array(
 				'item_id'			=> $this->_item->getItemID(),
 				'discussion'		=> $this->getDiscussionContent(),
@@ -159,19 +159,19 @@ if ($type != CS_DISCUSSION_TYPE) {
 				'new_num'			=> count($disc_articles) + 1,
 				'moredetails'		=> $this->getCreatorInformationAsArray($this->_item)
 			);
-			
+
 			return $return;
 		}
-		
+
 		protected function getAdditionalActions(&$perms) {
 			$current_context = $this->_environment->getCurrentContextItem();
 			$current_user = $this->_environment->getCurrentUserItem();
-			
+
 			$perms['wiki'] = false;
-			
+
 			if($this->_item->mayEdit($current_user) && $current_context->isWikiActive() && $this->_with_modifying_actions && (!$this->_item->isA(CS_DISCUSSION_TYPE) || $this->_item->getDiscussionType() === 'simple')) {
 				$perms['wiki'] = true;
-				
+
 				/*
 				 * $params = array();
          $params['iid'] = $item->getItemID();
@@ -200,30 +200,64 @@ if ($type != CS_DISCUSSION_TYPE) {
 				 */
 			}
 		}
-		
+
+		protected function markArticlesReadedAndNoticed($article_list) {
+			$reader_manager = $this->_environment->getReaderManager();
+			$noticed_manager = $this->_environment->getNoticedManager();
+
+			// collect an array of all ids and precach
+			$id_array = array();
+			$article = $article_list->getFirst();
+			while($article) {
+				$id_array[] = $article->getItemID();
+
+				$article = $article_list->getNext();
+			}
+
+			$reader_manager->getLatestReaderByIDArray($id_array);
+			$noticed_manager->getLatestNoticedByIDArray($id_array);
+
+			// mark if needed
+			$article = $article_list->getFirst();
+			while($article) {
+				$reader = $reader_manager->getLatestReader($article->getItemID());
+				if(empty($reader) || $reader['read_date'] < $article->getModificationDate()) {
+					$reader_manager->markRead($article->getItemID(), 0);
+				}
+
+				$noticed = $noticed_manager->getLatestNoticed($article->getItemID());
+				if(empty($noticed) || $noticed['read_date'] < $article->getModificationDate()) {
+					$noticed_manager->markNoticed($article->getItemID(), 0);
+				}
+
+				$article = $article_list->getNext();
+			}
+		}
+
+
 		private function getDiscussionContent() {
 			$return = array();
-			
+
 			// append return
 			$return = array(
 				'title'				=> $this->_item->getTitle(),
 				'item_id'			=> $this->_item->getItemID(),
 				'assessments'		=> $this->getAssessmentInformation()
 			);
-			
+
 			return $return;
 		}
-		
+
 		protected function getEditActions($item, $user, $module = '') {
 			$return = array(
 				'edit'		=> false,
 				'delete'		=> false
 			);
-			
+
 			$current_context = $this->_environment->getCurrentContextItem();
 			$current_user = $this->_environment->getCurrentUserItem();
 			$discussion_type = $this->_item->getDiscussionType();
-			
+
 			if($discussion_type === 'threaded') {
 				/*
 					if ( $subitem->mayEdit($user) and $this->_with_modifying_actions ) {
@@ -257,15 +291,15 @@ if ($type != CS_DISCUSSION_TYPE) {
 			} else {
 				$return = parent::getEditActions($item, $current_user, 'discarticle');
 			}
-			
+
 			if($user->isUser() && $discussion_type === 'threaded' && $this->_with_modifying_actions) {
-				
+
 				/*
 				$params = array();
 		         //$params['iid'] = 'NEW';
 		         $params['iid'] = $item->GetItemID();
 		         //$params['discussion_id'] = $item->getItemID();
-		
+
 		         $params['ref_position'] = 1;
 		         $ref_position = $subitem->getPosition();
 		         if(!empty($ref_position)){
@@ -278,9 +312,9 @@ if ($type != CS_DISCUSSION_TYPE) {
 		         } else {
 		            $image = '<img src="images/commsyicons/22x22/new_section.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('DISCARTICLE_ANSWER_NEW').'"/>';
 		         }
-		
+
 		         // in threaded view, we want to put the form directly into the detail view and not on a single page
-		
+
 		         $html .= ahref_curl(   $this->_environment->getCurrentContextID(),
 		                                'discussion',
 		                                'detail',
@@ -302,11 +336,11 @@ if ($type != CS_DISCUSSION_TYPE) {
 		         $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION_NEW',$this->_translator->getMessage('DISCARTICLE_ANSWER_NEW')).' "class="disabled">'.$image.'</a>'.LF;
 		         */
 			}
-			
+
 			if($item->mayEdit($user) && $this->_with_modifying_actions) {
 				$return['delete'] = true;
-				
-				
+
+
 				/*
 				$params = $this->_environment->getCurrentParameterArray();
          $params['action'] = 'delete';
@@ -344,23 +378,23 @@ if ($type != CS_DISCUSSION_TYPE) {
          $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION_NEW',$this->_translator->getMessage('COMMON_DELETE_ITEM')).' "class="disabled">'.$image.'</a>'.LF;
 				 */
 			}
-			
+
 			return $return;
 		}
-		
+
 		private function getDiscArticleContent() {
 			$context_item = $this->_environment->getCurrentContextItem();
 			$session = $this->_environment->getSessionItem();
-			
+
 			$creatorInfoStatus = array();
 			if(!empty($_GET['creator_info_max'])) {
 				$creatorInfoStatus = explode('-', $_GET['creator_info_max']);
 			}
-			
+
 			// load discussion articles
 			$disc_articles_manager = $this->_environment->getDiscussionArticlesManager();
 			$disc_articles_manager->setDiscussionLimit($this->_item->getItemID(), $creatorInfoStatus);
-			
+
 			$discussion_type = $this->_item->getDiscussionType();
 			if($discussion_type == 'threaded') {
 				$disc_articles_manager->setSortPosition();
@@ -368,23 +402,23 @@ if ($type != CS_DISCUSSION_TYPE) {
 			if(isset($_GET['status']) && $_GET['status'] == 'all_articles') {
 				$disc_articles_manager->setDeleteLimit(false);
 			}
-						
+
 			$disc_articles_manager->select();
 			$articles_list = $disc_articles_manager->get();
-			
+
 			// for performance reasons, pre-fetch latest noticed and reader(for all files)
 			$articles_id_array = array();
 			$article = $articles_list->getFirst();
 			while($article) {
 				$articles_id_array[] = $article->getItemID();
-				
+
 				$article = $articles_list->getNext();
 			}
 			$noticed_manager = $this->_environment->getNoticedManager();
 			$reader_manager = $this->_environment->getReaderManager();
 			$noticed_manager->getLatestNoticedByIDArray($articles_id_array);
 			$reader_manager->getLatestReaderByIDArray($articles_id_array);
-			
+			$this->markArticlesReadedAndNoticed($articles_list);
 			// set rubric connections
 			$current_room_modules = $context_item->getHomeConf();
 			/*
@@ -395,11 +429,11 @@ if ($type != CS_DISCUSSION_TYPE) {
       }
 			 */
 			$room_modules = explode(',', $current_room_modules);
-			
+
 			$first = '';
 			foreach($room_modules as $module) {
 				list($name, $view) = explode('_', $module);
-				
+
 				if($view !== 'none') {
 					switch($name) {
 						case 'group':
@@ -420,7 +454,7 @@ if ($type != CS_DISCUSSION_TYPE) {
 					}
 				}
 			}
-			
+
 			// set up ids of linked items
 			if($context_item->withRubric(CS_TOPIC_TYPE)) {
 				$ids = $this->_item->getLinkedItemIDArray(CS_TOPIC_TYPE);
@@ -434,7 +468,7 @@ if ($type != CS_DISCUSSION_TYPE) {
 				$ids = $this->_item->getLinkedItemIDArray(CS_INSTITUTION_TYPE);
 				$session->setValue('cid' . $this->_environment->getCurrentContextID() . '_institutions_index_ids', $ids);
 			}
-			
+
 			/* seems to be unused
 			$rubric_connections = array();
 			if($first === CS_TOPIC_TYPE) {
@@ -457,12 +491,12 @@ if ($type != CS_DISCUSSION_TYPE) {
 				}
 			}
 			$rubric_connections[] = CS_MATERIAL_TYPE;
-			
+
 			*/
 			// seems to be not needed
 			//$this->setRubricConnections($rubric_connections);
-			
-			
+
+
 			/* TODO
       if ( $context_item->isPrivateRoom() ) {
          // add annotations to detail view
@@ -511,41 +545,41 @@ if ($type != CS_DISCUSSION_TYPE) {
          }
          unset($search_array);
       }*/
-			
+
 			if($this->_item->getDiscussionType() === 'threaded') {
 					return $this->getDiscArticleContentThreaded($articles_list);
 			} else {
 					return $this->getDiscArticleContentLinear($articles_list);
 			}
 		}
-		
+
 		/*
 		 * TODO: Algorithm could be optimized
 		 */
 		private function buildThreadedTree($node_list, $root) {
 			$return = array();
-			
+
 			$noticed_manager = $this->_environment->getNoticedManager();
 			$reader_manager = $this->_environment->getReaderManager();
 			$translator = $this->_environment->getTranslationObject();
 			$current_user = $this->_environment->getCurrentUserItem();
 			$disc_manager = $this->_environment->getDiscManager();
 			$converter = $this->_environment->getTextConverter();
-			
+
 			$root_position = $root->getPosition();
 			$root_level = sizeof(explode('.', $root_position)) - 1;
-			
+
 			// get through
 			$item = $node_list->getFirst();
 			while($item) {
 				$item_position = $item->getPosition();
 				$item_level = sizeof(explode('.', $item_position)) - 1;
-				
+
 				// skip if item is not a direct child of root
 				if($item_level === $root_level + 1 && $root_position === mb_substr($item_position, 0, sizeof($item_position) - 6)) {
 					// files
 					$files = $item->getFileList();
-					
+
 					// creator
 					$creator = $item->getCreatorItem();
 					$creator_fullname = '';
@@ -567,7 +601,7 @@ if ($type != CS_DISCUSSION_TYPE) {
 							}
 						}
 					}
-					
+
 					// noticed
 					$noticed = '';
 					if($current_user->isUser()) {
@@ -580,7 +614,7 @@ if ($type != CS_DISCUSSION_TYPE) {
 							$noticed = 'changed';
 						}
 					}
-					
+
 					// description
 					$description = $item->getDescription();
 					$description = $converter->cleanDataFromTextArea($description);
@@ -588,10 +622,10 @@ if ($type != CS_DISCUSSION_TYPE) {
 					$description = $converter->text_as_html_long($description);
 					$description = $converter->showImages($description, $item, true);
 					//$retour .= $this->getScrollableContent($desc,$item,'',true).LF;
-					
+
 					$node_list->removeElement($item);
 					$node_list_clone = clone $node_list;
-					
+
 					// append return and recursive call
 					$return[] = array(
 						'item_id'			=> $item->getItemID(),
@@ -608,29 +642,29 @@ if ($type != CS_DISCUSSION_TYPE) {
 						'children'			=> $this->buildThreadedTree($node_list_clone, $item)
 					);
 				}
-				
+
 				$item = $node_list->getNext();
 			}
-			
+
 			return $return;
 		}
-		
+
 		private function getDiscArticleContentThreaded($articles_list) {
 			$return = array();
-			
+
 			$noticed_manager = $this->_environment->getNoticedManager();
 			$reader_manager = $this->_environment->getReaderManager();
 			$translator = $this->_environment->getTranslationObject();
 			$current_user = $this->_environment->getCurrentUserItem();
 			$disc_manager = $this->_environment->getDiscManager();
 			$converter = $this->_environment->getTextConverter();
-			
+
 			// first is always root
 			$root = $articles_list->getFirst();
-			
+
 			// files
 			$files = $root->getFileList();
-			
+
 			// creator
 			$creator = $root->getCreatorItem();
 			$creator_fullname = '';
@@ -652,7 +686,7 @@ if ($type != CS_DISCUSSION_TYPE) {
 					}
 				}
 			}
-			
+
 			// noticed
 			$noticed = '';
 			if($current_user->isUser()) {
@@ -665,7 +699,7 @@ if ($type != CS_DISCUSSION_TYPE) {
 					$noticed = 'changed';
 				}
 			}
-			
+
 			// description
 			$description = $root->getDescription();
 			$description = $converter->cleanDataFromTextArea($description);
@@ -673,7 +707,7 @@ if ($type != CS_DISCUSSION_TYPE) {
 			$description = $converter->text_as_html_long($description);
 			$description = $converter->showImages($description, $root, true);
 			//$retour .= $this->getScrollableContent($desc,$root,'',true).LF;
-			
+
 			$return[] = array(
 				'item_id'			=> $root->getItemID(),
 				'position'			=> $root->getPosition(),
@@ -687,31 +721,31 @@ if ($type != CS_DISCUSSION_TYPE) {
 				'custom_image'		=> !empty($image),
 				'actions'			=> $this->getEditActions($root, $current_user)
 			);
-			
+
 			$return[0]['children'] = $this->buildThreadedTree($articles_list, $root);
-			
+
 			pr($return);
-			
+
 			return $return;
 		}
-		
+
 		private function getDiscArticleContentLinear($articles_list) {
 			$noticed_manager = $this->_environment->getNoticedManager();
 			$reader_manager = $this->_environment->getReaderManager();
-			
+
 			$return = array();
-			
+
 			// go through list
 			$item = $articles_list->getFirst();
 			$translator = $this->_environment->getTranslationObject();
 			$current_user = $this->_environment->getCurrentUserItem();
 			$disc_manager = $this->_environment->getDiscManager();
 			$position = 0;
-			
+
 			while($item) {
 				// files
 				$files = $item->getFileList();
-				
+
 				// creator
 				$creator = $item->getCreatorItem();
 				$creator_fullname = '';
@@ -733,7 +767,7 @@ if ($type != CS_DISCUSSION_TYPE) {
 						}
 					}
 				}
-				
+
 				// noticed
 				$noticed = '';
 				if($current_user->isUser()) {
@@ -746,7 +780,7 @@ if ($type != CS_DISCUSSION_TYPE) {
 						$noticed = 'changed';
 					}
 				}
-				
+
 				// description
 				$converter = $this->_environment->getTextConverter();
 				$description = $item->getDescription();
@@ -754,9 +788,9 @@ if ($type != CS_DISCUSSION_TYPE) {
 				$converter->setFileArray($this->getItemFileList());
 				$description = $converter->text_as_html_long($description);
 				$description = $converter->showImages($description, $item, true);
-								
+
 				//$retour .= $this->getScrollableContent($desc,$item,'',true).LF;
-				
+
 				// append return
 				$return[] = array(
 					'item_id'			=> $item->getItemID(),
@@ -772,10 +806,10 @@ if ($type != CS_DISCUSSION_TYPE) {
 					'actions'			=> $this->getEditActions($item, $current_user)
 				);
 				$position++;
-				
+
 				$item = $articles_list->getNext();
 			}
-			
+
 			return $return;
 		}
 	}

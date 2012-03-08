@@ -932,6 +932,12 @@ a.new_item_2 {
 img.new_item_2 {
     padding-bottom: 0px;
   }
+
+img.new_item_home_2 {
+    padding-bottom: 0px;
+    padding-right: 4px;
+  }
+
 input.new_item_2 {
   margin-left:0px;
   }

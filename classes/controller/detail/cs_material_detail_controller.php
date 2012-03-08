@@ -273,9 +273,10 @@
 
 						// assign annotations
 						$this->assign('detail', 'annotations', $this->getAnnotationInformation($annotations));
-						
+
 						// mark annotations as readed and noticed
 						$this->markAnnotationsReadedAndNoticed($annotations);
+
 
 						// assessment
 						$this->assign('detail', 'assessment', $this->getAssessmentInformation($version_item));
@@ -338,6 +339,41 @@
 				$this->_browse_ids = array_values((array) $session->getValue('cid' . $this->_environment->getCurrentContextID() . '_material_index_ids'));
 			}
 		}
+
+
+		protected function markSectionsReadedAndNoticed($section_list) {
+			$reader_manager = $this->_environment->getReaderManager();
+			$noticed_manager = $this->_environment->getNoticedManager();
+
+			// collect an array of all ids and precach
+			$id_array = array();
+			$section = $section_list->getFirst();
+			while($section) {
+				$id_array[] = $section->getItemID();
+
+				$section = $section_list->getNext();
+			}
+
+			$reader_manager->getLatestReaderByIDArray($id_array);
+			$noticed_manager->getLatestNoticedByIDArray($id_array);
+
+			// mark if needed
+			$section = $section_list->getFirst();
+			while($section) {
+				$reader = $reader_manager->getLatestReader($section->getItemID());
+				if(empty($reader) || $reader['read_date'] < $section->getModificationDate()) {
+					$reader_manager->markRead($section->getItemID(), 0);
+				}
+
+				$noticed = $noticed_manager->getLatestNoticed($section->getItemID());
+				if(empty($noticed) || $noticed['read_date'] < $section->getModificationDate()) {
+					$noticed_manager->markNoticed($section->getItemID(), 0);
+				}
+
+				$section = $section_list->getNext();
+			}
+		}
+
 
 		protected function getDetailContent() {
             $converter = $this->_environment->getTextConverter();
@@ -915,6 +951,8 @@
 			$converter = $this->_environment->getTextConverter();
 
 			$section_list = $this->_item->getSectionList();
+			$this->markSectionsReadedAndNoticed($section_list);
+
 			if(!$section_list->isEmpty()) {
 				$section = $section_list->getFirst();
 

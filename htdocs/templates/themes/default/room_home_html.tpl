@@ -35,7 +35,7 @@
                 </h2>
 
                 <div class="clear"> </div>
-                
+
                 <div class="list_wrap{if $rubric.hidden} hidden{/if}">
 
 	                {foreach $rubric.items as $item}
@@ -47,9 +47,50 @@
 		                        	</p>
 	                        	{/if}
 	                        	<p>
-									{if $item.noticed != ''}
-										<a href="" class="new_item"><img title="{$item.noticed}" class="new_item" src="{$basic.tpl_path}img/flag_neu.gif" alt="*" /></a>
-	         						{/if}
+								{if $item.noticed.show_info}
+									<a class="new_item">
+									{if $item.noticed.status == "new" and ($item.noticed.annotation_info.count_new or $item.noticed.annotation_info.count_changed)}
+									<img title="" class="new_item_home_2" src="{$basic.tpl_path}img/flag_neu_a.gif" alt="*" /></a>
+									{elseif $item.noticed.status == "new"}
+									<img title="" class="new_item_home_2" src="{$basic.tpl_path}img/flag_neu.gif" alt="*" /></a>
+									{elseif $item.noticed.status == "modified"  and ($item.noticed.annotation_info.count_new or $item.noticed.annotation_info.count_changed)}
+									<img title="" class="new_item_home_2" src="{$basic.tpl_path}img/flag_neu_2_a.gif" alt="*" /></a>
+									{elseif $item.noticed.status == "modified"}
+									<img title="" class="new_item_home_2" src="{$basic.tpl_path}img/flag_neu_2.gif" alt="*" /></a>
+									{elseif $item.noticed.annotation_info.count_new}
+									<img title="" class="new_item_home_2" src="{$basic.tpl_path}img/flag_neu_a.gif" alt="*" /></a>
+									{elseif $item.noticed.annotation_info.count_changed}
+									<img title="" class="new_item_home_2" src="{$basic.tpl_path}img/flag_neu_2_a.gif" alt="*" /></a>
+									{/if}
+									<span class="tooltip">
+										<span class="header">___COMMON_CHANGE_INFORAMTION___</span><br/>
+										<span class="content">{$item.noticed.item_info}</span>
+										{if $item.noticed.annotation_info.count_new}
+											<span class="content">___COMMON_NEW_ANNOTATIONS___: {$item.noticed.annotation_info.count_new}
+											{foreach $item.noticed.annotation_info.anno_new_items as $anno_item}
+											   <br/>
+											   <span>- <a href="commsy.php?cid={$environment.cid}&mod={$rubric@key}&fct=detail&{$environment.params}&iid={$anno_item.ref_iid}#annotation{$anno_item.iid}">{$anno_item.title|truncate:25:'...':true}</a> ({$anno_item.date})
+											   </span>
+											{/foreach}
+											</span>
+										{/if}
+										{if $item.noticed.annotation_info.count_changed}
+											<span class="content">___COMMON_CHANGED_ANNOTATIONS___: {$item.noticed.annotation_info.count_changed}
+											{foreach $item.noticed.annotation_info.anno_changed_items as $anno_item}
+											   <br/>
+											   <span>- <a href="commsy.php?cid={$environment.cid}&mod={$rubric@key}&fct=detail&{$environment.params}&iid={$anno_item.ref_iid}#annotation{$anno_item.iid}">{$anno_item.title|truncate:25:'...':true}</a> ({$anno_item.date})
+											   </span>
+											{/foreach}
+											</span>
+										{/if}
+									</span>
+
+				         			<input class="new_item_2" type="checkbox" name="form_data[attach][{$item.iid}]" value="1"/>
+				        			<input type="hidden" name="form_data[shown][{$item.iid}]" value="1"/>
+								{else}
+				         			<input type="checkbox" name="form_data[attach][{$item.iid}]" value="1"/>
+				        			<input type="hidden" name="form_data[shown][{$item.iid}]" value="1"/>
+								{/if}
 		                            <a href="commsy.php?cid={$environment.cid}&mod={$rubric@key}&fct=detail&iid={$item.iid}">{$item.column_1}</a>
 	                            </p>
 	                        </div>

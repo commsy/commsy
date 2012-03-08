@@ -1,6 +1,6 @@
 <?php
 	require_once('classes/controller/cs_list_controller.php');
-	
+
 	class cs_discussion_index_controller extends cs_list_controller {
 		/**
 		 * constructor
@@ -8,25 +8,25 @@
 		public function __construct(cs_environment $environment) {
 			// call parent
 			parent::__construct($environment);
-			
+
 			$this->_tpl_file = 'discussion_list';
 		}
-		
+
 		/*
 		 * every derived class needs to implement an processTemplate function
 		 */
 		public function processTemplate() {
 			// call parent
 			parent::processTemplate();
-			
+
 			// assign rubric to template
 			$this->assign('room', 'rubric', CS_DISCUSSION_TYPE);
 		}
-		
+
 		/*****************************************************************************/
 		/******************************** ACTIONS ************************************/
 		/*****************************************************************************/
-		
+
 		/**
 		 * INDEX
 		 */
@@ -51,7 +51,7 @@
 			$this->assign('list','restriction_tag_link_parameters',$this->getRestrictionTagLinkParameters());
 			$this->assign('list','restriction_text_parameters',$this->_getRestrictionTextAsHTML());
 			$this->assign('discussion','list_content', $list_content);
-			
+
 			// Safe information in session for later use
 			/*
 			$session->setValue('discussion_clipboard', $clipboard_id_array);
@@ -59,7 +59,51 @@
 			$session->setValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_selected_ids', $selected_ids);
 			*/
 		}
-		
+
+		protected function _getItemArticleChangeStatus($item) {
+      		$translator = $this->_environment->getTranslationObject();
+      		$current_user = $this->_environment->getCurrentUserItem();
+      		$info_text = array();
+      		$info_text['count_new'] = 0;
+      		$info_text['count_changed'] = 0;
+      		if ($current_user->isUser()) {
+         		$noticed_manager = $this->_environment->getNoticedManager();
+         		$article_list = $item->getAllArticles();
+         		$article_item = $article_list->getFirst();
+         		$new = false;
+         		$changed = false;
+         		$date = "0000-00-00 00:00:00";
+         		while ( $article_item ) {
+            		$noticed = $noticed_manager->getLatestNoticed($article_item->getItemID());
+            		$temp_array = array();
+            		if ( empty($noticed) ) {
+               			if ($date < $article_item->getModificationDate() ) {
+                   			$info_text['count_new']++;
+                   			$temp_array['iid'] = $article_item->getItemID();
+                   			$temp_array['date'] = $article_item->getModificationDate();
+                   			$temp_array['date'] = $this->_environment->getTranslationObject()->getDateInLang($article_item->getModificationDate());
+                   			$temp_array['title'] = $article_item->getTitle();
+                    		$temp_array['ref_iid'] = $article_item->getDiscussionID();
+                    		$info_text['article_new_items'][] = $temp_array;
+               			}
+            		} elseif ( $noticed['read_date'] < $article_item->getModificationDate() ) {
+               			if ($date < $article_item->getModificationDate() ) {
+                   			$info_text['count_changed']++;
+                   			$temp_array['iid'] = $article_item->getItemID();
+                   			$temp_array['date'] = $this->_environment->getTranslationObject()->getDateInLang($article_item->getModificationDate());
+                   			$temp_array['modificator'] = $article_item->getModificatorItem()->getFullname();
+                   			$temp_array['title'] = $article_item->getTitle();
+                    		$temp_array['ref_iid'] = $article_item->getDiscussionID();
+                    		$info_text['article_changed_items'][] = $temp_array;
+                			}
+            		}
+            		$article_item = $article_list->getNext();
+         		}
+      		}
+      		return $info_text;
+  	 	}
+
+
 		public function getListContent() {
 			include_once('classes/cs_list.php');
 			include_once('classes/views/cs_view.php');
@@ -138,11 +182,11 @@
 			if ( $this->_list_parameter_arrray['interval'] > 0 ) {
    				$discussion_manager->setIntervalLimit($this->_list_parameter_arrray['from']-1,$this->_list_parameter_arrray['interval']);
 			}
-			
+
 			if($this->_list_parameter_arrray['interval'] > 0) {
 				$discussion_manager->setIntervalLimit($this->_list_parameter_arrray['from']-1, $this->_list_parameter_arrray['interval']);
 			}
-			
+
 			if ( !empty($only_show_array) ) {
    				$discussion_manager->resetLimits();
    				$discussion_manager->setIDArrayLimit($only_show_array);
@@ -154,10 +198,10 @@
 
 			$this->_page_text_fragment_array['count_entries'] = $this->getCountEntriesText($this->_list_parameter_arrray['from'],$this->_list_parameter_arrray['interval'], $count_all, $count_all_shown);
             $this->_browsing_icons_parameter_array = $this->getBrowsingIconsParameterArray($this->_list_parameter_arrray['from'],$this->_list_parameter_arrray['interval'], $count_all_shown);
-            
+
             $session = $this->_environment->getSessionItem();
             $session->setValue('cid'.$environment->getCurrentContextID().'_discussion_index_ids', $ids);
-            
+
 			$id_array = array();
 			$item = $list->getFirst();
 			while ($item){
@@ -172,16 +216,16 @@
 			$file_manager = $environment->getFileManager();
 			$file_manager->setIDArrayLimit($file_id_array);
 			$file_manager->select();
-			
+
 			$discarticle_manager = $environment->getDiscussionArticleManager();
 			$discarticle_list = $discarticle_manager->getAllDiscArticlesItemListByIDArray($id_array);
-			
+
 			$item = $discarticle_list->getFirst();
 			while ($item){
 			   $id_array[] = $item->getItemID();
 			   $item = $discarticle_list->getNext();
 			}
-			
+
 			$noticed_manager = $environment->getNoticedManager();
 			$noticed_manager->getLatestNoticedByIDArray($id_array);
 			$link_manager = $environment->getLinkManager();
@@ -189,7 +233,7 @@
 			$file_manager = $environment->getFileManager();
 			$file_manager->setIDArrayLimit($file_id_array);
 			$file_manager->select();
-			
+
 			// prepare item array
 			$item = $list->getFirst();
 			$item_array = array();
@@ -221,11 +265,11 @@
 					}
 				}
 				$noticed_text = $this->_getItemChangeStatus($item);
-				
+
 				$all_and_unread_articles = $item->getAllAndUnreadArticles();
-				
+
 				// files
-				$attachment_infos = array();	
+				$attachment_infos = array();
 				$file_count = $item->getFileList()->getCount();
 				$file_list = $item->getFileList();
 
@@ -244,7 +288,7 @@
 					$attachment_infos[] = $info;
 					$file = $file_list->getNext();
 				}
-				
+
 				$item_array[] = array(
 					'iid'				=> $item->getItemID(),
 					'title'				=> $view->_text_as_html_short($item->getTitle()),
@@ -268,7 +312,7 @@
 			);
 			return $return;
 		}
-		
+
 		protected function getAdditionalActions(&$perms) {
 			/*
 			 * TODO
@@ -279,7 +323,7 @@
       return $retour;
 			 */
 		}
-		
+
 		protected function getAdditionalListActions() {
 			$return = array();
 			$return[] = array('selected' => false, 'disabled' => false, 'id' => '', 'value' => CS_LISTOPTION_COPY, 'display' => '___COMMON_LIST_ACTION_COPY___');
