@@ -131,28 +131,12 @@
 			$params['with_modifying_actions'] = false;
 			$view = new cs_view($params);
 			while($item) {
-				$modificator = $item->getModificatorItem();
-				if(isset($modificator) && !$modificator->isDeleted()) {
-					$current_user_item = $environment->getCurrentUserItem();
-					if($current_user_item->isGuest() && $modificator->isVisibleForLoggedIn()) {
-						$modificator = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
-					} else {
-						$modificator = $modificator->getFullName();
-					}
-				} else {
-					$modificator = $translator->getMessage('COMMON_DELETED_USER');
-				}
-				
-				//TODO:
-				//$modificator = $converter->compareWithSearchText($modificator);
-				$modificator = $view->_text_as_html_short($modificator);
-				
 				$noticed_text = $this->_getItemChangeStatus($item);
 				$item_array[] = array(
 					'iid'				=> $item->getItemID(),
 					'title'				=> $view->_text_as_html_short($item->getTitle()),
 					'noticed'			=> $noticed_text,
-					'modificator'		=> $modificator
+					'modificator'		=> $this->getItemModificator($item)
 				);
 
 				$item = $list->getNext();

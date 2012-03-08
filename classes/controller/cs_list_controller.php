@@ -111,7 +111,27 @@
       		}
       		return $return_array;
 		}
-
+		
+		protected function getItemModificator($item) {
+			$modificator = $item->getModificatorItem();
+			$translator = $this->_environment->getTranslationObject();
+			$converter = $this->_environment->getTextConverter();
+			
+			if(isset($modificator) && !$modificator->isDeleted()) {
+				$current_user = $this->_environment->getCurrentUserItem();
+				
+				if($current_user->isGuest() && $modificator->isVisibleForLoggedIn()) {
+					$fullname = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+				} else {
+					$fullname = $modificator->getFullName();
+				}
+			} else {
+				$fullname = $translator->getMessage('COMMON_DELETED_USER');
+			}
+			
+			return $converter->text_as_html_short($fullname);
+		}
+		
 		protected function getSortingParameterArray(){
 			$environment = $this->_environment;
            	$params = $environment->getCurrentParameterArray();
@@ -151,6 +171,39 @@
       			$return_array['sort_numposts_link'] = $link_parameter_text.'&sort=numposts';
          		$return_array['sort_numposts'] = 'none';
       		}
+			
+			if($sort_parameter === 'latest') {
+				$return_array['sort_latest_link'] = $link_parameter_text . '&sort=latest_rev';
+				$return_array['sort_latest'] = 'up';
+			} elseif($sort_parameter === 'latest_rev') {
+				$return_array['sort_latest_link'] = $link_parameter_text . '&sort=latest';
+				$return_array['sort_latest'] = 'down';
+			} else {
+				$return_array['sort_latest_link'] = $link_parameter_text . '&sort=latest';
+				$return_array['sort_latest'] = 'none';
+			}
+			
+			if($sort_parameter === 'name') {
+				$return_array['sort_name_link'] = $link_parameter_text . '&sort=name_rev';
+				$return_array['sort_name'] = 'up';
+			} elseif($sort_parameter === 'name_rev') {
+				$return_array['sort_name_link'] = $link_parameter_text . '&sort=name';
+				$return_array['sort_name'] = 'down';
+			} else {
+				$return_array['sort_name_link'] = $link_parameter_text . '&sort=name';
+				$return_array['sort_name'] = 'none';
+			}
+			
+			if($sort_parameter === 'date') {
+				$return_array['sort_date_link'] = $link_parameter_text . '&sort=date_rev';
+				$return_array['sort_date'] = 'up';
+			} elseif($sort_parameter === 'date_rev') {
+				$return_array['sort_date_link'] = $link_parameter_text . '&sort=date';
+				$return_array['sort_date'] = 'down';
+			} else {
+				$return_array['sort_date_link'] = $link_parameter_text . '&sort=date';
+				$return_array['sort_date'] = 'none';
+			}
 
       		if ( $sort_parameter == 'modificator') {
          		$return_array['sort_modificator_link'] = $link_parameter_text.'&sort=modificator_rev';

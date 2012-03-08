@@ -23,7 +23,7 @@
 		{else}
 	 		<h3 class="w_135"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_place_link}" class="sort_none">___DATES_PLACE___</a></h3>
 		{/if}
-		<h3></h3>
+		
 		<div class="clear"> </div>
 	</div>
 {/block}

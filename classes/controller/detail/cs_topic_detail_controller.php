@@ -40,7 +40,7 @@
 			
 			//include_once('include/inc_delete_entry.php');
 			
-			$translator = $this->_environment->getTRanslationObject();
+			$translator = $this->_environment->getTranslationObject();
 			
 			$type = $this->_item->getItemType();
 			if($type !== CS_TOPIC_TYPE) {

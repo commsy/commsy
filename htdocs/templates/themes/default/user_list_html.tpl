@@ -2,21 +2,15 @@
 
 {block name=room_list_header}
 	<div class="table_head">
-		{if $list.sorting_parameters.sort_title == "up"}
-		 	<h3 class="w_255"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_title_link}" id="sort_up"><strong>___USER_NAME___</strong></a></h3>
-		{elseif $list.sorting_parameters.sort_title == "down"}
-		 	<h3 class="w_255"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_title_link}" id="sort_down"><strong>___USER_NAME___</strong></a></h3>
+		{if $list.sorting_parameters.sort_name == "up"}
+		 	<h3 class="w_255"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_name_link}" id="sort_up"><strong>___USER_NAME___</strong></a></h3>
+		{elseif $list.sorting_parameters.sort_name == "down"}
+		 	<h3 class="w_255"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_name_link}" id="sort_down"><strong>___USER_NAME___</strong></a></h3>
 		{else}
-		 	<h3 class="w_255"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_title_link}" class="sort_none">___USER_NAME___</a></h3>
+		 	<h3 class="w_255"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_name_link}" class="sort_none">___USER_NAME___</a></h3>
 		{/if}
 		<h3 class="w_135">___USER_TELEPHONE___</h3>
-		{if $list.sorting_parameters.sort_modificator == "up"}
-		 	<h3 class="w_135"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_modificator_link}" id="sort_up"><strong>___USER_EMAIL___</strong></a></h3>
-		{elseif $list.sorting_parameters.sort_modificator == "down"}
-		 	<h3 class="w_135"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_modificator_link}" id="sort_down"><strong>___USER_EMAIL___</strong></a></h3>
-		{else}
-	 		<h3 class="w_135"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_modificator_link}" class="sort_none">___USER_EMAIL___</a></h3>
-		{/if}
+		<h3 class="w_135">___USER_EMAIL___</h3>
 		<div class="clear"> </div>
 	</div>
 {/block}

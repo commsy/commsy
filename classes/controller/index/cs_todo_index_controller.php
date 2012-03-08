@@ -216,7 +216,6 @@
 			
 			while($item) {
 				$noticed_text = $this->_getItemChangeStatus($item);
-				$modificator = $item->getModificatorItem();
 				
 				// files
 				$attachment_infos = array();	
@@ -243,8 +242,7 @@
 					'iid'				=> $item->getItemID(),
 					'title'				=> $view->_text_as_html_short($item->getTitle()),
 					'date'				=> $this->_environment->getTranslationObject()->getDateInLang($item->getModificationDate()),
-					'modificator'		=> $modificator->getFullName(),
-					'modificator_id'	=> $modificator->getItemID(),
+					'modificator'		=> $this->getItemModificator($item),
 					'noticed'			=> $noticed_text,
 					'attachment_count'	=> $file_count,
 					'attachment_infos'	=> $attachment_infos

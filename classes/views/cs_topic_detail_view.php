@@ -174,7 +174,6 @@ class cs_topic_detail_view extends cs_detail_view {
          $html .= $this->getScrollableContent($desc,$item,'',true).LF;
       }
 
-
       $html .= $this->_getNewestLinkedItemsAsHTML($item);
 
 

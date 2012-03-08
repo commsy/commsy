@@ -10,32 +10,14 @@
 		 	<h3 class="w_295"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_title_link}" class="sort_none">___COMMON_TITLE___</a></h3>
 		{/if}
 		<h3 class="w_85">___DISCUSSION_ARTICLES___</h3>
-		{*
-		{if $list.sorting_parameters.sort_numposts == "up"}
-			<h3 class="w_85"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_numposts_link}" id="sort_up"><strong>___DISCUSSION_ARTICLES___</strong></a></h3>
-		{elseif $list.sorting_parameters.sort_numposts == "down"}
-			<h3 class="w_85"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_numposts_link}" id="sort_down"><strong>___DISCUSSION_ARTICLES___</strong></a></h3>
+		{if $list.sorting_parameters.sort_latest == "up"}
+		 	<h3 class="w_80"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_latest_link}" id="sort_up"><strong>___COMMON_MODIFIED_AT___</strong></a></h3>
+		{elseif $list.sorting_parameters.sort_latest == "down"}
+		 	<h3 class="w_80"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_latest_link}" id="sort_down"><strong>___COMMON_MODIFIED_AT___</strong></a></h3>
 		{else}
-			<h3 class="w_85"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_numposts_link}" class="sort_none">___DISCUSSION_ARTICLES___</a></h3>
-		{/if}
-		*}
-		{if $list.sorting_parameters.sort_modified == "up"}
-		 	<h3 class="w_80"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_modified_link}" id="sort_up"><strong>___COMMON_MODIFIED_AT___</strong></a></h3>
-		{elseif $list.sorting_parameters.sort_modified == "down"}
-		 	<h3 class="w_80"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_modified_link}" id="sort_down"><strong>___COMMON_MODIFIED_AT___</strong></a></h3>
-		{else}
-		 	<h3 class="w_80"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_modified_link}" class="sort_none">___COMMON_MODIFIED_AT___</a></h3>
+		 	<h3 class="w_80"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_latest_link}" class="sort_none">___COMMON_MODIFIED_AT___</a></h3>
 		{/if}
 		<h3 class="w_135">___COMMON_ENTERED_BY___</h3>
-		{*
-		{if $list.sorting_parameters.sort_modificator == "up"}
-		 	<h3 class="w_135"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_modificator_link}" id="sort_up"><strong>___COMMON_ENTERED_BY___</strong></a></h3>
-		{elseif $list.sorting_parameters.sort_modificator == "down"}
-		 	<h3 class="w_135"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_modificator_link}" id="sort_down"><strong>___COMMON_ENTERED_BY___</strong></a></h3>
-		{else}
-	 		<h3 class="w_135"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_modificator_link}" class="sort_none">___COMMON_ENTERED_BY___</a></h3>
-		{/if}
-		*}
 		{if $list.sorting_parameters.sort_assessment == "up"}
 		 	<h3><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_assessment_link}" id="sort_up"><strong>___COMMON_ASSESSMENT_INDEX___</strong></a></h3>
 		{elseif $list.sorting_parameters.sort_assessment == "down"}
@@ -43,6 +25,7 @@
 		{else}
 		 	<h3><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_assessment_link}" class="sort_none">___COMMON_ASSESSMENT_INDEX___</a></h3>
 		{/if}
+		
 		<div class="clear"> </div>
 	</div>
 {/block}
@@ -101,7 +84,7 @@
 			</div>
 			<div class="column_155">
 				<p>
-					<a href="commsy.php?cid={$environment.cid}&mod=user&fct=detail&iid={$item.modificator_id}">{$item.modificator}</a>
+					{$item.modificator}
 				</p>
 			</div>
 			<div class="column_100">

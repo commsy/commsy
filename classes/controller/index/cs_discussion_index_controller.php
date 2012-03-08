@@ -245,14 +245,11 @@
 					$file = $file_list->getNext();
 				}
 				
-				$modificator = $item->getModificatorItem();
-				
 				$item_array[] = array(
 					'iid'				=> $item->getItemID(),
 					'title'				=> $view->_text_as_html_short($item->getTitle()),
 					'date'				=> $this->_environment->getTranslationObject()->getDateInLang($item->getModificationDate()),
-					'modificator'		=> $modificator->getFullName(),
-					'modificator_id'	=> $modificator->getItemID(),
+					'modificator'		=> $this->getItemModificator($item),
 					'assessment_array'  => $assessment_stars_text_array,
 					'noticed'			=> $noticed_text,
 					'article_count'		=> $all_and_unread_articles['count'],

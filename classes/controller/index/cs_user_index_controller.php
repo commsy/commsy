@@ -184,12 +184,12 @@
 				
 				$noticed_text = $this->_getItemChangeStatus($item);
 				$item_array[] = array(
-				'iid'				=> $item->getItemID(),
-				'title'				=> $view->_text_as_html_short($item->getFullname()),
-				'phone'				=> $phone,
-				'handy'				=> $handy,
-				'mail'				=> $mail,
-				'noticed'			=> $noticed_text
+					'iid'				=> $item->getItemID(),
+					'title'				=> $view->_text_as_html_short($item->getFullname()),
+					'phone'				=> $phone,
+					'handy'				=> $handy,
+					'mail'				=> $mail,
+					'noticed'			=> $noticed_text
 				);
 
 				$item = $list->getNext();

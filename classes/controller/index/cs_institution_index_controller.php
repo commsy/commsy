@@ -306,7 +306,7 @@ if (isset($_GET['select']) and $_GET['select']=='all'){
 				$item_array[] = array(
 					'iid'				=> $item->getItemID(),
 					'title'				=> $view->_text_as_html_short($item->getTitle()),
-					'modificator'		=> $item->getModificatorItem()->getFullName(),
+					'modificator'		=> $this->getItemModificator($item),
 					'noticed'			=> $noticed_text
 				);
 

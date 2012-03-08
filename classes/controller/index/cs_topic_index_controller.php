@@ -392,14 +392,12 @@ if ($mode=='print'){
 			$params['with_modifying_actions'] = false;
 			$view = new cs_view($params);
 			while($item) {
-				$modificator = $item->getModificatorItem();
 				$noticed_text = $this->_getItemChangeStatus($item);
 				$item_array[] = array(
 					'iid'				=> $item->getItemID(),
 					'title'				=> $view->_text_as_html_short($item->getTitle()),
 					'date'				=> $this->_environment->getTranslationObject()->getDateInLang($item->getModificationDate()),
-					'modificator'		=> $modificator->getFullName(),
-					'modificator_id'	=> $modificator->getItemID(),
+					'modificator'		=> $this->getItemModificator($item),
 					'noticed'			=> $noticed_text,
 					'attachment_count'	=> $item->getFileList()->getCount()
 //				'attachment_infos'	=>

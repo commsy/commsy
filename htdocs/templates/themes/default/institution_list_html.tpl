@@ -16,6 +16,7 @@
 		{else}
 	 		<h3 class="w_135"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_modificator_link}" class="sort_none">___COMMON_MODIFIED_BY___</a></h3>
 		{/if}
+		
 		<div class="clear"> </div>
 	</div>
 {/block}
@@ -42,7 +43,7 @@
 			</div>
 			<div class="column_194">
 				<p>
-					<a href="">{$item.modificator}</a>
+					{$item.modificator}
 				</p>
 			</div>
 			<div class="clear"> </div>

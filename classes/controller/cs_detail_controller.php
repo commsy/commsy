@@ -152,7 +152,12 @@
 			}
 
 			$item_manager = $this->_environment->getItemManager();
-			$type = $item_manager->getItemType($_GET['iid']);
+			$type = $item_manager->getItemType($current_item_id);
+			if($type === CS_LABEL_TYPE) {
+				$label_manager = $this->_environment->getLabelManager();
+				$type = $label_manager->getItem($current_item_id)->getLabelType();
+			}
+			
 			$this->_manager = $this->_environment->getManager($type);
 			$this->_item = $this->_manager->getItem($current_item_id);
 		}
