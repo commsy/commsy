@@ -488,6 +488,7 @@
 			$return = array();
 			$return['title'] = $this->_item->getTitle();
 			$return['show_picture'] = false;
+			$return['moredetails'] = $this->getCreatorInformationAsArray($this->_item);
 
 			if($this->_show_content_without_window) {
 				// TODO:

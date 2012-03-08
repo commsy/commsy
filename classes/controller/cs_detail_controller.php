@@ -952,15 +952,13 @@
 					      $html .= '   </div>'.LF;
 					     */
 
-						$modificator = $annotation->getModificatorItem();
 						$return[] = array(
 							'image'				=> $this->getItemPicture($modificator_ref),
 							'pos_number'		=> $pos_number,
 							'item_id'			=> $annotation->getItemID(),
 							'title'				=> $subitem_title,
 							'description'		=> $desc,
-							'modifier'			=> $modificator->getFullName(),
-							'modifier_id'		=> $modificator->getItemID(),
+							'modifier'			=> $this->getItemModificator($annotation),
 							'modification_date'	=> $annotation->getModificationDate(),
 							'noticed'			=> $this->_getAnnotationChangeStatus($annotation),
 							'actions'			=> $this->getAnnotationEditActions($annotation),

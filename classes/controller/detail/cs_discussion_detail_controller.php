@@ -208,9 +208,6 @@ if ($type != CS_DISCUSSION_TYPE) {
 			$return = array(
 				'title'				=> $this->_item->getTitle(),
 				'item_id'			=> $this->_item->getItemID(),
-				'creator'			=> $this->_item->getCreatorItem()->getFullName(),
-				'creation_date'		=> getDateTimeInLang($this->_item->getCreationDate()),
-				'modification_date'	=> getDateTimeInLang($this->_item->getModificationDate()),
 				'assessments'		=> $this->getAssessmentInformation()
 			);
 			

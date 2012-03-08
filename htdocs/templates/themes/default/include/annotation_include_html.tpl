@@ -55,7 +55,7 @@
 								{if $article.noticed != ''}<img src="{$basic.tpl_path}img/flag_neu.gif" alt="___COMMON_NEW___"/>{/if}
 							</h4>
 							<div class="annotation_credits">
-								___COMMON_LAST_MODIFIED_BY_UPPER___ <a href="commsy.php?cid={$environment.cid}&mod=user&fct=detail&iid={$annotation.modifier_id}">{$annotation.modifier}</a> ___DATES_ON_DAY___ {$annotation.modification_date}
+								___COMMON_LAST_MODIFIED_BY_UPPER___ {$annotation.modifier} ___DATES_ON_DAY___ {$annotation.modification_date}
 							</div>
 							<div class="editor_content">
 								{$annotation.description}

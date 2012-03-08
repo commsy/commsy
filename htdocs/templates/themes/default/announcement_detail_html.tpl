@@ -57,7 +57,9 @@
 				{/foreach}
 			</p>
 			<p>
-				___COMMON_CREATED_BY_UPPER___ <a href="">{$detail.content.creator}</a> ___DATES_ON_DAY___  {$detail.content.creation_date}
+				___COMMON_LAST_MODIFIED_BY_UPPER___
+				{build_user_link status=$detail.content.moredetails.last_modificator_status user_name=$detail.content.moredetails.last_modificator id=$detail.content.moredetails.last_modificator_id}
+				___DATES_ON_DAY___  {$detail.content.moredetails.last_modification_date}
 			</p>
 			<div class="clear"> </div>
 		</div>

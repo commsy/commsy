@@ -1090,6 +1090,8 @@
 				$return['description'] = $desc;
 			}
 			
+			$return['moredetails'] = $this->getCreatorInformationAsArray($this->_item);
+			
 			return $return;
 		}
 	}

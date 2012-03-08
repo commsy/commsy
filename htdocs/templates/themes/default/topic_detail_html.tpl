@@ -3,19 +3,34 @@
 {block name=room_detail_content}
 	<div class="item_actions">
 		<div id="top_item_actions">
-			<a href=""><span class="edit_set"> &nbsp; </span></a>
-			<a href=""><span class="details_ia"> &nbsp; </span></a>
-			<a href=""><span class="ref_to_ia"> &nbsp; </span></a>
+			<a class="edit" href="#"><span class="edit_set"> &nbsp; </span></a>
+			<a class="detail" href="#"><span class="details_ia"> &nbsp; </span></a>
 		</div>
 	</div>
 	
 	<div class="item_body"> <!-- Start item body -->
+		
+		<!-- Start fade_in_ground -->
+		<div class="fade_in_ground_actions hidden">
+			{* TODO *}
+		</div>
+		<!-- Ende fade_in_ground -->
+		
 		<h2>{$detail.content.title}</h2>
 		<div class="clear"> </div>
 		
 		<div id="item_credits">
 			<p id="ic_rating">
 			</p>
+			<p>
+				___COMMON_LAST_MODIFIED_BY_UPPER___
+				{build_user_link status=$detail.content.moredetails.last_modificator_status user_name=$detail.content.moredetails.last_modificator id=$detail.content.moredetails.last_modificator_id}
+				___DATES_ON_DAY___  {$detail.content.moredetails.last_modification_date}
+			</p>
+			<div class="clear"> </div>
+		</div>
+		
+		<div id="item_credits">
 			<p>
 				<div class="user_profil_blocks">
 					{* files *}
@@ -60,6 +75,7 @@
 				{/if}
 			</div>
 		</div> <!-- Ende item_legend -->
+		{include file="include/detail_moredetails_html.tpl" data=$detail.content.moredetails}
 		
 	</div> <!-- Ende item body -->
 	<div class="clear"> </div>

@@ -462,20 +462,12 @@
             }
             
 			$return = array(
-				'title'			=> $this->_item->getTitle(),
-				'formal'		=> $this->getFormalData(),
-				'description'	=> $desc,
-				'steps'			=> $this->getStepContent(),
-				'item_id'		=> $this->_item->getItemID()
-			/*
-				'creator'		=> $this->_item->getCreatorItem()->getFullName(),
-				'creation_date'	=> getDateTimeInLang($this->_item->getCreationDate()),
-				'version'		=> $this->_item->getVersionID(),
-				'formal'		=> $this->getFormalData(),
-				'sections'		=> $this->getSections(),
-				
-				*/
-				//'material'			=> $this->getMaterialContent()
+				'title'				=> $this->_item->getTitle(),
+				'formal'			=> $this->getFormalData(),
+				'description'		=> $desc,
+				'steps'				=> $this->getStepContent(),
+				'item_id'			=> $this->_item->getItemID(),
+				'moredetails'		=> $this->getCreatorInformationAsArray($this->_item)
 			);
 			
 			return $return;

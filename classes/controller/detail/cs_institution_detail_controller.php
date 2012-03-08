@@ -237,6 +237,9 @@
 			// title
 			$return['title'] = $this->_item->getTitle();
 			
+			// moredetails
+			$return['moredetails'] = $this->getCreatorInformationAsArray($this->_item);
+			
 			// picture
 			$picture = $this->_item->getPicture();
 			if(!empty($picture)) {

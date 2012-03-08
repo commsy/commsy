@@ -386,7 +386,8 @@
 				'files'			=> implode(BRLF, $files),
 				'description'	=> $desc,
 				'item_id'		=> $this->_item->getItemID(),
-				'path_shown'	=> $path_shown
+				'path_shown'	=> $path_shown,
+				'moredetails'	=> $this->getCreatorInformationAsArray($this->_item)
 			);
 			
 			return $return;

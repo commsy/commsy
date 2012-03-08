@@ -450,19 +450,17 @@ class cs_date_detail_controller extends cs_detail_controller {
 		}
 		
         return array(
-				'formal'		=> $formal,
-				'privat'		=> $this->_item->issetPrivatDate(),
-				'datetime'		=> $datetime,
-				'place'			=> $place,
-				'color'			=> $color,
-                'files' => $this->getFileContent(),
-                'member' => $this->getMember(),
-				'item_id'		=> $this->_item->getItemID(),
-				'title'			=> $this->_item->getTitle(),
-				'creator'		=> $this->_item->getCreatorItem()->getFullName(),
-				'creation_date'	=> getDateTimeInLang($this->_item->getCreationDate()),
-				'description'	=> $desc,
-				'moredetails'	=> $this->getCreatorInformationAsArray($this->_item)
+				'formal'			=> $formal,
+				'privat'			=> $this->_item->issetPrivatDate(),
+				'datetime'			=> $datetime,
+				'place'				=> $place,
+				'color'				=> $color,
+                'files'				=> $this->getFileContent(),
+                'member'			=> $this->getMember(),
+				'item_id'			=> $this->_item->getItemID(),
+				'title'				=> $this->_item->getTitle(),
+				'description'		=> $desc,
+				'moredetails'		=> $this->getCreatorInformationAsArray($this->_item)
         );
     }
 

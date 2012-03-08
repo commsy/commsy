@@ -122,8 +122,13 @@ define([	"libs/jQuery/jquery-1.7.1.min",
 			if(cookie !== null) {
 				jQuery(cookie.items).each(function() {
 					if(parseInt(this) === parseInt(item_id)) {
-						match = true;
-						return false;
+						// validate against html
+						// this is needed, because deleting items removes checkboxes
+						if(jQuery('input[name="form_data[attach][' + parseInt(item_id) + ']"]').length !== 0) {
+							
+							match = true;
+							return false;
+						}
 					}
 				});
 			}
