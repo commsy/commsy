@@ -59,8 +59,8 @@
 							<ul>
 							{foreach $item.attachment_infos as $file}
 								<li>
-									<a href="{$file.file_url}" target="blank"{if $file.lightbox} rel="lightbox"{/if}>
-										{$file.file_icon} {$file.file_name}
+									<a href="{$file.file_url}" title="{$file.file_name}" target="blank"{if $file.lightbox} rel="lightbox"{/if}>
+										{$file.file_icon} {$file.file_name|truncate:25:'...':true}
 									</a>
 									({$file.file_size} KB)
 								</li>

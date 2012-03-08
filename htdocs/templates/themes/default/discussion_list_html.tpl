@@ -67,7 +67,7 @@
 					 <a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&{$environment.params}&iid={$item.iid}">{$item.title}</a>
 				</p>
 			</div>
-			
+
 			<div class="column_45">
 				<p>
 					<a href="" class="attachment">{$item.attachment_count}</a>
@@ -78,8 +78,8 @@
 							<ul>
 							{foreach $item.attachment_infos as $file}
 								<li>
-									<a href="{$file.file_url}" target="blank"{if $file.lightbox} rel="lightbox"{/if}>
-										{$file.file_icon} {$file.file_name}
+									<a href="{$file.file_url}" title="{$file.file_name}" target="blank"{if $file.lightbox} rel="lightbox"{/if}>
+										{$file.file_icon} {$file.file_name|truncate:25:'...':true}
 									</a>
 									({$file.file_size} KB)
 								</li>
@@ -89,13 +89,13 @@
 					</div>
 				{/if}
 			</div>
-			
+
 			<div class="column_90">
 				<p>
 					{$item.article_count} ({$item.article_unread} ___COMMON_UNREAD___)
 				</p>
 			</div>
-		
+
 			<div class="column_90">
 				<p>{$item.date}</p>
 			</div>
