@@ -141,6 +141,11 @@ define(["libs/jQuery/jquery-1.7.1.min"], function() {
 			
 			// lightbox
 			this.registerModule('commsy/lightbox', 'a[rel="lightbox"]');
+			
+			// noticed list overlay
+			if(this.getURLParam('fct') === 'index') {
+				this.registerModule('commsy/noticed_overlay', 'a[class="new_item_2"]');
+			}
 		},
 		
 		registerModule: function(module, parameters) {
