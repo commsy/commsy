@@ -31,7 +31,8 @@
 				{/if}
 			</div>
 			<!-- Ende fade_in_ground -->
-		
+			
+			<a name="annotation{$annotation.item_id}"></a>
 			<a name="annotation_{$annotation@index}"></a>
 			<div class="item_post">
 				<div class="row_{if $annotation@iteration is odd}odd{else}even{/if}_no_hover">
