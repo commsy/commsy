@@ -3,18 +3,18 @@
 {block name=room_list_header}
 	<div class="table_head">
 		{if $list.sorting_parameters.sort_title == "up"}
-		 	<h3 class="w_380"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_title_link}" id="sort_up"><strong>___COMMON_TITLE___</strong></a></h3>
+		 	<h3 class="w_295"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_title_link}" id="sort_up"><strong>___COMMON_TITLE___</strong></a></h3>
 		{elseif $list.sorting_parameters.sort_title == "down"}
-		 	<h3 class="w_380"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_title_link}" id="sort_down"><strong>___COMMON_TITLE___</strong></a></h3>
+		 	<h3 class="w_295"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_title_link}" id="sort_down"><strong>___COMMON_TITLE___</strong></a></h3>
 		{else}
-		 	<h3 class="w_380"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_title_link}" class="sort_none">___COMMON_TITLE___</a></h3>
+		 	<h3 class="w_295"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_title_link}" class="sort_none">___COMMON_TITLE___</a></h3>
 		{/if}
 		{if $list.sorting_parameters.sort_time == "up"}
-		 	<h3 class="w_80"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_time_link}" id="sort_up"><strong>___DATES_TIME___</strong></a></h3>
+		 	<h3 class="w_135"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_time_link}" id="sort_up"><strong>___DATES_TIME___</strong></a></h3>
 		{elseif $list.sorting_parameters.sort_time == "down"}
-		 	<h3 class="w_80"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_time_link}" id="sort_down"><strong>___DATES_TIME___</strong></a></h3>
+		 	<h3 class="w_135"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_time_link}" id="sort_down"><strong>___DATES_TIME___</strong></a></h3>
 		{else}
-		 	<h3 class="w_80"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_time_link}" class="sort_none">___DATES_TIME___</a></h3>
+		 	<h3 class="w_135"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_time_link}" class="sort_none">___DATES_TIME___</a></h3>
 		{/if}
 		{if $list.sorting_parameters.sort_place== "up"}
 		 	<h3 class="w_135"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_place_link}" id="sort_up"><strong>___DATES_PLACE___</strong></a></h3>
@@ -31,7 +31,7 @@
 
 {block name=room_list_content}
 	{foreach $date.list_content.items as $item }
-		<div class="{if $item@iteration is odd}row_odd{else}row_even{/if} {if $item@iteration is odd}odd_sep_announcement{else}even_sep_announcement{/if}"> <!-- Start Reihe -->
+		<div class="{if $item@iteration is odd}row_odd{else}row_even{/if} {if $item@iteration is odd}odd_sep_date{else}even_sep_date{/if}"> <!-- Start Reihe -->
 			<div class="column_20">
 				<p>
 				{if $item.noticed != ''}
@@ -44,7 +44,7 @@
 				{/if}
 				</p>
 			</div>
-			<div class="column_304">
+			<div class="column_244">
 				<p>
 					 <a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&{$environment.params}&iid={$item.iid}">{$item.title}</a>
 				</p>
@@ -70,18 +70,21 @@
 					</div>
 				{/if}
 			</div>
-			<div class="column_90">
+			<div class="column_140">
 				<p>
 					{$item.date}{if !empty($item.time) && $item.show_time}, {$item.time}{/if}
 				</p>
 			</div>
-			<div class="column_155">
+			<div class="column_184">
 				<p>
 					{$item.place}
 				</p>
 			</div>
 			<div class="column_100">
 				<p>
+					{if !empty($item.color)}
+						<span class="date_list_color" style="background-color:{$item.color}">&nbsp;</span>
+					{/if}
 				</p>
 			</div>
 			<div class="clear"> </div>

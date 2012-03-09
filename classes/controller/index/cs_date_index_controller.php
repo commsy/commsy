@@ -340,6 +340,7 @@
 					'title'				=> $view->_text_as_html_short($item->getTitle()),
 					'date'				=> $date,
 					'time'				=> $time,
+					'color'				=> $item->getColor(),
 					'show_time'			=> $item->getStartingTime() !== '',
 					'place'				=> $place,
 					'assessment_array'  => $assessment_stars_text_array,
