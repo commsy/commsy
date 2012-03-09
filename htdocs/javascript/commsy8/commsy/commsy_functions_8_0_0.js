@@ -153,6 +153,16 @@ define(["libs/jQuery/jquery-1.7.1.min"], function() {
 			if(this.getURLParam('fct') === 'index') {
 				this.registerModule('commsy/noticed_overlay', 'a[class="new_item_2"]');
 			}
+			
+			// ajax popup handler
+			// create new links
+			var new_objects = jQuery('a[id="create_new"]');
+			var new_handling = {
+				objects:	new_objects,
+				module:		this.getURLParam('mod')
+			};
+			
+			this.registerModule('commsy/ajax_popup_handler', new_handling);
 		},
 		
 		registerModule: function(module, parameters) {

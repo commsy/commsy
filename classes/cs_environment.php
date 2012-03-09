@@ -505,6 +505,17 @@ class cs_environment {
    function setCurrentParameter ( $key, $value ) {
       $this->_current_parameter_array[] = $key.'='.$value;
    }
+   
+   function removeCurrentParameter($del_key) {
+	   $temp_array = array();
+	   foreach($this->_current_parameter_array as $param) {
+		   list($key, $value) = explode('=', $param);
+		   
+		   if($key !== $del_key) $temp_array[] = $param;
+	   }
+	   
+	   $this->_current_parameter_array = $temp_array;
+   }
 
   /** get instance of cs_ads_log_manager
    *

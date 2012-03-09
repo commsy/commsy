@@ -231,7 +231,7 @@
         {if $confirm}
 		<div id="delete_confirm_overlay_background" class="delete_confirm_background"></div>
 		<div id="delete_confirm_overlay_box" class="delete_confirm_box" style="display: block;">
-			<form method="post">
+			<form method="post" action="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&delete_sel_cookie=true">
 				<h2 style="text-align: center;">{i18n tag=COMMON_DELETE_BOX_TITLE}</h2>
 				<p style="text-align: left;">{i18n tag=COMMON_DELETE_BOX_DESCRIPTION}</p>
 				<div>

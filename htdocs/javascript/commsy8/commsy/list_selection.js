@@ -26,6 +26,16 @@ define([	"libs/jQuery/jquery-1.7.1.min",
 				
 				// update counter
 				this.updateCounter(parameters.counter_object);
+			} else {
+				// rubric not changed
+				// reset selection after deleting items
+				if(commsy_functions.getURLParam('delete_sel_cookie') === 'true') {
+					// clear all selections
+					this.clearSelectionsFromCookie();
+
+					// update counter
+					this.updateCounter(parameters.counter_object);
+				}
 			}
 			
 			// store the current module as last used
@@ -122,13 +132,8 @@ define([	"libs/jQuery/jquery-1.7.1.min",
 			if(cookie !== null) {
 				jQuery(cookie.items).each(function() {
 					if(parseInt(this) === parseInt(item_id)) {
-						// validate against html
-						// this is needed, because deleting items removes checkboxes
-						if(jQuery('input[name="form_data[attach][' + parseInt(item_id) + ']"]').length !== 0) {
-							
-							match = true;
-							return false;
-						}
+						match = true;
+						return false;
 					}
 				});
 			}

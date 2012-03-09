@@ -24,6 +24,9 @@
 				'limit'		=> 20
 			);
 			*/
+			
+			// remove delete_sel_cookie
+			$this->_environment->removeCurrentParameter('delete_sel_cookie');
 		}
 
 		/*
@@ -78,6 +81,7 @@
 		protected function getListEntriesParameterArray(){
 			$environment = $this->_environment;
            	$params = $environment->getCurrentParameterArray();
+			
       		if (isset($params['interval']) and !empty($params['interval'])){
       			$interval_parameter = $params['interval'];
       		}elseif(isset($params['interval']) and empty($params['interval'])){
@@ -645,6 +649,7 @@
    		function getBrowsingIconsParameterArray($from = 0, $interval = 0, $count_all_shown = 0){
 			$environment = $this->_environment;
            	$params = $environment->getCurrentParameterArray();
+			
       		$link_parameter_text = '';
       		if ( count($params) > 0 ) {
          		foreach ($params as $key => $parameter) {

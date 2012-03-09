@@ -241,14 +241,15 @@
 
 				$noticed_text = $this->_getItemChangeStatus($item);
 				$item_array[] = array(
-				'iid'				=> $item->getItemID(),
-				'title'				=> $view->_text_as_html_short($item->getTitle()),
-				'date'				=> $this->_environment->getTranslationObject()->getDateInLang($item->getModificationDate()),
-				'modificator'		=> $this->getItemModificator($item),
-				'noticed'			=> $noticed_text,
-				'assessment_array'	=> $assessment_stars_text_array,
-				'attachment_count'	=> $file_count,
-				'attachment_infos'	=> $attachment_infos
+					'iid'				=> $item->getItemID(),
+					'title'				=> $view->_text_as_html_short($item->getTitle()),
+					'date'				=> $this->_environment->getTranslationObject()->getDateInLang($item->getModificationDate()),
+					'modificator'		=> $this->getItemModificator($item),
+					'noticed'			=> $noticed_text,
+					'assessment_array'	=> $assessment_stars_text_array,
+					'attachment_count'	=> $file_count,
+					'attachment_infos'	=> $attachment_infos,
+					'workflow'			=> $this->getWorkflowInformation($item)
 				);
 
 				$item = $list->getNext();

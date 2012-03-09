@@ -98,6 +98,12 @@
 
 			// second navigation information
 			$this->assign('room', 'second_navigation', $this->getSecondNavigationInformation());
+			
+			// set assessment status
+			$this->assign('room', 'assessment', $current_context->isAssessmentActive());
+			
+			// set workflow status
+			$this->assign('room', 'workflow', $current_context->withWorkflow());
 		}
 
 		private function getAddonInformation() {
@@ -424,6 +430,58 @@
 			$file_rubric_array[] = CS_TODO_TYPE;
 
 			return $file_rubric_array;
+		}
+		
+		protected function getWorkflowInformation($item) {
+			$return = array(
+				'light'		=> '',
+				'title'		=> '',
+				'show'		=> true
+			);
+			
+			$current_context = $this->_environment->getCurrentContextItem();
+			$translator = $this->_environment->getTranslationObject();
+			
+			if($current_context->withWorkflow()) {
+				switch($item->getWorkflowTrafficLight()) {
+					case '3_none':
+						$return['show'] = false;
+						break;
+					
+					case '0_green':
+						$return['light'] = 'green';
+						$return['title'] = $translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_GREEN_DEFAULT');
+						
+						if($current_context->getWorkflowTrafficLightTextGreen() != '') {
+							$return['title'] = $current_context->getWorkflowTrafficLightTextGreen();
+						}
+						break;
+					
+					case '1_yellow':
+						$return['light'] = 'yellow';
+						$return['title'] = $translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_YELLOW_DEFAULT');
+						
+						if($current_context->getWorkflowTrafficLightTextYellow() != '') {
+							$return['title'] = $current_context->getWorkflowTrafficLightTextYellow();
+						}
+						break;
+					
+					case '2_red':
+						$return['light'] = 'red';
+						$return['title'] = $translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_RED_DEFAULT');
+						
+						if($current_context->getWorkflowTrafficLightTextRed() != '') {
+							$return['title'] = $current_context->getWorkflowTrafficLightTextRed();
+						}
+						break;
+					
+					default:
+						$return['show'] = false;
+						break;
+				}
+			}
+			
+			return $return;
 		}
 
 		/**

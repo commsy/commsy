@@ -6,7 +6,7 @@
 	</a>
 
     {if $index.actions.new}
-		<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid=NEW" title="___COMMON_NEW_ITEM___">
+		<a id="create_new" href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid=NEW" title="___COMMON_NEW_ITEM___">
 	    	<img src="{$basic.tpl_path}img/btn_add_new.gif" alt="___COMMON_NEW_ITEM___" />
 	    </a>
     {/if}
@@ -60,19 +60,19 @@
 			<div class="ii_left">
 				<p>___COMMON_PAGE_ENTRIES___
 					{if $list.list_entries_parameter.20 == 'disabled'}
-						<a href=""><strong>20</strong></a>
+						<strong>20</strong>
 					{else}
 					   <a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.list_entries_parameter.20}">20</a>
 					{/if}
 					|
 					{if $list.list_entries_parameter.50 == 'disabled'}
-						<a href=""><strong>50</strong></a>
+						<strong>50</strong>
 					{else}
 					   <a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.list_entries_parameter.50}">50</a>
 					{/if}
 					|
 					{if $list.list_entries_parameter.all == 'disabled'}
-						<a href=""><strong>___COMMON_ALL_ENTRIES___</strong></a>
+						<strong>___COMMON_ALL_ENTRIES___</strong>
 					{else}
 					   <a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.list_entries_parameter.all}">___COMMON_ALL_ENTRIES___</a>
 					{/if}
