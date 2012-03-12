@@ -14,10 +14,15 @@
 			// get module from submitted data
 			$module = $this->_data['module'];
 			
-			// process template for this module popup
-			$html = $this->processTemplate($module);
-			
-			echo json_encode($html);
+			global $c_smarty;
+			if($c_smarty === true) {
+				// process template for this module popup
+				$html = $this->processTemplate($module);
+				
+				echo json_encode($html);
+			} else {
+				echo json_encode('smarty not enabled');
+			}
 		}
 
 		/*
@@ -29,6 +34,15 @@
 		}
 		
 		private function processTemplate($module) {
-			return '<div>test</div>';
+			$controller_name = 'cs_' . $module . '_edit_controller';
+			require_once('classes/controller/edit/' . $controller_name . '.php');
+
+			$controller = new $controller_name($this->_environment);
+			
+			$controller->processTemplate();
+			
+			ob_start();
+			$controller->displayTemplate();
+			return ob_get_clean();
 		}
 	}

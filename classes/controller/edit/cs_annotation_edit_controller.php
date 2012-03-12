@@ -66,13 +66,6 @@
 						'type'		=> 'text',
 						'mandatory'	=> false)
 			);
-			
-			
-			
-			throw new cs_form_value_exception ('error in value');
-			
-			
-			return false;
 		}
 		
 		/*****************************************************************************/
