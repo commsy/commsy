@@ -46,7 +46,10 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 					console.log("error while getting popup");
 				},
 				success: function(data, status) {
-					console.log(data);
+					if(status === 'success') {
+						// we recieved html - append it
+						jQuery('body').prepend(data);
+					}
 				}
 			});
 			

@@ -14,12 +14,15 @@
 			// get module from submitted data
 			$module = $this->_data['module'];
 			
+			$this->_tpl_file = 'popups/' . $module . '_popup';
+			
 			global $c_smarty;
 			if($c_smarty === true) {
-				// process template for this module popup
-				$html = $this->processTemplate($module);
+				$this->assignTemplateVariables();
 				
-				echo json_encode($html);
+				ob_start();
+				$this->displayTemplate();
+				echo json_encode(ob_get_clean());
 			} else {
 				echo json_encode('smarty not enabled');
 			}
@@ -33,16 +36,7 @@
 			parent::process();
 		}
 		
-		private function processTemplate($module) {
-			$controller_name = 'cs_' . $module . '_edit_controller';
-			require_once('classes/controller/edit/' . $controller_name . '.php');
-
-			$controller = new $controller_name($this->_environment);
+		private function assignTemplateVariables() {
 			
-			$controller->processTemplate();
-			
-			ob_start();
-			$controller->displayTemplate();
-			return ob_get_clean();
 		}
 	}

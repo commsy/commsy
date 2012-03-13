@@ -1,21 +1,15 @@
 <?php
-	require_once('classes/controller/cs_ajax_controller.php');
+	require_once('classes/controller/cs_base_controller.php');
 	
-	abstract class cs_ajax_controller {
-		protected $_environment = null;
-		protected $_tpl_engine = null;
-		protected $_tpl_file = null;
-		protected $_tpl_path = null;
+	abstract class cs_ajax_controller extends cs_base_controller {
 		protected $_data = null;
 
 		/**
 		 * constructor
 		 */
 		public function __construct(cs_environment $environment) {
-			$this->_environment = $environment;
-			$this->_tpl_engine  = $this->_environment->getTemplateEngine();
-			$this->_tpl_file = null;
-			$this->_tpl_path = substr($this->_tpl_engine->getTemplateDir(0), 7);
+			// call parent
+			parent::__construct($environment);
 			
 			// deativate debug information
 			global $c_show_debug_infos;
