@@ -53,49 +53,6 @@
 			$this->assign('material','list_content', $list_content);
 		}
 
-		protected function _getItemSectionChangeStatus($item) {
-      		$translator = $this->_environment->getTranslationObject();
-      		$current_user = $this->_environment->getCurrentUserItem();
-      		$info_text = array();
-      		$info_text['count_new'] = 0;
-      		$info_text['count_changed'] = 0;
-      		if ($current_user->isUser()) {
-         		$noticed_manager = $this->_environment->getNoticedManager();
-         		$section_list = $item->getSectionList();
-         		$section_item = $section_list->getFirst();
-         		$new = false;
-         		$changed = false;
-         		$date = "0000-00-00 00:00:00";
-         		while ( $section_item ) {
-            		$noticed = $noticed_manager->getLatestNoticed($section_item->getItemID());
-            		$temp_array = array();
-            		if ( empty($noticed) ) {
-               			if ($date < $section_item->getModificationDate() ) {
-                   			$info_text['count_new']++;
-                   			$temp_array['iid'] = $section_item->getItemID();
-                   			$temp_array['date'] = $section_item->getModificationDate();
-                   			$temp_array['date'] = $this->_environment->getTranslationObject()->getDateInLang($section_item->getModificationDate());
-                   			$temp_array['title'] = $section_item->getTitle();
-                    		$temp_array['ref_iid'] = $section_item->getLinkedItemID();
-                    		$info_text['section_new_items'][] = $temp_array;
-               			}
-            		} elseif ( $noticed['read_date'] < $section_item->getModificationDate() ) {
-               			if ($date < $section_item->getModificationDate() ) {
-                   			$info_text['count_changed']++;
-                   			$temp_array['iid'] = $section_item->getItemID();
-                   			$temp_array['date'] = $this->_environment->getTranslationObject()->getDateInLang($section_item->getModificationDate());
-                   			$temp_array['modificator'] = $section_item->getModificatorItem()->getFullname();
-                   			$temp_array['title'] = $section_item->getTitle();
-                    		$temp_array['ref_iid'] = $section_item->getLinkedItemID();
-                    		$info_text['section_changed_items'][] = $temp_array;
-                			}
-            		}
-            		$section_item = $section_list->getNext();
-         		}
-      		}
-      		return $info_text;
-  	 	}
-
 
 		public function getListContent() {
 			include_once('classes/cs_list.php');

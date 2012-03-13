@@ -60,49 +60,6 @@
 			*/
 		}
 
-		protected function _getItemArticleChangeStatus($item) {
-      		$translator = $this->_environment->getTranslationObject();
-      		$current_user = $this->_environment->getCurrentUserItem();
-      		$info_text = array();
-      		$info_text['count_new'] = 0;
-      		$info_text['count_changed'] = 0;
-      		if ($current_user->isUser()) {
-         		$noticed_manager = $this->_environment->getNoticedManager();
-         		$article_list = $item->getAllArticles();
-         		$article_item = $article_list->getFirst();
-         		$new = false;
-         		$changed = false;
-         		$date = "0000-00-00 00:00:00";
-         		while ( $article_item ) {
-            		$noticed = $noticed_manager->getLatestNoticed($article_item->getItemID());
-            		$temp_array = array();
-            		if ( empty($noticed) ) {
-               			if ($date < $article_item->getModificationDate() ) {
-                   			$info_text['count_new']++;
-                   			$temp_array['iid'] = $article_item->getItemID();
-                   			$temp_array['date'] = $article_item->getModificationDate();
-                   			$temp_array['date'] = $this->_environment->getTranslationObject()->getDateInLang($article_item->getModificationDate());
-                   			$temp_array['title'] = $article_item->getTitle();
-                    		$temp_array['ref_iid'] = $article_item->getDiscussionID();
-                    		$info_text['article_new_items'][] = $temp_array;
-               			}
-            		} elseif ( $noticed['read_date'] < $article_item->getModificationDate() ) {
-               			if ($date < $article_item->getModificationDate() ) {
-                   			$info_text['count_changed']++;
-                   			$temp_array['iid'] = $article_item->getItemID();
-                   			$temp_array['date'] = $this->_environment->getTranslationObject()->getDateInLang($article_item->getModificationDate());
-                   			$temp_array['modificator'] = $article_item->getModificatorItem()->getFullname();
-                   			$temp_array['title'] = $article_item->getTitle();
-                    		$temp_array['ref_iid'] = $article_item->getDiscussionID();
-                    		$info_text['article_changed_items'][] = $temp_array;
-                			}
-            		}
-            		$article_item = $article_list->getNext();
-         		}
-      		}
-      		return $info_text;
-  	 	}
-
 
 		public function getListContent() {
 			include_once('classes/cs_list.php');

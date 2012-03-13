@@ -98,10 +98,10 @@
 
 			// second navigation information
 			$this->assign('room', 'second_navigation', $this->getSecondNavigationInformation());
-			
+
 			// set assessment status
 			$this->assign('room', 'assessment', $current_context->isAssessmentActive());
-			
+
 			// set workflow status
 			$this->assign('room', 'workflow', $current_context->withWorkflow());
 		}
@@ -431,56 +431,56 @@
 
 			return $file_rubric_array;
 		}
-		
+
 		protected function getWorkflowInformation($item) {
 			$return = array(
 				'light'		=> '',
 				'title'		=> '',
 				'show'		=> true
 			);
-			
+
 			$current_context = $this->_environment->getCurrentContextItem();
 			$translator = $this->_environment->getTranslationObject();
-			
+
 			if($current_context->withWorkflow()) {
 				switch($item->getWorkflowTrafficLight()) {
 					case '3_none':
 						$return['show'] = false;
 						break;
-					
+
 					case '0_green':
 						$return['light'] = 'green';
 						$return['title'] = $translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_GREEN_DEFAULT');
-						
+
 						if($current_context->getWorkflowTrafficLightTextGreen() != '') {
 							$return['title'] = $current_context->getWorkflowTrafficLightTextGreen();
 						}
 						break;
-					
+
 					case '1_yellow':
 						$return['light'] = 'yellow';
 						$return['title'] = $translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_YELLOW_DEFAULT');
-						
+
 						if($current_context->getWorkflowTrafficLightTextYellow() != '') {
 							$return['title'] = $current_context->getWorkflowTrafficLightTextYellow();
 						}
 						break;
-					
+
 					case '2_red':
 						$return['light'] = 'red';
 						$return['title'] = $translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_RED_DEFAULT');
-						
+
 						if($current_context->getWorkflowTrafficLightTextRed() != '') {
 							$return['title'] = $current_context->getWorkflowTrafficLightTextRed();
 						}
 						break;
-					
+
 					default:
 						$return['show'] = false;
 						break;
 				}
 			}
-			
+
 			return $return;
 		}
 
@@ -621,6 +621,96 @@
             }
       		return $info_text;
    		}
+
+
+		protected function _getItemArticleChangeStatus($item) {
+      		$translator = $this->_environment->getTranslationObject();
+      		$current_user = $this->_environment->getCurrentUserItem();
+      		$info_text = array();
+      		$info_text['count_new'] = 0;
+      		$info_text['count_changed'] = 0;
+      		if ($current_user->isUser()) {
+         		$noticed_manager = $this->_environment->getNoticedManager();
+         		$article_list = $item->getAllArticles();
+         		$article_item = $article_list->getFirst();
+         		$new = false;
+         		$changed = false;
+         		$date = "0000-00-00 00:00:00";
+         		while ( $article_item ) {
+            		$noticed = $noticed_manager->getLatestNoticed($article_item->getItemID());
+            		$temp_array = array();
+            		if ( empty($noticed) ) {
+               			if ($date < $article_item->getModificationDate() ) {
+                   			$info_text['count_new']++;
+                   			$temp_array['iid'] = $article_item->getItemID();
+                   			$temp_array['date'] = $article_item->getModificationDate();
+                   			$temp_array['date'] = $this->_environment->getTranslationObject()->getDateInLang($article_item->getModificationDate());
+                   			$temp_array['title'] = $article_item->getTitle();
+                    		$temp_array['ref_iid'] = $article_item->getDiscussionID();
+                    		$info_text['article_new_items'][] = $temp_array;
+               			}
+            		} elseif ( $noticed['read_date'] < $article_item->getModificationDate() ) {
+               			if ($date < $article_item->getModificationDate() ) {
+                   			$info_text['count_changed']++;
+                   			$temp_array['iid'] = $article_item->getItemID();
+                   			$temp_array['date'] = $this->_environment->getTranslationObject()->getDateInLang($article_item->getModificationDate());
+                   			$temp_array['modificator'] = $article_item->getModificatorItem()->getFullname();
+                   			$temp_array['title'] = $article_item->getTitle();
+                    		$temp_array['ref_iid'] = $article_item->getDiscussionID();
+                    		$info_text['article_changed_items'][] = $temp_array;
+                			}
+            		}
+            		$article_item = $article_list->getNext();
+         		}
+      		}
+      		return $info_text;
+  	 	}
+
+
+		protected function _getItemSectionChangeStatus($item) {
+      		$translator = $this->_environment->getTranslationObject();
+      		$current_user = $this->_environment->getCurrentUserItem();
+      		$info_text = array();
+      		$info_text['count_new'] = 0;
+      		$info_text['count_changed'] = 0;
+      		if ($current_user->isUser()) {
+         		$noticed_manager = $this->_environment->getNoticedManager();
+         		$section_list = $item->getSectionList();
+         		$section_item = $section_list->getFirst();
+         		$new = false;
+         		$changed = false;
+         		$date = "0000-00-00 00:00:00";
+         		while ( $section_item ) {
+            		$noticed = $noticed_manager->getLatestNoticed($section_item->getItemID());
+            		$temp_array = array();
+            		if ( empty($noticed) ) {
+               			if ($date < $section_item->getModificationDate() ) {
+                   			$info_text['count_new']++;
+                   			$temp_array['iid'] = $section_item->getItemID();
+                   			$temp_array['date'] = $section_item->getModificationDate();
+                   			$temp_array['date'] = $this->_environment->getTranslationObject()->getDateInLang($section_item->getModificationDate());
+                   			$temp_array['title'] = $section_item->getTitle();
+                    		$temp_array['ref_iid'] = $section_item->getLinkedItemID();
+                    		$info_text['section_new_items'][] = $temp_array;
+               			}
+            		} elseif ( $noticed['read_date'] < $section_item->getModificationDate() ) {
+               			if ($date < $section_item->getModificationDate() ) {
+                   			$info_text['count_changed']++;
+                   			$temp_array['iid'] = $section_item->getItemID();
+                   			$temp_array['date'] = $this->_environment->getTranslationObject()->getDateInLang($section_item->getModificationDate());
+                   			$temp_array['modificator'] = $section_item->getModificatorItem()->getFullname();
+                   			$temp_array['title'] = $section_item->getTitle();
+                    		$temp_array['ref_iid'] = $section_item->getLinkedItemID();
+                    		$info_text['section_changed_items'][] = $temp_array;
+                			}
+            		}
+            		$section_item = $section_list->getNext();
+         		}
+      		}
+      		return $info_text;
+  	 	}
+
+
 
 		protected function _getItemAnnotationChangeStatus($item) {
       		$translator = $this->_environment->getTranslationObject();
