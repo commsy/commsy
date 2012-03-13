@@ -951,6 +951,17 @@
 			$converter = $this->_environment->getTextConverter();
 
 			$section_list = $this->_item->getSectionList();
+			$sections_id_array = array();
+			$section = $section_list->getFirst();
+			while($section) {
+				$sections_id_array[] = $section->getItemID();
+
+				$section = $section_list->getNext();
+			}
+			$noticed_manager = $this->_environment->getNoticedManager();
+			$reader_manager = $this->_environment->getReaderManager();
+			$noticed_manager->getLatestNoticedByIDArray($sections_id_array);
+			$reader_manager->getLatestReaderByIDArray($sections_id_array);
 			$this->markSectionsReadedAndNoticed($section_list);
 
 			if(!$section_list->isEmpty()) {

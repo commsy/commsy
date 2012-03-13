@@ -612,6 +612,9 @@
       		if ($item->getType() == CS_MATERIAL_TYPE){
       			$info_text['section_info'] = $this->_getItemSectionChangeStatus($item);
       		}
+      		if ($item->getType() == CS_TODO_TYPE){
+      			$info_text['step_info'] = $this->_getItemStepChangeStatus($item);
+      		}
       		if ($item->getType() == CS_DISCUSSION_TYPE){
       			$info_text['article_info'] = $this->_getItemArticleChangeStatus($item);
       		}
@@ -710,6 +713,48 @@
       		return $info_text;
   	 	}
 
+		protected function _getItemStepChangeStatus($item) {
+      		$translator = $this->_environment->getTranslationObject();
+      		$current_user = $this->_environment->getCurrentUserItem();
+      		$info_text = array();
+      		$info_text['count_new'] = 0;
+      		$info_text['count_changed'] = 0;
+      		if ($current_user->isUser()) {
+         		$noticed_manager = $this->_environment->getNoticedManager();
+         		$step_list = $item->getStepItemList();
+         		$step_item = $step_list->getFirst();
+         		$new = false;
+         		$changed = false;
+         		$date = "0000-00-00 00:00:00";
+         		while ( $step_item ) {
+            		$noticed = $noticed_manager->getLatestNoticed($step_item->getItemID());
+            		$temp_array = array();
+            		if ( empty($noticed) ) {
+               			if ($date < $step_item->getModificationDate() ) {
+                   			$info_text['count_new']++;
+                   			$temp_array['iid'] = $step_item->getItemID();
+                   			$temp_array['date'] = $step_item->getModificationDate();
+                   			$temp_array['date'] = $this->_environment->getTranslationObject()->getDateInLang($step_item->getModificationDate());
+                   			$temp_array['title'] = $step_item->getTitle();
+                    		$temp_array['ref_iid'] = $step_item->getTodoID();
+                    		$info_text['step_new_items'][] = $temp_array;
+               			}
+            		} elseif ( $noticed['read_date'] < $step_item->getModificationDate() ) {
+               			if ($date < $step_item->getModificationDate() ) {
+                   			$info_text['count_changed']++;
+                   			$temp_array['iid'] = $step_item->getItemID();
+                   			$temp_array['date'] = $this->_environment->getTranslationObject()->getDateInLang($step_item->getModificationDate());
+                   			$temp_array['modificator'] = $step_item->getModificatorItem()->getFullname();
+                   			$temp_array['title'] = $step_item->getTitle();
+                    		$temp_array['ref_iid'] = $step_item->getTodoID();
+                    		$info_text['step_changed_items'][] = $temp_array;
+                			}
+            		}
+            		$step_item = $step_list->getNext();
+         		}
+      		}
+      		return $info_text;
+  	 	}
 
 
 		protected function _getItemAnnotationChangeStatus($item) {

@@ -285,9 +285,9 @@ else {
             $status = $todo_item->getStatus();
             if ( $status == $translator->getMessage('TODO_NOT_STARTED')){
                $todo_item->setStatus(2);
-               $todo_item->setModificationDate(getCurrentDateTimeInMySQL());
-               $todo_item->save();
             }
+            $todo_item->setModificationDate(getCurrentDateTimeInMySQL());
+            $todo_item->save();
 
 
             // Redirect
