@@ -73,7 +73,6 @@
 		</div>
 	</div>
 {if $room.sidebar_configuration.active.netnavigation}
-{$h = $room.sidebar_configuration.hidden.netnavigation}
 	<div class="portlet_rc">
 	{if $room.netnavigation.edit}
 		<a href="{$room.netnavigation.edit_link}" title="{if isset($room.netnavigation.is_community)}{if $room.netnavigation.is_community}___COMMON_ATTACHED_INSTITUTIONS___{else}___COMMON_ATTACHED_GROUPS___{/if}{else}___COMMON_ATTACHED_ENTRIES___{/if}" class="btn_head_rc2">
@@ -105,7 +104,7 @@
 			</a>
 		{/if}
 	-->
-		<div class="portlet_rc_body{if $h} hidden{/if}">
+		<div class="portlet_rc_body">
 			<div id="netnavigation">
 				<ul>
 				{foreach $room.netnavigation.items as $item}
