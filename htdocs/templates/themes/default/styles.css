@@ -111,7 +111,7 @@ frame and header
     color: #2A3B59;
     font-size: 12px;
     text-shadow: #BCDEFD 0 1px;
-    float: left;
+    /*float: left;*/
     }
 
 #popup_close {

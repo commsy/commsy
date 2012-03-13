@@ -49,6 +49,18 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 					if(status === 'success') {
 						// we recieved html - append it
 						jQuery('body').prepend(data);
+						
+						// reinvoke CKEditor
+						require(['commsy/ck_editor'], function($) {
+							// call init
+							$.init(commsy_functions, {register_on: jQuery('div[id="ckeditor"]'), input_object: jQuery('input[id="ckeditor_content"]')});
+						});
+						
+						// reinvoke Uploadify
+						require(['commsy/uploadify'], function($) {
+							// call init
+							$.init(commsy_functions, {register_on: jQuery('input[id="uploadify"]'), upload_object: jQuery('a[id="uploadify_doUpload"]'), clear_object: jQuery('a[id="uploadify_clearQuery"]')});
+						});
 					}
 				}
 			});

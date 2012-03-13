@@ -13,13 +13,19 @@
 
 				<div id="content_row_three">
 					<div class="input_row">
-						<span class="input_label">Titel</span> <input type="text" value="" class="size_200" /> 
-						<span class="input_label">Betreff</span> <input type="text" value="" class="size_200" />
+						<span class="input_label">Titel</span> <input type="text" value="" name="form_data[title]" class="size_200" /> 
 					</div>
 
 					<div id="pop_editor">
 						<h2 id="pop_editor_head">Initialbeitrag der Diskussion</h2>
-						<img src="{$basic.tpl_path}img/dummy_editor.jpg" alt=""/>
+						
+						<input type="hidden" value="" name="iid"/>
+						<input type="hidden" value="{$detail.item_id}" name="discussion_id"/>
+						<input type="hidden" value="1" name="ref_position"/>
+						<div class="editor_content">
+							<div id="ckeditor"></div>
+							<input type="hidden" id="ckeditor_content" name="form_data[description]" value=""/>
+						</div>
 					</div>
 
 					<div class="tab_navigation">
@@ -33,7 +39,17 @@
 					<div class="settings_area">
 
 						<div class="sa_col_left">
-							<img src="{$basic.tpl_path}img/dummy_upload.jpg" alt=""/>
+							<div id="file_finished"></div>
+							<input id="uploadify" name="uploadify" type="file" />
+
+							<div>
+								<a id="uploadify_doUpload">
+									<img src="{$basic.tpl_path}img/uploadify/button_upload_{$environment.lang}.png" />
+								</a>
+								<a id="uploadify_clearQuery">
+									<img src="{$basic.tpl_path}img/uploadify/button_abort_{$environment.lang}.png" />
+								</a>
+							</div>
 						</div>
 
 						<div class="sa_col_right">
