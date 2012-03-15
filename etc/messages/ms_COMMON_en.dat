@@ -471,6 +471,7 @@ $message["COMMON_NETNAVIGATION"]["en"] = "Related contents";
 $message["COMMON_NETNAVIGATION_ENTRIES"]["en"] = "related contents";
 $message["COMMON_NETNAVIGATION_LATEST_ENTRIES"]["en"] = "Latest added references";
 $message["COMMON_NEW"]["en"] = "New";
+$message["COMMON_NEW_LOWER"]["en"] = "new";
 $message["COMMON_NEW-STEP"]["en"] = "New step";
 $message["COMMON_NEWEST_ENTRIES"]["en"] = "Latest entries";
 $message["COMMON_NEWEST_ENTRIES_IN_ROOMS"]["en"] = "Newest entries of all rooms where %1 is member.";

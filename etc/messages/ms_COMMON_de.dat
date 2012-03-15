@@ -480,6 +480,7 @@ $message["COMMON_NETNAVIGATION"]["de"] = "Netznavigation";
 $message["COMMON_NETNAVIGATION_ENTRIES"]["de"] = "zugeordnete Einträge";
 $message["COMMON_NETNAVIGATION_LATEST_ENTRIES"]["de"] = "Neueste Zuordnungen";
 $message["COMMON_NEW"]["de"] = "Neu";
+$message["COMMON_NEW_LOWER"]["de"] = "neu";
 $message["COMMON_NEWEST_ENTRIES"]["de"] = "Die neuesten Einträge";
 $message["COMMON_NEWEST_ENTRIES_IN_ROOMS"]["de"] = "Die neusten Einträge aus allen Räumen, in denen %1 Mitglied ist.";
 $message["COMMON_NEWS"]["de"] = "Neuigkeit";

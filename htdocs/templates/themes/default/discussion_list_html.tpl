@@ -131,7 +131,7 @@
 
 			<div class="column_90">
 				<p>
-					{$item.article_count} ({$item.article_unread} ___COMMON_UNREAD___)
+					{$item.article_count} ({$item.article_unread} ___COMMON_NEW_LOWER___)
 				</p>
 			</div>
 
