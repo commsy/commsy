@@ -2,12 +2,18 @@
 
 {block name=room_list_header}
 	<div class="table_head">
-		{if $list.sorting_parameters.sort_title == "up"}
-		 	<h3 class="w_380"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_title_link}" id="sort_up"><strong>___COMMON_TITLE___</strong></a></h3>
-		{elseif $list.sorting_parameters.sort_title == "down"}
-		 	<h3 class="w_380"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_title_link}" id="sort_down"><strong>___COMMON_TITLE___</strong></a></h3>
+		{if $room.assessment}
+			{$w = 380}
 		{else}
-		 	<h3 class="w_380"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_title_link}" class="sort_none">___COMMON_TITLE___</a></h3>
+			{$w = 420}
+		{/if}
+
+		{if $list.sorting_parameters.sort_title == "up"}
+		 	<h3 class="w_{$w}"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_title_link}" id="sort_up"><strong>___COMMON_TITLE___</strong></a></h3>
+		{elseif $list.sorting_parameters.sort_title == "down"}
+		 	<h3 class="w_{$w}"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_title_link}" id="sort_down"><strong>___COMMON_TITLE___</strong></a></h3>
+		{else}
+		 	<h3 class="w_{$w}"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_title_link}" class="sort_none">___COMMON_TITLE___</a></h3>
 		{/if}
 		{if $list.sorting_parameters.sort_modified == "up"}
 		 	<h3 class="w_80"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_modified_link}" id="sort_up"><strong>___COMMON_MODIFIED_AT___</strong></a></h3>
@@ -16,7 +22,13 @@
 		{else}
 		 	<h3 class="w_80"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_modified_link}" class="sort_none">___COMMON_MODIFIED_AT___</a></h3>
 		{/if}
-		<h3 class="w_135">___COMMON_ENTERED_BY___</h3>
+		{if $list.sorting_parameters.sort_modificator == "up"}
+		 	<h3 class="w_135"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_modificator_link}" id="sort_up"><strong>___COMMON_ENTERED_BY___</strong></a></h3>
+		{elseif $list.sorting_parameters.sort_modificator == "down"}
+		 	<h3 class="w_135"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_modificator_link}" id="sort_down"><strong>___COMMON_ENTERED_BY___</strong></a></h3>
+		{else}
+		 	<h3 class="w_135"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_modificator_link}" class="sort_none">___COMMON_ENTERED_BY___</a></h3>
+		{/if}
 		{if $room.assessment}
 			{if $list.sorting_parameters.sort_assessment == "up"}
 				<h3><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_assessment_link}" id="sort_up"><strong>___COMMON_ASSESSMENT_INDEX___</strong></a></h3>
@@ -34,7 +46,12 @@
 
 {block name=room_list_content}
 	{foreach $announcement.list_content.items as $item }
-		<div class="{if $item@iteration is odd}row_odd{else}row_even{/if} {if $item@iteration is odd}odd_sep_announcement{else}even_sep_announcement{/if}"> <!-- Start Reihe -->
+		{if $room.assessment}
+			{$sep = "announcement_assessment"}
+		{else}
+			{$sep = "announcement"}
+		{/if}
+		<div class="{if $item@iteration is odd}row_odd{else}row_even{/if} {if $item@iteration is odd}odd_sep_{$sep}{else}even_sep_{$sep}{/if}"> <!-- Start Reihe -->
 			<div class="column_20">
 				<p>
 				{if $item.noticed.show_info}
@@ -83,7 +100,13 @@
 				{/if}
 				</p>
 			</div>
-			<div class="column_304">
+			{if $room.assessment}
+				{$w = 304}
+			{else}
+				{$w = 344}
+			{/if}
+
+			<div class="column_{$w}">
 				<p>
 					 <a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&{$environment.params}&iid={$item.iid}">{$item.title}</a>
 				</p>
@@ -112,11 +135,17 @@
 			<div class="column_90">
 				<p>{$item.date}</p>
 			</div>
-			<div class="column_155">
+			{if $room.assessment}
+				{$w = 155}
+			{else}
+				{$w = 184}
+			{/if}
+			<div class="column_{$w}">
 				<p>
 					{$item.modificator}
 				</p>
 			</div>
+			{if $room.assessment}
 			<div class="column_100">
 				<p>
 					{foreach $item.assessment_array as $star_text}
@@ -124,6 +153,7 @@
 					{/foreach}
 				</p>
 			</div>
+			{/if}
 			<div class="clear"> </div>
 		</div> <!-- Ende Reihe -->
 	{/foreach}

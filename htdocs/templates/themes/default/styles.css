@@ -1144,6 +1144,14 @@ h2#item_navigation span {
     background: url(img/sep_announcement.gif) repeat-y #FFF;
     }
 
+.odd_sep_announcement_assessment {
+    background: url(img/sep_announcement_assessment.gif) repeat-y #F5F5F5;
+    }
+
+.even_sep_announcement_assessment {
+    background: url(img/sep_announcement_assessment.gif) repeat-y #FFF;
+    }
+
 .odd_sep_date {
     background: url(img/sep_date.gif) repeat-y #F5F5F5;
     }

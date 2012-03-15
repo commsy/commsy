@@ -6,6 +6,10 @@
 			{$w = 300}
 		{elseif !$room.assessment && !$room.workflow}
 			{$w = 420}
+		{elseif $room.assessment && !$room.workflow}
+			{$w = 380}
+		{elseif !$room.assessment && $room.workflow}
+			{$w = 380}
 		{else}
 			{$w = 420}
 		{/if}
@@ -133,12 +137,14 @@
 				{/if}
 				</p>
 			</div>
-			{if $room.assessment && $room.workflow}
-				{$w = 244}
-			{elseif !$room.assessment && !$room.workflow}
+			{if !$room.assessment && !$room.workflow}
 				{$w = 344}
+			{elseif $room.assessment && !$room.workflow}
+				{$w = 304}
+			{elseif !$room.assessment && $room.workflow}
+				{$w = 304}
 			{else}
-				{$w = 344}
+				{$w = 244}
 			{/if}
 			<div class="column_{$w}">
 				<p>
@@ -169,7 +175,12 @@
 			<div class="column_90">
 				<p>{$item.date}</p>
 			</div>
-			<div class="column_160">
+			{if !$room.assessment && !$room.workflow}
+				{$w = 184}
+			{else}
+				{$w = 160}
+			{/if}
+			<div class="column_{$w}">
 				<p>
 					{$item.modificator}
 				</p>
