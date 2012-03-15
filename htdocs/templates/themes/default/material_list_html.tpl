@@ -5,9 +5,9 @@
 		{if $room.assessment && $room.workflow}
 			{$w = 300}
 		{elseif !$room.assessment && !$room.workflow}
-			{$w = 380}
+			{$w = 420}
 		{else}
-			{$w = 380}
+			{$w = 420}
 		{/if}
 		{if $list.sorting_parameters.sort_title == "up"}
 		 	<h3 class="w_{$w}"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_title_link}" id="sort_up"><strong>___COMMON_TITLE___</strong></a></h3>
@@ -136,9 +136,9 @@
 			{if $room.assessment && $room.workflow}
 				{$w = 244}
 			{elseif !$room.assessment && !$room.workflow}
-				{$w = 304}
+				{$w = 344}
 			{else}
-				{$w = 304}
+				{$w = 344}
 			{/if}
 			<div class="column_{$w}">
 				<p>
