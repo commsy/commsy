@@ -24,7 +24,7 @@
 				'limit'		=> 20
 			);
 			*/
-			
+
 			// remove delete_sel_cookie
 			$this->_environment->removeCurrentParameter('delete_sel_cookie');
 		}
@@ -81,7 +81,7 @@
 		protected function getListEntriesParameterArray(){
 			$environment = $this->_environment;
            	$params = $environment->getCurrentParameterArray();
-			
+
       		if (isset($params['interval']) and !empty($params['interval'])){
       			$interval_parameter = $params['interval'];
       		}elseif(isset($params['interval']) and empty($params['interval'])){
@@ -115,7 +115,7 @@
       		}
       		return $return_array;
 		}
-		
+
 		protected function getSortingParameterArray(){
 			$environment = $this->_environment;
            	$params = $environment->getCurrentParameterArray();
@@ -155,7 +155,7 @@
       			$return_array['sort_numposts_link'] = $link_parameter_text.'&sort=numposts';
          		$return_array['sort_numposts'] = 'none';
       		}
-			
+
 			if($sort_parameter === 'latest') {
 				$return_array['sort_latest_link'] = $link_parameter_text . '&sort=latest_rev';
 				$return_array['sort_latest'] = 'up';
@@ -166,7 +166,7 @@
 				$return_array['sort_latest_link'] = $link_parameter_text . '&sort=latest';
 				$return_array['sort_latest'] = 'none';
 			}
-			
+
 			if($sort_parameter === 'name') {
 				$return_array['sort_name_link'] = $link_parameter_text . '&sort=name_rev';
 				$return_array['sort_name'] = 'up';
@@ -177,7 +177,7 @@
 				$return_array['sort_name_link'] = $link_parameter_text . '&sort=name';
 				$return_array['sort_name'] = 'none';
 			}
-			
+
 			if($sort_parameter === 'date') {
 				$return_array['sort_date_link'] = $link_parameter_text . '&sort=date_rev';
 				$return_array['sort_date'] = 'up';
@@ -209,6 +209,16 @@
          		$return_array['sort_assessment_link'] = $link_parameter_text.'&sort=assessment';
          		$return_array['sort_assessment'] = 'none';
       		}
+     		if ( $sort_parameter == 'workflow_status') {
+         		$return_array['sort_workflow_link'] = $link_parameter_text.'&sort=workflow_status_rev';
+         		$return_array['sort_workflow'] = 'up';
+      		}elseif ($sort_parameter == 'workflow_status_rev'){
+         		$return_array['sort_workflow_link'] = $link_parameter_text.'&sort=workflow_status';
+         		$return_array['sort_workflow'] = 'down';
+      		}else{
+         		$return_array['sort_workflow_link'] = $link_parameter_text.'&sort=workflow_status';
+         		$return_array['sort_workflow'] = 'none';
+      		}
       		if ( $sort_parameter == 'modified' or empty($sort_parameter)) {
          		$return_array['sort_modified_link'] = $link_parameter_text.'&sort=modified_rev';
          		$return_array['sort_modified'] = 'up';
@@ -219,7 +229,7 @@
          		$return_array['sort_modified_link'] = $link_parameter_text.'&sort=modified';
          		$return_array['sort_modified'] = 'none';
       		}
-			
+
 			if ( $sort_parameter == 'time') {
          		$return_array['sort_time_link'] = $link_parameter_text.'&sort=time_rev';
          		$return_array['sort_time'] = 'up';
@@ -230,7 +240,7 @@
          		$return_array['sort_time_link'] = $link_parameter_text.'&sort=time';
          		$return_array['sort_time'] = 'none';
       		}
-			
+
 			if ( $sort_parameter == 'place') {
          		$return_array['sort_place_link'] = $link_parameter_text.'&sort=place_rev';
          		$return_array['sort_place'] = 'up';
@@ -241,7 +251,7 @@
          		$return_array['sort_place_link'] = $link_parameter_text.'&sort=place';
          		$return_array['sort_place'] = 'none';
       		}
-			
+
 			return $return_array;
 		}
 
@@ -649,7 +659,7 @@
    		function getBrowsingIconsParameterArray($from = 0, $interval = 0, $count_all_shown = 0){
 			$environment = $this->_environment;
            	$params = $environment->getCurrentParameterArray();
-			
+
       		$link_parameter_text = '';
       		if ( count($params) > 0 ) {
          		foreach ($params as $key => $parameter) {

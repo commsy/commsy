@@ -51,7 +51,7 @@ class cs_wordpress_manager extends cs_manager {
     parent::cs_manager($environment);
 
     $this->wp_user = $this->_environment->getCurrentUser()->_getItemData();
-    
+
     global $c_wordpress;
     if($c_wordpress){
        $this->CW = $this->getSoapClient();
@@ -157,17 +157,17 @@ class cs_wordpress_manager extends cs_manager {
     global $class_factory;
 
     $wpUser = $this->_getCurrentAuthItem();
-    
+
     $context = $this->_environment->getCurrentContextItem();
     $wordpressId = $context->getWordpressId();
     $comment_status = $context->getWordpressUseComments();
     #$wordpress_post_id = '';
-    
+
     // Material Item
     $material_manager = $this->_environment->getMaterialManager();
     $material_version_list = $material_manager->getVersionList($current_item_id);
     $item = $material_version_list->getFirst();
-    
+
     // Informationen
     $author = $item->getAuthor();
     $description = $item->getDescription();
@@ -185,13 +185,13 @@ class cs_wordpress_manager extends cs_manager {
       foreach ($file_array as $file) {
 //        array($file->getUrl(), $file->getMime());
 //        $rel_path = '/wp/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/wp-content/uploads/commsy/'.$current_item_id.'/';
-      	
+
         $fileUrl  = $this->CW->insertFile($this->_environment->getSessionID(),array('name' => $file->getDisplayName(), 'data' => base64_encode(file_get_contents($file->getDiskFileName()))), $wordpressId);//$this->exportFileToWordpress($file, $current_item_id, $rel_path);
         if ( !is_soap_fault($fileUrl) ) {
 //        $fileUrl  = 'http://'.$_SERVER['HTTP_HOST'].'/'.$file->getUrl();//$this->exportFileToWordpress($file, $current_item_id, $rel_path);
           $file_link_array[] = '<a href="'.$fileUrl.'" title="'.$file->getDisplayName().'">'.$file->getDisplayName().'</a>' ;
           $file_link_array_images[$file->getDisplayName()] = $fileUrl;
-          
+
           // Add files to Wordpress media-library
           $file_post = array(
             'post_content'         =>'',
@@ -212,15 +212,15 @@ class cs_wordpress_manager extends cs_manager {
             'menu_order'           =>'0',
             'guid'                 =>$fileUrl,
       	   'post_mime_type'		  =>mysql_escape_string($file->getMime()));
-          
-          
+
+
           $wordpress_post_id = $file->getWordpressPostId();
           $wpPostId = $this->CW->insertPost($this->_environment->getSessionID(),$file_post, $wpUser, $wordpressId, 'Material', $wordpress_post_id);
           if($wordpress_post_id == ''){
              $file->setWordpressPostId($wpPostId);
              $file->update();
           }
-          
+
         }
       }
       if ( !empty($file_link_array) ) {
@@ -229,21 +229,21 @@ class cs_wordpress_manager extends cs_manager {
         #unset($file_links);
       }
     }
-    
+
     $params = array();
     $params['environment'] = $this->_environment;
     $wordpress_view = $class_factory->getClass(WORDPRESS_VIEW,$params);
     $wordpress_view->setItem($item);
     $description = $wordpress_view->formatForWordpress($description, $file_link_array_images);
-    
+
     $post_content = $this->encodeUmlaute($description);
     $post_content = 'Author: '.$author.'<br />'.$this->encodeUrl($post_content);
     $post_title = $item->getTitle();
 
     $post_content_complete = '';
-    
+
     $post_content .= $file_links;
-    
+
     // Abschnitte
     $sub_item_list = $item->getSectionList();
     $sub_item_descriptions = '';
@@ -534,7 +534,9 @@ class cs_wordpress_manager extends cs_manager {
                $retour = true;
             }
          } else {
-            $role = $this->CW->getUserRole($session_item->getSessionID(),$wordpress_id,$user_login);
+            if ( empty($this->CW) and is_object($this->CW)){
+	            $role = $this->CW->getUserRole($session_item->getSessionID(),$wordpress_id,$user_login);
+            }
             if ( empty($role)
                  or is_soap_fault($role)
                ) {

@@ -3,7 +3,7 @@
 {block name=room_list_header}
 	<div class="table_head">
 		{if $room.assessment && $room.workflow}
-			{$w = 295}
+			{$w = 300}
 		{elseif !$room.assessment && !$room.workflow}
 			{$w = 380}
 		{else}
@@ -23,18 +23,30 @@
 		{else}
 		 	<h3 class="w_80"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_modified_link}" class="sort_none">___COMMON_MODIFIED_AT___</a></h3>
 		{/if}
-		<h3 class="w_135">___COMMON_ENTERED_BY___</h3>
-		{if $room.assessment}
-			{if $list.sorting_parameters.sort_assessment == "up"}
-				<h3 class="w_80"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_assessment_link}" id="sort_up"><strong>___COMMON_ASSESSMENT_INDEX___</strong></a></h3>
-			{elseif $list.sorting_parameters.sort_assessment == "down"}
-				<h3 class="w_80"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_assessment_link}" id="sort_down"><strong>___COMMON_ASSESSMENT_INDEX___</strong></a></h3>
-			{else}
-				<h3 class="w_80"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_assessment_link}" class="sort_none">___COMMON_ASSESSMENT_INDEX___</a></h3>
-			{/if}
+		{if $list.sorting_parameters.sort_modificator == "up"}
+		 	<h3 class="w_150"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_modificator_link}" id="sort_up"><strong>___COMMON_ENTERED_BY___</strong></a></h3>
+		{elseif $list.sorting_parameters.sort_modificator == "down"}
+		 	<h3 class="w_150"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_modificator_link}" id="sort_down"><strong>___COMMON_ENTERED_BY___</strong></a></h3>
+		{else}
+		 	<h3 class="w_150"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_modificator_link}" class="sort_none">___COMMON_ENTERED_BY___</a></h3>
 		{/if}
 		{if $room.workflow}
-			<h3>___COMMON_WORKFLOW_INDEX___</h3>
+			{if $list.sorting_parameters.sort_workflow == "up"}
+				<h3 class="w_60"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_workflow_link}" id="sort_up"><strong>___COMMON_WORKFLOW_INDEX___</strong></a></h3>
+			{elseif $list.sorting_parameters.sort_workflow == "down"}
+				<h3 class="w_60"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_workflow_link}" id="sort_down"><strong>___COMMON_WORKFLOW_INDEX___</strong></a></h3>
+			{else}
+				<h3 class="w_60"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_workflow_link}" class="sort_none">___COMMON_WORKFLOW_INDEX___</a></h3>
+			{/if}
+		{/if}
+		{if $room.assessment}
+			{if $list.sorting_parameters.sort_assessment == "up"}
+				<h3 class="w_60"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_assessment_link}" id="sort_up"><strong>___COMMON_ASSESSMENT_INDEX___</strong></a></h3>
+			{elseif $list.sorting_parameters.sort_assessment == "down"}
+				<h3 class="w_60"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_assessment_link}" id="sort_down"><strong>___COMMON_ASSESSMENT_INDEX___</strong></a></h3>
+			{else}
+				<h3 class="w_60"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_assessment_link}" class="sort_none">___COMMON_ASSESSMENT_INDEX___</a></h3>
+			{/if}
 		{/if}
 		<div class="clear"> </div>
 	</div>
@@ -44,11 +56,15 @@
 {block name=room_list_content}
 	{foreach $material.list_content.items as $item }
 		{if $room.assessment && $room.workflow}
-			{$sep = "date"}
+			{$sep = "material_workflow_assessment"}
+		{elseif !$room.assessment && $room.workflow}
+			{$sep = "material_workflow"}
+		{elseif $room.assessment && !$room.workflow}
+			{$sep = "material_assessment"}
 		{elseif !$room.assessment && !$room.workflow}
-			{$sep = "announcement"}
+			{$sep = "material"}
 		{else}
-			{$sep = "announcement"}
+			{$sep = "material"}
 		{/if}
 		<div class="{if $item@iteration is odd}row_odd{else}row_even{/if} {if $item@iteration is odd}odd_sep_{$sep}{else}even_sep_{$sep}{/if}"> <!-- Start Reihe -->
 			<div class="column_20">
@@ -153,11 +169,19 @@
 			<div class="column_90">
 				<p>{$item.date}</p>
 			</div>
-			<div class="column_155">
+			<div class="column_160">
 				<p>
 					{$item.modificator}
 				</p>
 			</div>
+			{if $room.workflow}
+				<div class="column_70">
+					<p>
+						<img class="workflow" src="{$basic.tpl_path}img/workflow_traffic_light_{$item.workflow.light}.png" alt="{$item.workflow.title}" title="{$item.workflow.title}">
+					</p>
+				</div>
+			{/if}
+			{if $room.assessment}
 			<div class="column_100">
 				<p>
 					{foreach $item.assessment_array as $star_text}
@@ -165,12 +189,6 @@
 					{/foreach}
 				</p>
 			</div>
-			{if $room.workflow && $item.workflow.show}
-				<div class="column_100">
-					<p>
-						<img src="{$basic.tpl_path}img/workflow_traffic_light_{$item.workflow.light}" alt="{$item.workflow.title}" title="{$item.workflow.title}">
-					</p>
-				</div>
 			{/if}
 			<div class="clear"> </div>
 		</div> <!-- Ende Reihe -->
