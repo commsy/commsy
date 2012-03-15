@@ -1036,6 +1036,7 @@
 
 					$return[] = array(
 						'title'				=> $converter->text_as_html_short($section->getTitle()),
+						'iid'				=> $section->getItemID(),
 						'description'		=> $description,
 						'num_attachments'	=> sizeof($files)
 					);
@@ -1053,7 +1054,6 @@
 
 			// store for cache
 			$this->_sections = $return;
-
 			return $return;
 		}
 	}

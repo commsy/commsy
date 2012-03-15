@@ -95,6 +95,7 @@
 
 		<div class="item_body"> <!-- Start item body -->
 			<a name="disc_article_{$article.item_id}"></a>
+			<a name="article{$article.item_id}"></a>
 
 			<!-- Start fade_in_ground -->
 			<div class="fade_in_ground_actions hidden">

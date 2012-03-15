@@ -18,7 +18,7 @@
 			{/foreach}
 		</ul>
 	{/function}
-	
+
 	<div id="discussion_tree_progressbar_wrap">
 		<div>___DISCUSSION_THREADED_LOADING___</div>
 		<div>
@@ -26,7 +26,7 @@
 		</div>
 		<div id="discussion_tree_progressbar"></div>
 	</div>
-	
+
 	{*
 	 $html = '<div id="discussion_tree_progressbar_wrap">' . LF;
       $html .= '<div style="float: left; width: 180px;">' . $this->_translator->getMessage("DISCUSSION_THREADED_LOADING") . '</div>' . LF;
@@ -35,9 +35,9 @@
       $html .= '%</div>' . LF;
       $html .= '<div id="discussion_tree_progressbar" style="margin-left: 180px; margin-right: 50px;"></div>' . LF;
       $html .= '</div>' . LF;
-      
+
       *}
-      
+
 	<div id="discussion_tree" class="hidden">
 		{* call function *}
 		{short_discussion_threaded nodes=$detail.content.disc_articles}
@@ -45,6 +45,7 @@
 {/block}
 
 {block name=discussion_articles}
+	<a name="article{$article.item_id}"></a>
 	<div class="item_post">
 		<div class="row_{if $article@iteration is odd}odd{else}even{/if}_no_hover {if $article@iteration is odd}odd{else}even{/if}_sep_disdetail">
 			<div class="column_80">

@@ -8,9 +8,9 @@
 			<a class="detail" href="#"><span class="details_ia"> &nbsp; </span></a>
 		</div>
 	</div>
-	
+
 	<div class="item_body"> <!-- Start item body -->
-		
+
 		<!-- Start fade_in_ground -->
 		<div class="fade_in_ground_actions hidden">
 			{if $detail.actions.edit}
@@ -28,12 +28,12 @@
 			<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.content.item_id}">___COMMON_DOWNLOAD___</a>
 		</div>
 		<!-- Ende fade_in_ground -->
-		
+
 		{include file="include/detail_linked_html.tpl"}
-		
+
 		<h2>{$detail.content.title}</h2>
 		<div class="clear"> </div>
-		
+
 		<div id="item_credits">
 			<p id="ic_rating">
 			</p>
@@ -44,7 +44,7 @@
 			</p>
 			<div class="clear"> </div>
 		</div>
-		
+
 		<div id="item_credits">
 			<p>
 				<div class="user_profil_blocks">
@@ -66,7 +66,7 @@
 								{$detail.content.formal.status}
 							</td>
 						</tr>
-						
+
 						{if !empty($detail.content.formal.management)}
 							{if !empty($detail.content.formal.management[0])}
 								<tr>
@@ -85,7 +85,7 @@
 								</tr>
 							{/if}
 						{/if}
-						
+
 						<tr>
 							<td class="label"><h4>___TODO_PROCESSORS___</h4></td>
 							<td>
@@ -96,7 +96,7 @@
 								{/if}
 							</td>
 						</tr>
-						
+
 						{if !empty($detail.content.formal.files)}
 							<tr>
 								<td class="label"><h4>___MATERIAL_FILES___</h4></td>
@@ -105,7 +105,7 @@
 								</td>
 							</tr>
 						{/if}
-						
+
 						<tr>
 							<td class="label"><h4>___TODO_STEPS___</h4></td>
 							<td>
@@ -121,9 +121,9 @@
 			</p>
 			<div class="clear"> </div>
 		</div>
-		
+
 		<div id="item_legend"> <!-- Start item_legend -->
-			<div class="row_odd">				
+			<div class="row_odd">
 				{if !empty($detail.content.description)}
 					<div class="detail_description">
 						{$detail.content.description}
@@ -132,10 +132,10 @@
 			</div>
 		</div> <!-- Ende item_legend -->
 		{include file="include/detail_moredetails_html.tpl" data=$detail.content.moredetails}
-		
+
 	</div> <!-- Ende item body -->
 	<div class="clear"> </div>
-	
+
 	{foreach $detail.content.steps as $step}
 		<div class="item_actions">
 			<a class="edit" href="#"><span class="edit_set"> &nbsp; </span></a>
@@ -144,6 +144,7 @@
 
 		<div class="item_body"> <!-- Start item body -->
 			<a name="step_article_{$step.item_id}"></a>
+			<a name="step{$step.item_id}"></a>
 			<div class="edit_overlay">
 			{*
 				{if $article.actions.edit}
@@ -181,7 +182,7 @@
 												</td>
 											</tr>
 										{/if}
-										
+
 										{if !empty($step.formal.files)}
 											<tr>
 												<td class="label"><h4>___MATERIAL_FILES___</h4></td>
@@ -192,10 +193,10 @@
 										{/if}
 									</table>
 								</div>
-								
+
 								<div class="clear"> </div>
 							{/if}
-						
+
 							<h4>{*{if $article.noticed == 'new' or $article.noticed == 'changed'}<img src="{$basic.tpl_path}img/flag_neu.gif" alt="___COMMON_NEW___"/>{/if}*} {$step.title}
 							</h4>
 							<span><a href="">{*{$article.creator}*}</a>{*	, {$article.modification_date}*}</span>
@@ -221,9 +222,9 @@
 		</div> <!-- Ende item body -->
 		<div class="clear"> </div>
 	{/foreach}
-	
+
 	<div class="item_actions">&nbsp;</div>
-	
+
 	<div class="item_body"> <!-- Start item body -->
 		<div class="item_post">
 			<div id="item_postnew">
@@ -238,7 +239,7 @@
 						</a>
 					</p>
 				</div>
-				
+
 				<div class="column_590">
 					<form action="commsy.php?cid={$environment.cid}&mod=step&fct=edit" method="post">
 						<div class="post_content">
@@ -253,7 +254,7 @@
 								<option value="2">___TODO_TIME_HOURS___</option>
 								<option value="3">___TODO_TIME_DAYS___</option>
 							</select>
-							
+
 							<div class="editor_content">
 								<div id="ckeditor_second"></div>
 								<input type="hidden" id="ckeditor_content_second" name="form_data[description]" value=""/>
@@ -267,9 +268,9 @@
 		</div>
 	</div> <!-- Ende item body -->
 	<div class="clear"> </div>
-	
+
 	{include file='include/annotation_include_html.tpl'}
-	
+
 	<div class="clear"> </div>
 {/block}
 
