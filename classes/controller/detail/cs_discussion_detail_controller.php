@@ -724,7 +724,7 @@ if ($type != CS_DISCUSSION_TYPE) {
 
 			$return[0]['children'] = $this->buildThreadedTree($articles_list, $root);
 
-			pr($return);
+#			pr($return);
 
 			return $return;
 		}
