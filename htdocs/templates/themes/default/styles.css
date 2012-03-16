@@ -92,15 +92,25 @@ frame and header
 }
 
 #popup_w3col {
-	margin: 80px auto auto;
+	margin: 182px auto auto;
     border-top: 2px solid #7FB3E2;
-    width: 735px;
+    width: 979px;
     background: url(img/popup_bg.jpg) repeat-x #7FB3E2;
+	position: relative;
     }
 
 #popup {
     padding: 25px 10px 10px 10px;
+	width: 719px;
     }
+
+#popup_background {
+	background-color: #000000;
+	height: 100%;
+	width: 100%;
+	position: absolute;
+	opacity: 0.6;
+	}
 
 #popup_head {
     padding-bottom: 10px;
@@ -299,8 +309,8 @@ h3.pop_item_navigation {
 
 #content_row_three {
     padding: 30px 10px;
-    height: 400px;
-    overflow: auto;
+    /*height: 400px;
+    overflow: auto;*/
     border-bottom: 1px solid #767676;
     }
 

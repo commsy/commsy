@@ -57,7 +57,7 @@
 			foreach($this->getFieldInformation() as $field) {
 				
 				// check mandatory
-				if(isset($field['mandatory']) || $field['mandatory'] === true) {
+				if(isset($field['mandatory']) && $field['mandatory'] === true) {
 					if(!isset($_POST['form_data'][$field['name']]) || trim($_POST['form_data'][$field['name']]) === '') {
 						throw new cs_form_mandatory_exception('missing mandatory field');
 					}

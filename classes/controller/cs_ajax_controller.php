@@ -30,7 +30,7 @@
 			$function = 'action' . ucfirst($_GET['action']);
 
 			if(!method_exists($this, $function)) die('Method ' . $function . ' does not exists!');
-
+			
 			// call
 			call_user_func_array(array($this, $function), array());
 		}

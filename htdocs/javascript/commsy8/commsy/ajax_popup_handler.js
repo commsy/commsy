@@ -48,7 +48,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 				data: JSON.stringify(module),
 				contentType: 'application/json; charset=utf-8',
 				dataType: 'json',
-				error: function() {
+				error: function(jqXHR, textStatus, errorThrown) {
 					console.log("error while getting popup");
 				},
 				success: function(data, status) {
@@ -88,36 +88,54 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 		create: function(event) {
 			var handle = event.data.handle;
 			
-			// collect form data
-			var form_objects = jQuery('div[id="popup_wrapper"] input[name^="form_data"]');
-			
-			// build object
-			var data = {
-				form_data: [],
-				module: handle.mod
-			};
-			jQuery.each(form_objects, function() {
-				data.form_data.push({
-					name:	jQuery(this).attr('name'),
-					value:	jQuery(this).attr('value')
-				});
-			});
-			
-			// ajax request
-			jQuery.ajax({
-				type: 'POST',
-				url: 'commsy.php?cid=' + handle.cid + '&mod=ajax&fct=popup&action=create',
-				data: JSON.stringify(data),
-				contentType: 'application/json; charset=utf-8',
-				dataType: 'json',
-				error: function() {
-					console.log("error while processing popup action");
-				},
-				success: function(data, status) {
-					console.log(data);
-					//handle.preconditionsSuccess(data);
+			// check mandatory
+			var check_passed = true;
+			jQuery('input[class~="mandatory"]').each(function() {
+				if(jQuery(this).val() === '') {
+					jQuery(this).css('border', '1px solid red');
+					check_passed = false;
 				}
 			});
+			
+			if(check_passed) {
+				// collect form data
+				var form_objects = jQuery('div[id="popup_wrapper"] input[name^="form_data"]');
+
+				// set description data
+				var editor = jQuery('div[id="ckeditor"]').ckeditorGet();
+				jQuery('input[name="form_data[description]"]').val(editor.getData());
+
+				// build object
+				var data = {
+					form_data: [],
+					module: handle.mod
+				};
+				jQuery.each(form_objects, function() {
+					// extract name
+					/form_data\[(.*)\]/.exec(jQuery(this).attr('name'));
+
+					data.form_data.push({
+						name:	RegExp.$1,
+						value:	jQuery(this).attr('value')
+					});
+				});
+
+				// ajax request
+				jQuery.ajax({
+					type: 'POST',
+					url: 'commsy.php?cid=' + handle.cid + '&mod=ajax&fct=popup&action=create',
+					data: JSON.stringify(data),
+					contentType: 'application/json; charset=utf-8',
+					dataType: 'json',
+					error: function() {
+						console.log("error while processing popup action");
+					},
+					success: function(data, status) {
+						console.log(data);
+						//handle.preconditionsSuccess(data);
+					}
+				});
+			}
 			
 			return false;
 		},
@@ -160,6 +178,11 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 		},
 		
 		setupPopup: function() {
+			// fullsize black overlay
+			var overlay = jQuery('div[id="popup_background"]');
+			overlay.css('height', jQuery(document).height());
+			overlay.css('width', jQuery(document).width());
+			
 			// register click for close button
 			jQuery('a[id="popup_close"]').click(this.close);
 			

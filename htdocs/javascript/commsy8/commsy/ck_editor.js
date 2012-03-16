@@ -49,6 +49,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			
 			// on form submit, attach editor content
 			var form_object = object.parentsUntil('form').last().parent();
+			
 			handle.form_attach(form_object, input_object);
 			var options = handle.options;
 			

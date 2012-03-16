@@ -132,35 +132,51 @@
 -->
 			<h2>___COMMON_REFERENCED_ENTRIES___</h2>
 			<div class="clear"> </div>
-				<div class="portlet_rc_body">
-	    		{foreach $list.perspective_rubric_entries as $rubric}
-					<div class="change_view">
-						<form action="{$rubric.action}" method="get" name="{$rubric.name}_form">
-							<input type="hidden" name="cid" value="{$environment.cid}"/>
-							<input type="hidden" name="mod" value="{$environment.module}"/>
-							<input type="hidden" name="fct" value="{$environment.function}"/>
-							{foreach $rubric.hidden as $hidden_value}
-							<input type="hidden" name="{$hidden_value.name}" value="{$hidden_value.value}"/>
-							{/foreach}
+			
+			<div class="portlet_rc_body">
+			{foreach $list.perspective_rubric_entries as $rubric}
+				<div class="change_view">
+					<form action="{$rubric.action}" method="get" name="{$rubric.name}_form">
+						<input type="hidden" name="cid" value="{$environment.cid}"/>
+						<input type="hidden" name="mod" value="{$environment.module}"/>
+						<input type="hidden" name="fct" value="{$environment.function}"/>
+						{foreach $rubric.hidden as $hidden_value}
+						<input type="hidden" name="{$hidden_value.name}" value="{$hidden_value.value}"/>
+						{/foreach}
+						
+						{if isset($rubric.custom) && $rubric.custom == true}
+							{$rubric.tag}
+						{else}
 							___COMMON_{$rubric.tag}_INDEX___
-							<select name="sel{$rubric.name}" size="1" onChange="javascript:document.{$rubric.name}_form.submit()">
+						{/if}
+						
+						<select name="sel{$rubric.name}" size="1" onChange="javascript:document.{$rubric.name}_form.submit()">
+							{if !isset($rubric.custom) || $rubric.custom != true}
 								<option value="0">*___COMMON_NO_SELECTION___</option>
-	   							<option class="disabled" disabled="disabled" value="-2">------------------------------------------------------</option>
-	    						{foreach $rubric.items as $item}
-									<option value="{$item.id}"
-										{if $item.id == $item.selected}
-											selected="selected"
-										{/if}
-									>
-										{$item.name}
-									</option>
-	    						{/foreach}
-	   							<option class="disabled" disabled="disabled" value="-2">------------------------------------------------------</option>
+								<option class="disabled" disabled="disabled" value="-2">------------------------------------------------------</option>
+							{/if}
+							{foreach $rubric.items as $item}
+								<option 
+									{if isset($item.disabled) && $item.disabled == true}
+										class="disabled" disabled="disabled"
+									{/if}
+									
+									value="{$item.id}"
+									{if $item.id == $item.selected}
+										selected="selected"
+									{/if}
+								>
+									{$item.name}
+								</option>
+							{/foreach}
+							{if !isset($rubric.custom) || $rubric.custom != true}
+								<option class="disabled" disabled="disabled" value="-2">------------------------------------------------------</option>
 								<option value="-1">*___COMMON_NOT_LINKED___</option>
-							</select>
-						</form>
-					</div>
-	    		{/foreach}
+							{/if}
+						</select>
+					</form>
+				</div>
+			{/foreach}
 			</div>
 		</div>
 	{/if}

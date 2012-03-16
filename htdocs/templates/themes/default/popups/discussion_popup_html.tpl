@@ -1,4 +1,5 @@
 <div id="popup_wrapper">
+	<div id="popup_background"></div>
 	<div id="popup_w3col">
 		<div id="popup">
 
@@ -13,7 +14,11 @@
 
 				<div id="content_row_three">
 					<div class="input_row">
-						<span class="input_label">Titel</span> <input type="text" value="" name="form_data[title]" class="size_200" /> 
+						<span class="input_label">Titel</span> <input type="text" value="" name="form_data[title]" class="size_200 mandatory" />
+						
+						<span class="input_label">Art der Diskussion</span>
+						<input type="radio" name="form_data[discussion_type]" value="1" checked="checked">___DISCUSSION_SIMPLE___
+						<input type="radio" name="form_data[discussion_type]" value="2">___DISCUSSION_THREADED___
 					</div>
 
 					<div id="pop_editor">
@@ -30,8 +35,9 @@
 
 					<div class="tab_navigation">
 						<a href="" class="pop_tab_active">Dateien anh&auml;ngen</a>
-						<a href="" class="pop_tab">Art der Diskussion</a>
 						<a href="" class="pop_tab">Zugriffsrechte</a>
+						<a href="" class="pop_tab">Schlagwörter</a>
+						<a href="" class="pop_tab">Kategorien</a>
 
 						<div class="clear"> </div>
 					</div>
@@ -56,7 +62,7 @@
 							<div class="sa_col_right">
 								<p class="info_notice">
 								<img src="{$basic.tpl_path}img/file_info_icon.gif" alt="Info"/>
-								Es k&ouml;nnen nur Dateien mit maximal 48 MB Dateigr&ouml;&szlig;e hochgeladen werden.
+								{i18n tag=MATERIAL_MAX_FILE_SIZE param1=$popup.general.max_upload_size}
 								</p>
 							</div>
 
@@ -64,13 +70,37 @@
 						</div>
 						
 						<div class="settings_area hidden">
-							Art der Diskussion
+							{if $popup.config.with_activating}
+								<input type="checkbox" name="form_data[private_editing]" value="1"/>{i18n tag=RUBRIC_PUBLIC_NO param1=$popup.user.fullname}<br/>
+								<input type="checkbox" name="form_data[hide]" value="1">___COMMON_HIDE___
+								___DATES_HIDING_DAY___ <input type="text" name="form_data[dayStart]" value=""/>
+								___DATES_HIDING_TIME___ <input type="text" name="form_data[timeStart]" value=""/>
+
+							{else}
+								{if $popup.general.is_new}
+									<input type="radio" name="form_data[public]" value="1" checked="checked"/>___RUBRIC_PUBLIC_YES___<br/>
+									<input type="radio" name="form_data[public]" value="0"/>{i18n tag=RUBRIC_PUBLIC_NO param1=$popup.user.fullname}
+								{else}
+									{*
+									$current_user = $this->_environment->getCurrentUser();
+									$creator = $this->_item->getCreatorItem();
+
+									if ($current_user->getItemID() == $creator->getItemID() or $current_user->isModerator()) {
+									$this->_form->addRadioGroup('public',$this->_translator->getMessage('RUBRIC_PUBLIC'),$this->_translator->getMessage('RUBRIC_PUBLIC_DESC'),$this->_public_array);
+									} else {
+									$this->_form->addHidden('public','');
+									}
+									*}
+								{/if}
+							{/if}		
 						</div>
 						
 						<div class="settings_area hidden">
-
-							<input type="checkbox" name="" value="" /> nur von Dennis Mustermann bearbeitbar<br/>
-							<input type="checkbox" name="" value="" /> verbergen (optional: bis zum <input type="text" value="00.00.0000" class="size_80" /> um <input type="text" value="00:00" class="size_50" /> Uhr)
+							Schlagwörter
+						</div>
+						
+						<div class="settings_area hidden">
+							Kategorien
 						</div>
 					</div>
 

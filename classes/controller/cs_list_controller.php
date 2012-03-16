@@ -74,7 +74,7 @@
 			//pr($parameter_array); exit;
 			// paging
 			if(isset($parameter_array['from'])) {
-				$this->_paging['offset'] = $parameter_array['from'];
+				//$this->_paging['offset'] = $parameter_array['from'];
 			}
 		}
 
@@ -276,10 +276,6 @@
 /*List Restriction (Tags, Buzzwords, SelectionBoxes)*/
 /**************Begin*********************************/
 
-		protected function getAdditionalRestrictionTextAsHTML($restriction_array){
-			return $restriction_array;
-		}
-
 		protected function _getRestrictionTextAsHTML(){
 #      		$ref_user = $this->getRefUser();
 #      		$ref_iid = $this->getRefIID();
@@ -439,7 +435,11 @@
 					$tmp_array['link_parameter'] = $link_parameter_text;
 					$restriction_array[] = $tmp_array();
 	         	}
-	         	$restriction_array = $this->getAdditionalRestrictionTextAsHTML($restriction_array);
+				
+				// additional restrictions
+				$additional_restrictions = $this->getAdditionalRestrictionText();
+				if(!empty($additional_restrictions)) $restriction_array[] = $additional_restrictions;
+				
 	         	if ( isset($params['selgroup']) and !empty($params['selgroup']) ){
 	            	$new_params = $params;
 	            	unset($new_params['selgroup']);
@@ -1339,6 +1339,11 @@
    				foreach($sel_array as $rubric => $value){
    					$params = $environment->getCurrentParameterArray();
    					$sel_name = 'sel'.$rubric;
+					
+					if(!isset($params[$sel_name])) {
+						unset($params['from']);
+					}
+					
    					unset($params[$sel_name]);
       				$link_parameter_text = '';
       				$hidden_array = array();
@@ -1382,12 +1387,20 @@
    					$this->_perspective_rubric_array[] = $tmp3_array;
    					unset($rubric_list);
 				}
+				
+				// get additional restrictions
+				$additional_restrictions = $this->getAdditionalRestrictions();
+				if(!empty($additional_restrictions)) $this->_perspective_rubric_array[] = $additional_restrictions;
 			}
 		}
 
 		abstract protected function getListContent();
 
 		abstract protected function getAdditionalListActions();
+		
+		abstract protected function getAdditionalRestrictions();
+		
+		abstract protected function getAdditionalRestrictionText();
 
 		private function getListActions() {
 			$return = array();

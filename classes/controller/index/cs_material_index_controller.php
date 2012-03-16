@@ -229,4 +229,16 @@
 		   $return[] = array('selected' => false, 'disabled' => false, 'id' => '', 'value' => CS_LISTOPTION_DOWNLOAD, 'display' => '___COMMON_LIST_ACTION_DOWNLOAD___');
 			return $return;
 		}
+		
+		protected function getAdditionalRestrictionText(){
+			$return = array();
+				
+			return $return;
+		}
+		
+		protected function getAdditionalRestrictions() {
+			$return = array();
+			
+			return $return;
+		}
 	}

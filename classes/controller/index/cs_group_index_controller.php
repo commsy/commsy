@@ -156,4 +156,16 @@
 		protected function getAdditionalListActions() {
 			return array();
 		}
+		
+		protected function getAdditionalRestrictionText(){
+			$return = array();
+				
+			return $return;
+		}
+		
+		protected function getAdditionalRestrictions() {
+			$return = array();
+			
+			return $return;
+		}
 	}

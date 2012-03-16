@@ -1,7 +1,7 @@
 <?php
 	require_once('classes/controller/cs_list_controller.php');
 
-	class cs_user_index_controller extends cs_list_controller {
+	class cs_user_index_controller extends cs_list_controller {		
 		/**
 		 * constructor
 		 */
@@ -208,5 +208,131 @@
 
 		protected function getAdditionalListActions() {
 			return array();
+		}
+		
+		protected function getAdditionalRestrictionText(){
+			$return = array();
+			
+			$params = $this->_environment->getCurrentParameterArray();
+			if(isset($params['selstatus']) && !empty($params['selstatus']) && $params['selstatus'] === '3') {
+				$return = array(
+					'name'				=> '',
+					'type'				=> '',
+					'link_parameter'	=> ''
+				);
+				
+				$translator = $this->_environment->getTranslationObject();
+				
+				// set name
+				if($params['selstatus'] === '3') {
+					$return['name'] = $translator->getMessage('USER_MODERATORS');
+				} else {
+					$return['name'] = $translator->getMessage('COMMON_USERS');
+				}
+				
+				// set link parameter
+				unset($params['selstatus']);
+				$link_parameter_text = '';
+				if ( count($params) > 0 ) {
+					foreach ($params as $key => $parameter) {
+						$link_parameter_text .= '&'.$key.'='.$parameter;
+					}
+				}
+				$return['link_parameter'] = $link_parameter_text;
+			}
+				
+			return $return;
+		}
+		
+		protected function getAdditionalRestrictions() {
+			$return = array(
+				'item'		=> array(),
+				'action'	=> '',
+				'hidden'	=> array(),
+				'tag'		=> '',
+				'name'		=> '',
+				'custom'	=> true
+			);
+			
+			if(isset($_GET['selstatus']) && $_GET['selstatus'] != 2 && $_GET['selstatus'] != '-2') {
+				$selstatus = $_GET['selstatus'];
+			} else {
+				$selstatus = '';
+			}
+			
+			$translator = $this->_environment->getTranslationObject();
+			
+			// set tag and name
+			$tag = $translator->getMessage('COMMON_STATUS');
+			$return['tag'] = $tag;
+			$return['name'] = 'status';
+			
+			// set action
+			$params = $this->_environment->getCurrentParameterArray();
+			
+			if(!isset($params['selstatus'])) {
+				unset($params['from']);
+			}
+			
+			unset($params['selstatus']);
+			$link_parameter_text = '';
+			
+			if(count($params) > 0) {
+				foreach($params as $key => $parameter) {
+					$link_parameter_text .= '&'.$key.'='.$parameter;
+				}
+			}			
+			$return['action'] = 'commsy.php?cid='.$this->_environment->getCurrentContextID().'&mod='.$this->_environment->getCurrentModule().'&fct='.$this->_environment->getCurrentFunction().'&'.$link_parameter_text;
+			
+			// set items
+			$items = array();
+			
+			// no selection
+			$item = array(
+				'id'		=> 2,
+				'name'		=> $translator->getMessage('COMMON_NO_SELECTION'),
+				'selected'	=> $selstatus
+			);
+			$items[] = $item;
+			
+			// moderators
+			$item = array(
+				'id'		=> 3,
+				'name'		=> $translator->getMessage('USER_MODERATORS'),
+				'selected'	=> $selstatus
+			);
+			$items[] = $item;
+			
+			$current_context = $this->_environment->getCurrentContextItem();
+			if($current_context->isCommunityRoom()) {
+				// disabled
+				$item = array(
+					'id'		=> -2,
+					'name'		=> '------------------------------',
+					'selected'	=> $selstatus,
+					'disabled'	=> true
+				);
+				$items[] = $item;
+				
+				// project user
+				$item = array(
+					'id'		=> 11,
+					'name'		=> $translator->getMessage('USER_PROJECT_USER'),
+					'selected'	=> $selstatus
+				);
+				$items[] = $item;
+				
+				// project moderator
+				$item = array(
+					'id'		=> 12,
+					'name'		=> $translator->getMessage('USER_PROJECT_CONTACT_MODERATOR'),
+					'selected'	=> $selstatus
+				);
+				$items[] = $item;
+			}
+			
+			$return['items'] = $items;
+			
+			return $return;
 		}
 	}

@@ -83,4 +83,3 @@
 		</div> <!-- Ende Reihe -->
 	{/foreach}
 {/block}
-
