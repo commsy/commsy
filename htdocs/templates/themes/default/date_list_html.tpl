@@ -3,27 +3,27 @@
 {block name=room_list_header}
 	<div class="table_head">
 		{if $list.sorting_parameters.sort_title == "up"}
-		 	<h3 class="w_295"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_title_link}" id="sort_up"><strong>___COMMON_TITLE___</strong></a></h3>
+		 	<h3 class="w_335"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_title_link}" id="sort_up"><strong>___COMMON_TITLE___</strong></a></h3>
 		{elseif $list.sorting_parameters.sort_title == "down"}
-		 	<h3 class="w_295"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_title_link}" id="sort_down"><strong>___COMMON_TITLE___</strong></a></h3>
+		 	<h3 class="w_335"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_title_link}" id="sort_down"><strong>___COMMON_TITLE___</strong></a></h3>
 		{else}
-		 	<h3 class="w_295"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_title_link}" class="sort_none">___COMMON_TITLE___</a></h3>
+		 	<h3 class="w_335"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_title_link}" class="sort_none">___COMMON_TITLE___</a></h3>
 		{/if}
 		{if $list.sorting_parameters.sort_time == "up"}
-		 	<h3 class="w_135"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_time_link}" id="sort_up"><strong>___DATES_TIME___</strong></a></h3>
+		 	<h3 class="w_130"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_time_link}" id="sort_up"><strong>___DATES_TIME___</strong></a></h3>
 		{elseif $list.sorting_parameters.sort_time == "down"}
-		 	<h3 class="w_135"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_time_link}" id="sort_down"><strong>___DATES_TIME___</strong></a></h3>
+		 	<h3 class="w_130"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_time_link}" id="sort_down"><strong>___DATES_TIME___</strong></a></h3>
 		{else}
-		 	<h3 class="w_135"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_time_link}" class="sort_none">___DATES_TIME___</a></h3>
+		 	<h3 class="w_130"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_time_link}" class="sort_none">___DATES_TIME___</a></h3>
 		{/if}
 		{if $list.sorting_parameters.sort_place== "up"}
-		 	<h3 class="w_135"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_place_link}" id="sort_up"><strong>___DATES_PLACE___</strong></a></h3>
+		 	<h3 class="w_155"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_place_link}" id="sort_up"><strong>___DATES_PLACE___</strong></a></h3>
 		{elseif $list.sorting_parameters.sort_place == "down"}
-		 	<h3 class="w_135"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_place_link}" id="sort_down"><strong>___DATES_PLACE___</strong></a></h3>
+		 	<h3 class="w_155"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_place_link}" id="sort_down"><strong>___DATES_PLACE___</strong></a></h3>
 		{else}
-	 		<h3 class="w_135"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_place_link}" class="sort_none">___DATES_PLACE___</a></h3>
+	 		<h3 class="w_155"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_place_link}" class="sort_none">___DATES_PLACE___</a></h3>
 		{/if}
-		
+
 		<div class="clear"> </div>
 	</div>
 {/block}
@@ -34,8 +34,44 @@
 		<div class="{if $item@iteration is odd}row_odd{else}row_even{/if} {if $item@iteration is odd}odd_sep_date{else}even_sep_date{/if}"> <!-- Start Reihe -->
 			<div class="column_20">
 				<p>
-				{if $item.noticed != ''}
-					<a href="" class="new_item_2"><img title="{$item.noticed}" class="new_item_2" src="{$basic.tpl_path}img/flag_neu.gif" alt="*" /></a>
+				{if $item.noticed.show_info}
+					<a class="new_item_2">
+					{if $item.noticed.status == "new" and ($item.noticed.annotation_info.count_new or $item.noticed.annotation_info.count_changed)}
+					<img title="" class="new_item_2" src="{$basic.tpl_path}img/flag_neu_a.gif" alt="*" /></a>
+					{elseif $item.noticed.status == "new"}
+					<img title="" class="new_item_2" src="{$basic.tpl_path}img/flag_neu.gif" alt="*" /></a>
+					{elseif $item.noticed.status == "modified"  and ($item.noticed.annotation_info.count_new or $item.noticed.annotation_info.count_changed)}
+					<img title="" class="new_item_2" src="{$basic.tpl_path}img/flag_neu_2_a.gif" alt="*" /></a>
+					{elseif $item.noticed.status == "modified"}
+					<img title="" class="new_item_2" src="{$basic.tpl_path}img/flag_neu_2.gif" alt="*" /></a>
+					{elseif $item.noticed.annotation_info.count_new}
+					<img title="" class="new_item_2" src="{$basic.tpl_path}img/flag_neu_a.gif" alt="*" /></a>
+					{elseif $item.noticed.annotation_info.count_changed}
+					<img title="" class="new_item_2" src="{$basic.tpl_path}img/flag_neu_2_a.gif" alt="*" /></a>
+					{/if}
+					<span class="tooltip">
+						<span class="header">___COMMON_CHANGE_INFORAMTION___</span><br/>
+						<span class="content">{$item.noticed.item_info}</span>
+						{if $item.noticed.annotation_info.count_new}
+							<span class="content">___COMMON_NEW_ANNOTATIONS___: {$item.noticed.annotation_info.count_new}
+							{foreach $item.noticed.annotation_info.anno_new_items as $anno_item}
+							   <br/>
+							   <span>- <a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&{$environment.params}&iid={$anno_item.ref_iid}#annotation{$anno_item.iid}">{$anno_item.title|truncate:25:'...':true}</a> ({$anno_item.date})
+							   </span>
+							{/foreach}
+							</span>
+						{/if}
+						{if $item.noticed.annotation_info.count_changed}
+							<span class="content">___COMMON_CHANGED_ANNOTATIONS___: {$item.noticed.annotation_info.count_changed}
+							{foreach $item.noticed.annotation_info.anno_changed_items as $anno_item}
+							   <br/>
+							   <span>- <a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&{$environment.params}&iid={$anno_item.ref_iid}#annotation{$anno_item.iid}">{$anno_item.title|truncate:25:'...':true}</a> ({$anno_item.date})
+							   </span>
+							{/foreach}
+							</span>
+						{/if}
+					</span>
+
          			<input class="new_item_2" type="checkbox" name="form_data[attach][{$item.iid}]" value="1"/>
         			<input type="hidden" name="form_data[shown][{$item.iid}]" value="1"/>
 				{else}
@@ -44,7 +80,7 @@
 				{/if}
 				</p>
 			</div>
-			<div class="column_244">
+			<div class="column_280">
 				<p>
 					 <a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&{$environment.params}&iid={$item.iid}">{$item.title}</a>
 				</p>
@@ -75,18 +111,18 @@
 					{$item.date}{if !empty($item.time) && $item.show_time}, {$item.time}{/if}
 				</p>
 			</div>
-			<div class="column_184">
+			<div class="column_224">
 				<p>
 					{$item.place}
 				</p>
 			</div>
-			<div class="column_100">
-				<p>
-					{if !empty($item.color)}
+			{if !empty($item.color)}
+				<div class="column_20">
+					<p>
 						<span class="date_list_color" style="background-color:{$item.color}">&nbsp;</span>
-					{/if}
-				</p>
-			</div>
+					</p>
+				</div>
+			{/if}
 			<div class="clear"> </div>
 		</div> <!-- Ende Reihe -->
 	{/foreach}

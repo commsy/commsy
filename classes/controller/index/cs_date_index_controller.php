@@ -1,37 +1,37 @@
 <?php
 	require_once('classes/controller/cs_list_controller.php');
-	
+
 	class cs_date_index_controller extends cs_list_controller {
 		private $_display_mode = '';
-		
+
 		/**
 		 * constructor
 		 */
 		public function __construct(cs_environment $environment) {
 			// call parent
 			parent::__construct($environment);
-			
+
 			$this->_tpl_file = 'date_list';
-			
+
 			// set display mode
 			$this->setDisplayMode();
 		}
-		
+
 		/*
 		 * every derived class needs to implement an processTemplate function
 		 */
 		public function processTemplate() {
 			// call parent
 			parent::processTemplate();
-			
+
 			// assign rubric to template
 			$this->assign('room', 'rubric', CS_DATE_TYPE);
 		}
-		
+
 		/*****************************************************************************/
 		/******************************** ACTIONS ************************************/
 		/*****************************************************************************/
-		
+
 		/**
 		 * INDEX
 		 */
@@ -41,7 +41,7 @@
 
 			// perform list options
 			$this->performListOption(CS_DATE_TYPE);
-			
+
 			// get list content
 			$list_content = $this->getListContent();
 
@@ -57,7 +57,7 @@
 			$this->assign('list','restriction_text_parameters',$this->_getRestrictionTextAsHTML());
 			$this->assign('date','list_content', $list_content);
 		}
-		
+
 		public function getListContent() {
 			include_once('classes/cs_list.php');
 			include_once('classes/views/cs_view.php');
@@ -66,13 +66,13 @@
 			$converter = $environment->getTextConverter();
 			$translator = $this->_environment->getTranslationObject();
 			$return = array();
-			
+
 			if ( isset($_GET['ref_iid']) ) {
 			   $ref_iid = $_GET['ref_iid'];
 			} elseif ( isset($_POST['ref_iid']) ) {
 			   $ref_iid = $_POST['ref_iid'];
 			}
-			
+
 			if ( isset($_GET['ref_user']) ) {
 			   $ref_user = $_GET['ref_user'];
 			} elseif ( isset($_POST['ref_user']) ) {
@@ -80,23 +80,28 @@
 			} else{
 			   $ref_user ='';
 			}
-			
+
 			$last_selected_tag = '';
 			$seltag_array = array();
-			
+
 			// Find current buzzword selection
 			if(isset($_GET['selbuzzword']) && $_GET['selbuzzword'] != '-2') {
 				$selbuzzword = $_GET['selbuzzword'];
 			} else {
 				$selbuzzword = 0;
 			}
-			
+			if ( isset($_GET['sort']) ) {
+   				$sort = $_GET['sort'];
+			} else {
+   				$sort = 'time_rev';
+			}
+
 			// Find current topic selection
 			if(isset($_GET['seltag']) && $_GET['seltag'] == 'yes') {
 				$i = 0;
 				while(!isset($_GET['seltag_' . $i])) {
 					$i++;
-				} 
+				}
 				$seltag_array[] = $_GET['seltag_' . $i];
 				$j = 0;
 				while(isset($_GET['seltag_' . $i]) && $_GET['seltag_' . $i] != '-2') {
@@ -108,10 +113,10 @@
 				}
 				$last_selected_tag = $seltag_array[$j-1];
 			}
-			
+
 			// Get data from database
 			$dates_manager = $environment->getDatesManager();
-			
+
 			if ( empty($only_show_array) ) {
 			   $color_array = $dates_manager->getColorArray();
 			   $current_context = $environment->getCurrentContextItem();
@@ -168,26 +173,26 @@
 			      $dates_manager->setDateModeLimit(2);
 			      $count_all = $dates_manager->getCountAll();
 			   /*}*/
-			
-				  
-				  
-				  
-				  
+
+
+
+
+
 				if($this->_list_parameter_arrray['sel_activating_status'] == 2) {
 					$dates_manager->showNoNotActivatedEntries();
 				}
-				
+
 				if(	!empty($this->_list_parameter_arrray['sort']) &&
 					($this->_display_mode !== 'calendar' || $this->_display_mode === 'calendar_month' || $this->getViewMode() === 'formattach' || $this->getViewMode() === 'detailattach')) {
 					$dates_manager->setSortOrder($this->_list_parameter_arrray['sort']);
 				}
-				
-				
-				/* TODO: convert */
+
+
+				/* TODO: convert
 			   if ( !empty($sel_color) and $sel_color != 2 ) {
 			      $dates_manager->setColorLimit('#'.$sel_color);
 			   }
-			
+
 			   if ( !empty($ref_iid) and $mode == 'attached' ){
 			      $dates_manager->setRefIDLimit($ref_iid);
 			   }
@@ -206,23 +211,66 @@
 			   if ( !empty($last_selected_tag) ){
 			      $dates_manager->setTagLimit($last_selected_tag);
 			   }
+   			   if ( !empty($sort) ) {
+      			 $dates_manager->setSortOrder($sort);
+   			   }
+   			   */
+			$dates_manager->resetData();
+			if ( !empty($this->_list_parameter_arrray['ref_iid']) and $this->getViewMode() == 'attached' ){
+   				$dates_manager->setRefIDLimit($this->_list_parameter_arrray['ref_iid']);
+			}
+			if ( !empty($this->_list_parameter_arrray['ref_user']) and $this->getViewMode() == 'attached' ){
+   				$dates_manager->setRefUserLimit($this->_list_parameter_arrray['ref_user']);
+			}
+			if ( !empty($this->_list_parameter_arrray['sort']) ) {
+   				$dates_manager->setSortOrder($this->_list_parameter_arrray['sort']);
+			}
+			if ( $this->_list_parameter_arrray['sel_activating_status'] == 2 ) {
+   				$dates_manager->showNoNotActivatedEntries();
+			}
+			if ( !empty($this->_list_parameter_arrray['search']) ) {
+   				$dates_manager->setSearchLimit($this->_list_parameter_arrray['search']);
+			}
+			if ( !empty($this->_list_parameter_arrray['selgroup']) ) {
+   				$dates_manager->setGroupLimit($this->_list_parameter_arrray['selgroup']);
+			}
+			if ( !empty($this->_list_parameter_arrray['seltopic']) ) {
+   				$dates_manager->setTopicLimit($this->_list_parameter_arrray['seltopic']);
+			}
+			if ( !empty($this->_list_parameter_arrray['selinstitution']) ) {
+   				$dates_manager->setTopicLimit($this->_list_parameter_arrray['selinstitution']);
+			}
+			if ( !empty($this->_list_parameter_arrray['selbuzzword']) ) {
+   				$dates_manager->setBuzzwordLimit($this->_list_parameter_arrray['selbuzzword']);
+			}
+			if ( !empty($this->_list_parameter_arrray['last_selected_tag']) ){
+   				$dates_manager->setTagLimit($this->_list_parameter_arrray['last_selected_tag']);
+			}
+			if ( $this->_list_parameter_arrray['interval'] > 0 ) {
+   				$dates_manager->setIntervalLimit($this->_list_parameter_arrray['from']-1,$this->_list_parameter_arrray['interval']);
+			}
+			if ( !empty($only_show_array) ) {
+   				$dates_manager->resetLimits();
+   				$dates_manager->setIDArrayLimit($only_show_array);
+			}
+
 			   if ( $this->_list_parameter_arrray['interval'] > 0 ) {
 					$dates_manager->setIntervalLimit($this->_list_parameter_arrray['from']-1,$this->_list_parameter_arrray['interval']);
 				}
-				
+
 				/* end TODO */
-				
+
 			   $dates_manager->select();
 			   $list = $dates_manager->get();
 			   $ids = $dates_manager->getIDArray();
 			   $count_all_shown = count($ids);
-			   
+
 			   $this->_page_text_fragment_array['count_entries'] = $this->getCountEntriesText($this->_list_parameter_arrray['from'],$this->_list_parameter_arrray['interval'], $count_all, $count_all_shown);
 			   $this->_browsing_icons_parameter_array = $this->getBrowsingIconsParameterArray($this->_list_parameter_arrray['from'],$this->_list_parameter_arrray['interval'], $count_all_shown);
-			   
+
 			   $session = $this->_environment->getSessionItem();
 				$session->setValue('cid'.$environment->getCurrentContextID().'_date_index_ids', $ids);
-			   
+
 			   // prepare item array
 			   $item = $list->getFirst();
 			   $item_array = array();
@@ -254,9 +302,9 @@
 					}
 				}
 			   	$noticed_text = $this->_getItemChangeStatus($item);
-				
+
 				// files
-				$attachment_infos = array();	
+				$attachment_infos = array();
 				$file_count = $item->getFileList()->getCount();
 				$file_list = $item->getFileList();
 
@@ -275,10 +323,10 @@
 					$attachment_infos[] = $info;
 					$file = $file_list->getNext();
 				}
-				
+
 				$place = $item->getPlace();
 				$place = $converter->text_as_html_short($place);
-				
+
 				$parse_time_start = convertTimeFromInput($item->getStartingTime());
 				$conforms = $parse_time_start['conforms'];
 				if($conforms === true) {
@@ -287,7 +335,7 @@
 					$time = $item->getStartingTime();
 				}
 				$time = $converter->text_as_html_short($time);
-				
+
 				$parse_day_start = convertDateFromInput($item->getStartingDay(), $this->_environment->getSelectedLanguage());
 				$conforms = $parse_day_start['conforms'];
 				if($conforms === true) {
@@ -296,10 +344,10 @@
 					$date = $item->getStartingDay();
 				}
 				$date = $converter->text_as_html_short($date);
-				
-				
-				
-				
+
+
+
+
 				/**
 				 *if ($item->isNotActivated()){
 					$title = $item->getTitle();
@@ -332,9 +380,8 @@
 					$title = $this->_text_as_html_short($item->getTitle());
 					$html .= '      <td '.$style.'>'.$title.LF;
 					}
-				} 
+				}
 				 */
-				
 			   	$item_array[] = array(
 					'iid'				=> $item->getItemID(),
 					'title'				=> $view->_text_as_html_short($item->getTitle()),
@@ -348,13 +395,13 @@
 					'attachment_count'	=> $file_count,
 					'attachment_infos'	=> $attachment_infos
 				);
-				
+
 			   	$item = $list->getNext();
 			   }
-			   
-			   
+
+
 			}
-			
+
 			// append return
 			$return = array(
 				'items'		=> $item_array,
@@ -362,7 +409,7 @@
 			);
 			return $return;
 		}
-		
+
 		protected function getAdditionalActions(&$perms) {
 			/*
 			 * TODO
@@ -423,13 +470,13 @@
 		   $return[] = array('selected' => false, 'disabled' => false, 'id' => '', 'value' => CS_LISTOPTION_DOWNLOAD, 'display' => '___COMMON_LIST_ACTION_DOWNLOAD___');
 			return $return;
 		}
-		
+
 		private function setDisplayMode() {
 			$current_user = $this->_environment->getCurrentUserItem();
 			$current_context = $this->_environment->getCurrentContextItem();
 			$seldisplay_mod = $current_context->getDatesPresentationStatus();
 			$session = $this->_environment->getSessionItem();
-			
+
 			if(isset($_GET['seldisplay_mode'])) {
 				$this->_display_mode = $_GET['seldisplay_mode'];
 				$session->setValue($this->_environment->getCurrentContextID() . '_dates_seldisplay_mode', $_GET['seldisplay_mode']);

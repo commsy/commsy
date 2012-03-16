@@ -119,11 +119,15 @@
 		protected function getSortingParameterArray(){
 			$environment = $this->_environment;
            	$params = $environment->getCurrentParameterArray();
+           	$module = $environment->getCurrentModule();
       		if (isset($params['sort']) and !empty($params['sort'])){
       			$sort_parameter = $params['sort'];
+      		}elseif($module == CS_DATE_TYPE){
+      			$sort_parameter = 'time_rev';
       		}else{
       			$sort_parameter = '';
       		}
+
       		unset($params['sort']);
       		$link_parameter_text = '';
       		if ( count($params) > 0 ) {
@@ -1225,6 +1229,8 @@
 					$this->_list_parameter_arrray['sort'] = 'latest';
 				} elseif($this->_environment->getCurrentModule() === CS_TOPIC_TYPE) {
 					$this->_list_parameter_arrray['sort'] = 'title';
+				} elseif($this->_environment->getCurrentModule() === CS_DATE_TYPE) {
+					$this->_list_parameter_arrray['sort'] = 'time_rev';
 				} else {
 					$this->_list_parameter_arrray['sort'] = 'modified';
 				}
