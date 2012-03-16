@@ -79,9 +79,6 @@
 					{/if}
 				</p>
 			</div>
-			<div class="column_120">
-				<p></p>
-			</div>
 			<div class="clear"> </div>
 		</div> <!-- Ende Reihe -->
 	{/foreach}
