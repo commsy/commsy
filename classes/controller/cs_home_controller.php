@@ -12,6 +12,11 @@
 			$this->_tpl_file = 'room_home';
 		}
 
+		protected function getAdditionalRestrictions(){}
+
+		protected function getAdditionalRestrictionText(){}
+
+
 		/*
 		 * every derived class needs to implement an processTemplate function
 		 */
@@ -19,6 +24,8 @@
 			// call parent
 			parent::processTemplate();
 		}
+
+
 
 		/*****************************************************************************/
 		/******************************** ACTIONS ************************************/
@@ -48,18 +55,18 @@
 			$rubrics = $this->getRubrics();
 			$rubric_list = array();
 			$rubric_list_array = array();
-			
+
 			// determe rubrics to show on home list
 			foreach($rubrics as $rubric) {
 				list($rubric_name, $postfix) = explode('_', $rubric);
-				
+
 				// continue if postfix is none or nodisplay
 				if($postfix === 'none' || $postfix === 'nodisplay') continue;
-				
+
 				// TODO: where does activity come from?
 				// continue if name of rubric is activity
 				if($rubric_name === 'activity') continue;
-				
+
 				// store hidden state
 				$return[$rubric_name]['hidden'] = ($postfix === 'short') ? false : true;
 
@@ -440,34 +447,34 @@
 								$column3 = $item->getModificatorItem()->getFullName();
 								$modificator_id = $item->getModificatorItem()->getItemID();
 	               		}
-						
+
 						// files
 						$with_files = false;
 						$file_count = 0;
 						if(in_array($key, $this->getRubricsWithFiles())) {
 							$with_files = true;
 							$attachment_infos = array();
-							
+
 							$file_count = $item->getFileList()->getCount();
 							$file_list = $item->getFileList();
-							
+
 							$file = $file_list->getFirst();
 							while($file) {
 								$lightbox = false;
 								if((!isset($_GET['download']) || $_GET['download'] !== 'zip') && in_array($file->getExtension(), array('png', 'jpg', 'jpeg', 'gif'))) $lightbox = true;
-								
+
 								$info = array();
 								$info['file_name']	= $converter->text_as_html_short($file->getDisplayName());
 								$info['file_icon']	= $file->getFileIcon();
 								$info['file_url']	= $file->getURL();
 								$info['file_size']	= $file->getFileSize();
 								$info['lightbox']	= $lightbox;
-								
+
 								$attachment_infos[] = $info;
 								$file = $file_list->getNext();
 							}
 						}
-						
+
 						$item_array[] = array(
 							'iid'				=> $item->getItemID(),
 							'user_iid'			=> $modificator_id,
@@ -480,7 +487,7 @@
 							'attachment_count'	=> $file_count,
 							'attachment_infos'	=> $attachment_infos
 						);
-						
+
 						$item = $list->getNext();
 					}
 					$return[$key]['items'] = $item_array;
@@ -523,7 +530,7 @@
 							}
 							break;
 						case CS_USER_TYPE:
-							
+
 							if($this->_environment->inProjectRoom()) {
 								global $who_is_online;
 								if(isset($who_is_online) && $who_is_online) {pr("test");
@@ -593,7 +600,7 @@
 		public function getAdditionalListActions() {
 			return array();
 		}
-		
+
 		protected function getAdditionalActions(&$perms) {
 		}
 	}
