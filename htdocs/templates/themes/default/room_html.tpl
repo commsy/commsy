@@ -141,7 +141,7 @@
 					</div>
 				{/block}
 
-
+				{if $environment.module != 'group' and $environment.module != 'topic' and $environment.module != 'institution'}
            		<div id="rc_portlet_area">
            			{block name=room_right_portlets}
            				{if $room.sidebar_configuration.active.buzzwords}
@@ -221,6 +221,7 @@
 						{/if}
 					{/block}
            		</div>
+           		{/if}
             </div> <!-- Ende right_column -->
 
             <div class="clear"> </div>

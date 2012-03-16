@@ -1218,6 +1218,14 @@ h2#item_navigation span {
     background: url(img/sep_user.gif) repeat-y #FFF;
     }
 
+.odd_sep_group {
+    background: url(img/sep_group.gif) repeat-y #F5F5F5;
+    }
+
+.even_sep_group {
+    background: url(img/sep_group.gif) repeat-y #FFF;
+    }
+
 .odd_sep_institution {
     background: url(img/sep_institution.gif) repeat-y #F5F5F5;
     }
@@ -1668,6 +1676,10 @@ a#sort_down {
     width: 255px;
     }
 
+.w_270 {
+    width: 270px;
+    }
+
 .w_295 {
     width: 295px;
     }
@@ -1696,6 +1708,10 @@ a#sort_down {
     width: 85px;
     }
 
+.w_110 {
+    width: 110px;
+    }
+
 .w_130 {
     width: 130px;
     }
@@ -1714,6 +1730,10 @@ a#sort_down {
 
 .w_172 {
     width: 172px;
+    }
+
+.w_205 {
+    width: 205px;
     }
 
 .attachment, .attachment_none_overlay {

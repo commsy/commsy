@@ -95,6 +95,7 @@
 	                            </p>
 	                        </div>
 							<div class="column_45">
+		                        {if $rubric@key == 'material' or $rubric@key == 'announcement' or $rubric@key == 'discussion'  or $rubric@key == 'todo' or $rubric@key == 'date' or $rubric@key == 'topic'}
 								<p>
 									<a href="" class="attachment{if $item.attachment_count == 0}_none_overlay{/if}">{$item.attachment_count}</a>
 								</p>
@@ -113,6 +114,9 @@
 											</ul>
 										</div>
 									</div>
+								{/if}
+								{else}
+								<p>&nbsp;</p>
 								{/if}
 							</div>
                         	<div class="column_140">

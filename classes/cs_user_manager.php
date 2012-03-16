@@ -771,7 +771,6 @@ class cs_user_manager extends cs_manager {
         }
      }
      $this->_last_query = $query;
-
       // perform query
       if ( isset($this->_cache_sql[$query]) ) {
          return $this->_cache_sql[$query];
@@ -1683,10 +1682,10 @@ class cs_user_manager extends cs_manager {
    function resetCacheSQL(){
       $this->_cache_sql = array();
    }
-   
+
 	/**
 	 * gives the appropriate query to the updateSearchIndices function of cs_manager
-	 * 
+	 *
 	 * @see cs_manager::updateSearchIndices()
 	 */
 	public function updateSearchIndices($limit = array()) {
@@ -1716,11 +1715,11 @@ class cs_user_manager extends cs_manager {
 					user.modification_date > search_time.st_date
 				)
 		';
-		
+
 		if(!empty($limit)) {
 			$query .= ' LIMIT ' . $limit[0] . ', ' . $limit[1];
 		}
-		
+
 		parent::updateSearchIndicesMain($query, CS_USER_TYPE);
 	}
 }

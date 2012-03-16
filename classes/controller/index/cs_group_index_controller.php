@@ -1,6 +1,6 @@
 <?php
 	require_once('classes/controller/cs_list_controller.php');
-	
+
 	class cs_group_index_controller extends cs_list_controller {
 		/**
 		 * constructor
@@ -8,25 +8,25 @@
 		public function __construct(cs_environment $environment) {
 			// call parent
 			parent::__construct($environment);
-			
+
 			$this->_tpl_file = 'group_list';
 		}
-		
+
 		/*
 		 * every derived class needs to implement an processTemplate function
 		 */
 		public function processTemplate() {
 			// call parent
 			parent::processTemplate();
-			
+
 			// assign rubric to template
 			$this->assign('room', 'rubric', CS_GROUP_TYPE);
 		}
-		
+
 		/*****************************************************************************/
 		/******************************** ACTIONS ************************************/
 		/*****************************************************************************/
-		
+
 		/**
 		 * INDEX
 		 */
@@ -52,7 +52,7 @@
 			$this->assign('list','restriction_text_parameters',$this->_getRestrictionTextAsHTML());
 			$this->assign('group','list_content', $list_content);
 		}
-		
+
 		public function getListContent() {
 			include_once('classes/cs_list.php');
 			include_once('classes/views/cs_view.php');
@@ -81,14 +81,14 @@
 				}
 				$last_selected_tag = $seltag_array[$j-1];
 			}
-			
+
 			// Get data from database
 			$group_manager = $environment->getGroupManager();
 			$group_manager->reset();
 			$group_manager->setContextLimit($environment->getCurrentContextID());
 			$group_manager->setTypeLimit('group');
 			$count_all = $group_manager->getCountAll();
-			
+
 			if ( !empty($this->_list_parameter_arrray['ref_iid']) and $this->getViewMode() == 'attached' ){
    				$group_manager->setRefIDLimit($this->_list_parameter_arrray['ref_iid']);
 			}
@@ -101,7 +101,7 @@
 			if ( !empty($this->_list_parameter_arrray['seltopic']) ) {
    				$group_manager->setTopicLimit($this->_list_parameter_arrray['seltopic']);
 			}
-			
+
 			if ( $this->_list_parameter_arrray['interval'] > 0 ) {
    				$group_manager->setIntervalLimit($this->_list_parameter_arrray['from']-1,$this->_list_parameter_arrray['interval']);
 			}
@@ -112,7 +112,7 @@
 
 			$this->_page_text_fragment_array['count_entries'] = $this->getCountEntriesText($this->_list_parameter_arrray['from'],$this->_list_parameter_arrray['interval'], $count_all, $count_all_shown);
             $this->_browsing_icons_parameter_array = $this->getBrowsingIconsParameterArray($this->_list_parameter_arrray['from'],$this->_list_parameter_arrray['interval'], $count_all_shown);
-            
+
 			$id_array = array();
 			$item = $list->getFirst();
 			while ($item){
@@ -136,7 +136,9 @@
 					'iid'				=> $item->getItemID(),
 					'title'				=> $view->_text_as_html_short($item->getTitle()),
 					'noticed'			=> $noticed_text,
-					'modificator'		=> $this->getItemModificator($item)
+					'modificator'		=> $this->getItemModificator($item),
+					'members_count'		=> $item->getMemberItemList()->getCount(),
+					'linked_entries'	=> count($item->getAllLinkedItemIDArray())
 				);
 
 				$item = $list->getNext();
@@ -149,7 +151,7 @@
 			);
 			return $return;
 		}
-		
+
 		protected function getAdditionalActions(&$perms) {
 		}
 

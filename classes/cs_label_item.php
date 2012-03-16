@@ -234,6 +234,7 @@ class cs_label_item extends cs_item {
       if ( !empty($member_ids) ){
          $user_manager = $this->_environment->getUserManager();
          $user_manager->setIDArrayLimit($member_ids);
+         $user_manager->setUserLimit();
          $user_manager->select();
          $members = $user_manager->get();
       }        // returns a cs_list of user_items

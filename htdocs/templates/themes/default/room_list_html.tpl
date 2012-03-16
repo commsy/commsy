@@ -125,7 +125,7 @@
 			</div>
 		</div>
 	{/if}
-    {if $list.perspective_rubric_entries}
+    {if $list.perspective_rubric_entries && $environment.module != 'group'}
 	    <div class="portlet_rc">
 <!--
 			<a href="" title="___COMMON_CLOSE___" class="btn_head_rc"><img src="{$basic.tpl_path}img/btn_close_rc.gif" alt="___COMMON_CLOSE___" /></a>
