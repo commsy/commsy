@@ -124,6 +124,8 @@
       			$sort_parameter = $params['sort'];
       		}elseif($module == CS_DATE_TYPE){
       			$sort_parameter = 'time_rev';
+      		}elseif($module == CS_USER_TYPE){
+      			$sort_parameter = 'name';
       		}else{
       			$sort_parameter = '';
       		}
@@ -180,6 +182,17 @@
 			} else {
 				$return_array['sort_name_link'] = $link_parameter_text . '&sort=name';
 				$return_array['sort_name'] = 'none';
+			}
+
+			if($sort_parameter === 'email') {
+				$return_array['sort_email_link'] = $link_parameter_text . '&sort=email_rev';
+				$return_array['sort_email'] = 'up';
+			} elseif($sort_parameter === 'email_rev') {
+				$return_array['sort_email_link'] = $link_parameter_text . '&sort=email';
+				$return_array['sort_email'] = 'down';
+			} else {
+				$return_array['sort_email_link'] = $link_parameter_text . '&sort=email';
+				$return_array['sort_email'] = 'none';
 			}
 
 			if($sort_parameter === 'date') {
@@ -1231,6 +1244,8 @@
 					$this->_list_parameter_arrray['sort'] = 'title';
 				} elseif($this->_environment->getCurrentModule() === CS_DATE_TYPE) {
 					$this->_list_parameter_arrray['sort'] = 'time_rev';
+				} elseif($this->_environment->getCurrentModule() === CS_USER_TYPE) {
+					$this->_list_parameter_arrray['sort'] = 'name';
 				} else {
 					$this->_list_parameter_arrray['sort'] = 'modified';
 				}
