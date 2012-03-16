@@ -18,14 +18,31 @@
 			
 			global $c_smarty;
 			if($c_smarty === true) {
-				$this->assignTemplateVariables();
-				
 				ob_start();
 				$this->displayTemplate();
 				echo json_encode(ob_get_clean());
 			} else {
 				echo json_encode('smarty not enabled');
 			}
+		}
+		
+		public function actionCreate() {
+			// get module
+			$module = $this->_data['module'];
+			
+			// get form data
+			$form_data = $this->_data['form_data'];
+			
+			// include
+			require_once('classes/controller/ajax/popup/cs_popup_' . $module . '_controller.php');
+			
+			// get instance
+			$popup_controller = new cs_popup_discussion_controller($this->_environment);
+			$popup_controller->create($form_data);
+			
+			$return = $popup_controller->getReturn();
+
+			echo json_encode($return);
 		}
 
 		/*
@@ -34,9 +51,5 @@
 		public function process() {
 			// call parent
 			parent::process();
-		}
-		
-		private function assignTemplateVariables() {
-			
 		}
 	}

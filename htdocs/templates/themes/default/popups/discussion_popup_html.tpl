@@ -36,44 +36,50 @@
 						<div class="clear"> </div>
 					</div>
 
-					<div class="settings_area">
+					<div id="popup_tabcontent">
+						<div class="settings_area">
 
-						<div class="sa_col_left">
-							<div id="file_finished"></div>
-							<input id="uploadify" name="uploadify" type="file" />
+							<div class="sa_col_left">
+								<div id="file_finished"></div>
+								<input id="uploadify" name="uploadify" type="file" />
 
-							<div>
-								<a id="uploadify_doUpload">
-									<img src="{$basic.tpl_path}img/uploadify/button_upload_{$environment.lang}.png" />
-								</a>
-								<a id="uploadify_clearQuery">
-									<img src="{$basic.tpl_path}img/uploadify/button_abort_{$environment.lang}.png" />
-								</a>
+								<div>
+									<a id="uploadify_doUpload">
+										<img src="{$basic.tpl_path}img/uploadify/button_upload_{$environment.lang}.png" />
+									</a>
+									<a id="uploadify_clearQuery">
+										<img src="{$basic.tpl_path}img/uploadify/button_abort_{$environment.lang}.png" />
+									</a>
+								</div>
 							</div>
-						</div>
 
-						<div class="sa_col_right">
-							<p class="info_notice">
-							<img src="{$basic.tpl_path}img/file_info_icon.gif" alt="Info"/>
-							Es k&ouml;nnen nur Dateien mit maximal 48 MB Dateigr&ouml;&szlig;e hochgeladen werden.
-							</p>
-						</div>
+							<div class="sa_col_right">
+								<p class="info_notice">
+								<img src="{$basic.tpl_path}img/file_info_icon.gif" alt="Info"/>
+								Es k&ouml;nnen nur Dateien mit maximal 48 MB Dateigr&ouml;&szlig;e hochgeladen werden.
+								</p>
+							</div>
 
-						<div class="clear"> </div>
+							<div class="clear"> </div>
+						</div>
+						
+						<div class="settings_area hidden">
+							Art der Diskussion
+						</div>
+						
+						<div class="settings_area hidden">
+
+							<input type="checkbox" name="" value="" /> nur von Dennis Mustermann bearbeitbar<br/>
+							<input type="checkbox" name="" value="" /> verbergen (optional: bis zum <input type="text" value="00.00.0000" class="size_80" /> um <input type="text" value="00:00" class="size_50" /> Uhr)
+						</div>
 					</div>
-					
-					<div class="settings_area">
-                    
-                        <input type="checkbox" name="" value="" /> nur von Dennis Mustermann bearbeitbar<br/>
-                        <input type="checkbox" name="" value="" /> verbergen (optional: bis zum <input type="text" value="00.00.0000" class="size_80" /> um <input type="text" value="00:00" class="size_50" /> Uhr)
-                    </div>
 
 				</div>
 
 				<div id="content_row_four">
 					<div id="crt_actions_area">
-						<input class="popup_button" type="button" name="" value="Diskussion anlegen" />
-						<input class="popup_button" type="button" name="" value="abbrechen" /> 
+						<input id="popup_button_create" class="popup_button" type="button" name="" value="Diskussion anlegen" />
+						<input id="popup_button_abort" class="popup_button" type="button" name="" value="abbrechen" /> 
 					</div>
 				</div>
 
