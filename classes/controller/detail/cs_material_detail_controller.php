@@ -275,12 +275,13 @@
 						$this->assign('detail', 'annotations', $this->getAnnotationInformation($annotations));
 
 						// mark annotations as readed and noticed
-						$this->markAnnotationsReadedAndNoticed($annotations);
+#						$this->markAnnotationsReadedAndNoticed($annotations);
 
 
 						// assessment
 						$this->assign('detail', 'assessment', $this->getAssessmentInformation($version_item));
 					}
+
 
 					/*
 					 * // highlight search words in detail views
@@ -299,6 +300,9 @@
 					$this->assign('detail', 'content', $this->getDetailContent());
 				}
 			}
+			$annotations = $this->_item->getAnnotationList();
+
+			// mark annotations as readed and noticed
 		}
 
 		/*****************************************************************************/

@@ -1102,6 +1102,13 @@ h2#item_navigation span {
     text-decoration: underline;
     }
 
+.detail_content{
+	background-color: #FFF;
+	}
+
+.detail_margin{
+	margin-bottom:0px;
+	}
 
 .row_odd {
     background-color: #F5F5F5;
@@ -1282,10 +1289,11 @@ input.new_item_2 {
 
 
 img.new_item_detail_annotation {
-    left: -51px;
+    left: -6px;
     padding-bottom: 0;
     position: relative;
-    top: -8px;
+    top: -40px;
+    height:12px;
 }
 
 .item_actions {
@@ -1355,11 +1363,11 @@ a.item_actions_glow {
     margin-top: 1px;*/
     }
 
-#top_item_actions .action_count {
+#top_item_actions .action_count, #top_item_actions .anno_count{
     color: #DEE8FF;
     font-size: 10px;
     font-weight: bold;
-    left: 27px;
+    left: 25px;
     position: relative;
 	}
 
@@ -1368,7 +1376,7 @@ a.item_actions_glow {
 }
 
 #top_item_actions .linked_count{
-    top: -98px;
+    top: -112px;
 }
 
 .item_body {

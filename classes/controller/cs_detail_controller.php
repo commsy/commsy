@@ -66,9 +66,14 @@
 			$this->assign('item','linked_count', $this->_linked_count);
 
 			$global_changed = false;
-			if($this->_getItemAnnotationChangeStatus($this->_item)) {
-				$global_changed = true;
+			$changed = $this->_getItemAnnotationChangeStatus($this->_item);
+			if($changed['count_new']){
+				$global_changed = 'new';
+			}elseif($changed['count_changed']) {
+				$global_changed = 'changed';
 			}
+			$annotations = $this->_item->getAnnotationList();
+			$this->markAnnotationsReadedAndNoticed($annotations);
 			$this->assign('detail', 'annotations_changed', $global_changed);
 		}
 

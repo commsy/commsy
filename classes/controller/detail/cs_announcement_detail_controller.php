@@ -8,7 +8,7 @@
 		public function __construct(cs_environment $environment) {
 			// call parent
 			parent::__construct($environment);
-			
+
 			$this->_tpl_file = 'announcement_detail';
 		}
 
@@ -18,31 +18,31 @@
 		public function processTemplate() {
 			// call parent
 			parent::processTemplate();
-			
+
 			// assign rubric to template
 			$this->assign('room', 'rubric', CS_ANNOUNCEMENT_TYPE);
 		}
-		
+
 		/*****************************************************************************/
 		/******************************** ACTIONS ************************************/
 		/*****************************************************************************/
 		public function actionDetail() {
 			$session = $this->_environment->getSessionItem();
-			
+
 			// try to set the item
 			$this->setItem();
-			
+
 			$this->setupInformation();
-			
+
 			// used to signal which "creator ifnos" of annotations are expanded...
 			$creatorInfoStatus = array();
 			if(!empty($_GET['creator_info_max'])) {
 				$creatorInfoStatus = explode('-', $_GET['creator_info_max']);
 			}
-			
+
 			// TODO: implement deletion handling
 			//include_once('include/inc_delete_entry.php');
-			
+
 			// check for item type
 			$item_manager = $this->_environment->getItemManager();
 			$type = $item_manager->getItemType($_GET['iid']);
@@ -51,7 +51,7 @@
 			} else {
 				$current_context = $this->_environment->getCurrentContextItem();
 				$current_user = $this->_environment->getCurrentUser();
-				
+
 				/*
 				$params = array();
 			   $params['environment'] = $environment;
@@ -60,18 +60,18 @@
 			   $detail_view = $class_factory->getClass(ANNOUNCEMENT_DETAIL_VIEW,$params);
 			   unset($params);
 			    */
-				
+
 				// check if item exists
 				if($this->_item === null) {
 					include_once('functions/error_functions.php');
       				trigger_error('Item ' . $_GET['iid'] . ' does not exist!', E_USER_ERROR);
 				}
-				
+
 				// check if item is deleted
 				elseif($this->_item->isDeleted()) {
 					throw new cs_detail_item_type_exception('item deleted', 1);
 				}
-				
+
 				// check for access rights
 				elseif(!$this->_item->maySee($current_user)) {
 					// TODO: implement error handling
@@ -90,25 +90,25 @@
 					if($session->issetValue('announcement_clipboard')) {
 						$clipboard_id_array = $session->getValue('announcement_clipboard');
 					}
-					
+
 					// copy to clipboard
 					if(isset($_GET['add_to_announcement_clipboard']) && !in_array($current_item_id, $clipboard_id_array)) {
 						$clipboard_id_array[] = $current_item_id;
 						$session->setValue('announcement_clipboard', $clipboard_id_array);
 					}
-					
+
 					// set clipboard ids
 					$this->setClipboardIDArray($clipboard_id_array);
-					
+
 					// mark as read and noticed
 					$this->markRead();
 					$this->markNoticed();
-					
+
 					$announcement_ids = array();
 					if($session->issetValue('cid' . $this->_environment->getCurrentContextID() . '_announcement_index_ids')) {
 						$announcement_ids = $session->getValue('cid' . $this->_environment->getCurrentContextID() . '_announcement_index_ids');
 					}
-					
+
 					$current_room_modules = $current_context->getHomeConf();
 					if(!empty($current_room_modules)) {
 						$room_modules = explode(',', $current_room_modules);
@@ -116,13 +116,13 @@
 						// this seems to be never set before
 						//$room_modules = $default_room_modules;
 					}
-					
+
 					$first = array();
 					$second = array();
-					
+
 					foreach($room_modules as $module) {
 						list($module_name, $display_mode) = explode('_', $module);
-						
+
 						if($display_mode !== 'none' && $module_name !== $this->_environment->getCurrentModule()) {
 							if($this->isPerspective($module_name) === true) {
 								$first[] = $module_name;
@@ -131,7 +131,7 @@
 							}
 						}
 					}
-					
+
 					$room_modules = array_merge($first, $second);
 					$rubric_conntections = array();
 					foreach($room_modules as $module) {
@@ -142,20 +142,17 @@
 							//$rubric_connections[] = $module;
 						}
 					}
-					
+
 					// seems to be not needed
 					//$detail_view->setRubricConnections($announcement_item);
-					
+
 					// annotations
 					// get annotations
 					$annotations = $this->_item->getAnnotationList();
-					
+
 					// assign annotations
 					$this->assign('detail', 'annotations', $this->getAnnotationInformation($annotations));
-					
-					// mark annotations as readed and noticed
-					$this->markAnnotationsReadedAndNoticed($annotations);
-					
+
 					/*
 					 *TODO: handle in smarty as post_filter
 				      // highlight search words in detail views
@@ -167,35 +164,35 @@
 				         }
 				         unset($search_array);
 				      }
-			
-			
+
+
 			      $page->add($detail_view);
 					 */
-					
+
 					// assessment
 					$this->assign('detail', 'assessment', $this->getAssessmentInformation($this->_item));
-					
+
 					$this->assign('detail', 'content', $this->getDetailContent());
 				}
 			}
 		}
-		
+
 		/*****************************************************************************/
 		/******************************** END ACTIONS ********************************/
 		/*****************************************************************************/
-		
+
 		protected function getAdditionalActions(&$perms) {
-			
+
 		}
-		
+
 		protected function setBrowseIDs() {
 			$session = $this->_environment->getSessionItem();
-			
+
 			if($session->issetValue('cid' . $this->_environment->getCurrentContextID() . '_announcement_index_ids')) {
 				$this->_browse_ids = array_values((array) $session->getValue('cid' . $this->_environment->getCurrentContextID() . '_announcement_index_ids'));
 			}
 		}
-		
+
 		protected function getDetailContent() {
 			$converter = $this->_environment->getTextConverter();
 			$desc = $this->_item->getDescription();
@@ -207,7 +204,7 @@
 				//$desc = $converter->show_images($desc, $this->_item, true);
 				//$html .= $this->getScrollableContent($desc,$item,'',true);
 			}
-			
+
 			return array(
 				'item_id'		=> $this->_item->getItemID(),
 				'title'			=> $this->_item->getTitle(),

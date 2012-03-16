@@ -777,7 +777,6 @@
                			if ($date < $anno_item->getModificationDate() ) {
                    			$info_text['count_new']++;
                    			$temp_array['iid'] = $anno_item->getItemID();
-                   			$temp_array['date'] = $anno_item->getModificationDate();
                    			$temp_array['date'] = $this->_environment->getTranslationObject()->getDateInLang($anno_item->getModificationDate());
                    			$temp_array['title'] = $anno_item->getTitle();
                     		$temp_array['ref_iid'] = $anno_item->getLinkedItemID();
@@ -788,7 +787,7 @@
                    			$info_text['count_changed']++;
                    			$temp_array['iid'] = $anno_item->getItemID();
                    			$temp_array['date'] = $this->_environment->getTranslationObject()->getDateInLang($anno_item->getModificationDate());
-                   			$temp_array['modificator'] = $anno_item->getModificatorItem()->getFullname();
+   #                			$temp_array['modificator'] = $anno_item->getModificatorItem()->getFullname();
                    			$temp_array['title'] = $anno_item->getTitle();
                     		$temp_array['ref_iid'] = $anno_item->getLinkedItemID();
                     		$info_text['anno_changed_items'][] = $temp_array;

@@ -7,7 +7,25 @@
 			<a class="linked" href=""><span class="ref_to_ia"> &nbsp; </span></a>
 			<a class="detail" href=""><span class="details_ia"> &nbsp; </span></a>
 			<a class="annotations" href="#"><span class="ref_to_anno"> &nbsp; </span></a>
-			<div class="anno_count" >{$detail.annotations.all|@count}</div>
+			{if $detail.annotations|@count}
+			<div class="action_count anno_count" >{$detail.annotations|@count}
+			</div>
+			{if $detail.annotations_changed == 'new'}
+					<img title="*" class="new_item_detail_annotation" src="{$basic.tpl_path}img/flag_neu.gif" alt="*" />
+			{elseif $detail.annotations_changed == 'changed'}
+					<img title="*" class="new_item_detail_annotation" src="{$basic.tpl_path}img/flag_neu_2.gif" alt="*" />
+			{else}
+					<img title="*" class="new_item_detail_annotation" src="{$basic.tpl_path}img/spacer.gif" alt="*" />
+			{/if}
+			{else}
+			<div class="action_count anno_count" >&nbsp;</div>
+			<img title="*" class="new_item_detail_annotation" src="{$basic.tpl_path}img/spacer.gif" alt="*" />
+			{/if}
+			{if $item.linked_count}
+			<div class="action_count linked_count" >{$item.linked_count}</div>
+			{else}
+			<div class="action_count linked_count" >&nbsp;</div>
+			{/if}
 		</div>
 	</div>
 
@@ -20,10 +38,10 @@
 			{if $detail.actions.date_leave}
 				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&iid={$detail.content.item_id}&date_option=2" title="___DATE_LEAVE___">___DATE_LEAVE___</a> |
 			{/if}
-			
+
 			{if $detail.actions.date_participate}
 				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&iid={$detail.content.item_id}&date_option=1" title="___DATE_ENTER___">___DATE_ENTER___</a> |
-			{/if}			
+			{/if}
 			{if $detail.actions.delete}
 				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail{params params=$detail.actions.delparams}" title="___COMMON_DELETE_ITEM___">___COMMON_DELETE_ITEM___</a> |
 			{/if}
@@ -38,7 +56,7 @@
 		<!-- Ende fade_in_ground -->
 
 	    {include file="include/detail_linked_html.tpl"}
-		
+
         <h2>
             {$detail.content.title}
         </h2>
@@ -53,8 +71,8 @@
 			</p>
 			<div class="clear"> </div>
 		</div>
-		
-		<div id="item_credits">
+
+		<div class="detail_content detail_margin">
             <p>
                 <div class="user_profil_blocks">
                     {* formal data *}
@@ -65,19 +83,19 @@
                                 <td>___COMMON_NOT_ACCESSIBLE___</td>
                             </tr>
                     	{/if}
-						
+
 						<tr>
 							<td class="label"><h4>___DATES_DATETIME___</h4></td>
 							<td>{$detail.content.datetime}</td>
 						</tr>
-						
+
 						{if !empty($detail.content.place)}
                             <tr>
                                 <td class="label"><h4>___DATES_PLACE___</h4></td>
                                 <td>{$detail.content.place}</td>
                             </tr>
                         {/if}
-						
+
                         {if !empty($detail.content.color)}
                             <tr>
                                 <td class="label"><h4>___DATES_COLOR___</h4></td>
@@ -85,7 +103,7 @@
                                 <td><img id="color_box" src="images/spacer.gif" style="background-color: {$detail.content.color};"/></td>
                             </tr>
                         {/if}
-						
+
 						{if !empty($detail.files)}
 							<tr>
 								<td class="label"><h4>___MATERIAL_FILES___</h4></td>
@@ -96,7 +114,7 @@
 								</td>
 							</tr>
 						{/if}
-						
+
 						<tr>
 							<td class="label"><h4>___DATE_PARTICIPANTS___</h4></td>
 							<td>
@@ -119,7 +137,7 @@
 											{$member.linktext}
 										{/if}
 									{/if}
-									
+
 									{if !$member@last}, {/if}
 								{foreachelse}
 									___TODO_NO_PROCESSOR___
@@ -131,9 +149,9 @@
             </p>
             <div class="clear"> </div>
         </div>
-					
+
 		<div id="item_legend"> <!-- Start item_legend -->
-			<div class="row_odd">				
+			<div class="detail_content">
 				{if !empty($detail.content.description)}
 					<div class="detail_description">
 						{$detail.content.description}

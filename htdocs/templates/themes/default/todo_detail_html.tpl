@@ -6,6 +6,25 @@
 			<a class="edit" href="#"><span class="edit_set"> &nbsp; </span></a>
 			<a class="linked" href="#"><span class="ref_to_ia"> &nbsp; </span></a>
 			<a class="detail" href="#"><span class="details_ia"> &nbsp; </span></a>
+			{if $detail.annotations|@count}
+			<div class="action_count anno_count" >{$detail.annotations|@count}
+			</div>
+			{if $detail.annotations_changed == 'new'}
+					<img title="*" class="new_item_detail_annotation" src="{$basic.tpl_path}img/flag_neu.gif" alt="*" />
+			{elseif $detail.annotations_changed == 'changed'}
+					<img title="*" class="new_item_detail_annotation" src="{$basic.tpl_path}img/flag_neu_2.gif" alt="*" />
+			{else}
+					<img title="*" class="new_item_detail_annotation" src="{$basic.tpl_path}img/spacer.gif" alt="*" />
+			{/if}
+			{else}
+			<div class="action_count anno_count" >&nbsp;</div>
+			<img title="*" class="new_item_detail_annotation" src="{$basic.tpl_path}img/spacer.gif" alt="*" />
+			{/if}
+			{if $item.linked_count}
+			<div class="action_count linked_count" >{$item.linked_count}</div>
+			{else}
+			<div class="action_count linked_count" >&nbsp;</div>
+			{/if}
 		</div>
 	</div>
 

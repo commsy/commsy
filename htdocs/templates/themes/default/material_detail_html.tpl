@@ -9,12 +9,17 @@
 			<a class="annotations" href="#"><span class="ref_to_anno"> &nbsp; </span></a>
 			{if $detail.annotations|@count}
 			<div class="action_count anno_count" >{$detail.annotations|@count}
-			{if $detail.annotations_changed}
-					<img title="*" class="new_item_detail_annotation" src="{$basic.tpl_path}img/flag_neu.gif" alt="*" />
-			{/if}
 			</div>
+			{if $detail.annotations_changed == 'new'}
+					<img title="*" class="new_item_detail_annotation" src="{$basic.tpl_path}img/flag_neu.gif" alt="*" />
+			{elseif $detail.annotations_changed == 'changed'}
+					<img title="*" class="new_item_detail_annotation" src="{$basic.tpl_path}img/flag_neu_2.gif" alt="*" />
+			{else}
+					<img title="*" class="new_item_detail_annotation" src="{$basic.tpl_path}img/spacer.gif" alt="*" />
+			{/if}
 			{else}
 			<div class="action_count anno_count" >&nbsp;</div>
+			<img title="*" class="new_item_detail_annotation" src="{$basic.tpl_path}img/spacer.gif" alt="*" />
 			{/if}
 			{if $item.linked_count}
 			<div class="action_count linked_count" >{$item.linked_count}</div>
@@ -67,7 +72,7 @@
 		</div>
 
 		<div id="item_legend"> <!-- Start item_legend -->
-			<div class="row_odd">
+			<div class="detail_content">
 				{* formal data *}
 				{if !empty($detail.content.formal)}
 					<table>
@@ -79,13 +84,15 @@
 						{/foreach}
 					</table>
 				{/if}
+			</div>
 
-				{if !empty($detail.content.description)}
+				{if $detail.content.description}
+				<div class="detail_content">
 					<div class="detail_description">
 						{$detail.content.description}
 					</div>
+				</div>
 				{/if}
-			</div>
 		</div> <!-- Ende item_legend -->
 		{include file="include/detail_moredetails_html.tpl" data=$detail.content.moredetails}
 

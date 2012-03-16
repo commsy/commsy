@@ -9,7 +9,7 @@ class cs_date_detail_controller extends cs_detail_controller {
     public function __construct(cs_environment $environment) {
         // call parent
         parent::__construct($environment);
-         
+
         $this->_tpl_file = 'date_detail';
     }
 
@@ -19,7 +19,7 @@ class cs_date_detail_controller extends cs_detail_controller {
     public function processTemplate() {
         // call parent
         parent::processTemplate();
-         
+
         // assign rubric to template
         $this->assign('room', 'rubric', CS_DATE_TYPE);
     }
@@ -34,9 +34,9 @@ class cs_date_detail_controller extends cs_detail_controller {
 
         // try to set the item
         $this->setItem();
-         
+
         $this->setupInformation();
-         
+
 
         //		include_once('include/inc_delete_entry.php');
 
@@ -94,24 +94,24 @@ class cs_date_detail_controller extends cs_detail_controller {
              $page->add($errorbox);
              */
             //            } else {
-             
+
             // Get clipboard
             if ( $session->issetValue('date_clipboard') ) {
                 $clipboard_id_array = $session->getValue('date_clipboard');
             } else {
                 $clipboard_id_array = array();
             }
-             
+
             // Copy to clipboard
             if ( isset($_GET['add_to_date_clipboard'])
             and !in_array($current_item_id, $clipboard_id_array) ) {
                 $clipboard_id_array[] = $current_item_id;
                 $session->setValue('date_clipboard', $clipboard_id_array);
             }
-             
+
             // set clipboard ids
             $this->setClipboardIDArray($clipboard_id_array);
-             
+
             if (!empty($_GET['date_option'])) {
                 $current_user = $environment->getCurrentUser();
                 if ($_GET['date_option']=='1') {
@@ -150,11 +150,11 @@ class cs_date_detail_controller extends cs_detail_controller {
         } else {
             //$room_modules =  $default_room_modules;
         }
-		
+
 		$first = '';
 		foreach($room_modules as $module) {
 			list($name, $view) = explode('_', $module);
-			
+
 			if($view !== 'none') {
 				switch($name) {
 					case 'group':
@@ -170,26 +170,26 @@ class cs_date_detail_controller extends cs_detail_controller {
 				}
 			}
 		}
-		
+
 		// set up ids of linked items
 		$material_ids = $this->_item->getLinkedItemIDArray(CS_MATERIAL_TYPE);
 		$session->setValue('cid' . $this->_environment->getCurrentContextID() . '_material_index_ids', $material_ids);
-		
+
 		if($current_context->withRubric(CS_TOPIC_TYPE)) {
 			$ids = $this->_item->getLinkedItemIDArray(CS_TOPIC_TYPE);
-			$session->setValue('cid' . $this->_environment->getCurrentContextID() . '_topics_index_ids', $ids); 
+			$session->setValue('cid' . $this->_environment->getCurrentContextID() . '_topics_index_ids', $ids);
 		}
-		
+
 		if($current_context->withRubric(CS_GROUP_TYPE)) {
 			$ids = $this->_item->getLinkedItemIDArray(CS_GROUP_TYPE);
 			$session->setValue('cid' . $this->_environment->getCurrentContextID() . '_group_index_ids', $ids);
 		}
-		
+
 		if($current_context->withRubric(CS_INSTITUTION_TYPE)) {
 			$ids = $this->_item->getLinkedItemIDArray(CS_INSTITUTION_TYPE);
 			$session->setValue('cid' . $this->_environment->getCurrentContextID() . '_institutions_index_ids', $ids);
 		}
-		
+
 		$rubric_connections = array();
 		if($first === CS_TOPIC_TYPE) {
 			$rubric_connections = array(CS_TOPIC_TYPE);
@@ -211,12 +211,12 @@ class cs_date_detail_controller extends cs_detail_controller {
 			}
 		}
 		$rubric_connections[] = CS_MATERIAL_TYPE;
-		
+
 		// TODO: seems to be senseless??? why creating $rubric_connections array and set item here
 		// before migration: $detail_view->setRubricConnections($dates_item);
-		
+
 		$this->setRubricConnections($this->_item);
-		
+
 		// annotations
 		// get annotations
 		$annotations = $this->_item->getAnnotationList();
@@ -224,9 +224,7 @@ class cs_date_detail_controller extends cs_detail_controller {
 		// assign annotations
 		$this->assign('detail', 'annotations', $this->getAnnotationInformation($annotations));
 
-		// mark annotations as readed and noticed
-		$this->markAnnotationsReadedAndNoticed($annotations);
-		
+
 		// assign to template
         $this->assign('detail', 'content', $this->getDetailContent());
         $this->assign('detail', 'files', $this->getFileContent());
@@ -240,7 +238,7 @@ class cs_date_detail_controller extends cs_detail_controller {
 		$current_user = $this->_environment->getCurrentUserItem();
 		$perms['date_participate'] = false;
 		$perms['date_leave'] = false;
-		
+
 		// participate / leave
 		if($this->_item->isParticipant($current_user)) {
 			// is participant
@@ -256,7 +254,7 @@ class cs_date_detail_controller extends cs_detail_controller {
                $image = '<img src="images/commsyicons/22x22/group_leave_grey.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('DATE_LEAVE').'"/>';
             }
             $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION_NEW',$this->_translator->getMessage('DATE_LEAVE')).' "class="disabled">'.$image.'</a>'.LF;
-				 * 
+				 *
 				 */
 			}
 		} else {
@@ -279,7 +277,7 @@ class cs_date_detail_controller extends cs_detail_controller {
 
     protected function setBrowseIDs() {
         $session = $this->_environment->getSessionItem();
-         
+
         if($session->issetValue('cid' . $this->_environment->getCurrentContextID() . '_date_index_ids')) {
             $this->_browse_ids = array_values((array) $session->getValue('cid' . $this->_environment->getCurrentContextID() . '_date_index_ids'));
         }
@@ -288,11 +286,11 @@ class cs_date_detail_controller extends cs_detail_controller {
     protected function getDetailContent() {
         $converter = $this->_environment->getTextConverter();
 		$translator = $this->_environment->getTranslationObject();
-		
+
 		// description
         $desc = $this->_item->getDescription();
         if(!empty($desc)) {
-			
+
             $converter->setFileArray($this->getItemFileList());
             $desc = $converter->cleanDataFromTextArea($desc);
             //$desc = $converter->compareWithSearchText...
@@ -300,7 +298,7 @@ class cs_date_detail_controller extends cs_detail_controller {
             //$desc = $converter->show_images($desc, $this->_item, true);
             //$html .= $this->getScrollableContent($desc,$item,'',true);
         }
-		
+
 		// set up style of days and times
 		// time
 		$parse_time_start = convertTimeFromInput($this->_item->getStartingTime());
@@ -311,7 +309,7 @@ class cs_date_detail_controller extends cs_detail_controller {
 			// TODO: compareWithSearchText
 			$start_time_print = $converter->text_as_html_short($this->_item->getStartingTime());
 		}
-		
+
 		$parse_time_end = convertTimeFromInput($this->_item->getEndingTime());
 		$conforms = $parse_time_end['conforms'];
 		if($conforms === true) {
@@ -320,7 +318,7 @@ class cs_date_detail_controller extends cs_detail_controller {
 			// TODO: compareWithSearchText
 			$end_time_print = $converter->text_as_html_short($this->_item->getEndingTime());
 		}
-		
+
 		// day
 		$parse_day_start = convertDateFromInput($this->_item->getStartingDay(), $this->_environment->getSelectedLanguage());
 		$conforms = $parse_day_start['conforms'];
@@ -330,7 +328,7 @@ class cs_date_detail_controller extends cs_detail_controller {
 			// TODO: compareWithSearchText
 			$start_day_print = $converter->text_as_html_short($this->_item->getStartingDay());
 		}
-		
+
 		$parse_day_end = convertDateFromInput($this->_item->getEndingDay(), $this->_environment->getSelectedLanguage());
 		$conforms = $parse_day_end['coforms'];
 		if($conforms === true) {
@@ -339,11 +337,11 @@ class cs_date_detail_controller extends cs_detail_controller {
 			// TODO: compareWithSearchText
 			$end_day_print = $converter->text_as_html_short($this->_item->getEndingDay());
 		}
-		
+
 		// formate dates and times for displaying
 		$date_print = '';
 		$time_print = '';
-		
+
 		if($end_day_print !== '') {
 			// with ending day
 			$date_print = $translator->getMessage('DATES_AS_OF') . ' ' . $start_day_print . ' ' . $translator->getMessage('DATES_TILL') . ' ' . $end_day_print;
@@ -351,18 +349,18 @@ class cs_date_detail_controller extends cs_detail_controller {
 				// start and end are dates, not string <- ???
 				$date_print .= ' (' . getDifference($parse_day_start['timestamp'], $parse_day_end['timestamp']) . ' ' . $translator->getMessage('DATES_DAYS') . ')';
 			}
-			
+
 			if($start_time_print !== '' && $end_time_print === '') {
 				// only start time given
 				$time_print = $translator->getMessage('DATES_AS_OF_LOWER') . ' ' . $start_time_print;
-				
+
 				if($parse_time_start['conforms'] === true) {
 					$time_print .= ' ' . $translator->getMessage('DATES_OCLOCK');
 				}
 			} elseif($start_time_print === '' && $end_time_print !== '') {
 				// only end time given
 				$time_print = $translator->getMessage('DATES_TILL') . ' ' . $end_time_print;
-				
+
 				if($parse_time_end['conforms'] === true) {
 					$time_print .= ' ' . $translator->getMessage('DATES_OCLOCK');
 				}
@@ -371,14 +369,14 @@ class cs_date_detail_controller extends cs_detail_controller {
 				if($parse_time_end['conforms'] === true) {
 					$end_time_print .= ' ' . $translator->getMessage('DATES_OCLOCK');
 				}
-				
+
 				if($parse_time_start['conforms'] === true) {
 					$start_time_rpint .= ' ' . $translator->getMessage('DATES_OCLOCK');
 				}
-				
+
 				$date_print =	$translator->getMessage('DATES_AS_OF') . ' ' . $start_day_print . ', ' . $start_time_print . '<br/>' .
 								$translator->getMessage('DATES_TILL') . ' ' . $end_day_print . ', ' . $end_time_print;
-				
+
 				if($parse_day_start['conforms'] && $parse_day_end['conforms']) {
 					$date_print .= ' (' . getDifference($parse_day_start['timestamp'], $parse_day_end['timestamp']) . ' ' . $translator->getMessage('DATES_DAYS') . ')';
 				}
@@ -386,11 +384,11 @@ class cs_date_detail_controller extends cs_detail_controller {
 		} else {
 			// without ending day
 			$date_print = $translator->getMessage('DATES_ON_DAY') . ' ' . $start_day_print;
-			
+
 			if($start_time_print !== '' && $end_time_print == '') {
 				// starting time given
 				$time_print = $translator->getMessage('DATES_AS_OF_LOWER') . ' ' . $start_time_print;
-				
+
 				if($parse_time_start['conforms'] === true) {
 					$time_print .= ' ' . $translator->getMessage('DATES_OCLOCK');
 				}
@@ -412,12 +410,12 @@ class cs_date_detail_controller extends cs_detail_controller {
 				}
 
 				$time_print = $translator->getMessage('DATES_FROM_TIME_LOWER') . ' ' . $start_time_print . ' ' . $translator->getMessage('DATES_TILL') . ' ' . $end_time_print;
-			}			
+			}
 		}
-		
+
 		if($parse_day_start['timestamp'] === $parse_day_end['timestamp'] && $parse_day_start['conforms'] && $parse_day_end['conforms']) {
 			$date_print = $translator->getMessage('DATES_ON_DAY') . ' ' . $start_day_print;
-			
+
 			if($start_time_print !== '' && $end_time_print === '') {
 				// starting time given
 				$time_print = $translator->getMessage('DATES_AS_OF_LOWER') . ' ' . $start_time_print;
@@ -429,26 +427,26 @@ class cs_date_detail_controller extends cs_detail_controller {
 				$time_print = $translator->getMessage('DATES_FROM_TIME_LOWER') . ' ' . $start_time_print . ' ' . $translator->getMessage('DATES_TILL') . ' ' . $end_time_print;
 			}
 		}
-		
+
 		// date and time
 		$datetime = $date_print;
 		if($time_print !== '') {
 			$datetime .= BRLF . $time_print;
 		}
-		
+
 		// place
 		$place = $this->_item->getPlace();
 		if(!empty($place)) {
 			// TODO: compareWithSearchText
 			$place = $converter->text_as_html_short($place);
 		}
-		
+
 		// color
 		$color = $this->_item->getColor();
 		if(!empty($color)) {
 			$color = $converter->text_as_html_short($color);
 		}
-		
+
         return array(
 				'formal'			=> $formal,
 				'privat'			=> $this->_item->issetPrivatDate(),
@@ -468,54 +466,54 @@ class cs_date_detail_controller extends cs_detail_controller {
 		$return = array();
 		$current_user = $this->_environment->getCurrentUser();
 		$converter = $this->_environment->getTextConverter();
-		
+
 		$members = $this->_item->getParticipantsItemList();
 		if(!$members->isEmpty()) {
 			$member = $members->getFirst();
 			$count = $members->getCount();
 			$counter = 0;
-			
+
 			while($member) {
-				$member = array();
-				
+				$member_array = array();
+
 				$linktext = $member->getFullname();
 				// TODO: compareWithSearchText
 				$linktext = $converter->text_as_html_short($linktext);
-				$member['linktext'] = $linktext;
-				
-				$param_zip = $this->_environment->getValueOfParamter('download');
-				
+				$member_array['linktext'] = $linktext;
+
+				$param_zip = $this->_environment->getValueOfParameter('download');
+
 				if($member->isUser()) {
-					$member['is_user'] = true;
-					
+					$member_array['is_user'] = true;
+
 					if($member->maySee($current_user)) {
-						$member['visible'] = true;
-						$member['as_link'] = false;
-						
+						$member_array['visible'] = true;
+						$member_array['as_link'] = false;
+
 						if(empty($param_zip) || $param_zip !== 'zip') {
-							$member['as_link'] = true;
-							$member['item_id'] = $member->getItemID();
+							$member_array['as_link'] = true;
+							$member_array['item_id'] = $member->getItemID();
 						}
 					} else {
 						// disabled
-						$member['visible'] = false;
+						$member_array['visible'] = false;
 					}
 				} else {
-					$member['is_user'] = false;
-					$member['as_link'] = false;
-					
+					$member_array['is_user'] = false;
+					$member_array['as_link'] = false;
+
 					if(empty($param_zip) || $param_zip !== 'zip') {
-						$member['as_link'] = true;
-						$member['item_id'] = $member->getItemID();
+						$member_array['as_link'] = true;
+						$member_array['item_id'] = $member->getItemID();
 					}
 				}
-				
-				$return[] = $member;
-				
+
+				$return[] = $member_array;
+
 				$member = $members->getNext();
 			}
 		}
-		
+
 		return $return;
     }
 }
