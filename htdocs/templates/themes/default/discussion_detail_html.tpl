@@ -54,12 +54,12 @@
 				{section name="articles_short" loop=$detail.content.disc_articles}
 					{$article = $detail.content.disc_articles[articles_short]}
 					{$iteration = $smarty.section.articles_short.iteration}
-					<div class="row_{if $iteration is odd}odd{else}even{/if} {if $iteration is odd}odd{else}even{/if}_sep_390">
+					<div class="row_{if $iteration is odd}odd{else}even{/if} {if $iteration is odd}odd{else}even{/if}_sep_discussion_detail">
 						<div class="column_320">
 							<p>
 								{$article.position}.
 								{if $article.noticed == 'new' or $article.noticed == 'changed'}<img src="{$basic.tpl_path}img/flag_neu.gif" alt="NEU"/>{/if}
-								<a href="#disc_article_{$article.item_id}">{$article.subject}</a>
+								<a href="#disc_article_{$article.item_id}">{$article.subject|truncate:35:"...":true}</a>
 							</p>
 						</div>
 						<div class="column_45">
@@ -67,12 +67,12 @@
 								<a href="" class="attachment">{$article.num_attachments}</a>
 							</p>
 						</div>
-						<div class="column_155">
+						<div class="column_165">
 							<p>
 								<a href="">{$article.creator}</a>
 							</p>
 						</div>
-						<div class="column_155">
+						<div class="column_140">
 							<p>{$article.modification_date}</p>
 						</div>
 						<div class="clear"> </div>
