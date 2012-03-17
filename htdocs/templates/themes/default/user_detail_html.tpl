@@ -9,20 +9,20 @@
 	</div>
 
 	<div class="item_body"> <!-- Start item body -->
-		
+
 		<!-- Start fade_in_ground -->
 		<div class="fade_in_ground_actions hidden">
 			{* TODO *}
 		</div>
 		<!-- Ende fade_in_ground -->
-		
+
 		<h2>
 			{if !empty($detail.content.first_block.fullname)}
 				{$detail.content.first_block.fullname}
 			{/if}
 		</h2>
 		<div class="clear"> </div>
-		
+
 		<div id="item_credits">
 			<p id="ic_rating">
 			</p>
@@ -34,7 +34,7 @@
 			<div class="clear"> </div>
 		</div>
 
-		<div class="row_odd">
+		<div class="detail_content">
 				<div class="user_profil_blocks">
 					{* formal data *}
 					{if !empty($detail.content.first_block)}
