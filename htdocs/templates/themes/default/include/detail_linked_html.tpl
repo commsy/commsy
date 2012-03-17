@@ -1,7 +1,7 @@
 <!-- Start fade_in_ground -->
 <div class="fade_in_ground_linked hidden">
-	<div class="fi_moredetails">
-		<div class="fi_md_info">
+	<div class="fi_morelinked">
+		<div class="fi_md_linked_info">
 			<img src="{$basic.tpl_path}img/fi_item_link.gif" alt="Zuordnungen" />
 		</div>
 

@@ -71,7 +71,7 @@
 		</div>
 
 		<div id="item_legend"> <!-- Start item_legend -->
-			<div class="row_odd">
+			<div class="detail_content">
 				{if !empty($detail.content.description)}
 					<div class="detail_description">
 						{$detail.content.description}

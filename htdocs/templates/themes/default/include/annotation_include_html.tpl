@@ -31,7 +31,7 @@
 				{/if}
 			</div>
 			<!-- Ende fade_in_ground -->
-			
+
 			<a name="annotation{$annotation.item_id}"></a>
 			<a name="annotation_{$annotation@index}"></a>
 			<div class="item_post">
@@ -41,9 +41,9 @@
 						<p>
 							<a href="" title="{$annotation.creator}">
 								{if $annotation.image}
-									<img width="62" src="commsy.php?cid={$environment.cid}&mod=picture&fct=getfile&picture={$annotation.image.picture}" alt="{i18n tag=USER_PICTURE_NO_PICTURE param1=$annotation.creator}" />
+									<img width="62" src="commsy.php?cid={$environment.cid}&mod=picture&fct=getfile&picture={$annotation.image.picture}" alt="___USER_PICTURE_UPLOADFILE___" />
 								{else}
-									<img width="62" src="{$basic.tpl_path}img/user_unknown.gif" alt="{i18n tag=USER_PICTURE_NO_PICTURE param1=$annotation.creator}" />
+									<img width="62" src="{$basic.tpl_path}img/user_unknown.gif" alt="___USER_PICTURE_UPLOADFILE___" />
 								{/if}
 							</a>
 						</p>
@@ -85,9 +85,9 @@
 					<p>
 						<a href="" title="{$environment.username}">
 							{if $environment.user_picture != ''}
-								<img width="62" src="commsy.php?cid={$environment.cid}&mod=picture&fct=getfile&picture={$environment.user_picture}" alt="{i18n tag=USER_PICTURE_NO_PICTURE param1=$article.creator}" />
+								<img width="62" src="commsy.php?cid={$environment.cid}&mod=picture&fct=getfile&picture={$environment.user_picture}" alt="___USER_PICTURE_UPLOADFILE___" />
 							{else}
-								<img width="62" src="{$basic.tpl_path}img/user_unknown.gif" alt="{i18n tag=USER_PICTURE_NO_PICTURE param1=$article.creator}" />
+								<img width="62" src="{$basic.tpl_path}img/user_unknown.gif" alt="___USER_PICTURE_UPLOADFILE___" />
 							{/if}
 						</a>
 					</p>

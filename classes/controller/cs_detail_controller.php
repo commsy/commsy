@@ -62,7 +62,19 @@
 			$this->assign('list', 'paging', $paging);
 			$this->assign('list', 'num_entries', $this->_num_entries);
 			*/
-			$this->assign('item', 'tags', $this->getTags(true));
+			$tag_list = $this->_item->getTagList();
+			$tag_item = $tag_list->getFirst();
+			$tag_array = array();
+			while($tag_item){
+				$tmp = array();
+				$tmp['item_id'] = $tag_item->getItemID();
+				$tmp['title'] = $tag_item->getTitle();
+				$tmp['level'] = '0';
+				$tag_array[] = $tmp;
+				$tag_item = $tag_list->getNext();
+				$this->_linked_count++;
+			}
+			$this->assign('item', 'tags', $tag_array);
 			$this->assign('item','linked_count', $this->_linked_count);
 
 			$global_changed = false;

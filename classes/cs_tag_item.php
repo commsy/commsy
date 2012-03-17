@@ -85,6 +85,11 @@ class cs_tag_item extends cs_item {
       return $this->_position_array[0];
    }
 
+   public function getPosition () {
+      return $this->_position_array[0];
+   }
+
+
    public function setPosition ($father, $place = '') {
       $this->_position_array[0]['father'] = $father; // only tree
       $this->_position_array[0]['place'] = $place;   // not net
@@ -100,6 +105,10 @@ class cs_tag_item extends cs_item {
    }
 
    private function _getPositionArray () {
+      return $this->_position_array;
+   }
+
+   public function getPositionArray () {
       return $this->_position_array;
    }
 
