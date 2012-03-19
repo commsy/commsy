@@ -1847,6 +1847,7 @@
 		        $current_user = $user_list->getFirst();
 		        while ( $current_user ) {
 		            $current_reader = $reader_manager->getLatestReaderForUserByID($item->getItemID(), $current_user->getItemID());
+					
 		            if ( !empty($current_reader) ) {
 		                if ( $current_reader['read_date'] >= $item->getModificationDate() ) {
 		                    $read_count++;
@@ -1857,6 +1858,7 @@
 		            }
 		            $current_user = $user_list->getNext();
 		        }
+				
 		        $read_percentage = round(($read_count/$user_count) * 100);
 		        $read_since_modification_percentage = round(($read_since_modification_count/$user_count) * 100);
 		        $return['read_percentage'] = $read_percentage;

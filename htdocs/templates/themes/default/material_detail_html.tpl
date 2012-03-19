@@ -150,7 +150,8 @@
 					<div class="clear"> </div>
 				</div>
 			</div>
-			{include file="include/detail_moredetails_html.tpl"}
+			{include file="include/detail_moredetails_html.tpl" data=$section.moredetails}
+			
 		</div> <!-- Ende item body -->
 		<div class="clear"> </div>
 

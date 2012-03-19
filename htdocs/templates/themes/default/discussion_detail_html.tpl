@@ -148,11 +148,11 @@
 						<div class="clear"> </div>
 					</div>
 				</div>
+				
+				{include file="include/detail_moredetails_html.tpl" data=$article.moredetails}
 			{/block}
 		</div> <!-- Ende item body -->
 		<div class="clear"> </div>
-
-		{include file="include/detail_moredetails_html.tpl"}
 	{/foreach}
 
 	<div class="item_actions">&nbsp;</div>

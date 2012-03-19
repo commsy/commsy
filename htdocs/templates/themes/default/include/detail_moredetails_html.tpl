@@ -11,12 +11,15 @@
 				<p class="fi_mdc_item_150">
 					{$data.item_id}
             	</p>
-				<h4>___COMMON_READ_SINCE_MODIFICATION___</h4>
-				<div class="progressbar">
-					<img src="{$basic.tpl_path}img/ajax_loader.gif" alt="ajax_loader" />
-					<span class="percent hidden">{$data.read_since_modification_percentage}</span>
-					<span class="value hidden">{$data.read_since_modification_count}</span>
-				</div>
+				
+				{if isset($data.read_since_modification_percentage)}
+					<h4>___COMMON_READ_SINCE_MODIFICATION___</h4>
+					<div class="progressbar">
+						<img src="{$basic.tpl_path}img/ajax_loader.gif" alt="ajax_loader" />
+						<span class="percent hidden">{$data.read_since_modification_percentage}</span>
+						<span class="value hidden">{$data.read_since_modification_count}</span>
+					</div>
+				{/if}
 			</div>
 
 			<div class="fi_mdc_item_380">

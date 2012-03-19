@@ -790,7 +790,7 @@ if ($type != CS_DISCUSSION_TYPE) {
 				$description = $converter->showImages($description, $item, true);
 
 				//$retour .= $this->getScrollableContent($desc,$item,'',true).LF;
-
+				
 				// append return
 				$return[] = array(
 					'item_id'			=> $item->getItemID(),
@@ -803,7 +803,8 @@ if ($type != CS_DISCUSSION_TYPE) {
 					'noticed'			=> $noticed,
 					'modificator_image'	=> $modificator_image,
 					'custom_image'		=> !empty($image),
-					'actions'			=> $this->getEditActions($item, $current_user)
+					'actions'			=> $this->getEditActions($item, $current_user),
+					'moredetails'		=> $this->getCreatorInformationAsArray($item)
 				);
 				$position++;
 

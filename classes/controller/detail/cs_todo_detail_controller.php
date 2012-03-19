@@ -390,6 +390,8 @@
 					}
 
 					$entry['num_files'] = sizeof($files);
+					
+					$entry['moredetails'] = $this->getCreatorInformationAsArray($current_item);
 
 					/*
 					 *

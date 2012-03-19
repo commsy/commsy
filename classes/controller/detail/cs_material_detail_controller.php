@@ -1042,7 +1042,8 @@
 						'title'				=> $converter->text_as_html_short($section->getTitle()),
 						'iid'				=> $section->getItemID(),
 						'description'		=> $description,
-						'num_attachments'	=> sizeof($files)
+						'num_attachments'	=> sizeof($files),
+						'moredetails'		=> $this->getCreatorInformationAsArray($section)
 					);
 
 					$section = $section_list->getNext();

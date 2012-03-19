@@ -164,16 +164,13 @@
 		<div class="item_body"> <!-- Start item body -->
 			<a name="step_article_{$step.item_id}"></a>
 			<a name="step{$step.item_id}"></a>
-			<div class="edit_overlay">
-			{*
-				{if $article.actions.edit}
-					<a href="commsy.php?cid={$environment.cid}&mod={$article.actions.edit_module}&fct=edit&iid={$article.item_id}">___COMMON_EDIT_ITEM___</a>
-				{/if}
-				{if $article.actions.delete}
-					<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&iid={$detail.content.discussion.item_id}&action=delete&discarticle_iid={$article.item_id}&discarticle_action=delete">___COMMON_DELETE_ITEM___</a>
-				{/if}
-			*}
+			
+			<!-- Start fade_in_ground -->
+			<div class="fade_in_ground_actions hidden">
+				actions
 			</div>
+			<!-- Ende fade_in_ground -->
+			
 			<div class="item_post">
 				<div class="row_{if $step@iteration is odd}odd{else}even{/if}_no_hover {if $step@iteration is odd}odd{else}even{/if}_sep_disdetail">
 					<div class="column_80">
@@ -238,6 +235,8 @@
 					<div class="clear"> </div>
 				</div>
 			</div>
+			{include file="include/detail_moredetails_html.tpl" data=$step.moredetails}
+			
 		</div> <!-- Ende item body -->
 		<div class="clear"> </div>
 	{/foreach}

@@ -7,6 +7,7 @@
 		protected $_page_html_fragment_array = array();
 		protected $_browsing_icons_parameter_array = array();
 		protected $_perspective_rubric_array = array();
+		protected $_addition_selects = false;
 
 		/**
 		 * constructor
@@ -438,7 +439,7 @@
 				
 				// additional restrictions
 				$additional_restrictions = $this->getAdditionalRestrictionText();
-				if(!empty($additional_restrictions)) $restriction_array[] = $additional_restrictions;
+				if(!empty($additional_restrictions)) $restriction_array = array_merge($restriction_array, $additional_restrictions);
 				
 	         	if ( isset($params['selgroup']) and !empty($params['selgroup']) ){
 	            	$new_params = $params;
@@ -1390,7 +1391,7 @@
 				
 				// get additional restrictions
 				$additional_restrictions = $this->getAdditionalRestrictions();
-				if(!empty($additional_restrictions)) $this->_perspective_rubric_array[] = $additional_restrictions;
+				if(!empty($additional_restrictions)) $this->_perspective_rubric_array = array_merge($this->_perspective_rubric_array, $additional_restrictions);
 			}
 		}
 

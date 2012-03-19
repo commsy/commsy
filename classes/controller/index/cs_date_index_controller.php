@@ -3,6 +3,8 @@
 
 	class cs_date_index_controller extends cs_list_controller {
 		private $_display_mode = '';
+		private $_selected_status = '';
+		private $_available_color_array = array('#999999','#CC0000','#FF6600','#FFCC00','#FFFF66','#33CC00','#00CCCC','#3366FF','#6633FF','#CC33CC');
 
 		/**
 		 * constructor
@@ -15,6 +17,12 @@
 
 			// set display mode
 			$this->setDisplayMode();
+			
+			// set selected status
+			$this->setSelectedStatus();
+			
+			// this will enable processing of additional restriction texts
+			$this->_additional_selects = true;
 		}
 
 		/*
@@ -186,12 +194,20 @@
 					($this->_display_mode !== 'calendar' || $this->_display_mode === 'calendar_month' || $this->getViewMode() === 'formattach' || $this->getViewMode() === 'detailattach')) {
 					$dates_manager->setSortOrder($this->_list_parameter_arrray['sort']);
 				}
+				
+				// find current selected color
+				$selected_color = '';
+				if(isset($_GET['selcolor']) && $_GET['selcolor'] != '-2') {
+					$selected_color = $_GET['selcolor'];
+				}
+				
+				if(!empty($selected_color) && $selected_color != 2) {
+					$dates_manager->setColorLimit('#' . $selected_color);
+				}
+				
 
 
 				/* TODO: convert
-			   if ( !empty($sel_color) and $sel_color != 2 ) {
-			      $dates_manager->setColorLimit('#'.$sel_color);
-			   }
 
 			   if ( !empty($ref_iid) and $mode == 'attached' ){
 			      $dates_manager->setRefIDLimit($ref_iid);
@@ -470,6 +486,44 @@
 		   $return[] = array('selected' => false, 'disabled' => false, 'id' => '', 'value' => CS_LISTOPTION_DOWNLOAD, 'display' => '___COMMON_LIST_ACTION_DOWNLOAD___');
 			return $return;
 		}
+		
+		private function setSelectedStatus() {
+			$current_context = $this->_environment->getCurrentContextItem();
+			
+			// find current status selection
+			if(isset($_GET['selstatus']) && $_GET['selstatus'] != '-2') {
+				$this->_selected_status = $_GET['selstatus'];
+				
+				// save selection
+				if($current_context->isPrivateRoom()) {
+					$date_sel_status = $current_context->getRubrikSelection(CS_DATE_TYPE, 'status');
+					
+					if($date_sel_status != $this->_selected_status) {
+						$current_context->setRubrikSelection(CS_DATE_TYPE, 'status', $this->_selected_status);
+					}
+				}
+			} else {
+				if(	$this->_display_mode == 'calendar' ||
+					// TODO?:
+					$this->_display_mode == 'calendar_month' /* || $mode == 'formattach' || $mode == 'detailattach' */ ||
+					$this->_environment->inPrivateRoom()) {
+					
+					$this->_selected_status = 2;
+					
+					if($this->_environment->inPrivateRoom()) {
+						$date_sel_status = $current_context->getRubrikSelection(CS_DATE_TYPE, 'status');
+						
+						if(!empty($date_sel_status)) {
+							$this->_selected_status = $date_sel_status;
+						} else {
+							$this->_selected_status = 2;
+						}
+					}
+				} else {
+					$this->_selected_status = 3;
+				}
+			}
+		}
 
 		private function setDisplayMode() {
 			$current_user = $this->_environment->getCurrentUserItem();
@@ -557,7 +611,9 @@
 		}
 		
 		protected function getAdditionalRestrictions() {
-			$return = array(
+			$return = array();
+			
+			$restriction = array(
 				'item'		=> array(),
 				'action'	=> '',
 				'hidden'	=> array(),
@@ -566,18 +622,13 @@
 				'custom'	=> true
 			);
 			
-			if(isset($_GET['selstatus']) && $_GET['selstatus'] != 2 && $_GET['selstatus'] != '-2') {
-				$selstatus = $_GET['selstatus'];
-			} else {
-				$selstatus = '';
-			}
-			
 			$translator = $this->_environment->getTranslationObject();
+			$dates_manager = $this->_environment->getDatesManager();
 			
 			// set tag and name
 			$tag = $translator->getMessage('COMMON_DATE_STATUS');
-			$return['tag'] = $tag;
-			$return['name'] = 'status';
+			$restriction['tag'] = $tag;
+			$restriction['name'] = 'status';
 			
 			// set action
 			$params = $this->_environment->getCurrentParameterArray();
@@ -589,12 +640,20 @@
 			unset($params['selstatus']);
 			$link_parameter_text = '';
 			
+			$hidden_array = array();
 			if(count($params) > 0) {
 				foreach($params as $key => $parameter) {
 					$link_parameter_text .= '&'.$key.'='.$parameter;
+					$hidden_array[] = array(
+						'name'	=> $key,
+						'value'	=> $parameter
+					);
 				}
 			}			
-			$return['action'] = 'commsy.php?cid='.$this->_environment->getCurrentContextID().'&mod='.$this->_environment->getCurrentModule().'&fct='.$this->_environment->getCurrentFunction().'&'.$link_parameter_text;
+			$restriction['action'] = 'commsy.php?cid='.$this->_environment->getCurrentContextID().'&mod='.$this->_environment->getCurrentModule().'&fct='.$this->_environment->getCurrentFunction().'&'.$link_parameter_text;
+			
+			// set hidden
+			$restriction['hidden'] = $hidden_array;
 			
 			// set items
 			$items = array();
@@ -603,7 +662,7 @@
 			$item = array(
 				'id'		=> 2,
 				'name'		=> $translator->getMessage('COMMON_NO_SELECTION'),
-				'selected'	=> $selstatus
+				'selected'	=> $this->_selected_status
 			);
 			$items[] = $item;
 			
@@ -611,7 +670,7 @@
 			$item = array(
 				'id'		=> -2,
 				'name'		=> '------------------------------',
-				'selected'	=> $selstatus,
+				'selected'	=> $this->_selected_status,
 				'disabled'	=> true
 			);
 			$items[] = $item;
@@ -620,7 +679,7 @@
 			$item = array(
 				'id'		=> 3,
 				'name'		=> $translator->getMessage('DATES_PUBLIC'),
-				'selected'	=> $selstatus
+				'selected'	=> $this->_selected_status
 			);
 			$items[] = $item;
 			
@@ -629,61 +688,111 @@
 			$item = array(
 				'id'		=> 4,
 				'name'		=> $translator->getMessage('DATES_NON_PUBLIC'),
-				'selected'	=> $selstatus
+				'selected'	=> $this->_selected_status
 			);
 			$items[] = $item;
 			
-			/* TODO:
-			 * 
-			 * 
-			 * $html .= '   </select>'.LF;
-      $html .='</div>';
-
-      if (isset($this->_used_color_array[0])){
-         $selcolor = $this->_selected_color;
-         $html .= '<div class="infocolor" style="text-align:left; padding-bottom:5px; font-size: 10pt;">'.$this->_translator->getMessage('COMMON_DATE_COLOR').BRLF;
-         if ( !empty($selcolor)) {
-            $style_color = '#'.$selcolor;
-         }else{
-           $style_color = '#000000';
-         }
-         $html .= '   <select style="color:'.$style_color.'; width: '.$width.'px; font-size:10pt; margin-bottom:5px;" name="selcolor" size="1" id="submit_form">'.LF;
-
-         $html .= '      <option style="color:#000000;" value="2"';
-         if ( empty($selcolor) || $selcolor == 2 ) {
-            $html .= ' selected="selected"';
-         }
-         $html .= '>*'.$this->_translator->getMessage('COMMON_NO_SELECTION').'</option>'.LF;
-
-         $html .= '   <option class="disabled" disabled="disabled" value="-2">------------------------------</option>'.LF;
-         $color_array = $this->getAvailableColorArray();
-         foreach ($color_array as $color){
-            $html .= '      <option style="color:'.$color.'" value="'.str_replace('#','',$color).'"';
-            if ( !empty($selcolor) and $selcolor == str_replace('#','',$color) ) {
-               $html .= ' selected="selected"';
-            }
-            $color_text = '';
-            switch ($color){
-               case '#999999': $color_text = getMessage('DATE_COLOR_GREY');break;
-               case '#CC0000': $color_text = getMessage('DATE_COLOR_RED');break;
-               case '#FF6600': $color_text = getMessage('DATE_COLOR_ORANGE');break;
-               case '#FFCC00': $color_text = getMessage('DATE_COLOR_DEFAULT_YELLOW');break;
-               case '#FFFF66': $color_text = getMessage('DATE_COLOR_LIGHT_YELLOW');break;
-               case '#33CC00': $color_text = getMessage('DATE_COLOR_GREEN');break;
-               case '#00CCCC': $color_text = getMessage('DATE_COLOR_TURQUOISE');break;
-               case '#3366FF': $color_text = getMessage('DATE_COLOR_BLUE');break;
-               case '#6633FF': $color_text = getMessage('DATE_COLOR_DARK_BLUE');break;
-               case '#CC33CC': $color_text = getMessage('DATE_COLOR_PURPLE');break;
-               default: $color_text = getMessage('DATE_COLOR_UNKNOWN');
-            }
-            $html .= '>'.$color_text.'</option>'.LF;
-         }
-         $html .= '   </select>'.LF;
-         $html .='</div>';
-      }
-			 */
 			
-			$return['items'] = $items;
+			$restriction['items'] = $items;
+			$return[] = $restriction;
+			
+			// colors
+			$color_array = $dates_manager->getColorArray();
+			if(isset($color_array[0])) {
+				// find current selected color
+				$selected_color = '';
+				if(isset($_GET['selcolor']) && $_GET['selcolor'] != '-2') {
+					$selected_color = $_GET['selcolor'];
+				}
+				
+				$restriction = array(
+					'item'		=> array(),
+					'action'	=> '',
+					'hidden'	=> array(),
+					'tag'		=> '',
+					'name'		=> '',
+					'custom'	=> true
+				);
+				
+				// set tag and name
+				$tag = $translator->getMessage('COMMON_DATE_COLOR');
+				$restriction['tag'] = $tag;
+				$restriction['name'] = 'color';
+				
+				// set action
+				$params = $this->_environment->getCurrentParameterArray();
+
+				if(!isset($params['selcolor'])) {
+					unset($params['from']);
+				}
+
+				unset($params['selcolor']);
+				$link_parameter_text = '';
+				
+				$hidden_array = array();
+				if(count($params) > 0) {
+					foreach($params as $key => $parameter) {
+						$link_parameter_text .= '&'.$key.'='.$parameter;
+						$hidden_array[] = array(
+							'name'	=> $key,
+							'value'	=> $parameter
+						);
+					}
+				}			
+				$restriction['action'] = 'commsy.php?cid='.$this->_environment->getCurrentContextID().'&mod='.$this->_environment->getCurrentModule().'&fct='.$this->_environment->getCurrentFunction().'&'.$link_parameter_text;
+				
+				// set hidden
+				$restriction['hidden'] = $hidden_array;
+				
+				// set items
+				$items = array();
+				
+				// no selection
+				$item = array(
+					'id'		=> 2,
+					'name'		=> $translator->getMessage('COMMON_NO_SELECTION'),
+					'selected'	=> $this->_selected_status
+				);
+				$items[] = $item;
+
+				// disabled
+				$item = array(
+					'id'		=> -2,
+					'name'		=> '------------------------------',
+					'selected'	=> $this->_selected_status,
+					'disabled'	=> true
+				);
+				$items[] = $item;
+				
+				$color_array = $this->_available_color_array;
+				foreach($color_array as $color) {
+					$color_text = '';
+					switch ($color){
+						case '#999999': $color_text = getMessage('DATE_COLOR_GREY');break;
+						case '#CC0000': $color_text = getMessage('DATE_COLOR_RED');break;
+						case '#FF6600': $color_text = getMessage('DATE_COLOR_ORANGE');break;
+						case '#FFCC00': $color_text = getMessage('DATE_COLOR_DEFAULT_YELLOW');break;
+						case '#FFFF66': $color_text = getMessage('DATE_COLOR_LIGHT_YELLOW');break;
+						case '#33CC00': $color_text = getMessage('DATE_COLOR_GREEN');break;
+						case '#00CCCC': $color_text = getMessage('DATE_COLOR_TURQUOISE');break;
+						case '#3366FF': $color_text = getMessage('DATE_COLOR_BLUE');break;
+						case '#6633FF': $color_text = getMessage('DATE_COLOR_DARK_BLUE');break;
+						case '#CC33CC': $color_text = getMessage('DATE_COLOR_PURPLE');break;
+						default: $color_text = getMessage('DATE_COLOR_UNKNOWN');
+					}
+					
+					$item = array(
+						'id'		=> str_replace('#', '', $color),
+						'name'		=> $color_text,
+						'selected'	=> str_replace('#', '', $selected_color)
+					);
+					$items[] = $item;
+				}
+			}
+			
+			$restriction['items'] = $items;
+			
+			$return[] = $restriction;
 			
 			return $return;
 		}

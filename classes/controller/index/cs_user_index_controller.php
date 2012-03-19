@@ -241,11 +241,11 @@
 				$return['link_parameter'] = $link_parameter_text;
 			}
 				
-			return $return;
+			return array($return);
 		}
 		
 		protected function getAdditionalRestrictions() {
-			$return = array(
+			$return[0] = array(
 				'item'		=> array(),
 				'action'	=> '',
 				'hidden'	=> array(),
@@ -264,8 +264,8 @@
 			
 			// set tag and name
 			$tag = $translator->getMessage('COMMON_STATUS');
-			$return['tag'] = $tag;
-			$return['name'] = 'status';
+			$return[0]['tag'] = $tag;
+			$return[0]['name'] = 'status';
 			
 			// set action
 			$params = $this->_environment->getCurrentParameterArray();
@@ -277,12 +277,20 @@
 			unset($params['selstatus']);
 			$link_parameter_text = '';
 			
+			$hidden_array = array();
 			if(count($params) > 0) {
 				foreach($params as $key => $parameter) {
 					$link_parameter_text .= '&'.$key.'='.$parameter;
+					$hidden_array[] = array(
+						'name'	=> $key,
+						'value'	=> $parameter
+					);
 				}
 			}			
-			$return['action'] = 'commsy.php?cid='.$this->_environment->getCurrentContextID().'&mod='.$this->_environment->getCurrentModule().'&fct='.$this->_environment->getCurrentFunction().'&'.$link_parameter_text;
+			$return[0]['action'] = 'commsy.php?cid='.$this->_environment->getCurrentContextID().'&mod='.$this->_environment->getCurrentModule().'&fct='.$this->_environment->getCurrentFunction().'&'.$link_parameter_text;
+			
+			// set hidden
+			$return[0]['hidden'] = $hidden_array;
 			
 			// set items
 			$items = array();
@@ -331,7 +339,7 @@
 				$items[] = $item;
 			}
 			
-			$return['items'] = $items;
+			$return[0]['items'] = $items;
 			
 			return $return;
 		}
