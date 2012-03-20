@@ -462,8 +462,19 @@
 			$this->_item = $this->_manager->getItem($current_item_id);
 		}
 
-		protected function getAdditionalActions(&$perms) {
+		protected function getAdditionalActions(&$return) {
+			$current_context = $this->_environment->getCurrentContextItem();
+			$current_user = $this->_environment->getCurrentUserItem();
+			$is_in_group = $current_user->isInGroup($this->_item);
+			if (!$this->_item->isSystemLabel()){
+				if ($is_in_group) {
+					$return['member'] = 'member';
+				} else {
+					$return['member'] = 'no_member';
 
+				}
+			}
+			return $return;
 		}
 		//TODO: redfine getDetailActions
 		/*
