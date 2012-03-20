@@ -138,7 +138,7 @@
 			<div class="column_90">
 				<p>{$item.date}</p>
 			</div>
-			<div class="column_155">
+			<div class="column_145">
 				<p>
 					{$item.modificator}
 				</p>

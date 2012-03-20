@@ -188,7 +188,9 @@
 			{if $room.workflow}
 				<div class="column_70">
 					<p>
+					   {if $item.workflow.light}
 						<img class="workflow" src="{$basic.tpl_path}img/workflow_traffic_light_{$item.workflow.light}.png" alt="{$item.workflow.title}" title="{$item.workflow.title}">
+						{/if}
 					</p>
 				</div>
 			{/if}

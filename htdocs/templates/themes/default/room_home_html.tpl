@@ -40,7 +40,7 @@
 
 	                {foreach $rubric.items as $item}
 	                	<div class="{if $item@iteration is odd}row_odd{else}row_even{/if} {if $item@iteration is odd}odd_sep_home{else}even_sep_home{/if}">
-	                    	<div class="column_320">
+	                    	<div class="column_335">
 	                        	{if $rubric@key == 'discussion'}
 		                        	<p class="column_addon">
 		                        		{$item.column_1_addon}
@@ -85,11 +85,6 @@
 										{/if}
 									</span>
 
-				         			<input class="new_item_2" type="checkbox" name="form_data[attach][{$item.iid}]" value="1"/>
-				        			<input type="hidden" name="form_data[shown][{$item.iid}]" value="1"/>
-								{else}
-				         			<input type="checkbox" name="form_data[attach][{$item.iid}]" value="1"/>
-				        			<input type="hidden" name="form_data[shown][{$item.iid}]" value="1"/>
 								{/if}
 		                            <a href="commsy.php?cid={$environment.cid}&mod={$rubric@key}&fct=detail&iid={$item.iid}">{$item.column_1}</a>
 	                            </p>
