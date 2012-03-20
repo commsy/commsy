@@ -127,10 +127,11 @@
       			$sort_parameter = 'time_rev';
       		}elseif($module == CS_USER_TYPE){
       			$sort_parameter = 'name';
+      		}elseif($module == CS_TODO_TYPE){
+      			$sort_parameter = 'date';
       		}else{
       			$sort_parameter = '';
       		}
-
       		unset($params['sort']);
       		$link_parameter_text = '';
       		if ( count($params) > 0 ) {
@@ -270,6 +271,16 @@
          		$return_array['sort_place'] = 'none';
       		}
 
+			if ( $sort_parameter == 'status') {
+         		$return_array['sort_status_link'] = $link_parameter_text.'&sort=status_rev';
+         		$return_array['sort_status'] = 'up';
+      		}elseif ( $sort_parameter == 'status_rev'){
+         		$return_array['sort_status_link'] = $link_parameter_text.'&sort=status';
+         		$return_array['sort_status'] = 'down';
+      		}else{
+         		$return_array['sort_status_link'] = $link_parameter_text.'&sort=status';
+         		$return_array['sort_status'] = 'none';
+      		}
 			return $return_array;
 		}
 
@@ -436,11 +447,11 @@
 					$tmp_array['link_parameter'] = $link_parameter_text;
 					$restriction_array[] = $tmp_array();
 	         	}
-				
+
 				// additional restrictions
 				$additional_restrictions = $this->getAdditionalRestrictionText();
 				if(!empty($additional_restrictions)) $restriction_array = array_merge($restriction_array, $additional_restrictions);
-				
+
 	         	if ( isset($params['selgroup']) and !empty($params['selgroup']) ){
 	            	$new_params = $params;
 	            	unset($new_params['selgroup']);
@@ -1245,6 +1256,8 @@
 					$this->_list_parameter_arrray['sort'] = 'title';
 				} elseif($this->_environment->getCurrentModule() === CS_DATE_TYPE) {
 					$this->_list_parameter_arrray['sort'] = 'time_rev';
+				} elseif($this->_environment->getCurrentModule() === CS_TODO_TYPE) {
+					$this->_list_parameter_arrray['sort'] = 'date';
 				} elseif($this->_environment->getCurrentModule() === CS_USER_TYPE) {
 					$this->_list_parameter_arrray['sort'] = 'name';
 				} else {
@@ -1340,11 +1353,11 @@
    				foreach($sel_array as $rubric => $value){
    					$params = $environment->getCurrentParameterArray();
    					$sel_name = 'sel'.$rubric;
-					
+
 					if(!isset($params[$sel_name])) {
 						unset($params['from']);
 					}
-					
+
    					unset($params[$sel_name]);
       				$link_parameter_text = '';
       				$hidden_array = array();
@@ -1388,7 +1401,7 @@
    					$this->_perspective_rubric_array[] = $tmp3_array;
    					unset($rubric_list);
 				}
-				
+
 				// get additional restrictions
 				$additional_restrictions = $this->getAdditionalRestrictions();
 				if(!empty($additional_restrictions)) $this->_perspective_rubric_array = array_merge($this->_perspective_rubric_array, $additional_restrictions);
@@ -1398,9 +1411,9 @@
 		abstract protected function getListContent();
 
 		abstract protected function getAdditionalListActions();
-		
+
 		abstract protected function getAdditionalRestrictions();
-		
+
 		abstract protected function getAdditionalRestrictionText();
 
 		private function getListActions() {

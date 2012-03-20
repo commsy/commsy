@@ -2,21 +2,34 @@
 
 {block name=room_list_header}
 	<div class="table_head">
+		{if $room.assessment}
+			{$w = 220}
+		{else}
+			{$w = 250}
+		{/if}
 		{if $list.sorting_parameters.sort_title == "up"}
-		 	<h3 class="w_380"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_title_link}" id="sort_up"><strong>___COMMON_TITLE___</strong></a></h3>
+		 	<h3 class="w_{$w}"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_title_link}" id="sort_up"><strong>___COMMON_TITLE___</strong></a></h3>
 		{elseif $list.sorting_parameters.sort_title == "down"}
-		 	<h3 class="w_380"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_title_link}" id="sort_down"><strong>___COMMON_TITLE___</strong></a></h3>
+		 	<h3 class="w_{$w}"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_title_link}" id="sort_down"><strong>___COMMON_TITLE___</strong></a></h3>
 		{else}
-		 	<h3 class="w_380"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_title_link}" class="sort_none">___COMMON_TITLE___</a></h3>
+		 	<h3 class="w_{$w}"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_title_link}" class="sort_none">___COMMON_TITLE___</a></h3>
 		{/if}
-		{if $list.sorting_parameters.sort_modified == "up"}
-		 	<h3 class="w_80"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_modified_link}" id="sort_up"><strong>___COMMON_MODIFIED_AT___</strong></a></h3>
-		{elseif $list.sorting_parameters.sort_modified == "down"}
-		 	<h3 class="w_80"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_modified_link}" id="sort_down"><strong>___COMMON_MODIFIED_AT___</strong></a></h3>
+		{if $list.sorting_parameters.sort_status == "up"}
+		 	<h3 class="w_110"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_status_link}" id="sort_up"><strong>___TODO_STATUS___</strong></a></h3>
+		{elseif $list.sorting_parameters.sort_status == "down"}
+		 	<h3 class="w_110"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_status_link}" id="sort_down"><strong>___TODO_STATUS___</strong></a></h3>
 		{else}
-		 	<h3 class="w_80"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_modified_link}" class="sort_none">___COMMON_MODIFIED_AT___</a></h3>
+		 	<h3 class="w_110"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_status_link}" class="sort_none">___TODO_STATUS___</a></h3>
 		{/if}
-		<h3 class="w_135">___COMMON_ENTERED_BY___</h3>
+		{if $list.sorting_parameters.sort_date == "up"}
+		 	<h3 class="w_85"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_date_link}" id="sort_up"><strong>___TODO_DATE___</strong></a></h3>
+		{elseif $list.sorting_parameters.sort_date == "down"}
+		 	<h3 class="w_85"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_date_link}" id="sort_down"><strong>___TODO_DATE___</strong></a></h3>
+		{else}
+		 	<h3 class="w_85"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_date_link}" class="sort_none">___TODO_DATE___</a></h3>
+		{/if}
+		<h3 class="w_65">___COMMON_TIME___</h3>
+		<h3 class="w_110">___TODO_PROCESSORS___</h3>
 		{if $room.assessment}
 			{if $list.sorting_parameters.sort_assessment == "up"}
 				<h3><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_assessment_link}" id="sort_up"><strong>___COMMON_ASSESSMENT_INDEX___</strong></a></h3>
@@ -33,8 +46,13 @@
 
 
 {block name=room_list_content}
+		{if $room.assessment}
+			{$sep = "todo_assessment"}
+		{else}
+			{$sep = "todo"}
+		{/if}
 	{foreach $todo.list_content.items as $item }
-		<div class="{if $item@iteration is odd}row_odd{else}row_even{/if} {if $item@iteration is odd}odd_sep_announcement{else}even_sep_announcement{/if}"> <!-- Start Reihe -->
+		<div class="{if $item@iteration is odd}row_odd{else}row_even{/if} {if $item@iteration is odd}odd_sep_{$sep}{else}even_sep_{$sep}{/if}"> <!-- Start Reihe -->
 			<div class="column_20">
 				<p>
 				{if $item.noticed.show_info}
@@ -101,7 +119,12 @@
 				{/if}
 				</p>
 			</div>
-			<div class="column_304">
+			{if !$room.assessment}
+				{$w = 200}
+			{else}
+				{$w = 164}
+			{/if}
+			<div class="column_{$w}">
 				<p>
 					 <a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&{$environment.params}&iid={$item.iid}">{$item.title}</a>
 				</p>
@@ -127,21 +150,44 @@
 					</div>
 				{/if}
 			</div>
-			<div class="column_90">
-				<p>{$item.date}</p>
-			</div>
-			<div class="column_155">
-				<p>
-					{$item.modificator}
-				</p>
+			<div class="column_120">
+				<p>{$item.status}</p>
 			</div>
 			<div class="column_100">
-				<p>{*
-					{foreach $item.assessment_array as $star_text}
-						<img src="{$basic.tpl_path}img/star_{$star_text}.gif" alt="*" />
-					{/foreach}*}
+				<p>{$item.process_date}</p>
+			</div>
+			<div class="column_70">
+				{$item.process}
+			</div>
+			{if !$room.assessment}
+				{$w = 184}
+			{else}
+				{$w = 120}
+			{/if}
+			<div class="column_{$w}">
+				<p>
+				{if ($item.processors|@count) > 0}
+					{foreach $item.processors as $processor}
+						{if $processor.is_user && $processor.visible && $processor.as_link}
+							<a href="commsy.php?cid={$environment.cid}&mod=user&fct=detail&iid={$processor.item_id}">{$processor.linktext}</a>{if !$processor@last}, {/if}
+						{else}
+							{$processor.linktext}{if !$processor@last}, {/if}
+						{/if}
+					{/foreach}
+				{else}
+					___TODO_NO_PROCESSOR_SHORT___
+				{/if}
 				</p>
 			</div>
+			{if $room.assessment}
+			<div class="column_90">
+				<p>
+					{foreach $item.assessment_array as $star_text}
+						<img src="{$basic.tpl_path}img/star_{$star_text}.gif" alt="*" />
+					{/foreach}
+				</p>
+			</div>
+			{/if}
 			<div class="clear"> </div>
 		</div> <!-- Ende Reihe -->
 	{/foreach}

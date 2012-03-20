@@ -25,6 +25,7 @@ $message["TODO_NOT_STARTED"]["de"] = "nicht bearbeitet";
 $message["TODO_NO_END_DATE"]["de"] = "k.A.";
 $message["TODO_NO_END_DATE_LONG"]["de"] = "keine Angabe";
 $message["TODO_NO_PROCESSOR"]["de"] = "keine Zuordnung";
+$message["TODO_NO_PROCESSOR_SHORT"]["de"] = "niemand";
 $message["TODO_NO_STEPS"]["de"] = "Keine Arbeitsschritte angegeben";
 $message["TODO_PROCESS"]["de"] = "Zeit";
 $message["TODO_PROCESSORS"]["de"] = "Zuständigkeit";
@@ -39,5 +40,6 @@ $message["TODO_TIME_DAYS"]["de"] = "Tage (1 Tag = 8 Std.)";
 $message["TODO_TIME_DAY_END_DESC"]["de"] = "Geben Sie das Datum an, bis zu dem die Augabe erledigt sein sollte.";
 $message["TODO_TIME_HOURS"]["de"] = "Stunden";
 $message["TODO_TIME_MINUTES"]["de"] = "Minuten";
+$message["TODO_TIME_MINUTES_SHORT"]["de"] = "Min.";
 $message["TODO_VALIDITY_DATE"]["de"] = "fällig";
 ?>
