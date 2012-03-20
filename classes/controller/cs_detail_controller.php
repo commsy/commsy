@@ -886,7 +886,7 @@
 			$current_user = $this->_environment->getCurrentUser();
 			$reader_manager = $this->_environment->getReaderManager();
 			$noticed_manager = $this->_environment->getNoticedManager();
-
+			$translator = $this->_environment->getTranslationObject();
 			$count = $annotation_list->getCount();
 			if(!(isset($_GET['mode']) && $_GET['mode'] === 'print') || $count > 0) {
 				// TODO: add annotation heading to template, specified like here
@@ -976,7 +976,7 @@
 							'title'				=> $subitem_title,
 							'description'		=> $desc,
 							'modifier'			=> $this->getItemModificator($annotation),
-							'modification_date'	=> $annotation->getModificationDate(),
+							'modification_date'	=> $translator->getDateTimeInLang($annotation->getModificationDate()),
 							'noticed'			=> $this->_getAnnotationChangeStatus($annotation),
 							'actions'			=> $this->getAnnotationEditActions($annotation),
 							'num_attachments'	=> $annotation->getFileList()->getCount()
@@ -1847,7 +1847,7 @@
 		        $current_user = $user_list->getFirst();
 		        while ( $current_user ) {
 		            $current_reader = $reader_manager->getLatestReaderForUserByID($item->getItemID(), $current_user->getItemID());
-					
+
 		            if ( !empty($current_reader) ) {
 		                if ( $current_reader['read_date'] >= $item->getModificationDate() ) {
 		                    $read_count++;
@@ -1858,7 +1858,7 @@
 		            }
 		            $current_user = $user_list->getNext();
 		        }
-				
+
 		        $read_percentage = round(($read_count/$user_count) * 100);
 		        $read_since_modification_percentage = round(($read_since_modification_count/$user_count) * 100);
 		        $return['read_percentage'] = $read_percentage;
