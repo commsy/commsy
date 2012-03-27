@@ -16,6 +16,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			height:			25,
 			sizeLimit:		0
 		},
+		preconditions: null,
 		
 		init: function(commsy_functions, parameters) {
 			parameters.object = parameters.register_on;

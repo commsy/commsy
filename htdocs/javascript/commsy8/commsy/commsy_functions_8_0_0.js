@@ -5,6 +5,7 @@
 define(["libs/jQuery/jquery-1.7.1.min"], function() {
 	return {
 		preconditions_callbacks: null,
+		module_callbacks: null,
 		modules_registered: 0,
 		modules_loaded: 0,
 		
@@ -176,12 +177,14 @@ define(["libs/jQuery/jquery-1.7.1.min"], function() {
 				require([module], function($) {
 					// call init
 					$.init(commsy_functions);
+					commsy_functions.registerModuleCallback(module, $);
 				});
 			} else if(arguments.length === 2) {
 				// parameters given
 				require([module], function($) {
 					// call init
 					$.init(commsy_functions, parameters);
+					commsy_functions.registerModuleCallback(module, $);
 				});
 			} else {
 				// unknown
@@ -189,6 +192,32 @@ define(["libs/jQuery/jquery-1.7.1.min"], function() {
 			}
 			
 			if(register === true) this.modules_registered++;
+		},
+		
+		registerModuleCallback: function(module, callback) {
+			if(this.module_callbacks === null) this.module_callbacks = new Array;
+				
+			var module_object = {
+				name:		module,
+				callback:	callback
+			};
+			this.module_callbacks.push(module_object);
+			
+			
+		},
+		
+		getModuleCallback: function(module) {
+			var ret = null;
+			
+			jQuery.each(this.module_callbacks, function() {
+				if(this.name === module) {
+					ret = this.callback;
+					
+					return false;
+				}
+			});
+			
+			return ret;
 		},
 		
 		registerPreconditions: function(conditions, callback, parameters) {

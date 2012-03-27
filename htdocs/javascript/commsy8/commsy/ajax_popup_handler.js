@@ -56,6 +56,11 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 						// we recieved html - append it
 						jQuery('body').prepend(data);
 						
+						// reinvoke Uploadify
+						var uploadify_handler = commsy_functions.getModuleCallback('commsy/uploadify');
+						//uploadify_handler.create();
+						
+						
 						// reinvoke CKEditor
 						require(['commsy/ck_editor'], function($) {
 							// call init
@@ -63,10 +68,10 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 						});
 						
 						// reinvoke Uploadify
-						require(['commsy/uploadify'], function($) {
+						//require(['commsy/uploadify'], function($) {
 							// call init
-							$.init(commsy_functions, {register_on: jQuery('input[id="uploadify"]'), upload_object: jQuery('a[id="uploadify_doUpload"]'), clear_object: jQuery('a[id="uploadify_clearQuery"]')});
-						});
+						//	$.init(commsy_functions, {register_on: jQuery('input[id="uploadify"]'), upload_object: jQuery('a[id="uploadify_doUpload"]'), clear_object: jQuery('a[id="uploadify_clearQuery"]')});
+						//});
 						
 						// setup popup
 						handle.setupPopup();
