@@ -521,6 +521,17 @@
 			*/
 		}
 		
+		protected function getFieldInformation() {
+			return array(
+				array(	'name'		=> 'title',
+						'type'		=> 'text',
+						'mandatory' => true),
+				array(	'name'		=> 'description',
+						'type'		=> 'text',
+						'mandatory'	=> false)
+			);
+		}
+		
 		private function cleanup_session($current_iid) {
 			$session = $this->_environment->getSessionItem();
 			$session->unsetValue($this->_environment->getCurrentModule().'_add_files');

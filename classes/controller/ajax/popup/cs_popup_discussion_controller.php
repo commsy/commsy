@@ -108,9 +108,6 @@ if ( !empty($_GET['backfrom']) ) {
 			
 			// save item
 			if($this->_popup_controller->checkFormData()) {
-				$this->_return = 'success';
-				return;
-				
 				$session = $this->_environment->getSessionItem();
 				$discussion_manager = $this->_environment->getDiscussionManager();
 				

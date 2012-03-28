@@ -58,20 +58,19 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 						
 						// reinvoke Uploadify
 						var uploadify_handler = commsy_functions.getModuleCallback('commsy/uploadify');
-						//uploadify_handler.create();
-						
+						uploadify_handler.create(null, {
+							object:				jQuery('input[id="uploadify"]'),
+							handle:				uploadify_handler,
+							commsy_functions:	commsy_functions,
+							upload_object:		jQuery('a[id="uploadify_doUpload"]'),
+							clear_object:		jQuery('a[id="uploadify_clearQuery"]')
+						});
 						
 						// reinvoke CKEditor
 						require(['commsy/ck_editor'], function($) {
 							// call init
 							$.init(commsy_functions, {register_on: jQuery('div[id="ckeditor"]'), input_object: jQuery('input[id="ckeditor_content"]')});
 						});
-						
-						// reinvoke Uploadify
-						//require(['commsy/uploadify'], function($) {
-							// call init
-						//	$.init(commsy_functions, {register_on: jQuery('input[id="uploadify"]'), upload_object: jQuery('a[id="uploadify_doUpload"]'), clear_object: jQuery('a[id="uploadify_clearQuery"]')});
-						//});
 						
 						// setup popup
 						handle.setupPopup();
@@ -116,14 +115,19 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 					module: handle.mod
 				};
 				jQuery.each(form_objects, function() {
+					// if form field is a checkbox, only add if checked
+					if(jQuery(this).attr('type') === 'checkbox') {
+						console.log(jQuery(this).attr('checked'));
+					}
+					
 					// extract name
 					/form_data\[(.*)\]/.exec(jQuery(this).attr('name'));
-
+					
 					data.form_data.push({
 						name:	RegExp.$1,
 						value:	jQuery(this).attr('value')
 					});
-				});
+				});return;
 
 				// ajax request
 				jQuery.ajax({

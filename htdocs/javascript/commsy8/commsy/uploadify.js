@@ -44,6 +44,12 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			var object = parameters.object;
 			var commsy_functions = parameters.commsy_functions;
 			
+			// store preconditions
+			if(handle.preconditions === null) handle.preconditions = preconditions;
+			
+			// restore
+			else if(preconditions === null) preconditions = handle.preconditions;
+			
 			// create data object
 			var data = new Object;
 			data.cid = commsy_functions.getURLParam('cid');
@@ -89,8 +95,6 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 		},
 		
 		onComplete: function(event, queueID, fileObj, response, data) {
-			
-			console.log(fileObj);
 			// add checkbox and file name to finished list
 			jQuery("div[id='file_finished']").append(
 				jQuery("<input/>", {
@@ -101,7 +105,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 				}),
 				jQuery("<span/>", {
 					"style"		:	"font-size: 10pt;",
-					"innerHTML"	:	fileObj.name
+					"text"	:	fileObj.name
 				}),
 				jQuery("<br/>"
 				)
