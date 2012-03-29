@@ -263,6 +263,10 @@ else {
                or page_edit_virusscan_isClean($_FILES['dates_upload']['tmp_name'],$_FILES['dates_upload']['name']))) {
                $data_array = file($_FILES['dates_upload']['tmp_name']);
                $dates_data_array = array();
+               $separator = ',';
+               if (!empty($_POST['separator'])){
+                  $separator = $_POST['separator'];
+               }
 
                for ($i = 0; $i < count($data_array); $i++){
                   /*
@@ -272,10 +276,10 @@ else {
 
                   if ($i == 0){
                      $temp_data = str_replace('"','',$data_array[$i]);
-                     $data_header_array = explode(',',$temp_data);
+                     $data_header_array = explode($separator,$temp_data);
                   }else{
                      $temp_data = str_replace('"','',$data_array[$i]);
-                     $temp_data_array = explode(',',$temp_data);
+                     $temp_data_array = explode($separator,$temp_data);
                      for ($j = 0; $j < count($data_header_array); $j++){
                         if ( isset($temp_data_array[$j]) ){
                            include_once('functions/text_functions.php');

@@ -99,6 +99,7 @@ $message["DATES_RECURRING_YEAR_ERROR"]["de"] = "Bitte ein Datum für den Serient
 $message["DATES_RECURRING_YEAR_TO_MANY_DAYS_ERROR"]["de"] = "Zu viele Tage für den Monat angegeben";
 $message["DATES_SAVE_BUTTON"]["de"] = "Termin speichern";
 $message["DATES_SELECTION_BUTTON"]["de"] = "Termine importieren";
+$message["DATES_SEPARATOR"]["de"] = "Trennzeichen";
 $message["DATES_SEPTEMBER_LONG"]["de"] = "September";
 $message["DATES_SEPTEMBER_SHORT"]["de"] = "Sep";
 $message["DATES_START_DAY"]["de"] = "Datum";

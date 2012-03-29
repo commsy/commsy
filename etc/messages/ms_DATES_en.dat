@@ -99,6 +99,7 @@ $message["DATES_RECURRING_YEAR_ERROR"]["en"] = "Please give a recurrent date";
 $message["DATES_RECURRING_YEAR_TO_MANY_DAYS_ERROR"]["en"] = "Too many days given for the month";
 $message["DATES_SAVE_BUTTON"]["en"] = "Save event";
 $message["DATES_SELECTION_BUTTON"]["en"] = "Import events";
+$message["DATES_SEPARATOR"]["en"] = "Delimiter";
 $message["DATES_SEPTEMBER_LONG"]["en"] = "September";
 $message["DATES_SEPTEMBER_SHORT"]["en"] = "Sep";
 $message["DATES_START_DAY"]["en"] = "date";

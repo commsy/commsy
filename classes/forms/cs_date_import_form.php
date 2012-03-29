@@ -64,6 +64,7 @@ class cs_date_import_form extends cs_rubric_form {
     */
    function _createForm () {
       $this->_form->addImage('dates_upload','',$this->_translator->getMessage('DATES_UPLOADFILE'), $this->_translator->getMessage('DATES_UPLOADFILE_DESC'));
+      $this->_form->addTextfield('separator','',$this->_translator->getMessage('DATES_SEPARATOR'),$this->_translator->getMessage('DATES_PLACE_DESC'),1,1);
       $this->_form->addButtonBar('option',$this->_translator->getMessage('DATES_IMPORT_BUTTON'),$this->_translator->getMessage('COMMON_CANCEL_BUTTON'));
    }
 
@@ -73,6 +74,9 @@ class cs_date_import_form extends cs_rubric_form {
     * @author CommSy Development Group
     */
    function _prepareValues () {
+      if ( empty($this->_form_post) ) {
+         $this->_values['separator'] = ',';
+      }
    }
 
 
