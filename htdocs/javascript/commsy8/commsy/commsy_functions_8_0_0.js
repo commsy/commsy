@@ -131,13 +131,13 @@ define(["libs/jQuery/jquery-1.7.1.min"], function() {
 			
 			// ckeditor
 			// load on detail context
-			if(this.getURLParam('fct') === 'detail') {
+			//if(this.getURLParam('fct') === 'detail') {
 				var input_object = jQuery('input[id="ckeditor_content"]');
 				this.registerModule('commsy/ck_editor', {register_on: jQuery('div[id="ckeditor"]'), input_object: input_object});
 				
 				var input_object = jQuery('input[id="ckeditor_content_second"]');
-				this.registerModule('commsy/ck_editor', {register_on: jQuery('div[id="ckeditor_second"]'), dinput_object: input_object});
-			}
+				this.registerModule('commsy/ck_editor', {register_on: jQuery('div[id="ckeditor_second"]'), input_object: input_object});
+			//}
 			
 			// search
 			if(this.getURLParam('mod') === 'search') {

@@ -74,7 +74,7 @@ if ( !empty($_GET['backfrom']) ) {
    $backfrom = false;
 }*/
 
-		$discussion_item = NULL;
+		$discussion_item = null;
 		
 		// check access rights
 		if($current_context->isProjectRoom() && $current_context->isClosed()) {
@@ -111,11 +111,13 @@ if ( !empty($_GET['backfrom']) ) {
 				$session = $this->_environment->getSessionItem();
 				$discussion_manager = $this->_environment->getDiscussionManager();
 				
-				$discussion_item = $discussion_manager->getNewIteM();
-				$discussion_item->setContextID($this->_environment->getCurrentContextID());
-				$discussion_item->setCreatorItem($current_user);
-				$discussion_item->setCreationDate(getCurrentDateTimeInMySQL());
-				$discussion_item->setModificatorItem($current_user);
+				if($discussion_item === null) {
+					$discussion_item = $discussion_manager->getNewItem();
+					$discussion_item->setContextID($this->_environment->getCurrentContextID());
+					$discussion_item->setCreatorItem($current_user);
+					$discussion_item->setCreationDate(getCurrentDateTimeInMySQL());
+					$discussion_item->setModificatorItem($current_user);
+				}
 				
 				// set attributes
 				if(isset($form_data['title'])) $discussion_item->setTitle($form_data['title']);

@@ -3,6 +3,8 @@
  */
 
 define([	"order!libs/jQuery/jquery-1.7.1.min",
+			"order!libs/jQuery_plugins/jquery.viewport.mini",
+			"order!libs/jQuery/jquery-ui-1.8.17.custom.min",
         	"commsy/commsy_functions_8_0_0"], function() {
 	return {
 		cid: null,
@@ -31,21 +33,33 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			var handle = parameters.handle;
 			
 			jQuery.each(actors, function() {
-				jQuery(this).bind('click', {commsy_functions: commsy_functions, module: module, handle: handle}, handle.onClick);
+				jQuery(this).bind('click', {commsy_functions: commsy_functions, module: module, handle: handle, actor: jQuery(this)}, handle.onClick);
 			});
 		},
 		
 		onClick: function(event) {
 			var commsy_functions = event.data.commsy_functions;
-			var module = {module: event.data.module};
 			var handle = event.data.handle;
 			
 			var cid = commsy_functions.getURLParam('cid');
 			
+			var href = event.data.actor.attr('href');
+			var regex = new RegExp("[\\?&]iid=([^&#]*)");
+			var results = regex.exec(href);
+			
+			var iid = 'NEW';
+			
+			if(results !== null && results[1] !== 'NEW') iid = results[1];
+			
+			var data = {
+				module: event.data.module,
+				iid:	iid
+			};
+			
 			jQuery.ajax({
 				type: 'POST',
 				url: 'commsy.php?cid=' + cid + '&mod=ajax&fct=popup&action=getHTML',
-				data: JSON.stringify(module),
+				data: JSON.stringify(data),
 				contentType: 'application/json; charset=utf-8',
 				dataType: 'json',
 				error: function(jqXHR, textStatus, errorThrown) {
@@ -67,9 +81,11 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 						});
 						
 						// reinvoke CKEditor
-						require(['commsy/ck_editor'], function($) {
-							// call init
-							$.init(commsy_functions, {register_on: jQuery('div[id="ckeditor"]'), input_object: jQuery('input[id="ckeditor_content"]')});
+						var ck_editor_handler = commsy_functions.getModuleCallback('commsy/ck_editor');
+						ck_editor_handler.create(null, {
+							handle:				ck_editor_handler,
+							register_on:		jQuery('div[id="ckeditor"]'),
+							input_object:		jQuery('input[id="ckeditor_content"]')
 						});
 						
 						// setup popup
@@ -83,6 +99,10 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 		},
 		
 		close: function(event) {
+			// unregister ck editor
+			jQuery('div[id="ckeditor"]').ckeditorGet().destroy();
+			
+			
 			// remove popup html from dom
 			jQuery('div[id="popup_wrapper"]').remove();
 			
@@ -96,6 +116,15 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			var check_passed = true;
 			jQuery('input[class~="mandatory"]').each(function() {
 				if(jQuery(this).val() === '') {
+					if(check_passed === true) {
+						// this is the first error
+						// check if content is outside screen
+						if(!jQuery.inviewport(jQuery(this), {threshold: 0})) {
+							// scroll to target
+							jQuery('html, body').animate({scrollTop: jQuery(this).offset().top}, 500);
+						}
+					}
+					
 					jQuery(this).css('border', '1px solid red');
 					check_passed = false;
 				}
@@ -115,19 +144,52 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 					module: handle.mod
 				};
 				jQuery.each(form_objects, function() {
+					var add = false;
+					
 					// if form field is a checkbox, only add if checked
 					if(jQuery(this).attr('type') === 'checkbox') {
-						console.log(jQuery(this).attr('checked'));
+						if(jQuery(this).attr('checkbox') === 'checked') {
+							add = true;
+						}
 					}
 					
-					// extract name
-					/form_data\[(.*)\]/.exec(jQuery(this).attr('name'));
+					// if form fiel is a radio button, only add the selected one
+					else if(jQuery(this).attr('type') === 'radio') {
+						if(jQuery(this).attr('checked')	 === 'checked') {
+							add = true;
+						}
+					}
 					
-					data.form_data.push({
-						name:	RegExp.$1,
-						value:	jQuery(this).attr('value')
-					});
-				});return;
+					else {
+						add = true;
+					}
+					
+					if(add === true) {
+						// extract name
+						/form_data\[(.*)\]/.exec(jQuery(this).attr('name'));
+
+						data.form_data.push({
+							name:	RegExp.$1,
+							value:	jQuery(this).attr('value')
+						});
+					}
+				});
+				
+				// add buzzword data
+				var buzzword_objects = jQuery('ul[id="buzzwords_assigned"] li[id^="buzzword_"]');
+				var buzzword_ids = [];
+				jQuery.each(buzzword_objects, function() {
+					// extract buzzword id
+					/buzzword_([0-9]*)/.exec(jQuery(this).attr('id'));
+					buzzword_ids.push(RegExp.$1);
+				});
+				data.form_data.push({
+					name:	'buzzwords',
+					value:	buzzword_ids
+				});
+				
+				console.log(data);
+				return false;
 
 				// ajax request
 				jQuery.ajax({
@@ -155,6 +217,22 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			// register click for tabs
 			jQuery('div[class="tab_navigation"] a').each(function(index) {
 				jQuery(this).bind('click', {index: index}, handle.onClickTab);
+			});
+		},
+		
+		setupBuzzwords: function() {
+			// unassigned
+			jQuery('div[id="popup"] ul[id="buzzwords_unassigned"]').sortable({
+				connectWith:	'ul',
+				placeholder:	'ui-state-highlight',
+				cursor:			'pointer'
+			});
+			
+			// assigned
+			jQuery('div[id="popup"] ul[id="buzzwords_assigned"]').sortable({
+				connectWith:	'ul',
+				placeholder:	'ui-state-highlight',
+				cursor:			'pointer'
 			});
 		},
 		
@@ -200,6 +278,9 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			
 			// register click for create button
 			jQuery('input[id="popup_button_create"]').bind('click', {handle: this}, this.create);
+			
+			// setup buzzwords
+			this.setupBuzzwords();
 			
 			// setup tabs
 			this.setupTabs();

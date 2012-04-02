@@ -26,6 +26,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			    ['Maximize', 'Preview', 'About', '-', 'Image']
 			]
 		},
+		preconditions: null,
 		
 		init: function(commsy_functions, parameters) {
 			parameters.handle = this;
@@ -46,6 +47,12 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			var object = parameters.register_on;
 			var input_object = parameters.input_object;
 			var handle = parameters.handle;
+			
+			// store preconditions
+			if(handle.preconditions === null) handle.preconditions = preconditions;
+			
+			// restore
+			else if(preconditions === null) preconditions = handle.preconditions;
 			
 			// on form submit, attach editor content
 			var form_object = object.parentsUntil('form').last().parent();

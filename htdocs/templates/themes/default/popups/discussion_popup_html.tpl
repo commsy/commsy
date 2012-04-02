@@ -36,7 +36,7 @@
 					<div class="tab_navigation">
 						<a href="" class="pop_tab_active">Dateien anh&auml;ngen</a>
 						<a href="" class="pop_tab">Zugriffsrechte</a>
-						<a href="" class="pop_tab">Schlagwörter</a>
+						{if isset($popup.buzzwords)}<a href="" class="pop_tab">Schlagwörter</a>{/if}
 						<a href="" class="pop_tab">Kategorien</a>
 
 						<div class="clear"> </div>
@@ -95,9 +95,32 @@
 							{/if}		
 						</div>
 						
-						<div class="settings_area hidden">
-							Schlagwörter
-						</div>
+						{if isset($popup.buzzwords)}
+							<div class="settings_area hidden">
+								<div id="buzzwords_unassigned_title"><h2>nicht zugewiesen</h2></div>
+								<div id="buzzwords_assigned_title"><h2>zugewiesen</h2></div>
+								
+								{* display all not assigned *}
+								<ul id="buzzwords_unassigned" class="popup_buzzword_list">
+									{foreach $popup.buzzwords as $buzzword}
+										{if $popup.item_id == 'NEW' || $buzzword.to_item_id != $popup.item_id}
+											<li id="buzzword_{$buzzword.item_id}" class="ui-state-default popup_buzzword_item">{$buzzword.name}</li>
+										{/if}
+									{/foreach}
+								</ul>
+								
+								{* display all assigned *}
+								<ul id="buzzwords_assigned" class="popup_buzzword_list">
+								{foreach $popup.buzzwords as $buzzword}
+									{if $popup.item_id != 'NEW' || $buzzword.to_item_id == $popup.item_id}
+										<li id="buzzword_{$buzzword.item_id}" class="ui-state-highlight popup_buzzword_item">{$buzzword.name}</li>
+									{/if}
+								{/foreach}
+								</ul>
+								
+								<div class="clear"></div>
+							</div>
+						{/if}
 						
 						<div class="settings_area hidden">
 							Kategorien
