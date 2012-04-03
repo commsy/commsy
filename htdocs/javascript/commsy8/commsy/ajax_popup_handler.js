@@ -225,14 +225,53 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			jQuery('div[id="popup"] ul[id="buzzwords_unassigned"]').sortable({
 				connectWith:	'ul',
 				placeholder:	'ui-state-highlight',
-				cursor:			'pointer'
+				cursor:			'pointer',
+				change:			function(event, ui) {
+					if(ui.sender !== null) {
+						// adjust
+						ui.item.find('img').attr('alt', 'add');
+					}
+				}
 			});
 			
 			// assigned
 			jQuery('div[id="popup"] ul[id="buzzwords_assigned"]').sortable({
 				connectWith:	'ul',
 				placeholder:	'ui-state-highlight',
-				cursor:			'pointer'
+				cursor:			'pointer',
+				change:			function(event, ui) {
+					if(ui.sender !== null) {
+						// adjust
+						ui.item.find('img').attr('alt', 'remove');
+					}
+				}
+			});
+			
+			// register add event
+			jQuery('ul[id^="buzzwords_"] img').each(function() {
+				jQuery(this).click(function() {
+					var li = jQuery(this).parent().parent();
+					
+					// get ul id
+					var ul_id = li.parent().attr('id');
+					
+					// detach
+					li = li.detach();
+					
+					if(ul_id === 'buzzwords_unassigned') {
+						// append to assigned
+						li.appendTo(jQuery('ul[id="buzzwords_assigned"]'));
+						
+						// adjust
+						li.find('img').attr('alt', 'remove');
+					} else {
+						// append to unassigned
+						li.appendTo(jQuery('ul[id="buzzwords_unassigned"]'));
+						
+						// adjust
+						li.find('img').attr('alt', 'add');
+					}
+				});
 			});
 		},
 		

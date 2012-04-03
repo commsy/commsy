@@ -104,7 +104,10 @@
 								<ul id="buzzwords_unassigned" class="popup_buzzword_list">
 									{foreach $popup.buzzwords as $buzzword}
 										{if $popup.item_id == 'NEW' || $buzzword.to_item_id != $popup.item_id}
-											<li id="buzzword_{$buzzword.item_id}" class="ui-state-default popup_buzzword_item">{$buzzword.name}</li>
+											<li id="buzzword_{$buzzword.item_id}" class="ui-state-default popup_buzzword_item">
+												{$buzzword.name}
+												<span class="float-right"><img src="" alt="add"/></span>
+											</li>
 										{/if}
 									{/foreach}
 								</ul>
@@ -113,7 +116,10 @@
 								<ul id="buzzwords_assigned" class="popup_buzzword_list">
 								{foreach $popup.buzzwords as $buzzword}
 									{if $popup.item_id != 'NEW' || $buzzword.to_item_id == $popup.item_id}
-										<li id="buzzword_{$buzzword.item_id}" class="ui-state-highlight popup_buzzword_item">{$buzzword.name}</li>
+										<li id="buzzword_{$buzzword.item_id}" class="ui-state-highlight popup_buzzword_item">
+											{$buzzword.name}
+											<span class="float-right">remove</span>
+										</li>
 									{/if}
 								{/foreach}
 								</ul>
