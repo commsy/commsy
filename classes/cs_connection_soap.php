@@ -2084,6 +2084,7 @@ class cs_connection_soap {
          $auth_source_id = $session->getValue('auth_source');
          $context_id = $session->getValue('commsy_id');
          $this->_environment->setCurrentContextID($context_id);
+         $hash_manager = $this->_environment->getHashManager();
          $user_manager = $this->_environment->getUserManager();
          $user_manager->setContextLimit($context_id);
          $user_manager->setUserIDLimit($user_id);
@@ -2092,9 +2093,30 @@ class cs_connection_soap {
          $user_list = $user_manager->get();
          if ( $user_list->getCount() == 1 ) {
             $user_item = $user_list->getFirst();
+            if ( !empty($user_item) ) {
+               $this->_environment->setCurrentUserItem($user_item);
+            }
             $own_room = $user_item->getOwnRoom();
-            unset($user_item);
             $list = $own_room->getCustomizedRoomList();
+            if ( !(isset($list) and $list->isNotEmpty()) ) {
+               $community_list = $user_item->getRelatedCommunityList();
+               $project_list = $user_item->getRelatedProjectListForMyArea();
+               $group_list = $user_item->getRelatedGroupList();
+               
+               $class_factory = $this->_environment->getClassFactory();
+               include_once('classes/cs_list.php');
+               $list = new cs_list();
+               if ( !empty($community_list) and $community_list->isNotEmpty() ) {
+                  $list->addList($community_list);
+               }
+               if ( !empty($project_list) and $project_list->isNotEmpty() ) {
+                  $list->addList($project_list);
+               }
+               if ( !empty($group_list) and $group_list->isNotEmpty() ) {
+                  $list->addList($group_list);
+               }
+            }
+            unset($user_item);
             if ( isset($list) and $list->isNotEmpty() ) {
                $retour = '<?xml version="1.0" encoding="utf-8"?>'.LF;
                $retour .= '   <list>'.LF;
@@ -2125,6 +2147,21 @@ class cs_connection_soap {
                   global $c_commsy_domain, $c_commsy_url_path;
                   include_once('functions/curl_functions.php');
                   $retour .= '         <url><![CDATA['.$c_commsy_domain.$c_commsy_url_path.'/'._curl(false,$item->getItemID(),'home','index',array()).']]></url>'.LF;
+                                 
+                  // rss
+                  if ( $item->isRSSOn() ) {
+                     $own_room_user_item = $item->getOwnerUserItem();
+                     if ( !empty($own_room_user_item) ) {
+                        $rss_hash = $hash_manager->getRSSHashForUser($own_room_user_item->getItemID());
+                        if ( !empty($rss_hash) ) {
+                           global $c_commsy_domain, $c_commsy_url_path;
+                           $rss_url = $c_commsy_domain.$c_commsy_url_path.'/rss.php?cid='.$item->getItemID().'&hid='.$rss_hash;
+                           $retour .= '         <rss><![CDATA['.$rss_url.']]></rss>'.LF;
+                        }
+                        unset($rss_hash);
+                        unset($rss_url);
+                     }
+                  }
                }
                $retour .= '      </item>'.LF;
                $retour .= '      <item>'.LF;
@@ -2141,15 +2178,34 @@ class cs_connection_soap {
                      global $c_commsy_domain, $c_commsy_url_path;
                      include_once('functions/curl_functions.php');
                      $retour .= '         <url><![CDATA['.$c_commsy_domain.$c_commsy_url_path.'/'._curl(false,$item->getItemID(),'home','index',array()).']]></url>'.LF;
+                                       
+                     // rss
+                     if ( $item->isRSSOn() ) {
+                        $user_room_item = $item->getUserByUserID($user_id,$auth_source_id);
+                        if ( !empty($user_room_item)
+                             and !empty($hash_manager)
+                           ) {
+                           $rss_hash = $hash_manager->getRSSHashForUser($user_room_item->getItemID());
+                           if ( !empty($rss_hash) ) {
+                              global $c_commsy_domain, $c_commsy_url_path;
+                              $rss_url = $c_commsy_domain.$c_commsy_url_path.'/rss.php?cid='.$item->getItemID().'&hid='.$rss_hash;
+                              $retour .= '         <rss><![CDATA['.$rss_url.']]></rss>'.LF;
+                           }
+                           unset($rss_hash);
+                           unset($rss_url);
+                        }
+                     }
                   }
                   $retour .= '      </item>'.LF;
                   $item = $list->getNext();
                }
+               unset($hash_manager);
                $retour .= '   </list>'.LF;
                unset($list);
                $result = $this->_encode_output($retour);
-            } else {
-               // customized rooms list
+            }
+            if ( !empty($retour) ) {
+               $result = $this->_encode_output($retour);
             }
             unset($own_room);
             unset($user_item);
