@@ -14,7 +14,7 @@
 
 				<div id="content_row_three">
 					<div class="input_row">
-						<span class="input_label">Titel</span> <input type="text" value="" name="form_data[title]" class="size_200 mandatory" />
+						<span class="input_label">Titel</span> <input type="text" value="{if isset($item.title)}{$item.title}{/if}" name="form_data[title]" class="size_200 mandatory" />
 						
 						<span class="input_label">Art der Diskussion</span>
 						<input type="radio" name="form_data[discussion_type]" value="1" checked="checked">___DISCUSSION_SIMPLE___
@@ -28,8 +28,8 @@
 						<input type="hidden" value="{$detail.item_id}" name="discussion_id"/>
 						<input type="hidden" value="1" name="ref_position"/>
 						<div class="editor_content">
-							<div id="ckeditor"></div>
-							<input type="hidden" id="ckeditor_content" name="form_data[description]" value=""/>
+							<div id="popup_ckeditor"></div>
+							<input type="hidden" id="popup_ckeditor_content" name="form_data[description]" value=""/>
 						</div>
 					</div>
 
@@ -103,7 +103,7 @@
 								{* display all not assigned *}
 								<ul id="buzzwords_unassigned" class="popup_buzzword_list">
 									{foreach $popup.buzzwords as $buzzword}
-										{if $popup.item_id == 'NEW' || $buzzword.to_item_id != $popup.item_id}
+										{if $popup.item_id == 'NEW' || !$buzzword.assigned}
 											<li id="buzzword_{$buzzword.item_id}" class="ui-state-default popup_buzzword_item">
 												{$buzzword.name}
 												<span class="float-right"><img src="" alt="add"/></span>
@@ -114,23 +114,25 @@
 								
 								{* display all assigned *}
 								<ul id="buzzwords_assigned" class="popup_buzzword_list">
-								{foreach $popup.buzzwords as $buzzword}
-									{if $popup.item_id != 'NEW' || $buzzword.to_item_id == $popup.item_id}
-										<li id="buzzword_{$buzzword.item_id}" class="ui-state-highlight popup_buzzword_item">
-											{$buzzword.name}
-											<span class="float-right">remove</span>
-										</li>
-									{/if}
-								{/foreach}
+									{foreach $popup.buzzwords as $buzzword}
+										{if $popup.item_id != 'NEW' && $buzzword.assigned}
+											<li id="buzzword_{$buzzword.item_id}" class="ui-state-default popup_buzzword_item">
+												{$buzzword.name}
+												<span class="float-right"><img src="" alt="remove"/></span>
+											</li>
+										{/if}
+									{/foreach}
 								</ul>
 								
 								<div class="clear"></div>
 							</div>
 						{/if}
 						
-						<div class="settings_area hidden">
-							Kategorien
-						</div>
+						{if isset($popup.tags)}
+							<div class="settings_area hidden">
+								Kategorien
+							</div>
+						{/if}
 					</div>
 
 				</div>

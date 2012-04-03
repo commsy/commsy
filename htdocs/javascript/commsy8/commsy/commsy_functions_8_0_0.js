@@ -156,14 +156,18 @@ define(["libs/jQuery/jquery-1.7.1.min"], function() {
 			}
 			
 			// ajax popup handler
-			// create new links
 			var new_objects = jQuery('a[id="create_new"]');
-			var new_handling = {
-				objects:	new_objects,
+			var edit_objects = jQuery('a[id="action_edit"]');
+			var objects = [];
+			jQuery.merge(objects, new_objects);
+			jQuery.merge(objects, edit_objects);
+			
+			var handling = {
+				objects:	objects,
 				module:		this.getURLParam('mod')
 			};
 			
-			this.registerModule('commsy/ajax_popup_handler', new_handling);
+			this.registerModule('commsy/ajax_popup_handler', handling);
 		},
 		
 		registerModule: function(module, parameters) {

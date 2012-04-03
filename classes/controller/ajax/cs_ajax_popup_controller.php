@@ -4,6 +4,7 @@
 	class cs_ajax_popup_controller extends cs_ajax_controller {
 		private $_popup_controller = null;
 		private $_item_id = null;
+		private $_item = null;
 		
 		/**
 		 * constructor
@@ -19,7 +20,18 @@
 			$this->_tpl_file = 'popups/' . $module . '_popup';
 			
 			// item id
-			$this->assign('popup', 'item_id', $this->_data['iid']);
+			$this->_item_id = $this->_data['iid'];
+			$this->assign('popup', 'item_id', $this->_item_id);
+			
+			// item
+			$item_manager = $this->_environment->getItemManager();
+			$type = $item_manager->getItemType($this->_item_id);
+			if($type === CS_LABEL_TYPE) {
+				$label_manager = $this->_environment->getLabelManager();
+				$type = $label_manager->getItem($this->_item_id)->getLabelType();
+			}
+			$manager = $this->_environment->getManager($type);
+			$this->_item = $manager->getItem($this->_item_id);
 			
 			// include
 			require_once('classes/controller/ajax/popup/cs_popup_' . $module . '_controller.php');
@@ -33,9 +45,16 @@
 				$this->assign('popup', 'buzzwords', $this->getBuzzwords());
 			}
 			
+			// set Tag Information
+			if($this->showTags() === true) {
+				$this->assign('popup', 'tags', $this->getTags());
+			}
+			
 			global $c_smarty;
 			if($c_smarty === true) {
 				ob_start();
+				
+				$this->_popup_controller->edit($this->_item_id);
 				$this->displayTemplate();
 				
 				echo json_encode(ob_get_clean());
@@ -133,13 +152,40 @@
 			return false;
 		}
 		
-		protected function getBuzzwords() {
+		// TODO:
+		// copy from room_controller
+		private function showTags() {
+			$context_item = $this->_environment->getCurrentContextItem();
+			if($context_item->withTags() &&
+				( $this->_environment->getCurrentModule() == CS_MATERIAL_TYPE
+	                || $this->_environment->getCurrentModule() == CS_ANNOUNCEMENT_TYPE
+	                || $this->_environment->getCurrentModule() == CS_DISCUSSION_TYPE
+	                || $this->_environment->getCurrentModule() == CS_TODO_TYPE
+	                || $this->_environment->getCurrentModule() == CS_DATE_TYPE
+	                || $this->_environment->getCurrentModule() == 'campus_search'
+	                || $this->_environment->getCurrentModule() === 'home')) {
+				return true;
+			}
+
+			return false;
+		}
+		
+		private function getBuzzwords() {
 			$return = array();
 
 			$buzzword_manager = $this->_environment->getLabelManager();
 			$text_converter = $this->_environment->getTextConverter();
-      		$params = $this->_environment->getCurrentParameterArray();
-
+			
+			$item_buzzword_list = $this->_item->getBuzzwordList();
+			$item_id_array = array();
+			
+			$buzzword = $item_buzzword_list->getFirst();
+			while($buzzword) {
+				
+				$item_id_array[] = $buzzword->getItemID();
+				$buzzword = $item_buzzword_list->getNext();
+			}
+			
 			$buzzword_manager->resetLimits();
 			$buzzword_manager->setContextLimit($this->_environment->getCurrentContextID());
 			$buzzword_manager->setTypeLimit('buzzword');
@@ -153,11 +199,45 @@
 				if($count > 0) {
 					$return[] = array(
 						'item_id'			=> $buzzword->getItemID(),
-						'name'				=> $text_converter->text_as_html_short($buzzword->getName())
+						'name'				=> $text_converter->text_as_html_short($buzzword->getName()),
+						'assigned'			=> in_array($buzzword->getItemID(), $item_id_array)
 					);
 				}
 
 				$buzzword = $buzzword_list->getNext();
+			}
+
+			return $return;
+		}
+		
+		private function getTags() {
+			$tag_manager = $this->_environment->getTagManager();
+			$root_item = $tag_manager->getRootTagItem();
+
+			return $this->buildTagArray($root_item);
+		}
+
+		/**
+		 * this method goes through the tree structure and generates a nested array of information
+		 * @param cs_tag_item $item
+		 */
+		private function buildTagArray(cs_tag_item $item) {
+			$return = array();
+
+			if(isset($item)) {
+				$children_list = $item->getChildrenList();
+
+				$item = $children_list->getFirst();
+				while($item) {
+					// attach to return
+					$return[] = array(
+						'title'		=> $item->getTitle(),
+						'item_id'	=> $item->getItemID(),
+						'children'	=> $this->buildTagArray($item)
+					);
+
+					$item = $children_list->getNext();
+				}
 			}
 
 			return $return;

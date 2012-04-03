@@ -12,6 +12,15 @@ class cs_popup_discussion_controller {
 		$this->_popup_controller = $popup_controller;
 	}
 	
+	public function edit($item_id) {
+		$discussion_manager = $this->_environment->getDiscussionManager();
+		$discussion_item = $discussion_manager->getItem($item_id);
+		
+		// TODO: check rights
+		
+		$this->_popup_controller->assign('item', 'title', $discussion_item->getTitle());
+	}
+	
 	public function create($form_data) {
 		
 		/*
@@ -162,11 +171,17 @@ if ( !empty($_GET['backfrom']) ) {
 				} else {
 					if($discussion_item->isNotActivated()) $discussion_item->setModificationDate(getCurrentDateTimeInMySQL());
 				}
+				
+				// buzzwords
 				/*
-					if ($session->issetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_buzzword_ids')){
-					$discussion_item->setBuzzwordListByID($session->getValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_buzzword_ids'));
-					$session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_buzzword_ids');
+				 * if ($session->issetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_buzzword_ids')){
+						$discussion_item->setBuzzwordListByID($session->getValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_buzzword_ids'));
+						$session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_buzzword_ids');
 					}
+				 */
+				$discussion_item->setBuzzwordListByID($form_data['buzzwords']);
+				
+				/*
 					if ($session->issetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_tag_ids')){
 					$discussion_item->setTagListByID($session->getValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_tag_ids'));
 					$session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_tag_ids');

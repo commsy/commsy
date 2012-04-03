@@ -184,9 +184,7 @@
 		 */
 		protected function getBuzzwords() {
 			$return = array();
-
-			$current_context = $this->_environment->getCurrentContextItem();
-			$current_user = $this->_environment->getCurrentUserItem();
+			
 			$text_converter = $this->_environment->getTextConverter();
 
 			$buzzword_list = $this->_item->getBuzzwordList();
@@ -229,7 +227,6 @@
 		protected function getTags($as_marked_array = false) {
 			// get ids of tags associated with this item
 			$item_tag_list = $this->_item->getTagList();
-			$item_tag = $item_tag_list->getFirst();
 			$item_tag_id_array = $item_tag_list->getIDArray();
 
 

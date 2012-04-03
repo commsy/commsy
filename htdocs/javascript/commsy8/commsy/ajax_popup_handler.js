@@ -84,8 +84,8 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 						var ck_editor_handler = commsy_functions.getModuleCallback('commsy/ck_editor');
 						ck_editor_handler.create(null, {
 							handle:				ck_editor_handler,
-							register_on:		jQuery('div[id="ckeditor"]'),
-							input_object:		jQuery('input[id="ckeditor_content"]')
+							register_on:		jQuery('div[id="popup_ckeditor"]'),
+							input_object:		jQuery('input[id="popup_ckeditor_content"]')
 						});
 						
 						// setup popup
@@ -188,9 +188,6 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 					value:	buzzword_ids
 				});
 				
-				console.log(data);
-				return false;
-
 				// ajax request
 				jQuery.ajax({
 					type: 'POST',
