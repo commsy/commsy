@@ -42,17 +42,21 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			var handle = event.data.handle;
 			
 			var cid = commsy_functions.getURLParam('cid');
+			var iid = 'NEW';
+			var module = '';
 			
 			var href = event.data.actor.attr('href');
 			var regex = new RegExp("[\\?&]iid=([^&#]*)");
 			var results = regex.exec(href);
-			
-			var iid = 'NEW';
-			
 			if(results !== null && results[1] !== 'NEW') iid = results[1];
 			
+			// determ module from actor href
+			var regex = new RegExp("[\\?&]mod=([^&#]*)");
+			var results = regex.exec(href);
+			if(results !== null && results[1] !== 'NEW') module = results[1];
+			
 			var data = {
-				module: event.data.module,
+				module: module,//event.data.module,
 				iid:	iid
 			};
 			

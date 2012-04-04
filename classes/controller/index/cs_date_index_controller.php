@@ -409,7 +409,8 @@
 					'assessment_array'  => $assessment_stars_text_array,
 					'noticed'			=> $noticed_text,
 					'attachment_count'	=> $file_count,
-					'attachment_infos'	=> $attachment_infos
+					'attachment_infos'	=> $attachment_infos,
+					'activated'			=> !$item->isNotActivated()
 				);
 
 			   	$item = $list->getNext();

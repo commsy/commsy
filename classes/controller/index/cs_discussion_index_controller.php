@@ -10,6 +10,9 @@
 			parent::__construct($environment);
 
 			$this->_tpl_file = 'discussion_list';
+			
+			// this will enable processing of additional restriction texts
+			$this->_additional_selects = true;
 		}
 
 		/*
@@ -256,7 +259,8 @@
 					'article_count'		=> $all_and_unread_articles['count'],
 					'article_unread'	=> $all_and_unread_articles['unread'],
 					'attachment_count'	=> $file_count,
-					'attachment_infos'	=> $attachment_infos
+					'attachment_infos'	=> $attachment_infos,
+					'activated'			=> !$item->isNotActivated()
 				);
 
 				$item = $list->getNext();
@@ -288,8 +292,39 @@
 			return $return;
 		}
 		
-		protected function getAdditionalRestrictionText(){
+		protected function getAdditionalRestrictionText() {
 			$return = array();
+			
+			$params = $this->_environment->getCurrentParameterArray();
+			$current_context = $this->_environment->getCurrentContextItem();
+			
+			if($current_context->withActivatingContent()) {
+				$activation_limit = $this->_list_parameter_arrray['sel_activating_status'];
+				if($activation_limit == 2) {
+					$restriction = array(
+						'name'				=> '',
+						'type'				=> '',
+						'link_parameter'	=> ''
+					);
+
+					$translator = $this->_environment->getTranslationObject();
+
+					// set name
+					$restriction['name'] = $translator->getMessage('COMMON_SHOW_ONLY_ACTIVATED_ENTRIES');
+
+					// set link parameter
+					$params['selactivatingstatus'] = 1;
+					$link_parameter_text = '';
+					if ( count($params) > 0 ) {
+						foreach ($params as $key => $parameter) {
+							$link_parameter_text .= '&'.$key.'='.$parameter;
+						}
+					}
+					$restriction['link_parameter'] = $link_parameter_text;
+
+					$return[] = $restriction;
+				}
+			}
 				
 			return $return;
 		}

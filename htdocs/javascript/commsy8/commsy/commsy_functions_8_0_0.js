@@ -163,8 +163,8 @@ define(["libs/jQuery/jquery-1.7.1.min"], function() {
 			jQuery.merge(objects, edit_objects);
 			
 			var handling = {
-				objects:	objects,
-				module:		this.getURLParam('mod')
+				objects:	objects/*,
+				module:		this.getURLParam('mod')*/
 			};
 			
 			this.registerModule('commsy/ajax_popup_handler', handling);

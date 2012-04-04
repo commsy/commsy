@@ -103,7 +103,11 @@
 			</div>
 			<div class="column_244">
 				<p>
-					 <a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&{$environment.params}&iid={$item.iid}">{$item.title}</a>
+					{if $item.activated}
+						<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&{$environment.params}&iid={$item.iid}">{$item.title}</a>
+					{else}
+						{$item.title}</br>___COMMON_NOT_ACTIVATED___
+					{/if}
 				</p>
 			</div>
 

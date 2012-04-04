@@ -41,9 +41,9 @@
 
 					<div class="tab_navigation">
 						{if $popup.edit == false}<a href="" class="pop_tab_active">Dateien anh&auml;ngen</a>{/if}
-						<a href="" class="pop_tab">Zugriffsrechte</a>
-						{if $popup.edit == false}{if isset($popup.buzzwords)}<a href="" class="pop_tab">Schlagwörter</a>{/if}{/if}
-						{if $popup.edit == false}{if isset($popup.tags)}<a href="" class="pop_tab">Kategorien</a>{/if}{/if}
+						<a href="" class="pop_tab{if $popup.edit == true}_active{/if}">Zugriffsrechte</a>
+						{if isset($popup.buzzwords)}<a href="" class="pop_tab">Schlagwörter</a>{/if}
+						{if isset($popup.tags)}<a href="" class="pop_tab">Kategorien</a>{/if}
 
 						<div class="clear"> </div>
 					</div>
@@ -103,7 +103,7 @@
 							{/if}		
 						</div>
 						
-						{if $popup.edit == false && isset($popup.buzzwords)}
+						{if isset($popup.buzzwords)}
 							<div class="settings_area hidden">
 								<div id="buzzwords_unassigned_title"><h2>nicht zugewiesen</h2></div>
 								<div id="buzzwords_assigned_title"><h2>zugewiesen</h2></div>
@@ -136,7 +136,7 @@
 							</div>
 						{/if}
 						
-						{if $popup.edit == false && isset($popup.tags)}
+						{if isset($popup.tags)}
 							<div class="settings_area hidden">
 								Kategorien
 							</div>
