@@ -13,12 +13,27 @@ class cs_popup_discussion_controller {
 	}
 	
 	public function edit($item_id) {
+		$current_context = $this->_environment->getCurrentContextItem();
 		$discussion_manager = $this->_environment->getDiscussionManager();
 		$discussion_item = $discussion_manager->getItem($item_id);
 		
 		// TODO: check rights
 		
 		$this->_popup_controller->assign('item', 'title', $discussion_item->getTitle());
+		
+		if($current_context->withActivatingContent()) {
+			$this->_popup_controller->assign('item', 'private_editing', $discussion_item->isPrivateEditing());
+			
+			if($discussion_item->isNotActivated()) {
+				$this->_popup_controller->assign('item', 'is_not_activated', true);
+				
+				$activating_date = $discussion_item->getActivatingDate();
+				
+				$this->_popup_controller->assign('item', 'activating_date', mb_substr($activating_date, 0, 10));
+				$this->_popup_controller->assign('item', 'activating_time', mb_substr($activating_date, -8));
+			}
+			
+		}
 	}
 	
 	public function create($form_data) {
@@ -66,11 +81,11 @@ function cleanup_session ($current_iid) {
 		$current_user = $this->_environment->getCurrentUserItem();
 		$current_context = $this->_environment->getCurrentContextItem();
 		
-		$current_iid = 'NEW';
+		$current_iid = $form_data['iid'];
+		
 		//$with_anchor = false;
 		
 		/*
-
 
 // Get the translator object
 $translator = $environment->getTranslationObject();
@@ -82,8 +97,13 @@ if ( !empty($_GET['backfrom']) ) {
 } else {
    $backfrom = false;
 }*/
-
-		$discussion_item = null;
+		if($current_iid === 'NEW') {
+			$discussion_item = null;
+		} else {
+			$discussion_manager = $this->_environment->getDiscussionManager();
+			$discussion_item = $discussion_manager->getItem($current_iid);
+		}
+		
 		
 		// check access rights
 		if($current_context->isProjectRoom() && $current_context->isClosed()) {
@@ -118,15 +138,16 @@ if ( !empty($_GET['backfrom']) ) {
 			// save item
 			if($this->_popup_controller->checkFormData()) {
 				$session = $this->_environment->getSessionItem();
-				$discussion_manager = $this->_environment->getDiscussionManager();
 				
 				if($discussion_item === null) {
+					$discussion_manager = $this->_environment->getDiscussionManager();
 					$discussion_item = $discussion_manager->getNewItem();
 					$discussion_item->setContextID($this->_environment->getCurrentContextID());
 					$discussion_item->setCreatorItem($current_user);
 					$discussion_item->setCreationDate(getCurrentDateTimeInMySQL());
-					$discussion_item->setModificatorItem($current_user);
 				}
+				
+				$discussion_item->setModificatorItem($current_user);
 				
 				// set attributes
 				if(isset($form_data['title'])) $discussion_item->setTitle($form_data['title']);
@@ -156,7 +177,7 @@ if ( !empty($_GET['backfrom']) ) {
 					$dt_hiding_date = '9999-00-00';
 					$dt_hiding_datetime = '';
 					$converted_day_start = convertDateFromInput($form_data['dayStart'], $this->_environment->getSelectedLanguage());
-					if($converted_day_start['conforms'] === tru) {
+					if($converted_day_start['conforms'] === true) {
 						$dt_hiding_datetime = $converted_day_start['datetime'] . ' ';
 						$converted_time_start = convertTimeFromInput($form_data['timeStart']);
 						if ($converted_time_start['conforms'] === true) {
@@ -205,37 +226,36 @@ if ( !empty($_GET['backfrom']) ) {
 				$session->setValue('cid' . $this->_environment->getCurrentContextID() . '_' . $this->_environment->getCurrentModule() . '_index_ids', $id_array);
 				
 				// save initial discussion article
-				$discarticle_manager = $this->_environment->getDiscussionArticlesManager();
-				$discarticle_item = $discarticle_manager->getNewItem();
-				$discarticle_item->setContextID($this->_environment->getCurrentContextID());
-				$discarticle_item->setCreatorItem($current_user);
-				$discarticle_item->setCreationDate(getCurrentDateTimeInMySQL());
-				$discarticle_item->setDiscussionID($discussion_item->getItemID());
-				
-				if(isset($form_data['subject'])) $discarticle_item->setSubject($form_data['subject']);
-				if(isset($form_data['description'])) $discarticle_item->setDescription($form_data['description']);
-				if(isset($form_data['discussion_type']) && $form_data['discussion_type'] == 2) $discarticle_item->setPosition('1');
-				
-				$item_files_upload_to = $discarticle_item;
-				//include_once('include/inc_fileupload_edit_page_save_item.php');
-				
-				$discarticle_item->save();
-				
-				// update discussion item
-				$discussion_item->setLatestArticleID($discarticle_item->getItemID());
-				$discussion_item->setLatestArticleModificationDate($discarticle_item->getCreationDate());
-				
-				$discussion_status = $current_context->getDiscussionStatus();
-				if($discussion_status == 3) {
-					if($form_data['discussion_type'] == 2) $discussion_item->setDiscussionType('threaded');
-					else $discussion_item->setDiscussionType('simple');
-				} elseif($discussion_status == 2) {
-					$discussion_item->setDiscussionType('threaded');
-				} else {
-					$discussion_item->setDiscussionType('simple');
+				if($current_iid === 'NEW') {
+					$discarticle_manager = $this->_environment->getDiscussionArticlesManager();
+					$discarticle_item = $discarticle_manager->getNewItem();
+					$discarticle_item->setContextID($this->_environment->getCurrentContextID());
+					$discarticle_item->setCreatorItem($current_user);
+					$discarticle_item->setCreationDate(getCurrentDateTimeInMySQL());
+					$discarticle_item->setDiscussionID($discussion_item->getItemID());
+
+					if(isset($form_data['subject'])) $discarticle_item->setSubject($form_data['subject']);
+					if(isset($form_data['description'])) $discarticle_item->setDescription($form_data['description']);
+					if(isset($form_data['discussion_type']) && $form_data['discussion_type'] == 2) $discarticle_item->setPosition('1');
+
+					$discarticle_item->save();
+
+					// update discussion item
+					$discussion_item->setLatestArticleID($discarticle_item->getItemID());
+					$discussion_item->setLatestArticleModificationDate($discarticle_item->getCreationDate());
+
+					$discussion_status = $current_context->getDiscussionStatus();
+					if($discussion_status == 3) {
+						if($form_data['discussion_type'] == 2) $discussion_item->setDiscussionType('threaded');
+						else $discussion_item->setDiscussionType('simple');
+					} elseif($discussion_status == 2) {
+						$discussion_item->setDiscussionType('threaded');
+					} else {
+						$discussion_item->setDiscussionType('simple');
+					}
+
+					$discussion_item->save();
 				}
-				
-				$discussion_item->save();
 				
 				/*
 	
@@ -322,8 +342,6 @@ if ( !empty($_GET['backfrom']) ) {
 		
 		// general information
 		$general_information = array();
-		// TODO: !!!
-		$general_information['is_new'] = true;
 		
 		// max upload size
 		$val = ini_get('upload_max_filesize');

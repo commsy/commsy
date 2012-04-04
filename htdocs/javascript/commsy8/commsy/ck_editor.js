@@ -54,26 +54,29 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			// restore
 			else if(preconditions === null) preconditions = handle.preconditions;
 			
+			// if there is no object, skip
+			if(object.length == 0) return true;
+			
 			// on form submit, attach editor content
 			var form_object = object.parentsUntil('form').last().parent();
 			
-			handle.form_attach(form_object, input_object);
+			handle.form_attach(form_object, input_object, object);
 			var options = handle.options;
-			
 			
 			object.ckeditor(function() { /* callback */ }, options);
 		},
 		
-		form_attach: function(form_object, attach_object) {
+		form_attach: function(form_object, attach_object, object) {
 			var handler = this.onSubmit;
 			// register submit handling
-			form_object.bind('submit', {attach_object: attach_object}, handler);
+			form_object.bind('submit', {attach_object: attach_object, object: object}, handler);
 		},
 		
 		onSubmit: function(event) {
 			var attach_object = event.data.attach_object;
+			var object = event.data.object;
 			
-			var editor = jQuery('div[id="ckeditor"]').ckeditorGet();
+			var editor = object.ckeditorGet();
 			attach_object.attr('value', editor.getData());
 		}
 	};

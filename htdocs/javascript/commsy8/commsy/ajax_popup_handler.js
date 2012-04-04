@@ -100,8 +100,8 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 		
 		close: function(event) {
 			// unregister ck editor
-			jQuery('div[id="ckeditor"]').ckeditorGet().destroy();
-			
+			var editor = jQuery('div[id="popup_ckeditor"]');
+			if(editor.length > 0) editor.ckeditorGet().destroy();
 			
 			// remove popup html from dom
 			jQuery('div[id="popup_wrapper"]').remove();
@@ -135,8 +135,10 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 				var form_objects = jQuery('div[id="popup_wrapper"] input[name^="form_data"]');
 
 				// set description data
-				var editor = jQuery('div[id="ckeditor"]').ckeditorGet();
-				jQuery('input[name="form_data[description]"]').val(editor.getData());
+				var editor = jQuery('div[id="popup_ckeditor"]');
+				if(editor.length > 0) {
+					jQuery('input[name="form_data[description]"]').val(editor.ckeditorGet().getData());
+				}
 
 				// build object
 				var data = {
@@ -148,7 +150,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 					
 					// if form field is a checkbox, only add if checked
 					if(jQuery(this).attr('type') === 'checkbox') {
-						if(jQuery(this).attr('checkbox') === 'checked') {
+						if(jQuery(this).attr('checked') === 'checked') {
 							add = true;
 						}
 					}
@@ -186,6 +188,18 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 				data.form_data.push({
 					name:	'buzzwords',
 					value:	buzzword_ids
+				});
+				
+				var regex = new RegExp("[\\?&]iid=([^&#]*)");
+				var results = regex.exec(window.location.href);
+
+				var iid = 'NEW';
+
+				if(results !== null && results[1] !== 'NEW') iid = results[1];
+
+				data.form_data.push({
+					name:	'iid',
+					value:	iid
 				});
 				
 				// ajax request

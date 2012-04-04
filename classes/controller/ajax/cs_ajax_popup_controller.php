@@ -24,14 +24,23 @@
 			$this->assign('popup', 'item_id', $this->_item_id);
 			
 			// item
-			$item_manager = $this->_environment->getItemManager();
-			$type = $item_manager->getItemType($this->_item_id);
-			if($type === CS_LABEL_TYPE) {
-				$label_manager = $this->_environment->getLabelManager();
-				$type = $label_manager->getItem($this->_item_id)->getLabelType();
+			if($this->_item_id !== null && $this->_item_id !== 'NEW') {
+				$item_manager = $this->_environment->getItemManager();
+				$type = $item_manager->getItemType($this->_item_id);
+				if($type === CS_LABEL_TYPE) {
+					$label_manager = $this->_environment->getLabelManager();
+					$type = $label_manager->getItem($this->_item_id)->getLabelType();
+				}
+				$manager = $this->_environment->getManager($type);
+				$this->_item = $manager->getItem($this->_item_id);
 			}
-			$manager = $this->_environment->getManager($type);
-			$this->_item = $manager->getItem($this->_item_id);
+			
+			// new / edit
+			if($this->_item === null) {
+				$this->assign('popup', 'edit', false);
+			} else {
+				$this->assign('popup', 'edit', true);
+			}
 			
 			// include
 			require_once('classes/controller/ajax/popup/cs_popup_' . $module . '_controller.php');
@@ -54,7 +63,10 @@
 			if($c_smarty === true) {
 				ob_start();
 				
-				$this->_popup_controller->edit($this->_item_id);
+				if($this->_item !== null) {
+					$this->_popup_controller->edit($this->_item_id);
+				}
+				
 				$this->displayTemplate();
 				
 				echo json_encode(ob_get_clean());
@@ -176,14 +188,16 @@
 			$buzzword_manager = $this->_environment->getLabelManager();
 			$text_converter = $this->_environment->getTextConverter();
 			
-			$item_buzzword_list = $this->_item->getBuzzwordList();
 			$item_id_array = array();
-			
-			$buzzword = $item_buzzword_list->getFirst();
-			while($buzzword) {
+			if($this->_item !== null) {
+				$item_buzzword_list = $this->_item->getBuzzwordList();
 				
-				$item_id_array[] = $buzzword->getItemID();
-				$buzzword = $item_buzzword_list->getNext();
+				$buzzword = $item_buzzword_list->getFirst();
+				while($buzzword) {
+
+					$item_id_array[] = $buzzword->getItemID();
+					$buzzword = $item_buzzword_list->getNext();
+				}
 			}
 			
 			$buzzword_manager->resetLimits();
