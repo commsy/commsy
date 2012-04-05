@@ -314,6 +314,11 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 				}
 			});
 			
+			// fullsize black overlay
+			var overlay = jQuery('div[id="popup_background"]');
+			overlay.css('height', jQuery(document).height());
+			overlay.css('width', jQuery(document).width());
+			
 			return false;
 		},
 		
