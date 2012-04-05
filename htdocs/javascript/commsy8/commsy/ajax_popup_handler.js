@@ -8,11 +8,9 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
         	"commsy/commsy_functions_8_0_0"], function() {
 	return {
 		cid: null,
-		mod: null,
 		
 		init: function(commsy_functions, parameters) {
 			this.cid = commsy_functions.getURLParam('cid');
-			this.mod = commsy_functions.getURLParam('mod');
 			
 			// set preconditions
 			this.setPreconditions(commsy_functions, this.loadPopup, {handle: this, commsy_functions: commsy_functions, handling: parameters});
@@ -28,12 +26,29 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 
 		loadPopup: function(preconditions, parameters) {
 			var commsy_functions = parameters.commsy_functions;
-			var module = parameters.handling.module;
 			var actors = parameters.handling.objects;
 			var handle = parameters.handle;
 			
 			jQuery.each(actors, function() {
-				jQuery(this).bind('click', {commsy_functions: commsy_functions, module: module, handle: handle, actor: jQuery(this)}, handle.onClick);
+				// determ module from actor href
+				var module = '';
+				var regex = new RegExp("[\\?&]mod=([^&#]*)");
+				var results = regex.exec(jQuery(this).attr('href'));
+				if(results !== null && results[1] !== 'NEW') module = results[1];
+				
+				// determ item id from actor href
+				var item_id = 'NEW';
+				var regex = new RegExp("[\\?&]iid=([^&#]*)");
+				var results = regex.exec(jQuery(this).attr('href'));
+				if(results !== null && results[1] !== 'NEW') item_id = results[1];
+				
+				
+				jQuery(this).bind('click', {
+					commsy_functions:	commsy_functions,
+					handle:				handle,
+					actor:				jQuery(this),
+					module:				module,
+					item_id:			item_id}, handle.onClick);
 			});
 		},
 		
@@ -41,28 +56,14 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			var commsy_functions = event.data.commsy_functions;
 			var handle = event.data.handle;
 			
-			var cid = commsy_functions.getURLParam('cid');
-			var iid = 'NEW';
-			var module = '';
-			
-			var href = event.data.actor.attr('href');
-			var regex = new RegExp("[\\?&]iid=([^&#]*)");
-			var results = regex.exec(href);
-			if(results !== null && results[1] !== 'NEW') iid = results[1];
-			
-			// determ module from actor href
-			var regex = new RegExp("[\\?&]mod=([^&#]*)");
-			var results = regex.exec(href);
-			if(results !== null && results[1] !== 'NEW') module = results[1];
-			
 			var data = {
-				module: module,//event.data.module,
-				iid:	iid
+				module: event.data.module,
+				iid:	event.data.item_id
 			};
 			
 			jQuery.ajax({
 				type: 'POST',
-				url: 'commsy.php?cid=' + cid + '&mod=ajax&fct=popup&action=getHTML',
+				url: 'commsy.php?cid=' + handle.cid + '&mod=ajax&fct=popup&action=getHTML',
 				data: JSON.stringify(data),
 				contentType: 'application/json; charset=utf-8',
 				dataType: 'json',
@@ -93,7 +94,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 						});
 						
 						// setup popup
-						handle.setupPopup();
+						handle.setupPopup(event.data.module, event.data.item_id);
 					}
 				}
 			});
@@ -109,12 +110,12 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			
 			// remove popup html from dom
 			jQuery('div[id="popup_wrapper"]').remove();
-			
-			return false;
 		},
 		
 		create: function(event) {
 			var handle = event.data.handle;
+			var module = event.data.module;
+			var item_id = event.data.item_id;
 			
 			// check mandatory
 			var check_passed = true;
@@ -147,7 +148,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 				// build object
 				var data = {
 					form_data: [],
-					module: handle.mod
+					module: module
 				};
 				jQuery.each(form_objects, function() {
 					var add = false;
@@ -193,17 +194,10 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 					name:	'buzzwords',
 					value:	buzzword_ids
 				});
-				
-				var regex = new RegExp("[\\?&]iid=([^&#]*)");
-				var results = regex.exec(window.location.href);
-
-				var iid = 'NEW';
-
-				if(results !== null && results[1] !== 'NEW') iid = results[1];
 
 				data.form_data.push({
 					name:	'iid',
-					value:	iid
+					value:	item_id
 				});
 				
 				// ajax request
@@ -218,6 +212,11 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 					},
 					success: function(data, status) {
 						console.log(data);
+						
+						handle.close();
+						
+						// page reload
+						location.reload();
 						//handle.preconditionsSuccess(data);
 					}
 				});
@@ -318,20 +317,31 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			return false;
 		},
 		
-		setupPopup: function() {
+		setupPopup: function(module, item_id) {
+			var handle = this;
+			
 			// fullsize black overlay
 			var overlay = jQuery('div[id="popup_background"]');
 			overlay.css('height', jQuery(document).height());
 			overlay.css('width', jQuery(document).width());
 			
 			// register click for close button
-			jQuery('a[id="popup_close"]').click(this.close);
+			jQuery('a[id="popup_close"]').click(function() {
+				handle.close();
+				return false;
+			});
 			
 			// register click for abort button
-			jQuery('input[id="popup_button_abort"]').click(this.close);
+			jQuery('input[id="popup_button_abort"]').click(function() {
+				handle.close();
+				return false;
+			});
 			
 			// register click for create button
-			jQuery('input[id="popup_button_create"]').bind('click', {handle: this}, this.create);
+			jQuery('input[id="popup_button_create"]').bind('click', {
+				handle:		this,
+				module:		module,
+				item_id:	item_id}, this.create);
 			
 			// setup buzzwords
 			this.setupBuzzwords();
