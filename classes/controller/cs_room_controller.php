@@ -228,14 +228,14 @@
 
 			// buzzwords
 			if($context_item->isBuzzwordShowExpanded()) $this->_sidebar_configuration['hidden']['buzzwords'] = false;
-			if($this->showBuzzwords()) {
+			if($this->getUtils()->showBuzzwords()) {
 				$this->_sidebar_configuration['active']['buzzwords'] = true;
 				$this->assign('room', 'buzzwords', $this->getBuzzwords());
 			}
 
 			// tags
 			if($context_item->isTagsShowExpanded()) $this->_sidebar_configuration['hidden']['tags'] = false;
-			if($this->showTags()) {
+			if($this->getUtils()->showTags()) {
 				$this->_sidebar_configuration['active']['tags'] = true;
 				$this->assign('room', 'tags', $this->getTags());
 			}
@@ -488,102 +488,14 @@
 		 * get data for buzzword portlet
 		 */
 		protected function getBuzzwords() {
-			$return = array();
-
-			$buzzword_manager = $this->_environment->getLabelManager();
-			$text_converter = $this->_environment->getTextConverter();
-      		$params = $this->_environment->getCurrentParameterArray();
-
-			$buzzword_manager->resetLimits();
-			$buzzword_manager->setContextLimit($this->_environment->getCurrentContextID());
-			$buzzword_manager->setTypeLimit('buzzword');
-			$buzzword_manager->setGetCountLinks();
-			$buzzword_manager->select();
-			$buzzword_list = $buzzword_manager->get();
-
-			$buzzword = $buzzword_list->getFirst();
-			while($buzzword) {
-				$count = $buzzword->getCountLinks();
-				if($count > 0) {
-      				if ( isset($params['selbuzzword']) and !empty($params['selbuzzword']) and $buzzword->getItemID() == $params['selbuzzword']){
-						$return[] = array(
-							'to_item_id'		=> $buzzword->getItemID(),
-							'name'				=> $text_converter->text_as_html_short($buzzword->getName()),
-							'class_id'			=> $this->getBuzzwordSizeLogarithmic($count, 0, 30, 1, 4),
-							'selected_id'		=> $buzzword->getItemID()
-						);
-      				}else{
-						$return[] = array(
-							'to_item_id'		=> $buzzword->getItemID(),
-							'name'				=> $text_converter->text_as_html_short($buzzword->getName()),
-							'class_id'			=> $this->getBuzzwordSizeLogarithmic($count, 0, 30, 1, 4),
-							'selected_id'		=> 'no'
-						);
-      				}
-				}
-
-				$buzzword = $buzzword_list->getNext();
-			}
-
-			return $return;
-		}
-
-		/**
-		 * calculates the font size of a buzzword by relevance
-		 *
-		 * @param int $count
-		 * @param int $mincount
-		 * @param int $maxcount
-		 * @param int $minsize
-		 * @param int $maxsize
-		 * @param int $tresholds
-		 */
-		protected function getBuzzwordSizeLogarithmic($count, $mincount = 0, $maxcount = 30, $minsize = 10, $maxsize = 20, $tresholds = 0) {
-			if(empty($tresholds)) {
-				$tresholds = $maxsize - $minsize;
-				$treshold = 1;
-			} else {
-				$treshold = ($maxsize - $minsize) / ($tresholds - 1);
-			}
-
-			$a = $tresholds * log($count - $mincount + 2) / log($maxcount - $mincount + 2) - 1;
-			return round($minsize + round($a) * $treshold);
+			return $this->getUtils()->getBuzzwords();
 		}
 
 		/**
 		 * wrapper for recursive tag call
 		 */
 		protected function getTags() {
-			$tag_manager = $this->_environment->getTagManager();
-			$root_item = $tag_manager->getRootTagItem();
-
-			return $this->buildTagArray($root_item);
-		}
-
-		/**
-		 * this method goes through the tree structure and generates a nested array of information
-		 * @param cs_tag_item $item
-		 */
-		protected function buildTagArray(cs_tag_item $item) {
-			$return = array();
-
-			if(isset($item)) {
-				$children_list = $item->getChildrenList();
-
-				$item = $children_list->getFirst();
-				while($item) {
-					// attach to return
-					$return[] = array(
-						'title'		=> $item->getTitle(),
-						'item_id'	=> $item->getItemID(),
-						'children'	=> $this->buildTagArray($item)
-					);
-
-					$item = $children_list->getNext();
-				}
-			}
-
-			return $return;
+			return $this->getUtils()->getTags();
 		}
 
 		protected function _getItemChangeStatus($item) {
@@ -837,37 +749,6 @@
 
       		return $info_text;
   	 	}
-
-		private function showTags() {
-			$context_item = $this->_environment->getCurrentContextItem();
-			if($context_item->withTags() &&
-				( $this->_environment->getCurrentModule() == CS_MATERIAL_TYPE
-	                || $this->_environment->getCurrentModule() == CS_ANNOUNCEMENT_TYPE
-	                || $this->_environment->getCurrentModule() == CS_DISCUSSION_TYPE
-	                || $this->_environment->getCurrentModule() == CS_TODO_TYPE
-	                || $this->_environment->getCurrentModule() == CS_DATE_TYPE
-	                || $this->_environment->getCurrentModule() == 'campus_search'
-	                || $this->_environment->getCurrentModule() === 'home')) {
-				return true;
-			}
-
-			return false;
-		}
-
-		private function showBuzzwords() {
-			$context_item = $this->_environment->getCurrentContextItem();
-			if($context_item->withBuzzwords() &&
-				(	$this->_environment->getCurrentModule() === CS_ANNOUNCEMENT_TYPE ||
-					$this->_environment->getCurrentModule() === 'home' ||
-					$this->_environment->getCurrentModule() === CS_DATE_TYPE ||
-					$this->_environment->getCurrentModule() === CS_MATERIAL_TYPE ||
-					$this->_environment->getCurrentModule() === CS_DISCUSSION_TYPE ||
-					$this->_environment->getCurrentModule() === CS_TODO_TYPE)) {
-				return true;
-			}
-
-			return false;
-		}
 
 		protected function showNetnavigation() {
 			return false;

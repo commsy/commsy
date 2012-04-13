@@ -212,6 +212,10 @@ if ( !empty($_GET['backfrom']) ) {
 					$session->unsetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids');
 					}
 				*/
+				
+				// files
+				$file_ids = $form_data['files'];
+				$this->_popup_controller->getUtils()->setFilesForItem($discussion_item, $file_ids);
 
 				// save item
 				$discussion_item->save();
@@ -258,8 +262,6 @@ if ( !empty($_GET['backfrom']) ) {
 				}
 				
 				/*
-	
-
 					if ($session->issetValue('cid'.$environment->getCurrentContextID().'_linked_items_mylist_id')){
 					$mylist_manager = $environment->getMylistManager();
 					$mylist_item = $mylist_manager->getItem($session->getValue('cid'.$environment->getCurrentContextID().'_linked_items_mylist_id'));

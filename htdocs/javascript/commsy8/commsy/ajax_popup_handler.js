@@ -93,6 +93,12 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 							input_object:		jQuery('input[id="popup_ckeditor_content"]')
 						});
 						
+						// reinvoke TagTree
+						var tag_tree_handler = commsy_functions.getModuleCallback('commsy/tag_tree');
+						tag_tree_handler.buildTree(null, {
+							object:				jQuery('div[id="tag_tree"]')
+						});
+						
 						// setup popup
 						handle.setupPopup(event.data.module, event.data.item_id);
 					}
@@ -194,10 +200,22 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 					name:	'buzzwords',
 					value:	buzzword_ids
 				});
-
+				
+				// set item id
 				data.form_data.push({
 					name:	'iid',
 					value:	item_id
+				});
+				
+				// add files data
+				var file_objects = jQuery('div[id="popup_wrapper"] input[name="filelist[]"]');
+				var file_ids = [];
+				jQuery.each(file_objects, function() {
+					file_ids.push(jQuery(this).attr('value'));
+				})
+				data.form_data.push({
+					name:	'files',
+					value:	file_ids
 				});
 				
 				// ajax request
@@ -230,7 +248,9 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			
 			// register click for tabs
 			jQuery('div[class="tab_navigation"] a').each(function(index) {
-				jQuery(this).bind('click', {index: index}, handle.onClickTab);
+				jQuery(this).bind('click', {
+					index:	index,
+					handle:	handle}, handle.onClickTab);
 			});
 		},
 		
@@ -292,6 +312,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 		onClickTab: function(event) {
 			var target = jQuery(event.currentTarget);
 			var index = event.data.index;
+			var handle = event.data.handle;
 			
 			// set all tabs inactive
 			jQuery('div[class="tab_navigation"] a').each(function() {
@@ -315,9 +336,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			});
 			
 			// fullsize black overlay
-			var overlay = jQuery('div[id="popup_background"]');
-			overlay.css('height', jQuery(document).height());
-			overlay.css('width', jQuery(document).width());
+			handle.fullSizeOverlay();
 			
 			return false;
 		},
@@ -326,9 +345,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			var handle = this;
 			
 			// fullsize black overlay
-			var overlay = jQuery('div[id="popup_background"]');
-			overlay.css('height', jQuery(document).height());
-			overlay.css('width', jQuery(document).width());
+			handle.fullSizeOverlay();
 			
 			// register click for close button
 			jQuery('a[id="popup_close"]').click(function() {
@@ -353,6 +370,12 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			
 			// setup tabs
 			this.setupTabs();
+		},
+		
+		fullSizeOverlay: function() {
+			var overlay = jQuery('div[id="popup_background"]');
+			overlay.css('height', jQuery(document).height());
+			overlay.css('width', jQuery(document).width());
 		}
 	};
 });

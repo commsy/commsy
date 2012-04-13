@@ -1,5 +1,6 @@
 <?php
 	require_once('classes/controller/cs_ajax_controller.php');
+	require_once('classes/controller/cs_room_controller.php');
 	
 	class cs_ajax_popup_controller extends cs_ajax_controller {
 		private $_popup_controller = null;
@@ -50,13 +51,13 @@
 			$this->_popup_controller->assignTemplateVars();
 			
 			// set Buzzword Information
-			if($this->showBuzzwords() === true) {
+			if($this->getUtils()->showBuzzwords() === true) {
 				$this->assign('popup', 'buzzwords', $this->getBuzzwords());
 			}
 			
 			// set Tag Information
-			if($this->showTags() === true) {
-				$this->assign('popup', 'tags', $this->getTags());
+			if($this->getUtils()->showTags() === true) {
+				$this->assign('popup', 'tags', $this->getUtils()->getTags());
 			}
 			
 			global $c_smarty;
@@ -69,7 +70,10 @@
 				
 				$this->displayTemplate();
 				
-				echo json_encode(ob_get_clean());
+				$output = json_encode(ob_get_clean());
+				echo $output;
+				// TODO: optimize
+				//echo str_replace(array('\n', '\t'), '', $output);
 			} else {
 				echo json_encode('smarty not enabled');
 			}
@@ -147,41 +151,6 @@
 			}
 		}
 		
-		// TODO:
-		// copy from room_controller
-		private function showBuzzwords() {
-			$context_item = $this->_environment->getCurrentContextItem();
-			if($context_item->withBuzzwords() &&
-				(	$this->_environment->getCurrentModule() === CS_ANNOUNCEMENT_TYPE ||
-					$this->_environment->getCurrentModule() === 'home' ||
-					$this->_environment->getCurrentModule() === CS_DATE_TYPE ||
-					$this->_environment->getCurrentModule() === CS_MATERIAL_TYPE ||
-					$this->_environment->getCurrentModule() === CS_DISCUSSION_TYPE ||
-					$this->_environment->getCurrentModule() === CS_TODO_TYPE)) {
-				return true;
-			}
-
-			return false;
-		}
-		
-		// TODO:
-		// copy from room_controller
-		private function showTags() {
-			$context_item = $this->_environment->getCurrentContextItem();
-			if($context_item->withTags() &&
-				( $this->_environment->getCurrentModule() == CS_MATERIAL_TYPE
-	                || $this->_environment->getCurrentModule() == CS_ANNOUNCEMENT_TYPE
-	                || $this->_environment->getCurrentModule() == CS_DISCUSSION_TYPE
-	                || $this->_environment->getCurrentModule() == CS_TODO_TYPE
-	                || $this->_environment->getCurrentModule() == CS_DATE_TYPE
-	                || $this->_environment->getCurrentModule() == 'campus_search'
-	                || $this->_environment->getCurrentModule() === 'home')) {
-				return true;
-			}
-
-			return false;
-		}
-		
 		private function getBuzzwords() {
 			$return = array();
 
@@ -219,39 +188,6 @@
 				}
 
 				$buzzword = $buzzword_list->getNext();
-			}
-
-			return $return;
-		}
-		
-		private function getTags() {
-			$tag_manager = $this->_environment->getTagManager();
-			$root_item = $tag_manager->getRootTagItem();
-
-			return $this->buildTagArray($root_item);
-		}
-
-		/**
-		 * this method goes through the tree structure and generates a nested array of information
-		 * @param cs_tag_item $item
-		 */
-		private function buildTagArray(cs_tag_item $item) {
-			$return = array();
-
-			if(isset($item)) {
-				$children_list = $item->getChildrenList();
-
-				$item = $children_list->getFirst();
-				while($item) {
-					// attach to return
-					$return[] = array(
-						'title'		=> $item->getTitle(),
-						'item_id'	=> $item->getItemID(),
-						'children'	=> $this->buildTagArray($item)
-					);
-
-					$item = $children_list->getNext();
-				}
 			}
 
 			return $return;

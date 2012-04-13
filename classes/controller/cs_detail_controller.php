@@ -210,7 +210,7 @@
 				$return[] = array(
 							'to_item_id'		=> $buzzword_entry->getItemID(),
 							'name'				=> $text_converter->text_as_html_short($buzzword_entry->getName()),
-							'class_id'			=> $this->getBuzzwordSizeLogarithmic($count, 0, 30, 1, 4),
+							'class_id'			=> $this->getUtils()->getBuzzwordSizeLogarithmic($count, 0, 30, 1, 4),
 							'selected_id'		=> $buzzword_entry->getItemID()
 						);
 
@@ -231,7 +231,7 @@
 
 
 			// get all tags like common
-			$tag_array = parent::getTags();
+			$tag_array = $this->getUtils()->getTags();
 
 			// mark tags
 			$this->markTags($tag_array, $item_tag_id_array);

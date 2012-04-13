@@ -1,9 +1,12 @@
 <?php
+	require_once('classes/controller/cs_utils_controller.php');
+	
 	abstract class cs_base_controller {
 		protected $_environment = null;
 		protected $_tpl_engine = null;
 		protected $_tpl_file = null;
 		protected $_tpl_path = null;
+		protected $_utils = null;
 
 		/**
 		 * constructor
@@ -117,6 +120,14 @@
 				$assign[$categorie][$key] = $assignment;
 				$this->_tpl_engine->assign($assign);
 			}
+		}
+		
+		protected function getUtils() {
+			if($this->_utils === null) {
+				$this->_utils = new cs_utils_controller($this->_environment);
+			}
+			
+			return $this->_utils;
 		}
 
 		/**
