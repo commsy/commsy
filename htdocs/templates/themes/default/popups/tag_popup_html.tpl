@@ -19,16 +19,88 @@
                     
                     <div class="clear"> </div>
                 </div>
-                
-                <div id="content_row_one">
-                    <div class="input_row">
-                        <input type="text" class="size_200" /> <input class="popup_button" type="button" name="" value="neues Schlagwort anlegen" />
-                    </div>
-                </div>
-                
-                <div id="content_row_two">
-                    &nbsp;
-                </div>
+				
+				<div id="popup_tabcontent">
+					<div class="tab">
+						<div id="content_row_one">
+							<div class="input_row">
+								<input type="text" class="size_200" /> <input class="popup_button" type="button" name="" value="neues Schlagwort anlegen" />
+							</div>
+						</div>
+
+						<div id="content_row_two">
+							&nbsp;
+						</div>
+					</div>
+					
+					<div class="tab hidden">
+						zusammenlegen
+					</div>
+					
+					<div class="tab hidden">
+						<div id="content_row_one">
+							<div class="input_row">
+								<input type="text" value="Dokumentation" class="size_200" /> 
+								<input class="popup_button" type="button" name="" value="&auml;ndern" /> 
+								<input class="popup_button" type="button" name="" value="Eintr&auml;ge zuordnen" /> 
+								<input class="popup_button" type="button" name="" value="l&ouml;schen" />
+							</div>
+
+							<div class="input_row">
+								<input type="text" value="Bereitstellung" class="size_200" /> 
+								<input class="popup_button" type="button" name="" value="&auml;ndern" /> 
+								<input class="popup_button" type="button" name="" value="Eintr&auml;ge zuordnen" /> 
+								<input class="popup_button" type="button" name="" value="l&ouml;schen" />
+							</div>
+
+							<div class="input_row">
+								<input type="text" value="Extensions" class="size_200" /> 
+								<input class="popup_button" type="button" name="" value="&auml;ndern" /> 
+								<input class="popup_button" type="button" name="" value="Eintr&auml;ge zuordnen" /> 
+								<input class="popup_button" type="button" name="" value="l&ouml;schen" />
+							</div>
+
+							<div class="input_row">
+								<input type="text" value="Konferenz" class="size_200" /> 
+								<input class="popup_button" type="button" name="" value="&auml;ndern" /> 
+								<input class="popup_button" type="button" name="" value="Eintr&auml;ge zuordnen" /> 
+								<input class="popup_button" type="button" name="" value="l&ouml;schen" />
+							</div>
+
+							<div class="input_row">
+								<input type="text" value="Fallbeispiele" class="size_200" /> 
+								<input class="popup_button" type="button" name="" value="&auml;ndern" /> 
+								<input class="popup_button" type="button" name="" value="Eintr&auml;ge zuordnen" /> 
+								<input class="popup_button" type="button" name="" value="l&ouml;schen" />
+							</div>
+
+							<div class="input_row">
+								<input type="text" value="Zusammenarbeit" class="size_200" /> 
+								<input class="popup_button" type="button" name="" value="&auml;ndern" /> 
+								<input class="popup_button" type="button" name="" value="Eintr&auml;ge zuordnen" /> 
+								<input class="popup_button" type="button" name="" value="l&ouml;schen" />
+							</div>
+
+							<div class="input_row">
+								<input type="text" value="Support" class="size_200" /> 
+								<input class="popup_button" type="button" name="" value="&auml;ndern" /> 
+								<input class="popup_button" type="button" name="" value="Eintr&auml;ge zuordnen" /> 
+								<input class="popup_button" type="button" name="" value="l&ouml;schen" />
+							</div>
+
+							<div class="input_row">
+								<input type="text" value="Handbuch" class="size_200" /> 
+								<input class="popup_button" type="button" name="" value="&auml;ndern" /> 
+								<input class="popup_button" type="button" name="" value="Eintr&auml;ge zuordnen" /> 
+								<input class="popup_button" type="button" name="" value="l&ouml;schen" />
+							</div>
+						</div>
+						
+						<div id="content_row_two">
+							&nbsp;
+						</div>
+					</div>
+				</div>
 
 			</div>
 

@@ -199,7 +199,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			
 			// switch display
 			// get divs
-			var content_divs = jQuery('div[id="popup_content"] div[id^="content_row_"]');
+			var content_divs = jQuery('div[id="popup_tabcontent"] div[class^="tab"]');
 			
 			// set class for divs
 			content_divs.each(function(i) {
