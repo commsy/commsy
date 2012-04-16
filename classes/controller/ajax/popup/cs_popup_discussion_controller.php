@@ -202,11 +202,16 @@ if ( !empty($_GET['backfrom']) ) {
 				 */
 				$discussion_item->setBuzzwordListByID($form_data['buzzwords']);
 				
+				// tags
 				/*
 					if ($session->issetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_tag_ids')){
 					$discussion_item->setTagListByID($session->getValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_tag_ids'));
 					$session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_tag_ids');
 					}
+				 */
+				$discussion_item->setTagListByID($form_data['tags']);
+				
+				/*
 					if ($session->issetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids')){
 					$discussion_item->setLinkedItemsByIDArray(array_unique($session->getValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids')));
 					$session->unsetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids');

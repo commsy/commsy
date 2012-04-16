@@ -234,7 +234,7 @@
 			$tag_array = $this->getUtils()->getTags();
 
 			// mark tags
-			$this->markTags($tag_array, $item_tag_id_array);
+			$this->getUtils()->markTags($tag_array, $item_tag_id_array);
 
 			// convert to marked array if needed
 			if($as_marked_array === true) return $this->convertTagsToMarkedArray($tag_array);
@@ -1050,25 +1050,6 @@
 	      }
 
 	      return false;
-		}
-
-		private function markTags(&$tag_array, $item_tag_id_array) {
-			// compare and mark as highlighted
-			foreach($tag_array as &$tag) {
-				if(in_array($tag['item_id'], $item_tag_id_array)) {
-					$tag['match'] = true;
-				} else {
-					$tag['match'] = false;
-				}
-
-				// look recursive
-				if(!empty($tag['children'])) {
-					$this->markTags($tag['children'], $item_tag_id_array);
-				}
-			}
-
-			// break the reference
-			unset($tag);
 		}
 
 		private function convertTagsToMarkedArray(&$tag_array, $level = 0) {

@@ -1,29 +1,51 @@
 {extends file="layout_html.tpl"}
 
-{block name=meta_area}
-	<div id="meta_area_content">
+{block name=top_menu}
+	<div id="tm_wrapper">
+		<div id="tm_icons_bar">
+			<a href="" id="tm_settings" title="Einstellungen">&nbsp;</a>
+			<a href="" id="tm_clipboard" title="Zwischenablage">&nbsp;</a>
+			{if !$environment.is_guest}<a href="" id="tm_logout" title="Logout">&nbsp;</a>{/if}
 
-                <div id="breadcrumb">
-                    <span><a href="" class="mm_right">CommSy Projekt</a></span>
-                    <span><a href="" class="mm_dropdown">CommSy Community</a></span>
-                </div>
+			<div class="clear"></div>
+		</div>
 
-                <div id="meta_menu">
-                	{* login / logout *}
+		<div id="tm_pers_bar">
+			<a href="" id="tm_user">
+				<span class="tm_dropdown">
+					{* login / logout *}
+					{if !$environment.is_guest}
+						___COMMON_WELCOME___, {$environment.username|truncate:20}
+					{/if}
+					
+					
+					
+					{*
                 	{if $environment.is_guest}
                     	login maske
                     {else}
                     	<span class="mm_bl"><a href="" id="mm_logout">Abmelden</a></span>
+						
+						
                     	<span class="mm_br mm_bl"><a href="" class="mm_dropdown">Mein CommSy</a></span>
                     	{if $environment.is_moderator}
                     		<span class="mm_br mm_bl"><a href="" class="mm_dropdown">Admin</a></span>
                     	{/if}
+						
+						
                     	<span class="mm_br">___COMMON_WELCOME___, {$environment.username|truncate:12}</span>
                     {/if}
-                </div>
+					*}
+				</span>
+			</a>
+		</div>
 
-                <div class="clear"> </div>
-            </div>
+		<div id="tm_breadcrumb">
+			<a href="">CommSy Projekt<span class="tm_bcb_next">CommSy Community</span><!--<span class="tm_bcb_next">CommSy Community</span>--></a>
+		</div>
+
+		<div class="clear"></div>
+	</div>
 {/block}
 
 {block name=layout_content}
@@ -147,7 +169,9 @@
            				{if $room.sidebar_configuration.active.buzzwords}
 	           				{$h = $room.sidebar_configuration.hidden.buzzwords}
 							<div class="portlet_rc">
-								<a href="" title="___COMMON_EDIT___" class="btn_head_rc2"><img src="{$basic.tpl_path}img/btn_edit_rc.gif" alt="___COMMON_EDIT___" /></a>
+								{if $room.sidebar_configuration.editable.buzzwords}
+									<a id="edit_buzzwords" href="" title="___COMMON_EDIT___" class="btn_head_rc2"><img src="{$basic.tpl_path}img/btn_edit_rc.gif" alt="___COMMON_EDIT___" /></a>
+								{/if}
 		<!--
 								<a href="" title="{if $h}___COMMON_SHOW___{else}___COMMON_HIDE___{/if}" class="btn_head_rc">
 									<img src="{$basic.tpl_path}img/{if $h}btn_open_rc.gif{else}btn_close_rc.gif{/if}" alt="{if $h}___COMMON_SHOW___{else}___COMMON_HIDE___{/if}" />
@@ -178,7 +202,9 @@
 						{if $room.sidebar_configuration.active.tags}
 							{$h = $room.sidebar_configuration.hidden.tags}
 							<div class="portlet_rc">
-								<a href="" title="___COMMON_EDIT___" class="btn_head_rc2"><img src="{$basic.tpl_path}img/btn_edit_rc.gif" alt="___COMMON_EDIT___" /></a>
+								{if $room.sidebar_configuration.editable.tags}
+									<a href="" title="___COMMON_EDIT___" class="btn_head_rc2"><img src="{$basic.tpl_path}img/btn_edit_rc.gif" alt="___COMMON_EDIT___" /></a>
+								{/if}
 		<!--
 								<a href="" title="{if $h}___COMMON_SHOW___{else}___COMMON_HIDE___{/if}" class="btn_head_rc">
 									<img src="{$basic.tpl_path}img/{if $h}btn_open_rc.gif{else}btn_close_rc.gif{/if}" alt="{if $h}___COMMON_SHOW___{else}___COMMON_HIDE___{/if}" />

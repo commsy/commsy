@@ -225,11 +225,18 @@
 
 		private function setupSidebarInformation() {
 			$context_item = $this->_environment->getCurrentContextItem();
+			$current_user = $this->_environment->getCurrentUserItem();
 
 			// buzzwords
 			if($context_item->isBuzzwordShowExpanded()) $this->_sidebar_configuration['hidden']['buzzwords'] = false;
 			if($this->getUtils()->showBuzzwords()) {
 				$this->_sidebar_configuration['active']['buzzwords'] = true;
+				$this->_sidebar_configuration['editable']['buzzwords'] = false;
+				
+				if($current_user->isUser() && $this->_with_modifying_actions) {
+					$this->_sidebar_configuration['editable']['buzzwords'] = true;
+				}
+				
 				$this->assign('room', 'buzzwords', $this->getBuzzwords());
 			}
 
@@ -237,6 +244,12 @@
 			if($context_item->isTagsShowExpanded()) $this->_sidebar_configuration['hidden']['tags'] = false;
 			if($this->getUtils()->showTags()) {
 				$this->_sidebar_configuration['active']['tags'] = true;
+				$this->_sidebar_configuration['editable']['tags'] = false;
+				
+				if($current_user->isUser() && $this->_with_modifying_actions && ($context_item->isTagEditedByAll() || $current_user->isModerator())) {
+					$this->_sidebar_configuration['editable']['tags'] = true;
+				}
+				
 				$this->assign('room', 'tags', $this->getTags());
 			}
 

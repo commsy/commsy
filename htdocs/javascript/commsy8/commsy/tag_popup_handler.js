@@ -1,5 +1,5 @@
 /**
- * Ajax Popup Handler Module
+ * Tag Popup Handler Module
  */
 
 define([	"order!libs/jQuery/jquery-1.7.1.min",
@@ -30,25 +30,10 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			var handle = parameters.handle;
 			
 			jQuery.each(actors, function() {
-				// determ module from actor href
-				var module = '';
-				var regex = new RegExp("[\\?&]mod=([^&#]*)");
-				var results = regex.exec(jQuery(this).attr('href'));
-				if(results !== null && results[1] !== 'NEW') module = results[1];
-				
-				// determ item id from actor href
-				var item_id = 'NEW';
-				var regex = new RegExp("[\\?&]iid=([^&#]*)");
-				var results = regex.exec(jQuery(this).attr('href'));
-				if(results !== null && results[1] !== 'NEW') item_id = results[1];
-				
-				
 				jQuery(this).bind('click', {
 					commsy_functions:	commsy_functions,
 					handle:				handle,
-					actor:				jQuery(this),
-					module:				module,
-					item_id:			item_id}, handle.onClick);
+					actor:				jQuery(this)}, handle.onClick);
 			});
 		},
 		
@@ -57,8 +42,8 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			var handle = event.data.handle;
 			
 			var data = {
-				module: event.data.module,
-				iid:	event.data.item_id
+				module: 'tag',
+				iid:	'NEW'
 			};
 			
 			jQuery.ajax({
@@ -74,6 +59,9 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 					if(status === 'success') {
 						// we recieved html - append it
 						jQuery('body').prepend(data);
+						
+						
+						/*
 						
 						// reinvoke Uploadify
 						var uploadify_handler = commsy_functions.getModuleCallback('commsy/uploadify');
@@ -125,6 +113,10 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 							
 							return false;
 						}
+						*/
+						
+						
+						
 						
 						// setup popup
 						handle.setupPopup(event.data.module, event.data.item_id);
@@ -136,14 +128,107 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			return false;
 		},
 		
+		setupPopup: function(module, item_id) {
+			var handle = this;
+			
+			// fullsize black overlay
+			handle.fullSizeOverlay();
+			
+			// register click for close button
+			jQuery('a[id="popup_close"]').click(function() {
+				handle.close();
+				return false;
+			});
+			
+			// register click for abort button
+			jQuery('input[id="popup_button_abort"]').click(function() {
+				handle.close();
+				return false;
+			});
+			
+			// register click for create button
+			/*
+			jQuery('input[id="popup_button_create"]').bind('click', {
+				handle:		this,
+				module:		module,
+				item_id:	item_id}, this.create);
+			*/
+			
+			// setup tabs
+			this.setupTabs();
+		},
+		
+		fullSizeOverlay: function() {
+			var overlay = jQuery('div[id="popup_background"]');
+			overlay.css('height', jQuery(document).height());
+			overlay.css('width', jQuery(document).width());
+		},
+		
 		close: function(event) {
 			// unregister ck editor
-			var editor = jQuery('div[id="popup_ckeditor"]');
-			if(editor.length > 0) editor.ckeditorGet().destroy();
+			//var editor = jQuery('div[id="popup_ckeditor"]');
+			//if(editor.length > 0) editor.ckeditorGet().destroy();
 			
 			// remove popup html from dom
 			jQuery('div[id="popup_wrapper"]').remove();
 		},
+		
+		setupTabs: function() {
+			var handle = this;
+			
+			// register click for tabs
+			jQuery('div[class="tab_navigation"] a').each(function(index) {
+				jQuery(this).bind('click', {
+					index:	index,
+					handle:	handle}, handle.onClickTab);
+			});
+		},
+		
+		onClickTab: function(event) {
+			var target = jQuery(event.currentTarget);
+			var index = event.data.index;
+			var handle = event.data.handle;
+			
+			// set all tabs inactive
+			jQuery('div[class="tab_navigation"] a').each(function() {
+				jQuery(this).attr('class', 'pop_tab');
+			})
+			
+			// set target active
+			target.attr('class', 'pop_tab_active');
+			
+			// switch display
+			// get divs
+			var content_divs = jQuery('div[id="popup_content"] div[id^="content_row_"]');
+			
+			// set class for divs
+			content_divs.each(function(i) {
+				if(index === i) {
+					// remove hidden
+					jQuery(this).removeClass('hidden');
+				} else {
+					// add hidden
+					jQuery(this).addClass('hidden');
+				}
+			});
+			
+			// fullsize black overlay
+			handle.fullSizeOverlay();
+			
+			return false;
+		},
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		
 		create: function(event) {
 			var handle = event.data.handle;
@@ -286,141 +371,6 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			}
 			
 			return false;
-		},
-		
-		setupTabs: function() {
-			var handle = this;
-			
-			// register click for tabs
-			jQuery('div[class="tab_navigation"] a').each(function(index) {
-				jQuery(this).bind('click', {
-					index:	index,
-					handle:	handle}, handle.onClickTab);
-			});
-		},
-		
-		setupBuzzwords: function() {
-			// unassigned
-			jQuery('div[id="popup"] ul[id="buzzwords_unassigned"]').sortable({
-				connectWith:	'ul',
-				placeholder:	'ui-state-highlight',
-				cursor:			'pointer',
-				change:			function(event, ui) {
-					if(ui.sender !== null) {
-						// adjust
-						ui.item.find('img').attr('alt', 'add');
-					}
-				}
-			});
-			
-			// assigned
-			jQuery('div[id="popup"] ul[id="buzzwords_assigned"]').sortable({
-				connectWith:	'ul',
-				placeholder:	'ui-state-highlight',
-				cursor:			'pointer',
-				change:			function(event, ui) {
-					if(ui.sender !== null) {
-						// adjust
-						ui.item.find('img').attr('alt', 'remove');
-					}
-				}
-			});
-			
-			// register add event
-			jQuery('ul[id^="buzzwords_"] img').each(function() {
-				jQuery(this).click(function() {
-					var li = jQuery(this).parent().parent();
-					
-					// get ul id
-					var ul_id = li.parent().attr('id');
-					
-					// detach
-					li = li.detach();
-					
-					if(ul_id === 'buzzwords_unassigned') {
-						// append to assigned
-						li.appendTo(jQuery('ul[id="buzzwords_assigned"]'));
-						
-						// adjust
-						li.find('img').attr('alt', 'remove');
-					} else {
-						// append to unassigned
-						li.appendTo(jQuery('ul[id="buzzwords_unassigned"]'));
-						
-						// adjust
-						li.find('img').attr('alt', 'add');
-					}
-				});
-			});
-		},
-		
-		onClickTab: function(event) {
-			var target = jQuery(event.currentTarget);
-			var index = event.data.index;
-			var handle = event.data.handle;
-			
-			// set all tabs inactive
-			jQuery('div[class="tab_navigation"] a').each(function() {
-				jQuery(this).attr('class', 'pop_tab');
-			})
-			
-			// set target active
-			target.attr('class', 'pop_tab_active');
-			
-			// switch display
-			// get divs
-			var content_divs = jQuery('div[id="popup_tabcontent"] div[class^="settings_area"]');
-			
-			// set class for divs
-			content_divs.each(function(i) {
-				if(index === i) {
-					jQuery(this).attr('class', 'settings_area');
-				} else {
-					jQuery(this).attr('class', 'settings_area hidden');
-				}
-			});
-			
-			// fullsize black overlay
-			handle.fullSizeOverlay();
-			
-			return false;
-		},
-		
-		setupPopup: function(module, item_id) {
-			var handle = this;
-			
-			// fullsize black overlay
-			handle.fullSizeOverlay();
-			
-			// register click for close button
-			jQuery('a[id="popup_close"]').click(function() {
-				handle.close();
-				return false;
-			});
-			
-			// register click for abort button
-			jQuery('input[id="popup_button_abort"]').click(function() {
-				handle.close();
-				return false;
-			});
-			
-			// register click for create button
-			jQuery('input[id="popup_button_create"]').bind('click', {
-				handle:		this,
-				module:		module,
-				item_id:	item_id}, this.create);
-			
-			// setup buzzwords
-			this.setupBuzzwords();
-			
-			// setup tabs
-			this.setupTabs();
-		},
-		
-		fullSizeOverlay: function() {
-			var overlay = jQuery('div[id="popup_background"]');
-			overlay.css('height', jQuery(document).height());
-			overlay.css('width', jQuery(document).width());
 		}
 	};
 });

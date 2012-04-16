@@ -41,10 +41,10 @@
 
 <body>
     <div id="wrapper">
-
-        <div id="meta_area"> <!-- Start meta_area -->
-            {block name=meta_area}{/block}
-        </div> <!-- Ende meta_area -->
+		
+		<div id="top_menu">
+			{block name=top_menu}{/block}
+		</div>
 
         <div id="header"> <!-- Start header -->
             <div id="logo_area">

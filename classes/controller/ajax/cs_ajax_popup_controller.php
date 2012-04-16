@@ -50,6 +50,8 @@
 			
 			$this->_popup_controller->assignTemplateVars();
 			
+			// TODO: buzzwords and tags not needed for tag overlay, etc...
+			
 			// set Buzzword Information
 			if($this->getUtils()->showBuzzwords() === true) {
 				$this->assign('popup', 'buzzwords', $this->getBuzzwords());
@@ -57,7 +59,16 @@
 			
 			// set Tag Information
 			if($this->getUtils()->showTags() === true) {
-				$this->assign('popup', 'tags', $this->getUtils()->getTags());
+				$tag_array = $this->getUtils()->getTags();
+				
+				if($this->_item !== null) {
+					$item_tag_list = $this->_item->getTagList();
+					$item_tag_id_array = $item_tag_list->getIDArray();
+					
+					$this->getUtils()->markTags($tag_array, $item_tag_id_array);
+				}
+				
+				$this->assign('popup', 'tags', $tag_array);
 			}
 			
 			global $c_smarty;
@@ -97,6 +108,10 @@
 			$return = $this->_popup_controller->getReturn();
 
 			echo json_encode($return);
+		}
+		
+		public function getUtils() {
+			return parent::getUtils();
 		}
 
 		/*

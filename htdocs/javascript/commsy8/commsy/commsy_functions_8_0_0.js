@@ -167,6 +167,10 @@ define(["libs/jQuery/jquery-1.7.1.min"], function() {
 			};
 			
 			this.registerModule('commsy/ajax_popup_handler', handling);
+			
+			// tag popup handler
+			var objects = jQuery('a#edit_buzzwords');
+			this.registerModule('commsy/tag_popup_handler', {objects: objects});
 		},
 		
 		registerModule: function(module, parameters) {

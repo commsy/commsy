@@ -73,6 +73,25 @@
 			return $return;
 		}
 		
+		public function markTags(&$tag_array, $item_tag_id_array) {
+			// compare and mark as highlighted
+			foreach($tag_array as &$tag) {
+				if(in_array($tag['item_id'], $item_tag_id_array)) {
+					$tag['match'] = true;
+				} else {
+					$tag['match'] = false;
+				}
+
+				// look recursive
+				if(!empty($tag['children'])) {
+					$this->markTags($tag['children'], $item_tag_id_array);
+				}
+			}
+
+			// break the reference
+			unset($tag);
+		}
+		
 		/**
 		 * get data for buzzword portlet
 		 */
