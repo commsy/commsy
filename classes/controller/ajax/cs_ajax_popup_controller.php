@@ -50,11 +50,11 @@
 			
 			$this->_popup_controller->assignTemplateVars();
 			
-			// TODO: buzzwords and tags not needed for tag overlay, etc...
+			// TODO: buzzwords not needed for tag overlay, tags not needed for buzzword overlay, etc...
 			
 			// set Buzzword Information
 			if($this->getUtils()->showBuzzwords() === true) {
-				$this->assign('popup', 'buzzwords', $this->getBuzzwords());
+				$this->assign('popup', 'buzzwords', $this->getBuzzwords(true));
 			}
 			
 			// set Tag Information
@@ -166,7 +166,7 @@
 			}
 		}
 		
-		private function getBuzzwords() {
+		private function getBuzzwords($return_empty) {
 			$return = array();
 
 			$buzzword_manager = $this->_environment->getLabelManager();
@@ -194,7 +194,7 @@
 			$buzzword = $buzzword_list->getFirst();
 			while($buzzword) {
 				$count = $buzzword->getCountLinks();
-				if($count > 0) {
+				if($count > 0 || $return_empty) {
 					$return[] = array(
 						'item_id'			=> $buzzword->getItemID(),
 						'name'				=> $text_converter->text_as_html_short($buzzword->getName()),

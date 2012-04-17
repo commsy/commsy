@@ -95,7 +95,7 @@
 		/**
 		 * get data for buzzword portlet
 		 */
-		public function getBuzzwords() {
+		public function getBuzzwords($return_empty = false) {
 			$return = array();
 
 			$buzzword_manager = $this->_environment->getLabelManager();
@@ -112,7 +112,7 @@
 			$buzzword = $buzzword_list->getFirst();
 			while($buzzword) {
 				$count = $buzzword->getCountLinks();
-				if($count > 0) {
+				if($count > 0 || $return_empty) {
       				if ( isset($params['selbuzzword']) and !empty($params['selbuzzword']) and $buzzword->getItemID() == $params['selbuzzword']){
 						$return[] = array(
 							'to_item_id'		=> $buzzword->getItemID(),

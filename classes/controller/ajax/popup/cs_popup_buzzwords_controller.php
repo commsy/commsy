@@ -1,5 +1,5 @@
 <?php
-class cs_popup_tag_controller {
+class cs_popup_buzzwords_controller {
 	private $_environment = null;
 	private $_popup_controller = null;
 	private $_return = '';
@@ -10,12 +10,6 @@ class cs_popup_tag_controller {
 	public function __construct(cs_environment $environment, cs_ajax_popup_controller $popup_controller) {
 		$this->_environment = $environment;
 		$this->_popup_controller = $popup_controller;
-	}
-	
-	public function edit($item_id) {
-	}
-	
-	public function create($form_data) {
 	}
 	
 	public function getReturn() {
