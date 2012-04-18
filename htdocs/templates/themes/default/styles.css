@@ -2662,6 +2662,8 @@ a#tm_user:hover .tm_dropdown {
     width: 315px;
     padding-bottom: 12px;
     background: url(img/tm_dropmenu_bg.png) bottom left no-repeat;
+	position: absolute;
+	z-index: 6;
     }
 
 .tm_drop_item {

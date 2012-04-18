@@ -171,6 +171,15 @@ define(["libs/jQuery/jquery-1.7.1.min"], function() {
 			// tag popup handler
 			var objects = jQuery('a#edit_buzzwords');
 			this.registerModule('commsy/buzzwords_popup_handler', {objects: objects});
+			
+			// top menu
+			var objects = [
+				{	trigger:	jQuery('div#top_menu a#tm_user'),
+					menu:		jQuery('div#tm_menus div#tm_dropmenu_pers_bar')},
+				{	trigger:	jQuery('div#top_menu div#tm_breadcrumb a'),
+					menu:		jQuery('div#tm_menus div#tm_dropmenu_breadcrumb')}
+			];
+			this.registerModule('commsy/top_menu_handler', {objects: objects});
 		},
 		
 		registerModule: function(module, parameters) {
