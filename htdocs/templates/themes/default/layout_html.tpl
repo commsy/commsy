@@ -19,7 +19,7 @@
 
     <link rel="stylesheet" type="text/css" media="screen" href="{$basic.tpl_path}jquery-ui-custom-theme/jquery-ui-1.8.17.custom.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="{$basic.tpl_path}styles.css" />
-<!-- Individuelles Farbschema
+<!--
     <link rel="stylesheet" type="text/css" media="screen" href="templates/themes/individual/styles_cid.css" />
 -->
     <link rel="stylesheet" type="text/css" media="screen" href="{$basic.tpl_path}ui.dynatree.css" />
@@ -40,11 +40,11 @@
 </head>
 
 <body>
-    <div id="wrapper">
-		
 		<div id="top_menu">
 			{block name=top_menu}{/block}
 		</div>
+    <div id="wrapper">
+
 
         <div id="header"> <!-- Start header -->
             <div id="logo_area">
