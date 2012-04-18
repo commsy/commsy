@@ -829,6 +829,12 @@ jQuery(document).ready(function() {
 		   if(jQuery("input[name='workflow_resubmission_date']").length){
 			  jQuery("input[name='workflow_resubmission_date']").datepicker({showOn: 'button', buttonImage: datepicker_image, buttonImageOnly: true, buttonText: datepicker_choose});
 		   }
+		   if(jQuery("input[name='workflow_validity_date']").length){
+			  jQuery("input[name='workflow_validity_date']").datepicker({showOn: 'button', buttonImage: datepicker_image, buttonImageOnly: true, buttonText: datepicker_choose});
+		   }
+		   if(jQuery("input[name='document_release_date']").length){
+			  jQuery("input[name='document_release_date']").datepicker({showOn: 'button', buttonImage: datepicker_image, buttonImageOnly: true, buttonText: datepicker_choose});
+		   }
 	   }
    }
 });
@@ -4298,7 +4304,7 @@ jQuery(document).ready(function() {
 						   			
 						   			// create fast search results div
 									jQuery('<div/>', {
-						   				class:	"search_fast_results"
+						   				'class':	"search_fast_results"
 						   			})
 						   				.append(jQuery('<div/>', {
 						   					id:		"loading_animation"
@@ -4342,13 +4348,13 @@ jQuery(document).ready(function() {
 										   					id:		"results"
 										   				})
 										   					.append(jQuery('<table/>', {
-										   						class:		"list"
+										   						'class':		"list"
 										   					})
 										   						.append(jQuery('<tr/>', {
 										   							
 										   						})
 										   							.append(jQuery('<td/>', {
-											   							class:		"head"
+											   							'class':		"head"
 											   						})))).appendTo('div[class="search_fast_results"]');
 										   				
 										   				// show the first ten results
@@ -4368,7 +4374,7 @@ jQuery(document).ready(function() {
 										   						
 										   					})
 											   					.append(jQuery('<td/>', {
-											   						class:		css_class
+											   						'class':		css_class
 											   					})
 											   						.append(jQuery('<a/>', {
 											   							href:		'commsy.php?cid=' + getURLParam('cid') + '&mod=' + element.type + '&fct=detail&iid=' + index + '&search_path=true',
@@ -4382,7 +4388,7 @@ jQuery(document).ready(function() {
 										   					
 										   				}).append(
 										   					jQuery('<td/>', {
-									   							class:		'head'
+									   							'class':		'head'
 									   						})).appendTo('div[class="search_fast_results"] div[id="results"] table');
 									   					
 									   					jQuery('<tr/>', {
@@ -4469,12 +4475,12 @@ jQuery(document).ready(function() {
 									
 								}).append(
 									jQuery('<div/>', {
-										class: 'profile_title',
+										'class': 'profile_title',
 										style: 'float: right;'
 									}).append(
 										jQuery('<a/>', {
 											id: 'search_overlay_close',
-											class: 'titlelink',
+											'class': 'titlelink',
 											href: '#',
 											text: 'X'
 										}))).append(
@@ -4505,22 +4511,22 @@ jQuery(document).ready(function() {
 					// generate config box
 					jQuery('<div/>', {
 						text: search_lang_view_options,
-						class: 'search_overlay'
+						'class': 'search_overlay'
 					}).append(
 						jQuery('<div/>', {
 							
 						}).append(
 							jQuery('<div/>', {
-								class: 'search_overlay_config_label',
+								'class': 'search_overlay_config_label',
 								text: search_lang_view_options_rubric
 							}).append(
 								jQuery('<input/>', {
 									id: 'search_overlay_config_form_categorize',
-									class: 'search_overlay_config_form',
+									'class': 'search_overlay_config_form',
 									type: 'checkbox'
 								}))).append(
 							jQuery('<div/>', {
-								class: 'search_overlay_config_label'
+								'class': 'search_overlay_config_label'
 							}).append(
 								jQuery('<span/>', {
 									id: 'search_overlay_config_form_per_text',
@@ -4528,7 +4534,7 @@ jQuery(document).ready(function() {
 								})).append(
 								jQuery('<input/>', {
 									id: 'search_overlay_config_form_per_rubric',
-									class: 'search_overlay_config_form',
+									'class': 'search_overlay_config_form',
 									type: 'input',
 									size: 2,
 									style: 'margin: 1px;',
@@ -4541,13 +4547,13 @@ jQuery(document).ready(function() {
 					// generate restriction box
 					jQuery('<div/>', {
 						text: search_lang_restriction_options,
-						class: 'search_overlay'
+						'class': 'search_overlay'
 					}).append(
 						jQuery('<div/>', {
 							
 						}).append(
 							jQuery('<div/>', {
-								class: 'search_overlay_config_label',
+								'class': 'search_overlay_config_label',
 								text: search_lang_restriction_categories
 							}).append(
 								jQuery('<div/>', {
@@ -4648,7 +4654,7 @@ jQuery(document).ready(function() {
 						}
 						jQuery('<div/>', {
 							id: 'search_overlay_rubric_' + element,
-							class: 'search_overlay',
+							'class': 'search_overlay',
 							text: search_lang_rubrics[index]
 						}).append(
 							jQuery('<span/>', {
@@ -4718,7 +4724,7 @@ jQuery(document).ready(function() {
 				   					jQuery('<tr/>', {
 				   					}).append(
 				   						jQuery('<td/>', {
-				   							class: css_class,
+				   							'class': css_class,
 				   							style: 'width: 25%;'
 				   						}).append(
 			   								jQuery('<a/>', {
@@ -4729,7 +4735,7 @@ jQuery(document).ready(function() {
 				   								html: images
 				   							}))).append(
 				   						jQuery('<td/>', {
-				   							class: css_class,
+				   							'class': css_class,
 				   							text: element_entry.modification_date
 				   						})).appendTo(jQuery('div[id="search_overlay_rubric_' + element + '"] table'));
 				   					
@@ -4784,7 +4790,7 @@ jQuery(document).ready(function() {
 				// display results
 				jQuery('<div/>', {
 					id: 'search_overlay_rubric_none',
-					class: 'search_overlay',
+					'class': 'search_overlay',
 					text: search_lang_uncategorized
 				}).append(
 					jQuery('<span/>', {
@@ -4851,7 +4857,7 @@ jQuery(document).ready(function() {
 	   					jQuery('<tr/>', {
 	   					}).append(
 	   						jQuery('<td/>', {
-	   							class: css_class,
+	   							'class': css_class,
 	   							style: 'width: 25%;'
 	   						}).append(
 	   							jQuery('<a/>', {
@@ -4862,7 +4868,7 @@ jQuery(document).ready(function() {
 	   								html: images
 	   							}))).append(
 	   						jQuery('<td/>', {
-	   							class: css_class,
+	   							'class': css_class,
 	   							text: element_entry.modification_date
 	   						})).appendTo(jQuery('div[id="search_overlay_rubric_none"] table'));
 	   					
