@@ -151,11 +151,12 @@
 			<div class="column_95">
 				<p>
 					 {if $item.article_unread > 0}
-					 	<span class="strong">{$item.article_unread}</span>
+<!--					 	<span class="strong">{$item.article_unread}</span> -->
+					 	{$item.article_unread}
 					 {else}
 					 	{$item.article_unread}
 					 {/if}
-					 ({$item.article_count})
+					  / {$item.article_count}
 				</p>
 			</div>
 
