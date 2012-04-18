@@ -2645,9 +2645,10 @@ a#tm_user {
     text-shadow: #2E2D2E 0 1px;
     }
 
-a#tm_user:hover {
-    color: #2E2D2E;
-    text-shadow: none;
+a#tm_user:hover,
+a.tm_user_hover {
+    color: #2E2D2E !important;
+    text-shadow: none !important;
     background: url(img/tm_hover_active.jpg) repeat-x;
     }
 
@@ -2731,3 +2732,8 @@ a.tm_di_ground:hover, .tm_di_ground a:hover {
     color: #5288C9;
     text-decoration: none;
     }
+
+#tm_menus {
+	margin: 0 auto;
+	width: 1000px;
+	}

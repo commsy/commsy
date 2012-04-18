@@ -11,7 +11,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 		
 		init: function(commsy_functions, parameters) {
 			// set preconditions
-			this.setPreconditions(commsy_functions, this.setupMenus, {handle: this, commsy_functions: commsy_functions, objects: parameters.objects});
+			this.setPreconditions(commsy_functions, this.setupMenus, {handle: this, objects: parameters.objects});
 		},
 
 		setPreconditions: function(commsy_functions, callback, parameters) {
@@ -23,36 +23,40 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 		},
 
 		setupMenus: function(preconditions, parameters) {
-			var commsy_functions = parameters.commsy_functions;
 			var handle = parameters.handle;
 			var objects = parameters.objects;
 			
 			// register all trigger
 			jQuery.each(objects, function() {
 				// determe trigger offset
-				var offset = this.trigger.offset();
+				//var offset = this.trigger.offset();
 				
 				// reposition menu
-				this.menu.offset({top: offset.top + this.trigger.outerHeight(), left: offset.left - this.trigger.css('padding-left').substr(0, 2)});
+				//this.menu.offset({top: offset.top + this.trigger.outerHeight(), left: offset.left - this.trigger.css('padding-left').substr(0, 2)});
 				
-				this.trigger.bind('hover', {commsy_functions: commsy_functions, handle: handle, menu: this.menu}, handle.onHover);
+				this.trigger.bind('click', {menu: this.menu, trigger: this.trigger, active_class: this.active_class}, handle.onClick);
 			});
 		},
 		
-		onHover: function(event) {
-			var commsy_functions = event.data.commsy_functions;
-			var handle = event.data.handle;
+		onClick: function(event) {
 			var menu = event.data.menu;
-			var trigger = jQuery(event.target);
+			var trigger = event.data.trigger;
+			var active_class = event.data.active_class;
 			
-			if(event.type === 'mouseenter') {
+			
+			if(menu.css('display') === 'none') {
 				// show
 				menu.show();
-			} else {
 				
+				trigger.addClass(active_class);
+			} else {
 				// hide
 				menu.hide();
+				
+				trigger.removeClass(active_class);
 			}
+			
+			return false;
 		}
 	};
 });

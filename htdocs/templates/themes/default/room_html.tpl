@@ -4,16 +4,14 @@
 	<div id="top_menu">
 		<div id="tm_wrapper">
 			<div id="tm_icons_bar">
-				<a href="" id="tm_settings" title="Einstellungen">&nbsp;</a>
-				<a href="" id="tm_clipboard" title="Zwischenablage">&nbsp;</a>
 				{if !$environment.is_guest}<a href="" id="tm_logout" title="Logout">&nbsp;</a>{/if}
 
 				<div class="clear"></div>
 			</div>
-
+				
 			<div id="tm_pers_bar">
 				<a href="" id="tm_user">
-					<span class="tm_dropdown">
+					{*<span class="tm_dropdown">*}
 						{* login / logout *}
 						{if !$environment.is_guest}
 							___COMMON_WELCOME___, {$environment.username|truncate:20}
@@ -37,10 +35,17 @@
 							<span class="mm_br">___COMMON_WELCOME___, {$environment.username|truncate:12}</span>
 						{/if}
 						*}
-					</span>
+					{*</span>*}
 				</a>
 			</div>
+			
+			<div id="tm_icons_bar">
+				<a href="" id="tm_settings" title="Einstellungen">&nbsp;</a>
+				<a href="" id="tm_clipboard" title="Zwischenablage">&nbsp;</a>
 
+				<div class="clear"></div>
+			</div>
+					
 			<div id="tm_breadcrumb">
 				<a href="">CommSy Projekt<span class="tm_bcb_next">CommSy Community</span><!--<span class="tm_bcb_next">CommSy Community</span>--></a>
 			</div>
@@ -52,7 +57,6 @@
 	<div id="tm_menus">
 		<div id="tm_dropmenu_breadcrumb" class="tm_dropmenu hidden">
 			<div class="tm_drop_item">
-
 					<a href="" class="tm_di_ground">CommSy Projekt</a>
 
 			</div>
