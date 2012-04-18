@@ -97,10 +97,9 @@ frame and header
 
 #popup_w3col {
 	margin: 182px auto auto;
-    border-top: 2px solid #7FB3E2;
     width: 979px;
-    background: url(img/popup_bg.jpg) repeat-x #7FB3E2;
 	position: relative;
+    background: url(img/tm_hover_active.jpg) repeat-x #eaeaea;
     }
 
 #popup {
@@ -117,16 +116,24 @@ frame and header
 	}
 
 #popup_head {
-    padding-bottom: 10px;
-    border-bottom: 1px solid #767676;
+    padding: 10px;
+    /*border-bottom: 1px solid #767676;*/
     }
+
+#popup_head h2 {
+    /*color: #2A3B59;*/
+    font-size: 12px;
+    text-shadow: #BCDEFD 0 1px;
+    /*float: left;*/
+    }
+
 
 #popup_content ul.dynatree-container a {
 	color: #555555;
 }
 
 #popup h2 {
-    color: #2A3B59;
+    /*color: #2A3B59;*/
     font-size: 12px;
     text-shadow: #BCDEFD 0 1px;
     /*float: left;*/

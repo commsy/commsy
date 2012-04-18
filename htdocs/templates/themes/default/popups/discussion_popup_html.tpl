@@ -1,28 +1,28 @@
 <div id="popup_wrapper">
 	<div id="popup_background"></div>
 	<div id="popup_w3col">
-		<div id="popup">
-
 			<div id="popup_head">
-				<h2>Neue Diskussion erstellen</h2>
 				<a id="popup_close" href="" title="___COMMON_CLOSE___"><img src="{$basic.tpl_path}img/pop_close_btn.gif" alt="___COMMON_CLOSE___" /></a>
+				<h2>Neue Diskussion erstellen</h2>
 
 				<div class="clear"> </div>
 			</div>
+		<div id="popup">
+
 
 			<div id="popup_content">
 
 				<div id="content_row_three">
 					<div class="input_row">
 						<span class="input_label">Titel</span> <input type="text" value="{if isset($item.title)}{$item.title}{/if}" name="form_data[title]" class="size_200 mandatory" />
-						
+
 						{if $popup.edit == false}
 							<span class="input_label">Art der Diskussion</span>
 							<input type="radio" name="form_data[discussion_type]" value="1" checked="checked">___DISCUSSION_SIMPLE___
 							<input type="radio" name="form_data[discussion_type]" value="2">___DISCUSSION_THREADED___
 						{/if}
 					</div>
-					
+
 					{if $popup.edit == false}
 						<div id="pop_editor">
 							<h2 id="pop_editor_head">Initialbeitrag der Diskussion</h2
@@ -76,7 +76,7 @@
 								<div class="clear"> </div>
 							</div>
 						{/if}
-						
+
 						<div class="settings_area{if $popup.edit == false} hidden{/if}">
 							{if $popup.config.with_activating}
 								<input type="checkbox" name="form_data[private_editing]" value="1"{if $item.private_editing == true} checked="checked"{/if}/>{i18n tag=RUBRIC_PUBLIC_NO param1=$popup.user.fullname}<br/>
@@ -100,14 +100,14 @@
 									}
 									*}
 								{/if}
-							{/if}		
+							{/if}
 						</div>
-						
+
 						{if isset($popup.buzzwords)}
 							<div class="settings_area hidden">
 								<div id="buzzwords_unassigned_title"><h2>nicht zugewiesen</h2></div>
 								<div id="buzzwords_assigned_title"><h2>zugewiesen</h2></div>
-								
+
 								{* display all not assigned *}
 								<ul id="buzzwords_unassigned" class="popup_buzzword_list">
 									{foreach $popup.buzzwords as $buzzword}
@@ -119,7 +119,7 @@
 										{/if}
 									{/foreach}
 								</ul>
-								
+
 								{* display all assigned *}
 								<ul id="buzzwords_assigned" class="popup_buzzword_list">
 									{foreach $popup.buzzwords as $buzzword}
@@ -131,11 +131,11 @@
 										{/if}
 									{/foreach}
 								</ul>
-								
+
 								<div class="clear"></div>
 							</div>
 						{/if}
-						
+
 						{if isset($popup.tags)}
 							<div class="settings_area hidden">
 								<div id="tag_tree">
@@ -169,7 +169,7 @@
 				<div id="content_row_four">
 					<div id="crt_actions_area">
 						<input id="popup_button_create" class="popup_button" type="button" name="" value="Diskussion anlegen" />
-						<input id="popup_button_abort" class="popup_button" type="button" name="" value="abbrechen" /> 
+						<input id="popup_button_abort" class="popup_button" type="button" name="" value="abbrechen" />
 					</div>
 				</div>
 
