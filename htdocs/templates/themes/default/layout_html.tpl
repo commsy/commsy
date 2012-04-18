@@ -40,9 +40,9 @@
 </head>
 
 <body>
+	{block name=top_menu}{/block}
     <div id="wrapper">
-		
-		{block name=top_menu}{/block}
+
 
         <div id="header"> <!-- Start header -->
             <div id="logo_area">
