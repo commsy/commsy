@@ -196,6 +196,13 @@ rowset and content
     background: url(img/pop_content_bg.jpg) repeat-x left bottom #E8E8E8;
     }
 
+div#tag_tree input {
+	margin: 0px 5px 0px 0px;
+	position: relative;
+	top: 1px;
+	vertical-align: top;
+	}
+
 .tab_navigation {
     background: url(img/pop_tabnav_bg.jpg) left bottom repeat-x #D3D3D3;
     padding: 10px 0px 0px 10px;
@@ -2600,7 +2607,7 @@ top-bar, breadcrumb and settings
 #tm_breadcrumb {
     background: url(img/tm_separator.jpg) no-repeat;
     height: 27px;
-    padding: 11px 0px 0px 2px;
+    padding: 11px 0px 0px 0px;
     }
 
 #tm_breadcrumb a {

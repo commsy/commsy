@@ -101,23 +101,34 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 						
 						var dynatree = jQuery('div[id="tag_tree"]').dynatree('getTree');
 						
-						// expand all nodes
+						// expand all nodes and add checkbox inputs
 						dynatree.visit(function(node) {
 							node.expand(true);
+							
+							// check bold
+							if(node.data.title.substr(0, 3) === '<b>') {
+								node.data.title = '<input type="checkbox" checked="checked"/><span>' + node.data.title + '</span>';
+							} else {
+								node.data.title = '<input type="checkbox"/><span>' + node.data.title + '</span>';
+							}
+							
+							// re-render
+							node.render();
 						});
 						
 						// override onclick
 						dynatree.options.onClick = function(node, event) {
 							// toggle bold
-							var title = node.data.title;
+							/<span>(.*)<\/span>/.exec(node.data.title);
+							var title = RegExp.$1;
 							
 							// check bold
-							if(title.substr(0, 3) === '<b>') {
+							if(node.data.title.substr(0, 3) === '<b>') {
 								// remove
-								node.data.title = title.substr(3, title.length - 7);
+								node.data.title = '<input type="checkbox"/><span>' + title + '</span>';
 							} else {
 								// add
-								node.data.title = '<b>' + title + '</b>';
+								node.data.title = '<b><input type="checkbox" checked="checked"/><span>' + title + '</span></b>';
 							}
 							
 							// re-render
