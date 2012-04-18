@@ -1,13 +1,18 @@
 {extends file="room_list_html.tpl"}
 
 {block name=room_list_header}
+		{if $room.assessment}
+			{$w = 295}
+		{else}
+			{$w = 335}
+		{/if}
 	<div class="table_head">
 		{if $list.sorting_parameters.sort_title == "up"}
-		 	<h3 class="w_295"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_title_link}" id="sort_up"><strong>___COMMON_TITLE___</strong></a></h3>
+		 	<h3 class="w_{$w}"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_title_link}" id="sort_up"><strong>___COMMON_TITLE___</strong></a></h3>
 		{elseif $list.sorting_parameters.sort_title == "down"}
-		 	<h3 class="w_295"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_title_link}" id="sort_down"><strong>___COMMON_TITLE___</strong></a></h3>
+		 	<h3 class="w_{$w}"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_title_link}" id="sort_down"><strong>___COMMON_TITLE___</strong></a></h3>
 		{else}
-		 	<h3 class="w_295"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_title_link}" class="sort_none">___COMMON_TITLE___</a></h3>
+		 	<h3 class="w_{$w}"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_title_link}" class="sort_none">___COMMON_TITLE___</a></h3>
 		{/if}
 		<h3 class="w_85">___DISCUSSION_ARTICLES___</h3>
 		{if $list.sorting_parameters.sort_latest == "up"}
@@ -34,7 +39,12 @@
 
 {block name=room_list_content}
 	{foreach $discussion.list_content.items as $item }
-		<div class="{if $item@iteration is odd}row_odd{else}row_even{/if} {if $item@iteration is odd}odd_sep_discussion{else}even_sep_discussion{/if}"> <!-- Start Reihe -->
+		{if $room.assessment}
+			{$sep = "discussion_assessment"}
+		{else}
+			{$sep = "discussion"}
+		{/if}
+		<div class="{if $item@iteration is odd}row_odd{else}row_even{/if} {if $item@iteration is odd}odd_sep_{$sep}{else}even_sep_{$sep}{/if}"> <!-- Start Reihe -->
 			<div class="column_20">
 				<p>
 				{if $item.noticed.show_info}
@@ -101,7 +111,12 @@
 				{/if}
 				</p>
 			</div>
-			<div class="column_244">
+			{if $room.assessment}
+				{$w = 244}
+			{else}
+				{$w = 280}
+			{/if}
+			<div class="column_{$w}">
 				<p>
 					{if $item.activated}
 						<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&{$environment.params}&iid={$item.iid}">{$item.title}</a>
@@ -133,9 +148,14 @@
 				{/if}
 			</div>
 
-			<div class="column_90">
+			<div class="column_95">
 				<p>
-					{$item.article_count} ({$item.article_unread} ___COMMON_NEW_LOWER___)
+					 {if $item.article_unread > 0}
+					 	<span class="strong">{$item.article_unread}</span>
+					 {else}
+					 	{$item.article_unread}
+					 {/if}
+					 ({$item.article_count})
 				</p>
 			</div>
 
@@ -147,13 +167,15 @@
 					{$item.modificator}
 				</p>
 			</div>
-			<div class="column_100">
-				<p>
-					{foreach $item.assessment_array as $star_text}
-						<img src="{$basic.tpl_path}img/star_{$star_text}.gif" alt="*" />
-					{/foreach}
-				</p>
-			</div>
+			{if $room.assessment}
+				<div class="column_90">
+					<p>
+						{foreach $item.assessment_array as $star_text}
+							<img src="{$basic.tpl_path}img/star_{$star_text}.gif" alt="*" />
+						{/foreach}
+					</p>
+				</div>
+			{/if}
 			<div class="clear"> </div>
 		</div> <!-- Ende Reihe -->
 	{/foreach}

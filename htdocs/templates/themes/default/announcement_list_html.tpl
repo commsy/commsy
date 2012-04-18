@@ -103,7 +103,7 @@
 			{if $room.assessment}
 				{$w = 324}
 			{else}
-				{$w = 344}
+				{$w = 364}
 			{/if}
 
 			<div class="column_{$w}">

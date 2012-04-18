@@ -138,9 +138,9 @@
 				</p>
 			</div>
 			{if !$room.assessment && !$room.workflow}
-				{$w = 344}
+				{$w = 364}
 			{elseif $room.assessment && !$room.workflow}
-				{$w = 304}
+				{$w = 324}
 			{elseif !$room.assessment && $room.workflow}
 				{$w = 304}
 			{else}
@@ -199,7 +199,7 @@
 				</div>
 			{/if}
 			{if $room.assessment}
-			<div class="column_100">
+			<div class="column_90">
 				<p>
 					{foreach $item.assessment_array as $star_text}
 						<img src="{$basic.tpl_path}img/star_{$star_text}.gif" alt="*" />
