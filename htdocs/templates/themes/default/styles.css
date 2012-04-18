@@ -2693,7 +2693,7 @@ a#tm_user:hover .tm_dropdown {
     }
 
 .tm_dropmenu {
-    width: 315px;
+    width: 1000px;
     padding-bottom: 12px;
     background: url(img/tm_dropmenu_bg.png) bottom left no-repeat;
 	position: absolute;
@@ -2706,7 +2706,7 @@ a#tm_user:hover .tm_dropdown {
 
 .tm_di_ground {
     background: url(img/tm_di_ground_bg.jpg) #DFDFDF repeat-x;
-    width: 275px;
+    width: 960px;
     margin: 0px auto;
     padding: 10px;
     color: #5288C9;
