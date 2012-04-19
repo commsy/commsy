@@ -8,7 +8,7 @@
 
 				<div class="clear"></div>
 			</div>
-				
+
 			<div id="tm_pers_bar">
 				<a href="" id="tm_user">
 					{*<span class="tm_dropdown">*}
@@ -38,22 +38,22 @@
 					{*</span>*}
 				</a>
 			</div>
-			
+
 			<div id="tm_icons_bar">
 				<a href="" id="tm_settings" title="Einstellungen">&nbsp;</a>
 				<a href="" id="tm_clipboard" title="Zwischenablage">&nbsp;</a>
 
 				<div class="clear"></div>
 			</div>
-					
+
 			<div id="tm_breadcrumb">
-				<a href="">CommSy Projekt<span class="tm_bcb_next">CommSy Community</span><!--<span class="tm_bcb_next">CommSy Community</span>--></a>
+				<a href="">Raum wechseln: CommSy Community </a>
 			</div>
 
 			<div class="clear"></div>
 		</div>
 	</div>
-	
+
 	<div id="tm_menus">
 		<div id="tm_dropmenu_breadcrumb" class="tm_dropmenu hidden">
 			<div class="tm_drop_item">
