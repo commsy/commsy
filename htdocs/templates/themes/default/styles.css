@@ -107,6 +107,14 @@ frame and header
 	width: 719px;
     }
 
+.tm_di_ground_solid div#popup {
+	width: 940px;
+	}
+
+#popup_tabcontent {
+	color: #393939;
+	}
+
 #popup_background {
 	background-color: #000000;
 	height: 100%;
@@ -1491,6 +1499,22 @@ forms
     padding-bottom: 10px;
     }
 
+.input_container {
+	margin-left: 180px;
+	}
+
+.tm_di_ground_solid fieldset {
+	margin-bottom: 10px;
+	}
+
+.input_row label {
+	display: block;
+	float: left;
+	position: relative;
+	top: 2px;
+	width: 180px;
+	}
+
 .size_200 {
     width: 190px;
     background: url(img/size_200_bg.jpg) no-repeat;
@@ -2703,15 +2727,16 @@ a#tm_user:hover .tm_dropdown {
     width: 1000px;
     padding-bottom: 12px;
     background: url(img/tm_dropmenu_bg.png) bottom left no-repeat;
-	position: absolute;
 	z-index: 6;
+	margin: 0 auto;
     }
 
 .tm_drop_item {
     background: url(img/tm_dropmenu_frame.png) repeat-y;
     }
 
-.tm_di_ground {
+.tm_di_ground,
+.tm_di_ground_solid {
     background: url(img/tm_di_ground_bg.jpg) #DFDFDF repeat-x;
     width: 960px;
     margin: 0px auto;
@@ -2719,6 +2744,7 @@ a#tm_user:hover .tm_dropdown {
     color: #5288C9;
     text-decoration: none;
     display: block;
+	position: relative;
     }
 
 .tm_di_ground:hover {
@@ -2741,6 +2767,6 @@ a.tm_di_ground:hover, .tm_di_ground a:hover {
     }
 
 #tm_menus {
-	margin: 0 auto;
-	width: 1000px;
+	/*margin: 0 auto;
+	width: 1000px;*/
 	}

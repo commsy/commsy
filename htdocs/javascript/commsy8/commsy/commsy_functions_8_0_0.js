@@ -176,10 +176,12 @@ define(["libs/jQuery/jquery-1.7.1.min"], function() {
 			var objects = [
 				{	trigger:		jQuery('div#top_menu a#tm_user'),
 					menu:			jQuery('div#tm_menus div#tm_dropmenu_pers_bar'),
-					active_class:	'tm_user_hover'},
+					active_class:	'tm_user_hover',
+					callback:		'onClickPersBar'},
 				{	trigger:		jQuery('div#top_menu div#tm_breadcrumb a'),
 					menu:			jQuery('div#tm_menus div#tm_dropmenu_breadcrumb'),
-					active_class:	'tm_user_hover'}
+					active_class:	'tm_user_hover',
+					callback:		''}
 			];
 			this.registerModule('commsy/top_menu_handler', {objects: objects});
 		},

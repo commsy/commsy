@@ -8,7 +8,7 @@
 
 				<div class="clear"></div>
 			</div>
-
+				
 			<div id="tm_pers_bar">
 				<a href="" id="tm_user">
 					{*<span class="tm_dropdown">*}
@@ -38,27 +38,45 @@
 					{*</span>*}
 				</a>
 			</div>
-
+			
 			<div id="tm_icons_bar">
-				<a href="" id="tm_settings" title="Einstellungen">&nbsp;</a>
-				<a href="" id="tm_clipboard" title="Zwischenablage">&nbsp;</a>
+				<a href="" id="tm_settings" title="Meine Widgets">&nbsp;</a>
+				<a href="" id="tm_settings" title="Mein Kalender">&nbsp;</a>
+				<a href="" id="tm_clipboard" title="Meine Ablage">&nbsp;</a>
 
 				<div class="clear"></div>
 			</div>
-
+					
 			<div id="tm_breadcrumb">
-				<a href="">Raum wechseln: CommSy Community </a>
+				<a href="">{$room.room_information.portal_name}<span class="tm_bcb_next">{$room.room_information.room_name}</span><!--<span class="tm_bcb_next">CommSy Community</span>--></a>
 			</div>
 
 			<div class="clear"></div>
 		</div>
 	</div>
-
+	
 	<div id="tm_menus">
 		<div id="tm_dropmenu_breadcrumb" class="tm_dropmenu hidden">
 			<div class="tm_drop_item">
-					<a href="" class="tm_di_ground">CommSy Projekt</a>
-
+				<div class="tm_di_ground">
+					<p>Sie sind hier:</p>
+					
+					{foreach $room.breadcrumb_information as $crumb}
+						{if !$crumb@first}
+							<span class="tm_bcb_next">
+						{/if}
+						
+						{if !$crumb@last}
+							<a href="commsy.php?cid={$crumb.id}&mod=home&fct=index">{$crumb.title}</a>
+						{else}
+							<strong>{$crumb.title}</strong>
+						{/if}
+						
+						{if !$crumb@first}
+							</span>
+						{/if}
+					{/foreach}
+				</div>
 			</div>
 			<div class="tm_drop_item">
 				<div class="tm_di_ground">
@@ -71,13 +89,7 @@
 		</div>
 
 
-		<div id="tm_dropmenu_pers_bar" class="tm_dropmenu hidden">
-			<div class="tm_drop_item">
-				<a href="" class="tm_di_ground">Mein Schreibtisch</a>
-			</div>
-			<div class="tm_drop_item">
-				<a href="" class="tm_di_ground">Profil bearbeiten</a>
-			</div>
+		<div id="tm_dropmenu_pers_bar" class="hidden">
 		</div>
 	</div>
 {/block}

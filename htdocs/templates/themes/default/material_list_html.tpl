@@ -142,7 +142,7 @@
 			{elseif $room.assessment && !$room.workflow}
 				{$w = 324}
 			{elseif !$room.assessment && $room.workflow}
-				{$w = 324}
+				{$w = 304}
 			{else}
 				{$w = 244}
 			{/if}

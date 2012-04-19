@@ -89,6 +89,9 @@
 
 			// room information
 			$this->assign('room', 'room_information', $this->getRoomInformation());
+			
+			// breadcrumb
+			$this->assign('room', 'breadcrumb_information', $this->getBreadcrumbInformation());
 
 			// sidebar information
 			$this->setupSidebarInformation();
@@ -104,6 +107,67 @@
 
 			// set workflow status
 			$this->assign('room', 'workflow', $current_context->withWorkflow());
+		}
+		
+		private function getBreadcrumbInformation() {
+			$return = array();
+			
+			$current_user = $this->_environment->getCurrentUserItem();
+			$portal_item = $this->_environment->getCurrentPortalItem();
+			$current_context = $this->_environment->getCurrentContextItem();
+			
+			// server
+			if($current_user->isRoot()) {
+				$server_item = $this->_environment->getServerItem();
+				$return[] = array(
+					'id'	=> $server_item->getItemID(),
+					'title'	=> $server_item->getTitle()
+				);
+			}
+			
+			// portal
+			$return[] = array(
+				'id'	=> $portal_item->getItemID(),
+				'title'	=> $portal_item->getTitle()
+			);
+			
+			// community
+			if($this->_environment->inProjectRoom()) {
+				$community_list = $current_context->getCommunityList();
+				$community_item = $community_list->getFirst();
+				if(!empty($community_item)) {
+					$return[] = array(
+						'id'	=> $community_item->getItemID(),
+						'title'	=> $community_item->getTitle()
+					);
+				}
+			
+			// group groom
+			} elseif($this->_environment->inGroupRoom()) {
+				$project_item = $current_context->getLinkedProjectItem();
+				$community_list = $project_item->getCommunityList();
+				$community_item = $community_list->getFirst();
+				if(!empty($community_item)) {
+					$return[] = array(
+						'id'	=> $community_item->getItemID(),
+						'title'	=> $community_item->getTitle()
+					);
+				}
+				
+				// project
+				$return[] = array(
+					'id'	=> $project_item->getItemID(),
+					'title'	=> $project_item->getTitle()
+				);
+			}
+			
+			// room
+			$return[] = array(
+				'id'	=> $current_context->getItemID(),
+				'title'	=> $current_context->getTitle()
+			);
+			
+			return $return;
 		}
 
 		private function getAddonInformation() {
@@ -429,7 +493,12 @@
 			// page impressions
 			$return['page_impressions'] = $context_item->getPageImpressions($time_spread);
 
-			//$this->_translator->getMessage('ACTIVITY_ACTIVE_MEMBERS_DESC',$time_spread)
+			// room name
+			$return['room_name'] = $context_item->getTitle();
+			
+			// portal name
+			$return['portal_name'] = $this->_environment->getCurrentPortalItem()->getTitle();
+			
 			return $return;
 		}
 
