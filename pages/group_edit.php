@@ -28,7 +28,6 @@ if(isset($_GET['linked_item'])){
    $entry_new_array[] = $_GET['linked_item'];
    $session->setValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids',$entry_new_array);
 }
-
 // Function used for cleaning up the session. This function
 // deletes ALL session variables this page writes.
 // Function used for redirecting to connected rubrics
@@ -313,9 +312,13 @@ else {
             }
 
             $group_item->setDiscussionNotificationArray($discussion_notification_array);
-            if ($session->issetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids')){
-               $group_item->setLinkedItemsByIDArray(array_unique($session->getValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids')));
-               $session->unsetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids');
+
+            // If item is new, do not set linked items
+            if(!$item_is_new){
+	            if ($session->issetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids')){
+	               $group_item->setLinkedItemsByIDArray(array_unique($session->getValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids')));
+	               $session->unsetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids');
+	            }
             }
 
             // Save item
