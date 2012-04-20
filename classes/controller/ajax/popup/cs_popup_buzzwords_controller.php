@@ -16,6 +16,10 @@ class cs_popup_buzzwords_controller {
 		return $this->_return;
 	}
 	
+	public function getHTML() {
+	
+	}
+	
 	public function getFieldInformation() {
 		return array(
 			array(	'name'		=> 'title',

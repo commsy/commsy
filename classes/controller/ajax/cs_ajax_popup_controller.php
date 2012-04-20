@@ -48,6 +48,7 @@
 			$class_name = 'cs_popup_' . $module . '_controller';
 			$this->_popup_controller = new $class_name($this->_environment, $this);
 			
+			$this->_popup_controller->getHTML();
 			$this->_popup_controller->assignTemplateVars();
 			
 			// TODO: buzzwords not needed for tag overlay, tags not needed for buzzword overlay, etc...

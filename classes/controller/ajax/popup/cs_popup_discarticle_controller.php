@@ -12,6 +12,10 @@ class cs_popup_discarticle_controller {
 		$this->_popup_controller = $popup_controller;
 	}
 	
+	public function getHTML() {
+	
+	}
+	
 	public function edit($item_id) {
 		$discarticle_manager = $this->_environment->getDiscussionArticleManager();
 		$discarticle_item = $discarticle_manager->getItem($item_id);

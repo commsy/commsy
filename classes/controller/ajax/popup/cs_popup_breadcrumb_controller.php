@@ -21,6 +21,10 @@ class cs_popup_breadcrumb_controller {
 
 	}
 
+	public function getHTML() {
+	
+	}
+	
 	public function getReturn() {
 		return $this->_return;
 	}

@@ -3,6 +3,9 @@ class cs_popup_profile_controller {
 	private $_environment = null;
 	private $_popup_controller = null;
 	private $_return = '';
+	private $_user = null;
+	private $_config = array();
+	private $_data = array();
 	
 	/**
 	* constructor
@@ -18,6 +21,135 @@ class cs_popup_profile_controller {
 	
 	public function create($form_data) {
 		
+	}
+	
+	public function getHTML() {
+		$current_portal_item = $this->_environment->getCurrentPortalItem();
+		
+		// set configuration
+		$account = array();
+		
+		// set user item
+		if($this->_environment->inCommunityRoom() || $this->_environment->inProjectRoom()) {
+			$this->_user = $this->_environment->getPortalUserItem();
+		} else {
+			$this->_user = $this->_environment->getCurrentUserItem();
+		}
+		
+		// disable merge form only for root
+		$this->_config['show_merge_form'] = true;
+		if(isset($this->_user) && $this->_user->isRoot()) {
+			$this->_config['show_merge_form'] = false;
+		}
+		
+		// auth source
+		if(!isset($current_portal_item)) $current_portal_item = $this->_environment->getServerItem();
+		
+		#$this->_show_auth_source = $current_portal_item->showAuthAtLogin();
+		# muss angezeigt werden, sonst koennen mit der aktuellen Programmierung
+		# keine Acounts mit gleichen Kennungen aber unterschiedlichen Quellen
+		# zusammengelegt werden
+		$this->_config['show_auth_source'] = true;
+		
+		$auth_source_list = $current_portal_item->getAuthSourceListEnabled();
+		if(isset($auth_source_list) && !$auth_source_list->isEmpty()) {
+			$auth_source_item = $auth_source_list->getFirst();
+			
+			while($auth_source_item) {
+				$this->_data['auth_source_array'][] = array(
+					'value'		=> $auth_source_item->getItemID(),
+					'text'		=> $auth_source_item->getTitle());
+				
+				$auth_source_item = $auth_source_list->getNext();
+			}
+		}
+		$this->_data['default_auth_source'] = $current_portal_item->getAuthDefault();
+		
+		// password change form
+		$this->_config['show_password_change_form'] = false;
+		$current_auth_source_item = $current_portal_item->getAuthSource($this->_user->getAuthSource());
+		if(	(isset($current_auth_source_item) && $current_auth_source_item->allowChangePassword()) ||
+			$this->_user->isRoot()) {
+			
+			$this->_config['show_password_change_form'] = true;
+		}
+		
+		// account change form
+		$this->_config['show_account_change_form'] = false;
+		if(	(isset($current_auth_source_item) && $current_auth_source_item->allowChangeUserID()) ||
+			$this->_user->isRoot()) {
+			
+			$this->_config['show_account_change_form'] = true;
+		}
+		
+		// mail form
+		$this->_config['show_mail_change_form'] = false;
+		if($this->_user->isModerator()) {
+			$this->_config['show_mail_change_form'] = true;
+		}
+		
+		// setup room list
+		
+		
+		/*
+		 * 
+      }elseif($this->getProfilePageName() == 'room_list'){
+         $room_manager = $this->_environment->getRoomManager();
+         $own_room_item = $this->_environment->getCurrentUserItem()->getOwnRoom();
+         $checked_item_array = $own_room_item->getCustomizedRoomIDArray();
+         $room_list = $room_manager->getRelatedRoomListForUser($this->_environment->getCurrentUserItem());
+         $room_item = $room_list->getFirst();
+         $unchecked_link_item_array = array();
+         $tmp_link_item_array = array();
+         if (isset($checked_item_array[0])){
+            $customized_list_exists = true;
+         }else{
+            $customized_list_exists = false;
+         }
+         while ($room_item) {
+            if ( !$room_item->isPrivateRoom()
+                 and $room_item->isUser($this->_environment->getCurrentUserItem())
+               ) {
+               $temp_array = array();
+               $temp_array['text']  = $room_item->getTitle();
+               $temp_array['value'] = $room_item->getItemID();
+               if (in_array($room_item->getItemID(),$checked_item_array)){
+                  $tmp_link_item_array[$room_item->getItemID()] = $room_item->getTitle();
+                  $this->_link_item_check_array[] = $room_item->getItemID();
+               } else {
+                  if (!$customized_list_exists){
+                     $this->_link_item_check_array[] = $room_item->getItemID();
+                  }
+                  $unchecked_link_item_array[] = $temp_array;
+               }
+            }
+            $room_item = $room_list->getNext();
+         }
+         $count_sep = 0;
+         foreach ( $checked_item_array as $value ) {
+            if ( $value < 0 ) {
+               $this->_link_item_check_array[] = $value;
+               $tmp_link_item_array[$value] = '----------------------------';
+               $count_sep++;
+            }
+         }
+         for ( $i=$count_sep+1; $i<$count_sep+4; $i++ ) {
+            $temp_array = array();
+            $temp_array['text']  = '----------------------------';
+            $temp_array['value'] = -$i;
+            $unchecked_link_item_array[] = $temp_array;
+         }
+         foreach ($checked_item_array as $id) {
+            if ( !empty($tmp_link_item_array[$id]) ) {
+               $temp_array = array();
+               $temp_array['text']  = $tmp_link_item_array[$id];
+               $temp_array['value'] = $id;
+               $this->_link_item_array[] = $temp_array;
+            }
+         }
+         $this->_link_item_array = array_merge($this->_link_item_array,$unchecked_link_item_array);
+      }
+		 */
 	}
 	
 	public function getReturn() {
@@ -37,6 +169,8 @@ class cs_popup_profile_controller {
 	
 	public function assignTemplateVars() {
 		$translator = $this->_environment->getTranslationObject();
+		$current_user = $this->_environment->getCurrentUserItem();
+		$portal_user = $this->_environment->getPortalUserItem();
 		
 		// general information
 		$general_information = array();
@@ -67,6 +201,12 @@ class cs_popup_profile_controller {
 		
 		// form information
 		$form_information = array();
+		$form_information['account'] = $this->getAccountInformation();
+		$form_information['user'] = $this->getUserInformation();
+		$form_information['newsletter'] = $this->getNewsletterInformation();
+		$form_information['room_list'] = $this->getRoomListInformation();
+		$form_information['config'] = $this->_config;
+		$form_information['data'] = $this->_data;
 		
 		// languages
 		$languages = array();
@@ -90,6 +230,54 @@ class cs_popup_profile_controller {
 		$form_information['languages'] = $languages;
 		
 		$this->_popup_controller->assign('popup', 'form', $form_information);
+	}
+	
+	private function getAccountInformation() {
+		$return = array();
+		
+		// get data from database
+		$return['firstname'] = $this->_user->getFirstname();
+		$return['lastname'] = $this->_user->getLastname();
+		$return['user_id'] = $this->_user->getUserID();
+		$return['language'] = $this->_user->getLanguage();
+		$return['email_account'] = ($this->_user->getAccountWantMail() === 'yes') ? true : false;
+		$return['email_room'] = ($this->_user->getOpenRoomWantMail() === 'yes') ? true : false;
+		$return['new_upload'] = ($this->_user->isNewUploadOn()) ? true : false;
+		$return['auto_save'] = ($this->_user->isAutoSaveOn()) ? true : false;
+		
+        
+         /*
+ elseif (!empty($this->_item)) {
+           
+            $this->_values['auth_source'] = $this->_user->getAuthSource();
+            $this->_values['user_id'] = $this->_user->getUserID();
+            if ( $this->_user->isRoot() ) {
+               $this->_values['user_id_text'] = $this->_user->getUserID();
+            }
+            $this->_values['iid'] = $this->_item->getItemID();
+            
+       
+         } else {
+            include_once('functions/error_functions.php');
+            trigger_error('lost values',E_USER_WARNING);
+         }
+          */
+
+		 
+		
+		return $return;
+	}
+	
+	private function getUserInformation() {
+		
+	}
+	
+	private function getNewsletterInformation() {
+		
+	}
+	
+	private function getRoomListInformation() {
+		
 	}
 	
 	private function cleanup_session($current_iid) {

@@ -2136,6 +2136,10 @@ div#group_profil_picture img{
   display: none;
   }
 
+.autowidth {
+	width: auto !important;
+	}
+
 div.discussion_threaded_tree_subject,
 div.discussion_threaded_tree_creator,
 div.discussion_threaded_tree_date {

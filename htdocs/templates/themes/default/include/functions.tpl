@@ -11,3 +11,5 @@
 		{$user_name}
 	{/if}
 {/function}
+
+{function name=show}{if isset($var) && !empty($var)}{$var}{/if}{/function}

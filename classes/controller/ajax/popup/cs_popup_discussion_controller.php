@@ -12,6 +12,10 @@ class cs_popup_discussion_controller {
 		$this->_popup_controller = $popup_controller;
 	}
 	
+	public function getHTML() {
+	
+	}
+	
 	public function edit($item_id) {
 		$current_context = $this->_environment->getCurrentContextItem();
 		$discussion_manager = $this->_environment->getDiscussionManager();
