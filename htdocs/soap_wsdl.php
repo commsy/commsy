@@ -17,6 +17,14 @@
 <message name='getActiveRoomListOUT'>
   <part name='xml_list' type='xsd:string'/>
 </message>
+<message name='getActiveRoomListForUserIN'>
+  <part name='session_id' type='xsd:string'/>
+  <part name='portal_id' type='xsd:integer'/>
+  <part name='count' type='xsd:integer'/>
+</message>
+<message name='getActiveRoomListForUserOUT'>
+  <part name='xml_list' type='xsd:string'/>
+</message>
 <message name='createUserIN'>
   <part name='session_id' type='xsd:string'/>
   <part name='portal_id' type='xsd:integer'/>
@@ -339,6 +347,10 @@
     <input message='tns:getActiveRoomListIN'/>
     <output message='tns:getActiveRoomListOUT'/>
   </operation>
+  <operation name='getActiveRoomListForUser'>
+    <input message='tns:getActiveRoomListForUserIN'/>
+    <output message='tns:getActiveRoomListForUserOUT'/>
+  </operation>
   <operation name='createUser'>
     <input message='tns:createUserIN'/>
     <output message='tns:createUserOUT'/>
@@ -522,6 +534,17 @@
   </operation>
   <operation name='getActiveRoomList'>
     <soap:operation soapAction='urn:xmethodsCommSy#getActiveRoomList'/>
+      <input>
+        <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+          encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+      </input>
+      <output>
+        <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+          encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+      </output>
+  </operation>
+  <operation name='getActiveRoomListForUser'>
+    <soap:operation soapAction='urn:xmethodsCommSy#getActiveRoomListForUser'/>
       <input>
         <soap:body use='encoded' namespace='urn:xmethodsCommSy'
           encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
