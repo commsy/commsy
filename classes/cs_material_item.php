@@ -994,7 +994,46 @@ function copy () {
       }
       $import_version = $version_list->getNext();
    }
+   
+   $this->_updateInternalLinks($copy);
+   
    return $copy;
+}
+
+function _updateInternalLinks($copy){
+   $old_section_list = $this->_getSectionListForCurrentVersion();
+   $new_section_list = $copy->_getSectionListForCurrentVersion();
+
+   $id_array = array();
+   $id_array[$this->getItemID()] = $copy->getItemID();
+   $old_section_item = $old_section_list->getFirst();
+   while($old_section_item){
+      $new_section_item = $new_section_list->getFirst();
+      while($new_section_item){
+         if($old_section_item->getNumber() == $new_section_item->getNumber()){
+            $id_array[$old_section_item->getItemID()] = $new_section_item->getItemID();
+         }
+         $new_section_item = $new_section_list->getNext();
+      }
+      $old_section_item = $old_section_list->getNext();
+   }
+
+   $this->_updateInternalLinksInText($copy, $id_array);
+   $new_section_item = $new_section_list->getFirst();
+   while($new_section_item){
+      $this->_updateInternalLinksInText($new_section_item, $id_array);
+      $new_section_item = $new_section_list->getNext();
+   }
+}
+
+function _updateInternalLinksInText($item, $id_array){
+   $temp_description = $item->getDescription();
+   foreach($id_array as $old_id => $new_id){
+      $temp_description = str_replace('['.$old_id.']', '['.$new_id.']', $temp_description);
+      $temp_description = str_replace('(:item '.$old_id.':)', '(:item '.$new_id.':)', $temp_description);
+   }
+   $item->setDescription($temp_description);
+   $item->save();
 }
 
 function copyVersion ($id) {
