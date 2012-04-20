@@ -2633,13 +2633,14 @@ top-bar, breadcrumb and settings
     }
 
 #tm_wrapper {
-    margin: 0 auto;
+    background: url(img/tm_separator.jpg) no-repeat;
+	margin: 0 auto;
     width: 980px;
     color: #CCC;
     }
 
 #tm_breadcrumb {
-    background: url(img/tm_separator.jpg) no-repeat;
+    background: url(img/tm_separator.jpg) top right no-repeat;
     height: 27px;
     padding: 11px 0px 0px 0px;
     }
