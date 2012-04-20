@@ -376,6 +376,14 @@ h3.pop_item_navigation {
     font-size: 10px !important;
     }
 
+#profile_content_row_three {
+    padding: 0;
+    /*height: 400px;
+    overflow: auto;*/
+    border-bottom: 1px solid #767676;
+    }
+
+
 #content_row_three {
     padding: 30px 10px;
     /*height: 400px;
@@ -521,12 +529,13 @@ header
 
 #logo_area img {
     padding-left: 10px;
+    height: 50px;
     }
 
 #search_area {
     width: 245px;
     background: url(img/search_area_bg.gif) no-repeat;
-    height: 70px;
+    height: 55px;
     float: left;
     }
 
@@ -564,6 +573,7 @@ header
 #commsy_search {
     background: url(img/search_bg.jpg) no-repeat;
     margin-left: 10px;
+    margin-top: 10px;
     height: 35px;
     }
 

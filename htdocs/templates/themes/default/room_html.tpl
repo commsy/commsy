@@ -8,7 +8,7 @@
 
 				<div class="clear"></div>
 			</div>
-				
+
 			<div id="tm_pers_bar">
 				<a href="" id="tm_user">
 					{*<span class="tm_dropdown">*}
@@ -38,7 +38,7 @@
 					{*</span>*}
 				</a>
 			</div>
-			
+
 			<div id="tm_icons_bar">
 				<a href="" id="tm_settings" title="Meine Widgets">&nbsp;</a>
 				<a href="" id="tm_settings" title="Mein Kalender">&nbsp;</a>
@@ -46,32 +46,32 @@
 
 				<div class="clear"></div>
 			</div>
-					
+
 			<div id="tm_breadcrumb">
-				<a href="">{$room.room_information.portal_name}<span class="tm_bcb_next">{$room.room_information.room_name}</span><!--<span class="tm_bcb_next">CommSy Community</span>--></a>
+				<a href="">___COMMON_GO_BUTTON___: {$room.room_information.room_name}</span><!--<span class="tm_bcb_next">CommSy Community</span>--></a>
 			</div>
 
 			<div class="clear"></div>
 		</div>
 	</div>
-	
+
 	<div id="tm_menus">
 		<div id="tm_dropmenu_breadcrumb" class="tm_dropmenu hidden">
 			<div class="tm_drop_item">
 				<div class="tm_di_ground">
 					<p>Sie sind hier:</p>
-					
+
 					{foreach $room.breadcrumb_information as $crumb}
 						{if !$crumb@first}
 							<span class="tm_bcb_next">
 						{/if}
-						
+
 						{if !$crumb@last}
 							<a href="commsy.php?cid={$crumb.id}&mod=home&fct=index">{$crumb.title}</a>
 						{else}
 							<strong>{$crumb.title}</strong>
 						{/if}
-						
+
 						{if !$crumb@first}
 							</span>
 						{/if}

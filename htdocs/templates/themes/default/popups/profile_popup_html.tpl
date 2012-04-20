@@ -5,14 +5,9 @@
 		<div class="tm_di_ground_solid">
 
 			<div id="popup">
-				<div id="popup_head">
-					<h2>Profil bearbeiten</h2>
-
-					<div class="clear"> </div>
-				</div>
 
 				<div id="popup_content">
-					<div id="content_row_three">
+					<div id="profile_content_row_three">
 						<div class="tab_navigation">
 							<a href="" class="pop_tab_active">___PROFILE_ACCOUNT_DATA___</a>
 							<a href="" class="pop_tab">___PROFILE_USER_DATA___</a>
@@ -50,8 +45,10 @@
 
 										<div class="input_row">
 											<label for="new_password">___USER_PASSWORD_NEW___</label>
-											<input id="new_password" type="text" class="size_200 float-left" />
+											<input id="new_password" type="text" class="size_200" />
+										</div>
 
+										<div class="input_row">
 											<label for="new_password_confirm">___USER_PASSWORD_NEW2___</label>
 											<input id="new_password_confirm" type="text" class="size_200" />
 										</div>
@@ -165,10 +162,10 @@
                     <a href="" class="pop_tab_active">hinzuf&uuml;gen</a>
                     <a href="" class="pop_tab">zusammenlegen</a>
                     <a href="" class="pop_tab">bearbeiten</a>
-                    
+
                     <div class="clear"> </div>
                 </div>
-				
+
 				<div id="popup_tabcontent">
 					<div class="tab">
 						<div id="content_row_one">
@@ -182,23 +179,23 @@
 							&nbsp;
 						</div>
 					</div>
-					
+
 					<div class="tab hidden">
 						___BUZZWORDS_COMBINE_BUTTON___
 					</div>
-					
+
 					<div class="tab hidden">
 						<div id="content_row_one">
 							{foreach $popup.buzzwords as $buzzword}
 								<div class="input_row">
-									<input type="text" value="{$buzzword.name}" class="buzzword_change_name size_200" /> 
-									<input class="popup_button buzzword_change mandatory" type="button" name="form_data[{$buzzword.item_id}]" value="___BUZZWORDS_CHANGE_BUTTON___" /> 
-									<input class="popup_button buzzword_attach" type="button" name="form_data[{$buzzword.item_id}]" value="___COMMON_ATTACH_BUTTON___" /> 
+									<input type="text" value="{$buzzword.name}" class="buzzword_change_name size_200" />
+									<input class="popup_button buzzword_change mandatory" type="button" name="form_data[{$buzzword.item_id}]" value="___BUZZWORDS_CHANGE_BUTTON___" />
+									<input class="popup_button buzzword_attach" type="button" name="form_data[{$buzzword.item_id}]" value="___COMMON_ATTACH_BUTTON___" />
 									<input class="popup_button buzzword_delete" type="button" name="form_data[{$buzzword.item_id}]" value="___COMMON_DELETE_BUTTON___" />
 								</div>
 							{/foreach}
 						</div>
-						
+
 						<div id="content_row_two">
 							&nbsp;
 						</div>
