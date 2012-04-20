@@ -1030,7 +1030,7 @@ function _updateInternalLinksInText($item, $id_array){
    $temp_description = $item->getDescription();
    foreach($id_array as $old_id => $new_id){
       $temp_description = str_replace('['.$old_id.']', '['.$new_id.']', $temp_description);
-      $temp_description = str_replace('(:item '.$old_id.':)', '(:item '.$new_id.':)', $temp_description);
+      $temp_description = str_replace('(:item '.$old_id, '(:item '.$new_id, $temp_description);
    }
    $item->setDescription($temp_description);
    $item->save();
