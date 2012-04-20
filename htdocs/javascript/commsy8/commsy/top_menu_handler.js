@@ -146,6 +146,61 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			return false;
 		},
 		
+		onClickBreadcrumb: function() {
+			var data = {
+				module: 'breadcrumb',
+				iid:	'NEW'
+			};
+			
+			var handle = this;
+			
+			jQuery.ajax({
+				type: 'POST',
+				url: 'commsy.php?cid=' + this.cid + '&mod=ajax&fct=popup&action=getHTML',
+				data: JSON.stringify(data),
+				contentType: 'application/json; charset=utf-8',
+				dataType: 'json',
+				error: function(jqXHR, textStatus, errorThrown) {
+					console.log("error while getting popup");
+				},
+				success: function(data, status) {
+					if(status === 'success') {
+						// we recieved html - append it
+						jQuery('div#tm_dropmenu_breadcrumb').html(data);
+						
+						// show
+						jQuery('div#tm_dropmenu_breadcrumb div.tm_dropmenu').slideDown(100);
+						
+						/*
+						// reinvoke Uploadify
+						var uploadify_handler = commsy_functions.getModuleCallback('commsy/uploadify');
+						uploadify_handler.create(null, {
+							object:				jQuery('input[id="uploadify"]'),
+							handle:				uploadify_handler,
+							commsy_functions:	commsy_functions,
+							upload_object:		jQuery('a[id="uploadify_doUpload"]'),
+							clear_object:		jQuery('a[id="uploadify_clearQuery"]')
+						});
+						
+						// reinvoke CKEditor
+						var ck_editor_handler = commsy_functions.getModuleCallback('commsy/ck_editor');
+						ck_editor_handler.create(null, {
+							handle:				ck_editor_handler,
+							register_on:		jQuery('div[id="popup_ckeditor"]'),
+							input_object:		jQuery('input[id="popup_ckeditor_content"]')
+						});
+						*/
+						
+						// setup popup
+						handle.setupPopup();
+					}
+				}
+			});
+			
+			// stop processing
+			return false;
+		},
+		
 		setupPopup: function() {
 			var handle = this;
 			

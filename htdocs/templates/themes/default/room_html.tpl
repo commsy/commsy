@@ -56,41 +56,8 @@
 	</div>
 
 	<div id="tm_menus">
-		<div id="tm_dropmenu_breadcrumb" class="tm_dropmenu hidden">
-			<div class="tm_drop_item">
-				<div class="tm_di_ground">
-					<p>Sie sind hier:</p>
-
-					{foreach $room.breadcrumb_information as $crumb}
-						{if !$crumb@first}
-							<span class="tm_bcb_next">
-						{/if}
-
-						{if !$crumb@last}
-							<a href="commsy.php?cid={$crumb.id}&mod=home&fct=index">{$crumb.title}</a>
-						{else}
-							<strong>{$crumb.title}</strong>
-						{/if}
-
-						{if !$crumb@first}
-							</span>
-						{/if}
-					{/foreach}
-				</div>
-			</div>
-			<div class="tm_drop_item">
-				<div class="tm_di_ground">
-					<p>Raum wechseln:</p>
-					<a href=""><strong>CommSy Community</strong></a>
-					<br/><a href="">Donec pede justo</a>
-					<br/><a href="">Aenean vulputate</a>
-				</div>
-			</div>
-		</div>
-
-
-		<div id="tm_dropmenu_pers_bar" class="hidden">
-		</div>
+		<div id="tm_dropmenu_breadcrumb" class="hidden"></div>
+		<div id="tm_dropmenu_pers_bar" class="hidden"></div>
 	</div>
 {/block}
 
