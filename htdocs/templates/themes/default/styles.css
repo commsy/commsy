@@ -96,7 +96,7 @@ frame and header
 }
 
 #popup_w3col {
-	margin: 182px auto auto;
+	margin: 166px auto auto;
     width: 979px;
 	position: relative;
     background: url(img/tm_hover_active.jpg) repeat-x #eaeaea;
@@ -2750,9 +2750,9 @@ a#tm_user:hover .tm_dropdown {
 .tm_di_ground,
 .tm_di_ground_solid {
     background: url(img/tm_di_ground_bg.jpg) #DFDFDF repeat-x;
-    width: 960px;
+    width: 980px;
     margin: 0px auto;
-    padding: 10px;
+    padding: 0px;
     color: #5288C9;
     text-decoration: none;
     display: block;
@@ -2782,3 +2782,74 @@ a.tm_di_ground:hover, .tm_di_ground a:hover {
 	/*margin: 0 auto;
 	width: 1000px;*/
 	}
+
+.popup {
+    padding: 0px;
+	width: 980px;
+    }
+
+a.tab_navigation{
+	color: #393939;
+	display: inline-block;
+    float: none;
+}
+
+.room_change_room_box {
+    line-height: 8px;
+    padding: 8px;
+    margin:10px;
+    font-size:10px;
+    line-height: 16px;
+    border-left: 1px solid #2E2D2E;
+    border-right: 1px solid #2E2D2E;
+    border-bottom: 1px solid #2E2D2E;
+    color: #2E2D2E !important;
+    text-shadow: none !important;
+    background: url(img/tm_hover_active.jpg) repeat-x;
+    width:180px;
+    height:65px;
+}
+
+.room_change_room_box_own_color {
+    line-height: 8px;
+    margin:10px 3px ;
+    font-size:10px;
+    line-height: 16px;
+    border: 1px solid #2E2D2E;
+    color: #2E2D2E !important;
+    text-shadow: none !important;
+    width:180px;
+    height:70px;
+}
+
+
+.room_change_content {
+    color: #393939;
+}
+
+.room_change_content {
+    display:block;
+    text-decoration: none;
+}
+
+a.room_change_item {
+    display:block;
+    text-decoration: none;
+}
+
+.room_change_title {
+    padding: 2px 8px;
+	display:block;
+}
+
+.room_change_title_own_color {
+    padding: 2px 8px;
+	display:block;
+}
+
+.room_change_content_element {
+    padding: 2px 8px;
+	display:block;
+}
+
+

@@ -161,7 +161,7 @@ class cs_popup_breadcrumb_controller {
       if (isset($customized_room_array[0])){
          return $this->_getCustomizedRoomListForCurrentUser();
       }else{
-      #$this->translatorChangeToPortal();
+      $this->translatorChangeToPortal();
       $selected = false;
       $selected_future = 0;
       $selected_future_pos = -1;
@@ -418,6 +418,31 @@ class cs_popup_breadcrumb_controller {
       }
    }
 
+   function translatorChangeToPortal () {
+     $current_portal = $this->_environment->getCurrentPortalItem();
+     if (isset($current_portal)) {
+       $this->_translator->setContext(CS_PORTAL_TYPE);
+       $this->_translator->setRubricTranslationArray($current_portal->getRubricTranslationArray());
+       $this->_translator->setEmailTextArray($current_portal->getEmailTextArray());
+     }
+   }
+
+   function translatorChangeToCurrentContext () {
+     $current_context = $this->_environment->getCurrentContextItem();
+     if (isset($current_context)) {
+         if ($current_context->isCommunityRoom()) {
+          $this->_translator->setContext(CS_COMMUNITY_TYPE);
+         } elseif ($current_context->isProjectRoom()) {
+          $this->_translator->setContext(CS_PROJECT_TYPE);
+         } elseif ($current_context->isPortal()) {
+          $this->_translator->setContext(CS_PORTAL_TYPE);
+       } else {
+          $this->_translator->setContext(CS_SERVER_TYPE);
+       }
+       $this->_translator->setRubricTranslationArray($current_context->getRubricTranslationArray());
+       $this->_translator->setEmailTextArray($current_context->getEmailTextArray());
+     }
+   }
 
 
 	function getRoomListArray(){

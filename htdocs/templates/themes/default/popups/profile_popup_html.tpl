@@ -4,7 +4,7 @@
 	<div class="tm_dropmenu hidden">
 		<div class="tm_di_ground_solid">
 
-			<div id="popup">
+			<div class="popup">
 
 				<div id="popup_content">
 					<div id="profile_content_row_three">
