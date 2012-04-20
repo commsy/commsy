@@ -492,11 +492,13 @@ class cs_popup_breadcrumb_controller {
          $tmp_array['title'] = $title;
          $context_manager = $this->_environment->getRoomManager();
          $context_item = $context_manager->getItem($con['item_id']);
-   		 $tmp_array['color_array'] = $context_item->getColorArray();
-     	 $tmp_array['activity_array'] = $context_item->getActiveAndAllMembersAsArray();
-     	 $tmp_array['page_impressions'] = $context_item->getPageImpressions();
-     	 $tmp_array['new_entries'] = $context_item->getNewEntries();
-     	 $tmp_array['time_spread'] = $context_item->getTimeSpread();
+         if (is_object($context_item)){
+   		 	$tmp_array['color_array'] = $context_item->getColorArray();
+     	 	$tmp_array['activity_array'] = $context_item->getActiveAndAllMembersAsArray();
+     	 	$tmp_array['page_impressions'] = $context_item->getPageImpressions();
+     	 	$tmp_array['new_entries'] = $context_item->getNewEntries();
+     	 	$tmp_array['time_spread'] = $context_item->getTimeSpread();
+         }
          $room_array[] = $tmp_array;
       }
       return $room_array;
