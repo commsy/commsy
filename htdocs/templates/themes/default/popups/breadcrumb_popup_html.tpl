@@ -6,18 +6,17 @@
 
 			<div class="popup">
 				<div id="popup_content">
-				<div class="tab_navigation">
+					<div class="tab_navigation">
 						<p>
 							Sie sind hier:
 								{foreach $popup.breadcrumb as $crumb}
 									{if !$crumb@first}
 										<span class="tm_bcb_next">
 									{/if}
-
 									{if !$crumb@last}
-										<a class="tab_navigation" href="commsy.php?cid={$crumb.id}&mod=home&fct=index">{$crumb.title}</a>
+										<a class="tab_navigation" href="commsy.php?cid={$crumb.id}&mod=home&fct=index">{$crumb.title|truncate:40:'...':true}</a>
 									{else}
-										<strong>{$crumb.title}</strong>
+										<strong>{$crumb.title|truncate:40:'...':true}</strong>
 									{/if}
 
 									{if !$crumb@first}
@@ -36,19 +35,16 @@
 							<td>
 							<a class="room_change_item" title="{$room.title}" href="commsy.php?cid={$room.item_id}&mod=home&fct=index">
 							<div class="room_change_content">
-								{if !$room.color_array.content_background}
 								<div class="room_change_room_box">
-								{else}
-								<div class="room_change_room_box_own_color" style="background-color:{$room.color_array.content_background}">
-							    {/if}
-								{if !$room.color_array.tabs_background}
 								<div class="room_change_title">
-								{else}
-								<div class="room_change_title_own_color" style="background-color:{$room.color_array.tabs_background}; color:{$room.color_array.tabs_title}">
-							    {/if}
-							    	<h3> {$room.title|truncate:15:'...':true} </h3>
+							    	<h3 class="room_change_title_h3"> {$room.title|truncate:28:'...':true} </h3>
 							    </div>
+							    <div class="room_change_content_element_wrapper">
+								{if !$room.color_array.content_background}
 							    <div class="room_change_content_element">
+								{else}
+							    <div class="room_change_content_element" style="background-color:{$room.color_array.tabs_background}; text-shadow: 0 0px #999; background-image:none; color:{$room.color_array.tabs_title}">
+								{/if}
 									<p>
 										{if $room.new_entries == 1}
 											{i18n tag=ACTIVITY_NEW_ENTRIES_NEW_SINGULAR param1=$room.time_spread}: {$room.new_entries}
@@ -61,11 +57,12 @@
 									<p class="float-left">___ACTIVITY_ACTIVE_MEMBERS_DESC_NEW___: {$room.activity_array.active} / {$room.activity_array.all_users}</p>
 								</div>
 								</div>
+								</div>
 								<div class="clear"> </div>
 							</div>
 							</a>
 							<td>
-							{if $i == 4 && !$room@last}
+							{if $i == 3 && !$room@last}
 								</tr>
 								<tr>
 								{$i = 0}

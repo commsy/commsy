@@ -2757,7 +2757,7 @@ a#tm_user:hover .tm_dropdown {
     width: 980px;
     margin: 0px auto;
     padding: 0px;
-    color: #5288C9;
+    color: #393939;
     text-decoration: none;
     display: block;
 	position: relative;
@@ -2796,45 +2796,38 @@ a.tab_navigation{
 	color: #393939;
 	display: inline-block;
     float: none;
+    padding: 6px 0px;
+
 }
 
 .room_change_room_box {
-    line-height: 8px;
-    padding: 8px;
-    margin:10px;
+    border-top: 1px solid #EBEBEB;
+    border-left: 1px solid #EBEBEB;
+	line-height: 8px;
     font-size:10px;
     line-height: 16px;
-    border-left: 1px solid #2E2D2E;
-    border-right: 1px solid #2E2D2E;
-    border-bottom: 1px solid #2E2D2E;
-    color: #2E2D2E !important;
     text-shadow: none !important;
-    background: url(img/tm_hover_active.jpg) repeat-x;
-    width:180px;
-    height:65px;
-}
-
-.room_change_room_box_own_color {
-    line-height: 8px;
-    margin:5px 3px ;
-    font-size:10px;
-    line-height: 16px;
-    border: 1px solid #2E2D2E;
-    color: #2E2D2E !important;
-    text-shadow: none !important;
-    width:180px;
-    height:70px;
-}
-
-
-.room_change_content {
-    color: #393939;
+    width:220px;
 }
 
 .room_change_content {
+    border: 1px solid #999999;
+	color: #393939;
     display:block;
     text-decoration: none;
+    margin:5px 6px ;
+    background: url("img/room_change_bg.png") no-repeat scroll 0 0 transparent;
 }
+
+.room_change_content:hover {
+    border: 1px solid #999999;
+	color: #FFFFFF;
+    display:block;
+    text-decoration: none;
+    margin:5px 6px ;
+	background: url("img/active_bg.jpg") repeat-x scroll 0 0 transparent;
+}
+
 
 a.room_change_item {
     display:block;
@@ -2842,18 +2835,31 @@ a.room_change_item {
 }
 
 .room_change_title {
+    overflow: hidden;
     padding: 2px 8px;
-	display:block;
+    width: 204px;
+    display:block;
+	border-bottom: 1px solid #999999;
 }
 
-.room_change_title_own_color {
-    padding: 2px 8px;
-	display:block;
+.room_change_title_h3{
+	white-space:nowrap;
+}
+
+
+.room_change_content_element_wrapper {
+    background: url("img/columns_bg.jpg") repeat-y scroll right top #D7D7D9;
+    border-top: 1px solid #EBEBEB;
 }
 
 .room_change_content_element {
     padding: 2px 8px;
 	display:block;
+    background: url("img/info_addon_bg.png") no-repeat scroll 0 0 transparent;
+    color: #DEE8FF;
+    padding: 0 10px;
+    text-shadow: 0 1px #2E405E;
+    height:50px;
 }
 
 
