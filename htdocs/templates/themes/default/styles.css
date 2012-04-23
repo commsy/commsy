@@ -2816,7 +2816,7 @@ a.tab_navigation{
     display:block;
     text-decoration: none;
     margin:5px 6px ;
-    background: url("img/room_change_bg.png") no-repeat scroll 0 0 transparent;
+    background: url("img/nonactive_bg.jpg") repeat-x scroll 0 0;
 }
 
 .room_change_content:hover {
@@ -2825,7 +2825,7 @@ a.tab_navigation{
     display:block;
     text-decoration: none;
     margin:5px 6px ;
-	background: url("img/active_bg.jpg") repeat-x scroll 0 0 transparent;
+	background: url("img/active_bg.jpg") repeat-x scroll 0 0;
 }
 
 
