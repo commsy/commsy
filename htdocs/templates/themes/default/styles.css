@@ -1498,6 +1498,10 @@ a.item_actions_glow {
     top: -112px;
 }
 
+#top_item_actions .linked_count_workflow{
+    top: -144px;
+}
+
 .item_body {
     width: 695px;
     float: left;

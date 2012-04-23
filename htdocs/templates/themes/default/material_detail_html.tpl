@@ -25,7 +25,11 @@
 			<img title="*" class="new_item_detail_annotation" src="{$basic.tpl_path}img/spacer.gif" alt="*" />
 			{/if}
 			{if $item.linked_count}
-			<div class="action_count linked_count" >{$item.linked_count}</div>
+				{if $room.workflow}
+					<div class="action_count linked_count_workflow" >{$item.linked_count}</div>
+				{else}
+					<div class="action_count linked_count" >{$item.linked_count}</div>
+				{/if}
 			{else}
 			<div class="action_count linked_count" >&nbsp;</div>
 			{/if}
