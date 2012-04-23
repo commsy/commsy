@@ -116,9 +116,6 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 						// show
 						jQuery('div#tm_dropmenu_pers_bar div.tm_dropmenu').slideDown(100);
 						
-						// setup tabs
-						handle.setupTabs();
-						
 						/*
 						// reinvoke Uploadify
 						var uploadify_handler = commsy_functions.getModuleCallback('commsy/uploadify');
@@ -141,6 +138,9 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 						
 						// setup popup
 						handle.setupPopup();
+						
+						// setup tabs
+						handle.setupTabs(jQuery('div#tm_dropmenu_pers_bar'));
 					}
 				}
 			});
@@ -234,11 +234,11 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			*/
 		},
 		
-		setupTabs: function() {
+		setupTabs: function(parent_object) {
 			var handle = this;
 			
 			// register click for tabs
-			jQuery('div[class="tab_navigation"] a').each(function(index) {
+			parent_object.find('div[class="tab_navigation"] a').each(function(index) {
 				jQuery(this).bind('click', {
 					index:	index,
 					handle:	handle}, handle.onClickTab);
