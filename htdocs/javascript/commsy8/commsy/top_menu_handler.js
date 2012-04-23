@@ -116,6 +116,9 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 						// show
 						jQuery('div#tm_dropmenu_pers_bar div.tm_dropmenu').slideDown(100);
 						
+						// setup tabs
+						handle.setupTabs();
+						
 						/*
 						// reinvoke Uploadify
 						var uploadify_handler = commsy_functions.getModuleCallback('commsy/uploadify');
@@ -141,9 +144,6 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 					}
 				}
 			});
-			
-			// setup tabs
-			this.setupTabs();
 			
 			// stop processing
 			return false;
