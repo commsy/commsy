@@ -184,7 +184,7 @@
 		 */
 		protected function getBuzzwords() {
 			$return = array();
-			
+
 			$text_converter = $this->_environment->getTextConverter();
 
 			$buzzword_list = $this->_item->getBuzzwordList();
@@ -762,7 +762,7 @@
 				 */
 			}
 
-			$this->getAdditionalActions($return);
+			$return = $this->getAdditionalActions($return);
 
 			// mail
 			if(!$this->_environment->inPrivateRoom()) {

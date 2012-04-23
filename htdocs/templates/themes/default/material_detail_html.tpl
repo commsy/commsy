@@ -6,6 +6,9 @@
 			<a class="edit" href="#"><span class="edit_set"> &nbsp; </span></a>
 			<a class="linked" href="#"><span class="ref_to_ia"> &nbsp; </span></a>
 			<a class="detail" href="#"><span class="details_ia"> &nbsp; </span></a>
+			{if $room.assessment}
+				<a class="workflow" href="#"><span class="workflow_ia"> &nbsp; </span></a>
+			{/if}
 			<a class="annotations" href="#"><span class="ref_to_anno"> &nbsp; </span></a>
 			{if $detail.annotations|@count}
 			<div class="action_count anno_count" >{$detail.annotations|@count}
@@ -35,18 +38,24 @@
 		<div class="fade_in_ground_actions hidden">
 			{* TODO: add missing actions *}
 			{if $detail.actions.edit}
-				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.content.item_id}">___COMMON_EDIT_ITEM___</a> |
+				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.item_id}">___COMMON_EDIT_ITEM___</a> |
 			{/if}
 			{if $detail.actions.delete}
-				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.content.item_id}">___COMMON_DELETE_ITEM___</a> |
+				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.item_id}">___COMMON_DELETE_ITEM___</a> |
 			{/if}
 			{if $detail.actions.mail}
-				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.content.item_id}">___COMMON_EMAIL_TO___</a> |
+				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.item_id}">___COMMON_EMAIL_TO___</a> |
 			{/if}
 			{if $detail.actions.copy}
-				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.content.item_id}">___COMMON_ITEM_COPY_TO_CLIPBOARD___</a> |
+				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.item_id}">___COMMON_ITEM_COPY_TO_CLIPBOARD___</a> |
 			{/if}
-			<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.content.item_id}">___COMMON_DOWNLOAD___</a>
+			{if $detail.actions.workflow_read}
+				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&iid={$detail.item_id}&workflow_read=true">___ITEM_WORKFLOW_MARK_READ___</a> |
+			{/if}
+			{if $detail.actions.workflow_unread}
+				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&iid={$detail.item_id}&workflow_not_read=true">___ITEM_WORKFLOW_MARK_NOT_READ___</a> |
+			{/if}
+			<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.item_id}">___COMMON_DOWNLOAD___</a>
 		</div>
 		<!-- Ende fade_in_ground -->
 
@@ -58,9 +67,17 @@
 
 		<div id="item_credits">
 			<p id="ic_rating">
-				{foreach $detail.assessment as $assessment}
-					<img src="{$basic.tpl_path}img/star_{$assessment}.gif" alt="*" />
-				{/foreach}
+				{if $room.workflow}
+					<img class="workflow" src="{$basic.tpl_path}img/workflow_traffic_light_{$detail.content.workflow.light}.png" alt="{$detail.content.workflow.title}" title="{$detail.content.workflow.title}">
+				{/if}
+				{if $room.workflow && $room.assessment}
+					&nbsp;&nbsp;
+				{/if}
+				{if $room.assessment}
+					{foreach $detail.assessment as $assessment}
+						<img src="{$basic.tpl_path}img/star_{$assessment}.gif" alt="*" />
+					{/foreach}
+				{/if}
 			</p>
 			<p>
 				___COMMON_LAST_MODIFIED_BY_UPPER___
@@ -94,6 +111,9 @@
 				</div>
 				{/if}
 		</div> <!-- Ende item_legend -->
+		{if $room.assessment}
+		   {include file="include/detail_workflow_html.tpl" data=$detail.content.workflow}
+		{/if}
 		{include file="include/detail_moredetails_html.tpl" data=$detail.content.moredetails}
 
 	</div> <!-- Ende item body -->
@@ -151,7 +171,7 @@
 				</div>
 			</div>
 			{include file="include/detail_moredetails_html.tpl" data=$section.moredetails}
-			
+
 		</div> <!-- Ende item body -->
 		<div class="clear"> </div>
 

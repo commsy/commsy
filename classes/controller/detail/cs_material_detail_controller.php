@@ -132,6 +132,7 @@
 					}
 
 					if(isset($_GET['workflow_read'])) {
+						$item_manager = $this->_environment->getItemManager();
 						$item_manager->markItemAsWorkflowRead($this->_item->getItemID(), $current_user->getItemID());
 
 						unset($params['workflow_read']);
@@ -139,6 +140,7 @@
 					}
 
 					if(isset($_GET['workflow_not_read'])) {
+						$item_manager = $this->_environment->getItemManager();
 						$item_manager->markItemAsWorkflowNotRead($this->_item->getItemID(), $current_user->getItemID());
 
 						unset($params['workflow_not_read']);
@@ -379,6 +381,198 @@
 		}
 
 
+		protected function getWorkflowInformation($item) {
+			$return = array(
+				'light'		=> '',
+				'title'		=> '',
+				'show'		=> true
+			);
+
+			$current_context = $this->_environment->getCurrentContextItem();
+			$user = $this->_environment->getCurrentUserItem();
+			$translator = $this->_environment->getTranslationObject();
+
+			if($current_context->withWorkflow()) {
+				switch($item->getWorkflowTrafficLight()) {
+					case '3_none':
+						$return['show'] = false;
+						break;
+
+					case '0_green':
+						$return['light'] = 'green';
+						$return['title'] = $translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_GREEN_DEFAULT');
+
+						if($current_context->getWorkflowTrafficLightTextGreen() != '') {
+							$return['title'] = $current_context->getWorkflowTrafficLightTextGreen();
+						}
+						break;
+
+					case '1_yellow':
+						$return['light'] = 'yellow';
+						$return['title'] = $translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_YELLOW_DEFAULT');
+
+						if($current_context->getWorkflowTrafficLightTextYellow() != '') {
+							$return['title'] = $current_context->getWorkflowTrafficLightTextYellow();
+						}
+						break;
+
+					case '2_red':
+						$return['light'] = 'red';
+						$return['title'] = $translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_RED_DEFAULT');
+
+						if($current_context->getWorkflowTrafficLightTextRed() != '') {
+							$return['title'] = $current_context->getWorkflowTrafficLightTextRed();
+						}
+						break;
+
+					default:
+						$return['show'] = false;
+						break;
+				}
+			}
+			$return['validity_date'] = $translator->getDateInLang($item->getWorkflowValidityDate());
+			$return['resubmission_date'] = $translator->getDateInLang($item->getWorkflowResubmissionDate());
+
+
+      		// Read count (for improved awareness)
+      		if ( ( $current_context->isProjectRoom()
+             	or $current_context->isGroupRoom()
+           		)
+              	and !in_array($item->getType(), array(CS_SECTION_TYPE,
+                                                    CS_DISCARTICLE_TYPE,
+                                                    CS_STEP_TYPE,
+                                                    CS_ANNOTATION_TYPE))
+         		) {
+		        $reader_manager = $this->_environment->getReaderManager();
+		        $user_manager = $this->_environment->getUserManager();
+		        $user_list = $user_manager->getAllRoomUsersFromCache($this->_environment->getCurrentContextID());
+		        $user_count = $user_list->getCount();
+		        $read_count = 0;
+		        $read_since_modification_count = 0;
+		        $current_user = $user_list->getFirst();
+		        $id_array = array();
+		        while ( $current_user ) {
+		           $id_array[] = $current_user->getItemID();
+		           $current_user = $user_list->getNext();
+		        }
+		        $reader_manager->getLatestReaderByUserIDArray($id_array,$item->getItemID());
+		        $current_user = $user_list->getFirst();
+		        while ( $current_user ) {
+		           $current_reader = $reader_manager->getLatestReaderForUserByID($item->getItemID(), $current_user->getItemID());
+		           if ( !empty($current_reader) ) {
+		              if ( $current_reader['read_date'] >= $item->getModificationDate() ) {
+		                 $read_count++;
+		                 $read_since_modification_count++;
+		              } else {
+		                 $read_count++;
+		              }
+		           }
+		           $current_user = $user_list->getNext();
+		        }
+		        $read_percentage = round(($read_count/$user_count) * 100);
+		        $read_since_modification_percentage = round(($read_since_modification_count/$user_count) * 100);
+		        $user_allowed_detailed_awareness = false;
+         		if($user->isModerator()){
+            		$user_allowed_detailed_awareness = true;
+         		} else {
+            		if($current_context->getWorkflowReaderShowTo() == 'all'){
+               		$user_allowed_detailed_awareness = true;
+            	}
+         	}
+         	$is_workflow_type = false;
+         	if(in_array($item->getType(), array(CS_SECTION_TYPE,CS_MATERIAL_TYPE))){
+            	$is_workflow_type = true;
+         	}
+
+         	if(!$current_context->withWorkflowReader() or ($current_context->withWorkflowReader() and ($current_context->getWorkflowReaderGroup() == '0') and ($current_context->getWorkflowReaderPerson() == '0')) or !$user_allowed_detailed_awareness or !$is_workflow_type){
+            	if ( $read_since_modification_count == 1 ) {
+		        	$return['read_since_modification_count_text'] = $read_since_modification_count.' '.$translator->getMessage('COMMON_NUMBER_OF_MEMBERS_SINGULAR');
+
+            	} else {
+		        	$return['read_since_modification_count_text'] = $read_since_modification_count.' '.$translator->getMessage('COMMON_NUMBER_OF_MEMBERS');
+            	}
+         	} else if($current_context->withWorkflowReader()){
+            	$item_manager = $this->_environment->getItemManager();
+            	$user_manager = $this->_environment->getUserManager();
+            	$user_list = $user_manager->getAllRoomUsersFromCache($this->_environment->getCurrentContextID());
+            	$current_user = $user_list->getFirst();
+            	$id_array = array();
+            	while ( $current_user ) {
+               		$id_array[] = $current_user->getItemID();
+               		$current_user = $user_list->getNext();
+            	}
+            	$users_read_array = $item_manager->getUsersMarkedAsWorkflowReadForItem($item->getItemID());
+            	$persons_array = array();
+            	foreach($users_read_array as $user_read){
+               		$persons_array[] = $user_manager->getItem($user_read['user_id']);
+            	}
+            	if($current_context->getWorkflowReaderGroup() == '1'){
+               		$return['read_since_modification_count_text'] .= $translator->getMessage('COMMON_GROUPS').': ';
+               		$group_manager = $this->_environment->getGroupManager();
+               		$group_manager->setContextLimit($this->_environment->getCurrentContextID());
+               		$group_manager->setTypeLimit('group');
+               		$group_manager->select();
+               		$group_list = $group_manager->get();
+               		$group_item = $group_list->getFirst();
+               		$first = true;
+               		while($group_item){
+                  		$link_user_list = $group_item->getLinkItemList(CS_USER_TYPE);
+                  		$user_count_complete = $link_user_list->getCount();
+
+                  		$user_count = 0;
+                  		foreach($persons_array as $person){
+                     		$temp_link_list = $person->getLinkItemList(CS_GROUP_TYPE);
+                     		$temp_link_item = $temp_link_list->getFirst();
+                     		while($temp_link_item){
+                        		$temp_group_item = $temp_link_item->getLinkedItem($person);
+                        		if($group_item->getItemID() == $temp_group_item->getItemID()){
+                           			$user_count++;
+                        		}
+                        		$temp_link_item = $temp_link_list->getNext();
+                     		}
+                  		}
+
+                  		$params = array();
+                  		$params['iid'] = $group_item->getItemID();
+                  		if(!$first){
+                     		$return['read_since_modification_count_text'] .= ', ';
+                  		} else {
+                     		$first = false;
+                  		}
+                  			$return['read_since_modification_count_text'] .= ahref_curl($this->_environment->getCurrentContextID(),
+                                        'group',
+                                        'detail',
+                                        $params,
+                                        $group_item->getTitle().' ('.$user_count.' '.$translator->getMessage('COMMON_OF').' '.$user_count_complete.')');
+                  			$group_item = $group_list->getNext();
+               			}
+               			$return['read_since_modification_count_text'] .= '<br/>';
+            		}
+            		if($current_context->getWorkflowReaderPerson() == '1'){
+               			$return['read_since_modification_count_text'] .= $translator->getMessage('COMMON_USERS').': ';
+               			$first = true;
+               			foreach($persons_array as $person){
+                  			$params = array();
+                  			$params['iid'] = $person->getItemID();
+                  			if(!$first){
+                     			$return['read_since_modification_count_text'] .= ', ';
+                  			} else {
+                     			$first = false;
+                  			}
+                  			$return['read_since_modification_count_text'] .= ahref_curl($this->_environment->getCurrentContextID(),
+                                        'user',
+                                        'detail',
+                                        $params,
+                                        $person->getFullname());
+               			}
+            		}
+         		}
+		     }
+			return $return;
+		}
+
+
+
 		protected function getDetailContent() {
             $converter = $this->_environment->getTextConverter();
 
@@ -406,7 +600,8 @@
 				'formal'			=> $this->getFormalData(),
 				'sections'			=> $this->getSections(),
 				'description'		=> $desc,
-				'moredetails'		=> $this->getCreatorInformationAsArray($this->_item)
+				'moredetails'		=> $this->getCreatorInformationAsArray($this->_item),
+				'workflow'			=> $this->getWorkflowInformation($this->_item)
 			);
 
 			return $return;
@@ -929,6 +1124,14 @@
 		}
 
 		protected function getAdditionalActions(&$perms) {
+			$current_context = $this->_environment->getCurrentContextItem();
+      		$current_user = $this->_environment->getCurrentUserItem();
+      		if($current_context->withWorkflow() and $current_context->withWorkflowReader() == '1' and $current_user->getUserID() != 'root' and $this->_item->isReadByUser($current_user)){
+				$perms['workflow_unread'] = true;
+			} elseif ($current_context->withWorkflow() and $current_context->withWorkflowReader() == '1' and $current_user->getUserID() != 'root' ) {
+				$perms['workflow_read'] = true;
+			}
+			return $perms;
 			//TODO
 			/*
 			 * $current_context = $this->_environment->getCurrentContextItem();

@@ -1448,6 +1448,14 @@ img.new_item_detail_annotation {
     background: url(img/btn_details_2.gif) no-repeat;
     }
 
+.item_actions a span.workflow_ia {
+    background: url(img/btn_workflow.gif) -15px 0px no-repeat;
+    }
+
+.item_actions a:hover span.workflow_ia, .item_actions a span.workflow_ia_ok {
+    background: url(img/btn_workflow.gif) no-repeat;
+    }
+
 .item_actions a span.ref_to_ia {
     background: url(img/btn_ref_2.gif) -15px 0px no-repeat;
     }
@@ -2427,6 +2435,12 @@ fade-in
 /*    margin-left: 39px;  */
     }
 
+.fade_in_ground_workflow {
+    background: url(img/fade_in_bg.jpg) repeat-x #D7D7D9;
+	border-bottom: 1px solid #F9F9F9;
+    border-top: 1px solid #D7D7D9;
+    }
+
 .fade_in_ground_actions {
     background: url(img/fade_in_bg.jpg) repeat-x #D7D7D9;
     border-top: 1px solid #D7D7D9;
@@ -2452,6 +2466,11 @@ fade-in
 }
 
 .fi_moredetails {
+    background: url(img/fi_md_bg.gif) 3px 0px repeat-y;
+    min-height: 97px;
+    }
+
+.fi_workflow {
     background: url(img/fi_md_bg.gif) 3px 0px repeat-y;
     min-height: 97px;
     }

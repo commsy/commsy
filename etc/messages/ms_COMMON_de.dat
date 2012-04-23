@@ -458,6 +458,7 @@ $message["COMMON_MAIL_TO_SERVICE"]["de"] = "Anfrage an";
 $message["COMMON_MAIL_TO_SERVICE2"]["de"] = "Supportanfrage stellen";
 $message["COMMON_MAIL_TO_SERVICE2_LINK_TITLE"]["de"] = "Stellen Sie eine Supportanfrage an den Support dieses Portals.";
 $message["COMMON_MANDATORY_FIELDS"]["de"] = "Pflichtfelder";
+$message["COMMON_MARK_READ_SINCE_MODIFICATION"]["de"] = "Aktueller Eintrag als gelesen markiert von:";
 $message["COMMON_MATERIAL"]["de"] = "Material";
 $message["COMMON_MATERIALS"]["de"] = "Materialien";
 $message["COMMON_MATERIAL_EDIT"]["de"] = "Material bearbeiten";
