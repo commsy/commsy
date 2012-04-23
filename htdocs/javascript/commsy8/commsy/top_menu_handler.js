@@ -142,6 +142,9 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 				}
 			});
 			
+			// setup tabs
+			this.setupTabs();
+			
 			// stop processing
 			return false;
 		},
@@ -229,9 +232,6 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			// setup buzzwords
 			this.setupBuzzwords();
 			*/
-			
-			// setup tabs
-			this.setupTabs();
 		},
 		
 		setupTabs: function() {
