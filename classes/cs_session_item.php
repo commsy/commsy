@@ -209,5 +209,20 @@ class cs_session_item {
    public function setSoapSession () {
       $this->setValue('SOAP_SESSION',1);
    }
+   
+   public function setLoginSession() {
+	$this->setValue('SOAP_LOGIN', 1);
+   }
+   
+   public function isLoginSession() {
+   	$retour = false;
+   	if ( $this->issetValue('SOAP_LOGIN') ) {
+   		$value = $this->getValue('SOAP_LOGIN');
+   		if ( $value == 1 ) {
+   			$retour = true;
+   		}
+   	}
+   	return $retour;
+   }
 }
 ?>

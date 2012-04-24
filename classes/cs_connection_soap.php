@@ -801,6 +801,7 @@ class cs_connection_soap {
                      }
                      $session->setValue('auth_source',$auth_source_id);
                      $session->setValue('cookie','0');
+                     $session->setLoginSession();
                      //$session->setSoapSession();
 
                      // save session
