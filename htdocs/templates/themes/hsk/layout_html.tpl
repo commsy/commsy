@@ -20,10 +20,10 @@
     <link rel="stylesheet" type="text/css" media="screen" href="{$basic.tpl_path}jquery-ui-custom-theme/jquery-ui-1.8.17.custom.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="templates/themes/hsk/hsk_styles.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="{$basic.tpl_path}styles.css" />
-    <link rel="stylesheet" type="text/css" media="screen" href="templates/themes/hsk/styles_cs.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="{$basic.tpl_path}ui.dynatree.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="{$basic.tpl_path}uploadify.css" />
 	<link rel="stylesheet" type="text/css" media="screen" href="{$basic.tpl_path}jquery-lightbox/jquery.lightbox-0.5.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="templates/themes/hsk/styles_cs.css" />
 
     <script data-main="javascript/commsy8/main.js" src="javascript/commsy8/require.js"></script>
 
@@ -40,8 +40,7 @@
 
 <body>
     <div id ="wrapper-outer">
-           {block name=top_menu}{/block}
-	<div style="background: url(templates/themes/hsk/img/hintergrund.jpg) no-repeat top center;">
+	<div style="margin-top:40px; background: url(templates/themes/hsk/img/hintergrund.jpg) no-repeat top center;">
 		<!-- start header -->
 		<div id="cs_header" class="cf">
 	<!--
@@ -78,6 +77,7 @@
 
                         <div class="clear"> </div>
                     </div>
+           {block name=top_menu}{/block}
 	<div id ="cs_wrapper">
     <div id="wrapper">
 
