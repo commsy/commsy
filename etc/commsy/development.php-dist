@@ -102,7 +102,7 @@ $c_enable_htmltextarea_security = false;
 // smarty
 $c_smarty = false;
 
-$c_theme = default;
+$c_theme = 'default';
 
 
 // smarty caching

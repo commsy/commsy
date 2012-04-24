@@ -72,13 +72,18 @@ class cs_smarty extends Smarty {
 	public function setTheme($theme) {
 		$this->theme = $theme;
 		
-		if(!empty($theme) && file_exists($this->getTemplateDir(0) . 'themes/' . $theme)) {
-			$this->setTemplateDir($this->getTemplateDir(0) . 'themes/' . $theme);
-			$this->setCompileDir($this->getCompileDir(0) . $theme);
+		if(!empty($theme) && file_exists('htdocs/templates/themes/' . $theme)) {
+			$this->setTemplateDir('htdocs/templates/themes/' . $theme);
+			$this->addTemplateDir('htdocs/templates/themes/default');
+			$this->setCompileDir('htdocs/templates/templates_c/' . $theme);
 			return true;
 		} else {
 			return false;
 		}
+	}
+	
+	public function getTheme() {
+		return $this->theme;
 	}
 	
 	public function fetch($template = null, $cache_id = null, $compile_id = null, $parent = null, $display = false, $merge_tpl_vars = true, $no_output_filter = false) {
@@ -100,21 +105,15 @@ class cs_smarty extends Smarty {
 	}
 	
 	public function display($template, $output_mode) {
-		// check if template exists
-		if(!file_exists($this->getTemplateDir(0) . $template . '_' . $output_mode . '.tpl')) {
+		try {
+			parent::display($template . '_' . $output_mode . '.tpl');
+		} catch(SmartyException $e) {
 			// try fall back to html output
 			if($output_mode != 'html') {
 				$this->display($template, 'html');
-				
-			// try fall back to default theme
-			} elseif($template !== 'default') {
-				$this->display('default', 'html');
-				
 			} else {
 				throw new Exception('Template ' . $this->getTemplateDir(0) . $template . '_' . $output_mode . '.tpl does not exist!', 101);
 			}
-		} else {
-			parent::display($template . '_' . $output_mode . '.tpl');
 		}
 	}
 	

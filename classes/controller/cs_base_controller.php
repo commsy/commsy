@@ -15,7 +15,13 @@
 			$this->_environment = $environment;
 			$this->_tpl_engine  = $this->_environment->getTemplateEngine();
 			$this->_tpl_file = null;
-			$this->_tpl_path = substr($this->_tpl_engine->getTemplateDir(0), 7);
+			
+			// set correct template path
+			if($this->_tpl_engine->getTheme() !== 'default') {
+				$this->_tpl_path = substr($this->_tpl_engine->getTemplateDir(1), 7);
+			} else {
+				$this->_tpl_path = substr($this->_tpl_engine->getTemplateDir(0), 7);
+			}
 
 			// process basic template information
 			$this->processBaseTemplate();
