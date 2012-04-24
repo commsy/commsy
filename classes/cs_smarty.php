@@ -102,9 +102,14 @@ class cs_smarty extends Smarty {
 	public function display($template, $output_mode) {
 		// check if template exists
 		if(!file_exists($this->getTemplateDir(0) . $template . '_' . $output_mode . '.tpl')) {
+			// try fall back to html output
 			if($output_mode != 'html') {
-				// try fall back to html output
 				$this->display($template, 'html');
+				
+			// try fall back to default theme
+			} elseif($template !== 'default') {
+				$this->display('default', 'html');
+				
 			} else {
 				throw new Exception('Template ' . $this->getTemplateDir(0) . $template . '_' . $output_mode . '.tpl does not exist!', 101);
 			}
