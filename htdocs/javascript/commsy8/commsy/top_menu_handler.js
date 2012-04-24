@@ -194,6 +194,10 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 						});
 						*/
 						
+						// register click for edit button
+						jQuery('a#edit_roomlist').click(function() {
+							handle:		handle}, handle.setupEditMode);
+						
 						// setup popup
 						handle.setupPopup();
 					}
@@ -201,6 +205,27 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			});
 			
 			// stop processing
+			return false;
+		},
+		
+		setupEditMode: function(event) {
+			var commsy_functions = event.data.handle;
+			var target = jQuery(event.target);
+			
+			var content_object = jQuery('div#tm_dropmenu_breadcrumb div#profile_content_row_three');
+			
+			// setup sortables
+			content_object.find('.breadcrumb_column').sortable({
+				connectWith:	'.breadcrumb_column',
+				placeholder:	'ui-state-highlight'
+			});
+			
+			var column_objects = content_object.find('div.breadcrumb_column');
+			
+			jQuery.each(column_objects, function() {
+				//jQuery('<div/>', {'class': 'room_dummy'}).appendTo(this);
+			});
+			
 			return false;
 		},
 		

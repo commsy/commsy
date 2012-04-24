@@ -2823,6 +2823,16 @@ a.tab_navigation{
 
 }
 
+.breadcrumb_column {
+}
+
+div.breadcrumb_column .ui-state-highlight {
+	height: 60px;
+	width: 220px;
+	margin: 5px 10px;
+	display: block;
+}
+
 .room_change_room_box {
     border-top: 1px solid #EBEBEB;
     border-left: 1px solid #EBEBEB;
@@ -2838,8 +2848,10 @@ a.tab_navigation{
 	color: #393939;
     display:block;
     text-decoration: none;
-    margin:5px 6px ;
+    /*margin:5px 6px ;*/
+    margin: 5px 10px;
     background: url("img/nonactive_bg.jpg") repeat-x scroll 0 0;
+    width: 221px;
 }
 
 .room_change_content:hover {
@@ -2847,7 +2859,8 @@ a.tab_navigation{
 	color: #FFFFFF;
     display:block;
     text-decoration: none;
-    margin:5px 6px ;
+    /*margin:5px 6px ;*/
+    margin: 5px 10px;
 	background: url("img/active_bg.jpg") repeat-x scroll 0 0;
 }
 

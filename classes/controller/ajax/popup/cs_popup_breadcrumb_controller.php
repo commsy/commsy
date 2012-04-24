@@ -449,61 +449,95 @@ class cs_popup_breadcrumb_controller {
    }
 
 
-	function getRoomListArray(){
-	  $context_array = $this->_getAllOpenContextsForCurrentUser();
-      $current_portal = $this->_environment->getCurrentPortalItem();
-      $first_time = true;
-      $room_array = array();
-      foreach ($context_array as $con) {
-         $title = $con['title'];
-         $additional = '';
-         if (isset($con['selected']) and $con['selected']) {
-            $additional = 'selected';
-         }
-         if ($con['item_id'] == -1) {
-            $additional = 'disabled';
-            if (!empty($con['title'])) {
-               $title = '----'.$con['title'].'----';
-            } else {
-               $title = '&nbsp;';
-            }
-         }
-         if ($con['item_id'] == -2) {
-            $additional = 'disabled';
-            if (!empty($con['title'])) {
+	function getRoomListArray() {
+		$return = array();
+		
+		$context_array = $this->_getAllOpenContextsForCurrentUser();
+		$current_portal = $this->_environment->getCurrentPortalItem();
+		$context_manager = $this->_environment->getRoomManager();
+		$first_time = true;
+		$room_array = array();
+		
+		// this holds last headline
+		$headline = '';
+		
+		foreach($context_array as $context) {
+			$item_id = $context['item_id'];
+			$title = $context['title'];
+			$selected = isset($context['selected']) ? $context['selected'] : '';
+			
+			$room = array();
+			$additional = '';
+			
+			// selected
+			if(isset($selected) && !empty($selected)) {
+				$additional = 'selected';
+			}
+			
+			// empty or headline
+			if($item_id == -1) {
+				$additional = 'disabled';
+				if(!empty($title)) {
+					// update headline
+					$headline = $title;
+				}
+				
+				continue;
+			}
+			
+			// disabled
+			if($item_id == -2) {
+				$additional = 'disabled';
+				/*
+				 * if (!empty($con['title'])) {
                $title = $con['title'];
             } else {
                $title = '&nbsp;';
             }
-            $con['item_id'] = -1;
-            if ($first_time) {
-               $first_time = false;
-            } else {
-               $tmp_array = array();
-               $tmp_array['item_id'] = $con['item_id'];
-               $tmp_array['additional'] = $additional;
-               $tmp_array['title'] = $title;
-               $room_array[] = $tmp_array;
-            }
-         }
-         $tmp_array = array();
-         $tmp_array['item_id'] = $con['item_id'];
-         $tmp_array['additional'] = $additional;
-         $tmp_array['title'] = $title;
-         $context_manager = $this->_environment->getRoomManager();
-         $context_item = $context_manager->getItem($con['item_id']);
-         if (is_object($context_item)){
-   		 	$tmp_array['color_array'] = $context_item->getColorArray();
-     	 	$tmp_array['activity_array'] = $context_item->getActiveAndAllMembersAsArray();
-     	 	$tmp_array['page_impressions'] = $context_item->getPageImpressions();
-     	 	$tmp_array['new_entries'] = $context_item->getNewEntries();
-     	 	$tmp_array['time_spread'] = $context_item->getTimeSpread();
-         }
-         $room_array[] = $tmp_array;
-      }
-      return $room_array;
+				 */
+				
+				$item_id = -1;
+				if($first_time) {
+					$first_time = false;
+				} else {
+					$room = array(
+						'item_id'		=> $item_id,
+						'additional'	=> $additional,
+						'title'			=> $title
+					);
+				}
+			}
+			
+			$room = array(
+					'item_id'		=> $item_id,
+					'additional'	=> $additional,
+					'title'			=> $title
+			);
+			
+			$context_item = $context_manager->getItem($item_id);
+			if (is_object($context_item)){
+				$room['color_array'] = $context_item->getColorArray();
+				$room['activity_array'] = $context_item->getActiveAndAllMembersAsArray();
+				$room['page_impressions'] = $context_item->getPageImpressions();
+				$room['new_entries'] = $context_item->getNewEntries();
+				$room['time_spread'] = $context_item->getTimeSpread();
+			}
+			
+			$room_array[$headline][] = $room;
+		}
+		
+		$count = 0;
+		foreach($room_array as $headline => $rooms) {
+			foreach($rooms as $room) {
+				$return[$count++ % 4]['rooms'][] = $room;
+			}
+		}
+		
+		$return[0]['id'] = 'one';
+		$return[1]['id'] = 'two';
+		$return[2]['id'] = 'three';
+		$return[3]['id'] = 'four';
+		
+		return $return;
 	}
-
-
-
 }
