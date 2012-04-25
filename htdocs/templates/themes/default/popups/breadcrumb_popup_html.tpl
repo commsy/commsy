@@ -65,7 +65,7 @@
 					</div>
 					
 					<div id="profile_content_row_four">
-						laber nicht
+						edit
 					</div>
 				</div>
 			</div>
