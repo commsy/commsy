@@ -455,11 +455,11 @@ class cs_popup_breadcrumb_controller {
 		$context_array = $this->_getAllOpenContextsForCurrentUser();
 		$current_portal = $this->_environment->getCurrentPortalItem();
 		$context_manager = $this->_environment->getRoomManager();
-		$first_time = true;
 		$room_array = array();
 		
-		// this holds last headline
+		// this holds last headline and subline
 		$headline = '';
+		$subline = '';
 		
 		foreach($context_array as $context) {
 			$item_id = $context['item_id'];
@@ -488,24 +488,13 @@ class cs_popup_breadcrumb_controller {
 			// disabled
 			if($item_id == -2) {
 				$additional = 'disabled';
-				/*
-				 * if (!empty($con['title'])) {
-               $title = $con['title'];
-            } else {
-               $title = '&nbsp;';
-            }
-				 */
 				
-				$item_id = -1;
-				if($first_time) {
-					$first_time = false;
-				} else {
-					$room = array(
-						'item_id'		=> $item_id,
-						'additional'	=> $additional,
-						'title'			=> $title
-					);
+				if(!empty($title)) {
+					// update headline
+					$subline = $title;
 				}
+				
+				continue;
 			}
 			
 			$room = array(
@@ -523,20 +512,8 @@ class cs_popup_breadcrumb_controller {
 				$room['time_spread'] = $context_item->getTimeSpread();
 			}
 			
-			$room_array[$headline][] = $room;
+			$return[$headline][$subline]['rooms'][] = $room;
 		}
-		
-		$count = 0;
-		foreach($room_array as $headline => $rooms) {
-			foreach($rooms as $room) {
-				$return[$count++ % 4]['rooms'][] = $room;
-			}
-		}
-		
-		$return[0]['id'] = 'one';
-		$return[1]['id'] = 'two';
-		$return[2]['id'] = 'three';
-		$return[3]['id'] = 'four';
 		
 		return $return;
 	}
