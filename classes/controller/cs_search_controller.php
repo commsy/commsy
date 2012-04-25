@@ -914,4 +914,14 @@ $session->setValue('cid'.$environment->getCurrentContextID().'_campus_search_ind
 		   $return = array();
 		   return $return;
 		}
+		
+		protected function getAdditionalRestrictions() {
+			$return = array();
+			return $return;
+		}
+		
+		protected function getAdditionalRestrictionText() {
+			$return = array();
+			return $return;
+		}
 	}

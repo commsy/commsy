@@ -28,7 +28,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			var commsy_functions = parameters.commsy_functions;
 			
 			// register handler
-			object.bind('keyup', {handle: handle, commsy_functions: commsy_functions}, handle.onKeyUp);
+			jQuery(object).bind('keyup', {handle: handle, commsy_functions: commsy_functions}, handle.onKeyUp);
 			
 			// setup progressbars for list
 			handle.setupProgressbars();
@@ -36,7 +36,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 		
 		setupProgressbars: function() {
 			// find progressbars
-			var progressbars = jQuery('div[class="progressbar"]');
+			var progressbars = jQuery('div[class="progressbar_search"]');
 			
 			// find max relevanz value
 			var max = 0;

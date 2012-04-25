@@ -223,7 +223,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			var column_objects = content_object.find('div.breadcrumb_column');
 			
 			jQuery.each(column_objects, function() {
-				//jQuery('<div/>', {'class': 'room_dummy'}).appendTo(this);
+				jQuery('<div/>', {'class': 'room_dummy'}).appendTo(this);
 			});
 			
 			return false;

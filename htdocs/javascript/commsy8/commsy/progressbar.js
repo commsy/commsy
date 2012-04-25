@@ -31,7 +31,6 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 				// remove span
 				percent_span.remove();
 				
-				
 				// remove img
 				jQuery(this).children('img:first').remove();
 				

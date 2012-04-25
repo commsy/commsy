@@ -2883,7 +2883,7 @@ a.room_change_item {
 	border-bottom: 1px solid #999999;
 }
 
-.room_change_title_h3{
+.room_change_title_h3 {
 	white-space:nowrap;
 }
 
@@ -2903,4 +2903,8 @@ a.room_change_item {
     height:50px;
 }
 
-
+div.room_dummy {
+	height: 70px;
+	width: 250px;
+	border: 1px dotted white;
+}

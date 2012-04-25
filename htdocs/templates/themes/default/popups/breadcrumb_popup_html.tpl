@@ -32,6 +32,7 @@
 					<div id="profile_content_row_three">
 						{foreach $popup.rooms as $column}
 							<div id="column_{$column.id}" class="breadcrumb_column float-left">
+								<div>dummy</div>
 								{foreach $column.rooms as $room}
 									<a class="room_change_item" title="{$room.title}" href="commsy.php?cid={$room.item_id}&mod=home&fct=index">
 										<div class="room_change_content">
