@@ -6,7 +6,7 @@
 			<a class="edit" href="#"><span class="edit_set"> &nbsp; </span></a>
 			<a class="linked" href="#"><span class="ref_to_ia"> &nbsp; </span></a>
 			<a class="detail" href="#"><span class="details_ia"> &nbsp; </span></a>
-			{if $room.assessment}
+			{if $room.workflow}
 				<a class="workflow" href="#"><span class="workflow_ia"> &nbsp; </span></a>
 			{/if}
 			<a class="annotations" href="#"><span class="ref_to_anno"> &nbsp; </span></a>
@@ -96,7 +96,7 @@
 			<div class="detail_content">
 				{* formal data *}
 				{if !empty($detail.content.formal)}
-					<table>
+					<table class="detail_content_table">
 						{foreach $detail.content.formal as $formal}
 							<tr>
 								<td><h4>{$formal[0]}:</h4></td>
@@ -115,7 +115,7 @@
 				</div>
 				{/if}
 		</div> <!-- Ende item_legend -->
-		{if $room.assessment}
+		{if $room.workflow}
 		   {include file="include/detail_workflow_html.tpl" data=$detail.content.workflow}
 		{/if}
 		{include file="include/detail_moredetails_html.tpl" data=$detail.content.moredetails}

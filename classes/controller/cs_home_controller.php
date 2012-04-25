@@ -86,7 +86,9 @@
 
 	                        $count_select = $manager->getCountAll();
 	                        $manager->setIntervalLimit(0, $home_rubric_limit);
-	                        if($home_rubric_limit < $count_select) $short_list_view->setListShortened(true);
+	                        if($home_rubric_limit < $count_select){
+	                        	$home_rubric_limit = 50;
+	                        }
 
 	                        $manager->select();
 	                        $list = $manager->get();
@@ -104,7 +106,9 @@
 
 	                        $count_select = $manager->getCountAll();
 	                        $manager->setIntervalLimit(0, $home_rubric_limit);
-	                        if($home_rubric_limit < $count_select) $short_list_view->setListShortened(true);
+	                        if($home_rubric_limit < $count_select){
+	                        	$home_rubric_limit = 50;
+	                        }
 
 	                        $manager->select();
 	                        $list = $manager->get();
@@ -148,7 +152,9 @@
 
 	                        $count_select = $manager->getCountAll();
 	                        $manager->setIntervalLimit(0, $home_rubric_limit);
-	                        if($home_rubric_limit < $count_select) $short_list_view->setListShortened(true);
+	                        if($home_rubric_limit < $count_select){
+	                        	$home_rubric_limit = 50;
+	                        }
 
 	                        $manager->select();
 	                        $list = $manager->get();
@@ -220,7 +226,9 @@
 	                        $manager->setIntervalLimit(0, $home_rubric_limit);
 	                        $home_rubric_limit = CS_HOME_RUBRIC_LIST_LIMIT;
 
-	                        if($home_rubric_limit < $count_select) $short_list_view->setListShortened(true);
+	                        if($home_rubric_limit < $count_select){
+	                        	$home_rubric_limit = 50;
+	                        }
 
 	                        $manager->select();
 	                        $list = $manager->get();
@@ -257,7 +265,9 @@
 	                        $manager->setIntervalLimit(0, $home_rubric_limit);
 	                        $home_rubric_limit = CS_HOME_RUBRIC_LIST_LIMIT;
 
-	                        if($home_rubric_limit < $count_select) $short_list_view->setListShortened(true);
+	                        if($home_rubric_limit < $count_select){
+	                        	$home_rubric_limit = 50;
+	                        }
 
 	                        $manager->select();
 	                        $list = $manager->get();

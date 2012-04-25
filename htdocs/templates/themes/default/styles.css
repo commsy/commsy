@@ -1183,6 +1183,11 @@ h2#item_navigation span {
 
 .detail_content{
 	background-color: #FFF;
+	min-height: 150px;
+	}
+
+.detail_content_table{
+	margin: 0px 5px;
 	}
 
 .detail_margin{

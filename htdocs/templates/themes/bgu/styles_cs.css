@@ -43,7 +43,7 @@
 /* Navigation */
 
 #main_navigation {
-    background:#012F59;  /*CS_COLOR_ACTIVE_MENUE*/
+     background: url("img/main_nav_bg.jpg") repeat-x scroll 0 0 transparent;
 }
 #main_navigation #active {
     background: #012F59; /*CS_COLOR_ACTIVE_MENUE*/
