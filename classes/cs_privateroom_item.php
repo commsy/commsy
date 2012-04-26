@@ -1890,6 +1890,114 @@ class cs_privateroom_item extends cs_room_item {
          $this->_unsetExtra('PRIVATEROOMSELECTEDROOMLIST');
       }
    }
+   
+   public function getCustomizedRoomListCommSy8 () {
+   	$retour = NULL;
+   	$room_id_array = $this->getCustomizedRoomIDArray();
+   	if ( !empty($room_id_array)
+   			and !empty($room_id_array[0])
+   	) {
+   		// add grouprooms
+   		$current_user_item = $this->_environment->getCurrentUserItem();
+   		$grouproom_list = $current_user_item->getRelatedGroupList();
+   		if ( isset($grouproom_list)
+   				and $grouproom_list->isNotEmpty()
+   		) {
+   			$grouproom_list->reverse();
+   			$grouproom_item = $grouproom_list->getFirst();
+   			while ($grouproom_item) {
+   				$project_room_id = $grouproom_item->getLinkedProjectItemID();
+   				if ( in_array($project_room_id,$room_id_array) ) {
+   					$room_id_array_temp = array();
+   					foreach ($room_id_array as $value) {
+   						$room_id_array_temp[] = $value;
+   						if ( $value == $project_room_id) {
+   							$room_id_array_temp[] = $grouproom_item->getItemID();
+   						}
+   					}
+   					$room_id_array = $room_id_array_temp;
+   				}
+   				$grouproom_item = $grouproom_list->getNext();
+   			}
+   		}
+   		
+   		// store negativ ids and titles and their position
+   		$negative_ids = array();
+   		$titles = array();
+   		$position = 0;
+   		foreach($room_id_array as $key => $id) {
+   			if(mb_stristr($id, '-1$$')) {
+   				$titles[$position] = $id;
+   				unset($room_id_array[$key]);
+   			} elseif($id < 0) {
+   				$negative_ids[$position] = $id;
+   			}
+   			
+   			$position++;
+   		}
+   		
+   		$end = $position - 1;
+   
+   		// get room list
+   		$room_manager = $this->_environment->getRoomManager();
+   		$room_manager->setRoomTypeLimit('');
+   		$room_manager->setIDArrayLimit($room_id_array);
+   		$room_manager->setOrder('id_array');
+   		$room_manager->setUserIDLimit($current_user_item->getUserID());
+   		$room_manager->setAuthSourceLimit($current_user_item->getAuthSource());
+   		$room_manager->select();
+   		$retour = $room_manager->get();
+   		unset($room_manager);
+   		unset($current_user_item);
+   	}
+   
+   	// remove first ---- and clean grouprooms
+   	if ( !empty( $retour ) ) {
+   		$retour2 = new cs_list();
+   		$room_item = $retour->getFirst();
+   		$room_id = 0;
+   
+   		while ($room_item) {
+   			if ( $room_item->getItemID() == -1 ) {
+   					$retour2->add($room_item);
+   			} else {
+   				if ( !$room_item->isGroupRoom() ) {
+   					$room_id = $room_item->getItemID();
+   					$retour2->add($room_item);
+   				} elseif ( $room_id == $room_item->getLinkedProjectItemID() ) {
+   					$retour2->add($room_item);
+   				}
+   			}
+   			$room_item = $retour->getNext();
+   		}
+   		$retour = $retour2;
+   		unset($retour2);
+   	}
+   	// remove first ---- and clean grouprooms
+   	
+   	// restore correct negative id and titles
+   	$item = $retour->getFirst();
+   	$return = new cs_list;
+   	for($position = 0; $position <= $end; $position++) {
+   		if(isset($titles[$position])) {
+   			$room_item = new cs_room_item;
+   			$room_item->setItemID(-1);
+   			$room_item->setTitle(mb_substr($titles[$position], 4));
+   			$return->add($room_item);
+   		} elseif(isset($negative_ids[$position])) {
+   			$item->setItemID($negative_ids[$position]);
+   			$return->add($item);
+   			
+   			$item = $retour->getNext();
+   		} else {
+   			$return->add($item);
+   			
+   			$item = $retour->getNext();
+   		}
+   	}
+   
+   	return $return;
+   }
 
    public function getCustomizedRoomList () {
       $retour = NULL;
@@ -1919,6 +2027,11 @@ class cs_privateroom_item extends cs_room_item {
                }
                $grouproom_item = $grouproom_list->getNext();
             }
+         }
+         
+         // filter
+         foreach($room_id_array as $key => $id) {
+         	if(mb_stristr($id, '$$')) unset($room_id_array[$key]);
          }
 
          // get room list

@@ -14,11 +14,63 @@ class cs_popup_breadcrumb_controller {
 	}
 
 	public function edit($item_id) {
-
+		/*
+		 *  $current_user = $environment->getCurrentUserItem();
+                      $own_room_item = $current_user->getOwnRoom();
+                      if ( !empty($_POST['delete']) and $_POST['delete'] == 1 ) {
+                         $own_room_item->setCustomizedRoomIDArray(array());
+                      } else {
+                         $own_room_item->setCustomizedRoomIDArray($_POST['sorting']);
+                      }
+                      $own_room_item->save();
+		 */
 	}
 
 	public function create($form_data) {
-
+		$room_config = $form_data['room_config'];
+		
+		// prepare sorting array
+		$sorting = array();
+		$num_latest_dummies = 0;
+		foreach($room_config as $config) {
+			switch($config['type']) {
+				case 'title':
+					$sorting[] = '-1$$' . $config['value'];
+					$num_latest_dummies = 0;
+					break;
+				case 'room':
+					$sorting[] = $config['value'];
+					$num_latest_dummies = 0;
+					break;
+				case 'dummy':
+					$sorting[] = '-3';
+					$num_latest_dummies++;
+					break;
+			}
+		}
+		
+		// remove all tailing dummies per title
+		$sorting = array_reverse($sorting);
+		$is_before_title = true;
+		foreach($sorting as $key => $id) {
+			// if dummy
+			if($id == '-3' && $is_before_title) {
+				unset($sorting[$key]);
+				
+			// if title
+			} elseif(mb_stristr($id, '-1$$')) {
+				$is_before_title = true;
+			} else {
+				$is_before_title = false;
+			}
+		}
+		$sorting = array_reverse($sorting);
+		
+		// save
+		$current_user = $this->_environment->getCurrentUserItem();
+		$own_room_item = $current_user->getOwnRoom();
+		$own_room_item->setCustomizedRoomIDArray($sorting);
+		$own_room_item->save();
 	}
 
 	public function getHTML() {
@@ -125,11 +177,7 @@ class cs_popup_breadcrumb_controller {
       $current_user = $this->_environment->getCurrentUserItem();
       $current_context_id = $this->_environment->getCurrentContextID();
       $own_room_item = $current_user->getOwnRoom();
-      $temp_array = array();
-      $temp_array['title'] = '----------------------------';
-      $temp_array['item_id'] = '-1';
-      $retour[] = $temp_array;
-      $customized_room_list = $own_room_item->getCustomizedRoomList();
+      $customized_room_list = $own_room_item->getCustomizedRoomListCommSy8();
       if ( isset($customized_room_list) ) {
          $room_item = $customized_room_list->getFirst();
          while ($room_item) {
@@ -151,275 +199,276 @@ class cs_popup_breadcrumb_controller {
             $room_item = $customized_room_list->getNext();
          }
       }
+      
       return $retour;
    }
 
 
    function _getAllOpenContextsForCurrentUser () {
-	  $this->_translator = $this->_environment->getTranslationObject();
-      $current_user = $this->_environment->getCurrentUserItem();
-      $own_room_item = $current_user->getOwnRoom();
-      if ( isset($own_room_item) ) {
-         $customized_room_array = $own_room_item->getCustomizedRoomIDArray();
-      }
-      if (isset($customized_room_array[0])){
-         return $this->_getCustomizedRoomListForCurrentUser();
-      }else{
-      $this->translatorChangeToPortal();
-      $selected = false;
-      $selected_future = 0;
-      $selected_future_pos = -1;
-      $retour = array();
-      $temp_array = array();
-      $temp_array['item_id'] = -1;
-      $temp_array['title'] = '';
-      $retour[] = $temp_array;
-      unset($temp_array);
-      $temp_array = array();
-      $community_list = $current_user->getRelatedCommunityList();
-      if ( $community_list->isNotEmpty() ) {
-         $temp_array['item_id'] = -1;
-         $temp_array['title'] = $this->_translator->getMessage('MYAREA_COMMUNITY_INDEX').'';
-         $retour[] = $temp_array;
-         unset($temp_array);
-         $community_item = $community_list->getFirst();
-         while ($community_item) {
-            $temp_array = array();
-            $temp_array['item_id'] = $community_item->getItemID();
-            $title = $community_item->getTitle();
-            $temp_array['title'] = $title;
-            if ( $community_item->getItemID() == $this->_environment->getCurrentContextID()
-                 and !$selected
-               ) {
-               $temp_array['selected'] = true;
-               $selected = true;
-            }
+   	$this->_translator = $this->_environment->getTranslationObject();
+   	$current_user = $this->_environment->getCurrentUserItem();
+   	$own_room_item = $current_user->getOwnRoom();
+   	if ( isset($own_room_item) ) {
+   		$customized_room_array = $own_room_item->getCustomizedRoomIDArray();
+   	}
+   	if (isset($customized_room_array[0])){
+   		return $this->_getCustomizedRoomListForCurrentUser();
+   	}else{
+   		$this->translatorChangeToPortal();
+   		$selected = false;
+   		$selected_future = 0;
+   		$selected_future_pos = -1;
+   		$retour = array();
+   		$temp_array = array();
+   		$temp_array['item_id'] = -1;
+   		$temp_array['title'] = '';
+   		$retour[] = $temp_array;
+   		unset($temp_array);
+   		$temp_array = array();
+   		$community_list = $current_user->getRelatedCommunityList();
+   		if ( $community_list->isNotEmpty() ) {
+   			$temp_array['item_id'] = -1;
+   			$temp_array['title'] = $this->_translator->getMessage('MYAREA_COMMUNITY_INDEX').'';
+   			$retour[] = $temp_array;
+   			unset($temp_array);
+   			$community_item = $community_list->getFirst();
+   			while ($community_item) {
+   				$temp_array = array();
+   				$temp_array['item_id'] = $community_item->getItemID();
+   				$title = $community_item->getTitle();
+   				$temp_array['title'] = $title;
+   				if ( $community_item->getItemID() == $this->_environment->getCurrentContextID()
+   						and !$selected
+   				) {
+   					$temp_array['selected'] = true;
+   					$selected = true;
+   				}
 
-            $retour[] = $temp_array;
-            unset($temp_array);
-            unset($community_item);
-            $community_item = $community_list->getNext();
-         }
-         $temp_array = array();
-         $temp_array['item_id'] = -1;
-         $temp_array['title'] = '';
-         $retour[] = $temp_array;
-         unset($community_list);
-      }
-      $portal_item = $this->_environment->getCurrentPortalItem();
-      if ($portal_item->showTime()) {
-         $project_list = $current_user->getRelatedProjectListSortByTimeForMyArea();
-#         if ( $portal_item->showGrouproomConfig() ) {
-            include_once('classes/cs_list.php');
-            $new_project_list = new cs_list();
-            $grouproom_array = array();
-            $project_grouproom_array = array();
-            if ( $project_list->isNotEmpty() ) {
-               $room_item = $project_list->getFirst();
-               while ($room_item) {
-                  if ( $room_item->isA(CS_GROUPROOM_TYPE) ) {
-                     $grouproom_array[$room_item->getItemID()] = $room_item->getTitle();
-                     $linked_project_item_id = $room_item->getLinkedProjectItemID();
-                     $project_grouproom_array[$linked_project_item_id][] = $room_item->getItemID();
-                  } else {
-                     $new_project_list->add($room_item);
-                  }
-                  unset($room_item);
-                  $room_item = $project_list->getNext();
-               }
-               unset($project_list);
-               $project_list = $new_project_list;
-               unset($new_project_list);
-            }
-#         }
-         $future = true;
-         $future_array = array();
-         $no_time = false;
-         $no_time_array = array();
-         $current_time = $portal_item->getTitleOfCurrentTime();
-         $with_title = false;
-      } else {
-         $project_list = $current_user->getRelatedProjectListForMyArea();
-#         if ( $portal_item->showGrouproomConfig() ) {
-            include_once('classes/cs_list.php');
-            $new_project_list = new cs_list();
-            $grouproom_array = array();
-            $project_grouproom_array = array();
-            if ( $project_list->isNotEmpty() ) {
-               $room_item = $project_list->getFirst();
-               while ($room_item) {
-                  if ( $room_item->isA(CS_GROUPROOM_TYPE) ) {
-                     $grouproom_array[$room_item->getItemID()] = $room_item->getTitle();
-                     $linked_project_item_id = $room_item->getLinkedProjectItemID();
-                     $project_grouproom_array[$linked_project_item_id][] = $room_item->getItemID();
-                  } else {
-                     $new_project_list->add($room_item);
-                  }
-                  unset($room_item);
-                  $room_item = $project_list->getNext();
-               }
-               unset($project_list);
-               $project_list = $new_project_list;
-               unset($new_project_list);
-            }
-#         }
-      }
-      unset($current_user);
-      if ( $project_list->isNotEmpty() ) {
-         $temp_array['item_id'] = -1;
-         $temp_array['title'] = $this->_translator->getMessage('MYAREA_PROJECT_INDEX').'';
-         $retour[] = $temp_array;
-         unset($temp_array);
-         $project_item = $project_list->getFirst();
-         while ($project_item) {
-            $temp_array = array();
-            if ( $project_item->isA(CS_PROJECT_TYPE)
-               ) {
-               $temp_array['item_id'] = $project_item->getItemID();
-               $title = $project_item->getTitle();
-               $temp_array['title'] = $title;
-               if ( $project_item->getItemID() == $this->_environment->getCurrentContextID()
-                    and ( !$selected
-                          or $selected_future == $project_item->getItemID()
-                        )
-                  ) {
-                  $temp_array['selected'] = true;
-                  if ( !empty($selected_future)
-                       and $selected_future != 0
-                       and $selected_future_pos != -1
-                     ) {
-                     $selected_future = 0;
-                     unset($future_array[$selected_future_pos]['selected']);
-                  }
-                  $selected = true;
-               }
+   				$retour[] = $temp_array;
+   				unset($temp_array);
+   				unset($community_item);
+   				$community_item = $community_list->getNext();
+   			}
+   			$temp_array = array();
+   			$temp_array['item_id'] = -1;
+   			$temp_array['title'] = '';
+   			$retour[] = $temp_array;
+   			unset($community_list);
+   		}
+   		$portal_item = $this->_environment->getCurrentPortalItem();
+   		if ($portal_item->showTime()) {
+   			$project_list = $current_user->getRelatedProjectListSortByTimeForMyArea();
+   			#         if ( $portal_item->showGrouproomConfig() ) {
+   			include_once('classes/cs_list.php');
+   			$new_project_list = new cs_list();
+   			$grouproom_array = array();
+   			$project_grouproom_array = array();
+   			if ( $project_list->isNotEmpty() ) {
+   				$room_item = $project_list->getFirst();
+   				while ($room_item) {
+   					if ( $room_item->isA(CS_GROUPROOM_TYPE) ) {
+   						$grouproom_array[$room_item->getItemID()] = $room_item->getTitle();
+   						$linked_project_item_id = $room_item->getLinkedProjectItemID();
+   						$project_grouproom_array[$linked_project_item_id][] = $room_item->getItemID();
+   					} else {
+   						$new_project_list->add($room_item);
+   					}
+   					unset($room_item);
+   					$room_item = $project_list->getNext();
+   				}
+   				unset($project_list);
+   				$project_list = $new_project_list;
+   				unset($new_project_list);
+   			}
+   			#         }
+   			$future = true;
+   			$future_array = array();
+   			$no_time = false;
+   			$no_time_array = array();
+   			$current_time = $portal_item->getTitleOfCurrentTime();
+   			$with_title = false;
+   		} else {
+   			$project_list = $current_user->getRelatedProjectListForMyArea();
+   			#         if ( $portal_item->showGrouproomConfig() ) {
+   			include_once('classes/cs_list.php');
+   			$new_project_list = new cs_list();
+   			$grouproom_array = array();
+   			$project_grouproom_array = array();
+   			if ( $project_list->isNotEmpty() ) {
+   				$room_item = $project_list->getFirst();
+   				while ($room_item) {
+   					if ( $room_item->isA(CS_GROUPROOM_TYPE) ) {
+   						$grouproom_array[$room_item->getItemID()] = $room_item->getTitle();
+   						$linked_project_item_id = $room_item->getLinkedProjectItemID();
+   						$project_grouproom_array[$linked_project_item_id][] = $room_item->getItemID();
+   					} else {
+   						$new_project_list->add($room_item);
+   					}
+   					unset($room_item);
+   					$room_item = $project_list->getNext();
+   				}
+   				unset($project_list);
+   				$project_list = $new_project_list;
+   				unset($new_project_list);
+   			}
+   			#         }
+   		}
+   		unset($current_user);
+   		if ( $project_list->isNotEmpty() ) {
+   			$temp_array['item_id'] = -1;
+   			$temp_array['title'] = $this->_translator->getMessage('MYAREA_PROJECT_INDEX').'';
+   			$retour[] = $temp_array;
+   			unset($temp_array);
+   			$project_item = $project_list->getFirst();
+   			while ($project_item) {
+   				$temp_array = array();
+   				if ( $project_item->isA(CS_PROJECT_TYPE)
+   				) {
+   					$temp_array['item_id'] = $project_item->getItemID();
+   					$title = $project_item->getTitle();
+   					$temp_array['title'] = $title;
+   					if ( $project_item->getItemID() == $this->_environment->getCurrentContextID()
+   							and ( !$selected
+   									or $selected_future == $project_item->getItemID()
+   							)
+   					) {
+   						$temp_array['selected'] = true;
+   						if ( !empty($selected_future)
+   								and $selected_future != 0
+   								and $selected_future_pos != -1
+   						) {
+   							$selected_future = 0;
+   							unset($future_array[$selected_future_pos]['selected']);
+   						}
+   						$selected = true;
+   					}
 
-               // grouprooms
-#               if ( $portal_item->showGrouproomConfig() ) {
-                  if ( isset($project_grouproom_array[$project_item->getItemID()]) and !empty($project_grouproom_array[$project_item->getItemID()]) and $project_item->isGrouproomActive()) {
-                     $group_result_array = array();
-                     $project_grouproom_array[$project_item->getItemID()]= array_unique($project_grouproom_array[$project_item->getItemID()]);
-                     foreach ($project_grouproom_array[$project_item->getItemID()] as $value) {
-                        $group_temp_array = array();
-                        $group_temp_array['item_id'] = $value;
-                        $group_temp_array['title'] = '- '.$grouproom_array[$value];
-                        if ( $value == $this->_environment->getCurrentContextID()
-                             and ( !$selected
-                                   or $selected_future == $value
-                                 )
-                           ) {
-                           $group_temp_array['selected'] = true;
-                           $selected = true;
-                           if ( !empty($selected_future)
-                                and $selected_future != 0
-                                and $selected_future_pos != -1
-                              ) {
-                              $selected_future = 0;
-                              unset($future_array[$selected_future_pos]['selected']);
-                           }
-                        }
-                        $group_result_array[] = $group_temp_array;
-                        unset($group_temp_array);
-                     }
-                  }
-#               }
-            } else {
-               $with_title = true;
-               $temp_array['item_id'] = -2;
-               $title = $project_item->getTitle();
-               if (!empty($title) and $title != 'COMMON_NOT_LINKED') {
-                  $temp_array['title'] = $this->_translator->getTimeMessage($title);
-               } else {
-                  $temp_array['title'] = $this->_translator->getMessage('COMMON_NOT_LINKED');
-                  $no_time = true;
-               }
-               if (!empty($title) and $title == $current_time) {
-               // if (!empty($title) and !empty($current_time) and $title == $current_time) {
-                  $future = false;
-               }
-            }
-            if ($portal_item->showTime()) {
-               if ($no_time) {
-                  $no_time_array[] = $temp_array;
-                  if ( isset($group_result_array) and !empty($group_result_array) ) {
-                     $no_time_array = array_merge($no_time_array,$group_result_array);
-                     unset($group_result_array);
-                  }
-               } elseif ($future) {
-                  if ($temp_array['item_id'] != -2) {
-                     $future_array[] = $temp_array;
-                     if ( !empty($temp_array['selected']) and $temp_array['selected'] ) {
-                        $selected_future = $temp_array['item_id'];
-                        $selected_future_pos = count($future_array)-1;
-                     }
-                     if ( isset($group_result_array) and !empty($group_result_array) ) {
-                         $future_array = array_merge($future_array,$group_result_array);
-                         unset($group_result_array);
-                     }
-                  }
-               } else {
-                  $retour[] = $temp_array;
-                  if ( isset($group_result_array) and !empty($group_result_array) ) {
-                      $retour = array_merge($retour,$group_result_array);
-                      unset($group_result_array);
-                  }
-               }
-            } else {
-               $retour[] = $temp_array;
-               if ( isset($group_result_array) and !empty($group_result_array) ) {
-                    $retour = array_merge($retour,$group_result_array);
-                  unset($group_result_array);
-               }
-            }
-            unset($temp_array);
-            unset($project_item);
-            $project_item = $project_list->getNext();
-         }
-         unset($project_list);
-   if ($portal_item->showTime()) {
+   					// grouprooms
+   					#               if ( $portal_item->showGrouproomConfig() ) {
+   					if ( isset($project_grouproom_array[$project_item->getItemID()]) and !empty($project_grouproom_array[$project_item->getItemID()]) and $project_item->isGrouproomActive()) {
+   						$group_result_array = array();
+   						$project_grouproom_array[$project_item->getItemID()]= array_unique($project_grouproom_array[$project_item->getItemID()]);
+   						foreach ($project_grouproom_array[$project_item->getItemID()] as $value) {
+   							$group_temp_array = array();
+   							$group_temp_array['item_id'] = $value;
+   							$group_temp_array['title'] = '- '.$grouproom_array[$value];
+   							if ( $value == $this->_environment->getCurrentContextID()
+   									and ( !$selected
+   											or $selected_future == $value
+   									)
+   							) {
+   								$group_temp_array['selected'] = true;
+   								$selected = true;
+   								if ( !empty($selected_future)
+   										and $selected_future != 0
+   										and $selected_future_pos != -1
+   								) {
+   									$selected_future = 0;
+   									unset($future_array[$selected_future_pos]['selected']);
+   								}
+   							}
+   							$group_result_array[] = $group_temp_array;
+   							unset($group_temp_array);
+   						}
+   					}
+   					#               }
+   				} else {
+   					$with_title = true;
+   					$temp_array['item_id'] = -2;
+   					$title = $project_item->getTitle();
+   					if (!empty($title) and $title != 'COMMON_NOT_LINKED') {
+   						$temp_array['title'] = $this->_translator->getTimeMessage($title);
+   					} else {
+   						$temp_array['title'] = $this->_translator->getMessage('COMMON_NOT_LINKED');
+   						$no_time = true;
+   					}
+   					if (!empty($title) and $title == $current_time) {
+   						// if (!empty($title) and !empty($current_time) and $title == $current_time) {
+   						$future = false;
+   					}
+   				}
+   				if ($portal_item->showTime()) {
+   					if ($no_time) {
+   						$no_time_array[] = $temp_array;
+   						if ( isset($group_result_array) and !empty($group_result_array) ) {
+   							$no_time_array = array_merge($no_time_array,$group_result_array);
+   							unset($group_result_array);
+   						}
+   					} elseif ($future) {
+   						if ($temp_array['item_id'] != -2) {
+   							$future_array[] = $temp_array;
+   							if ( !empty($temp_array['selected']) and $temp_array['selected'] ) {
+   								$selected_future = $temp_array['item_id'];
+   								$selected_future_pos = count($future_array)-1;
+   							}
+   							if ( isset($group_result_array) and !empty($group_result_array) ) {
+   								$future_array = array_merge($future_array,$group_result_array);
+   								unset($group_result_array);
+   							}
+   						}
+   					} else {
+   						$retour[] = $temp_array;
+   						if ( isset($group_result_array) and !empty($group_result_array) ) {
+   							$retour = array_merge($retour,$group_result_array);
+   							unset($group_result_array);
+   						}
+   					}
+   				} else {
+   					$retour[] = $temp_array;
+   					if ( isset($group_result_array) and !empty($group_result_array) ) {
+   						$retour = array_merge($retour,$group_result_array);
+   						unset($group_result_array);
+   					}
+   				}
+   				unset($temp_array);
+   				unset($project_item);
+   				$project_item = $project_list->getNext();
+   			}
+   			unset($project_list);
+   			if ($portal_item->showTime()) {
 
-      // special case, if no room is linked to a time pulse
-      if (isset($with_title) and !$with_title) {
-         $temp_array = array();
-         $temp_array['item_id'] = -2;
-         $temp_array['title'] = $this->_translator->getMessage('COMMON_NOT_LINKED');
-         $retour[] = $temp_array;
-         unset($temp_array);
-         $retour = array_merge($retour,$future_array);
-         $future_array = array();
-      }
+   				// special case, if no room is linked to a time pulse
+   				if (isset($with_title) and !$with_title) {
+   					$temp_array = array();
+   					$temp_array['item_id'] = -2;
+   					$temp_array['title'] = $this->_translator->getMessage('COMMON_NOT_LINKED');
+   					$retour[] = $temp_array;
+   					unset($temp_array);
+   					$retour = array_merge($retour,$future_array);
+   					$future_array = array();
+   				}
 
-      if (!empty($future_array)) {
-         $future_array2 = array();
-         $future_array3 = array();
-         foreach ($future_array as $element) {
-            if ( !in_array($element['item_id'],$future_array3) ) {
-                     $future_array3[] = $element['item_id'];
-                     $future_array2[] = $element;
-            }
-         }
-         $future_array = $future_array2;
-         unset($future_array2);
-         unset($future_array3);
-         $temp_array = array();
-         $temp_array['title'] = $this->_translator->getMessage('COMMON_IN_FUTURE');
-         $temp_array['item_id'] = -2;
-         $future_array_begin = array();
-         $future_array_begin[] = $temp_array;
-         $future_array = array_merge($future_array_begin,$future_array);
-         unset($temp_array);
-         $retour = array_merge($retour,$future_array);
-      }
+   				if (!empty($future_array)) {
+   					$future_array2 = array();
+   					$future_array3 = array();
+   					foreach ($future_array as $element) {
+   						if ( !in_array($element['item_id'],$future_array3) ) {
+   							$future_array3[] = $element['item_id'];
+   							$future_array2[] = $element;
+   						}
+   					}
+   					$future_array = $future_array2;
+   					unset($future_array2);
+   					unset($future_array3);
+   					$temp_array = array();
+   					$temp_array['title'] = $this->_translator->getMessage('COMMON_IN_FUTURE');
+   					$temp_array['item_id'] = -2;
+   					$future_array_begin = array();
+   					$future_array_begin[] = $temp_array;
+   					$future_array = array_merge($future_array_begin,$future_array);
+   					unset($temp_array);
+   					$retour = array_merge($retour,$future_array);
+   				}
 
-      if (!empty($no_time_array)) {
-         $retour = array_merge($retour,$no_time_array);
-      }
-         }
-      }
-      unset($portal_item);
-      $this->translatorChangeToCurrentContext();
-      return $retour;
-      }
+   				if (!empty($no_time_array)) {
+   					$retour = array_merge($retour,$no_time_array);
+   				}
+   			}
+   		}
+   		unset($portal_item);
+   		$this->translatorChangeToCurrentContext();
+   		return $retour;
+   	}
    }
 
    function translatorChangeToPortal () {

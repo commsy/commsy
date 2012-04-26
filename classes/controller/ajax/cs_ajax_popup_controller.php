@@ -91,7 +91,7 @@
 			}
 		}
 		
-		public function actionCreate() {	
+		public function actionCreate() {
 			// include
 			$module = $this->_data['module'];
 			require_once('classes/controller/ajax/popup/cs_popup_' . $module . '_controller.php');

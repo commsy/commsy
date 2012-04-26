@@ -2828,14 +2828,12 @@ a.tab_navigation{
 
 }
 
-.breadcrumb_column {
-}
-
-div.breadcrumb_column .ui-state-highlight {
-	height: 60px;
+div.breadcrumb_room_area .ui-state-highlight {
+	height: 73px;
 	width: 220px;
 	margin: 5px 10px;
 	display: block;
+	float: left;
 }
 
 .room_change_room_box {
@@ -2873,6 +2871,7 @@ div.breadcrumb_column .ui-state-highlight {
 a.room_change_item {
     display:block;
     text-decoration: none;
+    float: left;
 }
 
 .room_change_title {
@@ -2904,7 +2903,18 @@ a.room_change_item {
 }
 
 div.room_dummy {
-	height: 70px;
-	width: 250px;
-	border: 1px dotted white;
+	height: 73px;
+	width: 222px;
+	border: 1px dotted navy;
+	margin: 5px 10px;
+	float: left;
+}
+
+div.room_dummy_no_border {
+	border: none;
+	height: 75px;
+}
+
+div.breadcrumb_column_title {
+	width: 220px;
 }

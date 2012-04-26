@@ -195,7 +195,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 						*/
 						
 						// register click for edit button
-						jQuery('a#edit_roomlist').click(function() {
+						jQuery('a#edit_roomlist').bind('click', {
 							handle:		handle}, handle.setupEditMode);
 						
 						// setup popup
@@ -209,23 +209,172 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 		},
 		
 		setupEditMode: function(event) {
-			var commsy_functions = event.data.handle;
+			var handle = event.data.handle;
 			var target = jQuery(event.target);
 			
 			var content_object = jQuery('div#tm_dropmenu_breadcrumb div#profile_content_row_three');
 			
 			// setup sortables
-			content_object.find('.breadcrumb_column').sortable({
-				connectWith:	'.breadcrumb_column',
+			content_object.find('.breadcrumb_room_area').sortable({
+				connectWith:	'.breadcrumb_room_area',
 				placeholder:	'ui-state-highlight'
 			});
 			
-			var column_objects = content_object.find('div.breadcrumb_column');
-			
-			jQuery.each(column_objects, function() {
-				jQuery('<div/>', {'class': 'room_dummy'}).appendTo(this);
+			/* when creating a personal room list for the first time */
+			jQuery('div.room_block').each(function() {
+				var room_area_objects = jQuery(this).find('div.breadcrumb_room_area');
+				
+				// group h3-tags together
+				var ref = null;
+				jQuery.each(room_area_objects, function(index) {
+					// save first room area
+					if(index === 0) ref = jQuery(this);
+					
+					// otherwise move its rooms to first room
+					else {
+						ref.find('div.clear').before(jQuery(this).find('a.room_change_item'));
+						
+						// remove room area
+						jQuery(this).remove();
+					}
+				});
+				
+				// determe number of dummies to add
+				/*
+				 * holds the beginning position after that only dummies appear
+				 * D D D D R D D R D D D D D
+				 * 				  /\
+				 * 				  ||
+				 */
+				var earliest_dummy_streak_appearance = -1;
+				
+				/*
+				 * holds the latest appearance of a room
+				 * D D D D R D D R D D D D D
+				 * 				/\
+				 * 				||
+				 */
+				var latest_room_appearance = -1;
+				
+				var count = 0;
+				ref.find('a.room_change_item, div.room_dummy').each(function(index) {
+					// determ type
+					if(jQuery(this).hasClass('room_dummy')) {
+						// dummy
+						// make visible
+						jQuery(this).removeClass('room_dummy_no_border');
+						
+						//if(earliest_dummy_streak_appearance == -1) earliest_dummy_streak_appearance = index;
+					} else {
+						// room
+						// update latest appearance
+						latest_room_appearance = index;
+						
+						//if(index > earliest_dummy_streak_appearance) earliest_dummy_streak_appearance = -1;
+					}
+					
+					count++;
+				});
+				
+				var dummies_to_add = 0;
+				
+				// not fully filled rows
+				if(count % 4 !== 0) dummies_to_add = 4 + 4 - count % 4;		// this is one complete row + filled last one	
+				
+				// last row contains a room
+				else if(latest_room_appearance > count - 3) {
+					dummies_to_add = 4;
+				}
+				
+				// add dummies		
+				for(var i=0; i < dummies_to_add; i++) {
+					ref.find('div.clear').before(jQuery('<div/>', {'class': 'room_dummy'}));
+				}
+				
+				// remove all h3-tags
+				jQuery(this).children('h3').remove();
+				
+				// make h2-tags to inputs
+				jQuery(this).children('h2').each(function() {
+					// wrap
+					jQuery(this).html(jQuery('<input/>', {
+						'value':	jQuery(this).html()
+					}));
+				});
 			});
 			
+			// add save
+			content_object.append(
+			jQuery('<div/>', {
+				'class':	'float-right'
+			}).append(
+				jQuery('<a/>', {
+					'id':	'roomlist_save',
+					'href':	'#',
+					'html':	'save'
+				}))).append(
+			jQuery('<div/>', {
+				'class':	'clear'
+			}));
+			
+			// register save
+			jQuery('a#roomlist_save').bind('click', {handle: handle}, handle.saveRoomlist);
+			
+			return false;
+		},
+		
+		saveRoomlist: function(event) {
+			var handle = event.data.handle;
+			
+			var data = {
+				module:		'breadcrumb',
+				form_data:	[]
+			};
+			var room_config = [];
+			
+			// prepare form data
+			jQuery('div.room_block').each(function() {
+				// get title from h2
+				room_config.push({
+					'type':		'title',
+					'value':	jQuery(this).children('h2').children('input').attr('value')
+				});
+				
+				// get room and spaces
+				jQuery(this).children('div.breadcrumb_room_area').find('a.room_change_item, div.room_dummy').each(function() {
+					// determ type
+					var type = 'room';
+					if(jQuery(this).hasClass('room_dummy')) type = 'dummy';
+					
+					room_config.push({
+						'type':		type,
+						'value':	jQuery(this).find('input[name="hidden_item_id"]').attr('value')
+					});
+				});
+			});
+			
+			data.form_data.push({
+				'name':		'room_config',
+				'value':	room_config
+			});
+			
+			jQuery.ajax({
+				type: 'POST',
+				url: 'commsy.php?cid=' + handle.cid + '&mod=ajax&fct=popup&action=create',
+				data: JSON.stringify(data),
+				contentType: 'application/json; charset=utf-8',
+				dataType: 'json',
+				error: function(jqXHR, textStatus, errorThrown) {
+					console.log("error while getting popup");
+				},
+				success: function(data, status) {
+					if(status === 'success') {
+						
+					}
+				}
+			});
+			
+			// stop processing
 			return false;
 		},
 		
