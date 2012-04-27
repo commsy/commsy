@@ -297,7 +297,14 @@ class misc_text_converter {
       $text = preg_replace('~\*([^*]+)\*~uU', '<span style="font-weight:bold;">$1</span>', $text);
 
       // italic
+      preg_match('~<!-- DNC -->.*<!-- DNC -->~us',$text,$values);
+      foreach ($values as $key => $value) {
+         $text = str_replace($value,'COMMSY_DNC'.$key.' ',$text);
+      }
       $text = preg_replace('~(^|\n|\t|\s|[ >\/[{(])_([^_]+)_($|\n|\t|:|[ <\/.)\]},!?;])~uU', '$1<span style="font-style:italic;">$2</span>$3', $text);
+      foreach ($values as $key => $value) {
+         $text = str_replace('COMMSY_DNC'.$key.' ',$value,$text);
+      }     
 
 
       // search (with yellow background)
