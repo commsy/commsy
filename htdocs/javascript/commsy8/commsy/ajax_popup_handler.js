@@ -158,7 +158,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			jQuery('div[id="popup_wrapper"]').remove();
 		},
 		
-		create: function(event) {
+		save: function(event) {
 			var handle = event.data.handle;
 			var module = event.data.module;
 			var item_id = event.data.item_id;
@@ -421,11 +421,11 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 				return false;
 			});
 			
-			// register click for create button
+			// register click for save button
 			jQuery('input[id="popup_button_create"]').bind('click', {
 				handle:		this,
 				module:		module,
-				item_id:	item_id}, this.create);
+				item_id:	item_id}, this.save);
 			
 			// setup buzzwords
 			this.setupBuzzwords();
