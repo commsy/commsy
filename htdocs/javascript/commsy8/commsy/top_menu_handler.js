@@ -194,6 +194,9 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			
 			var content_objects = jQuery('div#tm_dropmenu_breadcrumb div#profile_content_row_three, div#tm_dropmenu_breadcrumb div#profile_content_row_four');
 			
+			// make hidden rooms visible
+			jQuery('div#profile_content_row_four').show();
+			
 			// setup sortables
 			content_objects.find('.breadcrumb_room_area').sortable({
 				connectWith:	'.breadcrumb_room_area',
