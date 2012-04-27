@@ -101,40 +101,42 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 						
 						var dynatree = jQuery('div[id="tag_tree"]').dynatree('getTree');
 						
-						// expand all nodes and add checkbox inputs
-						dynatree.visit(function(node) {
-							node.expand(true);
+						if(dynatree.length > 0) {
+							// expand all nodes and add checkbox inputs
+							dynatree.visit(function(node) {
+								node.expand(true);
+								
+								// check bold
+								if(node.data.title.substr(0, 3) === '<b>') {
+									node.data.title = '<input type="checkbox" checked="checked"/><span>' + node.data.title + '</span>';
+								} else {
+									node.data.title = '<input type="checkbox"/><span>' + node.data.title + '</span>';
+								}
+								
+								// re-render
+								node.render();
+							});
 							
-							// check bold
-							if(node.data.title.substr(0, 3) === '<b>') {
-								node.data.title = '<input type="checkbox" checked="checked"/><span>' + node.data.title + '</span>';
-							} else {
-								node.data.title = '<input type="checkbox"/><span>' + node.data.title + '</span>';
+							// override onclick
+							dynatree.options.onClick = function(node, event) {
+								// toggle bold
+								/<span>(.*)<\/span>/.exec(node.data.title);
+								var title = RegExp.$1;
+								
+								// check bold
+								if(node.data.title.substr(0, 3) === '<b>') {
+									// remove
+									node.data.title = '<input type="checkbox"/><span>' + title + '</span>';
+								} else {
+									// add
+									node.data.title = '<b><input type="checkbox" checked="checked"/><span>' + title + '</span></b>';
+								}
+								
+								// re-render
+								node.render();
+								
+								return false;
 							}
-							
-							// re-render
-							node.render();
-						});
-						
-						// override onclick
-						dynatree.options.onClick = function(node, event) {
-							// toggle bold
-							/<span>(.*)<\/span>/.exec(node.data.title);
-							var title = RegExp.$1;
-							
-							// check bold
-							if(node.data.title.substr(0, 3) === '<b>') {
-								// remove
-								node.data.title = '<input type="checkbox"/><span>' + title + '</span>';
-							} else {
-								// add
-								node.data.title = '<b><input type="checkbox" checked="checked"/><span>' + title + '</span></b>';
-							}
-							
-							// re-render
-							node.render();
-							
-							return false;
 						}
 						
 						// setup popup
