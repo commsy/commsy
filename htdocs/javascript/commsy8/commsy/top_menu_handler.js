@@ -212,15 +212,15 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			var handle = event.data.handle;
 			var target = jQuery(event.target);
 			
-			var content_object = jQuery('div#tm_dropmenu_breadcrumb div#profile_content_row_three');
+			var content_objects = jQuery('div#tm_dropmenu_breadcrumb div#profile_content_row_three, div#tm_dropmenu_breadcrumb div#profile_content_row_four');
 			
 			// setup sortables
-			content_object.find('.breadcrumb_room_area').sortable({
+			content_objects.find('.breadcrumb_room_area').sortable({
 				connectWith:	'.breadcrumb_room_area',
 				placeholder:	'ui-state-highlight'
 			});
 			
-			/* when creating a personal room list for the first time */
+			// process each room block
 			jQuery('div.room_block').each(function() {
 				var room_area_objects = jQuery(this).find('div.breadcrumb_room_area');
 				
@@ -303,8 +303,22 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 				});
 			});
 			
+			// add new block area
+			jQuery('div#tm_dropmenu_breadcrumb div#profile_content_row_three div.room_block:last').after(
+			jQuery('<div/>', {
+				'class':	'float-left'
+			}).append(
+				jQuery('<a/>', {
+					'id':	'roomlist_append_block',
+					'href':	'#',
+					'html':	'new block'
+				})));
+			
+			// register new block
+			jQuery('a#roomlist_append_block').bind('click', {handle: handle}, handle.appendNewBlock);
+			
 			// add save
-			content_object.append(
+			jQuery('div#tm_dropmenu_breadcrumb div#profile_content_row_three').append(
 			jQuery('<div/>', {
 				'class':	'float-right'
 			}).append(
@@ -320,7 +334,45 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			// register save
 			jQuery('a#roomlist_save').bind('click', {handle: handle}, handle.saveRoomlist);
 			
+			// unregister handler
+			jQuery('a#edit_roomlist').unbind();
+			
 			return false;
+		},
+		
+		appendNewBlock: function(event) {
+			// build main structure
+			jQuery('div#profile_content_row_three div.room_block:last').after(
+			jQuery('<div/>', {
+				'class':	'room_block'
+			}).append(
+				jQuery('<h2/>').append(
+					jQuery('<input/>', {
+						'value':	'Neu'
+					}))).append(
+				jQuery('<div/>', {
+					'class':	'breadcrumb_room_area'
+				})));
+			
+			var new_area_object = jQuery('div#profile_content_row_three div.room_block:last div.breadcrumb_room_area');
+			
+			// make sortable
+			new_area_object.sortable({
+				connectWith:	'.breadcrumb_room_area',
+				placeholder:	'ui-state-highlight'
+			});
+			
+			// append eight dummies
+			for(var i=0; i < 8; i++) {
+				new_area_object.append(jQuery('<div/>', {
+					'class':	'room_dummy'
+				}));
+			}
+			
+			// append clearing div
+			new_area_object.append(jQuery('<div/>', {
+				'class':	'clear'
+			}));
 		},
 		
 		saveRoomlist: function(event) {
@@ -333,7 +385,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			var room_config = [];
 			
 			// prepare form data
-			jQuery('div.room_block').each(function() {
+			jQuery('div#profile_content_row_three div.room_block').each(function() {
 				// get title from h2
 				room_config.push({
 					'type':		'title',

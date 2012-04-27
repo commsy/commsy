@@ -2070,12 +2070,13 @@ class cs_privateroom_item extends cs_room_item {
                }
             }
             $room_item = $retour->getNext();
+            
+           
          }
          $retour = $retour2;
          unset($retour2);
       }
       // remove first ---- and clean grouprooms
-
       return $retour;
    }
 

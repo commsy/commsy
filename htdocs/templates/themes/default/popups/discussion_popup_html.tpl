@@ -25,7 +25,7 @@
 
 					{if $popup.edit == false}
 						<div id="pop_editor">
-							<h2 id="pop_editor_head">Initialbeitrag der Diskussion</h2
+							<h2 id="pop_editor_head">Initialbeitrag der Diskussion</h2>
 							<span class="input_label">Betreff</span>
 							<input type="text" class="size_200 mandatory" name="form_data[subject]" value="Initialbeitrag"/>
 

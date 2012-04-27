@@ -178,6 +178,7 @@ class cs_popup_breadcrumb_controller {
       $current_context_id = $this->_environment->getCurrentContextID();
       $own_room_item = $current_user->getOwnRoom();
       $customized_room_list = $own_room_item->getCustomizedRoomListCommSy8();
+      
       if ( isset($customized_room_list) ) {
          $room_item = $customized_room_list->getFirst();
          while ($room_item) {
@@ -510,6 +511,8 @@ class cs_popup_breadcrumb_controller {
 		$headline = '';
 		$subline = '';
 		
+		$checked_room_id_array = array();
+		
 		foreach($context_array as $context) {
 			$item_id = $context['item_id'];
 			$title = $context['title'];
@@ -552,6 +555,8 @@ class cs_popup_breadcrumb_controller {
 					'title'			=> $title
 			);
 			
+			$checked_room_id_array[] = $item_id;
+			
 			$context_item = $context_manager->getItem($item_id);
 			if (is_object($context_item)){
 				$room['color_array'] = $context_item->getColorArray();
@@ -562,6 +567,27 @@ class cs_popup_breadcrumb_controller {
 			}
 			
 			$return[$headline][$subline]['rooms'][] = $room;
+		}
+		
+		
+		// get unchecked rooms
+		$room_manager = $this->_environment->getRoomManager();
+		$room_list = $room_manager->getRelatedRoomListForUser($this->_environment->getCurrentUserItem());
+		$room_item = $room_list->getFirst();
+		$unchecked_rooms = array();
+		
+		while($room_item) {
+			// skip if this room is already checked
+			if(!in_array($room_item->getItemID(), $checked_room_id_array)) {
+				if(!$room_item->isPrivateRoom() && $room_item->isUser($this->_environment->getCurrentUserItem())) {
+					$return['unchecked']['']['rooms'][] = array(
+						'item_id'	=> $room_item->getItemID(),
+						'title'		=> $room_item->getTitle()
+					);
+				}
+			}
+			
+			$room_item = $room_list->getNext();
 		}
 		
 		return $return;
