@@ -63,7 +63,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			
 			jQuery.ajax({
 				type: 'POST',
-				url: 'commsy.php?cid=' + handle.cid + '&mod=ajax&fct=popup&action=getHTML',
+				url: 'commsy.php?cid=' + handle.cid + '&mod=ajax&fct=rubric_popup&action=getHTML',
 				data: JSON.stringify(data),
 				contentType: 'application/json; charset=utf-8',
 				dataType: 'json',
@@ -244,15 +244,19 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 				// add tag data
 				var dynatree = jQuery('div[id="tag_tree"]').dynatree('getTree');
 				var tag_ids  = [];
-				dynatree.visit(function(node) {
-					// check if bold
-					if(node.data.title.substr(0, 3) === '<b>') {
-						// separte tag id
-						var tag_id = node.data.key.substr(5);
+				
+				if(dynatree.length > 0) {
+					dynatree.visit(function(node) {
+						// check if bold
+						if(node.data.title.substr(0, 3) === '<b>') {
+							// separte tag id
+							var tag_id = node.data.key.substr(5);
 
-						tag_ids.push(tag_id);
-					}
-				});
+							tag_ids.push(tag_id);
+						}
+					});
+				}
+				
 				data.form_data.push({
 					name:	'tags',
 					value:	tag_ids
@@ -279,7 +283,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 				// ajax request
 				jQuery.ajax({
 					type: 'POST',
-					url: 'commsy.php?cid=' + handle.cid + '&mod=ajax&fct=popup&action=create',
+					url: 'commsy.php?cid=' + handle.cid + '&mod=ajax&fct=rubric_popup&action=save',
 					data: JSON.stringify(data),
 					contentType: 'application/json; charset=utf-8',
 					dataType: 'json',

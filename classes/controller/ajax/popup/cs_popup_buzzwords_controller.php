@@ -16,8 +16,9 @@ class cs_popup_buzzwords_controller {
 		return $this->_return;
 	}
 	
-	public function getHTML() {
-	
+	public function initPopup() {
+		// assign template vars
+		$this->assignTemplateVars();
 	}
 	
 	public function getFieldInformation() {
@@ -31,7 +32,7 @@ class cs_popup_buzzwords_controller {
 		);
 	}
 	
-	public function assignTemplateVars() {
+	private function assignTemplateVars() {
 		$current_user = $this->_environment->getCurrentUserItem();
 		$current_context = $this->_environment->getCurrentContextItem();
 		

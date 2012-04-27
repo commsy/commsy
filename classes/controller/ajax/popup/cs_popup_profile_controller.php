@@ -15,15 +15,11 @@ class cs_popup_profile_controller {
 		$this->_popup_controller = $popup_controller;
 	}
 	
-	public function edit($item_id) {
-
-	}
-	
-	public function create($form_data) {
+	public function save($form_data) {
 		
 	}
 	
-	public function getHTML() {
+	public function initPopup() {
 		$current_portal_item = $this->_environment->getCurrentPortalItem();
 		
 		// set configuration
@@ -150,6 +146,9 @@ class cs_popup_profile_controller {
          $this->_link_item_array = array_merge($this->_link_item_array,$unchecked_link_item_array);
       }
 		 */
+		
+		// assign template vars
+		$this->assignTemplateVars();
 	}
 	
 	public function getReturn() {
@@ -167,7 +166,7 @@ class cs_popup_profile_controller {
 		);
 	}
 	
-	public function assignTemplateVars() {
+	private function assignTemplateVars() {
 		$translator = $this->_environment->getTranslationObject();
 		$current_user = $this->_environment->getCurrentUserItem();
 		$portal_user = $this->_environment->getPortalUserItem();

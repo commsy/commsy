@@ -248,7 +248,7 @@
 			$return = array(
 				'edit'		=> false,
 				'delete'	=> false);
-
+			
 			if($item->mayEdit($user) && $this->_with_modifying_actions) {
 				$return['edit'] = true;
 
