@@ -297,8 +297,14 @@ class misc_text_converter {
       $text = preg_replace('~\*([^*]+)\*~uU', '<span style="font-weight:bold;">$1</span>', $text);
 
       // italic
+      preg_match('~<!-- DNC -->.*<!-- DNC -->~us',$text,$values);
+      foreach ($values as $key => $value) {
+         $text = str_replace($value,'COMMSY_DNC'.$key.' ',$text);
+      }
       $text = preg_replace('~(^|\n|\t|\s|[ >\/[{(])_([^_]+)_($|\n|\t|:|[ <\/.)\]},!?;])~uU', '$1<span style="font-style:italic;">$2</span>$3', $text);
-
+      foreach ($values as $key => $value) {
+         $text = str_replace('COMMSY_DNC'.$key.' ',$value,$text);
+      }     
 
       // search (with yellow background)
       $text = preg_replace('~\(:mainsearch_text_yellow:\)(.+)\(:mainsearch_text_yellow_end:\)~uU', '<span class="searched_text_yellow">$1</span>', $text);
@@ -1642,6 +1648,8 @@ class misc_text_converter {
 
    private function _formatLecture2go ( $text, $array ) {
 
+      $new_style = true;
+      
       $retour = '';
       $source = $array[1];
 
@@ -1657,29 +1665,59 @@ class misc_text_converter {
          $play = 'false';
       }
 
-      $factor = 0.655; // orig = 1;
+      if ( !empty($args['server']) ) {
+         $server = $args['server'];
+         $new_style = false;
+      }
+      /* old style
+      else {
+         #$server = 'rtmp://fms.rrz.uni-hamburg.de:80/vod';         
+      }
+      */
+      
+      if ( $new_style ) {
+         $factor = 0.642; // orig = 1;
+      } else {
+         $factor = 0.655; // orig = 1;
+      }
       if ( !empty($args['width']) ) {
          $width = $args['width'];
       } else {
-         $width = 960*$factor;
+         if ( $new_style ) {
+            $width = 960*$factor;            
+            #$width = 600;            
+         } else {
+            $width = 960*$factor;            
+         }
       }
       if ( !empty($args['height']) ) {
          $height = $args['height'];
       } else {
-         $height = 500*$factor+(14/$factor)-10;
+         if ( $new_style ) {
+            $height = 500*$factor-14;
+            #$height = 450;
+         } else {
+            $height = 500*$factor+(14/$factor)-10;
+         }
       }
 
       if ( !empty($args['image']) ) {
          $image = $args['image'];
       } else {
-         $image = 'http://lecture2go.uni-hamburg.de/logo/l2g-flash.jpg';
-      }
-
-      if ( !empty($args['server']) ) {
-         $server = $args['server'];
-      } else {
-         $server = 'rtmp://fms.rrz.uni-hamburg.de:80/vod';
-         #$server = 'http://fms.rrz.uni-hamburg.de:80/vod';
+         if ( $new_style ) {
+            if ( !empty($source) ) {
+               $source_array = explode('/', $source);
+               $picture = str_replace('.mp4','.jpg',$source_array[1]);
+               if ( !empty($picture) ) {
+                  $image = 'http://lecture2go.uni-hamburg.de/videorep/images/'.$picture;
+               } else {
+                  $image = 'http://lecture2go.uni-hamburg.de/logo/l2g-flash.jpg';                  
+               }
+            }
+            $endOfVideoOverlay = 'http://lecture2go.uni-hamburg.de/logo/l2g-flash.jpg'; 
+         } else {
+            $image = 'http://lecture2go.uni-hamburg.de/logo/l2g-flash.jpg';
+         }
       }
 
       if ( !empty($args['bufferlength']) ) {
@@ -1723,27 +1761,47 @@ class misc_text_converter {
          $image_text = '';
          $div_number = $this->_getDivNumber();
          $translator = $this->_environment->getTranslationObject();
-
-         $image_text .= '<script type="text/javascript" src="http://lecture2go.uni-hamburg.de/jw/swfobject.js"></script>'.LF;
-         $image_text .= '<div id="id'.$div_number.'" style="'.$float.' padding:10px;">'.$translator->getMessage('COMMON_GET_FLASH').'</div>'.LF;
-         $image_text .= '<script type="text/javascript">'.LF;
-         $image_text .= '  var so = new SWFObject(\'http://lecture2go.uni-hamburg.de/jw5.0/player-licensed.swf\',\'ply\',\''.$width.'\',\''.$height.'\',\'9\',\''.$screencolor.'\');'.LF;
-         $image_text .= '  so.addParam(\'allowfullscreen\',\'true\');'.LF;
-         $image_text .= '  so.addParam(\'allowscriptaccess\',\'always\');'.LF;
-         $image_text .= '  so.addParam(\'wmode\',\'opaque\');'.LF;
-         $image_text .= '  so.addVariable(\'autostart\',\''.$play.'\');'.LF;
-         $image_text .= '  so.addVariable(\'image\',"'.$image.'");'.LF;
-         $image_text .= '  so.addVariable(\'bufferlength\',"'.$bufferlength.'");'.LF;
-         $image_text .= '  so.addVariable(\'streamer\',"'.$server.'");'.LF;
-         $image_text .= '  so.addVariable(\'file\',"'.$source.'");'.LF;
-         $image_text .= '  so.addVariable(\'backcolor\',"'.$backcolor.'");'.LF;
-         $image_text .= '  so.addVariable(\'frontcolor\',"'.$frontcolor.'");'.LF;
-         $image_text .= '  so.addVariable(\'lightcolor\',"'.$lightcolor.'");'.LF;
-         $image_text .= '  so.addVariable(\'screencolor\',"'.$screencolor.'");'.LF;
-         $image_text .= '  so.addVariable(\'id\',"id'.$div_number.'");'.LF;
-         $image_text .= '  so.write(\'id'.$div_number.'\');'.LF;
-         $image_text .= '</script>'.LF;
-
+         
+         if ( $new_style ) {
+            /*
+             * new style: iframe
+             */
+            $image_text .= '<!-- DNC -->'.LF;
+            $image_text .= '<iframe'.LF;
+            $image_text .= ' src=\'http://lecture2go.uni-hamburg.de/strobemediaplayer/embed.html?autoPlay='.$play.'&endOfVideoOverlay='.$endOfVideoOverlay.'&poster='.$image.'&src=http://fms.rrz.uni-hamburg.de/vod/_definst_/mp4:'.$source.'/manifest.f4m\''.LF; 
+            $image_text .= ' type=\'text/html\''.LF;
+            $image_text .= ' style=\''.$float.' margin:10px;\''.LF;
+            $image_text .= ' width=\''.$width.'\''.LF;
+            $image_text .= ' height=\''.$height.'\'>'.LF;
+            $image_text .= ' </iframe>'.LF;
+            $image_text .= '<!-- DNC -->'.LF;
+         }
+         
+         else {
+            /* 
+             * old style: swf object
+             */
+            $image_text .= '<script type="text/javascript" src="http://lecture2go.uni-hamburg.de/jw/swfobject.js"></script>'.LF;
+            $image_text .= '<div id="id'.$div_number.'" style="'.$float.' padding:10px;">'.$translator->getMessage('COMMON_GET_FLASH').'</div>'.LF;
+            $image_text .= '<script type="text/javascript">'.LF;
+            $image_text .= '  var so = new SWFObject(\'http://lecture2go.uni-hamburg.de/jw5.0/player-licensed.swf\',\'ply\',\''.$width.'\',\''.$height.'\',\'9\',\''.$screencolor.'\');'.LF;
+            $image_text .= '  so.addParam(\'allowfullscreen\',\'true\');'.LF;
+            $image_text .= '  so.addParam(\'allowscriptaccess\',\'always\');'.LF;
+            $image_text .= '  so.addParam(\'wmode\',\'opaque\');'.LF;
+            $image_text .= '  so.addVariable(\'autostart\',\''.$play.'\');'.LF;
+            $image_text .= '  so.addVariable(\'image\',"'.$image.'");'.LF;
+            $image_text .= '  so.addVariable(\'bufferlength\',"'.$bufferlength.'");'.LF;
+            $image_text .= '  so.addVariable(\'streamer\',"'.$server.'");'.LF;
+            $image_text .= '  so.addVariable(\'file\',"'.$source.'");'.LF;
+            $image_text .= '  so.addVariable(\'backcolor\',"'.$backcolor.'");'.LF;
+            $image_text .= '  so.addVariable(\'frontcolor\',"'.$frontcolor.'");'.LF;
+            $image_text .= '  so.addVariable(\'lightcolor\',"'.$lightcolor.'");'.LF;
+            $image_text .= '  so.addVariable(\'screencolor\',"'.$screencolor.'");'.LF;
+            $image_text .= '  so.addVariable(\'id\',"id'.$div_number.'");'.LF;
+            $image_text .= '  so.write(\'id'.$div_number.'\');'.LF;
+            $image_text .= '</script>'.LF;
+         }
+                        
          $text = str_replace($array[0],$image_text,$text);
       }
       $retour = $text;

@@ -461,6 +461,7 @@ $message["COMMON_NETNAVIGATION"]["en"] = "Related contents";
 $message["COMMON_NETNAVIGATION_ENTRIES"]["en"] = "related contents";
 $message["COMMON_NETNAVIGATION_LATEST_ENTRIES"]["en"] = "Latest added references";
 $message["COMMON_NEW"]["en"] = "New";
+$message["COMMON_NEW-STEP"]["en"] = "New step";
 $message["COMMON_NEWEST_ENTRIES"]["en"] = "Latest entries";
 $message["COMMON_NEWEST_ENTRIES_IN_ROOMS"]["en"] = "Newest entries of all rooms where %1 is member.";
 $message["COMMON_NEWS"]["en"] = "News";
@@ -486,7 +487,6 @@ $message["COMMON_NEW_N_BIG"]["en"] = "new";
 $message["COMMON_NEW_PROJECT"]["en"] = "new %_PROJECT_SUB_NOMS_LOW";
 $message["COMMON_NEW_ROOM_EDIT_FORM_TITLE"]["en"] = "Create new room";
 $message["COMMON_NEW_SECTION_EDIT"]["en"] = "Create new section";
-$message["COMMON_NEW-STEP"]["en"] = "New step";
 $message["COMMON_NEW_STEP_EDIT"]["en"] = "Create new step";
 $message["COMMON_NEW_TODO_EDIT"]["en"] = "Create new todo";
 $message["COMMON_NEW_TOPIC_EDIT"]["en"] = "Create new topic";
@@ -727,7 +727,7 @@ $message["COMMON_TEXT_INCLUDING_MEDIA_TEXT"]["en"] = "<ol style=&quot;font-weigh
     <li>(:flash FILEINAME play=true width=ZAHL:) for swf, flv</li>
     <li>(:youtube FILM-ID:) oder (:wmplayer FILM-ID:) for youtube videos</li>
     <li>(:googlevideo FILM-ID:) for google videos</li>
-   <li>(:lecture2go DATEINAME:) to show Lecture2Go movies [<a href=&quot;http://www.commsy.net/pmwiki.php?n=Software/Features&id=81&quot; target=&quot;_blank&quot;>Details</a>]</li>
+   <li>(:lecture2go DATEINAME:) to show Lecture2Go movies.<br/>The DATEINAME must begin with an foldername.<br/>You need a server (server=rtmp://fms.rrz.uni-hamburg.de:NUMBER/vod) only at old l2go-videos.</li>
 <li>(:podcampus MOVIE-ID:) for movies at <a href=&quot;http://www.podcampus.de&quot; target=&quot;_blank&quot;>www.podcampus.de</a></li>
     <li>Arguments:
     <ul>
