@@ -84,69 +84,6 @@ class cs_popup_profile_controller {
 			$this->_config['show_mail_change_form'] = true;
 		}
 		
-		// setup room list
-		
-		
-		/*
-		 * 
-      }elseif($this->getProfilePageName() == 'room_list'){
-         $room_manager = $this->_environment->getRoomManager();
-         $own_room_item = $this->_environment->getCurrentUserItem()->getOwnRoom();
-         $checked_item_array = $own_room_item->getCustomizedRoomIDArray();
-         $room_list = $room_manager->getRelatedRoomListForUser($this->_environment->getCurrentUserItem());
-         $room_item = $room_list->getFirst();
-         $unchecked_link_item_array = array();
-         $tmp_link_item_array = array();
-         if (isset($checked_item_array[0])){
-            $customized_list_exists = true;
-         }else{
-            $customized_list_exists = false;
-         }
-         while ($room_item) {
-            if ( !$room_item->isPrivateRoom()
-                 and $room_item->isUser($this->_environment->getCurrentUserItem())
-               ) {
-               $temp_array = array();
-               $temp_array['text']  = $room_item->getTitle();
-               $temp_array['value'] = $room_item->getItemID();
-               if (in_array($room_item->getItemID(),$checked_item_array)){
-                  $tmp_link_item_array[$room_item->getItemID()] = $room_item->getTitle();
-                  $this->_link_item_check_array[] = $room_item->getItemID();
-               } else {
-                  if (!$customized_list_exists){
-                     $this->_link_item_check_array[] = $room_item->getItemID();
-                  }
-                  $unchecked_link_item_array[] = $temp_array;
-               }
-            }
-            $room_item = $room_list->getNext();
-         }
-         $count_sep = 0;
-         foreach ( $checked_item_array as $value ) {
-            if ( $value < 0 ) {
-               $this->_link_item_check_array[] = $value;
-               $tmp_link_item_array[$value] = '----------------------------';
-               $count_sep++;
-            }
-         }
-         for ( $i=$count_sep+1; $i<$count_sep+4; $i++ ) {
-            $temp_array = array();
-            $temp_array['text']  = '----------------------------';
-            $temp_array['value'] = -$i;
-            $unchecked_link_item_array[] = $temp_array;
-         }
-         foreach ($checked_item_array as $id) {
-            if ( !empty($tmp_link_item_array[$id]) ) {
-               $temp_array = array();
-               $temp_array['text']  = $tmp_link_item_array[$id];
-               $temp_array['value'] = $id;
-               $this->_link_item_array[] = $temp_array;
-            }
-         }
-         $this->_link_item_array = array_merge($this->_link_item_array,$unchecked_link_item_array);
-      }
-		 */
-		
 		// assign template vars
 		$this->assignTemplateVars();
 	}
@@ -244,35 +181,77 @@ class cs_popup_profile_controller {
 		$return['new_upload'] = ($this->_user->isNewUploadOn()) ? true : false;
 		$return['auto_save'] = ($this->_user->isAutoSaveOn()) ? true : false;
 		
-        
-         /*
- elseif (!empty($this->_item)) {
-           
-            $this->_values['auth_source'] = $this->_user->getAuthSource();
-            $this->_values['user_id'] = $this->_user->getUserID();
-            if ( $this->_user->isRoot() ) {
-               $this->_values['user_id_text'] = $this->_user->getUserID();
-            }
-            $this->_values['iid'] = $this->_item->getItemID();
-            
-       
-         } else {
-            include_once('functions/error_functions.php');
-            trigger_error('lost values',E_USER_WARNING);
-         }
-          */
-
-		 
-		
 		return $return;
 	}
 	
 	private function getUserInformation() {
+		$retrun = array();
 		
+		// get data from database
+		$return['title'] = $this->_user->getTitle();
+		$return['birthday'] = $this->_user->getBirthday();
+		//$return['picture']
+		$return['mail'] = $this->_user->getEmail();
+		$return['telephone'] = $this->_user->getTelephone();
+		$return['cellularphone'] = $this->_user->getCellularphone();
+		$return['street'] = $this->_user->getStreet();
+		$return['zipcode'] = $this->_user->getZipcode();
+		$return['city'] = $this->_user->getCity();
+		$return['room'] = $this->_user->getRoom();
+		$return['organisation'] = $this->_user->getOrganisation();
+		$return['position'] = $this->_user->getPosition();
+		$return['icq'] = $this->_user->getICQ();
+		$return['msn'] = $this->_user->getMSN();
+		$return['skype'] = $this->_user->getSkype();
+		$return['yahoo'] = $this->_user->getYahoo();
+		$return['jabber'] = $this->_user->getJabber();
+		$return['homepage'] = $this->_user->getHomepage();
+		$return['description'] = $this->_user->getDescription();
+		
+		return $return;
+		
+		/*
+
+            if ($this->_item->isModerator()) {
+               $this->_values['want_mail_get_account'] = $this->_item->getAccountWantMail();
+               $this->_values['is_moderator'] = true;
+            } else {
+               $this->_values['is_moderator'] = false;
+            }
+            $picture = $this->_item->getPicture();
+            $this->_values['upload'] = $picture;
+            if (!empty($picture)) {
+               $this->_values['with_picture'] = true;
+            } else {
+               $this->_values['with_picture'] = false;
+            }
+
+            if (!$this->_item->isEmailVisible()) {
+               $this->_values['email_visibility'] = 'checked';
+            }
+		 */
 	}
 	
 	private function getNewsletterInformation() {
+		$return = array();
 		
+		// get data from database
+		$room = $this->_environment->getCurrentUserItem()->getOwnRoom();
+		$newsletter = $room->getPrivateRoomNewsletterActivity();
+		
+		switch($newsletter) {
+			case 'weekly':
+				$return['newsletter'] = '2';
+				break;
+			case 'daily':
+				$return['newsletter'] = '3';
+				break;
+			default:
+				$return['newsletter'] = '1';
+				break;
+		}
+		
+		return $return;
 	}
 	
 	private function getRoomListInformation() {
