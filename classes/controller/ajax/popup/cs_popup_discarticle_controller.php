@@ -28,7 +28,7 @@
 			}
 		}
 		
-		public function save($form_data) {
+		public function save($form_data, $additional = array()) {
 			$current_user = $this->_environment->getCurrentUserItem();
 			$current_context = $this->_environment->getCurrentContextItem();
 			
@@ -95,7 +95,7 @@
 			return $this->_return;
 		}
 		
-		public function getFieldInformation() {
+		public function getFieldInformation($sub = '') {
 			return array(
 				array(	'name'		=> 'title',
 						'type'		=> 'text',

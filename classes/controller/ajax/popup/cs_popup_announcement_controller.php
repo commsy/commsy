@@ -18,7 +18,7 @@ class cs_popup_announcement_controller implements cs_rubric_popup_controller {
         $this->assignTemplateVars();
     }
 
-    public function save($form_data) {
+    public function save($form_data, $additional = array()) {
         $environment = $this->_environment;
         $current_user = $this->_environment->getCurrentUserItem();
         $current_context = $this->_environment->getCurrentContextItem();
@@ -266,7 +266,7 @@ class cs_popup_announcement_controller implements cs_rubric_popup_controller {
         $this->_environment->getSessionItem()->unsetValue($current_iid.'_post_vars');
     }
 
-    public function getFieldInformation() {
+    public function getFieldInformation($sub = '') {
         return array();
     }
 

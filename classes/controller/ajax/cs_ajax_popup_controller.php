@@ -58,11 +58,56 @@
 				$form_data[$data['name']] = $data['value'];
 			}
 			
-			$this->_popup_controller->save($form_data);
+			// additional data
+			$additional = array();
+			if(isset($this->_data['additional']) && !empty($this->_data['additional'])) {
+				$additional = $this->_data['additional'];
+			}
+			
+			$this->_popup_controller->save($form_data, $additional);
 			
 			$return = $this->_popup_controller->getReturn();
 
 			echo json_encode($return);
+		}
+		
+		public function checkFormData() {
+			try {
+				$this->checkForm();
+		
+				return true;
+			} catch(cs_form_mandatory_exception $e) {
+				echo json_encode('mandatory missing');
+				exit;
+		
+				return false;
+			} catch(cs_form_value_exception $e) {
+				// TODO: implement in edit form
+				echo "value catched";
+		
+				return false;
+			}
+		}
+		
+		private function checkForm($sub = '') {
+			// get form data
+			$form_data = array();
+			foreach($this->_data['form_data'] as $data) {
+				$form_data[$data['name']] = $data['value'];
+			}
+			
+			foreach($this->_popup_controller->getFieldInformation($sub) as $field) {
+				// check mandatory
+				if(isset($field['mandatory']) && $field['mandatory'] === true) {
+					if(!isset($form_data[$field['name']]) || trim($form_data[$field['name']]) === '') {
+						throw new cs_form_mandatory_exception('missing mandatory field');
+					}
+				}
+		
+				// check values
+				// TODO:
+				//throw new cs_form_value_exception('value exception');
+			}
 		}
 		
 		public function getUtils() {

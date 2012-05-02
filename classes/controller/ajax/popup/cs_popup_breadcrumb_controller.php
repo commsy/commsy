@@ -15,7 +15,7 @@
 			$this->_popup_controller = $popup_controller;
 		}
 	
-		public function save($form_data) {
+		public function save($form_data, $additional = array()) {
 			$room_config = $form_data['room_config'];
 			
 			// prepare sorting array

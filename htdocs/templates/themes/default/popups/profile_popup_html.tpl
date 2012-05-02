@@ -20,7 +20,7 @@
 						</div>
 
 						<div id="popup_tabcontent">
-							<div class="tab">
+							<div class="tab" id="account">
 								<div id="content_row_three">
 									<fieldset>
 										<legend>___MYAREA_MY_PROFILE___</legend>
@@ -101,8 +101,8 @@
 
 										<div class="input_row">
 											<div class="input_container">
-												<input id="submit" type="button" name="form_data[save]" value="___PREFERENCES_SAVE_BUTTON___"/>
-												<input id="delete" type="button" name="form_data[delete]" value="___PREFERENCES_DELETE_BUTTON___"/>
+												<input id="submit" type="button" name="save" value="___PREFERENCES_SAVE_BUTTON___"/>
+												<input id="delete" type="button" name="delete" value="___PREFERENCES_DELETE_BUTTON___"/>
 											</div>
 
 										</div>
@@ -155,7 +155,7 @@
 								</div>
 							</div>
 
-							<div class="tab hidden">
+							<div class="tab hidden" id="user">
 								<div id="content_row_three">
 									<fieldset>
 										<legend>Allgemein</legend>
@@ -190,7 +190,7 @@
 										
 										<div class="input_row">
 											<label for="data_mail">___USER_EMAIL___</label>
-											<input id="data_mail" type="text" class="size_200 float-left" name="form_data[mail]" value="{show var=$popup.form.user.mail}" />
+											<input id="data_mail" type="text" class="mandatory size_200 float-left" name="form_data[mail]" value="{show var=$popup.form.user.mail}" />
 											<input id="data_mail_all" type="checkbox" class="float-left" name="form_data[mail_all]" />
 											<label for="data_mail_all" class="float-left">___USER_CHANGE_IN_ALL_ROOMS___</label>
 											<div class="clear"></div>
@@ -343,20 +343,20 @@
 									</fieldset>
 									
 									<div class="input_row">
-										<input id="submit" type="button" name="form_data[save]" value="___PREFERENCES_SAVE_BUTTON___"/>
+										<input id="submit" type="button" name="save" value="___PREFERENCES_SAVE_BUTTON___"/>
 									</div>
 								</div>
 							</div>
 
-							<div class="tab hidden">
+							<div class="tab hidden" id="newsletter">
 								<div id="content_row_three">
 									<div class="input_row">
 										<label for="newsletter">___USER_STATUS___</label>
 
 										<div class="input_container">
-											<input id="newsletter" type="radio" name="form_data[newsletter]"{if $popup.form.newsletter.newsletter == '2'} checked="checked"{/if} /> ___CONFIGURATION_NEWSLETTER_NONE___<br/>
-											<input type="radio" name="form_data[newsletter]"{if $popup.form.newsletter.newsletter == '3'} checked="checked"{/if} /> ___CONFIGURATION_NEWSLETTER_WEEKLY___<br/>
-											<input type="radio" name="form_data[newsletter]"{if $popup.form.newsletter.newsletter == '1'} checked="checked"{/if} /> ___CONFIGURATION_NEWSLETTER_DAILY___
+											<input id="newsletter" type="radio" value="2" name="form_data[newsletter]"{if $popup.form.newsletter.newsletter == '2'} checked="checked"{/if} /> ___CONFIGURATION_NEWSLETTER_NONE___<br/>
+											<input type="radio" value="3" name="form_data[newsletter]"{if $popup.form.newsletter.newsletter == '3'} checked="checked"{/if} /> ___CONFIGURATION_NEWSLETTER_WEEKLY___<br/>
+											<input type="radio" value="1" name="form_data[newsletter]"{if $popup.form.newsletter.newsletter == '1'} checked="checked"{/if} /> ___CONFIGURATION_NEWSLETTER_DAILY___
 										</div>
 									</div>
 									
@@ -368,7 +368,7 @@
 									
 									<div class="input_row">
 										<div class="input_container">
-											<input id="submit" type="button" name="form_data[save]" value="___PREFERENCES_SAVE_BUTTON___"/>
+											<input id="submit" type="button" name="save" value="___PREFERENCES_SAVE_BUTTON___"/>
 										</div>
 									</div>
 								</div>

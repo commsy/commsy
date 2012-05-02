@@ -70,45 +70,6 @@
 			$this->_popup_controller->initPopup($this->_item);
 		}
 		
-		public function checkFormData() {
-			try {
-				$this->checkForm();
-		
-				return true;
-			} catch(cs_form_mandatory_exception $e) {
-				echo json_encode('mandatory missing');
-				exit;
-		
-				return false;
-			} catch(cs_form_value_exception $e) {
-				// TODO: implement in edit form
-				echo "value catched";
-		
-				return false;
-			}
-		}
-		
-		private function checkForm() {
-			// get form data
-			$form_data = array();
-			foreach($this->_data['form_data'] as $data) {
-				$form_data[$data['name']] = $data['value'];
-			}
-				
-			foreach($this->_popup_controller->getFieldInformation() as $field) {
-				// check mandatory
-				if(isset($field['mandatory']) && $field['mandatory'] === true) {
-					if(!isset($form_data[$field['name']]) || trim($form_data[$field['name']]) === '') {
-						throw new cs_form_mandatory_exception('missing mandatory field');
-					}
-				}
-		
-				// check values
-				// TODO:
-				//throw new cs_form_value_exception('value exception');
-			}
-		}
-		
 		private function getBuzzwords($return_empty) {
 			$return = array();
 		

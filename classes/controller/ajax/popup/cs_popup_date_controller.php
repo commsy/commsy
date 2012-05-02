@@ -17,7 +17,7 @@ class cs_popup_date_controller {
         $this->assignTemplateVars();
     }
 
-    public function save($form_data) {
+    public function save($form_data, $additional = array()) {
 
         $environment = $this->_environment;
         $current_user = $this->_environment->getCurrentUserItem();
@@ -375,7 +375,7 @@ class cs_popup_date_controller {
         $this->_popup_controller->assign('popup', 'config', $config_information);
     }
 
-    public function getFieldInformation() {
+    public function getFieldInformation($sub = '') {
         return array();
     }
 

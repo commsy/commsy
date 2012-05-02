@@ -116,25 +116,9 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 						// show
 						jQuery('div#tm_dropmenu_pers_bar div.tm_dropmenu').slideDown(100);
 						
-						/*
-						// reinvoke Uploadify
-						var uploadify_handler = commsy_functions.getModuleCallback('commsy/uploadify');
-						uploadify_handler.create(null, {
-							object:				jQuery('input[id="uploadify"]'),
-							handle:				uploadify_handler,
-							commsy_functions:	commsy_functions,
-							upload_object:		jQuery('a[id="uploadify_doUpload"]'),
-							clear_object:		jQuery('a[id="uploadify_clearQuery"]')
-						});
-						
-						// reinvoke CKEditor
-						var ck_editor_handler = commsy_functions.getModuleCallback('commsy/ck_editor');
-						ck_editor_handler.create(null, {
-							handle:				ck_editor_handler,
-							register_on:		jQuery('div[id="popup_ckeditor"]'),
-							input_object:		jQuery('input[id="popup_ckeditor_content"]')
-						});
-						*/
+						// register click for save buttons
+						jQuery('div#tm_dropmenu_pers_bar input#submit').bind('click', {
+							handle:		handle}, handle.onSavePersBar);
 						
 						// setup popup
 						handle.setupPopup();
@@ -147,6 +131,70 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			
 			// stop processing
 			return false;
+		},
+		
+		onSavePersBar: function(event) {
+			var handle = event.data.handle;
+			var target = jQuery(event.target);
+			
+			// get all form information from current tab
+			var col_object = target.parentsUntil('div.tab');
+			var form_objects = col_object.find('input[name^="form_data"]');
+			
+			// build object
+			var data = {
+				form_data: [],
+				module: 'profile',
+				additional: {
+					tab: col_object.parent().attr('id')
+				}
+			};
+			jQuery.each(form_objects, function() {
+				var add = false;
+				
+				// if form field is a checkbox, only add if checked
+				if(jQuery(this).attr('type') === 'checkbox') {
+					if(jQuery(this).attr('checked') === 'checked') {
+						add = true;
+					}
+				}
+				
+				// if form fiel is a radio button, only add the selected one
+				else if(jQuery(this).attr('type') === 'radio') {
+					if(jQuery(this).attr('checked')	 === 'checked') {
+						add = true;
+					}
+				}
+				
+				else {
+					add = true;
+				}
+				
+				if(add === true) {
+					// extract name
+					/form_data\[(.*)\]/.exec(jQuery(this).attr('name'));
+
+					data.form_data.push({
+						name:	RegExp.$1,
+						value:	jQuery(this).attr('value')
+					});
+				}
+			});
+			
+			// ajax request
+			jQuery.ajax({
+				type: 'POST',
+				url: 'commsy.php?cid=' + handle.cid + '&mod=ajax&fct=popup&action=save',
+				data: JSON.stringify(data),
+				contentType: 'application/json; charset=utf-8',
+				dataType: 'json',
+				error: function() {
+					console.log("error while processing popup action");
+				},
+				success: function(data, status) {
+					console.log(data);
+				}
+			});
 		},
 		
 		onClickBreadcrumb: function() {

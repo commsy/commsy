@@ -45,7 +45,7 @@
 			
 		}
 		
-		public function save($form_data) {
+		public function save($form_data, $additional = array()) {
 			
 			/*
 				 * 
@@ -341,7 +341,7 @@
 			return $this->_return;
 		}
 		
-		public function getFieldInformation() {
+		public function getFieldInformation($sub = '') {
 			return array(
 				array(	'name'		=> 'title',
 						'type'		=> 'text',
