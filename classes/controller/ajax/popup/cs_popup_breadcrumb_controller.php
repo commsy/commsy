@@ -512,7 +512,7 @@
 				// empty or headline
 				if($item_id == -1) {
 					$additional = 'disabled';
-					if(!empty($title)) {
+					if(!empty($title) && $title !== '----------------------------') {
 						// update headline
 						$headline = $title;
 					}
@@ -524,13 +524,15 @@
 				if($item_id == -2) {
 					$additional = 'disabled';
 					
-					if(!empty($title)) {
+					if(!empty($title) && $title !== '----------------------------') {
 						// update headline
 						$subline = $title;
 					}
 					
 					continue;
 				}
+				
+				if($item_id <= -3) continue;
 				
 				$room = array(
 						'item_id'		=> $item_id,

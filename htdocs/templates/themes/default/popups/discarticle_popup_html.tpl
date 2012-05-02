@@ -18,7 +18,7 @@
 					</div>
 					
 					<div id="pop_editor">
-						<h2 id="pop_editor_head">Diskussionsbeitrag</h2
+						<h2 id="pop_editor_head">Diskussionsbeitrag</h2>
 
 						<input type="hidden" value="" name="iid"/>
 						<input type="hidden" value="{$detail.item_id}" name="discussion_id"/>

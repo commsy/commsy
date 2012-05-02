@@ -47,23 +47,23 @@
 										{if $popup.form.config.show_password_change_form === true}
 											<div class="input_row">
 												<label for="old_password">___USER_PASSWORD_OLD___</label>
-												<input id="old_password" type="text" class="size_200" />
+												<input id="old_password" type="text" class="size_200" name="form_data[old_password]" />
 											</div>
 	
 											<div class="input_row">
 												<label for="new_password">___USER_PASSWORD_NEW___</label>
-												<input id="new_password" type="text" class="size_200" />
+												<input id="new_password" type="text" class="size_200" name="form_data[new_password]" />
 											</div>
 	
 											<div class="input_row">
 												<label for="new_password_confirm">___USER_PASSWORD_NEW2___</label>
-												<input id="new_password_confirm" type="text" class="size_200" />
+												<input id="new_password_confirm" type="text" class="size_200" name="form_data[new_password_confirm]" />
 											</div>
 										{/if}
 
 										<div class="input_row">
 											<label for="language">___USER_LANGUAGE___</label>
-											<select id="language">
+											<select id="language" name="form_data[language]">
 												{foreach $popup.form.languages as $language}
 													<option value="{$language.value}"{if $language.value == $popup.form.account.language} selected="selected"{/if}>{$language.text}</option>
 												{/foreach}
@@ -75,8 +75,8 @@
 												<label for="mail_account">___USER_EMAIL___</label>
 												
 												<div class="input_container">
-													<input id="mail_account" type="checkbox"{if $popup.form.account.email_account == true} checked="checked"{/if}/> ___USER_MAIL_GET_ACCOUNT___<br/>
-													<input id="mail_room" type="checkbox"{if $popup.form.account.email_room == true} checked="checked"{/if}/> ___USER_MAIL_OPEN_ROOM_PO___
+													<input id="mail_account" name="form_data[mail_account]" type="checkbox"{if $popup.form.account.email_account == true} checked="checked"{/if}/> ___USER_MAIL_GET_ACCOUNT___<br/>
+													<input id="mail_room" name="form_data[mail_room]" type="checkbox"{if $popup.form.account.email_room == true} checked="checked"{/if}/> ___USER_MAIL_OPEN_ROOM_PO___
 												</div>
 											</div>
 										{/if}
@@ -102,7 +102,7 @@
 										<div class="input_row">
 											<div class="input_container">
 												<input id="submit" type="button" name="save" value="___PREFERENCES_SAVE_BUTTON___"/>
-												<input id="delete" type="button" name="delete" value="___PREFERENCES_DELETE_BUTTON___"/>
+												<input id="delete" type="button" name="form_data[delete]" value="___PREFERENCES_DELETE_BUTTON___"/>
 											</div>
 
 										</div>
@@ -121,7 +121,7 @@
 											{if sizeof($popup.form.data.auth_source_array) > 1 && $popup.form.config.show_auth_source === true}
 												<div class="input_row">
 													<label for="auth_source">___USER_AUTH_SOURCE___</label>
-													<select id="auth_source">
+													<select id="auth_source" name="form_data[auth_source]">
 														{foreach $popup.form.data.auth_source_array as $auth_source}
 															<option value="{$auth_source.value}"{if $auth_source.value == $popup.form.data.default_auth_source} selected="selected"{/if}>{$auth_source.text}</option>
 														{/foreach}
@@ -131,12 +131,12 @@
             								
 											<div class="input_row">
 												<label for="merge_user_id">___USER_USER_ID___</label>
-												<input id="merge_user_id" type="text" class="size_200 mandatory" />
+												<input id="merge_user_id" type="text" class="size_200 mandatory" name="form_data[merge_user_id]" />
 											</div>
 	
 											<div class="input_row">
 												<label for="merge_user_password">___USER_PASSWORD___</label>
-												<input id="merge_user_password" type="text" class="size_200 mandatory" />
+												<input id="merge_user_password" type="text" class="size_200 mandatory" name="form_data[merge_user_password]" />
 											</div>
 	
 											<div class="input_row">

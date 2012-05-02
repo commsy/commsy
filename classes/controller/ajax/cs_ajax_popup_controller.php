@@ -71,9 +71,9 @@
 			echo json_encode($return);
 		}
 		
-		public function checkFormData() {
+		public function checkFormData($sub = '') {
 			try {
-				$this->checkForm();
+				$this->checkForm($sub);
 		
 				return true;
 			} catch(cs_form_mandatory_exception $e) {
@@ -89,7 +89,7 @@
 			}
 		}
 		
-		private function checkForm($sub = '') {
+		private function checkForm($sub) {
 			// get form data
 			$form_data = array();
 			foreach($this->_data['form_data'] as $data) {
