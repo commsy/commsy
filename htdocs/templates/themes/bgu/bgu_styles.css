@@ -240,7 +240,8 @@ div#inhalt {
     margin: 0 auto;
     padding: 0;
     position: relative;
-    width: 980px;
+    width: 1000px;
+    background-color:#FFF;
     z-index: 1;
 }
 #cs_header {
