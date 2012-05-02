@@ -178,7 +178,7 @@
 										
 										<div class="input_row">
 											<label for="data_picture">___USER_PICTURE_UPLOADFILE___</label>
-											<input id="data_picture" type="file" class="size_200 float-left" name="form_data[picture]"/>
+											<input id="data_picture" type="file" class="size_200 float-left" name="form_data[picture]" accept="image/*" />
 											<input id="data_picture_all" type="checkbox" class="float-left" name="form_data[picture_all]" />
 											<label for="data_picture_all" class="float-left">___USER_CHANGE_IN_ALL_ROOMS___</label>
 											<div class="clear"></div>

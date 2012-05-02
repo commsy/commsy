@@ -457,6 +457,9 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 				}
 			});
 			
+			// submit picture
+			
+			
 			// stop processing
 			return false;
 		},
