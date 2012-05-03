@@ -952,7 +952,7 @@ function save_recurring_dates($dates_item, $is_new_date, $values_to_change){
 	         $temp_date->setStartingDay(date('Y-m-d', $date->getTimestamp()));
 
 	         if($dates_item->getStartingTime() != '') {
-	            $temp_date->setDateTime_start(date('Y-m-D', $date->getTimestamp()) . ' ' . $dates_item->getStartingTime());
+	            $temp_date->setDateTime_start(date('Y-m-d', $date->getTimestamp()) . ' ' . $dates_item->getStartingTime());
 	         } else {
 	            $temp_date->setDateTime_start(date('Y-m-d 00:00:00', $date->getTimestamp()));
 	         }
