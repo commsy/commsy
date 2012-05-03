@@ -78,9 +78,7 @@
 					&nbsp;&nbsp;
 				{/if}
 				{if $room.assessment}
-					{foreach $detail.assessment as $assessment}
-						<img src="{$basic.tpl_path}img/star_{$assessment}.gif" alt="*" />
-					{/foreach}
+					{include file="include/detail_assessment_include_html.tpl"}
 				{/if}
 			</p>
 			<p>
@@ -93,19 +91,19 @@
 		</div>
 
 		<div id="item_legend"> <!-- Start item_legend -->
-			<div class="detail_content">
 				{* formal data *}
 				{if !empty($detail.content.formal)}
-					<table class="detail_content_table">
-						{foreach $detail.content.formal as $formal}
-							<tr>
-								<td><h4>{$formal[0]}:</h4></td>
-								<td>{$formal[1]}</td>
-							</tr>
-						{/foreach}
-					</table>
+					<div class="detail_content">
+						<table class="detail_content_table">
+							{foreach $detail.content.formal as $formal}
+								<tr>
+									<td><h4>{$formal[0]}:</h4></td>
+									<td>{$formal[1]}</td>
+								</tr>
+							{/foreach}
+						</table>
+					</div>
 				{/if}
-			</div>
 
 				{if $detail.content.description}
 				<div class="detail_content">

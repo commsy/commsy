@@ -13,3 +13,17 @@
 {/function}
 
 {function name=show}{if isset($var) && !empty($var)}{$var}{/if}{/function}
+
+{function name=display_assessment}
+	{if $assessment > 0}
+		{for $i = 1 to $assessment}
+			<img src="{$basic.tpl_path}img/star_active.gif" alt="*" />
+		{/for}
+	{else}
+		{$i = 1}
+	{/if}
+	
+	{for $j = $i to 5}
+		<img src="{$basic.tpl_path}img/star_non_active.gif" alt="" />
+	{/for}
+{/function}

@@ -27,6 +27,10 @@
 			// TODO: sanitize
 			$this->_data = json_decode(file_get_contents('php://input'), true);
 			
+			if(empty($this->_data)) {
+				$this->_data = $_POST;
+			}
+			
 			// the actual function determes the method to call
 			$function = 'action' . ucfirst($_GET['action']);
 

@@ -58,9 +58,9 @@
 
 		<div id="item_credits">
 			<p id="ic_rating">
-				{foreach $detail.assessment as $assessment}
-					<img src="{$basic.tpl_path}img/star_{$assessment}.gif" alt="*" />
-				{/foreach}
+				{if $room.assessment}
+					{include file="include/detail_assessment_include_html.tpl"}
+				{/if}
 			</p>
 			<p>
 				___COMMON_LAST_MODIFIED_BY_UPPER___

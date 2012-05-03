@@ -133,7 +133,10 @@ if ($type != CS_DISCUSSION_TYPE) {
 			// mark as read and noticed
 			$this->markRead();
 			$this->markNoticed();
-
+			
+			// assessment
+			$this->assign('detail', 'assessment', $this->getAssessmentInformation($this->_item));
+			
 			$this->assign('detail', 'content', $this->getDetailContent());
 		}
 

@@ -126,33 +126,36 @@
 		}
 
 		protected function getAssessmentInformation($item = null) {
+			$return = array(
+				'average'	=> 0
+			);
+			
 			$assessment_item =& $this->_item;
 			if(isset($item)) $assessment_item = $item;
-
-			$assessment_stars_text_array = array('non_active','non_active','non_active','non_active','non_active');
+			
 			$current_context = $this->_environment->getCurrentContextItem();
 			if($current_context->isAssessmentActive()) {
 				$assessment_manager = $this->_environment->getAssessmentManager();
+				
 				$assessment = $assessment_manager->getAssessmentForItemAverage($assessment_item);
-				if(isset($assessment[0])) {
-					$assessment = sprintf('%1.1f', (float) $assessment[0]);
-				} else {
-			 		$assessment = 0;
-				}
-		  		$php_version = explode('.', phpversion());
+				if(isset($assessment[0])) $assessment = sprintf('%1.1f', (float) $assessment[0]);
+				else $assessment = 0;
+				
+				$php_version = explode('.', phpversion());
 				if($php_version[0] >= 5 && $php_version[1] >= 3) {
 					// if php version is equal to or above 5.3
-					$assessment_count_stars = round($assessment, 0, PHP_ROUND_HALF_UP);
+					$return['average'] = round($assessment, 0, PHP_ROUND_HALF_UP);
 				} else {
 					// if php version is below 5.3
-					$assessment_count_stars = round($assessment);
+					$return['average'] = round($assessment);
 				}
-				for ($i=0; $i < $assessment_count_stars; $i++){
-					$assessment_stars_text_array[$i] = 'active';
-				}
+				
+				$return['user_voted'] = $assessment_manager->hasCurrentUserAlreadyVoted($assessment_item);
+				$return['own_vote'] = $assessment_manager->getAssessmentForItemOwn($assessment_item);
+				$return['detail'] = $assessment_manager->getAssessmentForItemDetail($assessment_item);
 			}
-
-			return $assessment_stars_text_array;
+			
+			return $return;
 		}
 
 		protected function setItem() {

@@ -178,7 +178,14 @@
 										
 										<div class="input_row">
 											<label for="data_picture">___USER_PICTURE_UPLOADFILE___</label>
-											<input id="data_picture" type="file" class="size_200 float-left" name="form_data[picture]" accept="image/*" />
+											<form id="picture_upload" action="commsy.php?cid={$environment.cid}&mod=ajax&fct=popup&action=save" method="post">
+												<input type="hidden" name="module" value="profile" />
+												<input type="hidden" name="additional[tab]" value="user_picture" />
+												<input id="data_picture" type="file" class="size_200 float-left" name="form_data[picture]" accept="image/*" />
+											</form>
+											{if !empty($popup.form.user.picture)}
+												<img src="commsy.php?cid={$environment.cid}&mod=picture&fct=getfile&picture={$popup.form.user.picture}" alt="___USER_PICTURE_UPLOADFILE___" />
+											{/if}
 											<input id="data_picture_all" type="checkbox" class="float-left" name="form_data[picture_all]" />
 											<label for="data_picture_all" class="float-left">___USER_CHANGE_IN_ALL_ROOMS___</label>
 											<div class="clear"></div>

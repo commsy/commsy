@@ -16,8 +16,6 @@ class cs_popup_profile_controller {
 	}
 	
 	public function save($form_data, $additional) {
-
-		
 // 		// function for page edit
 // 		// - to check files for virus
 // 		if (isset($c_virus_scan) and $c_virus_scan) {
@@ -304,73 +302,77 @@ class cs_popup_profile_controller {
 						}
 						break;
 					
+					/**** USER PICTURE ****/
+					case 'user_picture':
+						if($this->_popup_controller->checkFormData('user_picture')) {
+							/* handle user picture upload */
+							if(!empty($_FILES['form_data']['tmp_name'])) {
+								// rename temp file
+								$new_temp_name = $_FILES['form_data']['tmp_name'] . '_TEMP_' . $_FILES['form_data']['name'];
+								move_uploaded_file($_FILES['form_data']['tmp_name'], $new_temp_name);
+								$_FILES['form_data']['tmp_name'] = $new_temp_name;
+								
+								$session_item = $this->_environment->getSessionItem();
+								if(isset($session_item)) {
+									$current_iid = $this->_environment->getCurrentContextID();
+									//$session_item->setValue($environment->getCurrentContextID().'_user_'.$iid.'_upload_temp_name',$new_temp_name);
+									//$session_item->setValue($environment->getCurrentContextID().'_user_'.$iid.'_upload_name',$_FILES['upload']['name']);
+								}
+								
+								// resize image to a maximum width of 150px and keep ratio
+								$srcfile = $_FILES['form_data']['tmp_name'];
+								$target = $_FILES['form_data']['tmp_name'];
+								
+								$size = getimagesize($srcfile);
+								list($x_orig, $y_orig, $type) = $size;
+								
+								$verhaeltnis = $y_orig / $x_orig;
+								$max_width = 150;
+								$ratio = 1.334; // 3:4
+								
+								if($verhaeltnis < $ratio) {
+									// wider than 1:$ratio
+									$source_width = ($y_orig * $max_width) / ($max_width * $ratio);
+									$source_height = $y_orig;
+									$source_x = ($x_orig - $sourc_width) / 2;
+									$source_y = 0;
+								} else {
+									// higher than 1:$ratio
+									$source_width = $x_orig;
+									$source_height = ($x_orig * ($max_width * $ratio)) / $max_width;
+									$source_x = 0;
+									$source_y = ($y_orig - $source_height) / 2;
+								}
+								
+								// create image
+								switch($type) {
+									case '1':
+										$im = imagecreatefromgif($srcfile);
+										break;
+									case '2':
+										$im = imagecreatefromjpeg($srcfile);
+										break;
+									case '3':
+										$im = imagecreatefrompng($srcfile);
+										break;
+								}
+								
+								$newimg = imagecreatetruecolor($max_width, ($max_width * $ratio));
+								imagecopyresampled($newimg, $im, 0, 0, $source_x, $source_y, $max_width, ceil($max_width * $ratio), $source_width, $source_height);
+								imagepng($newimg, $target);
+								
+								// clean up
+								imagedestroy($im);
+								imagedestroy($newimg);
+							}
+							
+							$this->_return = 'success';
+						}
+						break;
+					
 					/**** USER ****/
 					case 'user':
 						if($this->_popup_controller->checkFormData('user')) {
-							// user picture
-							pr(file_get_contents('php://fd'));
-							if(!empty($FILES)) {
-								
-							}
-							
-							/*
-							 * if ( !empty($_FILES['upload']['tmp_name']) ) {
-               $new_temp_name = $_FILES['upload']['tmp_name'].'_TEMP_'.$_FILES['upload']['name'];
-               move_uploaded_file($_FILES['upload']['tmp_name'],$new_temp_name);
-               $_FILES['upload']['tmp_name'] = $new_temp_name;
-               $session_item = $environment->getSessionItem();
-               if ( isset($session_item) ) {
-                  $current_iid = $environment->getCurrentContextID();
-                  $session_item->setValue($environment->getCurrentContextID().'_user_'.$iid.'_upload_temp_name',$new_temp_name);
-                  $session_item->setValue($environment->getCurrentContextID().'_user_'.$iid.'_upload_name',$_FILES['upload']['name']);
-               }
-               //resizing the userimage to a maximum width of 150px
-               // + keeping a set ratio
-               $srcfile = $_FILES['upload']['tmp_name'];
-               $target = $_FILES['upload']['tmp_name'];
-               $size = getimagesize($srcfile);
-               $x_orig= $size[0];
-               $y_orig= $size[1];
-               //$verhaeltnis = $x_orig/$y_orig;
-               $verhaeltnis = $y_orig/$x_orig;
-               $max_width = 150;
-               //$ratio = 1.618; // Goldener Schnitt
-               //$ratio = 1.5; // 2:3
-               $ratio = 1.334; // 3:4
-               //$ratio = 1; // 1:1
-               if($verhaeltnis < $ratio){
-                  // Breiter als 1:$ratio
-                  $source_width = ($size[1] * $max_width) / ($max_width * $ratio);
-                  $source_height = $size[1];
-                  $source_x = ($size[0] - $source_width) / 2;
-                  $source_y = 0;
-               } else {
-                  // Höher als 1:$ratio
-                  $source_width = $size[0];
-                  $source_height = ($size[0] * ($max_width * $ratio)) / ($max_width);
-                  $source_x = 0;
-                  $source_y = ($size[1] - $source_height) / 2;
-               }
-               switch ($size[2]) {
-                  case '1':
-                     $im = imagecreatefromgif($srcfile);
-                     break;
-                  case '2':
-                     $im = imagecreatefromjpeg($srcfile);
-                     break;
-                  case '3':
-                     $im = imagecreatefrompng($srcfile);
-                     break;
-               }
-               //$newimg = imagecreatetruecolor($show_width,$show_height);
-               //imagecopyresampled($newimg, $im, 0, 0, 0, 0, $show_width, $show_height, $size[0], $size[1]);
-               $newimg = imagecreatetruecolor($max_width,($max_width * $ratio));
-               imagecopyresampled($newimg, $im, 0, 0, $source_x, $source_y, $max_width, ceil($max_width * $ratio), $source_width, $source_height);
-               imagepng($newimg,$target);
-               imagedestroy($im);
-               imagedestroy($newimg);
-             }
-							 */
 							
 							// 						if ( $correct
 							// 								and empty($_FILES['upload']['tmp_name'])
@@ -843,7 +845,9 @@ class cs_popup_profile_controller {
 				array('name' => 'jabber','type' => 'text', 'mandatory' => false), array('name' => 'messenger_all','type' => 'checkbox', 'mandatory' => false),
 				array('name' => 'homepage','type' => 'text', 'mandatory' => false), array('name' => 'homepage_all','type' => 'checkbox', 'mandatory' => false),
 				array('name' => 'description','type' => 'text', 'mandatory' => false), array('name' => 'description_all','type' => 'checkbox', 'mandatory' => false),
-			)
+			),
+			'user_picture'	=> array(
+			),
 		);
 		
 		return $return[$sub];
@@ -936,7 +940,7 @@ class cs_popup_profile_controller {
 		// get data from database
 		$return['title'] = $this->_user->getTitle();
 		$return['birthday'] = $this->_user->getBirthday();
-		//$return['picture']
+		$return['picture'] = $this->_user->getPicture();
 		$return['mail'] = $this->_user->getEmail();
 		$return['telephone'] = $this->_user->getTelephone();
 		$return['cellularphone'] = $this->_user->getCellularphone();

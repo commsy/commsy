@@ -2932,4 +2932,6 @@ div.breadcrumb_column_title {
     padding: 8px 0px 8px 10px;
     }
 
-
+ul.dynatree-container {
+	overflow: hidden !important;
+}

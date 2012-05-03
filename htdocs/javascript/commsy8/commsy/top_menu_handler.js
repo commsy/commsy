@@ -5,6 +5,7 @@
 define([	"order!libs/jQuery/jquery-1.7.1.min",
 			"order!libs/jQuery_plugins/jquery.viewport.mini",
 			"order!libs/jQuery/jquery-ui-1.8.17.custom.min",
+			"order!libs/jQuery_plugins/jquery.form",
         	"commsy/commsy_functions_8_0_0"], function() {
 	return {
 		isExpanded: false,
@@ -192,9 +193,38 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 					console.log("error while processing popup action");
 				},
 				success: function(data, status) {
-					console.log(data);
+					// submit picture
+					var form_object = jQuery('form#picture_upload');
+					
+					if(form_object.find('input').attr('value') !== '') {
+						handle.uploadUserPicture(form_object);
+					}
 				}
 			});
+		},
+		
+		uploadUserPicture: function(form_object) {
+			// build object
+			var data = {
+				form_data: [],
+				module: 'profile',
+				additional: {
+					action: 'uploadUserPicture'
+				}
+			};
+			
+			// setup ajax form
+			form_object.ajaxForm();
+			
+			// submit form
+			form_object.ajaxSubmit({
+				type:		'POST',
+				success:	function() {
+					console.log('success');
+				}
+			});
+			
+			return false;
 		},
 		
 		onClickBreadcrumb: function() {
@@ -248,7 +278,11 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			// setup sortables
 			content_objects.find('.breadcrumb_room_area').sortable({
 				connectWith:	'.breadcrumb_room_area',
-				placeholder:	'ui-state-highlight'
+				placeholder:	'ui-state-highlight',
+				start: function(event, ui) {
+			        //ui.helper.css({'top' : ui.position.top + 'px'});
+					jQuery(this).sortable('refreshPositions');
+			    }
 			});
 			
 			// process each room block
@@ -452,13 +486,9 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 				},
 				success: function(data, status) {
 					if(status === 'success') {
-						
 					}
 				}
 			});
-			
-			// submit picture
-			
 			
 			// stop processing
 			return false;

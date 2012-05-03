@@ -186,6 +186,9 @@ define(["libs/jQuery/jquery-1.7.1.min"], function() {
 					callback:		'onClickBreadcrumb'}
 			];
 			this.registerModule('commsy/top_menu_handler', {objects: objects});
+			
+			// assessment
+			this.registerModule('commsy/assessment', {object: jQuery('span#detail_assessment')})
 		},
 
 		registerModule: function(module, parameters) {
