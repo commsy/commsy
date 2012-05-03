@@ -1208,14 +1208,14 @@
 								if((!isset($_GET['download']) || $_GET['download'] != 'zip') && in_array($file->getExtension(), array('png', 'jpg', 'jpeg', 'gif'))) {
 									//$this->_with_slimbox = true;
 									$file_string = '<a href="'.$file->getUrl().'" rel="lightbox[gallery'.$section->getItemID().']">';
-									$file->getFileIcon().' '.($this->_text_as_html_short($file->getDisplayName())).'</a> ('.$file->getFileSize().' KB)';
+									$file->getFileIcon().' '.($file->getDisplayName()).'</a> ('.$file->getFileSize().' KB)';
 								} else {
 									$file_string = '<a href="'.$file->getUrl().'" target="blank">'.
-						                  $file->getFileIcon().' '.($this->_text_as_html_short($file->getDisplayName())).'</a> ('.$file->getFileSize().' KB)';
+						                  $file->getFileIcon().' '.($file->getDisplayName()).'</a> ('.$file->getFileSize().' KB)';
 								}
 							} else {
 									 $file_string = '<a href="'.$file->getUrl().'" target="blank">'.
-                					  $file->getFileIcon().' '.($this->_text_as_html_short($file->getDisplayName())).'</a> ('.$file->getFileSize().' KB)';
+                					  $file->getFileIcon().' '.($file->getDisplayName()).'</a> ('.$file->getFileSize().' KB)';
 							}
 							$files[] = $file_string;
 
