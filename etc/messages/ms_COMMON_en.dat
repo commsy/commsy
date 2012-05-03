@@ -527,6 +527,7 @@ $message["COMMON_NO_CONTENT"]["en"] = "No items there.";
 $message["COMMON_NO_COPIES"]["en"] = "Nothing on clipboard";
 $message["COMMON_NO_CURRENT_CONTENT"]["en"] = "There are no current items.";
 $message["COMMON_NO_DESCRIPTION"]["en"] = "No description available";
+$message["COMMON_NO_DISPLAY"]["en"] = "Cowered rooms";
 $message["COMMON_NO_ENTRIES"]["en"] = "No items";
 $message["COMMON_NO_ENTRIES_FROM_ALL"]["en"] = "Listed: 0 items (out of %1 total)";
 $message["COMMON_NO_FORUM_ENTRIES"]["en"] = "no forums used";

@@ -2918,3 +2918,18 @@ div.room_dummy_no_border {
 div.breadcrumb_column_title {
 	width: 220px;
 }
+
+.room_block h2{
+    background: url(img/ci_head_bg.png) left bottom repeat-x;
+    font-size: 12px;
+    padding: 8px 0px 8px 10px;
+    }
+
+
+.room_block_h2 {
+    background: url(img/ci_head_bg.png) left bottom repeat-x;
+    font-size: 12px;
+    padding: 8px 0px 8px 10px;
+    }
+
+

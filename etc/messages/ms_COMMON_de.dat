@@ -536,6 +536,7 @@ $message["COMMON_NO_CONTENT"]["de"] = "Es existieren keine Einträge.";
 $message["COMMON_NO_COPIES"]["de"] = "Keine Kopien vorhanden";
 $message["COMMON_NO_CURRENT_CONTENT"]["de"] = "Es existieren keine aktuellen Einträge.";
 $message["COMMON_NO_DESCRIPTION"]["de"] = "Keine Beschreibung vorhanden";
+$message["COMMON_NO_DISPLAY"]["de"] = "Nicht angezeigte Räume";
 $message["COMMON_NO_ENTRIES"]["de"] = "Keine Einträge";
 $message["COMMON_NO_ENTRIES_FROM_ALL"]["de"] = "Angezeigt: 0 Einträge (%1 insgesamt)";
 $message["COMMON_NO_FORUM_ENTRIES"]["de"] = "keine Foren vorhanden";
