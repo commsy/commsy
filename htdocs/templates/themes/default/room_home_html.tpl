@@ -116,15 +116,24 @@
 							</div>
                         	<div class="column_140">
                             	<p>{$item.column_2}</p>
+	                        	{if $rubric@key == 'todo'}
+	                        	  {$item.column_2_addon}
+								{/if}
                             </div>
 	                        <div class="column_194">
-	                        	<p>
 		                        	{if $rubric@key == 'material' or $rubric@key == 'announcement' or $rubric@key == 'discussion'}
-		                            	<a href="commsy.php?cid={$environment.cid}&mod=user&fct=detail&iid={$item.user_iid}">{$item.column_3}</a>
+	                        			<p>
+		                            		<a href="commsy.php?cid={$environment.cid}&mod=user&fct=detail&iid={$item.user_iid}">{$item.column_3}</a>
+	                            		</p>
 		                        	{else}
-		                        		{$item.column_3}
+	                        			{if $rubric@key == 'todo'}
+	                        	  			{$item.column_3}
+										{else}
+		                        			<p>
+		                        	  			{$item.column_3}
+	    	                    			</p>
+										{/if}
 		                            {/if}
-	                            </p>
 	                        </div>
 		                    <div class="clear"> </div>
 	                    </div>

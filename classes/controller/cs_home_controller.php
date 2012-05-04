@@ -451,6 +451,21 @@
            						$linked_item_array = $item->getAllLinkedItemIDArray();
 								$column3 = $translator->getMessage('COMMON_REFERENCED_LATEST_ENTRIES').': '.count($linked_item_array);
 								break;
+							case CS_TODO_TYPE:
+								$column1 = $view->_text_as_html_short($item->getTitle());
+								$original_date = $item->getDate();
+      							$date = getDateInLang($original_date);
+      							$status = $item->getStatus();
+      							$actual_date = date("Y-m-d H:i:s");
+      							if ($status != $translator->getMessage('TODO_DONE') and $original_date < $actual_date){
+         							$date = '<span class="required">'.$date.'</span>';
+      							}
+      							if ($original_date == '9999-00-00 00:00:00'){
+      	 							$date = $translator->getMessage('TODO_NO_END_DATE');
+      							}
+								$column2 = $date;
+								$column3 = $this->_getTodoItemProcess($item,$translator);
+								break;
 							default:
 								$column1 = $view->_text_as_html_short($item->getTitle());
 								$column2 = $this->_environment->getTranslationObject()->getDateInLang($item->getModificationDate());
@@ -605,6 +620,104 @@
 					*/
 			return $return;
 		}
+
+
+   function _getTodoItemProcess($item,$translator){
+      $step_html = '';
+      $step_minutes = 0;
+      $step_item_list = $item->getStepItemList();
+      if ( $step_item_list->isEmpty() ) {
+         $status = $item->getStatus();
+      } else {
+         $step = $step_item_list->getFirst();
+         $count = $step_item_list->getCount();
+         $counter = 0;
+         while ($step) {
+            $counter++;
+            $step_minutes = $step_minutes + $step->getMinutes();
+            $step = $step_item_list->getNext();
+         }
+      }
+      $done_time = '';
+      $done_percentage = 100;
+      if ($item->getPlannedTime() > 0){
+         $done_percentage = $step_minutes / $item->getPlannedTime() * 100;
+      }
+
+      $tmp_message = $translator->getMessage('COMMON_MINUTES');
+      $step_minutes_text = $step_minutes;
+      if (($step_minutes/60)>1 and ($step_minutes/60)<=8){
+         $step_minutes_text = '';
+         $exact_minutes = $step_minutes/60;
+         $step_minutes = round($exact_minutes,1);
+         if ($step_minutes != $exact_minutes){
+            $step_minutes_text .= 'ca. ';
+         }
+         if ($translator->getSelectedLanguage() == 'de'){
+            $step_minutes = str_replace('.',',',$step_minutes);
+         }
+         $step_minutes_text .= $step_minutes;
+         $tmp_message = $translator->getMessage('COMMON_HOURS');
+         if ($step_minutes == 1){
+            $tmp_message = $translator->getMessage('COMMON_HOUR');
+         }
+       }elseif(($step_minutes/60)>8){
+         $exact_minutes = ($step_minutes/60)/8;
+         $step_minutes = round($exact_minutes,1);
+         $step_minutes_text = '';
+         if ($step_minutes != $exact_minutes){
+            $step_minutes_text .= 'ca. ';
+         }
+         if ($translator->getSelectedLanguage() == 'de'){
+            $step_minutes = str_replace('.',',',$step_minutes);
+         }
+         $step_minutes_text .= $step_minutes;
+         $tmp_message = $translator->getMessage('COMMON_DAYS');
+         if ($step_minutes == 1){
+            $tmp_message = $translator->getMessage('COMMON_DAY');
+         }
+      }else{
+         $step_minutes = round($step_minutes,1);
+         if ($translator->getSelectedLanguage() == 'de'){
+            $step_minutes = str_replace('.',',',$step_minutes);
+         }
+      }
+      $shown_time = $step_minutes_text.' '.$tmp_message;
+      $display_time_text = $shown_time.' - '.round($done_percentage).'% '.$translator->getMessage('TODO_DONE');
+
+      if($done_percentage <= 100){
+         $style = ' height: 10px; background-color: #75ab05; ';
+         $done_time .= '      <div title="'.$display_time_text.'" style="border: 1px solid #444;  margin-left: 10px; margin-top:7px; height: 10px; width: 80px;">';
+         if ( $done_percentage >= 30 ) {
+            $done_time .= '         <div style=" font-size: 2pt; '.$style.'width:'.$done_percentage.'%; color:#000000;">&nbsp;</div>';
+         } else {
+            $done_time .= '         <div style=" font-size: 2pt; '.$style.'width:'.$done_percentage.'%; color:#000000;">&nbsp;</div>';
+         }
+         $done_time .= '      </div>';
+      }elseif($done_percentage <= 120){
+         $done_percentage = (100 / $done_percentage) *100;
+         $style = ' height: 10px; border: 1px solid #444; background-color: #f2f030; ';
+         $done_time .= '         <div title="'.$display_time_text.'" style="width: 80px; font-size: 2pt; '.$style.' color:#000000;">';
+         $done_time .= '      <div style="border-right: 1px solid #444; margin-left: 10px; margin-top:7px; height:12px;  background-color:none; width:'.$done_percentage.'%;">';
+         $done_time .= '      </div>';
+         $done_time .= '</div>';
+      }else{
+         $done_percentage = (100 / $done_percentage) *100;
+         $style = ' height: 8px; border: 1px solid #444; background-color: #f23030; ';
+         $done_time .= '         <p><div title="'.$display_time_text.'" style="width: 80px; font-size: 2pt; '.$style.' color:#000000;">';
+         $done_time .= '      <div style="border-right: 1px solid #444; margin-left: 10px; margin-top:7px; height:12px;  background-color:none; width:'.$done_percentage.'%;">';
+         $done_time .= '      </div>';
+         $done_time .= '</div>';
+      }
+      if ($item->getPlannedTime() > 0){
+         $process = $done_time;
+      }else{
+      	$process = '<p>'.$shown_time.'</p>';
+      }
+      return $process;
+   }
+
+
 
 		// TODO: home view does not have any list actions -> actions could be derived into another subclass
 		public function getAdditionalListActions() {
