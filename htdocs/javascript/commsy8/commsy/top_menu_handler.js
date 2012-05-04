@@ -279,9 +279,71 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			content_objects.find('.breadcrumb_room_area').sortable({
 				connectWith:	'.breadcrumb_room_area',
 				placeholder:	'ui-state-highlight',
-				start: function(event, ui) {
+				start:			function(event, ui) {
 			        //ui.helper.css({'top' : ui.position.top + 'px'});
 					jQuery(this).sortable('refreshPositions');
+			    },
+			    stop:			function(event, ui) {
+			    	// process each room area
+			    	jQuery('div.breadcrumb_room_area').each(function() {
+			    		// get number of elements in this area
+			    		var num_elements = jQuery(this).children('a.room_change_item, div.room_dummy').length;
+			    		
+			    		// fill with dummies if elements missing
+			    		if(num_elements % 4 !== 0) {
+			    			for(var i = 0; i < 4 - (num_elements % 4); i++) {
+			    				jQuery(this).find('div.clear').before(jQuery('<div/>', {'class': 'room_dummy'}));
+			    			}
+			    		}
+			    		
+			    		// ensure one empty row below the last room in area
+			    		/*
+						 * holds the latest appearance of a room
+						 * D D D D R D D R D D D D D
+						 * 				/\
+						 * 				||
+						 */
+						var latest_room_appearance = -1;
+						
+						jQuery(this).find('a.room_change_item, div.room_dummy').each(function(index) {
+							// determ type
+							if(jQuery(this).hasClass('room_change_item')) {
+								// room
+								// update latest appearance
+								latest_room_appearance = index;
+							}
+						});
+						
+						if(latest_room_appearance > -1) {
+							var num_dummies_after_last_room = num_elements - latest_room_appearance - 1;
+							
+							if(num_dummies_after_last_room <= 3) {
+								// add a row of dummies
+								for(var i = 0; i < 4; i++) {
+				    				jQuery(this).find('div.clear').before(jQuery('<div/>', {'class': 'room_dummy'}));
+				    			}
+							} else if(num_dummies_after_last_room >= 5) {
+								// get new latest room appearance
+								var new_latest_room_appearance = -1;
+								jQuery(this).find('a.room_change_item, div.room_dummy').each(function(index) {
+									// determ type
+									if(jQuery(this).hasClass('room_change_item')) {
+										// room
+										// update latest appearance
+										new_latest_room_appearance = index;
+									}
+								});
+								
+								// determe number to delete
+								var num_delete = num_elements - new_latest_room_appearance - 1 - 4 - ((num_elements - new_latest_room_appearance - 1 - 4) % 4);
+								
+								// remove a row of dummies
+								for(var i = 0; i < num_delete; i++) {
+				    				jQuery(this).find('div.clear').prev().remove();
+				    			}
+							}
+						}
+			    	});
 			    }
 			});
 			

@@ -1894,6 +1894,7 @@ class cs_privateroom_item extends cs_room_item {
    public function getCustomizedRoomListCommSy8 () {
    	$retour = NULL;
    	$room_id_array = $this->getCustomizedRoomIDArray();
+   	
    	if ( !empty($room_id_array)
    			and !empty($room_id_array[0])
    	) {
@@ -1912,7 +1913,8 @@ class cs_privateroom_item extends cs_room_item {
    					foreach ($room_id_array as $value) {
    						$room_id_array_temp[] = $value;
    						if ( $value == $project_room_id) {
-   							$room_id_array_temp[] = $grouproom_item->getItemID();
+   							if(!in_array($grouproom_item->getItemID(), $room_id_array))
+   								$room_id_array_temp[] = $grouproom_item->getItemID();
    						}
    					}
    					$room_id_array = $room_id_array_temp;
@@ -1965,6 +1967,9 @@ class cs_privateroom_item extends cs_room_item {
    					$room_id = $room_item->getItemID();
    					$retour2->add($room_item);
    				} elseif ( $room_id == $room_item->getLinkedProjectItemID() ) {
+   					$retour2->add($room_item);
+   				} else {
+   					$room_id = $room_item->getItemID();
    					$retour2->add($room_item);
    				}
    			}

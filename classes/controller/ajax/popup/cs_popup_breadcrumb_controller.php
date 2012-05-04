@@ -532,7 +532,7 @@
 					continue;
 				}
 				
-				if($item_id <= -3) continue;
+				//if($item_id <= -3) continue;
 				
 				$room = array(
 						'item_id'		=> $item_id,
