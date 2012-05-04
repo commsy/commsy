@@ -308,9 +308,9 @@ class cs_popup_profile_controller {
 							/* handle user picture upload */
 							if(!empty($_FILES['form_data']['tmp_name'])) {
 								// rename temp file
-								$new_temp_name = $_FILES['form_data']['tmp_name'] . '_TEMP_' . $_FILES['form_data']['name'];
-								move_uploaded_file($_FILES['form_data']['tmp_name'], $new_temp_name);
-								$_FILES['form_data']['tmp_name'] = $new_temp_name;
+								$new_temp_name = $_FILES['form_data']['tmp_name']['picture'] . '_TEMP_' . $_FILES['form_data']['name']['picture'];
+								move_uploaded_file($_FILES['form_data']['tmp_name']['picture'], $new_temp_name);
+								$_FILES['form_data']['tmp_name']['picture'] = $new_temp_name;
 								
 								$session_item = $this->_environment->getSessionItem();
 								if(isset($session_item)) {
@@ -320,8 +320,8 @@ class cs_popup_profile_controller {
 								}
 								
 								// resize image to a maximum width of 150px and keep ratio
-								$srcfile = $_FILES['form_data']['tmp_name'];
-								$target = $_FILES['form_data']['tmp_name'];
+								$srcfile = $_FILES['form_data']['tmp_name']['picture'];
+								$target = $_FILES['form_data']['tmp_name']['picture'];
 								
 								$size = getimagesize($srcfile);
 								list($x_orig, $y_orig, $type) = $size;
@@ -334,7 +334,7 @@ class cs_popup_profile_controller {
 									// wider than 1:$ratio
 									$source_width = ($y_orig * $max_width) / ($max_width * $ratio);
 									$source_height = $y_orig;
-									$source_x = ($x_orig - $sourc_width) / 2;
+									$source_x = ($x_orig - $source_width) / 2;
 									$source_y = 0;
 								} else {
 									// higher than 1:$ratio
@@ -364,6 +364,50 @@ class cs_popup_profile_controller {
 								// clean up
 								imagedestroy($im);
 								imagedestroy($newimg);
+								
+								// determ new file name
+								$filename_info = pathinfo($_FILES['form_data']['name']['picture']);
+								$filename = 'cid' . $this->_environment->getCurrentContextID() . '_' . $user_item->getItemID() . '.' . $filename_info['extension'];
+								
+								// copy file and set picture
+								$disc_manager = $this->_environment->getDiscManager();
+								
+								$disc_manager->copyFile($_FILES['form_data']['tmp_name']['picture'], $filename, true);
+								$user_item->setPicture($filename);
+								
+								$portal_user = $user_item->getRelatedCommSyUserItem();
+								if(isset($portal_user)) {
+									if($disc_manager->copyImageFromRoomToRoom($filename, $portal_user->getContextID())) {
+										$value_array = explode('_', $filename);
+										
+										$old_room_id = $value_array[0];
+										$old_room_id = str_replace('cid', '', $old_room_id);
+										$valu_array[0] = 'cid' . $portal_user->getContextID();
+										$new_picture_name = implode('_', $value_array);
+										
+										$portal_user->setPicture($new_picture_name);
+									}
+								}
+								
+								// 							if ( !empty($_FILES['upload']['name']) and !empty($_FILES['upload']['tmp_name']) ) {
+								// 								//$filename = 'cid'.$environment->getCurrentContextID().'_'.$user_item->getUserID().'_'.$_FILES['upload']['name'];
+								// 								$filename_info = pathinfo($_FILES['upload']['name']);
+								// 								$filename = 'cid' . $environment->getCurrentContextID() . '_' . $user_item->getItemID() . '.' . $filename_info['extension'];
+								// 								$disc_manager = $environment->getDiscManager();
+								// 								$disc_manager->copyFile($_FILES['upload']['tmp_name'],$filename,true);
+								// 								$user_item->setPicture($filename);
+								// 								if ( isset($portal_user_item) ) {
+								// 									if ( $disc_manager->copyImageFromRoomToRoom($filename,$portal_user_item->getContextID()) ) {
+								// 										$value_array = explode('_',$filename);
+								// 										$old_room_id = $value_array[0];
+								// 										$old_room_id = str_replace('cid','',$old_room_id);
+								
+								// 										$value_array[0] = 'cid'.$portal_user_item->getContextID();
+								// 										$new_picture_name = implode('_',$value_array);
+								// 										$portal_user_item->setPicture($new_picture_name);
+								// 									}
+								// 								}
+								// 							}
 							}
 							
 							$this->_return = 'success';
@@ -428,6 +472,18 @@ class cs_popup_profile_controller {
 								setValue($user_item, $portal_user, 'setHomepage', $form_data['homepage']);
 								setValue($user_item, $portal_user, 'setDescription', $form_data['description']);
 								
+								// delete picture handling
+								if(isset($form_data['delete_picture']) && $user_item->getPicture()) {
+									$disc_manager = $this->_environment->getDiscManager();
+									
+									// unlink file
+									if($disc_manager->existsFile($user_item->getPicture())) $disc_manager->unlinkFile($user_item->getPicture());
+									
+									// set non picture
+									$user_item->setPicture('');
+									if(isset($portal_user)) $portal_user->setPicture('');
+								}
+								
 								// set modificator and modification date
 								$user_item->setModificationDate(getCurrentDateTimeInMySQL());
 								$portal_user->setModificationDate(getCurrentDateTimeInMySQL());
@@ -435,43 +491,6 @@ class cs_popup_profile_controller {
 								// save
 								$user_item->save();
 								$portal_user->save();
-								
-								
-								
-								// 							if ( ( isset($_POST['deletePicture'])
-								// 									or ( !empty($_FILES['upload']['name'])
-								// 											and !empty($_FILES['upload']['tmp_name'])
-								// 									)
-								// 							)
-								// 									and $user_item->getPicture()
-								// 							) {
-								// 								$disc_manager = $environment->getDiscManager();
-								// 								if ( $disc_manager->existsFile($user_item->getPicture()) ) {
-								// 									$disc_manager->unlinkFile($user_item->getPicture());
-								// 								}
-								// 								$user_item->setPicture('');
-								// 								if ( isset($portal_user_item) ) {
-								// 									$portal_user_item->setPicture('');
-								// 								}
-								// 							}
-								// 							if ( !empty($_FILES['upload']['name']) and !empty($_FILES['upload']['tmp_name']) ) {
-								// 								//$filename = 'cid'.$environment->getCurrentContextID().'_'.$user_item->getUserID().'_'.$_FILES['upload']['name'];
-								// 								$filename_info = pathinfo($_FILES['upload']['name']);
-								// 								$filename = 'cid' . $environment->getCurrentContextID() . '_' . $user_item->getItemID() . '.' . $filename_info['extension'];
-								// 								$disc_manager = $environment->getDiscManager();
-								// 								$disc_manager->copyFile($_FILES['upload']['tmp_name'],$filename,true);
-								// 								$user_item->setPicture($filename);
-								// 								if ( isset($portal_user_item) ) {
-								// 									if ( $disc_manager->copyImageFromRoomToRoom($filename,$portal_user_item->getContextID()) ) {
-								// 										$value_array = explode('_',$filename);
-								// 										$old_room_id = $value_array[0];
-								// 										$old_room_id = str_replace('cid','',$old_room_id);
-								// 										$value_array[0] = 'cid'.$portal_user_item->getContextID();
-								// 										$new_picture_name = implode('_',$value_array);
-								// 										$portal_user_item->setPicture($new_picture_name);
-								// 									}
-								// 								}
-								// 							}
 								
 								// 							if (isset($_POST['want_mail_get_account'])) {
 								// 								$user_item->setAccountWantMail($_POST['want_mail_get_account']);
@@ -940,7 +959,7 @@ class cs_popup_profile_controller {
 		// get data from database
 		$return['title'] = $this->_user->getTitle();
 		$return['birthday'] = $this->_user->getBirthday();
-		$return['picture'] = $this->_user->getPicture();
+		$return['picture'] = $this->_environment->getCurrentUserItem()->getPicture();
 		$return['mail'] = $this->_user->getEmail();
 		$return['telephone'] = $this->_user->getTelephone();
 		$return['cellularphone'] = $this->_user->getCellularphone();
