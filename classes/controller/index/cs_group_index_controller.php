@@ -93,7 +93,7 @@
    				$group_manager->setRefIDLimit($this->_list_parameter_arrray['ref_iid']);
 			}
 			if ( !empty($this->_list_parameter_arrray['sort']) ) {
-   				$group_manager->setSortOrder($this->_list_parameter_arrray['sort']);
+   				$group_manager->setOrder($this->_list_parameter_arrray['sort']);
 			}
 			if ( !empty($this->_list_parameter_arrray['search']) ) {
    				$group_manager->setSearchLimit($this->_list_parameter_arrray['search']);
@@ -158,16 +158,16 @@
 		protected function getAdditionalListActions() {
 			return array();
 		}
-		
+
 		protected function getAdditionalRestrictionText(){
 			$return = array();
-				
+
 			return $return;
 		}
-		
+
 		protected function getAdditionalRestrictions() {
 			$return = array();
-			
+
 			return $return;
 		}
 	}

@@ -10,7 +10,7 @@
 			parent::__construct($environment);
 
 			$this->_tpl_file = 'material_list';
-			
+
 			// this will enable processing of additional restriction texts
 			$this->_additional_selects = true;
 		}
@@ -233,13 +233,13 @@
 		   $return[] = array('selected' => false, 'disabled' => false, 'id' => '', 'value' => CS_LISTOPTION_DOWNLOAD, 'display' => '___COMMON_LIST_ACTION_DOWNLOAD___');
 			return $return;
 		}
-		
+
 		protected function getAdditionalRestrictionText(){
 			$return = array();
-			
+
 			$params = $this->_environment->getCurrentParameterArray();
 			$current_context = $this->_environment->getCurrentContextItem();
-			
+
 			if($current_context->withActivatingContent()) {
 				$activation_limit = $this->_list_parameter_arrray['sel_activating_status'];
 				if($activation_limit == 2) {
@@ -267,13 +267,13 @@
 					$return[] = $restriction;
 				}
 			}
-				
+
 			return $return;
 		}
-		
+
 		protected function getAdditionalRestrictions() {
 			$return = array();
-			
+
 			return $return;
 		}
 	}

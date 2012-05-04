@@ -441,11 +441,12 @@
 		/******************************** END ACTIONS ********************************/
 		/*****************************************************************************/
 
+
 		protected function setBrowseIDs() {
 			$session = $this->_environment->getSessionItem();
 
 			if($session->issetValue('cid' . $this->_environment->getCurrentContextID() . '_group_index_ids')) {
-				$this->_browse_ids = array_values((array) $session->getValue('cid' . $this->_environment->getCurrentContextID() . '_user_group_ids'));
+				$this->_browse_ids = array_values((array) $session->getValue('cid' . $this->_environment->getCurrentContextID() . '_group_index_ids'));
 			}
 		}
 

@@ -1260,6 +1260,8 @@
 					$this->_list_parameter_arrray['sort'] = 'date';
 				} elseif($this->_environment->getCurrentModule() === CS_USER_TYPE) {
 					$this->_list_parameter_arrray['sort'] = 'name';
+				}elseif($this->_environment->getCurrentModule() === CS_GROUP_TYPE) {
+					$this->_list_parameter_arrray['sort'] = 'name';
 				} else {
 					$this->_list_parameter_arrray['sort'] = 'modified';
 				}

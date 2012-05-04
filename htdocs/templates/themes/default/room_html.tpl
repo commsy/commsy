@@ -176,7 +176,7 @@
 					</div>
 				{/block}
 
-				{if $environment.module != 'group' and $environment.module != 'topic' and $environment.module != 'institution'}
+				{if ($environment.module != 'group' and $environment.module != 'topic' and $environment.module != 'institution') or ($environment.function != 'index')}
            		<div id="rc_portlet_area">
            			{block name=room_right_portlets}
            				{if $room.sidebar_configuration.active.buzzwords}
