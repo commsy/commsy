@@ -155,6 +155,9 @@ define(["libs/jQuery/jquery-1.7.1.min"], function() {
 			if(this.getURLParam('fct') === 'index') {
 				this.registerModule('commsy/noticed_overlay', 'a[class="new_item_2"]');
 			}
+			if(this.getURLParam('fct') === 'index') {
+				this.registerModule('commsy/noticed_overlay', 'a[class="new_item"]');
+			}
 
 			// ajax popup handler
 			var new_objects = jQuery('a[id="create_new"]');
@@ -186,7 +189,7 @@ define(["libs/jQuery/jquery-1.7.1.min"], function() {
 					callback:		'onClickBreadcrumb'}
 			];
 			this.registerModule('commsy/top_menu_handler', {objects: objects});
-			
+
 			// assessment
 			this.registerModule('commsy/assessment', {object: jQuery('span#detail_assessment')})
 		},
