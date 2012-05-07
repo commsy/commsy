@@ -388,26 +388,6 @@ class cs_popup_profile_controller {
 										$portal_user->setPicture($new_picture_name);
 									}
 								}
-								
-								// 							if ( !empty($_FILES['upload']['name']) and !empty($_FILES['upload']['tmp_name']) ) {
-								// 								//$filename = 'cid'.$environment->getCurrentContextID().'_'.$user_item->getUserID().'_'.$_FILES['upload']['name'];
-								// 								$filename_info = pathinfo($_FILES['upload']['name']);
-								// 								$filename = 'cid' . $environment->getCurrentContextID() . '_' . $user_item->getItemID() . '.' . $filename_info['extension'];
-								// 								$disc_manager = $environment->getDiscManager();
-								// 								$disc_manager->copyFile($_FILES['upload']['tmp_name'],$filename,true);
-								// 								$user_item->setPicture($filename);
-								// 								if ( isset($portal_user_item) ) {
-								// 									if ( $disc_manager->copyImageFromRoomToRoom($filename,$portal_user_item->getContextID()) ) {
-								// 										$value_array = explode('_',$filename);
-								// 										$old_room_id = $value_array[0];
-								// 										$old_room_id = str_replace('cid','',$old_room_id);
-								
-								// 										$value_array[0] = 'cid'.$portal_user_item->getContextID();
-								// 										$new_picture_name = implode('_',$value_array);
-								// 										$portal_user_item->setPicture($new_picture_name);
-								// 									}
-								// 								}
-								// 							}
 							}
 							
 							$this->_return = 'success';
