@@ -812,3 +812,7 @@ div.weak #iWeak {
 div.strong #iStrong, div.medium #iMedium, div.weak #iWeak {
    color:#000;
 }
+
+#my_tag_content_div{
+   overflow:hidden
+}
