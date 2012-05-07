@@ -101,7 +101,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 						
 						var dynatree = jQuery('div[id="tag_tree"]').dynatree('getTree');
 						
-						if(dynatree.length > 0) {
+						if(typeof(dynatree['$tree']) !== 'undefined') {
 							// expand all nodes and add checkbox inputs
 							dynatree.visit(function(node) {
 								node.expand(true);
@@ -122,7 +122,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 								// toggle bold
 								/<span>(.*)<\/span>/.exec(node.data.title);
 								var title = RegExp.$1;
-								
+								console.log('title');
 								// check bold
 								if(node.data.title.substr(0, 3) === '<b>') {
 									// remove
@@ -245,7 +245,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 				var dynatree = jQuery('div[id="tag_tree"]').dynatree('getTree');
 				var tag_ids  = [];
 				
-				if(dynatree.length > 0) {
+				if(dynatree['$tree'] !== 'undefined') {
 					dynatree.visit(function(node) {
 						// check if bold
 						if(node.data.title.substr(0, 3) === '<b>') {
@@ -291,8 +291,6 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 						console.log("error while processing popup action");
 					},
 					success: function(data, status) {
-						console.log(data);
-						
 						handle.close();
 						
 						// page reload
@@ -430,8 +428,33 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			// setup buzzwords
 			this.setupBuzzwords();
 			
+			// setup netnavigation
+			this.setupNetnavigation();
+			
 			// setup tabs
 			this.setupTabs();
+		},
+		
+		setupNetnavigation: function() {
+			// register onclick handler
+			jQuery('#popup_netnavigation_attach_new').click(function() {
+				// scroll in/out
+				var animate_object = jQuery('#popup_netnavigation');
+				
+				if(animate_object.css('width') !== '0px') {
+					// scroll in
+					jQuery('#popup_netnavigation').animate({
+						width:			'0px',
+						'margin-left':	'-19px'
+					});
+				} else {
+					// scroll out
+					jQuery('#popup_netnavigation').animate({
+						width:			'739px',
+						'margin-left':	'-758px'
+					});
+				}
+			});
 		},
 		
 		fullSizeOverlay: function() {

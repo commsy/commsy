@@ -105,7 +105,32 @@ frame and header
 #popup {
     padding: 25px 10px 10px 10px;
 	width: 719px;
+	float: left;
     }
+
+#popup_right {
+	padding: 25px 10px 10px 10px;
+	width: 220px;
+	float: left;
+	}
+
+#popup_netnavigation {
+	background-color: #7FB3E2;
+	margin-left: -758px;
+	overflow: hidden;
+	width: 739px;
+	border-right: 1px solid #767676;
+	height: 361px;
+	}
+
+.popup_netnavigation_outer {
+	background-color: #7FB3E2;
+	}
+
+#popup_netnavigation_outer_bottom {
+	text-align: center;
+	height: 17px;
+	}
 
 .tm_di_ground_solid div#popup {
 	width: 940px;
@@ -2353,13 +2378,24 @@ a:hover.keywords_s1, a:hover.keywords_s2, a:hover.keywords_s3, a:hover.keywords_
     text-decoration: none;
     }
 
+div#popup_w3col #netnavigation {
+    color: #393939;
+    background-color: #EAEAEA;
+    margin: 0px 0px 0px 17px;
+    padding-left: 2px;
+    width: 201px;
+    }
+
+div#popup_w3col #netnavigation a {
+    color: #393939;
+    text-decoration: none;
+    }
+
 #dis_navigation a:hover, a:hover.context_nav {
     display: block;
     color: #FFF;
     text-decoration: underline;
     }
-
-
 
 /*
 ----------------------------------------------------------------------

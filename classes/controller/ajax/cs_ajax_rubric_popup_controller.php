@@ -56,6 +56,13 @@
 				$this->assign('popup', 'tags', $tag_array);
 			}
 			
+			// set netnavigation information
+			if($this->getUtils()->showNetnavigation() === true) {
+				if($this->_item !== null) {
+					$this->assign('popup', 'netnavigation', $this->getUtils()->getNetnavigation($this->_item));
+				}
+			}
+			
 			/*
 			 * if($this->_item !== null) {
 					$this->_popup_controller->edit($this->_item_id);

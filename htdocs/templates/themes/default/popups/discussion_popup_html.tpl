@@ -9,7 +9,6 @@
 			</div>
 		<div id="popup">
 
-
 			<div id="popup_content">
 
 				<div id="content_row_three">
@@ -176,5 +175,101 @@
 			</div>
 
 		</div>
+		
+		<div id="popup_right">
+			{if isset($popup.netnavigation)}
+				<h3>___COMMON_ATTACHED_ENTRIES___</h3>
+				
+				<div id="popup_netnavigation_outer_left" class="popup_netnavigation_outer">
+					<div class="float-left" id="netnavigation">
+						<div class="float-left" id="popup_netnavigation">
+							<div id="content_row_two_max">
+			                    <div class="open_close_head">
+			                        <strong>___COMMON_ITEM_NEW_ATTACH___</strong> 
+			                        (<span class="text_important">&bdquo;Bereitstellung&rdquo;</span> &ndash; {$popup.netnavigation.count} ___COMMON_ACTUAL_ATTACHED___) 
+			                    </div>
+			                    
+			                    <div id="crt_content">
+			                        <div id="crt_col_left">
+			                            
+			                            <div id="crt_row_area">
+			                            	{foreach $popup.netnavigation.items as $entry}
+			                            		<div class="{if $entry@iteration is even}pop_row_even{else}pop_row_odd{/if}">
+				                            		<div class="pop_col_25">
+				                                        <input type="checkbox" name="" value="" />
+				                                    </div>
+				                                    <div class="pop_col_220">
+				                                        {$entry.link_text|truncate:30:"...":true}
+				                                    </div>
+				                                    <div class="pop_col_90">
+				                                        00.00.0000
+				                                    </div>
+				                                    <div class="pop_col_150">
+				                                        Dennis Mustermann
+				                                    </div>
+				                                    <div class="clear"> </div>
+			                                    </div>
+			                            	{/foreach}
+			                            </div>
+			                            
+			                            <div id="crt_actions_area">
+			                                <input class="popup_button" type="button" name="" value="___COMMON_ATTACH_BUTTON___" /> 
+			                            </div>
+			                            
+			                        </div>
+			                        
+			                        <div id="crt_col_right">
+			                            <h3 class="pop_item_navigation">
+			                                <a href=""><img src="{$basic.tpl_path}img/btn_ar_start2.gif" alt="Start" /></a>
+			                                <a href=""><img src="{$basic.tpl_path}img/btn_ar_left2.gif" alt="zur&uuml;ck" /></a>
+			                                <span>Seite 1/10</span>
+			                                <a href=""><img src="{$basic.tpl_path}img/btn_ar_right2.gif" alt="weiter" /></a>
+			                                <a href=""><img src="{$basic.tpl_path}img/btn_ar_end2.gif" alt="Ende" /></a>
+			                            </h3>
+			                            
+			                            <div class="pop_item_content">
+			                                <input type="text" value="Suchbegriff" class="size_150_color" /> 
+			                                <br/>
+			                                <select name="" size="1" class="size_150_color">
+			                                    <option>___SEARCH_RUBRIC_RESTRICTION___</option>
+			                                </select>
+			                                <br/>
+			                                <select name="" size="1" class="size_150_color">
+			                                    <option>Art der Eintr&auml;ge</option>
+			                                </select>
+			                                <br/>
+			                                <input type="checkbox" name="" value="" /> <span class="sitenote">___SEARCH_LINKED_ENTRIES_ONLY___</span>
+			                            </div>
+			                        </div>
+			                        
+			                        <div class="clear"> </div>  
+			                    </div>
+			                </div>
+						</div>
+						
+						<ul>
+							{foreach $popup.netnavigation.items as $entry}
+								<li>
+									<a target="_self" href="commsy.php?cid={$environment.cid}&mod={$entry.module}&fct=detail&iid={$entry.linked_iid}" title="{$entry.title}">
+										<img src="{$basic.tpl_path}img/netnavigation/{$entry.img}" title="{$entry.title}"/>
+									</a>
+									<a target="_self" href="commsy.php?cid={$environment.cid}&mod={$entry.module}&fct=detail&iid={$entry.linked_iid}" title="{$entry.title}">
+										{$entry.link_text|truncate:25:"...":true}
+									</a>
+								</li>
+							{/foreach}
+						</ul>
+					</div>
+					
+					<div class="clear"></div>
+				</div>
+				
+				<div id="popup_netnavigation_outer_bottom" class="popup_netnavigation_outer">
+					<a id="popup_netnavigation_attach_new" href="#" title="___COMMON_ITEM_ATTACH___">___COMMON_ITEM_ATTACH___</a>
+				</div>
+			{/if}
+		</div>
+		
+		<div class="clear"></div>
 	</div>
 </div>
