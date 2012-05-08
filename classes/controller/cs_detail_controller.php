@@ -129,18 +129,18 @@
 			$return = array(
 				'average'	=> 0
 			);
-			
+
 			$assessment_item =& $this->_item;
 			if(isset($item)) $assessment_item = $item;
-			
+
 			$current_context = $this->_environment->getCurrentContextItem();
 			if($current_context->isAssessmentActive()) {
 				$assessment_manager = $this->_environment->getAssessmentManager();
-				
+
 				$assessment = $assessment_manager->getAssessmentForItemAverage($assessment_item);
 				if(isset($assessment[0])) $assessment = sprintf('%1.1f', (float) $assessment[0]);
 				else $assessment = 0;
-				
+
 				$php_version = explode('.', phpversion());
 				if($php_version[0] >= 5 && $php_version[1] >= 3) {
 					// if php version is equal to or above 5.3
@@ -149,12 +149,12 @@
 					// if php version is below 5.3
 					$return['average'] = round($assessment);
 				}
-				
+
 				$return['user_voted'] = $assessment_manager->hasCurrentUserAlreadyVoted($assessment_item);
 				$return['own_vote'] = $assessment_manager->getAssessmentForItemOwn($assessment_item);
 				$return['detail'] = $assessment_manager->getAssessmentForItemDetail($assessment_item);
 			}
-			
+
 			return $return;
 		}
 
@@ -251,7 +251,7 @@
 			$return = array(
 				'edit'		=> false,
 				'delete'	=> false);
-			
+
 			if($item->mayEdit($user) && $this->_with_modifying_actions) {
 				$return['edit'] = true;
 
@@ -360,7 +360,7 @@
 
 		protected function getNetnavigation() {
 			if($this->_item === null) $this->setItem();
-			
+
 			return $this->getUtils()->getNetnavigation($this->_item);
 		}
 
@@ -456,7 +456,7 @@
          $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION_NEW',$this->_translator->getMessage('COMMON_DELETE_ITEM')).' "class="disabled">'.$image.'</a>'.LF;
 				 */
 			}
-			
+
 			$this->getAdditionalActions($return);
 
 			// mail
@@ -563,7 +563,7 @@
 
 			//TODO:
 			//$html .= $this->_initDropDownMenus();
-			
+
 			return $return;
 		}
 
@@ -660,9 +660,9 @@
 					      }
 					      $html .= '   </div>'.LF;
 					     */
-
+						pr($modificator_ref->getPicture());
 						$return[] = array(
-							'image'				=> $this->getItemPicture($modificator_ref),
+							'image'				=> $modificator_ref->getPicture(),
 							'pos_number'		=> $pos_number,
 							'item_id'			=> $annotation->getItemID(),
 							'title'				=> $subitem_title,
