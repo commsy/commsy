@@ -1218,7 +1218,7 @@ h2#item_navigation span {
 	}
 
 .detail_content_table{
-	margin: 0px 5px;
+	margin: 0px 0px;
 	}
 
 .detail_margin{
@@ -2158,6 +2158,11 @@ div.user_profil_blocks td.label {
   vertical-align: top;
  }
 div.detail_description td.label {
+  width: 150px;
+  vertical-align: top;
+  }
+
+div.post_content td.label {
   width: 150px;
   vertical-align: top;
   }

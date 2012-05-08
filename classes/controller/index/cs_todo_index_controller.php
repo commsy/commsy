@@ -222,9 +222,9 @@
 
 				// files
 				$attachment_infos = array();
-				$file_count = $item->getFileList()->getCount();
-				$file_list = $item->getFileList();
 
+				$file_count = $item->getFileListWithFilesFromSteps()->getCount();
+				$file_list = $item->getFileListWithFilesFromSteps();
 				$file = $file_list->getFirst();
 				while($file) {
 					$lightbox = false;

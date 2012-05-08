@@ -64,81 +64,79 @@
 			<div class="clear"> </div>
 		</div>
 
-		<div id="item_credits">
-			<p>
-				<div class="user_profil_blocks">
-					{* formal data *}
-					<table>
-						<tr>
-							<td class="label"><h4>___TODO_VALIDITY_DATE___</h4></td>
-							<td>
-								{if $detail.content.formal.date == 'no_end'}
-									___TODO_NO_END_DATE_LONG___
-								{else}
-									{$detail.content.formal.date}
-								{/if}
-							</td>
-						</tr>
-						<tr>
-							<td class="label"><h4>___TODO_STATUS___</h4></td>
-							<td>
-								{$detail.content.formal.status}
-							</td>
-						</tr>
-
-						{if !empty($detail.content.formal.management)}
-							{if !empty($detail.content.formal.management[0])}
-								<tr>
-									<td class="label"><h4>___TODO_MINUTES___</h4></td>
-									<td>
-										{$detail.content.formal.management[0]}
-									</td>
-								</tr>
+		<div id="item_legend">
+			<div class="detail_content">
+				{* formal data *}
+				<table class="detail_content_table">
+					<tr>
+						<td class="label"><h4>___TODO_VALIDITY_DATE___:</h4></td>
+						<td>
+							{if $detail.content.formal.date == 'no_end'}
+								___TODO_NO_END_DATE_LONG___
+							{else}
+								{$detail.content.formal.date}
 							{/if}
-							{if !empty($detail.content.formal.management[1])}
-								<tr>
-									<td class="label"><h4>___TODO_DONE_MINUTES___</h4></td>
-									<td>
-										{$detail.content.formal.management[1]}
-									</td>
-								</tr>
-							{/if}
-						{/if}
+						</td>
+					</tr>
+					<tr>
+						<td class="label"><h4>___TODO_STATUS___:</h4></td>
+						<td>
+							{$detail.content.formal.status}
+						</td>
+					</tr>
 
-						<tr>
-							<td class="label"><h4>___TODO_PROCESSORS___</h4></td>
-							<td>
-								{if !empty($detail.content.formal.members)}
-									{$detail.content.formal.members}
-								{else}
-									___TODO_NO_PROCESSOR___
-								{/if}
-							</td>
-						</tr>
-
-						{if !empty($detail.content.formal.files)}
+					{if !empty($detail.content.formal.management)}
+						{if !empty($detail.content.formal.management[0])}
 							<tr>
-								<td class="label"><h4>___MATERIAL_FILES___</h4></td>
+								<td class="label"><h4>___TODO_MINUTES___:</h4></td>
 								<td>
-									{$detail.content.formal.files}
+									{$detail.content.formal.management[0]}
 								</td>
 							</tr>
 						{/if}
+						{if !empty($detail.content.formal.management[1])}
+							<tr>
+								<td class="label"><h4>___TODO_DONE_MINUTES___:</h4></td>
+								<td>
+									{$detail.content.formal.management[1]}
+								</td>
+							</tr>
+						{/if}
+					{/if}
 
+					<tr>
+						<td class="label"><h4>___TODO_PROCESSORS___:</h4></td>
+						<td>
+							{if !empty($detail.content.formal.members)}
+								{$detail.content.formal.members}
+							{else}
+								___TODO_NO_PROCESSOR___
+							{/if}
+						</td>
+					</tr>
+
+					{if !empty($detail.content.formal.files)}
 						<tr>
-							<td class="label"><h4>___TODO_STEPS___</h4></td>
+							<td class="label"><h4>___MATERIAL_FILES___:</h4></td>
 							<td>
-								{if !empty($detail.content.formal.steps)}
-									{$detail.content.formal.steps}
-								{else}
-									___TODO_NO_STEPS___
-								{/if}
+								{$detail.content.formal.files}
 							</td>
 						</tr>
-					</table>
-				</div>
-			</p>
-			<div class="clear"> </div>
+					{/if}
+
+					<tr>
+						<td class="label"><h4>___TODO_STEPS___:</h4></td>
+						<td>
+							{if !empty($detail.content.formal.steps)}
+								{$detail.content.formal.steps}
+							{else}
+								___TODO_NO_STEPS___
+							{/if}
+						</td>
+					</tr>
+				</table>
+				<div class="clear"> </div>
+			</div>
 		</div>
 
 		<div id="item_legend"> <!-- Start item_legend -->
@@ -164,20 +162,20 @@
 		<div class="item_body"> <!-- Start item body -->
 			<a name="step_article_{$step.item_id}"></a>
 			<a name="step{$step.item_id}"></a>
-			
+
 			<!-- Start fade_in_ground -->
 			<div class="fade_in_ground_actions hidden">
 				actions
 			</div>
 			<!-- Ende fade_in_ground -->
-			
+
 			<div class="item_post">
 				<div class="row_{if $step@iteration is odd}odd{else}even{/if}_no_hover {if $step@iteration is odd}odd{else}even{/if}_sep_disdetail">
 					<div class="column_80">
 						<p>
-							<a href="" title="{$step.image.linktext}">
-								{if !empty($step.image)}
-									<img width="62" src="commsy.php?cid={$environment.cid}&mod=picture&fct=getfile&picture={$step.image.picture}" alt="{i18n tag=USER_PICTURE_NO_PICTURE param1=$step.image.linktext}" />
+							<a href="" title="{$step.linktext}">
+								{if !empty($step.picture)}
+									<img width="62" src="commsy.php?cid={$environment.cid}&mod=picture&fct=getfile&picture={$step.picture}" alt="{i18n tag=USER_PICTURE_NO_PICTURE param1=$step.image.linktext}" />
 								{else}
 									<img width="62" src="{$basic.tpl_path}img/user_unknown.gif" alt="{i18n tag=USER_PICTURE_NO_PICTURE param1=$step.image.linktext}" />
 								{/if}
@@ -187,34 +185,37 @@
 
 					<div class="column_510">
 						<div class="post_content">
+							<h4>{*{if $article.noticed == 'new' or $article.noticed == 'changed'}<img src="{$basic.tpl_path}img/flag_neu.gif" alt="___COMMON_NEW___"/>{/if}*} {$step.title}
+							</h4>
 							{if !empty($step.formal)}
-								<div class="user_profil_blocks">
-									<table>
-										{if !empty($step.formal.time)}
-											<tr>
-												<td class="label"><h4>___TODO_DONE_MINUTES___</h4></td>
-												<td>
-													{$step.formal.time}
-												</td>
-											</tr>
-										{/if}
+								<table>
+									{if !empty($step.formal.time)}
+										<tr>
+											<td class="label"><h4>___TODO_DONE_MINUTES___</h4></td>
+											<td>
+												{$step.formal.time}
+											</td>
+										</tr>
+									{/if}
 
-										{if !empty($step.formal.files)}
-											<tr>
-												<td class="label"><h4>___MATERIAL_FILES___</h4></td>
-												<td>
-													{$step.formal.files}
-												</td>
-											</tr>
-										{/if}
-									</table>
-								</div>
+									{if !empty($step.formal.files)}
+										<tr>
+											<td class="label"><h4>___MATERIAL_FILES___</h4></td>
+											<td>
+												{foreach $step.formal.files as $file}
+													{$file.name}
+													{if !$file.last }
+														<br/>
+													{/if}
+												{/foreach}
+											</td>
+										</tr>
+									{/if}
+								</table>
 
 								<div class="clear"> </div>
 							{/if}
 
-							<h4>{*{if $article.noticed == 'new' or $article.noticed == 'changed'}<img src="{$basic.tpl_path}img/flag_neu.gif" alt="___COMMON_NEW___"/>{/if}*} {$step.title}
-							</h4>
 							<span><a href="">{*{$article.creator}*}</a>{*	, {$article.modification_date}*}</span>
 							<div class="editor_content">
 								{$step.description}
@@ -236,7 +237,7 @@
 				</div>
 			</div>
 			{include file="include/detail_moredetails_html.tpl" data=$step.moredetails}
-			
+
 		</div> <!-- Ende item body -->
 		<div class="clear"> </div>
 	{/foreach}

@@ -275,7 +275,7 @@
 				$current_item = $subitems->getFirst();
 				$pos_number = 1;
 				while($current_item) {
-					$image = $current_item->getModificatorItem()->getItemPicture();
+					$image = $current_item->getModificatorItem()->getPicture();
 
 					$title = $current_item->getTitle();
 					//TODO:
@@ -296,7 +296,7 @@
 					 */
 
 					$entry = array(
-						'image'			=> $image,
+						'picture'		=> $image,
 						'item_id'		=> $current_item->getItemID(),
 						'title'			=> $title
 					);
@@ -371,7 +371,7 @@
 									//$name = $converter->compareWithSearchText($name);
 									$name = $converter->text_as_html_short($name);
 
-									$file_string .= $file->getFileIcon() . ' ' . '</a> (' . $file->getFileSize() . ' KB)';
+									$file_string .= $name.' '.$file->getFileIcon() . ' ' . '</a> (' . $file->getFileSize() . ' KB)';
 								}
 							} else {
 								$name = $file->getDisplayName();
@@ -380,8 +380,10 @@
 								$name = $converter->text_as_html_short($name);
 								$file_string = $file->getFileIcon() . ' ' . $name;
 							}
+							$tmp_array = array();
+							$tmp_array['name'] = $file_string;
 
-							$files[] = $file_string;
+							$files[] = $tmp_array;
 
 							$file = $file_list->getNext();
 						}
@@ -496,7 +498,6 @@
 					$pos_number++;
 				}
 			}
-
 			return $return;
 		}
 

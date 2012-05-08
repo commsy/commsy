@@ -1741,17 +1741,19 @@
 		                    $user_count_complete = $link_user_list->getCount();
 
 		                    $user_count = 0;
-		                    foreach($persons_array as $person){
-		                        $temp_link_list = $person->getLinkItemList(CS_GROUP_TYPE);
-		                        $temp_link_item = $temp_link_list->getFirst();
-		                        while($temp_link_item){
-		                            $temp_group_item = $temp_link_item->getLinkedItem($person);
-		                            if($group_item->getItemID() == $temp_group_item->getItemID()){
-		                                $user_count++;
-		                            }
-		                            $temp_link_item = $temp_link_list->getNext();
-		                        }
-		                    }
+		                    if (!empty($persons_array[0])){
+			                    foreach($persons_array as $person){
+			                        $temp_link_list = $person->getLinkItemList(CS_GROUP_TYPE);
+			                        $temp_link_item = $temp_link_list->getFirst();
+			                        while($temp_link_item){
+			                            $temp_group_item = $temp_link_item->getLinkedItem($person);
+			                            if($group_item->getItemID() == $temp_group_item->getItemID()){
+			                                $user_count++;
+			                            }
+			                            $temp_link_item = $temp_link_list->getNext();
+			                        }
+			                    }
+		                	}
 
 		                    $params = array();
 		                    $params['iid'] = $group_item->getItemID();
@@ -1781,6 +1783,7 @@
 		               // $html .= $translator->getMessage('COMMON_USERS').': ';
 		               // $first = true;
 		                foreach($persons_array as $person){
+		                    if (!empty($persons_array[0])){
 		                   /* $params = array();
 		                    $params['iid'] = $person->getItemID();
 		                    if(!$first){
@@ -1793,11 +1796,12 @@
                                         'detail',
 		                    $params,
 		                    $this->_text_as_html_short($this->_compareWithSearchText($person->getFullname()))); */
-		                    $personArray = array(
-		                        'name' => $person->getFullname(),
-		                        'id' => $person->getItemID());
+			                    $personArray = array(
+			                        'name' => $person->getFullname(),
+		    	                    'id' => $person->getItemID());
 
-		                    $persons[] = $personArray;
+			                    $persons[] = $personArray;
+		                    }
 		                }
 		            }
 		        }

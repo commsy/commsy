@@ -521,15 +521,17 @@
 
                   		$user_count = 0;
                   		foreach($persons_array as $person){
-                     		$temp_link_list = $person->getLinkItemList(CS_GROUP_TYPE);
-                     		$temp_link_item = $temp_link_list->getFirst();
-                     		while($temp_link_item){
-                        		$temp_group_item = $temp_link_item->getLinkedItem($person);
-                        		if($group_item->getItemID() == $temp_group_item->getItemID()){
-                           			$user_count++;
-                        		}
-                        		$temp_link_item = $temp_link_list->getNext();
-                     		}
+		                    if (!empty($persons_array[0])){
+	                     		$temp_link_list = $person->getLinkItemList(CS_GROUP_TYPE);
+	                     		$temp_link_item = $temp_link_list->getFirst();
+	                     		while($temp_link_item){
+	                        		$temp_group_item = $temp_link_item->getLinkedItem($person);
+	                        		if($group_item->getItemID() == $temp_group_item->getItemID()){
+	                           			$user_count++;
+	                        		}
+	                        		$temp_link_item = $temp_link_list->getNext();
+	                     		}
+		                    }
                   		}
 
                   		$params = array();
@@ -552,18 +554,20 @@
                			$return['read_since_modification_count_text'] .= $translator->getMessage('COMMON_USERS').': ';
                			$first = true;
                			foreach($persons_array as $person){
-                  			$params = array();
-                  			$params['iid'] = $person->getItemID();
-                  			if(!$first){
-                     			$return['read_since_modification_count_text'] .= ', ';
-                  			} else {
-                     			$first = false;
-                  			}
-                  			$return['read_since_modification_count_text'] .= ahref_curl($this->_environment->getCurrentContextID(),
-                                        'user',
-                                        'detail',
-                                        $params,
-                                        $person->getFullname());
+		                    if (!empty($persons_array[0])){
+	                  			$params = array();
+	                  			$params['iid'] = $person->getItemID();
+	                  			if(!$first){
+	                     			$return['read_since_modification_count_text'] .= ', ';
+	                  			} else {
+	                     			$first = false;
+	                  			}
+	                  			$return['read_since_modification_count_text'] .= ahref_curl($this->_environment->getCurrentContextID(),
+	                                        'user',
+	                                        'detail',
+	                                        $params,
+	                                        $person->getFullname());
+		                    }
                			}
             		}
          		}
