@@ -193,23 +193,6 @@
 			                        <div id="crt_col_left">
 			                            
 			                            <div id="crt_row_area">
-			                            	{foreach $popup.netnavigation.items as $entry}
-			                            		<div class="{if $entry@iteration is even}pop_row_even{else}pop_row_odd{/if}">
-				                            		<div class="pop_col_25">
-				                                        <input type="checkbox" name="" value="" />
-				                                    </div>
-				                                    <div class="pop_col_220">
-				                                        {$entry.link_text|truncate:30:"...":true}
-				                                    </div>
-				                                    <div class="pop_col_90">
-				                                        00.00.0000
-				                                    </div>
-				                                    <div class="pop_col_150">
-				                                        Dennis Mustermann
-				                                    </div>
-				                                    <div class="clear"> </div>
-			                                    </div>
-			                            	{/foreach}
 			                            </div>
 			                            
 			                            <div id="crt_actions_area">
@@ -219,25 +202,31 @@
 			                        </div>
 			                        
 			                        <div id="crt_col_right">
-			                            <h3 class="pop_item_navigation">
-			                                <a href=""><img src="{$basic.tpl_path}img/btn_ar_start2.gif" alt="Start" /></a>
-			                                <a href=""><img src="{$basic.tpl_path}img/btn_ar_left2.gif" alt="zur&uuml;ck" /></a>
-			                                <span>Seite 1/10</span>
-			                                <a href=""><img src="{$basic.tpl_path}img/btn_ar_right2.gif" alt="weiter" /></a>
-			                                <a href=""><img src="{$basic.tpl_path}img/btn_ar_end2.gif" alt="Ende" /></a>
-			                            </h3>
+			                            <div class="pop_item_navigation">
+			                                <a id="first" href="#"><img src="{$basic.tpl_path}img/btn_ar_start2.gif" alt="Start" /></a>
+			                                <a id="prev" href="#"><img src="{$basic.tpl_path}img/btn_ar_left2.gif" alt="zur&uuml;ck" /></a>
+			                                <span>___COMMON_PAGE___ <span id="pop_item_current_page"></span>/<span id="pop_item_pages"></span></span>
+			                                <a id="next" href="#"><img src="{$basic.tpl_path}img/btn_ar_right2.gif" alt="weiter" /></a>
+			                                <a id="last" href="#"><img src="{$basic.tpl_path}img/btn_ar_end2.gif" alt="Ende" /></a>
+			                            </div>
 			                            
 			                            <div class="pop_item_content">
 			                                <input type="text" value="Suchbegriff" class="size_150_color" /> 
 			                                <br/>
-			                                <select name="" size="1" class="size_150_color">
-			                                    <option>___SEARCH_RUBRIC_RESTRICTION___</option>
-			                                </select>
+			                                <span class="sitenote">___SEARCH_RUBRIC_RESTRICTION___</span><br/>
+			                                <select name="netnavigation_rubric_restriction" size="1" class="size_150_color"></select>
 			                                <br/>
-			                                <select name="" size="1" class="size_150_color">
-			                                    <option>Art der Eintr&auml;ge</option>
-			                                </select>
-			                                <br/>
+			                                
+			                                {if $popup.activating}
+				                                <span class="sitenote">___COMMON_SHOW_ACTIVATING_ENTRIES___</span><br/>
+				                                <select name="" size="1" class="size_150_color">
+				                                    <option value="1">___COMMON_ALL_ENTRIES___</option>
+				                                    <option value="-2" disabled="disabled">------------------------------</option>
+				                                    <option value="2" selected="selected">___COMMON_SHOW_ONLY_ACTIVATED_ENTRIES___</option>
+				                                </select>
+				                                <br/>
+			                                {/if}
+			                                
 			                                <input type="checkbox" name="" value="" /> <span class="sitenote">___SEARCH_LINKED_ENTRIES_ONLY___</span>
 			                            </div>
 			                        </div>

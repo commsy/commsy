@@ -116,9 +116,9 @@ frame and header
 
 #popup_netnavigation {
 	background-color: #7FB3E2;
-	margin-left: -758px;
+	margin-left: -19px;
 	overflow: hidden;
-	width: 739px;
+	width: 0px;
 	border-right: 1px solid #767676;
 	height: 361px;
 	}
@@ -358,7 +358,8 @@ div#tag_tree input {
     }
 
 .pop_col_220 {
-    width: 220px;
+    width: 205px;
+    padding-right: 15px;
     float: left;
     }
 
@@ -372,7 +373,7 @@ div#tag_tree input {
     float: left;
     }
 
-h3.pop_item_navigation {
+div.pop_item_navigation {
     margin: 10px 10px 0px 10px;
     padding-bottom: 5px;
     color: #FFF;
@@ -385,6 +386,11 @@ h3.pop_item_navigation {
 .pop_item_navigation span {
     padding: 0px 15px;
     }
+
+.pop_item_navigation span#pop_item_pages,
+.pop_item_navigation span#pop_item_current_page {
+	padding: 0px;
+}
 
 .pop_item_navigation a {
     vertical-align: middle;

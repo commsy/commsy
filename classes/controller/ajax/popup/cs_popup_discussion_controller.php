@@ -26,7 +26,10 @@
 				
 				$this->_popup_controller->assign('item', 'title', $item->getTitle());
 				
+				$activating = false;
 				if($current_context->withActivatingContent()) {
+					$activating = true;
+					
 					$this->_popup_controller->assign('item', 'private_editing', $item->isPrivateEditing());
 						
 					if($item->isNotActivated()) {
@@ -38,6 +41,33 @@
 						$this->_popup_controller->assign('item', 'activating_time', mb_substr($activating_date, -8));
 					}
 				}
+				
+				$this->_popup_controller->assign('popup', 'activating', $activating);
+					
+				/*
+				
+				if ( $context_item->withActivatingContent() ) {
+				$html .= '<div class="infocolor" style="text-align:left; font-size: 10pt;">'.$this->_translator->getMessage('COMMON_SHOW_ACTIVATING_ENTRIES').'<br />'.LF;
+				
+				$html .= '   <select style="width: '.$width.'px; font-size:10pt; margin-bottom:5px;" name="selactivatingstatus" size="1" id="submit_form">'.LF;
+				$html .= '      <option value="1"';
+				if ( isset($this->_activation_limit) and $this->_activation_limit == 1 ) {
+				$html .= ' selected="selected"';
+				}
+				$html .= '>*'.$this->_translator->getMessage('COMMON_ALL_ENTRIES').'</option>'.LF;
+				 
+				$html .= '   <option class="disabled" disabled="disabled" value="-2">------------------------------</option>'.LF;
+				 
+				$html .= '      <option value="2"';
+				if ( !isset($this->_activation_limit) || $this->_activation_limit == 2 ) {
+				$html .= ' selected="selected"';
+				}
+				$html .= '>'.$this->_translator->getMessage('COMMON_SHOW_ONLY_ACTIVATED_ENTRIES').'</option>'.LF;
+				$html .= '   </select>'.LF;
+				$html .='</div>';
+				}
+				return $html;
+				*/
 			}
 		}
 		

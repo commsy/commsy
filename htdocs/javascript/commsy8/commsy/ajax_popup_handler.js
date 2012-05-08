@@ -429,13 +429,53 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			this.setupBuzzwords();
 			
 			// setup netnavigation
-			this.setupNetnavigation();
+			this.setupNetnavigation(handle, item_id, module);
 			
 			// setup tabs
 			this.setupTabs();
 		},
 		
-		setupNetnavigation: function() {
+		setupNetnavigation: function(handle, item_id, module) {
+			// init netnavigation class
+			var netnavigation = new Netnavigation();
+			netnavigation.init(handle.cid, item_id, module);
+		},
+		
+		fullSizeOverlay: function() {
+			var overlay = jQuery('div[id="popup_background"]');
+			overlay.css('height', jQuery(document).height());
+			overlay.css('width', jQuery(document).width());
+		}
+	};
+});
+
+/* Netnavigation Class */
+var Netnavigation = function() {
+	return {
+		cid: null,
+		item_id: null,
+		module: null,
+		initialized: false,
+		paging: {
+			current: 0
+		},
+		restrictions: {
+			search:			'',
+			rubric:			'all',
+			type:			2,
+			only_linked:	false
+		},
+		store: {
+			pages:			1
+		},
+		
+		init: function(cid, item_id, module) {
+			this.cid = cid;
+			this.item_id = item_id;
+			this.module = module;
+			
+			var handle = this;
+			
 			// register onclick handler
 			jQuery('#popup_netnavigation_attach_new').click(function() {
 				// scroll in/out
@@ -448,6 +488,29 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 						'margin-left':	'-19px'
 					});
 				} else {
+					// get inital data if this is the first call
+					if(handle.initialized === false) {
+						handle.ajaxRequest('getInitialData', {module: this.module}, function(data) {
+							// init rubric select box
+							var select_object = jQuery('select[name="netnavigation_rubric_restriction"]');
+							jQuery.each(data.rubrics, function() {
+								select_object.append(jQuery('<option/>', {
+									value:		this.value,
+									text:		this.text,
+									disabled:	this.disabled
+								}));
+							});
+							
+							// setup paging
+							handle.setupPaging();
+							
+							// perform first request
+							handle.performRequest();
+						});
+						
+						handle.initialized = true;
+					}
+					
 					// scroll out
 					jQuery('#popup_netnavigation').animate({
 						width:			'739px',
@@ -457,10 +520,135 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			});
 		},
 		
-		fullSizeOverlay: function() {
-			var overlay = jQuery('div[id="popup_background"]');
-			overlay.css('height', jQuery(document).height());
-			overlay.css('width', jQuery(document).width());
+		setupPaging: function() {
+			var navigation_object = jQuery('.pop_item_navigation');
+			var handle = this;
+			
+			// first
+			navigation_object.children('#first').click(function() {
+				if(handle.paging.current > 0) {
+					handle.paging.current = 0;
+					handle.performRequest();
+				}
+				
+				return false;
+			});
+			
+			// previous
+			navigation_object.children('#prev').click(function() {
+				if(handle.paging.current > 0) {
+					handle.paging.current -= 1;
+					handle.performRequest();
+				}
+				
+				return false;
+			});
+			
+			// next
+			navigation_object.children('#next').click(function() {
+				if(handle.paging.current + 1 < handle.store.pages) {
+					handle.paging.current += 1;
+					handle.performRequest();
+				}
+				
+				return false;
+			})
+			
+			// last
+			navigation_object.children('#last').click(function() {
+				if(handle.paging.current + 1 < handle.store.pages) {
+					handle.paging.current = handle.store.pages - 1;
+					handle.performRequest();
+				}
+				
+				return false;
+			})
+		},
+		
+		performRequest: function() {
+			// create data object for request
+			var data = {
+				item_id:		this.item_id,
+				module:			this.module,
+				current_page:	this.paging.current,
+				restrictions:	this.restrictions
+			};
+			
+			var handle = this;
+			
+			// send request
+			this.ajaxRequest('performRequest', data, function(ret) {
+				// fill list
+				var content_object = jQuery('#popup_netnavigation #crt_row_area');
+				
+				content_object.empty();
+				
+				jQuery.each(ret.list, function(index) {
+					content_object.append(
+						jQuery('<div/>', {
+							'class':	(index % 2 === 0) ? 'pop_row_even' : 'pop_row_odd'
+						}).append(
+							jQuery('<div/>', {
+								'class':	'pop_col_25'
+							}).append(
+								jQuery('<input/>', {
+									type:	'checkbox'
+								})
+							)
+						).append(
+							jQuery('<div/>', {
+								'class':	'pop_col_220',
+								text:		this.title
+							})
+						).append(
+							jQuery('<div/>', {
+								'class':	'pop_col_90',
+								text:		this.modification_date
+							})
+						).append(
+							jQuery('<div/>', {
+								'class':	'pop_col_150',
+								text:		this.modificator
+							})
+						).append(
+							jQuery('<div/>', {
+								'class':	'clear'
+							})
+						)
+					);
+				});
+				
+				// update current page and total number of pages
+				jQuery('#pop_item_current_page').text(handle.paging.current + 1);
+				jQuery('#pop_item_pages').text(ret.paging.pages);
+				
+				// store pages
+				handle.store.pages = ret.paging.pages;
+			});
+		},
+		
+		ajaxRequest: function(action, data, callback) {
+			var handle = this;
+			
+			jQuery.ajax({
+				type: 'POST',
+				url: 'commsy.php?cid=' + handle.cid + '&mod=ajax&fct=netnavigation&action=' + action,
+				data: JSON.stringify(data),
+				contentType: 'application/json; charset=utf-8',
+				dataType: 'json',
+				error: function(jqXHR, textStatus, errorThrown) {
+					console.log("error while getting popup");
+				},
+				success: function(data, status) {
+					if(status === 'success') {
+						if(callback !== null) {
+							callback(data);
+						}
+						
+						return data;
+					}
+				}
+			});
 		}
-	};
-});
+	}
+};
