@@ -10,7 +10,7 @@
 			parent::__construct($environment);
 
 			$this->_tpl_file = 'discussion_list';
-			
+
 			// this will enable processing of additional restriction texts
 			$this->_additional_selects = true;
 		}
@@ -69,6 +69,7 @@
 			include_once('classes/views/cs_view.php');
 			$environment = $this->_environment;
 			$context_item = $environment->getCurrentContextItem();
+			$converter = $this->_environment->getTextConverter();
 			$return = array();
 
 			$last_selected_tag = '';
@@ -230,8 +231,8 @@
 
 				// files
 				$attachment_infos = array();
-				$file_count = $item->getFileList()->getCount();
-				$file_list = $item->getFileList();
+				$file_count = $item->getFileListWithFilesFromArticles()->getCount();
+				$file_list = $item->getFileListWithFilesFromArticles();
 
 				$file = $file_list->getFirst();
 				while($file) {
@@ -291,13 +292,13 @@
 		   $return[] = array('selected' => false, 'disabled' => false, 'id' => '', 'value' => CS_LISTOPTION_DOWNLOAD, 'display' => '___COMMON_LIST_ACTION_DOWNLOAD___');
 			return $return;
 		}
-		
+
 		protected function getAdditionalRestrictionText() {
 			$return = array();
-			
+
 			$params = $this->_environment->getCurrentParameterArray();
 			$current_context = $this->_environment->getCurrentContextItem();
-			
+
 			if($current_context->withActivatingContent()) {
 				$activation_limit = $this->_list_parameter_arrray['sel_activating_status'];
 				if($activation_limit == 2) {
@@ -325,13 +326,13 @@
 					$return[] = $restriction;
 				}
 			}
-				
+
 			return $return;
 		}
-		
+
 		protected function getAdditionalRestrictions() {
 			$return = array();
-			
+
 			return $return;
 		}
 	}

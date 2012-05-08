@@ -180,8 +180,10 @@
 
 				// files
 				$attachment_infos = array();
-				$file_count = $item->getFileList()->getCount();
-				$file_list = $item->getFileList();
+
+
+				$file_count = $item->getFileListWithFilesFromSections()->getCount();
+				$file_list = $item->getFileListWithFilesFromSections();
 
 				$file = $file_list->getFirst();
 				while($file) {

@@ -480,9 +480,16 @@
 							$with_files = true;
 							$attachment_infos = array();
 
-							$file_count = $item->getFileList()->getCount();
-							$file_list = $item->getFileList();
-
+							if ($key == CS_MATERIAL_TYPE){
+								$file_count = $item->getFileListWithFilesFromSections()->getCount();
+								$file_list = $item->getFileListWithFilesFromSections();
+							}elseif($key == CS_DISCUSSION_TYPE){
+								$file_count = $item->getFileListWithFilesFromArticles()->getCount();
+								$file_list = $item->getFileListWithFilesFromArticles();
+							}else{
+								$file_count = $item->getFileList()->getCount();
+								$file_list = $item->getFileList();
+							}
 							$file = $file_list->getFirst();
 							while($file) {
 								$lightbox = false;
