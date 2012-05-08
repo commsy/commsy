@@ -351,29 +351,14 @@
 						$file = $file_list->getFirst();
 						while($file) {
 							if(!(isset($_GET['mode']) && $_GET['mode'] === 'print') || (isset($_GET['download']) && $_GET['download'] === 'zip')) {
-								if((!isset($_GET['download']) || $_GET['download'] !== 'zip') && in_array($file->getExtension(), array('png', 'jpg', 'jpeg', 'gif'))) {
-									/*
-									 * $this->_with_slimbox = true;
-				                  // jQuery
-				                  //$file_string = '<a href="'.$file->getUrl().'" rel="lightbox[gallery'.$item->getItemID().']">'.
-				                  //$file_string = '<a href="'.$file->getUrl().'" rel="lightbox-gallery_'.$item->getItemID().'">'.
-				                  $displayname = $file->getDisplayName();
-				                  $filesize = $file->getFileSize();
-				                  $fileicon = $file->getFileIcon();
-				                  $file_string = '<a href="'.$file->getUrl().'" rel="lightbox-gallery'.$item->getItemID().'" title="'.$this->_text_as_html_short($displayname).' ('.$filesize.' kb)">'.
+								$file_string = '<a href="' . $file->getUrl() . '" target="blank">';
+								$name = $file->getDisplayName();
+								//TODO:
+								//$name = $converter->compareWithSearchText($name);
+								$name = $converter->text_as_html_short($name);
 
-				                  // jQuery
-				                  $file->getFileIcon().' '.($this->_text_as_html_short($this->_compareWithSearchText($file->getDisplayName()))).'</a> ('.$file->getFileSize().' KB)';
-									 */
-								} else {
-									$file_string = '<a href="' . $file->getUrl() . '" target="blank">';
-									$name = $file->getDisplayName();
-									//TODO:
-									//$name = $converter->compareWithSearchText($name);
-									$name = $converter->text_as_html_short($name);
+								$file_string .= $name.' '.$file->getFileIcon() . ' ' . '</a> (' . $file->getFileSize() . ' KB)';
 
-									$file_string .= $name.' '.$file->getFileIcon() . ' ' . '</a> (' . $file->getFileSize() . ' KB)';
-								}
 							} else {
 								$name = $file->getDisplayName();
 								//TODO:
@@ -497,8 +482,10 @@
 					$current_user = $this->_environment->getCurrentUserItem();
 					// apend to return
 					$entry['actions'] = $this->getEditActions($current_item, $current_user);
+					$entry['creator'] = $current_item->getModificatorItem()->getFullname();
+					$entry['modification_date'] = getDateTimeInLang($current_item->getModificationDate());
 					$return[] = $entry;
-
+					$entry = array();
 					$current_item = $subitems->getNext();
 					$pos_number++;
 				}

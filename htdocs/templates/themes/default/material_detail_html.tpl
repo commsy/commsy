@@ -101,6 +101,23 @@
 									<td>{$formal[1]}</td>
 								</tr>
 							{/foreach}
+
+							{if $detail.content.sections}
+								<tr>
+									<td><h4>___MATERIAL_SECTIONS___:</h4></td>
+									<td>
+									{foreach $detail.content.sections as $section}
+										{$section@iteration}. <a href="#section{$section.iid}">{$section.title}</a>
+										{foreach $section.formal.files as $file}
+											{$file.icon}
+										{/foreach}
+										{if !$section@last}
+											<br/>
+										{/if}
+									{/foreach}
+									</td>
+								</tr>
+							{/if}
 						</table>
 					</div>
 				{/if}
@@ -139,20 +156,39 @@
 			<!-- Ende fade_in_ground -->
 
 			<div class="item_post">
-				<div class="row_{if $section@iteration is odd}odd{else}even{/if}_no_hover {if $section@iteration is odd}odd{else}even{/if}_sep_disdetail">
-
-					<div class="column_27">
-						<p></p>
-					</div>
-
-					<div class="column_563">
+				<div class="row_{if $section@iteration is odd}odd{else}even{/if}_no_hover padding_left_10px">
+					<div class="column_655">
 						<div class="post_content">
 							<h4>
 								{$section.title}
 
-							{*{if $article.noticed == 'new' or $article.noticed == 'changed'}*}<img src="{$basic.tpl_path}img/flag_neu.gif" alt="___COMMON_NEW___"/>{*{/if}*}
+							{*{if $section.noticed == 'new' or $section.noticed == 'changed'}<img src="{$basic.tpl_path}img/flag_neu.gif" alt="___COMMON_NEW___"/>{/if}*}
 							</h4>
-							{*<span><a href="">{$article.creator}</a>, {$article.modification_date}</span>*}
+							<span>
+							___COMMON_LAST_MODIFIED_BY_UPPER___
+							{build_user_link status=$section.moredetails.last_modificator_status user_name=$section.moredetails.last_modificator id=$section.moredetails.last_modificator_id}
+							___DATES_ON_DAY___  {$section.moredetails.last_modification_date}
+							</span>
+							{if !empty($section.formal)}
+								<table>
+									{if !empty($section.formal.files)}
+										<tr>
+											<td class="label"><h4>___MATERIAL_FILES___: </h4></td>
+											<td>
+												{foreach $section.formal.files as $file}
+													{$file.name}
+													{if !$file@last }
+														<br/>
+													{/if}
+												{/foreach}
+											</td>
+										</tr>
+									{/if}
+								</table>
+
+								<div class="clear"> </div>
+							{/if}
+
 							<div class="editor_content">
 								{$section.description}
 							</div>
@@ -162,11 +198,6 @@
 						<p class="jump_up_down">
 							{if !$section@first}<a href="#mat_section_{$section@index - 1}"><img src="{$basic.tpl_path}img/btn_jump_up.gif" alt="&lt;" /></a>{/if}
 							{if !$section@last}<a href="#mat_section_{$section@index + 1}"><img src="{$basic.tpl_path}img/btn_jump_down.gif" alt="&gt;" /></a>{/if}
-						</p>
-					</div>
-					<div class="column_45">
-						<p>
-							<a href="" class="attachment">{$section.num_attachments}</a>
 						</p>
 					</div>
 					<div class="clear"> </div>

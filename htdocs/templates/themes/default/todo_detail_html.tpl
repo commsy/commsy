@@ -132,7 +132,7 @@
 						<td>
 							{if $detail.content.steps}
 								{foreach $detail.content.steps as $step}
-									{$step@iteration}.<a href="#step{$step.item_id}">{$step.title}</a>
+									{$step@iteration}. <a href="#step{$step.item_id}">{$step.title}</a>
 									{foreach $step.formal.files as $file}
 										{$file.icon}
 									{/foreach}
@@ -201,6 +201,12 @@
 						<div class="post_content">
 							<h4>{*{if $article.noticed == 'new' or $article.noticed == 'changed'}<img src="{$basic.tpl_path}img/flag_neu.gif" alt="___COMMON_NEW___"/>{/if}*} {$step.title}
 							</h4>
+				<span>
+				___COMMON_LAST_MODIFIED_BY_UPPER___
+				{build_user_link status=$step.moredetails.last_modificator_status user_name=$step.moredetails.last_modificator id=$step.moredetails.last_modificator_id}
+				___DATES_ON_DAY___  {$step.moredetails.last_modification_date}
+				</span>
+
 							{if !empty($step.formal)}
 								<table>
 									{if !empty($step.formal.time)}
@@ -229,8 +235,6 @@
 
 								<div class="clear"> </div>
 							{/if}
-
-							<span><a href="">{*{$article.creator}*}</a>{*	, {$article.modification_date}*}</span>
 							<div class="editor_content">
 								{$step.description}
 							</div>

@@ -958,28 +958,6 @@
 					$temp_array[] = $translator->getMessage('COMMON_NONE');
 				}
 				$return[] = $temp_array;
-
-				foreach($sections as $section) {
-					/*
-					 *  // files
-		            $fileicons = $this->_getItemFiles( $section,true);
-		            if ( !empty($fileicons) ) {
-		               $fileicons = '&nbsp;'.$fileicons;
-		            }
-		            */
-
-					$section_title = $converter->text_as_html_short($section['title']);
-					/*
-					 * if( $with_links and !(isset($_GET['mode']) and $_GET['mode']=='print') ) {
-		               $section_title = '<a href="#anchor'.$section->getItemID().'">'.$section_title.'</a>'.$fileicons.LF;
-		            }
-            		*/
-					$sections_return[] = $section_title;
-				}
-				$temp_array = array();
-				$temp_array[] = $translator->getMessage('MATERIAL_SECTIONS');
-				$temp_array[] = implode(BRLF, $sections_return);
-				$return[] = $temp_array;
 			}
 
 			// files
@@ -1201,58 +1179,51 @@
 					$description = $converter->text_as_html_long($description);
 					$description = $converter->showImages($description, $section, true);
 
-					// files
-					$files = array();
 
+					$files = array();
 					$file_list = $section->getFileList();
 					if(!$file_list->isEmpty()) {
+						$file_string = '';
 						$file = $file_list->getFirst();
 						while($file) {
 							if(!(isset($_GET['mode']) && $_GET['mode'] === 'print') || (isset($_GET['download']) && $_GET['download'] === 'zip')) {
-								if((!isset($_GET['download']) || $_GET['download'] != 'zip') && in_array($file->getExtension(), array('png', 'jpg', 'jpeg', 'gif'))) {
-									//$this->_with_slimbox = true;
-									$file_string = '<a href="'.$file->getUrl().'" rel="lightbox[gallery'.$section->getItemID().']">';
-									$file->getFileIcon().' '.($file->getDisplayName()).'</a> ('.$file->getFileSize().' KB)';
-								} else {
-									$file_string = '<a href="'.$file->getUrl().'" target="blank">'.
-						                  $file->getFileIcon().' '.($file->getDisplayName()).'</a> ('.$file->getFileSize().' KB)';
-								}
+									$file_string = '<a href="' . $file->getUrl() . '" target="blank">';
+									$name = $file->getDisplayName();
+									//TODO:
+									//$name = $converter->compareWithSearchText($name);
+									$name = $converter->text_as_html_short($name);
+
+									$file_string .= $name.' '.$file->getFileIcon() . ' ' . '</a> (' . $file->getFileSize() . ' KB)';
 							} else {
-									 $file_string = '<a href="'.$file->getUrl().'" target="blank">'.
-                					  $file->getFileIcon().' '.($file->getDisplayName()).'</a> ('.$file->getFileSize().' KB)';
+								$name = $file->getDisplayName();
+								//TODO:
+								//$name = $converter->compareWithSearchText($name);
+								$name = $converter->text_as_html_short($name);
+								$file_string = $file->getFileIcon() . ' ' . $name;
 							}
-							$files[] = $file_string;
+							$tmp_array = array();
+							$tmp_array['name'] = $file_string;
+							$tmp_array['icon'] = '<a href="' . $file->getUrl() . '" target="blank">'.$file->getFileIcon(). '</a>';
+
+
+							$files[] = $tmp_array;
 
 							$file = $file_list->getNext();
 						}
+						if (isset($files[0])){
+							$entry['formal']['files'] = $files;
+						}
 					}
-					/*
-					 *
-					 // files
-      $formal_data = array();
-      $files = $this->_getFilesForFormalData($item);
-      if ( !empty($files) ) {
-         $temp_array = array();
-         $temp_array[] = $this->_translator->getMessage('MATERIAL_FILES');
-         $temp_array[] = implode(BRLF, $files);
-         $formal_data[] = $temp_array;
-      }
 
-      if ( !empty($formal_data) ) {
-         $html .= $this->_getFormalDataAsHTML($formal_data);
-      }
-
-      return $html;
-					 */
-
-					$return[] = array(
-						'title'				=> $converter->text_as_html_short($section->getTitle()),
-						'iid'				=> $section->getItemID(),
-						'description'		=> $description,
-						'num_attachments'	=> sizeof($files),
-						'moredetails'		=> $this->getCreatorInformationAsArray($section)
-					);
-
+					$entry['num_files'] 		= sizeof($files);
+					$entry['moredetails'] 		= $this->getCreatorInformationAsArray($section);
+					$entry['title']				= $converter->text_as_html_short($section->getTitle());
+					$entry['iid']				= $section->getItemID();
+					$entry['description']		= $description;
+					$entry['num_attachments']	= sizeof($files);
+					$entry['moredetails']		= $this->getCreatorInformationAsArray($section);
+					$return[] = $entry;
+					$entry = array();
 					$section = $section_list->getNext();
 				}
 
