@@ -660,7 +660,6 @@
 					      }
 					      $html .= '   </div>'.LF;
 					     */
-						pr($modificator_ref->getPicture());
 						$return[] = array(
 							'image'				=> $modificator_ref->getPicture(),
 							'pos_number'		=> $pos_number,

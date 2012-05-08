@@ -275,7 +275,7 @@
 				$current_item = $subitems->getFirst();
 				$pos_number = 1;
 				while($current_item) {
-					$image = $this->getItemPicture($current_item->getModificatorItem());
+					$image = $current_item->getModificatorItem()->getItemPicture();
 
 					$title = $current_item->getTitle();
 					//TODO:
@@ -390,7 +390,7 @@
 					}
 
 					$entry['num_files'] = sizeof($files);
-					
+
 					$entry['moredetails'] = $this->getCreatorInformationAsArray($current_item);
 
 					/*

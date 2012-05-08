@@ -41,7 +41,7 @@
 						<p>
 							<a href="" title="{$annotation.creator}">
 								{if $annotation.image}
-									<img width="62" src="commsy.php?cid={$environment.cid}&mod=picture&fct=getfile&picture={$annotation.image.picture}" alt="___USER_PICTURE_UPLOADFILE___" />
+									<img width="62" src="commsy.php?cid={$environment.cid}&mod=picture&fct=getfile&picture={$annotation.image}" alt="___USER_PICTURE_UPLOADFILE___" />
 								{else}
 									<img width="62" src="{$basic.tpl_path}img/user_unknown.gif" alt="___USER_PICTURE_UPLOADFILE___" />
 								{/if}
