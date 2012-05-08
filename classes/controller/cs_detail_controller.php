@@ -254,10 +254,10 @@
 
 			if($item->mayEdit($user) && $this->_with_modifying_actions) {
 				$return['edit'] = true;
-
+				$return['delete'] = true;
 				if(empty($module)) $module = $this->_environment->getCurrentModule();
-				$return['edit_module'] = $module;
-			} else {
+					$return['edit_module'] = $module;
+				} else {
 
 
 

@@ -245,7 +245,6 @@
 				if($current_context->isAssessmentActive()) {
 					$assessment_manager = $this->_environment->getAssessmentManager();
 					$assessment = $assessment_manager->getAssessmentForItemAverage($item);
-					pr($assessment);
 					if(isset($assessment[0])) {
 						$assessment = sprintf('%1.1f', (float) $assessment[0]);
 					} else {

@@ -190,6 +190,7 @@
 
    $page->add($detail_view);
 				 */
+				$this->assign('detail', 'assessment', $this->getAssessmentInformation($this->_item));
 
 				$this->assign('detail', 'content', $this->getDetailContent());
 			}
@@ -382,6 +383,8 @@
 							}
 							$tmp_array = array();
 							$tmp_array['name'] = $file_string;
+							$tmp_array['icon'] = '<a href="' . $file->getUrl() . '" target="blank">'.$file->getFileIcon(). '</a>';
+
 
 							$files[] = $tmp_array;
 
@@ -491,13 +494,16 @@
 						$noticed_manager->markNoticed($current_item->getItemID(), 0);
 					}
 
+					$current_user = $this->_environment->getCurrentUserItem();
 					// apend to return
+					$entry['actions'] = $this->getEditActions($current_item, $current_user);
 					$return[] = $entry;
 
 					$current_item = $subitems->getNext();
 					$pos_number++;
 				}
 			}
+
 			return $return;
 		}
 
@@ -514,7 +520,6 @@
             	$desc = $converter->text_as_html_long($desc);
             	//$html .= $this->getScrollableContent($desc,$item,'',true).LF;
             }
-
 			$return = array(
 				'title'				=> $this->_item->getTitle(),
 				'formal'			=> $this->getFormalData(),
@@ -574,82 +579,6 @@
 					while($step) {
 						$counter++;
 						$step_minutes = $step_minutes + $step->getMinutes();
-
-						$fileicons = '';
-						$files = $step->getFileList();
-						$file = $files->getFirst();
-						while($file) {
-							$url = $file->getUrl();
-							$displayname = $file->getDisplayName();
-							$filesize = $file->getFileSize();
-							$fileicon = $file->getFileIcon();
-							if($this->_environment->inProjectRoom() || (!$this->_environment->inProjectRoom() && ($step->isPublished() || $user->isUser()))) {
-								if(isset($_GET['mode']) && $_GET['mode'] === 'print') {
-									$fileicons .= '<span class="disabled">' . $fileicon . '</span>' . "\n";
-								} else {
-									if(in_array($file->getExtension(), array('png', 'jpg', 'jpeg', 'gif'))) {
-										// TODO
-										/*
-										 * $this->_with_slimbox = true;
-                   // jQuery
-                   //$file_list.='<a href="'.$url.'" rel="lightbox[gallery'.$item->getItemID().']" title="'.$this->_text_as_html_short($displayname).' ('.$filesize.' kb)" >'.$fileicon.'</a> ';
-                   $file_list.='<a href="'.$url.'" rel="lightbox-gallery'.$item->getItemID().'" title="'.$this->_text_as_html_short($displayname).' ('.$filesize.' kb)" >'.$fileicon.'</a> ';
-                   // jQuery
-										 */
-									} else {
-										$fileicons .= '<a href="' . $url . '" title="' . $converter->text_as_html_short($displayname) . ' (' . $filesize . ' kb)" target="blank" >' . $fileicon . '</a>';
-									}
-								}
-							} else {
-								$fileicons .= '<span class="disabled">' . $fileicon . '</span>' . "\n";
-							}
-
-							$file = $files->getNext();
-						}
-
-						if(!empty($fileicons)) {
-							$fileicons = '&nbsp;' . $fileicons;
-						}
-
-						$params = array();
-						$params['iid'] = $this->_item->getItemID();
-						$hover = str_replace('"', '&quot;', $converter->text_as_html_short($step->getTitle()));
-						$param_zip = $this->_environment->getValueOfParameter('download');
-						if(empty($param_zip) || $param_zip != 'zip') {
-							$linktext = $step->getTitle();
-							//TODO:
-							//$linktext = $converter->compareWithSearchText($linktext);
-							$linktext = $converter->text_as_html_short($linktext);
-
-							$title = ahref_curl(
-								$this->_environment->getCurrentContextID(),
-								CS_TODO_TYPE,
-								'detail',
-								$params,
-								$linktext,
-								$hover, '',
-								'anchor' . $step->getItemID());
-						} else {
-							$title = $step->getTitle();
-							//TODO:
-							//$title = $converter->compareWithSearchText($title);
-							$title = $converter->text_as_html_short($title);
-						}
-
-						$step_html .= $counter . '. ' . $title . $fileicons;
-
-						if($user->isUser()) {
-							$noticed_manager = $this->_environment->getNoticedManager();
-							$noticed = $noticed_manager->getLatestNoticed($step->getItemID());
-
-							if(empty($noticed)) {
-								$step_html .= ' <span class="changed">[' . $translator->getMessage('COMMON_NEW') . ']</span>';
-							} elseif($noticed['read_date'] < $step->getModificationDate()) {
-								$step_html .= ' <span class="changed">[' . $translator->getMessage('COMMON_CHANGED') . ']</span>';
-							}
-						}
-						$step_html .= ' ' . '<br/>';
-
 						$step = $step_item_list->getNext();
 					}
 				}
@@ -762,7 +691,7 @@
 		         		$minutes = str_replace('.', ',', $minutes);
 		         	}
 
-		         	$return['management'][0] = $minutes . ' ' . $tmp_message;
+		         	$return['management'][0] = round($minutes,0) . ' ' . $tmp_message;
 		        } elseif($this->_item->getPlannedTime() === 0 && $done_percentage > 0) {
 		        	$tmp_message = $translator->getMessage('COMMON_MINUTES');
 		        	$done_time = $step_minutes;
@@ -892,7 +821,6 @@
 			if($context->withTodoManagement()) {
 				$return['steps'] = $step_html;
 			}
-
 
 			return $return;
 		}

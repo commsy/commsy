@@ -1,6 +1,6 @@
 <?php
 	require_once('classes/controller/cs_utils_controller.php');
-	
+
 	abstract class cs_base_controller {
 		protected $_environment = null;
 		protected $_tpl_engine = null;
@@ -15,7 +15,7 @@
 			$this->_environment = $environment;
 			$this->_tpl_engine  = $this->_environment->getTemplateEngine();
 			$this->_tpl_file = null;
-			
+
 			// set correct template path
 			if($this->_tpl_engine->getTheme() !== 'default') {
 				$this->_tpl_path = substr($this->_tpl_engine->getTemplateDir(1), 7);
@@ -127,12 +127,12 @@
 				$this->_tpl_engine->assign($assign);
 			}
 		}
-		
+
 		protected function getUtils() {
 			if($this->_utils === null) {
 				$this->_utils = new cs_utils_controller($this->_environment);
 			}
-			
+
 			return $this->_utils;
 		}
 

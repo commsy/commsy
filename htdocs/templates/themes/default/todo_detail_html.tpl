@@ -55,6 +55,9 @@
 
 		<div id="item_credits">
 			<p id="ic_rating">
+				{if $room.assessment}
+					{include file="include/detail_assessment_include_html.tpl"}
+				{/if}
 			</p>
 			<p>
 				___COMMON_LAST_MODIFIED_BY_UPPER___
@@ -127,8 +130,16 @@
 					<tr>
 						<td class="label"><h4>___TODO_STEPS___:</h4></td>
 						<td>
-							{if !empty($detail.content.formal.steps)}
-								{$detail.content.formal.steps}
+							{if $detail.content.steps}
+								{foreach $detail.content.steps as $step}
+									{$step@iteration}.<a href="#step{$step.item_id}">{$step.title}</a>
+									{foreach $step.formal.files as $file}
+										{$file.icon}
+									{/foreach}
+									{if !$step@last}
+										<br/>
+									{/if}
+								{/foreach}
 							{else}
 								___TODO_NO_STEPS___
 							{/if}
@@ -139,14 +150,12 @@
 			</div>
 		</div>
 
-		<div id="item_legend"> <!-- Start item_legend -->
-			<div class="row_odd">
-				{if !empty($detail.content.description)}
-					<div class="detail_description">
-						{$detail.content.description}
-					</div>
-				{/if}
-			</div>
+		<div class="detail_content"> <!-- Start item_legend -->
+			{if !empty($detail.content.description)}
+				<div class="detail_description">
+					{$detail.content.description}
+				</div>
+			{/if}
 		</div> <!-- Ende item_legend -->
 		{include file="include/detail_moredetails_html.tpl" data=$detail.content.moredetails}
 
@@ -165,12 +174,17 @@
 
 			<!-- Start fade_in_ground -->
 			<div class="fade_in_ground_actions hidden">
-				actions
+				{if $step.actions.edit}
+					<a id="action_edit" href="commsy.php?cid={$environment.cid}&mod=step&fct=edit&iid={$step.item_id}">___COMMON_EDIT_ITEM___</a> |
+				{/if}
+				{if $step.actions.delete}
+					<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&iid={$detail.content.item_id}&action=delete&step_iid={$step.item_id}&step_action=delete">___COMMON_DELETE_ITEM___</a>
+				{/if}
 			</div>
 			<!-- Ende fade_in_ground -->
 
 			<div class="item_post">
-				<div class="row_{if $step@iteration is odd}odd{else}even{/if}_no_hover {if $step@iteration is odd}odd{else}even{/if}_sep_disdetail">
+				<div class="row_{if $step@iteration is odd}odd{else}even{/if}_no_hover ">
 					<div class="column_80">
 						<p>
 							<a href="" title="{$step.linktext}">
@@ -183,7 +197,7 @@
 						</p>
 					</div>
 
-					<div class="column_510">
+					<div class="column_585">
 						<div class="post_content">
 							<h4>{*{if $article.noticed == 'new' or $article.noticed == 'changed'}<img src="{$basic.tpl_path}img/flag_neu.gif" alt="___COMMON_NEW___"/>{/if}*} {$step.title}
 							</h4>
@@ -191,7 +205,7 @@
 								<table>
 									{if !empty($step.formal.time)}
 										<tr>
-											<td class="label"><h4>___TODO_DONE_MINUTES___</h4></td>
+											<td class="label"><h4>___TODO_DONE_MINUTES___: </h4></td>
 											<td>
 												{$step.formal.time}
 											</td>
@@ -200,11 +214,11 @@
 
 									{if !empty($step.formal.files)}
 										<tr>
-											<td class="label"><h4>___MATERIAL_FILES___</h4></td>
+											<td class="label"><h4>___MATERIAL_FILES___: </h4></td>
 											<td>
 												{foreach $step.formal.files as $file}
 													{$file.name}
-													{if !$file.last }
+													{if !$file@last }
 														<br/>
 													{/if}
 												{/foreach}
@@ -226,11 +240,6 @@
 						<p class="jump_up_down">
 							{if !$step@first}<a href="#step_article_{$detail.content.steps[$step@index - 1].item_id}"><img src="{$basic.tpl_path}img/btn_jump_up.gif" alt="&lt;" /></a>{/if}
 							{if !$step@last}<a href="#step_article_{$detail.content.steps[$step@index + 1].item_id}"><img src="{$basic.tpl_path}img/btn_jump_down.gif" alt="&gt;" /></a>{/if}
-						</p>
-					</div>
-					<div class="column_45">
-						<p>
-							<a href="" class="attachment">{$step.num_files}</a>
 						</p>
 					</div>
 					<div class="clear"> </div>

@@ -2137,6 +2137,15 @@ div.detail_description {
   padding: 5px 10px 10px 10px;
   }
 
+div.detail_description ul {
+	margin: 5px 15px;
+	}
+
+div.detail_description li {
+	list-style-type: disc;
+  	}
+
+
 div.user_profil_blocks {
   float: left;
   clear: left;
@@ -2163,7 +2172,6 @@ div.detail_description td.label {
   }
 
 div.post_content td.label {
-  width: 150px;
   vertical-align: top;
   }
 
