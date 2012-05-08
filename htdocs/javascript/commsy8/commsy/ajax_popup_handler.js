@@ -504,11 +504,21 @@ var Netnavigation = function() {
 							// setup paging
 							handle.setupPaging();
 							
+							// setup restrictions
+							handle.setupRestrictions();
+							
+							// setup form submit
+							jQuery('input[name="netnavigation_submit_restrictions"]').click(function() {
+								handle.performRequest();
+								
+								return false;
+							});
+							
 							// perform first request
 							handle.performRequest();
+							
+							handle.initialized = true;
 						});
-						
-						handle.initialized = true;
 					}
 					
 					// scroll out
@@ -517,6 +527,39 @@ var Netnavigation = function() {
 						'margin-left':	'-758px'
 					});
 				}
+			});
+		},
+		
+		setupRestrictions: function() {
+			var content_object = jQuery('.pop_item_content');
+			var handle = this;
+			
+			// type restriction
+			content_object.find('select[name="netnavigation_type_restriction"]').change(function(event) {
+				handle.restrictions.type = jQuery(event.target).val();
+				
+				return false;
+			});
+			
+			// rubric restriction
+			content_object.find('select[name="netnavigation_rubric_restriction"]').change(function(event) {
+				handle.restrictions.rubric = jQuery(event.target).val();
+				
+				return false;
+			});
+			
+			// search restriction
+			content_object.find('input[name="netnavigation_search_restriction"]').change(function(event) {
+				handle.restrictions.search = jQuery(event.target).val();
+				
+				return false;
+			});
+			
+			// linked restriction
+			content_object.find('input[name="netnavigation_linked_restriction"]').change(function(event) {
+				handle.restrictions.only_linked = (jQuery(event.target).val() == 'true') ? true : false;
+				
+				return false;
 			});
 		},
 		
@@ -565,7 +608,9 @@ var Netnavigation = function() {
 			})
 		},
 		
-		performRequest: function() {
+		performRequest: function() {			
+			var handle = this;
+			
 			// create data object for request
 			var data = {
 				item_id:		this.item_id,
@@ -574,13 +619,11 @@ var Netnavigation = function() {
 				restrictions:	this.restrictions
 			};
 			
-			var handle = this;
-			
 			// send request
 			this.ajaxRequest('performRequest', data, function(ret) {
-				// fill list
 				var content_object = jQuery('#popup_netnavigation #crt_row_area');
 				
+				// fill list
 				content_object.empty();
 				
 				jQuery.each(ret.list, function(index) {
@@ -592,7 +635,9 @@ var Netnavigation = function() {
 								'class':	'pop_col_25'
 							}).append(
 								jQuery('<input/>', {
-									type:	'checkbox'
+									type:		'checkbox',
+									id:			'linked_' + this.item_id,
+									checked:	this.checked
 								})
 							)
 						).append(
@@ -618,6 +663,30 @@ var Netnavigation = function() {
 					);
 				});
 				
+				// register checkbox events - unregistering is done by jQuery when empty the content object
+				content_object.find('input[type="checkbox"]').each(function() {
+					var row_object = jQuery(this).parentsUntil('div[class^="pop_row_"]').parent();
+					var old_bg_color = row_object.css('background-color');
+					
+					jQuery(this).change(function(event) {
+						var data = {
+							item_id:	handle.item_id,
+							link_id:	jQuery(event.target).attr('id').substr(7),
+							checked:	(jQuery(this).attr('checked') === 'checked') ? true : false
+						};
+						
+						// save old row background color and set new
+						row_object.css('background-color', '#66CC00');
+						
+						handle.ajaxRequest('updateLinkedItem', data, function() {
+							// fade back to old row color
+							row_object.animate({
+								'background-color':	old_bg_color
+							});
+						});
+					});
+				});
+				
 				// update current page and total number of pages
 				jQuery('#pop_item_current_page').text(handle.paging.current + 1);
 				jQuery('#pop_item_pages').text(ret.paging.pages);
@@ -636,6 +705,7 @@ var Netnavigation = function() {
 				data: JSON.stringify(data),
 				contentType: 'application/json; charset=utf-8',
 				dataType: 'json',
+				async: false,
 				error: function(jqXHR, textStatus, errorThrown) {
 					console.log("error while getting popup");
 				},

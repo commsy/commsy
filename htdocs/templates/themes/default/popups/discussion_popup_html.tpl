@@ -195,9 +195,11 @@
 			                            <div id="crt_row_area">
 			                            </div>
 			                            
+			                            {*
 			                            <div id="crt_actions_area">
 			                                <input class="popup_button" type="button" name="" value="___COMMON_ATTACH_BUTTON___" /> 
 			                            </div>
+			                            *}
 			                            
 			                        </div>
 			                        
@@ -211,7 +213,7 @@
 			                            </div>
 			                            
 			                            <div class="pop_item_content">
-			                                <input type="text" value="Suchbegriff" class="size_150_color" /> 
+			                                <input name="netnavigation_search_restriction" type="text" value="___HOME_SEARCH_SHORT_TO___" class="size_150_color" /> 
 			                                <br/>
 			                                <span class="sitenote">___SEARCH_RUBRIC_RESTRICTION___</span><br/>
 			                                <select name="netnavigation_rubric_restriction" size="1" class="size_150_color"></select>
@@ -219,7 +221,7 @@
 			                                
 			                                {if $popup.activating}
 				                                <span class="sitenote">___COMMON_SHOW_ACTIVATING_ENTRIES___</span><br/>
-				                                <select name="" size="1" class="size_150_color">
+				                                <select name="netnavigation_type_restriction" size="1" class="size_150_color">
 				                                    <option value="1">___COMMON_ALL_ENTRIES___</option>
 				                                    <option value="-2" disabled="disabled">------------------------------</option>
 				                                    <option value="2" selected="selected">___COMMON_SHOW_ONLY_ACTIVATED_ENTRIES___</option>
@@ -227,7 +229,9 @@
 				                                <br/>
 			                                {/if}
 			                                
-			                                <input type="checkbox" name="" value="" /> <span class="sitenote">___SEARCH_LINKED_ENTRIES_ONLY___</span>
+			                                <input name="netnavigation_linked_restriction" type="checkbox" value="true" /> <span class="sitenote">___SEARCH_LINKED_ENTRIES_ONLY___</span>
+			                                <br/>
+			                                <input name="netnavigation_submit_restrictions" type="submit" value="___COMMON_SEARCH_OVERLAY_RESTRICTION_OPTIONS___" />
 			                            </div>
 			                        </div>
 			                        

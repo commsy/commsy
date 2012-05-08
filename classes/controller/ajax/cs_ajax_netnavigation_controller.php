@@ -10,11 +10,57 @@
 			parent::__construct($environment);
 		}
 		
+		public function actionUpdateLinkedItem() {
+			$return = array();
+			
+			// get request data
+			$item_id = $this->_data['item_id'];
+			$link_id = $this->_data['link_id'];
+			$checked = $this->_data['checked'];
+			
+			// get item
+			$item_manager = $this->_environment->getItemManager();
+			$temp_item = $item_manager->getItem($item_id);
+			
+			if(isset($temp_item)) {
+				$manager = $this->_environment->getManager($temp_item->getItemType());
+				$item = $manager->getItem($item_id);
+			}
+			
+			// get ids of linked items
+			$selected_ids = $this->getLinkedItemIDArray($item);
+			
+			// update id array
+			if($checked === true) {
+				// add
+				$selected_ids[] = $link_id;						
+				$selected_ids = array_unique($selected_ids);	// ensure uniqueness
+			} else {
+				// remove
+				if(($offset = array_search($link_id, $selected_ids)) !== false) array_splice($selected_ids, $offset, 1);
+			}
+			
+			// update item
+			if(isset($item)) {
+				if($item->isA(CS_LABEL_TYPE) && $item->getLabelType() == CS_BUZZWORD_TYPE) {
+					$item->saveLinksByIDArray($selected_ids);
+				} else {
+					$item->setLinkedItemsByIDArray($selected_ids);
+					$item->save();
+				}
+			}
+			
+			$return['success'] = true;
+			
+			echo json_encode($return);
+		}
+		
 		public function actionPerformRequest() {
 			$return = array();
 			
 			$current_context = $this->_environment->getCurrentContextItem();
 			$current_user = $this->_environment->getCurrentUser();
+			$session = $this->_environment->getSessionItem();
 			
 			// get request data
 			$item_id = $this->_data['item_id'];
@@ -32,195 +78,7 @@
 			}
 			
 			// get ids of linked items
-			$selected_ids = array();
-			if(isset($item)) {
-				if($item->isA(CS_LABEL_TYPE) && $item->getLabelType() == CS_GROUP_TYPE) {
-					$group_manager = $this->_environment->getGroupManager();
-					$item = $group_manager->getItem($item_id);
-					unset($group_manager);
-				} elseif($item->isA(CS_LABEL_TYPE) && $item->getLabelType() == CS_BUZZWORD_TYPE) {
-					$buzzword_manager = $this->_environment->getBuzzwordManager();
-					$item = $buzzword_manager->getItem($item_id);
-					unset($buzzword_manager);
-				}
-				
-				if($module == CS_USER_TYPE) {
-					if($this->_environment->inCommunityRoom()) $selected_ids = $item->getLinkedItemIDArray(CS_INSTITUTION_TYPE);
-					else $selected_ids = $item->getLinkedItemIDArray(CS_GROUP_TYPE);
-				} elseif($item->isA(CS_LABEL_TYPE) && $item->getLabelType() == CS_BUZZWORD_TYPE) {
-					$selected_ids = $item->getAllLinkedItemIDArrayLabelVersion();
-				} else {
-					$selected_ids = $item->getAllLinkedItemIDArray();
-				}
-			}
-			
-			/*
-// initial
-if ( !$session->issetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids2') ) {
-   $session->setValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids2',$selected_ids);
-}
-
-if ( !empty($_POST['itemlist'])
-     or !empty($_POST['shown'])
-   ) {
-   $sess_selected_ids = array();
-   if ($session->issetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids2')) {
-      $sess_selected_ids = $session->getValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids2');
-   }
-   if ( !empty($_POST['itemlist']) ) {
-      foreach ($_POST['itemlist'] as $key => $id) {
-         $sess_selected_ids[] = $key;
-      }
-   }
-   if ( !empty($_POST['shown']) ) {
-      $drop_array = array();
-      foreach ( $_POST['shown'] as $id => $value) {
-         if ( in_array($id,$sess_selected_ids)
-              and ( empty($_POST['itemlist'])
-                    or !array_key_exists($id,$_POST['itemlist'])
-                  )
-            ) {
-            $drop_array[] = $id;
-         }
-      }
-      if ( !empty($drop_array) ) {
-         $temp_array = array();
-         foreach ($sess_selected_ids as $id) {
-            if ( !in_array($id,$drop_array) ) {
-               $temp_array[] = $id;
-            }
-         }
-         $sess_selected_ids = $temp_array;
-      }
-   }
-   $sess_selected_ids = array_unique($sess_selected_ids);
-   $session->setValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids2',$sess_selected_ids);
-}
-
-if ( $session->issetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids2') ) {
-   $selected_ids = $session->getValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids2');
-}
-
-if ($mode == '') {
-   $session->unsetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids');
-}
-
-// wie komme ich von einer liste über die actions hier her ???
-// 2009.07.24 ij
-elseif ( $mode == 'list_actions' ) {
-   if ($session->issetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids')) {
-      $selected_ids = $session->getValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids');
-   }
-}
-
-// wird das noch gebraucht????
-// ij 16.10.2009
-if ( isset($_COOKIE['itemlist']) ) {
-   foreach ( $_COOKIE['itemlist'] as $key => $val ) {
-      setcookie ('itemlist['.$key.']', '', time()-3600);
-      if ( $val == '1' ) {
-         if ( !in_array($key, $selected_ids) ) {
-            $selected_ids[] = $key;
-         }
-      } else {
-         $idx = array_search($key, $selected_ids);
-         if ( $idx !== false ) {
-            unset($selected_ids[$idx]);
-         }
-      }
-   }
-}
-
-$session->setValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids',$selected_ids);
-
-if ( isset($_POST['right_box_option2']) ) {
-   $right_box_command2 = $_POST['right_box_option2'];
-} elseif ( isset($_GET['right_box_option2']) ) {
-   $right_box_command2 = $_GET['right_box_option2'];
-} else {
-   $right_box_command2 = '';
-}
-
-$browse_dir = '';
-if ( strstr($right_box_command2, '_START') ) {
-   $browse_dir = '_start';
-   #$right_box_command = $translator->getMessage('COMMON_ITEM_NEW_ATTACH');
-} elseif ( strstr($right_box_command2, '_LEFT') ) {
-   $browse_dir = '_left';
-   #$right_box_command = $translator->getMessage('COMMON_ITEM_NEW_ATTACH');
-} elseif ( strstr($right_box_command2, '_RIGHT') ) {
-   $browse_dir = '_right';
-   #$right_box_command = $translator->getMessage('COMMON_ITEM_NEW_ATTACH');
-} elseif ( strstr($right_box_command2, '_END') ) {
-   $browse_dir = '_end';
-   #$right_box_command = $translator->getMessage('COMMON_ITEM_NEW_ATTACH');
-}
-
-// Find current browsing starting point
-if ( isset($_POST['from'.$browse_dir]) ) {
-   $from = $_POST['from'.$browse_dir];
-} elseif ( isset($_GET['from']) ) {
-   $from = $_GET['from'];
-} elseif ( isset($_POST['from']) ) {
-   $from = $_POST['from'];
-} else {
-   $from = 1;
-}
-
-// Find current browsing interval
-// The browsing interval is applied to all rubrics!
-if ( isset($_GET['interval']) ) {
-   $interval = $_GET['interval'];
-} elseif ( isset($_POST['interval']) ) {
-   $interval = $_POST['interval'];
-} else {
-   $interval = CS_LIST_INTERVAL;
-}
-
-if ( !empty($option)
-      and (isOption($option, $translator->getMessage('COMMON_ITEM_ATTACH')))
-    ) {
-    $entry_array = array();
-    $entry_new_array = array();
-    if ($session->issetValue('cid'.$environment->getCurrentContextID().
-                                  '_linked_items_index_selected_ids')) {
-       $entry_array = $session->getValue('cid'.$environment->getCurrentContextID().
-                                               '_linked_items_index_selected_ids');
-    }
-    if (isset($_POST['itemlist'])){
-       $selected_id_array = $_POST['itemlist'];
-       foreach($selected_id_array as $id => $value){
-          $entry_new_array[] = $id;
-       }
-    }
-    $entry_array = array_merge($entry_array,$entry_new_array);
-    $entry_array = array_unique($entry_array);
-    if ( isset($item)
-         and $item->isA(CS_LABEL_TYPE)
-         and $item->getLabelType() == CS_BUZZWORD_TYPE
-       ) {
-       $item->saveLinksByIDArray($entry_array);
-    } elseif ( isset($item) )  {
-       $item->setLinkedItemsByIDArray($entry_array);
-       $item->save();
-    }
-    $session->unsetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids');
-    $session->unsetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids2');
-    unset($params['attach_view']);
-    unset($params['attach_type']);
-    unset($params['from']);
-    unset($params['pos']);
-    unset($params['mode']);
-    unset($params['return_attach_item_list']);
-    if ( $environment->getCurrentModule() == type2module(CS_DATE_TYPE) ) {
-       unset($params['date_option']);
-    }
-    if ( $environment->getCurrentModule() == type2module(CS_TODO_TYPE) ) {
-       unset($params['todo_option']);
-    }
-    redirect($environment->getCurrentContextID(),$environment->getCurrentModule(), $environment->getCurrentFunction(), $params);
-}
-*/
+			$selected_ids = $this->getLinkedItemIDArray($item);
 			
 			// get current room modules
 			$room_modules = array();
@@ -241,18 +99,11 @@ if ( !empty($option)
 				}
 			}
 			
-			/*
-			 * 
-			 * if ( !empty($selrubric)
-			     and $selrubric != 'all'
-			     and $selrubric != 'campus_search'
-			     and $selrubric != -1
-			   ) {
-			   $rubric_array = array();
-			   $rubric_array[] = $selrubric;
+			// overwrite if rubric is selected
+			if(!empty($restrictions['rubric']) && !in_array($restrictions['rubric'], array('all', 'campus_search', '-1'))) {
+				$rubric_array = array();
+				$rubric_array[] = $restrictions['rubric'];
 			}
-
-*/
 			
 			if($module == CS_USER_TYPE) {
 				$rubric_array = array();
@@ -286,7 +137,7 @@ if ( !empty($option)
 					$count_all += $rubric_manager->getCountAll();
 					
 					// set restrictions
-					if(!empty($restrictions['search'])) $rubric_manager->setSearchLimit($search);
+					if(!empty($restrictions['search'])) $rubric_manager->setSearchLimit($restrictions['search']);
 					if($restrictions['only_linked'] === true) $rubric_manager->setIDArrayLimit($selected_ids);
 					if($restrictions['type'] == 2) $rubric_manager->showNoNotActivatedEntries();
 					
@@ -330,31 +181,18 @@ if ( !empty($option)
 			while($item) {
 				$entry = array();
 				
+				$entry['item_id']			= $item->getItemID();
 				$entry['title']				= $item->getTitle();
 				$entry['modification_date']	= $item->getModificationDate();
 				$entry['modificator']		= $item->getModificatorItem()->getFullName();
+				
+				$entry['checked'] = false;
+				if(in_array($item->getItemID(), $selected_ids)) $entry['checked'] = true;
 				
 				$return['list'][] = $entry;
 				$item = $sublist->getNext();
 			}
 			$return['paging']['pages'] = ceil(/*$count_all*/count($item_ids) / $interval);
-			
-			/*
-
-$sublist = $item_list->getSubList($from-1,$interval);
-$item_attach_index_view->setList($sublist);
-
-$item_attach_index_view->setLinkedItemIDArray($selected_ids);
-$item_attach_index_view->setRefItemID($ref_iid);
-$item_attach_index_view->setRefItem($item);
-$item_attach_index_view->setCountAllShown(count($item_ids));
-$item_attach_index_view->setCountAll($count_all);
-$item_attach_index_view->setFrom($from);
-$item_attach_index_view->setInterval($interval);
-$item_attach_index_view->setSearchText($search);
-$item_attach_index_view->setChoosenRubric($selrubric);
-$item_attach_index_view->setActivationLimit($sel_activating_status);
-			 */
 			
 			$return['success'] = true;
 			
@@ -488,6 +326,33 @@ $item_attach_index_view->setActivationLimit($sel_activating_status);
 			$return['success'] = true;
 				
 			echo json_encode($return);
+		}
+		
+		private function getLinkedItemIDArray($item) {
+			$selected_ids = array();
+			
+			if(isset($item)) {
+				if($item->isA(CS_LABEL_TYPE) && $item->getLabelType() == CS_GROUP_TYPE) {
+					$group_manager = $this->_environment->getGroupManager();
+					$item = $group_manager->getItem($item_id);
+					unset($group_manager);
+				} elseif($item->isA(CS_LABEL_TYPE) && $item->getLabelType() == CS_BUZZWORD_TYPE) {
+					$buzzword_manager = $this->_environment->getBuzzwordManager();
+					$item = $buzzword_manager->getItem($item_id);
+					unset($buzzword_manager);
+				}
+			
+				if($module == CS_USER_TYPE) {
+					if($this->_environment->inCommunityRoom()) $selected_ids = $item->getLinkedItemIDArray(CS_INSTITUTION_TYPE);
+					else $selected_ids = $item->getLinkedItemIDArray(CS_GROUP_TYPE);
+				} elseif($item->isA(CS_LABEL_TYPE) && $item->getLabelType() == CS_BUZZWORD_TYPE) {
+					$selected_ids = $item->getAllLinkedItemIDArrayLabelVersion();
+				} else {
+					$selected_ids = $item->getAllLinkedItemIDArray();
+				}
+			}
+			
+			return $selected_ids;
 		}
 
 		/*
