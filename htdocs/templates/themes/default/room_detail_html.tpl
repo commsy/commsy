@@ -61,14 +61,25 @@
 		{/if}
 		</div>
 		<h2 id="portlet_rc">
-		<strong>___COMMON_CHANGE_INDEX_VIEW_LIST___</strong>&nbsp;&nbsp;&nbsp;&nbsp;
+		{if $detail.browsing_information.paging.forward_type == 'path'}
+			<strong>___TOPIC_PATH___</strong>&nbsp;&nbsp;&nbsp;&nbsp;
+		{else}
+			<strong>___COMMON_CHANGE_INDEX_VIEW_LIST___</strong>&nbsp;&nbsp;&nbsp;&nbsp;
+		{/if}
 		</h2>
 		<div class="clear"> </div>
 
 		<div id="dis_navigation">
-			{block name=room_right_portlets_navigation}{/block}
+			{foreach $detail.forward_information as $entry}
+				<a href="commsy.php?cid={$environment.cid}&mod={$entry.type}&fct={$environment.function}&iid={$entry.item_id}{params params=$entry.params}">{$entry.position}. {if $entry.is_current}<strong>{/if}{$entry.title|truncate:25:'...':true}{if $entry.is_current}</strong>{/if}</a>
+			{/foreach}
+			{*{block name=room_right_portlets_navigation}{/block}*}
 			<div class="portlet_rc_action">
+			{if $detail.browsing_information.paging.forward_type == 'path'}
+				<a href="commsy.php?cid={$environment.cid}&mod=topic&fct=detail&iid={$detail.browsing_information.paging.backward_id}" class="context_nav">___COMMON_BACK_TO_PATH___</a>
+			{else}
 				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=index&back_to_index=true" class="context_nav">___COMMON_BACK_TO_LIST___</a>
+			{/if}
 			</div>
 		</div>
 	</div>

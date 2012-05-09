@@ -93,34 +93,27 @@
 			$session = $this->_environment->getSessionItem();
 
 			$ids = array();
-			if(isset($_GET['path']) && !emptry($_GET['path'])) {
+			if(isset($_GET['path']) && !empty($_GET['path'])) {
 				$topic_manager = $this->_environment->getTopicManager();
 				$topic_item = $topic_manager->getItem($_GET['path']);
 				$path_item_list = $topic_item->getPathItemList();
 				$path_item = $path_item_list->getFirst();
 
 				while($path_item) {
-					$ids[] = $path_item->getItem();
+					$ids[] = $path_item->getItemID();
 					$path_item = $path_item_list->getNext();
 				}
-				//$params['path'] = $_GET['path'];
-	         	//$html .= $this->_getForwardLinkAsHTML($ids,'path');
+				$this->assign('detail', 'browsing_information', $this->getBrowseInformation($ids,'path'));
 			} elseif(isset($_GET['search_path']) && !empty($_GET['search_path'])) {
 				$ids = $session->getValue('cid' . $this->_environment->getCurrentContextID() . '_campus_search_index_ids');
-				//$html .= $this->_getForwardLinkAsHTML($ids,'search');
-				//$params['search_path'] = $_GET['search_path'];
 			} elseif(isset($_GET['link_item_path']) && !empty($_GET['link_item_path'])) {
 				$manager = $this->_environment->getItemManager();
 				$item = $manager->getItem($_GET['link_item_path']);
 				$ids = $item->getAllLinkeditemIDArray();
-				//$html .= $this->_getForwardLinkAsHTML($ids,'link_item');
-				//$params['link_item_path'] = $_GET['link_item_path'];
 			} else {
 				$ids = $this->getBrowseIDs();
 				$this->assign('detail', 'browsing_information', $this->getBrowseInformation($ids));
-				//$html .= $this->_getForwardLinkAsHTML($ids);
 			}
-
 			$this->assign('detail', 'item_id', $this->_item->getItemID());
 			$this->assign('detail', 'forward_information', $this->getForwardInformation($ids));
 		}
@@ -790,6 +783,7 @@
 			$listed_ids = array();
 			$count_items = 0;
 			$i = 1;
+
 			foreach($ids as $id) {
 				if($count_items >= $start && $count_items <= $end) {
 					$item_manager = $this->_environment->getItemManager();
@@ -804,80 +798,24 @@
 							$label_item = $label_manager->getItem($tmp_item->getItemID());
 							$type = $label_item->getLabelType();
 						}
-
-						/*
-								switch ( mb_strtoupper($type, 'UTF-8') ){
-		                  case 'ANNOUNCEMENT':
-		                     $text .= $this->_translator->getMessage('COMMON_ONE_ANNOUNCEMENT');
-		                     break;
-		                  case 'DATE':
-		                     $text .= $this->_translator->getMessage('COMMON_ONE_DATE');
-		                     break;
-		                  case 'DISCUSSION':
-		                     $text .= $this->_translator->getMessage('COMMON_ONE_DISCUSSION');
-		                     break;
-		                  case 'GROUP':
-		                     $text .= $this->_translator->getMessage('COMMON_ONE_GROUP');
-		                     break;
-		                  case 'INSTITUTION':
-		                     $text .= $this->_translator->getMessage('COMMON_ONE_INSTITUTION');
-		                     break;
-		                  case 'MATERIAL':
-		                     $text .= $this->_translator->getMessage('COMMON_ONE_MATERIAL');
-		                     break;
-		                  case 'PROJECT':
-		                     $text .= $this->_translator->getMessage('COMMON_ONE_PROJECT');
-		                     break;
-		                  case 'TODO':
-		                     $text .= $this->_translator->getMessage('COMMON_ONE_TODO');
-		                     break;
-		                  case 'TOPIC':
-		                     $text .= $this->_translator->getMessage('COMMON_ONE_TOPIC');
-		                     break;
-		                  case 'USER':
-		                     $text .= $this->_translator->getMessage('COMMON_ONE_USER');
-		                     break;
-		                  case 'ACCOUNT':
-		                     $text .= $this->_translator->getMessage('COMMON_ACCOUNTS');
-		                     break;
-		                  default:
-		                     $text .= $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR').' cs_detail_view('.__LINE__.') ';
-		                     break;
-		               }
-						*/
 					}
-
 					$link_title = '';
 					if(isset($item) && is_object($item) && $item->isA(CS_USER_TYPE)) {
 						$link_title = $item->getFullName();
 					} elseif(isset($item) && is_object($item)) {
 						$link_title = $item->getTitle();
 					}
-
+					$params = $this->_environment->getCurrentParameterArray();
+					unset($params['iid']);
 					// append to return
 					$return[] = array(
 						'title'			=> $converter->text_as_html_short($link_title),
 						'is_current'	=> $item->getItemID() == $this->_item->getItemID(),
 						'item_id'		=> $item->getItemID(),
+						'type'			=> $type,
+						'params'		=> $params,
 						'position'		=> $count_items + 1
 					);
-
-
-
-					/*
-				 *
-
-		            if ($this->_environment->getCurrentModule() == 'account'){
-		               $type = 'account';
-		            } elseif ( $this->_environment->getCurrentModule() == type2module(CS_MYROOM_TYPE) ) {
-		               $type = CS_MYROOM_TYPE;
-		            }
-		            if ($count_items < 9){
-		               $style='padding:0px 5px 0px 10px;';
-		            }else{
-		                $style='padding:0px 5px 0px 5px;';
-		            }
-		            */
 
 					$current_user_item = $this->_environment->getCurrentUserItem();
 					if(isset($item) && $item->getItemID() === $this->_item->getItemID()) {
@@ -1049,10 +987,18 @@
 		private function getBrowseInformation($ids, $forward_type = '') {
 			$return = array();
 			$paging = array();
+			$forward_type 	= 'list';
+			$backward_id 	= false;
+			if(isset($_GET['path']) && !empty($_GET['path'])) {
+				$backward_id = $_GET['path'];
+				$forward_type = 'path';
+			}
 			$paging['first']['active'] = false;
 			$paging['prev']['active'] = false;
 			$paging['next']['active'] = false;
 			$paging['last']['active'] = false;
+			$paging['forward_type'] = $forward_type;
+			$paging['backward_id'] = $backward_id;
 
 			// update position from GET-Vars
 			if(isset($_GET['pos'])) {
@@ -1205,6 +1151,7 @@
 
          		if(!empty($forward_type) && ($forward_type === 'path' || $forward_type === 'search')) {
          			$item = $item_manager->getItem($browse_left);
+         			$module = $item->getItemType();
          			if($module === 'label') {
          				$label_manager = $this->_environment->getLabelManager();
          				$label_item = $label_manager->getItem($item->getItemID());
@@ -1229,6 +1176,7 @@
 
          		if(!empty($forward_type) && ($forward_type === 'path' || $forward_type === 'search' || $forward_type === 'link_item')) {
          			$item = $item_manager->getItem($browse_right);
+         			$module = $item->getItemType();
          			if($module === 'label') {
          				$label_manager = $this->_environment->getLabelManager();
          				$label_item = $label_manager->getItem($item->getItemID());
@@ -1253,6 +1201,7 @@
 
          		if(!empty($forward_type) && ($forward_type === 'path' || $forward_type === 'search')) {
          			$item = $item_manager->getItem($browse_right);
+         			$module = $item->getItemType();
          			if($module === 'label') {
          				$label_manager = $this->_environment->getLabelManager();
          				$label_item = $label_manager->getItem($item->getItemID());

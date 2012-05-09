@@ -3029,3 +3029,12 @@ ul.dynatree-container {
 .padding_left_10px{
   padding-left:10px;
 }
+
+.padding_left_bottom_10px{
+  padding-left:10px;
+  padding-bottom:10px;
+}
+
+.no_style li{
+	list-style-type:none;
+}

@@ -2,14 +2,14 @@
 	require_once('classes/controller/cs_detail_controller.php');
 
 	class cs_topic_detail_controller extends cs_detail_controller {
-		
+
 		/**
 		 * constructor
 		 */
 		public function __construct(cs_environment $environment) {
 			// call parent
 			parent::__construct($environment);
-			
+
 			$this->_tpl_file = 'topic_detail';
 		}
 
@@ -19,29 +19,29 @@
 		public function processTemplate() {
 			// call parent
 			parent::processTemplate();
-			
+
 			// assign rubric to template
 			$this->assign('room', 'rubric', CS_TOPIC_TYPE);
 		}
-		
+
 		/*****************************************************************************/
 		/******************************** ACTIONS ************************************/
 		/*****************************************************************************/
 		public function actionDetail() {
 			// try to set the item
 			$this->setItem();
-			
+
 			$this->setupInformation();
-			
+
 			$session = $this->_environment->getSessionItem();
-			
+
 			$current_user = $this->_environment->getCurrentUserItem();
 			$context_item = $this->_environment->getCurrentContextItem();
-			
+
 			//include_once('include/inc_delete_entry.php');
-			
+
 			$translator = $this->_environment->getTranslationObject();
-			
+
 			$type = $this->_item->getItemType();
 			if($type !== CS_TOPIC_TYPE) {
 				throw new cs_detail_item_type_exception('wrong item type', 0);
@@ -52,18 +52,18 @@
 				      $mode = 'print';
 				   }
 				 */
-				
+
 				// used to signal which "creator infos" of annotations are expanded...
 				//TODO
 				$creatorInfoStatus = array();
 				if(!empty($_GET['creator_info_max'])) {
 					$creatorInfoStatus = explode('-', $_GET['creator_info_max']);
 				}
-				
-				
-				
+
+
+
 				/*
-				 * 
+				 *
 
 
    // initialize objects
@@ -77,15 +77,15 @@
    if ($mode=='print'){
       $detail_view->setPrintableView();
    }
-   
-   
-   
+
+
+
    */
 				// check for deletion
 				if($this->_item->isDeleted()) {
 					throw new cs_detail_item_type_exception('item deleted', 1);
 				}
-				
+
 				// check for visibility
 				elseif(!$this->_item->maySee($current_user)) {
 					//TODO: implement error handling
@@ -99,7 +99,7 @@
 				      $page->add($errorbox);
 					 */
 				}
-				
+
 				else {
 					/*
 					 * // Enter or leave Topic
@@ -111,14 +111,14 @@
 			            $topic_item->removeMember($current_user);
 			         }
 			      }
-			
+
 			      $detail_view->setItem($topic_item);
 			      */
-					
+
 					// mark as read and noticed
 					$this->markRead();
 					$this->markNoticed();
-					
+
 					/*
 
 			      // set up browsing
@@ -129,14 +129,14 @@
 			         $ids = $topic_item->getLinkedItemIDArray(CS_USER_TYPE);
 			         $session->setValue('cid'.$context_item->getItemID().'_user_index_ids', $ids);
 			      }
-			
+
 			      if ($session->issetValue('cid'.$context_item->getItemID().'_topic_index_ids')) {
 			         $topic_ids = $session->getValue('cid'.$context_item->getItemID().'_topic_index_ids');
 			      } else {
 			         $topic_ids = array();
 			      }
 			      $detail_view->setBrowseIDs($topic_ids);
-			
+
 			      $context_item = $environment->getCurrentContextItem();
 			      $current_room_modules = $context_item->getHomeConf();
 			      if ( !empty($current_room_modules) ){
@@ -171,7 +171,7 @@
 			         }
 			      }
 			      $detail_view->setRubricConnections($rubric_connections);
-			
+
 			      $annotations = $topic_item->getAnnotationList();
 			            $id_array = array();
 			            $annotation = $annotations->getFirst();
@@ -194,7 +194,7 @@
 			         $annotation = $annotations->getNext();
 			      }
 			      $detail_view->setAnnotationList($annotations);
-			
+
 			      // highlight search words in detail views
 			      $session_item = $environment->getSessionItem();
 			      if ( $session->issetValue('cid'.$environment->getCurrentContextID().'_campus_search_parameter_array') ) {
@@ -204,9 +204,9 @@
 			         }
 			         unset($search_array);
 			      }
-			
+
 			      $page->add($detail_view);
-			
+
 			      // Safe information in session for later use
 			      $session->setValue('cid'.$context_item->getItemID().'_topic_index_ids', $topic_ids);
 					 */
@@ -214,44 +214,44 @@
 				}
 			}
 		}
-		
+
 		/*****************************************************************************/
 		/******************************** END ACTIONS ********************************/
 		/*****************************************************************************/
-		
+
 		protected function setBrowseIDs() {
 			$session = $this->_environment->getSessionItem();
-			
+
 			if($session->issetValue('cid' . $this->_environment->getCurrentContextID() . '_topic_index_ids')) {
 				$this->_browse_ids = array_values((array) $session->getValue('cid' . $this->_environment->getCurrentContextID() . '_topic_index_ids'));
 			}
 		}
-		
+
 		protected function getAdditionalActions(&$perms) {
 		}
-		
+
 		protected function getDetailContent() {
             $converter = $this->_environment->getTextConverter();
             $translator = $this->_environment->getTranslationObject();
-            
+
             $user = $this->_environment->getCurrentUser();
             $current_context = $this->_environment->getCurrentContextItem();
-            
+
             // files
             $files = array();
             $file_list = $this->_item->getFileList();
             if(!$file_list->isEmpty()) {
             	$file = $file_list->getFirst();
-            	
+
             	while($file) {
             		if(!(isset($_GET['mode']) && $_GET['mode'] === 'print') || (isset($_GET['download']) && $_GET['download'] === 'zip')) {
             			if((!isset($_GET['download']) || $_GET['download'] !== 'zip') && in_array($file->getExtension(), array('png', 'jpg', 'jpeg', 'gif'))) {
             				//TODO: $this->_with_slimbox = true;
-            				
+
             				$display_name = $file->getDisplayName();
             				$file_size = $file->getFileSize();
             				$file_icon = $file->getFileIcon();
-            				
+
             				/*
             				 *  TODO
                   $file_string = '<a href="'.$file->getUrl().'" rel="lightbox-gallery'.$item->getItemID().'" title="'.$this->_text_as_html_short($displayname).' ('.$filesize.' kb)">'.
@@ -259,16 +259,16 @@
                   // jQuery
                   $file->getFileIcon().' '.($this->_text_as_html_short($this->_compareWithSearchText($file->getDisplayName()))).'</a> ('.$file->getFileSize().' KB)';
             				 */
-            				
+
             				$display_name = $file->getDisplayName();
             				//TODO:
 	            			//$display_name = $converter->compareWithSearchText($display_name);
 	            			$display_name = $converter->text_as_html_short($display_name);
-	            			
+
             				$file_string = $file->getFileIcon() . ' ' . $display_name;
             			} else {
             				$file_string = '<a href="' . $file->getUrl() . '" target="blank">';
-            				
+
             				$display_name = $file->getDisplayName();
 	            			//TODO:
 	            			//$display_name = $converter->compareWithSearchText($display_name);
@@ -282,13 +282,13 @@
             			$display_name = $converter->text_as_html_short($display_name);
             			$file_string = $file->getFileIcon() . ' ' . $display_name;
             		}
-            		
+
             		$files[] = $file_string;
-            		
+
             		$file = $file_list->getNext();
             	}
             }
-            
+
             // description
             $desc = $this->_item->getDescription();
             if(!empty($desc)) {
@@ -299,26 +299,26 @@
             	$desc = $converter->text_as_html_long($desc);
             	//$html .= $this->getScrollableContent($desc,$item,'',true).LF;
             }
-            
+
             $path_shown = false;
             $path_items = array();
             if($current_context->withPath() && $this->_item->isPathActive()) {
             	$item_list = $this->_item->getPathItemList();
-            	
+
             	if(!$item_list->isEmpty()) {
             		$path_shown = true;
-            		
+
             		$linked_item = $item_list->getFirst();
             		while($linked_item) {
             			$entry = array();
             			$entry['iid'] = $linked_item->getItemID();
-            			
+
             			$mod = Type2Module($linked_item->getItemType());
             			$type = $linked_item->getItemType();
             			if($type === 'date') {
             				$type .= 's';
             			}
-            			
+
             			$temp_type = mb_strtoupper($type, 'UTF-8');
             			switch($temp_type) {
             				case 'ANNOUNCEMENT':
@@ -355,7 +355,7 @@
             					$type = $translator->getMessage('COMMON_MESSAGETAG_ERROR');
             					break;
             			}
-            			
+
             			if($linked_item->isNotActivated() && !($linked_item->getCreatorID() === $user->getItemID() || $user->isModerator())) {
             				$activatring_date = $linked_item->getActivatingDate();
             				if(strstr($activating_date, '9999-00-00')) {
@@ -363,7 +363,7 @@
             				} else {
             					$link_creator_text = $translator->getMessage('COMMON_ACTIVATING_DATE') . ' ' . getDateInLang($linked_item->getActivatingDate());
             				}
-            				
+
             				$entry['title'] = $linked_item->getTitle();
             				$entry['link_text'] = $link_creator_text;
             				$entry['not_activated'] = true;
@@ -373,23 +373,24 @@
             				$entry['mod'] = $mod;
             				$entry['not_activated'] = false;
             			}
-            			
+
             			$path_items[] = $entry;
-            			
+
             			$linked_item = $item_list->getNext();
             		}
             	}
             }
-            
+
 			$return = array(
 				'title'			=> $this->_item->getTitle(),
 				'files'			=> implode(BRLF, $files),
 				'description'	=> $desc,
 				'item_id'		=> $this->_item->getItemID(),
 				'path_shown'	=> $path_shown,
+				'path_items'	=> $path_items,
 				'moredetails'	=> $this->getCreatorInformationAsArray($this->_item)
 			);
-			
+
 			return $return;
 		}
 	}
