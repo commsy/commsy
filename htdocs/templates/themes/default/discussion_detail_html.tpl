@@ -6,6 +6,11 @@
 			<a class="edit" href="#"><span class="edit_set"> &nbsp; </span></a>
 			<a class="linked" href="#"><span class="ref_to_ia"> &nbsp; </span></a>
 			<a class="detail" href="#"><span class="details_ia"> &nbsp; </span></a>
+			{if $item.linked_count}
+				<div class="action_count linked_count_without_annotation" >{$item.linked_count}</div>
+			{else}
+				<div class="action_count linked_count_without_annotation" >&nbsp;</div>
+			{/if}
 		</div>
 	</div>
 

@@ -110,6 +110,7 @@
 				$manager = $this->_environment->getItemManager();
 				$item = $manager->getItem($_GET['link_item_path']);
 				$ids = $item->getAllLinkeditemIDArray();
+				$this->assign('detail', 'browsing_information', $this->getBrowseInformation($ids,'link_item_path'));
 			} else {
 				$ids = $this->getBrowseIDs();
 				$this->assign('detail', 'browsing_information', $this->getBrowseInformation($ids));
@@ -607,6 +608,10 @@
 					while($annotation) {
 						// get item picture
 						$modificator_ref = $annotation->getModificatorItem();
+						$picture = '';
+						if (isset($modificator_ref)){
+						   $picture = $modificator_ref->getPicture();
+						}
 
 						//$html .= $this->_text_as_html_short($this->_compareWithSearchText($subitem->getTitle()));
 						$subitem_title = $annotation->getTitle();
@@ -654,7 +659,7 @@
 					      $html .= '   </div>'.LF;
 					     */
 						$return[] = array(
-							'image'				=> $modificator_ref->getPicture(),
+							'image'				=> $picture,
 							'pos_number'		=> $pos_number,
 							'item_id'			=> $annotation->getItemID(),
 							'title'				=> $subitem_title,
@@ -875,112 +880,6 @@
 				}
 				$count_items++;
 			}
-
-			if(isset($_GET['path']) && !empty($_GET['path'])) {
-				$topic_manager = $this->_environment->getTopicManager();
-				$topic_item = $topic_manager->getItem($_GET['path']);
-				/*
-				$params = array();
-         $params['iid'] = $_GET['path'];
-         $html .= $this->_translator->getMessage('COMMON_BACK_TO_PATH').': '.ahref_curl( $this->_environment->getCurrentContextID(),
-                           CS_TOPIC_TYPE,
-                           'detail',
-                           $params,
-                           chunkText($topic_item->getTitle(),30)
-                           );
-                */
-			} elseif(isset($_GET['search_path']) && !empty($_GET['search_path'])) {
-				/*
-				 $params = array();
-         $params['iid'] = $_GET['path'];
-         $html .= $this->_translator->getMessage('COMMON_BACK_TO_PATH').': '.ahref_curl( $this->_environment->getCurrentContextID(),
-                           CS_TOPIC_TYPE,
-                           'detail',
-                           $params,
-                           chunkText($topic_item->getTitle(),30)
-                           );
-				 */
-			} elseif(isset($_GET['link_item_path']) && !empty($_GET['link_item_path'])) {
-				/*
-				$params = array();
-         $params['iid'] = $_GET['link_item_path'];
-         $item_manager = $this->_environment->getItemManager();
-         $tmp_item = $item_manager->getItem($_GET['link_item_path']);
-         $manager = $this->_environment->getManager($tmp_item->getItemType());
-         $item = $manager->getItem($_GET['link_item_path']);
-         $type = $tmp_item->getItemType();
-         if ($type == 'label'){
-            $label_manager = $this->_environment->getLabelManager();
-            $label_item = $label_manager->getItem($tmp_item->getItemID());
-            $type = $label_item->getLabelType();
-         }
-         $manager = $this->_environment->getManager($type);
-         $item = $manager->getItem($_GET['link_item_path']);
-         if($type == CS_USER_TYPE){
-             $link_title = $this->_text_as_html_short($item->getFullName());
-         } else {
-             $link_title = $this->_text_as_html_short($item->getTitle());
-         }
-         $html .= $this->_translator->getMessage('COMMON_BACK_TO_ITEM').': '.ahref_curl( $this->_environment->getCurrentContextID(),
-                           $type,
-                           'detail',
-                           $params,
-                           chunkText($link_title,20),
-                           $link_title
-                           );
-				 */
-			} else {
-				/*
-				  $display_mod = $this->_environment->getValueOfParameter('seldisplay_mode');
-         if ( empty($display_mod) ) {
-            $session = $this->_environment->getSessionItem();
-            if ( $session->issetValue($this->_environment->getCurrentContextID().'_dates_seldisplay_mode') ) {
-               $display_mod = $session->getValue($this->_environment->getCurrentContextID().'_dates_seldisplay_mode');
-            }
-         }
-         $params = array();
-         $params['back_to_index'] = 'true';
-         $link_text = $this->_translator->getMessage('COMMON_BACK_TO_LIST');
-         $link_module = $this->_environment->getCurrentModule();
-         if ( module2type($this->_environment->getCurrentModule()) == CS_DATE_TYPE
-              and !empty($display_mod)
-              and $display_mod == 'calendar'
-            ) {
-            $link_text = $this->_translator->getMessage('DATE_BACK_TO_CALENDAR');
-         }
-         if ( module2type($this->_environment->getCurrentModule()) == CS_DATE_TYPE
-              and $this->_environment->inPrivateRoom()
-              and $this->_environment->getConfiguration('c_use_new_private_room')
-            ) {
-            $link_text = $this->_translator->getMessage('COMMON_BACK_TO_INDEX');
-         }
-         if ( module2type($this->_environment->getCurrentModule()) == CS_TODO_TYPE
-              and $this->_environment->inPrivateRoom()
-              and $this->_environment->getConfiguration('c_use_new_private_room')
-            ) {
-            $link_text = $this->_translator->getMessage('COMMON_BACK_TO_INDEX');
-            $link_module = type2module(CS_DATE_TYPE);
-         }
-         if ( $this->_environment->inPrivateRoom()
-              and $this->_environment->getConfiguration('c_use_new_private_room')
-              and ( module2type($this->_environment->getCurrentModule()) == CS_MATERIAL_TYPE
-                    or module2type($this->_environment->getCurrentModule()) == CS_DISCUSSION_TYPE
-                    or module2type($this->_environment->getCurrentModule()) == CS_ANNOUNCEMENT_TYPE
-                    or module2type($this->_environment->getCurrentModule()) == CS_TOPIC_TYPE
-                  )
-            ) {
-            $link_text = $this->_translator->getMessage('COMMON_BACK_TO_INDEX');
-            $link_module = type2module(CS_ENTRY_TYPE);
-         }
-         $html .= ahref_curl( $this->_environment->getCurrentContextID(),
-                           $link_module,
-                           'index',
-                           $params,
-                           $link_text
-                           );
-				 */
-			}
-
 			return $return;
 		}
 
@@ -992,6 +891,24 @@
 			if(isset($_GET['path']) && !empty($_GET['path'])) {
 				$backward_id = $_GET['path'];
 				$forward_type = 'path';
+			}
+			if(isset($_GET['link_item_path']) && !empty($_GET['link_item_path'])) {
+				$backward_id = $_GET['link_item_path'];
+				$forward_type = 'link_item_path';
+				$item_manager = $this->_environment->getItemManager();
+				$tmp_item = $item_manager->getItem($backward_id);
+				//$text = '';
+				if(isset($tmp_item)) {
+					$manager = $this->_environment->getManager($tmp_item->getItemType());
+					$item = $manager->getItem($backward_id);
+					$type = $tmp_item->getItemType();
+					if($type == 'label') {
+						$label_manager = $this->_environment->getLabelManager();
+						$label_item = $label_manager->getItem($tmp_item->getItemID());
+						$type = $label_item->getLabelType();
+					}
+				}
+				$paging['backward_type'] = $type;
 			}
 			$paging['first']['active'] = false;
 			$paging['prev']['active'] = false;
@@ -1117,7 +1034,7 @@
          		$params['iid'] = $browse_start;
          		$params['pos'] = $pos_index_start;
 
-         		if(!empty($forward_type) && ($forward_type === 'path' || $forward_type == 'search')) {
+         		if(!empty($forward_type) && ($forward_type === 'path' || $forward_type == 'search' || $forward_type == 'link_item_path')) {
          			$item = $item_manager->getItem($browse_start);
          			$module = $item->getItemType();
          			if($module === 'label') {
@@ -1149,7 +1066,7 @@
          		$params['iid'] = $browse_left;
          		$params['pos'] = $pos_index_left;
 
-         		if(!empty($forward_type) && ($forward_type === 'path' || $forward_type === 'search')) {
+         		if(!empty($forward_type) && ($forward_type === 'path' || $forward_type === 'search' || $forward_type == 'link_item_path')) {
          			$item = $item_manager->getItem($browse_left);
          			$module = $item->getItemType();
          			if($module === 'label') {
@@ -1174,7 +1091,7 @@
          		$params['iid'] = $browse_right;
          		$params['pos'] = $pos_index_right;
 
-         		if(!empty($forward_type) && ($forward_type === 'path' || $forward_type === 'search' || $forward_type === 'link_item')) {
+         		if(!empty($forward_type) && ($forward_type === 'path' || $forward_type === 'search' || $forward_type === 'link_item_path')) {
          			$item = $item_manager->getItem($browse_right);
          			$module = $item->getItemType();
          			if($module === 'label') {
@@ -1199,7 +1116,7 @@
          		$params['iid'] = $browse_end;
          		$params['pos'] = $pos_index_end;
 
-         		if(!empty($forward_type) && ($forward_type === 'path' || $forward_type === 'search')) {
+         		if(!empty($forward_type) && ($forward_type === 'path' || $forward_type === 'search' || $forward_type == 'link_item_path')) {
          			$item = $item_manager->getItem($browse_right);
          			$module = $item->getItemType();
          			if($module === 'label') {

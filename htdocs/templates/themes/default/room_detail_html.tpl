@@ -63,6 +63,8 @@
 		<h2 id="portlet_rc">
 		{if $detail.browsing_information.paging.forward_type == 'path'}
 			<strong>___TOPIC_PATH___</strong>&nbsp;&nbsp;&nbsp;&nbsp;
+		{elseif $detail.browsing_information.paging.forward_type == 'link_item_path'}
+			<strong>___CONFIGURATION_TAG_STATUS___</strong>&nbsp;&nbsp;&nbsp;&nbsp;
 		{else}
 			<strong>___COMMON_CHANGE_INDEX_VIEW_LIST___</strong>&nbsp;&nbsp;&nbsp;&nbsp;
 		{/if}
@@ -77,6 +79,8 @@
 			<div class="portlet_rc_action">
 			{if $detail.browsing_information.paging.forward_type == 'path'}
 				<a href="commsy.php?cid={$environment.cid}&mod=topic&fct=detail&iid={$detail.browsing_information.paging.backward_id}" class="context_nav">___COMMON_BACK_TO_PATH___</a>
+			{elseif $detail.browsing_information.paging.forward_type == 'link_item_path'}
+				<a href="commsy.php?cid={$environment.cid}&mod={$detail.browsing_information.paging.backward_type}&fct=detail&iid={$detail.browsing_information.paging.backward_id}" class="context_nav">___COMMON_BACK_TO_ITEM___</a>
 			{else}
 				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=index&back_to_index=true" class="context_nav">___COMMON_BACK_TO_LIST___</a>
 			{/if}
@@ -120,10 +124,10 @@
 				<ul>
 				{foreach $room.netnavigation.items as $item}
 					<li>
-						<a target="_self" href="commsy.php?cid={$environment.cid}&mod={$item.module}&fct=detail&iid={$item.linked_iid}" title="{$item.title}">
+						<a target="_self" href="commsy.php?cid={$environment.cid}&mod={$item.module}&fct=detail&iid={$item.linked_iid}&link_item_path={$detail.item_id}" title="{$item.title}">
 							<img src="{$basic.tpl_path}img/netnavigation/{$item.img}" title="{$item.title}"/>
 						</a>
-						<a target="_self" href="commsy.php?cid={$environment.cid}&mod={$item.module}&fct=detail&iid={$item.linked_iid}" title="{$item.title}">
+						<a target="_self" href="commsy.php?cid={$environment.cid}&mod={$item.module}&fct=detail&iid={$item.linked_iid}&link_item_path={$detail.item_id}" title="{$item.title}">
 							{$item.link_text|truncate:25:"...":true}
 						</a>
 					</li>

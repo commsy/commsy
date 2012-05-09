@@ -1535,6 +1535,10 @@ a.item_actions_glow {
     top: -112px;
 }
 
+#top_item_actions .linked_count_without_annotation{
+    top: -50px;
+}
+
 #top_item_actions .linked_count_workflow{
     top: -144px;
 }

@@ -92,8 +92,8 @@
 
 		<div id="item_legend"> <!-- Start item_legend -->
 				{* formal data *}
+				<div class="detail_content">
 				{if !empty($detail.content.formal)}
-					<div class="detail_content">
 						<table class="detail_content_table">
 							{foreach $detail.content.formal as $formal}
 								<tr>
@@ -119,16 +119,14 @@
 								</tr>
 							{/if}
 						</table>
-					</div>
 				{/if}
 
 				{if $detail.content.description}
-				<div class="detail_content">
 					<div class="detail_description">
 						{$detail.content.description}
 					</div>
-				</div>
 				{/if}
+				</div>
 		</div> <!-- Ende item_legend -->
 		{if $room.workflow}
 		   {include file="include/detail_workflow_html.tpl" data=$detail.content.workflow}
