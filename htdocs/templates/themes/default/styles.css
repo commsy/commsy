@@ -2310,6 +2310,10 @@ portlets, right_column
 	line-height:16px;
 }
 
+.restriction{
+	display:block;
+	}
+
 .portlet_rc_list img{
    padding:0px 5px;
 }

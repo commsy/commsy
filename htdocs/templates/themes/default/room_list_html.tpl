@@ -118,7 +118,7 @@
 			<div class="clear"> </div>
 			<div class="portlet_rc_body">
 				{foreach $list.restriction_text_parameters as $restriction}
-					<span title="{$restriction.name}">{$restriction.name|truncate:25:'...':true}
+					<span class="restriction" title="{$restriction.name}">{$restriction.name|truncate:25:'...':true}
 				   		<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$restriction.link_parameter}"><img src="{$basic.tpl_path}img/cross.gif" alt="x" border="0"/></a>
 				   	</span>
 				{/foreach}
@@ -155,7 +155,7 @@
 									<option class="disabled" disabled="disabled" value="-2">------------------------------------------------------</option>
 								{/if}
 								{foreach $rubric.items as $item}
-									<option 
+									<option
 										{if isset($item.disabled) && $item.disabled == true}
 											class="disabled" disabled="disabled"
 										{/if}
