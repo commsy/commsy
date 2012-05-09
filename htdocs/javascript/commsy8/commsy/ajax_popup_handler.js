@@ -8,6 +8,8 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
         	"commsy/commsy_functions_8_0_0"], function() {
 	return {
 		cid: null,
+		tpl_path: '',
+		netnavigation: null,
 		
 		init: function(commsy_functions, parameters) {
 			this.cid = commsy_functions.getURLParam('cid');
@@ -18,6 +20,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 
 		setPreconditions: function(commsy_functions, callback, parameters) {
 			var preconditions = {
+				template: ['tpl_path']
 			};
 
 			// register preconditions
@@ -28,6 +31,8 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			var commsy_functions = parameters.commsy_functions;
 			var actors = parameters.handling.objects;
 			var handle = parameters.handle;
+			
+			handle.tpl_path = preconditions.template.tpl_path;
 			
 			jQuery.each(actors, function() {
 				// determ module from actor href
@@ -291,6 +296,11 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 						console.log("error while processing popup action");
 					},
 					success: function(data, status) {
+						// invoke netnavigation - process after item creation actions
+						if(item_id == 'NEW') {
+							handle.netnavigation.afterItemCreation(data);
+						}
+						
 						handle.close();
 						
 						// page reload
@@ -419,17 +429,17 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 				return false;
 			});
 			
-			// register click for save button
-			jQuery('input[id="popup_button_create"]').bind('click', {
-				handle:		this,
-				module:		module,
-				item_id:	item_id}, this.save);
-			
 			// setup buzzwords
 			this.setupBuzzwords();
 			
 			// setup netnavigation
 			this.setupNetnavigation(handle, item_id, module);
+			
+			// register click for save button
+			jQuery('input[id="popup_button_create"]').bind('click', {
+				handle:		this,
+				module:		module,
+				item_id:	item_id}, this.save);
 			
 			// setup tabs
 			this.setupTabs();
@@ -437,8 +447,8 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 		
 		setupNetnavigation: function(handle, item_id, module) {
 			// init netnavigation class
-			var netnavigation = new Netnavigation();
-			netnavigation.init(handle.cid, item_id, module);
+			this.netnavigation = new Netnavigation();
+			this.netnavigation.init(handle.cid, item_id, module, this.tpl_path);
 		},
 		
 		fullSizeOverlay: function() {
@@ -452,28 +462,31 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 /* Netnavigation Class */
 var Netnavigation = function() {
 	return {
-		cid: null,
-		item_id: null,
-		module: null,
-		initialized: false,
+		cid: 						null,
+		item_id: 					null,
+		module: 					null,
+		tpl_path: 					'',
+		initialized: 				false,
 		paging: {
 			current: 0
 		},
 		restrictions: {
-			search:			'',
-			rubric:			'all',
-			type:			2,
-			only_linked:	false
+			search:					'',
+			rubric:					'all',
+			type:					2,
+			only_linked:			false
 		},
 		store: {
-			pages:			1,
-			selected:		0
+			pages:					1,
+			selected:				0,
+			after_item_creation:	[]
 		},
 		
-		init: function(cid, item_id, module) {
+		init: function(cid, item_id, module, tpl_path) {
 			this.cid = cid;
 			this.item_id = item_id;
 			this.module = module;
+			this.tpl_path = tpl_path;
 			
 			var handle = this;
 			
@@ -558,7 +571,7 @@ var Netnavigation = function() {
 			
 			// linked restriction
 			content_object.find('input[name="netnavigation_linked_restriction"]').change(function(event) {
-				handle.restrictions.only_linked = (jQuery(event.target).val() == 'true') ? true : false;
+				handle.restrictions.only_linked = (event.target.checked == true) ? true : false;
 				
 				return false;
 			});
@@ -688,7 +701,7 @@ var Netnavigation = function() {
 						// save old row background color and set new
 						row_object.css('background-color', '#66CC00');
 						
-						handle.ajaxRequest('updateLinkedItem', data, function() {
+						handle.ajaxRequest('updateLinkedItem', data, function(ret) {
 							// fade back to old row color
 							row_object.animate({
 								'background-color':	old_bg_color
@@ -698,24 +711,33 @@ var Netnavigation = function() {
 								// on check
 								handle.store.selected++;
 								
+								var text = ret.linked_item.link_text;
+								if(text.length > 25) text = text.substr(0, 22) + '...';
+								
 								// add related entry to right box list
-								/*
-								jQuery('div#netnavigation ul').append(
-									jQuery('<li/>')
+								jQuery('div#popup_right div#netnavigation ul').prepend(
+									jQuery('<li/>', {
+										id:		'item_' + linked_id
+									}).append(
+										jQuery('<a/>', {
+											target:	'_self',
+											href:	'commsy.php?cid=' + handle.cid + '&mod=' + ret.linked_item.module + '&fct=detail&iid=' + ret.linked_item.linked_iid,
+											title:	ret.linked_item.title
+										}).append(
+											jQuery('<img/>', {
+												src:	handle.tpl_path + 'img/netnavigation/' + ret.linked_item.img,
+												title:	ret.linked_item.title
+											})
+										)
+									).append(
+										jQuery('<a/>', {
+											target:	'_self',
+											href:	'commsy.php?cid=' + handle.cid + '&mod=' + ret.linked_item.module + '&fct=detail&iid=' + ret.linked_item.linked_iid,
+											title:	ret.linked_item.title,
+											text:	' ' + text
+										})
+									)
 								);
-								*/
-								
-								
-								/*
-								 * <li id="item_{$entry.linked_iid}">
-									<a target="_self" href="commsy.php?cid={$environment.cid}&mod={$entry.module}&fct=detail&iid={$entry.linked_iid}" title="{$entry.title}">
-										<img src="{$basic.tpl_path}img/netnavigation/{$entry.img}" title="{$entry.title}"/>
-									</a>
-									<a target="_self" href="commsy.php?cid={$environment.cid}&mod={$entry.module}&fct=detail&iid={$entry.linked_iid}" title="{$entry.title}">
-										{$entry.link_text|truncate:25:"...":true}
-									</a>
-								</li>
-								 */
 							} else {
 								// on uncheck
 								handle.store.selected--;
@@ -724,7 +746,7 @@ var Netnavigation = function() {
 								var li_object = jQuery('div#netnavigation li#item_' + linked_id);
 								li_object.slideUp(1000, function() {
 									li_object.remove();
-								});
+								});						
 							}
 						});
 					});
@@ -736,6 +758,26 @@ var Netnavigation = function() {
 				
 				// store pages
 				handle.store.pages = ret.paging.pages;
+			});
+		},
+		
+		afterItemCreation: function(item_id) {
+			var handle = this;
+			
+			// get ids
+			var store_after_item_creation = [];
+			jQuery('div#popup_right div#netnavigation li').each(function() {
+				store_after_item_creation.push(jQuery(this).attr('id').substr(5));
+			});
+			
+			jQuery.each(store_after_item_creation, function(index, value) {
+				var data = {
+					item_id:	item_id,
+					link_id:	value,
+					checked:	true
+				};
+				
+				handle.ajaxRequest('updateLinkedItem', data, null);
 			});
 		},
 		

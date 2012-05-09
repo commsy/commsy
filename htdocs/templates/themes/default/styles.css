@@ -121,6 +121,7 @@ frame and header
 	width: 0px;
 	border-right: 1px solid #767676;
 	height: 361px;
+	position: relative;
 	}
 
 .popup_netnavigation_outer {

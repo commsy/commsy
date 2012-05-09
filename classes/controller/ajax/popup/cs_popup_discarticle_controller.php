@@ -86,7 +86,7 @@
 					// save item
 					$discarticle_item->save();
 					
-					$this->_return = 'success';
+					$this->_return = $discarticle_item->getItemID();
 				}
 			}
 		}

@@ -331,7 +331,7 @@
 								'discussion', 'detail', $params);
 					 */
 					
-					$this->_return = 'success';
+					$this->_return = $discussion_item->getItemID();
 				}
 			}
 	

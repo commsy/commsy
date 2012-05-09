@@ -35,6 +35,128 @@
 				// add
 				$selected_ids[] = $link_id;						
 				$selected_ids = array_unique($selected_ids);	// ensure uniqueness
+				
+				// get linked item
+				$temp_item = $item_manager->getItem($link_id);
+					
+				if(isset($temp_item)) {
+					$manager = $this->_environment->getManager($temp_item->getItemType());
+					$linked_item = $manager->getItem($link_id);
+				}
+				
+				// collect new item information
+				$entry = array();
+				$user = $this->_environment->getCurrentUser();
+				$converter = $this->_environment->getTextConverter();
+				$translator = $this->_environment->getTranslationObject();
+				
+				$type = $linked_item->getType();
+				if($type === 'label') {
+					$type = $linked_item->getLabelType();
+				}
+				
+				switch(mb_strtoupper($type, 'UTF-8')) {
+					case 'ANNOUNCEMENT':
+						$text = $translator->getMessage('COMMON_ONE_ANNOUNCEMENT');
+						$img = 'announcement.png';
+						break;
+					case 'DATE':
+						$text = $translator->getMessage('COMMON_ONE_DATE');
+						$img = 'date.png';
+						break;
+					case 'DISCUSSION':
+						$text = $translator->getMessage('COMMON_ONE_DISCUSSION');
+						$img = 'discussion.png';
+						break;
+					case 'GROUP':
+						$text = $translator->getMessage('COMMON_ONE_GROUP');
+						$img = 'group.png';
+						break;
+					case 'INSTITUTION':
+						$text = $translator->getMessage('COMMON_ONE_INSTITUTION');
+						$img = '';
+						break;
+					case 'MATERIAL':
+						$text = $translator->getMessage('COMMON_ONE_MATERIAL');
+						$img = 'material.png';
+						break;
+					case 'PROJECT':
+						$text = $translator->getMessage('COMMON_ONE_PROJECT');
+						$img = '';
+						break;
+					case 'TODO':
+						$text = $translator->getMessage('COMMON_ONE_TODO');
+						$img = 'todo.png';
+						break;
+					case 'TOPIC':
+						$text = $translator->getMessage('COMMON_ONE_TOPIC');
+						$img = 'topic.png';
+						break;
+					case 'USER':
+						$text = $translator->getMessage('COMMON_ONE_USER');
+						$img = 'user.png';
+						break;
+					default:
+						$text = $translator->getMessage('COMMON_MESSAGETAB_ERROR');
+						$img = '';
+						break;
+				}
+				
+				$link_creator_text = $text . ' - ' . $translator->getMessage('COMMON_LINK_CREATOR') . ' ' . $entry['creator'];
+				
+				switch($type) {
+					case CS_DISCARTICLE_TYPE:
+						$linked_iid = $linked_item->getDiscussionID();
+						$discussion_manager = $this->_environment->getDiscussionManager();
+						$linked_item = $discussion_manager->getItem($linked_iid);
+						break;
+					case CS_SECTION_TYPE:
+						$linked_iid = $linked_item->getLinkedItemID();
+						$material_manager = $this->_environment->getMaterialManager();
+						$linked_item = $material_manager->getItem($linked_iid);
+						break;
+					default:
+						$linked_iid = $linked_item->getItemID();
+				}
+				
+				$entry['linked_iid'] = $linked_iid;
+				
+				$module = Type2Module($type);
+				
+				if($linked_item->isNotActivated() && !($linked_item->getCreatorID() === $user->getItemID() || $user->isModerator())) {
+					$activating_date = $linked_item->getActivatingDate();
+					if(strstr($activating_date, '9999-00-00')) {
+						$link_creator_text .= ' (' . $translator->getMessage('COMMON_NOT_ACTIVATED') . ')';
+					} else {
+						$link_creator_text .= ' (' . $translator->getMessage('COMMON_ACTIVATING_DATE') . ' ' . getDateInLang($linked_item->getActivatingDate()) . ')';
+					}
+				
+					if($module === CS_USER_TYPE) {
+						$title = $linked_item->getFullName();
+					} else {
+						$title = $linked_item->getTitle();
+					}
+					$title = $converter->text_as_html_short($title);
+				
+					$entry['module'] = $module;
+					$entry['img'] = $img;
+					$entry['title'] = $link_creator_text;
+					$entry['link_text'] = $title;
+				} else {
+					if($module === CS_USER_TYPE) {
+						$title = $linked_item->getFullName();
+					} else {
+						$title = $linked_item->getTitle();
+					}
+					$title = $converter->text_as_html_short($title);
+				
+					$entry['module'] = $module;
+					$entry['img'] = $img;
+					$entry['title'] = $link_creator_text;
+					$entry['link_text'] = $title;
+				}
+				
+				$return['linked_item'] = $entry;
 			} else {
 				// remove
 				if(($offset = array_search($link_id, $selected_ids)) !== false) array_splice($selected_ids, $offset, 1);

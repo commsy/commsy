@@ -209,7 +209,7 @@ class cs_popup_announcement_controller implements cs_rubric_popup_controller {
                  $params['iid'] = $announcement_item->getItemID();
                  redirect($environment->getCurrentContextID(), CS_ANNOUNCEMENT_TYPE, 'detail', $params);
                  */
-                $this->_return = 'success';
+                $this->_return = $announcement_item->getItemID();
             }
         }
     }
