@@ -193,6 +193,7 @@
 				$item = $sublist->getNext();
 			}
 			$return['paging']['pages'] = ceil(/*$count_all*/count($item_ids) / $interval);
+			$return['num_selected_total'] = count($selected_ids);
 			
 			$return['success'] = true;
 			

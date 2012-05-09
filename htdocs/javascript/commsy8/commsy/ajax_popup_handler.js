@@ -466,7 +466,8 @@ var Netnavigation = function() {
 			only_linked:	false
 		},
 		store: {
-			pages:			1
+			pages:			1,
+			selected:		0
 		},
 		
 		init: function(cid, item_id, module) {
@@ -663,17 +664,26 @@ var Netnavigation = function() {
 					);
 				});
 				
+				// update selected
+				handle.store.selected = ret.num_selected_total;
+				jQuery('span#pop_item_entries_selected').text(handle.store.selected);
+				
 				// register checkbox events - unregistering is done by jQuery when empty the content object
 				content_object.find('input[type="checkbox"]').each(function() {
 					var row_object = jQuery(this).parentsUntil('div[class^="pop_row_"]').parent();
 					var old_bg_color = row_object.css('background-color');
 					
 					jQuery(this).change(function(event) {
+						var checked = (jQuery(this).attr('checked') === 'checked') ? true : false;
+						var linked_id = jQuery(event.target).attr('id').substr(7);
+						
 						var data = {
 							item_id:	handle.item_id,
-							link_id:	jQuery(event.target).attr('id').substr(7),
-							checked:	(jQuery(this).attr('checked') === 'checked') ? true : false
+							link_id:	linked_id,
+							checked:	checked
 						};
+						
+						jQuery('span#pop_item_entries_selected').text(handle.store.selected);
 						
 						// save old row background color and set new
 						row_object.css('background-color', '#66CC00');
@@ -683,6 +693,39 @@ var Netnavigation = function() {
 							row_object.animate({
 								'background-color':	old_bg_color
 							});
+							
+							if(checked === true) {
+								// on check
+								handle.store.selected++;
+								
+								// add related entry to right box list
+								/*
+								jQuery('div#netnavigation ul').append(
+									jQuery('<li/>')
+								);
+								*/
+								
+								
+								/*
+								 * <li id="item_{$entry.linked_iid}">
+									<a target="_self" href="commsy.php?cid={$environment.cid}&mod={$entry.module}&fct=detail&iid={$entry.linked_iid}" title="{$entry.title}">
+										<img src="{$basic.tpl_path}img/netnavigation/{$entry.img}" title="{$entry.title}"/>
+									</a>
+									<a target="_self" href="commsy.php?cid={$environment.cid}&mod={$entry.module}&fct=detail&iid={$entry.linked_iid}" title="{$entry.title}">
+										{$entry.link_text|truncate:25:"...":true}
+									</a>
+								</li>
+								 */
+							} else {
+								// on uncheck
+								handle.store.selected--;
+								
+								// remove related entry from right box list
+								var li_object = jQuery('div#netnavigation li#item_' + linked_id);
+								li_object.slideUp(1000, function() {
+									li_object.remove();
+								});
+							}
 						});
 					});
 				});

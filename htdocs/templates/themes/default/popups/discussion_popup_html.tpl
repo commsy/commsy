@@ -186,7 +186,7 @@
 							<div id="content_row_two_max">
 			                    <div class="open_close_head">
 			                        <strong>___COMMON_ITEM_NEW_ATTACH___</strong> 
-			                        (<span class="text_important">&bdquo;Bereitstellung&rdquo;</span> &ndash; {$popup.netnavigation.count} ___COMMON_ACTUAL_ATTACHED___) 
+			                        (<span class="text_important">&bdquo;{$item.title}&rdquo;</span> &ndash; <span id="pop_item_entries_selected">0</span> ___COMMON_ACTUAL_ATTACHED___) 
 			                    </div>
 			                    
 			                    <div id="crt_content">
@@ -242,7 +242,7 @@
 						
 						<ul>
 							{foreach $popup.netnavigation.items as $entry}
-								<li>
+								<li id="item_{$entry.linked_iid}">
 									<a target="_self" href="commsy.php?cid={$environment.cid}&mod={$entry.module}&fct=detail&iid={$entry.linked_iid}" title="{$entry.title}">
 										<img src="{$basic.tpl_path}img/netnavigation/{$entry.img}" title="{$entry.title}"/>
 									</a>
