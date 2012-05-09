@@ -106,6 +106,7 @@
 				$this->assign('detail', 'browsing_information', $this->getBrowseInformation($ids,'path'));
 			} elseif(isset($_GET['search_path']) && !empty($_GET['search_path'])) {
 				$ids = $session->getValue('cid' . $this->_environment->getCurrentContextID() . '_campus_search_index_ids');
+				$this->assign('detail', 'browsing_information', $this->getBrowseInformation($ids,'search_path'));
 			} elseif(isset($_GET['link_item_path']) && !empty($_GET['link_item_path'])) {
 				$manager = $this->_environment->getItemManager();
 				$item = $manager->getItem($_GET['link_item_path']);
@@ -892,6 +893,9 @@
 				$backward_id = $_GET['path'];
 				$forward_type = 'path';
 			}
+			if(isset($_GET['search_path']) && !empty($_GET['search_path'])) {
+				$forward_type = 'search_path';
+			}
 			if(isset($_GET['link_item_path']) && !empty($_GET['link_item_path'])) {
 				$backward_id = $_GET['link_item_path'];
 				$forward_type = 'link_item_path';
@@ -1034,7 +1038,7 @@
          		$params['iid'] = $browse_start;
          		$params['pos'] = $pos_index_start;
 
-         		if(!empty($forward_type) && ($forward_type === 'path' || $forward_type == 'search' || $forward_type == 'link_item_path')) {
+         		if(!empty($forward_type) && ($forward_type === 'path' || $forward_type == 'search_path' || $forward_type == 'link_item_path')) {
          			$item = $item_manager->getItem($browse_start);
          			$module = $item->getItemType();
          			if($module === 'label') {
@@ -1049,13 +1053,6 @@
          		$paging['first']['active'] = true;
          		$paging['first']['module'] = $module;
          		$paging['first']['params'] = $params;
-         		/*
-         		$html .= ahref_curl($this->_environment->getCurrentContextID(),$module, $this->_function,
-                                   $params,
-                                   $image, $this->_translator->getMessage('COMMON_BROWSE_START_DESC'),
-                                   '','','','','','class="detail_system_link"').LF;
-                unset($params);
-                */
 			}
 
 			// browse left
@@ -1066,7 +1063,7 @@
          		$params['iid'] = $browse_left;
          		$params['pos'] = $pos_index_left;
 
-         		if(!empty($forward_type) && ($forward_type === 'path' || $forward_type === 'search' || $forward_type == 'link_item_path')) {
+         		if(!empty($forward_type) && ($forward_type === 'path' || $forward_type === 'search_path' || $forward_type == 'link_item_path')) {
          			$item = $item_manager->getItem($browse_left);
          			$module = $item->getItemType();
          			if($module === 'label') {
@@ -1091,7 +1088,7 @@
          		$params['iid'] = $browse_right;
          		$params['pos'] = $pos_index_right;
 
-         		if(!empty($forward_type) && ($forward_type === 'path' || $forward_type === 'search' || $forward_type === 'link_item_path')) {
+         		if(!empty($forward_type) && ($forward_type === 'path' || $forward_type === 'search_path' || $forward_type === 'link_item_path')) {
          			$item = $item_manager->getItem($browse_right);
          			$module = $item->getItemType();
          			if($module === 'label') {
@@ -1116,7 +1113,7 @@
          		$params['iid'] = $browse_end;
          		$params['pos'] = $pos_index_end;
 
-         		if(!empty($forward_type) && ($forward_type === 'path' || $forward_type === 'search' || $forward_type == 'link_item_path')) {
+         		if(!empty($forward_type) && ($forward_type === 'path' || $forward_type === 'search_path' || $forward_type == 'link_item_path')) {
          			$item = $item_manager->getItem($browse_right);
          			$module = $item->getItemType();
          			if($module === 'label') {
@@ -1133,88 +1130,6 @@
          		$paging['last']['params'] = $params;
 			}
 
-			/**
-			 *
-
-      $html .= '</div>';
-      $html .= '<div id="right_box_page_numbers">';
-      if (!empty($forward_type) and $forward_type =='path'){
-         if ( empty($ids) ) {
-            $html .= '<span class="bold">'.$this->_translator->getMessage('COMMON_PATH_ENTRIES').' 1 / 1</span>'.LF;
-         } else {
-            $html .= '<span class="bold">'.$this->_translator->getMessage('COMMON_PATH_ENTRIES').' '.($pos+1).' / '.$count_all.'</span>'.LF;
-         }
-      }elseif(!empty($forward_type) and $forward_type =='search'){
-         if ( empty($ids) ) {
-            $html .= '<span class="bold">'.$this->_translator->getMessage('COMMON_SEARCH_ENTRIES').' 1 / 1</span>'.LF;
-         } else {
-            $html .= '<span class="bold">'.$this->_translator->getMessage('COMMON_SEARCH_ENTRIES').' '.($pos+1).' / '.$count_all.'</span>'.LF;
-         }
-      }elseif(!empty($forward_type) and $forward_type =='link_item'){
-         if ( empty($ids) ) {
-            $html .= '<span class="bold">'.$this->_translator->getMessage('COMMON_REFERENCED_ENTRIES').' 1 / 1</span>'.LF;
-         } else {
-            $html .= '<span class="bold">'.$this->_translator->getMessage('COMMON_REFERENCED_ENTRIES').' '.($pos+1).' / '.$count_all.'</span>'.LF;
-         }
-       }else{
-         switch ( mb_strtoupper($this->_environment->getCurrentModule(), 'UTF-8') ){
-            case 'ANNOUNCEMENT':
-               $text = $this->_translator->getMessage('COMMON_ANNOUNCEMENT');
-               break;
-            case 'DATE':
-               $text = $this->_translator->getMessage('COMMON_DATE');
-               break;
-            case 'DISCUSSION':
-               $text = $this->_translator->getMessage('COMMON_DISCUSSION');
-               break;
-            case 'GROUP':
-               $text = $this->_translator->getMessage('COMMON_GROUP');
-               break;
-            case 'INSTITUTION':
-               $text = $this->_translator->getMessage('COMMON_INSTITUTION');
-               break;
-            case 'MATERIAL':
-               $text = $this->_translator->getMessage('COMMON_MATERIAL');
-               break;
-            case 'MATERIAL_ADMIN':
-               $text = $this->_translator->getMessage('COMMON_MATERIAL');
-               break;
-            case 'PROJECT':
-               $text = $this->_translator->getMessage('COMMON_PROJECT');
-               break;
-            case 'TODO':
-               $text = $this->_translator->getMessage('COMMON_TODO');
-               break;
-            case 'TOPIC':
-               $text = $this->_translator->getMessage('COMMON_TOPIC');
-               break;
-            case 'USER':
-               $text = $this->_translator->getMessage('COMMON_USER');
-               break;
-            case 'MYROOM':
-               $text = $this->_translator->getMessage('COMMON_ROOM');
-               break;
-            case 'ACCOUNT':
-               $text = $this->_translator->getMessage('COMMON_ACCOUNTS');
-            break;            default:
-               $text = $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR'.' '.__FILE__.'('.__LINE__.') ' );
-               break;
-         }
-         if ( empty($ids) ) {
-            $html .= '<span class="bold">'.$text.' 1 / 1</span>'.LF;
-         } else {
-            $html .= '<span class="bold">'.$text.' '.($pos+1).' / '.$count_all.'</span>'.LF;
-         }
-      }
-      $html .= '';
-      $html .= '</div>';
-*/
-//      return /*$this->_text_as_html_short(*/$html/*)*/;
-
-
-
-
-
 			// build return
 			$return = array(
 				'position'			=> $this->_position + 1,
@@ -1224,6 +1139,8 @@
 
 			return $return;
 		}
+
+
 
 		private function getBrowseIDs() {
 			if(sizeof($this->_browse_ids) === 0) {

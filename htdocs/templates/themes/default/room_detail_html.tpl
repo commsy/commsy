@@ -65,6 +65,8 @@
 			<strong>___TOPIC_PATH___</strong>&nbsp;&nbsp;&nbsp;&nbsp;
 		{elseif $detail.browsing_information.paging.forward_type == 'link_item_path'}
 			<strong>___CONFIGURATION_TAG_STATUS___</strong>&nbsp;&nbsp;&nbsp;&nbsp;
+		{elseif $detail.browsing_information.paging.forward_type == 'search_path'}
+			<strong>___COMMON_SEARCH___</strong>&nbsp;&nbsp;&nbsp;&nbsp;
 		{else}
 			<strong>___COMMON_CHANGE_INDEX_VIEW_LIST___</strong>&nbsp;&nbsp;&nbsp;&nbsp;
 		{/if}
@@ -81,6 +83,8 @@
 				<a href="commsy.php?cid={$environment.cid}&mod=topic&fct=detail&iid={$detail.browsing_information.paging.backward_id}" class="context_nav">___COMMON_BACK_TO_PATH___</a>
 			{elseif $detail.browsing_information.paging.forward_type == 'link_item_path'}
 				<a href="commsy.php?cid={$environment.cid}&mod={$detail.browsing_information.paging.backward_type}&fct=detail&iid={$detail.browsing_information.paging.backward_id}" class="context_nav">___COMMON_BACK_TO_ITEM___</a>
+			{elseif $detail.browsing_information.paging.forward_type == 'search_path'}
+				<a href="commsy.php?cid={$environment.cid}&mod=search&fct=index&back_to_search=true" class="context_nav">___COMMON_BACK_TO_SEARCH___</a>
 			{else}
 				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=index&back_to_index=true" class="context_nav">___COMMON_BACK_TO_LIST___</a>
 			{/if}

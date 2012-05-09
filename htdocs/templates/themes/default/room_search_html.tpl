@@ -55,7 +55,7 @@
 			</div>
 			<div class="column_304">
 				<p>
-					 <a href="commsy.php?cid={$environment.cid}&mod={$item.type}&fct=detail&iid={$item.item_id}">{$item.title}</a>
+					 <a href="commsy.php?cid={$environment.cid}&mod={$item.type}&fct=detail&iid={$item.item_id}&search_path=true">{$item.title}</a>
 				</p>
 			</div>
 			<div class="column_45">
@@ -98,9 +98,9 @@
 			{foreach $room.search_sidebar.search_words as $word}
 				{$word}
 			{/foreach}
-			
+
 			<div class="clear"></div>
-			
+
 			<input type="checkbox" value="kategorisiert" name="kat"/>
 			<label for="kat">kategorisiert</label>
 		</div>

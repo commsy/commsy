@@ -584,7 +584,6 @@ if ( $environment->inPrivateRoom()
 
 					$session->setValue('cid' . $this->_environment->getCurrentContextID() . '_' . $rubric . '_index_ids', $rubric_ids);
 					$campus_search_ids = array_merge($campus_search_ids, $rubric_ids);
-
 					/*
 
       $search_list->addList($rubric_list);
@@ -595,6 +594,8 @@ if ( $environment->inPrivateRoom()
       $campus_search_ids = array_merge($campus_search_ids, $rubric_ids);
 					 */
 				}
+			#$session->setValue('cid'.$environment->getCurrentContextID().'_campus_search_parameter_array', $campus_search_parameter_array);
+#            $session = $this->_environment->getSessionItem();
 			}
 
 
@@ -612,6 +613,7 @@ if($interval == 0){
 			/////////////////////////////////////////
 
 			$entry = $result_list->getFirst();
+			$ids = array();
 			while($entry) {
 				/*
 				if($entry instanceof cs_group_item) {
@@ -619,7 +621,10 @@ if($interval == 0){
 					$this->_list->add($entry);
 				}*/
 
-				if(isset($this->_items[$entry->getType()][$entry->getItemID()])) $this->_list->add($entry);
+				if(isset($this->_items[$entry->getType()][$entry->getItemID()])){
+					$this->_list->add($entry);
+					$ids[] = $entry->getItemID();
+				}
 
 				$entry = $result_list->getNext();
 			}
@@ -627,6 +632,7 @@ if($interval == 0){
 
 			$this->assign('room', 'search_content', $this->getListContent());
 			$this->assign('room', 'search_sidebar', $this->getSidebarContent());
+			$session->setValue('cid'.$this->_environment->getCurrentContextID().'_campus_search_index_ids', $ids);
 		}
 
 		protected function getListContent() {
@@ -914,12 +920,12 @@ $session->setValue('cid'.$environment->getCurrentContextID().'_campus_search_ind
 		   $return = array();
 		   return $return;
 		}
-		
+
 		protected function getAdditionalRestrictions() {
 			$return = array();
 			return $return;
 		}
-		
+
 		protected function getAdditionalRestrictionText() {
 			$return = array();
 			return $return;
