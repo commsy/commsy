@@ -133,10 +133,10 @@ if ($type != CS_DISCUSSION_TYPE) {
 			// mark as read and noticed
 			$this->markRead();
 			$this->markNoticed();
-			
+
 			// assessment
 			$this->assign('detail', 'assessment', $this->getAssessmentInformation($this->_item));
-			
+
 			$this->assign('detail', 'content', $this->getDetailContent());
 		}
 
@@ -667,6 +667,39 @@ if ($type != CS_DISCUSSION_TYPE) {
 
 			// files
 			$files = $root->getFileList();
+			// files
+			if(!$files->isEmpty()) {
+				$file = $files->getFirst();
+				while($file) {
+					if(!(isset($_GET['mode']) && $_GET['mode'] === 'print') || (isset($_GET['download']) && $_GET['download'] === 'zip')) {
+						$file_string = '<a href="' . $file->getUrl() . '" target="blank">';
+						$name = $file->getDisplayName();
+						//TODO:
+						//$name = $converter->compareWithSearchText($name);
+						$name = $converter->text_as_html_short($name);
+
+						$file_string .= $name.' '.$file->getFileIcon() . ' ' . '</a> (' . $file->getFileSize() . ' KB)';
+
+					} else {
+						$name = $file->getDisplayName();
+						//TODO:
+						//$name = $converter->compareWithSearchText($name);
+						$name = $converter->text_as_html_short($name);
+						$file_string = $file->getFileIcon() . ' ' . $name;
+					}
+					$tmp_array = array();
+					$tmp_array['name'] = $file_string;
+					$tmp_array['icon'] = '<a href="' . $file->getUrl() . '" target="blank">'.$file->getFileIcon(). '</a>';
+
+
+					$file_array[] = $tmp_array;
+
+					$file = $files->getNext();
+				}
+
+				$entry['files'] = $file_array;
+				$file_array = array();
+			}
 
 			// creator
 			$creator = $root->getCreatorItem();
@@ -722,7 +755,9 @@ if ($type != CS_DISCUSSION_TYPE) {
 				'noticed'			=> $noticed,
 				'modificator_image'	=> $modificator_image,
 				'custom_image'		=> !empty($image),
-				'actions'			=> $this->getEditActions($root, $current_user)
+				'actions'			=> $this->getEditActions($root, $current_user),
+				'moredetails'		=> $this->getCreatorInformationAsArray($root),
+				'formal'			=> $entry
 			);
 
 			$return[0]['children'] = $this->buildThreadedTree($articles_list, $root);
@@ -740,6 +775,7 @@ if ($type != CS_DISCUSSION_TYPE) {
 
 			// go through list
 			$item = $articles_list->getFirst();
+			$converter = $this->_environment->getTextConverter();
 			$translator = $this->_environment->getTranslationObject();
 			$current_user = $this->_environment->getCurrentUserItem();
 			$disc_manager = $this->_environment->getDiscManager();
@@ -748,6 +784,38 @@ if ($type != CS_DISCUSSION_TYPE) {
 			while($item) {
 				// files
 				$files = $item->getFileList();
+				if(!$files->isEmpty()) {
+					$file = $files->getFirst();
+					while($file) {
+						if(!(isset($_GET['mode']) && $_GET['mode'] === 'print') || (isset($_GET['download']) && $_GET['download'] === 'zip')) {
+							$file_string = '<a href="' . $file->getUrl() . '" target="blank">';
+							$name = $file->getDisplayName();
+							//TODO:
+							//$name = $converter->compareWithSearchText($name);
+							$name = $converter->text_as_html_short($name);
+
+							$file_string .= $name.' '.$file->getFileIcon() . ' ' . '</a> (' . $file->getFileSize() . ' KB)';
+
+						} else {
+							$name = $file->getDisplayName();
+							//TODO:
+							//$name = $converter->compareWithSearchText($name);
+							$name = $converter->text_as_html_short($name);
+							$file_string = $file->getFileIcon() . ' ' . $name;
+						}
+						$tmp_array = array();
+						$tmp_array['name'] = $file_string;
+						$tmp_array['icon'] = '<a href="' . $file->getUrl() . '" target="blank">'.$file->getFileIcon(). '</a>';
+
+
+						$file_array[] = $tmp_array;
+
+						$file = $files->getNext();
+					}
+
+					$entry['files'] = $file_array;
+					$file_array = array();
+				}
 
 				// creator
 				$creator = $item->getCreatorItem();
@@ -793,7 +861,7 @@ if ($type != CS_DISCUSSION_TYPE) {
 				$description = $converter->showImages($description, $item, true);
 
 				//$retour .= $this->getScrollableContent($desc,$item,'',true).LF;
-				
+
 				// append return
 				$return[] = array(
 					'item_id'			=> $item->getItemID(),
@@ -807,13 +875,13 @@ if ($type != CS_DISCUSSION_TYPE) {
 					'modificator_image'	=> $modificator_image,
 					'custom_image'		=> !empty($image),
 					'actions'			=> $this->getEditActions($item, $current_user),
-					'moredetails'		=> $this->getCreatorInformationAsArray($item)
+					'moredetails'		=> $this->getCreatorInformationAsArray($item),
+					'formal'			=> $entry
 				);
 				$position++;
 
 				$item = $articles_list->getNext();
 			}
-
 			return $return;
 		}
 	}

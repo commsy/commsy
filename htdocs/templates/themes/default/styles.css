@@ -1856,6 +1856,12 @@ content, column-width
     float: left;
     }
 
+.column_585_nopadding {
+    width: 585px;
+    float: left;
+    }
+
+
 .column_655 {
     width: 655px;
     float: left;
@@ -1880,7 +1886,7 @@ content, column-width
     padding: 5px 10px;
     }
 
-.column_510_nopadding p{
+.column_510_nopadding p, .column_585_nopadding p{
 	padding:5px 0;
 	}
 

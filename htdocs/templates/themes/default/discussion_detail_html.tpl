@@ -110,7 +110,7 @@
 
 			{block name=discussion_articles}
 				<div class="item_post">
-					<div class="row_{if $article@iteration is odd}odd{else}even{/if}_no_hover {if $article@iteration is odd}odd{else}even{/if}_sep_disdetail">
+					<div class="row_{if $article@iteration is odd}odd{else}even{/if}_no_hover">
 						<div class="column_80">
 							<p>
 								<a href="" title="{$article.creator}">
@@ -123,12 +123,36 @@
 							</p>
 						</div>
 
-						<div class="column_510_nopadding">
+
+						<div class="column_585_nopadding">
 							<div class="post_content">
 								<h4>{$article@iteration}.
-									{if $article.noticed == 'new' or $article.noticed == 'changed'}<img src="{$basic.tpl_path}img/flag_neu.gif" alt="___COMMON_NEW___"/>{/if} {$article.subject}
+									{*{if $article.noticed == 'new' or $article.noticed == 'changed'}<img src="{$basic.tpl_path}img/flag_neu.gif" alt="___COMMON_NEW___"/>{/if}*} {$article.subject}
 								</h4>
-								<span><a href="">{$article.creator}</a>, {$article.modification_date}</span>
+								<span>
+								___COMMON_LAST_MODIFIED_BY_UPPER___
+								{build_user_link status=$article.moredetails.last_modificator_status user_name=$article.moredetails.last_modificator id=$article.moredetails.last_modificator_id}
+								___DATES_ON_DAY___  {$article.moredetails.last_modification_date}
+								</span>
+								{if !empty($article.formal)}
+									<table>
+										{if !empty($article.formal.files)}
+											<tr>
+												<td class="label"><h4>___MATERIAL_FILES___: </h4></td>
+												<td>
+													{foreach $article.formal.files as $file}
+														{$file.name}
+														{if !$file@last }
+															<br/>
+														{/if}
+													{/foreach}
+												</td>
+											</tr>
+										{/if}
+									</table>
+									<div class="clear"> </div>
+								{/if}
+
 								<div class="editor_content">
 									{$article.description}
 								</div>
@@ -140,15 +164,10 @@
 								{if !$article@last}<a href="#disc_article_{$detail.content.disc_articles[$article@index + 1].item_id}"><img src="{$basic.tpl_path}img/btn_jump_down.gif" alt="&gt;" /></a>{/if}
 							</p>
 						</div>
-						<div class="column_45">
-							<p>
-								<a href="" class="attachment">{$article.num_attachments}</a>
-							</p>
-						</div>
 						<div class="clear"> </div>
 					</div>
 				</div>
-				
+
 				{include file="include/detail_moredetails_html.tpl" data=$article.moredetails}
 			{/block}
 		</div> <!-- Ende item body -->
