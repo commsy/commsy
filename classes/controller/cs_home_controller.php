@@ -538,7 +538,7 @@
 						case CS_PROJECT_TYPE:
 							if($this->_environment->inProjectRoom()) {
 								$message_tag = $translator->getMessage('PROJECT_SHORT_DESCRIPTION', 5);
-							} elseif($this->_environment>inCommunityRoom()) {
+							} elseif($this->_environment->inCommunityRoom()) {
 								$message_tag = $translator->getMessage('COMMUNITY_SHORT_DESCRIPTION');
 							}
 							break;
