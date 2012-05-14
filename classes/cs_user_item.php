@@ -1992,6 +1992,20 @@ class cs_user_item extends cs_item {
       return $retour;
    }
 
+   public function isInInstitution ( $institution_item ) {
+      $retour = false;
+      if ( isset($institution_item)
+           and $institution_item->getItemID() > 0
+         ) {
+         $institution_list = $this->getInstitutionList();
+         $retour = $institution_list->inList($institution_item);
+         unset($institution_list);
+         unset($institution_item);
+      }
+      return $retour;
+   }
+
+
    public function isActiveDuringLast99Days () {
       include_once('functions/date_functions.php');
       return $this->getLastLogin() >  getCurrentDateTimeMinusDaysInMySQL(99);

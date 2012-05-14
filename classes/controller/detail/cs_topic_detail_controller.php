@@ -27,6 +27,7 @@
 		/*****************************************************************************/
 		/******************************** ACTIONS ************************************/
 		/*****************************************************************************/
+
 		public function actionDetail() {
 			// try to set the item
 			$this->setItem();
@@ -231,11 +232,13 @@
 		}
 
 		protected function getDetailContent() {
-            $converter = $this->_environment->getTextConverter();
-            $translator = $this->_environment->getTranslationObject();
+			$converter = $this->_environment->getTextConverter();
+			$translator = $this->_environment->getTranslationObject();
 
-            $user = $this->_environment->getCurrentUser();
-            $current_context = $this->_environment->getCurrentContextItem();
+			$return = array();
+			$return['title'] = $this->_item->getTitle();
+			$return['show_picture'] = false;
+			$return['moredetails'] = $this->getCreatorInformationAsArray($this->_item);
 
             // files
             $files = array();

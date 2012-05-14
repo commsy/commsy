@@ -3,11 +3,11 @@
 {block name=room_list_header}
 	<div class="table_head">
 		{if $list.sorting_parameters.sort_title == "up"}
-		 	<h3 class="w_335"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_title_link}" id="sort_up"><strong>___COMMON_NAME___</strong></a></h3>
+		 	<h3 class="w_335"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_title_link}" id="sort_up"><strong>___COMMON_TITLE___</strong></a></h3>
 		{elseif $list.sorting_parameters.sort_title == "down"}
-		 	<h3 class="w_335"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_title_link}" id="sort_down"><strong>___COMMON_NAME___</strong></a></h3>
+		 	<h3 class="w_335"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_title_link}" id="sort_down"><strong>___COMMON_TITLE___</strong></a></h3>
 		{else}
-		 	<h3 class="w_335"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_title_link}" class="sort_none">___COMMON_NAME___</a></h3>
+		 	<h3 class="w_335"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_title_link}" class="sort_none">___COMMON_TITLE___</a></h3>
 		{/if}
 		<h3 class="w_130">___GROUP_MEMBERS___</h3>
 		<h3 class="w_110">___COMMON_REFERENCED_ENTRIES___</h3>
