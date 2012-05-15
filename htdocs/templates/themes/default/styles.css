@@ -1388,6 +1388,14 @@ h2#item_navigation span {
     background: url(img/sep_group.gif) repeat-y #FFF;
     }
 
+.odd_sep_project{
+    background: url(img/sep_project.gif) repeat-y #F5F5F5;
+    }
+
+.even_sep_project {
+    background: url(img/sep_project.gif) repeat-y #FFF;
+    }
+
 .odd_sep_institution {
     background: url(img/sep_institution.gif) repeat-y #F5F5F5;
     }

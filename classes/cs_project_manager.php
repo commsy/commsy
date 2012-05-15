@@ -400,7 +400,6 @@ class cs_project_manager extends cs_room2_manager {
            $query .= ' LIMIT '.encode(AS_DB,$this->_from_limit).', '.encode(AS_DB,$this->_interval_limit);
         }
      }
-
      // perform query
      $result = $this->_db_connector->performQuery($query);
      if (!isset($result)) {
@@ -538,10 +537,10 @@ class cs_project_manager extends cs_room2_manager {
       $portal->saveMaxRoomActivityPoints($item->getActivityPoints());
       unset($portal);
    }
-   
+
 	/**
 	 * calls cs_room2_manager parent function
-	 * 
+	 *
 	 * @see cs_room2_manager::updateSearchIndices()
 	 */
 	public function updateSearchIndices($limit = array()) {

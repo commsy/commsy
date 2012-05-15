@@ -131,6 +131,8 @@
       			$sort_parameter = 'date';
       		}elseif($module == CS_INSTITUTION_TYPE){
       			$sort_parameter = 'title';
+      		}elseif($module == CS_PROJECT_TYPE){
+      			$sort_parameter = 'title';
       		}else{
       			$sort_parameter = '';
       		}
@@ -153,6 +155,17 @@
       		}else{
          		$return_array['sort_title_link'] = $link_parameter_text.'&sort=title';
          		$return_array['sort_title'] = 'none';
+      		}
+
+      		if ( $sort_parameter == 'activity') {
+         		$return_array['sort_activity_link'] = $link_parameter_text.'&sort=activity_rev';
+         		$return_array['sort_activity'] = 'up';
+      		}elseif ( $sort_parameter == 'activity_rev'){
+         		$return_array['sort_activity_link'] = $link_parameter_text.'&sort=activity';
+         		$return_array['sort_activity'] = 'down';
+      		}else{
+         		$return_array['sort_activity_link'] = $link_parameter_text.'&sort=activity';
+         		$return_array['sort_activity'] = 'none';
       		}
 
       		if($sort_parameter === 'numposts') {
