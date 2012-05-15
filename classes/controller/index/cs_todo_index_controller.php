@@ -393,8 +393,8 @@
       }
       $display_time_text = $shown_time.' '.$translator->getMessage('COMMON_FROM2').' '.$display_time_text_addon.' - '.round($done_percentage).'% '.$translator->getMessage('TODO_DONE');
       if($done_percentage <= 100){
-         $style = ' height: 11px; background-color: #75ab05; ';
-         $done_time .= '      <div title="'.$display_time_text.'" style="border: 1px solid #444;  margin: 7px 3px; height: 11px; width: 60px;">'.LF;
+         $style = ' height: 5px; background-color: #75ab05; ';
+         $done_time .= '      <div title="'.$display_time_text.'" style="border: 1px solid #444;  margin: 10px 3px 0px; height: 5px; width: 60px;">'.LF;
          if ( $done_percentage >= 30 ) {
             $done_time .= '         <div style="font-size: 2pt; '.$style.'width:'.$done_percentage.'%; color:#000000;">&nbsp;</div>'.LF;
          } else {
@@ -403,16 +403,16 @@
          $done_time .= '      </div>'.LF;
       }elseif($done_percentage <= 120){
          $done_percentage = (100 / $done_percentage) *100;
-         $style = ' height: 11px; border: 1px solid #444; background-color: #f2f030; ';
+         $style = ' height: 5px; border: 1px solid #444; background-color: #f2f030; ';
          $done_time .= '         <div title="'.$display_time_text.'" style="width: 60px; font-size: 2pt; '.$style.' color:#000000;">'.LF;
-         $done_time .= '      <div style="border-right: 1px solid #444; margin-left: 0px; height:10px;  background-color:none; width:'.$done_percentage.'%;">'.LF;
+         $done_time .= '      <div style="border-right: 1px solid #444; margin-left: 0px; height:4px;  background-color:none; width:'.$done_percentage.'%;">'.LF;
          $done_time .= '      </div>'.LF;
          $done_time .= '</div>'.LF;
       }else{
          $done_percentage = (100 / $done_percentage) *100;
-         $style = ' height: 11px; border: 1px solid #444; background-color: #f23030; ';
+         $style = ' height: 5px; border: 1px solid #444; background-color: #f23030; ';
          $done_time .= '         <div title="'.$display_time_text.'" style="width: 60px; font-size: 2pt; '.$style.' color:#000000;">'.LF;
-         $done_time .= '      <div style="border-right: 1px solid #444; margin-left: 0px; height:8px;  background-color:none; width:'.$done_percentage.'%;">'.LF;
+         $done_time .= '      <div style="border-right: 1px solid #444; margin-left: 0px; height:4px;  background-color:none; width:'.$done_percentage.'%;">'.LF;
          $done_time .= '      </div>'.LF;
          $done_time .= '</div>'.LF;
       }
