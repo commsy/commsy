@@ -305,84 +305,82 @@
 
             $path_shown = false;
             $path_items = array();
-            if($current_context->withPath() && $this->_item->isPathActive()) {
-            	$item_list = $this->_item->getPathItemList();
+        	$item_list = $this->_item->getPathItemList();
 
-            	if(!$item_list->isEmpty()) {
-            		$path_shown = true;
+        	if(!$item_list->isEmpty()) {
+        		$path_shown = true;
 
-            		$linked_item = $item_list->getFirst();
-            		while($linked_item) {
-            			$entry = array();
-            			$entry['iid'] = $linked_item->getItemID();
+        		$linked_item = $item_list->getFirst();
+        		while($linked_item) {
+        			$entry = array();
+        			$entry['iid'] = $linked_item->getItemID();
 
-            			$mod = Type2Module($linked_item->getItemType());
-            			$type = $linked_item->getItemType();
-            			if($type === 'date') {
-            				$type .= 's';
-            			}
+        			$mod = Type2Module($linked_item->getItemType());
+        			$type = $linked_item->getItemType();
+        			if($type === 'date') {
+        				$type .= 's';
+        			}
 
-            			$temp_type = mb_strtoupper($type, 'UTF-8');
-            			switch($temp_type) {
-            				case 'ANNOUNCEMENT':
-            					$type = $translator->getMessage('COMMON_ANNOUNCEMENT');
-            					break;
-            				case 'DATES':
-            					$type = $translator->getMessage('COMMON_DATES');
-            					break;
-            				case 'DISCUSSION':
-            					$type = $translator->getMessage('COMMON_DISCUSSION');
-            					break;
-            				case 'GROUP':
-            					$type = $translator->getMessage('COMMON_GROUP');
-            					break;
-            				case 'INSTITUTION':
-            					$type = $translator->getMessage('COMMON_INSTITUTION');
-            					break;
-            				case 'MATERIAL':
-            					$type = $translator->getMessage('COMMON_MATERIAL');
-            					break;
-            				case 'PROJECT':
-            					$type = $translator->getMessage('COMMON_PROJECT');
-            					break;
-            				case 'TODO':
-            					$type = $translator->getMessage('COMMON_TODO');
-            					break;
-            				case 'TOPIC':
-            					$type = $translator->getMessage('COMMON_TOPIC');
-            					break;
-            				case 'USER':
-            					$type = $translator->getMessage('COMMON_USER');
-            					break;
-            				default:
-            					$type = $translator->getMessage('COMMON_MESSAGETAG_ERROR');
-            					break;
-            			}
+        			$temp_type = mb_strtoupper($type, 'UTF-8');
+        			switch($temp_type) {
+        				case 'ANNOUNCEMENT':
+        					$type = $translator->getMessage('COMMON_ANNOUNCEMENT');
+        					break;
+        				case 'DATES':
+        					$type = $translator->getMessage('COMMON_DATES');
+        					break;
+        				case 'DISCUSSION':
+        					$type = $translator->getMessage('COMMON_DISCUSSION');
+        					break;
+        				case 'GROUP':
+        					$type = $translator->getMessage('COMMON_GROUP');
+        					break;
+        				case 'INSTITUTION':
+        					$type = $translator->getMessage('COMMON_INSTITUTION');
+        					break;
+        				case 'MATERIAL':
+        					$type = $translator->getMessage('COMMON_MATERIAL');
+        					break;
+        				case 'PROJECT':
+        					$type = $translator->getMessage('COMMON_PROJECT');
+        					break;
+        				case 'TODO':
+        					$type = $translator->getMessage('COMMON_TODO');
+        					break;
+        				case 'TOPIC':
+        					$type = $translator->getMessage('COMMON_TOPIC');
+        					break;
+        				case 'USER':
+        					$type = $translator->getMessage('COMMON_USER');
+        					break;
+        				default:
+        					$type = $translator->getMessage('COMMON_MESSAGETAG_ERROR');
+        					break;
+        			}
 
-            			if($linked_item->isNotActivated() && !($linked_item->getCreatorID() === $user->getItemID() || $user->isModerator())) {
-            				$activatring_date = $linked_item->getActivatingDate();
-            				if(strstr($activating_date, '9999-00-00')) {
-            					$link_creator_text = $translator->getMessage('COMMON_NOT_ACTIVATED');
-            				} else {
-            					$link_creator_text = $translator->getMessage('COMMON_ACTIVATING_DATE') . ' ' . getDateInLang($linked_item->getActivatingDate());
-            				}
+        			if($linked_item->isNotActivated() && !($linked_item->getCreatorID() === $user->getItemID() || $user->isModerator())) {
+        				$activatring_date = $linked_item->getActivatingDate();
+        				if(strstr($activating_date, '9999-00-00')) {
+        					$link_creator_text = $translator->getMessage('COMMON_NOT_ACTIVATED');
+        				} else {
+        					$link_creator_text = $translator->getMessage('COMMON_ACTIVATING_DATE') . ' ' . getDateInLang($linked_item->getActivatingDate());
+        				}
 
-            				$entry['title'] = $linked_item->getTitle();
-            				$entry['link_text'] = $link_creator_text;
-            				$entry['not_activated'] = true;
-            			} else {
-            				$entry['title'] = $linked_item->getTitle();
-            				$entry['type'] = $type;
-            				$entry['mod'] = $mod;
-            				$entry['not_activated'] = false;
-            			}
+        				$entry['title'] = $linked_item->getTitle();
+        				$entry['link_text'] = $link_creator_text;
+        				$entry['not_activated'] = true;
+        			} else {
+        				$entry['title'] = $linked_item->getTitle();
+        				$entry['type'] = $type;
+        				$entry['mod'] = $mod;
+        				$entry['not_activated'] = false;
+        			}
 
-            			$path_items[] = $entry;
+        			$path_items[] = $entry;
 
-            			$linked_item = $item_list->getNext();
-            		}
-            	}
-            }
+        			$linked_item = $item_list->getNext();
+        		}
+        	}
 
 			$return = array(
 				'title'			=> $this->_item->getTitle(),

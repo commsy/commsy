@@ -35,6 +35,37 @@
 			$this->assign('room', 'home_content', $this->getListContent());
 		}
 
+		  /** get the activity of the item
+		    * this method returns the item activity in the right formatted style
+		    *
+		    * @return string title
+		    */
+		   function _getItemActivity ($item,$room_max_activity) {
+		      if ( $room_max_activity != 0 ) {
+		         $percentage = $item->getActivityPoints();
+		         if ( empty($percentage) ) {
+		            $percentage = 0;
+		         } else {
+		           $teiler = $room_max_activity/20;
+		            $percentage = log(($percentage/$teiler)+1);
+		          if ($percentage < 0) {
+		            $percentage = 0;
+		          }
+		          $max_activity = log(($room_max_activity/$teiler)+1);
+		            $percentage = round(($percentage / $max_activity) * 100,2);
+		         }
+		      } else {
+		         $percentage = 0;
+		      }
+		      $display_percentage = $percentage;
+		      $html = '         <div class="gauge" style="height:5px;">'.LF;
+		      $html .= '            <div class="gauge-bar" style="height:5px; width:'.$display_percentage.'%;">&nbsp;</div>'.LF;
+		      $html .= '         </div>'.LF;
+		      return $html;
+		   }
+
+
+
 		public function getListContent() {
 			$session = $this->_environment->getSessionItem();
 			include_once('classes/cs_list.php');
@@ -319,6 +350,20 @@
 			      $file_id_array = $link_manager->getAllFileLinksForListByIDs($id_array, $v_id_array);
 			      $file_manager = $environment->getFileManager();
 			      $file_manager->setIDArrayLimit($file_id_array);
+			      $manager = $environment->getProjectManager();
+			      if ($this->_environment->inCommunityRoom()) {
+			         $manager->setContextLimit($environment->getCurrentPortalID());
+			      }
+			      $room_max_activity = 0;
+			      global $c_cache_cr_pr;
+			      if ( !isset($c_cache_cr_pr) or !$c_cache_cr_pr ) {
+			         $room_max_activity = $manager->getMaxActivityPointsInCommunityRoom($environment->getCurrentContextID());
+			      } else {
+			         $current_context_item = $environment->getCurrentContextItem();
+			         $room_max_activity = $manager->getMaxActivityPointsInCommunityRoomInternal($current_context_item->getInternalProjectIDArray());
+			         unset($current_context_item);
+			      }
+
 				 foreach($rubric_list_array as $key=>$list){
 					$item_array = array();
 				 	$column1_addon = '';
@@ -447,9 +492,15 @@
 								break;
 							case CS_INSTITUTION_TYPE:
 								$column1 = $view->_text_as_html_short($item->getTitle());
-								$column2 = $this->_environment->getTranslationObject()->getDateInLang($item->getModificationDate());
+								$members = $item->getMemberItemList();
+            					$column2 = $translator->getMessage('GROUP_MEMBERS').': '.$members->getCount();
            						$linked_item_array = $item->getAllLinkedItemIDArray();
 								$column3 = $translator->getMessage('COMMON_REFERENCED_LATEST_ENTRIES').': '.count($linked_item_array);
+								break;
+							case CS_PROJECT_TYPE:
+								$column1 = $view->_text_as_html_short($item->getTitle());
+           						$column2 = $translator->getMessage('GROUP_MEMBERS').': '.$item->getAllUsers();
+ 								$column3 = $this->_getItemActivity ($item,$room_max_activity);
 								break;
 							case CS_TODO_TYPE:
 								$column1 = $view->_text_as_html_short($item->getTitle());
