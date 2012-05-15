@@ -104,10 +104,24 @@
 
 						{if isset($popup.buzzwords)}
 							<div class="settings_area hidden">
+								<ul id="buzzwords_unassigned" class="popup_buzzword_list">
+									{foreach $popup.buzzwords as $buzzword}
+										<li id="buzzword_{$buzzword.item_id}" class="ui-state-default popup_buzzword_item">
+											<input type="checkbox" />{$buzzword.name}
+										</li>
+									{/foreach}
+									<div class="clear"></div>
+								</ul>
+							
+							
+							
+							
+							{*
+							
 								<div id="buzzwords_unassigned_title"><h2>nicht zugewiesen</h2></div>
 								<div id="buzzwords_assigned_title"><h2>zugewiesen</h2></div>
 
-								{* display all not assigned *}
+								{* display all not assigned *}{*
 								<ul id="buzzwords_unassigned" class="popup_buzzword_list">
 									{foreach $popup.buzzwords as $buzzword}
 										{if $popup.item_id == 'NEW' || !$buzzword.assigned}
@@ -119,7 +133,7 @@
 									{/foreach}
 								</ul>
 
-								{* display all assigned *}
+								{* display all assigned *}{*
 								<ul id="buzzwords_assigned" class="popup_buzzword_list">
 									{foreach $popup.buzzwords as $buzzword}
 										{if $popup.item_id != 'NEW' && $buzzword.assigned}
@@ -130,6 +144,7 @@
 										{/if}
 									{/foreach}
 								</ul>
+							*}
 
 								<div class="clear"></div>
 							</div>

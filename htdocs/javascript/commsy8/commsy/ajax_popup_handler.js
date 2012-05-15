@@ -324,7 +324,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			});
 		},
 		
-		setupBuzzwords: function() {
+		setupBuzzwords: function() {return false;
 			// unassigned
 			jQuery('div[id="popup"] ul[id="buzzwords_unassigned"]').sortable({
 				connectWith:	'ul',

@@ -179,42 +179,13 @@ frame and header
     }
 
 .popup_buzzword_list {
-	width: 250px;
 	padding: 5px;
 	background-color: #7FB3E2;
 }
 
-ul#buzzwords_unassigned {
-	float: left;
-}
-
-ul#buzzwords_assigned {
-	float: right;
-}
-
 .popup_buzzword_item {
 	padding: 4px;
-}
-
-.ui-state-highlight {
-	height: 24px;
-}
-
-div#buzzwords_unassigned_title,
-div#buzzwords_assigned_title {
-	width: 250px;
-	margin-bottom: 20px;
-}
-
-div#buzzwords_unassigned_title {
 	float: left;
-	padding-left: 50px;
-}
-
-div#buzzwords_assigned_title {
-	float: right;
-	text-align: right;
-	padding-right: 50px;
 }
 
 /*
