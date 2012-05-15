@@ -33,44 +33,6 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			// register handler
 			jQuery(object).bind('keyup', {handle: handle, commsy_functions: commsy_functions}, handle.onKeyUp);
 			jQuery(object).bind('click', {handle: handle}, handle.onClick);
-			
-			// setup progressbars for list
-			handle.setupProgressbars();
-		},
-		
-		setupProgressbars: function() {
-			// find progressbars
-			var progressbars = jQuery('div[class="progressbar_search"]');
-			
-			// find max relevanz value
-			var max = 0;
-			jQuery.each(progressbars, function() {
-				var span = jQuery(this).children('span:first');
-				var value = parseInt(span.text());
-				
-				if(value > max) max = value;
-			});
-			
-			jQuery.each(progressbars, function() {
-				// get value from span-tag
-				var span = jQuery(this).children('span:first');
-				var value = parseInt(span.text());
-				
-				// remove span
-				span.remove();
-				
-				// remove img
-				jQuery(this).children('img:first').remove();
-				
-				// calculate percent
-				var percent = 100 * value / max;
-				
-				// create progressbars
-				jQuery(this).progressbar({
-					disabled: false,
-					value: percent
-				});
-			});
 		},
 		
 		onClick: function(event) {

@@ -68,9 +68,9 @@
 			</div>
 			<div class="column_155">
 				<p>
-					<div class="progressbar_search">
+					<div class="progressbar">
 						<img src="{$basic.tpl_path}img/ajax_loader.gif" alt="ajax_loader" />
-						<span class="percent hidden">{$item.count}</span>
+						<span class="percent hidden">{$item.relevanz}</span>
 					</div>
 				</p>
 			</div>

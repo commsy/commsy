@@ -626,6 +626,15 @@ if($interval == 0){
 			$return = array();
 			
 			$session = $this->_environment->getSessionItem();
+			
+			// find max count for relevanz bar
+			$max_count = 0;
+			$entry = $this->_list->getFirst();
+			while($entry) {
+				if($this->_items[$entry->getType()][$entry->getItemID()] > $max_count) $max_count = $this->_items[$entry->getType()][$entry->getItemID()];
+				
+				$entry = $this->_list->getNext();
+			}
 
 			$entry = $this->_list->getFirst();
 			while($entry) {
@@ -634,11 +643,11 @@ if($interval == 0){
 				$return['items'][] = array(
 					'title'			=> $entry->getType() === CS_USER_TYPE ? $entry->getFullname() : $entry->getTitle(),
 					'type'			=> $type,
-					'count'			=> $this->_items[$entry->getType()][$entry->getItemID()],
+					'relevanz'		=> 100 * $this->_items[$entry->getType()][$entry->getItemID()] / $max_count,
 					'item_id'		=> $entry->getItemID(),
 					'num_files'		=> $entry->getFileList()->getCount()
 				);
-
+				
 				$entry = $this->_list->getNext();
 			}
 
@@ -680,9 +689,9 @@ if($interval == 0){
 		}
 
 		private function sortByRelevanz($a, $b) {
-			if($a['count']	=== $b['count']) return 0;
+			if($a['relevanz']	=== $b['relevanz']) return 0;
 
-			return ($a['count'] < $b['count']) ? -1 : 1;
+			return ($a['relevanz'] < $b['relevanz']) ? -1 : 1;
 		}
 
 
