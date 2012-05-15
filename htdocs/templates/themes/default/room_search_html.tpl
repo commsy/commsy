@@ -2,7 +2,7 @@
 
 {block name=room_navigation_rubric_title}
 	___COMMON_SEARCH_RESULTS___:
-	<span>{$room.search_content|count}</span>
+	<span>{$room.search_content.count_all}</span>
 {/block}
 
 {block name=room_list_header}
@@ -37,7 +37,7 @@
 
 
 {block name=room_list_content}
-	{foreach $room.search_content as $item }
+	{foreach $room.search_content.items as $item }
 		<div class="{if $item@iteration is odd}row_odd{else}row_even{/if} {if $item@iteration is odd}odd_sep_announcement{else}even_sep_announcement{/if}"> <!-- Start Reihe -->
 			<div class="column_20">
 				<p>
@@ -64,7 +64,7 @@
 				</p>
 			</div>
 			<div class="column_90">
-				<p>{$item.type}</p>
+				<p><img src="{$basic.tpl_path}img/netnavigation/{$item.type}" title="{$item.type}"/></p>
 			</div>
 			<div class="column_155">
 				<p>
@@ -100,9 +100,6 @@
 			{/foreach}
 
 			<div class="clear"></div>
-
-			<input type="checkbox" value="kategorisiert" name="kat"/>
-			<label for="kat">kategorisiert</label>
 		</div>
 	</div>
 {/block}

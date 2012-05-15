@@ -37,26 +37,7 @@
 
 			// init list params
 			$this->initListParameters();
-
-			if(isset($_GET['back_to_search']) && $session->issetValue('cid' . $this->_environment->getCurrentContextID() . '_campus_search_parameter_array')) {
-				$campuser_search_parameter_array = $session->getValue('cid' . $this->_environment->getCurrentContextID() . '_compus_search_parameter_array');
-				$params['search'] = $campus_search_parameter_array['search'];
-				$params['selrestriction'] = $campus_search_parameter_array['selrestriction'];
-				$params['selrubric'] = $campus_search_parameter_array['selrubric'];
-				$params['selbuzzword'] = $campus_search_parameter_array['selbuzzword'];
-				$params['seltag_array'] = $campus_search_parameter_array['seltag_array'];
-				$params['selfiles'] = $campus_search_parameter_array['selfiles'];
-				$params['interval'] = $campus_search_parameter_array['interval'];
-				$params['sel_activating_status'] = $campus_search_parameter_array['sel_activating_status'];
-				$sel_array = $campus_search_parameter_array['sel_array'];
-				foreach($sel_array as $key => $value){
-					$params['sel'.$key] = $value;
-				}
-				$session->unsetValue('cid'.$environment->getCurrentContextID().'_campus_search_parameter_array');
-				$session->unsetValue('cid'.$environment->getCurrentContextID().'_campus_search_index_ids');
-				redirect($environment->getCurrentContextID(),'campus_search', 'index', $params);
-			}
-
+			
 			// an array of all rubrics, containing files
 			$file_rubric_array = $this->getRubricsWithFiles();
 
@@ -90,7 +71,14 @@ if ( isset($_GET['interval']) ) {
 				$this->_params['seltag_array'] = array();
 			} else {
 				// get parameters
-				$this->getParameters();
+				if(isset($_GET['back_to_search']) && $session->issetValue('cid' . $this->_environment->getCurrentContextID() . '_campus_search_parameter_array')) {
+					$this->_params = $session->getValue('cid' . $this->_environment->getCurrentContextID() . '_campus_search_parameter_array');
+				} else {
+					$this->getParameters();
+				}
+				
+				// store parameters in session
+				$session->setValue('cid' . $this->_environment->getCurrentContextID() . '_campus_search_parameter_array', $this->_params);
 			}
 
 			// find current option
@@ -611,9 +599,8 @@ if($interval == 0){
 			/////////////////////////////////////////
 			// 5. filter item ids
 			/////////////////////////////////////////
-
+			
 			$entry = $result_list->getFirst();
-			$ids = array();
 			while($entry) {
 				/*
 				if($entry instanceof cs_group_item) {
@@ -623,7 +610,6 @@ if($interval == 0){
 
 				if(isset($this->_items[$entry->getType()][$entry->getItemID()])){
 					$this->_list->add($entry);
-					$ids[] = $entry->getItemID();
 				}
 
 				$entry = $result_list->getNext();
@@ -632,17 +618,20 @@ if($interval == 0){
 
 			$this->assign('room', 'search_content', $this->getListContent());
 			$this->assign('room', 'search_sidebar', $this->getSidebarContent());
-			$session->setValue('cid'.$this->_environment->getCurrentContextID().'_campus_search_index_ids', $ids);
+			
+			$this->assign('list','browsing_parameters',$this->_browsing_icons_parameter_array);
 		}
 
 		protected function getListContent() {
 			$return = array();
+			
+			$session = $this->_environment->getSessionItem();
 
 			$entry = $this->_list->getFirst();
 			while($entry) {
 				$type = $entry->getType() === CS_LABEL_TYPE ? $entry->getLabelType() : $entry->getType();
 
-				$return/*[$type]*/[] = array(
+				$return['items'][] = array(
 					'title'			=> $entry->getType() === CS_USER_TYPE ? $entry->getFullname() : $entry->getTitle(),
 					'type'			=> $type,
 					'count'			=> $this->_items[$entry->getType()][$entry->getItemID()],
@@ -654,15 +643,30 @@ if($interval == 0){
 			}
 
 			// sort return by relevanz
-			usort($return, array($this, 'sortByRelevanz'));
-			$return = array_reverse($return);
-
-			/*
-			foreach($return as $type => $entries) {
-				usort($entries, array($this, 'sortByRelevanz'));
-				$return[$type] = array_reverse($entries);
+			usort($return['items'], array($this, 'sortByRelevanz'));
+			$return['items'] = array_reverse($return['items']);
+			
+			// create id array
+			$ids = array();
+			foreach($return['items'] as $entry) {
+				$ids[] = $entry['item_id'];
 			}
-			*/
+			$session->setValue('cid'.$this->_environment->getCurrentContextID().'_campus_search_index_ids', $ids);
+			
+			$this->_browsing_icons_parameter_array = $this->getBrowsingIconsParameterArray($this->_list_parameter_arrray['from'],$this->_list_parameter_arrray['interval'],sizeof($ids));
+			$return['count_all'] = sizeof($ids);
+			
+			// limit output
+			$limited_return = array();
+			$count = 0;
+			foreach($return['items'] as $entry) {
+				if($count >= $this->_list_parameter_arrray['from'] - 1 && sizeof($limited_return) < $this->_list_parameter_arrray['interval']) {
+					$limited_return[] = $entry;
+				}
+				
+				$count++;
+			}
+			$return['items'] = $limited_return;
 
 			return $return;
 		}
@@ -683,7 +687,7 @@ if($interval == 0){
 
 
 			/*
-			 *
+			 * TODO:
    }
 }
 if($interval == 0){
@@ -735,22 +739,6 @@ if ( !empty($ref_iid) and $mode =='attached'){
 // Add list view to page
 $page->add($view);
 
-// Safe information in session for later use
-$campus_search_parameter_array = array();
-$campus_search_parameter_array['search'] = $search;
-$campus_search_parameter_array['selrestriction'] = $selrestriction;
-$campus_search_parameter_array['selrubric'] = $selrubric;
-$campus_search_parameter_array['selbuzzword'] = $selbuzzword;
-$campus_search_parameter_array['selstatus'] = $selstatus;
-$campus_search_parameter_array['selcolor'] = $selcolor;
-$campus_search_parameter_array['selgroup'] = $selgroup;
-$campus_search_parameter_array['seluser'] = $seluser;
-$campus_search_parameter_array['seltag_array'] = $seltag_array;
-$campus_search_parameter_array['selfiles'] = $selfiles;
-$campus_search_parameter_array['sel_array'] = $sel_array;
-$campus_search_parameter_array['interval'] = $interval;
-$campus_search_parameter_array['sel_activating_status'] = $sel_activating_status;
-
 $ftsearch_manager = $environment->getFTSearchManager();
 if ($ftsearch_manager->getSearchStatus()) {
    // get fids from cs_ftsearch_manager
@@ -761,8 +749,6 @@ if ($ftsearch_manager->getSearchStatus()) {
 }
 unset($ftsearch_manager);
 
-$session->setValue('cid'.$environment->getCurrentContextID().'_campus_search_parameter_array', $campus_search_parameter_array);
-$session->setValue('cid'.$environment->getCurrentContextID().'_campus_search_index_ids', $campus_search_ids);
 		}*/
 
 		private function rubric2ItemType($rubric_name) {

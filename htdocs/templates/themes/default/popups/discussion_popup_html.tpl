@@ -268,7 +268,10 @@
 					</ul>
 					
 					<div id="popup_netnavigation_outer_bottom" class="popup_netnavigation_outer">
-						<a id="popup_netnavigation_attach_new" href="#" title="___COMMON_ITEM_ATTACH___">___COMMON_ITEM_ATTACH___</a>
+						<a id="popup_netnavigation_attach_new" href="#" title="___COMMON_ITEM_ATTACH___">
+							<span id="attach_show">___COMMON_ITEM_ATTACH_SHOW___</span>
+							<span id="attach_hide" class="hidden">___COMMON_ITEM_ATTACH_HIDE___</span>
+						</a>
 					</div>
 				</div>
 				

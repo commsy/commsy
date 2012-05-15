@@ -619,6 +619,7 @@ function isURLValid () {
         $module != 'annotation' and
         $module != 'contact' and
         $module != 'campus_search' and
+   		$module != 'search' and
         $module != 'agb' and
 
         // project room

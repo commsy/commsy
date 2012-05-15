@@ -501,6 +501,10 @@ var Netnavigation = function() {
 						width:			'0px',
 						'margin-left':	'-19px'
 					});
+					
+					// change show/hide text
+					jQuery('span#attach_show').toggle();
+					jQuery('span#attach_hide').toggle();
 				} else {
 					// get inital data if this is the first call
 					if(handle.initialized === false) {
@@ -534,6 +538,10 @@ var Netnavigation = function() {
 							handle.initialized = true;
 						});
 					}
+					
+					// change show/hide text
+					jQuery('span#attach_show').toggle();
+					jQuery('span#attach_hide').toggle();
 					
 					// scroll out
 					jQuery('#popup_netnavigation').animate({

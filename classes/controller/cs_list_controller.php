@@ -1210,6 +1210,8 @@
 		protected function initListParameters($rubric) {
 			$environment = $this->_environment;
 			$session = $environment->getSessionItem();
+			$translator = $environment->getTranslationObject();
+			
 			if (isset($_GET['back_to_index']) and $session->issetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index')){
    				$index_search_parameter_array = $session->getValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index_parameter_array');
    				$params['interval'] = $index_search_parameter_array['interval'];
