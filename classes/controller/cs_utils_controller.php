@@ -19,7 +19,7 @@
 	                or $this->_environment->getCurrentModule() == CS_INSTITUTION_TYPE
 	                or ($this->_environment->getCurrentModule() == CS_USER_TYPE and ($context_item->withRubric(CS_GROUP_TYPE) or($context_item->withRubric(CS_INSTITUTION_TYPE))))
 	                or $this->_environment->getCurrentModule() == 'campus_search'
-	          		|| ($_GET['mod'] === 'ajax' && $_GET['fct'] === 'rubric_popup'))
+	          		|| ($this->_environment->getCurrentModule() === 'ajax' && $_GET['fct'] === 'rubric_popup'))
 	      ) {
 	         return true;
 	      }
@@ -36,6 +36,7 @@
 	                || $this->_environment->getCurrentModule() == CS_TODO_TYPE
 	                || $this->_environment->getCurrentModule() == CS_DATE_TYPE
 	                || $this->_environment->getCurrentModule() == 'campus_search'
+					|| $this->_environment->getCurrentModule() == 'ajax'
 	                || $this->_environment->getCurrentModule() === 'home')) {
 				return true;
 			}
@@ -48,6 +49,7 @@
 			if($context_item->withBuzzwords() &&
 				(	$this->_environment->getCurrentModule() === CS_ANNOUNCEMENT_TYPE ||
 					$this->_environment->getCurrentModule() === 'home' ||
+					$this->_environment->getCurrentModule() === 'ajax' ||
 					$this->_environment->getCurrentModule() === CS_DATE_TYPE ||
 					$this->_environment->getCurrentModule() === CS_MATERIAL_TYPE ||
 					$this->_environment->getCurrentModule() === CS_DISCUSSION_TYPE ||
@@ -428,7 +430,7 @@
 			return round($minsize + round($a) * $treshold);
 		}
 		
-		public function setFilesForItem(cs_item $item, $post_file_ids) {
+		public function setFilesForItem(cs_item $item, $post_file_ids, $module) {
 			$session = $this->_environment->getSessionItem();
 			
 			// temp files
@@ -454,70 +456,69 @@
 				$file_ids = isset($_POST['filelist']) ? $_POST['filelist'] : array();
 			}
 			
-			$files = $session->getValue($this->_environment->getCurrentModule() . '_add_files');
+			$files = $session->getValue($module . '_add_files');
 			
 			$file_id_array = array();
 			
-
 			if ( !empty($files)
 				and count($files) >= count($file_ids)
 			) {
-			$file_man = $this->_environment->getFileManager();
-			foreach ( $files as $file_data ) {
-				if ( in_array(trim($file_data["file_id"]), $file_ids) ) {
-					if ( isset($file_data["tmp_name"]) and file_exists($file_data["tmp_name"]) ) { // create file entries for uploaded files
-						$file_item = $file_man->getNewItem();
-						$file_item->setTempKey($file_data["file_id"]);
-						// trim space
-						$file_data['name'] = trim($file_data['name']);
-						$file_item->setPostFile($file_data);
-						$file_item->save();
-						unlink($file_data["tmp_name"]);  // Currently, the file manager does not unlink a file in its _saveOnDisk() method, because it is also used for copying files when copying material.
-						$file_id_array[] = $file_item->getFileID();
-					} else {
-						$file_id_array[] = $file_data["file_id"];
+				$file_man = $this->_environment->getFileManager();
+				foreach ( $files as $file_data ) {
+					if ( in_array(trim($file_data["file_id"]), $file_ids) ) {
+						if ( isset($file_data["tmp_name"]) and file_exists($file_data["tmp_name"]) ) { // create file entries for uploaded files
+							$file_item = $file_man->getNewItem();
+							$file_item->setTempKey($file_data["file_id"]);
+							// trim space
+							$file_data['name'] = trim($file_data['name']);
+							$file_item->setPostFile($file_data);
+							$file_item->save();
+							unlink($file_data["tmp_name"]);  // Currently, the file manager does not unlink a file in its _saveOnDisk() method, because it is also used for copying files when copying material.
+							$file_id_array[] = $file_item->getFileID();
+						} else {
+							$file_id_array[] = $file_data["file_id"];
+						}
 					}
 				}
-			}
-			#$item->setFileIDArray($file_id_array);
-			$temp_merge_array = array_merge($file_id_array, $temp_files_array);
-			$item->setFileIDArray($temp_merge_array);
-			} elseif ( !empty($file_ids) ) {
-			$temp_array = array();
-			foreach ($file_ids as $file_id) {
-				if ( is_numeric($file_id) ) {
-					$temp_array[] = $file_id;
-				} else {
-					if ( !isset($file_manager) ) {
-						$file_manager = $this->_environment->getFileManager();
-						$file_manager->setContextLimit($this->_environment->getCurrentContextID());
-					}
-					$temp_key = $file_manager->getFileIDForTempKey($file_id);
-					if ( !empty($temp_key) and is_numeric($temp_key) ) {
-						$temp_array[] = $temp_key;
-					} elseif ( !empty($files) ) {
-						foreach ( $files as $file_data ) {
-						if ( $file_data["file_id"] == $file_id ) {
-							if ( isset($file_data["tmp_name"]) and file_exists($file_data["tmp_name"]) ) { // create file entries for uploaded files
-								$file_item = $file_manager->getNewItem();
-								$file_item->setTempKey($file_data["file_id"]);
-								$file_item->setPostFile($file_data);
-								$file_item->save();
-								unlink($file_data["tmp_name"]);  // Currently, the file manager does not unlink a file in its _saveOnDisk() method, because it is also used for copying files when copying material.
-								$temp_array[] = $file_item->getFileID();
+				#$item->setFileIDArray($file_id_array);
+				$temp_merge_array = array_merge($file_id_array, $temp_files_array);
+				$item->setFileIDArray($temp_merge_array);
+				} elseif ( !empty($file_ids) ) {
+				$temp_array = array();
+				foreach ($file_ids as $file_id) {
+					if ( is_numeric($file_id) ) {
+						$temp_array[] = $file_id;
+					} else {
+						if ( !isset($file_manager) ) {
+							$file_manager = $this->_environment->getFileManager();
+							$file_manager->setContextLimit($this->_environment->getCurrentContextID());
+						}
+						$temp_key = $file_manager->getFileIDForTempKey($file_id);
+						if ( !empty($temp_key) and is_numeric($temp_key) ) {
+							$temp_array[] = $temp_key;
+						} elseif ( !empty($files) ) {
+							foreach ( $files as $file_data ) {
+							if ( $file_data["file_id"] == $file_id ) {
+								if ( isset($file_data["tmp_name"]) and file_exists($file_data["tmp_name"]) ) { // create file entries for uploaded files
+									$file_item = $file_manager->getNewItem();
+									$file_item->setTempKey($file_data["file_id"]);
+									$file_item->setPostFile($file_data);
+									$file_item->save();
+									unlink($file_data["tmp_name"]);  // Currently, the file manager does not unlink a file in its _saveOnDisk() method, because it is also used for copying files when copying material.
+									$temp_array[] = $file_item->getFileID();
+								}
+							}
 							}
 						}
-						}
 					}
 				}
-			}
-			unset($file_manager);
-			#$item->setFileIDArray($temp_array);
-			$temp_merge_array = array_merge($temp_array, $temp_files_array);
-			$item->setFileIDArray($temp_merge_array);
+				unset($file_manager);
+				#$item->setFileIDArray($temp_array);
+				$temp_merge_array = array_merge($temp_array, $temp_files_array);
+				$item->setFileIDArray($temp_merge_array);
 			} else {
-			#$item->setFileIDArray(array());
-			$item->setFileIDArray($temp_files_array);
+				#$item->setFileIDArray(array());
+				$item->setFileIDArray($temp_files_array);
 			}
 		}
 	}

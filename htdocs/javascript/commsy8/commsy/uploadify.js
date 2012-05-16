@@ -62,9 +62,9 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			var mod = commsy_functions.getURLParam('mod');
 			var fct = commsy_functions.getURLParam('fct');
 			var target_module = mod;
-			if(mod === 'todo' && fct === 'detail') {
+			if(mod === 'todo') {
 				target_module = 'step';
-			} else if(mod === 'discussion' && fct == 'detail') {
+			} else if(mod === 'discussion') {
 				target_module = 'discarticle';
 			}
 			

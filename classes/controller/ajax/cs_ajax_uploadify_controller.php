@@ -19,6 +19,7 @@
 			if(!isset($_FILES)) fputs($file, "not set\n");
 			else fputs($file, "set\n");
 			fputs($file, pr($_FILES));
+			fputs($file, pr($_REQUEST));
 			*/
 			
 			if(!empty($_FILES)) {

@@ -135,7 +135,7 @@ class cs_popup_announcement_controller implements cs_rubric_popup_controller {
                     $announcement_item->setPublic($form_data['public']);
                 }
                 $file_ids = $form_data['files'];
-                $this->_popup_controller->getUtils()->setFilesForItem($announcement_item, $file_ids);
+                $this->_popup_controller->getUtils()->setFilesForItem($announcement_item, $file_ids, CS_ANNOUNCEMENT_TYPE);
 
 
                 if ( isset($form_data['hide']) ) {
@@ -161,23 +161,33 @@ class cs_popup_announcement_controller implements cs_rubric_popup_controller {
                         $announcement_item->setModificationDate(getCurrentDateTimeInMySQL());
                     }
                 }
-
-
+                
+                // buzzwords
+                $announcement_item->setBuzzwordListByID($form_data['buzzwords']);
+                
+                // tags
+                $announcement_item->setTagListByID($form_data['tags']);
 
                 // Save item
                 $announcement_item->save();
-                if ($session->issetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_index_ids')){
-                    $id_array =  array_reverse($session->getValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_index_ids'));
-                }else{
-                    $id_array =  array();
-                }
-                if ($item_is_new){
+                
+                // this will update the right box list
+                if($item_is_new){
+	                if ($session->issetValue('cid'.$environment->getCurrentContextID().'_'.CS_ANNOUNCEMENT_TYPE.'_index_ids')){
+	                    $id_array =  array_reverse($session->getValue('cid'.$environment->getCurrentContextID().'_'.CS_ANNOUNCEMENT_TYPE.'_index_ids'));
+	                } else {
+	                    $id_array =  array();
+	                }
+                
                     $id_array[] = $announcement_item->getItemID();
                     $id_array = array_reverse($id_array);
-                    $session->setValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_index_ids',$id_array);
+                    $session->setValue('cid'.$environment->getCurrentContextID().'_'.CS_ANNOUNCEMENT_TYPE.'_index_ids',$id_array);
                 }
+                
+                // save session
+                $this->_environment->getSessionManager()->save($session);
 
-                //Add modifier to all users who ever edited this item
+                // Add modifier to all users who ever edited this item
                 $manager = $environment->getLinkModifierItemManager();
                 $manager->markEdited($announcement_item->getItemID());
 

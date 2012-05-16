@@ -92,10 +92,10 @@
 
 						{if isset($popup.buzzwords)}
 							<div class="settings_area {if $popup.edit == false && $popup.is_owner == true} hidden{/if}">
-								<ul id="buzzwords_unassigned" class="popup_buzzword_list">
+								<ul class="popup_buzzword_list">
 									{foreach $popup.buzzwords as $buzzword}
 										<li id="buzzword_{$buzzword.item_id}" class="ui-state-default popup_buzzword_item">
-											<input type="checkbox" />{$buzzword.name}
+											<input type="checkbox"{if $buzzword.assigned == true} checked="checked"{/if}/>{$buzzword.name}
 										</li>
 									{/foreach}
 									<div class="clear"></div>

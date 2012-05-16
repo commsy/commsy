@@ -232,12 +232,17 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 				});
 
 				// add buzzword data
-				var buzzword_objects = jQuery('ul[id="buzzwords_assigned"] li[id^="buzzword_"]');
+				var buzzword_objects = jQuery('ul.popup_buzzword_list li');
 				var buzzword_ids = [];
 				jQuery.each(buzzword_objects, function() {
-					// extract buzzword id
-					/buzzword_([0-9]*)/.exec(jQuery(this).attr('id'));
-					buzzword_ids.push(RegExp.$1);
+					// check if input is checked
+					var input_object = jQuery(this).find('input[type="checkbox"]');
+					
+					if(input_object.attr('checked') === 'checked') {
+						// extract buzzword id
+						/buzzword_([0-9]*)/.exec(jQuery(this).attr('id'));
+						buzzword_ids.push(RegExp.$1);
+					}
 				});
 				data.form_data.push({
 					name:	'buzzwords',
@@ -247,8 +252,8 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 				// add tag data
 				var dynatree = jQuery('div[id="tag_tree"]').dynatree('getTree');
 				var tag_ids  = [];
-
-				if(dynatree['$tree'] !== 'undefined') {
+				
+				if(typeof(dynatree['$tree']) !== 'undefined') {
 					dynatree.visit(function(node) {
 						// check if bold
 						if(node.data.title.substr(0, 3) === '<b>') {
@@ -302,8 +307,21 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 						handle.close();
 
 						// page reload
-						location.reload();
-						//handle.preconditionsSuccess(data);
+						var fct = '';
+						var regex = new RegExp("[\\?&]fct=([^&#]*)");
+						var results = regex.exec(location.href);
+						if(results !== null) fct = results[1];
+						
+						if(fct !== 'detail') {
+							location.reload();
+						} else {
+							var module = '';
+							var regex = new RegExp("[\\?&]mod=([^&#]*)");
+							var results = regex.exec(location.href);
+							if(results !== null && results[1] !== 'NEW') module = results[1];
+							
+							location.href = 'commsy.php?cid=' + handle.cid + '&mod=' + module + '&fct=detail&iid=' + data;
+						}
 					}
 				});
 			}
@@ -321,62 +339,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 					handle:	handle}, handle.onClickTab);
 			});
 		},
-
-		setupBuzzwords: function() {return false;
-			// unassigned
-			jQuery('div[id="popup"] ul[id="buzzwords_unassigned"]').sortable({
-				connectWith:	'ul',
-				placeholder:	'ui-state-highlight',
-				cursor:			'pointer',
-				change:			function(event, ui) {
-					if(ui.sender !== null) {
-						// adjust
-						ui.item.find('img').attr('alt', 'add');
-					}
-				}
-			});
-
-			// assigned
-			jQuery('div[id="popup"] ul[id="buzzwords_assigned"]').sortable({
-				connectWith:	'ul',
-				placeholder:	'ui-state-highlight',
-				cursor:			'pointer',
-				change:			function(event, ui) {
-					if(ui.sender !== null) {
-						// adjust
-						ui.item.find('img').attr('alt', 'remove');
-					}
-				}
-			});
-
-			// register add event
-			jQuery('ul[id^="buzzwords_"] img').each(function() {
-				jQuery(this).click(function() {
-					var li = jQuery(this).parent().parent();
-
-					// get ul id
-					var ul_id = li.parent().attr('id');
-
-					// detach
-					li = li.detach();
-
-					if(ul_id === 'buzzwords_unassigned') {
-						// append to assigned
-						li.appendTo(jQuery('ul[id="buzzwords_assigned"]'));
-
-						// adjust
-						li.find('img').attr('alt', 'remove');
-					} else {
-						// append to unassigned
-						li.appendTo(jQuery('ul[id="buzzwords_unassigned"]'));
-
-						// adjust
-						li.find('img').attr('alt', 'add');
-					}
-				});
-			});
-		},
-
+		
 		onClickTab: function(event) {
 			var target = jQuery(event.currentTarget);
 			var index = event.data.index;
@@ -426,9 +389,6 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 				handle.close();
 				return false;
 			});
-
-			// setup buzzwords
-			this.setupBuzzwords();
 
 			// setup netnavigation
 			this.setupNetnavigation(handle, item_id, module);

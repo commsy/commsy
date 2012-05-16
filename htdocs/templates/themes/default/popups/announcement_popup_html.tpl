@@ -28,7 +28,7 @@
 
 
 					<div class="tab_navigation">
-						<a href="" class="pop_tab_active">___COMMON_RIGHTS___</a>
+						<a href="" class="pop_tab_active">___MATERIAL_FILES___</a>
 						{if $popup.is_owner == true}<a href="" class="pop_tab">___COMMON_RIGHTS___</a>{/if}
 						{if isset($popup.buzzwords)}<a href="" class="pop_tab">___COMMON_BUZZWORDS___</a>{/if}
 						{if isset($popup.tags)}<a href="" class="pop_tab">___COMMON_TAGS___</a>{/if}
@@ -79,10 +79,10 @@
 
 						{if isset($popup.buzzwords)}
 							<div class="settings_area hidden">
-								<ul id="buzzwords_unassigned" class="popup_buzzword_list">
+								<ul class="popup_buzzword_list">
 									{foreach $popup.buzzwords as $buzzword}
 										<li id="buzzword_{$buzzword.item_id}" class="ui-state-default popup_buzzword_item">
-											<input type="checkbox" />{$buzzword.name}
+											<input type="checkbox"{if $buzzword.assigned == true} checked="checked"{/if}/>{$buzzword.name}
 										</li>
 									{/foreach}
 									<div class="clear"></div>
