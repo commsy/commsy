@@ -237,7 +237,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 				jQuery.each(buzzword_objects, function() {
 					// check if input is checked
 					var input_object = jQuery(this).find('input[type="checkbox"]');
-					
+
 					if(input_object.attr('checked') === 'checked') {
 						// extract buzzword id
 						/buzzword_([0-9]*)/.exec(jQuery(this).attr('id'));
@@ -252,7 +252,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 				// add tag data
 				var dynatree = jQuery('div[id="tag_tree"]').dynatree('getTree');
 				var tag_ids  = [];
-				
+
 				if(typeof(dynatree['$tree']) !== 'undefined') {
 					dynatree.visit(function(node) {
 						// check if bold
@@ -311,7 +311,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 						var regex = new RegExp("[\\?&]fct=([^&#]*)");
 						var results = regex.exec(location.href);
 						if(results !== null) fct = results[1];
-						
+
 						if(fct !== 'detail') {
 							location.reload();
 						} else {
@@ -319,7 +319,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 							var regex = new RegExp("[\\?&]mod=([^&#]*)");
 							var results = regex.exec(location.href);
 							if(results !== null && results[1] !== 'NEW') module = results[1];
-							
+
 							location.href = 'commsy.php?cid=' + handle.cid + '&mod=' + module + '&fct=detail&iid=' + data;
 						}
 					}
@@ -339,7 +339,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 					handle:	handle}, handle.onClickTab);
 			});
 		},
-		
+
 		onClickTab: function(event) {
 			var target = jQuery(event.currentTarget);
 			var index = event.data.index;
@@ -456,8 +456,9 @@ var Netnavigation = function() {
 				if(animate_object.css('width') !== '0px') {
 					// scroll in
 					jQuery('#popup_netnavigation').animate({
-						width:			'0px',
-						'margin-left':	'-19px'
+						'width':			'0px',
+						'margin-left':	'0px',
+						'opacity': '0'
 					});
 
 					// change show/hide text
@@ -503,8 +504,11 @@ var Netnavigation = function() {
 
 					// scroll out
 					jQuery('#popup_netnavigation').animate({
-						width:			'739px',
-						'margin-left':	'-758px'
+						'width':'727px',
+						'margin-left':	'-730px',
+						'margin-top':'-31px',
+						'background-color': '#EAEAEA',
+						'opacity': '1'
 					});
 				}
 			});

@@ -103,34 +103,45 @@ frame and header
     }
 
 #popup {
-    padding: 25px 10px 10px 10px;
-	width: 719px;
+    padding: 0px 0px 10px 10px;
+    margin-top: 1px;
+	width: 718px;
 	float: left;
-    }
-
-#popup_right {
-	padding: 25px 10px 10px 10px;
-	width: 220px;
-	float: left;
+    border-right: 1px solid #FFF;
+    background: url(img/pop_content_bg.jpg) repeat-x left bottom #E8E8E8;
 	}
 
+#popup_right {
+    float: left;
+    padding: 0px;
+    width: 250px;
+}	}
+
 #popup_netnavigation {
-	background-color: #7FB3E2;
-	margin-left: -19px;
+	position: relative;
+	margin-top: -31px;
+	height: 361px;
+	background-color: #EAEAEA;
+	margin-left: 0px;
 	overflow: hidden;
 	width: 0px;
 	border-right: 1px solid #767676;
-	height: 361px;
-	position: relative;
+	opacity:1;
 	}
 
 .popup_netnavigation_outer {
-	background-color: #7FB3E2;
+	background-color: #EAEAEA;
+	margin-top:1px;
 	}
 
 #popup_netnavigation_outer_bottom {
 	text-align: center;
 	height: 17px;
+	}
+
+ul.netnavigation{
+	padding: 9px;
+	margin-top: 20px;
 	}
 
 .tm_di_ground_solid div#popup {
@@ -150,7 +161,7 @@ frame and header
 	}
 
 #popup_head {
-    padding: 10px;
+    padding: 3px;
     /*border-bottom: 1px solid #767676;*/
     }
 
@@ -167,15 +178,23 @@ frame and header
 }
 
 #popup h2 {
-    /*color: #2A3B59;*/
-    font-size: 12px;
-    text-shadow: #BCDEFD 0 1px;
-    /*float: left;*/
-    }
+    font-size: 14px;
+    margin-top: 15px;
+    margin-left: 10px;
+    text-shadow: 0 1px #BCDEFD;
+}
+
+#popup_right h2 {
+    font-size: 14px;
+    margin-top: 15px;
+    margin-left: 10px;
+    text-shadow: 0 1px #BCDEFD;
+}
 
 #popup_close {
     float: right;
     display: block;
+    padding: 15px;
     }
 
 .popup_buzzword_list {
@@ -199,6 +218,10 @@ rowset and content
     border-left: 1px solid #FFF;
     border-right: 1px solid #FFF;
     background: url(img/pop_content_bg.jpg) repeat-x left bottom #E8E8E8;
+    }
+
+#popup_rubric_content {
+    border: none;
     }
 
 div#tag_tree input {
@@ -256,8 +279,9 @@ div#tag_tree input {
     }
 
 #content_row_two_max {
-    height: 361px;
-    border-top: 1px solid #FFF;
+    border: 3px solid #D1D1D1;
+    position: relative;
+    background-color: #EAEAEA;
     }
 
 .open_close_head {
@@ -277,23 +301,26 @@ div#tag_tree input {
     }
 
 #crt_content {
-    height: 149px;
+    /*height: 149px;*/
     background: url(img/crt_content_bg.jpg) repeat-y 533px top;
+    margin-right: 0;
+    padding-right: 0;
+    width: 730px;
     }
 
 #crt_col_left {
     width: 533px;
     float: left;
     overflow: auto;
-    height: 149px;
+    /*height: 149px;*/
     }
 
 #content_row_two_max #crt_content {
-    height: 330px !important;
+    /*height: 440px !important;*/
     }
 
 #content_row_two_max #crt_col_left {
-    height: 330px !important;
+    /*height: 440px !important;*/
     }
 
 #crt_col_right {
@@ -390,8 +417,8 @@ div.pop_item_navigation {
 #content_row_three {
     padding: 30px 10px;
     /*height: 400px;
-    overflow: auto;*/
-    border-bottom: 1px solid #767676;
+    overflow: auto;
+    border-bottom: 1px solid #767676; */
     }
 
 #content_row_four {
@@ -413,7 +440,7 @@ div.pop_item_navigation {
     }
 
 #content_row_three .tab_navigation {
-    margin: 0px -10px;
+    margin: 10px -10px 0px 0px;
     border-top: 1px solid #FFF;
     }
 
@@ -1614,6 +1641,19 @@ forms
     color: #394965;
     }
 
+.size_400 {
+    width: 390px;
+    background: url(img/size_400_bg.jpg) no-repeat;
+    border: 0px;
+    padding: 5px 5px 7px 5px;
+    margin-right: 10px;
+    }
+
+.size_400:hover {
+    background: url(img/size_400_hover_bg.jpg) no-repeat;
+    color: #394965;
+    }
+
 .size_80 {
     width: 70px;
     background: url(img/size_80_bg.jpg) no-repeat;
@@ -1659,6 +1699,23 @@ forms
 .input_label {
     padding-right: 5px;
     }
+
+.input_label_100 {
+	float: left;
+    line-height: 25px;
+    padding-right: 5px;
+    vertical-align: bottom;
+    width: 100px;
+    }
+
+.input_label_80 {
+	float: left;
+    line-height: 25px;
+    padding-right: 5px;
+    vertical-align: bottom;
+    width: 80px;
+    }
+
 
 /*
 ----------------------------------------------------------------------
@@ -2443,7 +2500,7 @@ a:hover.keywords_s1, a:hover.keywords_s2, a:hover.keywords_s3, a:hover.keywords_
 div#popup_w3col #netnavigation {
     color: #393939;
     background-color: #EAEAEA;
-    margin: 0px 0px 0px 17px;
+    margin: 0px;
     padding-left: 2px;
     width: 201px;
     }

@@ -1,24 +1,19 @@
 <div id="popup_wrapper">
 	<div id="popup_background"></div>
 	<div id="popup_w3col">
-			<div id="popup_head">
-				<a id="popup_close" href="" title="___COMMON_CLOSE___"><img src="{$basic.tpl_path}img/pop_close_btn.gif" alt="___COMMON_CLOSE___" /></a>
-				<h2>{if $popup.edit == false}___COMMON_ENTER_NEW_ANNOUNCEMENT___{else}___COMMON_ANNOUNCEMENT_EDIT___{/if}</h2>
-
-				<div class="clear"> </div>
-			</div>
 		<div id="popup">
 
-			<div id="popup_content">
+			<div id="popup_rubric_content">
+				<h2>{if $popup.edit == false}___COMMON_ENTER_NEW_ANNOUNCEMENT___{else}___COMMON_ANNOUNCEMENT_EDIT___{/if}</h2>
 
 				<div id="content_row_three">
 					<div class="input_row">
-						<span class="input_label">___COMMON_TITLE___</span> <input type="text" value="{if isset($item.title)}{$item.title}{/if}" name="form_data[title]" class="size_200 mandatory" />
+						<div class="input_label_80">___COMMON_TITLE___<span class="required">*</span>:</div> <input type="text" value="{if isset($item.title)}{$item.title}{/if}" name="form_data[title]" class="size_400 mandatory" />
 					</div>
 					<div class="input_row">
-						<span class="input_label">___ANNOUNCEMENT_SHOW_HOME_DATE___</span>
-						<input type="text" value="{if isset($item.dayEnd)}{$item.dayEnd}{/if}" name="form_data[dayEnd]" class="size_200 mandatory" />
-						<input type="text" value="{if isset($item.timeEnd)}{$item.timeEnd}{/if}" name="form_data[timeEnd]" class="size_200" />
+						<span  class="input_label_80">___ANNOUNCEMENT_SHOW_HOME_DATE___<span class="required">*</span>:</span>
+						<span>___COMMON_CALENDAR_DATE___:</span><span class="required">*</span><input type="text" value="{if isset($item.dayEnd)}{$item.dayEnd}{/if}" name="form_data[dayEnd]" class="size_80 mandatory" />
+						<span>___COMMON_CLOCK___:</span><input type="text" value="{if isset($item.timeEnd)}{$item.timeEnd}{/if}" name="form_data[timeEnd]" class="size_80" />
 					</div>
 
 					<div class="editor_content">

@@ -1,7 +1,8 @@
 <div id="popup_right">
+	<a id="popup_close" href="" title="___COMMON_CLOSE___"><img src="{$basic.tpl_path}img/pop_close_btn.gif" alt="___COMMON_CLOSE___" /></a>
 	<div id="popup_netnavigation_outer_left" class="popup_netnavigation_outer">
 		<div class="float-left" id="netnavigation">
-			<h3>___COMMON_ATTACHED_ENTRIES___</h3>
+			<h2>___COMMON_ATTACHED_ENTRIES___</h2>
 
 			<div class="float-left" id="popup_netnavigation">
 				<div id="content_row_two_max">
@@ -61,7 +62,7 @@
                 </div>
 			</div>
 
-			<ul>
+			<ul class="netnavigation">
 				{foreach $popup.netnavigation.items as $entry}
 					<li id="item_{$entry.linked_iid}">
 						<a target="_self" href="commsy.php?cid={$environment.cid}&mod={$entry.module}&fct=detail&iid={$entry.linked_iid}" title="{$entry.title}">
@@ -76,8 +77,8 @@
 
 			<div id="popup_netnavigation_outer_bottom" class="popup_netnavigation_outer">
 				<a id="popup_netnavigation_attach_new" href="#" title="___COMMON_ITEM_ATTACH___">
-					<span id="attach_show">___COMMON_ITEM_ATTACH_SHOW___</span>
-					<span id="attach_hide" class="hidden">___COMMON_ITEM_ATTACH_HIDE___</span>
+					<span id="attach_show" class="hidden">___COMMON_ITEM_ATTACH_SHOW___</span>
+					<span id="attach_hide">___COMMON_ITEM_ATTACH_HIDE___</span>
 				</a>
 			</div>
 		</div>
