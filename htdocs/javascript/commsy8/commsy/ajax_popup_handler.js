@@ -10,10 +10,10 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 		cid: null,
 		tpl_path: '',
 		netnavigation: null,
-		
+
 		init: function(commsy_functions, parameters) {
 			this.cid = commsy_functions.getURLParam('cid');
-			
+
 			// set preconditions
 			this.setPreconditions(commsy_functions, this.loadPopup, {handle: this, commsy_functions: commsy_functions, handling: parameters});
 		},
@@ -31,23 +31,21 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			var commsy_functions = parameters.commsy_functions;
 			var actors = parameters.handling.objects;
 			var handle = parameters.handle;
-			
+
 			handle.tpl_path = preconditions.template.tpl_path;
-			
 			jQuery.each(actors, function() {
 				// determ module from actor href
 				var module = '';
 				var regex = new RegExp("[\\?&]mod=([^&#]*)");
 				var results = regex.exec(jQuery(this).attr('href'));
 				if(results !== null && results[1] !== 'NEW') module = results[1];
-				
+
 				// determ item id from actor href
 				var item_id = 'NEW';
 				var regex = new RegExp("[\\?&]iid=([^&#]*)");
 				var results = regex.exec(jQuery(this).attr('href'));
 				if(results !== null && results[1] !== 'NEW') item_id = results[1];
-				
-				
+
 				jQuery(this).bind('click', {
 					commsy_functions:	commsy_functions,
 					handle:				handle,
@@ -56,16 +54,16 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 					item_id:			item_id}, handle.onClick);
 			});
 		},
-		
+
 		onClick: function(event) {
 			var commsy_functions = event.data.commsy_functions;
 			var handle = event.data.handle;
-			
+
 			var data = {
 				module: event.data.module,
 				iid:	event.data.item_id
 			};
-			
+
 			jQuery.ajax({
 				type: 'POST',
 				url: 'commsy.php?cid=' + handle.cid + '&mod=ajax&fct=rubric_popup&action=getHTML',
@@ -79,7 +77,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 					if(status === 'success') {
 						// we recieved html - append it
 						jQuery('body').prepend(data);
-						
+
 						// reinvoke Uploadify
 						var uploadify_handler = commsy_functions.getModuleCallback('commsy/uploadify');
 						uploadify_handler.create(null, {
@@ -89,7 +87,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 							upload_object:		jQuery('a[id="uploadify_doUpload"]'),
 							clear_object:		jQuery('a[id="uploadify_clearQuery"]')
 						});
-						
+
 						// reinvoke CKEditor
 						var ck_editor_handler = commsy_functions.getModuleCallback('commsy/ck_editor');
 						ck_editor_handler.create(null, {
@@ -97,31 +95,31 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 							register_on:		jQuery('div[id="popup_ckeditor"]'),
 							input_object:		jQuery('input[id="popup_ckeditor_content"]')
 						});
-						
+
 						// reinvoke TagTree
 						var tag_tree_handler = commsy_functions.getModuleCallback('commsy/tag_tree');
 						tag_tree_handler.buildTree(null, {
 							object:				jQuery('div[id="tag_tree"]')
 						});
-						
+
 						var dynatree = jQuery('div[id="tag_tree"]').dynatree('getTree');
-						
+
 						if(typeof(dynatree['$tree']) !== 'undefined') {
 							// expand all nodes and add checkbox inputs
 							dynatree.visit(function(node) {
 								node.expand(true);
-								
+
 								// check bold
 								if(node.data.title.substr(0, 3) === '<b>') {
 									node.data.title = '<input type="checkbox" checked="checked"/><span>' + node.data.title + '</span>';
 								} else {
 									node.data.title = '<input type="checkbox"/><span>' + node.data.title + '</span>';
 								}
-								
+
 								// re-render
 								node.render();
 							});
-							
+
 							// override onclick
 							dynatree.options.onClick = function(node, event) {
 								// toggle bold
@@ -136,38 +134,38 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 									// add
 									node.data.title = '<b><input type="checkbox" checked="checked"/><span>' + title + '</span></b>';
 								}
-								
+
 								// re-render
 								node.render();
-								
+
 								return false;
 							}
 						}
-						
+
 						// setup popup
 						handle.setupPopup(event.data.module, event.data.item_id);
 					}
 				}
 			});
-			
+
 			// stop processing
 			return false;
 		},
-		
+
 		close: function(event) {
 			// unregister ck editor
 			var editor = jQuery('div[id="popup_ckeditor"]');
 			if(editor.length > 0) editor.ckeditorGet().destroy();
-			
+
 			// remove popup html from dom
 			jQuery('div[id="popup_wrapper"]').remove();
 		},
-		
+
 		save: function(event) {
 			var handle = event.data.handle;
 			var module = event.data.module;
 			var item_id = event.data.item_id;
-			
+
 			// check mandatory
 			var check_passed = true;
 			jQuery('input[class~="mandatory"]').each(function() {
@@ -180,12 +178,12 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 							jQuery('html, body').animate({scrollTop: jQuery(this).offset().top}, 500);
 						}
 					}
-					
+
 					jQuery(this).css('border', '1px solid red');
 					check_passed = false;
 				}
 			});
-			
+
 			if(check_passed) {
 				// collect form data
 				var form_objects = jQuery('div[id="popup_wrapper"] input[name^="form_data"]');
@@ -203,25 +201,25 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 				};
 				jQuery.each(form_objects, function() {
 					var add = false;
-					
+
 					// if form field is a checkbox, only add if checked
 					if(jQuery(this).attr('type') === 'checkbox') {
 						if(jQuery(this).attr('checked') === 'checked') {
 							add = true;
 						}
 					}
-					
+
 					// if form fiel is a radio button, only add the selected one
 					else if(jQuery(this).attr('type') === 'radio') {
 						if(jQuery(this).attr('checked')	 === 'checked') {
 							add = true;
 						}
 					}
-					
+
 					else {
 						add = true;
 					}
-					
+
 					if(add === true) {
 						// extract name
 						/form_data\[(.*)\]/.exec(jQuery(this).attr('name'));
@@ -232,7 +230,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 						});
 					}
 				});
-				
+
 				// add buzzword data
 				var buzzword_objects = jQuery('ul[id="buzzwords_assigned"] li[id^="buzzword_"]');
 				var buzzword_ids = [];
@@ -245,11 +243,11 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 					name:	'buzzwords',
 					value:	buzzword_ids
 				});
-				
+
 				// add tag data
 				var dynatree = jQuery('div[id="tag_tree"]').dynatree('getTree');
 				var tag_ids  = [];
-				
+
 				if(dynatree['$tree'] !== 'undefined') {
 					dynatree.visit(function(node) {
 						// check if bold
@@ -261,19 +259,19 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 						}
 					});
 				}
-				
+
 				data.form_data.push({
 					name:	'tags',
 					value:	tag_ids
 				});
-				
-				
+
+
 				// set item id
 				data.form_data.push({
 					name:	'iid',
 					value:	item_id
 				});
-				
+
 				// add files data
 				var file_objects = jQuery('div[id="popup_wrapper"] input[name="filelist[]"]');
 				var file_ids = [];
@@ -284,7 +282,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 					name:	'files',
 					value:	file_ids
 				});
-				
+
 				// ajax request
 				jQuery.ajax({
 					type: 'POST',
@@ -300,22 +298,22 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 						if(item_id == 'NEW') {
 							handle.netnavigation.afterItemCreation(data);
 						}
-						
+
 						handle.close();
-						
+
 						// page reload
 						location.reload();
 						//handle.preconditionsSuccess(data);
 					}
 				});
 			}
-			
+
 			return false;
 		},
-		
+
 		setupTabs: function() {
 			var handle = this;
-			
+
 			// register click for tabs
 			jQuery('div[class="tab_navigation"] a').each(function(index) {
 				jQuery(this).bind('click', {
@@ -323,7 +321,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 					handle:	handle}, handle.onClickTab);
 			});
 		},
-		
+
 		setupBuzzwords: function() {return false;
 			// unassigned
 			jQuery('div[id="popup"] ul[id="buzzwords_unassigned"]').sortable({
@@ -337,7 +335,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 					}
 				}
 			});
-			
+
 			// assigned
 			jQuery('div[id="popup"] ul[id="buzzwords_assigned"]').sortable({
 				connectWith:	'ul',
@@ -350,52 +348,52 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 					}
 				}
 			});
-			
+
 			// register add event
 			jQuery('ul[id^="buzzwords_"] img').each(function() {
 				jQuery(this).click(function() {
 					var li = jQuery(this).parent().parent();
-					
+
 					// get ul id
 					var ul_id = li.parent().attr('id');
-					
+
 					// detach
 					li = li.detach();
-					
+
 					if(ul_id === 'buzzwords_unassigned') {
 						// append to assigned
 						li.appendTo(jQuery('ul[id="buzzwords_assigned"]'));
-						
+
 						// adjust
 						li.find('img').attr('alt', 'remove');
 					} else {
 						// append to unassigned
 						li.appendTo(jQuery('ul[id="buzzwords_unassigned"]'));
-						
+
 						// adjust
 						li.find('img').attr('alt', 'add');
 					}
 				});
 			});
 		},
-		
+
 		onClickTab: function(event) {
 			var target = jQuery(event.currentTarget);
 			var index = event.data.index;
 			var handle = event.data.handle;
-			
+
 			// set all tabs inactive
 			jQuery('div[class="tab_navigation"] a').each(function() {
 				jQuery(this).attr('class', 'pop_tab');
 			})
-			
+
 			// set target active
 			target.attr('class', 'pop_tab_active');
-			
+
 			// switch display
 			// get divs
 			var content_divs = jQuery('div[id="popup_tabcontent"] div[class^="settings_area"]');
-			
+
 			// set class for divs
 			content_divs.each(function(i) {
 				if(index === i) {
@@ -404,53 +402,53 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 					jQuery(this).attr('class', 'settings_area hidden');
 				}
 			});
-			
+
 			// fullsize black overlay
 			handle.fullSizeOverlay();
-			
+
 			return false;
 		},
-		
+
 		setupPopup: function(module, item_id) {
 			var handle = this;
-			
+
 			// fullsize black overlay
 			handle.fullSizeOverlay();
-			
+
 			// register click for close button
 			jQuery('a[id="popup_close"]').click(function() {
 				handle.close();
 				return false;
 			});
-			
+
 			// register click for abort button
 			jQuery('input[id="popup_button_abort"]').click(function() {
 				handle.close();
 				return false;
 			});
-			
+
 			// setup buzzwords
 			this.setupBuzzwords();
-			
+
 			// setup netnavigation
 			this.setupNetnavigation(handle, item_id, module);
-			
+
 			// register click for save button
 			jQuery('input[id="popup_button_create"]').bind('click', {
 				handle:		this,
 				module:		module,
 				item_id:	item_id}, this.save);
-			
+
 			// setup tabs
 			this.setupTabs();
 		},
-		
+
 		setupNetnavigation: function(handle, item_id, module) {
 			// init netnavigation class
 			this.netnavigation = new Netnavigation();
 			this.netnavigation.init(handle.cid, item_id, module, this.tpl_path);
 		},
-		
+
 		fullSizeOverlay: function() {
 			var overlay = jQuery('div[id="popup_background"]');
 			overlay.css('height', jQuery(document).height());
@@ -481,27 +479,27 @@ var Netnavigation = function() {
 			selected:				0,
 			after_item_creation:	[]
 		},
-		
+
 		init: function(cid, item_id, module, tpl_path) {
 			this.cid = cid;
 			this.item_id = item_id;
 			this.module = module;
 			this.tpl_path = tpl_path;
-			
+
 			var handle = this;
-			
+
 			// register onclick handler
 			jQuery('#popup_netnavigation_attach_new').click(function() {
 				// scroll in/out
 				var animate_object = jQuery('#popup_netnavigation');
-				
+
 				if(animate_object.css('width') !== '0px') {
 					// scroll in
 					jQuery('#popup_netnavigation').animate({
 						width:			'0px',
 						'margin-left':	'-19px'
 					});
-					
+
 					// change show/hide text
 					jQuery('span#attach_show').toggle();
 					jQuery('span#attach_hide').toggle();
@@ -518,31 +516,31 @@ var Netnavigation = function() {
 									disabled:	this.disabled
 								}));
 							});
-							
+
 							// setup paging
 							handle.setupPaging();
-							
+
 							// setup restrictions
 							handle.setupRestrictions();
-							
+
 							// setup form submit
 							jQuery('input[name="netnavigation_submit_restrictions"]').click(function() {
 								handle.performRequest();
-								
+
 								return false;
 							});
-							
+
 							// perform first request
 							handle.performRequest();
-							
+
 							handle.initialized = true;
 						});
 					}
-					
+
 					// change show/hide text
 					jQuery('span#attach_show').toggle();
 					jQuery('span#attach_hide').toggle();
-					
+
 					// scroll out
 					jQuery('#popup_netnavigation').animate({
 						width:			'739px',
@@ -551,88 +549,88 @@ var Netnavigation = function() {
 				}
 			});
 		},
-		
+
 		setupRestrictions: function() {
 			var content_object = jQuery('.pop_item_content');
 			var handle = this;
-			
+
 			// type restriction
 			content_object.find('select[name="netnavigation_type_restriction"]').change(function(event) {
 				handle.restrictions.type = jQuery(event.target).val();
-				
+
 				return false;
 			});
-			
+
 			// rubric restriction
 			content_object.find('select[name="netnavigation_rubric_restriction"]').change(function(event) {
 				handle.restrictions.rubric = jQuery(event.target).val();
-				
+
 				return false;
 			});
-			
+
 			// search restriction
 			content_object.find('input[name="netnavigation_search_restriction"]').change(function(event) {
 				handle.restrictions.search = jQuery(event.target).val();
-				
+
 				return false;
 			});
-			
+
 			// linked restriction
 			content_object.find('input[name="netnavigation_linked_restriction"]').change(function(event) {
 				handle.restrictions.only_linked = (event.target.checked == true) ? true : false;
-				
+
 				return false;
 			});
 		},
-		
+
 		setupPaging: function() {
 			var navigation_object = jQuery('.pop_item_navigation');
 			var handle = this;
-			
+
 			// first
 			navigation_object.children('#first').click(function() {
 				if(handle.paging.current > 0) {
 					handle.paging.current = 0;
 					handle.performRequest();
 				}
-				
+
 				return false;
 			});
-			
+
 			// previous
 			navigation_object.children('#prev').click(function() {
 				if(handle.paging.current > 0) {
 					handle.paging.current -= 1;
 					handle.performRequest();
 				}
-				
+
 				return false;
 			});
-			
+
 			// next
 			navigation_object.children('#next').click(function() {
 				if(handle.paging.current + 1 < handle.store.pages) {
 					handle.paging.current += 1;
 					handle.performRequest();
 				}
-				
+
 				return false;
 			})
-			
+
 			// last
 			navigation_object.children('#last').click(function() {
 				if(handle.paging.current + 1 < handle.store.pages) {
 					handle.paging.current = handle.store.pages - 1;
 					handle.performRequest();
 				}
-				
+
 				return false;
 			})
 		},
-		
-		performRequest: function() {			
+
+		performRequest: function() {
 			var handle = this;
-			
+
 			// create data object for request
 			var data = {
 				item_id:		this.item_id,
@@ -640,14 +638,14 @@ var Netnavigation = function() {
 				current_page:	this.paging.current,
 				restrictions:	this.restrictions
 			};
-			
+
 			// send request
 			this.ajaxRequest('performRequest', data, function(ret) {
 				var content_object = jQuery('#popup_netnavigation #crt_row_area');
-				
+
 				// fill list
 				content_object.empty();
-				
+
 				jQuery.each(ret.list, function(index) {
 					content_object.append(
 						jQuery('<div/>', {
@@ -684,44 +682,44 @@ var Netnavigation = function() {
 						)
 					);
 				});
-				
+
 				// update selected
 				handle.store.selected = ret.num_selected_total;
 				jQuery('span#pop_item_entries_selected').text(handle.store.selected);
-				
+
 				// register checkbox events - unregistering is done by jQuery when empty the content object
 				content_object.find('input[type="checkbox"]').each(function() {
 					var row_object = jQuery(this).parentsUntil('div[class^="pop_row_"]').parent();
 					var old_bg_color = row_object.css('background-color');
-					
+
 					jQuery(this).change(function(event) {
 						var checked = (jQuery(this).attr('checked') === 'checked') ? true : false;
 						var linked_id = jQuery(event.target).attr('id').substr(7);
-						
+
 						var data = {
 							item_id:	handle.item_id,
 							link_id:	linked_id,
 							checked:	checked
 						};
-						
+
 						jQuery('span#pop_item_entries_selected').text(handle.store.selected);
-						
+
 						// save old row background color and set new
 						row_object.css('background-color', '#66CC00');
-						
+
 						handle.ajaxRequest('updateLinkedItem', data, function(ret) {
 							// fade back to old row color
 							row_object.animate({
 								'background-color':	old_bg_color
 							});
-							
+
 							if(checked === true) {
 								// on check
 								handle.store.selected++;
-								
+
 								var text = ret.linked_item.link_text;
 								if(text.length > 25) text = text.substr(0, 22) + '...';
-								
+
 								// add related entry to right box list
 								jQuery('div#popup_right div#netnavigation ul').prepend(
 									jQuery('<li/>', {
@@ -749,49 +747,49 @@ var Netnavigation = function() {
 							} else {
 								// on uncheck
 								handle.store.selected--;
-								
+
 								// remove related entry from right box list
 								var li_object = jQuery('div#netnavigation li#item_' + linked_id);
 								li_object.slideUp(1000, function() {
 									li_object.remove();
-								});						
+								});
 							}
 						});
 					});
 				});
-				
+
 				// update current page and total number of pages
 				jQuery('#pop_item_current_page').text(handle.paging.current + 1);
 				jQuery('#pop_item_pages').text(ret.paging.pages);
-				
+
 				// store pages
 				handle.store.pages = ret.paging.pages;
 			});
 		},
-		
+
 		afterItemCreation: function(item_id) {
 			var handle = this;
-			
+
 			// get ids
 			var store_after_item_creation = [];
 			jQuery('div#popup_right div#netnavigation li').each(function() {
 				store_after_item_creation.push(jQuery(this).attr('id').substr(5));
 			});
-			
+
 			jQuery.each(store_after_item_creation, function(index, value) {
 				var data = {
 					item_id:	item_id,
 					link_id:	value,
 					checked:	true
 				};
-				
+
 				handle.ajaxRequest('updateLinkedItem', data, null);
 			});
 		},
-		
+
 		ajaxRequest: function(action, data, callback) {
 			var handle = this;
-			
+
 			jQuery.ajax({
 				type: 'POST',
 				url: 'commsy.php?cid=' + handle.cid + '&mod=ajax&fct=netnavigation&action=' + action,
@@ -807,7 +805,7 @@ var Netnavigation = function() {
 						if(callback !== null) {
 							callback(data);
 						}
-						
+
 						return data;
 					}
 				}
