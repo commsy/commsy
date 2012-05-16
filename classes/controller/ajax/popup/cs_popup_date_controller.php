@@ -48,7 +48,7 @@ class cs_popup_date_controller {
         // Access granted
         else {
 
-             
+
 
             // Save item
             if ($this->_popup_controller->checkFormData()) {
@@ -379,11 +379,7 @@ class cs_popup_date_controller {
         return array();
     }
 
-    private function cleanup_session ($current_iid) {
-        $this->_environment->getSessionItem()->unsetValue($this->_environment->getCurrentModule().'_add_files');
-        $this->_environment->getSessionItem()->unsetValue($current_iid.'_post_vars');
-    }
-    
+
     public function getReturn() {
         return $this->_return;
     }

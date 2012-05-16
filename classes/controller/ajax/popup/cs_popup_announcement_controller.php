@@ -15,7 +15,45 @@ class cs_popup_announcement_controller implements cs_rubric_popup_controller {
     }
 
     public function initPopup($item) {
-        $this->assignTemplateVars();
+			// assign template vars
+			$this->assignTemplateVars();
+
+			if($item !== null) {
+				// edit mode
+				$current_context = $this->_environment->getCurrentContextItem();
+
+				// TODO: check rights
+
+				$this->_popup_controller->assign('item', 'title', $item->getTitle());
+				$this->_popup_controller->assign('item', 'description', $item->getDescription());
+ 				$this->_popup_controller->assign('item', 'public', $item->isPublic());
+		        if ($item->getSeconddateTime() != '') {
+ 					$this->_popup_controller->assign('item', 'dayEnd', getDateInLang($item->getSeconddateTime()));
+		            $this->_popup_controller->assign('item', 'timeEnd', getTimeInLang($item->getSeconddateTime()));
+		        }else{
+            		$time = $current_context->getTimeSpread();
+ 					$this->_popup_controller->assign('item', 'dayEnd', getDateInLang(DateAdd($time,date("Y-m-d"),"Y-m-d")));
+		            $this->_popup_controller->assign('item', 'timeEnd', date("H:m"));
+		        }
+
+				$activating = false;
+				if($current_context->withActivatingContent()) {
+					$activating = true;
+
+					$this->_popup_controller->assign('item', 'private_editing', $item->isPrivateEditing());
+
+					if($item->isNotActivated()) {
+						$this->_popup_controller->assign('item', 'is_not_activated', true);
+
+						$activating_date = $item->getActivatingDate();
+
+						$this->_popup_controller->assign('item', 'activating_date', mb_substr($activating_date, 0, 10));
+						$this->_popup_controller->assign('item', 'activating_time', mb_substr($activating_date, -8));
+					}
+				}
+
+				$this->_popup_controller->assign('popup', 'activating', $activating);
+			}
     }
 
     public function save($form_data, $additional = array()) {
@@ -34,47 +72,22 @@ class cs_popup_announcement_controller implements cs_rubric_popup_controller {
             $announcement_item = $announcement_manager->getItem($current_iid);
         }
 
+        // TODO: check rights */
+		/****************************/
         if ( $current_iid != 'NEW' and !isset($announcement_item) ) {
 
         } elseif ( !(($current_iid == 'NEW' and $current_user->isUser()) or
         ($current_iid != 'NEW' and isset($announcement_item) and
         $announcement_item->mayEdit($current_user))) ) {
 
+		/****************************/
+
+
         } else { //Acces granted
-            // Find out what to do
-            /*            if ( isset($_POST['option']) ) {
-             $command = $_POST['option'];
-             }elseif ( isset($_GET['option']) ) {
-             $command = $_GET['option'];
-             } else {
-             $command = '';
-             } */
+			$this->cleanup_session($current_iid);
 
-            // Cancel editing
-            /*  if ( isOption($command, $translator->getMessage('COMMON_CANCEL_BUTTON')) ) {
-             cleanup_session($current_iid);
-             $this->_environment->getSessionItem()->unsetValue('cid'.$this->_environment->getCurrentContextID().'_'.$this->_environment->getCurrentModule().'_buzzword_ids');
-             $this->_environment->getSessionItem()->unsetValue('buzzword_post_vars');
-             $this->_environment->getSessionItem()->unsetValue('cid'.$this->_environment->getCurrentContextID().'_'.$this->_environment->getCurrentModule().'_tag_ids');
-             $this->_environment->getSessionItem()->unsetValue('tag_post_vars');
-             $this->_environment->getSessionItem()->unsetValue('cid'.$this->_environment->getCurrentContextID().'_linked_items_index_selected_ids');
-             $this->_environment->getSessionItem()->unsetValue('linked_items_post_vars');
-             if ( $current_iid == 'NEW' ) {
-             redirect($this->_environment->getCurrentContextID(), CS_ANNOUNCEMENT_TYPE, 'index', '');
-             } else {
-             $params = array();
-             $params['iid'] = $current_iid;
-             redirect($this->_environment->getCurrentContextID(), CS_ANNOUNCEMENT_TYPE, 'detail', $params);
-             }
-             }
-             // Show form and/or save item
-             else {
-             // Save item
-             if ( !empty($command) and
-             (isOption($command, $translator->getMessage('ANNOUNCEMENT_SAVE_BUTTON'))
-             or isOption($command, $translator->getMessage('ANNOUNCEMENT_CHANGE_BUTTON'))) ) { */
-
-            if ($this->_popup_controller->checkFormData()) {
+			// save item
+			if($this->_popup_controller->checkFormData()) {
                 $session = $this->_environment->getSessionItem();
                 $item_is_new = false;
                 // Create new item
@@ -121,35 +134,6 @@ class cs_popup_announcement_controller implements cs_rubric_popup_controller {
                 if (isset($form_data['public'])) {
                     $announcement_item->setPublic($form_data['public']);
                 }
-                if ($session->issetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_buzzword_ids')){
-                    $announcement_item->setBuzzwordListByID($session->getValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_buzzword_ids'));
-                    $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_buzzword_ids');
-                }
-                if ($session->issetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_tag_ids')){
-                    $announcement_item->setTagListByID($session->getValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_tag_ids'));
-                    $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_tag_ids');
-                }
-                if ($session->issetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids')){
-                    $announcement_item->setLinkedItemsByIDArray(array_unique($session->getValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids')));
-                    $session->unsetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids');
-                }
-
-                // files
-                /*$item_files_upload_to = $announcement_item;
-                 include_once('include/inc_fileupload_edit_page_save_item.php');
-
-                 if ( isset($form_data['public']) ) {
-                 if ( $announcement_item->isPublic() != $form_data['public'] ) {
-                 $announcement_item->setPublic($form_data['public']);
-                 }
-                 } else {
-                 if ( isset($form_data['private_editing']) ) {
-                 $announcement_item->setPrivateEditing('0');
-                 } else {
-                 $announcement_item->setPrivateEditing('1');
-                 }
-                 } */
-                // files
                 $file_ids = $form_data['files'];
                 $this->_popup_controller->getUtils()->setFilesForItem($announcement_item, $file_ids);
 
@@ -182,12 +166,6 @@ class cs_popup_announcement_controller implements cs_rubric_popup_controller {
 
                 // Save item
                 $announcement_item->save();
-                $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_buzzword_ids');
-                $session->unsetValue('buzzword_post_vars');
-                $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_tag_ids');
-                $session->unsetValue('tag_post_vars');
-                $session->unsetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids');
-                $session->unsetValue('linked_items_post_vars');
                 if ($session->issetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_index_ids')){
                     $id_array =  array_reverse($session->getValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_index_ids'));
                 }else{
@@ -204,11 +182,6 @@ class cs_popup_announcement_controller implements cs_rubric_popup_controller {
                 $manager->markEdited($announcement_item->getItemID());
 
                 // Redirect
-                /*cleanup_session($current_iid);
-                 $params = array();
-                 $params['iid'] = $announcement_item->getItemID();
-                 redirect($environment->getCurrentContextID(), CS_ANNOUNCEMENT_TYPE, 'detail', $params);
-                 */
                 $this->_return = $announcement_item->getItemID();
             }
         }
@@ -261,13 +234,33 @@ class cs_popup_announcement_controller implements cs_rubric_popup_controller {
         $this->_popup_controller->assign('popup', 'config', $config_information);
     }
 
-    private function cleanup_session ($current_iid) {
-        $this->_environment->getSessionItem()->unsetValue($this->_environment->getCurrentModule().'_add_files');
-        $this->_environment->getSessionItem()->unsetValue($current_iid.'_post_vars');
-    }
 
     public function getFieldInformation($sub = '') {
-        return array();
+			return array(
+				array(	'name'		=> 'title',
+						'type'		=> 'text',
+						'mandatory' => true),
+				array(	'name'		=> 'description',
+						'type'		=> 'textarea',
+						'mandatory'	=> false),
+				array(	'name'		=> 'dayEnd',
+						'type'		=> 'text',
+						'mandatory'	=> true),
+				array(	'name'		=> 'timeEnd',
+						'type'		=> 'text',
+						'mandatory'	=> false)
+			);
     }
+
+	public function cleanup_session($current_iid) {
+		$environment = $this->_environment;
+		$session = $this->_environment->getSessionItem();
+
+		$session->unsetValue($environment->getCurrentModule().'_add_buzzwords');
+		$session->unsetValue($environment->getCurrentModule().'_add_tags');
+		$session->unsetValue($environment->getCurrentModule().'_add_files');
+		$session->unsetValue($current_iid.'_post_vars');
+	}
+
 
 }
