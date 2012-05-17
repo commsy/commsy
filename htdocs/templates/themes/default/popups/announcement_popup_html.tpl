@@ -1,12 +1,17 @@
 <div id="popup_wrapper">
-	<div id="popup_background"></div>
-	<div id="popup_w3col">
-		<div id="popup">
+	<div id="popup_edit">
+		<div id="popup_frame">
+			<div id="popup_inner">
 
-			<div id="popup_rubric_content">
-				<h2>{if $popup.edit == false}___COMMON_ENTER_NEW_ANNOUNCEMENT___{else}___COMMON_ANNOUNCEMENT_EDIT___{/if}</h2>
 
-				<div id="content_row_three">
+				<div id="popup_title">
+					<a id="popup_close" href="" title="___COMMON_CLOSE___"><img src="{$basic.tpl_path}img/popup_close.gif" alt="___COMMON_CLOSE___" /></a>
+					<h2>{if $popup.edit == false}___COMMON_ENTER_NEW_ANNOUNCEMENT___{else}___COMMON_ANNOUNCEMENT_EDIT___{/if}</h2>
+					<div class="clear"> </div>
+				</div>
+
+
+				<div id="popup_content">
 					<div class="input_row">
 						<div class="input_label_80">___COMMON_TITLE___<span class="required">*</span>:</div> <input type="text" value="{if isset($item.title)}{$item.title}{/if}" name="form_data[title]" class="size_400 mandatory" />
 					</div>
@@ -20,20 +25,21 @@
 						<div id="popup_ckeditor">{if isset($item.description)}{$item.description}{/if}</div>
 						<input type="hidden" id="popup_ckeditor_content" name="form_data[description]" value=""/>
 					</div>
+				</div>
 
 
+
+				<div id="popup_tabs">
 					<div class="tab_navigation">
 						<a href="" class="pop_tab_active">___MATERIAL_FILES___</a>
 						{if $popup.is_owner == true}<a href="" class="pop_tab">___COMMON_RIGHTS___</a>{/if}
 						{if isset($popup.buzzwords)}<a href="" class="pop_tab">___COMMON_BUZZWORDS___</a>{/if}
 						{if isset($popup.tags)}<a href="" class="pop_tab">___COMMON_TAGS___</a>{/if}
-
+						<a href="" id="popup_netnavigation_attach_new" class="pop_tab">___COMMON_ATTACHED_ENTRIES___</a>
 						<div class="clear"> </div>
 					</div>
-
 					<div id="popup_tabcontent">
 						<div class="settings_area">
-
 							<div class="sa_col_left">
 								<div id="file_finished"></div>
 								<input id="uploadify" name="uploadify" type="file" />
@@ -112,23 +118,27 @@
 								</div>
 							</div>
 						{/if}
+
+						{include file="popups/include/edit_attach_items_include_html.tpl"}
+
 					</div>
 
-				</div>
 
-				<div id="content_row_four">
-					<div id="crt_actions_area">
-						<input id="popup_button_create" class="popup_button" type="button" name="" value="{if $popup.edit == false}___DISCUSSIONS_SAVE_BUTTON___{else}___COMMON_DISCUSSION_EDIT___{/if}" />
-						<input id="popup_button_abort" class="popup_button" type="button" name="" value="___COMMON_CANCEL_BUTTON___" />
+
+					<div id="content_buttons">
+						<div id="crt_actions_area">
+							<input id="popup_button_create" class="popup_button" type="button" name="" value="{if $popup.edit == false}___DISCUSSIONS_SAVE_BUTTON___{else}___COMMON_DISCUSSION_EDIT___{/if}" />
+							<input id="popup_button_abort" class="popup_button" type="button" name="" value="___COMMON_CANCEL_BUTTON___" />
+						</div>
 					</div>
-				</div>
 
+
+
+				</div>
 			</div>
 
+
+			<div class="clear"></div>
 		</div>
-
-		{include file="popups/include/edit_attach_items_include_html.tpl"}
-
-		<div class="clear"></div>
 	</div>
 </div>

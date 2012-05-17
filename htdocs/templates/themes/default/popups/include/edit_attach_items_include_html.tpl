@@ -1,28 +1,19 @@
-<div id="popup_right">
-	<a id="popup_close" href="" title="___COMMON_CLOSE___"><img src="{$basic.tpl_path}img/pop_close_btn.gif" alt="___COMMON_CLOSE___" /></a>
-	<div id="popup_netnavigation_outer_left" class="popup_netnavigation_outer">
-		<div class="float-left" id="netnavigation">
-			<h2>___COMMON_ATTACHED_ENTRIES___</h2>
+<div class="settings_area hidden">
 
-			<div class="float-left" id="popup_netnavigation">
+{*			<div id="popup_netnavigation_outer_bottom" class="popup_netnavigation_outer">
+				<a id="popup_netnavigation_attach_new" href="#" title="___COMMON_ITEM_ATTACH___">
+					<span id="attach_show" class="hidden">___COMMON_ITEM_ATTACH_SHOW___</span>
+					<span id="attach_hide">___COMMON_ITEM_ATTACH_HIDE___</span>
+				</a>
+			</div>
+*}
+
+			<div id="popup_netnavigation">
 				<div id="content_row_two_max">
-                    <div class="open_close_head">
-                        <strong>___COMMON_ITEM_NEW_ATTACH___</strong>
-                        (<span class="text_important">&bdquo;{$item.title}&rdquo;</span> &ndash; <span id="pop_item_entries_selected">0</span> ___COMMON_ACTUAL_ATTACHED___)
-                    </div>
-
                     <div id="crt_content">
                         <div id="crt_col_left">
-
                             <div id="crt_row_area">
                             </div>
-
-                            {*
-                            <div id="crt_actions_area">
-                                <input class="popup_button" type="button" name="" value="___COMMON_ATTACH_BUTTON___" />
-                            </div>
-                            *}
-
                         </div>
 
                         <div id="crt_col_right">
@@ -35,15 +26,15 @@
                             </div>
 
                             <div class="pop_item_content">
-                                <input name="netnavigation_search_restriction" type="text" value="___HOME_SEARCH_SHORT_TO___" class="size_150_color" />
+                                <input name="netnavigation_search_restriction" type="text" value="___HOME_SEARCH_SHORT_TO___" class="size_170" />
                                 <br/>
                                 <span class="sitenote">___SEARCH_RUBRIC_RESTRICTION___</span><br/>
-                                <select name="netnavigation_rubric_restriction" size="1" class="size_150_color"></select>
+                                <select name="netnavigation_rubric_restriction" size="1" class="size_170_select"></select>
                                 <br/>
 
                                 {if $popup.activating}
 	                                <span class="sitenote">___COMMON_SHOW_ACTIVATING_ENTRIES___</span><br/>
-	                                <select name="netnavigation_type_restriction" size="1" class="size_150_color">
+	                                <select name="netnavigation_type_restriction" size="1" class="size_170_select">
 	                                    <option value="1">___COMMON_ALL_ENTRIES___</option>
 	                                    <option value="-2" disabled="disabled">------------------------------</option>
 	                                    <option value="2" selected="selected">___COMMON_SHOW_ONLY_ACTIVATED_ENTRIES___</option>
@@ -62,27 +53,20 @@
                 </div>
 			</div>
 
-			<ul class="netnavigation">
-				{foreach $popup.netnavigation.items as $entry}
-					<li id="item_{$entry.linked_iid}">
-						<a target="_self" href="commsy.php?cid={$environment.cid}&mod={$entry.module}&fct=detail&iid={$entry.linked_iid}" title="{$entry.title}">
-							<img src="{$basic.tpl_path}img/netnavigation/{$entry.img}" title="{$entry.title}"/>
-						</a>
-						<a target="_self" href="commsy.php?cid={$environment.cid}&mod={$entry.module}&fct=detail&iid={$entry.linked_iid}" title="{$entry.title}">
-							{$entry.link_text|truncate:25:"...":true}
-						</a>
-					</li>
-				{/foreach}
-			</ul>
-
-			<div id="popup_netnavigation_outer_bottom" class="popup_netnavigation_outer">
-				<a id="popup_netnavigation_attach_new" href="#" title="___COMMON_ITEM_ATTACH___">
-					<span id="attach_show" class="hidden">___COMMON_ITEM_ATTACH_SHOW___</span>
-					<span id="attach_hide">___COMMON_ITEM_ATTACH_HIDE___</span>
-				</a>
+			<div id="netnavigation_list">
+				<ul class="netnavigation">
+					{foreach $popup.netnavigation.items as $entry}
+						<li id="item_{$entry.linked_iid}" class="netnavigation">
+							<a target="_self" href="commsy.php?cid={$environment.cid}&mod={$entry.module}&fct=detail&iid={$entry.linked_iid}" title="{$entry.title}">
+								<img src="{$basic.tpl_path}img/netnavigation/{$entry.img}" title="{$entry.title}"/>
+							</a>
+							<a target="_self" href="commsy.php?cid={$environment.cid}&mod={$entry.module}&fct=detail&iid={$entry.linked_iid}" title="{$entry.title}">
+								{$entry.link_text}
+							</a>
+						</li>
+					{/foreach}
+				</ul>
 			</div>
-		</div>
 
 		<div class="clear"></div>
-	</div>
 </div>

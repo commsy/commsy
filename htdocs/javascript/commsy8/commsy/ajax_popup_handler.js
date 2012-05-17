@@ -452,63 +452,42 @@ var Netnavigation = function() {
 			jQuery('#popup_netnavigation_attach_new').click(function() {
 				// scroll in/out
 				var animate_object = jQuery('#popup_netnavigation');
+				// get inital data if this is the first call
+				if(handle.initialized === false) {
+					handle.ajaxRequest('getInitialData', {module: this.module}, function(data) {
+						// init rubric select box
+						var select_object = jQuery('select[name="netnavigation_rubric_restriction"]');
+						jQuery.each(data.rubrics, function() {
+							select_object.append(jQuery('<option/>', {
+								value:		this.value,
+								text:		this.text,
+								disabled:	this.disabled
+							}));
+						});
 
-				if(animate_object.css('width') !== '0px') {
-					// scroll in
-					jQuery('#popup_netnavigation').animate({
-						'width':			'0px',
-						'margin-left':	'0px',
-						'opacity': '0'
-					});
+						// setup paging
+						handle.setupPaging();
 
-					// change show/hide text
-					jQuery('span#attach_show').toggle();
-					jQuery('span#attach_hide').toggle();
-				} else {
-					// get inital data if this is the first call
-					if(handle.initialized === false) {
-						handle.ajaxRequest('getInitialData', {module: this.module}, function(data) {
-							// init rubric select box
-							var select_object = jQuery('select[name="netnavigation_rubric_restriction"]');
-							jQuery.each(data.rubrics, function() {
-								select_object.append(jQuery('<option/>', {
-									value:		this.value,
-									text:		this.text,
-									disabled:	this.disabled
-								}));
-							});
+						// setup restrictions
+						handle.setupRestrictions();
 
-							// setup paging
-							handle.setupPaging();
-
-							// setup restrictions
-							handle.setupRestrictions();
-
-							// setup form submit
-							jQuery('input[name="netnavigation_submit_restrictions"]').click(function() {
-								handle.performRequest();
-
-								return false;
-							});
-
-							// perform first request
+						// setup form submit
+						jQuery('input[name="netnavigation_submit_restrictions"]').click(function() {
 							handle.performRequest();
 
-							handle.initialized = true;
+							return false;
 						});
-					}
 
-					// change show/hide text
-					jQuery('span#attach_show').toggle();
-					jQuery('span#attach_hide').toggle();
+						// perform first request
+						handle.performRequest();
 
+						handle.initialized = true;
+					});
 					// scroll out
 					jQuery('#popup_netnavigation').animate({
-						'width':'727px',
-						'margin-left':	'-730px',
-						'margin-top':'-31px',
-						'background-color': '#EAEAEA',
-						'opacity': '1'
+						'width':'890px',
+						'margin-left':	'0px',
+						'margin-top':'0px',
 					});
 				}
 			});
@@ -626,12 +605,12 @@ var Netnavigation = function() {
 							)
 						).append(
 							jQuery('<div/>', {
-								'class':	'pop_col_220',
+								'class':	'pop_col_270',
 								text:		this.title
 							})
 						).append(
 							jQuery('<div/>', {
-								'class':	'pop_col_90',
+								'class':	'pop_col_150',
 								text:		this.modification_date
 							})
 						).append(
@@ -669,7 +648,7 @@ var Netnavigation = function() {
 						jQuery('span#pop_item_entries_selected').text(handle.store.selected);
 
 						// save old row background color and set new
-						row_object.css('background-color', '#66CC00');
+						row_object.css('background-color', '#D1D1D1');
 
 						handle.ajaxRequest('updateLinkedItem', data, function(ret) {
 							// fade back to old row color
@@ -682,11 +661,10 @@ var Netnavigation = function() {
 								handle.store.selected++;
 
 								var text = ret.linked_item.link_text;
-								if(text.length > 25) text = text.substr(0, 22) + '...';
 
 								// add related entry to right box list
-								jQuery('div#popup_right div#netnavigation ul').prepend(
-									jQuery('<li/>', {
+								jQuery('div#netnavigation_list ul').prepend(
+									jQuery('<li class=\"netnavigation\" />', {
 										id:		'item_' + linked_id
 									}).append(
 										jQuery('<a/>', {
@@ -713,7 +691,7 @@ var Netnavigation = function() {
 								handle.store.selected--;
 
 								// remove related entry from right box list
-								var li_object = jQuery('div#netnavigation li#item_' + linked_id);
+								var li_object = jQuery('div#netnavigation_list li#item_' + linked_id);
 								li_object.slideUp(1000, function() {
 									li_object.remove();
 								});
