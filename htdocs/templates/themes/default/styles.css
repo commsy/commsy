@@ -1706,8 +1706,21 @@ forms
     margin-top: -1px;
     }
 
+.input_radio{
+    line-height: 12px;
+    vertical-align: bottom;
+	}
+
 .input_label {
     padding-right: 5px;
+    }
+
+.input_label_150 {
+	float: left;
+    line-height: 25px;
+    padding-right: 5px;
+    vertical-align: bottom;
+    width: 150px;
     }
 
 .input_label_100 {

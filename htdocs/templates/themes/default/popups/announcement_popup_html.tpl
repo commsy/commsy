@@ -127,7 +127,7 @@
 
 					<div id="content_buttons">
 						<div id="crt_actions_area">
-							<input id="popup_button_create" class="popup_button" type="button" name="" value="{if $popup.edit == false}___DISCUSSIONS_SAVE_BUTTON___{else}___COMMON_DISCUSSION_EDIT___{/if}" />
+							<input id="popup_button_create" class="popup_button" type="button" name="" value="{if $popup.edit == false}___ANNOUNCEMENT_SAVE_BUTTON___{else}___COMMON_ANNOUNCEMENT_EDIT___{/if}" />
 							<input id="popup_button_abort" class="popup_button" type="button" name="" value="___COMMON_CANCEL_BUTTON___" />
 						</div>
 					</div>
