@@ -111,7 +111,7 @@
 		 * @param mixed $assignment
 		 */
 		protected function assign($categorie, $key, $assignment) {
-			if(!is_string($categorie) || !is_string($key)) die('categorie and key need to be of type string');
+			if(!is_string($categorie) || !is_string($key)) die('assign error: category and key need to be of type string');
 
 			$categorie_vars = $this->_tpl_engine->getTemplateVars($categorie);
 

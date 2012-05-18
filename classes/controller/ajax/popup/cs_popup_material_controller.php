@@ -57,27 +57,26 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
 		     	 /** Ende Dokumentenverwaltung **/
 
 		        if ($current_context->withWorkflow()){
-		           $this->_popup_controller->assign('workflow_traffic_light', $item->getWorkflowTrafficLight());
-		           $this->_popup_controller->assign('workflow_resubmission', $item->getWorkflowResubmission());
+		           $this->_popup_controller->assign('item', 'workflow_traffic_light', $item->getWorkflowTrafficLight());
+		           $this->_popup_controller->assign('item', 'workflow_resubmission', $item->getWorkflowResubmission());
 		           if($item->getWorkflowResubmissionDate() != '' and $item->getWorkflowResubmissionDate() != '0000-00-00 00:00:00'){
-		              $this->_popup_controller->assign('workflow_resubmission_date_workflow_resubmission_date', getDateInLang($item->getWorkflowResubmissionDate()));
+		              $this->_popup_controller->assign('item', 'workflow_resubmission_date_workflow_resubmission_date', getDateInLang($item->getWorkflowResubmissionDate()));
 		           } else {
-		              $this->_popup_controller->assign('workflow_resubmission_date_workflow_resubmission_date', '');
+		              $this->_popup_controller->assign('item', 'workflow_resubmission_date_workflow_resubmission_date', '');
 		           }
-		           $this->_popup_controller->assign('workflow_resubmission_who', $item->getWorkflowResubmissionWho());
-		           $this->_popup_controller->assign('workflow_resubmission_who_additional', $item->getWorkflowResubmissionWhoAdditional());
-		           $this->_popup_controller->assign('workflow_resubmission_traffic_light', $item->getWorkflowResubmissionTrafficLight());
-				   $this->_popup_controller->assign('workflow_validity', $item->getWorkflowValidity());
+		           $this->_popup_controller->assign('item', 'workflow_resubmission_who', $item->getWorkflowResubmissionWho());
+		           $this->_popup_controller->assign('item', 'workflow_resubmission_who_additional', $item->getWorkflowResubmissionWhoAdditional());
+		           $this->_popup_controller->assign('item', 'workflow_resubmission_traffic_light', $item->getWorkflowResubmissionTrafficLight());
+				   $this->_popup_controller->assign('item', 'workflow_validity', $item->getWorkflowValidity());
 		           if($item->getWorkflowValidityDate() != '' and $item->getWorkflowValidityDate() != '0000-00-00 00:00:00'){
-		              $this->_popup_controller->assign('workflow_validity_date_workflow_validity_date',getDateInLang($item->getWorkflowValidityDate()));
+		              $this->_popup_controller->assign('item', 'workflow_validity_date_workflow_validity_date',getDateInLang($item->getWorkflowValidityDate()));
 		           } else {
 		              $this->_popup_controller->assign('workflow_validity_date_workflow_validity_date', '');
 		           }
-		           $this->_popup_controller->assign('workflow_validity_who', $item->getWorkflowValidityWho());
-		           $this->_popup_controller->assign('workflow_validity_who_additional', $item->getWorkflowValidityWhoAdditional());
-		           $this->_popup_controller->assign('workflow_validity_traffic_light', $item->getWorkflowValidityTrafficLight());
+		           $this->_popup_controller->assign('item', 'workflow_validity_who', $item->getWorkflowValidityWho());
+		           $this->_popup_controller->assign('item', 'workflow_validity_who_additional', $item->getWorkflowValidityWhoAdditional());
+		           $this->_popup_controller->assign('item', 'workflow_validity_traffic_light', $item->getWorkflowValidityTrafficLight());
 		        }
-
 
 				$activating = false;
 				if($current_context->withActivatingContent()) {

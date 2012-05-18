@@ -312,16 +312,12 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 						var results = regex.exec(location.href);
 						if(results !== null) fct = results[1];
 
-						if(fct !== 'detail') {
-							location.reload();
-						} else {
-							var module = '';
-							var regex = new RegExp("[\\?&]mod=([^&#]*)");
-							var results = regex.exec(location.href);
-							if(results !== null && results[1] !== 'NEW') module = results[1];
+						var module = '';
+						var regex = new RegExp("[\\?&]mod=([^&#]*)");
+						var results = regex.exec(location.href);
+						if(results !== null && results[1] !== 'NEW') module = results[1];
 
-							location.href = 'commsy.php?cid=' + handle.cid + '&mod=' + module + '&fct=detail&iid=' + data;
-						}
+						location.href = 'commsy.php?cid=' + handle.cid + '&mod=' + module + '&fct=detail&iid=' + data;
 					}
 				});
 			}
@@ -482,12 +478,6 @@ var Netnavigation = function() {
 						handle.performRequest();
 
 						handle.initialized = true;
-					});
-					// scroll out
-					jQuery('#popup_netnavigation').animate({
-						'width':'890px',
-						'margin-left':	'0px',
-						'margin-top':'0px',
 					});
 				}
 			});
