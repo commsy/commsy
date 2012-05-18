@@ -26,6 +26,13 @@
     <link rel="stylesheet" type="text/css" media="screen" href="{$basic.tpl_path}uploadify.css" />
 	<link rel="stylesheet" type="text/css" media="screen" href="{$basic.tpl_path}jquery-lightbox/jquery.lightbox-0.5.css" />
 
+    <script type="text/javascript">
+	      <!--
+	   var datepicker_language = 'de';
+	   var datepicker_choose = 'Datum auswählen';
+	      -->
+    </script>
+
     <script data-main="javascript/commsy8/main.js" src="javascript/commsy8/require.js"></script>
 
     <title>CommSy 8.0 - Home</title>

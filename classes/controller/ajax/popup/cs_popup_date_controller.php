@@ -14,7 +14,70 @@ class cs_popup_date_controller {
     }
 
     public function initPopup($item) {
-        $this->assignTemplateVars();
+			// assign template vars
+			$this->assignTemplateVars();
+			$current_context = $this->_environment->getCurrentContextItem();
+
+			if($item !== null) {
+				// edit mode
+
+				// TODO: check rights
+
+				$this->_popup_controller->assign('item', 'title', $item->getTitle());
+				$this->_popup_controller->assign('item', 'description', $item->getDescription());
+ 				$this->_popup_controller->assign('item', 'public', $item->isPublic());
+         		$this->_popup_controller->assign('item', 'mode', $item->getDateMode());
+
+		        $temp = convertDateFromInput($item->getStartingDay(),$this->_environment->getSelectedLanguage());
+		        if ($temp['conforms']) {
+		           $this->_popup_controller->assign('item', 'dayStart', getDateInLang($item->getStartingDay()));
+		        } else {
+		           $this->_popup_controller->assign('item', 'dayStart',  $item->getStartingDay());
+		        }
+		        $temp = convertTimeFromInput($item->getStartingTime());
+		        if ($temp['conforms']) {
+		           $this->_popup_controller->assign('item', 'timeStart', getTimeLanguage($item->getStartingTime()));
+		        } else {
+		           $this->_popup_controller->assign('item', 'timeStart',  $item->getStartingTime());
+		        }
+         		$temp = convertDateFromInput($item->getEndingDay(),$this->_environment->getSelectedLanguage());
+		        if ($temp['conforms']) {
+		           $this->_popup_controller->assign('item', 'dayEnd', getDateInLang($item->getEndingDay()));
+		        } else {
+		           $this->_popup_controller->assign('item', 'dayEnd',  $item->getEndingDay());
+		        }
+         		$temp = convertTimeFromInput($item->getEndingTime());
+		        if ($temp['conforms']) {
+		           $this->_popup_controller->assign('item', 'timeEnd', getTimeLanguage($item->getEndingTime()));
+		        } else {
+		           $this->_popup_controller->assign('item', 'timeEnd',  $item->getEndingTime());
+		        }
+
+         		$this->_popup_controller->assign('item', 'place', $item->getPlace());
+
+
+				$activating = false;
+				if($current_context->withActivatingContent()) {
+					$activating = true;
+
+					$this->_popup_controller->assign('item', 'private_editing', $item->isPrivateEditing());
+
+					if($item->isNotActivated()) {
+						$this->_popup_controller->assign('item', 'is_not_activated', true);
+
+						$activating_date = $item->getActivatingDate();
+
+						$this->_popup_controller->assign('item', 'activating_date', mb_substr($activating_date, 0, 10));
+						$this->_popup_controller->assign('item', 'activating_time', mb_substr($activating_date, -8));
+					}
+				}
+
+				$this->_popup_controller->assign('popup', 'activating', $activating);
+			}else{
+ 				$val = ($this->_environment->inProjectRoom() OR $this->_environment->inGroupRoom())?'1':'0';
+ 				$this->_popup_controller->assign('item', 'public', $val);
+         		$this->_popup_controller->assign('item', 'private_editing', $val);
+			}
     }
 
     public function save($form_data, $additional = array()) {
@@ -27,65 +90,56 @@ class cs_popup_date_controller {
 
         $translator = $this->_environment->getTranslationObject();
 
-        if ( $current_iid == 'NEW' ) {
-            $dates_item = NULL;
+        if($current_iid === 'NEW') {
+            $date_item = null;
         } else {
-            $dates_manager = $environment->getDatesManager();
-            $dates_item = $dates_manager->getItem($current_iid);
+            $date_manager = $this->_environment->getDateManager();
+            $date_item = $date_manager->getItem($current_iid);
         }
 
-        // Check access rights
-        if ( $context_item->isProjectRoom() and $context_item->isClosed() ) {
+        // TODO: check rights */
+		/****************************/
+        if ( $current_iid != 'NEW' and !isset($date_item) ) {
 
-        } elseif ( $current_iid != 'NEW' and !isset($dates_item) ) {
+        } elseif ( !(($current_iid == 'NEW' and $current_user->isUser()) or
+        ($current_iid != 'NEW' and isset($date_item) and
+        $date_item->mayEdit($current_user))) ) {
 
-        }  elseif ( !(($current_iid == 'NEW' and $current_user->isUser()) or
-        ($current_iid != 'NEW' and isset($dates_item) and
-        $dates_item->mayEdit($current_user))) ) {
-
-        }
-
-        // Access granted
-        else {
+		/****************************/
 
 
+        } else { //Acces granted
+			$this->cleanup_session($current_iid);
 
-            // Save item
-            if ($this->_popup_controller->checkFormData()) {
-
-                // Create new item
+			// save item
+			if($this->_popup_controller->checkFormData()) {
+                $session = $this->_environment->getSessionItem();
                 $item_is_new = false;
-                if ( !isset($dates_item) ) {
-                    $dates_manager = $environment->getdatesManager();
-                    $dates_item = $dates_manager->getNewItem();
-                    $dates_item->setContextID($environment->getCurrentContextID());
-                    $user = $environment->getCurrentUserItem();
-                    $dates_item->setCreatorItem($user);
-                    $dates_item->setCreationDate(getCurrentDateTimeInMySQL());
+                // Create new item
+                if ( !isset($date_item) ) {
+                    $date_manager = $environment->getDateManager();
+                    $date_item = $date_manager->getNewItem();
+                    $date_item->setContextID($environment->getCurrentContextID());
+                    $current_user = $environment->getCurrentUserItem();
+                    $date_item->setCreatorItem($current_user);
+                    $date_item->setCreationDate(getCurrentDateTimeInMySQL());
                     $item_is_new = true;
                 }
 
-                $values_before_change = array();
-                $values_before_change['title'] = $dates_item->getTitle();
-                $values_before_change['startingTime'] = $dates_item->getStartingTime();
-                $values_before_change['endingTime'] = $dates_item->getEndingTime();
-                $values_before_change['place'] = $dates_item->getPlace();
-                $values_before_change['color'] = $dates_item->getColor();
-                $values_before_change['description'] = $dates_item->getDescription();
-
                 // Set modificator and modification date
-                $user = $environment->getCurrentUserItem();
-                $dates_item->setModificatorItem($user);
-                $dates_item->setModificationDate(getCurrentDateTimeInMySQL());
+                $current_user = $environment->getCurrentUserItem();
+                $date_item->setModificatorItem($current_user);
 
                 // Set attributes
                 if ( isset($form_data['title']) ) {
-                    $dates_item->setTitle($form_data['title']);
+                    $date_item->setTitle($form_data['title']);
                 }
                 if ( isset($form_data['description']) ) {
-                    $dates_item->setDescription($form_data['description']);
+                    $date_item->setDescription($form_data['description']);
                 }
-
+                if (isset($form_data['public'])) {
+                    $date_item->setPublic($form_data['public']);
+                }
                 if ( isset($form_data['public']) ) {
                     if ( $dates_item->isPublic() != $form_data['public'] ) {
                         $dates_item->setPublic($form_data['public']);
@@ -112,7 +166,7 @@ class cs_popup_date_controller {
                     $converted_activate_day_start = convertDateFromInput($form_data['dayActivateStart'],$environment->getSelectedLanguage());
                     if ($converted_activate_day_start['conforms'] == TRUE) {
                         $dt_hiding_datetime = $converted_activate_day_start['datetime'].' ';
-                        $converted_activate_time_start = convertTimeFromInput($form_data['timeStart']);
+                        $converted_activate_time_start = convertTimeFromInput($form_data['timeActivateStart']);
                         if ($converted_activate_time_start['conforms'] == TRUE) {
                             $dt_hiding_datetime .= $converted_activate_time_start['datetime'];
                         }else{
@@ -193,78 +247,73 @@ class cs_popup_date_controller {
                 } else {
                     $dates_item->setPlace('');
                 }
-                if ($session->issetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_buzzword_ids')){
-                    $dates_item->setBuzzwordListByID($session->getValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_buzzword_ids'));
-                    $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_buzzword_ids');
-                }
-                if ($session->issetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_tag_ids')){
-                    $dates_item->setTagListByID($session->getValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_tag_ids'));
-                    $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_tag_ids');
-                }
-                if ($session->issetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids')){
-                    $dates_item->setLinkedItemsByIDArray(array_unique($session->getValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids')));
-                    $session->unsetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids');
-                }
 
-                if(isset($form_data['date_addon_color'])){
-                    $dates_item->setColor($form_data['date_addon_color']);
-                }
+                $file_ids = $form_data['files'];
+                $this->_popup_controller->getUtils()->setFilesForItem($date_item, $file_ids, CS_DATE_TYPE);
 
-                $item_files_upload_to = $dates_item;
-                include_once('include/inc_fileupload_edit_page_save_item.php');
+
+                // buzzwords
+                $date_item->setBuzzwordListByID($form_data['buzzwords']);
+
+                // tags
+                $date_item->setTagListByID($form_data['tags']);
 
                 // Save item
-                $dates_item->save();
+                $date_item->save();
 
                 // Save recurrent items
                 if(isset($form_data['recurring']) or isset($form_data['recurring_date'])){
                     if(isOption($command, $translator->getMessage('DATES_SAVE_BUTTON')) and !isset($form_data['recurring_ignore'])){
-                        save_recurring_dates($dates_item, true, array());
+                        save_recurring_dates($date_item, true, array());
                     } elseif (isOption($command, $translator->getMessage('DATES_CHANGE_RECURRING_BUTTON'))){
                         $vales_to_change = array();
-                        if($values_before_change['title'] != $dates_item->getTitle()){
+                        if($values_before_change['title'] != $date_item->getTitle()){
                             $vales_to_change[] = 'title';
                         }
-                        if($values_before_change['startingTime'] != $dates_item->getStartingTime()){
+                        if($values_before_change['startingTime'] != $date_item->getStartingTime()){
                             $vales_to_change[] = 'startingTime';
                         }
-                        if($values_before_change['endingTime'] != $dates_item->getEndingTime()){
+                        if($values_before_change['endingTime'] != $date_item->getEndingTime()){
                             $vales_to_change[] = 'endingTime';
                         }
-                        if($values_before_change['place'] != $dates_item->getPlace()){
+                        if($values_before_change['place'] != $date_item->getPlace()){
                             $vales_to_change[] = 'place';
                         }
-                        if($values_before_change['color'] != $dates_item->getColor()){
+                        if($values_before_change['color'] != $date_item->getColor()){
                             $vales_to_change[] = 'color';
                         }
-                        if($values_before_change['description'] != $dates_item->getDescription()){
+                        if($values_before_change['description'] != $date_item->getDescription()){
                             $vales_to_change[] = 'description';
                         }
-                        save_recurring_dates($dates_item, false, $vales_to_change);
+                        save_recurring_dates($date_item, false, $vales_to_change);
                     }
                 }
 
-                if ($session->issetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_index_ids')){
-                    $id_array =  array_reverse($session->getValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_index_ids'));
-                }else{
-                    $id_array =  array();
-                }
-                if ($item_is_new){
-                    $id_array[] = $dates_item->getItemID();
+                // this will update the right box list
+                if($item_is_new){
+	                if ($session->issetValue('cid'.$environment->getCurrentContextID().'_'.CS_DATE_TYPE.'_index_ids')){
+	                    $id_array =  array_reverse($session->getValue('cid'.$environment->getCurrentContextID().'_'.CS_DATE_TYPE.'_index_ids'));
+	                } else {
+	                    $id_array =  array();
+	                }
+
+                    $id_array[] = $date_item->getItemID();
                     $id_array = array_reverse($id_array);
-                    $session->setValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_index_ids',$id_array);
+                    $session->setValue('cid'.$environment->getCurrentContextID().'_'.CS_DATE_TYPE.'_index_ids',$id_array);
                 }
 
-                if ($session->issetValue('cid'.$environment->getCurrentContextID().'_linked_items_mylist_id')){
-                    $mylist_manager = $environment->getMylistManager();
-                    $mylist_item = $mylist_manager->getItem($session->getValue('cid'.$environment->getCurrentContextID().'_linked_items_mylist_id'));
-                    $id_array = $mylist_item->getAllLinkedItemIDArrayLabelVersion();
-                    if (!in_array($dates_item->getItemID(),$id_array)){
-                        $id_array[] =  $dates_item->getItemID();
-                    }
-                    $mylist_item->saveLinksByIDArray($id_array);
-                }
-                $session->unsetValue('cid'.$environment->getCurrentContextID().'_linked_items_mylist_id');
+                // save session
+                $this->_environment->getSessionManager()->save($session);
+
+                // Add modifier to all users who ever edited this item
+                $manager = $environment->getLinkModifierItemManager();
+                $manager->markEdited($date_item->getItemID());
+
+                // Redirect
+                $this->_return = $date_item->getItemID();
+            }
+        }
+
 
                 // Redirect
                 /*cleanup_session($current_iid);
@@ -330,10 +379,10 @@ class cs_popup_date_controller {
                  $params['iid'] = $dates_item->getItemID();
                  redirect($environment->getCurrentContextID(),
                  CS_DATE_TYPE, 'detail', $params);
-                 } */
+                 }
                 $this->_return = 'success';
             }
-        }
+        }*/
     }
 
 
