@@ -654,8 +654,9 @@ var Netnavigation = function() {
 
 								// add related entry to right box list
 								jQuery('div#netnavigation_list ul').prepend(
-									jQuery('<li class=\"netnavigation\" />', {
-										id:		'item_' + linked_id
+									jQuery('<li/>', {
+										'class':	'netnavigation',
+										id:			'item_' + linked_id
 									}).append(
 										jQuery('<a/>', {
 											target:	'_self',
@@ -704,7 +705,7 @@ var Netnavigation = function() {
 
 			// get ids
 			var store_after_item_creation = [];
-			jQuery('div#popup_right div#netnavigation li').each(function() {
+			jQuery('div#netnavigation_list li.netnavigation').each(function() {
 				store_after_item_creation.push(jQuery(this).attr('id').substr(5));
 			});
 
