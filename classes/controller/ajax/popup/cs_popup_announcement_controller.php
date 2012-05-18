@@ -17,10 +17,10 @@ class cs_popup_announcement_controller implements cs_rubric_popup_controller {
     public function initPopup($item) {
 			// assign template vars
 			$this->assignTemplateVars();
+			$current_context = $this->_environment->getCurrentContextItem();
 
 			if($item !== null) {
 				// edit mode
-				$current_context = $this->_environment->getCurrentContextItem();
 
 				// TODO: check rights
 
@@ -53,6 +53,10 @@ class cs_popup_announcement_controller implements cs_rubric_popup_controller {
 				}
 
 				$this->_popup_controller->assign('popup', 'activating', $activating);
+			}else{
+            	$time = $current_context->getTimeSpread();
+ 				$this->_popup_controller->assign('item', 'dayEnd', getDateInLang(DateAdd($time,date("Y-m-d"),"Y-m-d")));
+		        $this->_popup_controller->assign('item', 'timeEnd', date("H:m"));
 			}
     }
 
@@ -161,16 +165,16 @@ class cs_popup_announcement_controller implements cs_rubric_popup_controller {
                         $announcement_item->setModificationDate(getCurrentDateTimeInMySQL());
                     }
                 }
-                
+
                 // buzzwords
                 $announcement_item->setBuzzwordListByID($form_data['buzzwords']);
-                
+
                 // tags
                 $announcement_item->setTagListByID($form_data['tags']);
 
                 // Save item
                 $announcement_item->save();
-                
+
                 // this will update the right box list
                 if($item_is_new){
 	                if ($session->issetValue('cid'.$environment->getCurrentContextID().'_'.CS_ANNOUNCEMENT_TYPE.'_index_ids')){
@@ -178,12 +182,12 @@ class cs_popup_announcement_controller implements cs_rubric_popup_controller {
 	                } else {
 	                    $id_array =  array();
 	                }
-                
+
                     $id_array[] = $announcement_item->getItemID();
                     $id_array = array_reverse($id_array);
                     $session->setValue('cid'.$environment->getCurrentContextID().'_'.CS_ANNOUNCEMENT_TYPE.'_index_ids',$id_array);
                 }
-                
+
                 // save session
                 $this->_environment->getSessionManager()->save($session);
 
