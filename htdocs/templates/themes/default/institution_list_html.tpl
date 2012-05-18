@@ -19,26 +19,32 @@
 {block name=room_list_content}
 	{foreach $institution.list_content.items as $item }
 		<div class="{if $item@iteration is odd}row_odd{else}row_even{/if} {if $item@iteration is odd}odd_sep_institution{else}even_sep_institution{/if}"> <!-- Start Reihe -->
-			<div class="column_20">
-				<p>
+			<div class="column_new_list">
 				{if $item.noticed.show_info}
 					<a class="new_item_2">
-					{if $item.noticed.status == "new"}
+					{if $item.noticed.status == "new" and ($item.noticed.annotation_info.count_new or $item.noticed.annotation_info.count_changed)}
+					<img title="" class="new_item_2" src="{$basic.tpl_path}img/flag_neu_a.gif" alt="*" /></a>
+					{elseif $item.noticed.status == "new"}
 					<img title="" class="new_item_2" src="{$basic.tpl_path}img/flag_neu.gif" alt="*" /></a>
 					{elseif $item.noticed.status == "modified"}
 					<img title="" class="new_item_2" src="{$basic.tpl_path}img/flag_neu_2.gif" alt="*" /></a>
 					{/if}
-					<span class="tooltip">
-						<span class="header">___COMMON_CHANGE_INFORAMTION___</span><br/>
-						<span class="content">{$item.noticed.item_info}</span>
-					</span>
-
-         			<input class="new_item_2" type="checkbox" name="form_data[attach][{$item.iid}]" value="1"/>
-        			<input type="hidden" name="form_data[shown][{$item.iid}]" value="1"/>
-				{else}
+					<div class="tooltip">
+						<div class="tooltip_inner">
+							<div class="tooltip_title">
+								<div class="header">___COMMON_CHANGE_INFORAMTION___</div>
+							</div>
+							<div class="tooltip_content">
+								<span class="content">{$item.noticed.item_info}</span>
+							</div>
+						</div>
+					</div>
+				{/if}
+			</div>
+			<div class="column_list_20">
+				<p>
          			<input type="checkbox" name="form_data[attach][{$item.iid}]" value="1"/>
         			<input type="hidden" name="form_data[shown][{$item.iid}]" value="1"/>
-				{/if}
 				</p>
 			</div>
 			<div class="column_324">

@@ -56,46 +56,52 @@
 									{elseif $item.noticed.annotation_info.count_changed}
 									<img title="" class="new_item" src="{$basic.tpl_path}img/flag_neu_2_a.gif" alt="*" /></a>
 									{/if}
-									<span class="tooltip">
-										<span class="header">___COMMON_CHANGE_INFORAMTION___</span><br/>
-										<span class="content">{$item.noticed.item_info}</span>
-										{if $item.noticed.section_info.count_new}
-											<span class="content">___COMMON_NEW_SECTIONS___: {$item.noticed.section_info.count_new}
-											{foreach $item.noticed.section_info.section_new_items as $section_item}
-											   <br/>
-											   <span>- <a href="commsy.php?cid={$environment.cid}&mod={$rubric@key}&fct=detail&{$environment.params}&iid={$section_item.ref_iid}#section{$section_item.iid}">{$section_item.title|truncate:25:'...':true}</a> ({$section_item.date})
-											   </span>
-											{/foreach}
-											</span>
-										{/if}
-										{if $item.noticed.section_info.count_changed}
-											<span class="content">___COMMON_CHANGED_SECTIONS___: {$item.noticed.section_info.count_changed}
-											{foreach $item.noticed.section_info.section_changed_items as $section_item}
-											   <br/>
-											   <span>- <a href="commsy.php?cid={$environment.cid}&mod={$rubric@key}&fct=detail&{$environment.params}&iid={$section_item.ref_iid}#section{$section_item.iid}">{$section_item.title|truncate:25:'...':true}</a> ({$section_item.date})
-											   </span>
-											{/foreach}
-											</span>
-										{/if}
-										{if $item.noticed.annotation_info.count_new}
-											<span class="content">___COMMON_NEW_ANNOTATIONS___: {$item.noticed.annotation_info.count_new}
-											{foreach $item.noticed.annotation_info.anno_new_items as $anno_item}
-											   <br/>
-											   <span>- <a href="commsy.php?cid={$environment.cid}&mod={$rubric@key}&fct=detail&{$environment.params}&iid={$anno_item.ref_iid}#annotation{$anno_item.iid}">{$anno_item.title|truncate:25:'...':true}</a> ({$anno_item.date})
-											   </span>
-											{/foreach}
-											</span>
-										{/if}
-										{if $item.noticed.annotation_info.count_changed}
-											<span class="content">___COMMON_CHANGED_ANNOTATIONS___: {$item.noticed.annotation_info.count_changed}
-											{foreach $item.noticed.annotation_info.anno_changed_items as $anno_item}
-											   <br/>
-											   <span>- <a href="commsy.php?cid={$environment.cid}&mod={$rubric@key}&fct=detail&{$environment.params}&iid={$anno_item.ref_iid}#annotation{$anno_item.iid}">{$anno_item.title|truncate:25:'...':true}</a> ({$anno_item.date})
-											   </span>
-											{/foreach}
-											</span>
-										{/if}
-									</span>
+									<div class="tooltip">
+										<div class="tooltip_inner">
+											<div class="tooltip_title">
+												<div class="header">___COMMON_CHANGE_INFORAMTION___</div>
+											</div>
+											<div class="tooltip_content">
+												<span class="content">{$item.noticed.item_info}</span>
+												{if $item.noticed.section_info.count_new}
+													<span class="content">___COMMON_NEW_SECTIONS___: {$item.noticed.section_info.count_new}
+													{foreach $item.noticed.section_info.section_new_items as $section_item}
+													   <br/>
+													   <span>- <a href="commsy.php?cid={$environment.cid}&mod={$rubric@key}&fct=detail&{$environment.params}&iid={$section_item.ref_iid}#section{$section_item.iid}">{$section_item.title|truncate:25:'...':true}</a> ({$section_item.date})
+													   </span>
+													{/foreach}
+													</span>
+												{/if}
+												{if $item.noticed.section_info.count_changed}
+													<span class="content">___COMMON_CHANGED_SECTIONS___: {$item.noticed.section_info.count_changed}
+													{foreach $item.noticed.section_info.section_changed_items as $section_item}
+													   <br/>
+													   <span>- <a href="commsy.php?cid={$environment.cid}&mod={$rubric@key}&fct=detail&{$environment.params}&iid={$section_item.ref_iid}#section{$section_item.iid}">{$section_item.title|truncate:25:'...':true}</a> ({$section_item.date})
+													   </span>
+													{/foreach}
+													</span>
+												{/if}
+												{if $item.noticed.annotation_info.count_new}
+													<span class="content">___COMMON_NEW_ANNOTATIONS___: {$item.noticed.annotation_info.count_new}
+													{foreach $item.noticed.annotation_info.anno_new_items as $anno_item}
+													   <br/>
+													   <span>- <a href="commsy.php?cid={$environment.cid}&mod={$rubric@key}&fct=detail&{$environment.params}&iid={$anno_item.ref_iid}#annotation{$anno_item.iid}">{$anno_item.title|truncate:25:'...':true}</a> ({$anno_item.date})
+													   </span>
+													{/foreach}
+													</span>
+												{/if}
+												{if $item.noticed.annotation_info.count_changed}
+													<span class="content">___COMMON_CHANGED_ANNOTATIONS___: {$item.noticed.annotation_info.count_changed}
+													{foreach $item.noticed.annotation_info.anno_changed_items as $anno_item}
+													   <br/>
+													   <span>- <a href="commsy.php?cid={$environment.cid}&mod={$rubric@key}&fct=detail&{$environment.params}&iid={$anno_item.ref_iid}#annotation{$anno_item.iid}">{$anno_item.title|truncate:25:'...':true}</a> ({$anno_item.date})
+													   </span>
+													{/foreach}
+													</span>
+												{/if}
+											</div>
+										</div>
+									</div>
 								{/if}
 							</div>
 	                    	<div class="column_home_320">
@@ -114,18 +120,25 @@
 									<a href="" class="attachment{if $item.attachment_count == 0}_none_overlay{/if}">{$item.attachment_count}</a>
 								</p>
 								{if $item.attachment_count > 0}
-									<div class="tooltip">
-										<div class="scrollable">
-											<ul>
-											{foreach $item.attachment_infos as $file}
-												<li>
-													<a href="{$file.file_url}" target="blank"{if $file.lightbox} rel="lightbox"{/if}>
-														{$file.file_icon} {$file.file_name}
-													</a>
-													({$file.file_size} KB)
-												</li>
-											{/foreach}
-											</ul>
+									<div class="tooltip tooltip_with_400">
+										<div class="tooltip_inner">
+											<div class="tooltip_title">
+												<div class="header">___COMMON_ATTACHED_FILES___</div>
+											</div>
+											<div class="scrollable">
+												<div class="tooltip_content">
+													<ul>
+													{foreach $item.attachment_infos as $file}
+														<li>
+															<a href="{$file.file_url}" target="blank"{if $file.lightbox} rel="lightbox"{/if}>
+																{$file.file_icon} {$file.file_name}
+															</a>
+															({$file.file_size} KB)
+														</li>
+													{/foreach}
+													</ul>
+												</div>
+											</div>
 										</div>
 									</div>
 								{/if}

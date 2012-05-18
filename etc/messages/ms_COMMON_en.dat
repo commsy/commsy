@@ -43,6 +43,7 @@ $message["COMMON_ASSIGN"]["en"] = "Add reference/s";
 $message["COMMON_ATTACHED_ANNOUNCEMENT_ID"]["en"] = "Reference number";
 $message["COMMON_ATTACHED_BUZZWORDS"]["en"] = "added tags";
 $message["COMMON_ATTACHED_ENTRIES"]["en"] = "referenced entries";
+$message["COMMON_ATTACHED_FILES"]["en"] = "Attached files";
 $message["COMMON_ATTACHED_GROUPS"]["en"] = "referenced groups";
 $message["COMMON_ATTACHED_INSTITUTIONS"]["en"] = "referenced %_INSTITUTION_SUB_NOMPL_LOW";
 $message["COMMON_ATTACHED_TAGS"]["en"] = "added categories";

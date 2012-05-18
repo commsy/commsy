@@ -115,35 +115,6 @@ frame and header
     border-radius: 2px 2px 2px 2px;
     box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
 	}
-/*
-#popup_right {
-    float: left;
-    padding: 0px;
-    width: 250px;
-}	}
-
-#popup_netnavigation {
-	position: relative;
-	margin-top: -31px;
-	height: 361px;
-	background-color: #EAEAEA;
-	margin-left: 0px;
-	overflow: hidden;
-	width: 0px;
-	border-right: 1px solid #767676;
-	opacity:1;
-	}
-
-.popup_netnavigation_outer {
-	background-color: #EAEAEA;
-	margin-top:1px;
-	}
-
-#popup_netnavigation_outer_bottom {
-	text-align: center;
-	height: 17px;
-	}
-*/
 
 li.netnavigation{
 	padding: 10px;
@@ -180,7 +151,7 @@ ul.netnavigation{
 }
 
 #popup_wrapper h2 {
-    font-size: 14px;
+    font-size: 12px;
     text-shadow: 0 1px #CCCCCC;
     line-height:24px;
     vertical-align: bottom;
@@ -219,10 +190,12 @@ rowset and content
 	padding:10px;
 	}
 
+
 #popup_content {
     border-top: 1px solid #FFFFFF;
     padding:10px;
     }
+
 
 #popup_rubric_content {
     border: none;
@@ -1766,8 +1739,20 @@ content, column-width
     white-space: nowrap;
     }
 
+.column_new_list {
+    width: 0px;
+    float: left;
+    white-space: nowrap;
+ 	padding: 5px 0 5px 5px;
+ 	}
 
 .column_20 {
+    width: 20px;
+    float: left;
+    white-space: nowrap;
+    }
+
+.column_list_20 {
     width: 20px;
     float: left;
     white-space: nowrap;
@@ -1951,6 +1936,10 @@ content, column-width
 
 .column_20 p {
     padding: 3px 5px 0px 5px;
+    }
+
+.column_list_20 p {
+    padding: 3px 5px 0px 0px;
     }
 
 .column_510 {
@@ -2832,8 +2821,44 @@ Tooltips
 */
 
 /* tooltip styling */
-.tooltip {
+
+.tooltip_inner{
+	background: none repeat scroll #E8E8E8;
+    border-radius: 2px 2px 2px 2px;
+	width:100%;
+    position:relative;
+	}
+
+.tooltip{
 	display: none;
+	background: none repeat scroll 0 0 rgba(0, 0, 0, 0.6);
+	border: 5px solid transparent;
+	padding: 5px;
+    border-radius: 2px 2px 2px 2px;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
+	width:300px;
+}
+
+.tooltip_title{
+	padding:10px;
+    border-bottom: 1px solid #FFFFFF;
+	}
+
+.tooltip_with_500{
+	width:500px;
+	}
+
+.tooltip_with_400{
+	width:400px;
+	}
+
+.tooltip_content {
+    padding:10px;
+    }
+
+
+/*
+.tooltip {
 	-moz-border-radius-topleft: 5px; -webkit-border-top-left-radius: 5px; -khtml-border-top-left-radius: 5px; border-top-left-radius: 5px;
 	-moz-border-radius-topright: 5px; -webkit-border-top-right-radius: 5px; -khtml-border-top-right-radius: 5px; border-top-right-radius: 5px;
 	-moz-border-radius-bottomleft: 5px; -webkit-border-bottom-left-radius: 5px; -khtml-border-bottom-left-radius: 5px; border-bottom-left-radius: 5px;
@@ -2846,18 +2871,24 @@ Tooltips
 	padding: 15px;
 	font-size: 12px;
 }
+*/
 
-.tooltip .scrollable {
+.scrollable {
+	max-height:200px;
 	overflow-x: hidden;
 	overflow-y: auto;
-	background-color: none;
 }
 
 .tooltip .header {
-	font-weight: bold;
-    font-size: 12px !important;
-    padding-bottom:5px;
+    font-size: 12px;
+    line-height: 24px;
+    text-shadow: 0 1px #CCCCCC;
+    vertical-align: bottom;
+    font-weight:bold;
+    display:block;
+    border-bottom:
 }
+
 .tooltip .content {
 	font-weight: normal;
 	display:block;

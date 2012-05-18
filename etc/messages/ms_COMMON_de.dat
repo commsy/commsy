@@ -43,6 +43,7 @@ $message["COMMON_ASSIGN"]["de"] = "Zuordnen";
 $message["COMMON_ATTACHED_ANNOUNCEMENT_ID"]["de"] = "Referenznummer";
 $message["COMMON_ATTACHED_BUZZWORDS"]["de"] = "zugeordnete Schlagwörter";
 $message["COMMON_ATTACHED_ENTRIES"]["de"] = "zugeordnete Einträge";
+$message["COMMON_ATTACHED_FILES"]["de"] = "Angehängte Dateien";
 $message["COMMON_ATTACHED_GROUPS"]["de"] = "zugeordnete Gruppen";
 $message["COMMON_ATTACHED_INSTITUTIONS"]["de"] = "zugeordnete %_INSTITUTION_SUB_NOMPL_BIG";
 $message["COMMON_ATTACHED_TAGS"]["de"] = "zugeordnete Kategorien";
