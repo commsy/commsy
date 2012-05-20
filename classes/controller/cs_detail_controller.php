@@ -1840,4 +1840,5 @@
 		abstract protected function setBrowseIDs();
 
 		abstract protected function getDetailContent();
+
 	}

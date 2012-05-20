@@ -167,7 +167,7 @@
 			<div class="column_100">
 				<p>{$item.process_date}</p>
 			</div>
-			<div class="column_70">
+			<div class="column_65">
 				{$item.process}
 			</div>
 			{if !$room.assessment}

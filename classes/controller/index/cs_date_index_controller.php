@@ -17,10 +17,10 @@
 
 			// set display mode
 			$this->setDisplayMode();
-			
+
 			// set selected status
 			$this->setSelectedStatus();
-			
+
 			// this will enable processing of additional restriction texts
 			$this->_additional_selects = true;
 		}
@@ -194,17 +194,17 @@
 					($this->_display_mode !== 'calendar' || $this->_display_mode === 'calendar_month' || $this->getViewMode() === 'formattach' || $this->getViewMode() === 'detailattach')) {
 					$dates_manager->setSortOrder($this->_list_parameter_arrray['sort']);
 				}
-				
+
 				// find current selected color
 				$selected_color = '';
 				if(isset($_GET['selcolor']) && $_GET['selcolor'] != '-2') {
 					$selected_color = $_GET['selcolor'];
 				}
-				
+
 				if(!empty($selected_color) && $selected_color != 2) {
 					$dates_manager->setColorLimit('#' . $selected_color);
 				}
-				
+
 
 
 				/* TODO: convert
@@ -487,18 +487,18 @@
 		   $return[] = array('selected' => false, 'disabled' => false, 'id' => '', 'value' => CS_LISTOPTION_DOWNLOAD, 'display' => '___COMMON_LIST_ACTION_DOWNLOAD___');
 			return $return;
 		}
-		
+
 		private function setSelectedStatus() {
 			$current_context = $this->_environment->getCurrentContextItem();
-			
+
 			// find current status selection
 			if(isset($_GET['selstatus']) && $_GET['selstatus'] != '-2') {
 				$this->_selected_status = $_GET['selstatus'];
-				
+
 				// save selection
 				if($current_context->isPrivateRoom()) {
 					$date_sel_status = $current_context->getRubrikSelection(CS_DATE_TYPE, 'status');
-					
+
 					if($date_sel_status != $this->_selected_status) {
 						$current_context->setRubrikSelection(CS_DATE_TYPE, 'status', $this->_selected_status);
 					}
@@ -508,12 +508,12 @@
 					// TODO?:
 					$this->_display_mode == 'calendar_month' /* || $mode == 'formattach' || $mode == 'detailattach' */ ||
 					$this->_environment->inPrivateRoom()) {
-					
+
 					$this->_selected_status = 2;
-					
+
 					if($this->_environment->inPrivateRoom()) {
 						$date_sel_status = $current_context->getRubrikSelection(CS_DATE_TYPE, 'status');
-						
+
 						if(!empty($date_sel_status)) {
 							$this->_selected_status = $date_sel_status;
 						} else {
@@ -544,57 +544,29 @@
 				$this->_display_mode = $current_context->getDatesPresentationStatus();
 			}
 		}
-		
+
 		protected function getAdditionalRestrictionText(){
 			$return = array();
-			
+
 			$params = $this->_environment->getCurrentParameterArray();
 			$current_context = $this->_environment->getCurrentContextItem();
-			
-			if($current_context->withActivatingContent()) {
-				$activation_limit = $this->_list_parameter_arrray['sel_activating_status'];
-				if($activation_limit == 2) {
-					$restriction = array(
-						'name'				=> '',
-						'type'				=> '',
-						'link_parameter'	=> ''
-					);
 
-					$translator = $this->_environment->getTranslationObject();
-
-					// set name
-					$restriction['name'] = $translator->getMessage('COMMON_SHOW_ONLY_ACTIVATED_ENTRIES');
-
-					// set link parameter
-					$params['selactivatingstatus'] = 1;
-					$link_parameter_text = '';
-					if ( count($params) > 0 ) {
-						foreach ($params as $key => $parameter) {
-							$link_parameter_text .= '&'.$key.'='.$parameter;
-						}
-					}
-					$restriction['link_parameter'] = $link_parameter_text;
-
-					$return[] = $restriction;
-				}
-			}
-			
 			if(!isset($params['selstatus']) || $params['selstatus'] === '4' || $params['selstatus'] === '3') {
 				$restriction = array(
 					'name'				=> '',
 					'type'				=> '',
 					'link_parameter'	=> ''
 				);
-				
+
 				$translator = $this->_environment->getTranslationObject();
-				
+
 				// set name
 				if(isset($params['selstatus']) && $params['selstatus'] === '4') {
 					$restriction['name'] = $translator->getMessage('DATES_NON_PUBLIC');
 				} elseif(!isset($params['selstatus']) || $params['selstatus'] === '3') {
 					$restriction['name'] = $translator->getMessage('DATES_PUBLIC');
 				}
-				
+
 				// set link parameter
 				$params['selstatus'] = 2;
 				$link_parameter_text = '';
@@ -604,16 +576,16 @@
 					}
 				}
 				$restriction['link_parameter'] = $link_parameter_text;
-				
+
 				$return[] = $restriction;
 			}
-				
+
 			return $return;
 		}
-		
+
 		protected function getAdditionalRestrictions() {
 			$return = array();
-			
+
 			$restriction = array(
 				'item'		=> array(),
 				'action'	=> '',
@@ -622,25 +594,25 @@
 				'name'		=> '',
 				'custom'	=> true
 			);
-			
+
 			$translator = $this->_environment->getTranslationObject();
 			$dates_manager = $this->_environment->getDatesManager();
-			
+
 			// set tag and name
 			$tag = $translator->getMessage('COMMON_DATE_STATUS');
 			$restriction['tag'] = $tag;
 			$restriction['name'] = 'status';
-			
+
 			// set action
 			$params = $this->_environment->getCurrentParameterArray();
-			
+
 			if(!isset($params['selstatus'])) {
 				unset($params['from']);
 			}
-			
+
 			unset($params['selstatus']);
 			$link_parameter_text = '';
-			
+
 			$hidden_array = array();
 			if(count($params) > 0) {
 				foreach($params as $key => $parameter) {
@@ -650,15 +622,15 @@
 						'value'	=> $parameter
 					);
 				}
-			}			
+			}
 			$restriction['action'] = 'commsy.php?cid='.$this->_environment->getCurrentContextID().'&mod='.$this->_environment->getCurrentModule().'&fct='.$this->_environment->getCurrentFunction().'&'.$link_parameter_text;
-			
+
 			// set hidden
 			$restriction['hidden'] = $hidden_array;
-			
+
 			// set items
 			$items = array();
-			
+
 			// no selection
 			$item = array(
 				'id'		=> 2,
@@ -666,7 +638,7 @@
 				'selected'	=> $this->_selected_status
 			);
 			$items[] = $item;
-			
+
 			// disabled
 			$item = array(
 				'id'		=> -2,
@@ -675,7 +647,7 @@
 				'disabled'	=> true
 			);
 			$items[] = $item;
-			
+
 			// public
 			$item = array(
 				'id'		=> 3,
@@ -683,7 +655,7 @@
 				'selected'	=> $this->_selected_status
 			);
 			$items[] = $item;
-			
+
 			// non public
 			// public
 			$item = array(
@@ -692,11 +664,11 @@
 				'selected'	=> $this->_selected_status
 			);
 			$items[] = $item;
-			
-			
+
+
 			$restriction['items'] = $items;
 			$return[] = $restriction;
-			
+
 			// colors
 			$color_array = $dates_manager->getColorArray();
 			if(isset($color_array[0])) {
@@ -705,7 +677,7 @@
 				if(isset($_GET['selcolor']) && $_GET['selcolor'] != '-2') {
 					$selected_color = $_GET['selcolor'];
 				}
-				
+
 				$restriction = array(
 					'item'		=> array(),
 					'action'	=> '',
@@ -714,12 +686,12 @@
 					'name'		=> '',
 					'custom'	=> true
 				);
-				
+
 				// set tag and name
 				$tag = $translator->getMessage('COMMON_DATE_COLOR');
 				$restriction['tag'] = $tag;
 				$restriction['name'] = 'color';
-				
+
 				// set action
 				$params = $this->_environment->getCurrentParameterArray();
 
@@ -729,7 +701,7 @@
 
 				unset($params['selcolor']);
 				$link_parameter_text = '';
-				
+
 				$hidden_array = array();
 				if(count($params) > 0) {
 					foreach($params as $key => $parameter) {
@@ -739,15 +711,15 @@
 							'value'	=> $parameter
 						);
 					}
-				}			
+				}
 				$restriction['action'] = 'commsy.php?cid='.$this->_environment->getCurrentContextID().'&mod='.$this->_environment->getCurrentModule().'&fct='.$this->_environment->getCurrentFunction().'&'.$link_parameter_text;
-				
+
 				// set hidden
 				$restriction['hidden'] = $hidden_array;
-				
+
 				// set items
 				$items = array();
-				
+
 				// no selection
 				$item = array(
 					'id'		=> 2,
@@ -764,7 +736,7 @@
 					'disabled'	=> true
 				);
 				$items[] = $item;
-				
+
 				$color_array = $this->_available_color_array;
 				foreach($color_array as $color) {
 					$color_text = '';
@@ -781,7 +753,7 @@
 						case '#CC33CC': $color_text = getMessage('DATE_COLOR_PURPLE');break;
 						default: $color_text = getMessage('DATE_COLOR_UNKNOWN');
 					}
-					
+
 					$item = array(
 						'id'		=> str_replace('#', '', $color),
 						'name'		=> $color_text,
@@ -790,11 +762,11 @@
 					$items[] = $item;
 				}
 			}
-			
+
 			$restriction['items'] = $items;
-			
+
 			$return[] = $restriction;
-			
+
 			return $return;
 		}
 	}

@@ -657,6 +657,34 @@
 					$restriction_array[] = $tmp_array;
          		}
        		}
+
+			$current_context = $environment->getCurrentContextItem();
+			if($current_context->withActivatingContent()) {
+				$activation_limit = $this->_list_parameter_arrray['sel_activating_status'];
+				if($activation_limit == 2) {
+					$restriction = array(
+						'name'				=> '',
+						'type'				=> '',
+						'link_parameter'	=> ''
+					);
+
+					$translator = $environment->getTranslationObject();
+
+					// set name
+					$restriction['name'] = $translator->getMessage('COMMON_SHOW_ONLY_ACTIVATED_ENTRIES');
+
+					// set link parameter
+					$params['selactivatingstatus'] = 1;
+					$link_parameter_text = '';
+					if ( count($params) > 0 ) {
+						foreach ($params as $key => $parameter) {
+							$link_parameter_text .= '&'.$key.'='.$parameter;
+						}
+					}
+					$restriction['link_parameter'] = $link_parameter_text;
+					$restriction_array[] = $restriction;
+				}
+			}
       		return $restriction_array;
    		}
 
@@ -1211,7 +1239,7 @@
 			$environment = $this->_environment;
 			$session = $environment->getSessionItem();
 			$translator = $environment->getTranslationObject();
-			
+
 			if (isset($_GET['back_to_index']) and $session->issetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index')){
    				$index_search_parameter_array = $session->getValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index_parameter_array');
    				$params['interval'] = $index_search_parameter_array['interval'];

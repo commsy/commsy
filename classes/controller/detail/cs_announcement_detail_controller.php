@@ -201,9 +201,14 @@
 			$converter = $this->_environment->getTextConverter();
 			$context_item = $this->_environment->getCurrentContextItem();
 			$current_user = $this->_environment->getCurrentUserItem();
+
+			$formal_data = array();
+			$temp_array[0] = $translator->getMessage('ANNOUNCEMENT_SHOW_HOME_DATE');
+			$temp_array[1] = getDateTimeInLang($this->_item->getSeconddateTime());
+			$return[] = $temp_array;
+
 			// files
 			$files = array();
-
 			$file_list = $this->_item->getFileList();
 			if(!$file_list->isEmpty()) {
 				$file = $file_list->getFirst();
@@ -228,7 +233,21 @@
 				$temp_array[] = $translator->getMessage('MATERIAL_FILES');
 				$temp_array[] = implode(BRLF, $files);
 				$return[] = $temp_array;
+
 			}
+		    if ($this->_item->isNotActivated()){
+		        $activating_date = $this->_item->getActivatingDate();
+		        $text = '';
+		        if (strstr($activating_date,'9999-00-00')){
+		           $activating_text = $translator->getMessage('COMMON_NOT_ACTIVATED');
+		        }else{
+		           $activating_text = $translator->getMessage('COMMON_ACTIVATING_DATE').' '.getDateInLang($this->_item->getActivatingDate());
+		        }
+				$temp_array = array();
+				$temp_array[] = $translator->getMessage('COMMON_RIGHTS');
+				$temp_array[] = $activating_text;
+				$return[] = $temp_array;
+		    }
 			return $return;
 		}
 
