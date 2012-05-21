@@ -52,27 +52,34 @@
 				<p>
 					 <a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&{$environment.params}&iid={$item.iid}">{$item.title}</a>
 				</p>
-				{if $item.attachment_count > 0}
-					<div class="tooltip">
-						<div class="scrollable">
-							<ul>
-							{foreach $item.attachment_infos as $file}
-								<li>
-									<a href="{$file.file_url}" title="{$file.file_name}" target="blank"{if $file.lightbox} rel="lightbox"{/if}>
-										{$file.file_icon} {$file.file_name|truncate:25:'...':true}
-									</a>
-									({$file.file_size} KB)
-								</li>
-							{/foreach}
-							</ul>
-						</div>
-					</div>
-				{/if}
 			</div>
 			<div class="column_45">
 				<p>
 					<a href="" class="attachment{if $item.attachment_count == 0}_none_overlay{/if}">{$item.attachment_count}</a>
 				</p>
+				{if $item.attachment_count > 0}
+					<div class="tooltip tooltip_with_400">
+						<div class="tooltip_inner">
+							<div class="tooltip_title">
+								<div class="header">___COMMON_ATTACHED_FILES___</div>
+							</div>
+							<div class="scrollable">
+								<div class="tooltip_content">
+									<ul>
+									{foreach $item.attachment_infos as $file}
+										<li>
+											<a href="{$file.file_url}" target="blank"{if $file.lightbox} rel="lightbox"{/if}>
+												{$file.file_icon} {$file.file_name}
+											</a>
+											({$file.file_size} KB)
+										</li>
+									{/foreach}
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+				{/if}
 			</div>
 			<div class="column_145">
 				<p>{$item.date}</p>

@@ -375,6 +375,20 @@ if ($mode=='print'){
 			$id_array = array();
 			$item = $list->getFirst();
 			while ($item){
+  				$item = $list->getNext();
+			}
+			$noticed_manager = $environment->getNoticedManager();
+			$noticed_manager->getLatestNoticedByIDArray($id_array);
+			$noticed_manager->getLatestNoticedAnnotationsByIDArray($id_array);
+
+			// prepare item array
+			$item = $list->getFirst();
+			$item_array = array();
+			$params = array();
+			$params['environment'] = $environment;
+			$params['with_modifying_actions'] = false;
+			$view = new cs_view($params);
+			while($item) {
    				$id_array[] = $item->getItemID();
 				// files
 				$attachment_infos = array();
@@ -392,34 +406,10 @@ if ($mode=='print'){
 					$info['file_url']	= $file->getURL();
 					$info['file_size']	= $file->getFileSize();
 					$info['lightbox']	= $lightbox;
-
 					$attachment_infos[] = $info;
 					$file = $file_list->getNext();
 				}
-
-   				$item = $list->getNext();
-			}
-			$noticed_manager = $environment->getNoticedManager();
-			$noticed_manager->getLatestNoticedByIDArray($id_array);
-			$noticed_manager->getLatestNoticedAnnotationsByIDArray($id_array);
-
-			$step_manager = $environment->getStepManager();
-			$step_list = $step_manager->getAllStepItemListByIDArray($id_array);
-			$item = $step_list->getFirst();
-			while ($item) {
-			   $id_array[] = $item->getItemID();
-			   $item = $step_list->getNext();
-			}
-
-			// prepare item array
-			$item = $list->getFirst();
-			$item_array = array();
-			$params = array();
-			$params['environment'] = $environment;
-			$params['with_modifying_actions'] = false;
-			$view = new cs_view($params);
-			while($item) {
-				$noticed_text = $this->_getItemChangeStatus($item);
+ 				$noticed_text = $this->_getItemChangeStatus($item);
 				$item_array[] = array(
 					'iid'				=> $item->getItemID(),
 					'title'				=> $view->_text_as_html_short($item->getTitle()),
