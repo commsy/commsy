@@ -183,13 +183,31 @@
 												<input type="hidden" name="additional[tab]" value="user_picture" />
 												<input id="data_picture" type="file" class="size_200 float-left" name="form_data[picture]" accept="image/*" />
 											</form>
-											{if !empty($popup.form.user.picture)}
-												<img src="commsy.php?cid={$environment.cid}&mod=picture&fct=getfile&picture={$popup.form.user.picture}" alt="___USER_PICTURE_UPLOADFILE___" />
-												<input type="checkbox" name="form_data[delete_picture]" value="1"/>
-											{/if}
-											<input id="data_picture_all" type="checkbox" class="float-left" name="form_data[picture_all]" />
-											<label for="data_picture_all" class="float-left">___USER_CHANGE_IN_ALL_ROOMS___</label>
 											<div class="clear"></div>
+										</div>
+										
+										{if !empty($popup.form.user.picture)}
+											<div class="input_row">
+												<div class="input_container">
+													<img src="commsy.php?cid={$environment.cid}&mod=picture&fct=getfile&picture={$popup.form.user.picture}" alt="___USER_PICTURE_UPLOADFILE___" />
+												</div>
+											</div>
+											
+											<div class="input_row">
+												<div class="input_container">
+													<input id="delete_picture" class="float-left" type="checkbox" name="form_data[delete_picture]" value="1"/>
+													<label for="delete_picture" class="float-left">___USER_DEL_PIC_BUTTON___</label>
+													<div class="clear"></div>
+												</div>
+											</div>
+										{/if}
+										
+										<div class="input_row">
+											<div class="input_container">
+												<input id="data_picture_all" type="checkbox" class="float-left" name="form_data[picture_all]" />
+												<label for="data_picture_all" class="float-left">___USER_CHANGE_IN_ALL_ROOMS___</label>
+												<div class="clear"></div>
+											</div>
 										</div>
 									</fieldset>
 									

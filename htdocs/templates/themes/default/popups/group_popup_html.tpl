@@ -24,12 +24,24 @@
 							<input id="upload_hidden_iid" type="hidden" name="additional[iid]" value="" />
 							<input id="data_picture" type="file" class="size_200 float-left" name="form_data[picture]" accept="image/*" />
 						</form>
-						{if !empty($item.picture_upload)}
-							<img src="commsy.php?cid={$environment.cid}&mod=picture&fct=getfile&picture={$item.picture_upload}" alt="___USER_PICTURE_UPLOADFILE___" />
-							<input type="checkbox" name="form_data[deletePicture]" value="1"/>
-						{/if}
 						<div class="clear"></div>
 					</div>
+					
+					{if !empty($item.picture)}
+						<div class="input_row">
+							<div class="input_container">
+								<img src="commsy.php?cid={$environment.cid}&mod=picture&fct=getfile&picture={$item.picture}" alt="___USER_PICTURE_UPLOADFILE___" />
+							</div>
+						</div>
+						
+						<div class="input_row">
+							<div class="input_container">
+								<input id="delete_picture" class="float-left" type="checkbox" name="form_data[delete_picture]" value="1"/>
+								<label for="delete_picture" class="float-left">___USER_DEL_PIC_BUTTON___</label>
+								<div class="clear"></div>
+							</div>
+						</div>
+					{/if}
 
 					<div class="editor_content">
 						<div id="popup_ckeditor">{if isset($item.description)}{$item.description}{/if}</div>

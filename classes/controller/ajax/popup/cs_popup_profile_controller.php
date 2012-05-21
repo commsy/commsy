@@ -386,8 +386,13 @@ class cs_popup_profile_controller {
 										$new_picture_name = implode('_', $value_array);
 										
 										$portal_user->setPicture($new_picture_name);
+										
+										$portal_user->save();
 									}
 								}
+								
+								// save
+								$user_item->save();
 							}
 							
 							$this->_return = 'success';

@@ -27,11 +27,7 @@ class cs_popup_group_controller implements cs_rubric_popup_controller {
 				$this->_popup_controller->assign('item', 'name', $item->getName());
 				$this->_popup_controller->assign('item', 'description', $item->getDescription());
  				$this->_popup_controller->assign('item', 'public', $item->isPublic());
-
-
-			    $this->_popup_controller->assign('item','has_picture','');
-			    $this->_popup_controller->assign('item','picture_upload','',$item->getPicture());
-			    $this->_popup_controller->assign('item','deletePicture','');
+			    $this->_popup_controller->assign('item', 'picture', $item->getPicture());
 
       			if($current_context->WikiEnableDiscussionNotificationGroups() == 1){
       				$discussion_array = $current_context->getWikiDiscussionArray();
@@ -179,6 +175,13 @@ class cs_popup_group_controller implements cs_rubric_popup_controller {
 
 					if ( !empty($form_data['group_room_activate']) ) {
 						$item->setGroupRoomActive();
+					}
+					
+					if($item->getPicture() && isset($form_data['delete_picture'])) {
+						$disc_manager = $this->_environment->getDiscManager();
+						
+						if($disc_manager->existsFile($item->getPicture())) $disc_manager->unlinkFile($item->getPicture());
+						$item->setPicture('');
 					}
 
 					// Foren:
