@@ -34,9 +34,9 @@
 			// try to set the item
 			$this->setItem();
 
-			if($this->_item->isA(CS_LABEL_TYPE) && $this->_item->getLabelType() === CS_GROUP_TYPE && $this->_item->isGroupRoomActivated()) {
-				$this->_show_content_without_window = true;
-			}
+#			if($this->_item->isA(CS_LABEL_TYPE) && $this->_item->getLabelType() === CS_GROUP_TYPE && $this->_item->isGroupRoomActivated()) {
+#				$this->_show_content_without_window = true;
+#			}
 
 			$this->setupInformation();
 

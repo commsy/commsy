@@ -113,7 +113,7 @@ class cs_date_detail_controller extends cs_detail_controller {
             $this->setClipboardIDArray($clipboard_id_array);
 
             if (!empty($_GET['date_option'])) {
-                $current_user = $environment->getCurrentUser();
+                $current_user = $this->_environment->getCurrentUser();
                 if ($_GET['date_option']=='1') {
                     $this->_item->addParticipant($current_user);
                 } else if ($_GET['date_option']=='2') {
@@ -313,12 +313,11 @@ class cs_date_detail_controller extends cs_detail_controller {
 		$parse_time_end = convertTimeFromInput($this->_item->getEndingTime());
 		$conforms = $parse_time_end['conforms'];
 		if($conforms === true) {
-			$end_time_print = convertTimeFromInput($this->_item->getEndingTime());
+			$end_time_print = getTimeLanguage($parse_time_end['datetime']);
 		} else {
 			// TODO: compareWithSearchText
 			$end_time_print = $converter->text_as_html_short($this->_item->getEndingTime());
 		}
-
 		// day
 		$parse_day_start = convertDateFromInput($this->_item->getStartingDay(), $this->_environment->getSelectedLanguage());
 		$conforms = $parse_day_start['conforms'];
@@ -364,7 +363,7 @@ class cs_date_detail_controller extends cs_detail_controller {
 				if($parse_time_end['conforms'] === true) {
 					$time_print .= ' ' . $translator->getMessage('DATES_OCLOCK');
 				}
-			} elseif($start_time_print !== '' && $end_time_rpint !== '') {
+			} elseif($start_time_print !== '' && $end_time_print !== '') {
 				// all times given
 				if($parse_time_end['conforms'] === true) {
 					$end_time_print .= ' ' . $translator->getMessage('DATES_OCLOCK');
@@ -399,7 +398,7 @@ class cs_date_detail_controller extends cs_detail_controller {
 				if($parse_time_end['conforms'] === true) {
 					$time_print .= ' ' . $translator->getMessage('DATES_OCLOCK');
 				}
-			} elseif($start_time_rpint !== '' && $end_time_print !== '') {
+			} elseif($start_time_print !== '' && $end_time_print !== '') {
 				// all times given
 				if($parse_time_end['conforms'] === true) {
 					$end_time_print .= ' ' . $translator->getMessage('DATES_OCLOCK');
