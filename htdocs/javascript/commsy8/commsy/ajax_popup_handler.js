@@ -5,6 +5,7 @@
 define([	"order!libs/jQuery/jquery-1.7.1.min",
 			"order!libs/jQuery_plugins/jquery.viewport.mini",
 			"order!libs/jQuery/jquery-ui-1.8.17.custom.min",
+			"order!libs/jQuery_plugins/jquery.form",
         	"commsy/commsy_functions_8_0_0"], function() {
 	return {
 		cid: null,
@@ -303,25 +304,55 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 						if(item_id == 'NEW') {
 							handle.netnavigation.afterItemCreation(data);
 						}
-
-						handle.close();
-
-						// page reload
-						var fct = '';
-						var regex = new RegExp("[\\?&]fct=([^&#]*)");
-						var results = regex.exec(location.href);
-						if(results !== null) fct = results[1];
-
-						var module = '';
-						var regex = new RegExp("[\\?&]mod=([^&#]*)");
-						var results = regex.exec(location.href);
-						if(results !== null && results[1] !== 'NEW') module = results[1];
-
-						location.href = 'commsy.php?cid=' + handle.cid + '&mod=' + module + '&fct=detail&iid=' + data;
+						
+						// submit picture
+						var form_object = jQuery('form#picture_upload');
+						
+						if(form_object.find('input[type="file"]').attr('value') !== '') {
+							handle.uploadPicture(form_object, data);
+						} else {
+							handle.close();
+							
+							handle.reload(data);
+						}
 					}
 				});
 			}
 
+			return false;
+		},
+		
+		reload: function(item_id) {
+			// page reload
+			var fct = '';
+			var regex = new RegExp("[\\?&]fct=([^&#]*)");
+			var results = regex.exec(location.href);
+			if(results !== null) fct = results[1];
+
+			var module = '';
+			var regex = new RegExp("[\\?&]mod=([^&#]*)");
+			var results = regex.exec(location.href);
+			if(results !== null && results[1] !== 'NEW') module = results[1];
+
+			location.href = 'commsy.php?cid=' + this.cid + '&mod=' + module + '&fct=detail&iid=' + item_id;
+		},
+		
+		uploadPicture: function(form_object, item_id) {
+			var handle = this;
+			
+			jQuery('input#upload_hidden_iid').val(item_id);
+			
+			// setup ajax form
+			form_object.ajaxForm();
+			
+			// submit form
+			form_object.ajaxSubmit({
+				type:		'POST',
+				success:	function() {
+					handle.reload(item_id);
+				}
+			});
+			
 			return false;
 		},
 

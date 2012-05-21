@@ -185,6 +185,7 @@
 											</form>
 											{if !empty($popup.form.user.picture)}
 												<img src="commsy.php?cid={$environment.cid}&mod=picture&fct=getfile&picture={$popup.form.user.picture}" alt="___USER_PICTURE_UPLOADFILE___" />
+												<input type="checkbox" name="form_data[deletePicture]" value="1"/>
 											{/if}
 											<input id="data_picture_all" type="checkbox" class="float-left" name="form_data[picture_all]" />
 											<label for="data_picture_all" class="float-left">___USER_CHANGE_IN_ALL_ROOMS___</label>

@@ -18,28 +18,17 @@
 
 					<div class="input_row">
 						<label for="data_picture">___USER_PICTURE_UPLOADFILE___</label>
-						<form id="picture_upload" action="commsy.php?cid={$environment.cid}&mod=ajax&fct=popup&action=save" method="post">
-							<input type="hidden" name="module" value="profile" />
+						<form id="picture_upload" action="commsy.php?cid={$environment.cid}&mod=ajax&fct=rubric_popup&action=save" method="post">
+							<input type="hidden" name="module" value="group" />
+							<input type="hidden" name="additional[action]" value="upload_picture" />
+							<input id="upload_hidden_iid" type="hidden" name="additional[iid]" value="" />
 							<input id="data_picture" type="file" class="size_200 float-left" name="form_data[picture]" accept="image/*" />
 						</form>
 						{if !empty($item.picture_upload)}
 							<img src="commsy.php?cid={$environment.cid}&mod=picture&fct=getfile&picture={$item.picture_upload}" alt="___USER_PICTURE_UPLOADFILE___" />
+							<input type="checkbox" name="form_data[deletePicture]" value="1"/>
 						{/if}
 						<div class="clear"></div>
-					</div>
-
-
-					<div class="input_row">
-						{if isset($item.picture_upload)}
-							<div class="input_row">
-								{$item.picture_upload}
-								<div class="input_label_150">___USER_DEL_PIC_BUTTON___:</div>
-								<input type="checkbox" name="form_data[deletePicture]" value="1"/>
-								<input name="hidden_picture_upload" value="{$item.picture_upload}" type="hidden">
-							</div>
-						{/if}
-						<div class="input_label_80">___ADS_IMAGE_FORM_ELEMENT_TITLE___:</div>
-						<input type="file" name="picture_upload" size="30"/>
 					</div>
 
 					<div class="editor_content">

@@ -196,7 +196,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 					// submit picture
 					var form_object = jQuery('form#picture_upload');
 					
-					if(form_object.find('input').attr('value') !== '') {
+					if(form_object.find('input[type="file"]').attr('value') !== '') {
 						handle.uploadUserPicture(form_object);
 					}
 				}
@@ -204,15 +204,6 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 		},
 		
 		uploadUserPicture: function(form_object) {
-			// build object
-			var data = {
-				form_data: [],
-				module: 'profile',
-				additional: {
-					action: 'uploadUserPicture'
-				}
-			};
-			
 			// setup ajax form
 			form_object.ajaxForm();
 			

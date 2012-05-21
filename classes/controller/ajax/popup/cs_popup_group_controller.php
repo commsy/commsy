@@ -89,9 +89,10 @@ class cs_popup_group_controller implements cs_rubric_popup_controller {
         $environment = $this->_environment;
         $current_user = $this->_environment->getCurrentUserItem();
         $current_context = $this->_environment->getCurrentContextItem();
-
-        $current_iid = $form_data['iid'];
-
+		
+        if(isset($additional['action']) && $additional['action'] === 'upload_picture') $current_iid = $additional['iid'];
+        else $current_iid = $form_data['iid'];
+        
         $translator = $this->_environment->getTranslationObject();
 
         if($current_iid === 'NEW') {
@@ -114,148 +115,155 @@ class cs_popup_group_controller implements cs_rubric_popup_controller {
 
         } else { //Acces granted
 			$this->cleanup_session($current_iid);
-
-			// save item
-			if($this->_popup_controller->checkFormData()) {
-                $session = $this->_environment->getSessionItem();
-                $item_is_new = false;
-                // Create new item
-                if ( !isset($item) ) {
-                    $item_manager = $environment->getGroupManager();
-                    $item = $item_manager->getNewItem();
-                    $item->setContextID($environment->getCurrentContextID());
-                    $current_user = $environment->getCurrentUserItem();
-                    $item->setCreatorItem($current_user);
-                    $item->setCreationDate(getCurrentDateTimeInMySQL());
-                    $item_is_new = true;
-                }
-
-                // Set modificator and modification date
-                $current_user = $environment->getCurrentUserItem();
-                $item->setModificatorItem($current_user);
-
-                // Set attributes
-                if ( isset($form_data['name']) ) {
-                    $item->setName($form_data['name']);
-                }
-                if ( isset($form_data['description']) ) {
-                    $item->setDescription($form_data['description']);
-                }
-            	if (isset($form_data['public'])) {
-                	$item->setPublic($form_data['public']);
-            	}
-
-							/* handle user picture upload */
-							if(!empty($_FILES['form_data']['tmp_name'])) {
-								// rename temp file
-								$new_temp_name = $_FILES['form_data']['tmp_name']['picture'] . '_TEMP_' . $_FILES['form_data']['name']['picture'];
-								move_uploaded_file($_FILES['form_data']['tmp_name']['picture'], $new_temp_name);
-								$_FILES['form_data']['tmp_name']['picture'] = $new_temp_name;
-
-
-								// resize image to a maximum width of 150px and keep ratio
-								$srcfile = $_FILES['form_data']['tmp_name']['picture'];
-								$target = $_FILES['form_data']['tmp_name']['picture'];
-
-								$size = getimagesize($srcfile);
-								list($x_orig, $y_orig, $type) = $size;
-
-								$verhaeltnis = $y_orig / $x_orig;
-								$max_width = 150;
-								$ratio = 1.334; // 3:4
-
-								if($verhaeltnis < $ratio) {
-									// wider than 1:$ratio
-									$source_width = ($y_orig * $max_width) / ($max_width * $ratio);
-									$source_height = $y_orig;
-									$source_x = ($x_orig - $source_width) / 2;
-									$source_y = 0;
-								} else {
-									// higher than 1:$ratio
-									$source_width = $x_orig;
-									$source_height = ($x_orig * ($max_width * $ratio)) / $max_width;
-									$source_x = 0;
-									$source_y = ($y_orig - $source_height) / 2;
-								}
-
-								// create image
-								switch($type) {
-									case '1':
-										$im = imagecreatefromgif($srcfile);
-										break;
-									case '2':
-										$im = imagecreatefromjpeg($srcfile);
-										break;
-									case '3':
-										$im = imagecreatefrompng($srcfile);
-										break;
-								}
-
-								$newimg = imagecreatetruecolor($max_width, ($max_width * $ratio));
-								imagecopyresampled($newimg, $im, 0, 0, $source_x, $source_y, $max_width, ceil($max_width * $ratio), $source_width, $source_height);
-								imagepng($newimg, $target);
-
-								// clean up
-								imagedestroy($im);
-								imagedestroy($newimg);
-
-								// determ new file name
-								$filename_info = pathinfo($_FILES['form_data']['name']['picture']);
-								$filename = 'cid' . $this->_environment->getCurrentContextID() . '_' . $item->getItemID() . '.' . $filename_info['extension'];
-
-								// copy file and set picture
-								$disc_manager = $this->_environment->getDiscManager();
-
-								$disc_manager->copyFile($_FILES['form_data']['tmp_name']['picture'], $filename, true);
-								$item->setPicture($filename);
-							}
-
-
-	            if ( !empty($form_data['group_room_activate']) ) {
-                	$item->setGroupRoomActive();
-            	}
-
-	            // Foren:
-	            $discussion_notification_array = array();
-	            if ( isset($form_data['discussion_notification_list']) ) {
-	               $discussion_notification_array = $form_data['discussion_notification_list'];
-	            }
-	            if ( isset($form_data['discussion_notification'])
-	                 and !in_array($form_data['discussion_notification'],$discussion_notification_array)
-	                 and ($form_data['discussion_notification'] != -1)
-	                 and ($form_data['discussion_notification'] != 'disabled')
-	               ) {
-	               $discussion_notification_array[] = $form_data['discussion_notification'];
-	            }
-
-	            $item->setDiscussionNotificationArray($discussion_notification_array);
-
-                // Save item
-                $item->save();
-
-                // this will update the right box list
-                if($item_is_new){
-	                if ($session->issetValue('cid'.$environment->getCurrentContextID().'_'.CS_GROUP_TYPE.'_index_ids')){
-	                    $id_array =  array_reverse($session->getValue('cid'.$environment->getCurrentContextID().'_'.CS_GROUP_TYPE.'_index_ids'));
-	                } else {
-	                    $id_array =  array();
-	                }
-
-                    $id_array[] = $item->getItemID();
-                    $id_array = array_reverse($id_array);
-                    $session->setValue('cid'.$environment->getCurrentContextID().'_'.CS_GROUP_TYPE.'_index_ids',$id_array);
-                }
-
-                // save session
-                $this->_environment->getSessionManager()->save($session);
-
-                // Add modifier to all users who ever edited this item
-                $manager = $environment->getLinkModifierItemManager();
-                $manager->markEdited($item->getItemID());
-
-                // Redirect
-                $this->_return = $item->getItemID();
-            }
+			
+			
+			// upload picture
+			if(isset($additional['action']) && $additional['action'] === 'upload_picture') {
+				if($this->_popup_controller->checkFormData('picture_upload')) {
+					/* handle group picture upload */
+					if(!empty($_FILES['form_data']['tmp_name'])) {
+						// rename temp file
+						$new_temp_name = $_FILES['form_data']['tmp_name']['picture'] . '_TEMP_' . $_FILES['form_data']['name']['picture'];
+						move_uploaded_file($_FILES['form_data']['tmp_name']['picture'], $new_temp_name);
+						$_FILES['form_data']['tmp_name']['picture'] = $new_temp_name;
+				
+				
+						// resize image to a maximum width of 150px and keep ratio
+						$srcfile = $_FILES['form_data']['tmp_name']['picture'];
+						$target = $_FILES['form_data']['tmp_name']['picture'];
+				
+						$size = getimagesize($srcfile);
+						list($x_orig, $y_orig, $type) = $size;
+				
+						$verhaeltnis = $y_orig / $x_orig;
+						$max_width = 150;
+						$ratio = 1.334; // 3:4
+				
+						if($verhaeltnis < $ratio) {
+							// wider than 1:$ratio
+							$source_width = ($y_orig * $max_width) / ($max_width * $ratio);
+							$source_height = $y_orig;
+							$source_x = ($x_orig - $source_width) / 2;
+							$source_y = 0;
+						} else {
+							// higher than 1:$ratio
+							$source_width = $x_orig;
+							$source_height = ($x_orig * ($max_width * $ratio)) / $max_width;
+							$source_x = 0;
+							$source_y = ($y_orig - $source_height) / 2;
+						}
+				
+						// create image
+						switch($type) {
+							case '1':
+								$im = imagecreatefromgif($srcfile);
+								break;
+							case '2':
+								$im = imagecreatefromjpeg($srcfile);
+								break;
+							case '3':
+								$im = imagecreatefrompng($srcfile);
+								break;
+						}
+				
+						$newimg = imagecreatetruecolor($max_width, ($max_width * $ratio));
+						imagecopyresampled($newimg, $im, 0, 0, $source_x, $source_y, $max_width, ceil($max_width * $ratio), $source_width, $source_height);
+						imagepng($newimg, $target);
+				
+						// clean up
+						imagedestroy($im);
+						imagedestroy($newimg);
+				
+						// determ new file name
+						$filename_info = pathinfo($_FILES['form_data']['name']['picture']);
+						$filename = 'cid' . $this->_environment->getCurrentContextID() . '_' . $item->getItemID() . '.' . $filename_info['extension'];
+				
+						// copy file and set picture
+						$disc_manager = $this->_environment->getDiscManager();
+				
+						$disc_manager->copyFile($_FILES['form_data']['tmp_name']['picture'], $filename, true);
+						$item->setPicture($filename);
+						
+						$this->_return = 'success';
+					}
+				}
+			} else {
+				// save item
+				if($this->_popup_controller->checkFormData('general')) {
+					$session = $this->_environment->getSessionItem();
+					$item_is_new = false;
+					// Create new item
+					if ( !isset($item) ) {
+						$item_manager = $environment->getGroupManager();
+						$item = $item_manager->getNewItem();
+						$item->setContextID($environment->getCurrentContextID());
+						$current_user = $environment->getCurrentUserItem();
+						$item->setCreatorItem($current_user);
+						$item->setCreationDate(getCurrentDateTimeInMySQL());
+						$item_is_new = true;
+					}
+				
+					// Set modificator and modification date
+					$current_user = $environment->getCurrentUserItem();
+					$item->setModificatorItem($current_user);
+				
+					// Set attributes
+					if ( isset($form_data['name']) ) {
+						$item->setName($form_data['name']);
+					}
+					if ( isset($form_data['description']) ) {
+						$item->setDescription($form_data['description']);
+					}
+					if (isset($form_data['public'])) {
+						$item->setPublic($form_data['public']);
+					}
+				
+					if ( !empty($form_data['group_room_activate']) ) {
+						$item->setGroupRoomActive();
+					}
+				
+					// Foren:
+					$discussion_notification_array = array();
+					if ( isset($form_data['discussion_notification_list']) ) {
+						$discussion_notification_array = $form_data['discussion_notification_list'];
+					}
+					if ( isset($form_data['discussion_notification'])
+							and !in_array($form_data['discussion_notification'],$discussion_notification_array)
+							and ($form_data['discussion_notification'] != -1)
+							and ($form_data['discussion_notification'] != 'disabled')
+					) {
+						$discussion_notification_array[] = $form_data['discussion_notification'];
+					}
+				
+					$item->setDiscussionNotificationArray($discussion_notification_array);
+				
+					// Save item
+					$item->save();
+				
+					// this will update the right box list
+					if($item_is_new){
+						if ($session->issetValue('cid'.$environment->getCurrentContextID().'_'.CS_GROUP_TYPE.'_index_ids')){
+							$id_array =  array_reverse($session->getValue('cid'.$environment->getCurrentContextID().'_'.CS_GROUP_TYPE.'_index_ids'));
+						} else {
+							$id_array =  array();
+						}
+				
+						$id_array[] = $item->getItemID();
+						$id_array = array_reverse($id_array);
+						$session->setValue('cid'.$environment->getCurrentContextID().'_'.CS_GROUP_TYPE.'_index_ids',$id_array);
+					}
+				
+					// save session
+					$this->_environment->getSessionManager()->save($session);
+				
+					// Add modifier to all users who ever edited this item
+					$manager = $environment->getLinkModifierItemManager();
+					$manager->markEdited($item->getItemID());
+				
+					// Redirect
+					$this->_return = $item->getItemID();
+				}
+			}
         }
     }
 
@@ -304,9 +312,14 @@ class cs_popup_group_controller implements cs_rubric_popup_controller {
 
     public function getFieldInformation($sub = '') {
 			return array(
-				array(	'name'		=> 'name',
-						'type'		=> 'text',
-						'mandatory' => true),
+				'upload_picture'	=> array(
+				),
+				
+				'general'			=> array(
+					array(	'name'		=> 'name',
+							'type'		=> 'text',
+							'mandatory' => true)
+				)
 			);
     }
 
