@@ -941,24 +941,6 @@
 				}
 			}
 
-			// sections
-			$sections = $this->getSections();
-			$sections_return = array();
-			if(!empty($sections)) {
-				$temp_array = array();
-				$temp_array[] = $translator->getMessage('MATERIAL_ABSTRACT');
-				$description = $this->_item->getDescription();
-				if(!empty($description)) {
-					$description = $converter->cleanDataFromTextArea($description);
-					$converter->setFileArray($this->getItemFileList());
-					$description = $converter->text_as_html_long($description);
-					$description = $converter->showImages($description, $this->_item, true);
-					$temp_array[] = $description;
-				} else {
-					$temp_array[] = $translator->getMessage('COMMON_NONE');
-				}
-				$return[] = $temp_array;
-			}
 
 			// files
 			$files = array();
@@ -1187,7 +1169,7 @@
 						$file = $file_list->getFirst();
 						while($file) {
 							if(!(isset($_GET['mode']) && $_GET['mode'] === 'print') || (isset($_GET['download']) && $_GET['download'] === 'zip')) {
-									$file_string = '<a href="' . $file->getUrl() . '" target="blank">';
+									$file_string = '<a rel="lightbox-gallery'.$section->getItemID().'" href="' . $file->getUrl() . '" target="blank">';
 									$name = $file->getDisplayName();
 									//TODO:
 									//$name = $converter->compareWithSearchText($name);
@@ -1203,7 +1185,7 @@
 							}
 							$tmp_array = array();
 							$tmp_array['name'] = $file_string;
-							$tmp_array['icon'] = '<a href="' . $file->getUrl() . '" target="blank">'.$file->getFileIcon(). '</a>';
+							$tmp_array['icon'] = '<a rel="lightbox-gallery'.$section->getItemID().'" href="' . $file->getUrl() . '" target="blank">'.$file->getFileIcon(). '</a>';
 
 
 							$files[] = $tmp_array;
