@@ -70,7 +70,6 @@
 
 						{include file="popups/include/edit_attach_items_include_html.tpl"}
 
-						{debug}
 						<div class="settings_area hidden">
 							<div class="input_row">
 								<div class="input_label_100">___COMMON_GROUPROOM___:</div>
@@ -80,11 +79,7 @@
 							</div>
 							<div class="clear"></div>
 						</div>
-
-
 					</div>
-
-
 
 					<div id="content_buttons">
 						<div id="crt_actions_area">
