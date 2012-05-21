@@ -626,7 +626,7 @@ columnset, general settings
     }
 
 #right_column {
-    width: 245px;
+    width: 244px;
     float: left;
     border-top: 1px solid #2E405E; /* ueber Skin-Editor austauschbar */
     }
@@ -656,9 +656,10 @@ columnset, general settings
 
 #info_area_row_1 {
     float: left;
-    border-right: 1px solid #2E405E; /* ueber Skin-Editor austauschbar */
-    width: 199px;
+   /*  border-right: 1px solid #2E405E;*/ /* ueber Skin-Editor austauschbar */
+    width: 198px;
     height: 60px;
+    overflow:auto;
     }
 
 #info_area_row_3 h2,
@@ -2587,7 +2588,7 @@ footer
     }
 
 #footer_right {
-    width: 245px;
+    width: 244px;
     color: #DEE8FF; /* ueber Skin-Editor austauschbar */
     background: url(img/columns_bg.jpg) repeat-y; /* ueber Skin-Editor austauschbar */
     float: left;
