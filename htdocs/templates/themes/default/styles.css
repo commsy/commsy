@@ -1597,8 +1597,12 @@ forms
     padding-bottom: 10px;
     }
 
+.input_image{
+	height:150px;
+	}
+
 .input_container {
-	margin-left: 180px;
+	margin-left: 80px;
 	}
 
 .tm_di_ground_solid fieldset {

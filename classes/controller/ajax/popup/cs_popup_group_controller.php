@@ -28,6 +28,12 @@ class cs_popup_group_controller implements cs_rubric_popup_controller {
 				$this->_popup_controller->assign('item', 'description', $item->getDescription());
  				$this->_popup_controller->assign('item', 'public', $item->isPublic());
 			    $this->_popup_controller->assign('item', 'picture', $item->getPicture());
+			    if ($item->isGroupRoomActivated()){
+			    	$this->_popup_controller->assign('item','group_room_activate','1');
+			    }else{
+			    	$this->_popup_controller->assign('item','group_room_activate','0');
+			    }
+			    $this->_popup_controller->assign('item','system_label',$item->isSystemLabel());
 
       			if($current_context->WikiEnableDiscussionNotificationGroups() == 1){
       				$discussion_array = $current_context->getWikiDiscussionArray();
@@ -67,14 +73,6 @@ class cs_popup_group_controller implements cs_rubric_popup_controller {
          		   	$this->_popup_controller->assign('item','discussion_notification',$_discussion_notification_array);
  			   }
 
-
-		      if ( !$item->isSystemLabel() ) {
-		         if ( $item->isGroupRoomActivated() ) {
-		          	$this->_popup_controller->assign('item','group_room_exists','1');
-		          	$this->_popup_controller->assign('item', $item->getGroupRoomItemID());
-			     	$this->_popup_controller->assign('item','group_room_activate','1');
-		         }
-		      }
 			}else{
 
 
@@ -131,7 +129,6 @@ class cs_popup_group_controller implements cs_rubric_popup_controller {
 						// determ new file name
 						$filename_info = pathinfo($_FILES['form_data']['name']['picture']);
 						$filename = 'cid' . $this->_environment->getCurrentContextID() . '_iid' . $item->getItemID() . '_'. $_FILES['form_data']['name']['picture'];
-						pr($filename);
 						// copy file and set picture
 						$disc_manager = $this->_environment->getDiscManager();
 
@@ -173,13 +170,15 @@ class cs_popup_group_controller implements cs_rubric_popup_controller {
 						$item->setPublic($form_data['public']);
 					}
 
-					if ( !empty($form_data['group_room_activate']) ) {
+					if ( isset($form_data['group_room_activate']) ) {
 						$item->setGroupRoomActive();
+					}else{
+						$item->unsetGroupRoomActive();
 					}
-					
+
 					if($item->getPicture() && isset($form_data['delete_picture'])) {
 						$disc_manager = $this->_environment->getDiscManager();
-						
+
 						if($disc_manager->existsFile($item->getPicture())) $disc_manager->unlinkFile($item->getPicture());
 						$item->setPicture('');
 					}
@@ -198,7 +197,6 @@ class cs_popup_group_controller implements cs_rubric_popup_controller {
 					}
 
 					$item->setDiscussionNotificationArray($discussion_notification_array);
-
 					// Save item
 					$item->save();
 
@@ -228,7 +226,6 @@ class cs_popup_group_controller implements cs_rubric_popup_controller {
 			}
         }
     }
-
 
     public function isOption( $option, $string ) {
         return (strcmp( $option, $string ) == 0) || (strcmp( htmlentities($option, ENT_NOQUOTES, 'UTF-8'), $string ) == 0 || (strcmp( $option, htmlentities($string, ENT_NOQUOTES, 'UTF-8') )) == 0 );
