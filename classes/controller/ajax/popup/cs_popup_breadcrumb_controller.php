@@ -5,7 +5,6 @@
 		private $_environment = null;
 		private $_translator = null;
 		private $_popup_controller = null;
-		private $_return = '';
 	
 		/**
 		* constructor
@@ -60,6 +59,9 @@
 			$own_room_item = $current_user->getOwnRoom();
 			$own_room_item->setCustomizedRoomIDArray($sorting);
 			$own_room_item->save();
+			
+			// set return
+			$this->_popup_controller->setSuccessfullItemIDReturn($own_room_item->getItemID());
 		}
 	
 		public function initPopup() {
@@ -67,21 +69,6 @@
 			$breadcrumb_information = array();
 			$this->_popup_controller->assign('popup', 'breadcrumb', $this->getBreadcrumbInformation());
 			$this->_popup_controller->assign('popup', 'rooms', $this->getRoomListArray());
-		}
-		
-		public function getReturn() {
-			return $this->_return;
-		}
-	
-		public function getFieldInformation() {
-			return array(
-				array(	'name'		=> 'title',
-						'type'		=> 'text',
-						'mandatory' => true),
-				array(	'name'		=> 'description',
-						'type'		=> 'text',
-						'mandatory'	=> false)
-			);
 		}
 	
 		private function getBreadcrumbInformation() {

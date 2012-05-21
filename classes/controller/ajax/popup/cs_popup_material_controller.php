@@ -4,7 +4,6 @@ require_once('classes/controller/ajax/popup/cs_rubric_popup_controller.php');
 class cs_popup_material_controller implements cs_rubric_popup_controller {
     private $_environment = null;
     private $_popup_controller = null;
-    private $_return = '';
 
     /**
      * constructor
@@ -140,9 +139,14 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
 
         } else { //Acces granted
 			$this->cleanup_session($current_iid);
-
+			
+			$check_passed = $this->_popup_controller->checkFormData('general');
+			if($check_passed === true && $form_data['bib_kind'] !== 'none') {
+				$check_passed = $this->_popup_controller->checkFormData($form_data['bib_kind']);
+			}
+			
 			// save item
-			if($this->_popup_controller->checkFormData()) {
+			if($check_passed === true) {
                 $session = $this->_environment->getSessionItem();
                 $item_is_new = false;
                 // Create new item
@@ -357,7 +361,7 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
 	               $item->setWorkflowValidityTrafficLight( $form_data['workflow_validity_traffic_light']);
 	            }
 
-	            if ( $context_item->isCommunityRoom() and $context_item->isOpenForGuests() ) {
+	            if ( $current_context->isCommunityRoom() and $current_context->isOpenForGuests() ) {
 	               $old_world_public = $item->getWorldPublic();
 	               if ( ( isset( $form_data['world_public']) and $old_world_public == 0) or
 	                    ( !isset( $form_data['world_public']) and $old_world_public == 2 and !$current_user->isModerator())  ){               // Request for world public
@@ -393,12 +397,12 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
 
                // send notifications if world public status is requested
                if ( $item->getWorldPublic() == 1
-                    and isset($context_item)
-                    and $context_item->isCommunityRoom()
+                    and isset($current_context)
+                    and $current_context->isCommunityRoom()
                   ) {
 
                   // Get receiving moderators
-                  $modList = $context_item->getModeratorList();
+                  $modList = $current_context->getModeratorList();
                   $moderator = $modList->getFirst();
                   $mailSendTo = '';
                   while ( $moderator ) {
@@ -423,10 +427,10 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
                         $mail->set_to($moderator->getEMail());
                         $language = $moderator->getLanguage();
                         $translator->setSelectedLanguage($language);
-                        $mail_subject = $translator->getMessage('ADMIN_MAIL_MATERIAL_SHOULD_BE_WORLDPUBLIC_SUBJECT',$context_item->getTitle());
+                        $mail_subject = $translator->getMessage('ADMIN_MAIL_MATERIAL_SHOULD_BE_WORLDPUBLIC_SUBJECT',$current_context->getTitle());
                         $mail_body = $translator->getMessage('MAIL_AUTO',$translator->getDateInLang(getCurrentDateTimeInMySQL()),$translator->getTimeInLang(getCurrentDateTimeInMySQL()));
                         $mail_body.= "\n\n";
-                        $mail_body.= $translator->getMessage('ADMIN_MAIL_MATERIAL_SHOULD_BE_WORLDPUBLIC_BODY',$item->getTitle(),$context_item->getTitle(),$sender->getFullName());
+                        $mail_body.= $translator->getMessage('ADMIN_MAIL_MATERIAL_SHOULD_BE_WORLDPUBLIC_BODY',$item->getTitle(),$current_context->getTitle(),$sender->getFullName());
                         $mail_body.= "\n\n";
                         $mail_body.= $translator->getMessage('MAIL_SEND_TO',$mailSendTo);
                         $mail_body.= "\n";
@@ -496,9 +500,9 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
                 // Add modifier to all users who ever edited this item
                 $manager = $environment->getLinkModifierItemManager();
                 $manager->markEdited($announcement_item->getItemID());
-
-                // Redirect
-                $this->_return = $announcement_item->getItemID();
+                
+                // set return
+                $this->_popup_controller->setSuccessfullItemIDReturn($item->getItemID());
             }
         }
     }
@@ -506,10 +510,6 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
 
     public function isOption( $option, $string ) {
         return (strcmp( $option, $string ) == 0) || (strcmp( htmlentities($option, ENT_NOQUOTES, 'UTF-8'), $string ) == 0 || (strcmp( $option, htmlentities($string, ENT_NOQUOTES, 'UTF-8') )) == 0 );
-    }
-
-    public function getReturn() {
-        return $this->_return;
     }
 
     private function assignTemplateVars() {
@@ -549,74 +549,112 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
         $config_information['with_activating'] = $current_context->withActivatingContent();
         $this->_popup_controller->assign('popup', 'config', $config_information);
     }
-
-
+    
     public function getFieldInformation($sub = '') {
-			return array(
+		$return = array(
+			'general'	=> array(
 				array(	'name'		=> 'title',
-						'type'		=> 'text',
-						'mandatory' => true),
-				array(	'name'		=> 'vid',
-						'type'		=> 'hidden',
-						'mandatory' => true),
+					'type'		=> 'text',
+					'mandatory' => true),
 				array(	'name'		=> 'description',
 						'type'		=> 'textarea',
-						'mandatory'	=> false),
-				array(	'name'		=> 'pages',
-						'type'		=> 'text',
-						'mandatory'	=> false),
-				array(	'name'		=> 'booktitle',
-						'type'		=> 'text',
-						'mandatory'	=> false),
-				array(	'name'		=> 'editor',
-						'type'		=> 'text',
-						'mandatory'	=> false),
-				array(	'name'		=> 'isbn',
-						'type'		=> 'text',
-						'mandatory'	=> false),
-				array(	'name'		=> 'volume',
-						'type'		=> 'text',
-						'mandatory'	=> false),
-				array(	'name'		=> 'series',
-						'type'		=> 'text',
-						'mandatory'	=> false),
-				array(	'name'		=> 'edition',
-						'type'		=> 'text',
-						'mandatory'	=> false),
-				array(	'name'		=> 'address',
-						'type'		=> 'text',
-						'mandatory'	=> false),
-				array(	'name'		=> 'publisher',
-						'type'		=> 'text',
-						'mandatory'	=> false),
-				array(	'name'		=> 'bib_kind',
-						'type'		=> 'text',
-						'mandatory'	=> false),
-				array(	'name'		=> 'author',
-						'type'		=> 'text',
-						'mandatory'	=> false),
-				array(	'name'		=> 'journal',
-						'type'		=> 'text',
-						'mandatory'	=> false),
-				array(	'name'		=> 'issue',
-						'type'		=> 'text',
-						'mandatory'	=> false),
-				array(	'name'		=> 'thesis_kind',
-						'type'		=> 'text',
-						'mandatory'	=> false),
-				array(	'name'		=> 'university',
-						'type'		=> 'text',
-						'mandatory'	=> false),
-				array(	'name'		=> 'faculty',
-						'type'		=> 'text',
-						'mandatory'	=> false),
-				array(	'name'		=> 'dayEnd',
-						'type'		=> 'text',
-						'mandatory'	=> true),
-				array(	'name'		=> 'timeEnd',
-						'type'		=> 'text',
 						'mandatory'	=> false)
-			);
+			),
+			
+			'common'	=> array(
+			),
+				
+			'book'	=> array(
+			),
+			
+			'collection'	=> array(
+			),
+			
+			'incolection'	=> array(
+			),
+			
+			'article'	=> array(
+			),
+			
+			'chapter'	=> array(
+			),
+			
+			'inpaper'	=> array(
+			),
+			
+			'thesis'	=> array(
+			),
+			
+			'manuscript'	=> array(
+			),
+			
+			'website'	=> array(
+			),
+			
+			'document'	=> array(
+			)/*
+			array(	'name'		=> 'vid',
+					'type'		=> 'hidden',
+					'mandatory' => true),
+			
+			array(	'name'		=> 'pages',
+					'type'		=> 'text',
+					'mandatory'	=> false),
+			array(	'name'		=> 'booktitle',
+					'type'		=> 'text',
+					'mandatory'	=> false),
+			array(	'name'		=> 'editor',
+					'type'		=> 'text',
+					'mandatory'	=> false),
+			array(	'name'		=> 'isbn',
+					'type'		=> 'text',
+					'mandatory'	=> false),
+			array(	'name'		=> 'volume',
+					'type'		=> 'text',
+					'mandatory'	=> false),
+			array(	'name'		=> 'series',
+					'type'		=> 'text',
+					'mandatory'	=> false),
+			array(	'name'		=> 'edition',
+					'type'		=> 'text',
+					'mandatory'	=> false),
+			array(	'name'		=> 'address',
+					'type'		=> 'text',
+					'mandatory'	=> false),
+			array(	'name'		=> 'publisher',
+					'type'		=> 'text',
+					'mandatory'	=> false),
+			array(	'name'		=> 'bib_kind',
+					'type'		=> 'text',
+					'mandatory'	=> false),
+			array(	'name'		=> 'author',
+					'type'		=> 'text',
+					'mandatory'	=> false),
+			array(	'name'		=> 'journal',
+					'type'		=> 'text',
+					'mandatory'	=> false),
+			array(	'name'		=> 'issue',
+					'type'		=> 'text',
+					'mandatory'	=> false),
+			array(	'name'		=> 'thesis_kind',
+					'type'		=> 'text',
+					'mandatory'	=> false),
+			array(	'name'		=> 'university',
+					'type'		=> 'text',
+					'mandatory'	=> false),
+			array(	'name'		=> 'faculty',
+					'type'		=> 'text',
+					'mandatory'	=> false),
+			array(	'name'		=> 'dayEnd',
+					'type'		=> 'text',
+					'mandatory'	=> true),
+			array(	'name'		=> 'timeEnd',
+					'type'		=> 'text',
+					'mandatory'	=> false)
+					*/
+		);
+		
+		return $return[$sub];
     }
 
 

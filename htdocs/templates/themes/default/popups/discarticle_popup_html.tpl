@@ -1,40 +1,39 @@
 <div id="popup_wrapper">
-	<div id="popup_background"></div>
-	<div id="popup_w3col">
-		<div id="popup">
+	<div id="popup_edit">
+		<div id="popup_frame">
+			<div id="popup_inner">
+			
+				<div id="popup_title">
+					<a id="popup_close" href="" title="___COMMON_CLOSE___"><img src="{$basic.tpl_path}img/popup_close.gif" alt="___COMMON_CLOSE___" /></a>
+					<h2>{if $popup.edit == false}___COMMON_ENTER_NEW_DISCARTICLE___{else}___COMMON_DISCARTICLE_EDIT___{/if}</h2>
+					<div class="clear"> </div>
+				</div>
 
-			<div id="popup_head">
-				<h2>Neue Diskussion erstellen</h2>
-				<a id="popup_close" href="" title="___COMMON_CLOSE___"><img src="{$basic.tpl_path}img/pop_close_btn.gif" alt="___COMMON_CLOSE___" /></a>
-
-				<div class="clear"> </div>
-			</div>
-
-			<div id="popup_content">
-
-				<div id="content_row_three">
-					<div class="input_row">
-						<span class="input_label">Titel</span> <input type="text" value="{if isset($item.title)}{$item.title}{/if}" name="form_data[title]" class="size_200 mandatory" />
-					</div>
-					
-					<div id="pop_editor">
-						<h2 id="pop_editor_head">Diskussionsbeitrag</h2>
-
-						<input type="hidden" value="" name="iid"/>
-						<input type="hidden" value="{$detail.item_id}" name="discussion_id"/>
-						<input type="hidden" value="1" name="ref_position"/>
-						<div class="editor_content">
-							<div id="popup_ckeditor">{if isset($item.description)}{$item.description}{/if}</div>
-							<input type="hidden" id="popup_ckeditor_content" name="form_data[description]" value=""/>
+				<div id="popup_content">
+					<div id="content_row_three">
+						<div class="input_row">
+							<span class="input_label">Titel</span> <input type="text" value="{if isset($item.title)}{$item.title}{/if}" name="form_data[title]" class="size_200" />
 						</div>
-					</div>
-
+						
+						<div id="pop_editor">
+							<h2 id="pop_editor_head">Diskussionsbeitrag</h2>
+	
+							<input type="hidden" value="" name="iid"/>
+							<input type="hidden" value="{$detail.item_id}" name="discussion_id"/>
+							<input type="hidden" value="1" name="ref_position"/>
+							<div class="editor_content">
+								<div id="discarticle_description" class="ckeditor">{if isset($item.discarticle_description)}{$item.discarticle_description}{/if}</div>
+							</div>
+						</div>
+				</div>
+				
+				<div id="popup_tabs">
 					<div class="tab_navigation">
 						<a href="" class="pop_tab_active">Dateien anh&auml;ngen</a>
-
+						
 						<div class="clear"> </div>
 					</div>
-
+					
 					<div id="popup_tabcontent">
 						<div class="settings_area">
 
@@ -62,18 +61,17 @@
 							<div class="clear"> </div>
 						</div>
 					</div>
-
-				</div>
-
-				<div id="content_row_four">
-					<div id="crt_actions_area">
-						<input id="popup_button_create" class="popup_button" type="button" name="" value="Diskussion anlegen" />
-						<input id="popup_button_abort" class="popup_button" type="button" name="" value="abbrechen" /> 
+	
+					<div id="content_buttons">
+						<div id="crt_actions_area">
+							<input id="popup_button_create" class="popup_button" type="button" name="" value="Diskussion anlegen" />
+							<input id="popup_button_abort" class="popup_button" type="button" name="" value="abbrechen" /> 
+						</div>
 					</div>
 				</div>
-
 			</div>
-
+				
+			<div class="clear"></div>
 		</div>
 	</div>
 </div>

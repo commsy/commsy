@@ -160,7 +160,8 @@ class cs_popup_profile_controller {
 								
 								$authentication->mergeAccount($current_user->getUserID(), $current_user->getAuthSource(), $form_data['merge_user_id'], $auth_source_old);
 								
-								$this->_return = 'success';
+								// set return
+                				$this->_popup_controller->setSuccessfullItemIDReturn($current_user->getItemID());
 							}
 						} else {
 							if($this->_popup_controller->checkFormData('account')) {
@@ -297,7 +298,8 @@ class cs_popup_profile_controller {
 									$user->changeRelatedUser($dummy_user);
 								}
 								
-								$this->_return = 'success';
+								// set return
+                				$this->_popup_controller->setSuccessfullItemIDReturn($user->getItemID());
 							}
 						}
 						break;
@@ -395,7 +397,8 @@ class cs_popup_profile_controller {
 								$user_item->save();
 							}
 							
-							$this->_return = 'success';
+							// set return
+               				$this->_popup_controller->setSuccessfullItemIDReturn($user_item->getItemID());
 						}
 						break;
 					
@@ -554,7 +557,8 @@ class cs_popup_profile_controller {
 							}
 							
 							
-							$this->_return = 'success';
+							// set return
+                			$this->_popup_controller->setSuccessfullItemIDReturn($user_item->getItemID());
 						}
 						// init data display
 						// 					if (!empty($_POST)) {
@@ -686,7 +690,8 @@ class cs_popup_profile_controller {
 							// save
 							$room_item->save();
 							
-							$this->_return = 'success';
+							// set return
+                			$this->_popup_controller->setSuccessfullItemIDReturn($room_item->getItemID());
 						}
 						break;
 				}
@@ -801,10 +806,6 @@ class cs_popup_profile_controller {
 		
 		// assign template vars
 		$this->assignTemplateVars();
-	}
-	
-	public function getReturn() {
-		return $this->_return;
 	}
 	
 	public function getFieldInformation($sub) {

@@ -133,15 +133,9 @@ define(["libs/jQuery/jquery-1.7.1.min"], function() {
 			this.registerModule('commsy/progressbar', {objects: objects});
 
 			// ckeditor
-			// load on detail context
-			//if(this.getURLParam('fct') === 'detail') {
-				var input_object = jQuery('input[id="ckeditor_content"]');
-				this.registerModule('commsy/ck_editor', {register_on: jQuery('div[id="ckeditor"]'), input_object: input_object});
-
-				var input_object = jQuery('input[id="ckeditor_content_second"]');
-				this.registerModule('commsy/ck_editor', {register_on: jQuery('div[id="ckeditor_second"]'), input_object: input_object});
-			//}
-
+			// register on all div with class "ckeditor"
+			this.registerModule('commsy/ck_editor', {register_on: jQuery('div.ckeditor')});
+			
 			// search
 			this.registerModule('commsy/search', 'input[id="search_input"]');
 

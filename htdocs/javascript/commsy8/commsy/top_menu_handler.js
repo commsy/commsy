@@ -110,9 +110,9 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 					console.log("error while getting popup");
 				},
 				success: function(data, status) {
-					if(status === 'success') {
+					if(data.status === 'success') {
 						// we recieved html - append it
-						jQuery('div#tm_dropmenu_pers_bar').html(data);
+						jQuery('div#tm_dropmenu_pers_bar').html(data.html);
 						
 						// show
 						jQuery('div#tm_dropmenu_pers_bar div.tm_dropmenu').slideDown(100);
@@ -193,11 +193,32 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 					console.log("error while processing popup action");
 				},
 				success: function(data, status) {
-					// submit picture
-					var form_object = jQuery('form#picture_upload');
-					
-					if(form_object.find('input[type="file"]').attr('value') !== '') {
-						handle.uploadUserPicture(form_object);
+					if(data.status === 'success') {
+						// submit picture
+						var form_object = jQuery('form#picture_upload');
+						
+						if(form_object.find('input[type="file"]').attr('value') !== '') {
+							handle.uploadUserPicture(form_object);
+						}
+					} else if(data.status === 'error' && data.code === 101) {
+						// mandatory error
+						var missing_fields = data.detail;
+						
+						// create a red border around the missing fields and scroll to first one
+						jQuery.each(missing_fields, function(index, field_name) {
+							jQuery.each(form_objects, function() {
+								if(jQuery(this).attr('name') === 'form_data[' + field_name + ']') {
+									jQuery(this).css('border', '1px solid red');
+									
+									if(index === 0 && !jQuery.inviewport(jQuery(this), {threshold: 0})) {
+										jQuery('html, body').animate({scrollTop: jQuery(this).offset().top}, 500);
+									}
+								}
+							});
+						});
+					} else {
+						// unhandled error
+						console.log('unhandled error');
 					}
 				}
 			});
@@ -236,9 +257,9 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 					console.log("error while getting popup");
 				},
 				success: function(data, status) {
-					if(status === 'success') {
+					if(data.status === 'success') {
 						// we recieved html - append it
-						jQuery('div#tm_dropmenu_breadcrumb').html(data);
+						jQuery('div#tm_dropmenu_breadcrumb').html(data.html);
 						
 						// show
 						jQuery('div#tm_dropmenu_breadcrumb div.tm_dropmenu').slideDown(100);
@@ -543,7 +564,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 					console.log("error while getting popup");
 				},
 				success: function(data, status) {
-					if(status === 'success') {
+					if(data.status === 'success') {
 					}
 				}
 			});

@@ -3,7 +3,6 @@ class cs_popup_date_controller {
 
     private $_environment = null;
     private $_popup_controller = null;
-    private $_return = '';
 
     /**
      * constructor
@@ -141,21 +140,21 @@ class cs_popup_date_controller {
                     $date_item->setPublic($form_data['public']);
                 }
                 if ( isset($form_data['public']) ) {
-                    if ( $dates_item->isPublic() != $form_data['public'] ) {
-                        $dates_item->setPublic($form_data['public']);
+                    if ( $date_item->isPublic() != $form_data['public'] ) {
+                        $date_item->setPublic($form_data['public']);
                     }
                 } else {
                     if ( isset($form_data['private_editing']) ) {
-                        $dates_item->setPrivateEditing('0');
+                        $date_item->setPrivateEditing('0');
                     } else {
-                        $dates_item->setPrivateEditing('1');
+                        $date_item->setPrivateEditing('1');
                     }
                 }
                 if ( isset($form_data['external_viewer']) and isset($form_data['external_viewer_accounts']) ) {
                     $user_ids = explode(" ",$form_data['external_viewer_accounts']);
-                    $dates_item->setExternalViewerAccounts($user_ids);
+                    $date_item->setExternalViewerAccounts($user_ids);
                 }else{
-                    $dates_item->unsetExternalViewerAccounts();
+                    $date_item->unsetExternalViewerAccounts();
                 }
 
                 if ( isset($form_data['hide']) ) {
@@ -175,17 +174,17 @@ class cs_popup_date_controller {
                     }else{
                         $dt_hiding_datetime = $dt_hiding_date.' '.$dt_hiding_time;
                     }
-                    $dates_item->setModificationDate($dt_hiding_datetime);
+                    $date_item->setModificationDate($dt_hiding_datetime);
                 }else{
-                    if($dates_item->isNotActivated()){
-                        $dates_item->setModificationDate(getCurrentDateTimeInMySQL());
+                    if($date_item->isNotActivated()){
+                        $date_item->setModificationDate(getCurrentDateTimeInMySQL());
                     }
                 }
 
                 if ( isset($form_data['mode']) ) {
-                    $dates_item->setDateMode('1');
+                    $date_item->setDateMode('1');
                 }else{
-                    $dates_item->setDateMode('0');
+                    $date_item->setDateMode('0');
                 }
 
                 // variables for datetime-format of end and beginning
@@ -197,55 +196,55 @@ class cs_popup_date_controller {
 
                 $converted_time_start = convertTimeFromInput($form_data['timeStart']);
                 if ($converted_time_start['conforms'] == TRUE) {
-                    $dates_item->setStartingTime($converted_time_start['datetime']);
+                    $date_item->setStartingTime($converted_time_start['datetime']);
                     $dt_start_time = $converted_time_start['datetime'];
                 } else {
-                    $dates_item->setStartingTime($converted_time_start['display']);
+                    $date_item->setStartingTime($converted_time_start['display']);
                 }
 
                 $converted_day_start = convertDateFromInput($form_data['dayStart'],$environment->getSelectedLanguage());
                 if ($converted_day_start['conforms'] == TRUE) {
-                    $dates_item->setStartingDay($converted_day_start['datetime']);
+                    $date_item->setStartingDay($converted_day_start['datetime']);
                     $dt_start_date = $converted_day_start['datetime'];
                 } else {
-                    $dates_item->setStartingDay($converted_day_start['display']);
+                    $date_item->setStartingDay($converted_day_start['display']);
                 }
 
                 if (!empty($form_data['timeEnd'])) {
                     $converted_time_end = convertTimeFromInput($form_data['timeEnd']);
                     if ($converted_time_end['conforms'] == TRUE) {
-                        $dates_item->setEndingTime($converted_time_end['datetime']);
+                        $date_item->setEndingTime($converted_time_end['datetime']);
                         $dt_end_time = $converted_time_end['datetime'];
                     } else {
-                        $dates_item->setEndingTime($converted_time_end['display']);
+                        $date_item->setEndingTime($converted_time_end['display']);
                     }
                 } else {
-                    $dates_item->setEndingTime('');
+                    $date_item->setEndingTime('');
                 }
 
                 if (!empty($form_data['dayEnd'])) {
                     $converted_day_end = convertDateFromInput($form_data['dayEnd'],$environment->getSelectedLanguage());
                     if ($converted_day_end['conforms'] == TRUE) {
-                        $dates_item->setEndingDay($converted_day_end['datetime']);
+                        $date_item->setEndingDay($converted_day_end['datetime']);
                         $dt_end_date = $converted_day_end['datetime'];
                     } else {
-                        $dates_item->setEndingDay($converted_day_end['display']);
+                        $date_item->setEndingDay($converted_day_end['display']);
                     }
                 } else {
-                    $dates_item->setEndingDay('');
+                    $date_item->setEndingDay('');
                 }
 
                 if ($dt_end_date == '0000-00-00') {
                     $dt_end_date = $dt_start_date;
                 }
 
-                $dates_item->setDateTime_start($dt_start_date.' '.$dt_start_time);
-                $dates_item->setDateTime_end($dt_end_date.' '.$dt_end_time);
+                $date_item->setDateTime_start($dt_start_date.' '.$dt_start_time);
+                $date_item->setDateTime_end($dt_end_date.' '.$dt_end_time);
 
                 if (!empty($form_data['place'])) {
-                    $dates_item->setPlace($form_data['place']);
+                    $date_item->setPlace($form_data['place']);
                 } else {
-                    $dates_item->setPlace('');
+                    $date_item->setPlace('');
                 }
 
                 $file_ids = $form_data['files'];
@@ -309,8 +308,8 @@ class cs_popup_date_controller {
                 $manager = $environment->getLinkModifierItemManager();
                 $manager->markEdited($date_item->getItemID());
 
-                // Redirect
-                $this->_return = $date_item->getItemID();
+                // set return
+                $this->_popup_controller->setSuccessfullItemIDReturn($date_item->getItemID());
             }
         }
 
@@ -331,13 +330,13 @@ class cs_popup_date_controller {
                  if (isset($form_data['seldisplay_mode']) or $seldisplay_mode== 'calendar') {
                  if ($seldisplay_mode == 'calendar') {
                  $noticed_manager = $environment->getNoticedManager();
-                 $noticed = $noticed_manager->getLatestNoticed($dates_item->getItemID());
-                 if ( empty($noticed) or $noticed['read_date'] < $dates_item->getModificationDate() ) {
-                 $noticed_manager->markNoticed($dates_item->getItemID(),0);
+                 $noticed = $noticed_manager->getLatestNoticed($date_item->getItemID());
+                 if ( empty($noticed) or $noticed['read_date'] < $date_item->getModificationDate() ) {
+                 $noticed_manager->markNoticed($date_item->getItemID(),0);
                  }
                  }
                  $params = array();
-                 $params = getCalendarParameterArrayByItem($dates_item);
+                 $params = getCalendarParameterArrayByItem($date_item);
                  $params['seldisplay_mode'] = $seldisplay_mode;
                  if($params['presentation_mode'] == '1' and !empty($params['week'])){
                  $converted_day_start = convertDateFromInput($form_data['dayStart'],$environment->getSelectedLanguage());
@@ -366,7 +365,7 @@ class cs_popup_date_controller {
 
                  $params['iid'] = $current_iid;
                  if ( !is_numeric($current_iid) ) {
-                 $params['iid'] = $dates_item->getItemID();
+                 $params['iid'] = $date_item->getItemID();
                  }
                  redirect($environment->getCurrentContextID(),CS_DATE_TYPE, 'detail',$params);
                  /*
@@ -376,13 +375,23 @@ class cs_popup_date_controller {
 
                  }else{
                  $params = array();
-                 $params['iid'] = $dates_item->getItemID();
+                 $params['iid'] = $date_item->getItemID();
                  redirect($environment->getCurrentContextID(),
                  CS_DATE_TYPE, 'detail', $params);
                  }
                 $this->_return = 'success';
             }
         }*/
+    }
+    
+    private function cleanup_session($current_iid) {
+    	$environment = $this->_environment;
+    	$session = $this->_environment->getSessionItem();
+    
+    	$session->unsetValue($environment->getCurrentModule().'_add_buzzwords');
+    	$session->unsetValue($environment->getCurrentModule().'_add_tags');
+    	$session->unsetValue($environment->getCurrentModule().'_add_files');
+    	$session->unsetValue($current_iid.'_post_vars');
     }
 
 
@@ -426,10 +435,5 @@ class cs_popup_date_controller {
 
     public function getFieldInformation($sub = '') {
         return array();
-    }
-
-
-    public function getReturn() {
-        return $this->_return;
     }
 }

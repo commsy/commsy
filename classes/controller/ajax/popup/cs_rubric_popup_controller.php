@@ -6,8 +6,6 @@
 
 		public function save($form_data, $additional = array());
 
-		public function getReturn();
-
 		public function cleanup_session($iid);
 
 	}

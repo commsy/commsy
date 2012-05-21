@@ -14,7 +14,7 @@
 				<div id="popup_content">
 					<div class="input_row">
 						<div class="input_label_80">___COMMON_NAME___<span class="required">*</span>:</div>
-						<input type="text" value="{if isset($item.name)}{$item.name}{/if}" name="form_data[name]" class="size_400 mandatory" />
+						<input type="text" value="{if isset($item.name)}{$item.name}{/if}" name="form_data[name]" class="size_400" />
 					</div>
 
 					<div class="input_row">
@@ -45,8 +45,7 @@
 					{/if}
 
 					<div class="editor_content">
-						<div id="popup_ckeditor">{if isset($item.description)}{$item.description}{/if}</div>
-						<input type="hidden" id="popup_ckeditor_content" name="form_data[description]" value=""/>
+						<div id="description" class="ckeditor">{if isset($item.description)}{$item.description}{/if}</div>
 					</div>
 
 				</div>

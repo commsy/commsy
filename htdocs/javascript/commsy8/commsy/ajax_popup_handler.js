@@ -75,9 +75,9 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 					console.log("error while getting popup");
 				},
 				success: function(data, status) {
-					if(status === 'success') {
+					if(data.status === 'success') {
 						// we recieved html - append it
-						jQuery('body').prepend(data);
+						jQuery('body').prepend(data.html);
 
 						// reinvoke Uploadify
 						var uploadify_handler = commsy_functions.getModuleCallback('commsy/uploadify');
@@ -93,8 +93,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 						var ck_editor_handler = commsy_functions.getModuleCallback('commsy/ck_editor');
 						ck_editor_handler.create(null, {
 							handle:				ck_editor_handler,
-							register_on:		jQuery('div[id="popup_ckeditor"]'),
-							input_object:		jQuery('input[id="popup_ckeditor_content"]')
+							register_on:		jQuery('div.ckeditor')
 						});
 
 						// reinvoke TagTree
@@ -157,9 +156,13 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 		},
 
 		close: function(event) {
-			// unregister ck editor
-			var editor = jQuery('div[id="popup_ckeditor"]');
-			if(editor.length > 0) editor.ckeditorGet().destroy();
+			// unregister ck editor instances
+			var editors = jQuery('div#popup_frame div.ckeditor');
+			if(editors.length > 0) {
+				editors.each(function() {
+					jQuery(this).ckeditorGet().destroy();
+				});
+			}
 
 			// remove popup html from dom
 			jQuery('div[id="popup_wrapper"]').remove();
@@ -169,143 +172,125 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			var handle = event.data.handle;
 			var module = event.data.module;
 			var item_id = event.data.item_id;
+			
+			// add ckeditor data to hidden div
+			jQuery('div.ckeditor').each(function() {
+				var editor = jQuery(this).ckeditorGet();
+				jQuery(this).parent().children('input[type="hidden"]').attr('value', editor.getData());
+			});
+			
+			// collect form data
+			var form_objects = jQuery('div[id="popup_wrapper"] input[name^="form_data"],div[id="popup_wrapper"] select[name^="form_data"]');
 
-			// check mandatory
-			var check_passed = true;
-			jQuery('input[class~="mandatory"]').each(function() {
-				if(jQuery(this).val() === '') {
-					if(check_passed === true) {
-						// this is the first error
-						// check if content is outside screen
-						if(!jQuery.inviewport(jQuery(this), {threshold: 0})) {
-							// scroll to target
-							jQuery('html, body').animate({scrollTop: jQuery(this).offset().top}, 500);
-						}
+			// build object
+			var data = {
+				form_data: [],
+				module: module
+			};
+			jQuery.each(form_objects, function() {
+				var add = false;
+
+				// if form field is a checkbox, only add if checked
+				if(jQuery(this).attr('type') === 'checkbox') {
+					if(jQuery(this).attr('checked') === 'checked') {
+						add = true;
 					}
+				}
 
-					jQuery(this).css('border', '1px solid red');
-					check_passed = false;
+				// if form fiel is a radio button, only add the selected one
+				else if(jQuery(this).attr('type') === 'radio') {
+					if(jQuery(this).attr('checked')	 === 'checked') {
+						add = true;
+					}
+				}
+
+				else {
+					add = true;
+				}
+
+				if(add === true) {
+					// extract name
+					/form_data\[(.*)\]/.exec(jQuery(this).attr('name'));
+
+					data.form_data.push({
+						name:	RegExp.$1,
+						value:	jQuery(this).attr('value')
+					});
 				}
 			});
 
-			if(check_passed) {
-				// collect form data
-				var form_objects = jQuery('div[id="popup_wrapper"] input[name^="form_data"]');
+			// add buzzword data
+			var buzzword_objects = jQuery('ul.popup_buzzword_list li');
+			var buzzword_ids = [];
+			jQuery.each(buzzword_objects, function() {
+				// check if input is checked
+				var input_object = jQuery(this).find('input[type="checkbox"]');
 
-				// set description data
-				var editor = jQuery('div[id="popup_ckeditor"]');
-				if(editor.length > 0) {
-					jQuery('input[name="form_data[description]"]').val(editor.ckeditorGet().getData());
+				if(input_object.attr('checked') === 'checked') {
+					// extract buzzword id
+					/buzzword_([0-9]*)/.exec(jQuery(this).attr('id'));
+					buzzword_ids.push(RegExp.$1);
 				}
+			});
+			data.form_data.push({
+				name:	'buzzwords',
+				value:	buzzword_ids
+			});
 
-				// build object
-				var data = {
-					form_data: [],
-					module: module
-				};
-				jQuery.each(form_objects, function() {
-					var add = false;
+			// add tag data
+			var dynatree = jQuery('div[id="tag_tree"]').dynatree('getTree');
+			var tag_ids  = [];
 
-					// if form field is a checkbox, only add if checked
-					if(jQuery(this).attr('type') === 'checkbox') {
-						if(jQuery(this).attr('checked') === 'checked') {
-							add = true;
-						}
-					}
+			if(typeof(dynatree['$tree']) !== 'undefined') {
+				dynatree.visit(function(node) {
+					// check if bold
+					if(node.data.title.substr(0, 3) === '<b>') {
+						// separte tag id
+						var tag_id = node.data.key.substr(5);
 
-					// if form fiel is a radio button, only add the selected one
-					else if(jQuery(this).attr('type') === 'radio') {
-						if(jQuery(this).attr('checked')	 === 'checked') {
-							add = true;
-						}
-					}
-
-					else {
-						add = true;
-					}
-
-					if(add === true) {
-						// extract name
-						/form_data\[(.*)\]/.exec(jQuery(this).attr('name'));
-
-						data.form_data.push({
-							name:	RegExp.$1,
-							value:	jQuery(this).attr('value')
-						});
+						tag_ids.push(tag_id);
 					}
 				});
+			}
 
-				// add buzzword data
-				var buzzword_objects = jQuery('ul.popup_buzzword_list li');
-				var buzzword_ids = [];
-				jQuery.each(buzzword_objects, function() {
-					// check if input is checked
-					var input_object = jQuery(this).find('input[type="checkbox"]');
-
-					if(input_object.attr('checked') === 'checked') {
-						// extract buzzword id
-						/buzzword_([0-9]*)/.exec(jQuery(this).attr('id'));
-						buzzword_ids.push(RegExp.$1);
-					}
-				});
-				data.form_data.push({
-					name:	'buzzwords',
-					value:	buzzword_ids
-				});
-
-				// add tag data
-				var dynatree = jQuery('div[id="tag_tree"]').dynatree('getTree');
-				var tag_ids  = [];
-
-				if(typeof(dynatree['$tree']) !== 'undefined') {
-					dynatree.visit(function(node) {
-						// check if bold
-						if(node.data.title.substr(0, 3) === '<b>') {
-							// separte tag id
-							var tag_id = node.data.key.substr(5);
-
-							tag_ids.push(tag_id);
-						}
-					});
-				}
-
-				data.form_data.push({
-					name:	'tags',
-					value:	tag_ids
-				});
+			data.form_data.push({
+				name:	'tags',
+				value:	tag_ids
+			});
 
 
-				// set item id
-				data.form_data.push({
-					name:	'iid',
-					value:	item_id
-				});
+			// set item id
+			data.form_data.push({
+				name:	'iid',
+				value:	item_id
+			});
 
-				// add files data
-				var file_objects = jQuery('div[id="popup_wrapper"] input[name="filelist[]"]');
-				var file_ids = [];
-				jQuery.each(file_objects, function() {
-					file_ids.push(jQuery(this).attr('value'));
-				})
-				data.form_data.push({
-					name:	'files',
-					value:	file_ids
-				});
-
-				// ajax request
-				jQuery.ajax({
-					type: 'POST',
-					url: 'commsy.php?cid=' + handle.cid + '&mod=ajax&fct=rubric_popup&action=save',
-					data: JSON.stringify(data),
-					contentType: 'application/json; charset=utf-8',
-					dataType: 'json',
-					error: function() {
-						console.log("error while processing popup action");
-					},
-					success: function(data, status) {
+			// add files data
+			var file_objects = jQuery('div[id="popup_wrapper"] input[name="filelist[]"]');
+			var file_ids = [];
+			jQuery.each(file_objects, function() {
+				file_ids.push(jQuery(this).attr('value'));
+			})
+			data.form_data.push({
+				name:	'files',
+				value:	file_ids
+			});
+			
+			// ajax request
+			jQuery.ajax({
+				type: 'POST',
+				url: 'commsy.php?cid=' + handle.cid + '&mod=ajax&fct=rubric_popup&action=save',
+				data: JSON.stringify(data),
+				contentType: 'application/json; charset=utf-8',
+				dataType: 'json',
+				error: function() {
+					console.log("error while processing popup action");
+				},
+				success: function(data, status) {
+					if(data.status === 'success') {
 						// invoke netnavigation - process after item creation actions
 						if(item_id == 'NEW') {
-							handle.netnavigation.afterItemCreation(data);
+							handle.netnavigation.afterItemCreation(data.item_id);
 						}
 						
 						// submit picture
@@ -313,16 +298,39 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 						
 						if(form_object.find('input[type="file"]').length > 0) {
 							if(form_object.find('input[type="file"]').attr('value') !== '') {
-								handle.uploadPicture(form_object, data);
+								handle.uploadPicture(form_object, data.item_id);
+							} else {
+								handle.close();
+								
+								handle.reload(data.item_id);
 							}
 						} else {
 							handle.close();
 							
-							handle.reload(data);
+							handle.reload(data.item_id);
 						}
+					} else if(data.status === 'error' && data.code === 101) {
+						// mandatory error
+						var missing_fields = data.detail;
+						
+						// create a red border around the missing fields and scroll to first one
+						jQuery.each(missing_fields, function(index, field_name) {
+							jQuery.each(form_objects, function() {
+								if(jQuery(this).attr('name') === 'form_data[' + field_name + ']') {
+									jQuery(this).css('border', '1px solid red');
+									
+									if(index === 0 && !jQuery.inviewport(jQuery(this), {threshold: 0})) {
+										jQuery('html, body').animate({scrollTop: jQuery(this).offset().top}, 500);
+									}
+								}
+							});
+						});
+					} else {
+						// unhandled error
+						console.log('unhandled error');
 					}
-				});
-			}
+				}
+			});
 
 			return false;
 		},
@@ -424,6 +432,9 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 
 			// setup netnavigation
 			this.setupNetnavigation(handle, item_id, module);
+			
+			// this will setup some special things for certain modules
+			if(module === 'material') handle.setupMaterialPopup();
 
 			// register click for save button
 			jQuery('input[id="popup_button_create"]').bind('click', {
@@ -433,6 +444,50 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 
 			// setup tabs
 			this.setupTabs();
+		},
+		
+		setupMaterialPopup: function() {
+			var handle = this;
+			
+			/* setup bibliographic form elements */
+			// get value from active bibliographic option
+			var select_object = jQuery('select#bibliographic_select');
+			
+			// show / hide bibliographic div's
+			handle.showHideBibliographic(select_object);
+			
+			// register handler for select
+			select_object.change(function() {
+				// show / hide bibliographic div's
+				handle.showHideBibliographic(select_object);
+			});
+		},
+		
+		showHideBibliographic: function(select_object) {
+			var key = select_object.children('option:selected').val();
+			
+			// go through all bibliographic content div's and show the one who's id matches "bib_content_" + key
+			jQuery('div#bibliographic div[id^="bib_content_"]').each(function() {
+				if(jQuery(this).attr('id') === 'bib_content_' + key) {
+					jQuery(this).show();
+					
+					// go through each input field and change the name, if needed, so they will be submitted again
+					jQuery(this).find('input').each(function() {
+						if(jQuery(this).attr('name').substr(0, 14) === 'do_not_submit_') {
+							jQuery(this).attr('name', jQuery(this).attr('name').substr(14));
+						}
+					});
+				} else {
+					jQuery(this).hide();
+					
+					// go through each input field and change the name, if needed, so they won't be submitted
+					jQuery(this).find('input').each(function() {
+						if(jQuery(this).attr('name').substr(0, 14) !== 'do_not_submit_') {
+							jQuery(this).attr('name', 'do_not_submit_' + jQuery(this).attr('name'));
+						}
+					});
+				}
+			});
 		},
 
 		setupNetnavigation: function(handle, item_id, module) {

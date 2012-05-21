@@ -4,7 +4,6 @@ require_once('classes/controller/ajax/popup/cs_rubric_popup_controller.php');
 class cs_popup_announcement_controller implements cs_rubric_popup_controller {
     private $_environment = null;
     private $_popup_controller = null;
-    private $_return = '';
 
     /**
      * constructor
@@ -113,6 +112,7 @@ class cs_popup_announcement_controller implements cs_rubric_popup_controller {
                 if ( isset($form_data['title']) ) {
                     $announcement_item->setTitle($form_data['title']);
                 }
+                
                 if ( isset($form_data['description']) ) {
                     $announcement_item->setDescription($form_data['description']);
                 }
@@ -171,7 +171,7 @@ class cs_popup_announcement_controller implements cs_rubric_popup_controller {
 
                 // tags
                 $announcement_item->setTagListByID($form_data['tags']);
-
+                
                 // Save item
                 $announcement_item->save();
 
@@ -194,9 +194,9 @@ class cs_popup_announcement_controller implements cs_rubric_popup_controller {
                 // Add modifier to all users who ever edited this item
                 $manager = $environment->getLinkModifierItemManager();
                 $manager->markEdited($announcement_item->getItemID());
-
-                // Redirect
-                $this->_return = $announcement_item->getItemID();
+                
+                // set return
+                $this->_popup_controller->setSuccessfullItemIDReturn($announcement_item->getItemID());
             }
         }
     }
@@ -204,10 +204,6 @@ class cs_popup_announcement_controller implements cs_rubric_popup_controller {
 
     public function isOption( $option, $string ) {
         return (strcmp( $option, $string ) == 0) || (strcmp( htmlentities($option, ENT_NOQUOTES, 'UTF-8'), $string ) == 0 || (strcmp( $option, htmlentities($string, ENT_NOQUOTES, 'UTF-8') )) == 0 );
-    }
-
-    public function getReturn() {
-        return $this->_return;
     }
 
     private function assignTemplateVars() {
@@ -275,6 +271,4 @@ class cs_popup_announcement_controller implements cs_rubric_popup_controller {
 		$session->unsetValue($environment->getCurrentModule().'_add_files');
 		$session->unsetValue($current_iid.'_post_vars');
 	}
-
-
 }

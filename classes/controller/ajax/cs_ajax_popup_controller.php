@@ -4,6 +4,7 @@
 	
 	class cs_ajax_popup_controller extends cs_ajax_controller {
 		protected $_popup_controller = null;
+		private $_return = '';
 		
 		/**
 		 * constructor
@@ -32,10 +33,14 @@
 				
 				$this->displayTemplate();
 				
-				$output = json_encode(ob_get_clean());
-				echo $output;
+				// setup return
 				// TODO: optimize
 				//echo str_replace(array('\n', '\t'), '', $output);
+				$output = ob_get_clean();
+				$this->setSuccessfullHTMLReturn($output);
+				
+				echo $this->_return;
+				
 			} else {
 				echo json_encode('smarty not enabled');
 			}
@@ -65,10 +70,8 @@
 			}
 			
 			$this->_popup_controller->save($form_data, $additional);
-			
-			$return = $this->_popup_controller->getReturn();
 
-			echo json_encode($return);
+			echo $this->_return;
 		}
 		
 		public function checkFormData($sub = '') {
@@ -77,8 +80,15 @@
 		
 				return true;
 			} catch(cs_form_mandatory_exception $e) {
-				echo json_encode('mandatory missing');
-				exit;
+				// setup return array
+				$return = array(
+					'status'	=> 'error',
+					'code'		=> $e->getCode(),
+					'reason'	=> $e->getMessage(),
+					'detail'	=> $e->getMissingFields()
+				);
+				
+				echo json_encode($return);
 		
 				return false;
 			} catch(cs_form_value_exception $e) {
@@ -89,6 +99,26 @@
 			}
 		}
 		
+		public function setSuccessfullItemIDReturn($item_id) {
+			// setup return
+			$return = array(
+				'status'	=> 'success',
+				'item_id'	=> $item_id
+			);
+			
+			$this->_return = json_encode($return);
+		}
+		
+		private function setSuccessfullHTMLReturn($html) {
+			// setup return
+			$return = array(
+				'status'=> 'success',
+				'html'	=> $html
+			);
+			
+			$this->_return = json_encode($return);
+		}
+		
 		private function checkForm($sub) {
 			// get form data
 			$form_data = array();
@@ -96,17 +126,27 @@
 				$form_data[$data['name']] = $data['value'];
 			}
 			
+			$missing_fields = array();
 			foreach($this->_popup_controller->getFieldInformation($sub) as $field) {
 				// check mandatory
 				if(isset($field['mandatory']) && $field['mandatory'] === true) {
 					if(!isset($form_data[$field['name']]) || trim($form_data[$field['name']]) === '') {
-						throw new cs_form_mandatory_exception('missing mandatory field');
+						// add to missing
+						$missing_fields[] = $field['name'];
 					}
 				}
 		
 				// check values
 				// TODO:
 				//throw new cs_form_value_exception('value exception');
+			}
+			
+			if(!empty($missing_fields)) {
+				// setup new exception
+				$exception = new cs_form_mandatory_exception('missing_mandatory field', 101);
+				$exception->setMissingFields($missing_fields);
+					
+				throw $exception;
 			}
 		}
 		

@@ -208,8 +208,7 @@
 							<input type="hidden" value="1" name="ref_position"/>
 							<input id="pn_title" type="text" name="form_data[title]" />
 							<div class="editor_content">
-								<div id="ckeditor"></div>
-								<input type="hidden" id="ckeditor_content" name="form_data[description]" value=""/>
+								<div id="description" class="ckeditor"></div>
 
 								<div id="file_finished"></div>
 								<input id="uploadify" name="uploadify" type="file" />

@@ -4,7 +4,6 @@
 	class cs_popup_discussion_controller implements cs_rubric_popup_controller {
 		private $_environment = null;
 		private $_popup_controller = null;
-		private $_return = '';
 
 		/**
 		* constructor
@@ -226,14 +225,10 @@
 						$discussion_item->save();
 					}
 
-					$this->_return = $discussion_item->getItemID();
+					// set return
+                	$this->_popup_controller->setSuccessfullItemIDReturn($discussion_item->getItemID());
 				}
 			}
-		}
-
-
-		public function getReturn() {
-			return $this->_return;
 		}
 
 		public function getFieldInformation($sub = '') {
@@ -294,6 +289,4 @@
 			$session->unsetValue($environment->getCurrentModule().'_add_files');
 			$session->unsetValue($current_iid.'_post_vars');
 		}
-
-
 	}

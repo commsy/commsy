@@ -13,29 +13,29 @@
 
 				<div id="popup_content">
 					<div class="input_row">
-						<div class="input_label_100">___COMMON_TITLE___<span class="required">*</span>:</div> <input type="text" value="{if isset($item.title)}{$item.title}{/if}" name="form_data[title]" class="size_400 mandatory" />
+						<div class="input_label_100">___COMMON_TITLE___<span class="required">*</span>:</div> <input type="text" value="{if isset($item.title)}{$item.title}{/if}" name="form_data[title]" class="size_400" />
 					</div>
 					<div class="input_row">
 						<span  class="input_label_100">___MATERIAL_BIBLIOGRAPHIC___<span class="required">*</span>:</span>
-						<select name="form_data[bib_kind]" size="1" class="size_200 mandatory" >
-				            <option value="form_data[none]" {if $item.bib_kind == ___MATERIAL_BIB_NOTHING___} selected="selected" {/if} >* ___MATERIAL_BIB_NOTHING___</option>
-				            <option value="form_data[common]" {if $item.bib_kind == ___MATERIAL_BIB_NONE___} selected="selected" {/if}>* ___MATERIAL_BIB_NONE___</option>
-				            <option value="form_data[book]" {if $item.bib_kind == ___MATERIAL_BIB_BOOK___} selected="selected" {/if}>___MATERIAL_BIB_BOOK___</option>
-				            <option value="form_data[collection]" {if $item.bib_kind == ___MATERIAL_BIB_COLLECTION___} selected="selected" {/if}>___MATERIAL_BIB_COLLECTION___</option>
-				            <option value="form_data[incollection]" {if $item.bib_kind == ___MATERIAL_BIB_INCOLLECTION___} selected="selected" {/if}>___MATERIAL_BIB_INCOLLECTION___</option>
-				            <option value="form_data[article]" {if $item.bib_kind == ___MATERIAL_BIB_ARTICLE___} selected="selected" {/if}>___MATERIAL_BIB_ARTICLE___</option>
-				            <option value="form_data[chapter]" {if $item.bib_kind == ___MATERIAL_BIB_CHAPTER___} selected="selected" {/if}>___MATERIAL_BIB_CHAPTER___</option>
-				            <option value="form_data[inpaper]" {if $item.bib_kind == ___MATERIAL_BIB_INPAPER___} selected="selected" {/if}>___MATERIAL_BIB_INPAPER___</option>
-				            <option value="form_data[thesis]" {if $item.bib_kind == ___MATERIAL_BIB_THESIS___} selected="selected" {/if}>___MATERIAL_BIB_THESIS___</option>
-				            <option value="form_data[manuscript]" {if $item.bib_kind == ___MATERIAL_BIB_MANUSCRIPT___} selected="selected" {/if}>___MATERIAL_BIB_MANUSCRIPT___</option>
-				            <option value="form_data[website]" {if $item.bib_kind == ___MATERIAL_BIB_WEBSITE___} selected="selected" {/if}>___MATERIAL_BIB_WEBSITE___</option>
-				            <option value="form_data[document]" {if $item.bib_kind == ___MATERIAL_BIB_DOCUMENT___} selected="selected" {/if}>___MATERIAL_BIB_DOCUMENT___</option>
+						<select id="bibliographic_select" name="form_data[bib_kind]" size="1" class="size_200" >
+				            <option value="none" {if $item.bib_kind == ___MATERIAL_BIB_NOTHING___} selected="selected" {/if} >* ___MATERIAL_BIB_NOTHING___</option>
+				            <option value="common" {if $item.bib_kind == ___MATERIAL_BIB_NONE___} selected="selected" {/if}>* ___MATERIAL_BIB_NONE___</option>
+				            <option value="book" {if $item.bib_kind == ___MATERIAL_BIB_BOOK___} selected="selected" {/if}>___MATERIAL_BIB_BOOK___</option>
+				            <option value="collection" {if $item.bib_kind == ___MATERIAL_BIB_COLLECTION___} selected="selected" {/if}>___MATERIAL_BIB_COLLECTION___</option>
+				            <option value="incollection" {if $item.bib_kind == ___MATERIAL_BIB_INCOLLECTION___} selected="selected" {/if}>___MATERIAL_BIB_INCOLLECTION___</option>
+				            <option value="article" {if $item.bib_kind == ___MATERIAL_BIB_ARTICLE___} selected="selected" {/if}>___MATERIAL_BIB_ARTICLE___</option>
+				            <option value="chapter" {if $item.bib_kind == ___MATERIAL_BIB_CHAPTER___} selected="selected" {/if}>___MATERIAL_BIB_CHAPTER___</option>
+				            <option value="inpaper" {if $item.bib_kind == ___MATERIAL_BIB_INPAPER___} selected="selected" {/if}>___MATERIAL_BIB_INPAPER___</option>
+				            <option value="thesis" {if $item.bib_kind == ___MATERIAL_BIB_THESIS___} selected="selected" {/if}>___MATERIAL_BIB_THESIS___</option>
+				            <option value="manuscript" {if $item.bib_kind == ___MATERIAL_BIB_MANUSCRIPT___} selected="selected" {/if}>___MATERIAL_BIB_MANUSCRIPT___</option>
+				            <option value="website" {if $item.bib_kind == ___MATERIAL_BIB_WEBSITE___} selected="selected" {/if}>___MATERIAL_BIB_WEBSITE___</option>
+				            <option value="document" {if $item.bib_kind == ___MATERIAL_BIB_DOCUMENT___} selected="selected" {/if}>___MATERIAL_BIB_DOCUMENT___</option>
          				</select>
          			</div>
          			
          			{* bibliographic data *}
          			<div id="bibliographic">
-         				<div id="bib_content_common">
+         				<div id="bib_content_common" class="hidden">
          					<div class="input_row">
          						<label for="bib_author">___MATERIAL_AUTHORS___:</label>
          						<input id="bib_author" type="text" class="size_200" name="form_data[author]" value="" />
@@ -50,32 +50,31 @@
          						<label for="bib_common">___MATERIAL_BIBLIOGRAPHIC___:</label>
          						<input id="bib_common" type="text" class="size_200" name="form_data[common]" value="" />
          					</div>
-         					
-         					<div class="editor_content">
-								<div id="popup_ckeditor">{*{if isset($item.description)}{$item.description}{/if}*}</div>
-								<input type="hidden" id="popup_ckeditor_content" name="form_data[common]" value=""/>
+							
+							<div class="editor_content">
+								<div id="common" class="ckeditor">{if isset($item.description)}{$item.description}{/if}</div>
 							</div>
          				</div>
          				
-         				<div id="bib_content_book">
+         				<div id="bib_content_book" class="hidden">
          					<div class="input_row">
          						<label for="bib_author">___MATERIAL_AUTHORS___<span class="required">*</span>:</label>
-         						<input id="bib_author" type="text" class="size_200 mandatory" name="form_data[author]" value="" />
+         						<input id="bib_author" type="text" class="size_200" name="form_data[author]" value="" />
          					</div>
          					
          					<div class="input_row">
          						<label for="bib_publishing_date">___MATERIAL_YEAR___<span class="required">*</span>:</label>
-         						<input id="bib_publishing_date" type="text" class="size_200 mandatory" name="form_data[publishing_date]" value="" />
+         						<input id="bib_publishing_date" type="text" class="size_200" name="form_data[publishing_date]" value="" />
          					</div>
          					
          					<div class="input_row">
          						<label for="bib_publisher">___MATERIAL_PUBLISHER___<span class="required">*</span>:</label>
-         						<input id="bib_publisher" type="text" class="size_200 mandatory" name="form_data[publisher]" value="" />
+         						<input id="bib_publisher" type="text" class="size_200" name="form_data[publisher]" value="" />
          					</div>
          					
          					<div class="input_row">
          						<label for="bib_address">___MATERIAL_ADDRESS___<span class="required">*</span>:</label>
-         						<input id="bib_address" type="text" class="size_200 mandatory" name="form_data[address]" value="" />
+         						<input id="bib_address" type="text" class="size_200" name="form_data[address]" value="" />
          					</div>
          					
          					<div class="input_row">
@@ -109,25 +108,25 @@
          					</div>
          				</div>
          				
-         				<div id="bib_content_collection">
+         				<div id="bib_content_collection" class="hidden">
          					<div class="input_row">
          						<label for="bib_author">___MATERIAL_EDITOR___<span class="required">*</span>:</label>
-         						<input id="bib_author" type="text" class="size_200 mandatory" name="form_data[author]" value="" />
+         						<input id="bib_author" type="text" class="size_200" name="form_data[author]" value="" />
          					</div>
          					
          					<div class="input_row">
          						<label for="bib_publishing_date">___MATERIAL_YEAR___<span class="required">*</span>:</label>
-         						<input id="bib_publishing_date" type="text" class="size_200 mandatory" name="form_data[publishing_date]" value="" />
+         						<input id="bib_publishing_date" type="text" class="size_200" name="form_data[publishing_date]" value="" />
          					</div>
          					
          					<div class="input_row">
          						<label for="bib_publisher">___MATERIAL_PUBLISHER___<span class="required">*</span>:</label>
-         						<input id="bib_publisher" type="text" class="size_200 mandatory" name="form_data[publisher]" value="" />
+         						<input id="bib_publisher" type="text" class="size_200" name="form_data[publisher]" value="" />
          					</div>
          					
          					<div class="input_row">
          						<label for="bib_address">___MATERIAL_ADDRESS___<span class="required">*</span>:</label>
-         						<input id="bib_address" type="text" class="size_200 mandatory" name="form_data[address]" value="" />
+         						<input id="bib_address" type="text" class="size_200" name="form_data[address]" value="" />
          					</div>
          					
          					<div class="input_row">
@@ -161,35 +160,35 @@
          					</div>
          				</div>
          				
-         				<div id="bib_content_incollection">
+         				<div id="bib_content_incollection" class="hidden">
          					<div class="input_row">
          						<label for="bib_author">___MATERIAL_AUTHORS___<span class="required">*</span>:</label>
-         						<input id="bib_author" type="text" class="size_200 mandatory" name="form_data[author]" value="" />
+         						<input id="bib_author" type="text" class="size_200" name="form_data[author]" value="" />
          					</div>
          					
          					<div class="input_row">
          						<label for="bib_publishing_date">___MATERIAL_YEAR___<span class="required">*</span>:</label>
-         						<input id="bib_publishing_date" type="text" class="size_200 mandatory" name="form_data[publishing_date]" value="" />
+         						<input id="bib_publishing_date" type="text" class="size_200" name="form_data[publishing_date]" value="" />
          					</div>
          					
          					<div class="input_row">
          						<label for="bib_editor">___MATERIAL_EDITOR___<span class="required">*</span>:</label>
-         						<input id="bib_editor" type="text" class="size_200 mandatory" name="form_data[editor]" value="" />
+         						<input id="bib_editor" type="text" class="size_200" name="form_data[editor]" value="" />
          					</div>
          					
          					<div class="input_row">
          						<label for="bib_booktitle">___MATERIAL_BOOKTITLE___<span class="required">*</span>:</label>
-         						<input id="bib_booktitle" type="text" class="size_200 mandatory" name="form_data[booktitle]" value="" />
+         						<input id="bib_booktitle" type="text" class="size_200" name="form_data[booktitle]" value="" />
          					</div>
          					
          					<div class="input_row">
          						<label for="bib_address">___MATERIAL_ADDRESS___<span class="required">*</span>:</label>
-         						<input id="bib_address" type="text" class="size_200 mandatory" name="form_data[address]" value="" />
+         						<input id="bib_address" type="text" class="size_200" name="form_data[address]" value="" />
          					</div>
          					
          					<div class="input_row">
          						<label for="bib_publisher">___MATERIAL_PUBLISHER___<span class="required">*</span>:</label>
-         						<input id="bib_publisher" type="text" class="size_200 mandatory" name="form_data[publisher]" value="" />
+         						<input id="bib_publisher" type="text" class="size_200" name="form_data[publisher]" value="" />
          					</div>
          					
          					<div class="input_row">
@@ -223,20 +222,20 @@
          					</div>
          				</div>
          				
-         				<div id="bib_content_article">
+         				<div id="bib_content_article" class="hidden">
          					<div class="input_row">
          						<label for="bib_author">___MATERIAL_AUTHORS___<span class="required">*</span>:</label>
-         						<input id="bib_author" type="text" class="size_200 mandatory" name="form_data[author]" value="" />
+         						<input id="bib_author" type="text" class="size_200" name="form_data[author]" value="" />
          					</div>
          					
          					<div class="input_row">
          						<label for="bib_publishing_date">___MATERIAL_YEAR___<span class="required">*</span>:</label>
-         						<input id="bib_publishing_date" type="text" class="size_200 mandatory" name="form_data[publishing_date]" value="" />
+         						<input id="bib_publishing_date" type="text" class="size_200" name="form_data[publishing_date]" value="" />
          					</div>
          					
          					<div class="input_row">
          						<label for="bib_journal">___MATERIAL_JOURNAL___<span class="required">*</span>:</label>
-         						<input id="bib_journal" type="text" class="size_200 mandatory" name="form_data[journal]" value="" />
+         						<input id="bib_journal" type="text" class="size_200" name="form_data[journal]" value="" />
          					</div>
          					
          					<div class="input_row">
@@ -251,17 +250,17 @@
          					
          					<div class="input_row">
          						<label for="bib_pages">___MATERIAL_PAGES___<span class="required">*</span>:</label>
-         						<input id="bib_pages" type="text" class="size_200 mandatory" name="form_data[pages]" value="" />
+         						<input id="bib_pages" type="text" class="size_200" name="form_data[pages]" value="" />
          					</div>
          					
          					<div class="input_row">
          						<label for="bib_address">___MATERIAL_ADDRESS___<span class="required">*</span>:</label>
-         						<input id="bib_address" type="text" class="size_200 mandatory" name="form_data[address]" value="" />
+         						<input id="bib_address" type="text" class="size_200" name="form_data[address]" value="" />
          					</div>
          					
          					<div class="input_row">
          						<label for="bib_publisher">___MATERIAL_PUBLISHER___<span class="required">*</span>:</label>
-         						<input id="bib_publisher" type="text" class="size_200 mandatory" name="form_data[publisher]" value="" />
+         						<input id="bib_publisher" type="text" class="size_200" name="form_data[publisher]" value="" />
          					</div>
          					
          					<div class="input_row">
@@ -280,20 +279,20 @@
          					</div>
          				</div>
          				
-         				<div id="bib_content_chapter">
+         				<div id="bib_content_chapter" class="hidden">
          					<div class="input_row">
          						<label for="bib_author">___MATERIAL_EDITOR___<span class="required">*</span>:</label>
-         						<input id="bib_author" type="text" class="size_200 mandatory" name="form_data[author]" value="" />
+         						<input id="bib_author" type="text" class="size_200" name="form_data[author]" value="" />
          					</div>
          					
          					<div class="input_row">
          						<label for="bib_publishing_date">___MATERIAL_YEAR___<span class="required">*</span>:</label>
-         						<input id="bib_publishing_date" type="text" class="size_200 mandatory" name="form_data[publishing_date]" value="" />
+         						<input id="bib_publishing_date" type="text" class="size_200" name="form_data[publishing_date]" value="" />
          					</div>
          					
          					<div class="input_row">
          						<label for="bib_address">___MATERIAL_ADDRESS___<span class="required">*</span>:</label>
-         						<input id="bib_address" type="text" class="size_200 mandatory" name="form_data[address]" value="" />
+         						<input id="bib_address" type="text" class="size_200" name="form_data[address]" value="" />
          					</div>
          					
          					<div class="input_row">
@@ -327,20 +326,20 @@
          					</div>
          				</div>
          				
-         				<div id="bib_content_inpaper">
+         				<div id="bib_content_inpaper" class="hidden">
          					<div class="input_row">
          						<label for="bib_author">___MATERIAL_EDITOR___<span class="required">*</span>:</label>
-         						<input id="bib_author" type="text" class="size_200 mandatory" name="form_data[author]" value="" />
+         						<input id="bib_author" type="text" class="size_200" name="form_data[author]" value="" />
          					</div>
          					
          					<div class="input_row">
          						<label for="bib_publishing_date">___MATERIAL_YEAR___<span class="required">*</span>:</label>
-         						<input id="bib_publishing_date" type="text" class="size_200 mandatory" name="form_data[publishing_date]" value="" />
+         						<input id="bib_publishing_date" type="text" class="size_200" name="form_data[publishing_date]" value="" />
          					</div>
          					
          					<div class="input_row">
          						<label for="bib_journal">___MATERIAL_JOURNAL___<span class="required">*</span>:</label>
-         						<input id="bib_journal" type="text" class="size_200 mandatory" name="form_data[journal]" value="" />
+         						<input id="bib_journal" type="text" class="size_200" name="form_data[journal]" value="" />
          					</div>
          					
          					<div class="input_row">
@@ -350,7 +349,7 @@
          					
          					<div class="input_row">
          						<label for="bib_pages">___MATERIAL_PAGES___<span class="required">*</span>:</label>
-         						<input id="bib_pages" type="text" class="size_200 mandatory" name="form_data[pages]" value="" />
+         						<input id="bib_pages" type="text" class="size_200" name="form_data[pages]" value="" />
          					</div>
          					
          					<div class="input_row">
@@ -374,7 +373,7 @@
          					</div>
          				</div>
          				
-         				<div id="bib_content_thesis">{*
+         				<div id="bib_content_thesis" class="hidden">{*
          					 $thesis_kinds = array();
 				               $thesis_kinds[] = array('text'  => $this->_translator->getMessage('MATERIAL_THESIS_TERM'),
 				                                       'value' => 'term');
@@ -400,7 +399,7 @@
 				            $this->_form->addTextField('url_date','',$this->_translator->getMessage('MATERIAL_URL_DATE'),'',10,20);
          				*}</div>
          				
-         				<div id="bib_content_manuscript">{*
+         				<div id="bib_content_manuscript" class="hidden">{*
          					$this->_form->addTextField('author','',$this->_translator->getMessage('MATERIAL_AUTHORS'),$this->_translator->getMessage('MATERIAL_AUTHORS_DESC'),200,35,true);
 				               $this->_form->addTextField('publishing_date','',$this->_translator->getMessage('MATERIAL_YEAR'),$this->_translator->getMessage('MATERIAL_YEAR'),4,5,true);
 				               $this->_form->addTextField('address','',$this->_translator->getMessage('MATERIAL_ADDRESS'),$this->_translator->getMessage('MATERIAL_ADDRESS_DESC'),200,35,true);
@@ -408,13 +407,13 @@
 				            $this->_form->addTextField('url_date','',$this->_translator->getMessage('MATERIAL_URL_DATE'),'',10,20);
          				*}</div>
          				
-         				<div id="bib_content_website">{*
+         				<div id="bib_content_website" class="hidden">{*
          					 $this->_form->addTextField('author','',$this->_translator->getMessage('MATERIAL_AUTHORS'),$this->_translator->getMessage('MATERIAL_AUTHORS_DESC'),200,35,true);
 				            $this->_form->addTextField('url','',$this->_translator->getMessage('MATERIAL_URL'),'',200,35,true);
 				            $this->_form->addTextField('url_date','',$this->_translator->getMessage('MATERIAL_URL_DATE'),'',10,20);
          				*}</div>
          				
-         				<div id="bib_content_document">{*
+         				<div id="bib_content_document" class="hidden">{*
          					$this->_form->addTextField('document_editor','',$this->_translator->getMessage('MATERIAL_BIB_DOCUMENT_EDITOR'),$this->_translator->getMessage('MATERIAL_BIB_DOCUMENT_EDITOR'),200,35,false);
 			               $this->_form->addTextField('document_maintainer','',$this->_translator->getMessage('MATERIAL_BIB_DOCUMENT_MAINTAINER'),$this->_translator->getMessage('MATERIAL_BIB_DOCUMENT_MAINTAINER'),200,35,false);
 			               $this->_form->addTextField('document_release_number','',$this->_translator->getMessage('MATERIAL_BIB_DOCUMENT_RELEASE_NUMBER'),$this->_translator->getMessage('MATERIAL_BIB_DOCUMENT_RELEASE_NUMBER'),200,35,false);
@@ -430,8 +429,7 @@
          			*}
 
 					<div class="editor_content">
-						<div id="popup_ckeditor">{if isset($item.description)}{$item.description}{/if}</div>
-						<input type="hidden" id="popup_ckeditor_content" name="form_data[description]" value=""/>
+						<div id="description" class="ckeditor">{if isset($item.description)}{$item.description}{/if}</div>
 					</div>
 				</div>
 

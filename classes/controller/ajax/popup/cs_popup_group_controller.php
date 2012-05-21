@@ -4,7 +4,6 @@ require_once('classes/controller/ajax/popup/cs_rubric_popup_controller.php');
 class cs_popup_group_controller implements cs_rubric_popup_controller {
     private $_environment = null;
     private $_popup_controller = null;
-    private $_return = '';
 
     /**
      * constructor
@@ -220,8 +219,8 @@ class cs_popup_group_controller implements cs_rubric_popup_controller {
 					$manager = $environment->getLinkModifierItemManager();
 					$manager->markEdited($item->getItemID());
 
-					// Redirect
-					$this->_return = $item->getItemID();
+					// set return
+                	$this->_popup_controller->setSuccessfullItemIDReturn($item->getItemID());
 				}
 			}
         }
@@ -229,10 +228,6 @@ class cs_popup_group_controller implements cs_rubric_popup_controller {
 
     public function isOption( $option, $string ) {
         return (strcmp( $option, $string ) == 0) || (strcmp( htmlentities($option, ENT_NOQUOTES, 'UTF-8'), $string ) == 0 || (strcmp( $option, htmlentities($string, ENT_NOQUOTES, 'UTF-8') )) == 0 );
-    }
-
-    public function getReturn() {
-        return $this->_return;
     }
 
     private function assignTemplateVars() {
@@ -270,16 +265,18 @@ class cs_popup_group_controller implements cs_rubric_popup_controller {
 
 
     public function getFieldInformation($sub = '') {
-			return array(
-				'upload_picture'	=> array(
-				),
+		$return = array(
+			'upload_picture'	=> array(
+			),
 
-				'general'			=> array(
-					array(	'name'		=> 'name',
-							'type'		=> 'text',
-							'mandatory' => true)
-				)
-			);
+			'general'			=> array(
+				array(	'name'		=> 'name',
+						'type'		=> 'text',
+						'mandatory' => true)
+			)
+		);
+		
+		return $return[$sub];
     }
 
 	public function cleanup_session($current_iid) {

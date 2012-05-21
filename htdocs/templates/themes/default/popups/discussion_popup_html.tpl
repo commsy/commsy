@@ -12,7 +12,7 @@
 				<div id="popup_content">
 					<div class="input_row">
 						<span class="input_label_80">___COMMON_TITLE___:</span><span class="required">*</span>
-						<input type="text" value="{if isset($item.title)}{$item.title}{/if}" name="form_data[title]" class="size_400 mandatory" />
+						<input type="text" value="{if isset($item.title)}{$item.title}{/if}" name="form_data[title]" class="size_400" />
 					</div>
 
 					{if $popup.edit == false}
@@ -29,14 +29,13 @@
 								<div id="pop_editor">
 									<h2 id="pop_editor_head">___DISCUSSION_INIT_ARTICLE___</h2>
 									<span class="input_label">___COMMON_SUBJECT___:</span><span class="required">*</span>
-									<input type="text" class="size_400 mandatory" name="form_data[subject]" value=""/>
+									<input type="text" class="size_400" name="form_data[subject]" value=""/>
 
 									<input type="hidden" value="" name="iid"/>
 									<input type="hidden" value="{$detail.item_id}" name="discussion_id"/>
 									<input type="hidden" value="1" name="ref_position"/>
 									<div class="editor_content">
-										<div id="popup_ckeditor"></div>
-										<input type="hidden" id="popup_ckeditor_content" name="form_data[description]" value=""/>
+										<div id="description" class="ckeditor"></div>
 									</div>
 								</div>
 							</div>

@@ -72,12 +72,6 @@
 				}
 			}
 
-			/*
-			 * if($this->_item !== null) {
-					$this->_popup_controller->edit($this->_item_id);
-				}
-			 */
-
 			// call parent
 			parent::actiongetHTML();
 		}

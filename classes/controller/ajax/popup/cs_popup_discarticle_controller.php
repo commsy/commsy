@@ -4,7 +4,6 @@
 	class cs_popup_discarticle_controller implements cs_rubric_popup_controller {
 		private $_environment = null;
 		private $_popup_controller = null;
-		private $_return = '';
 		
 		/**
 		* constructor
@@ -24,7 +23,7 @@
 				// TODO: check rights
 					
 				$this->_popup_controller->assign('item', 'title', $item->getTitle());
-				$this->_popup_controller->assign('item', 'description', $item->getDescription());
+				$this->_popup_controller->assign('item', 'discarticle_description', $item->getDescription());
 			}
 		}
 		
@@ -81,18 +80,17 @@
 					
 					// set attributes
 					if(isset($form_data['title'])) $discarticle_item->setSubject($form_data['title']);
-					if(isset($form_data['description'])) $discarticle_item->setDescription($form_data['description']);
+					if(isset($form_data['discarticle_description'])) $discarticle_item->setDescription($form_data['discarticle_description']);
 					
 					// save item
 					$discarticle_item->save();
 					
 					$this->_return = $discarticle_item->getItemID();
+					
+					// set return
+					$this->_popup_controller->setSuccessfullItemIDReturn($discarticle_item->getItemID());
 				}
 			}
-		}
-		
-		public function getReturn() {
-			return $this->_return;
 		}
 		
 		public function getFieldInformation($sub = '') {
@@ -104,6 +102,9 @@
 						'type'		=> 'text',
 						'mandatory'	=> false)
 			);
+		}
+		
+		public function cleanup_session($current_iid) {
 		}
 		
 		private function assignTemplateVars() {

@@ -3,7 +3,6 @@
 		<div id="popup_frame">
 			<div id="popup_inner">
 
-
 				<div id="popup_title">
 					<a id="popup_close" href="" title="___COMMON_CLOSE___"><img src="{$basic.tpl_path}img/popup_close.gif" alt="___COMMON_CLOSE___" /></a>
 					<h2>{if $popup.edit == false}___COMMON_ENTER_NEW_ANNOUNCEMENT___{else}___COMMON_ANNOUNCEMENT_EDIT___{/if}</h2>
@@ -13,21 +12,18 @@
 
 				<div id="popup_content">
 					<div class="input_row">
-						<div class="input_label_80">___COMMON_TITLE___<span class="required">*</span>:</div> <input type="text" value="{if isset($item.title)}{$item.title}{/if}" name="form_data[title]" class="size_400 mandatory" />
+						<div class="input_label_80">___COMMON_TITLE___<span class="required">*</span>:</div> <input type="text" value="{if isset($item.title)}{$item.title}{/if}" name="form_data[title]" class="size_400" />
 					</div>
 					<div class="input_row">
 						<span  class="input_label_80">___ANNOUNCEMENT_SHOW_HOME_DATE___<span class="required">*</span>:</span>
-						<span>___COMMON_CALENDAR_DATE___:</span><span class="required">*</span><input type="text" value="{if isset($item.dayEnd)}{$item.dayEnd}{/if}" name="form_data[dayEnd]" class="size_80 mandatory" />
+						<span>___COMMON_CALENDAR_DATE___:</span><span class="required">*</span><input type="text" value="{if isset($item.dayEnd)}{$item.dayEnd}{/if}" name="form_data[dayEnd]" class="size_80" />
 						<span>___COMMON_CLOCK___:</span><input type="text" value="{if isset($item.timeEnd)}{$item.timeEnd}{/if}" name="form_data[timeEnd]" class="size_80" />
 					</div>
 
 					<div class="editor_content">
-						<div id="popup_ckeditor">{if isset($item.description)}{$item.description}{/if}</div>
-						<input type="hidden" id="popup_ckeditor_content" name="form_data[description]" value=""/>
+						<div id="description" class="ckeditor">{if isset($item.description)}{$item.description}{/if}</div>
 					</div>
 				</div>
-
-
 
 				<div id="popup_tabs">
 					<div class="tab_navigation">

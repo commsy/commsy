@@ -3,6 +3,4 @@
 		public function initPopup();
 		
 		public function save($form_data, $additional = array());
-		
-		public function getReturn();
 	}

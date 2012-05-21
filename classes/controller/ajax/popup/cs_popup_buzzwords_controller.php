@@ -12,10 +12,6 @@ class cs_popup_buzzwords_controller {
 		$this->_popup_controller = $popup_controller;
 	}
 	
-	public function getReturn() {
-		return $this->_return;
-	}
-	
 	public function initPopup() {
 		// assign template vars
 		$this->assignTemplateVars();

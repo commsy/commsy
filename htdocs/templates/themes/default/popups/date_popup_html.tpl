@@ -14,12 +14,12 @@
 				<div id="popup_content">
 					<div class="input_row">
 						<span class="input_label_80">___COMMON_TITLE___:<span class="required">*</span></span>
-						<input type="text" value="{if isset($item.title)}{$item.title}{/if}" name="form_data[title]" class="size_400 mandatory" />
+						<input type="text" value="{if isset($item.title)}{$item.title}{/if}" name="form_data[title]" class="size_400" />
 					</div>
 					<div class="input_row">
 						<span class="input_label_80">___DATES_TIME_DAY_START___:<span class="required">*</span></span>
 						<span class="input_label">___COMMON_CALENDAR_DATE___<span class="required">*</span></span>
-						<input type="text" value="{if isset($item.dayStart)}{$item.dayStart}{/if}" name="form_data[dayStart]" class="size_80 mandatory" />
+						<input type="text" value="{if isset($item.dayStart)}{$item.dayStart}{/if}" name="form_data[dayStart]" class="size_80" />
 						<span class="input_label">___COMMON_CLOCK___</span>
 						<input type="text" value="{if isset($item.timeStart)}{$item.timeStart}{/if}" name="form_data[timeStart]" class="size_80" />
 					</div>
@@ -35,8 +35,7 @@
 						<input type="text" value="{if isset($item.place)}{$item.place}{/if}" name="form_data[place]" class="size_400" />
 					</div>
 					<div class="editor_content">
-						<div id="popup_ckeditor">{if isset($item.description)}{$item.description}{/if}</div>
-						<input type="hidden" id="popup_ckeditor_content" name="form_data[description]" value=""/>
+						<div id="description" class="ckeditor">{if isset($item.description)}{$item.description}{/if}</div>
 					</div>
 				</div>
 
