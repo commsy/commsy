@@ -123,23 +123,26 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 
 							// override onclick
 							dynatree.options.onClick = function(node, event) {
-								// toggle bold
-								/<span>(.*)<\/span>/.exec(node.data.title);
-								var title = RegExp.$1;
-								console.log('title');
-								// check bold
-								if(node.data.title.substr(0, 3) === '<b>') {
-									// remove
-									node.data.title = '<input type="checkbox"/><span>' + title + '</span>';
-								} else {
-									// add
-									node.data.title = '<b><input type="checkbox" checked="checked"/><span>' + title + '</span></b>';
+								if(node.getEventTargetType(event) == null) {
+									// toggle bold
+									/<span>(.*)<\/span>/.exec(node.data.title);
+									var title = RegExp.$1;
+									
+									// check bold
+									if(node.data.title.substr(0, 3) === '<b>') {
+										// remove
+										node.data.title = '<input type="checkbox"/><span>' + title + '</span>';
+									} else {
+										// add
+										node.data.title = '<b><input type="checkbox" checked="checked"/><span>' + title + '</span></b>';
+									}
+
+									// re-render
+									node.render();
+
+									// prevent default processing
+									return false;
 								}
-
-								// re-render
-								node.render();
-
-								return false;
 							}
 						}
 
@@ -308,8 +311,10 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 						// submit picture
 						var form_object = jQuery('form#picture_upload');
 						
-						if(form_object.find('input[type="file"]').attr('value') !== '') {
-							handle.uploadPicture(form_object, data);
+						if(form_object.find('input[type="file"]').length > 0) {
+							if(form_object.find('input[type="file"]').attr('value') !== '') {
+								handle.uploadPicture(form_object, data);
+							}
 						} else {
 							handle.close();
 							

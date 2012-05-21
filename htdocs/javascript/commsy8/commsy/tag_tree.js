@@ -31,7 +31,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 				
 				onClick: function(node, event) {
 					// follow link if event was not triggered by an expander
-					if(event.target.className !== 'dynatree-expander') {
+					if(node.getEventTargetType(event) !== 'expander') {
 						window.location.href = node.data.url;
 					}
 				}
