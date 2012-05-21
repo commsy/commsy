@@ -846,6 +846,10 @@ if(isset($c_smarty) && $c_smarty === true) {
 	// set smarty in environment
 	$environment->setTemplateEngine($smarty);
 	
+	// set output mode
+	if(isset($_GET['mode'])) $environment->setOutputMode($_GET['mode']);
+	
+	
 	// determ template
 	//$tpl = $environment->getCurrentModule() . '_' . $environment->getCurrentFunction();
 }
