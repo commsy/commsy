@@ -591,7 +591,7 @@
 				// description
 				$return['show_grouproom'] = false;
 				$grouproom_item = $this->_item->getGroupRoomItem();
-				if(isset($grouproom_item) && !empty($grouproom_item)) {
+				if(isset($grouproom_item) && !empty($grouproom_item) and $this->_item->isGroupRoomActivated()) {
 					$desc = $converter->cleanDataFromTextArea($desc);
 					// TODO: implement
 					//$desc = $converter->compareWithSearchText($desc);
