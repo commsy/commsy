@@ -29,8 +29,6 @@ class cs_popup_group_controller implements cs_rubric_popup_controller {
 			    $this->_popup_controller->assign('item', 'picture', $item->getPicture());
 			    if ($item->isGroupRoomActivated()){
 			    	$this->_popup_controller->assign('item','group_room_activate','1');
-			    }else{
-			    	$this->_popup_controller->assign('item','group_room_activate','0');
 			    }
 			    $this->_popup_controller->assign('item','system_label',$item->isSystemLabel());
 
