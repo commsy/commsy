@@ -1,5 +1,6 @@
 <?php
 $message["GROUPROOM_ACCESS_NOT_GRANTED"]["en"] = "Sorry, you are not a member of group workspace <span style=&quot;font-weight:bold;&quot;>%1</span>. Only members are allowed to enter.";
+$message["GROUPROOM_COMMON_DESC"]["en"] = "This room is onla accessible for the member of this group.";
 $message["GROUPROOM_CONFIGURATION_CHOICE_TITLE"]["en"] = "Group workspaces";
 $message["GROUPROOM_CONFIGURATION_CHOICE_VALUE"]["en"] = "Enable group workspaces";
 $message["GROUPROOM_EXPLANATION_TITLE"]["en"] = "Explanation";
@@ -16,6 +17,7 @@ $message["GROUPROOM_MAIL_BODY_REOPEN"]["en"] = "Group workspace unblocked.";
 $message["GROUPROOM_MAIL_BODY_UNDELETE"]["en"] = "Group workspace restored.";
 $message["GROUPROOM_MAIL_BODY_UNLOCK"]["en"] = "Unblocking group workspace.";
 $message["GROUPROOM_MAIL_SEND_WHY_GROUP"]["en"] = "This e-mail was sent to you as a moderator of group workspace %1.";
+$message["GROUPROOM_MODERATORS"]["en"] = "Grouproom moderators";
 $message["GROUPROOM_PORTAL_SELECT_TITLE"]["en"] = "group workspaces";
 $message["GROUPROOM_USER_JOIN_CONTEXT_MAIL_BODY"]["en"] = "%1 requests admission [%2] for group workspace %4.
 

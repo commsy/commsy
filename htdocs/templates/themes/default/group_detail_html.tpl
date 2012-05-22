@@ -23,6 +23,10 @@
 			{/if}
 			{if $detail.actions.member=='no_member'}
 				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&iid={$detail.item_id}&group_option=1">___GROUP_ENTER___</a> |
+			{elseif $detail.actions.member=='no_member_false'}
+				<span class="disabled_action">___GROUP_ENTER___</span> |
+			{elseif $detail.actions.member=='member_false'}
+				<span class="disabled_action">___GROUP_LEAVE___</span> |
 			{else}
 				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&iid={$detail.item_id}&group_option=2">___GROUP_LEAVE___</a> |
 			{/if}
@@ -56,6 +60,48 @@
 				{/if}
 				<div class="clear"> </div>
 
+		{if $detail.content.show_grouproom}
+			</div>
+			<div class="fade_in_ground_panel">
+				<div class="fi_moredetails">
+					<div class="fi_md_info">
+						{if $detail.content.grouproom_may_enter}
+							<a href="commsy.php?cid={$detail.content.grouproom_item_id}&mod=home&fct=index">
+								<img style="width:30px; padding:20px;" src="{$basic.tpl_path}img/door_open_large.gif" alt="Detailansicht" />
+							</a>
+						{else}
+							<img style="width:30px; padding:20px;" src="{$basic.tpl_path}img/door_closed_large.gif" alt="Detailansicht" />
+						{/if}
+					</div>
+
+					<div class="fi_md_content">
+
+						<div class="fi_mdc_item">
+							<h4>{$detail.content.grouproom_title}</h4>
+							<p class="fi_mdc_item">
+							___GROUPROOM_COMMON_DESC___
+							</p>
+						</div>
+						<div class="fi_mdc_item_150">
+							<h4>___COMMON_ROOM_INFORMATION___</h4>
+							<p class="fi_mdc_item">
+							___GROUPROOM_MODERATORS___: {$detail.content.grouproom_moderators}
+							</p>
+							<p class="fi_mdc_item">
+							{if $detail.content.grouproom_may_enter}
+								- <a href="commsy.php?cid={$detail.content.grouproom_item_id}&mod=home&fct=index">___CONTEXT_ENTER___</a>
+							{else}
+								- ___CONTEXT_ENTER_LOGIN_NOT_ALLOWED___
+							{/if}
+							</p>
+						</div>
+						<div class="clear"> </div>
+					</div>
+					<div class="clear"> </div>
+				</div>
+			</div>
+			<div class="row_odd">
+			{/if}
 
 				<div class="detail_description">
 					<h4>___GROUP_MEMBERS___</h4>

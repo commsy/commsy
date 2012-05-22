@@ -80,7 +80,7 @@
 			if(	!$this->_environment->inProjectRoom() &&
 				!$this->_environment->inCommunityRoom() &&
 				!$this->_environment->inPrivateRoom() &&
-				!$this->environment->inGroupRoom()) {
+				!$this->_environment->inGroupRoom()) {
 				die('you are not in room context, so no room template should be processed');
 			}
 

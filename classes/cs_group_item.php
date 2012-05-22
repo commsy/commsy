@@ -128,14 +128,7 @@ class cs_group_item extends cs_label_item {
     * this methode save the news item into the database
     */
    function save ( $save_other = true ) {
-
-      ##########################
-      # FLAG: group room
-      ########BEGIN#############
-      if ( $this->isGroupRoomActivated()
-           and !$this->_issetGroupRoomItemID()
-           and $save_other
-         ) {
+      if ( !$this->_issetGroupRoomItemID() and $save_other ) {
          $new_group_room = true;
          // initiate group room
          $grouproom_manager = $this->_environment->getGroupRoomManager();
@@ -169,13 +162,13 @@ class cs_group_item extends cs_label_item {
          if ( $portal_item->showTime() ) {
             $save_time = true;
          }
-         
+
          $grouproom_item->saveOnlyItem();
 
          // add member of group to the group room
          $current_user_item = $this->_environment->getCurrentUserItem();
          $member_list = $this->getMemberItemList();
-         
+
          if ( $member_list->isNotEmpty() ) {
             $member_item = $member_list->getFirst();
             while ( $member_item ) {
@@ -206,8 +199,7 @@ class cs_group_item extends cs_label_item {
             $add_member = true;
          }
 
-      } elseif ( $this->isGroupRoomActivated()
-                 and $this->_issetGroupRoomItemID()
+      } elseif ( $this->_issetGroupRoomItemID()
                  and $save_other
                ) {
          $grouproom_item = $this->getGroupRoomItem();
@@ -230,16 +222,10 @@ class cs_group_item extends cs_label_item {
             $save2 = true;
          }
       }
-      ##########END#############
-      # FLAG: group room
-      ##########################
 
       $label_manager = $this->_environment->getLabelManager();
       $this->_save($label_manager);
 
-      ##########################
-      # FLAG: group room
-      #########BEGIN############
       if ( isset($save_time) and $save_time ) {
          $context_item = $this->_environment->getCurrentContextItem();
          if ( $context_item->isContinuous() ) {
@@ -270,9 +256,6 @@ class cs_group_item extends cs_label_item {
       if ( isset($add_member) and $add_member ) {
          $this->addMember($current_user_item);
       }
-      ##########END#############
-      # FLAG: group room
-      ##########################
 
       unset($current_user_item);
 
@@ -298,11 +281,9 @@ class cs_group_item extends cs_label_item {
     * with the group room
     */
    function delete() {
-      if ( $this->isGroupRoomActivated() ) {
-         $room = $this->getGroupRoomItem();
-         if ( isset($room) ) {
-            $room->delete();
-         }
+      $room = $this->getGroupRoomItem();
+      if ( isset($room) ) {
+         $room->delete();
       }
       parent::delete();
    }

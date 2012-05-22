@@ -467,14 +467,55 @@
 			$current_context = $this->_environment->getCurrentContextItem();
 			$current_user = $this->_environment->getCurrentUserItem();
 			$is_in_group = $current_user->isInGroup($this->_item);
-			if (!$this->_item->isSystemLabel()){
+	        $grouproom_item = $this->_item->getGroupRoomItem();
+	        if ( isset($grouproom_item) and !empty($grouproom_item) ) {
+	            if ( $grouproom_item->isUser($current_user) ) {
+	               if ($this->_item->isSystemLabel() or ($grouproom_item->isLastModeratorByUserID($current_user->getUserID(),$current_user->getAuthSource())) ) {
+						if ($is_in_group) {
+							$return['member'] = 'member_false';
+						} else {
+							$return['member'] = 'no_member_false';
+
+						}
+	               } else {
+						if ($is_in_group) {
+							$return['member'] = 'member';
+						} else {
+							$return['member'] = 'no_member';
+
+						}
+			        }
+	            } else {
+	               $grouproom_user_item = $grouproom_item->getUserByUserID($current_user->getUserID(),$current_user->getAuthSource());
+	               if ( !empty($grouproom_user_item)
+	                    and ( $grouproom_user_item->isRequested()
+	                          or $grouproom_user_item->isRejected()
+	                        )
+	                  ) {
+						if ($is_in_group) {
+							$return['member'] = 'member_false';
+						} else {
+							$return['member'] = 'no_member_false';
+
+						}
+	               } else {
+						if ($is_in_group) {
+							$return['member'] = 'member';
+						} else {
+							$return['member'] = 'no_member';
+
+						}
+	               }
+	            }
+	         }else{
 				if ($is_in_group) {
 					$return['member'] = 'member';
 				} else {
 					$return['member'] = 'no_member';
 
 				}
-			}
+
+	        }
 			return $return;
 		}
 		//TODO: redfine getDetailActions
@@ -496,13 +537,15 @@
 		protected function getDetailContent() {
 			$converter = $this->_environment->getTextConverter();
 			$translator = $this->_environment->getTranslationObject();
+			$current_context = $this->_environment->getCurrentContextItem();
+			$current_user = $this->_environment->getCurrentUserItem();
 
 			$return = array();
 			$return['title'] = $this->_item->getTitle();
 			$return['show_picture'] = false;
 			$return['moredetails'] = $this->getCreatorInformationAsArray($this->_item);
 
-			if($this->_show_content_without_window) {
+/*			if($this->_show_content_without_window) {
 				// TODO:
 				/*
 				 * $grouproom_item = $item->getGroupRoomItem();
@@ -510,30 +553,26 @@
             $html .= $this->_getRoomWindowAsHTML($grouproom_item,$this->_account_mode);
          }
 				 */
-			} else {
-
-				$current_context = $this->_environment->getCurrentContextItem();
+/*			} else {
+*/
 				//$html  .='<table style="width:100%; border-collapse:collapse; border:0px solid black;" summary="Layout"><tr><td>';
 
-				if(!$current_context->showGrouproomFunctions() || !$this->_item->isGroupRoomActivated()) {
-					// normal room???
 
-					// picture
-					$picture = $this->_item->getPicture();
-					if(!empty($picture)) {
-						$disc_manager = $this->_environment->getDiscManager();
-						$width = 150;
-						if($disc_manager->existsFile($picture)) {
-							list($pict_width) = getimagesize($disc_manager->getFilePath() . $picture);
+				// picture
+				$picture = $this->_item->getPicture();
+				if(!empty($picture)) {
+					$disc_manager = $this->_environment->getDiscManager();
+					$width = 150;
+					if($disc_manager->existsFile($picture)) {
+						list($pict_width) = getimagesize($disc_manager->getFilePath() . $picture);
 
-							if($pict_width < 150) {
-								$width = $pict_width;
-							}
+						if($pict_width < 150) {
+							$width = $pict_width;
 						}
-
-						$return['show_picture'] = true;
-						$return['picture'] = $picture;
 					}
+
+					$return['show_picture'] = true;
+					$return['picture'] = $picture;
 
 					// description
 					$desc = $this->_item->getDescription();
@@ -547,191 +586,140 @@
 
 						$return['description'] = $desc;
 					}
-				} else {
-					// grouproom???
-
-					// description
-					$grouproom_item = $this->_item->getGroupRoomItem();
-					if(isset($grouproom_item) && !empty($grouproom_item)) {
-						$desc = $grouproom_item->getDescription();
-						if(!empty($desc)) {
-							$desc = $converter->cleanDataFromTextArea($desc);
-							// TODO: implement
-							//$desc = $converter->compareWithSearchText($desc);
-							$converter->setFileArray($this->getItemFileList());
-							$desc = $converter->text_as_html_long($desc);
-							//$html .= $this->getScrollableContent($desc,$item,'',true).LF;
-
-							$return['description'] = $desc;
-						}
-					}
 				}
+
+				// description
+				$return['show_grouproom'] = false;
+				$grouproom_item = $this->_item->getGroupRoomItem();
+				if(isset($grouproom_item) && !empty($grouproom_item)) {
+					$desc = $converter->cleanDataFromTextArea($desc);
+					// TODO: implement
+					//$desc = $converter->compareWithSearchText($desc);
+					$converter->setFileArray($this->getItemFileList());
+					$desc = $converter->text_as_html_long($desc);
+					//$html .= $this->getScrollableContent($desc,$item,'',true).LF;
+
+					$return['grouproom_description'] = $grouproom_item->getDescription();
+					$return['grouproom_item_id'] = $grouproom_item->getItemID();
+					$return['grouproom_title'] = $grouproom_item->getTitle();
+					$return['show_grouproom'] = true;
+					$morderator_list = $grouproom_item->getModeratorList();
+					$morderator_item = $morderator_list->getFirst();
+					$moderator_string = '';
+					while($morderator_item){
+						$moderator_string .= $morderator_item->getFullname();
+						if ($morderator_list->getNext()){
+							$moderator_string .=', ';
+						}
+						$morderator_item = $morderator_list->getNext();
+					}
+					$return['grouproom_moderators'] = $moderator_string;
+				    $user_manager = $this->_environment->getUserManager();
+				    $user_manager->setUserIDLimit($current_user->getUserID());
+				    $user_manager->setAuthSourceLimit($current_user->getAuthSource());
+				    $user_manager->setContextLimit($grouproom_item->getItemID());
+				    $user_manager->select();
+				    $user_list = $user_manager->get();
+				    if (!empty($user_list)){
+				       $room_user = $user_list->getFirst();
+				    } else {
+				       $room_user = '';
+				    }
+			        if ($current_user->isRoot()) {
+			           $may_enter = true;
+			        } elseif ( !empty($room_user) ) {
+			           $may_enter = $grouproom_item->mayEnter($room_user);
+			        } else {
+			           $may_enter = false;
+			        }
+					$return['grouproom_may_enter'] = $may_enter;
+				}
+
+				// members
+				$members = $this->_item->getMemberItemList();
+				$count_member = $members->getCount();
+
+				if(!$members->isEmpty()) {
+					$member = $members->getFirst();
+
+					while($member) {
+						$member_info = array();
+
+						if($member->isUser()) {
+							$firtsname = $member->getFirstname();
+							// TODO:
+							//$linktext = $converter->compareWithSearchText($linktext);
+							$linktext = $converter->text_as_html_short($linktext);
+
+							$member_title = $member->getTitle();
+							// TODO:
+							//$member_title = $converter->compareWithSearchText($member_title);
+							$member_title = $converter->text_as_html_short($member_title);
+
+							if(!empty($member_title)) {
+								$linktext .= ', ' . $member_title;
+							}
+							$member_info['linktext'] = $linktext;
+							$member_info['firstname'] = $converter->text_as_html_short($member->getFirstname());
+							$member_info['lastname'] = $converter->text_as_html_short($member->getLastname());
+							$member_info['title'] = $converter->text_as_html_short($member->getTitle());
+							$member_info['picture'] =$member->getPicture();
+							$member_info['iid'] = $member->getItemID();
+						    $return['members'][] = $member_info;
+						}
+
+
+						unset($member);
+						$member = $members->getNext();
+					}
+			/*	} */
+
+				/*
+				 *
+
+	            $html .='<ul style="list-style-position:inside; font-size:10pt; padding-left:0px; margin-left:20px; margin-top:0px; margin-bottom:20px; padding-bottom:0px;">  '.LF;
+	            $html .= $html1.LF;
+	            $html .= '</ul>'.LF;
+
+
+	            if (!empty($html2)){
+	               $html .= '<td style="vertical-align:top;">'.LF;
+	               $html .='<ul style="list-style-position:inside; font-size:10pt; padding-left:0px; margin-left:20px; margin-top:0px; margin-bottom:20px; padding-bottom:0px;">  '.LF;
+	               $html .= $html2;
+	               $html .= '</ul>'.LF;
+	               $html .= '</td>'.LF;
+	            }
+	            if (!empty($html3)){
+	               $html .= '<td style="vertical-align:top;">'.LF;
+	               $html .='<ul style="list-style-position:inside; font-size:10pt; padding-left:0px; margin-left:20px; margin-top:0px; margin-bottom:20px; padding-bottom:0px;">  '.LF;
+	               $html .= $html3;
+	               $html .= '</ul>'.LF;
+	               $html .= '</td>'.LF;
+	            }
+
+	            */
+
 
 
 
 
 				/*
-		         $html  .='<table style="width:100%; border-collapse:collapse; border:0px solid black;" summary="Layout"><tr><td>';
-				*/
 
-				if($current_context->showGrouproomFunctions()) {
-					$grouproom_item = $this->_item->getGroupRoomItem();
-					if(isset($grouproom_item) && !empty($grouproom_item)) {
-						if(!empty($desc)) {
-							/*
-							 * $char = '';
-		                  $i = 1;
-		                  while ( (empty($char) or $char == LF) and $i < mb_strlen($desc) ) {
-		                     $char = $desc[mb_strlen($desc)-$i];
-		                     $i++;
-		                  }
-		                  if ( $char != '>' ) {
-		                     $html .= BRLF.BRLF;
-		                  }
-		                  unset($char);
-							 */
-						}
+	            // Foren
+	            $context_item = $this->_environment->getCurrentContextItem();
+	            if($context_item->WikiEnableDiscussionNotificationGroups() == 1){
+	               $discussions = $item->getDiscussionNotificationArray();
+	               if ( isset($discussions[0]) ) {
+	                  $html .= '<h3>'.$this->_translator->getMessage('GROUP_DISCUSSIONS').'</h3>'.LF;
+	                  $html .= '<ul>'.LF;
+	                  foreach($discussions as $discussion){
+	                        $html .= '   <li>' . $discussion . '</li>'.LF;
 
-						/*
-						 * $html .= $this->_getRoomWindowAsHTML($grouproom_item,$this->_account_mode);
-		               $show_group_room_window = true;
-						 */
-					}
-				}
-
-				if(!isset($show_group_room_window) || !$show_group_room_window) {
-					// members
-					$members = $this->_item->getMemberItemList();
-					$count_member = $members->getCount();
-
-					if(!$members->isEmpty()) {
-						$member = $members->getFirst();
-
-						while($member) {
-							$member_info = array();
-
-							if($member->isUser()) {
-								$firtsname = $member->getFirstname();
-								// TODO:
-								//$linktext = $converter->compareWithSearchText($linktext);
-								$linktext = $converter->text_as_html_short($linktext);
-
-								$member_title = $member->getTitle();
-								// TODO:
-								//$member_title = $converter->compareWithSearchText($member_title);
-								$member_title = $converter->text_as_html_short($member_title);
-
-								if(!empty($member_title)) {
-									$linktext .= ', ' . $member_title;
-								}
-								$member_info['linktext'] = $linktext;
-								$member_info['firstname'] = $converter->text_as_html_short($member->getFirstname());
-								$member_info['lastname'] = $converter->text_as_html_short($member->getLastname());
-								$member_info['title'] = $converter->text_as_html_short($member->getTitle());
-								$member_info['picture'] =$member->getPicture();
-								$member_info['iid'] = $member->getItemID();
-								/*
-								 * $html1 .= ahref_curl($this->_environment->getCurrentContextID(),
-			                                      'user',
-			                                      'detail',
-			                                      $params,
-			                                      $linktext);
-								 */
-
-								/*
-								 * if ($i == 1){
-			                        $html1 .= '   <li>';
-			                        $params = array();
-			                        $params['iid'] = $member->getItemID();
-			                        $html1 .= ahref_curl($this->_environment->getCurrentContextID(),
-			                                      'user',
-			                                      'detail',
-			                                      $params,
-			                                      $linktext);
-			                        unset($params);
-			                        $html1 .= '</li>'.LF;
-			                     }elseif($i == 2){
-			                        $html2 .= '   <li>';
-			                        $params = array();
-			                        $params['iid'] = $member->getItemID();
-			                        $html2 .= ahref_curl($this->_environment->getCurrentContextID(),
-			                                      'user',
-			                                      'detail',
-			                                      $params,
-			                                      $linktext);
-			                        unset($params);
-			                        $html2 .= '</li>'.LF;
-			                     }else{
-			                        $html3 .= '   <li>';
-			                        $params = array();
-			                        $params['iid'] = $member->getItemID();
-			                        $html3 .= ahref_curl($this->_environment->getCurrentContextID(),
-			                                      'user',
-			                                      'detail',
-			                                      $params,
-			                                      $linktext);
-			                        unset($params);
-			                        $html3 .= '</li>'.LF;
-			                        $i = 0;
-			                     }
-			                     $i++;
-								 */
-							     $return['members'][] = $member_info;
-							}
-
-
-							unset($member);
-							$member = $members->getNext();
-						}
-					}
-
-					/*
-					 *
-
-		            $html .='<ul style="list-style-position:inside; font-size:10pt; padding-left:0px; margin-left:20px; margin-top:0px; margin-bottom:20px; padding-bottom:0px;">  '.LF;
-		            $html .= $html1.LF;
-		            $html .= '</ul>'.LF;
-
-
-		            if (!empty($html2)){
-		               $html .= '<td style="vertical-align:top;">'.LF;
-		               $html .='<ul style="list-style-position:inside; font-size:10pt; padding-left:0px; margin-left:20px; margin-top:0px; margin-bottom:20px; padding-bottom:0px;">  '.LF;
-		               $html .= $html2;
-		               $html .= '</ul>'.LF;
-		               $html .= '</td>'.LF;
-		            }
-		            if (!empty($html3)){
-		               $html .= '<td style="vertical-align:top;">'.LF;
-		               $html .='<ul style="list-style-position:inside; font-size:10pt; padding-left:0px; margin-left:20px; margin-top:0px; margin-bottom:20px; padding-bottom:0px;">  '.LF;
-		               $html .= $html3;
-		               $html .= '</ul>'.LF;
-		               $html .= '</td>'.LF;
-		            }
-
-		            */
-
-
-
-
-
-					/*
-
-		            // Foren
-		            $context_item = $this->_environment->getCurrentContextItem();
-		            if($context_item->WikiEnableDiscussionNotificationGroups() == 1){
-		               $discussions = $item->getDiscussionNotificationArray();
-		               if ( isset($discussions[0]) ) {
-		                  $html .= '<h3>'.$this->_translator->getMessage('GROUP_DISCUSSIONS').'</h3>'.LF;
-		                  $html .= '<ul>'.LF;
-		                  foreach($discussions as $discussion){
-		                        $html .= '   <li>' . $discussion . '</li>'.LF;
-
-		                  }
-		                  $html .= '</ul>'.LF;
-		               }
-		            }
-					 */
-				}
+	                  }
+	                  $html .= '</ul>'.LF;
+	               }
+	            }
+				 */
 			}
 			return $return;
 		}
