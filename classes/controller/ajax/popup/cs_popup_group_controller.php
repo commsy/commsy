@@ -273,9 +273,26 @@ class cs_popup_group_controller implements cs_rubric_popup_controller {
 				array(	'name'		=> 'name',
 						'type'		=> 'text',
 						'mandatory' => true)
+			),
+			'description'			=> array(
+				array(	'name'		=> 'description',
+						'type'		=> 'text',
+						'mandatory' => false)
+			),
+			'public'			=> array(
+				array(	'name'		=> 'public',
+						'type'		=> 'radio',
+						'mandatory' => true)
+			),
+			'grouproom_activate'=> array(
+				array(	'name'		=> 'grouproom_activate',
+						'type'		=> 'check',
+						'mandatory' => false)
 			)
+
+
 		);
-		
+
 		return $return[$sub];
     }
 
