@@ -125,6 +125,7 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
             $manager = $this->_environment->getMaterialManager();
             $item = $manager->getItem($current_iid);
         }
+        
 
         // TODO: check rights */
 		/****************************/
@@ -171,14 +172,6 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
                 if ( isset($form_data['description']) ) {
                     $item->setDescription($form_data['description']);
                 }
-	            if (isset($form_data['author']) and isset($form_data['bib_kind']) and $form_data['bib_kind'] != 'none') {
-	               $item->setAuthor($form_data['author']);
-	            }else{
-	               $item->setAuthor('');
-	            }
-	            if (isset($form_data['publishing_date']) and $item->getPublishingDate() != $form_data['publishing_date']) {
-	               $item->setPublishingDate($form_data['publishing_date']);
-	            }
 
                 if (isset($form_data['public'])) {
                     $item->setPublic($form_data['public']);
@@ -210,73 +203,9 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
                         $item->setModificationDate(getCurrentDateTimeInMySQL());
                     }
                 }
-
-	            if (isset($form_data['bibliographic']) and $item->getBibliographicValues() != $form_data['bibliographic']) {
-	               $item->setBibliographicValues($form_data['bibliographic']);
-	            }
-	            if (isset($form_data['description']) and $item->getDescription() != $form_data['description']) {
-	               $item->setDescription($_POST['description']);
-	            }
-
-	            // Detail bibliographic values
-	            if ( isset($form_data['bib_kind']) and $item->getBibKind() != $form_data['bib_kind'] ) {
-	               $item->setBibKind($form_data['bib_kind']);
-	               $item->setBibliographicValues('');
-	            }
-	            if (isset($form_data['common']) and $item->getBibliographicValues() != $form_data['common']) {
-	               $item->setBibliographicValues($form_data['common']);
-	            }
-	            if ( isset($form_data['publisher']) and $item->getPublisher() != $form_data['publisher'] ) {
-	               $item->setPublisher( $form_data['publisher']);
-	            }
-	            if ( isset($form_data['address']) and $item->getAddress() != $form_data['address'] ) {
-	               $item->setAddress($form_data['address']);
-	            }
-	            if ( isset($form_data['edition']) and $item->getEdition() != $form_data['edition'] ) {
-	               $item->setEdition($form_data['edition']);
-	            }
-	            if ( isset($form_data['series']) and $item->getSeries() != $form_data['series'] ) {
-	               $item->setSeries($form_data['series']);
-	            }
-	            if ( isset($form_data['volume']) and $item->getVolume() != $form_data['volume'] ) {
-	               $item->setVolume($form_data['volume']);
-	            }
-	            if ( isset( $form_data['isbn']) and $item->getISBN() !=  $form_data['isbn'] ) {
-	               $item->setISBN( $form_data['isbn']);
-	            }
-	            if ( isset( $form_data['issn']) and $item->getISSN() !=  $form_data['issn'] ) {
-	               $item->setISSN( $form_data['issn']);
-	            }
-	            if ( isset( $form_data['editor']) and $item->getEditor() !=  $form_data['editor'] ) {
-	               $item->setEditor( $form_data['editor']);
-	            }
-	            if ( isset( $form_data['booktitle']) and $item->getBooktitle() !=  $form_data['booktitle'] ) {
-	               $item->setBooktitle( $form_data['booktitle']);
-	            }
-	            if ( isset( $form_data['pages']) and $item->getPages() !=  $form_data['pages'] ) {
-	               $item->setPages( $form_data['pages']);
-	            }
-	            if ( isset( $form_data['journal']) and $item->getJournal() !=  $form_data['journal'] ) {
-	               $item->setJournal( $form_data['journal']);
-	            }
-	            if ( isset( $form_data['issue']) and $item->getIssue() !=  $form_data['issue'] ) {
-	               $item->setIssue( $form_data['issue']);
-	            }
-	            if ( isset( $form_data['thesis_kind']) and $item->getThesisKind() !=  $form_data['thesis_kind'] ) {
-	               $item->setThesisKind( $form_data['thesis_kind']);
-	            }
-	            if ( isset( $form_data['university']) and $item->getUniversity() !=  $form_data['university'] ) {
-	               $item->setUniversity( $form_data['university']);
-	            }
-	            if ( isset( $form_data['faculty']) and $item->getFaculty() !=  $form_data['faculty'] ) {
-	               $item->setFaculty( $form_data['faculty']);
-	            }
-	            if ( isset( $form_data['url']) and $item->getURL() !=  $form_data['url'] ) {
-	               $item->setURL( $form_data['url']);
-	            }
-	            if ( isset( $form_data['url_date']) and $item->getURL() !=  $form_data['url_date'] ) {
-	               $item->setURLDate( $form_data['url_date']);
-	            }
+                
+                // set bibliographic
+                $this->setBibliographic($form_data, $item);
 
 	            /** Start Dokumentenverwaltung **/
 	            if ( isset( $form_data['document_editor']) and $item->getDocumentEditor() !=  $form_data['document_editor'] ) {
@@ -489,7 +418,7 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
 	                    $id_array =  array();
 	                }
 
-                    $id_array[] = $announcement_item->getItemID();
+                    $id_array[] = $item->getItemID();
                     $id_array = array_reverse($id_array);
                     $session->setValue('cid'.$environment->getCurrentContextID().'_'.CS_MATERIAL_TYPE.'_index_ids',$id_array);
                 }
@@ -499,14 +428,105 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
 
                 // Add modifier to all users who ever edited this item
                 $manager = $environment->getLinkModifierItemManager();
-                $manager->markEdited($announcement_item->getItemID());
+                $manager->markEdited($item->getItemID());
                 
                 // set return
                 $this->_popup_controller->setSuccessfullItemIDReturn($item->getItemID());
             }
         }
     }
+    
+    private function setBibliographic($form_data, $item) {
+    	$config = array(
+    		array(	'get'		=> 'getAuthor',
+ 					'set'		=> 'setAuthor',
+ 					'value'		=> $form_data['author']),
+    		array(	'get'		=> 'getPublishingDate',
+    	 			'set'		=> 'setPublishingDate',
+    	 			'value'		=> $form_data['publishing_date']),
+    		array(	'get'		=> 'getBibliographicValues',
+    	    	 	'set'		=> 'setBibliographicValues',
+    	    	 	'value'		=> $form_data['common'])
+    	);
+    	
+    	foreach($config as $method => $detail) {
+    		pr($detail['value']);
+    		
+    		
+    		if($detail['value'] != call_user_func_array(array($item, $detail['get']), array())) {
+    			call_user_func_array(array($item, $detail['set'], array($detail['value'])));
+    		}
+    		
+    		exit;
+    	}
+    	
+    	/*
 
+    	
+    	
+    	if (isset($form_data['bibliographic']) and $item->getBibliographicValues() != $form_data['bibliographic']) {
+    		$item->setBibliographicValues($form_data['bibliographic']);
+    	}
+    	
+    	
+    	// Detail bibliographic values
+    	if ( isset($form_data['bib_kind']) and $item->getBibKind() != $form_data['bib_kind'] ) {
+    		$item->setBibKind($form_data['bib_kind']);
+    		$item->setBibliographicValues('');
+    	}
+    	if ( isset($form_data['publisher']) and $item->getPublisher() != $form_data['publisher'] ) {
+    		$item->setPublisher( $form_data['publisher']);
+    	}
+    	if ( isset($form_data['address']) and $item->getAddress() != $form_data['address'] ) {
+    		$item->setAddress($form_data['address']);
+    	}
+    	if ( isset($form_data['edition']) and $item->getEdition() != $form_data['edition'] ) {
+    		$item->setEdition($form_data['edition']);
+    	}
+    	if ( isset($form_data['series']) and $item->getSeries() != $form_data['series'] ) {
+    		$item->setSeries($form_data['series']);
+    	}
+    	if ( isset($form_data['volume']) and $item->getVolume() != $form_data['volume'] ) {
+    		$item->setVolume($form_data['volume']);
+    	}
+    	if ( isset( $form_data['isbn']) and $item->getISBN() !=  $form_data['isbn'] ) {
+    		$item->setISBN( $form_data['isbn']);
+    	}
+    	if ( isset( $form_data['issn']) and $item->getISSN() !=  $form_data['issn'] ) {
+    		$item->setISSN( $form_data['issn']);
+    	}
+    	if ( isset( $form_data['editor']) and $item->getEditor() !=  $form_data['editor'] ) {
+    		$item->setEditor( $form_data['editor']);
+    	}
+    	if ( isset( $form_data['booktitle']) and $item->getBooktitle() !=  $form_data['booktitle'] ) {
+    		$item->setBooktitle( $form_data['booktitle']);
+    	}
+    	if ( isset( $form_data['pages']) and $item->getPages() !=  $form_data['pages'] ) {
+    		$item->setPages( $form_data['pages']);
+    	}
+    	if ( isset( $form_data['journal']) and $item->getJournal() !=  $form_data['journal'] ) {
+    		$item->setJournal( $form_data['journal']);
+    	}
+    	if ( isset( $form_data['issue']) and $item->getIssue() !=  $form_data['issue'] ) {
+    		$item->setIssue( $form_data['issue']);
+    	}
+    	if ( isset( $form_data['thesis_kind']) and $item->getThesisKind() !=  $form_data['thesis_kind'] ) {
+    		$item->setThesisKind( $form_data['thesis_kind']);
+    	}
+    	if ( isset( $form_data['university']) and $item->getUniversity() !=  $form_data['university'] ) {
+    		$item->setUniversity( $form_data['university']);
+    	}
+    	if ( isset( $form_data['faculty']) and $item->getFaculty() !=  $form_data['faculty'] ) {
+    		$item->setFaculty( $form_data['faculty']);
+    	}
+    	if ( isset( $form_data['url']) and $item->getURL() !=  $form_data['url'] ) {
+    		$item->setURL( $form_data['url']);
+    	}
+    	if ( isset( $form_data['url_date']) and $item->getURL() !=  $form_data['url_date'] ) {
+    		$item->setURLDate( $form_data['url_date']);
+    	}
+    	*/
+    }
 
     public function isOption( $option, $string ) {
         return (strcmp( $option, $string ) == 0) || (strcmp( htmlentities($option, ENT_NOQUOTES, 'UTF-8'), $string ) == 0 || (strcmp( $option, htmlentities($string, ENT_NOQUOTES, 'UTF-8') )) == 0 );

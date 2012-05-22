@@ -47,12 +47,11 @@
          					</div>
          					
          					<div class="input_row">
-         						<label for="bib_common">___MATERIAL_BIBLIOGRAPHIC___:</label>
-         						<input id="bib_common" type="text" class="size_200" name="form_data[common]" value="" />
+         						___MATERIAL_BIBLIOGRAPHIC___:
          					</div>
 							
 							<div class="editor_content">
-								<div id="common" class="ckeditor">{if isset($item.description)}{$item.description}{/if}</div>
+								<div id="common" class="ckeditor">{if isset($item.common)}{$item.common}{/if}</div>
 							</div>
          				</div>
          				
@@ -373,61 +372,123 @@
          					</div>
          				</div>
          				
-         				<div id="bib_content_thesis" class="hidden">{*
-         					 $thesis_kinds = array();
-				               $thesis_kinds[] = array('text'  => $this->_translator->getMessage('MATERIAL_THESIS_TERM'),
-				                                       'value' => 'term');
-				               $thesis_kinds[] = array('text'  => $this->_translator->getMessage('MATERIAL_THESIS_BACHELOR'),
-				                                       'value' => 'bachelor');
-				               $thesis_kinds[] = array('text'  => $this->_translator->getMessage('MATERIAL_THESIS_MASTER'),
-				                                       'value' => 'master');
-				               $thesis_kinds[] = array('text'  => $this->_translator->getMessage('MATERIAL_THESIS_EXAM'),
-				                                       'value' => 'exam');
-				               $thesis_kinds[] = array('text'  => $this->_translator->getMessage('MATERIAL_THESIS_DIPLOMA'),
-				                                       'value' => 'diploma');
-				               $thesis_kinds[] = array('text'  => $this->_translator->getMessage('MATERIAL_THESIS_DISSERTATION'),
-				                                       'value' => 'dissertation');
-				               $thesis_kinds[] = array('text'  => $this->_translator->getMessage('MATERIAL_THESIS_POSTDOC'),
-				                                       'value' => 'postdoc');
-				               $this->_form->addTextField('author','',$this->_translator->getMessage('MATERIAL_AUTHORS'),$this->_translator->getMessage('MATERIAL_AUTHORS_DESC'),200,35,true);
-				               $this->_form->addTextField('publishing_date','',$this->_translator->getMessage('MATERIAL_YEAR'),$this->_translator->getMessage('MATERIAL_YEAR'),4,5,true);
-				               $this->_form->addSelect('thesis_kind',$thesis_kinds,'',$this->_translator->getMessage('MATERIAL_THESIS_KIND'),$this->_translator->getMessage('MATERIAL_THESIS_KIND_DESC'), 1, false,true,false,'','','','',24.8);
-				               $this->_form->addTextField('address','',$this->_translator->getMessage('MATERIAL_ADDRESS'),$this->_translator->getMessage('MATERIAL_ADDRESS_DESC'),200,35,true);
-				               $this->_form->addTextField('university','',$this->_translator->getMessage('MATERIAL_UNIVERSITY'),$this->_translator->getMessage('MATERIAL_UNIVERSITY_DESC'),200,35,true);
-				               $this->_form->addTextField('faculty','',$this->_translator->getMessage('MATERIAL_FACULTY'),$this->_translator->getMessage('MATERIAL_FACULTY_DESC'),200,35,false);
-				            $this->_form->addTextField('url','',$this->_translator->getMessage('MATERIAL_URL'),'',200,35);
-				            $this->_form->addTextField('url_date','',$this->_translator->getMessage('MATERIAL_URL_DATE'),'',10,20);
-         				*}</div>
+         				<div id="bib_content_thesis" class="hidden">
+         					<div class="input_row">
+         						<label for="bib_author">___MATERIAL_EDITOR___<span class="required">*</span>:</label>
+         						<input id="bib_author" type="text" class="size_200" name="form_data[author]" value="" />
+         					</div>
+         					
+         					<div class="input_row">
+         						<label for="bib_publishing_date">___MATERIAL_YEAR___<span class="required">*</span>:</label>
+         						<input id="bib_publishing_date" type="text" class="size_200" name="form_data[publishing_date]" value="" />
+         					</div>
+         					
+         					<div class="input_row">
+         						<label for="bib_thesis_kind">___MATERIAL_THESIS_KIND___:</label>
+         						<select id="bib_thesis_kind" class="size_200" name="form_data[thesis_kind]">
+         							<option value="term">___MATERIAL_THESIS_TERM___</option>
+         							<option value="bachelor">___MATERIAL_THESIS_BACHELOR___</option>
+         							<option value="master">___MATERIAL_THESIS_MASTER___</option>
+         							<option value="exam">___MATERIAL_THESIS_EXAM___</option>
+         							<option value="diploma">___MATERIAL_THESIS_DIPLOMA___</option>
+         							<option value="dissertation">___MATERIAL_THESIS_DISSERTATION___</option>
+         							<option value="postdoc">___MATERIAL_THESIS_POSTDOC___</option>
+         						</select>
+         					</div>
+         					
+         					<div class="input_row">
+         						<label for="bib_address">___MATERIAL_ADDRESS___<span class="required">*</span>:</label>
+         						<input id="bib_address" type="text" class="size_200" name="form_data[address]" value="" />
+         					</div>
+         					
+         					<div class="input_row">
+         						<label for="bib_university">___MATERIAL_UNIVERSITY___<span class="required">*</span>:</label>
+         						<input id="bib_university" type="text" class="size_200" name="form_data[university]" value="" />
+         					</div>
+         					
+         					<div class="input_row">
+         						<label for="bib_faculty">___MATERIAL_FACULTY___:</label>
+         						<input id="bib_faculty" type="text" class="size_200" name="form_data[faculty]" value="" />
+         					</div>
+         					
+         					<div class="input_row">
+         						<label for="bib_url">___MATERIAL_URL___:</label>
+         						<input id="bib_url" type="text" class="size_200" name="form_data[url]" value="" />
+         					</div>
+         					
+         					<div class="input_row">
+         						<label for="bib_url_date">___MATERIAL_URL_DATE___:</label>
+         						<input id="bib_url_date" type="text" class="size_200" name="form_data[url_date]" value="" />
+         					</div>
+         				</div>
          				
-         				<div id="bib_content_manuscript" class="hidden">{*
-         					$this->_form->addTextField('author','',$this->_translator->getMessage('MATERIAL_AUTHORS'),$this->_translator->getMessage('MATERIAL_AUTHORS_DESC'),200,35,true);
-				               $this->_form->addTextField('publishing_date','',$this->_translator->getMessage('MATERIAL_YEAR'),$this->_translator->getMessage('MATERIAL_YEAR'),4,5,true);
-				               $this->_form->addTextField('address','',$this->_translator->getMessage('MATERIAL_ADDRESS'),$this->_translator->getMessage('MATERIAL_ADDRESS_DESC'),200,35,true);
-				            $this->_form->addTextField('url','',$this->_translator->getMessage('MATERIAL_URL'),'',200,35);
-				            $this->_form->addTextField('url_date','',$this->_translator->getMessage('MATERIAL_URL_DATE'),'',10,20);
-         				*}</div>
+         				<div id="bib_content_manuscript" class="hidden">
+         					<div class="input_row">
+         						<label for="bib_author">___MATERIAL_EDITOR___<span class="required">*</span>:</label>
+         						<input id="bib_author" type="text" class="size_200" name="form_data[author]" value="" />
+         					</div>
+         					
+         					<div class="input_row">
+         						<label for="bib_publishing_date">___MATERIAL_YEAR___<span class="required">*</span>:</label>
+         						<input id="bib_publishing_date" type="text" class="size_200" name="form_data[publishing_date]" value="" />
+         					</div>
+         					
+         					<div class="input_row">
+         						<label for="bib_address">___MATERIAL_ADDRESS___<span class="required">*</span>:</label>
+         						<input id="bib_address" type="text" class="size_200" name="form_data[address]" value="" />
+         					</div>
+         					
+         					<div class="input_row">
+         						<label for="bib_url">___MATERIAL_URL___:</label>
+         						<input id="bib_url" type="text" class="size_200" name="form_data[url]" value="" />
+         					</div>
+         					
+         					<div class="input_row">
+         						<label for="bib_url_date">___MATERIAL_URL_DATE___:</label>
+         						<input id="bib_url_date" type="text" class="size_200" name="form_data[url_date]" value="" />
+         					</div>
+         				</div>
          				
-         				<div id="bib_content_website" class="hidden">{*
-         					 $this->_form->addTextField('author','',$this->_translator->getMessage('MATERIAL_AUTHORS'),$this->_translator->getMessage('MATERIAL_AUTHORS_DESC'),200,35,true);
-				            $this->_form->addTextField('url','',$this->_translator->getMessage('MATERIAL_URL'),'',200,35,true);
-				            $this->_form->addTextField('url_date','',$this->_translator->getMessage('MATERIAL_URL_DATE'),'',10,20);
-         				*}</div>
+         				<div id="bib_content_website" class="hidden">
+         					<div class="input_row">
+         						<label for="bib_author">___MATERIAL_EDITOR___<span class="required">*</span>:</label>
+         						<input id="bib_author" type="text" class="size_200" name="form_data[author]" value="" />
+         					</div>
+         					
+         					<div class="input_row">
+         						<label for="bib_url">___MATERIAL_URL___<span class="required">*</span>:</label>
+         						<input id="bib_url" type="text" class="size_200" name="form_data[url]" value="" />
+         					</div>
+         					
+         					<div class="input_row">
+         						<label for="bib_url_date">___MATERIAL_URL_DATE___:</label>
+         						<input id="bib_url_date" type="text" class="size_200" name="form_data[url_date]" value="" />
+         					</div>
+         				</div>
          				
-         				<div id="bib_content_document" class="hidden">{*
-         					$this->_form->addTextField('document_editor','',$this->_translator->getMessage('MATERIAL_BIB_DOCUMENT_EDITOR'),$this->_translator->getMessage('MATERIAL_BIB_DOCUMENT_EDITOR'),200,35,false);
-			               $this->_form->addTextField('document_maintainer','',$this->_translator->getMessage('MATERIAL_BIB_DOCUMENT_MAINTAINER'),$this->_translator->getMessage('MATERIAL_BIB_DOCUMENT_MAINTAINER'),200,35,false);
-			               $this->_form->addTextField('document_release_number','',$this->_translator->getMessage('MATERIAL_BIB_DOCUMENT_RELEASE_NUMBER'),$this->_translator->getMessage('MATERIAL_BIB_DOCUMENT_RELEASE_NUMBER'),200,35,false);
-			               $this->_form->addTextField('document_release_date','',$this->_translator->getMessage('MATERIAL_BIB_DOCUMENT_RELEASE_DATE'),$this->_translator->getMessage('MATERIAL_BIB_DOCUMENT_RELEASE_DATE'),200,35,false);
-         				*}</div>
+         				<div id="bib_content_document" class="hidden">
+         					<div class="input_row">
+         						<label for="bib_document_editor">___MATERIAL_BIB_DOCUMENT_EDITOR___:</label>
+         						<input id="bib_document_editor" type="text" class="size_200" name="form_data[document_editor]" value="" />
+         					</div>
+         					
+         					<div class="input_row">
+         						<label for="bib_document_maintainer">___MATERIAL_BIB_DOCUMENT_MAINTAINER___:</label>
+         						<input id="bib_document_maintainer" type="text" class="size_200" name="form_data[document_maintainer]" value="" />
+         					</div>
+         					
+         					<div class="input_row">
+         						<label for="bib_document_release_number">___MATERIAL_BIB_DOCUMENT_RELEASE_NUMBER___:</label>
+         						<input id="bib_document_release_number" type="text" class="size_200" name="form_data[document_release_number]" value="" />
+         					</div>
+         					
+         					<div class="input_row">
+         						<label for="bib_document_release_date">___MATERIAL_BIB_DOCUMENT_RELEASE_DATE___:</label>
+         						<input id="bib_document_release_date" type="text" class="size_200" name="form_data[document_release_date]" value="" />
+         					</div>
+         				</div>
          			</div>
          			
-         			{*
-         			{if $item.bib_kind == }
-         			{elsif}
-         			{else}
-         			{/if}
-         			*}
-
 					<div class="editor_content">
 						<div id="description" class="ckeditor">{if isset($item.description)}{$item.description}{/if}</div>
 					</div>

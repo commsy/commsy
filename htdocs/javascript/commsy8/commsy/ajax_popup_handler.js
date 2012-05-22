@@ -472,7 +472,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 					jQuery(this).show();
 					
 					// go through each input field and change the name, if needed, so they will be submitted again
-					jQuery(this).find('input').each(function() {
+					jQuery(this).find('input, select').each(function() {
 						if(jQuery(this).attr('name').substr(0, 14) === 'do_not_submit_') {
 							jQuery(this).attr('name', jQuery(this).attr('name').substr(14));
 						}
@@ -481,7 +481,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 					jQuery(this).hide();
 					
 					// go through each input field and change the name, if needed, so they won't be submitted
-					jQuery(this).find('input').each(function() {
+					jQuery(this).find('input, select').each(function() {
 						if(jQuery(this).attr('name').substr(0, 14) !== 'do_not_submit_') {
 							jQuery(this).attr('name', 'do_not_submit_' + jQuery(this).attr('name'));
 						}
