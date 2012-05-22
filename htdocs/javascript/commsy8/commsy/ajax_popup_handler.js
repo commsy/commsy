@@ -95,6 +95,13 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 							handle:				ck_editor_handler,
 							register_on:		jQuery('div.ckeditor')
 						});
+						
+						// reinvoke Datepicker
+						var datepicker_handler = commsy_functions.getModuleCallback('commsy/datepicker');
+						datepicker_handler.setup(null, {
+							handle:				datepicker_handler,
+							register_on:		jQuery('input.datepicker')
+						});
 
 						// reinvoke TagTree
 						var tag_tree_handler = commsy_functions.getModuleCallback('commsy/tag_tree');

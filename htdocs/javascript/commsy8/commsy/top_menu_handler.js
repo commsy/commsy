@@ -114,6 +114,13 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 						// we recieved html - append it
 						jQuery('div#tm_dropmenu_pers_bar').html(data.html);
 						
+						// reinvoke Datepicker
+						var datepicker_handler = handle.commsy_functions.getModuleCallback('commsy/datepicker');
+						datepicker_handler.setup(null, {
+							handle:				datepicker_handler,
+							register_on:		jQuery('input.datepicker')
+						});
+						
 						// show
 						jQuery('div#tm_dropmenu_pers_bar div.tm_dropmenu').slideDown(100);
 						

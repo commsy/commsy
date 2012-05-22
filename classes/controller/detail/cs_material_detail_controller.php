@@ -634,20 +634,22 @@
 				}
 
 				$pub_date = $this->_item->getPublishingDate();
-				if(!empty($pub_data)) {
+				if(!empty($pub_date)) {
 					$temp_array[0] = $translator->getMessage('MATERIAL_PUBLISHING_DATE');
 					$temp_array[1] = $converter->text_as_html_short($this->_item->getPublishingDate());
 					$return[] = $temp_array;
 				}
 
+				/*
 				if(!empty($return)) {
 					$html .= $this->_getFormalDataAsHTML($return);
 		            if ( isset($html_script) and !empty($html_script) ) {
 		               $html .= $html_script;
 		            }
 				}
+				*/
 
-				$return = array();
+				//$return = array();
 		         $temp_array = array();
 		         $biblio = $this->_item->getBibliographicValues();
 			} elseif($bib_kind === 'website') {
@@ -692,7 +694,7 @@
 							$biblio .= $translator->getMessage('MATERIAL_BIB_EDITOR', $this->_item->getEditor()) . ': ';
 						}
 						$biblio .= $this->_item->getBooktitle() . '. ';
-						$biblio .= $this->_item->getAddress() . ': ' . $this->item->getPublisher();
+						$biblio .= $this->_item->getAddress() . ': ' . $this->_item->getPublisher();
 
 						if($this->_item->getEdition()) {
 							$biblio .= ', ' . $translator->getMessage('MATERIAL_BIB_EDITION', $this->_item->getEdition());

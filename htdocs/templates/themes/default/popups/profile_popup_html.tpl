@@ -170,7 +170,7 @@
 										
 										<div class="input_row">
 											<label for="data_birthday">___USER_BIRTHDAY___</label>
-											<input id="data_birthday" type="text" class="size_200 float-left" name="form_data[birthday]" value="{show var=$popup.form.user.birthday}" />
+											<input id="data_birthday" type="text" class="size_200 float-left datepicker" name="form_data[birthday]" value="{show var=$popup.form.user.birthday}" />
 											<input id="data_birthday_all" type="checkbox" class="float-left" name="form_data[birthday_all]" />
 											<label for="data_birthday_all" class="float-left">___USER_CHANGE_IN_ALL_ROOMS___</label>
 											<div class="clear"></div>

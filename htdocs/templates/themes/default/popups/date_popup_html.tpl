@@ -19,14 +19,14 @@
 					<div class="input_row">
 						<span class="input_label_80">___DATES_TIME_DAY_START___:<span class="required">*</span></span>
 						<span class="input_label">___COMMON_CALENDAR_DATE___<span class="required">*</span></span>
-						<input type="text" value="{if isset($item.dayStart)}{$item.dayStart}{/if}" name="form_data[dayStart]" class="size_80" />
+						<input class="size_80 datepicker" type="text" value="{if isset($item.dayStart)}{$item.dayStart}{/if}" name="form_data[dayStart]" />
 						<span class="input_label">___COMMON_CLOCK___</span>
 						<input type="text" value="{if isset($item.timeStart)}{$item.timeStart}{/if}" name="form_data[timeStart]" class="size_80" />
 					</div>
 					<div class="input_row">
 						<span class="input_label_80">___DATES_TIME_DAY_END___:</span>
 						<span class="input_label">___COMMON_CALENDAR_DATE___&nbsp;&nbsp;</span>
-						<input type="text" value="{if isset($item.dayEnd)}{$item.dayEnd}{/if}" name="form_data[dateEnd]" class="size_80" />
+						<input class="size_80 datepicker" type="text" value="{if isset($item.dayEnd)}{$item.dayEnd}{/if}" name="form_data[dateEnd]" />
 						<span class="input_label">___COMMON_CLOCK___</span>
 						<input type="text" value="{if isset($item.timeEnd)}{$item.timeEnd}{/if}" name="form_data[timeEnd]" class="size_80" />
 					</div>
@@ -133,7 +133,7 @@
 								{if $popup.config.with_activating}
 									<input type="checkbox" name="form_data[private_editing]" value="1"{if $item.private_editing == true} checked="checked"{/if}/>{i18n tag=RUBRIC_PUBLIC_NO param1=$popup.user.fullname}<br/>
 									<input type="checkbox" name="form_data[hide]" value="1"{if $item.is_not_activated} checked="checked"{/if}>___COMMON_HIDE___
-									___DATES_HIDING_DAY___ <input type="text" name="form_data[dayActivateStart]" value="{if isset($item.activating_date)}{$item.activating_date}{/if}"/>
+									___DATES_HIDING_DAY___ <input class="datepicker" type="text" name="form_data[dayActivateStart]" value="{if isset($item.activating_date)}{$item.activating_date}{/if}"/>
 									___DATES_HIDING_TIME___ <input type="text" name="form_data[timeActivateStart]" value="{if isset($item.activating_time)}{$item.activating_time}{/if}"/>
 
 								{else}

@@ -16,7 +16,7 @@
 					</div>
 					<div class="input_row">
 						<span  class="input_label_80">___ANNOUNCEMENT_SHOW_HOME_DATE___<span class="required">*</span>:</span>
-						<span>___COMMON_CALENDAR_DATE___:</span><span class="required">*</span><input type="text" value="{if isset($item.dayEnd)}{$item.dayEnd}{/if}" name="form_data[dayEnd]" class="size_80" />
+						<span>___COMMON_CALENDAR_DATE___:</span><span class="required">*</span><input class="size_80 datepicker" type="text" value="{if isset($item.dayEnd)}{$item.dayEnd}{/if}" name="form_data[dayEnd]" />
 						<span>___COMMON_CLOCK___:</span><input type="text" value="{if isset($item.timeEnd)}{$item.timeEnd}{/if}" name="form_data[timeEnd]" class="size_80" />
 					</div>
 
@@ -64,7 +64,7 @@
 								{if $popup.config.with_activating}
 									<input type="checkbox" name="form_data[private_editing]" value="1"{if $item.private_editing == true} checked="checked"{/if}/>{i18n tag=RUBRIC_PUBLIC_NO param1=$popup.user.fullname}<br/>
 									<input type="checkbox" name="form_data[hide]" value="1"{if $item.is_not_activated} checked="checked"{/if}>___COMMON_HIDE___
-									___DATES_HIDING_DAY___ <input type="text" name="form_data[dayStart]" value="{if isset($item.activating_date)}{$item.activating_date}{/if}"/>
+									___DATES_HIDING_DAY___ <input class="datepicker" type="text" name="form_data[dayStart]" value="{if isset($item.activating_date)}{$item.activating_date}{/if}"/>
 									___DATES_HIDING_TIME___ <input type="text" name="form_data[timeStart]" value="{if isset($item.activating_time)}{$item.activating_time}{/if}"/>
 
 								{else}

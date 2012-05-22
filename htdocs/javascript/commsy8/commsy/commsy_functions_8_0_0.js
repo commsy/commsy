@@ -185,7 +185,10 @@ define(["libs/jQuery/jquery-1.7.1.min"], function() {
 			this.registerModule('commsy/top_menu_handler', {objects: objects});
 
 			// assessment
-			this.registerModule('commsy/assessment', {object: jQuery('span#detail_assessment')})
+			this.registerModule('commsy/assessment', {object: jQuery('span#detail_assessment')});
+			
+			// datepicker
+			this.registerModule('commsy/datepicker', {register_on: jQuery('input.datepicker')});
 		},
 
 		registerModule: function(module, parameters) {

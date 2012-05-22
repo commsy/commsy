@@ -177,7 +177,7 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
                     $item->setPublic($form_data['public']);
                 }
                 $file_ids = $form_data['files'];
-                $this->_popup_controller->getUtils()->setFilesForItem($item, $file_ids, CS_MATERAIL_TYPE);
+                $this->_popup_controller->getUtils()->setFilesForItem($item, $file_ids, CS_MATERIAL_TYPE);
 
 
                 if ( isset($form_data['hide']) ) {
@@ -446,86 +446,69 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
     	 			'value'		=> $form_data['publishing_date']),
     		array(	'get'		=> 'getBibliographicValues',
     	    	 	'set'		=> 'setBibliographicValues',
-    	    	 	'value'		=> $form_data['common'])
+    	    	 	'value'		=> $form_data['common']),
+    		array(	'get'		=> 'getBibKind',
+    	    	    'set'		=> 'setBibKind',
+    	    	    'value'		=> $form_data['bib_kind']),
+    		array(	'get'		=> 'getPublisher',
+    	    	    'set'		=> 'setPublisher',
+    	    	    'value'		=> $form_data['publisher']),
+    		array(	'get'		=> 'getAddress',
+    	    	    'set'		=> 'setAddress',
+    	    	    'value'		=> $form_data['address']),
+    		array(	'get'		=> 'getEdition',
+    	    	    'set'		=> 'setEdition',
+    	    	    'value'		=> $form_data['edition']),
+    		array(	'get'		=> 'getSeries',
+    	    	    'set'		=> 'setSeries',
+    	    	    'value'		=> $form_data['series']),
+    		array(	'get'		=> 'getVolume',
+    	    	    'set'		=> 'setVolume',
+    	    	    'value'		=> $form_data['volume']),
+    		array(	'get'		=> 'getISBN',
+    	    	    'set'		=> 'setISBN',
+    	    	    'value'		=> $form_data['isbn']),
+    		array(	'get'		=> 'getURL',
+    	    	    'set'		=> 'setURL',
+    	    	    'value'		=> $form_data['url']),
+    		array(	'get'		=> 'getURLDate',
+    	    	    'set'		=> 'setURLDate',
+    	    	    'value'		=> $form_data['url_date']),
+    		array(	'get'		=> 'getEditor',
+    	    	    'set'		=> 'setEditor',
+    	    	    'value'		=> $form_data['editor']),
+    		array(	'get'		=> 'getBooktitle',
+    	    	    'set'		=> 'setBooktitle',
+    	    	    'value'		=> $form_data['booktitle']),
+    		array(	'get'		=> 'getISSN',
+    	    	    'set'		=> 'setISSN',
+    	    	    'value'		=> $form_data['issn']),
+    		array(	'get'		=> 'getPages',
+    	    	    'set'		=> 'setPages',
+    	    	    'value'		=> $form_data['pages']),
+    		array(	'get'		=> 'getJournal',
+    	    	    'set'		=> 'setJournal',
+    	    	    'value'		=> $form_data['journal']),
+    		array(	'get'		=> 'getIssue',
+    	    	    'set'		=> 'setIssue',
+    	    	    'value'		=> $form_data['issue']),
+    		array(	'get'		=> 'getThesisKind',
+    	    	    'set'		=> 'setThesisKind',
+    	    	   	'value'		=> $form_data['thesis_kind']),
+    		array(	'get'		=> 'getUniversity',
+    	    	    'set'		=> 'setUniversity',
+    	    	    'value'		=> $form_data['university']),
+    		array(	'get'		=> 'getFaculty',
+    	    	    'set'		=> 'setFaculty',
+    	    	    'value'		=> $form_data['faculty'])
     	);
     	
     	foreach($config as $method => $detail) {
-    		pr($detail['value']);
-    		
-    		
     		if($detail['value'] != call_user_func_array(array($item, $detail['get']), array())) {
-    			call_user_func_array(array($item, $detail['set'], array($detail['value'])));
-    		}
-    		
-    		exit;
-    	}
-    	
-    	/*
 
-    	
-    	
-    	if (isset($form_data['bibliographic']) and $item->getBibliographicValues() != $form_data['bibliographic']) {
-    		$item->setBibliographicValues($form_data['bibliographic']);
+    			call_user_func_array(array($item, $detail['set']), array($detail['value']));
+    		}
     	}
-    	
-    	
-    	// Detail bibliographic values
-    	if ( isset($form_data['bib_kind']) and $item->getBibKind() != $form_data['bib_kind'] ) {
-    		$item->setBibKind($form_data['bib_kind']);
-    		$item->setBibliographicValues('');
-    	}
-    	if ( isset($form_data['publisher']) and $item->getPublisher() != $form_data['publisher'] ) {
-    		$item->setPublisher( $form_data['publisher']);
-    	}
-    	if ( isset($form_data['address']) and $item->getAddress() != $form_data['address'] ) {
-    		$item->setAddress($form_data['address']);
-    	}
-    	if ( isset($form_data['edition']) and $item->getEdition() != $form_data['edition'] ) {
-    		$item->setEdition($form_data['edition']);
-    	}
-    	if ( isset($form_data['series']) and $item->getSeries() != $form_data['series'] ) {
-    		$item->setSeries($form_data['series']);
-    	}
-    	if ( isset($form_data['volume']) and $item->getVolume() != $form_data['volume'] ) {
-    		$item->setVolume($form_data['volume']);
-    	}
-    	if ( isset( $form_data['isbn']) and $item->getISBN() !=  $form_data['isbn'] ) {
-    		$item->setISBN( $form_data['isbn']);
-    	}
-    	if ( isset( $form_data['issn']) and $item->getISSN() !=  $form_data['issn'] ) {
-    		$item->setISSN( $form_data['issn']);
-    	}
-    	if ( isset( $form_data['editor']) and $item->getEditor() !=  $form_data['editor'] ) {
-    		$item->setEditor( $form_data['editor']);
-    	}
-    	if ( isset( $form_data['booktitle']) and $item->getBooktitle() !=  $form_data['booktitle'] ) {
-    		$item->setBooktitle( $form_data['booktitle']);
-    	}
-    	if ( isset( $form_data['pages']) and $item->getPages() !=  $form_data['pages'] ) {
-    		$item->setPages( $form_data['pages']);
-    	}
-    	if ( isset( $form_data['journal']) and $item->getJournal() !=  $form_data['journal'] ) {
-    		$item->setJournal( $form_data['journal']);
-    	}
-    	if ( isset( $form_data['issue']) and $item->getIssue() !=  $form_data['issue'] ) {
-    		$item->setIssue( $form_data['issue']);
-    	}
-    	if ( isset( $form_data['thesis_kind']) and $item->getThesisKind() !=  $form_data['thesis_kind'] ) {
-    		$item->setThesisKind( $form_data['thesis_kind']);
-    	}
-    	if ( isset( $form_data['university']) and $item->getUniversity() !=  $form_data['university'] ) {
-    		$item->setUniversity( $form_data['university']);
-    	}
-    	if ( isset( $form_data['faculty']) and $item->getFaculty() !=  $form_data['faculty'] ) {
-    		$item->setFaculty( $form_data['faculty']);
-    	}
-    	if ( isset( $form_data['url']) and $item->getURL() !=  $form_data['url'] ) {
-    		$item->setURL( $form_data['url']);
-    	}
-    	if ( isset( $form_data['url_date']) and $item->getURL() !=  $form_data['url_date'] ) {
-    		$item->setURLDate( $form_data['url_date']);
-    	}
-    	*/
     }
 
     public function isOption( $option, $string ) {
@@ -574,8 +557,8 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
 		$return = array(
 			'general'	=> array(
 				array(	'name'		=> 'title',
-					'type'		=> 'text',
-					'mandatory' => true),
+						'type'		=> 'text',
+						'mandatory' => true),
 				array(	'name'		=> 'description',
 						'type'		=> 'textarea',
 						'mandatory'	=> false)
@@ -585,93 +568,277 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
 			),
 				
 			'book'	=> array(
+				array(	'name'		=> 'author',
+						'type'		=> 'text',
+						'mandatory' => true),
+				array(	'name'		=> 'publishing_date',
+						'type'		=> 'numeric',
+						'mandatory'	=> true),
+				array(	'name'		=> 'publisher',
+						'type'		=> 'text',
+						'mandatory'	=> true),
+				array(	'name'		=> 'address',
+						'type'		=> 'text',
+						'mandatory'	=> true),
+				array(	'name'		=> 'edition',
+						'type'		=> 'text',
+						'mandatory'	=> false),
+				array(	'name'		=> 'series',
+						'type'		=> 'text',
+						'mandatory'	=> false),
+				array(	'name'		=> 'volume',
+						'type'		=> 'text',
+						'mandatory'	=> false),
+				array(	'name'		=> 'isbn',
+						'type'		=> 'text',
+						'mandatory'	=> false),
+				array(	'name'		=> 'url',
+						'type'		=> 'url',
+						'mandatory'	=> false),
+				array(	'name'		=> 'url_date',
+						'type'		=> 'date',
+						'mandatory'	=> false)
 			),
 			
 			'collection'	=> array(
+				array(	'name'		=> 'author',
+						'type'		=> 'text',
+						'mandatory' => true),
+				array(	'name'		=> 'publishing_date',
+						'type'		=> 'numeric',
+						'mandatory'	=> true),
+				array(	'name'		=> 'publisher',
+						'type'		=> 'text',
+						'mandatory'	=> true),
+				array(	'name'		=> 'address',
+						'type'		=> 'text',
+						'mandatory'	=> true),
+				array(	'name'		=> 'edition',
+						'type'		=> 'text',
+						'mandatory'	=> false),
+				array(	'name'		=> 'series',
+						'type'		=> 'text',
+						'mandatory'	=> false),
+				array(	'name'		=> 'volume',
+						'type'		=> 'text',
+						'mandatory'	=> false),
+				array(	'name'		=> 'isbn',
+						'type'		=> 'text',
+						'mandatory'	=> false),
+				array(	'name'		=> 'url',
+						'type'		=> 'url',
+						'mandatory'	=> false),
+				array(	'name'		=> 'url_date',
+						'type'		=> 'date',
+						'mandatory'	=> false)
 			),
 			
-			'incolection'	=> array(
+			'incollection'	=> array(
+				array(	'name'		=> 'author',
+						'type'		=> 'text',
+						'mandatory' => true),
+				array(	'name'		=> 'publishing_date',
+						'type'		=> 'numeric',
+						'mandatory'	=> true),
+				array(	'name'		=> 'editor',
+						'type'		=> 'text',
+						'mandatory'	=> true),
+				array(	'name'		=> 'booktitle',
+						'type'		=> 'text',
+						'mandatory'	=> true),
+				array(	'name'		=> 'address',
+						'type'		=> 'text',
+						'mandatory'	=> true),
+				array(	'name'		=> 'publisher',
+						'type'		=> 'text',
+						'mandatory'	=> true),
+				array(	'name'		=> 'edition',
+						'type'		=> 'text',
+						'mandatory'	=> false),
+				array(	'name'		=> 'series',
+						'type'		=> 'text',
+						'mandatory'	=> false),
+				array(	'name'		=> 'volume',
+						'type'		=> 'text',
+						'mandatory'	=> false),
+				array(	'name'		=> 'isbn',
+						'type'		=> 'text',
+						'mandatory'	=> false),
+				array(	'name'		=> 'url',
+						'type'		=> 'url',
+						'mandatory'	=> false),
+				array(	'name'		=> 'url_date',
+						'type'		=> 'date',
+						'mandatory'	=> false)
 			),
 			
 			'article'	=> array(
+				array(	'name'		=> 'author',
+						'type'		=> 'text',
+						'mandatory' => true),
+				array(	'name'		=> 'publishing_date',
+						'type'		=> 'numeric',
+						'mandatory'	=> true),
+				array(	'name'		=> 'journal',
+						'type'		=> 'text',
+						'mandatory'	=> true),
+				array(	'name'		=> 'volume',
+						'type'		=> 'text',
+						'mandatory'	=> false),
+				array(	'name'		=> 'issue',
+						'type'		=> 'text',
+						'mandatory'	=> false),
+				array(	'name'		=> 'pages',
+						'type'		=> 'text',
+						'mandatory'	=> true),
+				array(	'name'		=> 'address',
+						'type'		=> 'text',
+						'mandatory'	=> true),
+				array(	'name'		=> 'publisher',
+						'type'		=> 'text',
+						'mandatory'	=> true),
+				array(	'name'		=> 'issn',
+						'type'		=> 'text',
+						'mandatory'	=> false),
+				array(	'name'		=> 'url',
+						'type'		=> 'url',
+						'mandatory'	=> false),
+				array(	'name'		=> 'url_date',
+						'type'		=> 'date',
+						'mandatory'	=> false)
 			),
 			
 			'chapter'	=> array(
+				array(	'name'		=> 'author',
+						'type'		=> 'text',
+						'mandatory' => true),
+				array(	'name'		=> 'publishing_date',
+						'type'		=> 'numeric',
+						'mandatory'	=> true),
+				array(	'name'		=> 'address',
+						'type'		=> 'text',
+						'mandatory'	=> true),
+				array(	'name'		=> 'edition',
+						'type'		=> 'text',
+						'mandatory'	=> false),
+				array(	'name'		=> 'series',
+						'type'		=> 'text',
+						'mandatory'	=> false),
+				array(	'name'		=> 'volume',
+						'type'		=> 'text',
+						'mandatory'	=> false),
+				array(	'name'		=> 'isbn',
+						'type'		=> 'text',
+						'mandatory'	=> false),
+				array(	'name'		=> 'url',
+						'type'		=> 'url',
+						'mandatory'	=> false),
+				array(	'name'		=> 'url_date',
+						'type'		=> 'date',
+						'mandatory'	=> false)
 			),
 			
 			'inpaper'	=> array(
+				array(	'name'		=> 'author',
+						'type'		=> 'text',
+						'mandatory' => true),
+				array(	'name'		=> 'publishing_date',
+						'type'		=> 'numeric',
+						'mandatory'	=> true),
+				array(	'name'		=> 'journal',
+						'type'		=> 'text',
+						'mandatory'	=> true),
+				array(	'name'		=> 'issue',
+						'type'		=> 'text',
+						'mandatory'	=> false),
+				array(	'name'		=> 'pages',
+						'type'		=> 'text',
+						'mandatory'	=> true),
+				array(	'name'		=> 'address',
+						'type'		=> 'text',
+						'mandatory'	=> false),
+				array(	'name'		=> 'publisher',
+						'type'		=> 'text',
+						'mandatory'	=> false),
+				array(	'name'		=> 'url',
+						'type'		=> 'url',
+						'mandatory'	=> false),
+				array(	'name'		=> 'url_date',
+						'type'		=> 'date',
+						'mandatory'	=> false)
 			),
 			
 			'thesis'	=> array(
+				array(	'name'		=> 'author',
+						'type'		=> 'text',
+						'mandatory' => true),
+				array(	'name'		=> 'publishing_date',
+						'type'		=> 'numeric',
+						'mandatory'	=> true),
+				array(	'name'		=> 'thesis_kind',
+						'type'		=> 'text',
+						'mandatory'	=> true),
+				array(	'name'		=> 'address',
+						'type'		=> 'text',
+						'mandatory'	=> true),
+				array(	'name'		=> 'university',
+						'type'		=> 'text',
+						'mandatory'	=> true),
+				array(	'name'		=> 'faculty',
+						'type'		=> 'text',
+						'mandatory'	=> false),
+				array(	'name'		=> 'url',
+						'type'		=> 'url',
+						'mandatory'	=> false),
+				array(	'name'		=> 'url_date',
+						'type'		=> 'date',
+						'mandatory'	=> false)
 			),
 			
 			'manuscript'	=> array(
+				array(	'name'		=> 'author',
+						'type'		=> 'text',
+						'mandatory' => true),
+				array(	'name'		=> 'publishing_date',
+						'type'		=> 'numeric',
+						'mandatory'	=> true),
+				array(	'name'		=> 'address',
+						'type'		=> 'text',
+						'mandatory'	=> true),
+				array(	'name'		=> 'url',
+						'type'		=> 'url',
+						'mandatory'	=> false),
+				array(	'name'		=> 'url_date',
+						'type'		=> 'date',
+						'mandatory'	=> false)
 			),
 			
 			'website'	=> array(
+				array(	'name'		=> 'author',
+						'type'		=> 'text',
+						'mandatory' => true),
+				array(	'name'		=> 'url',
+						'type'		=> 'url',
+						'mandatory'	=> true),
+				array(	'name'		=> 'url_date',
+						'type'		=> 'date',
+						'mandatory'	=> false)
 			),
 			
 			'document'	=> array(
-			)/*
-			array(	'name'		=> 'vid',
-					'type'		=> 'hidden',
-					'mandatory' => true),
-			
-			array(	'name'		=> 'pages',
-					'type'		=> 'text',
-					'mandatory'	=> false),
-			array(	'name'		=> 'booktitle',
-					'type'		=> 'text',
-					'mandatory'	=> false),
-			array(	'name'		=> 'editor',
-					'type'		=> 'text',
-					'mandatory'	=> false),
-			array(	'name'		=> 'isbn',
-					'type'		=> 'text',
-					'mandatory'	=> false),
-			array(	'name'		=> 'volume',
-					'type'		=> 'text',
-					'mandatory'	=> false),
-			array(	'name'		=> 'series',
-					'type'		=> 'text',
-					'mandatory'	=> false),
-			array(	'name'		=> 'edition',
-					'type'		=> 'text',
-					'mandatory'	=> false),
-			array(	'name'		=> 'address',
-					'type'		=> 'text',
-					'mandatory'	=> false),
-			array(	'name'		=> 'publisher',
-					'type'		=> 'text',
-					'mandatory'	=> false),
-			array(	'name'		=> 'bib_kind',
-					'type'		=> 'text',
-					'mandatory'	=> false),
-			array(	'name'		=> 'author',
-					'type'		=> 'text',
-					'mandatory'	=> false),
-			array(	'name'		=> 'journal',
-					'type'		=> 'text',
-					'mandatory'	=> false),
-			array(	'name'		=> 'issue',
-					'type'		=> 'text',
-					'mandatory'	=> false),
-			array(	'name'		=> 'thesis_kind',
-					'type'		=> 'text',
-					'mandatory'	=> false),
-			array(	'name'		=> 'university',
-					'type'		=> 'text',
-					'mandatory'	=> false),
-			array(	'name'		=> 'faculty',
-					'type'		=> 'text',
-					'mandatory'	=> false),
-			array(	'name'		=> 'dayEnd',
-					'type'		=> 'text',
-					'mandatory'	=> true),
-			array(	'name'		=> 'timeEnd',
-					'type'		=> 'text',
-					'mandatory'	=> false)
-					*/
+				array(	'name'		=> 'document_editor',
+						'type'		=> 'text',
+						'mandatory' => false),
+				array(	'name'		=> 'document_maintainer',
+						'type'		=> 'text',
+						'mandatory'	=> false),
+				array(	'name'		=> 'document_release_number',
+						'type'		=> 'text',
+						'mandatory'	=> false),
+				array(	'name'		=> 'document_release_date',
+						'type'		=> 'date',
+						'mandatory'	=> false)
+			)
 		);
 		
 		return $return[$sub];
