@@ -11,6 +11,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 		cid: null,
 		tpl_path: '',
 		netnavigation: null,
+		uploaded: false,
 
 		init: function(commsy_functions, parameters) {
 			this.cid = commsy_functions.getURLParam('cid');
@@ -86,7 +87,8 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 							handle:				uploadify_handler,
 							commsy_functions:	commsy_functions,
 							upload_object:		jQuery('a[id="uploadify_doUpload"]'),
-							clear_object:		jQuery('a[id="uploadify_clearQuery"]')
+							clear_object:		jQuery('a[id="uploadify_clearQuery"]'),
+							onAllComplete:	handle.onUploadifyAllComplete
 						});
 
 						// reinvoke CKEditor
@@ -188,7 +190,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			
 			// collect form data
 			var form_objects = jQuery('div[id="popup_wrapper"] input[name^="form_data"],div[id="popup_wrapper"] select[name^="form_data"]');
-
+			
 			// build object
 			var data = {
 				form_data: [],
@@ -413,17 +415,11 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 				}
 			});
 
-			// fullsize black overlay
-			handle.fullSizeOverlay();
-
 			return false;
 		},
 
 		setupPopup: function(module, item_id) {
 			var handle = this;
-
-			// fullsize black overlay
-			handle.fullSizeOverlay();
 
 			// register click for close button
 			jQuery('a[id="popup_close"]').click(function() {
@@ -447,10 +443,33 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			jQuery('input[id="popup_button_create"]').bind('click', {
 				handle:		this,
 				module:		module,
-				item_id:	item_id}, this.save);
+				item_id:	item_id}, this.onClickSave);
 
 			// setup tabs
 			this.setupTabs();
+		},
+		
+		onClickSave: function(event) {
+			// check if uploadify queue is empty
+			var queue_length = jQuery('div#uploadifyQueue').children().length;
+			
+			if(queue_length == 0 || event.data.handle.uploaded == true) {
+				event.data.handle.uploaded = false;
+				
+				// if queue is empty - save item
+				event.data.handle.save(event);
+			} else {
+				var uploadify = jQuery('input#uploadify');
+				
+				// first upload files - then save
+				uploadify.uploadifyUpload();
+				
+				event.data.handle.uploaded = true;
+			}
+		},
+		
+		onUploadifyAllComplete: function() {
+			jQuery('input#popup_button_create').click();
 		},
 		
 		setupMaterialPopup: function() {
@@ -501,12 +520,6 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			// init netnavigation class
 			this.netnavigation = new Netnavigation();
 			this.netnavigation.init(handle.cid, item_id, module, this.tpl_path);
-		},
-
-		fullSizeOverlay: function() {
-			var overlay = jQuery('div[id="popup_background"]');
-			overlay.css('height', jQuery(document).height());
-			overlay.css('width', jQuery(document).width());
 		}
 	};
 });

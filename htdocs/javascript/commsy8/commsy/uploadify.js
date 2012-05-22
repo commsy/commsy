@@ -43,6 +43,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			var handle = parameters.handle;
 			var object = parameters.object;
 			var commsy_functions = parameters.commsy_functions;
+			var onAllCompleteHandler = parameters.onAllComplete;
 			
 			// store preconditions
 			if(handle.preconditions === null) handle.preconditions = preconditions;
@@ -79,8 +80,10 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			handle.options.scriptData = data;
 			handle.options.cancelImg = preconditions.template.tpl_path + '/img/uploadify/delete.png';
 			handle.options.onComplete = handle.onComplete;
-			handle.options.onAllComplete = handle.onAllComplete;
 			handle.options.onError = handle.onError;
+			
+			if(typeof(onAllCompleteHandler) !== 'undefined') handle.options.onAllComplete = onAllCompleteHandler;
+			else handle.options.onAllComplete = handle.onAllComplete;
 			
 			// create
 			object.uploadify(handle.options);

@@ -583,9 +583,6 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 		setupPopup: function() {
 			var handle = this;
 			
-			// fullsize black overlay
-			handle.fullSizeOverlay();
-			
 			/*
 			// register click for close button
 			jQuery('a[id="popup_close"]').click(function() {
@@ -649,16 +646,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 				}
 			});
 			
-			// fullsize black overlay
-			handle.fullSizeOverlay();
-			
 			return false;
-		},
-		
-		fullSizeOverlay: function() {
-			var overlay = jQuery('div[id="popup_background"]');
-			overlay.css('height', jQuery(document).height());
-			overlay.css('width', jQuery(document).width());
 		}
 	};
 });
