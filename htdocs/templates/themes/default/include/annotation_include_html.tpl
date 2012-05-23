@@ -104,7 +104,7 @@
 							{if isset($detail.content.version)}<input type="hidden" value="{$detail.content.version}" name="version"/>{/if}
 							<input id="pn_title" type="text" name="form_data[title]" />
 							<div class="editor_content">
-								<div id="description" class="ckeditor"></div>
+								<div id="description_annotation" class="ckeditor"></div>
 								<input type="image" id="disc_article_submit" name="form_data[option][new]" src="{$basic.tpl_path}img/btn_go.gif" alt="___ANNOTATION_SAVE_BUTTON___" />
 							</div>
 						</div>

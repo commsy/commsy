@@ -291,8 +291,8 @@
 							$annotation_item->setTitle($_POST['form_data']['title']);
 						}
 						
-						if(isset($_POST['form_data']['description'])) {
-							$annotation_item->setDescription($_POST['form_data']['description']);
+						if(isset($_POST['form_data']['description_annotation'])) {
+							$annotation_item->setDescription($_POST['form_data']['description_annotation']);
 						} elseif(isset($_POST['form_data']['annotation_description'])) {
 							$annotation_item->setDescription($_POST['form_data']['annotation_description']);
 						}
