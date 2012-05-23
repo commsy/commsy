@@ -74,7 +74,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 				var form_object = jQuery(this).parentsUntil('form').parent();
 				
 				// on form submit, attach editor content to hidden input
-				handle.append_content(form_object, jQuery('input[name="form_data[\"' + id + '\"]'), jQuery(this).ckeditorGet());
+				handle.append_content(form_object, jQuery('input[name="form_data[' + id + ']"]'), jQuery(this).ckeditorGet());
 			});
 		},
 		
