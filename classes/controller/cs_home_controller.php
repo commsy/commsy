@@ -745,27 +745,27 @@
 
       if($done_percentage <= 100){
          $style = ' height: 5px; background-color: #75ab05; ';
-         $done_time .= '      <div title="'.$display_time_text.'" style="border: 1px solid #444;  margin-left: 10px; margin-top:10px; height: 5px; width: 80px;">';
+         $done_time .= '      <div title="'.$display_time_text.'" style="border: 1px solid #444;  margin: 10px 3px 0px; height: 5px; width: 60px;">'.LF;
          if ( $done_percentage >= 30 ) {
-            $done_time .= '         <div style=" font-size: 2pt; '.$style.'width:'.$done_percentage.'%; color:#000000;">&nbsp;</div>';
+            $done_time .= '         <div style="font-size: 2pt; '.$style.'width:'.$done_percentage.'%; color:#000000;">&nbsp;</div>'.LF;
          } else {
-            $done_time .= '         <div style=" font-size: 2pt; '.$style.'width:'.$done_percentage.'%; color:#000000;">&nbsp;</div>';
+            $done_time .= '         <div style="font-size: 2pt; '.$style.'width:'.$done_percentage.'%; color:#000000;">&nbsp;</div>'.LF;
          }
-         $done_time .= '      </div>';
+         $done_time .= '      </div>'.LF;
       }elseif($done_percentage <= 120){
          $done_percentage = (100 / $done_percentage) *100;
          $style = ' height: 5px; border: 1px solid #444; background-color: #f2f030; ';
-         $done_time .= '         <div title="'.$display_time_text.'" style="width: 80px; font-size: 2pt; '.$style.' color:#000000;">';
-         $done_time .= '      <div style="border-right: 1px solid #444; margin-left: 10px; margin-top:10px; height:6px;  background-color:none; width:'.$done_percentage.'%;">';
-         $done_time .= '      </div>';
-         $done_time .= '</div>';
+         $done_time .= '         <div title="'.$display_time_text.'" style="width: 60px; font-size: 2pt; margin: 10px 3px 0px; height: 5px; '.$style.' color:#000000;">'.LF;
+         $done_time .= '      <div style="border-right: 1px solid #444; margin-left: 0px; height:5px;  background-color:none; width:'.$done_percentage.'%;">'.LF;
+         $done_time .= '      </div>'.LF;
+         $done_time .= '</div>'.LF;
       }else{
          $done_percentage = (100 / $done_percentage) *100;
          $style = ' height: 5px; border: 1px solid #444; background-color: #f23030; ';
-         $done_time .= '         <p><div title="'.$display_time_text.'" style="width: 80px; font-size: 2pt; '.$style.' color:#000000;">';
-         $done_time .= '      <div style="border-right: 1px solid #444; margin-left: 10px; margin-top:10px; height:6px;  background-color:none; width:'.$done_percentage.'%;">';
-         $done_time .= '      </div>';
-         $done_time .= '</div>';
+         $done_time .= '         <div title="'.$display_time_text.'" style="width: 60px; font-size: 2pt; margin: 10px 3px 0px; height: 5px; '.$style.' color:#000000;">'.LF;
+         $done_time .= '      <div style="border-right: 1px solid #444; margin-left: 0px; height:5px;  background-color:none; width:'.$done_percentage.'%;">'.LF;
+         $done_time .= '      </div>'.LF;
+         $done_time .= '</div>'.LF;
       }
       if ($item->getPlannedTime() > 0){
          $process = $done_time;
