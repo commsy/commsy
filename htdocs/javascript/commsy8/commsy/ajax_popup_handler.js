@@ -11,6 +11,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 		cid: null,
 		tpl_path: '',
 		netnavigation: null,
+		path: null,
 		uploaded: false,
 
 		init: function(commsy_functions, parameters) {
@@ -302,6 +303,11 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 							handle.netnavigation.afterItemCreation(data.item_id);
 						}
 						
+						// submit path
+						if(handle.path !== null) {
+							handle.path.save();
+						}
+						
 						// submit picture
 						var form_object = jQuery('form#picture_upload');
 						
@@ -432,6 +438,9 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 				handle.close();
 				return false;
 			});
+			
+			// setup path
+			if(jQuery('a#popup_path_tab').length > 0) this.setupPath(handle, item_id);
 
 			// setup netnavigation
 			this.setupNetnavigation(handle, item_id, module);
@@ -520,9 +529,116 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			// init netnavigation class
 			this.netnavigation = new Netnavigation();
 			this.netnavigation.init(handle.cid, item_id, module, this.tpl_path);
+		},
+		
+		setupPath: function(handle, item_id) {
+			// init path class
+			this.path = new Path();
+			this.path.init(handle.cid, item_id, this.tpl_path);
 		}
 	};
 });
+
+/* Path Class */
+var Path = function() {
+	return {
+		cid:				null,
+		item_id:			null,
+		tpl_path:			'',
+		
+		init: function(cid, item_id, tpl_path) {
+			this.cid = cid;
+			this.item_id = item_id;
+			this.tpl_path = tpl_path;
+			
+			var handle = this;
+			
+			// register onclick handler
+			jQuery('a#popup_path_tab').click(function() {
+				// get all connected entries for this item
+				handle.ajaxRequest('getConnectedEntries', {item_id: item_id}, function(data) {
+					var list = jQuery('ul#popup_path_list');
+					
+					// clear list
+					list.children().remove();
+					
+					// append items to list
+					jQuery.each(data, function() {
+						list.append(
+							jQuery('<li/>', {
+								'class':	'netnavigation'
+							}).append(
+								jQuery('<input/>', {
+									type:		'checkbox',
+									id:			'path_' + this.link_id,
+									checked:	this.path_active
+								})
+							).append(
+								jQuery('<img/>', {
+									src:	handle.tpl_path + 'img/netnavigation/' + this.img
+								})
+							).append(
+								jQuery('<span/>', {
+									text:		this.text
+								})
+							)
+						);
+					});
+					
+					// setup sortable
+					list.sortable({
+						placeholder:	'ui-state-highlight'
+					});
+				});
+			});
+		},
+		
+		save: function() {
+			// collect data
+			var ids = [];
+			jQuery('ul#popup_path_list input[type="checkbox"]:checked').each(function() {
+				// extract item id
+				var id = '';
+				var regex = new RegExp("path_(.*)");
+				var results = regex.exec(jQuery(this).attr('id'));
+				if(results !== null) id = results[1];
+				
+				ids.push(id);
+			});
+			
+			this.ajaxRequest('savePath', {
+				item_id:	this.item_id,
+				path_ids:	ids}, function() {
+					
+				});
+		},
+		
+		ajaxRequest: function(action, data, callback) {
+			var handle = this;
+
+			jQuery.ajax({
+				type: 'POST',
+				url: 'commsy.php?cid=' + handle.cid + '&mod=ajax&fct=path&action=' + action,
+				data: JSON.stringify(data),
+				contentType: 'application/json; charset=utf-8',
+				dataType: 'json',
+				async: false,
+				error: function(jqXHR, textStatus, errorThrown) {
+					console.log("error while getting popup");
+				},
+				success: function(data, status) {
+					if(status === 'success') {
+						if(callback !== null) {
+							callback(data);
+						}
+
+						return data;
+					}
+				}
+			});
+		}
+	}
+}
 
 /* Netnavigation Class */
 var Netnavigation = function() {

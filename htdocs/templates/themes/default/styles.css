@@ -131,6 +131,10 @@ ul.netnavigation{
 	width: 940px;
 	}
 
+ul#popup_path_list .ui-state-highlight {
+	height: 36px;
+}
+
 #popup_tabcontent {
 	color: #393939;
 	padding:10px;

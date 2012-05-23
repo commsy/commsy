@@ -19,7 +19,7 @@
 	                or $this->_environment->getCurrentModule() == CS_INSTITUTION_TYPE
 	                or ($this->_environment->getCurrentModule() == CS_USER_TYPE and ($context_item->withRubric(CS_GROUP_TYPE) or($context_item->withRubric(CS_INSTITUTION_TYPE))))
 	                or $this->_environment->getCurrentModule() == 'campus_search'
-	          		|| ($this->_environment->getCurrentModule() === 'ajax' && $_GET['fct'] === 'rubric_popup'))
+	          		|| ($this->_environment->getCurrentModule() === 'ajax' && in_array($this->_environment->getCurrentFunction(), array('rubric_popup', 'path'))))
 	      ) {
 	         return true;
 	      }
@@ -189,8 +189,10 @@
 								default:
 									$linked_iid = $linked_item->getItemID();
 							}
-
+							
+							$entry['link_id'] = $link_item->getItemID();
 							$entry['linked_iid'] = $linked_iid;
+							$entry['sorting_place'] = $link_item->getSortingPlace();
 
 							$module = Type2Module($type);
 							$user = $this->_environment->getCurrentUser();

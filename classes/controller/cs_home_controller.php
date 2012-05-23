@@ -351,17 +351,18 @@
 			      $file_manager = $environment->getFileManager();
 			      $file_manager->setIDArrayLimit($file_id_array);
 			      $manager = $environment->getProjectManager();
+			      $room_max_activity = 0;
 			      if ($this->_environment->inCommunityRoom()) {
 			         $manager->setContextLimit($environment->getCurrentPortalID());
-			      }
-			      $room_max_activity = 0;
-			      global $c_cache_cr_pr;
-			      if ( !isset($c_cache_cr_pr) or !$c_cache_cr_pr ) {
-			         $room_max_activity = $manager->getMaxActivityPointsInCommunityRoom($environment->getCurrentContextID());
-			      } else {
-			         $current_context_item = $environment->getCurrentContextItem();
-			         $room_max_activity = $manager->getMaxActivityPointsInCommunityRoomInternal($current_context_item->getInternalProjectIDArray());
-			         unset($current_context_item);
+			         
+			         global $c_cache_cr_pr;
+			         if ( !isset($c_cache_cr_pr) or !$c_cache_cr_pr ) {
+			         	$room_max_activity = $manager->getMaxActivityPointsInCommunityRoom($environment->getCurrentContextID());
+			         } else {
+			         	$current_context_item = $environment->getCurrentContextItem();
+			         	$room_max_activity = $manager->getMaxActivityPointsInCommunityRoomInternal($current_context_item->getInternalProjectIDArray());
+			         	unset($current_context_item);
+			         }
 			      }
 
 				 foreach($rubric_list_array as $key=>$list){

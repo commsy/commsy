@@ -132,8 +132,8 @@ class cs_popup_topic_controller implements cs_rubric_popup_controller {
 					$item->setModificatorItem($current_user);
 
 					// Set attributes
-					if ( isset($form_data['name']) ) {
-						$item->setName($form_data['name']);
+					if ( isset($form_data['title']) ) {
+						$item->setName($form_data['title']);
 					}
 					if ( isset($form_data['description']) ) {
 						$item->setDescription($form_data['description']);
@@ -144,6 +144,7 @@ class cs_popup_topic_controller implements cs_rubric_popup_controller {
 
 	                $file_ids = $form_data['files'];
 	                $this->_popup_controller->getUtils()->setFilesForItem($item, $file_ids, CS_TOPIC_TYPE);
+	                
  	                if ( isset($form_data['hide']) ) {
 	                    // variables for datetime-format of end and beginning
 	                    $dt_hiding_time = '00:00:00';
@@ -167,32 +168,6 @@ class cs_popup_topic_controller implements cs_rubric_popup_controller {
 	                        $item->setModificationDate(getCurrentDateTimeInMySQL());
 	                    }
 	                }
-
-				      // PATH
-/*				      if($current_iid == 'NEW' and $context_item->withPath()){
-				         $path_items = $session->getValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids');
-				         if(!empty($path_items)){
-				            $form->setPathItems($path_items);
-				         }
-				      }
-				      if ( isOption($command, $translator->getMessage('TOPIC_ACTIVATE_PATH')) ) {
-				         $form->activatePath();
-				         $_POST['path_active'] = 1;
-				      } elseif ( isOption($command, $translator->getMessage('TOPIC_DEACTIVATE_PATH')) ) {
-				         $form->deactivatePath();
-				         $_POST['path_active'] = -1;
-				      } elseif ( !empty($_POST)
-				                and !empty($_POST['path_active'])
-				                and $_POST['path_active'] == 1 ) {
-				         $form->activatePath();
-				      } elseif ( isset($topic_item)
-				                and $topic_item->isPathActive() ) {
-				         $form->activatePath();
-				      }
-				      if ( isOption($command, $translator->getMessage('COMMON_ITEM_NEW_ATTACH')) ) {
-				         $form->resetPathItems();
-				      }
-*/
 
 					if($item->getPicture() && isset($form_data['delete_picture'])) {
 						$disc_manager = $this->_environment->getDiscManager();

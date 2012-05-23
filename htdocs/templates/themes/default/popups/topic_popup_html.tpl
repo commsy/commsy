@@ -10,7 +10,6 @@
 					<div class="clear"> </div>
 				</div>
 
-
 				<div id="popup_content">
 					<div class="input_row">
 						<div class="input_label_80">___COMMON_TITLE___<span class="required">*</span>:</div>
@@ -56,7 +55,7 @@
 					<div class="tab_navigation">
 						<a href="" class="pop_tab_active">___MATERIAL_FILES___</a>
 						{if $popup.is_owner == true}<a href="" class="pop_tab">___COMMON_RIGHTS___</a>{/if}
-						<a href="" class="pop_tab">___TOPIC_PATH___</a>
+						<a href="" id="popup_path_tab" class="pop_tab">___TOPIC_PATH___</a>
 						<a href="" id="popup_netnavigation_attach_new" class="pop_tab">___COMMON_ATTACHED_ENTRIES___</a>
 						<div class="clear"> </div>
 					</div>
@@ -91,15 +90,16 @@
 								<input type="radio" name="form_data[public]" value="0"/>{i18n tag=RUBRIC_PUBLIC_NO param1=$popup.user.fullname}
 							</div>
 						{/if}
-
-						{include file="popups/include/edit_attach_items_include_html.tpl"}
-
+						
 						<div class="settings_area hidden">
 							<div class="input_row">
-								<div class="input_label_100">___TOPIC_PATH___:</div>
+								<ul id="popup_path_list">
+								</ul>
 							</div>
 							<div class="clear"></div>
 						</div>
+						
+						{include file="popups/include/edit_attach_items_include_html.tpl"}
 					</div>
 
 					<div id="content_buttons">
