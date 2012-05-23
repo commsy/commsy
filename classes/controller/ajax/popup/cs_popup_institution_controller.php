@@ -1,7 +1,7 @@
 <?php
 require_once('classes/controller/ajax/popup/cs_rubric_popup_controller.php');
 
-class cs_popup_group_controller implements cs_rubric_popup_controller {
+class cs_popup_institution_controller implements cs_rubric_popup_controller {
     private $_environment = null;
     private $_popup_controller = null;
 
@@ -27,48 +27,6 @@ class cs_popup_group_controller implements cs_rubric_popup_controller {
 				$this->_popup_controller->assign('item', 'description', $item->getDescription());
  				$this->_popup_controller->assign('item', 'public', $item->isPublic());
 			    $this->_popup_controller->assign('item', 'picture', $item->getPicture());
-			    if ($item->isGroupRoomActivated()){
-			    	$this->_popup_controller->assign('item','group_room_activate','1');
-			    }
-			    $this->_popup_controller->assign('item','system_label',$item->isSystemLabel());
-
-      			if($current_context->WikiEnableDiscussionNotificationGroups() == 1){
-      				$discussion_array = $current_context->getWikiDiscussionArray();
-
-			        $discussion_notification_array = array();
-			        $temp_array['text'] = '*'.$this->_translator->getMessage('PREFERENCES_NO_DISCUSSION_NOTIFICATION');
-			        $temp_array['value'] = '-1';
-			        $discussion_notification_array[] = $temp_array;
-			        $temp_array['text'] = '--------------------';
-			        $temp_array['value'] = 'disabled';
-			        $discussion_notification_array[] = $temp_array;
-
-			        if ( isset($discussion_array) and !empty($discussion_array) ) {
-			           foreach ($discussion_array as $discussion) {
-			              $temp_array['text'] = $discussion;
-			              $temp_array['value'] = $discussion;
-			              $discussion_notification_array[] = $temp_array;
-			           }
-			        }
-
-      				$_discussion_notification_array = $discussion_notification_array;
-
-			        $discussion_notification_array = array();
-
-   		            $discussion_notification_array = $this->_item->getDiscussionNotificationArray();
-			        if (isset($discussion_notification_array[0])) {
-			            foreach ($discussion_notification_array as $discussion_notification) {
-			               $temp_array['text'] = $discussion_notification;
-			               $temp_array['value'] = $discussion_notification;
-			               $discussion_notification_array[] = $temp_array;
-			            }
-			        }
-      				$_shown_discussion_notification_array = $discussion_notification_array;
-         		   	if ( !empty ($_shown_discussion_notification_array) ) {
-            	       $this->_popup_controller->assign('item','discussion_notification_list',$_shown_discussion_notification_array);
-         		   	}
-         		   	$this->_popup_controller->assign('item','discussion_notification',$_discussion_notification_array);
- 			   }
 
 			}else{
 
@@ -89,7 +47,7 @@ class cs_popup_group_controller implements cs_rubric_popup_controller {
         if($current_iid === 'NEW') {
             $item = null;
         } else {
-            $item_manager = $this->_environment->getGroupManager();
+            $item_manager = $this->_environment->getInstitutionManager();
             $item = $item_manager->getItem($current_iid);
         }
 
@@ -111,7 +69,7 @@ class cs_popup_group_controller implements cs_rubric_popup_controller {
 			// upload picture
 			if(isset($additional['action']) && $additional['action'] === 'upload_picture') {
 				if($this->_popup_controller->checkFormData('picture_upload')) {
-					/* handle group picture upload */
+					/* handle institution picture upload */
 					if(!empty($_FILES['form_data']['tmp_name'])) {
 						// rename temp file
 						$new_temp_name = $_FILES['form_data']['tmp_name']['picture'] . '_TEMP_' . $_FILES['form_data']['name']['picture'];
@@ -143,13 +101,13 @@ class cs_popup_group_controller implements cs_rubric_popup_controller {
 					$item_is_new = false;
 					// Create new item
 					if ( !isset($item) ) {
-						$item_manager = $environment->getGroupManager();
+						$item_manager = $environment->getInstitutionManager();
 						$item = $item_manager->getNewItem();
 						$item->setContextID($environment->getCurrentContextID());
 						$current_user = $environment->getCurrentUserItem();
 						$item->setCreatorItem($current_user);
 						$item->setCreationDate(getCurrentDateTimeInMySQL());
-               			$item->setLabelType(CS_GROUP_TYPE);
+               			$item->setLabelType(CS_INSTITUTION_TYPE);
 						$item_is_new = true;
 					}
 
@@ -168,11 +126,6 @@ class cs_popup_group_controller implements cs_rubric_popup_controller {
 						$item->setPublic($form_data['public']);
 					}
 
-					if ( isset($form_data['group_room_activate']) ) {
-						$item->setGroupRoomActive();
-					}else{
-						$item->unsetGroupRoomActive();
-					}
 
 					if($item->getPicture() && isset($form_data['delete_picture'])) {
 						$disc_manager = $this->_environment->getDiscManager();
@@ -181,34 +134,20 @@ class cs_popup_group_controller implements cs_rubric_popup_controller {
 						$item->setPicture('');
 					}
 
-					// Foren:
-					$discussion_notification_array = array();
-					if ( isset($form_data['discussion_notification_list']) ) {
-						$discussion_notification_array = $form_data['discussion_notification_list'];
-					}
-					if ( isset($form_data['discussion_notification'])
-							and !in_array($form_data['discussion_notification'],$discussion_notification_array)
-							and ($form_data['discussion_notification'] != -1)
-							and ($form_data['discussion_notification'] != 'disabled')
-					) {
-						$discussion_notification_array[] = $form_data['discussion_notification'];
-					}
-
-					$item->setDiscussionNotificationArray($discussion_notification_array);
 					// Save item
 					$item->save();
 
 					// this will update the right box list
 					if($item_is_new){
-						if ($session->issetValue('cid'.$environment->getCurrentContextID().'_'.CS_GROUP_TYPE.'_index_ids')){
-							$id_array =  array_reverse($session->getValue('cid'.$environment->getCurrentContextID().'_'.CS_GROUP_TYPE.'_index_ids'));
+						if ($session->issetValue('cid'.$environment->getCurrentContextID().'_'.CS_INSTITUTION_TYPE.'_index_ids')){
+							$id_array =  array_reverse($session->getValue('cid'.$environment->getCurrentContextID().'_'.CS_INSTITUTION_TYPE.'_index_ids'));
 						} else {
 							$id_array =  array();
 						}
 
 						$id_array[] = $item->getItemID();
 						$id_array = array_reverse($id_array);
-						$session->setValue('cid'.$environment->getCurrentContextID().'_'.CS_GROUP_TYPE.'_index_ids',$id_array);
+						$session->setValue('cid'.$environment->getCurrentContextID().'_'.CS_INSTITUTION_TYPE.'_index_ids',$id_array);
 					}
 
 					// save session
@@ -282,11 +221,6 @@ class cs_popup_group_controller implements cs_rubric_popup_controller {
 				array(	'name'		=> 'public',
 						'type'		=> 'radio',
 						'mandatory' => true)
-			),
-			'grouproom_activate'=> array(
-				array(	'name'		=> 'grouproom_activate',
-						'type'		=> 'check',
-						'mandatory' => false)
 			)
 
 

@@ -26,7 +26,8 @@
 				$type = $item_manager->getItemType($this->_item_id);
 				if($type === CS_LABEL_TYPE) {
 					$label_manager = $this->_environment->getLabelManager();
-					$type = $label_manager->getItem($this->_item_id)->getLabelType();
+					$label_item = $label_manager->getItem($this->_item_id);
+					$type = $label_item->getItemType();
 				}
 				$manager = $this->_environment->getManager($type);
 				$this->_item = $manager->getItem($this->_item_id);

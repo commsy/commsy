@@ -124,6 +124,7 @@ class cs_popup_topic_controller implements cs_rubric_popup_controller {
 						$current_user = $environment->getCurrentUserItem();
 						$item->setCreatorItem($current_user);
 						$item->setCreationDate(getCurrentDateTimeInMySQL());
+               			$item->setLabelType(CS_TOPIC_TYPE);
 						$item_is_new = true;
 					}
 
@@ -144,7 +145,7 @@ class cs_popup_topic_controller implements cs_rubric_popup_controller {
 
 	                $file_ids = $form_data['files'];
 	                $this->_popup_controller->getUtils()->setFilesForItem($item, $file_ids, CS_TOPIC_TYPE);
-	                
+
  	                if ( isset($form_data['hide']) ) {
 	                    // variables for datetime-format of end and beginning
 	                    $dt_hiding_time = '00:00:00';
