@@ -120,9 +120,9 @@
 								    <input type="checkbox" tabindex="53" value="saturday" name="recurring_week_days[]">&nbsp;<span style="font-size:10pt;">___COMMON_DATE_SATURDAY___</span>
 								    <input type="checkbox" tabindex="54" value="sunday" name="recurring_week_days[]">&nbsp;<span style="font-size:10pt;">___COMMON_DATE_SUNDAY___</span>
 								</div>
-								<div style="padding-top: 3px;"><!-- COMBINED FIELDS -->
+								<div style="padding-top: 3px;">
 									___DATES_RECURRING_END_DATE___:<span class="required">*</span>&nbsp;
-									<input type="text" tabindex="55" size="13" maxlength="13" value="" style="font-size:10pt;" name="recurring_end_date">
+									<input class="datepicker" type="text" tabindex="55" size="13" maxlength="13" value="" style="font-size:10pt;" name="recurring_end_date">
 								</div>
 								<div class="clear"></div>
 							</div>
