@@ -17,6 +17,7 @@
 			$item_id = $this->_data['item_id'];
 			$link_id = $this->_data['link_id'];
 			$checked = $this->_data['checked'];
+			
 			// get item
 			$item_manager = $this->_environment->getItemManager();
 			$temp_item = $item_manager->getItem($item_id);

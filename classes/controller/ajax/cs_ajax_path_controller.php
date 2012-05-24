@@ -69,15 +69,26 @@
 							
 						$entry = array(
 								'img'				=> $item['img'],
-								'text'				=> $text . ': ' . $item['link_text'],
-								'link_id'			=> $item['link_id'],
+								'text'				=> $item['link_text'],
+								'linked_id'			=> $item['linked_iid'],
 								'path_active'		=> !empty($item['sorting_place'])
 						);
 							
 						if(empty($item['sorting_place'])) $entries_unsorted[] = $entry;
-						else $entries_sorted[] = $entry;
+						else {
+							$entry['sorting_place'] = $item['sorting_place'];
+							
+							$entries_sorted[] = $entry;
+						}
 					}
-				
+					
+					// sort by sorting_place
+					usort($entries_sorted, function($a, $b) {
+						if($a['sorting_place'] == $b['sorting_place']) return 0;
+						
+						return ($a['sorting_place'] < $b['sorting_place']) ? -1 : 1;
+					});
+					
 					$return = array_merge($entries_sorted, $entries_unsorted);
 				}
 			}
@@ -90,17 +101,48 @@
 			
 			// get request data
 			$item_id = $this->_data['item_id'];
-			$path_ids = $this->_data['path_ids'];
+			$linked_ids = $this->_data['linked_ids'];
 			
 			// get item
 			$manager = $this->_environment->getManager(CS_TOPIC_TYPE);
 			$item = $manager->getItem($item_id);
 			
+			// get link_id for all linked entries
+			$linked_id_link_id = array();
+			$link_items = $item->getAllLinkItemList();
+			$link_item = $link_items->getFirst();
+			while($link_item) {
+				$linked_item = $link_item->getLinkedItem($item);
+				$type = $linked_item->getType();
+				if($type === 'label') {
+					$type = $linked_item->getLabelType();
+				}
+				
+				switch($type) {
+					case CS_DISCARTICLE_TYPE:
+						$linked_iid = $linked_item->getDiscussionID();
+						$discussion_manager = $this->_environment->getDiscussionManager();
+						$linked_item = $discussion_manager->getItem($linked_iid);
+						break;
+					case CS_SECTION_TYPE:
+						$linked_iid = $linked_item->getLinkedItemID();
+						$material_manager = $this->_environment->getMaterialManager();
+						$linked_item = $material_manager->getItem($linked_iid);
+						break;
+					default:
+						$linked_iid = $linked_item->getItemID();
+				}
+				
+				$linked_id_link_id[$linked_iid] = $link_item->getItemID();
+			
+				$link_item = $link_items->getNext();
+			}
+			
 			$item_place_array = array();
 			$count = 1;
-			foreach($path_ids as $id) {
+			foreach($linked_ids as $id) {
 				$item_place_array[] = array(
-					'item_id'		=> $id,
+					'item_id'		=> $linked_id_link_id[$id],
 					'place'			=> $count++
 				);
 			}

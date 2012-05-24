@@ -305,7 +305,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 						
 						// submit path
 						if(handle.path !== null) {
-							handle.path.save();
+							handle.path.save(data.item_id);
 						}
 						
 						// submit picture
@@ -555,45 +555,50 @@ var Path = function() {
 			
 			// register onclick handler
 			jQuery('a#popup_path_tab').click(function() {
+				var list = jQuery('ul#popup_path_list');
+				
 				// get all connected entries for this item
-				handle.ajaxRequest('getConnectedEntries', {item_id: item_id}, function(data) {
-					var list = jQuery('ul#popup_path_list');
-					
-					// clear list
-					list.children().remove();
-					
-					// append items to list
-					jQuery.each(data, function() {
-						list.append(
-							jQuery('<li/>', {
-								'class':	'netnavigation'
-							}).append(
-								jQuery('<input/>', {
-									type:		'checkbox',
-									id:			'path_' + this.link_id,
-									checked:	this.path_active
-								})
-							).append(
-								jQuery('<img/>', {
-									src:	handle.tpl_path + 'img/netnavigation/' + this.img
-								})
-							).append(
-								jQuery('<span/>', {
-									text:		this.text
-								})
-							)
-						);
+				if(item_id !== 'NEW') {
+					handle.ajaxRequest('getConnectedEntries', {item_id: item_id}, function(data) {
+						// clear list
+						list.children().remove();
+						
+						// append items to list
+						jQuery.each(data, function() {
+							list.append(
+								jQuery('<li/>', {
+									'class':	'netnavigation'
+								}).append(
+									jQuery('<input/>', {
+										type:		'checkbox',
+										id:			'path_' + this.linked_id,
+										checked:	this.path_active
+									})
+								).append(
+									jQuery('<img/>', {
+										src:	handle.tpl_path + 'img/netnavigation/' + this.img
+									})
+								).append(
+									jQuery('<span/>', {
+										text:		this.text
+									})
+								)
+							);
+						});
 					});
-					
-					// setup sortable
-					list.sortable({
-						placeholder:	'ui-state-highlight'
-					});
+				}
+				
+				// setup sortable
+				list.sortable({
+					placeholder:	'ui-state-highlight'
 				});
 			});
 		},
 		
-		save: function() {
+		save: function(item_id) {
+			var request_item_id = this.item_id;
+			if(typeof(item_id) !== 'undefined') request_item_id = item_id; 
+			
 			// collect data
 			var ids = [];
 			jQuery('ul#popup_path_list input[type="checkbox"]:checked').each(function() {
@@ -607,8 +612,8 @@ var Path = function() {
 			});
 			
 			this.ajaxRequest('savePath', {
-				item_id:	this.item_id,
-				path_ids:	ids}, function() {
+				item_id:	request_item_id,
+				linked_ids:	ids}, function() {
 					
 				});
 		},
@@ -904,6 +909,29 @@ var Netnavigation = function() {
 										})
 									)
 								);
+								
+								if(jQuery('a#popup_path_tab').length > 0) {
+									// add related entry to path list
+									jQuery('ul#popup_path_list').append(
+										jQuery('<li/>', {
+											'class':	'netnavigation'
+										}).append(
+											jQuery('<input/>', {
+												type:		'checkbox',
+												id:			'path_' + ret.linked_item.linked_iid,
+												checked:	false
+											})
+										).append(
+											jQuery('<img/>', {
+												src:	handle.tpl_path + 'img/netnavigation/' + ret.linked_item.img
+											})
+										).append(
+											jQuery('<span/>', {
+												text:		text
+											})
+										)
+									);
+								}
 							} else {
 								// on uncheck
 								handle.store.selected--;
@@ -913,6 +941,12 @@ var Netnavigation = function() {
 								li_object.slideUp(1000, function() {
 									li_object.remove();
 								});
+								
+								if(jQuery('a#popup_path_tab').length > 0) {
+									// remove related entry from path list
+									var input_object = jQuery('ul#popup_path_list input#path_' + linked_id);
+									input_object.parent().remove();
+								}
 							}
 						});
 					});
