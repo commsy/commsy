@@ -2988,6 +2988,7 @@ top-bar, breadcrumb and settings
     background: url(img/tm_separator.jpg) top right no-repeat;
     height: 27px;
     padding: 11px 0px 0px 0px;
+    float: left;
     }
 
 #tm_breadcrumb a {
@@ -3055,12 +3056,24 @@ a#tm_user:hover .tm_dropdown {
     text-decoration: none;
     }
 
+#tm_icons_left_bar {
+    float: left;
+    }
+
+#tm_icons_left_bar a {
+    float: left;
+    display: block;
+    width: 36px;
+    height: 40px;
+    text-decoration: none;
+    }
+
 #tm_settings {
-    background: url(img/tm_settings.gif) no-repeat !important;
+    background: url(img/tm_settings.gif) no-repeat;
     }
 
 #tm_settings:hover {
-    background: url(img/tm_settings.gif) -36px 0px no-repeat !important;
+    background: url(img/tm_settings.gif) -36px 0px no-repeat;
     }
 
 #tm_mycalendar {
