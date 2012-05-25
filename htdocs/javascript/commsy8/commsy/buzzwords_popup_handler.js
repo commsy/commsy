@@ -57,9 +57,9 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 					console.log("error while getting popup");
 				},
 				success: function(data, status) {
-					if(status === 'success') {
+					if(data.status === 'success') {
 						// we recieved html - append it
-						jQuery('body').prepend(data);
+						jQuery('body').prepend(data.html);
 						
 						// setup popup
 						handle.setupPopup(event.data.module, event.data.item_id);
