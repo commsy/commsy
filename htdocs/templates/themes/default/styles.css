@@ -106,9 +106,9 @@ frame and header
 	}
 
 #popup_inner{
-	background: none repeat scroll #E8E8E8;
+	background: url("img/fade_in_popup_bg.jpg") repeat-x scroll 0 0 #d9d9d9;
     border-radius: 2px 2px 2px 2px;
-    padding: 0px;
+    padding: 10px;
 	position:relative;
 	}
 
@@ -194,15 +194,33 @@ rowset and content
 ----------------------------------------------------------------------
 */
 
+#popup_pagetitle{
+	padding:10px 0px 5px 0px;
+	border-bottom: 1px solid #767676;
+	}
+
 #popup_title{
-	background: url("img/ci_head_bg.png") repeat-x scroll left bottom transparent;
+	background: url("img/ci_popup_head_bg.png") repeat-x scroll left bottom transparent;
 	padding:10px;
 	}
 
+#popup_title h2 {
+    font-size: 12px;
+    line-height: 16px;
+    padding-bottom: 0;
+    text-shadow: 0 1px #CCCCCC;
+    vertical-align: bottom;
+}
+
+#popup_content_wrapper {
+    border: 1px solid #FFFFFF;
+    background-color: #E8E8E8;
+    padding:0px;
+    }
+
 
 #popup_content {
-    border-top: 1px solid #FFFFFF;
-    padding:10px;
+   padding:10px;
     }
 
 
@@ -316,7 +334,7 @@ div#tag_tree input {
     }
 
 #crt_actions_area {
-    border-top: 1px solid #FFF;
+    border-bottom: 1px solid #767676;
     padding: 10px;
     }
 
@@ -607,7 +625,7 @@ header
     font-weight: bold;
     border: 0px none;
     position: absolute;
-    z-index: 0;
+    z-index: 5;
     }
 
 #commsy_search input {
@@ -2385,7 +2403,7 @@ div.discussion_threaded_tree_date {
 
 input#search_suggestion {
   position: absolute;
-  z-index: -1;
+  z-index: 0;
   background: transparent;
     padding: 10px 5px 5px 35px;
     width: 130px;
@@ -2948,7 +2966,6 @@ Tooltips
     font-size: 12px !important;
     padding-bottom:5px;
 }
-
 /*
 ----------------------------------------------------------------------
 top-bar, breadcrumb and settings
@@ -2971,7 +2988,6 @@ top-bar, breadcrumb and settings
     background: url(img/tm_separator.jpg) top right no-repeat;
     height: 27px;
     padding: 11px 0px 0px 0px;
-    float: left;
     }
 
 #tm_breadcrumb a {
@@ -3039,24 +3055,12 @@ a#tm_user:hover .tm_dropdown {
     text-decoration: none;
     }
 
-#tm_icons_left_bar {
-    float: left;
-    }
-
-#tm_icons_left_bar a {
-    float: left;
-    display: block;
-    width: 36px;
-    height: 40px;
-    text-decoration: none;
-    }
-
 #tm_settings {
-    background: url(img/tm_settings.gif) no-repeat;
+    background: url(img/tm_settings.gif) no-repeat !important;
     }
 
 #tm_settings:hover {
-    background: url(img/tm_settings.gif) -36px 0px no-repeat;
+    background: url(img/tm_settings.gif) -36px 0px no-repeat !important;
     }
 
 #tm_mycalendar {
@@ -3331,7 +3335,7 @@ print settings
 }
 
 .content_with_actions_print {
-	
+
 }
 
 .content_item_print {
@@ -3370,12 +3374,12 @@ print settings
 }
 
 .discussion_tree_print {
-    display: block;	
+    display: block;
     color: black;
 }
 
 .print_border {
-    border-left: #ffcccc double;	
+    border-left: #ffcccc double;
 }
 
 .print_table_border {
@@ -3390,12 +3394,12 @@ print settings
 }
 
 .print_title {
-    float: left;	
+    float: left;
 }
 
 .print_files_icon {
 	float: right;
 }
-    
-	
+
+
 
