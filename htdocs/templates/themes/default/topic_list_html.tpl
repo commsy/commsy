@@ -59,7 +59,7 @@
 				</p>
 				{if $item.attachment_count > 0}
 					<div class="tooltip tooltip_with_400">
-						<div class="tooltip_inner">
+						<div class="tooltip_inner tooltip_inner_with_400">
 							<div class="tooltip_title">
 								<div class="header">___COMMON_ATTACHED_FILES___</div>
 							</div>

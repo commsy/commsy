@@ -121,22 +121,24 @@
 				</p>
 				{if $item.attachment_count > 0}
 					<div class="tooltip tooltip_with_400">
-						<div class="tooltip_inner">
-							<div class="tooltip_title">
-								<div class="header">___COMMON_ATTACHED_FILES___</div>
-							</div>
-							<div class="scrollable">
-								<div class="tooltip_content">
-									<ul>
-									{foreach $item.attachment_infos as $file}
-										<li>
-											<a href="{$file.file_url}" target="blank"{if $file.lightbox} rel="lightbox"{/if}>
-												{$file.file_icon} {$file.file_name}
-											</a>
-											({$file.file_size} KB)
-										</li>
-									{/foreach}
-									</ul>
+						<div class="tooltip_wrapper">
+							<div class="tooltip_inner tooltip_inner_with_400">
+								<div class="tooltip_title">
+									<div class="header">___COMMON_ATTACHED_FILES___</div>
+								</div>
+								<div class="scrollable">
+									<div class="tooltip_content">
+										<ul>
+										{foreach $item.attachment_infos as $file}
+											<li>
+												<a href="{$file.file_url}" target="blank"{if $file.lightbox} rel="lightbox"{/if}>
+													{$file.file_icon} {$file.file_name}
+												</a>
+												({$file.file_size} KB)
+											</li>
+										{/foreach}
+										</ul>
+									</div>
 								</div>
 							</div>
 						</div>

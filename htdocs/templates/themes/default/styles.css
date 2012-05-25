@@ -607,7 +607,7 @@ header
     font-weight: bold;
     border: 0px none;
     position: absolute;
-    z-index: 5;
+    z-index: 0;
     }
 
 #commsy_search input {
@@ -2385,7 +2385,7 @@ div.discussion_threaded_tree_date {
 
 input#search_suggestion {
   position: absolute;
-  z-index: 0;
+  z-index: -1;
   background: transparent;
     padding: 10px 5px 5px 35px;
     width: 130px;
@@ -2867,10 +2867,11 @@ Tooltips
 /* tooltip styling */
 
 .tooltip_inner{
-	background: none repeat scroll #E8E8E8;
+    background: none repeat scroll 0 0 #E8E8E8;
     border-radius: 2px 2px 2px 2px;
-	width:100%;
-    position:relative;
+    position: relative;
+    padding:10px;
+    width: 300px;
 	}
 
 .tooltip{
@@ -2880,13 +2881,11 @@ Tooltips
 	padding: 5px;
     border-radius: 2px 2px 2px 2px;
     box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
-	width:300px;
+	width:320px;
 }
 
 .tooltip_title{
-	background: url("img/ci_head_bg.png") repeat-x scroll left bottom transparent;
-	padding:10px;
-    border-bottom: 1px solid #FFFFFF;
+	border-bottom: 1px solid #767676;
 	}
 
 .tooltip_with_500{
@@ -2897,7 +2896,16 @@ Tooltips
 	width:400px;
 	}
 
+.tooltip_inner_with_500{
+	width:480px;
+	}
+
+.tooltip_inner_with_400{
+	width:380px;
+	}
+
 .tooltip_content {
+	border: 1px solid #FFFFFF;
     padding:10px;
     }
 
@@ -2912,7 +2920,7 @@ Tooltips
 	filter: alpha(opacity = 95);
 	box-shadow:2px 2px 2px 2px #666;
 	background: url("img/tooltips/commsy_bg.png") repeat-x 0 0 #e1e1e1;
-	width:250px;
+	width:260px;
 	padding: 15px;
 	font-size: 12px;
 }
