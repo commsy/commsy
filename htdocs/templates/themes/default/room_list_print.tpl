@@ -22,7 +22,6 @@
 		<form action="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.list_entries_parameter.all}" method="post">
 			<input type="hidden" name="option" value="___COMMON_LIST_ACTION_BUTTON_GO___">
 			<div class="content_item"> <!-- Start content_item -->
-				{block name=room_list_header}{/block}
 				{block name=room_list_content}{/block}
 			</div> <!-- Ende content_item -->
 			{block name=room_list_footer}{/block}

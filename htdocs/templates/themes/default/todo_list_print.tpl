@@ -1,6 +1,6 @@
 {extends file="room_list_print.tpl"}
 
-{block name=room_list_header}
+{block name=room_list_content}
 	
 	<table width="100%" cellpadding="2" cellspacing="0" class="print_table_border">
 		<thead>
