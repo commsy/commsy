@@ -40,15 +40,16 @@
 			</div>
 
 			<div id="tm_icons_bar">
-				<a href="" id="tm_settings" title="Meine Widgets">&nbsp;</a>
-				<a href="" id="tm_settings" title="Mein Kalender">&nbsp;</a>
-				<a href="" id="tm_clipboard" title="Meine Ablage">&nbsp;</a>
-
+				<a href="" id="tm_widgets" title="Meine Widgets">&nbsp;</a>
+				<a href="" id="tm_mycalendar" title="Mein Kalender">&nbsp;</a>
+				<a href="" id="tm_stack" title="Meine Ablage">&nbsp;</a>
+				<a href="" id="tm_clipboard" title="Meine Kopien">&nbsp;</a>
 				<div class="clear"></div>
 			</div>
 
 			<div id="tm_breadcrumb">
-				<a href="">___COMMON_GO_BUTTON___: {$room.room_information.room_name}</span><!--<span class="tm_bcb_next">CommSy Community</span>--></a>
+				<a href="">___COMMON_GO_BUTTON___: {$room.room_information.room_name}</a>
+				<a href="" id="tm_settings" title="Meine Einstellungen">&nbsp;</a>
 			</div>
 
 			<div class="clear"></div>

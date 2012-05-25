@@ -3049,11 +3049,35 @@ a#tm_user:hover .tm_dropdown {
     }
 
 #tm_settings {
-    background: url(img/tm_settings.gif) no-repeat;
+    background: url(img/tm_settings.gif) no-repeat !important;
     }
 
 #tm_settings:hover {
-    background: url(img/tm_settings.gif) -36px 0px no-repeat;
+    background: url(img/tm_settings.gif) -36px 0px no-repeat !important;
+    }
+
+#tm_mycalendar {
+    background: url(img/tm_mycalendar.gif) no-repeat;
+    }
+
+#tm_mycalendar:hover {
+    background: url(img/tm_mycalendar.gif) -36px 0px no-repeat;
+    }
+
+#tm_widgets {
+    background: url(img/tm_widgets.gif) no-repeat;
+    }
+
+#tm_widgets:hover {
+    background: url(img/tm_widgets.gif) -36px 0px no-repeat;
+    }
+
+#tm_stack {
+    background: url(img/tm_stack.gif) no-repeat;
+    }
+
+#tm_stack:hover {
+    background: url(img/tm_stack.gif) -36px 0px no-repeat;
     }
 
 #tm_clipboard {
