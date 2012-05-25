@@ -1,7 +1,7 @@
 {extends file="room_html.tpl"}
 
 {block name=room_site_actions}
-	<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&iid={$detail.item_id}&mode=print" title="___COMMON_LIST_PRINTVIEW___">
+	<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&iid={$detail.item_id}&mode=print" title="___COMMON_LIST_PRINTVIEW___" target="_blank">
 		<img src="{$basic.tpl_path}img/btn_print.gif" alt="___COMMON_LIST_PRINTVIEW___" />
 	</a>
 

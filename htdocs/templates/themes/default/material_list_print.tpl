@@ -5,6 +5,7 @@
 	<table width="100%" cellpadding="2" cellspacing="0" class="print_table_border">
 		<thead>
 			<tr>
+				<td class="table_head"></td>
 				<td class="table_head">
             		{if $list.sorting_parameters.sort_title == "up"}
             		 	<h3><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_title_link}" id="sort_up"><strong>___COMMON_TITLE___</strong></a></h3>
@@ -55,39 +56,31 @@
             		</td>
         		{/if}
 			</tr>
+		</thead>
+		<tbody>
 			{foreach $material.list_content.items as $item }
-        		{if $room.assessment && $room.workflow}
-        			{$sep = "material_workflow_assessment"}
-        		{elseif !$room.assessment && $room.workflow}
-        			{$sep = "material_workflow"}
-        		{elseif $room.assessment && !$room.workflow}
-        			{$sep = "material_assessment"}
-        		{elseif !$room.assessment && !$room.workflow}
-        			{$sep = "material"}
-        		{else}
-        			{$sep = "material"}
-        		{/if}
     			<tr>
     				<td class="{if $item@iteration is odd}row_odd{else}row_even{/if}">
-    					{if !$room.assessment && !$room.workflow}
-            				{$w = 364}
-            			{elseif $room.assessment && !$room.workflow}
-            				{$w = 324}
-            			{elseif !$room.assessment && $room.workflow}
-            				{$w = 324}
-            			{else}
-            				{$w = 244}
-            			{/if}
-            				<p>
-            					{if $item.activated}
-            						<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&{$environment.params}&iid={$item.iid}">{$item.title}</a>
-            					{else}
-            						{$item.title}</br>___COMMON_NOT_ACTIVATED___
-            					{/if}
-            				</p>
-            				<p>
-            					<a href="" class="attachment">{$item.attachment_count}</a>
-            				</p>
+    					{if $item.noticed.show_info}
+    						<img title="" class="new_item_2" src="{$basic.tpl_path}img/flag_neu_a.gif" alt="*" />
+    					{/if}
+    				</td>
+    				<td class="{if $item@iteration is odd}row_odd{else}row_even{/if}">
+            				<div class="print_title">
+                				<p>
+                					{if $item.activated}
+                						<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&{$environment.params}&iid={$item.iid}">{$item.title}</a>
+                					{else}
+                						{$item.title}</br>___COMMON_NOT_ACTIVATED___
+                					{/if}
+                				</p>
+            				</div>
+            				<div class="print_files_icon">
+                				<p>
+                					<a href="" class="attachment">{$item.attachment_count}</a>
+                				</p>
+            				</div>
+            				<div class="clear"></div>
             				{if $item.attachment_count > 0}
             					<div class="tooltip tooltip_with_400">
             						<div class="tooltip_inner">
@@ -140,7 +133,7 @@
     				{/if}
     			</tr>
     		{/foreach}
-		</thead>
+		</tbody>
 	</table>
 {/block}
 
