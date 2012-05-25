@@ -1,11 +1,22 @@
+
 <div id="popup_wrapper">
-	<div id="popup_background"></div>
+	<div id="popup_my_area">
+		<div id="popup_frame_my_area">
+			<div id="popup_inner_my_area">
 
-	<div class="tm_dropmenu hidden">
-		<div class="tm_di_ground_solid">
+				<div id="popup_pagetitle">
+					<a id="popup_close" href="" title="___COMMON_CLOSE___"><img src="{$basic.tpl_path}img/popup_close.gif" alt="___COMMON_CLOSE___" /></a>
+					<h2>___COMMON_ANNOUNCEMENT___</h2>
+					<div class="clear"> </div>
+				</div>
+				<div id="popup_content_wrapper">
+					<div id="popup_title">
+						<h2>{if $popup.edit == false}___COMMON_ENTER_NEW___{else}___COMMON_EDIT___{/if}</h2>
+						<div class="clear"> </div>
+					</div>
 
-			<div class="popup">
-				<div id="popup_content">
+
+
 					<div class="tab_navigation">
 						<p>
 							Sie sind hier:
@@ -124,6 +135,7 @@
 					</div>
 				</div>
 			</div>
+			<div class="clear"></div>
 		</div>
 	</div>
 </div>

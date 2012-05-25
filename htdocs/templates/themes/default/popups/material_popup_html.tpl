@@ -600,7 +600,7 @@
 							{if $item.with_workflow == true}
 								<div class="settings_area hidden">
 									{if $item.with_workflow_traffic_light == true}
-										<fieldset>
+										<fieldset class="fieldset">
 											<legend>___COMMON_WORKFLOW_TRAFFIC_LIGHT___</legend>
 
 											<div class="input_row">

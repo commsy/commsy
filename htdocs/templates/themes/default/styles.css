@@ -105,12 +105,27 @@ frame and header
 	position: relative;
 	}
 
+#popup_my_area {
+	margin: 0px auto 20px;
+    width: 990px;
+	position: relative;
+	}
+
 #popup_inner{
 	background: url("img/fade_in_popup_bg.jpg") repeat-x scroll 0 0 #d9d9d9;
     border-radius: 2px 2px 2px 2px;
     padding: 10px;
 	position:relative;
 	}
+
+#popup_inner_my_area{
+	background: url("img/fade_in_popup_bg.jpg") repeat-x scroll 0 0 #d9d9d9;
+    border-radius: 0px 0px 2px 2px;
+    border-top: 2px solid #FFFFFF;
+    padding: 10px;
+	position:relative;
+	}
+
 
 #popup_frame{
 	background: none repeat scroll 0 0 rgba(0, 0, 0, 0.6);
@@ -119,6 +134,16 @@ frame and header
     border-radius: 2px 2px 2px 2px;
     box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
 	}
+
+#popup_frame_my_area {
+    background: none repeat scroll 0 0 rgba(0, 0, 0, 0.6);
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+    border-radius: 0px 0px 2px 2px;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
+    padding: 0 10px 10px 10px;
+}
 
 li.netnavigation{
 	padding: 10px;
@@ -2977,12 +3002,20 @@ top-bar, breadcrumb and settings
     height: 40px;
     }
 
-#tm_wrapper {
-    background: url(img/tm_separator.jpg) no-repeat;
+#tm_wrapper_outer {
 	margin: 0 auto;
     width: 980px;
     color: #CCC;
     }
+
+#tm_wrapper {
+    background: url(img/tm_separator.jpg) no-repeat;
+	margin-left:10px;
+    width: 970px;
+    color: #CCC;
+    }
+
+
 
 #tm_breadcrumb {
     background: url(img/tm_separator.jpg) top right no-repeat;
@@ -2992,7 +3025,7 @@ top-bar, breadcrumb and settings
     }
 
 #tm_breadcrumb a {
-    padding: 11px 10px 13px 10px;
+    padding: 12px 10px 14px 10px;
     text-decoration: none;
     color: #CCC;
     text-shadow: #2E2D2E 0 1px;
@@ -3001,7 +3034,7 @@ top-bar, breadcrumb and settings
 #tm_breadcrumb a:hover {
     color: #2E2D2E;
     text-shadow: none;
-    background: url(img/tm_hover_active.jpg) repeat-x;
+    background: url(img/tm_hover_active.jpg) repeat-x #FFFFFF;
     }
 
 .tm_bcb_next {
@@ -3027,7 +3060,7 @@ top-bar, breadcrumb and settings
     }
 
 a#tm_user {
-    padding: 11px 10px 13px 10px;
+    padding: 12px 10px 14px 10px;
     text-decoration: none;
     color: #CCC;
     text-shadow: #2E2D2E 0 1px;

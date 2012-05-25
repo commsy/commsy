@@ -2,6 +2,7 @@
 
 {block name=top_menu}
 	<div id="top_menu">
+		<div id="tm_wrapper_outer">
 		<div id="tm_wrapper">
 			<div id="tm_icons_bar">
 				{if !$environment.is_guest}<a href="" id="tm_logout" title="Logout">&nbsp;</a>{/if}
@@ -63,6 +64,7 @@
 	<div id="tm_menus">
 		<div id="tm_dropmenu_breadcrumb" class="hidden"></div>
 		<div id="tm_dropmenu_pers_bar" class="hidden"></div>
+	</div>
 	</div>
 {/block}
 
