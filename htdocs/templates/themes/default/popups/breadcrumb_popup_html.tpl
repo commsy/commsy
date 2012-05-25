@@ -6,40 +6,29 @@
 
 				<div id="popup_pagetitle">
 					<a id="popup_close" href="" title="___COMMON_CLOSE___"><img src="{$basic.tpl_path}img/popup_close.gif" alt="___COMMON_CLOSE___" /></a>
-					<h2>___COMMON_ANNOUNCEMENT___</h2>
+					<span class="float-right">
+						<a id="edit_roomlist" href="#" title="___COMMON_EDIT___" class="btn_head_rc2"><img src="{$basic.tpl_path}img/btn_edit_rc.gif" alt="___COMMON_EDIT___" /></a>
+					</span>
+					<h2>
+						___COMMON_YOUR_ARE_HERE___:
+						{foreach $popup.breadcrumb as $crumb}
+							{if !$crumb@first}
+								<span class="tm_bcb_next">
+							{/if}
+							{if !$crumb@last}
+								<a class="tm_breadcrumb_h2" href="commsy.php?cid={$crumb.id}&mod=home&fct=index">{$crumb.title|truncate:40:'...':true}</a>
+							{else}
+								<strong>{$crumb.title|truncate:40:'...':true}</strong>
+							{/if}
+
+							{if !$crumb@first}
+								</span>
+							{/if}
+						{/foreach}
+					</h2>
 					<div class="clear"> </div>
 				</div>
 				<div id="popup_content_wrapper">
-					<div id="popup_title">
-						<h2>{if $popup.edit == false}___COMMON_ENTER_NEW___{else}___COMMON_EDIT___{/if}</h2>
-						<div class="clear"> </div>
-					</div>
-
-
-
-					<div class="tab_navigation">
-						<p>
-							Sie sind hier:
-								{foreach $popup.breadcrumb as $crumb}
-									{if !$crumb@first}
-										<span class="tm_bcb_next">
-									{/if}
-									{if !$crumb@last}
-										<a class="tab_navigation" href="commsy.php?cid={$crumb.id}&mod=home&fct=index">{$crumb.title|truncate:40:'...':true}</a>
-									{else}
-										<strong>{$crumb.title|truncate:40:'...':true}</strong>
-									{/if}
-
-									{if !$crumb@first}
-										</span>
-									{/if}
-								{/foreach}
-
-								<span class="float-right">
-									<a id="edit_roomlist" href="#" title="___COMMON_EDIT___" class="btn_head_rc2"><img src="{$basic.tpl_path}img/btn_edit_rc.gif" alt="___COMMON_EDIT___" /></a>
-								</span>
-							</p>
-					</div>
 					<div id="profile_content_row_three">
 						{foreach $popup.rooms as $headline}
 							{if $headline@key !== 'unchecked'}
@@ -61,7 +50,7 @@
 																</div>
 
 																<div class="room_change_content_element_wrapper">
-																	<div class="room_change_content_element"{if $room.color_array.content_background} style="background-color:{$room.color_array.tabs_background}; text-shadow: 0 0px #999; background-image:none; color:{$room.color_array.tabs_title}{/if}">
+																	<div class="room_change_content_element">
 																		<p>
 																			{if $room.new_entries == 1}
 																				{i18n tag=ACTIVITY_NEW_ENTRIES_NEW_SINGULAR param1=$room.time_spread}: {$room.new_entries}

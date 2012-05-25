@@ -486,6 +486,7 @@ $message["COMMON_NEW_ANNOTATION"]["en"] = "New comment";
 $message["COMMON_NEW_ANNOTATIONS"]["en"] = "New annotations";
 $message["COMMON_NEW_ANNOUNCEMENT_EDIT"]["en"] = "Create new announcement";
 $message["COMMON_NEW_ARTICLES"]["en"] = "New articles";
+$message["COMMON_NEW_BLOCK"]["en"] = "New section";
 $message["COMMON_NEW_BUZZWORD_BUTTON"]["en"] = "New";
 $message["COMMON_NEW_COMMUNITY"]["en"] = "new %_COMMUNITY_SUB_NOMS_LOW";
 $message["COMMON_NEW_DATE"]["en"] = "new event";
@@ -893,4 +894,5 @@ $message["COMMON_X_TO_Y_FROM_Z_FROM_ALL"]["en"] = "Listed: %1 to %2 of %3 items 
 $message["COMMON_X_TO_Y_FROM_Z_SHOWN"]["en"] = "Listed: %1 to %2 of %3";
 $message["COMMON_YEAR"]["en"] = "Year";
 $message["COMMON_YES"]["en"] = "Yes";
+$message["COMMON_YOUR_ARE_HERE"]["en"] = "You are here";
 ?>

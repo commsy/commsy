@@ -494,6 +494,7 @@ $message["COMMON_NEW_ANNOTATION"]["de"] = "Neue Anmerkung";
 $message["COMMON_NEW_ANNOTATIONS"]["de"] = "Neue Anmerkungen";
 $message["COMMON_NEW_ANNOUNCEMENT_EDIT"]["de"] = "Neue Ankündigung erstellen";
 $message["COMMON_NEW_ARTICLES"]["de"] = "Neue Beiträge";
+$message["COMMON_NEW_BLOCK"]["de"] = "Neuer Abschnitt";
 $message["COMMON_NEW_BUZZWORD_BUTTON"]["de"] = "Neu";
 $message["COMMON_NEW_COMMUNITY"]["de"] = "neuer %_COMMUNITY_SUB_NOMS_BIG";
 $message["COMMON_NEW_DATE"]["de"] = "neuer Termin";
@@ -903,4 +904,5 @@ $message["COMMON_X_TO_Y_FROM_Z_FROM_ALL"]["de"] = "Angezeigt: %1 bis %2 von %3 E
 $message["COMMON_X_TO_Y_FROM_Z_SHOWN"]["de"] = "Angezeigt: %1 bis %2 von %3";
 $message["COMMON_YEAR"]["de"] = "Jahr";
 $message["COMMON_YES"]["de"] = "Ja";
+$message["COMMON_YOUR_ARE_HERE"]["de"] = "Sie sind hier";
 ?>

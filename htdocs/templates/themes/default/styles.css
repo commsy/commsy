@@ -202,6 +202,10 @@ ul#popup_path_list .ui-state-highlight {
     display: block;
     }
 
+#popup_pagetitle span.float-right {
+    padding-right: 10px;
+}
+
 .popup_buzzword_list {
 	padding: 3px 5px;
 }
@@ -3025,7 +3029,7 @@ top-bar, breadcrumb and settings
     }
 
 #tm_breadcrumb a {
-    padding: 12px 10px 14px 10px;
+    padding: 11px 10px 13px 10px;
     text-decoration: none;
     color: #CCC;
     text-shadow: #2E2D2E 0 1px;
@@ -3047,6 +3051,18 @@ top-bar, breadcrumb and settings
     background: url(img/tm_arrow_right_dark.gif) no-repeat 0px 5px;
     }
 
+.tm_breadcrumb_h2{
+	color: #393939;
+    display: inline-block;
+    float: none;
+    padding: 6px 0;
+	}
+
+a.tm_breadcrumb_h2:hover{
+	color: #393939;
+	}
+
+
 .tm_dropdown {
     background: url(img/tm_arrow_down.gif) no-repeat right 6px;
     padding-right: 13px;
@@ -3060,7 +3076,7 @@ top-bar, breadcrumb and settings
     }
 
 a#tm_user {
-    padding: 12px 10px 14px 10px;
+    padding: 11px 10px 13px 10px;
     text-decoration: none;
     color: #CCC;
     text-shadow: #2E2D2E 0 1px;
@@ -3225,28 +3241,28 @@ div.breadcrumb_room_area .ui-state-highlight {
     font-size:10px;
     line-height: 16px;
     text-shadow: none !important;
-    width:220px;
+    width:209px;
 }
 
 .room_change_content {
-    border: 1px solid #999999;
+    border: 1px solid #c0c0c1;
 	color: #393939;
     display:block;
     text-decoration: none;
     /*margin:5px 6px ;*/
     margin: 5px 10px;
-    background: url("img/nonactive_bg.jpg") repeat-x scroll 0 0;
-    width: 221px;
+    background: url("img/breadcrump_room_title.jpg") repeat-x scroll 0 0#FFF ;
+    width: 210px;
 }
 
 .room_change_content:hover {
-    border: 1px solid #999999;
-	color: #FFFFFF;
+    border: 1px solid #c0c0c1;
+	color: #393939;
     display:block;
     text-decoration: none;
     /*margin:5px 6px ;*/
     margin: 5px 10px;
-	background: url("img/active_bg.jpg") repeat-x scroll 0 0;
+	background: url("img/breadcrump_room_title_active.jpg") repeat-x scroll 0 0 #d2d2d3;
 }
 
 
@@ -3258,10 +3274,9 @@ a.room_change_item {
 
 .room_change_title {
     overflow: hidden;
-    padding: 2px 8px;
-    width: 204px;
+    padding: 7px;
+    width: 194px;
     display:block;
-	border-bottom: 1px solid #999999;
 }
 
 .room_change_title_h3 {
@@ -3270,23 +3285,27 @@ a.room_change_item {
 
 
 .room_change_content_element_wrapper {
-    background: url("img/columns_bg.jpg") repeat-y scroll right top #D7D7D9;
-    border-top: 1px solid #EBEBEB;
+   /* background: url("img/columns_bg.jpg") repeat-y scroll right top #D7D7D9;*/
+   /* background-color: #FFF;*/
 }
 
+.room_change_content_element_wrapper:hover {
+   /* background: url("img/columns_bg.jpg") repeat-y scroll right top #D7D7D9;*/
+   /* background-color: #d2d2d3;*/
+}
+
+
 .room_change_content_element {
-    padding: 2px 8px;
-	display:block;
-    background: url("img/info_addon_bg.png") no-repeat scroll 0 0 transparent;
-    color: #DEE8FF;
-    padding: 0 10px;
-    text-shadow: 0 1px #2E405E;
-    height:50px;
+    color: #393939;
+    display: block;
+    height: 40px;
+    line-height: 12px;
+    padding: 8px;
 }
 
 div.room_dummy {
 	height: 73px;
-	width: 222px;
+	width: 210px;
 	border: 1px dotted navy;
 	margin: 5px 10px;
 	float: left;
@@ -3296,6 +3315,28 @@ div.room_dummy_no_border {
 	border: none;
 	height: 75px;
 }
+
+#roomlist_append_block, #roomlist_save {
+	background: url("img/pop_button_bg.jpg") repeat-x scroll 0 0 #D7D7D9;
+    border: 1px solid #919191;
+    color: #393939;
+	font-size: 12px;
+    font-weight: bold;
+    margin-top: -1px;
+    padding: 3px 10px;
+    text-decoration: none;
+	}
+
+div.roomlist_save{
+	padding: 20px 10px 30px;
+	float:left;
+	}
+
+div.roomlist_append_block{
+	padding: 20px 10px 30px;
+	float:right;
+	}
+
 
 div.breadcrumb_column_title {
 	width: 220px;
