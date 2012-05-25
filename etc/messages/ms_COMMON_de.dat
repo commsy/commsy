@@ -621,6 +621,7 @@ $message["COMMON_PRIVATEROOM_DESC"]["de"] = "persönlicher Raum";
 $message["COMMON_PRIVATE_DATE"]["de"] = "Terminart";
 $message["COMMON_PRIVATE_ROOM"]["de"] = "Persönlicher Raum";
 $message["COMMON_PROFILE_EDIT"]["de"] = "Profil bearbeiten";
+$message["COMMON_PROFIL_EDIT"]["de"] = "Profil bearbeiten";
 $message["COMMON_PROJECT"]["de"] = "%_PROJECT_SUB_NOMS_BIG";
 $message["COMMON_PROJECT_INDEX"]["de"] = "%_PROJECT_SUB_NOMPL_BIG";
 $message["COMMON_PROJECT_PL"]["de"] = "%_PROJECT_SUB_NOMPL_BIG";

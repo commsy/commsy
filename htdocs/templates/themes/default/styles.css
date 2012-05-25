@@ -1660,8 +1660,21 @@ forms
 	margin-left: 80px;
 	}
 
+.input_container_180 {
+    margin-left: 180px;
+}
+
 .tm_di_ground_solid fieldset {
 	margin-bottom: 10px;
+	}
+
+fieldset {
+	margin-bottom: 20px;
+	border:none;
+	}
+
+legend{
+	display:none;
 	}
 
 .input_row label {
