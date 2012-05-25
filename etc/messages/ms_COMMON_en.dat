@@ -337,6 +337,7 @@ $message["COMMON_EDIT_ITEM"]["en"] = "Edit";
 $message["COMMON_EMAIL_TO"]["en"] = "Send via e-mail";
 $message["COMMON_EMAIL_TO_TITLE"]["en"] = "Send e-mail";
 $message["COMMON_ENTERED_BY"]["en"] = "by";
+$message["COMMON_ENTER_NEW"]["en"] = "Enter new entry";
 $message["COMMON_ENTER_NEW_ANNOUNCEMENT"]["en"] = "Add new announcement";
 $message["COMMON_ENTER_NEW_DATE"]["en"] = "Add new event";
 $message["COMMON_ENTER_NEW_DISCUSSION"]["en"] = "Add new discussion";
