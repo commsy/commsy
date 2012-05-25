@@ -14,9 +14,123 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
     }
 
     public function initPopup($item) {
+    		$translator = $this->_environment->getTranslationObject();
+    		$current_context = $this->_environment->getCurrentContextItem();
+    		$current_user = $this->_environment->getCurrentUserItem();
+    		
 			// assign template vars
 			$this->assignTemplateVars();
-			$current_context = $this->_environment->getCurrentContextItem();
+			
+			if ($current_context->withWorkflow()){
+				$this->_popup_controller->assign('item', 'with_workflow', true);
+				
+				// workflow traffic light
+				if($current_context->withWorkflowTrafficLight()) {
+					$this->_popup_controller->assign('item', 'with_workflow_traffic_light', true);
+					
+					$description = array(
+						'green'		=>	($current_context->getWorkflowTrafficLightTextGreen() != '') ?
+											$current_context->getWorkflowTrafficLightTextGreen() :
+												$translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_GREEN_DEFAULT'),
+						'yellow'	=>	($current_context->getWorkflowTrafficLightTextYellow() != '') ?
+											$current_context->getWorkflowTrafficLightTextYellow() :
+												$translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_YELLOW_DEFAULT'),
+						'red'		=>	($current_context->getWorkflowTrafficLightTextRed() != '') ?
+											$current_context->getWorkflowTrafficLightTextRed() :
+												$translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_RED_DEFAULT'),
+					);
+					
+					$this->_popup_controller->assign('item', 'workflow_traffic_light_description', $description);
+				} else {
+					$this->_popup_controller->assign('item', 'with_workflow_traffic_light', false);
+				}
+				
+				// workflow resubmission
+				if($current_context->withWorkflowResubmission()) {
+					$this->_popup_controller->assign('item', 'with_workflow_resubmission', true);
+					
+					// creator
+					if($item !== null) {
+						$creator_item = $item->getCreatorItem();
+					} else {
+						$creator_item = $current_user;
+					}
+					
+					$this->_popup_controller->assign('item', 'workflow_creator_id', $creator_item->getItemID());
+					$this->_popup_controller->assign('item', 'workflow_creator_fullname', $creator_item->getFullName());
+					
+					
+					
+					// modifier
+					$modifier_array = array();
+					
+					if($item !== null) {
+						$link_modifier_item_manager = $this->_environment->getLinkModifierItemManager();
+						$user_manager = $this->_environment->getUserManager();
+						$modifiers = $link_modifier_item_manager->getModifiersOfItem($item->getItemID());
+						
+						
+						foreach($modifiers as $modifier_id) {
+							$modificator = $user_manager->getItem($modifier_id);
+							
+							// links only at accessible contact pages
+							if(isset($modificator) && $modificator->isRoot()) {
+								$modifier_array[]['name'] = $modificator->getFullname();
+							} elseif($modificator->getContextID() == $item->getContextID()) {
+								if($this->_environment->inProjectRoom()) {
+									if(isset($modificator) && !empty($modificator) && $modificator->isUser() && !$modificator->isDeleted() && $modificator->maySee($current_user)) {
+										$modifier_array[] = array(
+											'name'		=> $modificator->getFullname(),
+											'id'		=> $modificator->getItemID()
+										);
+									} elseif(isset($modificator) && !$modificator->isDeleted()) {
+										$modifier_array[]['name'] = $translator->getMessage('COMMON_DELETED_USER');
+									} else {
+										$modifier_array[]['name'] = $translator->getMessage('COMMON_DELETED_USER');
+									}
+								} elseif(	($current_user->isUser() && isset($modificator) && $modificator->isVisibleForLoggedIn()) ||
+											(!$user->isUser() && isset($modificator) && $modificator->isVisibleForAll()) ||
+											(isset($modificator) && $this->_environment->getCurrentUserID() == $modificator->getItemID())) {
+									if(!$modificator->isDeleted() && $modificator->maySee($current_user)) {
+										if(!$this->_environment->inPortal()) {
+											$modifier_array[] = array(
+												'name'		=> $modificator->getFullname(),
+												'id'		=> $modificator->getItemID()
+											);
+										} else {
+											$modifier_array[]['name'] = $modificator->getFullname();
+										}
+									} else {
+										$modifier_array[]['name'] = $translator->getMessage('COMMON_DELETED_USER');
+									}
+								} elseif($item->mayExternalSee($current_user())) {
+									$modifier_array[] = $modificator->getFullname();
+								} else {
+									if(isset($modificator) && !$modificator->isDeleted()) {
+										if($current_user->isGuest()) {
+											$modifier_array[]['name'] = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+										} else {
+											$modifier_array[]['name'] = $modificator->getFullname();
+										}
+									} else {
+										$modifier_array[]['name'] = $translator->getMessage('COMMON_DELETED_USER');
+									}
+								}
+							}
+						}
+						
+						$modifier_array = array_unique($modifier_array);
+					}
+					
+					$this->_popup_controller->assign('item', 'workflow_modifier', $modifier_array);
+				} else {
+					$this->_popup_controller->assign('item', 'with_workflow_resubmission', false);
+				}
+				
+				$this->_popup_controller->assign('item', 'with_workflow_validity', $current_context->withWorkflowValidity());
+			} else {
+				$this->_popup_controller->assign('item', 'with_workflow', false);
+			}
 
 			if($item !== null) {
 				// edit mode
@@ -59,18 +173,18 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
 		           $this->_popup_controller->assign('item', 'workflow_traffic_light', $item->getWorkflowTrafficLight());
 		           $this->_popup_controller->assign('item', 'workflow_resubmission', $item->getWorkflowResubmission());
 		           if($item->getWorkflowResubmissionDate() != '' and $item->getWorkflowResubmissionDate() != '0000-00-00 00:00:00'){
-		              $this->_popup_controller->assign('item', 'workflow_resubmission_date_workflow_resubmission_date', getDateInLang($item->getWorkflowResubmissionDate()));
+		              $this->_popup_controller->assign('item', 'workflow_resubmission_date', getDateInLang($item->getWorkflowResubmissionDate()));
 		           } else {
-		              $this->_popup_controller->assign('item', 'workflow_resubmission_date_workflow_resubmission_date', '');
+		              $this->_popup_controller->assign('item', 'workflow_resubmission_date', '');
 		           }
 		           $this->_popup_controller->assign('item', 'workflow_resubmission_who', $item->getWorkflowResubmissionWho());
 		           $this->_popup_controller->assign('item', 'workflow_resubmission_who_additional', $item->getWorkflowResubmissionWhoAdditional());
 		           $this->_popup_controller->assign('item', 'workflow_resubmission_traffic_light', $item->getWorkflowResubmissionTrafficLight());
 				   $this->_popup_controller->assign('item', 'workflow_validity', $item->getWorkflowValidity());
 		           if($item->getWorkflowValidityDate() != '' and $item->getWorkflowValidityDate() != '0000-00-00 00:00:00'){
-		              $this->_popup_controller->assign('item', 'workflow_validity_date_workflow_validity_date',getDateInLang($item->getWorkflowValidityDate()));
+		              $this->_popup_controller->assign('item', 'workflow_validity_date',getDateInLang($item->getWorkflowValidityDate()));
 		           } else {
-		              $this->_popup_controller->assign('workflow_validity_date_workflow_validity_date', '');
+		              $this->_popup_controller->assign('workflow_validity_date', '');
 		           }
 		           $this->_popup_controller->assign('item', 'workflow_validity_who', $item->getWorkflowValidityWho());
 		           $this->_popup_controller->assign('item', 'workflow_validity_who_additional', $item->getWorkflowValidityWhoAdditional());
@@ -221,16 +335,15 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
 	               $item->setDocumentReleaseDate( $form_data['document_release_date']);
 	            }
 	            /** Ende Dokumentenverwaltung **/
-
-
-
+	            
 	            if ( isset( $form_data['external_viewer']) and isset( $form_data['external_viewer_accounts']) ) {
 	               $user_ids = explode(" ", $form_data['external_viewer_accounts']);
 	               $item->setExternalViewerAccounts($user_ids);
 	            }else{
 	               $item->unsetExternalViewerAccounts();
 	            }
-
+	            
+	            // workflow
 	            if ( isset( $form_data['workflow_traffic_light']) and $item->getWorkflowTrafficLight() !=  $form_data['workflow_traffic_light'] ) {
 	               $item->setWorkflowTrafficLight( $form_data['workflow_traffic_light']);
 	            }

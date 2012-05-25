@@ -505,6 +505,7 @@
 						{if $popup.is_owner == true}<a href="" class="pop_tab">___COMMON_RIGHTS___</a>{/if}
 						{if isset($popup.buzzwords)}<a href="" class="pop_tab">___COMMON_BUZZWORDS___</a>{/if}
 						{if isset($popup.tags)}<a href="" class="pop_tab">___COMMON_TAGS___</a>{/if}
+						{if $item.with_workflow == true}<a href="" class="pop_tab">___COMMON_WORKFLOW___</a>{/if}
 						<a href="" id="popup_netnavigation_attach_new" class="pop_tab">___COMMON_ATTACHED_ENTRIES___</a>
 						<div class="clear"> </div>
 					</div>
@@ -586,6 +587,221 @@
 									{* call function *}
 									{tag_tree nodes=$popup.tags}
 								</div>
+							</div>
+						{/if}
+						
+						{if $item.with_workflow == true}
+							<div class="settings_area hidden">
+								{if $item.with_workflow_traffic_light == true}
+									<fieldset>
+										<legend>___COMMON_WORKFLOW_TRAFFIC_LIGHT___</legend>
+										
+										<div class="input_row">
+											<input id="workflow_traffic_light_none" class="float-left" type="radio" name="form_data[workflow_traffic_light]" value="3_none"{if $item.workflow_traffic_light == '3_none'} checked="checked"{/if} />
+											<label for="workflow_traffic_light_none">___COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_NONE___</label>
+											<div class="clear"></div>
+			         					</div>
+			         					
+										<div class="input_row">
+											<input id="workflow_traffic_light_red" class="float-left" type="radio" name="form_data[workflow_traffic_light]" value="0_green"{if $item.workflow_traffic_light == '0_green'} checked="checked"{/if} />
+											<label for="workflow_traffic_light_red">{$item.workflow_traffic_light_description.green}</label>
+											<img src="{$basic.tpl_path}img/workflow_traffic_light_green.png" alt="{$item.workflow_traffic_light_description.green}" title="{$item.workflow_traffic_light_description.green}">
+											<div class="clear"></div>
+			         					</div>
+			         					
+			         					<div class="input_row">
+		         							<input id="workflow_traffic_light_yellow" class="float-left" type="radio" name="form_data[workflow_traffic_light]" value="1_yellow"{if $item.workflow_traffic_light == '1_yellow'} checked="checked"{/if} />
+		         							<label for="workflow_traffic_light_yellow">{$item.workflow_traffic_light_description.yellow}</label>
+		         							<img src="{$basic.tpl_path}img/workflow_traffic_light_yellow.png" alt="{$item.workflow_traffic_light_description.yellow}" title="{$item.workflow_traffic_light_description.yellow}">
+											<div class="clear"></div>
+			         					</div>
+			         					
+			         					<div class="input_row">
+		         							<input id="workflow_traffic_light_red" class="float-left" type="radio" name="form_data[workflow_traffic_light]" value="2_red" {if $item.workflow_traffic_light == '2_red'} checked="checked"{/if}/>
+		         							<label for="workflow_traffic_light_red">{$item.workflow_traffic_light_description.red}</label>
+		         							<img src="{$basic.tpl_path}img/workflow_traffic_light_red.png" alt="{$item.workflow_traffic_light_description.red}" title="{$item.workflow_traffic_light_description.red}">
+											<div class="clear"></div>
+			         					</div>
+									</fieldset>
+								{/if}
+								
+								{if $item.with_workflow_resubmission == true}
+									<fieldset>
+										<legend>___COMMON_WORKFLOW_RESUBMISSION___</legend>
+										
+										<div class="input_row">
+											<label for="workflow_resubmission">___COMMON_IS_ACTIVATED___</label>
+											<input id="workflow_resubmission" type="checkbox" name="form_data[workflow_resubmission]"{if $item.workflow_resubmission == true} checked="checked"{/if} />
+										</div>
+										
+										<div class="input_row">
+											<label for="workflow_resubmission_date">___COMMON_CALENDAR_DATE___</label>
+											<input id="workflow_resubmission_date" class="datepicker" type="text" name="form_data[workflow_resubmission_date]" value="{show var=$item.workflow_resubmission_date}" />
+										</div>
+										
+										<div class="input_row"><hr class="float-left hr_400" /><div class="clear"></div></div>
+										
+										<div class="input_row">
+											___COMMON_WORKFLOW_RESUBMISSION_WHO___:
+										</div>
+										
+										<div class="input_row">
+											<input id="workflow_resubmission_who" class="float-left" type="radio" name="form_data[workflow_resubmission_who]" value="creator"{if $item.workflow_resubmission_who == 'creator'} checked="checked"{/if} />
+											<label for="workflow_resubmission_who" class="auto_width">
+												___COMMON_WORKFLOW_RESUBMISSION_CREATOR___ (<a href="commsy.php?cid={$environment.cid}&mod=user&fct=detail&iid={$item.workflow_creator_id}">{$item.workflow_creator_fullname}</a>)
+											</label>
+											<div class="clear"></div>
+										</div>
+										
+										<div class="input_row">
+											<input id="workflow_resubmission_who" class="float-left" type="radio" name="form_data[workflow_resubmission_who]" value="modifier"{if $item.workflow_resubmission_who == 'modifier'} checked="checked"{/if} />
+											<label for="workflow_resubmission_who" class="auto_width">
+											___COMMON_WORKFLOW_RESUBMISSION_MODIFIER___
+											{if !empty($item.workflow_modifier)}
+												(
+												{foreach $item.workflow_modifier as $modifier}
+													{if isset($modifier.id)}
+														<a href="commsy.php?cid={$environment.cid}&mod=user&fct=detail&iid={$modifier.id}">{$modifier.name}</a>
+													{else}
+														{$modifier.name}
+													{/if}
+													
+													{if !$modifier@last}, {/if}
+												{/foreach}
+												)
+											{/if}
+											</label>
+											<div class="clear"></div>
+										</div>
+										
+										<div class="input_row">
+											<label for="workflow_resubmission_who_additional">___COMMON_WORKFLOW_RESUBMISSION_ADDITIONAL___ (___COMMON_WORKFLOW_RESUBMISSION_ADDITIONAL_SEPERATOR___)</label>
+											<input id="workflow_resubmission_who_additional" type="text" name="form_data[workflow_resubmission_who_additional]" value="{show var=$item.workflow_resubmission_who_additional}" />
+										</div>
+										
+										<div class="input_row"><hr class="float-left hr_400" /><div class="clear"></div></div>
+										
+										<div class="input_row">
+											___COMMON_WORKFLOW_RESUBMISSION_TRAFFIC_LIGHT___:
+										</div>
+										
+										<div class="input_row">
+											<input id="workflow_resubmission_traffic_light_none" class="float-left" type="radio" name="form_data[workflow_resubmission_traffic_light]" value="3_none"{if $item.workflow_resubmission_traffic_light == '3_none'} checked="checked"{/if} />
+											<label for="workflow_resubmission_traffic_light_none">___COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_NONE___</label>
+											<div class="clear"></div>
+			         					</div>
+			         					
+										<div class="input_row">
+											<input id="workflow_resubmission_traffic_light_red" class="float-left" type="radio" name="form_data[workflow_resubmission_traffic_light]" value="0_green"{if $item.workflow_resubmission_traffic_light == '0_green'} checked="checked"{/if} />
+											<label for="workflow_resubmission_traffic_light_red">{$item.workflow_traffic_light_description.green}</label>
+											<img src="{$basic.tpl_path}img/workflow_traffic_light_green.png" alt="{$item.workflow_traffic_light_description.green}" title="{$item.workflow_traffic_light_description.green}">
+											<div class="clear"></div>
+			         					</div>
+			         					
+			         					<div class="input_row">
+		         							<input id="workflow_resubmission_traffic_light_yellow" class="float-left" type="radio" name="form_data[workflow_resubmission_traffic_light]" value="1_yellow"{if $item.workflow_resubmission_traffic_light == '1_yellow'} checked="checked"{/if} />
+		         							<label for="workflow_resubmission_traffic_light_yellow">{$item.workflow_traffic_light_description.yellow}</label>
+		         							<img src="{$basic.tpl_path}img/workflow_traffic_light_yellow.png" alt="{$item.workflow_traffic_light_description.yellow}" title="{$item.workflow_traffic_light_description.yellow}">
+											<div class="clear"></div>
+			         					</div>
+			         					
+			         					<div class="input_row">
+		         							<input id="workflow_resubmission_traffic_light_red" class="float-left" type="radio" name="form_data[workflow_resubmission_traffic_light]" value="2_red"{if $item.workflow_resubmission_traffic_light == '2_red'} checked="checked"{/if} />
+		         							<label for="workflow_resubmission_traffic_light_red">{$item.workflow_traffic_light_description.red}</label>
+		         							<img src="{$basic.tpl_path}img/workflow_traffic_light_red.png" alt="{$item.workflow_traffic_light_description.red}" title="{$item.workflow_traffic_light_description.red}">
+											<div class="clear"></div>
+			         					</div>
+									</fieldset>
+								{/if}
+								
+								{if $item.with_workflow_validity == true}
+									<fieldset>
+										<legend>___COMMON_WORKFLOW_VALIDITY___</legend>
+										
+										<div class="input_row">
+											<label for="workflow_validity">___COMMON_IS_ACTIVATED___</label>
+											<input id="workflow_validity" type="checkbox" name="form_data[workflow_validity]"{if $item.workflow_validity_date == true} checked="checked"{/if} />
+										</div>
+										
+										<div class="input_row">
+											<label for="workflow_validity_date">___COMMON_CALENDAR_DATE___</label>
+											<input id="workflow_validity_date" class="datepicker" type="text" name="form_data[workflow_validity_date]" value="{show var=$item.workflow_validity_date}" />
+										</div>
+										
+										<div class="input_row"><hr class="float-left hr_400" /><div class="clear"></div></div>
+										
+										<div class="input_row">
+											___COMMON_WORKFLOW_RESUBMISSION_WHO___:
+										</div>
+										
+										<div class="input_row">
+											<input id="workflow_validity_who" class="float-left" type="radio" name="form_data[workflow_validity_who]" value="creator"{if $item.workflow_validity_who == 'creator'} checked="checked"{/if} />
+											<label for="workflow_validity_who" class="auto_width">
+												___COMMON_WORKFLOW_RESUBMISSION_CREATOR___ (<a href="commsy.php?cid={$environment.cid}&mod=user&fct=detail&iid={$item.workflow_creator_id}">{$item.workflow_creator_fullname}</a>)
+											</label>
+											<div class="clear"></div>
+										</div>
+										
+										<div class="input_row">
+											<input id="workflow_validity_who" class="float-left" type="radio" name="form_data[workflow_validity_who]" value="modifier"{if $item.workflow_validity_who == 'modifier'} checked="checked"{/if} />
+											<label for="workflow_validity_who" class="auto_width">
+											___COMMON_WORKFLOW_RESUBMISSION_MODIFIER___
+											{if !empty($item.workflow_modifier)}
+												(
+												{foreach $item.workflow_modifier as $modifier}
+													{if isset($modifier.id)}
+														<a href="commsy.php?cid={$environment.cid}&mod=user&fct=detail&iid={$modifier.id}">{$modifier.name}</a>
+													{else}
+														{$modifier.name}
+													{/if}
+													
+													{if !$modifier@last}, {/if}
+												{/foreach}
+												)
+											{/if}
+											</label>
+											<div class="clear"></div>
+										</div>
+										
+										<div class="input_row">
+											<label for="workflow_validity_who_additional">___COMMON_WORKFLOW_RESUBMISSION_ADDITIONAL___ (___COMMON_WORKFLOW_RESUBMISSION_ADDITIONAL_SEPERATOR___)</label>
+											<input id="workflow_validity_who_additional" type="text" name="form_data[workflow_validity_who_additional]" value="{show var=$item.workflow_validity_who_additional}" />
+										</div>
+										
+										<div class="input_row"><hr class="float-left hr_400" /><div class="clear"></div></div>
+										
+										<div class="input_row">
+											___COMMON_WORKFLOW_RESUBMISSION_TRAFFIC_LIGHT___:
+										</div>
+										
+										<div class="input_row">
+											<input id="workflow_validity_traffic_light_none" class="float-left" type="radio" name="form_data[workflow_validity_traffic_light]" value="3_none"{if $item.workflow_validity_traffic_light == '3_none'} checked="checked"{/if} />
+											<label for="workflow_validity_traffic_light_none">___COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_NONE___</label>
+											<div class="clear"></div>
+			         					</div>
+			         					
+										<div class="input_row">
+											<input id="workflow_validity_traffic_light_red" class="float-left" type="radio" name="form_data[workflow_validity_traffic_light]" value="0_green"{if $item.workflow_validity_traffic_light == '0_green'} checked="checked"{/if} />
+											<label for="workflow_validity_traffic_light_red">{$item.workflow_traffic_light_description.green}</label>
+											<img src="{$basic.tpl_path}img/workflow_traffic_light_green.png" alt="{$item.workflow_traffic_light_description.green}" title="{$item.workflow_traffic_light_description.green}">
+											<div class="clear"></div>
+			         					</div>
+			         					
+			         					<div class="input_row">
+		         							<input id="workflow_validity_traffic_light_yellow" class="float-left" type="radio" name="form_data[workflow_validity_traffic_light]" value="1_yellow"{if $item.workflow_validity_traffic_light == '1_yellow'} checked="checked"{/if} />
+		         							<label for="workflow_validity_traffic_light_yellow">{$item.workflow_traffic_light_description.yellow}</label>
+		         							<img src="{$basic.tpl_path}img/workflow_traffic_light_yellow.png" alt="{$item.workflow_traffic_light_description.yellow}" title="{$item.workflow_traffic_light_description.yellow}">
+											<div class="clear"></div>
+			         					</div>
+			         					
+			         					<div class="input_row">
+		         							<input id="workflow_validity_traffic_light_red" class="float-left" type="radio" name="form_data[workflow_validity_traffic_light]" value="2_red"{if $item.workflow_validity_traffic_light == '2_red'} checked="checked"{/if} />
+		         							<label for="workflow_validity_traffic_light_red">{$item.workflow_traffic_light_description.red}</label>
+		         							<img src="{$basic.tpl_path}img/workflow_traffic_light_red.png" alt="{$item.workflow_traffic_light_description.red}" title="{$item.workflow_traffic_light_description.red}">
+											<div class="clear"></div>
+			         					</div>
+									</fieldset>
+								{/if}
 							</div>
 						{/if}
 

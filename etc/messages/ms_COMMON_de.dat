@@ -417,6 +417,7 @@ $message["COMMON_INSTITUTION_ATTACH"]["de"] = "%_INSTITUTION_SUB_NOMPL_BIG zuord
 $message["COMMON_INSTITUTION_EDIT"]["de"] = "%_INSTITUTION_SUB_NOMS_BIG bearbeiten";
 $message["COMMON_INSTITUTION_INDEX"]["de"] = "%_INSTITUTION_SUB_NOMPL_BIG";
 $message["COMMON_IN_FUTURE"]["de"] = "zukünftig";
+$message["COMMON_IS_ACTIVATED"]["de"] = "Aktiviert";
 $message["COMMON_ITEM_ATTACH"]["de"] = "Einträge zuordnen";
 $message["COMMON_ITEM_ATTACH_HIDE"]["de"] = "Einträge zuordnen einklappen";
 $message["COMMON_ITEM_ATTACH_SHOW"]["de"] = "Einträge zuordnen ausklappen";

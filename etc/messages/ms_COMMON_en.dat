@@ -408,6 +408,7 @@ $message["COMMON_INSTITUTION_ATTACH"]["en"] = "Add to %_INSTITUTION_SUB_NOMPL_LO
 $message["COMMON_INSTITUTION_EDIT"]["en"] = "Edit %_INSTITUTION_SUB_NOMS_LOW";
 $message["COMMON_INSTITUTION_INDEX"]["en"] = "%_INSTITUTION_SUB_NOMPL_BIG";
 $message["COMMON_IN_FUTURE"]["en"] = "in the future";
+$message["COMMON_IS_ACTIVATED"]["en"] = "Activated";
 $message["COMMON_ITEM_ATTACH"]["en"] = "Add reference/s";
 $message["COMMON_ITEM_ATTACH_HIDE"]["en"] = "Hide references";
 $message["COMMON_ITEM_ATTACH_SHOW"]["en"] = "Show references";

@@ -83,6 +83,10 @@ id and class selectors
 	float: right;
 	}
 
+.auto_width {
+	width: auto !important;
+	}
+
 /*
 ----------------------------------------------------------------------
 frame and header
@@ -1749,6 +1753,9 @@ forms
     width: 80px;
     }
 
+.hr_400 {
+	width: 400px;
+}
 
 /*
 ----------------------------------------------------------------------
