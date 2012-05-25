@@ -1,7 +1,7 @@
-{extends file="room_html.tpl"}
+{extends file="room_print.tpl"}
 
 {block name=room_site_actions}
-	<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=index&mode=print" title="___COMMON_LIST_PRINTVIEW___">
+	<a href="" title="___COMMON_LIST_PRINTVIEW___">
 		<img src="{$basic.tpl_path}img/btn_print.gif" alt="___COMMON_LIST_PRINTVIEW___" />
 	</a>
 
@@ -32,28 +32,7 @@
 
 {block name=room_list_footer}
 	<div class="content_item"> <!-- Start content_item -->
-		<div class="item_info">
-			<div class="ii_left">
-			 	<div id="item_action">
-			 		<input type="checkbox" name="" value="" /> ___ALL___
-			 		<select name="form_data[option][list]" size="1">
-			 			{foreach $list.actions as $action}
-			 				{if $action.disabled}
-			 					<option class="disabled" disabled="disabled">{$action.display}</option>
-			 				{else}
-			 					<option{if $action.id} id="{$action.id}"{/if}{if $action.selected} selected="selected"{/if} value="{$action.value}">{$action.display}</option>
-			 				{/if}
-
-			 			{/foreach}
-				 	</select>
-					<input type="image" id="delete_confirmselect_option" name="option" src="{$basic.tpl_path}img/btn_go.gif" alt="___COMMON_LIST_ACTION_BUTTON_GO___" />
-				 </div>
-			</div>
-				<div class="ii_right">
-				<p>{i18n tag=COMMON_SELECTED param1='<span id="selected_items"></span>'}</p>
-			</div>
-				<div class="clear"> </div>
-		</div>
+		
 	</div> <!-- Ende content_item -->
 	<div class="content_item"> <!-- Start content_item -->
 		<div class="item_info">
@@ -78,7 +57,7 @@
 					{/if}
 				</p>
 			</div>
-			<div class="ii_right">
+			<div class="ii_right_print">
 				<div id="item_navigation">
 				    {if $list.browsing_parameters.browse_start != "disabled"}
 					   <a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.browsing_parameters.browse_start}"><img src="{$basic.tpl_path}img/btn_ar_start.gif" alt="Start" /></a>
