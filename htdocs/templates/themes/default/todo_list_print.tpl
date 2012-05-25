@@ -1,6 +1,7 @@
-{extends file="room_list_html.tpl"}
+{extends file="room_list_print.tpl"}
 
 {block name=room_list_header}
+	
 	<div class="table_head">
 		{if $room.assessment}
 			{$w = 220}

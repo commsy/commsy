@@ -35,7 +35,7 @@
 		
 	</div> <!-- Ende content_item -->
 	<div class="content_item"> <!-- Start content_item -->
-		<div class="item_info">
+		<div class="item_info print_info_border">
 			<div class="ii_left">
 				<p>___COMMON_PAGE_ENTRIES___
 					{if $list.list_entries_parameter.20 == 'disabled'}

@@ -3247,6 +3247,14 @@ div.gauge-bar {
    font-size:10px;
 }
 
+
+/*
+----------------------------------------------------------------------
+print settings
+----------------------------------------------------------------------
+*/
+
+
 #print_head {
 	text-align: right;
 	width: 100%;
@@ -3312,7 +3320,22 @@ div.gauge-bar {
 .discussion_tree_print {
     display: block;	
     color: black;
-}	
+}
+
+.print_border {
+    border-left: #ffcccc double;	
+}
+
+.print_table_border {
+	border-left: 1px solid black;
+	border-right: 1px solid black;
+}
+
+.print_info_border {
+	border-left: 1px solid black;
+    border-right: 1px solid black;
+    border-bottom: 1px solid black;
+}
     
 	
 

@@ -48,15 +48,9 @@
 </head>
 
 <body>
-	<div id="print_head">
-		<img alt="CommSy" src="templates/themes/default/img/commsy_logo.gif">
-	</div>
     <div id="wrapper_print">
         {block name=layout_content}{/block}
     </div>
-    <div id="print_footer">
-		*hier genereller Print-Footer*
-	</div>
 </body>
 
 </html>

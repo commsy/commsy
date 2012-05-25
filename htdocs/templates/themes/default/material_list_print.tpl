@@ -2,7 +2,7 @@
 
 {block name=room_list_header}
 
-	<table width="100%" cellpadding="2" cellspacing="0">
+	<table width="100%" cellpadding="2" cellspacing="0" class="print_table_border">
 		<thead>
 			<tr>
 				<td class="table_head">
@@ -112,7 +112,7 @@
             					</div>
             				{/if}
     				</td>
-    				<td class="{if $item@iteration is odd}row_odd{else}row_even{/if}" style="border-left: #ffcccc double; border-width:medium">
+    				<td class="{if $item@iteration is odd}row_odd{else}row_even{/if} print_border">
             				<p>{$item.date}</p>
     				</td>
     				<td class="{if $item@iteration is odd}row_odd{else}row_even{/if}">
@@ -121,7 +121,7 @@
             				</p>
     				</td>
     				{if $room.workflow}
-    					<td class="{if $item@iteration is odd}row_odd{else}row_even{/if}" style="border-left: #ffcccc double medium">
+    					<td class="{if $item@iteration is odd}row_odd{else}row_even{/if} print_border">
         					<p>
         					   {if $item.workflow.light}
         						<img class="workflow" src="{$basic.tpl_path}img/workflow_traffic_light_{$item.workflow.light}.png" alt="{$item.workflow.title}" title="{$item.workflow.title}">
@@ -130,7 +130,7 @@
     					</td>
     				{/if}
     				{if $room.assessment}
-    					<td class="{if $item@iteration is odd}row_odd{else}row_even{/if}" style="border-left: #ffcccc double medium">   					
+    					<td class="{if $item@iteration is odd}row_odd{else}row_even{/if} print_border">   					
             				<p>
             					{foreach $item.assessment_array as $star_text}
             						<img src="{$basic.tpl_path}img/star_{$star_text}.gif" alt="*" />
