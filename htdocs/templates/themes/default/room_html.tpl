@@ -40,16 +40,20 @@
 			</div>
 
 			<div id="tm_icons_bar">
-				<a href="" id="tm_widgets" title="Meine Widgets">&nbsp;</a>
-				<a href="" id="tm_mycalendar" title="Mein Kalender">&nbsp;</a>
-				<a href="" id="tm_stack" title="Meine Ablage">&nbsp;</a>
-				<a href="" id="tm_clipboard" title="Meine Kopien">&nbsp;</a>
+				<a href="" id="tm_widgets" title="___MYWIDGETS_INDEX___">&nbsp;</a>
+				<a href="" id="tm_mycalendar" title="___MYCALENDAR_INDEX___">&nbsp;</a>
+				<a href="" id="tm_stack" title="___COMMON_ENTRY_INDEX___">&nbsp;</a>
+				<a href="" id="tm_clipboard" title="___MYAREA_MY_COPIES___">&nbsp;</a>
 				<div class="clear"></div>
 			</div>
-
+			
 			<div id="tm_breadcrumb">
 				<a href="">___COMMON_GO_BUTTON___: {$room.room_information.room_name}</a>
-				<a href="" id="tm_settings" title="Meine Einstellungen">&nbsp;</a>
+			</div>
+			
+			<div id="tm_icons_left_bar">
+				<a href="" id="tm_settings" title="___COMMON_CONFIGURATION___">&nbsp;</a>
+				<div class="clear"></div>
 			</div>
 
 			<div class="clear"></div>
