@@ -47,11 +47,11 @@
 				<a href="" id="tm_clipboard" title="___MYAREA_MY_COPIES___">&nbsp;</a>
 				<div class="clear"></div>
 			</div>
-			
+
 			<div id="tm_breadcrumb">
 				<a href="">___COMMON_GO_BUTTON___: {$room.room_information.room_name}</a>
 			</div>
-			
+
 			<div id="tm_icons_left_bar">
 				<a href="" id="tm_settings" title="___COMMON_CONFIGURATION___">&nbsp;</a>
 				<div class="clear"></div>
@@ -95,22 +95,6 @@
 								</li>
 							{/if}
                     </ul>
-
-					{if $room.second_navigation.config || $room.second_navigation.profil}
-						<ul id="right_navigation" class="float-right">
-							{* configuration *}
-							{$entry = $room.second_navigation.config}
-							{if $entry.access}
-								<li {if $entry.active}id="active"{else}class="non_active"{/if}>
-									<a href="commsy.php?cid={$environment.cid}&mod=configuration&fct=index">
-										<span id="{if $entry.active}{$entry.span_prefix}_act{else}{$entry.span_prefix}_non_act{/if}"></span>
-										___COMMON_ROOM_CONFIGURATION___
-									</a>
-								</li>
-							{/if}
-
-						</ul>
-					{/if}
                     <div class="clear"> </div>
 
 
