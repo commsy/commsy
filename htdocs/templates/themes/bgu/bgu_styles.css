@@ -237,13 +237,13 @@ div#inhalt {
     position: relative;
 }
 #cs_wrapper {
+    background-color: #FFFFFF;
     margin: 0 auto;
-    padding: 0;
+    padding: 0 0 5px;
     position: relative;
     width: 1000px;
-    background-color:#FFF;
-    z-index: 1;
 }
+
 #cs_header {
 }
 #cs_header .inner {
