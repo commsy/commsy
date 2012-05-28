@@ -3,18 +3,20 @@
 {block name=room_detail_content}
 	<div class="item_actions">
 		<div id="top_item_actions">
-			<a class="edit" href="#"><span class="edit_set"> &nbsp; </span></a>
+			{if $detail.actions.edit}
+				<a class="edit" href="#"><span class="edit_set"> &nbsp; </span></a>
+			{/if}
 			<a class="detail" href="#"><span class="details_ia"> &nbsp; </span></a>
 		</div>
 	</div>
 
 	<div class="item_body"> <!-- Start item body -->
-
-		<!-- Start fade_in_ground -->
 		<div class="fade_in_ground_actions hidden">
-			{* TODO *}
+			{if $detail.actions.edit}
+				<a id="action_edit" href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.item_id}">___COMMON_EDIT_ITEM___</a> |
+				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.item_id}">___COMMON_CLOSE_PARTICIPATION___</a>
+			{/if}
 		</div>
-		<!-- Ende fade_in_ground -->
 
 		<h2>
 			{if !empty($detail.content.first_block.fullname)}

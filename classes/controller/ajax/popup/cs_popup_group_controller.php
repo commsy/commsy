@@ -107,7 +107,6 @@ class cs_popup_group_controller implements cs_rubric_popup_controller {
         } else { //Acces granted
 			$this->cleanup_session($current_iid);
 
-
 			// upload picture
 			if(isset($additional['action']) && $additional['action'] === 'upload_picture') {
 				if($this->_popup_controller->checkFormData('picture_upload')) {

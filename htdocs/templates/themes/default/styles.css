@@ -1789,6 +1789,14 @@ legend{
     padding-right: 5px;
     }
 
+.input_label_230 {
+	float: left;
+    line-height: 25px;
+    padding-right: 5px;
+    vertical-align: bottom;
+    width: 230px;
+    }
+
 .input_label_150 {
 	float: left;
     line-height: 25px;

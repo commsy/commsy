@@ -17,7 +17,7 @@
 			$item_id = $this->_data['item_id'];
 			$link_id = $this->_data['link_id'];
 			$checked = $this->_data['checked'];
-			
+
 			// get item
 			$item_manager = $this->_environment->getItemManager();
 			$temp_item = $item_manager->getItem($item_id);
@@ -32,6 +32,7 @@
 				$item = $manager->getItem($item_id);
 			}
 			// get ids of linked items
+
 			$selected_ids = $this->getLinkedItemIDArray($item);
 
 			// update id array
@@ -462,7 +463,8 @@
 		private function getLinkedItemIDArray($item) {
 			$selected_ids = array();
 			if(isset($item)) {
-				if($module == CS_USER_TYPE) {
+				$type = $item->getItemType();
+				if($type == CS_USER_TYPE) {
 					if($this->_environment->inCommunityRoom()) $selected_ids = $item->getLinkedItemIDArray(CS_INSTITUTION_TYPE);
 					else $selected_ids = $item->getLinkedItemIDArray(CS_GROUP_TYPE);
 				} elseif(isset($item) && $item->isA(CS_BUZZWORD_TYPE)) {
@@ -471,7 +473,6 @@
 					$selected_ids = $item->getAllLinkedItemIDArray();
 				}
 			}
-
 			return $selected_ids;
 		}
 

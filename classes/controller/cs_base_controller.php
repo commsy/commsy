@@ -141,6 +141,7 @@
 		 */
 		private function processBaseTemplate() {
 			$current_user = $this->_environment->getCurrentUser();
+			$current_context = $this->_environment->getCurrentContextItem();
 
 			$this->assign('basic', 'tpl_path', $this->_tpl_path);
 			$this->assign('environment', 'cid', $this->_environment->getCurrentContextID());
@@ -149,6 +150,7 @@
 			$this->assign('environment', 'params', $this->_environment->getCurrentparameterString());
 			$this->assign('environment', 'username', $current_user->getFullName());
 			$this->assign('environment', 'user_picture', $current_user->getPicture());
+			$this->assign('environment', 'room_type_commnunity', $current_context->isCommunityRoom());
 			$this->assign('environment', 'is_guest', $current_user->isReallyGuest());
 			$this->assign('environment', 'is_moderator', $current_user->isModerator());
 			$this->assign('translation', 'act_month_long', getLongMonthName(date("n") - 1));

@@ -69,7 +69,11 @@
 			// set netnavigation information
 			if($this->getUtils()->showNetnavigation() === true) {
 				if($this->_item !== null) {
-					$this->assign('popup', 'netnavigation', $this->getUtils()->getNetnavigation($this->_item));
+					if($this->_item->getItemType()== CS_USER_TYPE){
+						$this->assign('popup', 'netnavigation', $this->getUtils()->getNetnavigationForUser($this->_item));
+					}else{
+						$this->assign('popup', 'netnavigation', $this->getUtils()->getNetnavigation($this->_item));
+					}
 				}
 			}
 

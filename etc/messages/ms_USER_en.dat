@@ -12,6 +12,7 @@ $message["USER_AUTH_SOURCE_ERROR"]["en"] = "Error: Lost authentication source.";
 $message["USER_AUTH_SOURCE_ERROR_NOT_AVAILABLE"]["en"] = "%1: This function is not available via CommSy.";
 $message["USER_BECOME_MEMBER_BUTTON"]["en"] = "Submit";
 $message["USER_BIRTHDAY"]["en"] = "Birthday";
+$message["USER_BIRTHDAY_DAY"]["en"] = "Birthday";
 $message["USER_BROWSER_LANGUAGE"]["en"] = "Browser preferences";
 $message["USER_CELLULARPHONE"]["en"] = "2. phonenumber";
 $message["USER_CHANGE_BUTTON"]["en"] = "Save profile";
