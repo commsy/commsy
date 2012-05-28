@@ -303,7 +303,7 @@
 					);
 
 					// time
-					$minutes = $current_item->getMinutes();
+					$minutes = $current_item->getPlannedTime();
 					$time_type = $current_item->getTimeType();
 					$tmp_message = $translator->getMessage('COMMON_MINUTES');
 
