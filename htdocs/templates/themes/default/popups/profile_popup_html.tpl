@@ -200,7 +200,7 @@
 											<div class="input_row">
 												<div class="input_container_180">
 													<input id="delete_picture" class="float-left" type="checkbox" name="form_data[delete_picture]" value="1"/>
-													<label for="delete_picture" class="float-left">___USER_DEL_PIC_BUTTON___:</label>
+													<label for="delete_picture" class="float-left">___USER_DEL_PIC_BUTTON___</label>
 													<div class="clear"></div>
 												</div>
 											</div>

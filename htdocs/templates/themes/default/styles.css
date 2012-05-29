@@ -3142,8 +3142,9 @@ a#tm_user:hover .tm_dropdown {
     background: url(img/tm_settings.gif) no-repeat;
     }
 
-#tm_settings:hover {
-    background: url(img/tm_settings.gif) -36px 0px no-repeat;
+#tm_settings:hover,
+a.tm_settings_hover {
+    background: url(img/tm_settings.gif) -36px 0px no-repeat !important;
     }
 
 #tm_mycalendar {

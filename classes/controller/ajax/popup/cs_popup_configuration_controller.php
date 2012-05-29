@@ -1,5 +1,5 @@
 <?php
-class cs_popup_profile_controller {
+class cs_popup_configuration_controller {
 	private $_environment = null;
 	private $_popup_controller = null;
 	private $_user = null;
@@ -739,8 +739,304 @@ class cs_popup_profile_controller {
 	}
 	
 	public function initPopup() {
+		
+		/*
+		 * $current_context_item = $this->_environment->getCurrentContextItem();
+
+      /********Zuordnung********//*
+      $community_room_array = array();
+      // links to community room
+      $current_portal = $this->_environment->getCurrentPortalItem();
+      $current_user = $this->_environment->getCurrentUserItem();
+      $community_list = $current_portal->getCommunityList();
+      $community_room_array = array();
+      $temp_array['text'] = '*'.$this->_translator->getMessage('PREFERENCES_NO_COMMUNITY_ROOM');
+      $temp_array['value'] = '-1';
+      $community_room_array[] = $temp_array;
+      $temp_array['text'] = '--------------------';
+      $temp_array['value'] = 'disabled';
+      $community_room_array[] = $temp_array;
+      unset($temp_array);
+      if ($community_list->isNotEmpty()) {
+         $community_item = $community_list->getFirst();
+         while ($community_item) {
+            $temp_array = array();
+            if ($community_item->isAssignmentOnlyOpenForRoomMembers() ){
+               if ( !$community_item->isUser($current_user)) {
+                  $temp_array['text'] = $community_item->getTitle();
+                  $temp_array['value'] = 'disabled';
+               }else{
+                  $temp_array['text'] = $community_item->getTitle();
+                  $temp_array['value'] = $community_item->getItemID();
+               }
+            }else{
+               $temp_array['text'] = $community_item->getTitle();
+               $temp_array['value'] = $community_item->getItemID();
+            }
+            $community_room_array[] = $temp_array;
+            unset($temp_array);
+            $community_item = $community_list->getNext();
+         }
+      }
+      $this->_community_room_array = $community_room_array;
+      $community_room_array = array();
+
+      if ($this->_environment->inProjectRoom()){
+         if (!empty($this->_session_community_room_array)) {
+            foreach ( $this->_session_community_room_array as $community_room ) {
+               $temp_array['text'] = $community_room['name'];
+               $temp_array['value'] = $community_room['id'];
+               $community_room_array[] = $temp_array;
+            }
+         } else{
+            $community_room_list = $current_context_item->getCommunityList();
+            if ($community_room_list->getCount() > 0) {
+               $community_room_item = $community_room_list->getFirst();
+               while ($community_room_item) {
+                  $temp_array['text'] = $community_room_item->getTitle();
+                  $temp_array['value'] = $community_room_item->getItemID();
+                  $community_room_array[] = $temp_array;
+                  $community_room_item = $community_room_list->getNext();
+               }
+            }
+         }
+         $this->_shown_community_room_array = $community_room_array;
+      }
+
+
+      
+
+
+      /****Zeittakte*****/ /*
+      // time pulses
+      $current_context = $this->_environment->getCurrentContextItem();
+      $current_portal  = $this->_environment->getCurrentPortalItem();
+      if (
+            ( $current_context->isProjectRoom() and $this->_environment->inProjectRoom() )
+            or ( $current_context->isProjectRoom()
+                 and $this->_environment->inCommunityRoom()
+                 and $current_context->showTime()
+               )
+            or ( $this->_environment->getCurrentModule() == CS_PROJECT_TYPE
+                 and ( $this->_environment->inCommunityRoom() or $this->_environment->inPortal() )
+                 and $current_context->showTime()
+               )
+            or ( $this->_environment->inGroupRoom()
+                 and $current_portal->showTime()
+               )
+         ) {
+         if ( $this->_environment->inPortal() ) {
+            $portal_item = $current_context;
+         } else {
+            $portal_item = $current_context->getContextItem();
+         }
+         if ($portal_item->showTime()) {
+                     $current_time_title = $portal_item->getTitleOfCurrentTime();
+                     if (isset($this->_item)) {
+                            $time_list = $this->_item->getTimeList();
+                            if ($time_list->isNotEmpty()) {
+                               $time_item = $time_list->getFirst();
+                               $linked_time_title = $time_item->getTitle();
+                            }
+                     }
+                     if ( !empty($linked_time_title)
+                          and $linked_time_title < $current_time_title
+                            ) {
+                             $start_time_title = $linked_time_title;
+                     } else {
+                             $start_time_title = $current_time_title;
+                     }
+                     $time_list = $portal_item->getTimeList();
+                     if ($time_list->isNotEmpty()) {
+                             $time_item = $time_list->getFirst();
+                             while ($time_item) {
+                                     if ($time_item->getTitle() >= $start_time_title) {
+                                             $temp_array = array();
+                                             $temp_array['text'] = $this->_translator->getTimeMessage($time_item->getTitle());
+                                             $temp_array['value'] = $time_item->getItemID();
+                                             $this->_time_array2[] = $temp_array;
+                                     }
+                                     $time_item = $time_list->getNext();
+                             }
+                     }
+
+                         // continuous
+                     $temp_array = array();
+                     $temp_array['text'] = $this->_translator->getMessage('COMMON_CONTINUOUS');
+                     $temp_array['value'] = 'cont';
+                     $this->_time_array2[] = $temp_array;
+
+                     $this->_with_time_array2 = true;
+                  }
+          }
+
+      /*******Farben********/ /*
+      $temp_array = array();
+      $temp_array['text']  = $this->_translator->getMessage('COMMON_COLOR_DEFAULT');
+      $temp_array['value'] = 'COMMON_COLOR_DEFAULT';
+      $this->_array_info_text[] = $temp_array;
+
+      $temp_array = array();
+      $temp_array['text']  = '-----';
+      $temp_array['value'] = '-1';
+      $this->_array_info_text[] = $temp_array;
+
+      $temp_array = array();
+      $temp_array['text']  = $this->_translator->getMessage('COMMON_COLOR_SCHEMA_1');
+      $temp_array['value'] = 'COMMON_COLOR_SCHEMA_1';
+      $array_info_text_temp[$this->_translator->getMessage('COMMON_COLOR_SCHEMA_1')] = $temp_array;
+
+      $temp_array = array();
+      $temp_array['text']  = $this->_translator->getMessage('COMMON_COLOR_SCHEMA_2');
+      $temp_array['value'] = 'COMMON_COLOR_SCHEMA_2';
+      $array_info_text_temp[$this->_translator->getMessage('COMMON_COLOR_SCHEMA_2')] = $temp_array;
+
+      $temp_array = array();
+      $temp_array['text']  = $this->_translator->getMessage('COMMON_COLOR_SCHEMA_3');
+      $temp_array['value'] = 'COMMON_COLOR_SCHEMA_3';
+      $array_info_text_temp[$this->_translator->getMessage('COMMON_COLOR_SCHEMA_3')] = $temp_array;
+
+      $temp_array = array();
+      $temp_array['text']  = $this->_translator->getMessage('COMMON_COLOR_SCHEMA_4');
+      $temp_array['value'] = 'COMMON_COLOR_SCHEMA_4';
+      $array_info_text_temp[$this->_translator->getMessage('COMMON_COLOR_SCHEMA_4')] = $temp_array;
+
+      $temp_array = array();
+      $temp_array['text']  = $this->_translator->getMessage('COMMON_COLOR_SCHEMA_5');
+      $temp_array['value'] = 'COMMON_COLOR_SCHEMA_5';
+      $array_info_text_temp[$this->_translator->getMessage('COMMON_COLOR_SCHEMA_5')] = $temp_array;
+
+      $temp_array = array();
+      $temp_array['text']  = $this->_translator->getMessage('COMMON_COLOR_SCHEMA_6');
+      $temp_array['value'] = 'COMMON_COLOR_SCHEMA_6';
+      $array_info_text_temp[$this->_translator->getMessage('COMMON_COLOR_SCHEMA_6')] = $temp_array;
+
+      $temp_array = array();
+      $temp_array['text']  = $this->_translator->getMessage('COMMON_COLOR_SCHEMA_7');
+      $temp_array['value'] = 'COMMON_COLOR_SCHEMA_7';
+      $array_info_text_temp[$this->_translator->getMessage('COMMON_COLOR_SCHEMA_7')] = $temp_array;
+
+      $temp_array = array();
+      $temp_array['text']  = $this->_translator->getMessage('COMMON_COLOR_SCHEMA_8');
+      $temp_array['value'] = 'COMMON_COLOR_SCHEMA_8';
+      $array_info_text_temp[$this->_translator->getMessage('COMMON_COLOR_SCHEMA_8')] = $temp_array;
+
+      $temp_array = array();
+      $temp_array['text']  = $this->_translator->getMessage('COMMON_COLOR_SCHEMA_9');
+      $temp_array['value'] = 'COMMON_COLOR_SCHEMA_9';
+      $array_info_text_temp[$this->_translator->getMessage('COMMON_COLOR_SCHEMA_9')] = $temp_array;
+
+      $temp_array = array();
+      $temp_array['text']  = $this->_translator->getMessage('COMMON_COLOR_SCHEMA_10');
+      $temp_array['value'] = 'COMMON_COLOR_SCHEMA_10';
+      $array_info_text_temp[$this->_translator->getMessage('COMMON_COLOR_SCHEMA_10')] = $temp_array;
+
+      $temp_array = array();
+      $temp_array['text']  = $this->_translator->getMessage('COMMON_COLOR_SCHEMA_11');
+      $temp_array['value'] = 'COMMON_COLOR_SCHEMA_11';
+      $array_info_text_temp[$this->_translator->getMessage('COMMON_COLOR_SCHEMA_11')] = $temp_array;
+
+      $temp_array = array();
+      $temp_array['text']  = $this->_translator->getMessage('COMMON_COLOR_SCHEMA_12');
+      $temp_array['value'] = 'COMMON_COLOR_SCHEMA_12';
+      $array_info_text_temp[$this->_translator->getMessage('COMMON_COLOR_SCHEMA_12')] = $temp_array;
+
+      $temp_array = array();
+      $temp_array['text']  = $this->_translator->getMessage('COMMON_COLOR_SCHEMA_13');
+      $temp_array['value'] = 'COMMON_COLOR_SCHEMA_13';
+      $array_info_text_temp[$this->_translator->getMessage('COMMON_COLOR_SCHEMA_13')] = $temp_array;
+
+      $temp_array = array();
+      $temp_array['text']  = $this->_translator->getMessage('COMMON_COLOR_SCHEMA_14');
+      $temp_array['value'] = 'COMMON_COLOR_SCHEMA_14';
+      $array_info_text_temp[$this->_translator->getMessage('COMMON_COLOR_SCHEMA_14')] = $temp_array;
+
+      $temp_array = array();
+      $temp_array['text']  = $this->_translator->getMessage('COMMON_COLOR_SCHEMA_15');
+      $temp_array['value'] = 'COMMON_COLOR_SCHEMA_15';
+      $array_info_text_temp[$this->_translator->getMessage('COMMON_COLOR_SCHEMA_15')] = $temp_array;
+
+      $temp_array = array();
+      $temp_array['text']  = $this->_translator->getMessage('COMMON_COLOR_SCHEMA_16');
+      $temp_array['value'] = 'COMMON_COLOR_SCHEMA_16';
+      $array_info_text_temp[$this->_translator->getMessage('COMMON_COLOR_SCHEMA_16')] = $temp_array;
+
+      $temp_array = array();
+      $temp_array['text']  = $this->_translator->getMessage('COMMON_COLOR_SCHEMA_17');
+      $temp_array['value'] = 'COMMON_COLOR_SCHEMA_17';
+      $array_info_text_temp[$this->_translator->getMessage('COMMON_COLOR_SCHEMA_17')] = $temp_array;
+
+      $temp_array = array();
+      $temp_array['text']  = $this->_translator->getMessage('COMMON_COLOR_SCHEMA_18');
+      $temp_array['value'] = 'COMMON_COLOR_SCHEMA_18';
+      $array_info_text_temp[$this->_translator->getMessage('COMMON_COLOR_SCHEMA_18')] = $temp_array;
+
+      $temp_array = array();
+      $temp_array['text']  = $this->_translator->getMessage('COMMON_COLOR_SCHEMA_19');
+      $temp_array['value'] = 'COMMON_COLOR_SCHEMA_19';
+      $array_info_text_temp[$this->_translator->getMessage('COMMON_COLOR_SCHEMA_19')] = $temp_array;
+
+      $temp_array = array();
+      $temp_array['text']  = $this->_translator->getMessage('COMMON_COLOR_SCHEMA_20');
+      $temp_array['value'] = 'COMMON_COLOR_SCHEMA_20';
+      $array_info_text_temp[$this->_translator->getMessage('COMMON_COLOR_SCHEMA_20')] = $temp_array;
+
+      $temp_array = array();
+      $temp_array['text']  = $this->_translator->getMessage('COMMON_COLOR_SCHEMA_21');
+      $temp_array['value'] = 'COMMON_COLOR_SCHEMA_21';
+      $array_info_text_temp[$this->_translator->getMessage('COMMON_COLOR_SCHEMA_21')] = $temp_array;
+
+      $temp_array = array();
+      $temp_array['text']  = $this->_translator->getMessage('COMMON_COLOR_SCHEMA_22');
+      $temp_array['value'] = 'COMMON_COLOR_SCHEMA_22';
+      $array_info_text_temp[$this->_translator->getMessage('COMMON_COLOR_SCHEMA_22')] = $temp_array;
+
+      $temp_array = array();
+      $temp_array['text']  = $this->_translator->getMessage('COMMON_COLOR_SCHEMA_23');
+      $temp_array['value'] = 'COMMON_COLOR_SCHEMA_23';
+      $array_info_text_temp[$this->_translator->getMessage('COMMON_COLOR_SCHEMA_23')] = $temp_array;
+
+      $temp_array = array();
+      $temp_array['text']  = $this->_translator->getMessage('COMMON_COLOR_SCHEMA_24');
+      $temp_array['value'] = 'COMMON_COLOR_SCHEMA_24';
+      $array_info_text_temp[$this->_translator->getMessage('COMMON_COLOR_SCHEMA_24')] = $temp_array;
+
+      $temp_array = array();
+      $temp_array['text']  = $this->_translator->getMessage('COMMON_COLOR_SCHEMA_25');
+      $temp_array['value'] = 'COMMON_COLOR_SCHEMA_25';
+      $array_info_text_temp[$this->_translator->getMessage('COMMON_COLOR_SCHEMA_25')] = $temp_array;
+      
+      $temp_array = array();
+      $temp_array['text']  = $this->_translator->getMessage('COMMON_COLOR_SCHEMA_26');
+      $temp_array['value'] = 'COMMON_COLOR_SCHEMA_26';
+      $array_info_text_temp[$this->_translator->getMessage('COMMON_COLOR_SCHEMA_26')] = $temp_array;
+
+      ksort($array_info_text_temp);
+      foreach($array_info_text_temp as $entry){
+         $this->_array_info_text[] = $entry;
+      }
+      $temp_array = array();
+      $temp_array['text']  = '-----';
+      $temp_array['value'] = '-1';
+      $this->_array_info_text[] = $temp_array;
+      $temp_array = array();
+      $temp_array['text']  = $this->_translator->getMessage('COMMON_COLOR_SCHEMA_OWN');
+      $temp_array['value'] = 'COMMON_COLOR_SCHEMA_OWN';
+      $this->_array_info_text[] = $temp_array;
+		 */
+		
+		
+		
+		
+		
+		
+		/*
+		
+		
+		
 		$current_portal_item = $this->_environment->getCurrentPortalItem();
 		
+		/*
 		// set configuration
 		$account = array();
 		
@@ -802,6 +1098,8 @@ class cs_popup_profile_controller {
 		if($this->_user->isModerator()) {
 			$this->_config['show_mail_change_form'] = true;
 		}
+		
+		*/
 		
 		// assign template vars
 		$this->assignTemplateVars();
@@ -884,125 +1182,204 @@ class cs_popup_profile_controller {
 		
 		$this->_popup_controller->assign('popup', 'general', $general_information);
 		
-		// portal information
-		$portal_information = array();
-		$portal_information['portal_name'] = $this->_environment->getCurrentPortalItem()->getTitle();
-		$this->_popup_controller->assign('popup', 'portal', $portal_information);
+		// room information
+		$this->_popup_controller->assign('popup', 'room', $this->getRoomInformation());
+	}
+	
+	private function getRoomInformation() {
+		$return = array();
 		
-		// form information
-		$form_information = array();
-		$form_information['account'] = $this->getAccountInformation();
-		$form_information['user'] = $this->getUserInformation();
-		$form_information['newsletter'] = $this->getNewsletterInformation();
-		$form_information['config'] = $this->_config;
-		$form_information['data'] = $this->_data;
+		$current_context = $this->_environment->getCurrentContextItem();
+		$translator = $this->_environment->getTranslationObject();
 		
-		// languages
+		$return['room_name'] = $current_context->getTitle();
+		$return['room_show_name'] = $current_context->showTitle();
+		
+		// language
 		$languages = array();
+		
 		$languages[] = array(
-			'value'		=>	'browser',
-			'text'		=>	$translator->getMessage('USER_BROWSER_LANGUAGE')
-		);
-		$languages[] = array(
-			'value'		=>	'disabled',
-			'text'		=>	'------------------'
+			'text'		=> $translator->getMessage('CONTEXT_LANGUAGE_USER'),
+			'value'		=> 'user'
 		);
 		
-		$available_languages = $this->_environment->getAvailableLanguageArray();
-		foreach($available_languages as $language) {
-			$languages[] = array(
-				'value'		=>	$language,
-				'text'		=>	$translator->getLanguageLabelOriginally($language)
-			);
+		$languages[] = array(
+			'text'		=> '-------',
+			'value'		=> 'disabled',
+			'disabled'	=> true
+		);
+		
+		$language_array = $this->_environment->getAvailableLanguageArray();
+		foreach($language_array as $entry) {
+			switch ( mb_strtoupper($entry, 'UTF-8') ){
+				case 'DE':
+					$languages[] = array(
+						'text'		=> $translator->getMessage('DE'),
+						'value'		=> $entry
+					);
+					break;
+				case 'EN':
+					$languages[] = array(
+						'text'		=> $translator->getMessage('EN'),
+						'value'		=> $entry
+					);
+					break;
+				default:
+					break;
+			}
+		}
+		$return['languages'] = $languages;
+		$return['language'] = $current_context->getLanguage();
+		
+		// logo
+		if($current_context->getLogoFilename()) {
+			$return['logo'] = $current_context->getLogoFilename();
 		}
 		
-		$form_information['languages'] = $languages;
 		
-		$this->_popup_controller->assign('popup', 'form', $form_information);
-	}
-	
-	private function getAccountInformation() {
-		$return = array();
-		
-		// get data from database
-		$return['firstname'] = $this->_user->getFirstname();
-		$return['lastname'] = $this->_user->getLastname();
-		$return['user_id'] = $this->_user->getUserID();
-		$return['language'] = $this->_user->getLanguage();
-		$return['email_account'] = ($this->_user->getAccountWantMail() === 'yes') ? true : false;
-		$return['email_room'] = ($this->_user->getOpenRoomWantMail() === 'yes') ? true : false;
-		$return['new_upload'] = ($this->_user->isNewUploadOn()) ? true : false;
-		$return['auto_save'] = ($this->_user->isAutoSaveOn()) ? true : false;
-		
-		return $return;
-	}
-	
-	private function getUserInformation() {
-		$return = array();
-		
-		// get data from database
-		$return['title'] = $this->_user->getTitle();
-		$return['birthday'] = $this->_user->getBirthday();
-		$return['picture'] = $this->_environment->getCurrentUserItem()->getPicture();
-		$return['mail'] = $this->_user->getEmail();
-		$return['telephone'] = $this->_user->getTelephone();
-		$return['cellularphone'] = $this->_user->getCellularphone();
-		$return['street'] = $this->_user->getStreet();
-		$return['zipcode'] = $this->_user->getZipcode();
-		$return['city'] = $this->_user->getCity();
-		$return['room'] = $this->_user->getRoom();
-		$return['organisation'] = $this->_user->getOrganisation();
-		$return['position'] = $this->_user->getPosition();
-		$return['icq'] = $this->_user->getICQ();
-		$return['msn'] = $this->_user->getMSN();
-		$return['skype'] = $this->_user->getSkype();
-		$return['yahoo'] = $this->_user->getYahoo();
-		$return['jabber'] = $this->_user->getJabber();
-		$return['homepage'] = $this->_user->getHomepage();
-		$return['description'] = $this->_user->getDescription();
-		
-		return $return;
+		/**********Logo**********/ /*
+		$this->_with_bg_image = $current_context_item->getBGImageFilename();
 		
 		/*
+		 * $context_item = $this->_environment->getCurrentContextItem();
 
-            if ($this->_item->isModerator()) {
-               $this->_values['want_mail_get_account'] = $this->_item->getAccountWantMail();
-               $this->_values['is_moderator'] = true;
-            } else {
-               $this->_values['is_moderator'] = false;
+      $this->_values = array();
+      $color = $context_item->getColorArray();
+      $temp_array = array();
+      $temp_array['color_1'] = $color['tabs_background'];
+      $temp_array['color_2'] = $color['tabs_focus'];
+      $temp_array['color_3'] = $color['tabs_title'];
+      $temp_array['color_31'] = $color['tabs_separators'];
+      $temp_array['color_32'] = $color['tabs_dash'];
+      $temp_array['color_4'] = $color['content_background'];
+      $temp_array['color_5'] = $color['boxes_background'];
+      $temp_array['color_6'] = $color['hyperlink'];
+      $temp_array['color_7'] = $color['list_entry_even'];
+      if ( !empty($this->_form_post) ) {
+         $this->_values = $this->_form_post;
+         if (empty($this->_values['color_choice'])){
+            $this->_values['color_choice'] = 'COMMON_COLOR_'.mb_strtoupper($color['schema'], 'UTF-8');
+         }
+         if ($this->_values['color_choice']=='COMMON_COLOR_SCHEMA_OWN'){
+            for ($i=1; $i<8; $i++){
+               if ( !empty($this->_form_post['color_'.$i]) ){
+                  $this->_values['color_'.$i] = $this->_form_post['color_'.$i];
+               }else{
+                  $this->_values['color_'.$i] = $temp_array['color_'.$i];
+               }
             }
-            $picture = $this->_item->getPicture();
-            $this->_values['upload'] = $picture;
-            if (!empty($picture)) {
-               $this->_values['with_picture'] = true;
+            if(!empty($this->_form_post['color_31'])) {
+               $this->_values['color_31'] = $ths->_form_post['color_31'];
             } else {
-               $this->_values['with_picture'] = false;
+               $this->_values['color_31'] = $temp_array['color_31'];
             }
+            if(!empty($this->_form_post['color_32'])) {
+               $this->_values['color_32'] = $ths->_form_post['color_32'];
+            } else {
+               $this->_values['color_32'] = $temp_array['color_32'];
+            }
+         }
+      } else {
+         $color_array = $context_item->getColorArray();
+         $this->_values['color_choice'] = 'COMMON_COLOR_'.mb_strtoupper($color['schema'], 'UTF-8');
+         $this->_values['color_1'] = $color['tabs_background'];
+         $this->_values['color_2'] = $color['tabs_focus'];
+         $this->_values['color_3'] = $color['tabs_title'];
+         $this->_values['color_31'] = $color['tabs_separators'];
+         $this->_values['color_32'] = $color['tabs_dash'];
+         $this->_values['color_5'] = $color['boxes_background'];
+         $this->_values['color_7'] = $color['list_entry_even'];
+         $this->_values['color_6'] = $color['hyperlink'];
+         $this->_values['color_4'] = $color['content_background'];
+         if ( $context_item->isPrivateRoom() ) {
+            if ( $context_item->getTitle() == 'PRIVATEROOM' ) {
+               $this->_values['title'] = $this->_translator->getMessage('COMMON_PRIVATEROOM');
+            } elseif ( $context_item->isTemplate() ) {
+               $this->_values['title'] = $context_item->getTitlePure();
+            }
+         }
+         if ($context_item->isAssignmentOnlyOpenForRoomMembers()) {
+            $this->_values['room_assignment'] = 'closed';
+         } else {
+            $this->_values['room_assignment'] = 'open';
+         }
+      }
+      
+      if ($context_item->isRSSOn()) {
+         $this->_values['rss'] = 'yes';
+      } else {
+         $this->_values['rss'] = 'no';
+      }
+      if ($context_item->getBGImageFilename()){
+         $this->_values['bgimage'] = $context_item->getBGImageFilename();
+      }
+      if ($context_item->issetBGImageRepeat()){
+         $this->_values['bg_image_repeat'] = '1';
+      }
 
-            if (!$this->_item->isEmailVisible()) {
-               $this->_values['email_visibility'] = 'checked';
+      if (
+            ( $context_item->isA(CS_PROJECT_TYPE) and $this->_environment->inProjectRoom() )
+            or ( $context_item->isA(CS_PROJECT_TYPE) and $this->_environment->inCommunityRoom() )
+            or ( $context_item->isA(CS_GROUPROOM_TYPE) and $this->_environment->inGroupRoom() )
+         ) {
+         $portal_item = $this->_environment->getCurrentPortalItem();
+         if ( $portal_item->showTime() ) {
+            $time_list = $context_item->getTimeList();
+            $mark_array = array();
+            if ( $time_list->isNotEmpty() ) {
+               $time_item = $time_list->getFirst();
+               while ($time_item) {
+                  $mark_array[] = $time_item->getItemID();
+                  $time_item = $time_list->getNext();
+               }
+               if ($context_item->isContinuous()) {
+                  $mark_array[] = 'cont';
+               }
+               $this->_values['time2'] = $mark_array;
+               unset($mark_array);
             }
+         }
+      }
+
+      if ($this->_environment->inProjectRoom()){
+         $community_room_array = array();
+         if (!empty($this->_session_community_room_array)) {
+            foreach ( $this->_session_community_room_array as $community_room ) {
+               $community_room_array[] = $community_room['id'];
+            }
+         }
+         $community_room_list = $context_item->getCommunityList();
+         if ($community_room_list->getCount() > 0) {
+            $community_room_item = $community_room_list->getFirst();
+            while ($community_room_item) {
+               $community_room_array[] = $community_room_item->getItemID();
+               $community_room_item = $community_room_list->getNext();
+            }
+         }
+         if ( isset($this->_form_post['communityroomlist']) ) {
+            $this->_values['communityroomlist'] = $this->_form_post['communityroomlist'];
+         } else {
+            $this->_values['communityroomlist'] = $community_room_array;
+         }
+      }
+
+      $this->_values['description'] = $context_item->getDescription();
+      
+      global $c_email_upload;
+      if ($c_email_upload && $this->_environment->inPrivateRoom()) {
+         if ( isset($this->_form_post['email_to_commsy']) ) {
+            $this->_values['email_to_commsy'] = $this->_form_post['email_to_commsy'];
+         } else {
+            $this->_values['email_to_commsy'] = $context_item->getEmailToCommSy();
+         }
+         
+         if ( isset($this->_form_post['email_to_commsy_secret']) ) {
+            $this->_values['email_to_commsy_secret'] = $this->_form_post['email_to_commsy_secret'];
+         } else {
+            $this->_values['email_to_commsy_secret'] = $context_item->getEmailToCommSySecret();
+         }
+      }
 		 */
-	}
-	
-	private function getNewsletterInformation() {
-		$return = array();
-		
-		// get data from database
-		$room = $this->_environment->getCurrentUserItem()->getOwnRoom();
-		$newsletter = $room->getPrivateRoomNewsletterActivity();
-		
-		switch($newsletter) {
-			case 'weekly':
-				$return['newsletter'] = '2';
-				break;
-			case 'daily':
-				$return['newsletter'] = '3';
-				break;
-			default:
-				$return['newsletter'] = '1';
-				break;
-		}
 		
 		return $return;
 	}

@@ -646,24 +646,6 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 				
 				return false;
 			})
-			
-			/*
-
-			// register click for abort button
-			jQuery('input[id="popup_button_abort"]').click(function() {
-				handle.close();
-				return false;
-			});
-
-			// register click for create button
-			jQuery('input[id="popup_button_create"]').bind('click', {
-				handle:		this,
-				module:		module,
-				item_id:	item_id}, this.create);
-
-			// setup buzzwords
-			this.setupBuzzwords();
-			*/
 		},
 
 		setupTabs: function(parent_object) {
@@ -706,6 +688,58 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			});
 
 			return false;
+		},
+		
+		onClickConfiguration: function() {
+			var data = {
+				module: 'configuration'
+			};
+
+			var handle = this;
+
+			jQuery.ajax({
+				type: 'POST',
+				url: 'commsy.php?cid=' + this.cid + '&mod=ajax&fct=popup&action=getHTML',
+				data: JSON.stringify(data),
+				contentType: 'application/json; charset=utf-8',
+				dataType: 'json',
+				error: function(jqXHR, textStatus, errorThrown) {
+					console.log("error while getting popup");
+				},
+				success: function(data, status) {
+					if(data.status === 'success') {
+						// we recieved html - append it
+						jQuery('div#tm_dropmenu_configuration').html(data.html);
+
+						// show
+						jQuery('div#tm_dropmenu_configuration div.tm_dropmenu').slideDown(100);
+						
+						// reinvoke CKEditor
+						var ck_editor_handler = handle.commsy_functions.getModuleCallback('commsy/ck_editor');
+						ck_editor_handler.create(null, {
+							handle:				ck_editor_handler,
+							register_on:		jQuery('div.ckeditor')
+						});
+						
+						// register click for save buttons
+						jQuery('div#tm_dropmenu_configuration input#submit').bind('click', {
+							handle:		handle}, handle.onSaveConfiguration);
+
+						// setup popup
+						handle.setupPopup();
+
+						// setup tabs
+						handle.setupTabs(jQuery('div#tm_dropmenu_configuration'));
+					}
+				}
+			});
+
+			// stop processing
+			return false;
+		},
+		
+		onSaveConfiguration: function(event) {
+			
 		}
 	};
 });
