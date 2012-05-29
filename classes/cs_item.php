@@ -1119,18 +1119,18 @@ class cs_item {
             }
          }
       }
-      
+
       // invoke indices update
       try {
       	$reflector = new ReflectionClass($manager);
       	global $c_indexed_search;
       	if($c_indexed_search === true && $reflector->getMethod('updateSearchIndices')->getDeclaringClass()->getName() == $reflector->getName()) {
       		$manager->updateSearchIndices();
-      	} 
+      	}
       } catch(Exception $e) {
       	// actual object does not implement Method updateSearchIndices() - so dont call
       }
-	  
+
       return $saved;
    }
 
@@ -1609,6 +1609,10 @@ class cs_item {
       return $id_array;
    }
 
+   function isSystemLabel () {
+      $retour = false;
+      return $retour;
+   }
 
    function getLinkedItemIDArray($type) {
       $id_array = array();
@@ -2372,19 +2376,19 @@ function getExternalViewerArray(){
       unset($link_modifier_item_manager);
       return $retour;
    }
-   
+
    function setWorkflowTrafficLight($value) {
       $this->_setValue('workflow_status', (string)$value);
    }
    function getWorkflowTrafficLight() {
       return $this->_getValue('workflow_status');
    }
-   
+
    function isReadByUser($user){
       $item_manager = $this->_environment->getItemManager();
       return $item_manager->isItemMarkedAsWorkflowRead($this->getItemId(), $user->getItemID());
    }
-   
+
    function setWorkflowResubmission($value) {
       $this->_setExtra('WORKFLOWRESUBMISSION', (string)$value);
    }
@@ -2395,14 +2399,14 @@ function getExternalViewerArray(){
       }
       return $result;
    }
-   
+
    function setWorkflowResubmissionDate($value) {
       $this->_setValue('workflow_resubmission_date', (string)$value);
    }
    function getWorkflowResubmissionDate() {
       return $result = $this->_getValue('workflow_resubmission_date');
    }
-   
+
    function setWorkflowResubmissionWho($value) {
       $this->_setExtra('WORKFLOWRESUBMISSIONWHO', (string)$value);
    }
@@ -2413,7 +2417,7 @@ function getExternalViewerArray(){
       }
       return $result;
    }
-   
+
    function setWorkflowResubmissionWhoAdditional($value) {
       $value = str_replace(array("\t", " "), '', $value);
       $value_array = explode(',', $value);
@@ -2426,7 +2430,7 @@ function getExternalViewerArray(){
       }
       return $result;
    }
-   
+
    function setWorkflowResubmissionTrafficLight($value) {
       $this->_setExtra('WORKFLOWRESUBMISSIONTRAFFICLIGHT', (string)$value);
    }
@@ -2437,7 +2441,7 @@ function getExternalViewerArray(){
       }
       return $result;
    }
-   
+
    function setWorkflowValidity($value) {
       $this->_setExtra('WORKFLOWVALIDITY', (string)$value);
    }
@@ -2448,14 +2452,14 @@ function getExternalViewerArray(){
       }
       return $result;
    }
-   
+
    function setWorkflowValidityDate($value) {
       $this->_setValue('workflow_validity_date', (string)$value);
    }
    function getWorkflowValidityDate() {
       return $result = $this->_getValue('workflow_validity_date');
    }
-   
+
    function setWorkflowValidityWho($value) {
       $this->_setExtra('WORKFLOWVALIDITYWHO', (string)$value);
    }
@@ -2466,7 +2470,7 @@ function getExternalViewerArray(){
       }
       return $result;
    }
-   
+
    function setWorkflowValidityWhoAdditional($value) {
       $value = str_replace(array("\t", " "), '', $value);
       $value_array = explode(',', $value);
@@ -2479,7 +2483,7 @@ function getExternalViewerArray(){
       }
       return $result;
    }
-   
+
    function setWorkflowValidityTrafficLight($value) {
       $this->_setExtra('WORKFLOWVALIDITYTRAFFICLIGHT', (string)$value);
    }

@@ -75,7 +75,11 @@
 
 		<div id="dis_navigation">
 			{foreach $detail.forward_information as $entry}
-				<a href="commsy.php?cid={$environment.cid}&mod={$entry.type}&fct={$environment.function}&iid={$entry.item_id}{params params=$entry.params}">{$entry.position}. {if $entry.is_current}<strong>{/if}{$entry.title|truncate:25:'...':true}{if $entry.is_current}</strong>{/if}</a>
+				{if !empty($entry.activating_text)}
+					<a title="{$entry.activating_text}"href="#">{$entry.position}. {if $entry.is_current}<strong>{/if}{$entry.title|truncate:25:'...':true}{if $entry.is_current}</strong>{/if}</a>
+				{else}
+					<a href="commsy.php?cid={$environment.cid}&mod={$entry.type}&fct={$environment.function}&iid={$entry.item_id}{params params=$entry.params}">{$entry.position}. {if $entry.is_current}<strong>{/if}{$entry.title|truncate:25:'...':true}{if $entry.is_current}</strong>{/if}</a>
+				{/if}
 			{/foreach}
 			{*{block name=room_right_portlets_navigation}{/block}*}
 			<div class="portlet_rc_action">

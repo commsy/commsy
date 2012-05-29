@@ -814,72 +814,29 @@
 					$params = $this->_environment->getCurrentParameterArray();
 					unset($params['iid']);
 					// append to return
+					$activating_text = '';
+					$current_user_item = $this->_environment->getCurrentUserItem();
+					if(isset($item) && $item->isNotActivated() && !($item->getCreatorID() === $current_user_item->getItemID()) && !$current_user_item->isModerator()) {
+						 $activating_date = $item->getActivatingDate();
+						if (strstr($activating_date,'9999-00-00')){
+	                  		$activating_text = $this->_environment->getTranslationObject()->getMessage('COMMON_NOT_ACTIVATED');
+	               		}else{
+	                  		$activating_text = $this->_environment->getTranslationObject()->getMessage('COMMON_ACTIVATING_DATE').' '.getDateInLang($item->getActivatingDate());
+	               		}
+					}
 					$return[] = array(
 						'title'			=> $converter->text_as_html_short($link_title),
 						'is_current'	=> $item->getItemID() == $this->_item->getItemID(),
 						'item_id'		=> $item->getItemID(),
 						'type'			=> $type,
 						'params'		=> $params,
-						'position'		=> $count_items + 1
+						'position'		=> $count_items + 1,
+						'activating_text'=> $activating_text
 					);
 
-					$current_user_item = $this->_environment->getCurrentUserItem();
-					if(isset($item) && $item->getItemID() === $this->_item->getItemID()) {
-						/*
-						$html .='<li class="detail_list_entry" style="'.$style.'">';
-               $html .= '<span>'.($count_items+1).'. '.chunkText($link_title,35).'</span>';
-               $html .='</li>';
-               			*/
-					} elseif(isset($item) && $item->isNotActivated() && !($item->getCreatorID() === $current_user_item->getItemID()) && !$current_user_item->isModerator()) {
-						/*
-						 $activating_date = $item->getActivatingDate();
-               if (strstr($activating_date,'9999-00-00')){
-                  $activating_text = $this->_translator->getMessage('COMMON_NOT_ACTIVATED');
-               }else{
-                  $activating_text = $this->_translator->getMessage('COMMON_ACTIVATING_DATE').' '.getDateInLang($item->getActivatingDate());
-               }
-               $html .='<li class="disabled" style="'.$style.'">';
-               $params['iid'] =   $item->getItemID();
-               $html .= ($count_items+1).'. '.ahref_curl( $this->_environment->getCurrentContextID(),
-                                 $type,
-                                 $this->_environment->getCurrentFunction(),
-                                 $params,
-                                 chunkText($link_title,35),
-                                 $text.' - '.$link_title . '&nbsp;(' . $activating_text . ')',
-                                 '',
-                                 '',
-                                 '',
-                                 '',
-                                 '',
-                                 'class="disabled"',
-                                 '',
-                                 '',
-                                 true);
-               $html .='</li>';
-						*/
-					} elseif(isset($item)) {
-						/*
-						$html .='<li style="'.$style.'">';
-               $params['iid'] =   $item->getItemID();
-               $html .= ($count_items+1).'. '.ahref_curl( $this->_environment->getCurrentContextID(),
-                                 $type,
-                                 $this->_environment->getCurrentFunction(),
-                                 $params,
-                                 chunkText($link_title,35),
-                                 $text.' - '.$link_title,
-                                 '',
-                                 '',
-                                 '',
-                                 '',
-                                 '',
-                                 'class="detail_list"');
-               $html .='</li>';
-               */
-					}
-
 					unset($item);
-				}
 				$count_items++;
+				}
 			}
 			return $return;
 		}

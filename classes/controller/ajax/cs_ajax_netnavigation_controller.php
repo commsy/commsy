@@ -31,9 +31,9 @@
 				}
 				$item = $manager->getItem($item_id);
 			}
-			
+
 			// TODO: implement - users are not allowed to remove themself from the "All Members" group
-			
+
 			// get ids of linked items
 			$selected_ids = $this->getLinkedItemIDArray($item);
 
