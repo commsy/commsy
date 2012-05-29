@@ -1,0 +1,4 @@
+<?php
+$message["CONFIG_META_TITLE"]["en"] = "workspace settings";
+$message["CONFIG_MODERATION_TITLE"]["en"] = "Moderation support";
+?>

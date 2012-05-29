@@ -1,0 +1,4 @@
+<?php
+$message["CONFIG_META_TITLE"]["de"] = "Raumeinstellungen";
+$message["CONFIG_MODERATION_TITLE"]["de"] = "Moderationsunterstützung";
+?>

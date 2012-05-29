@@ -1685,6 +1685,14 @@ legend{
 	width: 180px;
 	}
 
+.input_row_100 label {
+	display: block;
+	float: left;
+	position: relative;
+	top: 2px;
+	width: 100px;
+	}
+
 .size_200 {
     width: 190px;
     background: url(img/size_200_bg.jpg) no-repeat;

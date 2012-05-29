@@ -16,8 +16,9 @@
 				<div id="popup_content_wrapper">
 					<div id="profile_content_row_three">
 						<div class="tab_navigation">
-							<a href="" class="pop_tab_active">___INTERNAL_META_TITLE___</a>
-							<a href="" class="pop_tab">Moderationsunterstützung</a>
+							<a href="" class="pop_tab_active">___CONFIG_META_TITLE___</a>
+							<a href="" class="pop_tab">___COMMON_ACCOUNTS___</a>
+							<a href="" class="pop_tab">___CONFIG_MODERATION_TITLE___</a>
 							<a href="" class="pop_tab">___CONFIGURATION_PLUGIN_LINK___</a>
 							<a href="" class="pop_tab">___HOME_EXTRA_TOOLS___</a>
 
@@ -27,54 +28,53 @@
 						<div id="popup_tabcontent">
 							<div class="tab" id="account">
 								<div id="content_row_three">
-									<div class="input_row">
-										<label for="room_name">___COMMON_ROOM_NAME___<span class="required">*</span>:</label>
-										<input id="room_name" type="text" class="size_200" name="form_data[room_name]" value="{show var=$popup.room.room_name}"/>
+									<fieldset>
+								<div class="input_row_100">
+									<label for="room_name">___COMMON_ROOM_NAME___<span class="required">*</span>:</label>
+									<input id="room_name" type="text" class="size_200" name="form_data[room_name]" value="{show var=$popup.room.room_name}"/>
+									<div class="input_container_180" style="margin-left:96px; margin-bottom:10px;">
+										<input id="room_show_name" type="checkbox" name="form_data[room_show_name]"{if $popup.room.room_show_name == true} checked="checked"{/if} />
+										<span for="room_show_name">___PREFERENCES_SHOW_TITLE_OPTION___</span>
 									</div>
-									
+								</div>
+
+								<div class="input_row_100">
+									<label for="room_language">___CONTEXT_LANGUAGE___<span class="required">*</span>:</label>
+									<select class="size_200" id="room_language" name="form_data['language]">
+										{foreach $popup.room.languages as $language}
+											<option value="{$language.value}"{if $language.value == $popup.room.language} selected="selected"{/if}{if isset($language.disabled) && $language.disabled == true} disabled="disabled"{/if}>
+												{$language.text}
+											</option>
+										{/foreach}
+									</select>
+								</div>
+
+								<div class="input_row_100">
+									<label for="room_logo">___LOGO_UPLOAD___:</label>
+									<form id="picture_upload" action="commsy.php?cid={$environment.cid}&mod=ajax&fct=popup&action=save" method="post">
+										<input type="hidden" name="module" value="configuration" />
+										<input type="hidden" name="additional[tab]" value="room" />
+										<input id="room_logo" type="file" class="size_150 float-left" name="form_data[picture]" accept="image/*" />
+									</form>
+									<div class="clear"></div>
+								</div>
+
+								{if isset($popup.room.logo)}
 									<div class="input_row">
 										<div class="input_container_180">
-											<input id="room_show_name" type="checkbox" name="form_data[room_show_name]"{if $popup.room.room_show_name == true} checked="checked"{/if} />
-											<label for="room_show_name">___PREFERENCES_SHOW_TITLE_OPTION___</label>
+											<img src="commsy.php?cid={$environment.cid}&mod=picture&fct=getfile&picture={$popup.room.logo}" alt="___USER_PICTURE_UPLOADFILE___" />
 										</div>
 									</div>
-									
+
 									<div class="input_row">
-										<label for="room_language">___CONTEXT_LANGUAGE___<span class="required">*</span>:</label>
-										<select id="room_language" name="form-data['langauge]">
-											{foreach $popup.room.languages as $language}
-												<option value="{$language.value}"{if $language.value == $popup.room.language} selected="selected"{/if}{if isset($language.disabled) && $language.disabled == true} disabled="disabled"{/if}>
-													{$language.text}
-												</option>
-											{/foreach}
-										</select>
-									</div>
-									
-									<div class="input_row">
-										<label for="room_logo">___LOGO_UPLOAD___:</label>
-										<form id="picture_upload" action="commsy.php?cid={$environment.cid}&mod=ajax&fct=popup&action=save" method="post">
-											<input type="hidden" name="module" value="configuration" />
-											<input type="hidden" name="additional[tab]" value="room" />
-											<input id="room_logo" type="file" class="size_200 float-left" name="form_data[picture]" accept="image/*" />
-										</form>
-										<div class="clear"></div>
-									</div>
-									
-									{if isset($popup.room.logo)}
-										<div class="input_row">
-											<div class="input_container_180">
-												<img src="commsy.php?cid={$environment.cid}&mod=picture&fct=getfile&picture={$popup.room.logo}" alt="___USER_PICTURE_UPLOADFILE___" />
-											</div>
+										<div class="input_container_180">
+											<input id="delete_logo" class="float-left" type="checkbox" name="form_data[delete_logo]" value="1"/>
+											<label for="delete_logo" class="float-left">___LOGO_DELETE_OPTION___</label>
+											<div class="clear"></div>
 										</div>
-	
-										<div class="input_row">
-											<div class="input_container_180">
-												<input id="delete_logo" class="float-left" type="checkbox" name="form_data[delete_logo]" value="1"/>
-												<label for="delete_logo" class="float-left">___LOGO_DELETE_OPTION___</label>
-												<div class="clear"></div>
-											</div>
-										</div>
-									{/if}
+									</div>
+								{/if}
+								</fieldset>
 
 								{*
 
@@ -434,77 +434,19 @@
          $this->_form->combine();
          $this->_form->addText('email_to_commsy_text','',$this->_translator->getMessage('PRIVATE_ROOM_EMAIL_TO_COMMSY_TEXT', $this->_translator->getMessage('EMAIL_TO_COMMSY_PASSWORD'), $this->_translator->getMessage('EMAIL_TO_COMMSY_ACCOUNT')));
       }
-      
+
       /******** buttons***********/
       $this->_form->addButtonBar('option',$this->_translator->getMessage('PREFERENCES_SAVE_BUTTON'),'',$this->_translator->getMessage('COMMON_DELETE_ROOM'));
-								
+
 								*}
-								
-								
-								
-								
-								
-								
-								
+
+
+
+
+
+
+
 									<fieldset>
-										<legend>___MYAREA_MY_PROFILE___:</legend>
-
-										<div class="input_row">
-											<label for="forname">___USER_FIRSTNAME___:</label>
-											<input id="forname" type="text" class="size_200 mandatory" name="form_data[forname]" value="{show var=$popup.form.account.firstname}"/>
-										</div>
-
-										<div class="input_row">
-											<label for="surname">___USER_LASTNAME___:</label>
-											<input id="surname" type="text" class="size_200 mandatory" name="form_data[surname]" value="{show var=$popup.form.account.lastname}"/>
-										</div>
-
-										<div class="input_row">
-											{if $popup.form.config.show_account_change_form === true}
-												<label for="user_id">___USER_USER_ID___:</label>
-												<input id="user_id" type="text" class="size_200 mandatory" name="form_data[user_id]" value="{show var=$popup.form.account.user_id}"/>
-											{else}
-												{show var=$popup.form.account.user_id}
-											{/if}
-										</div>
-
-										{if $popup.form.config.show_password_change_form === true}
-											<div class="input_row">
-												<label for="old_password">___USER_PASSWORD_OLD___:</label>
-												<input id="old_password" type="text" class="size_200" name="form_data[old_password]" />
-											</div>
-
-											<div class="input_row">
-												<label for="new_password">___USER_PASSWORD_NEW___:</label>
-												<input id="new_password" type="text" class="size_200" name="form_data[new_password]" />
-											</div>
-
-											<div class="input_row">
-												<label for="new_password_confirm">___USER_PASSWORD_NEW2___:</label>
-												<input id="new_password_confirm" type="text" class="size_200" name="form_data[new_password_confirm]" />
-											</div>
-										{/if}
-
-										<div class="input_row">
-											<label for="language">___USER_LANGUAGE___:</label>
-											<select id="language" name="form_data[language]">
-												{foreach $popup.form.languages as $language}
-													<option value="{$language.value}"{if $language.value == $popup.form.account.language} selected="selected"{/if}>{$language.text}</option>
-												{/foreach}
-											</select>
-										</div>
-
-										{if $popup.form.config.show_mail_change_form === true}
-											<div class="input_row">
-												<label for="mail_account">___USER_EMAIL___:</label>
-
-												<div class="input_container_180">
-													<input id="mail_account" name="form_data[mail_account]" type="checkbox"{if $popup.form.account.email_account == true} checked="checked"{/if}/> ___USER_MAIL_GET_ACCOUNT___<br/>
-													<input id="mail_room" name="form_data[mail_room]" type="checkbox"{if $popup.form.account.email_room == true} checked="checked"{/if}/> ___USER_MAIL_OPEN_ROOM_PO___
-												</div>
-											</div>
-										{/if}
-
 										<div class="input_row">
 											<label for="upload">___CONFIGURATION_NEW_UPLOAD___:</label>
 
@@ -777,12 +719,12 @@
 											<label for="data_homepage_all" class="float-left">___USER_CHANGE_IN_ALL_ROOMS___</label>
 											<div class="clear"></div>
 										</div>
-										
+
 										<div class="input_row">
 											<label for="description">___USER_DESCRIPTION___:</label>
 											<div class="clear"></div>
 										</div>
-										
+
 										<div class="input_row">
 											<div class="editor_content">
 												<div id="description" class="ckeditor">{if isset($popup.form.user.description)}{$popup.form.user.description}{/if}</div>
