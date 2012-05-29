@@ -462,7 +462,7 @@ if ( !empty($SID) ) {
          }
          unset($portal);
       }
-      
+
       $typo3_session_id = '';
       if ( !empty($_GET['ses_id']) ) {
          $typo3_session_id = $_GET['ses_id'];
@@ -521,7 +521,7 @@ if ( !empty($SID) ) {
                   $session_manager = $environment->getSessionManager();
                   $session_manager->save($session);
                   $environment->setSessionItem($session);
-                  
+
                   $params = array();
                   $params = $environment->getCurrentParameterArray();
                   unset($params['ses_id']);
@@ -836,20 +836,20 @@ if(isset($c_smarty) && $c_smarty === true) {
 	global $c_theme;
 	if(!isset($c_theme) || empty($c_theme)) $c_theme = 'default';
 	$smarty = new cs_smarty($environment, $c_theme);
-	
+
 	global $c_smarty_caching;
 	if(isset($c_smarty_caching) && $c_smarty_caching === true) {
 		$smarty->caching = Smarty::CACHING_LIFETIME_CURRENT;
 	}
 	//$smarty->debugging = true;
-	
+
 	// set smarty in environment
 	$environment->setTemplateEngine($smarty);
-	
+
 	// set output mode
 	if(isset($_GET['mode'])) $environment->setOutputMode($_GET['mode']);
-	
-	
+
+
 	// determ template
 	//$tpl = $environment->getCurrentModule() . '_' . $environment->getCurrentFunction();
 }
@@ -884,11 +884,11 @@ else {
 		$environment->getCurrentModule() !== 'annotation') {
 		$c_smarty = false;
 	}
-	
+
 	if($environment->getCurrentModule() === 'discarticle' && $environment->getCurrentFunction() === 'edit' && isset($_POST['option']['new'])) {
 		$c_smarty = false;
 	}
-	
+
 	if($environment->getCurrentFunction() === 'getfile') {
 		$c_smarty = false;
 	}
@@ -900,7 +900,13 @@ if(isset($c_smarty) && $c_smarty === true) {
 	if($_GET['mod'] === 'ajax') {
 		$controller_name = 'cs_ajax_' . $_GET['fct'] . '_controller';
 		require_once('classes/controller/ajax/' . $controller_name . '.php');
-		
+
+		$controller = new $controller_name($environment);
+		$controller->process();
+	}elseif($_GET['fct'] === 'logout') {
+		$controller_name = 'cs_context_logout_controller';
+		require_once('classes/controller/' . $controller_name . '.php');
+
 		$controller = new $controller_name($environment);
 		$controller->process();
 	} else {
@@ -914,7 +920,7 @@ if(isset($c_smarty) && $c_smarty === true) {
 			$controller_name = 'cs_' . $environment->getCurrentModule() . '_' . $environment->getCurrentFunction() . '_controller';
 			require_once('classes/controller/' . $environment->getCurrentFunction() . '/' . $controller_name . '.php');
 		}
-		
+
 		if($c_smarty) {
 			$controller = new $controller_name($environment);
 			$controller->processTemplate();
@@ -924,7 +930,7 @@ if(isset($c_smarty) && $c_smarty === true) {
 } else {
 	// with or without modifiying options
 	$with_modifying_actions = $context_item_current->isOpen();
-	
+
 	if ( $environment->isOutputMode('XML') ) {
 	   $params = array();
 	   $params['environment'] = $environment;
@@ -1015,17 +1021,17 @@ if(isset($c_smarty) && $c_smarty === true) {
 	      }
 	   }
 	}
-	
+
 	if ( isset($session) ) {
 	   $left_menue_status = $session->getValue('left_menue_status');
 	   if ( isset($_GET['left_menue']) and !empty($_GET['left_menue']) ){
 	      $session->setValue('left_menue_status', $_GET['left_menue']);
 	   }
 	}
-	
+
 	if ( $environment->isOutputModeNot('XML') and $environment->isOutputModeNot('JSON') and $environment->isOutputModeNot('BLANK')) {
 	   $page->setCurrentUser($environment->getCurrentUserItem());
-	
+
 	   // set title
 	   $title = $context_item_current->getTitle();
 	   if ($context_item_current->isProjectRoom() and $context_item_current->isTemplate()) {
@@ -1033,7 +1039,7 @@ if(isset($c_smarty) && $c_smarty === true) {
 	   } elseif ($context_item_current->isClosed()) {
 	      $title .= ' ('.$translator->getMessage('PROJECTROOM_CLOSED').')';
 	   }
-	
+
 	   $user = $environment->getCurrentUserItem();
 	   if ( $context_item_current->isPrivateRoom() and $user->isGuest() ) {
 	      $page->setRoomName($translator->getMessage('COMMON_FOREIGN_ROOM'));
@@ -1052,7 +1058,7 @@ if(isset($c_smarty) && $c_smarty === true) {
 	      $page->setPageName($tempMessage);
 	   }
 	}
-	
+
 	// display login errors
 	if ( isset($session) and $session->issetValue('error_array') ) {
 	   $params = array();
@@ -1064,7 +1070,7 @@ if(isset($c_smarty) && $c_smarty === true) {
 	   $session->unsetValue('error_array');
 	   $page->setMyAreaErrorBox($errorbox_left);
 	}
-	
+
 	// check if portal exists
 	if ( !$environment->inServer() and !$environment->inPortal() ) {
 	   $current_portal = $environment->getCurrentPortalItem();
@@ -1079,10 +1085,10 @@ if(isset($c_smarty) && $c_smarty === true) {
 	      $page->setWithoutLeftMenue();
 	   }
 	}
-	
+
 	// AGB
 	$current_user = $environment->getCurrentUserItem();
-	
+
 	// portal AGB
 	$current_context = $environment->getCurrentContextItem();
 	if ( !$current_context->isPortal()
@@ -1100,7 +1106,7 @@ if(isset($c_smarty) && $c_smarty === true) {
 	      }
 	   }
 	}
-	
+
 	// room AGB
 	$show_agb_again = false;
 	if ( $current_user->isUser() and !$current_user->isRoot() ) {
@@ -1112,7 +1118,7 @@ if(isset($c_smarty) && $c_smarty === true) {
 	      $show_agb_again = true;
 	   }
 	}
-	
+
 	// agb, errorbox or include page
 	if ( $current_context->isLocked()
 	     and !( $environment->getCurrentModule() == 'room'
@@ -1177,7 +1183,7 @@ if(isset($c_smarty) && $c_smarty === true) {
 	      $plugin_module = $environment->getCurrentModule();
 	      $plugin_function = $environment->getCurrentFunction();
 	   }
-	
+
 	   if ( !file_exists('pages/'.$current_module.'_'.$current_function.'.php') ) {
 	      $params = array();
 	      $params['environment'] = $environment;
@@ -1186,7 +1192,7 @@ if(isset($c_smarty) && $c_smarty === true) {
 	      unset($params);
 	      $errorbox->setText('The page '.$current_module.'_'.$current_function.' cannot be found!');
 	      $page->add($errorbox);
-	
+
 	      $current_user = $environment->getCurrentUserItem();
 	      if (!isset($current_user) or $current_user->getUserID() == '') {
 	         $page->setWithoutPersonalArea();
@@ -1200,15 +1206,15 @@ if(isset($c_smarty) && $c_smarty === true) {
 	      include('pages/'.$current_module.'_'.$current_function.'.php');
 	   }
 	}
-	
+
 	if ( $environment->isOutputModeNot('XML') and $environment->isOutputModeNot('JSON') and $environment->isOutputModeNot('BLANK')) {
-	
+
 	   // set navigation links
 	   $current_room_modules = $context_item_current->getHomeConf();
 	   if (!empty($current_room_modules)) {
 	      $room_modules =  explode(',',$current_room_modules);
 	   }
-	
+
 	   // das folgende nur, wenn der Raum auch offen ist
 	   // ansonsten hinweis
 	   // TBD
@@ -1276,21 +1282,21 @@ if(isset($c_smarty) && $c_smarty === true) {
 	         }
 	      }
 	   }
-	
+
 	   // authentication (bookmarks)
 	   $current_user = $environment->getCurrentUserItem();
 	   if (!$current_user->isUser() and !$context_item_current->isOpenForGuests()) {
 	      $page->setWithoutNavigationLinks();
 	   }
-	
+
 	   if ( isset($_GET['show_profile']) and ($_GET['show_profile'] == 'yes') ) {
 	      include_once('pages/profile_edit.php');
 	   }
-	
+
 	   if ( isset($_GET['show_copies']) and ($_GET['show_copies'] == 'yes') ) {
 	      include_once('pages/copies_index.php');
 	   }
-	
+
 	   if ( $current_function !='edit'
 	        and isset($_GET['attach_view'])
 	        and ($_GET['attach_view'] == 'yes')
@@ -1309,7 +1315,7 @@ if(isset($c_smarty) && $c_smarty === true) {
 	            break;
 	      }
 	   }
-	
+
 	   $password_param = $environment->getValueOfParameter('cs_modus');
 	   if ( !empty($password_param)
 	        and $password_param == 'password_change'
