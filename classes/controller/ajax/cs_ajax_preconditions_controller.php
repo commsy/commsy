@@ -25,8 +25,23 @@
 			if(isset($this->_data['security'])) {
 				$return['security'] = $this->getSecurityPreconditions($this->_data['security']);
 			}
+			if(isset($this->_data['i18n'])) {
+				$return['i18n'] = $this->getI18NPreconditions($this->_data['i18n']);
+			}
 			
 			echo json_encode($return);
+		}
+		
+		private function getI18NPreconditions($data) {
+			$return = array();
+			
+			$translator = $this->_environment->getTranslationObject();
+			
+			foreach($data as $value) {
+				$return[$value] = $translator->getMessage($value);
+			}
+			
+			return $return;
 		}
 		
 		private function getTemplatePreconditions($data) {

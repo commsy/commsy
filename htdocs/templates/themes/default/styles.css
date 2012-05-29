@@ -3249,7 +3249,7 @@ a.tab_navigation{
 
 div.breadcrumb_room_area .ui-state-highlight {
 	height: 73px;
-	width: 220px;
+	width: 210px;
 	margin: 5px 10px;
 	display: block;
 	float: left;
@@ -3325,7 +3325,7 @@ a.room_change_item {
 }
 
 div.room_dummy {
-	height: 73px;
+	height: 87px;
 	width: 210px;
 	border: 1px dotted navy;
 	margin: 5px 10px;

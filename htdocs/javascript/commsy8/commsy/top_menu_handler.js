@@ -11,6 +11,8 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 		isExpanded: false,
 		commsy_function: null,
 		cid: null,
+		objects: null,
+		preconditions: null,
 
 		init: function(commsy_functions, parameters) {
 			this.commsy_functions = commsy_functions;
@@ -22,6 +24,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 
 		setPreconditions: function(commsy_functions, callback, parameters) {
 			var preconditions = {
+					'i18n':	['COMMON_NEW_BLOCK', 'COMMON_SAVE_BUTTON']
 			};
 
 			// register preconditions
@@ -31,6 +34,9 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 		setupMenus: function(preconditions, parameters) {
 			var handle = parameters.handle;
 			var objects = parameters.objects;
+			
+			handle.preconditions = preconditions;
+			handle.objects = objects;
 
 			// register all trigger
 			jQuery.each(objects, function() {
@@ -89,6 +95,22 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 				handle.isExpanded = false;
 			}
 
+			return false;
+		},
+		
+		close: function() {
+			var handle = this;
+			
+			// remove popup html from dom
+			jQuery('div#popup_wrapper').remove();
+			
+			jQuery.each(handle.objects, function() {
+				this.trigger.removeClass(this.active_class);
+				this.menu.css('display', 'none');
+			});
+
+			handle.isExpanded = false;
+			
 			return false;
 		},
 
@@ -449,7 +471,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 					}));
 				});
 			});
-
+			
 			// add new block area
 			jQuery('div#tm_dropmenu_breadcrumb div#profile_content_row_three div.room_block:last').after(
 			jQuery('<div/>', {
@@ -458,7 +480,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 				jQuery('<a/>', {
 					'id':	'roomlist_append_block',
 					'href':	'#',
-					'html':	'___COMMON_NEW_BLOCK___'
+					'html':	handle.preconditions.i18n['COMMON_NEW_BLOCK']
 				})));
 
 			// register new block
@@ -472,7 +494,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 				jQuery('<a/>', {
 					'id':	'roomlist_save',
 					'href':	'#',
-					'html':	'___COMMON_SAVE_BUTTON___'
+					'html':	handle.preconditions.i18n['COMMON_SAVE_BUTTON']
 				}))).append(
 			jQuery('<div/>', {
 				'class':	'clear'
@@ -572,6 +594,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 				},
 				success: function(data, status) {
 					if(data.status === 'success') {
+						handle.close();
 					}
 				}
 			});
@@ -582,13 +605,15 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 
 		setupPopup: function() {
 			var handle = this;
-
-			/*
+			
 			// register click for close button
-			jQuery('a[id="popup_close"]').click(function() {
+			jQuery('a#popup_close').click(function() {
 				handle.close();
+				
 				return false;
-			});
+			})
+			
+			/*
 
 			// register click for abort button
 			jQuery('input[id="popup_button_abort"]').click(function() {
