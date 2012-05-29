@@ -153,7 +153,7 @@ define(["libs/jQuery/jquery-1.7.1.min"], function() {
 				this.registerModule('commsy/noticed_overlay', 'a[class="new_item"]');
 			}
 
-			// ajax popup handler
+			// ajax rubric popup handler
 			var new_objects = jQuery('a[id="create_new"]');
 			var edit_objects = jQuery('a[id="action_edit"]');
 			var objects = [];
@@ -165,7 +165,10 @@ define(["libs/jQuery/jquery-1.7.1.min"], function() {
 				module:		this.getURLParam('mod')*/
 			};
 
-			this.registerModule('commsy/ajax_popup_handler', handling);
+			this.registerModule('commsy/ajax_rubric_popup_handler', handling);
+			
+			// ajax popup handler
+			this.registerModule('commsy/ajax_popup_handler', {objects: jQuery('.ajax_popup')});
 
 			// tag popup handler
 			var objects = jQuery('a#edit_buzzwords');

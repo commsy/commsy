@@ -31,8 +31,10 @@
 				}
 				$item = $manager->getItem($item_id);
 			}
+			
+			// TODO: implement - users are not allowed to remove themself from the "All Members" group
+			
 			// get ids of linked items
-
 			$selected_ids = $this->getLinkedItemIDArray($item);
 
 			// update id array
@@ -316,6 +318,7 @@
 				$entry['title']				= $item->getTitle();
 				$entry['modification_date']	= $item->getModificationDate();
 				$entry['modificator']		= $item->getModificatorItem()->getFullName();
+				$entry['system_label']		= $item->isSystemLabel();
 
 				$entry['checked'] = false;
 				if(in_array($item->getItemID(), $selected_ids)) $entry['checked'] = true;
