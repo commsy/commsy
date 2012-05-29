@@ -59,8 +59,8 @@
 
 					<div id="popup_tabs">
 						<div class="tab_navigation">
-							{if $popup.is_owner == true}<a href="" class="pop_tab">___COMMON_RIGHTS___</a>{/if}
-							<a href="" id="popup_netnavigation_attach_new" class="pop_tab">___COMMON_ATTACHED_ENTRIES___</a>
+							{if $popup.is_owner == true}<a href="" class="pop_tab_active">___COMMON_RIGHTS___</a>{/if}
+							<a href="" id="popup_netnavigation_attach_new" class="{if $popup.is_owner == true}pop_tab{else}pop_tab_active{/if}">___COMMON_ATTACHED_ENTRIES___</a>
 							<a href="" class="pop_tab">___COMMON_GROUPROOM___</a>
 							<div class="clear"> </div>
 						</div>

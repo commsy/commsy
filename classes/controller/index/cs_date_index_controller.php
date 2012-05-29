@@ -361,43 +361,19 @@
 				}
 				$date = $converter->text_as_html_short($date);
 
-
-
-
-				/**
-				 *if ($item->isNotActivated()){
-					$title = $item->getTitle();
-					$title = $this->_compareWithSearchText($title);
-					$user = $this->_environment->getCurrentUser();
-					if($item->getCreatorID() == $user->getItemID() or $user->isModerator()){
-					$params = array();
-					$params['iid'] = $item->getItemID();
-					$title = ahref_curl( $this->_environment->getCurrentContextID(),
-										CS_DATE_TYPE,
-										'detail',
-										$params,
-										$title,
-										'','', '', '', '', '', '', '',
-										CS_DATE_TYPE.$item->getItemID());
-					unset($params);
-					}
-					$activating_date = $item->getActivatingDate();
-					if (strstr($activating_date,'9999-00-00')){
-					$title .= BR.$this->_translator->getMessage('COMMON_NOT_ACTIVATED');
-					}else{
-					$title .= BR.$this->_translator->getMessage('COMMON_ACTIVATING_DATE').' '.getDateInLang($item->getActivatingDate());
-					}
-					$title = '<span class="disabled">'.$title.'</span>';
-					$html .= '      <td '.$style.'>'.$title.LF;
-				}else{
-					if($with_links) {
-					$html .= '      <td '.$style.'>'.$this->_getItemTitle($item).$fileicons.LF;
-					} else {
-					$title = $this->_text_as_html_short($item->getTitle());
-					$html .= '      <td '.$style.'>'.$title.LF;
-					}
-				}
-				 */
+				$moddate = $item->getModificationDate();
+				if ( $item->getCreationDate() <> $item->getModificationDate() and !strstr($moddate,'9999-00-00')){
+         			$mod_date = $this->_environment->getTranslationObject()->getDateInLang($item->getModificationDate());
+      			} else {
+         			$mod_date = $this->_environment->getTranslationObject()->getDateInLang($item->getCreationDate());
+      			}
+	            $activated_text =  '';
+	            $activating_date = $item->getActivatingDate();
+	            if (strstr($activating_date,'9999-00-00')){
+	               $activated_text = $this->_environment->getTranslationObject()->getMessage('COMMON_NOT_ACTIVATED');
+	            }else{
+	               $activated_text = $this->_environment->getTranslationObject()->getMessage('COMMON_ACTIVATING_DATE').' '.$this->_environment->getTranslationObject()->getDateInLang($item->getActivatingDate());
+	            }
 			   	$item_array[] = array(
 					'iid'				=> $item->getItemID(),
 					'title'				=> $view->_text_as_html_short($item->getTitle()),
@@ -410,6 +386,8 @@
 					'noticed'			=> $noticed_text,
 					'attachment_count'	=> $file_count,
 					'attachment_infos'	=> $attachment_infos,
+					'activated_text'	=> $activated_text,
+					'creator_id'		=> $item->getCreatorItem()->getItemID(),
 					'activated'			=> !$item->isNotActivated()
 				);
 

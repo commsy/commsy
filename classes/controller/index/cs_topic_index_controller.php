@@ -291,6 +291,11 @@ if ( !empty($ref_iid) and $mode == 'attached' ){
 				$topic_manager->setSortOrder($this->_list_parameter_arrray['sort']);
 			}
 
+			if ( $this->_list_parameter_arrray['sel_activating_status'] == 2 ) {
+   				$topic_manager->showNoNotActivatedEntries();
+			}
+
+
 			/*
 if ( !empty($search) ) {
    $topic_manager->setSearchLimit($search);
@@ -410,6 +415,19 @@ if ($mode=='print'){
 					$file = $file_list->getNext();
 				}
  				$noticed_text = $this->_getItemChangeStatus($item);
+				$moddate = $item->getModificationDate();
+				if ( $item->getCreationDate() <> $item->getModificationDate() and !strstr($moddate,'9999-00-00')){
+         			$mod_date = $this->_environment->getTranslationObject()->getDateInLang($item->getModificationDate());
+      			} else {
+         			$mod_date = $this->_environment->getTranslationObject()->getDateInLang($item->getCreationDate());
+      			}
+	            $activated_text =  '';
+	            $activating_date = $item->getActivatingDate();
+	            if (strstr($activating_date,'9999-00-00')){
+	               $activated_text = $this->_environment->getTranslationObject()->getMessage('COMMON_NOT_ACTIVATED');
+	            }else{
+	               $activated_text = $this->_environment->getTranslationObject()->getMessage('COMMON_ACTIVATING_DATE').' '.$this->_environment->getTranslationObject()->getDateInLang($item->getActivatingDate());
+	            }
 				$item_array[] = array(
 					'iid'				=> $item->getItemID(),
 					'title'				=> $view->_text_as_html_short($item->getTitle()),
@@ -418,7 +436,10 @@ if ($mode=='print'){
 					'noticed'			=> $noticed_text,
 					'attachment_infos'	=> $attachment_infos,
 					'attachment_count'	=> $item->getFileList()->getCount(),
-					'linked_entries'	=> count($item->getAllLinkedItemIDArray())
+					'linked_entries'	=> count($item->getAllLinkedItemIDArray()),
+					'activated'			=> !$item->isNotActivated(),
+					'activated_text'	=> $activated_text,
+					'creator_id'		=> $item->getCreatorItem()->getItemID()
 				);
 
 				$item = $list->getNext();

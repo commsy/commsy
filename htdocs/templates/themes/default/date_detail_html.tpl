@@ -76,8 +76,16 @@
             <p>
                 <div class="user_profil_blocks">
                     {* formal data *}
-                    <table>
-						{if $detail.content.privat}
+                   <table class="detail_content_table">
+		 				{if !empty($detail.content.formal)}
+							{foreach $detail.content.formal as $formal}
+								<tr>
+									<td><h4>{$formal[0]}:</h4></td>
+									<td>{$formal[1]}</td>
+								</tr>
+							{/foreach}
+						{/if}
+ 						{if $detail.content.privat}
                     		<tr>
                                 <td class="label"><h4>___COMMON_PRIVATE_DATE___</h4></td>
                                 <td>___COMMON_NOT_ACCESSIBLE___</td>

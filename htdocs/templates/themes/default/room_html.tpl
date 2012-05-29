@@ -252,6 +252,23 @@
 						{/if}
 					{/block}
            		</div>
+           		{elseif $environment.module == 'topic' }
+           			{if $list.restriction_text_parameters}
+           				<div id="rc_portlet_area">
+						    <div class="portlet_rc">
+								<h2>___COMMON_RESTRICTIONS___</h2>
+								<div class="clear"> </div>
+								<div class="portlet_rc_body">
+									{foreach $list.restriction_text_parameters as $restriction}
+										<span class="restriction" title="{$restriction.name}">{$restriction.name|truncate:25:'...':true}
+									   		<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$restriction.link_parameter}"><img src="{$basic.tpl_path}img/cross.gif" alt="x" border="0"/></a>
+									   	</span>
+									{/foreach}
+								</div>
+							</div>
+						</div>
+				{/if}
+
            		{/if}
             </div> <!-- Ende right_column -->
 

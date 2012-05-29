@@ -43,11 +43,8 @@ class cs_popup_announcement_controller implements cs_rubric_popup_controller {
 
 					if($item->isNotActivated()) {
 						$this->_popup_controller->assign('item', 'is_not_activated', true);
-
-						$activating_date = $item->getActivatingDate();
-
-						$this->_popup_controller->assign('item', 'activating_date', mb_substr($activating_date, 0, 10));
-						$this->_popup_controller->assign('item', 'activating_time', mb_substr($activating_date, -8));
+						$this->_popup_controller->assign('item', 'activating_date', getDateInLang($item->getActivatingDate()));
+						$this->_popup_controller->assign('item', 'activating_time', getTimeInLang($item->getActivatingDate()));
 					}
 				}
 
@@ -112,7 +109,7 @@ class cs_popup_announcement_controller implements cs_rubric_popup_controller {
                 if ( isset($form_data['title']) ) {
                     $announcement_item->setTitle($form_data['title']);
                 }
-                
+
                 if ( isset($form_data['description']) ) {
                     $announcement_item->setDescription($form_data['description']);
                 }
@@ -171,7 +168,7 @@ class cs_popup_announcement_controller implements cs_rubric_popup_controller {
 
                 // tags
                 $announcement_item->setTagListByID($form_data['tags']);
-                
+
                 // Save item
                 $announcement_item->save();
 
@@ -194,7 +191,7 @@ class cs_popup_announcement_controller implements cs_rubric_popup_controller {
                 // Add modifier to all users who ever edited this item
                 $manager = $environment->getLinkModifierItemManager();
                 $manager->markEdited($announcement_item->getItemID());
-                
+
                 // set return
                 $this->_popup_controller->setSuccessfullItemIDReturn($announcement_item->getItemID());
             }

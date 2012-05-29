@@ -446,6 +446,22 @@ class cs_date_detail_controller extends cs_detail_controller {
 			$color = $converter->text_as_html_short($color);
 		}
 
+	    if ($this->_item->isNotActivated()){
+	        $activating_date = $this->_item->getActivatingDate();
+	        $text = '';
+	        if (strstr($activating_date,'9999-00-00')){
+	           $activating_text = $translator->getMessage('COMMON_NOT_ACTIVATED');
+	        }else{
+	           $activating_text = $translator->getMessage('COMMON_ACTIVATING_DATE').' '.getDateInLang($this->_item->getActivatingDate());
+	        }
+			$temp_array = array();
+			$temp_array[] = $translator->getMessage('COMMON_RIGHTS');
+			$temp_array[] = $activating_text;
+			$formal[] = $temp_array;
+	    }
+	    $temp_array = array();
+
+
         return array(
 				'formal'			=> $formal,
 				'privat'			=> $this->_item->issetPrivatDate(),

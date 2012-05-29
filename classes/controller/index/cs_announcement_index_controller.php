@@ -147,10 +147,10 @@
 
 			$this->_page_text_fragment_array['count_entries'] = $this->getCountEntriesText($this->_list_parameter_arrray['from'],$this->_list_parameter_arrray['interval'], $count_all, $count_all_shown);
             $this->_browsing_icons_parameter_array = $this->getBrowsingIconsParameterArray($this->_list_parameter_arrray['from'],$this->_list_parameter_arrray['interval'], $count_all_shown);
-            
+
             $session = $this->_environment->getSessionItem();
             $session->setValue('cid'.$environment->getCurrentContextID().'_announcement_index_ids', $ids);
-            
+
 			$id_array = array();
 			$item = $list->getFirst();
 			while ($item){
@@ -196,9 +196,9 @@
 						$assessment_stars_text_array[$i] = 'active';
 					}
 				}
-				
+
 				// files
-				$attachment_infos = array();	
+				$attachment_infos = array();
 				$file_count = $item->getFileList()->getCount();
 				$file_list = $item->getFileList();
 
@@ -217,7 +217,21 @@
 					$attachment_infos[] = $info;
 					$file = $file_list->getNext();
 				}
-				
+
+				$moddate = $item->getModificationDate();
+				if ( $item->getCreationDate() <> $item->getModificationDate() and !strstr($moddate,'9999-00-00')){
+         			$mod_date = $this->_environment->getTranslationObject()->getDateInLang($item->getModificationDate());
+      			} else {
+         			$mod_date = $this->_environment->getTranslationObject()->getDateInLang($item->getCreationDate());
+      			}
+	            $activated_text =  '';
+	            $activating_date = $item->getActivatingDate();
+	            if (strstr($activating_date,'9999-00-00')){
+	               $activated_text = $this->_environment->getTranslationObject()->getMessage('COMMON_NOT_ACTIVATED');
+	            }else{
+	               $activated_text = $this->_environment->getTranslationObject()->getMessage('COMMON_ACTIVATING_DATE').' '.$this->_environment->getTranslationObject()->getDateInLang($item->getActivatingDate());
+	            }
+
 				$noticed_text = $this->_getItemChangeStatus($item);
 				$item_array[] = array(
 				'iid'				=> $item->getItemID(),
@@ -227,7 +241,10 @@
 				'assessment_array'  => $assessment_stars_text_array,
 				'noticed'			=> $noticed_text,
 				'attachment_count'	=> $file_count,
-				'attachment_infos'	=> $attachment_infos
+				'attachment_infos'	=> $attachment_infos,
+				'activated'			=> !$item->isNotActivated(),
+				'activated_text'	=> $activated_text,
+				'creator_id'		=> $item->getCreatorItem()->getItemID()
 				);
 
 				$item = $list->getNext();
@@ -240,7 +257,7 @@
 			);
 			return $return;
 		}
-		
+
 		protected function getAdditionalActions(&$perms) {
 		}
 
@@ -250,16 +267,16 @@
 		   $return[] = array('selected' => false, 'disabled' => false, 'id' => '', 'value' => CS_LISTOPTION_DOWNLOAD, 'display' => '___COMMON_LIST_ACTION_DOWNLOAD___');
 			return $return;
 		}
-		
+
 		protected function getAdditionalRestrictionText(){
 			$return = array();
-				
+
 			return $return;
 		}
-		
+
 		protected function getAdditionalRestrictions() {
 			$return = array();
-			
+
 			return $return;
 		}
 	}

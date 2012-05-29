@@ -200,19 +200,35 @@
 					$attachment_infos[] = $info;
 					$file = $file_list->getNext();
 				}
+				$moddate = $item->getModificationDate();
+				if ( $item->getCreationDate() <> $item->getModificationDate() and !strstr($moddate,'9999-00-00')){
+         			$mod_date = $this->_environment->getTranslationObject()->getDateInLang($item->getModificationDate());
+      			} else {
+         			$mod_date = $this->_environment->getTranslationObject()->getDateInLang($item->getCreationDate());
+      			}
+	            $activated_text =  '';
+	            $activating_date = $item->getActivatingDate();
+	            if (strstr($activating_date,'9999-00-00')){
+	               $activated_text = $this->_environment->getTranslationObject()->getMessage('COMMON_NOT_ACTIVATED');
+	            }else{
+	               $activated_text = $this->_environment->getTranslationObject()->getMessage('COMMON_ACTIVATING_DATE').' '.$this->_environment->getTranslationObject()->getDateInLang($item->getActivatingDate());
+	            }
+
 
 				$noticed_text = $this->_getItemChangeStatus($item);
 				$item_array[] = array(
 					'iid'				=> $item->getItemID(),
 					'title'				=> $view->_text_as_html_short($item->getTitle()),
-					'date'				=> $this->_environment->getTranslationObject()->getDateInLang($item->getModificationDate()),
+					'date'				=> $mod_date,
 					'modificator'		=> $this->getItemModificator($item),
 					'noticed'			=> $noticed_text,
 					'assessment_array'	=> $assessment_stars_text_array,
 					'attachment_count'	=> $file_count,
 					'attachment_infos'	=> $attachment_infos,
 					'workflow'			=> $this->getWorkflowInformation($item),
-					'activated'			=> !$item->isNotActivated()
+					'activated'			=> !$item->isNotActivated(),
+					'activated_text'	=> $activated_text,
+					'creator_id'		=> $item->getCreatorItem()->getItemID()
 				);
 
 				$item = $list->getNext();

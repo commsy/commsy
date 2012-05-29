@@ -269,7 +269,6 @@
 
 
 			$count = 0;
-
 			if(isset($subitems) && !$subitems->isEmpty()) {
 				$count = $subitems->getCount();
 
@@ -528,6 +527,17 @@
 			$converter = $this->_environment->getTextConverter();
 
 			$formal_data = array();
+		    if ($this->_item->isNotActivated()){
+		        $activating_date = $this->_item->getActivatingDate();
+		        $text = '';
+		        if (strstr($activating_date,'9999-00-00')){
+		           $activating_text = $this->_environment->getTranslationObject()->getMessage('COMMON_NOT_ACTIVATED');
+		        }else{
+		           $activating_text = $this->_environment->getTranslationObject()->getMessage('COMMON_ACTIVATING_DATE').' '.getDateInLang($this->_item->getActivatingDate());
+		        }
+				$temp_array = array();
+				$return['access'] = $activating_text;
+		    }
 
 			// date
 			$original_date = $this->_item->getDate();

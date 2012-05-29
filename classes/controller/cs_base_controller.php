@@ -149,6 +149,7 @@
 			$this->assign('environment', 'module', $this->_environment->getCurrentModule());
 			$this->assign('environment', 'params', $this->_environment->getCurrentparameterString());
 			$this->assign('environment', 'username', $current_user->getFullName());
+			$this->assign('environment', 'user_item_id', $current_user->getItemID());
 			$this->assign('environment', 'user_picture', $current_user->getPicture());
 			$this->assign('environment', 'room_type_commnunity', $current_context->isCommunityRoom());
 			$this->assign('environment', 'is_guest', $current_user->isReallyGuest());

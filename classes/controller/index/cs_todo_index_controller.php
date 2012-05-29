@@ -118,8 +118,8 @@
 				if ( !empty($this->_list_parameter_arrray['search']) ) {
 	   				$todo_manager->setSearchLimit($this->_list_parameter_arrray['search']);
 				}
-				if($sel_activating_status == 2) {
-					$todo_manager->showNoNotActivatedEntries();
+				if ( $this->_list_parameter_arrray['sel_activating_status'] == 2 ) {
+	   				$todo_manager->showNoNotActivatedEntries();
 				}
 
 				// Find current status selection
@@ -263,6 +263,20 @@
 					}
 				}
 
+				$moddate = $item->getModificationDate();
+				if ( $item->getCreationDate() <> $item->getModificationDate() and !strstr($moddate,'9999-00-00')){
+         			$mod_date = $this->_environment->getTranslationObject()->getDateInLang($item->getModificationDate());
+      			} else {
+         			$mod_date = $this->_environment->getTranslationObject()->getDateInLang($item->getCreationDate());
+      			}
+	            $activated_text =  '';
+	            $activating_date = $item->getActivatingDate();
+	            if (strstr($activating_date,'9999-00-00')){
+	               $activated_text = $this->_environment->getTranslationObject()->getMessage('COMMON_NOT_ACTIVATED');
+	            }else{
+	               $activated_text = $this->_environment->getTranslationObject()->getMessage('COMMON_ACTIVATING_DATE').' '.$this->_environment->getTranslationObject()->getDateInLang($item->getActivatingDate());
+	            }
+
 				$item_array[] = array(
 					'iid'				=> $item->getItemID(),
 					'title'				=> $view->_text_as_html_short($item->getTitle()),
@@ -275,7 +289,10 @@
 					'process'			=> $this->_getProcess($item),
 					'assessment_array'	=> $assessment_stars_text_array,
 					'attachment_count'	=> $file_count,
-					'attachment_infos'	=> $attachment_infos
+					'attachment_infos'	=> $attachment_infos,
+					'activated_text'	=> $activated_text,
+					'creator_id'		=> $item->getCreatorItem()->getItemID(),
+					'activated'			=> !$item->isNotActivated()
 				);
 
 				$item = $list->getNext();

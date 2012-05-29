@@ -154,8 +154,23 @@ if ($type != CS_DISCUSSION_TYPE) {
 
 		protected function getDetailContent() {
 			$disc_articles = $this->getDiscArticleContent();
+		    if ($this->_item->isNotActivated()){
+		        $activating_date = $this->_item->getActivatingDate();
+		        $text = '';
+		        if (strstr($activating_date,'9999-00-00')){
+		           $activating_text = $this->_environment->getTranslationObject()->getMessage('COMMON_NOT_ACTIVATED');
+		        }else{
+		           $activating_text = $this->_environment->getTranslationObject()->getMessage('COMMON_ACTIVATING_DATE').' '.getDateInLang($this->_item->getActivatingDate());
+		        }
+				$temp_array = array();
+				$temp_array[] = $this->_environment->getTranslationObject()->getMessage('COMMON_RIGHTS');
+				$temp_array[] = $activating_text;
+				$formal[] = $temp_array;
+		    }
+		    $temp_array = array();
 
 			$return = array(
+				'formal'			=> $formal,
 				'item_id'			=> $this->_item->getItemID(),
 				'discussion'		=> $this->getDiscussionContent(),
 				'disc_articles'		=> $disc_articles,

@@ -72,7 +72,7 @@
 		{/if}
 		<div class="{if $item@iteration is odd}row_odd{else}row_even{/if} {if $item@iteration is odd}odd_sep_{$sep}{else}even_sep_{$sep}{/if}"> <!-- Start Reihe -->
 			<div class="column_new_list">
-				{if $item.noticed.show_info}
+				{if $item.noticed.show_info && $item.activated}
 					<a class="new_item_2">
 					{if $item.noticed.status == "new" and ($item.noticed.annotation_info.count_new or $item.noticed.annotation_info.count_changed)}
 					<img title="" class="new_item_2" src="{$basic.tpl_path}img/flag_neu_a.gif" alt="*" /></a>
@@ -155,7 +155,12 @@
 					{if $item.activated}
 						<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&{$environment.params}&iid={$item.iid}">{$item.title}</a>
 					{else}
-						{$item.title}</br>___COMMON_NOT_ACTIVATED___
+						{if $environment.is_moderator || $environment.user_item_id == $item.creator_id}
+							<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&{$environment.params}&iid={$item.iid}">{$item.title}</a>
+						{else}
+							{$item.title}
+						{/if}
+						<br/>{$item.activated_text}
 					{/if}
 				</p>
 			</div>
@@ -163,7 +168,7 @@
 				<p>
 					<a href="" class="attachment">{$item.attachment_count}</a>
 				</p>
-				{if $item.attachment_count > 0}
+				{if $item.attachment_count > 0  && $item.activated}
 					<div class="tooltip tooltip_with_400">
 						<div class="tooltip_inner tooltip_inner_with_400">
 							<div class="tooltip_title">

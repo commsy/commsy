@@ -203,6 +203,20 @@
 			$current_user = $this->_environment->getCurrentUserItem();
 
 			$formal_data = array();
+		    if ($this->_item->isNotActivated()){
+		        $activating_date = $this->_item->getActivatingDate();
+		        $text = '';
+		        if (strstr($activating_date,'9999-00-00')){
+		           $activating_text = $translator->getMessage('COMMON_NOT_ACTIVATED');
+		        }else{
+		           $activating_text = $translator->getMessage('COMMON_ACTIVATING_DATE').' '.getDateInLang($this->_item->getActivatingDate());
+		        }
+				$temp_array = array();
+				$temp_array[] = $translator->getMessage('COMMON_RIGHTS');
+				$temp_array[] = $activating_text;
+				$return[] = $temp_array;
+		    }
+		    $temp_array = array();
 			$temp_array[0] = $translator->getMessage('ANNOUNCEMENT_SHOW_HOME_DATE');
 			$temp_array[1] = getDateTimeInLang($this->_item->getSeconddateTime());
 			$return[] = $temp_array;
@@ -235,19 +249,6 @@
 				$return[] = $temp_array;
 
 			}
-		    if ($this->_item->isNotActivated()){
-		        $activating_date = $this->_item->getActivatingDate();
-		        $text = '';
-		        if (strstr($activating_date,'9999-00-00')){
-		           $activating_text = $translator->getMessage('COMMON_NOT_ACTIVATED');
-		        }else{
-		           $activating_text = $translator->getMessage('COMMON_ACTIVATING_DATE').' '.getDateInLang($this->_item->getActivatingDate());
-		        }
-				$temp_array = array();
-				$temp_array[] = $translator->getMessage('COMMON_RIGHTS');
-				$temp_array[] = $activating_text;
-				$return[] = $temp_array;
-		    }
 			return $return;
 		}
 

@@ -250,6 +250,20 @@
 					$file = $file_list->getNext();
 				}
 
+				$moddate = $item->getModificationDate();
+				if ( $item->getCreationDate() <> $item->getModificationDate() and !strstr($moddate,'9999-00-00')){
+         			$mod_date = $this->_environment->getTranslationObject()->getDateInLang($item->getModificationDate());
+      			} else {
+         			$mod_date = $this->_environment->getTranslationObject()->getDateInLang($item->getCreationDate());
+      			}
+	            $activated_text =  '';
+	            $activating_date = $item->getActivatingDate();
+	            if (strstr($activating_date,'9999-00-00')){
+	               $activated_text = $this->_environment->getTranslationObject()->getMessage('COMMON_NOT_ACTIVATED');
+	            }else{
+	               $activated_text = $this->_environment->getTranslationObject()->getMessage('COMMON_ACTIVATING_DATE').' '.$this->_environment->getTranslationObject()->getDateInLang($item->getActivatingDate());
+	            }
+
 				$item_array[] = array(
 					'iid'				=> $item->getItemID(),
 					'title'				=> $view->_text_as_html_short($item->getTitle()),
@@ -261,6 +275,8 @@
 					'article_unread'	=> $all_and_unread_articles['unread'],
 					'attachment_count'	=> $file_count,
 					'attachment_infos'	=> $attachment_infos,
+					'activated_text'	=> $activated_text,
+					'creator_id'		=> $item->getCreatorItem()->getItemID(),
 					'activated'			=> !$item->isNotActivated()
 				);
 

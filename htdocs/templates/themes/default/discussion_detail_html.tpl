@@ -58,6 +58,18 @@
 		</div>
 
 		<div id="item_legend"> <!-- Start item_legend -->
+			{if !empty($detail.content.formal)}
+				<div class="detail_content" style="min-height:10px; margin-bottom:1px;">
+					<table class="detail_content_table">
+						{foreach $detail.content.formal as $formal}
+							<tr>
+								<td><h4>{$formal[0]}:</h4></td>
+								<td>{$formal[1]}</td>
+							</tr>
+						{/foreach}
+					</table>
+				</div>
+			{/if}
 			{block name=discussion_short_articles}
 				{section name="articles_short" loop=$detail.content.disc_articles}
 					{$article = $detail.content.disc_articles[articles_short]}

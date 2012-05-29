@@ -71,14 +71,12 @@
 			<div class="detail_content">
 				{* formal data *}
 				<table class="detail_content_table">
+					{if !empty($detail.content.formal.access)}
+					{/if}
 					<tr>
-						<td class="label"><h4>___TODO_VALIDITY_DATE___:</h4></td>
+						<td class="label"><h4>___COMMON_RIGHTS___:</h4></td>
 						<td>
-							{if $detail.content.formal.date == 'no_end'}
-								___TODO_NO_END_DATE_LONG___
-							{else}
-								{$detail.content.formal.date}
-							{/if}
+							{$detail.content.formal.access}
 						</td>
 					</tr>
 					<tr>

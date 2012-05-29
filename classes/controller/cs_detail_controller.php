@@ -1306,7 +1306,13 @@
 		        $return['read_since_modification_count'] = $read_since_modification_count;
 		    }
 
-		    $return['last_modification_date'] = $translator->getDateTimeInLang($item->getModificationDate());
+			$moddate = $item->getModificationDate();
+			if ( $item->getCreationDate() <> $item->getModificationDate() and !strstr($moddate,'9999-00-00')){
+     			$mod_date = $this->_environment->getTranslationObject()->getDateInLang($item->getModificationDate());
+  			} else {
+     			$mod_date = $this->_environment->getTranslationObject()->getDateInLang($item->getCreationDate());
+  			}
+ 		    $return['last_modification_date'] = $mod_date;
 		    $return['creation_date'] = $translator->getDateTimeInLang($item->getCreationDate());
 		    $return['item_id'] = $item->getItemID();
 
