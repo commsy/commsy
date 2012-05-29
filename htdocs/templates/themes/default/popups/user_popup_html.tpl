@@ -170,7 +170,7 @@
 							{/if}
 
 
-							<div class="settings_area hidden">
+							<div class="settings_area {if $popup.is_owner == true}hidden{/if}">
 
 							{*			<div id="popup_netnavigation_outer_bottom" class="popup_netnavigation_outer">
 											<a id="popup_netnavigation_attach_new" href="#" title="___COMMON_ITEM_ATTACH___">
