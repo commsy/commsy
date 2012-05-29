@@ -41,7 +41,7 @@
 				$is_owner = false;
 				$this->assign('popup', 'edit', true);
                 $creator = $this->_item->getCreatorItem();
-                if ($current_user->getItemID() == $creator->getItemID() || $current_user->isModerator()) {
+                if ($current_user->getItemID() == $creator->getItemID() || $current_user->isModerator() || ($this->_item->getItemType == CS_USER_TYPE && $this->_item->getItemID() == $current_user->getItemID())) {
 					$is_owner = true;
                 }
 				$this->assign('popup','is_owner', $is_owner);
