@@ -174,8 +174,13 @@ if ( !empty($_GET['iid']) ) {
             // Maybe the problem is Apache is trying to compress the output, so:
             global $c_webserver;
             if(isset($c_webserver) and $c_webserver != 'lighttpd'){
-            	@apache_setenv('no-gzip', 1);
-               @ini_set('zlib.output_compression', 0);
+            	if(function_exists('apache_setenv')) {
+            		@apache_setenv('no-gzip', 1);
+            	} else {
+            		@ini_set('output_buffering', 'Off');
+            	}
+            	
+            	@ini_set('zlib.output_compression', 'Off');
             }
             // Maybe the client doesn't know what to do with the output so send a bunch of these headers:
 
