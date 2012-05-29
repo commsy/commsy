@@ -10,6 +10,11 @@
 	    	<img src="{$basic.tpl_path}img/btn_add_new.gif" alt="___COMMON_NEW_ITEM___" />
 	    </a>
     {/if}
+    {if $index.actions.user}
+		<a id="own_user" href="commsy.php?cid={$environment.cid}&mod=user&fct=detail&iid={$index.actions.user_iid}" title="___COMMON_OWN_USER___">
+	    	<img src="{$basic.tpl_path}img/btn_own_user.gif" alt="___COMMON_OWN_USER___" />
+	    </a>
+    {/if}
 {/block}
 
 {block name=room_navigation_rubric_title}

@@ -1172,7 +1172,8 @@
 			$current_user = $this->_environment->getCurrentUserItem();
 
 			$return = array(
-				'new'		=> false
+				'new'		=> false,
+				'user'		=> false
 			);
 
 			$this->getAdditionalActions($return);
@@ -1217,6 +1218,11 @@
          $html .= '&nbsp;&nbsp;<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION_NEW',$this->_translator->getMessage('COMMON_NEW_ITEM')).' "class="disabled">'.$image.'</a>'.LF;
 				 */
 			}
+			if($current_module == CS_USER_TYPE and $current_user->isUser()){
+				$return['user'] = true;
+				$return['user_iid'] = $current_user->getItemID();
+			}
+
 			return $return;
 		}
 
