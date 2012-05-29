@@ -18,12 +18,12 @@
 					<div id="popup_content">
 						<div class="input_row">
 							<div class="input_label_100">___COMMON_TITLE___:</div>
-							<input type="text" value="{if isset($item.title)}{$item.title}{/if}" name="form_data[title]" class="size_100" />
+							<input type="text" value="{if isset($item.title)}{$item.title}{/if}" name="form_data[title]" class="size_80" />
 						</div>
 
 						<div class="input_row">
 							<div class="input_label_100">___USER_BIRTHDAY___:</div>
-							<input type="text" value="{if isset($item.birthday)}{$item.birthday}{/if}" name="form_data[birthday]" class="size_100" />
+							<input type="text" value="{if isset($item.birthday)}{$item.birthday}{/if}" name="form_data[birthday]" class="size_80" />
 						</div>
 
 						<div class="input_row">
@@ -101,15 +101,15 @@
 
 						<div class="input_row" style="margin-top:40px;">
 							<div class="input_label_150">___USER_MESSENGER_NUMBERS___:</div>
-							<input type="text" value="{if isset($item.msn)}{$item.msn}{/if}" name="form_data[msn]" class="size_100" /> ___USER_MSN___
+							<input type="text" value="{if isset($item.msn)}{$item.msn}{/if}" name="form_data[msn]" class="size_80" /> ___USER_MSN___
 							<div class="input_container" style="margin-left:156px; margin-top:10px;">
-								<input type="text" value="{if isset($item.skype)}{$item.skype}{/if}" name="form_data[skype]" class="size_100" /> ___USER_SKYPE___
+								<input type="text" value="{if isset($item.skype)}{$item.skype}{/if}" name="form_data[skype]" class="size_80" /> ___USER_SKYPE___
 							</div>
 							<div class="input_container" style="margin-left:156px; margin-top:10px;">
-								<input type="text" value="{if isset($item.icq)}{$item.icq}{/if}" name="form_data[icq]" class="size_100" /> ___ICQ___
+								<input type="text" value="{if isset($item.icq)}{$item.icq}{/if}" name="form_data[icq]" class="size_80" /> ___ICQ___
 							</div>
 							<div class="input_container" style="margin-left:156px;  margin-top:10px;">
-								<input type="text" value="{if isset($item.yahoo)}{$item.yahoo}{/if}" name="form_data[yahoo]" class="size_100" /> ___USER_YAHOO___
+								<input type="text" value="{if isset($item.yahoo)}{$item.yahoo}{/if}" name="form_data[yahoo]" class="size_80" /> ___USER_YAHOO___
 							</div>
 						</div>
 
