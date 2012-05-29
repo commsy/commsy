@@ -1,10 +1,6 @@
 <span id="detail_assessment"{if !isset($detail.assessment.user_voted) || $detail.assessment.user_voted === false} class="rateable"{/if}>
 	{* average assessment *}
 	{display_assessment assessment=$detail.assessment.average}
-
-	{if isset($detail.assessment.user_voted) && $detail.assessment.user_voted === true}
-		<a href="#" id="assessment_delete_own"><img src="{$basic.tpl_path}img/cross.gif" alt="___COMMON_DELETE_BUTTON___" /></a>
-	{/if}
 </span>
 <div class="tooltip tooltip_with_400" style="z-index:100">
 	<div class="tooltip_inner tooltip_inner_with_400">
@@ -30,7 +26,11 @@
 					<span class="content">___COMMON_ASSESSMENT_OWN_NO___</span>
 				{else}
 					{* display own voting *}
-					<span class="content">___COMMON_ASSESSMENT_OWN___ {$detail.assessment.own_vote}</span>
+					<span class="content">
+						___COMMON_ASSESSMENT_OWN___
+						{$detail.assessment.own_vote}
+						&nbsp;(<a href="#" id="assessment_delete_own">{*<img src="{$basic.tpl_path}img/cross.gif" alt="___COMMON_DELETE_BUTTON___" />*}___COMMON_ASSESSMENT_DELETE___</a>)
+					</span>
 				{/if}
 			</div>
 		</div>
