@@ -5,7 +5,7 @@
 		<div id="tm_wrapper_outer">
 		<div id="tm_wrapper">
 			<div id="tm_icons_bar">
-				{if !$environment.is_guest}<a href="" id="tm_logout" title="Logout">&nbsp;</a>{/if}
+				{if !$environment.is_guest}<a href="commsy.php?cid={$environment.cid}&mod=context&fct=logout&iid={$environment.user_item_id}" id="tm_logout" title="Logout">&nbsp;</a>{/if}
 
 				<div class="clear"></div>
 			</div>
@@ -24,7 +24,7 @@
 						{if $environment.is_guest}
 							login maske
 						{else}
-							<span class="mm_bl"><a href="" id="mm_logout">Abmelden</a></span>
+							<span class="mm_bl"><a href="commsy.php?cid={$environment.cid}&mod=context&fct=logout&iid={$environment.user_item_id}" id="mm_logout">___COMMON_LOGOUT___</a></span>
 
 
 							<span class="mm_br mm_bl"><a href="" class="mm_dropdown">Mein CommSy</a></span>
