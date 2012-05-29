@@ -14,19 +14,23 @@
 			{* TODO: add missing actions *}
 			{if $detail.actions.edit}
 				<a id="action_edit" href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.item_id}">___COMMON_EDIT_ITEM___</a> |
+			{else}
+				<span title="___COMMON_NO_ACTION___" class="disabled_actions">___COMMON_EDIT_ITEM___</span> |
 			{/if}
 			{if $detail.actions.delete}
 				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.item_id}">___COMMON_DELETE_ITEM___</a> |
+			{else}
+				<span title="___COMMON_NO_ACTION___" class="disabled_actions">___COMMON_DELETE_ITEM___</span> |
 			{/if}
 			{if $detail.actions.mail}
 				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.item_id}">___COMMON_EMAIL_TO___</a> |
 			{/if}
-			{if $detail.actions.member=='no_member'}
+			{if $detail.actions.member == 'no_member'}
 				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&iid={$detail.item_id}&group_option=1">___GROUP_ENTER___</a> |
-			{elseif $detail.actions.member=='no_member_false'}
-				<span class="disabled_action">___GROUP_ENTER___</span> |
-			{elseif $detail.actions.member=='member_false'}
-				<span class="disabled_action">___GROUP_LEAVE___</span> |
+			{elseif $detail.actions.member == 'no_member_false'}
+				<span title="___COMMON_NO_ACTION___" class="disabled_action">___GROUP_ENTER___</span> |
+			{elseif $detail.actions.member == 'member_false'}
+				<span title="___COMMON_NO_ACTION___" class="disabled_action">___GROUP_LEAVE___</span> |
 			{else}
 				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&iid={$detail.item_id}&group_option=2">___GROUP_LEAVE___</a> |
 			{/if}

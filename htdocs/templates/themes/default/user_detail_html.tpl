@@ -3,9 +3,7 @@
 {block name=room_detail_content}
 	<div class="item_actions">
 		<div id="top_item_actions">
-			{if $detail.actions.edit}
-				<a class="edit" href="#"><span class="edit_set"> &nbsp; </span></a>
-			{/if}
+			<a class="edit" href="#"><span class="edit_set"> &nbsp; </span></a>
 			<a class="detail" href="#"><span class="details_ia"> &nbsp; </span></a>
 		</div>
 	</div>
@@ -15,6 +13,8 @@
 			{if $detail.actions.edit}
 				<a id="action_edit" href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.item_id}">___COMMON_EDIT_ITEM___</a> |
 				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.item_id}">___COMMON_CLOSE_PARTICIPATION___</a>
+			{else}
+				<span title="___COMMON_NO_ACTION___" class="disabled_actions">___COMMON_EDIT_ITEM___</span>
 			{/if}
 		</div>
 

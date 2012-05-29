@@ -14,9 +14,13 @@
 			{* TODO: add missing actions *}
 			{if $detail.actions.edit}
 				<a id ="action_edit" href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.item_id}">___COMMON_EDIT_ITEM___</a> |
+			{else}
+				<span title="___COMMON_NO_ACTION___" class="disabled_actions">___COMMON_EDIT_ITEM___</span> |
 			{/if}
 			{if $detail.actions.delete}
 				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.content.item_id}">___COMMON_DELETE_ITEM___</a> |
+			{else}
+				<span title="___COMMON_NO_ACTION___" class="disabled_actions">___COMMON_DELETE_ITEM___</span> |
 			{/if}
 			{if $detail.actions.member == 'member'}
 				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&iid={$detail.item_id}&institution_option=2">___GROUP_LEAVE___</a> |

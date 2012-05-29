@@ -43,15 +43,21 @@
 			{* TODO: add missing actions *}
 			{if $detail.actions.edit}
 				<a id="action_edit" href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.item_id}">___COMMON_EDIT_ITEM___</a> |
+			{else}
+				<span title="___COMMON_NO_ACTION___" class="disabled_actions">___COMMON_EDIT_ITEM___</span> |
 			{/if}
 			{if $detail.actions.delete}
 				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.item_id}">___COMMON_DELETE_ITEM___</a> |
+			{else}
+				<span title="___COMMON_NO_ACTION___" class="disabled_actions">___COMMON_DELETE_ITEM___</span> |
 			{/if}
 			{if $detail.actions.mail}
 				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.item_id}">___COMMON_EMAIL_TO___</a> |
 			{/if}
 			{if $detail.actions.copy}
 				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.item_id}">___COMMON_ITEM_COPY_TO_CLIPBOARD___</a> |
+			{else}
+				<span title="___COMMON_NO_ACTION___" class="disabled_actions">___COMMON_ITEM_COPY_TO_CLIPBOARD___</span> |
 			{/if}
 			{if $detail.actions.workflow_read}
 				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&iid={$detail.item_id}&workflow_read=true">___ITEM_WORKFLOW_MARK_READ___</a> |

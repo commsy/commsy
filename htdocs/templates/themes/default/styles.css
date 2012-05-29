@@ -3435,6 +3435,11 @@ print settings
 	font-size: 10px;
 }
 
+.disabled_actions{
+	font-size:10px;
+	color: #393939;
+	}
+
 #wrapper_print {
 	width: 100%;
 }

@@ -34,6 +34,8 @@
 		<div class="fade_in_ground_actions hidden">
 			{if $detail.actions.edit}
 				<a id="action_edit" href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.content.item_id}" title="___COMMON_EDIT_ITEM___">___COMMON_EDIT_ITEM___</a> |
+			{else}
+				<span title="___COMMON_NO_ACTION___" class="disabled_actions">___COMMON_EDIT_ITEM___</span> |
 			{/if}
 			{if $detail.actions.date_leave}
 				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&iid={$detail.content.item_id}&date_option=2" title="___DATE_LEAVE___">___DATE_LEAVE___</a> |
@@ -44,12 +46,16 @@
 			{/if}
 			{if $detail.actions.delete}
 				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail{params params=$detail.actions.delparams}" title="___COMMON_DELETE_ITEM___">___COMMON_DELETE_ITEM___</a> |
+			{else}
+				<span title="___COMMON_NO_ACTION___" class="disabled_actions">___COMMON_DELETE_ITEM___</span> |
 			{/if}
 			{if $detail.actions.mail}
 				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=mail&iid={$detail.content.item_id}" alt="___COMMON_EMAIL_TO___">___COMMON_EMAIL_TO___</a> |
 			{/if}
 			{if $detail.actions.copy}
 				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&iid={$detail.content.item_id}&add_to_{$environment.module}_clipboard={$detail.content.item_id}" title="___COMMON_ITEM_COPY_TO_CLIPBOARD___">___COMMON_ITEM_COPY_TO_CLIPBOARD___</a> |
+			{else}
+				<span title="___COMMON_NO_ACTION___" class="disabled_actions">___COMMON_ITEM_COPY_TO_CLIPBOARD___</span> |
 			{/if}
 			<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail{params params=$detail.actions.downloadparams}" title="___COMMON_DOWNLOAD___">___COMMON_DOWNLOAD___</a>
 		</div>

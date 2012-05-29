@@ -508,12 +508,16 @@
 	               }
 	            }
 	         }else{
-				if ($is_in_group) {
-					$return['member'] = 'member';
-				} else {
-					$return['member'] = 'no_member';
+	         	if ($this->_item->isSystemLabel()){
+	         		$return['member'] = 'member_false';
+	         	}else{
+					if ($is_in_group) {
+						$return['member'] = 'member';
+					} else {
+						$return['member'] = 'no_member';
 
-				}
+					}
+	         	}
 
 	        }
 			return $return;
