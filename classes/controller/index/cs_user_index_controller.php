@@ -140,7 +140,10 @@
 
 			$this->_page_text_fragment_array['count_entries'] = $this->getCountEntriesText($this->_list_parameter_arrray['from'],$this->_list_parameter_arrray['interval'], $count_all, $count_all_shown);
             $this->_browsing_icons_parameter_array = $this->getBrowsingIconsParameterArray($this->_list_parameter_arrray['from'],$this->_list_parameter_arrray['interval'], $count_all_shown);
-
+            
+            $session = $this->_environment->getSessionItem();
+            $session->setValue('cid' . $environment->getCurrentContextID() . '_user_index_ids', $ids);
+            
 			$id_array = array();
 			$item = $list->getFirst();
 			while ($item){

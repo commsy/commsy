@@ -87,7 +87,7 @@ class cs_popup_user_controller implements cs_rubric_popup_controller {
 
 			// upload picture
 			if(isset($additional['action']) && $additional['action'] === 'upload_picture') {
-				if($this->_popup_controller->checkFormData('picture_upload')) {
+				if($this->_popup_controller->checkFormData('file_upload')) {
 
 					/* handle group picture upload */
 					if(!empty($_FILES['form_data']['tmp_name'])) {
@@ -150,12 +150,13 @@ class cs_popup_user_controller implements cs_rubric_popup_controller {
 						$user_item->setPicture($filename);
 						$user_item->save();
 
-						$this->_return = 'success';
+						// set return
+               			$this->_popup_controller->setSuccessfullItemIDReturn($user_item->getItemID());
 					}
 				}
 			} else {
 				// save item
-				if($this->_popup_controller->checkFormData()) {
+				if($this->_popup_controller->checkFormData('basic')) {
 	                $session = $this->_environment->getSessionItem();
 	                $item_is_new = false;
 
@@ -316,7 +317,8 @@ class cs_popup_user_controller implements cs_rubric_popup_controller {
 
 
     public function getFieldInformation($sub = '') {
-			return array(
+		$return = array(
+			'basic'	=> array(
 				array(	'name'		=> 'upload_picture',
 						'type'		=> 'picture',
 						'mandatory' => false),
@@ -389,9 +391,12 @@ class cs_popup_user_controller implements cs_rubric_popup_controller {
 						'mandatory'	=> false),
 				array(	'name'		=> 'skype',
 						'type'		=> 'text',
-						'mandatory'	=> false),
-
-			);
+						'mandatory'	=> false)
+			),
+			'file_upload'	=> array()
+		);
+		
+		return $return[$sub];
     }
 
 
