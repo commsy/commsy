@@ -2292,6 +2292,7 @@ a#sort_down {
 
 #ic_rating {
     float: right;
+    padding:5px 10px;
     }
 
 #item_legend {

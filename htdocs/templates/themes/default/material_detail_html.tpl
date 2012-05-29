@@ -70,7 +70,7 @@
 
 
 		<div id="item_credits">
-			<p id="ic_rating">
+			<div id="ic_rating">
 				{if $room.workflow}
 					<img class="workflow" src="{$basic.tpl_path}img/workflow_traffic_light_{$detail.content.workflow.light}.png" alt="{$detail.content.workflow.title}" title="{$detail.content.workflow.title}">
 				{/if}
@@ -80,7 +80,7 @@
 				{if $room.assessment}
 					{include file="include/detail_assessment_include_html.tpl"}
 				{/if}
-			</p>
+			</div>
 			<p>
 				___COMMON_LAST_MODIFIED_BY_UPPER___
 				{build_user_link status=$detail.content.moredetails.last_modificator_status user_name=$detail.content.moredetails.last_modificator id=$detail.content.moredetails.last_modificator_id}
