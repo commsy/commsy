@@ -86,6 +86,14 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			} else {
 				// hide
 				menu.slideUp(100);
+				
+				// unregister ck editor instances
+				var editors = jQuery('div#popup_wrapper div.ckeditor');
+				if(editors.length > 0) {
+					editors.each(function() {
+						jQuery(this).ckeditorGet().destroy();
+					});
+				}
 
 				// remove content
 				menu.html('');
@@ -100,6 +108,14 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 		
 		close: function() {
 			var handle = this;
+			
+			// unregister ck editor instances
+			var editors = jQuery('div#popup_wrapper div.ckeditor');
+			if(editors.length > 0) {
+				editors.each(function() {
+					jQuery(this).ckeditorGet().destroy();
+				});
+			}
 			
 			// remove popup html from dom
 			jQuery('div#popup_wrapper').remove();
@@ -142,6 +158,13 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 							handle:				datepicker_handler,
 							register_on:		jQuery('input.datepicker')
 						});
+						
+						// reinvoke CKEditor
+						var ck_editor_handler = handle.commsy_functions.getModuleCallback('commsy/ck_editor');
+						ck_editor_handler.create(null, {
+							handle:				ck_editor_handler,
+							register_on:		jQuery('div.ckeditor')
+						});
 
 						// show
 						jQuery('div#tm_dropmenu_pers_bar div.tm_dropmenu').slideDown(100);
@@ -179,6 +202,13 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 					tab: col_object.parent().attr('id')
 				}
 			};
+			
+			// add ckeditor data to hidden div
+			jQuery('div.ckeditor').each(function() {
+				var editor = jQuery(this).ckeditorGet();
+				jQuery(this).parent().children('input[type="hidden"]').attr('value', editor.getData());
+			});
+			
 			jQuery.each(form_objects, function() {
 				var add = false;
 
@@ -209,7 +239,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 						value:	jQuery(this).attr('value')
 					});
 				}
-			});
+			});			
 
 			// ajax request
 			jQuery.ajax({
@@ -228,6 +258,8 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 
 						if(form_object.find('input[type="file"]').attr('value') !== '') {
 							handle.uploadUserPicture(form_object);
+						} else {
+							handle.close();
 						}
 					} else if(data.status === 'error' && data.code === 101) {
 						// mandatory error
@@ -254,6 +286,8 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 		},
 
 		uploadUserPicture: function(form_object) {
+			var handle = this;
+			
 			// setup ajax form
 			form_object.ajaxForm();
 
@@ -261,7 +295,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			form_object.ajaxSubmit({
 				type:		'POST',
 				success:	function() {
-					console.log('success');
+					handle.close();
 				}
 			});
 

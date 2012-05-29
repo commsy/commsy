@@ -357,21 +357,22 @@
 											<label for="data_homepage_all" class="float-left">___USER_CHANGE_IN_ALL_ROOMS___</label>
 											<div class="clear"></div>
 										</div>
-
+										
 										<div class="input_row">
-											<label for="data_description">___USER_DESCRIPTION___:</label>
+											<label for="description">___USER_DESCRIPTION___:</label>
+											<div class="clear"></div>
+										</div>
+										
+										<div class="input_row">
 											<div class="editor_content">
 												<div id="description" class="ckeditor">{if isset($popup.form.user.description)}{$popup.form.user.description}{/if}</div>
 											</div>
-											<textarea id="data_description" name="form_data[description]">{show var=$popup.form.user.description}</textarea>
 										</div>
 
 										<div class="input_row">
-											<div class="input_container_180">
-												<input id="data_position_all" type="checkbox" class="float-left" name="form_data[description_all]" />
-												<label for="data_position_all" class="float-left">___USER_CHANGE_IN_ALL_ROOMS___</label>
-												<div class="clear"></div>
-											</div>
+											<input id="data_position_all" type="checkbox" class="float-left" name="form_data[description_all]" />
+											<label for="data_position_all" class="float-left">___USER_CHANGE_IN_ALL_ROOMS___</label>
+											<div class="clear"></div>
 										</div>
 									</fieldset>
 
