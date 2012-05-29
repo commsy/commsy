@@ -208,7 +208,7 @@
 	</div> <!-- Ende item body -->
 	<div class="clear"> </div>
 
-	{include file='include/annotation_include_print.tpl'}
+	{include file='include/annotation_include_html.tpl'}
 
 	<div class="clear"> </div>
 {/block}

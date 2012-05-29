@@ -6,6 +6,7 @@
 			<a class="edit" href="#"><span class="edit_set"> &nbsp; </span></a>
 			<a class="linked" href="#"><span class="ref_to_ia"> &nbsp; </span></a>
 			<a class="detail" href="#"><span class="details_ia"> &nbsp; </span></a>
+			<a class="annotations" href="#"><span class="ref_to_anno"> &nbsp; </span></a>
 			{if $detail.annotations|@count}
 			<div class="action_count anno_count" >{$detail.annotations|@count}
 			</div>
