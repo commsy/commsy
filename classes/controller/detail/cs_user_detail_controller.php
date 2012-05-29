@@ -3,14 +3,14 @@
 
 	class cs_user_detail_controller extends cs_detail_controller {
 		private $_display_mod = null;
-		
+
 		/**
 		 * constructor
 		 */
 		public function __construct(cs_environment $environment) {
 			// call parent
 			parent::__construct($environment);
-			
+
 			$this->_tpl_file = 'user_detail';
 		}
 
@@ -20,22 +20,22 @@
 		public function processTemplate() {
 			// call parent
 			parent::processTemplate();
-			
+
 			// assign rubric to template
 			$this->assign('room', 'rubric', CS_USER_TYPE);
 		}
-		
+
 		/*****************************************************************************/
 		/******************************** ACTIONS ************************************/
 		/*****************************************************************************/
 		public function actionDetail() {
 			$session = $this->_environment->getSessionItem();
-			
+
 			// try to set the item
 			$this->setItem();
-			
+
 			$this->setupInformation();
-			
+
 			// check for item type
 			$item_manager = $this->_environment->getItemManager();
 			$type = $item_manager->getItemType($_GET['iid']);
@@ -48,23 +48,23 @@
 				if(!empty($_GET['creator_info_max'])) {
 					$creatorInfoStatus = explode('-', $_GET['creator_info_max']);
 				}
-				
+
 				// init
 				$user_manager = $this->_environment->getUserManager();
 				$current_user = $this->_environment->getCurrentUser();
 				$current_module = $this->_environment->getCurrentModule();
-				
+
 				// check if item exists
 				if($this->_item === null) {
 					include_once('functions/error_functions.php');
       				trigger_error('Item ' . $_GET['iid'] . ' does not exist!', E_USER_ERROR);
 				}
-				
+
 				// check if item is deleted
 				elseif($this->_item->isDeleted()) {
 					throw new cs_detail_item_type_exception('item deleted', 1);
 				}
-				
+
 				// check for access rights
 				elseif(!$this->_item->maySee($current_user)) {
 					// TODO: implement error handling
@@ -78,69 +78,69 @@
       $page->add($errorbox);
 					 */
 				}
-				
+
 				// check for takeover
 				elseif(($current_user->isRoot() || $current_user->isModerator()) && $this->_environment->inPortal() && isset($_GET['mode']) && $_GET['mode'] === 'take_over') {
 					$history = $session->getValue('history');
-					
+
 					$cookie = $session->getValue('cookie');
 					$javascript = $session->getValue('javascript');
 					$https = $session->getValue('https');
 					$flash = $session->getValue('flash');
-					
+
 					$session_id = $session->getSessionID();
 					$session = new cs_session_item();
 					$session->createSessionID($user_item->getUserID());
 					$session->setValue('auth_source', $user_item->getAuthSource());
 					$session->setValue('root_session_id', $session_id);
-					
+
 					// TODO:	checking strings, but setting integers???
 					// 			improve to type-secure checks
-					
-					// set cookie in session, if cookie is empty, do nothing, commsy will try to save it 
+
+					// set cookie in session, if cookie is empty, do nothing, commsy will try to save it
 					if($cookie == '1') {
 						$session->setValue('cookie', 2);
 					} elseif(!empty($cookie)) {
 						$session->setValue('cookie', 0);
 					}
-					
+
 					if($javascript == '1') {
 						$session->setValue('javascript', 1);
 					} elseif($javascript == '-1') {
 						$session->setValue('javascript', -1);
 					}
-					
+
 					if($https == '1') {
 						$session->setValue('https', 1);
 					} elseif($https == '-1') {
 						$session->setValue('https', -1);
 					}
-					
+
 					if($flash == '1') {
 						$session->setValue('flash', 1);
 					} elseif($flash == '-1') {
 						$session->setValue('flash', -1);
 					}
-					
+
 					// save portal id in session to ensure, that user didn't switch between portals
 					if($this->_environment->inServer()) {
 						$session->setValue('commsy_id', $this->_environment->getServerID());
 					} else {
 						$session->setValue('commsy_id', $this->_environment->getCurrentPortalID());
 					}
-					
+
 					$this->_environment->setSessionItem($session);
 					redirect($this->_environment->getCurrentContextID(), 'home', 'index', array());
-					
+
 				} else {
 					$config = array();
-					
+
 					// mark as read and noticed
 					$this->markRead();
 					$this->markNoticed();
-					
+
 					$current_context = $this->_environment->getCurrentContextItem();
-					
+
 					// create view
 					/*
 					 * $params = array();
@@ -150,7 +150,7 @@
       $detail_view = $class_factory->getClass(USER_DETAIL_VIEW,$params);
       unset($params);
 					 */
-					
+
 					// configuration overview
 					$config['show_configuration'] = false;
 					if($this->_item->getItemID() === $current_user->getItemID() || (isset($this->_display_mod) && $display_mod === 'admin' && $current_user->isModerator()) || $current_user->isRoot()) {
@@ -158,7 +158,7 @@
 							$config['show_configuration'] = true;
 						}
 					}
-					
+
 					// TODO: check this, should be handled by parent class
 					/*
 					 *  // Set up browsing order
@@ -173,21 +173,21 @@
 				         $detail_view->setPosition($_GET['pos']);
 				      }
 					 */
-					
+
 					// set up rubric connections and browsing
 					if($this->_environment->getCurrentModule() !== 'account' && ($current_context->isProjectRoom() || $current_context->isCommunityRoom())) {
 						$current_room_modules = $current_context->getHomeConf();
-						
+
 						$room_modules = array();
 						if(!empty($current_room_modules)) {
 							$room_modules = explode(',', $current_room_modules);
 						}
-						
+
 						$first = array();
 						$second = array();
 						foreach($room_modules as $module) {
 							list($module_name, $display_mode) = explode('_', $module);
-							
+
 							if($display_mode !== 'none' && $module_name !== CS_USER_TYPE && $module_name !== $this->_environment->getCurrentModule()) {
 								// TODO:
 								/*
@@ -202,27 +202,27 @@
 								 */
 							}
 						}
-						
+
 						$room_modules = $first;
 						$rubric_connections = array();
-						
+
 						foreach($room_modules as $module) {
 							if($current_context->withRubric($module)) {
 								$ids = $this->_item->getLinkedItemIDArray($module);
 								$session->setValue('cid' . $this->_environment->getCurrentContextID() . '_' . $module . '_index_ids', $ids);
-								
+
 								if($module !== CS_TOPIC_TYPE && $module !== CS_INSTITUTION_TYPE && $module !== CS_GROUP_TYPE) {
 									$ids = $this->_item->getModifiedItemIDArray($module, $this->_item->getItemID());
 									// TODO: implement
 									//$detail_view->addModifiedItemIDArray($module,$ids);
 								}
-								
+
 								$rubric_connections[] = $module;
 							}
 						}
-						
+
 						$room_modules = $second;
-						
+
 						foreach($room_modules as $module) {
 							if($current_context->withRubric($module)) {
 								if($this->_environment->inPortal()) {
@@ -232,15 +232,15 @@
 									} elseif($module === CS_COMMUNITY_TYPE) {
 										$room_list = $this->_item->getRelatedCommunityList();
 									}
-									
+
 									if($room_list->isNotEmpty()) {
 										$room_item = $room_list->getFirst();
-										
+
 										while($room_item) {
 											if($room_item->isOpen()) {
 												$ids[] = $room_item->getItemID();
 											}
-											
+
 											$room_item = $room_list->getNext();
 										}
 									}
@@ -252,16 +252,16 @@
 										$ids = $this->_item->getModifiedItemIDArray($module, $this->_item->getItemID());
 									}
 								}
-								
+
 								// TODO: implement
 								//$detail_view->addModifiedItemIDArray($module,$ids);
 							}
 						}
-						
+
 						$this->_rubric_connections = $rubric_connections;
 					}
-					
-					
+
+
 					/*
 					 * TODO
 
@@ -282,29 +282,29 @@
          $page->add($detail_view);
       }
 					 */
-					
+
 					$this->assign('detail', 'content', $this->getDetailContent());
 					$this->assign('detail', 'config', $config);
-					
+
 					if($config['show_configuration'] === true) {
 						$this->assign('detail', 'configcontent', $this->getConfigContent());
 					}
 				}
 			}
 		}
-		
+
 		/*****************************************************************************/
 		/******************************** END ACTIONS ********************************/
 		/*****************************************************************************/
-		
+
 		protected function setBrowseIDs() {
 			$session = $this->_environment->getSessionItem();
-			
+
 			if($session->issetValue('cid' . $this->_environment->getCurrentContextID() . '_user_index_ids')) {
 				$this->_browse_ids = array_values((array) $session->getValue('cid' . $this->_environment->getCurrentContextID() . '_user_index_ids'));
 			}
 		}
-		
+
 		//TODO: redefine getDetailActions
 		/*
 		 * $current_context = $this->_environment->getCurrentContextItem();
@@ -359,241 +359,29 @@
       }
       return $html;
 		 */
-		
+
 		protected function getAdditionalActions(&$perms) {
 		}
-		
+
 		protected function getNetnavigation() {
-			$return = array();
-			
-			$current_context = $this->_environment->getCurrentContextItem();
-			$current_user = $this->_environment->getCurrentUser();
-			$translator = $this->_environment->getTranslationObject();
-			if($this->_item === null) $this->setItem();
-			
-			if($this->_environment->inCommunityRoom()) {
-				$link_items = $this->_item->getLinkItemList(CS_INSTITUTION_TYPE);
-			} else {
-				$link_items = $this->_item->getLinkItemList(CS_GROUP_TYPE);
-			}
-			
-			$return['count'] = $link_items->getCount();
-			
-			$return['is_community'] = false;
-			if($this->_environment->inCommunityRoom()) {
-				$return['is_community'] = true;
-			}
-			
-			
-			/*
-			 * 
-   if ($this->_environment->inCommunityRoom()){
-         $this->_right_box_config['title_string'] .= $separator.'"'.$this->_translator->getMessage('COMMON_ATTACHED_INSTITUTIONS').' ('.$count_link_item.')"';
-      }else{
-         $this->_right_box_config['title_string'] .= $separator.'"'.$this->_translator->getMessage('COMMON_ATTACHED_GROUPS').' ('.$count_link_item.')"';
-      }
-  
-  
-  
-  
-      $this->_right_box_config['desc_string'] .= $separator.'""';
-      $this->_right_box_config['size_string'] .= $separator.'"10"';
-      if($current_context->isNetnavigationShowExpanded()){
-         $this->_right_box_config['config_string'] .= $separator.'true';
-      } else {
-         $this->_right_box_config['config_string'] .= $separator.'false';
-      }
-      $html .= '<div class="commsy_panel" style="margin-bottom:1px;">'.LF;
-      $html .= '<div class="right_box">'.LF;
-      */
-			
-			if(!$link_items->isEmpty()) {
-				$link_item = $link_items->getFirst();
-				
-				while($link_item) {
-					$entry = array(
-						'creator'			=> ''									// TODO: if empty set to COMMON_DELETED_USER
-					);
-					
-					$link_creator = $link_item->getCreatorItem();
-					if(isset($link_creator) && !$link_creator->isDeleted()) {
-						$entry['creator'] = $link_creator->getFullname();
-					}
-					
-					// create the list entry
-					$linked_item = $link_item->getLinkedItem($this->_item);
-					if(isset($linked_item)) {
-						$type = $linked_item->getType();
-						if($type === 'label') {
-							$type = $linked_item->getLabelType();
-						}
-						
-						$link_created = $translator->getDateInLang($link_item->getCreationDate());
-						
-						switch(mb_strtoupper($type, 'UTF-8')) {
-							case 'ANNOUNCEMENT':
-								$text = $translator->getMessage('COMMON_ONE_ANNOUNCEMENT');
-								$img = 'images/commsyicons/netnavigation/announcement.png';
-								break;
-							case 'DATE':
-								$text = $translator->getMessage('COMMON_ONE_DATE');
-								$img = 'images/commsyicons/netnavigation/date.png';
-								break;
-							case 'DISCUSSION':
-								$text = $translator->getMessage('COMMON_ONE_DISCUSSION');
-								$img = 'images/commsyicons/netnavigation/discussion.png';
-								break;
-							case 'GROUP':
-								$text = $translator->getMessage('COMMON_ONE_GROUP');
-								$img = 'images/commsyicons/netnavigation/group.png';
-								break;
-							case 'INSTITUTION':
-								$text = $translator->getMessage('COMMON_ONE_INSTITUTION');
-								$img = '';
-								break;
-							case 'MATERIAL':
-								$text = $translator->getMessage('COMMON_ONE_MATERIAL');
-								$img = 'images/commsyicons/netnavigation/material.png';
-								break;
-							case 'PROJECT':
-								$text = $translator->getMessage('COMMON_ONE_PROJECT');
-								$img = '';
-								break;
-							case 'TODO':
-								$text = $translator->getMessage('COMMON_ONE_TODO');
-								$img = 'images/commsyicons/netnavigation/todo.png';
-								break;
-							case 'TOPIC':
-								$text = $translator->getMessage('COMMON_ONE_TOPIC');
-								$img = 'images/commsyicons/netnavigation/topic.png';
-								break;
-							case 'USER':
-								$text = $translator->getMessage('COMMON_ONE_USER');
-								$img = 'images/commsyicons/netnavigation/user.png';
-								break;
-							default:
-								$text = $translator->getMessage('COMMON_MESSAGETAB_ERROR');
-								$img = '';
-								break;
-						}
-						
-						$link_creator_text = $text . ' - ' . $translator->getMessage('COMMON_LINK_CREATOR') . ' ' . $entry['creator'] . ', ' . $link_created;
-						
-						switch($type) {
-							case CS_DISCARTICLE_TYPE:
-								$linked_iid = $linked_item->getDiscussionID();
-								$discussion_manager = $this->_environment->getDiscussionManager();
-								$linked_item = $discussion_manager->getItem($linked_iid);
-								break;
-							case CS_SECTION_TYPE:
-								$linked_iid = $linked_item->getLinkedItemID();
-								$material_manager = $this->_environment->getMaterialManager();
-								$linked_item = $material_manager->getItem($linked_iid);
-								break;
-							default:
-								$linked_iid = $linked_item->getItemID();
-						}
-						
-						$entry['linked_iid'] = $linked_iid;
-						
-						$module = Type2Module($type);
-						
-						if($linked_item->isNotActivated() && !($linked_item->getCreatorID() === $user->getItemID() || $current_user->isModerator())) {
-							$activating_date = $linked_item->getActivatingDate();
-							if(strstr($activating_date, '9999-00-00')) {
-								$link_creator_text .= ' (' . $translator->getMessage('COMMON_NOT_ACTIVATED') . ')';
-							} else {
-								$link_creator_text .= ' (' . $translator->getMessage('COMMON_ACTIVATING_DATE') . ' ' . getDateInLang($linked_item->getActivatingDate()) . ')';
-							}
-							
-							$entry['module'] = $module;
-							$entry['img'] = $img;
-							$entry['link_creator_text'] = $link_creator_text;
-							$entry['title'] = $linked_item->getTitle();
-							
-							/*
-							 * TODO: check if working
-							 *
-                   $html .= ahref_curl( $this->_environment->getCurrentContextID(),
-                                       $module,
-                                       'detail',
-                                       $params,
-                                       '<img src="' . $img . '" style="padding-right:3px;" title="' . $link_creator_text . '"/>',
-                                       $link_creator_text,
-                                       '_self',
-                                       $fragment,
-                                       '',
-                                       '',
-                                       '',
-                                       'class="disabled"',
-                                       '',
-                                       '',
-                                       true);
-                   $html .= ahref_curl( $this->_environment->getCurrentContextID(),
-                                       $module,
-                                       'detail',
-                                       $params,
-                                       chunkText($linked_item->getTitle(),35),
-                                       $link_creator_text,
-                                       '_self',
-                                       $fragment,
-                                       '',
-                                       '',
-                                       '',
-                                       'class="disabled"',
-                                       '',
-                                       '',
-                                       true);
-                  unset($params);
-							 */
-						} else {
-							$entry['module'] = $module;
-							$entry['img'] = $img;
-							$entry['link_creator_text'] = $link_creator_text;
-							$entry['title'] = $linked_item->getTitle();
-						}
-					}
-					
-					$return['items'][] = $entry;
-					
-					$link_item = $link_items->getNext();
-				}
-			}
-			
-			$return['edit'] = false;
-			if($current_user->isUser() && $this->_with_modifying_actions) {
-				$return['edit'] = true;
-				
-				$params = $this->_environment->getCurrentParameterArray();
-				$params['attach_view'] = 'yes';
-				$params['attach_type'] = 'item';
-				
-				$link = 'commsy.php?cid=' . $this->_environment->getCurrentContextID() . '&mod=' . $this->_environment->getCurrentModule() . '&fct=' . $this->_environment->getCurrentFunction();
-				foreach($params as $key => $value) {
-					$link .= '&' . $key . '=' . $value;
-				}
-				
-				$return['edit_link'] = $link;
-			}
-			
-			return $return;
+			return $this->getUtils()->getNetnavigationForUser($this->_item);
 		}
-		
+
 		private function getConfigContent() {
 			$return = array();
-			
+
 			$current_context = $this->_environment->getCurrentContextItem();
 			$translator = $this->_environment->getTranslationObject();
-			
+
 			// user id
 			$return['user_id'] = $this->_item->getUserID();
-			
+
 			// portal
 			$portal_item = $this->_environment->getCurrentPortalItem();
 			if($portal_item->getCountAuthSourceListEnabled() !== 1) {
 				$return['auth_source'] = $portal_item->getAuthSource($this->_item->getAuthSource())->getTitle();
 			}
-			
+
 			if(!$this->_environment->inPrivateRoom()) {
 				// status
 				$status = '';
@@ -615,16 +403,16 @@
 						}
 					}
 				}
-				
+
 				$return['status'] = $status;
-				
+
 				// contact
 				if($this->_item->isContact()) {
 					$return['contact'] = 'common_yes';
 				} elseif($this->_item->isModerator()) {
 					$return['contact'] = 'common_no';
 				}
-				
+
 				// language
 				$language = $current_context->getLanguage();
 				if(mb_strtoupper($language, 'UTF-8') === 'USER' || ($this->_display_mod === 'admin' && $this->_environment->inPortal())) {
@@ -638,7 +426,7 @@
 					}
 				}
 			}
-			
+
 			// visibility
 			if($this->_environment->inCommunityRoom()) {
 				if($current_context->isOpenForGuests()) {
@@ -649,7 +437,7 @@
 					}
 				}
 			}
-			
+
 			// mailing
 			if($this->_item->isModerator() && !$this->_environment->inPrivateRoom()) {
 				$temp_extra = cs_strtoupper($this->_item->getAccountWantMail());	// text_functions, respectively cs_user_item.php
@@ -663,9 +451,9 @@
 					default:
 						$return['mailing'] = 'error';
 						break;
-							
+
 				}
-				
+
 				$temp_extra = cs_strtoupper($this->_item->getOpenRoomWantMail());
 				switch($temp_extra) {
 					case 'YES':
@@ -678,7 +466,7 @@
 						$return['mailing_room'] = 'error';
 						break;
 				}
-				
+
 				if($this->_environment->inCommunityRoom()) {
 					if($current_context->isOpenForGuests()) {
 						$temp_extra = cs_strtoupper($this->_item->getPublishMaterialWantMail());
@@ -696,25 +484,25 @@
 					}
 				}
 			}
-			
+
 			if($this->_environment->inPortal()) {
 				$related_user_array = array();
 				$Related_user_list = $this->_item->getRelatedUserList();
 				if($related_user_list->isNotEmpty()) {
 					$user_item = $related_user_list->getFirst();
-					
+
 					while($user_item) {
 						$related_user_array[$user_item->getContextID()] = $user_item;
-						
+
 						$user_item = $related_user_list->getNext();
 					}
 					unset($related_user_list);
 				}
-				
+
 				// TODO: migrate
-				
+
 				/*
-				 * 
+				 *
 
        $temp_array = array();
        $formal_data[] = $temp_array;
@@ -798,10 +586,10 @@
        unset($related_user_list);
 				 */
 			}
-			
+
 			if($this->_environment->inPrivateRoom()) {
 				// TODO: migrate
-				
+
 				/*
 				 * $temp_array = array();
          $temp_array[] = $this->_translator->getMessage('CONFIGURATION_AUTOSAVE_STATUS');
@@ -813,20 +601,20 @@
          $formal_data[] = $temp_array;
 				 */
 			}
-			
+
 			return $return;
 		}
-		
+
 		protected function getDetailContent() {
 			$converter = $this->_environment->getTextConverter();
 			$translator = $this->_environment->getTranslationObject();
-			
+
 			$return = array();
-			
+
 			################
 			## FIRST BLOCK
 			#
-			
+
 			// title
 			$title = $this->_item->getFullname();
 			if(!empty($title)) {
@@ -838,7 +626,7 @@
 				//$formal_data[] = $temp_array;
 				$return['first_block']['fullname'] = $converter->text_as_html_short($title);
 			}
-			
+
 			// birthday
 			$birthday = $this->_item->getBirthday();
 			if(!empty($birthday)) {
@@ -850,38 +638,38 @@
 				//$formal_data[] = $temp_array;
 				$return['first_block']['birthday'] = $converter->text_as_html_short($birthday);
 			}
-			
+
 			#
 			##
 			################
 			################
 			## SECOND BLOCK
 			#
-			
+
 			// email
 			$email = $this->_item->getEmail();
 			// TODO:
 			//$email = $converter->compareWithSearchText...
 			$email = $converter->text_as_html_short($email);
-			
+
 			$return['hidden']['email'] = false;
 			if(!empty($email) && ($this->_item->isEmailVisible() || $this->_display_mod === 'admin')) {
 				$return['second_block']['email'] = $email;
 			} elseif(!$this->_item->isEmailVisible()) {
 				$return['hidden']['email'] = true;
 			}
-			
+
 			// telephone
 			$telephone = $this->_item->getTelephone();
 			if(!empty($telephone)) {
 				//$temp_array[] = $this->_translator->getMessage('USER_TELEPHONE');
-				
+
 				// TODO:
 				//$telephone = $converter->compareWithSearchText($telephone);
 				$telephone = $converter->text_as_html_short($telephone);
 				$return['second_block']['telephone'] = $telephone;
 			}
-			
+
 			$cellularphone = $this->_item->getCellularphone();
 			if(!empty($cellularphone)) {
 				//$temp_array[] = $this->_translator->getMessage('USER_CELLULARPHONE');
@@ -890,14 +678,14 @@
 				$cellularphone = $converter->text_as_html_short($cellularphone);
 				$return['second_block']['cellularphone'] = $cellularphone;
 			}
-			
+
 			#
 			##
 			################
 			################
 			## THIRD BLOCK
 			#
-			
+
 			// street
 			$street = $this->_item->getStreet();
 			if(!empty($street)) {
@@ -906,7 +694,7 @@
 				$street = $converter->text_as_html_short($street);
 				$return['third_block']['street'] = $street;
 			}
-			
+
 			// city
 			$city = $this->_item->getCity();
 			if(!empty($city)) {
@@ -917,7 +705,7 @@
 				$city = $converter->text_as_html_short(trim($city));
 				$return['third_block']['city'] = $city;
 			}
-			
+
 			// room
 			$room = $this->_item->getRoom();
 			if(!empty($room)) {
@@ -926,14 +714,14 @@
 				$room = $converter->text_as_html_short($room);
 				$return['third_block']['room'] = $room;
 			}
-			
+
 			#
 			##
 			################
 			################
 			## FOURTH BLOCK
 			#
-			
+
 			// organisation
 			$organisation = $this->_item->getOrganisation();
 			if(!empty($organisation)) {
@@ -942,7 +730,7 @@
 				$organisation = $converter->text_as_html_short($organisation);
 				$return['fourth_block']['organisation'] = $organisation;
 			}
-			
+
 			// position
 			$position = $this->_item->getPosition();
 			if(!empty($position)) {
@@ -951,11 +739,11 @@
 				$position = $converter->text_as_html_short($position);
 				$return['fourth_block']['position'] = $position;
 			}
-			
+
 			#
 			##
 			################
-			
+
 			// picture
 			$picture = $this->_item->getPicture();
 			if(!empty($picture)) {
@@ -968,33 +756,33 @@
 						$width = $pict_width;
 					}
 				}
-				
+
 				$return['picture']['src'] = $picture;
 			}
-			
+
 			################
 			## messenger block
 			#
-			
+
 			$icq = $this->_item->getICQ();
 			$jabber = $this->_item->getJabber();
 			$msn = $this->_item->getMSN();
 			$skype = $this->_item->getSkype();
 			$yahoo = $this->_item->getYahoo();
-			
+
 			if(!empty($icq) || !empty($jabber) || !empty($msn) || !empty($skype) || !empty($yahoo)) {
 				global $c_commsy_domain;
 				$host = $c_commsy_domain;
 				if(strstr($c_commsy_domain, 'http')) {
 					$host = mb_substr($c_commsy_domain, mb_strrpos($c_commsy_domain, '/') + 1);
 				}
-				
+
 				global $c_commsy_url_path;
 				$url_to_img = $host . $c_commsy_url_path . '/img/messenger';
 				$url_to_service = 'http://osi.danvic.co.uk';
-				
+
 				//$temp_array[] = $this->_translator->getMessage('USER_MESSENGER_NUMBERS');
-				
+
 				// icq
 				if(!empty($icq)) {
 					//TODO:
@@ -1003,7 +791,7 @@
 					$return['messenger_block']['icq'] = $icq;
 					$return['indicators']['icq'] = 'http://status.icq.com/online.gif?icq=' . rawurlencode($icq) . '&img=2';
 				}
-				
+
 				// jabber
 				if(!empty($jabber)) {
 					//TODO:
@@ -1012,7 +800,7 @@
 					$return['messenger_block']['jabber'] = $jabber;
 					//$return['indicators']['jabber'] = '';
 				}
-				
+
 				// msn
 				if(!empty($msn)) {
 					//TODO:
@@ -1021,7 +809,7 @@
             		$return['messenger_block']['msn'] = $msn;
             		$return['indicators']['msn'] = 'http://www.IMStatusCheck.com/status/msn/' . rawurlencode($msn) . '?icons';
 				}
-				
+
 				// skype
 				if(!empty($skype)) {
 					//TODO:
@@ -1033,7 +821,7 @@
 		            $skype = $converter->text_as_html_short($skype);
 		            $return['messenger_block']['skype'] = $skype;
 				}
-				
+
 				// yahoo
 				if(!empty($yahoo)) {
 					//TODO:
@@ -1046,18 +834,18 @@
 		            $return['messenger_block']['yahoo'] = $yahoo;
 				}
 			}
-			
+
 			#
 			##
 			################
-			
+
 			$homepage = $this->_item->getHomepage();
 			$homepage = $converter->text_as_html_short($homepage);
 			if(!empty($homepage)) {
 				if(strstr($homepage, '?')) {
 					list($first_part, $second_part) = explode('?', $homepage);
 					$homepage = $first_part . '?';
-					
+
 					if(strstr($second_part, '&')) {
 						$param_array = explode('&', $second_part);
 						foreach($param_array as $key => $value) {
@@ -1066,19 +854,19 @@
 							$value = str_replace('EQUAL', '=', $value);
 							$param_array[$key] = $value;
 						}
-						
+
 						$homepage .= implode('&', $param_array);
 					}
-					
+
 					//$homepage = '<a href="'.$homepage.'" title="'.str_replace('"','&quot;',$homepage_text).'" target="_blank">'.$this->_text_as_html_short($this->_compareWithSearchText($homepage_short)).'</a>';
 				}
-				
+
 				// TODO:
 				// $homepage = $converter->compareWithSearchText($homepage);
 				$homepage = $converter->text_as_html_short($homepage);
 				$return['homepage'] = $homepage;
 			}
-			
+
 			// description of the user
 			$desc = $this->_item->getDescription();
 			if(!empty($desc)) {
@@ -1089,9 +877,9 @@
 				$desc = $converter->text_as_html_long($desc);
 				$return['description'] = $desc;
 			}
-			
+
 			$return['moredetails'] = $this->getCreatorInformationAsArray($this->_item);
-			
+
 			return $return;
 		}
 	}
