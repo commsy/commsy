@@ -1,4 +1,4 @@
-{extends file="layout_html.tpl"}
+{extends file="overwrite_html.tpl"}
 
 {block name=top_menu}
 	<div id="top_menu">

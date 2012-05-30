@@ -150,12 +150,52 @@
 									</select>
 								</div>
 								
+								<div class="input_row">
+									___CONFIGURATION_ROOM_DESCRIPTION___
+								</div>
 								
+								<div class="input_row">
+									<div class="editor_content">
+										<div id="description" class="ckeditor">{if isset($popup.room.description)}{$popup.room.description}{/if}</div>
+									</div>
+								</div>
+								
+								<div class="input_row">
+									___CONFIGURATION_RSS___
+								</div>
+								
+								<div class="input_row">
+									<label for="room_rss_yes">___CONFIGURATION_RSS_YES___</label>
+									<input id="room_rss_yes" type="radio" name="form_data[rss]" value="yes" />
+								</div>
+								
+								<div class="input_row">
+									<label for="room_rss_no">___CONFIGURATION_RSS_NO___</label>
+									<input id="room_rss_no" type="radio" name="form_data[rss]" value="no" />
+								</div>
 								
 								</fieldset>
 
 								{*
 
+      // specials in private room - E-Mail to CommSy
+      global $c_email_upload;
+      if ($c_email_upload && $this->_environment->inPrivateRoom()) {
+      	global $c_email_upload_email_account;
+         $this->_form->addCheckbox('email_to_commsy',
+                                   'value',
+                                   false,
+                                   $this->_translator->getMessage('PRIVATE_ROOM_EMAIL_TO_COMMSY'),
+                                   $this->_translator->getMessage('PRIVATE_ROOM_EMAIL_TO_COMMSY_CHECKBOX', $c_email_upload_email_account)
+                                   );
+         $this->_form->combine();
+         $this->_form->addTextField('email_to_commsy_secret','',$this->_translator->getMessage('PRIVATE_ROOM_EMAIL_TO_COMMSY_SECRET'),'',60,48);
+         $this->_form->combine();
+         $this->_form->addText('email_to_commsy_text','',$this->_translator->getMessage('PRIVATE_ROOM_EMAIL_TO_COMMSY_TEXT', $this->_translator->getMessage('EMAIL_TO_COMMSY_PASSWORD'), $this->_translator->getMessage('EMAIL_TO_COMMSY_ACCOUNT')));
+      }
+
+      /******** buttons***********/
+      $this->_form->addButtonBar('option',$this->_translator->getMessage('PREFERENCES_SAVE_BUTTON'),'',$this->_translator->getMessage('COMMON_DELETE_ROOM'));
       
       
       
@@ -407,56 +447,6 @@
             $this->_form->addEmptyLine();
          }
       }
-
-      $languageArray = array();
-      $tmpArray = $this->_environment->getAvailableLanguageArray();
-      $zaehler = 0;
-      foreach ($tmpArray as $item){
-         switch ( mb_strtoupper($item, 'UTF-8') ){
-            case 'DE':
-               $languageArray[$zaehler]['text']= $this->_translator->getMessage('DE');
-               break;
-            case 'EN':
-               $languageArray[$zaehler]['text']= $this->_translator->getMessage('EN');
-               break;
-            default:
-               break;
-         }
-         $languageArray[$zaehler]['value']= $item;
-         $zaehler++;
-      }
-      $context_item = $this->_environment->getCurrentContextItem();
-      $html_status = $context_item->getHtmlTextAreaStatus();
-      if ($html_status =='1'){
-          $html_status ='2';
-      }
-      $this->_form->addTextArea('description','',$this->_translator->getMessage('CONFIGURATION_ROOM_DESCRIPTION'),'','','5','virtual',false,false,true,$html_status);
-
-      $radio_values = array();
-      $radio_values[0]['text'] = $this->_translator->getMessage('CONFIGURATION_RSS_YES');
-      $radio_values[0]['value'] = 'yes';
-      $radio_values[1]['text'] = $this->_translator->getMessage('CONFIGURATION_RSS_NO');
-      $radio_values[1]['value'] = 'no';
-      $this->_form->addRadioGroup('rss',$this->_translator->getMessage('CONFIGURATION_RSS'),'',$radio_values,'',true,false);
-
-      // specials in private room - E-Mail to CommSy
-      global $c_email_upload;
-      if ($c_email_upload && $this->_environment->inPrivateRoom()) {
-      	global $c_email_upload_email_account;
-         $this->_form->addCheckbox('email_to_commsy',
-                                   'value',
-                                   false,
-                                   $this->_translator->getMessage('PRIVATE_ROOM_EMAIL_TO_COMMSY'),
-                                   $this->_translator->getMessage('PRIVATE_ROOM_EMAIL_TO_COMMSY_CHECKBOX', $c_email_upload_email_account)
-                                   );
-         $this->_form->combine();
-         $this->_form->addTextField('email_to_commsy_secret','',$this->_translator->getMessage('PRIVATE_ROOM_EMAIL_TO_COMMSY_SECRET'),'',60,48);
-         $this->_form->combine();
-         $this->_form->addText('email_to_commsy_text','',$this->_translator->getMessage('PRIVATE_ROOM_EMAIL_TO_COMMSY_TEXT', $this->_translator->getMessage('EMAIL_TO_COMMSY_PASSWORD'), $this->_translator->getMessage('EMAIL_TO_COMMSY_ACCOUNT')));
-      }
-
-      /******** buttons***********/
-      $this->_form->addButtonBar('option',$this->_translator->getMessage('PREFERENCES_SAVE_BUTTON'),'',$this->_translator->getMessage('COMMON_DELETE_ROOM'));
 
 								*}
 

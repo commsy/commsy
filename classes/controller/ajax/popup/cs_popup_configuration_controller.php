@@ -476,6 +476,15 @@ class cs_popup_configuration_controller {
 		$color = $current_context->getColorArray();
 		$return['color_schema'] = 'COMMON_COLOR_' . mb_strtoupper($color['schema'], 'UTF-8');
 		
+		// description
+		$return['description'] = $current_context->getDescription();
+		
+		// rss
+		if ($context_item->isRSSOn()) {
+			$this->_values['rss'] = 'yes';
+		} else {
+			$this->_values['rss'] = 'no';
+		}
 		
 		/**********Logo**********/ /*
 		$this->_with_bg_image = $current_context_item->getBGImageFilename();
@@ -541,11 +550,7 @@ class cs_popup_configuration_controller {
          
       }
       
-      if ($context_item->isRSSOn()) {
-         $this->_values['rss'] = 'yes';
-      } else {
-         $this->_values['rss'] = 'no';
-      }
+      
       if ($context_item->getBGImageFilename()){
          $this->_values['bgimage'] = $context_item->getBGImageFilename();
       }
@@ -576,8 +581,6 @@ class cs_popup_configuration_controller {
             $this->_values['communityroomlist'] = $community_room_array;
          }
       }
-
-      $this->_values['description'] = $context_item->getDescription();
       
       global $c_email_upload;
       if ($c_email_upload && $this->_environment->inPrivateRoom()) {

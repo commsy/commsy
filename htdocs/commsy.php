@@ -835,6 +835,14 @@ if(isset($c_smarty) && $c_smarty === true) {
 	require_once('classes/cs_smarty.php');
 	global $c_theme;
 	if(!isset($c_theme) || empty($c_theme)) $c_theme = 'default';
+	
+	// room theme
+	$color = $environment->getCurrentContextItem()->getColorArray();
+	$theme = $translator->getMessage('COMMON_COLOR_' . mb_strtoupper($color['schema'], 'UTF-8'));
+	if($theme !== $translator->getMessage('COMMON_COLOR_DEFAULT')) {
+		$c_theme = $theme;
+	}
+	
 	$smarty = new cs_smarty($environment, $c_theme);
 
 	global $c_smarty_caching;
