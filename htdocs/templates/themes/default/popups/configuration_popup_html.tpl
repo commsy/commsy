@@ -31,13 +31,11 @@
 									<fieldset>
 										<div class="input_row_100">
 											<label for="room_name">___COMMON_ROOM_NAME___<span class="required">*</span>:</label>
-											<input id="room_name" type="text" class="size_200" name="form_data[room_name]" value="{show var=$popup.room.room_name}"/>
-											<div class="input_container_180" style="margin-left:96px; margin-bottom:10px;">
-												<input id="room_show_name" type="checkbox" name="form_data[room_show_name]"{if $popup.room.room_show_name == true} checked="checked"{/if} />
-												<span for="room_show_name">___PREFERENCES_SHOW_TITLE_OPTION___</span>
-											</div>
+											<input id="room_name" type="text" class="size_400" name="form_data[room_name]" value="{show var=$popup.room.room_name}"/>
+											<input id="room_show_name" type="checkbox" name="form_data[room_show_name]"{if $popup.room.room_show_name == true} checked="checked"{/if} />
+											<span for="room_show_name">___PREFERENCES_SHOW_TITLE_OPTION___</span>
 										</div>
-		
+
 										<div class="input_row_100">
 											<label for="room_language">___CONTEXT_LANGUAGE___<span class="required">*</span>:</label>
 											<select class="size_200" id="room_language" name="form_data['language]">
@@ -48,53 +46,12 @@
 												{/foreach}
 											</select>
 										</div>
-		
-										<div class="input_row_100">
-											<label for="room_logo">___LOGO_UPLOAD___:</label>
-											<form id="picture_upload" action="commsy.php?cid={$environment.cid}&mod=ajax&fct=popup&action=save" method="post">
-												<input type="hidden" name="module" value="configuration" />
-												<input type="hidden" name="additional[tab]" value="room" />
-												<input id="room_logo" type="file" class="size_150 float-left" name="form_data[picture]" accept="image/*" />
-											</form>
-											<div class="clear"></div>
-										</div>
-		
-										{if isset($popup.room.logo)}
-											<div class="input_row">
-												<div class="input_container_180">
-													<img src="commsy.php?cid={$environment.cid}&mod=picture&fct=getfile&picture={$popup.room.logo}" alt="___USER_PICTURE_UPLOADFILE___" />
-												</div>
-											</div>
-		
-											<div class="input_row">
-												<div class="input_container_180">
-													<input id="delete_logo" class="float-left" type="checkbox" name="form_data[delete_logo]" value="1"/>
-													<label for="delete_logo" class="float-left">___LOGO_DELETE_OPTION___</label>
-													<div class="clear"></div>
-												</div>
-											</div>
-										{/if}
-										
-										{if isset($popup.room.time_array)}
-											<div class="input_row_100">
-												{i18n tag=COMMON_TIME_NAME context=portal}:
-												
-												{foreach $popup.room.time_array as $time}
-													<div class="input_container_180">
-														<input id="room_time_{$time.value}" type="checkbox" name="form_data[room_time][{$time.value}]" value="{$time.value}"{if $time.checked == true} checked="checked"{/if} />
-														<label for="room_time_{$time.value}">{$time.text}</label>
-														<div class="clear"></div>
-													</div>
-												{/foreach}					
-											</div>
-										{/if}
-										
 										{* assignment *}
 										{if $popup.room.in_project_room == true}
 											{if !empty($popup.room.assigned_community_room_array)}
 												<div class="input_row_100">
 													___PREFERENCES_COMMUNITY_ROOMS___:
-													
+
 													{foreach $popup.room.assigned_community_room_array as $room}
 														<div id="assigned_community_rooms" class="input_container_180">
 															<input id="room_communityroomlist" type="checkbox" name="form_data[communityroomlist][{$room.value}]" value="{$room.value}" checked="checked" />
@@ -104,30 +61,25 @@
 													{/foreach}
 												</div>
 											{/if}
-											
+
 											{if !empty($popup.room.community_room_array)}
 												<div class="input_row_100">
 													<label for="room_communityrooms">
 														___PREFERENCES_COMMUNITY_ROOMS___{if $popup.room.link_status != 'optional'}<span class="required">*</span>{/if}:
 													</label>
-													<select id="room_communityrooms" name="form_data[communityrooms]">
+													<select class="size_200" id="room_communityrooms" name="form_data[communityrooms]">
 														{foreach $popup.room.community_room_array as $room}
 															<option value="{$room.value}"{if $room.disabled == true} disabled="disabled"{/if}>{$room.text}</option>
 														{/foreach}
 													</select>
-												</div>
-												
-												<div class="input_row_100">
-													<div class="input_container_180">
-														<input id="add_community_room" type="button" value="___PREFERENCES_ADD_COMMUNITY_ROOMS_BUTTON___" />
-													</div>
+													<input id="add_community_room" type="button" value="___PREFERENCES_ADD_COMMUNITY_ROOMS_BUTTON___" />
 												</div>
 											{/if}
-										
+
 										{elseif $popup.room.in_community_room == true}
 											<div class="input_row_100">
 												___PREFERENCES_ROOM_ASSIGMENT___
-												
+
 												<div class="input_container_180">
 													<input id="room_assignment_open" type="radio" name="form_data[room_assignment]" value="open"{if $popup.room.assignment == 'open'} checked="checked"{/if} />
 													<label for="room_assignment_open">___COMMON_ASSIGMENT_ON___</label>
@@ -140,7 +92,44 @@
 												</div>
 											</div>
 										{/if}
-										
+
+										<div class="input_row_100">
+											<label for="room_logo">___LOGO_UPLOAD___:</label>
+											<form id="picture_upload" action="commsy.php?cid={$environment.cid}&mod=ajax&fct=popup&action=save" method="post">
+												<input type="hidden" name="module" value="configuration" />
+												<input type="hidden" name="additional[tab]" value="room" />
+												<input id="room_logo" type="file" class="size_150 float-left" name="form_data[picture]" accept="image/*" />
+											</form>
+											<div class="clear"></div>
+										</div>
+
+										{if isset($popup.room.logo)}
+											<div class="input_row">
+												<div class="input_container_180">
+													<img src="commsy.php?cid={$environment.cid}&mod=picture&fct=getfile&picture={$popup.room.logo}" alt="___USER_PICTURE_UPLOADFILE___" />
+												</div>
+											</div>
+
+											<div class="input_row">
+												<div class="input_container_180">
+													<input id="delete_logo" class="float-left" type="checkbox" name="form_data[delete_logo]" value="1"/>
+													<label for="delete_logo" class="float-left">___LOGO_DELETE_OPTION___</label>
+													<div class="clear"></div>
+												</div>
+											</div>
+										{/if}
+
+										{if isset($popup.room.time_array)}
+											<div class="input_row_100">
+												<label for="delete_logo" class="float-left">{i18n tag=COMMON_TIME_NAME context=portal}:</label>
+												{foreach $popup.room.time_array as $time}
+													<input id="room_time_{$time.value}" type="checkbox" name="form_data[room_time][{$time.value}]" value="{$time.value}"{if $time.checked == true} checked="checked"{/if}/>
+													<span>{$time.text}</span>{if !$time@last}, {/if}
+												{/foreach}
+											</div>
+										{/if}
+
+
 										<div class="input_row_100">
 											<label for="room_color_choice">___CONFIGURATION_COLOR_FORM_CHOOSE_TEXT___</label>
 											<select id="room_color_choice" name="form_data[color_choice]">
@@ -149,41 +138,41 @@
 												{/foreach}
 											</select>
 										</div>
-										
+
 										<div class="input_row">
 											___CONFIGURATION_ROOM_DESCRIPTION___
 										</div>
-										
+
 										<div class="input_row">
 											<div class="editor_content">
 												<div id="description" class="ckeditor">{if isset($popup.room.description)}{$popup.room.description}{/if}</div>
 											</div>
 										</div>
-										
+
 										<div class="input_row">
 											___CONFIGURATION_RSS___
 										</div>
-										
+
 										<div class="input_row">
 											<label for="room_rss_yes">___CONFIGURATION_RSS_YES___</label>
 											<input id="room_rss_yes" type="radio" name="form_data[rss]" value="yes"{if $popup.room.rss == 'yes'} checked="checked"{/if} />
 										</div>
-										
+
 										<div class="input_row">
 											<label for="room_rss_no">___CONFIGURATION_RSS_NO___</label>
 											<input id="room_rss_no" type="radio" name="form_data[rss]" value="no"{if $popup.room.rss == 'no'} checked="checked"{/if} />
 										</div>
-										
+
 										<div class="input_row">
 											<div class="input_container_180">
 												<input id="submit" type="button" name="save" value="___PREFERENCES_SAVE_BUTTON___"/>
 											</div>
 										</div>
-									
+
 									</fieldset>
 
 								{*
-      
+
       /***************Farben************/
       $this->_form->addSelect( 'color_choice',
                                $this->_array_info_text,
@@ -200,10 +189,10 @@
                                '',
                                '16',
                                true);
-                               
-                               
-                               
-                               
+
+
+
+
       if ( !empty($this->_form_post['color_choice']) ) {
          if ( $this->_form_post['color_choice']== 'COMMON_COLOR_DEFAULT' ) {
             $this->_form->combine();
@@ -440,7 +429,7 @@
 
 
 
-								
+
 								</div>
 							</div>
 
