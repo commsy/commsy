@@ -945,7 +945,7 @@ a span#co_non_act {
 a span#spe_act, a span#spe_non_act {
     display: block;
     height: 25px;
-    width: 25px;
+    width: 14px;
     margin: 0px auto;
     }
 
@@ -964,7 +964,7 @@ a span#spe_act {
     }
 
 a span#spe_non_act {
-    background: url(img/nav_person.png) no-repeat -25px 0px;
+    background: url(img/nav_person.png) no-repeat -14px 0px;
     }
 
 
