@@ -480,10 +480,10 @@ class cs_popup_configuration_controller {
 		$return['description'] = $current_context->getDescription();
 		
 		// rss
-		if ($context_item->isRSSOn()) {
-			$this->_values['rss'] = 'yes';
+		if($current_context->isRSSOn()) {
+			$return['rss'] = 'yes';
 		} else {
-			$this->_values['rss'] = 'no';
+			$return['rss'] = 'no';
 		}
 		
 		/**********Logo**********/ /*
