@@ -138,6 +138,66 @@
 												{/foreach}
 											</select>
 										</div>
+										
+										<div id="room_color_preview" class="input_row">
+											<img src="" alt="preview" />
+										</div>
+										
+										<div id="room_color_own">
+											<div class="input_row">
+												<label for="room_color_active_menu">___ROOM_COLOR_ACTIVE_MENU___</label>
+												<input id="room_color_active_menu" class="colorpicker" type="input" name="form_data[color_active_menu]" value=""/>
+											</div>
+											
+											<div class="input_row">
+												<label for="room_color_menu">___ROOM_COLOR_MENU___</label>
+												<input id="room_color_menu" class="colorpicker" type="input" name="form_data[color_menu]" value=""/>
+											</div>
+											
+											<div class="input_row">
+												<label for="room_color_right_column">___ROOM_COLOR_RIGHT_COLUMN___</label>
+												<input id="room_color_right_column" class="colorpicker" type="input" name="form_data[color_right_column]" value=""/>
+											</div>
+											
+											<div class="input_row">
+												<label for="room_color_content_bg">___ROOM_COLOR_CONTENT_BG___</label>
+												<input id="room_color_content_bg" class="colorpicker" type="input" name="form_data[color__content_bg]" value=""/>
+											</div>
+											
+											<div class="input_row">
+												<label for="room_color_link">___ROOM_COLOR_LINK___</label>
+												<input id="room_color_link" class="colorpicker" type="input" name="form_data[color_link]" value=""/>
+											</div>
+											
+											<div class="input_row">
+												<label for="room_color_link_hover">___ROOM_COLOR_LINK_HOVER___</label>
+												<input id="room_color_link_hover" class="colorpicker" type="input" name="form_data[color_link_hover]" value=""/>
+											</div>
+											
+											<div class="input_row">
+												<label for="room_color_action_bg">___ROOM_COLOR_ACTION_BG___</label>
+												<input id="room_color_action_bg" class="colorpicker" type="input" name="form_data[color_action_bg]" value=""/>
+											</div>
+											
+											<div class="input_row">
+												<label for="room_color_action_icon">___ROOM_COLOR_ACTION_ICON___</label>
+												<input id="room_color_action_icon" class="colorpicker" type="input" name="form_data[color_action_icon]" value=""/>
+											</div>
+											
+											<div class="input_row">
+												<label for="room_color_action_icon_hover">___ROOM_COLOR_ACTION_ICON_HOVER___</label>
+												<input id="room_color_action_icon_hover" class="colorpicker" type="input" name="form_data[color_action_icon_hover]" value=""/>
+											</div>
+											
+											<div class="input_row">
+												<label for="room_color_bg">___ROOM_COLOR_BG___</label>
+												<input id="room_color_bg" class="colorpicker" type="input" name="form_data[color_bg]" value=""/>
+											</div>
+										</div>
+										{*]
+										/* Sonnenuntergang.jpg -> Background-Image */
+
+*}
 
 										<div class="input_row">
 											___CONFIGURATION_ROOM_DESCRIPTION___
@@ -170,27 +230,12 @@
 										</div>
 
 									</fieldset>
+									
+									<fieldset>
+										
+									</fieldset>
 
 								{*
-
-      /***************Farben************/
-      $this->_form->addSelect( 'color_choice',
-                               $this->_array_info_text,
-                               '',
-                               $this->_translator->getMessage('CONFIGURATION_COLOR_FORM_CHOOSE_TEXT'),
-                               '',
-                               '',
-                               '',
-                               '',
-                               true,
-                               $this->_translator->getMessage('COMMON_CHOOSE_BUTTON'),
-                               'option',
-                               '',
-                               '',
-                               '16',
-                               true);
-
-
 
 
       if ( !empty($this->_form_post['color_choice']) ) {
@@ -637,11 +682,7 @@
 											<div class="clear"></div>
 										</div>
 
-										<div class="input_row">
-											<div class="editor_content">
-												<div id="description" class="ckeditor">{if isset($popup.form.user.description)}{$popup.form.user.description}{/if}</div>
-											</div>
-										</div>
+									
 
 										<div class="input_row">
 											<input id="data_position_all" type="checkbox" class="float-left" name="form_data[description_all]" />

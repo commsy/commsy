@@ -721,6 +721,13 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 							register_on:		jQuery('div.ckeditor')
 						});
 						
+						// reinvoke Colorpicker
+						var colorpicker_handler = handle.commsy_functions.getModuleCallback('commsy/colorpicker');
+						colorpicker_handler.setup(null, {
+							handle:				colorpicker_handler,
+							register_on:		jQuery('input.colorpicker')
+						});
+						
 						// register click for community room assign button
 						jQuery('div#tm_dropmenu_configuration input#add_community_room').bind('click', {
 							handle:		handle}, handle.onClickAssignCommunityRoom);
@@ -734,12 +741,55 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 
 						// setup tabs
 						handle.setupTabs(jQuery('div#tm_dropmenu_configuration'));
+						
+						// setup configuration popup
+						handle.setupConfigurationPopup();
 					}
 				}
 			});
 
 			// stop processing
 			return false;
+		},
+		
+		setupConfigurationPopup: function() {
+			var handle = this;
+			
+			// update schema preview and set onchange handler
+			handle.updateConfigurationSchemaPreview();
+			
+			jQuery('select#room_color_choice').change(function() {
+				handle.updateConfigurationSchemaPreview();
+			});
+			
+			// setup color picker
+			jQuery('input.colorpicker').colorpicker().on('colorselect', function(e, c) {
+				console.log("selecte");
+			});
+		},
+		
+		updateConfigurationSchemaPreview: function() {
+			// set image path for preview and handle own schema
+			var selected_option_object = jQuery('select#room_color_choice option:selected');
+			var selected_value = selected_option_object.val();
+			var selected_text = selected_option_object.text();
+			var image_object = jQuery('div#room_color_preview img');
+			var image_div_object = jQuery('div#room_color_preview');
+			var div_object = jQuery('div#room_color_own');
+			
+			if(selected_value == 'COMMON_COLOR_SCHEMA_OWN') {
+				// hide image preview, show own
+				image_div_object.hide();
+				div_object.show();
+			} else {
+				// show image preview, hide own
+				image_div_object.show();
+				div_object.hide();
+				
+				if(selected_value == 'COMMON_COLOR_DEFAULT') selected_text = 'default';
+				
+				image_object.attr('src', 'templates/themes/' + selected_text + '/preview.gif');
+			}
 		},
 		
 		onClickAssignCommunityRoom: function(event) {

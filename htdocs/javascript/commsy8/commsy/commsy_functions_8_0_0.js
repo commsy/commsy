@@ -196,6 +196,9 @@ define(["libs/jQuery/jquery-1.7.1.min"], function() {
 			
 			// datepicker
 			this.registerModule('commsy/datepicker', {register_on: jQuery('input.datepicker')});
+			
+			// colorpicker
+			this.registerModule('commsy/colorpicker', {register_on: jQuery('input.colorpicker')});
 		},
 
 		registerModule: function(module, parameters) {
