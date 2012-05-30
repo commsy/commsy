@@ -764,7 +764,7 @@ columnset, general settings
     float: right;
     border-left: 1px solid #689FDE; /* ueber Skin-Editor austauschbar */
     height: 60px;
-    width: 48px;
+    width: 47px;
     }
 
 #addon_area_row_1 {
@@ -785,7 +785,7 @@ columnset, general settings
 #addon_area_row_1 a {
     display: block;
     float: left;
-    width: 16px;
+    width: 15px;
     height: 20px;
     margin: 6px 0px 0px 8px;
     }
