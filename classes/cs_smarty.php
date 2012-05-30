@@ -133,7 +133,34 @@ class cs_smarty extends Smarty {
 		$param4 = isset($params['param4']) ? $params['param4'] : '';
 		$param5 = isset($params['param5']) ? $params['param5'] : '';
 		
-		return $translator->getMessage($params['tag'], $param1, $param2, $param3, $param4, $param5);
+		if(isset($params['context'])) {
+			switch($params['context']) {
+				case 'portal':
+					$current_portal = $this->environment->getCurrentPortalItem();
+					if(isset($current_portal)) {
+						$translator->setContext(CS_PORTAL_TYPE);
+						$translator->setRubricTranslationArray($current_portal->getRubricTranslationArray());
+						$translator->setEmailTextArray($current_portal->getEmailTextArray());
+					}
+					break;
+			}
+		}
+		
+		$translation = $translator->getMessage($params['tag'], $param1, $param2, $param3, $param4, $param5);
+		
+		// restore context
+		$current_context = $this->environment->getCurrentContextItem();
+		if(isset($current_context)) {
+			if($current_context->isCommunityRoom()) $translator->setContext(CS_COMMUNITY_TYPE);
+			elseif($current_context->isProjectRoom()) $translator->setContext(CS_PROJECT_TYPE);
+			elseif($current_context->isPortal()) $translator->setContext(CS_PORTAL_TYPE);
+			else $translator->setContext(CS_SERVER_TYPE);
+		
+			$translator->setRubricTranslationArray($current_context->getRubricTranslationArray());
+			$translator->setEmailTextArray($current_context->getEmailTextArray());
+		}
+		
+		return $translation;
 	}
 	
 	public function compile_lang($key) {

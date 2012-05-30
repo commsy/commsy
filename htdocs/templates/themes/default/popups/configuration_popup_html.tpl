@@ -74,37 +74,30 @@
 										</div>
 									</div>
 								{/if}
-								</fieldset>
-
-								{*
-
-
-      /**********Zeittakte**************/
-     if (isset($this->_with_time_array2) and $this->_with_time_array2) {
-        $this->translatorChangeToPortal();
-        $form_element_title = $this->_translator->getMessage('COMMON_TIME_NAME');
-        $this->_form->addCheckboxGroup('time2',
-                                       $this->_time_array2,
-                                       '',
-                                       $form_element_title,
-                                       '',
-                                       '',
-                                       true,
-                                       2
-                                      );
-        $this->translatorChangeToCurrentContext();
-     }
-
-
-
-
-      /**********Zuordnung**************/
-      if ($this->_environment->inProjectRoom()){
-         if ( !empty($this->_community_room_array) ) {
-            $portal_item = $this->_environment->getCurrentPortalItem();
-            $project_room_link_status = $portal_item->getProjectRoomLinkStatus();
-            if ($project_room_link_status =='optional'){
-               if ( !empty ($this->_shown_community_room_array) ) {
+								
+								{if isset($popup.room.time_array)}
+									<div class="input_row_100">
+										{i18n tag=COMMON_TIME_NAME context=portal}
+										
+										{foreach $popup.room.time_array as $time}
+											<div class="input_container_180">
+												<input id="room_time_{$time.value}" type="checkbox" name="form_data[room_time][{$time.value}]" value="1"{if $time.checked == true} checked="checked"{/if} />
+												<label for="room_time_{$time.value}">{$time.text}</label>
+												<div class="clear"></div>
+											</div>
+										{/foreach}					
+									</div>
+								{/if}
+								
+								{* assignment *}
+								{if $popup.room.in_project_room == true}
+									{if $popup.room.link_status == 'optional'}
+										
+									
+									
+									
+									{*
+									if ( !empty ($this->_shown_community_room_array) ) {
                   $this->_form->addCheckBoxGroup('communityroomlist',$this->_shown_community_room_array,'',$this->_translator->getMessage('PREFERENCES_COMMUNITY_ROOMS'),'',false,false);
                   $this->_form->combine();
                }
@@ -112,9 +105,16 @@
                   $this->_form->addSelect('communityrooms',$this->_community_room_array,'',$this->_translator->getMessage('PREFERENCES_COMMUNITY_ROOMS'),'', 1, false,false,false,'','','','',16);
                   $this->_form->combine('horizontal');
                   $this->_form->addButton('option',$this->_translator->getMessage('PREFERENCES_ADD_COMMUNITY_ROOMS_BUTTON'),'','',100);
-               }
-            }else{
-               if ( !empty ($this->_shown_community_room_array) ) {
+               }	
+               						*}
+									
+									
+									{else}
+									
+									
+									{*
+									
+									if ( !empty ($this->_shown_community_room_array) ) {
                   $this->_form->addCheckBoxGroup('communityroomlist',$this->_shown_community_room_array,'',$this->_translator->getMessage('PREFERENCES_COMMUNITY_ROOMS'),'',false,false);
                   $this->_form->combine();
                }
@@ -123,24 +123,33 @@
                   $this->_form->combine('horizontal');
                   $this->_form->addButton('option',$this->_translator->getMessage('PREFERENCES_ADD_COMMUNITY_ROOMS_BUTTON'),'','',100);
                }
-            }
-         }
-      }elseif($this->_environment->inCommunityRoom()){
-         $radio_values = array();
-         $radio_values[0]['text'] = $this->_translator->getMessage('COMMON_ASSIGMENT_ON');
-         $radio_values[0]['value'] = 'open';
-         $radio_values[1]['text'] = $this->_translator->getMessage('COMMON_ASSIGMENT_OFF');
-         $radio_values[1]['value'] = 'closed';
-         $this->_form->addRadioGroup('room_assignment',
-                                     $this->_translator->getMessage('PREFERENCES_ROOM_ASSIGMENT'),
-                                     $this->_translator->getMessage('PREFERENCES_ASSIGMENT_OPEN_FOR_GUESTS_DESC'),
-                                     $radio_values,
-                                     '',
-                                     true,
-                                     false
-                                    );
-         unset($radio_values);
-      }
+               						*}
+									{/if}
+								
+								{elseif $popup.room.in_community_room == true}
+									<div class="input_row_100">
+										___PREFERENCES_ROOM_ASSIGMENT___
+										
+										<div class="input_container_180">
+											<input id="room_assignment_open" type="radio" name="form_data[room_assignment]" value="1"{if $time.checked == true} checked="checked"{/if} />
+											<label for="room_assignment_open">___COMMON_ASSIGMENT_ON___</label>
+											<div class="clear"></div>
+										</div>
+										<div class="input_container_180">
+											<input id="room_assignment_closed" type="radio" name="form_data[room_assignment]" value="1"{if $time.checked == true} checked="checked"{/if} />
+											<label for="room_assignment_closed">___COMMON_ASSIGMENT_OFF___</label>
+											<div class="clear"></div>
+										</div>
+									</div>
+								{/if}
+								</fieldset>
+
+								{*
+
+      
+      
+      
+      
       /***************Farben************/
       if ( !empty($this->_form_post['color_choice']) and $this->_form_post['color_choice']=='COMMON_COLOR_SCHEMA_OWN' ) {
           $this->_form->addEmptyLine();
@@ -446,78 +455,7 @@
 
 
 
-									<fieldset>
-										<div class="input_row">
-											<label for="upload">___CONFIGURATION_NEW_UPLOAD___:</label>
-
-											<div class="input_container_180">
-												<input id="upload" type="radio" name="form_data[upload]"{if $popup.form.account.new_upload == true} checked="checked"{/if}/> ___CONFIGURATION_NEW_UPLOAD_YES___<br/>
-												<input type="radio" name="form_data[upload]"{if $popup.form.account.new_upload != true} checked="checked"{/if}/> ___CONFIGURATION_NEW_UPLOAD_NO___
-											</div>
-										</div>
-
-										<div class="input_row">
-											<label for="auto_save">___CONFIGURATION_AUTO_SAVE___:</label>
-
-											<div class="input_container_180">
-												<input id="auto_save" type="radio" name="form_data[auto_save]"{if $popup.form.account.auto_save == true} checked="checked"{/if}/> ___CONFIGURATION_AUTO_SAVE_YES___<br/>
-												<input type="radio" name="form_data[auto_save]"{if $popup.form.account.auto_save != true} checked="checked"{/if}/> ___CONFIGURATION_AUTO_SAVE_NO___
-											</div>
-										</div>
-
-										<div class="input_row">
-											<div class="input_container_180">
-												<input id="submit" type="button" name="save" value="___PREFERENCES_SAVE_BUTTON___"/>
-												<input id="delete" type="button" name="form_data[delete]" value="___PREFERENCES_DELETE_BUTTON___"/>
-											</div>
-
-										</div>
-									</fieldset>
-
-									{if $popup.form.config.show_merge_form === true}
-										<fieldset>
-											<legend>___ACCOUNT_MERGE___:</legend>
-
-											<div class="input_row">
-												<div>
-													{i18n tag="ACCOUNT_MERGE_TEXT" param1=$popup.portal.portal_name}
-												</div>
-											</div>
-
-											{if sizeof($popup.form.data.auth_source_array) > 1 && $popup.form.config.show_auth_source === true}
-												<div class="input_row">
-													<label for="auth_source">___USER_AUTH_SOURCE___:</label>
-													<select id="auth_source" name="form_data[auth_source]">
-														{foreach $popup.form.data.auth_source_array as $auth_source}
-															<option value="{$auth_source.value}"{if $auth_source.value == $popup.form.data.default_auth_source} selected="selected"{/if}>{$auth_source.text}</option>
-														{/foreach}
-													</select>
-												</div>
-											{/if}
-
-											<div class="input_row">
-												<label for="merge_user_id">___USER_USER_ID___:</label>
-												<input id="merge_user_id" type="text" class="size_200 mandatory" name="form_data[merge_user_id]" />
-											</div>
-
-											<div class="input_row">
-												<label for="merge_user_password">___USER_PASSWORD___:</label>
-												<input id="merge_user_password" type="text" class="size_200 mandatory" name="form_data[merge_user_password]" />
-											</div>
-
-											<div class="input_row">
-												<div class="input_container_180">
-													___COMMON_DONT_STOP___
-												</div>
-											</div>
-
-											<div class="input_row">
-												<div class="input_container_180">
-													<input id="merge" type="button" name="form_data[merge]" value="___ACCOUNT_MERGE_BUTTON___"/>
-												</div>
-											</div>
-										</fieldset>
-									{/if}
+								
 								</div>
 							</div>
 
