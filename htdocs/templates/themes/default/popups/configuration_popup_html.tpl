@@ -31,14 +31,14 @@
 									<fieldset>
 										<div class="input_row_100">
 											<label for="room_name">___COMMON_ROOM_NAME___<span class="required">*</span>:</label>
-											<input id="room_name" type="text" class="size_400" name="form_data[room_name]" value="{show var=$popup.room.room_name}"/>
+											<input id="room_name" type="text" class="size_200" name="form_data[room_name]" value="{show var=$popup.room.room_name}"/>
 											<input id="room_show_name" type="checkbox" name="form_data[room_show_name]"{if $popup.room.room_show_name == true} checked="checked"{/if} />
 											<span for="room_show_name">___PREFERENCES_SHOW_TITLE_OPTION___</span>
 										</div>
 
 										<div class="input_row_100">
 											<label for="room_language">___CONTEXT_LANGUAGE___<span class="required">*</span>:</label>
-											<select class="size_200" id="room_language" name="form_data['language]">
+											<select class="size_200" style="width:200px;" id="room_language" name="form_data['language]">
 												{foreach $popup.room.languages as $language}
 													<option value="{$language.value}"{if $language.value == $popup.room.language} selected="selected"{/if}{if isset($language.disabled) && $language.disabled == true} disabled="disabled"{/if}>
 														{$language.text}
@@ -67,12 +67,12 @@
 													<label for="room_communityrooms">
 														___PREFERENCES_COMMUNITY_ROOMS___{if $popup.room.link_status != 'optional'}<span class="required">*</span>{/if}:
 													</label>
-													<select class="size_200" id="room_communityrooms" name="form_data[communityrooms]">
+													<select class="size_200"  style="width:200px;" id="room_communityrooms" name="form_data[communityrooms]">
 														{foreach $popup.room.community_room_array as $room}
 															<option value="{$room.value}"{if $room.disabled == true} disabled="disabled"{/if}>{$room.text}</option>
 														{/foreach}
 													</select>
-													<input id="add_community_room" type="button" value="___PREFERENCES_ADD_COMMUNITY_ROOMS_BUTTON___" />
+													<input style="width:125px;" id="add_community_room" type="button" value="___PREFERENCES_ADD_COMMUNITY_ROOMS_BUTTON___" />
 												</div>
 											{/if}
 
@@ -98,7 +98,7 @@
 											<form id="picture_upload" action="commsy.php?cid={$environment.cid}&mod=ajax&fct=popup&action=save" method="post">
 												<input type="hidden" name="module" value="configuration" />
 												<input type="hidden" name="additional[tab]" value="room" />
-												<input id="room_logo" type="file" class="size_150 float-left" name="form_data[picture]" accept="image/*" />
+												<input id="room_logo" type="file" style="width:200px" class="size_150 float-left" name="form_data[picture]" accept="image/*" />
 											</form>
 											<div class="clear"></div>
 										</div>
@@ -132,7 +132,7 @@
 
 										<div class="input_row_100">
 											<label for="room_color_choice">___CONFIGURATION_COLOR_FORM_CHOOSE_TEXT___</label>
-											<select id="room_color_choice" name="form_data[color_choice]">
+											<select class="size_200"  style="width:200px;" id="room_color_choice" name="form_data[color_choice]">
 												{foreach $popup.room.color_array as $color}
 													<option value="{$color.value}"{if $color.disabled == true} disabled="disabled"{/if}{if $color.value == $popup.room.color_schema} selected="selected"{/if}>{$color.text}</option>
 												{/foreach}
