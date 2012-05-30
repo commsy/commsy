@@ -77,11 +77,11 @@
 								
 								{if isset($popup.room.time_array)}
 									<div class="input_row_100">
-										{i18n tag=COMMON_TIME_NAME context=portal}
+										{i18n tag=COMMON_TIME_NAME context=portal}:
 										
 										{foreach $popup.room.time_array as $time}
 											<div class="input_container_180">
-												<input id="room_time_{$time.value}" type="checkbox" name="form_data[room_time][{$time.value}]" value="1"{if $time.checked == true} checked="checked"{/if} />
+												<input id="room_time_{$time.value}" type="checkbox" name="form_data[room_time][{$time.value}]" value="{$time.value}"{if $time.checked == true} checked="checked"{/if} />
 												<label for="room_time_{$time.value}">{$time.text}</label>
 												<div class="clear"></div>
 											</div>
@@ -91,39 +91,37 @@
 								
 								{* assignment *}
 								{if $popup.room.in_project_room == true}
-									{if $popup.room.link_status == 'optional'}
+									{if !empty($popup.room.assigned_community_room_array)}
+										<div class="input_row_100">
+											___PREFERENCES_COMMUNITY_ROOMS___:
+											
+											{foreach $popup.room.assigned_community_room_array as $room}
+												<div id="assigned_community_rooms" class="input_container_180">
+													<input id="room_communityroomlist" type="checkbox" name="form_data[communityroomlist][{$room.value}]" value="{$room.value}" checked="checked" />
+													<label for="room_communityroomlist">{$room.text}</label>
+													<div class="clear"></div>
+												</div>
+											{/foreach}
+										</div>
+									{/if}
+									
+									{if !empty($popup.room.community_room_array)}
+										<div class="input_row_100">
+											<label for="room_communityrooms">
+												___PREFERENCES_COMMUNITY_ROOMS___{if $popup.room.link_status != 'optional'}<span class="required">*</span>{/if}:
+											</label>
+											<select id="room_communityrooms" name="form_data[communityrooms]">
+												{foreach $popup.room.community_room_array as $room}
+													<option value="{$room.value}"{if $room.disabled == true} disabled="disabled"{/if}>{$room.text}</option>
+												{/foreach}
+											</select>
+										</div>
 										
-									
-									
-									
-									{*
-									if ( !empty ($this->_shown_community_room_array) ) {
-                  $this->_form->addCheckBoxGroup('communityroomlist',$this->_shown_community_room_array,'',$this->_translator->getMessage('PREFERENCES_COMMUNITY_ROOMS'),'',false,false);
-                  $this->_form->combine();
-               }
-               if(count($this->_community_room_array) > 2){
-                  $this->_form->addSelect('communityrooms',$this->_community_room_array,'',$this->_translator->getMessage('PREFERENCES_COMMUNITY_ROOMS'),'', 1, false,false,false,'','','','',16);
-                  $this->_form->combine('horizontal');
-                  $this->_form->addButton('option',$this->_translator->getMessage('PREFERENCES_ADD_COMMUNITY_ROOMS_BUTTON'),'','',100);
-               }	
-               						*}
-									
-									
-									{else}
-									
-									
-									{*
-									
-									if ( !empty ($this->_shown_community_room_array) ) {
-                  $this->_form->addCheckBoxGroup('communityroomlist',$this->_shown_community_room_array,'',$this->_translator->getMessage('PREFERENCES_COMMUNITY_ROOMS'),'',false,false);
-                  $this->_form->combine();
-               }
-               if(count($this->_community_room_array) > 2){
-                  $this->_form->addSelect('communityrooms',$this->_community_room_array,'',$this->_translator->getMessage('PREFERENCES_COMMUNITY_ROOMS'),'', 1, false,true,false,'','','','',16);
-                  $this->_form->combine('horizontal');
-                  $this->_form->addButton('option',$this->_translator->getMessage('PREFERENCES_ADD_COMMUNITY_ROOMS_BUTTON'),'','',100);
-               }
-               						*}
+										<div class="input_row_100">
+											<div class="input_container_180">
+												<input id="add_community_room" type="button" value="___PREFERENCES_ADD_COMMUNITY_ROOMS_BUTTON___" />
+											</div>
+										</div>
 									{/if}
 								
 								{elseif $popup.room.in_community_room == true}

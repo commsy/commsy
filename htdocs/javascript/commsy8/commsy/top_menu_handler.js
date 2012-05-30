@@ -721,6 +721,10 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 							register_on:		jQuery('div.ckeditor')
 						});
 						
+						// register click for community room assign button
+						jQuery('div#tm_dropmenu_configuration input#add_community_room').bind('click', {
+							handle:		handle}, handle.onClickAssignCommunityRoom);
+						
 						// register click for save buttons
 						jQuery('div#tm_dropmenu_configuration input#submit').bind('click', {
 							handle:		handle}, handle.onSaveConfiguration);
@@ -736,6 +740,39 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 
 			// stop processing
 			return false;
+		},
+		
+		onClickAssignCommunityRoom: function(event) {
+			var handle = event.data.handle;
+			
+			// get id from selected option
+			var selected_id = jQuery('select#room_communityrooms option:selected').attr('value');
+			
+			// check if id is a number and greater than -1
+			if(!isNaN(selected_id) && selected_id > -1) {
+				// check if already assigned
+				var assigned = false;
+				jQuery('input[name^="form_data[communityroomlist]"]').each(function() {
+					// extract id
+					var id = '';
+					var regex = new RegExp("form_data\\[communityroomlist\\]\\[([0-9]*)\\]");
+					var results = regex.exec(jQuery(this).attr('name'));
+					if(results !== null && results[1] !== 'NEW') id = results[1];
+					
+					if(id == selected_id) {
+						assigned = true;
+						return true;
+					}
+				});
+				
+				if(assigned === false) {
+					// append new entry
+					var div_object = jQuery('assigned_community_rooms div.clear');
+					alert('neuen Eintrag einfügen - nachdem Template überarbeitet');
+					//div.prepend();
+					//div.prepend();
+				}
+			}
 		},
 		
 		onSaveConfiguration: function(event) {

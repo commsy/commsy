@@ -6,6 +6,7 @@ class cs_popup_configuration_controller {
 	private $_data = array();
 	private $_time_array = array();
 	private $_community_room_array = array();
+	private $_shown_community_room_array = array();
 	
 	/**
 	* constructor
@@ -140,14 +141,14 @@ class cs_popup_configuration_controller {
 							$community_room_array[] = array(
 								'text'		=> $community_item->getTitle(),
 								'value'		=> $community_item->getItemID(),
-								'disabled'	=> true
+								'disabled'	=> false
 							);
 						}
 					} else {
 						$community_room_array[] = array(
 							'text'		=> $community_item->getTitle(),
 							'value'		=> $community_item->getItemID(),
-							'disabled'	=> true
+							'disabled'	=> false
 						);
 					}
 					
@@ -158,41 +159,35 @@ class cs_popup_configuration_controller {
 			$this->_community_room_array = $community_room_array;
 			
 			$shown_community_room_array = array();
-			//if()
 			/*
-			
-			$community_room_array = array();
-			
 			if (!empty($this->_session_community_room_array)) {
 				foreach ( $this->_session_community_room_array as $community_room ) {
-				$temp_array['text'] = $community_room['name'];
-				$temp_array['value'] = $community_room['id'];
-				$community_room_array[] = $temp_array;
+					$temp_array['text'] = $community_room['name'];
+					$temp_array['value'] = $community_room['id'];
+					$community_room_array[] = $temp_array;
 				}
-				} else{
-				$community_room_list = $current_context_item->getCommunityList();
-				if ($community_room_list->getCount() > 0) {
+			} else{
+			*/
+			$community_room_list = $current_context->getCommunityList();
+			if($community_room_list->getCount() > 0) {
 				$community_room_item = $community_room_list->getFirst();
-				while ($community_room_item) {
-				$temp_array['text'] = $community_room_item->getTitle();
-				$temp_array['value'] = $community_room_item->getItemID();
-				$community_room_array[] = $temp_array;
-				$community_room_item = $community_room_list->getNext();
-				}
+				
+				while($community_room_item) {
+					$shown_community_room_array[] = array(
+						'text'	=> $community_room_item->getTitle(),
+						'value'	=> $community_room_item->getItemID()
+					);
+					
+					$community_room_item = $community_room_list->getNext();
 				}
 			}
-			$this->_shown_community_room_array = $community_room_array;
-			
+			/*
+			}
 			*/
+			
+			$this->_shown_community_room_array = $shown_community_room_array;
 		}
 		
-		
-
-
-      
-
-
-      
 
       /*******Farben********/ /*
       $temp_array = array();
@@ -430,6 +425,18 @@ class cs_popup_configuration_controller {
 	}
 	
 	public function getFieldInformation($sub) {
+		
+		
+		// TODO
+		// form_data[communityrooms} is mendatory if the following is true
+		/*
+		 * if($this->_environment->inProjectRoom()) {
+			// project room
+			if(!empty($this->_community_room_array)) {
+				$portal_item = $this->_environment->getCurrentPortalItem();
+				$project_room_link_status = $portal_item->getProjectRoomLinkStatus();
+		 */
+		
 		$return = array(
 			'newsletter'	=> array(
 				array('name' => 'newsletter', 'type' => 'radio', 'mandatory' => true)
@@ -578,42 +585,9 @@ class cs_popup_configuration_controller {
 				$project_room_link_status = $portal_item->getProjectRoomLinkStatus();
 				$return['link_status'] = $project_room_link_status;
 				
-				if($project_room_link_status == 'optional') {
-					
-				} else {
-					
-				}
+				if(!empty($this->_shown_community_room_array)) $return['assigned_community_room_array'] = $this->_shown_community_room_array;
+				if(count($this->_community_room_array) > 2) $return['community_room_array'] = $this->_community_room_array;
 			}
-			
-			
-			
-			/*
-			 * if ( !empty($this->_community_room_array) ) {
-            $portal_item = $this->_environment->getCurrentPortalItem();
-            $project_room_link_status = $portal_item->getProjectRoomLinkStatus();
-            if ($project_room_link_status =='optional'){
-               if ( !empty ($this->_shown_community_room_array) ) {
-                  $this->_form->addCheckBoxGroup('communityroomlist',$this->_shown_community_room_array,'',$this->_translator->getMessage('PREFERENCES_COMMUNITY_ROOMS'),'',false,false);
-                  $this->_form->combine();
-               }
-               if(count($this->_community_room_array) > 2){
-                  $this->_form->addSelect('communityrooms',$this->_community_room_array,'',$this->_translator->getMessage('PREFERENCES_COMMUNITY_ROOMS'),'', 1, false,false,false,'','','','',16);
-                  $this->_form->combine('horizontal');
-                  $this->_form->addButton('option',$this->_translator->getMessage('PREFERENCES_ADD_COMMUNITY_ROOMS_BUTTON'),'','',100);
-               }
-            }else{
-               if ( !empty ($this->_shown_community_room_array) ) {
-                  $this->_form->addCheckBoxGroup('communityroomlist',$this->_shown_community_room_array,'',$this->_translator->getMessage('PREFERENCES_COMMUNITY_ROOMS'),'',false,false);
-                  $this->_form->combine();
-               }
-               if(count($this->_community_room_array) > 2){
-                  $this->_form->addSelect('communityrooms',$this->_community_room_array,'',$this->_translator->getMessage('PREFERENCES_COMMUNITY_ROOMS'),'', 1, false,true,false,'','','','',16);
-                  $this->_form->combine('horizontal');
-                  $this->_form->addButton('option',$this->_translator->getMessage('PREFERENCES_ADD_COMMUNITY_ROOMS_BUTTON'),'','',100);
-               }
-            }
-         }
-			 */
 		}
 		
 		
