@@ -60,7 +60,8 @@ class cs_smarty extends Smarty {
 		
 		// theme support
 		if(!$this->setTheme($theme) && !empty($theme)) {
-			die('Error: Theme "' . $theme . '" does not exist');
+			// set to default
+			$this->setTheme('default');
 		}
 		
 		// multilanguage support
