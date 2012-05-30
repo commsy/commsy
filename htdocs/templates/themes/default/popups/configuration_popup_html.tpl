@@ -129,17 +129,29 @@
 										___PREFERENCES_ROOM_ASSIGMENT___
 										
 										<div class="input_container_180">
-											<input id="room_assignment_open" type="radio" name="form_data[room_assignment]" value="1"{if $time.checked == true} checked="checked"{/if} />
+											<input id="room_assignment_open" type="radio" name="form_data[room_assignment]" value="open"{if $popup.room.assignment == 'open'} checked="checked"{/if} />
 											<label for="room_assignment_open">___COMMON_ASSIGMENT_ON___</label>
 											<div class="clear"></div>
 										</div>
 										<div class="input_container_180">
-											<input id="room_assignment_closed" type="radio" name="form_data[room_assignment]" value="1"{if $time.checked == true} checked="checked"{/if} />
+											<input id="room_assignment_closed" type="radio" name="form_data[room_assignment]" value="closed"{if $popup.room.assignment == 'closed'} checked="checked"{/if} />
 											<label for="room_assignment_closed">___COMMON_ASSIGMENT_OFF___</label>
 											<div class="clear"></div>
 										</div>
 									</div>
 								{/if}
+								
+								<div class="input_row_100">
+									<label for="room_color_choice">___CONFIGURATION_COLOR_FORM_CHOOSE_TEXT___</label>
+									<select id="room_color_choice" name="form_data[color_choice]">
+										{foreach $popup.room.color_array as $color}
+											<option value="{$color.value}"{if $color.disabled == true} disabled="disabled"{/if}{if $color.value == $popup.room.color_schema} selected="selected"{/if}>{$color.text}</option>
+										{/foreach}
+									</select>
+								</div>
+								
+								
+								
 								</fieldset>
 
 								{*
@@ -149,9 +161,6 @@
       
       
       /***************Farben************/
-      if ( !empty($this->_form_post['color_choice']) and $this->_form_post['color_choice']=='COMMON_COLOR_SCHEMA_OWN' ) {
-          $this->_form->addEmptyLine();
-      }
       $this->_form->addSelect( 'color_choice',
                                $this->_array_info_text,
                                '',
@@ -167,6 +176,10 @@
                                '',
                                '16',
                                true);
+                               
+                               
+                               
+                               
       if ( !empty($this->_form_post['color_choice']) ) {
          if ( $this->_form_post['color_choice']== 'COMMON_COLOR_DEFAULT' ) {
             $this->_form->combine();

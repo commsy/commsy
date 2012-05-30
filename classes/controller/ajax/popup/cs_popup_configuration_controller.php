@@ -7,6 +7,7 @@ class cs_popup_configuration_controller {
 	private $_time_array = array();
 	private $_community_room_array = array();
 	private $_shown_community_room_array = array();
+	private $_color_array = array();
 	
 	/**
 	* constructor
@@ -188,166 +189,42 @@ class cs_popup_configuration_controller {
 			$this->_shown_community_room_array = $shown_community_room_array;
 		}
 		
-
-      /*******Farben********/ /*
-      $temp_array = array();
-      $temp_array['text']  = $this->_translator->getMessage('COMMON_COLOR_DEFAULT');
-      $temp_array['value'] = 'COMMON_COLOR_DEFAULT';
-      $this->_array_info_text[] = $temp_array;
-
-      $temp_array = array();
-      $temp_array['text']  = '-----';
-      $temp_array['value'] = '-1';
-      $this->_array_info_text[] = $temp_array;
-
-      $temp_array = array();
-      $temp_array['text']  = $this->_translator->getMessage('COMMON_COLOR_SCHEMA_1');
-      $temp_array['value'] = 'COMMON_COLOR_SCHEMA_1';
-      $array_info_text_temp[$this->_translator->getMessage('COMMON_COLOR_SCHEMA_1')] = $temp_array;
-
-      $temp_array = array();
-      $temp_array['text']  = $this->_translator->getMessage('COMMON_COLOR_SCHEMA_2');
-      $temp_array['value'] = 'COMMON_COLOR_SCHEMA_2';
-      $array_info_text_temp[$this->_translator->getMessage('COMMON_COLOR_SCHEMA_2')] = $temp_array;
-
-      $temp_array = array();
-      $temp_array['text']  = $this->_translator->getMessage('COMMON_COLOR_SCHEMA_3');
-      $temp_array['value'] = 'COMMON_COLOR_SCHEMA_3';
-      $array_info_text_temp[$this->_translator->getMessage('COMMON_COLOR_SCHEMA_3')] = $temp_array;
-
-      $temp_array = array();
-      $temp_array['text']  = $this->_translator->getMessage('COMMON_COLOR_SCHEMA_4');
-      $temp_array['value'] = 'COMMON_COLOR_SCHEMA_4';
-      $array_info_text_temp[$this->_translator->getMessage('COMMON_COLOR_SCHEMA_4')] = $temp_array;
-
-      $temp_array = array();
-      $temp_array['text']  = $this->_translator->getMessage('COMMON_COLOR_SCHEMA_5');
-      $temp_array['value'] = 'COMMON_COLOR_SCHEMA_5';
-      $array_info_text_temp[$this->_translator->getMessage('COMMON_COLOR_SCHEMA_5')] = $temp_array;
-
-      $temp_array = array();
-      $temp_array['text']  = $this->_translator->getMessage('COMMON_COLOR_SCHEMA_6');
-      $temp_array['value'] = 'COMMON_COLOR_SCHEMA_6';
-      $array_info_text_temp[$this->_translator->getMessage('COMMON_COLOR_SCHEMA_6')] = $temp_array;
-
-      $temp_array = array();
-      $temp_array['text']  = $this->_translator->getMessage('COMMON_COLOR_SCHEMA_7');
-      $temp_array['value'] = 'COMMON_COLOR_SCHEMA_7';
-      $array_info_text_temp[$this->_translator->getMessage('COMMON_COLOR_SCHEMA_7')] = $temp_array;
-
-      $temp_array = array();
-      $temp_array['text']  = $this->_translator->getMessage('COMMON_COLOR_SCHEMA_8');
-      $temp_array['value'] = 'COMMON_COLOR_SCHEMA_8';
-      $array_info_text_temp[$this->_translator->getMessage('COMMON_COLOR_SCHEMA_8')] = $temp_array;
-
-      $temp_array = array();
-      $temp_array['text']  = $this->_translator->getMessage('COMMON_COLOR_SCHEMA_9');
-      $temp_array['value'] = 'COMMON_COLOR_SCHEMA_9';
-      $array_info_text_temp[$this->_translator->getMessage('COMMON_COLOR_SCHEMA_9')] = $temp_array;
-
-      $temp_array = array();
-      $temp_array['text']  = $this->_translator->getMessage('COMMON_COLOR_SCHEMA_10');
-      $temp_array['value'] = 'COMMON_COLOR_SCHEMA_10';
-      $array_info_text_temp[$this->_translator->getMessage('COMMON_COLOR_SCHEMA_10')] = $temp_array;
-
-      $temp_array = array();
-      $temp_array['text']  = $this->_translator->getMessage('COMMON_COLOR_SCHEMA_11');
-      $temp_array['value'] = 'COMMON_COLOR_SCHEMA_11';
-      $array_info_text_temp[$this->_translator->getMessage('COMMON_COLOR_SCHEMA_11')] = $temp_array;
-
-      $temp_array = array();
-      $temp_array['text']  = $this->_translator->getMessage('COMMON_COLOR_SCHEMA_12');
-      $temp_array['value'] = 'COMMON_COLOR_SCHEMA_12';
-      $array_info_text_temp[$this->_translator->getMessage('COMMON_COLOR_SCHEMA_12')] = $temp_array;
-
-      $temp_array = array();
-      $temp_array['text']  = $this->_translator->getMessage('COMMON_COLOR_SCHEMA_13');
-      $temp_array['value'] = 'COMMON_COLOR_SCHEMA_13';
-      $array_info_text_temp[$this->_translator->getMessage('COMMON_COLOR_SCHEMA_13')] = $temp_array;
-
-      $temp_array = array();
-      $temp_array['text']  = $this->_translator->getMessage('COMMON_COLOR_SCHEMA_14');
-      $temp_array['value'] = 'COMMON_COLOR_SCHEMA_14';
-      $array_info_text_temp[$this->_translator->getMessage('COMMON_COLOR_SCHEMA_14')] = $temp_array;
-
-      $temp_array = array();
-      $temp_array['text']  = $this->_translator->getMessage('COMMON_COLOR_SCHEMA_15');
-      $temp_array['value'] = 'COMMON_COLOR_SCHEMA_15';
-      $array_info_text_temp[$this->_translator->getMessage('COMMON_COLOR_SCHEMA_15')] = $temp_array;
-
-      $temp_array = array();
-      $temp_array['text']  = $this->_translator->getMessage('COMMON_COLOR_SCHEMA_16');
-      $temp_array['value'] = 'COMMON_COLOR_SCHEMA_16';
-      $array_info_text_temp[$this->_translator->getMessage('COMMON_COLOR_SCHEMA_16')] = $temp_array;
-
-      $temp_array = array();
-      $temp_array['text']  = $this->_translator->getMessage('COMMON_COLOR_SCHEMA_17');
-      $temp_array['value'] = 'COMMON_COLOR_SCHEMA_17';
-      $array_info_text_temp[$this->_translator->getMessage('COMMON_COLOR_SCHEMA_17')] = $temp_array;
-
-      $temp_array = array();
-      $temp_array['text']  = $this->_translator->getMessage('COMMON_COLOR_SCHEMA_18');
-      $temp_array['value'] = 'COMMON_COLOR_SCHEMA_18';
-      $array_info_text_temp[$this->_translator->getMessage('COMMON_COLOR_SCHEMA_18')] = $temp_array;
-
-      $temp_array = array();
-      $temp_array['text']  = $this->_translator->getMessage('COMMON_COLOR_SCHEMA_19');
-      $temp_array['value'] = 'COMMON_COLOR_SCHEMA_19';
-      $array_info_text_temp[$this->_translator->getMessage('COMMON_COLOR_SCHEMA_19')] = $temp_array;
-
-      $temp_array = array();
-      $temp_array['text']  = $this->_translator->getMessage('COMMON_COLOR_SCHEMA_20');
-      $temp_array['value'] = 'COMMON_COLOR_SCHEMA_20';
-      $array_info_text_temp[$this->_translator->getMessage('COMMON_COLOR_SCHEMA_20')] = $temp_array;
-
-      $temp_array = array();
-      $temp_array['text']  = $this->_translator->getMessage('COMMON_COLOR_SCHEMA_21');
-      $temp_array['value'] = 'COMMON_COLOR_SCHEMA_21';
-      $array_info_text_temp[$this->_translator->getMessage('COMMON_COLOR_SCHEMA_21')] = $temp_array;
-
-      $temp_array = array();
-      $temp_array['text']  = $this->_translator->getMessage('COMMON_COLOR_SCHEMA_22');
-      $temp_array['value'] = 'COMMON_COLOR_SCHEMA_22';
-      $array_info_text_temp[$this->_translator->getMessage('COMMON_COLOR_SCHEMA_22')] = $temp_array;
-
-      $temp_array = array();
-      $temp_array['text']  = $this->_translator->getMessage('COMMON_COLOR_SCHEMA_23');
-      $temp_array['value'] = 'COMMON_COLOR_SCHEMA_23';
-      $array_info_text_temp[$this->_translator->getMessage('COMMON_COLOR_SCHEMA_23')] = $temp_array;
-
-      $temp_array = array();
-      $temp_array['text']  = $this->_translator->getMessage('COMMON_COLOR_SCHEMA_24');
-      $temp_array['value'] = 'COMMON_COLOR_SCHEMA_24';
-      $array_info_text_temp[$this->_translator->getMessage('COMMON_COLOR_SCHEMA_24')] = $temp_array;
-
-      $temp_array = array();
-      $temp_array['text']  = $this->_translator->getMessage('COMMON_COLOR_SCHEMA_25');
-      $temp_array['value'] = 'COMMON_COLOR_SCHEMA_25';
-      $array_info_text_temp[$this->_translator->getMessage('COMMON_COLOR_SCHEMA_25')] = $temp_array;
-      
-      $temp_array = array();
-      $temp_array['text']  = $this->_translator->getMessage('COMMON_COLOR_SCHEMA_26');
-      $temp_array['value'] = 'COMMON_COLOR_SCHEMA_26';
-      $array_info_text_temp[$this->_translator->getMessage('COMMON_COLOR_SCHEMA_26')] = $temp_array;
-
-      ksort($array_info_text_temp);
-      foreach($array_info_text_temp as $entry){
-         $this->_array_info_text[] = $entry;
-      }
-      $temp_array = array();
-      $temp_array['text']  = '-----';
-      $temp_array['value'] = '-1';
-      $this->_array_info_text[] = $temp_array;
-      $temp_array = array();
-      $temp_array['text']  = $this->_translator->getMessage('COMMON_COLOR_SCHEMA_OWN');
-      $temp_array['value'] = 'COMMON_COLOR_SCHEMA_OWN';
-      $this->_array_info_text[] = $temp_array;
-		 */
+		// color schemes
+		$this->_color_array[] = array(
+			'text'		=> $translator->getMessage('COMMON_COLOR_DEFAULT'),
+			'value'		=> 'COMMON_COLOR_DEFAULT',
+			'disabled'	=> false
+		);
+		$this->_color_array[] = array(
+			'text'		=> '-----',
+			'value'		=> '-1',
+			'disabled'	=> true
+		);
 		
+		$temp_color_array = array();
+		for($i=1; $i <= 26; $i++) {
+			$translation = $translator->getMessage('COMMON_COLOR_SCHEMA_' . $i);
+			
+			$temp_color_array[$translation] = array(
+				'text'		=> $translation,
+				'value'		=> 'COMMON_COLOR_SCHEMA_' . $i,
+				'disabled'	=> false
+			);
+		}
 		
+		ksort($temp_color_array);
+		$this->_color_array = array_merge($this->_color_array, $temp_color_array);
 		
-		
-		
+		$this->_color_array[] = array(
+			'text'		=> '-----',
+			'value'		=> '-1',
+			'disabled'	=> true
+		);
+		$this->_color_array[] = array(
+			'text'		=> $translator->getMessage('COMMON_COLOR_SCHEMA_OWN'),
+			'value'		=> 'COMMON_COLOR_SCHEMA_OWN',
+			'disabled'	=> false
+		);
 		
 		/*
 		
@@ -588,7 +465,16 @@ class cs_popup_configuration_controller {
 				if(!empty($this->_shown_community_room_array)) $return['assigned_community_room_array'] = $this->_shown_community_room_array;
 				if(count($this->_community_room_array) > 2) $return['community_room_array'] = $this->_community_room_array;
 			}
+		} else {
+			if($current_context->isAssignmentOnlyOpenForRoomMembers()) $return['assignment'] = 'closed';
+			else $return['assignment'] = 'open';
 		}
+		
+		// colors
+		$return['color_array'] = $this->_color_array;
+		
+		$color = $current_context->getColorArray();
+		$return['color_schema'] = 'COMMON_COLOR_' . mb_strtoupper($color['schema'], 'UTF-8');
 		
 		
 		/**********Logo**********/ /*
@@ -652,11 +538,7 @@ class cs_popup_configuration_controller {
                $this->_values['title'] = $context_item->getTitlePure();
             }
          }
-         if ($context_item->isAssignmentOnlyOpenForRoomMembers()) {
-            $this->_values['room_assignment'] = 'closed';
-         } else {
-            $this->_values['room_assignment'] = 'open';
-         }
+         
       }
       
       if ($context_item->isRSSOn()) {
