@@ -657,6 +657,7 @@ $message["COMMON_ROOM_SEARCH"]["en"] = "Search for workspace";
 $message["COMMON_ROOM_SEARCH_DESCRIPTION"]["en"] = "Search in the list of all workspaces";
 $message["COMMON_RSS_TICKER"]["en"] = "rss ticker";
 $message["COMMON_RUBRIC"]["en"] = "Workspace rubric";
+$message["COMMON_RUBRICS"]["en"] = "Rubrics";
 $message["COMMON_RUBRIC_DOES_NOT_EXIST"]["en"] = "You tried to access non accessible rubric.";
 $message["COMMON_SAVE_AT_TIME"]["en"] = "save at";
 $message["COMMON_SAVE_BUTTON"]["en"] = "Save";

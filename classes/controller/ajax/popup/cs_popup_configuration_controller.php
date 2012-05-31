@@ -8,7 +8,8 @@ class cs_popup_configuration_controller {
 	private $_community_room_array = array();
 	private $_shown_community_room_array = array();
 	private $_color_array = array();
-	
+	private $_rubric_array = array();
+
 	/**
 	* constructor
 	*/
@@ -16,16 +17,120 @@ class cs_popup_configuration_controller {
 		$this->_environment = $environment;
 		$this->_popup_controller = $popup_controller;
 	}
-	
+
 	public function save($form_data, $additional) {
+
+	/*Rubrikauswahl
+		 if (!empty($_POST['time_spread'])) {
+            $room_item->setTimeSpread($_POST['time_spread']);
+         }
+         $temp_array = array();
+         $j = 0;
+         if ( !empty($_POST['rubric_0']) ) {
+            $count = 0;
+            while ( isset($_POST['rubric_'.$count]) ) {
+               $count++;
+            }
+         } else {
+            $default_rubrics = $room_item->getAvailableDefaultRubricArray();
+            if ( count($default_rubrics) > 8 ) {
+               $count = 8;
+            } else {
+               $count = count($default_rubrics);
+            }
+         }
+         $rubric_array_for_plugin = array();
+         for ($i=0; $i<$count; $i++){
+            $rubric = '';
+            if (!empty($_POST['rubric_'.$i])){
+               if ($_POST['rubric_'.$i] != 'none') {
+                  $rubric_array_for_plugin[] = $_POST['rubric_'.$i];
+                  $temp_array[$i] = $_POST['rubric_'.$i].'_';
+                  if ( !empty($_POST['show_'.$i]) ) {
+                     $temp_array[$i] .= $_POST['show_'.$i];
+                  } else {
+                     $temp_array[$i] .= 'nodisplay';
+                  }
+                  $j++;
+               }
+            }
+         }
+         $room_item->setHomeConf(implode($temp_array,','));
+		*/
+
 	}
-	
+
 	public function initPopup() {
 		$current_context = $this->_environment->getCurrentContextItem();
 		$current_portal = $this->_environment->getCurrentPortalItem();
 		$current_user = $this->_environment->getCurrentUser();
 		$translator = $this->_environment->getTranslationObject();
-		
+
+
+		//rubric_choice
+	     $room = $this->_environment->getCurrentContextItem();
+	     $default_rubrics = $room->getAvailableDefaultRubricArray();
+	     $rubric_array = array();
+	     $i = 1;
+	     $select_array[0]['text'] = '----------';
+	     $select_array[0]['value'] = 'none';
+	     foreach ($default_rubrics as $rubric){
+	              if ($this->_environment->inPrivateRoom() and $rubric =='user' ){
+	                 $select_array[$i]['text'] = $this->_translator->getMessage('COMMON_MY_USER_DESCRIPTION');
+	              } else {
+	                 switch ( mb_strtoupper($rubric, 'UTF-8') ){
+	                    case 'ANNOUNCEMENT':
+	                       $select_array[$i]['text'] = $translator->getMessage('ANNOUNCEMENT_INDEX');
+	                       break;
+	                    case 'DATE':
+	                       $select_array[$i]['text'] = $translator->getMessage('DATE_INDEX');
+	                       break;
+	                    case 'DISCUSSION':
+	                       $select_array[$i]['text'] = $translator->getMessage('DISCUSSION_INDEX');
+	                       break;
+	                    case 'GROUP':
+	                       $select_array[$i]['text'] = $translator->getMessage('GROUP_INDEX');
+	                       break;
+	                    case 'INSTITUTION':
+	                       $select_array[$i]['text'] = $translator->getMessage('INSTITUTION_INDEX');
+	                       break;
+	                    case 'MATERIAL':
+	                       $select_array[$i]['text'] = $translator->getMessage('MATERIAL_INDEX');
+	                       break;
+	                    case 'PROJECT':
+	                       $select_array[$i]['text'] = $translator->getMessage('PROJECT_INDEX');
+	                       break;
+	                    case 'TODO':
+	                       $select_array[$i]['text'] = $translator->getMessage('TODO_INDEX');
+	                       break;
+	                    case 'TOPIC':
+	                       $select_array[$i]['text'] = $translator->getMessage('TOPIC_INDEX');
+	                       break;
+	                    case 'USER':
+	                       $select_array[$i]['text'] = $translator->getMessage('USER_INDEX');
+	                       break;
+	                    default:
+	                       $text = '';
+	                       if ( $this->_environment->isPlugin($rubric) ) {
+	                          $text = plugin_hook_output($rubric,'getDisplayName');
+	                       }
+	                       if ( !empty($text) ) {
+	                          $select_array[$i]['text'] = $text;
+	                       } else {
+	                          $select_array[$i]['text'] = $translator->getMessage('COMMON_MESSAGETAG_ERROR'.' cs_configuration_rubric_form('.__LINE__.') ');
+	                       }
+	                       break;
+	                 }
+	              }
+	        $select_array[$i]['value'] = $rubric;
+	       $i++;
+	     }
+	     // sorting
+	     $sort_by = 'text';
+	     usort($select_array,create_function('$a,$b','return strnatcasecmp($a[\''.$sort_by.'\'],$b[\''.$sort_by.'\']);'));
+		 $this->_rubric_array = $select_array;
+
+
 		// time pulses
 		if (
 				( $current_context->isProjectRoom() and $this->_environment->inProjectRoom() )
@@ -46,47 +151,47 @@ class cs_popup_configuration_controller {
 			} else {
 				$portal_item = $current_context->getContextItem();
 			}
-			
+
 			if($portal_item->showTime()) {
 				$current_time_title = $portal_item->getTitleOfCurrentTime();
-				
+
 				if(isset($current_context)) {
 					$time_list = $current_context->getTimeList();
-					
+
 					if($time_list->isNotEmpty()) {
 						$time_item = $time_list->getFirst();
 						$linked_time_title = $time_item->getTitle();
 					}
 				}
-				
+
 				if(!empty($linked_time_title) && $linked_time_title < $current_time_title) {
 					$start_time_title = $linked_time_title;
 				} else {
 					$start_time_title = $current_time_title;
 				}
 				$time_list = $portal_item->getTimeList();
-				
+
 				if($time_list->isNotEmpty()) {
 					$time_item = $time_list->getFirst();
-					
+
 					$context_time_list = $current_context->getTimeList();
-					
+
 					while($time_item) {
 						// check if checked
 						$checked = false;
 						if($context_time_list->isNotEmpty()) {
 							$context_time_item = $context_time_list->getFirst();
-							
+
 							while($context_time_item) {
 								if($context_time_item->getItemID() === $time_item->getItemID()) {
 									$checked = true;
 									break;
 								}
-								
+
 								$context_time_item = $context_time_list->getNext();
 							}
 						}
-						
+
 						if($time_item->getTitle() >= $start_time_title) {
 							$this->_time_array[] = array(
 								'text'		=> $translator->getTimeMessage($time_item->getTitle()),
@@ -94,10 +199,10 @@ class cs_popup_configuration_controller {
 								'checked'	=> $checked
 							);
 						}
-						
+
 						$time_item = $time_list->getNext();
 					}
-					
+
 					// continuous
 					$this->_time_array[] = array(
 						'text'		=> $translator->getMessage('COMMON_CONTINUOUS'),
@@ -107,14 +212,14 @@ class cs_popup_configuration_controller {
 				}
 			}
 		}
-		
+
 		// assignment
 		if($this->_environment->inProjectRoom()) {
 			$community_room_array = array();
-			
+
 			// get community list and build up select options
 			$community_list = $current_portal->getCommunityList();
-			
+
 			$community_room_array[] = array(
 				'text'		=> $translator->getMessage('PREFERENCES_NO_COMMUNITY_ROOM'),
 				'value'		=> '-1',
@@ -126,10 +231,10 @@ class cs_popup_configuration_controller {
 				'checked'	=> false,
 				'disabled'	=> true
 			);
-			
+
 			if($community_list->isNotEmpty()) {
 				$community_item = $community_list->getFirst();
-				
+
 				while($community_item) {
 					if($community_item->isAssignmentOnlyOpenForRoomMembers()) {
 						if(!$community_item->isUser($current_user)) {
@@ -152,13 +257,13 @@ class cs_popup_configuration_controller {
 							'disabled'	=> false
 						);
 					}
-					
+
 					$community_item = $community_list->getNext();
 				}
 			}
-			
+
 			$this->_community_room_array = $community_room_array;
-			
+
 			$shown_community_room_array = array();
 			/*
 			if (!empty($this->_session_community_room_array)) {
@@ -172,23 +277,23 @@ class cs_popup_configuration_controller {
 			$community_room_list = $current_context->getCommunityList();
 			if($community_room_list->getCount() > 0) {
 				$community_room_item = $community_room_list->getFirst();
-				
+
 				while($community_room_item) {
 					$shown_community_room_array[] = array(
 						'text'	=> $community_room_item->getTitle(),
 						'value'	=> $community_room_item->getItemID()
 					);
-					
+
 					$community_room_item = $community_room_list->getNext();
 				}
 			}
 			/*
 			}
 			*/
-			
+
 			$this->_shown_community_room_array = $shown_community_room_array;
 		}
-		
+
 		// color schemes
 		$this->_color_array[] = array(
 			'text'		=> $translator->getMessage('COMMON_COLOR_DEFAULT'),
@@ -200,21 +305,21 @@ class cs_popup_configuration_controller {
 			'value'		=> '-1',
 			'disabled'	=> true
 		);
-		
+
 		$temp_color_array = array();
 		for($i=1; $i <= 26; $i++) {
 			$translation = $translator->getMessage('COMMON_COLOR_SCHEMA_' . $i);
-			
+
 			$temp_color_array[$translation] = array(
 				'text'		=> $translation,
 				'value'		=> 'COMMON_COLOR_SCHEMA_' . $i,
 				'disabled'	=> false
 			);
 		}
-		
+
 		ksort($temp_color_array);
 		$this->_color_array = array_merge($this->_color_array, $temp_color_array);
-		
+
 		$this->_color_array[] = array(
 			'text'		=> '-----',
 			'value'		=> '-1',
@@ -225,85 +330,85 @@ class cs_popup_configuration_controller {
 			'value'		=> 'COMMON_COLOR_SCHEMA_OWN',
 			'disabled'	=> false
 		);
-		
+
 		/*
-		
-		
-		
+
+
+
 		$current_portal_item = $this->_environment->getCurrentPortalItem();
-		
+
 		/*
 		// set configuration
 		$account = array();
-		
+
 		// set user item
 		if($this->_environment->inCommunityRoom() || $this->_environment->inProjectRoom()) {
 			$this->_user = $this->_environment->getPortalUserItem();
 		} else {
 			$this->_user = $this->_environment->getCurrentUserItem();
 		}
-		
+
 		// disable merge form only for root
 		$this->_config['show_merge_form'] = true;
 		if(isset($this->_user) && $this->_user->isRoot()) {
 			$this->_config['show_merge_form'] = false;
 		}
-		
+
 		// auth source
 		if(!isset($current_portal_item)) $current_portal_item = $this->_environment->getServerItem();
-		
+
 		#$this->_show_auth_source = $current_portal_item->showAuthAtLogin();
 		# muss angezeigt werden, sonst koennen mit der aktuellen Programmierung
 		# keine Acounts mit gleichen Kennungen aber unterschiedlichen Quellen
 		# zusammengelegt werden
 		$this->_config['show_auth_source'] = true;
-		
+
 		$auth_source_list = $current_portal_item->getAuthSourceListEnabled();
 		if(isset($auth_source_list) && !$auth_source_list->isEmpty()) {
 			$auth_source_item = $auth_source_list->getFirst();
-			
+
 			while($auth_source_item) {
 				$this->_data['auth_source_array'][] = array(
 					'value'		=> $auth_source_item->getItemID(),
 					'text'		=> $auth_source_item->getTitle());
-				
+
 				$auth_source_item = $auth_source_list->getNext();
 			}
 		}
 		$this->_data['default_auth_source'] = $current_portal_item->getAuthDefault();
-		
+
 		// password change form
 		$this->_config['show_password_change_form'] = false;
 		$current_auth_source_item = $current_portal_item->getAuthSource($this->_user->getAuthSource());
 		if(	(isset($current_auth_source_item) && $current_auth_source_item->allowChangePassword()) ||
 			$this->_user->isRoot()) {
-			
+
 			$this->_config['show_password_change_form'] = true;
 		}
-		
+
 		// account change form
 		$this->_config['show_account_change_form'] = false;
 		if(	(isset($current_auth_source_item) && $current_auth_source_item->allowChangeUserID()) ||
 			$this->_user->isRoot()) {
-			
+
 			$this->_config['show_account_change_form'] = true;
 		}
-		
+
 		// mail form
 		$this->_config['show_mail_change_form'] = false;
 		if($this->_user->isModerator()) {
 			$this->_config['show_mail_change_form'] = true;
 		}
-		
+
 		*/
-		
+
 		// assign template vars
 		$this->assignTemplateVars();
 	}
-	
+
 	public function getFieldInformation($sub) {
-		
-		
+
+
 		// TODO
 		// form_data[communityrooms} is mendatory if the following is true
 		/*
@@ -313,7 +418,7 @@ class cs_popup_configuration_controller {
 				$portal_item = $this->_environment->getCurrentPortalItem();
 				$project_room_link_status = $portal_item->getProjectRoomLinkStatus();
 		 */
-		
+
 		$return = array(
 			'newsletter'	=> array(
 				array('name' => 'newsletter', 'type' => 'radio', 'mandatory' => true)
@@ -359,18 +464,18 @@ class cs_popup_configuration_controller {
 			'user_picture'	=> array(
 			),
 		);
-		
+
 		return $return[$sub];
 	}
-	
+
 	private function assignTemplateVars() {
 		$translator = $this->_environment->getTranslationObject();
 		$current_user = $this->_environment->getCurrentUserItem();
 		$portal_user = $this->_environment->getPortalUserItem();
-		
+
 		// general information
 		$general_information = array();
-		
+
 		// max upload size
 		$val = ini_get('upload_max_filesize');
 		$val = trim($val);
@@ -387,36 +492,36 @@ class cs_popup_configuration_controller {
 		}
 		$meg_val = round($val / 1048576);
 		$general_information['max_upload_size'] = $meg_val;
-		
+
 		$this->_popup_controller->assign('popup', 'general', $general_information);
-		
+
 		// room information
 		$this->_popup_controller->assign('popup', 'room', $this->getRoomInformation());
 	}
-	
+
 	private function getRoomInformation() {
 		$return = array();
-		
+
 		$current_context = $this->_environment->getCurrentContextItem();
 		$translator = $this->_environment->getTranslationObject();
-		
+
 		$return['room_name'] = $current_context->getTitle();
 		$return['room_show_name'] = $current_context->showTitle();
-		
+
 		// language
 		$languages = array();
-		
+
 		$languages[] = array(
 			'text'		=> $translator->getMessage('CONTEXT_LANGUAGE_USER'),
 			'value'		=> 'user'
 		);
-		
+
 		$languages[] = array(
 			'text'		=> '-------',
 			'value'		=> 'disabled',
 			'disabled'	=> true
 		);
-		
+
 		$language_array = $this->_environment->getAvailableLanguageArray();
 		foreach($language_array as $entry) {
 			switch ( mb_strtoupper($entry, 'UTF-8') ){
@@ -438,21 +543,21 @@ class cs_popup_configuration_controller {
 		}
 		$return['languages'] = $languages;
 		$return['language'] = $current_context->getLanguage();
-		
+
 		// logo
 		if($current_context->getLogoFilename()) {
 			$return['logo'] = $current_context->getLogoFilename();
 		}
-		
+
 		// time pulses
 		if(!empty($this->_time_array)) {
 			$return['time_array'] = $this->_time_array;
 		}
-		
+
 		// project / community room
 		$return['in_project_room'] = $this->_environment->inProjectRoom();
 		$return['in_community_room'] = $this->_environment->inCommunityRoom();
-		
+
 		// assignment
 		$assignments = array();
 		if($this->_environment->inProjectRoom()) {
@@ -461,7 +566,7 @@ class cs_popup_configuration_controller {
 				$portal_item = $this->_environment->getCurrentPortalItem();
 				$project_room_link_status = $portal_item->getProjectRoomLinkStatus();
 				$return['link_status'] = $project_room_link_status;
-				
+
 				if(!empty($this->_shown_community_room_array)) $return['assigned_community_room_array'] = $this->_shown_community_room_array;
 				if(count($this->_community_room_array) > 2) $return['community_room_array'] = $this->_community_room_array;
 			}
@@ -469,26 +574,87 @@ class cs_popup_configuration_controller {
 			if($current_context->isAssignmentOnlyOpenForRoomMembers()) $return['assignment'] = 'closed';
 			else $return['assignment'] = 'open';
 		}
-		
+
 		// colors
 		$return['color_array'] = $this->_color_array;
-		
+
 		$color = $current_context->getColorArray();
 		$return['color_schema'] = 'COMMON_COLOR_' . mb_strtoupper($color['schema'], 'UTF-8');
-		
+
 		// description
 		$return['description'] = $current_context->getDescription();
-		
+
+		//rubric choice
+        $home_conf = $current_context->getHomeConf();
+        $home_conf_array = explode(',',$home_conf);
+        $rubric_configuration_array = array();
+        $i=0;
+      	$count =8;
+     	if ($this->_environment->inCommunityRoom()){
+        	$count =7;
+      	}
+        foreach ($home_conf_array as $rubric_conf) {
+          $rubric_conf_array = explode('_',$rubric_conf);
+          if ($rubric_conf_array[1] != 'none') {
+             $temp_array = array();
+             $temp_array['key'] = 'rubric_'.$i;
+             $temp_array['value'] = $rubric_conf_array[0];
+             $temp_array['show'] = $rubric_conf_array[1];
+             $i++;
+             $rubric_configuration_array[] = $temp_array;
+          }
+        }
+        for ($j=$i+1; $j<$count; $j++) {
+             $temp_array = array();
+             $temp_array['key'] = 'rubric_'.$i;
+             $temp_array['value'] = 'none';
+             $temp_array['show'] = 'none';
+             $rubric_configuration_array[] = $temp_array;
+        }
+
+	     $first = true;
+	     $second = false;
+	     $third = false;
+	     $count = 8;
+	     $nameArray = array();
+	     if ( $this->_environment->inCommunityRoom()
+	          or $this->_environment->inGroupRoom()
+	        ) {
+	        $count = 7;
+	     }
+	     for ( $i = 0; $i < $count; $i++ ) {
+	        $desc = '';
+	        if ($first) {
+	           $first = false;
+	           $desc = $translator->getMessage('INTERNAL_MODULE_CONF_DESC_SHORT',$translator->getMessage('MODULE_CONFIG_SHORT'));
+	           $second = true;
+	        } elseif ($second) {
+	           $second = false;
+	           $desc = $translator->getMessage('INTERNAL_MODULE_CONF_DESC_TINY',$translator->getMessage('MODULE_CONFIG_TINY'));
+	           $third = true;
+	        } elseif ($third) {
+	           $third = false;
+	           $desc = $translator->getMessage('INTERNAL_MODULE_CONF_DESC_NONE',$translator->getMessage('MODULE_CONFIG_NONE'));
+	        }
+	        $nameArray[] = $desc;
+	     }
+
+
+		$return['rubric_array'] = $this->_rubric_array;
+		$return['rubric_conf_array'] = $rubric_configuration_array;
+		$return['rubric_display_array'] = $nameArray;
+
+
 		// rss
 		if($current_context->isRSSOn()) {
 			$return['rss'] = 'yes';
 		} else {
 			$return['rss'] = 'no';
 		}
-		
+
 		/**********Logo**********/ /*
 		$this->_with_bg_image = $current_context_item->getBGImageFilename();
-		
+
 		/*
 		 * $context_item = $this->_environment->getCurrentContextItem();
 
@@ -547,10 +713,10 @@ class cs_popup_configuration_controller {
                $this->_values['title'] = $context_item->getTitlePure();
             }
          }
-         
+
       }
-      
-      
+
+
       if ($context_item->getBGImageFilename()){
          $this->_values['bgimage'] = $context_item->getBGImageFilename();
       }
@@ -558,7 +724,7 @@ class cs_popup_configuration_controller {
          $this->_values['bg_image_repeat'] = '1';
       }
 
-      
+
 
       if ($this->_environment->inProjectRoom()){
          $community_room_array = array();
@@ -581,7 +747,7 @@ class cs_popup_configuration_controller {
             $this->_values['communityroomlist'] = $community_room_array;
          }
       }
-      
+
       global $c_email_upload;
       if ($c_email_upload && $this->_environment->inPrivateRoom()) {
          if ( isset($this->_form_post['email_to_commsy']) ) {
@@ -589,7 +755,7 @@ class cs_popup_configuration_controller {
          } else {
             $this->_values['email_to_commsy'] = $context_item->getEmailToCommSy();
          }
-         
+
          if ( isset($this->_form_post['email_to_commsy_secret']) ) {
             $this->_values['email_to_commsy_secret'] = $this->_form_post['email_to_commsy_secret'];
          } else {
@@ -597,7 +763,7 @@ class cs_popup_configuration_controller {
          }
       }
 		 */
-		
+
 		return $return;
 	}
 }

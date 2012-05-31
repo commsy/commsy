@@ -3258,6 +3258,10 @@ a.tm_di_ground:hover, .tm_di_ground a:hover {
 	width: 1000px;*/
 	}
 
+#popup_tabcontent p{
+    padding-bottom: 10px;
+		}
+
 .popup {
     padding: 0px;
 	width: 980px;

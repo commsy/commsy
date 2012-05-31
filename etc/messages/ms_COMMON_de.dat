@@ -666,6 +666,7 @@ $message["COMMON_ROOM_SEARCH"]["de"] = "Raum suchen";
 $message["COMMON_ROOM_SEARCH_DESCRIPTION"]["de"] = "Suche in der Raumliste des Portals";
 $message["COMMON_RSS_TICKER"]["de"] = "RSS Ticker";
 $message["COMMON_RUBRIC"]["de"] = "Rubrik";
+$message["COMMON_RUBRICS"]["de"] = "Rubriken";
 $message["COMMON_RUBRIC_DOES_NOT_EXIST"]["de"] = "Die Rubrik, auf die Sie zu greifen wollen, ist nicht freigeschaltet.";
 $message["COMMON_SAVE_AT_TIME"]["de"] = "speichern in";
 $message["COMMON_SAVE_BUTTON"]["de"] = "Speichern";

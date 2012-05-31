@@ -1,3 +1,5 @@
+{debug}
+
 {* include template functions *}
 {include file="include/functions.tpl" inline}
 
@@ -29,6 +31,9 @@
 							<div class="tab" id="account">
 								<div id="content_row_three">
 									<fieldset>
+										<p>
+											<strong>___CONFIG_BASIC_DESC_TITLE___:</strong> ___CONFIG_BASIC_DESC___
+										</p>
 										<div class="input_row_100">
 											<label for="room_name">___COMMON_ROOM_NAME___<span class="required">*</span>:</label>
 											<input id="room_name" type="text" class="size_200" name="form_data[room_name]" value="{show var=$popup.room.room_name}"/>
@@ -38,7 +43,7 @@
 
 										<div class="input_row_100">
 											<label for="room_language">___CONTEXT_LANGUAGE___<span class="required">*</span>:</label>
-											<select class="size_200" style="width:200px;" id="room_language" name="form_data['language]">
+											<select class="size_200" style="width:200px;" id="room_language" name="form_data['language']">
 												{foreach $popup.room.languages as $language}
 													<option value="{$language.value}"{if $language.value == $popup.room.language} selected="selected"{/if}{if isset($language.disabled) && $language.disabled == true} disabled="disabled"{/if}>
 														{$language.text}
@@ -46,18 +51,26 @@
 												{/foreach}
 											</select>
 										</div>
+
 										<div class="input_row_100">
-											<label for="rubric_choice">___CONFIGURATION_USAGEINFO_FORM_CHOOSE_TEXT___<span class="required">*</span>:</label>
-											<select class="size_200" style="width:200px;" id="room_language" name="form_data['language]">
-												{foreach $popup.room.languages as $language}
-													<option value="{$language.value}"{if $language.value == $popup.room.language} selected="selected"{/if}{if isset($language.disabled) && $language.disabled == true} disabled="disabled"{/if}>
-														{$language.text}
-													</option>
-												{/foreach}
-											</select>
+											<label for="room_logo">___LOGO_UPLOAD___:</label>
+											<form id="picture_upload" action="commsy.php?cid={$environment.cid}&mod=ajax&fct=popup&action=save" method="post">
+												<input type="hidden" name="module" value="configuration" />
+												<input type="hidden" name="additional[tab]" value="room" />
+												<input id="room_logo" size="29" type="file" style="width:200px" class="size_150 float-left" name="form_data[picture]" accept="image/*" />
+											</form>
+											<div class="clear"></div>
 										</div>
 
-
+										{if isset($popup.room.logo)}
+											<div class="input_row">
+												<div class="input_container_180" style="margin-left:100px;">
+													<img style="width:200px" src="commsy.php?cid={$environment.cid}&mod=picture&fct=getfile&picture={$popup.room.logo}" alt="___USER_PICTURE_UPLOADFILE___" />
+													<input id="delete_logo" type="checkbox" name="form_data[delete_logo]" value="1"/>___LOGO_DELETE_OPTION___
+												</div>
+											<div class="clear"></div>
+											</div>
+										{/if}
 
 										{* assignment *}
 										{if $popup.room.in_project_room == true}
@@ -87,36 +100,16 @@
 											<div class="input_row_100">
 												___PREFERENCES_ROOM_ASSIGMENT___:
 
-												<div class="input_container_180">
+												<div class="input_container_180" style="margin-left:100px;">
 													<input id="room_assignment_open" type="radio" name="form_data[room_assignment]" value="open"{if $popup.room.assignment == 'open'} checked="checked"{/if} />
 													<label for="room_assignment_open">___COMMON_ASSIGMENT_ON___</label>
 													<div class="clear"></div>
 												</div>
-												<div class="input_container_180">
+												<div class="input_container_180" style="margin-left:100px;">
 													<input id="room_assignment_closed" type="radio" name="form_data[room_assignment]" value="closed"{if $popup.room.assignment == 'closed'} checked="checked"{/if} />
 													<label for="room_assignment_closed">___COMMON_ASSIGMENT_OFF___</label>
 													<div class="clear"></div>
 												</div>
-											</div>
-										{/if}
-
-										<div class="input_row_100">
-											<label for="room_logo">___LOGO_UPLOAD___:</label>
-											<form id="picture_upload" action="commsy.php?cid={$environment.cid}&mod=ajax&fct=popup&action=save" method="post">
-												<input type="hidden" name="module" value="configuration" />
-												<input type="hidden" name="additional[tab]" value="room" />
-												<input id="room_logo" size="29" type="file" style="width:200px" class="size_150 float-left" name="form_data[picture]" accept="image/*" />
-											</form>
-											<div class="clear"></div>
-										</div>
-
-										{if isset($popup.room.logo)}
-											<div class="input_row">
-												<div class="input_container_180" style="margin-left:100px;">
-													<img style="width:200px" src="commsy.php?cid={$environment.cid}&mod=picture&fct=getfile&picture={$popup.room.logo}" alt="___USER_PICTURE_UPLOADFILE___" />
-													<input id="delete_logo" type="checkbox" name="form_data[delete_logo]" value="1"/>___LOGO_DELETE_OPTION___
-												</div>
-											<div class="clear"></div>
 											</div>
 										{/if}
 
@@ -129,8 +122,42 @@
 												{/foreach}
 											</div>
 										{/if}
+									</fieldset>
+									<fieldset>
+										<p>
+											<strong>___CONFIGURATION_USAGEINFO_FORM_CHOOSE_TEXT___:</strong> ___RUBRIC_ADMIN_DESC___ {i18n tag=INTERNAL_MODULE_CONF_DESC_SHORT param1=___MODULE_CONFIG_SHORT___} {i18n tag=INTERNAL_MODULE_CONF_DESC_TINY param1=___MODULE_CONFIG_TINY___} {i18n tag=INTERNAL_MODULE_CONF_DESC_NONE param1=___MODULE_CONFIG_NONE___}
+										</p>
+										<div class="input_row_100">
+											<label for="rubric_choice">___COMMON_RUBRICS___<span class="required">*</span>:</label>
+											{foreach $popup.room.rubric_conf_array as $conf_rubric}
+												<div class="input_container_180" style="margin-left:100px;">
+													<select class="size_200" style="width:200px;" name="form_data['rubric_{$conf_rubric.iteration}']">
+														{foreach $popup.room.rubric_array as $rubric}
+															<option value="{$rubric.value}"{if $rubric.value == $conf_rubric.value} selected="selected"{/if}>
+																{$rubric.text}
+															</option>
+														{/foreach}
+													</select>
+													<select class="size_200" style="width:200px;" name="form_data['show_{$conf_rubric.iteration}']">
+														<option value="short"{if 'short' == $conf_rubric.show} selected="selected"{/if}>
+															___MODULE_CONFIG_SHORT___
+														</option>
+														<option value="tiny"{if 'tiny' == $conf_rubric.show} selected="selected"{/if}>
+															___MODULE_CONFIG_TINY___
+														</option>
+														<option value="nodisplay"{if 'none' == $conf_rubric.show} selected="selected"{/if}>
+															___MODULE_CONFIG_NONE___
+														</option>
+													</select>
+												</div>
+											{/foreach}
+										</div>
+									</fieldset>
+									<fieldset>
 
-
+										<p>
+											<strong>___PREFERENCES_HEXACOLOR___:</strong> ___PREFERENCES_HEXACOLOR_DESC___
+										</p>
 										<div class="input_row_100">
 											<label for="room_color_choice">___CONFIGURATION_COLOR_FORM_CHOOSE_TEXT___:</label>
 											<select class="size_200"  style="width:200px;" id="room_color_choice" name="form_data[color_choice]">
@@ -200,8 +227,10 @@
 
 *}
 
+									</fieldset>
+									<fieldset>
 										<div class="input_row">
-											___CONFIGURATION_ROOM_DESCRIPTION___
+											<strong>___PORTAL_ROOM_DESCRIPTION___:</strong> ___CONFIGURATION_ROOM_DESCRIPTION___
 										</div>
 
 										<div class="input_row">
