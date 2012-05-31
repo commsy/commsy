@@ -786,12 +786,26 @@
 		
 		public function createOwnCSSForRoomContext(cs_context_item $room_item, array $schema) {
 			$bg_image = $room_item->getBGImageFilename();
-			$bg_repeat = $room_item->issetBGImageRepeat();
+			$bg_repeat = ($room_item->issetBGImageRepeat() == true) ? 'repeat' : 'no-repeat';
 			
 			// TODO: handle bg image and bg repeat
 			
-			$master = 'templates/themes/individual/styles_styles_cid.css';
-			$path = 'templates/themes/individual/styles_' . $room_item->getItemID() . '.css';
+			$master = 'htdocs/templates/themes/individual/styles_cid.css';
+			$path = 'htdocs/templates/themes/individual/styles_' . $room_item->getItemID() . '.css';
+			
+			// load master file
+			$css_file = file_get_contents($master);
+			
+			// replace placeholder
+			preg_match_all("/\\{\\$(.*?)\\}/", $css_file, $matches);
+			
+			
+			foreach($matches[1] as $placeholder) {
+				
+			}
+			
+			
+			pr($matches);
 			die("test");
 		}
 	}

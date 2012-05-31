@@ -17,10 +17,10 @@
 /* Body*/
 
 body {
-    background-image: url("img/Sonnenuntergang.jpg"); /* Background-Image */
-    background-repeat: no-repeat;
+    background-image: url("{$bg_image}"); /* Background-Image */
+    background-repeat: {$bg_repeat};
     background-position: 50% 50%;
-    background-color: #fcc7dc /*CS_BG_COLOR*/
+    background-color: {$bg_color}; /*CS_BG_COLOR*/
 }
 
 #logo_area {
