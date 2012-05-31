@@ -46,22 +46,21 @@
 												{/foreach}
 											</select>
 										</div>
+										<div class="input_row_100">
+											<label for="rubric_choice">___CONFIGURATION_USAGEINFO_FORM_CHOOSE_TEXT___<span class="required">*</span>:</label>
+											<select class="size_200" style="width:200px;" id="room_language" name="form_data['language]">
+												{foreach $popup.room.languages as $language}
+													<option value="{$language.value}"{if $language.value == $popup.room.language} selected="selected"{/if}{if isset($language.disabled) && $language.disabled == true} disabled="disabled"{/if}>
+														{$language.text}
+													</option>
+												{/foreach}
+											</select>
+										</div>
+
+
+
 										{* assignment *}
 										{if $popup.room.in_project_room == true}
-											{if !empty($popup.room.assigned_community_room_array)}
-												<div class="input_row_100">
-													___PREFERENCES_COMMUNITY_ROOMS___:
-
-													{foreach $popup.room.assigned_community_room_array as $room}
-														<div id="assigned_community_rooms" class="input_container_180">
-															<input id="room_communityroomlist" type="checkbox" name="form_data[communityroomlist][{$room.value}]" value="{$room.value}" checked="checked" />
-															<label for="room_communityroomlist">{$room.text}</label>
-															<div class="clear"></div>
-														</div>
-													{/foreach}
-												</div>
-											{/if}
-
 											{if !empty($popup.room.community_room_array)}
 												<div class="input_row_100">
 													<label for="room_communityrooms">
@@ -72,13 +71,21 @@
 															<option value="{$room.value}"{if $room.disabled == true} disabled="disabled"{/if}>{$room.text}</option>
 														{/foreach}
 													</select>
-													<input style="width:125px;" id="add_community_room" type="button" value="___PREFERENCES_ADD_COMMUNITY_ROOMS_BUTTON___" />
+													<input style="width:102px;" id="add_community_room" class="popup_button" type="button" value="___PREFERENCES_ADD_COMMUNITY_ROOMS_BUTTON___" />
+													{if !empty($popup.room.assigned_community_room_array)}
+														<div id="assigned_community_rooms" class="input_row_100" style="margin-left:100px;">
+															{foreach $popup.room.assigned_community_room_array as $room}
+																<input id="room_communityroomlist" type="checkbox" name="form_data[communityroomlist][{$room.value}]" value="{$room.value}" checked="checked" />{$room.text}
+															{/foreach}
+														</div>
+													{/if}
+													<div class="clear"></div>
 												</div>
 											{/if}
 
 										{elseif $popup.room.in_community_room == true}
 											<div class="input_row_100">
-												___PREFERENCES_ROOM_ASSIGMENT___
+												___PREFERENCES_ROOM_ASSIGMENT___:
 
 												<div class="input_container_180">
 													<input id="room_assignment_open" type="radio" name="form_data[room_assignment]" value="open"{if $popup.room.assignment == 'open'} checked="checked"{/if} />
@@ -98,24 +105,18 @@
 											<form id="picture_upload" action="commsy.php?cid={$environment.cid}&mod=ajax&fct=popup&action=save" method="post">
 												<input type="hidden" name="module" value="configuration" />
 												<input type="hidden" name="additional[tab]" value="room" />
-												<input id="room_logo" type="file" style="width:200px" class="size_150 float-left" name="form_data[picture]" accept="image/*" />
+												<input id="room_logo" size="29" type="file" style="width:200px" class="size_150 float-left" name="form_data[picture]" accept="image/*" />
 											</form>
 											<div class="clear"></div>
 										</div>
 
 										{if isset($popup.room.logo)}
 											<div class="input_row">
-												<div class="input_container_180">
-													<img src="commsy.php?cid={$environment.cid}&mod=picture&fct=getfile&picture={$popup.room.logo}" alt="___USER_PICTURE_UPLOADFILE___" />
+												<div class="input_container_180" style="margin-left:100px;">
+													<img style="width:200px" src="commsy.php?cid={$environment.cid}&mod=picture&fct=getfile&picture={$popup.room.logo}" alt="___USER_PICTURE_UPLOADFILE___" />
+													<input id="delete_logo" type="checkbox" name="form_data[delete_logo]" value="1"/>___LOGO_DELETE_OPTION___
 												</div>
-											</div>
-
-											<div class="input_row">
-												<div class="input_container_180">
-													<input id="delete_logo" class="float-left" type="checkbox" name="form_data[delete_logo]" value="1"/>
-													<label for="delete_logo" class="float-left">___LOGO_DELETE_OPTION___</label>
-													<div class="clear"></div>
-												</div>
+											<div class="clear"></div>
 											</div>
 										{/if}
 
@@ -131,67 +132,67 @@
 
 
 										<div class="input_row_100">
-											<label for="room_color_choice">___CONFIGURATION_COLOR_FORM_CHOOSE_TEXT___</label>
+											<label for="room_color_choice">___CONFIGURATION_COLOR_FORM_CHOOSE_TEXT___:</label>
 											<select class="size_200"  style="width:200px;" id="room_color_choice" name="form_data[color_choice]">
 												{foreach $popup.room.color_array as $color}
 													<option value="{$color.value}"{if $color.disabled == true} disabled="disabled"{/if}{if $color.value == $popup.room.color_schema} selected="selected"{/if}>{$color.text}</option>
 												{/foreach}
 											</select>
 										</div>
-										
+
 										<div id="room_color_preview" class="input_row">
-											<img src="" alt="preview" />
+											<img style="width:300px" src="" alt="preview" />
 										</div>
-										
+
 										<div id="room_color_own">
-											<div class="input_row">
+											<div class="input_row_100">
 												<label for="room_color_active_menu">___ROOM_COLOR_ACTIVE_MENU___</label>
-												<input id="room_color_active_menu" class="colorpicker" type="input" name="form_data[color_active_menu]" value=""/>
+												<input class="size_200" id="room_color_active_menu" class="colorpicker" type="input" name="form_data[color_active_menu]" value=""/>
 											</div>
-											
-											<div class="input_row">
+
+											<div class="input_row_100">
 												<label for="room_color_menu">___ROOM_COLOR_MENU___</label>
-												<input id="room_color_menu" class="colorpicker" type="input" name="form_data[color_menu]" value=""/>
+												<input class="size_200" id="room_color_menu" class="colorpicker" type="input" name="form_data[color_menu]" value=""/>
 											</div>
-											
-											<div class="input_row">
+
+											<div class="input_row_100">
 												<label for="room_color_right_column">___ROOM_COLOR_RIGHT_COLUMN___</label>
-												<input id="room_color_right_column" class="colorpicker" type="input" name="form_data[color_right_column]" value=""/>
+												<input class="size_200" id="room_color_right_column" class="colorpicker" type="input" name="form_data[color_right_column]" value=""/>
 											</div>
-											
-											<div class="input_row">
+
+											<div class="input_row_100">
 												<label for="room_color_content_bg">___ROOM_COLOR_CONTENT_BG___</label>
-												<input id="room_color_content_bg" class="colorpicker" type="input" name="form_data[color__content_bg]" value=""/>
+												<input class="size_200" id="room_color_content_bg" class="colorpicker" type="input" name="form_data[color__content_bg]" value=""/>
 											</div>
-											
-											<div class="input_row">
+
+											<div class="input_row_100">
 												<label for="room_color_link">___ROOM_COLOR_LINK___</label>
-												<input id="room_color_link" class="colorpicker" type="input" name="form_data[color_link]" value=""/>
+												<input class="size_200" id="room_color_link" class="colorpicker" type="input" name="form_data[color_link]" value=""/>
 											</div>
-											
-											<div class="input_row">
+
+											<div class="input_row_100">
 												<label for="room_color_link_hover">___ROOM_COLOR_LINK_HOVER___</label>
-												<input id="room_color_link_hover" class="colorpicker" type="input" name="form_data[color_link_hover]" value=""/>
+												<input class="size_200" id="room_color_link_hover" class="colorpicker" type="input" name="form_data[color_link_hover]" value=""/>
 											</div>
-											
-											<div class="input_row">
+
+											<div class="input_row_100">
 												<label for="room_color_action_bg">___ROOM_COLOR_ACTION_BG___</label>
-												<input id="room_color_action_bg" class="colorpicker" type="input" name="form_data[color_action_bg]" value=""/>
+												<input class="size_200" id="room_color_action_bg" class="colorpicker" type="input" name="form_data[color_action_bg]" value=""/>
 											</div>
-											
-											<div class="input_row">
+
+											<div class="input_row_100">
 												<label for="room_color_action_icon">___ROOM_COLOR_ACTION_ICON___</label>
-												<input id="room_color_action_icon" class="colorpicker" type="input" name="form_data[color_action_icon]" value=""/>
+												<input class="size_200" id="room_color_action_icon" class="colorpicker" type="input" name="form_data[color_action_icon]" value=""/>
 											</div>
-											
-											<div class="input_row">
+
+											<div class="input_row_100">
 												<label for="room_color_action_icon_hover">___ROOM_COLOR_ACTION_ICON_HOVER___</label>
-												<input id="room_color_action_icon_hover" class="colorpicker" type="input" name="form_data[color_action_icon_hover]" value=""/>
+												<input class="size_200" id="room_color_action_icon_hover" class="colorpicker" type="input" name="form_data[color_action_icon_hover]" value=""/>
 											</div>
-											
-											<div class="input_row">
+
+											<div class="input_row_100">
 												<label for="room_color_bg">___ROOM_COLOR_BG___</label>
-												<input id="room_color_bg" class="colorpicker" type="input" name="form_data[color_bg]" value=""/>
+												<input class="size_200" id="room_color_bg" class="colorpicker" type="input" name="form_data[color_bg]" value=""/>
 											</div>
 										</div>
 										{*]
@@ -230,9 +231,9 @@
 										</div>
 
 									</fieldset>
-									
+
 									<fieldset>
-										
+
 									</fieldset>
 
 								{*
@@ -682,7 +683,7 @@
 											<div class="clear"></div>
 										</div>
 
-									
+
 
 										<div class="input_row">
 											<input id="data_position_all" type="checkbox" class="float-left" name="form_data[description_all]" />

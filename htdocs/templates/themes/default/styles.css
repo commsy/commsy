@@ -1785,12 +1785,22 @@ legend{
 
 .popup_button {
     border: 1px solid #919191;
-    font-weight: bold;
+    font-weight: normal;
     font-size: 12px;
     background: url(img/pop_button_bg.jpg) repeat-x #D7D7D9;
     padding: 3px 10px 3px 10px;
     margin-top: -1px;
     }
+
+.popup_button:hover {
+    border: 1px solid #393939;
+	}
+
+.popup_button:active {
+	position:relative;
+	top:1px;
+	}
+
 
 .input_radio{
     line-height: 12px;
@@ -3356,11 +3366,21 @@ div.room_dummy_no_border {
     border: 1px solid #919191;
     color: #393939;
 	font-size: 12px;
-    font-weight: bold;
+    font-weight: normal;
     margin-top: -1px;
     padding: 3px 10px;
     text-decoration: none;
 	}
+
+#roomlist_append_block:hover, #roomlist_save:hover {
+    border: 1px solid #393939;
+	}
+
+#roomlist_append_block:active, #roomlist_save:active {
+	position:relative;
+	top:1px;
+	}
+
 
 div.roomlist_save{
 	padding: 20px 10px 30px;
