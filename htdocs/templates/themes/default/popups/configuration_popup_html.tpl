@@ -1,3 +1,4 @@
+{debug}
 {* include template functions *}
 {include file="include/functions.tpl" inline}
 <div id="popup_wrapper">
@@ -140,14 +141,14 @@
 											<label for="rubric_choice">___COMMON_RUBRICS___<span class="required">*</span>:</label>
 											{foreach $popup.room.rubric_conf_array as $conf_rubric}
 												<div class="input_container_180" style="margin-left:100px;">
-													<select class="size_200" style="width:200px;" name="form_data['rubric_{$conf_rubric@iteration}']">
+													<select class="size_200" style="width:200px;" name="form_data[rubric_{$conf_rubric@index}]">
 														{foreach $popup.room.rubric_array as $rubric}
 															<option value="{$rubric.value}"{if $rubric.value == $conf_rubric.value} selected="selected"{/if}>
 																{$rubric.text}
 															</option>
 														{/foreach}
 													</select>
-													<select class="size_200" style="width:200px;" name="form_data['show_{$conf_rubric@iteration}']">
+													<select class="size_200" style="width:200px;" name="form_data[show_{$conf_rubric@index}]">
 														<option value="short"{if 'short' == $conf_rubric.show} selected="selected"{/if}>
 															___MODULE_CONFIG_SHORT___
 														</option>
@@ -218,7 +219,7 @@
 
 											<div class="input_row_100">
 												<label for="room_color_action_icon">___ROOM_COLOR_ACTION_ICON___</label>
-												<input class="size_200 colorpicker" id="room_color_action_icon" type="text" name="form_data[color_action_icon]" value="{show var=$popup.room.color_action_icon}"/>
+												<input class="size_200" colorpicker" id="room_color_action_icon" type="text" name="form_data[color_action_icon]" value="{show var=$popup.room.color_action_icon}"/>
 											</div>
 
 											<div class="input_row_100">
