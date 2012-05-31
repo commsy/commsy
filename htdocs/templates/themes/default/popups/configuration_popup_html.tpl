@@ -219,7 +219,7 @@
 
 											<div class="input_row_100">
 												<label for="room_color_action_icon">___ROOM_COLOR_ACTION_ICON___</label>
-												<input class="size_200" colorpicker" id="room_color_action_icon" type="text" name="form_data[color_action_icon]" value="{show var=$popup.room.color_action_icon}"/>
+												<input class="size_200 colorpicker" id="room_color_action_icon" type="text" name="form_data[color_action_icon]" value="{show var=$popup.room.color_action_icon}"/>
 											</div>
 
 											<div class="input_row_100">
