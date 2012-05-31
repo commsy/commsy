@@ -40,7 +40,8 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			// setup colorpicker
 			register_on.each(function() {
 				jQuery(this).colorpicker({
-					regional:	preconditions.environment.lang
+					regional:	preconditions.environment.lang,
+					zIndex:		1003
 				});
 			});
 		}

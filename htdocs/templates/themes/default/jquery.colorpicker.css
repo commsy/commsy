@@ -1,12 +1,9 @@
-.ui-colorpicker {
-	display: inline-block;
-	width: auto;
-	z-index: 7;
-}
-
+.ui-colorpicker,
 .ui-dialog.ui-colorpicker {
     display: inline-block;
 	width: auto;
+	left: 870px !important;
+	top: 1047px !important;
 }
 
 .ui-colorpicker-inline {
