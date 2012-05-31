@@ -226,6 +226,46 @@ class cs_popup_configuration_controller {
 
 						$current_context->setHomeConf(implode($temp_array, ','));
 
+				         // check member
+				         if ( isset($form_data['member_check']) ) {
+				            if ($form_data['member_check'] == 'never') {
+				               $requested_user_manager = $this->_environment->getUserManager();
+				               $requested_user_manager->setContextLimit($this->_environment->getCurrentContextID());
+				               $requested_user_manager->setRegisteredLimit();
+				               $requested_user_manager->select();
+				               $requested_user_list = $requested_user_manager->get();
+				               if (!empty($requested_user_list)){
+				                  $requested_user = $requested_user_list->getFirst();
+				                  while($requested_user){
+				                     $requested_user->makeUser();
+				                     $requested_user->save();
+				                     $task_manager = $this->_environment->getTaskManager();
+				                     $task_list = $task_manager->getTaskListForItem($requested_user);
+				                     if (!empty($task_list)){
+				                        $task = $task_list->getFirst();
+				                        while($task){
+				                           if ($task->getStatus() == 'REQUEST' and ($task->getTitle() == 'TASK_USER_REQUEST' or $task->getTitle() == 'TASK_PROJECT_MEMBER_REQUEST')) {
+				                              $task->setStatus('CLOSED');
+				                              $task->save();
+				                           }
+				                           $task = $task_list->getNext();
+				                        }
+				                     }
+				                     $requested_user = $requested_user_list->getNext();
+				                  }
+				               }
+				               $current_context->setCheckNewMemberNever();
+				            } elseif ($form_data['member_check'] == 'always') {
+				               $current_context->setCheckNewMemberAlways();
+				            } elseif ($form_data['member_check'] == 'sometimes') {
+				               $current_context->setCheckNewMemberSometimes();
+				            } elseif ($form_data['member_check'] == 'withcode') {
+				               $current_context->setCheckNewMemberWithCode();
+				               $current_context->setCheckNewMemberCode($form_data['code']);
+				            }
+				         }
+
+
 						// save
 						$current_context->save();
 
@@ -237,6 +277,102 @@ class cs_popup_configuration_controller {
 					}
 
 					break;
+
+				/**** MODERATION CONFIGURATION ****/
+				case 'moderation_configuration':
+					if($this->_popup_controller->checkFormData('moderation_configuration')) {
+				         $info_array = array();
+				        if (is_array($current_context->_getExtra('USAGE_INFO'))) {
+				            $info_array = $current_context->_getExtra('USAGE_INFO');
+				         }
+				         $do_not_show = false;
+				         if (!empty($form_data['info_text'])){
+				            if (empty($form_data['show'])) {
+				               $do_not_show = true;
+				            }
+				            if ( empty($info_array) and  $do_not_show ){
+				               $info_array[] = $form_data['info_text'];
+				               $current_context->setUsageInfoArray($info_array);
+				            }
+				            elseif ( !in_array($form_data['info_text'].'_no', $info_array) and $do_not_show ){
+				               array_push($info_array,$form_data['info_text'].'_no');
+				               $current_context->setUsageInfoArray($info_array);
+				            }
+				            elseif ( in_array($form_data['info_text'].'_no', $info_array) and  !$do_not_show ){
+				               $array[]=$form_data['info_text'].'_no';
+				               $new_array = array_diff($info_array,$array);
+				               $current_context->setUsageInfoArray($new_array);
+				            }
+				            if (! empty($form_data['title']) ){
+				               $current_context->setUsageInfoHeaderForRubric( $form_data['info_text'],  $form_data['title']);
+				            }
+				            if (! empty($form_data['text']) ){
+				               if ( mb_stristr($form_data['text'],'<!-- KFC TEXT -->') ){
+				                  $text = str_replace('<!-- KFC TEXT -->','',$form_data['text']);
+				               } else{
+				                  $text =  $form_data['text'];
+				               }
+				               $current_context->setUsageInfoTextForRubric( $form_data['info_text'],  $text);
+				            }else{
+				               $current_context->setUsageInfoTextForRubric( $form_data['info_text'],  '');
+				            }
+				         }
+				         $info_form_array = array();
+				         if (is_array($current_context->getUsageInfoFormArray())) {
+				            $info_form_array = $current_context->getUsageInfoFormArray();
+				         }
+				         $do_not_show_form = false;
+				         if (!empty($form_data['info_text'])){
+				            if (empty($form_data['text_form'])) {
+				               $do_not_show_form = true;
+				            }
+				            if ( empty($info_form_array) and  $do_not_show_form ){
+				               $info_form_array[] = $form_data['info_text'];
+				               $current_context->setUsageInfoFormArray($info_form_array);
+				            }
+				            elseif ( !in_array($form_data['info_text'].'_no', $info_form_array) and $do_not_show_form ){
+				               array_push($info_form_array,$form_data['info_text'].'_no');
+				               $current_context->setUsageInfoFormArray($info_form_array);
+				            }
+				            elseif ( in_array($form_data['info_text'].'_no', $info_form_array) and  !$do_not_show_form ){
+				               $array[]=$form_data['info_text'].'_no';
+				               $new_array = array_diff($info_form_array,$array);
+				               $current_context->setUsageInfoFormArray($new_array);
+				            }
+				            if (! empty($form_data['title']) ){
+				               $current_context->setUsageInfoHeaderForRubricForm( $form_data['info_text'],  $form_data['title']);
+				            }
+				            if (! empty($form_data['text_form']) ){
+				               if ( mb_stristr($form_data['text_form'],'<!-- KFC TEXT -->') ){
+				                  $text = str_replace('<!-- KFC TEXT -->','',$form_data['text']);
+				               } else{
+				                  $text =  $form_data['text_form'];
+				               }
+				               $current_context->setUsageInfoTextForRubricForm( $form_data['info_text'],  $text);
+				            }else{
+				               $current_context->setUsageInfoTextForRubricForm( $form_data['info_text'],  '');
+				            }
+				          if(!empty($form_data['show_global'])) {
+				             $current_context->setUsageInfoGlobal('true');
+				          } else {
+				             $current_context->setUsageInfoGlobal('false');
+				          }
+
+				         }
+
+						// save
+						$current_context->save();
+
+						// genereate layout images
+						$current_context->generateLayoutImages();
+
+						// set return
+						$this->_popup_controller->setSuccessfullItemIDReturn($current_context->getItemID());
+				    }
+
+					break;
+
+
 
 				/**** ROOM PICTURE ****/
 				case 'room_picture':
@@ -736,7 +872,116 @@ class cs_popup_configuration_controller {
 
 		// room information
 		$this->_popup_controller->assign('popup', 'room', $this->getRoomInformation());
+		$this->_popup_controller->assign('popup', 'moderation', $this->getModerationInformation());
 	}
+
+	private function getModerationInformation() {
+		$return = array();
+		$current_context = $this->_environment->getCurrentContextItem();
+		$translator = $this->_environment->getTranslationObject();
+
+		//Informationbox
+        $return['item_id'] = $current_context->getInformationBoxEntryID();
+        if ( $current_context->withInformationBox() ) {
+           $return['show_information_box'] = '1';
+        } else {
+           $return['show_information_box'] = '0';
+        }
+
+		//Usage Infos
+        $default_rubrics = $current_context->getAvailableRubrics();
+        $array_info_text = array();
+        $rubric_array = array();
+        $temp_array['rubric']  = $translator->getMessage('HOME_INDEX');
+        $temp_array['key'] = 'home';
+	    $temp_array['title'] = $current_context->getUsageInfoHeaderForRubric('home');
+	    $temp_array['text'] = $current_context->getUsageInfoTextForRubricInForm('home');
+        $array_info_text[] = $temp_array;
+        foreach ($default_rubrics as $rubric) {
+             $temp_array = array();
+             switch ( mb_strtoupper($rubric, 'UTF-8') ){
+                case 'ANNOUNCEMENT':
+                   $temp_array['rubric'] = $translator->getMessage('ANNOUNCEMENT_INDEX');
+                   break;
+                case 'DATE':
+                   $temp_array['rubric'] = $translator->getMessage('DATE_INDEX');
+                   break;
+                case 'DISCUSSION':
+                   $temp_array['rubric'] = $translator->getMessage('DISCUSSION_INDEX');
+                   break;
+                case 'INSTITUTION':
+                   $temp_array['rubric'] = $translator->getMessage('INSTITUTION_INDEX');
+                   break;
+                case 'GROUP':
+                   $temp_array['rubric'] = $translator->getMessage('GROUP_INDEX');
+                   break;
+                case 'MATERIAL':
+                   $temp_array['rubric'] = $translator->getMessage('MATERIAL_INDEX');
+                   break;
+                case 'PROJECT':
+                   $temp_array['rubric'] = $translator->getMessage('PROJECT_INDEX');
+                   break;
+                case 'TODO':
+                   $temp_array['rubric'] = $translator->getMessage('TODO_INDEX');
+                   break;
+                case 'TOPIC':
+                   $temp_array['rubric'] = $translator->getMessage('TOPIC_INDEX');
+                   break;
+                case 'USER':
+                   $temp_array['rubric'] = $translator->getMessage('USER_INDEX');
+                   break;
+                default:
+                   $temp_array['rubric'] = $translator->getMessage('COMMON_MESSAGETAG_ERROR'.' cs_configuration_usageinfo_form(113) ');
+                   break;
+              }
+              $temp_array['key'] = $rubric;
+	          $temp_array['title'] = $current_context->getUsageInfoHeaderForRubric($rubric);
+	          $temp_array['text'] = $current_context->getUsageInfoTextForRubricInForm($rubric);
+              $array_info_text[] = $temp_array;
+              unset($temp_array);
+         }
+		 $return['array_info_text'] = $array_info_text;
+
+	      // mail text choice
+	      $array_mail_text[0]['text']  = '*'.$translator->getMessage('MAIL_CHOICE_CHOOSE_TEXT');
+	      $array_mail_text[0]['value'] = -1;
+
+	      // mail salutation
+	      $array_mail_text[1]['text']  = '----------------------';
+	      $array_mail_text[1]['value'] = 'disabled';
+	      $array_mail_text[2]['text']  = $translator->getMessage('MAIL_CHOICE_HELLO');
+	      $array_mail_text[2]['value'] = 'MAIL_CHOICE_HELLO';
+	      $array_mail_text[3]['text']  = $translator->getMessage('MAIL_CHOICE_CIAO');
+	      $array_mail_text[3]['value'] = 'MAIL_CHOICE_CIAO';
+
+	      // user
+	      $array_mail_text[4]['text']  = '----------------------';
+	      $array_mail_text[4]['value'] = 'disabled';
+	      $array_mail_text[5]['text']  = $translator->getMessage('MAIL_CHOICE_USER_ACCOUNT_DELETE');
+	      $array_mail_text[5]['value'] = 'MAIL_CHOICE_USER_ACCOUNT_DELETE';
+	      $array_mail_text[6]['text']  = $translator->getMessage('MAIL_CHOICE_USER_ACCOUNT_LOCK');
+	      $array_mail_text[6]['value'] = 'MAIL_CHOICE_USER_ACCOUNT_LOCK';
+	      $array_mail_text[7]['text']  = $translator->getMessage('MAIL_CHOICE_USER_STATUS_USER');
+	      $array_mail_text[7]['value'] = 'MAIL_CHOICE_USER_STATUS_USER';
+	      $array_mail_text[8]['text']  = $translator->getMessage('MAIL_CHOICE_USER_STATUS_MODERATOR');
+	      $array_mail_text[8]['value'] = 'MAIL_CHOICE_USER_STATUS_MODERATOR';
+	      $array_mail_text[9]['text']  = $translator->getMessage('MAIL_CHOICE_USER_MAKE_CONTACT_PERSON');
+	      $array_mail_text[9]['value'] = 'MAIL_CHOICE_USER_MAKE_CONTACT_PERSON';
+	      $array_mail_text[10]['text']  = $translator->getMessage('MAIL_CHOICE_USER_UNMAKE_CONTACT_PERSON');
+	      $array_mail_text[10]['value'] = 'MAIL_CHOICE_USER_UNMAKE_CONTACT_PERSON';
+	      if ($this->_environment->inCommunityRoom()) {
+	         $array_mail_text[11]['text']  = $translator->getMessage('MAIL_CHOICE_USER_ACCOUNT_PASSWORD');
+	         $array_mail_text[11]['value'] = 'MAIL_CHOICE_USER_ACCOUNT_PASSWORD';
+	         $array_mail_text[12]['text']  = $translator->getMessage('MAIL_CHOICE_USER_ACCOUNT_MERGE');
+	         $array_mail_text[12]['value'] = 'MAIL_CHOICE_USER_ACCOUNT_MERGE';
+	      }
+		 $return['array_mail_text'] = $array_mail_text;
+
+
+		 return $return;
+	}
+
+
 
 	private function getRoomInformation() {
 		$return = array();
@@ -894,6 +1139,22 @@ class cs_popup_configuration_controller {
 		$return['rubric_array'] = $this->_rubric_array;
 		$return['rubric_conf_array'] = $rubric_configuration_array;
 		$return['rubric_display_array'] = $nameArray;
+
+         if ($current_context->checkNewMembersNever()) {
+            $return['member_check'] = 'never';
+         } elseif ($current_context->checkNewMembersAlways()) {
+            $return['member_check'] = 'always';
+         } elseif ($current_context->checkNewMembersSometimes()) {
+            $return['member_check'] = 'sometimes';
+         } elseif ($current_context->checkNewMembersWithCode()) {
+            $return['member_check'] = 'withcode';
+         }
+
+         $code = $current_context->getCheckNewMemberCode();
+         if ( !empty($code) ) {
+            $return['code'] = $code;
+         }
+
 
 		// rss
 		if($current_context->isRSSOn()) {

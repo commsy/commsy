@@ -1,4 +1,3 @@
-{debug}
 {* include template functions *}
 {include file="include/functions.tpl" inline}
 <div id="popup_wrapper">
@@ -18,8 +17,8 @@
 						<div class="tab_navigation">
 							<a href="" class="pop_tab_active">___INTERNAL_META_TITLE___</a>
 							<a href="" class="pop_tab">___INTERNAL_SPECIAL_TITLE___</a>
-							<a href="" class="pop_tab">___COMMON_ACCOUNTS___</a>
 							<a href="" class="pop_tab">___CONFIG_MODERATION_TITLE___</a>
+							<a href="" class="pop_tab">___COMMON_ACCOUNTS___</a>
 							<a href="" class="pop_tab">___CONFIGURATION_PLUGIN_LINK___</a>
 							<a href="" class="pop_tab">___HOME_EXTRA_TOOLS___</a>
 
@@ -67,18 +66,30 @@
 													<img style="width:200px" src="commsy.php?cid={$environment.cid}&mod=picture&fct=getfile&picture={$popup.room.logo}" alt="___USER_PICTURE_UPLOADFILE___" />
 													<input id="delete_logo" type="checkbox" name="form_data[delete_logo]" value="1"/>___LOGO_DELETE_OPTION___
 												</div>
-											<div class="clear"></div>
+												<div class="clear"></div>
 											</div>
 										{/if}
+
 
 										<div class="input_row_100">
 											<label for="room_logo">___DATE_PARTICIPANTS___:</label>
 									        <input type="radio" name="form_data[member_check]" value="always" {if $popup.room.member_check == 'always'}checked{/if} onclick="disable_code()"/>___PREFERENCES_CHECK_NEW_MEMBERS_ALWAYS___
 											<input type="radio" name="form_data[member_check]" value="never" {if $popup.room.member_check == 'never'}checked{/if} onclick="disable_code()"/>___PREFERENCES_CHECK_NEW_MEMBERS_NEVER___
 									        <input type="radio" name="form_data[member_check]" value="withcode" {if $popup.room.member_check == 'withcode'}checked{/if} onclick="enable_code()"/>___PREFERENCES_CHECK_NEW_MEMBERS_WITH_CODE___:
-											<input type="text" class="size_200" name="form_data[code]" value="{if isset($popup.room.code)}{$popup.room.code}{/if}" maxlength="255" size="30"/>
+											<input type="text" class="size_200" id="code" name="form_data[code]" value="{if isset($popup.room.code)}{$popup.room.code}{else}___PREFERENCES_CHECK_NEW_MEMBERS_WITH_CODE_VALUE___{/if}" {if $popup.room.member_check != 'withcode'}disabled=disabled{/if} maxlength="255" size="30"/>
 											<div class="clear"></div>
 										</div>
+										<script type="text/javascript">
+										      <!--
+										         function disable_code() {
+										            document.getElementById("code").disabled = true;
+										         }
+										         function enable_code() {
+										            document.getElementById("code").disabled = false;
+										         }
+
+										      -->
+										</script>
 
 
 
@@ -290,23 +301,102 @@
 											<input id="room_rss_no" type="radio" name="form_data[rss]" value="no"{if $popup.room.rss == 'no'} checked="checked"{/if} />
 										</div>
 *}
-										<div class="input_row">
-											<input id="submit" type="button" class="popup_button" name="save" value="___PREFERENCES_SAVE_BUTTON___"/>
-										</div>
 
 									</fieldset>
-
-									<fieldset>
-
-									</fieldset>
+									<div class="input_row">
+										<input id="submit" type="button" class="popup_button" name="save" value="___PREFERENCES_SAVE_BUTTON___"/>
+									</div>
 
 								</div>
 							</div>
 
-							<div class="tab hidden" id="user">
+							<div class="tab hidden" id="additional_configuration">
 								<div id="content_row_three">
 									<fieldset>
 									</fieldset>
+								</div>
+							</div>
+
+							<div class="tab hidden" id="moderation_configuration">
+								<div id="content_row_three">
+									<fieldset>
+										<p>
+											<strong>___COMMON_INFORMATION_BOX___:</strong> ___COMMON_INFORMATION_BOX_ID_ENTRY___
+										</p>
+										<div class="input_row_150">
+											<label for="room_name">___COMMON_INFORMATION_BOX_SHORT___:</label>
+											<input id="room_name" type="text" class="size_200" name="form_data[item_id]" value="{show var=$popup.moderation.item_id}"/>
+											<input type="radio" name="form_data[show_information_box]" value="1" {if $popup.moderation.show_information_box == '1'}checked{/if}/>___COMMON_SHOW_INFORMATION_BOX_YES___
+         									<input type="radio" name="form_data[show_information_box]" value="0" {if $popup.moderation.show_information_box == '0'}checked{/if}/>___COMMON_SHOW_INFORMATION_BOX_NO___
+										</div>
+										<div class="clear"></div>
+									</fieldset>
+									<fieldset>
+										<p>
+											<strong>___PREFERENCES_USAGE_INFOS___:</strong> ___PREFERENCES_USAGE_INFOS_DESC___
+										</p>
+										<div class="input_row_100">
+											<label for="room_name">___COMMON_CHOOSE_RUBRIC___:</label>
+											<select class="size_200"  style="width:200px;" id="moderation_rubric" name="form_data[array_info_text_rubric]">
+												{foreach $popup.moderation.array_info_text as $info_text}
+													<option value="{$info_text.key}">{$info_text.rubric}</option>
+												{/foreach}
+											</select>
+										</div>
+										<div class="input_row_100">
+											<label for="room_name">___COMMON_TITLE___:</label>
+											{foreach $popup.moderation.array_info_text as $info_text}
+												<input id="moderation_title_{$info_text.key}" type="text" class="size_200 {if $info_text@index >0}hidden{/if}" name="form_data[moderation_title_{$info_text.key}]" value="{show var=$info_text.title}"/>
+											{/foreach}
+
+										</div>
+										<div class="input_row_100">
+											<label for="room_name">___COMMON_TEXT___:</label>
+											{foreach $popup.moderation.array_info_text as $info_text}
+												<div class="editor_content {if $info_text@index >0}hidden{/if}" style="margin-left:100px;">
+													<div id="moderation_description_{$info_text.key}" class="ckeditor">{if isset($info_text.text)}{$info_text.text}{/if}</div>
+												</div>
+											{/foreach}
+
+										</div>
+
+									</fieldset>
+									<fieldset>
+										<p>
+											<strong>___CONFIGURATION_MAIL_FORM_HEADLINE___:</strong> ___PREFERENCES_MAIL_DESC___
+										</p>
+										<div class="input_row_100">
+											<label for="room_name">___COMMON_CONFIGURATION_MAIL_FORM_TITLE___:</label>
+											<select class="size_200"  style="width:200px;" id="moderation_rubric" name="form_data[array_mail_text_rubric]">
+												{foreach $popup.moderation.array_mail_text as $mailtext}
+													<option value="{$mailtext.value}">{$mailtext.text}</option>
+												{/foreach}
+											</select>
+										</div>
+										<div class="input_row_100">
+											<label for="room_name">___COMMON_BODY___ (___DE___):</label>
+											{foreach $popup.moderation.array_mail_text as $mail_text}
+												<div class="editor_content {if $mail_text@index >0}hidden{/if}" style="margin-left:100px;">
+													<div id="moderation_mail_body_de_{$mail_text@index}" class="ckeditor">{if isset($mail_text.body_de)}{$mail_text.body_de}{/if}</div>
+												</div>
+											{/foreach}
+
+										</div>
+										<div class="input_row_100">
+											<label for="room_name">___COMMON_BODY___ (___EN___):</label>
+											{foreach $popup.moderation.array_mail_text as $mail_text}
+												<div class="editor_content {if $mail_text@index >0}hidden{/if}" style="margin-left:100px;">
+													<div id="moderation_mail_body_en_{$mail_text@index}" class="ckeditor">{if isset($mail_text.body_en)}{$mail_text.body_en}{/if}</div>
+												</div>
+											{/foreach}
+
+										</div>
+
+
+									</fieldset>
+									<div class="input_row">
+										<input id="submit" type="button" class="popup_button" name="save" value="___PREFERENCES_SAVE_BUTTON___"/>
+									</div>
 								</div>
 							</div>
 
