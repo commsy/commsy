@@ -129,14 +129,14 @@
 											<label for="rubric_choice">___COMMON_RUBRICS___<span class="required">*</span>:</label>
 											{foreach $popup.room.rubric_conf_array as $conf_rubric}
 												<div class="input_container_180" style="margin-left:100px;">
-													<select class="size_200" style="width:200px;" name="form_data['rubric_{$conf_rubric.iteration}']">
+													<select class="size_200" style="width:200px;" name="form_data['rubric_{$conf_rubric@iteration}']">
 														{foreach $popup.room.rubric_array as $rubric}
 															<option value="{$rubric.value}"{if $rubric.value == $conf_rubric.value} selected="selected"{/if}>
 																{$rubric.text}
 															</option>
 														{/foreach}
 													</select>
-													<select class="size_200" style="width:200px;" name="form_data['show_{$conf_rubric.iteration}']">
+													<select class="size_200" style="width:200px;" name="form_data['show_{$conf_rubric@iteration}']">
 														<option value="short"{if 'short' == $conf_rubric.show} selected="selected"{/if}>
 															___MODULE_CONFIG_SHORT___
 														</option>
