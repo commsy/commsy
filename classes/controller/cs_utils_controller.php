@@ -783,5 +783,16 @@
 				$item->setFileIDArray($temp_files_array);
 			}
 		}
+		
+		public function createOwnCSSForRoomContext(cs_context_item $room_item, array $schema) {
+			$bg_image = $room_item->getBGImageFilename();
+			$bg_repeat = $room_item->issetBGImageRepeat();
+			
+			// TODO: handle bg image and bg repeat
+			
+			$master = 'templates/themes/individual/styles_styles_cid.css';
+			$path = 'templates/themes/individual/styles_' . $room_item->getItemID() . '.css';
+			die("test");
+		}
 	}
 ?>

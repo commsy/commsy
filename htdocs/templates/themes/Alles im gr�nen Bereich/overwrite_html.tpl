@@ -7,4 +7,5 @@
     <link rel="stylesheet" type="text/css" media="screen" href="{$basic.tpl_path}uploadify.css" />
 	<link rel="stylesheet" type="text/css" media="screen" href="{$basic.tpl_path}jquery-lightbox/jquery.lightbox-0.5.css" />
 	<link rel="stylesheet" type="text/css" media="screen" href="templates/themes/Alles im grünen Bereich/schema.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="{$basic.tpl_path}jquery.colorpicker.css" />
 {/block}

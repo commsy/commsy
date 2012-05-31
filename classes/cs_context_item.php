@@ -1086,7 +1086,7 @@ class cs_context_item extends cs_item {
     }
 
     if ( !strstr($retour['schema'],'OWN') ) {
-      $retour = $cs_color[$retour['schema']];
+    	if(isset($cs_color[$retour['schema']])) $retour = $cs_color[$retour['schema']];
     }
     return $retour;
   }

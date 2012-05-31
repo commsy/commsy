@@ -826,7 +826,104 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 		},
 		
 		onSaveConfiguration: function(event) {
+			var handle = event.data.handle;
+			var target = jQuery(event.target);
+
+			// get all form information from current tab
+			var col_object = target.parentsUntil('div.tab');
+			var form_objects = col_object.find('input[name^="form_data"], select[name^="form_data"]');
+
+			// build object
+			var data = {
+				form_data: [],
+				module: 'configuration',
+				additional: {
+					tab: col_object.parent().attr('id')
+				}
+			};
 			
+			// add ckeditor data to hidden div
+			jQuery('div.ckeditor').each(function() {
+				var editor = jQuery(this).ckeditorGet();
+				jQuery(this).parent().children('input[type="hidden"]').attr('value', editor.getData());
+			});
+			
+			jQuery.each(form_objects, function() {
+				var add = false;
+
+				// if form field is a checkbox, only add if checked
+				if(jQuery(this).attr('type') === 'checkbox') {
+					if(jQuery(this).attr('checked') === 'checked') {
+						add = true;
+					}
+				}
+
+				// if form fiel is a radio button, only add the selected one
+				else if(jQuery(this).attr('type') === 'radio') {
+					if(jQuery(this).attr('checked')	 === 'checked') {
+						add = true;
+					}
+				}
+
+				else {
+					add = true;
+				}
+
+				if(add === true) {
+					// extract name
+					/form_data\[(.*)\]/.exec(jQuery(this).attr('name'));
+
+					data.form_data.push({
+						name:	RegExp.$1,
+						value:	jQuery(this).attr('value')
+					});
+				}
+			});
+
+			// ajax request
+			jQuery.ajax({
+				type: 'POST',
+				url: 'commsy.php?cid=' + handle.cid + '&mod=ajax&fct=popup&action=save',
+				data: JSON.stringify(data),
+				contentType: 'application/json; charset=utf-8',
+				dataType: 'json',
+				error: function() {
+					console.log("error while processing popup action");
+				},
+				success: function(data, status) {
+					if(data.status === 'success') {
+						// submit picture
+						/*
+						var form_object = jQuery('form#picture_upload');
+
+						if(form_object.find('input[type="file"]').attr('value') !== '') {
+							handle.uploadUserPicture(form_object);
+						} else {
+							handle.close();
+						}
+						*/
+					} else if(data.status === 'error' && data.code === 101) {
+						// mandatory error
+						var missing_fields = data.detail;
+
+						// create a red border around the missing fields and scroll to first one
+						jQuery.each(missing_fields, function(index, field_name) {
+							jQuery.each(form_objects, function() {
+								if(jQuery(this).attr('name') === 'form_data[' + field_name + ']') {
+									jQuery(this).css('border', '1px solid red');
+
+									if(index === 0 && !jQuery.inviewport(jQuery(this), {threshold: 0})) {
+										jQuery('html, body').animate({scrollTop: jQuery(this).offset().top}, 500);
+									}
+								}
+							});
+						});
+					} else {
+						// unhandled error
+						console.log('unhandled error');
+					}
+				}
+			});
 		}
 	};
 });
