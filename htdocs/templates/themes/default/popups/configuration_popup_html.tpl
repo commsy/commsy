@@ -1,4 +1,3 @@
-{debug}
 {* include template functions *}
 {include file="include/functions.tpl" inline}
 <div id="popup_wrapper">
