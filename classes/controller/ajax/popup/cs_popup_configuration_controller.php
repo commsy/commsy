@@ -310,6 +310,69 @@ class cs_popup_configuration_controller {
 		$current_user = $this->_environment->getCurrentUser();
 		$translator = $this->_environment->getTranslationObject();
 		
+		//rubric_choice
+		$room = $this->_environment->getCurrentContextItem();
+		$default_rubrics = $room->getAvailableDefaultRubricArray();
+		$rubric_array = array();
+		$i = 1;
+		$select_array[0]['text'] = '----------';
+		$select_array[0]['value'] = 'none';
+		foreach ($default_rubrics as $rubric){
+			if ($this->_environment->inPrivateRoom() and $rubric =='user' ){
+				$select_array[$i]['text'] = $this->_translator->getMessage('COMMON_MY_USER_DESCRIPTION');
+			} else {
+				switch ( mb_strtoupper($rubric, 'UTF-8') ){
+					case 'ANNOUNCEMENT':
+						$select_array[$i]['text'] = $translator->getMessage('ANNOUNCEMENT_INDEX');
+						break;
+					case 'DATE':
+						$select_array[$i]['text'] = $translator->getMessage('DATE_INDEX');
+						break;
+					case 'DISCUSSION':
+						$select_array[$i]['text'] = $translator->getMessage('DISCUSSION_INDEX');
+						break;
+					case 'GROUP':
+						$select_array[$i]['text'] = $translator->getMessage('GROUP_INDEX');
+						break;
+					case 'INSTITUTION':
+						$select_array[$i]['text'] = $translator->getMessage('INSTITUTION_INDEX');
+						break;
+					case 'MATERIAL':
+						$select_array[$i]['text'] = $translator->getMessage('MATERIAL_INDEX');
+						break;
+					case 'PROJECT':
+						$select_array[$i]['text'] = $translator->getMessage('PROJECT_INDEX');
+						break;
+					case 'TODO':
+						$select_array[$i]['text'] = $translator->getMessage('TODO_INDEX');
+						break;
+					case 'TOPIC':
+						$select_array[$i]['text'] = $translator->getMessage('TOPIC_INDEX');
+						break;
+					case 'USER':
+						$select_array[$i]['text'] = $translator->getMessage('USER_INDEX');
+						break;
+					default:
+						$text = '';
+						if ( $this->_environment->isPlugin($rubric) ) {
+							$text = plugin_hook_output($rubric,'getDisplayName');
+						}
+						if ( !empty($text) ) {
+							$select_array[$i]['text'] = $text;
+						} else {
+							$select_array[$i]['text'] = $translator->getMessage('COMMON_MESSAGETAG_ERROR'.' cs_configuration_rubric_form('.__LINE__.') ');
+						}
+						break;
+				}
+			}
+			$select_array[$i]['value'] = $rubric;
+			$i++;
+		}
+		// sorting
+		$sort_by = 'text';
+		usort($select_array,create_function('$a,$b','return strnatcasecmp($a[\''.$sort_by.'\'],$b[\''.$sort_by.'\']);'));
+		$this->_rubric_array = $select_array;
+		
 		// time pulses
 		if (
 				( $current_context->isProjectRoom() and $this->_environment->inProjectRoom() )
@@ -774,6 +837,66 @@ class cs_popup_configuration_controller {
 		
 		// description
 		$return['description'] = $current_context->getDescription();
+		
+		//rubric choice
+		$home_conf = $current_context->getHomeConf();
+		$home_conf_array = explode(',',$home_conf);
+		$rubric_configuration_array = array();
+		$i=0;
+		$count =8;
+		if ($this->_environment->inCommunityRoom()){
+			$count =7;
+		}
+		foreach ($home_conf_array as $rubric_conf) {
+			$rubric_conf_array = explode('_',$rubric_conf);
+			if ($rubric_conf_array[1] != 'none') {
+				$temp_array = array();
+				$temp_array['key'] = 'rubric_'.$i;
+				$temp_array['value'] = $rubric_conf_array[0];
+				$temp_array['show'] = $rubric_conf_array[1];
+				$i++;
+				$rubric_configuration_array[] = $temp_array;
+			}
+		}
+		for ($j=$i+1; $j<$count; $j++) {
+			$temp_array = array();
+			$temp_array['key'] = 'rubric_'.$i;
+			$temp_array['value'] = 'none';
+			$temp_array['show'] = 'none';
+			$rubric_configuration_array[] = $temp_array;
+		}
+		
+		$first = true;
+		$second = false;
+		$third = false;
+		$count = 8;
+		$nameArray = array();
+		if ( $this->_environment->inCommunityRoom()
+				or $this->_environment->inGroupRoom()
+		) {
+			$count = 7;
+		}
+		for ( $i = 0; $i < $count; $i++ ) {
+			$desc = '';
+			if ($first) {
+				$first = false;
+				$desc = $translator->getMessage('INTERNAL_MODULE_CONF_DESC_SHORT',$translator->getMessage('MODULE_CONFIG_SHORT'));
+				$second = true;
+			} elseif ($second) {
+				$second = false;
+				$desc = $translator->getMessage('INTERNAL_MODULE_CONF_DESC_TINY',$translator->getMessage('MODULE_CONFIG_TINY'));
+				$third = true;
+			} elseif ($third) {
+				$third = false;
+				$desc = $translator->getMessage('INTERNAL_MODULE_CONF_DESC_NONE',$translator->getMessage('MODULE_CONFIG_NONE'));
+			}
+			$nameArray[] = $desc;
+		}
+		
+		
+		$return['rubric_array'] = $this->_rubric_array;
+		$return['rubric_conf_array'] = $rubric_configuration_array;
+		$return['rubric_display_array'] = $nameArray;
 		
 		// rss
 		if($current_context->isRSSOn()) {

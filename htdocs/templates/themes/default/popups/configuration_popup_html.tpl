@@ -172,52 +172,52 @@
 										<div id="room_color_own">
 											<div class="input_row_100">
 												<label for="room_color_active_menu">___ROOM_COLOR_ACTIVE_MENU___</label>
-												<input class="size_200" id="room_color_active_menu" class="colorpicker" type="text" name="form_data[color_active_menu]" value="{show var=$popup.room.color_active_menu}"/>
+												<input class="size_200 colorpicker" id="room_color_active_menu" type="text" name="form_data[color_active_menu]" value="{show var=$popup.room.color_active_menu}"/>
 											</div>
 
 											<div class="input_row_100">
 												<label for="room_color_menu">___ROOM_COLOR_MENU___</label>
-												<input class="size_200" id="room_color_menu" class="colorpicker" type="text" name="form_data[color_menu]" value="{show var=$popup.room.color_menu}"/>
+												<input class="size_200 colorpicker" id="room_color_menu" type="text" name="form_data[color_menu]" value="{show var=$popup.room.color_menu}"/>
 											</div>
 
 											<div class="input_row_100">
 												<label for="room_color_right_column">___ROOM_COLOR_RIGHT_COLUMN___</label>
-												<input class="size_200" id="room_color_right_column" class="colorpicker" type="text" name="form_data[color_right_column]" value="{show var=$popup.room.color_right_menu}"/>
+												<input class="size_200 colorpicker" id="room_color_right_column" type="text" name="form_data[color_right_column]" value="{show var=$popup.room.color_right_menu}"/>
 											</div>
 
 											<div class="input_row_100">
 												<label for="room_color_content_bg">___ROOM_COLOR_CONTENT_BG___</label>
-												<input class="size_200" id="room_color_content_bg" class="colorpicker" type="text" name="form_data[color_content_bg]" value="{show var=$popup.room.color_content_bg}"/>
+												<input class="size_200 colorpicker" id="room_color_content_bg" type="text" name="form_data[color_content_bg]" value="{show var=$popup.room.color_content_bg}"/>
 											</div>
 
 											<div class="input_row_100">
 												<label for="room_color_link">___ROOM_COLOR_LINK___</label>
-												<input class="size_200" id="room_color_link" class="colorpicker" type="text" name="form_data[color_link]" value="{show var=$popup.room.color_link}"/>
+												<input class="size_200 colorpicker" id="room_color_link" type="text" name="form_data[color_link]" value="{show var=$popup.room.color_link}"/>
 											</div>
 
 											<div class="input_row_100">
 												<label for="room_color_link_hover">___ROOM_COLOR_LINK_HOVER___</label>
-												<input class="size_200" id="room_color_link_hover" class="colorpicker" type="text" name="form_data[color_link_hover]" value="{show var=$popup.room.color_link_hover}"/>
+												<input class="size_200 colorpicker" id="room_color_link_hover" type="text" name="form_data[color_link_hover]" value="{show var=$popup.room.color_link_hover}"/>
 											</div>
 
 											<div class="input_row_100">
 												<label for="room_color_action_bg">___ROOM_COLOR_ACTION_BG___</label>
-												<input class="size_200" id="room_color_action_bg" class="colorpicker" type="text" name="form_data[color_action_bg]" value="{show var=$popup.room.color_action_bg}"/>
+												<input class="size_200 colorpicker" id="room_color_action_bg" type="text" name="form_data[color_action_bg]" value="{show var=$popup.room.color_action_bg}"/>
 											</div>
 
 											<div class="input_row_100">
 												<label for="room_color_action_icon">___ROOM_COLOR_ACTION_ICON___</label>
-												<input class="size_200" id="room_color_action_icon" class="colorpicker" type="text" name="form_data[color_action_icon]" value="{show var=$popup.room.color_action_icon}"/>
+												<input class="size_200" colorpicker" id="room_color_action_icon" type="text" name="form_data[color_action_icon]" value="{show var=$popup.room.color_action_icon}"/>
 											</div>
 
 											<div class="input_row_100">
 												<label for="room_color_action_icon_hover">___ROOM_COLOR_ACTION_ICON_HOVER___</label>
-												<input class="size_200" id="room_color_action_icon_hover" class="colorpicker" type="text" name="form_data[color_action_icon_hover]" value="{show var=$popup.room.color_action_icon_hover}"/>
+												<input class="size_200 colorpicker" id="room_color_action_icon_hover" type="text" name="form_data[color_action_icon_hover]" value="{show var=$popup.room.color_action_icon_hover}"/>
 											</div>
 
 											<div class="input_row_100">
 												<label for="room_color_bg">___ROOM_COLOR_BG___</label>
-												<input class="size_200" id="room_color_bg" class="colorpicker" type="text" name="form_data[color_bg]" value="{show var=$popup.room.color_bg}"/>
+												<input class="size_200 colorpicker" id="room_color_bg" type="text" name="form_data[color_bg]" value="{show var=$popup.room.color_bg}"/>
 											</div>
 
 											<div class="input_row_100">
