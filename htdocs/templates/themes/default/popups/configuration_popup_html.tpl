@@ -1,6 +1,5 @@
 {* include template functions *}
 {include file="include/functions.tpl" inline}
-
 <div id="popup_wrapper">
 	<div id="popup_my_area">
 		<div id="popup_frame_my_area">
@@ -9,14 +8,15 @@
 				<div id="popup_pagetitle">
 					<a id="popup_close" href="" title="___COMMON_CLOSE___"><img src="{$basic.tpl_path}img/popup_close.gif" alt="___COMMON_CLOSE___" /></a>
 					<h2>
-						___COMMON_PAGETITLE_CONFIGURATION___
+						___CONFIG_META_TITLE___
 					</h2>
 					<div class="clear"> </div>
 				</div>
 				<div id="popup_content_wrapper">
 					<div id="profile_content_row_three">
 						<div class="tab_navigation">
-							<a href="" class="pop_tab_active">___CONFIG_META_TITLE___</a>
+							<a href="" class="pop_tab_active">___INTERNAL_META_TITLE___</a>
+							<a href="" class="pop_tab">___INTERNAL_SPECIAL_TITLE___</a>
 							<a href="" class="pop_tab">___COMMON_ACCOUNTS___</a>
 							<a href="" class="pop_tab">___CONFIG_MODERATION_TITLE___</a>
 							<a href="" class="pop_tab">___CONFIGURATION_PLUGIN_LINK___</a>
@@ -49,7 +49,7 @@
 												{/foreach}
 											</select>
 										</div>
-										
+
 										<div class="input_row_100">
 											<label for="room_logo">___LOGO_UPLOAD___:</label>
 											<form id="picture_upload" action="commsy.php?cid={$environment.cid}&mod=ajax&fct=popup&action=save" method="post">
@@ -69,7 +69,18 @@
 											<div class="clear"></div>
 											</div>
 										{/if}
-										
+
+										<div class="input_row_100">
+											<label for="room_logo">___DATE_PARTICIPANTS___:</label>
+									        <input type="radio" name="form_data[member_check]" value="always" {if $popup.room.member_check == 'always'}checked{/if} onclick="disable_code()"/>___PREFERENCES_CHECK_NEW_MEMBERS_ALWAYS___
+											<input type="radio" name="form_data[member_check]" value="never" {if $popup.room.member_check == 'never'}checked{/if} onclick="disable_code()"/>___PREFERENCES_CHECK_NEW_MEMBERS_NEVER___
+									        <input type="radio" name="form_data[member_check]" value="withcode" {if $popup.room.member_check == 'withcode'}checked{/if} onclick="enable_code()"/>___PREFERENCES_CHECK_NEW_MEMBERS_WITH_CODE___:
+											<input type="text" class="size_200" name="form_data[code]" value="{if isset($popup.room.code)}{$popup.room.code}{/if}" maxlength="255" size="30"/>
+											<div class="clear"></div>
+										</div>
+
+
+
 										{* assignment *}
 										{if $popup.room.in_project_room == true}
 											{if !empty($popup.room.community_room_array)}
@@ -164,11 +175,11 @@
 												{/foreach}
 											</select>
 										</div>
-										
+
 										<div id="room_color_preview" class="input_row">
 											<img style="width:300px" src="" alt="preview" />
 										</div>
-										
+
 										<div id="room_color_own">
 											<div class="input_row_100">
 												<label for="room_color_active_menu">___ROOM_COLOR_ACTIVE_MENU___</label>
@@ -234,14 +245,14 @@
 												<label for="room_color_bg_image_repeat">___CONFIGURATION_BGIMAGE_REPEAT___</label>
 												<input id="room_color_bg_image_repeat" type="checkbox" name="form_data[color_bg_image_repeat]" value="1"{if $popup.room.color_bg == true} checked="checked"{/if} />
 											</div>
-											
+
 											{if !empty($popup.room.color_bg_image)}
 												<div class="input_row">
 													<div class="input_container_180">
 														<img src="commsy.php?cid={$environment.cid}&mod=picture&fct=getfile&picture={$popup.room.color_bg_image}" alt="___USER_PICTURE_UPLOADFILE___" />
 													</div>
 												</div>
-	
+
 												<div class="input_row">
 													<div class="input_container_180">
 														<input id="delete_bg_image" class="float-left" type="checkbox" name="form_data[delete_bg_image]" value="1"/>
@@ -285,9 +296,9 @@
 										</div>
 
 									</fieldset>
-									
+
 									<fieldset>
-										
+
 									</fieldset>
 
 								{*
@@ -737,7 +748,7 @@
 											<div class="clear"></div>
 										</div>
 
-									
+
 
 										<div class="input_row">
 											<input id="data_position_all" type="checkbox" class="float-left" name="form_data[description_all]" />
