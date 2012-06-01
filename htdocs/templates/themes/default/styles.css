@@ -604,7 +604,7 @@ header
 }
 
 #logo_area img {
-    padding-left: 10px;
+    padding-left: 0px 10px;
     height: 45px;
     }
 
