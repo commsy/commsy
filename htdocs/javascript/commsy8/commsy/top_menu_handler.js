@@ -893,15 +893,15 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 				success: function(data, status) {
 					if(data.status === 'success') {
 						// submit picture
-						/*
-						var form_object = jQuery('form#picture_upload');
-
-						if(form_object.find('input[type="file"]').attr('value') !== '') {
-							handle.uploadUserPicture(form_object);
-						} else {
-							handle.close();
-						}
-						*/
+						var form_objects = jQuery('form#logo_upload, form#bg_upload');
+						
+						form_objects.each(function() {
+							if(jQuery(this).find('input[type="file"]').attr('value') !== '') {
+								handle.uploadRoomPicture(jQuery(this));
+							} else {
+								handle.close();
+							}
+						});
 					} else if(data.status === 'error' && data.code === 101) {
 						// mandatory error
 						var missing_fields = data.detail;
@@ -924,6 +924,23 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 					}
 				}
 			});
-		}
+		},
+		
+		uploadRoomPicture: function(form_object) {
+			var handle = this;
+			
+			// setup ajax form
+			form_object.ajaxForm();
+
+			// submit form
+			form_object.ajaxSubmit({
+				type:		'POST',
+				success:	function() {
+					handle.close();
+				}
+			});
+
+			return false;
+		},
 	};
 });

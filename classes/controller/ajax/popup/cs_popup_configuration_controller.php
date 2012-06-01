@@ -375,10 +375,10 @@ class cs_popup_configuration_controller {
 
 
 				/**** ROOM PICTURE ****/
-				case 'room_picture':
+				case 'room_logo':
 					if($this->_popup_controller->checkFormData('room_picture')) {
 						/* handle room picture upload */
-						if(!empty($_FILES['form_data']['name'])) {
+						if(!empty($_FILES['form_data']['name']['picture'])) {
 							$logo = $current_context->getLogoFilename();
 							$disc_manager = $this->_environment->getDiscManager();
 
@@ -390,9 +390,9 @@ class cs_popup_configuration_controller {
 
 								$current_context->setLogoFilename('');
 							}
-
-							$filename = 'cid' . $this->_environment->getCurrentContextID() . '_logo_' . $_FILES['form_data']['name'];
-							$disc_manager->copyFile($_FILES['form_data']['tmp_name'], $filename, true);
+pr($_FILES);
+							$filename = 'cid' . $this->_environment->getCurrentContextID() . '_logo_' . $_FILES['form_data']['name']['picture'];
+							$disc_manager->copyFile($_FILES['form_data']['tmp_name']['picture'], $filename, true);
 							$current_context->setLogoFilename($filename);
 
 							// save
@@ -405,10 +405,10 @@ class cs_popup_configuration_controller {
 					break;
 
 				/**** ROOM BG IMAGE ****/
-				case 'room_background':
+				case 'room_bg':
 					if($this->_popup_controller->checkFormData('room_background')) {
 						/* handle room picture upload */
-						if(!empty($_FILES['form_data']['name'])) {
+						if(!empty($_FILES['form_data']['name']['picture'])) {
 							$bg_image = $current_context->getBGImageFilename();
 							$disc_manager = $this->_environment->getDiscManager();
 
@@ -421,8 +421,8 @@ class cs_popup_configuration_controller {
 								$current_context->setBGImageFilename('');
 							}
 
-							$filename = 'cid' . $this->_environment->getCurrentContextID() . '_bgimage_' . $_FILES['form_data']['name'];
-							$disc_manager->copyFile($_FILES['form_data']['tmp_name'], $filename, true);
+							$filename = 'cid' . $this->_environment->getCurrentContextID() . '_bgimage_' . $_FILES['form_data']['name']['picture'];
+							$disc_manager->copyFile($_FILES['form_data']['tmp_name']['picture'], $filename, true);
 							$current_context->setBGImageFilename($filename);
 
 							// save

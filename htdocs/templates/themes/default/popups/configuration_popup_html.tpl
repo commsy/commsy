@@ -52,9 +52,9 @@
 
 										<div class="input_row_100">
 											<label for="room_logo">___LOGO_UPLOAD___:</label>
-											<form id="picture_upload" action="commsy.php?cid={$environment.cid}&mod=ajax&fct=popup&action=save" method="post">
+											<form id="logo_upload" action="commsy.php?cid={$environment.cid}&mod=ajax&fct=popup&action=save" method="post">
 												<input type="hidden" name="module" value="configuration" />
-												<input type="hidden" name="additional[tab]" value="room" />
+												<input type="hidden" name="additional[tab]" value="room_logo" />
 												<input id="room_logo" size="29" type="file" style="width:200px" class="size_150 float-left" name="form_data[picture]" accept="image/*" />
 											</form>
 											<div class="clear"></div>
@@ -230,7 +230,7 @@
 
 											<div class="input_row_100">
 												<label for="room_color_action_icon">___ROOM_COLOR_ACTION_ICON___</label>
-												<input class="size_200" colorpicker" id="room_color_action_icon" type="text" name="form_data[color_action_icon]" value="{show var=$popup.room.color_action_icon}"/>
+												<input class="size_200S colorpicker" id="room_color_action_icon" type="text" name="form_data[color_action_icon]" value="{show var=$popup.room.color_action_icon}"/>
 											</div>
 
 											<div class="input_row_100">
@@ -245,9 +245,9 @@
 
 											<div class="input_row_100">
 												<label for="room_color_bg_image">___USER_PICTURE_UPLOADFILE___:</label>
-												<form id="picture_upload" action="commsy.php?cid={$environment.cid}&mod=ajax&fct=popup&action=save" method="post">
+												<form id="bg_upload" action="commsy.php?cid={$environment.cid}&mod=ajax&fct=popup&action=save" method="post">
 													<input type="hidden" name="module" value="configuration" />
-													<input type="hidden" name="additional[tab]" value="room_background" />
+													<input type="hidden" name="additional[tab]" value="room_bg" />
 													<input id="room_color_bg_image" type="file" class="size_200 float-left" name="form_data[picture]" accept="image/*" />
 												</form>
 												<div class="clear"></div>
