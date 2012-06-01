@@ -73,26 +73,13 @@
 
 										<div class="input_row_100">
 											<label for="room_logo">___DATE_PARTICIPANTS___:</label>
-									        <input type="radio" name="form_data[member_check]" value="always" {if $popup.room.member_check == 'always'}checked{/if} onclick="disable_code()"/>___PREFERENCES_CHECK_NEW_MEMBERS_ALWAYS___
-											<input type="radio" name="form_data[member_check]" value="never" {if $popup.room.member_check == 'never'}checked{/if} onclick="disable_code()"/>___PREFERENCES_CHECK_NEW_MEMBERS_NEVER___
-									        <input type="radio" name="form_data[member_check]" value="withcode" {if $popup.room.member_check == 'withcode'}checked{/if} onclick="enable_code()"/>___PREFERENCES_CHECK_NEW_MEMBERS_WITH_CODE___:
+									        <input type="radio" name="form_data[member_check]" value="always" {if $popup.room.member_check == 'always'}checked{/if}/>___PREFERENCES_CHECK_NEW_MEMBERS_ALWAYS___
+											<input type="radio" name="form_data[member_check]" value="never" {if $popup.room.member_check == 'never'}checked{/if}/>___PREFERENCES_CHECK_NEW_MEMBERS_NEVER___
+									        <input type="radio" name="form_data[member_check]" value="withcode" {if $popup.room.member_check == 'withcode'}checked{/if}/>___PREFERENCES_CHECK_NEW_MEMBERS_WITH_CODE___:
 											<input type="text" class="size_200" id="code" name="form_data[code]" value="{if isset($popup.room.code)}{$popup.room.code}{else}___PREFERENCES_CHECK_NEW_MEMBERS_WITH_CODE_VALUE___{/if}" {if $popup.room.member_check != 'withcode'}disabled=disabled{/if} maxlength="255" size="30"/>
 											<div class="clear"></div>
 										</div>
-										<script type="text/javascript">
-										      <!--
-										         function disable_code() {
-										            document.getElementById("code").disabled = true;
-										         }
-										         function enable_code() {
-										            document.getElementById("code").disabled = false;
-										         }
-
-										      -->
-										</script>
-
-
-
+										
 										{* assignment *}
 										{if $popup.room.in_project_room == true}
 											{if !empty($popup.room.community_room_array)}
@@ -255,7 +242,7 @@
 
 											<div class="input_row_100">
 												<label for="room_color_bg_image_repeat">___CONFIGURATION_BGIMAGE_REPEAT___</label>
-												<input id="room_color_bg_image_repeat" type="checkbox" name="form_data[color_bg_image_repeat]" value="1"{if $popup.room.color_bg == true} checked="checked"{/if} />
+												<input id="room_color_bg_image_repeat" type="checkbox" name="form_data[color_bg_image_repeat]" value="1"{if $popup.room.color_bg_image_repeat == true} checked="checked"{/if} />
 											</div>
 
 											{if !empty($popup.room.color_bg_image)}
