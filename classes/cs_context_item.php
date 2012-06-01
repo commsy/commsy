@@ -662,7 +662,7 @@ class cs_context_item extends cs_item {
   }
 
 
-  
+
   function setWithWorkflow() {
     $this->_addExtra('WITHWORKFLOW',2);
   }
@@ -684,8 +684,8 @@ class cs_context_item extends cs_item {
     #}
     return $retour;
   }
-  
-  
+
+
   function setWithWorkflowTrafficLight() {
     $this->_addExtra('WITHWORKFLOWTRAFFICLIGHT',2);
   }
@@ -704,7 +704,7 @@ class cs_context_item extends cs_item {
     }
     return $retour;
   }
-  
+
   function setWorkflowTrafficLightDefault($value) {
     $this->_addExtra('WORKFLOWTRAFFICLIGHTDEFAULT',$value);
   }
@@ -716,7 +716,7 @@ class cs_context_item extends cs_item {
     }
     return $retour;
   }
-  
+
   function setWorkflowTrafficLightTextGreen($value) {
     $this->_addExtra('WORKFLOWTRAFFICLIGHTTEXTGREEN',$value);
   }
@@ -728,7 +728,7 @@ class cs_context_item extends cs_item {
     }
     return $retour;
   }
-  
+
   function setWorkflowTrafficLightTextYellow($value) {
     $this->_addExtra('WORKFLOWTRAFFICLIGHTTEXTYELLOW',$value);
   }
@@ -740,7 +740,7 @@ class cs_context_item extends cs_item {
     }
     return $retour;
   }
-  
+
   function setWorkflowTrafficLightTextRed($value) {
     $this->_addExtra('WORKFLOWTRAFFICLIGHTTEXTRED',$value);
   }
@@ -752,8 +752,8 @@ class cs_context_item extends cs_item {
     }
     return $retour;
   }
-  
-  
+
+
   function setWithWorkflowResubmission() {
     $this->_addExtra('WITHWORKFLOWRESUBMISSION',2);
   }
@@ -775,8 +775,8 @@ class cs_context_item extends cs_item {
     #}
     return $retour;
   }
-  
-  
+
+
   function setWithWorkflowReader() {
     $this->_addExtra('WITHWORKFLOWREADER',2);
   }
@@ -798,7 +798,7 @@ class cs_context_item extends cs_item {
     #}
     return $retour;
   }
-  
+
   function setWithWorkflowReaderGroup() {
     $this->_addExtra('WORKFLOWREADERGROUP','1');
   }
@@ -806,7 +806,7 @@ class cs_context_item extends cs_item {
   function setWithoutWorkflowReaderGroup() {
     $this->_addExtra('WORKFLOWREADERGROUP','0');
   }
-  
+
   function getWorkflowReaderGroup() {
     $retour = '0';
     if ($this->_issetExtra('WORKFLOWREADERGROUP') ) {
@@ -814,7 +814,7 @@ class cs_context_item extends cs_item {
     }
     return $retour;
   }
-  
+
   function setWithWorkflowReaderPerson() {
     $this->_addExtra('WORKFLOWREADERPERSON','1');
   }
@@ -822,7 +822,7 @@ class cs_context_item extends cs_item {
   function setWithoutWorkflowReaderPerson() {
     $this->_addExtra('WORKFLOWREADERPERSON','0');
   }
-  
+
   function getWorkflowReaderPerson() {
     $retour = '0';
     if ($this->_issetExtra('WORKFLOWREADERPERSON') ) {
@@ -830,7 +830,7 @@ class cs_context_item extends cs_item {
     }
     return $retour;
   }
-  
+
   function setWorkflowReaderShowTo($value) {
     $this->_addExtra('WORKFLOWREADERSHOWTO',$value);
   }
@@ -842,7 +842,7 @@ class cs_context_item extends cs_item {
     }
     return $retour;
   }
-  
+
   function setWithWorkflowValidity() {
     $this->_addExtra('WITHWORKFLOWVALIDITY',2);
   }
@@ -864,7 +864,7 @@ class cs_context_item extends cs_item {
     #}
     return $retour;
   }
-  
+
   /** get htmltextarea status
    *
    * @return integer discussion status 1 = simple, 2 = threaded,  3 = both
@@ -2220,11 +2220,11 @@ class cs_context_item extends cs_item {
   ##########################################
   # assessment flag
   ##########################################
-  
+
   function setAssessmentActive() {
   	$this->_addExtra('ASSESSMENT', (int) 1);
   }
-  
+
   function setAssessmentInactive() {
   	$this->_addExtra('ASSESSMENT', (int) -1);
   }
@@ -4446,10 +4446,31 @@ class cs_context_item extends cs_item {
     $this->_addExtra('BGIMAGEREPEAT',0);
   }
 
+  function setBGImageFixed () {
+    $this->_addExtra('BGIMAGEFIXED',1);
+  }
+
+  function unsetBGImageFixed () {
+    $this->_addExtra('BGIMAGEFIXED',0);
+  }
+
   public function issetBGImageRepeat () {
     $retour = false;
     if ($this->_issetExtra('BGIMAGEREPEAT')) {
       $retour = $this->_getExtra('BGIMAGEREPEAT');
+      if ( $retour == 1 ) {
+        $retour = true;
+      } else {
+        $retour = false;
+      }
+    }
+    return $retour;
+  }
+
+  public function issetBGImageFixed () {
+    $retour = false;
+    if ($this->_issetExtra('BGIMAGEFIXED')) {
+      $retour = $this->_getExtra('BGIMAGEFIXED');
       if ( $retour == 1 ) {
         $retour = true;
       } else {
@@ -6590,11 +6611,11 @@ class cs_context_item extends cs_item {
   function setPageImpressionAndUserActivityLast($value) {
     $this->_addExtra('PIUA_LAST',$value);
   }
-  
+
   ##################################
   # Workflow
   ##################################
-  
+
   function withWorkflowFunctions () {
     global $c_workflow;
     if ( !isset($c_workflow) or !$c_workflow ) {

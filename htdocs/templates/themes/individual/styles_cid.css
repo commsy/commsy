@@ -18,7 +18,8 @@
 body {
     background-image: url("{$bg_image}"); /* Background-Image */
     background-repeat: {$bg_repeat};
-    background-position: 50% 50%;
+    background-attachment: {$bg_fixed};
+	background-position: 50% 50%;
     background-color: #{$color_bg}; /*CS_BG_COLOR*/
 }
 

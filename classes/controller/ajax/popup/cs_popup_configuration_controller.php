@@ -172,6 +172,8 @@ class cs_popup_configuration_controller {
 								// bg image repeat
 								if(isset($form_data['color_bg_image_repeat']) && $form_data['color_bg_image_repeat'] == '1') $current_context->setBGImageRepeat();
 								else $current_context->unsetBGImageRepeat();
+								if(isset($form_data['color_bg_image_fixed']) && $form_data['color_bg_image_fixed'] == '1') $current_context->setBGImageFixed();
+								else $current_context->unsetBGImageFixed();
 
 								// create individual css for room context
 								$this->_popup_controller->getUtils()->createOwnCSSForRoomContext($current_context, $schema);
@@ -191,21 +193,21 @@ class cs_popup_configuration_controller {
 							if($form_data['rss'] === 'yes') $current_context->turnRSSOn();
 							elseif($form_data['rss'] === 'no') $current_context->turnRSSOff();
 						}
-						
+
 						// rubric selection form check
 						if(!empty($form_data['rubric_0'])) {
 							$default_rubrics = $current_context->getAvailableDefaultRubricArray();
-							
+
 							if(count($default_rubrics) > 8) $count = 8;
 							else $count = count($default_rubrics);
-							
+
 							if(isset($form_data['rubric_0'])) {
 								$post_array = array();
-								
+
 								for($j=0; $j < $count; $j++) {
 									$post_array[] = $form_data['rubric_' . $j];
 								}
-								
+
 								$value = true;
 								for($k=0; $k < $count; $k++) {
 									for($l=0; $l < $count; $l++) {
@@ -217,15 +219,15 @@ class cs_popup_configuration_controller {
 									}
 								}
 							}
-							
+
 							if(!$value) {
 								// error
 								$this->_popup_controller->setErrorReturn('102', 'doubled rubric entries', array());
-								
+
 								return false;
 							}
 						}
-						
+
 						// rubric selection
 						$temp_array = array();
 						$j = 0;
@@ -424,7 +426,7 @@ class cs_popup_configuration_controller {
 
 								$current_context->setLogoFilename('');
 							}
-							
+
 							$filename = 'cid' . $this->_environment->getCurrentContextID() . '_logo_' . $_FILES['form_data']['name']['picture'];
 							$disc_manager->copyFile($_FILES['form_data']['tmp_name']['picture'], $filename, true);
 							$current_context->setLogoFilename($filename);
@@ -1110,6 +1112,7 @@ class cs_popup_configuration_controller {
 		$return['color_bg'] = $color['color_bg'];
 		$return['color_bg_image'] = $current_context->getBGImageFilename();
 		$return['color_bg_image_repeat'] = $current_context->issetBGImageRepeat();
+		$return['color_bg_image_fixed'] = $current_context->issetBGImageFixed();
 
 		// description
 		$return['description'] = $current_context->getDescription();
