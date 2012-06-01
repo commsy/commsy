@@ -59,7 +59,7 @@
                 	<img src="{$basic.tpl_path}img/commsy_logo.gif" alt="CommSy" />
             	{/if}
             	{if $environment.show_room_title}
-            		{$environment.room_title}
+            		<span>{$environment.room_title|truncate:50:"...":true}</span>
             	{/if}
             </div>
 

@@ -596,6 +596,13 @@ header
     float: left;
     }
 
+#logo_area span {
+    color: #393939;
+    font-size: 18px;
+    font-weight: bold;
+    text-shadow: 0 1px #CCCCCC;
+}
+
 #logo_area img {
     padding-left: 10px;
     height: 45px;
