@@ -767,7 +767,69 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 				// do something if color
 				//console.log("selecte");
 			});
+			
+			// participation code hiding
+			jQuery('input[name="form_data[member_check]"]').each(function() {
+				if(jQuery(this).attr('value') == 'withcode') {
+					// enable
+					jQuery(this).click(function() {
+						jQuery('input#code').attr('disabled', false);
+					});			
+				} else {
+					// disable
+					jQuery(this).click(function() {
+						jQuery('input#code').attr('disabled', true);
+					});
+				}
+			});
+			
+			/* setup moderation support form elements */
+			
+			/*
+			
+			
+			// get value from active bibliographic option
+			var select_object = jQuery('select#bibliographic_select');
+			
+			// show / hide bibliographic div's
+			handle.showHideBibliographic(select_object);
+			
+			// register handler for select
+			select_object.change(function() {
+				// show / hide bibliographic div's
+				handle.showHideBibliographic(select_object);
+			});
+			*/
 		},
+		
+		/*
+		 * showHideBibliographic: function(select_object) {
+			var key = select_object.children('option:selected').val();
+			
+			// go through all bibliographic content div's and show the one who's id matches "bib_content_" + key
+			jQuery('div#bibliographic div[id^="bib_content_"]').each(function() {
+				if(jQuery(this).attr('id') === 'bib_content_' + key) {
+					jQuery(this).show();
+					
+					// go through each input field and change the name, if needed, so they will be submitted again
+					jQuery(this).find('input, select').each(function() {
+						if(jQuery(this).attr('name').substr(0, 14) === 'do_not_submit_') {
+							jQuery(this).attr('name', jQuery(this).attr('name').substr(14));
+						}
+					});
+				} else {
+					jQuery(this).hide();
+					
+					// go through each input field and change the name, if needed, so they won't be submitted
+					jQuery(this).find('input, select').each(function() {
+						if(jQuery(this).attr('name').substr(0, 14) !== 'do_not_submit_') {
+							jQuery(this).attr('name', 'do_not_submit_' + jQuery(this).attr('name'));
+						}
+					});
+				}
+			});
+		},
+		 */
 		
 		updateConfigurationSchemaPreview: function() {
 			// set image path for preview and handle own schema

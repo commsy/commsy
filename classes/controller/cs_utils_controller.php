@@ -783,42 +783,41 @@
 				$item->setFileIDArray($temp_files_array);
 			}
 		}
-
+		
 		public function createOwnCSSForRoomContext(cs_context_item $room_item, array $schema) {
 			$bg_image = $room_item->getBGImageFilename();
 			$bg_repeat = ($room_item->issetBGImageRepeat() == true) ? 'repeat' : 'no-repeat';
 			$bg_fixed = ($room_item->issetBGImageFixed() == true) ? 'fixed' : 'scroll';
 
 			// set complete path for background image
-			global $c_commsy_domain;
 			$bg_image = '../../../commsy.php?cid=' . $this->_environment->getCurrentContextID() . '&mod=picture&fct=getfile&picture=' . $bg_image;
-
+			
 			$master = 'htdocs/templates/themes/individual/styles_cid.css';
 			$path = 'htdocs/templates/themes/individual/styles_' . $room_item->getItemID() . '.css';
-
+			
 			// load master file
 			$css_file = file_get_contents($master);
-
+			
 			// replace placeholder
 			preg_match_all("/\\{\\$(\S*?)\\}/", $css_file, $matches);
-
+			
 			if(isset($matches[0])) {
 				for($i=0; $i < sizeof($matches[0]); $i++) {
 					$match = $matches[0][$i];
 					$var_name = $matches[1][$i];
-
+					
 					$val = ${$var_name};
 					if(!isset($val)) {
 						$val = $schema[$var_name];
 					}
-
+					
 					// replace - only if not surrounded by /* ... */
 					//preg_match_all("=(?<!\\/\\*).*?\\{\\$(.*?)\\}.*?(?!\\*\\/)=s", $css_file, $matches);
-
+					
 					$css_file = str_replace($match, $val, $css_file);
 				}
 			}
-
+			
 			// store new css file
 			file_put_contents($path, $css_file);
 		}
