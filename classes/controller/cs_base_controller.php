@@ -156,6 +156,9 @@
 			$this->assign('environment', 'is_moderator', $current_user->isModerator());
 			$this->assign('translation', 'act_month_long', getLongMonthName(date("n") - 1));
 			$this->assign('environment', 'lang', $this->_environment->getSelectedLanguage());
+			$this->assign('environment', 'logo', $current_context->getLogoFileName());
+			$this->assign('environment', 'room_title', $current_context->getTitle());
+			$this->assign('environment', 'show_room_title', $current_context->showTitle());
 			$this->assign('environment', 'post', $_POST);
 			$this->assign('environment', 'get', $_GET);
 		}

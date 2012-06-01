@@ -53,7 +53,14 @@
 
         <div id="header"> <!-- Start header -->
             <div id="logo_area">
-                <a href=""><img src="{$basic.tpl_path}img/commsy_logo.gif" alt="CommSy" /></a> <!-- Logo-Hoehe 60 Pixel -->
+                {if isset($environment.logo)}
+                	<img src="commsy.php?cid={$environment.cid}&mod=picture&fct=getfile&picture={$environment.logo}" alt="Logo" /> <!-- Logo-Hoehe 60 Pixel -->
+                {else}
+                	<img src="{$basic.tpl_path}img/commsy_logo.gif" alt="CommSy" />
+            	{/if}
+            	{if $environment.show_room_title}
+            		{$environment.room_title}
+            	{/if}
             </div>
 
             <div id="search_area">
