@@ -191,7 +191,41 @@ class cs_popup_configuration_controller {
 							if($form_data['rss'] === 'yes') $current_context->turnRSSOn();
 							elseif($form_data['rss'] === 'no') $current_context->turnRSSOff();
 						}
-
+						
+						// rubric selection form check
+						if(!empty($form_data['rubric_0'])) {
+							$default_rubrics = $current_context->getAvailableDefaultRubricArray();
+							
+							if(count($default_rubrics) > 8) $count = 8;
+							else $count = count($default_rubrics);
+							
+							if(isset($form_data['rubric_0'])) {
+								$post_array = array();
+								
+								for($j=0; $j < $count; $j++) {
+									$post_array[] = $form_data['rubric_' . $j];
+								}
+								
+								$value = true;
+								for($k=0; $k < $count; $k++) {
+									for($l=0; $l < $count; $l++) {
+										if($k != $l) {
+											if($post_array[$l] == $post_array[$k] && $post_array[$l] != 'none') {
+												$value = false;
+											}
+										}
+									}
+								}
+							}
+							
+							if(!$value) {
+								// error
+								$this->_popup_controller->setErrorReturn('102', 'doubled rubric entries', array());
+								
+								return false;
+							}
+						}
+						
 						// rubric selection
 						$temp_array = array();
 						$j = 0;
@@ -390,7 +424,7 @@ class cs_popup_configuration_controller {
 
 								$current_context->setLogoFilename('');
 							}
-pr($_FILES);
+							
 							$filename = 'cid' . $this->_environment->getCurrentContextID() . '_logo_' . $_FILES['form_data']['name']['picture'];
 							$disc_manager->copyFile($_FILES['form_data']['tmp_name']['picture'], $filename, true);
 							$current_context->setLogoFilename($filename);
@@ -1064,16 +1098,16 @@ pr($_FILES);
 
 		$color = $current_context->getColorArray();
 		$return['color_schema'] = 'COMMON_COLOR_' . mb_strtoupper($color['schema'], 'UTF-8');
-		$return['color_active_menu'] = $color['active_menu'];
-		$return['color_menu'] = $color['menu'];
-		$return['color_right_column'] = $color['right_column'];
-		$return['color_content_bg'] = $color['content_bg'];
-		$return['color_link'] = $color['link'];
-		$return['color_link_hover'] = $color['link_hover'];
-		$return['color_action_bg'] = $color['action_bg'];
-		$return['color_action_icon'] = $color['action_icon'];
-		$return['color_action_icon_hover'] = $color['action_icon_hover'];
-		$return['color_bg'] = $color['bg'];
+		$return['color_active_menu'] = $color['color_active_menu'];
+		$return['color_menu'] = $color['color_menu'];
+		$return['color_right_column'] = $color['color_right_column'];
+		$return['color_content_bg'] = $color['color_content_bg'];
+		$return['color_link'] = $color['color_link'];
+		$return['color_link_hover'] = $color['color_link_hover'];
+		$return['color_action_bg'] = $color['color_action_bg'];
+		$return['color_action_icon'] = $color['color_action_icon'];
+		$return['color_action_icon_hover'] = $color['color_action_icon_hover'];
+		$return['color_bg'] = $color['color_bg'];
 		$return['color_bg_image'] = $current_context->getBGImageFilename();
 		$return['color_bg_image_repeat'] = $current_context->issetBGImageRepeat();
 

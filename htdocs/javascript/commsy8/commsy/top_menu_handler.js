@@ -764,7 +764,8 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			
 			// setup color picker
 			jQuery('input.colorpicker').colorpicker().on('colorselect', function(e, c) {
-				console.log("selecte");
+				// do something if color
+				//console.log("selecte");
 			});
 		},
 		
@@ -796,7 +797,8 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			var handle = event.data.handle;
 			
 			// get id from selected option
-			var selected_id = jQuery('select#room_communityrooms option:selected').attr('value');
+			var selected_object = jQuery('select#room_communityrooms option:selected');
+			var selected_id = selected_object.attr('value');
 			
 			// check if id is a number and greater than -1
 			if(!isNaN(selected_id) && selected_id > -1) {
@@ -805,7 +807,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 				jQuery('input[name^="form_data[communityroomlist]"]').each(function() {
 					// extract id
 					var id = '';
-					var regex = new RegExp("form_data\\[communityroomlist\\]\\[([0-9]*)\\]");
+					var regex = new RegExp("form_data\\[communityroomlist_([0-9]*)\\]");
 					var results = regex.exec(jQuery(this).attr('name'));
 					if(results !== null && results[1] !== 'NEW') id = results[1];
 					
@@ -817,15 +819,49 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 				
 				if(assigned === false) {
 					// append new entry
-					var div_object = jQuery('assigned_community_rooms div.clear');
-					alert('neuen Eintrag einfügen - nachdem Template überarbeitet');
-					//div.prepend();
-					//div.prepend();
+					var div_object = jQuery('div#assigned_community_rooms');
+					
+					div_object.append(
+						jQuery('<input/>', {
+							'id':		'room_communityroomlist',
+							type:		'checkbox',
+							checked:	true,
+							value:		selected_id,
+							name:		'form_data[communityroomlist_' + selected_id + ']'
+						})
+					).append(selected_object.text());
 				}
 			}
 		},
 		
 		onSaveConfiguration: function(event) {
+			var handle = event.data.handle;
+			var target = jQuery(event.target);
+			
+			// submit picture
+			var form_objects = jQuery('form#logo_upload, form#bg_upload');
+			
+			var all = 0;
+			form_objects.each(function(index) {
+				if(jQuery(this).find('input[type="file"]').attr('value') !== '') {
+					all++;
+				}
+			});
+			
+			if(all == 0) {
+				handle.saveConfiguration(event);
+			}
+			
+			var index = 0;
+			form_objects.each(function() {
+				if(jQuery(this).find('input[type="file"]').attr('value') !== '') {
+					handle.uploadRoomPicture(jQuery(this), index, all, handle.saveConfiguration, event);
+					index++;
+				}
+			});
+		},
+		
+		saveConfiguration: function(event) {
 			var handle = event.data.handle;
 			var target = jQuery(event.target);
 
@@ -892,16 +928,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 				},
 				success: function(data, status) {
 					if(data.status === 'success') {
-						// submit picture
-						var form_objects = jQuery('form#logo_upload, form#bg_upload');
-						
-						form_objects.each(function() {
-							if(jQuery(this).find('input[type="file"]').attr('value') !== '') {
-								handle.uploadRoomPicture(jQuery(this));
-							} else {
-								handle.close();
-							}
-						});
+						handle.close();
 					} else if(data.status === 'error' && data.code === 101) {
 						// mandatory error
 						var missing_fields = data.detail;
@@ -926,7 +953,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			});
 		},
 		
-		uploadRoomPicture: function(form_object) {
+		uploadRoomPicture: function(form_object, index, all, callback, event) {
 			var handle = this;
 			
 			// setup ajax form
@@ -936,7 +963,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			form_object.ajaxSubmit({
 				type:		'POST',
 				success:	function() {
-					handle.close();
+					if(index+1 == all) callback(event);
 				}
 			});
 

@@ -261,7 +261,7 @@
 											{if !empty($popup.room.color_bg_image)}
 												<div class="input_row">
 													<div class="input_container_180">
-														<img src="commsy.php?cid={$environment.cid}&mod=picture&fct=getfile&picture={$popup.room.color_bg_image}" alt="___USER_PICTURE_UPLOADFILE___" />
+														<img src="commsy.php?cid={$environment.cid}&mod=picture&fct=getfile&picture={$popup.room.color_bg_image}" alt="___USER_PICTURE_UPLOADFILE___" style="width: 200px" />
 													</div>
 												</div>
 

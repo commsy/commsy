@@ -839,7 +839,10 @@ if(isset($c_smarty) && $c_smarty === true) {
 	// room theme
 	$color = $environment->getCurrentContextItem()->getColorArray();
 	$theme = $translator->getMessage('COMMON_COLOR_' . mb_strtoupper($color['schema'], 'UTF-8'));
-	if($theme !== $translator->getMessage('COMMON_COLOR_DEFAULT')) {
+	
+	if($theme === $translator->getMessage('COMMON_COLOR_SCHEMA_OWN')) {
+		$c_theme = 'individual';
+	} elseif($theme !== $translator->getMessage('COMMON_COLOR_DEFAULT')) {
 		$c_theme = $theme;
 	}
 	

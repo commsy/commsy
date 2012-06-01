@@ -74,6 +74,18 @@
 			echo $this->_return;
 		}
 		
+		public function setErrorReturn($code, $reason, $detail) {
+			// setup return
+			$return = array(
+				'status'	=> 'error',
+				'code'		=> $code,
+				'reason'	=> $reason,
+				'detail'	=> $detail
+			);
+			
+			$this->_return = json_encode($return);
+		}
+		
 		public function checkFormData($sub = '') {
 			try {
 				$this->checkForm($sub);
@@ -81,15 +93,10 @@
 				return true;
 			} catch(cs_form_mandatory_exception $e) {
 				// setup return array
-				$return = array(
-					'status'	=> 'error',
-					'code'		=> $e->getCode(),
-					'reason'	=> $e->getMessage(),
-					'detail'	=> $e->getMissingFields()
-				);
+				$this->setErrorReturn($e->getCode(), $e->getMessage(), $e->getMissingFields());
 				
-				echo json_encode($return);
-		
+				echo $this->_return;
+
 				return false;
 			} catch(cs_form_value_exception $e) {
 				// TODO: implement in edit form
