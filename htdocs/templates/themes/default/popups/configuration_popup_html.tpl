@@ -79,7 +79,7 @@
 											<input type="text" class="size_200" id="code" name="form_data[code]" value="{if isset($popup.room.code)}{$popup.room.code}{else}___PREFERENCES_CHECK_NEW_MEMBERS_WITH_CODE_VALUE___{/if}" {if $popup.room.member_check != 'withcode'}disabled=disabled{/if} maxlength="255" size="30"/>
 											<div class="clear"></div>
 										</div>
-										
+
 										{* assignment *}
 										{if $popup.room.in_project_room == true}
 											{if !empty($popup.room.community_room_array)}
@@ -180,53 +180,54 @@
 										</div>
 
 										<div id="room_color_own">
-											<div class="input_row_100">
-												<label for="room_color_active_menu">___ROOM_COLOR_ACTIVE_MENU___</label>
-												<input class="size_200 colorpicker" id="room_color_active_menu" type="text" name="form_data[color_active_menu]" value="{show var=$popup.room.color_active_menu}"/>
-											</div>
 
 											<div class="input_row_100">
-												<label for="room_color_menu">___ROOM_COLOR_MENU___</label>
+												<label for="room_color_menu">___ROOM_COLOR_MENU___:</label>
 												<input class="size_200 colorpicker" id="room_color_menu" type="text" name="form_data[color_menu]" value="{show var=$popup.room.color_menu}"/>
 											</div>
 
 											<div class="input_row_100">
-												<label for="room_color_right_column">___ROOM_COLOR_RIGHT_COLUMN___</label>
+												<label for="room_color_active_menu">___ROOM_COLOR_ACTIVE_MENU___:</label>
+												<input class="size_200 colorpicker" id="room_color_active_menu" type="text" name="form_data[color_active_menu]" value="{show var=$popup.room.color_active_menu}"/>
+											</div>
+
+											<div class="input_row_100">
+												<label for="room_color_right_column">___ROOM_COLOR_RIGHT_COLUMN___:</label>
 												<input class="size_200 colorpicker" id="room_color_right_column" type="text" name="form_data[color_right_column]" value="{show var=$popup.room.color_right_menu}"/>
 											</div>
 
 											<div class="input_row_100">
-												<label for="room_color_content_bg">___ROOM_COLOR_CONTENT_BG___</label>
+												<label for="room_color_content_bg">___ROOM_COLOR_CONTENT_BG___:</label>
 												<input class="size_200 colorpicker" id="room_color_content_bg" type="text" name="form_data[color_content_bg]" value="{show var=$popup.room.color_content_bg}"/>
 											</div>
 
 											<div class="input_row_100">
-												<label for="room_color_link">___ROOM_COLOR_LINK___</label>
+												<label for="room_color_link">___ROOM_COLOR_LINK___:</label>
 												<input class="size_200 colorpicker" id="room_color_link" type="text" name="form_data[color_link]" value="{show var=$popup.room.color_link}"/>
 											</div>
 
 											<div class="input_row_100">
-												<label for="room_color_link_hover">___ROOM_COLOR_LINK_HOVER___</label>
+												<label for="room_color_link_hover">___ROOM_COLOR_LINK_HOVER___:</label>
 												<input class="size_200 colorpicker" id="room_color_link_hover" type="text" name="form_data[color_link_hover]" value="{show var=$popup.room.color_link_hover}"/>
 											</div>
 
 											<div class="input_row_100">
-												<label for="room_color_action_bg">___ROOM_COLOR_ACTION_BG___</label>
+												<label for="room_color_action_bg">___ROOM_COLOR_ACTION_BG___:</label>
 												<input class="size_200 colorpicker" id="room_color_action_bg" type="text" name="form_data[color_action_bg]" value="{show var=$popup.room.color_action_bg}"/>
 											</div>
 
 											<div class="input_row_100">
-												<label for="room_color_action_icon">___ROOM_COLOR_ACTION_ICON___</label>
-												<input class="size_200S colorpicker" id="room_color_action_icon" type="text" name="form_data[color_action_icon]" value="{show var=$popup.room.color_action_icon}"/>
+												<label for="room_color_action_icon">___ROOM_COLOR_ACTION_ICON___:</label>
+												<input class="size_200 colorpicker" id="room_color_action_icon" type="text" name="form_data[color_action_icon]" value="{show var=$popup.room.color_action_icon}"/>
 											</div>
 
 											<div class="input_row_100">
-												<label for="room_color_action_icon_hover">___ROOM_COLOR_ACTION_ICON_HOVER___</label>
+												<label for="room_color_action_icon_hover">___ROOM_COLOR_ACTION_ICON_HOVER___:</label>
 												<input class="size_200 colorpicker" id="room_color_action_icon_hover" type="text" name="form_data[color_action_icon_hover]" value="{show var=$popup.room.color_action_icon_hover}"/>
 											</div>
 
 											<div class="input_row_100">
-												<label for="room_color_bg">___ROOM_COLOR_BG___</label>
+												<label for="room_color_bg">___ROOM_COLOR_BG___:</label>
 												<input class="size_200 colorpicker" id="room_color_bg" type="text" name="form_data[color_bg]" value="{show var=$popup.room.color_bg}"/>
 											</div>
 
@@ -236,27 +237,17 @@
 													<input type="hidden" name="module" value="configuration" />
 													<input type="hidden" name="additional[tab]" value="room_bg" />
 													<input id="room_color_bg_image" type="file" class="size_200 float-left" name="form_data[picture]" accept="image/*" />
+													<input style="margin-left:80px;" id="room_color_bg_image_repeat" type="checkbox" name="form_data[color_bg_image_repeat]" value="1"{if $popup.room.color_bg_image_repeat == true} checked="checked"{/if} /> ___CONFIGURATION_BGIMAGE_REPEAT___
+													<input id="room_color_bg_image_fixed" type="checkbox" name="form_data[color_bg_image_fixed]" value="1"{if $popup.room.color_bg_image_fixed == true} checked="checked"{/if} /> ___CONFIGURATION_BGIMAGE_FIXED___
 												</form>
 												<div class="clear"></div>
 											</div>
 
-											<div class="input_row_100">
-												<label for="room_color_bg_image_repeat">___CONFIGURATION_BGIMAGE_REPEAT___</label>
-												<input id="room_color_bg_image_repeat" type="checkbox" name="form_data[color_bg_image_repeat]" value="1"{if $popup.room.color_bg_image_repeat == true} checked="checked"{/if} />
-											</div>
-
 											{if !empty($popup.room.color_bg_image)}
 												<div class="input_row">
-													<div class="input_container_180">
-														<img src="commsy.php?cid={$environment.cid}&mod=picture&fct=getfile&picture={$popup.room.color_bg_image}" alt="___USER_PICTURE_UPLOADFILE___" style="width: 200px" />
-													</div>
-												</div>
-
-												<div class="input_row">
-													<div class="input_container_180">
-														<input id="delete_bg_image" class="float-left" type="checkbox" name="form_data[delete_bg_image]" value="1"/>
-														<label for="delete_bg_image" class="float-left">___USER_DEL_PIC_BUTTON___</label>
-														<div class="clear"></div>
+													<div class="input_container_180" style="margin-left:100px;">
+														<img style="width:200px" src="commsy.php?cid={$environment.cid}&mod=picture&fct=getfile&picture={$popup.room.color_bg_image}" alt="___USER_PICTURE_UPLOADFILE___" style="width: 200px" />
+														<input id="delete_bg_image" type="checkbox" name="form_data[delete_bg_image]" value="1"/> ___USER_DEL_PIC_BUTTON___
 													</div>
 												</div>
 											{/if}
