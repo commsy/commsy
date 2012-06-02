@@ -1704,6 +1704,14 @@ legend{
 	width: 100px;
 	}
 
+.input_row_150 label {
+	display: block;
+	float: left;
+	position: relative;
+	top: 2px;
+	width: 150px;
+	}
+
 .size_200 {
     width: 190px;
     background: url(img/size_200_bg.jpg) no-repeat;
@@ -1724,11 +1732,23 @@ legend{
     padding: 5px 5px 7px 5px;
     margin-right: 10px;
     }
-
 .size_170:hover {
     background: url(img/size_170_hover_bg.jpg) no-repeat;
     color: #394965;
     }
+
+.size_120 {
+    width: 120px;
+    background: url(img/size_120_bg.jpg) no-repeat;
+    border: 0px;
+    padding: 5px 5px 7px 5px;
+    margin-right: 10px;
+    }
+.size_120:hover {
+    background: url(img/size_120_hover_bg.jpg) no-repeat;
+    color: #394965;
+    }
+
 
 .size_170_select {
     width: 170px;

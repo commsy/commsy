@@ -14,6 +14,16 @@ $message["ROOM_BUSINESS_CONTEXT_DESCRIPTION"]["en"] = "This is a workspace prese
 <li>Tasks</li>
 </ul>";
 $message["ROOM_CLOSED"]["en"] = "closed";
+$message["ROOM_COLOR_ACTION_BG"]["en"] = "Action background";
+$message["ROOM_COLOR_ACTION_ICON"]["en"] = "Icon color";
+$message["ROOM_COLOR_ACTION_ICON_HOVER"]["en"] = "Icon (hover)";
+$message["ROOM_COLOR_ACTIVE_MENU"]["en"] = "Selected rubric";
+$message["ROOM_COLOR_BG"]["en"] = "Room color";
+$message["ROOM_COLOR_CONTENT_BG"]["en"] = "Content";
+$message["ROOM_COLOR_LINK"]["en"] = "Link";
+$message["ROOM_COLOR_LINK_HOVER"]["en"] = "Link (hover)";
+$message["ROOM_COLOR_MENU"]["en"] = "Rubric menu";
+$message["ROOM_COLOR_RIGHT_COLUMN"]["en"] = "Right column";
 $message["ROOM_CONTACT"]["en"] = "Contact persons";
 $message["ROOM_CONTACT_SINGULAR"]["en"] = "Contact person";
 $message["ROOM_CONTINUOUS_SINCE"]["en"] = "continuous since";

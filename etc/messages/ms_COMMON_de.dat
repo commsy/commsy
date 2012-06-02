@@ -34,6 +34,7 @@ $message["COMMON_ASSESSMENT_CONFIGURATION_CHOICE_VALUE"]["de"] = "Bewertungen vo
 $message["COMMON_ASSESSMENT_DELETE"]["de"] = "Bewertung löschen";
 $message["COMMON_ASSESSMENT_EXPLANATION_VALUE"]["de"] = "Wenn diese Funktion aktiviert ist, können Einträge innerhalb von Räumen bewertet werden.";
 $message["COMMON_ASSESSMENT_INDEX"]["de"] = "Bewertung";
+$message["COMMON_ASSESSMENT_LABEL"]["de"] = "Aktivierung";
 $message["COMMON_ASSESSMENT_OVERLAY_DESCRIPTION"]["de"] = "Dieser Eintrag wurde bisher wie folgt bewertet:";
 $message["COMMON_ASSESSMENT_OWN"]["de"] = "Eigene Bewertung:";
 $message["COMMON_ASSESSMENT_OWN_NO"]["de"] = "Noch keine eigene Bewertung abgegeben";
@@ -374,6 +375,7 @@ $message["COMMON_ERROR_SELECT"]["de"] = "Bitte wählen Sie bei <span style=&quot
 $message["COMMON_ERROR_TAG_ENTRY"]["de"] = "Bitte wählen Sie eine <span style=&quot;font-weight:bold;&quot;>Kategorie</span> aus.";
 $message["COMMON_ERROR_WORKFLOW_RESUBMISSION_DATE_MISSED"]["de"] = "Bitte geben Sie ein Wiedervorlage-Datum an";
 $message["COMMON_ERROR_WORKFLOW_VALIDITY_DATE_MISSED"]["de"] = "Bitte geben Sie ein G&uuml;ltigkeitsdatum an";
+$message["COMMON_EXTERNAL_SYSTEMS"]["de"] = "Plugins";
 $message["COMMON_EXTERNAL_VIEWER"]["de"] = "Der Eintrag ist freigegeben für";
 $message["COMMON_FACTS"]["de"] = "Fakten";
 $message["COMMON_FADE_IN"]["de"] = "Meinen Bereich einblenden";
@@ -863,6 +865,7 @@ $message["COMMON_WIKI_READ_PW"]["de"] = "<div style=&quot;float:left; width:120p
 $message["COMMON_WORDPRESS_LINK"]["de"] = "Wordpress-Blog";
 $message["COMMON_WORKFLOW"]["de"] = "Workflow";
 $message["COMMON_WORKFLOW_DESCRIPTION"]["de"] = "Workflow Einstellungen";
+$message["COMMON_WORKFLOW_DESCRIPTION_DESC"]["de"] = "Die Workflow Einstellungen sind Zusatzfunktionen für die Rubrik Materialien, um den Redaktionsprozess zu koordinieren.";
 $message["COMMON_WORKFLOW_EMAIL_BODY_RESUBMISSION"]["de"] = "Im Raum &quot;%1&quot; wurde das Wiedervorlage-Datum f&uuml;r den Eintrag &quot;%2&quot; erreicht:
 
 %3";

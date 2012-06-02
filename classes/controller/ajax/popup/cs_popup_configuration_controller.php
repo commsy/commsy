@@ -187,12 +187,6 @@ class cs_popup_configuration_controller {
 						if(isset($form_data['description'])) $current_context->setDescription($form_data['description']);
 						else $current_context->setDescription('');
 
-						// rss
-						// TODO: move
-						if(isset($form_data['rss'])) {
-							if($form_data['rss'] === 'yes') $current_context->turnRSSOn();
-							elseif($form_data['rss'] === 'no') $current_context->turnRSSOff();
-						}
 
 						// rubric selection form check
 						if(!empty($form_data['rubric_0'])) {
@@ -312,6 +306,190 @@ class cs_popup_configuration_controller {
 						$this->_popup_controller->setSuccessfullItemIDReturn($current_context->getItemID());
 					}
 
+					break;
+
+				case 'additional_configuration':
+					if($this->_popup_controller->checkFormData('additional_configuration')) {
+
+					    if ( isset($form_data['dates_status']) ) {
+					        $current_context->setDatesPresentationStatus($form_data['dates_status']);
+					    }
+
+						// rss
+						// TODO: move
+						if(isset($form_data['rss'])) {
+							if($form_data['rss'] === 'yes') $current_context->turnRSSOn();
+							elseif($form_data['rss'] === 'no') $current_context->turnRSSOff();
+						}
+
+				        /*********save buzzword options******/
+				        if ( isset($form_data['buzzword']) and !empty($form_data['buzzword']) and $form_data['buzzword'] == 'yes') {
+				           $current_context->setWithBuzzwords();
+				        } else {
+				          $current_context->setWithoutBuzzwords();
+				        }
+				        if ( isset($form_data['buzzword_mandatory']) and !empty($form_data['buzzword_mandatory']) and $form_data['buzzword_mandatory'] == 'yes' ) {
+				           $current_context->setBuzzwordMandatory();
+				        } else {
+				           $current_context->unsetBuzzwordMandatory();
+				        }
+
+				        /**********save tag options*******/
+				        if ( isset($form_data['tags']) and !empty($form_data['tags']) and $form_data['tags'] == 'yes') {
+				           $current_context->setWithTags();
+				        } else {
+				           $current_context->setWithoutTags();
+				        }
+				        if ( isset($form_data['tags_mandatory']) and !empty($form_data['tags_mandatory']) and $form_data['tags_mandatory'] == 'yes' ) {
+				           $current_context->setTagMandatory();
+				        } else {
+				           $current_context->unsetTagMandatory();
+				        }
+				        if ( isset($form_data['tags_edit']) and !empty($form_data['tags_edit']) and $form_data['tags_edit'] == 'yes' ) {
+				           $current_context->setTagEditedByModerator();
+				        } else {
+				           $current_context->setTagEditedByAll();
+				        }
+
+						if (!empty($form_data['time_spread'])) {
+				            $current_context->setTimeSpread($form_data['time_spread']);
+				        }
+
+				         if ( isset($form_data['template'])
+				              and !empty($form_data['template'])
+				            ) {
+				            if ( $form_data['template'] == 1 ) {
+				               $current_context->setTemplate();
+				            } else {
+				               $current_context->setNotTemplate();
+				            }
+				         } elseif ( $current_context->isProjectRoom()
+				                    or $current_context->isCommunityRoom()
+				                    or $current_context->isPrivateRoom()
+				                  ) {
+				            $current_context->setNotTemplate();
+				         }
+				         if ( isset($form_data['template_availability'])){
+				            if ( $current_context->isCommunityRoom() ){
+				               $current_context->setCommunityTemplateAvailability($form_data['template_availability']);
+				            }else{
+				               $current_context->setTemplateAvailability($form_data['template_availability']);
+				            }
+				         }
+				         if ( !empty($form_data['template_title']) ) {
+				            $current_context->setTemplateTitle($form_data['template_title']);
+				         }
+				         if ( isset($form_data['template_description'])){
+				            $current_context->setTemplateDescription($form_data['template_description']);
+				         }
+
+
+/*      if ( !empty($delete_id) or !empty($change_id) ){
+        if (!empty ($_POST)){
+             foreach ($_POST as $key => $post_var){
+               $iid = mb_substr(strchr($key,'#'),1);
+               if (!empty($iid) and mb_stristr($key,'status') and $iid == $change_id) {
+                  $context_item = $environment->getCurrentContextItem();
+                  $status_array = $context_item->getExtraToDoStatusArray();
+                  $status_array[$iid] = $post_var;
+                  $context_item->setExtraToDoStatusArray($status_array);
+                  $context_item->save();
+               } elseif(!empty($iid) and $iid == $delete_id) {
+                  $context_item = $environment->getCurrentContextItem();
+                  $status_array = $context_item->getExtraToDoStatusArray();
+                  unset($status_array[$iid]);
+                  $context_item->setExtraToDoStatusArray($status_array);
+                  $context_item->save();
+               }
+            }
+         }
+*/
+
+						// save
+						$current_context->save();
+
+						// set return
+						$this->_popup_controller->setSuccessfullItemIDReturn($current_context->getItemID());
+					}
+					break;
+
+				case 'addon_configuration':
+					if($this->_popup_controller->checkFormData('addon_configuration')) {
+						if(isset($form_data['assessment']) && !empty($form_data['assessment']) && $form_data['assessment'] == 1) {
+							$current_context->setAssessmentActive();
+						} else {
+							$current_context->setAssessmentInactive();
+						}
+
+
+				        $isset_workflow = false;
+
+				        if ( isset($form_data['workflow_trafic_light']) and !empty($form_data['workflow_trafic_light']) and $form_data['workflow_trafic_light'] == 'yes') {
+				           $current_context->setWithWorkflowTrafficLight();
+				           $isset_workflow = true;
+				        } else {
+				           $current_context->setWithoutWorkflowTrafficLight();
+				        }
+				        if ( isset($form_data['workflow_resubmission']) and !empty($form_data['workflow_resubmission']) and $form_data['workflow_resubmission'] == 'yes' ) {
+				           $current_context->setWithWorkflowResubmission();
+				           $isset_workflow = true;
+				        } else {
+				           $current_context->setWithoutWorkflowResubmission();
+				        }
+				        if ( isset($form_data['workflow_reader']) and !empty($form_data['workflow_reader']) and $form_data['workflow_reader'] == 'yes' ) {
+				           $current_context->setWithWorkflowReader();
+				           $isset_workflow = true;
+				        } else {
+				           $current_context->setWithoutWorkflowReader();
+				        }
+				        if ( isset($form_data['workflow_trafic_light_default']) and !empty($form_data['workflow_trafic_light_default'])) {
+				           $current_context->setWorkflowTrafficLightDefault($form_data['workflow_trafic_light_default']);
+				        }
+
+				        if ( isset($form_data['workflow_trafic_light_green_text']) and !empty($form_data['workflow_trafic_light_green_text'])) {
+				           $current_context->setWorkflowTrafficLightTextGreen($form_data['workflow_trafic_light_green_text']);
+				        }
+				        if ( isset($form_data['workflow_trafic_light_yellow_text']) and !empty($form_data['workflow_trafic_light_yellow_text'])) {
+				           $current_context->setWorkflowTrafficLightTextYellow($form_data['workflow_trafic_light_yellow_text']);
+				        }
+				        if ( isset($form_data['workflow_trafic_light_red_text']) and !empty($form_data['workflow_trafic_light_red_text'])) {
+				           $current_context->setWorkflowTrafficLightTextRed($form_data['workflow_trafic_light_red_text']);
+				        }
+
+				        if ( isset($form_data['workflow_reader_group']) and !empty($form_data['workflow_reader_group'])) {
+				           $current_context->setWithWorkflowReaderGroup();
+				        } else {
+				           $current_context->setWithoutWorkflowReaderGroup();
+				        }
+				        if ( isset($form_data['workflow_reader_person']) and !empty($form_data['workflow_reader_person'])) {
+				           $current_context->setWithWorkflowReaderPerson();
+				        } else {
+				           $current_context->setWithoutWorkflowReaderPerson();
+				        }
+
+				        if ( isset($form_data['workflow_resubmission_show_to']) and !empty($form_data['workflow_resubmission_show_to'])) {
+				           $current_context->setWorkflowReaderShowTo($form_data['workflow_resubmission_show_to']);
+				        }
+
+				        if ( isset($form_data['workflow_validity']) and !empty($form_data['workflow_validity']) and $form_data['workflow_validity'] == 'yes' ) {
+				           $current_context->setWithWorkflowValidity();
+				           $isset_workflow = true;
+				        } else {
+				           $current_context->setWithoutWorkflowValidity();
+				        }
+
+				        if($isset_workflow){
+				           $room_item->setWithWorkflow();
+				        } else {
+				           $room_item->setWithoutWorkflow();
+				        }
+
+						// save
+						$current_context->save();
+
+						// set return
+						$this->_popup_controller->setSuccessfullItemIDReturn($current_context->getItemID());
+					}
 					break;
 
 				/**** MODERATION CONFIGURATION ****/
@@ -908,7 +1086,9 @@ class cs_popup_configuration_controller {
 
 		// room information
 		$this->_popup_controller->assign('popup', 'room', $this->getRoomInformation());
+		$this->_popup_controller->assign('popup', 'additional', $this->getAdditionalInformation());
 		$this->_popup_controller->assign('popup', 'moderation', $this->getModerationInformation());
+		$this->_popup_controller->assign('popup', 'addon', $this->getAddonInformation());
 	}
 
 	private function getModerationInformation() {
@@ -1015,6 +1195,107 @@ class cs_popup_configuration_controller {
 
 
 		 return $return;
+	}
+
+	private function getAdditionalInformation() {
+		$return = array();
+		$current_context = $this->_environment->getCurrentContextItem();
+		$translator = $this->_environment->getTranslationObject();
+		$return['dates_status'] = $current_context->getDatesPresentationStatus();
+
+	    $todo_status_array = $current_context->getExtraToDoStatusArray();
+	    $status_array = array();
+	    foreach ($todo_status_array as $key=>$value){
+	       $temp_array['text']  = $value;
+	       $temp_array['value'] = $key;
+	       $status_array[] = $temp_array;
+	    }
+	    $return['additional_extra_status_array']  = $status_array;
+
+		// rss
+		if($current_context->isRSSOn()) {
+			$return['rss'] = 'yes';
+		} else {
+			$return['rss'] = 'no';
+		}
+
+         //buzzwords
+         if ($current_context->withBuzzwords()){
+            $return['buzzword'] = 'yes';
+         }
+         if ($current_context->isBuzzwordMandatory()){
+            $return['buzzword_mandatory'] = 'yes';
+         }
+
+         //tags
+         if ($current_context->withTags()){
+            $return['tags'] = 'yes';
+         }
+         if ($current_context->isTagMandatory()){
+            $return['tags_mandatory'] = 'yes';
+         }
+         if (!$current_context->isTagEditedByAll()){
+            $return['tags_edit'] = 'yes';
+         }
+
+         $return['time_spread'] = $current_context->getTimeSpread();
+
+         if ($current_context->isTemplate()) {
+            $return['template'] = 1;
+         }
+         if ( $current_context->isCommunityRoom() ){
+            $return['template_availability'] = $current_context->getCommunityTemplateAvailability();
+         }else{
+            $return['template_availability'] = $current_context->getTemplateAvailability();
+         }
+         $return['template_description'] = $current_context->getTemplateDescription();
+
+
+		return $return;
+	}
+
+	private function getAddonInformation() {
+		$return = array();
+		$current_context = $this->_environment->getCurrentContextItem();
+		$translator = $this->_environment->getTranslationObject();
+
+		$return['assessment'] = $current_context->isAssessmentActive();
+
+         if ($current_context->withWorkflowTrafficLight()){
+            $return['workflow_trafic_light'] = 'yes';
+         }
+         $return['workflow_trafic_light_default'] = $current_context->getWorkflowTrafficLightDefault();
+         if($current_context->getWorkflowTrafficLightTextGreen() != ''){
+            $return['workflow_trafic_light_green_text'] = $current_context->getWorkflowTrafficLightTextGreen();
+         } else {
+            $return['workflow_trafic_light_green_text'] = $translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_GREEN_DEFAULT');
+         }
+         if($current_context->getWorkflowTrafficLightTextYellow() != ''){
+            $return['workflow_trafic_light_yellow_text'] = $current_context->getWorkflowTrafficLightTextYellow();
+         } else {
+            $return['workflow_trafic_light_yellow_text'] = $translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_YELLOW_DEFAULT');
+         }
+         if($current_context->getWorkflowTrafficLightTextRed() != ''){
+            $return['workflow_trafic_light_red_text'] = $current_context->getWorkflowTrafficLightTextRed();
+         } else {
+            $return['workflow_trafic_light_red_text'] = $translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_RED_DEFAULT');
+         }
+
+         // resubmission
+         if ($current_context->withWorkflowResubmission()){
+            $return['workflow_resubmission'] = 'yes';
+         }
+
+         // reader
+         if ($current_context->withWorkflowReader()){
+            $return['workflow_reader'] = 'yes';
+         }
+         $return['workflow_reader_group'] = $current_context->getWorkflowReaderGroup();
+         $return['workflow_reader_person'] = $current_context->getWorkflowReaderPerson();
+         $return['workflow_resubmission_show_to'] = $current_context->getWorkflowReaderShowTo();
+
+
+		return $return;
 	}
 
 
@@ -1192,13 +1473,6 @@ class cs_popup_configuration_controller {
             $return['code'] = $code;
          }
 
-
-		// rss
-		if($current_context->isRSSOn()) {
-			$return['rss'] = 'yes';
-		} else {
-			$return['rss'] = 'no';
-		}
 
 		return $return;
 	}

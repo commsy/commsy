@@ -34,6 +34,7 @@ $message["COMMON_ASSESSMENT_CONFIGURATION_CHOICE_VALUE"]["en"] = "activate asses
 $message["COMMON_ASSESSMENT_DELETE"]["en"] = "Delete assessment";
 $message["COMMON_ASSESSMENT_EXPLANATION_VALUE"]["en"] = "If this function is activated, entries in this room can be assessed.";
 $message["COMMON_ASSESSMENT_INDEX"]["en"] = "Assessment";
+$message["COMMON_ASSESSMENT_LABEL"]["en"] = "Activate";
 $message["COMMON_ASSESSMENT_OVERLAY_DESCRIPTION"]["en"] = "This item was assessed as follows:";
 $message["COMMON_ASSESSMENT_OWN"]["en"] = "Own voting:";
 $message["COMMON_ASSESSMENT_OWN_NO"]["en"] = "No own vote";
@@ -366,6 +367,7 @@ $message["COMMON_ERROR_SELECT"]["en"] = "Please select something for <span style
 $message["COMMON_ERROR_TAG_ENTRY"]["en"] = "Please select a <span style=&quot;font-weight:bold;&quot;>category</span>.";
 $message["COMMON_ERROR_WORKFLOW_RESUBMISSION_DATE_MISSED"]["en"] = "Please give a resubmission date";
 $message["COMMON_ERROR_WORKFLOW_VALIDITY_DATE_MISSED"]["en"] = "Please give a validity date";
+$message["COMMON_EXTERNAL_SYSTEMS"]["en"] = "Plugins";
 $message["COMMON_EXTERNAL_VIEWER"]["en"] = "This entry is released for";
 $message["COMMON_FACTS"]["en"] = "Basics";
 $message["COMMON_FADE_IN"]["en"] = "Show left panel";
@@ -854,6 +856,7 @@ $message["COMMON_WIKI_READ_PW"]["en"] = "<div style=&quot;float:left; width:120p
 $message["COMMON_WORDPRESS_LINK"]["en"] = "Wordpress blog";
 $message["COMMON_WORKFLOW"]["en"] = "Workflow";
 $message["COMMON_WORKFLOW_DESCRIPTION"]["en"] = "Workflow settings";
+$message["COMMON_WORKFLOW_DESCRIPTION_DESC"]["en"] = "The Workflow settings are additional features to manage the editorial prozess in materials.";
 $message["COMMON_WORKFLOW_EMAIL_BODY_RESUBMISSION"]["en"] = "In the workroom &quot;%1&quot; the resubmission-date for the entry &quot;%2&quot; has been reached:
 
 %3";

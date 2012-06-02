@@ -51,11 +51,12 @@
 			<div id="tm_breadcrumb">
 				<a href="">___COMMON_GO_BUTTON___: {$room.room_information.room_name}</a>
 			</div>
-
-			<div id="tm_icons_left_bar">
-				<a href="" id="tm_settings" title="___COMMON_CONFIGURATION___">&nbsp;</a>
-				<div class="clear"></div>
-			</div>
+			{if $environment.is_moderator}
+				<div id="tm_icons_left_bar">
+					<a href="" id="tm_settings" title="___COMMON_CONFIGURATION___">&nbsp;</a>
+					<div class="clear"></div>
+				</div>
+			{/if}
 
 			<div class="clear"></div>
 		</div>

@@ -650,7 +650,8 @@ class cs_context_item extends cs_item {
         $retour = true;
       }
     }
-    return $retour;
+   // return $retour;
+   return true;
   }
 
   function setBuzzwordShowExpanded () {
@@ -4528,7 +4529,8 @@ class cs_context_item extends cs_item {
         $retour = true;
       }
     }
-    return $retour;
+   // return $retour;
+   return true;
   }
 
   function isNetnavigationShowExpanded () {

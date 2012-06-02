@@ -14,6 +14,16 @@ $message["ROOM_BUSINESS_CONTEXT_DESCRIPTION"]["de"] = "Die Rubriken lauten:
 <li>Aufgaben</li>
 </ul>";
 $message["ROOM_CLOSED"]["de"] = "archiviert";
+$message["ROOM_COLOR_ACTION_BG"]["de"] = "Aktionsleiste";
+$message["ROOM_COLOR_ACTION_ICON"]["de"] = "Iconfarbe";
+$message["ROOM_COLOR_ACTION_ICON_HOVER"]["de"] = "Icon (hover)";
+$message["ROOM_COLOR_ACTIVE_MENU"]["de"] = "Aktive Rubrik";
+$message["ROOM_COLOR_BG"]["de"] = "Raumfarbe";
+$message["ROOM_COLOR_CONTENT_BG"]["de"] = "Inhaltsbereich";
+$message["ROOM_COLOR_LINK"]["de"] = "Link";
+$message["ROOM_COLOR_LINK_HOVER"]["de"] = "Link (hover)";
+$message["ROOM_COLOR_MENU"]["de"] = "Rubrikleiste";
+$message["ROOM_COLOR_RIGHT_COLUMN"]["de"] = "Rechte Spalte";
 $message["ROOM_CONTACT"]["de"] = "AnsprechpartnerInnen";
 $message["ROOM_CONTACT_SINGULAR"]["de"] = "AnsprechpartnerIn";
 $message["ROOM_CONTINUOUS_SINCE"]["de"] = "kontinuierlich seit";

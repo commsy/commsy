@@ -16,11 +16,11 @@
 					<div id="profile_content_row_three">
 						<div class="tab_navigation">
 							<a href="" class="pop_tab_active">___INTERNAL_META_TITLE___</a>
-							<a href="" class="pop_tab">___INTERNAL_SPECIAL_TITLE___</a>
-							<a href="" class="pop_tab">___CONFIG_MODERATION_TITLE___</a>
 							<a href="" class="pop_tab">___COMMON_ACCOUNTS___</a>
-							<a href="" class="pop_tab">___CONFIGURATION_PLUGIN_LINK___</a>
+							<a href="" class="pop_tab">___CONFIG_MODERATION_TITLE___</a>
+							<a href="" class="pop_tab">___INTERNAL_SPECIAL_TITLE___</a>
 							<a href="" class="pop_tab">___HOME_EXTRA_TOOLS___</a>
+							<a href="" class="pop_tab">___COMMON_EXTERNAL_SYSTEMS___</a>
 
 							<div class="clear"> </div>
 						</div>
@@ -264,22 +264,6 @@
 												<div id="description" class="ckeditor">{if isset($popup.room.description)}{$popup.room.description}{/if}</div>
 											</div>
 										</div>
-
-{*										<div class="input_row">
-											___CONFIGURATION_RSS___
-										</div>
-
-										<div class="input_row">
-											<label for="room_rss_yes">___CONFIGURATION_RSS_YES___</label>
-											<input id="room_rss_yes" type="radio" name="form_data[rss]" value="yes"{if $popup.room.rss == 'yes'} checked="checked"{/if} />
-										</div>
-
-										<div class="input_row">
-											<label for="room_rss_no">___CONFIGURATION_RSS_NO___</label>
-											<input id="room_rss_no" type="radio" name="form_data[rss]" value="no"{if $popup.room.rss == 'no'} checked="checked"{/if} />
-										</div>
-*}
-
 									</fieldset>
 									<div class="input_row">
 										<input id="submit" type="button" class="popup_button" name="save" value="___PREFERENCES_SAVE_BUTTON___"/>
@@ -288,12 +272,11 @@
 								</div>
 							</div>
 
-							<div class="tab hidden" id="additional_configuration">
+							<div class="tab hidden" id="accounts">
 								<div id="content_row_three">
-									<fieldset>
-									</fieldset>
 								</div>
 							</div>
+
 
 							<div class="tab hidden" id="moderation_configuration">
 								<div id="content_row_three">
@@ -378,10 +361,194 @@
 								</div>
 							</div>
 
-							<div class="tab hidden" id="newsletter">
+
+							<div class="tab hidden" id="additional_configuration">
+								<div id="content_row_three">
+									<fieldset>
+										<p>
+											<strong>___CONFIGURATION_STRUCTURE_OPTIONS_TITLE___</strong>
+										</p>
+										<div class="input_row_100">
+											<label for="additional_structure">___COMMON_BUZZWORDS___:</label>
+											<input id="radditional_buzzword" type="checkbox" name="form_data[buzzword]" value="yes"{if $popup.additional.buzzword == 'yes'} checked="checked"{/if} />___PREFERENCES_CONFIGURATION_BUZZWORD_VALUE___
+											<input id="radditional_buzzword_mandatory" type="checkbox" name="form_data[buzzword_mandatory]" value="yes"{if $popup.additional.buzzword_mandatory == 'yes'} checked="checked"{/if} />___CONFIGURATION_BUZZWORDS_MANDATORY___
+											<div class="clear"></div>
+										</div>
+										<div class="input_row_100">
+											<label for="additional_structure">___COMMON_TAGS___:</label>
+											<input id="radditional_tags" type="checkbox" name="form_data[tags]" value="yes"{if $popup.additional.tags == 'yes'} checked="checked"{/if} />___PREFERENCES_CONFIGURATION_TAGS_VALUE___
+											<input id="radditional_tags_mandatory" type="checkbox" name="form_data[tags_mandatory]" value="yes"{if $popup.additional.tags_mandatory == 'yes'} checked="checked"{/if} />___CONFIGURATION_TAG_MANDATORY___
+											<input id="radditional_tags_edit" type="checkbox" name="form_data[tags_edit]" value="yes"{if $popup.additional.tags_edit == 'yes'} checked="checked"{/if} />___CONFIGURATION_TAG_EDIT_BY_MODERATOR___
+											<div class="clear"></div>
+										</div>
+									</fieldset>
+									<fieldset>
+										<p>
+											<strong>___INTERNAL_TIME_SPREAD___:</strong> ___INTERNAL_TIME_SPREAD_DESC___
+										</p>
+										<div class="input_row_100">
+											<label for="additional_time_spread">___COMMON_EDIT___:</label>
+											<input class="size_50" id="time_spread" type="text" name="form_data[time_spread]" value="{$popup.additional.time_spread}"/> ___COMMON_DAYS___
+											<div class="clear"></div>
+										</div>
+									</fieldset>
+									<fieldset>
+										<p>
+											<strong>___COMMON_CONFIGURATION_DATES_FORM_TITLE___:</strong> ___CONFIGURATION_DATES_DESC___
+										</p>
+										<div class="input_row_100">
+											<label for="additional_dates_status">___CONFIGURATION_DATES_LABEL___:</label>
+											<input type="radio" name="form_data[dates_status]" value="normal" {if $popup.additional.dates_status == 'normal'} checked="checked"{/if}/> ___CONFIGURATION_DATES_PRESENTATION_NORMAL___
+									        <input type="radio" name="form_data[dates_status]" value="calendar" {if $popup.additional.dates_status == 'calendar'} checked="checked"{/if}/> ___CONFIGURATION_DATES_PRESENTATION_CALENDAR_WEEK___
+									        <input type="radio" name="form_data[dates_status]" value="calendar_month" {if $popup.additional.dates_status == 'calendar_month'} checked="checked"{/if}/> ___CONFIGURATION_DATES_PRESENTATION_CALENDAR___
+											<div class="clear"></div>
+										</div>
+									</fieldset>
+									<fieldset>
+										<p>
+											<strong>___COMMON_TODO_INDEX___:</strong> ___CONFIGURATION_TODO_STATUS_MANAGEMENT_DESC___
+										</p>
+										<div class="input_row_100">
+											<label for="additional_status">___USER_STATUS_NEW___:</label>
+											<input class="size_200" id="status" type="text" name="form_data[status]" value=""/>
+											<input id="submit" type="button" class="popup_button" name="form_data[status_option]" value="___CONFIGURATION_TODO_NEW_STATUS_BUTTON___"/>
+											<div class="input_container_180" style="margin-left:100px;">
+												{foreach $popup.additional_extra_status_array as $extra_status}
+													{$extra_status}{if !$extra_status@last}, {/if}
+												{/foreach}
+											</div>
+											<div class="clear"></div>
+										</div>
+									</fieldset>
+									<fieldset>
+										<p>
+											<strong>___CONFIGURATION_RSS___</strong>
+										</p>
+										<div class="input_row_100">
+											<label for="additional_assessment">___COMMON_ASSESSMENT_LABEL___:</label>
+											<input id="room_rss_yes" type="radio" name="form_data[rss]" value="yes"{if $popup.additional.rss == 'yes'} checked="checked"{/if} /> ___CONFIGURATION_RSS_YES___
+											<input id="room_rss_no" type="radio" name="form_data[rss]" value="no"{if $popup.additional.rss == 'no'} checked="checked"{/if} /> ___CONFIGURATION_RSS_NO___
+											<div class="clear"></div>
+										</div>
+									</fieldset>
+
+									<fieldset>
+										<p>
+											<strong>___CONFIGURATION_TEMPLATE_FORM_ELEMENT_SHORT_TITLE___:</strong> ___CONFIGURATION_TEMPLATE_FORM_ELEMENT_VALUE_LONG___ ___CONFIGURATION_TEMPLATE_FORM_SELECT_DESC___
+										</p>
+										<div class="input_row_100">
+											<label for="additional_template">___COMMON_STATUS___:</label>
+											<input type="checkbox" name="form_data[template]" value="1" {if $popup.additional.template == true} checked="checked"{/if}/> ___CONFIGURATION_TEMPLATE_FORM_ELEMENT_VALUE___
+											<div class="clear"></div>
+										</div>
+										<div class="input_row_100">
+											<label for="additional_template_availability">___CONFIGURATION_TEMPLATE_GROUP___:</label>
+											<select class="size_200"  style="width:200px;" id="additional_template_availability" name="form_data[template_availability]">
+												<option value="0"{if $popup.additional.template_availability == '0'} selected="selected"{/if}>___CONFIGURATION_TEMPLATE_FORM_AVAILABILITY_ALL_USERS___</option>
+												<option value="1"{if $popup.additional.template_availability == '1'} selected="selected"{/if}>___CONFIGURATION_TEMPLATE_FORM_AVAILABILITY_ROOM_USERS___</option>
+												<option value="2"{if $popup.additional.template_availability == '2'} selected="selected"{/if}>___CONFIGURATION_TEMPLATE_FORM_AVAILABILITY_ROOM_MODERATORS___</option>
+											</select>
+											<div class="clear"></div>
+										</div>
+										<div class="input_row">
+											<div class="editor_content">
+												<div id="template_description" class="ckeditor">{if isset($popup.additional.template_description)}{$popup.additional.template_description}{/if}</div>
+											</div>
+										</div>
+									</fieldset>
+
+									<fieldset>
+										<p>
+											<strong>Archivieren:</strong> TBD
+										</p>
+									</fieldset>
+
+									<fieldset>
+										<p>
+											<strong>Nutzungsvereinbarungen:</strong> TBD
+										</p>
+									</fieldset>
+
+									<div class="input_row">
+										<input id="submit" type="button" class="popup_button" name="save" value="___PREFERENCES_SAVE_BUTTON___"/>
+									</div>
+								</div>
+							</div>
+
+							<div class="tab hidden" id="addons">
+								<div id="content_row_three">
+									<fieldset>
+										<p>
+											<strong>___COMMON_ASSESSMENT___:</strong> ___COMMON_ASSESSMENT_EXPLANATION_VALUE___
+										</p>
+										<div class="input_row_100">
+											<label for="addon_assessment">___COMMON_ASSESSMENT_LABEL___:</label>
+											<input type="checkbox" name="form_data[assessment]" value="1" {if $popup.addon.assessment == true} checked="checked"{/if}/> ___COMMON_ASSESSMENT_CONFIGURATION_CHOICE_VALUE___
+											<div class="clear"></div>
+										</div>
+									</fieldset>
+									<fieldset>
+										<p>
+											<strong>___COMMON_WORKFLOW_DESCRIPTION___:</strong> ___COMMON_WORKFLOW_DESCRIPTION_DESC___
+										</p>
+										<div class="input_row_150">
+											<label for="addon_workflow_resubmission">___PREFERENCES_CONFIGURATION_WORKFLOW_RESUBMISSION_VALUE___:</label>
+											<input type="checkbox" name="form_data[workflow_resubmission]" value="yes" {if $popup.addon.workflow_resubmission == 'yes'} checked="checked"{/if}/> ___PREFERENCES_CONFIGURATION_WORKFLOW_VALIDITY_ENABLE___
+											<div class="clear"></div>
+										</div>
+										<div class="input_row_150">
+											<label for="addon_workflow_validity">___COMMON_WORKFLOW_VALIDITY___:</label>
+											<input type="checkbox" name="form_data[workflow_validity]" value="yes" {if $popup.addon.workflow_validity == 'yes'} checked="checked"{/if}/> ___PREFERENCES_CONFIGURATION_WORKFLOW_VALIDITY_ENABLE___
+											<div class="clear"></div>
+										</div>
+										<div class="input_row_150">
+											<label for="addon_workflow_trafic_light">___PREFERENCES_CONFIGURATION_WORKFLOW_TRAFFIC_LIGHT_VALUE___:</label>
+											<input type="checkbox" name="form_data[workflow_trafic_light]" value="yes" {if $popup.addon.workflow_trafic_light == 'yes'} checked="checked"{/if}/> ___PREFERENCES_CONFIGURATION_WORKFLOW_VALIDITY_ENABLE___
+											<div class="clear"></div>
+										</div>
+										<div class="input_row_150">
+											<label for="addon_workflow_trafic_light_default">___PREFERENCES_CONFIGURATION_WORKFLOW_TRAFFIC_LIGHT_DEFAULT___:</label>
+											<img src="images/commsyicons/workflow_traffic_light_green.png" style="height:12px;"> <input type="radio" name="form_data[workflow_trafic_light_default]" value="0_green" {if $popup.addon.workflow_trafic_light_default == '0_green'} checked="checked"{/if}/>
+											<img src="images/commsyicons/workflow_traffic_light_yellow.png" style="margin-left:119px; height:12px;"><input type="radio" name="form_data[workflow_trafic_light_default]" value="1_yellow" {if $popup.addon.workflow_trafic_light_default == '1_yellow'} checked="checked"{/if}/>
+											<img src="images/commsyicons/workflow_traffic_light_red.png" style="margin-left:123px; height:12px;"><input type="radio" name="form_data[workflow_trafic_light_default]" value="2_red" {if $popup.addon.workflow_trafic_light_default == '2_red'} checked="checked"{/if}/>
+											<span style="margin-left:119px;">___COMMON_WORKFLOW_TRAFFIC_LIGHT_NONE___</span>
+											<input type="radio" name="form_data[workflow_trafic_light_default]" value="3_none" {if $popup.addon.workflow_trafic_light_default == '3_none'} checked="checked"{/if}/>
+											<div class="clear"></div>
+										</div>
+										<div class="input_row_150">
+											<label for="addon_workflow_trafic_light_text">___COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT___:</label>
+											<img src="images/commsyicons/workflow_traffic_light_green.png" style="height:12px;"> <input id="room_name" type="text" class="size_120" name="form_data[workflow_trafic_light_green_text]" value="{$popup.addon.workflow_trafic_light_green_text}"/>
+											<img src="images/commsyicons/workflow_traffic_light_yellow.png" style="height:12px;"> <input id="room_name" type="text" class="size_120" name="form_data[workflow_trafic_light_yellox_text]" value="{$popup.addon.workflow_trafic_light_yellow_text}"/>
+											<img src="images/commsyicons/workflow_traffic_light_red.png" style="height:12px;"> <input id="room_name" type="text" class="size_120" name="form_data[workflow_trafic_light_red_text]" value="{$popup.addon.workflow_trafic_light_red_text}"/>
+											<div class="clear"></div>
+										</div>
+										<div class="input_row_150">
+											<label for="addon_workflow_reader">___PREFERENCES_CONFIGURATION_WORKFLOW_READER_VALUE___:</label>
+											<input type="checkbox" name="form_data[workflow_reader]" value="yes" {if $popup.addon.workflow_reader == 'yes'} checked="checked"{/if}/> ___PREFERENCES_CONFIGURATION_WORKFLOW_VALIDITY_ENABLE___
+											<div class="clear"></div>
+										</div>
+										<div class="input_container_180" style="margin-left:150px;">
+											<input type="checkbox" name="form_data[workflow_reader_group]" value="yes" {if $popup.addon.workflow_reader_group == 'yes'} checked="checked"{/if}/> ___PREFERENCES_CONFIGURATION_WORKFLOW_READER_GROUP_VALUE___
+											<input type="checkbox" name="form_data[workflow_reader_person]" value="yes" {if $popup.addon.workflow_reader_person == 'yes'} checked="checked"{/if}/> ___PREFERENCES_CONFIGURATION_WORKFLOW_READER_PERSON_VALUE___
+										</div>
+										<div class="input_container_180" style="margin-left:150px;">
+											<input type="radio" name="form_data[workflow_resubmission_show_to]" value="moderator" {if $popup.addon.workflow_resubmission_show_to == 'moderator'} checked="checked"{/if}/> ___PREFERENCES_CONFIGURATION_WORKFLOW_RESUBMISSION_SHOW_TO_MODERATOR_VALUE___
+											<input type="radio" name="form_data[workflow_resubmission_show_to]" value="all" {if $popup.addon.workflow_resubmission_show_to == 'all'} checked="checked"{/if}/> ___PREFERENCES_CONFIGURATION_WORKFLOW_RESUBMISSION_SHOW_TO_ALL_VALUE___
+										</div>
+									</fieldset>
+									<div class="input_row">
+										<input id="submit" type="button" class="popup_button" name="save" value="___PREFERENCES_SAVE_BUTTON___"/>
+									</div>
+								</div>
+							</div>
+
+							<div class="tab hidden" id="external_systems">
 								<div id="content_row_three">
 								</div>
 							</div>
+
+
+
 						</div>
 					</div>
 				</div>
