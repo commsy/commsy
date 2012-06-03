@@ -384,6 +384,103 @@ class cs_popup_configuration_controller {
 				         }
 
 
+				         global $c_use_soap_for_wiki;
+				         if ( isset($form_data['room_status']) ) {
+				            if ($form_data['room_status'] == '') {
+				               $current_context->open();
+				               if($current_context->existWiki() and $c_use_soap_for_wiki){
+				                  $wiki_manager = $environment->getWikiManager();
+				                  $wiki_manager->openWiki();
+				               }
+
+				               // Fix: Find Group-Rooms if existing
+				               if( $current_context->isGrouproomActive() ) {
+				                  $groupRoomList = $current_context->getGroupRoomList();
+
+				                  if( !$groupRoomList->isEmpty() ) {
+				                     $room_item = $groupRoomList->getFirst();
+
+				                     while($room_item) {
+				                        // All GroupRooms have to be opened too
+				                        $room_item->open();
+				                        $room_item->save();
+
+				                        $room_item = $groupRoomList->getNext();
+				                     }
+				                  }
+				               }
+				               // ~Fix
+
+
+				            } elseif ($form_data['room_status'] == 2) {
+				               $current_context->close();
+				               if($current_context->existWiki() and $c_use_soap_for_wiki){
+				                  $wiki_manager = $environment->getWikiManager();
+				                  $wiki_manager->closeWiki();
+				               }
+
+				               // Fix: Find Group-Rooms if existing
+				               if( $current_context->isGrouproomActive() ) {
+				                  $groupRoomList = $current_context->getGroupRoomList();
+
+				                  if( !$groupRoomList->isEmpty() ) {
+				                     $room_item = $groupRoomList->getFirst();
+
+				                     while($room_item) {
+				                        // All GroupRooms have to be closed too
+				                        $room_item->close();
+				                        $room_item->save();
+
+				                        $room_item = $groupRoomList->getNext();
+				                     }
+				                  }
+				               }
+				               // ~Fix
+				            }
+				         }else{
+				            $current_context->open();
+				            if($current_context->existWiki() and $c_use_soap_for_wiki){
+				               $wiki_manager = $environment->getWikiManager();
+				               $wiki_manager->openWiki();
+				            }
+
+				            // Fix: Find Group-Rooms if existing
+				            if( $current_context->isGrouproomActive() ) {
+				               $groupRoomList = $current_context->getGroupRoomList();
+
+				               if( !$groupRoomList->isEmpty() ) {
+				                  $room_item = $groupRoomList->getFirst();
+
+				                  while($room_item) {
+				                     // All GroupRooms have to be opened too
+				                     $room_item->open();
+				                     $room_item->save();
+
+				                     $room_item = $groupRoomList->getNext();
+				                  }
+				               }
+				            }
+				            // ~Fix
+				         }
+
+				         $languages = $this->_environment->getAvailableLanguageArray();
+				         foreach ($languages as $language) {
+				            if (!empty($form_data['agb_text_'.mb_strtoupper($language, 'UTF-8')])) {
+				               $agbtext_array[mb_strtoupper($language, 'UTF-8')] = $form_data['agb_text_'.mb_strtoupper($language, 'UTF-8')];
+				            } else {
+				               $agbtext_array[mb_strtoupper($language, 'UTF-8')] = '';
+				            }
+				         }
+
+				         if(($agbtext_array != $current_context->getAGBTextArray()) or ($form_data['agb_status'] != $current_context->getAGBStatus())) {
+				            $current_context->setAGBStatus($form_data['agb_status']);
+				            $current_context->setAGBTextArray($agbtext_array);
+				            $current_context->setAGBChangeDate();
+				         }
+
+
+
+
 /*      if ( !empty($delete_id) or !empty($change_id) ){
         if (!empty ($_POST)){
              foreach ($_POST as $key => $post_var){
@@ -1249,6 +1346,26 @@ class cs_popup_configuration_controller {
             $return['template_availability'] = $current_context->getTemplateAvailability();
          }
          $return['template_description'] = $current_context->getTemplateDescription();
+
+         if ( $current_context->isOpen() ) {
+            $return['room_status'] = '';
+         } else {
+            $return['room_status'] = '2';
+         }
+
+         $agb_text_array = $current_context->getAGBTextArray();
+         foreach ($this->_languages as $language) {
+            if (!empty($agb_text_array[cs_strtoupper($language)])) {
+               $return['agb_text_'.cs_strtoupper($language)] = $agb_text_array[cs_strtoupper($language)];
+            } else {
+               $return['agb_text_'.cs_strtoupper($language)] = '';
+            }
+         }
+         $return['agb_status'] = $current_context->getAGBStatus();
+         if ($return['agb_status'] != '1'){
+         	$return['agb_status'] = '2';
+         }
+
 
 
 		return $return;

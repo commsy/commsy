@@ -459,14 +459,45 @@
 
 									<fieldset>
 										<p>
-											<strong>Archivieren:</strong> TBD
+											<strong>___CONTEXT_ROOM_ARCHIVE___:</strong> ___ROOM_STATUS_LONG_DESCRIPTION___
 										</p>
+										<div class="input_row_100">
+											<label for="additional_room_status">___COMMON_STATUS___:</label>
+											<input type="checkbox" name="form_data[room_status]" value="2" {if $popup.additional.room_status == 2} checked="checked"{/if}/> ___ROOM_STATUS_DESCRIPTION___
+											<div class="clear"></div>
+										</div>
 									</fieldset>
 
 									<fieldset>
 										<p>
-											<strong>Nutzungsvereinbarungen:</strong> TBD
+											<strong>___AGB_CONFIRMATION___:</strong> ___CONFIGURATION_AGB_FORM_WANT_DESC___
 										</p>
+										<div class="input_row_100">
+											<label for="additional_agb_status">___COMMON_STATUS___:</label>
+											<input id="room_agb_status_yes" type="radio" name="form_data[agb_status]" value="1"{if $popup.additional.agb_status == '1'} checked="checked"{/if} /> ___COMMON_YES___
+											<input id="room_agb_status_no" type="radio" name="form_data[agb_status]" value="2"{if $popup.additional.agb_status == '2'} checked="checked"{/if} /> ___COMMON_NO___
+											<div class="clear"></div>
+										</div>
+										<div class="input_row_100">
+											<label for="additional_agb_status">___COMMON_LANGUAGE___:</label>
+											<select class="size_200"  style="width:200px;" id="additional_agb_description_text" name="form_data[agb_description_text]">
+												<option value="de">___DE___</option>
+												<option value="en">___EN___</option>
+									         </select>
+											<div class="clear"></div>
+										</div>
+										<div class="input_row_100">
+											<label for="room_name">___COMMON_TEXT___ (___DE___):</label>
+											<div class="editor_content" style="margin-left:100px;">
+												<div id="agb_text_DE" class="ckeditor">{if isset($popup.additional.agb_text_DE)}{$popup.additional.agb_text_DE}{/if}</div>
+											</div>
+										</div>
+										<div class="input_row_100 hidden">
+											<label for="room_name">___COMMON_TEXT___ (___EN___):</label>
+											<div class="editor_content" style="margin-left:100px;">
+												<div id="agb_text_EN" class="ckeditor">{if isset($popup.additional.agb_text_EN)}{$popup.additional.agb_text_EN}{/if}</div>
+											</div>
+										</div>
 									</fieldset>
 
 									<div class="input_row">
