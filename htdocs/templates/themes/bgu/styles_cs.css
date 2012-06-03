@@ -232,3 +232,23 @@ a.keywords_s1, a.keywords_s2, a.keywords_s3, a.keywords_s4 {
     padding: 11px 2px 0 0;
 }
 
+#tm_mycalendar {
+    background: url("img/tm_mycalendar.gif") no-repeat scroll 0 0 transparent;
+}
+
+#tm_widgets {
+    background: url("img/tm_widgets.gif") no-repeat scroll 0 0 transparent;
+}
+
+#tm_stack {
+    background: url("img/tm_stack.gif") no-repeat scroll 0 0 transparent;
+}
+
+#popup_wrapper{
+	left: -5px;
+	}
+
+#popup_my_area {
+    width: 1010px;
+	}
+
