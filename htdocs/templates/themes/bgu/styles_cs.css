@@ -16,6 +16,16 @@
 
 /* Body*/
 
+body{
+	background-image: url(img/hintergrund.jpg);
+	background-attachment: fixed;
+	}
+
+#wrapper{
+	background-color: #FFF;
+	padding:0px 10px 10px 10px;
+	}
+
 #logo_area {
     float: left;
     width: 735px;
