@@ -3514,6 +3514,7 @@ print settings
 
 #wrapper_print {
 	width: 19cm;
+	margin: 10px auto;
 }
 
 #moredetails_print {
