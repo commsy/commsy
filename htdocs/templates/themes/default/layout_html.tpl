@@ -25,14 +25,12 @@
 		<link rel="stylesheet" type="text/css" media="screen" href="{$basic.tpl_path}jquery-lightbox/jquery.lightbox-0.5.css" />
 		<link rel="stylesheet" type="text/css" media="screen" href="{$basic.tpl_path}jquery.colorpicker.css" />
 	{/block}
-
-    <script type="text/javascript">
-	      <!--
-	   var datepicker_language = 'de';
-	   var datepicker_choose = 'Datum auswählen';
-	      -->
-    </script>
-
+	
+	<!--
+	<script src="javascript/commsy8_dojo/libs/dojo.js" data-dojo-config="async: true"></script>
+	<script src="javascript/commsy8_dojo/main.js"></script>
+	-->
+	
     <script data-main="javascript/commsy8/main.js" src="javascript/commsy8/require.js"></script>
 
     <title>CommSy 8.0 - Home</title>
