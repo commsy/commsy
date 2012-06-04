@@ -527,6 +527,10 @@ class cs_labels_manager extends cs_manager {
            $query .= ' ORDER BY '.$this->addDatabasePrefix('labels').'.name ASC';
         } elseif ( $this->_sort_order == 'title_rev' ) {
            $query .= ' ORDER BY '.$this->addDatabasePrefix('labels').'.name DESC';
+        }elseif ( $this->_sort_order == 'name' ) {
+           $query .= ' ORDER BY '.$this->addDatabasePrefix('labels').'.name ASC';
+        } elseif ( $this->_sort_order == 'name_rev' ) {
+           $query .= ' ORDER BY '.$this->addDatabasePrefix('labels').'.name DESC';
         } elseif ( $this->_sort_order == 'modificator' ) {
            $query .= ' ORDER BY '.$this->addDatabasePrefix('user').'.lastname ASC';
         } elseif ( $this->_sort_order == 'modificator_rev' ) {
@@ -550,7 +554,6 @@ class cs_labels_manager extends cs_manager {
            $query .= ' LIMIT '.encode(AS_DB,$this->_from_limit).', '.encode(AS_DB,$this->_interval_limit);
         }
      }
-
      // sixth, perform query
      $result = $this->_db_connector->performQuery($query);
      if ( !isset($result) ) {
@@ -1144,10 +1147,10 @@ class cs_labels_manager extends cs_manager {
    public function resetCache () {
       $this->_internal_data = array();
    }
-   
+
 	/**
 	 * gives the appropriate query to the updateSearchIndices function of cs_manager
-	 * 
+	 *
 	 * @param String $label_type - the type of the label
 	 * @see cs_manager::updateSearchIndices()
 	 */
@@ -1184,11 +1187,11 @@ class cs_labels_manager extends cs_manager {
 					labels.modification_date > search_time.st_date
 				)
 		';
-		
+
 		if(!empty($limit)) {
 			$query .= ' LIMIT ' . $limit[0] . ', ' . $limit[1];
 		}
-		
+
 		$this->updateSearchIndicesMain($query, $label_type);
 	}
 }

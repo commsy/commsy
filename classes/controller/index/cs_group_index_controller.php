@@ -93,7 +93,9 @@
    				$group_manager->setRefIDLimit($this->_list_parameter_arrray['ref_iid']);
 			}
 			if ( !empty($this->_list_parameter_arrray['sort']) ) {
-   				$group_manager->setOrder($this->_list_parameter_arrray['sort']);
+   				$group_manager->setSortOrder($this->_list_parameter_arrray['sort']);
+			}else{
+				$group_manager->setOrder('name');
 			}
 			if ( !empty($this->_list_parameter_arrray['search']) ) {
    				$group_manager->setSearchLimit($this->_list_parameter_arrray['search']);

@@ -131,6 +131,14 @@
       			$sort_parameter = 'date';
       		}elseif($module == CS_INSTITUTION_TYPE){
       			$sort_parameter = 'title';
+      		}elseif($module == CS_DISCUSSION_TYPE){
+      			$sort_parameter = 'latest';
+      		}elseif($module == CS_GROUP_TYPE){
+      			$sort_parameter = 'title';
+      		}elseif($module == CS_TOPIC_TYPE){
+      			$sort_parameter = 'title';
+      		}elseif($module == CS_INSTITUTION_TYPE){
+      			$sort_parameter = 'title';
       		}elseif($module == CS_PROJECT_TYPE){
       			$sort_parameter = 'title';
       		}else{
