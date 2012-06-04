@@ -894,7 +894,7 @@ if ($type != CS_DISCUSSION_TYPE) {
 					'formal'			=> $entry
 				);
 				$position++;
-
+				$entry = array();
 				$item = $articles_list->getNext();
 			}
 			return $return;
