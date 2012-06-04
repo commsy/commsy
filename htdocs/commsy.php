@@ -884,6 +884,9 @@ if(isset($_GET['smarty']) || $session->issetValue('smarty_off')) {
 	$c_smarty = false;
 }
 
+global $c_smarty_always;
+if(isset($c_smarty_always) && $c_smarty_always === true) $c_smarty = true;
+
 // temporary bypass smarty for server and project context
 if($context_item->isServer() || $context_item->isPortal()) {
 	$c_smarty = false;
