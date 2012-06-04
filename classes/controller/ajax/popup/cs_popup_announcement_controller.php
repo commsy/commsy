@@ -53,6 +53,12 @@ class cs_popup_announcement_controller implements cs_rubric_popup_controller {
             	$time = $current_context->getTimeSpread();
  				$this->_popup_controller->assign('item', 'dayEnd', getDateInLang(DateAdd($time,date("Y-m-d"),"Y-m-d")));
 		        $this->_popup_controller->assign('item', 'timeEnd', date("H:m"));
+ 				if ($current_context->isCommunityRoom()){
+ 						$this->_popup_controller->assign('item', 'public', '0');
+ 				}else{
+ 						$this->_popup_controller->assign('item', 'public', '1');
+ 				}
+
 			}
     }
 

@@ -29,7 +29,11 @@ class cs_popup_institution_controller implements cs_rubric_popup_controller {
 			    $this->_popup_controller->assign('item', 'picture', $item->getPicture());
 
 			}else{
-
+ 				if ($current_context->isCommunityRoom()){
+ 						$this->_popup_controller->assign('item', 'public', '0');
+ 				}else{
+ 						$this->_popup_controller->assign('item', 'public', '1');
+ 				}
 
 			}
     }

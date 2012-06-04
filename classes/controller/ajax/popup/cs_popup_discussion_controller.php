@@ -42,6 +42,9 @@
 				}
 
 				$this->_popup_controller->assign('popup', 'activating', $activating);
+			}else{
+ 				$val = ($this->_environment->inProjectRoom() OR $this->_environment->inGroupRoom())?'1':'0';
+ 				$this->_popup_controller->assign('item', 'public', $val);
 			}
 		}
 
@@ -161,7 +164,7 @@
 
 					// save item
 					$discussion_item->save();
-					
+
 					// this will update the right box list
 					$id_array = array();
 					if($session->issetValue('cid' . $this->_environment->getCurrentContextID() . '_' . CS_DISCUSSION_TYPE . '_index_ids')) {
@@ -171,7 +174,7 @@
 					$id_array[] = $discussion_item->getItemID();
 					$id_array = array_reverse($id_array);
 					$session->setValue('cid' . $this->_environment->getCurrentContextID() . '_' . CS_DISCUSSION_TYPE . '_index_ids', $id_array);
-					
+
 					// this will update the right box list
 					if($discussion_item === null){
 						if ($session->issetValue('cid'.$environment->getCurrentContextID().'_'.CS_ANNOUNCEMENT_TYPE.'_index_ids')){
@@ -180,12 +183,12 @@
 							$id_array =  array();
 						}
 						pr($id_array); exit;
-					
+
 						$id_array[] = $announcement_item->getItemID();
 						$id_array = array_reverse($id_array);
 						$session->setValue('cid'.$environment->getCurrentContextID().'_'.CS_ANNOUNCEMENT_TYPE.'_index_ids',$id_array);
 					}
-					
+
 					// save session
 					$this->_environment->getSessionManager()->save($session);
 
@@ -201,7 +204,7 @@
 						if(isset($form_data['subject'])) $discarticle_item->setSubject($form_data['subject']);
 						if(isset($form_data['description'])) $discarticle_item->setDescription($form_data['description']);
 						if(isset($form_data['discussion_type']) && $form_data['discussion_type'] == 2) $discarticle_item->setPosition('1');
-						
+
 						// files
 						$file_ids = $form_data['files'];
 						$this->_popup_controller->getUtils()->setFilesForItem($discarticle_item, $file_ids, CS_DISCARTICLE_TYPE);

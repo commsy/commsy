@@ -46,8 +46,8 @@ class cs_popup_topic_controller implements cs_rubric_popup_controller {
 				$this->_popup_controller->assign('popup', 'activating', $activating);
 
 			}else{
-
-
+ 				$val = ($this->_environment->inProjectRoom() OR $this->_environment->inGroupRoom())?'1':'0';
+ 				$this->_popup_controller->assign('item', 'public', $val);
 			}
     }
 

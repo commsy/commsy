@@ -17,17 +17,17 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
     		$translator = $this->_environment->getTranslationObject();
     		$current_context = $this->_environment->getCurrentContextItem();
     		$current_user = $this->_environment->getCurrentUserItem();
-    		
+
 			// assign template vars
 			$this->assignTemplateVars();
-			
+
 			if ($current_context->withWorkflow()){
 				$this->_popup_controller->assign('item', 'with_workflow', true);
-				
+
 				// workflow traffic light
 				if($current_context->withWorkflowTrafficLight()) {
 					$this->_popup_controller->assign('item', 'with_workflow_traffic_light', true);
-					
+
 					$description = array(
 						'green'		=>	($current_context->getWorkflowTrafficLightTextGreen() != '') ?
 											$current_context->getWorkflowTrafficLightTextGreen() :
@@ -39,40 +39,40 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
 											$current_context->getWorkflowTrafficLightTextRed() :
 												$translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_RED_DEFAULT'),
 					);
-					
+
 					$this->_popup_controller->assign('item', 'workflow_traffic_light_description', $description);
 				} else {
 					$this->_popup_controller->assign('item', 'with_workflow_traffic_light', false);
 				}
-				
+
 				// workflow resubmission
 				if($current_context->withWorkflowResubmission()) {
 					$this->_popup_controller->assign('item', 'with_workflow_resubmission', true);
-					
+
 					// creator
 					if($item !== null) {
 						$creator_item = $item->getCreatorItem();
 					} else {
 						$creator_item = $current_user;
 					}
-					
+
 					$this->_popup_controller->assign('item', 'workflow_creator_id', $creator_item->getItemID());
 					$this->_popup_controller->assign('item', 'workflow_creator_fullname', $creator_item->getFullName());
-					
-					
-					
+
+
+
 					// modifier
 					$modifier_array = array();
-					
+
 					if($item !== null) {
 						$link_modifier_item_manager = $this->_environment->getLinkModifierItemManager();
 						$user_manager = $this->_environment->getUserManager();
 						$modifiers = $link_modifier_item_manager->getModifiersOfItem($item->getItemID());
-						
-						
+
+
 						foreach($modifiers as $modifier_id) {
 							$modificator = $user_manager->getItem($modifier_id);
-							
+
 							// links only at accessible contact pages
 							if(isset($modificator) && $modificator->isRoot()) {
 								$modifier_array[]['name'] = $modificator->getFullname();
@@ -118,15 +118,15 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
 								}
 							}
 						}
-						
+
 						$modifier_array = array_unique($modifier_array);
 					}
-					
+
 					$this->_popup_controller->assign('item', 'workflow_modifier', $modifier_array);
 				} else {
 					$this->_popup_controller->assign('item', 'with_workflow_resubmission', false);
 				}
-				
+
 				$this->_popup_controller->assign('item', 'with_workflow_validity', $current_context->withWorkflowValidity());
 			} else {
 				$this->_popup_controller->assign('item', 'with_workflow', false);
@@ -209,7 +209,7 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
 
 				$this->_popup_controller->assign('popup', 'activating', $activating);
 			}else{
-				$val = ($this->_environment->inProjectRoom() OR $this->_environment->inGroupRoom())?'0':'1';
+				$val = ($this->_environment->inProjectRoom() OR $this->_environment->inGroupRoom())?'1':'0';
 		    	$this->_popup_controller->assign('item', 'private_editing', $val);
 		    	$this->_popup_controller->assign('item', 'public', $val);
 		        if ($current_context->withWorkflow()){
@@ -239,7 +239,7 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
             $manager = $this->_environment->getMaterialManager();
             $item = $manager->getItem($current_iid);
         }
-        
+
 
         // TODO: check rights */
 		/****************************/
@@ -254,12 +254,12 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
 
         } else { //Acces granted
 			$this->cleanup_session($current_iid);
-			
+
 			$check_passed = $this->_popup_controller->checkFormData('general');
 			if($check_passed === true && $form_data['bib_kind'] !== 'none') {
 				$check_passed = $this->_popup_controller->checkFormData($form_data['bib_kind']);
 			}
-			
+
 			// save item
 			if($check_passed === true) {
                 $session = $this->_environment->getSessionItem();
@@ -317,7 +317,7 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
                         $item->setModificationDate(getCurrentDateTimeInMySQL());
                     }
                 }
-                
+
                 // set bibliographic
                 $this->setBibliographic($form_data, $item);
 
@@ -335,14 +335,14 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
 	               $item->setDocumentReleaseDate( $form_data['document_release_date']);
 	            }
 	            /** Ende Dokumentenverwaltung **/
-	            
+
 	            if ( isset( $form_data['external_viewer']) and isset( $form_data['external_viewer_accounts']) ) {
 	               $user_ids = explode(" ", $form_data['external_viewer_accounts']);
 	               $item->setExternalViewerAccounts($user_ids);
 	            }else{
 	               $item->unsetExternalViewerAccounts();
 	            }
-	            
+
 	            // workflow
 	            if ( isset( $form_data['workflow_traffic_light']) and $item->getWorkflowTrafficLight() !=  $form_data['workflow_traffic_light'] ) {
 	               $item->setWorkflowTrafficLight( $form_data['workflow_traffic_light']);
@@ -542,13 +542,13 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
                 // Add modifier to all users who ever edited this item
                 $manager = $environment->getLinkModifierItemManager();
                 $manager->markEdited($item->getItemID());
-                
+
                 // set return
                 $this->_popup_controller->setSuccessfullItemIDReturn($item->getItemID());
             }
         }
     }
-    
+
     private function setBibliographic($form_data, $item) {
     	$config = array(
     		array(	'get'		=> 'getAuthor',
@@ -615,7 +615,7 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
     	    	    'set'		=> 'setFaculty',
     	    	    'value'		=> $form_data['faculty'])
     	);
-    	
+
     	foreach($config as $method => $detail) {
     		if($detail['value'] != call_user_func_array(array($item, $detail['get']), array())) {
 
@@ -665,7 +665,7 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
         $config_information['with_activating'] = $current_context->withActivatingContent();
         $this->_popup_controller->assign('popup', 'config', $config_information);
     }
-    
+
     public function getFieldInformation($sub = '') {
 		$return = array(
 			'general'	=> array(
@@ -676,10 +676,10 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
 						'type'		=> 'textarea',
 						'mandatory'	=> false)
 			),
-			
+
 			'common'	=> array(
 			),
-				
+
 			'book'	=> array(
 				array(	'name'		=> 'author',
 						'type'		=> 'text',
@@ -712,7 +712,7 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
 						'type'		=> 'date',
 						'mandatory'	=> false)
 			),
-			
+
 			'collection'	=> array(
 				array(	'name'		=> 'author',
 						'type'		=> 'text',
@@ -745,7 +745,7 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
 						'type'		=> 'date',
 						'mandatory'	=> false)
 			),
-			
+
 			'incollection'	=> array(
 				array(	'name'		=> 'author',
 						'type'		=> 'text',
@@ -784,7 +784,7 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
 						'type'		=> 'date',
 						'mandatory'	=> false)
 			),
-			
+
 			'article'	=> array(
 				array(	'name'		=> 'author',
 						'type'		=> 'text',
@@ -820,7 +820,7 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
 						'type'		=> 'date',
 						'mandatory'	=> false)
 			),
-			
+
 			'chapter'	=> array(
 				array(	'name'		=> 'author',
 						'type'		=> 'text',
@@ -850,7 +850,7 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
 						'type'		=> 'date',
 						'mandatory'	=> false)
 			),
-			
+
 			'inpaper'	=> array(
 				array(	'name'		=> 'author',
 						'type'		=> 'text',
@@ -880,7 +880,7 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
 						'type'		=> 'date',
 						'mandatory'	=> false)
 			),
-			
+
 			'thesis'	=> array(
 				array(	'name'		=> 'author',
 						'type'		=> 'text',
@@ -907,7 +907,7 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
 						'type'		=> 'date',
 						'mandatory'	=> false)
 			),
-			
+
 			'manuscript'	=> array(
 				array(	'name'		=> 'author',
 						'type'		=> 'text',
@@ -925,7 +925,7 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
 						'type'		=> 'date',
 						'mandatory'	=> false)
 			),
-			
+
 			'website'	=> array(
 				array(	'name'		=> 'author',
 						'type'		=> 'text',
@@ -937,7 +937,7 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
 						'type'		=> 'date',
 						'mandatory'	=> false)
 			),
-			
+
 			'document'	=> array(
 				array(	'name'		=> 'document_editor',
 						'type'		=> 'text',
@@ -953,7 +953,7 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
 						'mandatory'	=> false)
 			)
 		);
-		
+
 		return $return[$sub];
     }
 
