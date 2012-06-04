@@ -217,6 +217,15 @@ ul#popup_path_list .ui-state-highlight {
     border: medium none;
 }
 
+#room_title{
+	display:inline;
+	vertical-align:bottom;
+	color: #393939;
+    font-size: 18px;
+    font-weight: bold;
+    text-shadow: 0 1px #CCCCCC;
+	}
+
 /*
 ----------------------------------------------------------------------
 rowset and content

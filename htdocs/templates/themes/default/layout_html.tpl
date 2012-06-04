@@ -54,10 +54,10 @@
 
         <div id="header"> <!-- Start header -->
             <div id="logo_area">
-                {if isset($environment.logo)}
+                {if !empty($environment.logo)}
                 	<img src="commsy.php?cid={$environment.cid}&mod=picture&fct=getfile&picture={$environment.logo}" alt="Logo" /> <!-- Logo-Hoehe 60 Pixel -->
                 {else}
-                	<img src="{$basic.tpl_path}img/commsy_logo.gif" alt="CommSy" />
+                	<img src="{$basic.tpl_path}img/spacer.gif" style="width:1px;" alt="" />
             	{/if}
             	{if $environment.show_room_title}
             		<span>{$environment.room_title|truncate:50:"...":true}</span>

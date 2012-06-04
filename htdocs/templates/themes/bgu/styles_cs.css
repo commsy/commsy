@@ -262,3 +262,9 @@ a.keywords_s1, a.keywords_s2, a.keywords_s3, a.keywords_s4 {
     width: 1010px;
 	}
 
+.column_new_list {
+    float: left;
+    padding: 3px 3px 5px 5px;
+    white-space: nowrap;
+    width: 0;
+}
