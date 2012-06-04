@@ -597,7 +597,8 @@ class cs_context_item extends cs_item {
         $retour = true;
       }
     }
-    return $retour;
+//    return $retour;
+	return true;
   }
 
 
@@ -2251,7 +2252,8 @@ class cs_context_item extends cs_item {
     if ($value == 1) {
       $retour = true;
     }
-    return $retour;
+//    return $retour;
+	return true;
   }
 
   function setWithGrouproomFunctions () {
@@ -4298,7 +4300,8 @@ class cs_context_item extends cs_item {
         $retour = true;
       }
     }
-    return $retour;
+//    return $retour;
+	return true;
   }
 
   function setWithPath () {
@@ -4541,7 +4544,8 @@ class cs_context_item extends cs_item {
         $retour = true;
       }
     }
-    return $retour;
+//    return $retour;
+	return true;
   }
 
   function setNetnavigationShowExpanded () {

@@ -1653,7 +1653,7 @@
 		        	//$temp_text = $this->_compareWithSearchText($modificator->getFullname());
 		        	$temp_text = $modificator->getFullname();
 		            $modifier_array[] = $temp_text;
-		        } elseif ( $modificator->getContextID() == $item->getContextID() ) {
+		        } elseif ( isset($modificator) and !empty($modificator) and $modificator->getContextID() == $item->getContextID() ) {
 		            if ( $environment->inProjectRoom() ) {
 		                $params = array();
 		                if (isset($modificator) and !empty($modificator) and $modificator->isUser() and !$modificator->isDeleted() and $modificator->maySee($user)){
