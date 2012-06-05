@@ -14,9 +14,11 @@
 		{foreach $room.home_content as $rubric}
 			<div class="content_item"> <!-- Start content_item -->
             	<div class="ci_head_actions">
-	            	<a href="commsy.php?cid={$environment.cid}&mod={$rubric@key}&fct=edit&iid=NEW" title="___HOME_SMARTY_ACTION_NEW___">
-	            		<img src="{$basic.tpl_path}img/btn_ci_add.gif" alt="___HOME_SMARTY_ACTION_NEW___" />
-	            	</a>
+	            	{if $rubric@key != 'user'}
+		            	<a href="commsy.php?cid={$environment.cid}&mod={$rubric@key}&fct=edit&iid=NEW" title="___HOME_SMARTY_ACTION_NEW___">
+		            		<img src="{$basic.tpl_path}img/btn_ci_add.gif" alt="___HOME_SMARTY_ACTION_NEW___" />
+		            	</a>
+					{/if}
 					{if $rubric.items|count == 0}
 						<a class="open_close">
 							<div class="disabled"></div>
