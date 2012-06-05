@@ -51,7 +51,7 @@
 
 			 			{/foreach}
 				 	</select>
-					<input type="image" id="delete_confirmselect_option" name="option" src="{$basic.tpl_path}img/btn_go.gif" alt="___COMMON_LIST_ACTION_BUTTON_GO___" />
+						<input type="submit" class="popup_button" id="delete_confirmselect_option" name="option" value="___COMMON_LIST_ACTION_BUTTON_GO___" />
 				 </div>
 			</div>
 				<div class="ii_right">

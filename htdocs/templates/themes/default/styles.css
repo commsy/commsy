@@ -1235,7 +1235,7 @@ content, general
     background: url(img/select_bg.jpg) repeat-x #FFF;
     padding: 5px 4px 5px 4px;
     width: 150px;
-    color: #6B6B6B;
+    color: #393939;
     }
 
 .ii_right {
@@ -1835,6 +1835,30 @@ legend{
 .popup_button:active {
 	position:relative;
 	top:1px;
+	cursor:wait;
+	}
+
+
+.search_button {
+	background: url("img/btn_search.gif") repeat scroll 0 0 transparent;
+    border: 0 solid #919191;
+    color: #FFFFFF;
+    font-size: 14px;
+    font-weight: bold;
+    height: 33px;
+    text-align: center;
+    width: 55px;
+    cursor:default;
+    }
+
+.search_button:hover {
+    font-size: 14px;
+	}
+
+.search_button:active {
+	position:relative;
+	top:1px;
+	cursor:wait;
 	}
 
 

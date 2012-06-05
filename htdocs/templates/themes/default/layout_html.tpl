@@ -25,12 +25,12 @@
 		<link rel="stylesheet" type="text/css" media="screen" href="{$basic.tpl_path}jquery-lightbox/jquery.lightbox-0.5.css" />
 		<link rel="stylesheet" type="text/css" media="screen" href="{$basic.tpl_path}jquery.colorpicker.css" />
 	{/block}
-	
+
 	<!--
 	<script src="javascript/commsy8_dojo/libs/dojo.js" data-dojo-config="async: true"></script>
 	<script src="javascript/commsy8_dojo/main.js"></script>
 	-->
-	
+
     <script data-main="javascript/commsy8/main.js" src="javascript/commsy8/require.js"></script>
 
     <title>CommSy 8.0 - Home</title>
@@ -79,7 +79,7 @@
                     		{/if}
                         	<input name="form_data[keywords]" id="search_input" type="text" value="Suche ..." />
                         	<input id="search_suggestion" type="text" value="" />
-                        	<input id="search_submit" type="image" src="{$basic.tpl_path}img/btn_search.gif" alt="absenden" />
+                        	<input id="search_submit" type="sumit" class="search_button" value="___COMMON_GO_BUTTON2___!" />
                         </form>
                     </div>
                 </div>
