@@ -578,6 +578,18 @@ class cs_popup_configuration_controller {
 				/**** MODERATION CONFIGURATION ****/
 				case 'moderation_configuration':
 					if($this->_popup_controller->checkFormData('moderation_configuration')) {
+						// information on home
+						$info_array = array();
+						if(is_array($current_context->_getExtra('INFORMATIONBOX'))) {
+							$info_array = $current_context->_getExtra('INFORMATIONBOX');
+						}
+						
+						if(!empty($form_data['item_id'])) $current_context->setInformationBoxEntryID($form_data['item_id']);
+						
+						if($form_data['show_information_box'] == '1') $current_context->setwithInformationBox('yes');
+						else $current_context->setwithInformationBox('no');
+						
+						// usage information
 				         $info_array = array();
 				        if (is_array($current_context->_getExtra('USAGE_INFO'))) {
 				            $info_array = $current_context->_getExtra('USAGE_INFO');
