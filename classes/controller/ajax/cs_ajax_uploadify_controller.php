@@ -37,14 +37,19 @@
 			   } else {
 			      $file_array = array();
 			   }
+			   
+			   global $c_virus_scan;
+			   global $c_virus_scan_cron;
+			   $c_virus_scan = (!isset($c_virus_scan) || $c_virus_scan === false) ? false : true;
+			   $c_virus_scan_cron = (!isset($c_virus_scan_cron) || $c_virus_scan_cron === false) ? false : true;
 			
 			   if(!empty($tempFile) && $_FILES['Filedata']['size'] > 0) {
 			      $disc_manager = $this->_environment->getDiscManager();
-			      if(   isset($_REQUEST['c_virus_scan']) &&
-			            $_REQUEST['c_virus_scan'] &&
-			            isset($_REQUEST['c_virus_scan_cron']) &&
-			            !empty($_REQUEST['c_virus_scan_cron']) &&
-			            !$_REQUEST['c_virus_scan_cron']) {
+			      if(   isset($c_virus_scan) &&
+			            $c_virus_scan &&
+			            isset($c_virus_scan_cron) &&
+			            !empty($c_virus_scan_cron) &&
+			            !$c_virus_scan_cron) {
 			         // use virus scanner
 			         require_once('classes/cs_virus_scan.php');
 			         $virus_scanner = new cs_virus_scan($this->_environment);

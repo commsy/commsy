@@ -31,7 +31,6 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			var preconditions = {
 					template: ['tpl_path'],
 					environment: ['lang', 'single_entry_point', 'max_upload_size'],
-					global: ['virus_scan', 'virus_scan_cron'],
 					security: ['token']
 			};
 			
@@ -57,11 +56,8 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			data.mod = 'ajax';
 			data.fct = 'uploadify';
 			data.action = 'upload';
-			data.c_virus_scan = preconditions.global.virus_scan;
-			data.c_virus_scan_cron = preconditions.global.virus_scan_cron;
 			
 			var mod = commsy_functions.getURLParam('mod');
-			var fct = commsy_functions.getURLParam('fct');
 			var target_module = mod;
 			if(mod === 'todo') {
 				target_module = 'step';

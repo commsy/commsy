@@ -14,4 +14,3 @@ var dojoConfig = {
 }
 
 var test = require(["commsy/base"]);
-console.log(test);

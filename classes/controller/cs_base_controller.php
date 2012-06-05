@@ -142,6 +142,7 @@
 		private function processBaseTemplate() {
 			$current_user = $this->_environment->getCurrentUser();
 			$current_context = $this->_environment->getCurrentContextItem();
+			$translator = $this->_environment->getTranslationObject();
 
 			$this->assign('basic', 'tpl_path', $this->_tpl_path);
 			$this->assign('environment', 'cid', $this->_environment->getCurrentContextID());
@@ -162,5 +163,18 @@
 			$this->assign('environment', 'language', $current_context->getLanguage());
 			$this->assign('environment', 'post', $_POST);
 			$this->assign('environment', 'get', $_GET);
+			
+			// to javascript
+			$to_javascript = array();
+			
+			$to_javascript['template']['tpl_path'] = $this->_tpl_path;
+			$to_javascript['environment']['lang'] = $this->_environment->getSelectedLanguage();
+			$to_javascript['environment']['single_entry_point'] = $this->_environment->getConfiguration('c_single_entry_point');
+			$to_javascript['environment']['max_upload_size'] = $this->_environment->getCurrentContextItem()->getMaxUploadSizeInBytes();
+			$to_javascript['i18n']['COMMON_NEW_BLOCK'] = $translator->getMessage('COMMON_NEW_BLOCK');
+			$to_javascript['i18n']['COMMON_SAVE_BUTTON'] = $translator->getMessage('COMMON_SAVE_BUTTON');
+			$to_javascript['security']['token'] = getToken();
+			
+			$this->assign('javascript', 'variables_as_json', json_encode($to_javascript));
 		}
 	}

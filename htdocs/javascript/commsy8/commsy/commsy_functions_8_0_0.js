@@ -8,6 +8,7 @@ define(["libs/jQuery/jquery-1.7.1.min"], function() {
 		module_callbacks: null,
 		modules_registered: 0,
 		modules_loaded: 0,
+		from_php: null,
 
 		init: function() {
 			// wait for dom loaded
@@ -16,6 +17,8 @@ define(["libs/jQuery/jquery-1.7.1.min"], function() {
 
 		onDomLoaded: function() {
 			var commsy_functions = this;
+			
+			this.from_php = jQuery.parseJSON(from_php);
 
 			// Tag Tree
 			this.registerModule('commsy/tag_tree', {register_on: jQuery('div[id="tag_tree"]')});
@@ -282,7 +285,10 @@ define(["libs/jQuery/jquery-1.7.1.min"], function() {
 			jQuery(this.preconditions_callbacks).each(function() {
 				jQuery.extend(merge, this.conditions);
 			});
-
+			
+			var handle = this;
+			
+			/*
 			var cid = this.getURLParam('cid');
 
 			var handle = this;
@@ -299,6 +305,12 @@ define(["libs/jQuery/jquery-1.7.1.min"], function() {
 				success: function(data, status) {
 					handle.preconditionsSuccess(data);
 				}
+			});
+			*/
+			
+			jQuery(this.preconditions_callbacks).each(function() {
+				// callback
+				this.callback(handle.from_php, this.parameters);
 			});
 		},
 
