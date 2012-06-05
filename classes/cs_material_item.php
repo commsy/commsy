@@ -994,9 +994,9 @@ function copy () {
       }
       $import_version = $version_list->getNext();
    }
-   
+
    $this->_updateInternalLinks($copy);
-   
+
    return $copy;
 }
 
@@ -1529,7 +1529,6 @@ function _copySectionList ($copy_id) {
    */
    function getFileListWithFilesFromSections () {
       $file_list = new cs_list;
-
       // material
       if ( !empty($this->_data['file_list']) ) {
          $file_list = $this->_data['file_list'];

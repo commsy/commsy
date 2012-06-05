@@ -350,11 +350,12 @@
 			      $file_id_array = $link_manager->getAllFileLinksForListByIDs($id_array, $v_id_array);
 			      $file_manager = $environment->getFileManager();
 			      $file_manager->setIDArrayLimit($file_id_array);
+			      $file_manager->select();
 			      $manager = $environment->getProjectManager();
 			      $room_max_activity = 0;
 			      if ($this->_environment->inCommunityRoom()) {
 			         $manager->setContextLimit($environment->getCurrentPortalID());
-			         
+
 			         global $c_cache_cr_pr;
 			         if ( !isset($c_cache_cr_pr) or !$c_cache_cr_pr ) {
 			         	$room_max_activity = $manager->getMaxActivityPointsInCommunityRoom($environment->getCurrentContextID());
@@ -376,6 +377,7 @@
 					$view = new cs_view($params);
 	           		 while($item) {
 						$noticed_text = $this->_getItemChangeStatus($item);
+#						$noticed_text = '';
 	               		switch($key) {
 	                  		case CS_ANNOUNCEMENT_TYPE:
 								$column1 = $view->_text_as_html_short($item->getTitle());
@@ -416,7 +418,8 @@
 								$column2 = $this->_environment->getTranslationObject()->getDateInLang($item->getModificationDate());
 								$column3 = $item->getModificatorItem()->getFullName();
 								$modificator_id = $item->getModificatorItem()->getItemID();
-								$column1_addon = $item->getUnreadArticles().' / '.$item->getAllArticlesCount();
+								$reader_array = $item->getAllAndUnreadArticles();
+								$column1_addon = $reader_array['unread'].' / '.$reader_array['count'];
 								break;
 	                  		case CS_USER_TYPE:
 	                  			$column1 = '';
@@ -531,6 +534,7 @@
 						if(in_array($key, $this->getRubricsWithFiles())) {
 							$with_files = true;
 							$attachment_infos = array();
+
 
 							if ($key == CS_MATERIAL_TYPE){
 								$file_count = $item->getFileListWithFilesFromSections()->getCount();

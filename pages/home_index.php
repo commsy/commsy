@@ -277,7 +277,7 @@ if ( $context_item->isProjectroom()
                         $count_select = $manager->getCountAll();
                         $manager->setIntervalLimit(0, $home_rubric_limit);
                         $home_rubric_limit = CS_HOME_RUBRIC_LIST_LIMIT;
-                        
+
                         if($home_rubric_limit < $count_select) $short_list_view->setListShortened(true);
 
                         $manager->select();
@@ -317,7 +317,7 @@ if ( $context_item->isProjectroom()
                         $count_select = $manager->getCountAll();
                         $manager->setIntervalLimit(0, $home_rubric_limit);
                         $home_rubric_limit = CS_HOME_RUBRIC_LIST_LIMIT;
-                        
+
                         if($home_rubric_limit < $count_select) $short_list_view->setListShortened(true);
 
                         $manager->select();
@@ -369,7 +369,7 @@ if ( $context_item->isProjectroom()
       $file_manager = $environment->getFileManager();
       $file_manager->setIDArrayLimit($file_id_array);
       $file_manager->select();
-      
+
       if ( $current_context->withBuzzwords() ){
          $params = array();
          $params['environment'] = $environment;
@@ -731,11 +731,11 @@ if ( $context_item->isProjectroom()
                         }
                         $manager->showNoNotActivatedEntries();
                         $manager->select();
-                        
+
                         $count_select = $manager->getCountAll();
                         $manager->setIntervalLimit(0, $home_rubric_limit);
                         $home_rubric_limit = CS_HOME_RUBRIC_LIST_LIMIT;
-                        
+
                         if($home_rubric_limit < $count_select) $short_list_view->setListShortened(true);
 
                         $list = $manager->get();
