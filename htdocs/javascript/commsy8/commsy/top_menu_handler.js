@@ -840,8 +840,8 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 				jQuery(this).addClass('hidden');
 			});
 			
-			jQuery('div.editor_content').each(function() {
-				jQuery(this).addClass('hidden');
+			jQuery('div[id^="moderation_description_"]').each(function() {
+				jQuery(this).parent().addClass('hidden');
 			});
 			
 			// show selected
@@ -940,8 +940,8 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			// check if id is a number and greater than -1
 			if(!isNaN(selected_id) && selected_id > -1) {
 				// check if already assigned
-				var assigned = true;
-				jQuery('input[name^="form_data[communityroomlist]"]').each(function() {
+				var assigned = false;
+				jQuery('input[name^="form_data[communityroomlist_"]').each(function() {
 					// extract id
 					var id = '';
 					var regex = new RegExp("form_data\\[communityroomlist_([0-9]*)\\]");

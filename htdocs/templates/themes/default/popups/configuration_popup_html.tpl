@@ -93,13 +93,11 @@
 														{/foreach}
 													</select>
 													<input style="width:102px;" id="add_community_room" class="popup_button" type="button" value="___PREFERENCES_ADD_COMMUNITY_ROOMS_BUTTON___" />
-													{if !empty($popup.room.assigned_community_room_array)}
 														<div id="assigned_community_rooms" class="input_row_100" style="margin-left:100px;">
 															{foreach $popup.room.assigned_community_room_array as $room}
 																<input id="room_communityroomlist" type="checkbox" name="form_data[communityroomlist_{$room.value}]" value="{$room.value}" checked="checked" />{$room.text}
 															{/foreach}
 														</div>
-													{/if}
 													<div class="clear"></div>
 												</div>
 											{/if}
