@@ -343,9 +343,9 @@
 
 	      		  $noticed_manager = $environment->getNoticedManager();
 			      $id_array = array_merge($id_array, $disc_id_array);
+			      $id_array = array_merge($id_array, $sub_id_array);
 			      $noticed_manager->getLatestNoticedByIDArray($id_array);
 			      $noticed_manager->getLatestNoticedAnnotationsByIDArray($id_array);
-			      $id_array = array_merge($id_array, $sub_id_array);
 			      $link_manager = $environment->getLinkManager();
 			      $file_id_array = $link_manager->getAllFileLinksForListByIDs($id_array, $v_id_array);
 			      $file_manager = $environment->getFileManager();
