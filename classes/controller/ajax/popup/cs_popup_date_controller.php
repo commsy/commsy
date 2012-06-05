@@ -125,6 +125,14 @@ class cs_popup_date_controller {
                     $item_is_new = true;
                 }
 
+	            $values_before_change = array();
+	            $values_before_change['title'] = $dates_item->getTitle();
+	            $values_before_change['startingTime'] = $dates_item->getStartingTime();
+	            $values_before_change['endingTime'] = $dates_item->getEndingTime();
+	            $values_before_change['place'] = $dates_item->getPlace();
+	            $values_before_change['color'] = $dates_item->getColor();
+	            $values_before_change['description'] = $dates_item->getDescription();
+
                 // Set modificator and modification date
                 $current_user = $environment->getCurrentUserItem();
                 $date_item->setModificatorItem($current_user);
@@ -383,11 +391,11 @@ class cs_popup_date_controller {
             }
         }*/
     }
-    
+
     private function cleanup_session($current_iid) {
     	$environment = $this->_environment;
     	$session = $this->_environment->getSessionItem();
-    
+
     	$session->unsetValue($environment->getCurrentModule().'_add_buzzwords');
     	$session->unsetValue($environment->getCurrentModule().'_add_tags');
     	$session->unsetValue($environment->getCurrentModule().'_add_files');
