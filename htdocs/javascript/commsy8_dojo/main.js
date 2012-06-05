@@ -13,4 +13,23 @@ var dojoConfig = {
 	]
 }
 
-var test = require(["commsy/base"]);
+require(["dojo/_base/declare"], function(declare) {
+	var Controller = declare(null, {
+		constructor: function(args) {
+			
+		},
+		
+		init: function() {
+			require(["dojo/query", "dojo/domReady!"], function(query, ready) {
+				
+				// initiate popup handler
+				require(["commsy/popups/room_configuration"], function(RoomConfigurationPopup) {
+					var handler = new RoomConfigurationPopup(query("a#tm_settings"));
+				});
+			});
+		}
+	});
+	
+	var ctrl = new Controller;
+	ctrl.init();
+});
