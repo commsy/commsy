@@ -477,30 +477,16 @@ class cs_popup_configuration_controller {
 				            $current_context->setAGBTextArray($agbtext_array);
 				            $current_context->setAGBChangeDate();
 				         }
-
-
-
-
-/*      if ( !empty($delete_id) or !empty($change_id) ){
-        if (!empty ($_POST)){
-             foreach ($_POST as $key => $post_var){
-               $iid = mb_substr(strchr($key,'#'),1);
-               if (!empty($iid) and mb_stristr($key,'status') and $iid == $change_id) {
-                  $context_item = $environment->getCurrentContextItem();
-                  $status_array = $context_item->getExtraToDoStatusArray();
-                  $status_array[$iid] = $post_var;
-                  $context_item->setExtraToDoStatusArray($status_array);
-                  $context_item->save();
-               } elseif(!empty($iid) and $iid == $delete_id) {
-                  $context_item = $environment->getCurrentContextItem();
-                  $status_array = $context_item->getExtraToDoStatusArray();
-                  unset($status_array[$iid]);
-                  $context_item->setExtraToDoStatusArray($status_array);
-                  $context_item->save();
-               }
-            }
-         }
-*/
+				         
+				         // extra todo status
+				         $status_array = array();
+				         foreach($form_data as $key => $value) {
+				         	if(mb_substr($key, 0, 18) === 'additional_status_') {
+				         		$status_array[mb_substr($key, 18)] = $value;
+				         	}
+				         }
+				         
+				         $current_context->setExtraToDoStatusArray($status_array);
 
 						// save
 						$current_context->save();
@@ -1258,12 +1244,13 @@ class cs_popup_configuration_controller {
 	      // mail text choice
 	      $array_mail_text[0]['text']  = '*'.$translator->getMessage('MAIL_CHOICE_CHOOSE_TEXT');
 	      $array_mail_text[0]['value'] = -1;
-
+	      
 	      // mail salutation
 	      $array_mail_text[1]['text']  = '----------------------';
 	      $array_mail_text[1]['value'] = 'disabled';
 	      $array_mail_text[2]['text']  = $translator->getMessage('MAIL_CHOICE_HELLO');
 	      $array_mail_text[2]['value'] = 'MAIL_CHOICE_HELLO';
+	      
 	      $array_mail_text[3]['text']  = $translator->getMessage('MAIL_CHOICE_CIAO');
 	      $array_mail_text[3]['value'] = 'MAIL_CHOICE_CIAO';
 
@@ -1288,6 +1275,41 @@ class cs_popup_configuration_controller {
 	         $array_mail_text[12]['text']  = $translator->getMessage('MAIL_CHOICE_USER_ACCOUNT_MERGE');
 	         $array_mail_text[12]['value'] = 'MAIL_CHOICE_USER_ACCOUNT_MERGE';
 	      }
+	      
+	      $languages = $this->_environment->getAvailableLanguageArray();
+	      foreach($array_mail_text as $index => $array) {
+	      	switch($array['value']) {
+	      		case -1:										$message_tag = ''; break;
+	      		case 'MAIL_CHOICE_HELLO':						$message_tag = 'MAIL_BODY_HELLO'; break;
+	      		case 'MAIL_CHOICE_CIAO':						$message_tag = 'MAIL_BODY_CIAO'; break;
+	      		case 'MAIL_CHOICE_USER_ACCOUNT_DELETE':			$message_tag = 'MAIL_BODY_USER_ACCOUNT_DELETE'; break;
+	      		case 'MAIL_CHOICE_USER_ACCOUNT_LOCK':			$message_tag = 'MAIL_BODY_USER_ACCOUNT_LOCK'; break;
+	      		case 'MAIL_CHOICE_USER_STATUS_USER':			$message_tag = 'MAIL_BODY_USER_STATUS_USER'; break;
+	      		case 'MAIL_CHOICE_USER_STATUS_MODERATOR':		$message_tag = 'MAIL_BODY_USER_STATUS_MODERATOR'; break;
+	      		case 'MAIL_CHOICE_USER_MAKE_CONTACT_PERSON':	$message_tag = 'MAIL_BODY_USER_MAKE_CONTACT_PERSON'; break;
+	      		case 'MAIL_CHOICE_USER_UNMAKE_CONTACT_PERSON':	$message_tag = 'MAIL_BODY_USER_UNMAKE_CONTACT_PERSON'; break;
+	      		case 'MAIL_CHOICE_USER_ACCOUNT_PASSWORD':		$message_tag = 'MAIL_BODY_USER_ACCOUNT_PASSWORD'; break;
+	      		case 'MAIL_CHOICE_USER_ACCOUNT_MERGE':			$message_tag = 'MAIL_BODY_USER_ACCOUNT_MERGE'; break;
+	      		case 'MAIL_CHOICE_USER_PASSWORD_CHANGE':		$message_tag = 'MAIL_BODY_USER_PASSWORD_CHANGE'; break;
+	      		case 'MAIL_CHOICE_MATERIAL_WORLDPUBLIC':		$message_tag = 'MAIL_BODY_MATERIAL_WORLDPUBLIC'; break;
+	      		case 'MAIL_CHOICE_MATERIAL_NOT_WORLDPUBLIC':	$message_tag = 'MAIL_BODY_MATERIAL_NOT_WORLDPUBLIC'; break;
+	      		case 'MAIL_CHOICE_ROOM_LOCK':					$message_tag = 'MAIL_BODY_ROOM_LOCK'; break;
+	      		case 'MAIL_CHOICE_ROOM_UNLOCK':					$message_tag = 'MAIL_BODY_ROOM_UNLOCK'; break;
+	      		case 'MAIL_CHOICE_ROOM_UNLINK':					$message_tag = 'MAIL_BODY_ROOM_UNLINK'; break;
+	      		case 'MAIL_CHOICE_ROOM_DELETE':					$message_tag = 'MAIL_BODY_ROOM_DELETE'; break;
+	      		case 'MAIL_CHOICE_ROOM_OPEN':					$message_tag = 'MAIL_BODY_ROOM_OPEN'; break;
+	      	}
+	      	
+	      	foreach ($languages as $language) {
+	      		if (!empty($message_tag)) {
+	      			$array_mail_text[$index]['body_' . $language] = $translator->getEmailMessageInLang($language,$message_tag);
+	      		} else {
+	      			$array_mail_text[$index]['body_' . $language] = '';
+	      		}
+	      	}
+	      	
+	      }
+	      
 		 $return['array_mail_text'] = $array_mail_text;
 
 

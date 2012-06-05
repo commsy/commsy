@@ -328,32 +328,34 @@
 										</p>
 										<div class="input_row_100">
 											<label for="room_name">___COMMON_CONFIGURATION_MAIL_FORM_TITLE___:</label>
-											<select class="size_200"  style="width:200px;" id="moderation_rubric" name="form_data[array_mail_text_rubric]">
+											<select class="size_200"  style="width:200px;" id="mailtext_rubric" name="form_data[array_mail_text_rubric]">
 												{foreach $popup.moderation.array_mail_text as $mailtext}
-													<option value="{$mailtext.value}">{$mailtext.text}</option>
+													<option id="mail_text_{$mailtext@index}" value="{$mailtext.value}">{$mailtext.text}</option>
 												{/foreach}
 											</select>
 										</div>
 										<div class="input_row_100">
 											<label for="room_name">___COMMON_BODY___ (___DE___):</label>
 											{foreach $popup.moderation.array_mail_text as $mail_text}
-												<div class="editor_content {if $mail_text@index >0}hidden{/if}" style="margin-left:100px;">
-													<div id="moderation_mail_body_de_{$mail_text@index}" class="ckeditor">{if isset($mail_text.body_de)}{$mail_text.body_de}{/if}</div>
-												</div>
+												{if $mail_text.value != -1 && $mail_text.value != 'disabled'}
+													<div class="editor_content {if $mail_text@index >0}hidden{/if}" style="margin-left:100px;">
+														<div id="moderation_mail_body_de_{$mail_text@index}" class="ckeditor">{if isset($mail_text.body_de)}{$mail_text.body_de}{/if}</div>
+													</div>
+												{/if}
 											{/foreach}
 
 										</div>
 										<div class="input_row_100">
 											<label for="room_name">___COMMON_BODY___ (___EN___):</label>
 											{foreach $popup.moderation.array_mail_text as $mail_text}
-												<div class="editor_content {if $mail_text@index >0}hidden{/if}" style="margin-left:100px;">
-													<div id="moderation_mail_body_en_{$mail_text@index}" class="ckeditor">{if isset($mail_text.body_en)}{$mail_text.body_en}{/if}</div>
-												</div>
+												{if $mail_text.value != -1 && $mail_text.value != 'disabled'}
+													<div class="editor_content {if $mail_text@index >0}hidden{/if}" style="margin-left:100px;">
+														<div id="moderation_mail_body_en_{$mail_text@index}" class="ckeditor">{if isset($mail_text.body_en)}{$mail_text.body_en}{/if}</div>
+													</div>
+												{/if}
 											{/foreach}
 
 										</div>
-
-
 									</fieldset>
 									<div class="input_row">
 										<input id="submit" type="button" class="popup_button" name="save" value="___PREFERENCES_SAVE_BUTTON___"/>
@@ -411,10 +413,11 @@
 										<div class="input_row_100">
 											<label for="additional_status">___USER_STATUS_NEW___:</label>
 											<input class="size_200" id="status" type="text" name="form_data[status]" value=""/>
-											<input id="submit" type="button" class="popup_button" name="form_data[status_option]" value="___CONFIGURATION_TODO_NEW_STATUS_BUTTON___"/>
-											<div class="input_container_180" style="margin-left:100px;">
-												{foreach $popup.additional_extra_status_array as $extra_status}
-													{$extra_status}{if !$extra_status@last}, {/if}
+											<input id="add_additional_status" type="button" class="popup_button" name="form_data[status_option]" value="___CONFIGURATION_TODO_NEW_STATUS_BUTTON___"/>
+											
+											<div id="additional_status_list" class="input_container_180" style="margin-left:100px;">
+												{foreach $popup.additional.additional_extra_status_array as $extra_status}
+													<input type="checkbox" name="form_data[additional_status_{$extra_status.value}]" value="{$extra_status.text}" checked="checked" />{$extra_status.text}
 												{/foreach}
 											</div>
 											<div class="clear"></div>
@@ -489,13 +492,13 @@
 										<div class="input_row_100">
 											<label for="room_name">___COMMON_TEXT___ (___DE___):</label>
 											<div class="editor_content" style="margin-left:100px;">
-												<div id="agb_text_DE" class="ckeditor">{if isset($popup.additional.agb_text_DE)}{$popup.additional.agb_text_DE}{/if}</div>
+												<div id="agb_text_de" class="ckeditor">{if isset($popup.additional.agb_text_DE)}{$popup.additional.agb_text_DE}{/if}</div>
 											</div>
 										</div>
 										<div class="input_row_100 hidden">
 											<label for="room_name">___COMMON_TEXT___ (___EN___):</label>
 											<div class="editor_content" style="margin-left:100px;">
-												<div id="agb_text_EN" class="ckeditor">{if isset($popup.additional.agb_text_EN)}{$popup.additional.agb_text_EN}{/if}</div>
+												<div id="agb_text_en" class="ckeditor">{if isset($popup.additional.agb_text_EN)}{$popup.additional.agb_text_EN}{/if}</div>
 											</div>
 										</div>
 									</fieldset>

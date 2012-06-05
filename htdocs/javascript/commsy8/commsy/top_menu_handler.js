@@ -732,6 +732,10 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 						jQuery('div#tm_dropmenu_configuration input#add_community_room').bind('click', {
 							handle:		handle}, handle.onClickAssignCommunityRoom);
 						
+						// register click for additional status button
+						jQuery('div#tm_dropmenu_configuration input#add_additional_status').bind('click', {
+							handle:		handle}, handle.onClickAdditionalStatus);
+						
 						// register click for save buttons
 						jQuery('div#tm_dropmenu_configuration input#submit').bind('click', {
 							handle:		handle}, handle.onSaveConfiguration);
@@ -784,6 +788,34 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			});
 			
 			/* setup moderation support form elements */
+			handle.updateUsageHints(jQuery('select#moderation_rubric').children(':selected').attr('value'));
+			
+			jQuery('select#moderation_rubric').change(function(event) {
+				// get active moderation rubric
+				var active_rubric = jQuery('select#moderation_rubric').children(':selected').attr('value');
+				handle.updateUsageHints(active_rubric);
+			});
+			
+			handle.updateMailText(jQuery('select#mailtext_rubric').children(':selected').attr('id'));
+			
+			jQuery('select#mailtext_rubric').change(function(event) {
+				// get active value
+				var active_mailtext = jQuery('select#mailtext_rubric').children(':selected').attr('id');
+				handle.updateMailText(active_mailtext);
+			});
+			
+			/* setup additional form elements */
+			handle.updateUsageContract(jQuery('select#additional_agb_description_text').children(':selected').attr('value'));
+			
+			jQuery('select#additional_agb_description_text').change(function(event) {
+				// get active value
+				var active_lang = jQuery('select#additional_agb_description_text').children(':selected').attr('value');
+				handle.updateUsageContract(active_lang);
+			});
+			
+			
+			
+			
 			
 			/*
 			
@@ -800,6 +832,49 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 				handle.showHideBibliographic(select_object);
 			});
 			*/
+		},
+		
+		updateUsageHints: function(selected_value) {
+			// hide all
+			jQuery('input[id^="moderation_title_"]').each(function() {
+				jQuery(this).addClass('hidden');
+			});
+			
+			jQuery('div.editor_content').each(function() {
+				jQuery(this).addClass('hidden');
+			});
+			
+			// show selected
+			jQuery('input#moderation_title_' + selected_value).removeClass('hidden');
+			jQuery('div#moderation_description_' + selected_value).parent().removeClass('hidden');
+		},
+		
+		updateUsageContract: function(selected_value) {
+			// hide all
+			jQuery('div[id^=agb_text_]').each(function() {
+				jQuery(this).parent().addClass('hidden').parent().addClass('hidden');
+			});
+			
+			// show selected
+			jQuery('div[id^=agb_text_' + selected_value + ']').parent().removeClass('hidden').parent().removeClass('hidden');
+		},
+		
+		updateMailText: function(selected_value) {
+			// extract index
+			var index= '';
+			var regex = new RegExp("mail_text_([0-9]*)");
+			var results = regex.exec(selected_value);
+			if(results !== null && results[1] !== 'NEW') index = results[1];
+			
+			// hide all
+			jQuery('div[id^=moderation_mail_body_]').each(function() {
+				jQuery(this).parent().addClass('hidden').parent().addClass('hidden');
+			});
+			
+			// show selected
+			jQuery('div#moderation_mail_body_de_' + index + ', div#moderation_mail_body_en_' + index).each(function() {
+				jQuery(this).parent().removeClass('hidden').parent().removeClass('hidden');
+			});
 		},
 		
 		/*
@@ -865,7 +940,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			// check if id is a number and greater than -1
 			if(!isNaN(selected_id) && selected_id > -1) {
 				// check if already assigned
-				var assigned = false;
+				var assigned = true;
 				jQuery('input[name^="form_data[communityroomlist]"]').each(function() {
 					// extract id
 					var id = '';
@@ -893,6 +968,41 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 						})
 					).append(selected_object.text());
 				}
+			}
+		},
+		
+		onClickAdditionalStatus: function(event) {
+			var handle = event.data.handle;
+			
+			var input_object = jQuery('input#status');
+			
+			var value = input_object.attr('value');
+			input_object.attr('value', '');
+			
+			if(value !== '') {
+				// append new entry
+				var div_object = jQuery('div#additional_status_list');
+				
+				// get new value
+				var new_value = 5;
+				div_object.children('input').each(function() {
+					var iindex = '';
+					var regex = new RegExp("form_data\\[additional_status_([0-9]*)\\]");
+					var results = regex.exec(jQuery(this).attr('name'));
+					if(results !== null && results[1] !== 'NEW') index = results[1];
+					
+					if(index >= new_value) new_value = parseInt(index) + 1;
+				});
+				
+				
+				div_object.append(
+					jQuery('<input/>', {
+						type:		'checkbox',
+						checked:	true,
+						value:		value,
+						name:		'form_data[additional_status_' + new_value + ']'
+					})
+				).append(value);
 			}
 		},
 		
