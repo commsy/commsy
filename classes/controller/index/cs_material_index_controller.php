@@ -135,7 +135,7 @@
    				$id_array[] = $item->getItemID();
    				$item = $list->getNext();
 			}
-      		$section_manager = $environment->getSectionManager();
+/*      		$section_manager = $environment->getSectionManager();
       		$section_list = $section_manager->getAllSectionItemListByIDArray($id_array);
 			$noticed_manager = $environment->getNoticedManager();
 			$noticed_manager->getLatestNoticedByIDArray($id_array);
@@ -145,7 +145,29 @@
 			$file_manager = $environment->getFileManager();
 			$file_manager->setIDArrayLimit($file_id_array);
 			$file_manager->select();
+*/
 
+			$assessment_manager = $environment->getAssessmentManager();
+			$assessment_manager->getAssessmentForItemAverageByIDArray($id_array);
+
+
+		    $section_manager = $environment->getSectionManager();
+		    $section_list = $section_manager->getAllSectionItemListByIDArray($id_array);
+		    $item = $section_list->getFirst();
+		    while ($item) {
+		       $id_array[] = $item->getItemID();
+		       $vid_array[$item->getItemID()] = $item->getVersionID();
+		       $item = $section_list->getNext();
+		    }
+		    $noticed_manager = $environment->getNoticedManager();
+		    $noticed_manager->getLatestNoticedByIDArray($id_array);
+		    $noticed_manager->getLatestNoticedAnnotationsByIDArray($id_array);
+
+		    $link_manager = $environment->getLinkManager();
+		    $file_id_array = $link_manager->getAllFileLinksForListByIDs($id_array, $vid_array);
+		    $file_manager = $environment->getFileManager();
+		    $file_manager->setIDArrayLimit($file_id_array);
+		    $file_manager->select();
 
 			// prepare item array
 			$item = $list->getFirst();

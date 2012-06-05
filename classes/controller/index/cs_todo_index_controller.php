@@ -167,9 +167,8 @@
    				$id_array[] = $item->getItemID();
    				$item = $list->getNext();
 			}
-			$noticed_manager = $environment->getNoticedManager();
-			$noticed_manager->getLatestNoticedByIDArray($id_array);
-			$noticed_manager->getLatestNoticedAnnotationsByIDArray($id_array);
+			$assessment_manager = $environment->getAssessmentManager();
+			$assessment_manager->getAssessmentForItemAverageByIDArray($id_array);
 
 			$step_manager = $environment->getStepManager();
 			$step_list = $step_manager->getAllStepItemListByIDArray($id_array);
@@ -178,6 +177,10 @@
 			   $id_array[] = $item->getItemID();
 			   $item = $step_list->getNext();
 			}
+
+			$noticed_manager = $environment->getNoticedManager();
+			$noticed_manager->getLatestNoticedByIDArray($id_array);
+			$noticed_manager->getLatestNoticedAnnotationsByIDArray($id_array);
 
 			// caching
 			$link_manager = $environment->getLinkManager();

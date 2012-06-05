@@ -33,6 +33,12 @@ include_once('functions/date_functions.php');
  */
 class cs_assessments_manager extends cs_manager {
 
+
+  var $_average_assessment_id_array = array();
+  var $_item_id_array = array();
+  var $_cache_on = true;
+
+
   /** constructor: cs_assessments_manager
     * the only available constructor, initial values for internal variables
     */
@@ -44,6 +50,11 @@ class cs_assessments_manager extends cs_manager {
   function _buildItem ($data_array) {
       return parent::_buildItem($db_array);
   }
+
+   public function setCacheOff () {
+      $this->_cache_on = false;
+   }
+
 
   /** get an assessment
     *
@@ -81,7 +92,7 @@ class cs_assessments_manager extends cs_manager {
     */
   function _update ($assessments_item) {
      $current_datetime = getCurrentDateTimeInMySQL();
-	 
+
 	 $query = '
 	 	UPDATE
 	 		' . $this->addDatabasePrefix($this->_db_table) . '
@@ -97,7 +108,7 @@ class cs_assessments_manager extends cs_manager {
         trigger_error('Problems updating assessment from query: "'.$query.'"',E_USER_WARNING);
      }
   }
-  
+
   function addAssessmentForItem($item, $assessment) {
   	 $new_item = $this->getNewItem();
 	 $new_item->setContextID($this->_environment->getCurrentContextID());
@@ -106,28 +117,61 @@ class cs_assessments_manager extends cs_manager {
 	 $new_item->setAssessment($assessment);
 	 $new_item->save();
   }
-  
+
   function getAssessmentForItemAverage($item) {
-  	$query = '
-  		SELECT
-  			AVG(assessment) AS average_assessment,
-  			COUNT(item_id) AS count_assessment
-		FROM
-			assessments
-		WHERE
-			item_link_id = "' . encode(AS_DB, $item->getItemID())  . '" AND
-			deletion_date IS NULL
-		GROUP BY
-			item_link_id
-  	';
-	$result = $this->_db_connector->performQuery($query);
-	if(isset($result[0])) {
-		return array($result[0]['average_assessment'], $result[0]['count_assessment']);
-	} else {
-		return '';
-	}
+     if (in_array($item->getItemID(),$this->_item_id_array)){
+         if (array_key_exists($item->getItemID(), $this->_average_assessment_id_array)){
+            return array($this->_average_assessment_id_array[$item->getItemID()]['average_assessment'], $this->_average_assessment_id_array[$item->getItemID()]['count_assessment']);
+         }else{
+            return false;
+         }
+    }else{
+	  	$query = '
+	  		SELECT AVG(assessment) AS average_assessment, COUNT(item_id) AS count_assessment FROM assessments WHERE	item_link_id = "' . encode(AS_DB, $item->getItemID())  . '" AND	deletion_date IS NULL GROUP BY item_link_id';
+		$result = $this->_db_connector->performQuery($query);
+		if(isset($result[0])) {
+			return array($result[0]['average_assessment'], $result[0]['count_assessment']);
+		} else {
+			return '';
+		}
+     }
   }
-  
+
+
+   function getAssessmentForItemAverageByIDArray ($id_array,$user_id = 0) {
+      // ------------------
+      // --->UTF8 - OK<----
+      // ------------------
+      if (empty($user_id)){
+      	 $user_id = $this->_current_user_id;
+      }
+      if ($this->_cache_on and count($id_array) > 0){
+         foreach($id_array as $id){
+            if (!in_array($id,$this->_item_id_array)){
+               $this->_item_id_array[] = $id;
+            }
+         }
+	  	$query = 'SELECT AVG(assessment) AS average_assessment, COUNT(item_id) AS count_assessment, item_link_id FROM assessments WHERE item_link_id IN ('.implode(",",encode(AS_DB,$id_array)).')'. ' AND deletion_date IS NULL GROUP BY item_link_id';
+         $result = $this->_db_connector->performQuery($query);
+         if ( !isset($result) ) {
+           include_once('functions/error_functions.php');trigger_error('Problems selecting noticed from query: "'.$query.'"');
+         } else {
+            $noticed = array();
+            foreach ($result as $rs) {
+               $temp = array();
+               $temp[$rs['item_link_id']]['average_assessment'] = $rs['average_assessment'];
+               $temp[$rs['item_link_id']]['count_assessment'] = $rs['count_assessment'];
+               if (!in_array($temp,$this->_average_assessment_id_array)){
+               $this->_average_assessment_id_array[$rs['item_link_id']]['average_assessment'] = $rs['average_assessment'];
+               $this->_average_assessment_id_array[$rs['item_link_id']]['count_assessment'] = $rs['count_assessment'];
+               }
+            }
+         }
+      }
+   }
+
+
+
   function getAssessmentForItemDetail($item) {
   	$query = '
   		SELECT
@@ -152,7 +196,7 @@ class cs_assessments_manager extends cs_manager {
   		return '';
   	}
   }
-  
+
   function hasCurrentUserAlreadyVoted($item) {
   	$query = '
   		SELECT
@@ -168,10 +212,10 @@ class cs_assessments_manager extends cs_manager {
 	if(sizeof($result) > 0) {
 		return true;
 	}
-	
+
 	return false;
   }
-  
+
   function getAssessmentForItemOwn($item) {
   	$query = '
   		SELECT
@@ -220,15 +264,15 @@ class cs_assessments_manager extends cs_manager {
 		}
 	 }
   }
-  
+
   /**
    * create a new assessment - internal, do not use -> use method save
-   * 
+   *
    * @param object cs_assessments_item
    */
   private function _newAssessment($assessments_item) {
   	 $current_datetime = getCurrentDateTimeInMySQL();
-	 
+
 	 $query = '
 	 	INSERT INTO
 	 		' . $this->addDatabasePrefix($this->_db_table) . '
@@ -283,7 +327,7 @@ class cs_assessments_manager extends cs_manager {
            parent::delete($item_id);
      }
   }
-  
+
   function getItemIDForOwn($item_link_id) {
   	$query = '
   		SELECT

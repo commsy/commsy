@@ -169,9 +169,9 @@
    				$id_array[] = $item->getItemID();
    				$item = $list->getNext();
 			}
-			$noticed_manager = $environment->getNoticedManager();
-			$noticed_manager->getLatestNoticedByIDArray($id_array);
-			$noticed_manager->getLatestNoticedAnnotationsByIDArray($id_array);
+			$assessment_manager = $environment->getAssessmentManager();
+			$assessment_manager->getAssessmentForItemAverageByIDArray($id_array);
+
 			$link_manager = $environment->getLinkManager();
 			$file_id_array = $link_manager->getAllFileLinksForListByIDs($id_array);
 			$file_manager = $environment->getFileManager();
@@ -189,6 +189,7 @@
 
 			$noticed_manager = $environment->getNoticedManager();
 			$noticed_manager->getLatestNoticedByIDArray($id_array);
+#			$noticed_manager->getLatestNoticedAnnotationsByIDArray($id_array); // gibt noch keine Anmerkungen
 			$link_manager = $environment->getLinkManager();
 			$file_id_array = $link_manager->getAllFileLinksForListByIDs($id_array);
 			$file_manager = $environment->getFileManager();

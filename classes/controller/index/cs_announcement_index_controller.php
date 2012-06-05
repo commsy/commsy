@@ -157,6 +157,9 @@
    				$id_array[] = $item->getItemID();
    				$item = $list->getNext();
 			}
+			$assessment_manager = $environment->getAssessmentManager();
+			$assessment_manager->getAssessmentForItemAverageByIDArray($id_array);
+
 			$noticed_manager = $environment->getNoticedManager();
 			$noticed_manager->getLatestNoticedByIDArray($id_array);
 			$noticed_manager->getLatestNoticedAnnotationsByIDArray($id_array);
