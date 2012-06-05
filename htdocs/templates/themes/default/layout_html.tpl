@@ -72,7 +72,7 @@
 
                     <div id="commsy_search">
                     	<form action="commsy.php?cid={$environment.cid}&mod=search&fct=index" method="post">
-                    		{if $environment.module != 'home'}
+                    		{if $environment.module != 'home' && $environment.module != 'search'}
                     			<input type="hidden" name="form_data[selrubric]" value="{$environment.module}"/>
                     		{elseif isset($environment.post.form_data.selrubric) && !empty($environment.post.form_data.selrubric)}
                     			<input type="hidden" name="form_data[selrubric]" value="{$environment.post.form_data.selrubric}"/>
