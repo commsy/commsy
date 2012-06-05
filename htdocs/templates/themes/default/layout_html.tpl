@@ -79,7 +79,7 @@
                     		{/if}
                         	<input name="form_data[keywords]" id="search_input" type="text" value="Suche ..." />
                         	<input id="search_suggestion" type="text" value="" />
-                        	<input id="search_submit" type="sumit" class="search_button" value="___COMMON_GO_BUTTON2___!" />
+                        	<input id="search_submit" type="submit" class="search_button" value="___COMMON_GO_BUTTON2___!" />
                         </form>
                     </div>
                 </div>

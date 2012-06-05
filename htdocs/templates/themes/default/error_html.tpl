@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">  
-	                  
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="de" lang="de">
 
 <head>
@@ -13,9 +13,9 @@
     <meta name="keywords" content="" />
     <meta name="description" content="" />
     <meta name="copyright" content="" />
-    
+
     <link rel="stylesheet" type="text/css" media="screen" href="{$basic.tpl_path}styles.css" />
-    
+
     <title>CommSy 8.0 - Home</title>
 
     <!--
@@ -28,37 +28,37 @@
 </head>
 
 <body>
-    <div id="wrapper"> 
-    
+    <div id="wrapper">
+
         <div id="meta_area"> <!-- Start meta_area -->
         </div> <!-- Ende meta_area -->
-        
+
         <div id="header"> <!-- Start header -->
             <div id="logo_area">
                 <a href=""><img src="{$basic.tpl_path}img/commsy_logo.gif" alt="CommSy" /></a> <!-- Logo-Hoehe 60 Pixel -->
             </div>
-            
+
             <div id="search_area">
                 <div id="search_navigation">
                     <span class="sa_sep"><a href="" id="sa_active">nur dieser Raum</a></span>
                     <span class="sa_sep"><a href="">alle meine R&auml;ume</a></span>
                     <span id="sa_options"><a href=""><img src="{$basic.tpl_path}img/sa_dropdown.gif" alt="O" /></a></span>
-                    
+
                     <div class="clear"> </div>
-                    
+
                     <div id="commsy_search">
                     	<form action="commsy.php?cid={$environment.cid}&mod=search&fct=index" method="post">
                         	<input name="form_data[keywords]" id="search_input" type="text" value="Suche ..." />
                         	<input id="search_suggestion" type="text" value="" />
-                        	<input id="search_submit" type="image" src="{$basic.tpl_path}img/btn_search.gif" alt="absenden" />
+                        	<input id="search_submit" type="submit" class="search_button" value="___COMMON_GO_BUTTON2___!" />
                         </form>
                     </div>
                 </div>
             </div>
-            
+
             <div class="clear"> </div>
         </div> <!-- Ende header -->
-        
+
         <div id="columnset"> <!-- Start columnset -->
 
             <div id="left_column"> <!-- Start left_column -->
@@ -137,24 +137,24 @@
 
             <div class="clear"> </div>
         </div> <!-- Ende columnset -->
-        
+
         <div id="footer"> <!-- Start footer -->
             <div id="footer_left">
                 <p>CommSy 8.0</p>
             </div>
-            
+
             <div id="footer_right">
                 <p>
                 </p>
             </div>
-        
+
             <div class="clear"> </div>
         </div> <!-- Ende footer -->
-        
-        
+
+
         <!-- hier Google Adwords -->
-        
-        
+
+
     </div> <!-- Ende wrapper -->
 </body>
 
