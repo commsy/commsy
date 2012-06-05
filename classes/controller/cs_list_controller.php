@@ -112,7 +112,7 @@
       		if ( $interval_parameter == 'all' ) {
          		$return_array['all'] = 'disabled';
       		}else{
-         		$return_array['all'] = $link_parameter_text.'&interval=0';
+         		$return_array['all'] = $link_parameter_text.'&interval=all';
       		}
       		return $return_array;
 		}
