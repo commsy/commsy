@@ -846,6 +846,7 @@
 
 		protected function performListOption($rubric){
 		   $this->getPostData();
+		   #pr($_POST);
 
 		   #pr($this->_list_attached_ids);
 		   #pr($_POST);
@@ -939,6 +940,7 @@
       		      }
       		   }
       		}
+      		unset($this->_list_attached_ids);
 
 			// Cancel editing
 			/*if ( isOption($delete_command, $translator->getMessage('COMMON_CANCEL_BUTTON')) ) {
@@ -1169,6 +1171,8 @@
       			   $session->unsetValue('cid'.$environment->getCurrentContextID().
       			                              '_'.$environment->getCurrentModule().
       			                              '_selected_ids');
+     			   unset($this->_list_attached_ids);
+      			   #$session->save();
       			}
 			}
 		}
@@ -1297,11 +1301,8 @@
 			// Find current browsing interval
 			// The browsing interval is applied to all rubrics
 			$context_item = $environment->getCurrentContextItem();
-			if ( isset($_GET['interval']) ) {
+			if ( isset($_GET['interval']) and !empty($_GET['interval'])) {
    				$this->_list_parameter_arrray['interval'] = $_GET['interval'];
-#			}
-#			elseif ( $session->issetValue('interval') ) {
-#   				$this->_list_parameter_arrray['interval'] = $session->getValue('interval');
 			} else{
    				$this->_list_parameter_arrray['interval'] = $context_item->getListLength();
 			}

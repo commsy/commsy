@@ -1965,6 +1965,9 @@ class cs_context_item extends cs_item {
     if ( $this->_issetExtra('LISTLENGTH') ) {
       $retour = $this->_getExtra('LISTLENGTH');
     }
+    if(empty($retour)){
+    	$retour = CS_LIST_INTERVAL;
+    }
     return $retour;
   }
 
