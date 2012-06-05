@@ -201,7 +201,7 @@ class cs_tag_manager extends cs_manager {
       $this->_object_data = NULL;
       $this->_cached_sql = array();
    }
-   
+
   /** select labels limited by limits
     * this method returns a list (cs_list) of labels within the database limited by the limits. the select statement is a bit tricky, see source code for further information
     */
@@ -237,8 +237,24 @@ class cs_tag_manager extends cs_manager {
          } else {
             // sort tags(alphabet) if no order is given
             $tag2tag_manager = $this->_environment->getTag2TagManager();
-            $query = 'SELECT link_id,sorting_place,title FROM '.$this->addDatabasePrefix($tag2tag_manager->_db_table).' INNER JOIN '.$this->addDatabasePrefix($this->_db_table).' ON item_id = to_item_id WHERE '.$this->addDatabasePrefix($tag2tag_manager->_db_table).'.deletion_date is NULL AND '.$this->addDatabasePrefix($tag2tag_manager->_db_table).'.deleter_id IS NULL ORDER BY title ASC';
-            $result = $tag2tag_manager->_db_connector->performQuery($query);
+            $query = 'SELECT link_id,sorting_place,title FROM '.$this->addDatabasePrefix($tag2tag_manager->_db_table).' INNER JOIN '.$this->addDatabasePrefix($this->_db_table).' ON item_id = to_item_id WHERE '.$this->addDatabasePrefix($tag2tag_manager->_db_table).'.deletion_date is NULL AND '.$this->addDatabasePrefix($tag2tag_manager->_db_table).'.deleter_id IS NULL ';
+            $query .=' AND '.$this->addDatabasePrefix($tag2tag_manager->_db_table).'.context_id ="'.$this->_environment->getCurrentContextID().'"';
+            $query .=' ORDER BY title ASC';
+		     if ( !$this->_force_sql
+		          and isset($this->_cached_sql[$query])
+		        ) {
+		        $result = $this->_cached_sql[$query];
+		     } else {
+		        $this->_force_sql = false;
+            	$result = $tag2tag_manager->_db_connector->performQuery($query);
+		        if ( !isset($result) ) {
+		        	trigger_error('Problems selecting '.$this->_db_table.'.', E_USER_WARNING);
+		        } else {
+		             if ( $this->_cache_on ) {
+		                $this->_cached_sql[$query] = $result;
+		             }
+		        }
+		     }
             if (!isset($result)) {
                include_once('functions/error_functions.php');
                trigger_error('Problems selecting tags from query: "'.$query.'"',E_USER_WARNING);
@@ -258,6 +274,24 @@ class cs_tag_manager extends cs_manager {
          }
          if($flag == false){
             $query = 'SELECT item_id,title FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).'.deletion_date is NULL AND '.$this->addDatabasePrefix($this->_db_table).'.deleter_id IS NULL AND title != "CS_TAG_ROOT" ORDER BY title ASC;';
+		     // sixth, perform query
+		     if ( !$this->_force_sql
+		          and isset($this->_cached_sql[$query])
+		        ) {
+		        $result = $this->_cached_sql[$query];
+		     } else {
+		        $this->_force_sql = false;
+            	$result = $tag2tag_manager->_db_connector->performQuery($query);
+		        if ( !isset($result) ) {
+		        	trigger_error('Problems selecting '.$this->_db_table.'.', E_USER_WARNING);
+		        } else {
+		             if ( $this->_cache_on ) {
+		                $this->_cached_sql[$query] = $result;
+		             }
+		        }
+		     }
+
+
              $result = $this->_db_connector->performQuery($query);
              if (!isset($result)) {
                   include_once('functions/error_functions.php');
@@ -760,10 +794,10 @@ class cs_tag_manager extends cs_manager {
          unset($result);
       }
    }
-   
+
 	/**
 	 * gives the appropriate query to the updateSearchIndices function of cs_manager
-	 * 
+	 *
 	 * @see cs_manager::updateSearchIndices()
 	 */
 	public function updateSearchIndices($limit = array()) {
@@ -796,11 +830,11 @@ class cs_tag_manager extends cs_manager {
 					tag.modification_date > search_time.st_date
 				)
 		';
-		
+
 		if(!empty($limit)) {
 			$query .= ' LIMIT ' . $limit[0] . ', ' . $limit[1];
 		}
-		
+
 		$this->updateSearchIndicesMain($query, CS_TAG_TYPE);
 	}
 }

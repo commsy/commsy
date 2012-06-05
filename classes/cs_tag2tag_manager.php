@@ -331,7 +331,7 @@ class cs_tag2tag_manager extends cs_manager {
    	unset($this->_cached_children_id_array_array);
    	$this->_cached_rows = array();
    }
-   
+
    public function getChildrenItemIDArray ($item_id) {
       $retour = array();
       if ( !isset($this->_cached_children_id_array_array) ) {
@@ -359,7 +359,7 @@ class cs_tag2tag_manager extends cs_manager {
       }
       return $retour;
    }
-   
+
    public function sortRecursiveABC($root_id) {
       //////////////////////////////
       // "0." force cache reset ////
@@ -370,10 +370,10 @@ class cs_tag2tag_manager extends cs_manager {
       //////////////////////////////
       //////////////////////////////
       //////////////////////////////
-      
+
       // 1. fetch all direct children
       $children_array = $this->getChildrenItemIDArray($root_id);
-      
+
       // 2. sort children
       if(sizeof($children_array) > 1) {
          $temp_array = array();
@@ -383,14 +383,14 @@ class cs_tag2tag_manager extends cs_manager {
             array_push($temp_array, array(   'id'   =>   $id,
                                              'name' =>   $item_title));
          }
-         
+
          usort(   $temp_array,
                   create_function('$a,$b','return strnatcasecmp($a[\'name\'],$b[\'name\']);'));
-         
+
          // 3. change sort order
          foreach($children_array as $id) {
             $item = $tag_manager->getItem($id);
-            
+
             // get new position
             $new_sort_order = 1;
             foreach($temp_array as $item_info_array) {
@@ -399,12 +399,12 @@ class cs_tag2tag_manager extends cs_manager {
                }
                $new_sort_order++;
             }
-            
+
             // change sort order and save
             $item->setPosition($root_id, $new_sort_order);
             $item->save();
             unset($item);
-            
+
             // 4. call recursive
             $this->sortRecursiveABC($id);
          }
@@ -467,7 +467,6 @@ class cs_tag2tag_manager extends cs_manager {
       $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.deletion_date is NULL AND '.$this->addDatabasePrefix($this->_db_table).'.deleter_id IS NULL';
       $query .= ' ORDER BY sorting_place';
 
-      // perform query
       $result = $this->_db_connector->performQuery($query);
       if (!isset($result)) {
          include_once('functions/error_functions.php');
@@ -528,10 +527,10 @@ class cs_tag2tag_manager extends cs_manager {
          }
       }
    }
-   
+
    /**
     * Combines two categories to one
-    * 
+    *
     * @param $item_id_1 first item id
     * @param $item_id_2 second item id
     * @param $father_id father id under which the combined categorie will be inserted
@@ -540,49 +539,49 @@ class cs_tag2tag_manager extends cs_manager {
       // get children of both items
       $childrenIdArrayItem_1 = $this->getChildrenItemIDArray($item_id_1);
       $childrenIdArrayItem_2 = $this->getChildrenItemIDArray($item_id_2);
-      
+
       // get item titles
       $tag_manager = $this->_environment->getTagManager();
       $item_1 = $tag_manager->getItem($item_id_1);
       $item_title_1 = $item_1->getTitle();
       $item_2 = $tag_manager->getItem($item_id_2);
       $item_title_2 = $item_2->getTitle();
-      
+
       // delete tags, but keep children alive
       $tag_manager->delete($item_id_1, false);
       $tag_manager->delete($item_id_2, false);
-      
+
       unset($item_1);
       unset($item_2);
-      
+
       // create new tag
       $new = $tag_manager->getNewItem();
       $new->setTitle($item_title_1 . '/' . $item_title_2);
       $new->setContextID($this->_environment->getCurrentContextID());
       $new->setCreatorItem($this->_environment->getCurrentUserItem());
       $new->setCreationDate(getCurrentDateTimeInMySQL());
-      
+
       // set position
       $new->setPosition($father_id, $this->countChildren($father_id));
-      
+
       // save
       $new->save();
-      
+
       // link old childrens to new tag
       $new_id = $new->getItemID();
       $count = 1;
       foreach(array_merge($childrenIdArrayItem_1, $childrenIdArrayItem_2) as $item_id) {
          // get item
          $item = $tag_manager->getItem($item_id);
-         
+
          // set position
          $item->setPosition($new_id, $count);
          $item->save();
-         
+
          unset($item);
          $count++;
       }
-      
+
       unset($tag_manager);
       unset($new);
    }
