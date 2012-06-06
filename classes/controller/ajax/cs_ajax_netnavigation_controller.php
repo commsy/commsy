@@ -483,6 +483,8 @@
 		 * every derived class needs to implement an processTemplate function
 		 */
 		public function process() {
+			// TODO: check for rights, see cs_ajax_accounts_controller
+			
 			// call parent
 			parent::process();
 		}

@@ -24,7 +24,8 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 
 		setPreconditions: function(commsy_functions, callback, parameters) {
 			var preconditions = {
-					'i18n':	['COMMON_NEW_BLOCK', 'COMMON_SAVE_BUTTON']
+					i18n:		['COMMON_NEW_BLOCK', 'COMMON_SAVE_BUTTON'],
+					template:	['tpl_path']
 			};
 
 			// register preconditions
@@ -34,7 +35,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 		setupMenus: function(preconditions, parameters) {
 			var handle = parameters.handle;
 			var objects = parameters.objects;
-
+			
 			handle.preconditions = preconditions;
 			handle.objects = objects;
 
@@ -86,7 +87,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			} else {
 				// hide
 				menu.slideUp(100);
-
+				
 				// unregister ck editor instances
 				var editors = jQuery('div#popup_wrapper div.ckeditor');
 				if(editors.length > 0) {
@@ -105,10 +106,10 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 
 			return false;
 		},
-
+		
 		close: function() {
 			var handle = this;
-
+			
 			// unregister ck editor instances
 			var editors = jQuery('div#popup_wrapper div.ckeditor');
 			if(editors.length > 0) {
@@ -116,17 +117,17 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 					jQuery(this).ckeditorGet().destroy();
 				});
 			}
-
+			
 			// remove popup html from dom
 			jQuery('div#popup_wrapper').remove();
-
+			
 			jQuery.each(handle.objects, function() {
 				this.trigger.removeClass(this.active_class);
 				this.menu.css('display', 'none');
 			});
 
 			handle.isExpanded = false;
-
+			
 			return false;
 		},
 
@@ -158,7 +159,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 							handle:				datepicker_handler,
 							register_on:		jQuery('input.datepicker')
 						});
-
+						
 						// reinvoke CKEditor
 						var ck_editor_handler = handle.commsy_functions.getModuleCallback('commsy/ck_editor');
 						ck_editor_handler.create(null, {
@@ -202,13 +203,13 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 					tab: col_object.parent().attr('id')
 				}
 			};
-
+			
 			// add ckeditor data to hidden div
 			jQuery('div.ckeditor').each(function() {
 				var editor = jQuery(this).ckeditorGet();
 				jQuery(this).parent().children('input[type="hidden"]').attr('value', editor.getData());
 			});
-
+			
 			jQuery.each(form_objects, function() {
 				var add = false;
 
@@ -239,7 +240,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 						value:	jQuery(this).attr('value')
 					});
 				}
-			});
+			});			
 
 			// ajax request
 			jQuery.ajax({
@@ -287,7 +288,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 
 		uploadUserPicture: function(form_object) {
 			var handle = this;
-
+			
 			// setup ajax form
 			form_object.ajaxForm();
 
@@ -505,7 +506,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 					}));
 				});
 			});
-
+			
 			// add new block area
 			jQuery('div#tm_dropmenu_breadcrumb div#profile_content_row_three div.room_block:last').after(
 			jQuery('<div/>', {
@@ -639,11 +640,11 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 
 		setupPopup: function() {
 			var handle = this;
-
+			
 			// register click for close button
 			jQuery('a#popup_close').click(function() {
 				handle.close();
-
+				
 				return false;
 			})
 		},
@@ -689,7 +690,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 
 			return false;
 		},
-
+		
 		onClickConfiguration: function() {
 			var data = {
 				module: 'configuration'
@@ -713,29 +714,29 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 
 						// show
 						jQuery('div#tm_dropmenu_configuration div.tm_dropmenu').slideDown(100);
-
+						
 						// reinvoke CKEditor
 						var ck_editor_handler = handle.commsy_functions.getModuleCallback('commsy/ck_editor');
 						ck_editor_handler.create(null, {
 							handle:				ck_editor_handler,
 							register_on:		jQuery('div.ckeditor')
 						});
-
+						
 						// reinvoke Colorpicker
 						var colorpicker_handler = handle.commsy_functions.getModuleCallback('commsy/colorpicker');
 						colorpicker_handler.setup(null, {
 							handle:				colorpicker_handler,
 							register_on:		jQuery('input.colorpicker')
 						});
-
+						
 						// register click for community room assign button
 						jQuery('div#tm_dropmenu_configuration input#add_community_room').bind('click', {
 							handle:		handle}, handle.onClickAssignCommunityRoom);
-
+						
 						// register click for additional status button
 						jQuery('div#tm_dropmenu_configuration input#add_additional_status').bind('click', {
 							handle:		handle}, handle.onClickAdditionalStatus);
-
+						
 						// register click for save buttons
 						jQuery('div#tm_dropmenu_configuration input#submit').bind('click', {
 							handle:		handle}, handle.onSaveConfiguration);
@@ -745,7 +746,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 
 						// setup tabs
 						handle.setupTabs(jQuery('div#tm_dropmenu_configuration'));
-
+						
 						// setup configuration popup
 						handle.setupConfigurationPopup();
 					}
@@ -755,30 +756,30 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			// stop processing
 			return false;
 		},
-
+		
 		setupConfigurationPopup: function() {
 			var handle = this;
-
+			
 			// update schema preview and set onchange handler
 			handle.updateConfigurationSchemaPreview();
-
+			
 			jQuery('select#room_color_choice').change(function() {
 				handle.updateConfigurationSchemaPreview();
 			});
-
+			
 			// setup color picker
 			jQuery('input.colorpicker').colorpicker().on('colorselect', function(e, c) {
 				// do something if color
 				//console.log("selecte");
 			});
-
+			
 			// participation code hiding
 			jQuery('input[name="form_data[member_check]"]').each(function() {
 				if(jQuery(this).attr('value') == 'withcode') {
 					// enable
 					jQuery(this).click(function() {
 						jQuery('input#code').attr('disabled', false);
-					});
+					});			
 				} else {
 					// disable
 					jQuery(this).click(function() {
@@ -786,46 +787,46 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 					});
 				}
 			});
-
+			
 			/* setup moderation support form elements */
 			handle.updateUsageHints(jQuery('select#moderation_rubric').children(':selected').attr('value'));
-
+			
 			jQuery('select#moderation_rubric').change(function(event) {
 				// get active moderation rubric
 				var active_rubric = jQuery('select#moderation_rubric').children(':selected').attr('value');
 				handle.updateUsageHints(active_rubric);
 			});
-
+			
 			handle.updateMailText(jQuery('select#mailtext_rubric').children(':selected').attr('id'));
-
+			
 			jQuery('select#mailtext_rubric').change(function(event) {
 				// get active value
 				var active_mailtext = jQuery('select#mailtext_rubric').children(':selected').attr('id');
 				handle.updateMailText(active_mailtext);
 			});
-
+			
 			/* setup additional form elements */
 			handle.updateUsageContract(jQuery('select#additional_agb_description_text').children(':selected').attr('value'));
-
+			
 			jQuery('select#additional_agb_description_text').change(function(event) {
 				// get active value
 				var active_lang = jQuery('select#additional_agb_description_text').children(':selected').attr('value');
 				handle.updateUsageContract(active_lang);
 			});
-
-
-
-
-
+			
+			// setup accounts
+			var accounts = new Accounts();
+			accounts.init(handle.cid, handle.preconditions.template.tpl_path);
+			
 			/*
-
-
+			
+			
 			// get value from active bibliographic option
 			var select_object = jQuery('select#bibliographic_select');
-
+			
 			// show / hide bibliographic div's
 			handle.showHideBibliographic(select_object);
-
+			
 			// register handler for select
 			select_object.change(function() {
 				// show / hide bibliographic div's
@@ -833,59 +834,59 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			});
 			*/
 		},
-
+		
 		updateUsageHints: function(selected_value) {
 			// hide all
 			jQuery('input[id^="moderation_title_"]').each(function() {
 				jQuery(this).addClass('hidden');
 			});
-
+			
 			jQuery('div[id^="moderation_description_"]').each(function() {
 				jQuery(this).parent().addClass('hidden');
 			});
-
+			
 			// show selected
 			jQuery('input#moderation_title_' + selected_value).removeClass('hidden');
 			jQuery('div#moderation_description_' + selected_value).parent().removeClass('hidden');
 		},
-
+		
 		updateUsageContract: function(selected_value) {
 			// hide all
 			jQuery('div[id^=agb_text_]').each(function() {
 				jQuery(this).parent().addClass('hidden').parent().addClass('hidden');
 			});
-
+			
 			// show selected
 			jQuery('div[id^=agb_text_' + selected_value + ']').parent().removeClass('hidden').parent().removeClass('hidden');
 		},
-
+		
 		updateMailText: function(selected_value) {
 			// extract index
 			var index= '';
 			var regex = new RegExp("mail_text_([0-9]*)");
 			var results = regex.exec(selected_value);
 			if(results !== null && results[1] !== 'NEW') index = results[1];
-
+			
 			// hide all
 			jQuery('div[id^=moderation_mail_body_]').each(function() {
 				jQuery(this).parent().addClass('hidden').parent().addClass('hidden');
 			});
-
+			
 			// show selected
 			jQuery('div#moderation_mail_body_de_' + index + ', div#moderation_mail_body_en_' + index).each(function() {
 				jQuery(this).parent().removeClass('hidden').parent().removeClass('hidden');
 			});
 		},
-
+		
 		/*
 		 * showHideBibliographic: function(select_object) {
 			var key = select_object.children('option:selected').val();
-
+			
 			// go through all bibliographic content div's and show the one who's id matches "bib_content_" + key
 			jQuery('div#bibliographic div[id^="bib_content_"]').each(function() {
 				if(jQuery(this).attr('id') === 'bib_content_' + key) {
 					jQuery(this).show();
-
+					
 					// go through each input field and change the name, if needed, so they will be submitted again
 					jQuery(this).find('input, select').each(function() {
 						if(jQuery(this).attr('name').substr(0, 14) === 'do_not_submit_') {
@@ -894,7 +895,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 					});
 				} else {
 					jQuery(this).hide();
-
+					
 					// go through each input field and change the name, if needed, so they won't be submitted
 					jQuery(this).find('input, select').each(function() {
 						if(jQuery(this).attr('name').substr(0, 14) !== 'do_not_submit_') {
@@ -905,7 +906,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			});
 		},
 		 */
-
+		
 		updateConfigurationSchemaPreview: function() {
 			// set image path for preview and handle own schema
 			var selected_option_object = jQuery('select#room_color_choice option:selected');
@@ -914,7 +915,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			var image_object = jQuery('div#room_color_preview img');
 			var image_div_object = jQuery('div#room_color_preview');
 			var div_object = jQuery('div#room_color_own');
-
+			
 			if(selected_value == 'individual') {
 				// hide image preview, show own
 				image_div_object.hide();
@@ -923,20 +924,20 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 				// show image preview, hide own
 				image_div_object.show();
 				div_object.hide();
-
+				
 				if(selected_value == 'default') selected_text = 'default';
-
+				
 				image_object.attr('src', 'templates/themes/' + selected_text + '/preview.gif');
 			}
 		},
-
+		
 		onClickAssignCommunityRoom: function(event) {
 			var handle = event.data.handle;
-
+			
 			// get id from selected option
 			var selected_object = jQuery('select#room_communityrooms option:selected');
 			var selected_id = selected_object.attr('value');
-
+			
 			// check if id is a number and greater than -1
 			if(!isNaN(selected_id) && selected_id > -1) {
 				// check if already assigned
@@ -947,17 +948,17 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 					var regex = new RegExp("form_data\\[communityroomlist_([0-9]*)\\]");
 					var results = regex.exec(jQuery(this).attr('name'));
 					if(results !== null && results[1] !== 'NEW') id = results[1];
-
+					
 					if(id == selected_id) {
 						assigned = true;
 						return true;
 					}
 				});
-
+				
 				if(assigned === false) {
 					// append new entry
 					var div_object = jQuery('div#assigned_community_rooms');
-
+					
 					div_object.append(
 						jQuery('<input/>', {
 							'id':		'room_communityroomlist',
@@ -970,19 +971,19 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 				}
 			}
 		},
-
+		
 		onClickAdditionalStatus: function(event) {
 			var handle = event.data.handle;
-
+			
 			var input_object = jQuery('input#status');
-
+			
 			var value = input_object.attr('value');
 			input_object.attr('value', '');
-
+			
 			if(value !== '') {
 				// append new entry
 				var div_object = jQuery('div#additional_status_list');
-
+				
 				// get new value
 				var new_value = 5;
 				div_object.children('input').each(function() {
@@ -990,11 +991,11 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 					var regex = new RegExp("form_data\\[additional_status_([0-9]*)\\]");
 					var results = regex.exec(jQuery(this).attr('name'));
 					if(results !== null && results[1] !== 'NEW') index = results[1];
-
+					
 					if(index >= new_value) new_value = parseInt(index) + 1;
 				});
-
-
+				
+				
 				div_object.append(
 					jQuery('<input/>', {
 						type:		'checkbox',
@@ -1005,25 +1006,25 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 				).append(value);
 			}
 		},
-
+		
 		onSaveConfiguration: function(event) {
 			var handle = event.data.handle;
 			var target = jQuery(event.target);
-
+			
 			// submit picture
 			var form_objects = jQuery('form#logo_upload, form#bg_upload');
-
+			
 			var all = 0;
 			form_objects.each(function(index) {
 				if(jQuery(this).find('input[type="file"]').attr('value') !== '') {
 					all++;
 				}
 			});
-
+			
 			if(all == 0) {
 				handle.saveConfiguration(event);
 			}
-
+			
 			var index = 0;
 			form_objects.each(function() {
 				if(jQuery(this).find('input[type="file"]').attr('value') !== '') {
@@ -1032,7 +1033,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 				}
 			});
 		},
-
+		
 		saveConfiguration: function(event) {
 			var handle = event.data.handle;
 			var target = jQuery(event.target);
@@ -1049,13 +1050,13 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 					tab: col_object.parent().attr('id')
 				}
 			};
-
+			
 			// add ckeditor data to hidden div
 			jQuery('div.ckeditor').each(function() {
 				var editor = jQuery(this).ckeditorGet();
 				jQuery(this).parent().children('input[type="hidden"]').attr('value', editor.getData());
 			});
-
+			
 			jQuery.each(form_objects, function() {
 				var add = false;
 
@@ -1124,10 +1125,10 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 				}
 			});
 		},
-
+		
 		uploadRoomPicture: function(form_object, index, all, callback, event) {
 			var handle = this;
-
+			
 			// setup ajax form
 			form_object.ajaxForm();
 
@@ -1143,3 +1144,310 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 		},
 	};
 });
+
+/* Accounts Class */
+var Accounts = function() {
+	return {
+		cid: 						null,
+		tpl_path: 					'',
+		initialized: 				false,
+		paging: {
+			current: 0
+		},
+		restrictions: {
+			search:					'',
+			status:					7
+		},
+		store: {
+			pages:					1,
+			selected:				0,
+			after_item_creation:	[]
+		},
+
+		init: function(cid, tpl_path) {
+			this.cid = cid;
+			this.tpl_path = tpl_path;
+
+			var handle = this;
+
+			// register onclick handler
+			jQuery('#popup_account_tab').click(function() {
+				// get inital data if this is the first call
+				if(handle.initialized === false) {
+					// setup paging
+					handle.setupPaging();
+
+					// setup restrictions
+					handle.setupRestrictions();
+
+					// setup form submit
+					jQuery('input[name="accounts_submit_restrictions"]').click(function() {
+						handle.performRequest();
+
+						return false;
+					});
+
+					// perform first request
+					handle.performRequest();
+
+					handle.initialized = true;
+				}
+			});
+		},
+
+		setupRestrictions: function() {
+			var content_object = jQuery('.pop_item_content');
+			var handle = this;
+
+			// status restriction
+			content_object.find('select[name="account_status_restriction"]').change(function(event) {
+				handle.restrictions.status = jQuery(event.target).val();
+
+				return false;
+			});
+
+			// search restriction
+			content_object.find('input[name="account_search_restriction"]').change(function(event) {
+				handle.restrictions.search = jQuery(event.target).val();
+
+				return false;
+			});
+		},
+
+		setupPaging: function() {
+			var navigation_object = jQuery('.pop_item_navigation');
+			var handle = this;
+
+			// first
+			navigation_object.children('#first').click(function() {
+				if(handle.paging.current > 0) {
+					handle.paging.current = 0;
+					handle.performRequest();
+				}
+
+				return false;
+			});
+
+			// previous
+			navigation_object.children('#prev').click(function() {
+				if(handle.paging.current > 0) {
+					handle.paging.current -= 1;
+					handle.performRequest();
+				}
+
+				return false;
+			});
+
+			// next
+			navigation_object.children('#next').click(function() {
+				if(handle.paging.current + 1 < handle.store.pages) {
+					handle.paging.current += 1;
+					handle.performRequest();
+				}
+
+				return false;
+			})
+
+			// last
+			navigation_object.children('#last').click(function() {
+				if(handle.paging.current + 1 < handle.store.pages) {
+					handle.paging.current = handle.store.pages - 1;
+					handle.performRequest();
+				}
+
+				return false;
+			})
+		},
+
+		performRequest: function() {
+			var handle = this;
+
+			// create data object for request
+			var data = {
+				current_page:	this.paging.current,
+				restrictions:	this.restrictions
+			};
+
+			// send request
+			this.ajaxRequest('performRequest', data, function(ret) {
+				var content_object = jQuery('#popup_netnavigation #crt_row_area');
+
+				// fill list
+				content_object.empty();
+				
+				jQuery.each(ret.list, function(index) {
+					content_object.append(
+						jQuery('<div/>', {
+							'class':	(index % 2 === 0) ? 'pop_row_even' : 'pop_row_odd'
+						}).append(
+							jQuery('<div/>', {
+								'class':	'pop_col_25'
+							}).append(
+								jQuery('<input/>', {
+									type:		'checkbox',
+									id:			'linked_' + this.item_id,
+									checked:	this.checked
+								})
+							)
+						).append(
+							jQuery('<div/>', {
+								'class':	'pop_col_270',
+								text:		this.title
+							})
+						).append(
+							jQuery('<div/>', {
+								'class':	'pop_col_150',
+								text:		this.modification_date
+							})
+						).append(
+							jQuery('<div/>', {
+								'class':	'pop_col_150',
+								text:		this.modificator
+							})
+						).append(
+							jQuery('<div/>', {
+								'class':	'clear'
+							})
+						)
+					);
+				});
+
+				// update selected
+				handle.store.selected = ret.num_selected_total;
+				jQuery('span#pop_item_entries_selected').text(handle.store.selected);
+
+				// register checkbox events - unregistering is done by jQuery when empty the content object
+				content_object.find('input[type="checkbox"]').each(function() {
+					var row_object = jQuery(this).parentsUntil('div[class^="pop_row_"]').parent();
+					var old_bg_color = row_object.css('background-color');
+
+					jQuery(this).change(function(event) {
+						var checked = (jQuery(this).attr('checked') === 'checked') ? true : false;
+						var linked_id = jQuery(event.target).attr('id').substr(7);
+
+						var data = {
+							item_id:	handle.item_id,
+							link_id:	linked_id,
+							checked:	checked
+						};
+
+						jQuery('span#pop_item_entries_selected').text(handle.store.selected);
+
+						// save old row background color and set new
+						row_object.css('background-color', '#D1D1D1');
+
+						handle.ajaxRequest('updateLinkedItem', data, function(ret) {
+							// fade back to old row color
+							row_object.animate({
+								'background-color':	old_bg_color
+							});
+
+							if(checked === true) {
+								// on check
+								handle.store.selected++;
+
+								var text = ret.linked_item.link_text;
+
+								// add related entry to right box list
+								jQuery('div#netnavigation_list ul').prepend(
+									jQuery('<li/>', {
+										'class':	'netnavigation',
+										id:			'item_' + linked_id
+									}).append(
+										jQuery('<a/>', {
+											target:	'_self',
+											href:	'commsy.php?cid=' + handle.cid + '&mod=' + ret.linked_item.module + '&fct=detail&iid=' + ret.linked_item.linked_iid,
+											title:	ret.linked_item.title
+										}).append(
+											jQuery('<img/>', {
+												src:	handle.tpl_path + 'img/netnavigation/' + ret.linked_item.img,
+												title:	ret.linked_item.title
+											})
+										)
+									).append(
+										jQuery('<a/>', {
+											target:	'_self',
+											href:	'commsy.php?cid=' + handle.cid + '&mod=' + ret.linked_item.module + '&fct=detail&iid=' + ret.linked_item.linked_iid,
+											title:	ret.linked_item.title,
+											text:	' ' + text
+										})
+									)
+								);
+								
+								if(jQuery('a#popup_path_tab').length > 0) {
+									// add related entry to path list
+									jQuery('ul#popup_path_list').append(
+										jQuery('<li/>', {
+											'class':	'netnavigation'
+										}).append(
+											jQuery('<input/>', {
+												type:		'checkbox',
+												id:			'path_' + ret.linked_item.linked_iid,
+												checked:	false
+											})
+										).append(
+											jQuery('<img/>', {
+												src:	handle.tpl_path + 'img/netnavigation/' + ret.linked_item.img
+											})
+										).append(
+											jQuery('<span/>', {
+												text:		text
+											})
+										)
+									);
+								}
+							} else {
+								// on uncheck
+								handle.store.selected--;
+
+								// remove related entry from right box list
+								var li_object = jQuery('div#netnavigation_list li#item_' + linked_id);
+								li_object.slideUp(1000, function() {
+									li_object.remove();
+								});
+								
+								if(jQuery('a#popup_path_tab').length > 0) {
+									// remove related entry from path list
+									var input_object = jQuery('ul#popup_path_list input#path_' + linked_id);
+									input_object.parent().remove();
+								}
+							}
+						});
+					});
+				});
+
+				// update current page and total number of pages
+				jQuery('#pop_item_current_page').text(handle.paging.current + 1);
+				jQuery('#pop_item_pages').text(ret.paging.pages);
+
+				// store pages
+				handle.store.pages = ret.paging.pages;
+			});
+		},
+
+		ajaxRequest: function(action, data, callback) {
+			var handle = this;
+
+			jQuery.ajax({
+				type: 'POST',
+				url: 'commsy.php?cid=' + handle.cid + '&mod=ajax&fct=accounts&action=' + action,
+				data: JSON.stringify(data),
+				contentType: 'application/json; charset=utf-8',
+				dataType: 'json',
+				async: false,
+				error: function(jqXHR, textStatus, errorThrown) {
+					console.log("error while getting popup");
+				},
+				success: function(data, status) {
+					if(status === 'success') {
+						if(callback !== null) {
+							callback(data);
+						}
+
+						return data;
+					}
+				}
+			});
+		}
+	}
+};

@@ -16,7 +16,7 @@
 					<div id="profile_content_row_three">
 						<div class="tab_navigation">
 							<a href="" class="pop_tab_active">___INTERNAL_META_TITLE___</a>
-							<a href="" class="pop_tab">___COMMON_ACCOUNTS___</a>
+							<a id="popup_account_tab" href="" class="pop_tab">___COMMON_ACCOUNTS___</a>
 							<a href="" class="pop_tab">___CONFIG_MODERATION_TITLE___</a>
 							<a href="" class="pop_tab">___INTERNAL_SPECIAL_TITLE___</a>
 							<a href="" class="pop_tab">___HOME_EXTRA_TOOLS___</a>
@@ -272,6 +272,48 @@
 
 							<div class="tab hidden" id="accounts">
 								<div id="content_row_three">
+									
+									<div id="popup_accounts">
+										<div id="content_row_two_max">
+						                    <div id="crt_content">
+						                        <div id="crt_col_left">
+						                            <div id="crt_row_area">
+						                            </div>
+						                        </div>
+						
+						                        <div id="crt_col_right">
+						                            <div class="pop_item_navigation">
+						                                <a id="first" href="#"><img src="{$basic.tpl_path}img/btn_ar_start2.gif" alt="Start" /></a>
+						                                <a id="prev" href="#"><img src="{$basic.tpl_path}img/btn_ar_left2.gif" alt="zur&uuml;ck" /></a>
+						                                <span>___COMMON_PAGE___ <span id="pop_item_current_page"></span>/<span id="pop_item_pages"></span></span>
+						                                <a id="next" href="#"><img src="{$basic.tpl_path}img/btn_ar_right2.gif" alt="weiter" /></a>
+						                                <a id="last" href="#"><img src="{$basic.tpl_path}img/btn_ar_end2.gif" alt="Ende" /></a>
+						                            </div>
+						
+						                            <div class="pop_item_content">
+						                                <input name="accounts_search_restriction" type="text" value="___HOME_SEARCH_SHORT_TO___" class="size_170" />
+						                                <br/>
+						                                <span class="sitenote">___COMMON_STATUS___</span><br/>
+						                                <select name="accounts_status_restriction" size="1" class="size_170_select">
+						                                	<option value="7">___ALL___</option>
+						                                	<option value="8">___USER_USER___
+						                                	<option value="-1" disabled="disabled">------------------</option>
+						                                	<option value="6">___USER_STATUS_REJECTED___</option>
+						                                	<option value="1">___USER_REQUEST___</option>
+						                                	<option value="2">___USER_NORMAL_USER___</option>
+						                                	<option value="3">___USER_STATUS_MODERATOR___</option>
+						                                	<option value="10">___USER_STATUS_CONTACT___</option>
+						                                </select>
+						                                <br/>
+						                                <input name="accounts_submit_restrictions" type="submit" value="___COMMON_SEARCH_OVERLAY_RESTRICTION_OPTIONS___" />
+						                            </div>
+						                        </div>
+						
+						                        <div class="clear"> </div>
+						                    </div>
+						                </div>
+									</div>
+								
 								</div>
 							</div>
 
