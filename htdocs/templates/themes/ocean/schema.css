@@ -19,8 +19,9 @@
 body {
     background-image: url("img/bg.jpg"); /* Background-Image */
     background-repeat: no-repeat;
+    background-attachment: fixed;
     background-position: 50% 50%;
-    background-color: #fcc7dc /*CS_BG_COLOR*/
+    background-color: #9fc3e2 /*CS_BG_COLOR*/
 }
 
 #logo_area {
