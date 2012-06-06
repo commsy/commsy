@@ -174,7 +174,7 @@
 										</div>
 
 										<div id="room_color_preview" class="input_row">
-											<img style="width:300px" src="" alt="preview" />
+											<img style="width:510px" src="" alt="preview" />
 										</div>
 
 										<div id="room_color_own">
@@ -272,7 +272,7 @@
 
 							<div class="tab hidden" id="accounts">
 								<div id="content_row_three">
-									
+
 									<div id="popup_accounts">
 										<div id="content_row_two_max">
 						                    <div id="crt_content">
@@ -280,7 +280,7 @@
 						                            <div id="crt_row_area">
 						                            </div>
 						                        </div>
-						
+
 						                        <div id="crt_col_right">
 						                            <div class="pop_item_navigation">
 						                                <a id="first" href="#"><img src="{$basic.tpl_path}img/btn_ar_start2.gif" alt="Start" /></a>
@@ -289,7 +289,7 @@
 						                                <a id="next" href="#"><img src="{$basic.tpl_path}img/btn_ar_right2.gif" alt="weiter" /></a>
 						                                <a id="last" href="#"><img src="{$basic.tpl_path}img/btn_ar_end2.gif" alt="Ende" /></a>
 						                            </div>
-						
+
 						                            <div class="pop_item_content">
 						                                <input name="accounts_search_restriction" type="text" value="___HOME_SEARCH_SHORT_TO___" class="size_170" />
 						                                <br/>
@@ -308,12 +308,12 @@
 						                                <input name="accounts_submit_restrictions" type="submit" value="___COMMON_SEARCH_OVERLAY_RESTRICTION_OPTIONS___" />
 						                            </div>
 						                        </div>
-						
+
 						                        <div class="clear"> </div>
 						                    </div>
 						                </div>
 									</div>
-								
+
 								</div>
 							</div>
 

@@ -19,7 +19,7 @@
 body {
     background-image: url("img/bg.jpg"); /* Background-Image */
     background-repeat: repeat;
-    background-color: #9fc3e2 /*CS_BG_COLOR*/
+    background-color: #FFF /*CS_BG_COLOR*/
 }
 
 #search_area {
