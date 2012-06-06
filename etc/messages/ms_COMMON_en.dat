@@ -383,7 +383,7 @@ $message["COMMON_FROM2"]["en"] = "from";
 $message["COMMON_GET_FLASH"]["en"] = "You need the flash plugin to view this content.";
 $message["COMMON_GET_FLASH_LECTURE2GO"]["en"] = "to view the video, you must active <strong><em>javascript</em></strong> and install a <a href=&quot;http://www.macromedia.com/go/getflashplayer&quot; target=&quot;_blank&quot;><em>Flashplayer-Plugin Version 9.0.115</em></a> (or higher)!";
 $message["COMMON_GO_BUTTON"]["en"] = "Goto workspace";
-$message["COMMON_GO_BUTTON2"]["en"] = "go";
+$message["COMMON_GO_BUTTON2"]["en"] = "Go";
 $message["COMMON_GROUP"]["en"] = "Group";
 $message["COMMON_GROUPROOM"]["en"] = "Group workspace";
 $message["COMMON_GROUPS"]["en"] = "Groups";
