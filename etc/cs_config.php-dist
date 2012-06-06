@@ -104,6 +104,22 @@ $theme_array['grey'] = array(
 	'disabled'	=> false
 );
 
+$theme_array['redgrey'] = array(
+	'text'		=> 'COMMON_COLOR_SCHEMA_REDGREY',
+	'value'		=> 'redgrey',
+	'disabled'	=> false
+);
+$theme_array['football'] = array(
+	'text'		=> 'COMMON_COLOR_SCHEMA_FOOTBALL',
+	'value'		=> 'football',
+	'disabled'	=> false
+);
+$theme_array['red'] = array(
+	'text'		=> 'COMMON_COLOR_SCHEMA_RED',
+	'value'		=> 'red',
+	'disabled'	=> false
+);
+
 
 // include more commsy settings
 @include_once('config_meta.php');
