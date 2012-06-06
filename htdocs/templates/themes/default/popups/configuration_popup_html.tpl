@@ -168,7 +168,7 @@
 											<label for="room_color_choice">___CONFIGURATION_COLOR_FORM_CHOOSE_TEXT___:</label>
 											<select class="size_200"  style="width:200px;" id="room_color_choice" name="form_data[color_choice]">
 												{foreach $popup.room.color_array as $color}
-													<option value="{$color.value}"{if $color.disabled == true} disabled="disabled"{/if}{if $color.value == $popup.room.color_schema} selected="selected"{/if}>{$color.text}</option>
+													<option value="{$color.value}"{if $color.disabled == true} disabled="disabled"{/if}{if $color.value == $popup.room.color_schema} selected="selected"{/if}>___{$color.text}___</option>
 												{/foreach}
 											</select>
 										</div>
@@ -412,7 +412,7 @@
 											<label for="additional_status">___USER_STATUS_NEW___:</label>
 											<input class="size_200" id="status" type="text" name="form_data[status]" value=""/>
 											<input id="add_additional_status" type="button" class="popup_button" name="form_data[status_option]" value="___CONFIGURATION_TODO_NEW_STATUS_BUTTON___"/>
-											
+
 											<div id="additional_status_list" class="input_container_180" style="margin-left:100px;">
 												{foreach $popup.additional.additional_extra_status_array as $extra_status}
 													<input type="checkbox" name="form_data[additional_status_{$extra_status.value}]" value="{$extra_status.text}" checked="checked" />{$extra_status.text}
