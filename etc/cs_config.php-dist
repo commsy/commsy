@@ -70,6 +70,16 @@ $c_commsy_path_file = deleteLastSlash($c_commsy_path_file);
 // security key
 $c_security_key = "3a2a14dbbab21710e78f7091af0f70dd";
 
+$theme_array = array();
+/* Example
+$theme_array['example'] = array(
+	'text'		=> 'COMMON_COLOR_SCHEMA_EXAMPLE',
+	'value'		=> 'example',
+	'disabled'	=> false
+);
+*/
+
+
 // include more commsy settings
 @include_once('config_meta.php');
 
@@ -78,6 +88,6 @@ $c_security_key = "3a2a14dbbab21710e78f7091af0f70dd";
 // cron_new.php must be run as root to make changing user and group for commsy/var/temp possible!
 //$c_commsy_cron_var_temp_user = "www-data";
 //$c_commsy_cron_var_temp_group = "www-data";
-// set to true to use htdocs/cron_single_room.php 
+// set to true to use htdocs/cron_single_room.php
 //$c_commsy_cron_split_scripts = false;
 ?>
