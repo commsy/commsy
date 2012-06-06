@@ -3,6 +3,7 @@
  */
 
 define([	"order!libs/jQuery/jquery-1.7.1.min",
+        	"order!libs/jQuery_plugins/jquery.contextMenu",
 			"order!libs/jQuery_plugins/jquery.viewport.mini",
 			"order!libs/jQuery/jquery-ui-1.8.17.custom.min",
 			"order!libs/jQuery_plugins/jquery.form",
@@ -927,7 +928,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 				
 				if(selected_value == 'default') selected_text = 'default';
 				
-				image_object.attr('src', 'templates/themes/' + selected_text + '/preview.gif');
+				image_object.attr('src', 'templates/themes/' + selected_value + '/preview.gif');
 			}
 		},
 		
@@ -1200,14 +1201,14 @@ var Accounts = function() {
 			var handle = this;
 
 			// status restriction
-			content_object.find('select[name="account_status_restriction"]').change(function(event) {
+			content_object.find('select[name="accounts_status_restriction"]').change(function(event) {
 				handle.restrictions.status = jQuery(event.target).val();
 
 				return false;
 			});
 
 			// search restriction
-			content_object.find('input[name="account_search_restriction"]').change(function(event) {
+			content_object.find('input[name="accounts_search_restriction"]').change(function(event) {
 				handle.restrictions.search = jQuery(event.target).val();
 
 				return false;
@@ -1270,7 +1271,7 @@ var Accounts = function() {
 
 			// send request
 			this.ajaxRequest('performRequest', data, function(ret) {
-				var content_object = jQuery('#popup_netnavigation #crt_row_area');
+				var content_object = jQuery('#popup_accounts #crt_row_area');
 
 				// fill list
 				content_object.empty();
@@ -1281,28 +1282,31 @@ var Accounts = function() {
 							'class':	(index % 2 === 0) ? 'pop_row_even' : 'pop_row_odd'
 						}).append(
 							jQuery('<div/>', {
+								'class':	'pop_col_270',
+								text:		this.fullname
+							})
+						).append(
+							jQuery('<div/>', {
 								'class':	'pop_col_25'
 							}).append(
-								jQuery('<input/>', {
-									type:		'checkbox',
-									id:			'linked_' + this.item_id,
-									checked:	this.checked
-								})
+								jQuery('<a/>', {
+									id:			'user_' + this.item_id,
+									href:		'#'
+								}).append(
+									jQuery('<img/>', {
+										src:		handle.tpl_path + 'img/btn_edit_rc.gif'
+									})
+								)
 							)
 						).append(
 							jQuery('<div/>', {
-								'class':	'pop_col_270',
-								text:		this.title
+								'class':	'pop_col_150',
+								text:		this.status
 							})
 						).append(
 							jQuery('<div/>', {
 								'class':	'pop_col_150',
-								text:		this.modification_date
-							})
-						).append(
-							jQuery('<div/>', {
-								'class':	'pop_col_150',
-								text:		this.modificator
+								text:		this.email
 							})
 						).append(
 							jQuery('<div/>', {
@@ -1311,15 +1315,47 @@ var Accounts = function() {
 						)
 					);
 				});
-
-				// update selected
-				handle.store.selected = ret.num_selected_total;
-				jQuery('span#pop_item_entries_selected').text(handle.store.selected);
+				
+				jQuery.contextMenu({
+					selector:			'#popup_accounts #crt_row_area a[id^="user_"]',
+					items: {
+										command1: {
+											name:		'Löschen',
+											callback:	function(key, opt) {}
+										}
+					},
+					trigger:			'left'
+				});
+				
+				
+				
+				
+				
+				
 
 				// register checkbox events - unregistering is done by jQuery when empty the content object
-				content_object.find('input[type="checkbox"]').each(function() {
-					var row_object = jQuery(this).parentsUntil('div[class^="pop_row_"]').parent();
-					var old_bg_color = row_object.css('background-color');
+				content_object.find('div[class^="pop_row_"]').each(function() {
+					var row_object = jQuery(this);
+					
+					row_object.find('a[id^="user_"]').each(function() {
+						var link_object = jQuery(this);
+						/*
+						link_object.contextMenu({
+							menu:		"context_menu"
+						}, function(action, el, pos) {
+							console.log(pos);
+						});
+						*/
+						
+						jQuery(this).click(function(event) {
+							var item_id = link_object.attr('id').substr(5);
+							
+							console.log(item_id);
+						});
+					});
+					
+					
+					/*
 
 					jQuery(this).change(function(event) {
 						var checked = (jQuery(this).attr('checked') === 'checked') ? true : false;
@@ -1413,7 +1449,7 @@ var Accounts = function() {
 								}
 							}
 						});
-					});
+					});*/
 				});
 
 				// update current page and total number of pages

@@ -24,6 +24,7 @@
 	    <link rel="stylesheet" type="text/css" media="screen" href="{$basic.tpl_path}uploadify.css" />
 		<link rel="stylesheet" type="text/css" media="screen" href="{$basic.tpl_path}jquery-lightbox/jquery.lightbox-0.5.css" />
 		<link rel="stylesheet" type="text/css" media="screen" href="{$basic.tpl_path}jquery.colorpicker.css" />
+		<link rel="stylesheet" type="text/css" media="screen" href="{$basic.tpl_path}jquery.contextMenu.css" />
 	{/block}
 
 	<script>

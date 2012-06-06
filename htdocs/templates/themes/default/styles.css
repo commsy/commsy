@@ -354,6 +354,10 @@ div#tag_tree input {
     height: 250px;
     }
 
+div#accounts #crt_col_left {
+	height: 500px;
+	}
+
 #content_row_two_max #crt_content {
     /*height: 440px !important;*/
     }
