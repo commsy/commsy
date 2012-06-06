@@ -18,15 +18,34 @@
 
 body {
     background-image: url("img/bg.jpg"); /* Background-Image */
-    background-repeat: no-repeat;
-    background-attachment: fixed;
+    background-repeat: repeat;
     background-position: 50% 50%;
-    background-color: #FFF /*CS_BG_COLOR*/
+    background-color: #000 /*CS_BG_COLOR*/
+}
+
+#logo_area span {
+    color: #d5d5d5;
+    font-size: 18px;
+    font-weight: bold;
+    text-shadow: 0 1px #CCCCCC;
 }
 
 
 /* Navigation */
 
+#main_navigation {
+	background: url("img/main_nav_bg.jpg") repeat-x scroll 0 0 transparent;
+	}
+
+#main_navigation #active {
+	background: url("img/active_bg.jpg") repeat-x scroll 0 0 transparent;
+	border-bottom: 1px solid #90030b; /*CS_COLOR_ACTIVE_MENUE*/
+}
+
+#main_navigation #site_actions {
+    background: none;
+    border-left: 1px solid #d5d5d5;
+}
 
 
 /* Right Column */
@@ -58,7 +77,7 @@ body {
 #footer_right {
 	background: url("img/columns_bg.jpg") repeat-y scroll right top #D7D7D9;
     color: #d5d5d5;
-    border-right: 1px solid #999999;
+    border-right: 1px solid #c30009;
 }
 
 #addon_area_row_1 {
@@ -77,7 +96,7 @@ body {
 }
 
 .portlet_rc_body .change_view select {
-    background: #D7D7D9; /*CS_COLOR_RIGHT_COLUMN*/
+    background: #efefef; /*CS_COLOR_RIGHT_COLUMN*/
     border: 1px solid #999999;
     color: #393939;
 }
@@ -92,21 +111,7 @@ a.keywords_s1, a.keywords_s2, a.keywords_s3, a.keywords_s4 {
 }
 
 /*Content*/
-.table_head {
-	background: url("img/ci_head_bg.png") repeat-x scroll left bottom transparent;
-    border-bottom: 1px solid #999999;
-}
 
-.content_item .item_info {
-	background: url("img/ci_head_bg.png") repeat-x scroll left bottom transparent;
-    text-shadow: 0 1px #F5F5F5;
-    border-bottom:1px solid #999999;
-}
-
-#footer_left {
-    border-left: 1px solid #999999;
-    color: #898989;
-}
 
 #footer_right span {
     border-top: 1px solid #999999;
@@ -119,17 +124,13 @@ a.keywords_s1, a.keywords_s2, a.keywords_s3, a.keywords_s4 {
     text-shadow: none;
 }
 
-.content_item h2 {
-	background: url("img/ci_head_bg.png") repeat-x scroll left bottom transparent;
-	border-bottom:1px solid #999999;
-}
 
 a {
-   color: #646463; /*CS_LINK_COLOR*/
+   color: #90030b; /*CS_LINK_COLOR*/
 }
 
 a:hover {
-   color: #303030; /*CS_LINK_HOVER_COLOR*/
+   color: #90030b; /*CS_LINK_HOVER_COLOR*/
 }
 
 /* FORM */
