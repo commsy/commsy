@@ -13,43 +13,21 @@
 
 /**************************/
 
-
 /* Body*/
 
-body{
-	background-image: url(img/hintergrund.jpg);
-	background-repeat: no-repeat;
-	background-attachment: fixed;
-	}
-
-#wrapper{
-	background-color: #FFF;
-	padding:0px 10px 10px 10px;
-	}
+body {
+    background-image: url("img/bg.jpg"); /* Background-Image */
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: 50% 50%;
+    background-color: #9fc3e2 /*CS_BG_COLOR*/
+}
 
 #logo_area {
     float: left;
     width: 735px;
     visibility:hidden;
 }
-
-.tm_di_ground_solid {
-    background: url(img/tm_di_ground_bg.jpg) #DFDFDF repeat-x;
-    width: 980px;
-    margin: 0px auto;
-    padding: 0px;
-    color: #393939;
-    text-decoration: none;
-    display: block;
-	position: relative;
-	left: -10px;
-    }
-
-#top_menu {
-    background: url("img/top_menu_bg.jpg") repeat-x scroll 0 0 transparent;
-    height: 40px;
-}
-
 
 /* Navigation */
 
@@ -144,6 +122,7 @@ body{
     margin-bottom: 30px;
 }
 
+
 #addon_area_row_1 {
     border-left: 0px solid #b9386c; /*CS_COLOR_RIGHT_COLUMN*/
 }
@@ -224,60 +203,3 @@ a.keywords_s1, a.keywords_s2, a.keywords_s3, a.keywords_s4 {
 }
 
 
-#tm_settings {
-    background: url("img/tm_settings.gif") no-repeat scroll 0 0 transparent;
-}
-
-#tm_settings:hover {
-    background: url(img/tm_settings.gif) -36px 0px no-repeat;
-    }
-
-#tm_clipboard {
-    background: url(img/tm_clipboard.gif) no-repeat;
-    }
-
-#tm_clipboard:hover {
-    background: url(img/tm_clipboard.gif) -36px 0px no-repeat;
-    }
-
-#tm_logout {
-    background: url(img/tm_logout.gif) no-repeat;
-    }
-
-#tm_logout:hover {
-    background: url(img/tm_logout.gif) -36px 0px no-repeat;
-    }
-
-#tm_pers_bar {
-    background: url("img/top_menu_bg.jpg") no-repeat scroll right top transparent;
-    float: right;
-    height: 27px;
-    padding: 11px 2px 0 0;
-}
-
-#tm_mycalendar {
-    background: url("img/tm_mycalendar.gif") no-repeat scroll 0 0 transparent;
-}
-
-#tm_widgets {
-    background: url("img/tm_widgets.gif") no-repeat scroll 0 0 transparent;
-}
-
-#tm_stack {
-    background: url("img/tm_stack.gif") no-repeat scroll 0 0 transparent;
-}
-
-#popup_wrapper{
-	left: -5px;
-	}
-
-#popup_my_area {
-    width: 1010px;
-	}
-
-.column_new_list {
-    float: left;
-    padding: 3px 3px 5px 5px;
-    white-space: nowrap;
-    width: 0;
-}
