@@ -24,12 +24,6 @@ body {
     background-color: #9fc3e2 /*CS_BG_COLOR*/
 }
 
-#logo_area {
-    float: left;
-    width: 735px;
-    visibility:hidden;
-}
-
 #search_area {
     background: url("img/search_area_bg.gif") no-repeat scroll 0 0 transparent;
 }

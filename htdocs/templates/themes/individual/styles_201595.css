@@ -16,8 +16,8 @@
 /* Body*/
 
 body {
-    background-image: url("../../../commsy.php?cid=201595&mod=picture&fct=getfile&picture=cid201595_bgimage_IMG_1784.JPG"); /* Background-Image */
-    background-repeat: repeat;
+    background-image: url("../../../commsy.php?cid=201595&mod=picture&fct=getfile&picture=cid201595_bgimage_Hintergrund.jpg"); /* Background-Image */
+    background-repeat: no-repeat;
     background-attachment: fixed;
 	background-position: 50% 50%;
     background-color: #; /*CS_BG_COLOR*/
