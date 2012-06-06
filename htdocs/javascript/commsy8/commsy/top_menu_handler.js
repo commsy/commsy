@@ -1164,6 +1164,7 @@ var Accounts = function() {
 			selected:				0,
 			after_item_creation:	[]
 		},
+		translations:				null,
 
 		init: function(cid, tpl_path) {
 			this.cid = cid;
@@ -1175,23 +1176,27 @@ var Accounts = function() {
 			jQuery('#popup_account_tab').click(function() {
 				// get inital data if this is the first call
 				if(handle.initialized === false) {
-					// setup paging
-					handle.setupPaging();
+					handle.ajaxRequest('getInitialData', {}, function(data) {
+						handle.translations = data.translations;
+						
+						// setup paging
+						handle.setupPaging();
 
-					// setup restrictions
-					handle.setupRestrictions();
+						// setup restrictions
+						handle.setupRestrictions();
 
-					// setup form submit
-					jQuery('input[name="accounts_submit_restrictions"]').click(function() {
+						// setup form submit
+						jQuery('input[name="accounts_submit_restrictions"]').click(function() {
+							handle.performRequest();
+
+							return false;
+						});
+
+						// perform first request
 						handle.performRequest();
 
-						return false;
+						handle.initialized = true;
 					});
-
-					// perform first request
-					handle.performRequest();
-
-					handle.initialized = true;
 				}
 			});
 		},
@@ -1259,6 +1264,18 @@ var Accounts = function() {
 				return false;
 			})
 		},
+		
+		contextMenuCallback: function(action, key, opt) {
+			var item_id = opt.$trigger.attr('id').substr(5);
+			
+			this.ajaxRequest('performUserAction', { action: action, item_id: item_id }, function(ret) {
+				
+			});
+		},
+		
+		contextMenuDisabledCallback: function(action) {
+			return true;
+		},
 
 		performRequest: function() {
 			var handle = this;
@@ -1320,136 +1337,49 @@ var Accounts = function() {
 					selector:			'#popup_accounts #crt_row_area a[id^="user_"]',
 					items: {
 										command1: {
-											name:		'Löschen',
-											callback:	function(key, opt) {}
+											name:		handle.translations.USER_LIST_ACTION_DELETE_ACCOUNT,
+											callback:	function(key, opt) { handle.contextMenuCallback('delete', key, opt); },
+											disabled:	function(key, opt) { return handle.contextMenuDisabledCallback('delete'); }
+										},
+										command2: {
+											name:		handle.translations.USER_LIST_ACTION_LOCK_ACCOUNT,
+											callback:	function(key, opt) { handle.contextMenuCallback('lock', key, opt); },
+											disabled:	function(key, opt) { return handle.contextMenuDisabledCallback('lock'); }
+										},
+										command3: {
+											name:		handle.translations.USER_LIST_ACTION_FREE_ACCOUNT,
+											callback:	function(key, opt) { handle.contextMenuCallback('free', key, opt); },
+											disabled:	function(key, opt) { return handle.contextMenuDisabledCallback('free'); }
+										},
+										separator1: 	"---",
+										command4: {
+											name:		handle.translations.USER_LIST_ACTION_STATUS_USER,
+											callback:	function(key, opt) { handle.contextMenuCallback('status_user', key, opt); },
+											disabled:	function(key, opt) { return handle.contextMenuDisabledCallback('status_user'); }
+										},
+										command5: {
+											name:		handle.translations.USER_LIST_ACTION_STATUS_MODERATOR,
+											callback:	function(key, opt) { handle.contextMenuCallback('status_moderator', key, opt); },
+											disabled:	function(key, opt) { return handle.contextMenuDisabledCallback('status_moderator'); }
+										},
+										separator2:		"---",
+										command6: {
+											name:		handle.translations.USER_LIST_ACTION_STATUS_CONTACT_MODERATOR,
+											callback:	function(key, opt) { handle.contextMenuCallback('contact_moderator', key, opt); },
+											disabled:	function(key, opt) { return handle.contextMenuDisabledCallback('contact_moderator'); }
+										},
+										command6: {
+											name:		handle.translations.USER_LIST_ACTION_STATUS_NO_CONTACT_MODERATOR,
+											callback:	function(key, opt) { handle.contextMenuCallback('no_contact_moderator', key, opt); },
+											disabled:	function(key, opt) { return handle.contextMenuDisabledCallback('no_contact_moderator'); }
+										},
+										command7: {
+											name:		handle.translations.USER_LIST_ACTION_EMAIL_SEND,
+											callback:	function(key, opt) { handle.contextMenuCallback('email', key, opt); },
+											disabled:	function(key, opt) { return handle.contextMenuDisabledCallback('email'); }
 										}
 					},
 					trigger:			'left'
-				});
-				
-				
-				
-				
-				
-				
-
-				// register checkbox events - unregistering is done by jQuery when empty the content object
-				content_object.find('div[class^="pop_row_"]').each(function() {
-					var row_object = jQuery(this);
-					
-					row_object.find('a[id^="user_"]').each(function() {
-						var link_object = jQuery(this);
-						/*
-						link_object.contextMenu({
-							menu:		"context_menu"
-						}, function(action, el, pos) {
-							console.log(pos);
-						});
-						*/
-						
-						jQuery(this).click(function(event) {
-							var item_id = link_object.attr('id').substr(5);
-							
-							console.log(item_id);
-						});
-					});
-					
-					
-					/*
-
-					jQuery(this).change(function(event) {
-						var checked = (jQuery(this).attr('checked') === 'checked') ? true : false;
-						var linked_id = jQuery(event.target).attr('id').substr(7);
-
-						var data = {
-							item_id:	handle.item_id,
-							link_id:	linked_id,
-							checked:	checked
-						};
-
-						jQuery('span#pop_item_entries_selected').text(handle.store.selected);
-
-						// save old row background color and set new
-						row_object.css('background-color', '#D1D1D1');
-
-						handle.ajaxRequest('updateLinkedItem', data, function(ret) {
-							// fade back to old row color
-							row_object.animate({
-								'background-color':	old_bg_color
-							});
-
-							if(checked === true) {
-								// on check
-								handle.store.selected++;
-
-								var text = ret.linked_item.link_text;
-
-								// add related entry to right box list
-								jQuery('div#netnavigation_list ul').prepend(
-									jQuery('<li/>', {
-										'class':	'netnavigation',
-										id:			'item_' + linked_id
-									}).append(
-										jQuery('<a/>', {
-											target:	'_self',
-											href:	'commsy.php?cid=' + handle.cid + '&mod=' + ret.linked_item.module + '&fct=detail&iid=' + ret.linked_item.linked_iid,
-											title:	ret.linked_item.title
-										}).append(
-											jQuery('<img/>', {
-												src:	handle.tpl_path + 'img/netnavigation/' + ret.linked_item.img,
-												title:	ret.linked_item.title
-											})
-										)
-									).append(
-										jQuery('<a/>', {
-											target:	'_self',
-											href:	'commsy.php?cid=' + handle.cid + '&mod=' + ret.linked_item.module + '&fct=detail&iid=' + ret.linked_item.linked_iid,
-											title:	ret.linked_item.title,
-											text:	' ' + text
-										})
-									)
-								);
-								
-								if(jQuery('a#popup_path_tab').length > 0) {
-									// add related entry to path list
-									jQuery('ul#popup_path_list').append(
-										jQuery('<li/>', {
-											'class':	'netnavigation'
-										}).append(
-											jQuery('<input/>', {
-												type:		'checkbox',
-												id:			'path_' + ret.linked_item.linked_iid,
-												checked:	false
-											})
-										).append(
-											jQuery('<img/>', {
-												src:	handle.tpl_path + 'img/netnavigation/' + ret.linked_item.img
-											})
-										).append(
-											jQuery('<span/>', {
-												text:		text
-											})
-										)
-									);
-								}
-							} else {
-								// on uncheck
-								handle.store.selected--;
-
-								// remove related entry from right box list
-								var li_object = jQuery('div#netnavigation_list li#item_' + linked_id);
-								li_object.slideUp(1000, function() {
-									li_object.remove();
-								});
-								
-								if(jQuery('a#popup_path_tab').length > 0) {
-									// remove related entry from path list
-									var input_object = jQuery('ul#popup_path_list input#path_' + linked_id);
-									input_object.parent().remove();
-								}
-							}
-						});
-					});*/
 				});
 
 				// update current page and total number of pages

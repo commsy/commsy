@@ -9,14 +9,99 @@
 			// call parent
 			parent::__construct($environment);
 		}
-
-		public function actionUpdateLinkedItem() {
+		
+		public function actionGetInitialData() {
 			$return = array();
+			
+			$translator = $this->_environment->getTranslationObject();
+			
+			$translations = array();
+			$translations['USER_LIST_ACTION_DELETE_ACCOUNT'] = $translator->getMessage('USER_LIST_ACTION_DELETE_ACCOUNT');
+			$translations['USER_LIST_ACTION_LOCK_ACCOUNT'] = $translator->getMessage('USER_LIST_ACTION_LOCK_ACCOUNT');
+			$translations['USER_LIST_ACTION_FREE_ACCOUNT'] = $translator->getMessage('USER_LIST_ACTION_FREE_ACCOUNT');
+			$translations['USER_LIST_ACTION_STATUS_USER'] = $translator->getMessage('USER_LIST_ACTION_STATUS_USER');
+			$translations['USER_LIST_ACTION_STATUS_MODERATOR'] = $translator->getMessage('USER_LIST_ACTION_STATUS_MODERATOR');
+			$translations['USER_LIST_ACTION_STATUS_CONTACT_MODERATOR'] = $translator->getMessage('USER_LIST_ACTION_STATUS_CONTACT_MODERATOR');
+			$translations['USER_LIST_ACTION_STATUS_NO_CONTACT_MODERATOR'] = $translator->getMessage('USER_LIST_ACTION_STATUS_NO_CONTACT_MODERATOR');
+			$translations['USER_LIST_ACTION_EMAIL_SEND'] = $translator->getMessage('USER_LIST_ACTION_EMAIL_SEND');
+			
+			$return['translations'] = $translations;
+			$return['success'] = true;
+			
+			echo json_encode($return);
+		}
 
+		public function actionPerformUserAction() {
+			$return = array();
+			
+			$user_manager = $this->_environment->getUserManager();
+			
 			// get request data
 			$item_id = $this->_data['item_id'];
-			$link_id = $this->_data['link_id'];
-			$checked = $this->_data['checked'];
+			$action = $this->_data['action'];
+			
+			// prevent removing all moderators
+			$user_manager->resetLimits();
+			$user_manager->setContextLimit($this->_environment->getCurrentContextID());
+			$user_manager->setModeratorLimit();
+			
+			$moderator_ids = $user_manager->getIds();
+			if(!is_array($moderator_ids)) $moderator_ids = array();
+			$room_moderator_count = count($moderator_ids);
+			
+			$is_valid = true;
+			switch($action) {
+				case "delete":
+				case "lock":
+				case "free":
+				case "status_user":
+					if($room_moderator_count === 1) $is_valid = false; 
+			}
+			
+			
+			
+			
+			/*
+			 * 
+
+         case 30:
+            $action = 'USER_MAKE_CONTACT_PERSON';
+            $error = false;
+            $user_manager = $environment->getUserManager();
+            $array_login_id = array();
+            foreach ($selected_ids as $id) {
+               $user = $user_manager->getItem($id);
+               if ( !$user->isUser() ) {
+                  $error = true;
+                  $array_login_id[] = $id;
+               }
+            }
+            if ($error) {
+               $error_text_on_selection = $translator->getMessage('INDEX_USER_MAKE_CONTACT_ERROR');
+               $selected_ids = array_diff($selected_ids,$array_login_id);
+               $view->setCheckedIDs($selected_ids);
+            }
+            break;
+         case 31:
+            $action = 'USER_UNMAKE_CONTACT_PERSON';
+            $error = false;
+            $user_manager = $environment->getUserManager();
+            $array_login_id = array();
+            foreach ($selected_ids as $id) {
+               $user = $user_manager->getItem($id);
+               if ( !$user->isContact() ) {
+                  $error = true;
+                  $array_login_id[] = $id;
+               }
+            }
+            if ($error) {
+               $error_text_on_selection = $translator->getMessage('INDEX_USER_UNMAKE_CONTACT_ERROR');
+               $selected_ids = array_diff($selected_ids,$array_login_id);
+               $view->setCheckedIDs($selected_ids);
+            }
+            break;
+
+			 */
 
 			
 
@@ -93,7 +178,17 @@
 				$entry['email']				= $item->getEmail();
 				$entry['status']			= $status;
 			
-				$entry['checked'] = false;
+				// context menu rights
+				$entry['rights']			= array(
+					'delete'					=> $this->checkRight('delete'),
+					'lock'						=> $this->checkRight('lock'),
+					'free'						=> $this->checkRight('free'),
+					'status_user'				=> $this->checkRight('status_user'),
+					'status_moderator'			=> $this->checkRight('status_moderator'),
+					'contact_moderator'			=> $this->checkRight('contact_moderator'),
+					'no_contact_moderator'		=> $this->checkRight('delete'),
+					'email'						=> $this->checkRight('delete')
+				);
 			
 				$return['list'][] = $entry;
 				$item = $user_list->getNext();
