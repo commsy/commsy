@@ -34,7 +34,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 		setupMenus: function(preconditions, parameters) {
 			var handle = parameters.handle;
 			var objects = parameters.objects;
-			
+
 			handle.preconditions = preconditions;
 			handle.objects = objects;
 
@@ -86,7 +86,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			} else {
 				// hide
 				menu.slideUp(100);
-				
+
 				// unregister ck editor instances
 				var editors = jQuery('div#popup_wrapper div.ckeditor');
 				if(editors.length > 0) {
@@ -105,10 +105,10 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 
 			return false;
 		},
-		
+
 		close: function() {
 			var handle = this;
-			
+
 			// unregister ck editor instances
 			var editors = jQuery('div#popup_wrapper div.ckeditor');
 			if(editors.length > 0) {
@@ -116,17 +116,17 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 					jQuery(this).ckeditorGet().destroy();
 				});
 			}
-			
+
 			// remove popup html from dom
 			jQuery('div#popup_wrapper').remove();
-			
+
 			jQuery.each(handle.objects, function() {
 				this.trigger.removeClass(this.active_class);
 				this.menu.css('display', 'none');
 			});
 
 			handle.isExpanded = false;
-			
+
 			return false;
 		},
 
@@ -158,7 +158,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 							handle:				datepicker_handler,
 							register_on:		jQuery('input.datepicker')
 						});
-						
+
 						// reinvoke CKEditor
 						var ck_editor_handler = handle.commsy_functions.getModuleCallback('commsy/ck_editor');
 						ck_editor_handler.create(null, {
@@ -202,13 +202,13 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 					tab: col_object.parent().attr('id')
 				}
 			};
-			
+
 			// add ckeditor data to hidden div
 			jQuery('div.ckeditor').each(function() {
 				var editor = jQuery(this).ckeditorGet();
 				jQuery(this).parent().children('input[type="hidden"]').attr('value', editor.getData());
 			});
-			
+
 			jQuery.each(form_objects, function() {
 				var add = false;
 
@@ -239,7 +239,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 						value:	jQuery(this).attr('value')
 					});
 				}
-			});			
+			});
 
 			// ajax request
 			jQuery.ajax({
@@ -287,7 +287,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 
 		uploadUserPicture: function(form_object) {
 			var handle = this;
-			
+
 			// setup ajax form
 			form_object.ajaxForm();
 
@@ -505,7 +505,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 					}));
 				});
 			});
-			
+
 			// add new block area
 			jQuery('div#tm_dropmenu_breadcrumb div#profile_content_row_three div.room_block:last').after(
 			jQuery('<div/>', {
@@ -639,11 +639,11 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 
 		setupPopup: function() {
 			var handle = this;
-			
+
 			// register click for close button
 			jQuery('a#popup_close').click(function() {
 				handle.close();
-				
+
 				return false;
 			})
 		},
@@ -689,7 +689,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 
 			return false;
 		},
-		
+
 		onClickConfiguration: function() {
 			var data = {
 				module: 'configuration'
@@ -713,29 +713,29 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 
 						// show
 						jQuery('div#tm_dropmenu_configuration div.tm_dropmenu').slideDown(100);
-						
+
 						// reinvoke CKEditor
 						var ck_editor_handler = handle.commsy_functions.getModuleCallback('commsy/ck_editor');
 						ck_editor_handler.create(null, {
 							handle:				ck_editor_handler,
 							register_on:		jQuery('div.ckeditor')
 						});
-						
+
 						// reinvoke Colorpicker
 						var colorpicker_handler = handle.commsy_functions.getModuleCallback('commsy/colorpicker');
 						colorpicker_handler.setup(null, {
 							handle:				colorpicker_handler,
 							register_on:		jQuery('input.colorpicker')
 						});
-						
+
 						// register click for community room assign button
 						jQuery('div#tm_dropmenu_configuration input#add_community_room').bind('click', {
 							handle:		handle}, handle.onClickAssignCommunityRoom);
-						
+
 						// register click for additional status button
 						jQuery('div#tm_dropmenu_configuration input#add_additional_status').bind('click', {
 							handle:		handle}, handle.onClickAdditionalStatus);
-						
+
 						// register click for save buttons
 						jQuery('div#tm_dropmenu_configuration input#submit').bind('click', {
 							handle:		handle}, handle.onSaveConfiguration);
@@ -745,7 +745,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 
 						// setup tabs
 						handle.setupTabs(jQuery('div#tm_dropmenu_configuration'));
-						
+
 						// setup configuration popup
 						handle.setupConfigurationPopup();
 					}
@@ -755,30 +755,30 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			// stop processing
 			return false;
 		},
-		
+
 		setupConfigurationPopup: function() {
 			var handle = this;
-			
+
 			// update schema preview and set onchange handler
 			handle.updateConfigurationSchemaPreview();
-			
+
 			jQuery('select#room_color_choice').change(function() {
 				handle.updateConfigurationSchemaPreview();
 			});
-			
+
 			// setup color picker
 			jQuery('input.colorpicker').colorpicker().on('colorselect', function(e, c) {
 				// do something if color
 				//console.log("selecte");
 			});
-			
+
 			// participation code hiding
 			jQuery('input[name="form_data[member_check]"]').each(function() {
 				if(jQuery(this).attr('value') == 'withcode') {
 					// enable
 					jQuery(this).click(function() {
 						jQuery('input#code').attr('disabled', false);
-					});			
+					});
 				} else {
 					// disable
 					jQuery(this).click(function() {
@@ -786,46 +786,46 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 					});
 				}
 			});
-			
+
 			/* setup moderation support form elements */
 			handle.updateUsageHints(jQuery('select#moderation_rubric').children(':selected').attr('value'));
-			
+
 			jQuery('select#moderation_rubric').change(function(event) {
 				// get active moderation rubric
 				var active_rubric = jQuery('select#moderation_rubric').children(':selected').attr('value');
 				handle.updateUsageHints(active_rubric);
 			});
-			
+
 			handle.updateMailText(jQuery('select#mailtext_rubric').children(':selected').attr('id'));
-			
+
 			jQuery('select#mailtext_rubric').change(function(event) {
 				// get active value
 				var active_mailtext = jQuery('select#mailtext_rubric').children(':selected').attr('id');
 				handle.updateMailText(active_mailtext);
 			});
-			
+
 			/* setup additional form elements */
 			handle.updateUsageContract(jQuery('select#additional_agb_description_text').children(':selected').attr('value'));
-			
+
 			jQuery('select#additional_agb_description_text').change(function(event) {
 				// get active value
 				var active_lang = jQuery('select#additional_agb_description_text').children(':selected').attr('value');
 				handle.updateUsageContract(active_lang);
 			});
-			
-			
-			
-			
-			
+
+
+
+
+
 			/*
-			
-			
+
+
 			// get value from active bibliographic option
 			var select_object = jQuery('select#bibliographic_select');
-			
+
 			// show / hide bibliographic div's
 			handle.showHideBibliographic(select_object);
-			
+
 			// register handler for select
 			select_object.change(function() {
 				// show / hide bibliographic div's
@@ -833,59 +833,59 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			});
 			*/
 		},
-		
+
 		updateUsageHints: function(selected_value) {
 			// hide all
 			jQuery('input[id^="moderation_title_"]').each(function() {
 				jQuery(this).addClass('hidden');
 			});
-			
+
 			jQuery('div[id^="moderation_description_"]').each(function() {
 				jQuery(this).parent().addClass('hidden');
 			});
-			
+
 			// show selected
 			jQuery('input#moderation_title_' + selected_value).removeClass('hidden');
 			jQuery('div#moderation_description_' + selected_value).parent().removeClass('hidden');
 		},
-		
+
 		updateUsageContract: function(selected_value) {
 			// hide all
 			jQuery('div[id^=agb_text_]').each(function() {
 				jQuery(this).parent().addClass('hidden').parent().addClass('hidden');
 			});
-			
+
 			// show selected
 			jQuery('div[id^=agb_text_' + selected_value + ']').parent().removeClass('hidden').parent().removeClass('hidden');
 		},
-		
+
 		updateMailText: function(selected_value) {
 			// extract index
 			var index= '';
 			var regex = new RegExp("mail_text_([0-9]*)");
 			var results = regex.exec(selected_value);
 			if(results !== null && results[1] !== 'NEW') index = results[1];
-			
+
 			// hide all
 			jQuery('div[id^=moderation_mail_body_]').each(function() {
 				jQuery(this).parent().addClass('hidden').parent().addClass('hidden');
 			});
-			
+
 			// show selected
 			jQuery('div#moderation_mail_body_de_' + index + ', div#moderation_mail_body_en_' + index).each(function() {
 				jQuery(this).parent().removeClass('hidden').parent().removeClass('hidden');
 			});
 		},
-		
+
 		/*
 		 * showHideBibliographic: function(select_object) {
 			var key = select_object.children('option:selected').val();
-			
+
 			// go through all bibliographic content div's and show the one who's id matches "bib_content_" + key
 			jQuery('div#bibliographic div[id^="bib_content_"]').each(function() {
 				if(jQuery(this).attr('id') === 'bib_content_' + key) {
 					jQuery(this).show();
-					
+
 					// go through each input field and change the name, if needed, so they will be submitted again
 					jQuery(this).find('input, select').each(function() {
 						if(jQuery(this).attr('name').substr(0, 14) === 'do_not_submit_') {
@@ -894,7 +894,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 					});
 				} else {
 					jQuery(this).hide();
-					
+
 					// go through each input field and change the name, if needed, so they won't be submitted
 					jQuery(this).find('input, select').each(function() {
 						if(jQuery(this).attr('name').substr(0, 14) !== 'do_not_submit_') {
@@ -905,7 +905,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			});
 		},
 		 */
-		
+
 		updateConfigurationSchemaPreview: function() {
 			// set image path for preview and handle own schema
 			var selected_option_object = jQuery('select#room_color_choice option:selected');
@@ -914,8 +914,8 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			var image_object = jQuery('div#room_color_preview img');
 			var image_div_object = jQuery('div#room_color_preview');
 			var div_object = jQuery('div#room_color_own');
-			
-			if(selected_value == 'COMMON_COLOR_SCHEMA_OWN') {
+
+			if(selected_value == 'individual') {
 				// hide image preview, show own
 				image_div_object.hide();
 				div_object.show();
@@ -923,20 +923,20 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 				// show image preview, hide own
 				image_div_object.show();
 				div_object.hide();
-				
-				if(selected_value == 'COMMON_COLOR_DEFAULT') selected_text = 'default';
-				
+
+				if(selected_value == 'default') selected_text = 'default';
+
 				image_object.attr('src', 'templates/themes/' + selected_text + '/preview.gif');
 			}
 		},
-		
+
 		onClickAssignCommunityRoom: function(event) {
 			var handle = event.data.handle;
-			
+
 			// get id from selected option
 			var selected_object = jQuery('select#room_communityrooms option:selected');
 			var selected_id = selected_object.attr('value');
-			
+
 			// check if id is a number and greater than -1
 			if(!isNaN(selected_id) && selected_id > -1) {
 				// check if already assigned
@@ -947,17 +947,17 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 					var regex = new RegExp("form_data\\[communityroomlist_([0-9]*)\\]");
 					var results = regex.exec(jQuery(this).attr('name'));
 					if(results !== null && results[1] !== 'NEW') id = results[1];
-					
+
 					if(id == selected_id) {
 						assigned = true;
 						return true;
 					}
 				});
-				
+
 				if(assigned === false) {
 					// append new entry
 					var div_object = jQuery('div#assigned_community_rooms');
-					
+
 					div_object.append(
 						jQuery('<input/>', {
 							'id':		'room_communityroomlist',
@@ -970,19 +970,19 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 				}
 			}
 		},
-		
+
 		onClickAdditionalStatus: function(event) {
 			var handle = event.data.handle;
-			
+
 			var input_object = jQuery('input#status');
-			
+
 			var value = input_object.attr('value');
 			input_object.attr('value', '');
-			
+
 			if(value !== '') {
 				// append new entry
 				var div_object = jQuery('div#additional_status_list');
-				
+
 				// get new value
 				var new_value = 5;
 				div_object.children('input').each(function() {
@@ -990,11 +990,11 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 					var regex = new RegExp("form_data\\[additional_status_([0-9]*)\\]");
 					var results = regex.exec(jQuery(this).attr('name'));
 					if(results !== null && results[1] !== 'NEW') index = results[1];
-					
+
 					if(index >= new_value) new_value = parseInt(index) + 1;
 				});
-				
-				
+
+
 				div_object.append(
 					jQuery('<input/>', {
 						type:		'checkbox',
@@ -1005,25 +1005,25 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 				).append(value);
 			}
 		},
-		
+
 		onSaveConfiguration: function(event) {
 			var handle = event.data.handle;
 			var target = jQuery(event.target);
-			
+
 			// submit picture
 			var form_objects = jQuery('form#logo_upload, form#bg_upload');
-			
+
 			var all = 0;
 			form_objects.each(function(index) {
 				if(jQuery(this).find('input[type="file"]').attr('value') !== '') {
 					all++;
 				}
 			});
-			
+
 			if(all == 0) {
 				handle.saveConfiguration(event);
 			}
-			
+
 			var index = 0;
 			form_objects.each(function() {
 				if(jQuery(this).find('input[type="file"]').attr('value') !== '') {
@@ -1032,7 +1032,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 				}
 			});
 		},
-		
+
 		saveConfiguration: function(event) {
 			var handle = event.data.handle;
 			var target = jQuery(event.target);
@@ -1049,13 +1049,13 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 					tab: col_object.parent().attr('id')
 				}
 			};
-			
+
 			// add ckeditor data to hidden div
 			jQuery('div.ckeditor').each(function() {
 				var editor = jQuery(this).ckeditorGet();
 				jQuery(this).parent().children('input[type="hidden"]').attr('value', editor.getData());
 			});
-			
+
 			jQuery.each(form_objects, function() {
 				var add = false;
 
@@ -1124,10 +1124,10 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 				}
 			});
 		},
-		
+
 		uploadRoomPicture: function(form_object, index, all, callback, event) {
 			var handle = this;
-			
+
 			// setup ajax form
 			form_object.ajaxForm();
 

@@ -141,10 +141,10 @@ class cs_popup_configuration_controller {
 							$schema = array();
 
 							// set color scheme
-							$schema['schema'] = mb_substr($form_data['color_choice'], 13);
+							$schema['schema'] = $form_data['color_choice'];
 
-							if($form_data['color_choice'] === 'COMMON_COLOR_SCHEMA_OWN') {
-								$schema['schema'] = 'SCHEMA_OWN';
+							if($form_data['color_choice'] === 'individual') {
+								$schema['schema'] = 'individual';
 
 								// set own color values
 								if(isset($form_data['color_active_menu'])) $schema['color_active_menu'] = $form_data['color_active_menu'];
@@ -477,7 +477,7 @@ class cs_popup_configuration_controller {
 				            $current_context->setAGBTextArray($agbtext_array);
 				            $current_context->setAGBChangeDate();
 				         }
-				         
+
 				         // extra todo status
 				         $status_array = array();
 				         foreach($form_data as $key => $value) {
@@ -485,7 +485,7 @@ class cs_popup_configuration_controller {
 				         		$status_array[mb_substr($key, 18)] = $value;
 				         	}
 				         }
-				         
+
 				         $current_context->setExtraToDoStatusArray($status_array);
 
 						// save
@@ -583,12 +583,12 @@ class cs_popup_configuration_controller {
 						if(is_array($current_context->_getExtra('INFORMATIONBOX'))) {
 							$info_array = $current_context->_getExtra('INFORMATIONBOX');
 						}
-						
+
 						if(!empty($form_data['item_id'])) $current_context->setInformationBoxEntryID($form_data['item_id']);
-						
+
 						if($form_data['show_information_box'] == '1') $current_context->setwithInformationBox('yes');
 						else $current_context->setwithInformationBox('no');
-						
+
 						// usage information
 				         $info_array = array();
 				        if (is_array($current_context->_getExtra('USAGE_INFO'))) {
@@ -981,7 +981,7 @@ class cs_popup_configuration_controller {
 		// color schemes
 		$this->_color_array[] = array(
 			'text'		=> $translator->getMessage('COMMON_COLOR_DEFAULT'),
-			'value'		=> 'COMMON_COLOR_DEFAULT',
+			'value'		=> 'default',
 			'disabled'	=> false
 		);
 		$this->_color_array[] = array(
@@ -990,7 +990,7 @@ class cs_popup_configuration_controller {
 			'disabled'	=> true
 		);
 
-		$temp_color_array = array();
+/*		$temp_color_array = array();
 		for($i=1; $i <= 26; $i++) {
 			$translation = $translator->getMessage('COMMON_COLOR_SCHEMA_' . $i);
 
@@ -999,6 +999,10 @@ class cs_popup_configuration_controller {
 				'value'		=> 'COMMON_COLOR_SCHEMA_' . $i,
 				'disabled'	=> false
 			);
+		}*/
+		global $theme_array;
+		foreach($theme_array as $theme){
+			$temp_color_array[$theme['value']] = $theme;
 		}
 
 		ksort($temp_color_array);
@@ -1011,7 +1015,7 @@ class cs_popup_configuration_controller {
 		);
 		$this->_color_array[] = array(
 			'text'		=> $translator->getMessage('COMMON_COLOR_SCHEMA_OWN'),
-			'value'		=> 'COMMON_COLOR_SCHEMA_OWN',
+			'value'		=> 'individual',
 			'disabled'	=> false
 		);
 
@@ -1256,13 +1260,13 @@ class cs_popup_configuration_controller {
 	      // mail text choice
 	      $array_mail_text[0]['text']  = '*'.$translator->getMessage('MAIL_CHOICE_CHOOSE_TEXT');
 	      $array_mail_text[0]['value'] = -1;
-	      
+
 	      // mail salutation
 	      $array_mail_text[1]['text']  = '----------------------';
 	      $array_mail_text[1]['value'] = 'disabled';
 	      $array_mail_text[2]['text']  = $translator->getMessage('MAIL_CHOICE_HELLO');
 	      $array_mail_text[2]['value'] = 'MAIL_CHOICE_HELLO';
-	      
+
 	      $array_mail_text[3]['text']  = $translator->getMessage('MAIL_CHOICE_CIAO');
 	      $array_mail_text[3]['value'] = 'MAIL_CHOICE_CIAO';
 
@@ -1287,7 +1291,7 @@ class cs_popup_configuration_controller {
 	         $array_mail_text[12]['text']  = $translator->getMessage('MAIL_CHOICE_USER_ACCOUNT_MERGE');
 	         $array_mail_text[12]['value'] = 'MAIL_CHOICE_USER_ACCOUNT_MERGE';
 	      }
-	      
+
 	      $languages = $this->_environment->getAvailableLanguageArray();
 	      foreach($array_mail_text as $index => $array) {
 	      	switch($array['value']) {
@@ -1311,7 +1315,7 @@ class cs_popup_configuration_controller {
 	      		case 'MAIL_CHOICE_ROOM_DELETE':					$message_tag = 'MAIL_BODY_ROOM_DELETE'; break;
 	      		case 'MAIL_CHOICE_ROOM_OPEN':					$message_tag = 'MAIL_BODY_ROOM_OPEN'; break;
 	      	}
-	      	
+
 	      	foreach ($languages as $language) {
 	      		if (!empty($message_tag)) {
 	      			$array_mail_text[$index]['body_' . $language] = $translator->getEmailMessageInLang($language,$message_tag);
@@ -1319,9 +1323,9 @@ class cs_popup_configuration_controller {
 	      			$array_mail_text[$index]['body_' . $language] = '';
 	      		}
 	      	}
-	      	
+
 	      }
-	      
+
 		 $return['array_mail_text'] = $array_mail_text;
 
 
@@ -1531,7 +1535,7 @@ class cs_popup_configuration_controller {
 		$return['color_array'] = $this->_color_array;
 
 		$color = $current_context->getColorArray();
-		$return['color_schema'] = 'COMMON_COLOR_' . mb_strtoupper($color['schema'], 'UTF-8');
+		$return['color_schema'] = $color['schema'];
 		$return['color_active_menu'] = $color['color_active_menu'];
 		$return['color_menu'] = $color['color_menu'];
 		$return['color_right_column'] = $color['color_right_column'];
