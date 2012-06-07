@@ -3,6 +3,7 @@
 	
 	abstract class cs_ajax_controller extends cs_base_controller {
 		protected $_data = null;
+		protected $_return = '';
 
 		/**
 		 * constructor
@@ -38,5 +39,17 @@
 			
 			// call
 			call_user_func_array(array($this, $function), array());
+		}
+		
+		public function setErrorReturn($code, $reason, $detail) {
+			// setup return
+			$return = array(
+					'status'	=> 'error',
+					'code'		=> $code,
+					'reason'	=> $reason,
+					'detail'	=> $detail
+			);
+				
+			$this->_return = json_encode($return);
 		}
 	}

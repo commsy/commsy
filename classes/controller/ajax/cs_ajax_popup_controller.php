@@ -4,7 +4,6 @@
 	
 	class cs_ajax_popup_controller extends cs_ajax_controller {
 		protected $_popup_controller = null;
-		private $_return = '';
 		
 		/**
 		 * constructor
@@ -72,18 +71,6 @@
 			$this->_popup_controller->save($form_data, $additional);
 
 			echo $this->_return;
-		}
-		
-		public function setErrorReturn($code, $reason, $detail) {
-			// setup return
-			$return = array(
-				'status'	=> 'error',
-				'code'		=> $code,
-				'reason'	=> $reason,
-				'detail'	=> $detail
-			);
-			
-			$this->_return = json_encode($return);
 		}
 		
 		public function checkFormData($sub = '') {

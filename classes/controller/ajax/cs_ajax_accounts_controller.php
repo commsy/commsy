@@ -64,76 +64,28 @@
 					}
 					break;
 				case "status_contact_moderator":
+					foreach($ids as $id) {
+						$user = $user_manager->getItem($id);
+						if(!$user->isUser()) {
+							// if user is not normal user or moderator
+							$this->setErrorReturn('104', $user->getUserID() . ' is neither a normal user nor a moderator', array());
+							echo $this->_return;
+							exit;
+						}
+					}
+					break;
 				
 				case "status_no_contact_moderator":
+					foreach($ids as $id) {
+						$user = $user_manager->getItem($id);
+						if(!$user->isContact()) {
+							$this->setErrorReturn('105', $user->getUserID() . ' is no contact person', array());
+							echo $this->_return;
+							exit;
+						}
+					}
+					break;
 			}
-			
-			
-			
-			
-			/*
-			 * 
-
-         case 30:
-            $action = 'USER_MAKE_CONTACT_PERSON';
-            $error = false;
-            $user_manager = $environment->getUserManager();
-            $array_login_id = array();
-            foreach ($selected_ids as $id) {
-               $user = $user_manager->getItem($id);
-               if ( !$user->isUser() ) {
-                  $error = true;
-                  $array_login_id[] = $id;
-               }
-            }
-            if ($error) {
-               $error_text_on_selection = $translator->getMessage('INDEX_USER_MAKE_CONTACT_ERROR');
-               $selected_ids = array_diff($selected_ids,$array_login_id);
-               $view->setCheckedIDs($selected_ids);
-            }
-            break;
-         case 31:
-            $action = 'USER_UNMAKE_CONTACT_PERSON';
-            $error = false;
-            $user_manager = $environment->getUserManager();
-            $array_login_id = array();
-            foreach ($selected_ids as $id) {
-               $user = $user_manager->getItem($id);
-               if ( !$user->isContact() ) {
-                  $error = true;
-                  $array_login_id[] = $id;
-               }
-            }
-            if ($error) {
-               $error_text_on_selection = $translator->getMessage('INDEX_USER_UNMAKE_CONTACT_ERROR');
-               $selected_ids = array_diff($selected_ids,$array_login_id);
-               $view->setCheckedIDs($selected_ids);
-            }
-            break;
-         
-      }
-      if (!isset($error) or !$error) {
-         $current_user = $environment->getCurrentUser();
-         $user_item_id = $current_user->getItemID();
-
-         $action_array = array();
-         $action_array['user_item_id']    = $user_item_id;
-         $action_array['action']          = $action;
-         $action_array['backlink']['cid'] = $environment->getCurrentContextID();
-         $action_array['backlink']['mod'] = $environment->getCurrentModule();
-         $action_array['backlink']['fct'] = $environment->getCurrentFunction();
-         $action_array['backlink']['par'] = '';
-         $action_array['selected_ids']    = $selected_ids;
-         $params = array();
-         $session->setValue('index_action',$action_array);
-         redirect( $environment->getCurrentContextID(),
-                   $environment->getCurrentModule(),
-                   'action',
-                   $params);
-
-      } // end if of $error
-   } // end if (perform list actions)
-			 */
 
 			
 
