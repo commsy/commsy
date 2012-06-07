@@ -199,6 +199,10 @@
 
 			echo json_encode($return);
 		}
+		
+		private function checkRight($action) {
+			
+		}
 
 		/*
 		 * every derived class needs to implement an processTemplate function
