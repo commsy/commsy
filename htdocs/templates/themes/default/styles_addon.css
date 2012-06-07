@@ -1,0 +1,16 @@
+/* Navigation */
+
+#main_navigation {
+	background: url("img/main_nav_blue_bg.jpg") repeat-x scroll 0 0 transparent;
+	}
+
+#main_navigation #active {
+	background: url("img/active_blue_bg.jpg") repeat-x scroll 0 0 transparent;
+	border-bottom: 1px solid #3c61a6; /*CS_COLOR_ACTIVE_MENUE*/
+}
+
+#main_navigation #site_actions {
+    background: none;
+    border-left: 1px solid #D7D7D9;
+}
+
