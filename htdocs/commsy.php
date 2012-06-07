@@ -839,10 +839,8 @@ if(isset($c_smarty) && $c_smarty === true) {
 	// room theme
 	$color = $environment->getCurrentContextItem()->getColorArray();
 	$theme = $color['schema'];
-
-	if($theme === 'individual') {
-		$c_theme = 'individual';
-	} elseif($theme !== 'default') {
+	
+	if($theme !== 'default') {
 		$c_theme = $theme;
 	}
 
