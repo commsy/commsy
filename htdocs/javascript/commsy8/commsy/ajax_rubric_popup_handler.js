@@ -702,6 +702,10 @@ var Netnavigation = function() {
 						// setup form submit
 						jQuery('input[name="netnavigation_submit_restrictions"]').click(function() {
 							handle.performRequest();
+							
+							// reset paging
+							handle.paging.current = 0;
+							handle.performRequest();
 
 							return false;
 						});
@@ -962,7 +966,7 @@ var Netnavigation = function() {
 				});
 
 				// update current page and total number of pages
-				jQuery('#pop_item_current_page').text(handle.paging.current + 1);
+				jQuery('#pop_item_current_page').text((ret.list.length === 0) ? 0 : handle.paging.current + 1);
 				jQuery('#pop_item_pages').text(ret.paging.pages);
 
 				// store pages

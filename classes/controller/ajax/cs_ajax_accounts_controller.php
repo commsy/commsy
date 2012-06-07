@@ -37,7 +37,7 @@
 			$user_manager = $this->_environment->getUserManager();
 			
 			// get request data
-			$item_id = $this->_data['item_id'];
+			$ids = $this->_data['ids'];
 			$action = $this->_data['action'];
 			
 			// prevent removing all moderators
@@ -63,7 +63,82 @@
 			
 			/*
 			 * 
+//data needed to prevent removing all moderators
+   $user_manager->resetLimits();
+   $user_manager->setContextLimit($environment->getCurrentContextID());
+   $user_manager->setModeratorLimit();
+   $moderator_ids = $user_manager->getIds();
+   if (!is_array($moderator_ids)) {
+      $moderator_ids = array();
+   }
+   $selected_moderator_count = count(array_intersect($selected_ids,$moderator_ids));
+   $room_moderator_count = count($moderator_ids);
 
+   if ( isOption($option,$translator->getMessage('COMMON_LIST_ACTION_BUTTON_GO'))
+        and $_POST['index_view_action'] != '-1'
+        and !empty($selected_ids)
+      ) {
+      $automatic = false;
+      // prepare action process
+      switch ($_POST['index_view_action']) {
+         case 1:
+            $action = 'USER_ACCOUNT_DELETE';
+            $error = false;
+            if ( $room_moderator_count - $selected_moderator_count >= 1 ) {
+               $user_manager->resetLimits();
+               $array_login_id = array();
+               foreach ( $selected_ids as $id ) {
+                  $user = $user_manager->getItem($id);
+               }
+            } else {
+               $error = true;
+               $error_text_on_selection = $translator->getMessage('ERROR_LAST_MODERATOR');
+               $action = '';
+            }
+            break;
+         case 2:
+            $action = 'USER_ACCOUNT_LOCK';
+            if ($room_moderator_count - $selected_moderator_count < 1) {
+               $error = true;
+               $error_text_on_selection = $translator->getMessage('ERROR_LAST_MODERATOR');
+               $action = '';
+            }
+            break;
+         case 3:
+            $action = 'USER_ACCOUNT_FREE';
+            // Bugfix - 1933279
+            //if ($room_moderator_count - $selected_moderator_count < 1) {
+            //   $error = true;
+            //   $error_text_on_selection = $translator->getMessage('ERROR_LAST_MODERATOR');
+            //   $action = '';
+            //}
+            break;
+         case 4:
+            $action = 'USER_ACCOUNT_FREE';
+            $automatic = true;
+            if ( $room_moderator_count - $selected_moderator_count < 1 ) {
+               $error = true;
+               $error_text_on_selection = $translator->getMessage('ERROR_LAST_MODERATOR');
+               $action = '';
+            }
+            break;
+         case 11:
+            $action = 'USER_STATUS_USER';
+            if ($room_moderator_count - $selected_moderator_count < 1) {
+               $error = true;
+               $error_text_on_selection = $translator->getMessage('ERROR_LAST_MODERATOR');
+               $action = '';
+            }
+            break;
+         case 14:
+            $action = 'USER_STATUS_MODERATOR';
+            break;
+         case 21:
+            $action = 'USER_EMAIL_SEND';
+            break;
+         case 22:
+            $action = 'USER_EMAIL_ACCOUNT_PASSWORD';
+            break;
          case 30:
             $action = 'USER_MAKE_CONTACT_PERSON';
             $error = false;
@@ -100,7 +175,76 @@
                $view->setCheckedIDs($selected_ids);
             }
             break;
+         case 23:
+            $action = 'USER_EMAIL_ACCOUNT_MERGE';
+            $user_manager = $environment->getUserManager();
+            $array_double_id = array();
+            foreach ($selected_ids as $id) {
+               if (!in_array($id,$array_double_id)) {
+                  $user = $user_manager->getItem($id);
+                  if ($user->isRejected() or $user->isRequested()) {
+                     $array_double_id[] = $user->getItemID();
+                  } else {
+                     $user_manager->resetLimits();
+                     $user_manager->setContextLimit($environment->getCurrentContextID());
+                     $user_manager->setUserLimit();
+                     $user_manager->setSearchLimit($user->getEmail());
+                     $user_manager->select();
+                     $user_list = $user_manager->get();
+                     if (!$user_list->isEmpty()) {
+                        if ($user_list->getCount() > 1) {
+                           $user_item = $user_list->getFirst();
+                           while ($user_item) {
+                              if ($user_item->getItemID() != $id and in_array($user_item->getItemID(),$selected_ids)) {
+                                 $array_double_id[] = $user_item->getItemID();
+                              }
+                              $user_item = $user_list->getNext();
+                           }
+                        } else {
+                           $array_double_id[] = $id;
+                        }
+                     } else {
+                        include_once('functions/error_functions.php');
+                        trigger_error('that is impossible',E_USER_WARNING);
+                     }
+                  }
+               }
+            }
+            if (!empty($array_double_id)) {
+               $array_double_id = array_unique($array_double_id);
+               $selected_ids = array_diff($selected_ids,$array_double_id);
+            }
+            if (empty($selected_ids)) {
+               $error = true;
+               $error_text_on_selection = $translator->getMessage('INDEX_USER_ACCOUNT_MERGE_ERROR');
+               $view->setCheckedIDs($selected_ids);
+            }
+            break;
+         default:
+            include_once('functions/error_functions.php');
+            trigger_error('action ist not defined',E_USER_ERROR);
+      }
+      if (!isset($error) or !$error) {
+         $current_user = $environment->getCurrentUser();
+         $user_item_id = $current_user->getItemID();
 
+         $action_array = array();
+         $action_array['user_item_id']    = $user_item_id;
+         $action_array['action']          = $action;
+         $action_array['backlink']['cid'] = $environment->getCurrentContextID();
+         $action_array['backlink']['mod'] = $environment->getCurrentModule();
+         $action_array['backlink']['fct'] = $environment->getCurrentFunction();
+         $action_array['backlink']['par'] = '';
+         $action_array['selected_ids']    = $selected_ids;
+         $params = array();
+         $session->setValue('index_action',$action_array);
+         redirect( $environment->getCurrentContextID(),
+                   $environment->getCurrentModule(),
+                   'action',
+                   $params);
+
+      } // end if of $error
+   } // end if (perform list actions)
 			 */
 
 			
@@ -178,30 +322,14 @@
 				$entry['email']				= $item->getEmail();
 				$entry['status']			= $status;
 			
-				// context menu rights
-				$entry['rights']			= array(
-					'delete'					=> $this->checkRight('delete'),
-					'lock'						=> $this->checkRight('lock'),
-					'free'						=> $this->checkRight('free'),
-					'status_user'				=> $this->checkRight('status_user'),
-					'status_moderator'			=> $this->checkRight('status_moderator'),
-					'contact_moderator'			=> $this->checkRight('contact_moderator'),
-					'no_contact_moderator'		=> $this->checkRight('delete'),
-					'email'						=> $this->checkRight('delete')
-				);
-			
 				$return['list'][] = $entry;
 				$item = $user_list->getNext();
 			}
-			$return['paging']['pages'] = ceil($count_all/ $interval);
+			$return['paging']['pages'] = ceil($count_all_shown / $interval);
 
 			$return['success'] = true;
 
 			echo json_encode($return);
-		}
-		
-		private function checkRight($action) {
-			
 		}
 
 		/*

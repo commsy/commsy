@@ -3,7 +3,6 @@
  */
 
 define([	"order!libs/jQuery/jquery-1.7.1.min",
-        	"order!libs/jQuery_plugins/jquery.contextMenu",
 			"order!libs/jQuery_plugins/jquery.viewport.mini",
 			"order!libs/jQuery/jquery-ui-1.8.17.custom.min",
 			"order!libs/jQuery_plugins/jquery.form",
@@ -1161,8 +1160,7 @@ var Accounts = function() {
 		},
 		store: {
 			pages:					1,
-			selected:				0,
-			after_item_creation:	[]
+			selected_ids:			[]
 		},
 		translations:				null,
 
@@ -1188,9 +1186,19 @@ var Accounts = function() {
 						// setup form submit
 						jQuery('input[name="accounts_submit_restrictions"]').click(function() {
 							handle.performRequest();
+							
+							// reset selected ids
+							handle.store.selected_ids = [];
+							
+							// reset paging
+							handle.paging.current = 0;
+							handle.performRequest();
 
 							return false;
 						});
+						
+						// setup action submit
+						jQuery('input[id="list_action_submit"]').bind('click', { handle: handle }, handle.onActionSubmit);
 
 						// perform first request
 						handle.performRequest();
@@ -1264,18 +1272,6 @@ var Accounts = function() {
 				return false;
 			})
 		},
-		
-		contextMenuCallback: function(action, key, opt) {
-			var item_id = opt.$trigger.attr('id').substr(5);
-			
-			this.ajaxRequest('performUserAction', { action: action, item_id: item_id }, function(ret) {
-				
-			});
-		},
-		
-		contextMenuDisabledCallback: function(action) {
-			return true;
-		},
 
 		performRequest: function() {
 			var handle = this;
@@ -1299,22 +1295,19 @@ var Accounts = function() {
 							'class':	(index % 2 === 0) ? 'pop_row_even' : 'pop_row_odd'
 						}).append(
 							jQuery('<div/>', {
+								'class':	'pop_col_25'
+							}).append(
+								jQuery('<input/>', {
+									type:		'checkbox',
+									id:			'user_' + this.item_id,
+									checked:	(jQuery.inArray(this.item_id, handle.store.selected_ids) !== -1) ? true : false
+								})
+							)				
+						).append(
+							jQuery('<div/>', {
 								'class':	'pop_col_270',
 								text:		this.fullname
 							})
-						).append(
-							jQuery('<div/>', {
-								'class':	'pop_col_25'
-							}).append(
-								jQuery('<a/>', {
-									id:			'user_' + this.item_id,
-									href:		'#'
-								}).append(
-									jQuery('<img/>', {
-										src:		handle.tpl_path + 'img/btn_edit_rc.gif'
-									})
-								)
-							)
 						).append(
 							jQuery('<div/>', {
 								'class':	'pop_col_150',
@@ -1333,61 +1326,36 @@ var Accounts = function() {
 					);
 				});
 				
-				jQuery.contextMenu({
-					selector:			'#popup_accounts #crt_row_area a[id^="user_"]',
-					items: {
-										command1: {
-											name:		handle.translations.USER_LIST_ACTION_DELETE_ACCOUNT,
-											callback:	function(key, opt) { handle.contextMenuCallback('delete', key, opt); },
-											disabled:	function(key, opt) { return handle.contextMenuDisabledCallback('delete'); }
-										},
-										command2: {
-											name:		handle.translations.USER_LIST_ACTION_LOCK_ACCOUNT,
-											callback:	function(key, opt) { handle.contextMenuCallback('lock', key, opt); },
-											disabled:	function(key, opt) { return handle.contextMenuDisabledCallback('lock'); }
-										},
-										command3: {
-											name:		handle.translations.USER_LIST_ACTION_FREE_ACCOUNT,
-											callback:	function(key, opt) { handle.contextMenuCallback('free', key, opt); },
-											disabled:	function(key, opt) { return handle.contextMenuDisabledCallback('free'); }
-										},
-										separator1: 	"---",
-										command4: {
-											name:		handle.translations.USER_LIST_ACTION_STATUS_USER,
-											callback:	function(key, opt) { handle.contextMenuCallback('status_user', key, opt); },
-											disabled:	function(key, opt) { return handle.contextMenuDisabledCallback('status_user'); }
-										},
-										command5: {
-											name:		handle.translations.USER_LIST_ACTION_STATUS_MODERATOR,
-											callback:	function(key, opt) { handle.contextMenuCallback('status_moderator', key, opt); },
-											disabled:	function(key, opt) { return handle.contextMenuDisabledCallback('status_moderator'); }
-										},
-										separator2:		"---",
-										command6: {
-											name:		handle.translations.USER_LIST_ACTION_STATUS_CONTACT_MODERATOR,
-											callback:	function(key, opt) { handle.contextMenuCallback('contact_moderator', key, opt); },
-											disabled:	function(key, opt) { return handle.contextMenuDisabledCallback('contact_moderator'); }
-										},
-										command6: {
-											name:		handle.translations.USER_LIST_ACTION_STATUS_NO_CONTACT_MODERATOR,
-											callback:	function(key, opt) { handle.contextMenuCallback('no_contact_moderator', key, opt); },
-											disabled:	function(key, opt) { return handle.contextMenuDisabledCallback('no_contact_moderator'); }
-										},
-										command7: {
-											name:		handle.translations.USER_LIST_ACTION_EMAIL_SEND,
-											callback:	function(key, opt) { handle.contextMenuCallback('email', key, opt); },
-											disabled:	function(key, opt) { return handle.contextMenuDisabledCallback('email'); }
-										}
-					},
-					trigger:			'left'
+				// register input event handler and store / remove selected ids
+				content_object.find('input[id^="user_"]').click(function(event) {
+					var input_object = jQuery(event.target);
+					
+					// extract id
+					var item_id = input_object.attr('id').substr(5);
+					
+					var index = jQuery.inArray(item_id, handle.store.selected_ids);
+					if(index === -1) handle.store.selected_ids.push(item_id);
+					else handle.store.selected_ids.splice(index, 1);
 				});
 
 				// update current page and total number of pages
-				jQuery('#pop_item_current_page').text(handle.paging.current + 1);
+				jQuery('#pop_item_current_page').text((ret.list.length === 0) ? 0 : handle.paging.current + 1);
 				jQuery('#pop_item_pages').text(ret.paging.pages);
 
 				// store pages
 				handle.store.pages = ret.paging.pages;
+			});
+		},
+		
+		onActionSubmit: function(event) {
+			var handle = event.data.handle;
+			
+			// get current action
+			var action = jQuery('select#list_action').attr('value');
+			
+			// send action and id list via ajax
+			handle.ajaxRequest('performUserAction', { ids: handle.store.selected_ids, action: action }, function() {
+				
 			});
 		},
 

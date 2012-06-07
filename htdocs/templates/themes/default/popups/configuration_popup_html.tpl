@@ -310,6 +310,26 @@
 						                        </div>
 
 						                        <div class="clear"> </div>
+						                        
+						                        <div>
+						                        	<select id="list_action" size="1">
+						                        		<option selected="selected" value="-1">*___COMMON_LIST_ACTION_NO___</option>
+						                        		<option disabled="disabled">------------------------------</option>
+						                        		<option value="delete">___USER_LIST_ACTION_DELETE_ACCOUNT___</option>
+						                        		<option value="lock">___USER_LIST_ACTION_LOCK_ACCOUNT___</option>
+						                        		<option value="free">___USER_LIST_ACTION_FREE_ACCOUNT___</option>
+						                        		<option disabled="disabled">------------------------------</option>
+						                        		<option value="status_user">___USER_LIST_ACTION_STATUS_USER___</option>
+						                        		<option value="status_moderator">___USER_LIST_ACTION_STATUS_MODERATOR___</option>
+						                        		<option disabled="disabled">------------------------------</option>
+						                        		<option value="status_contact_moderator">___USER_LIST_ACTION_STATUS_CONTACT_MODERATOR___</option>
+						                        		<option value="status_no_contact_moderator">___USER_LIST_ACTION_STATUS_NO_CONTACT_MODERATOR___</option>
+						                        		<option disabled="disabled">------------------------------</option>
+						                        		<option value="email">___USER_LIST_ACTION_EMAIL_SEND___</option>
+						                        	</select>
+						                        	
+						                        	<input id="list_action_submit" type="submit" class="popup_button" value="___COMMON_LIST_ACTION_BUTTON_GO___" />
+						                        </div>
 						                    </div>
 						                </div>
 									</div>
