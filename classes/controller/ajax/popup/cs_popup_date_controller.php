@@ -126,12 +126,12 @@ class cs_popup_date_controller {
                 }
 
 	            $values_before_change = array();
-	            $values_before_change['title'] = $dates_item->getTitle();
-	            $values_before_change['startingTime'] = $dates_item->getStartingTime();
-	            $values_before_change['endingTime'] = $dates_item->getEndingTime();
-	            $values_before_change['place'] = $dates_item->getPlace();
-	            $values_before_change['color'] = $dates_item->getColor();
-	            $values_before_change['description'] = $dates_item->getDescription();
+	            $values_before_change['title'] = $date_item->getTitle();
+	            $values_before_change['startingTime'] = $date_item->getStartingTime();
+	            $values_before_change['endingTime'] = $date_item->getEndingTime();
+	            $values_before_change['place'] = $date_item->getPlace();
+	            $values_before_change['color'] = $date_item->getColor();
+	            $values_before_change['description'] = $date_item->getDescription();
 
                 // Set modificator and modification date
                 $current_user = $environment->getCurrentUserItem();
