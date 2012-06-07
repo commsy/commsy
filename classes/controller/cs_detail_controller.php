@@ -117,6 +117,7 @@
 				$this->assign('detail', 'browsing_information', $this->getBrowseInformation($ids));
 			}
 			$this->assign('detail', 'item_id', $this->_item->getItemID());
+			
 			$this->assign('detail', 'forward_information', $this->getForwardInformation($ids));
 		}
 
@@ -789,7 +790,6 @@
 			$listed_ids = array();
 			$count_items = 0;
 			$i = 1;
-
 			foreach($ids as $id) {
 				if($count_items >= $start && $count_items <= $end) {
 					$item_manager = $this->_environment->getItemManager();
@@ -835,8 +835,9 @@
 					);
 
 					unset($item);
-				$count_items++;
 				}
+				
+				$count_items++;
 			}
 			return $return;
 		}
