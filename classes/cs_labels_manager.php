@@ -801,6 +801,7 @@ class cs_labels_manager extends cs_manager {
      $user = $item->getCreatorItem();
      $modificator = $item->getModificatorItem();
      $current_datetime = getCurrentDateTimeInMySQL();
+     $modification_date = $item->getModificationDate();
 
      if ($item->isPublic()) {
         $public = 1;
@@ -813,9 +814,15 @@ class cs_labels_manager extends cs_manager {
                'context_id="'.encode(AS_DB,$item->getContextID()).'",'.
                'creator_id="'.encode(AS_DB,$user->getItemID()).'",'.
                'creation_date="'.$current_datetime.'",'.
-               'modifier_id="'.encode(AS_DB,$modificator->getItemID()).'",'.
-               'modification_date="'.$current_datetime.'",'.
-               'name="'.encode(AS_DB,$item->getTitle()).'",'.
+               'modifier_id="'.encode(AS_DB,$modificator->getItemID()).'",';
+
+     if(empty($modification_date) AND !isset($modification_date)){
+      $query .= 'modification_date="'.$current_datetime.'",';
+     } else {
+      $query .= 'modification_date="'.$modification_date.'",';
+     }
+
+     $query .= 'name="'.encode(AS_DB,$item->getTitle()).'",'.
                'public="'.encode(AS_DB,$public).'",'.
                'description="'.encode(AS_DB,$item->getDescription()).'",'.
                'extras="'.encode(AS_DB,serialize($item->getExtraInformation())).'",'.
