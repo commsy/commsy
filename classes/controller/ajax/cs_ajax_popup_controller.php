@@ -37,9 +37,14 @@
 				// TODO: optimize
 				//echo str_replace(array('\n', '\t'), '', $output);
 				$output = ob_get_clean();
+				//$output = str_replace(array('\n', '\t'), ' ', ob_get_clean());
 				$this->setSuccessfullHTMLReturn($output);
 				
-				echo $this->_return;
+				
+				
+				//echo preg_replace('/\s/', '', $this->_return);
+				echo str_replace(array('\n', '\t'), '', $this->_return);
+				//echo $this->_return;
 				
 			} else {
 				echo json_encode('smarty not enabled');

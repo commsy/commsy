@@ -13,12 +13,7 @@ define([	"dojo/_base/declare",
 			console.log('test');
 		},
 		
-		getHTMLFromAJAX: function(fct, action, data, callback) {
-			data.cid = this.uri_object.cid;
-			data.mod = 'ajax';
-			data.fct = fct;
-			data.action = action;
-			
+		getHTMLFromAJAX: function(fct, action, data, callback) {			
 			// execute a HTTP POST request
 			var request = xhr.post({
 				url:		"commsy.php?cid=" + this.uri_object.cid + "&mod=ajax&fct=" + fct + "&action=" + action,
