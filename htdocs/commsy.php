@@ -883,8 +883,6 @@ if(isset($_GET['smarty'])) {
 
 if(isset($_GET['smarty']) || $session->issetValue('smarty_off')) {
 	$c_smarty = !$session->getValue('smarty_off');
-} else {
-	$c_smarty = false;
 }
 
 // temporary bypass smarty for server and project context
