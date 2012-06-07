@@ -870,6 +870,9 @@ if(isset($c_smarty) && $c_smarty === true) {
 global $c_smarty;
 $context_item = $environment->getCurrentContextItem();
 
+global $c_smarty_always;
+if(isset($c_smarty_always) && $c_smarty_always === true) $c_smarty = true;
+
 if(isset($_GET['smarty'])) {
 	if($_GET['smarty'] === 'false') {
 		$session->setValue('smarty_off', true);
@@ -883,9 +886,6 @@ if(isset($_GET['smarty']) || $session->issetValue('smarty_off')) {
 } else {
 	$c_smarty = false;
 }
-
-global $c_smarty_always;
-if(isset($c_smarty_always) && $c_smarty_always === true) $c_smarty = true;
 
 // temporary bypass smarty for server and project context
 if($context_item->isServer() || $context_item->isPortal()) {

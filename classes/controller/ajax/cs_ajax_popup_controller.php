@@ -34,16 +34,11 @@
 				$this->displayTemplate();
 				
 				// setup return
-				// TODO: optimize
-				//echo str_replace(array('\n', '\t'), '', $output);
 				$output = ob_get_clean();
-				//$output = str_replace(array('\n', '\t'), ' ', ob_get_clean());
 				$this->setSuccessfullHTMLReturn($output);
 				
-				
-				
 				//echo preg_replace('/\s/', '', $this->_return);
-				//echo str_replace(array('\n', '\t'), '', $this->_return);
+				//echo str_replace(array('\n', '\t'), '', $this->_return);		// for some reasons, categories in popup will not work if active
 				echo $this->_return;
 				
 			} else {
