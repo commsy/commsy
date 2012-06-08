@@ -140,7 +140,7 @@
 							<p>
 								{if $room.addon_information.wiki.active}
 									{$w = $room.addon_information.wiki}
-									<a href="{$w.path}/wikis/{$environment.cid}/{$w.item_id}/{$w.session}" title="___COMMON_WIKI_LINK___: {$room.addon_information.wiki.title}" target="_blank">
+									<a href="{$w.path}/wikis/{$w.portal_id}/{$w.item_id}/{$w.session}" title="___COMMON_WIKI_LINK___: {$room.addon_information.wiki.title}" target="_blank">
 										<img src="{$basic.tpl_path}img/addon_wiki.png" alt="___COMMON_WIKI_LINK___" />
 									</a>
 								{/if}

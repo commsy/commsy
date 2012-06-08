@@ -135,6 +135,7 @@
 					$return['wiki']['active'] = true;
 					$return['wiki']['title'] = $current_context->getWikiTitle();
 					$return['wiki']['path'] = $c_pmwiki_path_url;
+					$return['wiki']['portal_id'] = $this->_environment->getCurrentPortalID();
 					$return['wiki']['item_id'] = $current_context->getItemID();
 
 					$url_session_id = '';
