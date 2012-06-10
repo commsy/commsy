@@ -129,6 +129,11 @@ $theme_array['book'] = array(
 	'value'		=> 'book',
 	'disabled'	=> false
 );
+$theme_array['flower'] = array(
+	'text'		=> 'COMMON_COLOR_SCHEMA_FLOWER',
+	'value'		=> 'flower',
+	'disabled'	=> false
+);
 
 
 // include more commsy settings
