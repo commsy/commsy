@@ -1238,25 +1238,14 @@ class cs_material_manager extends cs_manager {
       }
    }
    
-	/**
-	 * gives the appropriate query to the updateSearchIndices function of cs_manager
-	 * 
-	 * @see cs_manager::updateSearchIndices()
-	 */
-	public function updateSearchIndices($limit = array()) {
-		/*
-		 * this query selects all needed data
-		 * 	- the item id
-		 * 	- a string to be indexed by the algorithm, the search data
-		 *  - an search time index, if existing
-		 * for entries which
-		 *  - has been modified since the last index operation
-		 * and having the greatest version_id
-		 */
+	public function updateIndexedSearch($item) {
+		$indexer = $this->_environment->getSearchIndexer();
 		$query = '
 			SELECT
-				materials.item_id,
-				search_time.st_id,
+				materials.item_id AS item_id,
+				materials.item_id AS index_id,
+				materials.version_id AS version_id,
+				materials.modification_date,
 				CONCAT(materials.title, " ", materials.description, " ", user.firstname, " ", user.lastname) AS search_data
 			FROM
 				materials
@@ -1264,30 +1253,11 @@ class cs_material_manager extends cs_manager {
 				user
 			ON
 				user.item_id = materials.creator_id
-			LEFT JOIN
-				search_time
-			ON
-				search_time.st_item_id = materials.item_id
 			WHERE
-				(
-					search_time.st_id IS NULL OR
-					materials.modification_date > search_time.st_date
-				) AND
-				materials.version_id = (
-					SELECT
-						MAX(m2.version_id)
-					FROM
-						materials as m2
-					WHERE
-						m2.item_id = materials.item_id
-				)
+				materials.deletion_date IS NULL AND
+				materials.item_id = ' . $item->getItemID() . '
 		';
-			
-		if(!empty($limit)) {
-			$query .= ' LIMIT ' . $limit[0] . ', ' . $limit[1];
-		}
-		
-		$this->updateSearchIndicesMain($query, CS_MATERIAL_TYPE);
+		$indexer->add(CS_MATERIAL_TYPE, $query);
 	}
 	
 	function getResubmissionItemIDsByDate($year, $month, $day){

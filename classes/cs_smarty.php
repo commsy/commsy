@@ -105,7 +105,7 @@ class cs_smarty extends Smarty {
 		}
 	}
 	
-	public function display($template, $output_mode) {
+	public function display_output($template, $output_mode) {
 		try {
 			parent::display($template . '_' . $output_mode . '.tpl');
 		} catch(SmartyException $e) {

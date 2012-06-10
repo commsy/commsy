@@ -795,24 +795,14 @@ class cs_tag_manager extends cs_manager {
       }
    }
 
-	/**
-	 * gives the appropriate query to the updateSearchIndices function of cs_manager
-	 *
-	 * @see cs_manager::updateSearchIndices()
-	 */
-	public function updateSearchIndices($limit = array()) {
-		/*
-		 * this query selects all needed data
-		 * 	- the item id
-		 * 	- a string to be indexed by the algorithm, the search data
-		 *  - an search time index, if existing
-		 * for entries which
-		 *  - has been modified since the last index operation
-		 */
+	public function updateIndexedSearch($item) {
+		$indexer = $this->_environment->getSearchIndexer();
 		$query = '
 			SELECT
-				tag.item_id,
-				search_time.st_id,
+				tag.item_id AS item_id,
+				tag.item_id AS index_id,
+				NULL AS version_id,
+				tag.modification_date,
 				CONCAT(tag.title, " ", user.firstname, " ", user.lastname) AS search_data
 			FROM
 				tag
@@ -820,22 +810,11 @@ class cs_tag_manager extends cs_manager {
 				user
 			ON
 				user.item_id = tag.creator_id
-			LEFT JOIN
-				search_time
-			ON
-				search_time.st_item_id = tag.item_id
 			WHERE
-				(
-					search_time.st_id IS NULL OR
-					tag.modification_date > search_time.st_date
-				)
+				tag.deletion_date IS NULL AND
+				tag.item_id = ' . $item->getItemID() . '
 		';
-
-		if(!empty($limit)) {
-			$query .= ' LIMIT ' . $limit[0] . ', ' . $limit[1];
-		}
-
-		$this->updateSearchIndicesMain($query, CS_TAG_TYPE);
+		$indexer->add(CS_TAG_TYPE, $query);
 	}
 }
 ?>

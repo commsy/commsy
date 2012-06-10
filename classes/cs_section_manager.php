@@ -610,26 +610,14 @@ class cs_section_manager extends cs_manager {
       }
    }
    
-	/**
-	 * gives the appropriate query to the updateSearchIndices function of cs_manager
-	 * 
-	 * @see cs_manager::updateSearchIndices()
-	 */
-	public function updateSearchIndices($limit = array()) {
-		/*
-		 * this query selects all needed data
-		 * 	- the item id
-		 * 	- a string to be indexed by the algorithm, the search data
-		 *  - an search time index, if existing
-		 * for entries which
-		 *  - has been modified since the last index operation
-		 * and having the greatest version_id
-		 */
+	public function updateIndexedSearch($item) {
+		$indexer = $this->_environment->getSearchIndexer();
 		$query = '
 			SELECT
-				section.material_item_id AS item_id,
-				items.type AS item_type,
-				search_time.st_id,
+				section.item_id AS item_id,
+				section.material_item_id AS index_id,
+				section.version_id AS version_id,
+				section.modification_date,
 				CONCAT(section.title, " ", section.description, " ", user.firstname, " ", user.lastname) AS search_data
 			FROM
 				section
@@ -637,34 +625,10 @@ class cs_section_manager extends cs_manager {
 				user
 			ON
 				user.item_id = section.creator_id
-			LEFT JOIN
-				items
-			ON
-				section.material_item_id = items.item_id
-			LEFT JOIN
-				search_time
-			ON
-				search_time.st_item_id = section.material_item_id
 			WHERE
-				(
-					search_time.st_id IS NULL OR
-					section.modification_date > search_time.st_date
-				) AND
-				section.version_id = (
-					SELECT
-						MAX(s2.version_id)
-					FROM
-						section as s2
-					WHERE
-						s2.item_id = section.item_id
-				)
+				section.deletion_date IS NULL
 		';
-		
-		if(!empty($limit)) {
-			$query .= ' LIMIT ' . $limit[0] . ', ' . $limit[1];
-		}
-		
-		$this->updateSearchIndicesMain($query, "from_query");
+		$indexer->add(CS_SECTION_TYPE, $query);
 	}
 }
 ?>

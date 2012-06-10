@@ -1307,6 +1307,10 @@ class cs_environment {
          return $this->getZzzTaskManager();
       }
    }
+   
+   function getSearchIndexer() {
+   	return $this->_getInstance('cs_search_indexer');
+   }
 
  /** get instance of cs_zzz_task_manager
    *

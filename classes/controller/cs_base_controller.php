@@ -73,7 +73,7 @@
 					$this->_tpl_engine->setPostToken(true);
 				}
 
-				$this->_tpl_engine->display($this->_tpl_file, $this->_environment->getOutputMode());
+				$this->_tpl_engine->display_output($this->_tpl_file, $this->_environment->getOutputMode());
 			} catch(Exception $e) {
 				die($e->getMessage());
 			}

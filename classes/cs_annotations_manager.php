@@ -472,53 +472,26 @@ class cs_annotations_manager extends cs_manager {
       }
    }
    
-	/**
-	 * gives the appropriate query to the updateSearchIndices function of cs_manager
-	 * 
-	 * @see cs_manager::updateSearchIndices()
-	 */
-	public function updateSearchIndices($limit = array()) {
-		/*
-		 * this query selects all needed data
-		 * 	- the item id
-		 * 	- a string to be indexed by the algorithm, the search data
-		 *  - an search time index, if existing
-		 * for entries which
-		 *  - public
-		 *  - has been modified since the last index operation
-		 */
-		
-		// annotations should be linked with the item id they are related to
+	public function updateIndexedSearch($item) {
+		$indexer = $this->_environment->getSearchIndexer();
 		$query = '
 			SELECT
-				annotations.linked_item_id AS item_id,
-				search_time.st_id,
-				items.type AS item_type,
+				annotations.item_id AS item_id,
+				annotations.linked_item_id AS index_id,
+				NULL AS version_id,
+				annotations.modification_date,
 				CONCAT(annotations.title, " ", annotations.description, " ", user.firstname, " ", user.lastname) AS search_data
 			FROM
 				annotations
 			LEFT JOIN
-				items
-			ON
-				annotations.linked_item_id = items.item_id
-			LEFT JOIN
 				user
 			ON
 				user.item_id = annotations.creator_id
-			LEFT JOIN
-				search_time
-			ON
-				search_time.st_item_id = annotations.linked_item_id
 			WHERE
-				search_time.st_id IS NULL OR
-				annotations.modification_date > search_time.st_date
+				annotations.deletion_date IS NULL AND
+				annotations.item_id = ' . $item->getItemID() . '
 		';
-		
-		if(!empty($limit)) {
-			$query .= ' LIMIT ' . $limit[0] . ', ' . $limit[1];
-		}
-		
-		$this->updateSearchIndicesMain($query, "from_query");
+		$indexer->add(CS_ANNOTATION_TYPE, $query);
 	}
 }
 ?>

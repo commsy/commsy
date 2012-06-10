@@ -284,7 +284,7 @@ class cs_user_manager extends cs_manager {
   /** set status limit to "normal user"
     * this method sets the status limit to "normal user"
     */
-  function setUserLimit () {
+  function setUserLimit ($limit) {
      $this->_status_limit = 2;
   }
 
@@ -1683,44 +1683,22 @@ class cs_user_manager extends cs_manager {
       $this->_cache_sql = array();
    }
 
-	/**
-	 * gives the appropriate query to the updateSearchIndices function of cs_manager
-	 *
-	 * @see cs_manager::updateSearchIndices()
-	 */
-	public function updateSearchIndices($limit = array()) {
-		/*
-		 * this query selects all needed data
-		 * 	- the item id
-		 * 	- a string to be indexed by the algorithm, the search data
-		 *  - an search time index, if existing
-		 * for entries which
-		 *  - has been modified since the last index operation
-		 */
+	public function updateIndexedSearch($item) {
+		$indexer = $this->_environment->getSearchIndexer();
 		$query = '
 			SELECT
-				user.item_id,
-				search_time.st_id,
+				user.item_id AS item_id,
+				user.item_id AS index_id,
+				NULL AS version_id,
+				user.modification_date,
 				CONCAT(user.user_id, " ", user.firstname, " ", user.lastname) AS search_data
 			FROM
 				user
-			LEFT JOIN
-				search_time
-			ON
-				search_time.st_item_id = user.item_id
-
 			WHERE
-				(
-					search_time.st_id IS NULL OR
-					user.modification_date > search_time.st_date
-				)
+				user.deletion_date IS NULL AND
+				user.item_id = ' . $item->getItemID() . '
 		';
-
-		if(!empty($limit)) {
-			$query .= ' LIMIT ' . $limit[0] . ', ' . $limit[1];
-		}
-
-		parent::updateSearchIndicesMain($query, CS_USER_TYPE);
+		$indexer->add(CS_USER_TYPE, $query);
 	}
 }
 ?>

@@ -259,14 +259,5 @@ class cs_community_manager extends cs_room2_manager {
       $portal->saveMaxRoomActivityPoints($item->getActivityPoints());
       unset($portal);
    }
-   
-	/**
-	 * calls cs_room2_manager parent function
-	 * 
-	 * @see cs_room2_manager::updateSearchIndices()
-	 */
-	public function updateSearchIndices($limit = array()) {
-		$this->updateSearchIndicesRoom(CS_COMMUNITY_TYPE, $limit);
-	}
 }
 ?>
