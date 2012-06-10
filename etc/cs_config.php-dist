@@ -119,6 +119,16 @@ $theme_array['red'] = array(
 	'value'		=> 'red',
 	'disabled'	=> false
 );
+$theme_array['ice'] = array(
+	'text'		=> 'COMMON_COLOR_SCHEMA_ICE',
+	'value'		=> 'ice',
+	'disabled'	=> false
+);
+$theme_array['book'] = array(
+	'text'		=> 'COMMON_COLOR_SCHEMA_BOOK',
+	'value'		=> 'book',
+	'disabled'	=> false
+);
 
 
 // include more commsy settings
