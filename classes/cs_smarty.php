@@ -111,7 +111,7 @@ class cs_smarty extends Smarty {
 		} catch(SmartyException $e) {
 			// try fall back to html output
 			if($output_mode != 'html') {
-				$this->display($template, 'html');
+				$this->display_output($template, 'html');
 			} else {
 				throw new Exception('Template ' . $this->getTemplateDir(0) . $template . '_' . $output_mode . '.tpl does not exist!', 101);
 			}
