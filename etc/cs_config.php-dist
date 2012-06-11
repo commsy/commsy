@@ -134,6 +134,11 @@ $theme_array['flower'] = array(
 	'value'		=> 'flower',
 	'disabled'	=> false
 );
+$theme_array['stars'] = array(
+	'text'		=> 'COMMON_COLOR_SCHEMA_STARS',
+	'value'		=> 'stars',
+	'disabled'	=> false
+);
 
 
 // include more commsy settings
