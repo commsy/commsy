@@ -144,6 +144,11 @@ $theme_array['aquarium'] = array(
 	'value'		=> 'aquarium',
 	'disabled'	=> false
 );
+$theme_array['heaven'] = array(
+	'text'		=> 'COMMON_COLOR_SCHEMA_HEAVEN',
+	'value'		=> 'heaven',
+	'disabled'	=> false
+);
 
 
 
