@@ -139,6 +139,12 @@ $theme_array['stars'] = array(
 	'value'		=> 'stars',
 	'disabled'	=> false
 );
+$theme_array['aquarium'] = array(
+	'text'		=> 'COMMON_COLOR_SCHEMA_AQUARIUM',
+	'value'		=> 'aquarium',
+	'disabled'	=> false
+);
+
 
 
 // include more commsy settings
