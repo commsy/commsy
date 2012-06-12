@@ -159,6 +159,12 @@ $theme_array['autumn'] = array(
 	'value'		=> 'autumn',
 	'disabled'	=> false
 );
+$theme_array['neongreen'] = array(
+	'text'		=> 'COMMON_COLOR_SCHEMA_NEONGREEN',
+	'value'		=> 'neongreen',
+	'disabled'	=> false
+);
+
 
 
 

@@ -160,6 +160,7 @@ $message["COMMON_COLOR_SCHEMA_FOOTBALL"]["de"] = "Fußball";
 $message["COMMON_COLOR_SCHEMA_GREY"]["de"] = "Grau";
 $message["COMMON_COLOR_SCHEMA_HEAVEN"]["de"] = "Himmel";
 $message["COMMON_COLOR_SCHEMA_ICE"]["de"] = "Eiskristall";
+$message["COMMON_COLOR_SCHEMA_NEONGREEN"]["de"] = "Neongrün";
 $message["COMMON_COLOR_SCHEMA_OCEAN"]["de"] = "Meer";
 $message["COMMON_COLOR_SCHEMA_OWN"]["de"] = "Eigenes Farbschema";
 $message["COMMON_COLOR_SCHEMA_PINK"]["de"] = "Pink";
