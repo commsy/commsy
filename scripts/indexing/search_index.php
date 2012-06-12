@@ -710,7 +710,9 @@
 	////////////////////////////
 	////// Groups //////////////
 	////////////////////////////
-	$indexer->add(CS_GROUP_TYPE, '', function($indexing, $search_time) {
+	$indexer->add(CS_GROUP_TYPE, '', array(updateGroupIndex));
+			
+	function updateGroupIndex($indexing, $search_time) {
 		echo "collecting " . CS_GROUP_TYPE . " data..";
 		
 		// process the group itself
@@ -806,7 +808,7 @@
 		unset($user_data);
 		
 		echo "done\n";
-	});
+	}
 	
 	////////////////////////////
 	////// Taks ////////////////
