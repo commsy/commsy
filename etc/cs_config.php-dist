@@ -149,7 +149,11 @@ $theme_array['heaven'] = array(
 	'value'		=> 'heaven',
 	'disabled'	=> false
 );
-
+$theme_array['pink'] = array(
+	'text'		=> 'COMMON_COLOR_SCHEMA_PINK',
+	'value'		=> 'pink',
+	'disabled'	=> false
+)
 
 
 // include more commsy settings
