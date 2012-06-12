@@ -436,7 +436,12 @@
 		}
 		
 		private function displayProgress($count, $total) {
-			$items_per_step = round($total / 80, 0, PHP_ROUND_HALF_DOWN);
+			if(phpversion() > '5.3.0') {
+				$items_per_step = round($total / 80, 0, PHP_ROUND_HALF_DOWN);
+			} else {
+				$items_per_step = round($total / 80, 0);
+			}
+			
 			if($items_per_step == 0) $items_per_step = 1;
 			if($count % $items_per_step === 0) {
 				echo '.';
