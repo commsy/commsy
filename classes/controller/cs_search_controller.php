@@ -18,6 +18,7 @@
 			$this->_tpl_file = 'room_search';
 
 			$this->_list = new cs_list();
+			$this->_addition_selects = true;
 		}
 
 		/*
@@ -40,8 +41,21 @@
 			
 			// an array of all rubrics, containing files
 			$file_rubric_array = $this->getRubricsWithFiles();
-
-
+			
+			// get all parameters
+			$this->getParameters();
+			
+			// setup a template variable with all search parameters
+			$this->assign('search', 'parameters', $this->_params);
+			
+			// find current option
+			$option = '';
+			if(isset($_POST['form_data']['option'])) {
+				$option = $_POST['form_data']['option'];
+			} elseif(isset($_GET['option'])) {
+				$option = $_GET['option'];
+			}
+			
 			/*
 			 *
 
@@ -61,7 +75,9 @@ if ( isset($_GET['interval']) ) {
 }
 
 */
+			// TODO: rewrite this
 			// search / select area
+			/*
 			if(isset($_GET['option']) && isOption($_GET['option'], $translator->getMessage('COMMON_RESET'))) {
 				$this->_params['search'] = '';
 				$this->_params['selrubric'] = 'all';
@@ -80,14 +96,7 @@ if ( isset($_GET['interval']) ) {
 				// store parameters in session
 				$session->setValue('cid' . $this->_environment->getCurrentContextID() . '_campus_search_parameter_array', $this->_params);
 			}
-
-			// find current option
-			$option = '';
-			if(isset($_POST['form_data']['option'])) {
-				$option = $_POST['form_data']['option'];
-			} elseif(isset($_GET['option'])) {
-				$option = $_GET['option'];
-			}
+			*/
 
 			/*
 			 * // Handle attaching
@@ -133,77 +142,8 @@ if ( isset($_GET['interval']) ) {
 				$rubric_array = array();
 				$rubric_array[] = $this->_params['selrubric'];
 			}
-
+			
 			/*
-			 * /*
-			 *
-// Find current search text
-if ( isset($_GET['attribute_limit']) ) {
-   $attribute_limit = $_GET['attribute_limit'];
-   switch( $attribute_limit  ){
-     case 1 :
-         $attribute_limit = 'title';
-         break;
-     case 2 :
-         $attribute_limit = 'author';
-         break;
-     case 3 :
-         $attribute_limit = 'file';
-         break;
-   }
-} else {
-   $attribute_limit = '';
-}
-
-
-   // LIST ACTIONS
-   // initiate selected array of IDs
-   $selected_ids = array();
-   if ( isset($mode) && $mode == '') {
-      $session->unsetValue('cid'.$environment->getCurrentContextID().
-                              '_'.$environment->getCurrentModule().
-                              '_selected_ids');
-   }elseif ( isset($mode) && $mode == 'list_actions') {
-      if ($session->issetValue('cid'.$environment->getCurrentContextID().
-                                  '_'.$environment->getCurrentModule().
-                                 '_selected_ids')) {
-         $selected_ids = $session->getValue('cid'.$environment->getCurrentContextID().
-                                               '_'.$environment->getCurrentModule().
-                                               '_selected_ids');
-      }
-   }
-      // Update attached items from cookie (requires JavaScript in browser)
-      if ( isset($_COOKIE['attach']) ) {
-         foreach ( $_COOKIE['attach'] as $key => $val ) {
-            setcookie ('attach['.$key.']', '', time()-3600);
-            if ( $val == '1' ) {
-               if ( !in_array($key, $selected_ids) ) {
-                  $selected_ids[] = $key;
-               }
-            } else {
-               $idx = array_search($key, $selected_ids);
-               if ( $idx !== false ) {
-                  unset($selected_ids[$idx]);
-               }
-            }
-         }
-      }
-
-      // Update attached items from form post (works always)
-      if ( isset($_POST['attach']) ) {
-         foreach ( $_POST['shown'] as $shown_key => $shown_val ) {
-            if ( array_key_exists($shown_key, $_POST['attach']) ) {
-               if ( !in_array($shown_key, $selected_ids) ) {
-                  $selected_ids[] = $shown_key;
-               }
-            } else {
-               $idx = array_search($shown_key, $selected_ids);
-               if ( $idx !== false ) {
-                  unset($selected_ids[$idx]);
-               }
-            }
-         }
-      }
 
 
    ///////////////////////////////////////
@@ -324,6 +264,8 @@ if ( $environment->inPrivateRoom()
    unset($rubric_array2);
 }
 */
+			
+			var_dump($this->_params);
 
 			// convert search_rubric to item type
 			$item_types = array();
@@ -366,7 +308,7 @@ if ( $environment->inPrivateRoom()
 				$query .= ') ';
 			}
 			$word_ids = $db->performQuery($query);
-
+			
 			//echo sizeof($word_ids) . " words matched this search</br>\n"; //pr($word_ids);
 
 			/////////////////////////////////////////
@@ -492,8 +434,6 @@ if ( $environment->inPrivateRoom()
 						$rubric_manager->setGroupLimit($this->_params['selgroup']);
 					}
 
-
-
 					// user
 					if($rubric === CS_USER_TYPE) {
 						$rubric_manager->setUserLimit();
@@ -519,17 +459,18 @@ if ( $environment->inPrivateRoom()
 					}
 
 					$rubric_manager->setAttributeLimit($this->_params['selrestriction']);
-
-
+					
+					// apply filters
+					if(!empty($this->_params['selbuzzword'])) {
+						$rubric_manager->setBuzzwordLimit($this->_params['selbuzzword']);
+					}
+					
+					if(!empty($this->_params['seltag'])) {
+						$rubric_manager->setTagLimit($this->_params['seltag']);
+					}
 
 					/*
 					 *
-      if ( !empty($selbuzzword) ) {
-         $rubric_manager->setBuzzwordLimit($selbuzzword);
-      }
-      if ( !empty($last_selected_tag) ){
-         $rubric_manager->setTagLimit($last_selected_tag);
-      }
       if ( !empty($selcolor) and $selcolor != '2' and $selrubric == "date") {
           $rubric_manager->setColorLimit('#'.$selcolor);
       }
@@ -586,7 +527,6 @@ if ( $environment->inPrivateRoom()
 #            $session = $this->_environment->getSessionItem();
 			}
 
-
 			/*
 			 *
 if($interval == 0){
@@ -594,8 +534,7 @@ if($interval == 0){
 }
 			 */
 			//echo $result_list->getCount() . " results before id filtering<br>\n";
-
-
+			
 			/////////////////////////////////////////
 			// 5. filter item ids
 			/////////////////////////////////////////
@@ -620,6 +559,7 @@ if($interval == 0){
 			$this->assign('room', 'search_sidebar', $this->getSidebarContent());
 			
 			$this->assign('list','browsing_parameters',$this->_browsing_icons_parameter_array);
+			$this->assign('list', 'restriction_text_parameters', $this->_getRestrictionTextAsHTML());
 		}
 
 		protected function getListContent() {
@@ -792,7 +732,7 @@ unset($ftsearch_manager);
 			} elseif(isset($_GET['selrubric'])) {
 				$this->_params['selrubric'] = $_GET['selrubric'];
 			}
-			if($this->_params['selrubric'] === 'campus_search') {
+			if($this->_params['selrubric'] === 'search') {
 				$this->_params['selrubric'] = 'all';
 			}
 
@@ -804,10 +744,15 @@ unset($ftsearch_manager);
 				$this->_params['selbuzzword'] = $_POST['form_data']['selbuzzword'];
 			}
 
-			$this->_params['last_selected_tag'] = '';
-			$this->_params['seltag_array'] = array();
+			//$this->_params['last_selected_tag'] = '';
+			$this->_params['seltag'] = '';
 
 			// find selected topic
+			if(isset($_GET['seltags']) && !empty($_GET['seltags'])) {
+				$this->_params['seltags'] = $_GET['seltags'];
+			}
+			
+			/*
 			if(isset($_GET['seltag']) && $_GET['seltag'] === 'yes') {
 				$i = 0;
 				while(!isset($_GET['seltag_' . $i])) {
@@ -839,7 +784,7 @@ unset($ftsearch_manager);
 					$i++;
 				}
 				$this->_params['last_selected_tag'] = $this->_params['seltag_array'][$j-1];
-			}
+			}*/
 
 			// find selected restrictions
 			$this->_params['selrestriction'] = 'all';
@@ -923,7 +868,35 @@ unset($ftsearch_manager);
 
 		protected function getAdditionalRestrictionText() {
 			$return = array();
-			return $return;
+			$params = $this->_environment->getCurrentParameterArray();
+			if(isset($params['selstatus']) && !empty($params['selstatus']) && $params['selstatus'] === '3') {
+				$return = array(
+					'name'				=> '',
+					'type'				=> '',
+					'link_parameter'	=> ''
+				);
+				
+				$translator = $this->_environment->getTranslationObject();
+				
+				// set name
+				if($params['selstatus'] === '3') {
+					$return['name'] = $translator->getMessage('USER_MODERATORS');
+				} else {
+					$return['name'] = $translator->getMessage('COMMON_USERS');
+				}
+				
+				// set link parameter
+				unset($params['selstatus']);
+				$link_parameter_text = '';
+				if ( count($params) > 0 ) {
+					foreach ($params as $key => $parameter) {
+						$link_parameter_text .= '&'.$key.'='.$parameter;
+					}
+				}
+				$return['link_parameter'] = $link_parameter_text;
+			}
+				
+			return array($return);
 		}
 		
 		/**

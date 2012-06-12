@@ -449,8 +449,11 @@
             	$html .= $html_text;
          	}
  END TODO ref_user und ref_item migrieren, wenn klar ist, wofür */
+      			
+      			
 	         	include_once('classes/views/cs_view.php');
-	         	$parameters = array();
+	         	/*
+      			$parameters = array();
 	   			$parameters['environment'] = $environment;
 	   			$parameters['with_modifying_actions'] = 'no';
 	         	$view_object = new cs_view($parameters);
@@ -468,8 +471,10 @@
 	         		$tmp_array['type'] = 'search';
 	         		$tmp_array['name'] = $view_object->_text_as_html_short(urldecode($params['search']));
 					$tmp_array['link_parameter'] = $link_parameter_text;
-					$restriction_array[] = $tmp_array();
+					$restriction_array[] = $tmp_array;
+					
 	         	}
+	         	*/
 
 				// additional restrictions
 				$additional_restrictions = $this->getAdditionalRestrictionText();

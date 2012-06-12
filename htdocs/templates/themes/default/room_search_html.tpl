@@ -64,7 +64,7 @@
 				</p>
 			</div>
 			<div class="column_90">
-				<p><img src="{$basic.tpl_path}img/netnavigation/{$item.type}" title="{$item.type}"/></p>
+				<p><img src="{$basic.tpl_path}img/netnavigation/{$item.type}.png" title="{$item.type}"/></p>
 			</div>
 			<div class="column_155">
 				<p>
@@ -110,7 +110,7 @@
 		{foreach $nodes as $node}
 			<li	id="node_{$node.item_id}"
 				{if $node.children|count > 0}class="folder"{/if}
-				data="url:'commsy.php?cid={$environment.cid}&mod=campus_search&fct=index&name=selected&seltag_{$level}={$node.item_id}&seltag=yes'">{$node.title}
+				data="url:'commsy.php?cid={$environment.cid}&mod=search&fct=index{search_params params=$search.parameters key=seltag value=$node.item_id}'">{$node.title}
 			{if $node.children|count > 0}	{* recursive call *}
 				{tag_tree nodes=$node.children level=$level+1}
 			{/if}
@@ -120,5 +120,5 @@
 {/block}
 
 {block name=sidebar_buzzwordbox_buzzword}
-	<a href="commsy.php?cid={$environment.cid}&mod=campus_search&fct=index&selbuzzword={$buzzword.to_item_id}" class="keywords_s{$buzzword.class_id}">{$buzzword.name}</a>
+	<a href="commsy.php?cid={$environment.cid}&mod=search&fct=index{search_params params=$search.parameters key=selbuzzword value=$buzzword.to_item_id}" class="keywords_s{$buzzword.class_id}">{$buzzword.name}</a>
 {/block}
