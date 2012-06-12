@@ -77,7 +77,7 @@
             				</div>
             				<div class="print_files_icon">
                 				<p>
-                					<a href="" class="attachment">{$item.attachment_count}</a>
+                					<a href="#" class="attachment">{$item.attachment_count}</a>
                 				</p>
             				</div>
             				<div class="clear"></div>
@@ -92,9 +92,9 @@
             									<ul>
             									{foreach $item.attachment_infos as $file}
             										<li>
-            											<a href="{$file.file_url}" target="blank"{if $file.lightbox} rel="lightbox"{/if}>
-            												{$file.file_icon} {$file.file_name}
-            											</a>
+            											<a class="{if $file.lightbox}lightbox_{$item.iid}{/if}" href="{$file.file_url}" target="blank">
+															{$file.file_icon} {$file.file_name}
+														</a>
             											({$file.file_size} KB)
             										</li>
             									{/foreach}

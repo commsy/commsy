@@ -144,7 +144,7 @@
 			</div>
 			<div class="column_45">
 				<p>
-					<a href="" class="attachment{if $item.attachment_count == 0}_none_overlay{/if}">{$item.attachment_count}</a>
+					<a href="#" class="attachment{if $item.attachment_count == 0}_none_overlay{/if}">{$item.attachment_count}</a>
 				</p>
 				{if $item.attachment_count > 0 && $item.activated}
 					<div class="tooltip tooltip_with_400">
@@ -157,7 +157,7 @@
 									<ul>
 									{foreach $item.attachment_infos as $file}
 										<li>
-											<a href="{$file.file_url}" target="blank"{if $file.lightbox} rel="lightbox"{/if}>
+											<a class="{if $file.lightbox}lightbox_{$item.iid}{/if}" href="{$file.file_url}" target="blank">
 												{$file.file_icon} {$file.file_name}
 											</a>
 											({$file.file_size} KB)
