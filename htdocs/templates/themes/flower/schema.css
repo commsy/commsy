@@ -253,6 +253,26 @@ ul.dynatree-container a {
     vertical-align: top;
 }
 
+
+/* Actions */
+
+#content_with_actions {
+	background: url("img/cwa_bg.jpg") repeat-y scroll 0 0 transparent;
+}
+
+.item_actions a {
+    background: url("img/ia_norm_bg.jpg") repeat-y scroll 0 0 transparent;
+}
+
+.item_actions a:hover {
+    background: url("img/ia_active_bg_2.jpg") repeat-y scroll 0 0 transparent;
+}
+
+a.item_actions_glow {
+    background: url("img/ia_active_bg_2.jpg") repeat-y scroll 0 0 transparent;
+}
+
+
 /* FORM */
 
 #item_postnew {
