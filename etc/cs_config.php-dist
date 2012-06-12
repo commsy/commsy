@@ -154,6 +154,12 @@ $theme_array['pink'] = array(
 	'value'		=> 'pink',
 	'disabled'	=> false
 )
+$theme_array['autumn'] = array(
+	'text'		=> 'COMMON_COLOR_SCHEMA_AUTUMN',
+	'value'		=> 'autumn',
+	'disabled'	=> false
+);
+
 
 
 // include more commsy settings

@@ -151,6 +151,7 @@ $message["COMMON_COLOR_SCHEMA_7"]["de"] = "Himmelblau";
 $message["COMMON_COLOR_SCHEMA_8"]["de"] = "Herbstlaub";
 $message["COMMON_COLOR_SCHEMA_9"]["de"] = "Fade to Grey";
 $message["COMMON_COLOR_SCHEMA_AQUARIUM"]["de"] = "Aquarium";
+$message["COMMON_COLOR_SCHEMA_AUTUMN"]["de"] = "Herbst";
 $message["COMMON_COLOR_SCHEMA_BOOK"]["de"] = "Bücher";
 $message["COMMON_COLOR_SCHEMA_CONFETTI"]["de"] = "Konfetti";
 $message["COMMON_COLOR_SCHEMA_DARK_BLUE"]["de"] = "Dunkelblau";
