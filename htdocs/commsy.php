@@ -907,20 +907,20 @@ else {
 if(isset($c_smarty) && $c_smarty === true) {
 	// TODO: get-parameter is checked, because getCurrentModule() returns 'home' when calling 'ajax'
 	// TODO: getCurrentFunction() also fails
-	if($_GET['mod'] === 'ajax') {
+	if(isset($_GET['mod']) && $_GET['mod'] === 'ajax') {
 		$controller_name = 'cs_ajax_' . $_GET['fct'] . '_controller';
 		require_once('classes/controller/ajax/' . $controller_name . '.php');
 
 		$controller = new $controller_name($environment);
 		$controller->process();
-	}elseif($_GET['fct'] === 'logout') {
+	}elseif(isset($_GET['fct']) && $_GET['fct'] === 'logout') {
 		$controller_name = 'cs_context_logout_controller';
 		require_once('classes/controller/' . $controller_name . '.php');
 
 		$controller = new $controller_name($environment);
 		$controller->process();
 	} else {
-		if($_GET['mod'] === 'search') {
+		if(isset($_GET['mod']) && $_GET['mod'] === 'search') {
 			$controller_name = 'cs_search_controller';
 			require_once('classes/controller/' . $controller_name . '.php');
 		} elseif($environment->getCurrentModule() === 'home' || $environment->getCurrentModule() === 'search') {

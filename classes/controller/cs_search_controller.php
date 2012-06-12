@@ -925,4 +925,63 @@ unset($ftsearch_manager);
 			$return = array();
 			return $return;
 		}
+		
+		/**
+		 * gets information for displaying room rubrics in navigation bar
+		 */
+		protected function getRubricInformation() {
+			$selected_rubric = $this->_params['selrubric'];
+			if(empty($selected_rubric) || $selected_rubric === 'all') $selected_rubric = 'home';
+			
+			// init return with home
+			$return = array();
+			$return[] = array(
+					'name'			=> 'home',
+					'translate'		=> false,
+					'active'		=> $selected_rubric == 'home',
+					'span_prefix'	=> 'ho');
+		
+			// get rubrics
+			$rubrics = $this->getRubrics();
+		
+			// these prefixes are needed for building up the span id
+			$span_lookup = array(
+					CS_ANNOUNCEMENT_TYPE	=>	'an',
+					CS_DATE_TYPE			=>	'te',
+					CS_MATERIAL_TYPE		=>	'ma',
+					CS_DISCUSSION_TYPE		=>	'di',
+					CS_USER_TYPE			=>	'pe',
+					CS_GROUP_TYPE			=>	'gr',
+					CS_TODO_TYPE			=>	'au',
+					CS_TOPIC_TYPE			=>	'th',
+					CS_PROJECT_TYPE			=>	'pr',
+					CS_INSTITUTION_TYPE		=>	'in'
+			);
+		
+			foreach($rubrics as $rubric) {
+				list($suffix, $postfix) = explode('_', $rubric);
+		
+				if($postfix !== 'none') {
+					$name = '';
+					$translate = true;
+					if($this->_environment->isPlugin($suffix)) {
+						$name = plugin_hook_output($suffix, 'getDisplayName');
+						$translate = false;
+					} else {
+						$name = $suffix;
+					}
+		
+					if(empty($name)) die('rubric name could not be found');
+		
+					// append return
+					$return[] = array(
+							'name'			=> $name,
+							'translate'		=> $translate,
+							'active'		=> $selected_rubric == $name,
+							'span_prefix'	=> $span_lookup[$name]);
+				}
+			}
+		
+			return $return;
+		}
 	}

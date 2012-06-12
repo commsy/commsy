@@ -405,7 +405,7 @@
 				$progress = 1;
 				foreach($index_structure as $item_id => $version) {
 					foreach($version as $version_id => $detail) {
-						if($version_id === NULL || empty($version_id)) {
+						if($version_id === NULL || $version_id === '') {
 							$version_id = 'NULL';
 						} else {
 							$version_id = mysql_real_escape_string($version_id);

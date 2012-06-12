@@ -357,7 +357,7 @@
 		/**
 		 * gets information for displaying room rubrics in navigation bar
 		 */
-		private function getRubricInformation() {
+		protected function getRubricInformation() {
 			// init return with home
 			$return = array();
 			$return[] = array(

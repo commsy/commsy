@@ -23,13 +23,25 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 		registerEvent: function(preconditions, parameters) {
 			var tpl_path = preconditions.template.tpl_path;
 			
-			jQuery(parameters.objects).each(function(index) {
-				// lightbox
-				jQuery(this).lightBox({
-					imageLoading:	tpl_path + 'img/lightbox/lightbox-ico-loading.gif',
-					imageBtnClose:	tpl_path + 'img/lightbox/lightbox-btn-close.gif',
-					imageBtnPrev:	tpl_path + 'img/lightbox/lightbox-btn-prev.gif',
-					imageBtnNext:	tpl_path + 'img/lightbox/lightbox-btn-next.gif'
+			var lightbox_objects = jQuery(parameters.objects);
+			
+			// group by item_id - class is lightbox_itemid
+			var lightbox_ids= [];
+			lightbox_objects.each(function() {
+				var item_id = jQuery(this).attr('class').substr(9);
+				
+				if(jQuery.inArray(item_id, lightbox_ids) === -1) lightbox_ids.push(item_id);
+			});
+			
+			// create lightbox instances for each group
+			jQuery.each(lightbox_ids, function() {
+				jQuery('a.lightbox_' + this).lightBox({
+					fixedNavigation:	true,
+					imageLoading:		tpl_path + 'img/lightbox/lightbox-ico-loading.gif',
+					imageBtnClose:		tpl_path + 'img/lightbox/lightbox-btn-close.gif',
+					imageBtnPrev:		tpl_path + 'img/lightbox/lightbox-btn-prev.gif',
+					imageBtnNext:		tpl_path + 'img/lightbox/lightbox-btn-next.gif',
+					imageBlank:			tpl_path + 'img/lightbox/lightbox-blank.gif'
 				});
 			});
 		}

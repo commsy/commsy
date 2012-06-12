@@ -146,7 +146,7 @@ define(["libs/jQuery/jquery-1.7.1.min"], function() {
 			this.registerModule('commsy/attachments_overlay', 'a[class="attachment"]');
 
 			// lightbox
-			this.registerModule('commsy/lightbox', 'a[rel="lightbox"]');
+			this.registerModule('commsy/lightbox', 'a[class^="lightbox"]');
 
 			// noticed list overlay
 			if(this.getURLParam('fct') === 'index') {
