@@ -132,6 +132,17 @@ a:hover {
    color: #303030; /*CS_LINK_HOVER_COLOR*/
 }
 
+.row_odd_no_hover a, .row_even_no_hover a {
+    color: #646463;
+    text-decoration: none;
+}
+
+.row_odd_no_hover a:hover, .row_even_no_hover a:hover {
+    color: #303030;
+    text-decoration: none;
+}
+
+
 /* FORM */
 
 #item_postnew {

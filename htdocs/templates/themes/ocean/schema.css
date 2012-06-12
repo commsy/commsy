@@ -187,6 +187,17 @@ a:hover {
    color: #0a364b; /*CS_LINK_HOVER_COLOR*/
 }
 
+.row_odd_no_hover a, .row_even_no_hover a {
+    color: #1e5b79;
+    text-decoration: none;
+}
+
+.row_odd_no_hover a:hover, .row_even_no_hover a:hover {
+    color: #0a364b;
+    text-decoration: none;
+}
+
+
 .odd_sep_home {
     background-color: #d8e5f6;
 }

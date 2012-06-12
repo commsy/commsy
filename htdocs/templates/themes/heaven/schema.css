@@ -222,6 +222,17 @@ a:hover {
    color: #8499b6; /*CS_LINK_HOVER_COLOR*/
 }
 
+.row_odd_no_hover a, .row_even_no_hover a {
+    color: #0f679e;
+    text-decoration: none;
+}
+
+.row_odd_no_hover a:hover, .row_even_no_hover a:hover {
+    color: #8499b6;
+    text-decoration: none;
+}
+
+
 .odd_sep_home {
     background-color: #f0f4f9;
 }

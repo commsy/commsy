@@ -230,6 +230,17 @@ a:hover {
     background-color: #fbfbed;
 }
 
+.row_odd_no_hover a, .row_even_no_hover a {
+    color: #454545;
+    text-decoration: none;
+}
+
+.row_odd_no_hover a:hover, .row_even_no_hover a:hover {
+    color: #454545;
+    text-decoration: none;
+}
+
+
 .row_odd {
     background-color: #fbfbed;
 }
