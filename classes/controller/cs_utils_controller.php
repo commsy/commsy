@@ -18,7 +18,7 @@
 	                or $this->_environment->getCurrentModule() == CS_TOPIC_TYPE
 	                or $this->_environment->getCurrentModule() == CS_INSTITUTION_TYPE
 	                or ($this->_environment->getCurrentModule() == CS_USER_TYPE and ($context_item->withRubric(CS_GROUP_TYPE) or($context_item->withRubric(CS_INSTITUTION_TYPE))))
-	                or $this->_environment->getCurrentModule() == 'campus_search'
+	                or $this->_environment->getCurrentModule() == 'search'
 	          		|| ($this->_environment->getCurrentModule() === 'ajax' && in_array($this->_environment->getCurrentFunction(), array('rubric_popup', 'path'))))
 	      ) {
 	         return true;
@@ -35,7 +35,7 @@
 	                || $this->_environment->getCurrentModule() == CS_DISCUSSION_TYPE
 	                || $this->_environment->getCurrentModule() == CS_TODO_TYPE
 	                || $this->_environment->getCurrentModule() == CS_DATE_TYPE
-	                || $this->_environment->getCurrentModule() == 'campus_search'
+	                || $this->_environment->getCurrentModule() == 'search'
 					|| $this->_environment->getCurrentModule() == 'ajax'
 	                || $this->_environment->getCurrentModule() === 'home')) {
 				return true;
@@ -50,6 +50,7 @@
 				(	$this->_environment->getCurrentModule() === CS_ANNOUNCEMENT_TYPE ||
 					$this->_environment->getCurrentModule() === 'home' ||
 					$this->_environment->getCurrentModule() === 'ajax' ||
+					$this->_environment->getCurrentModule() === 'search' ||
 					$this->_environment->getCurrentModule() === CS_DATE_TYPE ||
 					$this->_environment->getCurrentModule() === CS_MATERIAL_TYPE ||
 					$this->_environment->getCurrentModule() === CS_DISCUSSION_TYPE ||
@@ -317,8 +318,6 @@
 
 			return $return;
 		}
-
-
 
 		public function getNetnavigation($item) {
 			$return = array();

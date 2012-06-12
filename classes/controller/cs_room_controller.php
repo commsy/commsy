@@ -771,6 +771,6 @@
   	 	}
 
 		protected function showNetnavigation() {
-			return false;
+	      return false;
 		}
 	}

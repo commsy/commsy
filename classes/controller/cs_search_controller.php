@@ -27,7 +27,7 @@
 			// call parent
 			parent::processTemplate();
 		}
-
+		
 		public function actionIndex() {
 			$translator = $this->_environment->getTranslationObject();
 			$session = $this->_environment->getSessionItem();
