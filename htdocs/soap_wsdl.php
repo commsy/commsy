@@ -332,7 +332,6 @@
 <message name='getPortalRoomListIN'>
   <part name='session_id' type='xsd:string'/>
   <part name='portal_id' type='xsd:integer'/>
-  <part name='count' type='xsd:integer'/>
 </message>
 <message name='getPortalRoomListOUT'>
   <part name='xml_list' type='xsd:string'/>

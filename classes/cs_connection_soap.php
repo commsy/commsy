@@ -2801,22 +2801,48 @@ class cs_connection_soap {
    //  Additional methods for iOS application
    // ----------------------------------------
 
-   public function getPortalRoomList($session_id, $portal_id, $count) {
+   public function getPortalRoomList($session_id, $portal_id) {
+      include_once('functions/development_functions.php');
       if($this->_isSessionValid($session_id)) {
+         $this->_environment->setSessionID($session_id);
+         $session = $this->_environment->getSessionItem();
+         $context_id = $session->getValue('commsy_id');
+         $this->_environment->setCurrentContextID($context_id);
+         $user_id = $session->getValue('user_id');
+         $auth_source_id = $session->getValue('auth_source');
+         $user_manager = $this->_environment->getUserManager();
+         $user_item = $user_manager->getItemByUserIDAuthSourceID($user_id, $auth_source_id);
+         $user_room_list = $user_item->getRelatedProjectList();
+         
          $room_manager = $this->_environment->getRoomManager();
          $room_manager->setContextLimit($portal_id);
          $room_manager->setRoomTypeLimit(CS_PROJECT_TYPE);
          $room_manager->setOrder('activity_rev');
-         $room_manager->setIntervalLimit(0,$count);
          $room_manager->select();
-         $test = $room_manager->getLastQuery();
          $room_list = $room_manager->get();
-
 
          $room_item = $room_list->getFirst();
          $xml = "<room_list>\n";
          while($room_item) {
-            $xml .= $room_item->getXMLData();
+            $user_room_item = $user_room_list->getFirst();
+            $is_room_user = false;
+            while($user_room_item){
+               if($user_room_item->getItemID() == $room_item->getItemID()){
+                  $is_room_user = true;
+               }
+               $user_room_item = $user_room_list->getNext();
+            }
+            
+            $xml .= "<room_item>";
+            $xml .= "<title><![CDATA[".$room_item->getTitle()."]]></title>\n";
+            $xml .= "<item_id><![CDATA[".$room_item->getItemID()."]]></item_id>\n";
+            $xml .= "<context_id><![CDATA[".$room_item->getContextID()."]]></context_id>\n";
+            if($is_room_user){
+               $xml .= "<room_user><![CDATA[is_room_user]]></room_user>\n";
+            } else {
+               $xml .= "<room_user><![CDATA[is_not_room_user]]></room_user>\n";
+            }
+            $xml .= "</room_item>\n";
             $room_item = $room_list->getNext();
          }
          $xml .= "</room_list>";
