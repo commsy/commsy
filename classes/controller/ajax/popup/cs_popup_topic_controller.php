@@ -22,6 +22,23 @@ class cs_popup_topic_controller implements cs_rubric_popup_controller {
 				// edit mode
 
 				// TODO: check rights
+				
+				// files
+				$attachment_infos = array();
+				
+				$converter = $this->_environment->getTextConverter();
+				$file_list = $item->getFileList();
+				
+				$file = $file_list->getFirst();
+				while($file) {
+					$info['file_name']	= $converter->text_as_html_short($file->getDisplayName());
+					$info['file_icon']	= $file->getFileIcon();
+					$info['file_id']	= $file->getFileID();
+				
+					$attachment_infos[] = $info;
+					$file = $file_list->getNext();
+				}
+				$this->_popup_controller->assign('item', 'files', $attachment_infos);
 
 				$this->_popup_controller->assign('item', 'title', $item->getTitle());
 				$this->_popup_controller->assign('item', 'description', $item->getDescription());
@@ -143,7 +160,15 @@ class cs_popup_topic_controller implements cs_rubric_popup_controller {
 						$item->setPublic($form_data['public']);
 					}
 
-	                $file_ids = $form_data['files'];
+	                // already attached files
+	                $file_ids = array();
+	                foreach($form_data as $key => $value) {
+	                	if(mb_substr($key, 0, 5) === 'file_') {
+	                		$file_ids[] = $value;
+	                	}
+	                }
+	                
+	                // this will handle already attached files as well as adding new files
 	                $this->_popup_controller->getUtils()->setFilesForItem($item, $file_ids, CS_TOPIC_TYPE);
 
 	                if ( isset($form_data['hide']) ) {

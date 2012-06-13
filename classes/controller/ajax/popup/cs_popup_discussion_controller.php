@@ -22,6 +22,23 @@
 				$current_context = $this->_environment->getCurrentContextItem();
 
 				// TODO: check rights
+				
+				// files
+				$attachment_infos = array();
+				
+				$converter = $this->_environment->getTextConverter();
+				$file_list = $item->getFileList();
+				
+				$file = $file_list->getFirst();
+				while($file) {
+					$info['file_name']	= $converter->text_as_html_short($file->getDisplayName());
+					$info['file_icon']	= $file->getFileIcon();
+					$info['file_id']	= $file->getFileID();
+				
+					$attachment_infos[] = $info;
+					$file = $file_list->getNext();
+				}
+				$this->_popup_controller->assign('item', 'files', $attachment_infos);
 
 				$this->_popup_controller->assign('item', 'title', $item->getTitle());
 
@@ -205,8 +222,15 @@
 						if(isset($form_data['description'])) $discarticle_item->setDescription($form_data['description']);
 						if(isset($form_data['discussion_type']) && $form_data['discussion_type'] == 2) $discarticle_item->setPosition('1');
 
-						// files
-						$file_ids = $form_data['files'];
+						// already attached files
+		                $file_ids = array();
+		                foreach($form_data as $key => $value) {
+		                	if(mb_substr($key, 0, 5) === 'file_') {
+		                		$file_ids[] = $value;
+		                	}
+		                }
+		                
+		                // this will handle already attached files as well as adding new files
 						$this->_popup_controller->getUtils()->setFilesForItem($discarticle_item, $file_ids, CS_DISCARTICLE_TYPE);
 
 						$discarticle_item->save();

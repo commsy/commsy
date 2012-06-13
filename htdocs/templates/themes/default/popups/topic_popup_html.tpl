@@ -69,7 +69,13 @@
 								<div class="sa_col_left">
 									<div id="file_finished"></div>
 									<input id="uploadify" name="uploadify" type="file" />
-
+									
+									<div id="files_attached">
+										{foreach $item.files as $file}
+											<input type="checkbox" checked="checked" name="form_data[file_{$file@index}]" value="{$file.file_id}" />{$file.file_name}<br/>
+										{/foreach}
+									</div>
+									
 									<div>
 										<a id="uploadify_doUpload">
 											<img src="{$basic.tpl_path}img/uploadify/button_upload_{$environment.lang}.png" />

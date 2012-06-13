@@ -43,6 +43,13 @@
 							<div class="settings_area">
 								<div class="sa_col_left">
 									<div id="file_finished"></div>
+									
+									<div id="files_attached">
+										{foreach $item.files as $file}
+											<input type="checkbox" checked="checked" name="form_data[file_{$file@index}]" value="{$file.file_id}" />{$file.file_name}<br/>
+										{/foreach}
+									</div>
+									
 									<input id="uploadify" name="uploadify" type="file" />
 
 									<div>

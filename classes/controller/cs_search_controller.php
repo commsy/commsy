@@ -265,7 +265,7 @@ if ( $environment->inPrivateRoom()
 }
 */
 			
-			var_dump($this->_params);
+			//var_dump($this->_params);
 
 			// convert search_rubric to item type
 			$item_types = array();
