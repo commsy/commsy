@@ -5,59 +5,42 @@
 		<div id="tm_wrapper_outer">
 		<div id="tm_wrapper">
 			<div id="tm_icons_bar">
-				{if !$environment.is_guest}<a href="commsy.php?cid={$environment.cid}&mod=context&fct=logout&iid={$environment.user_item_id}" id="tm_logout" title="___LOGOUT___">&nbsp;</a>{/if}
-
+				{if !$environment.is_guest}<a href="commsy.php?cid={$environment.cid}&mod=context&fct=logout&iid={$environment.user_item_id}" id="tm_logout" title="___COMMON_LOGOUT___">&nbsp;</a>{/if}
+				{if $environment.is_guest}<a href="commsy.php?cid={$environment.pid}&mod=home&fct=index&room_id={$environment.cid}&login_redirect=1" class="tm_user" style="width:70px;" title="___MYAREA_LOGIN_BUTTON___">___MYAREA_LOGIN_BUTTON___</a>{/if}
 				<div class="clear"></div>
 			</div>
 
 			<div id="tm_pers_bar">
 				<a href="" id="tm_user">
-					{*<span class="tm_dropdown">*}
-						{* login / logout *}
-						{if !$environment.is_guest}
-							___COMMON_WELCOME___, {$environment.username|truncate:20}
-						{/if}
-
-
-
-						{*
-						{if $environment.is_guest}
-							login maske
-						{else}
-							<span class="mm_bl"><a href="commsy.php?cid={$environment.cid}&mod=context&fct=logout&iid={$environment.user_item_id}" id="tm_logout" title="___LOGOUT___">&nbsp;</a></span>
-
-
-							<span class="mm_br mm_bl"><a href="" class="mm_dropdown">Mein CommSy</a></span>
-							{if $environment.is_moderator}
-								<span class="mm_br mm_bl"><a href="" class="mm_dropdown">Admin</a></span>
-							{/if}
-
-
-							<span class="mm_br">___COMMON_WELCOME___, {$environment.username|truncate:12}</span>
-						{/if}
-						*}
-					{*</span>*}
+					{* login / logout *}
+					{if !$environment.is_guest}
+						___COMMON_WELCOME___, {$environment.username|truncate:20}
+					{/if}
+					{if $environment.is_guest}
+						___COMMON_WELCOME___, ___COMMON_GUEST___
+					{/if}
 				</a>
 			</div>
 
-			<div id="tm_icons_bar">
-				<a href="" id="tm_widgets" title="___MYWIDGETS_INDEX___">&nbsp;</a>
-				<a href="" id="tm_mycalendar" title="___MYCALENDAR_INDEX___">&nbsp;</a>
-				<a href="" id="tm_stack" title="___COMMON_ENTRY_INDEX___">&nbsp;</a>
-				<a href="" id="tm_clipboard" title="___MYAREA_MY_COPIES___">&nbsp;</a>
-				<div class="clear"></div>
-			</div>
-
-			<div id="tm_breadcrumb">
-				<a href="">___COMMON_GO_BUTTON___: {$room.room_information.room_name}</a>
-			</div>
-			{if $environment.is_moderator}
-				<div id="tm_icons_left_bar">
-					<a href="" id="tm_settings" title="___COMMON_CONFIGURATION___">&nbsp;</a>
+			{if !$environment.is_guest}
+				<div id="tm_icons_bar">
+					<a href="" id="tm_widgets" title="___MYWIDGETS_INDEX___">&nbsp;</a>
+					<a href="" id="tm_mycalendar" title="___MYCALENDAR_INDEX___">&nbsp;</a>
+					<a href="" id="tm_stack" title="___COMMON_ENTRY_INDEX___">&nbsp;</a>
+					<a href="" id="tm_clipboard" title="___MYAREA_MY_COPIES___">&nbsp;</a>
 					<div class="clear"></div>
 				</div>
-			{/if}
 
+				<div id="tm_breadcrumb">
+					<a href="">___COMMON_GO_BUTTON___: {$room.room_information.room_name}</a>
+				</div>
+				{if $environment.is_moderator}
+					<div id="tm_icons_left_bar">
+						<a href="" id="tm_settings" title="___COMMON_CONFIGURATION___">&nbsp;</a>
+						<div class="clear"></div>
+					</div>
+				{/if}
+			{/if}
 			<div class="clear"></div>
 		</div>
 	</div>

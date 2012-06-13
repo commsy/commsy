@@ -3190,7 +3190,16 @@ a#tm_user {
     text-shadow: #2E2D2E 0 1px;
     }
 
+a.tm_user {
+    padding: 11px 10px 13px 10px;
+    text-decoration: none;
+    color: #CCC;
+    text-shadow: #2E2D2E 0 1px;
+    width:120px;
+    }
+
 a#tm_user:hover,
+a.tm_user:hover,
 a.tm_user_hover {
     color: #2E2D2E !important;
     text-shadow: none !important;
