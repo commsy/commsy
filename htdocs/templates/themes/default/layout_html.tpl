@@ -32,7 +32,8 @@
 	</script>
 
 	<!--
-	<script src="javascript/commsy8_dojo/libs/dojo.js" data-dojo-config="async: true"></script>
+	<script src="javascript/commsy8_dojo/config.js"></script>
+	<script src="javascript/commsy8_dojo/libs/dojo/dojo.js" data-dojo-config="async: true"></script>
 	<script src="javascript/commsy8_dojo/main.js"></script>
 	-->
 
