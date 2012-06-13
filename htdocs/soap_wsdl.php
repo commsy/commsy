@@ -337,6 +337,11 @@
 <message name='getPortalRoomListOUT'>
   <part name='xml_list' type='xsd:string'/>
 </message>
+<message name='getPortalListIN'>
+</message>
+<message name='getPortalListOUT'>
+  <part name='xml_list' type='xsd:string'/>
+</message>
 
 <portType name='CommSyPortType'>
   <operation name='getGuestSession'>
@@ -515,6 +520,10 @@
   <operation name='getPortalRoomList'>
     <input message='tns:getPortalRoomListIN'/>
     <output message='tns:getPortalRoomListOUT'/>
+  </operation>
+  <operation name='getPortalList'>
+    <input message='tns:getPortalListIN'/>
+    <output message='tns:getPortalListOUT'/>
   </operation>
 </portType>
 
@@ -998,6 +1007,17 @@
   
   <operation name='getPortalRoomList'>
     <soap:operation soapAction='urn:xmethodsCommSy#getPortalRoomList'/>
+      <input>
+        <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+          encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+      </input>
+      <output>
+        <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+          encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+      </output>
+  </operation>
+  <operation name='getPortalList'>
+    <soap:operation soapAction='urn:xmethodsCommSy#getPortalList'/>
       <input>
         <soap:body use='encoded' namespace='urn:xmethodsCommSy'
           encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>

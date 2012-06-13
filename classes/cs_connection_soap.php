@@ -2826,5 +2826,23 @@ class cs_connection_soap {
       }
       return $xml;
    }
+   
+   public function getPortalList() {                                                                    
+      $portal_manager = $this->_environment->getPortalManager();
+      $portal_manager->select();
+      $portal_list = $portal_manager->get();
+      $xml = "<portal_list>\n";
+      $portal_item = $portal_list->getFirst();
+      while($portal_item) {
+         $xml .= "<portal_item>\n";
+         $xml .= "<portal_id>".$portal_item->getItemID()."</portal_id>";
+         $xml .= "<portal_title>".$portal_item->getTitle()."</portal_title>";
+         $xml .= "</portal_item>\n";
+         $portal_item = $portal_list->getNext();
+      }
+      $xml .= "</portal_list>";
+      $xml = $this->_encode_output($xml);
+      return $xml;
+   }
 }
 ?>
