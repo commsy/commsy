@@ -83,27 +83,6 @@
 	{/foreach}
 {/block}
 
-{block name=room_right_portlets prepend}
-	<div class="portlet_rc">
-		<a href="" title="{if $h}___COMMON_SHOW___{else}___COMMON_HIDE___{/if}" class="btn_head_rc">
-			<img src="{$basic.tpl_path}img/{*{if $h}*}btn_open_rc.gif{*{else}btn_close_rc.gif{/if}*}" alt="{*{if $h}*}___COMMON_SHOW___{*{else}___COMMON_HIDE___{/if}*}" />
-		</a>
-		<h2>
-			Suche
-		</h2>
-
-		<div class="clear"></div>
-		<div class="portlet_rc_body{*{if $h} hidden{/if}*}">
-			Begriffe:
-			{foreach $room.search_sidebar.search_words as $word}
-				{$word}
-			{/foreach}
-
-			<div class="clear"></div>
-		</div>
-	</div>
-{/block}
-
 {block name=sidebar_tagbox_treefunction}
 	{function name=tag_tree level=0}
 		<ul>

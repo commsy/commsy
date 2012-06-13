@@ -264,8 +264,6 @@ if ( $environment->inPrivateRoom()
    unset($rubric_array2);
 }
 */
-			
-			//var_dump($this->_params);
 
 			// convert search_rubric to item type
 			$item_types = array();
@@ -280,9 +278,11 @@ if ( $environment->inPrivateRoom()
 
 			$search_words_tmp = array();
 			foreach($search_words as $word) {
-				if(strlen($word) >= 3) $search_words_tmp[] = $word;
+				if(strlen($word) >= 4) $search_words_tmp[] = $word;
 			}
 			$this->_search_words = $search_words_tmp;
+			
+			//if(empty($this->_search_words)) die("empty search");
 
 			/////////////////////////////////////////
 			// 1. get ids of search words
@@ -371,7 +371,7 @@ if ( $environment->inPrivateRoom()
 			$results = $db->performQuery($query);
 
 			//echo sizeof($results) . " indexed items matched this search</br>\n";
-
+			
 			/////////////////////////////////////////
 			// 3. order items by rubric
 			/////////////////////////////////////////
@@ -390,7 +390,7 @@ if ( $environment->inPrivateRoom()
 			/////////////////////////////////////////
 			// 4. get all needed item information
 			/////////////////////////////////////////
-
+			
 			// get data from database
 			global $c_plugin_array;
 			foreach($rubric_array as $rubric) {
@@ -554,9 +554,8 @@ if($interval == 0){
 				$entry = $result_list->getNext();
 			}
 			//echo $this->_list->getCount() . " final results<br>\n";
-
+			
 			$this->assign('room', 'search_content', $this->getListContent());
-			$this->assign('room', 'search_sidebar', $this->getSidebarContent());
 			
 			$this->assign('list','browsing_parameters',$this->_browsing_icons_parameter_array);
 			$this->assign('list', 'restriction_text_parameters', $this->_getRestrictionTextAsHTML());
@@ -616,14 +615,6 @@ if($interval == 0){
 				$count++;
 			}
 			$return['items'] = $limited_return;
-
-			return $return;
-		}
-
-		private function getSidebarContent() {
-			$return = array();
-
-			$return['search_words'] = $this->_search_words;
 
 			return $return;
 		}
@@ -868,35 +859,52 @@ unset($ftsearch_manager);
 
 		protected function getAdditionalRestrictionText() {
 			$return = array();
-			$params = $this->_environment->getCurrentParameterArray();
-			if(isset($params['selstatus']) && !empty($params['selstatus']) && $params['selstatus'] === '3') {
-				$return = array(
-					'name'				=> '',
+			
+			$translator = $this->_environment->getTranslationObject();
+			
+			// search word
+			if(isset($this->_params['search'])) {
+				$return[0] = array(
+					'name'				=> $translator->getMessage('COMMON_SEARCH_IN_ENTRIES') . ': ',
 					'type'				=> '',
 					'link_parameter'	=> ''
 				);
 				
-				$translator = $this->_environment->getTranslationObject();
-				
-				// set name
-				if($params['selstatus'] === '3') {
-					$return['name'] = $translator->getMessage('USER_MODERATORS');
-				} else {
-					$return['name'] = $translator->getMessage('COMMON_USERS');
-				}
+				$return[0]['name'] .= implode(', ', $this->_search_words);
 				
 				// set link parameter
-				unset($params['selstatus']);
+				$params = $this->_params;
+				unset($params['search']);
 				$link_parameter_text = '';
 				if ( count($params) > 0 ) {
 					foreach ($params as $key => $parameter) {
 						$link_parameter_text .= '&'.$key.'='.$parameter;
 					}
 				}
-				$return['link_parameter'] = $link_parameter_text;
+				$return[0]['link_parameter'] = $link_parameter_text;
+			}
+			
+			// rubric
+			if(isset($this->_params['selrubric']) && !empty($this->_params['selrubric'])) {
+				$return[1] = array(
+					'name'				=> $translator->getMessage('COMMON_RUBRICS') . ': ' . $translator->getMessage('COMMON_' . mb_strtoupper($this->_params['selrubric']) . '_INDEX'),
+					'type'				=> '',
+					'link_parameter'	=> ''
+				);
+				
+				// set link parameter
+				$params = $this->_params;
+				unset($params['selrubric']);
+				$link_parameter_text = '';
+				if ( count($params) > 0 ) {
+					foreach ($params as $key => $parameter) {
+						$link_parameter_text .= '&'.$key.'='.$parameter;
+					}
+				}
+				$return[1]['link_parameter'] = $link_parameter_text;
 			}
 				
-			return array($return);
+			return $return;
 		}
 		
 		/**

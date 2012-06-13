@@ -452,11 +452,11 @@
       			
       			
 	         	include_once('classes/views/cs_view.php');
-	         	/*
       			$parameters = array();
 	   			$parameters['environment'] = $environment;
 	   			$parameters['with_modifying_actions'] = 'no';
 	         	$view_object = new cs_view($parameters);
+	         	/*
 	         	if ( isset($params['search']) and !empty($params['search']) ){
 	            	$new_params = $params;
 	            	unset($new_params['search']);
@@ -475,7 +475,8 @@
 					
 	         	}
 	         	*/
-
+	         	
+	         	
 				// additional restrictions
 				$additional_restrictions = $this->getAdditionalRestrictionText();
 				if(!empty($additional_restrictions)) $restriction_array = array_merge($restriction_array, $additional_restrictions);
@@ -586,26 +587,51 @@
 					$restriction_array[] = $tmp_array;
 	         	}
 	         	if ( isset($params['seltag']) and !empty($params['seltag']) ){
-	            	$i = 0;
-	            	while ( !isset($params['seltag_'.$i]) ){
-	               		$i++;
-	            	}
-	            	$new_params = $params;
-	            	unset($new_params['seltag_'.$i]);
-	            	unset($new_params['seltag']);
-	      			$link_parameter_text = '';
-	      			if ( count($new_params) > 0 ) {
-	         			foreach ($new_params as $key => $parameter) {
-	            		   	$link_parameter_text .= '&'.$key.'='.$parameter;
+	         		$normal = false;
+	         		foreach($params as $key => $value) {
+	         			if(mb_stristr($key, 'seltag_') !== false) {
+	         				$normal = true;
 	         			}
 	         		}
-	         		$tmp_array = array();
-	            	$tag_manager = $environment->getTagManager();
-	               	$tag_item = $tag_manager->getItem($params['seltag_'.$i]);
-	        		$tmp_array['name'] = $view_object->_text_as_html_short($tag_item->getTitle());
-	         		$tmp_array['type'] = 'seltag';
-	 				$tmp_array['link_parameter'] = $link_parameter_text;
-					$restriction_array[] = $tmp_array;
+	         		
+	         		if($normal === true) {
+	         			$i = 0;
+	         			while ( !isset($params['seltag_'.$i]) ){
+	         				$i++;
+	         			}
+	         			$new_params = $params;
+	         			unset($new_params['seltag_'.$i]);
+	         			unset($new_params['seltag']);
+	         			$link_parameter_text = '';
+	         			if ( count($new_params) > 0 ) {
+	         				foreach ($new_params as $key => $parameter) {
+	         					$link_parameter_text .= '&'.$key.'='.$parameter;
+	         				}
+	         			}
+	         			$tmp_array = array();
+	         			$tag_manager = $environment->getTagManager();
+	         			$tag_item = $tag_manager->getItem($params['seltag_'.$i]);
+	         			$tmp_array['name'] = $view_object->_text_as_html_short($tag_item->getTitle());
+	         			$tmp_array['type'] = 'seltag';
+	         			$tmp_array['link_parameter'] = $link_parameter_text;
+	         			$restriction_array[] = $tmp_array;
+	         		} else {
+	         			$new_params = $params;
+	         			unset($new_params['seltag']);
+	         			$link_parameter_text = '';
+	         			if ( count($new_params) > 0 ) {
+	         				foreach ($new_params as $key => $parameter) {
+	         					$link_parameter_text .= '&'.$key.'='.$parameter;
+	         				}
+	         			}
+	         			$tmp_array = array();
+	         			$tag_manager = $environment->getTagManager();
+	         			$tag_item = $tag_manager->getItem($params['seltag']);
+	         			$tmp_array['name'] = $view_object->_text_as_html_short($tag_item->getTitle());
+	         			$tmp_array['type'] = 'seltag';
+	         			$tmp_array['link_parameter'] = $link_parameter_text;
+	         			$restriction_array[] = $tmp_array;
+	         		}
 	         	}
 	         	if ( isset($params['selstatus']) and $params['selstatus'] != '-1' and $params['selstatus'] != '0' and !empty($params['selstatus']) and $environment->current_module == "todo" ){
 	            	$new_params = $params;
