@@ -5,6 +5,11 @@
 {foreach $params as $param}{if $param@key == $key}&{$key}={$value}{else}&{$param@key}={$param}{/if}{/foreach}
 {/function}
 
+{function name=restriction_params}
+{$add=true}{foreach $params as $param}{if $param@key == $key}&{$key}={$value}{$add=false}{else}&{$param@key}={$param}{/if}{/foreach}
+{if $add == true}&{$key}={$value}{/if}
+{/function}
+
 {function name=build_user_link}
 	{if $status == 'user_is_root'}
 		{$user_name}{elseif $status == 'user_disabled'}

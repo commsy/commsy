@@ -365,12 +365,12 @@
 						
 								$count++;
 							}
-								
+							
 							if(!mysql_query($query)) {
 								echo $query . "\n";
 								echo mysql_error(); exit;
 							}
-								
+							
 							$this->displayProgress($progress, $indexing_size);
 							$progress++;
 						}

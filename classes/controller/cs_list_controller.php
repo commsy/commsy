@@ -1375,7 +1375,7 @@
    				$this->_list_parameter_arrray['selinstitution'] = '';
    				$this->_list_parameter_arrray['seltopic'] = '';
    				$this->_list_parameter_arrray['last_selected_tag'] = '';
-   				$this->_list_parameter_arrray['$seltag_array'] = array();
+   				$this->_list_parameter_arrray['seltag_array'] = array();
    				$this->_list_parameter_arrray['sel_activating_status'] = '';
 			} else {
    				$this->_list_parameter_arrray['sel_activating_status'] = '';
@@ -1402,6 +1402,14 @@
    				}
 
    				// Find current tag selection
+   				if(isset($_GET['seltag']) && !empty($_GET['seltag'])) {
+   					$this->_list_parameter_arrray['last_selected_tag'] = $_GET['seltag'];
+   				} else {
+   					$this->_list_parameter_arrray['last_selected_tag'] = '';
+   					$this->_list_parameter_arrray['seltag_array'] = array();
+   				}
+   				
+   				/*
     			$last_selected_tag = '';
 				if ( isset($_GET['seltag']) and $_GET['seltag'] =='yes') {
       				$i = 0;
@@ -1422,6 +1430,7 @@
       				$this->_list_parameter_arrray['last_selected_tag'] = '';
       				$this->_list_parameter_arrray['seltag_array'] = array();
    				}
+   				*/
 
 	   			$context_item = $environment->getCurrentContextItem();
    				$current_room_modules = $context_item->getHomeConf();

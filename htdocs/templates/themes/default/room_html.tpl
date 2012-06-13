@@ -197,7 +197,7 @@
 								<div class="portlet_rc_body{if $h} hidden{/if}">
 									{foreach $room.buzzwords as $buzzword}
 										{block name=sidebar_buzzwordbox_buzzword}
-											<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=index&selbuzzword={$buzzword.to_item_id}" class="keywords_s{$buzzword.class_id}">{$buzzword.name}</a>
+											<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=index{restriction_params params=$environment.params_array key=selbuzzword value=$buzzword.to_item_id}" class="keywords_s{$buzzword.class_id}">{$buzzword.name}</a>
 										{/block}
 									{foreachelse}
 										___COMMON_NONE___
@@ -237,7 +237,7 @@
 												{foreach $nodes as $node}
 													<li	id="node_{$node.item_id}"
 														{if $node.children|count > 0}class="folder"{/if}
-														data="url:'commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=index&name=selected&seltag_{$level}={$node.item_id}&seltag=yes'">{$node.title}
+														data="url:'commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=index{restriction_params params=$environment.params_array key=seltag value=$node.item_id}'">{$node.title}
 													{if $node.children|count > 0}	{* recursive call *}
 														{tag_tree nodes=$node.children level=$level+1}
 													{/if}

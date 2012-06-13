@@ -148,7 +148,8 @@
 			$this->assign('environment', 'cid', $this->_environment->getCurrentContextID());
 			$this->assign('environment', 'function', $this->_environment->getCurrentFunction());
 			$this->assign('environment', 'module', $this->_environment->getCurrentModule());
-			$this->assign('environment', 'params', $this->_environment->getCurrentparameterString());
+			$this->assign('environment', 'params', $this->_environment->getCurrentParameterString());
+			$this->assign('environment', 'params_array', $this->_environment->getCurrentParameterArray());
 			$this->assign('environment', 'username', $current_user->getFullName());
 			$this->assign('environment', 'user_item_id', $current_user->getItemID());
 			$this->assign('environment', 'user_picture', $current_user->getPicture());
