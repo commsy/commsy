@@ -212,6 +212,9 @@
 									<a href="" title="___COMMON_EDIT___" class="btn_body_rc"><img src="{$basic.tpl_path}img/btn_edit_rc.gif" alt="close" /></a>
 		-->
 								<div class="portlet_rc_body{if $h} hidden{/if}">
+									<div class="tree"></div>
+								
+								
 									<div id="tag_tree">
 										{block name=sidebar_tagbox_treefunction}
 											{* Tags Function *}

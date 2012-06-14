@@ -13,7 +13,7 @@ define([	"dojo/_base/declare",
 			console.log('test');
 		},
 		
-		getHTMLFromAJAX: function(fct, action, data, callback) {			
+		AJAXRequest: function(fct, action, data, callback) {
 			// execute a HTTP POST request
 			var request = xhr.post({
 				url:		"commsy.php?cid=" + this.uri_object.cid + "&mod=ajax&fct=" + fct + "&action=" + action,
@@ -28,7 +28,7 @@ define([	"dojo/_base/declare",
 			// setup deferred
 			request.then(function(response) {
 				if(response.status === "success") {
-					callback(response.html);
+					callback(response.data);
 				}
 				
 			}, function(errorMessage) {

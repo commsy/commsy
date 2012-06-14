@@ -1355,7 +1355,10 @@ var Accounts = function() {
 			
 			// send action and id list via ajax
 			handle.ajaxRequest('performUserAction', { ids: handle.store.selected_ids, action: action }, function() {
-				
+				// load mail popup information
+				handle.ajaxRequestHTML({ ids: handle.store.selected_ids, action: action, module: 'configuration_mail' }, function(html) {
+					jQuery('div#popup_accounts_mail').html(html);
+				});
 			});
 		},
 
@@ -1372,13 +1375,34 @@ var Accounts = function() {
 				error: function(jqXHR, textStatus, errorThrown) {
 					console.log("error while getting popup");
 				},
-				success: function(data, status) {
-					if(status === 'success') {
+				success: function(ret, status) {
+					if(ret.status === 'success') {
 						if(callback !== null) {
-							callback(data);
+							callback(ret.data);
 						}
+					}
+				}
+			});
+		},
+		
+		ajaxRequestHTML: function(data, callback) {
+			var handle = this;
 
-						return data;
+			jQuery.ajax({
+				type: 'POST',
+				url: 'commsy.php?cid=' + handle.cid + '&mod=ajax&fct=popup&action=getHTML',
+				data: JSON.stringify(data),
+				contentType: 'application/json; charset=utf-8',
+				dataType: 'json',
+				async: false,
+				error: function(jqXHR, textStatus, errorThrown) {
+					console.log("error while getting popup");
+				},
+				success: function(ret, status) {
+					if(ret.status === 'success') {
+						if(callback !== null) {
+							callback(ret.html);
+						}
 					}
 				}
 			});

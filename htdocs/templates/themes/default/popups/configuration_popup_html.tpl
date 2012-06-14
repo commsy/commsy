@@ -274,6 +274,11 @@
 
 							<div class="tab hidden" id="accounts">
 								<div id="content_row_three">
+									<div id="popup_accounts_mail"></div>
+								</div>
+								
+								
+								<div id="content_row_three">
 
 									<div id="popup_accounts">
 										<div id="content_row_two_max">

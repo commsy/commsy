@@ -44,10 +44,20 @@
 		public function setErrorReturn($code, $reason, $detail) {
 			// setup return
 			$return = array(
-					'status'	=> 'error',
-					'code'		=> $code,
-					'reason'	=> $reason,
-					'detail'	=> $detail
+				'status'	=> 'error',
+				'code'		=> $code,
+				'reason'	=> $reason,
+				'detail'	=> $detail
+			);
+				
+			$this->_return = json_encode($return);
+		}
+		
+		public function setSuccessfullDataReturn($data = array()) {
+			// setup return
+			$return = array(
+				'status'	=> 'success',
+				'data'		=> $data
 			);
 				
 			$this->_return = json_encode($return);

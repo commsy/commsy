@@ -20,7 +20,7 @@ define([	"dojo/_base/declare",
 			on(this.popup_button_node, "click", lang.hitch(this, function(event) {
 				if(this.is_loaded === false) {
 					// setup ajax request for getting html
-					this.getHTMLFromAJAX("popup", "getHTML", data, lang.hitch(this, function(html) {
+					this.AJAXRequest("popup", "getHTML", data, lang.hitch(this, function(html) {
 						// append html to node
 						this.popup_content_node.innerHTML = html;
 						

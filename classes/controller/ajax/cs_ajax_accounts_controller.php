@@ -26,9 +26,9 @@
 			$translations['USER_LIST_ACTION_EMAIL_SEND'] = $translator->getMessage('USER_LIST_ACTION_EMAIL_SEND');
 			
 			$return['translations'] = $translations;
-			$return['success'] = true;
 			
-			echo json_encode($return);
+			$this->setSuccessfullDataReturn($return);
+			echo $this->_return;
 		}
 
 		public function actionPerformUserAction() {
@@ -96,6 +96,9 @@
 				
 				$this->performAction($action, $user);
 			}
+			
+			
+			
 			
 			/*
 			 * $send_to = $user->getEmail();
@@ -285,20 +288,8 @@
 			unset($user);
 			 */
 			
-			
-			
-			foreach ( $action_array['selected_ids'] as $user_item_id ) {
-				$user = $user_manager->getItem($user_item_id);
-				if ( isset($user) ) {
-					$last_status = $user->getStatus();
-				}
-			}
-			
-			// check if send mail etc...
-
-			$return['success'] = true;
-
-			echo json_encode($return);
+			$this->setSuccessfullDataReturn();
+			echo $this->_return;
 		}
 		
 		private function performAction($action, $user) {
@@ -496,7 +487,7 @@
 			}
 			
 			// if commsy user is rejected, reject all accounts in project and community rooms
-			if($user->isRejectd() && $this->_environment->inPortal()) {
+			if($user->isRejected() && $this->_environment->inPortal()) {
 				$user_list = $user->getRelatedUserList();
 				$user_item = $user_list->getFirst();
 				
@@ -594,9 +585,8 @@
 			}
 			$return['paging']['pages'] = ceil($count_all_shown / $interval);
 
-			$return['success'] = true;
-
-			echo json_encode($return);
+			$this->setSuccessfullDataReturn($return);
+			echo $this->_return;
 		}
 
 		/*
