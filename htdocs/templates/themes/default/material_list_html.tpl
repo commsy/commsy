@@ -152,15 +152,17 @@
 			{/if}
 			<div class="column_{$w}">
 				<p>
-					{if $item.activated}
+					{if $item.activated and (!$environment.is_guest or $item.worldpublic)}
 						<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&{$environment.params}&iid={$item.iid}">{$item.title}</a>
-					{else}
+					{elseif (!$environment.is_guest or $item.worldpublic)}
 						{if $environment.is_moderator || $environment.user_item_id == $item.creator_id}
 							<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&{$environment.params}&iid={$item.iid}">{$item.title}</a>
 						{else}
 							{$item.title}
 						{/if}
 						<br/>{$item.activated_text}
+					{else}
+						{$item.title}
 					{/if}
 				</p>
 			</div>
@@ -179,9 +181,13 @@
 									<ul>
 									{foreach $item.attachment_infos as $file}
 										<li>
-											<a class="{if $file.lightbox}lightbox_{$item.iid}{/if}" href="{$file.file_url}" target="blank">
+											{if !$environment.is_guest or $item.worldpublic}
+												<a class="{if $file.lightbox}lightbox_{$item.iid}{/if}" href="{$file.file_url}" target="blank">
+											{/if}
 												{$file.file_icon} {$file.file_name}
-											</a>
+											{if !$environment.is_guest or $item.worldpublic}
+												</a>
+											{/if}
 											({$file.file_size} KB)
 										</li>
 									{/foreach}

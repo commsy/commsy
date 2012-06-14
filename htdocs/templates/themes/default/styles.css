@@ -2405,6 +2405,7 @@ a#sort_down {
 
 .post_content h4 {
     font-size: 12px;
+    font-weight:bold;
     padding: 5px 0px;
     }
 
@@ -3212,6 +3213,7 @@ a#tm_user:hover .tm_dropdown {
 
 #tm_icons_bar {
     float: right;
+    height: 27px;
     }
 
 #tm_icons_bar a {

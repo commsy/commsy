@@ -249,6 +249,7 @@
 					'attachment_infos'	=> $attachment_infos,
 					'workflow'			=> $this->getWorkflowInformation($item),
 					'activated'			=> !$item->isNotActivated(),
+					'worldpublic'		=> $item->isWorldPublic(),
 					'activated_text'	=> $activated_text,
 					'creator_id'		=> $item->getCreatorItem()->getItemID()
 				);

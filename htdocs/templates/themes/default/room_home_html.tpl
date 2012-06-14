@@ -39,11 +39,10 @@
                 <div class="clear"> </div>
 
                 <div class="list_wrap{if $rubric.hidden} hidden{/if}">
-
 	                {foreach $rubric.items as $item}
 	                	<div class="{if $item@iteration is odd}row_odd{else}row_even{/if} {if $item@iteration is odd}odd_sep_home{else}even_sep_home{/if}">
 							<div class="column_new_home">
-								{if $item.noticed.show_info}
+								{if $item.noticed.show_info and !$environment.is_guest}
 									<a class="new_item">
 									{if $item.noticed.status == "new" and ($item.noticed.annotation_info.count_new or $item.noticed.annotation_info.count_changed)}
 									<img title="" class="new_item" src="{$basic.tpl_path}img/flag_neu_a.gif" alt="*" /></a>
@@ -113,7 +112,11 @@
 		                        	</p>
 	                        	{/if}
 	                        	<p>
-		                            <a href="commsy.php?cid={$environment.cid}&mod={$rubric@key}&fct=detail&iid={$item.iid}">{$item.column_1}</a>
+									{if $rubric@key != 'material' or !$environment.is_guest or $item.worldpublic}
+		                            	<a href="commsy.php?cid={$environment.cid}&mod={$rubric@key}&fct=detail&iid={$item.iid}">{$item.column_1}</a>
+									{else}
+										{$item.column_1}
+									{/if}
 	                            </p>
 	                        </div>
 							<div class="column_45">
@@ -132,9 +135,13 @@
 													<ul>
 													{foreach $item.attachment_infos as $file}
 														<li>
-															<a class="{if $file.lightbox}lightbox_{$item.iid}{/if}" href="{$file.file_url}" target="blank">
+															{if $rubric@key != 'material' or !$environment.is_guest or $item.worldpublic}
+																<a class="{if $file.lightbox}lightbox_{$item.iid}{/if}" href="{$file.file_url}" target="blank">
+															{/if}
 																{$file.file_icon} {$file.file_name}
-															</a>
+															{if $rubric@key != 'material' or !$environment.is_guest or $item.worldpublic}
+																</a>
+															{/if}
 															({$file.file_size} KB)
 														</li>
 													{/foreach}
