@@ -289,19 +289,7 @@ class cs_popup_user_controller implements cs_rubric_popup_controller {
         $general_information = array();
 
         // max upload size
-        $val = ini_get('upload_max_filesize');
-        $val = trim($val);
-        $last = $val[mb_strlen($val) - 1];
-        switch($last) {
-            case 'k':
-            case 'K':
-                $val *= 1024;
-                break;
-            case 'm':
-            case 'M':
-                $val *= 1048576;
-                break;
-        }
+        $val = $current_context->getMaxUploadSizeInBytes();
         $meg_val = round($val / 1048576);
         $general_information['max_upload_size'] = $meg_val;
 
@@ -395,7 +383,7 @@ class cs_popup_user_controller implements cs_rubric_popup_controller {
 			),
 			'file_upload'	=> array()
 		);
-		
+
 		return $return[$sub];
     }
 

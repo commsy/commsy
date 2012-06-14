@@ -234,19 +234,7 @@ class cs_discussion_form extends cs_rubric_form {
       if ( $this->_is_new_discussion ) {
         // files
          $this->_form->addAnchor('fileupload');
-         $val = ini_get('upload_max_filesize');
-         $val = trim($val);
-         $last = $val[mb_strlen($val)-1];
-         switch($last) {
-            case 'k':
-            case 'K':
-               $val = $val * 1024;
-               break;
-            case 'm':
-            case 'M':
-               $val = $val * 1048576;
-               break;
-         }
+         $val = $this->_environment->getCurrentContextItem()->getMaxUploadSizeInBytes();
          $meg_val = round($val/1048576);
          if ( !empty($this->_file_array) ) {
             $this->_form->addCheckBoxGroup('filelist',$this->_file_array,'',$this->_translator->getMessage('MATERIAL_FILES'),$this->_translator->getMessage('MATERIAL_FILES_DESC', $meg_val),false,false);

@@ -5,7 +5,7 @@ class cs_popup_profile_controller {
 	private $_user = null;
 	private $_config = array();
 	private $_data = array();
-	
+
 	/**
 	* constructor
 	*/
@@ -13,7 +13,7 @@ class cs_popup_profile_controller {
 		$this->_environment = $environment;
 		$this->_popup_controller = $popup_controller;
 	}
-	
+
 	public function save($form_data, $additional) {
 // 		// function for page edit
 // 		// - to check files for virus
@@ -21,20 +21,20 @@ class cs_popup_profile_controller {
 // 			include_once('functions/page_edit_functions.php');
 // 		}
 // 		$is_saved = false;
-		
+
 // 		if (!empty($_POST['option'])) {
 // 			$command = $_POST['option'];
 // 		} else {
 // 			$command = '';
 // 		}
-		
+
 // 		// Coming back from attaching items
 // 		if ( !empty($_GET['backfrom']) ) {
 // 			$backfrom = $_GET['backfrom'];
 // 		} else {
 // 			$backfrom = false;
 // 		}
-		
+
 // 		if (!empty($_GET['uid'])) {
 // 			$iid = $_GET['uid'];
 // 		} elseif (!empty($_POST['uid'])) {
@@ -43,7 +43,7 @@ class cs_popup_profile_controller {
 // 			include_once('functions/error_functions.php');
 // 			trigger_error('No user selected!',E_USER_ERROR);
 // 		}
-		
+
 // 		if (!empty($_GET['profile_page'])) {
 // 			$profile_page = $_GET['profile_page'];
 // 		}  else {
@@ -52,10 +52,10 @@ class cs_popup_profile_controller {
 
 		$user_item = $this->_environment->getCurrentUserItem();
 		$current_context = $this->_environment->getCurrentContextItem();
-		
+
 // 		// Get the translator object
 // 		$translator = $environment->getTranslationObject();
-		
+
 		// check context
 		if(!$current_context->isOpen()) {
 			// TODO:
@@ -69,7 +69,7 @@ class cs_popup_profile_controller {
 			// 			$page->add($errorbox);
 			// 			$command = 'error';
 		}
-		
+
 		// access granted
 		else {
 			// 			// include form
@@ -77,23 +77,23 @@ class cs_popup_profile_controller {
 			// 			$class_params['environment'] = $environment;
 			// 			$form = $class_factory->getClass(PROFILE_FORM,$class_params);
 			// 			unset($class_params);
-			
+
 			// 			if ( isset($error_message_for_profile_form)
 			// 					and !empty($error_message_for_profile_form)
 			// 			) {
 			// 				$form->setFailure('email','',$error_message_for_profile_form);
 			// 			}
-			
+
 			// 			$form->setProfilePageName($profile_page);
-			
+
 			// 			$current_portal_item = $environment->getCurrentPortalItem();
-			
+
 			// 			// cancel edit process
 			// 			if ( isOption($command, $translator->getMessage('COMMON_CANCEL_BUTTON')) ) {
 			// 				$params = $environment->getCurrentParameterArray();
 			// 				redirect($environment->getCurrentContextID(), $environment->getCurrentModule(),$environment->getCurrentFunction(), $params);
 			// 			}
-			
+
 			// 			// lock user (room)
 			// 			elseif ( isOption($command, $translator->getMessage('PREFERENCES_LOCK_BUTTON_ROOM')) ) {
 			// 				$user_item->reject();
@@ -101,14 +101,14 @@ class cs_popup_profile_controller {
 			// 				unset($user_item);
 			// 				redirect($current_portal_item->getItemID(), 'home','index', array('room_id' => $environment->getCurrentContextID()));
 			// 			}
-			
+
 			// 			// delte user (room)
 			// 			elseif ( isOption($command, $translator->getMessage('PREFERENCES_REALLY_DELETE_BUTTON_ROOM')) ) {
 			// 				$user_item->delete();
 			// 				unset($user_item);
 			// 				redirect($current_portal_item->getItemID(), 'home','index', array('room_id' => $environment->getCurrentContextID()));
 			// 			}
-			
+
 			// 			// lock user (portal)
 			// 			elseif ( isOption($command, $translator->getMessage('PREFERENCES_LOCK_BUTTON',$current_portal_item->getTitle())) ) {
 			// 				$portal_user_item = $user_item->getRelatedCommSyUserItem();
@@ -124,7 +124,7 @@ class cs_popup_profile_controller {
 			// 				$environment->setSessionItem(NULL);
 			// 				redirect($environment->getCurrentPortalID(), 'home','index', array());
 			// 			}
-			
+
 			// 			// delete user (portal)
 			// 			elseif ( isOption($command, $translator->getMessage('PREFERENCES_REALLY_DELETE_BUTTON',$current_portal_item->getTitle())) ) {
 			// 				$authentication = $environment->getAuthenticationObject();
@@ -139,13 +139,13 @@ class cs_popup_profile_controller {
 			// 				redirect($environment->getCurrentPortalID(), 'home','index', array());
 			// 			}
 			if(false) {
-				
+
 			}
-			
+
 			// save user
 			else {
 				$tab = $additional['tab'];
-				
+
 				switch($tab) {
 					/**** ACCOUNT ****/
 					case 'account':
@@ -153,49 +153,49 @@ class cs_popup_profile_controller {
 							if($this->_popup_controller->checkFormData('merge')) {
 								$authentication = $this->_environment->getAuthenticationObject();
 								$current_user = $this->_environment->getCurrentUserItem();
-								
+
 								if(isset($form_data['auth_source'])) $auth_source_old = $form_data['auth_source'];
 								else $auth_source_old = $current_context->getAuthDefault();
-								
+
 								$authentication->mergeAccount($current_user->getUserID(), $current_user->getAuthSource(), $form_data['merge_user_id'], $auth_source_old);
-								
+
 								// set return
                 				$this->_popup_controller->setSuccessfullItemIDReturn($current_user->getItemID());
 							}
 						} else {
 							if($this->_popup_controller->checkFormData('account')) {
 								$authentication = $this->_environment->getAuthenticationObject();
-								
+
 								// password
 								if(!empty($form_data['new_password'])) {
 									$auth_manager = $authentication->getAuthManager($current_user->getAuthSource());
 									$auth_manager->changePassword($form_data['user_id'], $form_data['new_password']);
 									$error_number = $auth_manager->getErrorNumber();
-									
+
 									if(!empty($error_number)) {
 										// TODO:$error_string .= $translator->getMessage('COMMON_ERROR_DATABASE').$error_number.'<br />';
 									}
 								}
-								
+
 								if(!$this->_environment->inPortal()) $user = $this->_environment->getPortalUserItem();
 								else $user = $this->_environment->getCurrentUserItem();
-								
+
 								// user id
 								if(!empty($form_data['user_id']) && $form_data['user_ID'] != $user->getUserID()) {
 									if($authentication->changeUserID($form_data['user_id'], $user)) {
 										$session_manager = $this->_environment->getSessionManager();
 										$session = $this->_environment->getSessionItem();
-										
+
 										$session_id_old = $session->getSessionID();
 										$session_manager->delete($session_id_old, true);
 										$session->createSessionID($form_data['user_id']);
-										
+
 										$cookie = $session->getValue('cookie');
 										if($cookie == 1) $session->setValue('cookie', 2);
-										
+
 										$session_manager->save($session);
 										unset($session_manager);
-										
+
 										$user->setUserID($form_data['user_id']);
 										require_once('functions/misc_functions.php');
 										plugin_hook('user_save', $portal_user);
@@ -203,20 +203,20 @@ class cs_popup_profile_controller {
 								} else {
 									// $success_1 = true
 								}
-								
+
 								$save = false;
-								
+
 								// language
 								if(!empty($form_data['language']) && $form_data['language'] != $user->getLanguage()) {
 									$user->setLanguage($form_data['language']);
 									$save = true;
-									
+
 									if($this->_environment->inPrivateRoom()) {
 										$current_user->setLanguage($form_data['language']);
 										$current_user->save();
 									}
 								}
-								
+
 								// mail settings
 								if(!empty($form_data['mail_account'])) {
 									if($user->getAccountWantMail() == 'no') {
@@ -229,7 +229,7 @@ class cs_popup_profile_controller {
 										$save = true;
 									}
 								}
-								
+
 								if(!empty($form_data['mail_room'])) {
 									if($user->getOpenRoomWantMail() == 'no') {
 										$user->setOpenRoomWantMail('yes');
@@ -241,68 +241,68 @@ class cs_popup_profile_controller {
 										$save = true;
 									}
 								}
-								
+
 								$change_name = false;
-								
+
 								// forname
 								if(!empty($form_data['forname']) && $user->getFirstName() != $form_data['forname']) {
 									$user->setFirstName($form_data['forname']);
 									$change_name = true;
 									$save = true;
 								}
-								
+
 								// surname
 								if(!empty($form_data['surname']) && $user->getLastName() != $form_data['surname']) {
 									$user->setLastName($form_data['surname']);
 									$change_name = true;
 									$save = true;
 								}
-								
+
 								// new upload
 								if(isset($form_data['new_upload'])) {
 									if($form_data['new_upload'] == 'yes') $user->turnNewUploadOn();
 									elseif($form_data['new_upload'] == 'no') $user->turnNewUploadOff();
-									
+
 									$save = true;
 								}
-								
+
 								if(!empty($form_data['auto_save'])) {
 									if($form_data['auto_save'] == 'yes') $user->turnAutoSaveOn();
 									elseif($form_data['auto_save'] == 'no') $user->turnAutoSaveOff();
-									
+
 									$save = true;
 								}
-								
+
 								if($save === true) {
 									$user->save();
 								} else {
 									// $success_2 = true;
 								}
-								
+
 								// change firstname and lastname in all other user_items of this user
 								if($change_name === true) {
 									$user_manager = $this->_environment->getUserManager();
 									$dummy_user = $user_manager->getNewItem();
-									
+
 									// forname
 									$value = $form_data['forname'];
 									if(empty($value)) $value = -1;
 									$dummy_user->setFirstName($value);
-									
+
 									// surname
 									$value = $form_data['surname'];
 									if(empty($value)) $value = -1;
 									$dummy_user->setLastName($value);
-									
+
 									$user->changeRelatedUser($dummy_user);
 								}
-								
+
 								// set return
                 				$this->_popup_controller->setSuccessfullItemIDReturn($user->getItemID());
 							}
 						}
 						break;
-					
+
 					/**** USER PICTURE ****/
 					case 'user_picture':
 						if($this->_popup_controller->checkFormData('user_picture')) {
@@ -312,25 +312,25 @@ class cs_popup_profile_controller {
 								$new_temp_name = $_FILES['form_data']['tmp_name']['picture'] . '_TEMP_' . $_FILES['form_data']['name']['picture'];
 								move_uploaded_file($_FILES['form_data']['tmp_name']['picture'], $new_temp_name);
 								$_FILES['form_data']['tmp_name']['picture'] = $new_temp_name;
-								
+
 								$session_item = $this->_environment->getSessionItem();
 								if(isset($session_item)) {
 									$current_iid = $this->_environment->getCurrentContextID();
 									//$session_item->setValue($environment->getCurrentContextID().'_user_'.$iid.'_upload_temp_name',$new_temp_name);
 									//$session_item->setValue($environment->getCurrentContextID().'_user_'.$iid.'_upload_name',$_FILES['upload']['name']);
 								}
-								
+
 								// resize image to a maximum width of 150px and keep ratio
 								$srcfile = $_FILES['form_data']['tmp_name']['picture'];
 								$target = $_FILES['form_data']['tmp_name']['picture'];
-								
+
 								$size = getimagesize($srcfile);
 								list($x_orig, $y_orig, $type) = $size;
-								
+
 								$verhaeltnis = $y_orig / $x_orig;
 								$max_width = 150;
 								$ratio = 1.334; // 3:4
-								
+
 								if($verhaeltnis < $ratio) {
 									// wider than 1:$ratio
 									$source_width = ($y_orig * $max_width) / ($max_width * $ratio);
@@ -344,7 +344,7 @@ class cs_popup_profile_controller {
 									$source_x = 0;
 									$source_y = ($y_orig - $source_height) / 2;
 								}
-								
+
 								// create image
 								switch($type) {
 									case '1':
@@ -357,54 +357,54 @@ class cs_popup_profile_controller {
 										$im = imagecreatefrompng($srcfile);
 										break;
 								}
-								
+
 								$newimg = imagecreatetruecolor($max_width, ($max_width * $ratio));
 								imagecopyresampled($newimg, $im, 0, 0, $source_x, $source_y, $max_width, ceil($max_width * $ratio), $source_width, $source_height);
 								imagepng($newimg, $target);
-								
+
 								// clean up
 								imagedestroy($im);
 								imagedestroy($newimg);
-								
+
 								// determ new file name
 								$filename_info = pathinfo($_FILES['form_data']['name']['picture']);
 								$filename = 'cid' . $this->_environment->getCurrentContextID() . '_' . $user_item->getItemID() . '.' . $filename_info['extension'];
-								
+
 								// copy file and set picture
 								$disc_manager = $this->_environment->getDiscManager();
-								
+
 								$disc_manager->copyFile($_FILES['form_data']['tmp_name']['picture'], $filename, true);
 								$user_item->setPicture($filename);
-								
+
 								$portal_user = $user_item->getRelatedCommSyUserItem();
 								if(isset($portal_user)) {
 									if($disc_manager->copyImageFromRoomToRoom($filename, $portal_user->getContextID())) {
 										$value_array = explode('_', $filename);
-										
+
 										$old_room_id = $value_array[0];
 										$old_room_id = str_replace('cid', '', $old_room_id);
 										$valu_array[0] = 'cid' . $portal_user->getContextID();
 										$new_picture_name = implode('_', $value_array);
-										
+
 										$portal_user->setPicture($new_picture_name);
-										
+
 										$portal_user->save();
 									}
 								}
-								
+
 								// save
 								$user_item->save();
 							}
-							
+
 							// set return
                				$this->_popup_controller->setSuccessfullItemIDReturn($user_item->getItemID());
 						}
 						break;
-					
+
 					/**** USER ****/
 					case 'user':
 						if($this->_popup_controller->checkFormData('user')) {
-							
+
 							// 						if ( $correct
 							// 								and empty($_FILES['upload']['tmp_name'])
 							// 								and !empty($_POST['hidden_upload_name'])
@@ -417,32 +417,32 @@ class cs_popup_profile_controller {
 							// 								$session_item->unsetValue($environment->getCurrentContextID().'_user_'.$iid.'_upload_name');
 							// 							}
 							// 						}
-							
+
 							global $c_virus_scan;
 							if(!isset($c_virus_scan) || !c_virus_scan /*or empty($_FILES['upload']['tmp_name'])
 							// 										or empty($_FILES['upload']['name'])
 							// 										or page_edit_virusscan_isClean($_FILES['upload']['tmp_name'],$_FILES['upload']['name'])*/) {
 								$portal_user = $user_item->getRelatedCommSyUserItem();
-								
+
 								function setValue($user_item, $portal_user_item, $method, $value) {
 									if(isset($value) && !empty($value)) {
 										// set for user
 										call_user_func_array(array($user_item, $method), array($value));
-										
+
 										// set for portal user
 										call_user_func_array(array($portal_user_item, $method), array($value));
 									}
 								}
-								
+
 								setValue($user_item, $portal_user, 'setTitle', $form_data['title']);
 								setValue($user_item, $portal_user, 'setBirthday', $form_data['birthday']);
-								
+
 								setValue($user_item, $portal_user, 'setEmail', $form_data['mail']);
 								if($portal_user->hasToChangeEmail()) {
 									$portal_user_item->unsetHasToChangeEmail();
 									$form_data['mail_all'] = 1;
 								}
-								
+
 								setValue($user_item, $portal_user, 'setTelephone', $form_data['telephone']);
 								setValue($user_item, $portal_user, 'setCellularphone', $form_data['cellularphone']);
 								setValue($user_item, $portal_user, 'setStreet', $form_data['street']);
@@ -458,64 +458,64 @@ class cs_popup_profile_controller {
 								setValue($user_item, $portal_user, 'setJabber', $form_data['jabber']);
 								setValue($user_item, $portal_user, 'setHomepage', $form_data['homepage']);
 								setValue($user_item, $portal_user, 'setDescription', $form_data['description']);
-								
+
 								// delete picture handling
 								if(isset($form_data['delete_picture']) && $user_item->getPicture()) {
 									$disc_manager = $this->_environment->getDiscManager();
-									
+
 									// unlink file
 									if($disc_manager->existsFile($user_item->getPicture())) $disc_manager->unlinkFile($user_item->getPicture());
-									
+
 									// set non picture
 									$user_item->setPicture('');
 									if(isset($portal_user)) $portal_user->setPicture('');
 								}
-								
+
 								// set modificator and modification date
 								$user_item->setModificationDate(getCurrentDateTimeInMySQL());
 								$portal_user->setModificationDate(getCurrentDateTimeInMySQL());
-								
+
 								// save
 								$user_item->save();
 								$portal_user->save();
-								
+
 								// 							if (isset($_POST['want_mail_get_account'])) {
 								// 								$user_item->setAccountWantMail($_POST['want_mail_get_account']);
 								// 							}
-								
-								
-								
+
+
+
 								// 							// email visibility
 								// 							if (isset($_POST['email_visibility']) and !empty($_POST['email_visibility'])) {
 								// 								$user_item->setEmailNotVisible();
 								// 							} else {
 								// 								$user_item->setEmailVisible();
 								// 							}
-								
+
 								/* change all option */
 								// get a dummy user
 								$user_manager = $this->_environment->getUserManager();
 								$dummy_user = $user_manager->getNewItem();
-								
+
 								function setChangeAllValue($user_item, $dummy_user_item, $method_set, $method_get, $checked) {
 									if(isset($checked)) {
 										$value = call_user_func_array(array($user_item, $method_get), array());
-										
+
 										if(empty($value)) $value = -1;
-										
+
 										call_user_func_array(array($dummy_user, $method_set), array($value));
 									}
 								}
-								
+
 								setChangeAllValue($user_item, $dummy_user, 'setTitle', 'getTitle', $form_data['title_all']);
 								setChangeAllValue($user_item, $dummy_user, 'setBirthday', 'getBirthday', $form_data['birthday_all']);
-								
+
 								setChangeAllValue($user_item, $dummy_user, 'setEmail', 'getEmail', $form_data['mail_all']);
 								if(isset($form_data['mail_all'])) {
 									if(!$user_item->isEmailVisible()) $dummy_user->setEmailNotVisible();
 									else $dummy_user->setEMailVisibile();
 								}
-								
+
 								setChangeAllValue($user_item, $dummy_user, 'setTelephone', 'getTelephone', $form_data['telephone_all']);
 								setChangeAllValue($user_item, $dummy_user, 'setCellularphone', 'getCellularphone', $form_data['cellularphone_all']);
 								setChangeAllValue($user_item, $dummy_user, 'setStreet', 'getStreet', $form_data['street_all']);
@@ -531,8 +531,8 @@ class cs_popup_profile_controller {
 								setChangeAllValue($user_item, $dummy_user, 'setJabber', 'getJabber', $form_data['messenger_all']);
 								setChangeAllValue($user_item, $dummy_user, 'setHomepage', 'getHomepage', $form_data['homepage_all']);
 								setChangeAllValue($user_item, $dummy_user, 'setDescription', 'getDescription', $form_data['description_all']);
-								
-								
+
+
 								// 								if (isset($_POST['picture_change_all'])) {
 								// 									$value = $user_item->getPicture();
 								// 									if (empty($value)) {
@@ -541,12 +541,12 @@ class cs_popup_profile_controller {
 								// 									$dummy_user->setPicture($value);
 								// 								}
 								$user_item->changeRelatedUser($dummy_user);
-								
-								
+
+
 								// 							//Add modifier to all users who ever edited this item
 								// 							$manager = $environment->getLinkModifierItemManager();
 								// 							$manager->markEdited($user->getItemID());
-								
+
 								// 							// redirect
 								// 							$params = $environment->getCurrentParameterArray();
 								// 							if ($is_saved){
@@ -554,8 +554,8 @@ class cs_popup_profile_controller {
 								// 							}
 								// 							redirect($environment->getCurrentContextID(), $environment->getCurrentModule(),$environment->getCurrentFunction(), $params);
 							}
-							
-							
+
+
 							// set return
                 			$this->_popup_controller->setSuccessfullItemIDReturn($user_item->getItemID());
 						}
@@ -634,7 +634,7 @@ class cs_popup_profile_controller {
 						// 							$form->setWithPicture(false);
 						// 						}
 						// 					}
-							
+
 						// 					// Back from attaching groups
 						// 					// ??? IJ 22.05.2009
 						// 					elseif ( $backfrom == CS_GROUP_TYPE ) {
@@ -644,12 +644,12 @@ class cs_popup_profile_controller {
 						// 						$session_post_vars[CS_GROUP_TYPE] = $attach_ids;
 						// 						$form->setFormPost($session_post_vars);
 						// 					}
-							
+
 						// 					// first call
 						// 					elseif (!empty($iid) and $iid != 'NEW') { // change existing user
 						// 						$user_manager = $environment->getUserManager();
 						// 						$user_item = $user_manager->getItem($iid);
-						
+
 						// 						if(isset($_GET['show_profile']) && $_GET['show_profile'] == 'yes') {
 						// 							$user_manager->setContextLimit($environment->getCurrentPortalID());
 						// 							$user_manager->setUserIDLimit($user_item->getUserID());
@@ -660,7 +660,7 @@ class cs_popup_profile_controller {
 						// 								$user_item = $list->getFirst();
 						// 							}
 						// 						}
-						
+
 						// 						$form->setItem($user_item);
 						// 						$form->setIsModerator($current_user->isModerator());
 						// 						$picture = $user_item->getPicture();
@@ -671,39 +671,39 @@ class cs_popup_profile_controller {
 						// 					$form->prepareForm();
 						// 					$form->loadValues();
 						break;
-						
+
 					/**** NEWSLETTER ****/
 					case 'newsletter':
 						if($this->_popup_controller->checkFormData('newsletter')) {
 							$room_item = $user_item->getOwnRoom();
-							
+
 							$set_to = 'none';
 							if(isset($form_data['newsletter']) && !empty($form_data['newsletter'])) {
 								if($form_data['newsletter'] == 2) $set_to = 'weekly';
 								elseif($form_data['newsletter'] == 3) $set_to = 'daily';
 							}
-							
+
 							// set
 							$room_item->setPrivateRoomNewsletterActivity($set_to);
-							
+
 							// save
 							$room_item->save();
-							
+
 							// set return
                 			$this->_popup_controller->setSuccessfullItemIDReturn($room_item->getItemID());
 						}
 						break;
 				}
 			}
-			
-			
+
+
 			// 			// save user
 			// 			else {
 
 
-			
-			
-			
+
+
+
 			// 				$room_item = $environment->getCurrentContextItem();
 			// 				// Define rubric connections
 			// 				$rubric_connection = array();
@@ -732,81 +732,81 @@ class cs_popup_profile_controller {
 			// 					unset($params);
 			// 					$errorbox->setText($translator->getMessage('COMMON_EDIT_AS_MODERATOR'));
 			// 				}
-			
+
 			// 				$profile_view->setForm($form);
-			// 			}			
+			// 			}
 		}
 	}
-	
+
 	public function initPopup() {
 		$current_portal_item = $this->_environment->getCurrentPortalItem();
-		
+
 		// set configuration
 		$account = array();
-		
+
 		// set user item
 		if($this->_environment->inCommunityRoom() || $this->_environment->inProjectRoom()) {
 			$this->_user = $this->_environment->getPortalUserItem();
 		} else {
 			$this->_user = $this->_environment->getCurrentUserItem();
 		}
-		
+
 		// disable merge form only for root
 		$this->_config['show_merge_form'] = true;
 		if(isset($this->_user) && $this->_user->isRoot()) {
 			$this->_config['show_merge_form'] = false;
 		}
-		
+
 		// auth source
 		if(!isset($current_portal_item)) $current_portal_item = $this->_environment->getServerItem();
-		
+
 		#$this->_show_auth_source = $current_portal_item->showAuthAtLogin();
 		# muss angezeigt werden, sonst koennen mit der aktuellen Programmierung
 		# keine Acounts mit gleichen Kennungen aber unterschiedlichen Quellen
 		# zusammengelegt werden
 		$this->_config['show_auth_source'] = true;
-		
+
 		$auth_source_list = $current_portal_item->getAuthSourceListEnabled();
 		if(isset($auth_source_list) && !$auth_source_list->isEmpty()) {
 			$auth_source_item = $auth_source_list->getFirst();
-			
+
 			while($auth_source_item) {
 				$this->_data['auth_source_array'][] = array(
 					'value'		=> $auth_source_item->getItemID(),
 					'text'		=> $auth_source_item->getTitle());
-				
+
 				$auth_source_item = $auth_source_list->getNext();
 			}
 		}
 		$this->_data['default_auth_source'] = $current_portal_item->getAuthDefault();
-		
+
 		// password change form
 		$this->_config['show_password_change_form'] = false;
 		$current_auth_source_item = $current_portal_item->getAuthSource($this->_user->getAuthSource());
 		if(	(isset($current_auth_source_item) && $current_auth_source_item->allowChangePassword()) ||
 			$this->_user->isRoot()) {
-			
+
 			$this->_config['show_password_change_form'] = true;
 		}
-		
+
 		// account change form
 		$this->_config['show_account_change_form'] = false;
 		if(	(isset($current_auth_source_item) && $current_auth_source_item->allowChangeUserID()) ||
 			$this->_user->isRoot()) {
-			
+
 			$this->_config['show_account_change_form'] = true;
 		}
-		
+
 		// mail form
 		$this->_config['show_mail_change_form'] = false;
 		if($this->_user->isModerator()) {
 			$this->_config['show_mail_change_form'] = true;
 		}
-		
+
 		// assign template vars
 		$this->assignTemplateVars();
 	}
-	
+
 	public function getFieldInformation($sub) {
 		$return = array(
 			'newsletter'	=> array(
@@ -853,42 +853,30 @@ class cs_popup_profile_controller {
 			'user_picture'	=> array(
 			),
 		);
-		
+
 		return $return[$sub];
 	}
-	
+
 	private function assignTemplateVars() {
 		$translator = $this->_environment->getTranslationObject();
 		$current_user = $this->_environment->getCurrentUserItem();
 		$portal_user = $this->_environment->getPortalUserItem();
-		
+
 		// general information
 		$general_information = array();
-		
+
 		// max upload size
-		$val = ini_get('upload_max_filesize');
-		$val = trim($val);
-		$last = $val[mb_strlen($val) - 1];
-		switch($last) {
-			case 'k':
-			case 'K':
-				$val *= 1024;
-				break;
-			case 'm':
-			case 'M':
-				$val *= 1048576;
-				break;
-		}
+		$val = $current_context->getMaxUploadSizeInBytes();
 		$meg_val = round($val / 1048576);
 		$general_information['max_upload_size'] = $meg_val;
-		
+
 		$this->_popup_controller->assign('popup', 'general', $general_information);
-		
+
 		// portal information
 		$portal_information = array();
 		$portal_information['portal_name'] = $this->_environment->getCurrentPortalItem()->getTitle();
 		$this->_popup_controller->assign('popup', 'portal', $portal_information);
-		
+
 		// form information
 		$form_information = array();
 		$form_information['account'] = $this->getAccountInformation();
@@ -896,7 +884,7 @@ class cs_popup_profile_controller {
 		$form_information['newsletter'] = $this->getNewsletterInformation();
 		$form_information['config'] = $this->_config;
 		$form_information['data'] = $this->_data;
-		
+
 		// languages
 		$languages = array();
 		$languages[] = array(
@@ -907,7 +895,7 @@ class cs_popup_profile_controller {
 			'value'		=>	'disabled',
 			'text'		=>	'------------------'
 		);
-		
+
 		$available_languages = $this->_environment->getAvailableLanguageArray();
 		foreach($available_languages as $language) {
 			$languages[] = array(
@@ -915,15 +903,15 @@ class cs_popup_profile_controller {
 				'text'		=>	$translator->getLanguageLabelOriginally($language)
 			);
 		}
-		
+
 		$form_information['languages'] = $languages;
-		
+
 		$this->_popup_controller->assign('popup', 'form', $form_information);
 	}
-	
+
 	private function getAccountInformation() {
 		$return = array();
-		
+
 		// get data from database
 		$return['firstname'] = $this->_user->getFirstname();
 		$return['lastname'] = $this->_user->getLastname();
@@ -933,13 +921,13 @@ class cs_popup_profile_controller {
 		$return['email_room'] = ($this->_user->getOpenRoomWantMail() === 'yes') ? true : false;
 		$return['new_upload'] = ($this->_user->isNewUploadOn()) ? true : false;
 		$return['auto_save'] = ($this->_user->isAutoSaveOn()) ? true : false;
-		
+
 		return $return;
 	}
-	
+
 	private function getUserInformation() {
 		$return = array();
-		
+
 		// get data from database
 		$return['title'] = $this->_user->getTitle();
 		$return['birthday'] = $this->_user->getBirthday();
@@ -960,9 +948,9 @@ class cs_popup_profile_controller {
 		$return['jabber'] = $this->_user->getJabber();
 		$return['homepage'] = $this->_user->getHomepage();
 		$return['description'] = $this->_user->getDescription();
-		
+
 		return $return;
-		
+
 		/*
 
             if ($this->_item->isModerator()) {
@@ -984,14 +972,14 @@ class cs_popup_profile_controller {
             }
 		 */
 	}
-	
+
 	private function getNewsletterInformation() {
 		$return = array();
-		
+
 		// get data from database
 		$room = $this->_environment->getCurrentUserItem()->getOwnRoom();
 		$newsletter = $room->getPrivateRoomNewsletterActivity();
-		
+
 		switch($newsletter) {
 			case 'weekly':
 				$return['newsletter'] = '2';
@@ -1003,7 +991,7 @@ class cs_popup_profile_controller {
 				$return['newsletter'] = '1';
 				break;
 		}
-		
+
 		return $return;
 	}
 }

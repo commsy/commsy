@@ -136,19 +136,19 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
 				// edit mode
 
 				// TODO: check rights
-				
+
 				// files
 				$attachment_infos = array();
-				
+
 				$converter = $this->_environment->getTextConverter();
 				$file_list = $item->getFileListWithFilesFromSections();
-				
+
 				$file = $file_list->getFirst();
 				while($file) {
 					$info['file_name']	= $converter->text_as_html_short($file->getDisplayName());
 					$info['file_icon']	= $file->getFileIcon();
 					$info['file_id']	= $file->getFileID();
-				
+
 					$attachment_infos[] = $info;
 					$file = $file_list->getNext();
 				}
@@ -307,7 +307,7 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
                 if (isset($form_data['public'])) {
                     $item->setPublic($form_data['public']);
                 }
-                
+
                 // already attached files
                 $file_ids = array();
                 foreach($form_data as $key => $value) {
@@ -315,10 +315,10 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
                 		$file_ids[] = $value;
                 	}
                 }
-                
+
                 // this will handle already attached files as well as adding new files
                 $this->_popup_controller->getUtils()->setFilesForItem($item, $file_ids, CS_MATERIAL_TYPE);
-                
+
                 if ( isset($form_data['hide']) ) {
                     // variables for datetime-format of end and beginning
                     $dt_hiding_time = '00:00:00';
@@ -661,19 +661,7 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
         $general_information = array();
 
         // max upload size
-        $val = ini_get('upload_max_filesize');
-        $val = trim($val);
-        $last = $val[mb_strlen($val) - 1];
-        switch($last) {
-            case 'k':
-            case 'K':
-                $val *= 1024;
-                break;
-            case 'm':
-            case 'M':
-                $val *= 1048576;
-                break;
-        }
+        $val = $current_context->getMaxUploadSizeInBytes();
         $meg_val = round($val / 1048576);
         $general_information['max_upload_size'] = $meg_val;
 

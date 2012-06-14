@@ -1,10 +1,10 @@
 <?php
 	require_once('classes/controller/ajax/popup/cs_rubric_popup_controller.php');
-	
+
 	class cs_popup_discarticle_controller implements cs_rubric_popup_controller {
 		private $_environment = null;
 		private $_popup_controller = null;
-		
+
 		/**
 		* constructor
 		*/
@@ -12,30 +12,30 @@
 			$this->_environment = $environment;
 			$this->_popup_controller = $popup_controller;
 		}
-		
+
 		public function initPopup($item) {
 			// assign template vars
 			$this->assignTemplateVars();
-			
+
 			if($item !== null) {
 				// edit
-					
+
 				// TODO: check rights
-					
+
 				$this->_popup_controller->assign('item', 'title', $item->getTitle());
 				$this->_popup_controller->assign('item', 'discarticle_description', $item->getDescription());
 			}
 		}
-		
+
 		public function save($form_data, $additional = array()) {
 			$current_user = $this->_environment->getCurrentUserItem();
 			$current_context = $this->_environment->getCurrentContextItem();
-			
+
 			$current_iid = $form_data['iid'];
-			
+
 			$discarticle_manager = $this->_environment->getDiscussionArticleManager();
 			$discarticle_item = $discarticle_manager->getItem($current_iid);
-			
+
 			// check access rights
 			if($current_context->isProjectRoom() && $current_context->isClosed()) {
 				/*
@@ -69,7 +69,7 @@
 				   $page->add($errorbox);
 				 */
 			}
-			
+
 			// access granted
 			else {
 				// save item
@@ -77,22 +77,22 @@
 					// set modificator and modification date
 					$discarticle_item->setModificatorItem($current_user);
 					$discarticle_item->setModificationDate(getCurrentDateTimeInMySQL());
-					
+
 					// set attributes
 					if(isset($form_data['title'])) $discarticle_item->setSubject($form_data['title']);
 					if(isset($form_data['discarticle_description'])) $discarticle_item->setDescription($form_data['discarticle_description']);
-					
+
 					// save item
 					$discarticle_item->save();
-					
+
 					$this->_return = $discarticle_item->getItemID();
-					
+
 					// set return
 					$this->_popup_controller->setSuccessfullItemIDReturn($discarticle_item->getItemID());
 				}
 			}
 		}
-		
+
 		public function getFieldInformation($sub = '') {
 			return array(
 				array(	'name'		=> 'title',
@@ -103,42 +103,30 @@
 						'mandatory'	=> false)
 			);
 		}
-		
+
 		public function cleanup_session($current_iid) {
 		}
-		
+
 		private function assignTemplateVars() {
 			$current_user = $this->_environment->getCurrentUserItem();
 			$current_context = $this->_environment->getCurrentContextItem();
-			
+
 			// general information
 			$general_information = array();
-			
+
 			// max upload size
-			$val = ini_get('upload_max_filesize');
-			$val = trim($val);
-			$last = $val[mb_strlen($val) - 1];
-			switch($last) {
-				case 'k':
-				case 'K':
-					$val *= 1024;
-					break;
-				case 'm':
-				case 'M':
-					$val *= 1048576;
-					break;
-			}
+			$val = $current_context->getMaxUploadSizeInBytes();
 			$meg_val = round($val / 1048576);
 			$general_information['max_upload_size'] = $meg_val;
-			
+
 			$this->_popup_controller->assign('popup', 'general', $general_information);
-			
+
 			// user information
 			$user_information = array();
 			$user_information['fullname'] = $current_user->getFullName();
 			$this->_popup_controller->assign('popup', 'user', $user_information);
-			
-			
+
+
 			// config information
 			$config_information = array();
 			$config_information['with_activating'] = $current_context->withActivatingContent();
