@@ -140,19 +140,7 @@ class cs_discarticle_form extends cs_rubric_form {
 
       // files
       $this->_form->addAnchor('fileupload');
-      $val = ini_get('upload_max_filesize');
-      $val = trim($val);
-      $last = $val[mb_strlen($val)-1];
-      switch($last) {
-         case 'k':
-         case 'K':
-            $val = $val * 1024;
-            break;
-         case 'm':
-         case 'M':
-            $val = $val * 1048576;
-            break;
-      }
+      $val = $this->_environment->getCurrentContextItem()->getMaxUploadSizeInBytes();
       $meg_val = round($val/1048576);
       if ( !empty($this->_file_array) ) {
          $this->_form->addCheckBoxGroup('filelist',$this->_file_array,'',$this->_translator->getMessage('MATERIAL_FILES'),$this->_translator->getMessage('MATERIAL_FILES_DESC', $meg_val),false,false);
@@ -202,7 +190,7 @@ class cs_discarticle_form extends cs_rubric_form {
          $this->_form->combine('vertical');
       }
       $this->_form->addText('max_size','',$this->_translator->getMessage('MATERIAL_MAX_FILE_SIZE',$meg_val));
-      
+
       $session = $this->_environment->getSession();
       $new_upload = false;
       if($session->issetValue('javascript') and $session->issetValue('flash')) {
@@ -211,7 +199,7 @@ class cs_discarticle_form extends cs_rubric_form {
       	}
       }
       if(!$new_upload) $this->_form->addText('old_upload', '', $this->_translator->getMessage('COMMON_UPLOAD_OLD'));
-     
+
       // buttons
       if ( !$this->_detail_mode ) {
          $id = 0;
@@ -229,18 +217,18 @@ class cs_discarticle_form extends cs_rubric_form {
          }
       } else {
          $this->_form->addEmptyLine();
-         
+
          $discussion_manager = $this->_environment->getDiscussionManager();
 		 $discussion = $discussion_manager->getItem($this->_did);
 		 $discussion_type = $discussion->getDiscussionType();
-		 
+
 		 $this->_form->addButton('option',$this->_translator->getMessage('DISCARTICLE_SAVE_BUTTON'),'');
          if(   $this->_environment->getCurrentModule() == 'discussion' &&
                $this->_environment->getCurrentFunction() == 'detail' &&
                $discussion_type == 'threaded') {
             $this->_form->combine('vertical');
             $this->_form->addButton('option',$this->_translator->getMessage('COMMON_CANCEL_BUTTON'),'');
-            
+
          }
       }
    }

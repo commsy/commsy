@@ -161,7 +161,7 @@ class cs_topic_form extends cs_rubric_form {
          $this->_path_button_disable = false;
       }
    }
-   
+
    public function resetPathItems () {
       $this->_path_reset_items = true;
    }
@@ -290,7 +290,7 @@ class cs_topic_form extends cs_rubric_form {
             $link_manager->sortbySortingPlace();
             $link_manager->select();
             $link_item_list = $link_manager->get();
-   
+
             if ( !$link_item_list->isEmpty() ) {
                $counter = 1;
                $link_item = $link_item_list->getFirst();
@@ -305,7 +305,7 @@ class cs_topic_form extends cs_rubric_form {
                   if ($item_type == 'date') {
                      $item_type .= 's';
                   }
-   
+
                   $temp_item_type = mb_strtoupper($item_type, 'UTF-8');
                   switch ( $temp_item_type )
                   {
@@ -344,7 +344,7 @@ class cs_topic_form extends cs_rubric_form {
                         break;
                   }
                   $temp_array['text'] .= ': '.$linked_item->getTitle();
-   
+
                   $link_item_sort_array[] = $link_item->getItemID();
                   $temp_array['value'] = $link_item->getItemID();
                   $this->_link_item_array[] = $temp_array;
@@ -425,19 +425,7 @@ class cs_topic_form extends cs_rubric_form {
 
       // files
       $this->_form->addAnchor('fileupload');
-      $val = ini_get('upload_max_filesize');
-      $val = trim($val);
-      $last = $val[mb_strlen($val)-1];
-      switch($last) {
-         case 'k':
-         case 'K':
-            $val = $val * 1024;
-            break;
-         case 'm':
-         case 'M':
-            $val = $val * 1048576;
-            break;
-      }
+      $val = $this->_environment->getCurrentContextItem()->getMaxUploadSizeInBytes();
       $meg_val = round($val/1048576);
       if ( !empty($this->_file_array) ) {
          $this->_form->addCheckBoxGroup('filelist',$this->_file_array,'',$this->_translator->getMessage('MATERIAL_FILES'),$this->_translator->getMessage('MATERIAL_FILES_DESC', $meg_val),false,false);
