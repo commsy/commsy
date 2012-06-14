@@ -581,11 +581,11 @@
 					// description
 					$desc = $this->_item->getDescription();
 					if(!empty($desc)) {
-						$desc = $converter->cleanDataFromTextArea($desc);
+						//$desc = $converter->cleanDataFromTextArea($desc);
 						// TODO: implement
 						//$desc = $converter->compareWithSearchText($desc);
 						$converter->setFileArray($this->getItemFileList());
-						$desc = $converter->text_as_html_long($desc);
+						//$desc = $converter->text_as_html_long($desc);
 						//$html .= $this->getScrollableContent($desc,$item,'',true).LF;
 
 						$return['description'] = $desc;
@@ -596,11 +596,11 @@
 				$return['show_grouproom'] = false;
 				$grouproom_item = $this->_item->getGroupRoomItem();
 				if(isset($grouproom_item) && !empty($grouproom_item) and $this->_item->isGroupRoomActivated()) {
-					$desc = $converter->cleanDataFromTextArea($desc);
+					//$desc = $converter->cleanDataFromTextArea($desc);
 					// TODO: implement
 					//$desc = $converter->compareWithSearchText($desc);
 					$converter->setFileArray($this->getItemFileList());
-					$desc = $converter->text_as_html_long($desc);
+					//$desc = $converter->text_as_html_long($desc);
 					//$html .= $this->getScrollableContent($desc,$item,'',true).LF;
 
 					$return['grouproom_description'] = $grouproom_item->getDescription();

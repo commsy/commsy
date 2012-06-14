@@ -635,9 +635,9 @@ if ($type != CS_DISCUSSION_TYPE) {
 
 					// description
 					$description = $item->getDescription();
-					$description = $converter->cleanDataFromTextArea($description);
+					$//description = $converter->cleanDataFromTextArea($description);
 					$converter->setFileArray($this->getItemFileList());
-					$description = $converter->text_as_html_long($description);
+					//$description = $converter->text_as_html_long($description);
 					$description = $converter->showImages($description, $item, true);
 					//$retour .= $this->getScrollableContent($desc,$item,'',true).LF;
 
@@ -753,9 +753,9 @@ if ($type != CS_DISCUSSION_TYPE) {
 
 			// description
 			$description = $root->getDescription();
-			$description = $converter->cleanDataFromTextArea($description);
+			//$description = $converter->cleanDataFromTextArea($description);
 			$converter->setFileArray($this->getItemFileList());
-			$description = $converter->text_as_html_long($description);
+			$//description = $converter->text_as_html_long($description);
 			$description = $converter->showImages($description, $root, true);
 			//$retour .= $this->getScrollableContent($desc,$root,'',true).LF;
 
@@ -870,9 +870,9 @@ if ($type != CS_DISCUSSION_TYPE) {
 				// description
 				$converter = $this->_environment->getTextConverter();
 				$description = $item->getDescription();
-				$description = $converter->cleanDataFromTextArea($description);
+				//$description = $converter->cleanDataFromTextArea($description);
 				$converter->setFileArray($this->getItemFileList());
-				$description = $converter->text_as_html_long($description);
+				//$description = $converter->text_as_html_long($description);
 				$description = $converter->showImages($description, $item, true);
 
 				//$retour .= $this->getScrollableContent($desc,$item,'',true).LF;

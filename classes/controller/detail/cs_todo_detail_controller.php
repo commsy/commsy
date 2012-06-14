@@ -333,11 +333,11 @@
 					// description
 					$desc = $current_item->getDescription();
 					if(!empty($desc)) {
-						$desc = $converter->cleanDataFromTextArea($desc);
+						//$desc = $converter->cleanDataFromTextArea($desc);
 						//TODO:
 						//$desc = $converter->compareWithSearchText($desc);
 						$converter->setFileArray($this->getItemFileList());
-						$desc = $converter->text_as_html_long($desc);
+						//$desc = $converter->text_as_html_long($desc);
 						//$desc = $this->_show_images($desc,$item,true);
          				//$retour .= $this->getScrollableContent($desc,$item,'',true).LF;
          				$entry['description'] = $desc;
@@ -499,11 +499,11 @@
             // description
             $desc = $this->_item->getDescription();
             if(!empty($desc)) {
-            	$desc = $converter->cleanDataFromTextArea($desc);
+            	//$desc = $converter->cleanDataFromTextArea($desc);
             	//TODO:
             	//$desc = $converter->compareWithSearchText($desc);
             	$converter->setFileArray($this->getItemFileList());
-            	$desc = $converter->text_as_html_long($desc);
+            	//$desc = $converter->text_as_html_long($desc);
             	//$html .= $this->getScrollableContent($desc,$item,'',true).LF;
             }
 			$return = array(

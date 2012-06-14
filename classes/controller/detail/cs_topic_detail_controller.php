@@ -295,11 +295,11 @@
             // description
             $desc = $this->_item->getDescription();
             if(!empty($desc)) {
-            	$desc = $converter->cleanDataFromTextArea($desc);
+            	//$desc = $converter->cleanDataFromTextArea($desc);
             	//TODO:
             	//$desc = $converter->compareWithSearchText($desc);
             	$converter->setFileArray($this->getItemFileList());
-            	$desc = $converter->text_as_html_long($desc);
+            	//$desc = $converter->text_as_html_long($desc);
             	//$html .= $this->getScrollableContent($desc,$item,'',true).LF;
             }
 

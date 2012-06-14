@@ -292,9 +292,9 @@ class cs_date_detail_controller extends cs_detail_controller {
         if(!empty($desc)) {
 
             $converter->setFileArray($this->getItemFileList());
-            $desc = $converter->cleanDataFromTextArea($desc);
+            //$desc = $converter->cleanDataFromTextArea($desc);
             //$desc = $converter->compareWithSearchText...
-            $desc = $converter->text_as_html_long($desc);
+            //$desc = $converter->text_as_html_long($desc);
             //$desc = $converter->show_images($desc, $this->_item, true);
             //$html .= $this->getScrollableContent($desc,$item,'',true);
         }

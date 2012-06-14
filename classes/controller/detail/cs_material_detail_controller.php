@@ -587,9 +587,9 @@
       		if($num_sections === 0) {
       			$desc = $this->_item->getDescription();
       			if(!empty($desc)) {
-      				$desc = $converter->cleanDataFromTextArea($desc);
+      				//$desc = $converter->cleanDataFromTextArea($desc);
       				$converter->setFileArray($this->getItemFileList());
-      				$desc = $converter->text_as_html_long($desc);
+      				//$desc = $converter->text_as_html_long($desc);
 
       				/*
 					$temp_string = $this->_text_as_html_long($this->_compareWithSearchText($this->_cleanDataFromTextArea($desc)));
@@ -910,7 +910,7 @@
 				$temp_array[] = $translator->getMessage('MATERIAL_BIBLIOGRAPHIC');
 				if(!empty($biblio)) {
 					$converter->setFileArray($this->getItemFileList());
-					$temp_array[] = $converter->text_as_html_long($converter->cleanDataFromTextArea($biblio));
+					$temp_array[] = $biblio;//$converter->text_as_html_long($converter->cleanDataFromTextArea($biblio));
 				} else {
 					$temp_array[] = '<span class="disabled"> ' . $translator->getMessage('COMON_NONE') . '</span>';
 				}
@@ -1172,9 +1172,9 @@
             */
 					// prepare description
 		            $description = $section->getDescription();
-					$description = $converter->cleanDataFromTextArea($description);
+					//$description = $converter->cleanDataFromTextArea($description);
 					$converter->setFileArray($this->getItemFileList());
-					$description = $converter->text_as_html_long($description);
+					//$description = $converter->text_as_html_long($description);
 					$description = $converter->showImages($description, $section, true);
 
 
