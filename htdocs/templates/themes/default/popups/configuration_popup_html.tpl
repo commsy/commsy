@@ -80,6 +80,16 @@
 											<div class="clear"></div>
 										</div>
 
+
+										{if $popup.room.in_community_room == true}
+											<div class="input_row_100">
+												<label for="open_for_guests">___PREFERENCES_OPEN_FOR_GUESTS___:</label>
+										        <input type="radio" name="form_data[open_for_guests]" value="closed" {if $popup.room.open_for_guests == 'closed'}checked{/if}/>___COMMON_OFF___
+												<input type="radio" name="form_data[open_for_guests]" value="open" {if $popup.room.open_for_guests == 'open'}checked{/if}/>___COMMON_ON___
+												<div class="clear"></div>
+											</div>
+										{/if}
+
 										{* assignment *}
 										{if $popup.room.in_project_room == true}
 											{if !empty($popup.room.community_room_array)}
@@ -105,17 +115,9 @@
 										{elseif $popup.room.in_community_room == true}
 											<div class="input_row_100">
 												___PREFERENCES_ROOM_ASSIGMENT___:
-
-												<div class="input_container_180" style="margin-left:100px;">
-													<input id="room_assignment_open" type="radio" name="form_data[room_assignment]" value="open"{if $popup.room.assignment == 'open'} checked="checked"{/if} />
-													<label for="room_assignment_open">___COMMON_ASSIGMENT_ON___</label>
+													<input id="room_assignment_open" type="radio" name="form_data[room_assignment]" value="open"{if $popup.room.assignment == 'open'} checked="checked"{/if} /> ___COMMON_ASSIGMENT_ON___
+													<input id="room_assignment_closed" type="radio" name="form_data[room_assignment]" value="closed"{if $popup.room.assignment == 'closed'} checked="checked"{/if} /> ___COMMON_ASSIGMENT_OFF___
 													<div class="clear"></div>
-												</div>
-												<div class="input_container_180" style="margin-left:100px;">
-													<input id="room_assignment_closed" type="radio" name="form_data[room_assignment]" value="closed"{if $popup.room.assignment == 'closed'} checked="checked"{/if} />
-													<label for="room_assignment_closed">___COMMON_ASSIGMENT_OFF___</label>
-													<div class="clear"></div>
-												</div>
 											</div>
 										{/if}
 
@@ -310,7 +312,7 @@
 						                        </div>
 
 						                        <div class="clear"> </div>
-						                        
+
 						                        <div>
 						                        	<select id="list_action" size="1">
 						                        		<option selected="selected" value="-1">*___COMMON_LIST_ACTION_NO___</option>
@@ -327,7 +329,7 @@
 						                        		<option disabled="disabled">------------------------------</option>
 						                        		<option value="email">___USER_LIST_ACTION_EMAIL_SEND___</option>
 						                        	</select>
-						                        	
+
 						                        	<input id="list_action_submit" type="submit" class="popup_button" value="___COMMON_LIST_ACTION_BUTTON_GO___" />
 						                        </div>
 						                    </div>

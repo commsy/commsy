@@ -294,6 +294,14 @@ class cs_popup_configuration_controller {
 				               $current_context->setCheckNewMemberCode($form_data['code']);
 				            }
 				         }
+				         // open for guests
+				         if ( isset($form_data['open_for_guests']) ) {
+				            if ($form_data['open_for_guests'] == 'open') {
+				                $current_context->setOpenForGuests();
+				            } elseif ($form_data['open_for_guests'] == 'closed') {
+				               $current_context->setClosedForGuests();
+				            }
+				         }
 
 
 						// save
@@ -1627,6 +1635,13 @@ class cs_popup_configuration_controller {
          if ( !empty($code) ) {
             $return['code'] = $code;
          }
+
+         if ($current_context->isOpenForGuests()) {
+            $return['open_for_guests'] = 'open';
+         } else {
+            $return['open_for_guests'] = 'closed';
+         }
+
 
 
 		return $return;
