@@ -99,7 +99,7 @@
 		<div id="item_legend"> <!-- Start item_legend -->
 				{* formal data *}
 				<div class="detail_content">
-				{if !empty($detail.content.formal)}
+				{if !empty($detail.content.formal) || $detail.content.sections}
 						<table class="detail_content_table">
 							{foreach $detail.content.formal as $formal}
 								<tr>
