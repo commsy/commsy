@@ -52,6 +52,7 @@ class cs_popup_profile_controller {
 
 		$user_item = $this->_environment->getCurrentUserItem();
 		$current_context = $this->_environment->getCurrentContextItem();
+		$current_portal_item = $this->_environment->getCurrentPortalItem();
 
 // 		// Get the translator object
 // 		$translator = $environment->getTranslationObject();
@@ -155,7 +156,7 @@ class cs_popup_profile_controller {
 								$current_user = $this->_environment->getCurrentUserItem();
 
 								if(isset($form_data['auth_source'])) $auth_source_old = $form_data['auth_source'];
-								else $auth_source_old = $current_context->getAuthDefault();
+								else $auth_source_old = $current_portal_item->getAuthDefault();
 
 								$authentication->mergeAccount($current_user->getUserID(), $current_user->getAuthSource(), $form_data['merge_user_id'], $auth_source_old);
 
@@ -272,6 +273,24 @@ class cs_popup_profile_controller {
 
 									$save = true;
 								}
+
+							    global $c_email_upload;
+							    if ($c_email_upload ) {
+							       $own_room = $user->getOwnRoom();
+							       if ( (isset($form_data['email_to_commsy']) and !empty($form_data['email_to_commsy'])) ) {
+							          $own_room->setEmailToCommSy();
+							       } else {
+							          $own_room->unsetEmailToCommSy();
+							       }
+						           if ( (isset($form_data['email_to_commsy_secret']) and !empty($form_data['email_to_commsy_secret'])) ) {
+							          $own_room->setEmailToCommSySecret($form_data['email_to_commsy_secret']);
+							       } else {
+							          $own_room->setEmailToCommSySecret('');
+							       }
+							       $own_room->save();
+							       $save = true;
+							    }
+
 
 								if($save === true) {
 									$user->save();
@@ -860,6 +879,7 @@ class cs_popup_profile_controller {
 	private function assignTemplateVars() {
 		$translator = $this->_environment->getTranslationObject();
 		$current_user = $this->_environment->getCurrentUserItem();
+		$current_context = $this->_environment->getCurrentContextItem();
 		$portal_user = $this->_environment->getPortalUserItem();
 
 		// general information
@@ -921,6 +941,17 @@ class cs_popup_profile_controller {
 		$return['email_room'] = ($this->_user->getOpenRoomWantMail() === 'yes') ? true : false;
 		$return['new_upload'] = ($this->_user->isNewUploadOn()) ? true : false;
 		$return['auto_save'] = ($this->_user->isAutoSaveOn()) ? true : false;
+		$return['email_to_commsy_on'] = false;
+
+	    global $c_email_upload;
+	    if ($c_email_upload ) {
+		   $return['email_to_commsy_on'] = true;
+	       $own_room = $this->_user->getOwnRoom();
+	       $return['email_to_commsy'] = $own_room->getEmailToCommSy();
+	       $return['email_to_commsy_secret'] = $own_room->getEmailToCommSySecret();
+	       global $c_email_upload_email_account;
+	       $return['email_to_commsy_mailadress'] = $c_email_upload_email_account;
+	    }
 
 		return $return;
 	}

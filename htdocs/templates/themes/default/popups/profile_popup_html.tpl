@@ -102,13 +102,20 @@
 												<input type="radio" name="form_data[auto_save]"{if $popup.form.account.auto_save != true} checked="checked"{/if}/> ___CONFIGURATION_AUTO_SAVE_NO___
 											</div>
 										</div>
-
-										<div class="input_row">
-											<div class="input_container_180">
-												<input id="submit" type="button" name="save" value="___PREFERENCES_SAVE_BUTTON___"/>
-												<input id="delete" type="button" name="form_data[delete]" value="___PREFERENCES_DELETE_BUTTON___"/>
+										{if $popup.form.account.email_to_commsy_on}
+											<div class="input_row">
+												<label for="email_to_commsy">___PRIVATE_ROOM_EMAIL_TO_COMMSY___:</label>
+												<div class="input_container_180">
+													<input id="email_to_commsy" name="form_data[email_to_commsy]" type="checkbox"{if $popup.form.account.email_to_commsy == true} checked="checked"{/if}/> ___PRIVATE_ROOM_EMAIL_TO_COMMSY_CHECKBOX_NEW___{$popup.form.account.email_to_commsy_mailadress}<br/>
+													<input id="email_to_commsy_secret" type="text" class="size_200" name="form_data[email_to_commsy_secret]" value="{show var=$popup.form.account.email_to_commsy_secret}"/> ___PRIVATE_ROOM_EMAIL_TO_COMMSY_NO_SECRET___<br/>
+													___PRIVATE_ROOM_EMAIL_TO_COMMSY_TEXT___
+												</div>
 											</div>
+										{/if}
 
+										<div class="input_row" style="margin-bottom:40px;">
+											<input id="submit" type="button" name="save" value="___PREFERENCES_SAVE_BUTTON___"/>
+											<input id="delete" type="button" name="form_data[delete]" value="___PREFERENCES_DELETE_BUTTON___"/>
 										</div>
 									</fieldset>
 
@@ -151,7 +158,7 @@
 
 											<div class="input_row">
 												<div class="input_container_180">
-													<input id="merge" type="button" name="form_data[merge]" value="___ACCOUNT_MERGE_BUTTON___"/>
+													<input id="merge" type="submit" name="form_data[merge]" value="___ACCOUNT_MERGE_BUTTON___"/>
 												</div>
 											</div>
 										</fieldset>
@@ -357,12 +364,12 @@
 											<label for="data_homepage_all" class="float-left">___USER_CHANGE_IN_ALL_ROOMS___</label>
 											<div class="clear"></div>
 										</div>
-										
+
 										<div class="input_row">
 											<label for="description">___USER_DESCRIPTION___:</label>
 											<div class="clear"></div>
 										</div>
-										
+
 										<div class="input_row">
 											<div class="editor_content">
 												<div id="description" class="ckeditor">{if isset($popup.form.user.description)}{$popup.form.user.description}{/if}</div>
