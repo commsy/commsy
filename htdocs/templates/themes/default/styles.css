@@ -3628,6 +3628,18 @@ print settings
 	float: right;
 }
 
+#main_navigation_print {
+    background: url(img/main_nav_bg.jpg) repeat-x;
+    background-position: bottom;
+    height: 30px;
+}
+
+#main_navigation_print h1 {
+    font-size: 12px;
+    color: #FFF;
+    padding: 8px 10px;
+    }
+
 
 
 

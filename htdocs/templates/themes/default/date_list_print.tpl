@@ -39,8 +39,18 @@
 			{foreach $date.list_content.items as $item }
 				<tr>
 					<td class="{if $item@iteration is odd}row_odd{else}row_even{/if}">
-    					{if $item.noticed.show_info}
-    						<img title="" class="new_item_2" src="{$basic.tpl_path}img/flag_neu_a.gif" alt="*" />
+    					{if $item.noticed.status == "new" and ($item.noticed.annotation_info.count_new or $item.noticed.annotation_info.count_changed)}
+    						<img title="" class="new_item_2" src="{$basic.tpl_path}img/flag_neu_a.gif" alt="*" /></a>
+    					{elseif $item.noticed.status == "new"}
+    						<img title="" class="new_item_2" src="{$basic.tpl_path}img/flag_neu.gif" alt="*" /></a>
+    					{elseif $item.noticed.status == "modified"  and ($item.noticed.annotation_info.count_new or $item.noticed.annotation_info.count_changed)}
+    						<img title="" class="new_item_2" src="{$basic.tpl_path}img/flag_neu_2_a.gif" alt="*" /></a>
+    					{elseif $item.noticed.status == "modified"}
+    						<img title="" class="new_item_2" src="{$basic.tpl_path}img/flag_neu_2.gif" alt="*" /></a>
+    					{elseif $item.noticed.annotation_info.count_new}
+    						<img title="" class="new_item_2" src="{$basic.tpl_path}img/flag_neu_a.gif" alt="*" /></a>
+    					{elseif $item.noticed.annotation_info.count_changed}
+    						<img title="" class="new_item_2" src="{$basic.tpl_path}img/flag_neu_2_a.gif" alt="*" /></a>
     					{/if}
     				</td>
 					<td class="{if $item@iteration is odd}row_odd{else}row_even{/if}">

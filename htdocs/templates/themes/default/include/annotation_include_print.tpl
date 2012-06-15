@@ -24,7 +24,7 @@
 			<a name="annotation{$annotation.item_id}"></a>
 			<a name="annotation_{$annotation@index}"></a>
 			<div class="item_post">
-				<div class="row_{if $annotation@iteration is odd}odd{else}even{/if}_no_hover_print">
+				<div class="row_{if $annotation@iteration is odd}odd{else}even{/if}_no_hover">
 
 					<div class="column_80">
 						<p>
@@ -36,7 +36,7 @@
 						</p>
 					</div>
 
-					<div class="column_585">
+					<div>
 						<div class="post_content">
 							<h4>
 								{$annotation.pos_number}. {$annotation.title}

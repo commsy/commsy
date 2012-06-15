@@ -97,19 +97,15 @@
 		{if $room.workflow}
 		   {include file="include/detail_workflow_html.tpl" data=$detail.content.workflow}
 		{/if}
-		{include file="include/detail_moredetails_html.tpl" data=$detail.content.moredetails}
+		{include file="include/detail_moredetails_print.tpl" data=$detail.content.moredetails}
 
 	</div> <!-- Ende item body -->
 	<div class="clear"> </div>
 
 
 	{foreach $detail.content.sections as $section}
-		<div class="item_actions">
-			<a class="edit" href="#"><span class="edit_set"> &nbsp; </span></a>
-			<a class="detail" href="#"><span class="details_ia"> &nbsp; </span></a>
-		</div>
 
-		<div class="item_body"> <!-- Start item body -->
+		<div class="item_body_print"> <!-- Start item body -->
 			<a name="mat_section_{$section@index}"></a>
 			<a name="section{$section.iid}"></a>
 
@@ -121,7 +117,7 @@
 
 			<div class="item_post">
 				<div class="row_{if $section@iteration is odd}odd{else}even{/if}_no_hover padding_left_10px">
-					<div class="column_655">
+					<div>
 						<div class="post_content">
 							<h4>
 								{$section.title}
