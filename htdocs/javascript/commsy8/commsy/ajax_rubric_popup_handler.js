@@ -48,13 +48,20 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 				var regex = new RegExp("[\\?&]iid=([^&#]*)");
 				var results = regex.exec(jQuery(this).attr('href'));
 				if(results !== null && results[1] !== 'NEW') item_id = results[1];
+				
+				// determ ref item id from actor href
+				var ref_item_id = '';
+				var regex = new RegExp("[\\?&]ref_iid=([^&#]*)");
+				var results = regex.exec(jQuery(this).attr('href'));
+				if(results !== null && results[1] !== 'NEW') ref_item_id = results[1];
 
 				jQuery(this).bind('click', {
 					commsy_functions:	commsy_functions,
 					handle:				handle,
 					actor:				jQuery(this),
 					module:				module,
-					item_id:			item_id}, handle.onClick);
+					item_id:			item_id,
+					ref_iid:			ref_item_id}, handle.onClick);
 			});
 		},
 
@@ -63,8 +70,9 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			var handle = event.data.handle;
 
 			var data = {
-				module: event.data.module,
-				iid:	event.data.item_id
+				module: 	event.data.module,
+				iid:		event.data.item_id,
+				ref_iid:	event.data.ref_iid
 			};
 
 			jQuery.ajax({

@@ -90,7 +90,7 @@
 		}
 
 		protected function initPopup() {
-			$this->_popup_controller->initPopup($this->_item);
+			$this->_popup_controller->initPopup($this->_item, $this->_data);
 		}
 
 		private function getBuzzwords($return_empty) {

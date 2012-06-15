@@ -1,50 +1,45 @@
 <?php
-class cs_popup_mailtomod_controller implements cs_rubric_popup_controller{
-    private $_environment = null;
-    private $_popup_controller = null;
+
+require_once('classes/controller/ajax/cs_ajax_popup_controller.php');
+
+class cs_ajax_mailtomod_controller extends cs_ajax_popup_controller {
     private $_receiver_array = null;
-    private $_return = '';
 
     /**
      * constructor
      */
-    public function __construct(cs_environment $environment, cs_ajax_popup_controller $popup_controller) {
-        $this->_environment = $environment;
-        $this->_popup_controller = $popup_controller;
-    }
-
-    public function initPopup() {
-        // assign template vars
-        $this->assignTemplateVars();
+    public function __construct(cs_environment $environment) {
+        parent::__construct($environment);
     }
 
     public function getFieldInformation() {
         return array(
-            array(	'name'		=> 'subject',
+        array(	'name'		=> 'subject',
 					'type'		=> 'text',
 					'mandatory' => true),
-            array(	'name'		=> 'content',
+        array(	'name'		=> 'content',
 					'type'		=> 'text',
 					'mandatory'	=> true)
         );
     }
 
-    private function assignTemplateVars() {
+    public function actiongetHTML() {
         $current_user = $this->_environment->getCurrentUserItem();
-        $current_context = $this->_environment->getCurrentContextItem();
+        $context_item = $this->_environment->getCurrentContextItem();
+        pr($current_context);
 
         // user information
         $user_information = array();
         $user_information['fullname'] = $current_user->getFullName();
         $user_information['mail'] = $current_user->getEmail();
-        $this->_popup_controller->assign('popup', 'user', $user_information);
+        $this->assign('popup', 'user', $user_information);
 
         $mod_information = array();
         $mod_information['list'] = implode(', ', $this->getRecieverList());
-        $this->_popup_controller->assign('popup', 'mod', $mod_information);
+        $this->assign('popup', 'mod', $mod_information);
 
         $translator = $this->_environment->getTranslationObject();
-        
+
         if ( $context_item->isCommunityRoom() ) {
             $body_message = $translator->getMessage('RUBRIC_EMAIL_ADDED_BODY_COMMUNITY', $context_item->getTitle());
         } elseif ( $context_item->isProjectRoom() ) {
@@ -56,13 +51,16 @@ class cs_popup_mailtomod_controller implements cs_rubric_popup_controller{
         } elseif ( $context_item->isServer() ) {
             $body_message = $translator->getMessage('RUBRIC_EMAIL_ADDED_BODY_SERVER', $context_item->getTitle());
         }
-        
-        $this->_popup_controller->assign('popup', 'body', $body_message);
+
+        $this->assign('popup', 'body', $body_message);
+
+        // call parent
+        parent::actiongetHTML();
     }
 
     public function save($form_data, $additional = array()) {
         $mail = new cs_mail();
-        //TODO: Mail mit Formulardaten etc. füttern
+        //TODO: feed mail with formdata etc.
         //$mail->set_to($this->_environment->);
         $mail->set_from_email($this->_environment->getCurrentUser()->getEmail());
         $mail->set_from_name($this->_environment->getCurrentUser()->getFullName());
@@ -85,7 +83,7 @@ class cs_popup_mailtomod_controller implements cs_rubric_popup_controller{
 
     private function getRecieverList() {
         $translator = $this->_environment->getTranslationObject();
-        
+
         $context_item = $this->_environment->getCurrentContextItem();
         $mod_list = $context_item->getModeratorList();
         $receiver_array = array();
@@ -104,6 +102,10 @@ class cs_popup_mailtomod_controller implements cs_rubric_popup_controller{
             }
         }
         return $receiver_array;
+    }
+
+    protected function initPopup() {
+        $this->initPopup($this->_item);
     }
 
 }

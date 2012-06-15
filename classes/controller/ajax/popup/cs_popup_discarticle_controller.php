@@ -13,7 +13,7 @@
 			$this->_popup_controller = $popup_controller;
 		}
 
-		public function initPopup($item) {
+		public function initPopup($item, $data) {
 			// assign template vars
 			$this->assignTemplateVars();
 

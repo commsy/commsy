@@ -13,7 +13,7 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
         $this->_popup_controller = $popup_controller;
     }
 
-    public function initPopup($item) {
+    public function initPopup($item, $data) {
     		$translator = $this->_environment->getTranslationObject();
     		$current_context = $this->_environment->getCurrentContextItem();
     		$current_user = $this->_environment->getCurrentUserItem();

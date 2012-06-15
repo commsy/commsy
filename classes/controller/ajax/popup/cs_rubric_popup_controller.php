@@ -1,6 +1,6 @@
 <?php
 	interface cs_rubric_popup_controller {
-		public function initPopup($item);
+		public function initPopup($item, $data);
 
 		public function getFieldInformation($sub = '');
 
