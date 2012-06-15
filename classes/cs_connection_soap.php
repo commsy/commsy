@@ -2833,14 +2833,27 @@ class cs_connection_soap {
                $user_room_item = $user_room_list->getNext();
             }
             
+            $is_membership_pending = false;
+            if($is_room_user){
+               $room_user = $room_item->getUserByUserID($user_id, $auth_source_id);
+               if($room_user->getStatus() == '1'){
+                  $is_membership_pending = true;
+               }
+            }
+            
             $xml .= "<room_item>";
             $xml .= "<title><![CDATA[".$room_item->getTitle()."]]></title>\n";
             $xml .= "<item_id><![CDATA[".$room_item->getItemID()."]]></item_id>\n";
             $xml .= "<context_id><![CDATA[".$room_item->getContextID()."]]></context_id>\n";
-            if($is_room_user){
+            if($is_room_user and !$is_membership_pending){
                $xml .= "<room_user><![CDATA[is_room_user]]></room_user>\n";
             } else {
                $xml .= "<room_user><![CDATA[is_not_room_user]]></room_user>\n";
+            }
+            if($is_membership_pending){
+               $xml .= "<membership_pending><![CDATA[membership_is_pending]]></membership_pending>\n";
+            } else {
+               $xml .= "<membership_pending><![CDATA[membership_is_not_pending]]></membership_pending>\n";
             }
             $xml .= "</room_item>\n";
             $room_item = $room_list->getNext();
