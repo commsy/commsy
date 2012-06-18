@@ -1,5 +1,24 @@
 {extends file="room_list_html.tpl"}
 
+{block name=room_site_actions}
+	<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=index&mode=print" title="___COMMON_LIST_PRINTVIEW___" target="_blank">
+		<img src="{$basic.tpl_path}img/btn_print.gif" alt="___COMMON_LIST_PRINTVIEW___" />
+	</a>
+
+    {if $index.actions.new}
+		<a id="create_new" href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid=NEW" title="___COMMON_NEW_ITEM___">
+	    	<img src="{$basic.tpl_path}img/btn_add_new.gif" alt="___COMMON_NEW_ITEM___" />
+	    </a>
+    {/if}
+    {if $index.actions.user}
+		<a id="own_user" href="commsy.php?cid={$environment.cid}&mod=user&fct=detail&iid={$index.actions.user_iid}" title="___COMMON_OWN_USER___">
+	    	<img src="{$basic.tpl_path}img/btn_own_user.gif" alt="___COMMON_OWN_USER___" />
+	    </a>
+    {/if}
+    
+    <a href="commsy.php?cid={$environment.cid}&mod=date&fct=index&mode=calendar" title="Ansicht in Portlets"><img src="{$basic.tpl_path}img/btn_portlet_view.gif" alt="Portlets" /></a>
+{/block}
+
 {block name=room_list_header}
 	<div class="table_head">
 		{if $list.sorting_parameters.sort_title == "up"}

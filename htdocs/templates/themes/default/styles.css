@@ -3650,7 +3650,7 @@ calendar
 */	
 
 #calendar {
-    width: 710px;
+    /*width: 710px;*/
     background: #E8E8E8;
     }
     
@@ -3680,7 +3680,7 @@ calendar
     }    
 
 #cal_table_month th {
-    width: 100px;
+    width: 104px;
     height: 30px;
     text-align: center;
     font-weight: normal;
@@ -3764,7 +3764,7 @@ calendar
     }
 
 #cal_hint {
-    background: url(attention.gif) no-repeat 0px 14px;
+    background: url(img/attention.gif) no-repeat 0px 14px;
     padding: 13px 0px 15px 23px;
     color: #2C3E5E;
     }

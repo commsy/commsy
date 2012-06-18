@@ -12,8 +12,8 @@
 		public function __construct(cs_environment $environment) {
 			// call parent
 			parent::__construct($environment);
-
-			$this->_tpl_file = 'date_list';
+			
+			$this->_tpl_file = (isset($_GET['mode']) && $_GET['mode'] === "calendar") ? 'date_calendar' : 'date_list';
 
 			// set display mode
 			$this->setDisplayMode();
