@@ -20,6 +20,7 @@ $message["ACCOUNT_GET_GUEST_CHOICE"]["de"] = "Zur Teilnahme an einem Raum müsse
 - melden Sie sich an oder<br/>
 - %1";
 $message["ACCOUNT_GET_GUEST_CHOICE_LINK"]["de"] = "beantragen Sie eine neue Kennung";
+$message["ACCOUNT_GET_MEMBERSHIP_ALREADY"]["de"] = "Mitgliedschaft besteht bereits";
 $message["ACCOUNT_GET_MEMBERSHIP_BUTTON"]["de"] = "Teilnahme registrieren";
 $message["ACCOUNT_INDEX"]["de"] = "Kennungen";
 $message["ACCOUNT_MERGE"]["de"] = "Kennungen verbinden";
@@ -28,6 +29,7 @@ $message["ACCOUNT_MERGE_ERROR_ANNONYMOUS"]["de"] = "Die Kennung %1 darf nicht ve
 $message["ACCOUNT_MERGE_ERROR_USER_ID"]["de"] = "Sie können die Kennung <span style=&quot;font-weight:bold;&quot;>%1</span> nicht mit sich selbst zusammen führen. Bitte geben Sie eine andere Kennung an.";
 $message["ACCOUNT_MERGE_TEXT"]["de"] = "Hier können Sie Kennungen auf dem Portal %1 zusammenlegen.";
 $message["ACCOUNT_NOT_ACCEPTED"]["de"] = "Ihre Kennung ist für diesen Raum gesperrt.";
+$message["ACCOUNT_NOT_ACCEPTED_AS_GUEST"]["de"] = "Mit der Gastkennung können Sie keine Teilnahme beantragen.";
 $message["ACCOUNT_NOT_ACCEPTED_YET"]["de"] = "Die ModeratorInnen haben der Teilnahme <b>noch nicht</b> zugestimmt.";
 $message["ACCOUNT_PASSWORD_CHANGE"]["de"] = "Passwort ändern";
 $message["ACCOUNT_PROCESS_CONFIRMATION"]["de"] = "Bestätigung";

@@ -2516,10 +2516,12 @@ div.group_member_picture {
 
 
 
-div#group_profil_picture {
+div#group_profil_picture, #project_door_picture {
   float: right;
   padding: 5px 7px ;
   }
+
+
 
 div#group_profil_picture img{
 	width:150px;
@@ -3277,6 +3279,13 @@ a.tm_settings_hover {
     background: url(img/tm_clipboard.gif) -36px 0px no-repeat;
     }
 
+#tm_clipboard_copies {
+    font-size: 8pt;
+    left: -33px;
+    position: relative;
+    top: 22px;
+	}
+
 #tm_logout {
     background: url(img/tm_logout.gif) no-repeat;
     }
@@ -3647,20 +3656,20 @@ print settings
 ----------------------------------------------------------------------
 calendar
 ----------------------------------------------------------------------
-*/	
+*/
 
 #calendar {
     /*width: 710px;*/
     background: #E8E8E8;
     }
-    
+
 #cal_head {
     padding: 20px 0px;
-    }    
+    }
 
 #cal_head strong {
     padding-left: 15px;
-    }  
+    }
 
 #cal_head a {
     text-decoration: none;
@@ -3670,14 +3679,14 @@ calendar
 #cal_left {
     padding: 0px 5px;
     }
-    
+
 #cal_right {
     padding: 0px 5px;
-    }    
-    
+    }
+
 #cal_table_month {
-    
-    }    
+
+    }
 
 #cal_table_month th {
     width: 104px;
@@ -3736,14 +3745,14 @@ calendar
     padding: 0px 2px;
     border-bottom: 1px solid #E8E8E8;
     }
-    
+
 .active_day {
     background: #FFF;
-    }    
-    
+    }
+
 .nonactive_day {
     background: #D2D2D2;
-    }      
+    }
 
 .this_today {
     background: #DEEDFF;
@@ -3751,7 +3760,7 @@ calendar
 
 .cal_daynumber {
     padding: 5px;
-    }    
+    }
 
 .cal_days_events {
     height: 70px;
@@ -3773,29 +3782,29 @@ calendar
     display: block;
     color: #393939;
     text-decoration: none;
-    margin-bottom: 1px;  
+    margin-bottom: 1px;
     }
 
 a.event_blue {
     background: #BAC9FF;
     padding: 1px 5px;
-    }    
-    
+    }
+
 a.event_green {
     background: #E7FFBA;
     padding: 1px 5px;
-    }    
-    
+    }
+
 a.event_red {
     background: #FFBABA;
     padding: 1px 5px;
-    }      
-    
+    }
+
 a.event_purple {
     background: #E2BAFF;
     padding: 1px 5px;
-    }      
-        
+    }
+
 a.event_yellow {
     background: #FFFCBA;
     padding: 1px 5px;

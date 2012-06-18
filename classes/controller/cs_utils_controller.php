@@ -625,6 +625,18 @@
 			unset($tag);
 		}
 
+
+		public function getCopyCount(){
+			$item_id_count = 0;
+			$rubric_copy_array = array(CS_ANNOUNCEMENT_TYPE, CS_DATE_TYPE, CS_DISCUSSION_TYPE, CS_MATERIAL_TYPE,CS_TODO_TYPE);
+			$session = $this->_environment->getSessionItem();
+			foreach ($rubric_copy_array as $rubric){
+			   $item_id_count = $item_id_count + count($session->getValue($rubric.'_clipboard'));
+			}
+			return $item_id_count;
+		}
+
+
 		/**
 		 * get data for buzzword portlet
 		 */
@@ -693,25 +705,25 @@
 
 		public function setFilesForItem(cs_item $item, $post_file_ids, $module) {
 			$session = $this->_environment->getSessionItem();
-			
+
 			$file_ids = array();
-			
+
 			// new file information are stored in the session object
 			$new_files = $session->getValue($module . '_add_files');
 			$new_file_ids = array();
-			
+
 			if(!empty($new_files)) {
 				$file_manager = $this->_environment->getFileManager();
-				
+
 				foreach($new_files as $file) {
 					if(isset($file['tmp_name']) && file_exists($file['tmp_name'])) {
 						$file_item = $file_manager->getNewItem();
 						$file_item->setTempKey($file['file_id']);
-						
+
 						$file['name'] = trim($file['name']);
 						$file_item->setPostFile($file);
 						$file_item->save();
-						
+
 						unlink($file['tmp_name']);  // Currently, the file manager does not unlink a file in its _saveOnDisk() method, because it is also used for copying files when copying material.
 						$new_file_ids[] = $file_item->getFileID();
 					} else {
@@ -719,7 +731,7 @@
 					}
 				}
 			}
-			
+
 			// already attach file ids are in $post_file_ids
 			$attached_ids = array();
 			foreach($post_file_ids as $file_id) {
@@ -751,10 +763,10 @@
 					 */
 				}
 			}
-			
+
 			// merge already attached file ids and new ones
 			$file_ids = array_merge($new_file_ids, $attached_ids);
-			
+
 			// set
 			$item->setFileIDArray($file_ids);
 		}

@@ -1,6 +1,6 @@
 <?php
 $message["EMAIL_CONTACT_MODERATOR"]["de"] = "E-Mail senden";
-$message["EMAIL_CONTACT_MODERATOR_TEXT"]["de"] = "E-Mail an die AnsprechpartnerInnen senden.";
+$message["EMAIL_CONTACT_MODERATOR_TEXT"]["de"] = "E-Mail an die AnsprechpartnerInnen senden";
 $message["EMAIL_CONTACT_MODERATOR_TEXT_DESC"]["de"] = "Text";
 $message["EMAIL_TO_COMMSY_ACCOUNT"]["de"] = "Kennung";
 $message["EMAIL_TO_COMMSY_PASSWORD"]["de"] = "Upload-Kennwort";

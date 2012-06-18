@@ -165,14 +165,14 @@
          		$return_array['sort_title'] = 'none';
       		}
 
-      		if ( $sort_parameter == 'activity') {
-         		$return_array['sort_activity_link'] = $link_parameter_text.'&sort=activity_rev';
-         		$return_array['sort_activity'] = 'up';
-      		}elseif ( $sort_parameter == 'activity_rev'){
+      		if ( $sort_parameter == 'activity_rev') {
          		$return_array['sort_activity_link'] = $link_parameter_text.'&sort=activity';
+         		$return_array['sort_activity'] = 'up';
+      		}elseif ( $sort_parameter == 'activity'){
+         		$return_array['sort_activity_link'] = $link_parameter_text.'&sort=activity_rev';
          		$return_array['sort_activity'] = 'down';
       		}else{
-         		$return_array['sort_activity_link'] = $link_parameter_text.'&sort=activity';
+         		$return_array['sort_activity_link'] = $link_parameter_text.'&sort=activity_rev';
          		$return_array['sort_activity'] = 'none';
       		}
 
@@ -449,8 +449,8 @@
             	$html .= $html_text;
          	}
  END TODO ref_user und ref_item migrieren, wenn klar ist, wofür */
-      			
-      			
+
+
 	         	include_once('classes/views/cs_view.php');
       			$parameters = array();
 	   			$parameters['environment'] = $environment;
@@ -472,11 +472,11 @@
 	         		$tmp_array['name'] = $view_object->_text_as_html_short(urldecode($params['search']));
 					$tmp_array['link_parameter'] = $link_parameter_text;
 					$restriction_array[] = $tmp_array;
-					
+
 	         	}
 	         	*/
-	         	
-	         	
+
+
 				// additional restrictions
 				$additional_restrictions = $this->getAdditionalRestrictionText();
 				if(!empty($additional_restrictions)) $restriction_array = array_merge($restriction_array, $additional_restrictions);
@@ -593,7 +593,7 @@
 	         				$normal = true;
 	         			}
 	         		}
-	         		
+
 	         		if($normal === true) {
 	         			$i = 0;
 	         			while ( !isset($params['seltag_'.$i]) ){
@@ -1408,7 +1408,7 @@
    					$this->_list_parameter_arrray['last_selected_tag'] = '';
    					$this->_list_parameter_arrray['seltag_array'] = array();
    				}
-   				
+
    				/*
     			$last_selected_tag = '';
 				if ( isset($_GET['seltag']) and $_GET['seltag'] =='yes') {

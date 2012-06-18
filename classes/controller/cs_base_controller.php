@@ -163,6 +163,7 @@
 			$this->assign('environment', 'room_title', $current_context->getTitle());
 			$this->assign('environment', 'show_room_title', $current_context->showTitle());
 			$this->assign('environment', 'language', $current_context->getLanguage());
+			$this->assign('environment','count_copies', $this->getUtils()->getCopyCount());
 			$this->assign('environment', 'post', $_POST);
 			$this->assign('environment', 'get', $_GET);
 
