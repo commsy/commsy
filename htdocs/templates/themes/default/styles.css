@@ -3643,3 +3643,160 @@ print settings
 
 
 
+/*
+----------------------------------------------------------------------
+calendar
+----------------------------------------------------------------------
+*/	
+
+#calendar {
+    width: 710px;
+    background: #E8E8E8;
+    }
+    
+#cal_head {
+    padding: 20px 0px;
+    }    
+
+#cal_head strong {
+    padding-left: 15px;
+    }  
+
+#cal_head a {
+    text-decoration: none;
+    color: #393939;
+    }
+
+#cal_left {
+    padding: 0px 5px;
+    }
+    
+#cal_right {
+    padding: 0px 5px;
+    }    
+    
+#cal_table_month {
+    
+    }    
+
+#cal_table_month th {
+    width: 100px;
+    height: 30px;
+    text-align: center;
+    font-weight: normal;
+    border-right: 1px solid #E8E8E8;
+    border-bottom: 1px solid #E8E8E8;
+    }
+
+#cal_table_month td {
+    width: 100px;
+    height: 100px;
+    font-size: 10px;
+    border-right: 1px solid #E8E8E8;
+    border-bottom: 1px solid #E8E8E8;
+    vertical-align: top;
+    }
+
+#cal_table_week {
+    height: 600px;
+    overflow: auto;
+    }
+
+#cal_table_week th {
+    width: 95px;
+    height: 30px;
+    text-align: center;
+    font-weight: normal;
+    border-right: 1px solid #E8E8E8;
+    border-bottom: 1px solid #E8E8E8;
+    }
+
+#cal_table_week td {
+    width: 95px;
+    height: 45px;
+    font-size: 10px;
+    border-right: 1px solid #E8E8E8;
+    border-bottom: 1px solid #E8E8E8;
+    vertical-align: top;
+    }
+
+#cal_table_month td:hover, #cal_table_week td:hover {
+    background: #FCF3C1;
+    }
+
+#hour_index {
+    float: right;
+    padding-top: 30px;
+    }
+
+.cal_hi_hour {
+    height: 44px;
+    background: #FFF;
+    text-align: right;
+    padding: 0px 2px;
+    border-bottom: 1px solid #E8E8E8;
+    }
+    
+.active_day {
+    background: #FFF;
+    }    
+    
+.nonactive_day {
+    background: #D2D2D2;
+    }      
+
+.this_today {
+    background: #DEEDFF;
+    }
+
+.cal_daynumber {
+    padding: 5px;
+    }    
+
+.cal_days_events {
+    height: 70px;
+    overflow: auto;
+    }
+
+.cal_hour_events {
+    height: 42px;
+    overflow: auto;
+    }
+
+#cal_hint {
+    background: url(attention.gif) no-repeat 0px 14px;
+    padding: 13px 0px 15px 23px;
+    color: #2C3E5E;
+    }
+
+#cal_table_month td a, #cal_table_week td a {
+    display: block;
+    color: #393939;
+    text-decoration: none;
+    margin-bottom: 1px;  
+    }
+
+a.event_blue {
+    background: #BAC9FF;
+    padding: 1px 5px;
+    }    
+    
+a.event_green {
+    background: #E7FFBA;
+    padding: 1px 5px;
+    }    
+    
+a.event_red {
+    background: #FFBABA;
+    padding: 1px 5px;
+    }      
+    
+a.event_purple {
+    background: #E2BAFF;
+    padding: 1px 5px;
+    }      
+        
+a.event_yellow {
+    background: #FFFCBA;
+    padding: 1px 5px;
+    }
