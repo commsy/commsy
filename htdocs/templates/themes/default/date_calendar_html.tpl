@@ -20,249 +20,62 @@
 {/block}
 
 {block name=room_list_content}
+	{$cc = $date.calendar_content}
+	
 	<div id="calendar">
         <div id="cal_head">
-            <a href="" id="cal_left"><img src="{$basic.tpl_path}img/cal_arrow_left.gif" alt=""/></a>
-            <a href="">heute</a>
-            <a href="" id="cal_right"><img src="{$basic.tpl_path}img/cal_arrow_right.gif" alt="" /></a>
+           	<a href="commsy.php?cid={$environment.cid}&mod=date&fct=index{restriction_params params=$environment.params_array key=$cc.mode value=$cc.header.prev}" id="cal_left"><img src="{$basic.tpl_path}img/cal_arrow_left.gif" alt=""/></a>
+           	<a href="commsy.php?cid={$environment.cid}&mod=date&fct=index{restriction_params params=$environment.params_array key=$cc.mode value=$cc.header.today}">___DATES_CALENDAR_LINK_TODAY___</a>
+           	<a href="commsy.php?cid={$environment.cid}&mod=date&fct=index{restriction_params params=$environment.params_array key=$cc.mode value=$cc.header.next}" id="cal_right"><img src="{$basic.tpl_path}img/cal_arrow_right.gif" alt="" /></a>
             
-            <strong>Kalenderwochen 22-24 | Juni 2012</strong>
-        </div>
-        
-        <div id="cal_table_month">
-            <table cellspacing="0" cellpadding="0" border="0">
-                <tr>
-                    <th>
-                    Montag
-                    </th>
-                    <th>
-                    Dienstag
-                    </th>
-                    <th>
-                    Mittwoch
-                    </th>
-                    <th>
-                    Donnerstag
-                    </th>
-                    <th>
-                    Freitag
-                    </th>
-                    <th>
-                    Samstag
-                    </th>
-                    <th>
-                    Sonntag
-                    </th>
-                </tr>
-                <tr>
-                    <td class="nonactive_day">
-                        <div class="cal_daynumber">28</div>
-                    </td>
-                    <td class="nonactive_day">
-                        <div class="cal_daynumber">29</div>
-                    </td>
-                    <td class="nonactive_day">
-                        <div class="cal_daynumber">30</div>
-                    </td>
-                    <td class="nonactive_day">
-                        <div class="cal_daynumber">31</div>
-                    </td>
-                    <td class="active_day">
-                        <div class="cal_daynumber">1</div>
-                    </td>
-                    <td class="active_day">
-                        <div class="cal_daynumber">2</div>
-                    </td>
-                    <td class="active_day">
-                        <div class="cal_daynumber">3</div>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="active_day">
-                        <div class="cal_daynumber">4</div>
-                    </td>
-                    <td class="active_day">
-                        <div class="cal_daynumber">5</div>
-                    </td>
-                    <td class="active_day">
-                        <div class="cal_daynumber">6</div>
-                    </td>
-                    <td class="active_day">
-                        <div class="cal_daynumber">7</div>
-                        <div class="cal_days_events">
-                            <a href="" class="event_blue">Lorem ipsum</a> <!-- bitte den Text kuerzen, damit er maximal eine Zeile einnimmt -->
-                            <a href="" class="event_blue">Lorem ipsum</a> <!-- bitte den Text kuerzen, damit er maximal eine Zeile einnimmt -->
-                            <a href="" class="event_green">Lorem ipsum</a> <!-- bitte den Text kuerzen, damit er maximal eine Zeile einnimmt -->
-                            <a href="" class="event_red">Lorem ipsum</a> <!-- bitte den Text kuerzen, damit er maximal eine Zeile einnimmt -->
-                        </div>
-                    </td>
-                    <td class="active_day">
-                        <div class="cal_daynumber">8</div>
-                    </td>
-                    <td class="active_day">
-                        <div class="cal_daynumber">9</div>
-                        <div class="cal_days_events">
-                            <a href="" class="event_blue">Lorem ipsum</a> <!-- bitte den Text kuerzen, damit er maximal eine Zeile einnimmt -->
-                            <a href="" class="event_red">Lorem ipsum</a> <!-- bitte den Text kuerzen, damit er maximal eine Zeile einnimmt -->
-                            <a href="" class="event_green">Lorem ipsum</a> <!-- bitte den Text kuerzen, damit er maximal eine Zeile einnimmt -->
-                        </div>
-                    </td>
-                    <td class="active_day">
-                        <div class="cal_daynumber">10</div>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="active_day">
-                        <div class="cal_daynumber">11</div>
-                    </td>
-                    <td class="active_day">
-                        <div class="cal_daynumber">12</div>
-                    </td>
-                    <td class="this_today">
-                        <div class="cal_daynumber">13</div>
-                    </td>
-                    <td class="active_day">
-                        <div class="cal_daynumber">14</div>
-                    </td>
-                    <td class="active_day">
-                        <div class="cal_daynumber">15</div>
-                    </td>
-                    <td class="active_day">
-                        <div class="cal_daynumber">16</div>
-                    </td>
-                    <td class="active_day">
-                        <div class="cal_daynumber">17</div>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="active_day">
-                        <div class="cal_daynumber">18</div>
-                        <div class="cal_days_events">
-                            <a href="" class="event_purple">Lorem ipsum</a> <!-- bitte den Text kuerzen, damit er maximal eine Zeile einnimmt -->
-                            <a href="" class="event_yellow">Lorem ipsum</a> <!-- bitte den Text kuerzen, damit er maximal eine Zeile einnimmt -->
-                        </div>
-                    </td>
-                    <td class="active_day">
-                        <div class="cal_daynumber">19</div>
-                    </td>
-                    <td class="active_day">
-                        <div class="cal_daynumber">20</div>
-                    </td>
-                    <td class="active_day">
-                        <div class="cal_daynumber">21</div>
-                    </td>
-                    <td class="active_day">
-                        <div class="cal_daynumber">22</div>
-                        <div class="cal_days_events">
-                            <a href="" class="event_green">Lorem ipsum</a> <!-- bitte den Text kuerzen, damit er maximal eine Zeile einnimmt -->
-                            <a href="" class="event_red">Lorem ipsum</a> <!-- bitte den Text kuerzen, damit er maximal eine Zeile einnimmt -->
-                        </div>
-                    </td>
-                    <td class="active_day">
-                        <div class="cal_daynumber">23</div>
-                    </td>
-                    <td class="active_day">
-                        <div class="cal_daynumber">24</div>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="active_day">
-                        <div class="cal_daynumber">25</div>
-                    </td>
-                    <td class="active_day">
-                        <div class="cal_daynumber">26</div>
-                    </td>
-                    <td class="active_day">
-                        <div class="cal_daynumber">27</div>
-                        <div class="cal_days_events">
-                            <a href="" class="event_purple">Lorem ipsum</a> <!-- bitte den Text kuerzen, damit er maximal eine Zeile einnimmt -->
-                        </div>
-                    </td>
-                    <td class="active_day">
-                        <div class="cal_daynumber">28</div>
-                    </td>
-                    <td class="active_day">
-                        <div class="cal_daynumber">29</div>
-                    </td>
-                    <td class="active_day">
-                        <div class="cal_daynumber">30</div>
-                    </td>
-                    <td class="nonactive_day">
-                        <div class="cal_daynumber">1</div>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="nonactive_day">
-                        <div class="cal_daynumber">2</div>
-                        <div class="cal_days_events">
-                            <a href="" class="event_green">Lorem ipsum</a> <!-- bitte den Text kuerzen, damit er maximal eine Zeile einnimmt -->
-                        </div>
-                    </td>
-                    <td class="nonactive_day">
-                        <div class="cal_daynumber">3</div>
-                    </td>
-                    <td class="nonactive_day">
-                        <div class="cal_daynumber">4</div>
-                    </td>
-                    <td class="nonactive_day">
-                        <div class="cal_daynumber">5</div>
-                    </td>
-                    <td class="nonactive_day">
-                        <div class="cal_daynumber">6</div>
-                    </td>
-                    <td class="nonactive_day">
-                        <div class="cal_daynumber">7</div>
-                    </td>
-                    <td class="nonactive_day">
-                        <div class="cal_daynumber">8</div>
-                    </td>
-                </tr>
-            </table>
-        </div>
-        
-        <div id="cal_hint">
-        Tipp: Klicken Sie auf einen Tag, um einen neuen Termin einzutragen.
-        </div>
-    </div>
-{/block}
-
-{block name=room_list_footer}
-{/block}
-
-{*
-<div id="calendar">
-        <div id="cal_head">
-            <a href="" id="cal_left"><img src="{$basic.tpl_path}img/cal_arrow_left.gif" alt=""/></a>
-            <a href="">heute</a>
-            <a href="" id="cal_right"><img src="{$basic.tpl_path}img/cal_arrow_right.gif" alt="" /></a>
+            <strong>
+            	<a href="commsy.php?cid={$environment.cid}&mod=date&fct=index{params params=$cc.header.change_presentation_params_today}" id="cal_left">___DATES_CALENDAR_LINK_TODAY___</a>
+            	<a href="commsy.php?cid={$environment.cid}&mod=date&fct=index{params params=$cc.header.change_presentation_params_week}" id="cal_left">___DATES_CALENDAR_LINK_WEEK___</a>
+            	<a href="commsy.php?cid={$environment.cid}&mod=date&fct=index{params params=$cc.header.change_presentation_params_month}" id="cal_left">___DATES_CALENDAR_LINK_MONTH___</a>
+            </strong>
             
-            <strong>11.06.2012 - 17.06.2012 | Kalenderwoche 24</strong>
+            {if $cc.mode == "month"}
+            	<strong>___DATES_CALENDARWEEKS___ {$cc.header.current_calendarweek_first}-{$cc.header.current_calendarweek_last} | {$cc.header.current_month} {$cc.header.current_year}</strong>
+            {else if $cc.mode == "week"}
+            	<strong>{$cc.header.current_week_start} - {$cc.header.current_week_last} | ___DATES_CALENDARWEEK___ {$cc.header.current_week}</strong>
+            {/if}
         </div>
         
-        <div id="cal_table_week">
-        
-            <div id="hour_index">
-                <div class="cal_hi_hour">&nbsp;</div>
-                <div class="cal_hi_hour">8</div>
-                <div class="cal_hi_hour">9</div>
-                <div class="cal_hi_hour">10</div>
-                <div class="cal_hi_hour">11</div>
-                <div class="cal_hi_hour">12</div>
-                <div class="cal_hi_hour">13</div>
-                <div class="cal_hi_hour">14</div>
-                <div class="cal_hi_hour">15</div>
-                <div class="cal_hi_hour">16</div>
-                <div class="cal_hi_hour">17</div>
-                <div class="cal_hi_hour">18</div>
-                <div class="cal_hi_hour">19</div>
-                <div class="cal_hi_hour">20</div>
-                <div class="cal_hi_hour">21</div>
-                <div class="cal_hi_hour">22</div>
-            </div>
+        <div id="cal_table_{$cc.mode}">
+        	
+        	{if $cc.mode == "week"}
+	        	<div id="hour_index">
+	                <div class="cal_hi_hour">&nbsp;</div>
+	                <div class="cal_hi_hour">8</div>
+	                <div class="cal_hi_hour">9</div>
+	                <div class="cal_hi_hour">10</div>
+	                <div class="cal_hi_hour">11</div>
+	                <div class="cal_hi_hour">12</div>
+	                <div class="cal_hi_hour">13</div>
+	                <div class="cal_hi_hour">14</div>
+	                <div class="cal_hi_hour">15</div>
+	                <div class="cal_hi_hour">16</div>
+	                <div class="cal_hi_hour">17</div>
+	                <div class="cal_hi_hour">18</div>
+	                <div class="cal_hi_hour">19</div>
+	                <div class="cal_hi_hour">20</div>
+	                <div class="cal_hi_hour">21</div>
+	                <div class="cal_hi_hour">22</div>
+	            </div>
+        	{/if}
         
             <table cellspacing="0" cellpadding="0" border="0">
                 <tr>
-                    <th>
+                	{if $cc.mode == "month"}
+                		<th>___COMMON_DATE_MONDAY___</th>
+                		<th>___COMMON_DATE_TUESDAY___</th>
+                		<th>___COMMON_DATE_WEDNESDAY___</th>
+                		<th>___COMMON_DATE_THURSDAY___</th>
+                		<th>___COMMON_DATE_FRIDAY___</th>
+                		<th>___COMMON_DATE_SATURDAY___</th>
+                		<th>___COMMON_DATE_SUNDAY___</th>
+                	{else if $cc.mode == "week"}
+                	<th>
                     Mo, 11.06.
                     </th>
                     <th>
@@ -283,391 +96,44 @@
                     <th>
                     So, 17.06.
                     </th>
+                	{/if}
+                    
                 </tr>
-                <tr>
-                    <td class="nonactive_day">
-                        
-                    </td>
-                    <td class="nonactive_day">
-                        
-                    </td>
-                    <td class="this_today">
-                        
-                    </td>
-                    <td class="nonactive_day">
-                        
-                    </td>
-                    <td class="nonactive_day">
-                        
-                    </td>
-                    <td class="nonactive_day">
-                        
-                    </td>
-                    <td class="nonactive_day">
-                        
-                    </td>
-                </tr>
-                <tr>
-                    <td class="active_day">
-                        
-                    </td>
-                    <td class="active_day">
-                        
-                    </td>
-                    <td class="this_today">
-                        
-                    </td>
-                    <td class="active_day">
-                        
-                    </td>
-                    <td class="active_day">
-                        
-                    </td>
-                    <td class="active_day">
-                        
-                    </td>
-                    <td class="active_day">
-                        
-                    </td>
-                </tr>
-                <tr>
-                    <td class="active_day">
-                        
-                    </td>
-                    <td class="active_day">
-                        
-                    </td>
-                    <td class="this_today">
-                        
-                    </td>
-                    <td class="active_day">
-                        <div class="cal_hour_events">
+                
+                {section name=rows loop=6}
+                	{$i = $smarty.section.rows.index}
+                	
+                	<tr>
+                		{section name=columns loop=7}
+                			{$j = $smarty.section.columns.index}
+                			{$pos = $i * 7 + $j}
+                			
+                			{* nonactive_day / active_day / this_today *}
+                			
+                			<td class="nonactive_day">
+                				{if $cc.mode == "month"}<div class="cal_daynumber">{$pos}</div>{/if}
+                				
+                				{*
+                				
+                				<div class="cal_days_events">
                             <a href="" class="event_blue">Lorem ipsum</a> <!-- bitte den Text kuerzen, damit er maximal eine Zeile einnimmt -->
-                        </div>
-                    </td>
-                    <td class="active_day">
-                        
-                    </td>
-                    <td class="active_day">
-                        
-                    </td>
-                    <td class="active_day">
-                        
-                    </td>
-                </tr>
-                <tr>
-                    <td class="active_day">
-                        
-                    </td>
-                    <td class="active_day">
-                        
-                    </td>
-                    <td class="this_today">
-                        
-                    </td>
-                    <td class="active_day">
-                        
-                    </td>
-                    <td class="active_day">
-                        
-                    </td>
-                    <td class="active_day">
-                        
-                    </td>
-                    <td class="active_day">
-                        
-                    </td>
-                </tr>
-                <tr>
-                    <td class="active_day">
-                        
-                    </td>
-                    <td class="active_day">
-                        <div class="cal_hour_events">
-                            <a href="" class="event_green">Lorem ipsum</a> <!-- bitte den Text kuerzen, damit er maximal eine Zeile einnimmt -->
-                        </div>
-                    </td>
-                    <td class="this_today">
-                        
-                    </td>
-                    <td class="active_day">
-                        
-                    </td>
-                    <td class="active_day">
-                        
-                    </td>
-                    <td class="active_day">
-                        
-                    </td>
-                    <td class="active_day">
-                        
-                    </td>
-                </tr>
-                <tr>
-                    <td class="active_day">
-                        
-                    </td>
-                    <td class="active_day">
-                        
-                    </td>
-                    <td class="this_today">
-                        <div class="cal_hour_events">
+                            <a href="" class="event_blue">Lorem ipsum</a> <!-- bitte den Text kuerzen, damit er maximal eine Zeile einnimmt -->
                             <a href="" class="event_green">Lorem ipsum</a> <!-- bitte den Text kuerzen, damit er maximal eine Zeile einnimmt -->
                             <a href="" class="event_red">Lorem ipsum</a> <!-- bitte den Text kuerzen, damit er maximal eine Zeile einnimmt -->
                         </div>
-                    </td>
-                    <td class="active_day">
-                        
-                    </td>
-                    <td class="active_day">
-                        
-                    </td>
-                    <td class="active_day">
-                        
-                    </td>
-                    <td class="active_day">
-                        
-                    </td>
-                </tr>
-                <tr>
-                    <td class="active_day">
-                        
-                    </td>
-                    <td class="active_day">
-                        
-                    </td>
-                    <td class="this_today">
-                        
-                    </td>
-                    <td class="active_day">
-                        
-                    </td>
-                    <td class="active_day">
-                        
-                    </td>
-                    <td class="active_day">
-                        
-                    </td>
-                    <td class="active_day">
-                        
-                    </td>
-                </tr>
-                <tr>
-                    <td class="active_day">
-                        
-                    </td>
-                    <td class="active_day">
-                        
-                    </td>
-                    <td class="this_today">
-                        
-                    </td>
-                    <td class="active_day">
-                        
-                    </td>
-                    <td class="active_day">
-                        
-                    </td>
-                    <td class="active_day">
-                        
-                    </td>
-                    <td class="active_day">
-                        
-                    </td>
-                </tr>
-                <tr>
-                    <td class="active_day">
-                        
-                    </td>
-                    <td class="active_day">
-                        
-                    </td>
-                    <td class="this_today">
-                        
-                    </td>
-                    <td class="active_day">
-                        
-                    </td>
-                    <td class="active_day">
-                        
-                    </td>
-                    <td class="active_day">
-                        
-                    </td>
-                    <td class="active_day">
-                        
-                    </td>
-                </tr>
-                <tr>
-                    <td class="nonactive_day">
-                        
-                    </td>
-                    <td class="nonactive_day">
-                        
-                    </td>
-                    <td class="this_today">
-                        
-                    </td>
-                    <td class="nonactive_day">
-                        
-                    </td>
-                    <td class="nonactive_day">
-                        
-                    </td>
-                    <td class="nonactive_day">
-                        
-                    </td>
-                    <td class="nonactive_day">
-                        
-                    </td>
-                </tr>
-                <tr>
-                    <td class="nonactive_day">
-                        
-                    </td>
-                    <td class="nonactive_day">
-                        
-                    </td>
-                    <td class="this_today">
-                        
-                    </td>
-                    <td class="nonactive_day">
-                        
-                    </td>
-                    <td class="nonactive_day">
-                        
-                    </td>
-                    <td class="nonactive_day">
-                        
-                    </td>
-                    <td class="nonactive_day">
-                        
-                    </td>
-                </tr>
-                <tr>
-                    <td class="nonactive_day">
-                        
-                    </td>
-                    <td class="nonactive_day">
-                        
-                    </td>
-                    <td class="this_today">
-                        
-                    </td>
-                    <td class="nonactive_day">
-                        
-                    </td>
-                    <td class="nonactive_day">
-                        
-                    </td>
-                    <td class="nonactive_day">
-                        
-                    </td>
-                    <td class="nonactive_day">
-                        
-                    </td>
-                </tr>
-                <tr>
-                    <td class="nonactive_day">
-                        
-                    </td>
-                    <td class="nonactive_day">
-                        
-                    </td>
-                    <td class="this_today">
-                        
-                    </td>
-                    <td class="nonactive_day">
-                        
-                    </td>
-                    <td class="nonactive_day">
-                        
-                    </td>
-                    <td class="nonactive_day">
-                        
-                    </td>
-                    <td class="nonactive_day">
-                        
-                    </td>
-                </tr>
-                <tr>
-                    <td class="nonactive_day">
-                        
-                    </td>
-                    <td class="nonactive_day">
-                        
-                    </td>
-                    <td class="this_today">
-                        
-                    </td>
-                    <td class="nonactive_day">
-                        
-                    </td>
-                    <td class="nonactive_day">
-                        
-                    </td>
-                    <td class="nonactive_day">
-                        
-                    </td>
-                    <td class="nonactive_day">
-                        
-                    </td>
-                </tr>
-                <tr>
-                    <td class="nonactive_day">
-                        
-                    </td>
-                    <td class="nonactive_day">
-                        
-                    </td>
-                    <td class="this_today">
-                        
-                    </td>
-                    <td class="nonactive_day">
-                        
-                    </td>
-                    <td class="nonactive_day">
-                        <div class="cal_hour_events">
-                            <a href="" class="event_purple">Lorem ipsum</a> <!-- bitte den Text kuerzen, damit er maximal eine Zeile einnimmt -->
-                        </div>
-                    </td>
-                    <td class="nonactive_day">
-                        
-                    </td>
-                    <td class="nonactive_day">
-                        
-                    </td>
-                </tr>
-                <tr>
-                    <td class="nonactive_day">
-                        
-                    </td>
-                    <td class="nonactive_day">
-                        
-                    </td>
-                    <td class="this_today">
-                        
-                    </td>
-                    <td class="nonactive_day">
-                        
-                    </td>
-                    <td class="nonactive_day">
-                        
-                    </td>
-                    <td class="nonactive_day">
-                        
-                    </td>
-                    <td class="nonactive_day">
-                        
-                    </td>
-                </tr>
+                        		*}
+                			</td>
+                		{/section}
+                    </tr>
+                {/section}
             </table>
-            
-            <div class="clear"> </div>
         </div>
         
         <div id="cal_hint">
         Tipp: Klicken Sie auf einen Tag, um einen neuen Termin einzutragen.
         </div>
     </div>
-    *}
+{/block}
+
+{block name=room_list_footer}
+{/block}
