@@ -112,37 +112,40 @@
                 	{/if}
                     
                 </tr>
+                {if $cc.mode == "month"}
+                	{section name=rows loop=6}
+	                	{$i = $smarty.section.rows.index}
+	                	
+	                	<tr>
+	                		{section name=columns loop=7}
+	                			{$j = $smarty.section.columns.index}
+	                			{$pos = $i * 7 + $j}
+	                			
+	                			{* nonactive_day / active_day / this_today *}
+	                			
+	               				<td class="{$cc.content.days[$pos].state}">
+	                			
+	                				{if $cc.mode == "month"}<div class="cal_daynumber">{$cc.content.days[$pos].day}</div>{/if}
+	                				
+	                				{if isset($cc.content.days[$pos].dates) && !empty($cc.content.days[$pos].dates)}
+	                					termin
+	                					{*
+		                				<div class="cal_days_events">
+				                            <a href="" class="event_blue">Lorem ipsum</a> <!-- bitte den Text kuerzen, damit er maximal eine Zeile einnimmt -->
+				                            <a href="" class="event_blue">Lorem ipsum</a> <!-- bitte den Text kuerzen, damit er maximal eine Zeile einnimmt -->
+				                            <a href="" class="event_green">Lorem ipsum</a> <!-- bitte den Text kuerzen, damit er maximal eine Zeile einnimmt -->
+				                            <a href="" class="event_red">Lorem ipsum</a> <!-- bitte den Text kuerzen, damit er maximal eine Zeile einnimmt -->
+				                        </div>
+		                        		*}
+	                				{/if}
+	                			</td>
+	                		{/section}
+	                    </tr>
+	                {/section}
+                {else}
+       				
+       			{/if}
                 
-                {section name=rows loop=6}
-                	{$i = $smarty.section.rows.index}
-                	
-                	<tr>
-                		{section name=columns loop=7}
-                			{$j = $smarty.section.columns.index}
-                			{$pos = $i * 7 + $j}
-                			
-                			{* nonactive_day / active_day / this_today *}
-                			
-                			<td class="{$cc.content.days[$pos].state}">
-                				{if $cc.mode == "month"}
-                					<div class="cal_daynumber">{$cc.content.days[$pos].day}</div>
-                				{/if}
-                				
-                				{if isset($cc.content.days[$pos].dates) && !empty($cc.content.days[$pos].dates)}
-                					termin
-                					{*
-	                				<div class="cal_days_events">
-			                            <a href="" class="event_blue">Lorem ipsum</a> <!-- bitte den Text kuerzen, damit er maximal eine Zeile einnimmt -->
-			                            <a href="" class="event_blue">Lorem ipsum</a> <!-- bitte den Text kuerzen, damit er maximal eine Zeile einnimmt -->
-			                            <a href="" class="event_green">Lorem ipsum</a> <!-- bitte den Text kuerzen, damit er maximal eine Zeile einnimmt -->
-			                            <a href="" class="event_red">Lorem ipsum</a> <!-- bitte den Text kuerzen, damit er maximal eine Zeile einnimmt -->
-			                        </div>
-	                        		*}
-                				{/if}
-                			</td>
-                		{/section}
-                    </tr>
-                {/section}
             </table>
         </div>
         

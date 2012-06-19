@@ -499,10 +499,6 @@
 		      		$current_month_temp = $current_month_temp[1];
 		      	}
 		      	
-		      	if($current_month[$i] != mb_substr($this->_month,4,2)){
-		      		$html .= 'background-color:#dfdfdf;';
-		      	}
-		      	
 		      	$state = "active_day";
 		      	// check if day is today
 		      	if($todayCompressed === $format['day'].$current_month_temp.$current_year[$i]) {
@@ -653,7 +649,7 @@
 			
 			
 			
-			
+			/*
 			
 			if(isset($_GET['presentation_mode']) and !empty($_GET['presentation_mode'])){
 				$presentation_mode = $_GET['presentation_mode'];
@@ -800,6 +796,8 @@
 			$session->setValue($this->_environment->getCurrentContextID().'_week', $week);
 			$session->setValue($this->_environment->getCurrentContextID().'_presentation_mode', $presentation_mode);
 			
+			*/
+			
 			return $return;
 		}
 		
@@ -857,6 +855,39 @@
 					$i++;
 				}
 				$last_selected_tag = $seltag_array[$j-1];
+			}
+			
+			// Find current status selection
+			if ( isset($_GET['selstatus'])
+					and $_GET['selstatus'] != '-2'
+			) {
+				$selstatus = $_GET['selstatus'];
+				// save selection
+				if ( $context_item->isPrivateRoom() ) {
+					$date_sel_status = $context_item->getRubrikSelection(CS_DATE_TYPE,'status');
+					if ( $date_sel_status != $selstatus ) {
+						$context_item->setRubrikSelection(CS_DATE_TYPE,'status',$selstatus);
+						$room_save_selection = true;
+					}
+				}
+			} else {
+				if ( $this->_display_mode === "calendar"
+						or $mode == 'formattach'
+						or $mode == 'detailattach'
+						or $environment->inPrivateRoom()
+				) {
+					$selstatus = 2;
+					if ( $environment->inPrivateRoom() ) {
+						$date_sel_status = $context_item->getRubrikSelection(CS_DATE_TYPE,'status');
+						if ( !empty($date_sel_status) ) {
+							$selstatus = $date_sel_status;
+						} else {
+							$selstatus = 2;
+						}
+					}
+				}else{
+					$selstatus = 3;
+				}
 			}
 
 			// Get data from database
@@ -988,12 +1019,9 @@
 					$dates_manager->setTagLimit($this->_list_parameter_arrray['last_selected_tag']);
 				}
 				
-				// TODO: apply filter
-				/*
 				if ( !empty($selstatus) ) {
-				      $dates_manager->setDateModeLimit($selstatus);
-				   }
-				 */
+					$dates_manager->setDateModeLimit($selstatus);
+				}
 				
 				// TODO: not sure if this is correct here
 				if ( $this->_list_parameter_arrray['interval'] > 0 ) {
@@ -1031,12 +1059,9 @@
 							}
 						}
 						
-						// TODO: apply filter
-						/*
-						 if ( !empty($selstatus) ) {
-						$dates_manager->setDateModeLimit($selstatus);
+						if ( !empty($selstatus) ) {
+							$dates_manager->setDateModeLimit($selstatus);
 						}
-						*/
 					}
 					
 					if ( $this->_list_parameter_arrray['interval'] > 0 ) {
