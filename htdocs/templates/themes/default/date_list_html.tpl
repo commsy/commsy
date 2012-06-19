@@ -15,7 +15,7 @@
 	    	<img src="{$basic.tpl_path}img/btn_own_user.gif" alt="___COMMON_OWN_USER___" />
 	    </a>
     {/if}
-    
+
     <a href="commsy.php?cid={$environment.cid}&mod=date&fct=index&mode=calendar" title="Ansicht in Portlets"><img src="{$basic.tpl_path}img/btn_portlet_view.gif" alt="Portlets" /></a>
 {/block}
 
@@ -118,10 +118,10 @@
 				</p>
 			</div>
 			<div class="column_45">
+			{if $item.attachment_count > 0 && $item.activated}
 				<p>
 					<a href="#" class="attachment{if $item.attachment_count == 0}_none_overlay{/if}">{$item.attachment_count}</a>
 				</p>
-				{if $item.attachment_count > 0 && $item.activated}
 					<div class="tooltip tooltip_with_400">
 						<div class="tooltip_inner tooltip_inner_with_400">
 							<div class="tooltip_title">
@@ -143,7 +143,9 @@
 							</div>
 						</div>
 					</div>
-				{/if}
+			{else}
+				<p>&nbsp;</p>
+			{/if}
 			</div>
 			<div class="column_140">
 				<p>

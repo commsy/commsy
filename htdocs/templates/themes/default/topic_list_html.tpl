@@ -63,10 +63,10 @@
 				</p>
 			</div>
 			<div class="column_45">
+			{if $item.attachment_count > 0 && $item.activated}
 				<p>
 					<a href="#" class="attachment{if $item.attachment_count == 0}_none_overlay{/if}">{$item.attachment_count}</a>
 				</p>
-				{if $item.attachment_count > 0 && $item.activated}
 					<div class="tooltip tooltip_with_400">
 						<div class="tooltip_inner tooltip_inner_with_400">
 							<div class="tooltip_title">
@@ -88,7 +88,9 @@
 							</div>
 						</div>
 					</div>
-				{/if}
+			{else}
+				<p>&nbsp;</p>
+			{/if}
 			</div>
 			<div class="column_145">
 				<p>{$item.date}</p>
