@@ -31,7 +31,7 @@
 						<div class="input_row">
 							<span class="input_label_80">___DATES_TIME_DAY_END___:</span>
 							<span class="input_label">___COMMON_CALENDAR_DATE___&nbsp;&nbsp;</span>
-							<input class="size_80 datepicker" type="text" value="{if isset($item.dayEnd)}{$item.dayEnd}{/if}" name="form_data[dateEnd]" />
+							<input class="size_80 datepicker" type="text" value="{if isset($item.dayEnd)}{$item.dayEnd}{/if}" name="form_data[dayEnd]" />
 							<span class="input_label">___COMMON_CLOCK___</span>
 							<input type="text" value="{if isset($item.timeEnd)}{$item.timeEnd}{/if}" name="form_data[timeEnd]" class="size_80" />
 						</div>
@@ -60,13 +60,13 @@
 							<div class="settings_area">
 								<div class="sa_col_left">
 									<div id="file_finished"></div>
-									
+
 									<div id="files_attached">
 										{foreach $item.files as $file}
 											<input type="checkbox" checked="checked" name="form_data[file_{$file@index}]" value="{$file.file_id}" />{$file.file_name}<br/>
 										{/foreach}
 									</div>
-									
+
 									<input id="uploadify" name="uploadify" type="file" />
 
 									<div>

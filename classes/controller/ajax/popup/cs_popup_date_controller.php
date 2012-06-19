@@ -248,7 +248,7 @@ class cs_popup_date_controller {
                 }
 
                 if (!empty($form_data['dayEnd'])) {
-                    $converted_day_end = convertDateFromInput($form_data['dayEnd'],$environment->getSelectedLanguage());
+        			$converted_day_end = convertDateFromInput($form_data['dayEnd'],$environment->getSelectedLanguage());
                     if ($converted_day_end['conforms'] == TRUE) {
                         $date_item->setEndingDay($converted_day_end['datetime']);
                         $dt_end_date = $converted_day_end['datetime'];

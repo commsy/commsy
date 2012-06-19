@@ -329,7 +329,7 @@ class cs_date_detail_controller extends cs_detail_controller {
 		}
 
 		$parse_day_end = convertDateFromInput($this->_item->getEndingDay(), $this->_environment->getSelectedLanguage());
-		$conforms = $parse_day_end['coforms'];
+		$conforms = $parse_day_end['conforms'];
 		if($conforms === true) {
 			$end_day_print = $this->_item->getEndingDayName() . ', ' . $translator->getDateInLang($parse_day_end['datetime']);
 		} else {
