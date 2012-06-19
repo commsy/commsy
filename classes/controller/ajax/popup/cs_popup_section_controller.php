@@ -30,7 +30,7 @@ class cs_popup_section_controller implements cs_rubric_popup_controller {
         $section = $section_list->getFirst();
         while($section) {
             $this->_sections[] = $section;
-            
+
             $section = $section_list->getNext();
         }
 

@@ -48,7 +48,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 				var regex = new RegExp("[\\?&]iid=([^&#]*)");
 				var results = regex.exec(jQuery(this).attr('href'));
 				if(results !== null && results[1] !== 'NEW') item_id = results[1];
-				
+
 				// determ ref item id from actor href
 				var ref_item_id = '';
 				var regex = new RegExp("[\\?&]ref_iid=([^&#]*)");
@@ -106,7 +106,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 							handle:				ck_editor_handler,
 							register_on:		jQuery('div.ckeditor')
 						});
-						
+
 						// reinvoke Datepicker
 						var datepicker_handler = commsy_functions.getModuleCallback('commsy/datepicker');
 						datepicker_handler.setup(null, {
@@ -144,7 +144,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 									// toggle bold
 									/<span>(.*)<\/span>/.exec(node.data.title);
 									var title = RegExp.$1;
-									
+
 									// check bold
 									if(node.data.title.substr(0, 3) === '<b>') {
 										// remove
@@ -190,16 +190,16 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			var handle = event.data.handle;
 			var module = event.data.module;
 			var item_id = event.data.item_id;
-			
+
 			// add ckeditor data to hidden div
 			jQuery('div.ckeditor').each(function() {
 				var editor = jQuery(this).ckeditorGet();
 				jQuery(this).parent().children('input[type="hidden"]').attr('value', editor.getData());
 			});
-			
+
 			// collect form data
 			var form_objects = jQuery('div[id="popup_wrapper"] input[name^="form_data"],div[id="popup_wrapper"] select[name^="form_data"]');
-			
+
 			// build object
 			var data = {
 				form_data: [],
@@ -293,7 +293,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 				name:	'files',
 				value:	file_ids
 			});
-			
+
 			// ajax request
 			jQuery.ajax({
 				type: 'POST',
@@ -310,38 +310,38 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 						if(item_id == 'NEW') {
 							handle.netnavigation.afterItemCreation(data.item_id);
 						}
-						
+
 						// submit path
 						if(handle.path !== null) {
 							handle.path.save(data.item_id);
 						}
-						
+
 						// submit picture
 						var form_object = jQuery('form#picture_upload');
-						
+
 						if(form_object.find('input[type="file"]').length > 0) {
 							if(form_object.find('input[type="file"]').attr('value') !== '') {
-								handle.uploadPicture(form_object, data.item_id);
+								handle.uploadPicture(form_object, data.item_id, data.module);
 							} else {
 								handle.close();
-								
-								handle.reload(data.item_id);
+
+								handle.reload(data.item_id,data.module);
 							}
 						} else {
 							handle.close();
-							
-							handle.reload(data.item_id);
+
+							handle.reload(data.item_id,data.module);
 						}
 					} else if(data.status === 'error' && data.code === 101) {
 						// mandatory error
 						var missing_fields = data.detail;
-						
+
 						// create a red border around the missing fields and scroll to first one
 						jQuery.each(missing_fields, function(index, field_name) {
 							jQuery.each(form_objects, function() {
 								if(jQuery(this).attr('name') === 'form_data[' + field_name + ']') {
 									jQuery(this).css('border', '1px solid red');
-									
+
 									if(index === 0 && !jQuery.inviewport(jQuery(this), {threshold: 0})) {
 										jQuery('html, body').animate({scrollTop: jQuery(this).offset().top}, 500);
 									}
@@ -357,8 +357,8 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 
 			return false;
 		},
-		
-		reload: function(item_id) {
+
+		reload: function(item_id,cs_module) {
 			// page reload
 			var fct = '';
 			var regex = new RegExp("[\\?&]fct=([^&#]*)");
@@ -368,27 +368,32 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			var module = '';
 			var regex = new RegExp("[\\?&]mod=([^&#]*)");
 			var results = regex.exec(location.href);
+
 			if(results !== null && results[1] !== 'NEW') module = results[1];
+
+			if(cs_module != ''){
+				module = cs_module;
+			}
 
 			location.href = 'commsy.php?cid=' + this.cid + '&mod=' + module + '&fct=detail&iid=' + item_id;
 		},
-		
-		uploadPicture: function(form_object, item_id) {
+
+		uploadPicture: function(form_object, item_id, cs_module) {
 			var handle = this;
-			
+
 			jQuery('input#upload_hidden_iid').val(item_id);
-			
+
 			// setup ajax form
 			form_object.ajaxForm();
-			
+
 			// submit form
 			form_object.ajaxSubmit({
 				type:		'POST',
 				success:	function() {
-					handle.reload(item_id);
+					handle.reload(item_id, cs_module);
 				}
 			});
-			
+
 			return false;
 		},
 
@@ -446,13 +451,13 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 				handle.close();
 				return false;
 			});
-			
+
 			// setup path
 			if(jQuery('a#popup_path_tab').length > 0) this.setupPath(handle, item_id);
 
 			// setup netnavigation
 			this.setupNetnavigation(handle, item_id, module);
-			
+
 			// this will setup some special things for certain modules
 			if(module === 'material') handle.setupMaterialPopup();
 
@@ -465,55 +470,55 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			// setup tabs
 			this.setupTabs();
 		},
-		
+
 		onClickSave: function(event) {
 			// check if uploadify queue is empty
 			var queue_length = jQuery('div#uploadifyQueue').children().length;
-			
+
 			if(queue_length == 0 || event.data.handle.uploaded == true) {
 				event.data.handle.uploaded = false;
-				
+
 				// if queue is empty - save item
 				event.data.handle.save(event);
 			} else {
 				var uploadify = jQuery('input#uploadify');
-				
+
 				// first upload files - then save
 				uploadify.uploadifyUpload();
-				
+
 				event.data.handle.uploaded = true;
 			}
 		},
-		
+
 		onUploadifyAllComplete: function() {
 			jQuery('input#popup_button_create').click();
 		},
-		
+
 		setupMaterialPopup: function() {
 			var handle = this;
-			
+
 			/* setup bibliographic form elements */
 			// get value from active bibliographic option
 			var select_object = jQuery('select#bibliographic_select');
-			
+
 			// show / hide bibliographic div's
 			handle.showHideBibliographic(select_object);
-			
+
 			// register handler for select
 			select_object.change(function() {
 				// show / hide bibliographic div's
 				handle.showHideBibliographic(select_object);
 			});
 		},
-		
+
 		showHideBibliographic: function(select_object) {
 			var key = select_object.children('option:selected').val();
-			
+
 			// go through all bibliographic content div's and show the one who's id matches "bib_content_" + key
 			jQuery('div#bibliographic div[id^="bib_content_"]').each(function() {
 				if(jQuery(this).attr('id') === 'bib_content_' + key) {
 					jQuery(this).show();
-					
+
 					// go through each input field and change the name, if needed, so they will be submitted again
 					jQuery(this).find('input, select').each(function() {
 						if(jQuery(this).attr('name').substr(0, 14) === 'do_not_submit_') {
@@ -522,7 +527,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 					});
 				} else {
 					jQuery(this).hide();
-					
+
 					// go through each input field and change the name, if needed, so they won't be submitted
 					jQuery(this).find('input, select').each(function() {
 						if(jQuery(this).attr('name').substr(0, 14) !== 'do_not_submit_') {
@@ -538,7 +543,7 @@ define([	"order!libs/jQuery/jquery-1.7.1.min",
 			this.netnavigation = new Netnavigation();
 			this.netnavigation.init(handle.cid, item_id, module, this.tpl_path);
 		},
-		
+
 		setupPath: function(handle, item_id) {
 			// init path class
 			this.path = new Path();
@@ -553,24 +558,24 @@ var Path = function() {
 		cid:				null,
 		item_id:			null,
 		tpl_path:			'',
-		
+
 		init: function(cid, item_id, tpl_path) {
 			this.cid = cid;
 			this.item_id = item_id;
 			this.tpl_path = tpl_path;
-			
+
 			var handle = this;
-			
+
 			// register onclick handler
 			jQuery('a#popup_path_tab').click(function() {
 				var list = jQuery('ul#popup_path_list');
-				
+
 				// get all connected entries for this item
 				if(item_id !== 'NEW') {
 					handle.ajaxRequest('getConnectedEntries', {item_id: item_id}, function(data) {
 						// clear list
 						list.children().remove();
-						
+
 						// append items to list
 						jQuery.each(data, function() {
 							list.append(
@@ -595,18 +600,18 @@ var Path = function() {
 						});
 					});
 				}
-				
+
 				// setup sortable
 				list.sortable({
 					placeholder:	'ui-state-highlight'
 				});
 			});
 		},
-		
+
 		save: function(item_id) {
 			var request_item_id = this.item_id;
-			if(typeof(item_id) !== 'undefined') request_item_id = item_id; 
-			
+			if(typeof(item_id) !== 'undefined') request_item_id = item_id;
+
 			// collect data
 			var ids = [];
 			jQuery('ul#popup_path_list input[type="checkbox"]:checked').each(function() {
@@ -615,17 +620,17 @@ var Path = function() {
 				var regex = new RegExp("path_(.*)");
 				var results = regex.exec(jQuery(this).attr('id'));
 				if(results !== null) id = results[1];
-				
+
 				ids.push(id);
 			});
-			
+
 			this.ajaxRequest('savePath', {
 				item_id:	request_item_id,
 				linked_ids:	ids}, function() {
-					
+
 				});
 		},
-		
+
 		ajaxRequest: function(action, data, callback) {
 			var handle = this;
 
@@ -710,7 +715,7 @@ var Netnavigation = function() {
 						// setup form submit
 						jQuery('input[name="netnavigation_submit_restrictions"]').click(function() {
 							handle.performRequest();
-							
+
 							// reset paging
 							handle.paging.current = 0;
 							handle.performRequest();
@@ -815,7 +820,7 @@ var Netnavigation = function() {
 				current_page:	this.paging.current,
 				restrictions:	this.restrictions
 			};
-			
+
 			var module = this.module;
 
 			// send request
@@ -824,14 +829,14 @@ var Netnavigation = function() {
 
 				// fill list
 				content_object.empty();
-				
+
 				jQuery.each(ret.list, function(index) {
 					// if current module is of type user, deactivate selection for "All Members"(system label) entries
 					var disabled = false;
 					if(module === 'user' && this.system_label === true) {
 						disabled = true;
 					}
-					
+
 					content_object.append(
 						jQuery('<div/>', {
 							'class':	(index % 2 === 0) ? 'pop_row_even' : 'pop_row_odd'
@@ -930,7 +935,7 @@ var Netnavigation = function() {
 										})
 									)
 								);
-								
+
 								if(jQuery('a#popup_path_tab').length > 0) {
 									// add related entry to path list
 									jQuery('ul#popup_path_list').append(
@@ -962,7 +967,7 @@ var Netnavigation = function() {
 								li_object.slideUp(1000, function() {
 									li_object.remove();
 								});
-								
+
 								if(jQuery('a#popup_path_tab').length > 0) {
 									// remove related entry from path list
 									var input_object = jQuery('ul#popup_path_list input#path_' + linked_id);

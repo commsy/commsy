@@ -218,7 +218,7 @@ class cs_popup_group_controller implements cs_rubric_popup_controller {
 					$manager->markEdited($item->getItemID());
 
 					// set return
-                	$this->_popup_controller->setSuccessfullItemIDReturn($item->getItemID());
+                	$this->_popup_controller->setSuccessfullItemIDReturn($item->getItemID(),CS_GROUP_TYPE);
 				}
 			}
         }

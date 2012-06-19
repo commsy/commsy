@@ -225,7 +225,7 @@ class cs_popup_announcement_controller implements cs_rubric_popup_controller {
                 $manager->markEdited($announcement_item->getItemID());
 
                 // set return
-                $this->_popup_controller->setSuccessfullItemIDReturn($announcement_item->getItemID());
+                $this->_popup_controller->setSuccessfullItemIDReturn($announcement_item->getItemID(),CS_ANNOUNCEMENT_TYPE);
             }
         }
     }

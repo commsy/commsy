@@ -93,11 +93,19 @@
 			}
 		}
 
-		public function setSuccessfullItemIDReturn($item_id) {
+		public function setSuccessfullItemIDReturn($item_id, $module = '') {
 			// setup return
+
+			if (empty($module)){
+				$item_manager = $this->_environment->getItemManager();
+				$item = $item_manager->getItem($item_id);
+				$module = $item->getItemType();
+			}
+
 			$return = array(
 				'status'	=> 'success',
-				'item_id'	=> $item_id
+				'item_id'	=> $item_id,
+				'module'	=> $module
 			);
 
 			$this->_return = json_encode($return);
