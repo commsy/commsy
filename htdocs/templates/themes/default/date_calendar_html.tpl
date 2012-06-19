@@ -44,6 +44,19 @@
         <div id="cal_table_{$cc.mode}">
         	
         	{if $cc.mode == "week"}
+        		<table id="hour_index" cellspacing="0" cellpadding="0" border="0">
+        			{section name=time loop=20}
+        				<tr>
+        					{if $smarty.section.time.index == 0}
+        						<th></th>
+        					{else}
+        						<td>{$smarty.section.time.index}</td>
+        					{/if}
+	        			</tr>
+        			{/section}
+        		</table>
+        	
+        	{*
 	        	<div id="hour_index">
 	                <div class="cal_hi_hour">&nbsp;</div>
 	                <div class="cal_hi_hour">8</div>
@@ -61,7 +74,7 @@
 	                <div class="cal_hi_hour">20</div>
 	                <div class="cal_hi_hour">21</div>
 	                <div class="cal_hi_hour">22</div>
-	            </div>
+	            </div>*}
         	{/if}
         
             <table cellspacing="0" cellpadding="0" border="0">
@@ -110,8 +123,14 @@
                 			
                 			{* nonactive_day / active_day / this_today *}
                 			
-                			<td class="nonactive_day">
-                				{if $cc.mode == "month"}<div class="cal_daynumber">{$pos}</div>{/if}
+                			<td class="{$cc.content.days[$pos].state}">
+                				{if $cc.mode == "month"}<div class="cal_daynumber">{$cc.content.days[$pos].day}</div>{/if}
+                				
+                				{if isset($cc.content.days[$pos].dates) && !empty($cc.content.days[$pos].dates)}
+                				bla
+                				{/if}
+                				
+                				
                 				
                 				{*
                 				
@@ -130,7 +149,7 @@
         </div>
         
         <div id="cal_hint">
-        Tipp: Klicken Sie auf einen Tag, um einen neuen Termin einzutragen.
+        	___DATES_TIPP_FOR_ENTRIES___
         </div>
     </div>
 {/block}

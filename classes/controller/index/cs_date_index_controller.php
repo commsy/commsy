@@ -284,6 +284,8 @@
 		}
 		
 		private function getMonthContent($list) {
+			$translator = $this->_environment->getTranslationObject();
+			
 			$current_time = localtime();
 			
 			// do some time calculations
@@ -296,6 +298,7 @@
 			$format_array = array();
 			$current_month = array();
 			$current_year = array();
+			
 			//skip fields at beginning
 			$empty_fields = (($first_day_week_day + 6) % 7);
 			if($month != '01'){
@@ -308,14 +311,14 @@
 			$prev_month_days = daysInMonth($prev_month,$prev_month_year);
 			for ($i =0; $i < $empty_fields; $i++) {
 				$format_array[]['day'] = $prev_month_days-($empty_fields - $i)+1;
-				$current_month[] = $prev_month;
+				$current_month[] = (string) $prev_month;
 				$current_year[] = $prev_month_year;
 			}
 			
 			// fill days
 			for ($i =1; $i <= $days;$i++) {
 				$format_array[]['day'] = $i;
-				$current_month[] = $month;
+				$current_month[] = (string) $month;
 				$current_year[] = $year;
 			}
 			
@@ -331,16 +334,16 @@
 			}
 			for ($i=0;$i<$remaining;$i++) {
 				$format_array[]['day'] = $i + 1;
-				$current_month[] = $next_month;
+				$current_month[] = (string) $next_month;
 				$current_year[] = $next_month_year;
 			}
 			
-			//get Dates in month
+			// get Dates in month
 			$current_date = $list->getFirst();
 			$finish = false;
 			$date_tooltip_array = array();
 			while ($current_date) {
-				//$date_tooltip_array[$current_date->getItemID()] = $this->getTooltipDate($current_date);
+				$date_tooltip_array[$current_date->getItemID()] = $this->getTooltipDate($current_date);
 				$start_date_month = '';
 				$start_date_day = '';
 				$start_date_year = '';
@@ -401,188 +404,204 @@
 				
 				$current_date = $list->getNext();
 			}
+			
+			// setup tooltip's and actions
+			$anAction_array = array();
+			$date_index = 0;
+			$tooltips = array();
+			$tooltip_last_id = '';
+			$tooltip_date = '';
+			
+			for ($i=0;$i<42;$i++) {
+				
+		      	if($format_array[$i]['day'].$current_month[$i].$current_year[$i] == date("dmY")){
+		      		$today = $format_array[$i]['day'].$current_month[$i].$current_year[$i];
+		      	}
+		      
+		      	if(isset($format_array[$i]['dates']) and !empty($format_array[$i]['dates'])){
+		      		foreach($format_array[$i]['dates'] as $date){
+		      			$link = $this->getDateItemLinkWithJavascript($date, $date->getTitle());
+		      			$link = str_replace("'", "\'", $link);
+		      			$link_array = explode('"', $link);
+		      			$href = $link_array[1];
+		      			if($date->getColor() != ''){
+		      				$color = $date->getColor();
+		      			} else {
+		      				$color = '#FFFF66';
+		      			}
+		      			$color_border = '#CCCCCC';
+		      			$current_month_temp = $current_month[$i];
+		      			if($current_month_temp[0] == 0){
+		      				$current_month_temp = $current_month_temp[1];
+		      			}
+		      			$date_array_for_jQuery[] = 'new Array(' . $format_array[$i]['day'] . ',' . $current_month_temp . ',\'' . $link . '\',' . count($format_array[$i]['dates']) . ',\'' . $color . '\'' . ',\'' . $color_border . '\'' . ',\'' . $href . '\'' . ',\'sticky_' . $date_index . '\')';
+		      			$tooltip = array();
+		      			$tooltip['title'] = $date->getTitle();
+		      			
+		      			$tooltip['date'] = $date_tooltip_array[$date->getItemID()];
+		      			$tooltip['place'] = $date->getPlace();
+		      			$tooltip['participants'] = $date->getParticipantsItemList();
+		      			$tooltip['color'] = $color;
+		      
+		      			// room
+		      			$date_context_item = $date->getContextItem();
+		      			if ( isset($date_context_item) ) {
+		      				$room_title = $date_context_item->getTitle();
+		      				if ( !empty($room_title) ) {
+		      					$tooltip['context'] = encode(AS_HTML_SHORT,$room_title);
+		      				}
+		      			}
+		      
+		      			$tooltips['sticky_' . $date_index] = $tooltip;
+		      			$date_index++;
+		      		}
+		      	}
+		      
+		      	$params = array();
+		      	$params['iid'] = 'NEW';
+		      	$temp_day = $format_array[$i]['day'];
+		      	
+		      	if(mb_strlen($temp_day) == 1){
+		      		$temp_day = '0'.$temp_day;
+		      	}
+		      	
+		      	$params['day'] = $temp_day;
+		      	$parameter_array = $this->_environment->getCurrentParameterArray();
+		      	$temp_month = $current_month[$i];
+		      	
+		      	if(mb_strlen($temp_month) == 1){
+			    	$temp_month = '0'.$temp_month;
+			    }
+			    
+	      		$params['month'] = $current_year[$i].$temp_month.'01';
+	      		$params['year'] = $current_year[$i];
+	      		$params['presentation_mode'] = $this->_presentation_mode;
+	      		$params['modus_from'] = 'calendar';
+	      		$anAction = ahref_curl( $this->_environment->getCurrentContextID(),
+		      		CS_DATE_TYPE,
+		      		'edit',
+		      		$params,
+		      		'<img style="width:100%; height:100%" src="images/spacer.gif" alt="" border="0"/>');
+	      		$anAction_array[] = $anAction;
+		      }
+		      
+		      
+		      // get return data
+		      $return = array();
+		      	
+		      $days = array();
+		      
+		      $i = 0;
+		      $todayCompressed = date("jnY");
+		      foreach($format_array as $format) {
+		      	$current_month_temp = $current_month[$i];
+		      	if($current_month_temp[0] == 0){
+		      		$current_month_temp = $current_month_temp[1];
+		      	}
+		      	
+		      	if($current_month[$i] != mb_substr($this->_month,4,2)){
+		      		$html .= 'background-color:#dfdfdf;';
+		      	}
+		      	
+		      	$state = "active_day";
+		      	// check if day is today
+		      	if($todayCompressed === $format['day'].$current_month_temp.$current_year[$i]) {
+		      		$state = "this_today";
+		      	}
+		      	
+		      	// check if day is not active(grey out)
+		      	elseif($current_month[$i] != mb_substr($this->_calendar["month"],4,2)) {
+		      		$state = "nonactive_day";
+		      	}
+		      	
+		      	// process dates for this day
+		      	$dates = array();
+		      	foreach($format["dates"] as $date) {
+		      		$dates[] = $date;
+		      	}
+		      	
+		      	$days[] = array(
+	      			"day"		=> $format["day"],
+	      			"link"		=> $anAction_array[$i],
+		      		"state"		=> $state,
+		      		"dates"		=> $dates
+		      	);
+		      	
+		      	$i++;
+		      }
+		      
+		      $return['days'] = $days;
+		      
+
+		      /*
+		       * 
+
+		      
+		      $html .= '<div id="mystickytooltip" class="stickytooltip"><div style="border:1px solid #cccccc;">';
+		      
+		      foreach($tooltips as $id => $tooltip){
+		      	$html .= '<div id="' . $id . '" class="atip" style="padding:5px; border:2px solid ' . $tooltip['color'] . '">'.LF;
+		      	$html .= '<table>'.LF;
+		      	$html .= '<tr><td colspan="2"><b>' . $tooltip['title'] . '</b></td></tr>'.LF;
+		      	$html .= '<tr><td style="vertical-align:top;"><b>' . $translator->getMessage('DATES_DATETIME') . ':</b></td><td>' .  $tooltip['date'][1] . '</td></tr>'.LF;
+		      	if($tooltip['place'] != ''){
+		      		$html .= '<tr><td style="vertical-align:top;"><b>' . $translator->getMessage('DATES_PLACE') . ':</b></td><td>' . $tooltip['place'] . '</td></tr>'.LF;
+		      	}
+		      	$html .= '<tr><td style="vertical-align:top;"><b>' . $translator->getMessage('DATE_PARTICIPANTS') . ':</b></td><td>'.LF;
+		      	if($tooltip['participants']->isEmpty()){
+		      		$html .= $translator->getMessage('TODO_NO_PROCESSOR');
+		      	} else {
+		      		$participant = $tooltip['participants']->getFirst();
+		      		$count = $tooltip['participants']->getCount();
+		      		$counter = 1;
+		      		while ($participant) {
+		      			$html .= $participant->getFullName();
+		      			if ( $counter < $count) {
+		      				$html .= ', ';
+		      			}
+		      			$participant = $tooltip['participants']->getNext();
+		      			$counter++;
+		      		}
+		      	}
+		      	$html .= '</td></tr>'.LF;
+		      	if ( !empty($tooltip['context']) ) {
+		      		$html .= '<tr><td style="vertical-align:top;"><b>' . $translator->getMessage('COMMON_ROOM') . ':</b></td><td>' . $tooltip['context'] . '</td></tr>'.LF;
+		      	}
+		      	$html .= '</table>'.LF;
+		      	$html .= '</div>'.LF;
+		      }
+		      
+		      // tooltips for todos
+		      if ( !empty($this->_tooltip_div_array) ) {
+			      foreach ( $this->_tooltip_div_array as $div ) {
+			      	$html .= $div;
+			      }
+		      }
+		      
+		      $html .= '</div></div>';
+		      	$html .= '<script type="text/javascript">'.LF;
+		      	$html .= '<!--'.LF;
+		      	$html .= 'var calendar_dates = new Array(';
+		      	if(isset($date_array_for_jQuery) and !empty($date_array_for_jQuery)){
+		      	$last = count($date_array_for_jQuery)-1;
+		      	for ($index = 0; $index < count($date_array_for_jQuery); $index++) {
+		      	$html .= $date_array_for_jQuery[$index];
+		      	if($index < $last){
+		      	$html .= ',';
+		      	}
+		      	}
+		      	}
+		      	$html .= ');'.LF;
+	      		$html .= 'var today = "' . $today . '";' .LF;
+	      		$html .= '-->'.LF;
+	      		$html .= '</script>'.LF;
+	      
+	      		
+	      		return $html;
+	      		*/
+		      
+			return $return;
 		}
-		
-		
-		
-		/*
-      //Create the html part of the calendar
-      //title row with weekdays
-
-
-      //rest of table
-      $anAction_array = array();
-      $date_index = 0;
-      $tooltips = array();
-      $tooltip_last_id = '';
-      $tooltip_date = '';
-      for ($i=0;$i<42;$i++) {
-
-         if($format_array[$i]['day'].$current_month[$i].$current_year[$i] == date("dmY")){
-            $today = $format_array[$i]['day'].$current_month[$i].$current_year[$i];
-         }
-
-         if(isset($format_array[$i]['dates']) and !empty($format_array[$i]['dates'])){
-            foreach($format_array[$i]['dates'] as $date){
-               $link = $this->_getDateItemLinkWithJavascript($date, $date->getTitle());
-               $link = str_replace("'", "\'", $link);
-               // split() is deprecated as of PHP 5.3.x - use explode() instead!
-               //$link_array = split('"', $link);
-               $link_array = explode('"', $link);
-               $href = $link_array[1];
-               if($date->getColor() != ''){
-                  $color = $date->getColor();
-               } else {
-                  $color = '#FFFF66';
-               }
-               $color_border = '#CCCCCC';
-               $current_month_temp = $current_month[$i];
-               if($current_month_temp[0] == 0){
-                  $current_month_temp = $current_month_temp[1];
-               }
-               $date_array_for_jQuery[] = 'new Array(' . $format_array[$i]['day'] . ',' . $current_month_temp . ',\'' . $link . '\',' . count($format_array[$i]['dates']) . ',\'' . $color . '\'' . ',\'' . $color_border . '\'' . ',\'' . $href . '\'' . ',\'sticky_' . $date_index . '\')';
-               $tooltip = array();
-               $tooltip['title'] = $date->getTitle();
-
-               #$tooltip['date'] = $tooltip_date;
-               $tooltip['date'] = $date_tooltip_array[$date->getItemID()];
-               $tooltip['place'] = $date->getPlace();
-               $tooltip['participants'] = $date->getParticipantsItemList();
-               #$tooltip['desc'] = $date->getDescription();
-               $tooltip['color'] = $color;
-
-               // room
-               $date_context_item = $date->getContextItem();
-               if ( isset($date_context_item) ) {
-                  $room_title = $date_context_item->getTitle();
-                  if ( !empty($room_title) ) {
-                     $tooltip['context'] = encode(AS_HTML_SHORT,$room_title);
-                  }
-               }
-
-               $tooltips['sticky_' . $date_index] = $tooltip;
-               $date_index++;
-            }
-         }
-
-               $params = array();
-               $params['iid'] = 'NEW';
-               $temp_day = $format_array[$i]['day'];
-               if(mb_strlen($temp_day) == 1){
-                  $temp_day = '0'.$temp_day;
-               }
-               #$params['day'] = $format_array[$i]['day'];
-               $params['day'] = $temp_day;
-               $parameter_array = $this->_environment->getCurrentParameterArray();
-               //$params['month'] = $this->_month;
-               $temp_month = $current_month[$i];
-               if(mb_strlen($temp_month) == 1){
-                  $temp_month = '0'.$temp_month;
-               }
-               #$params['month'] = $current_year[$i].$current_month[$i].'01';
-               $params['month'] = $current_year[$i].$temp_month.'01';
-               $params['year'] = $current_year[$i];
-               $params['presentation_mode'] = $this->_presentation_mode;
-               $params['modus_from'] = 'calendar';
-//               if ( $this->_with_modifying_actions and !empty($format_array[$i]['day'])) {
-                  $anAction = ahref_curl( $this->_environment->getCurrentContextID(),
-                                 CS_DATE_TYPE,
-                                 'edit',
-                                 $params,
-                                 '<img style="width:100%; height:100%" src="images/spacer.gif" alt="" border="0"/>');
-                  $anAction_array[] = $anAction;
-      }
-      $i = 0;
-      for ($index_week = 0; $index_week < 6; $index_week++) {
-         for ($index_day = 0; $index_day < 7; $index_day++) {
-            $current_month_temp = $current_month[$i];
-            if($current_month_temp[0] == 0){
-               $current_month_temp = $current_month_temp[1];
-            }
-            $html .= '<div class="calendar_month_entry" id="calendar_month_entry_' . $format_array[$i]['day'] .'_' . $current_month_temp . '" style="';
-            if($current_month[$i] != mb_substr($this->_month,4,2)){
-               $html .= 'background-color:#dfdfdf;';
-            }
-            if($index_day == 0){
-               $html .= 'clear:both;';
-            }
-            if($index_day == 6){
-              $html .= 'border-right:1px solid black;';
-            }
-            $html .= ' position:relative;">' . $format_array[$i]['day'] . '<div style="position: absolute; top:0px; left:0px; height:100%; width:100%;">' . $anAction_array[$i] . '</div></div>'.LF;
-            $i++;
-         }
-      }
-      //Create the html part of the calendar
-      //title row with weekdays
-      $params = $this->_environment->getCurrentParameterArray();
-      unset($params);
-      $html .= '<div id="calendar_month_footer" class="calendar_month_footer">' . $this->_translator->getMessage('DATES_TIPP_FOR_ENTRIES') . '</div>'.LF;
-      $html .= '</div>'.LF;
-
-      $html .= '<div id="mystickytooltip" class="stickytooltip"><div style="border:1px solid #cccccc;">';
-
-      foreach($tooltips as $id => $tooltip){
-         $html .= '<div id="' . $id . '" class="atip" style="padding:5px; border:2px solid ' . $tooltip['color'] . '">'.LF;
-         $html .= '<table>'.LF;
-         $html .= '<tr><td colspan="2"><b>' . $tooltip['title'] . '</b></td></tr>'.LF;
-         $html .= '<tr><td style="vertical-align:top;"><b>' . $this->_translator->getMessage('DATES_DATETIME') . ':</b></td><td>' .  $tooltip['date'][1] . '</td></tr>'.LF;
-         if($tooltip['place'] != ''){
-            $html .= '<tr><td style="vertical-align:top;"><b>' . $this->_translator->getMessage('DATES_PLACE') . ':</b></td><td>' . $tooltip['place'] . '</td></tr>'.LF;
-         }
-         $html .= '<tr><td style="vertical-align:top;"><b>' . $this->_translator->getMessage('DATE_PARTICIPANTS') . ':</b></td><td>'.LF;
-         if($tooltip['participants']->isEmpty()){
-            $html .= $this->_translator->getMessage('TODO_NO_PROCESSOR');
-         } else {
-            $participant = $tooltip['participants']->getFirst();
-            $count = $tooltip['participants']->getCount();
-            $counter = 1;
-            while ($participant) {
-               $html .= $participant->getFullName();
-               if ( $counter < $count) {
-                  $html .= ', ';
-               }
-               $participant = $tooltip['participants']->getNext();
-               $counter++;
-            }
-         }
-         $html .= '</td></tr>'.LF;
-         if ( !empty($tooltip['context']) ) {
-            $html .= '<tr><td style="vertical-align:top;"><b>' . $this->_translator->getMessage('COMMON_ROOM') . ':</b></td><td>' . $tooltip['context'] . '</td></tr>'.LF;
-         }
-         #$html .= '<tr><td colspan="2">' . $tooltip['desc'] . '</td></tr>'.LF;
-         $html .= '</table>'.LF;
-         $html .= '</div>'.LF;
-      }
-
-      // tooltips for todos
-      if ( !empty($this->_tooltip_div_array) ) {
-         foreach ( $this->_tooltip_div_array as $div ) {
-            $html .= $div;
-         }
-      }
-
-      $html .= '</div></div>';
-      $html .= '<script type="text/javascript">'.LF;
-      $html .= '<!--'.LF;
-      $html .= 'var calendar_dates = new Array(';
-      if(isset($date_array_for_jQuery) and !empty($date_array_for_jQuery)){
-         $last = count($date_array_for_jQuery)-1;
-         for ($index = 0; $index < count($date_array_for_jQuery); $index++) {
-            $html .= $date_array_for_jQuery[$index];
-            if($index < $last){
-              $html .= ',';
-            }
-         }
-      }
-      $html .= ');'.LF;
-      $html .= 'var today = "' . $today . '";' .LF;
-      $html .= '-->'.LF;
-      $html .= '</script>'.LF;
-
-      return $html;
-   }
-		 */
 
 		private function getCalendarContent() {
 			$current_context_item = $this->_environment->getCurrentContextItem();
@@ -877,14 +896,15 @@
 			   	$dates_manager->setContextLimit($this->_environment->getCurrentContextID());
 			   	$dates_manager->setDateModeLimit(2);
 			   	$dates_manager->setYearLimit($this->_calendar["year"]);
-			   	if (!empty($presentation_mode) and $presentation_mode =='2'){
+			   	
+			   	if($this->_presentation_mode === "month") {
 			   		$real_month = mb_substr($this->_calendar["month"],4,2);
 			   		$first_char = mb_substr($real_month,0,1);
 			   		if ($first_char == '0'){
 			   			$real_month = mb_substr($real_month,1,2);
 			   		}
 			   		$dates_manager->setMonthLimit($real_month);
-			   	}else{
+			   	} else {
 			   		$real_month = mb_substr($this->_calendar["month"],4,2);
 			   		$first_char = mb_substr($real_month,0,1);
 			   		if ($first_char == '0'){
@@ -892,6 +912,7 @@
 			   		}
 			   		$dates_manager->setMonthLimit2($real_month);
 			   	}
+			   	
 			   	$count_all = $dates_manager->getCountAll();
 			   	$dates_manager->resetLimits();
 			   	$dates_manager->setSortOrder('time');
@@ -926,10 +947,6 @@
 			      $dates_manager->setDateModeLimit(2);
 			      $count_all = $dates_manager->getCountAll();
 			   }
-
-
-
-
 
 				if($this->_list_parameter_arrray['sel_activating_status'] == 2) {
 					$dates_manager->showNoNotActivatedEntries();
@@ -1501,5 +1518,185 @@
 			$return[] = $restriction;
 
 			return $return;
+		}
+		
+		
+		private function getTooltipDate($date) {
+			$translator = $this->_environment->getTranslationObject();
+			
+			$parse_time_start = convertTimeFromInput($date->getStartingTime());
+			$conforms = $parse_time_start['conforms'];
+			if ($conforms == TRUE) {
+				$start_time_print = getTimeLanguage($parse_time_start['datetime']);
+			} else {
+				$start_time_print = $date->getStartingTime();
+			}
+		
+			$parse_time_end = convertTimeFromInput($date->getEndingTime());
+			$conforms = $parse_time_end['conforms'];
+			if ($conforms == TRUE) {
+				$end_time_print = getTimeLanguage($parse_time_end['datetime']);
+			} else {
+				$end_time_print = $date->getEndingTime();
+			}
+		
+			$parse_day_start = convertDateFromInput($date->getStartingDay(),$this->_environment->getSelectedLanguage());
+			$conforms = $parse_day_start['conforms'];
+			if ($conforms == TRUE) {
+				$start_day_print = $date->getStartingDayName().', '.$translator->getDateInLang($parse_day_start['datetime']);
+			} else {
+				$start_day_print = $date->getStartingDay();
+			}
+		
+			$parse_day_end = convertDateFromInput($date->getEndingDay(),$this->_environment->getSelectedLanguage());
+			$conforms = $parse_day_end['conforms'];
+			if ($conforms == TRUE) {
+				$end_day_print =$date->getEndingDayName().', '.$translator->getDateInLang($parse_day_end['datetime']);
+			} else {
+				$end_day_print = $date->getEndingDay();
+			}
+			//formating dates and times for displaying
+			$date_print ="";
+			$time_print ="";
+		
+			if ($end_day_print != "") { //with ending day
+				$date_print = $translator->getMessage('DATES_AS_OF').' '.$start_day_print.' '.$translator->getMessage('DATES_TILL').' '.$end_day_print;
+				if ($parse_day_start['conforms']
+						and $parse_day_end['conforms']) { //start and end are dates, not strings
+					$date_print .= ' ('.getDifference($parse_day_start['timestamp'], $parse_day_end['timestamp']).' '.$translator->getMessage('DATES_DAYS').')';
+				}
+		
+				if ($start_time_print != "" and $end_time_print =="") { //starting time given
+					$time_print = $translator->getMessage('DATES_AS_OF_LOWER').' '.$start_time_print;
+					if ($parse_time_start['conforms'] == true) {
+						$time_print .= ' '.$translator->getMessage('DATES_OCLOCK');
+					}
+				} elseif ($start_time_print == "" and $end_time_print !="") { //endtime given
+					$time_print = $translator->getMessage('DATES_TILL').' '.$end_time_print;
+					if ($parse_time_end['conforms'] == true) {
+						$time_print .= ' '.$translator->getMessage('DATES_OCLOCK');
+					}
+				} elseif ($start_time_print != "" and $end_time_print !="") { //all times given
+					if ($parse_time_end['conforms'] == true) {
+						$end_time_print .= ' '.$translator->getMessage('DATES_OCLOCK');
+					}
+					if ($parse_time_start['conforms'] == true) {
+						$start_time_print .= ' '.$translator->getMessage('DATES_OCLOCK');
+					}
+					$date_print = $translator->getMessage('DATES_AS_OF').' '.$start_day_print.', '.$start_time_print.'<br />'.
+							$translator->getMessage('DATES_TILL').' '.$end_day_print.', '.$end_time_print;
+					if ($parse_day_start['conforms']
+							and $parse_day_end['conforms']) {
+						$date_print .= ' ('.getDifference($parse_day_start['timestamp'], $parse_day_end['timestamp']).' '.$translator->getMessage('DATES_DAYS').')';
+					}
+				}
+		
+			} else { //without ending day
+				$date_print = $translator->getMessage('DATES_ON_DAY').' '.$start_day_print;
+				if ($start_time_print != "" and $end_time_print =="") { //starting time given
+					$time_print = $translator->getMessage('DATES_AS_OF_LOWER').' '.$start_time_print;
+					if ($parse_time_start['conforms'] == true) {
+						$time_print .= ' '.$translator->getMessage('DATES_OCLOCK');
+					}
+				} elseif ($start_time_print == "" and $end_time_print !="") { //endtime given
+					$time_print = $translator->getMessage('DATES_TILL').' '.$end_time_print;
+					if ($parse_time_end['conforms'] == true) {
+						$time_print .= ' '.$translator->getMessage('DATES_OCLOCK');
+					}
+				} elseif ($start_time_print != "" and $end_time_print !="") { //all times given
+					if ($parse_time_end['conforms'] == true) {
+						$end_time_print .= ' '.$translator->getMessage('DATES_OCLOCK');
+					}
+					if ($parse_time_start['conforms'] == true) {
+						$start_time_print .= ' '.$translator->getMessage('DATES_OCLOCK');
+					}
+					$time_print = $translator->getMessage('DATES_FROM_TIME_LOWER').' '.$start_time_print.' '.$translator->getMessage('DATES_TILL').' '.$end_time_print;
+				}
+			}
+		
+			if ($parse_day_start['timestamp'] == $parse_day_end['timestamp'] and $parse_day_start['conforms'] and $parse_day_end['conforms']) {
+				$date_print = $translator->getMessage('DATES_ON_DAY').' '.$start_day_print;
+				if ($start_time_print != "" and $end_time_print =="") { //starting time given
+					$time_print = $translator->getMessage('DATES_AS_OF_LOWER').' '.$start_time_print;
+				} elseif ($start_time_print == "" and $end_time_print !="") { //endtime given
+					$time_print = $translator->getMessage('DATES_TILL').' '.$end_time_print;
+				} elseif ($start_time_print != "" and $end_time_print !="") { //all times given
+					$time_print = $translator->getMessage('DATES_FROM_TIME_LOWER').' '.$start_time_print.' '.$translator->getMessage('DATES_TILL').' '.$end_time_print;
+				}
+			}
+		
+			// Date and time
+			$temp_array = array();
+			$temp_array[] = $translator->getMessage('DATES_DATETIME');
+			if ($time_print != '') {
+				$temp_array[] = $date_print.BRLF.$time_print;
+			} else {
+				$temp_array[] = $date_print;
+			}
+			$tooltip_date = $temp_array;
+			return $tooltip_date;
+		}
+		
+		private function getDateItemLinkWithJavascript($item, $text) {
+			$title = $item->getTitle();
+			$params = array();
+			$params['iid'] = $item->getItemID();
+			$params['mode'] = 'private';
+			$parameter_array = $this->_environment->getCurrentParameterArray();
+			if (isset ($parameter_array['year'])){
+				$params['year'] = $parameter_array['year'];
+			}
+			if (isset ($parameter_array['month'])){
+				$params['month'] = $parameter_array['month'];
+			}
+			if (isset ($parameter_array['week'])){
+				$params['week'] = $parameter_array['week'];
+			}
+			if (isset ($parameter_array['presentation_mode'])){
+				$params['presentation_mode'] = $parameter_array['presentation_mode'];
+			}
+			$link_color = '#000000';
+			if ($item->getColor() != ''){
+				if(($item->getColor() == '#3366FF')
+						or ($item->getColor() == '#6633FF')
+						or ($item->getColor() == '#CC33CC')
+						or ($item->getColor() == '#CC0000')
+						or ($item->getColor() == '#FF6600')
+						or ($item->getColor() == '#00CCCC')
+						or ($item->getColor() == '#999999')){
+					$link_color = '#FFFFFF';
+				}
+			}
+			if ( $item->issetPrivatDate() ){
+				$title ='<i>'.$title.'</i>'; // ???
+				$title = ahref_curl( $item->getContextID(),
+						CS_DATE_TYPE,
+						'detail',
+						$params,
+						$text,
+						'',
+						'',
+						'',
+						'',
+						'',
+						'calendar_link_' . $params['iid'],
+						'style="color:' . $link_color .';"');
+			}else{
+				$title = ahref_curl( $item->getContextID(),
+						CS_DATE_TYPE,
+						'detail',
+						$params,
+						$text,
+						'',
+						'',
+						'',
+						'',
+						'',
+						'calendar_link_' . $params['iid'],
+						'style="color:' . $link_color .';"');
+		
+			}
+			unset($params);
+			return $title;
 		}
 	}
