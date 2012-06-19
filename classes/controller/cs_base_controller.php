@@ -144,6 +144,28 @@
 			$current_context = $this->_environment->getCurrentContextItem();
 			$translator = $this->_environment->getTranslationObject();
 
+			if ($current_user->isModerator()){
+				// tasks
+		        $manager = $this->_environment->getTaskManager();
+		        $manager->resetLimits();
+		        $manager->setContextLimit($this->_environment->getCurrentContextID());
+		        $manager->setStatusLimit('REQUEST');
+		        $manager->select();
+		        $tasks = $manager->get();
+		        $task = $tasks->getFirst();
+		        $show_user_config = false;
+		        $count_new_accounts = 0;
+		        while($task){
+		           $mode = $task->getTitle();
+		           $task = $tasks->getNext();
+		           if ($mode == 'TASK_USER_REQUEST'){
+		              $count_new_accounts ++;
+		              $show_user_config = true;
+		           }
+		        }
+
+			}
+
 			$this->assign('basic', 'tpl_path', $this->_tpl_path);
 			$this->assign('environment', 'cid', $this->_environment->getCurrentContextID());
 			$this->assign('environment', 'pid', $this->_environment->getCurrentPortalID());
@@ -165,6 +187,7 @@
 			$this->assign('environment', 'show_room_title', $current_context->showTitle());
 			$this->assign('environment', 'language', $current_context->getLanguage());
 			$this->assign('environment','count_copies', $this->getUtils()->getCopyCount());
+			$this->assign('environment','count_new_accounts', $count_new_accounts);
 			$this->assign('environment', 'post', $_POST);
 			$this->assign('environment', 'get', $_GET);
 

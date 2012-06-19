@@ -16,7 +16,12 @@
 					<div id="profile_content_row_three">
 						<div class="tab_navigation">
 							<a href="room_configuration" class="pop_tab_active">___INTERNAL_META_TITLE___</a>
-							<a id="popup_account_tab" href="accounts" class="pop_tab">___COMMON_ACCOUNTS___</a>
+							<a id="popup_account_tab" href="accounts" class="pop_tab">
+								___COMMON_ACCOUNTS___
+							{if ($environment.count_new_accounts >0)}
+								<span class="bold">({$environment.count_new_accounts})</span>
+							{/if}
+							</a>
 							<a href="moderation_configuration" class="pop_tab">___CONFIG_MODERATION_TITLE___</a>
 							<a href="additional_configuration" class="pop_tab">___INTERNAL_SPECIAL_TITLE___</a>
 							<a href="addons" class="pop_tab">___HOME_EXTRA_TOOLS___</a>
@@ -276,8 +281,8 @@
 								<div id="content_row_three">
 									<div id="popup_accounts_mail"></div>
 								</div>
-								
-								
+
+
 								<div id="content_row_three">
 
 									<div id="popup_accounts">
