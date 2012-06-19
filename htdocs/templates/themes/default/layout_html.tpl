@@ -36,19 +36,12 @@
 	<script src="javascript/commsy8_dojo/libs/dojo/dojo.js" data-dojo-config="async: true"></script>
 	<script src="javascript/commsy8_dojo/main.js"></script>
 	-->
-	
-	<script data-main="javascript/commsy8/main.js" src="javascript/commsy8/require.js"></script>
-  
-  
-    <title>CommSy 8.0 - Home</title>
 
-    <!--
-    **********************************************************************
-    build in: November 2011
-    copyright: Mark Thabe, banality GmbH
-    location: Essen-Germany/Bielefeld-Germany, www.banality.de
-    **********************************************************************
-    -->
+	<script data-main="javascript/commsy8/main.js" src="javascript/commsy8/require.js"></script>
+
+
+    <title>{$environment.room_title} - ___{$environment.module_name}___</title>
+
 </head>
 
 <body>

@@ -149,6 +149,7 @@
 			$this->assign('environment', 'pid', $this->_environment->getCurrentPortalID());
 			$this->assign('environment', 'function', $this->_environment->getCurrentFunction());
 			$this->assign('environment', 'module', $this->_environment->getCurrentModule());
+			$this->assign('environment', 'module_name', $translator->getMessage(strtoupper($this->_environment->getCurrentModule())).'_INDEX');
 			$this->assign('environment', 'params', $this->_environment->getCurrentParameterString());
 			$this->assign('environment', 'params_array', $this->_environment->getCurrentParameterArray());
 			$this->assign('environment', 'username', $current_user->getFullName());
