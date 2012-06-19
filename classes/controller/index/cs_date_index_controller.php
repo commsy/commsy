@@ -172,10 +172,10 @@
 					$calendar_week_last = $calendar_week_last[1];
 				}
 				
-				if (!isset($this->_month) or empty($this->_month)){
+				if (!isset($this->_calendar["month"]) or empty($this->_calendar["month"])){
 					$month = date ("Ymd");
 				}else{
-					$month = $this->_month;
+					$month = $this->_calendar["month"];
 				}
 				$year = mb_substr($month,0,4);
 				$month = mb_substr($month,4,2);
