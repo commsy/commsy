@@ -15,9 +15,9 @@
 			<div class="content_item"> <!-- Start content_item -->
             	<div class="ci_head_actions">
 	            	{if $rubric@key != 'user'}
-		            	<a href="commsy.php?cid={$environment.cid}&mod={$rubric@key}&fct=edit&iid=NEW" title="___HOME_SMARTY_ACTION_NEW___">
-		            		<img src="{$basic.tpl_path}img/btn_ci_add.gif" alt="___HOME_SMARTY_ACTION_NEW___" />
-		            	</a>
+						<a id="create_new" class="$rubric@key" href="commsy.php?cid={$environment.cid}&mod={$rubric@key}&fct=edit&iid=NEW" title="___COMMON_NEW_ITEM___">
+					    	<img src="{$basic.tpl_path}img/btn_add_new.gif" alt="___COMMON_NEW_ITEM___" />
+					    </a>
 					{/if}
 					{if $rubric.items|count == 0}
 						<a class="open_close">
