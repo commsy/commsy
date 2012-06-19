@@ -15,34 +15,46 @@
 	    	<img src="{$basic.tpl_path}img/btn_own_user.gif" alt="___COMMON_OWN_USER___" />
 	    </a>
     {/if}
-    
+
     <a href="commsy.php?cid={$environment.cid}&mod=date&fct=index&mode=list" title="Ansicht in Reihen"><img src="{$basic.tpl_path}img/btn_row_view.gif" alt="Reihen" /></a>
 {/block}
 
 {block name=room_list_content}
 	{$cc = $date.calendar_content}
-	
+
+	<div class="tab_navigation" style="height:29px;">
+    	{if $cc.mode == "week"}
+    		<a class="pop_tab_active" href="commsy.php?cid={$environment.cid}&mod=date&fct=index{params params=$cc.header.change_presentation_params_week}">___DATES_CALENDAR_LINK_WEEK___</a>
+        	<a class="pop_tab" href="commsy.php?cid={$environment.cid}&mod=date&fct=index{params params=$cc.header.change_presentation_params_month}">___DATES_CALENDAR_LINK_MONTH___</a>
+		{else}
+    		<a class="pop_tab" href="commsy.php?cid={$environment.cid}&mod=date&fct=index{params params=$cc.header.change_presentation_params_week}">___DATES_CALENDAR_LINK_WEEK___</a>
+        	<a class="pop_tab_active" href="commsy.php?cid={$environment.cid}&mod=date&fct=index{params params=$cc.header.change_presentation_params_month}">___DATES_CALENDAR_LINK_MONTH___</a>
+		{/if}
+	</div>
+	<div class="clear"> </div>
+
 	<div id="calendar">
         <div id="cal_head">
-           	<a href="commsy.php?cid={$environment.cid}&mod=date&fct=index{restriction_params params=$environment.params_array key=$cc.mode value=$cc.header.prev}" id="cal_left"><img src="{$basic.tpl_path}img/cal_arrow_left.gif" alt=""/></a>
-           	<a href="commsy.php?cid={$environment.cid}&mod=date&fct=index{restriction_params params=$environment.params_array key=$cc.mode value=$cc.header.today}">___DATES_CALENDAR_LINK_TODAY___</a>
-           	<a href="commsy.php?cid={$environment.cid}&mod=date&fct=index{restriction_params params=$environment.params_array key=$cc.mode value=$cc.header.next}" id="cal_right"><img src="{$basic.tpl_path}img/cal_arrow_right.gif" alt="" /></a>
-            
-            <strong>
-            	<a href="commsy.php?cid={$environment.cid}&mod=date&fct=index{params params=$cc.header.change_presentation_params_today}" id="cal_left">___DATES_CALENDAR_LINK_TODAY___</a>
-            	<a href="commsy.php?cid={$environment.cid}&mod=date&fct=index{params params=$cc.header.change_presentation_params_week}" id="cal_left">___DATES_CALENDAR_LINK_WEEK___</a>
-            	<a href="commsy.php?cid={$environment.cid}&mod=date&fct=index{params params=$cc.header.change_presentation_params_month}" id="cal_left">___DATES_CALENDAR_LINK_MONTH___</a>
-            </strong>
-            
             {if $cc.mode == "month"}
-            	<strong>___DATES_CALENDARWEEKS___ {$cc.header.current_calendarweek_first}-{$cc.header.current_calendarweek_last} | {$cc.header.current_month} {$cc.header.current_year}</strong>
+            	<strong>{$cc.header.current_month} {$cc.header.current_year} (___DATES_CALENDARWEEKS_SHORT___ {$cc.header.current_calendarweek_first}-{$cc.header.current_calendarweek_last}) </strong>
+	           	<a href="commsy.php?cid={$environment.cid}&mod=date&fct=index{restriction_params params=$environment.params_array key=$cc.mode value=$cc.header.prev}" id="cal_left"><img src="{$basic.tpl_path}img/cal_arrow_left.gif" alt=""/></a>
+				<select size="1" class="size_200" >
+		            <option value="" >{$cc.header.current_month} {$cc.header.current_year}</option>
+	 			</select>
+           		<a href="commsy.php?cid={$environment.cid}&mod=date&fct=index{restriction_params params=$environment.params_array key=$cc.mode value=$cc.header.next}" id="cal_right"><img src="{$basic.tpl_path}img/cal_arrow_right.gif" alt="" /></a>
             {else if $cc.mode == "week"}
-            	<strong>{$cc.header.current_week_start} - {$cc.header.current_week_last} | ___DATES_CALENDARWEEK___ {$cc.header.current_week}</strong>
+            	<strong> {$cc.header.current_week_start} - {$cc.header.current_week_last}</strong>
+	           	<a href="commsy.php?cid={$environment.cid}&mod=date&fct=index{restriction_params params=$environment.params_array key=$cc.mode value=$cc.header.prev}" id="cal_left"><img src="{$basic.tpl_path}img/cal_arrow_left.gif" alt=""/></a>
+				<select size="1" class="size_200" >
+		            <option value="" >___DATES_CALENDARWEEK___  {$cc.header.current_week}</option>
+	 			</select>
+           		<a href="commsy.php?cid={$environment.cid}&mod=date&fct=index{restriction_params params=$environment.params_array key=$cc.mode value=$cc.header.next}" id="cal_right"><img src="{$basic.tpl_path}img/cal_arrow_right.gif" alt="" /></a>
             {/if}
+
         </div>
-        
+
         <div id="cal_table_{$cc.mode}">
-        	
+
         	{if $cc.mode == "week"}
         		<table id="hour_index" cellspacing="0" cellpadding="0" border="0">
         			{section name=time loop=20}
@@ -55,7 +67,7 @@
 	        			</tr>
         			{/section}
         		</table>
-        	
+
         	{*
 	        	<div id="hour_index">
 	                <div class="cal_hi_hour">&nbsp;</div>
@@ -76,7 +88,7 @@
 	                <div class="cal_hi_hour">22</div>
 	            </div>*}
         	{/if}
-        
+
             <table cellspacing="0" cellpadding="0" border="0">
                 <tr>
                 	{if $cc.mode == "month"}
@@ -110,23 +122,23 @@
                     So, 17.06.
                     </th>
                 	{/if}
-                    
+
                 </tr>
                 {if $cc.mode == "month"}
                 	{section name=rows loop=6}
 	                	{$i = $smarty.section.rows.index}
-	                	
+
 	                	<tr>
 	                		{section name=columns loop=7}
 	                			{$j = $smarty.section.columns.index}
 	                			{$pos = $i * 7 + $j}
-	                			
+
 	                			{* nonactive_day / active_day / this_today *}
-	                			
+
 	               				<td class="{$cc.content.days[$pos].state}">
-	                			
+
 	                				{if $cc.mode == "month"}<div class="cal_daynumber">{$cc.content.days[$pos].day}</div>{/if}
-	                				
+
 	                				{if isset($cc.content.days[$pos].dates) && !empty($cc.content.days[$pos].dates)}
 	                					termin
 	                					{*
@@ -143,12 +155,12 @@
 	                    </tr>
 	                {/section}
                 {else}
-       				
+
        			{/if}
-                
+
             </table>
         </div>
-        
+
         <div id="cal_hint">
         	___DATES_TIPP_FOR_ENTRIES___
         </div>
