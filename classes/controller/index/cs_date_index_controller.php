@@ -947,106 +947,119 @@
 			      $dates_manager->setDateModeLimit(2);
 			      $count_all = $dates_manager->getCountAll();
 			   }
-
-				if($this->_list_parameter_arrray['sel_activating_status'] == 2) {
+			   
+				// apply filter
+				if ( $this->_list_parameter_arrray['sel_activating_status'] == 2 ) {
 					$dates_manager->showNoNotActivatedEntries();
 				}
-
-				if(	!empty($this->_list_parameter_arrray['sort']) &&
-					($this->_display_mode !== 'calendar' || $this->_display_mode === 'calendar_month' || $this->getViewMode() === 'formattach' || $this->getViewMode() === 'detailattach')) {
-					$dates_manager->setSortOrder($this->_list_parameter_arrray['sort']);
-				}
-
-				// find current selected color
+				
+				// TODO: should be handles via list parameters
 				$selected_color = '';
 				if(isset($_GET['selcolor']) && $_GET['selcolor'] != '-2') {
 					$selected_color = $_GET['selcolor'];
 				}
-
+				
 				if(!empty($selected_color) && $selected_color != 2) {
 					$dates_manager->setColorLimit('#' . $selected_color);
 				}
-
-
-
-				/* TODO: convert
-
-			   if ( !empty($ref_iid) and $mode == 'attached' ){
-			      $dates_manager->setRefIDLimit($ref_iid);
-			   }
-			   if ( !empty($ref_user) and $mode == 'attached' ){
-			      $dates_manager->setRefUserLimit($ref_user);
-			   }
-			   if ( !empty($search) ) {
-			      $dates_manager->setSearchLimit($search);
-			   }
-			   if ( !empty($selstatus) ) {
-			      $dates_manager->setDateModeLimit($selstatus);
-			   }
-			   if ( !empty($selbuzzword) ) {
-			      $dates_manager->setBuzzwordLimit($selbuzzword);
-			   }
-			   if ( !empty($last_selected_tag) ){
-			      $dates_manager->setTagLimit($last_selected_tag);
-			   }
-   			   if ( !empty($sort) ) {
-      			 $dates_manager->setSortOrder($sort);
-   			   }
-   			   */
-			$dates_manager->resetData();
-			if ( !empty($this->_list_parameter_arrray['ref_iid']) and $this->getViewMode() == 'attached' ){
-   				$dates_manager->setRefIDLimit($this->_list_parameter_arrray['ref_iid']);
-			}
-			if ( !empty($this->_list_parameter_arrray['ref_user']) and $this->getViewMode() == 'attached' ){
-   				$dates_manager->setRefUserLimit($this->_list_parameter_arrray['ref_user']);
-			}
-			if ( !empty($this->_list_parameter_arrray['sort']) ) {
-   				$dates_manager->setSortOrder($this->_list_parameter_arrray['sort']);
-			}
-			if ( $this->_list_parameter_arrray['sel_activating_status'] == 2 ) {
-   				$dates_manager->showNoNotActivatedEntries();
-			}
-			if ( !empty($this->_list_parameter_arrray['search']) ) {
-   				$dates_manager->setSearchLimit($this->_list_parameter_arrray['search']);
-			}
-			if ( !empty($this->_list_parameter_arrray['selgroup']) ) {
-   				$dates_manager->setGroupLimit($this->_list_parameter_arrray['selgroup']);
-			}
-			if ( !empty($this->_list_parameter_arrray['seltopic']) ) {
-   				$dates_manager->setTopicLimit($this->_list_parameter_arrray['seltopic']);
-			}
-			if ( !empty($this->_list_parameter_arrray['selinstitution']) ) {
-   				$dates_manager->setTopicLimit($this->_list_parameter_arrray['selinstitution']);
-			}
-			if ( !empty($this->_list_parameter_arrray['selbuzzword']) ) {
-   				$dates_manager->setBuzzwordLimit($this->_list_parameter_arrray['selbuzzword']);
-			}
-			if ( !empty($this->_list_parameter_arrray['last_selected_tag']) ){
-   				$dates_manager->setTagLimit($this->_list_parameter_arrray['last_selected_tag']);
-			}
-			if ( $this->_list_parameter_arrray['interval'] > 0 ) {
-   				$dates_manager->setIntervalLimit($this->_list_parameter_arrray['from']-1,$this->_list_parameter_arrray['interval']);
-			}
-			if ( !empty($only_show_array) ) {
-   				$dates_manager->resetLimits();
-   				$dates_manager->setIDArrayLimit($only_show_array);
-			}
-
-			   if ( $this->_list_parameter_arrray['interval'] > 0 ) {
+				
+				if ( !empty($this->_list_parameter_arrray['ref_iid']) and $this->getViewMode() == 'attached' ){
+					$dates_manager->setRefIDLimit($this->_list_parameter_arrray['ref_iid']);
+				}
+				
+				if ( !empty($this->_list_parameter_arrray['ref_user']) and $this->getViewMode() == 'attached' ){
+					$dates_manager->setRefUserLimit($this->_list_parameter_arrray['ref_user']);
+				}
+				
+				if(	!empty($this->_list_parameter_arrray['sort']) &&
+						($this->_display_mode !== 'calendar' || $this->_display_mode === 'calendar_month' || $this->getViewMode() === 'formattach' || $this->getViewMode() === 'detailattach')) {
+					$dates_manager->setSortOrder($this->_list_parameter_arrray['sort']);
+				}
+				
+				if ( !empty($this->_list_parameter_arrray['search']) ) {
+					$dates_manager->setSearchLimit($this->_list_parameter_arrray['search']);
+				}
+				
+				if ( !empty($this->_list_parameter_arrray['selbuzzword']) ) {
+					$dates_manager->setBuzzwordLimit($this->_list_parameter_arrray['selbuzzword']);
+				}
+				
+				if ( !empty($this->_list_parameter_arrray['last_selected_tag']) ){
+					$dates_manager->setTagLimit($this->_list_parameter_arrray['last_selected_tag']);
+				}
+				
+				// TODO: apply filter
+				/*
+				if ( !empty($selstatus) ) {
+				      $dates_manager->setDateModeLimit($selstatus);
+				   }
+				 */
+				
+				// TODO: not sure if this is correct here
+				if ( $this->_list_parameter_arrray['interval'] > 0 ) {
 					$dates_manager->setIntervalLimit($this->_list_parameter_arrray['from']-1,$this->_list_parameter_arrray['interval']);
 				}
-
-				/* end TODO */
-
-			   $dates_manager->select();
-			   $list = $dates_manager->get();
-			   $ids = $dates_manager->getIDArray();
-			   $count_all_shown = count($ids);
-
-			   $this->_page_text_fragment_array['count_entries'] = $this->getCountEntriesText($this->_list_parameter_arrray['from'],$this->_list_parameter_arrray['interval'], $count_all, $count_all_shown);
-			   $this->_browsing_icons_parameter_array = $this->getBrowsingIconsParameterArray($this->_list_parameter_arrray['from'],$this->_list_parameter_arrray['interval'], $count_all_shown);
-
-			   $session = $this->_environment->getSessionItem();
+				
+				if ( !empty($only_show_array) ) {
+					$dates_manager->resetLimits();
+					$dates_manager->setWithoutDateModeLimit();
+					$dates_manager->setIDArrayLimit($only_show_array);
+				}
+				
+				$ids = $dates_manager->getIDArray();       // returns an array of item ids
+				$count_all_shown = count($ids);
+				
+				if(empty($only_show_array)) {
+					if($this->_display_mode === "calendar") {
+						if(!empty($this->_calendar["year"])) $dates_manager->setYearLimit($this->_calendar["year"]);
+						
+						if(!empty($this->_calendar["month"])) {
+							if($this->_presentation_mode === "month") {
+								$real_month = mb_substr($this->_calendar["month"],4,2);
+								$first_char = mb_substr($real_month,0,1);
+								if ($first_char == '0'){
+									$real_month = mb_substr($real_month,1,2);
+								}
+								$dates_manager->setMonthLimit($real_month);
+							} else {
+								$real_month = mb_substr($this->_calendar["month"],4,2);
+								$first_char = mb_substr($real_month,0,1);
+								if ($first_char == '0'){
+									$real_month = mb_substr($real_month,1,2);
+								}
+								$dates_manager->setMonthLimit2($real_month);
+							}
+						}
+						
+						// TODO: apply filter
+						/*
+						 if ( !empty($selstatus) ) {
+						$dates_manager->setDateModeLimit($selstatus);
+						}
+						*/
+					}
+					
+					if ( $this->_list_parameter_arrray['interval'] > 0 ) {
+						$dates_manager->setIntervalLimit($this->_list_parameter_arrray['from']-1,$this->_list_parameter_arrray['interval']);
+					}
+				}
+				
+				if($this->_display_mode === "calendar") {
+					$dates_manager->selectDistinct();
+				} else {
+					$dates_manager->select();
+				}
+				
+				$list = $dates_manager->get();
+				
+				if($this->_display_mode === "calendar") {
+					$count_all_shown = $list->getCount();
+				}
+				
+				$this->_page_text_fragment_array['count_entries'] = $this->getCountEntriesText($this->_list_parameter_arrray['from'],$this->_list_parameter_arrray['interval'], $count_all, $count_all_shown);
+				$this->_browsing_icons_parameter_array = $this->getBrowsingIconsParameterArray($this->_list_parameter_arrray['from'],$this->_list_parameter_arrray['interval'], $count_all_shown);
+				
+				$session = $this->_environment->getSessionItem();
 				$session->setValue('cid'.$environment->getCurrentContextID().'_date_index_ids', $ids);
 				
 				if($this->_display_mode == "calendar") {
