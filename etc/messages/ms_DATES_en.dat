@@ -11,6 +11,7 @@ $message["DATES_AUGUST_LONG"]["en"] = "August";
 $message["DATES_AUGUST_SHORT"]["en"] = "Aug";
 $message["DATES_CALENDARWEEK"]["en"] = "Calendarweek";
 $message["DATES_CALENDARWEEKS"]["en"] = "Calendarweeks";
+$message["DATES_CALENDARWEEKS_SHORT"]["en"] = "cw.";
 $message["DATES_CALENDAR_LINK_MONTH"]["en"] = "Month view";
 $message["DATES_CALENDAR_LINK_TODAY"]["en"] = "Today";
 $message["DATES_CALENDAR_LINK_WEEK"]["en"] = "Week view";
