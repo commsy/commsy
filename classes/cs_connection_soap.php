@@ -2855,6 +2855,7 @@ class cs_connection_soap {
             } else {
                $xml .= "<membership_pending><![CDATA[membership_is_not_pending]]></membership_pending>\n";
             }
+            $xml .= "<contact><![CDATA[".$room_item->getContactPersonString()."]]></contact>\n";
             $xml .= "</room_item>\n";
             $room_item = $room_list->getNext();
          }
@@ -2874,14 +2875,42 @@ class cs_connection_soap {
       $portal_item = $portal_list->getFirst();
       while($portal_item) {
          $xml .= "<portal_item>\n";
-         $xml .= "<portal_id>".$portal_item->getItemID()."</portal_id>";
-         $xml .= "<portal_title>".$portal_item->getTitle()."</portal_title>";
+         $xml .= "<portal_id><![CDATA[".$portal_item->getItemID()."]]></portal_id>";
+         $xml .= "<portal_title><![CDATA[".$portal_item->getTitle()."]]></portal_title>";
          $xml .= "</portal_item>\n";
          $portal_item = $portal_list->getNext();
       }
       $xml .= "</portal_list>";
       $xml = $this->_encode_output($xml);
       return $xml;
+   }
+   
+   public function getDatesList($session_id, $context_id) {
+      include_once('functions/development_functions.php');
+      if($this->_isSessionValid($session_id)) {
+         $dates_manager = $this->_environment->getDatesManager();
+         $dates_manager->setContextLimit($context_id);
+         $dates_manager->setDateModeLimit(2);
+         $count_all = $dates_manager->getCountAll();
+         $dates_manager->select();
+         $dates_list = $dates_manager->get();
+         $xml = "<dates_list>\n";
+         $date_item = $dates_list->getFirst();
+         while($date_item) {
+            debugToFile($date_item->getItemID());
+            $xml .= "<date_item>\n";
+            $xml .= "<date_id><![CDATA[".$date_item->getItemID()."]]></date_id>\n";
+            $xml .= "<date_title><![CDATA[".$date_item->getTitle()."]]></date_title>\n";
+            // 2001-03-24 10:45:32 +0600
+            $xml .= "<date_starting_date><![CDATA[".$date_item->getStartingDay()."]]></date_starting_date>\n";
+            $xml .= "<date_ending_date><![CDATA[".$date_item->getEndingDay()."]]></date_ending_date>\n";
+            $xml .= "</date_item>\n";
+            $date_item = $dates_list->getNext();
+         }
+         $xml .= "</dates_list>";
+         $xml = $this->_encode_output($xml);
+         return $xml;
+      }
    }
 }
 ?>

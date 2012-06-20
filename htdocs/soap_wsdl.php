@@ -341,6 +341,13 @@
 <message name='getPortalListOUT'>
   <part name='xml_list' type='xsd:string'/>
 </message>
+<message name='getDatesListIN'>
+  <part name='session_id' type='xsd:string'/>
+  <part name='context_id' type='xsd:integer'/>
+</message>
+<message name='getDatesListOUT'>
+  <part name='xml_list' type='xsd:string'/>
+</message>
 
 <portType name='CommSyPortType'>
   <operation name='getGuestSession'>
@@ -523,6 +530,10 @@
   <operation name='getPortalList'>
     <input message='tns:getPortalListIN'/>
     <output message='tns:getPortalListOUT'/>
+  </operation>
+  <operation name='getDatesList'>
+    <input message='tns:getDatesListIN'/>
+    <output message='tns:getDatesListOUT'/>
   </operation>
 </portType>
 
@@ -1017,6 +1028,17 @@
   </operation>
   <operation name='getPortalList'>
     <soap:operation soapAction='urn:xmethodsCommSy#getPortalList'/>
+      <input>
+        <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+          encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+      </input>
+      <output>
+        <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+          encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+      </output>
+  </operation>
+  <operation name='getDatesList'>
+    <soap:operation soapAction='urn:xmethodsCommSy#getDatesList'/>
       <input>
         <soap:body use='encoded' namespace='urn:xmethodsCommSy'
           encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
