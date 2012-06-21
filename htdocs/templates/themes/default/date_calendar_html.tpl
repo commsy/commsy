@@ -61,22 +61,17 @@
 
         </div>
 
-        <div id="cal_table_{$cc.mode}">
+        <div id="cal_table_{$cc.mode}" {if $cc.mode == "week"}class="tablehead"{/if}>
 
         	{if $cc.mode == "week"}
-        		<table id="hour_index" cellspacing="0" cellpadding="0" border="0">
-        			{section name=time loop=26}
-        				<tr>
-        					{if $smarty.section.time.index == 0}
-        						<th></th>
-        					{else if $smarty.section.time.index == 1}
-        						<td>0</br>24</td>
-        					{else}
-        						<td>{$smarty.section.time.index - 2}</td>
-        					{/if}
-	        			</tr>
-        			{/section}
-        		</table>
+        		<table id="hour_index_head" cellspacing="0" cellpadding="0" border="0">
+        			<tr>
+        				<th></th>
+        			</tr>
+        			<tr>
+       					<td>0-24</td>
+	        		</tr>
+	       		</table>
         	{/if}
 
             <table cellspacing="0" cellpadding="0" border="0">
@@ -92,7 +87,7 @@
                 	{else if $cc.mode == "week"}
                 		{section name=week_tablehead loop=7}
                 			{$i = $smarty.section.week_tablehead.index}
-                			
+
                 			<th>{$cc.content.tablehead.week_start[$i]}</th>
                 		{/section}
                 	{/if}
@@ -114,37 +109,68 @@
 
 	                				{if isset($cc.content.days[$pos].dates) && !empty($cc.content.days[$pos].dates)}
 	                					<div class="cal_days_events">
-		                					{foreach $cc.content.days[$pos].dates as $date}		                					
+		                					{foreach $cc.content.days[$pos].dates as $date}
 		                						<a href="{$date.href}" class="event_{$date.color}">{$date.title|truncate:11:"...":true}</a>
-		                						
-		                						
+
+
 		                						{* build and style tooltips here
-		                						
+
 		                						available date values are:
-		                							"title"				
-									      			"date"			
-									      			"place"			
+		                							"title"
+									      			"date"
+									      			"place"
 									      			"participants"	- array of
 									      				"name"
 									      			"color"			- used for css markup
 									      			"context"		- room title?
 									      			"href"			- link to date detail
 									      		*}
-		                						
+
 		                						<div class="tooltip tooltip_with_400">
+																<a href="{$date.href}">
 													<div class="tooltip_inner tooltip_inner_with_400">
-													
+
 														<div class="tooltip_title">
-															<div class="header">___COMMON_ATTACHED_FILES___</div>
+															<div class="header">{$date.title}</div>
 														</div>
 														<div class="scrollable">
 															<div class="tooltip_content">
-																<ul>
-																tooltip inhalt
-																</ul>
+																<table id="hover_table">
+																	<tr>
+																		<td class="key">
+																			___DATES_END_DAY___:
+																		</td>
+																		<td class="value">
+																			{$date.date[1]}
+																		</td>
+																	</tr>
+																		{if !empty($date.place)}
+																		<tr>
+																			<td class="key">
+																				___DATES_PLACE___:
+																			</td>
+																			<td class="value">
+																				{$date.place}
+																			</td>
+																		</tr>
+																	{/if}
+																	<tr>
+																		<td class="key">
+																			___DATE_PARTICIPANTS___:
+																		</td>
+																		<td class="value">
+																			{if !empty($date.participants)}
+																				{$date.participants}
+																			{else}
+																				___TODO_NO_PROCESSOR___
+																			{/if}
+																		</td>
+																	</tr>
+																</table>
 															</div>
 														</div>
 													</div>
+																</a>
 												</div>
 		                					{/foreach}
 	                					</div>
@@ -157,25 +183,40 @@
                 	<tr>
                 		{section name=columns_fullday loop=7}
                 			{$i = $smarty.section.columns_fullday.index}
-                			
+
                 			{* nonactive_day / active_day / this_today *}
-                			<td class="nonactive_day">
-                			
+                			<td class="active_day">
+
                 			</td>
                			{/section}
                 	</tr>
-                	
+                </table>
+        	</div>
+        	<div id="cal_table_{$cc.mode}">
+        		<table id="hour_index" cellspacing="0" cellpadding="0" border="0">
+        			{section name=time loop=24}
+        				<tr>
+        					<td>
+        						{if $smarty.section.time.index == 8}
+        							<a name="day_start"></a>
+        						{/if}
+        						{$smarty.section.time.index}
+        					</td>
+	        			</tr>
+        			{/section}
+        		</table>
+                <table cellspacing="0" cellpadding="0" border="0">
                 	{section name=rows loop=24}
                 		{$i = $smarty.section.rows.index}
-                		
+
                 		<tr>
                 			{section name=columns loop=7}
 	                			{$j = $smarty.section.columns.index}
 	                			{$pos = $i * 7 + $j}
-	                			
+
 	                			{* nonactive_day / active_day / this_today *}
 	                			<td class="{$cc.content.days[$pos].state}">
-	                			
+
 	                			</td>
                 			{/section}
                 		</tr>

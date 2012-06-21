@@ -3702,6 +3702,8 @@ calendar
 #calendar {
     /*width: 710px;*/
     background: #E8E8E8;
+    padding-left: 5px;
+    padding-right: 5px;
     }
 
 #cal_head {
@@ -3752,6 +3754,11 @@ calendar
     overflow: auto;
     }
 
+#cal_table_week.tablehead{
+    height: 80px;
+    overflow: none;
+	}
+
 #cal_table_week th {
     width: 98px;
     height: 30px;
@@ -3774,25 +3781,31 @@ calendar
     background: #FCF3C1;
     }
 
-#hour_index {
+#hour_index, #hour_index_head{
     float: right;
     padding-top: 30px;
     }
 
-table#hour_index {
+table#hour_index  {
 	width: 20px;
 	font-size: 12px;
 	padding-top: 0px;
 }
 
-table#hour_index th {
+table#hour_index_head{
+	width: 37px;
+	font-size: 12px;
+	padding-top: 0px;
+}
+
+table#hour_index th, table#hour_index_head th {
     height: 30px;
     text-align: right;
     padding: 0px 2px;
     border-bottom: 1px solid #E8E8E8;
     }
 
-table#hour_index td {
+table#hour_index td, table#hour_index_head td {
     height: 45px;
     background: #FFF;
     text-align: right;
@@ -3846,6 +3859,31 @@ table#hour_index td {
     text-decoration: none;
     margin-bottom: 1px;
     }
+
+#hover_table{
+	height:auto;
+	}
+
+#hover_table td{
+    font-size: 10px;
+    height: auto;
+	}
+
+#hover_table td.key{
+    width:50px;
+    font-weight:bold;
+	}
+
+#hover_table td.value{
+    width:200px;
+    font-weight:normal;
+	}
+
+
+#hover_table td:hover{
+	background:none;
+	}
+
 
 a.event_blue {
     background: #BAC9FF;

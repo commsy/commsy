@@ -302,10 +302,10 @@
 
 		private function getWeekContent($list) {
 			$translator = $this->_environment->getTranslationObject();
-			
+
 			$return = array();
 			$week_start = $this->_calendar['week'];
-			
+
 			$today = '';
 			$month_array = array(
 				$translator->getMessage('DATES_JANUARY_SHORT'),
@@ -321,7 +321,7 @@
 				$translator->getMessage('DATES_NOVEMBER_SHORT'),
 				$translator->getMessage('DATES_DECEMBER_SHORT')
 			);
-			
+
 			// get dates
 			$current_date = $list->getFirst();
 			$finish = false;
@@ -433,7 +433,7 @@
 				}
 				$current_date = $list->getNext();
 			}
-			
+
 			// table head
 			$display_date_array = array();
 			for($i = 0; $i < 7; $i++) {
@@ -463,7 +463,7 @@
 					case 5: $text = 'COMMON_DATE_WEEKVIEW_SATURDAY'; break;
 					case 6: $text = 'COMMON_DATE_WEEKVIEW_SUNDAY'; break;
 				}
-				
+
 				switch ( $text ){
 					case 'COMMON_DATE_WEEKVIEW_MONDAY':
 						$week_start = $translator->getMessage('COMMON_DATE_WEEKVIEW_MONDAY',    $display_startday, $startmonth);
@@ -489,12 +489,12 @@
 					default:
 						break;
 				}
-				
+
 				$return["tablehead"]["week_start"][$i] = $week_start;
-				
+
 				$week_start = $week_start + ( 3600 * 24);
 			}
-			
+
 			// top row - full day events
 			for($index=0; $index <7; $index++){
 				$week_start = $this->_week_start + ( 3600 * 24 * $index);
@@ -532,38 +532,38 @@
 							$params,
 							$image);
 				}
-				
+
 				/*
 				 * TODO: seems that this whole block just creates the links for adding new entries
-				 * 
+				 *
 				$return["day_events"][$index][] = array(
 				);
 				$html .= '<div class="calendar_entry_day" id="calendar_entry_' . $index . '"><div class="data_day" id="calendar_entry_date_div_' . $index . '">'.$anAction.'</div></div>'.LF;
 				*/
 			}
-			
+
 			$session = $this->_environment->getSession();
-			
+
 			// main week content
 			for($index=0; $index < 24; $index++) {
 				for($index_day=0; $index_day <7; $index_day++) {
 					$week_start = $this->_calendar["week"] + ( 3600 * 24 * $index_day);
 					$startday = date ( "d", $week_start);
 					$first_char = mb_substr($startday,0,1);
-					
+
 					if ($first_char == '0'){
 						$startday = mb_substr($startday,1,2);
 					}
-					
+
 					$startmonth = date ( "Ymd", $week_start );
 					$first_char = mb_substr($startmonth,0,1);
-					
+
 					if ($first_char == '0'){
 						$startmonth = mb_substr($startmonth,1,2);
 					}
-					
+
 					$startyear = date ( "Y", $week_start );
-					
+
 					$params = array();
 					$params['iid'] = 'NEW';
 					$params['day'] = $startday;
@@ -572,16 +572,16 @@
 					$params['year'] = $startyear;
 					$params['week'] = $this->_week_start;
 					$params['presentation_mode'] = '1';
-					
+
 					if ($i != 0){
 						$params['time'] = $index;
 					} else {
 						$params['time'] = 0;
 					}
-					
+
 					$params['modus_from'] = 'calendar';
 					$anAction = '';
-					
+
 					if ( $this->_with_modifying_actions ) {
 						$anAction = ahref_curl( $this->_environment->getCurrentContextID(),
 								CS_DATE_TYPE,
@@ -589,29 +589,29 @@
 								$params,
 								$image);
 					}
-					
-					
+
+
 					$state = "active_day";
 					// check if day is today
 					if(false) {//$todayCompressed === $format['day'].$current_month_temp.$current_year[$i]) {
 						$state = "this_today";
 					}
-					
+
 					// check if day is not active(grey out)
 					elseif(($index < 8) || ($index > 15)) {
 						$state = "nonactive_day";
 					}
-					
+
 					//$index_day
 					//$todayCompressed = date("jnY");
-					
+
 					$return["days"][] = array(
 						//"day"		=> $format["day"],
 						"link"		=> $anAction,
 						"state"		=> $state
 						//"dates"		=> $dates
 					);
-					
+
 					/*
 					if ($i == 0){
 						$image = '<img style="width:'.$width.'; height:1em;" src="images/spacer.gif" alt="" border="0"/>';
@@ -625,25 +625,25 @@
 						$html .= '<div class="calendar_entry_work" id="calendar_entry_' . $index . '_' . $index_day . '"><div class="data" id="calendar_entry_date_div_' . $index . '_' . $index_day . '"></div></div>'.LF;
 					}
 					*/
-			
+
 					$html_javascript .= 'new Array(\'#calendar_entry_date_div_' . $index . '_' . $index_day . '\',\'<div name="calendar_new_date" id="calendar_entry_background_div_' . $index . '_' . $index_day . '" style="position:absolute; top: 0px; left: 0px; height: 100%; width: 100%; z-index:900;"><div style="width:100%; text-align:left;">' . $anAction . '</div></div>\')';
-					
+
 					if($current_element < (24*7)-1){
 						$html_javascript .= ','.LF;
 					} else {
 						$html_javascript .= LF;
 					}
-					
+
 					$current_element++;
 				}
 			}
-			
-			
-			
-			/*
-      
 
-      
+
+
+			/*
+
+
+
 
 
       $date_array_for_jQuery = array();
@@ -953,7 +953,7 @@
       $html .= '</script>'.LF;
       return $html;
 			 */
-			
+
 			return $return;
 		}
 
@@ -1153,14 +1153,14 @@
 		      		$link = str_replace("'", "\'", $link);
 		      		$link_array = explode('"', $link);
 		      		$href = $link_array[1];
-		      		
+
 		      		// color
 		      		if($date->getColor() != ''){
 		      			$color = $date->getColor();
 		      		} else {
 		      			$color = '#FFFF66';
 		      		}
-		      		
+
 		      		$colorStr = "";
 		      		switch ($color){
 		      			case '#CC0000': $colorStr = "red"; break;
@@ -1174,29 +1174,29 @@
 		      			case '#CC33CC': $colorStr = "purple"; break;
 		      			default: $colorStr = "grey"; break;
 		      		}
-		      		
+
 		      		// room
 		      		$room_title = "";
 		      		$date_context_item = $date->getContextItem();
 		      		if ( isset($date_context_item) ) {
 		      			$room_title = $date_context_item->getTitle();
 		      		}
-		      		
+
 		      		// participants
 		      		$participants = array();
 		      		$participantsList = $date->getParticipantsItemList();
 		      		if(!$participantsList->isEmpty()) {
 		      			$participant = $participantsList->getFirst();
-		      			
+
 		      			while($participant) {
 		      				$participants[] = array(
 		      					"name"	=> $participant->getFullName()
 		      				);
-		      				
+
 		      				$participant = $participantsList->getNext();
 		      			}
 		      		}
-		      		
+
 		      		$date = array(
 		      			"title"			=> $date->getTitle(),
 		      			"date"			=> $date_tooltip_array[$date->getItemID()],
@@ -1206,7 +1206,7 @@
 		      			"context"		=> $room_title,
 		      			"href"			=> $href
 		      		);
-		      		
+
 		      		$dates[] = $date;
 		      	}
 
