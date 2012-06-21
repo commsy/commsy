@@ -348,6 +348,21 @@
 <message name='getDatesListOUT'>
   <part name='xml_list' type='xsd:string'/>
 </message>
+<message name='getDateDetailsIN'>
+  <part name='session_id' type='xsd:string'/>
+  <part name='item_id' type='xsd:integer'/>
+</message>
+<message name='getDateDetailsOUT'>
+  <part name='xml_list' type='xsd:string'/>
+</message>
+<message name='saveDateIN'>
+  <part name='session_id' type='xsd:string'/>
+  <part name='item_id' type='xsd:string'/>
+  <part name='title' type='xsd:string'/>
+</message>
+<message name='saveDateOUT'>
+  <part name='xml_list' type='xsd:string'/>
+</message>
 
 <portType name='CommSyPortType'>
   <operation name='getGuestSession'>
@@ -534,6 +549,14 @@
   <operation name='getDatesList'>
     <input message='tns:getDatesListIN'/>
     <output message='tns:getDatesListOUT'/>
+  </operation>
+  <operation name='getDateDetails'>
+    <input message='tns:getDateDetailsIN'/>
+    <output message='tns:getDateDetailsOUT'/>
+  </operation>
+  <operation name='saveDate'>
+    <input message='tns:saveDateIN'/>
+    <output message='tns:saveDateOUT'/>
   </operation>
 </portType>
 
@@ -1039,6 +1062,28 @@
   </operation>
   <operation name='getDatesList'>
     <soap:operation soapAction='urn:xmethodsCommSy#getDatesList'/>
+      <input>
+        <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+          encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+      </input>
+      <output>
+        <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+          encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+      </output>
+  </operation>
+  <operation name='getDateDetails'>
+    <soap:operation soapAction='urn:xmethodsCommSy#getDateDetails'/>
+      <input>
+        <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+          encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+      </input>
+      <output>
+        <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+          encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+      </output>
+  </operation>
+  <operation name='saveDate'>
+    <soap:operation soapAction='urn:xmethodsCommSy#getDateDetails'/>
       <input>
         <soap:body use='encoded' namespace='urn:xmethodsCommSy'
           encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>

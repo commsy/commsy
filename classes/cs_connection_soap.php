@@ -2912,5 +2912,49 @@ class cs_connection_soap {
          return $xml;
       }
    }
+   
+   public function getDateDetails($session_id, $item_id) {
+      include_once('functions/development_functions.php');
+      if($this->_isSessionValid($session_id)) {
+         $dates_manager = $this->_environment->getDatesManager();
+         $date_item = $dates_manager->getItem($item_id);
+         $xml .= "<date_item>\n";
+         $xml .= "<date_id><![CDATA[".$date_item->getItemID()."]]></date_id>\n";
+         $xml .= "<date_title><![CDATA[".$date_item->getTitle()."]]></date_title>\n";
+         // 2001-03-24 10:45:32 +0600
+         $xml .= "<date_starting_date><![CDATA[".$date_item->getStartingDay()."]]></date_starting_date>\n";
+         $xml .= "<date_ending_date><![CDATA[".$date_item->getEndingDay()."]]></date_ending_date>\n";
+         $xml .= "<date_place><![CDATA[".$date_item->getPlace()."]]></date_place>\n";
+         $temp_description = $date_item->getDescription();
+         $temp_description = html_entity_decode($date_item->getDescription());
+         $temp_description = utf8_encode($date_item->getDescription());
+         $temp_description = str_ireplace('<br />', "\n", $temp_description);
+         $temp_description = preg_replace('~<!-- KFC TEXT [a-z0-9]* -->~u','',$temp_description);
+         $xml .= "<date_description><![CDATA[".$temp_description."]]></date_description>\n";
+         $xml .= "</date_item>\n";
+         $xml = $this->_encode_output($xml);
+         debugToFile($xml);
+         return $xml;
+      }
+   }
+   
+   public function saveDate($session_id, $item_id, $title, $place, $description) {
+      include_once('functions/development_functions.php');
+      if($this->_isSessionValid($session_id)) {
+         $dates_manager = $this->_environment->getDatesManager();
+         $date_item = $dates_manager->getItem($item_id);
+         $date_item->setTitle($title);
+         $date_item->setPlace($place);
+         $date_item->setDescription(str_ireplace("\n", '<br />', $description));
+         $date_item->save();
+      }
+   }
+   
+   public function updateDate($session_id, $item_id, $title, $place, $starting_date, $ending_date, $description) {
+      include_once('functions/development_functions.php');
+      if($this->_isSessionValid($session_id)) {
+         
+      }
+   }
 }
 ?>
