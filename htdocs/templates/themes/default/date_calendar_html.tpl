@@ -65,36 +65,18 @@
 
         	{if $cc.mode == "week"}
         		<table id="hour_index" cellspacing="0" cellpadding="0" border="0">
-        			{section name=time loop=20}
+        			{section name=time loop=26}
         				<tr>
         					{if $smarty.section.time.index == 0}
         						<th></th>
+        					{else if $smarty.section.time.index == 1}
+        						<td>0</br>24</td>
         					{else}
-        						<td>{$smarty.section.time.index}</td>
+        						<td>{$smarty.section.time.index - 2}</td>
         					{/if}
 	        			</tr>
         			{/section}
         		</table>
-
-        	{*
-	        	<div id="hour_index">
-	                <div class="cal_hi_hour">&nbsp;</div>
-	                <div class="cal_hi_hour">8</div>
-	                <div class="cal_hi_hour">9</div>
-	                <div class="cal_hi_hour">10</div>
-	                <div class="cal_hi_hour">11</div>
-	                <div class="cal_hi_hour">12</div>
-	                <div class="cal_hi_hour">13</div>
-	                <div class="cal_hi_hour">14</div>
-	                <div class="cal_hi_hour">15</div>
-	                <div class="cal_hi_hour">16</div>
-	                <div class="cal_hi_hour">17</div>
-	                <div class="cal_hi_hour">18</div>
-	                <div class="cal_hi_hour">19</div>
-	                <div class="cal_hi_hour">20</div>
-	                <div class="cal_hi_hour">21</div>
-	                <div class="cal_hi_hour">22</div>
-	            </div>*}
         	{/if}
 
             <table cellspacing="0" cellpadding="0" border="0">
@@ -108,27 +90,11 @@
                 		<th>___COMMON_DATE_SATURDAY___</th>
                 		<th>___COMMON_DATE_SUNDAY___</th>
                 	{else if $cc.mode == "week"}
-                	<th>
-                    Mo, 11.06.
-                    </th>
-                    <th>
-                    Di, 12.06.
-                    </th>
-                    <th>
-                    Mi, 13.06.
-                    </th>
-                    <th>
-                    Do, 14.06.
-                    </th>
-                    <th>
-                    Fr, 15.06.
-                    </th>
-                    <th>
-                    Sa, 16.06.
-                    </th>
-                    <th>
-                    So, 17.06.
-                    </th>
+                		{section name=week_tablehead loop=7}
+                			{$i = $smarty.section.week_tablehead.index}
+                			
+                			<th>{$cc.content.tablehead.week_start[$i]}</th>
+                		{/section}
                 	{/if}
 
                 </tr>
@@ -142,10 +108,9 @@
 	                			{$pos = $i * 7 + $j}
 
 	                			{* nonactive_day / active_day / this_today *}
-
 	               				<td class="{$cc.content.days[$pos].state}">
 
-	                				{if $cc.mode == "month"}<div class="cal_daynumber">{$cc.content.days[$pos].day}</div>{/if}
+	                				<div class="cal_daynumber">{$cc.content.days[$pos].day}</div>
 
 	                				{if isset($cc.content.days[$pos].dates) && !empty($cc.content.days[$pos].dates)}
 	                					<div class="cal_days_events">
@@ -159,10 +124,11 @@
 		                							"title"				
 									      			"date"			
 									      			"place"			
-									      			"participants"	 - maybe of type cs_list, and needs to be converted
-									      			"color"			 - used for css markup
-									      			"context"		 - room title?
-									      			"href"			 - link to date detail
+									      			"participants"	- array of
+									      				"name"
+									      			"color"			- used for css markup
+									      			"context"		- room title?
+									      			"href"			- link to date detail
 									      		*}
 		                						
 		                						<div class="tooltip tooltip_with_400">
@@ -188,7 +154,32 @@
 	                    </tr>
 	                {/section}
                 {else if $cc.mode == "week"}
-
+                	<tr>
+                		{section name=columns_fullday loop=7}
+                			{$i = $smarty.section.columns_fullday.index}
+                			
+                			{* nonactive_day / active_day / this_today *}
+                			<td class="nonactive_day">
+                			
+                			</td>
+               			{/section}
+                	</tr>
+                	
+                	{section name=rows loop=24}
+                		{$i = $smarty.section.rows.index}
+                		
+                		<tr>
+                			{section name=columns loop=7}
+	                			{$j = $smarty.section.columns.index}
+	                			{$pos = $i * 7 + $j}
+	                			
+	                			{* nonactive_day / active_day / this_today *}
+	                			<td class="{$cc.content.days[$pos].state}">
+	                			
+	                			</td>
+                			{/section}
+                		</tr>
+                	{/section}
        			{/if}
 
             </table>
