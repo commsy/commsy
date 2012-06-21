@@ -143,7 +143,7 @@
 			$current_user = $this->_environment->getCurrentUser();
 			$current_context = $this->_environment->getCurrentContextItem();
 			$translator = $this->_environment->getTranslationObject();
-
+			$count_new_accounts = 0;
 			if ($current_user->isModerator()){
 				// tasks
 		        $manager = $this->_environment->getTaskManager();

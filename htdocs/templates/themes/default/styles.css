@@ -945,6 +945,11 @@ a span#ho_non_act {
     background: url(img/nav_home.png) no-repeat -25px 0px;
     }
 
+#ho_text {
+	width:60px;
+	text-align: center;
+	}
+
 /* Konfiguration */
 
 a span#co_act, a span#co_non_act {
@@ -1022,6 +1027,12 @@ a span#te_non_act {
     background: url(img/nav_termine.png) no-repeat -21px 0px;
     }
 
+#te_text {
+	width:60px;
+	text-align: center;
+	}
+
+
 /* Material */
 
 a span#ma_act, a span#ma_non_act {
@@ -1091,6 +1102,12 @@ a span#gr_non_act {
     background: url(img/nav_gruppen.png) no-repeat -25px 0px;
     }
 
+#gr_text {
+	width:60px;
+	text-align: center;
+	}
+
+
 /* Institutionen */
 
 a span#in_act, a span#in_non_act {
@@ -1113,17 +1130,18 @@ a span#in_non_act {
 a span#pr_act, a span#pr_non_act {
     display: block;
     height: 35px;
-    width: 25px;
+    width: 20px;
     margin: 0px auto;
     }
 
 a span#pr_act {
-    background: url(img/nav_projektraeume.png) no-repeat 0px 0px;
+    background: url(img/nav_raeume.png) no-repeat 0px 0px;
     }
 
 a span#pr_non_act {
-    background: url(img/nav_projektraeume.png) no-repeat -25px 0px;
+    background: url(img/nav_raeume.png) no-repeat -20px 0px;
     }
+
 
 
 
@@ -1161,6 +1179,10 @@ a span#th_non_act {
     background: url(img/nav_themen.png) no-repeat -25px 0px;
     }
 
+#th_text {
+	width:60px;
+	text-align: center;
+	}
 
 
 /*

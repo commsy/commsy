@@ -14,15 +14,15 @@
 		public function __construct(cs_environment $environment) {
 			// call parent
 			parent::__construct($environment);
-			
+
 			// set display mode
 			$this->setDisplayMode();
 
 			// set selected status
 			$this->setSelectedStatus();
-			
+
 			$this->_tpl_file = "date_" . $this->_display_mode;
-			
+
 			// this will enable processing of additional restriction texts
 			$this->_additional_selects = true;
 		}
@@ -46,16 +46,30 @@
 		 * INDEX
 		 */
 		public function actionIndex() {
+		    $current_context = $this->_environment->getCurrentContextItem();
+		    $current_user = $this->_environment->getCurrentUserItem();
+		    $hash_manager = $this->_environment->getHashManager();
+		    $params = $this->_environment->getCurrentParameterArray();
+			$translator = $this->_environment->getTranslationObject();
+		    $ical_url = '';
+		    $ical_url .= $_SERVER['HTTP_HOST'];
+		    global $c_single_entry_point;
+		    $ical_url .= str_replace($c_single_entry_point,'ical.php',$_SERVER['PHP_SELF']);
+		    $ical_url .= '?cid='.$_GET['cid'].'&amp;hid='.$hash_manager->getICalHashForUser($current_user->getItemID()).LF;
+			$this->assign('date','ical_adress', $ical_url);
+
 			if($this->_display_mode === "list") {
 				// init list params
 				$this->initListParameters(CS_DATE_TYPE);
-				
+
 				// perform list options
 				$this->performListOption(CS_DATE_TYPE);
-					
+
 				// get list content
 				$list_content = $this->getListContent();
-				
+
+
+
 				// assign to template
 				$this->assign('date','list_parameters', $this->_list_parameter_arrray);
 				$this->assign('list','perspective_rubric_entries', $this->_perspective_rubric_array);
@@ -74,16 +88,16 @@
 				} else {
 					$this->_presentation_mode = 'month';
 				}
-				
+
 				// get calendar content
 				$calendar_content = $this->getCalendarContent();
-				
+
 				// assign to template
 				$this->assign("date", "calendar_content", $calendar_content);
 			}
-			
+
 		}
-		
+
 		private function getWeekDayOfDate($day, $month, $year) {
 			// 0 - Sonntag, 6 - Samstag
 			$timestamp = mktime(0,0,0,$month,$day,$year);
@@ -91,15 +105,15 @@
 			$dayofweek = $date['wday'];
 			return $dayofweek;
 		}
-		
+
 		private function getHeaderContent() {
 			$translator = $this->_environment->getTranslationObject();
-			
+
 			$return = array();
-			
+
 			if($this->_presentation_mode === "month") {
 				$params = $this->_environment->getCurrentParameterArray();
-				
+
 				$month_array = array(
 					$translator->getMessage('DATES_JANUARY_LONG'),
 					$translator->getMessage('DATES_FEBRUARY_LONG'),
@@ -114,13 +128,13 @@
 					$translator->getMessage('DATES_NOVEMBER_LONG'),
 					$translator->getMessage('DATES_DECEMBER_LONG')
 				);
-				
+
 				// time calculations
 				$month = mb_substr($this->_calendar["month"],4,2);
 				$year = $this->_calendar["year"];
 				$days = daysInMonth($month,$year);
 				$first_day_week_day = $this->getWeekDayOfDate(1,$month,$year);
-				
+
 				// create array with correct daynumber/weekday relationship
 				$format_array = array();
 				$current_month = array();
@@ -140,14 +154,14 @@
 					$current_month[] = $prev_month;
 					$current_year[] = $prev_month_year;
 				}
-				
+
 				// fill days
 				for ($i =1; $i <= $days;$i++) {
 					$format_array[]['day'] = $i;
 					$current_month[] = $month;
 					$current_year[] = $year;
 				}
-				
+
 				// skip at ending
 				$sum = $days + $empty_fields;
 				$remaining = 42 - $sum;
@@ -171,7 +185,7 @@
 				if($calendar_week_last[0] == '0'){
 					$calendar_week_last = $calendar_week_last[1];
 				}
-				
+
 				if (!isset($this->_calendar["month"]) or empty($this->_calendar["month"])){
 					$month = date ("Ymd");
 				}else{
@@ -195,12 +209,12 @@
 					$prev_month_year = $year;
 					$next_month_year = $year+1;
 				}
-				
+
 				// navigation
 				$return["prev"] = date("Ymd", mktime(3,0,0,$prev_month,1,$prev_month_year));
 				$return["today"] = date("Ymd");
 				$return["next"] = date("Ymd",mktime(3,0,0,$next_month,1,$next_month_year));
-				
+
 				// info
 				$return["current_month"] = $month_array[$month -1];
 				$return["current_year"] = $year;
@@ -209,7 +223,7 @@
 			} elseif($this->_presentation_mode === "week") {
 				$week_left = $this->_calendar["week"] - ( 3600 * 24 * 7);
 				$week_right = $this->_calendar["week"] + ( 3600 * 24 * 7);
-				
+
 				$day = date('D');
 				if($day == 'Mon'){
 					$current_week = time();
@@ -226,20 +240,20 @@
 				} elseif ($day == 'Sun'){
 					$current_week = time() - (3600 * 24 * 6);
 				}
-				
+
 				// navigation
 				$return["prev"] = $week_left;
 				$return["today"] = $current_week;
 				$return["next"] = $week_right;
-				
+
 				// info
 				$return['current_week_start'] = date('d.m.Y', $this->_calendar["week"]);
 				$return["current_week_last"] = date('d.m.Y', $this->_calendar["week"] + ( 3600 * 24 * 6));
-				
+
 				$calendar_week = date('W', $this->_calendar["week"]);
 				$return["current_week"] = ($calendar_week[0] == "0") ? $calendar_week[1] : $calendar_week;
 			}
-			
+
 			// presentation_mode
 			$params = $this->_environment->getCurrentParameterArray();
 			if($this->_presentation_mode === "week") {
@@ -263,42 +277,42 @@
 				$params['month'] = date("Ymd");
 			}
 			$return["change_presentation_params_today"] = $params;
-			
+
 			unset($params["week"]);
 			unset($params["month"]);
 			$params["presentation_mode"] = "week";
 			$params["week"] = $this->_calendar["week"];
 			$return["change_presentation_params_week"] = $params;
-			
+
 			unset($params["week"]);
 			unset($params["month"]);
 			$params["presentation_mode"] = "month";
 			$params["month"] = $this->_calendar["month"];
 			$return["change_presentation_params_month"] = $params;
-			
+
 			return $return;
 		}
-		
+
 		private function getWeekContent() {
-			
+
 		}
-		
+
 		private function getMonthContent($list) {
 			$translator = $this->_environment->getTranslationObject();
-			
+
 			$current_time = localtime();
-			
+
 			// do some time calculations
 			$month = mb_substr($this->_calendar["month"],4,2);
 			$year = $this->_calendar["year"];
 			$days = daysInMonth($month,$year);
 			$first_day_week_day = $this->getWeekDayOfDate(1,$month,$year);
-			
+
 			// create array with correct daynumber/weekday relationship
 			$format_array = array();
 			$current_month = array();
 			$current_year = array();
-			
+
 			//skip fields at beginning
 			$empty_fields = (($first_day_week_day + 6) % 7);
 			if($month != '01'){
@@ -314,14 +328,14 @@
 				$current_month[] = (string) $prev_month;
 				$current_year[] = $prev_month_year;
 			}
-			
+
 			// fill days
 			for ($i =1; $i <= $days;$i++) {
 				$format_array[]['day'] = $i;
 				$current_month[] = (string) $month;
 				$current_year[] = $year;
 			}
-			
+
 			// skip at ending
 			$sum = $days + $empty_fields;
 			$remaining = 42 - $sum;
@@ -337,7 +351,7 @@
 				$current_month[] = (string) $next_month;
 				$current_year[] = $next_month_year;
 			}
-			
+
 			// get Dates in month
 			$current_date = $list->getFirst();
 			$finish = false;
@@ -351,14 +365,14 @@
 				$end_date_day = '';
 				$end_date_year = '';
 				$start_date_array = convertDateFromInput($current_date->getStartingDay(),$this->_environment->getSelectedLanguage());
-				
+
 				if ($start_date_array['conforms'] == true) {
 					$start_date_array = getDateFromString($start_date_array['timestamp']);
 					$start_date_month = $start_date_array['month'];
 					$start_date_day = $start_date_array['day'];
 					$start_date_year = $start_date_array['year'];
 				}
-				
+
 				$end_date_array = convertDateFromInput($current_date->getEndingDay(),$this->_environment->getSelectedLanguage());
 				if ($end_date_array['conforms'] == true) {
 					$end_date_array = getDateFromString($end_date_array['timestamp']);
@@ -366,16 +380,16 @@
 					$end_date_day =   $end_date_array['day'];
 					$end_date_year = $end_date_array['year'];
 				}
-				
+
 				if ($start_date_day != '') {
-	
+
 	            	//date begins at least one month before currently displayed month, ends in currently displayed month
 	            	// OR date begins in a year before the current and ends in
 	       			if ( ($start_date_month < $month OR $start_date_year < $year) AND $end_date_month == $month AND $end_date_year == $year){
 	       				for ($i=0;$i < $end_date_day;$i++) {
 	             		$format_array[$empty_fields+$i]['dates'][] = $current_date;
 	          			}
-	
+
 			       //date begins in currently displayed month, ends aftet currently displayed month
 			       //OR date begins in currently displayed year and ends after currently displayed year
 			       } elseif ($start_date_month == $month AND $start_date_year == $year AND ($end_date_month > $month OR $end_date_year > $year ) ){
@@ -383,14 +397,14 @@
 			          for ($i=0;$i <= $rest_month;$i++) {
 			             $format_array[$empty_fields+$start_date_day-1+$i]['dates'][] = $current_date;
 			          }
-			
+
 			            //date begins before and ends after currently displayed month
 			       } elseif ( ($start_date_month < $month OR ($start_date_year < $year)) AND ($end_date_month > $month OR ($end_date_year > $year))) {
 			          for ($i=0;$i < $days;$i++) {
 			             $format_array[$empty_fields+$i]['dates'][] = $current_date;
 			          }
 			       }
-			
+
 			       else { //Date spans in one month or is on a single day
 			               $length = 0;
 			          if ($end_date_day != '') {
@@ -401,23 +415,23 @@
 			          }
 			       }
 				}
-				
+
 				$current_date = $list->getNext();
 			}
-			
+
 			// setup tooltip's and actions
 			$anAction_array = array();
 			$date_index = 0;
 			$tooltips = array();
 			$tooltip_last_id = '';
 			$tooltip_date = '';
-			
+
 			for ($i=0;$i<42;$i++) {
-				
+
 		      	if($format_array[$i]['day'].$current_month[$i].$current_year[$i] == date("dmY")){
 		      		$today = $format_array[$i]['day'].$current_month[$i].$current_year[$i];
 		      	}
-		      
+
 		      	if(isset($format_array[$i]['dates']) and !empty($format_array[$i]['dates'])){
 		      		foreach($format_array[$i]['dates'] as $date){
 		      			$link = $this->getDateItemLinkWithJavascript($date, $date->getTitle());
@@ -437,12 +451,12 @@
 		      			$date_array_for_jQuery[] = 'new Array(' . $format_array[$i]['day'] . ',' . $current_month_temp . ',\'' . $link . '\',' . count($format_array[$i]['dates']) . ',\'' . $color . '\'' . ',\'' . $color_border . '\'' . ',\'' . $href . '\'' . ',\'sticky_' . $date_index . '\')';
 		      			$tooltip = array();
 		      			$tooltip['title'] = $date->getTitle();
-		      			
+
 		      			$tooltip['date'] = $date_tooltip_array[$date->getItemID()];
 		      			$tooltip['place'] = $date->getPlace();
 		      			$tooltip['participants'] = $date->getParticipantsItemList();
 		      			$tooltip['color'] = $color;
-		      
+
 		      			// room
 		      			$date_context_item = $date->getContextItem();
 		      			if ( isset($date_context_item) ) {
@@ -451,28 +465,28 @@
 		      					$tooltip['context'] = encode(AS_HTML_SHORT,$room_title);
 		      				}
 		      			}
-		      
+
 		      			$tooltips['sticky_' . $date_index] = $tooltip;
 		      			$date_index++;
 		      		}
 		      	}
-		      
+
 		      	$params = array();
 		      	$params['iid'] = 'NEW';
 		      	$temp_day = $format_array[$i]['day'];
-		      	
+
 		      	if(mb_strlen($temp_day) == 1){
 		      		$temp_day = '0'.$temp_day;
 		      	}
-		      	
+
 		      	$params['day'] = $temp_day;
 		      	$parameter_array = $this->_environment->getCurrentParameterArray();
 		      	$temp_month = $current_month[$i];
-		      	
+
 		      	if(mb_strlen($temp_month) == 1){
 			    	$temp_month = '0'.$temp_month;
 			    }
-			    
+
 	      		$params['month'] = $current_year[$i].$temp_month.'01';
 	      		$params['year'] = $current_year[$i];
 	      		$params['presentation_mode'] = $this->_presentation_mode;
@@ -484,13 +498,13 @@
 		      		'<img style="width:100%; height:100%" src="images/spacer.gif" alt="" border="0"/>');
 	      		$anAction_array[] = $anAction;
 		      }
-		      
-		      
+
+
 		      // get return data
 		      $return = array();
-		      	
+
 		      $days = array();
-		      
+
 		      $i = 0;
 		      $todayCompressed = date("jnY");
 		      foreach($format_array as $format) {
@@ -498,43 +512,43 @@
 		      	if($current_month_temp[0] == 0){
 		      		$current_month_temp = $current_month_temp[1];
 		      	}
-		      	
+
 		      	$state = "active_day";
 		      	// check if day is today
 		      	if($todayCompressed === $format['day'].$current_month_temp.$current_year[$i]) {
 		      		$state = "this_today";
 		      	}
-		      	
+
 		      	// check if day is not active(grey out)
 		      	elseif($current_month[$i] != mb_substr($this->_calendar["month"],4,2)) {
 		      		$state = "nonactive_day";
 		      	}
-		      	
+
 		      	// process dates for this day
 		      	$dates = array();
 		      	foreach($format["dates"] as $date) {
 		      		$dates[] = $date;
 		      	}
-		      	
+
 		      	$days[] = array(
 	      			"day"		=> $format["day"],
 	      			"link"		=> $anAction_array[$i],
 		      		"state"		=> $state,
 		      		"dates"		=> $dates
 		      	);
-		      	
+
 		      	$i++;
 		      }
-		      
+
 		      $return['days'] = $days;
-		      
+
 
 		      /*
-		       * 
+		       *
 
-		      
+
 		      $html .= '<div id="mystickytooltip" class="stickytooltip"><div style="border:1px solid #cccccc;">';
-		      
+
 		      foreach($tooltips as $id => $tooltip){
 		      	$html .= '<div id="' . $id . '" class="atip" style="padding:5px; border:2px solid ' . $tooltip['color'] . '">'.LF;
 		      	$html .= '<table>'.LF;
@@ -566,14 +580,14 @@
 		      	$html .= '</table>'.LF;
 		      	$html .= '</div>'.LF;
 		      }
-		      
+
 		      // tooltips for todos
 		      if ( !empty($this->_tooltip_div_array) ) {
 			      foreach ( $this->_tooltip_div_array as $div ) {
 			      	$html .= $div;
 			      }
 		      }
-		      
+
 		      $html .= '</div></div>';
 		      	$html .= '<script type="text/javascript">'.LF;
 		      	$html .= '<!--'.LF;
@@ -591,20 +605,20 @@
 	      		$html .= 'var today = "' . $today . '";' .LF;
 	      		$html .= '-->'.LF;
 	      		$html .= '</script>'.LF;
-	      
-	      		
+
+
 	      		return $html;
 	      		*/
-		      
+
 			return $return;
 		}
 
 		private function getCalendarContent() {
 			$current_context_item = $this->_environment->getCurrentContextItem();
 			$session = $this->_environment->getSessionItem();
-			
+
 			$return = array();
-			
+
 			// init values
 			$this->_calendar["day"] = date("d");
 			$this->_calendar["year"] = date("Y");
@@ -615,7 +629,7 @@
 			$old_month ='';
 			$old_year ='';
 			$old_week ='';
-			
+
 			if (isset($_GET['year'])) {
 				$this->_calendar["year"] = $_GET['year'];
 			} elseif (isset($_POST['year'])) {
@@ -631,26 +645,26 @@
 			}elseif (isset($_POST['week'])) {
 				$this->_calendar["week"] = $_POST['week'];
 			}
-			
+
 			// presentation mode
 			$return['mode'] = $this->_presentation_mode;
-			
+
 			// get header content
 			$return['header'] = $this->getHeaderContent();
-			
+
 			// get main content
 			if($this->_presentation_mode === "week") {
 				$return['content'] = $this->getWeekContent();
 			} elseif($this->_presentation_mode === "month") {
 				$return['content'] = $this->getMonthContent($this->getListContent());
 			}
-			
-			
-			
-			
-			
+
+
+
+
+
 			/*
-			
+
 			if(isset($_GET['presentation_mode']) and !empty($_GET['presentation_mode'])){
 				$presentation_mode = $_GET['presentation_mode'];
 				if ( $this->_environment->inPrivateRoom() ) {
@@ -795,12 +809,12 @@
 			$session->setValue($this->_environment->getCurrentContextID().'_year', $year);
 			$session->setValue($this->_environment->getCurrentContextID().'_week', $week);
 			$session->setValue($this->_environment->getCurrentContextID().'_presentation_mode', $presentation_mode);
-			
+
 			*/
-			
+
 			return $return;
 		}
-		
+
 		public function getListContent() {
 			include_once('classes/cs_list.php');
 			include_once('classes/views/cs_view.php');
@@ -856,7 +870,7 @@
 				}
 				$last_selected_tag = $seltag_array[$j-1];
 			}
-			
+
 			// Find current status selection
 			if ( isset($_GET['selstatus'])
 					and $_GET['selstatus'] != '-2'
@@ -922,12 +936,12 @@
 			      $dates_manager->resetLimits();
 			      $dates_manager->setSortOrder('time');
 			      /*/
-			   
+
 			   if($this->_display_mode == "calendar") {
 			   	$dates_manager->setContextLimit($this->_environment->getCurrentContextID());
 			   	$dates_manager->setDateModeLimit(2);
 			   	$dates_manager->setYearLimit($this->_calendar["year"]);
-			   	
+
 			   	if($this->_presentation_mode === "month") {
 			   		$real_month = mb_substr($this->_calendar["month"],4,2);
 			   		$first_char = mb_substr($real_month,0,1);
@@ -943,7 +957,7 @@
 			   		}
 			   		$dates_manager->setMonthLimit2($real_month);
 			   	}
-			   	
+
 			   	$count_all = $dates_manager->getCountAll();
 			   	$dates_manager->resetLimits();
 			   	$dates_manager->setSortOrder('time');
@@ -971,76 +985,76 @@
 			      $count_all = $dates_manager->getCountAll();
 			      $dates_manager->resetLimits();
 			      $dates_manager->setSortOrder('time');
-			   
+
 			 			   	*/
 			   } else {
 			      $dates_manager->setContextLimit($environment->getCurrentContextID());
 			      $dates_manager->setDateModeLimit(2);
 			      $count_all = $dates_manager->getCountAll();
 			   }
-			   
+
 				// apply filter
 				if ( $this->_list_parameter_arrray['sel_activating_status'] == 2 ) {
 					$dates_manager->showNoNotActivatedEntries();
 				}
-				
+
 				// TODO: should be handles via list parameters
 				$selected_color = '';
 				if(isset($_GET['selcolor']) && $_GET['selcolor'] != '-2') {
 					$selected_color = $_GET['selcolor'];
 				}
-				
+
 				if(!empty($selected_color) && $selected_color != 2) {
 					$dates_manager->setColorLimit('#' . $selected_color);
 				}
-				
+
 				if ( !empty($this->_list_parameter_arrray['ref_iid']) and $this->getViewMode() == 'attached' ){
 					$dates_manager->setRefIDLimit($this->_list_parameter_arrray['ref_iid']);
 				}
-				
+
 				if ( !empty($this->_list_parameter_arrray['ref_user']) and $this->getViewMode() == 'attached' ){
 					$dates_manager->setRefUserLimit($this->_list_parameter_arrray['ref_user']);
 				}
-				
+
 				if(	!empty($this->_list_parameter_arrray['sort']) &&
 						($this->_display_mode !== 'calendar' || $this->_display_mode === 'calendar_month' || $this->getViewMode() === 'formattach' || $this->getViewMode() === 'detailattach')) {
 					$dates_manager->setSortOrder($this->_list_parameter_arrray['sort']);
 				}
-				
+
 				if ( !empty($this->_list_parameter_arrray['search']) ) {
 					$dates_manager->setSearchLimit($this->_list_parameter_arrray['search']);
 				}
-				
+
 				if ( !empty($this->_list_parameter_arrray['selbuzzword']) ) {
 					$dates_manager->setBuzzwordLimit($this->_list_parameter_arrray['selbuzzword']);
 				}
-				
+
 				if ( !empty($this->_list_parameter_arrray['last_selected_tag']) ){
 					$dates_manager->setTagLimit($this->_list_parameter_arrray['last_selected_tag']);
 				}
-				
+
 				if ( !empty($selstatus) ) {
 					$dates_manager->setDateModeLimit($selstatus);
 				}
-				
+
 				// TODO: not sure if this is correct here
 				if ( $this->_list_parameter_arrray['interval'] > 0 ) {
 					$dates_manager->setIntervalLimit($this->_list_parameter_arrray['from']-1,$this->_list_parameter_arrray['interval']);
 				}
-				
+
 				if ( !empty($only_show_array) ) {
 					$dates_manager->resetLimits();
 					$dates_manager->setWithoutDateModeLimit();
 					$dates_manager->setIDArrayLimit($only_show_array);
 				}
-				
+
 				$ids = $dates_manager->getIDArray();       // returns an array of item ids
 				$count_all_shown = count($ids);
-				
+
 				if(empty($only_show_array)) {
 					if($this->_display_mode === "calendar") {
 						if(!empty($this->_calendar["year"])) $dates_manager->setYearLimit($this->_calendar["year"]);
-						
+
 						if(!empty($this->_calendar["month"])) {
 							if($this->_presentation_mode === "month") {
 								$real_month = mb_substr($this->_calendar["month"],4,2);
@@ -1058,39 +1072,39 @@
 								$dates_manager->setMonthLimit2($real_month);
 							}
 						}
-						
+
 						if ( !empty($selstatus) ) {
 							$dates_manager->setDateModeLimit($selstatus);
 						}
 					}
-					
+
 					if ( $this->_list_parameter_arrray['interval'] > 0 ) {
 						$dates_manager->setIntervalLimit($this->_list_parameter_arrray['from']-1,$this->_list_parameter_arrray['interval']);
 					}
 				}
-				
+
 				if($this->_display_mode === "calendar") {
 					$dates_manager->selectDistinct();
 				} else {
 					$dates_manager->select();
 				}
-				
+
 				$list = $dates_manager->get();
-				
+
 				if($this->_display_mode === "calendar") {
 					$count_all_shown = $list->getCount();
 				}
-				
+
 				$this->_page_text_fragment_array['count_entries'] = $this->getCountEntriesText($this->_list_parameter_arrray['from'],$this->_list_parameter_arrray['interval'], $count_all, $count_all_shown);
 				$this->_browsing_icons_parameter_array = $this->getBrowsingIconsParameterArray($this->_list_parameter_arrray['from'],$this->_list_parameter_arrray['interval'], $count_all_shown);
-				
+
 				$session = $this->_environment->getSessionItem();
 				$session->setValue('cid'.$environment->getCurrentContextID().'_date_index_ids', $ids);
-				
+
 				if($this->_display_mode == "calendar") {
 					return $list;
 				}
-				
+
 			   // prepare item array
 			   $item = $list->getFirst();
 			   $item_array = array();
@@ -1325,7 +1339,7 @@
 			} else {
 				$this->_display_mode = $current_context->getDatesPresentationStatus();
 			}*/
-			
+
 			if(isset($_GET["mode"])) {
 				$this->_display_mode = $_GET["mode"];
 			} else {
@@ -1557,11 +1571,11 @@
 
 			return $return;
 		}
-		
-		
+
+
 		private function getTooltipDate($date) {
 			$translator = $this->_environment->getTranslationObject();
-			
+
 			$parse_time_start = convertTimeFromInput($date->getStartingTime());
 			$conforms = $parse_time_start['conforms'];
 			if ($conforms == TRUE) {
@@ -1569,7 +1583,7 @@
 			} else {
 				$start_time_print = $date->getStartingTime();
 			}
-		
+
 			$parse_time_end = convertTimeFromInput($date->getEndingTime());
 			$conforms = $parse_time_end['conforms'];
 			if ($conforms == TRUE) {
@@ -1577,7 +1591,7 @@
 			} else {
 				$end_time_print = $date->getEndingTime();
 			}
-		
+
 			$parse_day_start = convertDateFromInput($date->getStartingDay(),$this->_environment->getSelectedLanguage());
 			$conforms = $parse_day_start['conforms'];
 			if ($conforms == TRUE) {
@@ -1585,7 +1599,7 @@
 			} else {
 				$start_day_print = $date->getStartingDay();
 			}
-		
+
 			$parse_day_end = convertDateFromInput($date->getEndingDay(),$this->_environment->getSelectedLanguage());
 			$conforms = $parse_day_end['conforms'];
 			if ($conforms == TRUE) {
@@ -1596,14 +1610,14 @@
 			//formating dates and times for displaying
 			$date_print ="";
 			$time_print ="";
-		
+
 			if ($end_day_print != "") { //with ending day
 				$date_print = $translator->getMessage('DATES_AS_OF').' '.$start_day_print.' '.$translator->getMessage('DATES_TILL').' '.$end_day_print;
 				if ($parse_day_start['conforms']
 						and $parse_day_end['conforms']) { //start and end are dates, not strings
 					$date_print .= ' ('.getDifference($parse_day_start['timestamp'], $parse_day_end['timestamp']).' '.$translator->getMessage('DATES_DAYS').')';
 				}
-		
+
 				if ($start_time_print != "" and $end_time_print =="") { //starting time given
 					$time_print = $translator->getMessage('DATES_AS_OF_LOWER').' '.$start_time_print;
 					if ($parse_time_start['conforms'] == true) {
@@ -1628,7 +1642,7 @@
 						$date_print .= ' ('.getDifference($parse_day_start['timestamp'], $parse_day_end['timestamp']).' '.$translator->getMessage('DATES_DAYS').')';
 					}
 				}
-		
+
 			} else { //without ending day
 				$date_print = $translator->getMessage('DATES_ON_DAY').' '.$start_day_print;
 				if ($start_time_print != "" and $end_time_print =="") { //starting time given
@@ -1651,7 +1665,7 @@
 					$time_print = $translator->getMessage('DATES_FROM_TIME_LOWER').' '.$start_time_print.' '.$translator->getMessage('DATES_TILL').' '.$end_time_print;
 				}
 			}
-		
+
 			if ($parse_day_start['timestamp'] == $parse_day_end['timestamp'] and $parse_day_start['conforms'] and $parse_day_end['conforms']) {
 				$date_print = $translator->getMessage('DATES_ON_DAY').' '.$start_day_print;
 				if ($start_time_print != "" and $end_time_print =="") { //starting time given
@@ -1662,7 +1676,7 @@
 					$time_print = $translator->getMessage('DATES_FROM_TIME_LOWER').' '.$start_time_print.' '.$translator->getMessage('DATES_TILL').' '.$end_time_print;
 				}
 			}
-		
+
 			// Date and time
 			$temp_array = array();
 			$temp_array[] = $translator->getMessage('DATES_DATETIME');
@@ -1674,7 +1688,7 @@
 			$tooltip_date = $temp_array;
 			return $tooltip_date;
 		}
-		
+
 		private function getDateItemLinkWithJavascript($item, $text) {
 			$title = $item->getTitle();
 			$params = array();
@@ -1732,7 +1746,7 @@
 						'',
 						'calendar_link_' . $params['iid'],
 						'style="color:' . $link_color .';"');
-		
+
 			}
 			unset($params);
 			return $title;

@@ -74,7 +74,7 @@
                     		<li {if $rubric.active}id="active"{else}class="non_active"{/if}>
                     			<a href="commsy.php?cid={$environment.cid}&mod={$rubric.name}&fct=index">
                     				<span id="{if $rubric.active}{$rubric.span_prefix}_act{else}{$rubric.span_prefix}_non_act{/if}"></span>
-                    				{if $rubric.translate}___COMMON_{$rubric.name|upper}_INDEX___{else}{$rubric.name}{/if}
+                    				<div id="{$rubric.span_prefix}_text">{if $rubric.translate}___COMMON_{$rubric.name|upper}_INDEX___{else}{$rubric.name}{/if}</div>
                     			</a>
                     		</li>
                     	{/foreach}
@@ -84,7 +84,7 @@
 								<li {if $entry.active}id="active" class="active_spe"{else}class="non_active spe"{/if}>
 									<a href="commsy.php?cid={$environment.cid}&mod=user&fct=detail&iid={$entry.item_id}">
 										<span id="{if $entry.active}{$entry.span_prefix}_act{else}{$entry.span_prefix}_non_act{/if}"></span>
-										___USER_OWN_INFORMATION_LINK___
+										<div id="{$rubric.span_prefix}_text">___USER_OWN_INFORMATION_LINK___</div>
 									</a>
 								</li>
 							{/if}

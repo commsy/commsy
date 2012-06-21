@@ -1,6 +1,19 @@
 {extends file="room_list_html.tpl"}
 
 {block name=room_site_actions}
+    <a title="___COMMON_LIST_VIEW___"><img src="{$basic.tpl_path}img/btn_row_view_active.gif" alt="___COMMON_LIST_VIEW___" /></a>
+    <a href="commsy.php?cid={$environment.cid}&mod=date&fct=index&mode=calendar" title="___DATES_CHANGE_CALENDAR___"><img src="{$basic.tpl_path}img/btn_calendar_view.gif" alt="___DATES_CHANGE_CALENDAR___" /></a>
+
+	</div>
+	<div id="site_actions">
+	<a id="abo_entries" href="webcal://{$date.ical_adress}" title="___DATES_ABBO___" target="_blank">
+		<img src="{$basic.tpl_path}img/btn_remember.gif" alt="___DATES_ABBO___" />
+	</a>
+
+	<a id="export_entries" href="http://{$date.ical_adress}" title="___DATES_EXPORT___" target="_blank">
+		<img src="{$basic.tpl_path}img/btn_export_todisk.gif" alt="___DATES_EXPORT___" />
+	</a>
+
 	<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=index&mode=print" title="___COMMON_LIST_PRINTVIEW___" target="_blank">
 		<img src="{$basic.tpl_path}img/btn_print.gif" alt="___COMMON_LIST_PRINTVIEW___" />
 	</a>
@@ -10,13 +23,7 @@
 	    	<img src="{$basic.tpl_path}img/btn_add_new.gif" alt="___COMMON_NEW_ITEM___" />
 	    </a>
     {/if}
-    {if $index.actions.user}
-		<a id="own_user" href="commsy.php?cid={$environment.cid}&mod=user&fct=detail&iid={$index.actions.user_iid}" title="___COMMON_OWN_USER___">
-	    	<img src="{$basic.tpl_path}img/btn_own_user.gif" alt="___COMMON_OWN_USER___" />
-	    </a>
-    {/if}
 
-    <a href="commsy.php?cid={$environment.cid}&mod=date&fct=index&mode=calendar" title="Ansicht in Portlets"><img src="{$basic.tpl_path}img/btn_portlet_view.gif" alt="Portlets" /></a>
 {/block}
 
 {block name=room_list_header}

@@ -1,5 +1,29 @@
 {extends file="room_list_html.tpl"}
 
+
+{block name=room_site_actions}
+
+	<a id="abo_entries" href="webcal://{$todo.ical_adress}" title="___TODO_ABBO___" target="_blank">
+		<img src="{$basic.tpl_path}img/btn_remember.gif" alt="___TODO_ABBO___" />
+	</a>
+
+	<a id="export_entries" href="http://{$todo.ical_adress}" title="___TODO_EXPORT___" target="_blank">
+		<img src="{$basic.tpl_path}img/btn_export_todisk.gif" alt="___TODO_EXPORT___" />
+	</a>
+
+	<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=index&mode=print" title="___COMMON_LIST_PRINTVIEW___" target="_blank">
+		<img src="{$basic.tpl_path}img/btn_print.gif" alt="___COMMON_LIST_PRINTVIEW___" />
+	</a>
+
+    {if $index.actions.new}
+		<a id="create_new" href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid=NEW" title="___COMMON_NEW_ITEM___">
+	    	<img src="{$basic.tpl_path}img/btn_add_new.gif" alt="___COMMON_NEW_ITEM___" />
+	    </a>
+    {/if}
+
+{/block}
+
+
 {block name=room_list_header}
 	<div class="table_head">
 		{if $room.assessment}
