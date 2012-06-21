@@ -3871,3 +3871,28 @@ a.event_yellow {
     background: #FFFCBA;
     padding: 1px 5px;
     }
+
+a.event_orange {
+    background: #FF6600;
+    padding: 1px 5px;
+    }
+
+a.event_light_yellow {
+    background: #FFFF66;
+    padding: 1px 5px;
+    }
+
+a.event_turquoise {
+    background: #00CCCC;
+    padding: 1px 5px;
+    }
+
+a.event_dark_blue {
+    background: #6633FF;
+    padding: 1px 5px;
+    }
+
+a.event_grey {
+    background: #999999;
+    padding: 1px 5px;
+    }

@@ -148,21 +148,27 @@
 	                				{if $cc.mode == "month"}<div class="cal_daynumber">{$cc.content.days[$pos].day}</div>{/if}
 
 	                				{if isset($cc.content.days[$pos].dates) && !empty($cc.content.days[$pos].dates)}
-	                					termin
+	                					<div class="cal_days_events">
+		                					{foreach $cc.content.days[$pos].dates as $date}		                					
+		                						<a href="" class="event_{$date.color}">{$date.title|truncate:11:"...":true}</a>
+		                					{/foreach}
+	                					</div>
+	                				
+	                		
 	                					{*
-		                				<div class="cal_days_events">
-				                            <a href="" class="event_blue">Lorem ipsum</a> <!-- bitte den Text kuerzen, damit er maximal eine Zeile einnimmt -->
+		                				
+				                             <!-- bitte den Text kuerzen, damit er maximal eine Zeile einnimmt -->
 				                            <a href="" class="event_blue">Lorem ipsum</a> <!-- bitte den Text kuerzen, damit er maximal eine Zeile einnimmt -->
 				                            <a href="" class="event_green">Lorem ipsum</a> <!-- bitte den Text kuerzen, damit er maximal eine Zeile einnimmt -->
 				                            <a href="" class="event_red">Lorem ipsum</a> <!-- bitte den Text kuerzen, damit er maximal eine Zeile einnimmt -->
-				                        </div>
+				                        
 		                        		*}
 	                				{/if}
 	                			</td>
 	                		{/section}
 	                    </tr>
 	                {/section}
-                {else}
+                {else if $cc.mode == "week"}
 
        			{/if}
 

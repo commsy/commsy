@@ -439,45 +439,6 @@
 		      		$today = $format_array[$i]['day'].$current_month[$i].$current_year[$i];
 		      	}
 
-		      	if(isset($format_array[$i]['dates']) and !empty($format_array[$i]['dates'])){
-		      		foreach($format_array[$i]['dates'] as $date){
-		      			$link = $this->getDateItemLinkWithJavascript($date, $date->getTitle());
-		      			$link = str_replace("'", "\'", $link);
-		      			$link_array = explode('"', $link);
-		      			$href = $link_array[1];
-		      			if($date->getColor() != ''){
-		      				$color = $date->getColor();
-		      			} else {
-		      				$color = '#FFFF66';
-		      			}
-		      			$color_border = '#CCCCCC';
-		      			$current_month_temp = $current_month[$i];
-		      			if($current_month_temp[0] == 0){
-		      				$current_month_temp = $current_month_temp[1];
-		      			}
-		      			$date_array_for_jQuery[] = 'new Array(' . $format_array[$i]['day'] . ',' . $current_month_temp . ',\'' . $link . '\',' . count($format_array[$i]['dates']) . ',\'' . $color . '\'' . ',\'' . $color_border . '\'' . ',\'' . $href . '\'' . ',\'sticky_' . $date_index . '\')';
-		      			$tooltip = array();
-		      			$tooltip['title'] = $date->getTitle();
-
-		      			$tooltip['date'] = $date_tooltip_array[$date->getItemID()];
-		      			$tooltip['place'] = $date->getPlace();
-		      			$tooltip['participants'] = $date->getParticipantsItemList();
-		      			$tooltip['color'] = $color;
-
-		      			// room
-		      			$date_context_item = $date->getContextItem();
-		      			if ( isset($date_context_item) ) {
-		      				$room_title = $date_context_item->getTitle();
-		      				if ( !empty($room_title) ) {
-		      					$tooltip['context'] = encode(AS_HTML_SHORT,$room_title);
-		      				}
-		      			}
-
-		      			$tooltips['sticky_' . $date_index] = $tooltip;
-		      			$date_index++;
-		      		}
-		      	}
-
 		      	$params = array();
 		      	$params['iid'] = 'NEW';
 		      	$temp_day = $format_array[$i]['day'];
@@ -534,6 +495,49 @@
 		      	// process dates for this day
 		      	$dates = array();
 		      	foreach($format["dates"] as $date) {
+		      		// link
+		      		$link = $this->getDateItemLinkWithJavascript($date, $date->getTitle());
+		      		$link = str_replace("'", "\'", $link);
+		      		$link_array = explode('"', $link);
+		      		$href = $link_array[1];
+		      		
+		      		// color
+		      		if($date->getColor() != ''){
+		      			$color = $date->getColor();
+		      		} else {
+		      			$color = '#FFFF66';
+		      		}
+		      		
+		      		$colorStr = "";
+		      		switch ($color){
+		      			case '#CC0000': $colorStr = "red"; break;
+		      			case '#FF6600': $colorStr = "orange"; break;
+		      			case '#FFCC00': $colorStr = "yellow"; break;
+		      			case '#FFFF66': $colorStr = "light_yellow"; break;
+		      			case '#33CC00': $colorStr = "green"; break;
+		      			case '#00CCCC': $colorStr = "turquoise"; break;
+		      			case '#3366FF': $colorStr = "blue"; break;
+		      			case '#6633FF': $colorStr = "dark_blue"; break;
+		      			case '#CC33CC': $colorStr = "purple"; break;
+		      			default: $colorStr = "grey"; break;
+		      		}
+		      		
+		      		// room
+		      		$room_title = "";
+		      		$date_context_item = $date->getContextItem();
+		      		if ( isset($date_context_item) ) {
+		      			$room_title = $date_context_item->getTitle();
+		      		}
+		      		
+		      		$date = array(
+		      			"title"			=> $date->getTitle(),
+		      			"date"			=> $date_tooltip_array[$date->getItemID()],
+		      			"place"			=> $date->getPlace(),
+		      			"participants"	=> $date->getParticipantsItemList(),
+		      			"color"			=> $colorStr,
+		      			"context"		=> $room_title
+		      		);
+		      		
 		      		$dates[] = $date;
 		      	}
 
@@ -548,7 +552,8 @@
 		      }
 
 		      $return['days'] = $days;
-
+		      
+		      
 
 		      /*
 		       *
