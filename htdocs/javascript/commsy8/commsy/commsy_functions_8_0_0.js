@@ -155,6 +155,10 @@ define(["libs/jQuery/jquery-1.7.1.min"], function() {
 			if(this.getURLParam('fct') === 'index') {
 				this.registerModule('commsy/noticed_overlay', 'a[class="new_item"]');
 			}
+			
+			if(this.getURLParam('fct') === 'index') {
+				this.registerModule('commsy/noticed_overlay', 'div.cal_days_events a');
+			}
 
 			// ajax rubric popup handler
 			var new_objects = jQuery('a[id="create_new"]');

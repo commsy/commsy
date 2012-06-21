@@ -535,7 +535,8 @@
 		      			"place"			=> $date->getPlace(),
 		      			"participants"	=> $date->getParticipantsItemList(),
 		      			"color"			=> $colorStr,
-		      			"context"		=> $room_title
+		      			"context"		=> $room_title,
+		      			"href"			=> $href
 		      		);
 		      		
 		      		$dates[] = $date;

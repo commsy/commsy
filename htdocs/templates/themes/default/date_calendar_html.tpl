@@ -150,19 +150,38 @@
 	                				{if isset($cc.content.days[$pos].dates) && !empty($cc.content.days[$pos].dates)}
 	                					<div class="cal_days_events">
 		                					{foreach $cc.content.days[$pos].dates as $date}		                					
-		                						<a href="" class="event_{$date.color}">{$date.title|truncate:11:"...":true}</a>
+		                						<a href="{$date.href}" class="event_{$date.color}">{$date.title|truncate:11:"...":true}</a>
+		                						
+		                						
+		                						{* build and style tooltips here
+		                						
+		                						available date values are:
+		                							"title"				
+									      			"date"			
+									      			"place"			
+									      			"participants"	 - maybe of type cs_list, and needs to be converted
+									      			"color"			 - used for css markup
+									      			"context"		 - room title?
+									      			"href"			 - link to date detail
+									      		*}
+		                						
+		                						<div class="tooltip tooltip_with_400">
+													<div class="tooltip_inner tooltip_inner_with_400">
+													
+														<div class="tooltip_title">
+															<div class="header">___COMMON_ATTACHED_FILES___</div>
+														</div>
+														<div class="scrollable">
+															<div class="tooltip_content">
+																<ul>
+																tooltip inhalt
+																</ul>
+															</div>
+														</div>
+													</div>
+												</div>
 		                					{/foreach}
 	                					</div>
-	                				
-	                		
-	                					{*
-		                				
-				                             <!-- bitte den Text kuerzen, damit er maximal eine Zeile einnimmt -->
-				                            <a href="" class="event_blue">Lorem ipsum</a> <!-- bitte den Text kuerzen, damit er maximal eine Zeile einnimmt -->
-				                            <a href="" class="event_green">Lorem ipsum</a> <!-- bitte den Text kuerzen, damit er maximal eine Zeile einnimmt -->
-				                            <a href="" class="event_red">Lorem ipsum</a> <!-- bitte den Text kuerzen, damit er maximal eine Zeile einnimmt -->
-				                        
-		                        		*}
 	                				{/if}
 	                			</td>
 	                		{/section}
