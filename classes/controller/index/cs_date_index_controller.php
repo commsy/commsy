@@ -22,6 +22,9 @@
 			$this->setSelectedStatus();
 
 			$this->_tpl_file = "date_" . $this->_display_mode;
+			if ($this->_display_mode == 'calendar_month'){
+				$this->_tpl_file = "date_calendar";
+			}
 
 			// this will enable processing of additional restriction texts
 			$this->_additional_selects = true;
@@ -81,12 +84,16 @@
 				$this->assign('list','restriction_tag_link_parameters',$this->getRestrictionTagLinkParameters());
 				$this->assign('list','restriction_text_parameters',$this->_getRestrictionTextAsHTML());
 				$this->assign('date','list_content', $list_content);
-			} elseif($this->_display_mode === "calendar") {
+			} elseif($this->_display_mode === "calendar" or $this->_display_mode === "calendar_month") {
 				// set presentation mode
 				if(isset($_GET['presentation_mode'])) {
 					$this->_presentation_mode = $_GET['presentation_mode'];
 				} else {
-					$this->_presentation_mode = 'month';
+					if($this->_display_mode === "calendar" ){
+						$this->_presentation_mode = 'week';
+					}else{
+						$this->_presentation_mode = 'month';
+					}
 				}
 
 				// get calendar content
@@ -906,38 +913,12 @@
 
 			// Get data from database
 			$dates_manager = $environment->getDatesManager();
-
+			$only_show_array = '';
 			if ( empty($only_show_array) ) {
 			   $color_array = $dates_manager->getColorArray();
 			   $current_context = $environment->getCurrentContextItem();
-			   /*
-			   if ($current_context->isPrivateRoom()){
-			      $id_array = array();
-			      $id_array[] = $environment->getCurrentContextID();
-			      $dates_manager->setContextArrayLimit($id_array);
-			      $dates_manager->setDateModeLimit(2);
-			      $dates_manager->setYearLimit($year);
-			      if (!empty($presentation_mode) and $presentation_mode =='2'){
-			         $real_month = mb_substr($month,4,2);
-			         $first_char = mb_substr($real_month,0,1);
-			         if ($first_char == '0'){
-			            $real_month = mb_substr($real_month,1,2);
-			         }
-			         $dates_manager->setMonthLimit($real_month);
-			      }else{
-			         $real_month = mb_substr($month,4,2);
-			         $first_char = mb_substr($real_month,0,1);
-			         if ($first_char == '0'){
-			            $real_month = mb_substr($real_month,1,2);
-			         }
-			         $dates_manager->setMonthLimit2($real_month);
-			      }
-			      $count_all = $dates_manager->getCountAll();
-			      $dates_manager->resetLimits();
-			      $dates_manager->setSortOrder('time');
-			      /*/
 
-			   if($this->_display_mode == "calendar") {
+			   if($this->_display_mode == "calendar" || $this->_display_mode === "calendar_month") {
 			   	$dates_manager->setContextLimit($this->_environment->getCurrentContextID());
 			   	$dates_manager->setDateModeLimit(2);
 			   	$dates_manager->setYearLimit($this->_calendar["year"]);
@@ -1052,7 +1033,7 @@
 				$count_all_shown = count($ids);
 
 				if(empty($only_show_array)) {
-					if($this->_display_mode === "calendar") {
+					if($this->_display_mode === "calendar" || $this->_display_mode == "calendar_month") {
 						if(!empty($this->_calendar["year"])) $dates_manager->setYearLimit($this->_calendar["year"]);
 
 						if(!empty($this->_calendar["month"])) {
@@ -1083,7 +1064,7 @@
 					}
 				}
 
-				if($this->_display_mode === "calendar") {
+				if($this->_display_mode === "calendar" || $this->_display_mode === "calendar_month") {
 					$dates_manager->selectDistinct();
 				} else {
 					$dates_manager->select();
@@ -1091,7 +1072,7 @@
 
 				$list = $dates_manager->get();
 
-				if($this->_display_mode === "calendar") {
+				if($this->_display_mode === "calendar" || $this->_display_mode === "calendar_month") {
 					$count_all_shown = $list->getCount();
 				}
 
@@ -1101,7 +1082,7 @@
 				$session = $this->_environment->getSessionItem();
 				$session->setValue('cid'.$environment->getCurrentContextID().'_date_index_ids', $ids);
 
-				if($this->_display_mode == "calendar") {
+				if($this->_display_mode == "calendar" || $this->_display_mode === "calendar_month") {
 					return $list;
 				}
 
@@ -1327,24 +1308,28 @@
 			$current_context = $this->_environment->getCurrentContextItem();
 			$seldisplay_mod = $current_context->getDatesPresentationStatus();
 			$session = $this->_environment->getSessionItem();
-			/*
-			if(isset($_GET['seldisplay_mode'])) {
-				$this->_display_mode = $_GET['seldisplay_mode'];
-				$session->setValue($this->_environment->getCurrentContextID() . '_dates_seldisplay_mode', $_GET['seldisplay_mode']);
-			} elseif(!empty($_POST['seldisplay_mode'])) {
-				$this->_display_mode = $_POST['seldisplay_mode'];
-				$session->setValue($this->_environment->getCurrentContextID() . '_dates_seldisplay_mode', $_POST['seldisplay_mode']);
+			$session_manager = $this->_environment->getSessionManager();
+
+			if(isset($_GET['mode'])) {
+				$this->_display_mode = $_GET['mode'];
+			} elseif(!empty($_GET['presentation_mode'])) {
+				if ($_GET['presentation_mode'] == 'month'){
+					$this->_display_mode = 'calendar_month';
+				}else{
+					$this->_display_mode = 'calendar';
+				}
+			} elseif(!empty($_POST['mode'])) {
+				$this->_display_mode = $_POST['mode'];
 			} elseif($session->issetValue($this->_environment->getCurrentContextID() . '_dates_seldisplay_mode')) {
 				$this->_display_mode = $session->getValue($this->_environment->getCurrentContextID() . '_dates_seldisplay_mode');
 			} else {
 				$this->_display_mode = $current_context->getDatesPresentationStatus();
-			}*/
-
-			if(isset($_GET["mode"])) {
-				$this->_display_mode = $_GET["mode"];
-			} else {
-				$this->_display_mode = "calendar";
+				if($this->_display_mode == 'normal'){
+				  $this->_display_mode= 'list';
+				}
 			}
+			$session->setValue($this->_environment->getCurrentContextID() . '_dates_seldisplay_mode', $this->_display_mode);
+			$session_manager->save($session);
 		}
 
 		protected function getAdditionalRestrictionText(){

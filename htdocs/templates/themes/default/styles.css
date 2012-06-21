@@ -1050,6 +1050,7 @@ a span#ma_non_act {
     background: url(img/nav_material.png) no-repeat -21px 0px;
     }
 
+
 /* Diskussionen */
 
 a span#di_act, a span#di_non_act {
@@ -1083,6 +1084,11 @@ a span#pe_act {
 a span#pe_non_act {
     background: url(img/nav_personen.png) no-repeat -25px 0px;
     }
+
+#pe_text {
+	width:60px;
+	text-align: center;
+	}
 
 
  /* Gruppen */
@@ -1161,6 +1167,11 @@ a span#au_act {
 a span#au_non_act {
     background: url(img/nav_aufgaben.png) no-repeat -25px 2px;
     }
+
+#au_text {
+	width:60px;
+	text-align: center;
+	}
 
  /* Themen */
 
