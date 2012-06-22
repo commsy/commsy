@@ -466,31 +466,31 @@
 
 				switch ( $text ){
 					case 'COMMON_DATE_WEEKVIEW_MONDAY':
-						$week_start = $translator->getMessage('COMMON_DATE_WEEKVIEW_MONDAY',    $display_startday, $startmonth);
+						$week_string = $translator->getMessage('COMMON_DATE_WEEKVIEW_MONDAY',    $display_startday, $startmonth);
 						break;
 					case 'COMMON_DATE_WEEKVIEW_TUESDAY':
-						$week_start = $translator->getMessage('COMMON_DATE_WEEKVIEW_TUESDAY',   $display_startday, $startmonth);
+						$week_string = $translator->getMessage('COMMON_DATE_WEEKVIEW_TUESDAY',   $display_startday, $startmonth);
 						break;
 					case 'COMMON_DATE_WEEKVIEW_WEDNESDAY':
-						$week_start = $translator->getMessage('COMMON_DATE_WEEKVIEW_WEDNESDAY', $display_startday, $startmonth);
+						$week_string = $translator->getMessage('COMMON_DATE_WEEKVIEW_WEDNESDAY', $display_startday, $startmonth);
 						break;
 					case 'COMMON_DATE_WEEKVIEW_THURSDAY':
-						$week_start = $translator->getMessage('COMMON_DATE_WEEKVIEW_THURSDAY',  $display_startday, $startmonth);
+						$week_string = $translator->getMessage('COMMON_DATE_WEEKVIEW_THURSDAY',  $display_startday, $startmonth);
 						break;
 					case 'COMMON_DATE_WEEKVIEW_FRIDAY':
-						$week_start = $translator->getMessage('COMMON_DATE_WEEKVIEW_FRIDAY',    $display_startday, $startmonth);
+						$week_string = $translator->getMessage('COMMON_DATE_WEEKVIEW_FRIDAY',    $display_startday, $startmonth);
 						break;
 					case 'COMMON_DATE_WEEKVIEW_SATURDAY':
-						$week_start = $translator->getMessage('COMMON_DATE_WEEKVIEW_SATURDAY',  $display_startday, $startmonth);
+						$week_string = $translator->getMessage('COMMON_DATE_WEEKVIEW_SATURDAY',  $display_startday, $startmonth);
 						break;
 					case 'COMMON_DATE_WEEKVIEW_SUNDAY':
-						$week_start = $translator->getMessage('COMMON_DATE_WEEKVIEW_SUNDAY',    $display_startday, $startmonth);
+						$week_string = $translator->getMessage('COMMON_DATE_WEEKVIEW_SUNDAY',    $display_startday, $startmonth);
 						break;
 					default:
 						break;
 				}
 
-				$return["tablehead"]["week_start"][$i] = $week_start;
+				$return["tablehead"]["week_start"][$i] = $week_string;
 
 				$week_start = $week_start + ( 3600 * 24);
 			}
@@ -543,416 +543,397 @@
 			}
 
 			$session = $this->_environment->getSession();
+			
+			$date_array_for_jQuery = array();
+			$date_array_for_jQuery_temp = array();
+			$date_array_for_jQuery_php = array();
+			$date_index = 0;
+			$tooltips = array();
+			$tooltip_date = '';
+			$tooltip_last_id = '';
+			for ($day = 1; $day<9; $day++){
+				$day_entries = $day-1;
+				$left_position = 0;
+				if ( isset($display_date_array[$day_entries]) ){
+					foreach($display_date_array[$day_entries] as $date){
+						$is_date_for_whole_day = false;
+						$start_hour = mb_substr($date->getStartingTime(),0,2);
+						if(mb_substr($start_hour,0,1) == '0'){
+							$start_hour = mb_substr($start_hour,1,1);
+						}
+						$start_minutes = mb_substr($date->getStartingTime(),3,2);
+						if(mb_substr($start_minutes,0,1) == '0'){
+							$start_minutes = mb_substr($start_minutes,1,1);
+						}
+			
+						if(($date->getStartingDay() != $date->getEndingDay()) and ($date->getEndingDay() != '')){
+							if($date->getEndingTime() != ''){
+								$end_hour = 23;
+								$end_minutes = 60;
+							} else {
+								$end_hour = 0;
+								$end_minutes = 0;
+								$is_date_for_whole_day = true;
+							}
+						} else {
+							if($date->getEndingTime() != ''){
+								$end_hour = mb_substr($date->getEndingTime(),0,2);
+								$end_minutes = mb_substr($date->getEndingTime(),3,2);
+							} elseif($date->getStartingTime() != '' and $date->getEndingTime() == ''){
+								$end_hour = $start_hour + 1;
+								$end_minutes = $start_minutes;
+							} else {
+								$end_hour = $start_hour;
+								$end_minutes = $start_minutes;
+							}
+			
+						}
+						if(mb_substr($end_hour,0,1) == '0'){
+							$end_hour = mb_substr($end_hour,1,1);
+						}
+						if(mb_substr($end_minutes,0,1) == '0'){
+							$end_minutes = mb_substr($end_minutes,1,1);
+						}
+			
+						// umrechnen in Minuten, für jede viertelstunde 10 px drauf nach vier noch einen pixel drauf
+						$start_minutes = $start_hour*60 + $start_minutes;
+						$end_minutes = $end_hour*60 + $end_minutes;
+			
+						$start_quaters = mb_substr(($start_minutes / 15),0,2);
+						$start_quaters_addon = mb_substr(($start_quaters / 4),0,2);
+						$end_quaters = mb_substr(($end_minutes / 15),0,2);
+						$end_quaters_addon = mb_substr(($end_quaters / 4),0,2);
+			
+						if($start_quaters == 0 and $end_quaters == 0){
+							$is_date_for_whole_day = true;
+						}
+			
+						$top = $start_quaters*10;
+			
+						$left = 19 + 129*($day_entries-1) + $left_position;
+						$width = 129 / count($display_date_array[$day_entries]) - 4;
+						$height = ($end_quaters - $start_quaters) * 10;
+						if($date->getColor() != ''){
+							$color = $date->getColor();
+						} else {
+							$color = '#FFFF66';
+						}
+						$color_border = '#CCCCCC';
+						$link = $this->getDateItemLinkWithJavascript($date, $date->getTitle());
+						$link_array = explode('"', $link);
+						$href = $link_array[1];
+			
+						$overlap = 1;
+						if(!$is_date_for_whole_day){
+							$display_date = $date;
+							foreach($display_date_array[$day_entries] as $display_date_compare){
+								$compare_is_date_for_whole_day = false;
+								if(($display_date_compare->getStartingDay() != $display_date_compare->getEndingDay()) and ($display_date_compare->getEndingDay() != '')){
+									$compare_is_date_for_whole_day = true;
+								}
+								if(!$compare_is_date_for_whole_day and ($display_date->getItemID() != $display_date_compare->getItemID())){
+									if($this->overlap($display_date, $display_date_compare)){
+										$overlap++;
+									}
+								}
+							}
+						}
 
-			// main week content
-			for($index=0; $index < 24; $index++) {
-				for($index_day=0; $index_day <7; $index_day++) {
-					$week_start = $this->_calendar["week"] + ( 3600 * 24 * $index_day);
-					$startday = date ( "d", $week_start);
-					$first_char = mb_substr($startday,0,1);
-
-					if ($first_char == '0'){
-						$startday = mb_substr($startday,1,2);
+						$date_array_for_jQuery[] = 'new Array(' . $day_entries . ',\'' . $link . '\',' . $start_quaters . ',' . $end_quaters . ',' . count($display_date_array[$day_entries]) . ',\'' . $color . '\'' . ',\'' . $color_border . '\'' . ',\'' . $href . '\'' . ',\'sticky_' . $date_index . '\'' . ',\'' . $is_date_for_whole_day . '\')';
+						$date_array_for_jQuery_php[] = array($day_entries, $link, $start_quaters, $end_quaters, count($display_date_array[$day_entries]), $color, $color_border, $href, 'sticky_' . $date_index, $is_date_for_whole_day);
+						$tooltip = array();
+						$tooltip['title'] = $date->getTitle();
+						$tooltip['date'] = $date_tooltip_array[$date->getItemID()];
+						$tooltip['place'] = $date->getPlace();
+						$tooltip['participants'] = $date->getParticipantsItemList();
+						#$tooltip['desc'] = $date->getDescription();
+						$tooltip['color'] = $color;
+						$tooltips['sticky_' . $date_index] = $tooltip;
+						$date_index++;
+						$left_position = $left_position + $width + 4;
 					}
-
-					$startmonth = date ( "Ymd", $week_start );
-					$first_char = mb_substr($startmonth,0,1);
-
-					if ($first_char == '0'){
-						$startmonth = mb_substr($startmonth,1,2);
-					}
-
-					$startyear = date ( "Y", $week_start );
-
-					$params = array();
-					$params['iid'] = 'NEW';
-					$params['day'] = $startday;
-					$parameter_array = $this->_environment->getCurrentParameterArray();
-					$params['month'] = $startmonth;
-					$params['year'] = $startyear;
-					$params['week'] = $this->_week_start;
-					$params['presentation_mode'] = '1';
-
-					if ($i != 0){
-						$params['time'] = $index;
-					} else {
-						$params['time'] = 0;
-					}
-
-					$params['modus_from'] = 'calendar';
-					$anAction = '';
-
-					if ( $this->_with_modifying_actions ) {
-						$anAction = ahref_curl( $this->_environment->getCurrentContextID(),
-								CS_DATE_TYPE,
-								'edit',
-								$params,
-								$image);
-					}
-
-
-					$state = "active_day";
-					// check if day is today
-					if(false) {//$todayCompressed === $format['day'].$current_month_temp.$current_year[$i]) {
-						$state = "this_today";
-					}
-
-					// check if day is not active(grey out)
-					elseif(($index < 8) || ($index > 15)) {
-						$state = "nonactive_day";
-					}
-
-					//$index_day
-					//$todayCompressed = date("jnY");
-
-					$return["days"][] = array(
-						//"day"		=> $format["day"],
-						"link"		=> $anAction,
-						"state"		=> $state
-						//"dates"		=> $dates
-					);
-
-					/*
-					if ($i == 0){
-						$image = '<img style="width:'.$width.'; height:1em;" src="images/spacer.gif" alt="" border="0"/>';
-					} else {
-						$image = '<img style="width:'.$width.'; height:2.2em;" src="images/spacer.gif" alt="" border="0"/>';
-					}
-
-					if(($index < 8) or ($index > 15)){
-						$html .= '<div class="calendar_entry" id="calendar_entry_' . $index . '_' . $index_day . '"><div class="data" id="calendar_entry_date_div_' . $index . '_' . $index_day . '"></div></div>'.LF;
-					} else {
-						$html .= '<div class="calendar_entry_work" id="calendar_entry_' . $index . '_' . $index_day . '"><div class="data" id="calendar_entry_date_div_' . $index . '_' . $index_day . '"></div></div>'.LF;
-					}
-					*/
-
-					$html_javascript .= 'new Array(\'#calendar_entry_date_div_' . $index . '_' . $index_day . '\',\'<div name="calendar_new_date" id="calendar_entry_background_div_' . $index . '_' . $index_day . '" style="position:absolute; top: 0px; left: 0px; height: 100%; width: 100%; z-index:900;"><div style="width:100%; text-align:left;">' . $anAction . '</div></div>\')';
-
-					if($current_element < (24*7)-1){
-						$html_javascript .= ','.LF;
-					} else {
-						$html_javascript .= LF;
-					}
-
-					$current_element++;
 				}
 			}
-
-
-
+			
 			/*
-
-
-
-
-
-      $date_array_for_jQuery = array();
-      $date_array_for_jQuery_temp = array();
-      $date_array_for_jQuery_php = array();
-      $date_index = 0;
-      $tooltips = array();
-      $tooltip_date = '';
-      $tooltip_last_id = '';
-      for ($day = 1; $day<9; $day++){
-         $day_entries = $day-1;
-         $left_position = 0;
-         if ( isset($display_date_array[$day_entries]) ){
-            #$overlap_array = $this->overlap_display_date_array($display_date_array[$day_entries]);
-            #pr($overlap_array);
-            #$sort_array = array();
-            foreach($display_date_array[$day_entries] as $date){
-               $is_date_for_whole_day = false;
-               $start_hour = mb_substr($date->getStartingTime(),0,2);
-               if(mb_substr($start_hour,0,1) == '0'){
-                  $start_hour = mb_substr($start_hour,1,1);
-               }
-               $start_minutes = mb_substr($date->getStartingTime(),3,2);
-               if(mb_substr($start_minutes,0,1) == '0'){
-                  $start_minutes = mb_substr($start_minutes,1,1);
-               }
-
-               if(($date->getStartingDay() != $date->getEndingDay()) and ($date->getEndingDay() != '')){
-                  if($date->getEndingTime() != ''){
-                     $end_hour = 23;
-                     $end_minutes = 60;
-                  } else {
-                     $end_hour = 0;
-                     $end_minutes = 0;
-                     $is_date_for_whole_day = true;
-                  }
-               } else {
-                  if($date->getEndingTime() != ''){
-                     $end_hour = mb_substr($date->getEndingTime(),0,2);
-                     $end_minutes = mb_substr($date->getEndingTime(),3,2);
-                  } elseif($date->getStartingTime() != '' and $date->getEndingTime() == ''){
-                     $end_hour = $start_hour + 1;
-                     $end_minutes = $start_minutes;
-                  } else {
-                     $end_hour = $start_hour;
-                     $end_minutes = $start_minutes;
-                  }
-
-               }
-               if(mb_substr($end_hour,0,1) == '0'){
-                  $end_hour = mb_substr($end_hour,1,1);
-               }
-               if(mb_substr($end_minutes,0,1) == '0'){
-                  $end_minutes = mb_substr($end_minutes,1,1);
-               }
-
-               // umrechnen in Minuten, für jede viertelstunde 10 px drauf nach vier noch einen pixel drauf
-               $start_minutes = $start_hour*60 + $start_minutes;
-               $end_minutes = $end_hour*60 + $end_minutes;
-
-               $start_quaters = mb_substr(($start_minutes / 15),0,2);
-               $start_quaters_addon = mb_substr(($start_quaters / 4),0,2);
-               $end_quaters = mb_substr(($end_minutes / 15),0,2);
-               $end_quaters_addon = mb_substr(($end_quaters / 4),0,2);
-
-               if($start_quaters == 0 and $end_quaters == 0){
-                  $is_date_for_whole_day = true;
-               }
-
-               $top = $start_quaters*10;
-
-               $left = 19 + 129*($day_entries-1) + $left_position;
-               $width = 129 / count($display_date_array[$day_entries]) - 4;
-               $height = ($end_quaters - $start_quaters) * 10;
-               if($date->getColor() != ''){
-                  $color = $date->getColor();
-               } else {
-                  $color = '#FFFF66';
-               }
-               $color_border = '#CCCCCC';
-               $link = $this->_getDateItemLinkWithJavascript($date, $date->getTitle());
-               // split() is deprecated as of PHP 5.3.x - use explode() instead!
-               //$link_array = split('"', $link);
-               $link_array = explode('"', $link);
-               $href = $link_array[1];
-
-               $overlap = 1;
-               if(!$is_date_for_whole_day){
-                  $display_date = $date;
-                  foreach($display_date_array[$day_entries] as $display_date_compare){
-                     $compare_is_date_for_whole_day = false;
-                     if(($display_date_compare->getStartingDay() != $display_date_compare->getEndingDay()) and ($display_date_compare->getEndingDay() != '')){
-                        $compare_is_date_for_whole_day = true;
-                     }
-                     if(!$compare_is_date_for_whole_day and ($display_date->getItemID() != $display_date_compare->getItemID())){
-                        if($this->overlap($display_date, $display_date_compare)){
-                           $overlap++;
-                        }
-                     }
-                  }
-               }
-
-               $date_array_for_jQuery[] = 'new Array(' . $day_entries . ',\'' . $link . '\',' . $start_quaters . ',' . $end_quaters . ',' . count($display_date_array[$day_entries]) . ',\'' . $color . '\'' . ',\'' . $color_border . '\'' . ',\'' . $href . '\'' . ',\'sticky_' . $date_index . '\'' . ',\'' . $is_date_for_whole_day . '\')';
-               $date_array_for_jQuery_php[] = array($day_entries, $link, $start_quaters, $end_quaters, count($display_date_array[$day_entries]), $color, $color_border, $href, 'sticky_' . $date_index, $is_date_for_whole_day);
-               $tooltip = array();
-               $tooltip['title'] = $date->getTitle();
-               $tooltip['date'] = $date_tooltip_array[$date->getItemID()];
-               $tooltip['place'] = $date->getPlace();
-               $tooltip['participants'] = $date->getParticipantsItemList();
-               #$tooltip['desc'] = $date->getDescription();
-               $tooltip['color'] = $color;
-               $tooltips['sticky_' . $date_index] = $tooltip;
-               $date_index++;
-               $left_position = $left_position + $width + 4;
-            }
-         }
-      }
-      $html .= '<div id="mystickytooltip" class="stickytooltip"><div style="border:1px solid #cccccc;">';
-      foreach($tooltips as $id => $tooltip){
-         $html .= '<div id="' . $id . '" class="atip" style="padding:5px; border:2px solid ' . $tooltip['color'] . '">'.LF;
-         $html .= '<table>'.LF;
-         $html .= '<tr><td colspan="2"><b>' . encode(AS_HTML_SHORT,$tooltip['title']) . '</b></td></tr>'.LF;
-         $html .= '<tr><td style="vertical-align:top;"><b>' . $this->_translator->getMessage('DATES_DATETIME') . ':</b></td><td>' .  $tooltip['date'][1] . '</td></tr>'.LF;
-         if($tooltip['place'] != ''){
-            $html .= '<tr><td style="vertical-align:top;"><b>' . $this->_translator->getMessage('DATES_PLACE') . ':</b></td><td>' . encode(AS_HTML_SHORT,$tooltip['place']) . '</td></tr>'.LF;
-         }
-         $html .= '<tr><td style="vertical-align:top;"><b>' . $this->_translator->getMessage('DATE_PARTICIPANTS') . ':</b></td><td>'.LF;
-         if($tooltip['participants']->isEmpty()){
-            $html .= $this->_translator->getMessage('TODO_NO_PROCESSOR');
-         } else {
-            $participant = $tooltip['participants']->getFirst();
-            $count = $tooltip['participants']->getCount();
-            $counter = 1;
-            while ($participant) {
-               $html .= $participant->getFullName();
-               if ( $counter < $count) {
-                  $html .= ', ';
-               }
-               $participant = $tooltip['participants']->getNext();
-               $counter++;
-            }
-         }
-         $html .= '</td></tr>'.LF;
-         #$html .= '<tr><td colspan="2">' . $tooltip['desc'] . '</td></tr>'.LF;
-         $html .= '</table>'.LF;
-         $html .= '</div>'.LF;
-      }
-      $html .= '</div></div>';
-      $html .= '<script type="text/javascript">'.LF;
-      $html .= '<!--'.LF;
-      $html .= 'var calendar_dates = new Array(';
-      #pr($date_array_for_jQuery_php);
-      #pr($date_array_for_jQuery_temp);
-
-      // die maximale breite bei nebeneinander liegenden Termine
-
-      $overlap_array = array();
-      $max_overlap_array = array();
-      $max_overlap_array_for_date = array();
-      $date_array_for_jQuery_php_with_position = array();
-      for ($int = 0; $int < 7; $int++) {
-         $temp_quaters_array = array();
-         for ($j = 0; $j < 96; $j++) {
-            $temp_quaters_array[] = 0;
-         }
-         for ($i = 0; $i < sizeof($date_array_for_jQuery_php); $i++) {
-            $day = $date_array_for_jQuery_php[$i][0]-1;
-            if($day == $int){
-               $start_quaters = $date_array_for_jQuery_php[$i][2];
-               $end_quaters = $date_array_for_jQuery_php[$i][3];
-               for ($j = $start_quaters; $j < $end_quaters; $j++) {
-                  $value = $temp_quaters_array[$j];
-                  $temp_quaters_array[$j] = $value + 1;
-               }
-            }
-         }
-         $overlap_array[] = $temp_quaters_array;
-         $max_overlap = 0;
-         for ($i = 0; $i < sizeof($temp_quaters_array); $i++) {
-            if($max_overlap < $temp_quaters_array[$i]){
-               $max_overlap = $temp_quaters_array[$i];
-            }
-         }
-         $max_overlap_array[] = $max_overlap;
-         for ($i = 0; $i < sizeof($date_array_for_jQuery_php); $i++) {
-            $day = $date_array_for_jQuery_php[$i][0]-1;
-            if($day == $int){
-               $start_quaters = $date_array_for_jQuery_php[$i][2];
-               $end_quaters = $date_array_for_jQuery_php[$i][3];
-               $max_overlap_for_date = 0;
-               for ($j = $start_quaters; $j < $end_quaters; $j++) {
-                  if($temp_quaters_array[$j] > $max_overlap_for_date){
-                     $max_overlap_for_date = $temp_quaters_array[$j];
-                  }
-               }
-               $max_overlap_array_for_date[] = $max_overlap_for_date;
-            }
-         }
-      }
-
-
-      #pr($max_overlap_array);
-      // Arrays zum Sortieren vorbereiten
-      $sort_dates_array = array();
-      $sort_dates_start_array = array();
-      for ($i = 0; $i < 7; $i++) {
-         $temp_sort_array = array();
-         for ($j = 0; $j < $max_overlap_array[$i]; $j++) {
-            $temp_part_array = array();
-            for ($k = 0; $k < 96; $k++) {
-               $temp_part_array[] = 0;
-            }
-            $temp_sort_array[] = $temp_part_array;
-         }
-         // Termine sortieren
-         $max_overlap_index = 0;
-         foreach($date_array_for_jQuery_php as $temp_date){
-            $found_position = false;
-            if($temp_date[0]-1 == $i){
-               $start_quaters = $temp_date[2];
-               $end_quaters = $temp_date[3];
-               $date_set = false;
-               for ($temp_part = 0; $temp_part < sizeof($temp_sort_array); $temp_part++) {
-               #foreach($temp_sort_array as $temp_part_array){
-                  if(!$date_set){
-                     $slot_free = true;
-                     for ($time = $start_quaters; $time < $end_quaters; $time++) {
-                        if($temp_sort_array[$temp_part][$time] != 0){
-                        #if($temp_part_array[$time] != 0){
-                           $slot_free = false;
-                        }
-                     }
-                     if($slot_free){
-                        for ($time = $start_quaters; $time < $end_quaters; $time++) {
-                           $temp_sort_array[$temp_part][$time] = 1;
-                           if(!$found_position){
-                              $temp_date[] = sizeof($temp_sort_array);
-                              $temp_date[] = $temp_part;
-                              $temp_date[] = $time;
-                              $found_position = true;
-                           }
-                           $temp_part_array[$time] = 1;
-                        }
-                        $date_set = true;
-                     }
-                  }
-               }
-               $temp_date[] = $max_overlap_array_for_date[$max_overlap_index];
-               $date_array_for_jQuery_php_with_position[] = $temp_date;
-            }
-            $max_overlap_index++;
-         }
-         $sort_dates_array[] = $temp_sort_array;
-      }
-
-
-      $last = count($date_array_for_jQuery)-1;
-      #for ($index = 0; $index < count($date_array_for_jQuery); $index++) {
-      #   $html .= $date_array_for_jQuery[$index];
-      #   #pr($date_array_for_jQuery[$index]);
-      #   if($index < $last){
-      #     $html .= ',';
-      #   }
-      #}
-      for ($index = 0; $index < count($date_array_for_jQuery_php_with_position); $index++) {
-         $day_entries = $date_array_for_jQuery_php_with_position[$index][0];
-         $link = $date_array_for_jQuery_php_with_position[$index][1];
-         $link = str_replace("'", "\'", $link);
-         $start_quaters = $date_array_for_jQuery_php_with_position[$index][2];
-         $end_quaters = $date_array_for_jQuery_php_with_position[$index][3];
-         $dates_on_day = $date_array_for_jQuery_php_with_position[$index][4];
-         $color = $date_array_for_jQuery_php_with_position[$index][5];
-         $color_border = $date_array_for_jQuery_php_with_position[$index][6];
-         $href = $date_array_for_jQuery_php_with_position[$index][7];
-         $date_index = $date_array_for_jQuery_php_with_position[$index][8];
-         $is_date_for_whole_day = $date_array_for_jQuery_php_with_position[$index][9];
-         if(isset($date_array_for_jQuery_php_with_position[$index][10])){
-            $max_overlap = $date_array_for_jQuery_php_with_position[$index][10];
-         } else {
-            $max_overlap = 0;
-         }
-         if(isset($date_array_for_jQuery_php_with_position[$index][11])){
-            $start_column = $date_array_for_jQuery_php_with_position[$index][11];
-         } else {
-            $start_column = 0;
-         }
-         if(isset($date_array_for_jQuery_php_with_position[$index][12])){
-            $start_quarter = $date_array_for_jQuery_php_with_position[$index][12];
-         } else {
-            $start_quarter = 0;
-         }
-         if(isset($date_array_for_jQuery_php_with_position[$index][13])){
-            $max_overlap_for_date = $date_array_for_jQuery_php_with_position[$index][13];
-         } else {
-            $max_overlap_for_date = 0;
-         }
-         $html .= 'new Array(' . $day_entries . ',\'' . $link . '\',' . $start_quaters . ',' . $end_quaters . ',' . $dates_on_day . ',\'' . $color . '\'' . ',\'' . $color_border . '\'' . ',\'' . $href . '\'' . ',\'' . $date_index . '\'' . ',\'' . $is_date_for_whole_day . '\'' . ',' . $max_overlap . '' . ',' . $start_column . '' . ',' . $start_quarter . '' . ',' . $max_overlap_for_date . ')'.LF;
-         #pr($date_array_for_jQuery[$index]);
-         if($index < $last){
-           $html .= ',';
-         }
-      }
-
-      $html .= ');'.LF;
-      $html .= 'var today = "' . $today . '";' .LF;
-      $html .= '-->'.LF;
-      $html .= '</script>'.LF;
-      return $html;
-			 */
+			foreach($tooltips as $id => $tooltip){
+				
+				$html .= '<div id="' . $id . '" class="atip" style="padding:5px; border:2px solid ' . $tooltip['color'] . '">'.LF;
+				$html .= '<tr><td colspan="2"><b>' . encode(AS_HTML_SHORT,$tooltip['title']) . '</b></td></tr>'.LF;
+				$html .= '<tr><td style="vertical-align:top;"><b>' . $this->_translator->getMessage('DATES_DATETIME') . ':</b></td><td>' .  $tooltip['date'][1] . '</td></tr>'.LF;
+				if($tooltip['place'] != ''){
+					$html .= '<tr><td style="vertical-align:top;"><b>' . $this->_translator->getMessage('DATES_PLACE') . ':</b></td><td>' . encode(AS_HTML_SHORT,$tooltip['place']) . '</td></tr>'.LF;
+				}
+				$html .= '<tr><td style="vertical-align:top;"><b>' . $this->_translator->getMessage('DATE_PARTICIPANTS') . ':</b></td><td>'.LF;
+				
+				if($tooltip['participants']->isEmpty()){
+					$html .= $this->_translator->getMessage('TODO_NO_PROCESSOR');
+				} else {
+					$participant = $tooltip['participants']->getFirst();
+					$count = $tooltip['participants']->getCount();
+					$counter = 1;
+					while ($participant) {
+						$html .= $participant->getFullName();
+						if ( $counter < $count) {
+							$html .= ', ';
+						}
+						$participant = $tooltip['participants']->getNext();
+						$counter++;
+					}
+				}
+			}
+			$html .= '</div></div>';
+			$html .= '<script type="text/javascript">'.LF;
+			$html .= '<!--'.LF;
+			$html .= 'var calendar_dates = new Array(';
+			*/
+			
+			// die maximale breite bei nebeneinander liegenden Termine
+			$overlap_array = array();
+			$max_overlap_array = array();
+			$max_overlap_array_for_date = array();
+			$date_array_for_jQuery_php_with_position = array();
+			for ($int = 0; $int < 7; $int++) {
+				$temp_quaters_array = array();
+				for ($j = 0; $j < 96; $j++) {
+					$temp_quaters_array[] = 0;
+				}
+				for ($i = 0; $i < sizeof($date_array_for_jQuery_php); $i++) {
+					$day = $date_array_for_jQuery_php[$i][0]-1;
+					if($day == $int){
+						$start_quaters = $date_array_for_jQuery_php[$i][2];
+						$end_quaters = $date_array_for_jQuery_php[$i][3];
+						for ($j = $start_quaters; $j < $end_quaters; $j++) {
+							$value = $temp_quaters_array[$j];
+							$temp_quaters_array[$j] = $value + 1;
+						}
+					}
+				}
+				$overlap_array[] = $temp_quaters_array;
+				$max_overlap = 0;
+				for ($i = 0; $i < sizeof($temp_quaters_array); $i++) {
+					if($max_overlap < $temp_quaters_array[$i]){
+						$max_overlap = $temp_quaters_array[$i];
+					}
+				}
+				$max_overlap_array[] = $max_overlap;
+				for ($i = 0; $i < sizeof($date_array_for_jQuery_php); $i++) {
+					$day = $date_array_for_jQuery_php[$i][0]-1;
+					if($day == $int){
+						$start_quaters = $date_array_for_jQuery_php[$i][2];
+						$end_quaters = $date_array_for_jQuery_php[$i][3];
+						$max_overlap_for_date = 0;
+						for ($j = $start_quaters; $j < $end_quaters; $j++) {
+							if($temp_quaters_array[$j] > $max_overlap_for_date){
+								$max_overlap_for_date = $temp_quaters_array[$j];
+							}
+						}
+						$max_overlap_array_for_date[] = $max_overlap_for_date;
+					}
+				}
+			}
+			
+		      // Arrays zum Sortieren vorbereiten
+		      $sort_dates_array = array();
+		      $sort_dates_start_array = array();
+		      for ($i = 0; $i < 7; $i++) {
+		         $temp_sort_array = array();
+		         for ($j = 0; $j < $max_overlap_array[$i]; $j++) {
+		            $temp_part_array = array();
+		            for ($k = 0; $k < 96; $k++) {
+		               $temp_part_array[] = 0;
+		            }
+		            $temp_sort_array[] = $temp_part_array;
+		         }
+		         // Termine sortieren
+		         $max_overlap_index = 0;
+		         foreach($date_array_for_jQuery_php as $temp_date){
+		            $found_position = false;
+		            if($temp_date[0]-1 == $i){
+		               $start_quaters = $temp_date[2];
+		               $end_quaters = $temp_date[3];
+		               $date_set = false;
+		               for ($temp_part = 0; $temp_part < sizeof($temp_sort_array); $temp_part++) {
+		               #foreach($temp_sort_array as $temp_part_array){
+		                  if(!$date_set){
+		                     $slot_free = true;
+		                     for ($time = $start_quaters; $time < $end_quaters; $time++) {
+		                        if($temp_sort_array[$temp_part][$time] != 0){
+		                        #if($temp_part_array[$time] != 0){
+		                           $slot_free = false;
+		                        }
+		                     }
+		                     if($slot_free){
+		                        for ($time = $start_quaters; $time < $end_quaters; $time++) {
+		                           $temp_sort_array[$temp_part][$time] = 1;
+		                           if(!$found_position){
+		                              $temp_date[] = sizeof($temp_sort_array);
+		                              $temp_date[] = $temp_part;
+		                              $temp_date[] = $time;
+		                              $found_position = true;
+		                           }
+		                           $temp_part_array[$time] = 1;
+		                        }
+		                        $date_set = true;
+		                     }
+		                  }
+		               }
+		               $temp_date[] = $max_overlap_array_for_date[$max_overlap_index];
+		               $date_array_for_jQuery_php_with_position[] = $temp_date;
+		            }
+		            $max_overlap_index++;
+		         }
+		         $sort_dates_array[] = $temp_sort_array;
+		      }
+		
+		      $last = count($date_array_for_jQuery)-1;
+		      #for ($index = 0; $index < count($date_array_for_jQuery); $index++) {
+		      #   $html .= $date_array_for_jQuery[$index];
+		      #   #pr($date_array_for_jQuery[$index]);
+		      #   if($index < $last){
+		      #     $html .= ',';
+		      #   }
+		      #}
+		      for ($index = 0; $index < count($date_array_for_jQuery_php_with_position); $index++) {
+		         $day_entries = $date_array_for_jQuery_php_with_position[$index][0];
+		         $link = $date_array_for_jQuery_php_with_position[$index][1];
+		         $link = str_replace("'", "\'", $link);
+		         $start_quaters = $date_array_for_jQuery_php_with_position[$index][2];
+		         $end_quaters = $date_array_for_jQuery_php_with_position[$index][3];
+		         $dates_on_day = $date_array_for_jQuery_php_with_position[$index][4];
+		         $color = $date_array_for_jQuery_php_with_position[$index][5];
+		         $color_border = $date_array_for_jQuery_php_with_position[$index][6];
+		         $href = $date_array_for_jQuery_php_with_position[$index][7];
+		         $date_index = $date_array_for_jQuery_php_with_position[$index][8];
+		         $is_date_for_whole_day = $date_array_for_jQuery_php_with_position[$index][9];
+		         if(isset($date_array_for_jQuery_php_with_position[$index][10])){
+		            $max_overlap = $date_array_for_jQuery_php_with_position[$index][10];
+		         } else {
+		            $max_overlap = 0;
+		         }
+		         if(isset($date_array_for_jQuery_php_with_position[$index][11])){
+		            $start_column = $date_array_for_jQuery_php_with_position[$index][11];
+		         } else {
+		            $start_column = 0;
+		         }
+		         if(isset($date_array_for_jQuery_php_with_position[$index][12])){
+		            $start_quarter = $date_array_for_jQuery_php_with_position[$index][12];
+		         } else {
+		            $start_quarter = 0;
+		         }
+		         if(isset($date_array_for_jQuery_php_with_position[$index][13])){
+		            $max_overlap_for_date = $date_array_for_jQuery_php_with_position[$index][13];
+		         } else {
+		            $max_overlap_for_date = 0;
+		         }
+		         
+		         /*
+		         $html .= 'new Array(' . $day_entries . ',\'' . $link . '\',' . $start_quaters . ',' . $end_quaters . ',' . $dates_on_day . ',\'' . $color . '\'' . ',\'' . $color_border . '\'' . ',\'' . $href . '\'' . ',\'' . $date_index . '\'' . ',\'' . $is_date_for_whole_day . '\'' . ',' . $max_overlap . '' . ',' . $start_column . '' . ',' . $start_quarter . '' . ',' . $max_overlap_for_date . ')'.LF;
+		         if($index < $last){
+		           $html .= ',';
+		         }*/
+		      }
+		      
+		      // main week content
+		      for($index=0; $index < 24; $index++) {
+		      	for($index_day=0; $index_day <7; $index_day++) {
+		      		$week_start = $this->_calendar["week"] + ( 3600 * 24 * $index_day);
+		      		$startday = date ( "d", $week_start);
+		      		$first_char = mb_substr($startday,0,1);
+		      
+		      		if ($first_char == '0'){
+		      			$startday = mb_substr($startday,1,2);
+		      		}
+		      
+		      		$startmonth = date ( "Ymd", $week_start );
+		      		$first_char = mb_substr($startmonth,0,1);
+		      
+		      		if ($first_char == '0'){
+		      			$startmonth = mb_substr($startmonth,1,2);
+		      		}
+		      
+		      		$startyear = date ( "Y", $week_start );
+		      
+		      		$params = array();
+		      		$params['iid'] = 'NEW';
+		      		$params['day'] = $startday;
+		      		$parameter_array = $this->_environment->getCurrentParameterArray();
+		      		$params['month'] = $startmonth;
+		      		$params['year'] = $startyear;
+		      		$params['week'] = $this->_week_start;
+		      		$params['presentation_mode'] = '1';
+		      
+		      		if ($i != 0){
+		      			$params['time'] = $index;
+		      		} else {
+		      			$params['time'] = 0;
+		      		}
+		      
+		      		$params['modus_from'] = 'calendar';
+		      		$anAction = '';
+		      
+		      		if ( $this->_with_modifying_actions ) {
+		      			$anAction = ahref_curl( $this->_environment->getCurrentContextID(),
+		      					CS_DATE_TYPE,
+		      					'edit',
+		      					$params,
+		      					$image);
+		      		}
+		      
+		      
+		      		$state = "active_day";
+		      		// check if day is today
+		      		if(false) {//$todayCompressed === $format['day'].$current_month_temp.$current_year[$i]) {
+		      			$state = "this_today";
+		      		}
+		      
+		      		// check if day is not active(grey out)
+		      		elseif(($index < 9) || ($index > 17)) {
+		      			$state = "nonactive_day";
+		      		}
+		      
+		      		//$index_day
+		      		//$todayCompressed = date("jnY");
+		      
+		      		$return["days"][] = array(
+		      				//"day"		=> $format["day"],
+		      				"link"		=> $anAction,
+		      				"state"		=> $state
+		      				//"dates"		=> $dates
+		      		);
+		      
+		      		/*
+		      		 if ($i == 0){
+		      		$image = '<img style="width:'.$width.'; height:1em;" src="images/spacer.gif" alt="" border="0"/>';
+		      		} else {
+		      		$image = '<img style="width:'.$width.'; height:2.2em;" src="images/spacer.gif" alt="" border="0"/>';
+		      		}
+		      
+		      		if(($index < 8) or ($index > 15)){
+		      		$html .= '<div class="calendar_entry" id="calendar_entry_' . $index . '_' . $index_day . '"><div class="data" id="calendar_entry_date_div_' . $index . '_' . $index_day . '"></div></div>'.LF;
+		      		} else {
+		      		$html .= '<div class="calendar_entry_work" id="calendar_entry_' . $index . '_' . $index_day . '"><div class="data" id="calendar_entry_date_div_' . $index . '_' . $index_day . '"></div></div>'.LF;
+		      		}
+		      			
+		      
+		      		$html_javascript .= 'new Array(\'#calendar_entry_date_div_' . $index . '_' . $index_day . '\',\'<div name="calendar_new_date" id="calendar_entry_background_div_' . $index . '_' . $index_day . '" style="position:absolute; top: 0px; left: 0px; height: 100%; width: 100%; z-index:900;"><div style="width:100%; text-align:left;">' . $anAction . '</div></div>\')';
+		      
+		      		if($current_element < (24*7)-1){
+		      		$html_javascript .= ','.LF;
+		      		} else {
+		      		$html_javascript .= LF;
+		      		}*/
+		      
+		      		$current_element++;
+		      	}
+		      }
+		
+		      /*
+		      $html .= ');'.LF;
+		      $html .= 'var today = "' . $today . '";' .LF;
+		      $html .= '-->'.LF;
+		      $html .= '</script>'.LF;
+		      return $html;*/
 
 			return $return;
 		}
@@ -1224,6 +1205,68 @@
 
 			return $return;
 		}
+		
+		private function overlap($display_date, $compare_date) {
+			$result = false;
+		
+			$display_date_times = $this->getMktimeForDate($display_date);
+			$display_date_starttime = $display_date_times['starttime'];
+			$display_date_endtime = $display_date_times['endtime'];
+		
+			$display_date_compare_times = $this->getMktimeForDate($compare_date);
+			$display_date_compare_starttime = $display_date_compare_times['starttime'];
+			$display_date_compare_endtime = $display_date_compare_times['endtime'];
+		
+			if((($display_date_starttime < $display_date_compare_starttime) and ($display_date_endtime > $display_date_compare_starttime))
+					or (($display_date_starttime == $display_date_compare_starttime) and ($display_date_endtime == $display_date_compare_endtime))
+					or (($display_date_starttime < $display_date_compare_endtime) and ($display_date_endtime > $display_date_compare_endtime))
+					or (($display_date_starttime > $display_date_compare_starttime) and ($display_date_starttime < $display_date_compare_endtime))
+					or (($display_date_endtime > $display_date_compare_starttime) and ($display_date_endtime < $display_date_compare_endtime))){
+				$result = true;
+			}
+		
+			return $result;
+		}
+		
+		function getMktimeForDate($display_date){
+			#pr($display_date->getTitle() . ' ' . $display_date->getItemID());
+			$result = array();
+			if($display_date->getStartingTime() != ''){
+				$display_date_starttime_hours = mb_substr($display_date->getStartingTime(),0,2);
+				$display_date_starttime_minutes = mb_substr($display_date->getStartingTime(),3,2);
+				$display_date_starttime_seconds = mb_substr($display_date->getStartingTime(),6,2);
+			} else {
+				$display_date_starttime_hours = 0;
+				$display_date_starttime_minutes = 0;
+				$display_date_starttime_seconds = 0;
+			}
+			$display_date_starttime_year = mb_substr($display_date->getStartingDay(),0,4);
+			$display_date_starttime_month = mb_substr($display_date->getStartingDay(),5,2);
+			$display_date_starttime_day = mb_substr($display_date->getStartingDay(),8,2);
+			$result['starttime'] = mktime((int)$display_date_starttime_hours, (int)$display_date_starttime_minutes, (int)$display_date_starttime_seconds, (int)$display_date_starttime_month, (int)$display_date_starttime_day, (int)$display_date_starttime_year);
+		
+			if($display_date->getEndingTime() != ''){
+				$display_date_endtime_hours = mb_substr($display_date->getEndingTime(),0,2);
+				$display_date_endtime_minutes = mb_substr($display_date->getEndingTime(),3,2);
+				$display_date_endtime_seconds = mb_substr($display_date->getEndingTime(),6,2);
+			} else {
+				$display_date_endtime_hours = 0;
+				$display_date_endtime_minutes = 0;
+				$display_date_endtime_seconds = 0;
+			}
+			if($display_date->getEndingDay() != ''){
+				$display_date_endtime_year = mb_substr($display_date->getEndingDay(),0,4);
+				$display_date_endtime_month = mb_substr($display_date->getEndingDay(),5,2);
+				$display_date_endtime_day = mb_substr($display_date->getEndingDay(),8,2);
+			} else {
+				$display_date_endtime_year = $display_date_starttime_year;
+				$display_date_endtime_month = $display_date_starttime_month;
+				$display_date_endtime_day = $display_date_starttime_day;
+			}
+			$result['endtime'] = mktime((int)$display_date_endtime_hours, (int)$display_date_endtime_minutes, (int)$display_date_endtime_seconds, (int)$display_date_endtime_month, (int)$display_date_endtime_day, (int)$display_date_endtime_year);
+			#pr('.');
+			return $result;
+		}
 
 		private function getCalendarContent() {
 			$current_context_item = $this->_environment->getCurrentContextItem();
@@ -1236,7 +1279,7 @@
 			$this->_calendar["year"] = date("Y");
 			$this->_calendar["month"] = date("Ymd");
 			$d_time = mktime(3,0,0,date("m"),date("d"),date("Y") );
-			$this->_calendar["wday"]  = date("w",$d_time );
+			$wday  = date("w",$d_time );
 			$this->_calendar["week"]  = mktime (3,0,0,date("m"),date("d") - ($wday - 1),date("Y"));
 			$old_month ='';
 			$old_year ='';
