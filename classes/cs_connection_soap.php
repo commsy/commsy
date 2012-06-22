@@ -2888,6 +2888,7 @@ class cs_connection_soap {
    public function getDatesList($session_id, $context_id) {
       include_once('functions/development_functions.php');
       if($this->_isSessionValid($session_id)) {
+         $reader_manager = $this->_environment->getReaderManager();
          $dates_manager = $this->_environment->getDatesManager();
          $dates_manager->setContextLimit($context_id);
          $dates_manager->setDateModeLimit(2);
@@ -2904,6 +2905,14 @@ class cs_connection_soap {
             // 2001-03-24 10:45:32 +0600
             $xml .= "<date_starting_date><![CDATA[".$date_item->getStartingDay()."]]></date_starting_date>\n";
             $xml .= "<date_ending_date><![CDATA[".$date_item->getEndingDay()."]]></date_ending_date>\n";
+            $reader = $reader_manager->getLatestReader($date_item->getItemID());
+            if ( empty($reader) ) {
+               $xml .= "<date_read><![CDATA[new]]></date_read>\n";
+            } elseif ( $reader['read_date'] < $item->getModificationDate() ) {
+               $xml .= "<date_read><![CDATA[changed]]></date_read>\n";
+            } else {
+               $xml .= "<date_read><![CDATA[]]></date_read>\n";
+            }
             $xml .= "</date_item>\n";
             $date_item = $dates_list->getNext();
          }
