@@ -91,9 +91,16 @@
 			}
 		}
 
-		public function setSuccessfullItemIDReturn($item_id, $module = '') {
+		public function setSuccessfullItemIDReturn($item_id) {
 			// setup return
-			$this->setSuccessfullDataReturn($item_id);
+			parent::setSuccessfullDataReturn($item_id);
+			echo $this->_return;
+			exit;
+		}
+		
+		public function setSuccessfullDataReturn($data = array()) {
+			// setup return
+			parent::setSuccessfullDataReturn($data);
 			echo $this->_return;
 			exit;
 		}

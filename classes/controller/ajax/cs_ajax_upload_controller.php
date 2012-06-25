@@ -23,6 +23,10 @@
 			fputs($file, "================================");
 			*/
 			
+			fputs($file, var_dump($_FILES));
+			fputs($file, var_dump($_REQUEST));
+				
+			
 			// get post data
 			$postdata = array();
 			$data = "";
@@ -52,11 +56,14 @@
 				$info = $this->doUpload($_FILES["uploadedfilesFlash"], $postdata["file_upload_rubric"]);
 				
 				//$data .='file='.$file.',name='.$name.',width='.$width.',height='.$height.',type='.$type;
-				$info .= "file=" . $info["file"] . ",name=" . $info["name"] . ",type=" . $info["type"] . ",file_id=" . $info["file_id"];
+				$data .= "file=" . $info["file"] . ",name=" . $info["name"] . ",type=" . $info["type"] . ",file_id=" . $info["file_id"];
 				
-				echo $return;
+				echo $data;
+				
+				fputs($file, ob_get_clean());
+				fclose($file);
+				
 				exit;
-				//return $return;
 			}
 			
 			elseif(isset($_FILES["uploadedfile0"])) { // maybe also uploadedfile???
@@ -98,7 +105,7 @@
 				echo $data;
 			} else {
 ?>
-			<textarea><?php print $data; ?></textarea>
+			<textarea><?php echo $data; ?></textarea>
 <?php
 			}
 		}
@@ -192,14 +199,14 @@
 			// merge current upload data with last one - session will be cleaned when storing item
 			$currentSessionArray = array();
 			if($session->issetValue($file_upload_rubric . '_add_files')) {
-				$currentSessionArray = $session->getValue($file_upload_rubric . '_add_files');
+				$currentSessionArray = $session->getValue("add_files");
 			}
 			
 			foreach($currentSessionArray as $key => $value) {
 				$sessionArray[$key] = $value;
 			}
 			
-			$session->setValue($file_upload_rubric . '_add_files', $sessionArray);
+			$session->setValue("add_files", $sessionArray);
 			$this->_environment->getSessionManager()->save($session);
 			
 			return $return;

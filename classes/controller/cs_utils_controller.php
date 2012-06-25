@@ -703,13 +703,13 @@
 			return round($minsize + round($a) * $treshold);
 		}
 
-		public function setFilesForItem(cs_item $item, $post_file_ids, $new_file_ids_to_store, $module) {
+		public function setFilesForItem(cs_item $item, $post_file_ids, $new_file_ids_to_store) {
 			$session = $this->_environment->getSessionItem();
 
 			$file_ids = array();
 
 			// new file information are stored in the session object
-			$new_files = $session->getValue($module . '_add_files');
+			$new_files = $session->getValue("add_files");
 			$new_file_ids = array();
 
 			if(!empty($new_files)) {
@@ -735,7 +735,7 @@
 				}
 			}
 
-			$session->unsetValue($module . '_add_files');
+			$session->unsetValue("add_files");
 
 			// already attach file ids are in $post_file_ids
 			$attached_ids = array();
@@ -792,7 +792,7 @@
 
 			// replace placeholder
 			preg_match_all("/\\{\\$(\S*?)\\}/", $css_file, $matches);
-
+			
 			if(isset($matches[0])) {
 				for($i=0; $i < sizeof($matches[0]); $i++) {
 					$match = $matches[0][$i];

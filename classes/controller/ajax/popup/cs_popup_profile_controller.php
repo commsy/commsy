@@ -338,23 +338,14 @@ class cs_popup_profile_controller {
 					case 'user_picture':
 						if($this->_popup_controller->checkFormData('user_picture')) {
 							/* handle user picture upload */
-							if(!empty($_FILES['form_data']['tmp_name'])) {
-								// rename temp file
-								$new_temp_name = $_FILES['form_data']['tmp_name']['picture'] . '_TEMP_' . $_FILES['form_data']['name']['picture'];
-								move_uploaded_file($_FILES['form_data']['tmp_name']['picture'], $new_temp_name);
-								$_FILES['form_data']['tmp_name']['picture'] = $new_temp_name;
-
-								$session_item = $this->_environment->getSessionItem();
-								if(isset($session_item)) {
-									$current_iid = $this->_environment->getCurrentContextID();
-									//$session_item->setValue($environment->getCurrentContextID().'_user_'.$iid.'_upload_temp_name',$new_temp_name);
-									//$session_item->setValue($environment->getCurrentContextID().'_user_'.$iid.'_upload_name',$_FILES['upload']['name']);
-								}
-
+							if(!empty($additional["fileInfo"])) {
+								$srcfile = $additional["fileInfo"]["file"];
+								$targetfile = $srcfile . "_converted";
+								
+								$session = $this->_environment->getSessionItem();
+								$session->unsetValue("add_files");
+								
 								// resize image to a maximum width of 150px and keep ratio
-								$srcfile = $_FILES['form_data']['tmp_name']['picture'];
-								$target = $_FILES['form_data']['tmp_name']['picture'];
-
 								$size = getimagesize($srcfile);
 								list($x_orig, $y_orig, $type) = $size;
 
@@ -391,20 +382,20 @@ class cs_popup_profile_controller {
 
 								$newimg = imagecreatetruecolor($max_width, ($max_width * $ratio));
 								imagecopyresampled($newimg, $im, 0, 0, $source_x, $source_y, $max_width, ceil($max_width * $ratio), $source_width, $source_height);
-								imagepng($newimg, $target);
+								imagepng($newimg, $targetfile);
 
 								// clean up
 								imagedestroy($im);
 								imagedestroy($newimg);
 
 								// determ new file name
-								$filename_info = pathinfo($_FILES['form_data']['name']['picture']);
+								$filename_info = pathinfo($targetfile);
 								$filename = 'cid' . $this->_environment->getCurrentContextID() . '_' . $user_item->getItemID() . '.' . $filename_info['extension'];
 
 								// copy file and set picture
 								$disc_manager = $this->_environment->getDiscManager();
 
-								$disc_manager->copyFile($_FILES['form_data']['tmp_name']['picture'], $filename, true);
+								$disc_manager->copyFile($targetfile, $filename, true);
 								$user_item->setPicture($filename);
 
 								$portal_user = $user_item->getRelatedCommSyUserItem();
@@ -428,7 +419,7 @@ class cs_popup_profile_controller {
 							}
 
 							// set return
-               				$this->_popup_controller->setSuccessfullItemIDReturn($user_item->getItemID());
+							$this->_popup_controller->setSuccessfullDataReturn($filename);
 						}
 						break;
 

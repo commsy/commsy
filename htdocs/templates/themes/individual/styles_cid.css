@@ -20,7 +20,7 @@ body {
     background-repeat: {$bg_repeat};
     background-attachment: {$bg_fixed};
 	background-position: 50% 50%;
-    background-color: #{$color_bg}; /*CS_BG_COLOR*/
+    background-color: {$color_bg}; /*CS_BG_COLOR*/
 }
 
 #logo_area {
@@ -33,40 +33,40 @@ body {
 /* Navigation */
 
 #main_navigation {
-    background:#{$color_active_menu};
+    background:{$color_active_menu};
 }
 #main_navigation #active {
-    background: #{$color_active_menu};
-    border-bottom: 1px solid #{$color_active_menu};
+    background: {$color_active_menu};
+    border-bottom: 1px solid {$color_active_menu};
 }
 
 #main_navigation ul {
-    border-right: 0px solid #{$color_active_menu};
+    border-right: 0px solid {$color_active_menu};
 }
 
 #main_navigation .non_active a {
     border-left: none;
-    border-right: 1px solid #{$color_active_menu};
+    border-right: 1px solid {$color_active_menu};
     color: #454545;
 }
 
 #main_navigation #active a {
-    border-right: 1px solid #{$color_active_menu};
+    border-right: 1px solid {$color_active_menu};
     color: #FFFFFF;
 }
 
 #main_navigation .non_active {
-    background: #{$color_menu};
+    background: {$color_menu};
 }
 
 #main_navigation ul#right_navigation {
-    border-left: 1px solid #{$color_active_menu};
+    border-left: 1px solid {$color_active_menu};
     border-right: none;
 }
 
 #main_navigation .non_active a {
     border-left: none;
-    border-right: 1px solid #{$color_active_menu};
+    border-right: 1px solid {$color_active_menu};
     color: #000000;
 }
 
@@ -90,7 +90,7 @@ body {
 }
 
 #columnset {
-    background: #{$color_right_column};
+    background: {$color_right_column};
     border-left: 1px solid #999999;
 }
 
@@ -111,12 +111,12 @@ body {
 }
 
 #footer_right {
-    background: #{$color_right_column};
+    background: {$color_right_column};
     color: #DEE8FF;
 }
 
 #addon_area_row_1 {
-    border-left: 0px solid #{$color_right_column};
+    border-left: 0px solid {$color_right_column};
 }
 
 .portlet_rc h2 {
@@ -131,7 +131,7 @@ body {
 }
 
 .portlet_rc_body .change_view select {
-    background: #{$color_right_column};
+    background: {$color_right_column};
     border: 1px solid #999999;
     color: #FFFFFF;
 }
@@ -147,18 +147,18 @@ a.keywords_s1, a.keywords_s2, a.keywords_s3, a.keywords_s4 {
 
 /*Content*/
 .table_head {
-    background: #{$color_bg};
+    background: {$color_bg};
     border-bottom: 1px solid #999999;
 }
 
 .content_item .item_info {
-    background: #{$color_bg};
+    background: {$color_bg};
     text-shadow: 0 1px #F5F5F5;
     border-bottom:1px solid #999999;
 }
 
 #footer_left {
-    background-color: #{$color_bg};
+    background-color: {$color_bg};
     border-left: 1px solid #999999;
     color: #898989;
 }
@@ -175,16 +175,16 @@ a.keywords_s1, a.keywords_s2, a.keywords_s3, a.keywords_s4 {
 }
 
 .content_item h2 {
-    background: #{$color_bg};
+    background: {$color_bg};
     border-bottom:1px solid #999999;
 }
 
 a {
-   color: #{$color_link};
+   color: {$color_link};
 }
 
 a:hover {
-   color: #{$color_link_hover};
+   color: {$color_link_hover};
 }
 
 
@@ -193,19 +193,19 @@ a:hover {
 /* Actions */
 
 #content_with_actions {
-    background: #{$color_action_bg};
+    background: {$color_action_bg};
 }
 
 .item_actions a {
-    background: #{$color_action_icon};
+    background: {$color_action_icon};
 }
 
 .item_actions a:hover {
-    background: #{$color_action_icon_hover};
+    background: {$color_action_icon_hover};
 }
 
 a.item_actions_glow {
-    background: #{$color_action_icon_hover};
+    background: {$color_action_icon_hover};
 }
 
 /* FORM */

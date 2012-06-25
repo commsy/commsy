@@ -12,12 +12,18 @@ define([	"dojo/_base/declare",
         	"dojo/query",
         	"dojo/_base/connect"], function(declare, BaseClass, Lang, Flash, Uploader, ProgressBar, FileList, DomConstruct, DomAttr, On, Button, Query, connect) {
 	return declare(BaseClass, {
-		uploader: null,
+		uploader:		null,
 		//fileList: null,
-		progressbar: null,
+		progressbar:	null,
+		single:			false,
+		callback:		null,
 		
 		constructor: function(options) {
 			declare.safeMixin(this, options);
+		},
+		
+		setCallback: function(func) {
+			this.callback = func;
 		},
 		
 		setup: function(uploaderNode) {
@@ -29,14 +35,12 @@ define([	"dojo/_base/declare",
 			
 			dojo.ready(Lang.hitch(this, function() {
 				this.uploader = new dojox.form.Uploader({
-					multiple:		true,
+					multiple:		!this.single,
 					uploadOnSelect: false,
 					"class":		"fileSelector",
 					//force:			"flash",
 					url:			"commsy.php?cid=" + this.uri_object.cid + "&mod=ajax&fct=upload&action=upload"
 				}, Query("input.fileSelector", uploaderNode)[0]);
-				
-				
 				
 				// setup event handler
 				On(this.uploader, "begin", Lang.hitch(this, function(fileArray) {
@@ -71,49 +75,6 @@ define([	"dojo/_base/declare",
 					this.uploader.upload(send);
 				}));
 				
-				
-				
-				/*
-				On(Query("input.upload", uploaderNode)[0], "click", Lang.hitch(this, function() {
-					this.onUploadButtonClick(send);
-				}));
-				
-				this.fileList = new dojox.form.uploader.FileList({
-					uploader:		this.uploader
-				}, Query("div.fileList", uploaderNode)[0]);
-				
-				this.fileList.startup();
-				*/
-				
-				/*
-				this.uploader._connectButton = Lang.hitch(this.uploader, function() {
-					this._cons.push(connect.connect(this.inputNode, "change", this, function(evt){
-						if(this._files) {
-							this._files[1] = this.inputNode.files;
-							this._files.length++;
-						} else {
-							this._files = this.inputNode.files;
-						}
-						console.log(this._files);
-						
-						//this._files = this.inputNode.files;
-						this.onChange(this.getFileList(evt));
-						if(!this.supports("multiple") && this.multiple) this._createInput();
-					}));
-			
-					if(this.tabIndex > -1){
-						this.inputNode.tabIndex = this.tabIndex;
-			
-						this._cons.push(connect.connect(this.inputNode, "focus", this, function(){
-							this.titleNode.style.outline= "1px dashed #ccc";
-						}));
-						this._cons.push(connect.connect(this.inputNode, "blur", this, function(){
-							this.titleNode.style.outline = "";
-						}));
-					}
-				});
-				*/
-				
 				this.uploader.startup();
 			}));
 		},
@@ -128,49 +89,44 @@ define([	"dojo/_base/declare",
 		},
 		
 		onUploadComplete: function(data) {
-			var fileListNode = Query("div#files_finished")[0];
-			
-			if(!data.length) data = [data];
-			
-			data.forEach(Lang.hitch(this, function(file, index, arr) {
-				// add file to file finished
-				DomConstruct.create("input", {
-					type:		"checkbox",
-					checked:	"checked",
-					name:		"form_data[file_" + index + "]",
-					value:		file.file_id
-				}, fileListNode, "last");
+			if(this.callback) {
+				this.callback(data);
+			} else {
+				var fileListNode = Query("div#files_finished")[0];
 				
-				DomAttr.set(fileListNode, "innerHTML", DomAttr.get(fileListNode, "innerHTML") + file.name + "</br>");
-			}));
+				if(!data.length) data = [data];
+				
+				data.forEach(Lang.hitch(this, function(file, index, arr) {
+					// add file to file finished
+					DomConstruct.create("input", {
+						type:		"checkbox",
+						checked:	"checked",
+						name:		"form_data[file_" + index + "]",
+						value:		file.file_id
+					}, fileListNode, "last");
+					
+					DomAttr.set(fileListNode, "innerHTML", DomAttr.get(fileListNode, "innerHTML") + file.name + "</br>");
+				}));
+				
+				console.log(data);
+			}
 			
-			// remove progressbar
-			this.progressbar.destroy();
-			
-			console.log(data);
 			console.log("complete");
 		},
 		
 		onUploadError: function(error) {
 			console.log(error);
 		},
-		/*
-		onUploadButtonClick: function(postData) {
-			console.log("click");
-			//console.log(this.uploader.getFileList());
-			this.uploader.upload(postData);
-		},*/
 		
 		onProgress: function(statusObject) {
-			console.log(statusObject);
-			
 			// update progress bar
-			this.progressbar.set("value", statusObject.percent + "%");
+			this.progressbar.set("value", statusObject.percent);
+			
+			if(statusObject.percent === "100%") this.progressbar.destroy(false);
 		},
 		
 		destroy: function() {
-			this.uploader.destroyRecursive(false);
-			//this.fileList.destroyRecursive(false);
+			this.uploader.destroy(false);
 		}
 	});
 });

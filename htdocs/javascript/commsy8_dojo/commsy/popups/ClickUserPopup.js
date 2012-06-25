@@ -12,13 +12,31 @@ define([	"dojo/_base/declare",
 			this.item_id = customObject.iid;
 			this.module = "user";
 			
-			this.features = [ "editor", "netnavigation", "calendar" ];
+			this.features = [ "upload-single", "editor", "netnavigation", "calendar" ];
 			
 			// register click for node
 			this.registerPopupClick();
 		},
 		
 		setupSpecific: function() {
+			dojo.ready(lang.hitch(this, function() {
+				// setup callback for single upload
+				this.featureHandles["upload-single"][0].setCallback(lang.hitch(this, function(fileInfo) {
+					// send ajax request
+					var data = {
+						module:			"user",
+						additional: {
+							action:		"upload_picture",
+						    fileInfo:	fileInfo,
+						    iid:		this.item_id
+						}
+					};
+					
+					this.AJAXRequest("popup", "save", data, function(response) {
+						// maybe change the picture in-time
+					});
+				}));
+			}));
 		},
 		
 		onPopupSubmit: function(customObject) {

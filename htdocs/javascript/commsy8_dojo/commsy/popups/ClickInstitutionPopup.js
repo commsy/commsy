@@ -12,13 +12,41 @@ define([	"dojo/_base/declare",
 			this.item_id = customObject.iid;
 			this.module = "institution";
 			
-			this.features = [ "editor", "upload", "netnavigation", "calendar" ];
+			this.fileInfo = null;
+			
+			this.features = [ "editor", "upload", "upload-single", "netnavigation", "calendar" ];
 			
 			// register click for node
 			this.registerPopupClick();
 		},
 		
 		setupSpecific: function() {
+			dojo.ready(lang.hitch(this, function() {
+				// setup callback for single upload
+				this.featureHandles["upload-single"][0].setCallback(lang.hitch(this, function(fileInfo) {
+					this.fileInfo = fileInfo;
+					
+					if(this.item_id) uploadPicture(function() {});
+				}));
+			}));
+		},
+		
+		uploadPicture: function(callback) {
+			// send ajax request
+			var data = {
+				module:			"institution	",
+				additional: {
+					action:		"upload_picture",
+				    fileInfo:	this.fileInfo,
+				    iid:		this.item_id
+				}
+			};
+			
+			this.AJAXRequest("popup", "save", data, function(response) {
+				// maybe change the picture in-time
+				
+				callback();
+			});
 		},
 		
 		onPopupSubmit: function(customObject) {
@@ -49,16 +77,19 @@ define([	"dojo/_base/declare",
 			// invoke netnavigation / path - process after item creation actions
 			if(this.item_id === "NEW") {
 				this.featureHandles["netnavigation"][0].afterItemCreation(item_id, lang.hitch(this, function() {
-					this.featureHandles["path"][0].save(item_id, lang.hitch(this, function() {
+					if(this.fileInfo) {
+						this.uploadPicture(lang.hitch(this, function() {
+							this.close();
+							this.reload(item_id);
+						}));
+					} else {
 						this.close();
 						this.reload(item_id);
-					}));
+					}
 				}));
 			} else {
-				this.featureHandles["path"][0].save(item_id, lang.hitch(this, function() {
-					this.close();
-					this.reload(item_id);
-				}));
+				this.close();
+				this.reload(item_id);
 			}
 			
 			

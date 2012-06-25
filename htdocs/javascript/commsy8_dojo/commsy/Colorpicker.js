@@ -12,28 +12,12 @@ define([	"dojo/_base/declare",
 		setup: function(node) {
 			// setup colorpicker
 			var colorpicker = new dojox.widget.ColorPicker({
-				value:			DomAttr.get(node, "value"),
 				name:			DomAttr.get(node, "name"),
 			}, node);
-
 			
-			/*
-			
-			dojo.require("dojox.widget.ColorPicker");
-			dojo.ready(function(){
-			    var c = new dojox.widget.ColorPicker({}, "picker1");
-			});
-			
-			
-			
-			// setup colorpicker
-			register_on.each(function() {
-				jQuery(this).colorpicker({
-					regional:	preconditions.environment.lang,
-					zIndex:		1003
-				});
-			});
-			*/
+			var color = DomAttr.get(node, "value");
+			if(color) colorpicker.setColor(color);
+			else colorpicker.setColor("#FFFFFF");
 		}
 	});
 });

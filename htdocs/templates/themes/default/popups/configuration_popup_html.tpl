@@ -57,12 +57,13 @@
 
 										<div class="input_row_100">
 											<label for="room_logo">___LOGO_UPLOAD___:</label>
-											<form id="logo_upload" action="commsy.php?cid={$environment.cid}&mod=ajax&fct=popup&action=save" method="post">
-												<input type="hidden" name="module" value="configuration" />
-												<input type="hidden" name="additional[tab]" value="room_logo" />
-												<input id="room_logo" size="29" type="file" style="width:200px" class="size_150 float-left" name="form_data[picture]" accept="image/*" />
-											</form>
-											<div class="clear"></div>
+											
+											<div class="uploader-single">
+												<form method="post" action="UploadFile.php" id="myForm" enctype="multipart/form-data" >
+												   <input id="room_logo" class="fileSelector"></input>
+												   <div class="fileList"></div>
+												</form>
+											</div>
 										</div>
 
 										{if isset($popup.room.logo)}
@@ -238,13 +239,15 @@
 
 											<div class="input_row_100">
 												<label for="room_color_bg_image">___USER_PICTURE_UPLOADFILE___:</label>
-												<form id="bg_upload" action="commsy.php?cid={$environment.cid}&mod=ajax&fct=popup&action=save" method="post">
-													<input type="hidden" name="module" value="configuration" />
-													<input type="hidden" name="additional[tab]" value="room_bg" />
-													<input id="room_color_bg_image" type="file" class="size_200 float-left" name="form_data[picture]" accept="image/*" />
-													<input style="margin-left:80px;" id="room_color_bg_image_repeat" type="checkbox" name="form_data[color_bg_image_repeat]" value="1"{if $popup.room.color_bg_image_repeat == true} checked="checked"{/if} /> ___CONFIGURATION_BGIMAGE_REPEAT___
+												
+												<div class="uploader-single">
+													<form method="post" action="UploadFile.php" id="myForm" enctype="multipart/form-data" >
+													   <input id="room_color_bg_image" class="fileSelector"></input>
+													   <div class="fileList"></div>
+													   <input style="margin-left:80px;" id="room_color_bg_image_repeat" type="checkbox" name="form_data[color_bg_image_repeat]" value="1"{if $popup.room.color_bg_image_repeat == true} checked="checked"{/if} /> ___CONFIGURATION_BGIMAGE_REPEAT___
 													<input id="room_color_bg_image_fixed" type="checkbox" name="form_data[color_bg_image_fixed]" value="1"{if $popup.room.color_bg_image_fixed == true} checked="checked"{/if} /> ___CONFIGURATION_BGIMAGE_FIXED___
-												</form>
+													</form>
+												</div>
 												<div class="clear"></div>
 											</div>
 

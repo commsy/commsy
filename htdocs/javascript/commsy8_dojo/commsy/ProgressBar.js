@@ -26,8 +26,6 @@ define([	"dojo/_base/declare",
 			DomConstruct.destroy(percentSpan);
 			DomConstruct.destroy(nodeList.children("img:first")[0]);
 			
-			
-			
 			var progressBar = new ProgressBar({
 				value:		value + "%",
 				"class":	"ui-progressbar"

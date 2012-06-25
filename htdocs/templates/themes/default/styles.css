@@ -3055,6 +3055,11 @@ jQuery UI
     margin-top: 2px;
   }
 
+div.uploader .ui-progressbar,
+div.uploader-single .ui-progressbar {
+	height: 16px
+	}
+
 .fi_moredetails .ui-progressbar {
   height: 15px;
   }

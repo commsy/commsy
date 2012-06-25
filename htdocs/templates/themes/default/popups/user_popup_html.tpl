@@ -28,12 +28,13 @@
 
 						<div class="input_row">
 							<div class="input_label_100" for="data_picture">___USER_PICTURE_UPLOADFILE___:</div>
-							<form id="picture_upload" action="commsy.php?cid={$environment.cid}&mod=ajax&fct=rubric_popup&action=save" method="post">
-								<input type="hidden" name="module" value="user" />
-								<input type="hidden" name="additional[action]" value="upload_picture" />
-								<input id="upload_hidden_iid" type="hidden" name="additional[iid]" value="" />
-								<input id="data_picture" size="45" type="file" class="float-left" name="form_data[picture]" accept="image/*" />
-							</form>
+							
+							<div class="uploader-single">
+								<form method="post" action="UploadFile.php" id="myForm" enctype="multipart/form-data" >
+								   <input id="data_picture" class="fileSelector"></input>
+								   <div class="fileList"></div>
+								</form>
+							</div>
 							<div class="clear"></div>
 						</div>
 

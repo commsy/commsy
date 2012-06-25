@@ -12,7 +12,7 @@ define([	"dojo/_base/declare",
 			this.contentNode = content_node;
 			this.module = "profile";
 			
-			this.features = [ "editor", "upload" ];
+			this.features = [ "editor", "upload-single" ];
 			
 			// register click for node
 			this.registerPopupClick();
@@ -29,6 +29,23 @@ define([	"dojo/_base/declare",
 		},
 		
 		setupSpecific: function() {
+			dojo.ready(Lang.hitch(this, function() {
+				// setup callback for single upload
+				this.featureHandles["upload-single"][0].setCallback(Lang.hitch(this, function(fileInfo) {
+					// send ajax request
+					var data = {
+						module:			"profile",
+						additional: {
+						    part:		"user_picture",
+						    fileInfo:	fileInfo
+						}
+					};
+					
+					this.AJAXRequest("popup", "save", data, function(response) {
+						// maybe change the picture in-time
+					});
+				}));
+			}));
 		},
 		
 		onPopupSubmit: function(customObject) {
@@ -81,40 +98,7 @@ define([	"dojo/_base/declare",
 				};
 			}
 			
-			
-			
-			
 			this.submit(search, { part: part });
-			
-			/*
-			 * var handle = event.data.handle;
-			var target = jQuery(event.target);
-			
-			// submit picture
-			var form_objects = jQuery('form#logo_upload, form#bg_upload');
-			
-			var all = 0;
-			form_objects.each(function(index) {
-				if(jQuery(this).find('input[type="file"]').attr('value') !== '') {
-					all++;
-				}
-			});
-			
-			if(all == 0) {
-		
-				thishandle.saveConfiguration(event);
-				
-				
-			}
-			
-			var index = 0;
-			form_objects.each(function() {
-				if(jQuery(this).find('input[type="file"]').attr('value') !== '') {
-					handle.uploadRoomPicture(jQuery(this), index, all, handle.saveConfiguration, event);
-					index++;
-				}
-			});
-			 */
 		},
 		
 		onPopupSubmitSuccess: function(item_id) {
@@ -122,24 +106,3 @@ define([	"dojo/_base/declare",
 		}
 	});
 });
-
-/*
-
-
-
-		uploadUserPicture: function(form_object) {
-			var handle = this;
-			
-			// setup ajax form
-			form_object.ajaxForm();
-
-			// submit form
-			form_object.ajaxSubmit({
-				type:		'POST',
-				success:	function() {
-					handle.close();
-				}
-			});
-
-			return false;
-		},*/

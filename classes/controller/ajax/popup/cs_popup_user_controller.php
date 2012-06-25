@@ -88,18 +88,16 @@ class cs_popup_user_controller implements cs_rubric_popup_controller {
 			// upload picture
 			if(isset($additional['action']) && $additional['action'] === 'upload_picture') {
 				if($this->_popup_controller->checkFormData('file_upload')) {
-
-					/* handle group picture upload */
-					if(!empty($_FILES['form_data']['tmp_name'])) {
-						// rename temp file
-						$new_temp_name = $_FILES['form_data']['tmp_name']['picture'] . '_TEMP_' . $_FILES['form_data']['name']['picture'];
-						move_uploaded_file($_FILES['form_data']['tmp_name']['picture'], $new_temp_name);
-						$_FILES['form_data']['tmp_name']['picture'] = $new_temp_name;
-
+					
+					/* handle picture upload */
+					if(!empty($additional["fileInfo"])) {
+						$srcfile = $additional["fileInfo"]["file"];
+						$targetfile = $srcfile . "_converted";
+						
+						$session = $this->_environment->getSessionItem();
+						$session->unsetValue("add_files");
 
 						// resize image to a maximum width of 150px and keep ratio
-						$srcfile = $_FILES['form_data']['tmp_name']['picture'];
-						$target = $_FILES['form_data']['tmp_name']['picture'];
 			            $size = getimagesize($srcfile);
 			            $x_orig= $size[0];
 			            $y_orig= $size[1];
@@ -136,22 +134,22 @@ class cs_popup_user_controller implements cs_rubric_popup_controller {
 			            }
 		                $newimg = imagecreatetruecolor($max_width,($max_width * $ratio));
 		                imagecopyresampled($newimg, $im, 0, 0, $source_x, $source_y, $max_width, ceil($max_width * $ratio), $source_width, $source_height);
-		                imagepng($newimg,$target);
+		                imagepng($newimg,$targetfile);
 		                imagedestroy($im);
 		                imagedestroy($newimg);
 
 						// determ new file name
-						$filename_info = pathinfo($_FILES['form_data']['name']['picture']);
-						$filename = 'cid' . $this->_environment->getCurrentContextID() . '_' . $user_item->getUserID() . '_'. $_FILES['form_data']['name']['picture'];
+						$filename_info = pathinfo($targetfile);
+						$filename = 'cid' . $this->_environment->getCurrentContextID() . '_' . $user_item->getUserID() . '_'. $additional["fileInfo"]["name"];
 						// copy file and set picture
 						$disc_manager = $this->_environment->getDiscManager();
 
-						$disc_manager->copyFile($_FILES['form_data']['tmp_name']['picture'], $filename, true);
+						$disc_manager->copyFile($targetfile, $filename, true);
 						$user_item->setPicture($filename);
 						$user_item->save();
-
+						
 						// set return
-               			$this->_popup_controller->setSuccessfullItemIDReturn($user_item->getItemID());
+               			$this->_popup_controller->setSuccessfullDataReturn($filename);
 					}
 				}
 			} else {

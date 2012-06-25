@@ -1,0 +1,42 @@
+array(1) {
+  ["uploadedfiles"]=>
+  array(5) {
+    ["name"]=>
+    array(1) {
+      [0]=>
+      string(20) "uploadify-cancel.png"
+    }
+    ["type"]=>
+    array(1) {
+      [0]=>
+      string(9) "image/png"
+    }
+    ["tmp_name"]=>
+    array(1) {
+      [0]=>
+      string(14) "/tmp/phpd8Y1Km"
+    }
+    ["error"]=>
+    array(1) {
+      [0]=>
+      int(0)
+    }
+    ["size"]=>
+    array(1) {
+      [0]=>
+      int(2960)
+    }
+  }
+}
+array(5) {
+  ["cid"]=>
+  string(7) "3233518"
+  ["mod"]=>
+  string(4) "ajax"
+  ["fct"]=>
+  string(6) "upload"
+  ["action"]=>
+  string(6) "upload"
+  ["file_upload_rubric"]=>
+  string(4) "user"
+}

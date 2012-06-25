@@ -231,7 +231,7 @@
 		                }
 
 		                // this will handle already attached files as well as adding new files
-						$this->_popup_controller->getUtils()->setFilesForItem($discarticle_item, $file_ids, $form_data["files"], CS_DISCARTICLE_TYPE);
+						$this->_popup_controller->getUtils()->setFilesForItem($discarticle_item, $file_ids, $form_data["files"]);
 
 						$discarticle_item->save();
 

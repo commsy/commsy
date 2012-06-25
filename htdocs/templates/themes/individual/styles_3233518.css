@@ -16,11 +16,11 @@
 /* Body*/
 
 body {
-    background-image: url("../../../commsy.php?cid=201595&mod=picture&fct=getfile&picture=cid201595_bgimage_Hintergrund.jpg"); /* Background-Image */
-    background-repeat: no-repeat;
-    background-attachment: fixed;
+    background-image: url("../../../commsy.php?cid=3233518&mod=picture&fct=getfile&picture=cid3233518_bgimage_dndNoMove.png"); /* Background-Image */
+    background-repeat: repeat;
+    background-attachment: scroll;
 	background-position: 50% 50%;
-    background-color: #; /*CS_BG_COLOR*/
+    background-color: #ffffff; /*CS_BG_COLOR*/
 }
 
 #logo_area {
@@ -33,40 +33,40 @@ body {
 /* Navigation */
 
 #main_navigation {
-    background:#;
+    background:#42393a;
 }
 #main_navigation #active {
-    background: #;
-    border-bottom: 1px solid #;
+    background: #42393a;
+    border-bottom: 1px solid #42393a;
 }
 
 #main_navigation ul {
-    border-right: 0px solid #;
+    border-right: 0px solid #42393a;
 }
 
 #main_navigation .non_active a {
     border-left: none;
-    border-right: 1px solid #;
+    border-right: 1px solid #42393a;
     color: #454545;
 }
 
 #main_navigation #active a {
-    border-right: 1px solid #;
+    border-right: 1px solid #42393a;
     color: #FFFFFF;
 }
 
 #main_navigation .non_active {
-    background: #;
+    background: #6b2e39;
 }
 
 #main_navigation ul#right_navigation {
-    border-left: 1px solid #;
+    border-left: 1px solid #42393a;
     border-right: none;
 }
 
 #main_navigation .non_active a {
     border-left: none;
-    border-right: 1px solid #;
+    border-right: 1px solid #42393a;
     color: #000000;
 }
 
@@ -90,7 +90,7 @@ body {
 }
 
 #columnset {
-    background: #;
+    background: #ffffff;
     border-left: 1px solid #999999;
 }
 
@@ -111,12 +111,12 @@ body {
 }
 
 #footer_right {
-    background: #;
+    background: #ffffff;
     color: #DEE8FF;
 }
 
 #addon_area_row_1 {
-    border-left: 0px solid #;
+    border-left: 0px solid #ffffff;
 }
 
 .portlet_rc h2 {
@@ -131,7 +131,7 @@ body {
 }
 
 .portlet_rc_body .change_view select {
-    background: #;
+    background: #ffffff;
     border: 1px solid #999999;
     color: #FFFFFF;
 }
@@ -147,18 +147,18 @@ a.keywords_s1, a.keywords_s2, a.keywords_s3, a.keywords_s4 {
 
 /*Content*/
 .table_head {
-    background: #;
+    background: #ffffff;
     border-bottom: 1px solid #999999;
 }
 
 .content_item .item_info {
-    background: #;
+    background: #ffffff;
     text-shadow: 0 1px #F5F5F5;
     border-bottom:1px solid #999999;
 }
 
 #footer_left {
-    background-color: #;
+    background-color: #ffffff;
     border-left: 1px solid #999999;
     color: #898989;
 }
@@ -175,16 +175,16 @@ a.keywords_s1, a.keywords_s2, a.keywords_s3, a.keywords_s4 {
 }
 
 .content_item h2 {
-    background: #;
+    background: #ffffff;
     border-bottom:1px solid #999999;
 }
 
 a {
-   color: #;
+   color: #941d30;
 }
 
 a:hover {
-   color: #;
+   color: #9b8b8e;
 }
 
 
@@ -193,19 +193,19 @@ a:hover {
 /* Actions */
 
 #content_with_actions {
-    background: #;
+    background: #ad838a;
 }
 
 .item_actions a {
-    background: #;
+    background: #ffffff;
 }
 
 .item_actions a:hover {
-    background: #;
+    background: #ffffff;
 }
 
 a.item_actions_glow {
-    background: #;
+    background: #ffffff;
 }
 
 /* FORM */

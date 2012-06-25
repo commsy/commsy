@@ -296,6 +296,7 @@ class cs_popup_configuration_controller {
 				               $current_context->setCheckNewMemberCode($form_data['code']);
 				            }
 				         }
+				         
 				         // open for guests
 				         if ( isset($form_data['open_for_guests']) ) {
 				            if ($form_data['open_for_guests'] == 'open') {
@@ -310,6 +311,7 @@ class cs_popup_configuration_controller {
 						$current_context->save();
 
 						// genereate layout images
+						// TODO: outdated?
 						$current_context->generateLayoutImages();
 
 						// set return
@@ -711,9 +713,12 @@ class cs_popup_configuration_controller {
 				case 'room_logo':
 					if($this->_popup_controller->checkFormData('room_picture')) {
 						/* handle room picture upload */
-						if(!empty($_FILES['form_data']['name']['picture'])) {
+						if(!empty($additional["fileInfo"])) {
 							$logo = $current_context->getLogoFilename();
 							$disc_manager = $this->_environment->getDiscManager();
+							
+							$session = $this->_environment->getSessionItem();
+							$session->unsetValue("add_files");
 
 							// delete old if set
 							if(!empty($logo)) {
@@ -724,8 +729,8 @@ class cs_popup_configuration_controller {
 								$current_context->setLogoFilename('');
 							}
 
-							$filename = 'cid' . $this->_environment->getCurrentContextID() . '_logo_' . $_FILES['form_data']['name']['picture'];
-							$disc_manager->copyFile($_FILES['form_data']['tmp_name']['picture'], $filename, true);
+							$filename = 'cid' . $this->_environment->getCurrentContextID() . '_logo_' . $additional["fileInfo"]["name"];
+							$disc_manager->copyFile($additional["fileInfo"]["file"], $filename, true);
 							$current_context->setLogoFilename($filename);
 
 							// save
@@ -733,7 +738,7 @@ class cs_popup_configuration_controller {
 						}
 
 						// set return
-						$this->_popup_controller->setSuccessfullItemIDReturn($current_context->getItemID());
+						$this->_popup_controller->setSuccessfullDataReturn($filename);
 					}
 					break;
 
@@ -741,9 +746,12 @@ class cs_popup_configuration_controller {
 				case 'room_bg':
 					if($this->_popup_controller->checkFormData('room_background')) {
 						/* handle room picture upload */
-						if(!empty($_FILES['form_data']['name']['picture'])) {
+						if(!empty($additional["fileInfo"])) {
 							$bg_image = $current_context->getBGImageFilename();
 							$disc_manager = $this->_environment->getDiscManager();
+							
+							$session = $this->_environment->getSessionItem();
+							$session->unsetValue("add_files");
 
 							// delete old if set
 							if(!empty($bg_image)) {
@@ -754,8 +762,8 @@ class cs_popup_configuration_controller {
 								$current_context->setBGImageFilename('');
 							}
 
-							$filename = 'cid' . $this->_environment->getCurrentContextID() . '_bgimage_' . $_FILES['form_data']['name']['picture'];
-							$disc_manager->copyFile($_FILES['form_data']['tmp_name']['picture'], $filename, true);
+							$filename = 'cid' . $this->_environment->getCurrentContextID() . '_bgimage_' . $additional["fileInfo"]["name"];
+							$disc_manager->copyFile($additional["fileInfo"]["file"], $filename, true);
 							$current_context->setBGImageFilename($filename);
 
 							// save
@@ -763,7 +771,7 @@ class cs_popup_configuration_controller {
 						}
 
 						// set return
-						$this->_popup_controller->setSuccessfullItemIDReturn($current_context->getItemID());
+						$this->_popup_controller->setSuccessfullDataReturn($filename);
 					}
 					break;
 			}

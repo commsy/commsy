@@ -189,11 +189,13 @@
 
 										<div class="input_row">
 											<label for="data_picture">___USER_PICTURE_UPLOADFILE___:</label>
-											<form id="picture_upload" action="commsy.php?cid={$environment.cid}&mod=ajax&fct=popup&action=save" method="post">
-												<input type="hidden" name="module" value="profile" />
-												<input type="hidden" name="additional[tab]" value="user_picture" />
-												<input id="data_picture" type="file" class="size_200 float-left" name="form_data[picture]" accept="image/*" />
-											</form>
+											
+											<div class="uploader-single">
+												<form method="post" action="UploadFile.php" id="myForm" enctype="multipart/form-data" >
+												   <input id="data_picture" class="fileSelector"></input>
+												   <div class="fileList"></div>
+												</form>
+											</div>
 											<div class="clear"></div>
 										</div>
 
