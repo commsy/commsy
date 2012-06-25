@@ -20,9 +20,10 @@
     <!-- CSS -->
     <link rel="stylesheet" type="text/css" media="screen" href="javascript/commsy8_dojo/libs/dijit/themes/tundra/tundra.css" />
 	<link rel="stylesheet" type="text/css" media="screen" href="javascript/commsy8_dojo/libs/cbtree/themes/tundra/tundra.css" />
-	<link rel="stylesheet" type="text/css" media="screen" href="javascript/commsy8_dojo/libs/dojox/form/resources/UploaderFileList.css" />
+ 	<link rel="stylesheet" type="text/css" media="screen" href="javascript/commsy8_dojo/libs/dojox/form/resources/UploaderFileList.css" />
 	<link rel="stylesheet" type="text/css" media="screen" href="javascript/commsy8_dojo/libs/dojox/image/resources/Lightbox.css" />
 	<link rel="stylesheet" type="text/css" media="screen" href="javascript/commsy8_dojo/libs/dojox/widget/ColorPicker/ColorPicker.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="{$basic.tpl_path}cs_dojo.css" />
 
 	{block name="css"}
 	    <link rel="stylesheet" type="text/css" media="screen" href="{$basic.tpl_path}styles.css" />

@@ -3986,12 +3986,4 @@ a.event_grey {
     padding: 1px 5px;
     }
 
-.dijitTreeIcon {
-    display: none;
-    height: 16px;
-    width: 16px;
-}
-.dijitTreeLabel:hover {
-    text-decoration:underline;
-    cursor:pointer;
-}
+
