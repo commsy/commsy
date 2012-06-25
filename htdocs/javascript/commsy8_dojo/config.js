@@ -3,7 +3,7 @@ var dojoConfig = {
 		"dojo-firebug":			true,
 		"dojo-debug-messages":	true
 	},
-	baseUrl:					"/javascript/commsy8_dojo/",
+	baseUrl:					"javascript/commsy8_dojo/",
 	tlmSiblingOfDojo:			false,
 	packages: [
 	           					{ name: "dojo", location: "libs/dojo" },
@@ -16,4 +16,4 @@ var dojoConfig = {
 	]
 }
 
-var CKEDITOR_BASEPATH = "/javascript/commsy8_dojo/libs/ckeditor/";
+var CKEDITOR_BASEPATH = "javascript/commsy8_dojo/libs/ckeditor/";
