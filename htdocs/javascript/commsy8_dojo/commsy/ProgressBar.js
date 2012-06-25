@@ -19,12 +19,14 @@ define([	"dojo/_base/declare",
 		setup: function(node) {
 			var nodeList =  new dojo.NodeList(node);
 			
-			var percentSpan = nodeList.children("span[class^='percent']");
+			var percentSpan = nodeList.children("span[class^='percent']")[0];
 			var value = parseInt(DomAttr.get(percentSpan, "innerHTML"));
 			
 			// remove span and img
 			DomConstruct.destroy(percentSpan);
 			DomConstruct.destroy(nodeList.children("img:first")[0]);
+			
+			
 			
 			var progressBar = new ProgressBar({
 				value:		value + "%",

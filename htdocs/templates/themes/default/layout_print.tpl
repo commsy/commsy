@@ -17,19 +17,29 @@
     <meta name="description" content="" />
     <meta name="copyright" content="" />
 
-    <link rel="stylesheet" type="text/css" media="screen" href="{$basic.tpl_path}styles.css" />
-    <link rel="stylesheet" type="text/css" media="print" href="{$basic.tpl_path}styles.css" />
+    <!-- CSS -->
+    <link rel="stylesheet" type="text/css" media="screen" href="javascript/commsy8_dojo/libs/dijit/themes/tundra/tundra.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="javascript/commsy8_dojo/libs/cbtree/themes/tundra/tundra.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="javascript/commsy8_dojo/libs/dojox/form/resources/UploaderFileList.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="javascript/commsy8_dojo/libs/dojox/image/resources/Lightbox.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="javascript/commsy8_dojo/libs/dojox/widget/ColorPicker/ColorPicker.css" />
 
-    <script type="text/javascript">
-	      <!--
-	   var datepicker_language = 'de';
-	   var datepicker_choose = 'Datum auswählen';
-	      -->
-    </script>
+	{block name="css"}
+	    <link rel="stylesheet" type="text/css" media="screen" href="{$basic.tpl_path}styles.css" />
+	    <link rel="stylesheet" type="text/css" media="screen" href="{$basic.tpl_path}styles_addon.css" />
+	{/block}
 
-    <script data-main="javascript/commsy8/main.js" src="javascript/commsy8/require.js"></script>
+	<!-- SCRIPTS -->
+	<script>
+		{if isset($javascript.variables_as_json) && !empty($javascript.variables_as_json)}var from_php = '{$javascript.variables_as_json}';{/if}
+	</script>
 
-    <title>CommSy 8.0 - Home</title>
+	<script src="javascript/commsy8_dojo/config.js"></script>
+	<script src="javascript/commsy8_dojo/libs/dojo/dojo.js" data-dojo-config="async: true"></script>
+	<script src="javascript/commsy8_dojo/main.js"></script>
+
+
+    <title>{$environment.room_title} - ___{$environment.module_name}___</title>
 
     <!--
     **********************************************************************
