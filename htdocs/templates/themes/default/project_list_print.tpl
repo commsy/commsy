@@ -66,8 +66,8 @@
         				{$item.activity}
         				</p>
         			</td>
-        		{/foreach}
-        	</tr>
+        		</tr>
+        	{/foreach}
         </tbody>
     </table>
 {/block}
