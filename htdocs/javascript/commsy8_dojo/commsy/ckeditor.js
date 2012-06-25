@@ -3,8 +3,10 @@ define([	"dojo/_base/declare",
         	"ckeditor/ckeditor",
         	"dojo/dom-attr",
         	"dojo/dom-construct",
+        	"dojo/_base/lang",
+        	"dojo/on",
         	"dojo/query",
-        	"dojo/NodeList-traverse"], function(declare, BaseClass, CKEditor, domAttr, domConstruct, Query) {
+        	"dojo/NodeList-traverse"], function(declare, BaseClass, CKEditor, domAttr, domConstruct, Lang, On, Query) {
 	return declare(BaseClass, {
 		instance:	null,
 		node:		null,
@@ -58,7 +60,11 @@ define([	"dojo/_base/declare",
 			var formNode = nodeList.parents("form")[0];
 			
 			// on form submit, attach editor content to hidden input
-			
+			if(formNode) {
+				On(formNode, "submit", Lang.hitch(this, function(event) {
+					domAttr.set(hiddenNode, "value", this.instance.getData());
+				}));
+			}
 		},
 		
 		getInstance: function() {
@@ -84,7 +90,7 @@ define([	"dojo/_base/declare",
 				var form_object = jQuery(this).parentsUntil('form').parent();
 				
 				// on form submit, attach editor content to hidden input
-				handle.append_content(form_object, jQuery('input[name="form_data[' + id + ']"]'), jQuery(this).ckeditorGet());
+				
 			});
 		},
 		
