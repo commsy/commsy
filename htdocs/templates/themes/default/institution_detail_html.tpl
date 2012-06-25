@@ -3,30 +3,32 @@
 {block name=room_detail_content}
 	<div class="item_actions">
 		<div id="top_item_actions">
-			<a class="edit" href=""><span class="edit_set"> &nbsp; </span></a>
-			<a class="detail" href=""><span class="details_ia"> &nbsp; </span></a>
+			<a class="edit" data-custom="expand: 'edit_expand'" href="#"><span class="edit_set"> &nbsp; </span></a>
+			<a class="detail" data-custom="expand: 'detail_expand'" href="#"><span class="details_ia"> &nbsp; </span></a>
 		</div>
 	</div>
 
 	<div class="item_body"> <!-- Start item body -->
 		<!-- Start fade_in_ground -->
-		<div class="fade_in_ground_actions hidden">
-			{* TODO: add missing actions *}
-			{if $detail.actions.edit}
-				<a id ="action_edit" href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.item_id}">___COMMON_EDIT_ITEM___</a> |
-			{else}
-				<span title="___COMMON_NO_ACTION___" class="disabled_actions">___COMMON_EDIT_ITEM___</span> |
-			{/if}
-			{if $detail.actions.delete}
-				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.content.item_id}">___COMMON_DELETE_ITEM___</a> |
-			{else}
-				<span title="___COMMON_NO_ACTION___" class="disabled_actions">___COMMON_DELETE_ITEM___</span> |
-			{/if}
-			{if $detail.actions.member == 'member'}
-				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&iid={$detail.item_id}&institution_option=2">___GROUP_LEAVE___</a> |
-			{else}
-				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&iid={$detail.item_id}&institution_option=1">___GROUP_ENTER___</a> |
-			{/if}
+		<div id="edit_expand" class="hidden">
+			<div class="fade_in_ground_actions">
+				{* TODO: add missing actions *}
+				{if $detail.actions.edit}
+					<a id ="action_edit" class="open_popup" data-custom="iid: {$detail.item_id}, module: '{$environment.module}'" href="#">___COMMON_EDIT_ITEM___</a> |
+				{else}
+					<span title="___COMMON_NO_ACTION___" class="disabled_actions">___COMMON_EDIT_ITEM___</span> |
+				{/if}
+				{if $detail.actions.delete}
+					<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.content.item_id}">___COMMON_DELETE_ITEM___</a> |
+				{else}
+					<span title="___COMMON_NO_ACTION___" class="disabled_actions">___COMMON_DELETE_ITEM___</span> |
+				{/if}
+				{if $detail.actions.member == 'member'}
+					<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&iid={$detail.item_id}&institution_option=2">___GROUP_LEAVE___</a> |
+				{else}
+					<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&iid={$detail.item_id}&institution_option=1">___GROUP_ENTER___</a> |
+				{/if}
+			</div>
 		</div>
 		<!-- Ende fade_in_ground -->
 
@@ -125,7 +127,10 @@
 				</div>
 			</div>
 		</div> <!-- Ende item_legend -->
-		{include file="include/detail_moredetails_html.tpl" data=$detail.content.moredetails}
+		
+		<div id="detail_expand" class="hidden">
+			{include file="include/detail_moredetails_html.tpl" data=$detail.content.moredetails}
+		</div>
 
 	</div> <!-- Ende item body -->
 	<div class="clear"> </div>

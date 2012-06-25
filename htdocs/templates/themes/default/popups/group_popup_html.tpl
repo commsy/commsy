@@ -59,29 +59,33 @@
 
 					<div id="popup_tabs">
 						<div class="tab_navigation">
-							{if $popup.is_owner == true}<a href="" class="pop_tab_active">___COMMON_RIGHTS___</a>{/if}
-							<a href="" id="popup_netnavigation_attach_new" class="{if $popup.is_owner == true}pop_tab{else}pop_tab_active{/if}">___COMMON_ATTACHED_ENTRIES___</a>
-							<a href="" class="pop_tab">___COMMON_GROUPROOM___</a>
+							{if $popup.is_owner == true}<a href="rights_tab" class="pop_tab_active">___COMMON_RIGHTS___</a>{/if}
+							<a href="netnavigation_tab" id="popup_netnavigation_attach_new" class="{if $popup.is_owner == true}pop_tab{else}pop_tab_active{/if}">___COMMON_ATTACHED_ENTRIES___</a>
+							<a href="grouproom_tab" class="pop_tab">___COMMON_GROUPROOM___</a>
 							<div class="clear"> </div>
 						</div>
 						<div id="popup_tabcontent">
 							{if $popup.is_owner == true}
-								<div class="settings_area">
-									<input type="radio" name="form_data[public]" value="1" checked="checked"/>___RUBRIC_PUBLIC_YES___<br/>
-									<input type="radio" name="form_data[public]" value="0"/>{i18n tag=RUBRIC_PUBLIC_NO param1=$popup.user.fullname}
-								</div>
-							{/if}
-
-							{include file="popups/include/edit_attach_items_include_html.tpl"}
-
-							<div class="settings_area hidden">
-								<div class="input_row">
-									<div class="input_label_100">___COMMON_GROUPROOM___:</div>
-									<div style="padding-top:5px;">
-										<input type="checkbox" class="float-left" value="1" {if $item.group_room_activate}checked="checked"{/if} name="form_data[group_room_activate]"/> ___GROUPROOM_FORM_CHECKBOX_TEXT___
+								<div class="tab" id="rights_tab">
+									<div class="settings_area">
+										<input type="radio" name="form_data[public]" value="1" checked="checked"/>___RUBRIC_PUBLIC_YES___<br/>
+										<input type="radio" name="form_data[public]" value="0"/>{i18n tag=RUBRIC_PUBLIC_NO param1=$popup.user.fullname}
 									</div>
 								</div>
-								<div class="clear"></div>
+							{/if}
+							
+							{include file="popups/include/netnavigation_tab_include_html.tpl"}
+
+							<div class="tab hidden" id="grouproom_tab">
+								<div class="settings_area">
+									<div class="input_row">
+										<div class="input_label_100">___COMMON_GROUPROOM___:</div>
+										<div style="padding-top:5px;">
+											<input type="checkbox" class="float-left" value="1" {if $item.group_room_activate}checked="checked"{/if} name="form_data[group_room_activate]"/> ___GROUPROOM_FORM_CHECKBOX_TEXT___
+										</div>
+									</div>
+									<div class="clear"></div>
+								</div>
 							</div>
 						</div>
 

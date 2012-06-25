@@ -62,6 +62,8 @@
 
 			// set Tag Information
 			if($this->getUtils()->showTags() === true) {
+				$this->assign('popup', 'tags', true);
+				/*
 				$tag_array = $this->getUtils()->getTags();
 
 				if($this->_item !== null) {
@@ -72,6 +74,7 @@
 				}
 
 				$this->assign('popup', 'tags', $tag_array);
+				*/
 			}
 
 			// set netnavigation information

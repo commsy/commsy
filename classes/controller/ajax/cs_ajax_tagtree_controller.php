@@ -13,10 +13,35 @@
 		public function actionGetTreeData() {
 			$utils = $this->getUtils();
 			if($utils->showTags()) {
-				$tags = $utils->getTags();
+				$item_id = $this->_data['item_id'];
+					
+				if($item_id !== null && $item_id !== 'NEW') {
+					// get item
+					$item_manager = $this->_environment->getItemManager();
+					$type = $item_manager->getItemType($item_id);
+					if($type === CS_LABEL_TYPE) {
+						$label_manager = $this->_environment->getLabelManager();
+						$label_item = $label_manager->getItem($item_id);
+						$type = $label_item->getItemType();
+					}
+					$manager = $this->_environment->getManager($type);
+					$item = $manager->getItem($item_id);
+					
+					$item_tag_list = $item->getTagList();
+					$item_tag_id_array = $item_tag_list->getIDArray();
+					
+					$tags = $utils->getTags();
+					
+					$utils->markTags($tags, $item_tag_id_array);
+				} else {
+					$tags = $utils->getTags();
+				}
+				
+				$this->setSuccessfullDataReturn($tags);
+			} else {
+				$this->setErrorReturn("103", "tags are not enabled", array());
 			}
 			
-			$this->setSuccessfullDataReturn($tags);
 			echo $this->_return;
 		}
 

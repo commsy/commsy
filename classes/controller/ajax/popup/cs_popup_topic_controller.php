@@ -169,7 +169,7 @@ class cs_popup_topic_controller implements cs_rubric_popup_controller {
 	                }
 
 	                // this will handle already attached files as well as adding new files
-	                $this->_popup_controller->getUtils()->setFilesForItem($item, $file_ids, CS_TOPIC_TYPE);
+	                $this->_popup_controller->getUtils()->setFilesForItem($item, $file_ids, $form_data["files"], CS_TOPIC_TYPE);
 
 	                if ( isset($form_data['hide']) ) {
 	                    // variables for datetime-format of end and beginning

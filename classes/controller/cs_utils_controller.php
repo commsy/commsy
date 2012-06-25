@@ -703,7 +703,7 @@
 			return round($minsize + round($a) * $treshold);
 		}
 
-		public function setFilesForItem(cs_item $item, $post_file_ids, $module) {
+		public function setFilesForItem(cs_item $item, $post_file_ids, $new_file_ids_to_store, $module) {
 			$session = $this->_environment->getSessionItem();
 
 			$file_ids = array();
@@ -715,22 +715,27 @@
 			if(!empty($new_files)) {
 				$file_manager = $this->_environment->getFileManager();
 
-				foreach($new_files as $file) {
+				foreach($new_file_ids_to_store as $file_id) {
+					$file = $new_files[$file_id];
+					$file["file_id"] = $file_id;
+					
 					if(isset($file['tmp_name']) && file_exists($file['tmp_name'])) {
 						$file_item = $file_manager->getNewItem();
 						$file_item->setTempKey($file['file_id']);
-
+					
 						$file['name'] = trim($file['name']);
 						$file_item->setPostFile($file);
 						$file_item->save();
-
+					
 						unlink($file['tmp_name']);  // Currently, the file manager does not unlink a file in its _saveOnDisk() method, because it is also used for copying files when copying material.
 						$new_file_ids[] = $file_item->getFileID();
-					} else {
+					}/* else {
 						$new_file_ids[] = $file['file_id'];
-					}
+					}*/
 				}
 			}
+
+			$session->unsetValue($module . '_add_files');
 
 			// already attach file ids are in $post_file_ids
 			$attached_ids = array();

@@ -16,9 +16,9 @@
 				<div id="popup_content_wrapper">
 					<div id="profile_content_row_three">
 						<div class="tab_navigation">
-							<a href="" class="pop_tab_active">___PROFILE_ACCOUNT_DATA___</a>
-							<a href="" class="pop_tab">___PROFILE_USER_DATA___</a>
-							<a href="" class="pop_tab">___PROFILE_NEWSLETTER_DATA___</a>
+							<a href="account" class="pop_tab_active">___PROFILE_ACCOUNT_DATA___</a>
+							<a href="user" class="pop_tab">___PROFILE_USER_DATA___</a>
+							<a href="newsletter" class="pop_tab">___PROFILE_NEWSLETTER_DATA___</a>
 
 							<div class="clear"> </div>
 						</div>
@@ -114,8 +114,8 @@
 										{/if}
 
 										<div class="input_row" style="margin-bottom:40px;">
-											<input id="submit" type="button" name="save" value="___PREFERENCES_SAVE_BUTTON___"/>
-											<input id="delete" type="button" name="form_data[delete]" value="___PREFERENCES_DELETE_BUTTON___"/>
+											<input id="submit" class="submit" data-custom="part: 'account'" type="button" name="save" value="___PREFERENCES_SAVE_BUTTON___"/>
+											<input id="delete" class="submit" data-custom="part: 'account_delete'" type="button" name="form_data[delete]" value="___PREFERENCES_DELETE_BUTTON___"/>
 										</div>
 									</fieldset>
 
@@ -158,7 +158,7 @@
 
 											<div class="input_row">
 												<div class="input_container_180">
-													<input id="merge" type="submit" name="form_data[merge]" value="___ACCOUNT_MERGE_BUTTON___"/>
+													<input id="merge" class="submit" data-custom="part: 'account_merge'" type="submit" name="form_data[merge]" value="___ACCOUNT_MERGE_BUTTON___"/>
 												</div>
 											</div>
 										</fieldset>
@@ -385,7 +385,7 @@
 
 									<div class="input_row">
 										<div class="input_container_180">
-											<input id="submit" type="button" name="save" value="___PREFERENCES_SAVE_BUTTON___"/>
+											<input id="submit" class="submit" data-custom="part: 'user'" type="button" name="save" value="___PREFERENCES_SAVE_BUTTON___"/>
 										</div>
 									</div>
 								</div>
@@ -409,7 +409,7 @@
 
 									<div class="input_row">
 										<div class="input_container_180">
-											<input id="submit" type="button" name="save" value="___PREFERENCES_SAVE_BUTTON___"/>
+											<input id="submit" class="submit" data-custom="part: 'newsletter'" type="button" name="save" value="___PREFERENCES_SAVE_BUTTON___"/>
 										</div>
 									</div>
 								</div>

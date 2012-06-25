@@ -250,8 +250,6 @@
 				if($current_user->isUser() && $this->_with_modifying_actions && ($context_item->isTagEditedByAll() || $current_user->isModerator())) {
 					$this->_sidebar_configuration['editable']['tags'] = true;
 				}
-
-				$this->assign('room', 'tags', $this->getTags());
 			}
 
 

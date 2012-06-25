@@ -3,19 +3,21 @@
 {block name=room_detail_content}
 	<div class="item_actions">
 		<div id="top_item_actions">
-			<a class="edit" href="#"><span class="edit_set"> &nbsp; </span></a>
-			<a class="detail" href="#"><span class="details_ia"> &nbsp; </span></a>
+			<a class="edit" data-custom="expand: 'edit_expand'" href="#"><span class="edit_set"> &nbsp; </span></a>
+			<a class="detail" data-custom="expand: 'detail_expand'" href="#"><span class="details_ia"> &nbsp; </span></a>
 		</div>
 	</div>
 
 	<div class="item_body"> <!-- Start item body -->
-		<div class="fade_in_ground_actions hidden">
-			{if $detail.actions.edit}
-				<a id="action_edit" href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.item_id}">___COMMON_EDIT_ITEM___</a> |
-				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.item_id}">___COMMON_CLOSE_PARTICIPATION___</a>
-			{else}
-				<span title="___COMMON_NO_ACTION___" class="disabled_actions">___COMMON_EDIT_ITEM___</span>
-			{/if}
+		<div id="edit_expand" class="hidden">
+			<div class="fade_in_ground_actions">
+				{if $detail.actions.edit}
+					<a id="action_edit" class="open_popup" data-custom="iid: {$detail.item_id}, module: '{$environment.module}'" href="#">___COMMON_EDIT_ITEM___</a> |
+					<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.item_id}">___COMMON_CLOSE_PARTICIPATION___</a>
+				{else}
+					<span title="___COMMON_NO_ACTION___" class="disabled_actions">___COMMON_EDIT_ITEM___</span>
+				{/if}
+			</div>
 		</div>
 
 		<h2>
@@ -358,7 +360,10 @@
 					</div>
 			</div>
 		</div> <!-- Ende item_legend -->
-		{include file="include/detail_moredetails_html.tpl" data=$detail.content.moredetails}
+		
+		<div id="detail_expand" class="hidden">
+			{include file="include/detail_moredetails_html.tpl" data=$detail.content.moredetails}
+		</div>
 	{/if}
 
 	</div> <!-- Ende item body -->

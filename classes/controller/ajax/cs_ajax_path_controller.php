@@ -93,7 +93,8 @@
 				}
 			}
 			
-			echo json_encode($return);
+			$this->setSuccessfullDataReturn($return);
+			echo $this->_return;
 		}
 		
 		public function actionSavePath() {
@@ -152,7 +153,8 @@
 			
 			if(!empty($item_place_array)) $link_item_manager->saveSortingPlaces($item_place_array);
 			
-			return $return;
+			$this->setSuccessfullDataReturn($return);
+			echo $this->_return;
 		}
 
 		public function actionUpdateLinkedItem() {
@@ -320,9 +322,8 @@
 				}
 			}
 
-			$return['success'] = true;
-
-			echo json_encode($return);
+			$this->setSuccessfullDataReturn($return);
+			echo $this->_return;
 		}
 
 		/*

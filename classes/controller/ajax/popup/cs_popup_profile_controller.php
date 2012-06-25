@@ -145,180 +145,191 @@ class cs_popup_profile_controller {
 
 			// save user
 			else {
-				$tab = $additional['tab'];
+				$tab = $additional['part'];
 
 				switch($tab) {
 					/**** ACCOUNT ****/
+					case 'account_merge':
+						if($this->_popup_controller->checkFormData('merge')) {
+							$authentication = $this->_environment->getAuthenticationObject();
+							$current_user = $this->_environment->getCurrentUserItem();
+						
+							if(isset($form_data['auth_source'])) $auth_source_old = $form_data['auth_source'];
+							else $auth_source_old = $current_portal_item->getAuthDefault();
+						
+							$authentication->mergeAccount($current_user->getUserID(), $current_user->getAuthSource(), $form_data['merge_user_id'], $auth_source_old);
+						
+							// set return
+							$this->_popup_controller->setSuccessfullItemIDReturn($current_user->getItemID());
+						}
+						break;
+					
+					case 'account_delete':
+						if($this->_popup_controller->checkFormData('delete')) {
+							$authentication = $this->_environment->getAuthenticationObject();
+							$current_user = $this->_environment->getCurrentUserItem();
+							
+							// TODO:...
+							
+							// set return
+							$this->_popup_controller->setSuccessfullItemIDReturn($current_user->getItemID());
+						}
+						break;
+						
 					case 'account':
-						if(isset($form_data['merge'])) {
-							if($this->_popup_controller->checkFormData('merge')) {
-								$authentication = $this->_environment->getAuthenticationObject();
-								$current_user = $this->_environment->getCurrentUserItem();
-
-								if(isset($form_data['auth_source'])) $auth_source_old = $form_data['auth_source'];
-								else $auth_source_old = $current_portal_item->getAuthDefault();
-
-								$authentication->mergeAccount($current_user->getUserID(), $current_user->getAuthSource(), $form_data['merge_user_id'], $auth_source_old);
-
-								// set return
-                				$this->_popup_controller->setSuccessfullItemIDReturn($current_user->getItemID());
+						if($this->_popup_controller->checkFormData('account')) {
+							$authentication = $this->_environment->getAuthenticationObject();
+							
+							// password
+							if(!empty($form_data['new_password'])) {
+								$auth_manager = $authentication->getAuthManager($current_user->getAuthSource());
+								$auth_manager->changePassword($form_data['user_id'], $form_data['new_password']);
+								$error_number = $auth_manager->getErrorNumber();
+								
+								if(!empty($error_number)) {
+									// TODO:$error_string .= $translator->getMessage('COMMON_ERROR_DATABASE').$error_number.'<br />';
+								}
 							}
-						} else {
-							if($this->_popup_controller->checkFormData('account')) {
-								$authentication = $this->_environment->getAuthenticationObject();
-
-								// password
-								if(!empty($form_data['new_password'])) {
-									$auth_manager = $authentication->getAuthManager($current_user->getAuthSource());
-									$auth_manager->changePassword($form_data['user_id'], $form_data['new_password']);
-									$error_number = $auth_manager->getErrorNumber();
-
-									if(!empty($error_number)) {
-										// TODO:$error_string .= $translator->getMessage('COMMON_ERROR_DATABASE').$error_number.'<br />';
-									}
+							
+							if(!$this->_environment->inPortal()) $user = $this->_environment->getPortalUserItem();
+							else $user = $this->_environment->getCurrentUserItem();
+							
+							// user id
+							if(!empty($form_data['user_id']) && $form_data['user_ID'] != $user->getUserID()) {
+								if($authentication->changeUserID($form_data['user_id'], $user)) {
+									$session_manager = $this->_environment->getSessionManager();
+									$session = $this->_environment->getSessionItem();
+									
+									$session_id_old = $session->getSessionID();
+									$session_manager->delete($session_id_old, true);
+									$session->createSessionID($form_data['user_id']);
+									
+									$cookie = $session->getValue('cookie');
+									if($cookie == 1) $session->setValue('cookie', 2);
+									
+									$session_manager->save($session);
+									unset($session_manager);
+									
+									$user->setUserID($form_data['user_id']);
+									require_once('functions/misc_functions.php');
+									plugin_hook('user_save', $portal_user);
 								}
-
-								if(!$this->_environment->inPortal()) $user = $this->_environment->getPortalUserItem();
-								else $user = $this->_environment->getCurrentUserItem();
-
-								// user id
-								if(!empty($form_data['user_id']) && $form_data['user_ID'] != $user->getUserID()) {
-									if($authentication->changeUserID($form_data['user_id'], $user)) {
-										$session_manager = $this->_environment->getSessionManager();
-										$session = $this->_environment->getSessionItem();
-
-										$session_id_old = $session->getSessionID();
-										$session_manager->delete($session_id_old, true);
-										$session->createSessionID($form_data['user_id']);
-
-										$cookie = $session->getValue('cookie');
-										if($cookie == 1) $session->setValue('cookie', 2);
-
-										$session_manager->save($session);
-										unset($session_manager);
-
-										$user->setUserID($form_data['user_id']);
-										require_once('functions/misc_functions.php');
-										plugin_hook('user_save', $portal_user);
-									}
-								} else {
-									// $success_1 = true
+							} else {
+								// $success_1 = true
+							}
+							
+							$save = false;
+							
+							// language
+							if(!empty($form_data['language']) && $form_data['language'] != $user->getLanguage()) {
+								$user->setLanguage($form_data['language']);
+								$save = true;
+								
+								if($this->_environment->inPrivateRoom()) {
+									$current_user->setLanguage($form_data['language']);
+									$current_user->save();
 								}
-
-								$save = false;
-
-								// language
-								if(!empty($form_data['language']) && $form_data['language'] != $user->getLanguage()) {
-									$user->setLanguage($form_data['language']);
+							}
+							
+							// mail settings
+							if(!empty($form_data['mail_account'])) {
+								if($user->getAccountWantMail() == 'no') {
+									$user->setAccountWantMail('yes');
 									$save = true;
-
-									if($this->_environment->inPrivateRoom()) {
-										$current_user->setLanguage($form_data['language']);
-										$current_user->save();
-									}
 								}
-
-								// mail settings
-								if(!empty($form_data['mail_account'])) {
-									if($user->getAccountWantMail() == 'no') {
-										$user->setAccountWantMail('yes');
-										$save = true;
-									}
-								} else {
-									if($user->getAccountWantMail() == 'yes') {
-										$user->setAccountWantMail('no');
-										$save = true;
-									}
+							} else {
+								if($user->getAccountWantMail() == 'yes') {
+									$user->setAccountWantMail('no');
+									$save = true;
 								}
-
-								if(!empty($form_data['mail_room'])) {
-									if($user->getOpenRoomWantMail() == 'no') {
-										$user->setOpenRoomWantMail('yes');
-										$save = true;
-									}
-								} else {
-									if($user->getOpenRoomWantMail() == 'yes') {
-										$user->setOpenRoomWantMail('no');
-										$save = true;
-									}
+							}
+							
+							if(!empty($form_data['mail_room'])) {
+								if($user->getOpenRoomWantMail() == 'no') {
+									$user->setOpenRoomWantMail('yes');
+									$save = true;
 								}
-
-								$change_name = false;
-
+							} else {
+								if($user->getOpenRoomWantMail() == 'yes') {
+									$user->setOpenRoomWantMail('no');
+									$save = true;
+								}
+							}
+							
+							$change_name = false;
+							
+							// forname
+							if(!empty($form_data['forname']) && $user->getFirstName() != $form_data['forname']) {
+								$user->setFirstName($form_data['forname']);
+								$change_name = true;
+								$save = true;
+							}
+							
+							// surname
+							if(!empty($form_data['surname']) && $user->getLastName() != $form_data['surname']) {
+								$user->setLastName($form_data['surname']);
+								$change_name = true;
+								$save = true;
+							}
+							
+							// new upload
+							if(isset($form_data['new_upload'])) {
+								if($form_data['new_upload'] == 'yes') $user->turnNewUploadOn();
+								elseif($form_data['new_upload'] == 'no') $user->turnNewUploadOff();
+								
+								$save = true;
+							}
+							
+							if(!empty($form_data['auto_save'])) {
+								if($form_data['auto_save'] == 'yes') $user->turnAutoSaveOn();
+								elseif($form_data['auto_save'] == 'no') $user->turnAutoSaveOff();
+								
+								$save = true;
+							}
+							
+						    global $c_email_upload;
+						    if ($c_email_upload ) {
+						       $own_room = $user->getOwnRoom();
+						       if ( (isset($form_data['email_to_commsy']) and !empty($form_data['email_to_commsy'])) ) {
+						          $own_room->setEmailToCommSy();
+						       } else {
+						          $own_room->unsetEmailToCommSy();
+						       }
+					           if ( (isset($form_data['email_to_commsy_secret']) and !empty($form_data['email_to_commsy_secret'])) ) {
+						          $own_room->setEmailToCommSySecret($form_data['email_to_commsy_secret']);
+						       } else {
+						          $own_room->setEmailToCommSySecret('');
+						       }
+						       $own_room->save();
+						       $save = true;
+						    }
+						    
+							if($save === true) {
+								$user->save();
+							} else {
+								// $success_2 = true;
+							}
+							
+							// change firstname and lastname in all other user_items of this user
+							if($change_name === true) {
+								$user_manager = $this->_environment->getUserManager();
+								$dummy_user = $user_manager->getNewItem();
+								
 								// forname
-								if(!empty($form_data['forname']) && $user->getFirstName() != $form_data['forname']) {
-									$user->setFirstName($form_data['forname']);
-									$change_name = true;
-									$save = true;
-								}
-
+								$value = $form_data['forname'];
+								if(empty($value)) $value = -1;
+								$dummy_user->setFirstName($value);
+								
 								// surname
-								if(!empty($form_data['surname']) && $user->getLastName() != $form_data['surname']) {
-									$user->setLastName($form_data['surname']);
-									$change_name = true;
-									$save = true;
-								}
-
-								// new upload
-								if(isset($form_data['new_upload'])) {
-									if($form_data['new_upload'] == 'yes') $user->turnNewUploadOn();
-									elseif($form_data['new_upload'] == 'no') $user->turnNewUploadOff();
-
-									$save = true;
-								}
-
-								if(!empty($form_data['auto_save'])) {
-									if($form_data['auto_save'] == 'yes') $user->turnAutoSaveOn();
-									elseif($form_data['auto_save'] == 'no') $user->turnAutoSaveOff();
-
-									$save = true;
-								}
-
-							    global $c_email_upload;
-							    if ($c_email_upload ) {
-							       $own_room = $user->getOwnRoom();
-							       if ( (isset($form_data['email_to_commsy']) and !empty($form_data['email_to_commsy'])) ) {
-							          $own_room->setEmailToCommSy();
-							       } else {
-							          $own_room->unsetEmailToCommSy();
-							       }
-						           if ( (isset($form_data['email_to_commsy_secret']) and !empty($form_data['email_to_commsy_secret'])) ) {
-							          $own_room->setEmailToCommSySecret($form_data['email_to_commsy_secret']);
-							       } else {
-							          $own_room->setEmailToCommSySecret('');
-							       }
-							       $own_room->save();
-							       $save = true;
-							    }
-
-
-								if($save === true) {
-									$user->save();
-								} else {
-									// $success_2 = true;
-								}
-
-								// change firstname and lastname in all other user_items of this user
-								if($change_name === true) {
-									$user_manager = $this->_environment->getUserManager();
-									$dummy_user = $user_manager->getNewItem();
-
-									// forname
-									$value = $form_data['forname'];
-									if(empty($value)) $value = -1;
-									$dummy_user->setFirstName($value);
-
-									// surname
-									$value = $form_data['surname'];
-									if(empty($value)) $value = -1;
-									$dummy_user->setLastName($value);
-
-									$user->changeRelatedUser($dummy_user);
-								}
-
-								// set return
-                				$this->_popup_controller->setSuccessfullItemIDReturn($user->getItemID());
+								$value = $form_data['surname'];
+								if(empty($value)) $value = -1;
+								$dummy_user->setLastName($value);
+								
+								$user->changeRelatedUser($dummy_user);
 							}
+							
+							// set return
+                			$this->_popup_controller->setSuccessfullItemIDReturn($user->getItemID());
 						}
 						break;
 

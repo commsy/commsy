@@ -141,6 +141,7 @@
 		 */
 		private function processBaseTemplate() {
 			$current_user = $this->_environment->getCurrentUser();
+			$portal_user = $current_user->getRelatedPortalUserItem();
 			$current_context = $this->_environment->getCurrentContextItem();
 			$translator = $this->_environment->getTranslationObject();
 			$count_new_accounts = 0;
@@ -201,7 +202,19 @@
 			$to_javascript['i18n']['COMMON_NEW_BLOCK'] = $translator->getMessage('COMMON_NEW_BLOCK');
 			$to_javascript['i18n']['COMMON_SAVE_BUTTON'] = $translator->getMessage('COMMON_SAVE_BUTTON');
 			$to_javascript['security']['token'] = getToken();
-
+			$to_javascript['autosave']['mode'] = 0;
+			$to_javascript['autosave']['limit'] = 0;
+			
+			if(isset($portal_user) && $portal_user->isAutoSaveOn()) {
+				global $c_autosave_mode;
+				global $c_autosave_limit;
+				
+				if(isset($c_autosave_mode) && isset($c_autosave_limit)) {
+					$to_javascript['autosave']['mode'] = $c_autosave_mode;
+					$to_javascript['autosave']['limit'] = $c_autosave_limit;
+				}
+			}
+			
 			$this->assign('javascript', 'variables_as_json', json_encode($to_javascript));
 		}
 	}

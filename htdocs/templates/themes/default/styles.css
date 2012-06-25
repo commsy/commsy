@@ -92,6 +92,36 @@ id and class selectors
 frame and header
 ----------------------------------------------------------------------
 */
+div#loadingScreen {
+	z-index: 7;
+	position: fixed;
+	width: 300px;
+	margin-left: -158px;
+	height: 90px;
+	margin-top: -53px;
+	left: 50%;
+	top: 50%;
+	background-color: rgba(0, 0, 0, 0.6);
+	border: 5px solid transparent;
+	border-radius: 2px;
+	box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
+	padding: 5px;
+}
+
+div#loadingScreenInner {
+	background: none repeat scroll 0 0 #E8E8E8;
+    border-radius: 2px 2px 2px 2px;
+    position: relative;
+    padding: 10px;
+    width: 280px;
+    height: 70px;
+    text-align: center;
+}
+
+div#loadingScreenInner .img {
+	margin-top: 10px;
+}
+
 #popup_wrapper {
 	position: absolute;
 	width: 100%;
@@ -145,13 +175,13 @@ frame and header
     padding: 0 10px 10px 10px;
 }
 
-li.netnavigation{
+li.netnavigation {
 	padding: 10px;
 	background: url("img/fade_in_bg.jpg") repeat-x scroll 0 0 #E8E8E8;
 	/*border-bottom: 1px solid #D1D1D1;*/
 	}
 
-ul.netnavigation{
+ul.netnavigation {
 	margin-top: 10px;
 	border: 1px solid #D1D1D1;
 	}
@@ -3026,7 +3056,7 @@ jQuery UI
   }
 
 .fi_moredetails .ui-progressbar {
-  height: 11px;
+  height: 15px;
   }
 
 .fi_moredetails .ui-progressbar .ui-progressbar-value {
@@ -3073,6 +3103,7 @@ Tooltips
     border-radius: 2px 2px 2px 2px;
     box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
 	width:320px;
+	position: absolute;
 }
 
 .tooltip_title{
@@ -3408,6 +3439,25 @@ div.breadcrumb_room_area .ui-state-highlight {
 	float: left;
 }
 
+div.breadcrumb_room_area .dojoDndItemAfter,
+div.breadcrumb_room_area .dojoDndItemBefore {
+	border: 1px solid #FCEFA1 !important;
+	background-color: #FBF9EE !important;
+	height: 85px !important;
+	width: 210px !important;
+	margin: 5px 10px !important;
+	display: block !important;
+	float: left !important;
+	}
+
+div.breadcrumb_room_area .dojoDndItemAfter {
+	border-bottom: 2px solid #336699 !important;
+	}
+
+div.breadcrumb_room_area .dojoDndItemBefore {
+	border-top: 2px solid #336699 !important;
+	}
+	
 .room_change_room_box {
     border-top: 1px solid #EBEBEB;
     border-left: 1px solid #EBEBEB;
@@ -3440,7 +3490,7 @@ div.breadcrumb_room_area .ui-state-highlight {
 }
 
 
-a.room_change_item {
+div.room_change_item {
     display:block;
     text-decoration: none;
     float: left;

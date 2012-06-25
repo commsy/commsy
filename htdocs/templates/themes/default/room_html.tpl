@@ -11,7 +11,7 @@
 			</div>
 
 			<div id="tm_pers_bar">
-				<a href="" id="tm_user">
+				<a href="#" id="tm_user">
 					{* login / logout *}
 					{if !$environment.is_guest}
 						___COMMON_WELCOME___, {$environment.username|truncate:20}
@@ -24,9 +24,10 @@
 
 			{if !$environment.is_guest}
 				<div id="tm_icons_bar">
-					<a href="" id="tm_widgets" title="___MYWIDGETS_INDEX___">&nbsp;</a>
-					<a href="" id="tm_mycalendar" title="___MYCALENDAR_INDEX___">&nbsp;</a>
-					<a href="" id="tm_stack" title="___COMMON_ENTRY_INDEX___">&nbsp;</a>
+					<a href="#" id="tm_widgets" title="___MYWIDGETS_INDEX___">&nbsp;</a>
+					<a href="#" id="tm_mycalendar" title="___MYCALENDAR_INDEX___">&nbsp;</a>
+					<a href="#" id="tm_stack" title="___COMMON_ENTRY_INDEX___">&nbsp;</a>
+					<a href="#" id="tm_clipboard" title="___MYAREA_MY_COPIES___">&nbsp;</a>
 					{if ($environment.count_copies >0)}
 						<a href="" id="tm_clipboard" title="___MYAREA_MY_COPIES___">&nbsp;</a>
 						<span id="tm_clipboard_copies">{$environment.count_copies}</span>
@@ -38,11 +39,11 @@
 			{/if}
 
 			<div id="tm_breadcrumb">
-				<a href="">___COMMON_GO_BUTTON___: {$room.room_information.room_name}</a>
+				<a href="#" id="tm_bread_crumb">___COMMON_GO_BUTTON___: {$room.room_information.room_name}</a>
 			</div>
 			{if $environment.is_moderator}
 				<div id="tm_icons_left_bar">
-					<a href="" id="tm_settings" title="___COMMON_CONFIGURATION___">&nbsp;</a>
+					<a href="#" id="tm_settings" title="___COMMON_CONFIGURATION___">&nbsp;</a>
 					{if ($environment.count_new_accounts >0)}
 						<span id="tm_settings_count_new_accounts">{$environment.count_new_accounts}</span>
 					{/if}
@@ -220,28 +221,8 @@
 									<a href="" title="___COMMON_EDIT___" class="btn_body_rc"><img src="{$basic.tpl_path}img/btn_edit_rc.gif" alt="close" /></a>
 		-->
 								<div class="portlet_rc_body{if $h} hidden{/if}">
-									<div class="tree"></div>
-
-
-									<div id="tag_tree">
-										{block name=sidebar_tagbox_treefunction}
-											{* Tags Function *}
-											{function name=tag_tree level=0}
-												<ul>
-												{foreach $nodes as $node}
-													<li	id="node_{$node.item_id}"
-														{if $node.children|count > 0}class="folder"{/if}
-														data="url:'commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=index{restriction_params params=$environment.params_array key=seltag value=$node.item_id}'">{$node.title}
-													{if $node.children|count > 0}	{* recursive call *}
-														{tag_tree nodes=$node.children level=$level+1}
-													{/if}
-												{/foreach}
-												</ul>
-											{/function}
-										{/block}
-
-										{* call function *}
-										{tag_tree nodes=$room.tags}
+									<div class="tree">
+										<img src="{$basic.tpl_path}img/ajax_loader.gif" />
 									</div>
 								</div>
 							</div>

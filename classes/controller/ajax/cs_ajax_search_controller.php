@@ -41,7 +41,8 @@
 				$words[] = $word['sw_word'];
 			}
 			
-			echo json_encode($words);
+			$this->setSuccessfullDataReturn($words);
+			echo $this->_return;
 		}
 
 		/*

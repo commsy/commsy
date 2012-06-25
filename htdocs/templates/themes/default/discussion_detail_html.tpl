@@ -3,9 +3,9 @@
 {block name=room_detail_content}
 	<div class="item_actions">
 		<div id="top_item_actions">
-			<a class="edit" href="#"><span class="edit_set"> &nbsp; </span></a>
-			<a class="linked" href="#"><span class="ref_to_ia"> &nbsp; </span></a>
-			<a class="detail" href="#"><span class="details_ia"> &nbsp; </span></a>
+			<a class="edit" data-custom="expand: 'edit_expand'" href="#"><span class="edit_set"> &nbsp; </span></a>
+			<a class="linked" data-custom="expand: 'linked_expand'" href="#"><span class="ref_to_ia"> &nbsp; </span></a>
+			<a class="detail"  data-custom="expand: 'detail_expand'" href="#"><span class="details_ia"> &nbsp; </span></a>
 			{if $item.linked_count}
 				<div class="action_count linked_count_without_annotation" >{$item.linked_count}</div>
 			{else}
@@ -17,29 +17,31 @@
 	<div class="item_body"> <!-- Start item body -->
 
 		<!-- Start fade_in_ground -->
-		<div class="fade_in_ground_actions hidden">
-			{if $detail.actions.edit}
-				<a id="action_edit" href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.content.item_id}">___COMMON_EDIT_ITEM___</a> |
-			{else}
-				<span title="___COMMON_NO_ACTION___" class="disabled_actions">___COMMON_EDIT_ITEM___</span> |
-			{/if}
-			{if $detail.actions.delete}
-				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.content.item_id}">___COMMON_DELETE_ITEM___</a> |
-			{else}
-				<span title="___COMMON_NO_ACTION___" class="disabled_actions">___COMMON_DELETE_ITEM___</span> |
-			{/if}
-			{if $detail.actions.mail}
-				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.content.item_id}">___COMMON_EMAIL_TO___</a> |
-			{/if}
-			{if $detail.actions.copy}
-				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.content.item_id}">___COMMON_ITEM_COPY_TO_CLIPBOARD___</a> |
-			{else}
-				<span title="___COMMON_NO_ACTION___" class="disabled_actions">___COMMON_ITEM_COPY_TO_CLIPBOARD___</span> |
-			{/if}
-			{if $detail.actions.new}
-				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.content.item_id}">___COMMON_NEW_ITEM___</a> |
-			{/if}
-			<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.content.item_id}">___COMMON_DOWNLOAD___</a>
+		<div id="edit_expand" class="hidden">
+			<div class="fade_in_ground_actions">
+				{if $detail.actions.edit}
+					<a id="action_edit" class="open_popup" data-custom="iid: {$detail.content.item_id}, module: '{$environment.module}'" href="#"">___COMMON_EDIT_ITEM___</a> |
+				{else}
+					<span title="___COMMON_NO_ACTION___" class="disabled_actions">___COMMON_EDIT_ITEM___</span> |
+				{/if}
+				{if $detail.actions.delete}
+					<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.content.item_id}">___COMMON_DELETE_ITEM___</a> |
+				{else}
+					<span title="___COMMON_NO_ACTION___" class="disabled_actions">___COMMON_DELETE_ITEM___</span> |
+				{/if}
+				{if $detail.actions.mail}
+					<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.content.item_id}">___COMMON_EMAIL_TO___</a> |
+				{/if}
+				{if $detail.actions.copy}
+					<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.content.item_id}">___COMMON_ITEM_COPY_TO_CLIPBOARD___</a> |
+				{else}
+					<span title="___COMMON_NO_ACTION___" class="disabled_actions">___COMMON_ITEM_COPY_TO_CLIPBOARD___</span> |
+				{/if}
+				{if $detail.actions.new}
+					<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.content.item_id}">___COMMON_NEW_ITEM___</a> |
+				{/if}
+				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.content.item_id}">___COMMON_DOWNLOAD___</a>
+			</div>
 		</div>
 		<!-- Ende fade_in_ground -->
 
@@ -106,7 +108,10 @@
 				{/section}
 			{/block}
 		</div> <!-- Ende item_legend -->
-		{include file="include/detail_moredetails_html.tpl" data=$detail.content.moredetails}
+		
+		<div id="detail_expand" class="hidden">
+			{include file="include/detail_moredetails_html.tpl" data=$detail.content.moredetails}
+		</div>
 
 	</div> <!-- Ende item body -->
 	<div class="clear"> </div>
@@ -115,8 +120,8 @@
 
 	{foreach $detail.content.disc_articles as $article}
 		<div class="item_actions">
-			<a class="edit" href="#"><span class="edit_set"> &nbsp; </span></a>
-			<a class="detail" href="#"><span class="details_ia"> &nbsp; </span></a>
+			<a class="edit" data-custom="expand: 'edit_expand_article_{$article@index}'" href="#"><span class="edit_set"> &nbsp; </span></a>
+			<a class="detail" data-custom="expand: 'detail_expand_article_{$article@index}'" href="#"><span class="details_ia"> &nbsp; </span></a>
 		</div>
 
 		<div class="item_body"> <!-- Start item body -->
@@ -124,13 +129,15 @@
 			<a name="article{$article.item_id}"></a>
 
 			<!-- Start fade_in_ground -->
-			<div class="fade_in_ground_actions hidden">
-				{if $article.actions.edit}
-					<a id="action_edit" href="commsy.php?cid={$environment.cid}&mod={$article.actions.edit_module}&fct=edit&iid={$article.item_id}">___COMMON_EDIT_ITEM___</a> |
-				{/if}
-				{if $article.actions.delete}
-					<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&iid={$detail.content.discussion.item_id}&action=delete&discarticle_iid={$article.item_id}&discarticle_action=delete">___COMMON_DELETE_ITEM___</a>
-				{/if}
+			<div id="edit_expand_article_{$article@index}" class="hidden">
+				<div class="fade_in_ground_actions">
+					{if $article.actions.edit}
+						<a id="action_edit" class="open_popup" data-custom="iid: {$article.item_id}, module: '{$article.actions.edit_module}'" href="#">___COMMON_EDIT_ITEM___</a> |
+					{/if}
+					{if $article.actions.delete}
+						<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&iid={$detail.content.discussion.item_id}&action=delete&discarticle_iid={$article.item_id}&discarticle_action=delete">___COMMON_DELETE_ITEM___</a>
+					{/if}
+				</div>
 			</div>
 			<!-- Ende fade_in_ground -->
 
@@ -193,9 +200,11 @@
 						<div class="clear"> </div>
 					</div>
 				</div>
-
-				{include file="include/detail_moredetails_html.tpl" data=$article.moredetails}
 			{/block}
+			
+			<div id="detail_expand_article_{$article@index}" class="hidden">
+				{include file="include/detail_moredetails_html.tpl" data=$article.moredetails}
+			</div>
 		</div> <!-- Ende item body -->
 		<div class="clear"> </div>
 	{/foreach}

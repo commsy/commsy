@@ -3,13 +3,13 @@
 {block name=room_detail_content}
 	<div class="item_actions">
 		<div id="top_item_actions">
-			<a class="edit" href="#"><span class="edit_set"> &nbsp; </span></a>
-			<a class="linked" href="#"><span class="ref_to_ia"> &nbsp; </span></a>
-			<a class="detail" href="#"><span class="details_ia"> &nbsp; </span></a>
+			<a class="edit" data-custom="expand: 'edit_expand'" href="#"><span class="edit_set"> &nbsp; </span></a>
+			<a class="linked" data-custom="expand: 'linked_expand'" href="#"><span class="ref_to_ia"> &nbsp; </span></a>
+			<a class="detail" data-custom="expand: 'detail_expand'" href="#"><span class="details_ia"> &nbsp; </span></a>
 			{if $room.workflow}
-				<a class="workflow" href="#"><span class="workflow_ia"> &nbsp; </span></a>
+				<a class="workflow" data-custom="expand: 'workflow_expand'" href="#"><span class="workflow_ia"> &nbsp; </span></a>
 			{/if}
-			<a class="annotations" href="#"><span class="ref_to_anno"> &nbsp; </span></a>
+			<a class="annotations" data-custom="expand: 'annotations_expand'" href="#"><span class="ref_to_anno"> &nbsp; </span></a>
 			{if $detail.annotations|@count}
 			<div class="action_count anno_count" >{$detail.annotations|@count}
 			</div>
@@ -39,38 +39,40 @@
 	<div class="item_body"> <!-- Start item body -->
 
 		<!-- Start fade_in_ground -->
-		<div class="fade_in_ground_actions hidden">
-			{* TODO: add missing actions *}
-			{if $detail.actions.edit}
-				<a id="action_edit" href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.item_id}">___COMMON_EDIT_ITEM___</a> |
-			{else}
-				<span title="___COMMON_NO_ACTION___" class="disabled_actions">___COMMON_EDIT_ITEM___</span> |
-			{/if}
-			{if $detail.actions.edit}
-				<a id="action_edit" href="commsy.php?cid={$environment.cid}&mod=section&fct=edit&iid=NEW&ref_iid={$detail.item_id}">___MATERIAL_SECTION_ADD___</a> |
-			{else}
-				<span title="___COMMON_NO_ACTION___" class="disabled_actions">___MATERIAL_SECTION_ADD___</span> |
-			{/if}
-			{if $detail.actions.delete}
-				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.item_id}">___COMMON_DELETE_ITEM___</a> |
-			{else}
-				<span title="___COMMON_NO_ACTION___" class="disabled_actions">___COMMON_DELETE_ITEM___</span> |
-			{/if}
-			{if $detail.actions.mail}
-				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.item_id}">___COMMON_EMAIL_TO___</a> |
-			{/if}
-			{if $detail.actions.copy}
-				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.item_id}">___COMMON_ITEM_COPY_TO_CLIPBOARD___</a> |
-			{else}
-				<span title="___COMMON_NO_ACTION___" class="disabled_actions">___COMMON_ITEM_COPY_TO_CLIPBOARD___</span> |
-			{/if}
-			{if $detail.actions.workflow_read}
-				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&iid={$detail.item_id}&workflow_read=true">___ITEM_WORKFLOW_MARK_READ___</a> |
-			{/if}
-			{if $detail.actions.workflow_unread}
-				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&iid={$detail.item_id}&workflow_not_read=true">___ITEM_WORKFLOW_MARK_NOT_READ___</a> |
-			{/if}
-			<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.item_id}">___COMMON_DOWNLOAD___</a>
+		<div id="edit_expand" class="hidden">
+			<div class="fade_in_ground_actions">
+				{* TODO: add missing actions *}
+				{if $detail.actions.edit}
+					<a class="open_popup" data-custom="iid: {$detail.item_id}, module: '{$environment.module}'" href="#"">___COMMON_EDIT_ITEM___</a> |
+				{else}
+					<span title="___COMMON_NO_ACTION___" class="disabled_actions">___COMMON_EDIT_ITEM___</span> |
+				{/if}
+				{if $detail.actions.edit}
+					<a id="action_edit" href="commsy.php?cid={$environment.cid}&mod=section&fct=edit&iid=NEW&ref_iid={$detail.item_id}">___MATERIAL_SECTION_ADD___</a> |
+				{else}
+					<span title="___COMMON_NO_ACTION___" class="disabled_actions">___MATERIAL_SECTION_ADD___</span> |
+				{/if}
+				{if $detail.actions.delete}
+					<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.item_id}">___COMMON_DELETE_ITEM___</a> |
+				{else}
+					<span title="___COMMON_NO_ACTION___" class="disabled_actions">___COMMON_DELETE_ITEM___</span> |
+				{/if}
+				{if $detail.actions.mail}
+					<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.item_id}">___COMMON_EMAIL_TO___</a> |
+				{/if}
+				{if $detail.actions.copy}
+					<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.item_id}">___COMMON_ITEM_COPY_TO_CLIPBOARD___</a> |
+				{else}
+					<span title="___COMMON_NO_ACTION___" class="disabled_actions">___COMMON_ITEM_COPY_TO_CLIPBOARD___</span> |
+				{/if}
+				{if $detail.actions.workflow_read}
+					<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&iid={$detail.item_id}&workflow_read=true">___ITEM_WORKFLOW_MARK_READ___</a> |
+				{/if}
+				{if $detail.actions.workflow_unread}
+					<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&iid={$detail.item_id}&workflow_not_read=true">___ITEM_WORKFLOW_MARK_NOT_READ___</a> |
+				{/if}
+				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.item_id}">___COMMON_DOWNLOAD___</a>
+			</div>
 		</div>
 		<!-- Ende fade_in_ground -->
 
@@ -142,7 +144,10 @@
 		{if $room.workflow}
 		   {include file="include/detail_workflow_html.tpl" data=$detail.content.workflow}
 		{/if}
-		{include file="include/detail_moredetails_html.tpl" data=$detail.content.moredetails}
+		
+		<div id="detail_expand" class="hidden">
+			{include file="include/detail_moredetails_html.tpl" data=$detail.content.moredetails}
+		</div>
 
 	</div> <!-- Ende item body -->
 	<div class="clear"> </div>
@@ -150,8 +155,8 @@
 
 	{foreach $detail.content.sections as $section}
 		<div class="item_actions">
-			<a class="edit" href="#"><span class="edit_set"> &nbsp; </span></a>
-			<a class="detail" href="#"><span class="details_ia"> &nbsp; </span></a>
+			<a data-custom="expand: 'edit_expand_section_{$section@index}'" class="edit" href="#"><span class="edit_set"> &nbsp; </span></a>
+			<a data-custom="expand: 'detail_expand_section_{$section@index}'" class="detail" href="#"><span class="details_ia"> &nbsp; </span></a>
 		</div>
 
 		<div class="item_body"> <!-- Start item body -->
@@ -159,8 +164,10 @@
 			<a name="section{$section.iid}"></a>
 
 			<!-- Start fade_in_ground -->
-			<div class="fade_in_ground_actions hidden">
-				actions
+			<div id="edit_expand_section_{$section@index}" class="hidden">
+				<div class="fade_in_ground_actions">
+					actions
+				</div>
 			</div>
 			<!-- Ende fade_in_ground -->
 
@@ -212,7 +219,10 @@
 					<div class="clear"> </div>
 				</div>
 			</div>
-			{include file="include/detail_moredetails_html.tpl" data=$section.moredetails}
+			
+			<div id="detail_expand_section_{$section@index}" class="hidden">
+				{include file="include/detail_moredetails_html.tpl" data=$section.moredetails}
+			</div>
 
 		</div> <!-- Ende item body -->
 		<div class="clear"> </div>

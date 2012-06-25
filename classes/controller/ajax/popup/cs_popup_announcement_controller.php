@@ -168,7 +168,7 @@ class cs_popup_announcement_controller implements cs_rubric_popup_controller {
                 }
 
                 // this will handle already attached files as well as adding new files
-                $this->_popup_controller->getUtils()->setFilesForItem($announcement_item, $file_ids, CS_ANNOUNCEMENT_TYPE);
+                $this->_popup_controller->getUtils()->setFilesForItem($announcement_item, $file_ids, $form_data["files"], CS_ANNOUNCEMENT_TYPE);
 
 
                 if ( isset($form_data['hide']) ) {

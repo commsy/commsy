@@ -122,64 +122,58 @@
 					<div id="popup_tabs">
 						<div class="tab_navigation">
 							{if $popup.is_owner == true}
-								<a href="" class="pop_tab_active">___PROFILE_ACCOUNT_DATA___</a>
-								<a href="" id="popup_netnavigation_attach_new" class="pop_tab">___COMMON_ATTACHED_GROUPS___</a>
+								<a href="account_tab" class="pop_tab_active">___PROFILE_ACCOUNT_DATA___</a>
+								<a href="netnavigation_tab" id="popup_netnavigation_attach_new" class="pop_tab">___COMMON_ATTACHED_GROUPS___</a>
 							{else}
-								<a href="" id="popup_netnavigation_attach_new" class="pop_tab_active">___COMMON_ATTACHED_GROUPS___</a>
+								<a href="netnavigation_tab" id="popup_netnavigation_attach_new" class="pop_tab_active">___COMMON_ATTACHED_GROUPS___</a>
 							{/if}
 							<div class="clear"> </div>
 						</div>
 						<div id="popup_tabcontent">
 							{if $popup.is_owner == true}
-								<div class="settings_area">
-									<span  class="input_label_230">___COMMON_LANGUAGE___<span class="required">*</span>:</span>
-									<select id="language" name="form_data[language]" size="1" class="size_200" >
-							            <option value="none" {if $item.language == 'none'} selected="selected" {/if} >* ___BROWSER___</option>
-							            <option value="de" {if $item.language == 'de'} selected="selected" {/if}>___DE___</option>
-							            <option value="en" {if $item.language == 'en'} selected="selected" {/if}>___EN___</option>
-			         				</select>
-									{if $environment.room_type_commnunity}
-										<div class="input_row">
-											<span  class="input_label_230">___VISIBLE_PROPERTY___<span class="required">*</span>:</span>
-											<input type="radio" value="1" {if $item.commsy_visible  == '1' }checked="checked"{/if}" name="form_data[commsy_visible]"  />___VISIBLE_ONLY_LOGGED___
-											<input type="radio" value="2" {if !$item.commsy_visible == '2'} checked="checked"{/if}" name="form_data[commsy_visible]"  />___VISIBLE_ALWAYS___
-										</div>
-									{/if}
-									{if $environment.is_moderator}
-										<div class="input_row">
-											<div class="input_label_230">___USER_MAIL_GET_ACCOUNT___<span class="required">*</span>:</div>
-											<input type="radio" value="yes" {if $item.want_mail_get_account =='yes'}checked="checked"{/if}" name="form_data[want_mail_get_account]"  />___COMMON_YES___
-											<input type="radio" value="no" {if $item.want_mail_get_account == 'no'}checked="checked"{/if}" name="form_data[want_mail_get_account]" />___COMMON_NO___
-										</div>
-										<div class="clear"> </div>
-										<div class="input_row">
-											<span  class="input_label_230">___USER_MAIL_ROOM___<span class="required">*</span>:</span>
-											<input type="radio" value="yes" {if $item.want_mail_open_room  == 'yes' }checked="checked"{/if}" name="form_data[want_mail_open_room]"  />___COMMON_YES___
-											<input type="radio" value="no" {if !$item.want_mail_open_room == 'no'} checked="checked"{/if}" name="form_data[want_mail_open_room]"  />___COMMON_NO___
-										</div>
+								<div class="tab" id="account_tab">
+									<div class="settings_area">
+										<span  class="input_label_230">___COMMON_LANGUAGE___<span class="required">*</span>:</span>
+										<select id="language" name="form_data[language]" size="1" class="size_200" >
+								            <option value="none" {if $item.language == 'none'} selected="selected" {/if} >* ___BROWSER___</option>
+								            <option value="de" {if $item.language == 'de'} selected="selected" {/if}>___DE___</option>
+								            <option value="en" {if $item.language == 'en'} selected="selected" {/if}>___EN___</option>
+				         				</select>
 										{if $environment.room_type_commnunity}
 											<div class="input_row">
-												<span  class="input_label_230">___USER_MAIL_PUBLISH_MATERIAL___<span class="required">*</span>:</span>
-												<input type="radio" value="yes" {if $item.want_mail_publish_material  == 'yes' }checked="checked"{/if}" name="form_data[want_mail_publish_material]"  />___COMMON_YES___
-												<input type="radio" value="no" {if !$item.want_mail_publish_material == 'no'} checked="checked"{/if}" name="form_data[want_mail_publish_material]"  />___COMMON_NO___
+												<span  class="input_label_230">___VISIBLE_PROPERTY___<span class="required">*</span>:</span>
+												<input type="radio" value="1" {if $item.commsy_visible  == '1' }checked="checked"{/if}" name="form_data[commsy_visible]"  />___VISIBLE_ONLY_LOGGED___
+												<input type="radio" value="2" {if !$item.commsy_visible == '2'} checked="checked"{/if}" name="form_data[commsy_visible]"  />___VISIBLE_ALWAYS___
 											</div>
 										{/if}
-									{/if}
-									<div class="clear"> </div>
+										{if $environment.is_moderator}
+											<div class="input_row">
+												<div class="input_label_230">___USER_MAIL_GET_ACCOUNT___<span class="required">*</span>:</div>
+												<input type="radio" value="yes" {if $item.want_mail_get_account =='yes'}checked="checked"{/if}" name="form_data[want_mail_get_account]"  />___COMMON_YES___
+												<input type="radio" value="no" {if $item.want_mail_get_account == 'no'}checked="checked"{/if}" name="form_data[want_mail_get_account]" />___COMMON_NO___
+											</div>
+											<div class="clear"> </div>
+											<div class="input_row">
+												<span  class="input_label_230">___USER_MAIL_ROOM___<span class="required">*</span>:</span>
+												<input type="radio" value="yes" {if $item.want_mail_open_room  == 'yes' }checked="checked"{/if}" name="form_data[want_mail_open_room]"  />___COMMON_YES___
+												<input type="radio" value="no" {if !$item.want_mail_open_room == 'no'} checked="checked"{/if}" name="form_data[want_mail_open_room]"  />___COMMON_NO___
+											</div>
+											{if $environment.room_type_commnunity}
+												<div class="input_row">
+													<span  class="input_label_230">___USER_MAIL_PUBLISH_MATERIAL___<span class="required">*</span>:</span>
+													<input type="radio" value="yes" {if $item.want_mail_publish_material  == 'yes' }checked="checked"{/if}" name="form_data[want_mail_publish_material]"  />___COMMON_YES___
+													<input type="radio" value="no" {if !$item.want_mail_publish_material == 'no'} checked="checked"{/if}" name="form_data[want_mail_publish_material]"  />___COMMON_NO___
+												</div>
+											{/if}
+										{/if}
+										<div class="clear"> </div>
+									</div>
 								</div>
 							{/if}
 
 
-							<div class="settings_area {if $popup.is_owner == true}hidden{/if}">
-
-							{*			<div id="popup_netnavigation_outer_bottom" class="popup_netnavigation_outer">
-											<a id="popup_netnavigation_attach_new" href="#" title="___COMMON_ITEM_ATTACH___">
-												<span id="attach_show" class="hidden">___COMMON_ITEM_ATTACH_SHOW___</span>
-												<span id="attach_hide">___COMMON_ITEM_ATTACH_HIDE___</span>
-											</a>
-										</div>
-							*}
-
+							<div id="netnavigation_tab" class="tab{if $popup.is_owner == true} hidden{/if}">
+								<div class="settings_area">							
 										<div id="popup_netnavigation">
 											<div id="content_row_two_max">
 							                    <div id="crt_content">
@@ -187,7 +181,7 @@
 							                            <div id="crt_row_area">
 							                            </div>
 							                        </div>
-
+							
 							                        <div id="crt_col_right">
 							                            <div class="pop_item_navigation">
 							                                <a id="first" href="#"><img src="{$basic.tpl_path}img/btn_ar_start2.gif" alt="Start" /></a>
@@ -196,13 +190,35 @@
 							                                <a id="next" href="#"><img src="{$basic.tpl_path}img/btn_ar_right2.gif" alt="weiter" /></a>
 							                                <a id="last" href="#"><img src="{$basic.tpl_path}img/btn_ar_end2.gif" alt="Ende" /></a>
 							                            </div>
+							
+							                            <div class="pop_item_content">
+							                                <input name="netnavigation_search_restriction" type="text" value="___HOME_SEARCH_SHORT_TO___" class="size_170" />
+							                                <br/>
+							                                <span class="sitenote">___SEARCH_RUBRIC_RESTRICTION___</span><br/>
+							                                <select name="netnavigation_rubric_restriction" size="1" class="size_170_select"></select>
+							                                <br/>
+							
+							                                {if $popup.activating}
+								                                <span class="sitenote">___COMMON_SHOW_ACTIVATING_ENTRIES___</span><br/>
+								                                <select name="netnavigation_type_restriction" size="1" class="size_170_select">
+								                                    <option value="1">___COMMON_ALL_ENTRIES___</option>
+								                                    <option value="-2" disabled="disabled">------------------------------</option>
+								                                    <option value="2" selected="selected">___COMMON_SHOW_ONLY_ACTIVATED_ENTRIES___</option>
+								                                </select>
+								                                <br/>
+							                                {/if}
+							
+							                                <input name="netnavigation_linked_restriction" type="checkbox" value="true" /> <span class="sitenote">___SEARCH_LINKED_ENTRIES_ONLY___</span>
+							                                <br/>
+							                                <input name="netnavigation_submit_restrictions" type="submit" value="___COMMON_SEARCH_OVERLAY_RESTRICTION_OPTIONS___" />
+							                            </div>
 							                        </div>
-
+							
 							                        <div class="clear"> </div>
 							                    </div>
 							                </div>
 										</div>
-
+							
 										<div id="netnavigation_list">
 											<ul class="netnavigation">
 												{foreach $popup.netnavigation.items as $entry}
@@ -217,14 +233,15 @@
 												{/foreach}
 											</ul>
 										</div>
-
+							
 									<div class="clear"></div>
+								</div>
 							</div>
 
 						</div>
 						<div id="content_buttons">
 							<div id="crt_actions_area">
-								<input id="popup_button_create" class="popup_button" type="button" name="" value="{if $popup.edit == false}___COMMON_NEW_ITEM___{else}___COMMON_CHANGE_BUTTON___{/if}" />
+								<input id="popup_button_create" class="popup_button submit" data-custom="part: 'all'" type="button" name="" value="{if $popup.edit == false}___COMMON_NEW_ITEM___{else}___COMMON_CHANGE_BUTTON___{/if}" />
 								<input id="popup_button_abort" class="popup_button" type="button" name="" value="___COMMON_CANCEL_BUTTON___" />
 							</div>
 						</div>

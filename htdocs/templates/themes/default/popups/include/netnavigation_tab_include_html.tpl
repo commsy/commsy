@@ -1,4 +1,5 @@
-<div class="settings_area hidden">
+<div class="tab hidden" id="netnavigation_tab">
+	<div class="settings_area">
 
 {*			<div id="popup_netnavigation_outer_bottom" class="popup_netnavigation_outer">
 				<a id="popup_netnavigation_attach_new" href="#" title="___COMMON_ITEM_ATTACH___">
@@ -32,7 +33,7 @@
                                 <select name="netnavigation_rubric_restriction" size="1" class="size_170_select"></select>
                                 <br/>
 
-                                {if $popup.activating}
+                                {if $popup.config.with_activating}
 	                                <span class="sitenote">___COMMON_SHOW_ACTIVATING_ENTRIES___</span><br/>
 	                                <select name="netnavigation_type_restriction" size="1" class="size_170_select">
 	                                    <option value="1">___COMMON_ALL_ENTRIES___</option>
@@ -56,17 +57,20 @@
 			<div id="netnavigation_list">
 				<ul class="netnavigation">
 					{foreach $popup.netnavigation.items as $entry}
-						<li id="item_{$entry.linked_iid}" class="netnavigation">
-							<a target="_self" href="commsy.php?cid={$environment.cid}&mod={$entry.module}&fct=detail&iid={$entry.linked_iid}" title="{$entry.title}">
-								<img src="{$basic.tpl_path}img/netnavigation/{$entry.img}" title="{$entry.title}"/>
-							</a>
-							<a target="_self" href="commsy.php?cid={$environment.cid}&mod={$entry.module}&fct=detail&iid={$entry.linked_iid}" title="{$entry.title}">
-								{$entry.link_text}
-							</a>
+						<li id="item_{$entry.linked_iid}">
+							<div class="netnavigation">
+								<a target="_self" href="commsy.php?cid={$environment.cid}&mod={$entry.module}&fct=detail&iid={$entry.linked_iid}" title="{$entry.title}">
+									<img src="{$basic.tpl_path}img/netnavigation/{$entry.img}" title="{$entry.title}"/>
+								</a>
+								<a target="_self" href="commsy.php?cid={$environment.cid}&mod={$entry.module}&fct=detail&iid={$entry.linked_iid}" title="{$entry.title}">
+									{$entry.link_text}
+								</a>
+							</div>
 						</li>
 					{/foreach}
 				</ul>
 			</div>
 
 		<div class="clear"></div>
+	</div>
 </div>

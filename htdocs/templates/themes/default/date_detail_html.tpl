@@ -3,10 +3,10 @@
 {block name=room_detail_content}
     <div class="item_actions">
 		<div id="top_item_actions">
-			<a class="edit" href=""><span class="edit_set"> &nbsp; </span></a>
-			<a class="linked" href=""><span class="ref_to_ia"> &nbsp; </span></a>
-			<a class="detail" href=""><span class="details_ia"> &nbsp; </span></a>
-			<a class="annotations" href="#"><span class="ref_to_anno"> &nbsp; </span></a>
+			<a class="edit" data-custom="expand: 'edit_expand'" href="#"><span class="edit_set"> &nbsp; </span></a>
+			<a class="linked" data-custom="expand: 'linked_expand'" href="#"><span class="ref_to_ia"> &nbsp; </span></a>
+			<a class="detail" data-custom="expand: 'detail_expand'" href="#"><span class="details_ia"> &nbsp; </span></a>
+			<a class="annotations" data-custom="expand: 'annotations_expand'" href="#"><span class="ref_to_anno"> &nbsp; </span></a>
 			{if $detail.annotations|@count}
 			<div class="action_count anno_count" >{$detail.annotations|@count}
 			</div>
@@ -31,33 +31,35 @@
 
     <div class="item_body"> <!-- Start item body -->
 		<!-- Start fade_in_ground -->
-		<div class="fade_in_ground_actions hidden">
-			{if $detail.actions.edit}
-				<a id="action_edit" href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.content.item_id}" title="___COMMON_EDIT_ITEM___">___COMMON_EDIT_ITEM___</a> |
-			{else}
-				<span title="___COMMON_NO_ACTION___" class="disabled_actions">___COMMON_EDIT_ITEM___</span> |
-			{/if}
-			{if $detail.actions.date_leave}
-				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&iid={$detail.content.item_id}&date_option=2" title="___DATE_LEAVE___">___DATE_LEAVE___</a> |
-			{/if}
-
-			{if $detail.actions.date_participate}
-				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&iid={$detail.content.item_id}&date_option=1" title="___DATE_ENTER___">___DATE_ENTER___</a> |
-			{/if}
-			{if $detail.actions.delete}
-				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail{params params=$detail.actions.delparams}" title="___COMMON_DELETE_ITEM___">___COMMON_DELETE_ITEM___</a> |
-			{else}
-				<span title="___COMMON_NO_ACTION___" class="disabled_actions">___COMMON_DELETE_ITEM___</span> |
-			{/if}
-			{if $detail.actions.mail}
-				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=mail&iid={$detail.content.item_id}" alt="___COMMON_EMAIL_TO___">___COMMON_EMAIL_TO___</a> |
-			{/if}
-			{if $detail.actions.copy}
-				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&iid={$detail.content.item_id}&add_to_{$environment.module}_clipboard={$detail.content.item_id}" title="___COMMON_ITEM_COPY_TO_CLIPBOARD___">___COMMON_ITEM_COPY_TO_CLIPBOARD___</a> |
-			{else}
-				<span title="___COMMON_NO_ACTION___" class="disabled_actions">___COMMON_ITEM_COPY_TO_CLIPBOARD___</span> |
-			{/if}
-			<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail{params params=$detail.actions.downloadparams}" title="___COMMON_DOWNLOAD___">___COMMON_DOWNLOAD___</a>
+		<div id="edit_expand" class="hidden">
+			<div class="fade_in_ground_actions">
+				{if $detail.actions.edit}
+					<a id="action_edit" class="open_popup" data-custom="iid: {$detail.content.item_id}, module: '{$environment.module}'" href="#" title="___COMMON_EDIT_ITEM___">___COMMON_EDIT_ITEM___</a> |
+				{else}
+					<span title="___COMMON_NO_ACTION___" class="disabled_actions">___COMMON_EDIT_ITEM___</span> |
+				{/if}
+				{if $detail.actions.date_leave}
+					<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&iid={$detail.content.item_id}&date_option=2" title="___DATE_LEAVE___">___DATE_LEAVE___</a> |
+				{/if}
+	
+				{if $detail.actions.date_participate}
+					<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&iid={$detail.content.item_id}&date_option=1" title="___DATE_ENTER___">___DATE_ENTER___</a> |
+				{/if}
+				{if $detail.actions.delete}
+					<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail{params params=$detail.actions.delparams}" title="___COMMON_DELETE_ITEM___">___COMMON_DELETE_ITEM___</a> |
+				{else}
+					<span title="___COMMON_NO_ACTION___" class="disabled_actions">___COMMON_DELETE_ITEM___</span> |
+				{/if}
+				{if $detail.actions.mail}
+					<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=mail&iid={$detail.content.item_id}" alt="___COMMON_EMAIL_TO___">___COMMON_EMAIL_TO___</a> |
+				{/if}
+				{if $detail.actions.copy}
+					<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&iid={$detail.content.item_id}&add_to_{$environment.module}_clipboard={$detail.content.item_id}" title="___COMMON_ITEM_COPY_TO_CLIPBOARD___">___COMMON_ITEM_COPY_TO_CLIPBOARD___</a> |
+				{else}
+					<span title="___COMMON_NO_ACTION___" class="disabled_actions">___COMMON_ITEM_COPY_TO_CLIPBOARD___</span> |
+				{/if}
+				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail{params params=$detail.actions.downloadparams}" title="___COMMON_DOWNLOAD___">___COMMON_DOWNLOAD___</a>
+			</div>
 		</div>
 		<!-- Ende fade_in_ground -->
 
@@ -173,7 +175,10 @@
 				{/if}
 			</div>
 		</div> <!-- Ende item_legend -->
-		{include file="include/detail_moredetails_html.tpl" data=$detail.content.moredetails}
+		
+		<div id="detail_expand" class="hidden">
+			{include file="include/detail_moredetails_html.tpl" data=$detail.content.moredetails}
+		</div>
 
     </div> <!-- Ende item body -->
     <div class="clear"> </div>

@@ -65,7 +65,7 @@ class cs_popup_configuration_controller {
 
 		// access granted
 		else {
-			$tab = $additional['tab'];
+			$tab = $additional['part'];
 
 			switch($tab) {
 				/**** ROOM CONFIGURATION ****/

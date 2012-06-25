@@ -15,9 +15,9 @@
 			<div class="content_item"> <!-- Start content_item -->
             	<div class="ci_head_actions">
 	            	{if $rubric@key != 'user'}
-						<a id="create_new" class="{$rubric@key}" href="commsy.php?cid={$environment.cid}&mod={$rubric@key}&fct=edit&iid=NEW" title="___COMMON_NEW_ITEM___">
-					    	<img src="{$basic.tpl_path}img/btn_add_new_home.gif" alt="___COMMON_NEW_ITEM___" />
-					    </a>
+		            	<a class="open_popup" data-custom="iid: 'NEW', module: '{$rubric@key}'"	href="#" title="___COMMON_NEW_ITEM___">
+		            		<img src="{$basic.tpl_path}img/btn_add_new_home.gif" alt="___COMMON_NEW_ITEM___" />
+		            	</a>
 					{/if}
 					{if $rubric.items|count == 0}
 						<a class="open_close">
@@ -120,11 +120,11 @@
 	                            </p>
 	                        </div>
 							<div class="column_45">
-							{if $item.attachment_count > 0}
 		                        {if $rubric@key == 'material' or $rubric@key == 'announcement' or $rubric@key == 'discussion'  or $rubric@key == 'todo' or $rubric@key == 'date' or $rubric@key == 'topic'}
 								<p>
 									<a href="#" class="attachment{if $item.attachment_count == 0}_none_overlay{/if}">{$item.attachment_count}</a>
 								</p>
+								{if $item.attachment_count > 0}
 									<div class="tooltip tooltip_with_400">
 										<div class="tooltip_inner tooltip_inner_with_400">
 											<div class="tooltip_title">
@@ -150,10 +150,10 @@
 											</div>
 										</div>
 									</div>
-							{/if}
-							{else}
-							<p>&nbsp;</p>
-							{/if}
+								{/if}
+								{else}
+								<p>&nbsp;</p>
+								{/if}
 							</div>
                         	<div class="column_140">
                             	<p>{$item.column_2}</p>

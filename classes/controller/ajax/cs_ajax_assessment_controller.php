@@ -27,6 +27,9 @@
 			}
 			
 			unset($assessment_manager);
+			
+			$this->setSuccessfullDataReturn(array());
+			echo $this->_return;
 		}
 		
 		public function actionDeleteOwn() {
@@ -35,6 +38,9 @@
 			$assessment_manager = $this->_environment->getAssessmentManager();
 			$item_id = $assessment_manager->getItemIDForOwn($item_link_id);
 			$assessment_manager->delete($item_id);
+			
+			$this->setSuccessfullDataReturn(array());
+			echo $this->_return;
 		}
 
 		/*

@@ -1,5 +1,5 @@
 <!-- Start fade_in_ground -->
-<div class="fade_in_ground_panel hidden">
+<div class="fade_in_ground_panel">
 	<div class="fi_moredetails">
 		<div class="fi_md_info">
 			<img src="{$basic.tpl_path}img/fi_item_detail.gif" alt="Detailansicht" />

@@ -34,7 +34,7 @@
 
 				// setup return
 				$output = ob_get_clean();
-				$this->setSuccessfullHTMLReturn($output);
+				$this->setSuccessfullDataReturn($output);
 
 				//echo preg_replace('/\s/', '', $this->_return);
 				//echo str_replace(array('\n', '\t'), '', $this->_return);		// for some reasons, categories in popup will not work if active
@@ -83,42 +83,19 @@
 				$this->setErrorReturn($e->getCode(), $e->getMessage(), $e->getMissingFields());
 
 				echo $this->_return;
-
-				return false;
+				exit;
 			} catch(cs_form_value_exception $e) {
 				// TODO: implement in edit form
 				echo "value catched";
-
-				return false;
+				exit;
 			}
 		}
 
 		public function setSuccessfullItemIDReturn($item_id, $module = '') {
 			// setup return
-
-			if (empty($module)){
-				$item_manager = $this->_environment->getItemManager();
-				$item = $item_manager->getItem($item_id);
-				$module = $item->getItemType();
-			}
-
-			$return = array(
-				'status'	=> 'success',
-				'item_id'	=> $item_id,
-				'module'	=> $module
-			);
-
-			$this->_return = json_encode($return);
-		}
-
-		private function setSuccessfullHTMLReturn($html) {
-			// setup return
-			$return = array(
-				'status'=> 'success',
-				'html'	=> $html
-			);
-
-			$this->_return = json_encode($return);
+			$this->setSuccessfullDataReturn($item_id);
+			echo $this->_return;
+			exit;
 		}
 
 		private function checkForm($sub) {

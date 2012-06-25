@@ -271,7 +271,7 @@
 										</div>
 									</fieldset>
 									<div class="input_row">
-										<input id="submit" type="button" class="popup_button" name="save" value="___PREFERENCES_SAVE_BUTTON___"/>
+										<input id="submit" type="button" class="popup_button submit" data-custom="part: 'room_configuration'" name="save" value="___PREFERENCES_SAVE_BUTTON___"/>
 									</div>
 
 								</div>
@@ -340,7 +340,7 @@
 						                        		<option value="email">___USER_LIST_ACTION_EMAIL_SEND___</option>
 						                        	</select>
 
-						                        	<input id="list_action_submit" type="submit" class="popup_button" value="___COMMON_LIST_ACTION_BUTTON_GO___" />
+						                        	<input id="list_action_submit" type="submit" class="popup_button submit" data-custom="part: 'accounts'" value="___COMMON_LIST_ACTION_BUTTON_GO___" />
 						                        </div>
 						                    </div>
 						                </div>
@@ -430,7 +430,7 @@
 										</div>
 									</fieldset>
 									<div class="input_row">
-										<input id="submit" type="button" class="popup_button" name="save" value="___PREFERENCES_SAVE_BUTTON___"/>
+										<input id="submit" type="button" class="popup_button submit" data-custom="part: 'moderation_configuration'" name="save" value="___PREFERENCES_SAVE_BUTTON___"/>
 									</div>
 								</div>
 							</div>
@@ -576,7 +576,7 @@
 									</fieldset>
 
 									<div class="input_row">
-										<input id="submit" type="button" class="popup_button" name="save" value="___PREFERENCES_SAVE_BUTTON___"/>
+										<input id="submit" type="button" class="popup_button submit" data-custom="part: 'additional_configuration'" name="save" value="___PREFERENCES_SAVE_BUTTON___"/>
 									</div>
 								</div>
 							</div>
@@ -643,7 +643,7 @@
 										</div>
 									</fieldset>
 									<div class="input_row">
-										<input id="submit" type="button" class="popup_button" name="save" value="___PREFERENCES_SAVE_BUTTON___"/>
+										<input id="submit" type="button" class="popup_button submit" data-custom="part: 'addons'" name="save" value="___PREFERENCES_SAVE_BUTTON___"/>
 									</div>
 								</div>
 							</div>

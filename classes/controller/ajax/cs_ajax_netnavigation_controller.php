@@ -179,9 +179,8 @@
 				}
 			}
 
-			$return['success'] = true;
-
-			echo json_encode($return);
+			$this->setSuccessfullDataReturn($return);
+			echo $this->_return;
 		}
 
 		public function actionPerformRequest() {
@@ -211,93 +210,96 @@
 				$item = $manager->getItem($item_id);
 			}
 			// get ids of linked items
-			$selected_ids = $this->getLinkedItemIDArray($item);
-
-			// get current room modules
-			$room_modules = array();
-			$current_room_modules = $current_context->getHomeConf();
-			if(!empty($current_room_modules)) $room_modules = explode(',', $current_room_modules);
-
-			$rubric_array = array();
-			foreach($room_modules as $room_module) {
-				list($name, $display) = explode('_', $room_module);
-
-				if($display != 'none'	&&	!($this->_environment->inPrivateRoom() && $name == 'user') &&
-						!(	$name == CS_USER_TYPE && (
-								$module == CS_MATERIAL_TYPE ||
-								$module == CS_DISCUSSION_TYPE ||
-								$module == CS_ANNOUNCEMENT_TYPE ||
-								$module == CS_TOPCI_TYPE))) {
-					$rubric_array[] = $name;
-				}
-			}
-
-			// overwrite if rubric is selected
-			if(!empty($restrictions['rubric']) && !in_array($restrictions['rubric'], array('all', 'campus_search', '-1'))) {
-				$rubric_array = array();
-				$rubric_array[] = $restrictions['rubric'];
-			}
-
-			if($module == CS_USER_TYPE) {
-				$rubric_array = array();
-
-				if($current_context->withRubric(CS_GROUP_TYPE)) $rubric_array[] = CS_GROUP_TYPE;
-				if($current_context->withRubric(CS_INSTITUTION_TYPE)) $rubric_array[] = CS_INSTITUTION_TYPE;
-
-				// $interval = 100;
-			}
+			$selected_ids = ($item_id !== "NEW") ? $this->getLinkedItemIDArray($item) : array();
 
 			// build item list
 			$item_list = new cs_list();
 			$item_ids = array();
 			$count_all = 0;
-			foreach($rubric_array as $rubric) {
-				$rubric_list = new cs_list();
-				$rubric_manager = $this->_environment->getManager($rubric);
-
-				if(isset($rubric_manager) && $rubric != CS_MYROOM_TYPE) {
-					if($rubric != CS_PROJECT_TYPE) $rubric_manager->setContextLimit($this->_environment->getCurrentContextID());
-
-					if($rubric == CS_DATE_TYPE) $rubric_manager->setWithoutDateModeLimit();
-
-					if($rubric == CS_USER_TYPE) {
-						$rubric_manager->setUserLimit();
-
-						if($current_user->isUser()) $rubric_manager->setVisibleToAllAndCommsy();
-						else $rubric_manager->setVisibleToAll();
+			
+			if(!($item_id === "NEW" && $restrictions['only_linked'] === true)) {
+				// get current room modules
+				$room_modules = array();
+				$current_room_modules = $current_context->getHomeConf();
+				if(!empty($current_room_modules)) $room_modules = explode(',', $current_room_modules);
+				
+				$rubric_array = array();
+				foreach($room_modules as $room_module) {
+					list($name, $display) = explode('_', $room_module);
+				
+					if($display != 'none'	&&	!($this->_environment->inPrivateRoom() && $name == 'user') &&
+							!(	$name == CS_USER_TYPE && (
+									$module == CS_MATERIAL_TYPE ||
+									$module == CS_DISCUSSION_TYPE ||
+									$module == CS_ANNOUNCEMENT_TYPE ||
+									$module == CS_TOPIC_TYPE))) {
+						$rubric_array[] = $name;
 					}
-
-					$count_all += $rubric_manager->getCountAll();
-
-					// set restrictions
-					if(!empty($restrictions['search'])) $rubric_manager->setSearchLimit($restrictions['search']);
-					if($restrictions['only_linked'] === true) $rubric_manager->setIDArrayLimit($selected_ids);
-					if($restrictions['type'] == 2) $rubric_manager->showNoNotActivatedEntries();
-
-					$rubric_manager->selectDistinct();
-					$rubric_list = $rubric_manager->get();
-
-					// show hidden entries only if user is moderator or owner
-					if($restrictions['type'] != 2 && !$current_user->isModerator()) {
-						// check if user is owner
-						$entry = $rubric_list->getFirst();
-						while($entry) {
-							if($entry->isNotActivated() && $entry->getCreatorID() != $current_user->getItemID()) {
-								// remove item from list
-								$rubric_list->removeElement($entry);
-							}
-
-							$entry = $rubric_list->getNext();
+				}
+				
+				if($module == CS_USER_TYPE) {
+					$rubric_array = array();
+				
+					if($current_context->withRubric(CS_GROUP_TYPE)) $rubric_array[] = CS_GROUP_TYPE;
+					if($current_context->withRubric(CS_INSTITUTION_TYPE)) $rubric_array[] = CS_INSTITUTION_TYPE;
+				
+					// $interval = 100;
+				}
+				
+				// perform rubric restriction
+				if(!empty($restrictions['rubric']) && $restrictions['rubric'] !== "all") {
+					$rubric_array = array();
+					$rubric_array[] = $restrictions['rubric'];
+				}
+				
+				foreach($rubric_array as $rubric) {
+					$rubric_list = new cs_list();
+					$rubric_manager = $this->_environment->getManager($rubric);
+				
+					if(isset($rubric_manager) && $rubric != CS_MYROOM_TYPE) {
+						if($rubric != CS_PROJECT_TYPE) $rubric_manager->setContextLimit($this->_environment->getCurrentContextID());
+				
+						if($rubric == CS_DATE_TYPE) $rubric_manager->setWithoutDateModeLimit();
+				
+						if($rubric == CS_USER_TYPE) {
+							$rubric_manager->setUserLimit();
+				
+							if($current_user->isUser()) $rubric_manager->setVisibleToAllAndCommsy();
+							else $rubric_manager->setVisibleToAll();
 						}
-					}
-
-					// add rubric list to item list
-					$item_list->addList($rubric_list);
-
-					$temp_rubric_ids = $rubric_manager->getIDArray();
-					if(!empty($temp_rubric_ids)) {
-						//$session->setValue('cid'.$environment->getCurrentContextID().'_item_attach_index_ids', $rubric_ids);
-						$item_ids = array_merge($item_ids, $temp_rubric_ids);
+				
+						$count_all += $rubric_manager->getCountAll();
+				
+						// set restrictions
+						if(!empty($restrictions['search'])) $rubric_manager->setSearchLimit($restrictions['search']);
+						if($restrictions['only_linked'] === true) $rubric_manager->setIDArrayLimit($selected_ids);
+						if($restrictions['type'] == 2) $rubric_manager->showNoNotActivatedEntries();
+				
+						$rubric_manager->selectDistinct();
+						$rubric_list = $rubric_manager->get();
+				
+						// show hidden entries only if user is moderator or owner
+						if($restrictions['type'] != 2 && !$current_user->isModerator()) {
+							// check if user is owner
+							$entry = $rubric_list->getFirst();
+							while($entry) {
+								if($entry->isNotActivated() && $entry->getCreatorID() != $current_user->getItemID()) {
+									// remove item from list
+									$rubric_list->removeElement($entry);
+								}
+				
+								$entry = $rubric_list->getNext();
+							}
+						}
+				
+						// add rubric list to item list
+						$item_list->addList($rubric_list);
+				
+						$temp_rubric_ids = $rubric_manager->getIDArray();
+						if(!empty($temp_rubric_ids)) {
+							//$session->setValue('cid'.$environment->getCurrentContextID().'_item_attach_index_ids', $rubric_ids);
+							$item_ids = array_merge($item_ids, $temp_rubric_ids);
+						}
 					}
 				}
 			}
@@ -328,10 +330,9 @@
 			}
 			$return['paging']['pages'] = ceil(/*$count_all*/count($item_ids) / $interval);
 			$return['num_selected_total'] = count($selected_ids);
-
-			$return['success'] = true;
-
-			echo json_encode($return);
+			
+			$this->setSuccessfullDataReturn($return);
+			echo $this->_return;
 		}
 
 		public function actionGetInitialData() {
@@ -457,10 +458,9 @@
       # div end
       $html .= '</div>'.LF;
       */
-
-			$return['success'] = true;
-
-			echo json_encode($return);
+			
+			$this->setSuccessfullDataReturn($return);
+			echo $this->_return;
 		}
 
 		private function getLinkedItemIDArray($item) {
