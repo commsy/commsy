@@ -22,7 +22,7 @@ define([	"dojo/_base/declare",
 					this.setupLoading();
 					
 					// setup ajax request for getting html
-					this.AJAXRequest("popup", "getHTML", { module: this.module} , lang.hitch(this, function(html) {		
+					this.AJAXRequest("popup", "getHTML", { module: this.module} , lang.hitch(this, function(html) {
 						// append html to node
 						DomConstruct.place(html, this.contentNode, "last");
 						

@@ -11,8 +11,7 @@ var dojoConfig = {
 	           					{ name: "dojox", location: "libs/dojox" },
 	           					{ name: "commsy", location: "commsy" },
 	           					{ name: "ckeditor", location: "libs/ckeditor" },
-	           					{ name: "cbtree", location: "libs/cbtree" },
-	           					{ name: "uploadify", location: "libs/uploadify-v3.1" }
+	           					{ name: "cbtree", location: "libs/cbtree" }
 	]
 }
 

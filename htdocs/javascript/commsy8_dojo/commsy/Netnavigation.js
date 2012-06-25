@@ -329,23 +329,26 @@ define([	"dojo/_base/declare",
 			var requestsTotal = storeAfterItemCreation.length;
 			var requestsCompleted = 0;
 			
-			storeAfterItemCreation.forEach(Lang.hitch(this, function(id, index, arr) {
-				var data = {
-					item_id:	item_id,
-					link_id:	id,
-					checked:	true
-				}
-				
-				this.AJAXRequest("netnavigation", "updateLinkedItem", data,
-					function() {
-						requestsCompleted++;
-						
-						if(requestsCompleted === requestsTotal) callback();
-					},
-					function() {},
-					true
-				);
-			}));
+			if(storeAfterItemCreation.length === 0) callback();
+			else {
+				storeAfterItemCreation.forEach(Lang.hitch(this, function(id, index, arr) {
+					var data = {
+						item_id:	item_id,
+						link_id:	id,
+						checked:	true
+					}
+					
+					this.AJAXRequest("netnavigation", "updateLinkedItem", data,
+						function() {
+							requestsCompleted++;
+							
+							if(requestsCompleted === requestsTotal) callback();
+						},
+						function() {},
+						true
+					);
+				}));
+			}
 		}
 	});
 });
