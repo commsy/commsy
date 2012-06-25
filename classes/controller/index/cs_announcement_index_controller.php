@@ -130,6 +130,9 @@
 			if ( !empty($this->_list_parameter_arrray['selbuzzword']) ) {
    				$announcement_manager->setBuzzwordLimit($this->_list_parameter_arrray['selbuzzword']);
 			}
+			if ( !empty($this->_list_parameter_arrray['last_selected_tag']) ){
+   				$announcement_manager->setTagLimit($this->_list_parameter_arrray['last_selected_tag']);
+			}
 			if ( !empty($last_selected_tag) ){
    				$announcement_manager->setTagLimit($last_selected_tag);
 			}

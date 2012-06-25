@@ -3457,7 +3457,7 @@ div.breadcrumb_room_area .dojoDndItemAfter {
 div.breadcrumb_room_area .dojoDndItemBefore {
 	border-top: 2px solid #336699 !important;
 	}
-	
+
 .room_change_room_box {
     border-top: 1px solid #EBEBEB;
     border-left: 1px solid #EBEBEB;
@@ -3985,3 +3985,9 @@ a.event_grey {
     background: #999999;
     padding: 1px 5px;
     }
+
+.dijitTreeIcon {
+    display: none;
+    height: 16px;
+    width: 16px;
+}
