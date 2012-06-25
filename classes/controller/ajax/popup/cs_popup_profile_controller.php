@@ -274,15 +274,16 @@ class cs_popup_profile_controller {
 							
 							// new upload
 							if(isset($form_data['new_upload'])) {
-								if($form_data['new_upload'] == 'yes') $user->turnNewUploadOn();
-								elseif($form_data['new_upload'] == 'no') $user->turnNewUploadOff();
+								if($form_data['new_upload'] == 'on') $user->turnNewUploadOn();
+								else $user->turnNewUploadOff();
 								
 								$save = true;
 							}
 							
+							// auto save
 							if(!empty($form_data['auto_save'])) {
-								if($form_data['auto_save'] == 'yes') $user->turnAutoSaveOn();
-								elseif($form_data['auto_save'] == 'no') $user->turnAutoSaveOff();
+								if($form_data['auto_save'] == 'on') $user->turnAutoSaveOn();
+								else $user->turnAutoSaveOff();
 								
 								$save = true;
 							}
@@ -847,12 +848,12 @@ class cs_popup_profile_controller {
 				array('name' => 'merge_user_password', 'type' => 'text', 'mandatory' => false)
 			),
 			'account'	=> array(
-				array('name' => 'forename', 'type' => 'text', 'mandatory' => true),
+				array('name' => 'forname', 'type' => 'text', 'mandatory' => true),
 				array('name' => 'surname', 'type' => 'text', 'mandatory' => true),
 				array('name' => 'user_id', 'type' => 'text', 'mandatory' => true),
 				array('name' => 'old_password', 'type' => 'text', 'mandatory' => false),
 				array('name' => 'new_password', 'type' => 'text', 'mandatory' => false, 'same_as' => 'new_password_confirm'),
-				array('name' => 'new_password_confirm', 'type' => 'text', 'mandatory' => true),
+				array('name' => 'new_password_confirm', 'type' => 'text', 'mandatory' => false),
 				array('name' => 'language', 'type' => 'select', 'mandatory' => true),
 				array('name' => 'mail_account', 'type' => 'checkbox', 'mandatory' => false),
 				array('name' => 'mail_room', 'type' => 'checkbox', 'mandatory' => false),

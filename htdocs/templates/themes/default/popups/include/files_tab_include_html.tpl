@@ -12,7 +12,7 @@
 			<div class="uploader">
 				<form method="post" action="UploadFile.php" id="myForm" enctype="multipart/form-data" >
 				   <input class="fileSelector"></input>
-				   <input type="button" class="upload popup_button" value="Upload"/>
+				   {*<input type="button" class="upload popup_button" value="Upload"/>*}
 				   
 				   <div class="fileList"></div>
 				</form>

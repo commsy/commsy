@@ -60,7 +60,7 @@ define([	"dojo/_base/declare",
 						{ query: Query("input[name='form_data[old_password]']", this.contentNode) },
 						{ query: Query("input[name='form_data[new_password]']", this.contentNode) },
 						{ query: Query("input[name='form_data[new_password_confirm]']", this.contentNode) },
-						{ query: Query("input[name='form_data[language]']", this.contentNode) },
+						{ query: Query("select[name='form_data[language]']", this.contentNode) },
 						{ query: Query("input[name='form_data[upload]']", this.contentNode) },
 						{ query: Query("input[name='form_data[auto_save]']", this.contentNode) }
 					]
