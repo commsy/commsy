@@ -34,6 +34,16 @@ define([	"dojo/_base/declare",
 			On.once(Query("a#edit_roomlist", this.contentNode)[0], "click", Lang.hitch(this, function(event) {
 				this.setupEditMode();
 			}));
+			
+			// register click for room links
+			Query("div.room_change_item", this.contentNode).forEach(Lang.hitch(this, function(node, index, arr) {
+				// get href
+				var href = this.getAttrAsObject(node, "data-custom").href;
+				
+				On(node, "click", function(event) {
+					window.location = href;
+				});
+			}));
 		},
 		
 		onPopupSubmit: function(customObject) {
@@ -118,15 +128,15 @@ define([	"dojo/_base/declare",
 						// remove room area
 						DomConstruct.destroy(roomAreaObject);
 					}
-					
-					/*
-					 * holds the latest appearance of a room
-					 * D D D D R D D R D D D D D
-					 * 				/\
-					 * 				||
-					 */
-					var latestRoomAppearance = -1;
 				}));
+				
+				/*
+				 * holds the latest appearance of a room
+				 * D D D D R D D R D D D D D
+				 * 				/\
+				 * 				||
+				 */
+				var latestRoomAppearance = -1;
 				
 				var count = 0;
 				Query("div.room_change_item, div.room_dummy", ref).forEach(Lang.hitch(this, function(node, index, arr) {
@@ -191,6 +201,8 @@ define([	"dojo/_base/declare",
 			// register click event
 			On(newBlockANode, "click", Lang.hitch(this, function(event) {
 				this.appendNewBlock();
+				
+				event.preventDefault();
 			}));
 			
 			// add save link
@@ -215,6 +227,8 @@ define([	"dojo/_base/declare",
 			// register click event
 			On(saveANode, "click", Lang.hitch(this, function(event) {
 				this.saveRoomList();
+				
+				event.preventDefault();
 			}));
 			
 			// setup sortabes
@@ -277,66 +291,53 @@ define([	"dojo/_base/declare",
 		
 		onPopupSubmitSuccess: function(item_id) {
 			this.close();
+		},
+		
+		saveRoomList: function() {
+			var data = {
+				module:		"breadcrumb",
+				form_data:	[]
+			};
+			var roomConfig = [];
+			
+			// prepare form data
+			Query("div#profile_content_row_three div.room_block").forEach(function(node, index, arr) {
+				// get title from input
+				roomConfig.push({
+					type:		"title",
+					value:		DomAttr.get(Query(">input", node)[0], "value")
+				});
+				
+				// get room and spaces
+				Query("div.breadcrumb_room_area div.room_change_item, div.breadcrumb_room_area div.room_dummy", node).forEach(function(roomNode) {
+					// determ type
+					var type = "room";
+					var value = "";
+					
+					if(DomClass.contains(roomNode, "room_dummy")) type = "dummy";
+					else value = DomAttr.get(Query("input[name='hidden_item_id']", roomNode)[0], "value");
+					
+					roomConfig.push({
+						type:		type,
+						value:		value
+					});
+				});
+			});
+			
+			data.form_data.push({
+				'name':		'room_config',
+				'value':	roomConfig
+			});
+			
+			// save
+			this.AJAXRequest("popup", "save", data, Lang.hitch(this, function(response) {
+				this.close();
+			}));
 		}
 	});
 });
 
 /*
-
-		saveRoomlist: function(event) {
-			var handle = event.data.handle;
-
-			var data = {
-				module:		'breadcrumb',
-				form_data:	[]
-			};
-			var room_config = [];
-
-			// prepare form data
-			jQuery('div#profile_content_row_three div.room_block').each(function() {
-				// get title from h2
-				room_config.push({
-					'type':		'title',
-					'value':	jQuery(this).children('h2').children('input').attr('value')
-				});
-
-				// get room and spaces
-				jQuery(this).children('div.breadcrumb_room_area').find('a.room_change_item, div.room_dummy').each(function() {
-					// determ type
-					var type = 'room';
-					if(jQuery(this).hasClass('room_dummy')) type = 'dummy';
-
-					room_config.push({
-						'type':		type,
-						'value':	jQuery(this).find('input[name="hidden_item_id"]').attr('value')
-					});
-				});
-			});
-
-			data.form_data.push({
-				'name':		'room_config',
-				'value':	room_config
-			});
-
-			jQuery.ajax({
-				type: 'POST',
-				url: 'commsy.php?cid=' + handle.cid + '&mod=ajax&fct=popup&action=save',
-				data: JSON.stringify(data),
-				contentType: 'application/json; charset=utf-8',
-				dataType: 'json',
-				error: function(jqXHR, textStatus, errorThrown) {
-					console.log("error while getting popup");
-				},
-				success: function(data, status) {
-					if(data.status === 'success') {
-						handle.close();
-					}
-				}
-			});
-
-			// stop processing
-			return false;
-		},
 		
 		sortableOnStop: function(event, ui) {
 			// process each room area
