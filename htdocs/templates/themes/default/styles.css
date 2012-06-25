@@ -3487,6 +3487,7 @@ div.breadcrumb_room_area .dojoDndItemBefore {
     /*margin:5px 6px ;*/
     margin: 5px 10px;
 	background: url("img/breadcrump_room_title_active.jpg") repeat-x scroll 0 0 #d2d2d3;
+	cursor:pointer;
 }
 
 

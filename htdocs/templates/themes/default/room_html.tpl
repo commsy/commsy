@@ -5,7 +5,7 @@
 		<div id="tm_wrapper_outer">
 		<div id="tm_wrapper">
 			<div id="tm_icons_bar">
-				{if !$environment.is_guest}<a href="commsy.php?cid={$environment.cid}&mod=context&fct=logout&iid={$environment.user_item_id}" id="tm_logout" title="___COMMON_LOGOUT___">&nbsp;</a>{/if}
+				{if !$environment.is_guest}<a href="commsy.php?cid={$environment.cid}&mod=context&fct=logout&iid={$environment.user_item_id}" id="tm_logout" title="___LOGOUT___">&nbsp;</a>{/if}
 				{if $environment.is_guest}<a href="commsy.php?cid={$environment.pid}&mod=home&fct=index&room_id={$environment.cid}&login_redirect=1" class="tm_user" style="width:70px;" title="___MYAREA_LOGIN_BUTTON___">___MYAREA_LOGIN_BUTTON___</a>{/if}
 				<div class="clear"></div>
 			</div>

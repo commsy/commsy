@@ -11,7 +11,7 @@
 	    </a>
     {/if}
     {if $index.actions.user}
-		<a id="own_user" href="commsy.php?cid={$environment.cid}&mod=user&fct=detail&iid={$index.actions.user_iid}" title="___COMMON_OWN_USER___">
+		<a id="own_user" href="commsy.php?cid={$environment.cid}&mod=user&fct=detail&iid={$index.actions.user_iid}" title="___USER_OWN_INFORMATION_LINK___">
 	    	<img src="{$basic.tpl_path}img/btn_own_user.gif" alt="___COMMON_OWN_USER___" />
 	    </a>
     {/if}
