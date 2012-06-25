@@ -1,70 +1,105 @@
 define([	"dojo/_base/declare",
+        	"dojo/dom-construct",
+        	"dojo/io-query",
         	"commsy/base",
         	"dojo/_base/lang",
-        	"dijit/Tree",
-        	"commsy/stores/tag_store"], function(declare, BaseClass, lang, Tree, TagStore) {
+        	"cbtree/Tree",
+        	"dojo/query",
+        	"cbtree/models/ForestStoreModel",
+        	"dojo/data/ItemFileWriteStore",
+        	"cbtree/CheckBox",
+        	"cbtree/models/StoreModel-API"], function(declare, domConstruct, ioQuery, BaseClass, lang, Tree, Query, ForestStoreModel, ItemFileWriteStore, CheckBox) {
 	return declare(BaseClass, {
-		constructor: function(button_node, content_node) {
-			
+		followUrl:			true,
+		autoExpandLevel:	3,
+		checkboxes:			false,
+		expanded:			false,
+		item_id:			null,
+		
+		constructor: function(options) {
+			declare.safeMixin(this, options);
 		},
 		
 		setupTree: function(node) {
-			var model = TagStore({
-				mayHaveChildren: function(object) {
-					return "children" in object;
-				},
-				
-				getChildren: function(object, onComplete, onError) {
-					/*
-					 * // retrieve the full copy of the object
-			        this.get(object.id).then(function(fullObject){
-			            // copy to the original object so it has the children array as well.
-			            object.children = fullObject.children;
-			            // now that full object, we should have an array of children
-			            onComplete(fullObject.children);
-			        }, function(error){
-			            // an error occurred, log it, and indicate no children
-			            console.error(error);
-			            onComplete([]);
-			        });
-					 */
-					var fullObject = this.get(object.id);
-					object.children = fullObject.children;
-					
-					onComplete(fullObject.children);
-				},
-				
-				/*
-				getRoot: function(onItem, onError) {
-					/*
-					 * // get the root object, we will do a get() and callback the result
-        		this.get("root").then(onItem, onError);
-					 *//*
-					var rootObject = this.get('root');
-					onItem(rootObject);
-				},
-				*/
-				getLabel: function(object) {
-					return object.title;
-				}
-			});
-			
-			model.getAll(function() {
-				// create tree
-				var tree = new Tree({
-					model:	model
+			// get results from ajax call
+			this.AJAXRequest('tagtree', 'getTreeData', { item_id: this.item_id }, lang.hitch(this, function(results) {
+				var store = new ItemFileWriteStore({
+					data: {
+						identifier:		"item_id",
+						label:			"title",
+						items:			results
+					}
 				});
 				
+				var model = new ForestStoreModel({
+					store:			store,
+					checkedAttr:	"match"
+				});
+				
+				// create tree
+				var tree = new Tree({
+					autoExpand:			this.expanded,
+					model:				model,
+					showRoot:			false,
+					checkBoxes:			this.checkboxes,
+					onClick:			lang.hitch(this, function(item, node, evt) {
+						// follow item url
+						if(this.followUrl) {
+							location.href = 'commsy.php?' + ioQuery.objectToQuery(this.replaceOrSetURIParam('seltag', item.item_id));
+						} else {
+							// if click doesn't come from checkbox
+							if(evt.target.nodeName !== "INPUT") {
+								if(model.getChecked(item) === true) {
+									model.setChecked(item, false);
+								} else {
+									model.setChecked(item, true);
+								}
+							}
+						}
+					}),
+					widget: {
+						type:			CheckBox,
+						args: {
+							multiState:		true
+						},
+						mixin:		function(args) {
+							args["value"]	= this.item.item_id[0];
+							args["name"]	= "form_data[tags]";
+						}
+					}
+				});
+				
+				domConstruct.empty(node);
 				tree.placeAt(node);
-			});
+				
+				// auto expand
+				//this.autoExpandToLevel(tree);
+			}));
 		},
 		
-		onClickPopupOpen: function() {
-			
+		autoExpandToLevel: function(tree) {
+			this.walkHelper(tree, tree.rootNode.item, 0);
 		},
 		
-		setupSpecific: function() {
+		walkHelper: function(tree, item, level) {
+			if(item.item_id) {
+				var itemId = item.item_id[0];
+				
+				var node = tree.getNodesByItem(itemId);
+				
+				console.log(node);
+			}
+			//tree._expandNode(tree.rootNode);
 			
+			/*if(level <= this.autoExpandLevel && node.isExpandable) {
+				
+				console.log(node);	
+				tree._expandNode(node);
+			}
+			*/
+			for(var id in item.children) {
+				this.walkHelper(tree, item.children[id], level+1);
+			}
 		}
 	});
 });
