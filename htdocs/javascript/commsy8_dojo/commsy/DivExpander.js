@@ -1,11 +1,12 @@
 define([	"dojo/_base/declare",
         	"commsy/base",
         	"dojo/dom-attr",
+        	"dojo/dom-class",
         	"dojo/dom-style",
         	"dojo/query",
         	"dojo/on",
         	"dojo/fx",
-        	"dojo/_base/lang"], function(declare, BaseClass, DomAttr, DomStyle, Query, On, FX, Lang) {
+        	"dojo/_base/lang"], function(declare, BaseClass, DomAttr, DomClass, DomStyle, Query, On, FX, Lang) {
 	return declare(BaseClass, {
 		display:	false,
 		anim:		null,
@@ -30,7 +31,13 @@ define([	"dojo/_base/declare",
 		
 		onEvent: function(actor, div, img) {
 			if(img) {
-				if(DomStyle.get(div, "display") === "none") {
+				if(DomStyle.get(div, "display") === "none" || DomClass.contains(div, "hidden")) {
+					
+					if(DomClass.contains(div, "hidden")) {
+						DomStyle.set(div, "display", "none");
+						DomClass.remove(div, "hidden");
+					}
+					
 					FX.wipeIn({
 						node:		div
 					}).play();

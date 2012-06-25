@@ -2,7 +2,9 @@ define([	"dojo/_base/declare",
         	"commsy/base",
         	"ckeditor/ckeditor",
         	"dojo/dom-attr",
-        	"dojo/dom-construct"], function(declare, BaseClass, CKEditor, domAttr, domConstruct) {
+        	"dojo/dom-construct",
+        	"dojo/query",
+        	"dojo/NodeList-traverse"], function(declare, BaseClass, CKEditor, domAttr, domConstruct, Query) {
 	return declare(BaseClass, {
 		instance:	null,
 		node:		null,
@@ -50,6 +52,13 @@ define([	"dojo/_base/declare",
 			node.innerHTML = "";
 			
 			this.instance = CKEDITOR.appendTo(node, this.options, data);
+			
+			var nodeList =  new dojo.NodeList(node);
+			// get the form this editor belongs to
+			var formNode = nodeList.parents("form")[0];
+			
+			// on form submit, attach editor content to hidden input
+			
 		},
 		
 		getInstance: function() {
