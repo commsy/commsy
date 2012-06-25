@@ -10,9 +10,9 @@ define([	"dojo/_base/declare",
 		constructor: function(triggerNode, customObject) {
 			this.triggerNode = triggerNode;
 			this.item_id = customObject.iid;
-			this.module = "institution";
+			this.module = "mailtomod";
 			
-			this.features = [ "editor", "upload", "netnavigation", "calendar" ];
+			this.features = [ "editor" ];
 			
 			// register click for node
 			this.registerPopupClick();
@@ -36,9 +36,11 @@ define([	"dojo/_base/declare",
 				    { id: "rights_tab" }
 				],
 				nodeLists: [
+				    { query: query("div#reciever", this.contentNode), group: "reciever"},
+				    
 				    { query: query("div#files_attached", this.contentNode) },
-				    { query: query("input[name='form_data[description]']", this.contentNode) },
-				    { query: query("input[name='form_data[title]']", this.contentNode) },
+				    { query: query("input[name='form_data[body]']", this.contentNode) },
+				    { query: query("input[name='form_data[subject]']", this.contentNode) },
 				]
 			};
 			

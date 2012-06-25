@@ -1,35 +1,56 @@
 <div id="popup_wrapper">
-	<div id="popup_background"></div>
-	<div id="popup_w3col">
-		<div id="popup">
+	<div id="popup_edit">
+		<div id="popup_frame">
+			<div id="popup_inner">
 
-			<div id="popup_head">
-				<h2>___CONFIGURATION_SERVICE_EMAIL_MODERATOR___</h2>
-				<a id="popup_close" href="" title="___COMMON_CLOSE___"><img src="{$basic.tpl_path}img/pop_close_btn.gif" alt="___COMMON_CLOSE___" /></a>
-
-				<div class="clear"> </div>
-			</div>
-
-			<div id="popup_content">
-				<div id="content_row_one">
-					<div class="input_row">
-						<span class="input_label_150">___MAIL_SENDER___:</span>
-						<p>{$popup.user.fullname} ({$popup.user.mail})</p>
-					</div>
-					<div class="input_row">
-						<span class="input_label_150">___COMMON_MAIL_RECEIVER___:</span>
-						<p>{$popup.mod.list}</p>
-					</div>
-					<div class="input_row">
-						<span class="input_label_150">___COMMON_MAIL_SUBJECT___:</span><span class="required">*</span>
-						<input id="mailtomod_subject" type="text" class="size_200 mandatory" name="form_data[subject]"/>
+				<div id="popup_pagetitle">
+					<a id="popup_close" href="" title="___COMMON_CLOSE___"><img
+						src="{$basic.tpl_path}img/pop_close_btn.gif"
+						alt="___COMMON_CLOSE___" />
+					</a>
+					<h2>___CONFIGURATION_SERVICE_EMAIL_MODERATOR___</h2>
+					<div class="clear"></div>
+				</div>
+				<div id="popup_content_wrapper">
+    				<div id="popup_content">
+						<div class="input_row">
+							<span class="input_label_150">___MAIL_SENDER___:</span>
+							<div class="input_container_180">{$popup.user.fullname} ({$popup.user.mail})</div>
+						</div>
+						<div class="clear"></div>
+						<div class="input_row">
+							<span class="input_label_150">___COMMON_MAIL_RECEIVER___:</span>
+							<div class="input_container_180" id="reciever">
+    							{foreach $popup.mod.list as $ele}
+    								{if $ele@total == 1}
+    									<p>{$ele.text}</p>
+    								{else}
+    									<input type="checkbox" name="form_data[mod]" value="{$ele.value}" checked>{$ele.text}<br/>
+    								{/if}
+    							{/foreach}
+							</div>
+						</div>
+						<div class="input_row">
+							<span class="input_label_150">___MAIL_SUBJECT___</span>
+							<div class="input_container_180" id="reciever">
+								<input type="text" name="form_data[subject]" class="size_400" />
+							</div>
+						</div>
+						<div class="editor_content">
+							<div id="body" class="ckeditor">{if isset($popup.body)}{$popup.body}{/if}</div>
+						</div>
+    				</div>
+    				<div id="popup_tabs">
+						<div id="content_buttons">
+							<div id="crt_actions_area">
+								<input id="popup_button_create" class="popup_button submit" data-custom="part: 'all'" type="button" name="" value="___EMAIL_CONTACT_MODERATOR___" />
+								<input id="popup_button_abort" class="popup_button" type="button" name="" value="___COMMON_CANCEL_BUTTON___" />
+							</div>
+						</div>
 					</div>
 				</div>
-				<div id="content_row_two">
-					<textarea rows="10" cols="100" name="form_data[content]">{$popup.body}</textarea> 
-				</div>					
 			</div>
-
+			<div class="clear"></div>
 		</div>
 	</div>
 </div>

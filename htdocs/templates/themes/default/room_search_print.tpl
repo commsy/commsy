@@ -1,14 +1,8 @@
-{extends file="room_list_html.tpl"}
+{extends file="room_list_print.tpl"}
 
 {block name=room_navigation_rubric_title}
 	___COMMON_SEARCH_RESULTS___:
 	<span>{$room.search_content.count_all}</span>
-{/block}
-
-{block name=room_site_actions}
-	<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=index&mode=print" title="___COMMON_LIST_PRINTVIEW___" target="_blank">
-		<img src="{$basic.tpl_path}img/btn_print.gif" alt="___COMMON_LIST_PRINTVIEW___" />
-	</a>
 {/block}
 
 {block name=room_list_header}

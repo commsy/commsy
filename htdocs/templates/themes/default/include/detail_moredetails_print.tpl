@@ -15,9 +15,11 @@
 				{if isset($data.read_since_modification_percentage)}
 					<h4>___COMMON_READ_SINCE_MODIFICATION___</h4>
 					<div class="progressbar">
-						<img src="{$basic.tpl_path}img/ajax_loader.gif" alt="ajax_loader" />
-						<span class="percent">{$data.read_since_modification_percentage}</span>
+						<!--  <img src="{$basic.tpl_path}img/ajax_loader.gif" alt="ajax_loader" /> -->
+						
 						<span class="value">{$data.read_since_modification_count}</span>
+						<span> - </span>
+						<span class="percent">{$data.read_since_modification_percentage}%</span>					
 					</div>
 				{/if}
 			</div>
