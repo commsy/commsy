@@ -3991,3 +3991,7 @@ a.event_grey {
     height: 16px;
     width: 16px;
 }
+.dijitTreeLabel:hover {
+    text-decoration:underline;
+    cursor:pointer;
+}

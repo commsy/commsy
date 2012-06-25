@@ -27,7 +27,6 @@
 					<a href="#" id="tm_widgets" title="___MYWIDGETS_INDEX___">&nbsp;</a>
 					<a href="#" id="tm_mycalendar" title="___MYCALENDAR_INDEX___">&nbsp;</a>
 					<a href="#" id="tm_stack" title="___COMMON_ENTRY_INDEX___">&nbsp;</a>
-					<a href="#" id="tm_clipboard" title="___MYAREA_MY_COPIES___">&nbsp;</a>
 					{if ($environment.count_copies >0)}
 						<a href="" id="tm_clipboard" title="___MYAREA_MY_COPIES___">&nbsp;</a>
 						<span id="tm_clipboard_copies">{$environment.count_copies}</span>
