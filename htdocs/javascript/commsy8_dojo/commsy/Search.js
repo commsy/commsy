@@ -5,7 +5,7 @@ define([	"dojo/_base/declare",
         	"dojo/on",
         	"dojo/dom-attr"], function(declare, BaseClass, lang, Query, On, DomAttr) {
 	return declare(BaseClass, {
-		treshold:		3,
+		threshold:		3,
 		ajaxRequests:	[],
 		used:			false,
 		matches:		[],
@@ -30,7 +30,7 @@ define([	"dojo/_base/declare",
 			DomAttr.set(Query("input#search_suggestion")[0], "value", event.target.value);
 			
 			// only update if threshold is met
-			if(event.target.value.length === this.threshold) {
+			if(event.target.value.length === this.threshold) {console.log(event.target.value.length);
 				// abort all running ajax requests
 				this.ajaxRequests.forEach(function(request, index, arr) {
 					request.abort();

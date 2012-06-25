@@ -53,7 +53,8 @@ require([	"dojo/_base/declare",
 				
 				// search
 				require(["commsy/Search"], function(Search) {
-					var handler = new Search(query("input#search_input")[0]);
+					var handler = new Search();
+					handler.setup(query("input#search_input")[0]);
 				});
 				
 				// overlays
