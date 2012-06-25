@@ -1,0 +1,4 @@
+<?php
+$message["GROUPS_EMAIL_TO_GROUP_BIG"][""] = "";
+$message["GROUPS_EMAIL_TO_GROUP_TITLE"][""] = "";
+?>

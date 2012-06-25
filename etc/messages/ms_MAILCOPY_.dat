@@ -1,0 +1,4 @@
+<?php
+$message["MAILCOPY_TO_SENDER"][""] = "";
+$message["MAILCOPY_TO_SENDER_DESC"][""] = "";
+?>

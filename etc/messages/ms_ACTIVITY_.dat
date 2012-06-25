@@ -1,0 +1,11 @@
+<?php
+$message["ACTIVITY_ACTIVE_MEMBERS"][""] = "";
+$message["ACTIVITY_ACTIVE_MEMBERS_DESC"][""] = "";
+$message["ACTIVITY_ACTIVE_MEMBERS_DESC_NEW"][""] = "";
+$message["ACTIVITY_NEW_ENTRIES"][""] = "";
+$message["ACTIVITY_NEW_ENTRIES_NEW"][""] = "";
+$message["ACTIVITY_NEW_ENTRIES_NEW_SINGULAR"][""] = "";
+$message["ACTIVITY_NEW_ENTRIES_SINGULAR"][""] = "";
+$message["ACTIVITY_PAGE_IMPRESSIONS"][""] = "";
+$message["ACTIVITY_PAGE_IMPRESSIONS_SINGULAR"][""] = "";
+?>

@@ -1,0 +1,7 @@
+<?php
+$message["DISCARTICLE_ANSWER_NEW"][""] = "";
+$message["DISCARTICLE_CHANGE_BUTTON"][""] = "";
+$message["DISCARTICLE_EDIT"][""] = "";
+$message["DISCARTICLE_ENTER_NEW"][""] = "";
+$message["DISCARTICLE_SAVE_BUTTON"][""] = "";
+?>

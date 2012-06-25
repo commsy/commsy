@@ -1,0 +1,9 @@
+<?php
+$message["INSTITUTION_CHANGE_BUTTON"][""] = "";
+$message["INSTITUTION_EDIT"][""] = "";
+$message["INSTITUTION_ENTER_NEW"][""] = "";
+$message["INSTITUTION_INDEX"][""] = "";
+$message["INSTITUTION_MAIL_NO_RECIPIENTS_ERROR"][""] = "";
+$message["INSTITUTION_PICTURE_FILE_DESC"][""] = "";
+$message["INSTITUTION_SAVE_BUTTON"][""] = "";
+?>

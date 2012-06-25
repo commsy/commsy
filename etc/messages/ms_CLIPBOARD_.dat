@@ -1,0 +1,5 @@
+<?php
+$message["CLIPBOARD_DELETE_BUTTON"][""] = "";
+$message["CLIPBOARD_HEADER"][""] = "";
+$message["CLIPBOARD_PASTE_BUTTON"][""] = "";
+?>

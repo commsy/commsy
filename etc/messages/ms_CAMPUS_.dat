@@ -1,0 +1,4 @@
+<?php
+$message["CAMPUS_SEARCH_INDEX"][""] = "";
+$message["CAMPUS_SEARCH_ONLY_THIS_ROOM"][""] = "";
+?>

@@ -1,0 +1,4 @@
+<?php
+$message["DISCUSSIONS_CHANGE_BUTTON"][""] = "";
+$message["DISCUSSIONS_SAVE_BUTTON"][""] = "";
+?>

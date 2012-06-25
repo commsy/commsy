@@ -1,0 +1,11 @@
+<?php
+$message["ANNOTATION_ADD_NEW_BUTTON"][""] = "";
+$message["ANNOTATION_CHANGE_BUTTON"][""] = "";
+$message["ANNOTATION_DELETE_BUTTON"][""] = "";
+$message["ANNOTATION_EDIT"][""] = "";
+$message["ANNOTATION_ENTER_NEW"][""] = "";
+$message["ANNOTATION_FOR_NEWER_VERSION"][""] = "";
+$message["ANNOTATION_FOR_OLDER_VERSION"][""] = "";
+$message["ANNOTATION_INDEX"][""] = "";
+$message["ANNOTATION_SAVE_BUTTON"][""] = "";
+?>

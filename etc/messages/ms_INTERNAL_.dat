@@ -1,0 +1,9 @@
+<?php
+$message["INTERNAL_META_TITLE"][""] = "";
+$message["INTERNAL_MODULE_CONF_DESC_NONE"][""] = "";
+$message["INTERNAL_MODULE_CONF_DESC_SHORT"][""] = "";
+$message["INTERNAL_MODULE_CONF_DESC_TINY"][""] = "";
+$message["INTERNAL_SPECIAL_TITLE"][""] = "";
+$message["INTERNAL_TIME_SPREAD"][""] = "";
+$message["INTERNAL_TIME_SPREAD_DESC"][""] = "";
+?>

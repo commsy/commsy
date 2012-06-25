@@ -1,0 +1,14 @@
+<?php
+$message["EMAIL_CONTACT_MODERATOR"][""] = "";
+$message["EMAIL_CONTACT_MODERATOR_TEXT"][""] = "";
+$message["EMAIL_CONTACT_MODERATOR_TEXT_DESC"][""] = "";
+$message["EMAIL_TO_COMMSY_ACCOUNT"][""] = "";
+$message["EMAIL_TO_COMMSY_PASSWORD"][""] = "";
+$message["EMAIL_TO_COMMSY_RESULT_FAILURE"][""] = "";
+$message["EMAIL_TO_COMMSY_RESULT_FILES_TO_LARGE"][""] = "";
+$message["EMAIL_TO_COMMSY_RESULT_REGARDS"][""] = "";
+$message["EMAIL_TO_COMMSY_RESULT_SUCCESS"][""] = "";
+$message["EMAIL_TO_INSTITUTION_TITLE"][""] = "";
+$message["EMAIL_TO_INSTITUTION_TITLE_WITHOUT"][""] = "";
+$message["EMAIL_TO_TOPIC_TITLE"][""] = "";
+?>

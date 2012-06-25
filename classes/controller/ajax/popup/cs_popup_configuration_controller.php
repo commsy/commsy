@@ -88,6 +88,8 @@ class cs_popup_configuration_controller {
 							}
 						}
 
+
+
 						// assignment
 						if($current_context->isProjectRoom()) {
 							$community_room_array = array();
@@ -322,6 +324,20 @@ class cs_popup_configuration_controller {
 					    if ( isset($form_data['dates_status']) ) {
 					        $current_context->setDatesPresentationStatus($form_data['dates_status']);
 					    }
+
+						if ( isset($form_data['action_bar_visibility'])) {
+							$current_context->setActionBarVisibilityDefault($form_data['action_bar_visibility']);
+						}
+						if ( isset($form_data['reference_bar_visibility'])) {
+							$current_context->setReferenceBarVisibilityDefault($form_data['reference_bar_visibility']);
+						}
+						if ( isset($form_data['details_bar_visibility'])) {
+							$current_context->setDetailsBarVisibilityDefault($form_data['details_bar_visibility']);
+						}
+						if ( isset($form_data['annotations_bar_visibility'])) {
+							$current_context->setAnnotationsBarVisibilityDefault($form_data['annotations_bar_visibility']);
+						}
+
 
 						// rss
 						// TODO: move
@@ -1412,6 +1428,29 @@ class cs_popup_configuration_controller {
          	$return['agb_status'] = '2';
          }
 
+		if ( $current_context->isActionBarVisibleAsDefault()) {
+			$return['action_bar_visibility'] = '1';
+		}else{
+			$return['action_bar_visibility'] = '-1';
+		}
+
+		if ( $current_context->isReferenceBarVisibleAsDefault()) {
+			$return['reference_bar_visibility'] = '1';
+		}else{
+			$return['reference_bar_visibility'] = '-1';
+		}
+
+		if ( $current_context->isDetailsBarVisibleAsDefault()) {
+			$return['details_bar_visibility'] = '1';
+		}else{
+			$return['details_bar_visibility'] = '-1';
+		}
+
+		if ( $current_context->isAnnotationsBarVisibleAsDefault()) {
+			$return['annotations_bar_visibility'] = '1';
+		}else{
+			$return['annotations_bar_visibility'] = '-1';
+		}
 
 
 		return $return;
@@ -1641,7 +1680,6 @@ class cs_popup_configuration_controller {
          } else {
             $return['open_for_guests'] = 'closed';
          }
-
 
 
 		return $return;

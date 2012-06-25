@@ -1,0 +1,11 @@
+<?php
+$message["PROFILE_ACCOUNT_DATA"][""] = "";
+$message["PROFILE_NEWSLETTER_DATA"][""] = "";
+$message["PROFILE_ROOMLIST_CUSTOMIZING_DESCRIPTION"][""] = "";
+$message["PROFILE_ROOMLIST_DELETE_OPTION"][""] = "";
+$message["PROFILE_ROOM_LIST_DATA"][""] = "";
+$message["PROFILE_USER_DATA"][""] = "";
+$message["PROFILE_USER_PASSWORD"][""] = "";
+$message["PROFILE_USER_PASSWORD2"][""] = "";
+$message["PROFILE_USER_PASSWORD_OLD"][""] = "";
+?>

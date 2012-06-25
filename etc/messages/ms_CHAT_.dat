@@ -1,0 +1,10 @@
+<?php
+$message["CHAT_CHAT"][""] = "";
+$message["CHAT_CONFIGURATION_CHAT"][""] = "";
+$message["CHAT_CONFIGURATION_CHAT_VALUE"][""] = "";
+$message["CHAT_CONFIGURATION_DESC"][""] = "";
+$message["CHAT_CONFIGURATION_DESCRIPTION"][""] = "";
+$message["CHAT_CONFIGURATION_EXTRA_CHAT"][""] = "";
+$message["CHAT_CONFIGURATION_EXTRA_CHAT_DESC"][""] = "";
+$message["CHAT_CONFIGURATION_LINK"][""] = "";
+?>

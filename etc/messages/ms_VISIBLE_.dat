@@ -1,0 +1,7 @@
+<?php
+$message["VISIBLE_ALWAYS"][""] = "";
+$message["VISIBLE_NEVER"][""] = "";
+$message["VISIBLE_ONLY_LOGGED"][""] = "";
+$message["VISIBLE_PROPERTY"][""] = "";
+$message["VISIBLE_PROPERTY_DESC"][""] = "";
+?>

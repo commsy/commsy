@@ -1,0 +1,32 @@
+<?php
+$message["CONTEXT_ACTIVITY"][""] = "";
+$message["CONTEXT_ACTUALITY"][""] = "";
+$message["CONTEXT_ENTER"][""] = "";
+$message["CONTEXT_ENTER_AS_GUEST"][""] = "";
+$message["CONTEXT_ENTER_LOGIN"][""] = "";
+$message["CONTEXT_ENTER_LOGIN2"][""] = "";
+$message["CONTEXT_ENTER_LOGIN_EXTERNAL_PAGES"][""] = "";
+$message["CONTEXT_ENTER_LOGIN_EXTERNAL_PAGES2"][""] = "";
+$message["CONTEXT_ENTER_LOGIN_NOT_ALLOWED"][""] = "";
+$message["CONTEXT_ENTER_NEED_TO_BECOME_GROUP_MEMBER"][""] = "";
+$message["CONTEXT_ENTER_NEED_TO_BECOME_ROOM_MEMBER"][""] = "";
+$message["CONTEXT_IS_DELETED"][""] = "";
+$message["CONTEXT_IS_LOCKED"][""] = "";
+$message["CONTEXT_JOIN"][""] = "";
+$message["CONTEXT_LANGUAGE"][""] = "";
+$message["CONTEXT_LANGUAGE_DESC"][""] = "";
+$message["CONTEXT_LANGUAGE_DESC2"][""] = "";
+$message["CONTEXT_LANGUAGE_USER"][""] = "";
+$message["CONTEXT_MODERATOR"][""] = "";
+$message["CONTEXT_MOVE_ROOM"][""] = "";
+$message["CONTEXT_NOT_SHOWN_ON_HOME"][""] = "";
+$message["CONTEXT_NOT_SHOW_ON_HOME"][""] = "";
+$message["CONTEXT_NO_ROOM"][""] = "";
+$message["CONTEXT_ROOM_ARCHIVE"][""] = "";
+$message["CONTEXT_ROOM_LOCK"][""] = "";
+$message["CONTEXT_ROOM_OPEN"][""] = "";
+$message["CONTEXT_ROOM_UNDELETE"][""] = "";
+$message["CONTEXT_ROOM_UNLOCK"][""] = "";
+$message["CONTEXT_SHOWN_ON_HOME"][""] = "";
+$message["CONTEXT_SHOW_ON_HOME"][""] = "";
+?>

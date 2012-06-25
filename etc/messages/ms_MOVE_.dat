@@ -1,0 +1,17 @@
+<?php
+$message["MOVE_ROOM_MAIL_BODY_AGREE"][""] = "";
+$message["MOVE_ROOM_MAIL_BODY_CR"][""] = "";
+$message["MOVE_ROOM_MAIL_BODY_PR"][""] = "";
+$message["MOVE_ROOM_MAIL_BODY_REJECT"][""] = "";
+$message["MOVE_ROOM_MAIL_BODY_SUCCESS_ACCOUNT_COPY"][""] = "";
+$message["MOVE_ROOM_MAIL_BODY_SUCCESS_ACCOUNT_COPY_CHANGE"][""] = "";
+$message["MOVE_ROOM_MAIL_BODY_SUCCESS_ACCOUNT_NO_COPY_PL"][""] = "";
+$message["MOVE_ROOM_MAIL_BODY_SUCCESS_ACCOUNT_NO_COPY_S"][""] = "";
+$message["MOVE_ROOM_MAIL_BODY_SUCESS_PL"][""] = "";
+$message["MOVE_ROOM_MAIL_BODY_SUCESS_S"][""] = "";
+$message["MOVE_ROOM_MAIL_BODY_TO_NEW_PORTAL"][""] = "";
+$message["MOVE_ROOM_MAIL_BODY_TO_ROOM"][""] = "";
+$message["MOVE_ROOM_MAIL_SUBJECT"][""] = "";
+$message["MOVE_ROOM_MAIL_SUBJECT_SUCCESS_PL"][""] = "";
+$message["MOVE_ROOM_MAIL_SUBJECT_SUCCESS_S"][""] = "";
+?>

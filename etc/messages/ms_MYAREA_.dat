@@ -1,0 +1,30 @@
+<?php
+$message["MYAREA_ACCOUNT"][""] = "";
+$message["MYAREA_ACCOUNT_CHANGE"][""] = "";
+$message["MYAREA_ACCOUNT_PROFIL"][""] = "";
+$message["MYAREA_AUTH_PASSWORD_SET"][""] = "";
+$message["MYAREA_CHANGE_MY_ACTUAL_ROOMS"][""] = "";
+$message["MYAREA_CLIPBOARD_HEADER"][""] = "";
+$message["MYAREA_CLIPBOARD_HEADER_1"][""] = "";
+$message["MYAREA_COMMUNITY_INDEX"][""] = "";
+$message["MYAREA_CONTEXT_GUEST_IN"][""] = "";
+$message["MYAREA_CONTEXT_JOIN"][""] = "";
+$message["MYAREA_LOGIN_ACCOUNT_FORGET_LINK"][""] = "";
+$message["MYAREA_LOGIN_ACCOUNT_WANT_LINK"][""] = "";
+$message["MYAREA_LOGIN_AS_GUEST"][""] = "";
+$message["MYAREA_LOGIN_BUTTON"][""] = "";
+$message["MYAREA_LOGIN_NOT_LOGGED_IN"][""] = "";
+$message["MYAREA_LOGIN_PASSWORD_FORGET_LINK"][""] = "";
+$message["MYAREA_LOGIN_TO_ALL_PORTALS"][""] = "";
+$message["MYAREA_LOGIN_TO_OWN_ROOM"][""] = "";
+$message["MYAREA_LOGIN_TO_PORTAL_OVERVIEW"][""] = "";
+$message["MYAREA_LOGOUT"][""] = "";
+$message["MYAREA_MY_ACTUAL_ROOMS"][""] = "";
+$message["MYAREA_MY_COPIES"][""] = "";
+$message["MYAREA_MY_PROFILE"][""] = "";
+$message["MYAREA_PASSWORD"][""] = "";
+$message["MYAREA_PROFILE"][""] = "";
+$message["MYAREA_PROFILE_EDIT"][""] = "";
+$message["MYAREA_PROJECT_INDEX"][""] = "";
+$message["MYAREA_USER_AUTH_SOURCE_SHORT"][""] = "";
+?>

@@ -1,0 +1,4 @@
+<?php
+$message["WORKFLOW_CONFIGURATION_DESC"][""] = "";
+$message["WORKFLOW_CONFIGURATION_LINK"][""] = "";
+?>

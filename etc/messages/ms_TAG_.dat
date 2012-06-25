@@ -1,0 +1,12 @@
+<?php
+$message["TAG_ACTIONS_AFTER"][""] = "";
+$message["TAG_ACTIONS_BEFORE"][""] = "";
+$message["TAG_ACTIONS_UNDER"][""] = "";
+$message["TAG_CANNOT_COMBINE"][""] = "";
+$message["TAG_COMBINE_BUTTON"][""] = "";
+$message["TAG_EDIT_FORM_TITLE"][""] = "";
+$message["TAG_FORM_ROOT_LEVEL"][""] = "";
+$message["TAG_SORT_ABC"][""] = "";
+$message["TAG_SORT_BUTTON"][""] = "";
+$message["TAG_WORD_TO"][""] = "";
+?>

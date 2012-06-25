@@ -1,0 +1,13 @@
+<?php
+$message["AGB_ACCEPTANCE_BUTTON"][""] = "";
+$message["AGB_ACCEPTANCE_NOT_BUTTON"][""] = "";
+$message["AGB_ACCEPTANCE_NOT_BUTTON_PORTAL"][""] = "";
+$message["AGB_ACCEPTANCE_NOT_BUTTON_ROOM"][""] = "";
+$message["AGB_CHANGE_TITLE"][""] = "";
+$message["AGB_COMFIRMATION_TEXT"][""] = "";
+$message["AGB_CONFIRMATION"][""] = "";
+$message["AGB_CONFIRMATION_GUIDE"][""] = "";
+$message["AGB_CONFIRMATION_LINK_INPUT"][""] = "";
+$message["AGB_MUST_BE_ACCEPTED_FAILURE_TEXT"][""] = "";
+$message["AGB_NO_AGS_FOUND_IN_SELECTED_LANGUAGE"][""] = "";
+?>

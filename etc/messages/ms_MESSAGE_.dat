@@ -1,0 +1,11 @@
+<?php
+$message["MESSAGE_BOX_TITLE"][""] = "";
+$message["MESSAGE_EDIT_LINK"][""] = "";
+$message["MESSAGE_INDEX"][""] = "";
+$message["MESSAGE_INDEX_DESC"][""] = "";
+$message["MESSAGE_INDEX_LINK"][""] = "";
+$message["MESSAGE_LANGUAGE_DEFAULT_LINK"][""] = "";
+$message["MESSAGE_LANGUAGE_TITLE_LINK"][""] = "";
+$message["MESSAGE_TITLE_LINK"][""] = "";
+$message["MESSAGE_UNUSED_LINK"][""] = "";
+?>

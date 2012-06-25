@@ -1,0 +1,4 @@
+<?php
+$message["SYSTEM_MAIL_MESSAGE"][""] = "";
+$message["SYSTEM_MAIL_REPLY_INFO"][""] = "";
+?>

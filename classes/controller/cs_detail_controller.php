@@ -87,6 +87,12 @@
 			$annotations = $this->_item->getAnnotationList();
 			$this->markAnnotationsReadedAndNoticed($annotations);
 			$this->assign('detail', 'annotations_changed', $global_changed);
+
+			$current_context = $this->_environment->getCurrentContextItem();
+			$this->assign('detail','is_action_bar_visible',$current_context->isActionBarVisibleAsDefault());
+			$this->assign('detail','is_details_bar_visible',$current_context->isDetailsBarVisibleAsDefault());
+			$this->assign('detail','is_annotations_bar_visible',$current_context->isAnnotationsBarVisibleAsDefault());
+			$this->assign('detail','is_reference_bar_visible',$current_context->isReferenceBarVisibleAsDefault());
 		}
 
 		protected function setupInformation() {
@@ -117,7 +123,7 @@
 				$this->assign('detail', 'browsing_information', $this->getBrowseInformation($ids));
 			}
 			$this->assign('detail', 'item_id', $this->_item->getItemID());
-			
+
 			$this->assign('detail', 'forward_information', $this->getForwardInformation($ids));
 		}
 
@@ -836,7 +842,7 @@
 
 					unset($item);
 				}
-				
+
 				$count_items++;
 			}
 			return $return;

@@ -1,0 +1,25 @@
+<?php
+$message["RSS_CHANGE_PERSON_DESCRIPTION"][""] = "";
+$message["RSS_DESCRIPTION"][""] = "";
+$message["RSS_NEW_ANNOTATION_TITLE"][""] = "";
+$message["RSS_NEW_ANNOUNCEMENT_TITLE"][""] = "";
+$message["RSS_NEW_DATE_TITLE"][""] = "";
+$message["RSS_NEW_DISCUSSIONARTICLE_TITLE"][""] = "";
+$message["RSS_NEW_DISCUSSION_DESCRIPTION"][""] = "";
+$message["RSS_NEW_DISCUSSION_TITLE"][""] = "";
+$message["RSS_NEW_GROUP_TITLE"][""] = "";
+$message["RSS_NEW_INSTITUTION_TITLE"][""] = "";
+$message["RSS_NEW_MATERIAL_TITLE"][""] = "";
+$message["RSS_NEW_PERSON_DESCRIPTION"][""] = "";
+$message["RSS_NEW_PERSON_TITLE"][""] = "";
+$message["RSS_NEW_SECTION_TITLE"][""] = "";
+$message["RSS_NEW_STEP_TITLE"][""] = "";
+$message["RSS_NEW_TODO_TITLE"][""] = "";
+$message["RSS_NEW_TOPIC_TITLE"][""] = "";
+$message["RSS_NOT_ACTIVATED"][""] = "";
+$message["RSS_NOT_ALLOWED"][""] = "";
+$message["RSS_NO_CONTEXT"][""] = "";
+$message["RSS_OBJECT_TAG_REPLACE"][""] = "";
+$message["RSS_SUBSCRIBE_LINK"][""] = "";
+$message["RSS_TITLE"][""] = "";
+?>

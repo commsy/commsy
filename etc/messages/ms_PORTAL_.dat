@@ -1,0 +1,36 @@
+<?php
+$message["PORTAL_ADMINISTRATION_DESC"][""] = "";
+$message["PORTAL_ANNOUNCEMENT_FROM_COMMUNITIES_DESC"][""] = "";
+$message["PORTAL_ARCHIVED_ROOMS"][""] = "";
+$message["PORTAL_AUTOACCOUNTS_LINK"][""] = "";
+$message["PORTAL_AUTOACCOUNTS_LINK_DESC"][""] = "";
+$message["PORTAL_COMMUNITY_ROOM_LIST_ROOMS"][""] = "";
+$message["PORTAL_CONFIGURATION_ACTION"][""] = "";
+$message["PORTAL_CONFIGURATION_NEWS_SHOW_SERVER"][""] = "";
+$message["PORTAL_COUNT_ROOMS"][""] = "";
+$message["PORTAL_DELETED_ROOMS"][""] = "";
+$message["PORTAL_DELETE_BUTTON"][""] = "";
+$message["PORTAL_EDIT_ROOM"][""] = "";
+$message["PORTAL_ENTER_COMMUNITY"][""] = "";
+$message["PORTAL_ENTER_NEW"][""] = "";
+$message["PORTAL_ENTER_PROJECT"][""] = "";
+$message["PORTAL_ENTER_ROOM"][""] = "";
+$message["PORTAL_ERROR_DELETED"][""] = "";
+$message["PORTAL_ERROR_DELETED_ROOM"][""] = "";
+$message["PORTAL_EXPORT_ROOM"][""] = "";
+$message["PORTAL_EXPORT_ROOM_BUTTON"][""] = "";
+$message["PORTAL_MOVE_ROOM"][""] = "";
+$message["PORTAL_MOVE_ROOM_REGISTER_BUTTON"][""] = "";
+$message["PORTAL_MY_COMMUNITY_ROOMS"][""] = "";
+$message["PORTAL_MY_PROJECT_ROOMS"][""] = "";
+$message["PORTAL_MY_ROOMS"][""] = "";
+$message["PORTAL_NEWS_LINK"][""] = "";
+$message["PORTAL_NEWS_LINK_DESC"][""] = "";
+$message["PORTAL_NO_ANNOUNCEMENTS"][""] = "";
+$message["PORTAL_OPEN_ROOM"][""] = "";
+$message["PORTAL_ROOM_DESCRIPTION"][""] = "";
+$message["PORTAL_ROOM_LIST_ROOMS"][""] = "";
+$message["PORTAL_ROOM_MOVE_REQUESTED"][""] = "";
+$message["PORTAL_ROOM_OVERVIEW"][""] = "";
+$message["PORTAL_SEARCH_FIELD"][""] = "";
+?>

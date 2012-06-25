@@ -1,13 +1,13 @@
 <!-- Start fade_in_ground -->
-<div id="linked_expand" class="hidden">
+<div id="linked_expand" {if !$detail.is_reference_bar_visible}class="hidden"{/if}>
 	<div class="fade_in_ground_linked">
 		<div class="fi_morelinked">
 			<div class="fi_md_linked_info">
 				<img src="{$basic.tpl_path}img/fi_item_link.gif" alt="Zuordnungen" />
 			</div>
-	
+
 			<div class="fi_md_content">
-	
+
 				{if $room.sidebar_configuration.active.buzzwords}
 					<div class="fi_mdc_item">
 						<h4>___COMMON_ATTACHED_BUZZWORDS___</h4>
@@ -20,7 +20,7 @@
 						{/foreach}
 					</div>
 				{/if}
-	
+
 				{if $room.sidebar_configuration.active.tags}
 					<div class="fi_mdc_item">
 						<h4>___COMMON_ATTACHED_TAGS___</h4>
@@ -31,10 +31,10 @@
 							{/foreach}
 					</div>
 				{/if}
-	
+
 				<div class="clear"> </div>
 			</div>
-	
+
 			<div class="clear"> </div>
 		</div>
 	</div>

@@ -468,6 +468,35 @@
 									</fieldset>
 									<fieldset>
 										<p>
+											<strong>___COMMON_CONFIGURATION_BARS_VISIBILITY___:</strong> ___COMMON_CONFIGURATION_BARS_VISIBILITY_DESC___
+										</p>
+										<div class="input_row_100">
+											<label for="additional_dates_status">___COMMON_BARS_ACTION___:</label>
+											<input type="radio" name="form_data[action_bar_visibility]" value="1" {if $popup.additional.action_bar_visibility == '1'} checked="checked"{/if}/> ___COMMON_BARS_VISIBLE___
+									        <input type="radio" name="form_data[action_bar_visibility]" value="-1" {if $popup.additional.action_bar_visibility == '-1'} checked="checked"{/if}/> ___COMMON_BARS_NOT_VISIBLE___
+											<div class="clear"></div>
+										</div>
+										<div class="input_row_100">
+											<label for="additional_dates_status">___COMMON_REFERENCED_ENTRIES___:</label>
+											<input type="radio" name="form_data[reference_bar_visibility]" value="1" {if $popup.additional.reference_bar_visibility == '1'} checked="checked"{/if}/> ___COMMON_BARS_VISIBLE___
+									        <input type="radio" name="form_data[reference_bar_visibility]" value="-1" {if $popup.additional.reference_bar_visibility == '-1'} checked="checked"{/if}/> ___COMMON_BARS_NOT_VISIBLE___
+											<div class="clear"></div>
+										</div>
+										<div class="input_row_100">
+											<label for="additional_dates_status">___COMMON_DETAILS_ENTRIES___:</label>
+											<input type="radio" name="form_data[details_bar_visibility]" value="1" {if $popup.additional.details_bar_visibility == '1'} checked="checked"{/if}/> ___COMMON_BARS_VISIBLE___
+									        <input type="radio" name="form_data[details_bar_visibility]" value="-1" {if $popup.additional.details_bar_visibility == '-1'} checked="checked"{/if}/> ___COMMON_BARS_NOT_VISIBLE___
+											<div class="clear"></div>
+										</div>
+										<div class="input_row_100">
+											<label for="additional_dates_status">___COMMON_ANNOTATIONS___:</label>
+											<input type="radio" name="form_data[annotations_bar_visibility]" value="1" {if $popup.additional.annotations_bar_visibility == '1'} checked="checked"{/if}/> ___COMMON_BARS_VISIBLE___
+									        <input type="radio" name="form_data[annotations_bar_visibility]" value="-1" {if $popup.additional.annotations_bar_visibility == '-1'} checked="checked"{/if}/> ___COMMON_BARS_NOT_VISIBLE___
+											<div class="clear"></div>
+										</div>
+									</fieldset>
+									<fieldset>
+										<p>
 											<strong>___COMMON_CONFIGURATION_DATES_FORM_TITLE___:</strong> ___CONFIGURATION_DATES_DESC___
 										</p>
 										<div class="input_row_100">

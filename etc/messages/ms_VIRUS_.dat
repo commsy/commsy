@@ -1,0 +1,6 @@
+<?php
+$message["VIRUS_SCANNER_NOT_FOUND"][""] = "";
+$message["VIRUS_VIRUS_FOUND"][""] = "";
+$message["VIRUS_VIRUS_FOUND_MAIL_BODY"][""] = "";
+$message["VIRUS_VIRUS_FOUND_MAIL_SUBJECT"][""] = "";
+?>

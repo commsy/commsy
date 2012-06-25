@@ -1,0 +1,17 @@
+<?php
+$message["WIKI_CONFIGURATION_DESC"][""] = "";
+$message["WIKI_CONFIGURATION_LINK"][""] = "";
+$message["WIKI_CONFIGURATION_SECTION_EDIT"][""] = "";
+$message["WIKI_CONFIGURATION_SECTION_EDIT_VALUE"][""] = "";
+$message["WIKI_CONFIGURATION_SECTION_HEADER_VALUE"][""] = "";
+$message["WIKI_COOMUNITY_NO_READ_ACCESS_ERROR"][""] = "";
+$message["WIKI_DELETE_BUTTON"][""] = "";
+$message["WIKI_DISCUSSION_EMPTY_ERROR"][""] = "";
+$message["WIKI_DISCUSSION_EXISTS_ERROR"][""] = "";
+$message["WIKI_DISCUSSION_GROUP_TITLE"][""] = "";
+$message["WIKI_DISCUSSION_NOTIFICATION_NOT_SELECTED_ERROR"][""] = "";
+$message["WIKI_DISCUSSION_NOT_SELECTED_ERROR"][""] = "";
+$message["WIKI_DISCUSSION_NO_DISCUSSION_ERROR"][""] = "";
+$message["WIKI_NEW_PAGE_TEMPLATE"][""] = "";
+$message["WIKI_SAVE_BUTTON"][""] = "";
+?>

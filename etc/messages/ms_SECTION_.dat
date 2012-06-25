@@ -1,0 +1,9 @@
+<?php
+$message["SECTION_CHANGE_BUTTON"][""] = "";
+$message["SECTION_CHOOSE_POSITION"][""] = "";
+$message["SECTION_DELETE"][""] = "";
+$message["SECTION_EDIT"][""] = "";
+$message["SECTION_ENTER_NEW"][""] = "";
+$message["SECTION_OTHER_SECTIONS"][""] = "";
+$message["SECTION_SAVE_BUTTON"][""] = "";
+?>

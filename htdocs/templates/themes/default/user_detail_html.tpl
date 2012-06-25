@@ -3,13 +3,13 @@
 {block name=room_detail_content}
 	<div class="item_actions">
 		<div id="top_item_actions">
-			<a class="edit" data-custom="expand: 'edit_expand'" href="#"><span class="edit_set"> &nbsp; </span></a>
-			<a class="detail" data-custom="expand: 'detail_expand'" href="#"><span class="details_ia"> &nbsp; </span></a>
+			<a class="edit {if $detail.is_action_bar_visible}item_actions_glow{/if}" data-custom="expand: 'edit_expand'" href="#"><span class="edit_set{if $detail.is_action_bar_visible}_ok{/if}"> &nbsp; </span></a>
+			<a class="detail {if $detail.is_details_bar_visible}item_actions_glow{/if}" data-custom="expand: 'detail_expand'" href="#"><span class="details_ia{if $detail.is_details_bar_visible}_ok{/if}"> &nbsp; </span></a>
 		</div>
 	</div>
 
 	<div class="item_body"> <!-- Start item body -->
-		<div id="edit_expand" class="hidden">
+		<div id="edit_expand" {if !$detail.is_action_bar_visible}class="hidden"{/if}>
 			<div class="fade_in_ground_actions">
 				{if $detail.actions.edit}
 					<a id="action_edit" class="open_popup" data-custom="iid: {$detail.item_id}, module: '{$environment.module}'" href="#">___COMMON_EDIT_ITEM___</a> |
@@ -346,22 +346,11 @@
 
 					    </table>
 
-		{*
-
-         $html .='<div class="detail_content" style=" margin-top: 5px; border-top:1px solid #B0B0B0; border-left:0px solid #B0B0B0; border-right:0px solid #B0B0B0; border-bottom:0px solid #B0B0B0;">'.LF;
-         $html .= $this->_getSubItemAsHTML($current_item,1).LF;
-         $html .='</div>'.LF;
-         $html .='<div style="clear:both;">'.LF;
-         $html .='</div>'.LF;
-         $html .= '<!-- END OF SUB ITEM DETAIL VIEW -->'.LF.LF;
-         *}
-
-
 					</div>
 			</div>
 		</div> <!-- Ende item_legend -->
-		
-		<div id="detail_expand" class="hidden">
+
+		<div id="detail_expand" {if !$detail.is_details_bar_visible}class="hidden"{/if}>
 			{include file="include/detail_moredetails_html.tpl" data=$detail.content.moredetails}
 		</div>
 	{/if}

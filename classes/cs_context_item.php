@@ -589,6 +589,55 @@ class cs_context_item extends cs_item {
   }
 
 
+  function setActionBarVisibilityDefault($value) {
+    $this->_addExtra('ACTIONBARVISIBILITY',$value);
+  }
+
+  function isActionBarVisibleAsDefault() {
+    $retour = true;
+    if ($this->_issetExtra('ACTIONBARVISIBILITY') and $this->_getExtra('ACTIONBARVISIBILITY') == -1) {
+      $retour = false;
+    }
+    return $retour;
+  }
+
+  function setReferenceBarVisibilityDefault($value) {
+    $this->_addExtra('REFERENCEBARVISIBILITY',$value);
+  }
+
+  function isReferenceBarVisibleAsDefault() {
+    $retour = false;
+    if ($this->_issetExtra('REFERENCEBARVISIBILITY') and $this->_getExtra('REFERENCEBARVISIBILITY') == 1) {
+      $retour = true;
+    }
+    return $retour;
+  }
+
+  function setDetailsBarVisibilityDefault($value) {
+    $this->_addExtra('DETAILSBARVISIBILITY',$value);
+  }
+
+  function isDetailsBarVisibleAsDefault() {
+    $retour = false;
+    if ($this->_issetExtra('DETAILSBARVISIBILITY') and $this->_getExtra('DETAILSBARVISIBILITY') == 1) {
+      $retour = true;
+    }
+    return $retour;
+  }
+
+  function setAnnotationsBarVisibilityDefault($value) {
+    $this->_addExtra('ANNOTATIONSBARVISIBILITY',$value);
+  }
+
+  function isAnnotationsBarVisibleAsDefault() {
+    $retour = false;
+    if ($this->_issetExtra('ANNOTATIONSBARVISIBILITY') and $this->_getExtra('ANNOTATIONSBARVISIBILITY') == 1) {
+      $retour = true;
+    }
+    return $retour;
+  }
+
+
   function withTodoManagement() {
     $retour = false;
     if ($this->_issetExtra('TODOMANAGEMENT') ) {

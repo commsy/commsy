@@ -1,4 +1,4 @@
-<div id="annotations_expand" class="hidden">
+<div id="annotations_expand" {if !$detail.is_annotations_bar_visible}class="hidden"{/if}>
 	<div class="fade_in_ground_annotations">
 		<div class="markup">
 			<div class="item_body"> <!-- Start item body -->
@@ -14,14 +14,14 @@
 				</h2>
 				<div class="clear"> </div>
 			</div> <!-- Ende item body -->
-		
+
 			<div class="clear"> </div>
-		
+
 			{foreach $detail.annotations as $annotation}
 				<div class="item_actions">
 					<a link="edit_expand_annotation_{$annotation@index}" class="edit" href="#"><span class="edit_set"> &nbsp; </span></a>
 				</div>
-		
+
 				<div class="item_body"> <!-- Start item body -->
 					<!-- Start fade_in_ground -->
 					<div id="edit_expand_annotation_{$annotation@index}" class="hidden">
@@ -35,12 +35,12 @@
 						</div>
 					</div>
 					<!-- Ende fade_in_ground -->
-		
+
 					<a name="annotation{$annotation.item_id}"></a>
 					<a name="annotation_{$annotation@index}"></a>
 					<div class="item_post">
 						<div class="row_{if $annotation@iteration is odd}odd{else}even{/if}_no_hover">
-		
+
 							<div class="column_80">
 								<p>
 									<a href="" title="{$annotation.creator}">
@@ -52,7 +52,7 @@
 									</a>
 								</p>
 							</div>
-		
+
 							<div class="column_585">
 								<div class="post_content">
 									<h4>
@@ -79,9 +79,9 @@
 				</div> <!-- Ende item body -->
 				<div class="clear"> </div>
 			{/foreach}
-		
+
 			<div class="item_actions">&nbsp;</div>
-		
+
 			<div class="item_body"> <!-- Start item body -->
 				<div class="item_post">
 					<div id="item_postnew">
@@ -96,7 +96,7 @@
 								</a>
 							</p>
 						</div>
-		
+
 						<div class="column_590">
 							<form action="commsy.php?cid={$environment.cid}&mod=annotation&fct=edit&ref_iid={$detail.item_id}&mode=annotate&iid=NEW" method="post">
 								<div class="post_content">

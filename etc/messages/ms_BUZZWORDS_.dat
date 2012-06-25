@@ -1,0 +1,6 @@
+<?php
+$message["BUZZWORDS_CHANGE_BUTTON"][""] = "";
+$message["BUZZWORDS_COMBINE_BUTTON"][""] = "";
+$message["BUZZWORDS_EDIT_HEADER"][""] = "";
+$message["BUZZWORDS_NEW_BUTTON"][""] = "";
+?>

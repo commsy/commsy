@@ -3,10 +3,10 @@
 {block name=room_detail_content}
 	<div class="item_actions">
 		<div id="top_item_actions">
-			<a class="edit" data-custom="expand: 'edit_expand'" href="#"><span class="edit_set"> &nbsp; </span></a>
-			<a class="linked" data-custom="expand: 'linked_expand'" href="#"><span class="ref_to_ia"> &nbsp; </span></a>
-			<a class="detail" data-custom="expand: 'detail_expand'" href="#"><span class="details_ia"> &nbsp; </span></a>
-			<a class="annotations" data-custom="expand: 'annotations_expand'" href="#"><span class="ref_to_anno"> &nbsp; </span></a>
+			<a class="edit {if $detail.is_action_bar_visible}item_actions_glow{/if}" data-custom="expand: 'edit_expand'" href="#"><span class="edit_set{if $detail.is_action_bar_visible}_ok{/if}"> &nbsp; </span></a>
+			<a class="linked {if $detail.is_reference_bar_visible}item_actions_glow{/if}" data-custom="expand: 'linked_expand'" href="#"><span class="ref_to_ia{if $detail.is_reference_bar_visible}_ok{/if}"> &nbsp; </span></a>
+			<a class="detail {if $detail.is_details_bar_visible}item_actions_glow{/if}" data-custom="expand: 'detail_expand'" href="#"><span class="details_ia{if $detail.is_details_bar_visible}_ok{/if}"> &nbsp; </span></a>
+			<a class="annotations  {if $detail.is_annotations_bar_visible}item_actions_glow{/if}" data-custom="expand: 'annotations_expand'" href="#"><span class="ref_to_anno{if $detail.is_annotations_bar_visible}_ok{/if}"> &nbsp; </span></a>
 			{if $detail.annotations|@count}
 			<div class="action_count anno_count" >{$detail.annotations|@count}
 			</div>
@@ -31,7 +31,7 @@
 
 	<div class="item_body"> <!-- Start item body -->
 		<!-- Start fade_in_ground -->
-		<div id="edit_expand" class="hidden">
+		<div id="edit_expand" {if !$detail.is_action_bar_visible}class="hidden"{/if}>
 			<div class="fade_in_ground_actions">
 				{if $detail.actions.edit}
 					<a id="action_edit" class="open_popup" data-custom="iid: {$detail.content.item_id}, module: '{$environment.module}'" href="#">___COMMON_EDIT_ITEM___</a> |
@@ -95,8 +95,8 @@
 				{/if}
 			</div>
 		</div> <!-- Ende item_legend -->
-		
-		<div id="detail_expand" class="hidden">
+
+		<div id="detail_expand" {if !$detail.is_details_bar_visible}class="hidden"{/if}>
 			{include file="include/detail_moredetails_html.tpl" data=$detail.content.moredetails}
 		</div>
 	</div> <!-- Ende item body -->
