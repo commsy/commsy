@@ -6,6 +6,7 @@ class cs_popup_section_controller implements cs_rubric_popup_controller {
     private $_environment = null;
     private $_popup_controller = null;
     private $_sections = array();
+    private $_material_item = null;
 
     /**
      * constructor
@@ -24,9 +25,10 @@ class cs_popup_section_controller implements cs_rubric_popup_controller {
         $material_ref_id = $data['ref_iid'];
 
         $material_manager = $this->_environment->getMaterialManager();
-        $material_item = $material_manager->getItem($material_ref_id);
+        $this->_material_item = $material_manager->getItem($material_ref_id);
+        
 
-        $section_list = $material_item->getSectionList();
+        $section_list = $this->_material_item->getSectionList();
         $section = $section_list->getFirst();
         while($section) {
             $this->_sections[] = $section;
@@ -59,7 +61,6 @@ class cs_popup_section_controller implements cs_rubric_popup_controller {
             $this->_popup_controller->assign('item', 'files', $attachment_infos);
             $this->_popup_controller->assign('item', 'title', $item->getTitle());
             $this->_popup_controller->assign('item', 'description', $item->getDescription());
-        }else{
         }
     }
 
@@ -93,6 +94,93 @@ class cs_popup_section_controller implements cs_rubric_popup_controller {
     }
 
     public function save($form_data, $additional = array()) {
+        
+        $environment = $this->_environment;
+        
+        // Create new item
+        if ( !isset($section_item) ) {
+            $section_manager = $environment->getSectionManager();
+            $section_item = $section_manager->getNewItem();
+            $section_item->setContextID($environment->getCurrentContextID());
+            $user = $environment->getCurrentUserItem();
+            $section_item->setCreatorItem($user);
+            $section_item->setCreationDate(getCurrentDateTimeInMySQL());
+        }
+
+        // new version? 
+        /*
+        if ((!empty($command) AND isOption($command,$translator->getMessage('MATERIAL_VERSION_BUTTON')))
+        or ($form_data['material_modification_date'] != $this->_material_item->getModificationDate())) {
+            $version = $this->_material_item->getVersionID()+1;
+            $this->_material_item->save();
+            $this->_material_item = $this->_material_item->cloneCopy();
+            $this->_material_item->setVersionID($version);
+            $infoBox_forAutoNewVersion = "&autoVersion=true";
+        } */
+
+        // Set modificator and modification date
+        $user = $environment->getCurrentUserItem();
+        $section_item->setModificatorItem($user);
+        $section_item->setModificationDate(getCurrentDateTimeInMySQL());
+
+        // Set attributes
+        if (isset($form_data['title'])) {
+            $section_item->setTitle($form_data['title']);
+        }
+        if (isset($form_data['description'])) {
+            $section_item->setDescription($form_data['description']);
+        }
+        //TODO: Nummer auslesen (weil Eintragsordnung per drag & drop veränderbar)
+        if (isset($form_data['number'])) {
+            $section_item->setNumber($form_data['number']);
+        }
+        if (isset($this->_material_item) ) {
+            $section_item->setLinkedItemID($this->_material_item->getItemID());
+        }
+
+        // Set links to connected rubrics
+        if ( isset($form_data[CS_MATERIAL_TYPE]) ) {
+            $section_item->setMaterialListByID($form_data[CS_MATERIAL_TYPE]);
+        } else {
+            $section_item->setMaterialListByID(array());
+        }
+
+        // Update the material regarding the latest section informations...
+        // (this takes care of saving the section itself, too)
+        $user = $environment->getCurrentUserItem();
+        //TODO: php erzeugt mit jedem aufruf die Klassen neu und daher nützt es nichts sich das 
+        //      material_item beim aufrufen des popups zu merken...
+        $this->_material_item->setModificatorItem($user);
+        if (!$this->_material_item->isNotActivated()){
+            $this->_material_item->setModificationDate($section_item->getModificationDate());
+        }else{
+            $this->_material_item->setModificationDate($this->_material_item->getModificationDate());
+        }
+        $section_list = $this->_material_item->getSectionList();
+
+        // files
+        $item_files_upload_to = $section_item;
+        include_once('include/inc_fileupload_edit_page_save_item.php');
+
+        $section_list->set($section_item);
+        $this->_material_item->setSectionList($section_list);
+        $this->_material_item->setSectionSaveID($section_item->getItemId());
+
+        $external_view_array = $this->_material_item->getExternalViewerArray();
+        $this->_material_item->setExternalViewerAccounts($external_view_array);
+
+        $this->_material_item->save();
+
+        // redirect
+        /*
+        cleanup_session($current_iid);
+        $params = array();
+        $params['iid'] = $material_ref_iid;
+        if (!empty($infoBox_forAutoNewVersion)) {
+            $params['autoVersion'] = 'true';
+        }
+        redirect($environment->getCurrentContextID(), 'material', 'detail', $params,'anchor'.$section_item->getItemID());
+        */
     }
 
     public function cleanup_session($current_iid) {
