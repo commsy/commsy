@@ -29,10 +29,13 @@ define([	"dojo/_base/declare",
 		},
 		
 		setupSpecific: function() {
-			// register click for community room assign button
-			On(Query("input#add_community_room", this.contentNode)[0], "click", Lang.hitch(this, function(event) {
-				this.onClickAssignCommunityRoom();
-			}));
+			var communityRoomInputNode = Query("input#add_community_room", this.contentNode)[0];
+			if(communityRoomInputNode) {
+				// register click for community room assign button
+				On(communityRoomInputNode, "click", Lang.hitch(this, function(event) {
+					this.onClickAssignCommunityRoom();
+				}));
+			}
 			
 			// register click for additional status button
 			On(Query("input#add_additional_status", this.contentNode)[0], "click", Lang.hitch(this, function(event) {
