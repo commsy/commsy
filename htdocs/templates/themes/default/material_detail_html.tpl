@@ -48,7 +48,7 @@
 					<span title="___COMMON_NO_ACTION___" class="disabled_actions">___COMMON_EDIT_ITEM___</span> |
 				{/if}
 				{if $detail.actions.edit}
-					<a id="action_edit" href="commsy.php?cid={$environment.cid}&mod=section&fct=edit&iid=NEW&ref_iid={$detail.item_id}">___MATERIAL_SECTION_ADD___</a> |
+					<a id="action_edit" class="open_popup" data-custom="iid: 'NEW', module: 'section', ref_iid: {$detail.item_id}" href="#">___MATERIAL_SECTION_ADD___</a> |
 				{else}
 					<span title="___COMMON_NO_ACTION___" class="disabled_actions">___MATERIAL_SECTION_ADD___</span> |
 				{/if}

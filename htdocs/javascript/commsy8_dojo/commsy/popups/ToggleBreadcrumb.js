@@ -41,7 +41,7 @@ define([	"dojo/_base/declare",
 				var href = this.getAttrAsObject(node, "data-custom").href;
 				
 				On(node, "click", function(event) {
-					window.location = href;
+					location.href = href;
 				});
 			}));
 		},

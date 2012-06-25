@@ -11,6 +11,7 @@ define([	"dojo/_base/declare",
 	return declare(PopupHandler, {
 		triggerNode:			null,
 		item_id:				null,
+		ref_iid:				null,
 		ticks:					0,
 		
 		constructor: function(args) {
@@ -22,7 +23,7 @@ define([	"dojo/_base/declare",
 				this.setupLoading();
 				
 				// setup ajax request for getting html
-				this.AJAXRequest("rubric_popup", "getHTML", { module: this.module, iid: this.item_id }, lang.hitch(this, function(html) {
+				this.AJAXRequest("rubric_popup", "getHTML", { module: this.module, iid: this.item_id, ref_iid: this.ref_iid }, lang.hitch(this, function(html) {
 					// append html to body
 					domConstruct.place(html, query("body")[0], "first");
 					
