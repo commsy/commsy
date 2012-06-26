@@ -826,6 +826,8 @@
 		         } else {
 		            $max_overlap_for_date = 0;
 		         }
+		         var_dump($max_overlap);
+		         var_dump($max_overlap_for_date);
 		         
 		         /*
 		         $html .= 'new Array(' . $day_entries . ',\'' . $link . '\',' . $start_quaters . ',' . $end_quaters . ',' . $dates_on_day . ',\'' . $color . '\'' . ',\'' . $color_border . '\'' . ',\'' . $href . '\'' . ',\'' . $date_index . '\'' . ',\'' . $is_date_for_whole_day . '\'' . ',' . $max_overlap . '' . ',' . $start_column . '' . ',' . $start_quarter . '' . ',' . $max_overlap_for_date . ')'.LF;

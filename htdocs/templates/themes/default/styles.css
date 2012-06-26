@@ -1886,6 +1886,16 @@ legend{
     margin-bottom: 2px;
     }
 
+#popup_button_delete {
+	border: 1px solid red;
+	color: red;
+	font-weight: bold;
+}
+
+#popup_button_delete:hover {
+	border: 2px solid red;
+}
+
 .popup_button {
     border: 1px solid #919191;
     font-weight: normal;
