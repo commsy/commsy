@@ -1,5 +1,5 @@
 <?php
-$message["INDEX_ACTION_FORM_BCC"]["en"] = "bcc to sender (%1)";
+$message["INDEX_ACTION_FORM_BCC"]["en"] = "bcc to sender";
 $message["INDEX_ACTION_FORM_BCC_MODERATOR"]["en"] = "bcc to moderator/s";
 $message["INDEX_ACTION_FORM_CC"]["en"] = "cc and/or";
 $message["INDEX_ACTION_FORM_CC_BCC"]["en"] = "cc / bcc";
