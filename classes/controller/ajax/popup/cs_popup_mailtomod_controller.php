@@ -77,7 +77,7 @@ class cs_popup_mailtomod_controller implements cs_popup_controller {
 		return $receiver_array;
 	}
 
-	public function initPopup() {
+	public function initPopup($data) {
 		$current_user = $this->_environment->getCurrentUserItem();
 		$context_item = $this->_environment->getCurrentContextItem();
 

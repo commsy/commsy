@@ -1,5 +1,7 @@
 <?php
-class cs_popup_configuration_controller {
+require_once('classes/controller/ajax/popup/cs_popup_controller.php');
+
+class cs_popup_configuration_controller implements cs_popup_controller {
 	private $_environment = null;
 	private $_popup_controller = null;
 	private $_config = array();
@@ -17,7 +19,7 @@ class cs_popup_configuration_controller {
 		$this->_popup_controller = $popup_controller;
 	}
 
-	public function save($form_data, $additional) {
+	public function save($form_data, $additional = array()) {
 		$current_context = $this->_environment->getCurrentContextItem();
 		$current_user = $this->_environment->getCurrentUserItem();
 
@@ -778,7 +780,7 @@ class cs_popup_configuration_controller {
 		}
 	}
 
-	public function initPopup() {
+	public function initPopup($data) {
 		$current_context = $this->_environment->getCurrentContextItem();
 		$current_portal = $this->_environment->getCurrentPortalItem();
 		$current_user = $this->_environment->getCurrentUser();

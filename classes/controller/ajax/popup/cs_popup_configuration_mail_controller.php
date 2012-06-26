@@ -1,5 +1,7 @@
 <?php
-class cs_popup_configuration_mail_controller {
+require_once('classes/controller/ajax/popup/cs_popup_controller.php');
+
+class cs_popup_configuration_mail_controller implements cs_popup_controller {
 	private $_environment = null;
 	private $_popup_controller = null;
 
@@ -11,232 +13,16 @@ class cs_popup_configuration_mail_controller {
 		$this->_popup_controller = $popup_controller;
 	}
 
-	public function save($form_data, $additional) {
+	public function save($form_data, $additional = array()) {
 		
 	}
 
-	public function initPopup() {
+	public function initPopup($data) {
 		$current_context = $this->_environment->getCurrentContextItem();
 		$user_manager = $this->_environment->getUserManager();
 		$translator = $this->_environment->getTranslationObject();
 		
-		var_dump($this->_data);
-		
-		//$admin = $user_manager->get
-		
-
-		/*
-
-         $admin = $user_manager->getItem($this->_action_array['user_item_id']);
-         if ( !isset($admin) ) {
-            $admin = $this->_environment->getCurrentUserItem();
-         }
-         $room = $this->_environment->getCurrentContextItem();
-         $url_to_room = LF.LF;
-         $url_to_room .= 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?cid='.$this->_environment->getCurrentContextID();
-
-         $array_user_item_id = $this->_action_array['selected_ids'];
-         $this->_name = '';
-         $first = true;
-         foreach ($array_user_item_id as $id) {
-            if ($first) {
-               $first = false;
-            } else {
-               $this->_name .= LF;
-            }
-            $user = $user_manager->getItem($id);
-            if ( !empty($user) ) {
-               if($user->isEmailVisible()){
-                  $this->_name .= $user->getFullname().' ('.$user->getEmail().')';
-               } else {
-                  $this->_name .= $user->getFullname().' ('.$translator->getMessage('USER_EMAIL_HIDDEN').')';
-               }
-            }
-         }
-         $translate = false;
-         if ( count($array_user_item_id) == 1 ) {
-            $translate = true;
-         }
-
-         if ( $translate ) {
-            $this->_content  = $translator->getEmailMessage('MAIL_BODY_HELLO',$user->getFullname());
-         } else {
-            $this->_content  = $translator->getEmailMessage('MAIL_BODY_HELLO');
-         }
-         $this->_content .= LF.LF;
-
-         // now prepare for each action separately
-         if ( $this->_action_array['action'] == 'USER_ACCOUNT_DELETE' ) {
-            $this->_headline = $translator->getMessage('INDEX_ACTION_FORM_HEADLINE_USER_ACCOUNT_DELETE');
-            $this->_warning  = $translator->getMessage('INDEX_ACTION_FORM_USER_ACCOUNT_DELETE_WARNING');
-            $this->_subject  = $translator->getMessage('MAIL_SUBJECT_USER_ACCOUNT_DELETE',$room->getTitle());
-            if ( $translate ) {
-               $this->_content .= $translator->getEmailMessage('MAIL_BODY_USER_ACCOUNT_DELETE',$user->getUserID(),$room->getTitle());
-            } else {
-               $content_temp = $translator->getEmailMessage('MAIL_BODY_USER_ACCOUNT_DELETE');
-               $content_temp = str_replace('%2','%3',$content_temp);
-               $content_temp = str_replace('%1','%2',$content_temp);
-               $this->_content .= $content_temp;
-            }
-            $this->_content .= LF.LF;
-            $this->_content .= $translator->getEmailMessage('MAIL_BODY_CIAO',$admin->getFullname(),$room->getTitle());
-            $this->_content .= $url_to_room;
-         } elseif ( $this->_action_array['action'] == 'USER_ACCOUNT_LOCK' ) {
-            $this->_headline = $translator->getMessage('INDEX_ACTION_FORM_HEADLINE_USER_ACCOUNT_LOCK');
-            $this->_subject  = $translator->getMessage('MAIL_SUBJECT_USER_ACCOUNT_LOCK',$room->getTitle());
-            if ( $translate ) {
-               $this->_content .= $translator->getEmailMessage('MAIL_BODY_USER_ACCOUNT_LOCK',$user->getUserID(),$room->getTitle());
-            } else {
-               $content_temp = $translator->getEmailMessage('MAIL_BODY_USER_ACCOUNT_LOCK');
-               $content_temp = str_replace('%2','%3',$content_temp);
-               $content_temp = str_replace('%1','%2',$content_temp);
-               $this->_content .= $content_temp;
-            }
-            $this->_content .= LF.LF;
-            $this->_content .= $translator->getEmailMessage('MAIL_BODY_CIAO',$admin->getFullname(),$room->getTitle());
-            $this->_content .= $url_to_room;
-         } elseif ( $this->_action_array['action'] == 'USER_ACCOUNT_FREE' ) {
-            $this->_headline = $translator->getMessage('INDEX_ACTION_FORM_HEADLINE_USER_ACCOUNT_FREE');
-            $this->_subject  = $translator->getMessage('MAIL_SUBJECT_USER_ACCOUNT_FREE',$room->getTitle());
-            if ($translate) {
-               $this->_content .= $translator->getEmailMessage('MAIL_BODY_USER_STATUS_USER',$user->getUserID(),$room->getTitle());
-            } else {
-               $content_temp = $translator->getEmailMessage('MAIL_BODY_USER_STATUS_USER');
-               $content_temp = str_replace('%2','%3',$content_temp);
-               $content_temp = str_replace('%1','%2',$content_temp);
-               $this->_content .= $content_temp;
-            }
-            $this->_content .= LF.LF;
-            $this->_content .= $translator->getEmailMessage('MAIL_BODY_CIAO',$admin->getFullname(),$room->getTitle());
-            $this->_content .= $url_to_room;
-         } elseif ( $this->_action_array['action'] == 'USER_STATUS_USER' ) {
-            $this->_headline = $translator->getMessage('INDEX_ACTION_FORM_HEADLINE_USER_STATUS_USER');
-            $this->_subject  = $translator->getMessage('MAIL_SUBJECT_USER_STATUS_USER',$room->getTitle());
-            if ($translate) {
-               $this->_content .= $translator->getEmailMessage('MAIL_BODY_USER_STATUS_USER',$user->getUserID(),$room->getTitle());
-            } else {
-               $content_temp = $translator->getEmailMessage('MAIL_BODY_USER_STATUS_USER');
-               $content_temp = str_replace('%2','%3',$content_temp);
-               $content_temp = str_replace('%1','%2',$content_temp);
-               $this->_content .= $content_temp;
-            }
-            $this->_content .= LF.LF;
-            $this->_content .= $translator->getEmailMessage('MAIL_BODY_CIAO',$admin->getFullname(),$room->getTitle());
-            $this->_content .= $url_to_room;
-         } elseif ( $this->_action_array['action'] == 'USER_STATUS_MODERATOR' ) {
-            $this->_headline = $translator->getMessage('INDEX_ACTION_FORM_HEADLINE_USER_STATUS_MODERATOR');
-            $this->_subject  = $translator->getMessage('MAIL_SUBJECT_USER_STATUS_MODERATOR',$room->getTitle());
-            if ($translate) {
-               $this->_content .= $translator->getEmailMessage('MAIL_BODY_USER_STATUS_MODERATOR',$user->getUserID(),$room->getTitle());
-            } else {
-               $content_temp = $translator->getEmailMessage('MAIL_BODY_USER_STATUS_MODERATOR');
-               $content_temp = str_replace('%2','%3',$content_temp);
-               $content_temp = str_replace('%1','%2',$content_temp);
-               $this->_content .= $content_temp;
-            }
-            $this->_content .= LF.LF;
-            $this->_content .= $translator->getEmailMessage('MAIL_BODY_CIAO',$admin->getFullname(),$room->getTitle());
-            $this->_content .= $url_to_room;
-         } elseif ( $this->_action_array['action'] == 'USER_MAKE_CONTACT_PERSON' ) {
-            $this->_headline = $translator->getMessage('INDEX_ACTION_FORM_HEADLINE_USER_MAKE_CONTACT_PERSON');
-            $this->_subject  = $translator->getMessage('MAIL_SUBJECT_USER_MAKE_CONTACT_PERSON',$room->getTitle());
-            if ($translate) {
-               $this->_content .= $translator->getEmailMessage('MAIL_BODY_USER_MAKE_CONTACT_PERSON',$user->getUserID(),$room->getTitle());
-            } else {
-               $content_temp = $translator->getEmailMessage('MAIL_BODY_USER_MAKE_CONTACT_PERSON');
-               $content_temp = str_replace('%2','%3',$content_temp);
-               $content_temp = str_replace('%1','%2',$content_temp);
-               $this->_content .= $content_temp;
-            }
-            $this->_content .= LF.LF;
-            $this->_content .= $translator->getEmailMessage('MAIL_BODY_CIAO',$admin->getFullname(),$room->getTitle());
-            $this->_content .= $url_to_room;
-         } elseif ( $this->_action_array['action'] == 'USER_UNMAKE_CONTACT_PERSON' ) {
-            $this->_headline = $translator->getMessage('INDEX_ACTION_FORM_HEADLINE_USER_UNMAKE_CONTACT_PERSON');
-            $this->_subject  = $translator->getMessage('MAIL_SUBJECT_USER_UNMAKE_CONTACT_PERSON',$room->getTitle());
-            if ($translate) {
-               $this->_content .= $translator->getEmailMessage('MAIL_BODY_USER_UNMAKE_CONTACT_PERSON',$user->getUserID(),$room->getTitle());
-            } else {
-               $content_temp = $translator->getEmailMessage('MAIL_BODY_USER_UNMAKE_CONTACT_PERSON');
-               $content_temp = str_replace('%2','%3',$content_temp);
-               $content_temp = str_replace('%1','%2',$content_temp);
-               $this->_content .= $content_temp;
-            }
-            $this->_content .= LF.LF;
-            $this->_content .= $translator->getEmailMessage('MAIL_BODY_CIAO',$admin->getFullname(),$room->getTitle());
-            $this->_content .= $url_to_room;
-         } elseif ( $this->_action_array['action'] == 'USER_EMAIL_SEND' ) {
-            $this->_headline = $translator->getMessage('INDEX_ACTION_FORM_HEADLINE_USER_EMAIL_SEND');
-            $this->_subject  = '';
-            $this->_content  = LF.LF.LF;
-            if ( $this->_environment->getCurrentModule() == 'account' ) {
-               $this->_content .= $translator->getEmailMessage('MAIL_BODY_CIAO',$admin->getFullname(),$room->getTitle());
-            } else { // user: send mail
-               $this->_content .= $translator->getMessage('MAIL_BODY_CIAO',$admin->getFullname(),$room->getTitle());
-            }
-            $this->_content .= $url_to_room;
-            $this->_with_copy_mod = true;
-         } elseif ( $this->_action_array['action'] == 'USER_EMAIL_ACCOUNT_PASSWORD' ) {
-            $this->_headline = $translator->getMessage('INDEX_ACTION_FORM_HEADLINE_USER_ACCOUNT_PASSWORD');
-            $this->_subject  = $translator->getMessage('MAIL_SUBJECT_USER_ACCOUNT_PASSWORD',$room->getTitle());
-            if ($translate) {
-               $this->_content .= $translator->getEmailMessage('MAIL_BODY_USER_ACCOUNT_PASSWORD',$room->getTitle(),$user->getUserID());
-            } else {
-               $content_temp = $translator->getEmailMessage('MAIL_BODY_USER_ACCOUNT_PASSWORD');
-               $content_temp = str_replace('%2','%3',$content_temp);
-               $content_temp = str_replace('%1','%2',$content_temp);
-               $this->_content .= $content_temp;
-            }
-            $this->_content .= LF.LF;
-            $this->_content .= $translator->getEmailMessage('MAIL_BODY_CIAO',$admin->getFullname(),$room->getTitle());
-            $this->_content .= $url_to_room;
-         } elseif ( $this->_action_array['action'] == 'USER_EMAIL_ACCOUNT_MERGE' ) {
-            $this->_headline = $translator->getMessage('INDEX_ACTION_FORM_HEADLINE_USER_ACCOUNT_MERGE');
-            $this->_subject  = $translator->getMessage('MAIL_SUBJECT_USER_ACCOUNT_MERGE',$room->getTitle());
-            if ($translate) {
-               $account_text = '';
-               $user_manager->resetLimits();
-               $user_manager->setContextLimit($this->_environment->getCurrentContextID());
-               $user_manager->setUserLimit();
-               $user_manager->setSearchLimit($user->getEmail());
-               $user_manager->select();
-               $user_list = $user_manager->get();
-               if (!$user_list->isEmpty()) {
-                  if ($user_list->getCount() > 1) {
-                     $first = true;
-                     $user_item = $user_list->getFirst();
-                     while ($user_item) {
-                        if ($first) {
-                           $first = false;
-                        } else {
-                           $account_text .= LF;
-                        }
-                        $account_text .= $user_item->getUserID();
-                        $user_item = $user_list->getNext();
-                     }
-                  } else {
-                     include_once('functions/error_functions.php');
-                     trigger_error('that is impossible, list must be greater than one',E_USER_WARNING);
-                  }
-               } else {
-                  include_once('functions/error_functions.php');
-                  trigger_error('that is impossible, list must be greater than one',E_USER_WARNING);
-               }
-               $this->_content .= $translator->getEmailMessage('MAIL_BODY_USER_ACCOUNT_MERGE',$user->getEMail(),$room->getTitle(),$account_text);
-            } else {
-               $content_temp = $translator->getEmailMessage('MAIL_BODY_USER_ACCOUNT_MERGE');
-               $content_temp = str_replace('%3','%4',$content_temp);
-               $content_temp = str_replace('%2','%3',$content_temp);
-               $content_temp = str_replace('%1','%2',$content_temp);
-            }
-            $this->_content .= $content_temp;
-            $this->_content .= LF.LF;
-            $this->_content .= $translator->getEmailMessage('MAIL_BODY_CIAO',$admin->getFullname(),$room->getTitle());
-            $this->_content .= $url_to_room;
-		 */
-
-		// assign template vars
-		$this->assignTemplateVars();
+		$this->assignTemplateVars($data['ids'], $data["action"]);
 	}
 
 	public function getFieldInformation($sub) {
@@ -301,12 +87,273 @@ class cs_popup_configuration_mail_controller {
 		return $return[$sub];
 	}
 
-	private function assignTemplateVars() {
+	private function assignTemplateVars($ids, $action) {
 		$translator = $this->_environment->getTranslationObject();
 		$current_user = $this->_environment->getCurrentUserItem();
 		$portal_user = $this->_environment->getPortalUserItem();
-
-
-		$this->_popup_controller->assign('popup', 'general', $general_information);
+		$user_manager = $this->_environment->getUserManager();
+		
+		// receiver
+		$receiver = array();
+		$user = null;
+		foreach($ids as $id) {
+			$user = $user_manager->getItem($id);
+			if(!empty($user)) {
+				if($user->isEmailVisible()) {
+					$receiver[] = $user->getFullname() . " (" . $user->getEmail() . ")";
+				} else {
+					$receiver[] = $user->getFullname() . " (" . $translator->getMessage("USER_EMAIL_HIDDEN") . ")";
+				}
+			}
+		}
+		$this->_popup_controller->assign('popup', 'receiver', $receiver);
+		
+		// send mail checkbox
+		$this->_popup_controller->assign('popup', 'send_mail_checkbox', ($action !== "email"));
+		
+		// copy to mod
+		$this->_popup_controller->assign('popup', 'copy_mod', $action === "email");
+		
+		$admin = $this->_environment->getCurrentUserItem();
+		
+		// cc / bcc
+		$cc_bcc = array(
+			array(
+				"text"		=> $translator->getMessage("INDEX_ACTION_FORM_CC"),
+				"value"		=> "cc"
+			),
+			array(
+				"text"		=> $translator->getMessage("INDEX_ACTION_FORM_BCC", $admin->getFullname()),
+				"value"		=> "bcc"
+			),
+			array(
+				"text"		=> $translator->getMessage("INDEX_ACTION_FORM_CC_MODERATOR"),
+				"value"		=> "cc_moderator"
+			),
+			array(
+				"text"		=> $translator->getMessage("INDEX_ACTION_FORM_BCC_MODERATOR"),
+				"value"		=> "bcc_moderator"
+			)
+		);
+		$this->_popup_controller->assign('popup', 'cc_bcc', $cc_bcc);
+		
+		// specific text
+		$room = $this->_environment->getCurrentContextItem();
+		$url_to_room = LF.LF;
+        $url_to_room .= 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?cid='.$this->_environment->getCurrentContextID();
+        
+        $needTranslation = (sizeof($ids) === 1) ? true : false;
+        
+        if($needTranslation) {
+        	$content = $translator->getEmailMessage('MAIL_BODY_HELLO',$user->getFullname());
+        } else {
+        	$content = $translator->getEmailMessage('MAIL_BODY_HELLO');
+        }
+        
+        $subject = "";
+        $content .= LF.LF;
+        
+        switch($action) {
+        	case "delete":
+        		$subject = $translator->getMessage('MAIL_SUBJECT_USER_ACCOUNT_DELETE',$room->getTitle());
+        		
+        		if($needTranslation) {
+        			$content .= $translator->getEmailMessage('MAIL_BODY_USER_ACCOUNT_DELETE',$user->getUserID(),$room->getTitle());
+        		} else {
+        			$content_temp = $translator->getEmailMessage('MAIL_BODY_USER_ACCOUNT_DELETE');
+        			$content_temp = str_replace('%2','%3',$content_temp);
+        			$content_temp = str_replace('%1','%2',$content_temp);
+        			$content .= $content_temp;
+        		}
+        		
+        		$content .= LF.LF;
+        		$content .= $translator->getEmailMessage('MAIL_BODY_CIAO',$admin->getFullname(),$room->getTitle());
+        		$content .= $url_to_room;
+        		
+        		/*
+        		 * $this->_headline = $translator->getMessage('INDEX_ACTION_FORM_HEADLINE_USER_ACCOUNT_DELETE');
+            $this->_warning  = $translator->getMessage('INDEX_ACTION_FORM_USER_ACCOUNT_DELETE_WARNING');
+        		 */
+        		break;
+        	
+        	case "lock":
+        		$subject = $translator->getMessage('MAIL_SUBJECT_USER_ACCOUNT_LOCK',$room->getTitle());
+        		
+        		if($needTranslation) {
+        			$content .= $translator->getEmailMessage('MAIL_BODY_USER_ACCOUNT_LOCK',$user->getUserID(),$room->getTitle());
+        		} else {
+        			$content_temp = $translator->getEmailMessage('MAIL_BODY_USER_ACCOUNT_LOCK');
+        			$content_temp = str_replace('%2','%3',$content_temp);
+        			$content_temp = str_replace('%1','%2',$content_temp);
+        			$content .= $content_temp;
+        		}
+        		
+        		$content .= LF.LF;
+        		$content .= $translator->getEmailMessage('MAIL_BODY_CIAO',$admin->getFullname(),$room->getTitle());
+        		$content .= $url_to_room;
+        		
+        		/*
+        		 * $this->_headline = $translator->getMessage('INDEX_ACTION_FORM_HEADLINE_USER_ACCOUNT_LOCK');
+        		 */
+        		break;
+        	
+        	case "free":
+        		$subject = $translator->getMessage('MAIL_SUBJECT_USER_ACCOUNT_FREE',$room->getTitle());
+        		
+        		if($needTranslation) {
+        			$content .= $translator->getEmailMessage('MAIL_BODY_USER_STATUS_USER',$user->getUserID(),$room->getTitle());
+        		} else {
+        			$content_temp = $translator->getEmailMessage('MAIL_BODY_USER_STATUS_USER');
+        			$content_temp = str_replace('%2','%3',$content_temp);
+        			$content_temp = str_replace('%1','%2',$content_temp);
+        			$content .= $content_temp;
+        		}
+        		
+        		$content .= LF.LF;
+        		$content .= $translator->getEmailMessage('MAIL_BODY_CIAO',$admin->getFullname(),$room->getTitle());
+        		$content .= $url_to_room;
+        		
+        		/*
+        		 * $this->_headline = $translator->getMessage('INDEX_ACTION_FORM_HEADLINE_USER_ACCOUNT_FREE');
+        		 */
+        		break;
+        	
+        	case "status_user":
+        		$subject = $translator->getMessage('MAIL_SUBJECT_USER_STATUS_USER',$room->getTitle());
+        		
+        		if($needTranslation) {
+        			$content .= $translator->getEmailMessage('MAIL_BODY_USER_STATUS_USER',$user->getUserID(),$room->getTitle());
+        		} else {
+        			$content_temp = $translator->getEmailMessage('MAIL_BODY_USER_STATUS_USER');
+        			$content_temp = str_replace('%2','%3',$content_temp);
+        			$content_temp = str_replace('%1','%2',$content_temp);
+        			$content .= $content_temp;
+        		}
+        		
+        		$content .= LF.LF;
+        		$content .= $translator->getEmailMessage('MAIL_BODY_CIAO',$admin->getFullname(),$room->getTitle());
+        		$content .= $url_to_room;
+        		
+        		/*
+        		 * $this->_headline = $translator->getMessage('INDEX_ACTION_FORM_HEADLINE_USER_STATUS_USER');
+        		 */
+        		break;
+        	
+        	case "status_moderator":
+        		$subject = $translator->getMessage('MAIL_SUBJECT_USER_STATUS_MODERATOR',$room->getTitle());
+        		
+        		if($needTranslation) {
+        			$content .= $translator->getEmailMessage('MAIL_BODY_USER_STATUS_MODERATOR',$user->getUserID(),$room->getTitle());
+        		} else {
+        			$content_temp = $translator->getEmailMessage('MAIL_BODY_USER_STATUS_MODERATOR');
+        			$content_temp = str_replace('%2','%3',$content_temp);
+        			$content_temp = str_replace('%1','%2',$content_temp);
+        			$content .= $content_temp;
+        		}
+        		
+        		$content .= LF.LF;
+        		$content .= $translator->getEmailMessage('MAIL_BODY_CIAO',$admin->getFullname(),$room->getTitle());
+        		$content .= $url_to_room;
+        		
+        		/*
+        		 * $this->_headline = $translator->getMessage('INDEX_ACTION_FORM_HEADLINE_USER_STATUS_MODERATOR');
+        		 */
+        		break;
+        	
+        	case "status_contact_moderator":
+        		$subject = $translator->getMessage('MAIL_SUBJECT_USER_MAKE_CONTACT_PERSON',$room->getTitle());
+        		
+        		if($needTranslation) {
+        			$content .= $translator->getEmailMessage('MAIL_BODY_USER_MAKE_CONTACT_PERSON',$user->getUserID(),$room->getTitle());
+        		} else {
+        			$content_temp = $translator->getEmailMessage('MAIL_BODY_USER_MAKE_CONTACT_PERSON');
+        			$content_temp = str_replace('%2','%3',$content_temp);
+        			$content_temp = str_replace('%1','%2',$content_temp);
+        			$content .= $content_temp;
+        		}
+        		
+        		$content .= LF.LF;
+        		$content .= $translator->getEmailMessage('MAIL_BODY_CIAO',$admin->getFullname(),$room->getTitle());
+        		$content .= $url_to_room;
+        		
+        		/*
+        		 * $this->_headline = $translator->getMessage('INDEX_ACTION_FORM_HEADLINE_USER_MAKE_CONTACT_PERSON');
+        		 */
+        		break;
+        	
+        	case "status_no_contact_moderator":
+        		$subject = $translator->getMessage('MAIL_SUBJECT_USER_UNMAKE_CONTACT_PERSON',$room->getTitle());
+        		
+        		if($needTranslation) {
+        			$content .= $translator->getEmailMessage('MAIL_BODY_USER_UNMAKE_CONTACT_PERSON',$user->getUserID(),$room->getTitle());
+        		} else {
+        			$content_temp = $translator->getEmailMessage('MAIL_BODY_USER_UNMAKE_CONTACT_PERSON');
+        			$content_temp = str_replace('%2','%3',$content_temp);
+        			$content_temp = str_replace('%1','%2',$content_temp);
+        			$content .= $content_temp;
+        		}
+        		
+        		$content .= LF.LF;
+        		$content .= $translator->getEmailMessage('MAIL_BODY_CIAO',$admin->getFullname(),$room->getTitle());
+        		$content .= $url_to_room;
+        		
+        		/*
+        		 * $this->_headline = $translator->getMessage('INDEX_ACTION_FORM_HEADLINE_USER_UNMAKE_CONTACT_PERSON');
+        		 */
+        		break;
+        	
+        	case "email":
+        		$content = LF.LF.LF;
+        		$content .= $translator->getEmailMessage('MAIL_BODY_CIAO',$admin->getFullname(),$room->getTitle());
+        		$content .= $url_to_room;
+        		
+        		/*
+        		 * $this->_headline = $translator->getMessage('INDEX_ACTION_FORM_HEADLINE_USER_EMAIL_SEND');
+        		 */
+        		break;
+        }
+        
+        $specific = array(
+        	"subject"		=> $subject,
+        	"content"		=> $content
+        );
+        $this->_popup_controller->assign('popup', 'specific', $specific);
+        
+        // submit translation
+        if($action !== "email") {
+        	$translation = "";
+        	
+        	switch($action) {
+        		case "delete":
+        			$translation = $translator->getMessage('INDEX_ACTION_PERFORM_USER_ACCOUNT_DELETE_BUTTON');
+        			break;
+        			 
+        		case "lock":
+        			$translation = $translator->getMessage('INDEX_ACTION_PERFORM_USER_ACCOUNT_FREE_BUTTON');
+        			break;
+        			 
+        		case "free":
+        			$translation = $translator->getMessage('INDEX_ACTION_PERFORM_USER_ACCOUNT_LOCK_BUTTON');
+        			break;
+        			 
+        		case "status_user":
+        			$translation = $translator->getMessage('INDEX_ACTION_PERFORM_USER_STATUS_USER_BUTTON');
+        			break;
+        			 
+        		case "status_moderator":
+        			$translation = $translator->getMessage('INDEX_ACTION_PERFORM_USER_STATUS_MODERATOR_BUTTON');
+        			break;
+        			 
+        		case "status_contact_moderator":
+        			$translation = $translator->getMessage('INDEX_ACTION_PERFORM_USER_MAKE_CONTACT_PERSON_BUTTON');
+        			break;
+        			 
+        		case "status_no_contact_moderator":
+        			$translation = $this->_translator->getMessage('INDEX_ACTION_PERFORM_USER_UNMAKE_CONTACT_PERSON_BUTTON');
+        			break;
+        	}
+        	
+        	$this->_popup_controller->assign('popup', 'submit_translation', $translation);
+        }
 	}
 }

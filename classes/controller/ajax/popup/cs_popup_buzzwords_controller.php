@@ -1,5 +1,7 @@
 <?php
-class cs_popup_buzzwords_controller {
+require_once('classes/controller/ajax/popup/cs_popup_controller.php');
+
+class cs_popup_buzzwords_controller implements cs_popup_controller {
 	private $_environment = null;
 	private $_popup_controller = null;
 	private $_return = '';
@@ -12,7 +14,7 @@ class cs_popup_buzzwords_controller {
 		$this->_popup_controller = $popup_controller;
 	}
 	
-	public function initPopup() {
+	public function initPopup($data) {
 		// assign template vars
 		$this->assignTemplateVars();
 	}

@@ -1,5 +1,7 @@
 <?php
-class cs_popup_profile_controller {
+require_once('classes/controller/ajax/popup/cs_popup_controller.php');
+
+class cs_popup_profile_controller implements cs_popup_controller {
 	private $_environment = null;
 	private $_popup_controller = null;
 	private $_user = null;
@@ -14,7 +16,7 @@ class cs_popup_profile_controller {
 		$this->_popup_controller = $popup_controller;
 	}
 
-	public function save($form_data, $additional) {
+	public function save($form_data, $additional = array()) {
 // 		// function for page edit
 // 		// - to check files for virus
 // 		if (isset($c_virus_scan) and $c_virus_scan) {
@@ -760,7 +762,7 @@ class cs_popup_profile_controller {
 		}
 	}
 
-	public function initPopup() {
+	public function initPopup($data) {
 		$current_portal_item = $this->_environment->getCurrentPortalItem();
 
 		// set configuration

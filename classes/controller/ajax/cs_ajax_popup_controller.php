@@ -46,7 +46,7 @@
 		}
 
 		protected function initPopup() {
-			$this->_popup_controller->initPopup();
+			$this->_popup_controller->initPopup($this->_data);
 		}
 
 		public function actionSave() {

@@ -64,7 +64,7 @@
 			$this->_popup_controller->setSuccessfullItemIDReturn($own_room_item->getItemID());
 		}
 	
-		public function initPopup() {
+		public function initPopup($data) {
 			// breadcrumb information
 			$breadcrumb_information = array();
 			$this->_popup_controller->assign('popup', 'breadcrumb', $this->getBreadcrumbInformation());
