@@ -1,13 +1,16 @@
 define([	"dojo/_base/declare",
         	"commsy/base",
         	"dojo/dom-attr",
+        	"dojo/dom-construct",
         	"dojo/dom-style",
         	"dojo/query",
+        	"dijit/_TemplatedMixin",
         	"dojo/on",
         	"dojo/fx",
         	"dojo/_base/lang",
         	"dojo/_base/array",
-        	"dojox/image/Lightbox"], function(declare, BaseClass, DomAttr, DomStyle, Query, On, FX, Lang, Array, Lightbox) {
+        	"dojox/image/Lightbox",
+        	"dojo/text!templates/Lightbox.html"], function(declare, BaseClass, DomAttr, DomConstruct, DomStyle, Query, _TemplatedMixin, On, FX, Lang, Array, Lightbox, Template) {
 	return declare(BaseClass, {
 		display:	false,
 		anim:		null,
@@ -16,19 +19,32 @@ define([	"dojo/_base/declare",
 			declare.safeMixin(this, options);
 		},
 		
-		setup: function(nodeList) {
+		setup: function(nodeList) {			
+			var dialog = dojo.declare("CustomLightboxDialog", [dojox.image.LightboxDialog, dijit._TemplatedMixin ], {
+				id:					"dojoxLightboxDialog",
+				templateString: 	Template,
+				
+				download:			"",
+				_setDownloadAttr:	{ node: "downloadButtonNode", type: "innerHTML" }
+			})
+			
+			var dialog = new CustomLightboxDialog();
+			
 			// group by item_id - class is lightbox_itemid
 			nodeList.forEach(function(node, index, arr) {
 				var lightboxObject = {
 					group:		DomAttr.get(node, "class").substr(9),
 					title:		DomAttr.get(node, "title"),
-					href:		DomAttr.get(node, "href"),
-					templateString: "",
-					template: ""
+					href:		DomAttr.get(node, "href")
 				};
 				
 				// create lightbox instance for each
-				var lightBox = new dojox.image.Lightbox(lightboxObject);
+				var lightBox = new Lightbox(lightboxObject);
+				
+				// set download link for dialog
+				var aNode = "<a href='" + DomAttr.get(node, "href") + "'>Download</a>";
+				dialog.set("download", aNode);
+				
 				lightBox.startup();
 				
 				On(node, "click", function(event) {
