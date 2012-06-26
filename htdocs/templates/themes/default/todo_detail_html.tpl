@@ -174,8 +174,8 @@
 
 	{foreach $detail.content.steps as $step}
 		<div class="item_actions">
-			<a class="edit" href="#"><span class="edit_set"> &nbsp; </span></a>
-			<a class="detail" href="#"><span class="details_ia"> &nbsp; </span></a>
+			<a class="edit" data-custom="expand: 'edit_expand_step_{$step.item_id}'" href="#"><span class="edit_set"> &nbsp; </span></a>
+			<a class="detail" data-custom="expand: 'detail_expand_step_{$step.item_id}'" href="#"><span class="details_ia"> &nbsp; </span></a>
 		</div>
 
 		<div class="item_body"> <!-- Start item body -->
@@ -183,13 +183,15 @@
 			<a name="step{$step.item_id}"></a>
 
 			<!-- Start fade_in_ground -->
-			<div class="fade_in_ground_actions hidden">
-				{if $step.actions.edit}
-					<a id="action_edit" href="commsy.php?cid={$environment.cid}&mod=step&fct=edit&iid={$step.item_id}">___COMMON_EDIT_ITEM___</a> |
-				{/if}
-				{if $step.actions.delete}
-					<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&iid={$detail.content.item_id}&action=delete&step_iid={$step.item_id}&step_action=delete">___COMMON_DELETE_ITEM___</a>
-				{/if}
+			<div id="edit_expand_step_{$step.item_id}" class="hidden">
+				<div class="fade_in_ground_actions">
+					{if $step.actions.edit}
+						<a id="action_edit" class="open_popup" data-custom="iid: {$step.item_id}, module: '{$environment.module}', ref_iid: {$detail.content.item_id}" href="#">___COMMON_EDIT_ITEM___</a> |
+					{/if}
+					{if $step.actions.delete}
+						<a data-custom="iid: {$step.item_id}, module: '{$environment.module}', ref_iid: {$detail.content.item_id}">___COMMON_DELETE_ITEM___</a>
+					{/if}
+				</div>
 			</div>
 			<!-- Ende fade_in_ground -->
 
@@ -211,11 +213,12 @@
 						<div class="post_content">
 							<h4>{*{if $article.noticed == 'new' or $article.noticed == 'changed'}<img src="{$basic.tpl_path}img/flag_neu.gif" alt="___COMMON_NEW___"/>{/if}*} {$step.title}
 							</h4>
-				<span>
-				___COMMON_LAST_MODIFIED_BY_UPPER___
-				{build_user_link status=$step.moredetails.last_modificator_status user_name=$step.moredetails.last_modificator id=$step.moredetails.last_modificator_id}
-				___DATES_ON_DAY___  {$step.moredetails.last_modification_date}
-				</span>
+							
+							<span>
+							___COMMON_LAST_MODIFIED_BY_UPPER___
+							{build_user_link status=$step.moredetails.last_modificator_status user_name=$step.moredetails.last_modificator id=$step.moredetails.last_modificator_id}
+							___DATES_ON_DAY___  {$step.moredetails.last_modification_date}
+							</span>
 
 							{if !empty($step.formal)}
 								<table>
@@ -259,7 +262,10 @@
 					<div class="clear"> </div>
 				</div>
 			</div>
-			{include file="include/detail_moredetails_html.tpl" data=$step.moredetails}
+			
+			<div id="detail_expand_step_{$step.item_id}" class="hidden">
+				{include file="include/detail_moredetails_html.tpl" data=$step.moredetails}
+			</div>
 
 		</div> <!-- Ende item body -->
 		<div class="clear"> </div>
