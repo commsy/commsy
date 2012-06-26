@@ -105,6 +105,18 @@ require([	"dojo/_base/declare",
 					});
 				}
 				
+				// on list context
+				if(this.uri_object.fct === 'index') {
+					// list selection
+					var inputNodes = query("input[type='checkbox'][name^='form_data[attach]']");
+					var counterNode = query("div.ii_right span#selected_items")[0];
+					
+					require(["commsy/ListSelection"], function(ListSelection) {
+						var handler = new ListSelection();
+						handler.setup(inputNodes, counterNode);
+					});
+				}
+				
 				// uploader
 				query("div.uploader").forEach(function(node, index, arr) {
 					require(["commsy/Uploader"], function(Uploader) {

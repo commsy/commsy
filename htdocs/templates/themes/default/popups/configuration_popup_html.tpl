@@ -343,7 +343,7 @@
 						                        		<option value="email">___USER_LIST_ACTION_EMAIL_SEND___</option>
 						                        	</select>
 
-						                        	<input id="list_action_submit" type="submit" class="popup_button submit" data-custom="part: 'accounts'" value="___COMMON_LIST_ACTION_BUTTON_GO___" />
+						                        	<input id="list_action_submit" type="submit" class="popup_button" value="___COMMON_LIST_ACTION_BUTTON_GO___" />
 						                        </div>
 						                    </div>
 						                </div>
