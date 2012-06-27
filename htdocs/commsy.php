@@ -891,7 +891,8 @@ if($context_item->isServer() || $context_item->isPortal()) {
 else {
 	if(	$environment->getCurrentFunction() === 'edit' &&
 		$environment->getCurrentModule() !== 'discarticle' &&
-		$environment->getCurrentModule() !== 'annotation') {
+		$environment->getCurrentModule() !== 'annotation' &&
+		$environment->getCurrentModule() !== 'step') {
 		$c_smarty = false;
 	}
 

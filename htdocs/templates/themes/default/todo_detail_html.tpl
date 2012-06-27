@@ -189,7 +189,7 @@
 						<a id="action_edit" class="open_popup" data-custom="iid: {$step.item_id}, module: '{$environment.module}', ref_iid: {$detail.content.item_id}" href="#">___COMMON_EDIT_ITEM___</a> |
 					{/if}
 					{if $step.actions.delete}
-						<a data-custom="iid: {$step.item_id}, module: '{$environment.module}', ref_iid: {$detail.content.item_id}">___COMMON_DELETE_ITEM___</a>
+						<a class="open_popup" data-custom="iid: {$step.item_id}, module: '{$environment.module}', delType: 'step'" href="#">___COMMON_DELETE_ITEM___</a>
 					{/if}
 				</div>
 			</div>
@@ -292,7 +292,7 @@
 					<form action="commsy.php?cid={$environment.cid}&mod=step&fct=edit" method="post">
 						<div class="post_content">
 							<h4>{$step@total + 1}. </h4>
-							<input type="hidden" value="" name="iid"/>
+							<input type="hidden" value="NEW" name="iid"/>
 							<input type="hidden" value="{$detail.content.item_id}" name="todo_id"/>
 							<input type="hidden" value="" name="ref_position"/>
 							<input id="pn_title" type="text" name="form_data[title]" /> <br>
@@ -302,12 +302,12 @@
 								<option value="2">___TODO_TIME_HOURS___</option>
 								<option value="3">___TODO_TIME_DAYS___</option>
 							</select>
-
+							
 							<div class="editor_content">
-								<div id="ckeditor_second"></div>
-								<input type="hidden" id="ckeditor_content_second" name="form_data[description]" value=""/>
-								<input type="image" id="disc_article_submit" name="form_data[option][new]" src="{$basic.tpl_path}img/btn_go.gif" alt="___DISCARTICLE_SAVE_BUTTON___" />
+								<div id="ckeditor_step" class="ckeditor"></div>
 							</div>
+							
+							<input type="image" id="disc_article_submit" name="form_data[option][new]" src="{$basic.tpl_path}img/btn_go.gif" alt="___DISCARTICLE_SAVE_BUTTON___" />
 						</div>
 					</form>
 				</div>

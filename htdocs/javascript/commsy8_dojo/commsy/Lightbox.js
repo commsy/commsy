@@ -22,11 +22,8 @@ define([	"dojo/_base/declare",
 		setup: function(nodeList) {			
 			var dialog = dojo.declare("CustomLightboxDialog", [dojox.image.LightboxDialog, dijit._TemplatedMixin ], {
 				id:					"dojoxLightboxDialog",
-				templateString: 	Template,
-				
-				download:			"",
-				_setDownloadAttr:	{ node: "downloadButtonNode", type: "innerHTML" }
-			})
+				templateString: 	Template
+			});
 			
 			var dialog = new CustomLightboxDialog();
 			
@@ -41,10 +38,6 @@ define([	"dojo/_base/declare",
 				// create lightbox instance for each
 				var lightBox = new Lightbox(lightboxObject);
 				
-				// set download link for dialog
-				var aNode = "<a href='" + DomAttr.get(node, "href") + "'>Download</a>";
-				dialog.set("download", aNode);
-				
 				lightBox.startup();
 				
 				On(node, "click", function(event) {
@@ -53,25 +46,11 @@ define([	"dojo/_base/declare",
 					event.preventDefault();
 				});
 			});
+			
+			On(Query("a#lightboxDownloadLink", dialog.domNode)[0], "click", function() {
+				url_to_open = DomAttr.get(dialog.imgNode, "src");
+			    window.open(url_to_open, '_blank');
+			});
 		}
 	});
 });
-
-
-/**
-
-			
-			// create lightbox instances for each group
-			jQuery.each(lightbox_ids, function() {
-				jQuery('a.lightbox_' + this).lightBox({
-					fixedNavigation:	true,
-					imageLoading:		tpl_path + 'img/lightbox/lightbox-ico-loading.gif',
-					imageBtnClose:		tpl_path + 'img/lightbox/lightbox-btn-close.gif',
-					imageBtnPrev:		tpl_path + 'img/lightbox/lightbox-btn-prev.gif',
-					imageBtnNext:		tpl_path + 'img/lightbox/lightbox-btn-next.gif',
-					imageBlank:			tpl_path + 'img/lightbox/lightbox-blank.gif'
-				});
-			});
-		}
-	};
-});*/

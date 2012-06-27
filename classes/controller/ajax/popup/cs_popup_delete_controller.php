@@ -14,8 +14,11 @@ class cs_popup_delete_controller implements cs_rubric_popup_controller {
     }
 
     public function initPopup($item, $data) {
-			// assign template vars
-			$current_context = $this->_environment->getCurrentContextItem();
+    	$recurrence = false;
+		if($this->_environment->getCurrentModule() === "date") {
+			$recurrence = true;
+			$this->_popup_controller->assign("popup", "recurrence", $recurrence);
+		}
     }
 
     public function save($form_data, $additional = array()) {
