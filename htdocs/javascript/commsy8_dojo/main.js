@@ -91,7 +91,7 @@ require([	"dojo/_base/declare",
 				});
 				
 				// on detail context
-				if(this.uri_object.fct === 'detail') {
+				if(this.uri_object.fct === "detail") {
 					// action expander
 					var actors = query(	"div.item_actions a.edit," +
 										"div.item_actions a.detail," +
@@ -106,7 +106,7 @@ require([	"dojo/_base/declare",
 				}
 				
 				// on list context
-				if(this.uri_object.fct === 'index') {
+				if(this.uri_object.fct === "index") {
 					// list selection
 					var inputNodes = query("input[type='checkbox'][name^='form_data[attach]']");
 					var counterNode = query("div.ii_right span#selected_items")[0];

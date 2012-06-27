@@ -111,9 +111,6 @@ class cs_popup_configuration_mail_controller implements cs_popup_controller {
 		// send mail checkbox
 		$this->_popup_controller->assign('popup', 'send_mail_checkbox', ($action !== "email"));
 		
-		// copy to mod
-		$this->_popup_controller->assign('popup', 'copy_mod', $action === "email");
-		
 		$admin = $this->_environment->getCurrentUserItem();
 		
 		// cc / bcc

@@ -68,7 +68,7 @@ define([	"dojo/_base/declare",
 			}));
 			
 			// restore number of selected entries
-			DomAttr.set(this.counterNode, "innerHTML", this.cookieObject.selectedIDs.length);
+			if(this.counterNode) DomAttr.set(this.counterNode, "innerHTML", this.cookieObject.selectedIDs.length);
 		},
 		
 		onClickCheckbox: function(checkboxNode) {

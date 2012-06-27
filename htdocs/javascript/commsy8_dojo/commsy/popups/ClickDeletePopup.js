@@ -14,6 +14,7 @@ define([	"dojo/_base/declare",
 			this.item_id = customObject.iid;
 			this.module = "delete";
 			this.delType = customObject.delType;
+			this.delVersion = customObject.delVersion || {};
 			
 			this.features = [];
 			
@@ -31,11 +32,19 @@ define([	"dojo/_base/declare",
 				nodeLists: []
 			};
 			
-			this.submit(search, { delType: this.delType });
+			this.submit(search, { delType: this.delType, delVersion: this.delVersion });
 		},
 		
-		onPopupSubmitSuccess: function(item_id) {
+		onPopupSubmitSuccess: function(response) {
+			this.close();
 			
+			if(response.redirectToIndex) {
+				var cid = this.uri_object.cid;
+				var module = this.uri_object.mod;
+				location.href = "commsy.php?cid=" + cid + "&mod=" + module + "&fct=index";
+			} else {
+				this.reload(response.item_id);
+			}
 		},
 	});
 });
