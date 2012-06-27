@@ -14,7 +14,9 @@ require([	"dojo/_base/declare",
 				
 				// initiate popup handler
 				require(["commsy/popups/ToggleRoomConfiguration"], function(RoomConfigurationPopup) {
-					var handler = new RoomConfigurationPopup(query("a#tm_settings")[0], query("div#tm_menus div#tm_dropmenu_configuration")[0]);
+					var aNode = query("a#tm_settings")[0];
+					
+					if(aNode) var handler = new RoomConfigurationPopup(aNode, query("div#tm_menus div#tm_dropmenu_configuration")[0]);
 				});
 				require(["commsy/popups/TogglePersonalConfiguration"], function(PersonalConfigurationPopup) {
 					var handler = new PersonalConfigurationPopup(query("a#tm_user")[0], query("div#tm_menus div#tm_dropmenu_pers_bar")[0]);
