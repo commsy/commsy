@@ -1,6 +1,0 @@
-<?php
-$message["CONFIG_BASIC_DESC"][""] = "";
-$message["CONFIG_BASIC_DESC_TITLE"][""] = "";
-$message["CONFIG_META_TITLE"][""] = "";
-$message["CONFIG_MODERATION_TITLE"][""] = "";
-?>

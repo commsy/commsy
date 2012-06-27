@@ -1,7 +1,0 @@
-<?php
-$message["SEARCH_FIELD_RESTRICTION"][""] = "";
-$message["SEARCH_LINKED_ENTRIES_ONLY"][""] = "";
-$message["SEARCH_ONLY_FILES_TEXT"][""] = "";
-$message["SEARCH_ONLY_IN_FILES_TEXT"][""] = "";
-$message["SEARCH_RUBRIC_RESTRICTION"][""] = "";
-?>

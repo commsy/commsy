@@ -1,9 +1,0 @@
-<?php
-$message["ITEM_DOES_NOT_EXIST"][""] = "";
-$message["ITEM_EXPORT_TO_WIKI"][""] = "";
-$message["ITEM_EXPORT_TO_WORDPRESS"][""] = "";
-$message["ITEM_NOT_AVAILABLE"][""] = "";
-$message["ITEM_TITLE_SHORT"][""] = "";
-$message["ITEM_WORKFLOW_MARK_NOT_READ"][""] = "";
-$message["ITEM_WORKFLOW_MARK_READ"][""] = "";
-?>

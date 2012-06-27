@@ -1,7 +1,0 @@
-<?php
-$message["COPY_FROM"][""] = "";
-$message["COPY_FROM_COMMUNITYROOM"][""] = "";
-$message["COPY_FROM_GROUPROOM"][""] = "";
-$message["COPY_FROM_PRIVATEROOM"][""] = "";
-$message["COPY_FROM_PROJECTROOM"][""] = "";
-?>

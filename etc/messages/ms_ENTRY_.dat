@@ -1,9 +1,0 @@
-<?php
-$message["ENTRY_COPY_MYLIST"][""] = "";
-$message["ENTRY_DELETE_ENTRY_FROM_BUZZWORD"][""] = "";
-$message["ENTRY_DELETE_ENTRY_FROM_MATRIX"][""] = "";
-$message["ENTRY_DELETE_ENTRY_FROM_MYLIST"][""] = "";
-$message["ENTRY_DELETE_MYLIST"][""] = "";
-$message["ENTRY_DELETE_RESTRICTION"][""] = "";
-$message["ENTRY_INDEX"][""] = "";
-?>

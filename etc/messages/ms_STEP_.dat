@@ -1,5 +1,0 @@
-<?php
-$message["STEP_CHANGE_BUTTON"][""] = "";
-$message["STEP_MINUTES"][""] = "";
-$message["STEP_SAVE_BUTTON"][""] = "";
-?>

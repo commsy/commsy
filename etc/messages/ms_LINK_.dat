@@ -1,4 +1,0 @@
-<?php
-$message["LINK_ITEM_NEW"][""] = "";
-$message["LINK_ITEM_SAVE_BUTTON"][""] = "";
-?>

@@ -1,5 +1,0 @@
-<?php
-$message["PROJECTROOM_CLOSED"][""] = "";
-$message["PROJECTROOM_LOCKED"][""] = "";
-$message["PROJECTROOM_TEMPLATE"][""] = "";
-?>

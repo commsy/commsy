@@ -1,6 +1,0 @@
-<?php
-$message["MODULE_CONFIG_NO"][""] = "";
-$message["MODULE_CONFIG_NONE"][""] = "";
-$message["MODULE_CONFIG_SHORT"][""] = "";
-$message["MODULE_CONFIG_TINY"][""] = "";
-?>

@@ -1,6 +1,0 @@
-<?php
-$message["BELUGA_AVAILABILITY"][""] = "";
-$message["BELUGA_IMPORT_DESCRIPTION"][""] = "";
-$message["BELUGA_LINK"][""] = "";
-$message["BELUGA_NO_AVAILABILITY_INFORMATION"][""] = "";
-?>

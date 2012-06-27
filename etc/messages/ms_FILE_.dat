@@ -1,6 +1,0 @@
-<?php
-$message["FILE_ERROR_GET_FILE"][""] = "";
-$message["FILE_ERROR_GET_FILE_NOT_EXISTS"][""] = "";
-$message["FILE_ZIP_UPLOAD_PROCESS_DESC"][""] = "";
-$message["FILE_ZIP_UPLOAD_PROCESS_TITLE"][""] = "";
-?>

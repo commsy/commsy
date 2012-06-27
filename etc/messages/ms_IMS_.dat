@@ -1,4 +1,0 @@
-<?php
-$message["IMS_PASSWORD_ERROR"][""] = "";
-$message["IMS_UPLOAD_DESCRIPTION"][""] = "";
-?>

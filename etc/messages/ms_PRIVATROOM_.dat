@@ -1,5 +1,0 @@
-<?php
-$message["PRIVATROOM_ROOMWIDE_SEARCH_BOX"][""] = "";
-$message["PRIVATROOM_ROOMWIDE_SEARCH_BOX_TEXT"][""] = "";
-$message["PRIVATROOM_SEARCH_BOX"][""] = "";
-?>

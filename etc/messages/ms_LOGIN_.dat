@@ -1,5 +1,0 @@
-<?php
-$message["LOGIN_ACCOUNT_FORGET_LINK"][""] = "";
-$message["LOGIN_NOT_ALLOWED"][""] = "";
-$message["LOGIN_PASSWORD_FORGET_LINK"][""] = "";
-?>
