@@ -186,7 +186,7 @@
 			<div id="edit_expand_step_{$step.item_id}" class="hidden">
 				<div class="fade_in_ground_actions">
 					{if $step.actions.edit}
-						<a id="action_edit" class="open_popup" data-custom="iid: {$step.item_id}, module: '{$environment.module}', ref_iid: {$detail.content.item_id}" href="#">___COMMON_EDIT_ITEM___</a> |
+						<a id="action_edit" class="open_popup" data-custom="iid: {$step.item_id}, module: 'step', ref_iid: {$detail.content.item_id}" href="#">___COMMON_EDIT_ITEM___</a> |
 					{/if}
 					{if $step.actions.delete}
 						<a class="open_popup" data-custom="iid: {$step.item_id}, module: '{$environment.module}', delType: 'step'" href="#">___COMMON_DELETE_ITEM___</a>
@@ -297,7 +297,7 @@
 							<input type="hidden" value="" name="ref_position"/>
 							<input id="pn_title" type="text" name="form_data[title]" /> <br>
 							___STEP_MINUTES___: <input type="text" size="4" name="form_data[minutes]" />
-							<select size="1" name="form_data[time_type">
+							<select size="1" name="form_data[time_type]">
 								<option value="1">___TODO_TIME_MINUTES___</option>
 								<option value="2">___TODO_TIME_HOURS___</option>
 								<option value="3">___TODO_TIME_DAYS___</option>

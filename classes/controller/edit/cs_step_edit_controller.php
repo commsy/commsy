@@ -41,6 +41,7 @@
 		/*****************************************************************************/
 		public function actionEdit() {
 			$session = $this->_environment->getSessionItem();
+			$translator = $this->_environment->getTranslationObject();
 			
 			// get the current user and room
 			$current_user = $this->_environment->getCurrentUserItem();
@@ -90,46 +91,56 @@
 						isOption($this->_command, CS_OPTION_NEW))) {
 						
 					if($this->checkFormData()) {
+						if(!isset($step_item)) {
+							$step_manager = $this->_environment->getStepManager();
+							$step_item = $step_manager->getNewItem();
+							$step_item->setContextID($this->_environment->getCurrentContextID());
+							$user = $this->_environment->getCurrentUserItem();
+							$step_item->setCreatorItem($user);
+							$step_item->setCreationDAte(getCurrentDateTimeInMySQL());
+							$step_item->setTodoID($_POST["todo_id"]);
+						}
 						
+						$todo_manager = $this->_environment->getTodoManager();
+						$todo_item = $todo_manager->getItem($_POST["todo_id"]);
+						
+						// set modificator and modification date
+						$user = $this->_environment->getCurrentUserItem();
+						$step_item->setModificatorItem($user);
+						$step_item->setModificationDate(getCurrentDateTimeInMySQL());
+						
+						// set attributes
+						if(isset($_POST["form_data"]["title"])) $step_item->setTitle($_POST["form_data"]["title"]);
+						
+						if(isset($_POST["form_data"]["ckeditor_step"])) $step_item->setDescription($_POST["form_data"]["ckeditor_step"]);
+						
+						if(isset($_POST["form_data"]["minutes"])) {
+							$minutes = $_POST["form_data"]["minutes"];
+							$minutes = str_replace(",", ".", $minutes);
+							
+							if(isset($_POST["form_data"]["time_type"])) {
+								$step_item->setTimeType($_POST["form_data"]["time_type"]);
+								
+								switch($_POST["form_data"]["time_type"]) {
+									case 2: $minutes = minutes * 60; break;
+									case 3: $minutes = $minutes * 60 * 8; break;
+								}
+							}
+							
+							$step_item->setMinutes($minutes);
+						}
+						
+						// save
+						$step_item->save();
+						
+						$status = $todo_item->getStatus();
+						if($status == $translator->getMessage("TODO_NOT_STARTED")) {
+							$todo_item->setStatus(2);
+						}
+						$todo_item->setModificationDate(getCurrentDateTimeInMySQL());
+						$todo_item->save();
 						
 						/*
-						 * // Create new item
-            if ( !isset($step_item) ) {
-               $step_manager = $environment->getStepManager();
-               $step_item = $step_manager->getNewItem();
-               $step_item->setContextID($environment->getCurrentContextID());
-               $user = $environment->getCurrentUserItem();
-               $step_item->setCreatorItem($user);
-               $step_item->setCreationDate(getCurrentDateTimeInMySQL());
-               $step_item->setTodoID($todo_id);
-            }
-            $todo_manager = $environment->getTodoManager();
-            $todo_item = $todo_manager->getItem($todo_id);
-            // Set modificator and modification date
-            $user = $environment->getCurrentUserItem();
-            $step_item->setModificatorItem($user);
-            $step_item->setModificationDate(getCurrentDateTimeInMySQL());
-
-            // Set attributes
-            if (isset($_POST['subject'])) {
-               $step_item->setTitle($_POST['subject']);
-            }
-            if (isset($_POST['description'])) {
-               $step_item->setDescription($_POST['description']);
-            }
-            if ( isset($_POST['minutes']) ) {
-               $minutes = $_POST['minutes'];
-               $minutes = str_replace(',','.',$minutes);
-               if (isset($_POST['time_type'])){
-                  $step_item->setTimeType($_POST['time_type']);
-                  switch ($_POST['time_type']){
-                     case 2: $minutes = $minutes*60;break;
-                     case 3: $minutes = $minutes*60*8;break;
-                  }
-               }
-               $step_item->setMinutes($minutes);
-            }
-
             // Set links to connected rubrics
             if ( isset($_POST[CS_MATERIAL_TYPE]) ) {
                $step_item->setMaterialListByID($_POST[CS_MATERIAL_TYPE]);
@@ -139,24 +150,11 @@
 
             $item_files_upload_to = $step_item;
             include_once('include/inc_fileupload_edit_page_save_item.php');
-
-            // Save item
-            $step_item->save();
-            $status = $todo_item->getStatus();
-            if ( $status == $translator->getMessage('TODO_NOT_STARTED')){
-               $todo_item->setStatus(2);
-            }
-            $todo_item->setModificationDate(getCurrentDateTimeInMySQL());
-            $todo_item->save();
-
-
-            // Redirect
-            cleanup_session($current_iid);
-            $params = array();
-            $params['iid'] = $step_item->getTodoID();
-            redirect($environment->getCurrentContextID(),
-                     'todo', 'detail', $params,'anchor'.$step_item->getItemID());
-						 */
+						*/
+						
+						// redirect
+						$this->cleanup_session($this->_item_id);
+						redirect($this->_environment->getCurrentContextID(), "todo", "detail", array("iid" => $step_item->getTodoID()), "step".$step_item->getItemID());
 					}
 				}
 			}
@@ -186,9 +184,5 @@
 			$session->unsetValue($current_iid.'_post_vars');
 			$session->unsetValue($current_iid.'_material_attach_ids');
 			$session->unsetValue($current_iid.'_material_back_module');
-			$session->unsetValue('annotation_history_context');
-			$session->unsetValue('annotation_history_module');
-			$session->unsetValue('annotation_history_function');
-			$session->unsetValue('annotation_history_parameter');
 		}
 	}
