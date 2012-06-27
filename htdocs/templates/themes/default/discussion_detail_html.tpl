@@ -79,13 +79,13 @@
 				</div>
 			{/if}
 			{block name=discussion_short_articles}
-				{section name="articles_short" start=1 loop=$detail.content.disc_articles}
+				{section name="articles_short" start=0 loop=$detail.content.disc_articles}
 					{$article = $detail.content.disc_articles[articles_short]}
 					{$iteration = $smarty.section.articles_short.iteration}
 					<div class="row_{if $iteration is odd}odd{else}even{/if} {if $iteration is odd}odd{else}even{/if}_sep_discussion_detail">
 						<div class="column_320">
 							<p>
-								{$smarty.section.articles_short.index}.
+								{$smarty.section.articles_short.index + 1}.
 								{if $article.noticed == 'new' or $article.noticed == 'changed'}<img src="{$basic.tpl_path}img/flag_neu.gif" alt="NEU"/>{/if}
 								<a href="#disc_article_{$article.item_id}">{$article.subject|truncate:35:"...":true}</a>
 							</p>
