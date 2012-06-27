@@ -171,7 +171,6 @@
 
 					// assessment
 					$this->assign('detail', 'assessment', $this->getAssessmentInformation($this->_item));
-
 					$this->assign('detail', 'content', $this->getDetailContent());
 				}
 			}
@@ -221,34 +220,6 @@
 			$temp_array[1] = getDateTimeInLang($this->_item->getSeconddateTime());
 			$return[] = $temp_array;
 
-			// files
-			$files = array();
-			$file_list = $this->_item->getFileList();
-			if(!$file_list->isEmpty()) {
-				$file = $file_list->getFirst();
-				while($file) {
-					if(!(isset($_GET['mode']) && $_GET['mode'] === 'print') || (isset($_GET['download']) && $_GET['download'] === 'zip')) {
-						if((!isset($_GET['download']) || $_GET['download'] !== 'zip') && in_array($file->getExtension(), array('png', 'jpg', 'jpeg', 'gif'))) {
-							//$this->_with_slimbox = true;
-							$file_string = '<a href="' . $file->getUrl() . '" rel="lightbox[gallery' . $this->_item->getItemID() . ']">' . $file->getFileIcon() . ' ' . ($converter->text_as_html_short($file->getDisplayName())) . '</a> (' . $file->getFileSize() . ' KB)';
-						} else {
-							$file_string = '<a href="' . $file->getUrl() . '" target="blank">' . $file->getFileIcon() . ' ' . ($converter->text_as_html_short($file->getDisplayName())) . '</a> (' . $file->getFileSize() . ' KB)';
-						}
-					} else {
-						$file_string = $file->getFileIcon() . ' ' . $converter->text_as_html_short($file->getDisplayName());
-					}
-
-					$files[] = $file_string;
-
-					$file = $file_list->getNext();
-				}
-
-				$temp_array = array();
-				$temp_array[] = $translator->getMessage('MATERIAL_FILES');
-				$temp_array[] = implode(BRLF, $files);
-				$return[] = $temp_array;
-
-			}
 			return $return;
 		}
 
@@ -267,7 +238,8 @@
 
 			return array(
 				'item_id'		=> $this->_item->getItemID(),
-				'formal'			=> $this->getFormalData(),
+				'formal'		=> $this->getFormalData(),
+                'files'			=> $this->getFileContent(),
 				'title'			=> $this->_item->getTitle(),
 				'creator'		=> $this->_item->getCreatorItem()->getFullName(),
 				'creation_date'	=> getDateTimeInLang($this->_item->getCreationDate()),

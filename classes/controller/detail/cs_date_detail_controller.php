@@ -227,7 +227,6 @@ class cs_date_detail_controller extends cs_detail_controller {
 
 		// assign to template
         $this->assign('detail', 'content', $this->getDetailContent());
-        $this->assign('detail', 'files', $this->getFileContent());
     }
 
     /*****************************************************************************/

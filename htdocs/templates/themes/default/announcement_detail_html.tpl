@@ -78,16 +78,26 @@
 		<div id="item_legend"> <!-- Start item_legend -->
 			<div class="detail_content">
 				{* formal data *}
-				{if !empty($detail.content.formal)}
-					<table class="detail_content_table">
+				<table class="detail_content_table">
+					{if !empty($detail.content.formal)}
 						{foreach $detail.content.formal as $formal}
 							<tr>
 								<td><h4>{$formal[0]}:</h4></td>
 								<td>{$formal[1]}</td>
 							</tr>
 						{/foreach}
-					</table>
-				{/if}
+					{/if}
+					{if !empty($detail.content.files)}
+						<tr>
+							<td class="label"><h4>___MATERIAL_FILES___</h4></td>
+							<td>
+								{foreach $detail.content.files as $file}
+									{$file}
+								{/foreach}
+							</td>
+						</tr>
+					{/if}
+				</table>
 				{if !empty($detail.content.description)}
 					<div class="detail_description">
 						{$detail.content.description}

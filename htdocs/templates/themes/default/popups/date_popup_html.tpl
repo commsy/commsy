@@ -58,7 +58,7 @@
 						</div>
 						<div id="popup_tabcontent">
 							{include file="popups/include/files_tab_include_html.tpl"}
-							
+
 							<div class="tab hidden" id="addon_tab">
 								<div class="settings_area">
 									<div class="form_formatting_checkbox_box">
@@ -105,7 +105,7 @@
 										</div>
 										<div style="padding-top: 3px;">
 											___DATES_RECURRING_END_DATE___:<span class="required">*</span>&nbsp;
-											<input class="datepicker" type="text" tabindex="55" size="13" maxlength="13" value="" style="font-size:10pt;" name="recurring_end_date">
+											<input class="datepicker" type="text" tabindex="55" size="13" maxlength="13" value="" style="font-size:10pt;" name="form_data[recurring_end_date]">
 										</div>
 										<div class="clear"></div>
 									</div>
@@ -113,11 +113,11 @@
 							</div>
 
 							{include file="popups/include/rights_tab_include_html.tpl"}
-							
+
 							{include file="popups/include/buzzwords_tab_include_html.tpl"}
-							
+
 							{include file="popups/include/tags_tab_include_html.tpl"}
-							
+
 							{include file="popups/include/netnavigation_tab_include_html.tpl"}
 						</div>
 

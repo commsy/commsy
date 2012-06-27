@@ -228,7 +228,7 @@ class cs_popup_date_controller {
                 }
 
                 $converted_day_start = convertDateFromInput($form_data['dayStart'],$environment->getSelectedLanguage());
-                if ($converted_day_start['conforms'] == TRUE) {
+               if ($converted_day_start['conforms'] == TRUE) {
                     $date_item->setStartingDay($converted_day_start['datetime']);
                     $dt_start_date = $converted_day_start['datetime'];
                 } else {

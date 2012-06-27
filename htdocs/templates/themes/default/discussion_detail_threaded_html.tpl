@@ -70,24 +70,24 @@
 					{build_user_link status=$article.moredetails.last_modificator_status user_name=$article.moredetails.last_modificator id=$article.moredetails.last_modificator_id}
 					___DATES_ON_DAY___  {$article.moredetails.last_modification_date}
 					</span>
-					{if !empty($article.formal)}
-						<table>
-							{if !empty($article.formal.files)}
-								<tr>
-									<td class="label"><h4>___MATERIAL_FILES___: </h4></td>
-									<td>
-										{foreach $article.formal.files as $file}
-											{$file.name}
-											{if !$file@last }
-												<br/>
-											{/if}
-										{/foreach}
-									</td>
-								</tr>
-							{/if}
-						</table>
+						{if $article.attachment_count > 0}
+							<table>
+								{if !empty($article.formal.files)}
+									<tr>
+										<td class="label"><h4>___MATERIAL_FILES___: </h4></td>
+										<td>
+											{foreach $article.formal.files as $file}
+												{$file.name}
+												{if !$file@last }
+													<br/>
+												{/if}
+											{/foreach}
+										</td>
+									</tr>
+								{/if}
+							</table>
 						<div class="clear"> </div>
-					{/if}
+						{/if}
 
 					<div class="editor_content">
 						{$article.description}

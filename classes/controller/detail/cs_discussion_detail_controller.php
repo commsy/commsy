@@ -682,7 +682,9 @@ if ($type != CS_DISCUSSION_TYPE) {
 
 			// files
 			$files = $root->getFileList();
+
 			// files
+			$attachment_infos = array();
 			if(!$files->isEmpty()) {
 				$file = $files->getFirst();
 				while($file) {
@@ -708,6 +710,19 @@ if ($type != CS_DISCUSSION_TYPE) {
 
 
 					$file_array[] = $tmp_array;
+
+					$lightbox = false;
+					if((!isset($_GET['download']) || $_GET['download'] !== 'zip') && in_array($file->getExtension(), array('png', 'jpg', 'jpeg', 'gif'))) $lightbox = true;
+
+					$info = array();
+					$info['file_name']	= $converter->text_as_html_short($file->getDisplayName());
+					$info['file_icon']	= $file->getFileIcon();
+					$info['file_url']	= $file->getURL();
+					$info['file_size']	= $file->getFileSize();
+					$info['lightbox']	= $lightbox;
+
+					$attachment_infos[] = $info;
+					$file = $file_list->getNext();
 
 					$file = $files->getNext();
 				}
@@ -759,6 +774,12 @@ if ($type != CS_DISCUSSION_TYPE) {
 			$description = $converter->showImages($description, $root, true);
 			//$retour .= $this->getScrollableContent($desc,$root,'',true).LF;
 
+				$attachment_infos = array();
+				$file_count = $item->getFileList()->getCount();
+				$file_list = $item->getFileList();
+
+			pr($attachment_infos);
+
 			$return[] = array(
 				'item_id'			=> $root->getItemID(),
 				'position'			=> $root->getPosition(),
@@ -767,6 +788,7 @@ if ($type != CS_DISCUSSION_TYPE) {
 				'creator'			=> $creator_fullname,
 				'modification_date'	=> getDateTimeInLang($root->getModificationDate(), false),
 				'num_attachments'	=> $files->getCount(),
+				'attachment_infos'	=> $attachment_infos,
 				'noticed'			=> $noticed,
 				'modificator_image'	=> $modificator_image,
 				'custom_image'		=> !empty($image),
@@ -797,11 +819,24 @@ if ($type != CS_DISCUSSION_TYPE) {
 			$position = 0;
 
 			while($item) {
+				$attachment_infos = array();
 				// files
 				$files = $item->getFileList();
 				if(!$files->isEmpty()) {
 					$file = $files->getFirst();
 					while($file) {
+						$lightbox = false;
+						if((!isset($_GET['download']) || $_GET['download'] !== 'zip') && in_array($file->getExtension(), array('png', 'jpg', 'jpeg', 'gif'))) $lightbox = true;
+
+						$info = array();
+						$info['file_name']	= $converter->text_as_html_short($file->getDisplayName());
+						$info['file_icon']	= $file->getFileIcon();
+						$info['file_url']	= $file->getURL();
+						$info['file_size']	= $file->getFileSize();
+						$info['lightbox']	= $lightbox;
+
+						$attachment_infos[] = $info;
+
 						if(!(isset($_GET['mode']) && $_GET['mode'] === 'print') || (isset($_GET['download']) && $_GET['download'] === 'zip')) {
 							$file_string = '<a href="' . $file->getUrl() . '" target="blank">';
 							$name = $file->getDisplayName();
@@ -886,6 +921,7 @@ if ($type != CS_DISCUSSION_TYPE) {
 					'position'			=> $position,
 					'modification_date'	=> getDateTimeInLang($item->getModificationDate(), false),
 					'num_attachments'	=> $files->getCount(),
+					'attachment_infos'	=> $attachment_infos,
 					'noticed'			=> $noticed,
 					'modificator_image'	=> $modificator_image,
 					'custom_image'		=> !empty($image),

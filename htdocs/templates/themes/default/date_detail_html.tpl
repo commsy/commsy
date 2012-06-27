@@ -120,11 +120,11 @@
                             </tr>
                         {/if}
 
-						{if !empty($detail.files)}
+						{if !empty($detail.content.files)}
 							<tr>
 								<td class="label"><h4>___MATERIAL_FILES___</h4></td>
 								<td>
-									{foreach $detail.files as $file}
+									{foreach $detail.content.files as $file}
 										{$file}
 									{/foreach}
 								</td>

@@ -79,21 +79,48 @@
 				</div>
 			{/if}
 			{block name=discussion_short_articles}
-				{section name="articles_short" loop=$detail.content.disc_articles}
+				{section name="articles_short" start=1 loop=$detail.content.disc_articles}
 					{$article = $detail.content.disc_articles[articles_short]}
 					{$iteration = $smarty.section.articles_short.iteration}
 					<div class="row_{if $iteration is odd}odd{else}even{/if} {if $iteration is odd}odd{else}even{/if}_sep_discussion_detail">
 						<div class="column_320">
 							<p>
-								{$article.position}.
+								{$smarty.section.articles_short.index}.
 								{if $article.noticed == 'new' or $article.noticed == 'changed'}<img src="{$basic.tpl_path}img/flag_neu.gif" alt="NEU"/>{/if}
 								<a href="#disc_article_{$article.item_id}">{$article.subject|truncate:35:"...":true}</a>
 							</p>
 						</div>
 						<div class="column_45">
-							<p>
-								<a href="" class="attachment">{$article.num_attachments}</a>
-							</p>
+							{if $article.num_attachments > 0}
+								<p>
+									<a href="" class="attachment">{$article.num_attachments}</a>
+								</p>
+								<div class="tooltip tooltip_with_400">
+									<div class="tooltip_wrapper">
+										<div class="tooltip_inner tooltip_inner_with_400">
+											<div class="tooltip_title">
+												<div class="header">___COMMON_ATTACHED_FILES___</div>
+											</div>
+											<div class="scrollable">
+												<div class="tooltip_content">
+													<ul>
+													{foreach $article.attachment_infos as $file}
+														<li>
+															<a class="{if $file.lightbox}lightbox_{$item.iid}{/if}" href="{$file.file_url}" target="blank">
+																{$file.file_icon} {$file.file_name}
+															</a>
+															({$file.file_size} KB)
+														</li>
+													{/foreach}
+													</ul>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							{else}
+								<p>&nbsp;</p>
+							{/if}
 						</div>
 						<div class="column_165">
 							<p>

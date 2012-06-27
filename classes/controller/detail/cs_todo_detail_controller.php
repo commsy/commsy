@@ -367,7 +367,11 @@
 							}
 							$tmp_array = array();
 							$tmp_array['name'] = $file_string;
-							$tmp_array['icon'] = '<a href="' . $file->getUrl() . '" target="blank">'.$file->getFileIcon(). '</a>';
+							if (in_array($file->getExtension(), array('png', 'jpg', 'jpeg', 'gif'))){
+								$tmp_array['icon'] = '<a href="' . $file->getUrl() . '" class="lightbox_'.$this->_item->getItemID().'">'.$file->getFileIcon(). '</a>';
+							}else{
+								$tmp_array['icon'] = '<a href="' . $file->getUrl() . '" target="blank">'.$file->getFileIcon(). '</a>';
+							}
 
 
 							$files[] = $tmp_array;
