@@ -60,3 +60,31 @@
 .tundra .dijitTree {
 	overflow: hidden !important;
 }
+
+.tundra .dojoxLightbox {
+	background: none repeat scroll 0 0 rgba(0, 0, 0, 0.6);
+    border: 5px solid transparent !important;
+    border-radius: 2px 2px 2px 2px;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
+    padding: 5px 25px 25px 5px;
+}
+
+.tooltip_inner_lightbox {
+    background: none repeat scroll 0 0 #E8E8E8;
+    border-radius: 2px 2px 2px 2px;
+    padding:10px;
+    position:relative;
+}
+
+.dojoxLightboxContainer {
+    background: none repeat scroll 0 0 #E8E8E8;
+    border-radius: 2px 2px 2px 2px;
+    border: 5px solid solid !important;
+    padding:10px;
+}
+
+.dijitDialogUnderlay {
+    background: none repeat scroll 0 0 #EEEEEE;
+    opacity: 0 !important;
+}
+

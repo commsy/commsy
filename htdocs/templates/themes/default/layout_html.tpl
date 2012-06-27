@@ -23,7 +23,6 @@
  	<link rel="stylesheet" type="text/css" media="screen" href="javascript/commsy8_dojo/libs/dojox/form/resources/UploaderFileList.css" />
 	<link rel="stylesheet" type="text/css" media="screen" href="javascript/commsy8_dojo/libs/dojox/image/resources/Lightbox.css" />
 	<link rel="stylesheet" type="text/css" media="screen" href="javascript/commsy8_dojo/libs/dojox/widget/ColorPicker/ColorPicker.css" />
-	<link rel="stylesheet" type="text/css" media="screen" href="{$basic.tpl_path}cs_dojo.css" />
 
 	{block name="css"}
 	    <link rel="stylesheet" type="text/css" media="screen" href="{$basic.tpl_path}styles.css" />
@@ -38,6 +37,8 @@
 	<script src="javascript/commsy8_dojo/config.js"></script>
 	<script src="javascript/commsy8_dojo/libs/dojo/dojo.js" data-dojo-config="async: true"></script>
 	<script src="javascript/commsy8_dojo/main.js"></script>
+
+	<link rel="stylesheet" type="text/css" media="screen" href="{$basic.tpl_path}cs_dojo.css" />
 
 
     <title>{$environment.room_title} - ___{$environment.module_name}___</title>
