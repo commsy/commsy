@@ -33,6 +33,7 @@ define([	"dojo/_base/declare",
 		},
 		
 		constructor: function(options) {
+			options = options || {};
 			declare.safeMixin(this, options);
 		},
 		

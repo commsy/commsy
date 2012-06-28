@@ -6,6 +6,7 @@ define([	"dojo/_base/declare",
         	"dojo/dom-attr"], function(declare, BaseClass, lang, Query, ColorPicker, DomAttr) {
 	return declare(BaseClass, {
 		constructor: function(options) {
+			options = options || {};
 			declare.safeMixin(this, options);
 		},
 		

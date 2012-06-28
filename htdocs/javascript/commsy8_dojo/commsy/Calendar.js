@@ -8,6 +8,7 @@ define([	"dojo/_base/declare",
 		calendar: null,
 		
 		constructor: function(options) {
+			options = options || {};
 			declare.safeMixin(this, options);
 		},
 		

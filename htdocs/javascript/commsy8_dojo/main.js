@@ -66,7 +66,7 @@ require([	"dojo/_base/declare",
 						handler.setup(node);
 					});
 				});
-				
+			    
 				// div expander
 				if(this.uri_object.mod === "home") {
 					var objects = [];
@@ -152,6 +152,7 @@ require([	"dojo/_base/declare",
 						handler.setup(node);
 					});
 				});
+				
 			}));
 		}
 	});
