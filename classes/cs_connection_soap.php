@@ -2888,6 +2888,13 @@ class cs_connection_soap {
    public function getDatesList($session_id, $context_id) {
       include_once('functions/development_functions.php');
       if($this->_isSessionValid($session_id)) {
+         $this->_environment->setSessionID($session_id);
+         $session = $this->_environment->getSessionItem();
+         $this->_environment->setCurrentContextID($context_id);
+         $user_id = $session->getValue('user_id');
+         $auth_source_id = $session->getValue('auth_source');
+         $user_manager = $this->_environment->getUserManager();
+         $user_item = $user_manager->getItemByUserIDAuthSourceID($user_id, $auth_source_id);
          $reader_manager = $this->_environment->getReaderManager();
          $dates_manager = $this->_environment->getDatesManager();
          $dates_manager->setContextLimit($context_id);
@@ -2898,17 +2905,16 @@ class cs_connection_soap {
          $xml = "<dates_list>\n";
          $date_item = $dates_list->getFirst();
          while($date_item) {
-            debugToFile($date_item->getItemID());
             $xml .= "<date_item>\n";
             $xml .= "<date_id><![CDATA[".$date_item->getItemID()."]]></date_id>\n";
             $xml .= "<date_title><![CDATA[".$date_item->getTitle()."]]></date_title>\n";
             // 2001-03-24 10:45:32 +0600
             $xml .= "<date_starting_date><![CDATA[".$date_item->getStartingDay()."]]></date_starting_date>\n";
             $xml .= "<date_ending_date><![CDATA[".$date_item->getEndingDay()."]]></date_ending_date>\n";
-            $reader = $reader_manager->getLatestReader($date_item->getItemID());
+            $reader = $reader_manager->getLatestReaderForUserByID($date_item->getItemID(), $user_item->getItemID());
             if ( empty($reader) ) {
                $xml .= "<date_read><![CDATA[new]]></date_read>\n";
-            } elseif ( $reader['read_date'] < $item->getModificationDate() ) {
+            } elseif ( $reader['read_date'] < $date_item->getModificationDate() ) {
                $xml .= "<date_read><![CDATA[changed]]></date_read>\n";
             } else {
                $xml .= "<date_read><![CDATA[]]></date_read>\n";
@@ -2917,16 +2923,30 @@ class cs_connection_soap {
             $date_item = $dates_list->getNext();
          }
          $xml .= "</dates_list>";
+         debugToFile($xml);
          $xml = $this->_encode_output($xml);
          return $xml;
       }
    }
    
-   public function getDateDetails($session_id, $item_id) {
+   public function getDateDetails($session_id, $context_id, $item_id) {
       include_once('functions/development_functions.php');
       if($this->_isSessionValid($session_id)) {
+         $this->_environment->setSessionID($session_id);
+         $session = $this->_environment->getSessionItem();
+         $this->_environment->setCurrentContextID($context_id);
+         $user_id = $session->getValue('user_id');
+         $auth_source_id = $session->getValue('auth_source');
+         $user_manager = $this->_environment->getUserManager();
+         $user_item = $user_manager->getItemByUserIDAuthSourceID($user_id, $auth_source_id);
+         $this->_environment->setCurrentUser($user_item);
+         
+         $reader_manager = $this->_environment->getReaderManager();
+         $noticed_manager = $this->_environment->getNoticedManager();
+         
          $dates_manager = $this->_environment->getDatesManager();
          $date_item = $dates_manager->getItem($item_id);
+         
          $xml .= "<date_item>\n";
          $xml .= "<date_id><![CDATA[".$date_item->getItemID()."]]></date_id>\n";
          $xml .= "<date_title><![CDATA[".$date_item->getTitle()."]]></date_title>\n";
@@ -2940,9 +2960,35 @@ class cs_connection_soap {
          $temp_description = str_ireplace('<br />', "\n", $temp_description);
          $temp_description = preg_replace('~<!-- KFC TEXT [a-z0-9]* -->~u','',$temp_description);
          $xml .= "<date_description><![CDATA[".$temp_description."]]></date_description>\n";
+         
+         $reader = $reader_manager->getLatestReaderForUserByID($date_item->getItemID(), $user_item->getItemID());
+         if ( empty($reader) ) {
+            $xml .= "<date_read><![CDATA[new]]></date_read>\n";
+         } elseif ( $reader['read_date'] < $date_item->getModificationDate() ) {
+            $xml .= "<date_read><![CDATA[changed]]></date_read>\n";
+         } else {
+            $xml .= "<date_read><![CDATA[]]></date_read>\n";
+         }
+         
          $xml .= "</date_item>\n";
          $xml = $this->_encode_output($xml);
-         debugToFile($xml);
+         #debugToFile($xml);
+         
+         //Set Read
+         #$reader_manager->getLatestReaderByIDArray(array($item_id));
+         #$reader = $reader_manager->getLatestReader($date_item->getItemID());
+         $reader = $reader_manager->getLatestReaderForUserByID($date_item->getItemID(), $user_item->getItemID());
+         if ( empty($reader) or $reader['read_date'] < $date_item->getModificationDate() ) {
+            $reader_manager->markRead($date_item->getItemID(),0);
+         }
+         //Set Noticed
+         #$noticed_manager->getLatestNoticedByIDArray(array($item_id));
+         #$noticed = $noticed_manager->getLatestNoticed($date_item->getItemID());
+         $noticed = $noticed_manager->getLatestNoticedForUserByID($date_item->getItemID(), $user_item->getItemID());
+         if ( empty($noticed) or $noticed['read_date'] < $date_item->getModificationDate() ) {
+            $noticed_manager->markNoticed($date_item->getItemID(),0);
+         }
+         
          return $xml;
       }
    }

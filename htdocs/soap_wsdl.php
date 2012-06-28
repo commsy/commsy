@@ -350,6 +350,7 @@
 </message>
 <message name='getDateDetailsIN'>
   <part name='session_id' type='xsd:string'/>
+  <part name='context_id' type='xsd:integer'/>
   <part name='item_id' type='xsd:integer'/>
 </message>
 <message name='getDateDetailsOUT'>
