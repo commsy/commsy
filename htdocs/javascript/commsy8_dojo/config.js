@@ -12,7 +12,9 @@ var dojoConfig = {
 	           					{ name: "commsy", location: "commsy" },
 	           					{ name: "ckeditor", location: "libs/ckeditor" },
 	           					{ name: "cbtree", location: "libs/cbtree" }
-	]
+	],
+	async:						true,
+	parseOnLoad:				false
 }
 
 var CKEDITOR_BASEPATH = "javascript/commsy8_dojo/libs/ckeditor/";

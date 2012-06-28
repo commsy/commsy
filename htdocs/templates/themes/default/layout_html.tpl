@@ -35,7 +35,7 @@
 	</script>
 
 	<script src="javascript/commsy8_dojo/config.js"></script>
-	<script src="javascript/commsy8_dojo/libs/dojo/dojo.js" data-dojo-config="async: true"></script>
+	<script src="javascript/commsy8_dojo/libs/dojo/dojo.js"></script>
 	<script src="javascript/commsy8_dojo/main.js"></script>
 
 	<link rel="stylesheet" type="text/css" media="screen" href="{$basic.tpl_path}cs_dojo.css" />
