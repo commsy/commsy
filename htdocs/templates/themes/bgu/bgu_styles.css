@@ -657,13 +657,13 @@ div#inhalt {
     opacity: 0.3;
 }
 .smallicon-set li a.smallicon1 {
-    background-position: 0 -181px;
+    background-position: -1px -181px;
 }
 .smallicon-set li a.smallicon2 {
     background-position: -59px -180px;
 }
 .smallicon-set li a.smallicon3 {
-    background-position: -118px -180px;
+    background-position: -119px -180px;
 }
 .smallicon-set li a.smallicon4 {
     background-position: -177px -180px;
@@ -675,22 +675,22 @@ div#inhalt {
     background-position: -59px -240px;
 }
 .smallicon-set li a.smallicon7 {
-    background-position: -118px -240px;
+    background-position: -117px -240px;
 }
 .smallicon-set li a.smallicon8 {
-    background-position: -177px -240px;
+    background-position: -176px -240px;
 }
 .smallicon-set li a.smallicon9 {
-    background-position: 0 -299px;
+    background-position: -1px -296px;
 }
 .smallicon-set li a.smallicon10 {
-    background-position: -59px -299px;
+    background-position: -60px -296px;
 }
 .smallicon-set li a.smallicon11 {
-    background-position: -118px -299px;
+    background-position: -119px -296px;
 }
 .smallicon-set li a.smallicon12 {
-    background-position: -177px -299px;
+    background-position: -177px -296px;
 }
 .suppage h2 {
     color: #000000;
