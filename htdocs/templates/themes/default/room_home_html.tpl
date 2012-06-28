@@ -82,6 +82,24 @@
 													{/foreach}
 													</span>
 												{/if}
+												{if $item.noticed.article_info.count_new}
+													<span class="content">___COMMON_NEW_ARTICLES___: {$item.noticed.article_info.count_new}
+													{foreach $item.noticed.article_info.article_new_items as $article_item}
+													   <br/>
+													   <span>- <a href="commsy.php?cid={$environment.cid}&mod={$rubric@key}&fct=detail&{$environment.params}&iid={$article_item.ref_iid}#article{$article_item.iid}">{$article_item.title|truncate:25:'...':true}</a> ({$article_item.date})
+													   </span>
+													{/foreach}
+													</span>
+												{/if}
+												{if $item.noticed.article_info.count_changed}
+													<span class="content">___COMMON_CHANGED_ARTICLES___: {$item.noticed.article_info.count_changed}
+													{foreach $item.noticed.article_info.article_changed_items as $article_item}
+													   <br/>
+													   <span>- <a href="commsy.php?cid={$environment.cid}&mod={$rubric@key}&fct=detail&{$environment.params}&iid={$article_item.ref_iid}#article{$article_item.iid}">{$article_item.title|truncate:25:'...':true}</a> ({$article_item.date})
+													   </span>
+													{/foreach}
+													</span>
+												{/if}
 												{if $item.noticed.annotation_info.count_new}
 													<span class="content">___COMMON_NEW_ANNOTATIONS___: {$item.noticed.annotation_info.count_new}
 													{foreach $item.noticed.annotation_info.anno_new_items as $anno_item}
@@ -121,10 +139,10 @@
 	                        </div>
 							<div class="column_45">
 		                        {if $rubric@key == 'material' or $rubric@key == 'announcement' or $rubric@key == 'discussion'  or $rubric@key == 'todo' or $rubric@key == 'date' or $rubric@key == 'topic'}
-								<p>
-									<a href="#" class="attachment{if $item.attachment_count == 0}_none_overlay{/if}">{$item.attachment_count}</a>
-								</p>
 								{if $item.attachment_count > 0}
+									<p>
+										<a href="#" class="attachment{if $item.attachment_count == 0}_none_overlay{/if}">{$item.attachment_count}</a>
+									</p>
 									<div class="tooltip tooltip_with_400">
 										<div class="tooltip_inner tooltip_inner_with_400">
 											<div class="tooltip_title">
@@ -150,6 +168,8 @@
 											</div>
 										</div>
 									</div>
+								{else}
+								<p>&nbsp;</p>
 								{/if}
 								{else}
 								<p>&nbsp;</p>
