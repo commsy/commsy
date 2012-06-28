@@ -1,5 +1,5 @@
 //>>built
-define(["dijit","dojo","dojox","dojo/require!dojox/drawing/stencil/Text"],function(_1,_2,_3){
+define("dojox/drawing/annotations/Label",["dijit","dojo","dojox","dojo/require!dojox/drawing/stencil/Text"],function(_1,_2,_3){
 _2.provide("dojox.drawing.annotations.Label");
 _2.require("dojox.drawing.stencil.Text");
 _3.drawing.annotations.Label=_3.drawing.util.oo.declare(_3.drawing.stencil.Text,function(_4){

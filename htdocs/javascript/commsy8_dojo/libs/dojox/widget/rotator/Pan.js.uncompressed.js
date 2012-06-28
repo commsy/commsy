@@ -1,4 +1,3 @@
-//>>built
 // wrapped by build app
 define("dojox/widget/rotator/Pan", ["dijit","dojo","dojox","dojo/require!dojo/fx"], function(dijit,dojo,dojox){
 dojo.provide("dojox.widget.rotator.Pan");

@@ -1,4 +1,3 @@
-//>>built
 define("dojox/gauges/GlossyCircularGauge", ["dojo/_base/declare","dojo/_base/Color","./GlossyCircularGaugeBase"],
   function(declare, Color, GlossyCircularGaugeBase) {
 

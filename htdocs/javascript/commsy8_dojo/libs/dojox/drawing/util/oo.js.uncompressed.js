@@ -1,4 +1,3 @@
-//>>built
 // wrapped by build app
 define("dojox/drawing/util/oo", ["dijit","dojo","dojox"], function(dijit,dojo,dojox){
 dojo.provide("dojox.drawing.util.oo");

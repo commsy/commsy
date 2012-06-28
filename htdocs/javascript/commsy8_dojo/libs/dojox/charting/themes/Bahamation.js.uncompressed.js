@@ -1,4 +1,3 @@
-//>>built
 define("dojox/charting/themes/Bahamation", ["../Theme", "./common"], function(Theme, themes){
 	themes.Bahamation=new Theme({
 		colors: [

@@ -1,4 +1,3 @@
-//>>built
 define("dojox/validate/regexp", ["dojo/_base/lang", "dojo/regexp", "dojox/main"], 
   function(lang, regexp, dojox){
 

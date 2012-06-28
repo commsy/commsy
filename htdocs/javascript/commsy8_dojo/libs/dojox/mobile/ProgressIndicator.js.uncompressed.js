@@ -1,4 +1,3 @@
-//>>built
 define("dojox/mobile/ProgressIndicator", [
 	"dojo/_base/config",
 	"dojo/_base/declare",

@@ -320,13 +320,14 @@ this._onChangeColumn=this._onChangeCondition=function(){
 if(obj.column){
 this._colSelect.set("value",obj.column);
 }
-if(obj.condition){
-this._condSelect.set("value",obj.condition);
-}
 if(obj.type){
+this._setConditionsByType(obj.type);
 this._setValueBoxByType(obj.type);
 }else{
 obj.type=this.dlg.getColumnType(this._colSelect.get("value"));
+}
+if(obj.condition){
+this._condSelect.set("value",obj.condition);
 }
 var _49=obj.value||"";
 if(_49||(obj.type!="date"&&obj.type!="time")){
@@ -430,15 +431,15 @@ this.dlg.onRendered(this);
 var g=this.plugin.grid,_61=g.layout.cells[parseInt(this._colSelect.get("value"),10)],res={cbox:this};
 if(_60=="string"){
 if(_61&&(_61.suggestion||_61.autoComplete)){
-_6.mixin(res,{store:g.store,searchAttr:_61.field||_61.name,fetchProperties:{sort:[{"attribute":_61.field||_61.name}],query:g.query,queryOptions:g.queryOptions}});
+_4.mixin(res,{store:g.store,searchAttr:_61.field||_61.name,query:g.query||{},fetchProperties:{sort:[{"attribute":_61.field||_61.name}],queryOptions:_4.mixin({ignoreCase:true,deep:true},g.queryOptions||{})}});
 }
 }else{
 if(_60=="boolean"){
-_6.mixin(res,this.dlg.builder.defaultArgs["boolean"]);
+_4.mixin(res,this.dlg.builder.defaultArgs["boolean"]);
 }
 }
 if(_61&&_61.dataTypeArgs){
-_6.mixin(res,_61.dataTypeArgs);
+_4.mixin(res,_61.dataTypeArgs);
 }
 return res;
 },formatValue:function(_62,_63,v){

@@ -1,4 +1,3 @@
-//>>built
 define("dojox/rpc/Rest", ["dojo", "dojox"], function(dojo, dojox) {
 // Note: This doesn't require dojox.rpc.Service, and if you want it you must require it
 // yourself, and you must load it prior to dojox.rpc.Rest.

@@ -1,4 +1,3 @@
-//>>built
 define("dojo/store/util/SimpleQueryEngine", ["../../_base/array"], function(arrayUtil) {
   //  module:
   //    dojo/store/util/SimpleQueryEngine

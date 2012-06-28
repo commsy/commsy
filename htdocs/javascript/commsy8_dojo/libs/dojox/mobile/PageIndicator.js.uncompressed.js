@@ -1,4 +1,3 @@
-//>>built
 define("dojox/mobile/PageIndicator", [
 	"dojo/_base/connect",
 	"dojo/_base/declare",

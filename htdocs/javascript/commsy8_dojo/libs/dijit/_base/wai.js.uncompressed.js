@@ -1,4 +1,3 @@
-//>>built
 define("dijit/_base/wai", [
 	"dojo/dom-attr", // domAttr.attr
 	"dojo/_base/lang", // lang.mixin

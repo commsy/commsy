@@ -1,5 +1,5 @@
 //>>built
-define(["dijit","dojo","dojox"],function(_1,_2,_3){
+define("dojox/jsonPath/query",["dijit","dojo","dojox"],function(_1,_2,_3){
 _2.provide("dojox.jsonPath.query");
 _3.jsonPath.query=function(_4,_5,_6){
 var re=_3.jsonPath._regularExpressions;

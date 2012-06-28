@@ -1,4 +1,3 @@
-//>>built
 define("dojox/json/ref", ["dojo/_base/kernel", "dojox", "dojo/date/stamp", "dojo/_base/array", "dojo/_base/json"], function(dojo, dojox){
 
 dojo.getObject("json", true, dojox);

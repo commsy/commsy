@@ -1,4 +1,3 @@
-//>>built
 define("dojox/gauges/AnalogNeedleIndicator", ["dojo/_base/declare","./AnalogIndicatorBase"],
   function(declare, AnalogIndicatorBase) { 
 

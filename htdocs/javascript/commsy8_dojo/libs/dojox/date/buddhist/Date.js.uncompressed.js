@@ -1,4 +1,3 @@
-//>>built
 define("dojox/date/buddhist/Date", [
 	"dojo/_base/kernel",
 	"dojo/_base/declare",

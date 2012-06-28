@@ -1,4 +1,3 @@
-//>>built
 define("dojox/highlight/languages/delphi", ["dojox/main", "../_base"], function(dojox){
 
 	var DELPHI_KEYWORDS = {

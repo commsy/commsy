@@ -1,4 +1,3 @@
-//>>built
 define("dojox/rpc/Service", ["dojo", "dojox", "dojo/AdapterRegistry", "dojo/_base/url"], function(dojo, dojox) {
 
 dojo.declare("dojox.rpc.Service", null, {

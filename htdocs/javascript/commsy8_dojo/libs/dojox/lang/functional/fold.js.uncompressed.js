@@ -1,4 +1,3 @@
-//>>built
 define("dojox/lang/functional/fold", ["dojo/_base/lang", "dojo/_base/array", "dojo/_base/window", "./lambda"],
 	function(lang, arr, win, df){
 

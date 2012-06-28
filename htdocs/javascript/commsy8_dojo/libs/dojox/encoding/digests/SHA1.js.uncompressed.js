@@ -1,4 +1,3 @@
-//>>built
 define("dojox/encoding/digests/SHA1", ["./_base"], function(dxd) {
 
 	/*=====

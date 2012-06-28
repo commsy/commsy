@@ -1,4 +1,3 @@
-//>>built
 // AMD-ID "dojox/math/random/prng4"
 define("dojox/math/random/prng4", ["dojo", "dojox"], function(dojo, dojox) {
 	

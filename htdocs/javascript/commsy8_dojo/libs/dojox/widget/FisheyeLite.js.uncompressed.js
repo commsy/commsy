@@ -1,4 +1,3 @@
-//>>built
 define("dojox/widget/FisheyeLite", ["dojo", "dojox", "dijit/_Widget", "dojo/fx/easing"], function(dojo, dojox, widget, easing){
 	
 	dojo.getObject("widget", true, dojox);

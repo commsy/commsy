@@ -1,4 +1,3 @@
-//>>built
 // wrapped by build app
 define("dojox/widget/SortList", ["dijit","dojo","dojox","dojo/require!dijit/layout/_LayoutWidget,dijit/_Templated"], function(dijit,dojo,dojox){
 dojo.provide("dojox.widget.SortList");

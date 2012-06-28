@@ -129,7 +129,7 @@ define([	"dojo/_base/declare",
 				// fill list
 				DomConstruct.empty(contentObject);
 				
-				response.list.forEach(Lang.hitch(this, function(entry, index, arr) {
+				dojo.forEach(response.list, Lang.hitch(this, function(entry, index, arr) {
 					var rowDivNode = DomConstruct.create("div", {
 						className:		(index % 2 === 0) ? 'pop_row_even' : 'pop_row_odd'
 					}, contentObject, "last");
@@ -198,7 +198,7 @@ define([	"dojo/_base/declare",
 					DomConstruct.empty(mailContentNode);
 					DomConstruct.place(html, mailContentNode, "last");
 					
-					Query("div.ckeditor", mailContentNode).forEach(Lang.hitch(this, function(node, index, arr) {
+					dojo.forEach(Query("div.ckeditor", mailContentNode), Lang.hitch(this, function(node, index, arr) {
 						require(["commsy/ckeditor"], Lang.hitch(this, function(CKEditor) {
 							var ck = new CKEditor();
 							ck.create(node);

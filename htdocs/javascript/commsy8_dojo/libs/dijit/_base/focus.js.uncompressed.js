@@ -1,4 +1,3 @@
-//>>built
 define("dijit/_base/focus", [
 	"dojo/_base/array", // array.forEach
 	"dojo/dom", // dom.isDescendant

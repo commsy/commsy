@@ -26,7 +26,7 @@ var _7=this.textbox;
 _7.style.height="auto";
 _7.rows=(_7.value.match(/\n/g)||[]).length+2;
 },_resizeLater:function(){
-setTimeout(_3.hitch(this,"resize"),0);
+this.defer("resize");
 },resize:function(){
 function _8(){
 var _9=false;
@@ -44,10 +44,6 @@ var _a=this.textbox;
 if(_a.style.overflowY=="hidden"){
 _a.scrollTop=0;
 }
-if(this.resizeTimer){
-clearTimeout(this.resizeTimer);
-}
-this.resizeTimer=null;
 if(this.busyResizing){
 return;
 }
@@ -59,32 +55,34 @@ _b=_8();
 _a.rows=1;
 _a.style.height=_b+"px";
 }
-var _c=Math.max(parseInt(_b)-_a.clientHeight,0)+_8();
+var _c=Math.max(Math.max(_a.offsetHeight,parseInt(_b))-_a.clientHeight,0)+_8();
 var _d=_c+"px";
 if(_d!=_a.style.height){
 _a.rows=1;
 _a.style.height=_d;
 }
 if(_5){
-var _e=_8();
+var _e=_8(),_f=_e,_10=_a.style.minHeight,_11=4,_12;
+_a.style.minHeight=_d;
 _a.style.height="auto";
-if(_8()<_e){
-_d=_c-_e+_8()+"px";
+while(_c>0){
+_a.style.minHeight=Math.max(_c-_11,4)+"px";
+_12=_8();
+var _13=_f-_12;
+_c-=_13;
+if(_13<_11){
+break;
 }
-_a.style.height=_d;
+_f=_12;
+_11<<=1;
+}
+_a.style.height=_c+"px";
+_a.style.minHeight=_10;
 }
 _a.style.overflowY=_8()>_a.clientHeight?"auto":"hidden";
 }else{
 this._estimateHeight();
 }
 this.busyResizing=false;
-},destroy:function(){
-if(this.resizeTimer){
-clearTimeout(this.resizeTimer);
-}
-if(this.shrinkTimer){
-clearTimeout(this.shrinkTimer);
-}
-this.inherited(arguments);
 }});
 });

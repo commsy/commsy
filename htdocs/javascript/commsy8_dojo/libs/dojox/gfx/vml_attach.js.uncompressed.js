@@ -1,4 +1,3 @@
-//>>built
 define("dojox/gfx/vml_attach", ["dojo/_base/kernel", "dojo/_base/lang", "./_base", "./matrix", "./path", "dojo/_base/Color", "./vml"],
   function (kernel, lang, g, m, pathLib, Color, vml){
 

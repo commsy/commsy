@@ -1,4 +1,3 @@
-//>>built
 define("dojo/dnd/Selector", ["../main", "./common", "./Container"], function(dojo) {
 	// module:
 	//		dojo/dnd/Selector

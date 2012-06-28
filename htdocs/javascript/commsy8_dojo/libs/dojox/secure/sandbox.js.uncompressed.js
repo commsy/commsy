@@ -1,4 +1,3 @@
-//>>built
 // wrapped by build app
 define("dojox/secure/sandbox", ["dijit","dojo","dojox","dojo/require!dojox/secure/DOM,dojox/secure/capability,dojo/NodeList-fx,dojo/_base/url"], function(dijit,dojo,dojox){
 dojo.provide("dojox.secure.sandbox");

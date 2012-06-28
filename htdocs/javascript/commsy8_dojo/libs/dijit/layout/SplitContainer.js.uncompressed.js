@@ -1,4 +1,3 @@
-//>>built
 define("dijit/layout/SplitContainer", [
 	"dojo/_base/array", // array.forEach array.indexOf array.some
 	"dojo/cookie", // cookie

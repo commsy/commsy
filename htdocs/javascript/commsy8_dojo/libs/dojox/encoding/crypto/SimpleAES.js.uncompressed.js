@@ -1,4 +1,3 @@
-//>>built
 define("dojox/encoding/crypto/SimpleAES", ["../base64", "./_base"], 
  function(base64, crypto){
 

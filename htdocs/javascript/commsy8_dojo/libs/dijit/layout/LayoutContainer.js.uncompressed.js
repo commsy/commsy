@@ -1,4 +1,3 @@
-//>>built
 define("dijit/layout/LayoutContainer", [
 	"dojo/_base/kernel", // kernel.deprecated
 	"dojo/_base/lang",

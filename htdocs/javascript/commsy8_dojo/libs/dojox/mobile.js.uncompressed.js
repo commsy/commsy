@@ -1,17 +1,3 @@
-/*
-	Copyright (c) 2004-2011, The Dojo Foundation All Rights Reserved.
-	Available via Academic Free License >= 2.1 OR the modified BSD license.
-	see: http://dojotoolkit.org/license for details
-*/
-
-/*
-	This is an optimized version of Dojo, built for deployment and not for
-	development. To get sources and documentation, please visit:
-
-		http://dojotoolkit.org
-*/
-
-//>>built
 require({cache:{
 'dojox/mobile/ViewController':function(){
 define([
@@ -158,7 +144,13 @@ define([
 				moveTo = id;
 				w = this.findCurrentView(moveTo,registry.byId(evt.target.id)) || w; // the current view widget
 			}
-			w.performTransition(moveTo, evt.detail.transitionDir, evt.detail.transition, null, null);
+			var src = registry.getEnclosingWidget(evt.target);
+			var context, method;
+			if(src && src.callback){
+				context = src;
+				method = src.callback;
+			}
+			w.performTransition(moveTo, evt.detail.transitionDir, evt.detail.transition, context, method);
 		},
 
 		_parse: function(text, id){
@@ -181,8 +173,8 @@ define([
 				if(c.nodeType === 1){
 					if(c.getAttribute("fixed") === "bottom"){
 						refNode = c;
+						break;
 					}
-					break;
 				}
 			}
 			if(text.charAt(0) === "<"){ // html markup
@@ -1008,13 +1000,13 @@ return declare("dijit._WidgetBase", Stateful, {
 
 		// remove this.connect() and this.subscribe() listeners
 		var c;
-		while(c = this._connects.pop()){
+		while((c = this._connects.pop())){
 			c.remove();
 		}
 
 		// destroy widgets created as part of template, etc.
 		var w;
-		while(w = this._supportingWidgets.pop()){
+		while((w = this._supportingWidgets.pop())){
 			if(w.destroyRecursive){
 				w.destroyRecursive();
 			}else if(w.destroy){
@@ -1492,6 +1484,35 @@ return declare("dijit._WidgetBase", Stateful, {
 		// text: String
 		// tags:
 		//		protected.
+	},
+
+	defer: function(fcn, delay){ 
+		// summary:
+		//		Wrapper to setTimeout to avoid deferred functions executing
+		//		after the originating widget has been destroyed.
+		//		Returns an object handle with a remove method (that returns null) (replaces clearTimeout).
+		// fcn: function reference
+		// delay: Optional number (defaults to 0)
+		// tags:
+		//		protected.
+		var timer = setTimeout(lang.hitch(this, 
+			function(){ 
+				timer = null;
+				if(!this._destroyed){ 
+					lang.hitch(this, fcn)(); 
+				} 
+			}),
+			delay || 0
+		);
+		return {
+			remove:	function(){
+					if(timer){
+						clearTimeout(timer);
+						timer = null;
+					}
+					return null; // so this works well: handle = handle.remove();
+				}
+		};
 	}
 });
 
@@ -4540,10 +4561,6 @@ define("dijit/_Container", [
 });
 
 }}});
-
-require(["dojo/i18n"], function(i18n){
-i18n._preloadLocalizations("dojox/nls/mobile", []);
-});
 define("dojox/mobile", [
 	".",
 	"dojo/_base/lang",

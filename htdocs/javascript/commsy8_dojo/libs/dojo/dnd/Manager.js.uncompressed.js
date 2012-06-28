@@ -1,4 +1,3 @@
-//>>built
 define("dojo/dnd/Manager", ["../main", "../Evented", "./common", "./autoscroll", "./Avatar"], function(dojo, Evented) {
 	// module:
 	//		dojo/dnd/Manager

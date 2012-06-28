@@ -1,5 +1,5 @@
 //>>built
-define(["dijit","dojo","dojox","dojo/require!dojox/math/round"],function(_1,_2,_3){
+define("dojox/drawing/util/common",["dijit","dojo","dojox","dojo/require!dojox/math/round"],function(_1,_2,_3){
 _2.provide("dojox.drawing.util.common");
 _2.require("dojox.math.round");
 (function(){

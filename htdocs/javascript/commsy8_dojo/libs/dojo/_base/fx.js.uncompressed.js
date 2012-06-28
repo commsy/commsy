@@ -1,4 +1,3 @@
-//>>built
 define("dojo/_base/fx", ["./kernel", "./lang", "../Evented", "./Color", "./connect", "./sniff", "../dom", "../dom-style"], function(dojo, lang, Evented, Color, connect, has, dom, style){
 	// module:
 	//		dojo/_base/fx

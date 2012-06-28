@@ -1,4 +1,3 @@
-//>>built
 define("dojo/io/script", ["../main"], function(dojo) {
 	// module:
 	//		dojo/io/script

@@ -1,4 +1,3 @@
-//>>built
 define("dojox/mobile/_compat", [
 	"dojo/_base/array",	// array.forEach
 	"dojo/_base/config",

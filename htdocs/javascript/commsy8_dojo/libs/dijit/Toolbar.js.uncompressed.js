@@ -1,4 +1,3 @@
-//>>built
 define("dijit/Toolbar", [
 	"require",
 	"dojo/_base/declare", // declare

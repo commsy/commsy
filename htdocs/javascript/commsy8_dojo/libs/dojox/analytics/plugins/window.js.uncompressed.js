@@ -1,4 +1,3 @@
-//>>built
 define("dojox/analytics/plugins/window", ["dojo/_base/lang","../_base", "dojo/ready", "dojo/_base/config", "dojo/aspect"
 ], function(lang, dxa, ready, config, aspect){
 	/*=====

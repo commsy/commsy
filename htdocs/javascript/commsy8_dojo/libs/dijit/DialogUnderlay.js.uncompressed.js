@@ -1,4 +1,3 @@
-//>>built
 define("dijit/DialogUnderlay", [
 	"dojo/_base/declare", // declare
 	"dojo/dom-attr", // domAttr.set

@@ -1,4 +1,3 @@
-//>>built
 define("dojo/dnd/common", ["../main"], function(dojo) {
 	// module:
 	//		dojo/dnd/common

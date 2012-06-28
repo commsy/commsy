@@ -1,5 +1,5 @@
 //>>built
-define(["dijit","dojo","dojox"],function(_1,_2,_3){
+define("dojox/drawing/tools/Ellipse",["dijit","dojo","dojox"],function(_1,_2,_3){
 _2.provide("dojox.drawing.tools.Ellipse");
 _3.drawing.tools.Ellipse=_3.drawing.util.oo.declare(_3.drawing.stencil.Ellipse,function(){
 },{draws:true,onDrag:function(_4){

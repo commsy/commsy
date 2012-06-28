@@ -1,4 +1,3 @@
-//>>built
 define("dojox/io/xhrMultiPart", [
 	"dojo/_base/kernel",
 	"dojo/_base/array",

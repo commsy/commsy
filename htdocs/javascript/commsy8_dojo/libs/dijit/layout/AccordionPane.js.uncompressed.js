@@ -1,4 +1,3 @@
-//>>built
 define("dijit/layout/AccordionPane", [
 	"dojo/_base/declare", // declare
 	"dojo/_base/kernel", // kernel.deprecated

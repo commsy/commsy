@@ -1,4 +1,3 @@
-//>>built
 define("dojox/charting/themes/MiamiNice", ["../Theme", "./common"], function(Theme, themes){
 	
 	themes.MiamiNice=new Theme({

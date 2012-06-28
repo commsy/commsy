@@ -1,4 +1,3 @@
-//>>built
 define("dojox/app/transition", ["dojo/_base/kernel", "dojo/_base/array","dojo/_base/html","dojo/DeferredList","./animation"],
 	function(dojo, darray, dhtml, DeferredList,animation){
 	return function(from, to, options){

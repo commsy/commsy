@@ -1,4 +1,3 @@
-//>>built
 define("dojox/gauges/BarGauge", ["dojo/_base/declare","dojo/_base/lang","dojo/_base/array","dojo/_base/html","dojo/_base/event","dojox/gfx",
 		"./_Gauge","./BarLineIndicator", "dojo/dom-geometry"],
  function(declare, lang, arr, html, event, gfx, Gauge, BarLineIndicator, domGeometry) {

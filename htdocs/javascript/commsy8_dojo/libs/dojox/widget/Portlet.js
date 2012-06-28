@@ -1,5 +1,5 @@
 //>>built
-define(["dijit","dojo","dojox","dojo/require!dijit/TitlePane,dojo/fx"],function(_1,_2,_3){
+define("dojox/widget/Portlet",["dijit","dojo","dojox","dojo/require!dijit/TitlePane,dojo/fx"],function(_1,_2,_3){
 _2.experimental("dojox.widget.Portlet");
 _2.provide("dojox.widget.Portlet");
 _2.require("dijit.TitlePane");

@@ -1,5 +1,5 @@
 //>>built
-define(["dijit","dojo","dojox","dojo/require!dojox/cometd/_base"],function(_1,_2,_3){
+define("dojox/cometd/longPollTransportJsonEncoded",["dijit","dojo","dojox","dojo/require!dojox/cometd/_base"],function(_1,_2,_3){
 _2.provide("dojox.cometd.longPollTransportJsonEncoded");
 _2.require("dojox.cometd._base");
 _3.cometd.longPollTransportJsonEncoded=new function(){

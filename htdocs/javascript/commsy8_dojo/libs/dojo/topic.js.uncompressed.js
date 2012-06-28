@@ -1,4 +1,3 @@
-//>>built
 define("dojo/topic", ["./Evented"], function(Evented){
 	// summary:
 	//		The export of this module is a pubsub hub

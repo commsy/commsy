@@ -1,4 +1,3 @@
-//>>built
 define("dojo/hash", ["./_base/kernel", "require", "./_base/connect", "./_base/lang", "./ready", "./_base/sniff"],
 	function(dojo, require, connect, lang, ready, has) {
 	// module:

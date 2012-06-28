@@ -1,4 +1,3 @@
-//>>built
 define("dojox/fx/ext-dojo/reverse", ["dojo/_base/fx",
 		"dojo/fx",
 		"dojo/_base/lang", 

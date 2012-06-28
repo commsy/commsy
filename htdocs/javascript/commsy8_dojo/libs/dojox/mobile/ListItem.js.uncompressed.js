@@ -1,4 +1,3 @@
-//>>built
 define("dojox/mobile/ListItem", [
 	"dojo/_base/array",
 	"dojo/_base/connect",

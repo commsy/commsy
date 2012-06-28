@@ -1,4 +1,3 @@
-//>>built
 define("dojox/charting/axis2d/Default", ["dojo/_base/lang", "dojo/_base/array","dojo/_base/sniff", "dojo/_base/declare", 
 	"dojo/_base/connect", "dojo/_base/html", "dojo/dom-geometry", "./Invisible", 
 	"../scaler/common", "../scaler/linear", "./common", "dojox/gfx", "dojox/lang/utils"], 

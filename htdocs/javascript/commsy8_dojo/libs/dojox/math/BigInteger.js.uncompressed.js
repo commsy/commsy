@@ -1,4 +1,3 @@
-//>>built
 // AMD-ID "dojox/math/BigInteger"
 define("dojox/math/BigInteger", ["dojo", "dojox"], function(dojo, dojox) {
 

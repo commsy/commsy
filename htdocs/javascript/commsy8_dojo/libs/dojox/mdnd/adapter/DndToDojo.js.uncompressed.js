@@ -1,4 +1,3 @@
-//>>built
 define("dojox/mdnd/adapter/DndToDojo", ["dojo/_base/kernel","dojo/_base/declare","dojo/_base/html","dojo/_base/connect",
 	"dojo/_base/window","dojo/_base/array","dojox/mdnd/PureSource","dojox/mdnd/LazyManager"],function(dojo){
 	var dtd = dojo.declare(

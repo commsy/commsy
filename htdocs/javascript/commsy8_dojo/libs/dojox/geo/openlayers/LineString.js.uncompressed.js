@@ -1,4 +1,3 @@
-//>>built
 define("dojox/geo/openlayers/LineString", ["dojo/_base/kernel", "dojo/_base/declare", "dojox/geo/openlayers/Geometry"], function(dojo, declare,
 		/* ===== 
 		var Geometry = dojox.geo.openlayers.Geometry; 

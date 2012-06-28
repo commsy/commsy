@@ -1,4 +1,3 @@
-//>>built
 define("dojox/analytics/plugins/consoleMessages", ["dojo/_base/lang","../_base", "dojo/_base/config", "dojo/aspect"
 ], function(lang, dxa, config, aspect){
 	/*=====

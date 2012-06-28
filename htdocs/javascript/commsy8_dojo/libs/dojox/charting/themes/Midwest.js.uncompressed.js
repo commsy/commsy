@@ -1,4 +1,3 @@
-//>>built
 define("dojox/charting/themes/Midwest", ["../Theme", "./common"], function(Theme, themes){
 	
 	themes.Midwest=new Theme({

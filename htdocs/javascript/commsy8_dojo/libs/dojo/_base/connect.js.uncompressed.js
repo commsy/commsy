@@ -1,4 +1,3 @@
-//>>built
 define("dojo/_base/connect", ["./kernel", "../on", "../topic", "../aspect", "./event", "../mouse", "./sniff", "./lang", "../keys"], function(kernel, on, hub, aspect, eventModule, mouse, has, lang){
 //  module:
 //    dojo/_base/connect

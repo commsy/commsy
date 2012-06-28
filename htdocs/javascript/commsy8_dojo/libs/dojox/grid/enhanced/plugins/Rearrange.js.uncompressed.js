@@ -1,4 +1,3 @@
-//>>built
 define("dojox/grid/enhanced/plugins/Rearrange", [
 	"dojo/_base/kernel",
 	"dojo/_base/lang",

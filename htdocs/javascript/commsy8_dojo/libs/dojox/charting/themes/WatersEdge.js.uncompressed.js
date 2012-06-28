@@ -1,4 +1,3 @@
-//>>built
 define("dojox/charting/themes/WatersEdge", ["../Theme", "./common"], function(Theme, themes){
 	
 	themes.WatersEdge = new Theme({

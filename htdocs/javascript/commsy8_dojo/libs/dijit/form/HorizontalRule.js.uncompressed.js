@@ -1,4 +1,3 @@
-//>>built
 define("dijit/form/HorizontalRule", [
 	"dojo/_base/declare",	// declare
 	"../_Widget",

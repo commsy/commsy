@@ -1,4 +1,3 @@
-//>>built
 // wrapped by build app
 define("dojox/wire/XmlWire", ["dijit","dojo","dojox","dojo/require!dojox/xml/parser,dojox/wire/Wire"], function(dijit,dojo,dojox){
 dojo.provide("dojox.wire.XmlWire");

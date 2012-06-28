@@ -1,4 +1,3 @@
-//>>built
 define("dojox/dtl/filter/htmlstrings", [
 	"dojo/_base/lang",
 	"../_base"

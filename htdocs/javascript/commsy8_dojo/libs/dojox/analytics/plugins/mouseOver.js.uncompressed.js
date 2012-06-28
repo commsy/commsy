@@ -1,4 +1,3 @@
-//>>built
 define("dojox/analytics/plugins/mouseOver", ["dojo/_base/lang", "../_base", "dojo/_base/config", "dojo/_base/window", "dojo/on"
 ], function(lang, dxa, config, window, on){
 	/*=====

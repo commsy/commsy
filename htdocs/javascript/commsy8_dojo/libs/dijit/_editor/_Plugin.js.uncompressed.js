@@ -1,4 +1,3 @@
-//>>built
 define("dijit/_editor/_Plugin", [
 	"dojo/_base/connect", // connect.connect
 	"dojo/_base/declare", // declare

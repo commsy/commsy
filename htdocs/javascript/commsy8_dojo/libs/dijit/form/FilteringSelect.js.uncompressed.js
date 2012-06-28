@@ -1,4 +1,3 @@
-//>>built
 define("dijit/form/FilteringSelect", [
 	"dojo/data/util/filter", // filter.patternToRegExp
 	"dojo/_base/declare", // declare
@@ -58,7 +57,7 @@ define("dijit/form/FilteringSelect", [
 
 		isValid: function(){
 			// Overrides ValidationTextBox.isValid()
-			return this.item || (!this.required && this.get('displayedValue') == ""); // #5974
+			return !!this.item || (!this.required && this.get('displayedValue') == ""); // #5974
 		},
 
 		_refreshState: function(){

@@ -1,4 +1,3 @@
-//>>built
 define("dojox/color/Colorspace", ["dojo/_base/kernel", "../main", "dojo/_base/lang", "./_base", "dojox/math/matrix"], 
 	function(dojo, dojox, dlang, dxc, dxm){
 

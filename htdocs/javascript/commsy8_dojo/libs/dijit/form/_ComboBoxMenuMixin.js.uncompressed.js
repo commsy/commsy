@@ -1,4 +1,3 @@
-//>>built
 define("dijit/form/_ComboBoxMenuMixin", [
 	"dojo/_base/array", // array.forEach
 	"dojo/_base/declare", // declare

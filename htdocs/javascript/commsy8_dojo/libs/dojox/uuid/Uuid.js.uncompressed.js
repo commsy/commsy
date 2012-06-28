@@ -1,4 +1,3 @@
-//>>built
 define("dojox/uuid/Uuid", ['dojo/_base/lang', './_base'], function(dojo, uuid){
 
 dojox.uuid.Uuid = function(/*String?*/ input){

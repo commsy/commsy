@@ -1,4 +1,3 @@
-//>>built
 define("dojox/av/widget/PlayButton", ['dojo', 'dijit', 'dijit/_Widget', 'dijit/_TemplatedMixin'],function(dojo, dijit){
 
 dojo.declare("dojox.av.widget.PlayButton", [dijit._Widget, dijit._TemplatedMixin], {

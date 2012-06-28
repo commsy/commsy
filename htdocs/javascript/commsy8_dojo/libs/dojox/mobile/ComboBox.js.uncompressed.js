@@ -1,4 +1,3 @@
-//>>built
 define("dojox/mobile/ComboBox", [
 	"dojo/_base/kernel",
 	"dojo/_base/declare",

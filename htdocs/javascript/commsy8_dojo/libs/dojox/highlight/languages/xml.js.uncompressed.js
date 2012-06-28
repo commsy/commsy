@@ -1,4 +1,3 @@
-//>>built
 define("dojox/highlight/languages/xml", ["dojox/main", "../_base"], function(dojox){
 
 	var XML_COMMENT = {

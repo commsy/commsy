@@ -1,4 +1,3 @@
-//>>built
 define("dojo/data/util/filter", ["dojo/_base/lang"], function(lang) {
 	// module:
 	//		dojo/data/util/filter

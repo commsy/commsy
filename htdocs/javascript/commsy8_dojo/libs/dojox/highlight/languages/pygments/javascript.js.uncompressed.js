@@ -1,4 +1,3 @@
-//>>built
 define("dojox/highlight/languages/pygments/javascript", ["dojox/main", "../../_base"], function(dojox){
 
 	var dh = dojox.highlight, dhc = dh.constants;

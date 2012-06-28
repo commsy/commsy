@@ -1,5 +1,5 @@
 //>>built
-define(["dijit","dojo","dojox","dojo/require!dojox/gantt/GanttTaskItem,dojo/date/locale,dijit/focus"],function(_1,_2,_3){
+define("dojox/gantt/GanttProjectItem",["dijit","dojo","dojox","dojo/require!dojox/gantt/GanttTaskItem,dojo/date/locale,dijit/focus"],function(_1,_2,_3){
 _2.provide("dojox.gantt.GanttProjectItem");
 _2.require("dojox.gantt.GanttTaskItem");
 _2.require("dojo.date.locale");

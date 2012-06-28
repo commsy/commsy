@@ -1,4 +1,3 @@
-//>>built
 // wrapped by build app
 define("dojox/drawing/stencil/_Base", ["dijit","dojo","dojox","dojo/require!dojo/fx/easing"], function(dijit,dojo,dojox){
 dojo.provide("dojox.drawing.stencil._Base");

@@ -1,4 +1,3 @@
-//>>built
 define("dojox/mobile/deviceTheme", [
 	"dojo/_base/array",
 	"dojo/_base/config",

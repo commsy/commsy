@@ -22,7 +22,7 @@ this.widget=_16;
 this._movableMax=new _b(this.sliderHandleMax,{mover:_17});
 this.focusNodeMax.setAttribute("aria-valuemin",this.minimum);
 this.focusNodeMax.setAttribute("aria-valuemax",this.maximum);
-var _19=_1(_52,{constructor:function(){
+var _19=_1(_51,{constructor:function(){
 this.widget=_16;
 }});
 this._movableBar=new _b(this.progressBar,{mover:_19});
@@ -216,56 +216,54 @@ _4e=_4d._abspos=_7.position(_4d.sliderBarContainer,true);
 _4d._setPixelValue_=_2.hitch(_4d,"_setPixelValue");
 _4d._isReversed_=_4d._isReversed();
 }
-var _4f=e.touches?e.touches[0]:e;
-var _50=_4f[_4d._mousePixelCoord]-_4e[_4d._startingPixelCoord];
-_4d._setPixelValue_(_4d._isReversed_?(_4e[_4d._pixelCount]-_50):_50,_4e[_4d._pixelCount],false,true);
+var _4f=e[_4d._mousePixelCoord]-_4e[_4d._startingPixelCoord];
+_4d._setPixelValue_(_4d._isReversed_?(_4e[_4d._pixelCount]-_4f):_4f,_4e[_4d._pixelCount],false,true);
 },destroy:function(e){
 _a.prototype.destroy.apply(this,arguments);
-var _51=this.widget;
-_51._abspos=null;
-_51._setValueAttr(_51.value,true);
+var _50=this.widget;
+_50._abspos=null;
+_50._setValueAttr(_50.value,true);
 }});
-var _52=_1("dijit.form._SliderBarMover",_a,{onMouseMove:function(e){
-var _53=this.widget;
-if(_53.disabled||_53.readOnly){
+var _51=_1("dijit.form._SliderBarMover",_a,{onMouseMove:function(e){
+var _52=this.widget;
+if(_52.disabled||_52.readOnly){
 return;
 }
-var _54=_53._abspos;
-var bar=_53._bar;
-var _55=_53._mouseOffset;
-if(!_54){
-_54=_53._abspos=_7.position(_53.sliderBarContainer,true);
-_53._setPixelValue_=_2.hitch(_53,"_setPixelValue");
-_53._getValueByPixelValue_=_2.hitch(_53,"_getValueByPixelValue");
-_53._isReversed_=_53._isReversed();
+var _53=_52._abspos;
+var bar=_52._bar;
+var _54=_52._mouseOffset;
+if(!_53){
+_53=_52._abspos=_7.position(_52.sliderBarContainer,true);
+_52._setPixelValue_=_2.hitch(_52,"_setPixelValue");
+_52._getValueByPixelValue_=_2.hitch(_52,"_getValueByPixelValue");
+_52._isReversed_=_52._isReversed();
 }
 if(!bar){
-bar=_53._bar=_7.position(_53.progressBar,true);
+bar=_52._bar=_7.position(_52.progressBar,true);
 }
-var _56=e.touches?e.touches[0]:e;
-if(!_55){
-_55=_53._mouseOffset=_56[_53._mousePixelCoord]-_54[_53._startingPixelCoord]-bar[_53._startingPixelCoord];
+if(!_54){
+_54=_52._mouseOffset=e[_52._mousePixelCoord]-bar[_52._startingPixelCoord];
 }
-var _57=_56[_53._mousePixelCoord]-_54[_53._startingPixelCoord]-_55,_58=_57+bar[_53._pixelCount];
-pixelValues=[_57,_58];
+var _55=e[_52._mousePixelCoord]-_53[_52._startingPixelCoord]-_54,_56=_55+bar[_52._pixelCount];
+pixelValues=[_55,_56];
 pixelValues.sort(_14);
 if(pixelValues[0]<=0){
 pixelValues[0]=0;
-pixelValues[1]=bar[_53._pixelCount];
+pixelValues[1]=bar[_52._pixelCount];
 }
-if(pixelValues[1]>=_54[_53._pixelCount]){
-pixelValues[1]=_54[_53._pixelCount];
-pixelValues[0]=_54[_53._pixelCount]-bar[_53._pixelCount];
+if(pixelValues[1]>=_53[_52._pixelCount]){
+pixelValues[1]=_53[_52._pixelCount];
+pixelValues[0]=_53[_52._pixelCount]-bar[_52._pixelCount];
 }
-var _59=[_53._getValueByPixelValue(_53._isReversed_?(_54[_53._pixelCount]-pixelValues[0]):pixelValues[0],_54[_53._pixelCount]),_53._getValueByPixelValue(_53._isReversed_?(_54[_53._pixelCount]-pixelValues[1]):pixelValues[1],_54[_53._pixelCount])];
-_53._setValueAttr(_59,false,false);
+var _57=[_52._getValueByPixelValue(_52._isReversed_?(_53[_52._pixelCount]-pixelValues[0]):pixelValues[0],_53[_52._pixelCount]),_52._getValueByPixelValue(_52._isReversed_?(_53[_52._pixelCount]-pixelValues[1]):pixelValues[1],_53[_52._pixelCount])];
+_52._setValueAttr(_57,false,false);
 },destroy:function(){
 _a.prototype.destroy.apply(this,arguments);
-var _5a=this.widget;
-_5a._abspos=null;
-_5a._bar=null;
-_5a._mouseOffset=null;
-_5a._setValueAttr(_5a.value,true);
+var _58=this.widget;
+_58._abspos=null;
+_58._bar=null;
+_58._mouseOffset=null;
+_58._setValueAttr(_58.value,true);
 }});
 _1("dojox.form.HorizontalRangeSlider",[_e,_15],{templateString:_c});
 _1("dojox.form.VerticalRangeSlider",[_f,_15],{templateString:_d});

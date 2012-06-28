@@ -1,5 +1,5 @@
 //>>built
-define(["dijit","dojo","dojox","dojo/i18n!dojox/editor/plugins/nls/SpellCheck","dojo/require!dijit/_base/popup,dijit/_Widget,dijit/_Templated,dijit/form/TextBox,dijit/form/DropDownButton,dijit/TooltipDialog,dijit/form/MultiSelect,dojo/io/script,dijit/Menu"],function(_1,_2,_3){
+define("dojox/editor/plugins/SpellCheck",["dijit","dojo","dojox","dojo/i18n!dojox/editor/plugins/nls/SpellCheck","dojo/require!dijit/_base/popup,dijit/_Widget,dijit/_Templated,dijit/form/TextBox,dijit/form/DropDownButton,dijit/TooltipDialog,dijit/form/MultiSelect,dojo/io/script,dijit/Menu"],function(_1,_2,_3){
 _2.provide("dojox.editor.plugins.SpellCheck");
 _2.require("dijit._base.popup");
 _2.require("dijit._Widget");

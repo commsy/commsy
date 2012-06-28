@@ -1,4 +1,3 @@
-//>>built
 define("dojo/NodeList-traverse", ["./query", "./_base/lang", "./_base/array"], function(dquery, lang, array) {
 	// module:
 	//		dojo/NodeList-traverse

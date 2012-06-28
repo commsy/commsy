@@ -1,4 +1,3 @@
-//>>built
 define("dojox/css3/fx", [
 	"dojo/_base/kernel",
 	"dojo/_base/connect",	// dojo.connect

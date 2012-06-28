@@ -1,4 +1,3 @@
-//>>built
 define("dojo/touch", ["./_base/kernel", "./on", "./has", "./mouse"], function(dojo, on, has, mouse){
 // module:
 //		dojo/touch

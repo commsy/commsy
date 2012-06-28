@@ -1,4 +1,3 @@
-//>>built
 // wrapped by build app
 define("dojox/drawing/_base", ["dijit","dojo","dojox","dojo/require!dojox/drawing/manager/_registry,dojox/gfx,dojox/drawing/Drawing,dojox/drawing/util/oo,dojox/drawing/util/common,dojox/drawing/util/typeset,dojox/drawing/defaults,dojox/drawing/manager/Canvas,dojox/drawing/manager/Undo,dojox/drawing/manager/keys,dojox/drawing/manager/Mouse,dojox/drawing/manager/Stencil,dojox/drawing/manager/StencilUI,dojox/drawing/manager/Anchors,dojox/drawing/stencil/_Base,dojox/drawing/stencil/Line,dojox/drawing/stencil/Rect,dojox/drawing/stencil/Ellipse,dojox/drawing/stencil/Path,dojox/drawing/stencil/Text,dojox/drawing/stencil/Image,dojox/drawing/annotations/Label,dojox/drawing/annotations/Angle,dojox/drawing/annotations/Arrow,dojox/drawing/annotations/BoxShadow"], function(dijit,dojo,dojox){
 dojo.provide("dojox.drawing._base");

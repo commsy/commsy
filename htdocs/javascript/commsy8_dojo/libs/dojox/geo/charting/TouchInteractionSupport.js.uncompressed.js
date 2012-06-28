@@ -1,4 +1,3 @@
-//>>built
 define("dojox/geo/charting/TouchInteractionSupport", ["dojo/_base/lang","dojo/_base/declare","dojo/_base/event", "dojo/_base/connect","dojo/_base/window"],
   function(lang,declare,event,connect,win) {
 

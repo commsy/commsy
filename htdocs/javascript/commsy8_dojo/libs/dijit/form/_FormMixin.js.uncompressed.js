@@ -1,4 +1,3 @@
-//>>built
 define("dijit/form/_FormMixin", [
 	"dojo/_base/array", // array.every array.filter array.forEach array.indexOf array.map
 	"dojo/_base/declare", // declare

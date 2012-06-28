@@ -1,4 +1,3 @@
-//>>built
 define("dojox/dtl/filter/integers", [
 	"dojo/_base/lang",
 	"../_base"

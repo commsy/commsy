@@ -1,5 +1,5 @@
 //>>built
-define(["dijit","dojo","dojox","dojo/require!dojox/drawing/stencil/Text"],function(_1,_2,_3){
+define("dojox/drawing/tools/TextBlock",["dijit","dojo","dojox","dojo/require!dojox/drawing/stencil/Text"],function(_1,_2,_3){
 _2.provide("dojox.drawing.tools.TextBlock");
 _2.require("dojox.drawing.stencil.Text");
 (function(){

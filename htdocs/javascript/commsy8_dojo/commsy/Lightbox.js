@@ -28,7 +28,7 @@ define([	"dojo/_base/declare",
 			var dialog = new CustomLightboxDialog();
 			
 			// group by item_id - class is lightbox_itemid
-			nodeList.forEach(function(node, index, arr) {
+			dojo.forEach(nodeList, function(node, index, arr) {
 				var lightboxObject = {
 					group:		DomAttr.get(node, "class").substr(9),
 					title:		DomAttr.get(node, "title"),

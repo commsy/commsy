@@ -1,4 +1,3 @@
-//>>built
 define("dojox/color/_base", ["dojo/_base/kernel", "../main", "dojo/_base/lang", "dojo/_base/Color", "dojo/colors"], 
 	function(dojo, dojox, lang, Color, colors){
 

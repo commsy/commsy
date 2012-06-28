@@ -1,4 +1,3 @@
-//>>built
 define("dojox/image/FlickrBadge", ["dojo", "dojox/main", "dojox/image/Badge", "dojox/data/FlickrRestStore"], function(dojo, dojox){
 	
 	dojo.getObject("image", true, dojox);

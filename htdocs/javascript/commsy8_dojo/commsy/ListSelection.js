@@ -58,7 +58,7 @@ define([	"dojo/_base/declare",
 		
 		restoreSelection: function() {
 			// restore checkbox status
-			this.inputNodes.forEach(Lang.hitch(this, function(node, index, arr) {
+			dojo.forEach(this.inputNodes, Lang.hitch(this, function(node, index, arr) {
 				var name = DomAttr.get(node, "name");
 				var id = name.substr(18).substr(0, name.length - 19);
 				

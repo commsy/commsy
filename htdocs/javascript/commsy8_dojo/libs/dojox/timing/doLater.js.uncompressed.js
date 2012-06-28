@@ -1,4 +1,3 @@
-//>>built
 define("dojox/timing/doLater", ["./_base"], function(dxt){
 	dojo.experimental("dojox.timing.doLater");
 /*=====

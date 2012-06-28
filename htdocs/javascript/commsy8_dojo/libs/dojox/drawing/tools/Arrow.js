@@ -1,5 +1,5 @@
 //>>built
-define(["dijit","dojo","dojox"],function(_1,_2,_3){
+define("dojox/drawing/tools/Arrow",["dijit","dojo","dojox"],function(_1,_2,_3){
 _2.provide("dojox.drawing.tools.Arrow");
 _3.drawing.tools.Arrow=_3.drawing.util.oo.declare(_3.drawing.tools.Line,function(_4){
 if(this.arrowStart){

@@ -1,4 +1,3 @@
-//>>built
 define("dojox/gfx3d/object", [
 	"dojo/_base/array",
 	"dojo/_base/declare",

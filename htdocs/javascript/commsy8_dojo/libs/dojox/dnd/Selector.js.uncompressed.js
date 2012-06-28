@@ -1,4 +1,3 @@
-//>>built
 define("dojox/dnd/Selector", ["dojo", "dojox", "dojo/dnd/Selector"], function(dojo, dojox) {
 
 	return dojo.declare('dojox.dnd.Selector', dojo.dnd.Selector, {

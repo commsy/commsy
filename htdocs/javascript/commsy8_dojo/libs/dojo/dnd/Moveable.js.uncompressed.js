@@ -1,4 +1,3 @@
-//>>built
 define("dojo/dnd/Moveable", ["../main", "../Evented", "../touch", "./Mover"], function(dojo, Evented, touch) {
 	// module:
 	//		dojo/dnd/Moveable

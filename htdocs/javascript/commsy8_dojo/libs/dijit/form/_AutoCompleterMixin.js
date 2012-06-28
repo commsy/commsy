@@ -44,6 +44,9 @@ if(evt.charOrCode==229){
 this._onKey(evt);
 }
 },_onKey:function(evt){
+if(this.disabled||this.readOnly){
+return;
+}
 var key=evt.charOrCode;
 if(evt.altKey||((evt.ctrlKey||evt.metaKey)&&(key!="x"&&key!="v"))||key==_7.SHIFT){
 return;

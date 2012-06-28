@@ -1,4 +1,3 @@
-//>>built
 define("dojo/_base/Deferred", ["./kernel", "./lang"], function(dojo, lang){
 	// module:
 	//		dojo/_base/Deferred

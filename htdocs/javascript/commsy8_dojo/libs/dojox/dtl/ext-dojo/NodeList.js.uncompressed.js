@@ -1,4 +1,3 @@
-//>>built
 define("dojox/dtl/ext-dojo/NodeList", [
 	"dojo/_base/lang",
 	"dojo/_base/NodeList",

@@ -1,4 +1,3 @@
-//>>built
 define("dojox/highlight/_base", ["dojo", "dojox/main"], function(dojo, dojox){
 
 	/*=====

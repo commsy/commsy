@@ -1,4 +1,3 @@
-//>>built
 define("dojox/mobile/View", [
 	"dojo/_base/kernel", // to test dojo.hash
 	"dojo/_base/array",

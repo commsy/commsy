@@ -1,4 +1,3 @@
-//>>built
 define("dojox/charting/action2d/Tooltip", ["dojo/_base/kernel", "dijit/Tooltip","dojo/_base/lang", "dojo/_base/html", "dojo/_base/declare", "./PlotAction", 
 	"dojox/gfx/matrix", "dojox/lang/functional", "dojox/lang/functional/scan", "dojox/lang/functional/fold"], 
 	function(dojo, Tooltip, lang, html, declare, PlotAction, m, df, dfs, dff){

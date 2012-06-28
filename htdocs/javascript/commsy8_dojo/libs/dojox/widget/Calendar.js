@@ -1,5 +1,5 @@
 //>>built
-define(["dijit","dojo","dojox","dojo/require!dijit/_Widget,dijit/_Templated,dijit/_Container,dijit/typematic,dojo/date,dojo/date/locale"],function(_1,_2,_3){
+define("dojox/widget/Calendar",["dijit","dojo","dojox","dojo/require!dijit/_Widget,dijit/_Templated,dijit/_Container,dijit/typematic,dojo/date,dojo/date/locale"],function(_1,_2,_3){
 _2.provide("dojox.widget.Calendar");
 _2.experimental("dojox.widget.Calendar");
 _2.require("dijit._Widget");

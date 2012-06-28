@@ -1,4 +1,3 @@
-//>>built
 define("dojox/charting/widget/Legend", ["dojo/_base/lang", "dojo/_base/html", "dojo/_base/declare", "dijit/_Widget", "dojox/gfx","dojo/_base/array", 
 		"dojox/lang/functional", "dojox/lang/functional/array", "dojox/lang/functional/fold",
 		"dojo/dom", "dojo/dom-construct", "dojo/dom-class","dijit/_base/manager"], 

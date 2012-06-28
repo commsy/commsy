@@ -1,4 +1,3 @@
-//>>built
 define("dijit/_Calendar", [
 	"dojo/_base/kernel", // kernel.deprecated
 	"./Calendar",

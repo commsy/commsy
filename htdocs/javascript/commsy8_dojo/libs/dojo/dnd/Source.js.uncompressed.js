@@ -1,4 +1,3 @@
-//>>built
 define("dojo/dnd/Source", ["../main", "./Selector", "./Manager"], function(dojo, Selector, Manager) {
 	// module:
 	//		dojo/dnd/Source

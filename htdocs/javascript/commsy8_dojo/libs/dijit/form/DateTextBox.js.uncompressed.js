@@ -1,4 +1,3 @@
-//>>built
 define("dijit/form/DateTextBox", [
 	"dojo/_base/declare", // declare
 	"../Calendar",

@@ -1,4 +1,3 @@
-//>>built
 define("dojox/data/PersevereStore", ["dojo", "dojox", "require", "dojox/data/JsonQueryRestStore", "dojox/rpc/Client", "dojo/_base/url"], function(dojo, dojox, require) {
 
 // PersevereStore is an extension of JsonRestStore to handle Persevere's special features

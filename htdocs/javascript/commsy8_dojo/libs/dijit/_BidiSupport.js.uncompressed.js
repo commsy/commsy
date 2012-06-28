@@ -1,4 +1,3 @@
-//>>built
 define("dijit/_BidiSupport", ["./_WidgetBase"], function(_WidgetBase){
 
 /*=====

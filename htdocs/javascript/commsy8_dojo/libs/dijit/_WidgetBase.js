@@ -119,11 +119,11 @@ this.destroy(_28);
 this._beingDestroyed=true;
 this.uninitialize();
 var c;
-while(c=this._connects.pop()){
+while((c=this._connects.pop())){
 c.remove();
 }
 var w;
-while(w=this._supportingWidgets.pop()){
+while((w=this._supportingWidgets.pop())){
 if(w.destroyRecursive){
 w.destroyRecursive();
 }else{
@@ -284,5 +284,19 @@ return this;
 },getTextDir:function(_51,_52){
 return _52;
 },applyTextDir:function(){
+},defer:function(fcn,_53){
+var _54=setTimeout(_e.hitch(this,function(){
+_54=null;
+if(!this._destroyed){
+_e.hitch(this,fcn)();
+}
+}),_53||0);
+return {remove:function(){
+if(_54){
+clearTimeout(_54);
+_54=null;
+}
+return null;
+}};
 }});
 });

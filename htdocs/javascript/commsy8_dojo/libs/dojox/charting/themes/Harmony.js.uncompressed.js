@@ -1,4 +1,3 @@
-//>>built
 define("dojox/charting/themes/Harmony", ["../Theme", "./common"], function(Theme, themes){
 	
 	themes.Harmony=new Theme({

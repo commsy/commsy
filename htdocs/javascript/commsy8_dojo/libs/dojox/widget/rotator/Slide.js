@@ -1,5 +1,5 @@
 //>>built
-define(["dijit","dojo","dojox"],function(_1,_2,_3){
+define("dojox/widget/rotator/Slide",["dijit","dojo","dojox"],function(_1,_2,_3){
 _2.provide("dojox.widget.rotator.Slide");
 (function(d){
 var _4=0,_5=1,UP=2,_6=3;

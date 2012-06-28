@@ -1,4 +1,3 @@
-//>>built
 define("dojox/geo/charting/Feature", ["dojo/_base/lang", "dojo/_base/declare","dojo/_base/array",
 		"dojo/_base/html","dojo/dom","dojo/_base/event", "dojox/gfx/fx", "dojox/color"], 
   function(lang, declare,arr, html,dom, event, fx,color) {
@@ -126,7 +125,7 @@ return declare("dojox.geo.charting.Feature", null, {
 		if(this.mapObj.marker._needTooltipRefresh){
 			this.mapObj.marker.show(this.id,evt);
 		}
-		if(this.isSelected){
+		if(this.isSelected && evt){
 			if (this.parent.enableFeatureZoom) {
 				evt = event.fix(evt || window.event);
 				html.style("mapZoomCursor", "left", evt.pageX + 12 + "px");

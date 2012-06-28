@@ -1,4 +1,3 @@
-//>>built
 define("dojox/dtl/filter/misc", [
 	"dojo/_base/lang",
 	"dojo/_base/json",	// dojo.toJson

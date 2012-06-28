@@ -1,4 +1,3 @@
-//>>built
 define("dojo/colors", ["./_base/kernel", "./_base/lang", "./_base/Color", "./_base/array"], function(dojo, lang, Color, ArrayUtil) {
 	// module:
 	//		dojo/colors

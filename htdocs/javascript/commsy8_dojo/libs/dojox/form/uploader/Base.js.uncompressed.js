@@ -1,4 +1,3 @@
-//>>built
 define("dojox/form/uploader/Base", [
 	"dojo/dom-form",
 	"dojo/dom-style",

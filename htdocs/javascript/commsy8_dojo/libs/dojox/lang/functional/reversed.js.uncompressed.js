@@ -1,4 +1,3 @@
-//>>built
 define("dojox/lang/functional/reversed", ["dojo/_base/lang", "dojo/_base/window" ,"./lambda"], 
 	function(lang, win, df){
 // This module adds high-level functions and related constructs:

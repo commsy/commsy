@@ -1,4 +1,3 @@
-//>>built
 define("dojox/encoding/digests/MD5", ["./_base"], function(dxd) {
 
 	/*=====

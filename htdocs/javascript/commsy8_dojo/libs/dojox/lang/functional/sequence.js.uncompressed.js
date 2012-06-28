@@ -1,4 +1,3 @@
-//>>built
 define("dojox/lang/functional/sequence", ["dojo/_base/lang", "./lambda"], function(lang, df){
 
 // This module adds high-level functions and related constructs:

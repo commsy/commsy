@@ -1,5 +1,5 @@
 //>>built
-define(["dijit","dojo","dojox","dojo/require!dojox/drawing/plugins/_Plugin"],function(_1,_2,_3){
+define("dojox/drawing/plugins/tools/Zoom",["dijit","dojo","dojox","dojo/require!dojox/drawing/plugins/_Plugin"],function(_1,_2,_3){
 _2.provide("dojox.drawing.plugins.tools.Zoom");
 _2.require("dojox.drawing.plugins._Plugin");
 (function(){

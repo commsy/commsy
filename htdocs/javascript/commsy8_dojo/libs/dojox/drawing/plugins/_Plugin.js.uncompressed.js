@@ -1,4 +1,3 @@
-//>>built
 // wrapped by build app
 define("dojox/drawing/plugins/_Plugin", ["dijit","dojo","dojox"], function(dijit,dojo,dojox){
 dojo.provide("dojox.drawing.plugins._Plugin");

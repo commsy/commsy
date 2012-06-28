@@ -1,4 +1,3 @@
-//>>built
 define("dojox/data/ClientFilter", ["dojo/_base/declare", "dojo/_base/lang", "dojo/_base/array", "dojo/_base/Deferred", "dojo/data/util/filter"], 
   function(declare, lang, array, Deferred, filter) {
 

@@ -1,4 +1,3 @@
-//>>built
 // wrapped by build app
 define("dojox/widget/Loader", ["dijit","dojo","dojox","dojo/require!dijit/_Widget,dijit/_Templated"], function(dijit,dojo,dojox){
 dojo.provide("dojox.widget.Loader");

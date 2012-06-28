@@ -1,4 +1,3 @@
-//>>built
 define("dijit/form/NumberTextBox", [
 	"dojo/_base/declare", // declare
 	"dojo/_base/lang", // lang.hitch lang.mixin

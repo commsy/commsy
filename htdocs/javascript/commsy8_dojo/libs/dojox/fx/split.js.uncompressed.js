@@ -1,4 +1,3 @@
-//>>built
 define("dojox/fx/split", ["dojo/_base/lang", "dojo/dom", "dojo/_base/window", "dojo/_base/html", "dojo/dom-geometry", 
 		"dojo/dom-construct", "dojo/dom-attr", "dojo/_base/fx", "dojo/fx", "./_base", "dojo/fx/easing", "dojo/_base/connect"],
 	function(lang, dom, winUtil, htmlUtil, domGeom, domConstruct, domAttr, baseFx, coreFx, fxExt, easingUtil, connectUtil){

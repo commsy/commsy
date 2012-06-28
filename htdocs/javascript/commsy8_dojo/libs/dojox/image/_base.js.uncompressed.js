@@ -1,4 +1,3 @@
-//>>built
 define("dojox/image/_base", ["dojo", "dojox"], function(dojo, dojox){
 	
 	dojo.getObject("image", true, dojox);

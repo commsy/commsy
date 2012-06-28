@@ -1,4 +1,3 @@
-//>>built
 define("dojox/dtl/contrib/objects", [
 	"dojo/_base/lang",
 	"../_base"	

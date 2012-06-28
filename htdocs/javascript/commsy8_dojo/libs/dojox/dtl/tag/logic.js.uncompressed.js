@@ -1,4 +1,3 @@
-//>>built
 define("dojox/dtl/tag/logic", [
 	"dojo/_base/lang",
 	"../_base"

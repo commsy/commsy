@@ -1,4 +1,3 @@
-//>>built
 define("dojox/validate/web", ["./_base", "./regexp"], function(validate, xregexp){
 
 /*=====

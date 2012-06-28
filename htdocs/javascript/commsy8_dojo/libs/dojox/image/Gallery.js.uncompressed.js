@@ -1,4 +1,3 @@
-//>>built
 // wrapped by build app
 define("dojox/image/Gallery", ["dijit","dojo","dojox","dojo/require!dojo/fx,dijit/_Widget,dijit/_Templated,dojox/image/ThumbnailPicker,dojox/image/SlideShow"], function(dijit,dojo,dojox){
 dojo.provide("dojox.image.Gallery");

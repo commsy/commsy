@@ -1,4 +1,3 @@
-//>>built
 
 define("dojox/geo/charting/widget/Map", ["dojo/_base/kernel", "dojo/_base/lang", "dojo/_base/declare","dojo/_base/html","dojo/dom-geometry",
 		"dijit/_Widget","dojox/geo/charting/Map"],

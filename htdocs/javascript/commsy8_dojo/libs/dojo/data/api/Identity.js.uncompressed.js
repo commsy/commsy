@@ -1,4 +1,3 @@
-//>>built
 define("dojo/data/api/Identity", ["../..", "./Read"], function(dojo) {
 	// module:
 	//		dojo/data/api/Identity

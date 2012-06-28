@@ -1,4 +1,3 @@
-//>>built
 define("dojox/gauges/TextIndicator", ["dojo/_base/declare","./_Indicator"],
   function(declare, Indicator) { 
 

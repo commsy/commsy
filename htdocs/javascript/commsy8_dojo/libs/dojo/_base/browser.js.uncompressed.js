@@ -1,4 +1,3 @@
-//>>built
 if(require.has){
 	require.has.add("config-selectorEngine", "acme");
 }

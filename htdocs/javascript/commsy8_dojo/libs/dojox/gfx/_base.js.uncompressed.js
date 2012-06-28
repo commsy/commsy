@@ -1,4 +1,3 @@
-//>>built
 define("dojox/gfx/_base", ["dojo/_base/lang", "dojo/_base/html", "dojo/_base/Color", "dojo/_base/sniff", "dojo/_base/window",
 	    "dojo/_base/array","dojo/dom", "dojo/dom-construct","dojo/dom-geometry"], 
   function(lang, html, Color, has, win, arr, dom, domConstruct, domGeom){

@@ -1,4 +1,3 @@
-//>>built
 define("dojox/color/Palette", ["dojo/_base/kernel", "../main", "dojo/_base/lang", "dojo/_base/array", "./_base"], 
 	function(dojo, dojox, lang, arr, dxc){
 

@@ -1,4 +1,3 @@
-//>>built
 define("dojox/gfx3d/matrix", ["dojo/_base/lang", "./_base"], function(lang, gfx3d){
 	
 	// candidates for dojox.math:

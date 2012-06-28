@@ -1,4 +1,3 @@
-//>>built
 define("dojox/charting/plot2d/Areas", ["dojo/_base/declare", "./Default"], 
   function(declare, Default){
 /*=====

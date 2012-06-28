@@ -1,4 +1,3 @@
-//>>built
 define("dojox/lang/functional/scan", ["dojo/_base/kernel", "dojo/_base/lang", "./lambda"], function(d, darray, df){
 
 // This module adds high-level functions and related constructs:

@@ -1,4 +1,3 @@
-//>>built
 define("dojox/geo/openlayers/Geometry", ["dojo/_base/kernel", "dojo/_base/declare"], function(dojo, declare){
 
 	return declare("dojox.geo.openlayers.Geometry", null, {

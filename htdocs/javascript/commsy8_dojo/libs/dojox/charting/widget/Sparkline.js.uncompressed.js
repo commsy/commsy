@@ -1,4 +1,3 @@
-//>>built
 define("dojox/charting/widget/Sparkline", ["dojo/_base/lang", "dojo/_base/array", "dojo/_base/declare", "dojo/_base/html", "dojo/query", 
 	"./Chart", "../themes/GreySkies", "../plot2d/Lines", "dojo/dom-prop"], 
 	function(lang, arrayUtil, declare, html, query, Chart, GreySkies, Lines, domProp){

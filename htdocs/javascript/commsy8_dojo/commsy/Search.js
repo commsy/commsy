@@ -32,7 +32,7 @@ define([	"dojo/_base/declare",
 			// only update if threshold is met
 			if(event.target.value.length === this.threshold) {console.log(event.target.value.length);
 				// abort all running ajax requests
-				this.ajaxRequests.forEach(function(request, index, arr) {
+				dojo.forEach(this.ajaxRequests, function(request, index, arr) {
 					request.abort();
 				});
 				
@@ -86,7 +86,7 @@ define([	"dojo/_base/declare",
 			var suggestion = "";
 			
 			// find new suggestion
-			this.matches.forEach(function(match, index, arr) {
+			dojo.forEach(this.matches, function(match, index, arr) {
 				// current input needs to match the beginning of match
 				if(userInput.toLowerCase() === match.substr(0, userInput.length)) {
 					// match needs to be longer than userInput

@@ -1,4 +1,3 @@
-//>>built
 define("dojox/gfx/arc", ["./_base", "dojo/_base/lang", "./matrix"], 
   function(g, lang, m){
 /*===== 

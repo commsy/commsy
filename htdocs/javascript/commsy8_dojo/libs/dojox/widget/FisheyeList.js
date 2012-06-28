@@ -1,5 +1,5 @@
 //>>built
-define(["dijit","dojo","dojox","dojo/require!dijit/_Widget,dijit/_Templated,dijit/_Container,dijit/_Contained"],function(_1,_2,_3){
+define("dojox/widget/FisheyeList",["dijit","dojo","dojox","dojo/require!dijit/_Widget,dijit/_Templated,dijit/_Container,dijit/_Contained"],function(_1,_2,_3){
 _2.provide("dojox.widget.FisheyeList");
 _2.require("dijit._Widget");
 _2.require("dijit._Templated");

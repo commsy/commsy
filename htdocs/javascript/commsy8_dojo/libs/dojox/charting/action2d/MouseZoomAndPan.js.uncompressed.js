@@ -1,4 +1,3 @@
-//>>built
 define("dojox/charting/action2d/MouseZoomAndPan", ["dojo/_base/html", "dojo/_base/declare", "dojo/_base/window", "dojo/_base/array", "dojo/_base/event",
 	"dojo/_base/connect", "./ChartAction", "dojo/_base/sniff", "dojo/dom-prop", "dojo/keys"], 
 	function(html, declare, win, arr, eventUtil, connect, ChartAction, has, domProp, keys){

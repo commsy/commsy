@@ -1,4 +1,3 @@
-//>>built
 define("dojox/grid/enhanced/plugins/GridSource", [
 	"dojo/_base/declare",
 	"dojo/_base/array",

@@ -1,4 +1,3 @@
-//>>built
 define("dojo/dnd/Target", [ "./Source" ], function(Source){
 	/*===== Source = dojo.dnd.Source =====*/
 	return dojo.declare("dojo.dnd.Target", Source, {

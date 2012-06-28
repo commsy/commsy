@@ -1,4 +1,3 @@
-//>>built
 define("dojo/fx", [
 	"./_base/lang",
 	"./Evented",

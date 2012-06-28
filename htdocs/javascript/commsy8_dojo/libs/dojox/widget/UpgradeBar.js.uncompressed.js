@@ -1,4 +1,3 @@
-//>>built
 // wrapped by build app
 define("dojox/widget/UpgradeBar", ["dijit","dojo","dojox","dojo/require!dojo/window,dojo/fx,dojo/cookie,dijit/_Widget,dijit/_Templated"], function(dijit,dojo,dojox){
 dojo.provide("dojox.widget.UpgradeBar");

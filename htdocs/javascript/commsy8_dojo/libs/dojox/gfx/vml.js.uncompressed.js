@@ -1,4 +1,3 @@
-//>>built
 define("dojox/gfx/vml", ["dojo/_base/lang", "dojo/_base/declare", "dojo/_base/array", "dojo/_base/Color", "dojo/_base/sniff",
 		"dojo/_base/config", "dojo/dom", "dojo/dom-geometry", "dojo/_base/window", 
 		"./_base", "./shape", "./path", "./arc", "./gradient", "./matrix"],

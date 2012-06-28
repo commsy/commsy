@@ -1,4 +1,3 @@
-//>>built
 define("dojox/highlight/widget/Code", ["dojo", "dijit", "dijit/_Widget", "dijit/_Templated", "dojox/highlight"], function(dojo, dijit){
 
 	dojo.declare("dojox.highlight.widget.Code",[dijit._Widget, dijit._Templated],{

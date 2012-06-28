@@ -1,4 +1,3 @@
-//>>built
 define("dojox/geo/charting/KeyboardInteractionSupport", ["dojo/_base/lang","dojo/_base/declare","dojo/_base/event","dojo/_base/connect",
 		"dojo/_base/html","dojo/dom","dojox/lang/functional","dojo/keys"],
   function(lang, declare, event, connect, html, dom, functional, keys) {

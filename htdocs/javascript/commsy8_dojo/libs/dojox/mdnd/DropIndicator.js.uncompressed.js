@@ -1,4 +1,3 @@
-//>>built
 define("dojox/mdnd/DropIndicator", ["dojo/_base/kernel","dojo/_base/declare","dojo/_base/html","./AreaManager"],function(dojo){
 	var di = dojo.declare(
 		"dojox.mdnd.DropIndicator",

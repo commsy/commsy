@@ -1,5 +1,5 @@
 //>>built
-define(["dijit","dojo","dojox"],function(_1,_2,_3){
+define("dojox/drawing/manager/_registry",["dijit","dojo","dojox"],function(_1,_2,_3){
 _2.provide("dojox.drawing.manager._registry");
 (function(){
 var _4={tool:{},stencil:{},drawing:{},plugin:{},button:{}};

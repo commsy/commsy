@@ -1,4 +1,3 @@
-//>>built
 define("dojox/grid/cells/dijit", [
 	"dojo/_base/kernel",
 	"../../main",
@@ -220,7 +219,8 @@ define("dojox/grid/cells/dijit", [
 		createWidget: function(inNode, inDatum, inRowIndex){
 			// widget needs its value set after creation
 			var widget = new this.widgetClass(this.getWidgetProps(inDatum), inNode);
-			connect.connect(widget, 'onLoad', lang.hitch(this, 'populateEditor'));
+			// use onLoadDeferred because onLoad may have already fired
+			widget.onLoadDeferred.then(lang.hitch(this, 'populateEditor'));
 			return widget;
 		},
 		formatNode: function(inNode, inDatum, inRowIndex){

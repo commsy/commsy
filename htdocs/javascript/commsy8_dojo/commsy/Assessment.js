@@ -23,7 +23,7 @@ define([	"dojo/_base/declare",
 					var starImageNodes = Query("img", node);
 					
 					var oldStatus = [];
-					starImageNodes.forEach(Lang.hitch(this, function(starImageNode, index, arr) {
+					dojo.forEach(starImageNodes, Lang.hitch(this, function(starImageNode, index, arr) {
 						// store old status
 						oldStatus[index] = DomAttr.get(starImageNode, "src");
 						
@@ -31,7 +31,7 @@ define([	"dojo/_base/declare",
 						On(starImageNode, "mouseover", Lang.hitch(this, function(event) {
 							// set all stars up to the hovered one to full stars
 							DomAttr.set(starImageNode, "src", this.from_php.template.tpl_path + "img/star_selected.gif");
-							new dojo.NodeList(starImageNode).prevAll().forEach(Lang.hitch(this, function(node, index, arr) {
+							dojo.forEach(new dojo.NodeList(starImageNode).prevAll(), Lang.hitch(this, function(node, index, arr) {
 								DomAttr.set(node, "src", this.from_php.template.tpl_path + "img/star_selected.gif");
 							}));
 						}));
@@ -53,7 +53,7 @@ define([	"dojo/_base/declare",
 						// register mouseout
 						On(starImageNode, "mouseout", Lang.hitch(this, function(event) {
 							// set all stars to there previous state
-							new dojo.NodeList(node).children().forEach(function(node, index, arr) {
+							dojo.forEach(new dojo.NodeList(node).children(), function(node, index, arr) {
 								DomAttr.set(node, "src", oldStatus[index]);
 							});
 						}));

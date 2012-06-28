@@ -68,15 +68,17 @@ require([	"dojo/_base/declare",
 				});
 				
 				// div expander
-				var objects = [];
-				query("div.content_item div[class^='list_wrap']").forEach(function(node, index, arr) {					
-					objects.push({ div:node, actor:	query("a.open_close", node.parentNode)[0] });
-				});
-				
-				require(["commsy/DivExpander"], function(DivExpander) {
-					var handler = DivExpander();
-					handler.setup(objects);
-				});
+				if(this.uri_object.mod === "home") {
+					var objects = [];
+					query("div.content_item div[class^='list_wrap']").forEach(function(node, index, arr) {					
+						objects.push({ div:node, actor:	query("a.open_close", node.parentNode)[0] });
+					});
+					
+					require(["commsy/DivExpander"], function(DivExpander) {
+						var handler = DivExpander();
+						handler.setup(objects);
+					});
+				}
 				
 				// lightbox
 				require(["commsy/Lightbox"], function(Lightbox) {

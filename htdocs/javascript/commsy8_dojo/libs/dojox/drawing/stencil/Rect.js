@@ -1,5 +1,5 @@
 //>>built
-define(["dijit","dojo","dojox"],function(_1,_2,_3){
+define("dojox/drawing/stencil/Rect",["dijit","dojo","dojox"],function(_1,_2,_3){
 _2.provide("dojox.drawing.stencil.Rect");
 _3.drawing.stencil.Rect=_3.drawing.util.oo.declare(_3.drawing.stencil._Base,function(_4){
 if(this.points.length){

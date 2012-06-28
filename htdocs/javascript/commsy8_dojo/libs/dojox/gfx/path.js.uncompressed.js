@@ -1,4 +1,3 @@
-//>>built
 define("dojox/gfx/path", ["./_base", "dojo/_base/lang","dojo/_base/declare", "./matrix", "./shape"], 
   function(g, lang, declare, matrix, shapeLib){
 /*===== 

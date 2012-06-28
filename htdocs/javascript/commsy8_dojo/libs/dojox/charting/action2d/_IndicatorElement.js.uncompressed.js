@@ -1,4 +1,3 @@
-//>>built
 define("dojox/charting/action2d/_IndicatorElement", ["dojo/_base/lang", "dojo/_base/declare", "../Element", "../plot2d/common", 
     "../axis2d/common", "dojox/gfx"], 
 	function(lang, declare, Element, dcpc, dcac, gfx){ 

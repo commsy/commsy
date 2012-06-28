@@ -1,4 +1,3 @@
-//>>built
 define("dijit/_editor/selection", [
 	"dojo/dom", // dom.byId
 	"dojo/_base/lang",

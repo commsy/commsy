@@ -1,5 +1,5 @@
 //>>built
-define(["dijit","dojo","dojox","dojo/require!dojo/parser"],function(_1,_2,_3){
+define("dojox/widget/Rotator",["dijit","dojo","dojox","dojo/require!dojo/parser"],function(_1,_2,_3){
 _2.provide("dojox.widget.Rotator");
 _2.require("dojo.parser");
 (function(d){

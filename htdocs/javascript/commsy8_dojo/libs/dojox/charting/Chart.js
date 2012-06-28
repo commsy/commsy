@@ -1,19 +1,19 @@
 //>>built
-define("dojox/charting/Chart",["dojo/_base/lang","dojo/_base/array","dojo/_base/declare","dojo/_base/html","dojo/dom","dojo/dom-geometry","dojo/dom-construct","dojo/_base/Color","dojo/_base/sniff","./Element","./Theme","./Series","./axis2d/common","dojox/gfx","dojox/lang/functional","dojox/lang/functional/fold","dojox/lang/functional/reversed"],function(_1,_2,_3,_4,_5,_6,_7,_8,_9,_a,_b,_c,_d,g,_e,_f,_10){
-var dc=dojox.charting,_11=_e.lambda("item.clear()"),_12=_e.lambda("item.purgeGroup()"),_13=_e.lambda("item.destroy()"),_14=_e.lambda("item.dirty = false"),_15=_e.lambda("item.dirty = true"),_16=_e.lambda("item.name");
-_3("dojox.charting.Chart",null,{constructor:function(_17,_18){
-if(!_18){
-_18={};
+define("dojox/charting/Chart",["dojo/_base/lang","dojo/_base/array","dojo/_base/declare","dojo/_base/html","dojo/dom","dojo/dom-geometry","dojo/dom-construct","dojo/_base/Color","dojo/_base/sniff","./Element","./Theme","./Series","./axis2d/common","dojox/gfx/shape","dojox/gfx","dojox/lang/functional","dojox/lang/functional/fold","dojox/lang/functional/reversed"],function(_1,_2,_3,_4,_5,_6,_7,_8,_9,_a,_b,_c,_d,_e,g,_f,_10,_11){
+var dc=dojox.charting,_12=_f.lambda("item.clear()"),_13=_f.lambda("item.purgeGroup()"),_14=_f.lambda("item.destroy()"),_15=_f.lambda("item.dirty = false"),_16=_f.lambda("item.dirty = true"),_17=_f.lambda("item.name");
+_3("dojox.charting.Chart",null,{constructor:function(_18,_19){
+if(!_19){
+_19={};
 }
-this.margins=_18.margins?_18.margins:{l:10,t:10,r:10,b:10};
-this.stroke=_18.stroke;
-this.fill=_18.fill;
-this.delayInMs=_18.delayInMs||200;
-this.title=_18.title;
-this.titleGap=_18.titleGap;
-this.titlePos=_18.titlePos;
-this.titleFont=_18.titleFont;
-this.titleFontColor=_18.titleFontColor;
+this.margins=_19.margins?_19.margins:{l:10,t:10,r:10,b:10};
+this.stroke=_19.stroke;
+this.fill=_19.fill;
+this.delayInMs=_19.delayInMs||200;
+this.title=_19.title;
+this.titleGap=_19.titleGap;
+this.titlePos=_19.titlePos;
+this.titleFont=_19.titleFont;
+this.titleFontColor=_19.titleFontColor;
 this.chartTitle=null;
 this.theme=null;
 this.axes={};
@@ -23,96 +23,100 @@ this.series=[];
 this.runs={};
 this.dirty=true;
 this.coords=null;
-this.node=_5.byId(_17);
-var box=_6.getMarginBox(_17);
+this._clearRects=[];
+this.node=_5.byId(_18);
+var box=_6.getMarginBox(_18);
 this.surface=g.createSurface(this.node,box.w||400,box.h||300);
 },destroy:function(){
-_2.forEach(this.series,_13);
-_2.forEach(this.stack,_13);
-_e.forIn(this.axes,_13);
+_2.forEach(this.series,_14);
+_2.forEach(this.stack,_14);
+_f.forIn(this.axes,_14);
 if(this.chartTitle&&this.chartTitle.tagName){
 _7.destroy(this.chartTitle);
 }
+_2.forEach(this._clearRects,function(_1a){
+_e.dispose(_1a);
+});
 this.surface.destroy();
 },getCoords:function(){
 return _4.coords(this.node,true);
-},setTheme:function(_19){
-this.theme=_19.clone();
+},setTheme:function(_1b){
+this.theme=_1b.clone();
 this.dirty=true;
 return this;
-},addAxis:function(_1a,_1b){
-var _1c,_1d=_1b&&_1b.type||"Default";
-if(typeof _1d=="string"){
-if(!dc.axis2d||!dc.axis2d[_1d]){
-throw Error("Can't find axis: "+_1d+" - Check "+"require() dependencies.");
+},addAxis:function(_1c,_1d){
+var _1e,_1f=_1d&&_1d.type||"Default";
+if(typeof _1f=="string"){
+if(!dc.axis2d||!dc.axis2d[_1f]){
+throw Error("Can't find axis: "+_1f+" - Check "+"require() dependencies.");
 }
-_1c=new dc.axis2d[_1d](this,_1b);
+_1e=new dc.axis2d[_1f](this,_1d);
 }else{
-_1c=new _1d(this,_1b);
+_1e=new _1f(this,_1d);
 }
-_1c.name=_1a;
-_1c.dirty=true;
-if(_1a in this.axes){
-this.axes[_1a].destroy();
+_1e.name=_1c;
+_1e.dirty=true;
+if(_1c in this.axes){
+this.axes[_1c].destroy();
 }
-this.axes[_1a]=_1c;
+this.axes[_1c]=_1e;
 this.dirty=true;
 return this;
-},getAxis:function(_1e){
-return this.axes[_1e];
-},removeAxis:function(_1f){
-if(_1f in this.axes){
-this.axes[_1f].destroy();
-delete this.axes[_1f];
+},getAxis:function(_20){
+return this.axes[_20];
+},removeAxis:function(_21){
+if(_21 in this.axes){
+this.axes[_21].destroy();
+delete this.axes[_21];
 this.dirty=true;
 }
 return this;
-},addPlot:function(_20,_21){
-var _22,_23=_21&&_21.type||"Default";
-if(typeof _23=="string"){
-if(!dc.plot2d||!dc.plot2d[_23]){
-throw Error("Can't find plot: "+_23+" - didn't you forget to dojo"+".require() it?");
+},addPlot:function(_22,_23){
+var _24,_25=_23&&_23.type||"Default";
+if(typeof _25=="string"){
+if(!dc.plot2d||!dc.plot2d[_25]){
+throw Error("Can't find plot: "+_25+" - didn't you forget to dojo"+".require() it?");
 }
-_22=new dc.plot2d[_23](this,_21);
+_24=new dc.plot2d[_25](this,_23);
 }else{
-_22=new _23(this,_21);
+_24=new _25(this,_23);
 }
-_22.name=_20;
-_22.dirty=true;
-if(_20 in this.plots){
-this.stack[this.plots[_20]].destroy();
-this.stack[this.plots[_20]]=_22;
+_24.name=_22;
+_24.dirty=true;
+if(_22 in this.plots){
+this.stack[this.plots[_22]].destroy();
+this.stack[this.plots[_22]]=_24;
 }else{
-this.plots[_20]=this.stack.length;
-this.stack.push(_22);
+this.plots[_22]=this.stack.length;
+this.stack.push(_24);
 }
 this.dirty=true;
 return this;
-},getPlot:function(_24){
-return this.stack[this.plots[_24]];
-},removePlot:function(_25){
-if(_25 in this.plots){
-var _26=this.plots[_25];
-delete this.plots[_25];
-this.stack[_26].destroy();
-this.stack.splice(_26,1);
-_e.forIn(this.plots,function(idx,_27,_28){
-if(idx>_26){
-_28[_27]=idx-1;
+},getPlot:function(_26){
+return this.stack[this.plots[_26]];
+},removePlot:function(_27){
+if(_27 in this.plots){
+var _28=this.plots[_27];
+delete this.plots[_27];
+this.stack[_28].destroy();
+this.stack.splice(_28,1);
+_f.forIn(this.plots,function(idx,_29,_2a){
+if(idx>_28){
+_2a[_29]=idx-1;
 }
 });
 var ns=_2.filter(this.series,function(run){
-return run.plot!=_25;
+return run.plot!=_27;
 });
 if(ns.length<this.series.length){
 _2.forEach(this.series,function(run){
-if(run.plot==_25){
+if(run.plot==_27){
 run.destroy();
 }
 });
 this.runs={};
-_2.forEach(ns,function(run,_29){
-this.runs[run.plot]=_29;
+_2.forEach(ns,function(run,_2b){
+this.runs[run.plot]=_2b;
 },this);
 this.series=ns;
 }
@@ -120,62 +124,62 @@ this.dirty=true;
 }
 return this;
 },getPlotOrder:function(){
-return _e.map(this.stack,_16);
-},setPlotOrder:function(_2a){
-var _2b={},_2c=_e.filter(_2a,function(_2d){
-if(!(_2d in this.plots)||(_2d in _2b)){
+return _f.map(this.stack,_17);
+},setPlotOrder:function(_2c){
+var _2d={},_2e=_f.filter(_2c,function(_2f){
+if(!(_2f in this.plots)||(_2f in _2d)){
 return false;
 }
-_2b[_2d]=1;
+_2d[_2f]=1;
 return true;
 },this);
-if(_2c.length<this.stack.length){
-_e.forEach(this.stack,function(_2e){
-var _2f=_2e.name;
-if(!(_2f in _2b)){
-_2c.push(_2f);
+if(_2e.length<this.stack.length){
+_f.forEach(this.stack,function(_30){
+var _31=_30.name;
+if(!(_31 in _2d)){
+_2e.push(_31);
 }
 });
 }
-var _30=_e.map(_2c,function(_31){
-return this.stack[this.plots[_31]];
+var _32=_f.map(_2e,function(_33){
+return this.stack[this.plots[_33]];
 },this);
-_e.forEach(_30,function(_32,i){
-this.plots[_32.name]=i;
+_f.forEach(_32,function(_34,i){
+this.plots[_34.name]=i;
 },this);
-this.stack=_30;
+this.stack=_32;
 this.dirty=true;
 return this;
-},movePlotToFront:function(_33){
-if(_33 in this.plots){
-var _34=this.plots[_33];
-if(_34){
-var _35=this.getPlotOrder();
-_35.splice(_34,1);
-_35.unshift(_33);
-return this.setPlotOrder(_35);
+},movePlotToFront:function(_35){
+if(_35 in this.plots){
+var _36=this.plots[_35];
+if(_36){
+var _37=this.getPlotOrder();
+_37.splice(_36,1);
+_37.unshift(_35);
+return this.setPlotOrder(_37);
 }
 }
 return this;
-},movePlotToBack:function(_36){
-if(_36 in this.plots){
-var _37=this.plots[_36];
-if(_37<this.stack.length-1){
-var _38=this.getPlotOrder();
-_38.splice(_37,1);
-_38.push(_36);
-return this.setPlotOrder(_38);
+},movePlotToBack:function(_38){
+if(_38 in this.plots){
+var _39=this.plots[_38];
+if(_39<this.stack.length-1){
+var _3a=this.getPlotOrder();
+_3a.splice(_39,1);
+_3a.push(_38);
+return this.setPlotOrder(_3a);
 }
 }
 return this;
-},addSeries:function(_39,_3a,_3b){
-var run=new _c(this,_3a,_3b);
-run.name=_39;
-if(_39 in this.runs){
-this.series[this.runs[_39]].destroy();
-this.series[this.runs[_39]]=run;
+},addSeries:function(_3b,_3c,_3d){
+var run=new _c(this,_3c,_3d);
+run.name=_3b;
+if(_3b in this.runs){
+this.series[this.runs[_3b]].destroy();
+this.series[this.runs[_3b]]=run;
 }else{
-this.runs[_39]=this.series.length;
+this.runs[_3b]=this.series.length;
 this.series.push(run);
 }
 this.dirty=true;
@@ -186,96 +190,96 @@ if(!("ymax" in run)&&"max" in run){
 run.ymax=run.max;
 }
 return this;
-},getSeries:function(_3c){
-return this.series[this.runs[_3c]];
-},removeSeries:function(_3d){
-if(_3d in this.runs){
-var _3e=this.runs[_3d];
-delete this.runs[_3d];
-this.series[_3e].destroy();
-this.series.splice(_3e,1);
-_e.forIn(this.runs,function(idx,_3f,_40){
-if(idx>_3e){
-_40[_3f]=idx-1;
+},getSeries:function(_3e){
+return this.series[this.runs[_3e]];
+},removeSeries:function(_3f){
+if(_3f in this.runs){
+var _40=this.runs[_3f];
+delete this.runs[_3f];
+this.series[_40].destroy();
+this.series.splice(_40,1);
+_f.forIn(this.runs,function(idx,_41,_42){
+if(idx>_40){
+_42[_41]=idx-1;
 }
 });
 this.dirty=true;
 }
 return this;
-},updateSeries:function(_41,_42){
-if(_41 in this.runs){
-var run=this.series[this.runs[_41]];
-run.update(_42);
+},updateSeries:function(_43,_44){
+if(_43 in this.runs){
+var run=this.series[this.runs[_43]];
+run.update(_44);
 this._invalidateDependentPlots(run.plot,false);
 this._invalidateDependentPlots(run.plot,true);
 }
 return this;
-},getSeriesOrder:function(_43){
-return _e.map(_e.filter(this.series,function(run){
-return run.plot==_43;
-}),_16);
-},setSeriesOrder:function(_44){
-var _45,_46={},_47=_e.filter(_44,function(_48){
-if(!(_48 in this.runs)||(_48 in _46)){
+},getSeriesOrder:function(_45){
+return _f.map(_f.filter(this.series,function(run){
+return run.plot==_45;
+}),_17);
+},setSeriesOrder:function(_46){
+var _47,_48={},_49=_f.filter(_46,function(_4a){
+if(!(_4a in this.runs)||(_4a in _48)){
 return false;
 }
-var run=this.series[this.runs[_48]];
-if(_45){
-if(run.plot!=_45){
+var run=this.series[this.runs[_4a]];
+if(_47){
+if(run.plot!=_47){
 return false;
 }
 }else{
-_45=run.plot;
+_47=run.plot;
 }
-_46[_48]=1;
+_48[_4a]=1;
 return true;
 },this);
-_e.forEach(this.series,function(run){
-var _49=run.name;
-if(!(_49 in _46)&&run.plot==_45){
-_47.push(_49);
+_f.forEach(this.series,function(run){
+var _4b=run.name;
+if(!(_4b in _48)&&run.plot==_47){
+_49.push(_4b);
 }
 });
-var _4a=_e.map(_47,function(_4b){
-return this.series[this.runs[_4b]];
+var _4c=_f.map(_49,function(_4d){
+return this.series[this.runs[_4d]];
 },this);
-this.series=_4a.concat(_e.filter(this.series,function(run){
-return run.plot!=_45;
+this.series=_4c.concat(_f.filter(this.series,function(run){
+return run.plot!=_47;
 }));
-_e.forEach(this.series,function(run,i){
+_f.forEach(this.series,function(run,i){
 this.runs[run.name]=i;
 },this);
 this.dirty=true;
 return this;
-},moveSeriesToFront:function(_4c){
-if(_4c in this.runs){
-var _4d=this.runs[_4c],_4e=this.getSeriesOrder(this.series[_4d].plot);
-if(_4c!=_4e[0]){
-_4e.splice(_4d,1);
-_4e.unshift(_4c);
-return this.setSeriesOrder(_4e);
+},moveSeriesToFront:function(_4e){
+if(_4e in this.runs){
+var _4f=this.runs[_4e],_50=this.getSeriesOrder(this.series[_4f].plot);
+if(_4e!=_50[0]){
+_50.splice(_4f,1);
+_50.unshift(_4e);
+return this.setSeriesOrder(_50);
 }
 }
 return this;
-},moveSeriesToBack:function(_4f){
-if(_4f in this.runs){
-var _50=this.runs[_4f],_51=this.getSeriesOrder(this.series[_50].plot);
-if(_4f!=_51[_51.length-1]){
-_51.splice(_50,1);
-_51.push(_4f);
-return this.setSeriesOrder(_51);
+},moveSeriesToBack:function(_51){
+if(_51 in this.runs){
+var _52=this.runs[_51],_53=this.getSeriesOrder(this.series[_52].plot);
+if(_51!=_53[_53.length-1]){
+_53.splice(_52,1);
+_53.push(_51);
+return this.setSeriesOrder(_53);
 }
 }
 return this;
-},resize:function(_52,_53){
+},resize:function(_54,_55){
 var box;
 switch(arguments.length){
 case 1:
-box=_1.mixin({},_52);
+box=_1.mixin({},_54);
 _6.setMarginBox(this.node,box);
 break;
 case 2:
-box={w:_52,h:_53};
+box={w:_54,h:_55};
 _6.setMarginBox(this.node,box);
 break;
 }
@@ -290,67 +294,67 @@ return this;
 }
 },getGeometry:function(){
 var ret={};
-_e.forIn(this.axes,function(_54){
-if(_54.initialized()){
-ret[_54.name]={name:_54.name,vertical:_54.vertical,scaler:_54.scaler,ticks:_54.ticks};
+_f.forIn(this.axes,function(_56){
+if(_56.initialized()){
+ret[_56.name]={name:_56.name,vertical:_56.vertical,scaler:_56.scaler,ticks:_56.ticks};
 }
 });
 return ret;
-},setAxisWindow:function(_55,_56,_57,_58){
-var _59=this.axes[_55];
-if(_59){
-_59.setWindow(_56,_57);
-_2.forEach(this.stack,function(_5a){
-if(_5a.hAxis==_55||_5a.vAxis==_55){
-_5a.zoom=_58;
+},setAxisWindow:function(_57,_58,_59,_5a){
+var _5b=this.axes[_57];
+if(_5b){
+_5b.setWindow(_58,_59);
+_2.forEach(this.stack,function(_5c){
+if(_5c.hAxis==_57||_5c.vAxis==_57){
+_5c.zoom=_5a;
 }
 });
 }
 return this;
-},setWindow:function(sx,sy,dx,dy,_5b){
+},setWindow:function(sx,sy,dx,dy,_5d){
 if(!("plotArea" in this)){
 this.calculateGeometry();
 }
-_e.forIn(this.axes,function(_5c){
-var _5d,_5e,_5f=_5c.getScaler().bounds,s=_5f.span/(_5f.upper-_5f.lower);
-if(_5c.vertical){
-_5d=sy;
-_5e=dy/s/_5d;
+_f.forIn(this.axes,function(_5e){
+var _5f,_60,_61=_5e.getScaler().bounds,s=_61.span/(_61.upper-_61.lower);
+if(_5e.vertical){
+_5f=sy;
+_60=dy/s/_5f;
 }else{
-_5d=sx;
-_5e=dx/s/_5d;
+_5f=sx;
+_60=dx/s/_5f;
 }
-_5c.setWindow(_5d,_5e);
+_5e.setWindow(_5f,_60);
 });
-_2.forEach(this.stack,function(_60){
-_60.zoom=_5b;
+_2.forEach(this.stack,function(_62){
+_62.zoom=_5d;
 });
 return this;
-},zoomIn:function(_61,_62){
-var _63=this.axes[_61];
-if(_63){
-var _64,_65,_66=_63.getScaler().bounds;
-var _67=Math.min(_62[0],_62[1]);
-var _68=Math.max(_62[0],_62[1]);
-_67=_62[0]<_66.lower?_66.lower:_67;
-_68=_62[1]>_66.upper?_66.upper:_68;
-_64=(_66.upper-_66.lower)/(_68-_67);
-_65=_67-_66.lower;
-this.setAxisWindow(_61,_64,_65);
+},zoomIn:function(_63,_64){
+var _65=this.axes[_63];
+if(_65){
+var _66,_67,_68=_65.getScaler().bounds;
+var _69=Math.min(_64[0],_64[1]);
+var _6a=Math.max(_64[0],_64[1]);
+_69=_64[0]<_68.lower?_68.lower:_69;
+_6a=_64[1]>_68.upper?_68.upper:_6a;
+_66=(_68.upper-_68.lower)/(_6a-_69);
+_67=_69-_68.lower;
+this.setAxisWindow(_63,_66,_67);
 this.render();
 }
 },calculateGeometry:function(){
 if(this.dirty){
 return this.fullGeometry();
 }
-var _69=_2.filter(this.stack,function(_6a){
-return _6a.dirty||(_6a.hAxis&&this.axes[_6a.hAxis].dirty)||(_6a.vAxis&&this.axes[_6a.vAxis].dirty);
+var _6b=_2.filter(this.stack,function(_6c){
+return _6c.dirty||(_6c.hAxis&&this.axes[_6c.hAxis].dirty)||(_6c.vAxis&&this.axes[_6c.vAxis].dirty);
 },this);
-_6b(_69,this.plotArea);
+_6d(_6b,this.plotArea);
 return this;
 },fullGeometry:function(){
 this._makeDirty();
-_2.forEach(this.stack,_11);
+_2.forEach(this.stack,_12);
 if(!this.theme){
 this.setTheme(new _b(dojox.charting._def));
 }
@@ -359,30 +363,30 @@ if(!(run.plot in this.plots)){
 if(!dc.plot2d||!dc.plot2d.Default){
 throw Error("Can't find plot: Default - didn't you forget to dojo"+".require() it?");
 }
-var _6c=new dc.plot2d.Default(this,{});
-_6c.name=run.plot;
+var _6e=new dc.plot2d.Default(this,{});
+_6e.name=run.plot;
 this.plots[run.plot]=this.stack.length;
-this.stack.push(_6c);
+this.stack.push(_6e);
 }
 this.stack[this.plots[run.plot]].addSeries(run);
 },this);
-_2.forEach(this.stack,function(_6d){
-if(_6d.hAxis){
-_6d.setAxis(this.axes[_6d.hAxis]);
+_2.forEach(this.stack,function(_6f){
+if(_6f.hAxis){
+_6f.setAxis(this.axes[_6f.hAxis]);
 }
-if(_6d.vAxis){
-_6d.setAxis(this.axes[_6d.vAxis]);
+if(_6f.vAxis){
+_6f.setAxis(this.axes[_6f.vAxis]);
 }
 },this);
 var dim=this.dim=this.surface.getDimensions();
 dim.width=g.normalizedLength(dim.width);
 dim.height=g.normalizedLength(dim.height);
-_e.forIn(this.axes,_11);
-_6b(this.stack,dim);
-var _6e=this.offsets={l:0,r:0,t:0,b:0};
-_e.forIn(this.axes,function(_6f){
-_e.forIn(_6f.getOffsets(),function(o,i){
-_6e[i]+=o;
+_f.forIn(this.axes,_12);
+_6d(this.stack,dim);
+var _70=this.offsets={l:0,r:0,t:0,b:0};
+_f.forIn(this.axes,function(_71){
+_f.forIn(_71.getOffsets(),function(o,i){
+_70[i]+=o;
 });
 });
 if(this.title){
@@ -390,15 +394,15 @@ this.titleGap=(this.titleGap==0)?0:this.titleGap||this.theme.chart.titleGap||20;
 this.titlePos=this.titlePos||this.theme.chart.titlePos||"top";
 this.titleFont=this.titleFont||this.theme.chart.titleFont;
 this.titleFontColor=this.titleFontColor||this.theme.chart.titleFontColor||"black";
-var _70=g.normalizedLength(g.splitFontString(this.titleFont).size);
-_6e[this.titlePos=="top"?"t":"b"]+=(_70+this.titleGap);
+var _72=g.normalizedLength(g.splitFontString(this.titleFont).size);
+_70[this.titlePos=="top"?"t":"b"]+=(_72+this.titleGap);
 }
-_e.forIn(this.margins,function(o,i){
-_6e[i]+=o;
+_f.forIn(this.margins,function(o,i){
+_70[i]+=o;
 });
-this.plotArea={width:dim.width-_6e.l-_6e.r,height:dim.height-_6e.t-_6e.b};
-_e.forIn(this.axes,_11);
-_6b(this.stack,this.plotArea);
+this.plotArea={width:dim.width-_70.l-_70.r,height:dim.height-_70.t-_70.b};
+_f.forIn(this.axes,_12);
+_6d(this.stack,this.plotArea);
 return this;
 },render:function(){
 if(this.theme){
@@ -408,11 +412,11 @@ if(this.dirty){
 return this.fullRender();
 }
 this.calculateGeometry();
-_e.forEachRev(this.stack,function(_71){
-_71.render(this.dim,this.offsets);
+_f.forEachRev(this.stack,function(_73){
+_73.render(this.dim,this.offsets);
 },this);
-_e.forIn(this.axes,function(_72){
-_72.render(this.dim,this.offsets);
+_f.forIn(this.axes,function(_74){
+_74.render(this.dim,this.offsets);
 },this);
 this._makeClean();
 if(this.surface.render){
@@ -421,63 +425,67 @@ this.surface.render();
 return this;
 },fullRender:function(){
 this.fullGeometry();
-var _73=this.offsets,dim=this.dim,_74;
-_2.forEach(this.series,_12);
-_e.forIn(this.axes,_12);
-_2.forEach(this.stack,_12);
+var _75=this.offsets,dim=this.dim,_76;
+_2.forEach(this.series,_13);
+_f.forIn(this.axes,_13);
+_2.forEach(this.stack,_13);
+_2.forEach(this._clearRects,function(_77){
+_e.dispose(_77);
+});
+this._clearRects=[];
 if(this.chartTitle&&this.chartTitle.tagName){
 _7.destroy(this.chartTitle);
 }
 this.surface.clear();
 this.chartTitle=null;
-var t=this.theme,_75=t.plotarea&&t.plotarea.fill,_76=t.plotarea&&t.plotarea.stroke,w=Math.max(0,dim.width-_73.l-_73.r),h=Math.max(0,dim.height-_73.t-_73.b),_74={x:_73.l-1,y:_73.t-1,width:w+2,height:h+2};
-if(_75){
-_75=_a.prototype._shapeFill(_a.prototype._plotFill(_75,dim,_73),_74);
-this.surface.createRect(_74).setFill(_75);
+var t=this.theme,_78=t.plotarea&&t.plotarea.fill,_79=t.plotarea&&t.plotarea.stroke,w=Math.max(0,dim.width-_75.l-_75.r),h=Math.max(0,dim.height-_75.t-_75.b),_76={x:_75.l-1,y:_75.t-1,width:w+2,height:h+2};
+if(_78){
+_78=_a.prototype._shapeFill(_a.prototype._plotFill(_78,dim,_75),_76);
+this._clearRects.push(this.surface.createRect(_76).setFill(_78));
 }
-if(_76){
-this.surface.createRect({x:_73.l,y:_73.t,width:w+1,height:h+1}).setStroke(_76);
+if(_79){
+this._clearRects.push(this.surface.createRect({x:_75.l,y:_75.t,width:w+1,height:h+1}).setStroke(_79));
 }
-_e.foldr(this.stack,function(z,_77){
-return _77.render(dim,_73),0;
+_f.foldr(this.stack,function(z,_7a){
+return _7a.render(dim,_75),0;
 },0);
-_75=this.fill!==undefined?this.fill:(t.chart&&t.chart.fill);
-_76=this.stroke!==undefined?this.stroke:(t.chart&&t.chart.stroke);
-if(_75=="inherit"){
-var _78=this.node,_75=new _8(_4.style(_78,"backgroundColor"));
-while(_75.a==0&&_78!=document.documentElement){
-_75=new _8(_4.style(_78,"backgroundColor"));
-_78=_78.parentNode;
+_78=this.fill!==undefined?this.fill:(t.chart&&t.chart.fill);
+_79=this.stroke!==undefined?this.stroke:(t.chart&&t.chart.stroke);
+if(_78=="inherit"){
+var _7b=this.node,_78=new _8(_4.style(_7b,"backgroundColor"));
+while(_78.a==0&&_7b!=document.documentElement){
+_78=new _8(_4.style(_7b,"backgroundColor"));
+_7b=_7b.parentNode;
 }
 }
-if(_75){
-_75=_a.prototype._plotFill(_75,dim,_73);
-if(_73.l){
-_74={width:_73.l,height:dim.height+1};
-this.surface.createRect(_74).setFill(_a.prototype._shapeFill(_75,_74));
+if(_78){
+_78=_a.prototype._plotFill(_78,dim,_75);
+if(_75.l){
+_76={width:_75.l,height:dim.height+1};
+this._clearRects.push(this.surface.createRect(_76).setFill(_a.prototype._shapeFill(_78,_76)));
 }
-if(_73.r){
-_74={x:dim.width-_73.r,width:_73.r+1,height:dim.height+2};
-this.surface.createRect(_74).setFill(_a.prototype._shapeFill(_75,_74));
+if(_75.r){
+_76={x:dim.width-_75.r,width:_75.r+1,height:dim.height+2};
+this._clearRects.push(this.surface.createRect(_76).setFill(_a.prototype._shapeFill(_78,_76)));
 }
-if(_73.t){
-_74={width:dim.width+1,height:_73.t};
-this.surface.createRect(_74).setFill(_a.prototype._shapeFill(_75,_74));
+if(_75.t){
+_76={width:dim.width+1,height:_75.t};
+this._clearRects.push(this.surface.createRect(_76).setFill(_a.prototype._shapeFill(_78,_76)));
 }
-if(_73.b){
-_74={y:dim.height-_73.b,width:dim.width+1,height:_73.b+2};
-this.surface.createRect(_74).setFill(_a.prototype._shapeFill(_75,_74));
+if(_75.b){
+_76={y:dim.height-_75.b,width:dim.width+1,height:_75.b+2};
+this._clearRects.push(this.surface.createRect(_76).setFill(_a.prototype._shapeFill(_78,_76)));
 }
 }
-if(_76){
-this.surface.createRect({width:dim.width-1,height:dim.height-1}).setStroke(_76);
+if(_79){
+this._clearRects.push(this.surface.createRect({width:dim.width-1,height:dim.height-1}).setStroke(_79));
 }
 if(this.title){
-var _79=(g.renderer=="canvas"),_7a=_79||!_9("ie")&&!_9("opera")?"html":"gfx",_7b=g.normalizedLength(g.splitFontString(this.titleFont).size);
-this.chartTitle=_d.createText[_7a](this,this.surface,dim.width/2,this.titlePos=="top"?_7b+this.margins.t:dim.height-this.margins.b,"middle",this.title,this.titleFont,this.titleFontColor);
+var _7c=(g.renderer=="canvas"),_7d=_7c||!_9("ie")&&!_9("opera")?"html":"gfx",_7e=g.normalizedLength(g.splitFontString(this.titleFont).size);
+this.chartTitle=_d.createText[_7d](this,this.surface,dim.width/2,this.titlePos=="top"?_7e+this.margins.t:dim.height-this.margins.b,"middle",this.title,this.titleFont,this.titleFontColor);
 }
-_e.forIn(this.axes,function(_7c){
-_7c.render(dim,_73);
+_f.forIn(this.axes,function(_7f){
+_7f.render(dim,_75);
 });
 this._makeClean();
 if(this.surface.render){
@@ -493,88 +501,88 @@ this.render();
 }),this.delayInMs);
 }
 return this;
-},connectToPlot:function(_7d,_7e,_7f){
-return _7d in this.plots?this.stack[this.plots[_7d]].connect(_7e,_7f):null;
-},fireEvent:function(_80,_81,_82){
-if(_80 in this.runs){
-var _83=this.series[this.runs[_80]].plot;
-if(_83 in this.plots){
-var _84=this.stack[this.plots[_83]];
-if(_84){
-_84.fireEvent(_80,_81,_82);
+},connectToPlot:function(_80,_81,_82){
+return _80 in this.plots?this.stack[this.plots[_80]].connect(_81,_82):null;
+},fireEvent:function(_83,_84,_85){
+if(_83 in this.runs){
+var _86=this.series[this.runs[_83]].plot;
+if(_86 in this.plots){
+var _87=this.stack[this.plots[_86]];
+if(_87){
+_87.fireEvent(_83,_84,_85);
 }
 }
 }
 return this;
 },_makeClean:function(){
-_2.forEach(this.axes,_14);
-_2.forEach(this.stack,_14);
-_2.forEach(this.series,_14);
-this.dirty=false;
-},_makeDirty:function(){
 _2.forEach(this.axes,_15);
 _2.forEach(this.stack,_15);
 _2.forEach(this.series,_15);
+this.dirty=false;
+},_makeDirty:function(){
+_2.forEach(this.axes,_16);
+_2.forEach(this.stack,_16);
+_2.forEach(this.series,_16);
 this.dirty=true;
-},_invalidateDependentPlots:function(_85,_86){
-if(_85 in this.plots){
-var _87=this.stack[this.plots[_85]],_88,_89=_86?"vAxis":"hAxis";
-if(_87[_89]){
-_88=this.axes[_87[_89]];
-if(_88&&_88.dependOnData()){
-_88.dirty=true;
+},_invalidateDependentPlots:function(_88,_89){
+if(_88 in this.plots){
+var _8a=this.stack[this.plots[_88]],_8b,_8c=_89?"vAxis":"hAxis";
+if(_8a[_8c]){
+_8b=this.axes[_8a[_8c]];
+if(_8b&&_8b.dependOnData()){
+_8b.dirty=true;
 _2.forEach(this.stack,function(p){
-if(p[_89]&&p[_89]==_87[_89]){
+if(p[_8c]&&p[_8c]==_8a[_8c]){
 p.dirty=true;
 }
 });
 }
 }else{
-_87.dirty=true;
+_8a.dirty=true;
 }
 }
 }});
-function _8a(_8b){
-return {min:_8b.hmin,max:_8b.hmax};
+function _8d(_8e){
+return {min:_8e.hmin,max:_8e.hmax};
 };
-function _8c(_8d){
-return {min:_8d.vmin,max:_8d.vmax};
+function _8f(_90){
+return {min:_90.vmin,max:_90.vmax};
 };
-function _8e(_8f,h){
-_8f.hmin=h.min;
-_8f.hmax=h.max;
+function _91(_92,h){
+_92.hmin=h.min;
+_92.hmax=h.max;
 };
-function _90(_91,v){
-_91.vmin=v.min;
-_91.vmax=v.max;
+function _93(_94,v){
+_94.vmin=v.min;
+_94.vmax=v.max;
 };
-function _92(_93,_94){
-if(_93&&_94){
-_93.min=Math.min(_93.min,_94.min);
-_93.max=Math.max(_93.max,_94.max);
+function _95(_96,_97){
+if(_96&&_97){
+_96.min=Math.min(_96.min,_97.min);
+_96.max=Math.max(_96.max,_97.max);
 }
-return _93||_94;
+return _96||_97;
 };
-function _6b(_95,_96){
-var _97={},_98={};
-_2.forEach(_95,function(_99){
-var _9a=_97[_99.name]=_99.getSeriesStats();
-if(_99.hAxis){
-_98[_99.hAxis]=_92(_98[_99.hAxis],_8a(_9a));
+function _6d(_98,_99){
+var _9a={},_9b={};
+_2.forEach(_98,function(_9c){
+var _9d=_9a[_9c.name]=_9c.getSeriesStats();
+if(_9c.hAxis){
+_9b[_9c.hAxis]=_95(_9b[_9c.hAxis],_8d(_9d));
 }
-if(_99.vAxis){
-_98[_99.vAxis]=_92(_98[_99.vAxis],_8c(_9a));
+if(_9c.vAxis){
+_9b[_9c.vAxis]=_95(_9b[_9c.vAxis],_8f(_9d));
 }
 });
-_2.forEach(_95,function(_9b){
-var _9c=_97[_9b.name];
-if(_9b.hAxis){
-_8e(_9c,_98[_9b.hAxis]);
+_2.forEach(_98,function(_9e){
+var _9f=_9a[_9e.name];
+if(_9e.hAxis){
+_91(_9f,_9b[_9e.hAxis]);
 }
-if(_9b.vAxis){
-_90(_9c,_98[_9b.vAxis]);
+if(_9e.vAxis){
+_93(_9f,_9b[_9e.vAxis]);
 }
-_9b.initializeScalers(_96,_9c);
+_9e.initializeScalers(_99,_9f);
 });
 };
 return dojox.charting.Chart;

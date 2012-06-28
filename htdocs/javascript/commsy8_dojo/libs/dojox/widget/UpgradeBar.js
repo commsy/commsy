@@ -1,5 +1,5 @@
 //>>built
-define(["dijit","dojo","dojox","dojo/require!dojo/window,dojo/fx,dojo/cookie,dijit/_Widget,dijit/_Templated"],function(_1,_2,_3){
+define("dojox/widget/UpgradeBar",["dijit","dojo","dojox","dojo/require!dojo/window,dojo/fx,dojo/cookie,dijit/_Widget,dijit/_Templated"],function(_1,_2,_3){
 _2.provide("dojox.widget.UpgradeBar");
 _2.require("dojo.window");
 _2.require("dojo.fx");

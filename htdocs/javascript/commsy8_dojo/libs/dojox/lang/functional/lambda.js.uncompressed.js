@@ -1,4 +1,3 @@
-//>>built
 define("dojox/lang/functional/lambda", ["../..", "dojo/_base/kernel", "dojo/_base/lang", "dojo/_base/array"], function(dojox, dojo, lang, arr){
 	var df = lang.getObject("lang.functional", true, dojox);
 

@@ -1,4 +1,3 @@
-//>>built
 // wrapped by build app
 define("dojox/jsonPath/query", ["dijit","dojo","dojox"], function(dijit,dojo,dojox){
 dojo.provide("dojox.jsonPath.query");

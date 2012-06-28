@@ -1,4 +1,3 @@
-//>>built
 define("dojox/mobile/ToolBarButton", [
 	"dojo/_base/declare",
 	"dojo/_base/window",

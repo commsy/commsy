@@ -1,4 +1,3 @@
-//>>built
 define("dojo/_base/unload", ["./kernel", "./connect"], function(dojo, connect) {
 	// module:
 	//		dojo/unload

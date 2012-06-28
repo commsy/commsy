@@ -1,5 +1,5 @@
 //>>built
-define(["dijit","dojo","dojox"],function(_1,_2,_3){
+define("dojox/widget/rotator/ThumbnailController",["dijit","dojo","dojox"],function(_1,_2,_3){
 _2.provide("dojox.widget.rotator.ThumbnailController");
 (function(d){
 var _4="dojoxRotatorThumb",_5=_4+"Selected";

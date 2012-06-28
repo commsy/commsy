@@ -1,4 +1,3 @@
-//>>built
 define("dojo/on", ["./has!dom-addeventlistener?:./aspect", "./_base/kernel", "./has"], function(aspect, dojo, has){
 	// summary:
 	//		The export of this module is a function that provides core event listening functionality. With this function

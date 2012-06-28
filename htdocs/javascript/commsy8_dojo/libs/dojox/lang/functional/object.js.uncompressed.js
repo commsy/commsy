@@ -1,4 +1,3 @@
-//>>built
 define("dojox/lang/functional/object", ["dojo/_base/kernel", "dojo/_base/lang", "dojo/_base/window", "./lambda"], function(dojo, lang, win, df){
 
 // This module adds high-level functions and related constructs:

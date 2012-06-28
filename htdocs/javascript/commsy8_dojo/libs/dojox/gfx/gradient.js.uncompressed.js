@@ -1,4 +1,3 @@
-//>>built
 define("dojox/gfx/gradient", ["dojo/_base/lang", "./matrix", "dojo/_base/Color"], 
   function(lang, m, Color){
 // Various utilities to deal with a linear gradient (mostly VML-specific)

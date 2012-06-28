@@ -41,7 +41,7 @@ define([	"dojo/_base/declare",
 		
 		onPopupSubmit: function(customObject) {
 			// add ckeditor data to hidden div
-			this.featureHandles["editor"].forEach(function(editor, index, arr) {
+			dojo.forEach(this.featureHandles["editor"], function(editor, index, arr) {
 				var instance = editor.getInstance();
 				var node = editor.getNode().parentNode;
 				

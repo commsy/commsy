@@ -1,4 +1,3 @@
-//>>built
 define("dojox/embed/Flash", ["dojo"], function(dojo) {
 
 	/*******************************************************

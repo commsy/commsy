@@ -1,4 +1,3 @@
-//>>built
 define("dojo/NodeList-html", ["./query", "./_base/lang", "./html"], function(query, lang, html) {
 	// module:
 	//		dojo/NodeList-html

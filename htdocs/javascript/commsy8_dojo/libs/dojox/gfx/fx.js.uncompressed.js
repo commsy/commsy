@@ -1,4 +1,3 @@
-//>>built
 define("dojox/gfx/fx", ["dojo/_base/lang", "./_base", "./matrix", "dojo/_base/Color", "dojo/_base/array", "dojo/_base/fx", "dojo/_base/connect"], 
   function(lang, g, m, Color, arr, fx, Hub){
 	var fxg = g.fx = {};

@@ -1,4 +1,3 @@
-//>>built
 define("dojox/gfx/decompose", ["./_base", "dojo/_base/lang", "./matrix"], 
   function (g, lang, m){
 	/*===== g = dojox.gfx =====*/

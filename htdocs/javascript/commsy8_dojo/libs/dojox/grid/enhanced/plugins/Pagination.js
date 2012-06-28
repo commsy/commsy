@@ -550,6 +550,9 @@ return this._gridOriginalfuncs[0](_79);
 this._multiRemoving=true;
 this._gridOriginalfuncs[2].apply();
 this._multiRemoving=false;
+if(this.grid.store.save){
+this.grid.store.save();
+}
 this.grid.resize();
 this.grid._refresh();
 },showGotoPageButton:function(_7a){

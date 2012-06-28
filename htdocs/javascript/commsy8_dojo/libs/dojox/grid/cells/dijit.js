@@ -131,7 +131,7 @@ var _17=_3("dojox.grid.cells.Editor",_1a,{widgetClass:_17,getWidgetProps:functio
 return _5.mixin({},this.widgetProps||{},{height:this.widgetHeight||"100px"});
 },createWidget:function(_4b,_4c,_4d){
 var _4e=new this.widgetClass(this.getWidgetProps(_4c),_4b);
-_7.connect(_4e,"onLoad",_5.hitch(this,"populateEditor"));
+_4e.onLoadDeferred.then(_5.hitch(this,"populateEditor"));
 return _4e;
 },formatNode:function(_4f,_50,_51){
 this.content=_50;

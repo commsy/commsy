@@ -1,4 +1,3 @@
-//>>built
 define("dojox/grid/_Builder", [
 	"../main",
 	"dojo/_base/array",

@@ -1,4 +1,3 @@
-//>>built
 define("dojox/validate/_base", [
 	"dojo/_base/lang",
 	"dojo/regexp", // dojo core expressions

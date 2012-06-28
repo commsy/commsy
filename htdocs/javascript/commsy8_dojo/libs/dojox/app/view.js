@@ -4,7 +4,5 @@ return _1("dojox.app.view",[_2,_5,_3,_4,_6],{selected:false,keepScrollPosition:t
 return this.id;
 },activate:function(){
 },deactivate:function(){
-},getParent:function(){
-return null;
-}});
+},});
 });

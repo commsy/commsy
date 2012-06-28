@@ -1,4 +1,3 @@
-//>>built
 define("dojox/gauges/BarCircleIndicator", ["dojo/_base/declare","dojox/gfx","./BarLineIndicator"],
   function(declare, gfx, BarLineIndicator) { 
 

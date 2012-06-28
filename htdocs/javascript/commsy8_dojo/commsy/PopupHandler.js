@@ -26,7 +26,7 @@ define([	"dojo/_base/declare",
 			// register click event for all tabs
 			on(link_nodes, "click", lang.hitch(this, function(event) {
 				// set all tabs inactive
-				link_nodes.forEach(function(node) {
+				dojo.forEach(link_nodes, function(node) {
 					dom_class.add(node, "pop_tab");
 				});
 				
@@ -35,7 +35,7 @@ define([	"dojo/_base/declare",
 				
 				/* switch content */
 				// set classes for divs
-				content_nodes.forEach(function(node) {
+				dojo.forEach(content_nodes, function(node) {
 					if(dom_attr.get(event.target, "href") === dom_attr.get(node, "id")) {
 						dom_class.remove(node, "hidden");
 					} else {
@@ -48,9 +48,9 @@ define([	"dojo/_base/declare",
 		},
 		
 		setupFeatures: function() {
-			this.features.forEach(lang.hitch(this, function(feature, index, arr) {
+			dojo.forEach(this.features, lang.hitch(this, function(feature, index, arr) {
 				if(feature === "editor") {
-					query("div.ckeditor", this.contentNode).forEach(lang.hitch(this, function(node, index, arr) {
+					dojo.forEach(query("div.ckeditor", this.contentNode), lang.hitch(this, function(node, index, arr) {
 						require(["commsy/ckeditor"], lang.hitch(this, function(CKEditor) {
 							this.featureHandles[feature] = this.featureHandles[feature] || [];
 							this.featureHandles[feature][index] = new CKEditor();
@@ -60,7 +60,7 @@ define([	"dojo/_base/declare",
 				}
 				
 				if(feature === "tree") {
-					query("div.tree", this.contentNode).forEach(lang.hitch(this, function(node, index, arr) {
+					dojo.forEach(query("div.tree", this.contentNode), lang.hitch(this, function(node, index, arr) {
 						require(["commsy/tree"], lang.hitch(this, function(Tree) {
 							this.featureHandles[feature] = this.featureHandles[feature] || [];
 							this.featureHandles[feature][index] = new Tree({
@@ -75,7 +75,7 @@ define([	"dojo/_base/declare",
 				}
 				
 				if(feature === "upload") {
-					query("div.uploader", this.contentNode).forEach(lang.hitch(this, function(node, index, arr) {
+					dojo.forEach(query("div.uploader", this.contentNode), lang.hitch(this, function(node, index, arr) {
 						require(["commsy/Uploader"], lang.hitch(this, function(Uploader) {
 							this.featureHandles[feature] = this.featureHandles[feature] || [];
 							this.featureHandles[feature][index] = new Uploader();
@@ -85,7 +85,7 @@ define([	"dojo/_base/declare",
 				}
 				
 				if(feature === "upload-single") {
-					query("div.uploader-single", this.contentNode).forEach(lang.hitch(this, function(node, index, arr) {
+					dojo.forEach(query("div.uploader-single", this.contentNode), lang.hitch(this, function(node, index, arr) {
 						require(["commsy/Uploader"], lang.hitch(this, function(Uploader) {
 							this.featureHandles[feature] = this.featureHandles[feature] || [];
 							this.featureHandles[feature][index] = new Uploader({single: true});
@@ -111,7 +111,7 @@ define([	"dojo/_base/declare",
 				}
 				
 				if(feature === "calendar") {
-					query("input.datepicker", this.contentNode).forEach(lang.hitch(this, function(node, index, arr) {
+					dojo.forEach(query("input.datepicker", this.contentNode), lang.hitch(this, function(node, index, arr) {
 						require(["commsy/Calendar"], lang.hitch(this, function(Calendar) {
 							this.featureHandles[feature] = this.featureHandles[feature] || [];
 							this.featureHandles[feature][index] = new Calendar();
@@ -121,7 +121,7 @@ define([	"dojo/_base/declare",
 				}
 				
 				if(feature === "colorpicker") {
-					query("input.colorpicker", this.contentNode).forEach(lang.hitch(this, function(node, index, arr) {
+					dojo.forEach(query("input.colorpicker", this.contentNode), lang.hitch(this, function(node, index, arr) {
 						require(["commsy/Colorpicker"], lang.hitch(this, function(Colorpicker) {
 							this.featureHandles[feature] = this.featureHandles[feature] || [];
 							this.featureHandles[feature][index] = new Colorpicker();
@@ -184,7 +184,7 @@ define([	"dojo/_base/declare",
 			var nodeLists = search.nodeLists;
 			
 			// add tabs to node lists
-			search.tabs.forEach(function(tabObject, index, arr) {
+			dojo.forEach(search.tabs, function(tabObject, index, arr) {
 				tabObject.query = query("div#" + tabObject.id);
 				delete tabObject.id;
 				
@@ -192,11 +192,11 @@ define([	"dojo/_base/declare",
 			});
 			
 			// process node lists
-			nodeLists.forEach(function(nodeList, index, arr) {
+			dojo.forEach(nodeLists, function(nodeList, index, arr) {
 				var group = nodeList.group || null;
 				var nodes = nodeList.query;
 				
-				nodes.forEach(function(node, index, arr) {
+				dojo.forEach(nodes, function(node, index, arr) {
 					var formNodes = null;
 					
 					if(node.tagName === "INPUT" || node.tagName === "SELECT") {
@@ -205,7 +205,7 @@ define([	"dojo/_base/declare",
 						formNodes = query("input[name^='form_data'], select[name^='form_data']", node);
 					}
 					
-					formNodes.forEach(function(formNode, index, arr) {
+					dojo.forEach(formNodes, function(formNode, index, arr) {
 						var add = false;
 						
 						var type = dom_attr.get(formNode, "type");
@@ -264,7 +264,7 @@ define([	"dojo/_base/declare",
 						var missingFields = response.detail;
 						
 						// create a red border around the missing fields and scroll to first one
-						missingFields.forEach(lang.hitch(this, function(field, index, arr) {
+						dojo.forEach(missingFields, lang.hitch(this, function(field, index, arr) {
 							var fieldNode = query("[name='form_data[" + field + "]']", this.contentNode)[0];
 							
 							domStyle.set(fieldNode, "border", "1px solid red");
@@ -283,12 +283,12 @@ define([	"dojo/_base/declare",
 		close: function() {
 			// destroy uploader
 			if(this.featureHandles["upload"]) {
-				this.featureHandles["upload"].forEach(function(uploader, index, arr) {
+				dojo.forEach(this.featureHandles["upload"], function(uploader, index, arr) {
 					uploader.destroy();
 				});
 			}
 			if(this.featureHandles["upload-single"]) {
-				this.featureHandles["upload-single"].forEach(function(uploader, index, arr) {
+				dojo.forEach(this.featureHandles["upload-single"], function(uploader, index, arr) {
 					uploader.destroy();
 				});
 			}

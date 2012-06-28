@@ -1,4 +1,3 @@
-//>>built
 define("dojox/mobile/ToggleButton", [
 	"dojo/_base/declare",
 	"dojo/dom-class",

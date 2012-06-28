@@ -1,4 +1,3 @@
-//>>built
 define("dojo/_base/url", ["./kernel"], function(dojo) {
 	// module:
 	//		dojo/url

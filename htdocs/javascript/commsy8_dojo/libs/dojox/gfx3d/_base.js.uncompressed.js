@@ -1,4 +1,3 @@
-//>>built
 define("dojox/gfx3d/_base", ["dojo/_base/lang"],function(lang) {
 	var gfx3d = lang.getObject("dojox.gfx3d",true);
 	lang.mixin( gfx3d, {

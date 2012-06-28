@@ -1,4 +1,3 @@
-//>>built
 define("dojox/grid/_SelectionPreserver", [
 	"dojo/_base/declare",
 	"dojo/_base/connect",

@@ -1,4 +1,3 @@
-//>>built
 // Various generic utilities to deal with a linear gradient
 
 define("dojox/gfx/gradutils", ["./_base", "dojo/_base/lang", "./matrix", "dojo/_base/Color"], 

@@ -220,12 +220,12 @@ return;
 for(var i=0;i<_3b.length;i++){
 var _42=Math.abs(Math.sin(_3b[i].angle));
 if(_3b[i].left){
-if(_40>_42){
+if(_40>=_42){
 _40=_42;
 _3e=_3b[i];
 }
 }else{
-if(_41>_42){
+if(_41>=_42){
 _41=_42;
 _3f=_3b[i];
 }

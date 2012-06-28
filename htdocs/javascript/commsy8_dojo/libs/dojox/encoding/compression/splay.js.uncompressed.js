@@ -1,4 +1,3 @@
-//>>built
 define("dojox/encoding/compression/splay", [
 	"dojo/_base/lang",	// dojo.extend
 	"../bits"

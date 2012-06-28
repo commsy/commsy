@@ -1,4 +1,3 @@
-//>>built
 define("dijit/_Contained", [
 	"dojo/_base/declare", // declare
 	"./registry"	// registry.getEnclosingWidget(), registry.byNode()

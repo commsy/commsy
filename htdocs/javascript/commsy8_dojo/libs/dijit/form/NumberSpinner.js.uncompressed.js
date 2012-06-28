@@ -1,4 +1,3 @@
-//>>built
 define("dijit/form/NumberSpinner", [
 	"dojo/_base/declare", // declare
 	"dojo/_base/event", // event.stop

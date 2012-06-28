@@ -1,4 +1,3 @@
-//>>built
 define("dojox/dtl/_Templated", [
 	"dojo/_base/declare",
 	"./_base",

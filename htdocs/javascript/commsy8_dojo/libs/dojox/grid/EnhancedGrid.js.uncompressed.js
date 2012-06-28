@@ -1,4 +1,3 @@
-//>>built
 define("dojox/grid/EnhancedGrid", [
 	"dojo/_base/kernel",
 	"../main",

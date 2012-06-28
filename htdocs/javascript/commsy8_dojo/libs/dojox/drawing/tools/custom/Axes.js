@@ -1,5 +1,5 @@
 //>>built
-define(["dijit","dojo","dojox","dojo/require!dojox/drawing/stencil/Path"],function(_1,_2,_3){
+define("dojox/drawing/tools/custom/Axes",["dijit","dojo","dojox","dojo/require!dojox/drawing/stencil/Path"],function(_1,_2,_3){
 _2.provide("dojox.drawing.tools.custom.Axes");
 _2.require("dojox.drawing.stencil.Path");
 _3.drawing.tools.custom.Axes=_3.drawing.util.oo.declare(_3.drawing.stencil.Path,function(_4){

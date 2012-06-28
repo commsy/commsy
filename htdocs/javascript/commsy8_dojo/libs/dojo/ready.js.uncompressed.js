@@ -1,4 +1,3 @@
-//>>built
 define("dojo/ready", ["./_base/kernel", "./has", "require", "./domReady", "./_base/lang"], function(dojo, has, require, domReady, lang) {
 	// module:
 	//		dojo/ready

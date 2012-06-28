@@ -1,4 +1,3 @@
-//>>built
 define("dojox/mvc/Repeat", [
 	"dojo/_base/declare",
 	"dojo/dom",

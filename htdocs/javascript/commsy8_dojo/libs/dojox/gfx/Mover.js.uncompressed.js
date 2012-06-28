@@ -1,4 +1,3 @@
-//>>built
 define("dojox/gfx/Mover", ["dojo/_base/lang","dojo/_base/array", "dojo/_base/declare", "dojo/_base/connect", "dojo/_base/event"], 
   function(lang,arr,declare,connect,evt){
 	return declare("dojox.gfx.Mover", null, {

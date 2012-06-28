@@ -1,4 +1,3 @@
-//>>built
 define("dijit/tree/ForestStoreModel", [
 	"dojo/_base/array", // array.indexOf array.some
 	"dojo/_base/declare", // declare

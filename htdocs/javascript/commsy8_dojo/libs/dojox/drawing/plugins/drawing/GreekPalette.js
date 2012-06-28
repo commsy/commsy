@@ -1,5 +1,5 @@
 //>>built
-define(["dijit","dojo","dojox","dojo/i18n!dojox/editor/plugins/nls/latinEntities","dojo/require!dojox/drawing/library/greek,dijit/focus,dijit/_Widget,dijit/_TemplatedMixin,dijit/_PaletteMixin,dojo/i18n"],function(_1,_2,_3){
+define("dojox/drawing/plugins/drawing/GreekPalette",["dijit","dojo","dojox","dojo/i18n!dojox/editor/plugins/nls/latinEntities","dojo/require!dojox/drawing/library/greek,dijit/focus,dijit/_Widget,dijit/_TemplatedMixin,dijit/_PaletteMixin,dojo/i18n"],function(_1,_2,_3){
 _2.provide("dojox.drawing.plugins.drawing.GreekPalette");
 _2.require("dojox.drawing.library.greek");
 _2.require("dijit.focus");

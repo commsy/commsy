@@ -1,4 +1,3 @@
-//>>built
 // wrapped by build app
 define("dojox/drawing/ui/dom/Zoom", ["dijit","dojo","dojox","dojo/require!dojox/drawing/plugins/_Plugin"], function(dijit,dojo,dojox){
 dojo.provide("dojox.drawing.ui.dom.Zoom");

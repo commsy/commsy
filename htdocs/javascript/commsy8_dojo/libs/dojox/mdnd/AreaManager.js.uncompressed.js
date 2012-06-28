@@ -1,4 +1,3 @@
-//>>built
 define("dojox/mdnd/AreaManager", ["dojo/_base/kernel","dojo/_base/declare","dojo/_base/connect","dojo/_base/window",
 	"dojo/_base/array","dojo/query","dojo/_base/html","./Moveable"],function(dojo){
 	var am = dojo.declare(

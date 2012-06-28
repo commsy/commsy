@@ -1,4 +1,3 @@
-//>>built
 define("dijit/layout/TabContainer", [
 	"dojo/_base/lang", // lang.getObject
 	"dojo/_base/declare", // declare

@@ -1,4 +1,3 @@
-//>>built
 define("dijit/form/_FormValueMixin", [
 	"dojo/_base/declare", // declare
 	"dojo/dom-attr", // domAttr.set

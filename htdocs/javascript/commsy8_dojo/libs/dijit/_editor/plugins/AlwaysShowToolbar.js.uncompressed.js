@@ -1,4 +1,3 @@
-//>>built
 define("dijit/_editor/plugins/AlwaysShowToolbar", [
 	"dojo/_base/declare", // declare
 	"dojo/dom-class", // domClass.add domClass.remove

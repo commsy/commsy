@@ -1,4 +1,3 @@
-//>>built
 define("dojo/Stateful", ["./_base/kernel", "./_base/declare", "./_base/lang", "./_base/array"], function(dojo, declare, lang, array) {
 	// module:
 	//		dojo/Stateful

@@ -1,4 +1,3 @@
-//>>built
 define("dojox/mobile/Carousel", [
 	"dojo/_base/kernel",
 	"dojo/_base/array",

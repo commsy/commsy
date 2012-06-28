@@ -1,5 +1,5 @@
 //>>built
-define(["dijit","dojo","dojox","dojo/require!dijit/Tooltip,dojox/gantt/GanttProjectItem,dojox/gantt/GanttResourceItem,dojox/gantt/TabMenu,dojo/date/locale"],function(_1,_2,_3){
+define("dojox/gantt/GanttChart",["dijit","dojo","dojox","dojo/require!dijit/Tooltip,dojox/gantt/GanttProjectItem,dojox/gantt/GanttResourceItem,dojox/gantt/TabMenu,dojo/date/locale"],function(_1,_2,_3){
 _2.provide("dojox.gantt.GanttChart");
 _2.require("dijit.Tooltip");
 _2.require("dojox.gantt.GanttProjectItem");

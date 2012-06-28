@@ -1,4 +1,3 @@
-//>>built
 define("dojo/text", ["./_base/kernel", "require", "./has", "./_base/xhr"], function(dojo, require, has, xhr){
 	// module:
 	//		dojo/text

@@ -1,4 +1,3 @@
-//>>built
 define("dojox/io/OAuth", [
 	"dojo/_base/kernel", // dojo
 	"dojo/_base/lang", // mixin

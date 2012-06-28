@@ -1,4 +1,3 @@
-//>>built
 define("dojox/mobile/EdgeToEdgeList", [
 	"dojo/_base/declare",
 	"./RoundRectList"

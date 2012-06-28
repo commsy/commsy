@@ -1,4 +1,3 @@
-//>>built
 define("dijit/form/MappedTextBox", [
 	"dojo/_base/declare", // declare
 	"dojo/dom-construct", // domConstruct.place

@@ -1,4 +1,3 @@
-//>>built
 define("dojox/mvc/_patches", [
 	"dojo/_base/lang",
 	"dojo/_base/array",

@@ -1,4 +1,3 @@
-//>>built
 define("dojox/sketch", [
 	"dojo/_base/kernel",
 	"dojo/_base/lang", 

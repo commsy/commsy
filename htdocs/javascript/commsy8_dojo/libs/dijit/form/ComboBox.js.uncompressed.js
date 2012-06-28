@@ -1,4 +1,3 @@
-//>>built
 define("dijit/form/ComboBox", [
 	"dojo/_base/declare", // declare
 	"./ValidationTextBox",

@@ -1,4 +1,3 @@
-//>>built
 // wrapped by build app
 define("dojox/xmpp/TransportSession", ["dijit","dojo","dojox","dojo/require!dojox/xmpp/bosh,dojox/xmpp/util,dojox/data/dom"], function(dijit,dojo,dojox){
 dojo.provide("dojox.xmpp.TransportSession");

@@ -1,4 +1,3 @@
-//>>built
 define("dojox/mobile/_ListTouchMixin", [
 	"dojo/_base/declare",
 	"dojo/_base/event",

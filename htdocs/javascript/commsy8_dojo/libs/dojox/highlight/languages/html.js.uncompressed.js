@@ -1,4 +1,3 @@
-//>>built
 define("dojox/highlight/languages/html", ["dojox/main", "../_base", "./xml"], function(dojox){
 
 	var HTML_TAGS = {

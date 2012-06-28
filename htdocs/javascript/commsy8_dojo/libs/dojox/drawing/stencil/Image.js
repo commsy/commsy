@@ -1,5 +1,5 @@
 //>>built
-define(["dijit","dojo","dojox"],function(_1,_2,_3){
+define("dojox/drawing/stencil/Image",["dijit","dojo","dojox"],function(_1,_2,_3){
 _2.provide("dojox.drawing.stencil.Image");
 _3.drawing.stencil.Image=_3.drawing.util.oo.declare(_3.drawing.stencil._Base,function(_4){
 },{type:"dojox.drawing.stencil.Image",anchorType:"group",baseRender:true,dataToPoints:function(o){

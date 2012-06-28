@@ -1,4 +1,3 @@
-//>>built
 define("dojox/charting/themes/Grasshopper", ["dojo/_base/lang","../Theme", "./common"], function(lang, Theme, themes){
 	themes.Grasshopper=new Theme({
 		colors: [

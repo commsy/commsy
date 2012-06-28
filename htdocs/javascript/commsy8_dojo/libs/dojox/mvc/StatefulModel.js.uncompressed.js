@@ -1,4 +1,3 @@
-//>>built
 define("dojox/mvc/StatefulModel", [
 	"dojo/_base/lang",
 	"dojo/_base/array",

@@ -1,4 +1,3 @@
-//>>built
 define("dojox/lang/functional/array", ["dojo/_base/kernel", "dojo/_base/lang", "dojo/_base/array", "dojo/_base/window", "./lambda"], 
 	function(dojo, lang, arr, win, df){
 

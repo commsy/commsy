@@ -1,4 +1,3 @@
-//>>built
 define("dojox/mvc", ["./mvc/_base"], function(dxmvc){
 	// module:
 	//		dojox/mvc

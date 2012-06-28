@@ -1,4 +1,3 @@
-//>>built
 define("dojo/selector/acme", ["../_base/kernel", "../has", "../dom", "../_base/sniff", "../_base/array", "../_base/lang", "../_base/window"], function(dojo, has, dom){
   //  module:
   //    dojo/selector/acme

@@ -1,4 +1,3 @@
-//>>built
 define("dojox/grid/enhanced/plugins/NestedSorting", [
 	"dojo/_base/declare",
 	"dojo/_base/array",

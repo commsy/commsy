@@ -1,4 +1,3 @@
-//>>built
 define("dijit/_base/place", [
 	"dojo/_base/array", // array.forEach
 	"dojo/_base/lang", // lang.isArray

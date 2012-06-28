@@ -1,4 +1,3 @@
-//>>built
 define("dojo/data/util/simpleFetch", ["dojo/_base/lang", "dojo/_base/window", "./sorter"], 
   function(lang, winUtil, sorter) {
 	// module:

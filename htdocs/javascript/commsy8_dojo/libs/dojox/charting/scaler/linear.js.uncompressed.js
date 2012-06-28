@@ -1,4 +1,3 @@
-//>>built
 define("dojox/charting/scaler/linear", ["dojo/_base/lang", "./common"], 
 	function(lang, common){
 	var linear = lang.getObject("dojox.charting.scaler.linear", true);

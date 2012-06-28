@@ -1,4 +1,3 @@
-//>>built
 define("dojox/date/relative", ["dojo/_base/kernel", "dojo/_base/lang", "dojo/date/locale", "dojo/i18n"], function(dojo, dlang, ddl, i18n){
 
 dojo.getObject("date.relative", true, dojox);

@@ -1,17 +1,3 @@
-/*
-	Copyright (c) 2004-2011, The Dojo Foundation All Rights Reserved.
-	Available via Academic Free License >= 2.1 OR the modified BSD license.
-	see: http://dojotoolkit.org/license for details
-*/
-
-/*
-	This is an optimized version of Dojo, built for deployment and not for
-	development. To get sources and documentation, please visit:
-
-		http://dojotoolkit.org
-*/
-
-//>>built
 require({cache:{
 'dojo/uacss':function(){
 define(["./dom-geometry", "./_base/lang", "./ready", "./_base/sniff", "./_base/window"],
@@ -4020,49 +4006,6 @@ define("dojox/grid/_Grid", [
 	return _Grid;
 
 });
-},
-'dijit/nls/loading':function(){
-define("dijit/nls/loading", { root:
-//begin v1.x content
-({
-	loadingState: "Loading...",
-	errorState: "Sorry, an error occurred"
-})
-//end v1.x content
-,
-"zh": true,
-"zh-tw": true,
-"tr": true,
-"th": true,
-"sv": true,
-"sl": true,
-"sk": true,
-"ru": true,
-"ro": true,
-"pt": true,
-"pt-pt": true,
-"pl": true,
-"nl": true,
-"nb": true,
-"ko": true,
-"kk": true,
-"ja": true,
-"it": true,
-"hu": true,
-"hr": true,
-"he": true,
-"fr": true,
-"fi": true,
-"es": true,
-"el": true,
-"de": true,
-"da": true,
-"cs": true,
-"ca": true,
-"az": true,
-"ar": true
-});
-
 },
 'dojox/main':function(){
 define("dojox/main", ["dojo/_base/kernel"], function(dojo) {
@@ -13155,13 +13098,13 @@ return declare("dijit._WidgetBase", Stateful, {
 
 		// remove this.connect() and this.subscribe() listeners
 		var c;
-		while(c = this._connects.pop()){
+		while((c = this._connects.pop())){
 			c.remove();
 		}
 
 		// destroy widgets created as part of template, etc.
 		var w;
-		while(w = this._supportingWidgets.pop()){
+		while((w = this._supportingWidgets.pop())){
 			if(w.destroyRecursive){
 				w.destroyRecursive();
 			}else if(w.destroy){
@@ -13639,6 +13582,35 @@ return declare("dijit._WidgetBase", Stateful, {
 		// text: String
 		// tags:
 		//		protected.
+	},
+
+	defer: function(fcn, delay){ 
+		// summary:
+		//		Wrapper to setTimeout to avoid deferred functions executing
+		//		after the originating widget has been destroyed.
+		//		Returns an object handle with a remove method (that returns null) (replaces clearTimeout).
+		// fcn: function reference
+		// delay: Optional number (defaults to 0)
+		// tags:
+		//		protected.
+		var timer = setTimeout(lang.hitch(this, 
+			function(){ 
+				timer = null;
+				if(!this._destroyed){ 
+					lang.hitch(this, fcn)(); 
+				} 
+			}),
+			delay || 0
+		);
+		return {
+			remove:	function(){
+					if(timer){
+						clearTimeout(timer);
+						timer = null;
+					}
+					return null; // so this works well: handle = handle.remove();
+				}
+		};
 	}
 });
 
@@ -13820,11 +13792,9 @@ dojo.declare("dojo.dnd.Moveable", [Evented], {
 return dojo.dnd.Moveable;
 });
 
-}}});
-
-require(["dojo/i18n"], function(i18n){
-i18n._preloadLocalizations("dojox/grid/nls/DataGrid", ["nl-nl","en-us","da","fi-fi","pt-pt","hu","sk","sl","pl","ca","sv","zh-tw","ar","en-gb","he-il","de-de","ko-kr","ja-jp","nb","ru","es-es","th","cs","it-it","pt-br","fr-fr","el","tr","zh-cn"]);
-});
+},
+'*now':function(r){r(['dojo/i18n!*preload*dojox/grid/nls/DataGrid*["ar","ca","cs","da","de-de","el","en-gb","en-us","es-es","fi-fi","fr-fr","he-il","hu","it-it","ja-jp","ko-kr","nl-nl","nb","pl","pt-br","pt-pt","ru","sk","sl","sv","th","tr","zh-tw","zh-cn","ROOT"]']);}
+}});
 define("dojox/grid/DataGrid", [
 	"../main",
 	"dojo/_base/array",

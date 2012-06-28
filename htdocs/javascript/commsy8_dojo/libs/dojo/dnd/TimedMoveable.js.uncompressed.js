@@ -1,4 +1,3 @@
-//>>built
 define("dojo/dnd/TimedMoveable", ["../main", "./Moveable"], function(dojo) {
 	// module:
 	//		dojo/dnd/TimedMoveable

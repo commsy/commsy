@@ -1,21 +1,21 @@
 //>>built
-define("dojox/app/model",["dojo/_base/kernel","dojo/_base/Deferred","dojox/mvc/StatefulModel"],function(_1,_2){
-return function(_3,_4){
-var _5={};
-if(_4){
-_1.mixin(_5,_4);
+define("dojox/app/model",["dojo/_base/lang","dojo/_base/Deferred","dojox/mvc/_base"],function(_1,_2,_3){
+return function(_4,_5){
+var _6={};
+if(_5){
+_1.mixin(_6,_5);
 }
-if(_3){
-for(var _6 in _3){
-if(_6.charAt(0)!=="_"){
-var _7=_3[_6].params?_3[_6].params:{};
-var _8={"store":_7.store.store,"query":_7.store.query?_7.store.query:{}};
-_5[_6]=_2.when(dojox.mvc.newStatefulModel(_8),function(_9){
-return _9;
+if(_4){
+for(var _7 in _4){
+if(_7.charAt(0)!=="_"){
+var _8=_4[_7].params?_4[_7].params:{};
+var _9={"store":_8.store.store,"query":_8.store.query?_8.store.query:{}};
+_6[_7]=_2.when(_3.newStatefulModel(_9),function(_a){
+return _a;
 });
 }
 }
 }
-return _5;
+return _6;
 };
 });

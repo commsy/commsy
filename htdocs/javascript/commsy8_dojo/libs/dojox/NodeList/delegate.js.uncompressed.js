@@ -1,4 +1,3 @@
-//>>built
 define("dojox/NodeList/delegate", ["dojo/_base/lang", "dojo/query", "dojo/_base/NodeList", "dojo/NodeList-traverse"], function(lang, query, NodeList) {
 	// module:
 	//		dojox/NodeList/delegate

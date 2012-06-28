@@ -1,4 +1,3 @@
-//>>built
 define("dojo/_base/lang", ["./kernel", "../has", "./sniff"], function(dojo, has){
 	//	module:
 	//		dojo/_base/lang

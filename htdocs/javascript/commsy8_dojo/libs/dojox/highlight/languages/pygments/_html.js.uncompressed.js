@@ -1,4 +1,3 @@
-//>>built
 define("dojox/highlight/languages/pygments/_html", ["dojo", "dojox/main", "../../_base"], function(dojo, dojox){
 
 	dojo.getObject("highlight.languages.pygments._html", true, dojox);

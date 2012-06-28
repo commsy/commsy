@@ -1,4 +1,3 @@
-//>>built
 define("dojox/grid/_Events", [
 	"dojo/keys",
 	"dojo/dom-class",

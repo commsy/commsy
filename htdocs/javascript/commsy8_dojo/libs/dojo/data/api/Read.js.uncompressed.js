@@ -1,4 +1,3 @@
-//>>built
 define("dojo/data/api/Read", ["../..", "./Request"], function(dojo) {
 	// module:
 	//		dojo/data/api/Read

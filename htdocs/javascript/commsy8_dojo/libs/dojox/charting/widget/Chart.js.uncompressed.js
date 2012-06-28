@@ -1,4 +1,3 @@
-//>>built
 define("dojox/charting/widget/Chart", ["dojo/_base/kernel", "dojo/_base/lang", "dojo/_base/array","dojo/_base/html","dojo/_base/declare", "dojo/query",
 	"dijit/_Widget", "../Chart", "dojox/lang/utils", "dojox/lang/functional","dojox/lang/functional/lambda",
 	"dijit/_base/manager"], 

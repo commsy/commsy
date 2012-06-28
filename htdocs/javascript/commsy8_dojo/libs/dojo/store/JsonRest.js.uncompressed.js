@@ -1,4 +1,3 @@
-//>>built
 define("dojo/store/JsonRest", ["../_base/xhr", "../json", "../_base/declare", "./util/QueryResults"
 ], function(xhr, JSON, declare, QueryResults) {
   //  module:

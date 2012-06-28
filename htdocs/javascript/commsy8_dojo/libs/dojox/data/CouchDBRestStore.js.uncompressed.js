@@ -1,4 +1,3 @@
-//>>built
 define("dojox/data/CouchDBRestStore", ["dojo", "dojox", "dojox/data/JsonRestStore"], function(dojo, dojox) {
 
 // A CouchDBRestStore is an extension of JsonRestStore to handle CouchDB's idiosyncrasies, special features,

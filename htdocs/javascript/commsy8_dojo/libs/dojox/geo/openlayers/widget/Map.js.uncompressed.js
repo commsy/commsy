@@ -1,4 +1,3 @@
-//>>built
 define("dojox/geo/openlayers/widget/Map", ["dojo/_base/kernel",
 				"dojo/_base/declare",
 				"dojo/_base/array",

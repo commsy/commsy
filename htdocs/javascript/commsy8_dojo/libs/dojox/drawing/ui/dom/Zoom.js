@@ -1,5 +1,5 @@
 //>>built
-define(["dijit","dojo","dojox","dojo/require!dojox/drawing/plugins/_Plugin"],function(_1,_2,_3){
+define("dojox/drawing/ui/dom/Zoom",["dijit","dojo","dojox","dojo/require!dojox/drawing/plugins/_Plugin"],function(_1,_2,_3){
 _2.provide("dojox.drawing.ui.dom.Zoom");
 _2.require("dojox.drawing.plugins._Plugin");
 _3.drawing.ui.dom.Zoom=_3.drawing.util.oo.declare(_3.drawing.plugins._Plugin,function(_4){

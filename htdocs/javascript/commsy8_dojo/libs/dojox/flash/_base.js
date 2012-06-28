@@ -1,5 +1,5 @@
 //>>built
-define(["dijit","dojo","dojox","dojo/require!dojo/window"],function(_1,_2,_3){
+define("dojox/flash/_base",["dijit","dojo","dojox","dojo/require!dojo/window"],function(_1,_2,_3){
 _2.provide("dojox.flash._base");
 _2.experimental("dojox.flash");
 _2.require("dojo.window");

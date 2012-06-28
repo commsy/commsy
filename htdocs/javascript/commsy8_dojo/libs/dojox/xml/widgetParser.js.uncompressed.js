@@ -1,4 +1,3 @@
-//>>built
 define("dojox/xml/widgetParser", [
 	"dojo/_base/lang",	// dojo.getObject
 	"dojo/_base/window",	// dojo.doc

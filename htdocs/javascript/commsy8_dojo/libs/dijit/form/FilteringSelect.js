@@ -3,7 +3,7 @@ define("dijit/form/FilteringSelect",["dojo/data/util/filter","dojo/_base/declare
 return _2("dijit.form.FilteringSelect",[_5,_6],{required:true,_lastDisplayedValue:"",_isValidSubset:function(){
 return this._opened;
 },isValid:function(){
-return this.item||(!this.required&&this.get("displayedValue")=="");
+return !!this.item||(!this.required&&this.get("displayedValue")=="");
 },_refreshState:function(){
 if(!this.searchTimer){
 this.inherited(arguments);

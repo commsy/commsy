@@ -1,17 +1,3 @@
-/*
-	Copyright (c) 2004-2011, The Dojo Foundation All Rights Reserved.
-	Available via Academic Free License >= 2.1 OR the modified BSD license.
-	see: http://dojotoolkit.org/license for details
-*/
-
-/*
-	This is an optimized version of Dojo, built for deployment and not for
-	development. To get sources and documentation, please visit:
-
-		http://dojotoolkit.org
-*/
-
-//>>built
 require({cache:{
 'dojo/uacss':function(){
 define(["./dom-geometry", "./_base/lang", "./ready", "./_base/sniff", "./_base/window"],
@@ -1224,18 +1210,13 @@ return declare("dijit.form._FormWidgetMixin", null, {
 	// works with screen reader
 	_setIdAttr: "focusNode",
 
-	postCreate: function(){
-		this.inherited(arguments);
-		this.connect(this.domNode, "onmousedown", "_onMouseDown");
-	},
-
 	_setDisabledAttr: function(/*Boolean*/ value){
 		this._set("disabled", value);
 		domAttr.set(this.focusNode, 'disabled', value);
 		if(this.valueNode){
 			domAttr.set(this.valueNode, 'disabled', value);
 		}
-		this.focusNode.setAttribute("aria-disabled", value);
+		this.focusNode.setAttribute("aria-disabled", value ? "true" : "false");
 
 		if(value){
 			// reset these, because after the domNode is disabled, we can no longer receive
@@ -1262,9 +1243,29 @@ return declare("dijit.form._FormWidgetMixin", null, {
 		}
 	},
 
-	_onFocus: function(e){
+	_onFocus: function(/*String*/ by){
+		// If user clicks on the widget, even if the mouse is released outside of it,
+		// this widget's focusNode should get focus (to mimic native browser hehavior).
+		// Browsers often need help to make sure the focus via mouse actually gets to the focusNode.
+		if(by == "mouse" && this.isFocusable()){
+			// IE exhibits strange scrolling behavior when refocusing a node so only do it when !focused.
+			var focusConnector = this.connect(this.focusNode, "onfocus", function(){
+				this.disconnect(mouseUpConnector);
+				this.disconnect(focusConnector);
+			});
+			// Set a global event to handle mouseup, so it fires properly
+			// even if the cursor leaves this.domNode before the mouse up event.
+			var mouseUpConnector = this.connect(win.body(), "onmouseup", function(){
+				this.disconnect(mouseUpConnector);
+				this.disconnect(focusConnector);
+				// if here, then the mousedown did not focus the focusNode as the default action
+				if(this.focused){
+					this.focus();
+				}
+			});
+		}
 		if(this.scrollOnFocus){
-			winUtils.scrollIntoView(this.domNode);
+			this.defer(function(){ winUtils.scrollIntoView(this.domNode); }); // without defer, the input caret position can change on mouse click
 		}
 		this.inherited(arguments);
 	},
@@ -1338,15 +1339,15 @@ return declare("dijit.form._FormWidgetMixin", null, {
 			this._pendingOnChange = false;
 			if(this._onChangeActive){
 				if(this._onChangeHandle){
-					clearTimeout(this._onChangeHandle);
+					this._onChangeHandle.remove();
 				}
-				// setTimeout allows hidden value processing to run and
+				// defer allows hidden value processing to run and
 				// also the onChange handler can safely adjust focus, etc
-				this._onChangeHandle = setTimeout(lang.hitch(this,
+				this._onChangeHandle = this.defer(
 					function(){
 						this._onChangeHandle = null;
 						this.onChange(newValue);
-					}), 0); // try to collapse multiple onChange's fired faster than can be processed
+					}); // try to collapse multiple onChange's fired faster than can be processed
 			}
 		}
 	},
@@ -1359,29 +1360,10 @@ return declare("dijit.form._FormWidgetMixin", null, {
 
 	destroy: function(){
 		if(this._onChangeHandle){ // destroy called before last onChange has fired
-			clearTimeout(this._onChangeHandle);
+			this._onChangeHandle.remove();
 			this.onChange(this._lastValueReported);
 		}
 		this.inherited(arguments);
-	},
-
-	_onMouseDown: function(e){
-		// If user clicks on the button, even if the mouse is released outside of it,
-		// this button should get focus (to mimics native browser buttons).
-		// This is also needed on chrome because otherwise buttons won't get focus at all,
-		// which leads to bizarre focus restore on Dialog close etc.
-		// IE exhibits strange scrolling behavior when focusing a node so only do it when !focused.
-		// FF needs the extra help to make sure the mousedown actually gets to the focusNode
-		if((!this.focused || !has("ie")) && !e.ctrlKey && mouse.isLeft(e) && this.isFocusable()){ // !e.ctrlKey to ignore right-click on mac
-			// Set a global event to handle mouseup, so it fires properly
-			// even if the cursor leaves this.domNode before the mouse up event.
-			var mouseUpConnector = this.connect(win.body(), "onmouseup", function(){
-				if(this.isFocusable()){
-					this.focus();
-				}
-				this.disconnect(mouseUpConnector);
-			});
-		}
 	}
 });
 
@@ -6920,13 +6902,13 @@ return declare("dijit._WidgetBase", Stateful, {
 
 		// remove this.connect() and this.subscribe() listeners
 		var c;
-		while(c = this._connects.pop()){
+		while((c = this._connects.pop())){
 			c.remove();
 		}
 
 		// destroy widgets created as part of template, etc.
 		var w;
-		while(w = this._supportingWidgets.pop()){
+		while((w = this._supportingWidgets.pop())){
 			if(w.destroyRecursive){
 				w.destroyRecursive();
 			}else if(w.destroy){
@@ -7404,16 +7386,41 @@ return declare("dijit._WidgetBase", Stateful, {
 		// text: String
 		// tags:
 		//		protected.
+	},
+
+	defer: function(fcn, delay){ 
+		// summary:
+		//		Wrapper to setTimeout to avoid deferred functions executing
+		//		after the originating widget has been destroyed.
+		//		Returns an object handle with a remove method (that returns null) (replaces clearTimeout).
+		// fcn: function reference
+		// delay: Optional number (defaults to 0)
+		// tags:
+		//		protected.
+		var timer = setTimeout(lang.hitch(this, 
+			function(){ 
+				timer = null;
+				if(!this._destroyed){ 
+					lang.hitch(this, fcn)(); 
+				} 
+			}),
+			delay || 0
+		);
+		return {
+			remove:	function(){
+					if(timer){
+						clearTimeout(timer);
+						timer = null;
+					}
+					return null; // so this works well: handle = handle.remove();
+				}
+		};
 	}
 });
 
 });
 
 }}});
-
-require(["dojo/i18n"], function(i18n){
-i18n._preloadLocalizations("dijit/nls/dijit", []);
-});
 define("dijit/dijit", [
 	".",
 	"./_base",

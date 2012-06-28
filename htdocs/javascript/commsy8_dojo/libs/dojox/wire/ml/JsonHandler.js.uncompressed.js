@@ -1,4 +1,3 @@
-//>>built
 // wrapped by build app
 define("dojox/wire/ml/JsonHandler", ["dijit","dojo","dojox","dojo/require!dojox/wire/ml/RestHandler,dojox/wire/_base,dojox/wire/ml/util"], function(dijit,dojo,dojox){
 dojo.provide("dojox.wire.ml.JsonHandler");

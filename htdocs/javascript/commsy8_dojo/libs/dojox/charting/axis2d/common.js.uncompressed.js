@@ -1,4 +1,3 @@
-//>>built
 define("dojox/charting/axis2d/common", ["dojo/_base/lang", "dojo/_base/html", "dojo/_base/window", "dojo/dom-geometry", "dojox/gfx"], 
 	function(lang, html, win, domGeom, g){
 

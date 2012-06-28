@@ -1,5 +1,5 @@
 //>>built
-define(["dijit","dojo","dojox"],function(_1,_2,_3){
+define("dojox/drawing/annotations/BoxShadow",["dijit","dojo","dojox"],function(_1,_2,_3){
 _2.provide("dojox.drawing.annotations.BoxShadow");
 _3.drawing.annotations.BoxShadow=_3.drawing.util.oo.declare(function(_4){
 this.stencil=_4.stencil;

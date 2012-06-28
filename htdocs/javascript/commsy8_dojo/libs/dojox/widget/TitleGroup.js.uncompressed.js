@@ -1,4 +1,3 @@
-//>>built
 define("dojox/widget/TitleGroup", ["dojo", "dijit/registry", "dijit/_Widget", "dijit/TitlePane"], function(dojo, registry, widget, titlepane){
 	
 	var tp = titlepane.prototype,

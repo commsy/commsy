@@ -1,4 +1,3 @@
-//>>built
 define("dijit/_editor/plugins/FullScreen", [
 	"dojo/aspect",
 	"dojo/_base/declare", // declare

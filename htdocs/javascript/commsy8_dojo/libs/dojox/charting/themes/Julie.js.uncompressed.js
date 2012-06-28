@@ -1,4 +1,3 @@
-//>>built
 define("dojox/charting/themes/Julie", ["../Theme", "dojox/gfx/gradutils", "./common"], function(Theme, gradutils){
 
 	// created by Julie Santilli (Claro-based theme)

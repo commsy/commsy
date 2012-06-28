@@ -1,4 +1,3 @@
-//>>built
 define("dojo/dnd/Avatar", ["../main", "./common"], function(dojo) {
 	// module:
 	//		dojo/dnd/Avatar

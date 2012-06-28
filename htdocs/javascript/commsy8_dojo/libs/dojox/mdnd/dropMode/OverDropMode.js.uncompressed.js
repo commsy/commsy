@@ -1,4 +1,3 @@
-//>>built
 define("dojox/mdnd/dropMode/OverDropMode", ["dojo/_base/kernel","dojo/_base/declare","dojo/_base/connect","dojo/_base/html",
 	"dojo/_base/array","dojox/mdnd/AreaManager"],function(dojo){
 	var odm = dojo.declare(

@@ -1,4 +1,3 @@
-//>>built
 define("dojo/dnd/AutoSource", [ "./Source" ], function(Source){
 	/*===== Source = dojo.dnd.Source =====*/
 	return dojo.declare("dojo.dnd.AutoSource", Source, {

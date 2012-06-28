@@ -1,4 +1,3 @@
-//>>built
 define("dojox/analytics/plugins/mouseClick", ["dojo/_base/lang","../_base", "dojo/_base/window", "dojo/on"
 ], function(lang, dxa, window, on){
 	/*=====

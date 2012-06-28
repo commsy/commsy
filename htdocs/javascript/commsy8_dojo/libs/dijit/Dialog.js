@@ -244,7 +244,11 @@ pd.dialog._getFocusItems(pd.dialog.domNode);
 _32=pd.dialog._firstFocusItem;
 }
 if(_32){
+try{
 _32.focus();
+}
+catch(e){
+}
 }
 }
 }else{

@@ -1,4 +1,3 @@
-//>>built
 define("dojox/av/FLVideo", ['dojo', 'dijit', 'dijit/_Widget', 'dojox/embed/Flash', 'dojox/av/_Media'],function(dojo, dijit){
 
 dojo.experimental("dojox.av.FLVideo");

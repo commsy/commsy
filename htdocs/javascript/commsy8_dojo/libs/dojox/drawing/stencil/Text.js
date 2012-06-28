@@ -1,5 +1,5 @@
 //>>built
-define(["dijit","dojo","dojox"],function(_1,_2,_3){
+define("dojox/drawing/stencil/Text",["dijit","dojo","dojox"],function(_1,_2,_3){
 _2.provide("dojox.drawing.stencil.Text");
 _3.drawing.stencil.Text=_3.drawing.util.oo.declare(_3.drawing.stencil._Base,function(_4){
 },{type:"dojox.drawing.stencil.Text",anchorType:"none",baseRender:true,align:"start",valign:"top",_lineHeight:1,typesetter:function(_5){

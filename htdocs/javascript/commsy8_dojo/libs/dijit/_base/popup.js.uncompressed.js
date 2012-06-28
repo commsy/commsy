@@ -1,4 +1,3 @@
-//>>built
 define("dijit/_base/popup", [
 	"dojo/dom-class", // domClass.contains
 	"../popup",

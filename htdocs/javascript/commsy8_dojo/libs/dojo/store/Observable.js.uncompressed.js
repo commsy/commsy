@@ -1,4 +1,3 @@
-//>>built
 define("dojo/store/Observable", ["../_base/kernel", "../_base/lang", "../_base/Deferred", "../_base/array"
 ], function(kernel, lang, Deferred, array) {
 	// module:

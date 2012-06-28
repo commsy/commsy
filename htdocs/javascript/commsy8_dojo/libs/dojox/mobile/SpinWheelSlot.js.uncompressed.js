@@ -1,4 +1,3 @@
-//>>built
 define("dojox/mobile/SpinWheelSlot", [
 	"dojo/_base/declare",
 	"dojo/_base/window",

@@ -1,4 +1,3 @@
-//>>built
 define("dojox/validate/creditCard", ["dojo/_base/lang", "./_base"], function(lang, validate){
 /*=====
 

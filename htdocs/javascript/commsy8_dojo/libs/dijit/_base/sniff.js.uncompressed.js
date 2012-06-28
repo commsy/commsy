@@ -1,4 +1,3 @@
-//>>built
 define("dijit/_base/sniff", [ "dojo/uacss" ], function(){
 	// module:
 	//		dijit/_base/sniff

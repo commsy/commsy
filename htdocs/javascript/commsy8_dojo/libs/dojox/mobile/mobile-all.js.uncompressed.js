@@ -1,4 +1,3 @@
-//>>built
 define("dojox/mobile/mobile-all", [
 	"./_base",
 	"./compat",

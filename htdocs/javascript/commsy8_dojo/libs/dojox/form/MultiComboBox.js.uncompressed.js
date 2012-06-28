@@ -1,4 +1,3 @@
-//>>built
 define("dojox/form/MultiComboBox", [
 	"dojo/_base/kernel",
 	"dijit/form/ValidationTextBox",

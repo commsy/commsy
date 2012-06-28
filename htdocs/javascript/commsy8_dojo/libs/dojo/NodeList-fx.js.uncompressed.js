@@ -1,4 +1,3 @@
-//>>built
 define("dojo/NodeList-fx", ["dojo/_base/NodeList", "./_base/lang", "./_base/connect", "./_base/fx", "./fx"], 
   function(NodeList, lang, connectLib, baseFx, coreFx) {
 	// module:

@@ -1,4 +1,3 @@
-//>>built
 define("dojox/editor/plugins/StatusBar", [
 	"dojo",
 	"dijit",

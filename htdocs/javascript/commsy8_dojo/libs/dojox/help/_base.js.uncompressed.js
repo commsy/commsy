@@ -1,4 +1,3 @@
-//>>built
 // wrapped by build app
 define("dojox/help/_base", ["dijit","dojo","dojox","dojo/require!dojox/rpc/Service,dojo/io/script"], function(dijit,dojo,dojox){
 dojo.provide("dojox.help._base");

@@ -1,4 +1,3 @@
-//>>built
 define("dojox/mobile/_ItemBase", [
 	"dojo/_base/kernel",
 	"dojo/_base/config",

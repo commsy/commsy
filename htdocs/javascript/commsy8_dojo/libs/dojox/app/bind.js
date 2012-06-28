@@ -1,5 +1,5 @@
 //>>built
-define("dojox/app/bind",["dojo/_base/kernel","dojo/query","dojo/_base/array","dijit","dojo/_base/json"],function(_1,_2,_3,_4,_5){
+define("dojox/app/bind",["dojo/_base/lang","dojo/query","dojo/_base/array","dijit/registry","dojo/_base/json"],function(_1,_2,_3,_4,_5){
 return function(_6,_7){
 _3.forEach(_6,function(_8){
 var _9=_2("div[dojoType^=\"dojox.mvc\"],div[data-dojo-type^=\"dojox.mvc\"]",_8.domNode);

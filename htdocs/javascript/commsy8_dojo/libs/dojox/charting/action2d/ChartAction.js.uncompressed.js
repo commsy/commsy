@@ -1,4 +1,3 @@
-//>>built
 define("dojox/charting/action2d/ChartAction", ["dojo/_base/connect", "dojo/_base/declare", "./Base"], 
 	function(hub, declare, Base){
 	/*=====

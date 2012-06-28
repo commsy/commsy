@@ -1,4 +1,3 @@
-//>>built
 define("dojox/mobile/SpinWheelTimePicker", [
 	"dojo/_base/declare",
 	"dojo/dom-class",

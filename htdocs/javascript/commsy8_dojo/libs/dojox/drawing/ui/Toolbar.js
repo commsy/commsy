@@ -1,5 +1,5 @@
 //>>built
-define(["dijit","dojo","dojox","dojo/require!dojox/drawing/library/icons"],function(_1,_2,_3){
+define("dojox/drawing/ui/Toolbar",["dijit","dojo","dojox","dojo/require!dojox/drawing/library/icons"],function(_1,_2,_3){
 _2.provide("dojox.drawing.ui.Toolbar");
 _2.require("dojox.drawing.library.icons");
 _2.declare("dojox.drawing.ui.Toolbar",[],{constructor:function(_4,_5){

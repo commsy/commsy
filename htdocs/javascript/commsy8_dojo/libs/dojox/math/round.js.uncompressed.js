@@ -1,4 +1,3 @@
-//>>built
 // AMD-ID "dojox/math/round"
 define("dojox/math/round", ["dojo", "dojox"], function(dojo, dojox) {
 

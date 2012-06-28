@@ -1,4 +1,3 @@
-//>>built
 // AMD-ID "dojox/math/stats"
 define("dojox/math/stats", ["dojo", "../main"], function(dojo, dojox) {
 	

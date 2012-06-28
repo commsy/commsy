@@ -1,4 +1,3 @@
-//>>built
 define("dijit/tree/dndSource", [
 	"dojo/_base/array", // array.forEach array.indexOf array.map
 	"dojo/_base/connect", // isCopyKey

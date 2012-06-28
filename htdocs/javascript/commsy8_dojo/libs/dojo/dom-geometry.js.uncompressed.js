@@ -1,4 +1,3 @@
-//>>built
 define("dojo/dom-geometry", ["./_base/sniff", "./_base/window","./dom", "./dom-style"],
 		function(has, win, dom, style){
 	// module:

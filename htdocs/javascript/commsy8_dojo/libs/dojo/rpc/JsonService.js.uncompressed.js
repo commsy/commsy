@@ -1,4 +1,3 @@
-//>>built
 define("dojo/rpc/JsonService", ["../main", "./RpcService"], function(dojo) {
 	// module:
 	//		dojo/rpc/JsonService

@@ -1,4 +1,3 @@
-//>>built
 define("dojox/charting/plot3d/Bars", ["dojox/gfx3d", "dojo/_base/window", "dojo/_base/declare", "dojo/_base/Color", "./Base"], 
 	function(gfx3d, win, declare, Color, Base) {
 

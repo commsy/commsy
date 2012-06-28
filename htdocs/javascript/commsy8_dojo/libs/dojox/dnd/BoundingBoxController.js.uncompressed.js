@@ -1,4 +1,3 @@
-//>>built
 define("dojox/dnd/BoundingBoxController", ["dojo", "dojox"], function(dojo, dojox) {
 
 	return dojo.declare('dojox.dnd.BoundingBoxController', null, {

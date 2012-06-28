@@ -1,4 +1,3 @@
-//>>built
 define("dojox/layout/RotatorContainer", ["dojo/_base/declare","dojo/_base/html","dojo/_base/connect","dojo/_base/lang","dojo/_base/array",
 	"dojo/_base/fx","dojo/fx","dijit/_base/manager","dijit/layout/StackContainer","dijit/layout/StackController","dijit/_Widget",
 	"dijit/_Templated","dijit/_Contained"

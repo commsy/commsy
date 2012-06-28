@@ -1,4 +1,3 @@
-//>>built
 define("dojox/calc/_Executor", [
 	"dojo/_base/kernel",
 	"dojo/_base/declare",

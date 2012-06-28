@@ -1,4 +1,3 @@
-//>>built
 define("dojox/geo/charting/MouseInteractionSupport", ["dojo/_base/lang","dojo/_base/declare","dojo/_base/event",
 		"dojo/_base/connect","dojo/_base/window","dojo/_base/html","dojo/dom","dojo/_base/sniff"],
   function(lang, declare, event, connect, win, html, dom, has) {

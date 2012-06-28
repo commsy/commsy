@@ -1,4 +1,3 @@
-//>>built
 define(
 	"dojo/parser", ["./_base/kernel", "./_base/lang", "./_base/array", "./_base/html", "./_base/window", "./_base/url",
 		"./_base/json", "./aspect", "./date/stamp", "./query", "./on", "./ready"],

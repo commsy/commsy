@@ -50,7 +50,7 @@ define([	"dojo/_base/declare",
 			}));
 			
 			// participation code hiding
-			Query("input[name='form_data[member_check]']", this.contentNode).forEach(Lang.hitch(this, function(node, index, arr) {
+			dojo.forEach(Query("input[name='form_data[member_check]']", this.contentNode), Lang.hitch(this, function(node, index, arr) {
 				if(DomAttr.get(node, "value") === "withcode") {
 					// enable
 					On(node, "click", function(event) {
@@ -147,7 +147,7 @@ define([	"dojo/_base/declare",
 			if(!isNaN(selectedId) && selectedId > -1) {
 				// check if already assigned
 				var assigned = false;
-				Query("input[name^='form_data[communityroomlist_']").forEach(function(node, index, arr) {
+				dojo.forEach(Query("input[name^='form_data[communityroomlist_']"), function(node, index, arr) {
 					// extract id
 					var regex = new RegExp("form_data\\[communityroomlist_([0-9]*)\\]");
 					var results = regex.exec(DomAttr.get(node, "name"));
@@ -188,7 +188,7 @@ define([	"dojo/_base/declare",
 				
 				// get new value
 				var newValue = 5;
-				Query("input", divObject).forEach(function(node, index, arr) {
+				dojo.forEach(Query("input", divObject), function(node, index, arr) {
 					var regex = new RegExp("form_data\\[additional_status_([0-9]*)\\]");
 					var results = regex.exec(DomAttr.get(node, "name"));
 					var index = results[1];
@@ -232,11 +232,11 @@ define([	"dojo/_base/declare",
 		
 		updateUsageHints: function(selectedValue) {
 			// hide all
-			Query("input[id^='moderation_title_']", this.contentNode).forEach(function(node, index, arr) {
+			dojo.forEach(Query("input[id^='moderation_title_']", this.contentNode), function(node, index, arr) {
 				DomClass.add(node, "hidden");
 			});
 			
-			Query("div[id^='moderation_description_']", this.contentNode).forEach(function(node, index, arr) {
+			dojo.forEach(Query("div[id^='moderation_description_']", this.contentNode), function(node, index, arr) {
 				DomClass.add(node.parentNode, "hidden");
 			});
 			
@@ -252,13 +252,13 @@ define([	"dojo/_base/declare",
 			var index = results[1];
 			
 			// hide all
-			Query("div[id^='moderation_mail_body_']", this.contentNode).forEach(function(node, index, arr) {
+			dojo.forEach(Query("div[id^='moderation_mail_body_']", this.contentNode), function(node, index, arr) {
 				DomClass.add(node.parentNode, "hidden")
 				DomClass.add(node.parentNode.parentNode, "hidden");
 			});
 			
 			// show selected
-			Query("div#moderation_mail_body_de_" + index + ", div#moderation_mail_body_en_" + index, this.contentNode).forEach(function(node, index, arr) {
+			dojo.forEach(Query("div#moderation_mail_body_de_" + index + ", div#moderation_mail_body_en_" + index, this.contentNode), function(node, index, arr) {
 				DomClass.remove(node.parentNode, "hidden")
 				DomClass.remove(node.parentNode.parentNode, "hidden");
 			});
@@ -266,7 +266,7 @@ define([	"dojo/_base/declare",
 		
 		updateUsageContract: function(selectedValue) {
 			// hide all
-			Query("div[id^='agb_text_']", this.contentNode).forEach(function(node, index, arr) {
+			dojo.forEach(Query("div[id^='agb_text_']", this.contentNode), function(node, index, arr) {
 				DomClass.add(node.parentNode, "hidden")
 				DomClass.add(node.parentNode.parentNode, "hidden");
 			});
@@ -281,7 +281,7 @@ define([	"dojo/_base/declare",
 			var part = customObject.part;
 			
 			// add ckeditor data to hidden div
-			this.featureHandles["editor"].forEach(function(editor, index, arr) {
+			dojo.forEach(this.featureHandles["editor"], function(editor, index, arr) {
 				var instance = editor.getInstance();
 				var node = editor.getNode().parentNode;
 				

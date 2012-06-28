@@ -1,5 +1,5 @@
 //>>built
-define(["dijit","dojo","dojox","dojo/require!dojo/fx"],function(_1,_2,_3){
+define("dojox/widget/rotator/Fade",["dijit","dojo","dojox","dojo/require!dojo/fx"],function(_1,_2,_3){
 _2.provide("dojox.widget.rotator.Fade");
 _2.require("dojo.fx");
 (function(d){

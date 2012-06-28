@@ -1,4 +1,3 @@
-//>>built
 define("dojo/domReady", ['./has'], function(has){
 	var global = this,
 		doc = document,

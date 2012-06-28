@@ -94,7 +94,7 @@ return;
 }
 setTimeout(_6.hitch(this,"_onInput",_12),0);
 };
-_1.forEach(["onkeydown","onkeypress","onpaste","oncut","oninput"],function(_13){
+_1.forEach(["onkeydown","onkeypress","onpaste","oncut","oninput","oncompositionend"],function(_13){
 this.connect(this.textbox,_13,_10);
 },this);
 },_blankValue:"",filter:function(val){

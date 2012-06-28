@@ -1,4 +1,3 @@
-//>>built
 define("dojox/charting/plot2d/Default", ["dojo/_base/lang", "dojo/_base/declare", "dojo/_base/array", 
 		"./Base", "./common", "dojox/lang/functional", "dojox/lang/functional/reversed", "dojox/lang/utils", "dojox/gfx/fx"], 
 	function(lang, declare, arr, Base, dc, df, dfr, du, fx){

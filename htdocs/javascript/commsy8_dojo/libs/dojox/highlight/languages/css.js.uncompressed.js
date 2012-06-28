@@ -1,4 +1,3 @@
-//>>built
 define("dojox/highlight/languages/css", ["dojox/main", "../_base", "./html"], function(dojox, dh, html){
 	
 	var dhc = dh.constants;

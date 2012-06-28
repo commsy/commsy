@@ -25,7 +25,7 @@
 			
 			fputs($file, var_dump($_FILES));
 			fputs($file, var_dump($_REQUEST));
-				
+			
 			
 			// get post data
 			$postdata = array();
@@ -113,11 +113,60 @@
 		private function doUpload($uploadData, $file_upload_rubric) {
 			$session = $this->_environment->getSessionItem();
 			
-			$file_array = array();
-			$numFiles = sizeof($uploadData["name"]);
+			$isMulti = is_array($uploadData["name"]);
 			
-			for($i = 0; $i < $numFiles; $i++) {
-				$tempFile = $uploadData["tmp_name"][$i];
+			$file_array = array();
+			if($isMulti) {
+				$numFiles = sizeof($uploadData["name"]);
+				
+				for($i = 0; $i < $numFiles; $i++) {
+					$tempFile = $uploadData["tmp_name"][$i];
+				
+					/*
+					 if($session->issetValue($file_upload_rubric . "_add_files")) {
+					$file_array = $session->getValue($file_upload_rubric . "_add_files");
+					} else {
+					$file_array = array();
+					}*/
+						
+					global $c_virus_scan;
+					global $c_virus_scan_cron;
+					$c_virus_scan = (!isset($c_virus_scan) || $c_virus_scan === false) ? false : true;
+					$c_virus_scan_cron = (!isset($c_virus_scan_cron) || $c_virus_scan_cron === false) ? false : true;
+						
+					if(!empty($tempFile) && $uploadData["size"][$i] > 0) {
+						$disc_manager = $this->_environment->getDiscManager();
+				
+						if(	isset($c_virus_scan) &&
+								$c_virus_scan &&
+								isset($c_virus_scan_cron) &&
+								!empty($c_virus_scan_cron) &&
+								!$c_virus_scan_cron) {
+								
+							// use virus scanner
+							require_once('classes/cs_virus_scan.php');
+							$virus_scanner = new cs_virus_scan($this->_environment);
+							if ( $virus_scanner->isClean($tempFile, $uploadData['name'][$i]) ) {
+								$temp_array = array();
+								$temp_array['name'] = $uploadData['name'][$i];
+								$temp_array['tmp_name'] = $disc_manager->moveUploadedFileToTempFolder($tempFile);
+								$temp_array['file_id'] = $temp_array['name'].'_' . getCurrentDateTimeInMySQL();
+								$file_array[] = $temp_array;
+							}
+						} else {
+							// do not use virus scanner
+							require_once('functions/date_functions.php');
+							$temp_array = array();
+							$temp_array['name'] = $uploadData['name'][$i];
+							$temp_array['tmp_name'] = $disc_manager->moveUploadedFileToTempFolder($tempFile);
+							$temp_array['file_id'] = $temp_array['name'] . '_' . getCurrentDateTimeInMySQL();
+							$file_array[] = $temp_array;
+						}
+						unset($disc_manager);
+					}
+				}
+			} else {
+				$tempFile = $uploadData["tmp_name"];
 				
 				/*
 				if($session->issetValue($file_upload_rubric . "_add_files")) {
@@ -131,7 +180,7 @@
 				$c_virus_scan = (!isset($c_virus_scan) || $c_virus_scan === false) ? false : true;
 				$c_virus_scan_cron = (!isset($c_virus_scan_cron) || $c_virus_scan_cron === false) ? false : true;
 					
-				if(!empty($tempFile) && $uploadData["size"][$i] > 0) {
+				if(!empty($tempFile) && $uploadData["size"] > 0) {
 					$disc_manager = $this->_environment->getDiscManager();
 				
 					if(	isset($c_virus_scan) &&
@@ -143,9 +192,9 @@
 						// use virus scanner
 						require_once('classes/cs_virus_scan.php');
 						$virus_scanner = new cs_virus_scan($this->_environment);
-						if ( $virus_scanner->isClean($tempFile, $uploadData['name'][$i]) ) {
+						if ( $virus_scanner->isClean($tempFile, $uploadData['name']) ) {
 							$temp_array = array();
-							$temp_array['name'] = $uploadData['name'][$i];
+							$temp_array['name'] = $uploadData['name'];
 							$temp_array['tmp_name'] = $disc_manager->moveUploadedFileToTempFolder($tempFile);
 							$temp_array['file_id'] = $temp_array['name'].'_' . getCurrentDateTimeInMySQL();
 							$file_array[] = $temp_array;
@@ -154,7 +203,7 @@
 						// do not use virus scanner
 						require_once('functions/date_functions.php');
 						$temp_array = array();
-						$temp_array['name'] = $uploadData['name'][$i];
+						$temp_array['name'] = $uploadData['name'];
 						$temp_array['tmp_name'] = $disc_manager->moveUploadedFileToTempFolder($tempFile);
 						$temp_array['file_id'] = $temp_array['name'] . '_' . getCurrentDateTimeInMySQL();
 						$file_array[] = $temp_array;
@@ -198,7 +247,7 @@
 			
 			// merge current upload data with last one - session will be cleaned when storing item
 			$currentSessionArray = array();
-			if($session->issetValue($file_upload_rubric . '_add_files')) {
+			if($session->issetValue(/*$file_upload_rubric . '_add_files'*/"add_files")) {
 				$currentSessionArray = $session->getValue("add_files");
 			}
 			
@@ -210,68 +259,6 @@
 			$this->_environment->getSessionManager()->save($session);
 			
 			return $return;
-			
-			/*
-			if(!empty($_FILES)) {
-				include_once('functions/development_functions.php');
-			
-				$post_file_ids = array();
-				$tempFile = $_FILES['Filedata']['tmp_name'];
-					
-				$file_upload_rubric = $_REQUEST['file_upload_rubric'];
-			
-				$session = $this->_environment->getSessionItem();
-			
-				if($session->issetValue($file_upload_rubric . '_add_files')) {
-					$file_array = $session->getValue($file_upload_rubric . '_add_files');
-				} else {
-					$file_array = array();
-				}
-			
-				global $c_virus_scan;
-				global $c_virus_scan_cron;
-				$c_virus_scan = (!isset($c_virus_scan) || $c_virus_scan === false) ? false : true;
-				$c_virus_scan_cron = (!isset($c_virus_scan_cron) || $c_virus_scan_cron === false) ? false : true;
-					
-				if(!empty($tempFile) && $_FILES['Filedata']['size'] > 0) {
-					$disc_manager = $this->_environment->getDiscManager();
-					if(   isset($c_virus_scan) &&
-							$c_virus_scan &&
-							isset($c_virus_scan_cron) &&
-							!empty($c_virus_scan_cron) &&
-							!$c_virus_scan_cron) {
-						// use virus scanner
-						require_once('classes/cs_virus_scan.php');
-						$virus_scanner = new cs_virus_scan($this->_environment);
-						if ( $virus_scanner->isClean($tempFile,$_FILES['Filedata']['name']) ) {
-							$temp_array = array();
-							$temp_array['name'] = $_FILES['Filedata']['name'];
-							$temp_array['tmp_name'] = $disc_manager->moveUploadedFileToTempFolder($tempFile);
-							$temp_array['file_id'] = $temp_array['name'].'_' . getCurrentDateTimeInMySQL();
-							$file_array[] = $temp_array;
-						}
-					} else {
-						// do not use virus scanner
-						require_once('functions/date_functions.php');
-						$temp_array = array();
-						$temp_array['name'] = $_FILES['Filedata']['name'];
-						$temp_array['tmp_name'] = $disc_manager->moveUploadedFileToTempFolder($tempFile);
-						$temp_array['file_id'] = $temp_array['name'] . '_' . getCurrentDateTimeInMySQL();
-						$file_array[] = $temp_array;
-					}
-					unset($disc_manager);
-				}
-				if(count($file_array) > 0) {
-					$session->setValue($file_upload_rubric . '_add_files', $file_array);
-				} else {
-					$session->unsetValue($file_upload_rubric . '_add_files');
-				}
-					
-				echo $temp_array['file_id'];
-			}
-				
-			$this->_environment->getSessionManager()->save($session);
-			*/
 		}
 
 		/*

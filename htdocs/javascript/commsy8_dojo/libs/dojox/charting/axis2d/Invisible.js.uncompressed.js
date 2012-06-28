@@ -1,4 +1,3 @@
-//>>built
 define("dojox/charting/axis2d/Invisible", ["dojo/_base/lang", "dojo/_base/declare", "./Base", "../scaler/linear", 
 	"dojox/gfx", "dojox/lang/utils", "dojox/lang/functional", "dojo/string"],
 	function(lang, declare, Base, lin, g, du, df, dstring){

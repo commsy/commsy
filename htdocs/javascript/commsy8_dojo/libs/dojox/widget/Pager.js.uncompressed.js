@@ -1,4 +1,3 @@
-//>>built
 // wrapped by build app
 define("dojox/widget/Pager", ["dijit","dojo","dojox","dojo/require!dijit/_Widget,dijit/_Templated,dojo/fx"], function(dijit,dojo,dojox){
 dojo.provide("dojox.widget.Pager");

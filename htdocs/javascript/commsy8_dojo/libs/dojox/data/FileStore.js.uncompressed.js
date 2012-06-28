@@ -1,4 +1,3 @@
-//>>built
 define("dojox/data/FileStore", ["dojo/_base/declare", "dojo/_base/lang", "dojo/_base/window", "dojo/_base/json", "dojo/_base/xhr"], 
   function(declare, lang, winUtil, jsonUtil, xhr) {
 

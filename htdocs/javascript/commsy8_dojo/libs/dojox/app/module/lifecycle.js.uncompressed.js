@@ -1,4 +1,3 @@
-//>>built
 define("dojox/app/module/lifecycle", ["dojo/_base/declare", "dojo/_base/connect"], function(declare, connect){
     return declare(null, {
     

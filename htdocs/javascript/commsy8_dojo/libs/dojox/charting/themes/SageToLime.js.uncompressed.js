@@ -1,4 +1,3 @@
-//>>built
 define("dojox/charting/themes/SageToLime", ["../Theme", "./common"], function(Theme, themes){
 	
 	themes.SageToLime=new Theme({

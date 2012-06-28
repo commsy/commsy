@@ -1,4 +1,3 @@
-//>>built
 define("dijit/form/ToggleButton", [
 	"dojo/_base/declare", // declare
 	"dojo/_base/kernel", // kernel.deprecated

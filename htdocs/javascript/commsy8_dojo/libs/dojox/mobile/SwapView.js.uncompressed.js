@@ -1,4 +1,3 @@
-//>>built
 define("dojox/mobile/SwapView", [
 	"dojo/_base/array",
 	"dojo/_base/connect",

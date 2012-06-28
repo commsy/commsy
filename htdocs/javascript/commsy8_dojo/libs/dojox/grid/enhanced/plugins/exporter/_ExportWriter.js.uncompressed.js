@@ -1,4 +1,3 @@
-//>>built
 define("dojox/grid/enhanced/plugins/exporter/_ExportWriter", [
 	"dojo/_base/declare"
 ], function(declare){

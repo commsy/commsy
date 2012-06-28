@@ -1,5 +1,5 @@
 //>>built
-define(["dijit","dojo","dojox","dojo/require!dojox/drawing/plugins/_Plugin"],function(_1,_2,_3){
+define("dojox/drawing/plugins/drawing/Grid",["dijit","dojo","dojox","dojo/require!dojox/drawing/plugins/_Plugin"],function(_1,_2,_3){
 _2.provide("dojox.drawing.plugins.drawing.Grid");
 _2.require("dojox.drawing.plugins._Plugin");
 _3.drawing.plugins.drawing.Grid=_3.drawing.util.oo.declare(_3.drawing.plugins._Plugin,function(_4){

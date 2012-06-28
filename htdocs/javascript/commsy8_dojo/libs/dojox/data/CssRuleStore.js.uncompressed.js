@@ -1,4 +1,3 @@
-//>>built
 define("dojox/data/CssRuleStore", ["dojo/_base/lang", "dojo/_base/declare", "dojo/_base/array", "dojo/_base/json","dojo/_base/window", "dojo/_base/sniff", "dojo/data/util/sorter", "dojo/data/util/filter", "./css"],
  function(lang, declare, array, jsonUtil, winUtil, has, sorter, filter, css) {
 

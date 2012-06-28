@@ -1,4 +1,3 @@
-//>>built
 // wrapped by build app
 define("dojox/lang/oo/general", ["dijit","dojo","dojox","dojo/require!dojox/lang/oo/Decorator"], function(dijit,dojo,dojox){
 dojo.provide("dojox.lang.oo.general");

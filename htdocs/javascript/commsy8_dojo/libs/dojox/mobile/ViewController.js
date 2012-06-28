@@ -97,52 +97,58 @@ dm._viewMap[evt.detail.url]=id;
 _10=id;
 w=this.findCurrentView(_10,_b.byId(evt.target.id))||w;
 }
-w.performTransition(_10,evt.detail.transitionDir,evt.detail.transition,null,null);
-},_parse:function(_17,id){
-var _18,_19,i,j,len;
-var _1a=this.findCurrentView();
-var _1b=_b.byId(id)&&_b.byId(id).containerNode||_7.byId(id)||_1a&&_1a.domNode.parentNode||_6.body();
-var _1c=null;
-for(j=_1b.childNodes.length-1;j>=0;j--){
-var c=_1b.childNodes[j];
+var src=_b.getEnclosingWidget(evt.target);
+var _17,_18;
+if(src&&src.callback){
+_17=src;
+_18=src.callback;
+}
+w.performTransition(_10,evt.detail.transitionDir,evt.detail.transition,_17,_18);
+},_parse:function(_19,id){
+var _1a,_1b,i,j,len;
+var _1c=this.findCurrentView();
+var _1d=_b.byId(id)&&_b.byId(id).containerNode||_7.byId(id)||_1c&&_1c.domNode.parentNode||_6.body();
+var _1e=null;
+for(j=_1d.childNodes.length-1;j>=0;j--){
+var c=_1d.childNodes[j];
 if(c.nodeType===1){
 if(c.getAttribute("fixed")==="bottom"){
-_1c=c;
-}
+_1e=c;
 break;
 }
 }
-if(_17.charAt(0)==="<"){
-_18=_9.create("DIV",{innerHTML:_17});
-for(i=0;i<_18.childNodes.length;i++){
-var n=_18.childNodes[i];
+}
+if(_19.charAt(0)==="<"){
+_1a=_9.create("DIV",{innerHTML:_19});
+for(i=0;i<_1a.childNodes.length;i++){
+var n=_1a.childNodes[i];
 if(n.nodeType===1){
-_19=n;
+_1b=n;
 break;
 }
 }
-if(!_19){
+if(!_1b){
 return;
 }
-_19.style.visibility="hidden";
-_1b.insertBefore(_18,_1c);
-var ws=_1.parser.parse(_18);
+_1b.style.visibility="hidden";
+_1d.insertBefore(_1a,_1e);
+var ws=_1.parser.parse(_1a);
 _2.forEach(ws,function(w){
 if(w&&!w._started&&w.startup){
 w.startup();
 }
 });
-for(i=0,len=_18.childNodes.length;i<len;i++){
-_1b.insertBefore(_18.firstChild,_1c);
+for(i=0,len=_1a.childNodes.length;i<len;i++){
+_1d.insertBefore(_1a.firstChild,_1e);
 }
-_1b.removeChild(_18);
-_b.byNode(_19)._visible=true;
+_1d.removeChild(_1a);
+_b.byNode(_1b)._visible=true;
 }else{
-if(_17.charAt(0)==="{"){
-_18=_9.create("DIV");
-_1b.insertBefore(_18,_1c);
+if(_19.charAt(0)==="{"){
+_1a=_9.create("DIV");
+_1d.insertBefore(_1a,_1e);
 this._ws=[];
-_19=this._instantiate(eval("("+_17+")"),_18);
+_1b=this._instantiate(eval("("+_19+")"),_1a);
 for(i=0;i<this._ws.length;i++){
 var w=this._ws[i];
 w.startup&&!w._started&&(!w.getParent||!w.getParent())&&w.startup();
@@ -150,11 +156,11 @@ w.startup&&!w._started&&(!w.getParent||!w.getParent())&&w.startup();
 this._ws=null;
 }
 }
-_19.style.display="none";
-_19.style.visibility="visible";
-return _1.hash?"#"+_19.id:_19.id;
-},_instantiate:function(obj,_1d,_1e){
-var _1f;
+_1b.style.display="none";
+_1b.style.visibility="visible";
+return _1.hash?"#"+_1b.id:_1b.id;
+},_instantiate:function(obj,_1f,_20){
+var _21;
 for(var key in obj){
 if(key.charAt(0)=="@"){
 continue;
@@ -163,43 +169,43 @@ var cls=_5.getObject(key);
 if(!cls){
 continue;
 }
-var _20={};
-var _21=cls.prototype;
-var _22=_5.isArray(obj[key])?obj[key]:[obj[key]];
-for(var i=0;i<_22.length;i++){
-for(var _23 in _22[i]){
-if(_23.charAt(0)=="@"){
-var val=_22[i][_23];
-_23=_23.substring(1);
-if(typeof _21[_23]=="string"){
-_20[_23]=val;
+var _22={};
+var _23=cls.prototype;
+var _24=_5.isArray(obj[key])?obj[key]:[obj[key]];
+for(var i=0;i<_24.length;i++){
+for(var _25 in _24[i]){
+if(_25.charAt(0)=="@"){
+var val=_24[i][_25];
+_25=_25.substring(1);
+if(typeof _23[_25]=="string"){
+_22[_25]=val;
 }else{
-if(typeof _21[_23]=="number"){
-_20[_23]=val-0;
+if(typeof _23[_25]=="number"){
+_22[_25]=val-0;
 }else{
-if(typeof _21[_23]=="boolean"){
-_20[_23]=(val!="false");
+if(typeof _23[_25]=="boolean"){
+_22[_25]=(val!="false");
 }else{
-if(typeof _21[_23]=="object"){
-_20[_23]=eval("("+val+")");
+if(typeof _23[_25]=="object"){
+_22[_25]=eval("("+val+")");
 }
 }
 }
 }
 }
 }
-_1f=new cls(_20,_1d);
-if(_1d){
-_1f._visible=true;
-this._ws.push(_1f);
+_21=new cls(_22,_1f);
+if(_1f){
+_21._visible=true;
+this._ws.push(_21);
 }
-if(_1e&&_1e.addChild){
-_1e.addChild(_1f);
+if(_20&&_20.addChild){
+_20.addChild(_21);
 }
-this._instantiate(_22[i],null,_1f);
+this._instantiate(_24[i],null,_21);
 }
 }
-return _1f&&_1f.domNode;
+return _21&&_21.domNode;
 }});
 new _e();
 return _e;

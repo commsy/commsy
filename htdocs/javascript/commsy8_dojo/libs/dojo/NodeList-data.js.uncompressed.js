@@ -1,4 +1,3 @@
-//>>built
 define("dojo/NodeList-data", [
 	"./_base/kernel", "./query", "./_base/lang", "./_base/array", "./dom-attr"
 ], function(dojo, query, lang, array, attr) {

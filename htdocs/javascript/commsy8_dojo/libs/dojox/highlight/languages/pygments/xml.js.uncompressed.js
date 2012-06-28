@@ -1,4 +1,3 @@
-//>>built
 define("dojox/highlight/languages/pygments/xml", ["dojox/main", "../../_base", "../xml"], function(dojox){
 
 	var dxml = dojox.highlight.languages.xml = {

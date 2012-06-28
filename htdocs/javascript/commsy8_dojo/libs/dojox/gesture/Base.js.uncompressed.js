@@ -1,4 +1,3 @@
-//>>built
 define("dojox/gesture/Base", [
 	"dojo/_base/kernel",
 	"dojo/_base/declare",

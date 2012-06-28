@@ -1,4 +1,3 @@
-//>>built
 // AMD-ID "dojox/math/_base"
 define("dojox/math/_base", ["dojo", "dojox"], function(dojo, dojox) {
 	dojo.getObject("math", true, dojox);

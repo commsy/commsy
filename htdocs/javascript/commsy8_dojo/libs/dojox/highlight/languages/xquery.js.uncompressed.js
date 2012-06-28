@@ -1,4 +1,3 @@
-//>>built
 define("dojox/highlight/languages/xquery", ["dojox/main", "../_base"], function(dojox){
 
 	// Very simple XQuery language file.  Would be nice

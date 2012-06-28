@@ -1,4 +1,3 @@
-//>>built
 define("dojo/selector/_loader", ["../has", "require"],
 		function(has, require){
 // summary:

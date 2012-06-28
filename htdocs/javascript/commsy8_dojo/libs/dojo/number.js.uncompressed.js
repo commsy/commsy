@@ -1,4 +1,3 @@
-//>>built
 define("dojo/number", ["./_base/kernel", "./_base/lang", "./i18n", "./i18n!./cldr/nls/number", "./string", "./regexp"],
 	function(dojo, lang, i18n, nlsNumber, dstring, dregexp) {
 

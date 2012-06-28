@@ -1,4 +1,3 @@
-//>>built
 define("dojox/av/widget/Player", ['dojo', 'dijit', 'dijit/_Widget', 'dijit/_TemplatedMixin'],function(dojo, dijit){
 
 dojo.experimental("dojox.av.widget.Player");

@@ -1,4 +1,3 @@
-//>>built
 define("dojox/data/GoogleSearchStore", ["dojo/_base/kernel", "dojo/_base/lang", "dojo/_base/declare", "dojo/_base/window", "dojo/_base/query", 
 		"dojo/dom-construct","dojo/io/script"], 
   function(dojo, lang, declare, winUtil, domQuery, domConstruct, scriptIO) {

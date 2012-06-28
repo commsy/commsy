@@ -1,4 +1,3 @@
-//>>built
 define("dojox/data/AndOrReadStore", ["dojo/_base/kernel", "dojo/_base/declare", "dojo/_base/lang", "dojo/data/util/filter", "dojo/data/util/simpleFetch",
 		"dojo/_base/array", "dojo/date/stamp", "dojo/_base/json", "dojo/_base/window", "dojo/_base/xhr"], 
   function(kernel, declare, lang, filterUtil, simpleFetch, array, dateStamp, json, winUtil, xhr) {

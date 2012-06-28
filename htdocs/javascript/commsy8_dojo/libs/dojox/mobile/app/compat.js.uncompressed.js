@@ -1,17 +1,3 @@
-/*
-	Copyright (c) 2004-2011, The Dojo Foundation All Rights Reserved.
-	Available via Academic Free License >= 2.1 OR the modified BSD license.
-	see: http://dojotoolkit.org/license for details
-*/
-
-/*
-	This is an optimized version of Dojo, built for deployment and not for
-	development. To get sources and documentation, please visit:
-
-		http://dojotoolkit.org
-*/
-
-//>>built
 require({cache:{
 'dojox/main':function(){
 define(["dojo/_base/kernel"], function(dojo) {
@@ -50,10 +36,6 @@ define("dijit/main", [
 });
 
 }}});
-
-require(["dojo/i18n"], function(i18n){
-i18n._preloadLocalizations("dojox/mobile/app/nls/compat", []);
-});
 // wrapped by build app
 define("dojox/mobile/app/compat", ["dijit","dojo","dojox","dojo/require!dojox/mobile/compat"], function(dijit,dojo,dojox){
 dojo.provide("dojox.mobile.app.compat");

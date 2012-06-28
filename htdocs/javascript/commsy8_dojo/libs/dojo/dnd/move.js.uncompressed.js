@@ -1,4 +1,3 @@
-//>>built
 define("dojo/dnd/move", ["../main", "./Mover", "./Moveable"], function(dojo) {
 	// module:
 	//		dojo/dnd/move

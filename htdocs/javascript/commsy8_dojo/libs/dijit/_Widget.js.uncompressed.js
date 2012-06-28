@@ -1,4 +1,3 @@
-//>>built
 define("dijit/_Widget", [
 	"dojo/aspect",	// aspect.around
 	"dojo/_base/config",	// config.isDebug

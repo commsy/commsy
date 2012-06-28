@@ -1,4 +1,3 @@
-//>>built
 define("dojox/layout/DragPane", ["dojo/_base/declare", "dijit/_Widget", "dojo/_base/html", "dojo/dom-style"],
   function(declare, Widget, htmlUtil, domStyle){
 /*===== var Widget = dijit._Widget; =====*/

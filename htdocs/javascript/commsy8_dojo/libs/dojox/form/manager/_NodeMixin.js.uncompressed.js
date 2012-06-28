@@ -1,4 +1,3 @@
-//>>built
 define("dojox/form/manager/_NodeMixin", [
 	"dojo/_base/lang",
 	"dojo/_base/array",

@@ -1,17 +1,3 @@
-/*
-	Copyright (c) 2004-2011, The Dojo Foundation All Rights Reserved.
-	Available via Academic Free License >= 2.1 OR the modified BSD license.
-	see: http://dojotoolkit.org/license for details
-*/
-
-/*
-	This is an optimized version of Dojo, built for deployment and not for
-	development. To get sources and documentation, please visit:
-
-		http://dojotoolkit.org
-*/
-
-//>>built
 require({cache:{
 'dijit/_editor/plugins/FontChoice':function(){
 define([
@@ -604,50 +590,6 @@ array.forEach(["fontName", "fontSize", "formatBlock"], function(name){
 	};
 });
 
-});
-
-},
-'dijit/form/nls/validate':function(){
-define({ root:
-//begin v1.x content
-({
-	invalidMessage: "The value entered is not valid.",
-	missingMessage: "This value is required.",
-	rangeMessage: "This value is out of range."
-})
-//end v1.x content
-,
-"zh": true,
-"zh-tw": true,
-"tr": true,
-"th": true,
-"sv": true,
-"sl": true,
-"sk": true,
-"ru": true,
-"ro": true,
-"pt": true,
-"pt-pt": true,
-"pl": true,
-"nl": true,
-"nb": true,
-"ko": true,
-"kk": true,
-"ja": true,
-"it": true,
-"hu": true,
-"hr": true,
-"he": true,
-"fr": true,
-"fi": true,
-"es": true,
-"el": true,
-"de": true,
-"da": true,
-"cs": true,
-"ca": true,
-"az": true,
-"ar": true
 });
 
 },
@@ -1788,94 +1730,6 @@ return dijit._editor;
 });
 
 },
-'dijit/_editor/nls/commands':function(){
-define({ root:
-//begin v1.x content
-({
-	'bold': 'Bold',
-	'copy': 'Copy',
-	'cut': 'Cut',
-	'delete': 'Delete',
-	'indent': 'Indent',
-	'insertHorizontalRule': 'Horizontal Rule',
-	'insertOrderedList': 'Numbered List',
-	'insertUnorderedList': 'Bullet List',
-	'italic': 'Italic',
-	'justifyCenter': 'Align Center',
-	'justifyFull': 'Justify',
-	'justifyLeft': 'Align Left',
-	'justifyRight': 'Align Right',
-	'outdent': 'Outdent',
-	'paste': 'Paste',
-	'redo': 'Redo',
-	'removeFormat': 'Remove Format',
-	'selectAll': 'Select All',
-	'strikethrough': 'Strikethrough',
-	'subscript': 'Subscript',
-	'superscript': 'Superscript',
-	'underline': 'Underline',
-	'undo': 'Undo',
-	'unlink': 'Remove Link',
-	'createLink': 'Create Link',
-	'toggleDir': 'Toggle Direction',
-	'insertImage': 'Insert Image',
-	'insertTable': 'Insert/Edit Table',
-	'toggleTableBorder': 'Toggle Table Border',
-	'deleteTable': 'Delete Table',
-	'tableProp': 'Table Property',
-	'htmlToggle': 'HTML Source',
-	'foreColor': 'Foreground Color',
-	'hiliteColor': 'Background Color',
-	'plainFormatBlock': 'Paragraph Style',
-	'formatBlock': 'Paragraph Style',
-	'fontSize': 'Font Size',
-	'fontName': 'Font Name',
-	'tabIndent': 'Tab Indent',
-	"fullScreen": "Toggle Full Screen",
-	"viewSource": "View HTML Source",
-	"print": "Print",
-	"newPage": "New Page",
-	/* Error messages */
-	'systemShortcut': 'The "${0}" action is only available in your browser using a keyboard shortcut. Use ${1}.',
-	'ctrlKey':'ctrl+${0}',
-	'appleKey':'\u2318${0}' // "command" or open-apple key on Macintosh
-})
-//end v1.x content
-,
-"zh": true,
-"zh-tw": true,
-"tr": true,
-"th": true,
-"sv": true,
-"sl": true,
-"sk": true,
-"ru": true,
-"ro": true,
-"pt": true,
-"pt-pt": true,
-"pl": true,
-"nl": true,
-"nb": true,
-"ko": true,
-"kk": true,
-"ja": true,
-"it": true,
-"hu": true,
-"hr": true,
-"he": true,
-"fr": true,
-"fi": true,
-"es": true,
-"el": true,
-"de": true,
-"da": true,
-"cs": true,
-"ca": true,
-"az": true,
-"ar": true
-});
-
-},
 'dijit/_HasDropDown':function(){
 define([
 	"dojo/_base/declare", // declare
@@ -2887,18 +2741,31 @@ return declare("dijit._editor.plugins.EnterKeyHandling", _Plugin, {
 			// So, try to just have a common mode and be consistent.  Which means
 			// we need to enable customUndo, if not already enabled.
 			this.editor.customUndo = true;
-				editor.onLoadDeferred.addCallback(lang.hitch(this,function(d){
-				this.connect(editor.document, "onkeypress", function(e){
-					if(e.charOrCode == keys.ENTER){
-						// Just do it manually.  The handleEnterKey has a shift mode that
-						// Always acts like <br>, so just use it.
-						var ne = lang.mixin({},e);
-						ne.shiftKey = true;
-						if(!this.handleEnterKey(ne)){
-							event.stop(e);
+				editor.onLoadDeferred.then(lang.hitch(this,function(d){
+					this.connect(editor.document, "onkeypress", function(e){
+						if(e.charOrCode == keys.ENTER){
+							// Just do it manually.  The handleEnterKey has a shift mode that
+							// Always acts like <br>, so just use it.
+							var ne = lang.mixin({},e);
+							ne.shiftKey = true;
+							if(!this.handleEnterKey(ne)){
+								event.stop(e);
+							}
 						}
+					});
+					if(has("ie") == 9){
+						this.connect(editor.document, "onpaste", function(e){
+							setTimeout(dojo.hitch(this, function(){
+								// Use the old range/selection code to kick IE 9 into updating
+								// its range by moving it back, then forward, one 'character'.
+								var r = this.editor.document.selection.createRange();
+								r.move('character',-1);
+								r.select();
+								r.move('character',1);
+								r.select();
+							}),0);
+						});
 					}
-				});
 					return d;
 				}));
 		}else if(this.blockNodeForEnter){
@@ -2917,12 +2784,12 @@ return declare("dijit._editor.plugins.EnterKeyHandling", _Plugin, {
 		//		private
 		if(this._checkListLater){
 			if(win.withGlobal(this.editor.window, 'isCollapsed', dijit)){
-				var liparent=win.withGlobal(this.editor.window, 'getAncestorElement', selection, ['LI']);
+				var liparent=win.withGlobal(this.editor.window, 'getAncestorElement', selectionapi, ['LI']);
 				if(!liparent){
 					// circulate the undo detection code by calling RichText::execCommand directly
 					RichText.prototype.execCommand.call(this.editor, 'formatblock',this.blockNodeForEnter);
 					// set the innerHTML of the new block node
-					var block = win.withGlobal(this.editor.window, 'getAncestorElement', selection, [this.blockNodeForEnter]);
+					var block = win.withGlobal(this.editor.window, 'getAncestorElement', selectionapi, [this.blockNodeForEnter]);
 					if(block){
 						block.innerHTML=this.bogusHtmlContent;
 						if(has("ie")){
@@ -6239,6 +6106,7 @@ define([
 			// summary:
 			//		Handles keyboard events
 
+			if(this.disabled || this.readOnly){ return; }
 			var key = evt.charOrCode;
 
 			// except for cutting/pasting case - ctrl + x/v
@@ -7331,7 +7199,7 @@ var _TextBoxMixin = declare("dijit.form._TextBoxMixin", null, {
 			if(faux.wasConsumed){ return; } // if preventDefault was called
 			setTimeout(lang.hitch(this, "_onInput", faux), 0); // widget notification after key has posted
 		};
-		array.forEach([ "onkeydown", "onkeypress", "onpaste", "oncut", "oninput" ], function(event){
+		array.forEach([ "onkeydown", "onkeypress", "onpaste", "oncut", "oninput", "oncompositionend" ], function(event){
 			this.connect(this.textbox, event, handleEvent);
 		}, this);
 	},
@@ -10199,302 +10067,6 @@ define([
 },
 'url:dijit/templates/MenuItem.html':"<tr class=\"dijitReset dijitMenuItem\" data-dojo-attach-point=\"focusNode\" role=\"menuitem\" tabIndex=\"-1\"\n\t\tdata-dojo-attach-event=\"onmouseenter:_onHover,onmouseleave:_onUnhover,ondijitclick:_onClick\">\n\t<td class=\"dijitReset dijitMenuItemIconCell\" role=\"presentation\">\n\t\t<img src=\"${_blankGif}\" alt=\"\" class=\"dijitIcon dijitMenuItemIcon\" data-dojo-attach-point=\"iconNode\"/>\n\t</td>\n\t<td class=\"dijitReset dijitMenuItemLabel\" colspan=\"2\" data-dojo-attach-point=\"containerNode\"></td>\n\t<td class=\"dijitReset dijitMenuItemAccelKey\" style=\"display: none\" data-dojo-attach-point=\"accelKeyNode\"></td>\n\t<td class=\"dijitReset dijitMenuArrowCell\" role=\"presentation\">\n\t\t<div data-dojo-attach-point=\"arrowWrapper\" style=\"visibility: hidden\">\n\t\t\t<img src=\"${_blankGif}\" alt=\"\" class=\"dijitMenuExpand\"/>\n\t\t\t<span class=\"dijitMenuExpandA11y\">+</span>\n\t\t</div>\n\t</td>\n</tr>\n",
 'url:dijit/form/templates/CheckBox.html':"<div class=\"dijit dijitReset dijitInline\" role=\"presentation\"\n\t><input\n\t \t${!nameAttrSetting} type=\"${type}\" ${checkedAttrSetting}\n\t\tclass=\"dijitReset dijitCheckBoxInput\"\n\t\tdata-dojo-attach-point=\"focusNode\"\n\t \tdata-dojo-attach-event=\"onclick:_onClick\"\n/></div>\n",
-'dojo/cldr/nls/gregorian':function(){
-define({ root:
-
-//begin v1.x content
-{
-	"months-format-narrow": [
-		"1",
-		"2",
-		"3",
-		"4",
-		"5",
-		"6",
-		"7",
-		"8",
-		"9",
-		"10",
-		"11",
-		"12"
-	],
-	"quarters-standAlone-narrow": [
-		"1",
-		"2",
-		"3",
-		"4"
-	],
-	"field-weekday": "Day of the Week",
-	"dateFormatItem-yQQQ": "y QQQ",
-	"dateFormatItem-yMEd": "EEE, y-M-d",
-	"dateFormatItem-MMMEd": "E MMM d",
-	"eraNarrow": [
-		"BCE",
-		"CE"
-	],
-	"dateTimeFormats-appendItem-Day-Of-Week": "{0} {1}",
-	"dateFormat-long": "y MMMM d",
-	"months-format-wide": [
-		"1",
-		"2",
-		"3",
-		"4",
-		"5",
-		"6",
-		"7",
-		"8",
-		"9",
-		"10",
-		"11",
-		"12"
-	],
-	"dateTimeFormat-medium": "{1} {0}",
-	"dateFormatItem-EEEd": "d EEE",
-	"dayPeriods-format-wide-pm": "PM",
-	"dateFormat-full": "EEEE, y MMMM dd",
-	"dateFormatItem-Md": "M-d",
-	"dayPeriods-format-abbr-am": "AM",
-	"dateTimeFormats-appendItem-Second": "{0} ({2}: {1})",
-	"field-era": "Era",
-	"dateFormatItem-yM": "y-M",
-	"months-standAlone-wide": [
-		"1",
-		"2",
-		"3",
-		"4",
-		"5",
-		"6",
-		"7",
-		"8",
-		"9",
-		"10",
-		"11",
-		"12"
-	],
-	"timeFormat-short": "HH:mm",
-	"quarters-format-wide": [
-		"Q1",
-		"Q2",
-		"Q3",
-		"Q4"
-	],
-	"timeFormat-long": "HH:mm:ss z",
-	"field-year": "Year",
-	"dateFormatItem-yMMM": "y MMM",
-	"dateFormatItem-yQ": "y Q",
-	"dateTimeFormats-appendItem-Era": "{0} {1}",
-	"field-hour": "Hour",
-	"months-format-abbr": [
-		"1",
-		"2",
-		"3",
-		"4",
-		"5",
-		"6",
-		"7",
-		"8",
-		"9",
-		"10",
-		"11",
-		"12"
-	],
-	"timeFormat-full": "HH:mm:ss zzzz",
-	"dateTimeFormats-appendItem-Week": "{0} ({2}: {1})",
-	"field-day-relative+0": "Today",
-	"field-day-relative+1": "Tomorrow",
-	"dateFormatItem-H": "HH",
-	"months-standAlone-abbr": [
-		"1",
-		"2",
-		"3",
-		"4",
-		"5",
-		"6",
-		"7",
-		"8",
-		"9",
-		"10",
-		"11",
-		"12"
-	],
-	"quarters-format-abbr": [
-		"Q1",
-		"Q2",
-		"Q3",
-		"Q4"
-	],
-	"quarters-standAlone-wide": [
-		"Q1",
-		"Q2",
-		"Q3",
-		"Q4"
-	],
-	"dateFormatItem-M": "L",
-	"days-standAlone-wide": [
-		"1",
-		"2",
-		"3",
-		"4",
-		"5",
-		"6",
-		"7"
-	],
-	"timeFormat-medium": "HH:mm:ss",
-	"dateFormatItem-Hm": "HH:mm",
-	"quarters-standAlone-abbr": [
-		"Q1",
-		"Q2",
-		"Q3",
-		"Q4"
-	],
-	"eraAbbr": [
-		"BCE",
-		"CE"
-	],
-	"field-minute": "Minute",
-	"field-dayperiod": "Dayperiod",
-	"days-standAlone-abbr": [
-		"1",
-		"2",
-		"3",
-		"4",
-		"5",
-		"6",
-		"7"
-	],
-	"dateFormatItem-d": "d",
-	"dateFormatItem-ms": "mm:ss",
-	"quarters-format-narrow": [
-		"1",
-		"2",
-		"3",
-		"4"
-	],
-	"field-day-relative+-1": "Yesterday",
-	"dateFormatItem-h": "h a",
-	"dateTimeFormat-long": "{1} {0}",
-	"dayPeriods-format-narrow-am": "AM",
-	"dateFormatItem-MMMd": "MMM d",
-	"dateFormatItem-MEd": "E, M-d",
-	"dateTimeFormat-full": "{1} {0}",
-	"field-day": "Day",
-	"days-format-wide": [
-		"1",
-		"2",
-		"3",
-		"4",
-		"5",
-		"6",
-		"7"
-	],
-	"field-zone": "Zone",
-	"dateTimeFormats-appendItem-Day": "{0} ({2}: {1})",
-	"dateFormatItem-y": "y",
-	"months-standAlone-narrow": [
-		"1",
-		"2",
-		"3",
-		"4",
-		"5",
-		"6",
-		"7",
-		"8",
-		"9",
-		"10",
-		"11",
-		"12"
-	],
-	"dateFormatItem-hm": "h:mm a",
-	"dateTimeFormats-appendItem-Year": "{0} {1}",
-	"dateTimeFormats-appendItem-Hour": "{0} ({2}: {1})",
-	"dayPeriods-format-abbr-pm": "PM",
-	"days-format-abbr": [
-		"1",
-		"2",
-		"3",
-		"4",
-		"5",
-		"6",
-		"7"
-	],
-	"eraNames": [
-		"BCE",
-		"CE"
-	],
-	"days-format-narrow": [
-		"1",
-		"2",
-		"3",
-		"4",
-		"5",
-		"6",
-		"7"
-	],
-	"days-standAlone-narrow": [
-		"1",
-		"2",
-		"3",
-		"4",
-		"5",
-		"6",
-		"7"
-	],
-	"dateFormatItem-MMM": "LLL",
-	"field-month": "Month",
-	"dateTimeFormats-appendItem-Quarter": "{0} ({2}: {1})",
-	"dayPeriods-format-wide-am": "AM",
-	"dateTimeFormats-appendItem-Month": "{0} ({2}: {1})",
-	"dateTimeFormats-appendItem-Minute": "{0} ({2}: {1})",
-	"dateFormat-short": "yyyy-MM-dd",
-	"field-second": "Second",
-	"dateFormatItem-yMMMEd": "EEE, y MMM d",
-	"dateTimeFormats-appendItem-Timezone": "{0} {1}",
-	"field-week": "Week",
-	"dateFormat-medium": "y MMM d",
-	"dayPeriods-format-narrow-pm": "PM",
-	"dateTimeFormat-short": "{1} {0}",
-	"dateFormatItem-Hms": "HH:mm:ss",
-	"dateFormatItem-hms": "h:mm:ss a"
-}
-//end v1.x content
-,
-	"ar": true,
-	"ca": true,
-	"cs": true,
-	"da": true,
-	"de": true,
-	"el": true,
-	"en": true,
-	"en-au": true,
-	"en-ca": true,
-	"en-gb": true,
-	"es": true,
-	"fi": true,
-	"fr": true,
-	"fr-ch": true,
-	"he": true,
-	"hu": true,
-	"it": true,
-	"ja": true,
-	"ko": true,
-	"nb": true,
-	"nl": true,
-	"pl": true,
-	"pt": true,
-	"pt-pt": true,
-	"ro": true,
-	"ru": true,
-	"sk": true,
-	"sl": true,
-	"sv": true,
-	"th": true,
-	"tr": true,
-	"zh": true,
-	"zh-hant": true,
-	"zh-hk": true,
-	"zh-tw": true
-});
-},
 'url:dijit/form/templates/VerticalSlider.html':"<table class=\"dijit dijitReset dijitSlider dijitSliderV\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" rules=\"none\" data-dojo-attach-event=\"onkeypress:_onKeyPress,onkeyup:_onKeyUp\"\n\t><tr class=\"dijitReset\"\n\t\t><td class=\"dijitReset\"></td\n\t\t><td class=\"dijitReset dijitSliderButtonContainer dijitSliderButtonContainerV\"\n\t\t\t><div class=\"dijitSliderIncrementIconV\" style=\"display:none\" data-dojo-attach-point=\"decrementButton\"><span class=\"dijitSliderButtonInner\">+</span></div\n\t\t></td\n\t\t><td class=\"dijitReset\"></td\n\t></tr\n\t><tr class=\"dijitReset\"\n\t\t><td class=\"dijitReset\"></td\n\t\t><td class=\"dijitReset\"\n\t\t\t><center><div class=\"dijitSliderBar dijitSliderBumper dijitSliderBumperV dijitSliderTopBumper\" data-dojo-attach-event=\"press:_onClkIncBumper\"></div></center\n\t\t></td\n\t\t><td class=\"dijitReset\"></td\n\t></tr\n\t><tr class=\"dijitReset\"\n\t\t><td data-dojo-attach-point=\"leftDecoration\" class=\"dijitReset dijitSliderDecoration dijitSliderDecorationL dijitSliderDecorationV\"></td\n\t\t><td class=\"dijitReset dijitSliderDecorationC\" style=\"height:100%;\"\n\t\t\t><input data-dojo-attach-point=\"valueNode\" type=\"hidden\" ${!nameAttrSetting}\n\t\t\t/><center class=\"dijitReset dijitSliderBarContainerV\" role=\"presentation\" data-dojo-attach-point=\"sliderBarContainer\"\n\t\t\t\t><div role=\"presentation\" data-dojo-attach-point=\"remainingBar\" class=\"dijitSliderBar dijitSliderBarV dijitSliderRemainingBar dijitSliderRemainingBarV\" data-dojo-attach-event=\"press:_onBarClick\"><!--#5629--></div\n\t\t\t\t><div role=\"presentation\" data-dojo-attach-point=\"progressBar\" class=\"dijitSliderBar dijitSliderBarV dijitSliderProgressBar dijitSliderProgressBarV\" data-dojo-attach-event=\"press:_onBarClick\"\n\t\t\t\t\t><div class=\"dijitSliderMoveable dijitSliderMoveableV\" style=\"vertical-align:top;\"\n\t\t\t\t\t\t><div data-dojo-attach-point=\"sliderHandle,focusNode\" class=\"dijitSliderImageHandle dijitSliderImageHandleV\" data-dojo-attach-event=\"press:_onHandleClick\" role=\"slider\" valuemin=\"${minimum}\" valuemax=\"${maximum}\"></div\n\t\t\t\t\t></div\n\t\t\t\t></div\n\t\t\t></center\n\t\t></td\n\t\t><td data-dojo-attach-point=\"containerNode,rightDecoration\" class=\"dijitReset dijitSliderDecoration dijitSliderDecorationR dijitSliderDecorationV\"></td\n\t></tr\n\t><tr class=\"dijitReset\"\n\t\t><td class=\"dijitReset\"></td\n\t\t><td class=\"dijitReset\"\n\t\t\t><center><div class=\"dijitSliderBar dijitSliderBumper dijitSliderBumperV dijitSliderBottomBumper\" data-dojo-attach-event=\"press:_onClkDecBumper\"></div></center\n\t\t></td\n\t\t><td class=\"dijitReset\"></td\n\t></tr\n\t><tr class=\"dijitReset\"\n\t\t><td class=\"dijitReset\"></td\n\t\t><td class=\"dijitReset dijitSliderButtonContainer dijitSliderButtonContainerV\"\n\t\t\t><div class=\"dijitSliderDecrementIconV\" style=\"display:none\" data-dojo-attach-point=\"incrementButton\"><span class=\"dijitSliderButtonInner\">-</span></div\n\t\t></td\n\t\t><td class=\"dijitReset\"></td\n\t></tr\n></table>\n",
 'dijit/layout/LayoutContainer':function(){
 define([
@@ -10865,6 +10437,14 @@ define([
 		//		means "rtl"; specifies GUI direction, not text direction.
 		// textDir: String?
 		//		Corresponds to `WidgetBase.textdir` attribute; specifies direction of text.
+
+		// after/before don't work, but they used to, so for back-compat convert them to after-centered, before-centered
+		if(position){
+			position = array.map(position, function(val){
+				return {after: "after-centered", before: "before-centered"}[val] || val;
+			});
+		}
+
 		if(!Tooltip._masterTT){ dijit._masterTT = Tooltip._masterTT = new MasterTooltip(); }
 		return Tooltip._masterTT.show(innerHTML, aroundNode, position, rtl, textDir);
 	};
@@ -14883,49 +14463,6 @@ return RichText;
 });
 
 },
-'dijit/nls/loading':function(){
-define({ root:
-//begin v1.x content
-({
-	loadingState: "Loading...",
-	errorState: "Sorry, an error occurred"
-})
-//end v1.x content
-,
-"zh": true,
-"zh-tw": true,
-"tr": true,
-"th": true,
-"sv": true,
-"sl": true,
-"sk": true,
-"ru": true,
-"ro": true,
-"pt": true,
-"pt-pt": true,
-"pl": true,
-"nl": true,
-"nb": true,
-"ko": true,
-"kk": true,
-"ja": true,
-"it": true,
-"hu": true,
-"hr": true,
-"he": true,
-"fr": true,
-"fi": true,
-"es": true,
-"el": true,
-"de": true,
-"da": true,
-"cs": true,
-"ca": true,
-"az": true,
-"ar": true
-});
-
-},
 'dojo/dnd/Moveable':function(){
 define(["../main", "../Evented", "../touch", "./Mover"], function(dojo, Evented, touch) {
 	// module:
@@ -15259,200 +14796,6 @@ define([
 });
 
 },
-'dojo/nls/colors':function(){
-define({ root:
-//begin v1.x content
-({
-// local representation of all CSS3 named colors, companion to dojo.colors.  To be used where descriptive information
-// is required for each color, such as a palette widget, and not for specifying color programatically.
-
-//Note: due to the SVG 1.0 spec additions, some of these are alternate spellings for the same color e.g. gray vs. gray.
-//TODO: should we be using unique rgb values as keys instead and avoid these duplicates, or rely on the caller to do the reverse mapping?
-aliceblue: "alice blue",
-antiquewhite: "antique white",
-aqua: "aqua",
-aquamarine: "aquamarine",
-azure: "azure",
-beige: "beige",
-bisque: "bisque",
-black: "black",
-blanchedalmond: "blanched almond",
-blue: "blue",
-blueviolet: "blue-violet",
-brown: "brown",
-burlywood: "burlywood",
-cadetblue: "cadet blue",
-chartreuse: "chartreuse",
-chocolate: "chocolate",
-coral: "coral",
-cornflowerblue: "cornflower blue",
-cornsilk: "cornsilk",
-crimson: "crimson",
-cyan: "cyan",
-darkblue: "dark blue",
-darkcyan: "dark cyan",
-darkgoldenrod: "dark goldenrod",
-darkgray: "dark gray",
-darkgreen: "dark green",
-darkgrey: "dark gray", // same as darkgray
-darkkhaki: "dark khaki",
-darkmagenta: "dark magenta",
-darkolivegreen: "dark olive green",
-darkorange: "dark orange",
-darkorchid: "dark orchid",
-darkred: "dark red",
-darksalmon: "dark salmon",
-darkseagreen: "dark sea green",
-darkslateblue: "dark slate blue",
-darkslategray: "dark slate gray",
-darkslategrey: "dark slate gray", // same as darkslategray
-darkturquoise: "dark turquoise",
-darkviolet: "dark violet",
-deeppink: "deep pink",
-deepskyblue: "deep sky blue",
-dimgray: "dim gray",
-dimgrey: "dim gray", // same as dimgray
-dodgerblue: "dodger blue",
-firebrick: "fire brick",
-floralwhite: "floral white",
-forestgreen: "forest green",
-fuchsia: "fuchsia",
-gainsboro: "gainsboro",
-ghostwhite: "ghost white",
-gold: "gold",
-goldenrod: "goldenrod",
-gray: "gray",
-green: "green",
-greenyellow: "green-yellow",
-grey: "gray", // same as gray
-honeydew: "honeydew",
-hotpink: "hot pink",
-indianred: "indian red",
-indigo: "indigo",
-ivory: "ivory",
-khaki: "khaki",
-lavender: "lavender",
-lavenderblush: "lavender blush",
-lawngreen: "lawn green",
-lemonchiffon: "lemon chiffon",
-lightblue: "light blue",
-lightcoral: "light coral",
-lightcyan: "light cyan",
-lightgoldenrodyellow: "light goldenrod yellow",
-lightgray: "light gray",
-lightgreen: "light green",
-lightgrey: "light gray", // same as lightgray
-lightpink: "light pink",
-lightsalmon: "light salmon",
-lightseagreen: "light sea green",
-lightskyblue: "light sky blue",
-lightslategray: "light slate gray",
-lightslategrey: "light slate gray", // same as lightslategray
-lightsteelblue: "light steel blue",
-lightyellow: "light yellow",
-lime: "lime",
-limegreen: "lime green",
-linen: "linen",
-magenta: "magenta",
-maroon: "maroon",
-mediumaquamarine: "medium aquamarine",
-mediumblue: "medium blue",
-mediumorchid: "medium orchid",
-mediumpurple: "medium purple",
-mediumseagreen: "medium sea green",
-mediumslateblue: "medium slate blue",
-mediumspringgreen: "medium spring green",
-mediumturquoise: "medium turquoise",
-mediumvioletred: "medium violet-red",
-midnightblue: "midnight blue",
-mintcream: "mint cream",
-mistyrose: "misty rose",
-moccasin: "moccasin",
-navajowhite: "navajo white",
-navy: "navy",
-oldlace: "old lace",
-olive: "olive",
-olivedrab: "olive drab",
-orange: "orange",
-orangered: "orange red",
-orchid: "orchid",
-palegoldenrod: "pale goldenrod",
-palegreen: "pale green",
-paleturquoise: "pale turquoise",
-palevioletred: "pale violet-red",
-papayawhip: "papaya whip",
-peachpuff: "peach puff",
-peru: "peru",
-pink: "pink",
-plum: "plum",
-powderblue: "powder blue",
-purple: "purple",
-red: "red",
-rosybrown: "rosy brown",
-royalblue: "royal blue",
-saddlebrown: "saddle brown",
-salmon: "salmon",
-sandybrown: "sandy brown",
-seagreen: "sea green",
-seashell: "seashell",
-sienna: "sienna",
-silver: "silver",
-skyblue: "sky blue",
-slateblue: "slate blue",
-slategray: "slate gray",
-slategrey: "slate gray", // same as slategray
-snow: "snow",
-springgreen: "spring green",
-steelblue: "steel blue",
-tan: "tan",
-teal: "teal",
-thistle: "thistle",
-tomato: "tomato",
-transparent: "transparent",
-turquoise: "turquoise",
-violet: "violet",
-wheat: "wheat",
-white: "white",
-whitesmoke: "white smoke",
-yellow: "yellow",
-yellowgreen: "yellow green"
-})
-//end v1.x content
-,
-"zh": true,
-"zh-tw": true,
-"tr": true,
-"th": true,
-"sv": true,
-"sl": true,
-"sk": true,
-"ru": true,
-"ro": true,
-"pt": true,
-"pt-pt": true,
-"pl": true,
-"nl": true,
-"nb": true,
-"ko": true,
-"kk": true,
-"ja": true,
-"it": true,
-"hu": true,
-"hr": true,
-"he": true,
-"fr": true,
-"fi": true,
-"es": true,
-"el": true,
-"de": true,
-"da": true,
-"cs": true,
-"ca": true,
-"az": true,
-"ar": true
-});
-
-},
 'dojo/store/util/SimpleQueryEngine':function(){
 define(["../../_base/array"], function(arrayUtil) {
   //  module:
@@ -15564,72 +14907,6 @@ return function(query, options){
 });
 
 },
-'dojo/cldr/nls/number':function(){
-define({ root:
-
-//begin v1.x content
-{
-	"scientificFormat": "#E0",
-	"currencySpacing-afterCurrency-currencyMatch": "[:letter:]",
-	"infinity": "∞",
-	"list": ";",
-	"percentSign": "%",
-	"minusSign": "-",
-	"currencySpacing-beforeCurrency-surroundingMatch": "[:digit:]",
-	"decimalFormat-short": "000T",
-	"currencySpacing-afterCurrency-insertBetween": " ",
-	"nan": "NaN",
-	"nativeZeroDigit": "0",
-	"plusSign": "+",
-	"currencySpacing-afterCurrency-surroundingMatch": "[:digit:]",
-	"currencySpacing-beforeCurrency-currencyMatch": "[:letter:]",
-	"currencyFormat": "¤ #,##0.00",
-	"perMille": "‰",
-	"group": ",",
-	"percentFormat": "#,##0%",
-	"decimalFormat": "#,##0.###",
-	"decimal": ".",
-	"patternDigit": "#",
-	"currencySpacing-beforeCurrency-insertBetween": " ",
-	"exponential": "E"
-}
-//end v1.x content
-,
-	"ar": true,
-	"ca": true,
-	"cs": true,
-	"da": true,
-	"de": true,
-	"el": true,
-	"en": true,
-	"en-au": true,
-	"en-gb": true,
-	"es": true,
-	"fi": true,
-	"fr": true,
-	"fr-ch": true,
-	"he": true,
-	"hu": true,
-	"it": true,
-	"ja": true,
-	"ko": true,
-	"nb": true,
-	"nl": true,
-	"pl": true,
-	"pt": true,
-	"pt-pt": true,
-	"ro": true,
-	"ru": true,
-	"sk": true,
-	"sl": true,
-	"sv": true,
-	"th": true,
-	"tr": true,
-	"zh": true,
-	"zh-hant": true,
-	"zh-hk": true
-});
-},
 'dijit/form/_ExpandingTextAreaMixin':function(){
 define([
 	"dojo/_base/declare", // declare
@@ -15679,9 +14956,9 @@ define([
 
 		_estimateHeight: function(){
 			// summary:
-			// 		Approximate the height when the textarea is invisible with the number of lines in the text.
-			// 		Fails when someone calls setValue with a long wrapping line, but the layout fixes itself when the user clicks inside so . . .
-			// 		In IE, the resize event is supposed to fire when the textarea becomes visible again and that will correct the size automatically.
+			//		Approximate the height when the textarea is invisible with the number of lines in the text.
+			//		Fails when someone calls setValue with a long wrapping line, but the layout fixes itself when the user clicks inside so . . .
+			//		In IE, the resize event is supposed to fire when the textarea becomes visible again and that will correct the size automatically.
 			//
 			var textarea = this.textbox;
 			textarea.style.height = "auto";
@@ -15693,7 +14970,7 @@ define([
 		},
 
 		_resizeLater: function(){
-			setTimeout(lang.hitch(this, "resize"), 0);
+			this.defer("resize");
 		},
 
 		resize: function(){
@@ -15712,8 +14989,6 @@ define([
 
 			var textarea = this.textbox;
 			if(textarea.style.overflowY == "hidden"){ textarea.scrollTop = 0; }
-			if(this.resizeTimer){ clearTimeout(this.resizeTimer); }
-			this.resizeTimer = null;
 			if(this.busyResizing){ return; }
 			this.busyResizing = true;
 			if(textareaScrollHeight() || textarea.offsetHeight){
@@ -15723,19 +14998,33 @@ define([
 					textarea.rows = 1;
 					textarea.style.height = currentHeight + "px";
 				}
-				var newH = Math.max(parseInt(currentHeight) - textarea.clientHeight, 0) + textareaScrollHeight();
+				var newH = Math.max(Math.max(textarea.offsetHeight, parseInt(currentHeight)) - textarea.clientHeight, 0) + textareaScrollHeight();
 				var newHpx = newH + "px";
 				if(newHpx != textarea.style.height){
 					textarea.rows = 1;
 					textarea.style.height = newHpx;
 				}
 				if(needsHelpShrinking){
-					var scrollHeight = textareaScrollHeight();
-					textarea.style.height = "auto";
-					if(textareaScrollHeight() < scrollHeight){ // scrollHeight can shrink so now try a larger value
-						newHpx = newH - scrollHeight + textareaScrollHeight() + "px";
+					var	origScrollHeight = textareaScrollHeight(),
+						newScrollHeight = origScrollHeight,
+						origMinHeight = textarea.style.minHeight,
+						decrement = 4, // not too fast, not too slow
+						thisScrollHeight;
+					textarea.style.minHeight = newHpx; // maintain current height
+					textarea.style.height = "auto"; // allow scrollHeight to change
+					while(newH > 0){
+						textarea.style.minHeight = Math.max(newH - decrement, 4) + "px";
+						thisScrollHeight = textareaScrollHeight();
+						var change = newScrollHeight - thisScrollHeight;
+						newH -= change;
+						if(change < decrement){
+							break; // scrollHeight didn't shrink
+						}
+						newScrollHeight = thisScrollHeight;
+						decrement <<= 1;
 					}
-					textarea.style.height = newHpx;
+					textarea.style.height = newH + "px";
+					textarea.style.minHeight = origMinHeight;
 				}
 				textarea.style.overflowY = textareaScrollHeight() > textarea.clientHeight ? "auto" : "hidden";
 			}else{
@@ -15743,12 +15032,6 @@ define([
 				this._estimateHeight();
 			}
 			this.busyResizing = false;
-		},
-
-		destroy: function(){
-			if(this.resizeTimer){ clearTimeout(this.resizeTimer); }
-			if(this.shrinkTimer){ clearTimeout(this.shrinkTimer); }
-			this.inherited(arguments);
 		}
 	});
 });
@@ -17026,71 +16309,6 @@ define([
 
 },
 'url:dijit/templates/Menu.html':"<table class=\"dijit dijitMenu dijitMenuPassive dijitReset dijitMenuTable\" role=\"menu\" tabIndex=\"${tabIndex}\" data-dojo-attach-event=\"onkeypress:_onKeyPress\" cellspacing=\"0\">\n\t<tbody class=\"dijitReset\" data-dojo-attach-point=\"containerNode\"></tbody>\n</table>\n",
-'dijit/_editor/nls/FontChoice':function(){
-define("dijit/_editor/nls/FontChoice", { root:
-//begin v1.x content
-({
-	fontSize: "Size",
-	fontName: "Font",
-	formatBlock: "Format",
-
-	serif: "serif",
-	"sans-serif": "sans-serif",
-	monospace: "monospace",
-	cursive: "cursive",
-	fantasy: "fantasy",
-
-	noFormat: "None",
-	p: "Paragraph",
-	h1: "Heading",
-	h2: "Subheading",
-	h3: "Sub-subheading",
-	pre: "Pre-formatted",
-
-	1: "xx-small",
-	2: "x-small",
-	3: "small",
-	4: "medium",
-	5: "large",
-	6: "x-large",
-	7: "xx-large"
-})
-//end v1.x content
-,
-"zh": true,
-"zh-tw": true,
-"tr": true,
-"th": true,
-"sv": true,
-"sl": true,
-"sk": true,
-"ru": true,
-"ro": true,
-"pt": true,
-"pt-pt": true,
-"pl": true,
-"nl": true,
-"nb": true,
-"ko": true,
-"kk": true,
-"ja": true,
-"it": true,
-"hu": true,
-"hr": true,
-"he": true,
-"fr": true,
-"fi": true,
-"es": true,
-"el": true,
-"de": true,
-"da": true,
-"cs": true,
-"ca": true,
-"az": true,
-"ar": true
-});
-
-},
 'dijit/form/_Spinner':function(){
 define([
 	"dojo/_base/declare", // declare
@@ -18864,56 +18082,6 @@ define([
 	return Editor;
 });
 
-},
-'dojo/cldr/nls/currency':function(){
-define({ root:
-
-//begin v1.x content
-{
-	"USD_symbol": "US$",
-	"CAD_symbol": "CA$",
-	"GBP_symbol": "£",
-	"HKD_symbol": "HK$",
-	"JPY_symbol": "JP¥",
-	"AUD_symbol": "AU$",
-	"CNY_symbol": "CN¥",
-	"EUR_symbol": "€"
-}
-//end v1.x content
-,
-	"ar": true,
-	"ca": true,
-	"cs": true,
-	"da": true,
-	"de": true,
-	"el": true,
-	"en": true,
-	"en-au": true,
-	"en-ca": true,
-	"es": true,
-	"fi": true,
-	"fr": true,
-	"he": true,
-	"hu": true,
-	"it": true,
-	"ja": true,
-	"ko": true,
-	"nb": true,
-	"nl": true,
-	"pl": true,
-	"pt": true,
-	"ro": true,
-	"ru": true,
-	"sk": true,
-	"sl": true,
-	"sv": true,
-	"th": true,
-	"tr": true,
-	"zh": true,
-	"zh-hant": true,
-	"zh-hk": true,
-	"zh-tw": true
-});
 },
 'dijit/Toolbar':function(){
 define([
@@ -25264,7 +24432,7 @@ define([
 
 		isValid: function(){
 			// Overrides ValidationTextBox.isValid()
-			return this.item || (!this.required && this.get('displayedValue') == ""); // #5974
+			return !!this.item || (!this.required && this.get('displayedValue') == ""); // #5974
 		},
 
 		_refreshState: function(){
@@ -30010,7 +29178,12 @@ define("dijit/Dialog", [
 					}
 
 					if(focus){
-						focus.focus();
+						// Refocus the button that spawned the Dialog.   This will fail in corner cases including
+						// page unload on IE, because the dijit/form/Button that launched the Dialog may get destroyed
+						// before this code runs.  (#15058)
+						try{
+							focus.focus();
+						}catch(e){}
 					}
 				}
 			}else{
@@ -31188,49 +30361,6 @@ return dijit._editor.selection;
 });
 
 },
-'dijit/form/nls/ComboBox':function(){
-define({ root:
-//begin v1.x content
-({
-		previousMessage: "Previous choices",
-		nextMessage: "More choices"
-})
-//end v1.x content
-,
-"zh": true,
-"zh-tw": true,
-"tr": true,
-"th": true,
-"sv": true,
-"sl": true,
-"sk": true,
-"ru": true,
-"ro": true,
-"pt": true,
-"pt-pt": true,
-"pl": true,
-"nl": true,
-"nb": true,
-"ko": true,
-"kk": true,
-"ja": true,
-"it": true,
-"hu": true,
-"hr": true,
-"he": true,
-"fr": true,
-"fi": true,
-"es": true,
-"el": true,
-"de": true,
-"da": true,
-"cs": true,
-"ca": true,
-"az": true,
-"ar": true
-});
-
-},
 'dojo/fx':function(){
 define([
 	"./_base/lang",
@@ -31732,51 +30862,6 @@ define("dijit/_DialogMixin", [
 			this._lastFocusItem = elems.last || elems.highest || this._firstFocusItem;
 		}
 	});
-});
-
-},
-'dijit/nls/common':function(){
-define({ root:
-//begin v1.x content
-({
-	buttonOk: "OK",
-	buttonCancel: "Cancel",
-	buttonSave: "Save",
-	itemClose: "Close"
-})
-//end v1.x content
-,
-"zh": true,
-"zh-tw": true,
-"tr": true,
-"th": true,
-"sv": true,
-"sl": true,
-"sk": true,
-"ru": true,
-"ro": true,
-"pt": true,
-"pt-pt": true,
-"pl": true,
-"nl": true,
-"nb": true,
-"ko": true,
-"kk": true,
-"ja": true,
-"it": true,
-"hu": true,
-"hr": true,
-"he": true,
-"fr": true,
-"fi": true,
-"es": true,
-"el": true,
-"de": true,
-"da": true,
-"cs": true,
-"ca": true,
-"az": true,
-"ar": true
 });
 
 },
@@ -33831,11 +32916,9 @@ HorizontalSlider._Mover = _SliderMover;	// for monkey patching
 return HorizontalSlider;
 });
 
-}}});
-
-require(["dojo/i18n"], function(i18n){
-i18n._preloadLocalizations("dijit/nls/dijit-all", ["nl-nl","en-us","da","fi-fi","pt-pt","hu","sk","sl","pl","ca","sv","zh-tw","ar","en-gb","he-il","de-de","ko-kr","ja-jp","nb","ru","es-es","th","cs","it-it","pt-br","fr-fr","el","tr","zh-cn"]);
-});
+},
+'*now':function(r){r(['dojo/i18n!*preload*dijit/nls/dijit-all*["ar","ca","cs","da","de-de","el","en-gb","en-us","es-es","fi-fi","fr-fr","he-il","hu","it-it","ja-jp","ko-kr","nl-nl","nb","pl","pt-br","pt-pt","ru","sk","sl","sv","th","tr","zh-tw","zh-cn","ROOT"]']);}
+}});
 define("dijit/dijit-all", [
 	".",
 	"./dijit",

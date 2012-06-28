@@ -1,4 +1,3 @@
-//>>built
 define("dojo/cookie", ["./_base/kernel", "./regexp"], function(dojo, regexp) {
 	// module:
 	//		dojo/cookie

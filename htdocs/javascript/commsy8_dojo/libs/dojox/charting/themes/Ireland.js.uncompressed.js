@@ -1,4 +1,3 @@
-//>>built
 define("dojox/charting/themes/Ireland", ["../Theme", "./common"], function(Theme, themes){
 	
 	themes.Ireland=new Theme({

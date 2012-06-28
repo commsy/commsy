@@ -1,4 +1,3 @@
-//>>built
 define("dijit/form/_AutoCompleterMixin", [
 	"dojo/_base/connect", // keys keys.SHIFT
 	"dojo/data/util/filter", // patternToRegExp
@@ -189,6 +188,7 @@ define("dijit/form/_AutoCompleterMixin", [
 			// summary:
 			//		Handles keyboard events
 
+			if(this.disabled || this.readOnly){ return; }
 			var key = evt.charOrCode;
 
 			// except for cutting/pasting case - ctrl + x/v

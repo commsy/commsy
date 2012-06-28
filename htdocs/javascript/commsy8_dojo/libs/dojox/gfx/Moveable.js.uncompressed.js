@@ -1,4 +1,3 @@
-//>>built
 define("dojox/gfx/Moveable", ["dojo/_base/lang","dojo/_base/declare","dojo/_base/array","dojo/_base/event","dojo/_base/connect",
 	"dojo/dom-class","dojo/_base/window","./Mover"], 
   function(lang,declare,arr,event,connect,domClass,win,Mover){

@@ -1,4 +1,3 @@
-//>>built
 define("dojox/encoding/easy64", ["dojo/_base/lang"], function(lang) {
 	var easy64 = lang.getObject("dojox.encoding.easy64", true);
 	/*=====

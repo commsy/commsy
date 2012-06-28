@@ -1,4 +1,3 @@
-//>>built
 define("dojox/gfx3d/vector", ["dojo/_base/lang", "dojo/_base/array", "./_base"],function(lang, arrayUtil, gfx3d) {
 
 gfx3d.vector =  {

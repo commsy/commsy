@@ -1,5 +1,5 @@
 //>>built
-define(["dijit","dojo","dojox","dojo/require!dijit/_Widget,dijit/_Templated,dojo/fx"],function(_1,_2,_3){
+define("dojox/widget/Pager",["dijit","dojo","dojox","dojo/require!dijit/_Widget,dijit/_Templated,dojo/fx"],function(_1,_2,_3){
 _2.provide("dojox.widget.Pager");
 _2.experimental("dojox.widget.Pager");
 _2.require("dijit._Widget");

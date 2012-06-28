@@ -1,4 +1,3 @@
-//>>built
 // wrapped by build app
 define("dojox/image/SlideShow", ["dijit","dojo","dojox","dojo/require!dojo/string,dojo/fx,dijit/_Widget,dijit/_Templated"], function(dijit,dojo,dojox){
 dojo.provide("dojox.image.SlideShow");

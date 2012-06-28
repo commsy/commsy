@@ -1,4 +1,3 @@
-//>>built
 define("dojox/widget/DialogSimple", ["dojo", "dijit", "dojox", "dijit/Dialog", "dojox/layout/ContentPane"], function(dojo, dijit, dojox){
 
 	dojo.getObject("widget", true, dojox);

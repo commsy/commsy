@@ -1,4 +1,3 @@
-//>>built
 define("dojox/grid/_RowSelector", [
 	"dojo/_base/declare",
 	"./_View"

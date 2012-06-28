@@ -1,4 +1,3 @@
-//>>built
 define("dijit/form/_FormSelectWidget", [
 	"dojo/_base/array", // array.filter array.forEach array.map array.some
 	"dojo/aspect", // aspect.after

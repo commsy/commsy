@@ -1,4 +1,3 @@
-//>>built
 define("dojox/charting/themes/Adobebricks", ["../Theme", "./common"], function(Theme, themes){
 
 	themes.Adobebricks=new Theme({

@@ -1,4 +1,3 @@
-//>>built
 define("dojox/geo/openlayers/Feature", ["dojo/_base/kernel", "dojo/_base/declare", "dojox/geo/openlayers/Map"], function(dojo, declare, Map){
 
 	return declare("dojox.geo.openlayers.Feature", null, {

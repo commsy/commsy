@@ -1,4 +1,3 @@
-//>>built
 define("dojox/gauges/Range", ["dojo/_base/declare","dijit/_Widget"], 
   function(declare, Widget) {
 

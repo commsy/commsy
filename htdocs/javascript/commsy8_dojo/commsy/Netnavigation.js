@@ -47,7 +47,7 @@ define([	"dojo/_base/declare",
 						// init rubric select box
 						var selectNode = Query("select[name='netnavigation_rubric_restriction']")[0];
 						
-						data.rubrics.forEach(function(rubric, index, arr) {
+						dojo.forEach(data.rubrics, function(rubric, index, arr) {
 							DomConstruct.create("option", {
 								value:		rubric.value,
 								innerHTML:	rubric.text,
@@ -157,7 +157,7 @@ define([	"dojo/_base/declare",
 				// fill list
 				DomConstruct.empty(contentNode);
 				
-				ret.list.forEach(function(entry, index, arr) {
+				dojo.forEach(ret.list, function(entry, index, arr) {
 					// if current module is of type user, deactivate selection for "All Members"(system label) entries
 					var disabled = false;
 					if(this.module === "user" && entry.system_label === true) {
@@ -204,7 +204,7 @@ define([	"dojo/_base/declare",
 				//DomAttr.set(Query("span#pop_item_entries_selected")[0], "innerHTML", this.store.selected);
 				
 				// register checkbox events - unregistering is done when destroying
-				Query("input[type='checkbox']", contentNode).forEach(Lang.hitch(this, function(node, index, arr) {
+				dojo.forEach(Query("input[type='checkbox']", contentNode), Lang.hitch(this, function(node, index, arr) {
 					var rowNode = new dojo.NodeList(node).parents("div[class^='pop_row_']")[0];
 					
 					// safe row background color
@@ -322,7 +322,7 @@ define([	"dojo/_base/declare",
 			// get ids
 			var storeAfterItemCreation = [];
 			
-			Query("div#netnavigation_list li").forEach(function(node, index, arr) {
+			dojo.forEach(Query("div#netnavigation_list dojo.forEach(li"), function(node, index, arr) {
 				storeAfterItemCreation.push(DomAttr.get(node, "id").substr(5));
 			});
 			
@@ -331,7 +331,7 @@ define([	"dojo/_base/declare",
 			
 			if(storeAfterItemCreation.length === 0) callback();
 			else {
-				storeAfterItemCreation.forEach(Lang.hitch(this, function(id, index, arr) {
+				dojo.forEach(storeAfterItemCreation, Lang.hitch(this, function(id, index, arr) {
 					var data = {
 						item_id:	item_id,
 						link_id:	id,

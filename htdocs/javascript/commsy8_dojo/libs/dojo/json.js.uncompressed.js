@@ -1,4 +1,3 @@
-//>>built
 define("dojo/json", ["./has"], function(has){
 	"use strict";
 	var hasJSON = typeof JSON != "undefined";

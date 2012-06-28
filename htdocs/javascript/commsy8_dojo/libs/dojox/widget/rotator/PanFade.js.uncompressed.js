@@ -1,4 +1,3 @@
-//>>built
 // wrapped by build app
 define("dojox/widget/rotator/PanFade", ["dijit","dojo","dojox","dojo/require!dojo/fx"], function(dijit,dojo,dojox){
 dojo.provide("dojox.widget.rotator.PanFade");

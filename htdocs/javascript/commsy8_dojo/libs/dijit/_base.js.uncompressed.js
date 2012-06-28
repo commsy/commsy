@@ -1,4 +1,3 @@
-//>>built
 define("dijit/_base", [
 	".",
 	"./a11y",	// used to be in dijit/_base/manager

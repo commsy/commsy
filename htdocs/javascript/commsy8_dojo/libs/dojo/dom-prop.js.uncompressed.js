@@ -1,4 +1,3 @@
-//>>built
 define("dojo/dom-prop", ["exports", "./_base/kernel", "./_base/sniff", "./_base/lang", "./dom", "./dom-style", "./dom-construct", "./_base/connect"],
 		function(exports, dojo, has, lang, dom, style, ctr, conn){
 	// module:

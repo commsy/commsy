@@ -1,4 +1,3 @@
-//>>built
 // wrapped by build app
 define("dojox/widget/FeedPortlet", ["dijit","dojo","dojox","dojo/require!dojox/widget/Portlet,dijit/Tooltip,dijit/form/TextBox,dijit/form/Button,dojox/data/GoogleFeedStore"], function(dijit,dojo,dojox){
 dojo.provide("dojox.widget.FeedPortlet");

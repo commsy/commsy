@@ -1,5 +1,5 @@
 //>>built
-define(["dijit","dojo","dojox","dojo/require!dojo/AdapterRegistry"],function(_1,_2,_3){
+define("dojox/cometd/_base",["dijit","dojo","dojox","dojo/require!dojo/AdapterRegistry"],function(_1,_2,_3){
 _2.provide("dojox.cometd._base");
 _2.require("dojo.AdapterRegistry");
 _3.cometd={Connection:function(_4){

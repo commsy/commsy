@@ -159,10 +159,10 @@ if(_2.isArray(_2e)){
 if(_30){
 _3.forEach(_2e,function(_32){
 _32.set("checked",false,!this.watching);
-});
+},this);
 _3.forEach(_2e,function(_33){
 _33.set("checked",_33.value===_2f,!this.watching);
-});
+},this);
 return this;
 }
 _3.some(_2e,function(_34){

@@ -1,4 +1,3 @@
-//>>built
 define("dojo/main", [
 	"./_base/kernel",
 	"./has",

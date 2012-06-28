@@ -1,5 +1,5 @@
 //>>built
-define(["dijit","dojo","dojox"],function(_1,_2,_3){
+define("dojox/drawing/manager/Canvas",["dijit","dojo","dojox"],function(_1,_2,_3){
 _2.provide("dojox.drawing.manager.Canvas");
 (function(){
 _3.drawing.manager.Canvas=_3.drawing.util.oo.declare(function(_4){

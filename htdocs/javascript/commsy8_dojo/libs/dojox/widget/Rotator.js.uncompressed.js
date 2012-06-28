@@ -1,4 +1,3 @@
-//>>built
 // wrapped by build app
 define("dojox/widget/Rotator", ["dijit","dojo","dojox","dojo/require!dojo/parser"], function(dijit,dojo,dojox){
 dojo.provide("dojox.widget.Rotator");

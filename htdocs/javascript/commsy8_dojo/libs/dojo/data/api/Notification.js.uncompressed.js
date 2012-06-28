@@ -1,4 +1,3 @@
-//>>built
 define("dojo/data/api/Notification", ["../..", "./Read"], function(dojo) {
 	// module:
 	//		dojo/data/api/Notification

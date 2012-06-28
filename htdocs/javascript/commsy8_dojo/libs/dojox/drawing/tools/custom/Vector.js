@@ -1,5 +1,5 @@
 //>>built
-define(["dijit","dojo","dojox","dojo/require!dojox/drawing/tools/Arrow,dojox/drawing/util/positioning"],function(_1,_2,_3){
+define("dojox/drawing/tools/custom/Vector",["dijit","dojo","dojox","dojo/require!dojox/drawing/tools/Arrow,dojox/drawing/util/positioning"],function(_1,_2,_3){
 _2.provide("dojox.drawing.tools.custom.Vector");
 _2.require("dojox.drawing.tools.Arrow");
 _2.require("dojox.drawing.util.positioning");

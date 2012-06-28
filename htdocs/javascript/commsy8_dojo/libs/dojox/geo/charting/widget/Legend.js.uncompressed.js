@@ -1,4 +1,3 @@
-//>>built
 
 define("dojox/geo/charting/widget/Legend", ["dojo/_base/kernel", "dojo/_base/lang","dojo/_base/array", "dojo/_base/declare","dojo/_base/html","dojo/dom",
 		 "dojo/dom-construct","dojo/dom-class", "dojo/_base/window", "dijit/_Widget"],

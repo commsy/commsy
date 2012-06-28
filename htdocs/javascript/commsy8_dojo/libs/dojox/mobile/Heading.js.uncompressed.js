@@ -1,4 +1,3 @@
-//>>built
 define("dojox/mobile/Heading", [
 	"dojo/_base/array",
 	"dojo/_base/connect",

@@ -1,4 +1,3 @@
-//>>built
 define("dojox/dtl/Inline", [
 	"dojo/_base/lang",
 	"./_base",

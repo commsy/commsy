@@ -1,4 +1,3 @@
-//>>built
 // wrapped by build app
 define("dojox/data/restListener", ["dijit","dojo","dojox"], function(dijit,dojo,dojox){
 dojo.provide("dojox.data.restListener");

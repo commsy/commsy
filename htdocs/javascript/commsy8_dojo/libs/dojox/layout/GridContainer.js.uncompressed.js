@@ -1,4 +1,3 @@
-//>>built
 define("dojox/layout/GridContainer", [
 	"dojo/_base/kernel",
 	"dojo/_base/array",

@@ -1,4 +1,3 @@
-//>>built
 // wrapped by build app
 define("dojox/image/ThumbnailPicker", ["dijit","dojo","dojox","dojo/require!dojox/fx/scroll,dojo/fx/easing,dojo/fx,dijit/_Widget,dijit/_Templated"], function(dijit,dojo,dojox){
 dojo.provide("dojox.image.ThumbnailPicker");

@@ -1,4 +1,3 @@
-//>>built
 // wrapped by build app
 define("dojox/drawing/ui/Tooltip", ["dijit","dojo","dojox","dojo/require!dojox/drawing/plugins/_Plugin"], function(dijit,dojo,dojox){
 dojo.provide("dojox.drawing.ui.Tooltip");

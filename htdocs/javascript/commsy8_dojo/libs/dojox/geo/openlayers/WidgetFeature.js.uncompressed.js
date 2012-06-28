@@ -1,4 +1,3 @@
-//>>built
 define(
 	"dojox/geo/openlayers/WidgetFeature", ["dojo/_base/kernel", "dojo/_base/declare", "dojo/_base/html", "dojo/_base/lang", "dojox/geo/openlayers/Feature"],
 	function(dojo, declare, html, lang, Feature){

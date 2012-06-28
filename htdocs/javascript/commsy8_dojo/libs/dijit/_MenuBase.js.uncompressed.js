@@ -1,4 +1,3 @@
-//>>built
 define("dijit/_MenuBase", [
 	"./popup",
 	"dojo/window",

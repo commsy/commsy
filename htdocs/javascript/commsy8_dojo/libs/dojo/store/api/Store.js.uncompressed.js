@@ -1,4 +1,3 @@
-//>>built
 define("dojo/store/api/Store", ["dojo/_base/declare"], function(declare) {
 	// module:
 	//		dojo/store/api/Store

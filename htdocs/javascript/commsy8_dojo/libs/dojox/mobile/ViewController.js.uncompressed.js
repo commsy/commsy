@@ -1,4 +1,3 @@
-//>>built
 define("dojox/mobile/ViewController", [
 	"dojo/_base/kernel",
 	"dojo/_base/array",
@@ -143,7 +142,13 @@ define("dojox/mobile/ViewController", [
 				moveTo = id;
 				w = this.findCurrentView(moveTo,registry.byId(evt.target.id)) || w; // the current view widget
 			}
-			w.performTransition(moveTo, evt.detail.transitionDir, evt.detail.transition, null, null);
+			var src = registry.getEnclosingWidget(evt.target);
+			var context, method;
+			if(src && src.callback){
+				context = src;
+				method = src.callback;
+			}
+			w.performTransition(moveTo, evt.detail.transitionDir, evt.detail.transition, context, method);
 		},
 
 		_parse: function(text, id){
@@ -166,8 +171,8 @@ define("dojox/mobile/ViewController", [
 				if(c.nodeType === 1){
 					if(c.getAttribute("fixed") === "bottom"){
 						refNode = c;
+						break;
 					}
-					break;
 				}
 			}
 			if(text.charAt(0) === "<"){ // html markup

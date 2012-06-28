@@ -1,4 +1,3 @@
-//>>built
 define("dojo/cldr/supplemental", ["../_base/kernel", "../_base/lang", "../i18n"], function(dojo, lang) {
 	// module:
 	//		dojo/cldr/supplemental

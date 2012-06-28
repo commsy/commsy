@@ -1,4 +1,3 @@
-//>>built
 define("dojox/data/ServiceStore", ["dojo/_base/declare", "dojo/_base/lang", "dojo/_base/array"], 
   function(declare, lang, array) {
 

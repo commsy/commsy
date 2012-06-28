@@ -27,18 +27,22 @@ define([	"dojo/_base/declare",
 		},
 		
 		setup: function(uploaderNode) {
+			/*
 			if(Flash.available) {
 				dojo.require("dojox/form/uploader/plugins/Flash");
-			} else {
+			} else {*/
 				dojo.require("dojox/form/uploader/plugins/IFrame");
-			}
+			//}
 			
 			dojo.ready(Lang.hitch(this, function() {
 				this.uploader = new dojox.form.Uploader({
 					multiple:		!this.single,
 					uploadOnSelect: false,
 					"class":		"fileSelector",
+					
 					//force:			"flash",
+					isDebug:		true,
+					
 					url:			"commsy.php?cid=" + this.uri_object.cid + "&mod=ajax&fct=upload&action=upload"
 				}, Query("input.fileSelector", uploaderNode)[0]);
 				
@@ -88,7 +92,7 @@ define([	"dojo/_base/declare",
 			this.progressbar.placeAt(Query("div.fileList")[0]);
 		},
 		
-		onUploadComplete: function(data) {
+		onUploadComplete: function(data) {console.dir(data);
 			if(this.callback) {
 				this.callback(data);
 			} else {
@@ -96,7 +100,7 @@ define([	"dojo/_base/declare",
 				
 				if(!data.length) data = [data];
 				
-				data.forEach(Lang.hitch(this, function(file, index, arr) {
+				dojo.forEach(data, Lang.hitch(this, function(file, index, arr) {
 					// add file to file finished
 					DomConstruct.create("input", {
 						type:		"checkbox",

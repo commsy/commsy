@@ -1,4 +1,3 @@
-//>>built
 define("dojox/mobile/EdgeToEdgeCategory", [
 	"dojo/_base/declare",
 	"./RoundRectCategory"

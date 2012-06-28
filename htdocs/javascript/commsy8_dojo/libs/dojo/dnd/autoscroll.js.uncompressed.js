@@ -1,4 +1,3 @@
-//>>built
 define("dojo/dnd/autoscroll", ["../main", "../window"], function(dojo) {
 	// module:
 	//		dojo/dnd/autoscroll

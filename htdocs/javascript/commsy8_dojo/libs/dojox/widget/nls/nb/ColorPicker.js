@@ -1,8 +1,2 @@
 //>>built
-define(
-"dojox/widget/nls/nb/ColorPicker", //begin v1.x content
-({
-huePickerTitle: "Nyansevelger",
-saturationPickerTitle: "Metningsvelger"
-})
-);
+define("dojox/widget/nls/nb/ColorPicker",({huePickerTitle:"Nyansevelger",saturationPickerTitle:"Metningsvelger"}));

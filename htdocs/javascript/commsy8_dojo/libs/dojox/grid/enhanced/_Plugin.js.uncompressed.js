@@ -1,4 +1,3 @@
-//>>built
 define("dojox/grid/enhanced/_Plugin", [
 	"dojo/_base/kernel",
 	"dojo/_base/lang",

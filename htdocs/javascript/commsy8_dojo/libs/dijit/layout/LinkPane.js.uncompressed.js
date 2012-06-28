@@ -1,4 +1,3 @@
-//>>built
 define("dijit/layout/LinkPane", [
 	"./ContentPane",
 	"../_TemplatedMixin",

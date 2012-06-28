@@ -1,4 +1,3 @@
-//>>built
 define("dojox/fx/ext-dojo/NodeList-style", ["dojo/_base/lang", "dojo/_base/NodeList","dojo/NodeList-fx", "dojo/fx", "../style"],
 	function(lang, NodeList, NodeListFx, coreFx, styleX){
 // summary:

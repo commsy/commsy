@@ -1,4 +1,3 @@
-//>>built
 define("dojox/widget/PlaceholderMenuItem", ["dojo", "dijit", "dojox", "dijit/Menu","dijit/MenuItem"], function(dojo, dijit, dojox){
 dojo.experimental("dojox.widget.PlaceholderMenuItem");
 

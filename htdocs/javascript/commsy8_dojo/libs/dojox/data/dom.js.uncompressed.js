@@ -1,4 +1,3 @@
-//>>built
 define("dojox/data/dom", ["dojo/_base/kernel", "dojo/_base/lang", "dojox/xml/parser"], 
   function(kernel, lang, xmlParser) {
 

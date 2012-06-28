@@ -1,4 +1,3 @@
-//>>built
 define("dojox/app/view", ["dojo/_base/declare", "dijit/_WidgetBase", "dijit/_Container", "dijit/_Contained","dijit/_TemplatedMixin","dijit/_WidgetsInTemplateMixin"],function(declare,Widget,Container,Contained,TemplatedMixin,WidgetsInTemplateMixin){
 	return declare("dojox.app.view", [Widget,TemplatedMixin,Container,Contained, WidgetsInTemplateMixin], {
 		selected: false,
@@ -11,6 +10,6 @@ define("dojox/app/view", ["dojo/_base/declare", "dijit/_WidgetBase", "dijit/_Con
 		activate:function(){},
 		deactivate: function(){},
 		//Temporary work around for getting a null when calling getParent
-		getParent: function(){return null;}
+//		getParent: function(){return null;}
 	});
 });

@@ -1,5 +1,5 @@
 //>>built
-define(["dijit","dojo","dojox"],function(_1,_2,_3){
+define("dojox/drawing/tools/Rect",["dijit","dojo","dojox"],function(_1,_2,_3){
 _2.provide("dojox.drawing.tools.Rect");
 _3.drawing.tools.Rect=_3.drawing.util.oo.declare(_3.drawing.stencil.Rect,function(){
 },{draws:true,onDrag:function(_4){

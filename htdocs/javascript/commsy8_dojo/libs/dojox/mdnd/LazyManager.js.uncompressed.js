@@ -1,4 +1,3 @@
-//>>built
 define("dojox/mdnd/LazyManager", [
 	"dojo/_base/kernel",	// dojo.addOnUnload
 	"dojo/_base/lang",	// dojo.hitch

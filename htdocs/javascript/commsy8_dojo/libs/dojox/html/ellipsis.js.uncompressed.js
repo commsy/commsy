@@ -1,4 +1,3 @@
-//>>built
 define("dojox/html/ellipsis",["dojo/_base/kernel", "dojo/_base/lang", "dojo/_base/array", "dojo/_base/Color", "dojo/colors"], function(d){
 	/*=====
 	dojox.html.ellipsis = {

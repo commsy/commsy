@@ -1,4 +1,3 @@
-//>>built
 define("dojox/dtl/tag/loader", [
 	"dojo/_base/lang",
 	"../_base",

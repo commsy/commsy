@@ -1,5 +1,5 @@
 //>>built
-define(["dijit","dojo","dojox","dojo/require!dojox/fx/scroll,dojo/fx/easing,dojo/fx,dijit/_Widget,dijit/_Templated"],function(_1,_2,_3){
+define("dojox/image/ThumbnailPicker",["dijit","dojo","dojox","dojo/require!dojox/fx/scroll,dojo/fx/easing,dojo/fx,dijit/_Widget,dijit/_Templated"],function(_1,_2,_3){
 _2.provide("dojox.image.ThumbnailPicker");
 _2.experimental("dojox.image.ThumbnailPicker");
 _2.require("dojox.fx.scroll");

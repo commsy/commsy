@@ -1,4 +1,3 @@
-//>>built
 define("dijit/_FocusMixin", [
 	"./focus",
 	"./_WidgetBase",

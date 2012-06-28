@@ -1,4 +1,3 @@
-//>>built
 define("dojo/io/iframe", ["../main", "require"], function(dojo, require) {
 	// module:
 	//		dojo/io/iframe

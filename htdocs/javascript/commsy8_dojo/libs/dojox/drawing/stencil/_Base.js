@@ -1,5 +1,5 @@
 //>>built
-define(["dijit","dojo","dojox","dojo/require!dojo/fx/easing"],function(_1,_2,_3){
+define("dojox/drawing/stencil/_Base",["dijit","dojo","dojox","dojo/require!dojo/fx/easing"],function(_1,_2,_3){
 _2.provide("dojox.drawing.stencil._Base");
 _2.require("dojo.fx.easing");
 _3.drawing.stencil._Base=_3.drawing.util.oo.declare(function(_4){

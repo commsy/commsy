@@ -1,4 +1,3 @@
-//>>built
 define("dojox/embed/flashVars", ['dojo'],function(dojo){
 
 dojo.getObject("dojox.embed", true);

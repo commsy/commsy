@@ -1,4 +1,3 @@
-//>>built
 define("dijit/form/VerticalRule", [
 	"dojo/_base/declare", // declare
 	"./HorizontalRule"

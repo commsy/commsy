@@ -1,4 +1,3 @@
-//>>built
 // wrapped by build app
 define("dojox/wire/_base", ["dijit","dojo","dojox"], function(dijit,dojo,dojox){
 dojo.provide("dojox.wire._base");

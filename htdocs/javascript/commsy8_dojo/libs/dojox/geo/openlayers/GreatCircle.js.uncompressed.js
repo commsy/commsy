@@ -1,4 +1,3 @@
-//>>built
 define("dojox/geo/openlayers/GreatCircle", ["dojo/_base/lang",
 				"dojox/geo/openlayers/GeometryFeature",
 				"dojox/geo/openlayers/Point",

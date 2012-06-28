@@ -1,4 +1,3 @@
-//>>built
 define("dojox/data/XmlItem", ["dojo/_base/declare"], 
   function(declare) {
 

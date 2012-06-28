@@ -1,4 +1,3 @@
-//>>built
 define("dojox/data/HtmlStore", ["dojo/_base/declare", "dojo/_base/array", "dojo/_base/lang", "dojo/dom", "dojo/_base/xhr", "dojo/_base/window",
 		"dojo/data/util/simpleFetch", "dojo/data/util/filter", "dojox/xml/parser"], 
   function(declare, array, lang, dom, xhr, winUtil, simpleFetch, filter, xmlParser) {

@@ -1,4 +1,3 @@
-//>>built
 define("dojox/charting/themes/Algae", ["../Theme", "./common"], function(Theme, themes){
 	themes.Algae = new Theme({
 		colors: [

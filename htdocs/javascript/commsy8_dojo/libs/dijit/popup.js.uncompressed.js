@@ -1,4 +1,3 @@
-//>>built
 define("dijit/popup", [
 	"dojo/_base/array", // array.forEach array.some
 	"dojo/aspect",

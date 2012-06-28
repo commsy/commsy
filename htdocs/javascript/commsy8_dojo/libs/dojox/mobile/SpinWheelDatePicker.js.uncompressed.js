@@ -1,4 +1,3 @@
-//>>built
 define("dojox/mobile/SpinWheelDatePicker", [
 	"dojo/_base/declare",
 	"dojo/dom-class",

@@ -16,7 +16,7 @@ if(_5 instanceof Date){
 this.fromGregorian(_5);
 }else{
 if(_5==""){
-this._date=new Date("");
+this._year=this._month=this._date=this._hours=this._minutes=this._seconds=this._milliseconds=NaN;
 }else{
 this._year=_5._year;
 this._month=_5._month;

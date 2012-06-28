@@ -1,4 +1,3 @@
-//>>built
 define("dojox/charting/themes/Dollar", ["../Theme", "./common"], function(Theme, themes){
 	
 	themes.Dollar=new Theme({

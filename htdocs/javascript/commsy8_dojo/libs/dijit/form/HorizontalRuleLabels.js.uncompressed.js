@@ -1,4 +1,3 @@
-//>>built
 define("dijit/form/HorizontalRuleLabels", [
 	"dojo/_base/declare",	// declare
 	"dojo/number", // number.format

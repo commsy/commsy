@@ -1,4 +1,3 @@
-//>>built
 define("dojo/NodeList-dom", ["./_base/kernel", "./query", "./_base/array", "./_base/lang", "./dom-class", "./dom-construct", "./dom-geometry", "./dom-attr", "./dom-style"], function(dojo, query, array, lang, domCls, domCtr, domGeom, domAttr, domStyle){
 	/*===== var NodeList = dojo.NodeList; =====*/
 	var magicGuard = function(a){

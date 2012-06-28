@@ -1,4 +1,3 @@
-//>>built
 define("dijit/tree/TreeStoreModel", [
 	"dojo/_base/array", // array.filter array.forEach array.indexOf array.some
 	"dojo/aspect", // aspect.after

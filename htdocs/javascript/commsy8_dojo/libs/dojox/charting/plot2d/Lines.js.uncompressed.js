@@ -1,4 +1,3 @@
-//>>built
 define("dojox/charting/plot2d/Lines", ["dojo/_base/declare", "./Default"], function(declare, Default){
 /*=====
 var Default = dojox.charting.plot2d.Default;

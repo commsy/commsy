@@ -1,4 +1,3 @@
-//>>built
 define("dojox/dtl/dom", [
 	"dojo/_base/lang",
 	"./_base",

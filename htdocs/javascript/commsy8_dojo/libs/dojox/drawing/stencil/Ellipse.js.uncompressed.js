@@ -1,4 +1,3 @@
-//>>built
 // wrapped by build app
 define("dojox/drawing/stencil/Ellipse", ["dijit","dojo","dojox"], function(dijit,dojo,dojox){
 dojo.provide("dojox.drawing.stencil.Ellipse");

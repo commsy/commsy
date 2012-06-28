@@ -1,4 +1,3 @@
-//>>built
 define("dojox/encoding/ascii85", ["dojo/_base/lang"], function(lang) {
 
 	var ascii85 = lang.getObject("dojox.encoding.ascii85", true);

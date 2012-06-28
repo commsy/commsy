@@ -1,4 +1,3 @@
-//>>built
 define("dojox/collections/Stack", ["dojo/_base/kernel", "dojo/_base/array", "./_base"], function(dojo, darray, dxc){
 /*=====
 var dxc = dojox.collections;

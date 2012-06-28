@@ -1,4 +1,3 @@
-//>>built
 define("dojox/form/DropDownStack", [
 	"dijit/form/Select",
 	"./_SelectStackMixin",

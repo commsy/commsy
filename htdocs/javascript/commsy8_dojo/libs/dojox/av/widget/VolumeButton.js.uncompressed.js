@@ -1,4 +1,3 @@
-//>>built
 define("dojox/av/widget/VolumeButton", ['dojo', 'dijit', 'dijit/_Widget', 'dijit/_TemplatedMixin', 'dijit/form/Button'],function(dojo, dijit){
 
 dojo.declare("dojox.av.widget.VolumeButton", [dijit._Widget, dijit._TemplatedMixin], {

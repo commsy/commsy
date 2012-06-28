@@ -1,4 +1,3 @@
-//>>built
 define("dijit/layout/_LayoutWidget", [
 	"dojo/_base/lang", // lang.mixin
 	"../_Widget",

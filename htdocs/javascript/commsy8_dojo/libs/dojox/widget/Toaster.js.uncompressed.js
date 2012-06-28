@@ -1,4 +1,3 @@
-//>>built
 define("dojox/widget/Toaster", [
 	"dojo/_base/declare", // declare
         "dojo/_base/lang", // lang.getObject...

@@ -1,4 +1,3 @@
-//>>built
 define("dojox/mobile/ContentPane", [
 	"dojo/_base/kernel",
 	"dojo/_base/array",

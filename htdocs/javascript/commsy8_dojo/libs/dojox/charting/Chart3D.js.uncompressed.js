@@ -1,4 +1,3 @@
-//>>built
 define("dojox/charting/Chart3D", ["dojo/_base/array", "dojo/dom","dojo/_base/declare", "dojo/_base/html", "dojox/gfx", "dojox/gfx3d"], 
 	function(arr, dom, declare, html, gfx, gfx3d){
 	// module:

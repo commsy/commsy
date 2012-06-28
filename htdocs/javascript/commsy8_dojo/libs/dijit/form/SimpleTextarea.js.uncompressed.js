@@ -1,4 +1,3 @@
-//>>built
 define("dijit/form/SimpleTextarea", [
 	"dojo/_base/declare", // declare
 	"dojo/dom-class", // domClass.add

@@ -1,4 +1,3 @@
-//>>built
 define("dojox/form/BusyButton", [
 	"dojo/_base/lang",
 	"dojo/dom-attr",

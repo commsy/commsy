@@ -1,4 +1,3 @@
-//>>built
 define("dojo/date/locale", [
 	"../_base/kernel",
 	"../_base/lang",

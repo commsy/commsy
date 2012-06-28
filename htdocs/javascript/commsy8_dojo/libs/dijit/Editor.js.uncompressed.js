@@ -1,4 +1,3 @@
-//>>built
 define("dijit/Editor", [
 	"dojo/_base/array", // array.forEach
 	"dojo/_base/declare", // declare

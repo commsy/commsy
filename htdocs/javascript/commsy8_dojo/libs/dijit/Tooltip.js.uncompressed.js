@@ -1,4 +1,3 @@
-//>>built
 require({cache:{
 'url:dijit/templates/Tooltip.html':"<div class=\"dijitTooltip dijitTooltipLeft\" id=\"dojoTooltip\"\n\t><div class=\"dijitTooltipContainer dijitTooltipContents\" data-dojo-attach-point=\"containerNode\" role='alert'></div\n\t><div class=\"dijitTooltipConnector\" data-dojo-attach-point=\"connectorNode\"></div\n></div>\n"}});
 define("dijit/Tooltip", [
@@ -275,6 +274,14 @@ define("dijit/Tooltip", [
 		//		means "rtl"; specifies GUI direction, not text direction.
 		// textDir: String?
 		//		Corresponds to `WidgetBase.textdir` attribute; specifies direction of text.
+
+		// after/before don't work, but they used to, so for back-compat convert them to after-centered, before-centered
+		if(position){
+			position = array.map(position, function(val){
+				return {after: "after-centered", before: "before-centered"}[val] || val;
+			});
+		}
+
 		if(!Tooltip._masterTT){ dijit._masterTT = Tooltip._masterTT = new MasterTooltip(); }
 		return Tooltip._masterTT.show(innerHTML, aroundNode, position, rtl, textDir);
 	};

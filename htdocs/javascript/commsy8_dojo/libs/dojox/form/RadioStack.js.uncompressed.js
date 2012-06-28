@@ -1,4 +1,3 @@
-//>>built
 define("dojox/form/RadioStack", [
 	"./CheckedMultiSelect",
 	"./_SelectStackMixin",

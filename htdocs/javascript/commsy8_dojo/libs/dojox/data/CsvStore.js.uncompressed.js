@@ -1,4 +1,3 @@
-//>>built
 define("dojox/data/CsvStore", ["dojo/_base/lang", "dojo/_base/declare", "dojo/_base/xhr", "dojo/_base/window","dojo/data/util/filter", "dojo/data/util/simpleFetch"], 
   function(lang, declare, xhr, winUtil, filterUtil, simpleFetch) {
 

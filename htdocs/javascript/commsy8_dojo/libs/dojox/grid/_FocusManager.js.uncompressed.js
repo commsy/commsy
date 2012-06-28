@@ -1,4 +1,3 @@
-//>>built
 define("dojox/grid/_FocusManager", [
 	"dojo/_base/array",
 	"dojo/_base/lang",

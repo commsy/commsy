@@ -1,4 +1,3 @@
-//>>built
 // wrapped by build app
 define("dojox/drawing/plugins/drawing/GreekPalette", ["dijit","dojo","dojox","dojo/i18n!dojox/editor/plugins/nls/latinEntities","dojo/require!dojox/drawing/library/greek,dijit/focus,dijit/_Widget,dijit/_TemplatedMixin,dijit/_PaletteMixin,dojo/i18n"], function(dijit,dojo,dojox){
 dojo.provide("dojox.drawing.plugins.drawing.GreekPalette");

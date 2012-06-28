@@ -1,4 +1,3 @@
-//>>built
 define("dijit/_HasDropDown", [
 	"dojo/_base/declare", // declare
 	"dojo/_base/Deferred",

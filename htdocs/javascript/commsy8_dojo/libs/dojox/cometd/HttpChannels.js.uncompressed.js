@@ -1,4 +1,3 @@
-//>>built
 // wrapped by build app
 define("dojox/cometd/HttpChannels", ["dijit","dojo","dojox","dojo/require!dojox/io/httpParse,dojox/cometd/RestChannels"], function(dijit,dojo,dojox){
 dojo.provide("dojox.cometd.HttpChannels");

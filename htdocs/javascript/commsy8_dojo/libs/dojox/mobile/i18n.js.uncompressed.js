@@ -1,4 +1,3 @@
-//>>built
 define("dojox/mobile/i18n", [
 	"dojo/_base/lang",
 	"dojo/i18n",

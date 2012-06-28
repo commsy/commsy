@@ -1,4 +1,3 @@
-//>>built
 define("dojox/gfx/svg", ["dojo/_base/lang", "dojo/_base/window", "dojo/dom","dojo/_base/declare", "dojo/_base/array",
   "dojo/dom-geometry", "dojo/_base/Color", "./_base", "./shape", "./path"],
   function(lang, win, dom, declare, arr, domGeom, Color, g, gs, pathLib){

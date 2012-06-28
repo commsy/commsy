@@ -1,4 +1,3 @@
-//>>built
 define("dojox/mobile/_base", [
 	"./common",
 	"./View",

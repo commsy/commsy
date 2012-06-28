@@ -1,4 +1,3 @@
-//>>built
 define("dojox/data/XmlStore", ["dojo/_base/lang", "dojo/_base/declare", "dojo/_base/xhr", "dojo/data/util/simpleFetch", 
 		"dojo/_base/query", "dojo/_base/array", "dojo/_base/window", "dojo/data/util/filter", "dojox/xml/parser",
 		"dojox/data/XmlItem"], 

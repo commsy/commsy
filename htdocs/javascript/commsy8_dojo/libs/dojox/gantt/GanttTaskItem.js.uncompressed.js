@@ -1,4 +1,3 @@
-//>>built
 // wrapped by build app
 define("dojox/gantt/GanttTaskItem", ["dijit","dojo","dojox","dojo/require!dojo/date/locale,dijit/focus"], function(dijit,dojo,dojox){
 dojo.provide("dojox.gantt.GanttTaskItem");

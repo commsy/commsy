@@ -1,4 +1,3 @@
-//>>built
 define("dojox/mobile/transition", [
 	"dojo/_base/Deferred",
 	"dojo/_base/config"

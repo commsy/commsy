@@ -1,4 +1,3 @@
-//>>built
 // wrapped by build app
 define("dojox/drawing/tools/custom/Equation", ["dijit","dojo","dojox","dojo/require!dojox/drawing/tools/TextBlock"], function(dijit,dojo,dojox){
 dojo.provide("dojox.drawing.tools.custom.Equation");

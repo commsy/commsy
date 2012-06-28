@@ -1,4 +1,3 @@
-//>>built
 require({cache:{
 'url:dojox/form/resources/TriStateCheckBox.html':"<div class=\"dijit dijitReset dijitInline\" role=\"presentation\"\n\t><div class=\"dojoxTriStateCheckBoxInner\" dojoAttachPoint=\"stateLabelNode\"></div\n\t><input ${!nameAttrSetting} type=\"${type}\" dojoAttachPoint=\"focusNode\"\n\tclass=\"dijitReset dojoxTriStateCheckBoxInput\" dojoAttachEvent=\"onclick:_onClick\"\n/></div>"}});
 define("dojox/form/TriStateCheckBox", [
@@ -9,7 +8,8 @@ define("dojox/form/TriStateCheckBox", [
 	"dojo/query",
 	"dojo/dom-attr",
 	"dojo/text!./resources/TriStateCheckBox.html",
-	"dijit/form/ToggleButton"
+	"dijit/form/ToggleButton",
+	"dojo/NodeList-dom" // NodeList.addClass/removeClass
 ], function(kernel, declare, array, event, query, domAttr, template, ToggleButton){
 //	module:
 //		dojox/form/TriStateCheckBox

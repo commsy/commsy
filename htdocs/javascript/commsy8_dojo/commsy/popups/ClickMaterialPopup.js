@@ -34,7 +34,7 @@ define([	"dojo/_base/declare",
 		
 		onPopupSubmit: function(customObject) {
 			// add ckeditor data to hidden div
-			this.featureHandles["editor"].forEach(function(editor, index, arr) {
+			dojo.forEach(this.featureHandles["editor"], function(editor, index, arr) {
 				var instance = editor.getInstance();
 				var node = editor.getNode().parentNode;
 				
@@ -60,7 +60,7 @@ define([	"dojo/_base/declare",
 			
 			// add visible bibliographic div
 			// TODO: maybe there is a not-class selector?
-			query("div#bibliographic div[id^='bib_content_']", this.contentNode).forEach(function(node, index, arr) {
+			dojo.forEach(query("div#bibliographic div[id^='bib_content_']", this.contentNode), function(node, index, arr) {
 				if(!dom_class.contains(node, "hidden")) {
 					
 					var nodeId = domAttr.get(node, "id");
@@ -112,7 +112,7 @@ define([	"dojo/_base/declare",
 			var key = domAttr.get(selectNode, "value");
 			
 			// go through all bibliographic content div's and show the the one who's id matches "bib_content_" + key
-			query("div#bibliographic div[id^='bib_content_']", this.contentNode).forEach(function(node) {
+			dojo.forEach(query("div#bibliographic div[id^='bib_content_']", this.contentNode), function(node) {
 				if(domAttr.get(node, "id") === "bib_content_" + key) {
 					// show
 					dom_class.remove(node, "hidden");

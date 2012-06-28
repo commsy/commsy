@@ -1,4 +1,3 @@
-//>>built
 define("dojox/charting/themes/Distinctive", ["../Theme", "./common"], function(Theme, themes){
 	
 	themes.Distinctive=new Theme({

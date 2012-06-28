@@ -1,4 +1,3 @@
-//>>built
 define("dojox/charting/BidiSupport", ["dojo/_base/lang", "dojo/_base/html", "dojo/_base/array", "dojo/_base/sniff",
 	"dojo/dom","dojo/dom-construct",
 	"dojox/gfx", "dojox/gfx/_gfxBidiSupport", "./Chart", "./axis2d/common", "dojox/string/BidiEngine", "dojox/lang/functional"], 

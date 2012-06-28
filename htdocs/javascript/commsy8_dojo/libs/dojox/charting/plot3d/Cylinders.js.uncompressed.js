@@ -1,4 +1,3 @@
-//>>built
 define("dojox/charting/plot3d/Cylinders", ["dojox/gfx3d", "dojox/gfx3d/matrix", "dojo/_base/declare", "dojo/_base/Color", "dojo/_base/window", "./Base"], 
 	function(gfx3d, matrix3d, declare, Color, win, Base) {
 

@@ -1,4 +1,3 @@
-//>>built
 // wrapped by build app
 define("dojox/gantt/TabMenu", ["dijit","dojo","dojox","dojo/require!dijit/dijit,dijit/Menu,dijit/Dialog,dijit/form/NumberSpinner,dijit/form/Button,dijit/form/CheckBox,dijit/form/DateTextBox,dijit/form/TimeTextBox,dojo/date/locale,dijit/form/Form,dojo/parser"], function(dijit,dojo,dojox){
 dojo.provide("dojox.gantt.TabMenu");

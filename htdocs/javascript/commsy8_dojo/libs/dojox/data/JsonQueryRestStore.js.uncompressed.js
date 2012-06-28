@@ -1,4 +1,3 @@
-//>>built
 define("dojox/data/JsonQueryRestStore", ["dojo", "dojox", "dojox/data/JsonRestStore", "dojox/data/util/JsonQuery", "dojox/data/ClientFilter", "dojox/json/query"], function(dojo, dojox) {
 
 // this is an extension of JsonRestStore to convert object attribute queries to

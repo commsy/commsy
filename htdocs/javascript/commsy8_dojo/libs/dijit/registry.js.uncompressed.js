@@ -1,4 +1,3 @@
-//>>built
 define("dijit/registry", [
 	"dojo/_base/array", // array.forEach array.map
 	"dojo/_base/sniff", // has("ie")

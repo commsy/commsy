@@ -1,4 +1,3 @@
-//>>built
 define("dojox/date/buddhist/locale", ["dojo/main", "dojo/date", "dojo/i18n", "dojo/regexp", "dojo/string", "./Date", "dojo/i18n!dojo/cldr/nls/buddhist"],
 	function(dojo, dd, i18n, regexp, string, buddhistDate){
 
@@ -179,10 +178,7 @@ define("dojox/date/buddhist/locale", ["dojo/main", "dojo/date", "dojo/i18n", "do
 
 		var locale = i18n.normalizeLocale(options.locale);
 
-		if(!match){
-			console.debug("dojox.date.buddhist.locale.parse: value  "+value+" doesn't match pattern   " + re);
-			return null;
-		} // null
+		if(!match){ return null; } // null
 	
 		var date, date1;
 	

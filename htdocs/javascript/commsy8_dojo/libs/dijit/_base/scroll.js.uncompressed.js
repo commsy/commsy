@@ -1,4 +1,3 @@
-//>>built
 define("dijit/_base/scroll", [
 	"dojo/window", // windowUtils.scrollIntoView
 	".."	// export symbol to dijit

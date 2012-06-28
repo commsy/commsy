@@ -1,4 +1,3 @@
-//>>built
 define("dojox/highlight/languages/django", ["dojox/main", "../_base", "./xml", "./html"], function(dojox){
 
 	var dh = dojox.highlight, dhc = dh.constants, dhl = dh.languages, x = dhl.xml, h = dhl.html;

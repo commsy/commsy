@@ -1,4 +1,3 @@
-//>>built
 // wrapped by build app
 define("dojox/drawing/util/common", ["dijit","dojo","dojox","dojo/require!dojox/math/round"], function(dijit,dojo,dojox){
 dojo.provide("dojox.drawing.util.common");

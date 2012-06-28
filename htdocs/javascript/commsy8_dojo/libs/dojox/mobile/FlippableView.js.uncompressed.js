@@ -1,4 +1,3 @@
-//>>built
 define("dojox/mobile/FlippableView", [
 	"dojo/_base/kernel",
 	"dojox/mobile/SwapView"

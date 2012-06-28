@@ -1,5 +1,5 @@
 //>>built
-define(["dijit","dojo","dojox"],function(_1,_2,_3){
+define("dojox/drawing/manager/StencilUI",["dijit","dojo","dojox"],function(_1,_2,_3){
 _2.provide("dojox.drawing.manager.StencilUI");
 (function(){
 var _4,_5;

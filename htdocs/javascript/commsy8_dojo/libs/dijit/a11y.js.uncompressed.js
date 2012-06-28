@@ -1,4 +1,3 @@
-//>>built
 define("dijit/a11y", [
 	"dojo/_base/array", // array.forEach array.map
 	"dojo/_base/config", // defaultDuration

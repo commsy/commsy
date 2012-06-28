@@ -1,4 +1,3 @@
-//>>built
 require({cache:{
 'url:dijit/templates/Dialog.html':"<div class=\"dijitDialog\" role=\"dialog\" aria-labelledby=\"${id}_title\">\n\t<div data-dojo-attach-point=\"titleBar\" class=\"dijitDialogTitleBar\">\n\t<span data-dojo-attach-point=\"titleNode\" class=\"dijitDialogTitle\" id=\"${id}_title\"></span>\n\t<span data-dojo-attach-point=\"closeButtonNode\" class=\"dijitDialogCloseIcon\" data-dojo-attach-event=\"ondijitclick: onCancel\" title=\"${buttonCancel}\" role=\"button\" tabIndex=\"-1\">\n\t\t<span data-dojo-attach-point=\"closeText\" class=\"closeText\" title=\"${buttonCancel}\">x</span>\n\t</span>\n\t</div>\n\t\t<div data-dojo-attach-point=\"containerNode\" class=\"dijitDialogPaneContent\"></div>\n</div>\n"}});
 define("dijit/Dialog", [
@@ -595,7 +594,12 @@ define("dijit/Dialog", [
 					}
 
 					if(focus){
-						focus.focus();
+						// Refocus the button that spawned the Dialog.   This will fail in corner cases including
+						// page unload on IE, because the dijit/form/Button that launched the Dialog may get destroyed
+						// before this code runs.  (#15058)
+						try{
+							focus.focus();
+						}catch(e){}
 					}
 				}
 			}else{

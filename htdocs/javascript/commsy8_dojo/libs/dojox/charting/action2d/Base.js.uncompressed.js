@@ -1,4 +1,3 @@
-//>>built
 define("dojox/charting/action2d/Base", ["dojo/_base/lang", "dojo/_base/declare"], 
 	function(lang, declare){
 

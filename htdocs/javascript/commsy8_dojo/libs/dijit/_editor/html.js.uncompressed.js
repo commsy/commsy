@@ -1,4 +1,3 @@
-//>>built
 define("dijit/_editor/html", [
 	"dojo/_base/lang", // lang.isString
 	"dojo/_base/sniff", // has("ie")

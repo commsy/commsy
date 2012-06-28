@@ -1,4 +1,3 @@
-//>>built
 define("dojo/cldr/monetary", ["../main"], function(dojo) {
 	// module:
 	//		dojo/cldr/monetary

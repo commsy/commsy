@@ -1,4 +1,3 @@
-//>>built
 define("dijit/_TemplatedMixin", [
 	"dojo/_base/lang", // lang.getObject
 	"dojo/touch",

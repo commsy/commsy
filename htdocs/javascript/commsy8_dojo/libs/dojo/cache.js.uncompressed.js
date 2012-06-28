@@ -1,4 +1,3 @@
-//>>built
 define("dojo/cache", ["./_base/kernel", "./text"], function(dojo, text){
 	// module:
 	//		dojo/cache

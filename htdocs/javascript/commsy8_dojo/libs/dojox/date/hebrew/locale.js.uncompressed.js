@@ -1,4 +1,3 @@
-//>>built
 define("dojox/date/hebrew/locale", ["dojo/main", "dojo/date", "dojo/i18n", "dojo/regexp", "dojo/string", "./Date", "./numerals", "dojo/i18n!dojo/cldr/nls/hebrew"],
 	function(dojo, dd, i18n, regexp, string, hebrewDate, numerals){
 
@@ -207,10 +206,7 @@ define("dojox/date/hebrew/locale", ["dojo/main", "dojo/date", "dojo/i18n", "dojo
 
 		var locale = i18n.normalizeLocale(options.locale);
 
-		if(!match){
-			console.debug("dojox.date.hebrew.locale.parse: value  "+value+" doesn't match pattern   " + re);
-			return null;
-		} // null
+		if(!match){ return null; } // null
 	
 		var date, date1;
 	

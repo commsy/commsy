@@ -1,4 +1,3 @@
-//>>built
 define("dijit/form/_ComboBoxMenu", [
 	"dojo/_base/declare", // declare
 	"dojo/dom-class", // domClass.add domClass.remove

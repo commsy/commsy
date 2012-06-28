@@ -1,4 +1,3 @@
-//>>built
 define("dijit/_Container", [
 	"dojo/_base/array", // array.forEach array.indexOf
 	"dojo/_base/declare", // declare

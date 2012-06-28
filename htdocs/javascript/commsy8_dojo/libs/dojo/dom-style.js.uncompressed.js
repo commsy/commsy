@@ -1,4 +1,3 @@
-//>>built
 define("dojo/dom-style", ["./_base/sniff", "./dom"], function(has, dom){
 	// module:
 	//		dojo/dom-style

@@ -1,4 +1,3 @@
-//>>built
 define("dojox/mdnd/PureSource", ["dojo/_base/kernel","dojo/_base/declare","dojo/_base/html","dojo/_base/connect",
 	"dojo/_base/array","dojo/dnd/Selector","dojo/dnd/Manager"],function(dojo){
 	return dojo.declare(

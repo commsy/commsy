@@ -1,4 +1,3 @@
-//>>built
 define("dojo/_base/window", ["./kernel", "../has", "./sniff"], function(dojo, has){
 	// module:
 	//		dojo/window

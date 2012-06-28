@@ -1,4 +1,3 @@
-//>>built
 define("dojox/lang/utils", ["..", "dojo/_base/lang"], 
   function(dojox, lang){
 	var du = lang.getObject("lang.utils", true, dojox);

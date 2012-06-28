@@ -1,4 +1,3 @@
-//>>built
 define("dojox/dtl/filter/lists", [
 	"dojo/_base/lang",
 	"../_base"

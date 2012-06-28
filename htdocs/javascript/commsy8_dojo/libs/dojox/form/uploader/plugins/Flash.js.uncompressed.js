@@ -1,4 +1,3 @@
-//>>built
 define("dojox/form/uploader/plugins/Flash", [
 	"dojo/dom-form",
 	"dojo/dom-style",

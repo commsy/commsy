@@ -1,4 +1,3 @@
-//>>built
 // wrapped by build app
 define("dojox/sql/_crypto", ["dijit","dojo","dojox"], function(dijit,dojo,dojox){
 dojo.provide("dojox.sql._crypto");

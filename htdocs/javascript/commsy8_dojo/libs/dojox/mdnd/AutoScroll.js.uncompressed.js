@@ -1,4 +1,3 @@
-//>>built
 define("dojox/mdnd/AutoScroll", ["dojo/_base/kernel","dojo/_base/declare","dojo/_base/lang","dojo/_base/connect",
 	"dojo/_base/window"],function(dojo){
 	var as = dojo.declare(

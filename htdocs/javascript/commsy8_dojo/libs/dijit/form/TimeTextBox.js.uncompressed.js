@@ -1,4 +1,3 @@
-//>>built
 define("dijit/form/TimeTextBox", [
 	"dojo/_base/declare", // declare
 	"dojo/keys", // keys.DOWN_ARROW keys.ENTER keys.ESCAPE keys.TAB keys.UP_ARROW

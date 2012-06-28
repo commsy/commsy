@@ -1,4 +1,3 @@
-//>>built
 define("dojox/charting/themes/BlueDusk", ["../Theme", "./common"], function(Theme, themes){
 
 	themes.BlueDusk=new Theme({

@@ -1,4 +1,3 @@
-//>>built
 define("dijit/_editor/plugins/LinkDialog", [
 	"require",
 	"dojo/_base/declare", // declare

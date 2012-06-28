@@ -1,4 +1,3 @@
-//>>built
 define("dijit/main", [
 	"dojo/_base/kernel"
 ], function(dojo){

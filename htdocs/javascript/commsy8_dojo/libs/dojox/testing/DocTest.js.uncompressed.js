@@ -1,4 +1,3 @@
-//>>built
 define("dojox/testing/DocTest", ["dojo/string"], function() {
 
 dojo.declare(

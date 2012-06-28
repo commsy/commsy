@@ -1,4 +1,3 @@
-//>>built
 define("dijit/_KeyNavContainer", [
 	"dojo/_base/kernel", // kernel.deprecated
 	"./_Container",

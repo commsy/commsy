@@ -1,5 +1,5 @@
 //>>built
-define(["dijit","dojo","dojox"],function(_1,_2,_3){
+define("dojox/drawing/tools/Line",["dijit","dojo","dojox"],function(_1,_2,_3){
 _2.provide("dojox.drawing.tools.Line");
 _3.drawing.tools.Line=_3.drawing.util.oo.declare(_3.drawing.stencil.Line,function(){
 },{draws:true,showAngle:true,onTransformEnd:function(_4){

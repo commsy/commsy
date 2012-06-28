@@ -1,4 +1,3 @@
-//>>built
 define("dojo/query", ["./_base/kernel", "./has", "./dom", "./on", "./_base/array", "./_base/lang", "./selector/_loader", "./selector/_loader!default"],
 	function(dojo, has, dom, on, array, lang, loader, defaultEngine){
 "use strict";

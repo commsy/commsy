@@ -1,4 +1,3 @@
-//>>built
 // wrapped by build app
 define("dojox/storage/manager", ["dijit","dojo","dojox"], function(dijit,dojo,dojox){
 dojo.provide("dojox.storage.manager");

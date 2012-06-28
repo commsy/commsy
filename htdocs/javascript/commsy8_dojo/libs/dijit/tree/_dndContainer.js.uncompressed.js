@@ -1,4 +1,3 @@
-//>>built
 define("dijit/tree/_dndContainer", [
 	"dojo/aspect",	// aspect.after
 	"dojo/_base/declare", // declare

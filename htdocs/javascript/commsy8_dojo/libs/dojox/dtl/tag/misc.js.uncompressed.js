@@ -1,4 +1,3 @@
-//>>built
 define("dojox/dtl/tag/misc", [
 	"dojo/_base/lang",
 	"dojo/_base/array",

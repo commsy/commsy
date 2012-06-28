@@ -1,4 +1,3 @@
-//>>built
 define("dojox/mobile/TextBox", [
 	"dojo/_base/declare",
 	"dojo/dom-construct",

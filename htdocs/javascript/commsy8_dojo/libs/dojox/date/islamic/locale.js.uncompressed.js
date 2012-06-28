@@ -1,4 +1,3 @@
-//>>built
 define("dojox/date/islamic/locale", ["dojo/_base/kernel", "dojo/_base/lang", "dojo/_base/array", "dojo/date", "dojo/i18n", "dojo/regexp", "dojo/string", "./Date", "dojo/i18n!dojo/cldr/nls/islamic"],
 	function(dojo, dlang, darray, dd, i18n, regexp, string, islamicDate){
 
@@ -183,10 +182,7 @@ define("dojox/date/islamic/locale", ["dojo/_base/kernel", "dojo/_base/lang", "do
 
 		var locale = i18n.normalizeLocale(options.locale);
 
-		if(!match){
-			console.debug("dojox.date.islamic.locale.parse: value  "+value+" doesn't match pattern   " + re);
-			return null;
-		} // null
+		if(!match){ return null; } // null
 	
 		var date, date1;
 	

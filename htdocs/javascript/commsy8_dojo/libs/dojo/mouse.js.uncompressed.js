@@ -1,4 +1,3 @@
-//>>built
 define("dojo/mouse", ["./_base/kernel", "./on", "./has", "./dom", "./_base/window"], function(dojo, on, has, dom, win){
 
 	/*=====

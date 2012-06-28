@@ -1,4 +1,3 @@
-//>>built
 define("dojox/mobile/Opener", [
 	"dojo/_base/declare",
 	"dojo/_base/lang",

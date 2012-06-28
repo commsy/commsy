@@ -1,4 +1,3 @@
-//>>built
 define("dojox/charting/themes/Wetland", ["../Theme", "./common"], function(Theme, themes){
 	
 	themes.Wetland = new Theme({

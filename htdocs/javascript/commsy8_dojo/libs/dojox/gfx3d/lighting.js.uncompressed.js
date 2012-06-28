@@ -1,4 +1,3 @@
-//>>built
 define("dojox/gfx3d/lighting", [
 	"dojo/_base/lang",
 	"dojo/_base/Color",	// dojo.Color

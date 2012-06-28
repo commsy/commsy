@@ -1,4 +1,3 @@
-//>>built
 define("dojox/charting/themes/RoyalPurples", ["../Theme", "./common"], function(Theme, themes){
 	
 	themes.RoyalPurples=new Theme({

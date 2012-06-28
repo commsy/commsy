@@ -1,4 +1,3 @@
-//>>built
 define("dojox/image/Badge", ["dojo", "dijit", "dojox/main", "dijit/_Widget", "dijit/_TemplatedMixin", "dojo/fx/easing"], function(dojo, dijit, dojox){
 
 	dojo.experimental("dojox.image.Badge");

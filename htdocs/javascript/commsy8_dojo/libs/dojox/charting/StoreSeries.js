@@ -30,7 +30,7 @@ this.data=[];
 this.fetch();
 },destroy:function(){
 if(this.observeHandle){
-this.observeHandle.dismiss();
+this.observeHandle.cancel();
 }
 },setSeriesObject:function(_b){
 this.series=_b;
@@ -38,7 +38,7 @@ this.series=_b;
 var _c=this.objects=[];
 var _d=this;
 if(this.observeHandle){
-this.observeHandle.dismiss();
+this.observeHandle.cancel();
 }
 var _e=this.store.query(this.kwArgs.query,this.kwArgs);
 _3.when(_e,function(_f){

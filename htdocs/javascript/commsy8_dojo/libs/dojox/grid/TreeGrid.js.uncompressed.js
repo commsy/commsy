@@ -1,4 +1,3 @@
-//>>built
 define("dojox/grid/TreeGrid", [
 	"dojo/_base/kernel",
 	"../main",

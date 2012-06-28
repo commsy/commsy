@@ -1,4 +1,3 @@
-//>>built
 define("dojo/has", ["require"], function(require) {
 	// module:
 	//		dojo/has

@@ -1,4 +1,3 @@
-//>>built
 define("dojox/grid/enhanced/plugins/_SelectionPreserver", [
 	"dojo/_base/declare",
 	"dojo/_base/lang",

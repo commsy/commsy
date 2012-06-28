@@ -16,7 +16,7 @@ define([	"dojo/_base/declare",
 		},
 		
 		setup: function(objects) {
-			objects.forEach(Lang.hitch(this, function(object, index, arr) {
+			dojo.forEach(dojo, objects, Lang.hitch(this, function(object, index, arr) {
 				var actor = object.actor;
 				var div = object.div;
 				var img = Query("> img", actor)[0];

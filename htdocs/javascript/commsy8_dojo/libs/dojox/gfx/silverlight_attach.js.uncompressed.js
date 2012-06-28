@@ -1,4 +1,3 @@
-//>>built
 define("dojox/gfx/silverlight_attach", ["dojo/_base/kernel", "dojo/_base/lang", "./_base", "./silverlight"], 
   function(kernel, lang, g, sl){
 	lang.getObject("dojox.gfx.silverlight_attach", true);

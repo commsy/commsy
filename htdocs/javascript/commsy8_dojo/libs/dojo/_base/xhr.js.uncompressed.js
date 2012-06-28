@@ -1,4 +1,3 @@
-//>>built
 define("dojo/_base/xhr", [
 	"./kernel", "./sniff", "require", "../io-query", "../dom", "../dom-form", "./Deferred", "./json", "./lang", "./array", "../on"
 ], function(dojo, has, require, ioq, dom, domForm, deferred, json, lang, array, on){
@@ -12,7 +11,7 @@ define("dojo/_base/xhr", [
 		return typeof XMLHttpRequest !== 'undefined';
 	});
 
-	if(1){
+	if(1 && require.getXhr){
 		dojo._xhrObj = require.getXhr;
 	}else if (has("native-xhr")){
 		dojo._xhrObj = function(){
@@ -522,11 +521,11 @@ define("dojo/_base/xhr", [
 				if(dojo.config.debugAtAllCosts){
 					func.call(this);
 				}else{
-//					try{
+					try{
 						func.call(this);
-	/*				}catch(e){
+					}catch(e){
 						dfd.errback(e);
-					}*/
+					}
 				}
 			}
 		}

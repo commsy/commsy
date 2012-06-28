@@ -36,7 +36,7 @@ define([	"dojo/_base/declare",
 			}));
 			
 			// register click for room links
-			Query("div.room_change_item", this.contentNode).forEach(Lang.hitch(this, function(node, index, arr) {
+			dojo.forEach(Query("div.room_change_item", this.contentNode), Lang.hitch(this, function(node, index, arr) {
 				// get href
 				var href = this.getAttrAsObject(node, "data-custom").href;
 				
@@ -50,7 +50,7 @@ define([	"dojo/_base/declare",
 			var part = customObject.part;
 			
 			// add ckeditor data to hidden div
-			this.featureHandles["editor"].forEach(function(editor, index, arr) {
+			dojo.forEach(this.featureHandles["editor"], function(editor, index, arr) {
 				var instance = editor.getInstance();
 				var node = editor.getNode().parentNode;
 				
@@ -106,13 +106,13 @@ define([	"dojo/_base/declare",
 			DomClass.remove(contentObjects[1], "hidden");
 			
 			// process each room block
-			Query("div.room_block", this.contentNode).forEach(Lang.hitch(this, function(blockNode, index, arr) {
+			dojo.forEach(Query("div.room_block", this.contentNode), Lang.hitch(this, function(blockNode, index, arr) {
 				var roomAreaObjects = Query("div.breadcrumb_room_area", blockNode);
 				
 				// group h3-tags together
 				var ref = null;
 				var divNode = null;
-				roomAreaObjects.forEach(Lang.hitch(this, function(roomAreaObject, index, arr) {
+				dojo.forEach(roomAreaObjects, Lang.hitch(this, function(roomAreaObject, index, arr) {
 					// save first room area
 					if(index === 0) {
 						ref = roomAreaObject;
@@ -121,7 +121,7 @@ define([	"dojo/_base/declare",
 					
 					// otherwise move its rooms to first room
 					else {
-						Query("div.room_change_item", roomAreaObject).forEach(function(roomAreaRoom, index, arr) {
+						dojo.forEach(Query("div.room_change_item", roomAreaObject), function(roomAreaRoom, index, arr) {
 							DomConstruct.place(roomAreaRoom, divNode, "before");
 						});
 						
@@ -139,7 +139,7 @@ define([	"dojo/_base/declare",
 				var latestRoomAppearance = -1;
 				
 				var count = 0;
-				Query("div.room_change_item, div.room_dummy", ref).forEach(Lang.hitch(this, function(node, index, arr) {
+				dojo.forEach(Query("div.room_change_item, div.room_dummy", ref), Lang.hitch(this, function(node, index, arr) {
 					// determ type
 					if(DomClass.contains(node, "room_dummy")) {
 						// dummy - make visible
@@ -170,12 +170,12 @@ define([	"dojo/_base/declare",
 				}
 				
 				// remove all h3-tags
-				Query("> h3", blockNode).forEach(function(h3Node, index, arr) {
+				dojo.forEach(Query("> h3", blockNode), function(h3Node, index, arr) {
 					DomConstruct.destroy(h3Node, blockNode);
 				});
 				
 				// make h2-tags to inputs
-				Query("> h2", blockNode).forEach(function(h2Node, index, arr) {
+				dojo.forEach(Query("> h2", blockNode), function(h2Node, index, arr) {
 					// replace
 					DomConstruct.create("input", {
 						value:	DomAttr.get(h2Node, "innerHTML")
@@ -238,15 +238,15 @@ define([	"dojo/_base/declare",
 		setupSortables: function(contentObjects) {
 			// first we get all sources
 			var sourceNodes = [];
-			contentObjects.forEach(function(contentObject, index, arr) {
-				Query("div.breadcrumb_room_area", contentObject).forEach(function(sourceNode, index, arr) {
+			dojo.forEach(contentObjects, function(contentObject, index, arr) {
+				dojo.forEach(Query("div.breadcrumb_room_area", contentObject), function(sourceNode, index, arr) {
 					sourceNodes.push(sourceNode);
 				});
 			});
 			
 			// make all sources a dojo.dnd.Source and set nodes
 			var sources = [];
-			sourceNodes.forEach(Lang.hitch(this, function(sourceNode, index, arr) {
+			dojo.forEach(sourceNodes, Lang.hitch(this, function(sourceNode, index, arr) {
 				// register
 				sources.push(new Source(sourceNode, {
 					singular:	true/*,
@@ -301,7 +301,7 @@ define([	"dojo/_base/declare",
 			var roomConfig = [];
 			
 			// prepare form data
-			Query("div#profile_content_row_three div.room_block").forEach(function(node, index, arr) {
+			dojo.forEach(Query("div#profile_content_row_three div.room_block"), function(node, index, arr) {
 				// get title from input
 				roomConfig.push({
 					type:		"title",
@@ -309,7 +309,7 @@ define([	"dojo/_base/declare",
 				});
 				
 				// get room and spaces
-				Query("div.breadcrumb_room_area div.room_change_item, div.breadcrumb_room_area div.room_dummy", node).forEach(function(roomNode) {
+				dojo.forEach(Query("div.breadcrumb_room_area div.room_change_item, div.breadcrumb_room_area div.room_dummy", node), function(roomNode) {
 					// determ type
 					var type = "room";
 					var value = "";

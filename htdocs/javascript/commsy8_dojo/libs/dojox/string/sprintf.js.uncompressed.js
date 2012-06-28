@@ -1,4 +1,3 @@
-//>>built
 define("dojox/string/sprintf", [
 	"dojo/_base/kernel",	// dojo.getObject, dojo.mixin
 	"dojo/_base/lang",	// dojo.extend

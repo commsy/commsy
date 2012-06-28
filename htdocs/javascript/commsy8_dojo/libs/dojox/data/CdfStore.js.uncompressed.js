@@ -1,4 +1,3 @@
-//>>built
 define("dojox/data/CdfStore", ["dojo", "dojox", "dojo/data/util/sorter"], function(dojo, dojox) {
 
 dojox.data.ASYNC_MODE = 0;

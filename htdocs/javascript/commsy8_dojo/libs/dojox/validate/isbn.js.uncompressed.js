@@ -1,4 +1,3 @@
-//>>built
 define("dojox/validate/isbn", ["dojo/_base/lang", "./_base"], function(lang, validate){
 // summary: Provides ISBN validation functions in `dojox.validate`
 //

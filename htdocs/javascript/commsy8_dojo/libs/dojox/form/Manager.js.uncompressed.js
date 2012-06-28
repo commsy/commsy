@@ -1,4 +1,3 @@
-//>>built
 define("dojox/form/Manager", [
 	"dijit/_Widget",
 	"dijit/_TemplatedMixin",

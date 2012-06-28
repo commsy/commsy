@@ -1,4 +1,3 @@
-//>>built
 define("dojox/data/KeyValueStore", ["dojo/_base/declare", "dojo/_base/lang", "dojo/_base/xhr", "dojo/_base/window", 
 		"dojo/data/util/simpleFetch", "dojo/data/util/filter"], 
   function(declare, lang, xhr, winUtil, simpleFetch, filterUtil) {

@@ -1,5 +1,5 @@
 //>>built
-define(["dijit","dojo","dojox"],function(_1,_2,_3){
+define("dojox/drawing/ui/dom/Toolbar",["dijit","dojo","dojox"],function(_1,_2,_3){
 _2.provide("dojox.drawing.ui.dom.Toolbar");
 _2.deprecated("dojox.drawing.ui.dom.Toolbar","It may not even make it to the 1.4 release.",1.4);
 (function(){

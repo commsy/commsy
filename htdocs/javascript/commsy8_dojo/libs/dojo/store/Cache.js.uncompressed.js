@@ -1,4 +1,3 @@
-//>>built
 define("dojo/store/Cache", ["../_base/lang","../_base/Deferred"
 ],function(lang, Deferred) {
 	// module:

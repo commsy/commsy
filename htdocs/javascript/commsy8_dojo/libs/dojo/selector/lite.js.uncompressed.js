@@ -1,4 +1,3 @@
-//>>built
 define("dojo/selector/lite", ["../has", "../_base/kernel"], function(has, dojo){
 "use strict";
 // summary:

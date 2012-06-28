@@ -1,4 +1,3 @@
-//>>built
 // wrapped by build app
 define("dojox/lang/functional/multirec", ["dijit","dojo","dojox","dojo/require!dojox/lang/functional/lambda,dojox/lang/functional/util"], function(dijit,dojo,dojox){
 dojo.provide("dojox.lang.functional.multirec");

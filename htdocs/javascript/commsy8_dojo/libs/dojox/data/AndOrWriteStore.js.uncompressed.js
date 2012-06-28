@@ -1,4 +1,3 @@
-//>>built
 define("dojox/data/AndOrWriteStore", ["dojo/_base/declare","dojo/_base/lang","dojo/_base/array", "dojo/_base/json", "dojo/date/stamp",
 		"dojo/_base/window", "./AndOrReadStore"], 
   function(declare, lang, arrayUtil, json, dateStamp, winUtil, AndOrReadStore) {

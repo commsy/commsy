@@ -1,4 +1,3 @@
-//>>built
 define("dojo/Evented", ["./aspect", "./on"], function(aspect, on){
 	// summary:
 	//		The export of this module is a class that can be used as a mixin or base class, 

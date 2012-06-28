@@ -1,4 +1,3 @@
-//>>built
 define("dojox/timing/Sequence", [
 	"dojo/_base/kernel",
 	"dojo/_base/array",

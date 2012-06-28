@@ -1,4 +1,3 @@
-//>>built
 define("dijit/_base/window", [
 	"dojo/window", // windowUtils.get
 	".."	// export symbol to dijit

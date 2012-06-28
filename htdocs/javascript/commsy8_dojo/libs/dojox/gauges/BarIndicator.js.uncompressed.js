@@ -1,4 +1,3 @@
-//>>built
 define("dojox/gauges/BarIndicator", ["dojo/_base/declare","dojo/_base/fx","dojo/_base/connect","dojo/_base/lang","./BarLineIndicator"],
 function(declare, fx, connect, lang, BarLineIndicator) { 
 

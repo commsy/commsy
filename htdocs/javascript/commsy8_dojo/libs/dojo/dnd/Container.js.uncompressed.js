@@ -1,4 +1,3 @@
-//>>built
 define("dojo/dnd/Container", ["../main", "../Evented", "./common", "../parser"], function(dojo, Evented) {
 	// module:
 	//		dojo/dnd/Container

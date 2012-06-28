@@ -1,4 +1,3 @@
-//>>built
 define("dojox/date/islamic", ["dojo/_base/kernel", "dojo/date", "./islamic/Date"], function(dojo, dd, islamicDate){
 
 dojo.getObject("date.islamic", true, dojox);

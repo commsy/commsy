@@ -1,4 +1,3 @@
-//>>built
 define("dojo/store/Memory", ["../_base/declare", "./util/QueryResults", "./util/SimpleQueryEngine"], function(declare, QueryResults, SimpleQueryEngine) {
   //  module:
   //    dojo/store/Memory

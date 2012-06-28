@@ -1,4 +1,3 @@
-//>>built
 define("dojox/dtl/utils/date", [
 	"dojo/_base/lang",
 	"dojox/date/php",

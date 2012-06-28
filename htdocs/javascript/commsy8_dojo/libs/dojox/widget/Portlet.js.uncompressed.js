@@ -1,4 +1,3 @@
-//>>built
 // wrapped by build app
 define("dojox/widget/Portlet", ["dijit","dojo","dojox","dojo/require!dijit/TitlePane,dojo/fx"], function(dijit,dojo,dojox){
 dojo.experimental("dojox.widget.Portlet");

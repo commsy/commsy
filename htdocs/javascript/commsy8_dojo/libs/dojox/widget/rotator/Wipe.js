@@ -1,5 +1,5 @@
 //>>built
-define(["dijit","dojo","dojox"],function(_1,_2,_3){
+define("dojox/widget/rotator/Wipe",["dijit","dojo","dojox"],function(_1,_2,_3){
 _2.provide("dojox.widget.rotator.Wipe");
 (function(d){
 var _4=2,_5=3,UP=0,_6=1;

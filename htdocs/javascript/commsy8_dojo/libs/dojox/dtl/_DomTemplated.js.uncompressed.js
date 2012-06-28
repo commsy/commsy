@@ -1,4 +1,3 @@
-//>>built
 define("dojox/dtl/_DomTemplated", [
 	"dojo/dom-construct",
 	".",

@@ -297,7 +297,7 @@ this.tabbingOut=false;
 this.focusArea(-1,e);
 }
 },_delayedHeaderFocus:function(){
-if(this.isNavHeader()){
+if(this.isNavHeader()&&!_7("ie")){
 this.focusHeader();
 }
 },_delayedCellFocus:function(){

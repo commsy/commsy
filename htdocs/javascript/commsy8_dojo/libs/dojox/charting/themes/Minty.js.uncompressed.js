@@ -1,4 +1,3 @@
-//>>built
 define("dojox/charting/themes/Minty", ["../Theme", "./common"], function(Theme, themes){
 	
 	themes.Minty=new Theme({

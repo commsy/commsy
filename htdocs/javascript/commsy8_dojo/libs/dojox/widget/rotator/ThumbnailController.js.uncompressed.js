@@ -1,4 +1,3 @@
-//>>built
 // wrapped by build app
 define("dojox/widget/rotator/ThumbnailController", ["dijit","dojo","dojox"], function(dijit,dojo,dojox){
 dojo.provide("dojox.widget.rotator.ThumbnailController");

@@ -1,4 +1,3 @@
-//>>built
 define("dojox/highlight/languages/sql", ["dojox/main", "../_base"], function(dojox){
 
 	var SQL_KEYWORDS = {

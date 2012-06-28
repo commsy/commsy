@@ -1,5 +1,5 @@
 //>>built
-define(["dijit","dojo","dojox"],function(_1,_2,_3){
+define("dojox/widget/rotator/Controller",["dijit","dojo","dojox"],function(_1,_2,_3){
 _2.provide("dojox.widget.rotator.Controller");
 (function(d){
 var _4="dojoxRotator",_5=_4+"Play",_6=_4+"Pause",_7=_4+"Number",_8=_4+"Tab",_9=_4+"Selected";

@@ -1,4 +1,3 @@
-//>>built
 // wrapped by build app
 define("dojox/xmpp/util", ["dijit","dojo","dojox","dojo/require!dojox/string/Builder,dojox/encoding/base64"], function(dijit,dojo,dojox){
 dojo.provide("dojox.xmpp.util");

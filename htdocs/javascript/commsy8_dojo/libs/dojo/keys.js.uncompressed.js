@@ -1,4 +1,3 @@
-//>>built
 define("dojo/keys", ["./_base/kernel", "./_base/sniff"], function(dojo, has) {
 	// module:
 	//		dojo/keys

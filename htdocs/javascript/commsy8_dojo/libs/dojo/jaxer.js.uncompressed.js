@@ -1,4 +1,3 @@
-//>>built
 define("dojo/jaxer", ["./main"], function(dojo) {
 	// module:
 	//		dojo/jaxer

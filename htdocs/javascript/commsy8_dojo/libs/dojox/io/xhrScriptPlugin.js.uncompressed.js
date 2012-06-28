@@ -1,4 +1,3 @@
-//>>built
 define("dojox/io/xhrScriptPlugin", ["dojo/_base/kernel", "dojo/_base/window", "dojo/io/script", "dojox/io/xhrPlugins", "dojox/io/scriptFrame"], function(dojo, window, script, xhrPlugins, scriptFrame){
 dojo.getObject("io.xhrScriptPlugin", true, dojox);
 

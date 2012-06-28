@@ -1,5 +1,5 @@
 //>>built
-define(["dijit","dojo","dojox"],function(_1,_2,_3){
+define("dojox/drawing/Drawing",["dijit","dojo","dojox"],function(_1,_2,_3){
 _2.provide("dojox.drawing.Drawing");
 (function(){
 var _4=false;

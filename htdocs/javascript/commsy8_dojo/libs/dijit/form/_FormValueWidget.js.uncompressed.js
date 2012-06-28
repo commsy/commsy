@@ -1,4 +1,3 @@
-//>>built
 define("dijit/form/_FormValueWidget", [
 	"dojo/_base/declare", // declare
 	"dojo/_base/sniff", // has("ie")

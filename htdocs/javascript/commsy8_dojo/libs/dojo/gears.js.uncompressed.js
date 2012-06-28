@@ -1,4 +1,3 @@
-//>>built
 define("dojo/gears", ["./_base/kernel", "./_base/lang", "./_base/sniff"],
 	function(dojo, lang, has) {
 	// module:

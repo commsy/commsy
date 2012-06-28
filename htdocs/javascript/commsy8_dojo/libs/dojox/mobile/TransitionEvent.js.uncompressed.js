@@ -1,4 +1,3 @@
-//>>built
 define("dojox/mobile/TransitionEvent", [
 	"dojo/_base/declare",
 	"dojo/_base/Deferred",

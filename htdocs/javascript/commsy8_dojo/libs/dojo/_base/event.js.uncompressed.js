@@ -1,4 +1,3 @@
-//>>built
 define("dojo/_base/event", ["./kernel", "../on", "../has", "../dom-geometry"], function(dojo, on, has, dom){
   //  module:
   //    dojo/_base/event

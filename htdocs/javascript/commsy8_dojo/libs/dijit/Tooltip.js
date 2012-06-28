@@ -103,6 +103,11 @@ this.containerNode.dir=this.textDir;
 }
 }});
 _10.showTooltip=function(_28,_29,_2a,rtl,_2b){
+if(_2a){
+_2a=_1.map(_2a,function(val){
+return {after:"after-centered",before:"before-centered"}[val]||val;
+});
+}
 if(!_16._masterTT){
 _10._masterTT=_16._masterTT=new _11();
 }

@@ -1,4 +1,3 @@
-//>>built
 // wrapped by build app
 define("dojox/widget/CalendarFx", ["dijit","dojo","dojox","dojo/require!dojox/widget/FisheyeLite"], function(dijit,dojo,dojox){
 dojo.provide("dojox.widget.CalendarFx");

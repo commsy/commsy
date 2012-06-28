@@ -1,4 +1,3 @@
-//>>built
 define("dijit/_base/manager", [
 	"dojo/_base/array",
 	"dojo/_base/config", // defaultDuration

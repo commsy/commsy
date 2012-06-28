@@ -1,4 +1,3 @@
-//>>built
 define("dojox/date/php", ["dojo/_base/kernel", "dojo/_base/lang","dojo/date","dojox/string/tokenize"], function(dojo,dlang,ddate,dxst){
 dojo.getObject("date.php", true, dojox);
 

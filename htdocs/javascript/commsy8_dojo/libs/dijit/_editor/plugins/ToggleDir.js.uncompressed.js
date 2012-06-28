@@ -1,4 +1,3 @@
-//>>built
 define("dijit/_editor/plugins/ToggleDir", [
 	"dojo/_base/declare", // declare
 	"dojo/dom-style", // domStyle.getComputedStyle

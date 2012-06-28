@@ -1,5 +1,5 @@
 //>>built
-define(["dijit","dojo","dojox","dojo/require!dojox/cometd/_base,dojox/cometd/longPollTransport,dojo/io/script"],function(_1,_2,_3){
+define("dojox/cometd/callbackPollTransport",["dijit","dojo","dojox","dojo/require!dojox/cometd/_base,dojox/cometd/longPollTransport,dojo/io/script"],function(_1,_2,_3){
 _2.provide("dojox.cometd.callbackPollTransport");
 _2.require("dojox.cometd._base");
 _2.require("dojox.cometd.longPollTransport");

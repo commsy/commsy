@@ -1,4 +1,3 @@
-//>>built
 define("dojox/mdnd/Moveable", [
 	"dojo/_base/kernel",
 	"dojo/_base/array",

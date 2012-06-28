@@ -1,4 +1,3 @@
-//>>built
 define("dojox/highlight/languages/pygments/css", ["dojox/main", "../../_base", "./_html"], function(dojox){
 
 	var dh = dojox.highlight, dhl = dh.languages;

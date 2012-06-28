@@ -1,4 +1,3 @@
-//>>built
 define("dojox/charting/plot2d/ClusteredBars", ["dojo/_base/lang", "dojo/_base/array", "dojo/_base/declare", "./Bars", "./common", 
 		"dojox/lang/functional", "dojox/lang/functional/reversed", "dojox/lang/utils"], 
 	function(lang, arr, declare, Bars, dc, df, dfr, du){

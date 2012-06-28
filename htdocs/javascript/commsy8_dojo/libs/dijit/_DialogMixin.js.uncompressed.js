@@ -1,4 +1,3 @@
-//>>built
 define("dijit/_DialogMixin", [
 	"dojo/_base/declare", // declare
 	"./a11y"	// _getTabNavigable

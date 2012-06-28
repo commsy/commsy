@@ -1,4 +1,3 @@
-//>>built
 define("dijit/ToolbarSeparator", [
 	"dojo/_base/declare", // declare
 	"dojo/dom", // dom.setSelectable

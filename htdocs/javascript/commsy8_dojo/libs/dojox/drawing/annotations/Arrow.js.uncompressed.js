@@ -1,4 +1,3 @@
-//>>built
 // wrapped by build app
 define("dojox/drawing/annotations/Arrow", ["dijit","dojo","dojox","dojo/require!dojox/drawing/stencil/Path"], function(dijit,dojo,dojox){
 dojo.provide("dojox.drawing.annotations.Arrow");

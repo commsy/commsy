@@ -1,5 +1,5 @@
 //>>built
-define(["dijit","dojo","dojox"],function(_1,_2,_3){
+define("dojox/drawing/util/oo",["dijit","dojo","dojox"],function(_1,_2,_3){
 _2.provide("dojox.drawing.util.oo");
 _3.drawing.util.oo={declare:function(){
 var f,o,_4=0,a=arguments;

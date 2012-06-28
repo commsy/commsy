@@ -1,4 +1,3 @@
-//>>built
 // wrapped by build app
 define("dojox/cometd/_base", ["dijit","dojo","dojox","dojo/require!dojo/AdapterRegistry"], function(dijit,dojo,dojox){
 dojo.provide("dojox.cometd._base");

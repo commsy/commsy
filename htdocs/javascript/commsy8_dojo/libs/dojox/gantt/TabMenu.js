@@ -1,5 +1,5 @@
 //>>built
-define(["dijit","dojo","dojox","dojo/require!dijit/dijit,dijit/Menu,dijit/Dialog,dijit/form/NumberSpinner,dijit/form/Button,dijit/form/CheckBox,dijit/form/DateTextBox,dijit/form/TimeTextBox,dojo/date/locale,dijit/form/Form,dojo/parser"],function(_1,_2,_3){
+define("dojox/gantt/TabMenu",["dijit","dojo","dojox","dojo/require!dijit/dijit,dijit/Menu,dijit/Dialog,dijit/form/NumberSpinner,dijit/form/Button,dijit/form/CheckBox,dijit/form/DateTextBox,dijit/form/TimeTextBox,dojo/date/locale,dijit/form/Form,dojo/parser"],function(_1,_2,_3){
 _2.provide("dojox.gantt.TabMenu");
 _2.require("dijit.dijit");
 _2.require("dijit.Menu");

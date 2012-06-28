@@ -1,4 +1,3 @@
-//>>built
 define("dijit/_CssStateMixin", [
 	"dojo/touch",
 	"dojo/_base/array", // array.forEach array.map

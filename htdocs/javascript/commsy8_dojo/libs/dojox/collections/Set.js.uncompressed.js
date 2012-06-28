@@ -1,4 +1,3 @@
-//>>built
 define("dojox/collections/Set", ["./_base", "./ArrayList"], function(dxc, ArrayList){
 /*=====
 var dxc = dojox.collections;

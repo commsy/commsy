@@ -1,4 +1,3 @@
-//>>built
 // wrapped by build app
 define("dojox/widget/Calendar", ["dijit","dojo","dojox","dojo/require!dijit/_Widget,dijit/_Templated,dijit/_Container,dijit/typematic,dojo/date,dojo/date/locale"], function(dijit,dojo,dojox){
 dojo.provide("dojox.widget.Calendar");

@@ -1,4 +1,3 @@
-//>>built
 define("dojo/data/ItemFileWriteStore", ["../_base/lang", "../_base/declare", "../_base/array", "../_base/json", "../_base/window", 
 	"./ItemFileReadStore", "../date/stamp"
 ], function(lang, declare, arrayUtil, jsonUtil, window, ItemFileReadStore, dateStamp) {

@@ -1,4 +1,3 @@
-//>>built
 define("dojox/timing/ThreadPool", ["./_base"], function(){
 	dojo.experimental("dojox.timing.ThreadPool");
 

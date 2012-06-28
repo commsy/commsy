@@ -1,4 +1,3 @@
-//>>built
 define("dojox/gfx3d/scheduler", [
 	"dojo/_base/lang",
 	"dojo/_base/array",	// dojo.forEach, dojo.every

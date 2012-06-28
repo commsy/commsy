@@ -1,4 +1,3 @@
-//>>built
 define("dojo/dom", ["./_base/sniff", "./_base/lang", "./_base/window"],
 		function(has, lang, win){
 	// module:

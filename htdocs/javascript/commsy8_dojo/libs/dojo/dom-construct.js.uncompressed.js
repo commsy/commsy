@@ -1,4 +1,3 @@
-//>>built
 define("dojo/dom-construct", ["exports", "./_base/kernel", "./_base/sniff", "./_base/window", "./dom", "./dom-attr", "./on"],
 		function(exports, dojo, has, win, dom, attr, on){
 	// module:

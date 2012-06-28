@@ -1,4 +1,3 @@
-//>>built
 define("dojo/date", ["./_base/kernel", "./_base/lang"], function(dojo, lang) {
 	// module:
 	//		dojo/date

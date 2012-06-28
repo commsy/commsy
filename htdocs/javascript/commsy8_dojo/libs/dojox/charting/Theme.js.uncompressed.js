@@ -1,4 +1,3 @@
-//>>built
 define("dojox/charting/Theme", ["dojo/_base/lang", "dojo/_base/array","dojo/_base/declare","dojo/_base/Color",
 	    "dojox/color/_base", "dojox/color/Palette", "dojox/lang/utils", "dojox/gfx/gradutils"], 
 	function(lang, arr, declare, Color, colorX, Palette, dlu, dgg){ 

@@ -1,4 +1,3 @@
-//>>built
 define("dojox/store/LightstreamerStore", [
 	"dojo/_base/lang",
 	"dojo/_base/array",

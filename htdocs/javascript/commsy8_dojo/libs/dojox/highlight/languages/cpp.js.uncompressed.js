@@ -1,4 +1,3 @@
-//>>built
 define("dojox/highlight/languages/cpp", ["dojo", "dojox/main", "../_base"], function(dojo, dojox){
 	
 	var dh = dojox.highlight, dhc = dh.constants;

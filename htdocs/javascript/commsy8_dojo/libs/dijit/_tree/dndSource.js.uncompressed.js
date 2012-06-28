@@ -1,4 +1,3 @@
-//>>built
 define("dijit/_tree/dndSource", [
 	"dojo/_base/kernel", // kernel.deprecated
 	"dojo/_base/lang", // lang.getObject

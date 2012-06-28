@@ -1,4 +1,3 @@
-//>>built
 define("dojo/aspect", [], function(){
 
 // TODOC: after/before/around return object

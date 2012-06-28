@@ -1,4 +1,3 @@
-//>>built
 define("dojox/charting/StoreSeries", ["dojo/_base/array", "dojo/_base/declare", "dojo/_base/Deferred"], 
   function(arr, declare, Deferred){
 	
@@ -52,7 +51,7 @@ define("dojox/charting/StoreSeries", ["dojo/_base/array", "dojo/_base/declare", 
 			//	summary:
 			//		Clean up before GC.
 			if(this.observeHandle){
-				this.observeHandle.dismiss();
+				this.observeHandle.cancel();
 			}
 		},
 	
@@ -72,7 +71,7 @@ define("dojox/charting/StoreSeries", ["dojo/_base/array", "dojo/_base/declare", 
 			var objects = this.objects = [];
 			var self = this;
 			if(this.observeHandle){
-				this.observeHandle.dismiss();
+				this.observeHandle.cancel();
 			}
 			var results = this.store.query(this.kwArgs.query, this.kwArgs);
 			Deferred.when(results, function(objects){

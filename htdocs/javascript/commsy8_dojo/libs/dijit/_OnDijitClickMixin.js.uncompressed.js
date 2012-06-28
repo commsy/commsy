@@ -1,4 +1,3 @@
-//>>built
 define("dijit/_OnDijitClickMixin", [
 	"dojo/on",
 	"dojo/_base/array", // array.forEach

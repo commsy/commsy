@@ -1,4 +1,3 @@
-//>>built
 // wrapped by build app
 define("dojox/lang/typed", ["dijit","dojo","dojox","dojo/require!dojox/json/schema"], function(dijit,dojo,dojox){
 (function(){

@@ -1,4 +1,3 @@
-//>>built
 define("dojox/data/WikipediaStore", ["dojo/_base/kernel", "dojo/_base/lang", "dojo/_base/declare", "dojo/io/script", 
 		"dojo/io-query", "dojox/rpc/Service", "dojox/data/ServiceStore"], 
   function(kernel, lang, declare, scriptIO, ioQuery, Service, ServiceStore) {

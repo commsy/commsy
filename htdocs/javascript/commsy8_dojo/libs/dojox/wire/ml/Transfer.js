@@ -1,5 +1,5 @@
 //>>built
-define(["dijit","dojo","dojox","dojo/require!dijit/_Widget,dijit/_Container,dojox/wire/_base,dojox/wire/ml/Action"],function(_1,_2,_3){
+define("dojox/wire/ml/Transfer",["dijit","dojo","dojox","dojo/require!dijit/_Widget,dijit/_Container,dojox/wire/_base,dojox/wire/ml/Action"],function(_1,_2,_3){
 _2.provide("dojox.wire.ml.Transfer");
 _2.require("dijit._Widget");
 _2.require("dijit._Container");

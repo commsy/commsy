@@ -1,4 +1,3 @@
-//>>built
 define("dojox/editor/plugins/LocalImage", [
 	"dojo",//FIXME
 	"dijit",//FIXME

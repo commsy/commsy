@@ -1,4 +1,3 @@
-//>>built
 define("dojox/charting/Series", ["dojo/_base/lang", "dojo/_base/declare", "./Element"], 
 	function(lang, declare, Element){ 
 	/*=====

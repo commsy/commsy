@@ -1,4 +1,3 @@
-//>>built
 define("dojox/gfx3d/gradient", ["dojo/_base/lang","./matrix","./vector"], 
 	function(lang,m,v){
 

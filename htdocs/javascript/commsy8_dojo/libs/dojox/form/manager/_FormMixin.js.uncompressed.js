@@ -1,4 +1,3 @@
-//>>built
 define("dojox/form/manager/_FormMixin", [
 	"dojo/_base/lang",
 	"dojo/_base/kernel",

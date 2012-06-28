@@ -1,4 +1,3 @@
-//>>built
 define("dojox/css3/transit", ["dojo/_base/kernel", "dojo/_base/array","dojo/dom-style","dojo/DeferredList","./transition"],
 	function(dojo, darray, domStyle, DeferredList,transition){
 	var transit =  function(from, to, options){

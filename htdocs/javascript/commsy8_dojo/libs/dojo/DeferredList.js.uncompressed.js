@@ -1,4 +1,3 @@
-//>>built
 define("dojo/DeferredList", ["./_base/kernel", "./_base/Deferred", "./_base/array"], function(dojo, Deferred, darray) {
 	// module:
 	//		dojo/DeferredList

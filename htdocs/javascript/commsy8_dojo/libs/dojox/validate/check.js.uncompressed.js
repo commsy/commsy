@@ -1,4 +1,3 @@
-//>>built
 define("dojox/validate/check", ["dojo/_base/kernel", "dojo/_base/lang", "./_base"], 
  function(kernel, lang, validate){
 kernel.experimental("dojox.validate.check");

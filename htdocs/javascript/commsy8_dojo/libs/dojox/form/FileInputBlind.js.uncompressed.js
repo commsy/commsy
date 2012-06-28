@@ -1,4 +1,3 @@
-//>>built
 define("dojox/form/FileInputBlind", [
 	"dojo/_base/lang",
 	"dojox/form/FileInputAuto"

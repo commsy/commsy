@@ -1,4 +1,3 @@
-//>>built
 define("dojox/gfx/shape", ["./_base", "dojo/_base/lang", "dojo/_base/declare", "dojo/_base/window", "dojo/_base/sniff",
 	"dojo/_base/connect", "dojo/_base/array", "dojo/dom-construct", "dojo/_base/Color", "./matrix"], 
   function(g, lang, declare, win, has, events, arr, domConstruct, Color, matrixLib){

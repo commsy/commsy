@@ -130,14 +130,14 @@ define([	"dojo/_base/declare",
 			
 			// destroy editors
 			if(this.featureHandles["editor"]) {
-				this.featureHandles["editor"].forEach(function(editor, index, arr) {
+				dojo.forEach(this.featureHandles["editor"], function(editor, index, arr) {
 					editor.destroy();
 				});
 			}
 			
 			// destroy datepicker
 			if(this.featureHandles["calendar"]) {
-				this.featureHandles["calendar"].forEach(function(calendar, index, arr) {
+				dojo.forEach(this.featureHandles["calendar"], function(calendar, index, arr) {
 					calendar.destroy();
 				});
 			}

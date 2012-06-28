@@ -1,4 +1,3 @@
-//>>built
 define("dojox/mobile/sniff", [
 	"dojo/_base/window",
 	"dojo/_base/sniff"

@@ -1,4 +1,3 @@
-//>>built
 define("dojox/charting/Chart2D", ["dojo/_base/kernel", "dojox", "./Chart", 
 	"./axis2d/Default", "./axis2d/Invisible", "./plot2d/Default", "./plot2d/Lines", "./plot2d/Areas",
 	"./plot2d/Markers", "./plot2d/MarkersOnly", "./plot2d/Scatter", "./plot2d/Stacked", "./plot2d/StackedLines",

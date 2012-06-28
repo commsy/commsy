@@ -1,4 +1,3 @@
-//>>built
 define("dojox/gauges/AnalogIndicatorBase", ["dojo/_base/lang","dojo/_base/declare","dojo/_base/connect","dojo/_base/fx","dojox/gfx","./_Indicator"],
   function(lang, declare, connect, fx, gfx, Indicator) {
  

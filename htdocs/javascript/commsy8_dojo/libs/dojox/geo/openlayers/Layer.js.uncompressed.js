@@ -1,4 +1,3 @@
-//>>built
 define("dojox/geo/openlayers/Layer", ["dojo/_base/kernel", "dojo/_base/declare", "dojo/_base/lang", "dojo/_base/array", "dojo/_base/sniff"],
 	function(dojo, declare, lang, array, sniff){
 

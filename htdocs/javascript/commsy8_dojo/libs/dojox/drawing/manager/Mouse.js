@@ -1,5 +1,5 @@
 //>>built
-define(["dijit","dojo","dojox"],function(_1,_2,_3){
+define("dojox/drawing/manager/Mouse",["dijit","dojo","dojox"],function(_1,_2,_3){
 _2.provide("dojox.drawing.manager.Mouse");
 _3.drawing.manager.Mouse=_3.drawing.util.oo.declare(function(_4){
 this.util=_4.util;

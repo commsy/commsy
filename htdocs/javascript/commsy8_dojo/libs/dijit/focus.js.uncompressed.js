@@ -1,4 +1,3 @@
-//>>built
 define("dijit/focus", [
 	"dojo/aspect",
 	"dojo/_base/declare", // declare

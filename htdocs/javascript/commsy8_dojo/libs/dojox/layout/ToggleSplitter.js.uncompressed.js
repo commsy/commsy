@@ -1,4 +1,3 @@
-//>>built
 define("dojox/layout/ToggleSplitter", ["dojo", "dijit", "dijit/layout/BorderContainer"], function(dojo, dijit) {
 
 dojo.experimental("dojox.layout.ToggleSplitter");

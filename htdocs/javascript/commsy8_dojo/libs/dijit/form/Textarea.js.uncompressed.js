@@ -1,4 +1,3 @@
-//>>built
 define("dijit/form/Textarea", [
 	"dojo/_base/declare", // declare
 	"dojo/dom-style", // domStyle.set

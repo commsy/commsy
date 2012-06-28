@@ -1,4 +1,3 @@
-//>>built
 define("dojo/data/util/sorter", ["dojo/_base/lang"], function(lang) {
 	// module:
 	//		dojo/data/util/sorter

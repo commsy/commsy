@@ -37,12 +37,12 @@ define([	"dojo/_base/declare",
 				if(this.item_id !== "NEW") {
 					this.AJAXRequest("path", "getConnectedEntries", { item_id: item_id }, Lang.hitch(this, function(data) {
 						// clear list
-						Query(">", list).forEach(function(liNode, index, arr) {
+						dojo.forEach(Query(">", list), function(liNode, index, arr) {
 							DomConstruct.destroy(liNode);
 						});
 						
 						// append items to list
-						data.forEach(Lang.hitch(this, function(entry, index, arr) {
+						dojo.forEach(data, Lang.hitch(this, function(entry, index, arr) {
 							var liNode = DomConstruct.create("li", {
 								className:	"netnavigation"
 							}, list, "last");
@@ -74,7 +74,7 @@ define([	"dojo/_base/declare",
 			
 			// collect data
 			var ids = [];
-			Query("ul#popup_path_list input[type='checkbox']:checked").forEach(function(checkbox, index, arr) {
+			dojo.forEach(Query("ul#popup_path_list input[type='checkbox']:checked"), function(checkbox, index, arr) {
 				// extract item id
 				var regex = new RegExp("path_(.*)");
 				var results = regex.exec(jQuery(this).attr('id'));

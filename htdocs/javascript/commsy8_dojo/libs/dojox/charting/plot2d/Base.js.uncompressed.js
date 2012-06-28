@@ -1,4 +1,3 @@
-//>>built
 define("dojox/charting/plot2d/Base", ["dojo/_base/lang", "dojo/_base/declare", "dojo/_base/connect", 
 		"../Element", "./_PlotEvents", "dojo/_base/array",
 		"../scaler/primitive", "./common", "dojox/gfx/fx"],

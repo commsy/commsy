@@ -1,4 +1,3 @@
-//>>built
 define("dojo/data/ItemFileReadStore", ["../_base/kernel", "../_base/lang", "../_base/declare", "../_base/array", "../_base/xhr", 
 	"../Evented", "../_base/window", "./util/filter", "./util/simpleFetch", "../date/stamp"
 ], function(kernel, lang, declare, array, xhr, Evented, window, filterUtil, simpleFetch, dateStamp) {

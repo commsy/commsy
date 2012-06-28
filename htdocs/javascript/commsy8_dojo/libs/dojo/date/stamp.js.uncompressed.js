@@ -1,4 +1,3 @@
-//>>built
 define("dojo/date/stamp", ["../_base/kernel", "../_base/lang", "../_base/array"], function(dojo, lang, array) {
 	// module:
 	//		dojo/date/stamp

@@ -1,4 +1,3 @@
-//>>built
 define("dojox/gauges/_Indicator", ["dojo/_base/lang","dojo/_base/declare","dojo/_base/fx","dojo/_base/html","dojo/_base/connect","dijit/_Widget","dojo/dom-construct", "dojo/dom-class"], 
 function(lang,declare,fx,html,connect,Widget,dom,domClass) {
 

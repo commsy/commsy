@@ -1,4 +1,3 @@
-//>>built
 define("dojox/mvc/Group", ["dojo/_base/declare", "dijit/_WidgetBase"], function(declare, WidgetBase){
 	/*=====
 		WidgetBase = dijit._WidgetBase;

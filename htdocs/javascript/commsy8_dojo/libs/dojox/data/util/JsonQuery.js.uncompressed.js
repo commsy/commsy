@@ -1,4 +1,3 @@
-//>>built
 define("dojox/data/util/JsonQuery", ["dojo", "dojox"], function(dojo, dojox) {
 
 // this is a mixin to convert object attribute queries to

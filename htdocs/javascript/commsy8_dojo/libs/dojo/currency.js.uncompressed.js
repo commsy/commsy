@@ -1,4 +1,3 @@
-//>>built
 define("dojo/currency", ["./_base/kernel", "./_base/lang", "./_base/array", "./number", "./i18n", "./i18n!./cldr/nls/currency", "./cldr/monetary"], function(dojo, lang, darray, dnumber, i18n, nlsCurrency, cldrMonetary) {
 	// module:
 	//		dojo/currency

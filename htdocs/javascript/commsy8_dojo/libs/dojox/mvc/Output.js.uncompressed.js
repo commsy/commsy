@@ -1,4 +1,3 @@
-//>>built
 define("dojox/mvc/Output", [
 	"dojo/_base/declare",
 	"dojo/_base/lang",

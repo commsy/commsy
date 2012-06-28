@@ -1,4 +1,3 @@
-//>>built
 define("dijit/form/Form", [
 	"dojo/_base/declare", // declare
 	"dojo/dom-attr", // domAttr.set

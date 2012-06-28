@@ -1,4 +1,3 @@
-//>>built
 require({cache:{
 'url:dijit/templates/MenuBar.html':"<div class=\"dijitMenuBar dijitMenuPassive\" data-dojo-attach-point=\"containerNode\"  role=\"menubar\" tabIndex=\"${tabIndex}\" data-dojo-attach-event=\"onkeypress: _onKeyPress\"></div>\n"}});
 define("dijit/MenuBar", [

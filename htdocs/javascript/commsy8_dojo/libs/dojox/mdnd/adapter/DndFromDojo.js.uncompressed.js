@@ -1,4 +1,3 @@
-//>>built
 define("dojox/mdnd/adapter/DndFromDojo", ["dojo/_base/kernel","dojo/_base/declare","dojo/_base/connect","dojo/_base/array",
 	"dojo/_base/html","dojo/_base/window","dojox/mdnd/AreaManager","dojo/dnd/Manager"],function(dojo){
 	var dfd = dojo.declare(

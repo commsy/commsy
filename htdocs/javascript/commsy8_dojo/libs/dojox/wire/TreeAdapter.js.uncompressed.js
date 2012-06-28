@@ -1,4 +1,3 @@
-//>>built
 // wrapped by build app
 define("dojox/wire/TreeAdapter", ["dijit","dojo","dojox","dojo/require!dojox/wire/CompositeWire"], function(dijit,dojo,dojox){
 dojo.provide("dojox.wire.TreeAdapter");

@@ -1,4 +1,3 @@
-//>>built
 
 define("dojox/geo/charting/_Marker", ["dojo/_base/lang","dojo/_base/array", "dojo/_base/declare","dojo/_base/sniff","./_base"], 
 	function(lang, arr, declare, has) {

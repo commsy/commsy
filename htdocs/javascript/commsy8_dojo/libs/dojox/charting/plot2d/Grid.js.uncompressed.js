@@ -1,4 +1,3 @@
-//>>built
 define("dojox/charting/plot2d/Grid", ["dojo/_base/lang", "dojo/_base/declare", "dojo/_base/connect", "dojo/_base/array",
 		"../Element", "./common", "dojox/lang/utils", "dojox/gfx/fx"], 
 	function(lang, declare, hub, arr, Element, dc, du, fx){

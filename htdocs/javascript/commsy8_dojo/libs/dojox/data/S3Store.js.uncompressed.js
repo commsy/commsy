@@ -1,4 +1,3 @@
-//>>built
 define("dojox/data/S3Store", ["dojo/_base/declare", "dojox/data/JsonRestStore", "dojox/rpc/ProxiedPath"], 
   function(declare, JsonRestStore, ProxiedPath) {
 

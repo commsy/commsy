@@ -1,4 +1,3 @@
-//>>built
 define("dojo/_base/sniff", ["./kernel", "../has"], function(dojo, has){
 	// module:
 	//		dojo/sniff

@@ -1,4 +1,3 @@
-//>>built
 define("dijit/_editor/range", [
 	"dojo/_base/array", // array.every
 	"dojo/_base/declare", // declare

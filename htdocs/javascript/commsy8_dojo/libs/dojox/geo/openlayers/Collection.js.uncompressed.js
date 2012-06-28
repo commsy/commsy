@@ -1,4 +1,3 @@
-//>>built
 define("dojox/geo/openlayers/Collection", [ "dojo/_base/kernel", "dojo/_base/declare", "dojox/geo/openlayers/Geometry" ],
 		function(dojo, declare, Geometry) {
 			/*===== 

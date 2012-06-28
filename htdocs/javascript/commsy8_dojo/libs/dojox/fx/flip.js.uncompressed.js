@@ -1,4 +1,3 @@
-//>>built
 define("dojox/fx/flip", [
 	"dojo/_base/kernel",
 	"dojo/_base/html",

@@ -1,4 +1,3 @@
-//>>built
 define("dojox/dtl/render/html", [
 	"dojo/_base/lang",
 	"../render/dom",

@@ -1,4 +1,3 @@
-//>>built
 define("dojox/grid/util", [
 	"../main",
 	"dojo/_base/lang",

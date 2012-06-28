@@ -1,4 +1,3 @@
-//>>built
 // AMD-ID "dojox/math/random/Secure"
 define("dojox/math/random/Secure", ["dojo"], function(dojo) {
 

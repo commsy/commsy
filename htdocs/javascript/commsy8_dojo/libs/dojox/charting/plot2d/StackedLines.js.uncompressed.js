@@ -1,4 +1,3 @@
-//>>built
 define("dojox/charting/plot2d/StackedLines", ["dojo/_base/declare", "./Stacked"], function(declare, Stacked){
 /*=====
 var Stacked = dojox.charting.plot2d.Stacked;

@@ -1,4 +1,3 @@
-//>>built
 define("dijit/hccss", [
 	"require",			// require.toUrl
 	"dojo/_base/config", // config.blankGif

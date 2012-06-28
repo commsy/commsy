@@ -1,4 +1,3 @@
-//>>built
 define("dijit/_editor/plugins/TextColor", [
 	"require",
 	"dojo/colors", // colors.fromRgb

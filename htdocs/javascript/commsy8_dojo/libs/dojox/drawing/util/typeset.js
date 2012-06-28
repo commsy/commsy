@@ -1,5 +1,5 @@
 //>>built
-define(["dijit","dojo","dojox","dojo/require!dojox/drawing/library/greek"],function(_1,_2,_3){
+define("dojox/drawing/util/typeset",["dijit","dojo","dojox","dojo/require!dojox/drawing/library/greek"],function(_1,_2,_3){
 _2.provide("dojox.drawing.util.typeset");
 _2.require("dojox.drawing.library.greek");
 (function(){

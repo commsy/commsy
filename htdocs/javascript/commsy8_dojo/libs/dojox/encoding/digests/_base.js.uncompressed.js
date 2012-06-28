@@ -1,4 +1,3 @@
-//>>built
 define("dojox/encoding/digests/_base", ["dojo/_base/lang"], function(lang){
 	var d = lang.getObject("dojox.encoding.digests", true);
 	/*=====

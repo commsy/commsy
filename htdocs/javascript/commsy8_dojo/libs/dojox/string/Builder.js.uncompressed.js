@@ -1,4 +1,3 @@
-//>>built
 define("dojox/string/Builder", ["dojo/_base/lang"], 
   function(lang){
 	lang.getObject("string", true, dojox).Builder = 

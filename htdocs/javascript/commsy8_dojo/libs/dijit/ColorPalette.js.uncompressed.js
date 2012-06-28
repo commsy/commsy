@@ -1,4 +1,3 @@
-//>>built
 require({cache:{
 'url:dijit/templates/ColorPalette.html':"<div class=\"dijitInline dijitColorPalette\">\n\t<table dojoAttachPoint=\"paletteTableNode\" class=\"dijitPaletteTable\" cellSpacing=\"0\" cellPadding=\"0\" role=\"grid\">\n\t\t<tbody data-dojo-attach-point=\"gridNode\"></tbody>\n\t</table>\n</div>\n"}});
 define("dijit/ColorPalette", [

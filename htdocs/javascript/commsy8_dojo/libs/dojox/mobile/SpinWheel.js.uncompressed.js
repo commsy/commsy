@@ -1,4 +1,3 @@
-//>>built
 define("dojox/mobile/SpinWheel", [
 	"dojo/_base/array",
 	"dojo/_base/declare",

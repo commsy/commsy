@@ -1,4 +1,3 @@
-//>>built
 define("dojo/rpc/RpcService", ["../main", "../_base/url"], function(dojo) {
 	// module:
 	//		dojo/rpc/RpcService

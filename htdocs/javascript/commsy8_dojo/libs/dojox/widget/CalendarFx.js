@@ -1,5 +1,5 @@
 //>>built
-define(["dijit","dojo","dojox","dojo/require!dojox/widget/FisheyeLite"],function(_1,_2,_3){
+define("dojox/widget/CalendarFx",["dijit","dojo","dojox","dojo/require!dojox/widget/FisheyeLite"],function(_1,_2,_3){
 _2.provide("dojox.widget.CalendarFx");
 _2.require("dojox.widget.FisheyeLite");
 _2.declare("dojox.widget._FisheyeFX",null,{addFx:function(_4,_5){

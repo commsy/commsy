@@ -1,4 +1,3 @@
-//>>built
 define("dijit/form/_FormWidget", [
 	"dojo/_base/declare",	// declare
 	"dojo/_base/kernel", // kernel.deprecated

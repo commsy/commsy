@@ -1,4 +1,3 @@
-//>>built
 define("dojox/charting/themes/PlotKit/base", ["dojo/_base/kernel","dojo/_base/lang","../../Theme", "../common"], 
 	function(dojo, lang, Theme, themes){
 

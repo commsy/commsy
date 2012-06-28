@@ -1,4 +1,3 @@
-//>>built
 define("dojox/gauges/GlossyHorizontalGaugeMarker", ["dojo/_base/declare","dojo/_base/Color","./BarLineIndicator"],
   function(declare, Color, BarLineIndicator) {
 

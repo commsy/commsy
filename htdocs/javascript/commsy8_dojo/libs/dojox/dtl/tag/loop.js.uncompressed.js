@@ -1,4 +1,3 @@
-//>>built
 define("dojox/dtl/tag/loop", [
 	"dojo/_base/lang",
 	"dojo/_base/array",

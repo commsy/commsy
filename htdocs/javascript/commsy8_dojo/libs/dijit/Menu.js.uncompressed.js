@@ -1,4 +1,3 @@
-//>>built
 define("dijit/Menu", [
 	"require",
 	"dojo/_base/array", // array.forEach

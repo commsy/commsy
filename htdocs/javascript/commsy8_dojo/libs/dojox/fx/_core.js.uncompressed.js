@@ -1,4 +1,3 @@
-//>>built
 define("dojox/fx/_core", ["dojo/_base/lang", "dojo/_base/array","./_base"],
 	function(lang, arrayUtil, dojoxFx){
 	/*===== var dojox.fx._Line = line =====*/

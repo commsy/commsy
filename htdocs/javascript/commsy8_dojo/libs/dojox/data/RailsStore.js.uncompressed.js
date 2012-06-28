@@ -1,4 +1,3 @@
-//>>built
 define("dojox/data/RailsStore", ["dojo", "dojox", "dojox/data/JsonRestStore"], function(dojo, dojox) {
 
 // Contains code donated by Travis Tilley under CLA

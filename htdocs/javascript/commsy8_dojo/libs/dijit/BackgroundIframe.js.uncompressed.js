@@ -1,4 +1,3 @@
-//>>built
 define("dijit/BackgroundIframe", [
 	"require",			// require.toUrl
 	".",	// to export dijit.BackgroundIframe

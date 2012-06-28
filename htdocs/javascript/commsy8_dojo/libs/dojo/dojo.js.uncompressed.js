@@ -155,7 +155,9 @@
 		return now && has(name);
 	};
 
-	false && has.add("host-node", typeof process == "object" && /node(\.exe)?$/.test(process.execPath));
+	false && has.add("host-node", userConfig.has && "host-node" in userConfig.has ?
+		userConfig.has["host-node"] :
+		(typeof process == "object" && process.versions && process.versions.node && process.versions.v8));
 	if(0){
 		// fixup the default config for node.js environment
 		require("./_base/configNode.js").config(defaultConfig);
@@ -163,7 +165,9 @@
 		defaultConfig.loaderPatch.nodeRequire = require;
 	}
 
-	false && has.add("host-rhino", typeof load == "function" && (typeof Packages == "function" || typeof Packages == "object"));
+	false && has.add("host-rhino", userConfig.has && "host-rhino" in userConfig.has ?
+		userConfig.has["host-rhino"] :
+		(typeof load == "function" && (typeof Packages == "function" || typeof Packages == "object")));
 	if(0){
 		// owing to rhino's lame feature that hides the source of the script, give the user a way to specify the baseUrl...
 		for(var baseUrl = userConfig.baseUrl || ".", arg, rhinoArgs = this.arguments, i = 0; i < rhinoArgs.length;){
@@ -317,7 +321,7 @@
 	//
 	var eval_ =
 		// use the function constructor so our eval is scoped close to (but not in) in the global space with minimal pollution
-		new Function("__text", 'return eval(__text);');
+		new Function('return eval(arguments[0]);');
 
 	req.eval =
 		function(text, hint){
@@ -439,13 +443,20 @@
 
 	if(1){
 		var consumePendingCacheInsert = function(referenceModule){
-				for(var p in pendingCacheInsert){
-					var match = p.match(/^url\:(.+)/);
+				var p, item, match, now;
+				for(p in pendingCacheInsert){
+					item = pendingCacheInsert[p];
+					match = p.match(/^url\:(.+)/);
 					if(match){
-						cache[toUrl(match[1], referenceModule)] =  pendingCacheInsert[p];
+						cache[toUrl(match[1], referenceModule)] =  item;
+					}else if(p=="*now"){
+						now = item;
 					}else if(p!="*noref"){
-						cache[getModuleInfo(p, referenceModule).mid] = pendingCacheInsert[p];
+						cache[getModuleInfo(p, referenceModule).mid] = item;
 					}
+				}
+				if(now){
+					now(createRequire(referenceModule));
 				}
 				pendingCacheInsert = {};
 			},
@@ -766,6 +777,21 @@
 						req.undef(mid, module);
 					};
 				}
+				if(1){
+					result.syncLoadNls = function(mid){
+						var nlsModuleInfo = getModuleInfo(mid, module),
+							nlsModule = modules[nlsModuleInfo.mid];
+						if(!nlsModule || !nlsModule.executed){
+							cached = cache[nlsModuleInfo.mid] || cache[nlsModuleInfo.cacheId];
+							if(cached){
+								evalModuleText(cached);
+								nlsModule = modules[nlsModuleInfo.mid];
+							}
+						}
+						return nlsModule && nlsModule.executed && nlsModule.result;
+					};
+				}
+
 			}
 			return result;
 		},
@@ -977,15 +1003,14 @@
 		},
 
 		toUrl = req.toUrl = function(name, referenceModule){
-			// name must include a filetype; fault tolerate to allow no filetype (but things like "path/to/version2.13" will assume filetype of ".13")
-			var	match = name.match(/(.+)(\.[^\/\.]+?)$/),
-				root = (match && match[1]) || name,
-				ext = (match && match[2]) || "",
-				moduleInfo = getModuleInfo(root, referenceModule),
-				url= moduleInfo.url;
-			// recall, getModuleInfo always returns a url with a ".js" suffix iff pid; therefore, we've got to trim it
-			url= typeof moduleInfo.pid == "string" ? url.substring(0, url.length - 3) : url;
-			return fixupUrl(url + ext);
+			var moduleInfo = getModuleInfo(name+"/x", referenceModule),
+				url = moduleInfo.url;
+			return fixupUrl(moduleInfo.pid===0 ?
+				// if pid===0, then name had a protocol or absolute path; either way, toUrl is the identify function in such cases
+				name :
+				// "/x.js" since getModuleInfo automatically appends ".js" and we appended "/x" to make name look likde a module id
+				url.substring(0, url.length-5)
+			);
 		},
 
 		nonModuleProps = {
@@ -1224,7 +1249,6 @@
 						checkComplete();
 					};
 
-				setRequested(module);
 				if(plugin.load){
 					plugin.load(module.prid, module.req, onLoad);
 				}else if(plugin.loadQ){
@@ -1234,16 +1258,9 @@
 					// dependencies of some other module because this may cause circles when the plugin
 					// loadQ is run; also, generally, we want plugins to run early since they may load
 					// several other modules and therefore can potentially unblock many modules
+					plugin.loadQ = [module];
 					execQ.unshift(plugin);
 					injectModule(plugin);
-
-					// maybe the module was cached and is now defined...
-					if(plugin.load){
-						plugin.load(module.prid, module.req, onLoad);
-					}else{
-						// nope; queue up the plugin resource to be loaded after the plugin module is loaded
-						plugin.loadQ = [module];
-					}
 				}
 			},
 
@@ -1289,6 +1306,7 @@
 				if(module.executed || module.injected || waiting[mid] || (module.url && ((module.pack && waiting[module.url]===module.pack) || waiting[module.url]==1))){
 					return;
 				}
+				setRequested(module);
 
 				if(0){
 					var viaCombo = 0;
@@ -1303,7 +1321,6 @@
 						viaCombo = req.combo.add(0, module.mid, module.url, req);
 					}
 					if(viaCombo){
-						setRequested(module);
 						comboPending= 1;
 						return;
 					}
@@ -1314,7 +1331,6 @@
 					return;
 				} // else a normal module (not a plugin)
 
-				setRequested(module);
 
 				var onLoadCallback = function(){
 					runDefQ(module);
@@ -1480,7 +1496,6 @@
 			runDefQ = function(referenceModule, mids){
 				// defQ is an array of [id, dependencies, factory]
 				// mids (if any) is a vector of mids given by a combo service
-				consumePendingCacheInsert(referenceModule);
 				var definedModules = [],
 					module, args;
 				while(defQ.length){
@@ -1489,10 +1504,13 @@
 					// explicit define indicates possible multiple modules in a single file; delay injecting dependencies until defQ fully
 					// processed since modules earlier in the queue depend on already-arrived modules that are later in the queue
 					// TODO: what if no args[0] and no referenceModule
-					module = args[0] && getModule(args[0]) || referenceModule;
-					definedModules.push(defineModule(module, args[1], args[2]));
+					module = (args[0] && getModule(args[0])) || referenceModule;
+					definedModules.push([module, args[1], args[2]]);
 				}
-				forEach(definedModules, injectDependencies);
+				consumePendingCacheInsert(referenceModule);
+				forEach(definedModules, function(args){
+					injectDependencies(defineModule.apply(null, args));
+				});
 			};
 	}
 
@@ -1647,10 +1665,10 @@
 			if(arity == 1 && isFunction(mid)){
 				dependencies = [];
 				mid.toString()
-					.replace(/(\/\*([\s\S]*?)\*\/|\/\/(.*)$)/mg, "")
-					.replace(/require\(["']([\w\!\-_\.\/]+)["']\)/g, function (match, dep){
+				.replace(/(\/\*([\s\S]*?)\*\/|\/\/(.*)$)/mg, "")
+				.replace(/require\(["']([\w\!\-_\.\/]+)["']\)/g, function (match, dep){
 					dependencies.push(dep);
-				});
+			});
 				args = [0, defaultDeps.concat(dependencies), mid];
 			}
 		}
@@ -1789,8 +1807,8 @@
 	}
 
 	if(1){
-		var bootDeps = defaultConfig.deps || userConfig.deps || dojoSniffConfig.deps,
-			bootCallback = defaultConfig.callback || userConfig.callback || dojoSniffConfig.callback;
+		var bootDeps = dojoSniffConfig.deps ||  userConfig.deps || defaultConfig.deps,
+			bootCallback = dojoSniffConfig.callback || userConfig.callback || defaultConfig.callback;
 		req.boot = (bootDeps || bootCallback) ? [bootDeps || [], bootCallback] : 0;
 	}
 	if(!1){
@@ -2662,8 +2680,8 @@ define("dojo/dom-form", ["./_base/lang", "./dom", "./io-query", "./json"], funct
 
 },
 'dojo/i18n':function(){
-define(["./_base/kernel", "require", "./has", "./_base/array", "./_base/config", "./_base/lang", "./_base/xhr"],
-	function(dojo, require, has, array, config, lang, xhr) {
+define(["./_base/kernel", "require", "./has", "./_base/array", "./_base/config", "./_base/lang", "./_base/xhr", "./json"],
+	function(dojo, require, has, array, config, lang, xhr, json) {
 	// module:
 	//		dojo/i18n
 	// summary:
@@ -2672,6 +2690,18 @@ define(["./_base/kernel", "require", "./has", "./_base/array", "./_base/config",
 	//		We choose to include our own plugin to leverage functionality already contained in dojo
 	//		and thereby reduce the size of the plugin compared to various loader implementations. Also, this
 	//		allows foreign AMD loaders to be used without their plugins.
+
+
+	has.add("dojo-preload-i18n-Api",
+		// if true, define the preload localizations machinery
+		1
+	);
+
+	true || has.add("dojo-v1x-i18n-Api",
+		// if true, define the v1.x i18n functions
+		1
+	);
+
 	var
 		thisModule= dojo.i18n=
 			// the dojo.i18n module
@@ -2729,69 +2759,201 @@ define(["./_base/kernel", "require", "./has", "./_base/array", "./_base/config",
 		doLoad = function(require, bundlePathAndName, bundlePath, bundleName, locale, load){
 			// get the root bundle which instructs which other bundles are required to construct the localized bundle
 			require([bundlePathAndName], function(root){
-				var
-					current= cache[bundlePathAndName + "/"]= lang.clone(root.root),
+				var current= lang.clone(root.root),
 					availableLocales= getAvailableLocales(!root._v1x && root, locale, bundlePath, bundleName);
 				require(availableLocales, function(){
 					for (var i= 1; i<availableLocales.length; i++){
-						cache[availableLocales[i]]= current= lang.mixin(lang.clone(current), arguments[i]);
+						current= lang.mixin(lang.clone(current), arguments[i]);
 					}
 					// target may not have been resolve (e.g., maybe only "fr" exists when "fr-ca" was requested)
 					var target= bundlePathAndName + "/" + locale;
 					cache[target]= current;
-					load && load(lang.delegate(current));
+					load();
 				});
 			});
 		},
 
 		normalize = function(id, toAbsMid){
-			// note: id may be relative
-			var match= nlsRe.exec(id),
-				bundlePath= match[1];
-			return /^\./.test(bundlePath) ? toAbsMid(bundlePath) + "/" +  id.substring(bundlePath.length) : id;
+			// id may be relative
+			// preload has form *preload*<path>/nls/<module>*<flattened locales> and
+			// therefore never looks like a relative
+			return /^\./.test(id) ? toAbsMid(id) : id;
 		},
 
-		checkForLegacyModules = function(){},
+		getLocalesToLoad = function(targetLocale){
+			var list = config.extraLocale || [];
+			list = lang.isArray(list) ? list : [list];
+			list.push(targetLocale);
+			return list;
+		},
 
 		load = function(id, require, load){
-			// note: id is always absolute
-			var
-				match= nlsRe.exec(id),
+			//
+			// id is in one of the following formats
+			//
+			//	1. <path>/nls/<bundle>
+			//		=> load the bundle, localized to config.locale; load all bundles localized to
+			//      config.extraLocale (if any); return the loaded bundle localized to config.locale.
+			//
+			//  2. <path>/nls/<locale>/<bundle>
+			//		=> load then return the bundle localized to <locale>
+			//
+			//  3. *preload*<path>/nls/<module>*<JSON array of available locales>
+			//		=> for config.locale and all config.extraLocale, load all bundles found
+			//		   in the best-matching bundle rollup. A value of 1 is returned, which
+			//         is meaningless other than to say the plugin is executing the requested
+			//         preloads
+			//
+			// In cases 1 and 2, <path> is always normalized to an absolute module id upon entry; see
+			// normalize. In case 3, it <path> is assumed to be absolue; this is arranged by the builder.
+			//
+			// To load a bundle means to insert the bundle into the plugin's cache and publish the bundle
+			// value to the loader. Given <path>, <bundle>, and a particular <locale>, the cache key
+			//
+			//   <path>/nls/<bundle>/<locale>
+			//
+			// will hold the value. Similarly, then plugin will publish this value to the loader by
+			//
+			//   define("<path>/nls/<bundle>/<locale>", <bundle-value>);
+			//
+			// Given this algorithm, other machinery can provide fast load paths be preplacing
+			// values in the plugin's cache, which is public. When a load is demanded the
+			// cache is inspected before starting any loading. Explicitly placing values in the plugin
+			// cache is an advanced/experimental feature that should not be needed; use at your own risk.
+			//
+			// For the normal AMD algorithm, the root bundle is loaded first, which instructs the
+			// plugin what additional localized bundles are required for a particular locale. These
+			// additional locales are loaded and a mix of the root and each progressively-specific
+			// locale is returned. For example:
+			//
+			// 1. The client demands "dojo/i18n!some/path/nls/someBundle
+			//
+			// 2. The loader demands load(some/path/nls/someBundle)
+			//
+			// 3. This plugin require's "some/path/nls/someBundle", which is the root bundle.
+			//
+			// 4. Assuming config.locale is "ab-cd-ef" and the root bundle indicates that localizations
+			//    are available for "ab" and "ab-cd-ef" (note the missing "ab-cd", then the plugin
+			//    requires "some/path/nls/ab/someBundle" and "some/path/nls/ab-cd-ef/someBundle"
+			//
+			// 5. Upon receiving all required bundles, the plugin constructs the value of the bundle
+			//    ab-cd-ef as...
+			//
+			//      mixin(mixin(mixin({}, require("some/path/nls/someBundle"),
+			//        require("some/path/nls/ab/someBundle")),
+			//          require("some/path/nls/ab-cd-ef/someBundle"));
+			//
+			//    This value is inserted into the cache and published to the loader at the
+			//    key/module-id some/path/nls/someBundle/ab-cd-ef.
+			//
+			// The special preload signature (case 3) instructs the plugin to stop servicing all normal requests
+			// (further preload requests will be serviced) until all ongoing preloading has completed.
+			//
+			// The preload signature instructs the plugin that a special rollup module is available that contains
+			// one or more flattened, localized bundles. The JSON array of available locales indicates which locales
+			// are available. Here is an example:
+			//
+			//   *preload*some/path/nls/someModule*["root", "ab", "ab-cd-ef"]
+			//
+			// This indicates the following rollup modules are available:
+			//
+			//   some/path/nls/someModule_ROOT
+			//   some/path/nls/someModule_ab
+			//   some/path/nls/someModule_ab-cd-ef
+			//
+			// Each of these modules is a normal AMD module that contains one or more flattened bundles in a hash.
+			// For example, assume someModule contained the bundles some/bundle/path/someBundle and
+			// some/bundle/path/someOtherBundle, then some/path/nls/someModule_ab would be expressed as folllows:
+			//
+			// define({
+			//   some/bundle/path/someBundle:<value of someBundle, flattened with respect to locale ab>,
+			//   some/bundle/path/someOtherBundle:<value of someOtherBundle, flattened with respect to locale ab>,
+			// });
+			//
+			// E.g., given this design, preloading for locale=="ab" can execute the following algorithm:
+			//
+			// require(["some/path/nls/someModule_ab"], function(rollup){
+			//   for(var p in rollup){
+			//     var id = p + "/ab",
+			//     cache[id] = rollup[p];
+			//     define(id, rollup[p]);
+			//   }
+			// });
+			//
+			// Similarly, if "ab-cd" is requested, the algorithm can determine that "ab" is the best available and
+			// load accordingly.
+			//
+			// The builder will write such rollups for every layer if a non-empty localeList  profile property is
+			// provided. Further, the builder will include the following cache entry in the cache associated with
+			// any layer.
+			//
+			//   "*now":function(r){r(['dojo/i18n!*preload*<path>/nls/<module>*<JSON array of available locales>']);}
+			//
+			// The *now special cache module instructs the loader to apply the provided function to context-require
+			// with respect to the particular layer being defined. This causes the plugin to hold all normal service
+			// requests until all preloading is complete.
+			//
+			// Notice that this algorithm is rarely better than the standard AMD load algorithm. Consider the normal case
+			// where the target locale has a single segment and a layer depends on a single bundle:
+			//
+			// Without Preloads:
+			//
+			//   1. Layer loads root bundle.
+			//   2. bundle is demanded; plugin loads single localized bundle.
+			//
+			// With Preloads:
+			//
+			//   1. Layer causes preloading of target bundle.
+			//   2. bundle is demanded; service is delayed until preloading complete; bundle is returned.
+			//
+			// In each case a single transaction is required to load the target bundle. In cases where multiple bundles
+			// are required and/or the locale has multiple segments, preloads still requires a single transaction whereas
+			// the normal path requires an additional transaction for each additional bundle/locale-segment. However all
+			// of these additional transactions can be done concurrently. Owing to this analysis, the entire preloading
+			// algorithm can be discard during a build by setting the has feature dojo-preload-i18n-Api to false.
+			//
+			if(has("dojo-preload-i18n-Api")){
+				var split = id.split("*"),
+					preloadDemand = split[1]=="preload";
+				if(preloadDemand){
+					if(!cache[id]){
+						// use cache[id] to prevent multiple preloads of the same preload; this shouldn't happen, but
+						// who knows what over-aggressive human optimizers may attempt
+						cache[id] = 1;
+						preloadL10n(split[2], json.parse(split[3]), 1);
+					}
+					// don't stall the loader!
+					load(1);
+				}
+				if(preloadDemand || waitForPreloads(id, require, load)){
+					return;
+				}
+			}
+
+			var match= nlsRe.exec(id),
 				bundlePath= match[1] + "/",
 				bundleName= match[5] || match[4],
 				bundlePathAndName= bundlePath + bundleName,
 				localeSpecified = (match[5] && match[4]),
 				targetLocale=  localeSpecified || dojo.locale,
-				target= bundlePathAndName + "/" + targetLocale;
-
-			if(localeSpecified){
-				checkForLegacyModules(target);
-				if(cache[target]){
-					// a request for a specific local that has already been loaded; just return it
-					load(cache[target]);
-				}else{
-					// a request for a specific local that has not been loaded; load and return just that locale
-					doLoad(require, bundlePathAndName, bundlePath, bundleName, targetLocale, load);
-				}
-				return;
-			}// else a non-locale-specific request; therefore always load dojo.locale + config.extraLocale
-
-			// notice the subtle algorithm that loads targetLocal last, which is the only doLoad application that passes a value for the load callback
-			// this makes the sync loader follow a clean code path that loads extras first and then proceeds with tracing the current deps graph
-			var extra = config.extraLocale || [];
-			extra = lang.isArray(extra) ? extra : [extra];
-			extra.push(targetLocale);
-			var remaining = extra.length,
-				targetBundle;
-			array.forEach(extra, function(locale){
-				doLoad(require, bundlePathAndName, bundlePath, bundleName, locale, function(bundle){
-					if(locale == targetLocale){
-						targetBundle = bundle;
-					}
+				loadTarget= bundlePathAndName + "/" + targetLocale,
+				loadList = localeSpecified ? [targetLocale] : getLocalesToLoad(targetLocale),
+				remaining = loadList.length,
+				finish = function(){
 					if(!--remaining){
-						load(targetBundle);
+						load(lang.delegate(cache[loadTarget]));
 					}
-				});
+				};
+			array.forEach(loadList, function(locale){
+				var target = bundlePathAndName + "/" + locale;
+				if(has("dojo-preload-i18n-Api")){
+					checkForLegacyModules(target);
+				}
+				if(!cache[target]){
+					doLoad(require, bundlePathAndName, bundlePath, bundleName, locale, finish);
+				}else{
+					finish();
+				}
 			});
 		};
 
@@ -2799,128 +2961,203 @@ define(["./_base/kernel", "require", "./has", "./_base/array", "./_base/config",
 		var unitTests = thisModule.unitTests = [];
 	}
 
-	true || has.add("dojo-v1x-i18n-Api",
-		// if true, define the v1.x i18n functions
-		1
-	);
+	if(has("dojo-preload-i18n-Api") || 1){
+		var normalizeLocale = thisModule.normalizeLocale= function(locale){
+				var result = locale ? locale.toLowerCase() : dojo.locale;
+				return result == "root" ? "ROOT" : result;
+			},
+
+			isXd = function(mid){
+				return (1 && 1) ?
+					require.isXdUrl(require.toUrl(mid + ".js")) :
+					true;
+			},
+
+			preloading = 0,
+
+			preloadWaitQueue = [],
+
+			preloadL10n = thisModule._preloadLocalizations = function(/*String*/bundlePrefix, /*Array*/localesGenerated, /*boolean*/ guaranteedAmdFormat){
+				//	summary:
+				//		Load available flattened resource bundles associated with a particular module for dojo.locale and all dojo.config.extraLocale (if any)
+				//
+				//  descirption:
+				//		Only called by built layer files. The entire locale hierarchy is loaded. For example,
+				//		if locale=="ab-cd", then ROOT, "ab", and "ab-cd" are loaded. This is different than v1.6-
+				//		in that the v1.6- would lonly load ab-cd...which was *always* flattened.
+				//
+				//		If guaranteedAmdFormat is true, then the module can be loaded with require thereby circumventing the detection algorithm
+				//		and the extra possible extra transaction.
+				//
+
+				function forEachLocale(locale, func){
+					// given locale= "ab-cd-ef", calls func on "ab-cd-ef", "ab-cd", "ab", "ROOT"; stops calling the first time func returns truthy
+					var parts = locale.split("-");
+					while(parts.length){
+						if(func(parts.join("-"))){
+							return true;
+						}
+						parts.pop();
+					}
+					return func("ROOT");
+				}
+
+				function preload(locale){
+					locale = normalizeLocale(locale);
+					forEachLocale(locale, function(loc){
+						if(array.indexOf(localesGenerated, loc)>=0){
+							var mid = bundlePrefix.replace(/\./g, "/")+"_"+loc;
+							preloading++;
+							(isXd(mid) || guaranteedAmdFormat ? require : syncRequire)([mid], function(rollup){
+								for(var p in rollup){
+									cache[p + "/" + locale] = rollup[p];
+								}
+								--preloading;
+								while(!preloading && preloadWaitQueue.length){
+									load.apply(null, preloadWaitQueue.shift());
+								}
+							});
+							return true;
+						}
+						return false;
+					});
+				}
+
+				preload();
+				array.forEach(dojo.config.extraLocale, preload);
+			},
+
+			waitForPreloads = function(id, require, load){
+				if(preloading){
+					preloadWaitQueue.push([id, require, load]);
+				}
+				return preloading;
+			};
+	}
 
 	if(1){
-		var
-			__evalError = {},
+		// this code path assumes the dojo loader and won't work with a standard AMD loader
+		var evalBundle=
+				// use the function ctor to keep the minifiers away (also come close to global scope, but this is secondary)
+				new Function(
+					"__bundle",                // the bundle to evalutate
+					"__checkForLegacyModules", // a function that checks if __bundle defined __mid in the global space
+					"__mid",                   // the mid that __bundle is intended to define
 
-			evalBundle=
-				// use the function ctor to keep the minifiers away and come close to global scope
-				// if bundle is an AMD bundle, then __amdResult will be defined; otherwise it's a pre-amd bundle and the bundle value is returned by eval
-				new Function("bundle, __evalError",
-					"var __amdResult, define = function(x){__amdResult= x;};" +
-					"return [(function(){" +
-								"try{eval(arguments[0]);}catch(e){}" +
-								"if(__amdResult)return 0;" +
-								"try{return eval('('+arguments[0]+')');}" +
-								"catch(e){__evalError.e = e; return __evalError;}" +
-							"})(arguments[0]) , __amdResult];"
+					// returns one of:
+					//		1 => the bundle was an AMD bundle
+					//		a legacy bundle object that is the value of __mid
+					//		instance of Error => could not figure out how to evaluate bundle
+
+					  // used to detect when __bundle calls define
+					  "var define = function(){define.called = 1;},"
+					+ "    require = function(){define.called = 1;};"
+
+					+ "try{"
+					+		"define.called = 0;"
+					+		"eval(__bundle);"
+					+		"if(define.called==1)"
+								// bundle called define; therefore signal it's an AMD bundle
+					+			"return 1;"
+
+					+		"if((__checkForLegacyModules = __checkForLegacyModules(__mid)))"
+								// bundle was probably a v1.6- built NLS flattened NLS bundle that defined __mid in the global space
+					+			"return __checkForLegacyModules;"
+
+					+ "}catch(e){}"
+					// evaulating the bundle was *neither* an AMD *nor* a legacy flattened bundle
+					// either way, re-eval *after* surrounding with parentheses
+
+					+ "try{"
+					+ 		"return eval('('+__bundle+')');"
+					+ "}catch(e){"
+					+ 		"return e;"
+					+ "}"
 				),
-
-			fixup= function(url, preAmdResult, amdResult){
-				// nls/<locale>/<bundle-name> indicates not the root.
-				if(preAmdResult===__evalError){
-					console.error("failed to evaluate i18n bundle; url=" + url, __evalError.e);
-					return {};
-				}
-				return preAmdResult ? (/nls\/[^\/]+\/[^\/]+$/.test(url) ? preAmdResult : {root:preAmdResult, _v1x:1}) : amdResult;
-			},
 
 			syncRequire= function(deps, callback){
 				var results= [];
 				array.forEach(deps, function(mid){
 					var url= require.toUrl(mid + ".js");
+
+					function load(text){
+						var result = evalBundle(text, checkForLegacyModules, mid);
+						if(result===1){
+							// the bundle was an AMD module; re-inject it through the normal AMD path
+							// we gotta do this since it could be an anonymous module and simply evaluating
+							// the text here won't provide the loader with the context to know what
+							// module is being defined()'d. With browser caching, this should be free; further
+							// this entire code path can be circumvented by using the AMD format to begin with
+							require([mid], function(bundle){
+								results.push(cache[url]= bundle);
+							});
+						}else{
+							if(result instanceof Error){
+								console.error("failed to evaluate i18n bundle; url=" + url, result);
+								result = {};
+							}
+							// nls/<locale>/<bundle-name> indicates not the root.
+							results.push(cache[url] = (/nls\/[^\/]+\/[^\/]+$/.test(url) ? result : {root:result, _v1x:1}));
+						}
+					}
+
 					if(cache[url]){
 						results.push(cache[url]);
 					}else{
-
-						try {
-							var bundle= require(mid);
-							if(bundle){
-								results.push(bundle);
-								return;
+						var bundle= require.syncLoadNls(mid);
+						// don't need to check for legacy since syncLoadNls returns a module if the module
+						// (1) was already loaded, or (2) was in the cache. In case 1, if syncRequire is called
+						// from getLocalization --> load, then load will have called checkForLegacyModules() before
+						// calling syncRequire; if syncRequire is called from preloadLocalizations, then we
+						// don't care about checkForLegacyModules() because that will be done when a particular
+						// bundle is actually demanded. In case 2, checkForLegacyModules() is never relevant
+						// because cached modules are always v1.7+ built modules.
+						if(bundle){
+							results.push(bundle);
+						}else{
+							if(!xhr){
+								try{
+									require.getText(url, true, load);
+								}catch(e){
+									results.push(cache[url]= {});
+								}
+							}else{
+								xhr.get({
+									url:url,
+									sync:true,
+									load:load,
+									error:function(){
+										results.push(cache[url]= {});
+									}
+								});
 							}
-						}catch(e){}
-
-						xhr.get({
-							url:url,
-							sync:true,
-							load:function(text){
-								var result = evalBundle(text, __evalError);
-								results.push(cache[url]= fixup(url, result[0], result[1]));
-							},
-							error:function(){
-								results.push(cache[url]= {});
-							}
-						});
+						}
 					}
 				});
 				callback && callback.apply(null, results);
 			},
 
-			normalizeLocale = thisModule.normalizeLocale= function(locale){
-				var result = locale ? locale.toLowerCase() : dojo.locale;
-				if(result == "root"){
-					result = "ROOT";
+			checkForLegacyModules = function(target){
+				// legacy code may have already loaded [e.g] the raw bundle x/y/z at x.y.z; when true, push into the cache
+				for(var result, names = target.split("/"), object = dojo.global[names[0]], i = 1; object && i<names.length-1; object = object[names[i++]]){}
+				if(object){
+					result = object[names[i]];
+					if(!result){
+						// fallback for incorrect bundle build of 1.6
+						result = object[names[i].replace(/-/g,"_")];
+					}
+					if(result){
+						cache[target] = result;
+					}
 				}
 				return result;
-			},
-
-			forEachLocale = function(locale, func){
-				// this function is equivalent to v1.6 dojo.i18n._searchLocalePath with down===true
-				var parts = locale.split("-");
-				while(parts.length){
-					if(func(parts.join("-"))){
-						return true;
-					}
-					parts.pop();
-				}
-				return func("ROOT");
 			};
-
-		checkForLegacyModules = function(target){
-			// legacy code may have already loaded [e.g] the raw bundle x/y/z at x.y.z; when true, push into the cache
-			for(var names = target.split("/"), object = dojo.global[names[0]], i = 1; object && i<names.length; object = object[names[i++]]){}
-			if(object){
-				cache[target] = object;
-			}
-		};
 
 		thisModule.getLocalization= function(moduleName, bundleName, locale){
 			var result,
 				l10nName= getL10nName(moduleName, bundleName, locale).substring(10);
-			load(l10nName, (1 && !require.isXdUrl(require.toUrl(l10nName + ".js")) ? syncRequire : require), function(result_){ result= result_; });
+			load(l10nName, (!isXd(l10nName) ? syncRequire : require), function(result_){ result= result_; });
 			return result;
-		};
-
-		thisModule._preloadLocalizations = function(/*String*/bundlePrefix, /*Array*/localesGenerated){
-			//	summary:
-			//		Load built, flattened resource bundles, if available for all
-			//		locales used in the page. Only called by built layer files.
-			//
-			//  note: this function a direct copy of v1.6 function of same name
-
-			function preload(locale){
-				locale = normalizeLocale(locale);
-				forEachLocale(locale, function(loc){
-					for(var i=0; i<localesGenerated.length;i++){
-						if(localesGenerated[i] == loc){
-							syncRequire([bundlePrefix.replace(/\./g, "/")+"_"+loc]);
-							return true; // Boolean
-						}
-					}
-					return false; // Boolean
-				});
-			}
-			preload();
-			var extra = dojo.config.extraLocale||[];
-			for(var i=0; i<extra.length; i++){
-				preload(extra[i]);
-			}
 		};
 
 		if(has("dojo-unit-tests")){
@@ -2928,27 +3165,23 @@ define(["./_base/kernel", "require", "./has", "./_base/array", "./_base/config",
 				doh.register("tests.i18n.unit", function(t){
 					var check;
 
-					check = evalBundle("{prop:1}", __evalError);
-					t.is({prop:1}, check[0]); t.is(undefined, check[1]);
+					check = evalBundle("{prop:1}");
+					t.is({prop:1}, check); t.is(undefined, check[1]);
 
-					check = evalBundle("({prop:1})", __evalError);
-					t.is({prop:1}, check[0]); t.is(undefined, check[1]);
+					check = evalBundle("({prop:1})");
+					t.is({prop:1}, check); t.is(undefined, check[1]);
 
-					check = evalBundle("{'prop-x':1}", __evalError);
-					t.is({'prop-x':1}, check[0]); t.is(undefined, check[1]);
+					check = evalBundle("{'prop-x':1}");
+					t.is({'prop-x':1}, check); t.is(undefined, check[1]);
 
-					check = evalBundle("({'prop-x':1})", __evalError);
-					t.is({'prop-x':1}, check[0]); t.is(undefined, check[1]);
+					check = evalBundle("({'prop-x':1})");
+					t.is({'prop-x':1}, check); t.is(undefined, check[1]);
 
-					check = evalBundle("define({'prop-x':1})", __evalError);
-					t.is(0, check[0]); t.is({'prop-x':1}, check[1]);
+					check = evalBundle("define({'prop-x':1})");
+					t.is(1, check);
 
-					check = evalBundle("define({'prop-x':1});", __evalError);
-					t.is(0, check[0]); t.is({'prop-x':1}, check[1]);
-
-					check = evalBundle("this is total nonsense and should throw an error", __evalError);
-					t.is(__evalError, check[0]); t.is(undefined, check[1]);
-					t.is({}, fixup("some/url", check[0], check[1]));
+					check = evalBundle("this is total nonsense and should throw an error");
+					t.is(check instanceof Error, true);
 				});
 			});
 		}
@@ -2958,9 +3191,7 @@ define(["./_base/kernel", "require", "./has", "./_base/array", "./_base/config",
 		dynamic:true,
 		normalize:normalize,
 		load:load,
-		cache:function(mid, value){
-			cache[mid] = value;
-		}
+		cache:cache
 	});
 });
 
@@ -3453,9 +3684,9 @@ define(["../has", "./config", "require", "module"], function(has, config, requir
 			this.revision = 0;
 		}
 	=====*/
-	var rev = "$Rev: 27913 $".match(/\d+/);
+	var rev = "$Rev: 28982 $".match(/\d+/);
 	dojo.version = {
-		major: 1, minor: 7, patch: 2, flag: "",
+		major: 1, minor: 7, patch: 3, flag: "",
 		revision: rev ? +rev[0] : NaN,
 		toString: function(){
 			var v = dojo.version;
@@ -5523,42 +5754,89 @@ define(["./kernel", "../has", "require", "module", "./json", "./lang", "./array"
 			checkDojoRequirePlugin();
 		},
 
+		// checkDojoRequirePlugin inspects all of the modules demanded by a dojo/require!<module-list> dependency
+		// to see if they have arrived. The loader does not release *any* of these modules to be instantiated
+		// until *all* of these modules are on board, thereby preventing the evaluation of a module with dojo.require's
+		// that reference modules that are not available.
+		//
+		// The algorithm works by traversing the dependency graphs (remember, there can be cycles so they are not trees)
+		// of each module in the dojoRequireModuleStack array (which contains the list of modules demanded by dojo/require!).
+		// The moment a single module is discovered that is missing, the algorithm gives up and indicates that not all
+		// modules are on board. dojo/loadInit! and dojo/require! are ignored because there dependencies are inserted
+		// directly in dojoRequireModuleStack. For example, if "your/module" module depends on "dojo/require!my/module", then
+		// *both* "dojo/require!my/module" and "my/module" will be in dojoRequireModuleStack. Obviously, if "my/module"
+		// is on board, then "dojo/require!my/module" is also satisfied, so the algorithm doesn't check for "dojo/require!my/module".
+		//
+		// Note: inserting a dojo/require!<some-module-list> dependency in the dojoRequireModuleStack achieves nothing
+		// with the current algorithm; however, having such modules present makes it possible to optimize the algorithm
+		//
+		// Note: prior versions of this algorithm had an optimization that signaled loaded on dojo/require! dependencies
+		// individually (rather than waiting for them all to be resolved). The implementation proved problematic with cycles
+		// and plugins. However, it is possible to reattach that strategy in the future.
+
+		// a set from module-id to {undefined | 1 | 0}, where...
+		//   undefined => the module has not been inspected
+		//   0 => the module or at least one of its dependencies has not arrived
+		//   1 => the module is a loadInit! or require! plugin resource, or is currently being traversed (therefore, assume
+		//        OK until proven otherwise), or has been completely traversed and all dependencies have arrived
 		touched,
 
 		traverse = function(m){
-			if(touched[m.mid] || /loadInit\!/.test(m.mid)){
-				// loadInit plugin modules are dependencies of modules in dojoRequireModuleStack...
-				// which would cause a circular dependency chain that would never be resolved if checked here
-				// notice all dependencies of any particular loadInit plugin module will already
-				// be checked since those are pushed into dojoRequireModuleStack explicitly by the
-				// plugin...so if a particular loadInitPlugin module's dependencies are not really
-				// on board, that *will* be detected elsewhere in the traversal.
-				return true;
-			}
 		    touched[m.mid] = 1;
-			if(m.injected!==arrived && !m.executed){
-				return false;
-			}
-			for(var deps = m.deps || [], i= 0; i<deps.length; i++){
-				if(!traverse(deps[i])){
-					return false;
+			for(var t, module, deps = m.deps || [], i= 0; i<deps.length; i++){
+				module = deps[i];
+				if(!(t = touched[module.mid])){
+					if(t===0 || !traverse(module)){
+						touched[m.mid] = 0;
+						return false;
+					}
 				}
 			}
 			return true;
 		},
 
 		checkDojoRequirePlugin = function(){
+			// initialize the touched hash with easy-to-compute values that help short circuit recursive algorithm;
+			// recall loadInit/require plugin modules are dependencies of modules in dojoRequireModuleStack...
+			// which would cause a circular dependency chain that would never be resolved if checked here
+			// notice all dependencies of any particular loadInit/require plugin module will already
+			// be checked since those are pushed into dojoRequireModuleStack explicitly by the
+			// plugin...so if a particular loadInitPlugin module's dependencies are not really
+			// on board, that *will* be detected elsewhere in the traversal.
+			var module, mid;
 			touched = {};
-			dojoRequireModuleStack = array.filter(dojoRequireModuleStack, function(module){
-				return !traverse(module);
-			});
-			if(!dojoRequireModuleStack.length){
-				loaderVars.holdIdle();
-				var oldCallbacks = dojoRequireCallbacks;
-				dojoRequireCallbacks = [];
-				array.forEach(oldCallbacks, function(cb){cb(1);});
-				loaderVars.releaseIdle();
+			for(mid in modules){
+				module = modules[mid];
+				// this could be improved by remembering the result of the regex tests
+				if(module.executed || module.noReqPluginCheck){
+					touched[mid] = 1;
+				}else{
+					if(module.noReqPluginCheck!==0){
+						// tag the module as either a loadInit or require plugin or not for future reference
+						module.noReqPluginCheck = /loadInit\!/.test(mid) || /require\!/.test(mid) ? 1 : 0;
+					}
+					if(module.noReqPluginCheck){
+						touched[mid] = 1;
+					}else if(module.injected!==arrived){
+						// not executed, has not arrived, and is not a loadInit or require plugin resource
+						touched[mid] = 0;
+					}// else, leave undefined and we'll traverse the dependencies
+				}
 			}
+
+			for(var t, i = 0, end = dojoRequireModuleStack.length; i<end; i++){
+				module = dojoRequireModuleStack[i];
+				if(!(t = touched[module.mid])){
+					if(t===0 || !traverse(module)){
+						return;
+					}
+				}
+			}
+			loaderVars.holdIdle();
+			var oldCallbacks = dojoRequireCallbacks;
+			dojoRequireCallbacks = [];
+			array.forEach(oldCallbacks, function(cb){cb(1);});
+			loaderVars.releaseIdle();
 		},
 
 		dojoLoadInitPlugin = function(mid, require, loaded){
@@ -12242,7 +12520,7 @@ define([
 		return typeof XMLHttpRequest !== 'undefined';
 	});
 
-	if(1){
+	if(1 && require.getXhr){
 		dojo._xhrObj = require.getXhr;
 	}else if (has("native-xhr")){
 		dojo._xhrObj = function(){
@@ -12752,11 +13030,11 @@ define([
 				if(dojo.config.debugAtAllCosts){
 					func.call(this);
 				}else{
-//					try{
+					try{
 						func.call(this);
-	/*				}catch(e){
+					}catch(e){
 						dfd.errback(e);
-					}*/
+					}
 				}
 			}
 		}
@@ -13061,6 +13339,16 @@ define([
 });
 
 },
+'dojo/loadInit':function(){
+define(["./_base/loader"], function(loader){
+	return {
+		dynamic:0,
+		normalize:function(id){return id;},
+		load:loader.loadInit
+	};
+});
+
+},
 'dojo/_base/unload':function(){
 define(["./kernel", "./connect"], function(dojo, connect) {
 	// module:
@@ -13141,16 +13429,6 @@ define(["./kernel", "./connect"], function(dojo, connect) {
 	return {
 		addOnWindowUnload: dojo.addOnWindowUnload,
 		addOnUnload: dojo.addOnUnload
-	};
-});
-
-},
-'dojo/loadInit':function(){
-define(["./_base/loader"], function(loader){
-	return {
-		dynamic:0,
-		normalize:function(id){return id;},
-		load:loader.loadInit
 	};
 });
 
@@ -16120,7 +16398,6 @@ dojo.isCopyKey = function(e){
 
 
 }}});
-
 (function(){
 	// must use this.require to make this work in node.js
 	var require = this.require;

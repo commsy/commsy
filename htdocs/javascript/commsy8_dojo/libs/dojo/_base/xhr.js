@@ -9,7 +9,7 @@ define("dojo/_base/xhr",["./kernel","./sniff","require","../io-query","../dom","
 _2.add("native-xhr",function(){
 return typeof XMLHttpRequest!=="undefined";
 });
-if(1){
+if(1&&_3.getXhr){
 _1._xhrObj=_3.getXhr;
 }else{
 if(_2("native-xhr")){
@@ -217,7 +217,12 @@ _29-=1;
 if(_1.config.debugAtAllCosts){
 _2c.call(this);
 }else{
+try{
 _2c.call(this);
+}
+catch(e){
+dfd.errback(e);
+}
 }
 }
 }

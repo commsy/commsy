@@ -15,7 +15,7 @@ define([	"dojo/_base/declare",
 		},
 		
 		setup: function(actorNodes) {
-			actorNodes.forEach(Lang.hitch(this, function(node, index, arr) {
+			dojo.forEach(actorNodes, Lang.hitch(this, function(node, index, arr) {
 				// find content div - connected by data-custom
 				var customData = this.getAttrAsObject(node, "data-custom");
 				

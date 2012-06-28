@@ -1,4 +1,3 @@
-//>>built
 define("dojo/back", ["./_base/kernel", "./_base/lang", "./_base/sniff", "./dom", "./dom-construct", "./_base/window", "require"], function(dojo, lang, sniff, dom, domConstruct, baseWindow, require) {
 	// module:
 	//		dojo/back

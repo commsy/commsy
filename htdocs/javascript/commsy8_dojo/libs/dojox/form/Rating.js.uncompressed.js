@@ -1,4 +1,3 @@
-//>>built
 define("dojox/form/Rating", [
 	"dojo/_base/declare",
 	"dojo/_base/lang",

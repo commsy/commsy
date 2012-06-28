@@ -1,4 +1,3 @@
-//>>built
 define("dojo/store/util/QueryResults", ["../../_base/array", "../../_base/lang", "../../_base/Deferred"
 ], function(array, lang, Deferred) {
   //  module:

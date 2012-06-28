@@ -1,4 +1,3 @@
-//>>built
 // wrapped by build app
 define("dojox/mobile/app/_event", ["dijit","dojo","dojox"], function(dijit,dojo,dojox){
 dojo.provide("dojox.mobile.app._event");

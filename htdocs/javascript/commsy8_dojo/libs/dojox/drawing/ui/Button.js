@@ -1,5 +1,5 @@
 //>>built
-define(["dijit","dojo","dojox"],function(_1,_2,_3){
+define("dojox/drawing/ui/Button",["dijit","dojo","dojox"],function(_1,_2,_3){
 _2.provide("dojox.drawing.ui.Button");
 _3.drawing.ui.Button=_3.drawing.util.oo.declare(function(_4){
 _4.subShape=true;

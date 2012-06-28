@@ -1,4 +1,3 @@
-//>>built
 define("dojox/css3/transition", ["dojo/_base/kernel", 
 		"dojo/_base/lang",
 		"dojo/_base/declare",

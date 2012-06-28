@@ -1,4 +1,3 @@
-//>>built
 define("dojo/fx/easing", ["../_base/lang"], function(lang) {
 // module:
 //		dojo/fx/easing
