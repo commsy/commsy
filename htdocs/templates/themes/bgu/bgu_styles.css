@@ -864,7 +864,7 @@ fieldset {
     padding: 0;
    }
    
-div#right_column div#tag_tree {
+div#right_column div#tag_tree li a {
 	color: #032F76;
 	text-decoration: none;
 }
