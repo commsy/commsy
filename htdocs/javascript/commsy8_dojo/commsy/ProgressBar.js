@@ -36,11 +36,13 @@ define([	"dojo/_base/declare",
 			
 			// get count from span-tag
 			var spanNode = nodeList.children("span[class^='value']")[0];
-			var count = DomAttr.get(spanNode, "innerHTML");
-			
-			// remove span and set count
-			DomConstruct.destroy(spanNode);
-			progressBar.set("label", count);
+			if(spanNode) {
+				var count = DomAttr.get(spanNode, "innerHTML");
+				
+				// remove span and set count
+				DomConstruct.destroy(spanNode);
+				progressBar.set("label", count);
+			}
 		}
 	});
 });

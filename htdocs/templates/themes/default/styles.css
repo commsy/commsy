@@ -3066,7 +3066,8 @@ jQuery UI
   }
 
 div.uploader .ui-progressbar,
-div.uploader-single .ui-progressbar {
+div.uploader-single .ui-progressbar,
+div.content_item .ui-progressbar {
 	height: 16px
 	}
 
