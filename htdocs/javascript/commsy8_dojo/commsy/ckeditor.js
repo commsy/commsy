@@ -56,8 +56,8 @@ define([	"dojo/_base/declare",
 			
 			this.instance = CKEDITOR.appendTo(node, this.options, data);
 			
-			var nodeList =  new dojo.NodeList(node);
 			// get the form this editor belongs to
+			var nodeList =  new dojo.NodeList(node);
 			var formNode = nodeList.parents("form")[0];
 			
 			// on form submit, attach editor content to hidden input
@@ -81,27 +81,3 @@ define([	"dojo/_base/declare",
 		}
 	});
 });
-/*
-		create: function(preconditions, parameters) {
-
-			
-			// create ckeditor instances for all register_on objects
-			register_on.each(function() {
-				// get the form this editor belongs to
-				var form_object = jQuery(this).parentsUntil('form').parent();
-				
-				// on form submit, attach editor content to hidden input
-				
-			});
-		},
-		
-		append_content: function(form_object, hidden_input_object, editor) {
-			form_object.bind('submit', {hidden_input_object: hidden_input_object, editor: editor}, this.onSubmit);
-		},
-		
-		onSubmit: function(event) {
-			event.data.hidden_input_object.attr('value', event.data.editor.getData());
-		}
-	};
-});
-*/

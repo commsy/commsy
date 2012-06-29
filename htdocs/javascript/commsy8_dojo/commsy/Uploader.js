@@ -93,7 +93,7 @@ define([	"dojo/_base/declare",
 			this.progressbar.placeAt(Query("div.fileList")[0]);
 		},
 		
-		onUploadComplete: function(data) {console.dir(data);
+		onUploadComplete: function(data) {
 			if(this.callback) {
 				this.callback(data);
 			} else {

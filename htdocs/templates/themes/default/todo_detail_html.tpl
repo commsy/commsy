@@ -289,7 +289,7 @@
 				</div>
 
 				<div class="column_590">
-					<form action="commsy.php?cid={$environment.cid}&mod=step&fct=edit" method="post">
+					<form action="commsy.php?cid={$environment.cid}&mod=step&fct=edit" method="post" enctype="multipart/form-data">
 						<div class="post_content">
 							<h4>{$step@total + 1}. </h4>
 							<input type="hidden" value="NEW" name="iid"/>
@@ -307,10 +307,21 @@
 								<div id="ckeditor_step" class="ckeditor"></div>
 							</div>
 							
+							{*
+							<div id="files_finished"></div>
+							
+							<div class="uploader">
+							   <input class="fileSelector"></input>
+							   
+							   <div class="fileList"></div>
+							</div>
+							*}
+							
 							<input type="image" id="disc_article_submit" name="form_data[option][new]" src="{$basic.tpl_path}img/btn_go.gif" alt="___DISCARTICLE_SAVE_BUTTON___" />
 						</div>
 					</form>
 				</div>
+				
 				<div class="clear"> </div>
 			</div>
 		</div>

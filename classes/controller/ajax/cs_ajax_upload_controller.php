@@ -11,6 +11,8 @@
 		}
 
 		public function actionUpload() {
+			if(!isset($_FILES) || empty($_FILES)) exit;
+			
 			// debugging file output
 			$file = fopen("output.txt", "w+");
 			error_reporting(E_ALL);
@@ -25,7 +27,6 @@
 			
 			fputs($file, var_dump($_FILES));
 			fputs($file, var_dump($_REQUEST));
-			
 			
 			// get post data
 			$postdata = array();
