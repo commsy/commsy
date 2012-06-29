@@ -11,7 +11,7 @@
 				<a id ="action_edit" href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.content.item_id}">___COMMON_EDIT_ITEM___</a> |
 			{/if}
 			{if $detail.actions.delete}
-				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.content.item_id}">___COMMON_DELETE_ITEM___</a> |
+				<a class="open_popup" data-custom="iid: {$detail.content.item_id}, module: 'delete', delType: 'topic'" href="#"">___COMMON_DELETE_ITEM___</a> |
 			{/if}
 		</div>
 		<!-- Ende fade_in_ground -->

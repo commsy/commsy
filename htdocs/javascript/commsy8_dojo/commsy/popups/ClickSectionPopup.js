@@ -46,7 +46,7 @@ define([	"dojo/_base/declare",
 				]
 			};
 			
-			this.submit(search);
+			this.submit(search, { ref_iid: this.ref_iid });
 		},
 		
 		onPopupSubmitSuccess: function(item_id) {
@@ -60,88 +60,6 @@ define([	"dojo/_base/declare",
 				this.close();
 				this.reload(item_id);
 			}
-			
-			
-			
-			/*
-			
-			// submit picture
-			var form_object = jQuery('form#picture_upload');
-			
-			if(form_object.find('input[type="file"]').length > 0) {
-				if(form_object.find('input[type="file"]').attr('value') !== '') {
-					handle.uploadPicture(form_object, data.item_id);
-				} else {
-					handle.close();
-					
-					handle.reload(data.item_id);
-				}
-			} else {
-				handle.close();
-				
-				handle.reload(data.item_id);
-			}
-			 */
 		}
 	});
 });
-
-/*
-		
-
-		
-		
-		uploadPicture: function(form_object, item_id) {
-			var handle = this;
-			
-			jQuery('input#upload_hidden_iid').val(item_id);
-			
-			// setup ajax form
-			form_object.ajaxForm();
-			
-			// submit form
-			form_object.ajaxSubmit({
-				type:		'POST',
-				success:	function() {
-					handle.reload(item_id);
-				}
-			});
-			
-			return false;
-		},
-
-		
-		onClickSave: function(event) {
-			// check if uploadify queue is empty
-			var queue_length = jQuery('div#uploadifyQueue').children().length;
-			
-			if(queue_length == 0 || event.data.handle.uploaded == true) {
-				event.data.handle.uploaded = false;
-				
-				// if queue is empty - save item
-				event.data.handle.save(event);
-			} else {
-				var uploadify = jQuery('input#uploadify');
-				
-				// first upload files - then save
-				uploadify.uploadifyUpload();
-				
-				event.data.handle.uploaded = true;
-			}
-		},
-		
-		onUploadifyAllComplete: function() {
-			jQuery('input#popup_button_create').click();
-		},
-		
-		setupPath: function(handle, item_id) {
-			// init path class
-			this.path = new Path();
-			this.path.init(handle.cid, item_id, this.tpl_path);
-		}
-	};
-});
-
-
-
-*/

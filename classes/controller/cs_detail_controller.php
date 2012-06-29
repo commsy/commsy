@@ -416,15 +416,6 @@
 			// delete
 			if($this->_item->mayEdit($current_user) && $this->_with_modifying_actions && (!$this->_item->isA(CS_LABEL_TYPE) || !$this->_item->isSystemLabel())) {
 				$return['delete'] = true;
-
-				$return['delparams'] = $this->_environment->getCurrentParameterArray();
-				$return['delparams']['action'] = 'delete';
-				if($this->_item->getItemType() === CS_DATE_TYPE) {
-					if($this->_item->getRecurrenceId() != '' && $this->_item->getRecurrenceId() != 0) {
-						$return['delparams']['recurrence_id'] = $this->_item->getRecurrenceId();
-					}
-				}
-
 				/*
 
          if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
@@ -702,12 +693,6 @@
 			if(($item->mayEdit($current_user) || $item_manager->getExternalViewerForItem($annotated_item->getItemID(), $current_user->getUserID())) && $this->_with_modifying_actions === true) {
 				$return['edit'] = true;
 				$return['delete'] = true;
-
-				$return['deleteparams'] = $this->_environment->getCurrentParameterArray();
-				$return['deleteparams']['action'] = 'detail';
-				$return['deleteparams']['annotation_iid'] = $this->_item->getItemID();
-				$return['deleteparams']['iid'] = $annotated_item->getItemID();
-				$return['deleteparams']['annotation_action'] = 'delete';
 			} else {
 				/*
 				 * else {

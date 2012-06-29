@@ -1,4 +1,4 @@
-<?php
+	<?php
 require_once('classes/controller/ajax/popup/cs_rubric_popup_controller.php');
 
 class cs_popup_section_controller implements cs_rubric_popup_controller {
@@ -21,14 +21,13 @@ class cs_popup_section_controller implements cs_rubric_popup_controller {
         // assign template vars
         $this->assignTemplateVars();
         $current_context = $this->_environment->getCurrentContextItem();
-
+        
         $material_ref_id = $data['ref_iid'];
 
         $material_manager = $this->_environment->getMaterialManager();
-        $this->_material_item = $material_manager->getItem($material_ref_id);
-        
+        $material_item = $material_manager->getItem($material_ref_id);
 
-        $section_list = $this->_material_item->getSectionList();
+        $section_list = $material_item->getSectionList();
         $section = $section_list->getFirst();
         while($section) {
             $this->_sections[] = $section;
@@ -94,8 +93,24 @@ class cs_popup_section_controller implements cs_rubric_popup_controller {
     }
 
     public function save($form_data, $additional = array()) {
-        
+    	
+    	
+    	
+    	
         $environment = $this->_environment;
+        $user = $environment->getCurrentUserItem();
+        $material_manager = $this->_environment->getMaterialManager();
+        
+        $current_iid = $form_data['iid'];
+        if($current_iid === 'NEW') {
+        	$section_item = null;
+        } else {
+        	$section_manager = $this->_environment->getSectionManager();
+        	$section_item = $section_manager->getItem($current_iid);
+        }
+        
+        $material_ref_id = $additional['ref_iid'];
+        $material_item = $material_manager->getItem($material_ref_id);
         
         // Create new item
         if ( !isset($section_item) ) {
@@ -134,8 +149,8 @@ class cs_popup_section_controller implements cs_rubric_popup_controller {
         if (isset($form_data['number'])) {
             $section_item->setNumber($form_data['number']);
         }
-        if (isset($this->_material_item) ) {
-            $section_item->setLinkedItemID($this->_material_item->getItemID());
+        if (isset($material_item) ) {
+            $section_item->setLinkedItemID($material_item->getItemID());
         }
 
         // Set links to connected rubrics
@@ -147,40 +162,37 @@ class cs_popup_section_controller implements cs_rubric_popup_controller {
 
         // Update the material regarding the latest section informations...
         // (this takes care of saving the section itself, too)
-        $user = $environment->getCurrentUserItem();
-        //TODO: php erzeugt mit jedem aufruf die Klassen neu und daher nützt es nichts sich das 
-        //      material_item beim aufrufen des popups zu merken...
-        $this->_material_item->setModificatorItem($user);
-        if (!$this->_material_item->isNotActivated()){
-            $this->_material_item->setModificationDate($section_item->getModificationDate());
+        
+        $material_item->setModificatorItem($user);
+        if (!$material_item->isNotActivated()){
+            $material_item->setModificationDate($section_item->getModificationDate());
         }else{
-            $this->_material_item->setModificationDate($this->_material_item->getModificationDate());
+            $material_item->setModificationDate($material_item->getModificationDate());
         }
-        $section_list = $this->_material_item->getSectionList();
-
-        // files
-        $item_files_upload_to = $section_item;
-        include_once('include/inc_fileupload_edit_page_save_item.php');
+        $section_list = $material_item->getSectionList();
+        
+        // already attached files
+        $file_ids = array();
+        foreach($form_data as $key => $value) {
+        	if(mb_substr($key, 0, 5) === 'file_') {
+        		$file_ids[] = $value;
+        	}
+        }
+        
+        // this will handle already attached files as well as adding new files
+        $this->_popup_controller->getUtils()->setFilesForItem($section_item, $file_ids, $form_data["files"]);
 
         $section_list->set($section_item);
-        $this->_material_item->setSectionList($section_list);
-        $this->_material_item->setSectionSaveID($section_item->getItemId());
+        $material_item->setSectionList($section_list);
+        $material_item->setSectionSaveID($section_item->getItemId());
 
-        $external_view_array = $this->_material_item->getExternalViewerArray();
-        $this->_material_item->setExternalViewerAccounts($external_view_array);
+        $external_view_array = $material_item->getExternalViewerArray();
+        $material_item->setExternalViewerAccounts($external_view_array);
 
-        $this->_material_item->save();
-
-        // redirect
-        /*
-        cleanup_session($current_iid);
-        $params = array();
-        $params['iid'] = $material_ref_iid;
-        if (!empty($infoBox_forAutoNewVersion)) {
-            $params['autoVersion'] = 'true';
-        }
-        redirect($environment->getCurrentContextID(), 'material', 'detail', $params,'anchor'.$section_item->getItemID());
-        */
+        $material_item->save();
+        
+        // set return
+        $this->_popup_controller->setSuccessfullItemIDReturn($material_item->getItemID());
     }
 
     public function cleanup_session($current_iid) {

@@ -10,7 +10,9 @@
 				<div class="fi_mdc_item_150">
 					<h4>___COMMON_STATUS___</h4>
 					<p class="fi_mdc_item_150">
-						<img class="workflow" src="{$basic.tpl_path}img/workflow_traffic_light_{$data.light}.png" alt="{$data.title}" title="{$data.title}"> {$data.title}
+						{if !empty($data.light)}
+							<img class="workflow" src="{$basic.tpl_path}img/workflow_traffic_light_{$data.light}.png" alt="{$data.title}" title="{$data.title}"> {$data.title}
+	            		{/if}
 	            	</p>
 					<h4>___MATERIAL_WORKFLOW_VALID_UNTIL___</h4>
 					<p class="fi_mdc_item_380">

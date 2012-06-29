@@ -48,12 +48,12 @@
 					<span title="___COMMON_NO_ACTION___" class="disabled_actions">___COMMON_EDIT_ITEM___</span> |
 				{/if}
 				{if $detail.actions.edit}
-					<a id="action_edit" class="open_popup" data-custom="iid: 'NEW', module: 'section', ref_iid: {$detail.item_id}" href="#">___MATERIAL_SECTION_ADD___</a> |
+					<a id="action_edit" class="open_popup" data-custom="iid: 'NEW', module: 'section', ref_iid: {$detail.item_id}, delVersion: {$detail.content.version}" href="#">___MATERIAL_SECTION_ADD___</a> |
 				{else}
 					<span title="___COMMON_NO_ACTION___" class="disabled_actions">___MATERIAL_SECTION_ADD___</span> |
 				{/if}
 				{if $detail.actions.delete}
-					<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.item_id}">___COMMON_DELETE_ITEM___</a> |
+					<a class="open_popup" data-custom="iid: {$detail.item_id}, module: 'delete', delType: 'material'" href="#">___COMMON_DELETE_ITEM___</a> |
 				{else}
 					<span title="___COMMON_NO_ACTION___" class="disabled_actions">___COMMON_DELETE_ITEM___</span> |
 				{/if}
@@ -84,7 +84,7 @@
 
 		<div id="item_credits">
 			<div id="ic_rating">
-				{if $room.workflow}
+			{if $room.workflow && !empty($detail.content.workflow.light)}
 					<img class="workflow" src="{$basic.tpl_path}img/workflow_traffic_light_{$detail.content.workflow.light}.png" alt="{$detail.content.workflow.title}" title="{$detail.content.workflow.title}">
 				{/if}
 				{if $room.workflow && $room.assessment}
@@ -166,7 +166,12 @@
 			<!-- Start fade_in_ground -->
 			<div id="edit_expand_section_{$section@index}" class="hidden">
 				<div class="fade_in_ground_actions">
-					actions
+					{if $section.actions.edit}
+						<a class="open_popup" data-custom="module: 'section', iid: '{$section.iid}', ref_iid: {$detail.item_id}" href="#" title="___COMMON_EDIT_ITEM___">___COMMON_EDIT_ITEM___</a> |
+					{/if}
+					{if $section.actions.delete}
+						<a class="open_popup" data-custom="iid: {$section.iid}, module: 'delete', delType: 'section'" href="#" title="___COMMON_DELETE_ITEM___">___COMMON_DELETE_ITEM___</a>
+					{/if}
 				</div>
 			</div>
 			<!-- Ende fade_in_ground -->

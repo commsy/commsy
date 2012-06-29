@@ -30,7 +30,7 @@
 								<a class="open_popup" data-custom="module: 'annotation', iid: '{$detail.content.item_id}'" href="#" title="___COMMON_EDIT_ITEM___">___COMMON_EDIT_ITEM___</a> |
 							{/if}
 							{if $annotation.actions.delete}
-								<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit{params params=$annotation.actions.deleteparams}}" title="___COMMON_DELETE_ITEM___">___COMMON_DELETE_ITEM___</a>
+								<a class="open_popup" data-custom="iid: {$annotation.item_id}, module: 'delete', delType: 'annotation'" href="#" title="___COMMON_DELETE_ITEM___">___COMMON_DELETE_ITEM___</a>
 							{/if}
 						</div>
 					</div>

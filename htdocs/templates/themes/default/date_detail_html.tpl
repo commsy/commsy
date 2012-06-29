@@ -46,7 +46,7 @@
 					<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&iid={$detail.content.item_id}&date_option=1" title="___DATE_ENTER___">___DATE_ENTER___</a> |
 				{/if}
 				{if $detail.actions.delete}
-					<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail{params params=$detail.actions.delparams}" title="___COMMON_DELETE_ITEM___">___COMMON_DELETE_ITEM___</a> |
+					<a class="open_popup" data-custom="iid: {$detail.content.item_id}, module: 'delete', delType: 'date'" href="#" title="___COMMON_DELETE_ITEM___">___COMMON_DELETE_ITEM___</a> |
 				{else}
 					<span title="___COMMON_NO_ACTION___" class="disabled_actions">___COMMON_DELETE_ITEM___</span> |
 				{/if}

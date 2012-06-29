@@ -325,57 +325,21 @@
 						// reset id array
 						$session->setValue('cid' . $this->_environment->getCurrentContextID() . '_annotation_index_ids', array($annotation_item->getItemID()));
 						
-						$context = $session->getValue('annotation_history_context');
-						$module = $session->getValue('annotation_history_module');
-						$function = $session->getValue('annotation_history_function');
-						$param = $session->getValue('annotation_history_parameter');
-						
 						if(isset($annotation_item) && $annotation_item !== null) {
-							$anchor = 'anchor' . $annotation_item->getItemID();
+							$anchor = 'annotation' . $annotation_item->getItemID();
 						} else {
 							$anchor = '';
 						}
 						
+						$refId = $_POST['ref_iid'];
+						$item_manager = $this->_environment->getItemManager();
+						$type = $item_manager->getItemType($refId);
+						
 						// redirect
 						$this->cleanup_session($this->_item_id);
-						redirect($context, $module, $function, $param, $anchor);
-					}/* elseif ( $form->isDetailModeActive() ) {
-				            $form->reset();
-				            if ( !empty($_POST) ) {
-				               $form->setFormPost($_POST);
-				            }
-				            $form->prepareForm();
-				            $form->loadValues();
-				            $form->check();
-				         }*/
+						redirect($this->_environment->getCurrentContextID(), Type2Module($type), "detail", array("iid" => $refId), $anchor);
+					}
 				}
-				
-				/*
-				 * // Display form
-				      $params = array();
-				      $params['environment'] = $environment;
-				      $params['with_modifying_actions'] = true;
-				      $form_view = $class_factory->getClass(FORM_VIEW,$params);
-				      unset($params);
-				      if ($with_anchor){
-				         $form_view->withAnchor();
-				      }
-				      if (!mayEditRegular($current_user, $annotation_item)) {
-				         $form_view->warnChanger();
-				         $params = array();
-				         $params['environment'] = $environment;
-				         $params['with_modifying_actions'] = true;
-				         $params['width'] = 500;
-				         $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
-				         unset($params);
-				         $errorbox->setText($translator->getMessage('COMMON_EDIT_AS_MODERATOR'));
-				         $page->add($errorbox);
-				      }
-				      $form_view->setAction(curl($environment->getCurrentContextID(),'annotation','edit',''));
-				      $form_view->setForm($form);
-				      $form_view->setRubricConnections($rubric_connection);
-				      $page->add($form_view);
-				 */
 			}
 		}
 		

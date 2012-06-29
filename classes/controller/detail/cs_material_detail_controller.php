@@ -572,7 +572,8 @@
             		}
          		}
 		     }
-			return $return;
+		     
+		     return $return;
 		}
 
 
@@ -1131,6 +1132,8 @@
 		}
 
 		private function getSections() {
+			$current_user = $this->_environment->getCurrentUserItem();
+			
 			// cache
 			if($this->_sections !== null) return $this->_sections;
 
@@ -1212,7 +1215,8 @@
 							$entry['formal']['files'] = $files;
 						}
 					}
-
+					
+					$entry['actions']			= $this->getEditActions($section, $current_user);
 					$entry['num_files'] 		= sizeof($files);
 					$entry['moredetails'] 		= $this->getCreatorInformationAsArray($section);
 					$entry['title']				= $converter->text_as_html_short($section->getTitle());

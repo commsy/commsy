@@ -31,13 +31,11 @@ define([	"dojo/_base/declare",
 						domConstruct.place(html, query("body")[0], "first");
 						
 						this.contentNode = query("div#popup_wrapper")[0];
+						this.scrollToNodeAnimated(this.contentNode);
 						
 						this.setupTabs();
-						
 						this.setupFeatures();
-						
 						this.setupSpecific();
-						
 						this.setupAutoSave();
 						
 						// register close

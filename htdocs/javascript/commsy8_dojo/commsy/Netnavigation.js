@@ -323,7 +323,7 @@ define([	"dojo/_base/declare",
 			// get ids
 			var storeAfterItemCreation = [];
 			
-			dojo.forEach(Query("div#netnavigation_list dojo.forEach(li"), function(node, index, arr) {
+			dojo.forEach(Query("div#netnavigation_list li"), function(node, index, arr) {
 				storeAfterItemCreation.push(DomAttr.get(node, "id").substr(5));
 			});
 			
