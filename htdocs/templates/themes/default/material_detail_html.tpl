@@ -61,7 +61,7 @@
 					<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.item_id}">___COMMON_EMAIL_TO___</a> |
 				{/if}
 				{if $detail.actions.copy}
-					<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.item_id}">___COMMON_ITEM_COPY_TO_CLIPBOARD___</a> |
+					<a class="ajax_action" data-custom="iid: {$detail.item_id}, action: 'addToClipboard'" href="#">___COMMON_ITEM_COPY_TO_CLIPBOARD___</a> |
 				{else}
 					<span title="___COMMON_NO_ACTION___" class="disabled_actions">___COMMON_ITEM_COPY_TO_CLIPBOARD___</span> |
 				{/if}

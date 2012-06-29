@@ -27,11 +27,9 @@
 					<a href="#" id="tm_widgets" title="___MYWIDGETS_INDEX___">&nbsp;</a>
 					<a href="#" id="tm_mycalendar" title="___MYCALENDAR_INDEX___">&nbsp;</a>
 					<a href="#" id="tm_stack" title="___COMMON_ENTRY_INDEX___">&nbsp;</a>
-					{if ($environment.count_copies >0)}
-						<a href="" id="tm_clipboard" title="___MYAREA_MY_COPIES___">&nbsp;</a>
+					<a href="" id="tm_clipboard" title="___MYAREA_MY_COPIES___">&nbsp;</a>
+					{if ($environment.count_copies > 0)}
 						<span id="tm_clipboard_copies">{$environment.count_copies}</span>
-					{else}
-						<a href="" id="tm_clipboard" title="___MYAREA_MY_COPIES___">&nbsp;</a>
 					{/if}
 					<div class="clear"></div>
 				</div>
@@ -57,6 +55,7 @@
 		<div id="tm_dropmenu_breadcrumb" class="hidden"></div>
 		<div id="tm_dropmenu_widget_bar" class="hidden"></div>
 		<div id="tm_dropmenu_pers_bar" class="hidden"></div>
+		<div id="tm_dropmenu_clipboard" class="hidden"></div>
 		<div id="tm_dropmenu_configuration" class="hidden"></div>
 	</div>
 	</div>

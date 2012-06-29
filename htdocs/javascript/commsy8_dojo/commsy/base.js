@@ -75,9 +75,13 @@ define([	"dojo/_base/declare",
 		},
 		
 		getAttrAsObject: function(node, attrName) {
-			var attribute = DomAttr.get(node, attrName);
+			if(node) {
+				var attribute = DomAttr.get(node, attrName);
+				
+				if(attribute) return dojo.fromJson("{" + attribute + "}");
+			}
 			
-			return dojo.fromJson("{" + attribute + "}");
+			return {};
 		}
 	});
 });

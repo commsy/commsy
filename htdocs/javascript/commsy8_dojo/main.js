@@ -24,6 +24,9 @@ require([	"dojo/_base/declare",
 				require(["commsy/popups/ToggleBreadcrumb"], function(BreadcrumbPopup) {
 					var handler = new BreadcrumbPopup(query("a#tm_bread_crumb")[0], query("div#tm_menus div#tm_dropmenu_breadcrumb")[0]);
 				});
+				require(["commsy/popups/ToggleClipboard"], function(ClipboardPopup) {
+					var handler = new ClipboardPopup(query("a#tm_clipboard")[0], query("div#tm_menus div#tm_dropmenu_clipboard")[0]);
+				});
 				
 				// setup rubric forms
 				query("a.open_popup").forEach(Lang.hitch(this, function(node, index, arr) {
@@ -36,6 +39,16 @@ require([	"dojo/_base/declare",
 						var handler = new ClickPopup(node, customObject);
 					});
 				}));
+				
+				// ajax actions
+				require(["commsy/AjaxActions"], function(AjaxActions) {
+					var aNodes = query("a.ajax_action");
+					
+					if(aNodes) {
+						var handler = new AjaxActions();
+						handler.setup(aNodes);
+					}
+				});
 				
 				// ckeditor
 				query("div.ckeditor").forEach(function(node, index, arr) {

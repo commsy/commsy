@@ -624,11 +624,14 @@
 			// break the reference
 			unset($tag);
 		}
-
+		
+		public function getCopyRubrics() {
+			return array(CS_ANNOUNCEMENT_TYPE, CS_DATE_TYPE, CS_DISCUSSION_TYPE, CS_MATERIAL_TYPE, CS_TODO_TYPE);
+		}
 
 		public function getCopyCount(){
 			$item_id_count = 0;
-			$rubric_copy_array = array(CS_ANNOUNCEMENT_TYPE, CS_DATE_TYPE, CS_DISCUSSION_TYPE, CS_MATERIAL_TYPE,CS_TODO_TYPE);
+			$rubric_copy_array = $this->getCopyRubrics();
 			$session = $this->_environment->getSessionItem();
 			foreach ($rubric_copy_array as $rubric){
 			   $item_id_count = $item_id_count + count($session->getValue($rubric.'_clipboard'));
