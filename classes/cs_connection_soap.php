@@ -2908,9 +2908,8 @@ class cs_connection_soap {
             $xml .= "<date_item>\n";
             $xml .= "<date_id><![CDATA[".$date_item->getItemID()."]]></date_id>\n";
             $xml .= "<date_title><![CDATA[".$date_item->getTitle()."]]></date_title>\n";
-            // 2001-03-24 10:45:32 +0600
-            $xml .= "<date_starting_date><![CDATA[".$date_item->getStartingDay()."]]></date_starting_date>\n";
-            $xml .= "<date_ending_date><![CDATA[".$date_item->getEndingDay()."]]></date_ending_date>\n";
+            $xml .= "<date_starting_date><![CDATA[".$date_item->getDateTime_start()."]]></date_starting_date>\n";
+            $xml .= "<date_ending_date><![CDATA[".$date_item->getDateTime_end()."]]></date_ending_date>\n";
             $reader = $reader_manager->getLatestReaderForUserByID($date_item->getItemID(), $user_item->getItemID());
             if ( empty($reader) ) {
                $xml .= "<date_read><![CDATA[new]]></date_read>\n";
@@ -2940,19 +2939,15 @@ class cs_connection_soap {
          $user_manager = $this->_environment->getUserManager();
          $user_item = $user_manager->getItemByUserIDAuthSourceID($user_id, $auth_source_id);
          $this->_environment->setCurrentUser($user_item);
-         
          $reader_manager = $this->_environment->getReaderManager();
          $noticed_manager = $this->_environment->getNoticedManager();
-         
          $dates_manager = $this->_environment->getDatesManager();
          $date_item = $dates_manager->getItem($item_id);
-         
          $xml .= "<date_item>\n";
          $xml .= "<date_id><![CDATA[".$date_item->getItemID()."]]></date_id>\n";
          $xml .= "<date_title><![CDATA[".$date_item->getTitle()."]]></date_title>\n";
-         // 2001-03-24 10:45:32 +0600
-         $xml .= "<date_starting_date><![CDATA[".$date_item->getStartingDay()."]]></date_starting_date>\n";
-         $xml .= "<date_ending_date><![CDATA[".$date_item->getEndingDay()."]]></date_ending_date>\n";
+         $xml .= "<date_starting_date><![CDATA[".$date_item->getDateTime_start()."]]></date_starting_date>\n";
+         $xml .= "<date_ending_date><![CDATA[".$date_item->getDateTime_end()."]]></date_ending_date>\n";
          $xml .= "<date_place><![CDATA[".$date_item->getPlace()."]]></date_place>\n";
          $temp_description = $date_item->getDescription();
          $temp_description = html_entity_decode($date_item->getDescription());
@@ -2960,7 +2955,6 @@ class cs_connection_soap {
          $temp_description = str_ireplace('<br />', "\n", $temp_description);
          $temp_description = preg_replace('~<!-- KFC TEXT [a-z0-9]* -->~u','',$temp_description);
          $xml .= "<date_description><![CDATA[".$temp_description."]]></date_description>\n";
-         
          $reader = $reader_manager->getLatestReaderForUserByID($date_item->getItemID(), $user_item->getItemID());
          if ( empty($reader) ) {
             $xml .= "<date_read><![CDATA[new]]></date_read>\n";
@@ -2969,31 +2963,21 @@ class cs_connection_soap {
          } else {
             $xml .= "<date_read><![CDATA[]]></date_read>\n";
          }
-         
          $xml .= "</date_item>\n";
          $xml = $this->_encode_output($xml);
-         #debugToFile($xml);
-         
-         //Set Read
-         #$reader_manager->getLatestReaderByIDArray(array($item_id));
-         #$reader = $reader_manager->getLatestReader($date_item->getItemID());
          $reader = $reader_manager->getLatestReaderForUserByID($date_item->getItemID(), $user_item->getItemID());
          if ( empty($reader) or $reader['read_date'] < $date_item->getModificationDate() ) {
             $reader_manager->markRead($date_item->getItemID(),0);
          }
-         //Set Noticed
-         #$noticed_manager->getLatestNoticedByIDArray(array($item_id));
-         #$noticed = $noticed_manager->getLatestNoticed($date_item->getItemID());
          $noticed = $noticed_manager->getLatestNoticedForUserByID($date_item->getItemID(), $user_item->getItemID());
          if ( empty($noticed) or $noticed['read_date'] < $date_item->getModificationDate() ) {
             $noticed_manager->markNoticed($date_item->getItemID(),0);
          }
-         
          return $xml;
       }
    }
    
-   public function saveDate($session_id, $item_id, $title, $place, $description) {
+   public function saveDate($session_id, $item_id, $title, $place, $description, $startingDate, $startingTime, $endingDate, $endingTime) {
       include_once('functions/development_functions.php');
       if($this->_isSessionValid($session_id)) {
          $dates_manager = $this->_environment->getDatesManager();
@@ -3001,6 +2985,12 @@ class cs_connection_soap {
          $date_item->setTitle($title);
          $date_item->setPlace($place);
          $date_item->setDescription(str_ireplace("\n", '<br />', $description));
+         $date_item->setStartingDay($startingDate);
+         $date_item->setStartingTime($startingTime);
+         $date_item->setDateTime_start($startingDate.' '.$startingTime);
+         $date_item->setEndingDay($endingDate);
+         $date_item->setEndingTime($endingTime);
+         $date_item->setDateTime_end($endingDate.' '.$endingTime);
          $date_item->save();
       }
    }

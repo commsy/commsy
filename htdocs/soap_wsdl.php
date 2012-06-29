@@ -360,6 +360,12 @@
   <part name='session_id' type='xsd:string'/>
   <part name='item_id' type='xsd:string'/>
   <part name='title' type='xsd:string'/>
+  <part name='place' type='xsd:string'/>
+  <part name='description' type='xsd:string'/>
+  <part name='startingDate' type='xsd:string'/>
+  <part name='startingTime' type='xsd:string'/>
+  <part name='endingDate' type='xsd:string'/>
+  <part name='endingTime' type='xsd:string'/>
 </message>
 <message name='saveDateOUT'>
   <part name='xml_list' type='xsd:string'/>
