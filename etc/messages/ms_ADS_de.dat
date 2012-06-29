@@ -1,0 +1,15 @@
+<?php
+$message["ADS_ADD_NEXT_NORMAL_SPONSOR_BUTTON"]["de"] = "Weiteren Sponsor hinzufügen";
+$message["ADS_AD_NORMAL_SPONSOR_BUTTON"]["de"] = "Sponsor hinzufügen";
+$message["ADS_COMMON_SPONSOR_FORM_ELEMENT_HEADLINE"]["de"] = "Überschrift";
+$message["ADS_CONFIGURATION_FORM_NORMAL_SPONSORS_HEADLINE"]["de"] = "Sponsoren";
+$message["ADS_DELETE_BUTTON"]["de"] = "löschen";
+$message["ADS_DOWN_BUTTON"]["de"] = "nach unten";
+$message["ADS_FORM_ELEMENT_TITLE_SPONSOR_NO"]["de"] = "Sponsor %1";
+$message["ADS_IMAGE_FORM_ELEMENT_TITLE"]["de"] = "Bild";
+$message["ADS_SHOW_ADS_CHOICE_FORM_TITLE"]["de"] = "Sponsoren anzeigen?";
+$message["ADS_SHOW_AMAZON_ADS_CHOICE_FORM_TITLE"]["de"] = "Amazon anzeigen?";
+$message["ADS_SHOW_GOOGLE_ADS_CHOICE_FORM_TITLE"]["de"] = "Werbung anzeigen?";
+$message["ADS_UP_BUTTON"]["de"] = "nach oben";
+$message["ADS_URL_FORM_ELEMENT_TITLE"]["de"] = "Bild-URL";
+?>
