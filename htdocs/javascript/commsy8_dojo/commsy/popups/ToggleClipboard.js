@@ -29,55 +29,18 @@ define([	"dojo/_base/declare",
 		},
 		
 		setupSpecific: function() {
+			// setup clipboard functions
+			require(["commsy/Clipboard"], Lang.hitch(this, function(Clipboard) {
+				var clipboard = new Clipboard();
+				clipboard.init(this.cid, this.from_php.template.tpl_path);
+			}));
 		},
 		
 		onPopupSubmit: function(customObject) {
-			var part = customObject.part;
-			
-			// setup data to send via ajax
-			if(part === "user" || part === "newsletter") {
-				var search = {
-					tabs: [
-					    { id: part }
-					],
-					nodeLists: []
-				};
-			} else if(part === "account") {
-				var search = {
-					tabs: [],
-					nodeLists: [
-						{ query: Query("input[name='form_data[forname]']", this.contentNode) },
-						{ query: Query("input[name='form_data[surname]']", this.contentNode) },
-						{ query: Query("input[name='form_data[user_id]']", this.contentNode) },
-						{ query: Query("input[name='form_data[old_password]']", this.contentNode) },
-						{ query: Query("input[name='form_data[new_password]']", this.contentNode) },
-						{ query: Query("input[name='form_data[new_password_confirm]']", this.contentNode) },
-						{ query: Query("select[name='form_data[language]']", this.contentNode) },
-						{ query: Query("input[name='form_data[upload]']", this.contentNode) },
-						{ query: Query("input[name='form_data[auto_save]']", this.contentNode) }
-					]
-				};
-			} else if(part === "account_merge") {
-				var search = {
-					tabs: [],
-					nodeLists: [
-						{ query: Query("input[name='form_data[merge_user_id]']", this.contentNode) },
-						{ query: Query("input[name='form_data[merge_user_password]']", this.contentNode) }
-					]
-				};
-			} else {
-				// account delete
-				var search = {
-					tabs: [],
-					nodeLists: []
-				};
-			}
-			
-			this.submit(search, { part: part });
+			// this popup will not be submitted
 		},
 		
 		onPopupSubmitSuccess: function(item_id) {
-			this.close();
 		}
 	});
 });

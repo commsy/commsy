@@ -30,7 +30,7 @@
 					{/if}
                 </div>
                 <h2>
-                	___COMMON_{$rubric@key|upper}_INDEX___
+                	<a href="commsy.php?cid={$environment.cid}&mod={$rubric@key}&fct=index">___COMMON_{$rubric@key|upper}_INDEX___</a>
                 	<span>
                 		({$rubric.message_tag})
                 	</span>

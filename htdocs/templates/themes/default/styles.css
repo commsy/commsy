@@ -384,6 +384,13 @@ div#tag_tree input {
     height: 250px;
     }
 
+#crt_col_left_full {
+    width: 916px;
+    float: left;
+    overflow: auto;
+    height: 400px;
+    }
+
 div#accounts #crt_col_left {
 	height: 500px;
 	}

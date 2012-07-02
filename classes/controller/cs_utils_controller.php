@@ -816,5 +816,60 @@
 			// store new css file
 			file_put_contents($path, $css_file);
 		}
+		
+		public function getLogoInformationForType($type) {
+			$translator = $this->_environment->getTranslationObject();
+				
+			$information = array();
+				
+			switch(mb_strtoupper($type, 'UTF-8')) {
+				case 'ANNOUNCEMENT':
+					$information["text"] = $translator->getMessage('COMMON_ONE_ANNOUNCEMENT');
+					$information["img"] = 'announcement.png';
+					break;
+				case 'DATE':
+					$information["text"] = $translator->getMessage('COMMON_ONE_DATE');
+					$information["img"] = 'date.png';
+					break;
+				case 'DISCUSSION':
+					$information["text"] = $translator->getMessage('COMMON_ONE_DISCUSSION');
+					$information["img"] = 'discussion.png';
+					break;
+				case 'GROUP':
+					$information["text"] = $translator->getMessage('COMMON_ONE_GROUP');
+					$information["img"] = 'group.png';
+					break;
+				case 'INSTITUTION':
+					$information["text"] = $translator->getMessage('COMMON_ONE_INSTITUTION');
+					$information["img"] = '';
+					break;
+				case 'MATERIAL':
+					$information["text"] = $translator->getMessage('COMMON_ONE_MATERIAL');
+					$information["img"] = 'material.png';
+					break;
+				case 'PROJECT':
+					$information["text"] = $translator->getMessage('COMMON_ONE_PROJECT');
+					$information["img"] = '';
+					break;
+				case 'TODO':
+					$information["text"] = $translator->getMessage('COMMON_ONE_TODO');
+					$information["img"] = 'todo.png';
+					break;
+				case 'TOPIC':
+					$information["text"] = $translator->getMessage('COMMON_ONE_TOPIC');
+					$information["img"] = 'topic.png';
+					break;
+				case 'USER':
+					$information["text"] = $translator->getMessage('COMMON_ONE_USER');
+					$information["img"] = 'user.png';
+					break;
+				default:
+					$information["text"] = $translator->getMessage('COMMON_MESSAGETAB_ERROR');
+					$information["img"] = '';
+					break;
+			}
+				
+			return $information;
+		}
 	}
 ?>

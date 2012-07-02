@@ -18,24 +18,34 @@
 						<div id="popup_accounts">
 							<div id="content_row_two_max">
 			                    <div id="crt_content">
-			                        <div id="crt_col_left">
+			                        <div id="crt_col_left_full">
+			                        
+			                        	<div class="table_head">
+		                            		<h3 class="pop_col_25">&nbsp;</h3>
+		                            		<h3 class="pop_col_270">___COMMON_TITLE___</h3>
+		                            		<h3 class="pop_col_150">___COMMON_RUBRIC___</h3>
+		                            		<h3 class="pop_col_270">___COMMON_MODIFIED_BY___</h3>
+		                            		<h3 class="pop_col_150">___COMMON_MODIFIED_AT___</h3>
+		                            		
+		                            		<div class="clear"></div>
+		                            	</div>
+		                            	
 			                            <div id="crt_row_area">
-			                            
-			                            	<div class="popup_row_odd">
-			                            		<div class="pop_col_25">
-			                            			<input type="checkbox" />
-			                            		</div>
-			                            		<div class="pop_col_270"></div>
-			                            		<div class="pop_col_150"></div>
-			                            		<div class="pop_col_150"></div>
-			                            		
-			                            		<div class="clear"></div>
-			                            	</div>
-			                            	
 			                            </div>
 			                        </div>
 			                        
 			                        <div class="clear"> </div>
+			                        
+			                        <div>
+			                        	<select id="list_action" size="1">
+			                        		<option value="-1">*___COMMON_LIST_ACTION_NO___</option>
+			                        		<option disabled="disabled">------------------------------</option>
+			                        		<option selected="selected" value="paste">___CLIPBOARD_PASTE_BUTTON___</option>
+			                        		<option value="delete">___CLIPBOARD_DELETE_BUTTON___</option>
+			                        	</select>
+
+			                        	<input id="list_action_submit" type="submit" class="popup_button" value="___COMMON_LIST_ACTION_BUTTON_GO___" />
+			                        </div>
 			                    </div>
 			                </div>
 			            </div>
