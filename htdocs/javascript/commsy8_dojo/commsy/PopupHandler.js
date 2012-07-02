@@ -6,7 +6,9 @@ define([	"dojo/_base/declare",
         	"dojo/dom-class",
         	"dojo/dom-attr",
         	"dojo/dom-construct",
-        	"dojo/dom-style"], function(declare, BaseClass, on, lang, query, dom_class, dom_attr, domConstruct, domStyle) {
+        	"dojo/dom-style",
+        	"dojo/has",
+        	"dojo/_base/sniff"], function(declare, BaseClass, on, lang, query, dom_class, dom_attr, domConstruct, domStyle, Has) {
 	return declare(BaseClass, {
 		is_open:				false,
 		contentNode:			null,
@@ -66,7 +68,7 @@ define([	"dojo/_base/declare",
 							this.featureHandles[feature][index] = new Tree({
 								followUrl:		false,
 								checkboxes:		true,
-								expanded:		true,
+								expanded:		(Has("ie") <= 8) ? false : true,
 								item_id:		this.item_id
 							});
 							this.featureHandles[feature][index].setupTree(node);
