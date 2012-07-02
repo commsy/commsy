@@ -370,6 +370,15 @@
 <message name='saveDateOUT'>
   <part name='xml_list' type='xsd:string'/>
 </message>
+<message name='deleteDateIN'>
+  <part name='session_id' type='xsd:string'/>
+  <part name='item_id' type='xsd:string'/>
+  <part name='title' type='xsd:string'/>
+</message>
+<message name='deleteDateOUT'>
+  <part name='xml_list' type='xsd:string'/>
+</message>
+
 
 <portType name='CommSyPortType'>
   <operation name='getGuestSession'>
@@ -564,6 +573,10 @@
   <operation name='saveDate'>
     <input message='tns:saveDateIN'/>
     <output message='tns:saveDateOUT'/>
+  </operation>
+  <operation name='deleteDate'>
+    <input message='tns:deleteDateIN'/>
+    <output message='tns:deleteDateOUT'/>
   </operation>
 </portType>
 
@@ -1090,7 +1103,18 @@
       </output>
   </operation>
   <operation name='saveDate'>
-    <soap:operation soapAction='urn:xmethodsCommSy#getDateDetails'/>
+    <soap:operation soapAction='urn:xmethodsCommSy#saveDate'/>
+      <input>
+        <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+          encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+      </input>
+      <output>
+        <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+          encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+      </output>
+  </operation>
+  <operation name='deleteDate'>
+    <soap:operation soapAction='urn:xmethodsCommSy#deleteDate'/>
       <input>
         <soap:body use='encoded' namespace='urn:xmethodsCommSy'
           encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>

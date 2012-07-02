@@ -2963,6 +2963,11 @@ class cs_connection_soap {
          } else {
             $xml .= "<date_read><![CDATA[]]></date_read>\n";
          }
+         if($date_item->mayEdit($user_item)){
+            $xml .= "<date_edit><![CDATA[edit]]></date_edit>\n";
+         } else {
+            $xml .= "<date_edit><![CDATA[non_edit]]></date_edit>\n";
+         }
          $xml .= "</date_item>\n";
          $xml = $this->_encode_output($xml);
          $reader = $reader_manager->getLatestReaderForUserByID($date_item->getItemID(), $user_item->getItemID());
@@ -2977,11 +2982,29 @@ class cs_connection_soap {
       }
    }
    
-   public function saveDate($session_id, $item_id, $title, $place, $description, $startingDate, $startingTime, $endingDate, $endingTime) {
+   public function saveDate($session_id, $context_id, $item_id, $title, $place, $description, $startingDate, $startingTime, $endingDate, $endingTime) {
       include_once('functions/development_functions.php');
       if($this->_isSessionValid($session_id)) {
+         $this->_environment->setSessionID($session_id);
+         $session = $this->_environment->getSessionItem();
+         $this->_environment->setCurrentContextID($context_id);
+         $user_id = $session->getValue('user_id');
+         $auth_source_id = $session->getValue('auth_source');
+         $user_manager = $this->_environment->getUserManager();
+         $user_item = $user_manager->getItemByUserIDAuthSourceID($user_id, $auth_source_id);
+         $this->_environment->setCurrentUser($user_item);
+         
          $dates_manager = $this->_environment->getDatesManager();
-         $date_item = $dates_manager->getItem($item_id);
+         debugToFile($item_id);
+         if($item_id != 'NEW'){
+            $date_item = $dates_manager->getItem($item_id);
+         } else {
+            debugToFile('is NEW');
+            $date_item = $dates_manager->getNewItem();
+            $date_item->setContextID($context_id);
+            $date_item->setCreatorItem($user_item);
+            $date_item->setCreationDate(getCurrentDateTimeInMySQL());
+         }
          $date_item->setTitle($title);
          $date_item->setPlace($place);
          $date_item->setDescription(str_ireplace("\n", '<br />', $description));
@@ -2992,6 +3015,12 @@ class cs_connection_soap {
          $date_item->setEndingTime($endingTime);
          $date_item->setDateTime_end($endingDate.' '.$endingTime);
          $date_item->save();
+         
+         $reader_manager = $this->_environment->getReaderManager();
+         $noticed_manager = $this->_environment->getNoticedManager();
+         $reader = $reader_manager->getLatestReaderForUserByID($date_item->getItemID(), $user_item->getItemID());
+         $reader_manager->markRead($date_item->getItemID(),0);
+         $noticed_manager->markNoticed($date_item->getItemID(),0);
       }
    }
    
@@ -3001,5 +3030,15 @@ class cs_connection_soap {
          
       }
    }
+   
+   public function deleteDate($session_id, $context_id, $item_id) {
+      include_once('functions/development_functions.php');
+      if($this->_isSessionValid($session_id)) {
+         $dates_manager = $this->_environment->getDatesManager();
+         $date_item = $dates_manager->getItem($item_id);
+         $date_item->delete();
+      }
+   }
+   
 }
 ?>
