@@ -167,7 +167,7 @@
 	           				{$h = $room.sidebar_configuration.hidden.buzzwords}
 							<div class="portlet_rc">
 								{if $room.sidebar_configuration.editable.buzzwords}
-									<a id="edit_buzzwords" href="" title="___COMMON_EDIT___" class="btn_head_rc2"><img src="{$basic.tpl_path}img/btn_edit_rc.gif" alt="___COMMON_EDIT___" /></a>
+									<a id="edit_buzzwords" class="btn_head_rc2 open_popup" data-custom="module: 'buzzwords'" href="#" title="___COMMON_EDIT___"><img src="{$basic.tpl_path}img/btn_edit_rc.gif" alt="___COMMON_EDIT___" /></a>
 								{/if}
 		<!--
 								<a href="" title="{if $h}___COMMON_SHOW___{else}___COMMON_HIDE___{/if}" class="btn_head_rc">

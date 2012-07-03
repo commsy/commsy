@@ -10,32 +10,95 @@
 			parent::__construct($environment);
 		}
 		
-		public function actionCreate() {
+		public function actionCreateNewBuzzword() {
 			if($this->accessGranted()) {
-				$buzzword = $this->_data['form_data']['buzzword'];
-				
 				$current_user = $this->_environment->getCurrentUserItem();
 				
+				$buzzword = trim($this->_data["buzzword"]);
+				
 				// check if empty
-				if(trim($buzzword) === '') {
-					echo json_encode('empty');
-					return false;
+				if(empty($buzzword)) {
+					$this->setErrorReturn("108", "buzzword is empty", array());
+					echo $this->_return;
+				} else {
+					// get current buzzwords and check for duplicates
+					$currBuzzwords = $this->getUtils()->getBuzzwords(true);
+					
+					$isDuplicate = false;
+					foreach($currBuzzwords as $currBuzzword) {
+							
+						if($currBuzzword["name"] === $buzzword) {
+							$isDuplicate = true;
+							break;
+						}
+					}
+					
+					// if duplicate return an error, otherwise create new buzzword
+					if($isDuplicate) {
+						$this->setErrorReturn("107", "buzzword already exists", array());
+						echo $this->_return;
+					} else {
+						$buzzword_manager = $this->_environment->getLabelManager();
+							
+						$buzzword_item = $buzzword_manager->getNewItem();
+						$buzzword_item->setLabelType('buzzword');
+						$buzzword_item->setName($buzzword);
+						$buzzword_item->setContextID($this->_environment->getCurrentContextID());
+						$buzzword_item->setCreatorItem($current_user);
+						$buzzword_item->setCreationDate(getCurrentDateTimeInMySQL());
+						$buzzword_item->save();
+							
+						$this->setSuccessfullDataReturn(array("id" => $buzzword_item->getItemID()));
+						echo $this->_return;
+					}
 				}
-				
-				$buzzword_manager = $this->_environment->getLabelManager();
-				
-				$buzzword_item = $buzzword_manager->getNewItem();
-				$buzzword_item->setLabelType('buzzword');
-				$buzzword_item->setName($buzzword);
-				$buzzword_item->setContextID($this->_environment->getCurrentContextID());
-				$buzzword_item->setCreatorItem($current_user);
-				$buzzword_item->setCreationDate(getCurrentDateTimeInMySQL());
-				$buzzword_item->save();
-				
-				echo json_encode('success');
-				return true;
 			}
 		}
+		
+		public function actionMergeBuzzwords() {
+			if($this->accessGranted()) {
+				$buzzwordIdOne = $this->_data["idOne"];
+				$buzzwordIdTwo = $this->_data["idTwo"];
+				
+				// check if both are different from each other
+				if($buzzwordIdOne == $buzzwordIdTwo) {
+					$this->setErrorReturn("108", "can't merge two buzzwords with same id", array());
+					echo $this->_return;
+				} else {
+					// merge them
+					$link_manager = $this->_environment->getLinkManager();
+					$link_manager->combineBuzzwords($buzzwordIdOne, $buzzwordIdTwo);
+					
+					// get both
+					$buzzword_manager = $this->_environment->getLabelManager();
+					$buzzwordItemOne = $buzzword_manager->getItem($buzzwordIdOne);
+					$buzzwordItemTwo = $buzzword_manager->getItem($buzzwordIdTwo);
+					
+					// change name of item one, save it and delete the item two
+					$buzzwordOne = $buzzwordItemOne->getName();
+					$buzzwordTwo = $buzzwordItemTwo->getName();
+					$newName = $buzzwordOne. "/" . $buzzwordTwo;
+					$buzzwordItemOne->setName($newName);
+					$buzzwordItemOne->setModificationDate(getCurrentDateTimeInMySQL());
+					$buzzwordItemOne->save();
+					$buzzwordItemTwo->delete();
+					
+					$this->setSuccessfullDataReturn(array(
+						"buzzwordOne" => $buzzwordOne,
+						"buzzwordTwo" => $buzzwordTwo,
+						"newBuzzword" => $newName)
+					);
+					echo $this->_return;
+				}
+			}
+		}
+		
+		
+		
+		
+		
+		
+		
 		
 		public function actionDelete() {
 			if($this->accessGranted()) {
@@ -293,61 +356,11 @@ if ( !empty($_GET['module']) ) {
       }
       redirect($environment->getCurrentContextID(),'buzzwords', 'edit', $params);
    }elseif (!empty($command) and isOption($command, $translator->getMessage('BUZZWORDS_NEW_BUTTON'))){
-      if (isset($_POST['new_buzzword']) and !empty($_POST['new_buzzword'])){
-         $buzzword_manager = $environment->getLabelManager();
-         $buzzword_item = $buzzword_manager->getNewItem();
-         $buzzword_item->setLabelType('buzzword');
-         $buzzword_item->setName($_POST['new_buzzword']);
-         $buzzword_item->setContextID($environment->getCurrentContextID());
-         $user = $environment->getCurrentUserItem();
-         $buzzword_item->setCreatorItem($user);
-         $buzzword_item->setCreationDate(getCurrentDateTimeInMySQL());
-         $buzzword_item->save();
-         $params = array();
-         $params['focus_element_onload'] = 'new_buzzword';
-         redirect($environment->getCurrentContextID(), 'buzzwords', 'edit', $params);
-      }
+      
    }elseif (!empty($command) and isOption($command, $translator->getMessage('BUZZWORDS_COMBINE_BUTTON'))){
-      if ( (isset($_POST['sel1']) and !empty($_POST['sel1'])) and
-           (isset($_POST['sel2']) and !empty($_POST['sel2'])) and
-           (isset($_POST['sel1']) and isset($_POST['sel2']) and $_POST['sel1'] !=$_POST['sel2'])
-           ){
-         $link_manager = $environment->getLinkManager();
-         $link_manager->combineBuzzwords($_POST['sel1'],$_POST['sel2']);
-         $buzzword_manager = $environment->getLabelManager();
-         $buzzword_item1 = $buzzword_manager->getItem($_POST['sel1']);
-         $buzzword_item2 = $buzzword_manager->getItem($_POST['sel2']);
-         $buzzword_item1->setName($buzzword_item1->getName().'/'.$buzzword_item2->getName());
-         $buzzword_item1->setModificationDate(getCurrentDateTimeInMySQL());
-         $buzzword_item1->save();
-         $buzzword_item2->delete();
-         
-         $params = array();
-         $params['focus_element_onload'] = 'sel1';
-         redirect($environment->getCurrentContextID(), 'buzzwords', 'edit', $params);
-      }
+      
    }
 
-   // Display form
-   $params = array();
-   $params['environment'] = $environment;
-   $params['with_modifying_actions'] = true;
-   $form_view = $class_factory->getClass(FORM_VIEW,$params);
-   unset($params);
-   $form_view->setWithoutDescription();
-   $form_view->setAction(curl($environment->getCurrentContextID(),'buzzwords','edit',''));
-   
-   if (isset($_GET['focus_element_onload'])) {
-      if (is_numeric($_GET['focus_element_onload'])) {
-         // it would be a lot nicer if this concatenation could be done before refreshing
-         // but the '#' breaks the url.
-         $form_view->setFocusElementOnLoad('buzzword#'.$_GET['focus_element_onload']);
-      } else {
-         $form_view->setFocusElementOnLoad($_GET['focus_element_onload']);
-      }
-   }
-
-   $form_view->setForm($form);
-   $page->add($form_view);
+  
 				 */
 				 ?>

@@ -16,55 +16,10 @@ class cs_popup_buzzwords_controller implements cs_popup_controller {
 	
 	public function initPopup($data) {
 		// assign template vars
-		$this->assignTemplateVars();
+		//$this->assignTemplateVars();
 	}
 	
-	public function getFieldInformation() {
-		return array(
-			array(	'name'		=> 'title',
-					'type'		=> 'text',
-					'mandatory' => true),
-			array(	'name'		=> 'description',
-					'type'		=> 'text',
-					'mandatory'	=> false)
-		);
-	}
-	
-	private function assignTemplateVars() {
-		$current_user = $this->_environment->getCurrentUserItem();
-		$current_context = $this->_environment->getCurrentContextItem();
+	public function save($form_data, $additional = array()) {
 		
-		// general information
-		$general_information = array();
-		
-		// max upload size
-		$val = ini_get('upload_max_filesize');
-		$val = trim($val);
-		$last = $val[mb_strlen($val) - 1];
-		switch($last) {
-			case 'k':
-			case 'K':
-				$val *= 1024;
-				break;
-			case 'm':
-			case 'M':
-				$val *= 1048576;
-				break;
-		}
-		$meg_val = round($val / 1048576);
-		$general_information['max_upload_size'] = $meg_val;
-		
-		$this->_popup_controller->assign('popup', 'general', $general_information);
-		
-		// user information
-		$user_information = array();
-		$user_information['fullname'] = $current_user->getFullName();
-		$this->_popup_controller->assign('popup', 'user', $user_information);
-		
-		
-		// config information
-		$config_information = array();
-		$config_information['with_activating'] = $current_context->withActivatingContent();
-		$this->_popup_controller->assign('popup', 'config', $config_information);
 	}
 }

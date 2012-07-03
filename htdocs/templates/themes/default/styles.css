@@ -87,6 +87,10 @@ id and class selectors
 	width: auto !important;
 	}
 
+.overflow_auto {
+	overflow: auto;
+}
+
 /*
 ----------------------------------------------------------------------
 frame and header
