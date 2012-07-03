@@ -106,6 +106,8 @@ define([	"dojo/_base/declare",
 		},
 		
 		onActionSubmit: function() {
+			var contentObject = Query("#popup_accounts #crt_row_area")[0];
+			
 			// get current action
 			var action = DomAttr.get(Query("select#list_action")[0], "value");
 			
@@ -117,10 +119,17 @@ define([	"dojo/_base/declare",
 						location.href = response.url;
 					} else if(action === "delete") {
 						// remove entries from list
+						var numEntries = 0;
 						dojo.forEach(Query("input[id^='item_']", contentObject), Lang.hitch(this, function(node, index, arr) {
-							var rowNode = new dojo.NodeList(node).parents("div[class^='pop_row_']")[0];
-							DomConstruct.destroy(rowNode);
+							if(BaseArray.indexOf(this.store.selected_ids, DomAttr.get(node, "id").substr(5)) !== -1) {
+								var rowNode = new dojo.NodeList(node).parents("div[class^='pop_row_']")[0];
+								DomConstruct.destroy(rowNode);
+							} else {
+								numEntries++;
+							}
 						}));
+						
+						DomAttr.set(Query("span#tm_clipboard_copies")[0], "innerHTML", numEntries);
 					}
 				}),
 				

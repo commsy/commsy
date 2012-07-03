@@ -20,7 +20,7 @@
 		<div id="edit_expand" {if !$detail.is_action_bar_visible}class="hidden"{/if}>
 			<div class="fade_in_ground_actions">
 				{if $detail.actions.edit}
-					<a id="action_edit" class="open_popup" data-custom="iid: {$detail.content.item_id}, module: '{$environment.module}'" href="#"">___COMMON_EDIT_ITEM___</a> |
+					<a id="action_edit" class="open_popup" data-custom="iid: {$detail.content.item_id}, module: '{$environment.module}'" href="#">___COMMON_EDIT_ITEM___</a> |
 				{else}
 					<span title="___COMMON_NO_ACTION___" class="disabled_actions">___COMMON_EDIT_ITEM___</span> |
 				{/if}
@@ -159,7 +159,7 @@
 			<div id="edit_expand_article_{$article@index}" class="hidden">
 				<div class="fade_in_ground_actions">
 					{if $article.actions.edit}
-						<a id="action_edit" class="open_popup" data-custom="iid: {$article.item_id}, module: '{$article.actions.edit_module}'" href="#">___COMMON_EDIT_ITEM___</a> |
+						<a id="action_edit" class="open_popup" data-custom="iid: {$article.item_id}, module: 'discarticle'" href="#">___COMMON_EDIT_ITEM___</a> |
 					{/if}
 					{if $article.actions.delete}
 						<a class="open_popup" data-custom="iid: {$article.item_id}, module: 'delete', delType: 'discarticle'" href="#">___COMMON_DELETE_ITEM___</a>
@@ -261,22 +261,22 @@
 							<input type="hidden" value="{$detail.item_id}" name="discussion_id"/>
 							<input type="hidden" value="1" name="ref_position"/>
 							<input id="pn_title" type="text" name="form_data[title]" />
+	
 							<div class="editor_content">
 								<div id="description" class="ckeditor"></div>
-
-								<div id="file_finished"></div>
-								<input id="uploadify" name="uploadify" type="file" />
-
-								<div>
-									<a id="uploadify_doUpload">
-										<img src={$basic.tpl_path}img/uploadify/button_upload_{$environment.lang}.png />
-									</a>
-									<a id="uploadify_clearQuery">
-										<img src={$basic.tpl_path}img/uploadify/button_abort_{$environment.lang}.png />
-									</a>
-								</div>
-								<input type="image" id="disc_article_submit" name="form_data[option][new]" src="{$basic.tpl_path}img/btn_go.gif" alt="___DISCARTICLE_SAVE_BUTTON___" />
 							</div>
+							
+							{*
+							<div id="files_finished"></div>
+							
+							<div class="uploader">
+							   <input class="fileSelector"></input>
+							   
+							   <div class="fileList"></div>
+							</div>
+							*}
+							
+							<input type="image" id="disc_article_submit" name="form_data[option][new]" src="{$basic.tpl_path}img/btn_go.gif" alt="___DISCARTICLE_SAVE_BUTTON___" />
 						</div>
 					</form>
 				</div>

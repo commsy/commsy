@@ -295,7 +295,7 @@
 						$url = "commsy.php?cid=" . $this->_environment->getCurrentContextID();
 						
 						if (sizeof($ids) > 1) {
-							$url .= "&mod=index&fct=index";
+							$url .= "&mod=" . $rubric . "&fct=index";
 						} else {
 							$url .= "&mod=" . $rubric . "&fct=detail&iid=" . $iid;
 						}
@@ -308,7 +308,7 @@
 				case "delete":
 					if (!empty($ids)) {
 						$current_context = $this->_environment->getCurrentContextItem();
-						$session = $this->_environment->getSession();
+						$session = $this->_environment->getSessionItem();
 						$translator = $this->_environment->getTranslationObject();
 							
 						// get current room modules
@@ -327,40 +327,30 @@
 							
 						$rubric_copy_array = $this->getUtils()->getCopyRubrics();
 							
-						$item_room_ids = array();
-						$tmp_id_array = array();
-						$item_list = new cs_list();
-							
 						// collect room and item ids
+						$rubric_item_ids = array();
+						
 						foreach ($rubric_copy_array as $rubric) {
 							$item_manager = $this->_environment->getManager($rubric);
 							$item_id_array = $session->getValue($rubric . "_clipboard");
 							
 							if (is_array($item_id_array)) {
-								$tmp_id_array = array_merge($tmp_id_array, $item_id_array);
+								$rubric_item_ids[$rubric] = $item_id_array;
 							}
 						}
+						
+						// go through each rubric and remove appropriate entries
+						foreach($rubric_item_ids as $rubric => $id_array) {
 							
-						$item_id_array = $tmp_id_array;
-						
-						$id_array = array();
-						
-						foreach ($ids as $id) {
-							$item = $manager->getItem($id);
-							$id_array[$item->getItemType()][] = $id;
-						}
-						
-						foreach($id_array as $rubric => $rubric_ids) {
 							$new_id_array = array();
-							
-							foreach($item_id_array as $item_id) {
-								if (!in_array($item_id, $rubric_ids)) {
-									$new_id_array[] = $item_id;
-								}
+							foreach($id_array as $id) {
+								if(!in_array($id, $ids)) $new_id_array[] = $id;
 							}
 							
 							$session->setValue($rubric . "_clipboard", $new_id_array);
 						}
+						
+						$this->_environment->getSessionManager()->save($session);
 						
 						$this->setSuccessfullDataReturn(array());
 						echo $this->_return;

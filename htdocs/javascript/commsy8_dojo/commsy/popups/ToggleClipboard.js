@@ -20,10 +20,10 @@ define([	"dojo/_base/declare",
 		
 		onTogglePopup: function() {
 			if(this.is_open === true) {
-				DomClass.add(this.popup_button_node, "tm_user_hover");
+				DomClass.add(this.popup_button_node, "tm_clipboard_hover");
 				DomClass.remove(this.contentNode, "hidden");
 			} else {
-				DomClass.remove(this.popup_button_node, "tm_user_hover");
+				DomClass.remove(this.popup_button_node, "tm_clipboard_hover");
 				DomClass.add(this.contentNode, "hidden");
 			}
 		},

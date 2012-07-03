@@ -41,7 +41,7 @@ define([	"dojo/_base/declare",
 					if(!spanNode) {
 						// create span
 						spanNode = DomConstruct.create("span", {
-							"id":		tm_clipboard_copies,
+							"id":		"tm_clipboard_copies",
 							innerHTML:	0
 						}, ClipboardButtonNode, "after");
 					}

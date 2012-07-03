@@ -189,7 +189,7 @@
 						<a id="action_edit" class="open_popup" data-custom="iid: {$step.item_id}, module: 'step', ref_iid: {$detail.content.item_id}" href="#">___COMMON_EDIT_ITEM___</a> |
 					{/if}
 					{if $step.actions.delete}
-						<a class="open_popup" data-custom="iid: {$step.item_id}, module: '{$environment.module}', delType: 'step'" href="#">___COMMON_DELETE_ITEM___</a>
+						<a class="open_popup" data-custom="iid: {$step.item_id}, module: 'delete', delType: 'step'" href="#">___COMMON_DELETE_ITEM___</a>
 					{/if}
 				</div>
 			</div>

@@ -539,7 +539,7 @@ if ( !empty($SID) ) {
          unset($portal);
       }
    }
-
+   
    if (isset($session) and $session->issetValue('user_id')) {       // session is in database, so session is valid and user has already logged on
       if (!$session->issetValue('cookie')) {    // second time a user get a commsy page
          if (isset($_COOKIE['SID'])) { // are cookies allowed?

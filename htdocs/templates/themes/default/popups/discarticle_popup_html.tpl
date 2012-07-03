@@ -10,68 +10,40 @@
 				</div>
 
 				<div id="popup_content">
-					<div id="content_row_three">
-						<div class="input_row">
-							<span class="input_label">Titel</span> <input type="text" value="{if isset($item.title)}{$item.title}{/if}" name="form_data[title]" class="size_200" />
-						</div>
+					<div class="input_row">
+						<div class="input_label_80">___COMMON_TITLE___<span class="required">*</span>:</div> <input type="text" value="{if isset($item.title)}{$item.title}{/if}" name="form_data[title]" class="size_400" />
+					</div>
 
-						<div id="pop_editor">
-							<h2 id="pop_editor_head">Diskussionsbeitrag</h2>
-
-							<input type="hidden" value="" name="iid"/>
-							<input type="hidden" value="{$detail.item_id}" name="discussion_id"/>
-							<input type="hidden" value="1" name="ref_position"/>
-							<div class="editor_content">
-								<div id="discarticle_description" class="ckeditor">{if isset($item.discarticle_description)}{$item.discarticle_description}{/if}</div>
-							</div>
-						</div>
+					<div class="editor_content">
+						<div id="description" class="ckeditor">{if isset($item.discarticle_description)}{$item.discarticle_description}{/if}</div>
+					</div>
 				</div>
-
+				
 				<div id="popup_tabs">
 					<div class="tab_navigation">
-						<a href="" class="pop_tab_active">Dateien anh&auml;ngen</a>
-
+						<a href="files_tab" class="pop_tab_active">___MATERIAL_FILES___</a>
+						{if $popup.is_owner == true}<a href="rights_tab" class="pop_tab">___COMMON_RIGHTS___</a>{/if}
+						{if isset($popup.buzzwords)}<a href="buzzwords_tab" class="pop_tab">___COMMON_BUZZWORDS___</a>{/if}
+						{if isset($popup.tags)}<a href="tags_tab" class="pop_tab">___COMMON_TAGS___</a>{/if}
+						<a href="netnavigation_tab" id="popup_netnavigation_attach_new" class="pop_tab">___COMMON_ATTACHED_ENTRIES___</a>
 						<div class="clear"> </div>
 					</div>
-
 					<div id="popup_tabcontent">
-						<div class="settings_area">
+						{include file="popups/include/files_tab_include_html.tpl"}
+						
+						{include file="popups/include/rights_tab_include_html.tpl"}
+						
+						{include file="popups/include/buzzwords_tab_include_html.tpl"}
+						
+						{include file="popups/include/tags_tab_include_html.tpl"}
+						
+						{include file="popups/include/netnavigation_tab_include_html.tpl"}
 
-								<div class="sa_col_left">
-									<div id="file_finished"></div>
-
-									<div id="files_attached">
-										{foreach $item.files as $file}
-											<input type="checkbox" checked="checked" name="form_data[file_{$file@index}]" value="{$file.file_id}" />{$file.file_name}<br/>
-										{/foreach}
-									</div>
-
-									<input id="uploadify" name="uploadify" type="file" />
-
-									<div>
-										<a id="uploadify_doUpload">
-											<img src="{$basic.tpl_path}img/uploadify/button_upload_{$environment.lang}.png" />
-										</a>
-										<a id="uploadify_clearQuery">
-											<img src="{$basic.tpl_path}img/uploadify/button_abort_{$environment.lang}.png" />
-										</a>
-									</div>
-								</div>
-
-								<div class="sa_col_right">
-									<p class="info_notice">
-									<img src="{$basic.tpl_path}img/file_info_icon.gif" alt="Info"/>
-									{i18n tag=MATERIAL_MAX_FILE_SIZE param1=$popup.general.max_upload_size}
-									</p>
-								</div>
-
-							<div class="clear"> </div>
-						</div>
 					</div>
-
+					
 					<div id="content_buttons">
 						<div id="crt_actions_area">
-							<input id="popup_button_create" class="popup_button" type="button" name="" value="{if $popup.edit == false}___COMMON_NEW_ITEM___{else}___COMMON_CHANGE_BUTTON___{/if}" />
+							<input id="popup_button_create" class="popup_button submit" data-custom="part: 'all'" type="button" name="" value="{if $popup.edit == false}___COMMON_NEW_ITEM___{else}___COMMON_CHANGE_BUTTON___{/if}" />
 							<input id="popup_button_abort" class="popup_button" type="button" name="" value="___COMMON_CANCEL_BUTTON___" />
 						</div>
 					</div>

@@ -3346,32 +3346,36 @@ a.tm_settings_hover {
     background: url(img/tm_mycalendar.gif) no-repeat;
     }
 
-#tm_mycalendar:hover {
-    background: url(img/tm_mycalendar.gif) -36px 0px no-repeat;
+#tm_mycalendar:hover,
+.tm_mycalendar_hover {
+    background: url(img/tm_mycalendar.gif) -36px 0px no-repeat !important;
     }
 
 #tm_widgets {
     background: url(img/tm_widgets.gif) no-repeat;
     }
 
-#tm_widgets:hover {
-    background: url(img/tm_widgets.gif) -36px 0px no-repeat;
+#tm_widgets:hover,
+.tm_widgets_hover {
+    background: url(img/tm_widgets.gif) -36px 0px no-repeat !important;
     }
 
 #tm_stack {
     background: url(img/tm_stack.gif) no-repeat;
     }
 
-#tm_stack:hover {
-    background: url(img/tm_stack.gif) -36px 0px no-repeat;
+#tm_stack:hover,
+.tm_stack_hover {
+    background: url(img/tm_stack.gif) -36px 0px no-repeat !important;
     }
 
 #tm_clipboard {
     background: url(img/tm_clipboard.gif) no-repeat;
     }
 
-#tm_clipboard:hover {
-    background: url(img/tm_clipboard.gif) -36px 0px no-repeat;
+#tm_clipboard:hover,
+.tm_clipboard_hover {
+    background: url(img/tm_clipboard.gif) -36px 0px no-repeat !important;
     }
 
 #tm_clipboard_copies {

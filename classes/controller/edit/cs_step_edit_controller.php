@@ -122,7 +122,7 @@
 								$step_item->setTimeType($_POST["form_data"]["time_type"]);
 								
 								switch($_POST["form_data"]["time_type"]) {
-									case 2: $minutes = minutes * 60; break;
+									case 2: $minutes = $minutes * 60; break;
 									case 3: $minutes = $minutes * 60 * 8; break;
 								}
 							}
