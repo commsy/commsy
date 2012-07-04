@@ -17,7 +17,7 @@
 				$buzzword = trim($this->_data["buzzword"]);
 				
 				// check if empty
-				if(empty($buzzword)) {
+				if($buzzword === "") {
 					$this->setErrorReturn("108", "buzzword is empty", array());
 					echo $this->_return;
 				} else {
@@ -84,56 +84,429 @@
 					$buzzwordItemTwo->delete();
 					
 					$this->setSuccessfullDataReturn(array(
-						"buzzwordOne" => $buzzwordOne,
-						"buzzwordTwo" => $buzzwordTwo,
-						"newBuzzword" => $newName)
+						"buzzwordOne"	=> $buzzwordOne,
+						"buzzwordTwo"	=> $buzzwordTwo,
+						"newBuzzword"	=> $newName)
 					);
 					echo $this->_return;
 				}
 			}
 		}
 		
+		public function actionGetInitialData() {
+			$return = array();
 		
+			$current_context = $this->_environment->getCurrentContextItem();
+			$translator = $this->_environment->getTranslationObject();
 		
+			// get available rubrics
+			$rubrics = array();
 		
+			// add all
+			$rubrics[] = array(
+					'value'		=> 'all',
+					'text'		=> $translator->getMessage('ALL'),
+					'disabled'	=> false
+			);
 		
+			// add disabled
+			$rubrics[] = array(
+					'value'		=> '-1',
+					'text'		=> '-------------------------',
+					'disabled'	=> true
+			);
 		
+			// add rubrics
+			$current_room_modules = $current_context->getHomeConf();
+			$room_modules = array();
+			if(!empty($current_room_modules)) $room_modules = explode(',', $current_room_modules);
 		
+			foreach($room_modules as $module) {
+				list($name, $display) = explode('_', $module);
 		
-		public function actionDelete() {
-			if($this->accessGranted()) {
-				$buzzword_id = $this->_data['form_data']['buzzword_id'];
-				
-				$buzzword_manager = $this->_environment->getLabelManager();
-				$buzzword_item = $buzzword_manager->getItem($buzzword_id);
-				if(!empty($buzzword_item)) {
-					$buzzword_item->delete();
-					
-					echo json_encode('success');
-					return true;
-				} else {
-					echo json_encode('item was empty');
-					return false;
+				if($display != 'none'	&& (	$name != CS_USER_TYPE || (	$module != CS_MATERIAL_TYPE &&
+						$module != CS_DISCUSSION_TYPE &&
+						$module != CS_ANNOUNCEMENT_TYPE &&
+						$module != CS_TOPIC_TYPE))
+						&& $name != CS_PROJECT_TYPE
+						&& !$this->_environment->isPlugin($name)
+						&& !($this->_environment->inPrivateRoom() && $name == CS_MYROOM_TYPE)) {
+					// determ rubric text
+					switch(mb_strtoupper($name, 'UTF-8')) {
+						case 'ANNOUNCEMENT':
+							$text = $translator->getMessage('ANNOUNCEMENT_INDEX');
+							break;
+						case 'DATE':
+							$text = $translator->getMessage('DATE_INDEX');
+							break;
+						case 'DISCUSSION':
+							$text = $translator->getMessage('DISCUSSION_INDEX');
+							break;
+						case 'GROUP':
+							$text = $translator->getMessage('GROUP_INDEX');
+							break;
+						case 'INSTITUTION':
+							$text = $translator->getMessage('INSTITUTION_INDEX');
+							break;
+						case 'MATERIAL':
+							$text = $translator->getMessage('MATERIAL_INDEX');
+							break;
+						case 'PROJECT':
+							$text = $translator->getMessage('PROJECT_INDEX');
+							break;
+						case 'TODO':
+							$text = $translator->getMessage('TODO_INDEX');
+							break;
+						case 'TOPIC':
+							$text = $translator->getMessage('TOPIC_INDEX');
+							break;
+						case 'USER':
+							$text = $translator->getMessage('USER_INDEX');
+							break;
+						default:
+							$text = $translator->getMessage('COMMON_MESSAGETAG_ERROR'.' ('.$name.') '.__FILE__.'('.__LINE__.') ' );
+							break;
+					}
+		
+					// add rubric
+					$rubrics[] = array(
+							'value'		=> $name,
+							'text'		=> $text,
+							'disabled'	=> false
+					);
 				}
 			}
+		
+			// append to return
+			$return['rubrics'] = $rubrics;
+				
+			$this->setSuccessfullDataReturn($return);
+			echo $this->_return;
 		}
 		
-		public function actionChange() {
-			if($this->accessGranted()) {
-				$buzzword_id = $this->_data['form_data']['buzzword_id'];
-				$buzzword = $this->_data['form_data']['buzzword'];				
+		public function actionPerformRequest() {
+			$return = array();
+		
+			$current_context = $this->_environment->getCurrentContextItem();
+			$current_user = $this->_environment->getCurrentUser();
+			$session = $this->_environment->getSessionItem();
+			$item_manager = $this->_environment->getItemManager();
+		
+			// get request data
+			$item_id = $this->_data['item_id'];
+			$module = $this->_data['module'];
+			$current_page = $this->_data['current_page'];
+			$restrictions = $this->_data['restrictions'];
+			
+			// get item
+			$item = $item_manager->getItem($item_id);
+			if (isset($item)) {
+				$manager = $this->_environment->getManager($item->getItemType());
+				$item = $manager->getItem($item_id);
+			}
+			
+			$selected_ids = array();
+			if (isset($item)) {
+				if ($item->isA(CS_LABEL_TYPE) && $item->getLabelType() == CS_GROUP_TYPE) {
+					/*
+					 * $group_manager = $environment->getGroupManager();
+      $item = $group_manager->getItem($ref_iid);
+      unset($group_manager);
+					 */
+				} elseif ($item->isA(CS_LABEL_TYPE) && $item->getLabelType() == CS_BUZZWORD_TYPE) {
+					$buzzword_manager = $this->_environment->getBuzzwordManager();
+					$item = $buzzword_manager->getItem($item_id);
+				}
 				
+				/*
+				 * if ($environment->getCurrentModule() == CS_USER_TYPE){
+				      if ($environment->inCommunityRoom()){
+				         $selected_ids = $item->getLinkedItemIDArray(CS_INSTITUTION_TYPE);
+				      }else{
+				         $selected_ids = $item->getLinkedItemIDArray(CS_GROUP_TYPE);
+				      }
+				   } elseif ( $item->isA(CS_LABEL_TYPE)
+				              and $item->getLabelType() == CS_BUZZWORD_TYPE
+				            ) {
+				      $selected_ids = $item->getAllLinkedItemIDArrayLabelVersion();
+				   } else {
+				      $selected_ids = $item->getAllLinkedItemIDArray();
+				   }
+				 */
+				$selected_ids = $item->getAllLinkedItemIDArrayLabelVersion();
+			}
+			
+			
+			/*
+
+if ( !empty($_POST['itemlist'])
+     or !empty($_POST['shown'])
+   ) {
+   $sess_selected_ids = array();
+   if ($session->issetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids2')) {
+      $sess_selected_ids = $session->getValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids2');
+   }
+   if ( !empty($_POST['itemlist']) ) {
+      foreach ($_POST['itemlist'] as $key => $id) {
+         $sess_selected_ids[] = $key;
+      }
+   }
+   if ( !empty($_POST['shown']) ) {
+      $drop_array = array();
+      foreach ( $_POST['shown'] as $id => $value) {
+         if ( in_array($id,$sess_selected_ids)
+              and ( empty($_POST['itemlist'])
+                    or !array_key_exists($id,$_POST['itemlist'])
+                  )
+            ) {
+            $drop_array[] = $id;
+         }
+      }
+      if ( !empty($drop_array) ) {
+         $temp_array = array();
+         foreach ($sess_selected_ids as $id) {
+            if ( !in_array($id,$drop_array) ) {
+               $temp_array[] = $id;
+            }
+         }
+         $sess_selected_ids = $temp_array;
+      }
+   }
+   $sess_selected_ids = array_unique($sess_selected_ids);
+   $session->setValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids2',$sess_selected_ids);
+}
+
+
+
+
+*/
+			
+			// build item list
+			$item_list = new cs_list();
+			$item_ids = array();
+			$count_all = 0;
+			
+			// get current room modules
+			$room_modules = array();
+			$current_room_modules = $current_context->getHomeConf();
+			if(!empty($current_room_modules)) $room_modules = explode(',', $current_room_modules);
+			
+			$rubric_array = array();
+			foreach($room_modules as $room_module) {
+				list($name, $display) = explode('_', $room_module);
+			
+				if($display != 'none'	&&	!($this->_environment->inPrivateRoom() && $name == 'user') &&
+						!(	$name == CS_USER_TYPE && (
+								$module == CS_MATERIAL_TYPE ||
+								$module == CS_DISCUSSION_TYPE ||
+								$module == CS_ANNOUNCEMENT_TYPE ||
+								$module == CS_TOPIC_TYPE))) {
+					$rubric_array[] = $name;
+				}
+			}
+			
+			if($module == CS_USER_TYPE) {
+				$rubric_array = array();
+			
+				if($current_context->withRubric(CS_GROUP_TYPE)) $rubric_array[] = CS_GROUP_TYPE;
+				if($current_context->withRubric(CS_INSTITUTION_TYPE)) $rubric_array[] = CS_INSTITUTION_TYPE;
+			
+				// $interval = 100;
+			}
+			
+			// perform rubric restriction
+			if(!empty($restrictions['rubric']) && $restrictions['rubric'] !== "all") {
+				$rubric_array = array();
+				$rubric_array[] = $restrictions['rubric'];
+			}
+			
+			if($restrictions['only_linked'] === true && empty($selected_ids)) $rubric_array = array();
+			
+			foreach($rubric_array as $rubric) {
+				$rubric_list = new cs_list();
+				$rubric_manager = $this->_environment->getManager($rubric);
+			
+				if(isset($rubric_manager) && $rubric != CS_MYROOM_TYPE) {
+					if($rubric != CS_PROJECT_TYPE) $rubric_manager->setContextLimit($this->_environment->getCurrentContextID());
+			
+					if($rubric == CS_DATE_TYPE) $rubric_manager->setWithoutDateModeLimit();
+			
+					if($rubric == CS_USER_TYPE) {
+						$rubric_manager->setUserLimit();
+			
+						if($current_user->isUser()) $rubric_manager->setVisibleToAllAndCommsy();
+						else $rubric_manager->setVisibleToAll();
+					}
+			
+					$count_all += $rubric_manager->getCountAll();
+			
+					// set restrictions
+					if(!empty($restrictions['search'])) $rubric_manager->setSearchLimit($restrictions['search']);
+					if($restrictions['only_linked'] === true) $rubric_manager->setIDArrayLimit($selected_ids);
+					if($restrictions['type'] == 2) $rubric_manager->showNoNotActivatedEntries();
+			
+					$rubric_manager->selectDistinct();
+					$rubric_list = $rubric_manager->get();
+			
+					// show hidden entries only if user is moderator or owner
+					if($restrictions['type'] != 2 && !$current_user->isModerator()) {
+						// check if user is owner
+						$entry = $rubric_list->getFirst();
+						while($entry) {
+							if($entry->isNotActivated() && $entry->getCreatorID() != $current_user->getItemID()) {
+								// remove item from list
+								$rubric_list->removeElement($entry);
+							}
+			
+							$entry = $rubric_list->getNext();
+						}
+					}
+			
+					// add rubric list to item list
+					$item_list->addList($rubric_list);
+			
+					$temp_rubric_ids = $rubric_manager->getIDArray();
+					if(!empty($temp_rubric_ids)) {
+						//$session->setValue('cid'.$environment->getCurrentContextID().'_item_attach_index_ids', $rubric_ids);
+						$item_ids = array_merge($item_ids, $temp_rubric_ids);
+					}
+				}
+			}
+		
+			$interval = CS_LIST_INTERVAL;
+			$from = $current_page * $interval;
+		
+			// get sublist - paging
+			$sublist = $item_list->getSublist($from, $interval);
+			
+			// prepare return
+			$return['list'] = array();
+			$item = $sublist->getFirst();
+			while($item) {
+				$entry = array();
+		
+				$entry['item_id']			= $item->getItemID();
+				$entry['title']				= $item->getTitle();
+				$entry['modification_date']	= $item->getModificationDate();
+				$entry['modificator']		= $item->getModificatorItem()->getFullName();
+				$entry['system_label']		= $item->isSystemLabel();
+		
+				$entry['checked'] = false;
+				if(in_array($item->getItemID(), $selected_ids)) $entry['checked'] = true;
+		
+				$return['list'][] = $entry;
+				$item = $sublist->getNext();
+			}
+			$return['paging']['pages'] = ceil(/*$count_all*/count($item_ids) / $interval);
+			$return['num_selected_total'] = count($selected_ids);
+				
+			$this->setSuccessfullDataReturn($return);
+			echo $this->_return;
+		}
+		
+		public function actionUpdateLinkedItem() {
+			$return = array();
+			
+			$item_manager = $this->_environment->getItemManager();
+		
+			// get request data
+			$item_id = $this->_data['item_id'];
+			$link_id = $this->_data['link_id'];
+			$checked = $this->_data['checked'];
+			
+			// get item
+			$item = $item_manager->getItem($item_id);
+			if (isset($item)) {
+				$manager = $this->_environment->getManager($item->getItemType());
+				$item = $manager->getItem($item_id);
+			}
+				
+			$selected_ids = array();
+			if (isset($item)) {
+				if ($item->isA(CS_LABEL_TYPE) && $item->getLabelType() == CS_GROUP_TYPE) {
+					/*
+					 * $group_manager = $environment->getGroupManager();
+					$item = $group_manager->getItem($ref_iid);
+					unset($group_manager);
+					*/
+				} elseif ($item->isA(CS_LABEL_TYPE) && $item->getLabelType() == CS_BUZZWORD_TYPE) {
+					$buzzword_manager = $this->_environment->getBuzzwordManager();
+					$item = $buzzword_manager->getItem($item_id);
+				}
+			
+				/*
+				 * if ($environment->getCurrentModule() == CS_USER_TYPE){
+				if ($environment->inCommunityRoom()){
+				$selected_ids = $item->getLinkedItemIDArray(CS_INSTITUTION_TYPE);
+				}else{
+				$selected_ids = $item->getLinkedItemIDArray(CS_GROUP_TYPE);
+				}
+				} elseif ( $item->isA(CS_LABEL_TYPE)
+						and $item->getLabelType() == CS_BUZZWORD_TYPE
+				) {
+				$selected_ids = $item->getAllLinkedItemIDArrayLabelVersion();
+				} else {
+				$selected_ids = $item->getAllLinkedItemIDArray();
+				}
+				*/
+				$selected_ids = $item->getAllLinkedItemIDArrayLabelVersion();
+			}
+			
+			if($checked === true) {
+				// add
+				$selected_ids[] = $link_id;
+				$selected_ids = array_unique($selected_ids);
+			} else {
+				// remove
+				if(($offset = array_search($link_id, $selected_ids)) !== false) array_splice($selected_ids, $offset, 1);
+			}
+			
+			// save
+			if (isset($item) && $item->isA(CS_LABEL_TYPE) && $item->getLabelType() == CS_BUZZWORD_TYPE) {
+				$item->saveLinksByIDArray($selected_ids);
+			} elseif (isset($item)) {
+				$item->setLinkedItemsByIDArray($entry_array);
+				$item->save();
+			}
+		
+			$this->setSuccessfullDataReturn(array());
+			echo $this->_return;
+		}
+		
+		public function actionUpdateBuzzword() {
+			if($this->accessGranted()) {
+				$buzzword_id = $this->_data['buzzword_id'];
+				$buzzword = $this->_data['buzzword'];
+			
 				$buzzword_manager = $this->_environment->getLabelManager();
 				$buzzword_item = $buzzword_manager->getItem($buzzword_id);
 				if(!empty($buzzword_item)) {
 					$buzzword_item->setName($buzzword);
 					$buzzword_item->save();
 					
-					echo json_encode('success');
-					return true;
+					$this->setSuccessfullDataReturn(array());
+					echo $this->_return;
 				} else {
-					echo json_encode('item was empty');
-					return false;
+					$this->setErrorReturn("109", "item was empty", array());
+					echo $this->_return;
+				}
+			}
+		}
+		
+		public function actionDeleteBuzzword() {
+			if($this->accessGranted()) {
+				$buzzword_id = $this->_data['buzzword_id'];
+		
+				$buzzword_manager = $this->_environment->getLabelManager();
+				$buzzword_item = $buzzword_manager->getItem($buzzword_id);
+				if(!empty($buzzword_item)) {
+					$buzzword_item->delete();
+						
+					$this->setSuccessfullDataReturn(array());
+					echo $this->_return;
+				} else {
+					$this->setErrorReturn("109", "item was empty", array());
+					echo $this->_return;
 				}
 			}
 		}

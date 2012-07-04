@@ -6,12 +6,14 @@ define([	"dojo/_base/declare",
         	"dojo/dom-construct",
         	"dojo/dom-attr",
         	"dojo/dom-style",
-        	"dojo/on"], function(declare, ClickPopupHandler, Query, DomClass, Lang, DomConstruct, DomAttr, DomStyle, On) {
+        	"dojo/on",
+        	"dojo/NodeList-traverse"], function(declare, ClickPopupHandler, Query, DomClass, Lang, DomConstruct, DomAttr, DomStyle, On) {
 	return declare(ClickPopupHandler, {
 		constructor: function(triggerNode, customObject) {
 			this.triggerNode = triggerNode;
 			//this.item_id = customObject.iid;
 			this.module = "buzzwords";
+			this.list = null;
 			
 			this.features = [ ];
 			
@@ -31,6 +33,92 @@ define([	"dojo/_base/declare",
 			On(selectTwoNode, "change", Lang.hitch(this, function(event) {
 				// when changing box two, disable the selected value in box one
 				this.enableAllOptionsExceptOne(selectOneNode, DomAttr.get(event.target, "value"));
+			}));
+			
+			// setup list
+			require(["commsy/List"], Lang.hitch(this, function(List) {
+				this.list = new List();
+				this.list.init(this.cid, this.from_php.template.tpl_path, {
+					activatorNode:	Query("a.list_activator")[0],
+					module:			"buzzwords",
+					OnInitDone:		Lang.hitch(this, function() {
+						this.list.performRequest();
+					})
+				});
+				
+				// set initial buzzword to first in edit tab
+				var firstEditBuzzwordNode = Query("div#edit_tab input.buzzword_change_name:first-child")[0];
+				if(firstEditBuzzwordNode) {
+					var buzzwordId = DomAttr.get(firstEditBuzzwordNode, "id");
+					this.list.requestData.item_id = buzzwordId;
+				}
+			}));
+			
+			// connect all assignment buttons in edit tab
+			dojo.forEach(Query("input.buzzword_attach"), Lang.hitch(this, function(inputNode, index, arr) {
+				On(inputNode, "click", Lang.hitch(this, function(event) {
+					// get name and extract buzzword id
+					var nameAttr = DomAttr.get(inputNode, "name");
+					var buzzwordId = nameAttr.substr(10, nameAttr.length-11);
+					
+					// update reference id of list and perform a new request
+					this.list.requestData.item_id = buzzwordId;
+					this.list.performRequest();
+					
+					// update header
+					var buzzwordName = DomAttr.get(new dojo.NodeList(inputNode).siblings("input.buzzword_change_name")[0], "value");
+					DomAttr.set(Query("div.open_close_head span.text_important")[0], "innerHTML", "&bdquo;" + buzzwordName + "&rdquo;");
+				}));
+			}));
+			
+			// connect all change buttons in edit tab
+			dojo.forEach(Query("input.buzzword_change"), Lang.hitch(this, function(inputNode, index, arr) {
+				On(inputNode, "click", Lang.hitch(this, function(event) {
+					// get name and extract buzzword id
+					var nameAttr = DomAttr.get(inputNode, "name");
+					var buzzwordId = nameAttr.substr(10, nameAttr.length-11);
+					
+					// get new buzzword name
+					var buzzwordName = DomAttr.get(new dojo.NodeList(inputNode).siblings("input.buzzword_change_name")[0], "value");
+					
+					// perform ajax request
+					this.AJAXRequest("buzzwords", "updateBuzzword", { buzzword_id: buzzwordId, buzzword: buzzwordName },
+						Lang.hitch(this, function(response) {
+							// update header if the buzzword was set in list
+							if(this.list.requestData.item_id === buzzwordId) {
+								DomAttr.set(Query("div.open_close_head span.text_important")[0], "innerHTML", "&bdquo;" + buzzwordName + "&rdquo;");
+							}
+						}),
+						Lang.hitch(this, function(response) {
+							
+						})
+					);
+				}));
+			}));
+			
+			// connect all delete buttons in edit tab
+			dojo.forEach(Query("input.buzzword_delete"), Lang.hitch(this, function(inputNode, index, arr) {
+				On(inputNode, "click", Lang.hitch(this, function(event) {
+					// get name and extract buzzword id
+					var nameAttr = DomAttr.get(inputNode, "name");
+					var buzzwordId = nameAttr.substr(10, nameAttr.length-11);
+					
+					// get buzzword name
+					var buzzwordName = DomAttr.get(new dojo.NodeList(inputNode).siblings("input.buzzword_change_name")[0], "value");
+					
+					// perform ajax request
+					this.AJAXRequest("buzzwords", "deleteBuzzword", { buzzword_id: buzzwordId },
+						Lang.hitch(this, function(response) {
+							// remove buzzword from all lists, merge selects and edit tab
+							this.removeBuzzwordFromLists(buzzwordName);
+							this.removeBuzzwordFromMergeSelects(buzzwordName);
+							this.removeBuzzwordFromEditTab(buzzwordName);
+						}),
+						Lang.hitch(this, function(response) {
+							
+						})
+					);
+				}));
 			}));
 		},
 		
@@ -92,12 +180,71 @@ define([	"dojo/_base/declare",
 			}));
 		},
 		
-		addBuzzwordToMergeSelects: function(buzzword) {
+		addBuzzwordToMergeSelects: function(id, buzzword) {
+			var selectOneNode = Query("select#buzzword_merge_one")[0];
+			var selectTwoNode = Query("select#buzzword_merge_two")[0];
 			
+			DomConstruct.create("option", {
+				value:		id,
+				innerHTML:	buzzword
+			}, selectOneNode, "last");
+			
+			DomConstruct.create("option", {
+				value:		id,
+				innerHTML:	buzzword
+			}, selectTwoNode, "last");
 		},
 		
 		removeBuzzwordFromMergeSelects: function(buzzword) {
+			var OptionNodes = Query("select#buzzword_merge_one option, select#buzzword_merge_two option");
 			
+			dojo.forEach(OptionNodes, Lang.hitch(this, function(optionNode, index, arr) {
+				if(DomAttr.get(optionNode, "innerHTML") === buzzword) {
+					DomConstruct.destroy(optionNode);
+				}
+			}));
+		},
+		
+		addBuzzwordToEditTab: function(id, buzzword) {
+			var divNode = Query("div#edit_tab div#content_row_one")[0];
+			
+			var rowDivNode = DomConstruct.create("div", {
+				className:		"input_row"
+			}, divNode, "last");
+			
+				DomConstruct.create("input", {
+					className:		"buzzword_change_name size_200",
+					type:			"text",
+					value:			buzzword
+				}, rowDivNode, "last");
+				
+				DomConstruct.create("input", {
+					className:		"popup_button buzzword_change mandatory",
+					type:			"button",
+					value:			"Ändern",
+					name:			"form_data[" + id + "]"
+				}, rowDivNode, "last")
+				
+				DomConstruct.create("input", {
+					className:		"popup_button buzzword_attach",
+					type:			"button",
+					value:			"Einträge zuordnen",
+					name:			"form_data[" + id + "]"
+				}, rowDivNode, "last")
+				
+				DomConstruct.create("input", {
+					className:		"popup_button buzzword_delete",
+					type:			"button",
+					value:			"Löschen",
+					name:			"form_data[" + id + "]"
+				}, rowDivNode, "last")
+		},
+		
+		removeBuzzwordFromEditTab: function(buzzword) {
+			var inputNode = Query("input.buzzword_change_name[value='" + buzzword + "']")[0];
+			
+			var rowDivNode = new dojo.NodeList(inputNode).parents("div.input_row")[0];
+			DomConstruct.destroy(rowDivNode);
 		},
 		
 		OnAddNewBuzzword: function() {
@@ -112,18 +259,10 @@ define([	"dojo/_base/declare",
 						this.addBuzzwordToLists(buzzword);
 						
 						// add the new buzzwords to the merge select boxes
-						var selectOneNode = Query("select#buzzword_merge_one")[0];
-						var selectTwoNode = Query("select#buzzword_merge_two")[0];
+						addBuzzwordToMergeSelects(response.id, buzzword);
 						
-						DomConstruct.create("option", {
-							value:		response.id,
-							innerHTML:	buzzword
-						}, selectOneNode, "last");
-						
-						DomConstruct.create("option", {
-							value:		response.id,
-							innerHTML:	buzzword
-						}, selectTwoNode, "last");
+						// add the new buzzword to the edit tab
+						addBuzzwordToEditTab(response.id, buzzword);
 					}),
 					
 					Lang.hitch(this, function(response) {
@@ -157,7 +296,7 @@ define([	"dojo/_base/declare",
 						// remove both buzzwords from the merge select boxes and add the new one
 						this.removeBuzzwordFromMergeSelects(response.buzzwordOne);
 						this.removeBuzzwordFromMergeSelects(response.buzzwordTwo);
-						this.addBuzzwordToMergeSelects(response.buzzwordTwo);
+						this.addBuzzwordToMergeSelects(mergeIdOne, response.newBuzzword);
 					}),
 					
 					Lang.hitch(this, function(response) {

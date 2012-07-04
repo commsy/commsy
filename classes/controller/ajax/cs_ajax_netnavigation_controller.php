@@ -61,53 +61,10 @@
 				if($type === 'label') {
 					$type = $linked_item->getLabelType();
 				}
-
-				switch(mb_strtoupper($type, 'UTF-8')) {
-					case 'ANNOUNCEMENT':
-						$text = $translator->getMessage('COMMON_ONE_ANNOUNCEMENT');
-						$img = 'announcement.png';
-						break;
-					case 'DATE':
-						$text = $translator->getMessage('COMMON_ONE_DATE');
-						$img = 'date.png';
-						break;
-					case 'DISCUSSION':
-						$text = $translator->getMessage('COMMON_ONE_DISCUSSION');
-						$img = 'discussion.png';
-						break;
-					case 'GROUP':
-						$text = $translator->getMessage('COMMON_ONE_GROUP');
-						$img = 'group.png';
-						break;
-					case 'INSTITUTION':
-						$text = $translator->getMessage('COMMON_ONE_INSTITUTION');
-						$img = '';
-						break;
-					case 'MATERIAL':
-						$text = $translator->getMessage('COMMON_ONE_MATERIAL');
-						$img = 'material.png';
-						break;
-					case 'PROJECT':
-						$text = $translator->getMessage('COMMON_ONE_PROJECT');
-						$img = '';
-						break;
-					case 'TODO':
-						$text = $translator->getMessage('COMMON_ONE_TODO');
-						$img = 'todo.png';
-						break;
-					case 'TOPIC':
-						$text = $translator->getMessage('COMMON_ONE_TOPIC');
-						$img = 'topic.png';
-						break;
-					case 'USER':
-						$text = $translator->getMessage('COMMON_ONE_USER');
-						$img = 'user.png';
-						break;
-					default:
-						$text = $translator->getMessage('COMMON_MESSAGETAB_ERROR');
-						$img = '';
-						break;
-				}
+				
+				$logoInformation = $this->getUtils()->getLogoInformationForType($type);
+				$text = $logoInformation["text"];
+				$img = $logoInformation["img"];
 
 				$link_creator_text = $text . ' - ' . $translator->getMessage('COMMON_LINK_CREATOR') . ' ' . $entry['creator'];
 
@@ -251,6 +208,8 @@
 					$rubric_array = array();
 					$rubric_array[] = $restrictions['rubric'];
 				}
+				
+				if($restrictions['only_linked'] === true && empty($selected_ids)) $rubric_array = array();
 				
 				foreach($rubric_array as $rubric) {
 					$rubric_list = new cs_list();
@@ -424,40 +383,6 @@
 
 			// append to return
 			$return['rubrics'] = $rubrics;
-
-			// only linked items checkbox
-
-			/*
-
-      # checkbox for only linked items
-      // jQuery
-      //$html .= '   <input type="checkbox" name="linked_only" value="1" onChange="javascript:document.item_list_form.submit()"';
-      $html .= '   <input type="checkbox" name="linked_only" value="1" id="submit_form"';
-      // jQuery
-      if ( !empty($_POST['linked_only']) and $_POST['linked_only'] == 1 ) {
-         $html .= ' checked="checked"';
-      }
-      $html .= '/>'.$this->_translator->getMessage('SEARCH_LINKED_ENTRIES_ONLY').BRLF;
-      */
-			// search field
-
-			/*
-
-      # textfield for search term
-      $html .= '   <input type="textfield" name="search" style="width: 135px;"';
-      if ( !empty($_POST['search']) ) {
-         $html .= ' value="'.$this->_text_as_form($_POST['search']).'"';
-      }
-      $html .= '/>'.LF;
-      if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-         $html .= '   <input src="images/commsyicons_msie6/22x22/search.gif" style="vertical-align: top;" alt="Suchen" type="image">'.LF;
-      } else {
-         $html .= '   <input src="images/commsyicons/22x22/search.png" style="vertical-align: top;" alt="Suchen" type="image">'.LF;
-      }
-
-      # div end
-      $html .= '</div>'.LF;
-      */
 			
 			$this->setSuccessfullDataReturn($return);
 			echo $this->_return;
