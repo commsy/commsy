@@ -16,10 +16,19 @@ class cs_popup_buzzwords_controller implements cs_popup_controller {
 	
 	public function initPopup($data) {
 		// assign template vars
-		//$this->assignTemplateVars();
+		$this->assignTemplateVars();
 	}
 	
 	public function save($form_data, $additional = array()) {
 		
+	}
+	
+	private function assignTemplateVars() {
+		$current_context = $this->_environment->getCurrentContextItem();
+	
+		// config information
+		$config_information = array();
+		$config_information['with_activating'] = $current_context->withActivatingContent();
+		$this->_popup_controller->assign('popup', 'config', $config_information);
 	}
 }
