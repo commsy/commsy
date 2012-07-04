@@ -44,7 +44,7 @@ define([	"dojo/_base/declare",
 				    { query: query("input[name='form_data[day_end]']", this.contentNode) },
 				    { query: query("input[name='form_data[time_end]']", this.contentNode) },
 				    { query: query("input[name='form_data[minutes]']", this.contentNode) },
-				    { query: query("input[name='form_data[time_type]']", this.contentNode) },
+				    { query: query("select[name='form_data[time_type]']", this.contentNode) },
 				    { query: query("select[name='form_data[status]']", this.contentNode) },
 				    { query: query("input[name='form_data[title]']", this.contentNode) },
 				]

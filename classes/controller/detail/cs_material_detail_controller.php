@@ -585,8 +585,8 @@
 
       		$desc = '';
       		$num_sections = sizeof($this->getSections());
+      		$desc = $this->_item->getDescription();
       		if($num_sections === 0) {
-      			$desc = $this->_item->getDescription();
       			if(!empty($desc)) {
       				//$desc = $converter->cleanDataFromTextArea($desc);
       				$converter->setFileArray($this->getItemFileList());

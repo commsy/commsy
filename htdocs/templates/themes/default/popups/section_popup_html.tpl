@@ -31,7 +31,10 @@
         							{$section->getTitle()}
         							<br/>
         						{/foreach}
-        						&#060;___COMMON_NEW___&#062;
+        						{if isset($item.title)}
+        						{else}
+        							&#060;___COMMON_NEW___&#062;
+								{/if}
 							</div>
 						</div>
 					</div>

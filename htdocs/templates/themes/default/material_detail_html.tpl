@@ -130,11 +130,17 @@
 									{/foreach}
 									</td>
 								</tr>
+								<tr>
+									<td><h4>___MATERIAL_ABSTRACT___:</h4></td>
+									<td>
+										{$detail.content.description}
+									</td>
+								</tr>
 							{/if}
 						</table>
 				{/if}
 
-				{if $detail.content.description}
+				{if $detail.content.description && (!isset($detail.content.sections) || empty($detail.content.sections))}
 					<div class="detail_description">
 						{$detail.content.description}
 					</div>

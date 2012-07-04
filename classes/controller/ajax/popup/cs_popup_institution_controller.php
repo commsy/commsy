@@ -192,9 +192,6 @@ class cs_popup_institution_controller implements cs_rubric_popup_controller {
 
     public function getFieldInformation($sub = '') {
 		$return = array(
-			'upload_picture'	=> array(
-			),
-
 			'general'			=> array(
 				array(	'name'		=> 'name',
 						'type'		=> 'text',
@@ -209,9 +206,9 @@ class cs_popup_institution_controller implements cs_rubric_popup_controller {
 				array(	'name'		=> 'public',
 						'type'		=> 'radio',
 						'mandatory' => true)
+			),
+			'upload_picture'	=> array(
 			)
-
-
 		);
 
 		return $return[$sub];
