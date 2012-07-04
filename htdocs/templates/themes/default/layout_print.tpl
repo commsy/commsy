@@ -27,6 +27,7 @@
 	{block name="css"}
 	    <link rel="stylesheet" type="text/css" media="screen" href="{$basic.tpl_path}styles.css" />
 	    <link rel="stylesheet" type="text/css" media="screen" href="{$basic.tpl_path}styles_addon.css" />
+	    <link rel="stylesheet" type="text/css" media="print" href="{$basic.tpl_path}styles.css" />
 	{/block}
 
 	<!-- SCRIPTS -->

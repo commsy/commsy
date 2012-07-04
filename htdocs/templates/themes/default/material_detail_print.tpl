@@ -5,31 +5,7 @@
 	<div class="item_body_print"> <!-- Start item body -->
 
 		<!-- Start fade_in_ground -->
-		<div class="fade_in_ground_actions hidden">
-			{* TODO: add missing actions *}
-			{if $detail.actions.edit}
-				<a id="action_edit" href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.item_id}">___COMMON_EDIT_ITEM___</a> |
-			{/if}
-			{if $detail.actions.delete}
-				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.item_id}">___COMMON_DELETE_ITEM___</a> |
-			{/if}
-			{if $detail.actions.mail}
-				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.item_id}">___COMMON_EMAIL_TO___</a> |
-			{/if}
-			{if $detail.actions.copy}
-				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.item_id}">___COMMON_ITEM_COPY_TO_CLIPBOARD___</a> |
-			{/if}
-			{if $detail.actions.workflow_read}
-				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&iid={$detail.item_id}&workflow_read=true">___ITEM_WORKFLOW_MARK_READ___</a> |
-			{/if}
-			{if $detail.actions.workflow_unread}
-				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&iid={$detail.item_id}&workflow_not_read=true">___ITEM_WORKFLOW_MARK_NOT_READ___</a> |
-			{/if}
-			<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.item_id}">___COMMON_DOWNLOAD___</a>
-		</div>
 		<!-- Ende fade_in_ground -->
-
-	    {include file="include/detail_linked_html.tpl"}
 
 		<h2>{$detail.content.title}</h2>
 		<div class="clear"> </div>
@@ -44,7 +20,7 @@
 					&nbsp;&nbsp;
 				{/if}
 				{if $room.assessment}
-					{include file="include/detail_assessment_include_html.tpl"}
+					{include file="include/detail_assessment_include_print.tpl"}
 				{/if}
 			</p>
 			<p>
@@ -110,9 +86,6 @@
 			<a name="section{$section.iid}"></a>
 
 			<!-- Start fade_in_ground -->
-			<div class="fade_in_ground_actions hidden">
-				actions
-			</div>
 			<!-- Ende fade_in_ground -->
 
 			<div class="item_post">

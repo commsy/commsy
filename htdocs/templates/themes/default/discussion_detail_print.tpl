@@ -33,7 +33,7 @@
 		<div id="item_credits">
 			<p id="ic_rating">
 				{if $room.assessment}
-					{include file="include/detail_assessment_include_html.tpl"}
+					{include file="include/detail_assessment_include_print.tpl"}
 				{/if}
 			</p>
 			<p>
