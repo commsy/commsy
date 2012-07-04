@@ -2922,7 +2922,7 @@ class cs_connection_soap {
             $date_item = $dates_list->getNext();
          }
          $xml .= "</dates_list>";
-         debugToFile($xml);
+         #debugToFile($xml);
          $xml = $this->_encode_output($xml);
          return $xml;
       }
@@ -2968,6 +2968,19 @@ class cs_connection_soap {
          } else {
             $xml .= "<date_edit><![CDATA[non_edit]]></date_edit>\n";
          }
+         $xml .= "<date_files>\n";
+         $file_list = $date_item->getFileList();
+         $temp_file = $file_list->getFirst();
+         while($temp_file){
+            $xml .= "<date_file>\n";
+            $xml .= "<date_file_name><![CDATA[".$temp_file->getFileName()."]]></date_file_name>\n";
+            $xml .= "<date_file_id><![CDATA[".$temp_file->getFileID()."]]></date_file_id>\n";
+            $xml .= "<date_file_size><![CDATA[".$temp_file->getFileSize()."]]></date_file_size>\n";
+            $xml .= "<date_file_mime><![CDATA[".$temp_file->getMime()."]]></date_file_mime>\n";
+            $xml .= "</date_file>\n";
+            $temp_file = $file_list->getNext();
+         }
+         $xml .= "</date_files>\n";
          $xml .= "</date_item>\n";
          $xml = $this->_encode_output($xml);
          $reader = $reader_manager->getLatestReaderForUserByID($date_item->getItemID(), $user_item->getItemID());
@@ -2978,6 +2991,7 @@ class cs_connection_soap {
          if ( empty($noticed) or $noticed['read_date'] < $date_item->getModificationDate() ) {
             $noticed_manager->markNoticed($date_item->getItemID(),0);
          }
+         debugToFile($xml);
          return $xml;
       }
    }
