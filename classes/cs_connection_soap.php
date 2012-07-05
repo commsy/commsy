@@ -2977,6 +2977,10 @@ class cs_connection_soap {
             $xml .= "<date_file_id><![CDATA[".$temp_file->getFileID()."]]></date_file_id>\n";
             $xml .= "<date_file_size><![CDATA[".$temp_file->getFileSize()."]]></date_file_size>\n";
             $xml .= "<date_file_mime><![CDATA[".$temp_file->getMime()."]]></date_file_mime>\n";
+            //if($temp_file->getMime() == 'image/gif' || $temp_file->getMime() == 'image/jpeg' || $temp_file->getMime() == 'image/png'){
+            //   $xml .= "<date_file_data><![CDATA[".$temp_file->getBase64()."]]></date_file_data>\n";
+            //   debugToFile($temp_file->getBase64());
+            //}
             $xml .= "</date_file>\n";
             $temp_file = $file_list->getNext();
          }
