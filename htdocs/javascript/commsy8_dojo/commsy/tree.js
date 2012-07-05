@@ -106,6 +106,19 @@ define([	"dojo/_base/declare",
 			for(var id in item.children) {
 				this.walkHelper(tree, item.children[id], level+1);
 			}
+		},
+		
+		iterateCallback: function(rootItem, callbackFunction) {
+			// callback for item itself
+			callbackFunction(rootItem);
+			
+			// get all children
+			var children = this.tree.model.getChildren(rootItem, lang.hitch(this, function(children) {
+				// recursive call
+				dojo.forEach(children, lang.hitch(this, function(child, index, arr) {
+					this.iterateCallback(child, callbackFunction);
+				}));
+			}));
 		}
 	});
 });

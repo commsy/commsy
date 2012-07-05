@@ -27,7 +27,7 @@ define([	"dojo/_base/declare",
 			require(["commsy/EditTree"], Lang.hitch(this, function(EditTree) {
 				this.tree = new EditTree({
 					followUrl:		false,
-					checkboxes:		true,
+					checkboxes:		false,
 					expanded:		(Has("ie") <= 8) ? false : true,
 					item_id:		this.item_id
 				});
