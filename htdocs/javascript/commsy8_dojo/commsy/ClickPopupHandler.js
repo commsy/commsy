@@ -47,6 +47,9 @@ define([	"dojo/_base/declare",
 						
 						// register submit clicks
 						on(query("input.submit", this.contentNode), "click", lang.hitch(this, function(event) {
+							// setup loading
+							this.setupLoading();
+							
 							// get custom data object
 							var customObject = this.getAttrAsObject(event.target, "data-custom");
 							this.onPopupSubmit(customObject);
@@ -142,6 +145,9 @@ define([	"dojo/_base/declare",
 			
 			// remove from dom
 			domConstruct.destroy(this.contentNode);
+			
+			// destroy Loading
+			this.destroyLoading();
 			
 			this.is_open = false;
 		},

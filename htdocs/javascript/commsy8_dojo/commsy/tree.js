@@ -15,13 +15,16 @@ define([	"dojo/_base/declare",
 		checkboxes:			false,
 		expanded:			false,
 		item_id:			null,
+		tree:				null,
 		
 		constructor: function(options) {
 			options = options || {};
 			declare.safeMixin(this, options);
 		},
 		
-		setupTree: function(node) {
+		setupTree: function(node, callback) {
+			callback = callback || function() {};
+			
 			// get results from ajax call
 			this.AJAXRequest('tagtree', 'getTreeData', { item_id: this.item_id }, lang.hitch(this, function(results) {
 				var store = new ItemFileWriteStore({
@@ -38,7 +41,7 @@ define([	"dojo/_base/declare",
 				});
 				
 				// create tree
-				var tree = new Tree({
+				this.tree = new Tree({
 					autoExpand:			this.expanded,
 					model:				model,
 					showRoot:			false,
@@ -71,7 +74,9 @@ define([	"dojo/_base/declare",
 				});
 				
 				domConstruct.empty(node);
-				tree.placeAt(node);
+				this.tree.placeAt(node);
+				
+				callback();
 				
 				// auto expand
 				//this.autoExpandToLevel(tree);

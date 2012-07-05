@@ -156,13 +156,15 @@ define([	"dojo/_base/declare",
 		destroyLoading: function() {
 			var loadingScreenDiv = query("#loadingScreen")[0];
 			
-			dojo.fadeOut({
-				node:		loadingScreenDiv,
-				duration:	1000,
-				onEnd:		function() {
-					domConstruct.destroy(loadingScreenDiv);
-				}
-			}).play();
+			if(loadingScreenDiv) {
+				dojo.fadeOut({
+					node:		loadingScreenDiv,
+					duration:	1000,
+					onEnd:		function() {
+						domConstruct.destroy(loadingScreenDiv);
+					}
+				}).play();
+			}
 		},
 		
 		submit: function(search, additional) {

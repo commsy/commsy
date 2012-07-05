@@ -1,3 +1,14 @@
+{function name=tagsAsList level=0}
+	<ul>
+	{foreach $nodes as $node}
+		<li	id="node_{$node.item_id}" class="popup_buzzword_item">{$node.title}</li>
+		{if $node.children|count > 0}	{* recursive call *}
+			{tagsAsList nodes=$node.children level=$level+1}
+		{/if}
+	{/foreach}
+	</ul>
+{/function}
+
 <div id="popup_wrapper">
 	<div id="popup_edit">
 		<div id="popup_frame">
@@ -6,7 +17,7 @@
 
 				<div id="popup_pagetitle">
 					<a id="popup_close" href="" title="___COMMON_CLOSE___"><img src="{$basic.tpl_path}img/popup_close.gif" alt="___COMMON_CLOSE___" /></a>
-					<h2>___BUZZWORDS_EDIT_HEADER___</h2>
+					<h2>___TAG_EDIT_FORM_TITLE___</h2>
 					<div class="clear"> </div>
 				</div>
 
@@ -14,7 +25,8 @@
 					<div id="profile_content_row_three">
 
 						<div class="tab_navigation">
-		                    <a href="add_tab" class="pop_tab_active">___COMMON_ADD_BUTTON___</a>
+							<a href="add_tab" class="pop_tab_active">___COMMON_ADD_BUTTON___</a>
+							<a href="sort_tag" class="pop_tab">___COMMON_SORT_BUTTON___</a>
 		                    <a href="merge_tab" class="pop_tab">___BUZZWORDS_COMBINE_BUTTON___</a>
 		                    <a href="edit_tab" class="pop_tab list_activator">___COMMON_EDIT___</a>
 
@@ -23,20 +35,8 @@
 
 						<div id="popup_tabcontent">
 							<div id="add_tab" class="tab">
-								<div id="content_row_one">
-									<div class="input_row">
-										<input id="buzzword_create_name" type="text" class="size_200 mandatory" />
-										<input id="buzzword_create" class="popup_button submit" data-custom="part: 'add'" type="button" name="form_data[buzzword_create]" value="___BUZZWORDS_NEW_BUTTON___" />
-									</div>
-								</div>
-
-								<div id="content_row_two" class="overflow_auto">
-									<ul class="popup_buzzword_list">
-										{foreach $popup.buzzwords as $buzzword}
-											<li class="ui-state-default popup_buzzword_item">{$buzzword.name}</li>
-										{/foreach}
-										<div class="clear"></div>
-									</ul>
+								<div id="content_row_two_max">
+									<div class="tree"></div>
 								</div>
 							</div>
 
