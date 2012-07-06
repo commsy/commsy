@@ -63,6 +63,34 @@
 				}
 			}
 		}
+		
+		public function actionUpdateTreeStructure() {
+			if($this->accessGranted()) {
+				$parentId = $this->_data["parentId"];
+				$children = $this->_data["children"];
+				
+				$tag_manager = $this->_environment->getTagManager();
+				$tag2tag_manager = $this->_environment->getTag2TagManager();
+				
+				// process all children
+				foreach($children as $childIndex => $childId) {
+					// get item
+					$childItem = $tag_manager->getItem($childId);
+					
+					// delete all references from/to this child id
+					// ...?
+					
+					// set new position
+					$childItem->setPosition($parentId, $childIndex + 1);
+					
+					// save
+					$childItem->save();
+				}
+				
+				$this->setSuccessfullDataReturn(array());
+				echo $this->_return;
+			}
+		}
 
 		/*
 		 * every derived class needs to implement an processTemplate function
@@ -90,21 +118,6 @@
 			} else {
 				return true;
 			}
-		}
-		
-		private function cleanupSession($iid) {
-			$session = $this->_environment->getSessionItem();
-			
-			$session->unsetValue($this->_environment->getCurrentModule() . '_add_files');
-			$session->unsetValue($iid . '_post_vars');
-			$session->unsetValue($iid . '_material_attach_ids');
-			$session->unsetValue($iid . '_institution_attach_ids');
-			$session->unsetValue($iid . '_group_attach_ids');
-			$session->unsetValue($iid . '_topic_attach_ids');
-			$session->unsetValue($iid . '_material_back_module');
-			$session->unsetValue($iid . '_institution_back_module');
-			$session->unsetValue($iid . '_group_back_module');
-			$session->unsetValue($iid . '_topic_back_module');
 		}
 	}
 ?>

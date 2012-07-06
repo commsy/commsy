@@ -4,6 +4,7 @@ define([	"dojo/_base/declare",
         	"commsy/tree",
         	"dojo/_base/lang",
         	"dijit/Dialog",
+        	"cbtree/Tree",
         	"dijit/form/TextBox",
         	"dijit/form/Button",
         	"dojo/query",
@@ -11,8 +12,9 @@ define([	"dojo/_base/declare",
         	"dojo/dom-attr",
         	"cbtree/CheckBox",
         	"dojo/on",
+        	"dijit/tree/dndSource",
         	"cbtree/models/StoreModel-API",
-        	"dojo/NodeList-traverse"], function(declare, DomConstruct, ioQuery, TreeClass, Lang, Dialog, TextBox, Button, Query, ForestStoreModel, DomAttr, CheckBox, On) {
+        	"dojo/NodeList-traverse"], function(declare, DomConstruct, ioQuery, TreeClass, Lang, Dialog, Tree, TextBox, Button, Query, ForestStoreModel, DomAttr, CheckBox, On, DndSource) {
 	return declare(TreeClass, {
 		textbox:	null,
 		dialog:		null,
@@ -22,6 +24,52 @@ define([	"dojo/_base/declare",
 			// parent constructor is called automatically
 		},
 		
+		/************************************************************************************
+		 *** overwritten tree methods
+		 ************************************************************************************/
+		createTree: function() {
+			return new Tree({
+				autoExpand:			this.expanded,
+				model:				this.model,
+				showRoot:			false,
+				dndController:		DndSource,
+				checkBoxes:			this.checkboxes,
+				onClick:			Lang.hitch(this, function(item, node, evt) {
+				}),
+				widget: {
+					type:			CheckBox,
+					args: {
+						multiState:		true
+					},
+					mixin:		function(args) {
+						args["value"]	= this.item.item_id[0];
+						args["name"]	= "form_data[tags]";
+					}
+				}
+			});
+		},
+		
+		createModel: function() {
+			return new ForestStoreModel({
+				store:			this.store,
+				checkedAttr:	"match",
+				
+				// event handling
+				/*
+				onChildrenChange:	Lang.hitch(this, function(parent, newChildrenList) {
+					this.onChildrenChange(parent, newChildrenList);
+				}),
+				
+				onDelete:	Lang.hitch(this, function(item) {
+					this.onDelete(item);
+				})
+				*/
+			});
+		},
+		
+		/************************************************************************************
+		 *** main setup routine
+		 ************************************************************************************/
 		setupTree: function(node) {			
 			// call parent method - overwrite arguments(add a callback function, when loading is done)
 			this.inherited(arguments, [ node, Lang.hitch(this, function() {
@@ -29,9 +77,47 @@ define([	"dojo/_base/declare",
 				
 				// add "+" and "rename" to all node labels
 				this.addCreateAndRenameToAllLabels();
+				
+				On(this.store, "New", Lang.hitch(this, function(newItem, parentInfo) {
+					this.onStoreNew(newItem, parentInfo);
+				}));
+				
+				On(this.store, "Set", Lang.hitch(this, function(item, attribute, oldValue, newValue) {
+					this.onStoreSet(item, attribute, oldValue, newValue);
+				}));
 			})]);
 		},
 		
+		/************************************************************************************
+		 *** event handler
+		 ************************************************************************************/
+		onStoreNew: function(newItem, parentInfo) {
+			console.log("new");
+		},
+		
+		onStoreSet: function(item, attribute, oldValue, newValue) {
+			// we are only interested in changes of child relationship
+			if(attribute === "children") {
+				// get tag id of item
+				var parentId = this.model.getItemAttr(item, "item_id");
+				
+				// get array of children ids
+				var childrenIds = dojo.map(newValue, Lang.hitch(this, function(child, index, arr) {
+					return this.model.getItemAttr(child, "item_id");
+				}));
+				
+				// send ajax request
+				this.AJAXRequest("tags", "updateTreeStructure", { parentId: parentId, children: childrenIds },
+					Lang.hitch(this, function(response) {
+						
+					})
+				);
+			}
+		},
+		
+		/************************************************************************************
+		 *** Tree Actions
+		 ************************************************************************************/
 		createNewTreeEntry: function(parentId) {
 			var model = this.tree.model;
 			
@@ -63,6 +149,9 @@ define([	"dojo/_base/declare",
 			}), model.getItemAttr(item, "title"));
 		},
 		
+		/************************************************************************************
+		 *** Helper Functions	
+		 ************************************************************************************/
 		createNewInputDialog: function(submitCallback, value) {
 			value = value || "";
 			
@@ -95,7 +184,7 @@ define([	"dojo/_base/declare",
 		
 		addCreateAndRenameToAllLabels: function() {
 			// create a link after all labels and connect event handling
-			dojo.forEach(Query("span.dijitTreeLabel"), Lang.hitch(this, function(spanNode, index, arr) {
+			dojo.forEach(Query("div#popup_tabcontent span.dijitTreeLabel"), Lang.hitch(this, function(spanNode, index, arr) {
 				
 				// check if link wasn't already created
 				var nodeCreatorNode = Query("a.nodeCreator", spanNode.parentNode)[0];
@@ -112,7 +201,7 @@ define([	"dojo/_base/declare",
 					}, createLinkNode, "after");
 					
 					// get widget id from appropriated dijitTreeNode
-					var treeNode = new dojo.NodeList(createLinkNode).parents("div#popup_tabcontent div.dijitTreeNode")[0];
+					var treeNode = new dojo.NodeList(createLinkNode).parents("div.dijitTreeNode")[0];
 					if(treeNode) {
 						var widgetId = DomAttr.get(treeNode, "widgetid");
 						
