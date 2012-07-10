@@ -537,7 +537,7 @@ class cs_popup_profile_controller implements cs_popup_controller {
 								setChangeAllValue($user_item, $dummy_user, 'setEmail', 'getEmail', $form_data['mail_all']);
 								if(isset($form_data['mail_all'])) {
 									if(!$user_item->isEmailVisible()) $dummy_user->setEmailNotVisible();
-									else $dummy_user->setEMailVisibile();
+									else $dummy_user->setEmailVisible();
 								}
 
 								setChangeAllValue($user_item, $dummy_user, 'setTelephone', 'getTelephone', $form_data['telephone_all']);

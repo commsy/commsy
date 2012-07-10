@@ -26,7 +26,7 @@
 			<input id="send_mail" type="checkbox" name="form_data[copy_mod_cc]" value="true" /> ___INDEX_ACTION_FORM_CC___ <input id="send_mail" type="checkbox" name="form_data[copy_mod_bcc]" value="true" /> ___INDEX_ACTION_FORM_BCC_MODERATOR___
 		</div>
 		<div class="input_container" style="margin-left:100px;">
-			<input id="send_mail" type="checkbox" name="form_data[copy_auth_cc]" value="true" /> ___INDEX_ACTION_FORM_CC___ <input id="send_mail" type="checkbox" name="form_data[copy_auth_cc]" value="true" /> ___INDEX_ACTION_FORM_BCC___
+			<input id="send_mail" type="checkbox" name="form_data[copy_auth_cc]" value="true" /> ___INDEX_ACTION_FORM_CC___ <input id="send_mail" type="checkbox" name="form_data[copy_auth_bcc]" value="true" /> ___INDEX_ACTION_FORM_BCC___
 		</div>
 	</fieldset>
 	<div class="clear"></div>

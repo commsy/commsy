@@ -198,13 +198,34 @@ define([	"dojo/_base/declare",
 					DomConstruct.empty(mailContentNode);
 					DomConstruct.place(html, mailContentNode, "last");
 					
-					dojo.forEach(Query("div.ckeditor", mailContentNode), Lang.hitch(this, function(node, index, arr) {
-						require(["commsy/ckeditor"], Lang.hitch(this, function(CKEditor) {
-							var ck = new CKEditor();
-							ck.create(node);
+					require(["commsy/ckeditor"], Lang.hitch(this, function(CKEditor) {
+						var ck = new CKEditor();
+						ck.create(Query("div.ckeditor", mailContentNode)[0]);
+						
+						// create mail send event
+						On(Query("input[name='send']", mailContentNode)[0], "click", Lang.hitch(this, function(event) {
+							this.sendMail(mailContentNode, ck);
 						}));
 					}));
 				}));
+			}));
+		},
+		
+		sendMail: function(contentNode, ckEditor) {
+			// collect data
+			var data = {
+				sendMail:		DomAttr.get(Query("input[name='form_data[send_mail]']", contentNode)[0], "value"),
+				modCC:			DomAttr.get(Query("input[name='form_data[copy_mod_cc]']", contentNode)[0], "value"),
+				modBCC:			DomAttr.get(Query("input[name='form_data[copy_mod_bcc]']", contentNode)[0], "value"),
+				authCC:			DomAttr.get(Query("input[name='form_data[copy_auth_cc]']", contentNode)[0], "value"),
+				authBCC:		DomAttr.get(Query("input[name='form_data[copy_auth_bcc]']", contentNode)[0], "value"),
+				subject:		DomAttr.get(Query("input[name='form_data[subject]']", contentNode)[0], "value"),
+				description:	ckEditor.getInstance().getData()
+			};
+			
+			// send request
+			this.AJAXRequest("accounts", "sendMail", { data: data }, Lang.hitch(this, function(response) {
+				
 			}));
 		}
 	});
