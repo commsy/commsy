@@ -27,9 +27,7 @@ define([	"dojo/_base/declare",
 						DomConstruct.place(html, this.contentNode, "last");
 						
 						this.setupTabs();
-						
 						this.setupFeatures();
-						
 						this.setupSpecific();
 						
 						// register close

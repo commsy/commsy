@@ -166,6 +166,12 @@ require([	"dojo/_base/declare",
 					});
 				});
 				
+				// automatic popup opener
+				// should be loaded at the very last
+				require(["commsy/popups/TogglePersonalConfiguration", "commsy/AutoOpenPopup"], function(Configuration, AutoOpenPopup) {
+					var handler = new AutoOpenPopup();
+					handler.setup();
+				});
 			}));
 		}
 	});

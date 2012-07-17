@@ -346,7 +346,7 @@ class cs_popup_configuration_mail_controller implements cs_popup_controller {
         			break;
         			 
         		case "status_no_contact_moderator":
-        			$translation = $this->_translator->getMessage('INDEX_ACTION_PERFORM_USER_UNMAKE_CONTACT_PERSON_BUTTON');
+        			$translation = $translator->getMessage('INDEX_ACTION_PERFORM_USER_UNMAKE_CONTACT_PERSON_BUTTON');
         			break;
         	}
         	

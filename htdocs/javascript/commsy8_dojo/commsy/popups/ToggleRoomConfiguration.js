@@ -135,6 +135,16 @@ define([	"dojo/_base/declare",
 			require(["commsy/Accounts"], Lang.hitch(this, function(Accounts) {
 				var accounts = new Accounts();
 				accounts.init(this.cid, this.from_php.template.tpl_path);
+				
+				// check for auto load tab
+				var autoOpen = this.from_php.autoOpenPopup;
+				if (autoOpen) {
+					var aNode = Query("a[href='" + autoOpen.tab + "']")[0];
+					if (aNode) {
+						accounts.setStatus(autoOpen.parameters.filter);
+						aNode.click();
+					}
+				}
 			}));
 		},
 		

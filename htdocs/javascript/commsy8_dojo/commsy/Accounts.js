@@ -47,7 +47,7 @@ define([	"dojo/_base/declare",
 						// setup form submit
 						On(Query("input[name='accounts_submit_restrictions']")[0], "click", Lang.hitch(this, function(event) {
 							// reset selected ids
-							this.store.selected_ids = [];
+							//this.store.selected_ids = [];
 							
 							// reset paging
 							this.paging.current = 0;
@@ -115,6 +115,14 @@ define([	"dojo/_base/declare",
 			}));
 		},
 		
+		setStatus: function(status) {
+			this.restrictions.status = status;
+			
+			var contentNode = Query(".pop_item_content")[0];
+			var optionNode = Query("select[name='accounts_status_restriction'] option[value='" + status + "']", contentNode)[0];
+			DomAttr.set(optionNode, "selected", "selected");
+		},
+		
 		performRequest: function() {
 			// create data object for request
 			var data = {
@@ -141,7 +149,7 @@ define([	"dojo/_base/declare",
 							DomConstruct.create("input", {
 								type:		"checkbox",
 								id:			"user_" + entry.item_id,
-								checked:	(BaseArray.indexOf(this.store.selected_ids.indexOf, entry.item_id) !== -1) ? true : false
+								checked:	(BaseArray.indexOf(this.store.selected_ids, entry.item_id) !== -1) ? true : false
 							}, checkboxDivNode, "last");
 						
 						DomConstruct.create("div", {
@@ -191,6 +199,9 @@ define([	"dojo/_base/declare",
 			
 			// send action and id list via ajax
 			this.AJAXRequest("accounts", "performUserAction", { ids: this.store.selected_ids, action: action }, Lang.hitch(this, function(response) {
+				// reload list to get changes
+				this.performRequest();
+				
 				// load mail popup information
 				this.AJAXRequest("popup", "getHTML", { ids: this.store.selected_ids, action: action, module: "configuration_mail" }, Lang.hitch(this, function(html) {
 					var mailContentNode = Query("div#popup_accounts_mail")[0];
@@ -204,14 +215,14 @@ define([	"dojo/_base/declare",
 						
 						// create mail send event
 						On(Query("input[name='send']", mailContentNode)[0], "click", Lang.hitch(this, function(event) {
-							this.sendMail(mailContentNode, ck);
+							this.sendMail(mailContentNode, ck, action);
 						}));
 					}));
 				}));
 			}));
 		},
 		
-		sendMail: function(contentNode, ckEditor) {
+		sendMail: function(contentNode, ckEditor, action) {
 			// collect data
 			var data = {
 				sendMail:		DomAttr.get(Query("input[name='form_data[send_mail]']", contentNode)[0], "value"),
@@ -220,12 +231,17 @@ define([	"dojo/_base/declare",
 				authCC:			DomAttr.get(Query("input[name='form_data[copy_auth_cc]']", contentNode)[0], "value"),
 				authBCC:		DomAttr.get(Query("input[name='form_data[copy_auth_bcc]']", contentNode)[0], "value"),
 				subject:		DomAttr.get(Query("input[name='form_data[subject]']", contentNode)[0], "value"),
-				description:	ckEditor.getInstance().getData()
+				description:	ckEditor.getInstance().getData(),
+				ids:			this.store.selected_ids,
+				action:			action
 			};
 			
 			// send request
-			this.AJAXRequest("accounts", "sendMail", { data: data }, Lang.hitch(this, function(response) {
+			this.AJAXRequest("accounts", "sendMail", data,Lang.hitch(this, function(response) {
+				// handling errors etc. should be done here
 				
+				var mailContentNode = Query("div#popup_accounts_mail")[0];
+				DomConstruct.empty(mailContentNode);
 			}));
 		}
 	});

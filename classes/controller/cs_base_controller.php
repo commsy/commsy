@@ -7,6 +7,7 @@
 		protected $_tpl_file = null;
 		protected $_tpl_path = null;
 		protected $_utils = null;
+		protected $_toJSMixin = null;
 
 		/**
 		 * constructor
@@ -213,6 +214,11 @@
 					$to_javascript['autosave']['mode'] = $c_autosave_mode;
 					$to_javascript['autosave']['limit'] = $c_autosave_limit;
 				}
+			}
+			
+			// mixin javascript variables
+			if(is_array($this->_toJSMixin)) {
+				$to_javascript = array_merge($to_javascript, $this->_toJSMixin);
 			}
 			
 			$this->assign('javascript', 'variables_as_json', json_encode($to_javascript));

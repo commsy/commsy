@@ -89,206 +89,188 @@
 			}
 			
 			// perform actions
-			$admin = $this->_environment->getCurrentUser();
-			
 			foreach($ids as $id) {
 				$user = $user_manager->getItem($id);
 				
 				$this->performAction($action, $user);
 			}
 			
-			
-			
-			
-			/*
-			 * $send_to = $user->getEmail();
-			
-			
-			if($user->isEmailVisible()){
-				$formal_data_send_to[] = $user->getFullName()." &lt;".$send_to."&gt;";
-			} else {
-				$translator = $environment->getTranslationObject();
-				$formal_data_send_to[] = $user->getFullName()." &lt;".$translator->getMessage('USER_EMAIL_HIDDEN')."&gt;";
-			}
-			
-			
-			
-			
-			
-			// send email
-			if ( ( isset($post_array['with_mail']) and $post_array['with_mail'] == '1') ) {
-				include_once('classes/cs_mail.php');
-				$mail = new cs_mail();
-				$mail->set_from_email($admin->getEmail());
-				$mail->set_from_name($admin->getFullname());
-				$mail->set_reply_to_email($admin->getEmail());
-				$mail->set_reply_to_name($admin->getFullname());
-			
-				if(!isset($formal_data_from)){
-					$formal_data_from = array($translator->getMessage('MAIL_FROM'), $admin->getFullname()." &lt;".$admin->getEmail()."&gt;");
-					$formal_data[] = $formal_data_from;
-				}
-				if(!isset($formal_data_reply)){
-					$formal_data_reply = array($translator->getMessage('REPLY_TO'), $admin->getFullname()." &lt;".$admin->getEmail()."&gt;");
-					$formal_data[] = $formal_data_reply;
-				}
-				// subject and body
-				// language
-				$translator = $environment->getTranslationObject();
-				$room  = $environment->getCurrentContextItem();
-				$url_to_room = LF.LF;
-				$url_to_room .= 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?cid='.$environment->getCurrentContextID();
-				$subject = $_POST['subject'];
-				$content = $_POST['content'];
-				$content = str_replace('%1',$user->getFullname(),$content);
-			
-				// now prepare for each action separately
-				if ( $action_array['action'] == 'USER_ACCOUNT_DELETE'
-						or $action_array['action'] == 'USER_ACCOUNT_LOCK'
-						or $action_array['action'] == 'USER_ACCOUNT_FREE'
-						or $action_array['action'] == 'USER_STATUS_USER'
-						or $action_array['action'] == 'USER_STATUS_MODERATOR'
-						or $action_array['action'] == 'USER_UNMAKE_CONTACT_PERSON'
-						or $action_array['action'] == 'USER_MAKE_CONTACT_PERSON'
-				) {
-					$content = str_replace('%2',$user->getUserID(),$content);
-					$content = str_replace('%3',$room->getTitle(),$content);
-				} elseif ( $action_array['action'] == 'USER_EMAIL_ACCOUNT_PASSWORD' ) {
-					$content = str_replace('%2',$room->getTitle(),$content);
-					$content = str_replace('%3',$user->getUserID(),$content);
-				} elseif ( $action_array['action'] == 'USER_EMAIL_ACCOUNT_MERGE' ) {
-					$account_text = '';
-					$user_manager->resetLimits();
-					$user_manager->setContextLimit($environment->getCurrentContextID());
-					$user_manager->setUserLimit();
-					$user_manager->setSearchLimit($user->getEmail());
-					$user_manager->select();
-					$user_list = $user_manager->get();
-					if (!$user_list->isEmpty()) {
-						if ($user_list->getCount() > 1) {
-							$first = true;
-							$user_item = $user_list->getFirst();
-							while ($user_item) {
-								if ($first) {
-									$first = false;
-								} else {
-									$account_text .= LF;
-								}
-								$account_text .= $user_item->getUserID();
-								$user_item = $user_list->getNext();
-							}
-						} else {
-							include_once('functions/error_functions.php');
-							trigger_error('that is impossible, list must be greater than one',E_USER_WARNING);
-						}
-					} else {
-						include_once('functions/error_functions.php');
-						trigger_error('that is impossible, list must be greater than one',E_USER_WARNING);
-					}
-					$content = str_replace('%2',$user->getEmail(),$content);
-					$content = str_replace('%3',$room->getTitle(),$content);
-					$content = str_replace('%4',$account_text,$content);
-				}
-			
-				unset($translator);
-				unset($room);
-			
-				$translator = $environment->getTranslationObject();
-			
-				if ( isset($subject) and !empty($subject) ) {
-					$mail->set_subject($subject);
-					if(!isset($formal_data_subject)){
-						$formal_data_subject = array($translator->getMessage('MAIL_SUBJECT'), $subject);
-					}
-				}
-				if ( isset($content) and !empty($content) ) {
-					$mail->set_message($content);
-					if(!isset($formal_data_message)){
-						$formal_data_message = array($translator->getMessage('COMMON_MAIL_CONTENT').":", $content);
-					}
-				}
-				$mail->set_to($send_to);
-			
-				#// cc / bcc
-				$cc_string = '';
-				$bcc_string = '';
-				$cc_array = array();
-				$bcc_array = array();
-				if (isset($post_array['cc']) and $post_array['cc'] == 'cc') {
-					$cc_array[] = $admin->getEmail();
-				}
-				if (isset($post_array['bcc']) and $post_array['bcc'] == 'bcc') {
-					$bcc_array[] = $admin->getEmail();
-				}
-				if (isset($post_array['cc_moderator']) and $post_array['cc_moderator'] == 'cc_moderator') {
-					$current_context = $environment->getCurrentContextItem();
-					$mod_list = $current_context->getModeratorList();
-					if (!$mod_list->isEmpty()) {
-						$moderator_item = $mod_list->getFirst();
-						while ($moderator_item) {
-							$email = $moderator_item->getEmail();
-							if (!empty($email)) {
-								$cc_array[] = $email;
-							}
-							unset($email);
-							$moderator_item = $mod_list->getNext();
-						}
-					}
-					unset($current_context);
-				}
-				if (isset($post_array['bcc_moderator']) and $post_array['bcc_moderator'] == 'bcc_moderator') {
-					$current_context = $environment->getCurrentContextItem();
-					$mod_list = $current_context->getModeratorList();
-					if (!$mod_list->isEmpty()) {
-						$moderator_item = $mod_list->getFirst();
-						while ($moderator_item) {
-							$email = $moderator_item->getEmail();
-							if (!empty($email)) {
-								$bcc_array[] = $email;
-							}
-							unset($email);
-							$moderator_item = $mod_list->getNext();
-						}
-					}
-					unset($current_context);
-				}
-			
-				if ( isset($post_array['copy'])
-						and !empty($post_array['copy'])
-						and !in_array($action_array['user_item_id'],$action_array['selected_ids'])
-						and count($action_array['selected_ids']) == 1
-				) {
-					$cc_array[] = $admin->getEmail();
-				}
-			
-			
-				if (!empty($cc_array)) {
-					$cc_array = array_unique($cc_array);
-				}
-				if (!empty($bcc_array)) {
-					$bcc_array = array_unique($bcc_array);
-				}
-				$cc_string = implode(",",$cc_array);
-				$bcc_string = implode(",",$bcc_array);
-				unset($cc_array);
-				unset($bcc_array);
-				if (!empty($cc_string)) {
-					$mail->set_cc_to($cc_string);
-				}
-				if (!empty($bcc_string)) {
-					$mail->set_bcc_to($bcc_string);
-				}
-				unset($cc_string);
-				unset($bcc_string);
-			
-				$mail_success = $mail->send();
-				$mail_error_array = $mail->getErrorArray();
-				unset($mail);
-			}
-			unset($user);
-			 */
-			
 			$this->setSuccessfullDataReturn();
+			echo $this->_return;
+		}
+		
+		public function actionSendMail() {
+			$user_manager = $this->_environment->getUserManager();
+			$translator = $this->_environment->getTranslationObject();
+			
+			$ids = $this->_data["ids"];
+			$sendMail = $this->_data["sendMail"];
+			$modCC = $this->_data["modCC"];
+			$modBCC = $this->_data["modBCC"];
+			$authCC = $this->_data["authCC"];
+			$authBCC = $this->_data["authBCC"];
+			$subject = $this->_data["subject"];
+			$action = $this->_data["action"];
+			
+			$admin = $this->_environment->getCurrentUser();
+			
+			// if we do not send any mails, leave here
+			if ( !((isset($sendMail) && $sendMail == "true") || $action == "mail") ) {
+				$this->setSuccessfullDataReturn();
+				echo $this->_return;
+				return true;
+			}
+			
+			$response_array = array();
+			
+			foreach ($ids as $id) {
+				$user = $user_manager->getItem($id);
+				$sendTo = $user->getEmail();
+				
+				$description = $this->_data["description"];
+				
+				$formal_data_send_to = array();
+				
+				if ($user->isEmailVisible()) {
+					$formal_data_send_to[] = $user->getFullName() . " &lt;" . $sendTo . "&gt;";
+				} else {
+					$formal_data_send_to[] = $user->getFullName() . " &lt;" . $translator->getMessage("USER_EMAIL_HIDDEN") . "&gt;";
+				}
+				
+				// send email
+				if ( (isset($sendMail) && $sendMail == "true") || $action == "mail" ) {
+					include_once("classes/cs_mail.php");
+					
+					$mail = new cs_mail();
+					$mail->set_from_email($admin->getEmail());
+					$mail->set_from_name($admin->getFullname());
+					$mail->set_reply_to_email($admin->getEmail());
+					$mail->set_reply_to_name($admin->getFullname());
+					
+					if (!isset($formal_data_from)) {
+						$formal_data_from = array(
+							$translator->getMessage("MAIL_FROM"),
+							$admin->getFullname() . " &lt;" . $admin->getEmail() . "&gt;"
+						);
+						$formal_data[] = $form_data_from;
+					}
+					
+					if (!isset($formal_data_reply)) {
+						$form_data_reply = array(
+							$translator->getMessage("REPLY_TO"),
+							$admin->getFullname() . " &lt;" . $admin->getEmail() . "&gt;"
+						);
+						$formal_data[] = $form_data_reply;
+					}
+					
+					// subject and body
+					$room = $this->_environment->getCurrentContextItem();
+					$url_to_room = LF.LF;
+					$url_to_room .= "http://" . $_SERVER["HTTP_HOST"] . $_SERVER["PHP_SELF"] . "?cid=" . $this->_environment->getCurrentContextID();
+					
+					if($action !== "email") {
+						$description = str_replace("%1", $user->getFullname(), $description);
+						$description = str_replace("%2", $user->getUserID(), $description);
+						$description = str_replace("%3", $room->getTitle(), $description);
+					}
+					
+					if (isset($subect) && !empty($subject)) {
+						$mail->set_subject($subject);
+						
+						if (!isset($formal_data_subject)) {
+							$formal_data_subject = array($translator->getMessage("MAIL_SUBJECT"), $subject);
+						}
+					}
+					
+					if (isset($description) && !empty($description)) {
+						$mail->set_message($description);
+						
+						if (!isset($formal_data_message)) {
+							$formal_data_message = array($translator->getMessage("COMMON_MAIL_CONTENT") . ":", $description);
+						}
+					}
+					
+					$mail->set_to($sendTo);
+					
+					// cc / bcc
+					$cc_array = array();
+					$bcc_array = array();
+					
+					if (isset($authCC) && $authCC == "true") {
+						$cc_array[] = $admin->getEmail();
+					}
+					
+					if (isset($authBCC) && authBCC == "true") {
+						$bcc_array[] = $admin->getEmail();
+					}
+					
+					if (isset($modCC) && $modCC == "true") {
+						$current_context = $this->_environment->getCurrentContextItem();
+						$mod_list = $current_context->getModeratorList();
+						
+						if (!$mod_list->isEmpty()) {
+							$moderator_item = $mod_list->getFirst();
+							
+							while ($moderator_item) {
+								$email = $moderator_item->getEmail();
+								if (!empty($email)) {
+									$cc_array[] = $email;
+								}
+								
+								unset($email);
+								$moderator_item = $mod_list->getNext();
+							}
+						}
+					}
+					
+					if (isset($modBCC) && $modBCC == "true") {
+						$current_context = $this->_environment->getCurrentContextItem();
+						$mod_list = $current_context->getModeratorList();
+						
+						if (!$mod_list->isEmpty()) {
+							$moderator_item = $mod_list->getFirst();
+							
+							while ($moderator_item) {
+								$email = $moderator_item->getEmail();
+								if (!empty($email)) {
+									$bcc_array[] = $email;
+								}
+								
+								unset($email);
+								$moderator_item = $mod_list->getNext();
+							}
+						}
+					}
+					
+					// make unique
+					if (!empty($cc_array)) $cc_array = array_unique($cc_array);
+					if (!empty($bcc_array)) $bcc_array = array_unique($bcc_array);
+					
+					// build strings
+					$cc_string = implode(",", $cc_array);
+					$bcc_string = implode(",", $bcc_array);
+					
+					if (!empty($cc_string)) {
+						$mail->set_cc_to($cc_string);
+					}
+					
+					if (!empty($bcc_string)) {
+						$mail->set_bcc_to($bcc_string);
+					}
+					
+					unset($cc_string);
+					unset($bcc_string);
+					
+					// send mail
+					$response_array[] = array(
+						$mail_success = $mail->send(),
+						$mail_error_array = $mail->getErrorArray()
+					);
+				}
+			}
+			
+			// setup successfull reponse array - but it can also contains errors
+			$this->setSuccessfullDataReturn($response_array);
 			echo $this->_return;
 		}
 		

@@ -31,7 +31,7 @@ define([	"dojo/_base/declare",
 			return new Tree({
 				autoExpand:			this.expanded,
 				model:				this.model,
-				showRoot:			false,
+				showRoot:			true,
 				dndController:		DndSource,
 				checkBoxes:			this.checkboxes,
 				onClick:			Lang.hitch(this, function(item, node, evt) {
