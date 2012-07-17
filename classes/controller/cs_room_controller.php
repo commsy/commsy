@@ -104,7 +104,26 @@
 
 			// set workflow status
 			$this->assign('room', 'workflow', $current_context->withWorkflow());
+
+			$this->assign('room', 'usage_info_content', $this->getUsageInfoContent());
 		}
+
+
+		private function getUsageInfoContent(){
+      		$current_context = $this->_environment->getCurrentContextItem();
+			$return_array = array();
+			$return_array['show'] = false;
+
+	        $act_rubric = $this->_environment->getCurrentModule();
+	        $info_text = $current_context->getUsageInfoTextForRubric($act_rubric);
+	        if (!empty($info_text) ){
+				$return_array['title'] = $current_context->getUsageInfoHeaderForRubric($act_rubric);
+				$return_array['content'] = $current_context->getUsageInfoTextForRubric($act_rubric);
+				$return_array['show'] = true;
+			}
+			return $return_array;
+		}
+
 
 		private function getAddonInformation() {
 			$return = array(

@@ -33,6 +33,32 @@
 
 		public function actionIndex() {
 			$this->assign('room', 'home_content', $this->getListContent());
+			$this->assign('room', 'informationbox' , $this->getInformationBoxContent());
+		}
+
+		public function getInformationBoxContent(){
+      		$current_context = $this->_environment->getCurrentContextItem();
+
+			$return_array = array();
+			$return_array['show'] = $current_context->withInformationBox();
+			$return_array['title'] = '';
+			$return_array['iid'] = '';
+			$return_array['content'] = '';
+
+			if ($return_array['show']) {
+				$id = $current_context->getInformationBoxEntryID();
+			    $manager = $this->_environment->getItemManager();
+			    $item = $manager->getItem($id);
+			    $entry_manager = $this->_environment->getManager($item->getItemType());
+			    $entry = $entry_manager->getItem($id);
+				$return_array['title'] = $entry->getTitle();
+				$return_array['content'] = $entry->getDescription();
+				$return_array['rubric'] = $entry->getItemType();
+				$return_array['iid'] = $id;
+			}
+			return $return_array;
+
+
 		}
 
 		  /** get the activity of the item

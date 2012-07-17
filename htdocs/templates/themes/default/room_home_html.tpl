@@ -11,6 +11,24 @@
 
 {block name=room_main_content}
 	<div id="full_width_content">
+		{if $room.informationbox.show}
+			<div class="content_item"> <!-- Start content_item -->
+                <h2 style="border-bottom:0px;">
+                	<a href="commsy.php?cid={$environment.cid}&mod={$room.informationbox.rubric}&fct=detail&iid={$room.informationbox.iid}">{$room.informationbox.title}</a>
+                </h2>
+                <div class="clear"> </div>
+                <div class="row_even" style="padding:10px;">
+                	<div style="max-height: 220px; height:auto !important; height: 220px; overflow:auto; ">
+                		{$room.informationbox.content}
+               		</div>
+                	<div class="clear"> </div>
+               		<div style="float:right;">
+               			<a href="commsy.php?cid={$environment.cid}&mod={$room.informationbox.rubric}&fct=detail&iid={$room.informationbox.iid}">___COMMON_INFOBOX_FURTHER_INFORMATION___</a>
+               		</div>
+                	<div class="clear"> </div>
+               </div>
+             </div>
+		{/if}
 		{foreach $room.home_content as $rubric}
 			<div class="content_item"> <!-- Start content_item -->
             	<div class="ci_head_actions">

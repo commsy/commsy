@@ -163,6 +163,15 @@
 				{if ($environment.module != 'group' and $environment.module != 'project' and $environment.module != 'topic' and $environment.module != 'institution') or ($environment.function != 'index')}
            		<div id="rc_portlet_area">
            			{block name=room_right_portlets}
+           				{if $room.usage_info_content.show}
+							<div class="portlet_rc">
+								<h2>{$room.usage_info_content.title}</h2>
+								<div class="clear"> </div>
+								<div class="portlet_rc_body">
+									{$room.usage_info_content.content}
+								</div>
+							</div>
+           				{/if}
            				{if $room.sidebar_configuration.active.buzzwords}
 	           				{$h = $room.sidebar_configuration.hidden.buzzwords}
 							<div class="portlet_rc">
@@ -225,6 +234,7 @@
 								</div>
 							</div>
 						{/if}
+
 					{/block}
            		</div>
            		{elseif $environment.module == 'topic' }
