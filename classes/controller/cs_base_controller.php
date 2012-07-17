@@ -137,6 +137,44 @@
 			return $this->_utils;
 		}
 
+		private function getUseProblems(){
+			$current_context = $this->_environment->getCurrentContextItem();
+			$translator = $this->_environment->getTranslationObject();
+			$return_array = array();
+			$return_array['show'] = false;
+			$session_item = $this->_environment->getSessionItem();
+      		$return_array['content'] = '';
+      		$return_array['browser'] = false;
+			$return_array['big_problem'] = false;
+			$return_array['problem'] = false;
+      		if($session_item->issetValue('javascript')){
+         		if($session_item->getValue('javascript') == "-1"){
+            		$return_array['content'] .= ' '.$translator->getMessage('COMMON_NO_JAVASCRIPT_POSSIBLE');
+					$return_array['show'] = true;
+					$return_array['big_problem'] = true;
+         		}
+      		}
+/*      		if($session_item->issetValue('flash')){
+         		if($session_item->getValue('flash') == "-1"){
+            		$return_array['content'] .= $translator->getMessage('COMMON_NO_FLASH_POSSIBLE');
+					$return_array['show'] = true;
+					$return_array['big_problem'] = true;
+         		}
+      		}
+*/
+        	$current_browser = mb_strtolower($this->_environment->getCurrentBrowser(), 'UTF-8');
+        	$current_browser_version = $this->_environment->getCurrentBrowserVersion();
+        	if ($current_browser == 'msie'
+        		and (strstr($current_browser_version,'7.') or strstr($current_browser_version,'6.'))
+        		){
+				$return_array['problem'] = true;
+				$return_array['show'] = true;
+            	$return_array['content'] .= ' '.$translator->getMessage('COMMON_NO_IE_LOWER_THEN_8');
+        	}
+        	return $return_array;
+
+		}
+
 		/**
 		 * process basic template information
 		 */
@@ -193,6 +231,10 @@
 			$this->assign('environment', 'post', $_POST);
 			$this->assign('environment', 'get', $_GET);
 
+			$this->assign('environment', 'use_problems', $this->getUseProblems());
+
+
+
 			// to javascript
 			$to_javascript = array();
 
@@ -205,22 +247,22 @@
 			$to_javascript['security']['token'] = getToken();
 			$to_javascript['autosave']['mode'] = 0;
 			$to_javascript['autosave']['limit'] = 0;
-			
+
 			if(isset($portal_user) && $portal_user->isAutoSaveOn()) {
 				global $c_autosave_mode;
 				global $c_autosave_limit;
-				
+
 				if(isset($c_autosave_mode) && isset($c_autosave_limit)) {
 					$to_javascript['autosave']['mode'] = $c_autosave_mode;
 					$to_javascript['autosave']['limit'] = $c_autosave_limit;
 				}
 			}
-			
+
 			// mixin javascript variables
 			if(is_array($this->_toJSMixin)) {
 				$to_javascript = array_merge($to_javascript, $this->_toJSMixin);
 			}
-			
+
 			$this->assign('javascript', 'variables_as_json', json_encode($to_javascript));
 		}
 	}

@@ -1,5 +1,16 @@
 {extends file="overwrite_html.tpl"}
 
+{block name=warning}
+	{if $environment.use_problems.show}
+		<div id="warning">
+			<div id="wn_wrapper_outer">
+				<strong>___COMMSY_USE_PROBLEMS___ {$environment.use_problems.content}</strong>
+			<div class="clear"></div>
+		</div>
+	{/if}
+{/block}
+
+
 {block name=top_menu}
 	<div id="top_menu">
 		<div id="tm_wrapper_outer">

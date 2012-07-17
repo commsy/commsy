@@ -47,6 +47,7 @@
 
 <body class="tundra">
 	{block name=header}
+	{block name=warning}{/block}
 	{block name=top_menu}{/block}
     <div id="wrapper">
 	{/block}

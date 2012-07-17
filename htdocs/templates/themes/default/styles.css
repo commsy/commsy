@@ -3203,6 +3203,20 @@ top-bar, breadcrumb and settings
 ----------------------------------------------------------------------
 */
 
+#warning {
+    background: url(img/warning.jpg) repeat-x;
+    }
+
+#wn_wrapper_outer {
+	margin: 0 auto;
+    width: 980px;
+    color: #000;
+    height: 18px;
+    text-align:center;
+    padding:10px 20px;
+    }
+
+
 #top_menu {
     background: url(img/top_menu_bg.jpg) repeat-x;
     height: 40px;
