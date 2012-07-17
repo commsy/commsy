@@ -338,6 +338,12 @@
 						// redirect
 						$this->cleanup_session($this->_item_id);
 						redirect($this->_environment->getCurrentContextID(), Type2Module($type), "detail", array("iid" => $refId), $anchor);
+					} else {
+						$refId = $_POST['ref_iid'];
+						$item_manager = $this->_environment->getItemManager();
+						$type = $item_manager->getItemType($refId);
+						
+						redirect($this->_environment->getCurrentContextID(), Type2Module($type), "detail", array("iid" => $refId, "annotation_exception" => "mandatory"), "annotation-1");
 					}
 				}
 			}

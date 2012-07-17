@@ -1738,6 +1738,10 @@ forms
 ----------------------------------------------------------------------
 */
 
+input.missing {
+	border: 1px solid red !important;
+}
+
 #popup_content input {
     vertical-align: middle;
     }

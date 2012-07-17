@@ -12,7 +12,7 @@ define([	"dojo/_base/declare",
 		
 		follow: function(anchor) {
 			// separate type and item id
-			/([a-z]*)([0-9]*)/.exec(anchor);
+			/([a-z]*)([\-0-9]*)/.exec(anchor);
 			var type = RegExp.$1;
 			var item_id = parseInt(RegExp.$2);
 			

@@ -254,13 +254,14 @@
 				</div>
 
 				<div class="column_590">
+					<a name="discarticle_new"></a>
 					<form action="commsy.php?cid={$environment.cid}&mod=discarticle&fct=edit" method="post" enctype="multipart/form-data">
 						<div class="post_content">
 							<h4>{$detail.content.new_num}. </h4>
 							<input type="hidden" value="" name="iid"/>
 							<input type="hidden" value="{$detail.item_id}" name="discussion_id"/>
 							<input type="hidden" value="1" name="ref_position"/>
-							<input id="pn_title" type="text" name="form_data[title]" />
+							<input id="pn_title" type="text" name="form_data[title]"{if $detail.exception == "discarticle"} class="missing"{/if}/>
 	
 							<div class="editor_content">
 								<div id="description" class="ckeditor"></div>
@@ -276,7 +277,7 @@
 							</div>
 							*}
 							
-							<input type="image" id="disc_article_submit" name="form_data[option][new]" src="{$basic.tpl_path}img/btn_go.gif" alt="___DISCARTICLE_SAVE_BUTTON___" />
+							<input type="submit" id="disc_article_submit" name="form_data[option][new]" value="___COMMON_NEW_DISCARTICLE_EDIT___" />
 						</div>
 					</form>
 				</div>

@@ -155,6 +155,8 @@
 						// redirect
 						$this->cleanup_session($this->_item_id);
 						redirect($this->_environment->getCurrentContextID(), "todo", "detail", array("iid" => $step_item->getTodoID()), "step".$step_item->getItemID());
+					} else {
+						redirect($this->_environment->getCurrentContextID(), "todo", "detail", array("iid" => $_POST["todo_id"], "step_exception" => "mandatory"), "step_new");
 					}
 				}
 			}

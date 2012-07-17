@@ -98,6 +98,7 @@
 						</div>
 
 						<div class="column_590">
+							<a name="annotation-1"></a>
 							<form action="commsy.php?cid={$environment.cid}&mod=annotation&fct=edit&ref_iid={$detail.item_id}&mode=annotate&iid=NEW" method="post">
 								<div class="post_content">
 									<h4>{$annotation@total + 1}. </h4>
@@ -106,11 +107,12 @@
 									<input type="hidden" value="1" name="ref_position"/>
 									<input type="hidden" value="{$detail.item_id}" name="ref_iid"/>
 									{if isset($detail.content.version)}<input type="hidden" value="{$detail.content.version}" name="version"/>{/if}
-									<input id="pn_title" type="text" name="form_data[title]" />
+									<input id="pn_title" type="text" name="form_data[title]"{if $detail.exception == "annotation"} class="missing"{/if}/>
 									<div class="editor_content">
 										<div id="description_annotation" class="ckeditor"></div>
-										<input type="image" id="disc_article_submit" name="form_data[option][new]" src="{$basic.tpl_path}img/btn_go.gif" alt="___ANNOTATION_SAVE_BUTTON___" />
 									</div>
+									
+									<input type="submit" id="disc_article_submit" name="form_data[option][new]" value="___COMMON_NEW_ITEM___" />
 								</div>
 							</form>
 						</div>

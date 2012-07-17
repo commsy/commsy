@@ -342,9 +342,7 @@
 					
 					// save item
 					if($this->_command === 'new') {
-						// TODO: implement form check
-						$correct = true;
-						if($correct) {
+						if($this->checkFormData()) {
 							// create new item
 							if(!isset($this->_item)) {
 								$discarticle_manager = $this->_environment->getDiscussionArticlesManager();
@@ -436,6 +434,8 @@
 							$params = array();
 							$params['iid'] = $discarticle_item->getDiscussionID();
 							redirect($this->_environment->getCurrentContextID(), 'discussion', 'detail', $params, 'disc_article_' . $discarticle_item->getItemID());
+						} else {
+							redirect($this->_environment->getCurrentContextID(), 'discussion', 'detail', array("iid" => $_POST["discussion_id"], "discarticle_exception" => "mandatory"), "discarticle_new");
 						}
 					}
 					

@@ -43,6 +43,19 @@
 			parent::processTemplate();
 
 			$this->assign('detail', 'actions', $this->getDetailActions());
+			
+			/*******************/
+			// move this, when inline forms are handles via ajax
+			if (isset($_GET["annotation_exception"]) && $_GET["annotation_exception"] == "mandatory") {
+				$this->assign("detail", "exception", "annotation");
+			}
+			if (isset($_GET["step_exception"]) && $_GET["step_exception"] == "mandatory") {
+				$this->assign("detail", "exception", "step");
+			}
+			if (isset($_GET["discarticle_exception"]) && $_GET["discarticle_exception"] == "mandatory") {
+				$this->assign("detail", "exception", "discarticle");
+			}
+			/*******************/
 
 			// mark as read and noticed
 			//$this->markRead();

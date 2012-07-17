@@ -289,13 +289,14 @@
 				</div>
 
 				<div class="column_590">
+					<a name="step_new"></a>
 					<form action="commsy.php?cid={$environment.cid}&mod=step&fct=edit" method="post" enctype="multipart/form-data">
 						<div class="post_content">
 							<h4>{$step@total + 1}. </h4>
 							<input type="hidden" value="NEW" name="iid"/>
 							<input type="hidden" value="{$detail.content.item_id}" name="todo_id"/>
 							<input type="hidden" value="" name="ref_position"/>
-							<input id="pn_title" type="text" name="form_data[title]" /> <br>
+							<input id="pn_title" type="text" name="form_data[title]"{if $detail.exception == "step"} class="missing"{/if}/> <br>
 							___STEP_MINUTES___: <input type="text" size="4" name="form_data[minutes]" />
 							<select size="1" name="form_data[time_type]">
 								<option value="1">___TODO_TIME_MINUTES___</option>
@@ -317,7 +318,7 @@
 							</div>
 							*}
 							
-							<input type="image" id="disc_article_submit" name="form_data[option][new]" src="{$basic.tpl_path}img/btn_go.gif" alt="___DISCARTICLE_SAVE_BUTTON___" />
+							<input type="submit" id="disc_article_submit" name="form_data[option][new]" value="___COMMON_NEW_STEP_EDIT___" />
 						</div>
 					</form>
 				</div>
