@@ -67,10 +67,12 @@ require([	"dojo/_base/declare",
 				});
 				
 				// search
-				require(["commsy/Search"], function(Search) {
-					var handler = new Search();
-					handler.setup(query("input#search_input")[0]);
-				});
+				if(this.from_php.dev.indexed_search === true) {
+					require(["commsy/Search"], function(Search) {
+						var handler = new Search();
+						handler.setup(query("input#search_input")[0]);
+					});
+				}
 				
 				// overlays
 				query("a.new_item_2, a.new_item, a.attachment, span#detail_assessment, div.cal_days_events a").forEach(function(node, index, arr) {

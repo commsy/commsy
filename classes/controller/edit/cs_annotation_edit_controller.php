@@ -109,7 +109,7 @@
 			
 			// check access rights
 			$item_manager = $this->_environment->getItemManager();
-			if($this->_item_id !== 'NEW' && !isset($annotation_item)) {
+			if($annotation_item->getItemID() !== 'NEW' && !isset($annotation_item)) {
 				/*
 				 * $params = array();
 				   $params['environment'] = $environment;
@@ -119,9 +119,9 @@
 				   $errorbox->setText($translator->getMessage('ITEM_DOES_NOT_EXIST', $current_iid));
 				   $page->add($errorbox);
 				 */
-			} elseif(	!(($this->_item_id === 'NEW' && $current_user->isUser()) ||
-						($this->_item_id !== 'NEW' && isset($annotation_item) && $annotation_item->mayEdit($current_user)) ||
-						($this->_item_id === 'NEW' && isset($_GET['ref_iid']) && $item_manager->getExternalViewerForItem($_GET['ref_iid'], $current_user->getUserID())))) {
+			} elseif(	!(($annotation_item->getItemID() === 'NEW' && $current_user->isUser()) ||
+						($annotation_item->getItemID() !== 'NEW' && isset($annotation_item) && $annotation_item->mayEdit($current_user)) ||
+						($annotation_item->getItemID() === 'NEW' && isset($_GET['ref_iid']) && $item_manager->getExternalViewerForItem($_GET['ref_iid'], $current_user->getUserID())))) {
 						/*
 						 *    $params = array();
 							   $params['environment'] = $environment;
@@ -146,7 +146,7 @@
 						$anchor = 'anchor' . $annotation_item->getItemID();
 					}
 					
-					$this->cleanup_session($this->_item_id);
+					$this->cleanup_session($annotation_item->getItemID());
 					redirect($context, $module, $function, $param, $anchor);
 					exit;
 				}
@@ -159,7 +159,7 @@
 					$function = $session->getValue('annotation_history_function');
 					$param = $session->getValue('annotation_history_parameter');
 					
-					$this->cleanup_session($this->_item_id);
+					$this->cleanup_session($annotation_item->getItemID());
 					$annotation_item->delete();
 					redirect($context, $module, $function, $param);
 					exit;
@@ -239,7 +239,7 @@
 				}
 				
 				// create data for a new item
-				elseif($this->_item_id === 'NEW') {
+				elseif($annotation_item->getItemID() === 'NEW') {
 					/*
 					 * $form->setRefID($_GET['ref_iid']);
 				         if ( !empty($_GET['version']) ) {

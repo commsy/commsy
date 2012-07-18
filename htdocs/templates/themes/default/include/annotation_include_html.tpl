@@ -27,7 +27,7 @@
 					<div id="edit_expand_annotation_{$annotation@index}" class="hidden">
 						<div class="fade_in_ground_actions">
 							{if $annotation.actions.edit}
-								<a class="open_popup" data-custom="module: 'annotation', iid: '{$detail.content.item_id}'" href="#" title="___COMMON_EDIT_ITEM___">___COMMON_EDIT_ITEM___</a> |
+								<a class="open_popup" data-custom="module: 'annotation', iid: '{$annotation.item_id}'" href="#" title="___COMMON_EDIT_ITEM___">___COMMON_EDIT_ITEM___</a> |
 							{/if}
 							{if $annotation.actions.delete}
 								<a class="open_popup" data-custom="iid: {$annotation.item_id}, module: 'delete', delType: 'annotation'" href="#" title="___COMMON_DELETE_ITEM___">___COMMON_DELETE_ITEM___</a>

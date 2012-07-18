@@ -618,42 +618,110 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 						else $current_context->setwithInformationBox('no');
 
 						// usage information
-				         $info_array = array();
+						
+						
+						/*
+						 * $default_rubrics = $current_context->getAvailableRubrics();
+        $array_info_text = array();
+        $rubric_array = array();
+        $temp_array['rubric']  = $translator->getMessage('HOME_INDEX');
+        $temp_array['key'] = 'home';
+	    $temp_array['title'] = $current_context->getUsageInfoHeaderForRubric('home');
+	    $temp_array['text'] = $current_context->getUsageInfoTextForRubricInForm('home');
+        $array_info_text[] = $temp_array;
+        foreach ($default_rubrics as $rubric) {
+             $temp_array = array();
+             switch ( mb_strtoupper($rubric, 'UTF-8') ){
+                case 'ANNOUNCEMENT':
+                   $temp_array['rubric'] = $translator->getMessage('ANNOUNCEMENT_INDEX');
+                   break;
+                case 'DATE':
+                   $temp_array['rubric'] = $translator->getMessage('DATE_INDEX');
+                   break;
+                case 'DISCUSSION':
+                   $temp_array['rubric'] = $translator->getMessage('DISCUSSION_INDEX');
+                   break;
+                case 'INSTITUTION':
+                   $temp_array['rubric'] = $translator->getMessage('INSTITUTION_INDEX');
+                   break;
+                case 'GROUP':
+                   $temp_array['rubric'] = $translator->getMessage('GROUP_INDEX');
+                   break;
+                case 'MATERIAL':
+                   $temp_array['rubric'] = $translator->getMessage('MATERIAL_INDEX');
+                   break;
+                case 'PROJECT':
+                   $temp_array['rubric'] = $translator->getMessage('PROJECT_INDEX');
+                   break;
+                case 'TODO':
+                   $temp_array['rubric'] = $translator->getMessage('TODO_INDEX');
+                   break;
+                case 'TOPIC':
+                   $temp_array['rubric'] = $translator->getMessage('TOPIC_INDEX');
+                   break;
+                case 'USER':
+                   $temp_array['rubric'] = $translator->getMessage('USER_INDEX');
+                   break;
+                default:
+                   $temp_array['rubric'] = $translator->getMessage('COMMON_MESSAGETAG_ERROR'.' cs_configuration_usageinfo_form(113) ');
+                   break;
+              }
+              $temp_array['key'] = $rubric;
+	          $temp_array['title'] = $current_context->getUsageInfoHeaderForRubric($rubric);
+	          $temp_array['text'] = $current_context->getUsageInfoTextForRubricInForm($rubric);
+              $array_info_text[] = $temp_array;
+              unset($temp_array);
+         }
+						 */
+						
+						// get usage information
+				        $info_array = array();
 				        if (is_array($current_context->_getExtra('USAGE_INFO'))) {
-				            $info_array = $current_context->_getExtra('USAGE_INFO');
-				         }
-				         $do_not_show = false;
-				         if (!empty($form_data['info_text'])){
-				            if (empty($form_data['show'])) {
-				               $do_not_show = true;
-				            }
-				            if ( empty($info_array) and  $do_not_show ){
-				               $info_array[] = $form_data['info_text'];
-				               $current_context->setUsageInfoArray($info_array);
-				            }
-				            elseif ( !in_array($form_data['info_text'].'_no', $info_array) and $do_not_show ){
-				               array_push($info_array,$form_data['info_text'].'_no');
-				               $current_context->setUsageInfoArray($info_array);
-				            }
-				            elseif ( in_array($form_data['info_text'].'_no', $info_array) and  !$do_not_show ){
-				               $array[]=$form_data['info_text'].'_no';
-				               $new_array = array_diff($info_array,$array);
-				               $current_context->setUsageInfoArray($new_array);
-				            }
-				            if (! empty($form_data['title']) ){
-				               $current_context->setUsageInfoHeaderForRubric( $form_data['info_text'],  $form_data['title']);
-				            }
-				            if (! empty($form_data['text']) ){
-				               if ( mb_stristr($form_data['text'],'<!-- KFC TEXT -->') ){
-				                  $text = str_replace('<!-- KFC TEXT -->','',$form_data['text']);
-				               } else{
-				                  $text =  $form_data['text'];
-				               }
-				               $current_context->setUsageInfoTextForRubric( $form_data['info_text'],  $text);
-				            }else{
-				               $current_context->setUsageInfoTextForRubric( $form_data['info_text'],  '');
-				            }
-				         }
+				        	$info_array = $current_context->_getExtra('USAGE_INFO');
+				        }
+				        
+				        // get selected rubric from form
+				        $info_rubric = $form_data["array_info_text_rubric"];
+				        
+				        if (!empty($info_rubric)) {
+				        	// if info array is empty, add rubric
+				        	if (empty($info_array)) {
+				        		$info_array[] = $info_rubric;
+				        		$current_context->setUsageInfoArray($info_array);
+				        	}
+				        	
+				        	/*
+				        	 * Note: Why adding twice? Why differ between empty and !in_array?
+				        	 */
+				        	
+				        	// if rubric is not in array push it
+				        	elseif (!in_array($info_rubric . "_no", $info_array)) {
+				        		array_push($info_array, $info_rubric . "no");
+				        		$current_context->setUsageInfoArray($info_array);
+				        	}
+				        	
+				        	// if rubric is in array remove it
+				        	elseif (in_array($info_rubric . "_no", $info_array)) {
+				        		$temp = array($info_rubric . "_no");
+				        		$newArray = array_diff($info_array, $temp);
+				        		$current_context->setUsageInfoArray($newArray);
+				        	}
+				        	
+				        	// set title
+				        	if (!empty($form_data["moderation_title_" . $info_rubric])) {
+				        		$current_context->setUsageInfoHeaderForRubric($info_rubric, $form_data["moderation_title_" . $info_rubric]);
+				        	}
+				        	
+				        	// set text
+				        	if (!empty($form_data["moderation_description_" . $info_rubric])) {
+				        		$current_context->setUsageInfoTextForRubric($info_rubric, $form_data["moderation_description_" . $info_rubric]);
+				        	} else {
+				        		$current_context->setUsageInfoTextForRubric($info_rubric, "");
+				        	}
+				        }
+				        
+				        /*
+				         
 				         $info_form_array = array();
 				         if (is_array($current_context->getUsageInfoFormArray())) {
 				            $info_form_array = $current_context->getUsageInfoFormArray();
@@ -696,6 +764,8 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 				          }
 
 				         }
+				         
+				         */
 
 						// save
 						$current_context->save();

@@ -247,6 +247,10 @@
 			$to_javascript['security']['token'] = getToken();
 			$to_javascript['autosave']['mode'] = 0;
 			$to_javascript['autosave']['limit'] = 0;
+			
+			// dev
+			global $c_indexed_search;
+			$to_javascript['dev']['indexed_search'] = (isset($c_indexed_search) && $c_indexed_search === true) ? true : false;
 
 			if(isset($portal_user) && $portal_user->isAutoSaveOn()) {
 				global $c_autosave_mode;
