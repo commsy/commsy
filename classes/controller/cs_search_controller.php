@@ -7,6 +7,7 @@
 		private		$_list = null;
 		private 	$_items = array();
 		private		$_search_words = array();
+		private		$_indexed_search = false;
 
 		/**
 		 * constructor
@@ -25,6 +26,14 @@
 		 * every derived class needs to implement an processTemplate function
 		 */
 		public function processTemplate() {
+			/************************************************************************************
+			 * The Search Algorithm has to handle both, new indexed and old-fashioned
+			 * methods, so we need to check the $c_indexed_search global
+			************************************************************************************/
+			global $c_indexed_search;
+			$this->_indexed_search = (isset($c_indexed_search) && $c_indexed_search === true) ? true : false;
+				
+			
 			// call parent
 			parent::processTemplate();
 		}
@@ -45,8 +54,9 @@
 			// get all parameters
 			$this->getParameters();
 			
-			// setup a template variable with all search parameters
+			// setup template variables
 			$this->assign('search', 'parameters', $this->_params);
+			$this->assign("search", "indexed_search", $this->_indexed_search);
 			
 			// find current option
 			$option = '';
@@ -286,17 +296,11 @@ if ( $environment->inPrivateRoom()
 			
 			
 			
-			/************************************************************************************
-			 * The Search Algorithm has to handle both, new indexed and old-fashioned
-			 * methods, so we need to check the $c_indexed_search global
-			************************************************************************************/
-			global $c_indexed_search;
-			$indexed_search = (isset($c_indexed_search) && $c_indexed_search === true) ? true : false;
 			
 			/************************************************************************************
 			 * When using the indexed search method, ...
 			************************************************************************************/
-			if($indexed_search === true) {
+			if($this->_indexed_search === true) {
 				/************************************************************************************
 				 * ...we can look up all search words in the database to get their ids...
 				************************************************************************************/
@@ -554,13 +558,157 @@ if ( $environment->inPrivateRoom()
 			 * When NOT using the indexed search method, ...
 			************************************************************************************/
 			else {
+				$count_all = 0;
 				
+				$campus_search_ids = array();
+				$result_list = new cs_list();
+				
+				global $c_plugin_array;
+				foreach($rubric_array as $rubric) {
+					if(!isset($c_plugin_array) || !in_array(strtolower($rubric), $c_plugin_array)) {
+						$rubric_ids = array();
+						$rubric_list = new cs_list();
+						$rubric_manager = $this->_environment->getManager($rubric);
+				
+						/*
+						 * TODO:	the main idea is to limit requests by the previous detected item ids and only get detailed information for those,
+						* 			but db managers do not act as expected
+						*
+						*			for now, items are filtered afterwards
+						*/
+				
+						// set id array limit
+						//$rubric_manager->setIDArrayLimit(array_keys($items[$rubric]));
+				
+						if($rubric === CS_PROJECT_TYPE) {
+							$rubric_manager->setQueryWithoutExtra();
+						}
+				
+						// context limit
+						if($rubric !== CS_PROJECT_TYPE && $rubric !== CS_MYROOM_TYPE) {
+							$rubric_manager->setContextLimit($this->_environment->getCurrentContextID());
+						} elseif($rubric === CS_PROJECT_TYPE && $this->_environment->inCommunityRoom()) {
+							$rubric_manager->setContextLimit($this->_environment->getCurrentPortalID());
+							$current_community_item = $this->_environment->getCurrentContextItem();
+							$rubric_manager->setIDArrayLimit(($current_community_item->getInternalProjectIDArray()));
+							unset($current_community_item);
+						}
+				
+						// date
+						if($rubric === CS_DATE_TYPE && $this->_params['selstatus'] === 2) {
+							$rubric_manager->setWithoutDateModeLimit();
+						} elseif($rubric === CS_DATE_TYPE && $this->_params['selstatus'] !== 2) {
+							$rubric_manager->setDateModeLimit($this->_params['selstatus']);
+						}
+				
+						if ($this->_params['selgroup'] ){
+							$rubric_manager->setGroupLimit($this->_params['selgroup']);
+						}
+				
+						// user
+						if($rubric === CS_USER_TYPE) {
+							$rubric_manager->setUserLimit();
+							$current_user = $this->_environment->getCurrentUser();
+							if($current_user->isUser()) {
+								$rubric_manager->setVisibleToAllAndCommsy();
+							} else {
+								$rubric_manager->setVisibleToAll();
+							}
+						}
+				
+						$count_all = $count_all + $rubric_manager->getCountAll();
+				
+						foreach($sel_array as $rubric => $value) {
+							if(!empty($value)) {
+								$rubric_manager->setRubricLimit($rubric, $value);
+							}
+						}
+				
+						// activating status
+						if($this->_params['sel_activating_status'] !== '1') {
+							$rubric_manager->showNoNotActivatedEntries();
+						}
+						
+						$rubric_manager->setSearchLimit($this->_search_words[0]);
+				
+						$rubric_manager->setAttributeLimit($this->_params['selrestriction']);
+							
+						// apply filters
+						if(!empty($this->_params['selbuzzword'])) {
+							$rubric_manager->setBuzzwordLimit($this->_params['selbuzzword']);
+						}
+							
+						if(!empty($this->_params['seltag'])) {
+							$rubric_manager->setTagLimit($this->_params['seltag']);
+						}
+				
+						/*
+						 *
+						if ( !empty($selcolor) and $selcolor != '2' and $selrubric == "date") {
+						$rubric_manager->setColorLimit('#'.$selcolor);
+						}
+				
+						if ( ($selrubric == "todo") and !empty($selstatus)) {
+						$rubric_manager->setStatusLimit($selstatus);
+						}
+				
+						if (!empty($seluser)) {
+						$rubric_manager->setUserLimit($seluser);
+						}
+				
+						if ( !empty($selfiles) ) {
+						$rubric_manager->setOnlyFilesLimit();
+						}
+						*/
+						if($rubric != CS_MYROOM_TYPE) {
+							$rubric_manager->selectDistinct();
+							$rubric_list = $rubric_manager->get();
+							$temp_rubric_ids = $rubric_manager->getIDArray();
+						} else {
+							//$rubric_list = $rubric_manager->getRelatedContextListForUser($current_user->getUserID(),$current_user->getAuthSource(),$environment->getCurrentPortalID());;
+							//$temp_rubric_ids = $rubric_list->getIDArray();
+						}
+				
+				
+						/*
+				
+				
+						if (isset($_GET['select']) and $_GET['select']=='all'){
+						if(get_class($rubric_manager) == 'cs_user_manager'){
+						$selected_ids = $temp_rubric_ids;
+						}
+						}
+						*/
+						$result_list->addList($rubric_list);
+						if(!empty($temp_rubric_ids)) {
+							$rubric_ids = $temp_rubric_ids;
+						}
+				
+						$session->setValue('cid' . $this->_environment->getCurrentContextID() . '_' . $rubric . '_index_ids', $rubric_ids);
+						$campus_search_ids = array_merge($campus_search_ids, $rubric_ids);
+						/*
+				
+						$search_list->addList($rubric_list);
+						if (!empty($temp_rubric_ids)){
+						$rubric_ids = $temp_rubric_ids;
+						}
+						$session->setValue('cid'.$environment->getCurrentContextID().'_'.$rubric.'_index_ids', $rubric_ids);
+						$campus_search_ids = array_merge($campus_search_ids, $rubric_ids);
+						*/
+					}
+					#$session->setValue('cid'.$environment->getCurrentContextID().'_campus_search_parameter_array', $campus_search_parameter_array);
+					#            $session = $this->_environment->getSessionItem();
+				}
+				
+				// no filtering for result list
+				$this->_list = $result_list;
 			}
 			
 			$this->assign('room', 'search_content', $this->getListContent());
 			
 			$this->assign('list','browsing_parameters',$this->_browsing_icons_parameter_array);
 			$this->assign('list', 'restriction_text_parameters', $this->_getRestrictionTextAsHTML());
+			$this->assign('list','sorting_parameters',$this->getSortingParameterArray());
 		}
 
 		protected function getListContent() {
@@ -569,12 +717,14 @@ if ( $environment->inPrivateRoom()
 			$session = $this->_environment->getSessionItem();
 			
 			// find max count for relevanz bar
-			$max_count = 0;
-			$entry = $this->_list->getFirst();
-			while($entry) {
-				if($this->_items[$entry->getType()][$entry->getItemID()] > $max_count) $max_count = $this->_items[$entry->getType()][$entry->getItemID()];
+			if($this->_indexed_search === true) {
+				$max_count = 0;
+				$entry = $this->_list->getFirst();
+				while($entry) {
+					if($this->_items[$entry->getType()][$entry->getItemID()] > $max_count) $max_count = $this->_items[$entry->getType()][$entry->getItemID()];
 				
-				$entry = $this->_list->getNext();
+					$entry = $this->_list->getNext();
+				}
 			}
 
 			$entry = $this->_list->getFirst();
@@ -582,16 +732,29 @@ if ( $environment->inPrivateRoom()
 				$type = $entry->getType() === CS_LABEL_TYPE ? $entry->getLabelType() : $entry->getType();
 
 				$return['items'][] = array(
-					'title'			=> $entry->getType() === CS_USER_TYPE ? $entry->getFullname() : $entry->getTitle(),
-					'type'			=> $type,
-					'relevanz'		=> 100 * $this->_items[$entry->getType()][$entry->getItemID()] / $max_count,
-					'item_id'		=> $entry->getItemID(),
-					'num_files'		=> $entry->getFileList()->getCount()
+					'title'				=> $entry->getType() === CS_USER_TYPE ? $entry->getFullname() : $entry->getTitle(),
+					'type'				=> $type,
+					'relevanz'			=> ($this->_indexed_search === true) ? 100 * $this->_items[$entry->getType()][$entry->getItemID()] / $max_count : 0,
+					'item_id'			=> $entry->getItemID(),
+					'num_files'			=> $entry->getFileList()->getCount(),
+					"modificator"		=> $this->getItemModificator($entry),
+					"modification_date"	=> $entry->getModificationDate()
 				);
 				
 				$entry = $this->_list->getNext();
 			}
-
+			
+			/************************************************************************************
+			 * Now we can sort results
+			 * This must be done here, because we need to sort the results from all managers
+			 * (at least when not using the indexed search)
+			************************************************************************************/
+			if ( !empty($this->_list_parameter_arrray['sort']) ) {
+				var_dump($this->_list_parameter_arrray['sort']);
+				
+				//$material_manager->setOrder($this->_list_parameter_arrray['sort']);
+			}
+			
 			// sort return by relevanz
 			usort($return['items'], array($this, 'sortByRelevanz'));
 			$return['items'] = array_reverse($return['items']);

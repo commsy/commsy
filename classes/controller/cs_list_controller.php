@@ -294,7 +294,7 @@
          		$return_array['sort_place'] = 'none';
       		}
 
-			if ( $sort_parameter == 'status') {
+		if ( $sort_parameter == 'status') {
          		$return_array['sort_status_link'] = $link_parameter_text.'&sort=status_rev';
          		$return_array['sort_status'] = 'up';
       		}elseif ( $sort_parameter == 'status_rev'){
@@ -303,6 +303,28 @@
       		}else{
          		$return_array['sort_status_link'] = $link_parameter_text.'&sort=status';
          		$return_array['sort_status'] = 'none';
+      		}
+      		
+      		if ( $sort_parameter == 'relevanz') {
+      			$return_array['sort_relevanz_link'] = $link_parameter_text.'&sort=relevanz_rev';
+      			$return_array['sort_relevanz'] = 'up';
+      		}elseif ( $sort_parameter == 'relevanz_rev'){
+      			$return_array['sort_relevanz_link'] = $link_parameter_text.'&sort=relevanz';
+      			$return_array['sort_relevanz'] = 'down';
+      		}else{
+      			$return_array['sort_relevanz_link'] = $link_parameter_text.'&sort=relevanz';
+      			$return_array['sort_relevanz'] = 'none';
+      		}
+      		
+      		if ( $sort_parameter == 'rubric') {
+      			$return_array['sort_rubric_link'] = $link_parameter_text.'&sort=rubric_rev';
+      			$return_array['sort_rubric'] = 'up';
+      		}elseif ( $sort_parameter == 'rubric_rev'){
+      			$return_array['sort_rubric_link'] = $link_parameter_text.'&sort=rubric';
+      			$return_array['sort_rubric'] = 'down';
+      		}else{
+      			$return_array['sort_rubric_link'] = $link_parameter_text.'&sort=rubric';
+      			$return_array['sort_rubric'] = 'none';
       		}
 			return $return_array;
 		}
