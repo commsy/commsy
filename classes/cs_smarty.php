@@ -67,6 +67,7 @@ class cs_smarty extends Smarty {
 		// multilanguage support
 		//$this->registerFilter('pre', array($this, 'smarty_filter_i18n'));
 		$this->registerFilter('output', array($this, 'smarty_filter_i18n'));
+		$this->registerFilter("output", array($this, "smarty_filter_textfunctions"));
 		$this->registerPlugin('function', 'i18n', array($this, 'smarty_function_i18n'));
 	}
 	
@@ -120,6 +121,11 @@ class cs_smarty extends Smarty {
 	
 	public function smarty_filter_i18n($tpl_source, Smarty_Internal_Template $template) {
 		return preg_replace_callback('/___(.+?)___/', array($this, 'compile_lang'), $tpl_source);
+	}
+	
+	public function smarty_filter_textfunctions($tpl_source, Smarty_Internal_Template $template) {
+		$converter = $this->environment->getTextConverter();
+		return $converter->convertText($tpl_source);
 	}
 	
 	public function smarty_filter_post_token($tpl_source, Smarty_Internal_template $template) {

@@ -183,6 +183,23 @@ class misc_text_converter {
 
       return $text;
    }
+   
+   public function convertText($text) {
+   	  //$text = $this->_cs_htmlspecialchars($text,$htmlTextArea);
+      //$text = nl2br($text);
+      //$text = $this->_decode_backslashes_1($text);
+      //$text = $this->_preserve_whitespaces($text);
+      $text = $this->_newFormating($text);
+      //$text = $this->_emphasize_text($text);
+      //$text = $this->_activate_urls($text);
+      //$text = $this->_display_headers($text);
+      //$text = $this->_format_html_long($text);
+      //$text = $this->_parseText2ID($text);
+      //$text = $this->_decode_backslashes_2($text);
+      //$text = $this->_delete_unnecassary_br($text);
+      //$text = $this->_br_with_nl($text);
+   	  return $text;
+   }
 
    // text not from FCKeditor
    private function _text_as_html_long1 ($text,$htmlTextArea=false) {
