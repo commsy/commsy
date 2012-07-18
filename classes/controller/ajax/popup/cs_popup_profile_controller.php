@@ -165,17 +165,50 @@ class cs_popup_profile_controller implements cs_popup_controller {
 							$this->_popup_controller->setSuccessfullItemIDReturn($current_user->getItemID());
 						}
 						break;
-
-					case 'account_delete':
-						if($this->_popup_controller->checkFormData('delete')) {
-							$authentication = $this->_environment->getAuthenticationObject();
-							$current_user = $this->_environment->getCurrentUserItem();
-
-							// TODO:...
-
-							// set return
-							$this->_popup_controller->setSuccessfullItemIDReturn($current_user->getItemID());
-						}
+					
+					case "account_lock_room":
+						$current_user = $this->_environment->getCurrentUserItem();
+						
+						$current_user->reject();
+						$current_user->save();
+						
+						// set return
+						$this->_popup_controller->setSuccessfullItemIDReturn($current_user->getItemID());
+						break;
+					
+					case "account_delete_room":
+						$current_user = $this->_environment->getCurrentUserItem();
+							
+						$current_user->delete();
+						
+						// set return
+						$this->_popup_controller->setSuccessfullItemIDReturn($current_user->getItemID());
+						break;
+					
+					case "account_lock_portal":
+						$current_user = $this->_environment->getCurrentUserItem();
+						$portal_user_item = $user_item->getRelatedCommSyUserItem();
+						
+						$portal_user_item->reject();
+						$portal_user_item->save();
+						
+						// delete session
+						$session_manager = $this->_environment->getSessionManager();
+						$session = $this->_environment->getSessionItem();
+						$session_manager->delete($session->getSessionID());
+						$this->_environment->setSessionItem(null);
+						break;
+					
+					case "account_delete_portal":
+						$current_user = $this->_environment->getCurrentUserItem();
+						$authentication = $this->_environment->getAuthenticationObject();
+						$authentication->delete($user_item->getItemID());
+						
+						// delete session
+						$session_manager = $this->_environment->getSessionManager();
+						$session = $this->_environment->getSessionItem();
+						$session_manager->delete($session->getSessionID());
+						$this->_environment->setSessionItem(null);
 						break;
 
 					case 'account':
@@ -851,7 +884,7 @@ class cs_popup_profile_controller implements cs_popup_controller {
 				array('name' => 'language', 'type' => 'select', 'mandatory' => true),
 				array('name' => 'mail_account', 'type' => 'checkbox', 'mandatory' => false),
 				array('name' => 'mail_room', 'type' => 'checkbox', 'mandatory' => false),
-				array('name' => 'upload', 'type' => 'radio', 'mandatory' => true),
+				array('name' => 'upload', 'type' => 'radio', 'mandatory' => false/*true*/),
 				array('name' => 'auto_save', 'type' => 'checkbox', 'mandatory' => true),
 			),
 			'user'			=> array(
@@ -902,6 +935,11 @@ class cs_popup_profile_controller implements cs_popup_controller {
 		$portal_information = array();
 		$portal_information['portal_name'] = $this->_environment->getCurrentPortalItem()->getTitle();
 		$this->_popup_controller->assign('popup', 'portal', $portal_information);
+		
+		// context
+		$context_information = array();
+		$context_information["context_name"] = $current_context->getTitle();
+		$this->_popup_controller->assign("popup", "context", $context_information);
 
 		// form information
 		$form_information = array();

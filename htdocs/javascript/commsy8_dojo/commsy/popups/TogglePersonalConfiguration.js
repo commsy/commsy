@@ -11,6 +11,8 @@ define([	"dojo/_base/declare",
 			this.popup_button_node = button_node;
 			this.contentNode = content_node;
 			this.module = "profile";
+			this.dialog = null;
+			this.button = null;
 			
 			this.features = [ "editor", "upload-single" ];
 			
@@ -45,7 +47,48 @@ define([	"dojo/_base/declare",
 						// maybe change the picture in-time
 					});
 				}));
+				
+				// setup account delete handling
+				On(Query("input#delete", this.contentNode)[0], "click", Lang.hitch(this, function() {
+					DomClass.remove(Query("div#delete_options", this.contentNode)[0], "hidden");
+					
+					// register handler
+					On(Query("input#lock_room", this.contentNode)[0], "click", Lang.hitch(this, function() {
+						this.onPopupSubmit({ part: "account_lock_room" });
+					}));
+					On(Query("input#delete_room", this.contentNode)[0], "click", Lang.hitch(this, function() {
+						this.onPopupSubmit({ part: "account_delete_room" });
+					}));
+					On(Query("input#lock_portal", this.contentNode)[0], "click", Lang.hitch(this, function() {
+						this.onPopupSubmit({ part: "account_lock_portal" });
+					}));
+					On(Query("input#delete_portal", this.contentNode)[0], "click", Lang.hitch(this, function() {
+						this.onPopupSubmit({ part: "account_delete_portal" });
+					}));
+				}));
 			}));
+		},
+		
+		createConfirmBox: function() {
+			// create button
+			this.button = new dijit.form.Button({
+				label: "delete",
+				onClick:	Lang.hitch(this, function(event) {
+					// process submit
+					this.onPopupSubmit({ part: "account_delete" });
+					
+					// destroy the dialog
+					this.dialog.destroyRecursive();
+				})
+			});
+			
+			// create and show the dialog
+			this.dialog = new dijit.Dialog({
+				title:		""
+			});
+			dojo.place(this.button.domNode, this.dialog.containerNode, "last");
+			
+			this.dialog.show();
 		},
 		
 		onPopupSubmit: function(customObject) {

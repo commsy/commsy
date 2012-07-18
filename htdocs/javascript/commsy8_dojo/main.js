@@ -29,7 +29,7 @@ require([	"dojo/_base/declare",
 				});
 				
 				// setup rubric forms
-				query("a.open_popup").forEach(Lang.hitch(this, function(node, index, arr) {
+				query(".open_popup").forEach(Lang.hitch(this, function(node, index, arr) {
 					// get custom data object
 					var customObject = this.getAttrAsObject(node, "data-custom");
 					

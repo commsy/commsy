@@ -116,7 +116,19 @@
 
 										<div class="input_row" style="margin-bottom:40px;">
 											<input id="submit" class="submit" data-custom="part: 'account'" type="button" name="save" value="___PREFERENCES_SAVE_BUTTON___"/>
-											<input id="delete" class="submit" data-custom="part: 'account_delete'" type="button" name="form_data[delete]" value="___PREFERENCES_DELETE_BUTTON___"/>
+											<input id="delete" class="" data-custom="part: 'account_delete'" type="button" name="form_data[delete]" value="___PREFERENCES_DELETE_BUTTON___"/>
+										</div>
+										
+										<div id="delete_options" class="hidden">
+											{i18n tag="PREFERENCES_REALLY_DELETE_DESC_ROOM" param1="{$popup.context.context_name}" param2="___PREFERENCES_LOCK_BUTTON_ROOM___" param3="___PREFERENCES_REALLY_DELETE_BUTTON_ROOM___"}
+											<input id="lock_room" type="button" name="form_data[lock_room]" value="___PREFERENCES_LOCK_BUTTON_ROOM___"/>
+											<input id="delete_room" type="button" name="form_data[delete_room]" value="___PREFERENCES_REALLY_DELETE_BUTTON_ROOM___"/>
+											
+											{assign var="lockButton" value="{i18n tag="PREFERENCES_LOCK_BUTTON" param1="{$popup.portal.portal_name}"}"}
+											{assign var="deleteButton" value="{i18n tag="PREFERENCES_REALLY_DELETE_BUTTON" param1="{$popup.portal.portal_name}"}"}
+											{i18n tag="PREFERENCES_REALLY_DELETE_DESC" param1="{$popup.portal.portal_name}" param2="{$lockButton}" param3="{$deleteButton}"}
+											<input id="lock_portal" type="button" name="form_data[lock_portal]" value="{$lockButton}"/>
+											<input id="delete_portal" type="button" name="form_data[delete_portal]" value="{$deleteButton}"/>
 										</div>
 									</fieldset>
 

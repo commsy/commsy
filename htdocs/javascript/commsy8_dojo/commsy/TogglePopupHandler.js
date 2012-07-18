@@ -64,18 +64,6 @@ define([	"dojo/_base/declare",
 			this.inherited(arguments);
 			
 			this.onTogglePopup();
-			
-			// remove popup html from dom
-			//jQuery('div#popup_wrapper').remove();
-			
-			
-			/*
-			jQuery.each(handle.objects, function() {
-				this.trigger.removeClass(this.active_class);
-				this.menu.css('display', 'none');
-			});*/
-
-			//handle.isExpanded = false;
 		}
 	});
 });
