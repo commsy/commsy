@@ -774,12 +774,6 @@ if ($type != CS_DISCUSSION_TYPE) {
 			$description = $converter->showImages($description, $root, true);
 			//$retour .= $this->getScrollableContent($desc,$root,'',true).LF;
 
-				$attachment_infos = array();
-				$file_count = $item->getFileList()->getCount();
-				$file_list = $item->getFileList();
-
-			pr($attachment_infos);
-
 			$return[] = array(
 				'item_id'			=> $root->getItemID(),
 				'position'			=> $root->getPosition(),

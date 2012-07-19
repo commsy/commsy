@@ -707,6 +707,7 @@ if ( $environment->inPrivateRoom()
 			$this->assign('room', 'search_content', $this->getListContent());
 			
 			$this->assign('list','browsing_parameters',$this->_browsing_icons_parameter_array);
+			$this->assign('list','list_entries_parameter',$this->getListEntriesParameterArray());
 			$this->assign('list', 'restriction_text_parameters', $this->_getRestrictionTextAsHTML());
 			$this->assign('list','sorting_parameters',$this->getSortingParameterArray());
 		}
@@ -715,6 +716,15 @@ if ( $environment->inPrivateRoom()
 			$return = array();
 			
 			$session = $this->_environment->getSessionItem();
+			
+			// search in files
+			$ftsearch_manager = $this->_environment->getFTSearchManager();
+			if ($ftsearch_manager->getSearchStatus()) {
+				// get file ids from cs_ftsearch_manager
+				$ft_file_ids = $ftsearch_manager->getFileIDs();
+				
+				//var_dump($ft_file_ids);
+			}
 			
 			// find max count for relevanz bar
 			if($this->_indexed_search === true) {
@@ -795,8 +805,14 @@ if ( $environment->inPrivateRoom()
 			$limited_return = array();
 			$count = 0;
 			foreach($return['items'] as $entry) {
-				if($count >= $this->_list_parameter_arrray['from'] - 1 && sizeof($limited_return) < $this->_list_parameter_arrray['interval']) {
-					$limited_return[] = $entry;
+				if($this->_list_parameter_arrray['interval'] === "all") {
+					if($count >= $this->_list_parameter_arrray['from'] - 1) {
+						$limited_return[] = $entry;
+					}
+				} else {
+					if($count >= $this->_list_parameter_arrray['from'] - 1 && sizeof($limited_return) < $this->_list_parameter_arrray['interval']) {
+						$limited_return[] = $entry;
+					}
 				}
 				
 				$count++;
@@ -807,19 +823,23 @@ if ( $environment->inPrivateRoom()
 		}
 
 		private function sortByTitle($a, $b) {
-			return strcmp($a["title"], $b["title"]);
+			return strcasecmp($a["title"], $b["title"]);
 		}
 		
 		private function sortByRubric($a, $b) {
-			return strcmp($a["type"], $b["type"]);
+			return strcasecmp($a["type"], $b["type"]);
 		}
 		
 		private function sortByModified($a, $b) {
-			return strcmp($a["modification_date"], $b["modification_date"]);
+			return strcasecmp($a["modification_date"], $b["modification_date"]);
 		}
 		
 		private function sortByModificator($a, $b) {
-			return strcmp($a["modificator"], $b["modificator"]);
+			$aExplode = explode(" ", $a["modificator"]); end($aExplode);
+			$bExplode = explode(" ", $b["modificator"]); end($bExplode);
+			
+			
+			return strcasecmp(current($aExplode), current($bExplode));
 		}
 		
 		private function sortByRelevanz($a, $b) {
@@ -940,8 +960,12 @@ unset($ftsearch_manager);
 
 			//$this->_params['last_selected_tag'] = '';
 			$this->_params['seltag'] = '';
+			if(isset($_GET['seltag'])) {
+				$this->_params['seltag'] = $_GET['seltag'];
+			}
 
 			// find selected topic
+			/*
 			if(isset($_GET['seltags']) && !empty($_GET['seltags'])) {
 				$this->_params['seltags'] = $_GET['seltags'];
 			}
